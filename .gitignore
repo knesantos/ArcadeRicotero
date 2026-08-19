@@ -39,3 +39,6 @@ tmp/
 *.wav
 *.mp3
 !public/audio/fragmentos/*.mp3
+
+# Generado por Astro
+.astro/
