@@ -6,10 +6,11 @@
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
 **Última actualización:** 2026-08-19
-**Ciclo actual:** **3 — planificado, sin arrancar.** Plan en `Docs/ORQ/ORQ-plan-ciclo-3.md`,
-16 tareas `T-28`..`T-43`. **El ciclo 3 es construir el quiz**: después de dos ciclos hay
-todo especificado y **cero líneas de código**. Los ciclos 1 y 2 están cerrados, sin nada
-abierto. Banco: 30 preguntas.
+**Ciclo actual:** **3 — CERRADO.** Las 16 tareas `T-28`..`T-43`, más los siete hallazgos
+de `REV-04`, corregidos y verificados. **El quiz se juega**: Astro con salida estática,
+30 preguntas, cinco reglas como funciones puras con test, cuatro pantallas. 47 tests,
+`tsc` limpio, build OK. Repo en **https://github.com/knesantos/ArcadeRicotero**.
+Los ciclos 1 y 2 también están cerrados. **Ningún ciclo tiene nada abierto.**
 
 > 🔴 **Y algo peor que faltaba código: no hay repositorio git.** 55 archivos de trabajo de
 > dos ciclos completos, sin un solo commit y sin respaldo. Lo encontró `orquestador` al
@@ -90,17 +91,23 @@ abierto. Banco: 30 preguntas.
 
 ## Próximo paso
 
-**`T-28` — poner el repo bajo git.** Hay 55 archivos de dos ciclos de trabajo sin un solo
-commit. Va antes que cualquier otra cosa, y cuesta un minuto.
+**Correr `/ciclo` para el ciclo 4.** El quiz funciona; lo que falta es el resto de la v1.
 
-Después arranca la cadena de construcción: `T-33` levanta el andamiaje Astro que compila, y
-de ahí salen las cuatro funciones puras con test (`T-34` a `T-37`) y las cuatro pantallas
-(`T-39` a `T-42`). **Cada regla de negocio entra como función con test**, para que el código
-no pueda contradecir en silencio a los documentos.
+Tres frentes, y el primero es el que más acerca el "Listo":
 
-En paralelo, sin depender de nada, hay cuatro tareas documentales que valen solas: el copy
-que falta (`T-29`), dónde se ve el rótulo de leyenda (`T-30`), cerrar `ADR-01` (`T-31`) y
-reescribir `CNT-01` como mapa (`T-32`).
+1. **Los otros tres juegos no tienen un solo ítem.** `US-02` (adivinar el tema) tiene
+   contrato (`CTR-03`) pero necesita que **vos recortes los primeros mp3** — `origen` y
+   `fechaCorte` no son inventables. `US-03` (completar la letra) tiene fuente desde `D-13`
+   pero le falta el schema `CTR-04`. `US-04` (adivinar la tapa) necesita `CTR-05` y las
+   imágenes.
+2. **`letras` sigue en 0/10** y son las 10 que faltan para el piso de 40 de `US-01`.
+3. **Desplegar.** No hay nada que lo bloquee: `D-14` sacó el gate y `D-15` eligió Vercel
+   con salida estática. Conectar el repo y listo.
+
+**Hay un brand system en curso en otra sesión.** Cuando aterrice, reemplaza los valores de
+`src/styles/tokens.css` y **no hace falta tocar `src/styles/juego.css`**: ese archivo no
+tiene un solo color literal, todo sale de variables. Ojo con una cosa: hay un test que
+exige **WCAG AA en 12 pares de color**, así que cualquier paleta nueva tiene que pasarlo.
 
 Lo que sigue después, por orden de valor:
 
@@ -315,3 +322,8 @@ Estados posibles: `pendiente` · `en curso` · `bloqueado` · `hecho` · `cancel
 | 2026-08-19 | `/ciclo`: plan del **ciclo 3** en `Docs/ORQ/ORQ-plan-ciclo-3.md`, 16 tareas `T-28`..`T-43`. **El ciclo es construir el quiz.** Despues de dos ciclos estaba todo especificado —30 preguntas validadas, `CTR-02`, `CTR-03`, `UX-01`, `UX-02`, `UX-04`, seis reglas `BR-`— y **no habia una sola linea de codigo**. `D-14` saco el ultimo motivo para esperar. Se formalizo ademas en `Docs/EQUIPO.md` quien escribe el codigo: **el hilo principal**, por la misma razon de `D-12` — los cuatro roles que escriben no pueden ejecutar nada, y no se construye software sin correrlo. |
 | 2026-08-19 | **Hallazgo al planificar: el repo no estaba bajo git.** 55 archivos de dos ciclos completos, sin un solo commit ni respaldo. Es `T-28` y va antes que todo. |
 | 2026-08-19 | Tres huecos mas que encontro `orquestador` leyendo contra el encuadre nuevo: **`CNT-01` sigue redactada como cerrojo** y contradice al BRIEF (`T-32`); **`UX-01` no dice donde se ve el rotulo** de leyenda o testimonio, asi que 15 de los 30 items llegarian a pantalla con cara de hecho verificado — la ultima milla de todo el sistema de rotulado (`T-30`); y **ocho cadenas de copy** que `UX-01` y `UX-02` delegaron a `contenido` y nadie escribio (`T-29`). |
+| 2026-08-19 | **Ciclo 3 cerrado: las 16 tareas `T-28`..`T-43`, mas los siete hallazgos de `REV-04`.** El proyecto paso de cero lineas de codigo a **un quiz jugable**: Astro con salida estatica, cinco reglas de negocio como funciones puras con test, cuatro pantallas, y el repo en **github.com/knesantos/ArcadeRicotero**. 47 tests, `tsc` limpio, build OK. |
+| 2026-08-19 | **El defecto que solo aparecio jugando: en 25 de los 30 items la respuesta correcta era la primera opcion.** Tocando siempre arriba se sacaba **83%** sin saber nada — mucho peor que lo que discutio `BR-04`, que eligio 4 opciones en vez de 3 para bajar el azar de 33% a 25%. No lo agarro nadie porque en el JSON cada item se lee bien por separado: el patron solo existe en el conjunto. Arreglado barajando al servir; medido en el navegador, ahora rinde 28%. Y `revisor` encontro despues que **`CTR-02.3` ya lo exigia por escrito** desde el ciclo 1: no fue un parche, fue implementar un requisito que nadie habia ejecutado. |
+| 2026-08-19 | **`REV-04`, primera revision de codigo. El riesgo del ciclo no se materializo donde se temia.** `BR-01`, `BR-04`, `BR-05`, `ADR-01` y `ADR-02` coinciden con los documentos numero por numero. Se materializo en tres puntos que **pasaban en apariencia**: el test de contraste medía tokens que la pantalla nunca usaba (`FIND-15`, bloqueante — el juego corria sin senal de acierto, error ni rotulo), el payload mandaba mas de `testimonio` de lo aprobado (`FIND-16`), y una cadena de `CNT-05` se reemplazo por texto inventado (`FIND-17`). Los siete cerrados y verificados. |
+| 2026-08-19 | Nota de proceso: **`tsc --noEmit` no se estaba corriendo.** El hilo principal reporto `T-34` como verificada habiendo corrido solo `node --test`. Cuando se corrio (`FIND-19`), encontro que el arreglo de `FIND-16` estaba incompleto — el tipo seguia prometiendo campos que ya no se mandaban. **El comando que no se corria era el que iba a atrapar el arreglo a medias del otro hallazgo.** |
+| 2026-08-19 | `D-15`: hosting en **Vercel con salida estatica pura**. El usuario tiene Vercel Pro y Supabase Pro pagas, y aun asi el sitio se disena para el tier gratuito — si la suscripcion desaparece, sigue en linea sin cambiar una linea. **Supabase queda disponible y sin usar**: contradice "sin backend" (`D-02`), su tier gratuito pausa proyectos por inactividad, y sobre todo **una cuenta de usuario es literalmente un molinete**, que es lo unico que `D-14` prohibe por nombre. |
