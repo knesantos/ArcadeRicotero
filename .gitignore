@@ -1,0 +1,41 @@
+# Entorno
+.env
+.env.local
+*.local
+
+# Dependencias y builds
+node_modules/
+dist/
+build/
+.next/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Claude Code — preferencias personales, no del equipo
+.claude/settings.local.json
+CLAUDE.local.md
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Trabajo en crudo
+raw/
+tmp/
+*.log
+
+# Material de origen: se consulta local, no se publica
+#
+# El proyecto asume el riesgo de mostrar fragmentos y citas rotuladas (D-14), pero
+# subir una obra entera a un repositorio publico es otra cosa, y no hace falta para
+# nada: las fichas RES-XX ya extrajeron lo que el banco necesita.
+# Mismo criterio para los masters WAV del audio, que CTR-01 pide guardar fuera del
+# repo justamente para que bajar la duracion siga siendo barato.
+*.pdf
+*.epub
+*.wav
+*.mp3
+!public/audio/fragmentos/*.mp3

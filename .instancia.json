@@ -1,0 +1,78 @@
+{
+  "slug": "ricota-arcade",
+  "carpeta": "C:\\Users\\santi\\Proyectos\\InstanciadorProyectos\\RicotaArcade",
+  "roles": [
+    {
+      "id": "producto",
+      "carpeta_docs": "Docs/PRODUCTO",
+      "prefijo_archivo": "PRD",
+      "prefijo_id": "US",
+      "archivo_agente": ".claude/agents/producto.md",
+      "skill_metodo": ".claude/skills/producto-metodo/SKILL.md"
+    },
+    {
+      "id": "arquitectura",
+      "carpeta_docs": "Docs/ARQ",
+      "prefijo_archivo": "ARQ",
+      "prefijo_id": "ADR",
+      "archivo_agente": ".claude/agents/arquitectura.md",
+      "skill_metodo": ".claude/skills/arquitectura-metodo/SKILL.md"
+    },
+    {
+      "id": "investigador",
+      "carpeta_docs": "Docs/INVESTIGACION",
+      "prefijo_archivo": "INV",
+      "prefijo_id": "RES",
+      "archivo_agente": ".claude/agents/investigador.md",
+      "skill_metodo": ".claude/skills/investigador-metodo/SKILL.md"
+    },
+    {
+      "id": "contenido",
+      "carpeta_docs": "Docs/CONTENIDO",
+      "prefijo_archivo": "CNT",
+      "prefijo_id": "CNT",
+      "archivo_agente": ".claude/agents/contenido.md",
+      "skill_metodo": ".claude/skills/contenido-metodo/SKILL.md"
+    },
+    {
+      "id": "experiencia",
+      "carpeta_docs": "Docs/UX",
+      "prefijo_archivo": "UX",
+      "prefijo_id": "UX",
+      "archivo_agente": ".claude/agents/experiencia.md",
+      "skill_metodo": ".claude/skills/experiencia-metodo/SKILL.md"
+    },
+    {
+      "id": "revisor",
+      "carpeta_docs": "Docs/REVISIONES",
+      "prefijo_archivo": "REV",
+      "prefijo_id": "FIND",
+      "archivo_agente": ".claude/agents/revisor.md",
+      "skill_metodo": ".claude/skills/revisor-metodo/SKILL.md"
+    },
+    {
+      "id": "orquestador",
+      "carpeta_docs": "Docs/ORQ",
+      "prefijo_archivo": "ORQ",
+      "prefijo_id": "T",
+      "archivo_agente": ".claude/agents/orquestador.md",
+      "skill_metodo": ".claude/skills/orquestador-metodo/SKILL.md"
+    }
+  ],
+  "skills_flujo": [
+    "kickoff",
+    "estado",
+    "ciclo",
+    "coherencia"
+  ],
+  "archivos_pendientes": [
+    "CLAUDE.md",
+    "ESTADO.md",
+    "README.md",
+    ".gitignore",
+    "Docs/BRIEF.md",
+    "Docs/EQUIPO.md",
+    "Docs/DECISIONES.md",
+    "Docs/IDS.md"
+  ]
+}
