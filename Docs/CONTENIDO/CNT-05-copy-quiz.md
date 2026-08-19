@@ -1,13 +1,25 @@
 # CNT-05 — Copy del quiz
 
 - **Fecha:** 2026-08-19
-- **Estado:** cerrado. Gate del ciclo 3 (`T-29`) — desbloquea `T-39`, `T-41`, `T-42`.
+- **Estado:** cerrado (`T-29`). Gate del ciclo 3 — desbloquea `T-39`, `T-41`, `T-42`.
 - **Consume:** `Docs/UX/UX-01-flujo-quiz.md`, `Docs/UX/UX-02-tarjeta-resultado.md`, `BR-05`
   (`Docs/PRODUCTO/PRD-alcance-v1.md`), `CNT-02` (guía de tono), `D-14` (molinetes
-  abiertos), `RES-04` (fecha de muerte del Indio, 5-jun-2026, para el tiempo verbal).
+  abiertos), `RES-04` (fecha de muerte del Indio, 5-jun-2026, para el tiempo verbal),
+  `CTR-02.4` (schema de `testimonio`, campo `quien`).
 - **No edita** `UX-01` ni `UX-02`: son de `experiencia`. Donde esos documentos ya fijan
   un texto literal (los tres botones de una palabra), acá lo confirmo y le agrego el
   largo máximo que a ellos no les tocaba definir — no lo reemplazo.
+
+> **Parche — `T-30`, ciclo 3.** `T-29` (yo) y `T-30` (`experiencia`) corrieron en
+> paralelo sobre la misma pantalla y quedaron dos choques. Corrijo `B4`: la etiqueta de
+> testimonio no puede ser texto fijo con "el Indio" adentro porque no todo testimonio es
+> del Indio — dos de los cinco testimonios que hoy tiene el banco son de Rocambole
+> (`QZ-027`, `QZ-028`), y una etiqueta fija le atribuiría al Indio algo que dijo
+> Rocambole. La convierto en plantilla con hueco `{quien}`. Agrego `B5`: el botón que
+> reemplaza al auto-avance en los ítems con rótulo, que `UX-01` v2 pide porque un timer
+> fijo no le sirve a la vez a un `rotuloLeyenda` de 15 caracteres y a uno de 200. Ninguna
+> de las dos estaba en la lista original porque `UX-01` definió esta pantalla mientras yo
+> escribía esta pieza. Todo lo demás de la hoja queda igual.
 
 ## Nota sobre los largos máximos
 
@@ -90,14 +102,49 @@ dentro de la misma ronda de 8. Acompañan al ícono de festejo, ~1,2 s de auto-a
 - **Texto:** `Esto es leyenda:`
 - **Largo real:** 16 · **Largo máximo:** 24.
 
-**B4. Etiqueta que precede al rótulo de un ítem de testimonio del Indio**
-- **Texto:** `Lo contó el Indio:`
-- **Largo real:** 18 · **Largo máximo:** 24.
-- Tiempo verbal a propósito: **pretérito**, no presente. El Indio murió el 5-jun-2026
-  (`RES-04`); "cuenta" en presente sonaría a que sigue narrando hoy. "Contó" cita algo
-  que dijo en su momento (memoir o entrevista) sin ambigüedad de tiempo.
-- Dónde aparecen en pantalla y qué pasa con el auto-avance es de `T-30` (`experiencia`,
-  en curso en paralelo) — acá solo entrego el texto.
+**B4. Etiqueta que precede al rótulo de un ítem de testimonio — plantilla con hueco
+`{quien}` (corregida en el parche de arriba; ya no es texto fijo con "el Indio")**
+- **Plantilla:** `Lo contó {quien}:`
+- **Cómo se resuelve el hueco:** `{quien}` se reemplaza, tal cual, por el valor cargado
+  en `testimonio.quien` del ítem — sin agregar artículo ("el"/"la") ni recortar el
+  nombre. `testimonio.quien` ya guarda el nombre propio completo (`quiz.json`: "Indio
+  Solari" en tres ítems, "Rocambole" en `QZ-027` y `QZ-028`), así que la plantilla no
+  necesita saber quién es: solo interpola. Sirve igual para un nombre corto que para uno
+  largo porque no hay texto fijo pegado al nombre que dependa de su longitud — la
+  plantilla no trunca ni ajusta espacios.
+- **Ejemplos resueltos con los datos de hoy:**
+  - `testimonio.quien = "Indio Solari"` → `Lo contó Indio Solari:` — 22 caracteres.
+  - `testimonio.quien = "Rocambole"` → `Lo contó Rocambole:` — 19 caracteres.
+- **Largo de la parte fija de la plantilla** ("Lo contó " + ":"): 10 caracteres.
+  **Largo máximo de `{quien}`:** 60, el `maxLength` que ya fija el schema para
+  `testimonio.quien` (`CTR-02.4`), no un tope que invente yo. **Largo máximo total
+  resuelto:** 70 (10 fijos + 60 del hueco), aunque ningún caso real de hoy se acerca a
+  ese techo.
+- Tiempo verbal a propósito: **pretérito** ("contó"), sin cambios respecto de la versión
+  anterior — sigue valiendo para los dos testigos, vivo o no. El Indio murió el
+  5-jun-2026 (`RES-04`); "cuenta" en presente sonaría a que sigue narrando hoy. Para
+  Rocambole (artista vivo) "contó" también es correcto porque no describe si sigue
+  narrando ahora: cita algo que ya dijo, en el memoir o en una entrevista puntual — el
+  pretérito no afirma que haya dejado de hablar, solo fecha la cita.
+- Dónde aparece en pantalla (después de responder, junto a `testimonio.obra`) y por qué
+  ahí y no antes de responder: `UX-01` v2, sección "El rótulo de leyenda y de
+  testimonio".
+
+**B5. Botón que reemplaza al auto-avance en los ítems con rótulo — cadena nueva, pedida
+por `UX-01` v2 / `T-30`**
+- **Texto:** `SEGUÍ`
+- **Largo real:** 5 · **Largo máximo:** 12 (mismo margen que `A4`/"JUGÁ": una sola
+  palabra, imperativo en vos, sin variantes).
+- **Cuándo aparece:** solo en ítems con rótulo (leyenda o testimonio), después de que se
+  pintan las opciones y se muestra la tarjeta de revelación (`B3` o `B4` resuelto). En
+  los ítems sin rótulo no cambia nada: sigue el auto-avance de `B1`/`B2`.
+- **Por qué esta palabra y no otra.** Mismo registro que "JUGÁ": imperativo corto en
+  segunda persona del voseo rioplatense (no "seguir", no "continuar"), consistente con
+  el resto de los botones de acción de una palabra de esta pieza. No es un texto que
+  necesite explicar nada — el jugador ya leyó la tarjeta, el botón solo confirma que
+  terminó de leer y quiere la próxima pregunta.
+- Un solo tap, mismo gesto que responder una opción — no agrega un tipo de interacción
+  nuevo a la pantalla.
 
 ---
 
@@ -173,7 +220,8 @@ variante B) — 3 variantes según el resultado**
 | B1 | Pregunta | Micro-copy acierto | 4 | 32 |
 | B2 | Pregunta | Micro-copy error | 4 | 40 |
 | B3 | Pregunta | Etiqueta leyenda | 1 | 24 |
-| B4 | Pregunta | Etiqueta testimonio | 1 | 24 |
+| B4 | Pregunta | Etiqueta testimonio | 1 (template `{quien}`) | 70 (10 fijos + 60 del hueco) |
+| B5 | Pregunta | Botón "SEGUÍ" (ítems con rótulo) | 1 | 12 |
 | C1 | Resultado | Título + bajada tramo bajo | 1+1 | 40 / 70 |
 | C2 | Resultado | Título + bajada tramo medio | 1+1 | 30 / 55 |
 | C3 | Resultado | Título + bajada tramo alto | 1+1 | 35 / 50 |

@@ -1,0 +1,84 @@
+/*
+ * Tokens visuales. Implementa `UX-04` (Docs/UX/UX-04-sistema-visual.md).
+ *
+ * `UX-04` fijo las restricciones y dejo los valores exactos a quien produzca el arte,
+ * marcandolos explicitamente como criterio propio y no como referencia fichada de
+ * Rocambole: ninguna ficha describe su paleta. Estos hex son **valores de trabajo**
+ * que cumplen las restricciones — base oscura, acentos saturados, contraste real — y
+ * se pueden cambiar entero sin tocar una linea de logica.
+ *
+ * La restriccion que no se negocia: **saturado no exime de contraste** (`UX-04`, y el
+ * checklist de accesibilidad de `UX-01`). Todo par texto/fondo que se use de verdad
+ * esta verificado en `contraste.test.ts` contra WCAG AA, 4,5:1.
+ */
+
+:root {
+  /* Base oscura: los acentos explotan contra esto, no al reves. */
+  --fondo: #12101a;
+  --fondo-elevado: #1e1a2e;
+  --borde: #3a3350;
+
+  /* Texto */
+  --texto: #f4f1ea;
+  --texto-tenue: #b9b2c7;
+
+  /* Acentos psicodelicos saturados */
+  --acento: #ff8a3d; /* naranja: accion principal */
+  --acento-2: #ffd23f; /* amarillo: destaque */
+  --acento-3: #45e0c0; /* verde agua: acierto */
+  --acento-4: #ff5d8f; /* rosa: error, sin dramatismo */
+
+  /* Rotulos de fuente. No decorativos: son informacion de juego (UX-01 v2). */
+  --rotulo-leyenda: #c9a7ff;
+  --rotulo-testimonio: #7fd4ff;
+
+  /* Espaciado pensado para el pulgar (D-09) */
+  --toque-min: 48px; /* area de toque minima */
+  --espacio-1: 0.5rem;
+  --espacio-2: 1rem;
+  --espacio-3: 1.5rem;
+  --espacio-4: 2.5rem;
+
+  --radio: 14px;
+  --linea: 3px; /* linea gruesa, UX-04 */
+
+  --fuente: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--fuente);
+  line-height: 1.5;
+  /* Movil primero: nada de ancho fijo. */
+  padding: var(--espacio-2);
+}
+
+/* Todo lo tocable respeta el area minima. Es "jugable con el pulgar" en CSS. */
+button,
+a[role='button'] {
+  min-height: var(--toque-min);
+  min-width: var(--toque-min);
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+:where(a, button):focus-visible {
+  outline: var(--linea) solid var(--acento-2);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

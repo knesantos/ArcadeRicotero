@@ -68,7 +68,30 @@ export function armarRonda(items: readonly Item[], largo: number, azar: () => nu
       ronda.push(it);
     }
   }
-  return ronda;
+  return ronda.map((it) => barajarOpciones(it, azar));
+}
+
+/**
+ * Baraja las opciones de un item.
+ *
+ * **Por que existe esto.** Al jugar la primera partida de verdad se descubrio que en
+ * **25 de los 30 items la respuesta correcta era la primera opcion**: tocando siempre la
+ * de arriba se sacaba 83% sin saber nada. No lo agarro nadie — ni `contenido`, ni el
+ * schema, ni las tres revisiones — porque en el JSON cada item se lee correcto por
+ * separado; el patron solo existe en el conjunto.
+ *
+ * Es un agujero mucho mas grave que el que discutio `BR-04`: esa regla eligio 4 opciones
+ * en vez de 3 para bajar el azar de 33% a 25%, y mientras tanto el orden fijo lo tenia
+ * en 83%.
+ *
+ * Se arregla aca y no en el contenido a proposito. Quien escribe una pregunta pone
+ * naturalmente la respuesta correcta primero y despues inventa los distractores; pelear
+ * contra esa costumbre en 40 items, y en los 45 que faltan de los otros juegos, es una
+ * batalla perdida que ademas hay que volver a pelear cada vez que entra contenido nuevo.
+ * Barajar al servir lo resuelve una vez y para siempre.
+ */
+export function barajarOpciones(item: Item, azar: () => number): Item {
+  return { ...item, opciones: barajar(item.opciones, azar) };
 }
 
 /** Verifica que una ronda cumpla `BR-01`. Se usa en los tests y en la revision. */

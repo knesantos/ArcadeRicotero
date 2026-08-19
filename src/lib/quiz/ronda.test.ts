@@ -87,3 +87,40 @@ test('contarAciertos cuenta bien, incluida la respuesta en blanco', () => {
   assert.equal(contarAciertos(ronda, [null, null, null, null]), 0);
   assert.equal(contarAciertos(ronda, [todasBien[0]!, 'no existe', null, todasBien[3]!]), 2);
 });
+
+test('las opciones se barajan: tocar siempre la primera no puede ganar', () => {
+  // El defecto que aparecio al jugar la primera partida: 25 de 30 items tenian la
+  // respuesta correcta en la posicion 1. Tocando siempre arriba se sacaba 83%.
+  let aciertosTocandoLaPrimera = 0;
+  const RONDAS = 500;
+  for (let s = 0; s < RONDAS; s++) {
+    const ronda = armarRonda(BANCO_REAL, 8, azarSemilla(s));
+    const elegidas = ronda.map((i) => i.opciones[0]!.texto);
+    aciertosTocandoLaPrimera += contarAciertos(ronda, elegidas);
+  }
+  const tasa = aciertosTocandoLaPrimera / (RONDAS * 8);
+  // Con 4 opciones barajadas, tocar siempre la primera tiene que rendir ~25% (BR-04),
+  // no 83%. Margen generoso para no volver el test fragil.
+  assert.ok(tasa < 0.35, `tocando siempre la primera se saca ${(tasa * 100).toFixed(1)}%, deberia rondar 25%`);
+  assert.ok(tasa > 0.15, `tasa sospechosamente baja: ${(tasa * 100).toFixed(1)}%`);
+});
+
+test('barajar no pierde ni duplica opciones, y deja exactamente una correcta', () => {
+  for (let s = 0; s < 200; s++) {
+    for (const it of armarRonda(BANCO_REAL, 8, azarSemilla(s))) {
+      assert.equal(it.opciones.length, 4, 'BR-04: dejaron de ser 4 opciones');
+      assert.equal(it.opciones.filter((o) => o.correcta).length, 1, 'no quedo exactamente una correcta');
+      assert.equal(new Set(it.opciones.map((o) => o.texto)).size, 4, 'hay opciones duplicadas');
+    }
+  }
+});
+
+test('la correcta no cae siempre en la misma posicion', () => {
+  const posiciones = new Set<number>();
+  for (let s = 0; s < 200; s++) {
+    for (const it of armarRonda(BANCO_REAL, 8, azarSemilla(s))) {
+      posiciones.add(it.opciones.findIndex((o) => o.correcta));
+    }
+  }
+  assert.deepEqual([...posiciones].sort(), [0, 1, 2, 3], 'la correcta no aparece en las 4 posiciones');
+});
