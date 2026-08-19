@@ -506,3 +506,19 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   dispositivos, que ya estaba fuera de alcance. **Si algun dia se quiere ranking, esta
   decision es el lugar donde se discute**, y la conversacion arranca reconociendo que un
   ranking sin cuentas es dificil y un ranking con cuentas cierra un molinete.
+- **Actualizacion del 2026-08-19, verificada contra la documentacion (`RES-15`):** el
+  usuario desplego y pregunto como asegurarse de no pagar. La ficha confirma el diseno de
+  esta decision y corrige una intuicion razonable pero incompleta — la de que alcanza con
+  no activar Speed Insights ni Analytics.
+  **Lo que decide no son los add-ons: es el scope.** En **Hobby no hay cargo posible**,
+  porque al agotar un cupo el recurso se **frena** en vez de facturarse; en un **equipo
+  Pro se cobra el excedente** de transferencia y edge requests aunque no se toque ningun
+  add-on. Y hay una vuelta contraintuitiva: **Spend Management, el tope de gasto, solo
+  existe en Pro** — en Hobby no existe porque no hace falta.
+  La clausula de uso no comercial de Hobby encaja limpio: nada de cobrar, ads ni
+  afiliados, y **las donaciones estan explicitamente permitidas**
+  (https://vercel.com/docs/limits/fair-use-guidelines, consultado 2026-08-19).
+  Los numeros reales del sitio: **11 KB comprimidos por visita**, tres archivos. Un millon
+  de visitas serian ~10 GB contra los 100 GB de Hobby. **Accion pendiente del usuario:**
+  verificar en Settings -> General que el proyecto viva en el scope personal y no en el
+  equipo Pro, y moverlo con Transfer Project si hace falta.
