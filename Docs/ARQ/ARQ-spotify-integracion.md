@@ -1,21 +1,25 @@
 # ARQ — Integración con Spotify
 
 > Rol dueño: `arquitectura`. Consume: `Docs/BRIEF.md`, `D-02`, `D-03`, `D-04`, `D-08`,
-> `D-09`, `D-10`, `RES-01`, `RES-09`, `RES-25`, `RES-26`, `US-02`, `BR-06`,
+> `D-09`, `D-10`, **`D-14`**, `RES-01`, `RES-09`, `RES-25`, `RES-26`, `US-02`, `BR-06`,
 > `.claude/rules/codigo-juegos.md`. Produce: `ADR-01`.
-> Última actualización: 2026-08-19 (revisión 3, tras `RES-26`).
+> Última actualización: 2026-08-19 (**revisión 4: cierre en B bajo `D-14`**, `T-31` del
+> ciclo 3).
 
 ---
 
 ## ADR-01 — Vía de integración con Spotify para dar acceso al tema
 
 - **Fecha:** 2026-08-19 · **Revisión 2:** incorporando `RES-01` · **Revisión 3:**
-  2026-08-19, incorporando `RES-26`.
-- **Estado:** **propuesta**, con **cuatro de cinco opciones cerradas** y **una sola
-  pregunta abierta**. No bloquea construir; bloquea publicar el enlace.
+  2026-08-19, incorporando `RES-26` · **Revisión 4:** 2026-08-19, cierre bajo `D-14`.
+- **Estado:** **ACEPTADA** — **opción B, deep link**. Ya no bloquea nada: ni construir, ni
+  publicar el enlace.
+- **Motivo del cierre:** **`D-14`**, y no evidencia nueva. Ver "Decisión" más abajo, que es
+  la sección que hay que leer si esto se relee en dos meses.
 - **Consume:** `D-02` (sin backend), `D-03` (motor híbrido), `D-08` (el jugador no tiene
-  Premium), `D-09` (criterios no negociables), `D-10` (difusión), `RES-01`
-  (`Docs/INVESTIGACION/INV-01-fichas-iniciales.md`), `RES-26`
+  Premium), `D-09` (criterios no negociables), `D-10` (difusión), **`D-14`** (la postura:
+  fan site sin fines de lucro, el riesgo se asume, si llega un reclamo se da de baja),
+  `RES-01` (`Docs/INVESTIGACION/INV-01-fichas-iniciales.md`), `RES-26`
   (`Docs/INVESTIGACION/INV-22-imagenes-tapas-y-spotify.md`), `BR-06`
   (`Docs/PRODUCTO/PRD-promesa-spotify.md`).
 
@@ -27,13 +31,14 @@
 
 | | |
 |---|---|
+| **Decidido** | **B — deep link `https://open.spotify.com/track/<trackId>`.** Estado **aceptada**. Se cierra por `D-14`, no porque haya aparecido evidencia. |
 | **Descartadas con evidencia** | **C** (`preview_url`) y **D** (Web Playback SDK), por `RES-01`. **A** (embed), por `RES-26` — descarte **contractual**, no técnico. No se reabren salvo por la condición escrita en cada una. |
-| **En disputa** | **B** (deep link) contra **E** (ninguna integración). No hay tercera. |
-| **Lo único que falta** | **`E-13`**: ¿un deep link simple cuenta como "acceder a la Spotify Platform"? Una pregunta, y decide entre B y E. |
-| **Valor de trabajo, marcado** | **B**. `experiencia` y `contenido` pueden construir contra B hoy: es una hoja que se poda en un commit si `E-13` vuelve en contra. |
-| **Ya cerrado y usable hoy** | El **fallback** (revisado en esta revisión: la cascada perdió el escalón del embed) y el dato que consume el JSON: `trackId`, igual en B y sin desperdicio en E. |
-| **Presupuesto** | **Cero bytes de Spotify en toda la sesión**, no solo durante la partida. Ver "Consecuencias". |
-| **Estado de `producto`** | La alerta de la revisión 2 **está resuelta**: `BR-06` existe y aguanta este hallazgo sin cambios. Lo nuevo va como propuesta cruzada, no como alerta abierta. |
+| **La alternativa que perdió** | **E** (ninguna integración). No murió: queda como **destino de la reversión**, ya escrita y lista para tomar el control en un commit. |
+| **`E-13`** | **NO respondida. No bloqueante bajo `D-14`.** Sigue sin haber pronunciamiento sobre si un link pelado es "acceder a la Spotify Platform". Lo que cambió es que el proyecto decidió que puede absorber el peor desenlace. |
+| **Disparador de reversión** | Reclamo de Spotify → se borra el `<a>`, el fallback toma el control, el juego no se toca. Ver "Reversión". |
+| **Ya cerrado y usable hoy** | El **fallback** (revalidado en esta revisión, sigue coherente) y el dato que consume el JSON: `trackId`. |
+| **Presupuesto** | **Cero bytes de Spotify en toda la sesión**, no solo durante la partida. Ver "Consecuencias" y "Lo que este ADR le exige al código". |
+| **Estado de `producto`** | `BR-06` **no se toca**: promete acceso y describe exactamente un deep link. La rama B era la única que no la obligaba a reescribirse. |
 
 ### Contexto
 
@@ -109,10 +114,16 @@ de costos, y la escribo para que se pueda auditar:
   después retiró la promesa de reproducción dentro del sitio, que era su único diferencial
   real. Perdemos poco, y lo recuperamos en un commit porque el dato del JSON es el mismo.
 - **Si me equivoco usándolo:** el proyecto queda en incumplimiento de un acuerdo que se
-  considera aceptado por el solo uso, en un proyecto cuyo riesgo número uno ya es derechos
-  y cuya publicación ya está bloqueada por un gate de derechos real (`CLAUDE.md`, sección
-  6). Construir cuatro juegos encima de una cláusula que dice "no hagas juegos" es
-  exactamente el error que la cláusula describe.
+  considera aceptado por el solo uso, en un proyecto cuyo riesgo número uno ya es derechos.
+  Construir cuatro juegos encima de una cláusula que dice "no hagas juegos" es exactamente
+  el error que la cláusula describe.
+  > **Corrección de la revisión 4, y no es un detalle.** Este párrafo decía además *"y cuya
+  > publicación ya está bloqueada por un gate de derechos real"*. **Ese gate no existe más**
+  > (`D-14`): lo saco en vez de dejarlo, porque un lector futuro podría actuar sobre un
+  > cerrojo muerto. **El descarte de A no se cae con él:** nunca se apoyó en el gate, se
+  > apoya en la asimetría de costos —perdemos poco si erramos descartándolo, mucho si
+  > erramos usándolo— y esa asimetría es más marcada todavía que la del link, porque un
+  > embed no se revierte borrando un `<a>`. Ver "Qué NO autoriza este cierre".
 
 **Condición de reapertura, y es una sola:** prueba escrita de que la Policy no alcanza al
 uso del embed por un sitio sin fines de lucro (`E-14`). Aun así, A volvería **solo** si
@@ -123,7 +134,7 @@ La reapertura es remota y está bien que lo sea.
 el iframe necesita **`allow="encrypted-media"`** o reproduce menos de 30 segundos en
 silencio. Es el error silencioso perfecto y sería una lástima perderlo del registro.
 
-#### Opción B — Deep link a Spotify — **la candidata**
+#### Opción B — Deep link a Spotify — **ELEGIDA (revisión 4, por `D-14`)**
 
 Un link `https://open.spotify.com/track/<trackId>` que abre la app de Spotify si está
 instalada, o el reproductor web si no.
@@ -142,16 +153,23 @@ instalada, o el reproductor web si no.
   <https://developer.spotify.com/documentation/ios/tutorials/content-linking> — consultado
   2026-08-19. Consecuencia de diseño, ya incorporada a `BR-06`: **no se le puede prometer
   al jugador "abrí la app"**.
-- **No verificado, y es lo único que falta (`E-13`):** que un link pelado no cuente como
+- **No verificado, y sigue sin verificarse (`E-13`):** que un link pelado no cuente como
   "usar o acceder a la Spotify Platform". `RES-26` lo llama **discutible** y tiene razón en
-  llamarlo así. **Es una lectura razonable, no un hecho, y no la trato como hecho.** Sobre
-  el link simple no hay pronunciamiento conocido en ninguna de las dos direcciones.
+  llamarlo así. **Es una lectura razonable, no un hecho, y no la trato como hecho** — ni
+  ahora que la opción está elegida. Sobre el link simple no hay pronunciamiento conocido en
+  ninguna de las dos direcciones. Lo que cambió en la revisión 4 no es esto: es quién paga
+  si la lectura está mal, y cuánto. Ver "Decisión".
 - **Exige:** un `trackId` por tema en el JSON.
 
-#### Opción E — Ninguna integración: la revelación cierra en el fragmento propio
+#### Opción E — Ninguna integración: la revelación cierra en el fragmento propio — **NO ELEGIDA, pero viva como destino de reversión**
 
 La nombro porque, descartadas A, C y D, **es la única alternativa real que le queda a B**, y
-un ADR con una sola opción no es una decisión. No es una opción nueva: es el tercer escalón
+un ADR con una sola opción no es una decisión.
+
+> **Revisión 4.** E pierde, pero **no se archiva**: es exactamente el estado al que vuelve
+> el sitio si se dispara la reversión (ver "Reversión"). Que la alternativa perdedora sea
+> también el plan de contingencia, ya escrita y ya implementada como escalón 2 del
+> fallback, es lo que hace que elegir B sea barato. No es una opción nueva: es el tercer escalón
 del fallback —que ya está cerrado y escrito— promovido a primario.
 
 - **Gana:** exposición contractual cero. Ninguna duda sobre si aceptamos un acuerdo sin
@@ -195,19 +213,104 @@ Choca con `D-08` y, por el login OAuth previo, con `D-09`.
 *Nota de la revisión 3:* misma observación que en C. El SDK es Platform sin discusión
 posible; hoy tendría dos causas de muerte independientes.
 
-### Inclinación provisoria (no es la decisión)
+### Decisión — **B sola, aceptada** (revisión 4)
 
-**B sola**, y por eliminación otra vez, no por mérito. La cascada "A + B" de la revisión 2
-se cae entera: el escalón primario está prohibido.
+**Se elige B: un deep link `https://open.spotify.com/track/<trackId>`, que aparece recién
+después de revelar la respuesta.** Por eliminación otra vez, no por mérito: la cascada
+"A + B" de la revisión 2 se cayó entera cuando `RES-26` prohibió el escalón primario.
 
-Lo que cambió de fondo entre la revisión 2 y esta: antes elegíamos **entre dos formas de
-integrar**; ahora elegimos **si integramos**. Es una pregunta más chica en superficie y más
-grande en consecuencias, porque del lado del "no" no hay plan B técnico: hay un botón menos.
+#### Por qué se puede cerrar ahora, dicho con precisión
 
-### Fallback cuando Spotify no está disponible — **revisado en la revisión 3**
+**No cierro porque `E-13` se haya respondido. No se respondió.** No apareció ninguna fuente
+nueva entre la revisión 3 y esta: sigue sin haber pronunciamiento conocido de Spotify sobre
+si un link pelado a una ficha de catálogo cuenta como "usar o acceder a la Spotify
+Platform", y sigue siendo tan discutible como lo dejó `RES-26`.
 
-Sigue **cerrado**, sigue sin depender de evidencia externa. Lo que cambió es la cascada, que
-perdió el escalón del embed. El principio y los puntos 1 a 3 están intactos.
+**Lo que cambió no es la evidencia: es la postura del proyecto.** `D-14` estableció que
+RicotaArcade es un fan site sin fines de lucro, de poco volumen, hecho para divertirse, y
+que **si llega un reclamo se da de baja y listo**. Bajo ese encuadre, `E-13` deja de ser
+bloqueante — no porque se haya vuelto menos incierta, sino porque **el peor desenlace de
+equivocarse es que Spotify pida que se saque el link, y sacarlo cuesta borrar un `<a>`**.
+
+Esta es la misma lógica con la que **no** cerré antes, y conviene que se lea así: mantener
+el ADR en propuesta mientras la única salida era "afirmar que linkear es contractualmente
+limpio" era correcto, porque eso habría sido vender una lectura razonable como hecho
+verificado. Es el mismo criterio con el que no cerré sobre la leyenda técnica de `E-04`, y
+lo sostengo. Lo que destraba el cierre no es que la afirmación se haya vuelto verdadera:
+es que **ya no hace falta afirmarla** para decidir.
+
+#### Que esto lo cierre `arquitectura` y no otro rol
+
+Mi propia tabla de criterio de cierre (revisión 3) tenía la fila: *"no hay pronunciamiento
+y no lo va a haber — el desenlace más probable → deja de ser pregunta técnica y pasa a ser
+decisión de riesgo, que no es mía: la asume el usuario"*. **La regla se escribió antes de
+conocer el desenlace y se cumplió tal cual.** El usuario asumió esa decisión de riesgo el
+mismo día, para todo el proyecto, en `D-14`. Con la decisión de riesgo tomada afuera, lo
+único que quedaba de mi lado era la parte técnica —qué se construye, qué se borra si hay
+que borrar— y eso sí es mío. La recomendación que había dejado marcada para esa rama era B,
+y no cambió.
+
+#### Qué NO autoriza este cierre
+
+- **No dice que linkear sea contractualmente limpio.** Dice que el proyecto acepta la duda.
+- **No reabre A.** El embed tiene un descarte propio, por texto verificado (`RES-26`), y una
+  condición de reapertura propia (`E-14`) que `D-14` no toca. `D-14` cambia cuánto riesgo se
+  corre, no qué dice la Policy; y el embed no es reversible con la misma facilidad que un
+  link, así que la asimetría de costos que lo mató sigue en pie.
+- **No habilita registrar una app de desarrollador.** Esa restricción sigue dura y sin
+  excepciones (ver "Consecuencias").
+- **No habilita traer imágenes de dominios de Spotify.** Ídem.
+
+### Reversión — el disparador, escrito antes de necesitarlo
+
+Una decisión barata de revertir solo es barata si el procedimiento está escrito de
+antemano. Este es el procedimiento completo.
+
+**Disparador:** llega un reclamo de Spotify —correo, aviso, takedown, cualquier forma— que
+objete el enlace. **No hace falta evaluar si tiene razón.** El proyecto ya decidió en `D-14`
+que no discute: se cumple.
+
+**Qué se hace, en orden:**
+
+1. **Se borra el componente del botón** y el punto donde se lo invoca. Es una hoja: nada
+   depende de él.
+2. **El fallback toma el control solo.** El escalón 2 de la cascada —"solo fragmento
+   propio"— ya es el camino que recorre hoy cualquier ítem sin `trackId`, así que no es
+   código nuevo ni código sin probar: es el camino que ya corre en producción para una parte
+   del banco.
+3. **No se toca `src/data/*.json`.** Los `trackId` se quedan donde están: son identificadores
+   estables del tema y no cuesta nada dejarlos. Si el reclamo pidiera explícitamente que no
+   figuren, se los saca sin que ningún ítem deje de ser válido — el campo es opcional en
+   `CTR-02` y en `CTR-03`.
+4. **No se cae ningún juego, ni una pregunta, ni una partida.** La revelación está diseñada
+   para estar completa sin Spotify (fallback, punto 1).
+5. **`producto` reabre `BR-06`**, que es lo único que se rompe, y es de `producto`. Queda
+   avisado acá para que no lo descubra después.
+
+**Costo total estimado de la reversión: un commit que borra un archivo y una línea.** Eso es
+lo que hace defendible correr el riesgo, y por eso lo escribo como paso numerado y no como
+tranquilizante. Si algún día revertir cuesta más que esto, **es señal de que alguien acopló
+algo al botón que no debía**, y hay que revisar la implementación, no la decisión.
+
+### Fallback cuando Spotify no está disponible — **revalidado en la revisión 4, sin cambios**
+
+Sigue **cerrado**, sigue sin depender de evidencia externa. La revisión 3 le sacó el escalón
+del embed; la revisión 4 **no le toca nada**, y eso hay que justificarlo en vez de darlo por
+sentado, porque ahora B es la única vía y un fallback pensado para dos vías podría haber
+quedado torcido. Lo verifiqué punto por punto:
+
+- **La cascada de dos escalones sigue teniendo sentido** con B como única vía. Los dos
+  escalones existen porque el `trackId` es opcional, no porque hubiera dos integraciones:
+  con link (escalón 1) o sin link (escalón 2). Elegir B no elimina el escalón 2 — al
+  contrario, hoy **el escalón 2 es el único que corre**, porque hay 0 de 30 ítems con
+  `trackId` (H-28 del ciclo 3). El camino sin Spotify no es teórico: es el que se está
+  usando.
+- **La partida sigue sin depender de Spotify para nada**, y con B es más cierto que antes:
+  el único artefacto es un `<a href>` que se renderiza **después** de revelar y que el
+  jugador toca si quiere. No hay red, ni JS, ni espera, ni detección, ni estado.
+- **Un tercer escalón sería inventado.** No hay nada entre "hay link" y "no hay link".
+
+El principio y los puntos 1 a 7 están intactos.
 
 Implementa el **criterio 3 de `US-02`**: si el jugador no tiene la app, igual ve el
 resultado del ítem y cierra la partida, sin enlace roto de por medio.
@@ -289,16 +392,17 @@ conversación**, que estaba metido por error. El gate de derechos sigue donde es
 
 ### Evidencia — qué falta y qué ya no
 
-**De catorce preguntas, queda bloqueando una: `E-13`.**
+**De catorce preguntas, no queda ninguna bloqueando. Ninguna se respondió en la revisión 4:
+la última dejó de bloquear por decisión.**
 
-| ID | Tema | Estado tras `RES-26` |
+| ID | Tema | Estado tras la revisión 4 |
 |---|---|---|
-| **`E-13`** | ¿Un deep link simple es "acceder a la Spotify Platform"? | **BLOQUEA — la única.** Nueva en la revisión 3. Decide entre B y E |
-| `E-14` | ¿La Policy tiene excepción escrita para uso sin fines de lucro / fan site? | **Abierta, no bloquea.** Solo sirve como condición de reapertura de A. Nueva en la revisión 3 |
+| **`E-13`** | ¿Un deep link simple es "acceder a la Spotify Platform"? | **ABIERTA — SIN RESPUESTA — NO BLOQUEANTE BAJO `D-14`.** No se respondió y probablemente no se responda. Dejó de bloquear porque el proyecto asumió el peor desenlace, no porque haya evidencia. **No la marques como respondida** |
+| `E-14` | ¿La Policy tiene excepción escrita para uso sin fines de lucro / fan site? | **Abierta, no bloquea.** Solo sirve como condición de reapertura de A. Ojo: `D-14` **no** la responde — que nosotros seamos sin fines de lucro no es lo mismo que que la Policy tenga una excepción escrita |
 | `E-04` | Qué reproduce el embed sin Premium | **ANULADA por `RES-26`.** Ver abajo |
 | `E-05`, `E-06`, `E-10` | Requisitos, API JS y comportamiento móvil del embed | **ANULADAS.** Eran "cómo implementar A". Sin A, no tienen objeto |
 | `E-07` | Free en Argentina, ¿tema a demanda? | **Degradada: abierta, ya no bloquea.** Ver abajo |
-| `E-12` | Obtener un `trackId` sin cuenta de dev | **Abierta, no bloquea, pero ahora importa más.** Acoplada a `E-13` |
+| `E-12` | Obtener un `trackId` sin cuenta de dev | **CERRADA en la revisión 4, por la vía barata:** se copia el link desde la app o la web de Spotify, como cualquier usuario. Es observación del proyecto, no ficha. Ver abajo |
 | `E-01` | ¿Sigue vivo `preview_url`? | Respondida — **desfavorable**, descarta C |
 | `E-09` | ¿El SDK exige Premium? | Respondida — confirma el descarte de D |
 | `E-11` | Deep link sin la app instalada | Cubierta por `RES-01`(d) para lo que necesitamos |
@@ -340,22 +444,56 @@ en vez de dejarlo.** Dos motivos, ninguno de los cuales existía cuando lo escri
 Sigue siendo útil responderla, pero para otra cosa: para que `experiencia` sepa qué
 expectativa generar con el copy del botón. **No para cerrar este ADR.**
 
-#### `E-12` — sube de prioridad por un motivo nuevo
+#### `E-13` — qué la reabriría
 
-Era "abierta, nunca bloqueó". Ahora importa más, porque este ADR agrega una restricción dura
-—**no registrar una app de desarrollador**, ver Consecuencias— y con eso desaparece el atajo
-de "sacamos los IDs por la API y listo". Los `trackId` van a tener que salir de una acción
-de usuario común: copiar el link desde la app o la web.
+Cerrar como "no bloqueante" no es cerrar como "olvidada". Hay dos hechos que la vuelven a
+poner sobre la mesa, y **cualquiera de los dos alcanza**:
 
-**Y esa acción es la misma pregunta que `E-13`**, aplicada a la obtención en vez de a la
-publicación. Si copiar un link como usuario común no es acceder a la Platform, `E-12` se
-responde sola con `E-13`. Las dejo acopladas para que `investigador` no las investigue por
-separado.
+1. **Si el proyecto dejara de ser sin fines de lucro** —publicidad, donaciones atadas al
+   sitio, venta de algo, patrocinio— **`D-14` deja de aplicar tal como está escrita**. Toda
+   su fuerza viene de "fan site sin fines de lucro, de poco volumen"; sin eso, el peor
+   desenlace ya no es "sacá el link" y la pregunta vuelve a ser bloqueante. Este ADR se
+   reabre **antes** de que el cambio de modelo se haga efectivo, no después.
+2. **Si Spotify se pronunciara** en cualquier dirección —una cláusula nueva, una aclaración
+   pública, un caso conocido, o el reclamo directo del disparador de reversión—. Si el
+   pronunciamiento es favorable, `E-13` se responde y este cierre se vuelve retroactivamente
+   sólido en vez de asumido. Si es desfavorable, se dispara la reversión y el destino es E.
+
+Un tercer motivo que **no** la reabre, y lo digo para que nadie pierda una ráfaga: que
+alguien encuentre una opinión de un foro o un blog. `RES-26` ya dejó claro que sobre el link
+simple no hay pronunciamiento conocido; una opinión no es un pronunciamiento y no mueve
+nada. Si aparece una fuente primaria, es ficha `RES-XX` de `investigador`.
+
+#### `E-12` — cerrada por la vía barata
+
+Era "abierta, nunca bloqueó", y la revisión 3 la había subido de prioridad porque este ADR
+prohíbe registrar una app de desarrollador y con eso desaparecía el atajo de "sacamos los
+IDs por la API y listo".
+
+**Se cierra sin ficha, porque la respuesta no necesita investigación: los `trackId` se
+copian a mano desde la app o la web de Spotify, con la misma acción de compartir que hace
+cualquier usuario.** Es lento y es suficiente: son unas pocas decenas de temas, se cargan
+una vez, y el dato no caduca. Es observación del proyecto, no hecho externo verificado, y
+por eso no pido ficha: no hay nada que verificar en "copiar y pegar un link funciona".
+
+Queda acoplada a `E-13` en lo conceptual —copiar un link como usuario común es la misma
+acción de usuario común que publicarlo— y hereda su encuadre: **misma duda, mismo peor
+desenlace, mismo `D-14`**. Consecuencia operativa: el `trackId` es **entrada manual del
+usuario**, así que un ID mal copiado es el modo de falla realista, no un ID inventado.
+`CTR-03.7` ya lo dice y sigue vigente: **antes que un ID plausible, el campo se omite.**
 
 ### Criterio de cierre — reescrito, y con la autocrítica de por qué hubo que reescribirlo
 
 Sigo escribiéndolo **antes** de que llegue la evidencia. Funcionó dos veces: forzó el
 descarte de C sin renegociar nada.
+
+> **Revisión 4 — y esta es la mejor prueba de que servía.** La tabla previó el desenlace
+> "no hay pronunciamiento y no lo va a haber", lo llamó **el más probable**, y dijo qué
+> hacer con él: pasarlo a decisión de riesgo del usuario, con B como recomendación. Cuando
+> ese desenlace efectivamente ocurrió, no hubo nada que discutir ni que reinterpretar: el
+> cierre estaba escrito de antemano y solo faltaba que alguien tomara la decisión de riesgo.
+> **Escribir el criterio antes convierte un juicio difícil en un trámite**, que es
+> exactamente para lo que sirve.
 
 **Pero la tabla de la revisión 2 falló, y el modo de falla vale más que la tabla.** No falló
 porque una fila diera mal: falló porque **una tabla de criterios solo sabe elegir entre las
@@ -373,7 +511,7 @@ dónde podría venir. Costaba dos líneas y me habría ahorrado esta reescritura
 |---|---|
 | `E-13`: el link pelado **no** es acceso a la Platform | **B sola.** ADR cerrado. `BR-06` queda como está, sin tocar una palabra |
 | `E-13`: el link pelado **sí** es acceso a la Platform, o una fuente competente dice que la Policy alcanza al linkeo | **E: sin integración.** Se poda el botón, la revelación cierra en el fragmento propio, y `producto` reabre `BR-06`. **No se toca ningún juego** |
-| `E-13`: **no hay pronunciamiento y no lo va a haber** — el desenlace más probable | Deja de ser pregunta técnica y pasa a ser **decisión de riesgo**, que **no es mía**: se resuelve en la nota de derechos de `contenido` junto al resto de la exposición legal, y la asume el usuario, que es el expuesto. **Mi recomendación para esa rama, marcada como recomendación y no como decisión: B**, por los tres motivos de abajo |
+| `E-13`: **no hay pronunciamiento y no lo va a haber** — el desenlace más probable | **← ESTA ES LA FILA QUE SE APLICÓ, el 2026-08-19.** Deja de ser pregunta técnica y pasa a ser **decisión de riesgo**, que **no es mía**: la asume el usuario, que es el expuesto. **`D-14` la asumió, para todo el proyecto.** Mi recomendación marcada para esa rama era **B**, por los tres motivos de abajo, y es lo que se decidió. Registro de que la regla se escribió antes de conocer el desenlace y se cumplió sin renegociarla — la tercera vez en este ADR |
 | `E-14`: aparece excepción escrita para uso sin fines de lucro | A **puede** reabrirse, pero solo si además se responde `E-04`, que está anulada. En los hechos: no se reabre |
 | `E-07`: el free en Argentina no puede escuchar a demanda | **Nada.** Cambia el copy del botón, no la arquitectura ni `BR-06`. *(Revisión 3: esta fila resistió el hallazgo — decía "cambia lo que le prometemos, no la arquitectura", y sigue siendo exacta.)* |
 | ~~`E-04`: el embed da tema completo a free logueado / 30 s a todos / nada sin sesión~~ | **INVALIDADAS por `RES-26`.** Las tres filas elegían variantes de A. La opción que seleccionaban ya no existe. Se quedan acá como registro de la falla descrita arriba |
@@ -396,8 +534,10 @@ perdido**, incluso en la rama E.
 - **Fácil:** construir hoy. La revelación se implementa entera contra el contrato "Spotify es
   aditivo y opcional". Con A muerta, el escalón primario de la cascada es el link, que es
   trivial. Nadie queda esperando.
-- **Fácil:** revertir. B es un `<a href>` condicionado a un campo opcional. Si `E-13` vuelve
-  en contra, se borra el componente y no queda deuda.
+- **Fácil:** revertir. B es un `<a href>` condicionado a un campo opcional. Si se dispara la
+  reversión, se borra el componente y no queda deuda. El procedimiento completo, numerado,
+  está en la sección "Reversión" — y **mantenerlo barato es un requisito de implementación**,
+  no una expectativa.
 - **Ganancia inesperada, y es la mejor noticia de esta revisión:** el presupuesto de
   terceros baja a **cero bytes de Spotify en toda la sesión**, no solo durante la partida.
   Sin iframe no hay JS de terceros, ni cookies de terceros, ni bloqueadores que rompan nada,
@@ -415,10 +555,69 @@ perdido**, incluso en la rama E.
 - **Restricción dura sobre assets:** ninguna imagen desde dominios de Spotify. Ver la sección
   de Design Guidelines.
 - **Difícil, y no lo resuelve la arquitectura:** la exposición contractual residual de B. No
-  hay diseño que la elimine; solo la decisión de correrla o no. Va a la nota de derechos.
+  hay diseño que la elimine; solo la decisión de correrla o no. **Esa decisión ya se tomó en
+  `D-14`: se corre.** Lo que va a la nota de derechos de `contenido` ya no es una pregunta
+  abierta, es una entrada del mapa: qué se usa (un link a la ficha pública del tema), de
+  dónde salió (la URL de compartir de Spotify, copiada a mano) y la respuesta de una línea
+  si alguien pregunta.
 - **Lo que dejó de ser difícil:** "garantizar el tema completo dentro del sitio" ya no
   figura como problema. `BR-06` lo retiró de las promesas y `RES-26` cerró la única vía que
   quedaba de intentarlo. El tema deja de estar abierto en los dos frentes a la vez.
+
+### Lo que este ADR le exige al código — **requisitos, no comentarios**
+
+Con el ADR aceptado, esto deja de ser contexto y pasa a ser especificación. Aplica a
+**`T-42`** (el compartir del quiz, donde el botón de Spotify sale de `BR-06`) y a `US-02`
+cuando llegue. **Cada punto es verificable con un grep sobre `dist/`**, a propósito: un
+requisito que nadie puede comprobar es una preferencia.
+
+**`RQ-B1` — La URL, y ninguna otra.** El destino es exactamente
+`https://open.spotify.com/track/<trackId>`, armado a partir de `spotify.trackId` del ítem.
+Nada de dominios alternativos, nada de `spotify:track:` como `href` primario, nada de
+parámetros agregados (ni `si=`, ni `utm_`, ni nada que parezca telemetría nuestra).
+
+**`RQ-B2` — Es un `<a href>` y nada más.** Prohibido: `<iframe>`, `<script>` de Spotify,
+`fetch`, oEmbed, Embed IFrame API, y cualquier SDK. Si la implementación necesita JS de
+Spotify para funcionar, está mal hecha o dejó de ser B.
+
+**`RQ-B3` — Atributos obligatorios:** `target="_blank"` y **`rel="noopener noreferrer"`**.
+`noopener` porque un `target="_blank"` sin él le entrega `window.opener` a la pestaña
+destino; es higiene básica y no se discute. `noreferrer` porque **no hay ningún motivo para
+mandarle a un tercero la URL desde la que salió el jugador** — y en este caso, además, la
+URL lleva el puntaje (`ADR-02`). Los dos juntos, en ese orden, en el mismo atributo.
+
+**`RQ-B4` — Cero bytes de Spotify antes del tap, y cero después dentro del sitio.**
+Prohibidos también: `<link rel="preconnect">`, `dns-prefetch`, `prefetch`, `preload` o
+cualquier otra pista de recurso apuntando a un dominio de Spotify. Son requests reales a
+Spotify que ocurren **sin que el jugador haya decidido nada**, y romperían la única
+propiedad que hace defendible a B: que hasta el tap no existe ninguna relación con Spotify.
+El presupuesto es literal: **cero bytes de Spotify en toda la sesión**, salvo que el jugador
+toque el link — y ahí ya se fue del sitio.
+
+**`RQ-B5` — Sin `trackId`, no hay botón.** Si `spotify` o `spotify.trackId` falta, está
+vacío o no cumple el patrón de `CTR-02`/`CTR-03`, **el botón no se renderiza**. No se
+renderiza deshabilitado, no se renderiza gris, no se renderiza con un `href` vacío ni
+apuntando a una búsqueda. Es el escalón 2 del fallback y hoy es el caso de los 30 ítems del
+banco: **el camino sin botón es el camino normal**, no el degradado. Un enlace roto es peor
+que ningún enlace (`US-02`, criterio 3).
+
+**`RQ-B6` — El botón aparece después de revelar, y nunca bloquea.** No existe antes de la
+revelación, y avanzar de ronda jamás espera por él: ni deshabilitado, ni modal, ni foco
+robado (fallback, punto 6).
+
+**`RQ-B7` — Ningún asset de Spotify.** El botón es nuestro, con nuestro estilo y con el copy
+que fijen `producto`/`experiencia`. **No se descarga, no se hotlinkea y no se copia al repo
+ningún logo, ícono ni imagen de un dominio de Spotify** (`i.scdn.co` y similares). Es la
+misma restricción de la sección de Design Guidelines, aplicada al botón.
+
+**`RQ-B8` — Aislado en un solo archivo.** El botón vive en su propio componente y se invoca
+desde un solo lugar. Es lo que hace verdadero el paso 1 de "Reversión": borrar el archivo y
+la invocación tiene que alcanzar. **Si borrarlo rompe otra cosa, el requisito está
+incumplido**, aunque el sitio compile.
+
+Si alguna de estas reglas parece mal, **no se cambia en el código**: propuesta en
+`Docs/SUGERENCIAS/` y decide `arquitectura`. Es la misma regla que `ADR-02` ya fijó para
+`T-37`.
 
 ### Lo que esto le manda a `producto`
 
@@ -437,13 +636,31 @@ había previsto. Vale decirlo: eso no fue suerte, fue prometer solo lo que se po
 Lo nuevo —una precisión chica en el disparador de reapertura de `BR-06`— va como propuesta
 cruzada en `Docs/SUGERENCIAS/ARQ-para-producto-spotify-contractual.md`. No lo decido yo.
 
+**Revisión 4: `BR-06` no se toca.** Mi propia tabla decía que la rama B la deja intacta, y
+el cierre cayó en esa rama. `BR-06` promete acceso y describe un deep link; eso es
+exactamente lo que se aceptó. **`producto` no tiene nada que hacer con este cierre**, salvo
+saber que si algún día se dispara la reversión, `BR-06` es lo único que se rompe (paso 5).
+
 ### Qué NO decide este ADR
 
 - Cómo se ve la revelación, dónde va el botón y qué dice: `experiencia` (`UX-XX`).
 - La redacción de la promesa al jugador: `producto` (`BR-06`, ya escrita).
-- Si el deep link es legalmente prudente de correr sin pronunciamiento: **nota de derechos
-  de `contenido`**, con la recomendación de arriba como insumo, no como veredicto.
+- Si el deep link es legalmente prudente de correr sin pronunciamiento: **eso ya no es una
+  pregunta abierta — `D-14` decidió correrlo.** Lo que queda para la nota de derechos de
+  `contenido` no es un veredicto sino una entrada del mapa: el deep link como superficie,
+  con su origen y su respuesta de una línea. Ese es `T-32`, y es de `contenido`.
 - Si `US-04` puede usar tapas: **no cambia por esto**. Spotify queda fuera de esa discusión;
   el derecho moral del autor vivo sigue abierto y es de `contenido`.
 - La numeración exacta de las cláusulas de la Policy para citarla formalmente: `contenido`
   la tiene que confirmar antes de escribirla en la nota de derechos.
+
+### Deuda que deja este cierre, en mi propia carpeta
+
+**`CTR-03.7` quedó desactualizado y no lo toco acá**, porque `T-31` autoriza un solo
+archivo. Dice textualmente que `trackId` *"es el mismo dato para las dos opciones que siguen
+vivas en `ADR-01` (embed y deep link) […] gane la que gane cuando cierren `E-04` y `E-07`"*.
+Hoy: el embed está descartado (`RES-26`), `E-04` está anulada y `E-07` no decide nada. **El
+requisito de fondo no cambia** —el campo sigue siendo opcional y el `trackId` sigue siendo
+el dato correcto—, así que no hay riesgo de que alguien construya mal; lo que hay es una
+frase que confunde a quien la lea. Se arregla en una edición de una línea, en la próxima
+tarea que abra `ARQ-schema-adivinar-tema.md`. Lo anoto para que no se pierda.

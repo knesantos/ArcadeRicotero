@@ -471,3 +471,38 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   de ser una regla de UX para pasar a ser **la identidad del sitio**, con nombre propio.
   A cambio se acepta, con los ojos abiertos, que el sitio puede tener que bajarse algun dia
   — y que eso esta bien.
+
+## D-15 — Hosting en Vercel, salida estatica, y Supabase disponible pero sin usar
+
+- **Fecha:** 2026-08-19
+- **Estado:** aceptada
+- **Contexto:** `D-02` fijo "hosting estatico gratuito" sin elegir proveedor, y el brief
+  pone **cero costo recurrente** como restriccion dura. El usuario informa que tiene
+  **Vercel Pro y Supabase Pro ya pagas**, y reafirma que **el costo de mantener esto tiene
+  que ser 0 pesos**. Que una cuenta ya este paga no es lo mismo que que el proyecto sea
+  gratis: si el sitio depende de una suscripcion, el dia que se da de baja el sitio muere.
+- **Decision:** **Vercel, con salida estatica pura.** Astro genera HTML y assets, sin
+  adapter, sin funciones serverless, sin runtime. La razon no es que Vercel Pro este pago,
+  es que **un sitio estatico entra de sobra en el tier gratuito de Vercel**: si manana la
+  suscripcion Pro desaparece, el sitio sigue en linea sin cambiar una linea. El Pro suma
+  comodidad, no viabilidad. Y el tier gratuito de Vercel prohibe uso comercial, cosa que
+  encaja exacto con lo que este proyecto es (`D-14`).
+  **Supabase queda disponible y sin usar en la v1.**
+- **Alternativas descartadas:** usar Supabase para puntajes, ranking o cuentas, descartada
+  por tres razones que apuntan al mismo lado. Contradice `D-02` ("sin backend") y el
+  "fuera de alcance" del brief, que ya excluye cuentas y ranking global. Contradice
+  **"abrir los molinetes"** (`D-14`): una cuenta es, literalmente, un molinete — es pedirle
+  algo al jugador para dejarlo entrar, y es lo unico que el principio rector prohibe por
+  nombre. Y rompe el cero costo real: el tier gratuito de Supabase **pausa los proyectos
+  por inactividad**, asi que un fan site de poco trafico es justo el caso que se apaga solo
+  — el proyecto pasaria a depender de que la suscripcion Pro siga viva.
+  Tambien se descarto usar funciones serverless de Vercel aunque esten incluidas: no hay
+  nada en la v1 que las necesite, y agregarlas convierte un sitio que no puede fallar en
+  uno que si.
+- **Consecuencias:** desplegar es conectar el repo y listo, sin configuracion de runtime.
+  `localStorage` sigue siendo la unica persistencia, y el link con parametros de `ADR-02`
+  sigue siendo la unica forma de transportar un puntaje — las dos decisiones se vuelven
+  mas coherentes, no menos. A cambio se acepta que no hay ranking global ni puntajes entre
+  dispositivos, que ya estaba fuera de alcance. **Si algun dia se quiere ranking, esta
+  decision es el lugar donde se discute**, y la conversacion arranca reconociendo que un
+  ranking sin cuentas es dificil y un ranking con cuentas cierra un molinete.

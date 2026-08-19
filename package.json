@@ -1,0 +1,21 @@
+{
+  "name": "ricotaarcade",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Juegos sobre Patricio Rey y sus Redonditos de Ricota. Fan site sin fines de lucro.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check && tsc --noEmit",
+    "test": "node --test src/**/*.test.ts"
+  },
+  "dependencies": {
+    "astro": "^5.14.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.7.3"
+  }
+}
