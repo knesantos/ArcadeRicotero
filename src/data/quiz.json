@@ -310,7 +310,7 @@
         { "texto": "Viajaba siempre con custodia armada", "correcta": false },
         { "texto": "Usaba dobles en apariciones públicas", "correcta": false }
       ],
-      "explicacion": "Es parte del mismo combo de leyendas urbanas sobre el Indio que fichó RES-08: que casi no salía de su casa y que, cuando lo hacía, se disfrazaba para evitar el contacto. Circuló sin ninguna prueba ni desmentida conocida.",
+      "explicacion": "Es parte del mismo combo de leyendas urbanas sobre el Indio: que casi no salía de su casa y que, cuando lo hacía, se disfrazaba para evitar el contacto. Circuló sin ninguna prueba ni desmentida conocida.",
       "fuentes": ["RES-08"],
       "esLeyenda": true,
       "rotuloLeyenda": "Leyenda urbana sobre el Indio, parte del mismo combo de mitos que la mansión y la jauría: que casi no salía de su casa y se disfrazaba al hacerlo. Sin prueba ni desmentida conocida.",

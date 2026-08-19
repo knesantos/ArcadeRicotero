@@ -14,10 +14,12 @@
 import { armarRonda, contarAciertos } from '../lib/quiz/ronda.ts';
 import { tramo } from '../lib/quiz/tramo.ts';
 import { leerDesafio, armarLink } from '../lib/desafio.ts';
+import { botonSpotify } from './spotify.ts';
 import type { Item } from '../lib/quiz/banco.ts';
 import {
   ACIERTOS,
   BOTON_COMPARTIR,
+  comparacion,
   BOTON_DE_NUEVO,
   BOTON_SEGUIR,
   ERRORES,
@@ -129,14 +131,10 @@ function responder(texto: string): void {
     panel.append(caja);
   }
 
-  if (item.spotify) {
-    // ADR-01 opcion B: un <a> y nada mas. Sin iframe, sin script, sin SDK.
-    const a = el('a', 'spotify', 'Escuchalo en Spotify');
-    a.href = `https://open.spotify.com/track/${item.spotify.trackId}`;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    panel.append(a);
-  }
+  // FIND-18 / RQ-B8: el link vive en su propio modulo. Borrar `spotify.ts` y esta
+  // llamada saca Spotify del sitio entero sin romper nada mas.
+  const spot = botonSpotify(item.spotify?.trackId);
+  if (spot) panel.append(spot);
 
   zonaPartida.append(panel);
 
@@ -170,9 +168,11 @@ function pintarResultado(): void {
   zonaResultado.append(el('h2', `tramo tramo--${t}`, titulo));
   zonaResultado.append(el('p', 'tenue', bajada));
 
+  // FIND-17: las tres variantes de `D2` en `CNT-05`, no un string inventado aca.
   if (desafio) {
-    const suyo = `${desafio.nombre ?? 'Tu amigo'}: ${desafio.puntaje}/${desafio.total}`;
-    zonaResultado.append(el('p', 'comparacion', suyo));
+    zonaResultado.append(
+      el('p', 'comparacion', comparacion(aciertos, ronda.length, desafio.nombre, desafio.puntaje, desafio.total)),
+    );
   }
 
   const compartir = el('button', 'primario', BOTON_COMPARTIR);

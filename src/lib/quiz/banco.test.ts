@@ -57,10 +57,26 @@ test('aPayload conserva el rotulo de leyenda y el testimonio', () => {
   assert.equal(leyenda.clase, 'leyenda');
   assert.equal(leyenda.rotuloLeyenda, 'Esto lo cuentan, nadie lo confirmo');
 
+  // FIND-16: al jugador solo le llegan `quien` y `obra`. `ubicacion` y `afirmacion` son
+  // insumo de auditoria de `revisor`, y `UX-01` v2 decidio que no se muestran.
   const t = { quien: 'Rocambole', obra: 'Recuerdos', ubicacion: 'p. 233', afirmacion: 'Cuenta que...' };
   const testi = aPayload({ ...base, testimonio: t });
   assert.equal(testi.clase, 'testimonio');
-  assert.deepEqual(testi.testimonio, t);
+  assert.deepEqual(testi.testimonio, { quien: 'Rocambole', obra: 'Recuerdos' });
+
+  const json = JSON.stringify(testi);
+  assert.ok(!json.includes('p. 233'), 'la ubicacion del testimonio viajo al cliente');
+  assert.ok(!json.includes('Cuenta que'), 'la afirmacion del testimonio viajo al cliente');
+});
+
+test('FIND-16: ni una ubicacion ni una afirmacion salen en el banco real', () => {
+  const crudo = JSON.parse(readFileSync('src/data/quiz.json', 'utf-8')) as BancoCrudo;
+  const json = JSON.stringify(cargarBanco(crudo));
+  for (const it of crudo.items) {
+    if (!it.testimonio) continue;
+    assert.ok(!json.includes(it.testimonio.ubicacion), `${it.id}: la ubicacion viajo al cliente`);
+    assert.ok(!json.includes(it.testimonio.afirmacion), `${it.id}: la afirmacion viajo al cliente`);
+  }
 });
 
 test('un hecho no arrastra rotuloLeyenda aunque el JSON lo traiga', () => {

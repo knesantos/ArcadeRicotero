@@ -76,6 +76,20 @@ export interface Opcion {
   readonly correcta: boolean;
 }
 
+/**
+ * Lo que del testimonio ve el jugador: **solo quien lo dijo y en que obra**.
+ *
+ * `ubicacion` y `afirmacion` se quedan del lado del servidor: son insumo de auditoria de
+ * `revisor` para contrastar contra el original, no informacion de juego (`UX-01` v2).
+ * Que sea un tipo aparte y no un `Partial<Testimonio>` es a proposito — asi el
+ * compilador impide volver a mandar el objeto entero por descuido, que es como
+ * aparecio `FIND-16`.
+ */
+export interface TestimonioVisible {
+  readonly quien: string;
+  readonly obra: string;
+}
+
 /** Lo que efectivamente viaja al navegador. Sin campos internos. */
 export interface Item {
   readonly id: string;
@@ -86,7 +100,7 @@ export interface Item {
   readonly explicacion: string;
   readonly clase: ClaseDeFuente;
   readonly rotuloLeyenda?: string;
-  readonly testimonio?: Testimonio;
+  readonly testimonio?: TestimonioVisible;
   readonly spotify?: { readonly trackId: string };
 }
 
@@ -117,7 +131,13 @@ export function aPayload(item: ItemCrudo): Item {
     explicacion: item.explicacion,
     clase,
     ...(clase === 'leyenda' && item.rotuloLeyenda ? { rotuloLeyenda: item.rotuloLeyenda } : {}),
-    ...(clase === 'testimonio' && item.testimonio ? { testimonio: item.testimonio } : {}),
+    // FIND-16: solo `quien` y `obra`. `UX-01` v2 decidio que `ubicacion` y `afirmacion`
+    // no se muestran —son insumo de auditoria de `revisor`, no de disfrute del jugador—
+    // y esta funcion mandaba el objeto entero. Mandar al cliente algo que ninguna
+    // pantalla renderiza es exactamente lo que este archivo dice que no hay que hacer.
+    ...(clase === 'testimonio' && item.testimonio
+      ? { testimonio: { quien: item.testimonio.quien, obra: item.testimonio.obra } }
+      : {}),
     ...(item.spotify ? { spotify: item.spotify } : {}),
   };
 }

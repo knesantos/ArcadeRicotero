@@ -70,6 +70,27 @@ export const TRAMOS: Record<Tramo, { titulo: string; bajada: string }> = {
 export const BOTON_COMPARTIR = 'COMPARTIR';
 export const BOTON_DE_NUEVO = 'JUGAR DE NUEVO';
 
+/**
+ * D2 — el mensaje que ve quien llego por un desafio, comparado con quien lo mando.
+ *
+ * `FIND-17`: esto no estaba implementado y la pantalla mostraba un string inventado en
+ * el componente. Las tres variantes son de `CNT-05`, y la del medio importa: **no dice
+ * "perdiste"**, invita a otra vuelta, mismo espiritu que el tramo bajo.
+ */
+export function comparacion(
+  puntaje: number,
+  total: number,
+  nombre: string | undefined,
+  suyo: number,
+  suTotal: number,
+): string {
+  const quien = nombre ?? 'quien te lo mando';
+  const mio = `Vos: ${puntaje}/${total}`;
+  if (puntaje > suyo) return `${mio} — le ganaste a ${quien} (${suyo}/${suTotal}).`;
+  if (puntaje < suyo) return `${mio} — todavía no alcanzás a ${quien} (${suyo}/${suTotal}). Dale una más.`;
+  return `${mio} — empate con ${quien}. Van a tener que desempatar.`;
+}
+
 /** D1 — texto del tuit. */
 export function textoParaCompartir(puntaje: number, total: number): string {
   return `Saqué ${puntaje}/${total} en el arcade ricotero. ¿Vos cuánto sacás?`;
