@@ -267,3 +267,57 @@ de autenticidad, o lettering original encargado.
   Ninguna imagen de la web lo reemplaza.
 - Menor, no bloqueante: discrepancia 36 g contra 38 g del medallón de Momo Sampler entre
   corridas (la entrevista de 1999, leída de primera mano, dice 38).
+
+---
+
+# Quinta tanda (2026-08-20, misma sesión): las fuentes aparecieron, y la primera calcada es nuestra
+
+## RES-42 — Las digitalizaciones fan existen: corrige el negativo de `RES-38`
+
+- **Hallazgo:** el usuario encontró y trajo a `Docs/INVESTIGACION/Tipografia/` cinco
+  fuentes bajadas de la web. Tres son **digitalizaciones fan del lettering real**, de
+  **Benjamín Zavala** (así acreditado en la nota de cada zip), distribuidas gratis en
+  ffonts.net **sin licencia declarada** en el archivo:
+  - **"Patricio Rey"** (66 glifos, alfabeto completo + números): el lettering del logo
+    del PR coronado — el zip trae la referencia.
+  - **"Redonditos de Ricota"** (66 glifos): el lettering rasposo del arte del muñeco.
+  - **"Lobo Suelto, Cordero Atado"** (58 glifos, sin números): **el alfabeto de Semilla
+    Bucciarelli** (`RES-36`) — el zip lo muestra montado sobre la tapa real.
+- **Descartadas del mismo lote:** "Rock Argentina" es un juego de dingbats de logos de
+  bandas (no fuente de texto, 41 glifos incompletos); "INDIO" resultó ser **MASTERPLAN de
+  Billy Argel (2010)**, grunge genérica "free for personal use", sin relación con las tapas.
+- **Corrección de método sobre `RES-38`:** el negativo era falso para ffonts.net — la caza
+  automatizada pasó por ese sitio (encontró "Retroica") y no vio estas tres porque los
+  términos de búsqueda no las alcanzaron. El usuario buscando a mano las encontró.
+  Consultado: 2026-08-20 · **verificado — los archivos están en el repo, inspeccionados
+  glifo por glifo**
+
+## RES-43 — Oktubre Calco v0.2: la titular, calcada hoy de la tapa misma
+
+- **Hecho por el hilo principal**, no encontrado: las **siete letras del logo de
+  *Oktubre*** (O K T U B R E, **con la B espejada**) se calcaron de la imagen real de la
+  banda del logo (997 px de ancho) con el flujo de `RES-39` adaptado: aislado de la tinta
+  roja por umbral de color → segmentación por regiones a medida (la B espejada y la R
+  **comparten el palo vertical** en el original, y el travesaño de la T se solapa con la
+  U — un corte recto las mutila) → trazado potrace → contornos Bézier → **OTF real vía
+  fontTools** (CFF, 2 KB). Verificada contra el original lado a lado y renderizando en
+  Chrome. Archivo: `Docs/INVESTIGACION/Tipografia/OktubreCalco-v0.2.otf`.
+- **Límites declarados:** calco de una imagen de ~1000 px — el borde es fiel a esa
+  resolución, no al arte original; se rehace cuando haya foto a 300–600 dpi (`RES-39`,
+  paso 1). Solo 7 letras: sirve para titular con las letras de OKTUBRE; el alfabeto
+  completo exige el paso 5 del flujo (diseño manual con letras guía).
+- **Qué falta del disco:** la **minúscula redondeada de la contratapa** (`RES-41`), cuyo
+  corpus casi completo está visto y ubicado.
+- Consultado/hecho: 2026-08-20 · **verificado — reproducible con el script de la sesión**
+
+## Estado del tablero tipográfico tras esta tanda
+
+| Pieza | Estado |
+|---|---|
+| Logo PR coronado | Digitalización fan (Zavala) — auditar fidelidad |
+| Lettering "Redonditos" | Digitalización fan (Zavala) — auditar fidelidad |
+| Alfabeto de Semilla (*Lobo suelto*) | Digitalización fan (Zavala) — auditar contra tapa |
+| Titular *Oktubre* | **Calco propio v0.2 hecho** — rehacer con foto 300–600 dpi |
+| Minúscula contratapa *Oktubre* | Corpus ubicado (`RES-41`), sin calcar |
+| Manuscrito *Gulp!* | Sin material en alta; falta el insert |
+| Las otras seis tapas | Sin datos de letra (`RES-34`) |
