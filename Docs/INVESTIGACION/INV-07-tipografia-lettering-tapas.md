@@ -111,3 +111,45 @@ de autenticidad, o lettering original encargado.
 - **redondossubtitulados.com** (entrevista 1999 a Rocambole sobre las tapas) — HTTP 403
   en 5 de 9 corridas, accedido en otras.
 - Hay un reintento dedicado en curso al cierre de esta ficha.
+
+---
+
+# Tercera tanda (2026-08-20, misma sesión): la entrevista de 1999, leída entera
+
+> El reintento automatizado falló en las dos fuentes (la Cátedra Cosgaya rechaza
+> conexiones a nivel servidor — el sitio está caído, no protegido; la entrevista daba 403
+> al fetch). **El hilo principal la abrió en el navegador de la sesión y la leyó
+> completa**: es la reproducción de la entrevista de Rocambole en Clarín, 18-jun-1999,
+> donde recorre las nueve tapas una por una.
+
+## RES-36 — Lobo suelto, cordero atado (1993): el alfabeto es de Semilla Bucciarelli — resuelto
+
+- **Hallazgo, cita textual del pie de la sección:** *"las tipografías corresponden a un
+  alfabeto creado por el bajista Semilla Bucciarelli"*. Y de Rocambole en el cuerpo:
+  *"había muchas ganas de mostrar el trabajo de Semilla Bucciarelli, que es tan músico
+  como artista plástico"*; las tapas son *"aerografías gigantes"* y Rocambole se encargó
+  del *"álbum más oscuro"*.
+  URL: https://redondossubtitulados.com/1999/06/18/rocambole-cuenta-los-secretos-por-detras-de-las-tapa-de-patricio-rey/ (reproduce Clarín, 18-jun-1999)
+  Consultado: 2026-08-20 · **verificado — leído de primera mano en navegador**
+- **Resuelve el conflicto de `RES-35`:** "Rey Garufa" queda descartado como ruido de foro.
+  Es el único disco cuya letra no es de Rocambole sino de otro redondo.
+
+## Lo demás que la entrevista aporta (misma URL y fecha, verificado)
+
+- **Gulp!:** confirma `RES-33` con la voz del autor: *"pasamos un rodillo con tinta de
+  grabado y aplicamos serigrafía con las letras en plasticola de color"*; los originales
+  eran fluorescentes y *"las letras tenían textura"*.
+- **Oktubre:** confirma `RES-31`: *"La tipografía parece soviética al estar invertida una
+  letra."*
+- **Las otras seis tapas: la entrevista no aborda la letra del título** (habla del
+  concepto: el muñeco de su hija con antifaz, el homenaje a Goya, el gato momificado, la
+  arcilla del Luzbelito, el relieve de la caja de Chivas Regal, el medallón de 38 gramos
+  fundido en La Plata). **El sin-datos de `RES-34` queda firme: no es un hueco de acceso,
+  es que la fuente más completa que existe no lo dice.**
+
+## Estado final de la única fuente pendiente
+
+- **catedracosgaya.com.ar está caído a nivel servidor** (rechaza conexiones también desde
+  un navegador real, no solo del fetch automatizado). Ya no se espera: si algún día
+  vuelve, puede sumar análisis académico, pero la entrevista primaria ya cerró lo
+  esencial.
