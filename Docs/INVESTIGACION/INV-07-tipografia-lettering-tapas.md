@@ -61,3 +61,53 @@ una fuente auténtica basada en el lettering real de la banda. La vía auténtic
 usó el propio Rocambole — **letra dibujada a mano, oficio de cartelista** — no una
 descarga. Si el sitio necesita un font de sistema, es una fuente genérica sin pretensión
 de autenticidad, o lettering original encargado.
+
+---
+
+# Segunda tanda (2026-08-20, misma sesión): las nueve tapas, una por una
+
+> Nueve corridas paralelas de `investigador` (una por tapa) más una síntesis, pedidas por
+> el usuario: *"hay que conseguir la tipografía de cada disco"*. Transcripto por el hilo
+> principal sin editar contenido.
+
+## RES-33 — Gulp! (1985): manuscrito con plasticola y esmalte, verificado
+
+- **Hallazgo:** el título es lettering manuscrito y cursivo hecho **a mano alzada por
+  Rocambole con un tubito de plasticola relleno de esmalte sintético**, con una sombra
+  agregada para efecto de relieve; impreso en **serigrafía sobre seda en tres pasadas**,
+  una en pintura fluorescente. No es una tipografía comercial.
+  URL: https://comunicacionsocial.org.ar/35-anos-de-gulp-rocambole-hacer-un-disco-en-esa-epoca-era-hacerlo-de-forma-artesanal/
+  URL: https://www.infobae.com/teleshow/2025/04/22/40-anos-de-gulp-el-primer-disco-de-los-redondos-historias-sonidos-y-misterios-del-principio-de-la-leyenda/
+  URL: https://indiehoy.com/indieayer/patricio-rey-y-sus-redonditos-de-ricota-40-anos-de-gulp-el-comienzo-de-una-revolucion-independiente/
+  Consultado: 2026-08-20 · **verificado — tres fuentes independientes**
+
+## RES-34 — Barrido de las otras siete tapas: ninguna tipografía comercial confirmada
+
+- **Oktubre (1986):** confirma `RES-31` con fuentes adicionales (La Nación, Wikipedia en
+  inglés): tipografía inventada por Rocambole, B espejada. **Verificado.**
+- **Un baión (1988), ¡Bang! ¡Bang! (1989), La mosca y la sopa (1991), Luzbelito (1996),
+  Último bondi (1998), Momo Sampler (2000): sin datos.** Las fuentes describen el
+  concepto de cada tapa (el muñeco con antifaz, el homenaje a Goya, el gato momificado,
+  el mini-libro premiado con el ACE, el relieve de la caja de Chivas Regal, el
+  escapulario del Rey Momo) y **ninguna aborda la letra del título**.
+  Consultado: 2026-08-20 · **sin-datos declarado, no inferido**
+
+## RES-35 — Lobo suelto, cordero atado (1993): conflicto sin resolver
+
+- **Reportado, en conflicto:** un resumen de buscador (fuente no accedida de primera
+  mano) atribuye la letra a **"un alfabeto creado por el bajista Semilla Bucciarelli"**
+  (vía Cátedra Cosgaya); un único usuario del foro de DaFont escribió **"Rey Garufa"**,
+  sin fundamento ni corroboración — posible broma por el tema homónimo.
+  URL: https://www.dafont.com/forum/read/513980/lobo-suelto-cordero-atado
+  URL: https://www.catedracosgaya.com.ar/tipoblog/2016/rocambole-y-sus-dibujitos-de-ricota/
+  Consultado: 2026-08-20 · **reportado — ninguno de los dos confirmado**
+
+## Pendiente de revisión manual (bloqueo intermitente, no permanente)
+
+- **catedracosgaya.com.ar/tipoblog/2016/rocambole-y-sus-dibujitos-de-ricota/** — el
+  análisis académico del lettering disco por disco. ECONNREFUSED en 7 de 9 corridas,
+  **pero accedido con éxito en 2**: el bloqueo parece limitación de frecuencia. Es la
+  fuente con más chances de cerrar los seis sin-datos.
+- **redondossubtitulados.com** (entrevista 1999 a Rocambole sobre las tapas) — HTTP 403
+  en 5 de 9 corridas, accedido en otras.
+- Hay un reintento dedicado en curso al cierre de esta ficha.
