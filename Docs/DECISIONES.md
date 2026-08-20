@@ -566,3 +566,30 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   no sobre el nombre de una carpeta.
 - **Dueños:** el glosario de palabras visibles es de `contenido` (extiende `CNT-02`); la
   aplicación en pantallas es de `experiencia`; la prosa de cada carpeta, de su dueño.
+
+## D-18 — Tipografía fiel y estética real por disco: nada de símiles
+
+- **Fecha:** 2026-08-20
+- **Estado:** aceptada — decisión directa del usuario, en la sesión del sistema de marca.
+- **Contexto:** la hoja de tapas del sistema de marca mostraba "equivalentes de trabajo"
+  (fuentes de Google Fonts parecidas al estilo documentado de cada tapa). El usuario los
+  rechazó de plano: *"parecen parodias, quiero que sean las reales, no símiles"*. Y sumó:
+  aprovechar la investigación para levantar la estética (paleta) real de cada disco y
+  aplicarla al lienzo, y buscar más material de diseño en contratapas, folletos y afiches.
+- **Decisión:** **(1)** los equivalentes tipográficos se retiran del sistema de marca.
+  **(2)** El objetivo pasa a ser la **reconstrucción fiel** del lettering real de cada
+  tapa — primero verificando si alguien ya lo digitalizó; si no, armando la fuente desde
+  fotos con herramienta dedicada (barrido de herramientas y método en curso, ficha al
+  llegar). **(3)** La **estética de cada disco entra al sistema medida, no recordada**:
+  paleta muestreada por conteo de píxeles sobre la tapa real (`RES-37`), con método y
+  límites declarados.
+- **Tensión que esta decisión asume, y con qué respaldo:** reconstruir fiel la letra de
+  las tapas es obra derivada del arte real — más cerca de "citar la tapa" que la postura
+  de figuras sueltas de `D-04`/`UX-04`. Corre bajo el encuadre de `D-14` (fan site sin
+  fines de lucro; el riesgo se asume; si llega un reclamo se baja) y con el contexto de
+  `RES-06` (la postura pública de Rocambole sobre la reproductibilidad de su obra — que
+  la propia ficha marca como contexto, no permiso). La letra reconstruida se usaría para
+  los títulos del sitio, no para reponer composiciones de tapas.
+- **Consecuencia inmediata:** hoja 05 del lienzo rehecha — paleta real medida por disco +
+  estado de la evidencia sobre su letra. Pendiente al cierre: el barrido de fuentes ya
+  hechas / herramientas foto-a-fuente / mapa de gráfica por disco, corriendo en paralelo.

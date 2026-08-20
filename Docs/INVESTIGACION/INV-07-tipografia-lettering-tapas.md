@@ -153,3 +153,36 @@ de autenticidad, o lettering original encargado.
   un navegador real, no solo del fetch automatizado). Ya no se espera: si algún día
   vuelve, puede sumar análisis académico, pero la entrevista primaria ya cerró lo
   esencial.
+
+---
+
+# RES-37 — Las paletas reales de las nueve tapas, muestreadas por conteo de píxeles
+
+> **Medición del hilo principal, no búsqueda de `investigador`** (2026-08-20): el dato no
+> sale de leer una fuente sino de contar píxeles sobre la imagen de cada tapa. Se ficha
+> igual porque es reproducible: mismo método, mismos números.
+
+- **Método:** tapa frontal servida por **Cover Art Archive** vía release-group de
+  MusicBrainz (el único conducto técnico que `RES-25` dejó en pie), a 500 px; reducción
+  de color por corte de mediana; se listan los dominantes distinguibles con su
+  porcentaje de superficie. Imágenes verificadas a ojo contra las tapas conocidas antes
+  de fichar (grilla de contacto).
+- **Advertencia heredada de `RES-25`:** el archivo sirve *una* edición, no necesariamente
+  el vinilo argentino original. La imagen de *Oktubre* disponible es la banda del logo
+  (negro/rojo), no la pintura completa; el gris de su paleta sale de la entrevista de
+  1999 ("primero iba a ser todo rojo y negro... le agregué el gris"), citado y no medido.
+- **Paletas** (hex · nombre · muestreado 2026-08-20):
+  - *Gulp!*: `#151919` negro · `#DF5744` rojo · `#E6E4BD` crema · `#FFFFFF` blanco
+  - *Oktubre*: `#010204` negro · `#F8360D` rojo · (+ gris citado, no medido)
+  - *Un baión*: `#457EB1` azul · `#454C5F` azul noche · `#579EC5` celeste · `#EFEFEB` blanco
+  - *¡Bang! ¡Bang!*: `#927051` ocre · `#3B3E41` gris plomo · `#485364` azulado · `#AEB9B4` ceniza
+  - *La mosca y la sopa*: `#CA5927` naranja quemado · `#B8361B` rojo ladrillo · `#114B58` petróleo · `#1A1B19` negro
+  - *Lobo suelto I y II*: `#F28B16` naranja · `#0B7792` petróleo · `#030D0B` negro
+  - *Luzbelito*: `#2C3032` gris humo · `#69635C` topo · `#AF9178` cuero · `#000101` negro
+  - *Último bondi*: `#8F8B84` plata vieja · `#74726E` acero · `#2A2826` grafito
+  - *Momo Sampler*: `#020202` negro · `#CEDAE2` plata · `#656F70` peltre
+- **Discrepancia anotada:** el usuario recuerda *La mosca y la sopa* como
+  naranja/amarillo/negro. La tapa frontal muestreada da naranja quemado y rojo ladrillo
+  sobre oscuros, sin amarillo franco — la diferencia puede ser de edición (casete, CD) o
+  de otra pieza gráfica (contratapa). Queda abierta hasta que el mapa de gráfica por
+  disco ubique esas piezas.
