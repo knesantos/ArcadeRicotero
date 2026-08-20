@@ -522,3 +522,47 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   de visitas serian ~10 GB contra los 100 GB de Hobby. **Accion pendiente del usuario:**
   verificar en Settings -> General que el proyecto viva en el scope personal y no en el
   equipo Pro, y moverlo con Transfer Project si hace falta.
+
+## D-16 — El producto se llama Arcade Ricotero
+
+- **Fecha:** 2026-08-20
+- **Estado:** aceptada — decisión directa del usuario, en la sesión del sistema de marca.
+- **Contexto:** el proyecto nació como "RicotaArcade", un nombre de carpeta más que de
+  producto. Al armar el sistema de marca quedó a la vista que el nombre iba a estar en la
+  portada, en el título del navegador y en la tarjeta compartible — y "RicotaArcade" mezcla
+  orden inglés de palabras con un compuesto que nadie diría en voz alta.
+- **Decisión:** el producto se llama **Arcade Ricotero**. "Arcade" se queda porque ya es
+  palabra castellanizada de uso corriente; "Ricotero" es la identidad. El nombre cumple la
+  regla de voz de `D-17` en vez de violarla.
+- **Alcance del renombre:** lo que ve el jugador cambió ya (el `<title>` de
+  `src/pages/index.astro`; el copy visible ya decía "el arcade ricotero" desde `CNT-05`).
+  Las ~50 menciones en prosa interna (`Docs/`, `.claude/`, `CLAUDE.md`, `README.md`) se
+  migran de a poco, sin apuro: son documentación, no producto. **Lo que NO se renombra sin
+  su dueño:** el `$id` de los schemas (`ricotaarcade.local`) es contrato de `arquitectura`
+  (`CTR-02`) — cambiarlo rompe la validación de los JSON y espera una decisión de ese rol.
+  El nombre de la carpeta del repo tampoco se toca: no lo ve nadie y romperlo cuesta.
+- **Consecuencia:** el sistema de marca (lienzo "Sistema de marca Arcade Ricotero") ya usa
+  el nombre nuevo en la marca dibujada, la tarjeta compartible y todas las hojas.
+
+## D-17 — Regla de voz: sin anglicismos, en español, argentino y ricotero
+
+- **Fecha:** 2026-08-20
+- **Estado:** aceptada — decisión directa del usuario, en la sesión del sistema de marca.
+- **Contexto:** el copy del quiz ya venía en rioplatense con voseo (`CNT-02`, `CNT-05`),
+  pero no había una regla que lo hiciera obligatorio ni que alcanzara a la prosa de diseño
+  y a la documentación. Los anglicismos entraban por costumbre técnica: feedback, reveal,
+  display, quiz.
+- **Decisión:** **se evita el anglicismo siempre que exista la palabra castellana
+  corriente.** Todo lo que el jugador lee va en español, argentino (voseo, nada de tú ni de
+  neutro) y ricotero (la jerga va en el tono, nunca en la barrera — regla de `CNT-02`).
+  Glosario inicial, fijado en la hoja 02 del sistema de marca: feedback → devolución,
+  reveal → revelado, display (rol tipográfico) → rotulada, quiz → preguntas/trivia,
+  link → enlace, score → puntaje, tokens (en prosa) → variables.
+- **Límites explícitos, para que la regla no se vuelva caza de brujas:** los nombres
+  propios y siglas (Spotify, WCAG, PNG, CSS) no son anglicismos; las palabras ya
+  castellanizadas (arcade, collage, fanzine, rock) tampoco; y los identificadores internos
+  del código (clases CSS como `.feedback`, la carpeta `src/lib/quiz/`, `tokens.css`) se
+  renombran solo cuando el costo lo justifique — la regla manda sobre lo que **se lee**,
+  no sobre el nombre de una carpeta.
+- **Dueños:** el glosario de palabras visibles es de `contenido` (extiende `CNT-02`); la
+  aplicación en pantallas es de `experiencia`; la prosa de cada carpeta, de su dueño.
