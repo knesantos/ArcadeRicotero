@@ -186,3 +186,84 @@ de autenticidad, o lettering original encargado.
   sobre oscuros, sin amarillo franco — la diferencia puede ser de edición (casete, CD) o
   de otra pieza gráfica (contratapa). Queda abierta hasta que el mapa de gráfica por
   disco ubique esas piezas.
+
+---
+
+# Cuarta tanda (2026-08-20, misma sesión): el camino a la letra real
+
+> Barrido de ocho corridas en tres frentes (fuentes ya hechas / herramientas foto-a-fuente
+> / gráfica por disco), pedido por `D-18`. Más un hallazgo de campo del hilo principal en
+> el navegador. Transcripción consolidada.
+
+## RES-38 — Segunda caza, más profunda: sigue sin existir, y los señuelos tienen nombre
+
+- **Negativo consolidado:** nadie digitalizó jamás el lettering real. Verificado de forma
+  independiente en DaFont, WhatFontIs, GitHub, Behance, FontStruct, Velvetyne e Internet
+  Archive. Consultado: 2026-08-20.
+- **Los tres señuelos, para que nadie los use de base:**
+  - **"Big George NF"**: leyenda de foro — un hilo de 2015 sin respuestas y otro de 2022
+    respondido recién en 2026 con un "maybe". Fuente comercial genérica, no derivada.
+    URL: https://www.dafont.com/forum/read/513689/necesito-la-fuente-de-patricio-rey-y-sus-redonditos-de-ricota-por-favor · **verificado**
+  - **"JMH Rocambole"** (DaFont, Jorge Morán, 2020): falso positivo por coincidencia de
+    nombre, sin relación con Ricardo Cohen. URL: https://www.dafont.com/es/jmh-rocambole.font · **verificado**
+  - **STL de Cults3D** (lettering de Oktubre vectorizado para corte láser, US$0,65, autor
+    anónimo): fidelidad no verificable. Solo referencia cruzada, jamás fuente primaria.
+    URL: https://cults3d.com/en/3d-model/art/los-redonditos-de-ricota-oktubre-rocambole · **reportado**
+  - **CDR de seeklogo** (el logo circular): origen anónimo, no confiable como base.
+    URL: https://seeklogo.com/vector-logo/170381/patricio-rey-y-sus-redonditos-de-ricota · **verificado**
+
+## RES-39 — El flujo foto→fuente, a costo cero
+
+- **Camino recomendado (7 pasos, $0):** (1) foto/escaneo propio de tapa+contratapa+sobre a
+  **300–600 dpi**, PNG/TIFF, plano paralelo; (2) vectorizar cada glifo con **Inkscape**
+  (trazado de mapa de bits, motor Potrace); (3) SVG normalizado a 1000×1000, un trazado
+  por glifo, contraformas con operaciones booleanas reales; (4) importar por glifo a
+  **FontForge**; (5) **diseñar a mano los glifos ausentes** usando 1–2 letras guía del
+  original como plantilla de proporciones — el método documentado de los revivals serios
+  (Neue Kabel de Monotype, Rótulo Refugio Valencia 1937); (6) métricas y espaciado;
+  (7) exportar TTF/OTF/WOFF nativo desde FontForge.
+- **La parte cara es el paso 5**: tiempo de diseño manual, no automatizable ni plata.
+- **Descartada Calligraphr**: pensada para manuscrito nuevo sobre grilla impresa, no para
+  trazar letras ya impresas; su plan gratis topea en 75 caracteres.
+  Consultado: 2026-08-20 · **verificado contra documentación de cada herramienta**
+
+## RES-40 — Plan por disco: viabilidad con el material ubicado
+
+- **Oktubre — ALTA.** Ver `RES-41`: la contratapa trae corpus casi completo de minúsculas.
+  Dos estilos a reconstruir: el título constructivista y la redonda minúscula del
+  tracklist.
+- **Lobo suelto I y II — ALTA.** El único caso donde el origen es **un alfabeto diseñado
+  como sistema** (`RES-36`). Wikipedia confirma el crédito de tapa *"Visiones: Rocambole,
+  Semilla y Meroyuela"* en ambos volúmenes, sin precisar qué aportó cada uno. Combinar
+  tapa + contratapa + sobre de los dos volúmenes para el máximo de letras reales.
+- **Gulp! — MEDIA.** Corpus chico: básicamente el título manuscrito. El LP original
+  circula descripto "C/INSERT" en venta de coleccionista y **nadie describió nunca el
+  contenido de ese insert** — conseguir su escaneo es la prioridad.
+  Consultado: 2026-08-20 · **reportado/verificado según cada pieza, detalle en el barrido**
+
+## RES-41 — La contratapa de Oktubre, vista de primera mano: el corpus está ahí
+
+- **Hallazgo de campo del hilo principal** (navegador de la sesión, Discogs, edición
+  argentina de 1986 — release 4411468, imágenes): la contratapa/interior trae **el
+  tracklist completo y los créditos en el mismo lettering a mano** — *"fuegos de octubre",
+  "preso en mi ciudad", "música para pastillas", "semen-up", "divina tv. führer", "motor
+  psico", "jijiji", "canción para naufragios", "ya nadie va a escuchar tu remera"*, más
+  *"piojo abalos: batería, semilla bucciarelli: bajo, tito 'fargo' d'aviero: guitarra,
+  willy crook: saxo, indio: voz, skay beilinson: guitarra"* — **decenas de palabras en
+  minúscula redondeada, casi el abecedario completo**, y el logo OKTUBRE con la B espejada
+  en negativo.
+  URL: https://www.discogs.com/release/4411468 (imágenes) · Consultado: 2026-08-20 ·
+  **verificado — visto de primera mano**
+- **Consecuencia:** la viabilidad de Oktubre sube sola. Con una foto en 300–600 dpi de esa
+  contratapa, el paso 5 del flujo (glifos faltantes) queda mínimo para la minúscula.
+
+## Pistas abiertas que piden manos humanas
+
+- **El álbum de Facebook oficial de Rocambole** *"Tipografías originales para afiche de
+  Patricio Rey y sus Redonditos de Ricota"* — por el título, bocetos del propio autor:
+  fuente primaria potencial. Facebook exige login; quedó sin leer en dos corridas.
+  URL: https://www.facebook.com/RocamboleWebOficial/photos/1856728441260470/ · **reportado, sin cerrar**
+- **Los discos físicos del usuario**: el paso 1 del flujo es su foto/escaneo a 300–600 dpi.
+  Ninguna imagen de la web lo reemplaza.
+- Menor, no bloqueante: discrepancia 36 g contra 38 g del medallón de Momo Sampler entre
+  corridas (la entrevista de 1999, leída de primera mano, dice 38).
