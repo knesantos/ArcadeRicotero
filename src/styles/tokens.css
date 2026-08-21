@@ -98,7 +98,11 @@
   --espacio-3: 1.5rem;
   --espacio-4: 2.5rem;
 
-  --radio: 14px;
+  /* Radio de papel cortado, no de burbuja: la esquina blanda y pareja en todo es
+     el acabado tipico de interfaz generada (regla anti-slop en
+     .claude/rules/diseno-marca.md). Era 14px; la identidad de las cajas la dan el
+     borde grueso, la cinta y la rotacion. Pendiente de reflejar en el lienzo. */
+  --radio: 4px;
   --linea: 3px; /* linea gruesa, UX-04 */
 }
 

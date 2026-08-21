@@ -25,12 +25,18 @@ export function subtituloDesafio(nombre: string | undefined, puntaje: number, to
   return `${quien} sacó ${puntaje}/${total}. ¿Te la bancás?`;
 }
 
-/** B1 — cuatro variantes que rotan. */
+/** B1 — cuatro variantes que rotan.
+ *
+ * Corrida anti-slop 2026-08-21: la cuarta variante decia "¡Con la gorra bien
+ * puesta!" — jerga de utileria, y encima en la tribuna "la gorra" es la policia,
+ * el bando equivocado para premiar al que sabe. Cambio hecho aca (el producto es
+ * lo visible); queda propuesto a `contenido` actualizar `CNT-05` para que los
+ * identificadores sigan trazando. */
 export const ACIERTOS = [
   '¡Ahí la tenés!',
   '¡Sabés, che!',
   '¡Esa la clavaste!',
-  '¡Con la gorra bien puesta!',
+  '¡De una la sacaste!',
 ] as const;
 
 /** B2 — cuatro variantes. Ninguna dice "mal" ni "perdiste": el texto acompaña, no marca. */
@@ -38,7 +44,7 @@ export const ERRORES = [
   'Casi. Va la que sigue.',
   'No iba. Ya la vas a acertar.',
   'Ni todo el mundo se la sabe.',
-  'Esa quedará para la próxima.',
+  'Esa queda para la próxima.',
 ] as const;
 
 /** B3, B4 — las etiquetas de rotulo. B4 es plantilla: el testigo no siempre es el Indio. */

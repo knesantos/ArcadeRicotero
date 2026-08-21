@@ -59,7 +59,7 @@ const etiquetaRotulo = (seg: Segmento): string =>
 
     {
       laTapa && (
-        <figure style="margin:0">
+        <figure class="figura-tapa">
           <img
             class="tapa-disco"
             src={laTapa}
@@ -79,13 +79,7 @@ const etiquetaRotulo = (seg: Segmento): string =>
       articulo.datos.length > 0 && (
         <aside class="ficha">
           {sticker && (
-            <img
-              class="cocina-arte"
-              src={sticker}
-              alt=""
-              aria-hidden="true"
-              style="float:right;width:72px;margin:0 0 0.5rem 0.5rem"
-            />
+            <img class="sticker-ficha" src={sticker} alt="" aria-hidden="true" />
           )}
           <dl>
             {articulo.datos.map((d) => (

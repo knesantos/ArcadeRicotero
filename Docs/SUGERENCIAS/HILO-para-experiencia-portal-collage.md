@@ -31,6 +31,27 @@
   congela con `prefers-reduced-motion`); todo lo demás estático. Zona pulgar respetada:
   la acción principal de cada pantalla es un bloque abajo (`.accion-abajo`).
 
+## Agregado 2026-08-21: la corrida anti-slop también tocó componentes tuyos
+
+Pedido directo del usuario: eliminar todo tic de interfaz genérica de IA. La regla nueva
+quedó en `.claude/rules/diseno-marca.md` (sección "Prohibido: la estética genérica de
+IA") y parte se audita a máquina en `estilos.test.ts`. Lo que cambió en componentes que
+derivan de la hoja 08 del lienzo, para que lo bendigas o lo corrijas:
+
+- **Chips**: `.categoria`, `.insignia` y `.spotify` pasaron de pastilla cápsula
+  (`border-radius: 999px`) a sello de esquina casi viva (3px). Los símbolos ◆/❝ y el
+  borde de forma quedaron intactos.
+- **`.feedback`**: la barra lateral de acento (el callout genérico) pasó a borde
+  completo teñido por el estado. La señal no-cromática la siguen dando las palabras del
+  micro (B1/B2) y los símbolos ✔/✕ de las opciones.
+- **`--radio` bajó de 14px a 4px** (papel cortado, no burbuja). Es un token: falta
+  reflejarlo en el lienzo, hoja 03/07.
+- **Las piezas del collage perdieron la superficie "elevada"**: `.casete`, `.cocina` y
+  `.tarjeta-articulo` van con fondo transparente y se recortan por borde grueso y cinta.
+  Además de sacar el tic, arregla un dato duro: `cat-letras` sobre `--fondo-elevado` da
+  **4,32:1 y no llega a AA**; sobre `--fondo` (5,03:1+) todos los pares pasan y ya están
+  testeados.
+
 ## Las dos deudas de circuito (la regla de marca las exige)
 
 1. **Dos tokens entraron a `tokens.css` sin pasar antes por el lienzo:** `--papel`

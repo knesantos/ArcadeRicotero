@@ -40,7 +40,9 @@
 .categoria {
   color: var(--texto-tenue);
   border: 1px solid var(--borde);
-  border-radius: 999px;
+  /* Sello de goma, no pastilla capsula: la esquina casi viva es del idioma de
+     estampa del sitio (regla anti-slop en .claude/rules/diseno-marca.md). */
+  border-radius: 3px;
   padding: 0.15em 0.7em;
 }
 
@@ -48,7 +50,7 @@
 
 .insignia {
   font-weight: 700;
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 0.15em 0.7em;
   /* La linea gruesa de UX-04: la insignia se reconoce por forma, no solo por tinte. */
   border: 2px solid currentColor;
@@ -134,16 +136,18 @@
   padding: var(--espacio-2);
   border-radius: var(--radio);
   background: var(--fondo-elevado);
-  /* El borde lateral grueso distingue acierto de error sin depender del color. */
-  border-inline-start: 6px solid var(--borde);
+  /* Borde completo tenido por el estado, como recorte del collage — la barrita
+     lateral de acento es el tic generico que la regla de marca veta. El estado
+     nunca depende solo del color: el micro (B1/B2) lo dice con palabras. */
+  border: var(--linea) solid var(--borde);
 }
 
 .feedback.ok {
-  border-inline-start-color: var(--acento-3);
+  border-color: var(--acento-3);
 }
 
 .feedback.no {
-  border-inline-start-color: var(--acento-4);
+  border-color: var(--acento-4);
 }
 
 .micro {
@@ -197,7 +201,7 @@
   padding: var(--espacio-1) var(--espacio-2);
   color: var(--acento-2);
   border: 2px solid var(--acento-2);
-  border-radius: 999px;
+  border-radius: 3px;
   text-decoration: none;
   line-height: var(--toque-min);
 }

@@ -29,6 +29,26 @@ promediar (la fecha de *Gulp!*, el conteo de *Lobo suelto*/*Cordero atado*).
    "En la cocina", el pie del sitio. Nota: el juego del quiz quedó como "Preguntas
    ricoteras" para esquivar el anglicismo — si tenés un nombre mejor, es un string.
 
+## Agregado 2026-08-21: la corrida anti-slop tocó texto tuyo — dos cosas para CNT-05
+
+El usuario pidió eliminar todo tic de redacción genérica de IA (regla en
+`.claude/rules/diseno-marca.md`). En el copy del quiz cambiaron dos cadenas que
+`copy.ts` transcribe de `CNT-05` — falta que actualices el documento para que los
+identificadores sigan trazando:
+
+- **B1**: "¡Con la gorra bien puesta!" → "¡De una la sacaste!". Doble motivo: jerga de
+  utilería, y en la tribuna "la gorra" nombra a la policía — el bando equivocado para
+  premiar al que sabe.
+- **B2**: "Esa quedará para la próxima." → "Esa queda para la próxima." (el futuro
+  simple literario desentonaba con el voseo del resto).
+
+En los artículos de la Redondopedia se destempló la prosa serial: la coletilla "entre
+los emblemas" que se repetía en siete discos (ahora cada uno enumera a su manera), el
+redoble de tambor antes del dato ("esconde un secreto", "guarda una rareza", "un dato
+para dimensionar" — el dato va en seco), y la honestidad declamada como cierre ("sin
+venderte certezas", "sin elegir por vos" — el rotulado ya es la garantía; anunciarla es
+venderla). Ningún hecho ni rótulo cambió: solo la música de la frase.
+
 ## Dato que puede servirte
 
 Los verificadores tumbaron cinco bloqueantes con el mismo patrón: inflar un dato de ficha

@@ -55,6 +55,35 @@ Viven en `public/fuentes/` y se declaran solo en `tokens.css`:
 las fuentes de disco — hasta derivarlas, esas palabras van en `--fuente-rotulada`. No
 "resolver" esto escribiendo sin tilde: `D-17` no negocia el voseo.
 
+## Prohibido: la estética genérica de IA ("slop")
+
+Pedido directo del usuario (2026-08-21, corrida anti-slop): **nada en este sitio puede
+verse como la interfaz por defecto que genera una IA.** Cada elemento se resuelve en el
+idioma del proyecto — sello de goma, cinta adhesiva, papel con renglones, tinta plana,
+rotación a mano, borde grueso de serigrafía (`RES-06`) — o no se resuelve. La lista de
+tics vetados, con su reemplazo:
+
+| Tic genérico (vetado) | En su lugar |
+|---|---|
+| **Barra de acento en el borde izquierdo de una tarjeta** (el caso que motivó la regla) | Borde completo teñido por el disco de la sección, título en la tinta, rotación leve |
+| Pastilla cápsula (`border-radius: 999px`) como chip por defecto | Sello de goma: rectángulo de esquina casi viva (3px), borde fino, mayúsculas rotuladas, apenas torcido |
+| Superficie "elevada" (card gris sobre fondo gris) como forma de separar | La pieza se recorta por borde grueso y cinta, como recorte pegado — y la tinta queda sobre `--fondo`, que es el par testeado |
+| Sombra difusa de elevación, glow, glassmorphism/blur | Sombra dura desplazada (offset plano, como papel sobre papel) o nada |
+| Degradados decorativos, texto en gradiente | Tinta plana de los tokens |
+| Hover que "levanta" o infla la tarjeta, micro-rebotes | Cambio de tinta o de borde; el único movimiento decorativo del sitio es la mosca |
+| Emoji o ícono de librería como decoración de UI | Ya lo vetaba `UX-04`; los símbolos funcionales testeados (✔ ✕ en opciones, ◆ leyenda, ❝ testimonio) no son decoración y se quedan |
+| Esquinas redondeadas uniformes en todo | `--radio` queda para lo tocable grande (botones, casetes); lo chico va a 3px de estampa |
+| En el texto visible: fórmula pulida de IA — "no es solo X, es Y", "¡Y listo!", entusiasmo de folleto, cada ítem de lista arrancando con negrita-título | La voz la fijan `CNT-02` y `D-17`: rioplatense, directa, jerga en el tono |
+
+**Única excepción declarada a la barra lateral:** la sangría de cita de los párrafos
+rotulados de la Redondopedia (`.parrafo--leyenda`, `.parrafo--testimonio`) — es
+tipografía editorial clásica y el mecanismo visual de `BR-08`, con símbolo y etiqueta
+además del borde.
+
+**Se audita a máquina lo auditable:** `estilos.test.ts` falla el build si vuelve una
+pastilla 999px o una barra lateral fuera de la excepción. Lo demás lo audita el ojo de
+quien revisa, con esta tabla como vara.
+
 ## Si algo de esta regla te queda chico
 
 Propuesta en `Docs/SUGERENCIAS/`, como siempre. El mapa sección→disco es en última
