@@ -66,6 +66,28 @@ test('ni juego.css ni sitio.css traen un color literal: todo sale de los tokens'
   }
 });
 
+test('anti-slop: sin pastillas capsula ni barras de acento laterales', () => {
+  // La regla de marca (.claude/rules/diseno-marca.md, seccion anti-slop) veta los
+  // tics de interfaz generica de IA. Dos son detectables por maquina: la pastilla
+  // capsula (border-radius: 999px) y la barra de acento en el borde izquierdo de
+  // una tarjeta. La UNICA barra lateral permitida es la sangria de cita de los
+  // parrafos rotulados de la Redondopedia (.parrafo--leyenda / .parrafo--testimonio),
+  // que es tipografia editorial y mecanismo de BR-08, no decoracion.
+  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css']) {
+    const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
+    assert.ok(!css.includes('999px'), `${hoja}: pastilla capsula (border-radius 999px)`);
+    for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+      if (regla[2]!.includes('border-inline-start')) {
+        assert.match(
+          regla[1]!.trim(),
+          /^\.parrafo--/,
+          `${hoja}: barra lateral fuera de la cita rotulada, en "${regla[1]!.trim()}"`,
+        );
+      }
+    }
+  }
+});
+
 test('toda clase de estado usada en el CSS existe de verdad en el codigo', () => {
   // El reves del primer test: estilos huerfanos de clases que ya nadie crea.
   //

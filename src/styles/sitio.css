@@ -191,7 +191,11 @@
   gap: var(--espacio-2);
   align-items: center;
   padding: var(--espacio-2);
-  background: var(--fondo-elevado);
+  /* Sin superficie "elevada": la pieza se recorta del fondo por borde grueso y
+     cinta, como en serigrafia — y de paso la tinta de cada disco queda siempre
+     sobre --fondo, que es el par que el test AA verifica (sobre el elevado,
+     cat-letras baja a 4,32:1 y no llega). */
+  background: transparent;
   border: var(--linea) solid color-mix(in srgb, var(--tinte) 55%, var(--borde));
   border-radius: var(--radio);
   text-decoration: none;
@@ -277,14 +281,17 @@
   color: var(--tinte);
 }
 
+/* La accion es un sello de goma: rectangulo de borde fino, mayusculas, apenas
+   torcido — nunca la pastilla capsula generica. */
 .casete-accion {
   font-family: var(--fuente-rotulada);
   font-size: 0.9rem;
   letter-spacing: 0.06em;
   color: var(--tinte);
   border: 2px solid var(--tinte);
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 0.35em 1em;
+  transform: rotate(-1.4deg);
 }
 
 /* Lo que todavia no salio: etiqueta escrita en lapiz, sin boton que engañe. */
@@ -298,9 +305,10 @@
   letter-spacing: 0.08em;
   color: var(--texto-tenue);
   border: 2px dashed var(--borde);
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 0.35em 1em;
   text-transform: uppercase;
+  transform: rotate(0.9deg);
 }
 
 /* Variantes de disco (mezcla D-19). El acento rota; la base, nunca. */
@@ -327,7 +335,8 @@
   border: var(--linea) solid color-mix(in srgb, var(--tinte) 55%, var(--borde));
   border-radius: var(--radio);
   padding: var(--espacio-3);
-  background: var(--fondo-elevado);
+  /* Mismo criterio que .casete: recorte por borde, no superficie elevada. */
+  background: transparent;
   position: relative;
   transform: rotate(-0.5deg);
 }
@@ -395,7 +404,20 @@
   box-sizing: border-box;
 }
 
+/* El recorte que decora la ficha de un disco: calcomania pegada, apenas torcida.
+   Cero medidas inline en el marcado — la regla de marca lo exige. */
+.sticker-ficha {
+  float: inline-end;
+  width: clamp(56px, 18vw, 84px);
+  margin: 0 0 var(--espacio-1) var(--espacio-1);
+  transform: rotate(-2deg);
+}
+
 /* ---- La tapa real, solo donde el contrato la permite (D-04) ---- */
+
+.figura-tapa {
+  margin: 0;
+}
 
 .tapa-disco {
   display: block;
@@ -432,17 +454,28 @@
   margin: 0 0 var(--espacio-3);
 }
 
+/* La tarjeta de articulo es un recorte mas del collage: borde grueso tenido por
+   su disco, titulo en la tinta del disco, rotacion leve alternada. Nada de barra
+   de acento en el borde izquierdo — ese remarcado es el tic de interfaz generica
+   que la regla de marca veta por nombre. */
 .tarjeta-articulo {
   --tinte: var(--texto-tenue);
   display: block;
   padding: var(--espacio-2);
-  background: var(--fondo-elevado);
-  border: 2px solid color-mix(in srgb, var(--tinte) 45%, var(--borde));
-  border-inline-start: 6px solid var(--tinte);
+  background: transparent;
+  border: 2px solid color-mix(in srgb, var(--tinte) 55%, var(--borde));
   border-radius: var(--radio);
   text-decoration: none;
   color: var(--texto);
   min-height: var(--toque-min);
+}
+
+.indice-articulos > li:nth-child(odd) .tarjeta-articulo {
+  transform: rotate(-0.4deg);
+}
+
+.indice-articulos > li:nth-child(even) .tarjeta-articulo {
+  transform: rotate(0.35deg);
 }
 
 .tarjeta-articulo strong {
@@ -450,6 +483,7 @@
   font-family: var(--fuente-rotulada);
   font-size: 1rem;
   letter-spacing: 0.03em;
+  color: var(--tinte);
 }
 
 .tarjeta-articulo span {
@@ -473,14 +507,16 @@
 
 .articulo-tipo {
   display: inline-block;
-  font-size: 0.75rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--tinte);
-  border: 1px solid var(--tinte);
-  border-radius: 999px;
-  padding: 0.15em 0.8em;
+  border: 2px solid var(--tinte);
+  border-radius: 3px;
+  padding: 0.2em 0.8em;
   margin-bottom: var(--espacio-1);
+  transform: rotate(-1.2deg);
 }
 
 .articulo h1 {
@@ -622,8 +658,16 @@
   line-height: calc(var(--toque-min) - 4px);
   padding: 0 var(--espacio-2);
   border: 2px solid var(--borde);
-  border-radius: 999px;
+  border-radius: 3px;
   text-decoration-thickness: 1px;
+}
+
+.vea-tambien li:nth-child(odd) a {
+  transform: rotate(-0.8deg);
+}
+
+.vea-tambien li:nth-child(even) a {
+  transform: rotate(0.6deg);
 }
 
 /* La explicacion del rotulado en la portada de la Redondopedia. */
