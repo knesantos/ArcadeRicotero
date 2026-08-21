@@ -11,7 +11,14 @@
  */
 import Base from '../layouts/Base.astro';
 import { PORTAL, JUEGOS, CASETE_REDONDOPEDIA, type Casete } from '../lib/sitio/copy.ts';
-import { conRecorteReal } from '../lib/sitio/arte.ts';
+import { conRecorteReal, detalleTapa, discosDe, DETALLE_POR_VARIANTE } from '../lib/sitio/arte.ts';
+
+// Los discos que se ven acá: el de cada casete mas la franja de Oktubre del fondo.
+// El pie los nombra (`D-21`, condicion 1).
+const tapasUsadas = discosDe([
+  'oktubre-banderas',
+  ...[...JUEGOS, CASETE_REDONDOPEDIA].map((c) => DETALLE_POR_VARIANTE[c.variante]),
+]);
 
 const lados: Array<{ titulo: string; casetes: readonly Casete[] }> = [
   { titulo: PORTAL.ladoA, casetes: JUEGOS },
@@ -19,7 +26,7 @@ const lados: Array<{ titulo: string; casetes: readonly Casete[] }> = [
 ];
 ---
 
-<Base titulo="Arcade Ricotero" descripcion={PORTAL.bajada} conBanderas conMosca>
+<Base titulo="Arcade Ricotero" descripcion={PORTAL.bajada} conBanderas conMosca tapas={tapasUsadas}>
   <script is:inline slot="cabeza">
     // El quiz vivia en la raiz: los links de desafio viejos (`?g=quiz&p=...`) siguen
     // valiendo — se redirigen a /quiz/ con la query intacta (ADR-02 no cambia).
@@ -49,6 +56,14 @@ const lados: Array<{ titulo: string; casetes: readonly Casete[] }> = [
                   <span class="casete-baja">{c.baja}</span>
                 </span>
                 <span class="casete-pie">
+                  {detalleTapa(DETALLE_POR_VARIANTE[c.variante] ?? '') && (
+                    <img
+                      class="casete-tapa"
+                      src={detalleTapa(DETALLE_POR_VARIANTE[c.variante] ?? '')}
+                      alt=""
+                      aria-hidden="true"
+                    />
+                  )}
                   <span class="casete-disco">{c.viste}</span>
                   {c.accion ? (
                     <span class="casete-accion">{c.accion}</span>

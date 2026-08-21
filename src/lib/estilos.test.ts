@@ -88,6 +88,26 @@ test('anti-slop: sin pastillas capsula ni barras de acento laterales', () => {
   }
 });
 
+test('D-21: ninguna tapa entra de fondo sin su velo', () => {
+  // La mitigacion central del riesgo del ciclo 4, hecha maquina. `contraste.test.ts`
+  // prueba que el velo alcanza; esto prueba que el velo ESTA. Una tapa puesta de fondo
+  // sin velo no falla ningun test de color —el color no cambio— y sin embargo deja el
+  // texto sobre una foto: es justo el caso que la regla de marca veta como "foto a
+  // sangre con texto encima". Se exige en el mismo bloque de declaraciones, no en la
+  // hoja entera, para que no alcance con que el velo aparezca en cualquier otro lado.
+  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css']) {
+    const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
+    for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+      const declaraciones = regla[2]!;
+      if (!declaraciones.includes('/tapas/fondo/')) continue;
+      assert.ok(
+        declaraciones.includes('--velo-tapa'),
+        `${hoja}: "${regla[1]!.trim()}" pone una tapa de fondo sin velo`,
+      );
+    }
+  }
+});
+
 test('toda clase de estado usada en el CSS existe de verdad en el codigo', () => {
   // El reves del primer test: estilos huerfanos de clases que ya nadie crea.
   //

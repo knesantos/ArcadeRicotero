@@ -47,6 +47,92 @@
   user-select: none;
 }
 
+/* ---- La tapa real de fondo (D-21) ----
+   Debajo del velo puede haber cualquier foto: el peor caso —el velo sobre un pixel
+   blanco puro— ya esta medido en contraste.test.ts, asi que ninguna tapa lo empeora.
+   El velo va SIEMPRE en la misma declaracion que la imagen: estilos.test.ts falla el
+   build si alguien pone una tapa de fondo sin el. */
+.tapa-fondo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  border-radius: inherit;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Anclada abajo y fija, como la franja de multitud que ya vivia ahi dibujada.
+   NO va detras de la marca grande: esa se escribe en --marca-rojo, que sobre tapa
+   velada no llega a AA (3,38:1) — lo verifica contraste.test.ts. */
+.tapa-fondo--portal {
+  position: fixed;
+  inset: auto 0 0 0;
+  height: 30vh;
+  background-position: bottom;
+  background-image: linear-gradient(var(--velo-tapa), var(--velo-tapa)),
+    url('/tapas/fondo/oktubre-banderas.jpg');
+}
+
+.tapa-fondo--lobo-tiras {
+  background-image: linear-gradient(var(--velo-tapa), var(--velo-tapa)),
+    url('/tapas/fondo/lobo-tiras.jpg');
+}
+
+.tapa-fondo--mosca-olla {
+  background-image: linear-gradient(var(--velo-tapa), var(--velo-tapa)),
+    url('/tapas/fondo/mosca-olla.jpg');
+}
+
+.tapa-fondo--bondi-engranajes {
+  background-image: linear-gradient(var(--velo-tapa), var(--velo-tapa)),
+    url('/tapas/fondo/bondi-engranajes.jpg');
+}
+
+.tapa-fondo--gulp-pincelada {
+  background-image: linear-gradient(var(--velo-tapa), var(--velo-tapa)),
+    url('/tapas/fondo/gulp-pincelada.jpg');
+}
+
+/* El detalle de tapa que acompaña al titulo de un articulo que no es de disco
+   (UX-05, 7b/7c). Chico y pegado arriba a la derecha: no compite con el titulo ni se
+   mete detras del cuerpo rotulado. Se omite en los tres articulos de tono grave —
+   la lista vive en arte.ts, no acá. */
+.detalle-articulo {
+  float: right;
+  width: clamp(64px, 22vw, 96px);
+  margin: 0 0 var(--espacio-1) var(--espacio-2);
+  border: var(--linea) solid color-mix(in srgb, var(--tinte) 55%, var(--borde));
+  border-radius: 3px;
+  transform: rotate(-2deg);
+}
+
+/* La cabecera de la Redondopedia viste Gulp! (D-19). El fondo llega hasta acá y no
+   hasta el indice: el indice es una lista que crece con cada articulo nuevo, y un
+   fondo detras de algo que se estira sin limite es justo lo que UX-04 evita al acotar
+   el peso del fondo. */
+.portada-redondopedia {
+  position: relative;
+  padding: var(--espacio-2) var(--espacio-2) var(--espacio-1);
+  border: var(--linea) solid color-mix(in srgb, var(--cat-historia) 45%, var(--borde));
+  border-radius: var(--radio);
+  margin-bottom: var(--espacio-3);
+}
+
+/* El contenido de una pieza con tapa de fondo tiene que quedar por encima del velo.
+   La capa de fondo esta posicionada, y en el orden de pintado de CSS eso la deja
+   arriba del contenido en flujo: sin esto, el velo taparia el texto en vez de
+   sostenerlo. Se resuelve por contenedor y no elemento por elemento para que sumar un
+   parrafo despues no obligue a acordarse de nada. */
+.cocina > *:not(.tapa-fondo),
+.portada-redondopedia > *:not(.tapa-fondo),
+.sobre-tapa {
+  position: relative;
+  z-index: 1;
+}
+
 /* La mosca (La mosca y la sopa) vuela por la pantalla. Con reduced-motion el
    token global congela la animacion y queda quieta en su rincon de arranque. */
 .mosca-viva {
@@ -231,6 +317,20 @@
   height: 54px;
   object-fit: contain;
   transform: rotate(-4deg);
+}
+
+/* El detalle de la tapa real (D-21, UX-05), pegado junto al rotulo "Viste X".
+   Convive con el dibujo de arriba y no lo reemplaza: son dos materiales distintos —
+   uno es calco original, el otro es foto — y UX-04 los deja coexistir mientras no se
+   mezclen en la misma pieza. Borde grueso y rotacion: recorte pegado, no miniatura. */
+.casete-tapa {
+  width: 34px;
+  height: 34px;
+  object-fit: cover;
+  border: var(--linea) solid color-mix(in srgb, var(--tinte) 60%, var(--borde));
+  border-radius: 3px;
+  transform: rotate(2.5deg);
+  flex: none;
 }
 
 /* La etiqueta de papel del cassette: tinta sobre papel, con sus rayitas. */
@@ -682,3 +782,11 @@
 
 .leyenda-rotulos b.es-leyenda { color: var(--rotulo-leyenda); }
 .leyenda-rotulos b.es-testimonio { color: var(--rotulo-testimonio); }
+
+/* El credito puntual de la pantalla (D-21, condicion 1): que tapas se ven aca.
+   Va arriba del pie general, en su propia linea, porque nombra cosas distintas en
+   cada pagina y el de abajo es siempre el mismo. */
+.credito-pantalla {
+  display: block;
+  margin-bottom: var(--espacio-1);
+}

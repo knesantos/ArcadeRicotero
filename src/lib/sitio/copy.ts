@@ -24,6 +24,17 @@ export const PORTAL = {
     'Sitio de fans, sin fines de lucro. El arte de las tapas es de Rocambole ' +
     '(Ricardo Cohen); la música, de Patricio Rey y sus Redonditos de Ricota. ' +
     'Si algo molesta a quien corresponde, se baja y listo.',
+  /**
+   * El crédito puntual de la pantalla: qué tapas se usaron acá.
+   *
+   * Es la condición 1 de `D-21`. El pie de arriba nombra a Rocambole, pero no dice de
+   * qué discos salió lo que se está viendo, y un fondo no tiene dónde poner una firma
+   * al lado. Esto lo resuelve por pantalla, sin cargarle un crédito a cada imagen.
+   */
+  creditoTapas: (discos: readonly string[]) =>
+    `En esta pantalla, arte de ${discos.length === 1 ? 'la tapa de' : 'las tapas de'} ` +
+    `${discos.length > 1 ? `${discos.slice(0, -1).join(', ')} y ${discos.at(-1)}` : discos[0]}, ` +
+    'en baja resolución.',
 } as const;
 
 /** Los cinco casetes del portal. `viste` es la mezcla D-19: que disco viste cada uno. */
@@ -65,11 +76,14 @@ export const JUEGOS: readonly Casete[] = [
   },
   {
     titulo: 'Adiviná la tapa',
-    baja: 'El arte de Rocambole, de a pedacitos y en baja.',
+    // La bajada decia "de a pedacitos" cuando la pantalla era una promesa. El juego
+    // muestra la tapa entera, asi que ahora dice lo que hace.
+    baja: 'Te mostramos el arte de Rocambole y vos decís de qué disco es.',
     viste: 'Viste Último bondi',
     variante: 'discos',
     arte: '/arte/casete.svg',
     href: '/juegos/adivinar-la-tapa/',
+    accion: 'JUGÁ',
   },
 ] as const;
 
@@ -113,15 +127,8 @@ export const COCINA: Record<string, EnLaCocina> = {
       'disco — las otras tres son para dudar un rato.',
     estado: 'Está en la cocina: los versos se están cargando disco por disco.',
   },
-  'adivinar-la-tapa': {
-    titulo: 'ADIVINÁ LA TAPA',
-    variante: 'discos',
-    arte: '/arte/casete.svg',
-    queVaASer:
-      'El arte de Rocambole aparece de a pedacitos, en baja resolución y con su crédito, ' +
-      'y hay que decir qué disco es antes de que se vea entero.',
-    estado: 'Está en la cocina: faltan las imágenes y su contrato.',
-  },
+  // "Adiviná la tapa" salio de la cocina en el ciclo 4: el juego se juega en
+  // `/juegos/adivinar-la-tapa/` y ya no necesita pantalla de promesa.
 } as const;
 
 export const COCINA_VOLVER = 'VOLVÉ AL ARCADE';

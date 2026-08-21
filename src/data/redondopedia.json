@@ -662,7 +662,7 @@
           "quien": null
         },
         {
-          "texto": "Y después está el otro Indio, el de las leyendas. Cuentan los fans — y lo contaron durante treinta años sin una sola prueba — que fue profesor de educación física en el Colegio Militar durante la dictadura; que vive en una mansión imposible de encontrar en el trazado laberíntico de Parque Leloir; que no sale nunca de su casa, y que cuando sale se disfraza; que lo custodia una jauría entrenada para atacar al intruso a un silbido del amo. Elegí la que más te guste: ninguna tiene respaldo, y por eso van todas rotuladas como leyenda. La más famosa es la del supuesto romance con Karina Rabolini, que creció hasta volverse una de las leyendas urbanas más conocidas del universo ricotero sin que apareciera jamás una prueba; la propia Rabolini la desmintió con elegancia: dijo que le encantaría que fuera cierto, pero que cree que no es para ella.",
+          "texto": "Y después está el otro Indio, el de las leyendas. Cuentan los fans — y lo contaron durante treinta años sin una sola prueba — que fue profesor de educación física en el Colegio Militar durante la dictadura; que vive en una mansión imposible de encontrar en el trazado laberíntico de Parque Leloir; que no sale nunca de su casa, y que cuando sale se disfraza; que lo custodia una jauría entrenada para atacar al intruso a un silbido del amo. Elegí la que más te guste: ninguna tiene respaldo, y por eso van todas rotuladas como leyenda. La más famosa es la del supuesto romance con Karina Rabolini, que creció hasta volverse una de las leyendas urbanas más conocidas del universo ricotero sin que apareciera jamás una prueba; la propia Rabolini la desmintió con elegancia: dijo que le encantaría que fuera cierto, pero que cree que no es para ella. Las cuatro que siguen sin desmentida ni confirmación están reunidas en [[los-mitos-del-indio|los mitos del Indio]].",
           "rotulo": "leyenda",
           "fuente": "RES-08",
           "quien": null
@@ -1437,13 +1437,13 @@
           "quien": null
         },
         {
-          "texto": "El 19 de abril de 1991, antes de un recital de la banda, la Policía Federal montó un operativo en las inmediaciones del Estadio Obras y detuvo a más de ochenta jóvenes, muchos de ellos menores, bajo la figura de «averiguación de antecedentes». Entre ellos estaba Walter David Bulacio, de 17 años, que fue torturado durante la detención ilegal y murió el 26 de abril de 1991 por un traumatismo de cráneo. El caso llegó a la Corte Interamericana de Derechos Humanos. El primer juicio oral se hizo recién en 2011; en 2013 se condenó al comisario Espósito, solo por privación ilegal de la libertad, a tres años en suspenso, sin cumplimiento efectivo.",
+          "texto": "El 19 de abril de 1991, antes de un recital de la banda, la Policía Federal montó un operativo en las inmediaciones del Estadio Obras y detuvo a más de ochenta jóvenes, muchos de ellos menores, bajo la figura de «averiguación de antecedentes». Entre ellos estaba [[walter-bulacio|Walter David Bulacio]], de 17 años, que fue torturado durante la detención ilegal y murió el 26 de abril de 1991 por un traumatismo de cráneo. El caso llegó a la Corte Interamericana de Derechos Humanos. El primer juicio oral se hizo recién en 2011; en 2013 se condenó al comisario Espósito, solo por privación ilegal de la libertad, a tres años en suspenso, sin cumplimiento efectivo.",
           "rotulo": "hecho",
           "fuente": "RES-07",
           "quien": null
         },
         {
-          "texto": "El 11 de marzo de 2017, en el predio La Colmena de Olavarría, se hizo el último recital en vivo del [[indio-solari|Indio Solari]]. Dos personas, Javier León y Juan Francisco Bulacio, murieron por asfixia. Los organizadores fueron imputados por doble homicidio culposo; ni Solari ni el intendente estuvieron entre los imputados. Sobre cuánta gente hubo, las fuentes no coinciden: las cifras van de unas 300.000 a unas 400.000 personas, contra una capacidad habilitada de 200.000. La discrepancia queda anotada tal cual, sin promediar.",
+          "texto": "El 11 de marzo de 2017, en el predio La Colmena de [[olavarria-2017|Olavarría]], se hizo el último recital en vivo del [[indio-solari|Indio Solari]]. Dos personas, Javier León y Juan Francisco Bulacio, murieron por asfixia. Los organizadores fueron imputados por doble homicidio culposo; ni Solari ni el intendente estuvieron entre los imputados. Sobre cuánta gente hubo, las fuentes no coinciden: las cifras van de unas 300.000 a unas 400.000 personas, contra una capacidad habilitada de 200.000. La discrepancia queda anotada tal cual, sin promediar.",
           "rotulo": "hecho",
           "fuente": "RES-07",
           "quien": null
@@ -1757,6 +1757,240 @@
         "indio-solari",
         "la-formacion",
         "skay-beilinson"
+      ]
+    },
+    {
+      "slug": "walter-bulacio",
+      "tipo": "hito",
+      "titulo": "Walter Bulacio",
+      "resumen": "El 19 de abril de 1991, en un operativo policial antes de un recital de la banda en el Estadio Obras, la Policía Federal detuvo a más de 80 jóvenes, muchos menores de edad. Entre ellos estaba Walter David Bulacio, de 17 años, que murió siete días después por un traumatismo de cráneo. El caso llegó a la Corte Interamericana de Derechos Humanos: el primer juicio oral en Argentina fue recién en 2011, y en 2013 se condenó al comisario a cargo del operativo. Ni la banda ni sus integrantes tuvieron ninguna imputación en la causa.",
+      "datos": [
+        {
+          "etiqueta": "Nombre completo",
+          "valor": "Walter David Bulacio",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Edad",
+          "valor": "17 años",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Detención",
+          "valor": "19 de abril de 1991, en un operativo policial en las inmediaciones del Estadio Obras",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Muerte",
+          "valor": "26 de abril de 1991, por un traumatismo de cráneo",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Instancia judicial",
+          "valor": "Corte Interamericana de Derechos Humanos",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Primer juicio oral en Argentina",
+          "valor": "2011, veinte años después de los hechos",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Condena",
+          "valor": "2013, comisario Miguel Espósito, tres años en suspenso por privación ilegal de la libertad, sin cumplimiento efectivo",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Responsabilidad de la banda",
+          "valor": "Ninguna imputación contra la banda ni sus integrantes",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "El 19 de abril de 1991, en un operativo policial en las inmediaciones del [[debut-en-obras|Estadio Obras]] antes de un recital de la banda, la Policía Federal detuvo a más de 80 jóvenes, muchos de ellos menores de edad, bajo la figura de averiguación de antecedentes. Entre ellos estaba Walter David Bulacio, de 17 años, que murió siete días después, el 26 de abril de 1991, por un traumatismo de cráneo producto de las lesiones sufridas durante la detención.",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        },
+        {
+          "texto": "El caso llegó a la Corte Interamericana de Derechos Humanos. El primer juicio oral en Argentina se hizo recién en 2011, veinte años después de los hechos; en 2013 se condenó al comisario a cargo del operativo, Miguel Espósito, a tres años en suspenso por privación ilegal de la libertad, sin cumplimiento efectivo. Ni la banda ni sus integrantes tuvieron ninguna imputación en la causa.",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        },
+        {
+          "texto": "El caso marcó un antes y un después en cómo el Estado argentino trata la detención de menores en operativos masivos, y es una de las razones por las que cambió la relación entre los recitales de Patricio Rey y la policía en los años siguientes. No fue un hecho aislado: los saldos represivos de otros recitales de la banda se cuentan en [[el-aguante|el aguante]].",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        },
+        {
+          "texto": "En sus memorias, «Recuerdos que mienten un poco», el propio [[indio-solari|Indio Solari]] tituló el capítulo 14 con el nombre completo de Bulacio: «Walter David Bulacio». Qué dice ese capítulo no está fichado todavía —solo se conoce el título—, así que acá no se cita ni se resume: se deja anotado que existe, nada más.",
+          "rotulo": "hecho",
+          "fuente": "RES-21",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "debut-en-obras",
+        "el-aguante",
+        "indio-solari",
+        "olavarria-2017"
+      ]
+    },
+    {
+      "slug": "olavarria-2017",
+      "tipo": "hito",
+      "titulo": "Olavarría 2017",
+      "resumen": "El 11 de marzo de 2017, en el predio La Colmena de Olavarría, el Indio Solari dio lo que sería su último recital en vivo y en persona. Esa misma noche murieron por asfixia dos personas: Javier León y Juan Francisco Bulacio. Los organizadores del evento fueron imputados por doble homicidio culposo; ni el Indio ni el intendente de la ciudad figuraron entre los imputados. La cifra de asistentes no está saldada entre las fuentes: entre 300.000 y 400.000 personas, contra una capacidad habilitada de 200.000.",
+      "datos": [
+        {
+          "etiqueta": "Fecha",
+          "valor": "11 de marzo de 2017",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Lugar",
+          "valor": "Predio La Colmena, Olavarría",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Contexto",
+          "valor": "Último recital en vivo y en persona del Indio Solari",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Víctimas",
+          "valor": "Javier León y Juan Francisco Bulacio, muertos por asfixia",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Situación judicial",
+          "valor": "Organizadores imputados por doble homicidio culposo; sin sentencia fichada",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Responsabilidad de la banda",
+          "valor": "Ni el Indio ni el intendente de la ciudad estuvieron entre los imputados",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Cifra de asistentes",
+          "valor": "Entre 300.000 y 400.000 según la fuente, contra una capacidad habilitada de 200.000 — discrepancia sin promediar",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "El 11 de marzo de 2017, en el predio La Colmena de Olavarría, el [[indio-solari|Indio Solari]] dio lo que sería su último recital en vivo y en persona. Esa misma noche murieron por asfixia dos personas: Javier León y Juan Francisco Bulacio.",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        },
+        {
+          "texto": "Los organizadores del evento fueron imputados por doble homicidio culposo. Ni el Indio ni el intendente de la ciudad figuraron entre los imputados, y nuestras fichas no registran una sentencia en esta causa.",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        },
+        {
+          "texto": "La cifra de asistentes no está saldada entre las fuentes: algunas hablan de unas 300.000 personas y otras de 400.000, contra una capacidad habilitada de 200.000. No hay un número único para dar por cerrado, y acá no se elige uno solo por prolijidad.",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        },
+        {
+          "texto": "No hubo otro recital después de esa noche: fue la última vez que el Indio se presentó en persona sobre un escenario. El show y las dos muertes pasaron la misma noche; uno no es la causa del otro, y acá no se cuenta como el final perfecto de ninguna historia. El resto de lo que pasó en los recitales de la banda con la policía y la Justicia, incluido el caso de [[walter-bulacio|Walter Bulacio]] en 1991, se cuenta en [[el-aguante|el aguante]].",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "indio-solari",
+        "el-aguante",
+        "walter-bulacio",
+        "muerte-del-indio"
+      ]
+    },
+    {
+      "slug": "los-mitos-del-indio",
+      "tipo": "leyenda",
+      "titulo": "Los mitos del Indio",
+      "resumen": "Durante treinta años circularon sobre el Indio Solari media docena de historias sin una sola prueba a favor: que fue profesor de educación física en el Colegio Militar durante la dictadura, que vivía escondido en una mansión imposible de encontrar en el laberinto de Parque Leloir, que nunca salía de su casa y que cuando salía se disfrazaba, que lo cuidaba una jauría entrenada para atacar a un silbido del dueño. La más difundida de todas fue el supuesto romance con Karina Rabolini, y esa sí tuvo desmentida: la propia Rabolini dijo que le encantaría que fuera cierto, pero que no es para ella. Las otras cuatro siguen exactamente donde estaban: sin confirmar y sin desmentir.",
+      "datos": [
+        {
+          "etiqueta": "Los cuatro mitos sin desmentida",
+          "valor": "Profesor de educación física en el Colegio Militar durante la dictadura; mansión escondida en el laberinto de Parque Leloir; no sale nunca de su casa y se disfraza cuando sale; una jauría entrenada cuida la propiedad",
+          "rotulo": "leyenda",
+          "fuente": "RES-08"
+        },
+        {
+          "etiqueta": "Tiempo circulando",
+          "valor": "Al menos treinta años, sin que apareciera una sola prueba a favor",
+          "rotulo": "leyenda",
+          "fuente": "RES-08"
+        },
+        {
+          "etiqueta": "El mito de Karina Rabolini",
+          "valor": "Supuesto romance con el Indio; la leyenda urbana más citada de todo el universo ricotero",
+          "rotulo": "leyenda",
+          "fuente": "RES-08"
+        },
+        {
+          "etiqueta": "Desmentida",
+          "valor": "La propia Karina Rabolini: «la verdad es que me encantaría que fuera así, pero creo que no es para mí»",
+          "rotulo": "hecho",
+          "fuente": "RES-08"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Durante treinta años circuló, sin que nadie mostrara jamás una prueba, un puñado de historias sobre la vida privada del [[indio-solari|Indio Solari]]: que había sido profesor de educación física en el Colegio Militar durante la dictadura; que vivía en una mansión imposible de encontrar, perdida en el trazado laberíntico de Parque Leloir; que no salía nunca de su casa, y que cuando salía se disfrazaba para que nadie lo reconociera; que una jauría entrenada cuidaba la propiedad y atacaba al intruso a un silbido del dueño. Ninguna de las cuatro tiene desmentida ni confirmación fichada: quedan tal cual circularon, rotuladas como lo que son.",
+          "rotulo": "leyenda",
+          "fuente": "RES-08",
+          "quien": null
+        },
+        {
+          "texto": "La quinta, la más repetida de todas, fue un supuesto romance entre el Indio y la modelo y conductora Karina Rabolini. Creció durante años hasta volverse una de las leyendas urbanas más citadas de todo el universo ricotero, alimentada por el mismo hermetismo que sostenía a las otras cuatro: si nadie te ve, cualquier historia sobre vos es difícil de descartar del todo.",
+          "rotulo": "leyenda",
+          "fuente": "RES-08",
+          "quien": null
+        },
+        {
+          "texto": "Esta sí tuvo respuesta directa de una de las dos partes. Rabolini la desmintió públicamente, con elegancia: «la verdad es que me encantaría que fuera así, pero creo que no es para mí». Es la única de las cinco historias con un desmentido de alguien involucrado — las otras cuatro nunca tuvieron ni esa cortesía.",
+          "rotulo": "hecho",
+          "fuente": "RES-08",
+          "quien": null
+        },
+        {
+          "texto": "Que un cantante masivo termine rodeado de historias como estas no es casualidad: la banda armó su carrera entera esquivando la televisión y la prensa —contado en [[difusion-sin-tele|difusión sin tele]]—, y esa ausencia deliberada es el combustible perfecto para que el público invente el resto. Cuanto menos te ve la cámara, más te imagina la gente. Con el mismo mecanismo de fondo funciona otra leyenda de la casa, la que discute si detrás del nombre de la banda hubo o no una persona real: la tiene contada [[patricio-rey|Patricio Rey]].",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "indio-solari",
+        "la-leyenda-de-ji-ji-ji",
+        "difusion-sin-tele",
+        "patricio-rey"
       ]
     }
   ]

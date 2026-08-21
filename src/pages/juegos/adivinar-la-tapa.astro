@@ -1,26 +1,108 @@
 ---
 /**
- * Pantalla "en la cocina" de `US-04` (adivinar la tapa).
- * Viste Ultimo bondi (mezcla `D-19`, seccion discos). Cuando el juego exista, es la
- * UNICA pantalla del sitio donde entran tapas reales (UX-04), en baja y con credito.
+ * "Adiviná la tapa" (`US-04`). Dejó de estar en la cocina: se juega.
+ *
+ * Es la única pantalla donde las tapas reales son el **contenido** del juego y no la
+ * decoración de la sección (`D-21`, `UX-04`). Viste Último bondi por la mezcla `D-19`.
+ *
+ * Arquitectura de islas (`D-02`): HTML estático, y el único JavaScript es
+ * `partida-tapa.ts`. El banco se resuelve en build — al navegador llega JSON ya
+ * filtrado, sin notas internas y sin ítems en borrador.
+ *
+ * **Molinetes abiertos (`D-14`):** no pide nada. Ni cuenta, ni login, ni saber.
  */
-import Base from '../../layouts/Base.astro';
-import { COCINA, COCINA_VOLVER, PORTAL } from '../../lib/sitio/copy.ts';
-import { conRecorteReal } from '../../lib/sitio/arte.ts';
+import '../../styles/tokens.css';
+import '../../styles/juego.css';
+import '../../styles/sitio.css';
+import { cargarBanco, type BancoCrudo } from '../../lib/tapa/banco.ts';
+import { PANTALLA_0 } from '../../lib/tapa/copy.ts';
+import { PORTAL } from '../../lib/sitio/copy.ts';
+import { fondoTapa } from '../../lib/sitio/arte.ts';
+import crudo from '../../data/tapa.json';
 
-const c = COCINA['adivinar-la-tapa']!;
+const items = cargarBanco(crudo as unknown as BancoCrudo);
+const fondo = fondoTapa('bondi-engranajes');
 ---
 
-<Base
-  titulo={`${c.titulo} — Arcade Ricotero`}
-  descripcion={c.queVaASer}
-  volverA={{ href: '/', texto: PORTAL.volverAlArcade }}
->
-  <section class={`cocina cocina--${c.variante}`}>
-    <h1>{c.titulo}</h1>
-    <img class="cocina-arte" src={conRecorteReal(c.arte)} alt="" aria-hidden="true" />
-    <p class="cocina-explica">{c.queVaASer}</p>
-    <p class="cocina-estado">{c.estado}</p>
-  </section>
-  <a class="accion-abajo" href="/">{COCINA_VOLVER}</a>
-</Base>
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={PANTALLA_0.subtitulo} />
+    <title>Adiviná la tapa — Arcade Ricotero</title>
+  </head>
+  <body class="con-grano">
+    <main id="app">
+      {fondo && <div class="tapa-fondo tapa-fondo--bondi-engranajes" aria-hidden="true" />}
+
+      <section id="portada" class="pantalla sobre-tapa">
+        <header class="cabecera-sitio">
+          <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
+        </header>
+        <p class="marca" aria-label="Arcade Ricotero">ARCADE RICOTERO</p>
+        <h1>{PANTALLA_0.titulo}</h1>
+        <p class="tenue">{PANTALLA_0.subtitulo}</p>
+        <button id="jugar" class="primario" type="button">{PANTALLA_0.boton}</button>
+      </section>
+
+      <section id="partida" class="pantalla sobre-tapa" hidden></section>
+      <section id="resultado" class="pantalla sobre-tapa" hidden></section>
+
+      <footer class="pie-sitio sobre-tapa">{PORTAL.pie}</footer>
+    </main>
+
+    <script type="application/json" id="banco" set:html={JSON.stringify(items)} />
+    <script>
+      import '../../scripts/partida-tapa.ts';
+    </script>
+
+    <style>
+      main {
+        max-width: 34rem;
+        margin: 0 auto;
+        position: relative;
+        min-height: 100vh;
+      }
+      /* Esta pantalla viste Ultimo bondi (D-19, seccion discos). */
+      .marca {
+        font-family: var(--fuente-titular);
+        font-size: 2.1rem;
+        line-height: 0.96;
+        color: var(--marca-rojo);
+        margin: var(--espacio-3) 0 var(--espacio-2);
+        max-width: 7ch;
+      }
+      h1 {
+        font-family: var(--fuente-rotulada);
+        font-size: 1.5rem;
+        line-height: 1.2;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--cat-discos);
+        margin-top: 0;
+      }
+      .tenue {
+        color: var(--texto-tenue);
+      }
+      .pantalla[hidden] {
+        display: none;
+      }
+      .primario {
+        display: block;
+        width: 100%;
+        margin-top: var(--espacio-4);
+        padding: var(--espacio-2);
+        min-height: var(--toque-min);
+        font-family: var(--fuente-rotulada);
+        background: var(--marca-rojo);
+        color: var(--fondo);
+        border: none;
+        border-radius: var(--radio);
+        font-size: 1.25rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+    </style>
+  </body>
+</html>

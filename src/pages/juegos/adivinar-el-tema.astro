@@ -6,17 +6,24 @@
  */
 import Base from '../../layouts/Base.astro';
 import { COCINA, COCINA_VOLVER, PORTAL } from '../../lib/sitio/copy.ts';
-import { conRecorteReal } from '../../lib/sitio/arte.ts';
+import { conRecorteReal, fondoTapa, discosDe, FONDO_COCINA } from '../../lib/sitio/arte.ts';
 
 const c = COCINA['adivinar-el-tema']!;
+
+// El fondo velado que UX-05 le asigna a esta pantalla. Si el derivado todavia no se
+// genero (`node scripts/generar-tapas.mjs`), no hay fondo y la pantalla se ve igual.
+const fondo = fondoTapa(FONDO_COCINA['adivinar-el-tema'] ?? '');
+const tapasUsadas = fondo ? discosDe([FONDO_COCINA['adivinar-el-tema']]) : [];
 ---
 
 <Base
   titulo={`${c.titulo} — Arcade Ricotero`}
   descripcion={c.queVaASer}
   volverA={{ href: '/', texto: PORTAL.volverAlArcade }}
+  tapas={tapasUsadas}
 >
   <section class={`cocina cocina--${c.variante}`}>
+    {fondo && <div class={`tapa-fondo tapa-fondo--${FONDO_COCINA['adivinar-el-tema']}`} aria-hidden="true" />}
     <h1>{c.titulo}</h1>
     <img class="cocina-arte" src={conRecorteReal(c.arte)} alt="" aria-hidden="true" />
     <p class="cocina-explica">{c.queVaASer}</p>

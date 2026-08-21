@@ -14,7 +14,22 @@
  * parametro: un test que no puede fijar la semilla no puede probar nada.
  */
 
-import type { Dificultad, Item } from './banco.ts';
+import type { Dificultad } from './banco.ts';
+
+/**
+ * Lo minimo que un item necesita para poder entrar en una ronda.
+ *
+ * Existe porque `US-04` (adivinar la tapa) juega con la misma mecanica: dificultad
+ * escalonada de `BR-01` y cuatro opciones de `BR-04`. Duplicar esta logica alla seria
+ * duplicar tambien el arreglo del defecto que documenta `barajarOpciones` mas abajo — y
+ * la copia se olvidaria de arreglarlo. Un juego nuevo se engancha implementando esta
+ * forma, no copiando este archivo.
+ */
+export interface Jugable {
+  readonly id: string;
+  readonly dificultad: Dificultad;
+  readonly opciones: readonly { readonly texto: string; readonly correcta: boolean }[];
+}
 
 /** Orden de `BR-01`. El indice es lo que hace comparable la regla 2. */
 const ORDEN: Record<Dificultad, number> = { facil: 0, media: 1, dificil: 2 };
@@ -38,7 +53,11 @@ function barajar<T>(xs: readonly T[], azar: () => number): T[] {
  * @param largo  cuantas preguntas tiene la ronda (`US-01` criterio 1: 8)
  * @param azar   fuente de aleatoriedad, inyectable para los tests
  */
-export function armarRonda(items: readonly Item[], largo: number, azar: () => number = Math.random): readonly Item[] {
+export function armarRonda<T extends Jugable>(
+  items: readonly T[],
+  largo: number,
+  azar: () => number = Math.random,
+): readonly T[] {
   if (!Number.isInteger(largo) || largo <= 0) throw new RangeError('largo tiene que ser un entero positivo');
   if (items.length < largo) {
     throw new RondaImposible(`el banco tiene ${items.length} items y la ronda pide ${largo}`);
@@ -55,13 +74,13 @@ export function armarRonda(items: readonly Item[], largo: number, azar: () => nu
   // Punto 2: el resto se ordena por dificultad ascendente. Dentro de cada nivel se
   // baraja, para que dos partidas seguidas no sean identicas.
   const resto = items.filter((i) => i.id !== primero.id);
-  const porNivel: Record<Dificultad, Item[]> = {
+  const porNivel: Record<Dificultad, T[]> = {
     facil: barajar(resto.filter((i) => i.dificultad === 'facil'), azar),
     media: barajar(resto.filter((i) => i.dificultad === 'media'), azar),
     dificil: barajar(resto.filter((i) => i.dificultad === 'dificil'), azar),
   };
 
-  const ronda: Item[] = [primero];
+  const ronda: T[] = [primero];
   for (const nivel of ['facil', 'media', 'dificil'] as const) {
     for (const it of porNivel[nivel]) {
       if (ronda.length >= largo) break;
@@ -90,12 +109,12 @@ export function armarRonda(items: readonly Item[], largo: number, azar: () => nu
  * batalla perdida que ademas hay que volver a pelear cada vez que entra contenido nuevo.
  * Barajar al servir lo resuelve una vez y para siempre.
  */
-export function barajarOpciones(item: Item, azar: () => number): Item {
+export function barajarOpciones<T extends Jugable>(item: T, azar: () => number): T {
   return { ...item, opciones: barajar(item.opciones, azar) };
 }
 
 /** Verifica que una ronda cumpla `BR-01`. Se usa en los tests y en la revision. */
-export function cumpleBR01(ronda: readonly Item[]): boolean {
+export function cumpleBR01(ronda: readonly Jugable[]): boolean {
   if (ronda.length === 0) return false;
   if (ronda[0]!.dificultad !== 'facil') return false;
   for (let i = 1; i < ronda.length; i++) {
@@ -105,7 +124,7 @@ export function cumpleBR01(ronda: readonly Item[]): boolean {
 }
 
 /** Cuantos aciertos tiene un conjunto de respuestas. Una respuesta es el texto elegido. */
-export function contarAciertos(ronda: readonly Item[], elegidas: readonly (string | null)[]): number {
+export function contarAciertos(ronda: readonly Jugable[], elegidas: readonly (string | null)[]): number {
   let n = 0;
   for (let i = 0; i < ronda.length; i++) {
     const correcta = ronda[i]!.opciones.find((o) => o.correcta);

@@ -1,12 +1,15 @@
 # CNT-01 — Mapa de derechos: qué se usa, de dónde salió, y qué respondemos si preguntan
 
-- **Fecha:** 2026-08-19 — v2, reescrita en `T-32` del ciclo 3.
+- **Fecha:** 2026-08-19 — v2, reescrita en `T-32` del ciclo 3. **Corrección puntual
+  2026-08-21** en la sección B, por hallazgo de la revisión de cierre del ciclo 4: `D-21`
+  soltó las tapas a toda la pantalla y el origen real de las imágenes es Coveralia, no el
+  Cover Art Archive que esta nota seguía citando.
 - **Estado:** mapa activo, sin vencimiento. No es un cerrojo y no lo fue nunca desde `D-14`.
 - **Consume:** `Docs/BRIEF.md` (sección "La postura: molinetes abiertos"), `D-14`, `D-06`,
-  `D-04`, `D-13`, `D-08` (`Docs/DECISIONES.md`), `RES-03` (`INV-01`), `RES-06`, `RES-09`
-  (`INV-02`), `RES-11`, `RES-12` (`INV-04`), `RES-13`, `RES-14` (`INV-05`), `RES-25`, `RES-26`
-  (`INV-22`), y `ADR-01` (`Docs/ARQ/ARQ-spotify-integracion.md`, cerrado en opción B por
-  `T-31`).
+  `D-04`, `D-13`, `D-08`, `D-21` (`Docs/DECISIONES.md`), `RES-03` (`INV-01`), `RES-06`,
+  `RES-09` (`INV-02`), `RES-11`, `RES-12` (`INV-04`), `RES-13`, `RES-14` (`INV-05`), `RES-25`,
+  `RES-26` (`INV-22`), `RES-44`, `RES-46` (`INV-44`), `Docs/UX/UX-05-tapas-en-pantalla.md`, y
+  `ADR-01` (`Docs/ARQ/ARQ-spotify-integracion.md`, cerrado en opción B por `T-31`).
 
 ## Qué es esto ahora, y qué dejó de ser
 
@@ -75,12 +78,21 @@ no como semáforo.
 
 ### B. Tapas de Rocambole
 
+> **Corregido el 2026-08-21, hallazgo de la revisión de cierre del ciclo 4.** Esta sección
+> decía dos cosas que dejaron de ser ciertas. La primera: que las tapas reales se usaban
+> "únicamente en el juego adivinar la tapa" — **`D-21` las soltó a toda la pantalla**, con
+> el catálogo pantalla por pantalla en `Docs/UX/UX-05-tapas-en-pantalla.md`. La segunda: que
+> el origen era el Cover Art Archive — **los 10 ítems de `src/data/tapa.json` declaran
+> `credito.origen: "coveralia"`**, y los 35 másters se bajaron de ahí, no del Cover Art
+> Archive que `RES-25` había evaluado como vía preferida. Se corrige acá, sin tocar el
+> encuadre de `D-14`: el riesgo se asume igual, y si llega un reclamo se baja igual.
+
 | | |
 |---|---|
-| **Qué se usa** | Tapas reales, únicamente en el juego "adivinar la tapa o el disco" (`D-04`). En baja resolución (orden de magnitud manejado por el proyecto: unos cientos de píxeles de lado) y con crédito: artista, disco, año. En ningún otro lugar del sitio se usa una tapa real. |
-| **De dónde salió** | De las seis vías evaluadas (`RES-25`), el Cover Art Archive es el único conducto técnico que no impone un contrato adverso — no mejora la posición legal, simplemente no la empeora, y exige copia local en vez de hotlink. Discogs, Wikipedia/Commons, Spotify, Deezer, Apple, Last.fm, Genius, RYM y bestiarioredondo quedan descartados: o prohíben el uso explícitamente, o invocan doctrinas que no existen en Argentina (fair use, first sale), o no declaran nada sobre derechos. |
-| **Qué dice la evidencia** | Rocambole es artista vivo (`RES-06`) y el riesgo de derechos más alto del proyecto — por eso es el primer juego en el orden de corte (`D-05`). Su obra **no está registrada** (corrección de `FIND-05`: el registro de marca del nombre de la banda en el INPI, a nombre de Erks S.A., no es lo mismo que registrar la obra plástica). Su declaración pública sobre "la reproductibilidad del arte" es real y favorable, pero no prueba que sea hoy titular de los derechos sobre las tapas ni que cubra un uso que no vio (`RES-13`). Quién tiene la titularidad de la tapa como obra plástica — Rocambole, el sello, o Erks S.A. — sigue sin verificar. |
-| **Qué haríamos si llega un reclamo** | Se baja esa tapa puntual, o el juego entero si hace falta: es la pieza que ya está identificada como la primera en caer (`D-05`), así que sacarla no compromete el resto del sitio. Escribirle directamente a Rocambole por sus canales públicos para pedir autorización explícita es barato y está evaluado como jugada razonable (`RES-25`) — no se planificó la v1 asumiendo esa respuesta, pero es el primer paso si hay contacto. |
+| **Qué se usa** | Tapas reales, en tres formas (`D-21`, catálogo completo en `UX-05`): **ficha** entera en baja resolución, en el juego "adivinar la tapa o el disco" (`D-04`) y en cada artículo de disco de la Redondopedia; **detalle recortado**, en los casetes del portal, en las cabeceras de pregunta del quiz por categoría, y junto al título de artículos de historia y mitología; y **fondo velado**, en la cabecera del portal, en la presentación y el resultado del quiz, en las pantallas "en la cocina" de los otros tres juegos, y en la portada de la Redondopedia. En las tres formas: baja resolución y con crédito. |
+| **De dónde salió** | Coveralia (`RES-46`, `Docs/INVESTIGACION/INV-44-tapas-coveralia.md`), no el Cover Art Archive que `RES-25` había evaluado como el conducto preferido de las seis vías analizadas. El aviso legal de Coveralia, citado textual en `RES-46`, declara que sus imágenes vienen de "colaboradores anónimos o de nuestros partners" y no reclama licencia propia sobre ellas, con baja de contenido a pedido del autor — el mismo patrón sin contrato adverso que las ocho vías ya descartadas por `RES-25`: no mejora la posición legal, tampoco la empeora. |
+| **Qué dice la evidencia** | Rocambole es artista vivo (`RES-06`) y el riesgo de derechos más alto del proyecto — por eso es el primer juego en el orden de corte (`D-05`). Su obra **no está registrada** (corrección de `FIND-05`: el registro de marca del nombre de la banda en el INPI, a nombre de Erks S.A., no es lo mismo que registrar la obra plástica). Su declaración pública sobre "la reproductibilidad del arte" es real y favorable, pero no prueba que sea hoy titular de los derechos sobre las tapas ni que cubra un uso que no vio (`RES-13`). Quién tiene la titularidad de la tapa como obra plástica — Rocambole, el sello, o Erks S.A. — sigue sin verificar. Aparte, la auditoría de edición de `RES-44` encontró que el frontal fichado de *La mosca y la sopa* es un **rediseño con foto de recital, no arte de Rocambole**: el crédito que acompaña cada aparición de una tapa asume que la imagen es su obra, y ese título es la excepción confirmada — por eso el ítem `TP-010` de `tapa.json` usa la contratapa en vez del frontal. |
+| **Qué haríamos si llega un reclamo** | Se baja esa tapa puntual, o el juego entero si hace falta: es la pieza que ya está identificada como la primera en caer (`D-05`), así que sacarla no compromete el resto del sitio. El crédito a Rocambole viaja con cada aparición, no solo con la del juego original: pie del sitio (`footer.pie-sitio`) en las páginas que lo tienen, sello de esquina pegado a la imagen en el quiz, que no usa pie (`UX-05`) — así que decir qué se usó, dónde y con qué crédito es inmediato en cualquiera de las pantallas nuevas que abrió `D-21`. Escribirle directamente a Rocambole por sus canales públicos para pedir autorización explícita es barato y está evaluado como jugada razonable (`RES-25`) — no se planificó la v1 asumiendo esa respuesta, pero es el primer paso si hay contacto. |
 
 ### C. Letras
 
@@ -147,7 +159,7 @@ como siempre.
 | Superficie | Qué se usa | Si preguntan o reclaman |
 |---|---|---|
 | Audio | Fragmento ≤10,0 s de la grabación, con crédito | Se baja ese fragmento puntual |
-| Tapas de Rocambole | Tapa real en baja resolución, solo en "adivinar la tapa" | Se baja esa tapa, o el juego entero (es el primero en caer, `D-05`) |
+| Tapas de Rocambole | Tapa real en baja resolución: ficha en el juego y en la Redondopedia, detalle y fondo en todo el sitio (`D-21`, `UX-05`) | Se baja esa tapa, o el juego entero (es el primero en caer, `D-05`) |
 | Letras | Verso o estrofa puntual, reveal decreciente | Se saca esa cita puntual del banco |
 | Nombre y marca | Uso nominativo del nombre de la banda | Se refuerza el disclaimer; el nombre del proyecto se puede cambiar |
 | Deep link a Spotify | `open.spotify.com/track/<id>` tras revelar | Se saca el botón; la partida sigue completa sin él |
