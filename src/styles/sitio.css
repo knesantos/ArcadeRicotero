@@ -1,0 +1,640 @@
+/*
+ * El collage del sitio: portal, pantallas de juego que vienen, y Redondopedia.
+ *
+ * Implementa la estetica que fija UX-04 con las tecnicas FICHADAS de Rocambole
+ * (RES-06): collage, serigrafia, grano, linea gruesa. La metafora concreta es el
+ * arte de un cassette grabado en casa: etiquetas de papel escritas a mano, cinta
+ * adhesiva sujetando recortes de las tapas, todo un poco torcido a proposito.
+ *
+ * MISMA REGLA QUE juego.css: ni un hex aca adentro. Todo sale de tokens.css
+ * (estilos.test.ts lo verifica). La mezcla D-19 llega por --tinte: cada casete
+ * del portal viste la paleta real de su disco via las variables --cat-*.
+ *
+ * Los recortes reales los pega el usuario en public/arte/ (ver el README de esa
+ * carpeta): este CSS solo deja los huecos, el movimiento y la cinta adhesiva.
+ */
+
+/* ---- La base collage: grano de serigrafia sobre todo ---- */
+
+.con-grano {
+  position: relative;
+}
+
+.con-grano::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: var(--textura-grano);
+  opacity: 0.13;
+  pointer-events: none;
+  z-index: 40;
+}
+
+/* ---- Recortes que viven en el fondo ---- */
+
+/* La gente con banderas (Oktubre) marcha detras de todo, apenas visible. */
+.banderas-fondo {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  max-height: 26vh;
+  object-fit: cover;
+  object-position: top;
+  opacity: 0.14;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+}
+
+/* La mosca (La mosca y la sopa) vuela por la pantalla. Con reduced-motion el
+   token global congela la animacion y queda quieta en su rincon de arranque. */
+.mosca-viva {
+  position: fixed;
+  top: 4vh;
+  left: 2vw;
+  width: 44px;
+  height: auto;
+  pointer-events: none;
+  z-index: 30;
+  opacity: 0.85;
+  animation: vuelo-de-mosca 17s ease-in-out infinite;
+}
+
+@keyframes vuelo-de-mosca {
+  0% { transform: translate(0, 0) rotate(12deg); }
+  12% { transform: translate(38vw, 9vh) rotate(-28deg); }
+  22% { transform: translate(70vw, 3vh) rotate(24deg); }
+  34% { transform: translate(84vw, 34vh) rotate(-14deg); }
+  46% { transform: translate(52vw, 52vh) rotate(31deg); }
+  58% { transform: translate(76vw, 74vh) rotate(-24deg); }
+  70% { transform: translate(30vw, 66vh) rotate(18deg); }
+  82% { transform: translate(8vw, 38vh) rotate(-31deg); }
+  100% { transform: translate(0, 0) rotate(12deg); }
+}
+
+/* Todo lo que se lee va por encima de los recortes de fondo. */
+.contenido-sitio {
+  position: relative;
+  z-index: 1;
+  max-width: 34rem;
+  margin: 0 auto;
+}
+
+/* ---- Cabecera y regreso ---- */
+
+.cabecera-sitio {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-2);
+  margin-bottom: var(--espacio-3);
+}
+
+/* El regreso es una tira de cinta adhesiva pegada arriba a la izquierda. */
+.volver {
+  display: inline-block;
+  min-height: var(--toque-min);
+  line-height: var(--toque-min);
+  padding: 0 var(--espacio-2);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  color: var(--fondo);
+  background: color-mix(in srgb, var(--papel) 88%, transparent);
+  border-radius: 3px;
+  transform: rotate(-1.6deg);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--papel-borde) 60%, transparent);
+}
+
+.marca-chica {
+  font-family: var(--fuente-titular);
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--marca-rojo);
+  text-decoration: none;
+  max-width: 8ch;
+  text-align: right;
+}
+
+/* ---- La marca grande del portal ---- */
+
+.marca-grande {
+  font-family: var(--fuente-titular);
+  font-size: clamp(2.6rem, 13vw, 4rem);
+  line-height: 0.92;
+  color: var(--marca-rojo);
+  margin: var(--espacio-3) 0 var(--espacio-1);
+  max-width: 7ch;
+}
+
+.bajada-portal {
+  color: var(--texto-tenue);
+  margin: 0 0 var(--espacio-3);
+  text-wrap: balance;
+}
+
+/* El personaje de portada (el perro, motivo fichado en RES-06/RES-22) mira
+   desde el costado de la marca, pegado con cinta como un recorte mas. */
+.recorte-portada {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: clamp(72px, 24vw, 110px);
+  transform: rotate(6deg);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* La portada del portal: el recorte se pega arriba a la derecha de la marca. */
+.portada-arcade {
+  position: relative;
+}
+
+/* ---- Los lados del cassette ---- */
+
+.lado {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  margin: var(--espacio-4) 0 var(--espacio-2);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  color: var(--texto-tenue);
+  text-transform: uppercase;
+}
+
+.lado::after {
+  content: '';
+  flex: 1;
+  border-top: 2px dashed var(--borde);
+}
+
+/* ---- El casete: cada juego es un cassette apilado en el collage ---- */
+
+.casetera {
+  display: grid;
+  gap: var(--espacio-2);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.casete {
+  /* El tinte lo pone la variante de disco (mezcla D-19). */
+  --tinte: var(--texto-tenue);
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--espacio-2);
+  align-items: center;
+  padding: var(--espacio-2);
+  background: var(--fondo-elevado);
+  border: var(--linea) solid color-mix(in srgb, var(--tinte) 55%, var(--borde));
+  border-radius: var(--radio);
+  text-decoration: none;
+  color: var(--texto);
+  min-height: var(--toque-min);
+}
+
+/* Apilados a mano: ninguno queda perfectamente derecho. */
+.casetera > li:nth-child(odd) .casete { transform: rotate(-0.9deg); }
+.casetera > li:nth-child(even) .casete { transform: rotate(0.7deg); }
+
+/* La cinta adhesiva que sujeta el casete al fondo. */
+.casete::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 14%;
+  width: 64px;
+  height: 18px;
+  background: color-mix(in srgb, var(--papel) 30%, transparent);
+  transform: rotate(-3deg);
+  border-radius: 2px;
+}
+
+.casete:focus-visible {
+  outline: var(--linea) solid var(--acento-2);
+  outline-offset: 3px;
+}
+
+/* El recorte de tapa que decora cada casete. */
+.casete-arte {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+  transform: rotate(-4deg);
+}
+
+/* La etiqueta de papel del cassette: tinta sobre papel, con sus rayitas. */
+.casete-etiqueta {
+  display: block;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 1.35em,
+      color-mix(in srgb, var(--papel-borde) 55%, transparent) 1.35em,
+      color-mix(in srgb, var(--papel-borde) 55%, transparent) calc(1.35em + 1px)
+    ),
+    var(--papel);
+  color: var(--fondo);
+  padding: var(--espacio-1) var(--espacio-2);
+  border-radius: 4px;
+  transform: rotate(-0.4deg);
+}
+
+.casete-titulo {
+  display: block;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.05rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.casete-baja {
+  display: block;
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
+/* El pie del casete: que disco viste y que boton tiene. */
+.casete-pie {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-1);
+}
+
+.casete-disco {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--tinte);
+}
+
+.casete-accion {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  color: var(--tinte);
+  border: 2px solid var(--tinte);
+  border-radius: 999px;
+  padding: 0.35em 1em;
+}
+
+/* Lo que todavia no salio: etiqueta escrita en lapiz, sin boton que engañe. */
+.casete--pronto {
+  opacity: 0.82;
+}
+
+.casete-pronto {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--texto-tenue);
+  border: 2px dashed var(--borde);
+  border-radius: 999px;
+  padding: 0.35em 1em;
+  text-transform: uppercase;
+}
+
+/* Variantes de disco (mezcla D-19). El acento rota; la base, nunca. */
+.casete--marca { --tinte: var(--marca-rojo); }
+.casete--historia { --tinte: var(--cat-historia); }
+.casete--discos { --tinte: var(--cat-discos); }
+.casete--letras { --tinte: var(--cat-letras); }
+.casete--mitologia { --tinte: var(--cat-mitologia); }
+
+/* ---- Pie del sitio ---- */
+
+.pie-sitio {
+  margin: var(--espacio-4) 0 var(--espacio-2);
+  color: var(--texto-tenue);
+  font-size: 0.8rem;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* ---- Pantallas "en la cocina" (los juegos que vienen) ---- */
+
+.cocina {
+  --tinte: var(--texto-tenue);
+  border: var(--linea) solid color-mix(in srgb, var(--tinte) 55%, var(--borde));
+  border-radius: var(--radio);
+  padding: var(--espacio-3);
+  background: var(--fondo-elevado);
+  position: relative;
+  transform: rotate(-0.5deg);
+}
+
+.cocina::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: 12%;
+  width: 74px;
+  height: 20px;
+  background: color-mix(in srgb, var(--papel) 30%, transparent);
+  transform: rotate(2.5deg);
+  border-radius: 2px;
+}
+
+.cocina h1 {
+  font-family: var(--fuente-rotulada);
+  font-size: 1.5rem;
+  line-height: 1.2;
+  margin: 0 0 var(--espacio-1);
+  color: var(--tinte);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cocina--historia { --tinte: var(--cat-historia); }
+.cocina--discos { --tinte: var(--cat-discos); }
+.cocina--letras { --tinte: var(--cat-letras); }
+.cocina--mitologia { --tinte: var(--cat-mitologia); }
+
+.cocina-arte {
+  width: clamp(90px, 30vw, 140px);
+  display: block;
+  margin: var(--espacio-2) auto;
+  transform: rotate(3deg);
+}
+
+.cocina-explica {
+  line-height: 1.6;
+  margin: 0 0 var(--espacio-2);
+}
+
+.cocina-estado {
+  color: var(--texto-tenue);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* La accion principal de una pantalla vive abajo, en la zona del pulgar (UX-04). */
+.accion-abajo {
+  display: block;
+  width: 100%;
+  margin-top: var(--espacio-4);
+  padding: var(--espacio-2);
+  min-height: var(--toque-min);
+  font-family: var(--fuente-rotulada);
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-decoration: none;
+  color: var(--fondo);
+  background: var(--papel);
+  border-radius: var(--radio);
+  box-sizing: border-box;
+}
+
+/* ---- La tapa real, solo donde el contrato la permite (D-04) ---- */
+
+.tapa-disco {
+  display: block;
+  width: min(200px, 56vw);
+  margin: 0 0 var(--espacio-1);
+  border: var(--linea) solid var(--borde);
+  border-radius: 4px;
+  transform: rotate(-1.2deg);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--papel-borde) 35%, transparent);
+}
+
+.credito-tapa {
+  font-size: 0.75rem;
+  color: var(--texto-tenue);
+  margin: 0 0 var(--espacio-3);
+}
+
+/* ---- Redondopedia: portada e indice ---- */
+
+.titulo-seccion {
+  font-family: var(--fuente-rotulada);
+  font-size: 1.6rem;
+  line-height: 1.15;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 0 0 var(--espacio-1);
+}
+
+.indice-articulos {
+  display: grid;
+  gap: var(--espacio-1);
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--espacio-3);
+}
+
+.tarjeta-articulo {
+  --tinte: var(--texto-tenue);
+  display: block;
+  padding: var(--espacio-2);
+  background: var(--fondo-elevado);
+  border: 2px solid color-mix(in srgb, var(--tinte) 45%, var(--borde));
+  border-inline-start: 6px solid var(--tinte);
+  border-radius: var(--radio);
+  text-decoration: none;
+  color: var(--texto);
+  min-height: var(--toque-min);
+}
+
+.tarjeta-articulo strong {
+  display: block;
+  font-family: var(--fuente-rotulada);
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+}
+
+.tarjeta-articulo span {
+  display: block;
+  margin-top: 0.2em;
+  color: var(--texto-tenue);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* ---- Redondopedia: el articulo ---- */
+
+.articulo {
+  --tinte: var(--texto-tenue);
+}
+
+.articulo--historia, .tarjeta-articulo--historia { --tinte: var(--cat-historia); }
+.articulo--discos, .tarjeta-articulo--discos { --tinte: var(--cat-discos); }
+.articulo--letras, .tarjeta-articulo--letras { --tinte: var(--cat-letras); }
+.articulo--mitologia, .tarjeta-articulo--mitologia { --tinte: var(--cat-mitologia); }
+
+.articulo-tipo {
+  display: inline-block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--tinte);
+  border: 1px solid var(--tinte);
+  border-radius: 999px;
+  padding: 0.15em 0.8em;
+  margin-bottom: var(--espacio-1);
+}
+
+.articulo h1 {
+  font-family: var(--fuente-rotulada);
+  font-size: 1.7rem;
+  line-height: 1.1;
+  margin: 0 0 var(--espacio-2);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.articulo-resumen {
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--texto);
+  margin: 0 0 var(--espacio-3);
+}
+
+/* La ficha del articulo es la etiqueta de papel del cassette: tinta sobre papel. */
+.ficha {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 1.6em,
+      color-mix(in srgb, var(--papel-borde) 50%, transparent) 1.6em,
+      color-mix(in srgb, var(--papel-borde) 50%, transparent) calc(1.6em + 1px)
+    ),
+    var(--papel);
+  color: var(--fondo);
+  border-radius: 4px;
+  padding: var(--espacio-2);
+  margin: 0 0 var(--espacio-3);
+  transform: rotate(-0.6deg);
+  position: relative;
+}
+
+.ficha::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 10%;
+  width: 58px;
+  height: 16px;
+  background: color-mix(in srgb, var(--papel) 35%, transparent);
+  border: 1px solid color-mix(in srgb, var(--papel-borde) 40%, transparent);
+  transform: rotate(-2deg);
+  border-radius: 2px;
+}
+
+.ficha dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25em var(--espacio-2);
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.ficha dt {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  align-self: baseline;
+}
+
+.ficha dd {
+  margin: 0;
+}
+
+/* ---- El rotulado en prosa (BR-08): la marca vive en el punto exacto ---- */
+
+.parrafo {
+  margin: 0 0 var(--espacio-2);
+  line-height: 1.65;
+}
+
+/* Leyenda: el parrafo entero se corre y lleva el rombo de siempre. */
+.parrafo--leyenda {
+  border-inline-start: 3px dashed var(--rotulo-leyenda);
+  padding-inline-start: var(--espacio-2);
+  color: var(--rotulo-leyenda);
+}
+
+.parrafo--leyenda .marca-rotulo::before {
+  content: '◆ ';
+}
+
+/* Testimonio: comillas y celeste, como en el quiz. */
+.parrafo--testimonio {
+  border-inline-start: 3px solid var(--rotulo-testimonio);
+  padding-inline-start: var(--espacio-2);
+  color: var(--rotulo-testimonio);
+}
+
+.parrafo--testimonio .marca-rotulo::before {
+  content: '❝ ';
+}
+
+.marca-rotulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.15em;
+}
+
+/* La fuente de un hecho: chiquita, al final del segmento, sin gritar. */
+.fuente-chip {
+  font-size: 0.72rem;
+  color: var(--texto-tenue);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+/* Enlaces internos: subrayado grueso, el color no alcanza solo. */
+.parrafo a,
+.vea-tambien a {
+  color: var(--acento-2);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.vea-tambien {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+  list-style: none;
+  padding: 0;
+  margin: var(--espacio-3) 0;
+}
+
+.vea-tambien a {
+  display: inline-block;
+  min-height: var(--toque-min);
+  line-height: calc(var(--toque-min) - 4px);
+  padding: 0 var(--espacio-2);
+  border: 2px solid var(--borde);
+  border-radius: 999px;
+  text-decoration-thickness: 1px;
+}
+
+/* La explicacion del rotulado en la portada de la Redondopedia. */
+.leyenda-rotulos {
+  border: 2px dashed var(--borde);
+  border-radius: var(--radio);
+  padding: var(--espacio-2);
+  font-size: 0.9rem;
+  color: var(--texto-tenue);
+  margin: 0 0 var(--espacio-3);
+}
+
+.leyenda-rotulos b.es-leyenda { color: var(--rotulo-leyenda); }
+.leyenda-rotulos b.es-testimonio { color: var(--rotulo-testimonio); }

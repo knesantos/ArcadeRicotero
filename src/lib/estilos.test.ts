@@ -11,8 +11,12 @@ import { readFileSync } from 'node:fs';
  * que el jugador no ve es peor que no tener test.
  */
 
-const CSS = readFileSync('src/styles/juego.css', 'utf-8') + readFileSync('src/styles/tokens.css', 'utf-8');
-const JS = readFileSync('src/scripts/partida.ts', 'utf-8');
+// El checkout de git en Windows deja CRLF: se normaliza para que las busquedas con
+// '\n' literal no dependan de la maquina en la que corre el test.
+const leer = (ruta: string): string => readFileSync(ruta, 'utf-8').replace(/\r\n/g, '\n');
+
+const CSS = leer('src/styles/juego.css') + leer('src/styles/tokens.css');
+const JS = leer('src/scripts/partida.ts');
 
 /** Las clases de estado que el codigo crea y que tienen que verse distinto. */
 const ESTADOS = [
@@ -53,11 +57,13 @@ test('los rotulos se distinguen por forma ademas de por color', () => {
   assert.ok(CSS.includes('border: 2px dashed'), 'el sello no se distingue por borde');
 });
 
-test('juego.css no trae ningun color literal: todo sale de los tokens', () => {
-  // Hay un brand system en curso. Cuando aterrice, reemplaza `tokens.css` y este archivo
-  // no se toca. Un hex suelto aca romperia esa separacion.
-  const hexes = readFileSync('src/styles/juego.css', 'utf-8').match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];
-  assert.deepEqual(hexes, [], `juego.css tiene colores literales: ${hexes.join(', ')}`);
+test('ni juego.css ni sitio.css traen un color literal: todo sale de los tokens', () => {
+  // El circuito de diseno-marca: el UNICO archivo del repo donde vive un hex es
+  // tokens.css. Un hex suelto en una hoja de componentes romperia esa separacion.
+  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css']) {
+    const hexes = leer(hoja).match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];
+    assert.deepEqual(hexes, [], `${hoja} tiene colores literales: ${hexes.join(', ')}`);
+  }
 });
 
 test('toda clase de estado usada en el CSS existe de verdad en el codigo', () => {

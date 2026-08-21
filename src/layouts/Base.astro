@@ -1,0 +1,64 @@
+---
+/**
+ * El cascaron comun del sitio: grano de serigrafia, recortes de fondo y regreso.
+ *
+ * El quiz NO usa este layout: su pantalla es la isla de `partida.ts` y se maneja sola
+ * (ver `pages/quiz.astro`). Esto es para el portal, las pantallas en la cocina y la
+ * Redondopedia — todo lo que es lectura y navegacion, no partida.
+ *
+ * Molinetes abiertos (`D-14`): ninguna pagina que pase por aca pide nada.
+ */
+import '../styles/tokens.css';
+import '../styles/sitio.css';
+import { PORTAL } from '../lib/sitio/copy.ts';
+import { conRecorteReal } from '../lib/sitio/arte.ts';
+
+interface Props {
+  titulo: string;
+  descripcion: string;
+  /** Recortes de fondo del collage: se apagan en pantallas de lectura larga. */
+  conBanderas?: boolean;
+  conMosca?: boolean;
+  /** Adonde vuelve la cinta de regreso. Sin esto no hay cabecera (portal). */
+  volverA?: { href: string; texto: string };
+}
+
+const { titulo, descripcion, conBanderas = false, conMosca = false, volverA } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={descripcion} />
+    <title>{titulo}</title>
+    <slot name="cabeza" />
+  </head>
+  <body class="con-grano">
+    {
+      conBanderas && (
+        <img class="banderas-fondo" src={conRecorteReal('/arte/banderas.svg')} alt="" aria-hidden="true" />
+      )
+    }
+    {
+      conMosca && (
+        <img class="mosca-viva" src={conRecorteReal('/arte/mosca.svg')} alt="" aria-hidden="true" />
+      )
+    }
+    <div class="contenido-sitio">
+      {
+        volverA && (
+          <header class="cabecera-sitio">
+            <a class="volver" href={volverA.href}>← {volverA.texto}</a>
+            <a class="marca-chica" href="/" aria-label="Arcade Ricotero, a la portada">
+              ARCADE RICOTERO
+            </a>
+          </header>
+        )
+      }
+      <slot />
+      <footer class="pie-sitio">{PORTAL.pie}</footer>
+    </div>
+  </body>
+</html>

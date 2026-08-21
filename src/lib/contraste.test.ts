@@ -51,6 +51,8 @@ const PARES: Array<[string, string, string]> = [
   // La mezcla (D-19): las categorias visten la paleta real de su disco. Solo el color
   // principal se usa como texto; el "apoyo" es de bordes y no entra aca.
   ['marca (rojo de Oktubre) sobre fondo', 'marca-rojo', 'fondo'],
+  // El collage de cassette: las etiquetas de papel llevan la tinta del fondo encima.
+  ['tinta sobre papel de etiqueta', 'fondo', 'papel'],
   ['historia (Gulp!) sobre fondo', 'cat-historia', 'fondo'],
   ['discos (Ultimo bondi) sobre fondo', 'cat-discos', 'fondo'],
   ['letras (La mosca) sobre fondo', 'cat-letras', 'fondo'],

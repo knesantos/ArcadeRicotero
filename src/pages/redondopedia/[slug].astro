@@ -1,0 +1,148 @@
+---
+/**
+ * La plantilla de articulo de la Redondopedia (`US-05`, `BR-07`, `BR-08`).
+ *
+ * El rotulado por afirmacion de `BR-08` se pinta aca: cada segmento del cuerpo llega
+ * con su rotulo y la marca vive EN el parrafo — la leyenda se corre con borde tiza y
+ * rombo, el testimonio con celeste y comillas (los mismos codigos del quiz, que la
+ * regla de marca prohibe disfrazar de disco), y el hecho lleva su ficha RES al final
+ * del segmento. Nada se comunica solo con color.
+ *
+ * La tapa real entra SOLO en los articulos de tipo `disco` (`BR-07` la pide como
+ * campo; `D-04`: baja resolucion y credito a Rocambole) — en el resto del sitio las
+ * tapas no decoran nada (UX-04).
+ */
+import Base from '../../layouts/Base.astro';
+import { REDONDOPEDIA } from '../../lib/sitio/copy.ts';
+import {
+  TIPO_A_CATEGORIA,
+  segmentar,
+  type Articulo,
+  type Segmento,
+} from '../../lib/redondopedia.ts';
+import { recorte, tapa, STICKER_DISCO } from '../../lib/sitio/arte.ts';
+import crudo from '../../data/redondopedia.json';
+
+export function getStaticPaths() {
+  const todos = (crudo as unknown as { articulos: Articulo[] }).articulos;
+  return todos.map((articulo) => ({
+    params: { slug: articulo.slug },
+    props: { articulo },
+  }));
+}
+
+interface Props {
+  articulo: Articulo;
+}
+
+const { articulo } = Astro.props as Props;
+const todos = (crudo as unknown as { articulos: Articulo[] }).articulos;
+const titulos = new Map(todos.map((a) => [a.slug, a.titulo]));
+
+const categoria = TIPO_A_CATEGORIA[articulo.tipo];
+const laTapa = articulo.tipo === 'disco' ? tapa(articulo.slug) : null;
+const archivoSticker = STICKER_DISCO[articulo.slug];
+const sticker = archivoSticker ? recorte(archivoSticker) : null;
+
+const etiquetaRotulo = (seg: Segmento): string =>
+  seg.rotulo === 'leyenda' ? 'Leyenda' : `Lo contó ${seg.quien ?? 'alguien'}`;
+---
+
+<Base
+  titulo={`${articulo.titulo} — La Redondopedia`}
+  descripcion={articulo.resumen}
+  volverA={{ href: '/redondopedia/', texto: REDONDOPEDIA.volverPortada }}
+>
+  <article class={`articulo articulo--${categoria}`}>
+    <span class="articulo-tipo">{articulo.tipo}</span>
+    <h1>{articulo.titulo}</h1>
+
+    {
+      laTapa && (
+        <figure style="margin:0">
+          <img
+            class="tapa-disco"
+            src={laTapa}
+            alt={`Tapa de ${articulo.titulo}`}
+            loading="lazy"
+          />
+          <figcaption class="credito-tapa">
+            Tapa: Rocambole (Ricardo Cohen), en baja resolución.
+          </figcaption>
+        </figure>
+      )
+    }
+
+    <p class="articulo-resumen">{articulo.resumen}</p>
+
+    {
+      articulo.datos.length > 0 && (
+        <aside class="ficha">
+          {sticker && (
+            <img
+              class="cocina-arte"
+              src={sticker}
+              alt=""
+              aria-hidden="true"
+              style="float:right;width:72px;margin:0 0 0.5rem 0.5rem"
+            />
+          )}
+          <dl>
+            {articulo.datos.map((d) => (
+              <>
+                <dt>{d.etiqueta}</dt>
+                <dd>
+                  {d.valor}{' '}
+                  <span class="fuente-chip">
+                    {d.rotulo}
+                    {d.fuente ? ` · ${d.fuente}` : ''}
+                  </span>
+                </dd>
+              </>
+            ))}
+          </dl>
+        </aside>
+      )
+    }
+
+    {
+      articulo.cuerpo.map((seg) => (
+        <p class={`parrafo parrafo--${seg.rotulo}`}>
+          {seg.rotulo !== 'hecho' && (
+            <span class="marca-rotulo">{etiquetaRotulo(seg)}</span>
+          )}
+          {segmentar(seg.texto).map((pieza) =>
+            pieza.clase === 'enlace' ? (
+              <a href={`/redondopedia/${pieza.slug}/`}>{pieza.texto}</a>
+            ) : (
+              pieza.texto
+            ),
+          )}
+          {seg.rotulo === 'hecho' && seg.fuente && (
+            <span class="fuente-chip"> — hecho · {seg.fuente}</span>
+          )}
+          {seg.rotulo !== 'hecho' && seg.fuente && (
+            <span class="fuente-chip"> — {seg.fuente}</span>
+          )}
+        </p>
+      ))
+    }
+
+    {
+      articulo.veaTambien.length > 0 && (
+        <nav aria-label={REDONDOPEDIA.veaTambien}>
+          <h2 class="lado">{REDONDOPEDIA.veaTambien}</h2>
+          <ul class="vea-tambien">
+            {articulo.veaTambien.map((slug) => (
+              <li>
+                <a href={`/redondopedia/${slug}/`}>{titulos.get(slug) ?? slug}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+  </article>
+
+  <a class="accion-abajo" href="/redondopedia/">← {REDONDOPEDIA.volverPortada}</a>
+</Base>

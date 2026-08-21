@@ -1,0 +1,26 @@
+---
+/**
+ * Pantalla "en la cocina" de `US-04` (adivinar la tapa).
+ * Viste Ultimo bondi (mezcla `D-19`, seccion discos). Cuando el juego exista, es la
+ * UNICA pantalla del sitio donde entran tapas reales (UX-04), en baja y con credito.
+ */
+import Base from '../../layouts/Base.astro';
+import { COCINA, COCINA_VOLVER, PORTAL } from '../../lib/sitio/copy.ts';
+import { conRecorteReal } from '../../lib/sitio/arte.ts';
+
+const c = COCINA['adivinar-la-tapa']!;
+---
+
+<Base
+  titulo={`${c.titulo} — Arcade Ricotero`}
+  descripcion={c.queVaASer}
+  volverA={{ href: '/', texto: PORTAL.volverAlArcade }}
+>
+  <section class={`cocina cocina--${c.variante}`}>
+    <h1>{c.titulo}</h1>
+    <img class="cocina-arte" src={conRecorteReal(c.arte)} alt="" aria-hidden="true" />
+    <p class="cocina-explica">{c.queVaASer}</p>
+    <p class="cocina-estado">{c.estado}</p>
+  </section>
+  <a class="accion-abajo" href="/">{COCINA_VOLVER}</a>
+</Base>

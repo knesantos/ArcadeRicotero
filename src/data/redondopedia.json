@@ -1,0 +1,1763 @@
+{
+  "articulos": [
+    {
+      "slug": "gulp",
+      "tipo": "disco",
+      "titulo": "Gulp!",
+      "resumen": "Gulp! es un disco de 1985 de Patricio Rey y sus Redonditos de Ricota, editado por el sello Wormo, con temas emblema como La bestia pop, Superlógico y El infierno está encantador esta noche, todos firmados por el dúo Solari-Beilinson. El día exacto de salida es un lío que nadie resolvió —hay tres versiones según dónde mires, aunque el año es firme— y al final esconde un secreto: Pianito - Jam, un tema oculto que algunas listas ni cuentan.",
+      "datos": [
+        {
+          "etiqueta": "Año",
+          "valor": "1985 (el año es firme aunque la fecha exacta no lo sea)",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Fecha exacta (versión A)",
+          "valor": "22 de abril de 1985, según la cronología general de Wikipedia en español",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20), discrepancia 1"
+        },
+        {
+          "etiqueta": "Fecha exacta (versión B)",
+          "valor": "20 de julio de 1985, según el artículo del disco en Wikipedia en español",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20), discrepancia 1"
+        },
+        {
+          "etiqueta": "Fecha exacta (versión C)",
+          "valor": "agosto de 1985, según un agregador — discrepancia sin resolver",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20), discrepancia 1"
+        },
+        {
+          "etiqueta": "Sello",
+          "valor": "Wormo",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Tema oculto",
+          "valor": "Pianito - Jam (Solari-Beilinson)",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Gulp! salió en 1985 por el sello Wormo y trae varios de los temas emblema de la banda: La bestia pop, Superlógico, El infierno está encantador esta noche y Barbazul versus el amor letal. Todos llevan la firma del dúo [[indio-solari|Indio Solari]]–[[skay-beilinson|Skay Beilinson]]: los arreglos y las canciones del disco quedaron registrados a nombre de los dos.",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)",
+          "quien": null
+        },
+        {
+          "texto": "¿Qué día exacto salió? Ahí empieza la diversión: la cronología general de Wikipedia dice 22 de abril de 1985, el artículo del propio disco dice 20 de julio, y un agregador tira agosto directamente. Nadie resolvió la discrepancia, así que si alguna vez te cruzás con una fecha exacta de Gulp! dicha con total seguridad, desconfiá. Lo único firme es el año: 1985.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20), discrepancia 1",
+          "quien": null
+        },
+        {
+          "texto": "¿Y cuántos temas tiene? Depende de cómo cuentes: Wikipedia dice 12, contando Pianito - Jam, el tema oculto del final; CMTV dice 11, porque no lo cuenta. Por eso la pregunta buena no es cuántos temas tiene, sino cuál es el escondido. De paso: CMTV además tipea mal un título —lista 'Superógico' donde va Superlógico—, así que los nombres de los temas acá se transcriben desde Wikipedia.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20), discrepancias 2 y 3",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "oktubre",
+        "indio-solari",
+        "skay-beilinson",
+        "autogestion"
+      ]
+    },
+    {
+      "slug": "oktubre",
+      "tipo": "disco",
+      "titulo": "Oktubre",
+      "resumen": "Oktubre salió el 4 de octubre de 1986 en edición conjunta: Wormo en vinilo y casete, Del Cielito en CD. Son nueve temas firmados por el dúo Solari-Beilinson, con Ji ji ji, Fuegos de octubre y Preso en mi ciudad entre los emblemas. El objeto físico guarda una rareza que cualquiera puede comprobar: el sobre interno trae impresa la letra de una canción que no está en el disco, porque —según contó el propio Indio— la sacaron a último momento, con el sobre ya impreso.",
+      "datos": [
+        {
+          "etiqueta": "Año",
+          "valor": "1986",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Fecha de salida",
+          "valor": "4 de octubre de 1986, sin discrepancia entre fuentes",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Sello",
+          "valor": "Edición conjunta: Wormo (vinilo y casete) / Del Cielito (CD)",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01), precisado por RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Cantidad de temas",
+          "valor": "9",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Oktubre salió el 4 de octubre de 1986, en una edición conjunta: Wormo puso el vinilo y el casete, Del Cielito el CD. Son nueve temas, todos firmados por el dúo [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]], y entre los emblemas están Ji ji ji, Fuegos de octubre, Preso en mi ciudad, Divina TV Führer y Ya nadie va a escuchar tu remera.",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)",
+          "quien": null
+        },
+        {
+          "texto": "Si tenés el disco físico a mano, fijate en el sobre interno: trae impresa la letra de una canción llamada De estos polvos futuros lodos..., que no está en el disco. Según contó el propio Indio en su libro de memorias —que él mismo presenta como apenas su versión de las cosas—, la sacaron a último momento, cuando el sobre ya estaba impreso. Lo lindo de este dato es que no hace falta creerle a nadie: cualquiera que tenga el disco puede comprobar que la letra está y la canción no.",
+          "rotulo": "testimonio",
+          "fuente": "RES-22 (INV-20)",
+          "quien": "Indio Solari, en Recuerdos que mienten un poco"
+        },
+        {
+          "texto": "El sobre guarda otra trampa: los versos que cierran la letra impresa de Ji ji ji tampoco se escuchan en el disco. Eran lo que cantaban sobre la melodía instrumental del final, según el Indio. Y sobre el significado del tema, su versión es menos romántica que las que circulan: sí tenía que ver con la droga —la risita crispada del que está pasado, la paranoia como prisma—, aunque aclara que la cocaína en sí es inerte: el tema es lo que le pasa al que queda a la deriva. Esto coincide con la desmentida que él mismo ya había dado en la revista Rolling Stone en 2007. La historia de las chicas de Mar del Plata, en cambio, sigue desmentida: de eso te contamos más en [[la-leyenda-de-ji-ji-ji|la leyenda de Ji ji ji]].",
+          "rotulo": "testimonio",
+          "fuente": "RES-22 (INV-20), confirma RES-08",
+          "quien": "Indio Solari, en Recuerdos que mienten un poco"
+        },
+        {
+          "texto": "Un dato que todavía no cierra: la imagen del hombre que alza la cadena —el esclavo— está asociada a este disco, pero si venía o no en la edición original del vinilo sigue sin verificarse. Ni las memorias del Indio lo resuelven, así que acá queda anotado como pendiente.",
+          "rotulo": "hecho",
+          "fuente": "RES-22 (INV-20), sobre RES-06",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "gulp",
+        "un-baion-para-el-ojo-idiota",
+        "la-leyenda-de-ji-ji-ji",
+        "indio-solari"
+      ]
+    },
+    {
+      "slug": "un-baion-para-el-ojo-idiota",
+      "tipo": "disco",
+      "titulo": "Un baión para el ojo idiota",
+      "resumen": "Un baión para el ojo idiota es un disco de 1988 de Patricio Rey y sus Redonditos de Ricota: ocho temas, con Todo un palo, Vencedores vencidos y Vamos las bandas entre los emblemas. Trae una de las dos únicas excepciones de autoría en todo el cancionero de estudio relevado —Ella debe estar tan linda, con tres firmas— y un enigma administrativo intacto: las fuentes no se ponen de acuerdo sobre qué sello lo editó.",
+      "datos": [
+        {
+          "etiqueta": "Año",
+          "valor": "1988",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Fecha de salida",
+          "valor": "9 de mayo de 1988",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Sello (versión A)",
+          "valor": "Wormo, con reedición en CD en 1991 por Del Cielito (catálogo Discogs SW 1015)",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01), tabla de discografía"
+        },
+        {
+          "etiqueta": "Sello (versión B)",
+          "valor": "Del Cielito — discrepancia sin resolver entre las dos fichas",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20), encabezado del tracklist"
+        },
+        {
+          "etiqueta": "Cantidad de temas",
+          "valor": "8",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Un baión para el ojo idiota salió en 1988 y trae ocho temas, con varios emblemas: Todo un palo, Vencedores vencidos, Vamos las bandas y Masacre en el puticlub, todos del dúo [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]]. La perla de autoría está en Ella debe estar tan linda: la firma es Solari-Beilinson-Bucciarelli, con [[semilla-bucciarelli|Semilla Bucciarelli]] sumado al dúo. Es una de las dos únicas excepciones de autoría en los 105 temas de estudio relevados.",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)",
+          "quien": null
+        },
+        {
+          "texto": "¿Qué sello lo editó? Buena pregunta, sin respuesta cerrada: una ficha dice Wormo, con reedición en CD por Del Cielito en 1991; la otra dice Del Cielito, directamente. Ninguna de las dos resolvió la diferencia, así que acá van las dos versiones y no se promedia: cuando las fuentes discrepan, se muestra la discrepancia tal cual está.",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20), discrepancia sin resolver",
+          "quien": null
+        },
+        {
+          "texto": "La tapa tiene su propia historia, contada por el propio [[rocambole|Rocambole]]: lo primero fue el dibujo del televisor. Para representar la idiotez apareció después un muñeco de Marilú, su hija, con collares, antifaz y chupete. Y al final llegó el perro, un animal que según Rocambole es una constante en la literatura del Indio: aparece una y otra vez en su escritura.",
+          "rotulo": "testimonio",
+          "fuente": "RES-22 (INV-20)",
+          "quien": "Rocambole, citado en Recuerdos que mienten un poco"
+        }
+      ],
+      "veaTambien": [
+        "oktubre",
+        "bang-bang-estas-liquidado",
+        "rocambole",
+        "semilla-bucciarelli"
+      ]
+    },
+    {
+      "slug": "bang-bang-estas-liquidado",
+      "tipo": "disco",
+      "titulo": "¡Bang! ¡Bang!... Estás liquidado",
+      "resumen": "¡Bang! ¡Bang!... Estás liquidado salió el 7 de octubre de 1989 por el sello Del Cielito: nueve temas firmados por el dúo Solari-Beilinson, entre ellos Nuestro amo juega al esclavo, Un Pacman en el Savoy y Héroe del whisky. Acá no hay discrepancias de fecha ni de sello: todas las fuentes dicen lo mismo, algo que en esta discografía no es poca cosa.",
+      "datos": [
+        {
+          "etiqueta": "Año",
+          "valor": "1989",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Fecha de salida",
+          "valor": "7 de octubre de 1989, sin discrepancia entre fuentes",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Sello",
+          "valor": "Del Cielito",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Cantidad de temas",
+          "valor": "9",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "El título viene con toda la escenografía puesta: ¡Bang! ¡Bang!... Estás liquidado, con signos de exclamación y puntos suspensivos incluidos. Salió el 7 de octubre de 1989 por el sello Del Cielito, y acá no hay ningún misterio de calendario: a diferencia de lo que pasa con [[gulp|Gulp!]], todas las fuentes dicen exactamente lo mismo sobre la fecha y el sello.",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)",
+          "quien": null
+        },
+        {
+          "texto": "Son nueve temas firmados por el dúo [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]], y la lista de emblemas es contundente: Nuestro amo juega al esclavo, Un Pacman en el Savoy, Héroe del whisky, Maldición, va a ser un día hermoso y Rock para los dientes. Fijate los títulos: cada uno ya es medio cuento en sí mismo.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "un-baion-para-el-ojo-idiota",
+        "la-mosca-y-la-sopa",
+        "indio-solari",
+        "skay-beilinson"
+      ]
+    },
+    {
+      "slug": "la-mosca-y-la-sopa",
+      "tipo": "disco",
+      "titulo": "La mosca y la sopa",
+      "resumen": "La mosca y la sopa salió el 27 de octubre de 1991 por Del Cielito: diez temas, cinco por lado en vinilo y casete, con Mi perro dinamita, Un poco de amor francés y Toxi-Taxi entre los emblemas. La tapa nació de tres ideas superpuestas —un gato momificado, los cerdos y peces de una revista, y una noticia sobre jubilados que comían gatos—, según contó el propio Rocambole. Y el dato de color lo dio el Indio: el tema que él ni quería editar, Mi perro dinamita, terminó siendo uno de los más populares.",
+      "datos": [
+        {
+          "etiqueta": "Año",
+          "valor": "1991",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Fecha de salida",
+          "valor": "27 de octubre de 1991, sin discrepancia entre fuentes",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Sello",
+          "valor": "Del Cielito",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Cantidad de temas",
+          "valor": "10 (en vinilo y casete: lado A, temas 1 a 5; lado B, temas 6 a 10)",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "La mosca y la sopa salió el 27 de octubre de 1991 por Del Cielito: diez temas, repartidos cinco y cinco entre los dos lados del vinilo y el casete. Entre los emblemas están Un poco de amor francés, Toxi-Taxi, El pibe de los astilleros y Queso ruso, del dúo [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]], y Mi perro dinamita, que lleva una tercera firma: [[semilla-bucciarelli|Semilla Bucciarelli]]. Es la segunda de las dos únicas excepciones de autoría en los 105 temas de estudio relevados.",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)",
+          "quien": null
+        },
+        {
+          "texto": "La tapa no salió de una sola idea sino de tres superpuestas, según contó el propio [[rocambole|Rocambole]]: un gato momificado que él tenía guardado de un techo, los cerdos y los peces como guiño a Cerdos y Peces —la revista de Enrique Symns donde colaboraba el Indio— y la noticia de los jubilados que comían gatos en Plaza Lavalle. Durante un tiempo circuló que la noticia de los jubilados era el origen único de la tapa; la versión de Rocambole corrige el matiz: fue una de las tres capas, no la única.",
+          "rotulo": "testimonio",
+          "fuente": "RES-22 (INV-20)",
+          "quien": "Rocambole, citado en Recuerdos que mienten un poco"
+        },
+        {
+          "texto": "Y un detalle para la próxima vez que la cantes a los gritos: el Indio no quería ni editar Mi perro dinamita. Según contó en sus memorias, el tema que él hubiera dejado afuera terminó siendo uno de los más populares. A veces el autor es el último en enterarse de lo que tiene entre manos.",
+          "rotulo": "testimonio",
+          "fuente": "RES-22 (INV-20)",
+          "quien": "Indio Solari, en Recuerdos que mienten un poco"
+        }
+      ],
+      "veaTambien": [
+        "bang-bang-estas-liquidado",
+        "lobo-suelto",
+        "rocambole",
+        "semilla-bucciarelli"
+      ]
+    },
+    {
+      "slug": "lobo-suelto",
+      "tipo": "disco",
+      "titulo": "Lobo suelto",
+      "resumen": "Lobo suelto es la primera mitad de Lobo suelto, cordero atado, el disco doble conceptual que Patricio Rey y sus Redonditos de Ricota publicó el 4 de octubre de 1993 por el sello Del Cielito. Son trece temas —dos instrumentales incluidos— que giran alrededor de un personaje, Lupus el Lobo, el opuesto exacto del cordero que manda en el segundo volumen. Acá viven Rock para el negro Atila, Un ángel para tu soledad y Susanita. Y si querés saber si esto cuenta como un disco o como dos, la respuesta honesta es: depende de la convención que elijas — en este artículo te contamos las dos.",
+      "datos": [
+        {
+          "etiqueta": "Título completo",
+          "valor": "Lobo suelto, cordero atado, vol. 1",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20); RES-02 (INV-01)"
+        },
+        {
+          "etiqueta": "Salida",
+          "valor": "4 de octubre de 1993",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20); el 1994 de un agregador se descartó como error en CNT-03"
+        },
+        {
+          "etiqueta": "Sello",
+          "valor": "Del Cielito",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Temas",
+          "valor": "13, incluidos dos instrumentales (Capricho Magyar y Sushi)",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Presentación en vivo",
+          "valor": "Estadio de Huracán, 19 y 20 de noviembre de 1993, con Las Blacanblus de invitadas",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Es la primera mitad de un disco doble conceptual: los dos volúmenes salieron el mismo día, cada uno construido alrededor de un personaje, y los personajes son opuestos. De este lado vive Lupus el Lobo; del otro, Rulo el Cordero, protagonista de [[cordero-atado|Cordero atado]] — y las tapas también son opuestas entre sí. El doble se grabó entre marzo y julio de 1993 en Argentina y se mezcló en Miami y Los Ángeles.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "texto": "El volumen trae trece temas firmados por la dupla [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]], incluidos dos instrumentales: Capricho Magyar y Sushi. Entre sus temas emblema están Rock para el negro Atila, Un ángel para tu soledad, Susanita, La hija del fletero y El lobo caído.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "texto": "El doble se presentó en vivo en el estadio de [[huracan-93-94|Huracán]] el 19 y 20 de noviembre de 1993, con Las Blacanblus como invitadas.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "texto": "¿Cuántos discos de estudio tiene la banda entonces: nueve o diez? Depende de cómo se cuente este doble. Si Lobo suelto y Cordero atado valen como un solo álbum, son nueve; si cada volumen cuenta por su lado, son diez. Las dos convenciones circulan —la propia Wikipedia en castellano le dedica un artículo a cada volumen y al mismo tiempo los llama álbum doble— y ninguna es más verdadera que la otra. Acá lo declaramos así, con las dos versiones sobre la mesa, y no te vendemos un número pelado como si fuera el único posible.",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) discrepancia 2, RES-20 (INV-20), CNT-03 criterio 2"
+        }
+      ],
+      "veaTambien": [
+        "cordero-atado",
+        "huracan-93-94",
+        "indio-solari",
+        "la-mosca-y-la-sopa"
+      ]
+    },
+    {
+      "slug": "cordero-atado",
+      "tipo": "disco",
+      "titulo": "Cordero atado",
+      "resumen": "Cordero atado es la segunda mitad de Lobo suelto, cordero atado, el disco doble conceptual que Patricio Rey y sus Redonditos de Ricota publicó el 4 de octubre de 1993 —el mismo día que el primer volumen— por el sello Del Cielito. Son doce temas alrededor de Rulo el Cordero, el personaje opuesto al lobo del volumen uno, con Yo caníbal, ¡¿Lobo estás?! y Etiqueta negra entre sus temas emblema. ¿Cuenta como disco propio o como mitad de uno solo? Las dos formas de contarlo circulan, y acá te presentamos ambas sin elegir por vos.",
+      "datos": [
+        {
+          "etiqueta": "Título completo",
+          "valor": "Lobo suelto, cordero atado, vol. 2",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Salida",
+          "valor": "4 de octubre de 1993, el mismo día que el vol. 1",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Sello",
+          "valor": "Del Cielito",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Temas",
+          "valor": "12",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Duraciones por tema",
+          "valor": "Sin verificar, salvo Etiqueta negra (5:38)",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20), pendiente declarado"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Es la otra mitad del disco doble conceptual que la banda publicó entero el 4 de octubre de 1993. Acá el protagonista es Rulo el Cordero, el opuesto exacto del Lupus el Lobo que gobierna [[lobo-suelto|Lobo suelto]], y las tapas de los dos volúmenes son opuestas entre sí. El doble se grabó entre marzo y julio de 1993 en Argentina, se mezcló en Miami y Los Ángeles, y se presentó en vivo en el estadio de [[huracan-93-94|Huracán]] el 19 y 20 de noviembre de 1993, con Las Blacanblus de invitadas.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "texto": "El volumen trae doce temas firmados por la dupla [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]]. Entre los emblema: Yo caníbal, ¡¿Lobo estás?!, Botija rapado, Etiqueta negra y Caña seca y un membrillo.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "texto": "Un detalle de trastienda que preferimos decirte de frente: de este volumen los títulos están cruzados en dos fuentes, pero las duraciones por tema no — la única confirmada es la de Etiqueta negra, que dura 5:38. Cuando el resto se pueda verificar, se completa; mientras tanto, no lo inventamos.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20), pendiente declarado"
+        },
+        {
+          "texto": "Y la pregunta inevitable: ¿la banda tiene nueve o diez discos de estudio? Depende de si este doble cuenta como uno o como dos. Un solo álbum en dos volúmenes: nueve. Cada volumen por su lado: diez. Las dos convenciones existen —la Wikipedia en castellano le da un artículo a cada volumen y a la vez los llama álbum doble—, así que acá declaramos las dos versiones y listo: cualquier número pelado, sin aclarar cómo se cuenta, te estaría mintiendo un poquito.",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) discrepancia 2, CNT-03 criterio 2"
+        }
+      ],
+      "veaTambien": [
+        "lobo-suelto",
+        "huracan-93-94",
+        "indio-solari",
+        "skay-beilinson"
+      ]
+    },
+    {
+      "slug": "luzbelito",
+      "tipo": "disco",
+      "titulo": "Luzbelito",
+      "resumen": "Luzbelito salió el 7 de octubre de 1996 por Del Cielito Records y trae once temas firmados por la dupla Solari–Beilinson, entre ellos Juguetes perdidos, Mariposa Pontiac - Rock del país, Me matan, Limón! y Luzbelito y las sirenas. Un dato para dimensionar lo que este disco significa para su propio autor: es el que el Indio más menciona en su libro de memorias — veintiuna menciones en el conteo sobre el texto extraído (cuatro capítulos quedaron fuera de ese conteo), más que ningún otro de la banda.",
+      "datos": [
+        {
+          "etiqueta": "Salida",
+          "valor": "7 de octubre de 1996",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20), sin discrepancia"
+        },
+        {
+          "etiqueta": "Sello",
+          "valor": "Del Cielito Records",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20), que resolvió la discrepancia de RES-02; veto levantado en CNT-03 apartado 1"
+        },
+        {
+          "etiqueta": "Temas",
+          "valor": "11",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Menciones en el libro de memorias del Indio",
+          "valor": "21 en el texto extraído, el disco más mencionado del relevamiento",
+          "rotulo": "hecho",
+          "fuente": "RES-21 (INV-20)"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Salió el 7 de octubre de 1996 y trae once temas, todos de la dupla [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]]. Entre los emblema: Juguetes perdidos, Mariposa Pontiac - Rock del país, Me matan, Limón!, Luzbelito y las sirenas y Ella baila con todos.",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "texto": "Sobre el sello hubo lío, y vale contarlo porque muestra cómo trabaja esta enciclopedia. Durante un tiempo las fuentes discrepaban: la mayoría decía Del Cielito, pero la Wikipedia en inglés decía Patricio Rey Discos, y mientras la discrepancia estuvo abierta el dato quedó vedado en el sitio — directamente no se usaba. Una cuarta fuente independiente, el artículo específico del disco, la resolvió a favor de Del Cielito Records, y el veto se levantó. Para más confusión, dos años después [[ultimo-bondi-a-finisterre|Último bondi a Finisterre]] sí salió por Patricio Rey Discos.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20), resuelve la discrepancia 1 de RES-02 (INV-01); veto levantado en CNT-03 apartado 1; sello de Último bondi: RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "texto": "Dos cosas más, una que sabemos y una que no. La que sabemos: en su libro de memorias, el propio Indio menciona a Luzbelito más que a cualquier otro disco de la banda — veintiuna veces. La que no: si en algún lado leíste que Luzbelito ganó un premio, nuestras fichas no registran ninguno. El dato no está respaldado por ninguna fuente de las que trabajamos, y acá no se inventa: si algún día aparece la ficha que lo confirme, se agrega; hasta entonces, no lo vas a leer en este sitio como si fuera cierto.",
+          "rotulo": "hecho",
+          "fuente": "Menciones: RES-21 (INV-20). Premio: ausencia registrada en INV-01, INV-20 y CNT-03"
+        }
+      ],
+      "veaTambien": [
+        "indio-solari",
+        "skay-beilinson",
+        "ultimo-bondi-a-finisterre"
+      ]
+    },
+    {
+      "slug": "ultimo-bondi-a-finisterre",
+      "tipo": "disco",
+      "titulo": "Último bondi a Finisterre",
+      "resumen": "Último bondi a Finisterre salió el 18 de noviembre de 1998 por Patricio Rey Discos. Son diez temas de la dupla Solari–Beilinson, con Pogo, Gualicho y ¡Esto es to-to-todo amigos! entre los emblema, y una tapa —una nave interplanetaria— que tiene historia propia: según cuenta el Indio en su libro de memorias, él se imaginaba un colectivo espacial lleno de tornillos, medio Mad Max, y fue Rocambole quien lo convenció de la nave. En esa tapa, además, aparece por primera vez la banda en una portada, caracterizados como superhéroes — siempre según el relato del propio Indio.",
+      "datos": [
+        {
+          "etiqueta": "Salida",
+          "valor": "18 de noviembre de 1998",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20), sin discrepancia"
+        },
+        {
+          "etiqueta": "Sello",
+          "valor": "Patricio Rey Discos",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Temas",
+          "valor": "10",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Salió el 18 de noviembre de 1998 y marcó un cambio de casa: lo publicó Patricio Rey Discos, cuando el disco anterior, [[luzbelito|Luzbelito]], había salido por Del Cielito. Son diez temas firmados por la dupla [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]]; entre los emblema: Las increíbles andanzas del Capitán Buscapina en Cybersiberia, Pogo, Gualicho, ¡Esto es to-to-todo amigos! y Estás frito angelito.",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20); sello de Luzbelito: RES-20 (INV-20)"
+        },
+        {
+          "texto": "La tapa tiene su propia historia, y la cuenta el Indio en su libro de memorias, Recuerdos que mienten un poco — un libro que él mismo define como «apenas mi versión», así que tomala como lo que es: su relato. Él se imaginaba un bondi al estilo de la revista Metal Hurlant o de la película Heavy Metal, medio Mad Max, con mucho tornillo por fuera. [[rocambole|Rocambole]] le propuso en cambio una nave interplanetaria, y lo terminó de convencer con la cupulita traslúcida que simula una ventana redonda hacia el interior. Para materializarla se inspiraron en una caja de whisky Chivas Regal, con su repujado plateado.",
+          "rotulo": "testimonio",
+          "quien": "Indio Solari, en Recuerdos que mienten un poco",
+          "fuente": "RES-22 (INV-20), cubre el hueco de RES-06; «apenas mi versión»: RES-21"
+        },
+        {
+          "texto": "En esa misma tapa pasa algo que no había pasado nunca, siempre según el relato del Indio: por primera vez la banda aparece en la portada de un disco, caracterizados como superhéroes. Con esa misma estética se hizo el tercer y último videoclip del grupo, inspirado en el Capitán Buscapina, con apariciones de [[luzbelito|Luzbelito]] y del hombre que alza la cadena en la tapa de [[oktubre|Oktubre]].",
+          "rotulo": "testimonio",
+          "quien": "Indio Solari, en Recuerdos que mienten un poco",
+          "fuente": "RES-22 (INV-20)"
+        }
+      ],
+      "veaTambien": [
+        "rocambole",
+        "oktubre",
+        "momo-sampler",
+        "autogestion"
+      ]
+    },
+    {
+      "slug": "momo-sampler",
+      "tipo": "disco",
+      "titulo": "Momo Sampler",
+      "resumen": "Momo Sampler es el último disco de estudio de Patricio Rey y sus Redonditos de Ricota: salió el 17 de noviembre de 2000 por Patricio Rey Discos, y cierra una discografía de estudio que arrancó en 1985. Son once temas, con Templo de Momo, Sheriff y Una piba con la remera de Greenpeace... entre los emblema. ¿Es un disco de estudio «puro» o incluye material reelaborado? La discusión existe y acá no la escondemos: lo tratamos como un disco de estudio más, sin venderte certezas que no tenemos.",
+      "datos": [
+        {
+          "etiqueta": "Salida",
+          "valor": "17 de noviembre de 2000",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20), sin discrepancia"
+        },
+        {
+          "etiqueta": "Sello",
+          "valor": "Patricio Rey Discos",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01), CNT-03 apartado 3, sin discrepancia"
+        },
+        {
+          "etiqueta": "Temas",
+          "valor": "11",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Lugar en la discografía",
+          "valor": "Último disco de estudio de la lista (1985–2000)",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Salió el 17 de noviembre de 2000 por Patricio Rey Discos, dos años después de [[ultimo-bondi-a-finisterre|Último bondi a Finisterre]], y cierra la lista: es el último disco de estudio de una discografía que va de 1985 a 2000. Después de él, no hubo otro.",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) y RES-20 (INV-20)"
+        },
+        {
+          "texto": "Trae once temas firmados por la dupla [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]]. Entre los emblema: Templo de Momo, La murga de los renegados, Sheriff, Una piba con la remera de Greenpeace... y Morta punto com.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "texto": "Hay una discusión abierta sobre qué es exactamente este disco: si un álbum de estudio «puro» o uno que incluye recopilación y reelaboraciones. Nuestras fuentes lo registran como nota, no como pelea de datos, y el criterio del sitio es tratarlo como un disco de estudio más — año, sello y lugar en la discografía valen sin restricción. Lo que no vas a leer acá es que sea «puro material inédito» o que se haya «grabado enteramente para el disco»: ese enunciado no está respaldado, y antes de afirmarlo haría falta una ficha nueva que diga con precisión qué mezcla trae el disco. Preferimos deberte esa respuesta a inventártela.",
+          "rotulo": "hecho",
+          "fuente": "RES-02 (INV-01) nota 4, CNT-03 apartado 3"
+        }
+      ],
+      "veaTambien": [
+        "ultimo-bondi-a-finisterre",
+        "la-separacion",
+        "indio-solari"
+      ]
+    },
+    {
+      "slug": "indio-solari",
+      "tipo": "persona",
+      "titulo": "Indio Solari",
+      "resumen": "Carlos Alberto «Indio» Solari fue la voz de Patricio Rey y sus Redonditos de Ricota y una de las dos firmas detrás de casi todo su cancionero. Integró la formación estable desde 1987 hasta la ruptura y fue, junto a Skay Beilinson y la Negra Poli, uno de los tres pilares del grupo desde el origen. Después de su último recital en Olavarría, en 2017, no volvió a presentarse en vivo; en 2019 publicó unas memorias que él mismo presentó como apenas su versión, y murió el 5 de junio de 2026, a los 77 años. Alrededor de su figura circulan más leyendas que datos — y acá cada cosa va rotulada como lo que es.",
+      "datos": [
+        {
+          "etiqueta": "Rol",
+          "valor": "Voz y composición de Patricio Rey y sus Redonditos de Ricota",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "En la formación estable",
+          "valor": "Desde 1987 hasta la ruptura",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Último recital en vivo",
+          "valor": "11 de marzo de 2017, predio La Colmena, Olavarría",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Memorias",
+          "valor": "«Recuerdos que mienten un poco» (Sudamericana, en conversaciones con Marcelo Figueras)",
+          "rotulo": "hecho",
+          "fuente": "RES-21"
+        },
+        {
+          "etiqueta": "Empresa",
+          "valor": "Presidente de Erks S.A. (constituida en 1992)",
+          "rotulo": "hecho",
+          "fuente": "RES-09"
+        },
+        {
+          "etiqueta": "Fallecimiento",
+          "valor": "5 de junio de 2026, a los 77 años",
+          "rotulo": "hecho",
+          "fuente": "RES-04"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "El Indio fue la voz de la banda y una de las dos plumas detrás de su cancionero. Integró la [[la-formacion|formación estable]] desde 1987 hasta la ruptura, y fue uno de los tres pilares del proyecto desde el origen, junto al guitarrista [[skay-beilinson|Skay Beilinson]] y a [[la-negra-poli|la Negra Poli]], con [[rocambole|Rocambole]] como asesor artístico de todo el universo visual. Esa sociedad de tres fue la columna vertebral del grupo de punta a punta.",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "Su último recital en vivo fue el 11 de marzo de 2017, en el predio La Colmena de Olavarría. Después de esa noche no volvió a subirse a un escenario: nunca más se presentó en persona.",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        },
+        {
+          "texto": "Publicó sus memorias, «Recuerdos que mienten un poco», escritas en conversaciones con Marcelo Figueras: 863 páginas, 27 capítulos más prefacio, editadas por Sudamericana. El prefacio se titula «Prefacio / advertencia», y ahí el propio Indio avisa que el libro es apenas su versión, no una verdad única e incontrastable — aviso que esta enciclopedia toma al pie de la letra cada vez que lo cita. Entre esas páginas llama «el Mono» a Rocambole, y el capítulo 14 lleva por título el nombre completo de Walter David Bulacio. Ese capítulo acá se menciona con respeto y no se usa como fuente: la historia de Bulacio no se toca como curiosidad ni como pregunta de juego.",
+          "rotulo": "hecho",
+          "fuente": "RES-21, RES-22",
+          "quien": null
+        },
+        {
+          "texto": "Y después está el otro Indio, el de las leyendas. Cuentan los fans — y lo contaron durante treinta años sin una sola prueba — que fue profesor de educación física en el Colegio Militar durante la dictadura; que vive en una mansión imposible de encontrar en el trazado laberíntico de Parque Leloir; que no sale nunca de su casa, y que cuando sale se disfraza; que lo custodia una jauría entrenada para atacar al intruso a un silbido del amo. Elegí la que más te guste: ninguna tiene respaldo, y por eso van todas rotuladas como leyenda. La más famosa es la del supuesto romance con Karina Rabolini, que creció hasta volverse una de las leyendas urbanas más conocidas del universo ricotero sin que apareciera jamás una prueba; la propia Rabolini la desmintió con elegancia: dijo que le encantaría que fuera cierto, pero que cree que no es para ella.",
+          "rotulo": "leyenda",
+          "fuente": "RES-08",
+          "quien": null
+        },
+        {
+          "texto": "El Indio murió el 5 de junio de 2026, a los 77 años. Padecía Parkinson, un diagnóstico que él mismo había hecho público años antes. Su última aparición fue por video, en un recital de Los Fundamentalistas del Aire Acondicionado, para decirle a su público que lo quería, que lo respetaba y que era de los mejores del planeta. La noticia fue confirmada por Página/12 y por La Nación como segunda fuente independiente; lo que circuló sobre las circunstancias exactas de su muerte no tiene verificación, y por eso no se repite acá. El resto de esa historia está en [[muerte-del-indio|la muerte del Indio]].",
+          "rotulo": "hecho",
+          "fuente": "RES-04",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "muerte-del-indio",
+        "skay-beilinson",
+        "rocambole",
+        "la-formacion"
+      ]
+    },
+    {
+      "slug": "skay-beilinson",
+      "tipo": "persona",
+      "titulo": "Skay Beilinson",
+      "resumen": "Eduardo «Skay» Beilinson fue el guitarrista de Patricio Rey y sus Redonditos de Ricota y la otra mitad de la dupla que firmó casi todo el cancionero del grupo. Integró la formación estable desde 1987 hasta la ruptura y fue, junto al Indio Solari y la Negra Poli, uno de los tres pilares del proyecto desde el origen. Antes de los Redondos ya había fundado La Cofradía de la Flor Solar, a fines de los años sesenta, junto a Rocambole. Sigue vivo y activo.",
+      "datos": [
+        {
+          "etiqueta": "Rol",
+          "valor": "Guitarra y composición",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "En la formación estable",
+          "valor": "Desde 1987 hasta la ruptura",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Antecedente",
+          "valor": "Fundador de La Cofradía de la Flor Solar (fines de los 60), junto a Rocambole",
+          "rotulo": "hecho",
+          "fuente": "RES-06"
+        },
+        {
+          "etiqueta": "Autoría",
+          "valor": "Dupla Solari–Beilinson en el 100% del catálogo, salvo dos temas con tercer autor",
+          "rotulo": "hecho",
+          "fuente": "RES-20"
+        },
+        {
+          "etiqueta": "Empresa",
+          "valor": "Vicepresidente de Erks S.A. (constituida en 1992)",
+          "rotulo": "hecho",
+          "fuente": "RES-09"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Skay fue la guitarra de la [[la-formacion|formación estable]] desde 1987 hasta [[la-separacion|la ruptura]], y uno de los tres pilares de la banda desde el origen, junto a [[indio-solari|el Indio Solari]] y [[la-negra-poli|la Negra Poli]].",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "Su historia con [[rocambole|Rocambole]] viene de antes de los Redondos: a fines de los años sesenta fundaron juntos La Cofradía de la Flor Solar. Y esa sociedad nunca se cortó: el libro «Rocambole: Arte, Diseño y Contracultura», publicado en 2026, lleva aportes de Skay.",
+          "rotulo": "hecho",
+          "fuente": "RES-06",
+          "quien": null
+        },
+        {
+          "texto": "Del cancionero de Patricio Rey, la autoría es Solari–Beilinson en el cien por ciento del catálogo, con dos únicas excepciones que suman como tercer autor a [[semilla-bucciarelli|Semilla Bucciarelli]]. Todo lo demás salió de esa dupla, disco tras disco.",
+          "rotulo": "hecho",
+          "fuente": "RES-20",
+          "quien": null
+        },
+        {
+          "texto": "Según cuenta el Indio en sus memorias — que él mismo presentó como apenas su versión, no como verdad cerrada —, tras la primera separación de la banda Skay y Poli se fueron a administrar un campo en Salta, y allí conocieron a Francisco «Pancho» Silva, un nombre que después quedaría enredado con el mito de [[patricio-rey|Patricio Rey]].",
+          "rotulo": "testimonio",
+          "fuente": "RES-22",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco»"
+        },
+        {
+          "texto": "Skay está vivo y activo: en mayo de 2026 fue visto junto a la Negra Poli en Las Grutas. Es además vicepresidente de Erks S.A., la sociedad constituida en 1992, donde los tres socios tienen partes iguales del nombre del grupo — un reparto en tercios que dice bastante de cómo funcionó siempre esa sociedad.",
+          "rotulo": "hecho",
+          "fuente": "RES-09",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "indio-solari",
+        "rocambole",
+        "semilla-bucciarelli",
+        "la-separacion"
+      ]
+    },
+    {
+      "slug": "la-negra-poli",
+      "tipo": "persona",
+      "titulo": "La Negra Poli",
+      "resumen": "Carmen «La Negra Poli» Castro fue, junto al Indio Solari y Skay Beilinson, uno de los tres pilares de Patricio Rey y sus Redonditos de Ricota desde el origen. En una banda que la historia suele contar por su cantante y su guitarrista, ella fue la tercera parte con exactamente el mismo peso: en Erks S.A., la sociedad que administra el catálogo y los derechos del grupo, cada uno de los tres socios tiene partes iguales del nombre. Sigue viva y activa.",
+      "datos": [
+        {
+          "etiqueta": "Nombre",
+          "valor": "Carmen Castro",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Rol",
+          "valor": "Uno de los tres pilares de la banda desde el origen",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Empresa",
+          "valor": "Directora de Erks S.A. (constituida en 1992); los tres socios tienen partes iguales del nombre",
+          "rotulo": "hecho",
+          "fuente": "RES-09"
+        },
+        {
+          "etiqueta": "Situación",
+          "valor": "Viva y activa; vista junto a Skay en Las Grutas en mayo de 2026",
+          "rotulo": "hecho",
+          "fuente": "RES-09"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Carmen «la Negra Poli» Castro fue, junto a [[indio-solari|el Indio Solari]] y [[skay-beilinson|Skay Beilinson]], uno de los tres pilares del grupo desde el origen. No una colaboradora ni una acompañante: un pilar, con el mismo rango que la voz y la guitarra que sostuvo la [[la-formacion|formación estable]].",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "Ese rango no es una forma de decir: quedó escrito en los papeles. Poli es directora de Erks S.A., la sociedad constituida en 1992 que controla el catálogo y los derechos del grupo, y cada uno de los tres socios tiene partes iguales del nombre. Un tercio para la voz, un tercio para la guitarra, un tercio para ella. Y sigue en movimiento: en mayo de 2026 fue vista junto a Skay en Las Grutas.",
+          "rotulo": "hecho",
+          "fuente": "RES-09",
+          "quien": null
+        },
+        {
+          "texto": "Según cuenta el Indio en sus memorias — que él mismo presentó como apenas su versión —, tras la primera separación de la banda Poli se fue con Skay a administrar un campo en Salta. Allí conocieron a Francisco «Pancho» Silva, el personaje detrás de la versión de que [[patricio-rey|Patricio Rey]] — el nombre que bautiza a la banda — existía de verdad. Si querés tirar de ese hilo, seguí por el artículo del propio Patricio Rey.",
+          "rotulo": "testimonio",
+          "fuente": "RES-22",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco»"
+        }
+      ],
+      "veaTambien": [
+        "skay-beilinson",
+        "indio-solari",
+        "patricio-rey",
+        "autogestion"
+      ]
+    },
+    {
+      "slug": "semilla-bucciarelli",
+      "tipo": "persona",
+      "titulo": "Semilla Bucciarelli",
+      "resumen": "Semilla Bucciarelli fue el bajista de la formación estable de Patricio Rey y sus Redonditos de Ricota, desde 1987 hasta la ruptura. En un cancionero firmado casi por completo por la dupla Solari–Beilinson, su nombre aparece como tercer autor en las dos únicas excepciones de todo el catálogo: «Ella debe estar tan linda» y «Mi perro dinamita» — y esta última, según contó el propio Indio, era el tema que él no quería ni editar y terminó siendo uno de los más populares.",
+      "datos": [
+        {
+          "etiqueta": "Rol",
+          "valor": "Bajo",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "En la formación estable",
+          "valor": "Desde 1987 hasta la ruptura",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Coautoría",
+          "valor": "«Ella debe estar tan linda» (Un baión para el ojo idiota, tema 7)",
+          "rotulo": "hecho",
+          "fuente": "RES-20"
+        },
+        {
+          "etiqueta": "Coautoría",
+          "valor": "«Mi perro dinamita» (La mosca y la sopa, tema 4)",
+          "rotulo": "hecho",
+          "fuente": "RES-20"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Semilla Bucciarelli fue el bajo de la [[la-formacion|formación estable]] de los Redondos, desde 1987 hasta [[la-separacion|la ruptura]].",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "El dato que lo vuelve único está en los créditos: la autoría de los temas es Solari–Beilinson en el cien por ciento del catálogo, con dos únicas excepciones, y en las dos el tercer nombre es el suyo. Son «Ella debe estar tan linda», tema 7 de [[un-baion-para-el-ojo-idiota|Un baión para el ojo idiota]], y «Mi perro dinamita», tema 4 de [[la-mosca-y-la-sopa|La mosca y la sopa]]. Nadie más entró nunca a esa dupla; él, dos veces.",
+          "rotulo": "hecho",
+          "fuente": "RES-20",
+          "quien": null
+        },
+        {
+          "texto": "Y la segunda de esas excepciones tiene revancha incluida: según cuenta el propio [[indio-solari|Indio]] en sus memorias — que él mismo presentó como apenas su versión —, «Mi perro dinamita» era el tema que él no quería ni editar. Terminó siendo uno de los más populares.",
+          "rotulo": "testimonio",
+          "fuente": "RES-22",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco»"
+        }
+      ],
+      "veaTambien": [
+        "un-baion-para-el-ojo-idiota",
+        "la-mosca-y-la-sopa",
+        "la-formacion",
+        "skay-beilinson"
+      ]
+    },
+    {
+      "slug": "rocambole",
+      "tipo": "persona",
+      "titulo": "Rocambole",
+      "resumen": "Rocambole es Ricardo Cohen: el artista que desde 1978 hizo todas las portadas, los afiches, las escenografías, los videos y la identidad visual entera de Patricio Rey y sus Redonditos de Ricota. Nació en 1943 en Parque Patricios y vivió casi toda su vida en La Plata; le dicen «el cuarto redondo» o «el sexto sabio», y su obra circula desde hace décadas en remeras, banderas, paredes y tatuajes, masivamente y sin control de su parte. Está vivo, tiene 83 años, y en 2026 tuvo documental y libro propios.",
+      "datos": [
+        {
+          "etiqueta": "Nombre real",
+          "valor": "Ricardo Cohen",
+          "rotulo": "hecho",
+          "fuente": "RES-06"
+        },
+        {
+          "etiqueta": "Nacimiento",
+          "valor": "12 de mayo de 1943, Parque Patricios (Buenos Aires)",
+          "rotulo": "hecho",
+          "fuente": "RES-06"
+        },
+        {
+          "etiqueta": "Rol",
+          "valor": "Toda la identidad visual de la banda desde 1978",
+          "rotulo": "hecho",
+          "fuente": "RES-06, RES-05"
+        },
+        {
+          "etiqueta": "Apodos",
+          "valor": "«El cuarto redondo», «el sexto sabio»",
+          "rotulo": "hecho",
+          "fuente": "RES-06"
+        },
+        {
+          "etiqueta": "Premio",
+          "valor": "ACE al mejor diseño de portada, por Luzbelito",
+          "rotulo": "hecho",
+          "fuente": "RES-06"
+        },
+        {
+          "etiqueta": "Seudónimo",
+          "valor": "De «Las hazañas de Rocambole», folletín francés del siglo XIX",
+          "rotulo": "hecho",
+          "fuente": "RES-06"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Rocambole se llama Ricardo Cohen. Nació el 12 de mayo de 1943 en Parque Patricios y vivió casi toda su vida en La Plata. El seudónimo no salió del ambiente ricotero: viene de «Las hazañas de Rocambole», un folletín francés del siglo XIX que coleccionaba su padre, y ya lo usaba antes de cruzarse con la banda. Su formación es de manual: serigrafía entre 1961 y 1963, ingreso a la Escuela Superior de Bellas Artes de la Universidad Nacional de La Plata en 1964, egreso de la Facultad de Bellas Artes entre 1973 y 1975, y docencia en Dibujo desde 1984. Está vivo: tiene 83 años.",
+          "rotulo": "hecho",
+          "fuente": "RES-06",
+          "quien": null
+        },
+        {
+          "texto": "Con [[skay-beilinson|Skay Beilinson]] se conocen desde antes de los Redondos: a fines de los sesenta fundaron juntos La Cofradía de la Flor Solar. Desde 1978 hizo todas las portadas, los afiches, las escenografías, los videos y la identidad visual entera de la banda — por eso le dicen «el cuarto redondo» o «el sexto sabio». Su técnica es artesanal: rodillo y serigrafía, aerografía, grabado, collage e ilustración, con arte digital y animación sumados desde 1996. Por la tapa de [[luzbelito|Luzbelito]] ganó el premio ACE al mejor diseño de portada. En 2026 el mundo le devolvió la atención: en abril se estrenó el documental «Rocambole en el camino» y salió el libro «Rocambole: Arte, Diseño y Contracultura», con aportes de Skay. Ese mismo año le tocó también la despedida más difícil: el 5 de junio de 2026, cuando [[muerte-del-indio|murió el Indio]], lo despidió públicamente: «Adiós, amigo, tu luz seguirá iluminándonos».",
+          "rotulo": "hecho",
+          "fuente": "RES-06",
+          "quien": null
+        },
+        {
+          "texto": "Su idea del trabajo nunca fue decorar discos: declaró que no ilustraba la poesía ni la música, sino que era una parte integrante del mensaje — la integración tenía que ser tal que sacar una pieza dejara el mensaje incompleto. Su lenguaje mezcla anarquismo, iconografía revolucionaria y raíz popular, y concibe cada tapa como tres cosas a la vez: objeto artístico, declaración política y pieza pensada para reproducirse en masa. Lo de la masa no es teoría: declaró que siempre le encantó la reproductibilidad del arte, que todos pudieran acceder a su obra, y cuando empezó a ver sus diseños tatuados en la piel de los fans, adoptó esa circulación como parte del asunto. Hoy su obra vive en remeras, banderas, paredes, gorros y tatuajes, masivamente y sin control de su parte — una circulación de mano en mano, hermana de la [[difusion-sin-tele|difusión sin televisión]] que hizo enorme a la banda. Si alguna vez viste una de esas imágenes en una pared de tu barrio, ya conocés su museo.",
+          "rotulo": "hecho",
+          "fuente": "RES-06",
+          "quien": null
+        },
+        {
+          "texto": "Sobre la propiedad intelectual circula una versión muy citada: que no cree en ella para las cosas artísticas, que jamás cobró por la reproducción de su obra, y que le incomoda verla usada por grupos políticos que no comparte, aunque entiende que no puede impedirlo. Va acá con una aclaración honesta: la ficha lo trae como reportado, sin cita textual verificada en fuente primaria — así que hasta que aparezca esa cita, se rotula como leyenda, no como hecho. Encaja perfecto con todo lo demás; justamente por eso conviene desconfiar de lo que encaja perfecto.",
+          "rotulo": "leyenda",
+          "fuente": "RES-06",
+          "quien": null
+        },
+        {
+          "texto": "Rocambole contó también su versión de la relación con la prensa: una sola vez, dice, Clarín publicó una crítica netamente musical sobre Los Redondos; el resto del tiempo los diarios los analizaron como fenómeno de violencia antes que como fenómeno musical. Es su testimonio, no una estadística — pero viniendo del que dibujó la cara pública de la banda durante décadas, pinta el clima de época mejor que cualquier recorte.",
+          "rotulo": "testimonio",
+          "fuente": "RES-07",
+          "quien": "Rocambole"
+        }
+      ],
+      "veaTambien": [
+        "luzbelito",
+        "skay-beilinson",
+        "indio-solari",
+        "difusion-sin-tele"
+      ]
+    },
+    {
+      "slug": "la-formacion",
+      "tipo": "hito",
+      "titulo": "La formación",
+      "resumen": "Patricio Rey y sus Redonditos de Ricota no arrancó como una banda: arrancó como una juntada. Nació en 1976 en La Plata, heredera directa de La Cofradía de la Flor Solar, sin nombre fijo y con unos quince músicos que entraban y salían según la noche. El nombre apareció recién en el debut oficial, el 26 de noviembre de 1977 en el Teatro Lozano, la misma noche en que se repartieron buñuelos de ricota al público. Desde el origen los pilares fueron tres: el Indio Solari, Skay Beilinson y la Negra Poli, con Rocambole como asesor artístico. La formación que todos recuerdan —Indio, Skay, Semilla, Sidotti y Dawi— quedó estable recién en 1987 y llegó así hasta el final.",
+      "datos": [
+        {
+          "etiqueta": "Origen",
+          "valor": "1976, La Plata",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Antecedente directo",
+          "valor": "La Cofradía de la Flor Solar",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Fecha de fundación que circula",
+          "valor": "28 de diciembre de 1976 — nunca confirmada ni desmentida del todo",
+          "rotulo": "leyenda",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Primera presentación oficial",
+          "valor": "26 de noviembre de 1977, Teatro Lozano (\"el Lozanazo\")",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Mudanza a Buenos Aires",
+          "valor": "1982",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Formación estable",
+          "valor": "Desde 1987: Indio, Skay, Semilla, Sidotti y Dawi",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "La historia empieza en 1976 en La Plata, y no empieza de cero: la banda desciende en línea directa de La Cofradía de la Flor Solar, aquella comunidad de músicos y artistas platenses. Al principio no había ni nombre fijo ni integrantes fijos —rotaban unos quince músicos—, pero tres personas sostuvieron el asunto desde el primer día: [[indio-solari|el Indio Solari]], [[skay-beilinson|Skay Beilinson]] y [[la-negra-poli|la Negra Poli]], asesorados artísticamente por [[rocambole|Rocambole]].",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "¿Y la fecha exacta de fundación? Acá conviene frenar. Circula como efeméride firme el 28 de diciembre de 1976, pero nadie la confirmó ni la desmintió nunca del todo: hasta la Wikipedia en inglés la trata como leyenda urbana. Y hay un detalle que alimenta la sospecha: el 28 de diciembre es el Día de los Santos Inocentes, el día de las bromas. Una banda fundada —quizás— el día de las cargadas es demasiado perfecta para ser cierta, y demasiado perfecta para descartarla. Sirve para la mitología; no la uses para ganar una discusión.",
+          "rotulo": "leyenda",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "El nombre nació una noche concreta: la del 26 de noviembre de 1977, en la primera presentación oficial en el Teatro Lozano, que quedó bautizada como \"el Lozanazo\". Salió de la receta de los buñuelos redondos de ricota de un libro de cocina de la ecónoma Patricia Rey — sí, Patricia: la ecónoma se llamaba Patricia y la banda lo convirtió en Patricio. Esa misma noche, Edgardo \"el Docente\" Gaudini, vestido de sultán, repartió entre el público buñuelos redondos de nuez y ricota. Todo lo que hay que saber sobre quién es [[patricio-rey|Patricio Rey]] arranca en esa receta.",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "Después el asunto tomó vuelo: primera gira al interior en enero de 1978, a Salta, y ese mismo año Rocambole tomó a su cargo la identidad visual completa, que ya no soltó. El 2 de enero de 1982 tocaron en el Festival Pan Caliente, en el Club Atlético Excursionistas, y ese mismo año se mudaron a Buenos Aires.",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "La formación estable llegó en 1987 y duró hasta [[la-separacion|la ruptura]]: el Indio en voz y composición, Skay en guitarra y composición, [[semilla-bucciarelli|Semilla Bucciarelli]] en bajo, Walter Sidotti en batería y Sergio Dawi en saxo, armónica y piano. Once años de idas y vueltas para que cinco nombres quedaran fijos; después de eso, no se movió ninguno.",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "patricio-rey",
+        "indio-solari",
+        "skay-beilinson",
+        "debut-en-obras"
+      ]
+    },
+    {
+      "slug": "debut-en-obras",
+      "tipo": "hito",
+      "titulo": "El debut en Obras",
+      "resumen": "El 2 de diciembre de 1989 los Redondos tocaron por primera vez en el Estadio Obras. Fue el cierre de un año bisagra: meses antes, el 22 de julio, habían dado su primer recital fuera de Argentina, en Montevideo. Y una aclaración que conviene tener a mano: lo del 89 fue Obras; los recitales en Huracán fueron recién en 1993 y 1994, y mezclar las dos cosas es una de las confusiones más repetidas de la cronología ricotera.",
+      "datos": [
+        {
+          "etiqueta": "Fecha del debut",
+          "valor": "2 de diciembre de 1989",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Lugar",
+          "valor": "Estadio Obras",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Primer recital fuera de Argentina",
+          "valor": "22 de julio de 1989, Montevideo",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Aclaración de cronología",
+          "valor": "Huracán no fue en 1989: fue en 1993 y 1994",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "El primer recital en el Estadio Obras fue el 2 de diciembre de 1989. Para una banda que había nacido repartiendo buñuelos en un teatro de La Plata —esa historia está en [[la-formacion|la formación]]—, llegar a Obras era cruzar una frontera. Y el 89 ya venía cargado: el 22 de julio la banda había dado su primer recital fuera del país, en Montevideo.",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "Aclaración para la próxima discusión de asado: \"Huracán en el 89\" es falso, aunque se repita con total seguridad — hasta este mismo sitio llegó a escribirlo y tuvo que corregirse. En 1989 no hubo Huracán: hubo Obras. Los recitales en la cancha de Huracán fueron en noviembre de 1993 y diciembre de 1994, y tienen [[huracan-93-94|su propia entrada]]. Si querés el guiño de conocedor, decí \"Huracán en el 93\": suena igual de iniciado y encima es verdad.",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "Obras también quedó atado a una fecha que este artículo no trata como anécdota, porque no lo es. El 19 de abril de 1991, antes de un recital de la banda, la Policía Federal detuvo a más de 80 jóvenes en un operativo; entre ellos estaba Walter Bulacio. Su caso llegó a la Corte Interamericana de Derechos Humanos: el primer juicio oral se hizo recién veinte años después, en 2011, y hubo condena en 2013. Acá se lo nombra con respeto y sin entrar en más detalle — no es un dato para el juego. El contexto de esa historia se cuenta en [[el-aguante|el aguante]].",
+          "rotulo": "hecho",
+          "fuente": "RES-05, RES-07",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "huracan-93-94",
+        "la-formacion",
+        "el-aguante"
+      ]
+    },
+    {
+      "slug": "huracan-93-94",
+      "tipo": "hito",
+      "titulo": "Huracán, 93 y 94",
+      "resumen": "Dos veces llenaron los Redondos el estadio Tomás A. Ducó, la cancha de Huracán. La primera fue el 19 y 20 de noviembre de 1993, ante más de 70.000 personas, para presentar el disco doble \"Lobo suelto, cordero atado\" con Las Blacanblus de invitadas. La segunda, el 16 y 17 de diciembre de 1994, con 80.000 personas por noche. Y una aclaración que evita papelones: \"Huracán en el 89\" es falso — en el 89 la banda debutó en Obras; Huracán fue en el 93 y el 94.",
+      "datos": [
+        {
+          "etiqueta": "Estadio",
+          "valor": "Tomás A. Ducó (Huracán)",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Fechas 1993",
+          "valor": "19 y 20 de noviembre",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Público 1993",
+          "valor": "Más de 70.000 personas",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Disco presentado en 1993",
+          "valor": "\"Lobo suelto, cordero atado\", con Las Blacanblus de invitadas",
+          "rotulo": "hecho",
+          "fuente": "RES-20"
+        },
+        {
+          "etiqueta": "Fechas 1994",
+          "valor": "16 y 17 de diciembre",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Público 1994",
+          "valor": "80.000 personas por noche",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "El 19 y 20 de noviembre de 1993 los Redondos tocaron en el estadio Tomás A. Ducó, la cancha de Huracán, ante más de 70.000 personas. Era la primera vez de la banda en esa cancha, y no iba a ser la última.",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "Esas noches del 93 tuvieron disco nuevo bajo el brazo: se presentó el álbum doble [[lobo-suelto|Lobo suelto]], [[cordero-atado|cordero atado]], con Las Blacanblus como invitadas.",
+          "rotulo": "hecho",
+          "fuente": "RES-20",
+          "quien": null
+        },
+        {
+          "texto": "La vuelta fue el 16 y 17 de diciembre de 1994, otra vez en el Ducó, esta vez con 80.000 personas por noche. No todo fue fiesta: hubo 28 heridos y 60 detenidos. Se anota acá sin vueltas, porque también es parte de lo que fueron esas noches.",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "Y el mito a desarmar: \"Huracán en el 89\" se dice mucho y es falso. En 1989 no hubo Huracán — hubo [[debut-en-obras|el debut en Obras]], que es otro hito con su propia entrada. Si querés tirar el dato de conocedor en una previa, la versión verdadera es \"Huracán en el 93\": suena igual de iniciado y tiene la ventaja de haber ocurrido.",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "lobo-suelto",
+        "cordero-atado",
+        "debut-en-obras",
+        "misa-ricotera"
+      ]
+    },
+    {
+      "slug": "la-separacion",
+      "tipo": "hito",
+      "titulo": "La separación",
+      "resumen": "El último recital de Patricio Rey y sus Redonditos de Ricota fue el 4 de agosto de 2001 en el estadio Chateau Carreras de Córdoba, ante unas 50.000 personas, y la separación se oficializó recién el 2 de noviembre de ese año: para cuando se anunció, el final ya había pasado. En abril de 2001 la banda había dado sus últimos recitales fuera del país, en el Estadio Centenario de Montevideo. Y como casi todo en esta historia, hubo un ensayo previo: el propio Indio contó que en los primeros años existió una \"primera separación\", tras la cual Skay y Poli se fueron a administrar un campo en Salta.",
+      "datos": [
+        {
+          "etiqueta": "Último recital",
+          "valor": "4 de agosto de 2001, Chateau Carreras, Córdoba",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Público del último recital",
+          "valor": "Unas 50.000 personas",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Oficialización de la separación",
+          "valor": "2 de noviembre de 2001",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Últimos recitales en el exterior",
+          "valor": "22 y 23 de abril de 2001, Estadio Centenario, Montevideo",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "\"Primera separación\" temprana",
+          "valor": "Skay y Poli se fueron a administrar un campo en Salta — según el Indio en \"Recuerdos que mienten un poco\"",
+          "rotulo": "testimonio",
+          "fuente": "RES-22"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "El último recital fue el 4 de agosto de 2001, en el estadio Chateau Carreras de Córdoba, ante unas 50.000 personas. Tres meses después, el 2 de noviembre, la separación se hizo oficial. El anuncio no vino con función de despedida: para cuando se oficializó, el último recital ya había quedado atrás, una noche de invierno en Córdoba.",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "Un detalle para el que quiera hilar fino: la Wikipedia en español lista el 22 y 23 de abril de 2001, en el Estadio Centenario de Montevideo, como \"últimos recitales\". Las dos cosas se reconcilian sin forzar nada: Montevideo fueron los últimos recitales en el exterior; el último de todos fue el de Córdoba. Así que antes de discutir \"cuál fue el último\" en una mesa de fans, fijá primero cuál de las dos preguntas estás haciendo.",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "La del 2001 no habría sido la primera vez que el proyecto se cortó. El [[indio-solari|Indio]] contó en su libro de memorias —que él mismo tituló \"Recuerdos que mienten un poco\", avisando desde la tapa que es apenas su versión— que en la historia temprana de la banda hubo una \"primera separación\", tras la cual [[skay-beilinson|Skay]] y [[la-negra-poli|Poli]] se fueron a administrar un campo en Salta. Vale como lo que es: su versión de los hechos, contada por él y firmada por nadie más.",
+          "rotulo": "testimonio",
+          "fuente": "RES-22",
+          "quien": "Indio Solari (en \"Recuerdos que mienten un poco\")"
+        }
+      ],
+      "veaTambien": [
+        "indio-solari",
+        "skay-beilinson",
+        "la-negra-poli",
+        "la-formacion"
+      ]
+    },
+    {
+      "slug": "muerte-del-indio",
+      "tipo": "hito",
+      "titulo": "La muerte del Indio",
+      "resumen": "Carlos Alberto \"Indio\" Solari murió el 5 de junio de 2026, a los 77 años. Convivía desde hacía años con el Parkinson, un diagnóstico que él mismo había hecho público. La noticia fue confirmada por Página/12 y, de forma independiente, por La Nación. La despedida fue a la manera ricotera: banderazos y misas en plazas de todo el país — el público lo despidió con el mismo ritual con el que lo escuchaba.",
+      "datos": [
+        {
+          "etiqueta": "Fecha de muerte",
+          "valor": "5 de junio de 2026",
+          "rotulo": "hecho",
+          "fuente": "RES-04"
+        },
+        {
+          "etiqueta": "Edad",
+          "valor": "77 años",
+          "rotulo": "hecho",
+          "fuente": "RES-04"
+        },
+        {
+          "etiqueta": "Confirmación",
+          "valor": "Página/12 y, de forma independiente, La Nación",
+          "rotulo": "hecho",
+          "fuente": "RES-04"
+        },
+        {
+          "etiqueta": "Última aparición pública",
+          "valor": "Por video, en un concierto de Los Fundamentalistas",
+          "rotulo": "hecho",
+          "fuente": "RES-04"
+        },
+        {
+          "etiqueta": "Heredero principal",
+          "valor": "Bruno Solari, hijo del cantante",
+          "rotulo": "hecho",
+          "fuente": "RES-09"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "El [[indio-solari|Indio Solari]] murió el 5 de junio de 2026, a los 77 años. Padecía Parkinson, un diagnóstico que él mismo había comunicado públicamente años antes, sin intermediarios ni misterio. La fecha y la edad fueron confirmadas por Página/12 y, de forma independiente, por La Nación.",
+          "rotulo": "hecho",
+          "fuente": "RES-04",
+          "quien": null
+        },
+        {
+          "texto": "Sobre las circunstancias circularon versiones en agregadores de prensa: que murió en su casa de Parque Leloir, y una causa médica precisa. La ficha de este sitio las trae como reportadas pero no verificadas — no hay fuente primaria ni comunicado de la familia que las respalde—, así que acá quedan anotadas como lo que son: versiones de prensa, no hechos confirmados.",
+          "rotulo": "leyenda",
+          "fuente": "RES-04",
+          "quien": null
+        },
+        {
+          "texto": "Su última aparición pública fue por video, durante un concierto de Los Fundamentalistas. Ahí le habló a su público por última vez: \"Los quiero mucho, los respeto mucho como público. Son de los mejores del planeta\".",
+          "rotulo": "hecho",
+          "fuente": "RES-04",
+          "quien": null
+        },
+        {
+          "texto": "La despedida popular no fue de silencio, porque ese público nunca fue de silencio: hubo banderazos y [[misa-ricotera|misas ricoteras]] —el nombre con el que el propio público llama a sus encuentros masivos— en plazas de todo el país. La gente lo despidió con el mismo ritual con el que lo escuchaba. Ese mismo día, [[rocambole|Rocambole]], el artista que le puso imagen a toda la historia de la banda, lo despidió públicamente: \"Adiós, amigo, tu luz seguirá iluminándonos\".",
+          "rotulo": "hecho",
+          "fuente": "RES-04, RES-06",
+          "quien": null
+        },
+        {
+          "texto": "Después vino la parte administrativa, que también es parte de la historia. El heredero principal es Bruno Solari, hijo del cantante, de 25 años; en la sucesión figura también Virginia Inés Mones Ruiz. Los otros dos tercios del nombre del grupo siguen en manos de [[skay-beilinson|Skay]] y [[la-negra-poli|la Negra Poli]].",
+          "rotulo": "hecho",
+          "fuente": "RES-09",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "indio-solari",
+        "misa-ricotera",
+        "la-separacion",
+        "rocambole"
+      ]
+    },
+    {
+      "slug": "misa-ricotera",
+      "tipo": "concepto",
+      "titulo": "Misa ricotera",
+      "resumen": "La misa ricotera es la metáfora con la que se nombra al recital de Patricio Rey y sus Redonditos de Ricota: no un espectáculo que se mira sino una liturgia de la que se participa, donde cada uno aporta algo de sí para formar parte de la comunión. El pogo funciona como ritual; los cánticos, las frases repetidas y los silbidos son parte de la ceremonia. Y el rasgo que define todo es que el protagonismo no está en el escenario sino abajo, en el público — por eso ser ricotero es una identidad social, con códigos y pertenencia, antes que un gusto musical.",
+      "datos": [
+        {
+          "etiqueta": "Qué es",
+          "valor": "El recital vivido como liturgia: comunión, cánticos y pogo como ritual",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Rasgo central",
+          "valor": "El protagonismo está abajo: en el público, no en el escenario",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Origen del término",
+          "valor": "Se dice que nació en los años ochenta; no hay fuente primaria que lo confirme",
+          "rotulo": "leyenda",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Última gran expresión",
+          "valor": "Banderazos y misas ricoteras en plazas de todo el país, en la despedida del Indio (junio de 2026)",
+          "rotulo": "hecho",
+          "fuente": "RES-04"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Andá a un recital ricotero y vas a entender por qué la palabra que quedó no fue «concierto» sino «misa». La metáfora nombra al recital como liturgia: una ceremonia que no funciona si vas de espectador, porque exige que cada uno aporte algo de sí para formar parte de la comunión. El pogo —esa marea de gente que salta, se empuja y se sostiene a la vez— funciona como ritual, y los cánticos, las frases repetidas y los silbidos son parte de esa liturgia. Nadie va a mirar: se va a estar, y estar es hacer. Por eso el fenómeno se entiende mejor desde [[el-aguante|el aguante]] que desde la crítica musical.",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        },
+        {
+          "texto": "Ser ricotero —así se llama al fan de [[patricio-rey|Patricio Rey y sus Redonditos de Ricota]], la banda que todos nombran Los Redondos— es una identidad social antes que un gusto musical. Hay códigos, un lenguaje propio, formas de vestir, maneras de interpretar las letras y formas de ganarse el lugar: no alcanza con tener los discos. El rasgo central de todo el fenómeno es que el protagonismo se corre del escenario al público: es la banda de masas donde el que importa es el que está abajo.",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        },
+        {
+          "texto": "¿Y de cuándo viene el nombre? Varios sitios repiten que el término «misa ricotera» nació en los años ochenta, pero nadie mostró nunca la fuente primaria: nadie mostró nunca la fuente primaria de la primera vez que alguien lo dijo. Acá lo contamos como lo que es —una historia que circula— y no como fecha firme.",
+          "rotulo": "leyenda",
+          "fuente": "RES-07",
+          "quien": null
+        },
+        {
+          "texto": "El 5 de junio de 2026 murió el [[indio-solari|Indio Solari]]. La despedida popular tomó la forma que la cultura ricotera ya tenía ensayada desde hacía décadas: banderazos y misas ricoteras en plazas de todo el país. Esa despedida está contada en [[muerte-del-indio|la muerte del Indio]].",
+          "rotulo": "hecho",
+          "fuente": "RES-04",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "el-aguante",
+        "muerte-del-indio",
+        "difusion-sin-tele",
+        "patricio-rey"
+      ]
+    },
+    {
+      "slug": "el-aguante",
+      "tipo": "concepto",
+      "titulo": "El aguante",
+      "resumen": "El aguante es la cultura en la que se forjó el fenómeno ricotero: el protagonismo se corre del escenario al público, y estar —bancar, sostener, ir— pesa tanto como escuchar. Es también, cuenta Rocambole, el ángulo desde el que la prensa eligió mirar a Los Redondos: como fenómeno de violencia antes que como fenómeno musical. Y tiene un capítulo oscuro que no es folclore: la represión policial alrededor de los recitales, con el caso de Walter Bulacio —un chico de 17 años que murió tras una detención ilegal en 1991— como herida que llegó hasta la Corte Interamericana de Derechos Humanos.",
+      "datos": [
+        {
+          "etiqueta": "Qué es",
+          "valor": "La cultura donde el protagonismo pasa del escenario al público",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Huracán, diciembre de 1994",
+          "valor": "28 heridos y 60 detenidos",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Mar del Plata, 19 y 20 de junio de 1999",
+          "valor": "500 detenidos y 100 heridos",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Walter David Bulacio",
+          "valor": "Detenido ilegalmente el 19 de abril de 1991, a los 17 años; murió el 26 de abril de 1991",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Olavarría, 11 de marzo de 2017",
+          "valor": "Último recital en vivo del Indio Solari; dos personas murieron por asfixia",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "En las memorias del Indio",
+          "valor": "El capítulo 14 se titula «Walter David Bulacio», el nombre completo como título",
+          "rotulo": "hecho",
+          "fuente": "RES-21"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Si alguna vez escuchaste «aguante» en una cancha, ya tenés la mitad: aguantar es bancar, sostener, estar aunque cueste. El fenómeno ricotero se forjó en esa cultura, y eso explica su rasgo más citado: el protagonismo se desplaza del escenario al público. La hinchada no acompaña el recital; el recital es de la hinchada. Es la misma idea que late en el corazón de la [[misa-ricotera|misa ricotera]]: nadie va a mirar, se va a formar parte.",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        },
+        {
+          "texto": "De cómo miró todo esto la prensa da cuenta [[rocambole|Rocambole]] —su historia con la banda tiene artículo propio—: una sola vez Clarín publicó una crítica netamente musical sobre Los Redondos. El resto del tiempo, los diarios los analizaron como fenómeno de violencia antes que como fenómeno musical: se hablaba de desmanes y de policía, no de canciones. Es su versión, contada desde adentro; como todo testimonio, va firmada.",
+          "rotulo": "testimonio",
+          "fuente": "RES-07",
+          "quien": "Rocambole"
+        },
+        {
+          "texto": "Que el encuadre de la prensa fuera injusto no borra los hechos: los saldos represivos y de descontrol están documentados. En Huracán —el estadio de las noches masivas del 93 y el 94, que tienen [[huracan-93-94|su propio artículo]]—, en diciembre de 1994 hubo 28 heridos y 60 detenidos. En Mar del Plata, el 19 y 20 de junio de 1999, hubo 500 detenidos y 100 heridos.",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "El 19 de abril de 1991, antes de un recital de la banda, la Policía Federal montó un operativo en las inmediaciones del Estadio Obras y detuvo a más de ochenta jóvenes, muchos de ellos menores, bajo la figura de «averiguación de antecedentes». Entre ellos estaba Walter David Bulacio, de 17 años, que fue torturado durante la detención ilegal y murió el 26 de abril de 1991 por un traumatismo de cráneo. El caso llegó a la Corte Interamericana de Derechos Humanos. El primer juicio oral se hizo recién en 2011; en 2013 se condenó al comisario Espósito, solo por privación ilegal de la libertad, a tres años en suspenso, sin cumplimiento efectivo.",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        },
+        {
+          "texto": "El 11 de marzo de 2017, en el predio La Colmena de Olavarría, se hizo el último recital en vivo del [[indio-solari|Indio Solari]]. Dos personas, Javier León y Juan Francisco Bulacio, murieron por asfixia. Los organizadores fueron imputados por doble homicidio culposo; ni Solari ni el intendente estuvieron entre los imputados. Sobre cuánta gente hubo, las fuentes no coinciden: las cifras van de unas 300.000 a unas 400.000 personas, contra una capacidad habilitada de 200.000. La discrepancia queda anotada tal cual, sin promediar.",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "misa-ricotera",
+        "huracan-93-94",
+        "muerte-del-indio",
+        "indio-solari"
+      ]
+    },
+    {
+      "slug": "autogestion",
+      "tipo": "concepto",
+      "titulo": "Autogestión",
+      "resumen": "Los Redondos construyeron uno de los fenómenos masivos más grandes de la historia argentina sin firmar con una multinacional, sin aparecer en televisión y sin publicitar sus recitales. La autogestión no fue un detalle administrativo sino el corazón del proyecto: prescindir de compañías, representantes y aparato mediático les garantizó independencia artística y política, y una libertad poco común para decidir cómo sonar y cómo verse. Los discos salieron por Wormo, Del Cielito y Patricio Rey Discos —nunca por una multinacional—, y desde 1992 el catálogo y los derechos están en manos de una sociedad formada por los propios Solari, Beilinson y la Negra Poli.",
+      "datos": [
+        {
+          "etiqueta": "La regla",
+          "valor": "Sin multinacional, sin televisión, sin publicidad",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Antecedente",
+          "valor": "El circuito comunitario de La Cofradía de la Flor Solar y la Casa de la Luna",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Sellos",
+          "valor": "Wormo, Del Cielito y Patricio Rey Discos — los diez discos de estudio",
+          "rotulo": "hecho",
+          "fuente": "RES-20"
+        },
+        {
+          "etiqueta": "Sociedad",
+          "valor": "Erks S.A. (desde 1992): Solari presidente, Beilinson vicepresidente, la Negra Poli directora, en partes iguales",
+          "rotulo": "hecho",
+          "fuente": "RES-09"
+        },
+        {
+          "etiqueta": "Discografía digital",
+          "valor": "Completa (11 títulos) desde el 28 de julio de 2017, vía The Orchard",
+          "rotulo": "hecho",
+          "fuente": "RES-09"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "El dato es difícil de creer, así que leelo completo: [[patricio-rey|Patricio Rey y sus Redonditos de Ricota]] construyó uno de los fenómenos masivos más grandes de la historia argentina sin firmar con una multinacional, sin aparecer en televisión y sin publicitar sus recitales. Prescindir de compañías, de representantes y de aparato mediático no los dejó afuera de nada: les garantizó independencia artística y política, y una libertad poco común para decidir cómo sonar y cómo verse. Cómo se llenaban los estadios sin un solo aviso es historia aparte, y está contada en [[difusion-sin-tele|difusión sin tele]].",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        },
+        {
+          "texto": "La autogestión no salió de la nada. Antes de la banda existió un circuito comunitario —La Cofradía de la Flor Solar y la Casa de la Luna— que entendía el arte como experiencia colectiva y autónoma, por fuera del mercado. Que esa idea haya terminado llenando estadios en los años noventa, en pleno auge neoliberal, refuerza el carácter contracultural del asunto: mientras todo se privatizaba, uno de los fenómenos más masivos del rock argentino funcionaba por fuera del aparato.",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        },
+        {
+          "texto": "Los diez discos de estudio salieron por tres sellos. Por Wormo aparecieron [[gulp|Gulp!]] y [[oktubre|Oktubre]] —este último en vinilo y casete—; por Del Cielito, el Oktubre en CD, [[un-baion-para-el-ojo-idiota|Un baión para el ojo idiota]], [[bang-bang-estas-liquidado|¡Bang! ¡Bang!... Estás liquidado]], [[la-mosca-y-la-sopa|La mosca y la sopa]], [[lobo-suelto|Lobo suelto]] / [[cordero-atado|Cordero atado]] y [[luzbelito|Luzbelito]]; y por Patricio Rey Discos —el sello con el nombre de la casa—, [[ultimo-bondi-a-finisterre|Último bondi a Finisterre]] (1998) y [[momo-sampler|Momo Sampler]] (2000).",
+          "rotulo": "hecho",
+          "fuente": "RES-20",
+          "quien": null
+        },
+        {
+          "texto": "Desde 1992, el catálogo y los derechos del grupo están bajo Erks S.A., una sociedad constituida por el [[indio-solari|Indio Solari]] como presidente, [[skay-beilinson|Skay Beilinson]] como vicepresidente y Carmen Castro, [[la-negra-poli|la Negra Poli]], como directora, con partes iguales del nombre del grupo. Hay registros de marca en el INPI gestionados por la sociedad, con renovación prevista en 2030. La independencia también se administra: no hay multinacional, pero hay papeles en regla.",
+          "rotulo": "hecho",
+          "fuente": "RES-09",
+          "quien": null
+        },
+        {
+          "texto": "La llegada al mundo digital fue con idas y vueltas: el catálogo apareció por primera vez en las plataformas en mayo de 2015, fue retirado en septiembre de 2016 por cambios en las condiciones y fue restituido en julio de 2017, con desacuerdo público del Indio con la publicación digital en el medio. Desde el 28 de julio de 2017 la discografía completa —once títulos, incluyendo — está disponible vía The Orchard, una distribuidora independiente: ni para entrar al catálogo digital hizo falta una multinacional.",
+          "rotulo": "hecho",
+          "fuente": "RES-09",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "difusion-sin-tele",
+        "patricio-rey",
+        "la-negra-poli",
+        "el-aguante"
+      ]
+    },
+    {
+      "slug": "difusion-sin-tele",
+      "tipo": "concepto",
+      "titulo": "Difusión sin tele",
+      "resumen": "Los Redondos se hicieron masivos sin aparecer en televisión, sin publicitar sus recitales y sin firmar con una multinacional. La prensa, cuando los miró —cuenta Rocambole—, los trató como fenómeno de violencia antes que como fenómeno musical. Aun así llenaron Obras, Huracán, River y el Chateau Carreras, con noches de hasta 80.000 personas. La única conferencia de prensa televisada de toda su historia fue en Tandil, en octubre de 1997.",
+      "datos": [
+        {
+          "etiqueta": "La regla",
+          "valor": "Sin televisión, sin publicidad, sin multinacional",
+          "rotulo": "hecho",
+          "fuente": "RES-07"
+        },
+        {
+          "etiqueta": "Única conferencia de prensa televisada",
+          "valor": "Tandil, 4 de octubre de 1997, en ocasión de un recital ante 21.000 personas",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Debut en Obras",
+          "valor": "2 de diciembre de 1989",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Huracán 1993 / 1994",
+          "valor": "Más de 70.000 personas / 80.000 por noche",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "River, abril de 2000",
+          "valor": "70.000 personas",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Chateau Carreras, 2001",
+          "valor": "Alrededor de 50.000 personas",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Hacete la pregunta incómoda: ¿cómo te enterás de un recital que nadie publicita, de una banda que no aparece en televisión y que jamás firmó con una multinacional? Ese es el enigma de Los Redondos: se hicieron masivos sin ninguna de las tres cosas. La difusión sin tele no fue una carencia sino la otra cara de la [[autogestion|autogestión]] que atravesó todo el proyecto: prescindir del aparato mediático era parte del método.",
+          "rotulo": "hecho",
+          "fuente": "RES-07",
+          "quien": null
+        },
+        {
+          "texto": "De la relación con la prensa da cuenta [[rocambole|Rocambole]] —su historia con la banda tiene artículo propio—: una sola vez Clarín publicó una crítica netamente musical sobre Los Redondos. El resto de la cobertura los trató como fenómeno de violencia antes que como fenómeno musical. Es su versión, contada desde adentro; como todo testimonio, va firmada.",
+          "rotulo": "testimonio",
+          "fuente": "RES-07",
+          "quien": "Rocambole"
+        },
+        {
+          "texto": "El trato con los medios fue tan escaso que la única conferencia de prensa televisada de toda la historia de la banda fue en Tandil, el 4 de octubre de 1997, en ocasión de un recital ante 21.000 personas. Una banda que llenaba estadios dando su única conferencia televisada en una ciudad de provincia: la escena resume el método entero.",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        },
+        {
+          "texto": "Y sin aparato mediático, los números: el [[debut-en-obras|debut en Obras]] fue el 2 de diciembre de 1989; en [[huracan-93-94|Huracán]] hubo más de 70.000 personas en 1993 y 80.000 por noche en 1994; en River, en abril de 2000, 70.000; y en el Chateau Carreras de Córdoba, en 2001, alrededor de 50.000. Todo eso sin un aviso y sin pasar por la televisión. Cómo corría la noticia no figura en ninguna ficha; los estadios llenos, sí.",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "autogestion",
+        "el-aguante",
+        "debut-en-obras",
+        "huracan-93-94"
+      ]
+    },
+    {
+      "slug": "la-leyenda-de-ji-ji-ji",
+      "tipo": "leyenda",
+      "titulo": "La leyenda de Ji Ji Ji",
+      "resumen": "Cuentan los fans que detrás de «Ji Ji Ji» hay una historia siniestra: cuatro chicas de vacaciones en Mar del Plata en el verano de 1985, un desconocido que las invita a un boliche, una que se queda porque se siente mal, y un final que cambia según quién lo cuente. Es leyenda urbana, y la desmintió el menos sospechable de todos: el propio Indio Solari, que en 2007 explicó que el tema habla de paranoia y psicopatía, y que el título representa una risa perversa. La leyenda, igual, sigue circulando de previa en previa — y acá está contada como lo que es.",
+      "datos": [
+        {
+          "etiqueta": "Disco",
+          "valor": "Oktubre (1986)",
+          "rotulo": "hecho",
+          "fuente": "RES-08, RES-20"
+        },
+        {
+          "etiqueta": "Pista",
+          "valor": "7 — figura como «Jijiji», 5:34",
+          "rotulo": "hecho",
+          "fuente": "RES-08, RES-20"
+        },
+        {
+          "etiqueta": "Autores",
+          "valor": "Solari y Beilinson",
+          "rotulo": "hecho",
+          "fuente": "RES-08, RES-20"
+        },
+        {
+          "etiqueta": "La leyenda",
+          "valor": "Cuatro chicas en Mar del Plata, verano de 1985, y un final siniestro que cambia según quién lo cuente",
+          "rotulo": "leyenda",
+          "fuente": "RES-08"
+        },
+        {
+          "etiqueta": "Desmentida",
+          "valor": "Por el propio Solari, en Rolling Stone (2007)",
+          "rotulo": "hecho",
+          "fuente": "RES-08"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "La historia que circula arranca siempre igual: verano de 1985, cuatro chicas de vacaciones en Mar del Plata conocen a un chico que las invita a un boliche. Una se queda porque se siente mal. De ahí en adelante, cada versión elige su propio final, y todos son siniestros. Si a vos te la contaron distinta, no sos la excepción: nadie la contó nunca igual dos veces, y eso es justamente lo que delata a una leyenda urbana. Acá va rotulada como lo que es — una historia que los fans se pasaron de mano en mano hasta dejarla pegada al tema para siempre.",
+          "rotulo": "leyenda",
+          "fuente": "RES-08",
+          "quien": null
+        },
+        {
+          "texto": "El que la desarmó fue el propio autor. En una entrevista con Rolling Stone en 2007, el [[indio-solari|Indio Solari]] negó la leyenda de punta a punta: «Ji Ji Ji» habla de paranoia y de psicopatía, y el título representa una risa perversa. Es, explicó, un tema sobre la paranoia de la droga — no sobre la experiencia de drogarse, sino sobre lo que le pasa al que queda a la deriva adentro de esa situación.",
+          "rotulo": "hecho",
+          "fuente": "RES-08",
+          "quien": null
+        },
+        {
+          "texto": "Los papeles del tema están en orden: es de [[oktubre|Oktubre]] (1986), lo compusieron Solari y [[skay-beilinson|Beilinson]], y en el disco figura como «Jijiji», pista 7, con 5 minutos 34 de duración.",
+          "rotulo": "hecho",
+          "fuente": "RES-08, RES-20",
+          "quien": null
+        },
+        {
+          "texto": "Años después, en sus memorias —que él mismo presenta como apenas su versión—, el Indio volvió sobre el punto y dijo lo mismo que en 2007: el tema sí tenía que ver con la droga, pero como prisma, no como crónica. La risita del título es la risita crispada, medio perversa, del que está pasado; la cocaína en sí es inerte y no es culpable de nada; lo que importa es lo que le pasa al que queda a la deriva. Dos fuentes del mismo autor, separadas por años, diciendo lo mismo. Y dejó además dos confesiones de autor: el interludio instrumental —justo la parte que más pega en vivo— nunca le gustó, y los versos que cierran la letra impresa en el sobre interno de Oktubre no se oyen en el disco: eran lo que cantaban sobre la melodía instrumental del final.",
+          "rotulo": "testimonio",
+          "fuente": "RES-22",
+          "quien": "Indio Solari (en «Recuerdos que mienten un poco»)"
+        },
+        {
+          "texto": "Alfredo Rosso, citado en esas mismas memorias, aportó la definición musical: «Ji Ji Ji» es un tango metamorfoseado con «House Burning Down» de Jimi Hendrix. Quedate con esa imagen: el himno ricotero por excelencia sería, en el fondo, un tango cruzado con Hendrix.",
+          "rotulo": "testimonio",
+          "fuente": "RES-22",
+          "quien": "Alfredo Rosso (citado en las memorias del Indio)"
+        }
+      ],
+      "veaTambien": [
+        "oktubre",
+        "indio-solari",
+        "misa-ricotera"
+      ]
+    },
+    {
+      "slug": "patricio-rey",
+      "tipo": "leyenda",
+      "titulo": "Patricio Rey",
+      "resumen": "Patricio Rey es el padrino que le da nombre a la banda y al que nadie le vio nunca la cara: un personaje inventado a propósito para que el centro no fuera ninguno de los músicos. En el mito interno tenía departamento en París y un cuadro de Mondrian en el ascensor; en la versión de Rocambole existía de verdad y vivía en Salta, y el Indio nunca la desmintió. Lo único con fecha cierta es el nombre: nació la noche del debut, en 1977, de un libro de recetas de una ecónoma llamada — ojo — Patricia Rey.",
+      "datos": [
+        {
+          "etiqueta": "Qué es",
+          "valor": "El padrino inventado que le da nombre a la banda",
+          "rotulo": "hecho",
+          "fuente": "RES-22 (corrige RES-05)"
+        },
+        {
+          "etiqueta": "Nacimiento del nombre",
+          "valor": "26 de noviembre de 1977, Teatro Lozano, la noche del debut",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Origen de la receta",
+          "valor": "Buñuelos redondos de ricota, de un libro de la ecónoma Patricia Rey — la fuente dice «Patricia»; la banda dice «Patricio»",
+          "rotulo": "hecho",
+          "fuente": "RES-05"
+        },
+        {
+          "etiqueta": "Según Rocambole",
+          "valor": "Existía de verdad y vivía en Salta",
+          "rotulo": "leyenda",
+          "fuente": "RES-22"
+        },
+        {
+          "etiqueta": "Domicilio en el mito",
+          "valor": "Departamento en París, con un Mondrian en el ascensor (lo cuenta el Indio en sus memorias)",
+          "rotulo": "testimonio",
+          "fuente": "RES-22"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Empecemos por lo que está firme: Patricio Rey fue una invención deliberada. La banda quería un personaje que no fuese ninguno de ellos — un padrino que se había ganado la reverencia de sus seguidores, un centro de gravedad sin cara. El [[indio-solari|Indio Solari]] lo confirma en sus memorias, así que el invento, como invento, está verificado. Lo que no está tan claro es todo lo demás.",
+          "rotulo": "hecho",
+          "fuente": "RES-22 (corrige RES-05)",
+          "quien": null
+        },
+        {
+          "texto": "Según el Indio, el personaje tenía su mitología bien amueblada: departamento en París y un cuadro de Mondrian en el ascensor. Los músicos, mientras tanto, se pensaban a sí mismos como envases vacíos por los que pasaba la energía. El padrino era el dueño de la fiesta; ellos apenas la servían.",
+          "rotulo": "testimonio",
+          "fuente": "RES-22",
+          "quien": "Indio Solari (en «Recuerdos que mienten un poco»)"
+        },
+        {
+          "texto": "Y después está la versión de [[rocambole|Rocambole]], que declaró que Patricio Rey existía de verdad y vivía en Salta. El origen sería un tal Francisco «Pancho» Silva, un artesano al que le decían el loco de la guerra, que le cantaba a dos dioses que iban a venir en una nave espacial a traer cereales nuevos. [[skay-beilinson|Skay]] y [[la-negra-poli|Poli]] lo habrían conocido cuando administraban un campo en Salta, después de la primera separación de la banda. Nadie confirmó nunca esta historia, pero tampoco nadie la desmintió: cuando le preguntaron al Indio, respondió, entre la sorpresa y la risa, que puede ser.",
+          "rotulo": "leyenda",
+          "fuente": "RES-22",
+          "quien": null
+        },
+        {
+          "texto": "El Indio, en esas mismas memorias —que él mismo presenta como apenas su versión—, lo resuelve por el lado poético: Patricio Rey debería poder encarnar en cualquiera. Si el padrino puede ser cualquiera, discutir si fue alguien pierde bastante sentido. Quedate con la versión que más te guste: el personaje las aguanta todas.",
+          "rotulo": "testimonio",
+          "fuente": "RES-22",
+          "quien": "Indio Solari (en «Recuerdos que mienten un poco»)"
+        },
+        {
+          "texto": "El nombre completo, en cambio, tiene fecha y lugar de nacimiento: la noche del debut, el 26 de noviembre de 1977 en el Teatro Lozano. Los buñuelos redondos de ricota salían de una receta que venía de un libro de la ecónoma Patricia Rey. Sí, leíste bien: la fuente dice «Patricia», y la banda se llama «Patricio». Ese cambio de vocal todavía no tiene explicación fichada, así que acá queda anotado tal cual está, sin inventarle un porqué.",
+          "rotulo": "hecho",
+          "fuente": "RES-05",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "rocambole",
+        "indio-solari",
+        "la-formacion",
+        "skay-beilinson"
+      ]
+    }
+  ]
+}

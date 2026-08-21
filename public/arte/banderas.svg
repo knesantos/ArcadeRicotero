@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 260" preserveAspectRatio="xMidYMax slice" role="img" aria-label="La gente con banderas">
+  <!-- Marcador de posicion: multitud generica con banderas, silueta original propia.
+       A reemplazar por el recorte real de la marcha de "Oktubre" (mismo archivo). -->
+  <g fill="ivory">
+    <!-- mastiles, cada uno con su inclinacion -->
+    <path d="M120 190 L 132 24" stroke="ivory" stroke-width="7" stroke-linecap="round"/>
+    <path d="M340 200 L 330 10" stroke="ivory" stroke-width="7" stroke-linecap="round"/>
+    <path d="M585 195 L 600 30" stroke="ivory" stroke-width="7" stroke-linecap="round"/>
+    <path d="M830 205 L 818 18" stroke="ivory" stroke-width="7" stroke-linecap="round"/>
+    <path d="M1060 195 L 1072 36" stroke="ivory" stroke-width="7" stroke-linecap="round"/>
+    <!-- banderas flameando, telas irregulares -->
+    <path d="M132 24 C 175 14, 215 34, 255 22 C 250 48, 252 62, 258 78 C 218 88, 176 70, 134 82 Z"/>
+    <path d="M330 10 C 288 22, 258 12, 224 24 C 232 44, 231 58, 226 74 C 262 64, 292 76, 328 66 Z" opacity="0.8"/>
+    <path d="M600 30 C 645 18, 690 40, 735 26 C 728 50, 730 66, 738 84 C 694 94, 650 74, 602 88 Z"/>
+    <path d="M818 18 C 776 30, 742 20, 706 34 C 714 52, 713 66, 708 82 C 745 70, 778 82, 816 70 Z" opacity="0.8"/>
+    <path d="M1072 36 C 1110 26, 1148 44, 1188 32 C 1182 54, 1184 68, 1190 84 C 1152 94, 1112 76, 1074 88 Z"/>
+    <!-- la multitud: una linea de cabezas y hombros, despareja -->
+    <path d="M0 260 L 0 218 C 20 214, 28 198, 44 198 C 60 198, 64 212, 82 214 C 94 194, 116 192, 128 208 C 148 204, 154 188, 172 190 C 190 192, 194 208, 212 210 C 222 190, 246 188, 258 204 C 276 200, 282 186, 300 188 C 318 190, 322 206, 340 208 C 352 190, 374 190, 386 206 C 404 202, 410 188, 428 190 C 446 192, 450 206, 468 208 C 480 190, 502 188, 514 204 C 532 200, 538 186, 556 188 C 574 190, 578 204, 596 206 C 608 188, 630 188, 642 204 C 660 200, 666 186, 684 188 C 702 190, 706 204, 724 206 C 736 188, 758 186, 770 202 C 788 198, 794 184, 812 186 C 830 188, 834 202, 852 204 C 864 186, 886 186, 898 202 C 916 198, 922 184, 940 186 C 958 188, 962 202, 980 204 C 992 186, 1014 186, 1026 202 C 1044 198, 1050 184, 1068 186 C 1086 188, 1090 202, 1108 204 C 1120 186, 1142 186, 1154 202 C 1170 198, 1178 188, 1200 190 L 1200 260 Z"/>
+    <!-- brazos en alto, sueltos -->
+    <path d="M460 208 C 452 184, 448 168, 452 152" stroke="ivory" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <path d="M478 206 C 486 186, 492 174, 502 164" stroke="ivory" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <path d="M920 204 C 914 182, 912 168, 918 152" stroke="ivory" stroke-width="9" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

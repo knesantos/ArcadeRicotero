@@ -1,92 +1,66 @@
 ---
 /**
- * Pantalla 0 y contenedor del quiz. Implementa `UX-01` v2.
+ * El portal del arcade: la pantalla de entrada de todo el sitio.
  *
- * Arquitectura de islas (`D-02`): esto es HTML estatico. El unico JavaScript es el de
- * `partida.ts`, y se carga aca porque el quiz es la isla.
+ * Un cassette grabado en casa: lado A los juegos, lado B la lectura. Cada casete
+ * viste la paleta real de su disco (mezcla `D-19`) y el collage de fondo trae los
+ * recortes que pide `UX-04` con tecnicas fichadas de Rocambole (`RES-06`): la
+ * mosca volando, la gente con banderas, el perro suelto.
  *
- * **Molinetes abiertos (`D-14`):** esta pantalla no pide nada. Ni cuenta, ni login, ni
- * un campo de texto. Un tap y a jugar. `T-39` se verifica con un grep que cuenta cero
- * `<input>` y cero `<form>` en el HTML generado — no es una metafora, es una prueba.
+ * Molinetes abiertos (`D-14`): esta pantalla no pide nada — ni cuenta ni saber.
  */
-import '../styles/tokens.css';
-import '../styles/juego.css';
-import { cargarBanco, type BancoCrudo } from '../lib/quiz/banco.ts';
-import { PANTALLA_0 } from '../lib/quiz/copy.ts';
-import crudo from '../data/quiz.json';
+import Base from '../layouts/Base.astro';
+import { PORTAL, JUEGOS, CASETE_REDONDOPEDIA, type Casete } from '../lib/sitio/copy.ts';
+import { conRecorteReal } from '../lib/sitio/arte.ts';
 
-// El banco se resuelve en build: el navegador recibe JSON ya filtrado, sin campos
-// internos y sin los items en borrador o retirados.
-const items = cargarBanco(crudo as unknown as BancoCrudo);
+const lados: Array<{ titulo: string; casetes: readonly Casete[] }> = [
+  { titulo: PORTAL.ladoA, casetes: JUEGOS },
+  { titulo: PORTAL.ladoB, casetes: [CASETE_REDONDOPEDIA] },
+];
 ---
 
-<!doctype html>
-<html lang="es-AR">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={PANTALLA_0.subtitulo} />
-    <title>Arcade Ricotero</title>
-  </head>
-  <body>
-    <main id="app">
-      <!-- Pantalla 0. El subtitulo lo reemplaza partida.ts si se llega por un desafio. -->
-      <section id="portada" class="pantalla">
-        <p class="marca" aria-label="Arcade Ricotero">ARCADE RICOTERO</p>
-        <h1>{PANTALLA_0.titulo}</h1>
-        <p id="subtitulo" class="tenue">{PANTALLA_0.subtitulo}</p>
-        <button id="jugar" class="primario" type="button">{PANTALLA_0.botón}</button>
+<Base titulo="Arcade Ricotero" descripcion={PORTAL.bajada} conBanderas conMosca>
+  <script is:inline slot="cabeza">
+    // El quiz vivia en la raiz: los links de desafio viejos (`?g=quiz&p=...`) siguen
+    // valiendo — se redirigen a /quiz/ con la query intacta (ADR-02 no cambia).
+    if (/(^|[?&])g=/.test(location.search)) location.replace('/quiz/' + location.search);
+  </script>
+
+  <header class="portada-arcade">
+    <img class="recorte-portada" src={conRecorteReal('/arte/perro.svg')} alt="" aria-hidden="true" />
+    <h1 class="marca-grande">ARCADE RICOTERO</h1>
+    <p class="bajada-portal">{PORTAL.bajada}</p>
+  </header>
+
+  {
+    lados.map((lado) => (
+      <section>
+        <h2 class="lado">{lado.titulo}</h2>
+        <ul class="casetera">
+          {lado.casetes.map((c) => (
+            <li>
+              <a
+                class:list={['casete', `casete--${c.variante}`, { 'casete--pronto': !c.accion }]}
+                href={c.href}
+              >
+                <img class="casete-arte" src={conRecorteReal(c.arte)} alt="" aria-hidden="true" />
+                <span class="casete-etiqueta">
+                  <strong class="casete-titulo">{c.titulo}</strong>
+                  <span class="casete-baja">{c.baja}</span>
+                </span>
+                <span class="casete-pie">
+                  <span class="casete-disco">{c.viste}</span>
+                  {c.accion ? (
+                    <span class="casete-accion">{c.accion}</span>
+                  ) : (
+                    <span class="casete-pronto">{PORTAL.enLaCocina}</span>
+                  )}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </section>
-
-      <section id="partida" class="pantalla" hidden></section>
-      <section id="resultado" class="pantalla" hidden></section>
-    </main>
-
-    <script type="application/json" id="banco" set:html={JSON.stringify(items)} />
-    <script>
-      import '../scripts/partida.ts';
-    </script>
-
-    <style>
-      main {
-        max-width: 34rem;
-        margin: 0 auto;
-      }
-      /* La portada viste Oktubre (D-19): la titular calcada, el rojo de la tapa. */
-      .marca {
-        font-family: var(--fuente-titular);
-        font-size: 2.1rem;
-        line-height: 0.96;
-        color: var(--marca-rojo);
-        margin: var(--espacio-3) 0 var(--espacio-2);
-        max-width: 7ch;
-      }
-      h1 {
-        font-size: 1.35rem;
-        line-height: 1.3;
-        text-wrap: balance;
-        margin-top: 0;
-      }
-      .tenue {
-        color: var(--texto-tenue);
-      }
-      .pantalla[hidden] {
-        display: none;
-      }
-      .primario {
-        display: block;
-        width: 100%;
-        margin-top: var(--espacio-4);
-        padding: var(--espacio-2);
-        font-family: var(--fuente-rotulada);
-        background: var(--marca-rojo);
-        color: var(--fondo);
-        border: none;
-        border-radius: var(--radio);
-        font-size: 1.25rem;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-      }
-    </style>
-  </body>
-</html>
+    ))
+  }
+</Base>

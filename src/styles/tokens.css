@@ -73,6 +73,17 @@
   /* La marca viste Oktubre (D-19): el rojo de la tapa, medido (RES-37). */
   --marca-rojo: #f8360d;
 
+  /* Collage de cassette (UX-04: el collage es tecnica fichada de Rocambole, RES-06).
+     Papel de etiqueta: sobre el escribe la tinta del fondo (--fondo), par testeado.
+     El borde del papel no se usa como texto — como los -apoyo, no entra al test AA. */
+  --papel: #ede4ce;
+  --papel-borde: #c9bda0;
+
+  /* Grano de serigrafia (UX-04: "grano, imperfeccion de borde, nunca vector limpio").
+     Ruido monocromo en SVG embebido: sin color propio, solo alfa — se apoya sobre
+     cualquier fondo sin taparlo. */
+  --textura-grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0.55 0.55 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+
   /* Tipografia (hoja 04). Titular: el calco real. Rotulada: grita corto.
      Texto: pila del sistema — el enunciado y las opciones van SIEMPRE aca. */
   --fuente-titular: 'Oktubre Calco', 'Archivo Black', 'Arial Black', sans-serif;
