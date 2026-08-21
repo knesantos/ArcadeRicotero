@@ -12,7 +12,12 @@
 import Base from '../../layouts/Base.astro';
 import { PORTAL, REDONDOPEDIA } from '../../lib/sitio/copy.ts';
 import { porTipo, TIPO_A_CATEGORIA, type Articulo } from '../../lib/redondopedia.ts';
+import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/redondopedia.json';
+
+/** La cabecera viste Gulp! (`D-19`, catalogo `UX-05`), con velo (`D-21`). */
+const fondoCabecera = fondoTapa('gulp-pincelada');
+const tapasUsadas = fondoCabecera ? discosDe(['gulp-pincelada']) : [];
 
 const articulos = (crudo as unknown as { articulos: Articulo[] }).articulos;
 const grupos = porTipo(articulos);
@@ -26,17 +31,21 @@ const recortar = (texto: string): string =>
   descripcion={REDONDOPEDIA.bajada}
   conBanderas
   volverA={{ href: '/', texto: PORTAL.volverAlArcade }}
+  tapas={tapasUsadas}
 >
-  <h1 class="titulo-seccion">{REDONDOPEDIA.titulo}</h1>
-  <p class="bajada-portal">{REDONDOPEDIA.bajada}</p>
+  <div class="portada-redondopedia">
+    {fondoCabecera && <div class="tapa-fondo tapa-fondo--gulp-pincelada" aria-hidden="true" />}
+    <h1 class="titulo-seccion">{REDONDOPEDIA.titulo}</h1>
+    <p class="bajada-portal">{REDONDOPEDIA.bajada}</p>
 
-  <p class="leyenda-rotulos">
+    <p class="leyenda-rotulos">
     {REDONDOPEDIA.explicacionRotulos}<b class="es-leyenda"
       >◆ {REDONDOPEDIA.palabraLeyenda}</b
     >{REDONDOPEDIA.explicacionMedio}<b class="es-testimonio"
       >❝ {REDONDOPEDIA.palabraTestimonio}</b
     >{REDONDOPEDIA.explicacionCierre}
-  </p>
+    </p>
+  </div>
 
   {
     [...grupos.entries()].map(

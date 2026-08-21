@@ -6,11 +6,12 @@
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
 **Última actualización:** 2026-08-21
-**Ciclo actual:** **3 — CERRADO.** Las 16 tareas `T-28`..`T-43`, más los siete hallazgos
-de `REV-04`, corregidos y verificados. **El quiz se juega**: Astro con salida estática,
-30 preguntas, cinco reglas como funciones puras con test, cuatro pantallas. 47 tests,
-`tsc` limpio, build OK. Repo en **https://github.com/knesantos/ArcadeRicotero**.
-Los ciclos 1 y 2 también están cerrados. **Ningún ciclo tiene nada abierto.**
+**Ciclo actual:** **4 — CERRADO.** Las 20 tareas `T-44`..`T-63`, más los hallazgos de las
+dos revisiones, corregidos y verificados. **Las tapas reales entraron al sitio y hay un
+segundo juego jugable**: `US-04` (adivinar la tapa) cerró su piso en 10/10 y se juega de
+punta a punta. La Redondopedia pasó de 26 a **29 de 35** artículos. **77 tests**, `tsc`
+limpio, build de **35 páginas**. Repo en **https://github.com/knesantos/ArcadeRicotero**.
+Los ciclos 1, 2 y 3 también están cerrados. **Ningún ciclo tiene nada abierto.**
 
 > 🔴 **Y algo peor que faltaba código: no hay repositorio git.** 55 archivos de trabajo de
 > dos ciclos completos, sin un solo commit y sin respaldo. Lo encontró `orquestador` al
@@ -91,7 +92,33 @@ Los ciclos 1 y 2 también están cerrados. **Ningún ciclo tiene nada abierto.**
 
 ## Próximo paso
 
-**Correr `/ciclo` para el ciclo 4.** El quiz funciona; lo que falta es el resto de la v1.
+**Correr `/ciclo` para el ciclo 5.** El ciclo 4 cerró entero. Hay **dos juegos jugables**
+(el quiz y adivinar la tapa) y las tapas reales visten el sitio.
+
+**Lo que más acerca el "Listo" de la v1, en orden:**
+
+1. **Las letras, que son un solo frente aunque parezcan tres.** `US-03` (completar la
+   letra) tiene contrato desde `T-62` (`CTR-04`), las 10 preguntas de `letras` cierran el
+   piso de 40 de `US-01`, y los 6 artículos `tema` cierran el piso de 35 de `US-05`. Las
+   tres cosas esperan el mismo insumo: **versos**. `RES-45` evaluó la fuente que trajiste
+   (redondossubtitulados) y `BR-12` ya fijó que un artículo `tema` lleva versos citados y
+   análisis, no la letra entera. Falta que alguien vaya a buscar el material.
+2. **`US-02` (adivinar el tema) sigue esperándote a vos.** `CTR-03` pide `origen` y
+   `fechaCorte` por ítem, y esos campos salen de recortar los mp3. Ningún rol puede
+   inventarlos.
+3. **Desplegar en Vercel.** Nada lo bloquea desde `D-14` y `D-15`, y ahora el sitio tiene
+   algo que mostrar.
+
+**Lo que el ciclo 4 dejó afuera a propósito, y conviene que el 5 decida:** la sección 2 de
+`UX-05` — las **siete superficies del quiz** que el catálogo viste con tapas (fondo en la
+presentación y en el resultado, detalle por categoría, y el sello de esquina para el
+crédito en una isla que no tiene pie). El plan del ciclo 4 nunca las cubrió: sus tareas de
+aplicación eran el portal, las pantallas en la cocina y la Redondopedia. No es un olvido
+ahora, es una tarea del ciclo 5 — o una fila que `experiencia` retira del catálogo.
+
+**Rangos:** el ciclo 4 consumió `T-44`..`T-63`, `D-21`, `RES-44`..`RES-46`, `CTR-04`,
+`CTR-05`, `BR-12`, `CNT-06`, `UX-05`, `REV-05`. Libres: `T-64`+, `D-22`+, `RES-47`..`RES-49`,
+`CNT-07`+, `REV-06`+, `UX-06`+.
 
 > 🆕 **La Redondopedia ya está construida y navegable con 26 de los 35 artículos del piso**
 > (sesión 2026-08-21 — ver bitácora). El sitio entero tiene esqueleto: portal collage en
@@ -230,6 +257,17 @@ bloquean entre sí**:
 
 Estados posibles: `pendiente` · `en curso` · `bloqueado` · `hecho` · `cancelado`
 
+## Ideas guardadas — no se hacen ahora
+
+> Pedidos del usuario registrados a propósito **fuera** del ciclo en curso. No son
+> bloqueos ni tareas: son cosas que van a pasar, todavía sin ID y sin fecha. Cada una
+> tiene su propuesta escrita en `Docs/SUGERENCIAS/`.
+
+| Idea | Origen | Dueños cuando se tome | Puntero |
+|---|---|---|---|
+| **Que el sitio intente hablar como el Indio.** Analizar a fondo letras, entrevistas y demás archivo para destilar una guía de voz por encima de `CNT-02` y `D-17`. El usuario la marcó como idea futura, con esas palabras | usuario, 2026-08-21 | `investigador` junta el corpus (única puerta a la web), `contenido` destila la guía | `Docs/SUGERENCIAS/HILO-para-contenido-e-investigador-voz-del-indio.md` |
+| **Las bandas ricoteras de después de la separación entran a la Redondopedia.** El usuario nombró tres: *La Kermesse Redonda*, *Indio y los Fundamentalistas del Aire Acondicionado* y *Skay y los Fakires*. **Que entran no está en discusión**; falta ficha que verifique los nombres y decisión de `producto` sobre tipo y piso | usuario, 2026-08-21 | `investigador` (ficha), `producto` (tipo + piso), `contenido` (escribe) | `Docs/SUGERENCIAS/HILO-para-producto-y-contenido-bandas-post-separacion.md` |
+
 ## Bloqueos abiertos
 
 - **`ADR-01` espera evidencia, no trabajo.** Solo `E-04` y `E-07`; `E-02`, `E-03` y `E-08`
@@ -294,6 +332,14 @@ Estados posibles: `pendiente` · `en curso` · `bloqueado` · `hecho` · `cancel
   **Decidilo antes del primer lote**, no después de tener cuarenta preguntas escritas.
 - **Si el sitio menciona en algún lado que el Indio murió, y dónde.** Sale de `RES-04`.
   Dueño: `contenido`, con `producto` si toca la definición de "Listo" (probablemente no).
+- **Bajo qué tipo entran las bandas ricoteras de después de la separación, y qué le hace
+  eso al piso de 35.** `BR-07` tiene seis tipos y ninguno es `banda`: o se agrega el tipo,
+  o van como un `concepto` de cultura, o van adentro de `la-separacion` / `indio-solari` /
+  `skay-beilinson`. Dueño: **`producto`**. Que entren lo decidió el usuario; el cómo, no.
+  **Y con una línea que hay que escribir igual: material de esas bandas puede ser artículo,
+  pero no ítem de juego** mientras `US-01`..`US-04` sigan definidos sobre los 105 temas de
+  `RES-20`. Propuesta en
+  `Docs/SUGERENCIAS/HILO-para-producto-y-contenido-bandas-post-separacion.md`.
 - **Qué se hace con "Huracán en el 89".** `Docs/BRIEF.md` y `CLAUDE.md` lo usan como
   ejemplo del fan que sabe, pero en 1989 no hubo Huracán: fue 1993 y 1994 (`RES-05`). Como
   frase retórica no rompe nada; el riesgo es que alguien la convierta en pregunta. Dueño:
@@ -366,3 +412,11 @@ Estados posibles: `pendiente` · `en curso` · `bloqueado` · `hecho` · `cancel
 | 2026-08-21 | **Las tapas de Coveralia, bajadas y en uso acotado.** Pedido directo del usuario sobre el puntero que él mismo trajo: 35 imágenes (frontal, trasera y CD/interior donde existen, los 11 títulos) en `Docs/INVESTIGACION/TapasDiscos/` como másters fuera del sitio, y **bajas de 320 px** generadas a `public/tapas/` con `scripts/generar-tapas.mjs` (repetible). Dónde aparecen: **solo en las fichas `disco` de la Redondopedia** con crédito a Rocambole (`BR-07` las pide; `D-04` las quiere en baja) — el resto del collage sigue siendo recortes y dibujos propios, porque `UX-04` prohíbe la tapa entera como fondo decorativo. Nota para `investigador`: la ficha de evaluación de Coveralia sigue pendiente (`HILO-para-investigador-fuente-coveralia.md`); esto fue ejecución del pedido del usuario, no evaluación de corpus — la trampa de ediciones que avisó `RES-25` queda por auditar imagen por imagen. |
 | 2026-08-21 | Nota de proceso: el test de estilos fallaba en Windows por finales de línea CRLF del checkout (buscaba `\n}\n` literal) — venía fallando también sobre `main`, no lo introdujo esta sesión. Normalizado al leer en `estilos.test.ts`, que además ahora audita `sitio.css` en la regla de cero hex fuera de `tokens.css`. |
 | 2026-08-21 | **Corrida anti-slop, por pedido directo del usuario: nada en el sitio puede verse como la interfaz por defecto de una IA.** La regla quedó escrita para todos en `.claude/rules/diseno-marca.md` (tabla de tics vetados con su reemplazo en el idioma del proyecto — sello, cinta, papel, tinta plana, rotación) y **lo auditable se audita a máquina**: `estilos.test.ts` falla el build si vuelve una pastilla 999px o una barra de acento lateral fuera de la cita rotulada. Lo barrido, detectado con una caza de 3 agentes más el ojo propio: la **barra de acento a la izquierda de las tarjetas** (el caso que motivó el pedido — `.tarjeta-articulo` y `.feedback` pasan a borde completo teñido), **siete pastillas cápsula** convertidas a sello de goma de esquina casi viva, `--radio` de 14px a **4px** (papel cortado, no burbuja — deuda de lienzo anotada), los `style=` inline de la plantilla de artículo movidos a clases, y las **superficies "elevadas"** de las piezas del collage reemplazadas por recorte de borde grueso — que además arregla un defecto real: `cat-letras` sobre `--fondo-elevado` daba **4,32:1, abajo de AA**; sobre `--fondo` todos los pares pasan. En texto: la coletilla "entre los emblemas" repetida en siete discos destemplada, el redoble de tambor antes del dato y la honestidad declamada de tres cierres pasados a tinta seca, y dos cadenas de `CNT-05` corregidas — la gorda: **"¡Con la gorra bien puesta!" premiaba con la policía** ("la gorra" en la tribuna) y era jerga inventada; ahora "¡De una la sacaste!". Propuestas a `experiencia` y `contenido` actualizadas. 55/55 tests, build OK. |
+| 2026-08-21 | **Ciclo 4 planificado: `T-44`..`T-63`, 20 tareas, en `Docs/ORQ/ORQ-plan-ciclo-4.md`.** Pedido del usuario que ordena el ciclo: integrar las tapas reales a la página —recortarlas, usar detalles, usarlas de fondo— más seguir con los juegos, la página y la Redondopedia. El corte encontró que **el pedido choca de frente con una regla vigente**: `UX-04` dice textualmente que las tapas reales van "nunca como fondo decorativo de otra pantalla", así que el ciclo arranca registrando `D-21` (`T-44`) y reescribiendo esa fila (`T-45`) — construir antes de eso sería construir contra una regla. El foco es doble y no casual: las tapas entran al sitio y de paso se cierra **`US-04` (adivinar la tapa) de 0/10 a 10/10**, el único de los tres juegos que faltan cuya materia prima ya está en el repo. La Redondopedia va de 26/35 a **29/35** (los 2 `hito` de Bulacio y Olavarría más la tercera `leyenda`). **Riesgo declarado del ciclo:** que la foto de fondo con velo oscuro y texto encima traiga de vuelta el slop que costó una corrida entera sacar, y que rompa los pares AA — mitigado con el velo como token testeado, recorte pegado en vez de imagen a sangre, y una regla más en `estilos.test.ts`. **Cambio de alcance declarado:** `BR-07` pedía "letra completa" en los artículos `tema`; `T-61` le pide a `producto` que lo corrija a versos citados más análisis, alineado con el techo de cita de `RES-03` y con los 2/1/0 versos de `BR-03`. El piso de 6 no se toca. Quedó afuera `US-02` entero (los recortes de audio los produce el usuario), la carga de letras (el insumo todavía no está en el repo — se llevan las tres tareas que destraban el ciclo 5) y desplegar en Vercel (va primero en el 5, con las tapas ya adentro). Rangos reservados en `Docs/IDS.md`: `RES-44`..`RES-49`. |
+| 2026-08-21 | **El usuario dejó guardada una idea futura: que el sitio intente hablar como el Indio.** Analizar a fondo letras, entrevistas y demás archivo, y destilar de ahí una guía de voz que se apoye encima de `CNT-02` y `D-17`, no que las reemplace. **Pidió explícitamente que no se haga ahora.** Puntero en `Docs/SUGERENCIAS/HILO-para-contenido-e-investigador-voz-del-indio.md`, con las tres preguntas que hay que contestar antes de escribir copy: si el sitio habla *como* él o *citándolo* (escribir frases nuevas con la voz de una persona real que murió el 5-jun-2026, `RES-04`, no es lo mismo que citar testimonio rotulado); dónde aplica y dónde no (un botón críptico es un molinete cerrado, `D-14`); y que no termine en imitación de manual, que es el slop de `.claude/rules/diseno-marca.md` pero en el texto. |
+| 2026-08-21 | **Pedido del usuario: las bandas ricoteras nacidas después de la separación son parte de la cultura y van a la Redondopedia.** Nombró tres — *La Kermesse Redonda*, *Indio y los Fundamentalistas del Aire Acondicionado*, *Skay y los Fakires* — transcriptas tal cual, **sin verificar por nadie**: los nombres exactos, las fechas y qué es cada una las fija una ficha `RES-XX`, porque la web tiene una sola puerta. Que entran no se discute; falta que `producto` decida bajo qué tipo (`BR-07` tiene seis y ninguno es `banda`) y qué le pasa al piso de 35 (`BR-11` es el orden de recorte). **La trampa señalada en la propuesta:** artículo sí, ítem de juego no — el filtro de los **105 temas de `RES-20`** existe justo para que no se mezcle material solista con el de la banda, y meterlo en un juego le marcaría error al que se sabe cuál es cuál. Nada de esto es del ciclo 4. |
+| 2026-08-21 | **Ciclo 4 EJECUTADO y cerrado: las 20 tareas `T-44`..`T-63`.** Pedido del usuario: integrar las tapas reales a la página —recortarlas, usarlas de fondo— más seguir con los juegos, la página y la Redondopedia. **Lo primero que apareció fue un choque:** `UX-04` decía textualmente que las tapas reales van *"nunca como fondo decorativo de otra pantalla"*, o sea exactamente lo prohibido era lo pedido. Se registró `D-21` (las tapas entran a toda la pantalla, con cuatro condiciones: crédito, legibilidad como token testeado, la forma del proyecto y baja resolución) y recién después `experiencia` reescribió la fila y escribió `UX-05`, el catálogo pantalla por pantalla. **Resultado en el sitio:** 16 derivados nuevos generados desde los másters (`scripts/generar-tapas.mjs` ahora produce ficha, detalle y fondo), el portal con la franja de banderas de *Oktubre* y un recorte por casete, las pantallas en la cocina y la cabecera de la Redondopedia con fondo velado, y las fichas de artículo con su detalle por sección. **El velo es prueba, no promesa:** `--velo-tapa` (86%) y `--velo-tapa-titular` (75%) con seis tests que miden el **peor compuesto posible** —el velo sobre un píxel blanco puro—, más una regla en `estilos.test.ts` que falla el build si una tapa entra de fondo sin velo. |
+| 2026-08-21 | **Y el ciclo 4 dejó un segundo juego jugable: `US-04` (adiviná la tapa), 10/10.** `arquitectura` escribió `CTR-05`, `contenido` cargó el banco y el hilo principal el juego, que **reusa el armado de ronda del quiz en vez de copiarlo** — copiarlo habría copiado también el defecto que ese archivo arregla (la correcta caía primera en 25 de 30 ítems). El portal ya lo anuncia con JUGÁ. La Redondopedia pasó de 26 a **29 de 35**: los dos `hito` de Bulacio y Olavarría —habilitados por el veredicto de `contenido` en `CNT-06`— y la tercera `leyenda`. Se cerraron además `CTR-04` (schema de completar la letra), `BR-12` (un artículo `tema` lleva versos citados y análisis, no la letra entera), `RES-44` (auditoría de edición de las 35 imágenes y evaluación de Coveralia) y `RES-45` (la fuente de letras que trajo el usuario). **77 tests, `tsc` limpio, build de 35 páginas.** |
+| 2026-08-21 | **Tres cosas que el ciclo 4 encontró y que valen como lección.** (1) **La imagen de *La mosca y la sopa* no era de Rocambole:** el frontal que se había bajado es un rediseño con una foto de recital. Lo detectó `contenido` al no poder cargar el décimo ítem y lo confirmó el hilo principal mirándola. La contratapa sí trae el collage real, así que de ahí salen ahora la ficha de ese disco y los recortes de la sección `letras`. (2) **Una invariante propia rompió el build de más:** rechazaba toda reedición como respuesta correcta, cuando `RES-44` solo la veta *si la pregunta depende de la edición*. Se relajó a lo indefendible —"no determinable"— y quedó como test. (3) **`UX-05` mandaba poner *Oktubre* detrás de la marca grande**, que es el único texto del sitio que no llega a AA sobre tapa velada (3,38:1, y al 92% de velo sigue sin llegar). El fondo va anclado abajo. Las dos desviaciones quedaron en `Docs/SUGERENCIAS/` esperando a `experiencia`; `revisor` las revisó y las dio por bien resueltas y bien documentadas. |
+| 2026-08-21 | **Las dos revisiones del ciclo encontraron nueve hallazgos y los importantes se corrigieron en la misma ráfaga.** El más serio: **`TP-010` mostraba la contratapa con el título del disco impreso y legible en la propia imagen** —la respuesta escrita adentro de la pregunta, y encima rotulado difícil—. Se cambió al recorte de la olla, que no lleva texto. También: `TP-002` mezclaba un hecho verificado con una afirmación reportada y ahora la lleva rotulada como leyenda; `CNT-01` seguía diciendo que las tapas se usaban en un solo juego y que venían del Cover Art Archive, y quedó al día; y **el crédito por pantalla de la condición 1 de `D-21` estaba implementado genérico** — ahora cada página declara qué tapas usa y el pie las nombra. `REV-05` quedó escrita con los cinco hallazgos de `US-04`, tres de ellos abiertos y con dueño (`arquitectura`: la ruta de `detalle` en `CTR-05.4`, la ventana de precarga, y el crédito compartido de *Lobo suelto*/*Cordero atado*). |
+| 2026-08-21 | **El lienzo de marca se actualizó de verdad, y con eso el circuito de `.claude/rules/diseno-marca.md` quedó cumplido por primera vez.** La regla manda diseño → tokens → test y nunca al revés, pero el lienzo es un artefacto publicado que lleva su propio editor adentro: la sesión frenó y le preguntó al usuario antes de tocarlo, porque republicarlo reescribe lo que él edita a mano. Confirmó que nunca lo había editado. Se extrajeron las once hojas, se le agregó a la **hoja 05** la sección de `D-21` (las tres formas con su tamaño y su regla, los dos velos con su peor caso medido, el rojo de marca marcado como prohibido sobre tapa velada, el mecanismo de crédito y lo que sigue vetado), y se volvió a publicar en la misma URL con las otras diez hojas intactas. Queda anotado el techo real del material, que el catálogo no sabía: los frontales miden 953×953, así que **ningún recorte llega a los 480/640 px que pide `UX-04`** — el generador no agranda y avisa cuál quedó corto. |

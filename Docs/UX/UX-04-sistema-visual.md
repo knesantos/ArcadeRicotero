@@ -8,8 +8,19 @@
 > de referencia sobre Rocambole— está **levantado desde `RES-06`** (2026-08-19); esta
 > versión lo incorpora (`T-25`, ciclo 2).
 
-**Resuelve:** `D-04` (arte original en lenguaje rocambolesco para la interfaz; tapas
-reales solo en el juego que las necesita).
+> **v3 — `T-45`, ciclo 4.** `D-21` derogó la fila de esta hoja que limitaba las tapas
+> reales al juego "adivinar la tapa" y las prohibía como fondo. Esta versión reescribe
+> esa fila y agrega la sección **"Tapas reales en toda la pantalla"**, con las tres
+> formas en que una tapa puede aparecer, el piso de legibilidad convertido en número de
+> contraste, y el mecanismo de crédito para cuando la tapa es fondo o detalle en vez de
+> ficha. Todo lo demás de esta hoja —paleta, tipografía, línea, espaciado, brief de arte
+> original— queda igual. Suma a lo que consumo: `Docs/DECISIONES.md` `D-21`, `D-19`
+> (la mezcla, la base que no rota), `public/arte/README.md` (el despiece de recortes
+> existente) y `src/styles/tokens.css` (los tokens ya nombrados).
+
+**Resuelve:** `D-04` (arte original en lenguaje rocambolesco para la interfaz) y `D-21`
+(las tapas reales entran a cualquier pantalla, con piso de legibilidad y crédito
+propios).
 
 ## Cómo leer este documento
 
@@ -42,12 +53,198 @@ esta ficha era solo una descripción de estilo.
 
 ## Regla que ordena todo lo demás
 
-Dos materiales que nunca se mezclan en la misma pantalla:
+Dos materiales que **siguen sin mezclarse dentro de la misma pieza** — un ícono no es
+mitad dibujo mitad recorte de foto — pero que ya no están separados por pantalla desde
+`D-21`:
 
 | Material | Dónde aparece | Cómo |
 |---|---|---|
 | Arte original rocambolesco | Toda la interfaz: portada, quiz, botones, íconos, tarjeta de resultado, reveal de audio | Libre, sin límite de resolución ni crédito obligatorio (es obra nueva) |
-| Tapas reales | Solo el juego "adivinar la tapa o el disco" | Baja resolución, con crédito visible que nombra a **Rocambole (Ricardo Cohen)** (`RES-06`), nunca como fondo decorativo de otra pantalla |
+| Tapas reales | **Cualquier pantalla del sitio**, en tres formas — detalle recortado, fondo velado, ficha (`D-21`) | Baja resolución siempre; crédito a **Rocambole (Ricardo Cohen)** obligatorio en las tres formas, con mecanismo propio según la forma; legibilidad AA no negociable cuando hay texto encima. Detalle completo en la sección siguiente |
+
+## Tapas reales en toda la pantalla (`D-21`)
+
+`D-04` decía "tapas reales solo en el juego que las necesita, nunca como fondo
+decorativo de otra pantalla". El usuario derogó esa restricción en `D-21` y pidió
+explícitamente lo contrario: *"integrar las tapas reales a la página, utilizar los jpg
+reales. Recortarlos y usar detalles o usarlos de fondo."* Lo que sigue es la fila nueva,
+completa, y reemplaza a la vieja en todo lo que este documento manda.
+
+Lo que **no** cambió: la baja resolución y el crédito siguen siendo de `D-04`, y siguen
+sin negociarse. Lo que cambió es únicamente el "dónde".
+
+### Las tres formas
+
+**1. Detalle recortado.** Un pedazo de la tapa real (foto, no dibujo), tratado como
+recorte pegado: borde rasgado o borde grueso de serigrafía, rotación leve — el mismo
+tratamiento que ya usa `public/arte/README.md` para sus piezas dibujadas, aplicado ahora
+a un recorte fotográfico de verdad. **480 px del lado largo alcanza**: es una pieza
+decorativa, no la tapa entera, y a ese ancho no se ve masticada ni siquiera ocupando
+buena parte de un viewport móvil en pantalla de alta densidad. Nunca un rectángulo liso
+pegado tal cual — eso es la condición 3 de `D-21`, ver "Qué sigue prohibido" más abajo.
+Si el detalle queda detrás o pegado a texto (no solo flotando en un margen, como ya
+hacen `perro.png` o `mosca.png`), rige el mismo piso de legibilidad que el fondo velado:
+no es una forma exenta del contraste, es la misma regla aplicada donde haga falta.
+
+**Importante, para no confundir con lo que ya existe:** las piezas de
+`public/arte/README.md` (`mosca.png`, `perro.png`, `multitud-banderas.png`, etc.) son
+**arte original redibujado** en el lenguaje de Rocambole — la mitad de arriba de la
+tabla, sin crédito obligatorio porque son obra nueva. El "detalle recortado" de `D-21`
+es otra cosa: un recorte fotográfico literal del jpg real de `Docs/INVESTIGACION/
+TapasDiscos/`. Se ve parecido en el resultado final (mismo borde rasgado, misma
+rotación) pero es material distinto y **el detalle recortado sí lleva crédito
+obligatorio**, siempre, porque es la obra real y no una interpretación.
+
+**2. Fondo velado.** La tapa detrás del contenido, con un velo que garantiza que el
+texto de encima se siga leyendo. **640 px del lado largo, tope de 60 KB por imagen**
+(JPEG, calidad orientativa 65–70 a ajustar por quien la genere para no pasar el tope).
+Es un número bajo a propósito: `D-15` midió el sitio actual en **11 KB comprimidos por
+visita, tres archivos completos** — una sola imagen de fondo ya pesa varias veces esa
+página entera, así que 60 KB es una concesión grande, no un número libre. Si una
+pantalla usa dos tapas de fondo a la vez (caso raro, por ejemplo un enlace entre un
+juego y la ficha de ese disco), cada imagen respeta el tope por separado. El comando
+`node scripts/generar-tapas.mjs` ya imprime ancho y KB por archivo generado; extenderlo
+para producir también el derivado de fondo (y el de detalle) hereda gratis esa misma
+verificación — la corre el hilo principal, no yo (`D-12`).
+
+**3. Ficha.** La tapa entera en baja, como ya está en la Redondopedia hoy: **320 px del
+lado largo**, sin cambios — es el uso que menos agrega, porque ya existe y ya cumple
+`D-04`.
+
+### El piso de legibilidad, como número
+
+Texto sobre tapa velada **pasa WCAG AA o no va.** Dos umbrales, los que fija el propio
+estándar:
+
+- **Texto normal: contraste mínimo 4,5:1.**
+- **Texto grande** (≥ 24 px regular, o ≥ 18,66 px en negrita — el corte estándar de
+  WCAG, no uno mío): **contraste mínimo 3:1.**
+
+El velo **no es una opacidad elegida a ojo en cada pantalla** — es un token de
+`tokens.css`, con su par en `contraste.test.ts`, igual que cualquier otro color del
+sistema. Propuesta de familia `--velo-tapa-*`, reutilizando la tinta que ya existe
+(`--fondo`) en vez de sumar un hex nuevo — coherente con que `tokens.css` es "el único
+lugar del repo donde puede vivir un hex" y con que la base no rota (`D-19`):
+
+| Token | Qué es | Alfa mínimo | Uso |
+|---|---|---|---|
+| `--velo-tapa` | `--fondo` con transparencia | **86 %** | Default: cualquier texto de cuerpo (enunciados, párrafos, pie) sobre tapa de fondo |
+| `--velo-tapa-titular` | `--fondo` con transparencia | **75 %** | Solo cuando lo único que hay encima es texto grande en `--fuente-titular`/`--fuente-rotulada` — nunca para texto de cuerpo |
+
+**Es un color plano con alfa, una sola capa — no dos.** Lo descarté a propósito: un velo
+en dos capas (por ejemplo, un degradado) da un contraste distinto en cada punto de la
+imagen, y eso no se puede resumir en un número que un test corra una sola vez. Un color
+plano sí, porque se puede acotar por el **peor caso**: aunque la tapa tenga un píxel
+blanco puro debajo (el caso menos favorable posible, más claro que cualquier tapa real
+completa), el 86 % de alfa todavía deja el resultado por debajo del techo de luminancia
+que exige 4,5:1 contra `--texto` (#f4efe2). La cuenta, para que quien la implemente no
+tenga que rehacerla: con `--fondo` de luminancia ≈0,0055 y `--texto` de luminancia
+≈0,865, el peor caso (fondo = blanco puro, luminancia 1) da contraste 4,5:1 en alfa
+≈0,852 — dejo 86 % con margen. Para el 3:1 de texto grande el mismo cálculo da alfa
+≈0,749 — dejo 75 % con margen. Es un cálculo a mano, no una corrida (`D-12`); el comando
+que lo cierra es `node --test src/lib/contraste.test.ts`, y lo corre quien lo implemente.
+
+**El par que se testea es "tinta sobre tapa velada", no "tinta sobre una tapa real
+puntual".** No se puede testear cada jpg —son 35 imágenes y cualquiera nueva rompería
+el test en silencio—, así que el par que entra a `contraste.test.ts` es el **peor caso
+matemático**: `--velo-tapa` (o `--velo-tapa-titular`) compuesto sobre blanco puro, contra
+`--texto`. Si ese par pasa, cualquier tapa real —que nunca es un plano blanco liso—
+pasa también, porque ninguna va a ser más clara que el peor caso que ya se testeó. La
+tinta que se usa siempre es `--texto` (el claro sobre fondo oscuro que ya define la
+base): la base no rota (`D-19`), así que no hace falta un segundo color de tinta para
+tapas de sección — sería otro par a mantener por ningún beneficio real.
+
+**Circuito, para que quede explícito:** estos dos alfas son criterio propio de
+`experiencia` (igual que la paleta y la tipografía de más abajo, sin ficha detrás),
+calculados contra tokens que ya existen. El circuito real de `.claude/rules/
+diseno-marca.md` pide reflejarlos primero en el lienzo (hoja 05) y de ahí a
+`tokens.css` — dejo la propuesta acá para que quien actualice el lienzo no arranque de
+cero, no para saltear ese circuito.
+
+### El mecanismo de crédito, cuando la tapa es fondo o detalle
+
+La ficha ya resuelve su crédito: la imagen entera va con una línea de texto visible al
+lado, como hoy en la Redondopedia — **eso no cambia**. El problema nuevo es el fondo y
+el detalle: no tienen un margen al lado para poner una firma, y una pantalla puede
+llegar a usar dos tapas distintas a la vez.
+
+**Regla, por tipo de pantalla — para que un desarrollador la implemente sin volver a
+preguntar:**
+
+- **Pantallas que usan `src/layouts/Base.astro`** (portal, Redondopedia, pantallas de
+  "cocina" — todo lo que no es la isla de una partida): el crédito va en el **pie del
+  sitio que ya existe** (`footer.pie-sitio`). Cuando la pantalla usa una tapa como fondo
+  o detalle, el pie suma **una línea más**, generada a partir de qué tapas se usaron en
+  *esa* pantalla — no una firma por imagen. Patrón de texto: *"Arte de tapa: {Disco} —
+  Rocambole (Ricardo Cohen)"*; si hay dos tapas en la misma pantalla, se unen en la
+  misma línea (*"Arte de tapa: {Disco A} y {Disco B} — Rocambole (Ricardo Cohen)"*) — el
+  crédito es a la persona, no por archivo, así que su nombre aparece **una sola vez**
+  aunque haya varias tapas.
+- **Islas de partida sin `Base.astro`** (el quiz ya funciona así, y previsiblemente los
+  otros tres juegos): no hay pie de página real durante la partida, y agregar uno rompe
+  el presupuesto de pantalla que defiende `UX-01` (todo en el tercio de pulgar, sin
+  scroll). Ahí el crédito va como **sello de esquina**: chico, fijo en una esquina de la
+  pantalla de juego, mismo patrón de texto, tipografía `--fuente-rotulada` (no compite
+  con el enunciado ni con las opciones). Es la combinación que pide el enunciado de la
+  tarea: pie de página donde hay pie de página, sello donde no lo hay — nunca las dos
+  cosas en la misma pantalla, y nunca ausente en ninguna.
+- **Ficha (tapa entera):** sigue como está, crédito visible junto a la imagen. No
+  necesita ni pie ni sello nuevos.
+
+### Qué sigue prohibido, y por qué
+
+- **La imagen a sangre completa con velo oscuro y texto blanco al medio.** Es
+  exactamente el tic genérico que ya veta `.claude/rules/diseno-marca.md` — la interfaz
+  por defecto de cualquier plantilla, con o sin foto real debajo. Usar una tapa real
+  **no habilita** a resolverla como la resolvería cualquier plantilla: sigue rigiendo
+  "la pieza se recorta por borde grueso y cinta, como recorte pegado", no la foto a
+  sangre completa.
+- **El máster sin reducir llegando al sitio.** `D-04` puso "baja resolución" como piso
+  no negociable, y sigue siéndolo: un máster de varios miles de píxeles multiplica el
+  peso de carga (contra el mobile-first de sesiones de 2-3 min) y publica la copia de
+  mayor fidelidad posible de la obra del artista, que es lo opuesto de lo que la baja
+  resolución existe para lograr.
+- **El esclavo encadenado de *Oktubre*, mientras siga "reportado, no verificado"
+  (`RES-06`).** No está confirmado si esa figura integraba el arte original del vinilo
+  del 86 o si llegó recién con la reedición en CD. `public/arte/README.md` ya lo prohíbe
+  para la versión dibujada; `D-21` no abre una puerta nueva acá — si algo, un recorte
+  fotográfico literal de esa figura puntual está *más* expuesto que una versión
+  redibujada, no menos, así que la prohibición se mantiene con el mismo peso.
+- **Una tapa real reemplazando al personaje suelto de portada.** El perro y la mosca son
+  motivos sueltos, no una escena citando una tapa puntual — la regla del kickoff sigue
+  viva. `D-21` habilita fondo, detalle y ficha; no habilita que la composición entera de
+  una tapa pase a ser el ícono central de la portada.
+- **Un recorte rectangular liso, sin borde propio del proyecto, pegado tal cual.** Es la
+  condición 3 de `D-21` en otras palabras: la forma sigue siendo la del proyecto (borde
+  rasgado, serigrafía, rotación) — un rectángulo derecho sin tratamiento es el mismo
+  olor genérico, solo que con material real en vez de un stock cualquiera.
+- **Usar una tapa cuya edición no esté confirmada como respuesta correcta del juego
+  "adivinar la tapa".** Esto no lo defino yo acá en detalle —el flujo del juego 4 todavía
+  no tiene su propio `UX-XX`— pero lo repito porque `D-21` lo deja como lo único
+  estricto del cambio: si el archivo es un CD yanqui del 93 y la respuesta dice LP
+  argentino del 86, el juego le marca error al que se sabe el disco (`RES-25` ya cazó
+  ese caso con *Oktubre*). No es cautela legal, es la misma regla de `D-14` sobre
+  respuestas correctas.
+
+### Trazabilidad: qué decía esta regla antes, y por qué
+
+La fila que esta versión reemplaza decía, textual: *"Tapas reales | Solo el juego
+'adivinar la tapa o el disco' | Baja resolución, con crédito visible que nombra a
+Rocambole (Ricardo Cohen), nunca como fondo decorativo de otra pantalla."*
+
+**`D-21` la derogó.** La derogó el usuario directamente, no un hallazgo de
+`investigador` ni un cambio de ficha.
+
+**Por qué esa restricción sobrevivió al encuadre que la justificaba.** Nació bajo
+`D-04`, en un momento en el que `D-07` todavía existía: el gate que separaba "construir"
+de "publicar" y que frenaba todo lo que tocara derechos hasta cerrar una nota legal. La
+cautela de "nunca como fondo" era una cautela de publicación, escrita cuando publicar
+todavía dependía de resolver ese gate. `D-14` sacó ese cerrojo —fan site sin fines de
+lucro, riesgo asumido, si llega un reclamo se baja— y reencuadró el proyecto entero,
+pero la frase de `UX-04` quedó escrita como estaba: nadie la revisó porque nada la
+obligó a revisarse hasta que el usuario la chocó de frente al pedir tapas de fondo en el
+kickoff del ciclo 4. Es el mismo patrón que ya describió `D-21` en su propio texto: una
+regla de diseño puede sobrevivir, en silencio, al motivo que la hizo necesaria.
 
 ## Paleta — criterio propio, sin ficha que fije colores
 
@@ -98,8 +295,10 @@ Dos familias, nunca mezcladas dentro del mismo bloque de texto:
   en digital no traiciona la referencia — producir en vector liso sí.
 - **Collage como técnica de fondo** — confirmado por ficha: el collage es una de sus
   técnicas reales, no una interpretación libre de la descripción del BRIEF (`RES-06`).
-  Texturas superpuestas, recortes, nunca una foto real de por medio salvo la tapa del
-  juego 4.
+  Texturas superpuestas, recortes — y desde `D-21` el collage puede incluir una foto
+  real de tapa (detalle recortado o fondo velado, ver esa sección más arriba), siempre
+  con su crédito y su velo de legibilidad. Antes de `D-21` esto se leía "nunca una foto
+  real de por medio salvo la tapa del juego 4"; esa frase queda derogada.
 - **Figuras deformes, orgánicas, nunca geometría perfecta ni íconos de librería
   estándar — criterio propio, no confirmado por ficha.** Ni `RES-06` ni `RES-22`
   describen la figura de Rocambole como "deforme"; venía de la descripción general del
@@ -192,6 +391,16 @@ a ser hecho fichado:
 | — no existía — | `RES-06`: técnica artesanal completa, la frase guía, la capa simbólica (anarquismo/iconografía revolucionaria/raíz popular), el documental marcado como no-referencia | **Agregado** |
 | — no existía — | `RES-22`: sube tres tapas a testimonio; no cambia el estado del ícono del esclavo, que sigue reportado | **Agregado** — sin efecto directo en el brief de interfaz, es insumo del juego 4, no de esta pieza |
 
+### Ciclo 4, `T-45` — la fila de tapas reales, derogada por decisión directa
+
+Distinto de la tabla de arriba: acá no hay ficha que suba o baje un dato de estado. Es
+una decisión del usuario (`D-21`) que deroga una restricción de diseño que esta misma
+hoja había escrito bajo un encuadre —el gate de derechos de `D-07`— que ya no existe
+desde `D-14`. El detalle completo, con la fila vieja citada textual y el motivo de por
+qué sobrevivió al encuadre que la justificaba, está en "Tapas reales en toda la
+pantalla" más arriba, no acá: esa tabla es específicamente para tensión con una ficha,
+y esto no lo es.
+
 ## Estado de las referencias — reemplaza la sección de bloqueos anterior
 
 - **Bloqueo levantado.** La versión anterior de este documento no tenía ninguna ficha de
@@ -204,6 +413,8 @@ a ser hecho fichado:
   nunca mezclada con lo que sí está fichado.
 - **Lo que no me corresponde decidir:** si usar la identidad visual de Rocambole
   necesita autorización más allá de lo que este brief ya hace por decisión propia
-  (figuras sueltas, sin citar tapa, tapas reales solo en baja resolución y con
-  crédito). Esa pregunta la responde `contenido` en la nota de derechos (`D-07`), con
-  apoyo de las mismas fichas que usé acá.
+  (figuras sueltas, sin citar tapa; tapas reales siempre en baja resolución y con
+  crédito, ahora en cualquier pantalla por `D-21`). Esa pregunta ya no depende de un
+  gate previo a publicar —`D-14` sacó el cerrojo de `D-07`—, pero sigue sin ser mía: el
+  mapa de qué se usa y de dónde salió lo sostiene `contenido` (`CNT-01`), y el riesgo lo
+  asume el usuario bajo `D-14` (si llega un reclamo, se baja).

@@ -79,6 +79,14 @@
   --papel: #ede4ce;
   --papel-borde: #c9bda0;
 
+  /* Velo de tapa (D-21, UX-04). Una tapa real de fondo no es un token: es una imagen con
+     mil valores adentro, asi que no alcanza con medir "tinta sobre color". Lo que se
+     testea es el PEOR COMPUESTO POSIBLE — el velo apoyado sobre un pixel blanco puro —
+     y ese es el piso que ninguna tapa puede empeorar.
+     Los canales son los de --fondo: `contraste.test.ts` falla si dejan de serlo. */
+  --velo-tapa: rgba(20, 16, 14, 0.86); /* default: cualquier texto de cuerpo sobre tapa */
+  --velo-tapa-titular: rgba(20, 16, 14, 0.75); /* SOLO texto grande; nunca cuerpo */
+
   /* Grano de serigrafia (UX-04: "grano, imperfeccion de borde, nunca vector limpio").
      Ruido monocromo en SVG embebido: sin color propio, solo alfa — se apoya sobre
      cualquier fondo sin taparlo. */

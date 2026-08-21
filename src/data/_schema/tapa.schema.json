@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ricotaarcade.local/schema/tapa/1",
+  "title": "CTR-05 — Banco de adivinar la tapa",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contrato", "contratoVersion", "juego", "actualizado", "items"],
+  "properties": {
+    "contrato": { "const": "CTR-05" },
+    "contratoVersion": { "const": 1 },
+    "juego": { "const": "adivinar-tapa" },
+    "actualizado": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/item" }
+    }
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "us", "dificultad", "imagen",
+        "opciones", "fuentes", "sensibleA", "estado"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^TP-\\d{3}$" },
+        "us": {
+          "type": "array", "minItems": 1,
+          "items": { "type": "string", "pattern": "^US-\\d{2}$" }
+        },
+        "dificultad": { "enum": ["facil", "media", "dificil"] },
+        "imagen": { "$ref": "#/$defs/imagen" },
+        "opciones": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/opcion" },
+          "contains": {
+            "type": "object",
+            "required": ["correcta"],
+            "properties": { "correcta": { "const": true } }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        "explicacion": { "type": "string", "minLength": 10, "maxLength": 400 },
+        "rotulo": { "$ref": "#/$defs/rotulo" },
+        "fuentes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^RES-\\d{2}$" },
+          "contains": { "const": "RES-44" },
+          "minContains": 1
+        },
+        "sensibleA": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["letra", "tapa", "audio"] },
+          "contains": { "const": "tapa" },
+          "minContains": 1
+        },
+        "estado": { "enum": ["borrador", "listo", "retirado"] },
+        "notaInterna": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["imagen"],
+            "properties": {
+              "imagen": {
+                "required": ["auditoria"],
+                "properties": { "auditoria": { "const": "no determinable" } }
+              }
+            }
+          },
+          "then": {
+            "properties": { "estado": { "enum": ["borrador", "retirado"] } }
+          }
+        },
+        {
+          "if": {
+            "required": ["imagen"],
+            "properties": {
+              "imagen": {
+                "required": ["encuadre"],
+                "properties": { "encuadre": { "const": "detalle" } }
+              }
+            }
+          },
+          "then": {
+            "properties": { "dificultad": { "enum": ["media", "dificil"] } }
+          }
+        },
+        {
+          "if": { "required": ["rotulo"] },
+          "then": { "required": ["explicacion"] }
+        }
+      ]
+    },
+    "imagen": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["archivo", "encuadre", "disco", "edicion", "auditoria", "credito"],
+      "properties": {
+        "archivo": {
+          "type": "string",
+          "maxLength": 60,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "not": { "pattern": "-(detalle|fondo)$" }
+        },
+        "encuadre": { "enum": ["entera", "detalle"] },
+        "disco": { "$ref": "#/$defs/tituloDeDisco" },
+        "edicion": { "type": "string", "minLength": 10, "maxLength": 120 },
+        "auditoria": {
+          "enum": [
+            "original confirmada",
+            "reedicion confirmada",
+            "coincide con la original, sin marcador que lo pruebe",
+            "no determinable"
+          ]
+        },
+        "credito": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["autor", "origen"],
+          "properties": {
+            "autor": { "enum": ["Rocambole (Ricardo Cohen)"] },
+            "origen": { "enum": ["coveralia", "cover-art-archive"] }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["auditoria"],
+            "properties": {
+              "auditoria": {
+                "enum": [
+                  "original confirmada",
+                  "reedicion confirmada",
+                  "coincide con la original, sin marcador que lo pruebe"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": { "edicion": { "pattern": "(19|20)\\d{2}" } }
+          }
+        }
+      ]
+    },
+    "opcion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["texto", "correcta"],
+      "properties": {
+        "texto": { "$ref": "#/$defs/tituloDeDisco" },
+        "correcta": { "type": "boolean" },
+        "nota": { "type": "string", "maxLength": 200 }
+      }
+    },
+    "rotulo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tipo", "texto"],
+      "properties": {
+        "tipo": { "enum": ["leyenda", "testimonio"] },
+        "texto": { "type": "string", "minLength": 20, "maxLength": 200 }
+      }
+    },
+    "tituloDeDisco": {
+      "enum": [
+        "Gulp!",
+        "Oktubre",
+        "Un baión para el ojo idiota",
+        "¡Bang! ¡Bang!... Estás liquidado",
+        "La mosca y la sopa",
+        "Lobo suelto",
+        "Cordero atado",
+        "Luzbelito",
+        "Último bondi a Finisterre",
+        "Momo Sampler"
+      ]
+    }
+  }
+}

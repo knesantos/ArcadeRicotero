@@ -292,3 +292,30 @@
   background: var(--cat-historia); /* el resultado viste Gulp! */
   color: var(--fondo);
 }
+
+/* ---- Adivinar la tapa (US-04) ----
+   Acá la tapa NO es decoración de sección: es la pregunta. Por eso se muestra grande,
+   recortada como estampa (borde grueso, esquina casi viva, apenas torcida) y con el
+   crédito pegado abajo — D-21 no admite una tapa en pantalla sin firmar. */
+
+.figura-tapa-juego {
+  margin: var(--espacio-2) 0;
+  text-align: center;
+}
+
+.tapa-juego {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  border: 3px solid var(--borde);
+  border-radius: 3px;
+  transform: rotate(-1deg);
+}
+
+/* La edicion se cuenta al revelar: antes de responder seria una pista de mas. */
+.edicion-tapa {
+  color: var(--texto-tenue);
+  font-size: 0.85rem;
+  margin: 0 0 var(--espacio-1);
+}

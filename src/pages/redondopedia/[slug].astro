@@ -8,9 +8,11 @@
  * regla de marca prohibe disfrazar de disco), y el hecho lleva su ficha RES al final
  * del segmento. Nada se comunica solo con color.
  *
- * La tapa real entra SOLO en los articulos de tipo `disco` (`BR-07` la pide como
- * campo; `D-04`: baja resolucion y credito a Rocambole) — en el resto del sitio las
- * tapas no decoran nada (UX-04).
+ * La tapa entera entra en los articulos de tipo `disco` (`BR-07` la pide como campo;
+ * `D-04`: baja resolucion y credito a Rocambole). Los demas tipos llevan un **detalle
+ * recortado** junto al titulo, que `D-21` habilito y `UX-05` (7b/7c) reparte: historia
+ * viste Gulp!, mitologia viste Lobo suelto. Tres articulos quedan sin detalle por tono
+ * — la lista vive en `arte.ts`.
  */
 import Base from '../../layouts/Base.astro';
 import { REDONDOPEDIA } from '../../lib/sitio/copy.ts';
@@ -20,7 +22,7 @@ import {
   type Articulo,
   type Segmento,
 } from '../../lib/redondopedia.ts';
-import { recorte, tapa, STICKER_DISCO } from '../../lib/sitio/arte.ts';
+import { recorte, tapa, STICKER_DISCO, detalleArticulo, discosDe } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/redondopedia.json';
 
 export function getStaticPaths() {
@@ -44,6 +46,21 @@ const laTapa = articulo.tipo === 'disco' ? tapa(articulo.slug) : null;
 const archivoSticker = STICKER_DISCO[articulo.slug];
 const sticker = archivoSticker ? recorte(archivoSticker) : null;
 
+/**
+ * El detalle de tapa que acompaña al titulo cuando el articulo NO es de disco
+ * (`UX-05`, 7b y 7c). Va junto al titulo y nunca detras del cuerpo rotulado: la prosa
+ * larga con segmentos de `BR-08` es scroll, y un fondo detras de algo que se estira es
+ * lo que `UX-04` evita.
+ */
+const detalle = detalleArticulo(articulo.tipo, articulo.slug, categoria);
+
+/**
+ * Que tapas se ven en esta ficha (`D-21`, condicion 1): la del propio disco si el
+ * articulo es de disco, o la del recorte que lo viste si no lo es.
+ */
+const nombreDetalle = detalle?.split('/').pop()?.replace(/\.jpg$/, '') ?? null;
+const tapasUsadas = laTapa ? [articulo.titulo] : discosDe([nombreDetalle]);
+
 const etiquetaRotulo = (seg: Segmento): string =>
   seg.rotulo === 'leyenda' ? 'Leyenda' : `Lo contó ${seg.quien ?? 'alguien'}`;
 ---
@@ -52,9 +69,11 @@ const etiquetaRotulo = (seg: Segmento): string =>
   titulo={`${articulo.titulo} — La Redondopedia`}
   descripcion={articulo.resumen}
   volverA={{ href: '/redondopedia/', texto: REDONDOPEDIA.volverPortada }}
+  tapas={tapasUsadas}
 >
   <article class={`articulo articulo--${categoria}`}>
     <span class="articulo-tipo">{articulo.tipo}</span>
+    {detalle && <img class="detalle-articulo" src={detalle} alt="" aria-hidden="true" loading="lazy" />}
     <h1>{articulo.titulo}</h1>
 
     {

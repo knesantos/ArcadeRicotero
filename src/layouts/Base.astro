@@ -11,7 +11,7 @@
 import '../styles/tokens.css';
 import '../styles/sitio.css';
 import { PORTAL } from '../lib/sitio/copy.ts';
-import { conRecorteReal } from '../lib/sitio/arte.ts';
+import { conRecorteReal, fondoTapa } from '../lib/sitio/arte.ts';
 
 interface Props {
   titulo: string;
@@ -21,9 +21,25 @@ interface Props {
   conMosca?: boolean;
   /** Adonde vuelve la cinta de regreso. Sin esto no hay cabecera (portal). */
   volverA?: { href: string; texto: string };
+  /**
+   * Los discos cuyas tapas se ven en esta pantalla (`D-21`, condicion 1).
+   * La pagina los pasa y el pie los nombra: un fondo velado no tiene donde llevar su
+   * propia firma, asi que el credito puntual se junta acá.
+   */
+  tapas?: readonly string[];
 }
 
-const { titulo, descripcion, conBanderas = false, conMosca = false, volverA } = Astro.props;
+const { titulo, descripcion, conBanderas = false, conMosca = false, volverA, tapas = [] } = Astro.props;
+
+/**
+ * La franja de multitud con banderas de *Oktubre*. Si el recorte real de la tapa ya
+ * esta generado (`D-21`, `scripts/generar-tapas.mjs`), manda la foto; si no, queda el
+ * dibujo — el mismo criterio de reemplazo que usa el resto del collage.
+ *
+ * Va anclada abajo y NUNCA detras de la marca grande: esa se escribe en `--marca-rojo`,
+ * que sobre tapa velada no llega a AA. Lo verifica `contraste.test.ts`.
+ */
+const bandaOktubre = fondoTapa('oktubre-banderas');
 ---
 
 <!doctype html>
@@ -36,8 +52,9 @@ const { titulo, descripcion, conBanderas = false, conMosca = false, volverA } = 
     <slot name="cabeza" />
   </head>
   <body class="con-grano">
+    {conBanderas && bandaOktubre && <div class="tapa-fondo tapa-fondo--portal" aria-hidden="true" />}
     {
-      conBanderas && (
+      conBanderas && !bandaOktubre && (
         <img class="banderas-fondo" src={conRecorteReal('/arte/banderas.svg')} alt="" aria-hidden="true" />
       )
     }
@@ -58,7 +75,10 @@ const { titulo, descripcion, conBanderas = false, conMosca = false, volverA } = 
         )
       }
       <slot />
-      <footer class="pie-sitio">{PORTAL.pie}</footer>
+      <footer class="pie-sitio">
+        {tapas.length > 0 && <span class="credito-pantalla">{PORTAL.creditoTapas(tapas)}</span>}
+        {PORTAL.pie}
+      </footer>
     </div>
   </body>
 </html>

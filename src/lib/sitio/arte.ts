@@ -20,6 +20,92 @@ export function tapa(slug: string): string | null {
   return existsSync(join(process.cwd(), 'public', 'tapas', `${slug}.jpg`)) ? `/tapas/${slug}.jpg` : null;
 }
 
+/**
+ * Las otras dos formas en que una tapa real puede llegar a pantalla (`D-21`, `UX-04`):
+ * el detalle recortado y el fondo velado. Los produce `scripts/generar-tapas.mjs` desde
+ * los masters; si todavia no se corrio, devuelven null y la pagina no muestra nada — el
+ * mismo criterio que los recortes dibujados.
+ */
+export function detalleTapa(nombre: string): string | null {
+  return existsSync(join(process.cwd(), 'public', 'tapas', 'detalle', `${nombre}.jpg`))
+    ? `/tapas/detalle/${nombre}.jpg`
+    : null;
+}
+
+export function fondoTapa(nombre: string): string | null {
+  return existsSync(join(process.cwd(), 'public', 'tapas', 'fondo', `${nombre}.jpg`))
+    ? `/tapas/fondo/${nombre}.jpg`
+    : null;
+}
+
+/**
+ * Que detalle de tapa viste cada seccion, bajo el mapa de `D-19` y el catalogo `UX-05`.
+ * La clave es la `variante` que ya usan los casetes y las pantallas en la cocina.
+ */
+export const DETALLE_POR_VARIANTE: Record<string, string> = {
+  marca: 'oktubre-bandera',
+  mitologia: 'lobo-tiras',
+  letras: 'mosca-olla',
+  discos: 'bondi-circuito',
+  historia: 'gulp-pincelada',
+};
+
+/** Que fondo velado viste cada pantalla "en la cocina" (`UX-05`).
+ *  "Adivinar la tapa" ya no esta aca: salio de la cocina en el ciclo 4 y su pagina
+ *  pide el fondo directo. */
+export const FONDO_COCINA: Record<string, string> = {
+  'adivinar-el-tema': 'lobo-tiras',
+  'completar-la-letra': 'mosca-olla',
+};
+
+/**
+ * De que disco sale cada derivado. Existe por la condicion 1 de `D-21`: el credito a
+ * Rocambole no alcanza generico, tiene que decir **que tapas se usaron en esa pantalla**.
+ * Un fondo no tiene donde poner una firma al lado, asi que la pantalla la junta y la
+ * pone en el pie (`UX-04`, mecanismo de credito).
+ */
+const DISCO_DE: Record<string, string> = {
+  'oktubre-bandera': 'Oktubre',
+  'oktubre-banderas': 'Oktubre',
+  'oktubre-ok': 'Oktubre',
+  'lobo-tiras': 'Lobo suelto',
+  'mosca-olla': 'La mosca y la sopa',
+  'bondi-circuito': 'Último bondi a Finisterre',
+  'bondi-engranajes': 'Último bondi a Finisterre',
+  'gulp-pincelada': 'Gulp!',
+  'gulp-montana': 'Gulp!',
+  'gulp-logo': 'Gulp!',
+};
+
+/** Los discos que aparecen en una pantalla, sin repetir y en orden de aparicion. */
+export function discosDe(nombres: readonly (string | null | undefined)[]): readonly string[] {
+  const vistos: string[] = [];
+  for (const n of nombres) {
+    const d = n ? DISCO_DE[n] : undefined;
+    if (d && !vistos.includes(d)) vistos.push(d);
+  }
+  return vistos;
+}
+
+/**
+ * Articulos donde el detalle decorativo de tapa NO va, aunque la regla general de
+ * `UX-05` (7b) lo habilite. Son los tres que tratan muertes de personas con nombre: un
+ * adorno al lado de ese titulo esta fuera de tono. Lo sugirio `experiencia` como llamada
+ * de tono sin ficha detras y queda pendiente que lo confirme `contenido`, dueño de
+ * `CNT-04` y de `CNT-06`. Mientras tanto rige la opcion conservadora.
+ */
+export const SIN_DETALLE_POR_TONO = new Set(['muerte-del-indio', 'walter-bulacio', 'olavarria-2017']);
+
+/**
+ * El detalle de tapa que acompaña al titulo de un articulo que NO es de disco
+ * (`UX-05`, 7b y 7c). Los de disco ya muestran su propia tapa entera: superponerles el
+ * recorte de otro disco confundiria cual es cual.
+ */
+export function detalleArticulo(tipo: string, slug: string, categoria: string): string | null {
+  if (tipo === 'disco' || SIN_DETALLE_POR_TONO.has(slug)) return null;
+  return detalleTapa(DETALLE_POR_VARIANTE[categoria] ?? '');
+}
+
 /** Que recorte real reemplaza a cada dibujo de repuesto (ver public/arte/README.md). */
 const RECORTE_REAL: Record<string, string> = {
   '/arte/mosca.svg': 'mosca.png',

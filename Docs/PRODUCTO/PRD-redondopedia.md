@@ -6,11 +6,13 @@
 > `D-13` (letras de fans con mitigaciones), `D-14` (la postura: molinetes abiertos, rotulado
 > hecho/leyenda/testimonio), `D-19` (cada pantalla viste un disco), `D-04` (tapas reales en
 > baja resolución con crédito). Consume además `Docs/CONTENIDO/CNT-04-limite-editorial-muertes.md`
-> (sin editarla) y las fichas `RES-02`, `RES-04`, `RES-05`, `RES-06`, `RES-07`, `RES-08`,
-> `RES-09`, `RES-20`, `RES-21`, `RES-22`, `RES-23`, `RES-31`, `RES-33`, `RES-36` como
-> inventario de insumo disponible para el primer lote (`D-20`, cláusula 4).
+> (sin editarla), `BR-03` (`Docs/PRODUCTO/PRD-alcance-v1.md` — el tope de 2/1/0 versos y el
+> máximo de 5 versos simultáneos del juego "completar la letra", que `BR-12` reutiliza) y
+> las fichas `RES-02`, `RES-03`, `RES-04`, `RES-05`, `RES-06`, `RES-07`, `RES-08`, `RES-09`,
+> `RES-20`, `RES-21`, `RES-22`, `RES-23`, `RES-31`, `RES-33`, `RES-36` como inventario de
+> insumo disponible para el primer lote (`D-20`, cláusula 4).
 >
-> Produce: `US-05`, `BR-07`..`BR-11`.
+> Produce: `US-05`, `BR-07`..`BR-12`.
 >
 > No fija el schema ni el formato de archivo (`arquitectura`), no diseña la pantalla de
 > lectura ni el mecanismo visual del rótulo (`experiencia`), no redacta un solo artículo ni
@@ -116,7 +118,7 @@ sostenga sola en una enciclopedia; el disco al que pertenece, sí.
 | Tipo | Qué es | Campos mínimos |
 |---|---|---|
 | `disco` | Un álbum de estudio | Título, año (con discrepancia declarada si la hay), sello, tracklist con autoría por tema (`RES-20`), portada en baja resolución con crédito, un párrafo de ubicación en la cronología, enlace a al menos un `hito` o `persona` |
-| `tema` | Una canción | Título, disco de pertenencia (enlace obligatorio), año, autoría real (`RES-20` — la mayoría Solari–Beilinson, dos con tercer autor), letra completa con la fuente citada (`D-13`: letras.com o bestiarioredondo) y una marca de si fue cruzada contra los 105 temas de `RES-20` y/o confirmada de oído, notas de contexto si hay leyenda asociada |
+| `tema` | Una canción | Título, disco de pertenencia (enlace obligatorio), año, autoría real con enlace al artículo `persona` de cada autor (`RES-20` — la mayoría Solari–Beilinson, dos con tercer autor), hasta 5 versos citados al servicio del análisis —nunca sueltos— con la fuente (`D-13`: letras.com o bestiarioredondo) y marca de si fueron cruzados contra los 105 temas de `RES-20` y/o confirmados de oído (tope y regla completa en `BR-12`), contexto de grabación, la mitología o leyenda asociada rotulada, testimonio del Indio o de Skay sobre el tema si hay ficha que lo respalde |
 | `persona` | Un integrante de la banda o figura central (Indio, Skay, Poli, Semilla, Rocambole) | Nombre, rol/instrumento, período activo, biografía breve, discos en los que participó (enlaces), hitos relacionados (enlaces), fecha de fallecimiento si aplica, rotulada hecho |
 | `hito`/`caso` | Un suceso puntual de la historia real de la banda | Fecha, qué pasó (rotulado por afirmación, no un rótulo único), personas involucradas (enlaces), consecuencia institucional o histórica si existe, fuente |
 | `concepto` | Una práctica o rasgo de la cultura ricotera | Nombre del concepto, qué es y cómo se practica, origen o ejemplo histórico (enlace a `hito` o `disco`), fuente |
@@ -139,7 +141,7 @@ invisible dentro de artículos de hecho, que es justo lo que `BR-08` prohíbe.
 | `hito`/`caso` | 7 | Formación, debut en Obras (89), Huracán 93-94, separación, muerte del Indio, Bulacio, Olavarría — `RES-04`, `RES-05`, `RES-07` | Medio-alto — 2 de los 7 esperan `BR-10` |
 | `concepto` | 4 | Misa ricotera, aguante, autogestión, difusión sin TV — `RES-07` | Bajo |
 | `leyenda` | 3 | "Ji Ji Ji" desmentida, Patricio Rey como persona real — `RES-08`, `RES-22` | Bajo — ya vienen rotuladas |
-| `tema` | 6 | Los que ya tienen insumo rico fichado (mitología, autoría, contexto) — `RES-08`, `RES-20`, `RES-22` | Alto — letra completa, cruce obligatorio de `D-13` |
+| `tema` | 6 | Los que ya tienen insumo rico fichado (mitología, autoría, contexto) — `RES-08`, `RES-20`, `RES-22` | Alto — versos citados bajo el tope de `BR-12` más análisis, cruce obligatorio de `D-13` |
 | **Total** | **35** | | |
 
 **Por qué 35 y no un número más chico o más grande:** el mismo criterio que usé para
@@ -272,9 +274,14 @@ los cuatro juegos con "adivinar la tapa cae primero".
 
 **Orden de caída, del primero al que nunca cae del todo:**
 
-1. **`tema` (letras completas) cae primero.** Es el tipo más caro —transcripción completa
-   más el cruce obligatorio contra los 105 temas de `RES-20`— y el de mayor exposición: más
-   versos expuestos que los ~30 que necesita el juego (`D-20`, consecuencias).
+1. **`tema` cae primero.** Sigue siendo el tipo más caro —ya no por transcribir la letra
+   entera (`BR-12` corrigió ese campo: un artículo `tema` cita versos, no reproduce la
+   canción), sino por el cruce obligatorio contra los 105 temas de `RES-20`, la
+   confirmación de oído que pide `D-13`, y el trabajo de análisis, contexto y testimonio
+   que exige `BR-12` para que cada verso citado esté al servicio de algo. La exposición de
+   derechos también bajó con la corrección: el tope de `BR-12` (5 versos por artículo × 6
+   artículos, ~30 versos como máximo) queda en el mismo orden que los ~30 versos que ya
+   expone el juego (`D-20`, consecuencias), no por encima como suponía la redacción vieja.
 2. **`concepto` cae segundo.** Enriquece el contexto cultural pero no es lo que distingue
    al sitio ni lo que sostiene la navegación entre los demás tipos.
 3. **`leyenda` se defiende antes que `concepto`,** aunque también antes que `hito` en la
@@ -287,6 +294,85 @@ los cuatro juegos con "adivinar la tapa cae primero".
    puñado de cada uno no hay ni "quién" ni "qué" para que el resto enlace, y son además los
    más baratos de producir porque `RES-02`/`RES-20`/`RES-06`/`RES-09` ya los dejan casi
    armados.
+
+---
+
+## BR-12 — Qué reproduce un artículo de tipo `tema`: versos citados, no letra completa
+
+**Aplica a:** la fila `tema` de `BR-07`. Escrita en el ciclo 4, tarea `T-61`, para corregir
+un campo que quedó mal fijado cuando `BR-07` se escribió.
+
+**Qué decía antes, y por qué estaba mal:** la fila `tema` de `BR-07` pedía "letra completa
+con la fuente citada". Eso es un campo distinto de citar versos: es reproducir la canción
+entera. El propio proyecto ya tenía el límite puesto para el otro lado —`BR-03`
+(`Docs/PRODUCTO/PRD-alcance-v1.md`) arma "completar la letra" con 2/1/0 versos de contexto
+y un tope explícito de nunca más de **5 versos completos de una misma canción a la vez** en
+ninguna pantalla del juego— y `RES-03` fijó el techo legal de cita de obra literaria en
+**1000 palabras**, "las partes indispensables", no la obra entera. Nadie había cruzado esos
+dos límites contra el campo de `BR-07` hasta que `T-61` (ciclo 4) lo señaló: tal como
+estaba redactada, la Redondopedia iba a terminar exponiendo por artículo más letra que la
+que el propio juego se prohíbe mostrar en una sola pantalla.
+
+**Regla:**
+1. **Tope: hasta 5 versos citados por artículo `tema`, en total y no necesariamente
+   consecutivos.** El número no es nuevo: es el mismo techo que `BR-03` ya fija como máximo
+   de exposición simultánea del juego (2 versos antes + el verso del hueco + 2 después,
+   nivel Fácil). Un artículo de enciclopedia no gana un permiso más generoso que el juego
+   para el mismo material — el sitio tiene un solo techo de "cuánta letra de un tema se
+   expone en cualquier pantalla", no dos que alguien tenga que recordar por separado.
+2. **Cada verso citado tiene que estar al servicio de algo que el artículo dice sobre el
+   tema** — ilustrar la mitología asociada, sostener un punto de autoría o de contexto de
+   grabación, mostrar por qué se le atribuye una leyenda a esa canción. Un verso pegado sin
+   una oración de análisis propia en el mismo párrafo o el siguiente no cuenta para el piso
+   de `BR-07` aunque esté dentro del tope numérico: es cita suelta, no artículo de
+   enciclopedia.
+3. **Lo que sí compone el grueso del artículo** —lo que puede, y tiene que, ocupar la mayor
+   parte del texto, sin tope numérico— es:
+   - Autoría real, con el nombre exacto de cada autor y enlace a su artículo `persona`
+     (`RES-20`).
+   - Disco de pertenencia y año, con enlace al artículo `disco`.
+   - Contexto de grabación: cuándo, con qué formación, qué se sabe del proceso.
+   - La mitología o la leyenda asociada al tema, rotulada como tal (`BR-08`) — nunca como
+     hecho.
+   - Qué dijo el Indio o Skay sobre el tema, si hay una ficha `RES-XX` que lo registre
+     (rótulo testimonio, `BR-08`).
+   - Los enlaces a los artículos de `disco` y de cada `persona` autora, que además ya exige
+     `BR-09` como mínimo de salientes.
+4. **El piso no cambia.** Siguen siendo **6 artículos de tipo `tema`** dentro de los 35 de
+   `US-05`. Esta regla corrige un campo de `BR-07` —qué contiene el artículo—, no el número
+   de artículos ni la prioridad relativa de `tema` dentro de `BR-11` (que sí se actualizó,
+   arriba, porque su argumento citaba el campo viejo).
+
+**Por qué 5 y no otro número:** podría ser más bajo —3, calcado del nivel "Media" de
+`BR-03`— o más alto, acercándose a las 1000 palabras de `RES-03`. Elijo el techo del juego
+completo, 5, porque es el único que no exige inventar un criterio nuevo: ata la Redondopedia
+al límite que el propio proyecto ya defendió y justificó en `BR-03`, y queda *comprobadamente*
+lejos del techo legal —5 versos ricoteros rondan las 40-70 palabras según el tema, muy por
+debajo de las 1000 de `RES-03`— sin necesidad de acercarse al borde para justificarlo.
+
+**Trazabilidad:** antes decía "letra completa con la fuente citada" (fila `tema` de
+`BR-07`, escrita junto con el resto de esa regla al abrir este documento). El cambio lo
+pidió el corte del ciclo 4, tarea `T-61` (`Docs/ORQ/ORQ-plan-ciclo-4.md`), contra evidencia
+que ya existía en el propio repo antes de esta tarea: `BR-03` (tope de 5 versos del juego
+"completar la letra") y `RES-03` (techo legal de 1000 palabras para cita de obra literaria,
+"las partes indispensables"). No es un hallazgo nuevo de investigación — es una relectura de
+dos documentos que ya estaban escritos antes que `BR-07` y que `BR-07` no había cruzado.
+
+**Criterio de aceptación:**
+- **Given** un artículo `tema` publicado.
+- **When** se cuenta cuántos versos cita en total y se revisa si cada uno tiene una oración
+  de análisis propia que lo sostenga.
+- **Then** el total no supera 5, ninguno aparece sin una oración que explique por qué está
+  ahí, y el resumen del artículo (criterio 1 de `US-05`) se entiende sin depender de ese
+  verso — el verso ilustra el análisis, no lo reemplaza.
+
+**Verificación:** no hay comando propio — es un criterio de conteo y de lectura, no de
+estructura de archivo. Si `arquitectura`, al resolver el contrato de la colección
+(pendiente en `Docs/SUGERENCIAS/PRD-para-arquitectura-contrato-redondopedia.md`), decide
+estructurar las citas como campo propio del artículo, el schema puede hacer cumplir el tope
+numérico de forma automática; mientras eso no exista, lo audita `revisor` al revisar el
+piso de `tema` contra esta regla y contra `BR-08` (rotulado), con `D-12` rigiendo quién
+corre qué.
 
 ---
 
@@ -345,7 +431,8 @@ terminar, así que medirla contra el pacing de `US-01`..`US-04` no tiene sentido
   hoja 05 del sistema de marca — la Redondopedia hereda ese mapa, no necesita uno nuevo).
 - **`contenido`** debe relacer `CNT-04` con la vara de `BR-10` antes de escribir los
   artículos de Bulacio y Olavarría, y escribir el primer lote de 35 bajo `CNT-02` (tono) y
-  `D-13` (fuente y mitigaciones para las letras de `tema`).
+  `D-13` (fuente y mitigaciones para las letras de `tema`) — con el tope y el criterio de
+  `BR-12` rigiendo cuántos versos cita cada artículo `tema` y para qué.
 - **`investigador`** no tiene pendiente nuevo para el primer lote (`D-20` cláusula 4: sale
   de lo que ya existe). Si al escribir aparece un hueco de hecho puntual para una
   biografía o un hito, es ficha `RES-XX` nueva, a pedido de `contenido`.

@@ -27,6 +27,8 @@ a la otra qué número tomó.
 | `RES-04` … `RES-09` | Primera sesión paralela de investigación sobre la banda | 2026-08-19 | **cerrada — rango consumido entero** (`INV-02-banda-cultura-estetica.md`) |
 | `RES-10` … `RES-19` | Sesión principal. Primera: `RES-10`, `E-07` de `ADR-01` (`T-13` del ciclo 1) | 2026-08-19 | activa |
 | `RES-20` … `RES-29` | **Segunda sesión paralela de investigación, en curso.** Si estás en esa sesión, **tomá de acá**: `RES-10`+ ya está reclamado por la principal | 2026-08-19 | **activa** |
+| `RES-30` … `RES-43` | Sesión del sistema de marca (tipografía, lettering y paletas de tapas) | 2026-08-21 | **cerrada — rango consumido entero** (`INV-07-tipografia-lettering-tapas.md`) |
+| `RES-44` … `RES-49` | **Ciclo 4.** `RES-44` es la auditoría de edición de las tapas (`T-47`), `RES-45` la fuente de letras (`T-60`) | 2026-08-21 | **activa** |
 
 ### Los nombres de archivo son otro contador compartido
 
@@ -41,7 +43,9 @@ mirarse.
 |---|---|---|
 | `INV-01`, `INV-02`, `INV-03` | `RES-01`..`RES-10` | histórico, anterior a esta regla |
 | `INV-04`, `INV-05` | `RES-11`..`RES-14` | principal |
-| `INV-20`, `INV-21` | `RES-20`..`RES-24` | segunda paralela |
+| `INV-20`, `INV-21`, `INV-22` | `RES-20`..`RES-29` | segunda paralela |
+| `INV-06`, `INV-07` | `RES-15`, `RES-19`, `RES-30`..`RES-43` | sesión del sistema de marca |
+| `INV-44`, `INV-45` | `RES-44`..`RES-49` | ciclo 4 |
 
 Los tres primeros no se renombran: hay citas apuntándoles y renombrar rompe más de lo que
 ordena. De `INV-04` en adelante vale la regla.

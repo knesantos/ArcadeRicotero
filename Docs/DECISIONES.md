@@ -689,3 +689,66 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   baja). Y una aclaración de tono para que nadie la tropiece: el BRIEF dice "nada de
   manual ni de enciclopedia" — eso rige **la voz, no la estructura**. La Redondopedia es
   enciclopedia en la forma y ricotera en la voz.
+
+## D-21 — Las tapas reales entran a toda la pantalla, no solo al juego de adivinarlas
+
+- **Fecha:** 2026-08-21
+- **Estado:** aceptada — decisión directa del usuario, al arrancar el ciclo 4.
+- **Contexto:** las 35 imágenes de las tapas ya están bajadas y viven como másters fuera
+  del sitio, en `Docs/INVESTIGACION/TapasDiscos/`. Hoy llegan a **una sola pantalla**: la
+  ficha de disco de la Redondopedia, a 320 px. El usuario pidió otra cosa, textual:
+  *"integrar las tapas reales a la página, utilizar los jpg reales. Recortarlos y usar
+  detalles o usarlos de fondo."* Eso choca de frente con una fila de `UX-04` que dice
+  igual de textual: tapas reales **"solo el juego adivinar la tapa o el disco [...] nunca
+  como fondo decorativo de otra pantalla"**.
+- **Por qué la regla decía lo contrario, y por qué eso ya no se sostiene:** `UX-04` se
+  escribió bajo `D-04` (arte original rocambolesco, tapas reales acotadas) y en un momento
+  donde el gate de derechos de `D-07` todavía existía — la cautela era de publicación, no
+  de diseño. **`D-14` sacó ese cerrojo** y reencuadró el proyecto entero: fan site sin
+  fines de lucro, riesgo asumido, si llega un reclamo se baja. La restricción de `UX-04`
+  sobrevivió al encuadre que la justificaba. Lo que queda de `D-04` que sí sigue vivo es
+  otra cosa: **la baja resolución y el crédito**, y esos no se tocan.
+- **Decisión:** las tapas reales entran a **cualquier pantalla del sitio**, en tres formas
+  — **detalle recortado** (un pedazo de la tapa, tratado como recorte pegado), **fondo
+  velado** (la tapa detrás del contenido, con un velo que garantiza la lectura) y **ficha**
+  (la tapa entera en baja, como ya está en la Redondopedia). Con cuatro condiciones que no
+  son negociables:
+  **(1) El crédito a Rocambole sigue siendo obligatorio donde aparezca una tapa.** Deja de
+  alcanzar con "crédito al lado de la imagen", porque un fondo no tiene dónde poner una
+  firma: hace falta un mecanismo, y lo define `experiencia` en `UX-04`.
+  **(2) La legibilidad gana siempre.** Texto sobre tapa pasa AA o no va. El velo es un
+  **token con test de contraste**, no una opacidad elegida a ojo en cada pantalla. Es la
+  base que `D-19` declaró que no rota nunca, aplicada a un fondo nuevo.
+  **(3) La forma sigue siendo la del proyecto.** Recorte de borde rasgado, borde grueso de
+  serigrafía, rotación leve, tinta plana encima — no la imagen de encabezado a sangre con
+  velo oscuro y texto blanco al medio, que es exactamente el tic genérico que veta
+  `.claude/rules/diseno-marca.md`. Usar la tapa real **no habilita** a resolverla como la
+  resolvería cualquier plantilla.
+  **(4) La baja resolución de `D-04` sigue vigente.** Un fondo pide más píxeles que una
+  estampilla de 320 px, y el número nuevo lo fija `experiencia`; el máster no llega nunca
+  al sitio.
+- **Lo único que esta decisión deja explícitamente prohibido:** usar como **respuesta
+  correcta** de "adivinar la tapa" una imagen cuya edición no esté confirmada. No es una
+  cautela legal: es lo único estricto que le queda al proyecto — si el archivo es un CD
+  yanqui del 93 y la respuesta dice LP argentino del 86, **el juego le marca error al que
+  se sabe el disco**. `RES-25` ya cazó ese caso concreto con *Oktubre*.
+- **Alternativas descartadas:** *resolver todo con dibujos propios y dejar `UX-04` como
+  está*, descartado porque el usuario pidió las tapas reales y porque no es o uno o el otro
+  — los recortes originales de `public/arte/` conviven y siguen siendo el default del
+  collage; *usar las tapas sin tocar la regla escrita*, descartado porque una regla que se
+  incumple en silencio deja de ordenar nada y el próximo rol la va a leer y a obedecer,
+  construyendo contra el sitio real; *tapas enteras a sangre como fondo de cada pantalla*,
+  descartado por las condiciones 2 y 3 — rompe el contraste y trae de vuelta el slop que
+  costó una corrida entera sacar; *esperar la ficha de evaluación de Coveralia para tocar
+  nada*, descartado porque esa evaluación importa para **la edición de cada imagen** (o
+  sea, para `US-04`), no para si un detalle puede vestir una pantalla.
+- **Consecuencias:** `experiencia` reescribe la fila de `UX-04` y escribe `UX-05`, el
+  catálogo de qué detalle de qué tapa viste cada sección bajo el mapa de `D-19`;
+  `scripts/generar-tapas.mjs` gana los derivados (detalle y fondo) además de la baja que ya
+  produce; `tokens.css` gana el velo y `contraste.test.ts` el par nuevo; el lienzo de marca
+  gana la regla en la hoja 05, porque el circuito es diseño → tokens → test y no al revés.
+  Y habilita de una vez **`US-04`**, que era el juego con la materia prima más cerca y la
+  regla más en contra. El riesgo es el de `D-14` sin novedad: si llega un reclamo, se baja.
+- **Dueños:** la regla y el catálogo son de `experiencia` (`UX-04` es suya); los valores de
+  marca salen del lienzo; el riesgo lo asume el usuario bajo `D-14`. Esta decisión fija el
+  principio y las cuatro condiciones, no los números.
