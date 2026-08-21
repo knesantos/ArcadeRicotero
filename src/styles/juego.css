@@ -254,3 +254,37 @@
   color: var(--texto-tenue);
   font-size: 0.85rem;
 }
+
+/* ---- La mezcla (D-19): cada categoria viste la paleta real de su disco ---- */
+/* El color llega por la clase `categoria--X` que escribe partida.ts. La base no rota:
+   solo cambian el tinte de la insignia de categoria. Acierto, error y rotulos, nunca. */
+
+.categoria--historia {
+  color: var(--cat-historia);
+  border-color: var(--cat-historia);
+}
+
+.categoria--discos {
+  color: var(--cat-discos);
+  border-color: var(--cat-discos);
+}
+
+.categoria--letras {
+  color: var(--cat-letras);
+  border-color: var(--cat-letras);
+}
+
+.categoria--mitologia {
+  color: var(--cat-mitologia);
+  border-color: var(--cat-mitologia);
+}
+
+/* ---- La firma (D-19): compartir lleva el lettering del logo ---- */
+
+.primario.firma {
+  font-family: var(--fuente-marca-firma);
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  background: var(--cat-historia); /* el resultado viste Gulp! */
+  color: var(--fondo);
+}

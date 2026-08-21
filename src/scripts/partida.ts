@@ -84,7 +84,7 @@ function pintarPregunta(): void {
 
   const cab = el('div', 'cabecera');
   cab.append(el('span', 'paso', `${indice + 1} de ${ronda.length}`));
-  cab.append(el('span', 'categoria', item.categoria));
+  cab.append(el('span', `categoria categoria--${item.categoria}`, item.categoria));
 
   // La insignia va antes de tocar: el que conoce la historia real tiene que saber que se
   // le pregunta "que se cuenta" y no "que paso".
@@ -175,7 +175,7 @@ function pintarResultado(): void {
     );
   }
 
-  const compartir = el('button', 'primario', BOTON_COMPARTIR);
+  const compartir = el('button', 'primario firma', BOTON_COMPARTIR);
   compartir.type = 'button';
   compartir.addEventListener('click', () => void compartirResultado(aciertos));
   zonaResultado.append(compartir);

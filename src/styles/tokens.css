@@ -1,39 +1,87 @@
 /*
- * Tokens visuales. Implementa `UX-04` (Docs/UX/UX-04-sistema-visual.md).
+ * Tokens visuales. Implementa el sistema de marca de Arcade Ricotero.
  *
- * `UX-04` fijo las restricciones y dejo los valores exactos a quien produzca el arte,
- * marcandolos explicitamente como criterio propio y no como referencia fichada de
- * Rocambole: ninguna ficha describe su paleta. Estos hex son **valores de trabajo**
- * que cumplen las restricciones — base oscura, acentos saturados, contraste real — y
- * se pueden cambiar entero sin tocar una linea de logica.
+ * EL DISENO MANDA: la fuente de verdad es el lienzo "Sistema de marca Arcade Ricotero"
+ * (URL en ESTADO.md y en .claude/rules/diseno-marca.md). Para cambiar un color, una
+ * fuente o un espaciado, primero se cambia alla y despues se refleja aca — nunca al
+ * reves, y nunca un valor suelto en un componente. Este archivo es el UNICO lugar del
+ * codigo donde vive un hex.
  *
- * La restriccion que no se negocia: **saturado no exime de contraste** (`UX-04`, y el
- * checklist de accesibilidad de `UX-01`). Todo par texto/fondo que se use de verdad
- * esta verificado en `contraste.test.ts` contra WCAG AA, 4,5:1.
+ * Hojas que este archivo transcribe: 03 (paleta), 04 (tipografia), 05 (mezcla D-19).
+ * La restriccion que no se negocia: **saturado no exime de contraste** (UX-04). Todo
+ * par texto/fondo que se usa de verdad esta verificado en `contraste.test.ts` (WCAG AA).
  */
 
+/* Las letras reales (RES-42, RES-43), servidas desde el propio sitio: cero CDN. */
+@font-face {
+  font-family: 'Oktubre Calco';
+  src: url('/fuentes/oktubre-calco.woff') format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Patricio Rey Fan';
+  src: url('/fuentes/patricio-rey.woff') format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Lobo Suelto Fan';
+  src: url('/fuentes/lobo-suelto.woff') format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Redonditos Fan';
+  src: url('/fuentes/redonditos.woff') format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Archivo Black';
+  src: url('/fuentes/archivo-black.woff2') format('woff2');
+  font-display: swap;
+}
+
 :root {
-  /* Base oscura: los acentos explotan contra esto, no al reves. */
-  --fondo: #12101a;
-  --fondo-elevado: #1e1a2e;
-  --borde: #3a3350;
+  /* Base: tinta sobre negro calido (hoja 03). El negro es el 80% de cada pieza. */
+  --fondo: #14100e;
+  --fondo-elevado: #1f1815;
+  --borde: #3b302a;
 
   /* Texto */
-  --texto: #f4f1ea;
-  --texto-tenue: #b9b2c7;
+  --texto: #f4efe2;
+  --texto-tenue: #b7ab99;
 
-  /* Acentos psicodelicos saturados */
-  --acento: #ff8a3d; /* naranja: accion principal */
-  --acento-2: #ffd23f; /* amarillo: destaque */
-  --acento-3: #45e0c0; /* verde agua: acierto */
-  --acento-4: #ff5d8f; /* rosa: error, sin dramatismo */
+  /* Accion y estados (hoja 03). El rojo es del error y de nada mas. */
+  --acento: #f0761f; /* naranja: accion principal */
+  --acento-2: #f5c544; /* oro: destaque y foco */
+  --acento-3: #7be85c; /* verde: acierto — el unico verde que rellena */
+  --acento-4: #ff4b4b; /* rojo: error, reservado */
 
-  /* Rotulos de fuente. No decorativos: son informacion de juego (UX-01 v2). */
-  --rotulo-leyenda: #c9a7ff;
-  --rotulo-testimonio: #7fd4ff;
+  /* Rotulos de fuente (UX-01 v2). Informacion de juego: NUNCA rotan con la mezcla. */
+  --rotulo-leyenda: #ede4ce; /* tiza: folclore anonimo */
+  --rotulo-testimonio: #6fc7ff; /* celeste: alguien con nombre */
+
+  /* La mezcla (D-19): cada categoria viste la paleta real de un disco (RES-37).
+     El "apoyo" es para bordes y rellenos — NO llega a 4,5:1 como texto sobre fondo. */
+  --cat-historia: #df5744; /* Gulp! 1985: el rojo del titulo manuscrito */
+  --cat-historia-apoyo: #e6e4bd;
+  --cat-discos: #8f8b84; /* Ultimo bondi 1998: plata vieja */
+  --cat-discos-apoyo: #74726e;
+  --cat-letras: #ce5c29; /* La mosca y la sopa 1991: naranja quemado */
+  --cat-letras-apoyo: #114b58;
+  --cat-mitologia: #f28b16; /* Lobo suelto 1993: el naranja de Semilla */
+  --cat-mitologia-apoyo: #0b7792;
+
+  /* La marca viste Oktubre (D-19): el rojo de la tapa, medido (RES-37). */
+  --marca-rojo: #f8360d;
+
+  /* Tipografia (hoja 04). Titular: el calco real. Rotulada: grita corto.
+     Texto: pila del sistema — el enunciado y las opciones van SIEMPRE aca. */
+  --fuente-titular: 'Oktubre Calco', 'Archivo Black', 'Arial Black', sans-serif;
+  --fuente-rotulada: 'Archivo Black', 'Arial Black', sans-serif;
+  --fuente-marca-firma: 'Patricio Rey Fan', 'Archivo Black', sans-serif;
+  --fuente: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   /* Espaciado pensado para el pulgar (D-09) */
-  --toque-min: 48px; /* area de toque minima */
+  --toque-min: 48px;
   --espacio-1: 0.5rem;
   --espacio-2: 1rem;
   --espacio-3: 1.5rem;
@@ -41,8 +89,6 @@
 
   --radio: 14px;
   --linea: 3px; /* linea gruesa, UX-04 */
-
-  --fuente: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
 * {
