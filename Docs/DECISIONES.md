@@ -593,3 +593,35 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 - **Consecuencia inmediata:** hoja 05 del lienzo rehecha — paleta real medida por disco +
   estado de la evidencia sobre su letra. Pendiente al cierre: el barrido de fuentes ya
   hechas / herramientas foto-a-fuente / mapa de gráfica por disco, corriendo en paralelo.
+
+## D-19 — La mezcla ricotera: cada pantalla viste un disco, la base no rota nunca
+
+- **Fecha:** 2026-08-21
+- **Estado:** aceptada — decisión directa del usuario, en la sesión del sistema de marca.
+- **Contexto:** el sistema tenía una sola estética (tinta cálida + una rotulada). El
+  usuario pidió otra cosa: *"que el sitio sea una mezcla de toda la cultura y los discos
+  [...] que algunas secciones te hagan acordar a Gulp, otras a Oktubre, otras a La mosca
+  y la sopa. Una mezcla bien ricotera, manteniendo ese caos de la banda."* Para entonces
+  ya existían los insumos que lo hacen posible sin inventar nada: las paletas reales
+  muestreadas (`RES-37`), las fuentes fan de Zavala (`RES-42`) y el calco propio de
+  *Oktubre* (`RES-43`).
+- **Decisión:** el sitio es **polifónico**: cada parte viste la estética de un disco
+  distinto — paleta medida + letra reconstruida — sobre una base que no cambia. El mapa
+  inicial (hoja 05 del lienzo): portada y título en **Oktubre** (rojo/negro, Oktubre
+  Calco — el título del sitio va en la letra calcada, con las cuatro letras derivadas A
+  C D I); historia en **Gulp!**; mitología en **Lobo suelto** (con el alfabeto de
+  Semilla); letras en **La mosca y la sopa**; discos en **Último bondi**; resultado y
+  compartir en **Gulp! + el lettering del logo** (fuente "Patricio Rey").
+- **Las tres reglas que ordenan el caos:** (1) la base no rota — fondo de tinta, grano,
+  serigrafía, zona pulgar y contraste AA son idénticos en todas las pantallas; rotan el
+  acento y la letra grande. (2) El texto largo va siempre en la legible del sistema
+  (`UX-01` intacto): las letras de disco gritan títulos, no explican. (3) El verde de
+  acierto y el rojo de error no se disfrazan, y los rótulos de leyenda/testimonio no
+  rotan nunca.
+- **Deuda técnica declarada:** las fuentes fan y el calco **no traen acentos** (JUGÁ,
+  SEGUÍ, MITOLOGÍA los necesitan) — derivar tildes es el próximo paso del calco. Y
+  aplicar la mezcla al código real requiere variables de paleta por sección en
+  `tokens.css` + el test de contraste extendido a cada combinación nueva: pasa por el
+  hilo principal y el ciclo que lo planifique.
+- **Dueños:** el mapa sección→disco es de `experiencia` en última instancia (extiende
+  `UX-04`); esta decisión fija el principio y la primera asignación.
