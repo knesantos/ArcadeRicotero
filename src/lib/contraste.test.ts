@@ -48,6 +48,13 @@ const PARES: Array<[string, string, string]> = [
   ['rotulo de leyenda sobre fondo elevado', 'rotulo-leyenda', 'fondo-elevado'],
   ['rotulo de testimonio sobre fondo', 'rotulo-testimonio', 'fondo'],
   ['rotulo de testimonio sobre fondo elevado', 'rotulo-testimonio', 'fondo-elevado'],
+  // La mezcla (D-19): las categorias visten la paleta real de su disco. Solo el color
+  // principal se usa como texto; el "apoyo" es de bordes y no entra aca.
+  ['marca (rojo de Oktubre) sobre fondo', 'marca-rojo', 'fondo'],
+  ['historia (Gulp!) sobre fondo', 'cat-historia', 'fondo'],
+  ['discos (Ultimo bondi) sobre fondo', 'cat-discos', 'fondo'],
+  ['letras (La mosca) sobre fondo', 'cat-letras', 'fondo'],
+  ['mitologia (Lobo suelto) sobre fondo', 'cat-mitologia', 'fondo'],
 ];
 
 test('WCAG AA: todo par de texto y fondo llega a 4,5:1', () => {

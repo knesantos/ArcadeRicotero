@@ -625,3 +625,67 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   hilo principal y el ciclo que lo planifique.
 - **Dueños:** el mapa sección→disco es de `experiencia` en última instancia (extiende
   `UX-04`); esta decisión fija el principio y la primera asignación.
+
+## D-20 — La Redondopedia: enciclopedia ricotera navegable, quinto frente del producto
+
+- **Fecha:** 2026-08-21
+- **Estado:** aceptada — decisión directa del usuario
+- **Contexto:** el usuario pidió sumar al sitio una **"Redondopedia"**: una sección estilo
+  Wikipedia con la historia completa de la banda, biografías de los miembros, letras, los
+  casos reales alrededor de las canciones (Bulacio), y toda la cultura ricotera —
+  navegable por enlaces entre artículos, como se navega Wikipedia. El fundamento es que la
+  investigación acumulada **ya es más grande que lo que los juegos consumen**: más de
+  cuarenta fichas `RES-` con cronología (`RES-05`), cultura (`RES-07`), mitología rotulada
+  (`RES-08`), tracklists con autoría (`RES-20`), el memoir (`RES-21`), Rocambole y las
+  tapas (`RES-06`, `RES-31`, `RES-33`, `RES-36`) — y hoy solo se asoma en preguntas de
+  trivia. El usuario también pidió que **a futuro** la gente pueda sumar data; eso quedó
+  explícitamente para después, no para ahora.
+- **Decisión:** la Redondopedia entra como **quinto frente del producto**, con cinco
+  cláusulas:
+  **(1) No toca el "Listo" de la v1.** Los cuatro juegos (`D-05`) siguen siendo la v1 y
+  conservan sus pisos y su orden de corte. La Redondopedia es un frente nuevo con historia
+  propia (`US-05`, la escribe `producto`) y su propio "listo"; la prioridad relativa entre
+  frentes se decide en `/ciclo`, no acá.
+  **(2) Estática, sin backend — `D-02` intacta.** Artículos Markdown versionados en el
+  repo, enlaces internos estilo wiki, HTML estático generado por Astro. Un artículo es un
+  archivo, igual que una pregunta es una línea de JSON.
+  **(3) El rotulado de tres casillas se extiende a los artículos.** Hecho, leyenda y
+  testimonio (`D-14`) rigen dentro de la prosa igual que en el quiz. Esta es la ventaja
+  competitiva real: **Wikipedia no puede contar la leyenda como leyenda** — su política de
+  fuentes es exactamente la exigencia que `D-14` decidió no adoptar. Una enciclopedia que
+  rotula el relato y lo cuenta igual es la única que puede escribir la historia de esta
+  banda entera.
+  **(4) El insumo inicial es la investigación existente.** El primer lote de artículos
+  sale de las fichas `RES-` ya escritas, no de investigación nueva.
+  **(5) "Que la gente sume data" queda fuera de alcance por ahora.** Cuando se discuta,
+  la conversación arranca en esta decisión y con dos restricciones ya tomadas: sin backend
+  (`D-02`, `D-15`) y sin cuentas (`D-14`, los molinetes) — la vía natural es el repo
+  público en GitHub o un buzón de sugerencias, nunca un login.
+- **Alternativas descartadas:** un wiki con motor real (MediaWiki o similar), descartado
+  porque exige backend, cuentas y moderación — contradice `D-02` y `D-15`, y una cuenta de
+  editor es un molinete igual que una de jugador; enlazar a Wikipedia en vez de escribir
+  artículos propios, descartado porque regala la voz (el tono ricotero de `CNT-02` no
+  existe allá) y porque allá la leyenda sin fuente se borra en vez de rotularse; meterla
+  dentro del "Listo" de la v1, descartado porque los cuatro juegos tienen pisos y promesa
+  cerrados y la enciclopedia todavía no tiene piso — sumarla al gate sería frenar lo
+  terminado con lo recién nacido; esperar a terminar los juegos para siquiera
+  registrarla, descartado porque la decisión ya está tomada por el usuario y no
+  registrarla es como no tenerla (un requisito sin ID no existe).
+- **Consecuencias:** se gana la superficie donde la investigación rinde entera, y un
+  circuito nuevo entre juegos y artículos — la pregunta enlaza al artículo ("leé más") y
+  el artículo devuelve al juego. Cada rol hereda trabajo concreto: `producto` escribe
+  `US-05` con estructura y piso; `arquitectura` debe un contrato nuevo (colección
+  Markdown, frontmatter con rótulo y fuentes, convención de enlaces internos);
+  `experiencia` debe el patrón de navegación móvil de artículo largo — que es **otro
+  modo de uso** que el de sesión de juego de 2-3 minutos — y puede vestirla con `D-19`
+  (el mapa sección→disco ya existe: historia=Gulp!, mitología=Lobo suelto); `contenido`
+  escribe los artículos bajo `CNT-02` y `CNT-04`. La decisión **fuerza dos pendientes
+  que venían pateándose**: cómo y dónde el sitio cuenta la muerte del Indio (`RES-04` —
+  una biografía no puede esquivarla) y el límite editorial sobre Bulacio y Olavarría,
+  que deja de ser un borde del quiz para volverse artículos enteros (`CNT-04` se relee
+  con esa vara). Las letras completas por tema son más exposición que los ~30 versos del
+  juego: corren bajo `D-13` (fuentes de fans con mitigaciones, cruce obligatorio contra
+  los 105 temas de `RES-20`) y bajo `D-14` (el riesgo se asume; si llega un reclamo, se
+  baja). Y una aclaración de tono para que nadie la tropiece: el BRIEF dice "nada de
+  manual ni de enciclopedia" — eso rige **la voz, no la estructura**. La Redondopedia es
+  enciclopedia en la forma y ricotera en la voz.

@@ -32,6 +32,7 @@ const items = cargarBanco(crudo as unknown as BancoCrudo);
     <main id="app">
       <!-- Pantalla 0. El subtitulo lo reemplaza partida.ts si se llega por un desafio. -->
       <section id="portada" class="pantalla">
+        <p class="marca" aria-label="Arcade Ricotero">ARCADE RICOTERO</p>
         <h1>{PANTALLA_0.titulo}</h1>
         <p id="subtitulo" class="tenue">{PANTALLA_0.subtitulo}</p>
         <button id="jugar" class="primario" type="button">{PANTALLA_0.botón}</button>
@@ -51,10 +52,20 @@ const items = cargarBanco(crudo as unknown as BancoCrudo);
         max-width: 34rem;
         margin: 0 auto;
       }
+      /* La portada viste Oktubre (D-19): la titular calcada, el rojo de la tapa. */
+      .marca {
+        font-family: var(--fuente-titular);
+        font-size: 2.1rem;
+        line-height: 0.96;
+        color: var(--marca-rojo);
+        margin: var(--espacio-3) 0 var(--espacio-2);
+        max-width: 7ch;
+      }
       h1 {
-        font-size: 1.6rem;
-        line-height: 1.25;
+        font-size: 1.35rem;
+        line-height: 1.3;
         text-wrap: balance;
+        margin-top: 0;
       }
       .tenue {
         color: var(--texto-tenue);
@@ -67,8 +78,9 @@ const items = cargarBanco(crudo as unknown as BancoCrudo);
         width: 100%;
         margin-top: var(--espacio-4);
         padding: var(--espacio-2);
-        background: var(--acento);
-        color: #12101a;
+        font-family: var(--fuente-rotulada);
+        background: var(--marca-rojo);
+        color: var(--fondo);
         border: none;
         border-radius: var(--radio);
         font-size: 1.25rem;
