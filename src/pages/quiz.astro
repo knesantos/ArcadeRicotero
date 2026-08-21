@@ -1,0 +1,104 @@
+---
+/**
+ * La trivia: pantalla 0 y contenedor del quiz. Implementa `UX-01` v2.
+ *
+ * Vivia en `/` y se mudo a `/quiz/` cuando el index paso a ser el portal del arcade.
+ * Los links de desafio viejos que apuntan a `/?g=quiz&...` los redirige el portal
+ * conservando la query, y los nuevos se arman con `location.pathname`, asi que
+ * apuntan aca solos (`ADR-02` no cambia).
+ *
+ * Arquitectura de islas (`D-02`): esto es HTML estatico. El unico JavaScript es el de
+ * `partida.ts`, y se carga aca porque el quiz es la isla.
+ *
+ * **Molinetes abiertos (`D-14`):** esta pantalla no pide nada. Ni cuenta, ni login, ni
+ * un campo de texto. Un tap y a jugar. `T-39` se verifica con un grep que cuenta cero
+ * `<input>` y cero `<form>` en el HTML generado — no es una metafora, es una prueba.
+ */
+import '../styles/tokens.css';
+import '../styles/juego.css';
+import '../styles/sitio.css';
+import { cargarBanco, type BancoCrudo } from '../lib/quiz/banco.ts';
+import { PANTALLA_0 } from '../lib/quiz/copy.ts';
+import { PORTAL } from '../lib/sitio/copy.ts';
+import crudo from '../data/quiz.json';
+
+// El banco se resuelve en build: el navegador recibe JSON ya filtrado, sin campos
+// internos y sin los items en borrador o retirados.
+const items = cargarBanco(crudo as unknown as BancoCrudo);
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={PANTALLA_0.subtitulo} />
+    <title>Preguntas ricoteras — Arcade Ricotero</title>
+  </head>
+  <body class="con-grano">
+    <main id="app">
+      <!-- Pantalla 0. El subtitulo lo reemplaza partida.ts si se llega por un desafio.
+           La cinta de regreso vive solo aca: en plena partida no hay salidas que
+           distraigan, y el resultado ya tiene sus propios botones. -->
+      <section id="portada" class="pantalla">
+        <header class="cabecera-sitio">
+          <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
+        </header>
+        <p class="marca" aria-label="Arcade Ricotero">ARCADE RICOTERO</p>
+        <h1>{PANTALLA_0.titulo}</h1>
+        <p id="subtitulo" class="tenue">{PANTALLA_0.subtitulo}</p>
+        <button id="jugar" class="primario" type="button">{PANTALLA_0.botón}</button>
+      </section>
+
+      <section id="partida" class="pantalla" hidden></section>
+      <section id="resultado" class="pantalla" hidden></section>
+    </main>
+
+    <script type="application/json" id="banco" set:html={JSON.stringify(items)} />
+    <script>
+      import '../scripts/partida.ts';
+    </script>
+
+    <style>
+      main {
+        max-width: 34rem;
+        margin: 0 auto;
+      }
+      /* La portada viste Oktubre (D-19): la titular calcada, el rojo de la tapa. */
+      .marca {
+        font-family: var(--fuente-titular);
+        font-size: 2.1rem;
+        line-height: 0.96;
+        color: var(--marca-rojo);
+        margin: var(--espacio-3) 0 var(--espacio-2);
+        max-width: 7ch;
+      }
+      h1 {
+        font-size: 1.35rem;
+        line-height: 1.3;
+        text-wrap: balance;
+        margin-top: 0;
+      }
+      .tenue {
+        color: var(--texto-tenue);
+      }
+      .pantalla[hidden] {
+        display: none;
+      }
+      .primario {
+        display: block;
+        width: 100%;
+        margin-top: var(--espacio-4);
+        padding: var(--espacio-2);
+        font-family: var(--fuente-rotulada);
+        background: var(--marca-rojo);
+        color: var(--fondo);
+        border: none;
+        border-radius: var(--radio);
+        font-size: 1.25rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+    </style>
+  </body>
+</html>

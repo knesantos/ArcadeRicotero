@@ -1,0 +1,64 @@
+---
+/**
+ * La portada de la Redondopedia (`US-05`).
+ *
+ * Es el origen del grafo de `BR-09`: desde aca se llega a TODOS los articulos
+ * publicados siguiendo enlaces — el indice lista cada uno, y el test del grafo
+ * (`redondopedia.test.ts`) verifica que ademas el tejido interno no deje huerfanos.
+ *
+ * La explicacion del rotulado va arriba porque es la promesa central de `D-14`:
+ * el lector sabe desde la puerta que casilla es cada cosa.
+ */
+import Base from '../../layouts/Base.astro';
+import { PORTAL, REDONDOPEDIA } from '../../lib/sitio/copy.ts';
+import { porTipo, TIPO_A_CATEGORIA, type Articulo } from '../../lib/redondopedia.ts';
+import crudo from '../../data/redondopedia.json';
+
+const articulos = (crudo as unknown as { articulos: Articulo[] }).articulos;
+const grupos = porTipo(articulos);
+
+const recortar = (texto: string): string =>
+  texto.length > 150 ? `${texto.slice(0, 147).trimEnd()}…` : texto;
+---
+
+<Base
+  titulo="La Redondopedia — Arcade Ricotero"
+  descripcion={REDONDOPEDIA.bajada}
+  conBanderas
+  volverA={{ href: '/', texto: PORTAL.volverAlArcade }}
+>
+  <h1 class="titulo-seccion">{REDONDOPEDIA.titulo}</h1>
+  <p class="bajada-portal">{REDONDOPEDIA.bajada}</p>
+
+  <p class="leyenda-rotulos">
+    {REDONDOPEDIA.explicacionRotulos}<b class="es-leyenda"
+      >◆ {REDONDOPEDIA.palabraLeyenda}</b
+    >{REDONDOPEDIA.explicacionMedio}<b class="es-testimonio"
+      >❝ {REDONDOPEDIA.palabraTestimonio}</b
+    >{REDONDOPEDIA.explicacionCierre}
+  </p>
+
+  {
+    [...grupos.entries()].map(
+      ([tipo, lista]) =>
+        lista.length > 0 && (
+          <section>
+            <h2 class="lado">{REDONDOPEDIA.secciones[tipo]}</h2>
+            <ul class="indice-articulos">
+              {lista.map((a) => (
+                <li>
+                  <a
+                    class={`tarjeta-articulo tarjeta-articulo--${TIPO_A_CATEGORIA[a.tipo]}`}
+                    href={`/redondopedia/${a.slug}/`}
+                  >
+                    <strong>{a.titulo}</strong>
+                    <span>{recortar(a.resumen)}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ),
+    )
+  }
+</Base>

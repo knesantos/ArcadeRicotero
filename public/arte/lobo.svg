@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 120" role="img" aria-label="El lobo">
+  <!-- Marcador de posicion: lobo aullando, silueta original propia. El simbolo sale
+       del TITULO "Lobo suelto, cordero atado", no de la composicion de la tapa. -->
+  <g fill="ivory">
+    <path d="M28 104 C 24 88, 28 72, 40 62 C 50 54, 56 44, 60 32 C 63 24, 70 16, 80 10 C 79 18, 82 22, 90 24 C 98 26, 104 32, 105 40 C 106 47, 102 52, 94 54 C 86 56, 80 62, 76 72 C 72 82, 74 92, 70 104 Z"/>
+    <!-- oreja -->
+    <path d="M82 14 C 86 8, 92 4, 98 4 C 96 10, 96 16, 92 20 Z"/>
+    <!-- fauces abiertas hacia arriba -->
+    <path d="M80 10 C 84 6, 90 4, 96 5" stroke="ivory" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <!-- pata delantera suelta -->
+    <path d="M46 104 C 46 92, 44 82, 48 74" stroke="ivory" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <!-- ojo: hueco -->
+    <circle cx="88" cy="32" r="3" fill="black" opacity="0.55"/>
+  </g>
+</svg>

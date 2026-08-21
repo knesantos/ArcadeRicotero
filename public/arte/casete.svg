@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 130" role="img" aria-label="Un cassette">
+  <!-- El cassette dibujado a mano: motivo vintage generico del collage.
+       Linea gruesa, nada perfectamente derecho (UX-04). -->
+  <g fill="none" stroke="ivory" stroke-width="5" stroke-linecap="round">
+    <!-- carcasa, apenas torcida -->
+    <path d="M14 18 C 74 14, 136 16, 188 20 C 190 48, 189 82, 186 112 C 126 116, 66 114, 12 110 C 11 80, 12 46, 14 18 Z"/>
+    <!-- ventana de la cinta -->
+    <path d="M48 38 C 84 35, 122 36, 154 39 C 155 52, 155 62, 154 72 C 120 75, 84 74, 48 71 C 47 60, 47 48, 48 38 Z" stroke-width="4"/>
+    <!-- las dos ruedas dentadas -->
+    <circle cx="72" cy="55" r="12" stroke-width="4"/>
+    <circle cx="130" cy="55" r="12" stroke-width="4"/>
+    <path d="M72 47 L 72 63 M 64 55 L 80 55" stroke-width="3"/>
+    <path d="M130 47 L 130 63 M 122 55 L 138 55" stroke-width="3"/>
+    <!-- la cinta floja entre las ruedas -->
+    <path d="M84 60 C 96 66, 108 66, 118 60" stroke-width="3"/>
+    <!-- etiqueta escrita: dos renglones garabateados -->
+    <path d="M40 88 C 80 86, 124 86, 162 88" stroke-width="3" opacity="0.7"/>
+    <path d="M46 98 C 78 96, 110 96, 138 98" stroke-width="3" opacity="0.7"/>
+    <!-- tornillo -->
+    <circle cx="26" cy="28" r="3" stroke-width="3"/>
+    <circle cx="176" cy="30" r="3" stroke-width="3"/>
+    <circle cx="26" cy="100" r="3" stroke-width="3"/>
+    <circle cx="174" cy="102" r="3" stroke-width="3"/>
+  </g>
+</svg>

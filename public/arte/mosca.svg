@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 110" role="img" aria-label="La mosca">
+  <!-- Marcador de posicion: silueta original propia, a reemplazar por el recorte
+       real de la mosca de "La mosca y la sopa" (mismo nombre de archivo). -->
+  <g fill="ivory">
+    <!-- ala izquierda -->
+    <path opacity="0.55" d="M52 44 C 34 22, 8 14, 4 26 C 1 36, 18 48, 38 52 C 44 53, 50 50, 52 44 Z"/>
+    <!-- ala derecha -->
+    <path opacity="0.55" d="M68 42 C 82 18, 108 8, 114 20 C 118 30, 100 46, 80 52 C 73 54, 69 49, 68 42 Z"/>
+    <!-- cabeza -->
+    <path d="M53 34 C 50 26, 56 19, 63 20 C 70 21, 74 28, 70 35 C 66 41, 56 41, 53 34 Z"/>
+    <!-- ojo -->
+    <circle cx="58" cy="27" r="4" opacity="0.35"/>
+    <circle cx="67" cy="27" r="4" opacity="0.35"/>
+    <!-- torax y abdomen, un poco chuecos a proposito -->
+    <path d="M54 40 C 44 46, 42 60, 48 72 C 54 85, 66 94, 72 88 C 80 80, 82 62, 75 50 C 70 41, 61 36, 54 40 Z"/>
+    <!-- rayas del abdomen: huecos, como recorte -->
+    <path d="M50 62 C 58 66, 68 66, 75 61" stroke="black" stroke-width="3" fill="none" opacity="0.5"/>
+    <path d="M52 72 C 59 76, 68 76, 74 71" stroke="black" stroke-width="3" fill="none" opacity="0.5"/>
+    <!-- patas -->
+    <path d="M50 48 C 40 50, 34 58, 30 66" stroke="ivory" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path d="M50 58 C 42 64, 38 72, 37 80" stroke="ivory" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path d="M74 52 C 84 56, 88 64, 90 72" stroke="ivory" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path d="M70 62 C 78 70, 80 78, 80 86" stroke="ivory" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>
