@@ -6,16 +6,38 @@
 > `src/lib/quiz/banco.ts`, `.claude/rules/contenido-json.md`,
 > `.claude/rules/diseno-marca.md`.
 > Produce: **`CTR-05`**. Tarea: `T-53` del ciclo 4.
-> Fecha: 2026-08-21.
+> Fecha: 2026-08-21. **Revisión 2: 2026-08-22, `T-70` del ciclo 5.**
+
+---
+
+## Revisión 2 — qué cambió y por qué no es `CTR-05` v2
+
+`REV-05` dejó tres hallazgos de contrato abiertos y `contenido` dejó dos pedidos en
+`Docs/SUGERENCIAS/CNT-para-arquitectura-detalle-en-us04.md`. Esta revisión los cierra:
+
+| Qué | Dónde | Resultado |
+|---|---|---|
+| `FIND-18` — la ruta de `detalle` documentada no es la que existe | `CTR-05.4`, `CTR-05.9` | El texto pasa a la ruta real, con subcarpeta, y se dice qué puede valer `archivo` |
+| `FIND-21` — el crédito no admite autoría compartida | `CTR-05.4`, `CTR-05.7` | El enum gana un segundo valor y `contenido` tiene que reescribir `TP-007` y `TP-008` |
+| `FIND-19` — la ventana de precarga | `CTR-05.1` | Se confirma, con la aritmética que faltaba. Queda como deuda del código (`T-75`) |
+| Hueco 2 de `contenido` — no había cómo decir que la imagen es la contratapa | `CTR-05.4` | Campo opcional `imagen.cara`, con `frontal` por omisión |
+
+**`contratoVersion` sigue en `1` y el archivo del contrato no se versiona a `-v2`.** Versiono
+cuando el cambio invalida decisiones previas, y acá no pasa: la corrección de la ruta pone el
+texto de acuerdo con el código que ya corría —lo desactualizado era el papel, no el sitio—, y
+las dos incorporaciones son aditivas. **Ningún ítem cargado deja de validar por esta
+revisión**, así que subir el número del envoltorio obligaría a `contenido` a tocar diez ítems
+para no arreglar nada. Lo que sí queda pedido, y es de `contenido`, son los dos ítems del
+doble de 1993: `Docs/SUGERENCIAS/ARQ-para-contenido-credito-compartido.md`.
 
 ---
 
 ## CTR-05 — Contrato de `src/data/tapa.json`
 
-- **Estado:** vigente, sin valores abiertos, **con una dependencia declarada**: el schema
-  exige la ficha `RES-44` en cada ítem y esa ficha la produce `T-47` mientras escribo esto.
-  Hasta que exista, ningún ítem de `contenido` puede validar. Es a propósito: es el
-  mecanismo que impide elegir una tapa sin auditoría de edición (`D-21`).
+- **Estado:** vigente, sin valores abiertos. La dependencia que declaraba la revisión 1 —el
+  schema exige la ficha `RES-44` en cada ítem y esa ficha no existía todavía— **está
+  cumplida**: `T-47` entregó `RES-44` y los diez ítems de `T-54` la citan. El mecanismo se
+  queda igual: es lo que impide elegir una tapa sin auditoría de edición (`D-21`).
 - **Para quién:** para `contenido`, que carga los 10 ítems en `T-54`; para quien escriba el
   motor en `T-55`; y para `revisor` en `T-56`, que tiene que poder rechazar un ítem sin
   preguntarle a nadie.
@@ -65,6 +87,30 @@ descarga a un celular de gama baja:
   *Alternativa descartada:* precargar el pool entero al abrir el juego, que es cómodo de
   programar y hace que la primera pantalla pese medio mega en una conexión de celular para
   un jugador que va a ver seis tapas.
+
+**La ventana se confirma en la revisión 2, y ahora con el número que le faltaba** (`FIND-19`).
+El hallazgo es correcto: el código carga solo la imagen del ítem actual, así que hoy la
+ventana es deuda y no desvío tolerado. La medición de `REV-05` —los derivados reales pesan
+entre 16 y 33 KB— es justamente lo que la vuelve barata de cumplir, no lo que la vuelve
+innecesaria:
+
+- La ronda es de **6 ítems** (`partida-tapa.ts`, `LARGO_RONDA`). Precargar la ronda entera son
+  6 pedidos y hasta 360 KB en el peor caso del techo de 60 KB, todos disparados en la
+  pantalla donde el jugador todavía no vio nada. La ventana deja **2 archivos en vuelo como
+  máximo**, unos 50 KB con los pesos reales, y lo que el jugador nunca ve nunca se baja.
+- Lo que la ventana compra es el corte entre responder y la pregunta siguiente. En una
+  conexión de celular lenta, 30 KB no son 30 KB: son la latencia de abrir el pedido más la
+  descarga, y eso cae justo en el momento en que el jugador toca "Seguir".
+- **La forma exacta, para que `T-75` no tenga que interpretarla:** al pintar la pregunta `n`
+  se pide la imagen del ítem `n+1` de la ronda ya armada, una sola, y nada más. No se pide
+  al armar la ronda —ahí no se sabe todavía si el jugador va a jugar— ni se pide `n+2`.
+
+*Alternativa descartada, y la registro porque `FIND-19` la puso sobre la mesa con razón:*
+**relajar el contrato y quedarse con la carga de a una**, que es lo que el código ya hace y no
+rompe nada. La descarté porque el argumento a favor —"con estos pesos no se nota"— vale para
+el celular con el que se probó, y el proyecto tiene escrito que el destinatario es una gama
+baja en una conexión cualquiera. Bajar un requisito porque en la máquina del que mide no
+molesta es la forma más común de escribir un sitio que anda solo donde se escribió.
 - **La isla de este juego no importa el motor de audio** (`CTR-01`) ni el banco del quiz.
   Son juegos distintos y el que entra acá no tiene por qué bajar un decodificador que no
   usa.
@@ -121,7 +167,7 @@ visual en un quiz con foto. La pregunta fija que ve el jugador la escribe `exper
 | `id` | `^TP-\d{3}$` | sí | Contador propio, `TP-001`+. `CTR-02.7` ya reservó el prefijo `TP-` para este juego. |
 | `us` | array de `^US-\d{2}$`, ≥ 1 | sí | Hoy siempre `["US-04"]`. Lo pide `.claude/rules/contenido-json.md`. |
 | `dificultad` | `facil` · `media` · `dificil` | sí | `BR-01`. Mismo vocabulario que los otros tres bancos. |
-| `imagen` | objeto | sí | La tapa, su edición, su auditoría y su crédito. Ver `CTR-05.4`. |
+| `imagen` | objeto | sí | La tapa, de qué cara salió, su edición, su auditoría y su crédito. Ver `CTR-05.4`. |
 | `opciones` | array de exactamente **4** | sí | `BR-04`. Cada `texto` sale del enum de títulos: ver abajo. |
 | `explicacion` | string 10–400 | no | El dato de color que se muestra al revelar. Opcional, como en `CTR-03`. |
 | `rotulo` | objeto `{tipo, texto}` | condicional | Obligatorio si la `explicacion` afirma algo que las fuentes no sostienen como hecho. Ver `CTR-05.6`. |
@@ -184,25 +230,112 @@ JSON no significa nada. El fundamento completo está en `CTR-02.3` y no lo repit
 
 #### La ruta no se guarda: se arma
 
-`archivo` es el **slug pelado**, sin carpeta, sin extensión y sin el sufijo del derivado. La
-ruta pública sale de combinarlo con `encuadre`:
+`archivo` es el **nombre pelado del archivo**, sin carpeta y sin extensión. La ruta pública
+sale de combinarlo con `encuadre`:
 
 | `encuadre` | Archivo en el repo | Ruta pública que pide el navegador |
 |---|---|---|
 | `entera` | `public/tapas/<archivo>.jpg` | `/tapas/<archivo>.jpg` |
-| `detalle` | `public/tapas/<archivo>-detalle.jpg` | `/tapas/<archivo>-detalle.jpg` |
+| `detalle` | `public/tapas/detalle/<archivo>.jpg` | `/tapas/detalle/<archivo>.jpg` |
 
-Hoy existen los diez `<slug>.jpg` a 320 px que produce `scripts/generar-tapas.mjs` desde los
-másters de `Docs/INVESTIGACION/TapasDiscos/`; los `-detalle` los produce `T-49` en este mismo
-ciclo. **Guardar la ruta entera en el JSON estaba descartado de entrada**: son diez ítems
-repitiendo `/tapas/` y `.jpg`, y el día que el script emita otro formato hay que editar el
-banco a mano en vez de una línea de esta tabla. El schema además rechaza un `archivo` que
-termine en `-detalle` o en `-fondo`, para que nadie fabrique `oktubre-detalle-detalle.jpg`.
+> **Corregido en la revisión 2 (`FIND-18`).** La revisión 1 escribió la fila de `detalle`
+> como `public/tapas/<archivo>-detalle.jpg`, un sufijo plano sobre el slug del disco. `T-49`
+> entregó otra cosa —**subcarpeta**, y un nombre por recorte— y el código que corre
+> (`rutaImagen()` en `src/lib/tapa/banco.ts`) implementó lo entregado, no lo escrito. Lo
+> desactualizado era el contrato. La tabla de arriba ahora dice lo que el sitio hace, y el
+> chequeo 1 de `CTR-05.9` arma la ruta igual que `rutaImagen()`. La dependencia con `T-49`
+> que la revisión 1 declaró funcionó como estaba prevista salvo en una cosa: **avisó tarde**,
+> porque el que la vio fue `contenido` cargando el décimo ítem y no el chequeo, que estaba
+> escrito con la ruta vieja.
 
-**Dependencia con `T-49`, declarada:** si esa tarea nombra el derivado con otro sufijo, lo
-que cambia es esta tabla y el chequeo 1 de `CTR-05.9` — ningún ítem se edita. El chequeo 1
-existe justamente para que un desajuste de nombre falle en la validación y no como una
-imagen rota en la cara del jugador.
+**Qué puede valer `archivo`, que es la otra mitad de `FIND-18`:**
+
+- Con `encuadre: "entera"`, `archivo` **es el slug del disco** y no puede ser otra cosa: son
+  las diez claves de `FICHAS` en `scripts/generar-tapas.mjs`, las mismas que los slugs de los
+  artículos `disco` de la Redondopedia. Diez archivos, diez discos, uno a uno.
+- Con `encuadre: "detalle"`, **`archivo` es el nombre del recorte y puede no tener nada que
+  ver con el slug del disco.** Hoy de hecho difiere: `mosca-olla`, `gulp-logo`,
+  `bondi-circuito`, `lobo-tiras`. Esos nombres salen de la tabla `DERIVADOS` del script, que
+  a su vez traduce el catálogo de `experiencia` (`UX-05`): un recorte se nombra por el motivo
+  que muestra, porque su razón de existir es vestir una pantalla, no ilustrar una ficha.
+
+**Decisión: se permite, y no es una concesión al desorden.** La identidad del disco vive en
+`imagen.disco`, que es un enum cerrado y es lo que el juego premia; el nombre del archivo es
+una dirección, no una afirmación. Obligar a que el recorte se llamara
+`la-mosca-y-la-sopa-<algo>` sería renombrar archivos de `public/` y reescribir una tabla de
+`scripts/` —dos lugares que no son míos— para que el schema pueda comprobar algo que igual no
+comprueba: que el recorte muestre de veras ese disco. Eso no lo sabe ningún patrón de texto,
+lo sabe el que abre el JPEG.
+
+**La consecuencia hay que decirla, porque es una pérdida real:** con `entera`, un `archivo`
+cruzado con otro `disco` se caza por comando —el chequeo 1 compara contra el mapa de slugs—;
+con `detalle`, **no se caza por máquina**. Un recorte de *Gulp!* declarado como *Oktubre*
+valida, existe en `public/` y le marca error al que se sabe el disco. Por eso el chequeo 1
+imprime `disco | archivo` de cada ítem `detalle` en una línea, para que `revisor` lo lea de un
+vistazo, y hay una fila nueva para eso en la tabla de `CTR-05.9`. Si algún día los `detalle`
+son muchos, la salida barata es que `generar-tapas.mjs` emita un manifiesto con el máster de
+cada recorte y el chequeo lo cruce solo — es una línea de trabajo para el hilo principal, no
+un cambio de contrato.
+
+`fondo` no es un `encuadre`. Los derivados de `public/tapas/fondo/` visten otras pantallas
+(`UX-05`) y no son la pregunta de nadie; que no estén en el enum es lo que impide que uno se
+cuele como ítem. El schema además sigue rechazando un `archivo` que termine en `-detalle` o
+`-fondo`, que con la subcarpeta ya no es sufijo de nada y solo puede ser un error de copiar y
+pegar (`detalle/mosca-olla-detalle.jpg`).
+
+**Guardar la ruta entera en el JSON estaba descartado de entrada**: son diez ítems repitiendo
+`/tapas/` y `.jpg`, y el día que el script emita otro formato hay que editar el banco a mano
+en vez de una línea de esta tabla. Lo que `FIND-18` demostró es que esa elección tiene un
+precio distinto del que yo había anotado: la ruta armada concentra el cambio en un solo lugar,
+pero **ese lugar es prosa hasta que el chequeo la ejerce**. Por eso el chequeo 1 ahora arma la
+ruta con la misma regla que el código, y por eso `banco.test.ts` ya prueba `rutaImagen()` con
+un caso de cada encuadre.
+
+#### `cara`: cuando la imagen no es el frente
+
+Campo **opcional**, enum `frontal` · `trasera` · `interior`, y **si no está, es `frontal`**.
+Contesta el hueco 2 de `Docs/SUGERENCIAS/CNT-para-arquitectura-detalle-en-us04.md`: el
+encuadre distingue recortado de entero, pero no tenía cómo distinguir el frente del dorso, y
+para *La mosca y la sopa* eso importa porque la única imagen jugable que existe sale de la
+contratapa (`RES-44`). Con `detalle`, `cara` describe **de qué cara salió el máster del
+recorte** —lo dice la columna `master` de `DERIVADOS`—, no el recorte en sí.
+
+```json
+"imagen": {
+  "archivo": "mosca-olla",
+  "encuadre": "detalle",
+  "cara": "trasera",
+  "disco": "La mosca y la sopa",
+  "edicion": "<qué edición es exactamente esta imagen, con año>",
+  "auditoria": "reedicion confirmada",
+  "credito": { "autor": "Rocambole (Ricardo Cohen)", "origen": "coveralia" }
+}
+```
+
+Va como campo y no como texto libre por una razón que ya se pagó una vez: hoy la honestidad de
+`TP-010` vive en `edicion` y en `explicacion`, y las dos llegan **al revelar**, o sea después
+de que el jugador contestó. `experiencia` no tiene de dónde leer, antes de la respuesta, que
+lo que se muestra no es el frente. Con `cara` lo tiene, y decide qué hace con eso. El caso está
+vivo: hoy `copy.ts` pregunta *"¿De qué disco es esta tapa?"* y *"¿De qué disco es este pedazo
+de tapa?"*, y `TP-010` es un recorte de contratapa, así que el enunciado le dice tapa a algo
+que es el dorso. Las dos salidas —una tercera variante de enunciado, o cambiar las dos por una
+redacción que no prometa el frente— son de `experiencia`, no mías. Si elige la segunda, el
+campo no cambia una palabra en pantalla y queda como registro del banco.
+
+*Alternativa descartada:* **no agregar el campo** y dejar la honestidad en la prosa, que era
+la salida que `contenido` misma ofrecía si un campo nuevo no se justificaba por un solo ítem.
+La descarté porque el ítem no va a ser uno: de los siete recortes que existen hoy, tres salen
+de una trasera (`gulp-montana`, `gulp-logo`, `mosca-olla`), así que el caso ya es estructural
+y no una excepción. *Alternativa también descartada:* meterlo dentro de `encuadre` como un
+cuarto valor tipo `detalle-trasera`, que multiplica el enum por dos y mezcla dos preguntas
+distintas —cuánto se ve y de qué cara— en un solo campo.
+
+**Lo que `cara` no arregla, y conviene no confundir:** que una imagen **no sea el arte de ese
+disco**, que es el caso del frontal de *La mosca y la sopa* —un rediseño con foto de recital
+(`RES-44`)— y el aviso que `banco.ts` dejó escrito. Eso no es una cara: es una imagen que no
+corresponde, y el lugar donde se declara es `edicion` más `auditoria`. Hoy está cerrado por
+otro lado —`generar-tapas.mjs` ya no genera nada desde ese frontal— y no invento un campo para
+un archivo que el sitio no produce.
 
 **El slug es la respuesta, y viaja al cliente.** Quien abra la pestaña de red ve
 `/tapas/oktubre.jpg` antes de contestar. Es el mismo precio que `CTR-01.8` y `CTR-03.3`
@@ -248,17 +381,74 @@ del logo en negro y rojo, no la pintura completa. Esa distinción no la hace nin
 El chequeo 4 de `CTR-05.9` lista los ítems por valor de auditoría para que esa lectura sea
 de un renglón y no de abrir diez archivos.
 
-#### `credito`: firmado o no valida
+#### `credito`: firmado o no valida, y ahora con dos firmas posibles
 
-`credito.autor` es un **enum cerrado con un solo valor**: `Rocambole (Ricardo Cohen)`. No es
-un string que alguien pueda dejar vacío o llenar con "desconocido". Es la misma decisión que
-`CTR-01` tomó con el crédito del audio: publicar sin firmar no valida.
+`credito.autor` es un **enum cerrado**. No es un string que alguien pueda dejar vacío o llenar
+con "desconocido". Es la misma decisión que `CTR-01` tomó con el crédito del audio: publicar
+sin firmar no valida. Lo que cambia en la revisión 2 es cuántos valores tiene el enum, no que
+sea cerrado.
 
-El valor único se apoya en `RES-06`, que verificó que **desde 1978 Rocambole hizo todas las
+| Valor | Cuándo | Ficha |
+|---|---|---|
+| `Rocambole (Ricardo Cohen)` | Ocho de los diez discos | `RES-06` |
+| `Rocambole, Semilla y Meroyuela` | Los dos volúmenes del doble de 1993 — *Lobo suelto* y *Cordero atado* | `RES-40`, `RES-36`, `RES-44` |
+
+El primer valor se apoya en `RES-06`, que verificó que **desde 1978 Rocambole hizo todas las
 portadas** de la banda, y el nombre civil va adentro porque `UX-04` y `D-21` piden que el
-crédito lo nombre. Si `RES-44` encuentra una tapa que no es suya, el ítem **no valida** hasta
-que se amplíe el enum con la ficha en la mano — y eso es una tarea de `arquitectura`, no un
-campo que se completa en el apuro de un lote.
+crédito lo nombre.
+
+**El segundo lo trajo `FIND-21`, y el hallazgo es correcto.** `TP-007` y `TP-008` declaran
+*Rocambole* porque era el único valor que había, y los dos llevan `notaInterna` diciendo que
+eso es más angosto que lo que se sabe: `RES-40` da el crédito de tapa de los dos volúmenes
+como conjunto —el pie impreso dice *"Visiones: Rocambole, Semilla y Meroyuela"*, sin precisar
+qué aportó cada uno—, `RES-36` tiene al propio Rocambole diciendo que el alfabeto del título
+es de Semilla Bucciarelli, y `RES-44` anota el frontal del volumen 2 como arte de Semilla. No
+era un dato falso; era un dato recortado, y el recorte lo imponía mi enum.
+
+**Por qué el valor dice `Rocambole, Semilla y Meroyuela` y no la línea entera.** *"Visiones"*
+es la palabra con la que el sobre rotula el crédito, como quien escribe "Arte de tapa"; los
+autores son los tres nombres que vienen después, y este campo guarda autores. Copiar la
+etiqueta adentro del valor haría que la pantalla imprima *"Tapa: Visiones: Rocambole..."*, dos
+veces el mismo rótulo. Tampoco completo los apodos: de los tres, uno solo tiene nombre civil
+verificado en ficha —Semilla Bucciarelli, por `RES-36`— y de *Meroyuela* no hay ninguno.
+Expandir uno y dejar los otros dos a medias inventa una jerarquía que la fuente no hace.
+`D-21` y `UX-04` piden que el crédito nombre a Rocambole: lo nombra, primero.
+
+**Lo que este valor deliberadamente no hace: repartir.** No dice quién hizo qué en cada
+volumen, porque `RES-40` dice textualmente que la fuente no lo precisa. Un campo por persona
+—o un `autor` que fuera un array de tres— parece más fino y afirma más de lo que se sabe:
+convertiría un crédito conjunto en tres atribuciones separadas. Se firma como firmó el disco.
+
+*Alternativa descartada:* **`autor` como array de nombres**, con enum por persona. Es la forma
+que un schema pediría de manual y la descarté por tres cosas: cambia el tipo del campo, así
+que los diez ítems y `Credito` en `banco.ts` se reescriben por un hallazgo que `REV-05`
+clasificó menor; obliga a `experiencia` a decidir cómo se une una lista en una línea de pie; y
+afirma el reparto que la ficha no hace. *Alternativa descartada:* **`autor` como texto libre**,
+que resuelve todo y borra de un saque lo único que este campo garantiza — que una tapa sin
+firmar no llega a pantalla. *Alternativa descartada:* **dejarlo como estaba y arreglarlo en la
+`explicacion`**, o sea contar la autoría compartida en la prosa que se muestra al revelar. El
+crédito de la imagen tiene que estar donde está la imagen, no dos pantallas después.
+
+**Ampliar este enum sigue siendo tarea de `arquitectura`, con la ficha en la mano.** Que sea
+una tarea y no un campo que se completa en el apuro de un lote es el mismo mecanismo de
+`CTR-02.4`. Si `RES-44` encuentra otra tapa que no es de Rocambole, el ítem **no valida** hasta
+que el valor exista acá.
+
+**Los dos ítems del doble hay que reescribirlos, y no es mi carpeta.** `TP-007` y `TP-008`
+siguen validando con el valor viejo —la ampliación es aditiva—, así que esto no rompe el
+banco ni frena a nadie, pero mientras no se toquen le siguen dando al jugador un crédito más
+angosto que la ficha. Queda pedido en
+`Docs/SUGERENCIAS/ARQ-para-contenido-credito-compartido.md`, con el valor exacto y las dos
+`notaInterna` a reescribir. **Mientras tanto lo marca el chequeo 1 de `CTR-05.9`**, que
+imprime `CREDITO MAS ANGOSTO QUE LA FICHA` cuando un ítem de *Lobo suelto* o *Cordero atado*
+firma solo a Rocambole.
+
+> **Deuda declarada, con disparador:** el día que `contenido` reescriba esos dos ítems, la
+> regla sube del script al schema como un `if/then` por disco —los dos volúmenes del doble
+> exigen el crédito conjunto— y el desajuste deja de depender de que alguien corra el
+> chequeo. Es una tarea corta de `arquitectura` y no la hago hoy por una sola razón: escrita
+> ahora deja `src/data/tapa.json` sin validar contra su propio schema hasta que otro rol
+> actúe, y un repo en rojo esperando a un tercero es peor que un aviso que se imprime.
 
 `credito.origen` es de dónde salió el archivo máster, y también es enum cerrado:
 `coveralia` (lo que ficha `T-47`) o `cover-art-archive` (el único conducto que `RES-25` dejó
@@ -357,7 +547,8 @@ ya documentó cómo termina eso. `letra` se suma si la `explicacion` cita versos
 
 Draft 2020-12, igual que `CTR-02` y `CTR-03`. **Texto normativo:** si la copia de
 `src/data/_schema/tapa.schema.json` se desincroniza de este bloque, manda este bloque. Esta
-vez las dos salen de la misma ráfaga y son idénticas.
+vez las dos salen de la misma ráfaga y son idénticas — y la revisión 2 las volvió a tocar
+juntas, con los dos cambios del enum de crédito y el campo `cara`.
 
 ```json
 {
@@ -476,6 +667,7 @@ vez las dos salen de la misma ráfaga y son idénticas.
           "not": { "pattern": "-(detalle|fondo)$" }
         },
         "encuadre": { "enum": ["entera", "detalle"] },
+        "cara": { "enum": ["frontal", "trasera", "interior"] },
         "disco": { "$ref": "#/$defs/tituloDeDisco" },
         "edicion": { "type": "string", "minLength": 10, "maxLength": 120 },
         "auditoria": {
@@ -491,7 +683,12 @@ vez las dos salen de la misma ráfaga y son idénticas.
           "additionalProperties": false,
           "required": ["autor", "origen"],
           "properties": {
-            "autor": { "enum": ["Rocambole (Ricardo Cohen)"] },
+            "autor": {
+              "enum": [
+                "Rocambole (Ricardo Cohen)",
+                "Rocambole, Semilla y Meroyuela"
+              ]
+            },
             "origen": { "enum": ["coveralia", "cover-art-archive"] }
           }
         }
@@ -560,11 +757,18 @@ vez las dos salen de la misma ráfaga y son idénticas.
 2. Que la opción `correcta` tenga el mismo texto que `imagen.disco`.
 3. Que los cuatro `texto` sean distintos entre sí. `uniqueItems` sobre `opciones` compara
    objetos: dos opciones con el mismo título y distinta `nota` pasan.
-4. Que el archivo exista en `public/tapas/` con el nombre que arma `encuadre`.
+4. Que el archivo exista en `public/tapas/` con la ruta que arma `encuadre`.
 5. Que la imagen sea de verdad la edición que declara, y que una reedición confirmada
    muestre el mismo arte que la original. Ningún schema abre un JPEG.
 6. Que las `RES-NN` citadas existan y sostengan lo que el ítem afirma.
 7. Que el crédito se **pinte** en la pantalla. El contrato garantiza que el dato esté.
+8. Que el `archivo` de un ítem `entera` sea el slug de su `disco` — eso lo compara el chequeo
+   1 contra el mapa de `generar-tapas.mjs`. Con `detalle` no lo puede comparar nadie por
+   nombre: es el chequeo 9 de la tabla de abajo y lo mira una persona (`CTR-05.4`).
+9. Que el crédito elegido sea el más ancho que la ficha sostiene. El enum garantiza que haya
+   una firma válida, no que sea la que corresponde a ese disco: para los dos volúmenes del
+   doble de 1993 eso lo marca el chequeo 1 con un aviso, hasta que la deuda de `CTR-05.4`
+   suba la regla al schema.
 
 ---
 
@@ -643,10 +847,20 @@ declarado en el plan del ciclo:
 | 14 | Un distractor que no es un título real | rechaza |
 | 15 | `rotulo` sin `explicacion` | rechaza |
 | 16 | `sensibleA` sin `tapa` | rechaza |
+| 17 | `detalle` con un `archivo` que no es el slug del disco (`mosca-olla`) | **valida** |
+| 18 | `credito.autor` con el crédito conjunto del doble | **valida** |
+| 19 | `imagen.cara: "trasera"` | **valida** |
+| 20 | `imagen.cara` con un valor inventado | rechaza |
 
 Los casos 4, 6, 8, 10 y los dos de cantidad de opciones son los cuatro rechazos que pide el
 plan. El 11 está para probar que la regla de `D-21` **no** borra el ítem: lo saca de juego y
 lo deja en el archivo.
+
+Los cuatro últimos son de la revisión 2 y tres de ellos esperan **valida**, que es lo raro en
+una tanda de casos: `17` fija por prueba que un recorte puede llamarse distinto del disco
+(`FIND-18`), `18` que la autoría compartida entra por el enum y no por texto libre
+(`FIND-21`), y `19` que `cara` es opcional y aditivo. El único rechazo nuevo es el `20`, que
+es el que hace que `cara` sirva de algo: un enum que acepta cualquier palabra no declara nada.
 
 ```bash
 # Casos de prueba del schema. Bash, no PowerShell. Necesita `pip install jsonschema`.
@@ -694,35 +908,64 @@ caso(13, "fuentes sin RES-44", lambda i: i.__setitem__("fuentes", ["RES-02"]), "
 caso(14, "distractor inventado", lambda i: i["opciones"][1].__setitem__("texto", "El regreso de Patricio Rey"), "rechaza")
 caso(15, "rotulo sin explicacion", lambda i: i.__setitem__("rotulo", {"tipo": "leyenda", "texto": "Lo cuentan los fans desde siempre, sin fuente"}), "rechaza")
 caso(16, "sensibleA sin tapa", lambda i: i.__setitem__("sensibleA", ["letra"]), "rechaza")
+# --- revision 2 (T-70): FIND-18, FIND-21 y el campo `cara` ---
+caso(17, "detalle con nombre de recorte", lambda i: (i["imagen"].update({"archivo": "mosca-olla", "encuadre": "detalle"}), i.__setitem__("dificultad", "dificil")), "valida")
+caso(18, "credito conjunto del doble", lambda i: i["imagen"]["credito"].__setitem__("autor", "Rocambole, Semilla y Meroyuela"), "valida")
+caso(19, "cara trasera", lambda i: i["imagen"].__setitem__("cara", "trasera"), "valida")
+caso(20, "cara inventada", lambda i: i["imagen"].__setitem__("cara", "contratapa"), "rechaza")
 PY
 ```
 
 ```bash
 # (1) valida el banco real + ids unicos, textos distintos, la correcta = imagen.disco,
-#     y que el archivo exista en public/tapas/. Se corre en T-54 y T-56.
+#     que el archivo exista donde lo arma `encuadre`, que un `entera` no este cruzado de
+#     disco, y que el credito del doble no sea mas angosto que RES-40. Se corre en T-56.
+#     Revision 2 (T-70): la ruta de `detalle` va por subcarpeta, como rutaImagen().
 python - <<'PY'
 import json, os, jsonschema
 d = json.load(open('src/data/tapa.json', encoding='utf-8'))
 s = json.load(open('src/data/_schema/tapa.schema.json', encoding='utf-8'))
 jsonschema.validate(d, s)
+# disco -> slug: son las diez claves de FICHAS en scripts/generar-tapas.mjs.
+SLUG = {
+    'Gulp!': 'gulp', 'Oktubre': 'oktubre',
+    'Un baión para el ojo idiota': 'un-baion-para-el-ojo-idiota',
+    '¡Bang! ¡Bang!... Estás liquidado': 'bang-bang-estas-liquidado',
+    'La mosca y la sopa': 'la-mosca-y-la-sopa', 'Lobo suelto': 'lobo-suelto',
+    'Cordero atado': 'cordero-atado', 'Luzbelito': 'luzbelito',
+    'Último bondi a Finisterre': 'ultimo-bondi-a-finisterre', 'Momo Sampler': 'momo-sampler'}
+CONJUNTO = 'Rocambole, Semilla y Meroyuela'
 items = d['items']
 assert len({x['id'] for x in items}) == len(items), 'id repetido'
+detalles = []
 for x in items:
     im = x['imagen']
-    ruta = 'public/tapas/%s%s.jpg' % (im['archivo'], '-detalle' if im['encuadre'] == 'detalle' else '')
+    molde = 'public/tapas/detalle/%s.jpg' if im['encuadre'] == 'detalle' else 'public/tapas/%s.jpg'
+    ruta = molde % im['archivo']
     if not os.path.exists(ruta): print('FALTA EL ARCHIVO', x['id'], ruta)
+    if im['encuadre'] == 'entera' and im['archivo'] != SLUG[im['disco']]:
+        print('ARCHIVO CRUZADO', x['id'], im['archivo'], '!= slug de', im['disco'])
+    if im['encuadre'] == 'detalle':
+        detalles.append((x['id'], im['disco'], im['archivo'], im.get('cara', 'frontal')))
+    if im['disco'] in ('Lobo suelto', 'Cordero atado') and im['credito']['autor'] != CONJUNTO:
+        print('CREDITO MAS ANGOSTO QUE LA FICHA', x['id'], im['credito']['autor'], '- RES-40 da:', CONJUNTO)
     textos = [o['texto'] for o in x['opciones']]
     if len(set(textos)) != 4: print('OPCION REPETIDA', x['id'])
     correcta = next(o['texto'] for o in x['opciones'] if o['correcta'])
     if correcta != im['disco']: print('LA CORRECTA NO ES EL DISCO', x['id'], correcta, '!=', im['disco'])
-print('chequeos 1 a 4 corridos sobre', len(items), 'items')
+print('chequeos 1 a 3 corridos sobre', len(items), 'items')
+if detalles:
+    print('DETALLES — que el recorte sea de ese disco NO lo puede ver la maquina (CTR-05.4).')
+    print('Lo mira una persona, una linea por item:')
+    for t in detalles: print('  ', ' | '.join(t))
 PY
 
 # (2) cuotas del piso de US-04 y BR-01, contadas solo sobre `listo`
 python -c "import json;from collections import Counter;i=[x for x in json.load(open('src/data/tapa.json',encoding='utf-8'))['items'] if x['estado']=='listo'];print(len(i),'/10 |',Counter(x['dificultad'] for x in i),'| discos distintos:',len({x['imagen']['disco'] for x in i}),'| encuadre:',Counter(x['imagen']['encuadre'] for x in i))"
 
-# (3) el mapa de D-14: de donde salio cada imagen y en que estado quedo la auditoria
-python -c "import json;from collections import Counter;i=json.load(open('src/data/tapa.json',encoding='utf-8'))['items'];print(Counter(x['imagen']['auditoria'] for x in i));[print(x['id'],'|',x['estado'],'|',x['imagen']['disco'],'|',x['imagen']['edicion'],'|',x['imagen']['credito']['origen']) for x in i]"
+# (3) el mapa de D-14: de donde salio cada imagen, que cara es, quien firma y en que
+#     estado quedo la auditoria
+python -c "import json;from collections import Counter;i=json.load(open('src/data/tapa.json',encoding='utf-8'))['items'];print(Counter(x['imagen']['auditoria'] for x in i));[print(x['id'],'|',x['estado'],'|',x['imagen']['disco'],'|',x['imagen'].get('cara','frontal'),'|',x['imagen']['edicion'],'|',x['imagen']['credito']['autor'],'|',x['imagen']['credito']['origen']) for x in i]"
 ```
 
 Qué mira la máquina y qué mira una persona, para que nadie confunda "validó" con "está
@@ -732,12 +975,15 @@ bien":
 |---|---|---|
 | 1 | Schema completo, `id` únicos | comando (1) |
 | 2 | La opción correcta es igual a `imagen.disco`; los cuatro textos son distintos | comando (1) |
-| 3 | El archivo existe en `public/tapas/` con el nombre que arma `encuadre` | comando (1) |
+| 3 | El archivo existe en `public/tapas/` con la ruta que arma `encuadre` | comando (1) |
 | 4 | Piso de 10, mínimo 3 fáciles, discos distintos suficientes | comando (2) |
 | 5 | El reparto de auditoría, ítem por ítem | comando (3), **lo lee una persona** |
 | 6 | Que la imagen sea la edición que declara, y que una reedición no cambie el arte | `revisor`, con la ficha y la imagen |
 | 7 | Que las dos mitades del doble no compitan como opciones del mismo ítem | `revisor` |
-| 8 | Que la pantalla pinte el crédito a Rocambole cada vez que hay una tapa | `revisor` (`T-56`) |
+| 8 | Que la pantalla pinte el crédito cada vez que hay una tapa | `revisor` (`T-56`) |
+| 9 | Que un ítem `entera` no esté cruzado de disco (slug contra `imagen.disco`) | comando (1) |
+| 10 | Que el recorte de un ítem `detalle` sea de veras del disco que declara | `revisor`, con la lista de detalles que imprime el comando (1) |
+| 11 | Que el crédito no sea más angosto que la ficha, en los dos del doble | comando (1) avisa; lo cierra `contenido` reescribiendo el ítem |
 
 ---
 
@@ -808,6 +1054,25 @@ es mi carpeta.
   el aviso de `RES-25` sobre *Oktubre* en la mano.
 - Este contrato no le pide nada a `producto` ni deja ningún valor de trabajo abierto.
 
+**Consecuencias que suma la revisión 2:**
+
+- **`T-75` implementa la ventana de precarga tal como está descripta en `CTR-05.1`**: al
+  pintar la pregunta `n`, pedir la imagen de `n+1`, una sola. Hasta que eso pase, el código
+  está por debajo del contrato y es deuda, no desvío tolerado (`FIND-19`).
+- **`contenido` tiene dos ítems para reescribir**, `TP-007` y `TP-008`, con el valor de
+  crédito conjunto y sin la `notaInterna` que dice que el enum no daba para más. El pedido
+  está en `Docs/SUGERENCIAS/ARQ-para-contenido-credito-compartido.md` y el chequeo 1 lo marca
+  mientras tanto.
+- **`arquitectura` se queda con una deuda de una línea, con disparador escrito**: subir la
+  regla del crédito conjunto del script al schema cuando esos dos ítems estén reescritos.
+- **`experiencia` gana un dato que antes no tenía**: `imagen.cara`. Si decide que el enunciado
+  fijo cambia cuando la imagen no es el frente, ese campo hay que pasarlo al payload de
+  `banco.ts`, que hoy no lo lleva. Si decide que el enunciado no lo nombra nunca, no se toca
+  código y el campo queda como registro del banco.
+- **`revisor` gana una fila que antes no existía** (chequeo 10): mirar que el recorte de un
+  ítem `detalle` sea del disco que declara. Es la contracara de permitir que el nombre del
+  archivo no lleve el slug, y el comando (1) le deja la lista servida.
+
 ### Qué NO decide este contrato
 
 - **Cuál tapa se recorta, por dónde y cómo se ve el recorte**: `experiencia`, `UX-05`
@@ -821,3 +1086,9 @@ es mi carpeta.
   resultado**: `experiencia`.
 - **Si el uso de tapas necesita algo más que el crédito**: `contenido`, nota de derechos —
   que con `D-14` es un mapa y no un cerrojo.
+- **Si el enunciado fijo cambia cuando `imagen.cara` no es `frontal`**: `experiencia`. Yo
+  declaro el campo y su valor por omisión; qué se lee en pantalla antes de responder nunca fue
+  mío (`CTR-05.2`).
+- **Cómo se llama cada recorte de `public/tapas/detalle/`**: sale del catálogo de `UX-05` por
+  la tabla `DERIVADOS` de `scripts/generar-tapas.mjs`. El contrato acepta el nombre que ese
+  camino produzca; lo que fija es dónde lo busca el sitio.

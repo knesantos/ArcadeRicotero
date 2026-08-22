@@ -61,6 +61,22 @@ promete nada que no pueda cumplir para nadie.
 
 ## BR-06 — Qué le promete la v1 al jugador al revelar la respuesta, sobre Spotify
 
+> ⚠ **`D-22` (2026-08-22) le sacó el piso a esta regla, aunque ninguna oración de abajo se
+> volvió falsa.** El sitio ahora aloja los temas enteros en mp3 y los sirve él mismo.
+>
+> `BR-06` está escrita entera alrededor de un problema que dejó de existir: el sitio no
+> podía dar el tema completo, así que la regla se cuidaba de no prometerlo. Todo lo que dice
+> sigue siendo cierto —si el botón de Spotify se queda, sigue habiendo "acceso al tema en
+> Spotify"— pero ya no es *lo que el sitio ofrece al revelar*, porque ahora ofrece el tema.
+> La sección de abajo que explica por qué no hay que reescribirla cuando llegue `E-07`
+> quedó, además, sin objeto: `D-22` volvió irrelevante a `E-07`.
+>
+> **Lo que hay que decidir, y no lo decido acá porque depende de una pregunta abierta de
+> `D-22`:** si Spotify se queda como enlace opcional junto al reproductor propio, o si se
+> retira del reveal. Según cuál sea, la promesa al jugador se reescribe como `BR-XX` nueva o
+> `BR-06` se marca superada. Hasta entonces, **no citar `BR-06` como si fijara la promesa
+> vigente**: fija la promesa de un sitio que no podía reproducir, y este ya puede.
+
 **Al revelar la respuesta, la v1 le ofrece al jugador un acceso directo para escuchar ese
 tema en Spotify —abre la app si está instalada, o la reproduce en la web de Spotify si
 no— sin prometer ni garantizar que suene completo sin salir del sitio.**

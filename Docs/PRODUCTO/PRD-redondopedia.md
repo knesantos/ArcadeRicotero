@@ -12,7 +12,7 @@
 > `RES-20`, `RES-21`, `RES-22`, `RES-23`, `RES-31`, `RES-33`, `RES-36` como inventario de
 > insumo disponible para el primer lote (`D-20`, cláusula 4).
 >
-> Produce: `US-05`, `BR-07`..`BR-12`.
+> Produce: `US-05`, `BR-07`..`BR-14`.
 >
 > No fija el schema ni el formato de archivo (`arquitectura`), no diseña la pantalla de
 > lectura ni el mecanismo visual del rótulo (`experiencia`), no redacta un solo artículo ni
@@ -118,7 +118,7 @@ sostenga sola en una enciclopedia; el disco al que pertenece, sí.
 | Tipo | Qué es | Campos mínimos |
 |---|---|---|
 | `disco` | Un álbum de estudio | Título, año (con discrepancia declarada si la hay), sello, tracklist con autoría por tema (`RES-20`), portada en baja resolución con crédito, un párrafo de ubicación en la cronología, enlace a al menos un `hito` o `persona` |
-| `tema` | Una canción | Título, disco de pertenencia (enlace obligatorio), año, autoría real con enlace al artículo `persona` de cada autor (`RES-20` — la mayoría Solari–Beilinson, dos con tercer autor), hasta 5 versos citados al servicio del análisis —nunca sueltos— con la fuente (`D-13`: letras.com o bestiarioredondo) y marca de si fueron cruzados contra los 105 temas de `RES-20` y/o confirmados de oído (tope y regla completa en `BR-12`), contexto de grabación, la mitología o leyenda asociada rotulada, testimonio del Indio o de Skay sobre el tema si hay ficha que lo respalde |
+| `tema` | Una canción | Título, disco de pertenencia (enlace obligatorio), año, autoría real con enlace al artículo `persona` de cada autor (`RES-20` — la mayoría Solari–Beilinson, dos con tercer autor), de qué trata la canción contado con palabras propias, contexto de grabación, la mitología o leyenda asociada rotulada, testimonio del Indio o de Skay sobre el tema si hay ficha que lo respalde — **la cita de verso no es obligatoria** (`BR-14`); **si hay versos disponibles**, hasta 5 citados al servicio del análisis —nunca sueltos— con la fuente (`D-13`: letras.com o bestiarioredondo) y marca de si fueron cruzados contra los 105 temas de `RES-20` y/o confirmados de oído (tope y regla completa en `BR-12`) |
 | `persona` | Un integrante de la banda o figura central (Indio, Skay, Poli, Semilla, Rocambole) | Nombre, rol/instrumento, período activo, biografía breve, discos en los que participó (enlaces), hitos relacionados (enlaces), fecha de fallecimiento si aplica, rotulada hecho |
 | `hito`/`caso` | Un suceso puntual de la historia real de la banda | Fecha, qué pasó (rotulado por afirmación, no un rótulo único), personas involucradas (enlaces), consecuencia institucional o histórica si existe, fuente |
 | `concepto` | Una práctica o rasgo de la cultura ricotera | Nombre del concepto, qué es y cómo se practica, origen o ejemplo histórico (enlace a `hito` o `disco`), fuente |
@@ -132,17 +132,26 @@ invisible dentro de artículos de hecho, que es justo lo que `BR-08` prohíbe.
 
 ---
 
-## Piso de ítems — 35 artículos
+## Piso de ítems — 36 artículos (35 originales + 1 por `BR-13`)
 
 | Tipo | Piso | Insumo ya fichado | Costo dominante |
 |---|---|---|---|
 | `disco` | 10 | Los 10 discos completos, `RES-02` + `RES-20` | Bajo — datos ya armados, falta prosa de enlace |
 | `persona` | 5 | Indio, Skay, Poli, Semilla, Rocambole — `RES-06`, `RES-09`, `RES-22` | Medio — biografía nueva en prosa |
 | `hito`/`caso` | 7 | Formación, debut en Obras (89), Huracán 93-94, separación, muerte del Indio, Bulacio, Olavarría — `RES-04`, `RES-05`, `RES-07` | Medio-alto — 2 de los 7 esperan `BR-10` |
-| `concepto` | 4 | Misa ricotera, aguante, autogestión, difusión sin TV — `RES-07` | Bajo |
+| `concepto` | 5 | Misa ricotera, aguante, autogestión, difusión sin TV — `RES-07`; **+1 agregado por `BR-13`:** las bandas ricoteras de la posseparación — `RES-47` | Bajo |
 | `leyenda` | 3 | "Ji Ji Ji" desmentida, Patricio Rey como persona real — `RES-08`, `RES-22` | Bajo — ya vienen rotuladas |
-| `tema` | 6 | Los que ya tienen insumo rico fichado (mitología, autoría, contexto) — `RES-08`, `RES-20`, `RES-22` | Alto — versos citados bajo el tope de `BR-12` más análisis, cruce obligatorio de `D-13` |
-| **Total** | **35** | | |
+| `tema` | 6 | Los que ya tienen insumo rico fichado (mitología, autoría, contexto) — `RES-08`, `RES-20`, `RES-22` | Medio sin verso (`BR-14`): prosa de análisis sobre insumo ya fichado, sin esperar transcripción. Sube a Alto solo si se agregan versos citados, por el tope de `BR-12` y el cruce obligatorio de `D-13` |
+| **Total** | **36** | | |
+
+**Nota de `BR-13` (ciclo 5, `T-66`):** el piso subió de 35 a 36 al sumar un artículo
+`concepto` nuevo sobre las bandas ricoteras de la posseparación, fichadas en `RES-47`. No
+reemplaza ninguno de los cuatro `concepto` originales ni compite con ellos — es contenido
+nuevo con insumo ya fichado, mismo criterio que fijó el 35 de partida. El detalle completo
+de por qué es `concepto` y no un tipo nuevo está en `BR-13`, más abajo. Esto **no** reabre
+el 35/35 que este mismo ciclo cierra vía `BR-14`/`T-68` sobre la fila `tema`: esa fila sigue
+6/6, lo que cambia es el número total contra el que se mide "listo" — mismo patrón que usó
+`BR-10` al subir `hito` de 6 a 7 sin invalidar nada ya escrito.
 
 **Por qué 35 y no un número más chico o más grande:** el mismo criterio que usé para
 40/20/15/10 en `PRD-alcance-v1.md` — ajustar al costo real de producir cada tipo, no a una
@@ -376,6 +385,274 @@ corre qué.
 
 ---
 
+## BR-13 — Las bandas ricoteras de la posseparación: bajo qué tipo entran y qué pasa con el piso
+
+**Aplica a:** el pedido directo del usuario registrado en
+`Docs/SUGERENCIAS/HILO-para-producto-y-contenido-bandas-post-separacion.md`, resuelto con
+la ficha que acaba de llegar de `investigador`: `RES-47`
+(`Docs/INVESTIGACION/INV-47-bandas-post-separacion.md`).
+
+**Los nombres, corregidos antes de decidir nada — no se le discute al usuario, se le
+muestra la ficha:**
+1. **Indio Solari y los Fundamentalistas del Aire Acondicionado.** El pedido decía "INDIO
+   y los fundamentalistas del aire acondicionado"; al nombre público real le falta
+   "Solari" (`RES-47`, sección A).
+2. **Skay y los Fakires.** El nombre está bien tal como lo dijo el usuario, pero no la
+   historia completa: entre 2007 y 2012 la banda se llamó "Skay y los Seguidores de la
+   Diosa Kali", y "Los Fakires" es el nombre definitivo recién desde 2012, con primer
+   disco bajo ese nombre en 2013 (`RES-47`, sección B).
+3. **Los Decoradores.** El pedido decía "La kermesse redonda". Esa es, según `RES-47`, el
+   nombre de su **formato de gira** (feria + música), vigente en paralelo en la prensa
+   incluso en 2026 — pero **la banda se llama Los Decoradores** (`RES-47`, sección C).
+
+### 1. El tipo: un artículo `concepto` para el fenómeno, no un tipo nuevo — y tratamiento
+distinto puertas adentro para las dos clases que `RES-47` encontró
+
+**Decisión:** las tres bandas entran a la Redondopedia sin agregar un séptimo tipo a
+`BR-07`. Pero no van todas al mismo lugar, porque `RES-47` mostró que **no son la misma
+clase de cosa**: Indio Solari y Skay Beilinson son, cada uno, la propia figura fundadora
+tocando bajo otro nombre; Los Decoradores es un proyecto de músicos de acompañamiento
+(Sergio Dawi, Semilla Bucciarelli, Tito Fargo, Hernán Aramberri), sin figura central.
+
+- **La actividad post-separación de Indio y de Skay se cuenta en prosa, como extensión de
+  biografía, dentro de los artículos `persona` que ya están en el piso** (`indio-solari`,
+  `skay-beilinson`) — no son artículos nuevos, es un campo que esos dos artículos ya
+  tenían que llenar para cumplir su propio piso mínimo de `BR-07` ("biografía breve",
+  "hitos relacionados"). La actividad de Los Fundamentalistas hasta la muerte del Indio ya
+  tiene resuelto su cruce con `RES-04` vía `BR-10`; la de Skay y los Fakires se agrega
+  igual, como banda en actividad.
+- **Un artículo nuevo de tipo `concepto`** —título de trabajo "Las bandas ricoteras de la
+  posseparación" (la palabra final es de `contenido`)— es el punto de encuentro: nombra
+  las tres con el nombre correcto de `RES-47`, explica la diferencia de clase que la
+  propia ficha marca (banda de un fundador vs. banda de acompañantes), enlaza a
+  `indio-solari` y `skay-beilinson` para el detalle biográfico y a `la-separacion` como
+  origen del fenómeno. **Los Decoradores se cuenta ahí y en ningún otro lado**, porque no
+  hay ningún artículo `persona` existente del que su historia sea biografía.
+
+**Por qué no (a), tipo nuevo `banda`:** el propio pedido del usuario las nombra "parte de
+la cultura redonda" — la definición exacta que `BR-07` ya le dio a `concepto` ("una
+práctica o rasgo de la cultura ricotera"). Un tipo nuevo le crea trabajo real a
+`arquitectura` (tocar el schema) por tres artículos que no tienen ninguna cuarta compañera
+a la vista: no hay una lista de bandas ricoteras que siga creciendo, hay tres, ya
+identificadas. Es la sobre-ingeniería del riesgo 4 del brief mirada del otro lado del
+espejo — no "motor vacío con poco contenido adentro", sino "motor nuevo para contenido que
+ya entra en el que existe".
+
+**Por qué no (c) entera, todo adentro de los artículos que ya existen:** acá `RES-47`
+cambia el cálculo respecto de lo que decía la nota de `HILO` (escrita antes de tener los
+nombres verificados). Para Indio y Skay, (c) es exactamente correcta — son la banda, y por
+eso su actividad posterior es biografía de esa persona y no una entidad aparte. Pero
+forzar a Los Decoradores adentro de cualquiera de los cuatro artículos `persona` que ya
+existen sería inventarle un dueño que no tiene — el mismo error que `CNT-04`/`BR-10`
+evitaron del otro lado para Bulacio y Olavarría, no meter un hecho donde no corresponde
+solo porque hay un artículo cerca.
+
+**Por qué no dos `concepto` separados** (uno para las bandas de fundadores, otro para las
+de acompañantes): duplicaría el piso por una distinción que se explica en dos párrafos
+dentro de un mismo artículo sin perder nada, y fragmentaría la navegación de un fenómeno
+que el propio usuario nombró como una sola cosa ("bandas ricoteras" en plural, una sola
+vez). Proporción, no negligencia (`D-14`): la diferencia de clase se escribe, no se paga
+con un artículo extra.
+
+### 2. El piso: sube de 35 a 36, un solo artículo nuevo
+
+El `concepto` nuevo no estaba contado en ninguno de los cuatro que ya sostenían esa fila
+en `BR-07` (misa ricotera, aguante, autogestión, difusión sin TV — insumo de `RES-07`). No
+reemplaza ninguno ni compite con ellos: es contenido nuevo con insumo ya fichado por
+`RES-47`, así que sumarlo no abre un frente de investigación — mismo criterio con que se
+fijó el 35 original (`BR-07`, "Por qué 35 y no un número más chico o más grande").
+
+**Piso de `concepto`: 4 → 5. Piso total de `US-05`: 35 → 36.** La extensión biográfica
+dentro de `persona` (Indio, Skay) no suma artículos — siguen siendo los mismos 5 de
+siempre, con un campo más lleno — así que el resto de la tabla de piso no se mueve.
+
+**Esto no reabre el 35/35 que este mismo ciclo cierra vía `BR-14`/`T-68`.** Los 6 `tema`
+que `T-68` carga siguen cerrando esa fila entera, 6/6. Lo que cambia es el número contra
+el que se mide "listo" para el conjunto — mismo patrón que ya usó `BR-10` al subir `hito`
+de 6 a 7 sin invalidar nada de lo ya escrito.
+
+### 3. La línea que no se negocia: esto no es de Patricio Rey, y no entra a los juegos por la ventana
+
+**Regla, no comentario:** ningún ítem de los cuatro juegos de la v1 (`US-01` quiz, `US-02`
+adivinar el tema, `US-03` completar la letra, `US-04` adivinar la tapa o el disco) puede
+construirse con material de Indio Solari y los Fundamentalistas del Aire Acondicionado, de
+Skay y los Fakires (o sus nombres previos), ni de Los Decoradores, mientras el piso de
+esos cuatro juegos siga definido sobre los 105 temas de `RES-20` — que es, hoy, siempre.
+Que el artículo de la Redondopedia sí los cuente no cambia esto: un artículo de
+enciclopedia y un ítem de trivia no comparten filtro.
+
+**Por qué es regla dura y no una recomendación:** si un tema de Los Fundamentalistas
+entra como pregunta de "adivinar el tema", el jugador que se sabe de memoria los 105 temas
+reales de Patricio Rey —el que este sitio existe para premiar— puede arriesgar con la
+certeza de que eso no es de la banda madre, y el juego se lo marca error igual. Es
+exactamente el modo de falla que `D-14` dejó como lo único estricto del proyecto: la
+respuesta correcta tiene que ser correcta para el que sabe.
+
+**Si algún día se quiere que sí entren:** es una `BR-XX` nueva y explícita — que abra el
+filtro de `US-01`..`US-04` más allá de los 105 de `RES-20`, o que sume una categoría
+separada y rotulada como tal —, nunca un efecto colateral de que esta regla haya sumado
+artículos a la Redondopedia. `BR-13` no lo decide ni lo insinúa: lo cierra en la dirección
+contraria hasta que alguien lo reabra por escrito.
+
+### Criterio de aceptación
+
+- **Given** el artículo `concepto` nuevo y los campos de actividad posterior agregados a
+  `indio-solari` y `skay-beilinson`.
+- **When** se los audita contra el criterio 1 de `US-05` (piso de campos mínimos) y contra
+  `BR-08` (rotulado granular).
+- **Then** cada nombre de banda aparece con la forma verificada por `RES-47`, cualquier
+  dato marcado "no verificado" o con inconsistencia entre fuentes en esa ficha (el año de
+  formación de Los Decoradores, 2015 o 2016; la formación vigente de Skay y los Fakires)
+  se rotula como corresponde y no se presenta como hecho cerrado, y ningún ítem de
+  `US-01`..`US-04` cita material de estas tres bandas.
+
+**Verificación:** no hay comando propio — es un criterio de tipo, piso y contenido, igual
+que `BR-10`/`BR-12`/`BR-14`. Lo audita `revisor` contra esta regla, `BR-08` y `BR-09`
+cuando `contenido` cargue el artículo nuevo y los campos agregados.
+
+**Trazabilidad:** responde al pedido registrado en
+`Docs/SUGERENCIAS/HILO-para-producto-y-contenido-bandas-post-separacion.md`, con `RES-47`
+como ficha de hechos, `BR-07` (los seis tipos y su fundamento), `BR-09` (mínimos de
+enlace), `BR-10` (mismo patrón de "el piso sube con número explícito, no en silencio"), y
+`D-14`/`D-20` (molinetes abiertos y la Redondopedia cuenta cultura, pero la respuesta
+correcta del quiz no se toca).
+
+**Nota sobre el ID de esta regla:** la tarea que la encarga (`T-66`, ciclo 5) pedía el
+número `BR-15`. No lo usé: `Docs/IDS.md` y `Docs/PRODUCTO/PRD-backlog-ideas.md` muestran
+que `BR-15` y `BR-16` ya fueron consumidos por la sesión del backlog de ideas ese mismo
+día, con citas ya escritas apuntándoles (`IDEA-02`, `IDEA-03`, `IDEA-04`, `IDEA-07`,
+`IDEA-10` citan `BR-15`; varias ideas citan `BR-16`). El propio `Docs/ORQ/ORQ-plan-ciclo-5.md`
+(tabla, fila `T-66`) y el encabezado de este documento (antes de esta edición) ya
+reservaban `BR-13` para esta tarea — el número `BR-15` en el encargo de `T-66` es un error
+de transcripción, no una reserva real. Uso `BR-13`, que es el que estaba libre y
+efectivamente reservado, para no duplicar un ID ya citado en otro archivo (`Docs/IDS.md`:
+"no se reutiliza un número").
+
+---
+
+## BR-14 — Un artículo `tema` se sostiene sin citar un verso
+
+**Aplica a:** la fila `tema` de `BR-07` y el campo de versos citados que `BR-12` acota.
+Responde la pregunta que `BR-12` dejó abierta al corregir ese campo en el ciclo 4: la cita
+queda topeada en 5 versos **cuando existe**, pero ¿hace falta que exista para que el
+artículo cierre?
+
+**La pregunta, tal como la trajo el corte del ciclo 5** (`T-67`,
+`Docs/ORQ/ORQ-plan-ciclo-5.md`, tabla y §0.1): un artículo `tema` que trae autoría real,
+disco y año, contexto de grabación, la mitología o leyenda asociada rotulada, y lo que
+dijeron el Indio o Skay sobre el tema si hay testimonio fichado — ¿se sostiene como
+artículo de enciclopedia sin citar un solo verso, o queda cojo y conviene esperar el
+material?
+
+**Decisión: sí se sostiene, con una condición que lo sostiene de verdad y no de nombre.**
+
+**Por qué:**
+1. Lo que distingue a la Redondopedia de Wikipedia (`D-20`, cláusula 3) es poder contar la
+   leyenda como leyenda, no citar el texto de la canción — eso último ninguna enciclopedia
+   lo necesita para ser enciclopedia. `RES-08` (mitología ya rotulada), `RES-20` (autoría
+   por tema, incluido el contexto de grabación de discos enteros como *Lobo suelto,
+   cordero atado*) y `RES-22` (testimonio directo, incluida la voz de Rocambole y
+   correcciones del propio Indio) son insumo ya fichado y abundante para sostener un
+   artículo entero sin abrir un frente de investigación nuevo.
+2. `D-14` ya corrió este mismo debate para el proyecto entero y lo resolvió a favor de no
+   exigir algo que no hace falta: el conocimiento popular vale, y dejar de exigirlo no es
+   negligencia, es proporción. Acá lo que sobra exigir es el verso, no la fuente.
+3. Cerrar el piso de `US-05` a 35/35 este ciclo sin dejar 6 artículos esperando un insumo
+   que solo entra por la mano del usuario es el mismo criterio que ya pesó en `D-05`: un
+   artículo completo con lo que hay vale más que un cascarón esperando el resto.
+
+**Por qué el argumento en contra no alcanza para bloquear, pero sí alcanza para poner una
+condición dura:** un artículo sobre una canción donde no aparece una sola línea de la
+canción puede leerse como ficha técnica y no como artículo — ese riesgo es real, y por eso
+el punto 6 de la lista de abajo no es opcional ni decorativo: es la cláusula que evita la
+ficha técnica. Un artículo `tema` sin verso que **sí** cuenta de qué trata la canción, en
+prosa propia, hace el mismo trabajo editorial que cualquier reseña o nota de enciclopedia
+musical que no puede citar letra — y esas existen, y se leen como artículos, no como
+planillas.
+
+**Qué lleva OBLIGATORIAMENTE un artículo `tema` cuando no hay verso citado — 6 campos,
+ninguno opcional:**
+
+1. Autoría real, con el nombre exacto de cada autor y enlace al artículo `persona` de cada
+   uno (`RES-20` — la mayoría Solari–Beilinson, dos temas con Semilla Bucciarelli como
+   tercer autor).
+2. Disco de pertenencia y año, con enlace al artículo `disco`.
+3. Contexto de grabación: cuándo, con qué formación, qué se sabe del proceso — lo que el
+   insumo fichado permita decir. Si para un tema puntual no hay nada más específico que lo
+   que ya cuenta el artículo del disco, el artículo lo dice así, sin inventar relleno.
+4. La mitología o la leyenda asociada al tema, rotulada como tal (`BR-08`) — nunca como
+   hecho. Si no hay ninguna leyenda fichada para ese tema en particular, el artículo no
+   inventa una: dice que no la hay y sigue.
+5. Lo que dijo el Indio o Skay sobre el tema, si hay una ficha `RES-XX` que lo registre
+   (rótulo testimonio, `BR-08`). Si no hay ficha, no se especula en su lugar.
+6. De qué trata la canción, contado con palabras propias. Este campo reemplaza a la cita
+   como forma de mostrar el contenido del tema sin reproducirlo, y es lo que impide que el
+   artículo se lea como ficha técnica: cuenta la canción, no la transcribe.
+
+Los enlaces de los puntos 1 y 2 ya cubren el mínimo de 2 salientes que exige `BR-09`.
+
+**Consecuencia para la selección de los 6:** no cualquiera de los 105 temas de `RES-20`
+sirve igual de bien para este primer lote. `contenido` tiene que elegir, de ese universo,
+los temas donde el insumo de los puntos 3, 4 y 5 ya está fichado y es rico — el mismo
+criterio que ya usé para fijar el piso en 6 (`BR-07`, columna "Insumo ya fichado": `RES-08`,
+`RES-20`, `RES-22`). "Ji Ji Ji" es el caso que la propia investigación ya señaló como el
+mejor posible (`RES-08`): autoría firme, mitología grande y desmentida, y testimonio
+directo del Indio en Rolling Stone 2007 sobre de qué trata el tema — las tres capas (el que
+conoce el tema, el que conoce la leyenda, el que sabe que el Indio la desmintió) funcionan
+enteras en prosa, sin necesitar un solo verso citado.
+
+**Qué pasa cuando los versos existan, para que esto no quede ambiguo:** se **agregan** a
+los artículos ya escritos. No se quedan así para siempre, y agregarlos no abre una versión
+nueva (`-v2`) del contenido: sumar hasta 5 versos bajo el tope de `BR-12` no invalida
+ninguna decisión tomada acá, la completa. Es una mejora de contenido priorizable por
+`contenido`/`orquestador` cuando el insumo llegue — no una obligación del mismo día en que
+el primer verso quede transcripto.
+
+**`BR-12` no se deroga.** Sigue rigiendo entera en el momento en que un artículo `tema` sí
+cite un verso —desde el lote inicial o agregado después—: el tope de 5 versos por artículo,
+la exigencia de que cada verso tenga una oración de análisis propia que lo sostenga, y la
+fuente y el cruce contra los 105 temas que pide `D-13`. Lo único que fija `BR-14` es que la
+cita deja de ser un campo obligatorio del artículo y pasa a ser un campo condicional: no
+está si no hay verso, y cuando aparece, activa el tope de `BR-12` sin excepción.
+
+**Nota de alcance, que no es de esta regla:** que el ciclo 5 no transcriba ningún verso —ni
+para `US-03` ni para estos 6 artículos— es una decisión táctica del corte del ciclo, escrita
+en `Docs/ORQ/ORQ-plan-ciclo-5.md` §0.1, que trata los versos como material de origen que
+entra por la mano del usuario, igual que los recortes de audio de `US-02`. `BR-14` no toca
+esa decisión ni la contradice: fija que el artículo se sostiene sin ese material, no cuándo
+ni quién lo transcribe.
+
+**Efecto sobre `BR-11` que dejo señalado y no resuelvo acá:** el punto 1 de `BR-11` pone a
+`tema` primero en la fila de recorte por ser el tipo más caro, con el cruce de `D-13` y la
+confirmación de oído como costo dominante. Esa cuenta asumía que todo `tema` necesita verso.
+Con `BR-14`, el costo del `tema` sin verso baja (ver la columna "Costo dominante" del piso,
+arriba, ya actualizada) y el argumento de `BR-11` queda parcialmente apoyado en una premisa
+que cambió. No reescribo `BR-11` en esta tarea porque no es lo que pide `T-67`; lo señalo
+para quien planifique el próximo recorte de este frente.
+
+**Criterio de aceptación:**
+- **Given** un artículo `tema` publicado sin ningún verso citado.
+- **When** se lo audita contra el criterio 1 de `US-05` (piso de campos mínimos).
+- **Then** los 6 campos de arriba están completos y ninguno es un placeholder, y el campo 6
+  (de qué trata, en prosa propia) alcanza para que el resumen del artículo se entienda sin
+  haber escuchado el tema ni leído un verso — el mismo estándar que ya exige el criterio 1
+  de `US-05` para cualquier artículo del piso.
+
+**Verificación:** no hay comando propio, igual que `BR-12` — es un criterio de contenido de
+los campos, no de estructura de archivo. Lo audita `revisor` contra esta regla y contra
+`BR-08` (rotulado) al revisar el piso de `tema`, con `D-12` rigiendo quién corre qué si
+`arquitectura` llega a estructurar estos campos como propiedades del schema.
+
+**Trazabilidad:** pregunta traída por el corte del ciclo 5, tarea `T-67`
+(`Docs/ORQ/ORQ-plan-ciclo-5.md`, tabla, fila `T-67`, y su §0.1). Responde contra `BR-12`
+(el tope y la regla de análisis, que esta regla no deroga), `D-20` cláusula 3 (la ventaja
+competitiva es rotular la leyenda, no citar texto), `D-14` (el conocimiento popular alcanza;
+dejar de exigir algo que no hace falta es proporción, no negligencia), y las fichas
+`RES-08`, `RES-20` y `RES-22` como evidencia de que el insumo sin verso ya es rico y está
+fichado.
+
+---
+
 ## Qué promesa de sesión hace la Redondopedia (y cuál no)
 
 **No promete cierre en 2-3 minutos.** Es explícitamente **otro modo de uso** que el de
@@ -430,9 +707,13 @@ terminar, así que medirla contra el pacing de `US-01`..`US-04` no tiene sentido
   `D-19` (portada, historia, mitología, letras, discos ya tienen disco asignado en la
   hoja 05 del sistema de marca — la Redondopedia hereda ese mapa, no necesita uno nuevo).
 - **`contenido`** debe relacer `CNT-04` con la vara de `BR-10` antes de escribir los
-  artículos de Bulacio y Olavarría, y escribir el primer lote de 35 bajo `CNT-02` (tono) y
-  `D-13` (fuente y mitigaciones para las letras de `tema`) — con el tope y el criterio de
-  `BR-12` rigiendo cuántos versos cita cada artículo `tema` y para qué.
+  artículos de Bulacio y Olavarría, y escribir el primer lote de 36 bajo `CNT-02` (tono) y
+  `D-13` (fuente y mitigaciones para las letras de `tema`, cuando haya). Para los 6 `tema`:
+  `BR-14` fija que no hacen falta versos y qué campos son obligatorios en su lugar; `BR-12`
+  sigue rigiendo el tope y el criterio de análisis para cuando sí se cite alguno. Para las
+  bandas post-separación (`BR-13`): el `concepto` nuevo con nombre correcto de `RES-47` y
+  la extensión de biografía en `indio-solari`/`skay-beilinson` — el orden en que se
+  escribe, como el resto del lote, es de `contenido`/`orquestador`.
 - **`investigador`** no tiene pendiente nuevo para el primer lote (`D-20` cláusula 4: sale
   de lo que ya existe). Si al escribir aparece un hueco de hecho puntual para una
   biografía o un hito, es ficha `RES-XX` nueva, a pedido de `contenido`.
@@ -445,7 +726,7 @@ terminar, así que medirla contra el pacing de `US-01`..`US-04` no tiene sentido
   navegación móvil de lectura larga. Dueño: `experiencia`.
 - **La relectura de `CNT-04` para Bulacio y Olavarría en prosa** (`BR-10`), de la que
   depende si el piso de `hito` queda en 7 o baja a 6. Dueño: `contenido`.
-- **El orden real de qué se escribe primero de los 35.** Dueño: `contenido` /
+- **El orden real de qué se escribe primero de los 36.** Dueño: `contenido` /
   `orquestador`, con la recomendación de reutilizar insumo de `US-02`/`US-03` cuando
   exista.
 - **La secuencia entre este frente y lo que falta de la v1.** No la fijo acá a propósito

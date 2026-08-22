@@ -18,6 +18,21 @@
 > (la mezcla, la base que no rota), `public/arte/README.md` (el despiece de recortes
 > existente) y `src/styles/tokens.css` (los tokens ya nombrados).
 
+> **v4 — `T-71`, ciclo 5.** Dos correcciones, ninguna de fondo. **(1)** Los números de
+> píxeles y de peso de "Tapas reales en toda la pantalla" bajan al techo real del
+> material: los másters miden 953×953 px (frontales) y 1181×929 px (traseras), y ningún
+> recorte del catálogo de `UX-05` llega a los 480/640 px que esta hoja pedía antes de que
+> hubiera másters reales contra los cuales medir — el rango real de hoy es **210–591 px**,
+> muy por encima del destino real en pantalla (34–96 px). El detalle está en cada punto de
+> la sección. **(2)** Nuevo corolario en "El piso de legibilidad": el par testeado hoy
+> contra el peor caso del velo es solo `--texto`/`--texto-tenue` — cualquier otro color de
+> texto (`--marca-rojo`, los acentos de tramo) no tiene su par y no se pone detrás de un
+> fondo velado hasta que lo tenga. `UX-05` v2 aplica esto a dos pantallas del quiz que
+> todavía no se habían construido cuando escribí la v3. Suma a lo que consumo:
+> `Docs/SUGERENCIAS/HILO-para-experiencia-desvios-de-UX-05.md` (los dos desvíos que
+> confirma `UX-05` v2) y `src/lib/contraste.test.ts` (leído entero antes de escribir esta
+> versión, no solo citado de memoria).
+
 **Resuelve:** `D-04` (arte original en lenguaje rocambolesco para la interfaz) y `D-21`
 (las tapas reales entran a cualquier pantalla, con piso de legibilidad y crédito
 propios).
@@ -78,10 +93,20 @@ sin negociarse. Lo que cambió es únicamente el "dónde".
 **1. Detalle recortado.** Un pedazo de la tapa real (foto, no dibujo), tratado como
 recorte pegado: borde rasgado o borde grueso de serigrafía, rotación leve — el mismo
 tratamiento que ya usa `public/arte/README.md` para sus piezas dibujadas, aplicado ahora
-a un recorte fotográfico de verdad. **480 px del lado largo alcanza**: es una pieza
-decorativa, no la tapa entera, y a ese ancho no se ve masticada ni siquiera ocupando
-buena parte de un viewport móvil en pantalla de alta densidad. Nunca un rectángulo liso
-pegado tal cual — eso es la condición 3 de `D-21`, ver "Qué sigue prohibido" más abajo.
+a un recorte fotográfico de verdad. **El número que manda es el techo del máster, no un
+objetivo elegido a priori** (corrección de `T-71`, ciclo 5, sobre la versión anterior de
+este párrafo). Los másters reales miden **953×953 px** (frontales) y **1181×929 px**
+(traseras) — el generador no agranda nunca (agrandar una foto la hace papilla) y avisa
+por consola si un recorte pedido no entra. Con ese material, el catálogo de hoy
+(`UX-05`) recorta entre **591 px** (el caso más generoso) y **210 px** (el más ajustado:
+la bandera suelta de Oktubre del casete del portal) de lado largo — nunca los 480 px que
+esta hoja pedía cuando todavía no había másters reales contra los cuales medir. No es un
+problema: el destino real en pantalla es mucho más chico que cualquiera de esos dos
+números —**34 px** en un casete, **96 px** en una ficha de artículo—, así que hasta el
+recorte más ajustado sobra con margen. Los 480 px quedan como tope de referencia para si
+algún día hace falta un recorte más generoso, no como una meta que el material de hoy
+tenga que alcanzar. Nunca un rectángulo liso pegado tal cual — eso es la condición 3 de
+`D-21`, ver "Qué sigue prohibido" más abajo.
 Si el detalle queda detrás o pegado a texto (no solo flotando en un margen, como ya
 hacen `perro.png` o `mosca.png`), rige el mismo piso de legibilidad que el fondo velado:
 no es una forma exenta del contraste, es la misma regla aplicada donde haga falta.
@@ -95,10 +120,21 @@ TapasDiscos/`. Se ve parecido en el resultado final (mismo borde rasgado, misma
 rotación) pero es material distinto y **el detalle recortado sí lleva crédito
 obligatorio**, siempre, porque es la obra real y no una interpretación.
 
-**2. Fondo velado.** La tapa detrás del contenido, con un velo que garantiza que el
-texto de encima se siga leyendo. **640 px del lado largo, tope de 60 KB por imagen**
-(JPEG, calidad orientativa 65–70 a ajustar por quien la genere para no pasar el tope).
-Es un número bajo a propósito: `D-15` midió el sitio actual en **11 KB comprimidos por
+**2. Fondo velado.** La tapa detrás del contenido — nunca a sangre completa (ver "Qué
+sigue prohibido"): un recorte acotado a una tarjeta o una franja, no al viewport entero,
+con el mismo tratamiento de borde que el resto del proyecto y un velo que garantiza que
+el texto de encima se siga leyendo. **El mismo techo real que el punto 1** (`T-71`,
+ciclo 5): con másters de 953×953 / 1181×929 px, el catálogo de hoy tampoco llega a los
+640 px que esta hoja pedía — comparte el mismo rango real de **210–591 px** del punto
+anterior, porque son las mismas dos formas compitiendo por el mismo material. 640 px
+queda como tope de referencia, no como objetivo: nada del sitio de hoy lo necesita, y el
+velo además tapa buena parte de la definición de cualquier imagen que haya debajo.
+**Tope de 60 KB por imagen** (JPEG, calidad orientativa 65–70 a ajustar por quien la
+genere para no pasar el tope) — este número sí sigue siendo el que importa no cruzar,
+aunque tampoco lo roza nadie hoy: el archivo más pesado del catálogo pesa **53 KB**. No
+bajo el tope porque es margen, no aspiración — pero si algún derivado futuro se acerca a
+60 KB es señal de revisar ese recorte puntual, no de que el número esté mal puesto. Es
+un número bajo a propósito: `D-15` midió el sitio actual en **11 KB comprimidos por
 visita, tres archivos completos** — una sola imagen de fondo ya pesa varias veces esa
 página entera, así que 60 KB es una concesión grande, no un número libre. Si una
 pantalla usa dos tapas de fondo a la vez (caso raro, por ejemplo un enlace entre un
@@ -153,6 +189,22 @@ pasa también, porque ninguna va a ser más clara que el peor caso que ya se tes
 tinta que se usa siempre es `--texto` (el claro sobre fondo oscuro que ya define la
 base): la base no rota (`D-19`), así que no hace falta un segundo color de tinta para
 tapas de sección — sería otro par a mantener por ningún beneficio real.
+
+**Corolario (`T-71`, ciclo 5): el par testeado es `--texto`/`--texto-tenue`, no
+"cualquier tinta del sistema".** Al aplicar esta regla a pantallas reales que todavía no
+existían cuando escribí la versión anterior (`UX-05` v2: la presentación y el resultado
+del quiz), aparecieron dos colores que conviven con un fondo velado sin tener su par
+testeado contra el peor caso: `--marca-rojo` (ya prohibido explícitamente más abajo, con
+test propio) y los tres acentos que pinta el tramo de resultado (`--acento`, `--acento-2`,
+`--acento-3`). Cálculo a mano, no corrida (`D-12`), con los valores reales de
+`tokens.css`: `--acento-2` (oro, tramo bajo) y `--acento-3` (verde, tramo alto) dan de
+sobra; **`--acento` (naranja, tramo medio) da apenas ~4,48:1 contra el peor caso — por
+debajo del piso de 4,5:1, aunque el margen es tan chico que conviene confirmarlo con el
+test antes de confiar en el número.** Mientras ese par no esté en `contraste.test.ts`, la
+regla de `experiencia` es no arriesgarlo: **un fondo velado no se extiende detrás de
+texto que no sea `--texto`/`--texto-tenue`**, aunque eso signifique que cubra menos
+pantalla de la que cubriría a sangre completa. `UX-05` v2 acota dónde llega el fondo en
+las dos pantallas reales que lo necesitan, siguiendo esta misma regla.
 
 **Circuito, para que quede explícito:** estos dos alfas son criterio propio de
 `experiencia` (igual que la paleta y la tipografía de más abajo, sin ficha detrás),
@@ -400,6 +452,20 @@ desde `D-14`. El detalle completo, con la fila vieja citada textual y el motivo 
 qué sobrevivió al encuadre que la justificaba, está en "Tapas reales en toda la
 pantalla" más arriba, no acá: esa tabla es específicamente para tensión con una ficha,
 y esto no lo es.
+
+### Ciclo 5, `T-71` — no una derogación, una corrección de números y un corolario
+
+Distinto también de las dos entradas de arriba: acá no cambia ningún criterio, cambian
+dos cosas que se pusieron a prueba contra material real. **(1)** Los números de 480 px
+y 640 px se escribieron sin másters a mano para medirlos; con los másters reales
+(953×953 / 1181×929 px) ningún recorte del catálogo los alcanza nunca, así que dejaron
+de ser objetivo y pasaron a ser tope de referencia — el detalle está en la sección
+"Tapas reales en toda la pantalla". **(2)** El corolario sobre qué colores están
+testeados contra el velo no corrige nada de esta hoja: es un hallazgo nuevo, encontrado
+al escribir `UX-05` v2 para dos pantallas que el ciclo 4 no llegó a construir. Las dos
+correcciones las trae `Docs/SUGERENCIAS/HILO-para-experiencia-desvios-de-UX-05.md` (el
+reporte del hilo principal) más la lectura directa de `src/lib/contraste.test.ts` y de
+`tokens.css`.
 
 ## Estado de las referencias — reemplaza la sección de bloqueos anterior
 

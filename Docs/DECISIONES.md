@@ -752,3 +752,79 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 - **Dueños:** la regla y el catálogo son de `experiencia` (`UX-04` es suya); los valores de
   marca salen del lienzo; el riesgo lo asume el usuario bajo `D-14`. Esta decisión fija el
   principio y las cuatro condiciones, no los números.
+
+---
+
+## D-22 — Los temas enteros se alojan en el sitio, en mp3
+
+- **Fecha:** 2026-08-22
+- **Estado:** aceptada — decisión directa del usuario, textual: *"Vamos a alojar temas
+  enteros en .mp3 seguro."*
+- **Contexto:** hasta hoy, "alojar los temas completos" era una de las cuatro líneas de
+  **Fuera de alcance** del brief, y la única vía al tema entero era Spotify. Eso arrastraba
+  un problema que el proyecto venía sin poder cerrar: `RES-01` mostró que un jugador sin
+  Premium probablemente no escuche el tema completo, `E-07` de `ADR-01` quedó registrado en
+  `ESTADO.md` como **"la pregunta que más pesa"** —si un usuario free en Argentina no puede
+  reproducir a demanda, ninguna vía cumple la promesa del brief—, y `BR-06` tuvo que
+  redactarse justamente para **no prometer** lo que el sitio no podía dar. La contradicción
+  de fondo era con el principio del propio proyecto: los molinetes abiertos (`D-14`) dicen
+  que nada se le niega a nadie por no tener con qué entrar, y el tema completo era
+  exactamente eso — algo que solo escuchaba el que tenía Premium.
+- **Decisión:** el sitio aloja los temas enteros en mp3 y los sirve él mismo. Deja de estar
+  en Fuera de alcance.
+- **Alternativas descartadas:** seguir con fragmento propio + Spotify, descartada porque es
+  el estado actual y es el que no cumple — deja al jugador sin Premium sin tema completo, que
+  es cerrar el molinete; alojar solo los temas que los juegos necesitan (los 20 de `US-02`)
+  en vez de los 105, descartada como decisión pero **no como orden de carga**: se puede
+  empezar por esos 20 sin que eso cambie la decisión; alojar en un tercero (Archive, Drive,
+  bucket externo), no descartada por el usuario sino **no planteada** — queda como pregunta
+  abierta de abajo, porque cambia el costo y no la decisión.
+- **Consecuencias, y son varias:**
+  **(1) Se levanta el bloqueo que más pesaba.** `E-07` y `E-04` de `ADR-01` dejan de decidir
+  si la promesa se cumple: el sitio ya no depende de Spotify para el tema entero. Spotify
+  puede quedarse como enlace —no cuesta nada y suma para el que sí tiene cuenta— pero baja
+  de ser *la promesa* a ser *un extra*. Quién decide eso: `arquitectura` en `ADR-01`, con
+  `producto` revisando `BR-06`.
+  **(2) `D-06` se simplifica en vez de crecer.** El usuario ya baja los temas de YouTube; lo
+  que cambia es que deja de tener que recortar a mano cada fragmento, porque los pasos del
+  reveal de `US-02` se pueden derivar del archivo entero. Si `arquitectura` lo confirma, el
+  trabajo manual de `D-06` casi desaparece.
+  **(3) El peso pasa a ser el problema real, y no es chico.** Contra las duraciones fichadas
+  en `RES-20` —94 de los 105 temas las traen, suman 385 minutos— el catálogo completo son
+  **unas 7,2 horas de audio**. Traducido, y esto es aritmética, no opinión:
+
+  | Bitrate | Catálogo completo (105 temas) |
+  |---|---|
+  | 96 kbps | ~300 MB |
+  | 128 kbps | ~400 MB |
+  | 192 kbps | ~600 MB |
+  | 320 kbps | ~1 GB |
+
+  **(4) Y de ahí sale el que hay que mirar antes de subir el primer archivo: el repo.** El
+  proyecto está en GitHub y Vercel construye desde ahí, así que meter cientos de MB de mp3
+  al repo versionado es una decisión de infraestructura, no un detalle de carga. `RES-15` ya
+  verificó que en Vercel Hobby **no hay cargo posible** —al agotarse un cupo el recurso se
+  frena, no se factura—, o sea que el riesgo no es una factura sorpresa; el riesgo es que el
+  sitio deje de servir, o que el repo se vuelva impracticable. Los límites concretos de
+  Vercel para este volumen **no están fichados**: hace falta `RES-XX` de `investigador`
+  antes de tomar la vía. Es lo único de esta decisión que conviene chequear antes y no
+  después.
+  **(5) El codec es la palanca, y no la fija esta decisión.** El usuario dijo mp3 y mp3
+  queda. Pero si el peso resulta ser la restricción que manda, la tabla de arriba muestra
+  que bajar el bitrate vale más que cualquier otra cosa, y que un codec moderno pesaría
+  bastante menos a igual calidad percibida. Eso es de `arquitectura`, no de acá.
+  **(6) `IDEA-10` (Guitar Hero) se desbloquea.** Era la única de las diez ideas guardadas con
+  bloqueo estructural, y el bloqueo era exactamente este. Sigue sin estar empezada y sigue
+  necesitando promoverse a `US-XX` (`BR-16`); lo que cambió es que ahora se puede.
+  **(7) La exposición sube y el encuadre no cambia.** Servir la grabación entera es más que
+  usar un fragmento, y conviene decirlo una vez en voz alta en lugar de dejarlo implícito.
+  Pero el encuadre ya está decidido y no lo reabre esta decisión: `D-14` dice fan site sin
+  fines de lucro, riesgo asumido, y si llega un reclamo se baja. Lo que sí vuelve más
+  cargante es `BAJAR-EL-SITIO.md`: bajar el sitio ahora también significa bajar el audio.
+- **Preguntas que quedan abiertas al usuario, y ninguna frena la decisión:** si los mp3 van
+  adentro del repo o en un almacenamiento aparte; y si Spotify se queda como enlace o se
+  retira del reveal.
+- **Dueños:** la decisión y el riesgo son del usuario bajo `D-14`. La vía técnica —dónde
+  viven los archivos, qué bitrate, cómo se derivan los pasos del reveal— es de
+  `arquitectura` (`ADR-01`, `CTR-01.3`). La promesa que se le hace al jugador es de
+  `producto` (`BR-06`). Los límites de Vercel, de `investigador`.

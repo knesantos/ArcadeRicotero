@@ -61,13 +61,20 @@
           "rotulo": "hecho",
           "fuente": "RES-20 (INV-20), discrepancias 2 y 3",
           "quien": null
+        },
+        {
+          "texto": "Hay más letra chica en este disco: [[criminal-mambo|Criminal Mambo]], pista 11, esconde entre el material interno una supuesta nota de censura tan antigua como falsa. Te contamos toda la vuelta en su propio artículo.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
         }
       ],
       "veaTambien": [
         "oktubre",
         "indio-solari",
         "skay-beilinson",
-        "autogestion"
+        "autogestion",
+        "criminal-mambo"
       ]
     },
     {
@@ -103,7 +110,7 @@
       ],
       "cuerpo": [
         {
-          "texto": "Oktubre salió el 4 de octubre de 1986, en una edición conjunta: Wormo puso el vinilo y el casete, Del Cielito el CD. Son nueve temas, todos firmados por el dúo [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]], y suenan Ji ji ji, Fuegos de octubre, Preso en mi ciudad, Divina TV Führer y Ya nadie va a escuchar tu remera.",
+          "texto": "Oktubre salió el 4 de octubre de 1986, en una edición conjunta: Wormo puso el vinilo y el casete, Del Cielito el CD. Son nueve temas, todos firmados por el dúo [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]], y suenan [[ji-ji-ji|Ji ji ji]], Fuegos de octubre, Preso en mi ciudad, Divina TV Führer y Ya nadie va a escuchar tu remera.",
           "rotulo": "hecho",
           "fuente": "RES-02 (INV-01) y RES-20 (INV-20)",
           "quien": null
@@ -131,7 +138,8 @@
         "gulp",
         "un-baion-para-el-ojo-idiota",
         "la-leyenda-de-ji-ji-ji",
-        "indio-solari"
+        "indio-solari",
+        "ji-ji-ji"
       ]
     },
     {
@@ -173,7 +181,7 @@
       ],
       "cuerpo": [
         {
-          "texto": "Un baión para el ojo idiota salió en 1988 y trae ocho temas, y entre ellos: Todo un palo, Vencedores vencidos, Vamos las bandas y Masacre en el puticlub, todos del dúo [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]]. La perla de autoría está en Ella debe estar tan linda: la firma es Solari-Beilinson-Bucciarelli, con [[semilla-bucciarelli|Semilla Bucciarelli]] sumado al dúo. Es una de las dos únicas excepciones de autoría en los 105 temas de estudio relevados.",
+          "texto": "Un baión para el ojo idiota salió en 1988 y trae ocho temas, y entre ellos: [[todo-un-palo|Todo un palo]], Vencedores vencidos, Vamos las bandas y Masacre en el puticlub, todos del dúo [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]]. La perla de autoría está en Ella debe estar tan linda: la firma es Solari-Beilinson-Bucciarelli, con [[semilla-bucciarelli|Semilla Bucciarelli]] sumado al dúo. Es una de las dos únicas excepciones de autoría en los 105 temas de estudio relevados.",
           "rotulo": "hecho",
           "fuente": "RES-02 (INV-01) y RES-20 (INV-20)",
           "quien": null
@@ -195,7 +203,8 @@
         "oktubre",
         "bang-bang-estas-liquidado",
         "rocambole",
-        "semilla-bucciarelli"
+        "semilla-bucciarelli",
+        "todo-un-palo"
       ]
     },
     {
@@ -241,13 +250,20 @@
           "rotulo": "hecho",
           "fuente": "RES-20 (INV-20)",
           "quien": null
+        },
+        {
+          "texto": "De este disco sale también [[ropa-sucia|Ropa sucia]], que fue la primera base que la banda grabó para el álbum, aunque ya la habían estrenado en vivo unos meses antes. Su historia completa está en el artículo del tema.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
         }
       ],
       "veaTambien": [
         "un-baion-para-el-ojo-idiota",
         "la-mosca-y-la-sopa",
         "indio-solari",
-        "skay-beilinson"
+        "skay-beilinson",
+        "ropa-sucia"
       ]
     },
     {
@@ -283,7 +299,7 @@
       ],
       "cuerpo": [
         {
-          "texto": "La mosca y la sopa salió el 27 de octubre de 1991 por Del Cielito: diez temas, repartidos cinco y cinco entre los dos lados del vinilo y el casete. Van Un poco de amor francés, Toxi-Taxi, El pibe de los astilleros y Queso ruso, del dúo [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]], y Mi perro dinamita, que lleva una tercera firma: [[semilla-bucciarelli|Semilla Bucciarelli]]. Es la segunda de las dos únicas excepciones de autoría en los 105 temas de estudio relevados.",
+          "texto": "La mosca y la sopa salió el 27 de octubre de 1991 por Del Cielito: diez temas, repartidos cinco y cinco entre los dos lados del vinilo y el casete. Van Un poco de amor francés, Toxi-Taxi, El pibe de los astilleros y Queso ruso, del dúo [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]], y [[mi-perro-dinamita|Mi perro dinamita]], que lleva una tercera firma: [[semilla-bucciarelli|Semilla Bucciarelli]]. Es la segunda de las dos únicas excepciones de autoría en los 105 temas de estudio relevados.",
           "rotulo": "hecho",
           "fuente": "RES-02 (INV-01) y RES-20 (INV-20)",
           "quien": null
@@ -305,7 +321,8 @@
         "bang-bang-estas-liquidado",
         "lobo-suelto",
         "rocambole",
-        "semilla-bucciarelli"
+        "semilla-bucciarelli",
+        "mi-perro-dinamita"
       ]
     },
     {
@@ -352,7 +369,7 @@
           "fuente": "RES-20 (INV-20)"
         },
         {
-          "texto": "El volumen trae trece temas firmados por la dupla [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]], incluidos dos instrumentales: Capricho Magyar y Sushi. Ahí están Rock para el negro Atila, Un ángel para tu soledad, Susanita, La hija del fletero y El lobo caído.",
+          "texto": "El volumen trae trece temas firmados por la dupla [[indio-solari|Solari]]–[[skay-beilinson|Beilinson]], incluidos dos instrumentales: Capricho Magyar y Sushi. Ahí están Rock para el negro Atila, Un ángel para tu soledad, [[susanita|Susanita]], La hija del fletero y El lobo caído.",
           "rotulo": "hecho",
           "fuente": "RES-20 (INV-20)"
         },
@@ -371,7 +388,8 @@
         "cordero-atado",
         "huracan-93-94",
         "indio-solari",
-        "la-mosca-y-la-sopa"
+        "la-mosca-y-la-sopa",
+        "susanita"
       ]
     },
     {
@@ -1991,6 +2009,476 @@
         "la-leyenda-de-ji-ji-ji",
         "difusion-sin-tele",
         "patricio-rey"
+      ]
+    },
+    {
+      "slug": "criminal-mambo",
+      "tipo": "tema",
+      "titulo": "Criminal Mambo",
+      "resumen": "Criminal Mambo es la pista 11 de Gulp! (1985), firmada por Solari-Beilinson, con una letra deliberadamente casi vacía de sentido. El material interno del disco esconde una nota apócrifa del COMFER prohibiendo su difusión durante la dictadura —una broma ácida sobre la censura real de la época— y arrastra un rumor desmentido: que Luca Prodan fue coautor.",
+      "datos": [
+        {
+          "etiqueta": "Autoría",
+          "valor": "Solari–Beilinson",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Disco",
+          "valor": "Gulp! (1985), pista 11 de 12",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Duración",
+          "valor": "4:04 según RES-20; 4:02 según Wikipedia, con grabación fechada en 1984 — diferencia menor",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20); RES-48 (INV-48)"
+        },
+        {
+          "etiqueta": "Nota apócrifa del COMFER",
+          "valor": "En el material interno del disco, fechada durante la dictadura militar (1976-1983)",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)"
+        },
+        {
+          "etiqueta": "Coautoría de Luca Prodan",
+          "valor": "Rumor desmentido por la propia fuente que lo registra",
+          "rotulo": "leyenda",
+          "fuente": "RES-48 (INV-48)"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Criminal Mambo es la pista 11 de las 12 que tiene [[gulp|Gulp!]] (1985), firmada como casi todo el cancionero por el dúo [[indio-solari|Indio Solari]]–[[skay-beilinson|Skay Beilinson]]. RES-20 le da 4:04 de duración; una fuente externa anota 4:02 y ubica la grabación en 1984 — diferencia menor, no bloqueante.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20); RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "La letra es, a propósito, casi un vacío: una frase muy breve que se repite, con un fragmento en otro idioma europeo metido en el medio y una exclamación en japonés al final — un objeto de letra casi sin contenido, en las antípodas de todo lo demás que escribía el Indio. Es el tema donde la banda decidió que, por una vez, la palabra no tenía que decir nada.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "El material interno del disco trae una supuesta nota del COMFER —el organismo argentino que controlaba la radiodifusión— prohibiendo la difusión del tema, fechada durante la dictadura militar (1976-1983). La nota es apócrifa: nunca hubo semejante censura real. Funciona como un chiste ácido, con un «censor» de mentira advirtiendo sobre una canción cuya letra casi no dice nada — la ironía apunta directo a la censura real de esos años.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "Corrió durante años el rumor de que Luca Prodan había sido coautor del tema, a partir de una aparición improvisada suya tocándolo en el boliche Cemento, el 23 de mayo de 1987. La propia fuente que registra el episodio marca de entrada que la coautoría es un rumor falso: la firma sigue siendo, sin excepción, la del dúo Solari-Beilinson.",
+          "rotulo": "leyenda",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "El sitio redondossubtitulados republica, en su página sobre el tema, un fragmento firmado «Marcelo Figueras, agosto de 2018» — corresponde al capítulo 9 del libro de memorias del Indio, que Figueras coescribió. No es un texto anónimo: es la reproducción acreditada de una fuente que este sitio ya validó (ver [[indio-solari|Indio Solari]]). Pero lo que dice puntualmente ese capítulo sobre el tema no se pudo confirmar: la página completa no se pudo abrir, así que acá queda anotado que ese testimonio existe y dónde buscarlo, no su contenido — no se inventa lo que no se leyó.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "Del proceso puntual de grabación de este tema no hay más detalle específico que el que ya cuenta el artículo de [[gulp|Gulp!]]: se grabó, como todo el disco, en 1985 (o 1984 según la fuente que se use para esa fecha puntual), sin que ninguna ficha registre sesiones o anécdotas propias del tema en el estudio. Antes que inventar color donde no lo hay, se dice así.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20); RES-48 (INV-48)",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "gulp",
+        "indio-solari",
+        "skay-beilinson"
+      ]
+    },
+    {
+      "slug": "ji-ji-ji",
+      "tipo": "tema",
+      "titulo": "Ji ji ji",
+      "resumen": "Ji ji ji es la pista 7 de Oktubre (1986), firmada por Solari-Beilinson: el tema más coreado del repertorio ricotero. El propio Indio explicó dos veces, separado por años, que habla de la paranoia de estar drogado — no de ninguna anécdota puntual, como sí cuenta la leyenda urbana que circula sobre el tema. Acá se suma además otra historia menor, de origen desconocido, sobre cómo habría nacido el coro.",
+      "datos": [
+        {
+          "etiqueta": "Autoría",
+          "valor": "Solari–Beilinson",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Disco",
+          "valor": "Oktubre (1986), pista 7 de 9",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Duración",
+          "valor": "5:34",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Significado según el autor",
+          "valor": "La paranoia de estar drogado — dicho en Rolling Stone (2007) y en el libro de memorias (2019)",
+          "rotulo": "testimonio",
+          "fuente": "RES-08; RES-22 (INV-20)"
+        },
+        {
+          "etiqueta": "Leyenda del balcón",
+          "valor": "Skay improvisando con eco a Hendrix y el Indio sumando el coro — sin fuente identificable",
+          "rotulo": "leyenda",
+          "fuente": "RES-48 (INV-48)"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Ji ji ji es la pista 7 de las nueve de [[oktubre|Oktubre]] (1986), firmada por el dúo [[indio-solari|Indio Solari]]–[[skay-beilinson|Skay Beilinson]], con 5 minutos 34 de duración.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)",
+          "quien": null
+        },
+        {
+          "texto": "Es el tema que más se corea en cualquier recital ricotero, y lo que cuenta —en la explicación de su propio autor— no tiene nada de romántico: habla de la paranoia de estar drogado, con la risa nerviosa y medio perversa del que queda a la deriva como imagen central. No es una canción sobre una anécdota puntual: es un estado mental llevado a estribillo.",
+          "rotulo": "hecho",
+          "fuente": "RES-08; RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "El propio Indio lo explicó dos veces, separadas por años y por formato: primero en una entrevista con Rolling Stone en 2007, después en sus memorias de 2019. Las dos veces dijo lo mismo, lo que en esta casa cuenta como algo raro y valioso: dos fuentes del mismo autor coincidiendo en el tiempo. La versión completa de esa desmentida —incluida la leyenda urbana de las chicas en Mar del Plata, que el propio Indio bajó— está en [[la-leyenda-de-ji-ji-ji|la leyenda de Ji ji ji]].",
+          "rotulo": "testimonio",
+          "fuente": "RES-08; RES-22 (INV-20)",
+          "quien": "Indio Solari (Rolling Stone, 2007, y Recuerdos que mienten un poco, 2019)"
+        },
+        {
+          "texto": "Corre también otra historia, más chica y sin nombre propio detrás: que Skay estaba improvisando en un balcón, evocando a Jimi Hendrix, y que el Indio, al escuchar esa introducción, sumó ahí mismo el coro que terminaría siendo el más gritado del tema en vivo. Nadie identificó quién la contó por primera vez ni dónde — entra igual, rotulada como lo que es: leyenda sin fuente identificable.",
+          "rotulo": "leyenda",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "Del proceso puntual de grabación no hay más detalle específico fichado que el que ya cuenta el artículo de [[oktubre|Oktubre]]: nueve temas grabados para el disco de 1986, con Wormo editando el vinilo y el casete y Del Cielito el CD. Ninguna ficha registra una sesión o anécdota de estudio exclusiva de este tema, más allá de la leyenda del balcón de arriba — que es historia de origen, no de grabación confirmada.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20); RES-48 (INV-48)",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "oktubre",
+        "indio-solari",
+        "skay-beilinson",
+        "la-leyenda-de-ji-ji-ji"
+      ]
+    },
+    {
+      "slug": "todo-un-palo",
+      "tipo": "tema",
+      "titulo": "Todo un palo",
+      "resumen": "Todo un palo cierra Un baión para el ojo idiota (1988): la pista más larga del disco, 7 minutos 25, firmada por Solari-Beilinson. El propio Indio explicó en sus memorias que usó la expresión en el sentido de recibir un golpe fuerte y recién ahí caer en la cuenta de algo. En 2023, Skay se lo dedicó al Indio en un recital en Quilmes, veinte años después de la separación.",
+      "datos": [
+        {
+          "etiqueta": "Autoría",
+          "valor": "Solari–Beilinson",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Disco",
+          "valor": "Un baión para el ojo idiota (1988), pista 8 de 8 (la última)",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Duración",
+          "valor": "7:25",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Significado según el Indio",
+          "valor": "Recibir un golpe fuerte y recién ahí caer en la cuenta de algo",
+          "rotulo": "testimonio",
+          "fuente": "RES-48 (INV-48), vía notas que citan el libro (RES-21) — no releído directamente del PDF"
+        },
+        {
+          "etiqueta": "Dato reciente",
+          "valor": "Skay le dedicó el tema al Indio en un recital en Quilmes, marzo de 2023",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Todo un palo cierra [[un-baion-para-el-ojo-idiota|Un baión para el ojo idiota]] (1988): es la pista 8, la última y también la más larga del disco, con 7 minutos 25. La firma es la de siempre, [[indio-solari|Indio Solari]]–[[skay-beilinson|Skay Beilinson]].",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)",
+          "quien": null
+        },
+        {
+          "texto": "El propio Indio explicó, en sus memorias de 2019, el sentido de la expresión que le da título: la usó para nombrar el momento de recibir un golpe fuerte y recién ahí caer en la cuenta de algo. La canción funciona como una advertencia a no dejarse llevar, con el tiempo apremiando.",
+          "rotulo": "testimonio",
+          "fuente": "RES-48 (INV-48), vía notas que citan el libro (RES-21) — no releído directamente del PDF del proyecto",
+          "quien": "Indio Solari, en Recuerdos que mienten un poco (2019)"
+        },
+        {
+          "texto": "Un blog de fans le atribuye al Indio una respuesta sobre si el tema dialoga con una frase de otro músico del rock nacional, pero esa fuente no cita entrevista, medio ni fecha de origen — así que acá no entra como testimonio. Preferimos decir que se buscó y no alcanzó, antes que darlo como si estuviera confirmado.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "En marzo de 2023, en un recital en Quilmes, [[skay-beilinson|Skay Beilinson]] dedicó un saludo al Indio Solari mientras tocaba este mismo tema en vivo. El gesto se viralizó porque los dos llevan más de veinte años separados, sin reconciliación pública — no hace a la historia de origen del tema, pero es dato de enciclopedia igual.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "Del proceso específico de grabación de este tema no hay más detalle fichado que el que ya cuenta el artículo de [[un-baion-para-el-ojo-idiota|Un baión para el ojo idiota]]: se grabó para el disco de 1988. Ninguna ficha registra una sesión propia de este tema en particular.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20); RES-48 (INV-48)",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "un-baion-para-el-ojo-idiota",
+        "indio-solari",
+        "skay-beilinson"
+      ]
+    },
+    {
+      "slug": "ropa-sucia",
+      "tipo": "tema",
+      "titulo": "Ropa sucia",
+      "resumen": "Ropa sucia es la pista 8 de ¡Bang! ¡Bang!... Estás liquidado (1989), firmada por Solari-Beilinson: una relación atravesada por la pasión, el secreto y la hipocresía social. Fue la primera base que la banda grabó para el disco, con un solo de saxo regrabado por sugerencia de Gustavo Gauvry, y dialoga con una línea del tango Traicionera, de la década del veinte.",
+      "datos": [
+        {
+          "etiqueta": "Autoría",
+          "valor": "Solari–Beilinson",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Disco",
+          "valor": "¡Bang! ¡Bang!... Estás liquidado (1989), pista 8 de 9",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Duración",
+          "valor": "4:24",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Historia de grabación",
+          "valor": "Primera base grabada para el disco, comienzos de 1989; estrenado en vivo a fines de 1988",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)"
+        },
+        {
+          "etiqueta": "Referencia intertextual",
+          "valor": "Diálogo con una línea del tango Traicionera (Ghirlanda–Garrospe, década del 20), sin citar verso de ninguna de las dos obras",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Ropa sucia es la pista 8 de las nueve de [[bang-bang-estas-liquidado|¡Bang! ¡Bang!... Estás liquidado]] (1989), con 4 minutos 24, firmada por el dúo [[indio-solari|Indio Solari]]–[[skay-beilinson|Skay Beilinson]].",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)",
+          "quien": null
+        },
+        {
+          "texto": "La letra recorre una relación atravesada por la pasión, el secreto y una buena dosis de hipocresía social: el título funciona como metáfora de lo que se esconde puertas adentro, la ropa que no se cuelga a la vista de nadie.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "Fue la primera base que la banda grabó para este disco, a comienzos de 1989 — aunque ya se había estrenado en vivo unos meses antes, a fines de 1988. El solo de saxo, que en su forma original terminaba agudo y tirante, se regrabó más grave por sugerencia de Gustavo Gauvry, y ese cambio quedó en la versión final que todos conocen.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "Una línea de la canción dialoga con una línea del tango Traicionera (Ghirlanda–Garrospe, de la década del veinte), sobre lo que cuesta la vida vivir. Anotamos acá la relación entre las dos obras, no el texto de ninguna de las dos — no hace falta citar un verso para señalar el eco.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "Sobre este tema no hay ninguna leyenda fichada hasta ahora — ni desmentida ni sin desmentir. Si en algún momento aparece una, se agrega; mientras tanto, no se inventa una para llenar el casillero.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "Tampoco hay, por ahora, una ficha que registre algo que el Indio o Skay hayan dicho puntualmente sobre este tema — más allá del contexto de grabación de arriba, que sale de fuentes de terceros y no de una entrevista a la banda. Cuando aparezca esa voz de primera mano, entra; hasta entonces, no se especula en su lugar.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "bang-bang-estas-liquidado",
+        "indio-solari",
+        "skay-beilinson"
+      ]
+    },
+    {
+      "slug": "mi-perro-dinamita",
+      "tipo": "tema",
+      "titulo": "Mi perro dinamita",
+      "resumen": "Mi perro dinamita es la pista 4 de La mosca y la sopa (1991), una de las dos únicas excepciones de autoría del cancionero: Solari, Beilinson y Semilla Bucciarelli. El tema nació de un verso que Poli tenía pensado para otra canción, según contó el Indio en dos fuentes independientes — y terminó siendo uno de los más populares del regreso de la banda pese a que su propio autor no quería ni editarlo.",
+      "datos": [
+        {
+          "etiqueta": "Autoría",
+          "valor": "Solari / Beilinson / Bucciarelli — una de las dos únicas excepciones del cancionero",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Disco",
+          "valor": "La mosca y la sopa (1991), pista 4 de 10",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Duración",
+          "valor": "2:35",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Origen del tema",
+          "valor": "Verso de Poli pensado para otra canción no realizada; el Indio escribió esta letra en su lugar",
+          "rotulo": "testimonio",
+          "fuente": "RES-22 (INV-20); RES-48 (INV-48)"
+        },
+        {
+          "etiqueta": "Leyenda de título",
+          "valor": "Variante \"Perra dinamita\" entre fans, sin fuente independiente que la sostenga",
+          "rotulo": "leyenda",
+          "fuente": "RES-48 (INV-48)"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Mi perro dinamita es la pista 4 de las diez de [[la-mosca-y-la-sopa|La mosca y la sopa]] (1991), con 2 minutos 35 de duración. Es una de las dos únicas excepciones de autoría de todo el cancionero de estudio: la firma es Solari/Beilinson/[[semilla-bucciarelli|Bucciarelli]], con Semilla sumado como tercer autor.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)",
+          "quien": null
+        },
+        {
+          "texto": "Según contó el propio Indio en sus memorias, el tema nació de un verso que [[la-negra-poli|Poli]] tenía pensado para otra canción que nunca se llegó a hacer — y el Indio escribió esta letra en su lugar. Hay una segunda fuente independiente que cuenta lo mismo: en el documental Tsunami (Mario Pergolini), el Indio repite la historia y agrega que él no quería ni editar el tema, que para él era «un standard de rock más». Dos fuentes coincidentes, separadas en el tiempo y en el formato — el tipo de cruce que este sitio pide antes de dar un dato por firme.",
+          "rotulo": "testimonio",
+          "fuente": "RES-22 (INV-20); RES-48 (INV-48)",
+          "quien": "Indio Solari (en Recuerdos que mienten un poco, y en el documental Tsunami de Mario Pergolini)"
+        },
+        {
+          "texto": "Detrás de ese origen casual hay una canción con nombre de mascota y espíritu de amenaza cariñosa — el título juega con la idea de algo entrañable y a la vez peligroso, sin que haga falta explicar más para que la imagen funcione.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "El tema que el propio autor no quería ni editar terminó siendo uno de los más populares del regreso de la banda en 1991 — a veces el que menos fe le tiene a una canción es el último en enterarse de lo que tiene entre manos.",
+          "rotulo": "hecho",
+          "fuente": "RES-22 (INV-20)",
+          "quien": null
+        },
+        {
+          "texto": "Entre fans circula una variante del título, «Perra dinamita». Se buscó de nuevo una fuente independiente que la sostenga y no apareció ninguna — no se confirma ni se descarta: queda anotada como leyenda sin fuente identificable.",
+          "rotulo": "leyenda",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "Del proceso puntual de grabación no hay más detalle fichado que el que ya cuenta el artículo de [[la-mosca-y-la-sopa|La mosca y la sopa]]: se grabó para el disco de 1991, editado por Del Cielito. Ninguna ficha registra una sesión de estudio propia de este tema en particular, más allá de su historia de origen en el verso de Poli.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20); RES-48 (INV-48)",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "la-mosca-y-la-sopa",
+        "indio-solari",
+        "semilla-bucciarelli",
+        "la-negra-poli"
+      ]
+    },
+    {
+      "slug": "susanita",
+      "tipo": "tema",
+      "titulo": "Susanita",
+      "resumen": "Susanita es la pista 7 de Lobo suelto, cordero atado, vol. 1 (1993): el retrato de una chica, entre tierno y enrarecido, en contraste con la artificialidad de la tele. En sus memorias, el Indio contó que el estribillo original no nombraba a Susanita sino a la hija del entonces presidente Menem, tal como los medios la apodaban — el nombre se cambió para la versión final.",
+      "datos": [
+        {
+          "etiqueta": "Autoría",
+          "valor": "Solari–Beilinson",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Disco",
+          "valor": "Lobo suelto, cordero atado, vol. 1 (1993), pista 7 de 13",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Duración",
+          "valor": "3:43",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)"
+        },
+        {
+          "etiqueta": "Cambio de nombre en el estribillo",
+          "valor": "Según el Indio, la primera versión nombraba a otra chica, apodada como hija de Menem",
+          "rotulo": "testimonio",
+          "fuente": "RES-48 (INV-48), vía RES-21"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Susanita es la pista 7 de las trece de [[lobo-suelto|Lobo suelto, cordero atado, vol. 1]] (1993), con 3 minutos 43 de duración, firmada por el dúo [[indio-solari|Indio Solari]]–[[skay-beilinson|Skay Beilinson]].",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20)",
+          "quien": null
+        },
+        {
+          "texto": "Es el retrato de una chica, en un tono que va de tierno a enrarecido, con un contraste explícito frente a la artificialidad de la televisión — la chica de carne y hueso contra la pantalla, para decirlo simple.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "El dato fuerte de este tema salió del propio libro de memorias del Indio, publicado en 2019: contó que el estribillo, en su primera versión, no nombraba a «Susanita» sino a otra chica — la que los medios de la época apodaban con un diminutivo cariñoso por ser hija del entonces presidente Carlos Menem. El nombre se cambió para la versión final. No se reproduce acá la frase original que cita el libro, porque es, literalmente, el verso descartado; se la identifica solo por a quién apodaba. Una aclaración de método: esta ficha no releyó el PDF del proyecto de primera mano para este dato puntual — se encontró indexado en notas que citan el mismo libro, ya validado como fuente por este sitio.",
+          "rotulo": "testimonio",
+          "fuente": "RES-48 (INV-48), vía RES-21",
+          "quien": "Indio Solari, en Recuerdos que mienten un poco (2019)"
+        },
+        {
+          "texto": "La anécdota conecta un tema de 1993 con la coyuntura política de los años noventa — el tipo de dato que un artículo de enciclopedia puede usar sin necesitar tocar la letra.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "Fuera de ese cambio de nombre, no hay ninguna leyenda de fans fichada específicamente sobre este tema. Si aparece alguna, se agrega cuando esté verificada o claramente rotulada como tal.",
+          "rotulo": "hecho",
+          "fuente": "RES-48 (INV-48)",
+          "quien": null
+        },
+        {
+          "texto": "Del proceso puntual de grabación no hay más detalle fichado que el que ya cuenta el artículo de [[lobo-suelto|Lobo suelto]]: se grabó entre marzo y julio de 1993 en Argentina y se mezcló en Miami y Los Ángeles, como el resto del volumen. Ninguna ficha registra una sesión propia de este tema en particular.",
+          "rotulo": "hecho",
+          "fuente": "RES-20 (INV-20); RES-48 (INV-48)",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "lobo-suelto",
+        "indio-solari",
+        "skay-beilinson"
       ]
     }
   ]

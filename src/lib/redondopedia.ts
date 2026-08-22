@@ -20,7 +20,7 @@
  */
 
 export type Rotulo = 'hecho' | 'leyenda' | 'testimonio';
-export type TipoArticulo = 'disco' | 'persona' | 'hito' | 'concepto' | 'leyenda';
+export type TipoArticulo = 'disco' | 'tema' | 'persona' | 'hito' | 'concepto' | 'leyenda';
 
 export interface Dato {
   readonly etiqueta: string;
@@ -52,12 +52,23 @@ export const TIPO_A_CATEGORIA: Record<TipoArticulo, 'historia' | 'discos' | 'let
   hito: 'historia',
   persona: 'historia',
   disco: 'discos',
+  // `letras` era la unica categoria del mapa que ningun tipo usaba, y le toca al tipo
+  // que habla de canciones. Entro con los 6 articulos de `BR-14` (ciclo 5).
+  tema: 'letras',
   concepto: 'mitologia',
   leyenda: 'mitologia',
 };
 
 /** El orden narrativo de la portada: primero el que, despues el quien, despues la obra. */
-export const ORDEN_PORTADA: readonly TipoArticulo[] = ['hito', 'persona', 'disco', 'concepto', 'leyenda'];
+export const ORDEN_PORTADA: readonly TipoArticulo[] = [
+  'hito',
+  'persona',
+  'disco',
+  // El tema va pegado al disco: vive adentro de ese mundo, no aparte.
+  'tema',
+  'concepto',
+  'leyenda',
+];
 
 export type Pieza =
   | { readonly clase: 'texto'; readonly texto: string }

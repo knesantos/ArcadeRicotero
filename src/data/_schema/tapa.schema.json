@@ -114,6 +114,7 @@
           "not": { "pattern": "-(detalle|fondo)$" }
         },
         "encuadre": { "enum": ["entera", "detalle"] },
+        "cara": { "enum": ["frontal", "trasera", "interior"] },
         "disco": { "$ref": "#/$defs/tituloDeDisco" },
         "edicion": { "type": "string", "minLength": 10, "maxLength": 120 },
         "auditoria": {
@@ -129,7 +130,12 @@
           "additionalProperties": false,
           "required": ["autor", "origen"],
           "properties": {
-            "autor": { "enum": ["Rocambole (Ricardo Cohen)"] },
+            "autor": {
+              "enum": [
+                "Rocambole (Ricardo Cohen)",
+                "Rocambole, Semilla y Meroyuela"
+              ]
+            },
             "origen": { "enum": ["coveralia", "cover-art-archive"] }
           }
         }

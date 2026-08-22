@@ -22,8 +22,10 @@ con el tema escuchable vía Spotify al revelar.
 > que para un jugador sin Premium eso probablemente no se cumpla dentro del sitio. La
 > redacción definitiva de esa promesa la fija `producto` en `BR-06` (`T-03` del ciclo 1);
 > hasta entonces, no la cites como si estuviera cerrada.
-**Fuera de alcance:** cuentas de usuario, ranking global, backend, multijugador en
-tiempo real, y alojar los temas completos (solo fragmentos propios y Spotify).
+**Fuera de alcance:** cuentas de usuario, ranking global, backend y multijugador en
+tiempo real. **`D-22` sacó de acá "alojar los temas completos"**: el sitio los sirve en mp3
+—era lo único que le negaba al que no tiene Premium, contra los molinetes de `D-14`— y lo
+que ahora manda es el peso (~7,2 h de audio) y los límites de Vercel, todavía sin ficha.
 
 ## 2. Cómo se trabaja acá
 
@@ -114,8 +116,10 @@ leyenda **disfrazada de dato** hace quedar mal al jugador, no al sitio.
   comparte el resultado, se cierra. Todo lo que exija más está mal cortado.
 - **Stack: Astro + TypeScript**, islas, JSON versionado, sin backend, hosting estático
   gratuito. Detalle de código en `.claude/rules/codigo-juegos.md`.
-- **Motor de audio híbrido:** fragmentos propios con Web Audio API para el reveal desde
-  0,1 seg; Spotify para el tema completo. La vía exacta es `ADR-01`, pendiente.
+- **Motor de audio, revisado por `D-22`:** el reveal desde 0,1 seg sigue siendo fragmento
+  propio con Web Audio API; **el tema completo lo sirve el sitio en mp3**, ya no Spotify.
+  `ADR-01` cambió de pregunta: dónde viven los archivos, con qué bitrate, y si el reveal se
+  deriva del mp3 entero en vez de recortarse a mano (`D-06`).
 - **Regla de veracidad, en su forma actual (`D-14`):** lo que importa es que **el rótulo
   diga la verdad sobre lo que hay adentro**, no de dónde salió el dato. Tres casillas:
   **hecho**, **leyenda** y **testimonio**, y el schema las hace cumplir. Una historia que
