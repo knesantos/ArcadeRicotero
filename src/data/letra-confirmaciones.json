@@ -1,0 +1,7 @@
+{
+  "_comentario": "Confirmaciones de oido contra el disco (CTR-04). Sin esto un item no pasa de borrador, y no lo decide un programa: si la respuesta esta mal, el juego le marca error al que se sabe el tema. Cada clave es el id del item; el valor lleva quien escucho, cuando, donde (disco-fisico | streaming | video) y en que minuto.",
+  "_ejemplo": {
+    "CL-001": { "quien": "Santiago", "fecha": "2026-08-22", "donde": "streaming", "minuto": "1:24" }
+  },
+  "confirmados": {}
+}

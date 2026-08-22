@@ -87,6 +87,22 @@ export const JUEGOS: readonly Casete[] = [
   },
 ] as const;
 
+/**
+ * El casete del cancionero. Va en el lado B con la Redondopedia: no es una partida, es
+ * lectura — se entra, se busca un tema y se sale, sin nada que cerrar.
+ *
+ * Viste La mosca y la sopa por la mezcla `D-19`, que le da ese disco a `letras`.
+ */
+export const CASETE_CANCIONERO: Casete = {
+  titulo: 'Letras y acordes',
+  baja: 'Los diez discos enteros, con los acordes arriba de cada verso. Y te armás tu propio cancionero.',
+  viste: 'Viste La mosca y la sopa',
+  variante: 'letras',
+  arte: '/arte/mosca.svg',
+  href: '/letras-y-acordes/',
+  accion: 'TOCÁ',
+} as const;
+
 export const CASETE_REDONDOPEDIA: Casete = {
   titulo: 'La Redondopedia',
   baja: 'La historia entera, navegable: el hecho contado como hecho y la leyenda contada como leyenda.',
@@ -150,6 +166,7 @@ export const REDONDOPEDIA = {
     hito: 'La historia',
     persona: 'La banda y los suyos',
     disco: 'Los discos',
+    tema: 'Los temas',
     concepto: 'La cultura ricotera',
     leyenda: 'Las leyendas',
   } as const,

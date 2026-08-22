@@ -60,7 +60,7 @@ test('los rotulos se distinguen por forma ademas de por color', () => {
 test('ni juego.css ni sitio.css traen un color literal: todo sale de los tokens', () => {
   // El circuito de diseno-marca: el UNICO archivo del repo donde vive un hex es
   // tokens.css. Un hex suelto en una hoja de componentes romperia esa separacion.
-  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css']) {
+  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css']) {
     const hexes = leer(hoja).match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];
     assert.deepEqual(hexes, [], `${hoja} tiene colores literales: ${hexes.join(', ')}`);
   }
@@ -73,7 +73,7 @@ test('anti-slop: sin pastillas capsula ni barras de acento laterales', () => {
   // una tarjeta. La UNICA barra lateral permitida es la sangria de cita de los
   // parrafos rotulados de la Redondopedia (.parrafo--leyenda / .parrafo--testimonio),
   // que es tipografia editorial y mecanismo de BR-08, no decoracion.
-  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css']) {
+  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css']) {
     const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
     assert.ok(!css.includes('999px'), `${hoja}: pastilla capsula (border-radius 999px)`);
     for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
@@ -95,7 +95,7 @@ test('D-21: ninguna tapa entra de fondo sin su velo', () => {
   // texto sobre una foto: es justo el caso que la regla de marca veta como "foto a
   // sangre con texto encima". Se exige en el mismo bloque de declaraciones, no en la
   // hoja entera, para que no alcance con que el velo aparezca en cualquier otro lado.
-  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css']) {
+  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css']) {
     const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
     for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
       const declaraciones = regla[2]!;

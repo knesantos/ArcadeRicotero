@@ -57,7 +57,45 @@ const PARES: Array<[string, string, string]> = [
   ['discos (Ultimo bondi) sobre fondo', 'cat-discos', 'fondo'],
   ['letras (La mosca) sobre fondo', 'cat-letras', 'fondo'],
   ['mitologia (Lobo suelto) sobre fondo', 'cat-mitologia', 'fondo'],
+  // Las diez paletas de disco del cancionero (RES-37). La seccion de letras y acordes
+  // se ordena por disco y cada seccion se viste con el suyo, asi que hay diez tintas
+  // que llevan texto de verdad — titulo del disco, numero de pista, tono, acordes.
+  // El `-apoyo` de cada una NO esta aca a proposito: es borde y relleno, y dos de ellos
+  // (el ocre de ¡Bang! ¡Bang! y el azul de Un baion) no llegan a AA. Justamente por eso
+  // son apoyo: si alguien los usa como texto, este test no lo agarra pero la regla de
+  // `tokens.css` lo prohibe por escrito.
+  ['Gulp! sobre fondo', 'disco-gulp-tinta', 'fondo'],
+  ['Oktubre sobre fondo', 'disco-oktubre-tinta', 'fondo'],
+  ['Un baion sobre fondo', 'disco-un-baion-para-el-ojo-idiota-tinta', 'fondo'],
+  ['¡Bang! ¡Bang! sobre fondo', 'disco-bang-bang-estas-liquidado-tinta', 'fondo'],
+  ['La mosca y la sopa sobre fondo', 'disco-la-mosca-y-la-sopa-tinta', 'fondo'],
+  ['Lobo suelto sobre fondo', 'disco-lobo-suelto-tinta', 'fondo'],
+  ['Cordero atado sobre fondo', 'disco-cordero-atado-tinta', 'fondo'],
+  ['Luzbelito sobre fondo', 'disco-luzbelito-tinta', 'fondo'],
+  ['Ultimo bondi sobre fondo', 'disco-ultimo-bondi-a-finisterre-tinta', 'fondo'],
+  ['Momo Sampler sobre fondo', 'disco-momo-sampler-tinta', 'fondo'],
 ];
+
+/**
+ * **La tinta de disco va sobre `--fondo` y sobre nada mas.**
+ *
+ * No es una regla de estilo: la escribio este test. El primer intento uso las tintas
+ * tambien sobre `--fondo-elevado`, y el naranja quemado de *La mosca y la sopa* dio
+ * **4,32:1** — debajo de AA. Habia dos salidas: aclarar el naranja, o no apoyarlo ahi.
+ * Aclararlo lo habria vuelto un color inventado con coartada de medicion, justo lo que
+ * el bloque de `tokens.css` prohibe. Asi que la ficha de cada tema pinta su tinta sobre
+ * `--fondo`, y la regla anti-slop ya decia lo mismo por otro motivo ("la tinta queda
+ * sobre --fondo, que es el par testeado").
+ *
+ * Este test deja constancia de por que ese par no esta en la lista de arriba.
+ */
+test('las tintas de disco NO llegan a AA sobre el fondo elevado: por eso no se usan ahi', () => {
+  const r = contraste(token('disco-la-mosca-y-la-sopa-tinta'), token('fondo-elevado'));
+  assert.ok(
+    r < 4.5,
+    `si este par ya pasa AA (${r.toFixed(2)}:1), la restriccion sobro y se puede levantar`,
+  );
+});
 
 test('WCAG AA: todo par de texto y fondo llega a 4,5:1', () => {
   const fallas: string[] = [];

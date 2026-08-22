@@ -1,0 +1,92 @@
+---
+/**
+ * Índice de letras y acordes: los diez discos, cada uno con su tracklist entero.
+ *
+ * **Ordenado por disco, y cada disco vestido con su propia tapa** — no es decoración,
+ * es la estructura de la sección. `D-19` ya vestía cuatro categorías con cuatro discos;
+ * acá son los diez, porque acá la unidad de lectura es el disco: un tema de esta banda
+ * no es una unidad suelta, vive adentro de un disco con su tapa, su año y su paleta.
+ *
+ * **Y se muestra el tracklist completo, no solo lo que conseguimos.** Un índice que
+ * lista 12 de 13 pistas sin decirlo miente por omisión. Las que no tenemos aparecen
+ * tachadas y con el motivo. Es la misma regla de siempre: el rótulo dice la verdad.
+ */
+import Base from '../../layouts/Base.astro';
+import '../../styles/cancionero.css';
+import crudo from '../../data/cancionero.json';
+import { cargar, porDisco, tieneAcordes, type Cancionero } from '../../lib/cancionero/banco.ts';
+import { PORTAL } from '../../lib/sitio/copy.ts';
+import { tapa } from '../../lib/sitio/arte.ts';
+
+const temas = cargar(crudo as unknown as Cancionero);
+const discos = porDisco(temas);
+
+const totalConLetra = discos.reduce((n, d) => n + d.conLetra, 0);
+const totalConAcordes = temas.filter(tieneAcordes).length;
+---
+
+<Base
+  titulo="Letras y acordes — Arcade Ricotero"
+  descripcion="Las letras de Patricio Rey con sus acordes, disco por disco. Para leer, para cantar y para tocar."
+  volverA={{ href: '/', texto: PORTAL.volverAlArcade }}
+  tapas={discos.map((d) => d.titulo)}
+>
+  <section class="cancionero-intro">
+    <h1>Letras y acordes</h1>
+    <p>
+      Los diez discos completos, en orden. {totalConLetra} temas con la letra entera y
+      {totalConAcordes} con los acordes arriba de cada verso, para tocarlos.
+    </p>
+    <p>
+      Lo que no conseguimos aparece igual, tachado y con el motivo: un índice que esconde
+      lo que le falta te hace perder el tiempo buscándolo.
+    </p>
+    <div class="cancionero-acciones">
+      <a class="boton-recorte" href="/letras-y-acordes/armar-cancionero/">Armá tu cancionero</a>
+    </div>
+  </section>
+
+  {
+    discos.map((disco) => (
+      <section
+        class="disco"
+        style={`--tinta: var(--disco-${disco.slug}-tinta); --apoyo: var(--disco-${disco.slug}-apoyo);`}
+        aria-labelledby={`disco-${disco.slug}`}
+      >
+        <header class="disco-cabecera">
+          {tapa(disco.slug) && (
+            <img class="disco-tapa" src={tapa(disco.slug)} alt="" aria-hidden="true" loading="lazy" />
+          )}
+          <h2 class="disco-titulo" id={`disco-${disco.slug}`}>
+            {disco.titulo}
+            <span class="disco-dato">
+              {disco.anio} · {disco.pistas.length} temas · {disco.conAcordes} con acordes
+            </span>
+          </h2>
+        </header>
+
+        <ol class="pistas">
+          {disco.pistas.map((p) => (
+            <li class="pista">
+              {p.tema ? (
+                <a href={`/letras-y-acordes/${p.tema.slug}/`}>
+                  <span class="pista-numero">{p.pista}</span>
+                  <span class="pista-titulo">{p.titulo}</span>
+                  {p.tema.acordesUsados.length > 0 && <span class="sello-cifra">cifra</span>}
+                  {p.tema.contenido === 'instrumental' && <span class="pista-falta">instrumental</span>}
+                  {p.tema.contenido === 'solo-tablatura' && <span class="pista-falta">solo tablatura</span>}
+                </a>
+              ) : (
+                <span class="pista-muda">
+                  <span class="pista-numero">{p.pista}</span>
+                  <span class="pista-titulo">{p.titulo}</span>
+                  <span class="pista-falta">no la tenemos</span>
+                </span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))
+  }
+</Base>

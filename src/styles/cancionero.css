@@ -1,0 +1,442 @@
+/*
+ * Letras y acordes: la seccion de cancionero.
+ *
+ * EL DISENO MANDA (.claude/rules/diseno-marca.md): ni un hex aca, todo sale de
+ * `tokens.css`. Lo audita `estilos.test.ts`, que lee esta hoja igual que las otras dos.
+ *
+ * La idea que ordena todo el archivo: **la seccion se ordena por disco y cada disco se
+ * viste con su propia tapa**. `D-19` ya vestia cuatro categorias con cuatro discos; aca
+ * son los diez, porque aca la unidad de lectura ES el disco. Lo que rota por seccion es
+ * la tinta (`--disco-<slug>-tinta`) y el apoyo (`--disco-<slug>-apoyo`); lo que no rota
+ * nunca es la base: fondo de tinta, grano, zona pulgar, contraste AA.
+ *
+ * El mecanismo es una variable local `--tinta` / `--apoyo` que cada seccion redefine.
+ * Asi las reglas de componente se escriben una sola vez y no hay diez copias de nada.
+ */
+
+/* ------------------------------------------------------------------
+   El indice: diez recortes, uno por disco
+   ------------------------------------------------------------------ */
+
+.cancionero-intro {
+  max-width: 42rem;
+  margin: 0 auto var(--espacio-4);
+}
+
+.cancionero-intro h1 {
+  font-family: var(--fuente-rotulada);
+  font-size: clamp(2rem, 9vw, 3.2rem);
+  line-height: 0.95;
+  margin: 0 0 var(--espacio-2);
+  text-transform: uppercase;
+  color: var(--cat-letras);
+}
+
+.cancionero-intro p {
+  margin: 0 0 var(--espacio-2);
+  color: var(--texto-tenue);
+  max-width: 38rem;
+}
+
+/* La barra de acciones. Nunca pastilla capsula: rectangulo de esquina casi viva. */
+.cancionero-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+  margin-bottom: var(--espacio-3);
+}
+
+.boton-recorte {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--toque-min);
+  padding: 0 var(--espacio-3);
+  border: var(--linea) solid var(--acento);
+  border-radius: var(--radio);
+  background: var(--fondo);
+  color: var(--acento);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  /* Sombra dura desplazada, como papel sobre papel. Nada de difuminado. */
+  box-shadow: 4px 4px 0 var(--borde);
+}
+
+.boton-recorte:hover,
+.boton-recorte:focus-visible {
+  background: var(--acento);
+  color: var(--fondo);
+}
+
+/*
+ * Un disco. El borde ENTERO se tine con el disco — nunca una barra en el borde
+ * izquierdo, que es el tic vetado que motivo la regla anti-slop.
+ */
+.disco {
+  --tinta: var(--texto);
+  --apoyo: var(--borde);
+  margin: 0 0 var(--espacio-4);
+  border: var(--linea) solid var(--apoyo);
+  border-radius: var(--radio);
+  background: var(--fondo);
+  box-shadow: 5px 5px 0 var(--apoyo);
+  overflow: hidden;
+}
+
+.disco-cabecera {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  padding: var(--espacio-2);
+  border-bottom: var(--linea) solid var(--apoyo);
+}
+
+.disco-tapa {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 auto;
+  object-fit: cover;
+  border: 2px solid var(--apoyo);
+  border-radius: 3px;
+  /* Rotacion a mano: la tapa entra como recorte pegado, no como thumbnail. */
+  transform: rotate(-1.5deg);
+}
+
+.disco-titulo {
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: clamp(1.15rem, 5vw, 1.7rem);
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--tinta);
+}
+
+.disco-dato {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--texto-tenue);
+  font-family: var(--fuente);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* El tracklist. Cada pista es una fila tocable de punta a punta. */
+.pistas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pista {
+  border-top: 1px solid var(--borde);
+}
+
+.pista:first-child {
+  border-top: 0;
+}
+
+.pista a,
+.pista .pista-muda {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  min-height: var(--toque-min);
+  padding: var(--espacio-1) var(--espacio-2);
+  text-decoration: none;
+  color: var(--texto);
+}
+
+.pista a:hover,
+.pista a:focus-visible {
+  background: var(--fondo-elevado);
+  color: var(--tinta);
+}
+
+.pista-numero {
+  flex: 0 0 2ch;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.95rem;
+  color: var(--tinta);
+  text-align: right;
+}
+
+.pista-titulo {
+  flex: 1 1 auto;
+}
+
+/* El sello de "tiene acordes": esquina casi viva, apenas torcido, como estampa. */
+.sello-cifra {
+  flex: 0 0 auto;
+  padding: 2px 7px;
+  border: 1px solid var(--apoyo);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  transform: rotate(-1.2deg);
+}
+
+/* Una pista que no tenemos. Se muestra igual: un indice que oculta lo que falta miente. */
+.pista-muda {
+  color: var(--texto-tenue);
+  cursor: default;
+}
+
+.pista-muda .pista-titulo {
+  text-decoration: line-through;
+  text-decoration-color: var(--borde);
+}
+
+.pista-falta {
+  flex: 0 0 auto;
+  font-size: 0.7rem;
+  color: var(--texto-tenue);
+  font-style: italic;
+}
+
+/* ------------------------------------------------------------------
+   La ficha de un tema: letra con acordes
+   ------------------------------------------------------------------ */
+
+.tema {
+  --tinta: var(--texto);
+  --apoyo: var(--borde);
+  max-width: 46rem;
+  margin: 0 auto;
+}
+
+.tema-cabecera {
+  border-bottom: var(--linea) solid var(--apoyo);
+  padding-bottom: var(--espacio-2);
+  margin-bottom: var(--espacio-3);
+}
+
+.tema-titulo {
+  font-family: var(--fuente-rotulada);
+  font-size: clamp(1.6rem, 7vw, 2.6rem);
+  line-height: 1;
+  margin: 0 0 var(--espacio-1);
+  text-transform: uppercase;
+  color: var(--tinta);
+}
+
+.tema-origen {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--texto-tenue);
+}
+
+.tema-origen a {
+  color: var(--tinta);
+}
+
+/*
+ * La barra de herramientas: tono, transportar, autoscroll.
+ * Se pega arriba para que no haya que volver a buscarla despues de scrollear medio tema
+ * — que es exactamente el momento en que se la necesita, con la guitarra en la mano.
+ */
+.herramientas {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-1);
+  padding: var(--espacio-1) 0;
+  margin-bottom: var(--espacio-2);
+  background: var(--fondo);
+  border-bottom: 1px solid var(--borde);
+}
+
+.herramienta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 2px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 2px;
+}
+
+.herramienta-nombre {
+  padding: 0 6px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+.herramienta button {
+  min-width: var(--toque-min);
+  min-height: 40px;
+  border: 0;
+  border-radius: 3px;
+  background: var(--fondo-elevado);
+  color: var(--texto);
+  font-family: var(--fuente-rotulada);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.herramienta button:hover,
+.herramienta button:focus-visible {
+  background: var(--tinta);
+  color: var(--fondo);
+}
+
+.herramienta button[aria-pressed="true"] {
+  background: var(--tinta);
+  color: var(--fondo);
+}
+
+.herramienta-valor {
+  min-width: 4ch;
+  padding: 0 6px;
+  text-align: center;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.95rem;
+  color: var(--tinta);
+}
+
+/* La grilla de acordes de todo el tema, arriba de la letra. */
+.acordes-del-tema {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 var(--espacio-3);
+  padding: 0;
+  list-style: none;
+}
+
+.acordes-del-tema li {
+  padding: 3px 8px;
+  border: 1px solid var(--apoyo);
+  border-radius: 3px;
+  font-family: ui-monospace, "Consolas", monospace;
+  font-size: 0.85rem;
+  color: var(--tinta);
+}
+
+/*
+ * El cuerpo de la cancion.
+ *
+ * Monoespaciada obligatoria: los acordes se alinean contando caracteres, que es como
+ * los alineo la fuente. Con una tipografia proporcional el acorde cae sobre otra silaba
+ * y el cancionero deja de servir para tocar, que es lo unico que tiene que hacer.
+ */
+.cancion {
+  font-family: ui-monospace, "Consolas", monospace;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  /* Los versos largos no se parten: se scrollea la caja. Partir un verso mueve el
+     acorde de lugar y arruina la alineacion, que es lo unico que hay que cuidar. */
+  overflow-x: auto;
+}
+
+.seccion-cancion {
+  margin: 0 0 var(--espacio-3);
+}
+
+.seccion-etiqueta {
+  display: inline-block;
+  margin: 0 0 var(--espacio-1);
+  padding: 2px 8px;
+  border: 1px solid var(--apoyo);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  transform: rotate(-0.8deg);
+}
+
+.renglon {
+  white-space: pre;
+}
+
+.renglon-acordes {
+  color: var(--tinta);
+  font-weight: 700;
+  min-height: 1.35em;
+}
+
+.renglon-letra {
+  color: var(--texto);
+}
+
+.renglon-tab {
+  white-space: pre;
+  color: var(--texto-tenue);
+}
+
+/* Lo que la fuente no nos dio. Se dice, no se esconde. */
+.aviso-sin-letra {
+  margin: var(--espacio-3) 0;
+  padding: var(--espacio-2);
+  border: 2px dashed var(--borde);
+  border-radius: var(--radio);
+  color: var(--texto-tenue);
+}
+
+/* ------------------------------------------------------------------
+   Armar cancionero: elegir temas y llevarselos
+   ------------------------------------------------------------------ */
+
+.armador-barra {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-2);
+  padding: var(--espacio-2) 0;
+  background: var(--fondo);
+  border-bottom: var(--linea) solid var(--cat-letras);
+}
+
+.armador-cuenta {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.9rem;
+  color: var(--cat-letras);
+}
+
+.elegir {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  min-height: var(--toque-min);
+  padding: var(--espacio-1) var(--espacio-2);
+  cursor: pointer;
+}
+
+.elegir input {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  accent-color: var(--acento);
+}
+
+.elegir:hover {
+  background: var(--fondo-elevado);
+}
+
+.armador-vacio {
+  color: var(--texto-tenue);
+  font-style: italic;
+}
+
+@media (min-width: 46rem) {
+  .disco-tapa {
+    width: 96px;
+    height: 96px;
+  }
+}

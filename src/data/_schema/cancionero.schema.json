@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ricotaarcade.local/schema/cancionero/1",
+  "title": "CTR-06 — El cancionero: letra y acordes por tema",
+  "description": "Dataset propio del sitio, producido por scripts/ingerir-cancionero.mjs desde el material raspado del usuario. No se edita a mano: se vuelve a ingerir.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contrato", "contratoVersion", "actualizado", "origen", "temas"],
+  "properties": {
+    "contrato": { "const": "CTR-06" },
+    "contratoVersion": { "const": 1 },
+    "actualizado": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "origen": { "type": "string", "minLength": 1 },
+    "temas": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/tema" }
+    }
+  },
+  "$defs": {
+    "tema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slug", "titulo", "disco", "pista", "anio",
+        "tono", "capo", "acordesUsados", "contenido", "fuente", "secciones"
+      ],
+      "properties": {
+        "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "maxLength": 90 },
+        "titulo": { "type": "string", "minLength": 1, "maxLength": 90, "pattern": "^[^<>]+$" },
+        "disco": {
+          "enum": [
+            "gulp", "oktubre", "un-baion-para-el-ojo-idiota", "bang-bang-estas-liquidado",
+            "la-mosca-y-la-sopa", "lobo-suelto", "cordero-atado", "luzbelito",
+            "ultimo-bondi-a-finisterre", "momo-sampler"
+          ]
+        },
+        "pista": { "type": "integer", "minimum": 1, "maximum": 13 },
+        "anio": { "type": "integer", "minimum": 1985, "maximum": 2000 },
+        "tono": { "type": ["string", "null"], "pattern": "^[A-G](#|b)?m?$" },
+        "capo": { "type": ["integer", "null"], "minimum": 1, "maximum": 11 },
+        "acordesUsados": { "type": "array", "items": { "$ref": "#/$defs/acorde" } },
+        "contenido": {
+          "description": "Qué dio la fuente. 'instrumental': no tiene letra. 'solo-tablatura': hay transcripción pero es pentagrama, sin un verso. 'letra': el caso normal. Tres estados y no un booleano porque confundir un instrumental con una página que solo transcribió tablatura le hace decir al sitio algo falso sobre la obra.",
+          "enum": ["letra", "instrumental", "solo-tablatura"]
+        },
+        "fuente": { "$ref": "#/$defs/fuente" },
+        "secciones": { "type": "array", "items": { "$ref": "#/$defs/seccion" } }
+      },
+      "allOf": [
+        {
+          "comment": "Un instrumental no trae secciones; si trae, no era instrumental.",
+          "if": { "properties": { "contenido": { "const": "instrumental" } }, "required": ["contenido"] },
+          "then": { "properties": { "secciones": { "maxItems": 0 } } }
+        },
+        {
+          "comment": "Los otros dos estados sí traen algo: un tema declarado con letra y sin una sola línea es una ingesta rota.",
+          "if": { "properties": { "contenido": { "enum": ["letra", "solo-tablatura"] } }, "required": ["contenido"] },
+          "then": { "properties": { "secciones": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "fuente": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sitio", "url", "consultado"],
+      "description": "De dónde salió la letra. D-14 no exige fuente oficial —no existe— pero sí que el rótulo diga la verdad sobre de dónde salió.",
+      "properties": {
+        "sitio": { "type": ["string", "null"], "maxLength": 60 },
+        "url": { "type": ["string", "null"], "pattern": "^https?://" },
+        "consultado": { "type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+      }
+    },
+    "seccion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tipo", "etiqueta", "lineas"],
+      "properties": {
+        "tipo": { "enum": ["desconocida", "intro", "verso", "estribillo", "puente", "solo", "final"] },
+        "etiqueta": { "type": ["string", "null"], "maxLength": 60 },
+        "lineas": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/linea" } }
+      }
+    },
+    "linea": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["t"],
+      "properties": {
+        "t": { "enum": ["letra", "tab", "instrumental"] },
+        "texto": { "type": "string" },
+        "acordes": { "type": "array", "items": { "$ref": "#/$defs/marca" } }
+      },
+      "allOf": [
+        {
+          "comment": "Letra y tablatura llevan texto; una línea instrumental es solo acordes.",
+          "if": { "properties": { "t": { "enum": ["letra", "tab"] } }, "required": ["t"] },
+          "then": { "required": ["texto"] },
+          "else": { "required": ["acordes"] }
+        }
+      ]
+    },
+    "marca": {
+      "description": "Un acorde y la columna de la letra sobre la que cae: [nombre, columna].",
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [{ "$ref": "#/$defs/acorde" }, { "type": "integer", "minimum": 0 }]
+    },
+    "acorde": { "type": "string", "minLength": 1, "maxLength": 14, "pattern": "^[A-G]" }
+  }
+}

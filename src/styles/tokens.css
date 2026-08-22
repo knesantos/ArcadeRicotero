@@ -73,6 +73,49 @@
   /* La marca viste Oktubre (D-19): el rojo de la tapa, medido (RES-37). */
   --marca-rojo: #f8360d;
 
+  /* ------------------------------------------------------------------
+     Las diez paletas de disco (RES-37), para la seccion de letras y acordes.
+
+     La mezcla de `D-19` vestia cuatro CATEGORIAS con cuatro discos. El cancionero
+     necesita mas: se ordena por disco, y cada seccion se viste con el suyo — los diez,
+     no cuatro. Es la misma idea llevada a su conclusion, no una idea nueva.
+
+     REGLA DE ESTE BLOQUE, y es la que lo mantiene honesto: **ningun hex de aca se
+     invento**. Todos salen del muestreo por conteo de pixeles de `RES-37`. Cuando el
+     color mas identificatorio de una tapa NO llega a 4,5:1 sobre --fondo — el ocre de
+     ¡Bang! ¡Bang! (4,20) y el azul de Un baion (4,39) —, no se lo aclara para que pase:
+     se lo manda a `-apoyo`, que es borde y relleno y no lleva texto, y el texto se lo
+     queda otro color medido de la MISMA tapa. Aclarar un color medido lo convertiria en
+     un color inventado con coartada.
+
+     `-tinta` es el acento (texto, testeado AA en contraste.test.ts).
+     `-apoyo` es borde/relleno (NO se usa como texto, no entra al test).
+     ------------------------------------------------------------------ */
+  --disco-gulp-tinta: #df5744; /* rojo del titulo manuscrito */
+  --disco-gulp-apoyo: #e6e4bd; /* crema */
+  --disco-oktubre-tinta: #f8360d; /* el rojo de la bandera */
+  --disco-oktubre-apoyo: #9a9490; /* el gris que el propio Rocambole conto que agrego */
+  --disco-un-baion-para-el-ojo-idiota-tinta: #579ec5; /* celeste */
+  --disco-un-baion-para-el-ojo-idiota-apoyo: #457eb1; /* azul: 4,39 — borde, nunca texto */
+  --disco-bang-bang-estas-liquidado-tinta: #aeb9b4; /* ceniza */
+  --disco-bang-bang-estas-liquidado-apoyo: #927051; /* ocre: 4,20 — borde, nunca texto */
+  --disco-la-mosca-y-la-sopa-tinta: #ce5c29; /* naranja quemado */
+  --disco-la-mosca-y-la-sopa-apoyo: #114b58; /* petroleo */
+  /* Los dos volumenes comparten paleta porque RES-37 los MIDIO juntos ("Lobo suelto I y
+     II"), y RES-36 dice por que: es un solo alfabeto disenado como sistema. Inventarle
+     una diferencia al vol. 2 seria decir algo sobre la tapa que nadie midio. Se
+     distinguen por el apoyo, que es lo unico que la ficha separa. */
+  --disco-lobo-suelto-tinta: #f28b16; /* el naranja de Semilla */
+  --disco-lobo-suelto-apoyo: #0b7792; /* petroleo */
+  --disco-cordero-atado-tinta: #f28b16;
+  --disco-cordero-atado-apoyo: #030d0b; /* el negro de la tapa opuesta */
+  --disco-luzbelito-tinta: #af9178; /* cuero */
+  --disco-luzbelito-apoyo: #69635c; /* topo */
+  --disco-ultimo-bondi-a-finisterre-tinta: #8f8b84; /* plata vieja */
+  --disco-ultimo-bondi-a-finisterre-apoyo: #74726e; /* acero */
+  --disco-momo-sampler-tinta: #cedae2; /* plata */
+  --disco-momo-sampler-apoyo: #656f70; /* peltre */
+
   /* Collage de cassette (UX-04: el collage es tecnica fichada de Rocambole, RES-06).
      Papel de etiqueta: sobre el escribe la tinta del fondo (--fondo), par testeado.
      El borde del papel no se usa como texto — como los -apoyo, no entra al test AA. */

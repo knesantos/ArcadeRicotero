@@ -319,3 +319,53 @@
   font-size: 0.85rem;
   margin: 0 0 var(--espacio-1);
 }
+
+/* ------------------------------------------------------------------
+   Completar la letra (US-03): el verso con el hueco
+   ------------------------------------------------------------------ */
+
+/*
+ * El bloque de versos. El contexto de alrededor va mas apagado que el verso del hueco:
+ * BR-03 lo pone ahi como ayuda, no como la pregunta, y tienen que distinguirse de un
+ * vistazo o el que juega no sabe donde mirar.
+ */
+.verso-bloque {
+  margin: var(--espacio-2) 0 var(--espacio-3);
+  padding: var(--espacio-2);
+  border: var(--linea) solid var(--cat-letras);
+  border-radius: var(--radio);
+  /* Sombra dura desplazada, como recorte pegado. Nada de elevacion difusa. */
+  box-shadow: 4px 4px 0 var(--borde);
+}
+
+.verso-contexto {
+  margin: 0 0 var(--espacio-1);
+  color: var(--texto-tenue);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.verso-hueco {
+  margin: var(--espacio-1) 0;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--texto);
+}
+
+/* El hueco: subrayado grueso, no una caja. Es un renglon para completar a mano. */
+.hueco {
+  display: inline-block;
+  min-width: 6ch;
+  padding: 0 4px;
+  border-bottom: var(--linea) solid var(--acento-2);
+  color: var(--acento-2);
+  font-family: var(--fuente-rotulada);
+  letter-spacing: 0.05em;
+}
+
+/* Ya contestado: la palabra ocupa su lugar y el renglon se apaga. */
+.hueco.resuelto {
+  border-bottom-color: var(--acento-3);
+  color: var(--acento-3);
+  letter-spacing: 0;
+}
