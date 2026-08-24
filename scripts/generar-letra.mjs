@@ -39,6 +39,110 @@ const SALIDA = 'src/data/letra.json';
 /** La ficha que evaluó letras.com como fuente de letras. */
 const FICHA_LETRA = 'RES-23';
 
+/** `M:SS` o `MM:SS`, el mismo patrón de `letra.schema.json` y de `banco.ts`. */
+const MINUTO = /^\d{1,2}:[0-5]\d$/;
+const FECHA = /^\d{4}-\d{2}-\d{2}$/;
+const DONDES = ['disco-fisico', 'streaming', 'video'];
+
+/** Lo que escribe `hoja-de-escucha` en un verso que todavía nadie escuchó. */
+const PENDIENTE = /^[_?\s:]+$/;
+
+/**
+ * El verso como se lee en la hoja de escucha, con la respuesta a la vista.
+ *
+ * Tiene que dar exactamente lo mismo que `hoja-de-escucha.mjs`: es la huella con la que
+ * se detecta que los ids se corrieron. Si las dos versiones se separan, el chequeo pasa
+ * a fallar siempre y deja de servir.
+ */
+function renglon(item) {
+  const { antes, respuesta, despues } = item.hueco;
+  return `${antes} [${respuesta}] ${despues}`.replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Convierte lo que hay en `letra-confirmaciones.json` en confirmaciones válidas.
+ *
+ * Acepta dos formas para el mismo hecho:
+ *
+ *   "CL-034": "1:24"                                    ← el minuto, y nada más
+ *   "CL-034": { quien, fecha, donde, minuto }           ← la forma larga de CTR-04
+ *
+ * La corta existe porque confirmar veinte versos con la forma larga es transcribir el
+ * mismo objeto veinte veces, y lo que se repite se llena por inercia — que es justo lo
+ * que `CTR-04` quiso evitar con `minuto`. Los tres campos repetidos salen de
+ * `porDefecto`; **el minuto no tiene defecto posible y por eso nunca se autocompleta.**
+ *
+ * Devuelve `{ confirmadas, pendientes, errores }`. Un error aborta la corrida: es mejor
+ * no escribir nada que escribir un banco donde no se sabe qué está confirmado.
+ */
+function resolverConfirmaciones(crudas, porDefecto, renglones, versosAnotados) {
+  const confirmadas = new Map();
+  const pendientes = [];
+  const errores = [];
+
+  for (const [id, valor] of Object.entries(crudas)) {
+    if (!renglones.has(id)) {
+      errores.push(`${id}: no existe en el banco. ¿Se regeneró y se corrieron los ids?`);
+      continue;
+    }
+
+    // El guardián que importa. Los ids son posicionales (`CL-001`, `CL-002`...), así que
+    // un banco regenerado con otro filtro los corre: el verso que hoy es `CL-045` mañana
+    // puede ser otro, y la confirmación se mudaría sola a un verso que nadie escuchó.
+    // Eso es justo lo que `CTR-04` existe para impedir, y en silencio.
+    const anotado = versosAnotados[id];
+    if (anotado && anotado !== renglones.get(id)) {
+      errores.push(
+        `${id}: se corrieron los ids. Cuando lo anotaste era «${anotado}» y ahora es ` +
+          `«${renglones.get(id)}». Esa confirmación ya no es de este verso: borrala y ` +
+          `sacá la hoja de nuevo.`,
+      );
+      continue;
+    }
+
+    const esTexto = typeof valor === 'string';
+    if (esTexto && PENDIENTE.test(valor)) {
+      pendientes.push(id);
+      continue;
+    }
+    if (!esTexto && (valor === null || typeof valor !== 'object')) {
+      errores.push(`${id}: se esperaba el minuto ("1:24") o el objeto entero de CTR-04`);
+      continue;
+    }
+
+    const conf = esTexto ? { ...porDefecto, minuto: valor.trim() } : { ...porDefecto, ...valor };
+
+    if (!MINUTO.test(conf.minuto ?? '')) {
+      errores.push(
+        `${id}: minuto "${conf.minuto ?? ''}" — va M:SS o MM:SS. Es el campo que separa ` +
+          `haber escuchado de haber puesto un tilde, así que no se autocompleta.`,
+      );
+      continue;
+    }
+    if (!FECHA.test(conf.fecha ?? '')) {
+      errores.push(`${id}: fecha "${conf.fecha ?? ''}" — va AAAA-MM-DD (o poné porDefecto.fecha)`);
+      continue;
+    }
+    if (!DONDES.includes(conf.donde)) {
+      errores.push(`${id}: donde "${conf.donde ?? ''}" — va ${DONDES.join(' | ')}`);
+      continue;
+    }
+    if (!conf.quien || conf.quien.trim().length < 3 || !/^[A-ZÁÉÍÓÚÑ]/.test(conf.quien.trim())) {
+      errores.push(`${id}: quien "${conf.quien ?? ''}" — el nombre de quien escuchó, con mayúscula`);
+      continue;
+    }
+
+    confirmadas.set(id, {
+      quien: conf.quien.trim(),
+      fecha: conf.fecha,
+      donde: conf.donde,
+      minuto: conf.minuto,
+    });
+  }
+
+  return { confirmadas, pendientes, errores };
+}
+
 /**
  * Palabras que nunca son una buena respuesta.
  *
@@ -138,9 +242,11 @@ function versosDe(tema) {
 
 function main() {
   const cancionero = JSON.parse(readFileSync(CANCIONERO, 'utf-8'));
-  const confirmaciones = existsSync(CONFIRMACIONES)
-    ? JSON.parse(readFileSync(CONFIRMACIONES, 'utf-8')).confirmados ?? {}
+  const archivoConf = existsSync(CONFIRMACIONES)
+    ? JSON.parse(readFileSync(CONFIRMACIONES, 'utf-8'))
     : {};
+  const confirmaciones = archivoConf.confirmados ?? {};
+  const porDefecto = archivoConf.porDefecto ?? {};
 
   const temas = cancionero.temas.filter(
     (t) => t.contenido === 'letra' && t.fuente.sitio === 'letras.com',
@@ -161,7 +267,8 @@ function main() {
 
   const items = [];
   let n = 0;
-  const descartes = { sinPalabra: 0, sinDistractores: 0 };
+  const repetidos = new Set();
+  const descartes = { sinPalabra: 0, sinDistractores: 0, versoPelado: 0, repetidos: 0 };
 
   for (const tema of temas) {
     for (const verso of versosDe(tema)) {
@@ -183,6 +290,24 @@ function main() {
       // en vez de recortarlo, porque recortarlo cambiaría el verso.
       if (antes.length > 70 || despues.length > 70 || respuesta.length > 40) continue;
       if (!antes && !despues) continue;
+
+      // Un verso que, sacada la respuesta, no deja ni una palabra a la vista no es una
+      // pregunta: es una palabra suelta con un signo al lado. La `Invocación` de Lobo
+      // suelto daba tres ítems cuyo enunciado entero era "____ !", uno por cada nivel.
+      // El jugador que se sabe el tema no tiene ahí ninguna ventaja sobre el que tira.
+      if (!(antes + ' ' + despues).replace(/[^\p{L}\p{N}]+/gu, ' ').trim()) {
+        descartes.versoPelado++;
+        continue;
+      }
+
+      // El mismo verso repetido en el estribillo es el mismo ítem. Tres preguntas
+      // idénticas en el banco son una sola pregunta y dos rondas regaladas.
+      const huella = `${tema.slug}|${antes}|${respuesta}|${despues}`;
+      if (repetidos.has(huella)) {
+        descartes.repetidos++;
+        continue;
+      }
+      repetidos.add(huella);
 
       // BR-03: el contexto lo fija el nivel, no lo elige quien carga.
       const previos = verso.deSeccion.slice(Math.max(0, verso.enSeccion - 2), verso.enSeccion);
@@ -235,7 +360,6 @@ function main() {
         id,
       );
 
-      const confirmada = confirmaciones[id];
       n++;
       items.push({
         id,
@@ -253,13 +377,36 @@ function main() {
         opciones,
         fuentes: ['RES-20'],
         fuenteLetra: [FICHA_LETRA],
-        ...(confirmada ? { confirmadoDeOido: confirmada } : {}),
         sensibleA: ['letra'],
-        // Sin confirmación de oído no hay `listo`, y no lo decide un programa.
-        estado: confirmada ? 'listo' : 'borrador',
+        // Sin confirmación de oído no hay `listo`, y no lo decide un programa. La
+        // promoción es un paso aparte, más abajo, y solo la mueve una escucha.
+        estado: 'borrador',
         notaInterna: `Hueco elegido a máquina desde ${tema.fuente.sitio}. Confirmar de oído antes de jugarlo.`,
       });
     }
+  }
+
+  // ─── El único paso que mueve un ítem a `listo` ────────────────────────────────────
+  const { confirmadas, pendientes, errores } = resolverConfirmaciones(
+    confirmaciones,
+    porDefecto,
+    new Map(items.map((i) => [i.id, renglon(i)])),
+    archivoConf.versos ?? {},
+  );
+
+  if (errores.length) {
+    console.error(`\n✕ ${CONFIRMACIONES} tiene ${errores.length} problema(s). No escribí nada.\n`);
+    for (const e of errores) console.error(`   · ${e}`);
+    console.error('');
+    process.exit(1);
+  }
+
+  for (const item of items) {
+    const conf = confirmadas.get(item.id);
+    if (!conf) continue;
+    item.confirmadoDeOido = conf;
+    item.estado = 'listo';
+    item.notaInterna = `Verso confirmado de oído por ${conf.quien} el ${conf.fecha} (${conf.donde}, ${conf.minuto}).`;
   }
 
   const hoy = new Date().toISOString().slice(0, 10);
@@ -284,11 +431,31 @@ function main() {
   const porNivel = { facil: 0, media: 0, dificil: 0 };
   for (const i of items) porNivel[i.dificultad]++;
 
+  const porNivelListos = { facil: 0, media: 0, dificil: 0 };
+  for (const i of items) if (i.estado === 'listo') porNivelListos[i.dificultad]++;
+
   console.log(`temas usados:   ${temas.length} (letras.com, la fuente con ficha RES-23)`);
   console.log(`candidatos:     ${items.length}  ${JSON.stringify(porNivel)}`);
-  console.log(`descartados:    ${descartes.sinPalabra} sin palabra buena, ${descartes.sinDistractores} sin distractores`);
-  console.log(`LISTOS:         ${listos}${listos === 0 ? '  ← ninguno: falta confirmar de oído (CTR-04)' : ''}`);
-  console.log(`\nPara habilitar el juego, confirmá versos en ${CONFIRMACIONES} y volvé a correr esto.`);
+  console.log(
+    `descartados:    ${descartes.sinPalabra} sin palabra buena, ${descartes.sinDistractores} sin distractores, ` +
+      `${descartes.versoPelado} sin verso alrededor, ${descartes.repetidos} repetidos`,
+  );
+  if (pendientes.length) {
+    console.log(`en la hoja:     ${pendientes.length} verso(s) anotados sin escuchar todavía`);
+  }
+  console.log(`LISTOS:         ${listos}  ${JSON.stringify(porNivelListos)}`);
+
+  const PISO = 15; // US-03
+  if (listos === 0) {
+    console.log(`\nEl juego sigue apagado: ningún verso confirmado (CTR-04).`);
+    console.log(`Sacá la hoja de escucha con:  npm run hoja-de-escucha`);
+  } else if (listos < PISO) {
+    console.log(`\nEl juego se prende, pero falta el piso de US-03: ${listos} de ${PISO}.`);
+    console.log(`Quedan ${pendientes.length} verso(s) anotados esperando el minuto.`);
+  } else {
+    console.log(`\n✔ Piso de US-03 cumplido: ${listos} ítems jugables (pedía ${PISO}).`);
+    if (pendientes.length) console.log(`  Quedan ${pendientes.length} anotados sin escuchar, que suman cuando quieras.`);
+  }
 }
 
 main();

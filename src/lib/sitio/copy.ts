@@ -13,12 +13,13 @@
 export const PORTAL = {
   titulo: 'ARCADE RICOTERO',
   bajada:
-    'Juegos y enciclopedia sobre Patricio Rey y sus Redonditos de Ricota. ' +
-    'Sin cuenta, sin pagar la entrada, sepas lo que sepas: los molinetes van abiertos.',
+    'Entrá, que los molinetes van abiertos. ' +
+    'Juegos y enciclopedia sobre Patricio Rey y sus Redonditos de Ricota: sin cuenta, ' +
+    'sin pagar la entrada, sepas lo que sepas.',
   ladoA: 'Lado A · Para jugar',
   ladoB: 'Lado B · Para leer',
   enLaCocina: 'En la cocina',
-  volver: 'VOLVER',
+  volver: 'VOLVÉ',
   volverAlArcade: 'AL ARCADE',
   pie:
     'Sitio de fans, sin fines de lucro. El arte de las tapas es de Rocambole ' +
@@ -51,7 +52,7 @@ export interface Casete {
 export const JUEGOS: readonly Casete[] = [
   {
     titulo: 'Preguntas ricoteras',
-    baja: 'Ocho preguntas de historia, discos, letras y mitología. Dos minutos y salís.',
+    baja: 'Ocho preguntas y ninguna piadosa. Historia, discos, letras y mitología, en dos minutos.',
     viste: 'Viste Oktubre',
     variante: 'marca',
     arte: '/arte/casete.svg',
@@ -60,15 +61,16 @@ export const JUEGOS: readonly Casete[] = [
   },
   {
     titulo: 'Adiviná el tema',
-    baja: 'Suena un pedacito desde una décima de segundo y vas pidiendo más. Cuanto antes la saques, más vale.',
+    baja: 'Con una décima te tiene que alcanzar. Si no, te damos más, hasta quince segundos: cuanto antes la pegues, más vale.',
     viste: 'Viste Lobo suelto',
     variante: 'mitologia',
     arte: '/arte/lobo.svg',
     href: '/juegos/adivinar-el-tema/',
+    accion: 'JUGÁ',
   },
   {
     titulo: 'Completá la letra',
-    baja: 'Falta un verso y lo tenés en la punta de la lengua.',
+    baja: 'Lo tenés en la punta de la lengua. Falta una palabra del verso y hay cuatro para elegir.',
     viste: 'Viste La mosca y la sopa',
     variante: 'letras',
     arte: '/arte/mosca.svg',
@@ -78,7 +80,7 @@ export const JUEGOS: readonly Casete[] = [
     titulo: 'Adiviná la tapa',
     // La bajada decia "de a pedacitos" cuando la pantalla era una promesa. El juego
     // muestra la tapa entera, asi que ahora dice lo que hace.
-    baja: 'Te mostramos el arte de Rocambole y vos decís de qué disco es.',
+    baja: 'Rocambole dibujó; vos ponés el disco. La tapa entera en pantalla y cuatro discos para elegir.',
     viste: 'Viste Último bondi',
     variante: 'discos',
     arte: '/arte/casete.svg',
@@ -95,7 +97,7 @@ export const JUEGOS: readonly Casete[] = [
  */
 export const CASETE_CANCIONERO: Casete = {
   titulo: 'Letras y acordes',
-  baja: 'Los diez discos enteros, con los acordes arriba de cada verso. Y te armás tu propio cancionero.',
+  baja: 'Los diez discos, con los dedos puestos. Acordes arriba de cada verso, transporte, y armás tu cancionero.',
   viste: 'Viste La mosca y la sopa',
   variante: 'letras',
   arte: '/arte/mosca.svg',
@@ -105,7 +107,7 @@ export const CASETE_CANCIONERO: Casete = {
 
 export const CASETE_REDONDOPEDIA: Casete = {
   titulo: 'La Redondopedia',
-  baja: 'La historia entera, navegable: el hecho contado como hecho y la leyenda contada como leyenda.',
+  baja: 'El hecho como hecho, la leyenda como leyenda. La historia entera, navegable, con la ficha de dónde salió cada dato.',
   viste: 'Viste Gulp!',
   variante: 'historia',
   arte: '/arte/perro.svg',
@@ -124,16 +126,8 @@ export interface EnLaCocina {
 }
 
 export const COCINA: Record<string, EnLaCocina> = {
-  'adivinar-el-tema': {
-    titulo: 'ADIVINÁ EL TEMA',
-    variante: 'mitologia',
-    arte: '/arte/lobo.svg',
-    queVaASer:
-      'Va a sonar un fragmento cortito — arranca en una décima de segundo — y vas a poder ' +
-      'pedir más: medio segundo, dos, cinco, diez. Cuanto menos necesites para sacarla, ' +
-      'más vale el acierto. Al revelar, el tema queda a un toque en Spotify.',
-    estado: 'Está en la cocina: falta recortar los fragmentos de audio.',
-  },
+  // "Adiviná el tema" salio de la cocina: el juego se juega en
+  // `/juegos/adivinar-el-tema/` y ya no necesita pantalla de promesa.
   'completar-la-letra': {
     titulo: 'COMPLETÁ LA LETRA',
     variante: 'letras',

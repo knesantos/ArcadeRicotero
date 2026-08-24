@@ -13,6 +13,17 @@
 
 import { readFileSync } from 'node:fs';
 
+/**
+ * Los dos normalizadores viven en `src/lib/texto.ts` y no acá.
+ *
+ * Son funciones puras que **también las necesita el navegador** (el buscador de
+ * `US-02` tiene que perdonar 'jijiji' por 'Ji ji ji'), y este archivo importa
+ * `node:fs` en la primera línea: entero no entra a un bundle de cliente. Se
+ * re-exportan para que nada de lo que ya los importaba de acá tenga que cambiar.
+ */
+import { normalizar, normalizarDuro, slugDeTitulo } from '../texto.ts';
+export { normalizar, normalizarDuro, slugDeTitulo };
+
 const FICHA = 'Docs/INVESTIGACION/INV-20-fuentes-primarias.md';
 
 /** Los diez discos, con el slug que usan el schema y la Redondopedia. */
@@ -113,37 +124,12 @@ export function leerTemas(ruta: string = FICHA): readonly TemaDelDisco[] {
   return temas;
 }
 
-/** Normaliza un título para comparar: sin tildes, sin puntuación, en minúscula. */
-export function normalizar(titulo: string): string {
-  return titulo
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim();
-}
 
 /** El conjunto de títulos normalizados, para el cruce de `D-13`. */
 export function indiceDeTemas(temas: readonly TemaDelDisco[] = leerTemas()): ReadonlySet<string> {
   return new Set(temas.map((t) => normalizar(t.titulo)));
 }
 
-/**
- * Normalización dura: además de tildes y puntuación, **saca los espacios**.
- *
- * Existe porque la fuente raspada parte y pega palabras donde el tracklist no lo hace
- * (`Ji JiJi` / `Jijiji`, `Todo UnPalo` / `Todo un palo`, `JuguetesPerdidos` /
- * `Juguetes perdidos`). Comparar sin espacios recupera 12 temas legítimos que la
- * normalización blanda descartaba, sin aflojar el cruce de `D-13`: sigue siendo
- * comparación exacta contra los 105, solo que sobre una forma más tolerante.
- */
-export function normalizarDuro(titulo: string): string {
-  return titulo
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9]+/g, '');
-}
 
 /**
  * Los títulos que ni la normalización dura reconcilia, resueltos a mano.

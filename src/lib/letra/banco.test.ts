@@ -44,6 +44,9 @@ const base: ItemCrudo = {
   ],
   fuentes: ['RES-20'],
   fuenteLetra: ['pendiente de carga'],
+  // Una sola ficha de letra, asi que este item jugable se sostiene por la otra puerta de
+  // `CTR-04`: alguien lo escuchó. Es la forma que va a tener el banco de verdad.
+  confirmadoDeOido: { quien: 'Santiago', fecha: '2026-08-23', donde: 'disco-fisico', minuto: '1:24' },
   sensibleA: ['letra'],
   estado: 'listo',
 };
@@ -87,6 +90,60 @@ test('D-13: un tema real sí entra, aunque venga con otra grafía', () => {
 
 test('D-13: todo ítem declara de dónde salió la letra', () => {
   assert.throws(() => verificarInvariantes([con({ fuenteLetra: [] })], 'opciones', INDICE), BancoInvalido);
+});
+
+// ------------------------------------------------- CTR-04, las dos puertas hacia `listo`
+
+test('CTR-04: sin oído y con una sola ficha de letra, no puede estar en `listo`', () => {
+  // Es lo único estricto que le queda al proyecto: si la respuesta está mal, el juego le
+  // marca error justo al que se sabe el tema. Hasta este test la regla vivía solo en
+  // `letra.schema.json`, que no lo corre nadie.
+  const sinRespaldo = con({ confirmadoDeOido: undefined, fuenteLetra: ['RES-23'] });
+  assert.throws(() => verificarInvariantes([sinRespaldo], 'opciones', INDICE), BancoInvalido);
+});
+
+test('CTR-04: dos fichas de letra alcanzan, sin que nadie escuche', () => {
+  const dosFichas = con({ confirmadoDeOido: undefined, fuenteLetra: ['RES-23', 'RES-99'] });
+  assert.doesNotThrow(() => verificarInvariantes([dosFichas], 'opciones', INDICE));
+});
+
+test('CTR-04: en `borrador` no se le pide respaldo a nadie', () => {
+  // El banco candidato entero vive acá: 313 versos esperando que alguien ponga el disco.
+  const borrador = con({ confirmadoDeOido: undefined, fuenteLetra: ['RES-23'], estado: 'borrador' });
+  assert.doesNotThrow(() => verificarInvariantes([borrador], 'opciones', INDICE));
+});
+
+test('CTR-04: una confirmación sin minuto no es una confirmación', () => {
+  // `minuto` es el campo que separa el haber escuchado del haber puesto un tilde. Vacío,
+  // "0:0", "un rato" o "sí" son todas la misma cosa: nadie escuchó nada.
+  for (const minuto of ['', '0:0', 'un rato', '1:60', '124']) {
+    const flojo = con({ confirmadoDeOido: { ...base.confirmadoDeOido!, minuto } });
+    assert.throws(
+      () => verificarInvariantes([flojo], 'opciones', INDICE),
+      BancoInvalido,
+      `"${minuto}" pasó como minuto y no debería`,
+    );
+  }
+});
+
+test('CTR-04: la confirmación dice quién, cuándo y dónde, o no vale', () => {
+  const sinQuien = con({ confirmadoDeOido: { ...base.confirmadoDeOido!, quien: '' } });
+  assert.throws(() => verificarInvariantes([sinQuien], 'opciones', INDICE), BancoInvalido);
+
+  const fechaFloja = con({ confirmadoDeOido: { ...base.confirmadoDeOido!, fecha: 'ayer' } });
+  assert.throws(() => verificarInvariantes([fechaFloja], 'opciones', INDICE), BancoInvalido);
+
+  const dondeRaro = con({
+    confirmadoDeOido: { ...base.confirmadoDeOido!, donde: 'de memoria' as never },
+  });
+  assert.throws(() => verificarInvariantes([dondeRaro], 'opciones', INDICE), BancoInvalido);
+});
+
+test('el banco real no tiene ningún `listo` sin respaldo', () => {
+  // Este es el test que mira el archivo de verdad, no un ítem inventado. Mientras el
+  // banco esté todo en borrador pasa trivialmente; el día que se confirmen versos, es lo
+  // que impide que se cuele uno con el minuto en blanco.
+  assert.doesNotThrow(() => cargarBanco(CRUDO, INDICE));
 });
 
 // ---------------------------------------------------------------- BR-03, el hueco

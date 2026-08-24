@@ -9,13 +9,15 @@
 
 export const PANTALLA_0 = {
   titulo: 'Completá la letra',
-  subtitulo: 'Te falta una palabra del verso. Cuanto más difícil, menos letra ves alrededor.',
-  boton: 'Empezar',
+  subtitulo:
+    'Lo tenés en la punta de la lengua. Falta una palabra del verso, y cuanto más ' +
+    'difícil, menos letra ves alrededor.',
+  boton: 'Empezá',
 } as const;
 
 export const PARTIDA = {
   pregunta: '¿Qué falta acá?',
-  seguir: 'Seguir',
+  seguir: 'Seguí',
   ok: '¡Esa era!',
   no: 'No era esa.',
   eraLa: 'Era',
@@ -30,8 +32,8 @@ export const RESULTADO = {
   titulo: 'Cómo te fue',
   puntaje: (aciertos: number, total: number) => `${aciertos} de ${total}`,
   denuevo: 'Otra vuelta',
-  volver: 'Volver al arcade',
-  alCancionero: 'Ver las letras enteras',
+  volver: 'Volvé al arcade',
+  alCancionero: 'Mirá las letras enteras',
 } as const;
 
 /**
@@ -49,5 +51,5 @@ export const SIN_BANCO = {
     'Hasta que eso pase el juego no abre: una respuesta mal transcripta le marcaría error ' +
     'justo al que se sabe el tema, y es lo único que acá no se negocia.',
   mientras: 'Mientras tanto, las letras enteras con sus acordes ya están.',
-  boton: 'Ir a letras y acordes',
+  boton: 'Andá a letras y acordes',
 } as const;

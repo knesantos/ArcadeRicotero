@@ -11,8 +11,8 @@
 export const PANTALLA_0 = {
   titulo: 'Adiviná la tapa',
   subtitulo:
-    'Te mostramos el arte de Rocambole y vos decís de qué disco es. Arranca fácil y se pone bravo.',
-  boton: 'Empezar',
+    'Rocambole dibujó; vos ponés el disco. Arranca fácil y se pone bravo.',
+  boton: 'Empezá',
 } as const;
 
 export const PARTIDA = {
@@ -20,7 +20,7 @@ export const PARTIDA = {
   altImagen: 'Arte de tapa sin identificar: es lo que hay que adivinar.',
   pregunta: '¿De qué disco es esta tapa?',
   preguntaDetalle: '¿De qué disco es este pedazo de tapa?',
-  seguir: 'Seguir',
+  seguir: 'Seguí',
   ok: '¡La tenías!',
   no: 'No era esa.',
   eraLa: 'Era',
@@ -33,5 +33,5 @@ export const RESULTADO = {
   titulo: 'Cómo te fue',
   puntaje: (aciertos: number, total: number) => `${aciertos} de ${total}`,
   denuevo: 'Otra vuelta',
-  volver: 'Volver al arcade',
+  volver: 'Volvé al arcade',
 } as const;

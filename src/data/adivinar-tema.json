@@ -1,0 +1,9 @@
+{
+  "contrato": "CTR-03",
+  "contratoVersion": 2,
+  "juego": "adivinar-tema",
+  "modoRespuesta": "buscador",
+  "actualizado": "2026-08-23",
+  "nota": "Lista de archivos de audio que EXISTEN, no de temas. La escribe scripts/generar-fragmentos.mjs desde los masters del usuario (D-23). Vacía significa que el juego todavia no tiene con que sonar, y la pantalla lo dice sin romperse.",
+  "fragmentos": []
+}

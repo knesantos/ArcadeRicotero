@@ -119,6 +119,15 @@ export interface Item {
 export class BancoInvalido extends Error {}
 
 /**
+ * `M:SS` o `MM:SS`. El mismo patrón que hace cumplir `letra.schema.json`, repetido acá
+ * a propósito: el schema no lo corre ningún test, así que hasta hoy este campo no tenía
+ * más guardián que la buena fe de quien editaba el JSON a mano.
+ */
+const MINUTO = /^\d{1,2}:[0-5]\d$/;
+const FECHA = /^\d{4}-\d{2}-\d{2}$/;
+const DONDES: readonly Donde[] = ['disco-fisico', 'streaming', 'video'];
+
+/**
  * Cuántos versos de contexto corresponden a cada nivel (`BR-03`), **por lado**.
  *
  * La tabla de `BR-03` tiene dos columnas, no una: "versos visibles antes del hueco" y
@@ -206,6 +215,43 @@ export function verificarInvariantes(
     // D-13 otra vez: de donde salio la letra se declara siempre.
     if (it.fuenteLetra.length === 0) {
       throw new BancoInvalido(`${it.id}: no declara de donde salio la letra`);
+    }
+
+    // CTR-04, la regla que decide si el juego miente: un item pasa a `listo` con
+    // confirmacion de oido contra el disco **o** con dos fichas de letra distintas.
+    // Hasta hoy esto vivia solo en `letra.schema.json`, que ningun test corre — el
+    // unico guardian real era que el generador se portara bien. Aca abajo es codigo y
+    // rompe el build, que es donde tiene que romperse.
+    if (it.estado === 'listo' && !it.confirmadoDeOido && it.fuenteLetra.length < 2) {
+      throw new BancoInvalido(
+        `${it.id}: esta en 'listo' sin confirmacion de oido y con una sola ficha de letra ` +
+          `(${it.fuenteLetra.join(', ')}). CTR-04 pide una de las dos cosas.`,
+      );
+    }
+
+    // Y si dice estar confirmado, que la confirmacion sea una confirmacion. `minuto` es
+    // el campo que la separa de un tilde puesto por inercia: solo se puede escribir
+    // habiendo encontrado el verso en la grabacion, y deja el item re-chequeable por
+    // otra persona en veinte segundos.
+    const conf = it.confirmadoDeOido;
+    if (conf) {
+      if (!MINUTO.test(conf.minuto)) {
+        throw new BancoInvalido(
+          `${it.id}: confirmadoDeOido.minuto es "${conf.minuto}" y CTR-04 pide M:SS o MM:SS. ` +
+            `Sin el minuto no es una confirmacion, es un tilde.`,
+        );
+      }
+      if (!FECHA.test(conf.fecha)) {
+        throw new BancoInvalido(`${it.id}: confirmadoDeOido.fecha es "${conf.fecha}" y va AAAA-MM-DD`);
+      }
+      if (!DONDES.includes(conf.donde)) {
+        throw new BancoInvalido(
+          `${it.id}: confirmadoDeOido.donde es "${conf.donde}" y va ${DONDES.join(' | ')}`,
+        );
+      }
+      if (conf.quien.trim().length < 3) {
+        throw new BancoInvalido(`${it.id}: confirmadoDeOido.quien no dice quien escucho`);
+      }
     }
   }
 }

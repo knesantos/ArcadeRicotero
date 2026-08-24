@@ -828,3 +828,208 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   viven los archivos, qué bitrate, cómo se derivan los pasos del reveal— es de
   `arquitectura` (`ADR-01`, `CTR-01.3`). La promesa que se le hace al jugador es de
   `producto` (`BR-06`). Los límites de Vercel, de `investigador`.
+
+---
+
+## D-23 — El audio va en dos niveles, y los 2,5 GB no entran al repo
+
+- **Fecha:** 2026-08-23
+- **Estado:** aceptada — el usuario trajo el número y decidió sobre una propuesta del hilo
+  principal. Cierra la primera de las dos preguntas que `D-22` había dejado abiertas: *"si
+  los mp3 van adentro del repo o en un almacenamiento aparte"*.
+- **Contexto:** el usuario preguntó si convenía subir al repo **la discografía completa que
+  tiene, 2,5 GB**, para usarla en juegos, ambiente y demás. Tres cosas de ese número, y las
+  tres cambian la pregunta:
+
+  1. **2,5 GB no es la discografía: es la discografía en calidad de archivo.** Contra las
+     ~7,2 h que `D-22` calculó desde `RES-20`, esos 2,5 GB dan del orden de **770 kbps
+     promedio** — más del doble de un mp3 a 320. Es lossless o casi. La tabla de `D-22`
+     dice que el mismo catálogo a 128 kbps son ~400 MB, y a 96 kbps —el bitrate que
+     `CTR-01` ya usa para el fragmento— unos 300 MB. **El peso no viene de cuántos temas
+     son, viene del formato**, y la diferencia no la escucha nadie en un celular con datos
+     móviles.
+  2. **Git no es un disco.** Guarda cada versión para siempre y el audio ya viene
+     comprimido, así que no delta-comprime: 2,5 GB en el repo son 2,5 GB en cada clone,
+     cada checkout de CI y **cada build de Vercel**, para siempre. Y sacarlo después no es
+     un `revert`, es reescribir la historia del repo.
+  3. **Los topes conocidos lo dejan afuera.** GitHub bloquea archivos de más de 100 MiB
+     (ningún mp3 llega, tranquilos) pero recomienda repos **por debajo de 1 GB** y
+     "fuertemente" por debajo de 5. Del lado de Vercel, el número documentado —100 MB de
+     fuente en Hobby— es el del despliegue **por CLI**, y este proyecto despliega **desde
+     git**, que es otra vía. Ese hueco es exactamente lo que `D-22` dejó anotado como sin
+     fichar y lo que ahora se le pide a `investigador` como `RES-50`.
+
+- **Decisión:** tres partes.
+
+  **(1) Los 2,5 GB no entran al repo.** Se quedan en la máquina del usuario como material
+  de trabajo. De ahí salen los fragmentos, de ahí salen los mp3 que sirve el sitio, y de
+  ahí sale la confirmación de oído de `CTR-04` que hoy tiene apagado el juego de `US-03`.
+
+  **(2) Al sitio va un derivado, en dos niveles y no en tres:**
+
+  | Nivel | Qué es | Cuánto pesa | Para qué |
+  |---|---|---|---|
+  | **Fragmento** | los 15 s de `CTR-01`, 96 kbps mono | **120 KB** × 104 ≈ **12,5 MB** | que los 104 temas con letra sean jugables en `US-02` |
+  | **Tema entero** | el mp3 completo, a definir bitrate | ~4 MB c/u a 128 kbps | cumplir `D-22` con el que ya adivinó |
+
+  **(3) El nivel "entero" se carga por demanda, no por catálogo.** Arranca por los temas
+  que algún juego revela —del orden de 40, unos 160 MB— y no por los 105. Es el "orden de
+  carga" que `D-22` ya había dejado explícitamente permitido.
+
+- **Alternativas descartadas:**
+
+  1. **Subir los 2,5 GB tal cual.** Descartada por las tres razones del contexto. No es una
+     carga de material: es una decisión de infraestructura que en la práctica no se
+     revierte, y encima paga peso por una calidad que el destino final no distingue.
+  2. **Guardar la mitad de cada tema**, propuesta del usuario para que los 104 se pudieran
+     jugar sin alojar 105 temas enteros. **Descartada por aritmética, no por criterio.** El
+     juego de `US-02` necesita 15 segundos, no dos minutos: medio tema son ~1,4 MB contra
+     los 120 KB del fragmento, **doce veces más para exactamente el mismo juego**. Y del
+     lado de `D-22` tampoco alcanza — el que adivinó quiere el tema, y la mitad es media
+     promesa. Lo que la mitad quería comprar ya lo compra el fragmento de `CTR-01`, y más
+     barato.
+  3. **Música de ambiente en el sitio.** No se descarta el gusto, se descarta la vía por
+     default: en móvil el audio automático lo bloquean los navegadores, se le pisa al
+     jugador lo que ya venía escuchando, y contradice la sesión de dos o tres minutos del
+     brief. Si va, va **a pedido y con un control visible**, y lo diseña `experiencia`.
+  4. **Alojar en un tercero** (Archive, bucket externo). **No descartada** — sigue abierta,
+     igual que en `D-22`. Lo que cambió es la urgencia: con ~180 MB deja de ser la única
+     salida. Si `RES-50` dice que el repo no aguanta, vuelve al primer plano.
+
+- **Consecuencias:**
+
+  **(1) El primer paso queda chico y no lo discute nadie.** 12,5 MB de fragmentos hacen
+  jugables los 104 temas. Es la carga que se puede empezar hoy sin esperar ninguna ficha.
+
+  **(2) `RES-50` importa más, no menos.** Con 2,5 GB no hacía falta preguntar: no entraba
+  por ningún lado. Con ~180 MB la respuesta de Vercel es la que decide si el audio vive en
+  el repo o afuera. Es lo único de esta decisión que conviene chequear **antes**.
+
+  **(3) `D-22` mantiene su promesa entera.** Lo que se acota es el catálogo alojado, no la
+  experiencia: el que adivina un tema lo escucha completo, sin cuenta, sin Premium y sin
+  pedirle nada. Los molinetes siguen abiertos en los dos niveles.
+
+  **(4) El destrabe de `US-03` es el uso más valioso de esos 2,5 GB, y no pasa por el
+  sitio.** `CTR-04` deja llegar a `listo` por dos puertas —dos fichas de letra o
+  confirmación de oído— y la primera **hoy no la cruza ningún ítem**: letras.com aportó 14
+  temas con letra y cifraclub 82, con **solapamiento cero**. No hay atajo, alguien tiene que
+  escuchar. Tener la discografía en la máquina es exactamente lo que lo hace posible, y no
+  requiere subir un byte.
+
+  **(5) Dos ideas de juego quedan planteadas y fuera de alcance.** Un juego tipo Crazy Taxi
+  y otro tipo Doom, con el tema entero sonando de fondo. `D-05` fijó **cuatro** juegos para
+  la v1 y ninguno es eso. Esta decisión no los mete ni los mata: si entran, entran como
+  `US-XX` de `producto`, por la vía de `BR-16`. Lo que sí cambia es que el audio que
+  necesitarían ya no es un bloqueo.
+
+- **Preguntas que quedan abiertas, y ninguna frena la decisión:** cuántos temas enteros
+  exactamente —depende de qué juegos revelan cuáles—; y si Spotify se queda como enlace,
+  que viene abierta desde `D-22`.
+- **Dueños:** la decisión y el riesgo son del usuario bajo `D-14`. El bitrate, la ubicación
+  y si el fragmento se deriva del mp3 entero, de `arquitectura` (`ADR-01`, `CTR-01.3`). Los
+  límites de Vercel y GitHub, de `investigador` (`RES-50`). El sonido de ambiente, de
+  `experiencia`. Los dos juegos nuevos, de `producto`.
+
+---
+
+## D-24 — "Adiviná el tema" se hace calcado del juego de referencia: seis pasos y errar abre audio
+
+- **Fecha:** 2026-08-23
+- **Estado:** aceptada — decisión directa del usuario, con el juego de referencia sobre la
+  mesa. Textual: *"Utilizar como plantilla del juego esta pagina que es basicamente el
+  juego que queremos hacer"*, y *"no hay que reinventar la rueda, hay que aplicar este
+  juego hecho a la página"*.
+- **Contexto:** `US-02` estuvo dos ciclos en la cocina. El contrato estaba entero
+  (`CTR-01`, `CTR-03`) pero con dos cosas sin cerrar: **cómo se responde** —`CTR-03.5`
+  dejó `"opciones"` como valor de trabajo y pidió a `producto` que decidiera— y **la
+  aritmética de `BR-02`**, que `arquitectura` ya había mostrado rota: con cuatro opciones
+  y errar gratis, el que no reconoce nada sacaba 70 puntos de promedio. La revisión de
+  `BR-02` del 2026-08-19 lo tapó con **intento único**: errás una vez y el tema se cierra
+  en cero.
+
+  El usuario trajo el juego que quiere. Está relevado en
+  `Docs/SUGERENCIAS/HILO-mapa-del-juego-de-referencia.md`, jugado y medido, no mirado de
+  costado. Y lo que ese juego hace es **exactamente lo contrario** de lo que `BR-02` había
+  quedado diciendo.
+
+- **Decisión:** cuatro partes.
+
+  **(1) La escalera pasa de cinco pasos a seis, y de 10 a 15 segundos:**
+  **0,1 · 0,5 · 2 · 4 · 8 · 15**. Los tres primeros son los que `CTR-01.9` ya tenía; lo
+  que cambia es la cola, que ahora duplica hasta el final. Los 15 segundos no los inventa
+  esta decisión: `D-23` ya había escrito *"los 15 s de `CTR-01`"* al partir el audio en
+  dos niveles, y **`US-02` necesita 15 segundos** está en ese mismo texto.
+
+  **(2) Errar es lo que desbloquea el audio.** Seis intentos por tema, uno por escalón.
+  Cada respuesta equivocada —o cada "pasar"— abre el paso siguiente. Se acaban los seis y
+  ahí sí el tema se cierra en cero. **Esto reemplaza el intento único de `BR-02`.**
+
+  **(3) Se responde con un buscador con autocompletado, no con cuatro opciones.** El
+  jugador escribe y **elige de una lista**; lo que viaja es la identidad del tema, no una
+  cadena de texto. Pedido explícito del usuario: *"es importante el autocompletar de las
+  canciones para agilizar el juego"*. Esto cierra `CTR-03.5` con un valor que el contrato
+  no contemplaba: `modoRespuesta: "buscador"`.
+
+  **(4) El pozo lo elige el jugador: todos los temas, o un disco.** También pedido
+  explícito. La lista del buscador sigue siendo la de los 105 aunque el pozo sea de un
+  solo disco.
+
+- **Por qué la mecánica nueva no reabre el agujero que `BR-02` había tapado.** Es la
+  pregunta que hay que contestar, porque la mecánica vieja existía justamente para eso.
+  La cuenta cambia de raíz al cambiar el mecanismo de respuesta:
+
+  | | Cuatro opciones (lo que `BR-02` temía) | Buscador sobre 105 títulos |
+  |---|---|---|
+  | Probabilidad de pegarla sin reconocer nada | 1 de 4 | 1 de 105 |
+  | Seis intentos al azar rinden | esperado de 70 puntos | ~5,5% de sacar **algo** |
+
+  Con cuatro opciones, errar gratis era una máquina de descartar. Con 105 títulos no
+  descarta nada: seis intentos al azar dejan al jugador con 99 títulos sin probar. **El
+  azar dejó de pagar, así que ya no hay que castigarlo.** Y hay un motivo de proyecto
+  además del aritmético: cerrar el tema en el primer error deja al que entró sin idea
+  escuchando una décima de segundo y nada más, que es cerrar un molinete (`D-14`).
+
+- **La tabla de puntaje, provisoria y de `producto`:** 100 · 80 · 60 · 40 · 20 · 10, y
+  **0 solo por no sacarla**. Las cinco primeras filas son las de `BR-02` sin tocar; la
+  sexta la agrega esta decisión porque hay un escalón más. Cero sigue sin ser nunca el
+  resultado de haber tardado.
+
+- **Alternativas descartadas:**
+  - **Dejar `BR-02` como está (intento único, cinco pasos) y no copiar el juego.**
+    Descartada: es lo contrario de lo que pidió el usuario, y además el paso 5 y la rama
+    de cero eran inalcanzables en la práctica.
+  - **Mantener las cuatro opciones y sumarles la escalera de seis.** Descartada por la
+    tabla de arriba: con opciones, seis intentos gratis es peor que cinco.
+  - **Texto libre en vez de lista** (`modoRespuesta: "texto"`, que el contrato sí
+    contemplaba). Descartada: obliga a decidir si "Ji ji ji" y "Jijiji" son la misma
+    respuesta, y esa pregunta no tiene una respuesta buena. Con lista no existe.
+  - **Copiar el juego de referencia entero, partida diaria incluida.** Descartada: una
+    partida por día contradice "se entra, se juega, se cierra" y deja afuera al que llega
+    un martes a la noche con ganas de tres vueltas.
+  - **Copiar también su búsqueda difusa.** Descartada por ruido: se midió que `zzzzq`
+    ofrece temas de ZZ Top.
+  - **Copiar sus estadísticas y su comparación social.** Descartada por alcance y por
+    `D-14`: sin cuentas, sin ranking.
+
+- **Consecuencias:**
+  1. **`US-02` deja la cocina y se juega.** Es el tercero de los cuatro juegos de `D-05`.
+  2. **`BR-02` y `CTR-01.9` quedan desactualizados** y hay que rescribirlos. Los pedidos
+     están en `Docs/SUGERENCIAS/`. Mientras tanto la única fuente de la escalera es
+     `src/lib/tema/escalera.ts`, con la tabla del usuario escrita a mano en su test.
+  3. **`CTR-03` va a v2** por el `modoRespuesta` nuevo. Nada de lo ya cargado se pierde:
+     no hay banco cargado de este juego, y el que había que cargar a mano —veinte ítems
+     con cuatro distractores cada uno— **ya no hace falta**. El catálogo sale de `RES-20`
+     en build. Es trabajo de `contenido` que esta decisión borra, no que posterga.
+  4. **El cuello de botella queda en un solo lugar: el audio.** El juego está entero y no
+     tiene con qué sonar hasta que corran los fragmentos desde la máquina del usuario
+     (`npm run generar-fragmentos`). Sin audio la pantalla lo dice y no se rompe.
+  5. **Un número de `D-23` hay que corregirlo, y es a favor:** ahí dice "12,5 MB" para los
+     104 fragmentos, pero eso son 120 KB cada uno, que es el peso de **10** segundos a
+     96 kbps. A 15 segundos son ~180 KB, o sea **~19 MB** en total. Sigue siendo nada
+     contra cualquier tope, pero el número escrito estaba viejo.
+  6. **La escalera no vive en ningún dato.** Los seis pasos salen del mismo archivo de
+     audio (`CTR-03.4`): si mañana cambia, cambia una constante y ningún JSON.
+- **Dueños:** la decisión es del usuario. La tabla de puntaje y la mecánica de intentos
+  son de `producto` (`BR-02`); la escalera en segundos y el `modoRespuesta`, de
+  `arquitectura` (`CTR-01.9`, `CTR-03.5`). Lo construido por el hilo principal se ajusta a
+  lo que esos dos escriban.
