@@ -18,6 +18,7 @@ import '../../styles/tokens.css';
 import '../../styles/juego.css';
 import '../../styles/sitio.css';
 import { PANTALLA_0 } from '../../lib/dos-ejes/copy.ts';
+import Cabeza from '../../components/Cabeza.astro';
 import { PORTAL } from '../../lib/sitio/copy.ts';
 import crudo from '../../data/dos-ejes.json';
 
@@ -45,6 +46,8 @@ const banco = {
       estado,
     })),
 };
+
+const TITULO = '¿Qué tipo de ricotero sos? — Arcade Ricotero';
 ---
 
 <!doctype html>
@@ -53,7 +56,8 @@ const banco = {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={PANTALLA_0.subtitulo} />
-    <title>¿Qué tipo de ricotero sos? — Arcade Ricotero</title>
+    <title>{TITULO}</title>
+    <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} />
   </head>
   <body class="con-grano">
     <main id="app">

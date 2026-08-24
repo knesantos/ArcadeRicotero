@@ -208,17 +208,34 @@
 
 /* ---- Resultado ---- */
 
+/* El numero mas grande de la pantalla y el titulo que lo acompaña salian en la pila del
+   sistema: la unica letra de marca del resultado era la del boton de compartir. La regla
+   de marca dice que lo que rota por seccion es el acento **y la letra grande**, y esta
+   era letra de interfaz. Van en la rotulada, que es la unica completa (lleva tildes). */
 .puntaje {
+  font-family: var(--fuente-rotulada);
   font-size: 3.5rem;
-  font-weight: 800;
+  font-weight: 400;
+  letter-spacing: 0.01em;
   margin: var(--espacio-3) 0 0;
   line-height: 1;
 }
 
 .tramo {
+  font-family: var(--fuente-rotulada);
+  font-weight: 400;
   margin: var(--espacio-1) 0;
   font-size: 1.5rem;
+  line-height: 1.25;
   text-wrap: balance;
+}
+
+/* La salida del resultado hacia el arcade. Antes no habia ninguna: se terminaba la
+   partida y los otros cuatro juegos quedaban atras del boton del navegador, justo en el
+   momento de mas ganas de seguir jugando. Reusa la cinta de regreso del sitio. */
+.salida-resultado {
+  margin: var(--espacio-3) 0 0;
+  text-align: center;
 }
 
 .tramo--bajo {
@@ -238,6 +255,43 @@
   padding: var(--espacio-2);
   background: var(--fondo-elevado);
   border-radius: var(--radio);
+}
+
+/* ---- El boton principal ----
+ *
+ * Vive ACA y no en el `<style>` de cada pagina, y es la leccion de `FIND-15` otra vez: los
+ * `<style>` de un `.astro` tienen alcance por atributo, y ese atributo **no llega a los
+ * elementos que crea una isla**. `.primario.firma` ya habia tapado ese agujero para un
+ * solo boton; el `SEGUÍ` del quiz seguia saliendo como boton nativo gris, y en
+ * `completar-la-letra` y `dos-ejes` la regla directamente no existia. Siete botones en
+ * cuatro juegos. Global se arregla una vez y no vuelve.
+ *
+ * El color lo pone cada pantalla con `--tinte-accion`. Es variable, asi que **se hereda
+ * por el arbol del DOM** — y por eso si alcanza a lo que crea el JavaScript, que es
+ * justamente lo que el alcance de Astro no hace.
+ */
+.primario {
+  display: block;
+  width: 100%;
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-2);
+  min-height: var(--toque-min);
+  font-family: var(--fuente-rotulada);
+  font-size: 1.25rem;
+  /* Archivo Black ya viene negra: pedirle 700 la engorda sintetica y le come el ojo. */
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-decoration: none;
+  background: var(--tinte-accion, var(--marca-rojo));
+  color: var(--fondo);
+  border: none;
+  border-radius: var(--radio);
+}
+
+.primario:disabled {
+  background: var(--borde);
+  color: var(--texto-tenue);
 }
 
 .secundario {

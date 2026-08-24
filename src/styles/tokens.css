@@ -40,6 +40,12 @@
 }
 
 :root {
+  /* Lo que el navegador dibuja y nosotros no.
+     El sitio es tinta sobre negro y el navegador no se enteraba: barras de scroll
+     claras, controles nativos claros, menus claros. Una linea lo alinea todo. Y de paso
+     cualquier control que se cuele sin estilo sale oscuro en vez de gris de sistema. */
+  color-scheme: dark;
+
   /* Base: tinta sobre negro calido (hoja 03). El negro es el 80% de cada pieza. */
   --fondo: #14100e;
   --fondo-elevado: #1f1815;
@@ -169,6 +175,14 @@ body {
   line-height: 1.5;
   /* Movil primero: nada de ancho fijo. */
   padding: var(--espacio-2);
+}
+
+/* La seleccion tambien es una superficie del sitio, no del navegador: el celeste de
+   sistema no es de nadie. Es el mismo par que ya mide `contraste.test.ts` (la marca
+   sobre el fondo), dado vuelta. */
+::selection {
+  background: var(--marca-rojo);
+  color: var(--fondo);
 }
 
 /* Todo lo tocable respeta el area minima. Es "jugable con el pulgar" en CSS. */

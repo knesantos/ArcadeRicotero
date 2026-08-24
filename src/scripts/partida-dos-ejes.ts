@@ -117,7 +117,10 @@ function pintarPregunta(): void {
 
   const opciones = el('div', 'ejes-opciones');
   for (const o of item.opciones) {
-    const boton = el('button', 'primario ejes-opcion', o.texto) as HTMLButtonElement;
+    // Sin `primario`: `.ejes-opcion` se pinta entera sola (juego.css), y el boton
+    // principal ahora SI existe como componente global — arrastrarlo aca le meteria la
+    // rotulada, el interletrado y un margen que pelea con el `gap` de la columna.
+    const boton = el('button', 'ejes-opcion', o.texto) as HTMLButtonElement;
     boton.type = 'button';
     boton.addEventListener('click', () => {
       elegidos.push(o.polo);

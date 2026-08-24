@@ -14,6 +14,7 @@
     "generar-letra": "node --experimental-strip-types scripts/generar-letra.mjs",
     "hoja-de-escucha": "node --experimental-strip-types scripts/hoja-de-escucha.mjs",
     "generar-fragmentos": "node --experimental-strip-types scripts/generar-fragmentos.mjs",
+    "generar-marca-social": "node scripts/generar-marca-social.mjs",
     "ingerir-popularidad": "node --experimental-strip-types scripts/ingerir-popularidad.mjs"
   },
   "dependencies": {

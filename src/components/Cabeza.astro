@@ -1,0 +1,56 @@
+---
+/**
+ * Lo que el sitio dice de si mismo cuando alguien lo saca a la calle.
+ *
+ * El bucle entero del quiz termina en `COMPARTÍ`, que manda un link a WhatsApp o a
+ * Twitter. Hasta ahora ese link llegaba pelado: sin titulo, sin bajada, sin imagen, y la
+ * pestaña del navegador mostraba el icono en blanco. Es el unico momento en que el sitio
+ * sale afuera, y salia sin cara.
+ *
+ * Tres cosas que conviene no perder de vista:
+ *
+ * 1. **Las URL van absolutas.** Ningun previsualizador levanta un `og:image` relativo.
+ *    Salen de `Astro.site`, que se declara en `astro.config.mjs` y en ningun otro lado.
+ * 2. **El color de la barra sale del token, no de un hex copiado.** Lo lee
+ *    `lib/sitio/tokens.ts` del propio `tokens.css`: si el fondo cambia, la barra cambia.
+ * 3. **La tarjeta lleva su credito** (`D-21`, condicion 1). Adentro del sitio el credito
+ *    de tapas vive en el pie de cada pantalla; una tarjeta compartida no tiene pie, asi
+ *    que el credito viaja en `og:image:alt`, que es el unico lugar donde entra.
+ */
+import { token } from '../lib/sitio/tokens.ts';
+import { PORTAL } from '../lib/sitio/copy.ts';
+
+interface Props {
+  /** El titulo de la tarjeta. Suele ser el mismo `<title>` de la pantalla. */
+  titulo: string;
+  /** La bajada de la tarjeta. Suele ser la misma `<meta name="description">`. */
+  descripcion: string;
+}
+
+const { titulo, descripcion } = Astro.props;
+
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const imagen = new URL('/tarjeta.png', Astro.site).href;
+---
+
+<meta name="theme-color" content={token('--fondo')} />
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/icono-180.png" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={PORTAL.nombre} />
+<meta property="og:locale" content="es_AR" />
+<meta property="og:title" content={titulo} />
+<meta property="og:description" content={descripcion} />
+<meta property="og:url" content={url} />
+<meta property="og:image" content={imagen} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={PORTAL.altTarjeta} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={titulo} />
+<meta name="twitter:description" content={descripcion} />
+<meta name="twitter:image" content={imagen} />
+<meta name="twitter:image:alt" content={PORTAL.altTarjeta} />

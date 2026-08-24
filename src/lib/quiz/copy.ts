@@ -53,8 +53,35 @@ export function etiquetaTestimonio(quien: string): string {
   return `Lo contó ${quien}:`;
 }
 
-/** B5 — reemplaza el auto-avance en los items con rotulo. */
+/** B5 — el paso a la pregunta que sigue.
+ *
+ * Nacio como reemplazo del auto-avance **solo en los items con rotulo** (`UX-01` v2).
+ * Desde la auditoria de detalles del 2026-08-24 vale para todos, y el timer no existe
+ * mas: el argumento de `UX-01` —"un timer fijo no puede servir a la vez a un rotulo de 15
+ * caracteres y a uno de 200"— era igual de cierto para la explicacion, que es mas larga
+ * que varios rotulos. Medido: el panel duraba 1.577 ms con un texto de seis segundos de
+ * lectura, y eso pasaba en 22 de los 40 items. */
 export const BOTON_SEGUIR = 'SEGUÍ';
+
+/**
+ * Como se lee cada categoria en pantalla.
+ *
+ * El JSON las guarda como identificador (`mitologia`) y la cabecera las escribe en
+ * mayusculas, asi que sin esta tabla el jugador leia **MITOLOGIA**, sin tilde. En
+ * castellano la mayuscula lleva el acento, y este rotulo va en la pila del sistema, que
+ * los tiene todos: no es la deuda de tildes de las letras de disco, es un identificador
+ * que se estaba imprimiendo crudo. Mismo mecanismo que `REDONDOPEDIA.secciones`.
+ */
+export const CATEGORIAS: Record<string, string> = {
+  historia: 'Historia',
+  discos: 'Discos',
+  letras: 'Letras',
+  mitologia: 'Mitología',
+};
+
+export function etiquetaCategoria(categoria: string): string {
+  return CATEGORIAS[categoria] ?? categoria;
+}
 
 /** C1, C2, C3 — los tres tramos de `BR-05`. */
 export const TRAMOS: Record<Tramo, { titulo: string; bajada: string }> = {

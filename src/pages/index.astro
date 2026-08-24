@@ -5,13 +5,13 @@
  * Un cassette grabado en casa: lado A los juegos, lado B la lectura. Cada casete
  * viste la paleta real de su disco (mezcla `D-19`) y el collage de fondo trae los
  * recortes que pide `UX-04` con tecnicas fichadas de Rocambole (`RES-06`): la
- * mosca volando, la gente con banderas, el perro suelto.
+ * mosca volando, la gente con banderas, y ahora la figura de la cadena.
  *
  * Molinetes abiertos (`D-14`): esta pantalla no pide nada — ni cuenta ni saber.
  */
 import Base from '../layouts/Base.astro';
 import { PORTAL, JUEGOS, CASETE_REDONDOPEDIA, CASETE_CANCIONERO, type Casete } from '../lib/sitio/copy.ts';
-import { conRecorteReal, detalleTapa, discosDe, DETALLE_POR_VARIANTE } from '../lib/sitio/arte.ts';
+import { conRecorteReal, detalleTapa, discosDe, medidas, recorte, DETALLE_POR_VARIANTE } from '../lib/sitio/arte.ts';
 
 // Los discos que se ven acá: el de cada casete mas la franja de Oktubre del fondo.
 // El pie los nombra (`D-21`, condicion 1).
@@ -20,13 +20,46 @@ const tapasUsadas = discosDe([
   ...[...JUEGOS, CASETE_CANCIONERO, CASETE_REDONDOPEDIA].map((c) => DETALLE_POR_VARIANTE[c.variante]),
 ]);
 
+/**
+ * El personaje de portada.
+ *
+ * Era el perro. Pasa a ser la figura encadenada, calcada en linea blanca — la pidio el
+ * usuario el 2026-08-24. Si el archivo no estuviera, cae al perro dibujado: el mismo
+ * criterio de reemplazo que el resto del collage.
+ *
+ * **Lo que esta pagina no dice sobre ella, y es a proposito:** de que disco sale. `INV-02`
+ * reporto que la figura encadenada **no estaba en el arte del vinilo de Oktubre del 86** y
+ * que se difundio con la reedicion en CD, y eso sigue en "reportado, no verificado".
+ * Mientras siga ahi, el recorte se muestra pero **no se le atribuye disco**: por eso no
+ * entra en `tapasUsadas`, que es lo que arma el credito del pie (`D-21`), y por eso el
+ * texto de la tarjeta acredita a Rocambole sin nombrar el album. Ficha pedida en
+ * `Docs/SUGERENCIAS/HILO-para-investigador-figura-encadenada.md`.
+ */
+const artePortada = recorte('oktubre-cadena.png', conRecorteReal('/arte/perro.svg'))!;
+const medidaPortada = medidas(artePortada);
+
+/**
+ * Cada casete con su arte ya resuelta y **medida**.
+ *
+ * Se resuelve acá y no en el template porque `medidas()` lee el archivo en disco: es
+ * trabajo de build, y de paso deja el marcado sin logica adentro.
+ */
 const lados: Array<{ titulo: string; casetes: readonly Casete[] }> = [
   { titulo: PORTAL.ladoA, casetes: JUEGOS },
   { titulo: PORTAL.ladoB, casetes: [CASETE_CANCIONERO, CASETE_REDONDOPEDIA] },
 ];
+
+const conArte = lados.map((lado) => ({
+  titulo: lado.titulo,
+  casetes: lado.casetes.map((c) => {
+    const arte = conRecorteReal(c.arte);
+    const tapa = detalleTapa(DETALLE_POR_VARIANTE[c.variante] ?? '');
+    return { ...c, arte, medidaArte: medidas(arte), tapa, medidaTapa: tapa ? medidas(tapa) : null };
+  }),
+}));
 ---
 
-<Base titulo="Arcade Ricotero" descripcion={PORTAL.bajada} conBanderas conMosca tapas={tapasUsadas}>
+<Base titulo={PORTAL.nombre} descripcion={PORTAL.bajada} conBanderas conMosca tapas={tapasUsadas}>
   <script is:inline slot="cabeza">
     // El quiz vivia en la raiz: los links de desafio viejos (`?g=quiz&p=...`) siguen
     // valiendo — se redirigen a /quiz/ con la query intacta (ADR-02 no cambia).
@@ -34,13 +67,21 @@ const lados: Array<{ titulo: string; casetes: readonly Casete[] }> = [
   </script>
 
   <header class="portada-arcade">
-    <img class="recorte-portada" src={conRecorteReal('/arte/perro.svg')} alt="" aria-hidden="true" />
+    <img
+      class="recorte-portada"
+      src={artePortada}
+      alt=""
+      aria-hidden="true"
+      decoding="async"
+      width={medidaPortada?.ancho}
+      height={medidaPortada?.alto}
+    />
     <h1 class="marca-grande">ARCADE RICOTERO</h1>
     <p class="bajada-portal">{PORTAL.bajada}</p>
   </header>
 
   {
-    lados.map((lado) => (
+    conArte.map((lado) => (
       <section>
         <h2 class="lado">{lado.titulo}</h2>
         <ul class="casetera">
@@ -50,18 +91,31 @@ const lados: Array<{ titulo: string; casetes: readonly Casete[] }> = [
                 class:list={['casete', `casete--${c.variante}`, { 'casete--pronto': !c.accion }]}
                 href={c.href}
               >
-                <img class="casete-arte" src={conRecorteReal(c.arte)} alt="" aria-hidden="true" />
+                <img
+                  class="casete-arte"
+                  src={c.arte}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                  width={c.medidaArte?.ancho}
+                  height={c.medidaArte?.alto}
+                />
                 <span class="casete-etiqueta">
                   <strong class="casete-titulo">{c.titulo}</strong>
                   <span class="casete-baja">{c.baja}</span>
                 </span>
                 <span class="casete-pie">
-                  {detalleTapa(DETALLE_POR_VARIANTE[c.variante] ?? '') && (
+                  {c.tapa && (
                     <img
                       class="casete-tapa"
-                      src={detalleTapa(DETALLE_POR_VARIANTE[c.variante] ?? '')}
+                      src={c.tapa}
                       alt=""
                       aria-hidden="true"
+                      loading="lazy"
+                      decoding="async"
+                      width={c.medidaTapa?.ancho}
+                      height={c.medidaTapa?.alto}
                     />
                   )}
                   {c.accion ? (

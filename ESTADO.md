@@ -238,6 +238,81 @@ letras.com— y eso desbloqueó de un saque los tres frentes que esperaban verso
 
 ---
 
+## Sesión suelta del 2026-08-24 — la auditoría de detalles, y la figura encadenada
+
+No es un ciclo: es una skill nueva pasada por el portal y el quiz, y un recorte que trajo
+el usuario.
+
+**La skill.** `pbakaus/impeccable` (246K instalaciones), instalada global y enlazada a
+Claude Code. Es la que caza los 64 patrones de interfaz genérica de IA — el mismo enemigo
+que `.claude/rules/diseno-marca.md` ya tenía escrito con nombre y apellido. Se corrió su
+comando `audit` sobre `index.astro` y `quiz.astro`. Informe completo, con la medición de
+cada hallazgo, en `Docs/SUGERENCIAS/HILO-auditoria-impeccable-portal-y-quiz.md`.
+
+> Ojo con el detector: necesita `htmlparser2`, `css-select`, `css-tree` y `domutils` en el
+> directorio de la skill. Sin ellos avisa `DEGRADED` y cae a expresiones regulares, que no
+> evalúa variables CSS ni contraste computado. Están instaladas; si se reinstala la skill,
+> hay que volver a ponerlas o el resultado limpio es un subconteo.
+
+**Diagnóstico: 15/20.** El detector devuelve **limpio** sobre el HTML construido, que no es
+común. Lo que bajaba la nota no era el sistema visual: era la deriva entre el sistema y lo
+que el JavaScript crea en tiempo de ejecución.
+
+**Los cuatro P1, arreglados y verificados en pantalla:**
+
+1. **`.primario` era una regla con alcance de página, así que no alcanzaba a los botones
+   que crea una isla.** El `SEGUÍ` del quiz salía como botón nativo gris —medido:
+   `rgb(240,240,240)`, `2px outset`, 59 × 48— sobre fondo de tinta. Es `FIND-15` otra vez.
+   Ahora es componente global en `juego.css` con `--tinte-accion`, que **se hereda por el
+   árbol del DOM**. Alcanzó a siete botones en cuatro juegos: `dos-ejes` y
+   `completar-la-letra` ni siquiera tenían la regla.
+2. **Se fue el auto-avance.** Medido: el panel de feedback duraba **1.577 ms** con una
+   explicación de seis segundos de lectura, y eso pasaba en **22 de los 40 ítems**. Ahora
+   toda pregunta espera el dedo con `SEGUÍ`, como `UX-01` v2 ya había hecho para los ítems
+   con rótulo. Sale de paso una violación de WCAG 2.2.1 (Nivel A).
+3. **El foco ya no se cae al `<body>`** en cada cambio de pantalla, y el panel de feedback
+   es `role="status"`. Regiones vivas en la página: 0 → 1.
+4. **El link que manda `COMPARTÍ` tiene tarjeta.** Open Graph, ícono y `theme-color` en las
+   **148 páginas**. `public/tarjeta.png`, `icono-180.png` y `favicon.svg` los genera
+   `npm run generar-marca-social` **leyendo los colores de `tokens.css`**.
+
+**Los siete P2, también:** la categoría dejó de imprimirse cruda (se leía `MITOLOGIA`, sin
+tilde); el resultado tiene salida al arcade (era un callejón sin salida); el puntaje y el
+tramo pasaron a letra de marca (eran `system-ui`); la escala tipográfica de la portada del
+quiz se abrió a 20 / 28 / 38; `color-scheme: dark` y `::selection`; y las imágenes declaran
+medidas —leídas del archivo en build por `medidas()`— y cargan diferido.
+
+> **Un hallazgo se corrigió a la baja.** El informe decía "salto de maquetado"; lo medí
+> después y **el CLS del portal es 0**, y ya lo era. Las imágenes del casete tienen ancho y
+> alto fijos por CSS y las otras dos están fuera de flujo. Lo que faltaba de verdad era el
+> `loading="lazy"`.
+
+**Quedan abiertos:** los nueve P3, la misma jerarquía plana en `adivinar-la-tapa.astro`
+(20 / 24 / 33,6 px — apareció al pasar el detector por las cuatro páginas de juego), y los
+`.primario` con alcance que sobreviven en `adivinar-el-tema` y `adivinar-la-tapa`.
+
+### 🟡 La figura encadenada entró a la portada, y le falta la ficha
+
+El usuario trajo `Docs/UX/OktubreCadena.png` y pidió que reemplace al perro al lado del
+título del portal. Hecho, y es también la imagen de la tarjeta al compartir.
+
+**Pero `public/arte/README.md` decía que esa pieza no se usaba hasta tener ficha**, y la
+razón no es de derechos: `INV-02` reporta que la figura encadenada **no estaba en el arte
+del vinilo de *Oktubre* del 86** y que se difundió con la reedición en CD — "reportado, con
+buena base, verificar antes de usar".
+
+Resolución, sin frenar la pieza ni afirmar el dato: **se muestra y no se le atribuye
+disco.** No entra en `tapasUsadas`, así que el crédito del pie no la nombra; el texto de la
+tarjeta acredita a Rocambole —eso sí está firme— sin nombrar el álbum. Ficha pedida en
+`Docs/SUGERENCIAS/HILO-para-investigador-figura-encadenada.md`, donde los tres desenlaces
+posibles sirven, y uno de ellos es una pregunta de quiz de primer nivel.
+
+**Verificación:** build de 148 páginas, `npm test` **224/224**, `npm run check` 0 errores.
+Detector limpio sobre el HTML construido. En el navegador: sin desborde a 320, 375 y
+1280 px; 24 pares de texto con el peor en 4,67:1; ningún objetivo táctil bajo 48 px.
+
+---
+
 ## Sesión suelta del 2026-08-23 — el audio, y el candado de las letras
 
 No es un ciclo: son dos preguntas del usuario resueltas de punta a punta.
@@ -942,3 +1017,4 @@ versos en borrador.
 | 2026-08-23 | **`IDEA-11` guardada, sin empezar: mayor o menor con las palabras del cancionero.** Idea del usuario —arrancás con una palabra y su cantidad de apariciones en la discografía, y vas diciendo si la siguiente se dice más o menos, sumando racha—, con la instrucción explícita de guardarla y no desarrollarla. Ficha completa en `Docs/SUGERENCIAS/HILO-para-producto-idea-11-mayor-o-menor.md` (la carpeta del PRD es de `producto`), número reservado en `Docs/IDS.md`. **No aplica `BR-15`** aunque el género exista: el motor son dos botones, lo caro es el dato — igual que `IDEA-09`. **Lo que la vuelve barata:** el corpus ya está en el repo desde el ciclo 6, no necesita audio, ni imagen, ni ficha de `investigador`, ni motor con licencia; y no roza `BR-03`/`BR-12` porque muestra palabras y números, nunca versos. **Lo que la frena, medido hoy sobre `src/data/cancionero.json`:** de los 104 temas, 96 tienen letra, y contando en crudo las líneas tipadas `t: "letra"` la palabra más frecuente da **`riff` 306 veces** y la segunda `guitarra` 156 — son anotaciones de la cifra viajando adentro de la letra (cifraclub aportó 88 de los 104). Filtrando lo que parece anotación se caen 1.070 líneas y quedan 2.858, con al menos una sucia en 80 temas, y **todavía queda basura arriba**. Como el conteo **es** la respuesta correcta, sin limpiar el corpus el juego rompe lo único estricto de `CLAUDE.md`. Esa limpieza es la misma deuda que ya arrastran `IDEA-08` y `US-03`: se paga una vez y sirve para las tres. |
 | 2026-08-23 | **`IDEA-04` dejó de ser un género y pasó a tener meta: hay que llegar a tomar el último bondi.** El usuario lo pidió como "otro juego" —*"un mario de plataformas simple pero que hay que llegar a tomar el último bondi a Finisterre"*— y **no se abrió ID nuevo a propósito**: es la misma idea del 22, que estaba guardada con la frase pelada *"Plataformas ultimo bondi a finisterre"*. Un ID nuevo para la misma idea es justo lo que `Docs/IDS.md` evita. Ficha actualizada en `Docs/SUGERENCIAS/HILO-para-producto-idea-04-la-meta-del-bondi.md` (la carpeta del PRD es de `producto`). **Lo que la meta resuelve sola:** el choque principal de la ficha era "largo de nivel contra la sesión de dos o tres minutos", y ahora el que corta el nivel es el bondi que arranca — la cuenta regresiva es el micro, no un número en la esquina, que es lo que pide `diseno-marca.md`. Además empuja los controles hacia un solo botón (correr a alcanzar algo que ya se está yendo) y regala la pantalla de derrota: "el último" quiere decir que no hay otro, y quedarse a pie no necesita ni chiste ni consuelo. **Tres precisiones verificadas hoy contra el cancionero:** *Último bondi a Finisterre* es un **disco, no un tema** —los diez temas están cargados y ninguno lleva ese título—, la palabra *bondi* aparece **una sola vez** en los 96 temas con letra y es en *El lobo caído* (Lobo suelto, 1993), ~~y *Finisterre* **no aparece nunca**~~ — **mal medido, y lo corrigió el usuario el 2026-08-24: lo que medí fue el corpus del repo y lo escribí como si fuera un hecho sobre las letras. *Finisterre* está cantado en *Gualicho*, cuya letra el repo no tiene.** Queda pedido a `investigador`: qué es Finisterre, porque el juego puede usar el nombre del disco pero no afirmar qué significa hasta que haya `RES-XX`. Sigue sin empezar, sigue fuera de la v1, y sigue con lo caro abierto: motor 2D con licencia (`BR-15`) y el skin, el más caro de los cinco clones. |
 | 2026-08-24 | **`IDEA-04` tiene tema: *Gualicho*, y el tema corrigió un dato que yo había medido mal el día anterior.** El usuario avisó que el bondi a Finisterre está cantado ahí. **Mi frase del 23 —"*Finisterre* no aparece nunca en las letras"— era falsa, y el modo de fallar vale más que el dato:** medí el corpus del repo y lo escribí como si fuera un hecho sobre las canciones. Es exactamente lo que `CLAUDE.md` llama poner una leyenda disfrazada de dato, con el agravante de que la fuente era un archivo propio. Corregido en la bitácora del 23 y en `Docs/SUGERENCIAS/HILO-para-producto-idea-04-la-meta-del-bondi.md`. **Lo que el tema aporta a la idea:** el destino deja de ser un título de tapa y pasa a estar cantado; el verbo del juego sale de la letra —no es *tomar* el bondi, es **colgarse**—; *Gualicho* es la pista 4 del mismo disco, así que tema, tapa y paleta (`RES-37`, `D-19`) son la misma cosa; y con `D-22` el mp3 existe, lo que vuelve concreta la consecuencia 3 de `BR-15` (música de fondo en loop, sin ADR que la cubra). **`IDEA-04` es hoy la única de las cinco ideas de clon con su música decidida.** **El agujero que apareció al ir a buscar el verso, medido sobre `src/data/cancionero.json`:** *Gualicho* está marcado `contenido: "letra"` y **no tiene una sola línea cantada** —sus tres líneas tipadas `letra` son cifrado—; en el mismo disco *Pogo* tiene 0 de 24 (es una tablatura entera) y *El árbol del gran bonete* 1 de 4. Los otros seis con letra están completos y *Scaramanzia* está bien declarada como solo tablatura. Los tres agujeros vienen de cifraclub, fuente de 82 de los 104 temas. **Y hay un defecto vivo, chico pero visible:** `/letras-y-acordes/gualicho/` promete la letra de un tema y muestra tres líneas de acordes. La invariante de `src/lib/cancionero/banco.ts` que debería atajarlo existe pero cuenta como verso cualquier línea tipada `letra`, así que el cifrado le pasa por al lado. |
+| 2026-08-24 | **Auditoría de detalles con la skill `impeccable`** sobre el portal y el quiz: 15/20, 4 P1 y 7 P2, todos arreglados y verificados en pantalla el mismo día. El grueso: `.primario` era una regla con alcance de página y los botones que crea el JavaScript salían sin estilo (siete botones en cuatro juegos); el auto-avance de 1,2 s se comía la explicación en 22 de 40 ítems; el foco se caía al `<body>` en cada cambio de pantalla; y el link de `COMPARTÍ` no tenía tarjeta. Informe en `Docs/SUGERENCIAS/HILO-auditoria-impeccable-portal-y-quiz.md`. Entró además la figura encadenada a la portada, **sin atribuirle disco** hasta que haya ficha. |

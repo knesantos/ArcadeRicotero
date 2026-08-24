@@ -17,6 +17,7 @@
 import '../styles/tokens.css';
 import '../styles/juego.css';
 import '../styles/sitio.css';
+import Cabeza from '../components/Cabeza.astro';
 import { cargarBanco, type BancoCrudo } from '../lib/quiz/banco.ts';
 import { PANTALLA_0 } from '../lib/quiz/copy.ts';
 import { PORTAL } from '../lib/sitio/copy.ts';
@@ -25,6 +26,8 @@ import crudo from '../data/quiz.json';
 // El banco se resuelve en build: el navegador recibe JSON ya filtrado, sin campos
 // internos y sin los items en borrador o retirados.
 const items = cargarBanco(crudo as unknown as BancoCrudo);
+
+const TITULO = 'Preguntas ricoteras — Arcade Ricotero';
 ---
 
 <!doctype html>
@@ -33,7 +36,8 @@ const items = cargarBanco(crudo as unknown as BancoCrudo);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={PANTALLA_0.subtitulo} />
-    <title>Preguntas ricoteras — Arcade Ricotero</title>
+    <title>{TITULO}</title>
+    <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} />
   </head>
   <body class="con-grano">
     <main id="app">
@@ -64,40 +68,33 @@ const items = cargarBanco(crudo as unknown as BancoCrudo);
         max-width: 34rem;
         margin: 0 auto;
       }
-      /* La portada viste Oktubre (D-19): la titular calcada, el rojo de la tapa. */
+      /* La portada viste Oktubre (D-19): la titular calcada, el rojo de la tapa.
+         Los tres tamaños de esta pantalla —20 px el boton, 21,6 px el titulo, 33,6 px la
+         marca— estaban tan pegados que el boton competia con el titulo en vez de
+         obedecerle. Ahora cada escalon sube casi un 40%: 20 el boton, 28 el titulo, 38
+         la marca (y hasta 56 cuando hay pantalla de sobra). */
       .marca {
         font-family: var(--fuente-titular);
-        font-size: 2.1rem;
+        font-size: clamp(2.4rem, 11vw, 3.5rem);
         line-height: 0.96;
         color: var(--marca-rojo);
         margin: var(--espacio-3) 0 var(--espacio-2);
         max-width: 7ch;
       }
       h1 {
-        font-size: 1.35rem;
-        line-height: 1.3;
+        font-size: 1.75rem;
+        line-height: 1.2;
         text-wrap: balance;
         margin-top: 0;
-      }
-      .tenue {
-        color: var(--texto-tenue);
       }
       .pantalla[hidden] {
         display: none;
       }
-      .primario {
-        display: block;
-        width: 100%;
+      /* `.primario` es global (juego.css): tiene que alcanzar tambien a los botones que
+         crea la isla. Lo unico de la portada es cuanto respira el boton bajo el
+         subtitulo. */
+      #jugar {
         margin-top: var(--espacio-4);
-        padding: var(--espacio-2);
-        font-family: var(--fuente-rotulada);
-        background: var(--marca-rojo);
-        color: var(--fondo);
-        border: none;
-        border-radius: var(--radio);
-        font-size: 1.25rem;
-        font-weight: 700;
-        letter-spacing: 0.04em;
       }
     </style>
   </body>

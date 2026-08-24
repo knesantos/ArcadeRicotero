@@ -10,8 +10,9 @@
  */
 import '../styles/tokens.css';
 import '../styles/sitio.css';
+import Cabeza from '../components/Cabeza.astro';
 import { PORTAL } from '../lib/sitio/copy.ts';
-import { conRecorteReal, fondoTapa } from '../lib/sitio/arte.ts';
+import { conRecorteReal, fondoTapa, medidas } from '../lib/sitio/arte.ts';
 
 interface Props {
   titulo: string;
@@ -40,6 +41,13 @@ const { titulo, descripcion, conBanderas = false, conMosca = false, volverA, tap
  * que sobre tapa velada no llega a AA. Lo verifica `contraste.test.ts`.
  */
 const bandaOktubre = fondoTapa('oktubre-banderas');
+
+// Las dos piezas del collage que este cascaron pega por su cuenta, con sus medidas
+// leidas del archivo: un `<img>` sin medidas obliga al navegador a maquetar dos veces.
+const arteBanderas = conRecorteReal('/arte/banderas.svg');
+const arteMosca = conRecorteReal('/arte/mosca.svg');
+const medidaBanderas = medidas(arteBanderas);
+const medidaMosca = medidas(arteMosca);
 ---
 
 <!doctype html>
@@ -49,18 +57,35 @@ const bandaOktubre = fondoTapa('oktubre-banderas');
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={descripcion} />
     <title>{titulo}</title>
+    <Cabeza titulo={titulo} descripcion={descripcion} />
     <slot name="cabeza" />
   </head>
   <body class="con-grano">
     {conBanderas && bandaOktubre && <div class="tapa-fondo tapa-fondo--portal" aria-hidden="true" />}
     {
       conBanderas && !bandaOktubre && (
-        <img class="banderas-fondo" src={conRecorteReal('/arte/banderas.svg')} alt="" aria-hidden="true" />
+        <img
+          class="banderas-fondo"
+          src={arteBanderas}
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+          width={medidaBanderas?.ancho}
+          height={medidaBanderas?.alto}
+        />
       )
     }
     {
       conMosca && (
-        <img class="mosca-viva" src={conRecorteReal('/arte/mosca.svg')} alt="" aria-hidden="true" />
+        <img
+          class="mosca-viva"
+          src={arteMosca}
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+          width={medidaMosca?.ancho}
+          height={medidaMosca?.alto}
+        />
       )
     }
     <div class="contenido-sitio">
