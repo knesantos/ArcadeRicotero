@@ -31,6 +31,9 @@ a la otra qué número tomó.
 | `RES-44` … `RES-49` | **Ciclo 4.** `RES-44` es la auditoría de edición de las tapas (`T-47`), `RES-45` la fuente de letras (`T-60`) | 2026-08-21 | **activa** |
 | `BR-13`, `BR-14` | **Ciclo 5**, tareas `T-66` y `T-67` de `producto`, ambas en `PRD-redondopedia.md` | 2026-08-22 | **activa** |
 | `BR-15`, `BR-16` + `IDEA-01` … `IDEA-10` | **Sesión del backlog de ideas** (`PRD-backlog-ideas.md`). Tomó 15 y 16 salteando 13 y 14 porque el ciclo 5 ya los tenía reservados — ver nota abajo | 2026-08-22 | **cerrada — rango consumido entero** |
+| `IDEA-11` | **Sesión del 2026-08-23.** Idea del usuario guardada como ficha en `Docs/SUGERENCIAS/HILO-para-producto-idea-11-mayor-o-menor.md`, todavía sin pegar en `PRD-backlog-ideas.md` — la carpeta es de `producto` | 2026-08-23 | **cerrada — pegada en el PRD por `T-100` del ciclo 7** |
+| `T-97` … `T-107` · `RES-49`, `RES-50` · `CNT-08` · `REV-06` | **Ciclo 7** (`ORQ-plan-ciclo-7.md`). `RES-49` y `RES-50` salen del rango del ciclo 4, que estaba abierto y las tenía pedidas | 2026-08-24 | **cerrada — `T-103` y `T-105` canceladas, sus números no se reutilizan** |
+| — | ⚠ **Hay otra sesión escribiendo este repo el 2026-08-24** y no reservó rango: dejó `Docs/SUGERENCIAS/HILO-para-producto-idea-04-la-meta-del-bondi.md`. No tomó IDs nuevos (reusa `IDEA-04`), así que no chocó — pero es el caso que esta tabla existe para evitar | 2026-08-24 | **abierta** |
 
 ### Los nombres de archivo son otro contador compartido
 

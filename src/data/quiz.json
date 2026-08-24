@@ -2,7 +2,7 @@
   "contrato": "CTR-02",
   "contratoVersion": 1,
   "juego": "quiz",
-  "actualizado": "2026-08-19",
+  "actualizado": "2026-08-24",
   "items": [
     {
       "id": "QZ-001",
@@ -476,7 +476,7 @@
         { "texto": "Luzbelito", "correcta": false },
         { "texto": "Lobo suelto, cordero atado", "correcta": false }
       ],
-      "explicacion": "El Indio contó que en la tapa de Último bondi a Finisterre (1998) apareció por primera vez la imagen de la banda, caracterizada como superhéroes. Con esa estética se hizo el tercer y último videoclip del grupo, inspirado en «Capitán Buscapina», con cameos de Luzbelito y del hombre que alza la cadena en Oktubre.",
+      "explicacion": "El Indio contó que en la tapa de Último bondi a Finisterre (1998) apareció por primera vez la imagen de la banda, caracterizada como superhéroes.",
       "fuentes": ["RES-21", "RES-22", "RES-02"],
       "esLeyenda": false,
       "testimonio": {
@@ -585,6 +585,199 @@
         "ubicacion": "comentario de «Último bondi a Finisterre»",
         "afirmacion": "Recuerda que Rocambole propuso una nave interplanetaria en lugar del bondi tuneado que él había imaginado, inspirada en el repujado plateado de una caja de whisky Chivas Regal."
       },
+      "sensibleA": [],
+      "estado": "listo"
+    },
+    {
+      "id": "QZ-031",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "dificil",
+      "enunciado": "Casi toda la obra de la banda lleva la firma Solari-Beilinson. En «Mi perro dinamita», de La mosca y la sopa, se suma un tercer nombre. ¿Cuál?",
+      "opciones": [
+        { "texto": "Semilla Bucciarelli", "correcta": true },
+        { "texto": "Walter Sidotti", "correcta": false },
+        { "texto": "Sergio Dawi", "correcta": false },
+        { "texto": "Carmen \"Poli\" Castro", "correcta": false }
+      ],
+      "explicacion": "Solari y Beilinson firman casi toda la discografía. Las únicas excepciones son «Mi perro dinamita» y «Ella debe estar tan linda», con Semilla Bucciarelli como tercer autor.",
+      "fuentes": ["RES-20"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo"
+    },
+    {
+      "id": "QZ-032",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "dificil",
+      "enunciado": "Lobo suelto, cordero atado tiene dos personajes que le dan nombre a sus volúmenes, cada uno con su propia tapa: Lupus el Lobo y otro. ¿Cómo se llama el segundo?",
+      "opciones": [
+        { "texto": "Rulo el Cordero", "correcta": true },
+        { "texto": "Nerón el Cordero", "correcta": false },
+        { "texto": "Toby el Cordero", "correcta": false },
+        { "texto": "Manso el Cordero", "correcta": false }
+      ],
+      "explicacion": "Lupus el Lobo y Rulo el Cordero son los dos personajes de Lobo suelto, cordero atado, editado en 1993 en dos volúmenes el mismo día, cada uno con su propia tapa.",
+      "fuentes": ["RES-20"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo"
+    },
+    {
+      "id": "QZ-033",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "media",
+      "enunciado": "El Indio contó en sus memorias que el último videoclip de la banda estuvo inspirado en un personaje de Último bondi a Finisterre. ¿Cuál?",
+      "opciones": [
+        { "texto": "Capitán Buscapina", "correcta": true },
+        { "texto": "Drogocop", "correcta": false },
+        { "texto": "Alien Duce", "correcta": false },
+        { "texto": "Gualicho", "correcta": false }
+      ],
+      "explicacion": "El tercer y último videoclip de la banda estuvo inspirado en «Capitán Buscapina», con cameos de Luzbelito y del hombre que alza la cadena en Oktubre, según contó el Indio.",
+      "fuentes": ["RES-21", "RES-22", "RES-20"],
+      "esLeyenda": false,
+      "testimonio": {
+        "quien": "Indio Solari",
+        "obra": "Recuerdos que mienten un poco",
+        "ubicacion": "comentario de «Último bondi a Finisterre»",
+        "afirmacion": "Cuenta que el tercer y último videoclip de la banda estuvo inspirado en «Capitán Buscapina», con cameos de Luzbelito y del hombre que alza la cadena en Oktubre."
+      },
+      "sensibleA": [],
+      "estado": "listo"
+    },
+    {
+      "id": "QZ-034",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "dificil",
+      "enunciado": "Un baión para el ojo idiota tiene dos títulos que arrancan con «Todo»: uno es «Todo preso es político». ¿Cuál es el otro?",
+      "opciones": [
+        { "texto": "Todo un palo", "correcta": true },
+        { "texto": "Todo por vos", "correcta": false },
+        { "texto": "Todos contra todos", "correcta": false },
+        { "texto": "Todo o nada", "correcta": false }
+      ],
+      "explicacion": "«Todo un palo» cierra el disco de 1988 y es su tema más largo (7:25). El otro título que arranca igual es «Todo preso es político», track 4.",
+      "fuentes": ["RES-20"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo"
+    },
+    {
+      "id": "QZ-035",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "dificil",
+      "enunciado": "El material interno de Gulp! trae una nota apócrifa de un organismo real, prohibiendo un tema cuya letra casi no dice nada. ¿Cuál es el organismo?",
+      "opciones": [
+        { "texto": "El COMFER", "correcta": true },
+        { "texto": "La SADAIC", "correcta": false },
+        { "texto": "El INPI", "correcta": false },
+        { "texto": "La AFSCA", "correcta": false }
+      ],
+      "explicacion": "El COMFER —el Comité Federal de Radiodifusión— no era un organismo exclusivo de la dictadura: siguió en pie hasta 2009, en democracia. Gulp! salió en 1985, también en democracia, y trae una nota apócrifa fechada como si fuera de la dictadura, prohibiendo «Criminal Mambo». Nunca hubo una censura real sobre ese tema: es una broma ácida sobre un tema cuya letra casi no dice nada.",
+      "fuentes": ["RES-48"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo"
+    },
+    {
+      "id": "QZ-036",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "dificil",
+      "enunciado": "«Criminal Mambo» salió en Gulp!, 1985. Igual, circula la versión de que este músico lo coescribió, después de tocarlo de improviso en un boliche porteño en 1987. ¿Quién?",
+      "opciones": [
+        { "texto": "Luca Prodan", "correcta": true },
+        { "texto": "Charly García", "correcta": false },
+        { "texto": "Andrés Calamaro", "correcta": false },
+        { "texto": "Fito Páez", "correcta": false }
+      ],
+      "explicacion": "Luca Prodan tocó «Criminal Mambo» de improviso en el boliche Cemento, en 1987 — dos años después de que el tema saliera en Gulp!. Desde ahí corrió la versión de que lo había coescrito, pero la propia fuente que cuenta el episodio marca esa coautoría como falsa: Prodan nunca figuró como autor de la canción.",
+      "fuentes": ["RES-48"],
+      "esLeyenda": true,
+      "rotuloLeyenda": "Coautoría desmentida: Luca Prodan tocó «Criminal Mambo» de improviso en el boliche Cemento, en 1987, pero nunca fue coautor de la canción. Lo desmiente la propia fuente que recoge el episodio.",
+      "sensibleA": [],
+      "estado": "listo"
+    },
+    {
+      "id": "QZ-037",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "dificil",
+      "enunciado": "El Indio contó que el sobre interno de Oktubre imprime unos versos de «Ji ji ji» que el disco no llega a cantar. ¿Dónde iban esos versos?",
+      "opciones": [
+        { "texto": "Sobre la melodía instrumental que cierra el tema", "correcta": true },
+        { "texto": "En una segunda estrofa que se cortó entera", "correcta": false },
+        { "texto": "En un interludio que se grabó y se borró después", "correcta": false },
+        { "texto": "Solo en la versión en vivo, nunca en estudio", "correcta": false }
+      ],
+      "explicacion": "Según contó el Indio en sus memorias, esos versos iban cantados sobre la melodía instrumental final de «Ji ji ji», y en el disco quedaron sin voz.",
+      "fuentes": ["RES-21", "RES-22"],
+      "esLeyenda": false,
+      "testimonio": {
+        "quien": "Indio Solari",
+        "obra": "Recuerdos que mienten un poco",
+        "ubicacion": "comentario de «Oktubre»",
+        "afirmacion": "Cuenta que los versos que cierran la letra impresa de «Ji ji ji» en el sobre interno de Oktubre iban cantados sobre la melodía instrumental final, sin voz en el disco."
+      },
+      "sensibleA": [],
+      "estado": "listo"
+    },
+    {
+      "id": "QZ-038",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "dificil",
+      "enunciado": "En un recital solista en Quilmes, en 2023, Skay le dedicó un saludo al Indio mientras tocaba un tema de Un baión para el ojo idiota. ¿Cuál?",
+      "opciones": [
+        { "texto": "Todo un palo", "correcta": true },
+        { "texto": "Vencedores vencidos", "correcta": false },
+        { "texto": "Noticias de ayer", "correcta": false },
+        { "texto": "Vamos las bandas", "correcta": false }
+      ],
+      "explicacion": "Fue durante «Todo un palo». El gesto se viralizó porque Skay y el Indio llevaban más de veinte años separados, sin reconciliación pública.",
+      "fuentes": ["RES-48"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo"
+    },
+    {
+      "id": "QZ-039",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "dificil",
+      "enunciado": "El disco Luzbelito (1996) no abre con un tema que se llame solo «Luzbelito». ¿Cuál es el título completo de la primera pista?",
+      "opciones": [
+        { "texto": "Luzbelito y las sirenas", "correcta": true },
+        { "texto": "Luzbelito, la vela encendida", "correcta": false },
+        { "texto": "Luzbelito y el diablo manso", "correcta": false },
+        { "texto": "Luzbelito, cara de ángel", "correcta": false }
+      ],
+      "explicacion": "Luzbelito abre con «Luzbelito y las sirenas», la primera de once pistas. El nombre del disco y el del tema se confunden seguido, pero no son iguales.",
+      "fuentes": ["RES-20"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo"
+    },
+    {
+      "id": "QZ-040",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "media",
+      "enunciado": "Entre los títulos de Gulp!, hay uno que figura como pista oculta. ¿Cuál es?",
+      "opciones": [
+        { "texto": "Pianito - Jam", "correcta": true },
+        { "texto": "Criminal Mambo", "correcta": false },
+        { "texto": "Ñam fri frufi fali fru", "correcta": false },
+        { "texto": "Superlógico", "correcta": false }
+      ],
+      "explicacion": "«Pianito - Jam» es el track oculto de Gulp! (1985): dura menos de un minuto, y hasta hoy se discute si cuenta como tema aparte de los once restantes.",
+      "fuentes": ["RES-20"],
+      "esLeyenda": false,
       "sensibleA": [],
       "estado": "listo"
     }

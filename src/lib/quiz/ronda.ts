@@ -34,6 +34,95 @@ export interface Jugable {
 /** Orden de `BR-01`. El indice es lo que hace comparable la regla 2. */
 const ORDEN: Record<Dificultad, number> = { facil: 0, media: 1, dificil: 2 };
 
+/**
+ * En que proporcion se mezclan los tres niveles dentro de una ronda.
+ *
+ * **Son los numeros del piso de `US-01`, no una preferencia de este archivo**: `producto`
+ * pide 40 preguntas con minimo 10 faciles, 15 medias y 15 dificiles, *"para que `BR-01` no
+ * repita siempre el mismo"*. Una ronda es una muestra del banco, asi que se muestrea en la
+ * proporcion en que el banco esta declarado. Para la ronda de 8 de `US-01` da 2 / 3 / 3.
+ *
+ * **Por que existe esta constante — el defecto que arregla.** Hasta el ciclo 7 la ronda se
+ * llenaba tomando del pozo mas facil hasta completar el largo. Con 10 faciles en el banco y
+ * una ronda de 8, eso significaba que **toda partida era ocho faciles**: simulando 300
+ * rondas contra el banco real salieron 2.400 preguntas y **las 2.400 eran faciles**. Las 15
+ * medias y las 15 dificiles no salian nunca, y la categoria `letras` entera —recien cerrada
+ * en el ciclo 7— era inalcanzable. El banco tenia 40 preguntas y el jugador veia 10.
+ *
+ * Cumplia `BR-01` al pie de la letra (arranca facil, la dificultad nunca baja) y traicionaba
+ * las tres razones por las que `BR-01` existe.
+ */
+const MEZCLA: Record<Dificultad, number> = { facil: 10, media: 15, dificil: 15 };
+
+/**
+ * Cuantos items de cada nivel entran en la ronda.
+ *
+ * Reparte `largo` segun `MEZCLA` por resto mayor, y despues **acomoda contra lo que el
+ * banco tiene de verdad**: si un nivel no llega a su cupo, la diferencia se la reparten los
+ * otros. Sin eso, un banco a medio llenar serviria rondas mas cortas que `largo`.
+ *
+ * El pozo de faciles siempre aporta al menos uno, porque el primero de la partida sale de
+ * ahi (`BR-01` punto 1) y ese lugar no lo puede ocupar otro nivel.
+ */
+function repartirCupo(
+  largo: number,
+  disponibles: Readonly<Record<Dificultad, number>>,
+): Record<Dificultad, number> {
+  const niveles = ['facil', 'media', 'dificil'] as const;
+  const total = MEZCLA.facil + MEZCLA.media + MEZCLA.dificil;
+
+  const exacto: Record<Dificultad, number> = {
+    facil: (largo * MEZCLA.facil) / total,
+    media: (largo * MEZCLA.media) / total,
+    dificil: (largo * MEZCLA.dificil) / total,
+  };
+  const cupo: Record<Dificultad, number> = {
+    facil: Math.floor(exacto.facil),
+    media: Math.floor(exacto.media),
+    dificil: Math.floor(exacto.dificil),
+  };
+
+  // El primero de la partida es facil si o si: el pozo facil nunca aporta cero.
+  if (cupo.facil === 0) cupo.facil = 1;
+
+  // Los lugares que dejo el redondeo van a los niveles con el resto mas grande.
+  const porResto = [...niveles].sort(
+    (a, b) => ((exacto[b] % 1) - (exacto[a] % 1)) || (ORDEN[a] - ORDEN[b]),
+  );
+  let libres = largo - (cupo.facil + cupo.media + cupo.dificil);
+  while (libres > 0) {
+    for (const n of porResto) {
+      if (libres <= 0) break;
+      cupo[n]++;
+      libres--;
+    }
+  }
+  // Si forzar el facil se paso del largo, se lo devuelve el nivel mas holgado.
+  for (let sobra = -libres; sobra > 0; sobra--) {
+    const n = [...niveles].sort((a, b) => cupo[b] - cupo[a])[0]!;
+    cupo[n]--;
+  }
+
+  // Nadie puede dar mas de lo que tiene. Lo que falte se reparte entre los que sí pueden.
+  let deuda = 0;
+  for (const n of niveles) {
+    if (cupo[n] > disponibles[n]) {
+      deuda += cupo[n] - disponibles[n];
+      cupo[n] = disponibles[n];
+    }
+  }
+  while (deuda > 0) {
+    const pueden = niveles.filter((n) => cupo[n] < disponibles[n]);
+    if (pueden.length === 0) break;
+    for (const n of pueden) {
+      if (deuda <= 0) break;
+      cupo[n]++;
+      deuda--;
+    }
+  }
+  return cupo;
+}
+
 export class RondaImposible extends Error {}
 
 /** Fisher-Yates con azar inyectable. */
@@ -80,12 +169,17 @@ export function armarRonda<T extends Jugable>(
     dificil: barajar(resto.filter((i) => i.dificultad === 'dificil'), azar),
   };
 
+  // El primero ya gasto un lugar del pozo facil, asi que el cupo lo cuenta con el +1.
+  const cupo = repartirCupo(largo, {
+    facil: porNivel.facil.length + 1,
+    media: porNivel.media.length,
+    dificil: porNivel.dificil.length,
+  });
+
   const ronda: T[] = [primero];
   for (const nivel of ['facil', 'media', 'dificil'] as const) {
-    for (const it of porNivel[nivel]) {
-      if (ronda.length >= largo) break;
-      ronda.push(it);
-    }
+    const cuantos = nivel === 'facil' ? cupo.facil - 1 : cupo[nivel];
+    for (const it of porNivel[nivel].slice(0, Math.max(0, cuantos))) ronda.push(it);
   }
   return ronda.map((it) => barajarOpciones(it, azar));
 }

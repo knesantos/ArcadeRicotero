@@ -2,13 +2,20 @@
 
 > Consume: `Docs/BRIEF.md` ("Listo de la v1", "Orden de corte", "Criterios no
 > negociables", riesgos 4 y 6), `Docs/DECISIONES.md` `D-05`, `D-04`, `D-06`, `D-08`,
-> `D-09`, `D-10`.
+> `D-09`, `D-10`, `D-24`.
 >
 > Los cuatro juegos (quiz, adivinar el tema, completar la letra, adivinar la tapa o el
 > disco) están **confirmados por `D-05`** en el `/kickoff` del usuario — este documento
 > no los re-discute. Lo que faltaba y produce este archivo: criterio de aceptación por
 > juego, piso de ítems, y las reglas de negocio que el brief dejó como `PENDIENTE` a
 > cargo de `producto` (dificultad de "completar la letra", puntaje del reveal de audio).
+>
+> **Revisión 2026-08-24 (`T-99`, ciclo 7).** Consume además `D-24` y los dos hilos que la
+> devuelven a `producto`: `Docs/SUGERENCIAS/HILO-para-producto-mecanica-y-escalera-de-us02.md`
+> y `Docs/SUGERENCIAS/HILO-mapa-del-juego-de-referencia.md`. `US-02` ya estaba construida
+> con seis intentos y buscador cuando `BR-02` todavía describía intento único con cuatro
+> opciones — esta revisión hace que la regla escrita diga lo que el juego hace. Toca
+> `US-02`, `BR-02`, `BR-04` y el piso de `US-02`. El resto del documento no se tocó.
 
 ## Por qué existe el piso de ítems
 
@@ -99,6 +106,13 @@ alguna pregunta usa texto libre en vez de opción múltiple (dueño `experiencia
 
 **Prioridad:** Alta (P0) — se defiende recortando piso antes que salir (`D-05`).
 
+> **Revisión 2026-08-24, sobre `D-24` y `T-99`.** El criterio 1 describía **intento
+> único** ("si falla, el ítem se cierra en 0 puntos") y no fijaba largo de ronda. El
+> juego construido, calcado a propósito del juego de referencia (`D-24`), es **seis
+> intentos con desbloqueo** y una vuelta de **cuatro temas**. Se reescribe el criterio 1
+> para que describa eso. Los criterios 2 y 3 no cambian de mecánica y quedan como están,
+> salvo el aviso sobre `US-02` criterio 3 en `PENDIENTE`, al final del archivo.
+
 Como jugador que reconoce temas de oído, quiero escuchar un fragmento cada vez más
 largo de un tema y arriesgar cuál es, para demostrar que lo reconozco con lo mínimo
 posible y ganar más puntos cuanto menos necesité escuchar.
@@ -106,13 +120,19 @@ posible y ganar más puntos cuanto menos necesité escuchar.
 **Criterio 1 — caso feliz:**
 - **Given** un jugador arranca un ítem nuevo, que por `BR-01` es de nivel Fácil si es el
   primero de la partida.
-- **When** se reproduce el paso 1 del reveal (el fragmento más corto).
-- **Then** el jugador puede responder inmediatamente o pedir más audio, tantas veces como
-  quiera, antes de responder (`BR-02`); si responde bien en el paso 1 obtiene el puntaje
-  máximo de la tabla de `BR-02`. La respuesta es un **intento único**: si falla, el ítem
-  se cierra en 0 puntos, se revela la respuesta correcta, y la partida sigue con el
+- **When** se reproduce el paso 1 del reveal (0,1 seg) y el jugador busca un título en el
+  buscador de los 105 temas de `RES-20` y **arriesga** una respuesta, o **pasa** si no
+  tiene ningún candidato — tiene **seis intentos por tema**, uno por escalón (`BR-02`).
+- **Then** cada intento gastado (arriesgar mal, o pasar) abre el escalón siguiente de
+  audio; si acierta en cualquiera de los seis, el ítem se cierra con el puntaje del
+  escalón en que acertó (tabla de `BR-02`); si agota los seis intentos sin acertar, el
+  ítem se cierra en 0 puntos, se revela la respuesta correcta, y la partida sigue con el
   próximo ítem sin bloquear al jugador (mismo principio de continuidad que `US-01`
-  criterio 2).
+  criterio 2). **Una vuelta son cuatro temas**: a un ritmo de hasta seis intentos por
+  tema —cada uno con su propio audio y su tipeo en el buscador— cuatro temas llenan los
+  dos o tres minutos del brief con el mismo margen que el quiz reserva para sus 8
+  preguntas más simples; `experiencia` valida el tiempo real y puede ajustar el número
+  vía `Docs/SUGERENCIAS/`.
 
 **Criterio 2 — caso borde (sin sonido disponible):**
 - **Given** un jugador abre el juego con el dispositivo en silencio o sin auriculares.
@@ -128,17 +148,30 @@ posible y ganar más puntos cuanto menos necesité escuchar.
   del ítem (acertó o no, puntos ganados) sin que un enlace roto le impida cerrar la
   partida.
 
-**Piso de ítems: 20 temas**, cada uno con fragmento de audio propio y link a Spotify.
-- Mínimo 5 de nivel Fácil (hits reconocibles), resto repartido en Media/Difícil.
-- **Por qué 20 y no 40 como el quiz:** cada ítem acá cuesta más — necesita producir un
-  fragmento de audio (bajarlo de YouTube y recortarlo, `D-06`, trabajo manual del
-  usuario), no solo redactar texto. Un piso menor que el del quiz refleja ese costo real
-  sin bajar tanto como para que el jugador que vuelve escuche siempre las mismas 5
-  canciones.
+**Piso de ítems: 30 temas** (subido de 20 — revisión 2026-08-24, ver nota abajo), cada
+uno con fragmento de audio propio.
+- Mínimo 8 de nivel Fácil (hits reconocibles), resto repartido en Media/Difícil. Sube de
+  5 a 8 en la misma proporción que el piso: mantiene el ~25-27% que ya usan los otros
+  tres juegos (10/40 del quiz, 4/15 de letras), para que `BR-01` no repita siempre el
+  mismo puñado de temas fáciles.
+- **Por qué sube de 20 a 30 y no se queda ni iguala al quiz (revisión 2026-08-24, sobre
+  `D-24`):** el piso original cargaba **dos** costos por ítem — producir el fragmento de
+  audio (`D-06`) y curar tres distractores para el múltiple choice que `BR-04` le exigía
+  hasta el 19 de agosto. El segundo costo **desapareció**: con el buscador de `D-24` la
+  respuesta sale de elegir un título entre los 105 de `RES-20`, un pool compartido por
+  todos los ítems, no un conjunto de opciones que haya que redactar uno por uno. Lo único
+  que sigue costando por ítem es el fragmento de audio, y ese costo **no bajó** — sigue
+  siendo trabajo manual del usuario (`D-06`). Por eso el piso sube (se fue la mitad del
+  costo original), pero se queda lejos del piso de 40 del quiz (la otra mitad, la que no
+  se fue, sigue siendo más cara que redactar una pregunta de texto).
+- **Esto toca la definición de "Listo" de la v1.** `Docs/BRIEF.md`, sección "Listo de la
+  v1", cita literalmente "cada uno con su piso de ítems cumplido (40 / 20 / 15 / 10)" —
+  ese segundo número queda desactualizado hasta que se corrija ahí. No lo edito en este
+  archivo porque `Docs/BRIEF.md` no es mío; queda anotado en `PENDIENTE`.
 
-**Queda fuera de esta historia:** la vía técnica exacta del link o embed de Spotify
-(`ADR-01`, dueño `arquitectura`); la duración exacta en segundos de cada paso del reveal
-(dueño `arquitectura`, ver propuesta en `Docs/SUGERENCIAS/`).
+**Queda fuera de esta historia:** cómo se sirve el tema completo al revelar (`D-22`
+lo saca de Spotify y lo pasa a mp3 propio; el criterio 3 de esta historia y el bullet de
+arriba todavía describen la vía vieja — ver `PENDIENTE`, no es parte de esta revisión).
 
 ---
 
@@ -146,78 +179,131 @@ posible y ganar más puntos cuanto menos necesité escuchar.
 
 **Aplica a:** `US-02`.
 
-> **Revisión 2026-08-19.** La mecánica de intentos de esta regla se corrige a partir de
+> **Revisión 2026-08-19 (histórica, superada por la de abajo).** La mecánica de intentos
+> de esta regla se corrigió a partir de
 > `Docs/SUGERENCIAS/ARQ-para-producto-opciones-adivinar-tema.md` (`arquitectura`, `T-24`).
 > El texto original permitía errar gratis en cada paso; combinado con `BR-04` (4 opciones,
-> ahora extendida también a `US-02` — ver `BR-04`) eso le daba a un jugador que no
-> reconoce nada un esperado de 70 puntos con piso de 40, y volvía inalcanzables el paso 5
-> y la rama de 0 puntos. Verificación aritmética al final de esta regla.
+> extendida entonces también a `US-02`) eso le daba a un jugador que no reconoce nada un
+> esperado de 70 puntos con piso de 40, y volvía inalcanzables el paso 5 y la rama de 0
+> puntos. La corrección de esa fecha fue **intento único**: errás y el ítem se cierra en
+> cero, sin reintento.
 
-**Pasos:** el reveal tiene **5 pasos fijos**, numerados 1 a 5, del fragmento más corto
-(arranca en 0,1 seg, según el brief) al fragmento más largo disponible. `producto` fija
-la **cantidad** de pasos y su valor en puntos; `arquitectura` fija la **duración exacta
-en segundos** de cada paso dentro de su spec de precarga (pendiente — ver
-`Docs/SUGERENCIAS/PRD-para-arquitectura-pasos-reveal-audio.md`).
+> **Revisión 2026-08-24, sobre `D-24` y `T-99`.** El usuario trajo el juego que quiere
+> calcado (relevado en `Docs/SUGERENCIAS/HILO-mapa-del-juego-de-referencia.md`) y hace
+> **exactamente lo contrario** de la revisión del 19 de agosto: no hay intento único, hay
+> **seis intentos**, y errar —o pasar— es lo que abre el escalón siguiente. `US-02` ya
+> está construida así (`src/lib/tema/escalera.ts`, `src/scripts/partida-tema.ts`); esta
+> revisión hace que la regla escrita diga lo que el juego hace. Reemplaza "la respuesta es
+> un solo intento por ítem" y la tabla de 5 filas de la revisión anterior. **Por qué no
+> reabre el agujero que motivó el intento único:** ese agujero existía porque, con 4
+> opciones, errar gratis era una máquina de descartar hasta la última opción
+> sobreviviente. Ahora no hay opciones que descartar — hay un buscador sobre 105 títulos
+> (`BR-04`, revisión de esta misma fecha) — así que errar ya no elimina nada útil para el
+> jugador. Castigar el error con el ítem entero, en ese contexto, solo servía para cerrar
+> el molinete al que entra sin reconocer nada, dejándolo con 0,1 segundo escuchado y nada
+> más (`D-14`). Verificación aritmética completa al final de esta regla.
 
-**Mecánica (revisada — intento único por ítem):** el jugador puede pedir "más audio" en
-cualquier momento, tantas veces como quiera, antes de responder — eso no cuesta puntos,
-solo tiempo de partida. Pero **la respuesta es un solo intento por ítem**: al entregarla,
-el ítem queda resuelto en el acto.
-- Si es correcta, se anota el puntaje de la tabla de abajo según el paso en que se
-  entregó esa única respuesta.
-- Si es incorrecta, el ítem se marca fallado con **0 puntos**, se revela la respuesta
-  correcta, y la partida sigue con el próximo ítem — sin una segunda oportunidad dentro
-  del mismo ítem. Mismo principio que el quiz (`BR-04`): errar no es gratis.
+**Pasos:** el reveal tiene **seis pasos fijos**, numerados 1 a 6, de 0,1 a 15 segundos:
+0,1 · 0,5 · 2 · 4 · 8 · 15. Los cinco primeros son los que ya fijaba esta regla desde el
+19 de agosto; el sexto lo agrega `D-24` porque la escalera del juego de referencia tiene
+un escalón más. La duración exacta en segundos deja de ser un `PENDIENTE` de
+`arquitectura`: `D-24` la fijó junto con la mecánica y `arquitectura` ya la aplicó en
+`CTR-01.9`.
 
-Esto reemplaza la redacción anterior ("puede haber errado una respuesta antes de acertar;
-eso no cambia el cálculo"), que era justamente la que abría la cuenta de 70/40: permitía
-ensayar una opción por paso sin penalidad real y llegar garantizado a la última opción
-sobreviviente.
+**Mecánica (reescrita — seis intentos con desbloqueo):** el jugador tiene **seis
+intentos por tema**, uno por escalón. En cada intento puede:
+- **Arriesgar** una respuesta, elegida de un buscador con autocompletado sobre los 105
+  títulos de `RES-20` — no hay opciones que contar (`BR-04` ya no aplica a este juego).
+- **Pasar**, si no tiene ningún candidato para proponer.
 
-**Tabla de puntaje, fija (sin cambios):**
+Las dos acciones cuestan lo mismo, **un intento**, y las dos abren el escalón siguiente
+(más audio). No hay forma de escuchar más sin gastar un intento, y no hay forma de gastar
+un intento sin recibir más audio a cambio.
 
-| Paso alcanzado al responder | Puntos si acierta |
-|---|---|
-| Paso 1 (0,1 seg) | 100 |
-| Paso 2 | 80 |
-| Paso 3 | 60 |
-| Paso 4 | 40 |
-| Paso 5 (fragmento completo) | 20 |
+- **Si acierta:** el ítem se cierra en el acto con el puntaje de la tabla de abajo, según
+  el escalón en el que respondió.
+- **Si se le acaban los seis intentos sin acertar** (haya arriesgado, pasado, o combinado
+  ambas cosas): el ítem se cierra en **0 puntos**, se revela la respuesta correcta, y la
+  partida sigue con el próximo ítem — mismo principio de continuidad que el quiz
+  (`US-01` criterio 2).
 
-Acertar en el paso 1 sin haber pedido audio extra da el máximo. Acertar recién en el
-fragmento completo (paso 5) da el piso de 20 puntos **entre las respuestas correctas** —
-nunca 0 por haber tardado, para no castigar con dureza al que necesitó todo el contexto
-(coherente con "sin muro de entrada"). **0 puntos es exclusivamente el resultado de una
-respuesta incorrecta** (o de no responder nunca), nunca el resultado de tardar en acertar.
+**Por qué "pasar" cuesta un intento y no es gratis** — es la mitad de la mecánica que el
+mapa del juego de referencia dejó abierta para que `producto` la confirmara. Pasar y
+arriesgar le dan al jugador exactamente lo mismo, el escalón siguiente, así que cobrarle
+distinto premiaría la inacción por sobre el intento. Y hay un motivo de fondo: si pasar
+fuera gratis, la ronda de seis intentos dejaría de ser un techo real — nada impediría
+escuchar los 15 segundos completos sin gastar el recurso que hace que el ítem cierre, y
+la vuelta de cuatro temas dejaría de caber en los dos o tres minutos del brief. Con los
+seis intentos parejos, ese techo se sostiene. **Pasar existe igual, y no es decorativo:**
+es la salida honesta para el jugador que no reconoce nada del catálogo y no tiene ningún
+título para proponer — nadie está obligado a tipear una respuesta que no tiene, y esa es
+la otra mitad de "sin muro de entrada" (`D-14`). Coincide con el juego de referencia, que
+cobra lo mismo por *Skip* que por errar.
 
-**Si nunca responde:** si el jugador pasa al siguiente ítem sin arriesgar una respuesta,
-cuenta igual que un fallo — 0 puntos, respuesta revelada, la partida sigue.
+**Tabla de puntaje** (las cinco primeras filas son las que ya tenía esta regla, sin
+tocar; la sexta la agrega esta revisión):
+
+| Paso alcanzado al responder | Segundos | Puntos si acierta |
+|---|---|---|
+| 1 | 0,1 s | 100 |
+| 2 | 0,5 s | 80 |
+| 3 | 2 s | 60 |
+| 4 | 4 s | 40 |
+| 5 | 8 s | 20 |
+| 6 (fragmento completo) | 15 s | **10** |
+
+**Por qué 10 y no 0 en el paso 6:** dos partes de esta regla siguen intactas sin
+excepción. Primero, **0 puntos es exclusivamente el resultado de una respuesta
+incorrecta** (o de agotar los seis intentos sin responder), nunca el resultado de haber
+tardado en acertar. Segundo, un acierto **nunca puede valer 0**, porque eso premiaría
+igual al que reconoció el tema recién en el fragmento completo y al que directamente no
+lo sacó. **Por qué 10 y no otro número:** confirmo el valor que `D-24` dejó provisorio.
+Sigue la caída de a 20 puntos que traían los primeros cuatro escalones y la suaviza en
+los últimos dos —de 40 a 20 y de 20 a 10— para no tocar el piso. Es además el valor que
+ya está escrito en `src/lib/tema/escalera.ts`, así que confirmarlo cierra la brecha entre
+esta regla y el juego construido sin pedirle a nadie que retoque una línea de código.
+
+**Si nunca responde:** si el jugador agota los seis intentos sin haber arriesgado nunca
+(pasó las seis veces), cuenta igual que agotar los seis fallando — 0 puntos, respuesta
+revelada, la partida sigue.
 
 **Verificación aritmética — jugador que no reconoce absolutamente nada:**
 
-Con intento único no hay eliminación de opciones posible (no existe una segunda entrega
-que aproveche la información de un descarte previo), así que la probabilidad de acertar
-de un jugador sin ningún reconocimiento es 1/4, sea cual sea el paso en que decida
-responder — escuchar más audio no le suma información si no reconoce el tema.
+Cambia de raíz respecto de la verificación de la revisión anterior, porque cambió el
+mecanismo de responder: ya no hay 4 opciones entre las que tirar una moneda, hay un
+buscador sobre los **105 títulos** de `RES-20`. Para un jugador que no reconoce el tema
+pero conoce el catálogo, arriesgar un título al azar cuesta lo mismo que pasar y encima
+suma una chance de acertar — así que la mejor estrategia posible es tirar seis títulos
+distintos, uno por intento, nunca pasar de arranque.
 
-| Estrategia del jugador sin reconocimiento | Cálculo | Esperado |
+Con seis títulos distintos elegidos sin ninguna información, la probabilidad de que
+alguno sea el correcto es 6/105, y por simetría —cualquiera de los seis intentos tiene la
+misma chance de ser el que acierta— la probabilidad de acertar justo en el intento `n`
+(para `n` de 1 a 6) es 1/105 en cada uno:
+
+| Resultado | Probabilidad | Puntos |
 |---|---|---|
-| Responde ya en el paso 1 (la que más le conviene: esperar no sube su 1/4, solo baja el premio) | 1/4 × 100 + 3/4 × 0 | **25** |
-| Espera y responde recién en el paso 5 | 1/4 × 20 + 3/4 × 0 | **5** |
+| Acierta en el paso 1 | 1/105 | 100 |
+| Acierta en el paso 2 | 1/105 | 80 |
+| Acierta en el paso 3 | 1/105 | 60 |
+| Acierta en el paso 4 | 1/105 | 40 |
+| Acierta en el paso 5 | 1/105 | 20 |
+| Acierta en el paso 6 | 1/105 | 10 |
+| No acierta nunca | 99/105 | 0 |
 
-El mejor esperado posible para ese jugador (25) es el mismo techo que `BR-04` fija para
-tirar al azar en el quiz con 4 opciones — la misma cuenta de azar, ahora consistente entre
-los dos juegos de opción múltiple. El piso deja de ser 40 y pasa a ser **0** bajo cualquier
-estrategia: una respuesta incorrecta cierra el ítem sin reintento.
+**Esperado:** (100+80+60+40+20+10)/105 = 310/105 ≈ **2,95 puntos por tema**. Contra el
+techo de 25 que fijaba la verificación anterior —y que `BR-04` sigue usando como vara
+para el quiz con 4 opciones—, el azar puro rinde acá casi diez veces menos. Dejar
+responder sin castigar el error de más no reabre el agujero que motivó el intento único
+del 19 de agosto: con 105 títulos, el azar directamente no paga.
 
-**Paso 5 y rama de 0, alcanzables:**
-- **Rama de 0 puntos:** es el resultado de cualquier respuesta incorrecta, en cualquier
-  paso — para el jugador sin reconocimiento de la tabla de arriba ocurre el 75% de las
-  veces. Deja de ser un estado inalcanzable y pasa a ser el más probable para quien no
-  sabe.
-- **Paso 5 (20 puntos):** ocurre cada vez que un jugador, sepa o no, escucha el fragmento
-  completo antes de animarse a responder y acierta recién ahí. Ya no queda bloqueado por
-  una eliminación de opciones que garantizaba acertar antes de llegar a ese paso.
+**Rama de 0 y paso 6, alcanzables:**
+- **Rama de 0:** con la cuenta de arriba, es el resultado del **94,3%** de las tiradas de
+  un jugador sin reconocimiento (99/105). Sigue siendo, con enorme margen, el resultado
+  más probable para quien no sabe — la promesa de "premiar al que sabe" queda intacta.
+- **Paso 6 (10 puntos):** se alcanza cada vez que un jugador, sepa o no, escucha el
+  fragmento completo de 15 segundos antes de reconocer el tema. No hace falta ninguna
+  eliminación de opciones para llegar ahí: alcanza con pasar o arriesgar cinco veces.
 
 ---
 
@@ -294,24 +380,33 @@ cuánta letra por ítem queda expuesta.
 
 ## BR-04 — Cantidad de opciones en una pregunta de múltiple choice
 
-**Confirmo 4**, ni tres ni cinco. **Aplica a `US-01`, `US-02` y `US-04`**, el mismo número
-para las tres: la cuenta de azar no distingue si la opción es texto, un tema de audio o
-una tapa. Con 4 opciones el que no sabe nada acierta al azar el 25% de las veces; con 3
-sube al 33% y empieza a rendirle casi como al que sabe, justo en los ítems Fáciles que
-`BR-01` pone primero en toda partida — eso vacía la promesa de "premiar al que sabe". Con
-5 el azar baja al 20%, pero choca con "jugable con el pulgar" (`D-09`, no negociable): 5
-puntos porcentuales de rigor no justifican ceder un criterio que no cede.
+**Confirmo 4**, ni tres ni cinco. **Aplica a `US-01` y `US-04`**, el mismo número para
+las dos: la cuenta de azar no distingue si la opción es texto o una tapa. Con 4 opciones
+el que no sabe nada acierta al azar el 25% de las veces; con 3 sube al 33% y empieza a
+rendirle casi como al que sabe, justo en los ítems Fáciles que `BR-01` pone primero en
+toda partida — eso vacía la promesa de "premiar al que sabe". Con 5 el azar baja al 20%,
+pero choca con "jugable con el pulgar" (`D-09`, no negociable): 5 puntos porcentuales de
+rigor no justifican ceder un criterio que no cede.
 
-> **Extensión a `US-02`, 2026-08-19.** `BR-04` no nombraba a `US-02` porque esa historia
-> dejó el mecanismo de respuesta explícitamente fuera de alcance. `arquitectura` escaló la
-> ausencia de regla en `Docs/SUGERENCIAS/ARQ-para-producto-opciones-adivinar-tema.md` al
-> escribir `CTR-03`, porque sin esta regla, 4 opciones combinadas con el reveal progresivo
-> de `BR-02` (tal como estaba redactado) rendían 70 puntos esperados con piso de 40 para
-> quien tira al azar, y volvían inalcanzables el paso 5 y la rama de 0 puntos. Cierro las
-> dos mitades del problema juntas: confirmo 4 opciones acá, y corrijo la mecánica de
-> intentos en `BR-02` para que la cuenta de azar vuelva a valer 25% esperado, igual que en
-> el quiz (verificación completa en `BR-02`). `modoRespuesta: "opciones"` en `CTR-03` deja
-> de ser un valor de trabajo — queda confirmado.
+> **Extensión a `US-02`, 2026-08-19 (histórica, retirada por la revisión de abajo).**
+> `BR-04` no nombraba a `US-02` porque esa historia dejó el mecanismo de respuesta
+> explícitamente fuera de alcance. `arquitectura` escaló la ausencia de regla en
+> `Docs/SUGERENCIAS/ARQ-para-producto-opciones-adivinar-tema.md` al escribir `CTR-03`,
+> porque sin esta regla, 4 opciones combinadas con el reveal progresivo de `BR-02` (tal
+> como estaba redactado) rendían 70 puntos esperados con piso de 40 para quien tira al
+> azar, y volvían inalcanzables el paso 5 y la rama de 0 puntos. Esa fecha cerró las dos
+> mitades del problema juntas: confirmó 4 opciones para `US-02` y corrigió `BR-02` a
+> intento único.
+
+> **Retiro de `US-02`, 2026-08-24, sobre `D-24` y `T-99`.** `US-02` deja de responder por
+> opciones: el buscador con autocompletado de `D-24`, sobre los 105 títulos de `RES-20`,
+> reemplaza el múltiple choice que la extensión de arriba le había impuesto.
+> **`BR-04` deja de aplicar a `US-02`** — vuelve a aplicar solo a `US-01` y `US-04`, como
+> en su redacción original. No hay "cuatro opciones" que contar cuando la respuesta sale
+> de elegir un título de una lista de 105: el control del azar de ese juego se movió
+> entero a `BR-02`, que lo recalcula contra el tamaño real del catálogo (105) en vez de
+> contra un número fijo de opciones. `modoRespuesta: "buscador"` en `CTR-03.5` es el valor
+> que corresponde ahora; `"opciones"` queda retirado para este juego.
 
 ---
 
@@ -418,7 +513,7 @@ como parte de la mecánica de dificultad (dueño `experiencia`, con el material 
 | Juego | Piso | Mínimo Fácil | Costo dominante |
 |---|---|---|---|
 | Quiz (`US-01`) | 40 preguntas | 10 | Texto — el más barato, se construye primero |
-| Adivinar el tema (`US-02`) | 20 temas | 5 | Audio propio por ítem (`D-06`) |
+| Adivinar el tema (`US-02`) | 30 temas *(subido de 20 el 2026-08-24)* | 8 | Audio propio por ítem (`D-06`) — bajó al perder la curación de distractores que exigía el múltiple choice (`D-24`) |
 | Completar la letra (`US-03`) | 15 letras | 4 | Transcripción + mayor exposición a derechos |
 | Adivinar la tapa (`US-04`) | 10 tapas | 3 | Imagen con derechos; primero que se cae (`D-05`) |
 
@@ -429,16 +524,28 @@ motor terminado.
 
 ## PENDIENTE
 
-- **Duración exacta en segundos de cada paso del reveal de audio.** Dueño:
-  `arquitectura`. `BR-02` fija que sean 5 pasos con esos puntos; falta mapear cada paso
-  a segundos concretos dentro del presupuesto de precarga que ya está `PENDIENTE` en el
-  brief. Dejé propuesta en
-  `Docs/SUGERENCIAS/PRD-para-arquitectura-pasos-reveal-audio.md`.
+- ~~**Duración exacta en segundos de cada paso del reveal de audio.**~~ **[RESUELTO
+  2026-08-24 por `D-24`.]** Ya no es un pendiente de `arquitectura`: la escalera de seis
+  pasos y sus segundos (0,1 · 0,5 · 2 · 4 · 8 · 15) quedaron fijados junto con la
+  mecánica de `US-02`, y `BR-02` los cita ahora.
 - **Número real de discos de estudio para el piso de `US-04`.** El piso de 10 es un
   mínimo jugable, no la cobertura final. Dueño: `investigador`, ficha `RES-XX`.
-- **Validación del tiempo real de partida** (8 preguntas / 5 temas / 5 letras / 6 tapas
-  son supuestos de pacing, no medidos). Dueño: `experiencia`, al diseñar el flujo de
-  sesión.
+- **`US-02` criterio 3 y su bullet de "queda fuera de esta historia" describen todavía la
+  vía vieja de Spotify** ("si no tiene la app o no tiene Premium…", "la vía técnica
+  exacta del link o embed de Spotify"). `D-22` reemplazó esa vía por mp3 propio del
+  sitio antes de esta revisión, y el juego construido (`src/scripts/partida-tema.ts`,
+  `pintarRevelacion`) ya no toca Spotify — usa `tema.entero` y un `<audio>` propio. No lo
+  reescribí en `T-99` porque no era su alcance (la tarea pedía `BR-02`, no `D-22`).
+  Dueño: `producto`, próxima ráfaga.
+- **El piso de `US-02` subió a 30 (revisión 2026-08-24) y `Docs/BRIEF.md` sigue citando
+  "(40 / 20 / 15 / 10)" en "Listo de la v1".** Ese número quedó desactualizado. No lo
+  edito acá porque `Docs/BRIEF.md` no es carpeta de `producto` en el sentido de "archivo
+  que este PRD sobrescribe" — lo fija `/kickoff` — pero si alguien lo vuelve a tocar,
+  el número correcto para `US-02` es 30. Dueño: quien próximamente actualice el brief.
+- **Validación del tiempo real de partida** (8 preguntas / 5 letras / 6 tapas siguen
+  siendo supuestos de pacing, no medidos; los 4 temas de `US-02` dejaron de serlo el
+  2026-08-24: `D-24` los confirmó junto con la mecánica, no es una cuenta de `producto`
+  a ojo). Dueño: `experiencia`, al diseñar el flujo de sesión.
 - **Tolerancia de matching de texto libre** en "completar la letra" si el input no es
   múltiple choice. Dueño: `experiencia` (mecanismo), `contenido` (qué cuenta como
   correcto).

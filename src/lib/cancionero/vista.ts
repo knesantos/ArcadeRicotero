@@ -28,7 +28,7 @@ export function textoDeAcordes(marcas: readonly Marca[], semitonos = 0, tono?: s
 
 /** Un renglón listo para pintar: el de acordes (si hay) y el de letra. */
 export interface RenglonPintado {
-  readonly clase: 'letra' | 'tab' | 'instrumental';
+  readonly clase: 'letra' | 'tab' | 'anotacion' | 'instrumental';
   /** El renglón de acordes ya espaciado. Cadena vacía si esta línea no lleva. */
   readonly acordes: string;
   /** Las marcas crudas, para que el navegador pueda re-transportar sin volver a pedir. */

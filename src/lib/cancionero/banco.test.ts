@@ -69,15 +69,16 @@ test('los tres estados de contenido están poblados y cada uno dice la verdad', 
   // Los dos instrumentales de verdad: no tienen letra porque no la tuvieron nunca.
   assert.deepEqual((porEstado.get('instrumental') ?? []).sort(), ['capricho-magyar', 'pianito-jam']);
 
-  // Los seis que la fuente transcribió solo como tablatura. NO son instrumentales:
-  // tienen letra, simplemente nadie la escribió en la página de la que salieron. Si
-  // alguna vez se consiguen esas letras, este test cambia — y eso es lo correcto.
-  assert.deepEqual(
-    (porEstado.get('solo-tablatura') ?? []).sort(),
-    ['divina-tv-fuhrer', 'etiqueta-negra', 'fuegos-de-octubre', 'san-telmo', 'scaramanzia', 'soga-de-cain'],
-  );
+  // Los que la fuente transcribió solo como tablatura. NO son instrumentales: tienen
+  // letra, simplemente nadie la escribió en la página de la que salieron.
+  //
+  // **Este test ya cambió una vez, y era lo que tenía que pasar.** La versión anterior
+  // listaba seis. El 2026-08-24 el cancionero se rehizo sumando lacuerda.net como fuente y
+  // **cinco de los seis aparecieron con letra**: `divina-tv-fuhrer`, `etiqueta-negra`,
+  // `fuegos-de-octubre`, `san-telmo` y `scaramanzia`. Queda uno.
+  assert.deepEqual((porEstado.get('solo-tablatura') ?? []).sort(), ['soga-de-cain']);
 
-  assert.equal((porEstado.get('letra') ?? []).length, 96);
+  assert.equal((porEstado.get('letra') ?? []).length, 101);
 });
 
 test('lo que no se canta trae su aviso escrito, no un hueco mudo', () => {

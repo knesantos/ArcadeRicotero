@@ -5,8 +5,80 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-08-23
-**Ciclo actual:** **6 — construido, a la espera de una confirmación humana.** Plan en
+**Última actualización:** 2026-08-24
+**Ciclo actual:** **7 — CERRADO.** Plan en `Docs/ORQ/ORQ-plan-ciclo-7.md`, tareas
+`T-97`..`T-112`. `npm test` **212/212**, `npm run check` 0 errores, build de 147 páginas.
+
+> ### Lo que cerró el ciclo
+>
+> - **`US-01` cumplió su piso: 40/40.** Entraron las 10 preguntas de `letras` (`CNT-08`),
+>   con el reparto exacto que pide `producto`: 10 por categoría, 10 fáciles / 15 medias /
+>   15 difíciles. **Es el tercer juego con el piso cumplido**, después de `US-04` y `US-05`.
+> - **Cuatro deudas entre roles, saldadas.** `RES-49` (cifraclub, `INV-23`), `RES-50`
+>   (Vercel y los mp3, `INV-24`), `BR-02` reescrita sobre la mecánica real de `US-02`, y
+>   `CTR-01`/`CTR-03` puestos al día con el juego construido. `CNT-01` fijó el fragmento en
+>   **15,0 s**. `IDEA-11` entró al backlog.
+> - **El cancionero se rehizo y entró entero.** El usuario lo regeneró con tres fuentes
+>   (cifraclub 78, lacuerda.net 20, letras.com 5). **104/105 temas, 101 con letra** — eran
+>   96. Cinco temas que solo tenían tablatura ahora tienen versos.
+> - **El banco de `US-03` pasó de 226 candidatos sobre 13 temas a 1.784 sobre 80.** La hoja
+>   de escucha ahora reparte 24 versos en **24 temas distintos** y 8/8/8 por nivel.
+>
+> ### 🔴 Los tres defectos que el ciclo encontró, y ninguno estaba en el plan
+>
+> **1. El quiz servía solo preguntas fáciles.** `armarRonda` llenaba la ronda desde el pozo
+> más fácil hasta completar el largo. Con 10 fáciles y una ronda de 8, **toda partida era
+> ocho fáciles**: 300 rondas simuladas dieron 2.400 preguntas y **las 2.400 fáciles**. Las
+> 15 medias y las 15 difíciles no salían nunca, y la categoría `letras` recién cerrada era
+> inalcanzable. **El banco tenía 40 preguntas y el jugador veía 10.** Cumplía `BR-01` al pie
+> de la letra y traicionaba las tres razones por las que `BR-01` existe. Arreglado con la
+> mezcla derivada del piso (2/3/3 en una ronda de 8) y cinco tests.
+>
+> **2. Ningún schema se corría.** `banco.ts` decía que la validación la hacía "la
+> verificación", y no existía ningún comando que la hiciera — el mismo defecto que el ciclo
+> 6 ya había encontrado en `letra.schema.json`. Ahora corre (`src/lib/esquemas.test.ts`) y
+> encontró tres cosas al primer intento: acordes mal ingeridos, la notación latina de
+> lacuerda.net sin convertir, y el patrón de id del banco de letras topeado en tres dígitos.
+>
+> **3. Un `testimonio` de la Redondopedia citaba una ficha que no lo dice.** El artículo
+> `mi-perro-dinamita` atribuía a `RES-22` que el tema nació de un verso de Poli. Se leyó el
+> memoir directo: **no está**. El origen real —una prueba de sonido, con Semilla arrancando
+> una línea de bajo— explica además por qué él firma como tercer autor. Corregido, con la
+> página citada.
+>
+> ### Lo que sigue faltando, y no lo puede hacer un programa
+>
+> - **`US-02` no tiene un solo fragmento.** `npm run generar-fragmentos -- "<carpeta>"`,
+>   con ffmpeg, que en esta máquina no está. Y ojo: **`producto` subió el piso de 20 a 30**
+>   (`T-99`), así que los pisos de la v1 ahora son **40 / 30 / 15 / 10**. Sube la vara.
+> - **`US-03` sigue en 0 `listo` sobre 1.784 candidatos.** `npm run hoja-de-escucha` deja
+>   24 versos con el minuto en blanco. Con 15 confirmados el juego se prende solo.
+>
+> ### Deuda declarada
+>
+> **21 temas de lacuerda.net quedan afuera del banco de letras**: es fuente nueva y no tiene
+> ficha. Pedido en `Docs/SUGERENCIAS/HILO-para-investigador-fichar-lacuerda.md`. El
+> generador tiene el mapa en una constante (`FICHA_POR_SITIO`): cuando exista, es una línea.
+>
+> **Tres hallazgos abiertos de `REV-06`** (`FIND-22`..`FIND-24`), todos no bloqueantes.
+> `FIND-24` es de `producto`: si `QZ-038` se queda en `letras` o migra a `historia`.
+>
+> **`RES-48` tiene una cita falsa**: dice "ya en `RES-22`" sobre el origen de *Mi perro
+> dinamita*, y `RES-22` no lo dice. La Redondopedia ya está corregida; **la ficha no**, y es
+> de `investigador`.
+>
+> **`arquitectura` dejó una pregunta abierta para `producto`** sobre la cuota de fáciles de
+> `US-02`, que ya no tiene dónde vivir con el manifiesto nuevo. Está en
+> `Docs/SUGERENCIAS/HILO-para-producto-cuota-de-faciles-en-us02.md`.
+>
+> **Rangos consumidos por el ciclo 7:** `T-97`..`T-112`, `RES-49`, `RES-50`, `CNT-08`,
+> `REV-06`, `FIND-22`..`FIND-24`. `T-103` y `T-105` se cancelaron y sus números no se
+> reutilizan. Libres: `T-113`+, `D-25`+, `RES-51`+, `CNT-09`+, `REV-07`+, `UX-06`+,
+> `BR-17`+, `IDEA-12`+.
+
+---
+
+**Ciclo 6:** **construido, a la espera de una confirmación humana.** Plan en
 `Docs/ORQ/ORQ-plan-ciclo-6.md`, tareas `T-82`..`T-96`. **El usuario trajo el material que
 faltaba** —149 JSON con letra y acordes, raspados con scraper propio de cifraclub y
 letras.com— y eso desbloqueó de un saque los tres frentes que esperaban versos.
@@ -554,10 +626,10 @@ Estados posibles: `pendiente` · `en curso` · `bloqueado` · `hecho` · `cancel
 | **Que el sitio intente hablar como el Indio.** Analizar a fondo letras, entrevistas y demás archivo para destilar una guía de voz por encima de `CNT-02` y `D-17`. El usuario la marcó como idea futura, con esas palabras | usuario, 2026-08-21 | `investigador` junta el corpus (única puerta a la web), `contenido` destila la guía | `Docs/SUGERENCIAS/HILO-para-contenido-e-investigador-voz-del-indio.md` |
 | **Las bandas ricoteras de después de la separación entran a la Redondopedia.** El usuario nombró tres: *La Kermesse Redonda*, *Indio y los Fundamentalistas del Aire Acondicionado* y *Skay y los Fakires*. **Que entran no está en discusión**; falta ficha que verifique los nombres y decisión de `producto` sobre tipo y piso | usuario, 2026-08-21 | `investigador` (ficha), `producto` (tipo + piso), `contenido` (escribe) | `Docs/SUGERENCIAS/HILO-para-producto-y-contenido-bandas-post-separacion.md` |
 
-### Las diez ideas de juegos — `IDEA-01`..`IDEA-10`, guardadas el 2026-08-22
+### Las ideas de juegos guardadas — `IDEA-01`..`IDEA-11`
 
-El usuario tiró diez ideas de una y pidió **guardarlas todas sin empezar ninguna**. Están
-en `Docs/PRODUCTO/PRD-backlog-ideas.md`, cada una con su ancla ricotera verificada contra
+El usuario tiró diez ideas de una y pidió **guardarlas todas sin empezar ninguna**. Esas
+diez están en `Docs/PRODUCTO/PRD-backlog-ideas.md`, cada una con su ancla ricotera verificada contra
 los 105 temas de `RES-20` y con el choque que tiene contra lo ya decidido.
 
 | ID | Idea | Tipo |
@@ -565,13 +637,14 @@ los 105 temas de `RES-20` y con el choque que tiene contra lo ya decidido.
 | `IDEA-01` | Separar los temas en pistas y adivinar | original (probable modo de `US-02`) |
 | `IDEA-02` | Doom gore — *Masacre en el puticlub* | clon vestido |
 | `IDEA-03` | Crazy Toxi-Taxi | clon vestido |
-| `IDEA-04` | Plataformas — *Último bondi a Finisterre* | clon vestido |
+| `IDEA-04` | Plataformas: colgarse del último bondi, con *Gualicho* de fondo | clon vestido |
 | `IDEA-05` | Dibujá tu bandera y colgala | original |
 | `IDEA-06` | Zoológico de los personajes | original (probable tipo nuevo de `US-05`) |
 | `IDEA-07` | Un Pacman en el Savoy | clon vestido |
 | `IDEA-08` | Letras y acordes | original, no es juego |
 | `IDEA-09` | Test de dos ejes: qué tipo de ricotero sos | original |
 | `IDEA-10` | Guitar Hero ricotero | clon vestido |
+| `IDEA-11` | Mayor o menor: qué palabra se dice más en el cancionero | original (género conocido, motor mínimo) |
 
 Dos reglas nuevas salieron de ahí: **`BR-15`** (los clones se adoptan vestidos, no se
 escriben — instrucción transversal del usuario) y **`BR-16`** (una idea no entra a un ciclo
@@ -581,6 +654,36 @@ sin promoverse antes a `US-XX`). Prefijo `IDEA-` registrado en `Docs/IDS.md`.
 abiertas al usuario, listadas al final del PRD: qué es "el gordo Pier" (no figura en los
 105), qué es "la tumba del Indio" de `IDEA-05`, y cuál de las tres salidas de audio quiere
 para `IDEA-10`.
+
+**`IDEA-11` llegó después, el 2026-08-23**, y todavía **no está pegada en el PRD**: la
+carpeta es de `producto`, así que la ficha entera quedó como propuesta en
+`Docs/SUGERENCIAS/HILO-para-producto-idea-11-mayor-o-menor.md`, con el número ya reservado
+en `Docs/IDS.md`. El usuario pidió textual *"no hay que desarrollarlo ahora, agregalo como
+idea"*. Es de las dos más baratas del backlog —el corpus ya está en el repo desde el ciclo
+6— y no toca `BR-03` ni `BR-12` porque muestra palabras sueltas, no versos. **Su único
+choque es serio y está medido:** el conteo es la respuesta correcta, y hoy el cancionero
+trae anotación de cifra adentro de líneas tipadas como letra, así que la palabra más
+cantada de los Redondos da `riff` (306). Sin limpiar eso, el juego le marca error al que
+se sabe el tema.
+
+**`IDEA-04` recibió su meta el 2026-08-23** y tampoco está pegada todavía en el PRD:
+ficha actualizada en `Docs/SUGERENCIAS/HILO-para-producto-idea-04-la-meta-del-bondi.md`.
+El usuario pidió "un mario de plataformas simple pero que hay que llegar a tomar el último
+bondi a Finisterre" — **no es un juego nuevo, es `IDEA-04` con lo que le faltaba**, así que
+no se abrió ID nuevo. La meta **cierra el choque principal que la ficha tenía escrito**: el
+que corta el nivel es el bondi que arranca, no un límite puesto de afuera, y de paso empuja
+los controles hacia un solo botón. Sigue abierto lo caro: motor 2D con licencia (`BR-15`) y
+el skin, que en un plataformas es el más caro de los cinco clones.
+
+**Y el 2026-08-24 el usuario le puso tema: *Gualicho*** (pista 4 del mismo disco), donde el
+bondi a Finisterre está cantado y donde alguien se **cuelga** de él — que es el verbo del
+juego. Con eso `IDEA-04` es **la única de las cinco ideas de clon con su música decidida**, y
+con `D-22` el archivo existe. **Al ir a buscar el verso apareció un agujero:** la letra de
+*Gualicho* no está en el repo —cero líneas cantadas, tres líneas de cifrado tipadas como
+letra— y en el mismo disco *Pogo* está igual y *El árbol del gran bonete* casi. Los tres son
+de cifraclub. Es la misma deuda que bloquea `IDEA-11` y que `US-03` ya paga con sus 226
+versos en borrador.
+
 
 ## Bloqueos abiertos
 
@@ -745,3 +848,6 @@ para `IDEA-10`.
 | 2026-08-22 | **Diez ideas de juegos guardadas como `IDEA-01`..`IDEA-10`, sin empezar ninguna** (`Docs/PRODUCTO/PRD-backlog-ideas.md`). El usuario las tiró de una y pidió explícitamente guardarlas sin desarrollar. Se les creó prefijo propio en vez de escribirlas como `US-`: un `US-XX` acá es un contrato con Given/When/Then y piso, y forzarlo sobre diez ideas sin comprometer habría sido inventarles alcance. Cada título quedó **verificado contra los 105 temas de `RES-20`** antes de escribirlo — *Masacre en el puticlub* (Un baión, 1988), *Toxi-Taxi* (La mosca y la sopa, 1991), *Un Pacman en el Savoy* (¡Bang! ¡Bang!, 1989), *Último bondi a Finisterre* (1998), *Gran Lady* y *Rock para el negro Atila* (Lobo suelto vol. 1, 1993). **Dos reglas nuevas:** `BR-15` (la instrucción transversal del usuario — los clones se adoptan de un genérico y se visten, no se escriben; con las tres consecuencias que arrastra: licencia del motor, el skin es la parte cara, y la música de fondo en loop no está cubierta por ningún ADR) y `BR-16` (una idea no entra a un ciclo sin promoverse antes a `US-XX`). **Tres cosas quedaron abiertas y ninguna la puede contestar la sesión:** "el gordo Pier" no figura en los 105 —lo más cercano es *Pierre, el vitricida*, Gulp! 1985—, "la tumba del Indio" de `IDEA-05` no se dio ni por cierta ni por falsa, y `IDEA-10` (Guitar Hero) tiene bloqueo estructural de audio con tres salidas posibles. Ninguna de las diez es alcance de la v1: `US-02` y `US-03` siguen sin un solo ítem cargado. |
 | 2026-08-22 | **`D-22`: los temas enteros se alojan en el sitio, en mp3.** Decisión directa del usuario — *"Vamos a alojar temas enteros en .mp3 seguro."* **Sacó de Fuera de alcance la línea más estable que tenía el proyecto**, y el motivo no fue una concesión: esa línea contradecía a `D-14`, porque el tema completo era lo único que el sitio le negaba al jugador sin Premium, y los molinetes van abiertos. Corregidos los dos lugares que quedaban diciendo lo contrario (`Docs/BRIEF.md` y `CLAUDE.md`, alcance y motor de audio). **Lo que se cayó:** `E-07` —que `ESTADO.md` tenía como "la pregunta que más pesa"— y `E-04` dejan de decidir si la promesa se cumple; Spotify baja de vía a extra; `BR-06` quedó describiendo un sitio que ya no existe y lleva aviso, sin reescribirse todavía porque depende de si Spotify se queda. **Lo que se cayó del lado bueno:** `IDEA-10` (Guitar Hero) era la única de las diez con bloqueo estructural y el bloqueo era exactamente este — desbloqueada el mismo día, aunque ahora le falta de dónde sale la partitura. **Lo que apareció en su lugar, y es aritmética:** contra las duraciones de `RES-20` (94 de 105 temas, 385 min fichados) el catálogo son **~7,2 horas de audio** — ~300 MB a 96 kbps, ~400 MB a 128, ~600 MB a 192, ~1 GB a 320. El problema pasó de ser de alcance a ser de peso e infraestructura: dónde viven los archivos, si van adentro del repo que Vercel construye, y los límites de Vercel para ese volumen, **que no están fichados y es lo único que conviene chequear antes de subir el primer archivo** (`RES-15` ya descartó el susto de la factura: en Hobby no hay cargo posible). Se le dejó a `arquitectura` todo junto en `Docs/SUGERENCIAS/HILO-para-arquitectura-audio-alojado.md`, incluida la consecuencia que más horas ahorra: si los pasos del reveal se derivan del mp3 entero, el recorte manual de `D-06` casi desaparece. |
 | 2026-08-23 | **La voz del sitio dejó de ser intuición y pasó a estar medida** (`.claude/rules/voz-ricotera.md`). Se tomó la idea guardada del 21. Dos corpus del propio repo: el memoir (`RES-21`, 192.464 palabras) y las letras de los 104 temas (2.958 versos). Lo que salió: el verso mediano son **5 palabras** y el 90% no pasa de 8 — de ahí el techo de las líneas grandes; la letra le habla a alguien (*tu/tus* 146 contra *mi/mis* 115) y prefiere el cuerpo a los colores (75 contra 17); y el habla es corta (oración mediana de 13 palabras), rodea en vez de definir (*una especie de* 49, *más bien* 55) y **declara la duda** (*creo que* 81, *no sé* 71). Los tres antídotos contra la imitación: *che* 9 / *viste* 15 / *digamos* 3 en 192 mil palabras; *los fans* 2 contra *la gente* 333; y épica militante casi nula (*lucha* 6). **La regla prohíbe expresamente que el sitio se haga pasar por él**: una frase inventada con su firma rompería el rótulo `testimonio`, que es la promesa que sostiene todo lo demás (`D-14`). Nació también `src/lib/voz.test.ts` —lo que la sugerencia del 21 marcaba como inexistente—: seis pruebas sobre el copy visible, que encontraron y corrigieron **once botones en infinitivo** contra `D-17`. 185/185. **Y el barrido entró el mismo día**, con las dos decisiones del usuario: la Redondopedia va con prosa con voz y rótulo seco (registro 2 + 3), y el copy nuevo alcanza solo a las superficies que presentan — portada, seis casetes, pantalla 0 y tramos de resultado—, nunca a lo que hay que entender para jugar. 186/186. |
+| 2026-08-23 | **`IDEA-11` guardada, sin empezar: mayor o menor con las palabras del cancionero.** Idea del usuario —arrancás con una palabra y su cantidad de apariciones en la discografía, y vas diciendo si la siguiente se dice más o menos, sumando racha—, con la instrucción explícita de guardarla y no desarrollarla. Ficha completa en `Docs/SUGERENCIAS/HILO-para-producto-idea-11-mayor-o-menor.md` (la carpeta del PRD es de `producto`), número reservado en `Docs/IDS.md`. **No aplica `BR-15`** aunque el género exista: el motor son dos botones, lo caro es el dato — igual que `IDEA-09`. **Lo que la vuelve barata:** el corpus ya está en el repo desde el ciclo 6, no necesita audio, ni imagen, ni ficha de `investigador`, ni motor con licencia; y no roza `BR-03`/`BR-12` porque muestra palabras y números, nunca versos. **Lo que la frena, medido hoy sobre `src/data/cancionero.json`:** de los 104 temas, 96 tienen letra, y contando en crudo las líneas tipadas `t: "letra"` la palabra más frecuente da **`riff` 306 veces** y la segunda `guitarra` 156 — son anotaciones de la cifra viajando adentro de la letra (cifraclub aportó 88 de los 104). Filtrando lo que parece anotación se caen 1.070 líneas y quedan 2.858, con al menos una sucia en 80 temas, y **todavía queda basura arriba**. Como el conteo **es** la respuesta correcta, sin limpiar el corpus el juego rompe lo único estricto de `CLAUDE.md`. Esa limpieza es la misma deuda que ya arrastran `IDEA-08` y `US-03`: se paga una vez y sirve para las tres. |
+| 2026-08-23 | **`IDEA-04` dejó de ser un género y pasó a tener meta: hay que llegar a tomar el último bondi.** El usuario lo pidió como "otro juego" —*"un mario de plataformas simple pero que hay que llegar a tomar el último bondi a Finisterre"*— y **no se abrió ID nuevo a propósito**: es la misma idea del 22, que estaba guardada con la frase pelada *"Plataformas ultimo bondi a finisterre"*. Un ID nuevo para la misma idea es justo lo que `Docs/IDS.md` evita. Ficha actualizada en `Docs/SUGERENCIAS/HILO-para-producto-idea-04-la-meta-del-bondi.md` (la carpeta del PRD es de `producto`). **Lo que la meta resuelve sola:** el choque principal de la ficha era "largo de nivel contra la sesión de dos o tres minutos", y ahora el que corta el nivel es el bondi que arranca — la cuenta regresiva es el micro, no un número en la esquina, que es lo que pide `diseno-marca.md`. Además empuja los controles hacia un solo botón (correr a alcanzar algo que ya se está yendo) y regala la pantalla de derrota: "el último" quiere decir que no hay otro, y quedarse a pie no necesita ni chiste ni consuelo. **Tres precisiones verificadas hoy contra el cancionero:** *Último bondi a Finisterre* es un **disco, no un tema** —los diez temas están cargados y ninguno lleva ese título—, la palabra *bondi* aparece **una sola vez** en los 96 temas con letra y es en *El lobo caído* (Lobo suelto, 1993), ~~y *Finisterre* **no aparece nunca**~~ — **mal medido, y lo corrigió el usuario el 2026-08-24: lo que medí fue el corpus del repo y lo escribí como si fuera un hecho sobre las letras. *Finisterre* está cantado en *Gualicho*, cuya letra el repo no tiene.** Queda pedido a `investigador`: qué es Finisterre, porque el juego puede usar el nombre del disco pero no afirmar qué significa hasta que haya `RES-XX`. Sigue sin empezar, sigue fuera de la v1, y sigue con lo caro abierto: motor 2D con licencia (`BR-15`) y el skin, el más caro de los cinco clones. |
+| 2026-08-24 | **`IDEA-04` tiene tema: *Gualicho*, y el tema corrigió un dato que yo había medido mal el día anterior.** El usuario avisó que el bondi a Finisterre está cantado ahí. **Mi frase del 23 —"*Finisterre* no aparece nunca en las letras"— era falsa, y el modo de fallar vale más que el dato:** medí el corpus del repo y lo escribí como si fuera un hecho sobre las canciones. Es exactamente lo que `CLAUDE.md` llama poner una leyenda disfrazada de dato, con el agravante de que la fuente era un archivo propio. Corregido en la bitácora del 23 y en `Docs/SUGERENCIAS/HILO-para-producto-idea-04-la-meta-del-bondi.md`. **Lo que el tema aporta a la idea:** el destino deja de ser un título de tapa y pasa a estar cantado; el verbo del juego sale de la letra —no es *tomar* el bondi, es **colgarse**—; *Gualicho* es la pista 4 del mismo disco, así que tema, tapa y paleta (`RES-37`, `D-19`) son la misma cosa; y con `D-22` el mp3 existe, lo que vuelve concreta la consecuencia 3 de `BR-15` (música de fondo en loop, sin ADR que la cubra). **`IDEA-04` es hoy la única de las cinco ideas de clon con su música decidida.** **El agujero que apareció al ir a buscar el verso, medido sobre `src/data/cancionero.json`:** *Gualicho* está marcado `contenido: "letra"` y **no tiene una sola línea cantada** —sus tres líneas tipadas `letra` son cifrado—; en el mismo disco *Pogo* tiene 0 de 24 (es una tablatura entera) y *El árbol del gran bonete* 1 de 4. Los otros seis con letra están completos y *Scaramanzia* está bien declarada como solo tablatura. Los tres agujeros vienen de cifraclub, fuente de 82 de los 104 temas. **Y hay un defecto vivo, chico pero visible:** `/letras-y-acordes/gualicho/` promete la letra de un tema y muestra tres líneas de acordes. La invariante de `src/lib/cancionero/banco.ts` que debería atajarlo existe pero cuenta como verso cualquier línea tipada `letra`, así que el cifrado le pasa por al lado. |

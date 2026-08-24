@@ -13,11 +13,11 @@
  * La confirmación entra por `src/data/letra-confirmaciones.json`, que llena una persona
  * con la fecha, dónde escuchó y en qué minuto. Este script la lee y promueve solo eso.
  *
- * **Y no genera de todo el cancionero, sino de los 14 temas cuya letra salió de
- * letras.com**, que es la única fuente de letras con ficha propia (`RES-23`). Los otros
- * 82 vienen de cifraclub, que todavía no tiene ficha: citarle una inventada sería el
- * mismo problema de rótulo por otra puerta. Hay 337 versos ahí, muy por encima del piso
- * de 15 de `US-03`. La propuesta para fichar cifraclub quedó en `Docs/SUGERENCIAS/`.
+ * **Y no genera de todo el cancionero, sino de los temas cuya fuente tiene ficha.**
+ * `CTR-04` obliga a que cada ítem declare `fuenteLetra` como una lista de fichas `RES-XX`,
+ * y citarle una ficha inventada a un sitio es el mismo problema de rótulo por otra puerta.
+ * El mapa está en `FICHA_POR_SITIO`, abajo, y es lo único que hay que tocar cuando aparece
+ * una fuente nueva: sin entrada ahí, un tema no entra al banco y el script lo dice.
  *
  * ─── Lo que sí hace ────────────────────────────────────────────────────────────────
  *
@@ -31,13 +31,29 @@
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { sirveComoVerso } from '../src/lib/cancionero/anotacion.ts';
 
 const CANCIONERO = 'src/data/cancionero.json';
 const CONFIRMACIONES = 'src/data/letra-confirmaciones.json';
 const SALIDA = 'src/data/letra.json';
 
-/** La ficha que evaluó letras.com como fuente de letras. */
-const FICHA_LETRA = 'RES-23';
+/**
+ * Qué ficha respalda a cada sitio del que sale una letra.
+ *
+ * **Una fuente sin entrada acá no entra al banco.** No es prolijidad: `CTR-04` pide que el
+ * ítem declare de dónde salió la letra, y un sitio sin ficha no tiene con qué responder.
+ *
+ * · `letras.com` → `RES-23` (`INV-21`), la primera que se evaluó.
+ * · `cifraclub.com` → `RES-49` (`INV-23`), escrita en el ciclo 7. Su recomendación es
+ *   explícita: mismo estatus y mismas mitigaciones que letras.com.
+ * · `lacuerda.net` → **sin ficha.** Apareció con el cancionero rehecho del 2026-08-24 y
+ *   trae 20 temas con letra que quedan afuera hasta que `investigador` la fiche. El pedido
+ *   está en `Docs/SUGERENCIAS/HILO-para-investigador-fichar-lacuerda.md`.
+ */
+const FICHA_POR_SITIO = {
+  'letras.com': 'RES-23',
+  'cifraclub.com': 'RES-49',
+};
 
 /** `M:SS` o `MM:SS`, el mismo patrón de `letra.schema.json` y de `banco.ts`. */
 const MINUTO = /^\d{1,2}:[0-5]\d$/;
@@ -232,7 +248,11 @@ function barajar(lista, semilla) {
 function versosDe(tema) {
   const salida = [];
   for (const seccion of tema.secciones) {
-    const lineas = seccion.lineas.filter((l) => l.t === 'letra' && (l.texto ?? '').trim());
+    // `sirveComoVerso` es mas estricta que el filtro de la ingesta, y tiene que serlo:
+    // en la pantalla, marcar de mas borra un verso y nadie lo ve; aca, marcar de menos
+    // le pone al jugador un hueco sobre la palabra `Riff`. Con 1.900 candidatos y un piso
+    // de 15, perder algunos no cuesta nada.
+    const lineas = seccion.lineas.filter((l) => l.t === 'letra' && sirveComoVerso(l.texto));
     lineas.forEach((linea, i) => {
       salida.push({ texto: linea.texto.trim(), enSeccion: i, deSeccion: lineas });
     });
@@ -249,7 +269,10 @@ function main() {
   const porDefecto = archivoConf.porDefecto ?? {};
 
   const temas = cancionero.temas.filter(
-    (t) => t.contenido === 'letra' && t.fuente.sitio === 'letras.com',
+    (t) => t.contenido === 'letra' && FICHA_POR_SITIO[t.fuente.sitio] !== undefined,
+  );
+  const sinFicha = cancionero.temas.filter(
+    (t) => t.contenido === 'letra' && FICHA_POR_SITIO[t.fuente.sitio] === undefined,
   );
 
   // El vocabulario por disco, para que los distractores suenen del mismo mundo. Un
@@ -376,7 +399,7 @@ function main() {
         contexto: { antes: ctxAntes.map((l) => l.texto.trim()), despues: ctxDespues.map((l) => l.texto.trim()) },
         opciones,
         fuentes: ['RES-20'],
-        fuenteLetra: [FICHA_LETRA],
+        fuenteLetra: [FICHA_POR_SITIO[tema.fuente.sitio]],
         sensibleA: ['letra'],
         // Sin confirmación de oído no hay `listo`, y no lo decide un programa. La
         // promoción es un paso aparte, más abajo, y solo la mueve una escucha.
@@ -434,7 +457,14 @@ function main() {
   const porNivelListos = { facil: 0, media: 0, dificil: 0 };
   for (const i of items) if (i.estado === 'listo') porNivelListos[i.dificultad]++;
 
-  console.log(`temas usados:   ${temas.length} (letras.com, la fuente con ficha RES-23)`);
+  const porSitio = {};
+  for (const t of temas) porSitio[t.fuente.sitio] = (porSitio[t.fuente.sitio] ?? 0) + 1;
+  console.log(`temas usados:   ${temas.length} ${JSON.stringify(porSitio)}`);
+  if (sinFicha.length) {
+    const faltan = {};
+    for (const t of sinFicha) faltan[t.fuente.sitio] = (faltan[t.fuente.sitio] ?? 0) + 1;
+    console.log(`sin ficha:      ${sinFicha.length} temas afuera ${JSON.stringify(faltan)}`);
+  }
   console.log(`candidatos:     ${items.length}  ${JSON.stringify(porNivel)}`);
   console.log(
     `descartados:    ${descartes.sinPalabra} sin palabra buena, ${descartes.sinDistractores} sin distractores, ` +

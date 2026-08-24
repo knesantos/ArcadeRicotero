@@ -46,7 +46,11 @@
         "fuentes", "fuenteLetra", "sensibleA", "estado"
       ],
       "properties": {
-        "id": { "type": "string", "pattern": "^CL-\\d{3}$" },
+        "id": {
+          "type": "string",
+          "pattern": "^CL-\\d{3,5}$",
+          "description": "Tres a cinco dígitos. Eran tres cuando el banco salía de 13 temas y daba 226 candidatos; el 2026-08-24 el cancionero sumó fuentes, el banco pasó a 80 temas y ~1.780 candidatos, y CL-1000 dejó de validar. El patrón no es un límite de diseño: es la capacidad que se le supuso al contador."
+        },
         "us": {
           "type": "array",
           "minItems": 1,

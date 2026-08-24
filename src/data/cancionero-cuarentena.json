@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-08-22",
+ "actualizado": "2026-08-24",
  "regla": "D-13",
  "explicacion": "Apartados por no figurar entre los 105 temas de RES-20.",
  "apartados": [
@@ -53,10 +53,10 @@
   },
   {
    "archivo": "de-estos-polvos-futuros-lodos.json",
-   "titulo": "De Estos Polvos Futuros Lodos",
-   "sitio": "letras.com",
-   "url": "https://www.letras.com/los-redonditos-de-ricota/196014/",
-   "acordes": 0,
+   "titulo": "De esos polvos futuros lodos",
+   "sitio": "lacuerda.net",
+   "url": "https://acordes.lacuerda.net/patricio_rey/de_esos_polvos_futuros_lodos.shtml",
+   "acordes": 8,
    "motivo": "no figura entre los 105 temas de RES-20 (D-13)"
   },
   {
@@ -69,10 +69,10 @@
   },
   {
    "archivo": "el-blues-del-noticiero.json",
-   "titulo": "El Blues Del Noticiero",
-   "sitio": "letras.com",
-   "url": "https://www.letras.com/los-redonditos-de-ricota/el-blues-del-noticiero/",
-   "acordes": 0,
+   "titulo": "Blues del noticiero",
+   "sitio": "lacuerda.net",
+   "url": "https://acordes.lacuerda.net/patricio_rey/blues_del_noticiero.shtml",
+   "acordes": 64,
    "motivo": "no figura entre los 105 temas de RES-20 (D-13)"
   },
   {
@@ -94,9 +94,9 @@
   {
    "archivo": "el-regreso-de-mao.json",
    "titulo": "El regreso de Mao",
-   "sitio": "cifraclub.com",
-   "url": "https://www.cifraclub.com/los-redonditos-de-ricota/el-regreso-de-mao/",
-   "acordes": 0,
+   "sitio": "lacuerda.net",
+   "url": "https://acordes.lacuerda.net/patricio_rey/el_regreso_de_mao.shtml",
+   "acordes": 45,
    "motivo": "no figura entre los 105 temas de RES-20 (D-13)"
   },
   {
@@ -142,8 +142,8 @@
   {
    "archivo": "honolulu.json",
    "titulo": "Honolulu",
-   "sitio": "cifraclub.com",
-   "url": "https://www.cifraclub.com/los-redonditos-de-ricota/honolulu/",
+   "sitio": "lacuerda.net",
+   "url": "https://acordes.lacuerda.net/patricio_rey/honolulu.shtml",
    "acordes": 0,
    "motivo": "no figura entre los 105 temas de RES-20 (D-13)"
   },
@@ -157,10 +157,10 @@
   },
   {
    "archivo": "kazatchok.json",
-   "titulo": "Kazatchok",
-   "sitio": "letras.com",
-   "url": "https://www.letras.com/los-redonditos-de-ricota/kazatchok/",
-   "acordes": 0,
+   "titulo": "Kazachok",
+   "sitio": "lacuerda.net",
+   "url": "https://acordes.lacuerda.net/patricio_rey/kazachok.shtml",
+   "acordes": 28,
    "motivo": "no figura entre los 105 temas de RES-20 (D-13)"
   },
   {
@@ -357,10 +357,10 @@
   },
   {
    "archivo": "un-tal-brigitte-bardot.json",
-   "titulo": "Un tal Brigitte Bardot",
-   "sitio": "letras.com",
-   "url": "https://www.letras.com/los-redonditos-de-ricota/un-tal-brigitte-bardot/",
-   "acordes": 0,
+   "titulo": "Un tal Bridgitte Bardot",
+   "sitio": "lacuerda.net",
+   "url": "https://acordes.lacuerda.net/patricio_rey/un_tal_bridgitte_bardot.shtml",
+   "acordes": 18,
    "motivo": "no figura entre los 105 temas de RES-20 (D-13)"
   }
  ]

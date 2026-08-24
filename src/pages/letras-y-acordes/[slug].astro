@@ -97,8 +97,8 @@ const aviso = tema.contenido === 'letra' ? null : AVISO_SIN_LETRA[tema.contenido
           <section class="seccion-cancion">
             {seccion.etiqueta && <span class="seccion-etiqueta">{seccion.etiqueta}</span>}
             {seccion.renglones.map((r) =>
-              r.clase === 'tab' ? (
-                <div class="renglon renglon-tab">{r.texto}</div>
+              r.clase === 'tab' || r.clase === 'anotacion' ? (
+                <div class={`renglon renglon-${r.clase}`}>{r.texto}</div>
               ) : (
                 <>
                   {r.marcas.length > 0 && (

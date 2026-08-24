@@ -175,7 +175,12 @@ function pintarResultado(): void {
     );
   }
 
-  const compartir = el('button', 'primario firma', BOTON_COMPARTIR);
+  // `con-tilde` porque `BOTON_COMPARTIR` dejo de ser "COMPARTIR" y paso a "COMPARTÍ" al
+  // aplicarse `D-17`. La letra de la firma es una digitalizacion fan (`RES-42`) y **no
+  // tiene los acentos**: medido en el navegador, la `Í` cae en la fuente de repuesto y el
+  // boton salia partido a mitad de palabra. La clase manda la palabra a
+  // `--fuente-rotulada`, que es completa, sin sacarle la tilde — `D-17` no la negocia.
+  const compartir = el('button', 'primario firma con-tilde', BOTON_COMPARTIR);
   compartir.type = 'button';
   compartir.addEventListener('click', () => void compartirResultado(aciertos));
   zonaResultado.append(compartir);

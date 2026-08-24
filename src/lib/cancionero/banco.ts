@@ -19,7 +19,15 @@
 import { leerTemas, normalizarDuro, type Disco, DISCOS } from '../letra/temas.ts';
 
 export type TipoSeccion = 'desconocida' | 'intro' | 'verso' | 'estribillo' | 'puente' | 'solo' | 'final';
-export type TipoLinea = 'letra' | 'tab' | 'instrumental';
+/**
+ * `anotacion` es lo que escribio el que transcribio la cifra y no se canta: `GUITARRA:`,
+ * `VERSO 1: (Riff 2) X7`, `(X4)`. Se separo de `tab` en el ciclo 7 porque **no es
+ * tablatura**: llamarla asi seria otro rotulo que miente sobre lo que hay adentro. Y se
+ * separo de `letra` porque cuando estaba ahi, el banco de `US-03` llego a producir un
+ * item cuyo enunciado era `VERSO 1: [Riff] 2) X7`. Quien decide cual es cual:
+ * `src/lib/cancionero/anotacion.ts`.
+ */
+export type TipoLinea = 'letra' | 'tab' | 'anotacion' | 'instrumental';
 
 /**
  * Qué dio la fuente para este tema.

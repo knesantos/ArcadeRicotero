@@ -157,6 +157,9 @@ export const ALIAS: Readonly<Record<string, string>> = {
   '¡Es Hora de Levantarse, Querido! (¿Dormiste Bien?)': '¡Es hora de levantarse querido!',
   // Errata de la fuente: una sola "p" y guiones de más.
   'Shoping - Disco - Zen': 'Shopping Disco-Zen',
+  // lacuerda.net parte el nombre en dos y abrevia: "Barba Azul vs." por "Barbazul versus".
+  // Ninguna normalización lo salva —no comparten ni la palabra— así que va explícito.
+  'Barba Azul vs. el amor letal': 'Barbazul versus el amor letal',
 };
 
 /** Índice por forma dura, para resolver un título de fuente contra los 105. */

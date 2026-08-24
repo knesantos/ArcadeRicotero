@@ -2328,7 +2328,7 @@
       "slug": "mi-perro-dinamita",
       "tipo": "tema",
       "titulo": "Mi perro dinamita",
-      "resumen": "Mi perro dinamita es la pista 4 de La mosca y la sopa (1991), una de las dos únicas excepciones de autoría del cancionero: Solari, Beilinson y Semilla Bucciarelli. El tema nació de un verso que Poli tenía pensado para otra canción, según contó el Indio en dos fuentes independientes — y terminó siendo uno de los más populares del regreso de la banda pese a que su propio autor no quería ni editarlo.",
+      "resumen": "Mi perro dinamita es la pista 4 de La mosca y la sopa (1991), una de las dos únicas excepciones de autoría del cancionero: Solari, Beilinson y Semilla Bucciarelli. Salió de una prueba de sonido, de una línea de bajo de Semilla, y el Indio contó que él era el que insistía para que no se editara — terminó siendo uno de los más populares del regreso de la banda.",
       "datos": [
         {
           "etiqueta": "Autoría",
@@ -2350,9 +2350,9 @@
         },
         {
           "etiqueta": "Origen del tema",
-          "valor": "Verso de Poli pensado para otra canción no realizada; el Indio escribió esta letra en su lugar",
+          "valor": "Salió en una prueba de sonido, de una línea de bajo de Semilla Bucciarelli; el Indio no quería editarlo",
           "rotulo": "testimonio",
-          "fuente": "RES-22 (INV-20); RES-48 (INV-48)"
+          "fuente": "RES-21 (INV-20), memoir p. 298-299"
         },
         {
           "etiqueta": "Leyenda de título",
@@ -2369,10 +2369,10 @@
           "quien": null
         },
         {
-          "texto": "Según contó el propio Indio en sus memorias, el tema nació de un verso que [[la-negra-poli|Poli]] tenía pensado para otra canción que nunca se llegó a hacer — y el Indio escribió esta letra en su lugar. Hay una segunda fuente independiente que cuenta lo mismo: en el documental Tsunami (Mario Pergolini), el Indio repite la historia y agrega que él no quería ni editar el tema, que para él era «un standard de rock más». Dos fuentes coincidentes, separadas en el tiempo y en el formato — el tipo de cruce que este sitio pide antes de dar un dato por firme.",
+          "texto": "Según contó el propio Indio en sus memorias, el tema salió durante una prueba de sonido: [[semilla-bucciarelli|Semilla]] arrancó con una línea de bajo de rock and roll y el Indio le puso la melodía encima; la letra del perro desobediente vino después. Ese origen explica solo la excepción de autoría — el tercer autor firma porque el tema empezó en su bajo. El Indio agrega que él era el que insistía para que no saliera en el disco, porque le parecía “un estándar de rock”, y que fue Gustavo Gauvry quien insistió para incluirlo.",
           "rotulo": "testimonio",
-          "fuente": "RES-22 (INV-20); RES-48 (INV-48)",
-          "quien": "Indio Solari (en Recuerdos que mienten un poco, y en el documental Tsunami de Mario Pergolini)"
+          "fuente": "RES-21 (INV-20), memoir p. 298-299",
+          "quien": "Indio Solari (en Recuerdos que mienten un poco)"
         },
         {
           "texto": "Detrás de ese origen casual hay una canción con nombre de mascota y espíritu de amenaza cariñosa — el título juega con la idea de algo entrañable y a la vez peligroso, sin que haga falta explicar más para que la imagen funcione.",
@@ -2393,7 +2393,7 @@
           "quien": null
         },
         {
-          "texto": "Del proceso puntual de grabación no hay más detalle fichado que el que ya cuenta el artículo de [[la-mosca-y-la-sopa|La mosca y la sopa]]: se grabó para el disco de 1991, editado por Del Cielito. Ninguna ficha registra una sesión de estudio propia de este tema en particular, más allá de su historia de origen en el verso de Poli.",
+          "texto": "Del proceso puntual de grabación no hay más detalle fichado que el que ya cuenta el artículo de [[la-mosca-y-la-sopa|La mosca y la sopa]]: se grabó para el disco de 1991, editado por Del Cielito. Ninguna ficha registra una sesión de estudio propia de este tema en particular.",
           "rotulo": "hecho",
           "fuente": "RES-20 (INV-20); RES-48 (INV-48)",
           "quien": null
