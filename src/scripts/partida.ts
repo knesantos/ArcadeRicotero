@@ -24,12 +24,14 @@ import {
   BOTON_SEGUIR,
   ERRORES,
   TRAMOS,
+  etiquetaCategoria,
   insignia,
   selloRevelado,
   subtituloDesafio,
   textoParaCompartir,
   variante,
 } from '../lib/quiz/copy.ts';
+import { PORTAL } from '../lib/sitio/copy.ts';
 
 const LARGO_RONDA = 8; // US-01 criterio 1
 
@@ -62,6 +64,24 @@ function mostrar(seccion: HTMLElement): void {
   for (const s of [portada, zonaPartida, zonaResultado]) s.hidden = s !== seccion;
 }
 
+/**
+ * Llevar el foco a lo primero de la pantalla nueva.
+ *
+ * Este juego cambia de pantalla sin cambiar de pagina, y el navegador no tiene forma de
+ * saberlo: el foco se quedaba en el `<body>`. Medido el 2026-08-24 — al tocar `JUGÁ`, en
+ * cada avance y al llegar al resultado, `document.activeElement` era `BODY`. Quien juega
+ * con teclado tenia que tabular desde la cinta de regreso en cada pregunta, y quien usa
+ * lector de pantalla no se enteraba de nada: ni del acierto, ni del error, ni del puntaje.
+ *
+ * Es el mismo principio de los molinetes abiertos, aplicado a quien no ve la pantalla.
+ */
+function enfocar(destino: HTMLElement): void {
+  // -1 lo hace enfocable por codigo sin meterlo en el orden de tabulacion: el foco llega
+  // ahi cuando la pantalla cambia, pero nadie tiene que pasar por el tabulando.
+  destino.tabIndex = -1;
+  destino.focus();
+}
+
 // Pantalla 0: si se llego por un desafio, el subtitulo lo dice.
 if (desafio) {
   $('subtitulo').textContent = subtituloDesafio(desafio.nombre, desafio.puntaje, desafio.total);
@@ -83,8 +103,11 @@ function pintarPregunta(): void {
   zonaPartida.replaceChildren();
 
   const cab = el('div', 'cabecera');
+  cab.id = 'cabecera-pregunta';
   cab.append(el('span', 'paso', `${indice + 1} de ${ronda.length}`));
-  cab.append(el('span', `categoria categoria--${item.categoria}`, item.categoria));
+  // La clase sigue llevando el identificador (la mezcla D-19 la pinta por ahi); lo que se
+  // lee sale de la tabla de etiquetas, porque `mitologia` en mayusculas se leia sin tilde.
+  cab.append(el('span', `categoria categoria--${item.categoria}`, etiquetaCategoria(item.categoria)));
 
   // La insignia va antes de tocar: el que conoce la historia real tiene que saber que se
   // le pregunta "que se cuenta" y no "que paso".
@@ -92,7 +115,12 @@ function pintarPregunta(): void {
   if (ins) cab.append(el('span', `insignia insignia--${item.clase}`, ins));
   zonaPartida.append(cab);
 
-  zonaPartida.append(el('h2', 'enunciado', item.enunciado));
+  const enunciado = el('h2', 'enunciado', item.enunciado);
+  // El foco aterriza en la pregunta, pero el paso, la categoria y —sobre todo— la
+  // insignia de rotulo tienen que llegar con ella: saber que se pregunta "que se cuenta"
+  // y no "que paso" es justo lo que `UX-01` v2 pide que se sepa ANTES de responder.
+  enunciado.setAttribute('aria-describedby', cab.id);
+  zonaPartida.append(enunciado);
 
   const lista = el('div', 'opciones');
   for (const op of item.opciones) {
@@ -102,6 +130,8 @@ function pintarPregunta(): void {
     lista.append(b);
   }
   zonaPartida.append(lista);
+
+  enfocar(enunciado);
 }
 
 function responder(texto: string): void {
@@ -119,6 +149,13 @@ function responder(texto: string): void {
   const fuente = acerto ? ACIERTOS : ERRORES;
   ultimoFeedback = variante(fuente, ultimoFeedback, Math.random);
   const panel = el('div', `feedback ${acerto ? 'ok' : 'no'}`);
+  // Region viva: lo que aparezca acá adentro se lee solo, sin robarle el foco a nadie.
+  // Se inserta VACIA a proposito — un lector de pantalla anuncia los cambios de una
+  // region que ya existe con mucha mas confiabilidad que una region recien nacida con
+  // todo el texto adentro.
+  panel.setAttribute('role', 'status');
+  zonaPartida.append(panel);
+
   panel.append(el('p', 'micro', ultimoFeedback));
   panel.append(el('p', 'explicacion', item.explicacion));
 
@@ -136,19 +173,29 @@ function responder(texto: string): void {
   const spot = botonSpotify(item.spotify?.trackId);
   if (spot) panel.append(spot);
 
-  zonaPartida.append(panel);
-
-  // UX-01 v2: en items con rotulo, el auto-avance se reemplaza por un tap. Un timer fijo
-  // no puede servir a la vez a un rotulo de 15 caracteres y a uno de 200.
-  if (sello) {
-    const seguir = el('button', 'primario', BOTON_SEGUIR);
-    seguir.type = 'button';
-    seguir.addEventListener('click', avanzar, { once: true });
-    panel.append(seguir);
-    seguir.focus();
-  } else {
-    setTimeout(avanzar, acerto ? 1200 : 1600);
-  }
+  /*
+   * El avance lo manda el dedo, siempre. No hay temporizador.
+   *
+   * `UX-01` v2 ya habia sacado el auto-avance de los items con rotulo, con este
+   * argumento: "un timer fijo no puede servir a la vez a un rotulo de 15 caracteres y a
+   * uno de 200". El resto seguia con `setTimeout(..., acerto ? 1200 : 1600)`, y ahi
+   * estaba el problema, porque la explicacion es mas larga que varios rotulos: mediana de
+   * 171 caracteres, maxima de 379. Medido en pantalla el 2026-08-24, el panel duraba
+   * **1.577 ms** con un texto de unos seis segundos de lectura, y eso pasaba en 22 de los
+   * 40 items. El sitio tiraba a la basura el trabajo de `contenido` en mas de la mitad de
+   * las preguntas, y le pegaba mas fuerte a quien lee mas despacio.
+   *
+   * De paso saca una violacion de WCAG 2.2.1 (Nivel A): un limite de tiempo que no se
+   * puede apagar, alargar ni ajustar.
+   *
+   * El boton va AFUERA del panel, no adentro: asi la region viva anuncia el resultado y
+   * la explicacion, y no "SEGUÍ, boton" mezclado con ellos.
+   */
+  const seguir = el('button', 'primario', BOTON_SEGUIR);
+  seguir.type = 'button';
+  seguir.addEventListener('click', avanzar, { once: true });
+  zonaPartida.append(seguir);
+  seguir.focus();
 }
 
 function avanzar(): void {
@@ -164,9 +211,19 @@ function pintarResultado(): void {
   const { titulo, bajada } = TRAMOS[t];
 
   zonaResultado.replaceChildren();
-  zonaResultado.append(el('p', 'puntaje', `${aciertos}/${ronda.length}`));
-  zonaResultado.append(el('h2', `tramo tramo--${t}`, titulo));
-  zonaResultado.append(el('p', 'tenue', bajada));
+
+  const marcador = el('p', 'puntaje', `${aciertos}/${ronda.length}`);
+  marcador.id = 'puntaje';
+  zonaResultado.append(marcador);
+
+  // El foco aterriza en el titulo del tramo, que es el encabezado de la pantalla, y se
+  // lleva puestos el puntaje y la bajada: los tres son una sola noticia.
+  const encabezado = el('h2', `tramo tramo--${t}`, titulo);
+  const bajadaTramo = el('p', 'tenue', bajada);
+  bajadaTramo.id = 'bajada-tramo';
+  encabezado.setAttribute('aria-describedby', `${marcador.id} ${bajadaTramo.id}`);
+  zonaResultado.append(encabezado);
+  zonaResultado.append(bajadaTramo);
 
   // FIND-17: las tres variantes de `D2` en `CNT-05`, no un string inventado aca.
   if (desafio) {
@@ -190,7 +247,23 @@ function pintarResultado(): void {
   denuevo.addEventListener('click', comenzar);
   zonaResultado.append(denuevo);
 
+  /*
+   * La salida hacia el arcade.
+   *
+   * Hasta acá el resultado era un callejón sin salida: los dos botones que tenía te
+   * dejaban adentro del quiz, y los otros cuatro juegos quedaban atrás del botón del
+   * navegador. Justo en el momento de más ganas de seguir jugando. Es la misma cinta de
+   * regreso de la portada, no un botón nuevo: la pantalla ya tiene dos y un tercero
+   * competiría con ellos.
+   */
+  const salida = el('p', 'salida-resultado');
+  const alArcade = el('a', 'volver', `← ${PORTAL.volverAlArcade}`);
+  alArcade.href = '/';
+  salida.append(alArcade);
+  zonaResultado.append(salida);
+
   mostrar(zonaResultado);
+  enfocar(encabezado);
 }
 
 async function compartirResultado(aciertos: number): Promise<void> {

@@ -20,6 +20,7 @@ import '../../styles/juego.css';
 import '../../styles/sitio.css';
 import { cargarBanco, type BancoCrudo } from '../../lib/letra/banco.ts';
 import { PANTALLA_0, SIN_BANCO } from '../../lib/letra/copy.ts';
+import Cabeza from '../../components/Cabeza.astro';
 import { PORTAL } from '../../lib/sitio/copy.ts';
 import { fondoTapa } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/letra.json';
@@ -27,6 +28,8 @@ import crudo from '../../data/letra.json';
 const items = cargarBanco(crudo as unknown as BancoCrudo);
 const hayJuego = items.length > 0;
 const fondo = fondoTapa('mosca-olla');
+
+const TITULO = 'Completá la letra — Arcade Ricotero';
 ---
 
 <!doctype html>
@@ -35,7 +38,8 @@ const fondo = fondoTapa('mosca-olla');
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={PANTALLA_0.subtitulo} />
-    <title>Completá la letra — Arcade Ricotero</title>
+    <title>{TITULO}</title>
+    <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} />
   </head>
   <body class="con-grano">
     <main id="app">

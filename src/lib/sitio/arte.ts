@@ -7,7 +7,7 @@
  * pagina lo pega; si todavia no, usa el repuesto dibujado o no muestra nada.
  * Asi ningun hueco del collage rompe la pagina con una imagen quebrada.
  */
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 /** URL publica del recorte si ya existe; si no, el repuesto (o nada). */
@@ -117,6 +117,54 @@ const RECORTE_REAL: Record<string, string> = {
 export function conRecorteReal(ruta: string): string {
   const real = RECORTE_REAL[ruta];
   return real ? (recorte(real, ruta) as string) : ruta;
+}
+
+/**
+ * Las medidas reales de una pieza del collage, leidas del archivo en build.
+ *
+ * Existe para que un `<img>` pueda declarar `width` y `height` sin que nadie copie un
+ * numero a mano. Importa mas de lo que parece: el navegador usa esas dos medidas solo
+ * para sacar la proporcion, y si la proporcion no es la del archivo, **la imagen sale
+ * estirada**. Como acá el recorte real reemplaza al dibujo de repuesto cuando aparece
+ * (`conRecorteReal`), la pieza que se muestra puede cambiar sin que nadie toque el
+ * marcado — y con ella la proporcion. Medirla es la unica forma de no mentir.
+ *
+ * Devuelve `null` si no puede leerla, y entonces la pagina no declara medidas: mejor sin
+ * dato que con uno inventado.
+ */
+export function medidas(rutaPublica: string): { ancho: number; alto: number } | null {
+  const archivo = join(process.cwd(), 'public', rutaPublica.replace(/^\//, ''));
+  if (!existsSync(archivo)) return null;
+  const b = readFileSync(archivo);
+
+  // PNG: el bloque IHDR arranca siempre en el byte 16.
+  if (b.length > 24 && b.toString('ascii', 1, 4) === 'PNG') {
+    return { ancho: b.readUInt32BE(16), alto: b.readUInt32BE(20) };
+  }
+
+  // JPEG: hay que recorrer los marcadores hasta el SOF, que es el que trae las medidas.
+  if (b.length > 4 && b[0] === 0xff && b[1] === 0xd8) {
+    let p = 2;
+    while (p + 9 < b.length) {
+      if (b[p] !== 0xff) { p++; continue; }
+      const marca = b[p + 1]!;
+      // SOF0..SOF15, salteando los cuatro que no describen una imagen.
+      if (marca >= 0xc0 && marca <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marca)) {
+        return { alto: b.readUInt16BE(p + 5), ancho: b.readUInt16BE(p + 7) };
+      }
+      p += 2 + b.readUInt16BE(p + 2);
+    }
+    return null;
+  }
+
+  // SVG: primero los atributos, y si no estan, la caja de dibujo.
+  const texto = b.toString('utf-8', 0, 1024);
+  const w = /\bwidth="([\d.]+)/.exec(texto);
+  const h = /\bheight="([\d.]+)/.exec(texto);
+  if (w && h) return { ancho: Math.round(+w[1]!), alto: Math.round(+h[1]!) };
+  const caja = /viewBox="[\d.\s-]*?([\d.]+)\s+([\d.]+)"/.exec(texto);
+  if (caja) return { ancho: Math.round(+caja[1]!), alto: Math.round(+caja[2]!) };
+  return null;
 }
 
 /** Que pieza del despiece decora la ficha de cada disco en la Redondopedia. */

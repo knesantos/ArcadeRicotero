@@ -11,7 +11,11 @@
  */
 
 export const PORTAL = {
+  /** El logotipo, como se dibuja en pantalla. */
   titulo: 'ARCADE RICOTERO',
+  /** El nombre, como se escribe cuando lo lee otro sistema: la pestaña, la tarjeta al
+   *  compartir, el titulo de la pagina. La versacal es del logo, no del nombre. */
+  nombre: 'Arcade Ricotero',
   bajada:
     'Entrá, que los molinetes van abiertos. ' +
     'Juegos y enciclopedia sobre Patricio Rey y sus Redonditos de Ricota: sin cuenta, ' +
@@ -32,6 +36,23 @@ export const PORTAL = {
    * qué discos salió lo que se está viendo, y un fondo no tiene dónde poner una firma
    * al lado. Esto lo resuelve por pantalla, sin cargarle un crédito a cada imagen.
    */
+  /**
+   * El texto alternativo de la tarjeta que se ve cuando alguien comparte el sitio.
+   *
+   * Hace dos trabajos en una linea, y por eso dice lo que dice: describe la imagen para
+   * quien no la ve, y **carga el credito de `D-21`** — adentro del sitio el credito de
+   * tapas va en el pie de cada pantalla, pero una tarjeta compartida no tiene pie.
+   *
+   * **Y hay un tercer trabajo, que es lo que NO dice.** No dice "de la tapa de Oktubre",
+   * y no es un descuido: `INV-02` encontró que la figura encadenada **no estaba en el
+   * arte del vinilo del 86** y se difundió con la reedición en CD, y ese hallazgo sigue
+   * en "reportado, no verificado". Atribuirla al disco seria justo lo que el proyecto no
+   * hace: una leyenda vestida de hecho. Da el credito a Rocambole, que si es seguro, y se
+   * calla lo que todavia no tiene ficha. Ver
+   * `Docs/SUGERENCIAS/HILO-para-investigador-figura-encadenada.md`.
+   */
+  altTarjeta:
+    'Calco en línea blanca de la figura encadenada, del arte de Rocambole (Ricardo Cohen).',
   creditoTapas: (discos: readonly string[]) =>
     `En esta pantalla, arte de ${discos.length === 1 ? 'la tapa de' : 'las tapas de'} ` +
     `${discos.length > 1 ? `${discos.slice(0, -1).join(', ')} y ${discos.at(-1)}` : discos[0]}, ` +

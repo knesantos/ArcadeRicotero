@@ -221,13 +221,21 @@
   text-wrap: balance;
 }
 
-/* El personaje de portada (el perro, motivo fichado en RES-06/RES-22) mira
-   desde el costado de la marca, pegado con cinta como un recorte mas. */
+/* El personaje de portada mira desde el costado de la marca, pegado como un recorte mas.
+   Es mas grande que antes por una razon concreta: paso de ser una silueta llena (el
+   perro) a ser un calco de LINEA, y una linea de dos pixeles reducida a un cuarto no es
+   una linea, es ruido. El techo de 165px lo fija el titulo: mas ancho y la figura se le
+   monta encima. `height: auto` deja que mande la proporcion real del archivo, que la
+   pagina declara con las medidas leidas en build. */
 .recorte-portada {
   position: absolute;
   top: 0;
   right: 0;
-  width: clamp(72px, 24vw, 110px);
+  /* El techo lo fija la bajada, no el gusto: el recorte vive en la esquina de la
+     cabecera y arriba de 100px de alto se le monta encima al primer renglon del texto
+     que le explica el sitio a alguien que llego de un enlace. Medido a 375px. */
+  width: clamp(92px, 30vw, 132px);
+  height: auto;
   transform: rotate(6deg);
   opacity: 0.9;
   pointer-events: none;

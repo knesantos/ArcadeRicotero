@@ -22,6 +22,7 @@
 |---|---|---|---|---|
 | `mosca.png` (hoy `mosca.svg`) | La mosca | *La mosca y la sopa* (fichado: RES-06, RES-22) | La mosca sola, en silueta cerrada: sin sopa, sin fondo | Vuela por el portal con vuelo errático (animación `vuelo-de-mosca`); también en la pantalla de completar la letra |
 | `multitud-banderas.png` (hoy `banderas.svg`) | La multitud con banderas | *Oktubre* (fichado: RES-06) | Franja horizontal con gente y banderas: borde superior siguiendo siluetas, borde inferior rasgado. **Sin el esclavo encadenado.** Nunca la tapa entera | Fondo del portal y de la portada de la Redondopedia, anclada abajo, opacidad baja, fija |
+| `oktubre-cadena.png` | La figura encadenada | Arte de Rocambole. **De qué disco: sin ficha** — ver "Lo que NO va acá" | Ya vino calcada del usuario: estarcido blanco sobre transparente, 388×303 | Portada del portal, junto a la marca, y la tarjeta al compartir (`public/tarjeta.png`, la genera `npm run generar-marca-social`). **No se le atribuye álbum en ningún texto** |
 | `perro.png` (hoy `perro.svg`) | El perro | *Un baión* (fichado: RES-06, RES-22 — "en toda la mitología solariana hay un perro") | El perro solo, sin televisor ni muñeco. Borde grueso tipo serigrafía | Personaje de portada: asoma junto a la marca. **Nunca junto a televisor + muñeco en la misma pantalla** (recompondría la tapa) |
 | `lobo-lupus.png` (hoy `lobo.svg`) | Lupus el Lobo | *Lobo suelto* (fichado: RES-20 — álbum conceptual sobre Lupus y Rulo) | La figura del lobo, silueta cerrada | Pantalla de adivinar el tema (sección mitología) y ficha del disco en la Redondopedia |
 | `muneco-antifaz.png` | El muñeco con antifaz | *Un baión* (fichado: RES-06, RES-22) | La figura entera del muñeco (collares, antifaz, chupete), sin televisor ni perro | Ficha de *Un baión* en la Redondopedia, como calco apenas rotado |
@@ -47,5 +48,12 @@
 - **Tapas enteras.** Van en `public/tapas/` (baja resolución, generadas con
   `node scripts/generar-tapas.mjs`) y solo aparecen donde el contrato lo permite:
   fichas de disco de la Redondopedia y, a futuro, el juego de adivinar la tapa.
-- **El esclavo encadenado de Oktubre.** Sigue "reportado, no verificado" (`RES-06`);
-  hasta que una ficha lo confirme, no se recorta.
+- ~~**El esclavo encadenado de Oktubre.**~~ **Cambió el 2026-08-24: la pieza entró.** El
+  usuario trajo el calco (`oktubre-cadena.png`) y pidió ponerlo en la portada del portal.
+  Lo que sigue prohibido no es la imagen: es **decir de qué disco sale**. `INV-02` reportó
+  que esta figura no estaba en el arte del vinilo del 86 y que se difundió con la reedición
+  en CD, y ese hallazgo está en "reportado, no verificado". Entonces la pieza se muestra,
+  se acredita a Rocambole —eso sí está firme— y **no se le atribuye álbum** en ningún lado:
+  ni en el crédito del pie, ni en el texto de la tarjeta al compartir, ni como respuesta de
+  una pregunta. Ficha pedida en
+  `Docs/SUGERENCIAS/HILO-para-investigador-figura-encadenada.md`.
