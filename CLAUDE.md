@@ -16,12 +16,19 @@ en `/kickoff` por `D-05` — quiz, adivinar el tema con reveal progresivo, compl
 letra, y adivinar la tapa —, cada uno con su piso de ítems cumplido (40 / 20 / 15 / 10) y
 con el tema escuchable vía Spotify al revelar.
 
-> ⚠ **Dos avisos sobre el párrafo de arriba, para no repetir errores ajenos.** El primero:
+> ⚠ **Tres avisos sobre el párrafo de arriba, para no repetir errores ajenos.** El primero:
 > decía "Huracán en el 89" y era falso — en el 89 fue el debut en Obras, Huracán fue 93 y
 > 94 (`RES-05`). El segundo: decía "el tema **completo**" vía Spotify, y `RES-01` mostró
 > que para un jugador sin Premium eso probablemente no se cumpla dentro del sitio. La
 > redacción definitiva de esa promesa la fija `producto` en `BR-06` (`T-03` del ciclo 1);
 > hasta entonces, no la cites como si estuviera cerrada.
+>
+> **El tercero, del 2026-08-24: los pisos ya no son 40 / 20 / 15 / 10, son 40 / 30 / 15 /
+> 10.** `producto` subió el de "adivinar el tema" de 20 a 30 en `T-99` del ciclo 7, porque
+> `D-24` le sacó a ese juego el costo de curar distractores —ahora hay un buscador sobre
+> los 105 títulos, no cuatro opciones— y lo que quedaba caro por ítem era solo producir el
+> audio. **Sube la vara de la v1**, y el número que manda está en `PRD-alcance-v1.md`, no
+> acá. El de arriba queda escrito para que se vea qué cambió.
 **Fuera de alcance:** cuentas de usuario, ranking global, backend y multijugador en
 tiempo real. **`D-22` sacó de acá "alojar los temas completos"**: el sitio los sirve en mp3
 —era lo único que le negaba al que no tiene Premium, contra los molinetes de `D-14`— y lo

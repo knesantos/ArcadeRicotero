@@ -377,6 +377,15 @@
   color: var(--texto-tenue);
 }
 
+/* Lo que escribio el que transcribio, y no se canta: `GUITARRA:`, `(X4)`, `Riff 2 x7`.
+   No es tablatura y no es letra. Se muestra —es informacion util para el que toca— pero
+   en tinta tenue y en cursiva, para que a simple vista no se confunda con un verso. */
+.renglon-anotacion {
+  white-space: pre;
+  color: var(--texto-tenue);
+  font-style: italic;
+}
+
 /* Lo que la fuente no nos dio. Se dice, no se esconde. */
 .aviso-sin-letra {
   margin: var(--espacio-3) 0;

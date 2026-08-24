@@ -86,14 +86,14 @@
       "additionalProperties": false,
       "required": ["t"],
       "properties": {
-        "t": { "enum": ["letra", "tab", "instrumental"] },
+        "t": { "enum": ["letra", "tab", "anotacion", "instrumental"] },
         "texto": { "type": "string" },
         "acordes": { "type": "array", "items": { "$ref": "#/$defs/marca" } }
       },
       "allOf": [
         {
           "comment": "Letra y tablatura llevan texto; una línea instrumental es solo acordes.",
-          "if": { "properties": { "t": { "enum": ["letra", "tab"] } }, "required": ["t"] },
+          "if": { "properties": { "t": { "enum": ["letra", "tab", "anotacion"] } }, "required": ["t"] },
           "then": { "required": ["texto"] },
           "else": { "required": ["acordes"] }
         }

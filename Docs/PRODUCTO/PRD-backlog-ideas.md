@@ -274,6 +274,14 @@ diferencia entre cambiar de opinión y perder el hilo.
 
 ### IDEA-09 — Test: qué tipo de ricotero sos
 
+> ✅ **PROMOVIDA a `US-06` por `T-115` (ciclo 8), 2026-08-24.** El usuario fijó los ejes
+> —*"un eje luz oscuridad y otro eje orden caos"*— y confirmó que lo que se ubica en el
+> plano es el jugador, no los 105 temas: la única pregunta que esta ficha dejaba abierta
+> quedó contestada. Historia, criterios y piso en
+> `Docs/PRODUCTO/PRD-alcance-v1.md` (`US-06`, `BR-17`). Esta ficha se queda tal cual estaba
+> escrita, como registro de por qué se tomó (`Docs/IDS.md`, un `IDEA-XX` promovido no se
+> borra).
+
 **Tal cual la dijo el usuario:** *"Test que tipo de ricotero sos tipico 2 ejes"*.
 **Tipo:** original del sitio; el formato de dos ejes es el genérico (la brújula de toda la
 vida), pero el motor es tan chico que no aplica `BR-15`.
@@ -327,6 +335,65 @@ trabajo — es el insumo caro de este juego, del mismo modo que el fragmento lo 
 
 ---
 
+### IDEA-11 — Mayor o menor: qué palabra se dice más
+
+**Tal cual la dijo el usuario:** *"que arrancas con una palabra y cuantas veces se dice en
+toda la discografia y tenes que ir adivinando si la otra palabra que te muestran se dijo
+mas o menos veces y asi ir sumando"*.
+**Tipo:** género conocido —el mayor o menor de toda la vida—, pero **no aplica `BR-15`**:
+el motor son dos botones y un contador, igual que en `IDEA-09`. Lo caro no es el juego, es
+el dato.
+**Ancla:** el cancionero del sitio. 104 temas cargados (`CTR-06`, `src/data/cancionero.json`)
+sobre los 105 de `RES-20`.
+
+Se abre con una palabra y su número a la vista. Aparece una segunda palabra sin número y
+dos botones — **Más** / **Menos**. Si acierta, la segunda pasa al lugar de la primera con
+su número ya revelado, entra una tercera, y así. Un error corta la racha. El puntaje es el
+largo de la racha.
+
+**Lo que esta idea tiene y ninguna de las diez anteriores tenía:** el insumo ya está en el
+repo. El ciclo 6 metió las 104 letras — no hace falta ficha nueva de `investigador`, ni
+audio, ni imagen con derechos, ni motor genérico con licencia (`BR-15`, consecuencia 1).
+Junto con `IDEA-09`, de las dos más baratas del backlog. Encaja sin mover nada con móvil y
+sesión corta (dos botones grandes, la partida termina sola al primer error), con los
+molinetes abiertos (`D-14`) — es el juego con la barrera de conocimiento más baja del
+catálogo, más baja que el quiz —, con `BR-03`/`BR-12` (muestra palabras sueltas y números,
+no versos: no los roza) y con la tarjeta compartible (`UX-02`, la racha es un número).
+
+**El choque, y es uno solo: el número es una respuesta correcta.** `CLAUDE.md` dejó una sola
+cosa estricta y no es de derechos: que la respuesta correcta sea correcta, porque si está
+mal el juego le marca error justo al que se sabe el tema. Acá la respuesta correcta es un
+conteo, y medido el 2026-08-23 sobre `src/data/cancionero.json` el corpus **no estaba
+limpio**: contando en crudo todas las líneas tipadas `t: "letra"`, la palabra más "cantada"
+de los Redondos daba `riff`, 306 veces, y la segunda `guitarra`, 156 — anotación de cifra
+que viajaba adentro de líneas tipadas como letra (cifraclub aportó 88 de los 104 temas).
+Filtrando a ojo lo que parecía anotación se caían 1.070 líneas y quedaban 2.858 de letra —
+al menos una línea sucia en 80 de los 104 temas—, y quedaba basura arriba igual (`criminal`
+39 veces en un solo tema, `negrita` 25). Con ese corpus, el juego se equivocaba en la
+palabra más frecuente de todas.
+
+> **Saldado en este mismo ciclo, no sigue abierto.** `T-103` del ciclo 7 (hilo principal)
+> retipa las 625 líneas de anotación que estaban tipadas como letra en
+> `src/data/cancionero.json`. Al promover esta idea, el conteo **se reconfirma sobre el
+> cancionero ya limpio** — no se repite la medición de arriba, que quedó vieja el día que
+> se escribió. Lo que sigue en pie sin importar cuán limpio quede el corpus: el rótulo de
+> qué regla de conteo se usó (registro 3, de qué corpus salió, cuántos temas entraron), que
+> es lo que vuelve auditable un número que de otro modo es solo una afirmación.
+
+**A resolver antes de promoverla:**
+1. Reconfirmar el conteo sobre el cancionero post-`T-103`. Dueño: `producto` con
+   `arquitectura` para la regla de conteo (¿*corazón* cuenta *corazones*? ¿el estribillo
+   repetido cuenta cada vez o una sola? ¿los temas sin letra figuran como cero o no
+   figuran?). Una regla no declarada la paga el que sabe, que siente que le hicieron trampa.
+2. Empates: la convención del género es que cuentan como acierto; que se fije y se diga
+   **antes**, no después.
+3. El pool de palabras — curaduría de qué palabra se reconoce y qué par tiene gracia.
+   Dueño: `contenido`. El piso de ítems se fija al promover (`BR-16`), no antes.
+4. Cuánto se revela al acertar: el número no toca nada, el verso donde aparece la palabra
+   sí toca `BR-03`/`BR-12` y ahí hace falta tope.
+
+---
+
 ## Resumen
 
 | ID | Idea | Tipo | Reutiliza | Choque principal |
@@ -339,8 +406,9 @@ trabajo — es el insumo caro de este juego, del mismo modo que el fragmento lo 
 | `IDEA-06` | Zoológico | original (¿tipo nuevo de `US-05`?) | `BR-07`..`BR-12`, motor de artículos | mueve el piso de `US-05` |
 | `IDEA-07` | Pacman en el Savoy | clon vestido | — | motor + licencia (el más barato de los cinco) |
 | `IDEA-08` | Letras y acordes | original (no es juego) | — | deroga `BR-03`/`BR-12`; acordes sin fuente |
-| `IDEA-09` | Test de 2 ejes | original | `UX-02` | elegir ejes que no midan nivel |
+| `IDEA-09` | Test de 2 ejes | original | `UX-02` | ✅ **promovida a `US-06`** (`T-115`, ciclo 8) |
 | `IDEA-10` | Guitar Hero | clon vestido | el mp3 entero (`D-22`) | ~~bloqueo de audio~~ **levantado por `D-22`**; ahora falta la partitura |
+| `IDEA-11` | Mayor o menor con palabras del cancionero | original (género conocido, motor mínimo) | `cancionero.json` (104 temas), `UX-02` | el conteo es respuesta correcta — corpus limpiado por `T-103`, falta reconfirmar |
 
 ## Preguntas abiertas al usuario
 

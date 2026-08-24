@@ -1,667 +1,516 @@
-# ARQ — Schema de "adivinar el tema" (`US-02`)
+# ARQ — Schema de "adiviná el tema" (`US-02`)
 
 > Rol dueño: `arquitectura`. Consume: `US-02`, `BR-01`, `BR-02`, `BR-04`, `BR-06`,
-> `CTR-01` (todo, en especial `CTR-01.3`, `CTR-01.4`, `CTR-01.5`, `CTR-01.7`, `CTR-01.8`,
-> `CTR-01.9`), `ADR-01` (sección "Fallback", cerrada), `RES-20` y `RES-22`
-> (`Docs/INVESTIGACION/INV-20-fuentes-primarias.md`), `UX-03`, `D-06`, `D-07`, `D-09`,
-> `D-12`, `.claude/rules/contenido-json.md`.
-> Produce: **`CTR-03`**. Tarea: `T-24` del ciclo 2.
-> Fecha: 2026-08-19.
+> `CTR-01` v2 (en especial `CTR-01.3`, `CTR-01.4`, `CTR-01.5`, `CTR-01.7`, `CTR-01.8`,
+> `CTR-01.9`), `ADR-01`, `RES-20`, `D-13`, `D-14`, `D-22`, `D-23`, `D-24`,
+> `Docs/SUGERENCIAS/HILO-para-arquitectura-escalera-de-seis-y-modo-buscador.md`,
+> `Docs/SUGERENCIAS/HILO-mapa-del-juego-de-referencia.md`,
+> `.claude/rules/contenido-json.md`.
+> Produce: **`CTR-03` v2**. Tarea: `T-104` del ciclo 7.
+> Última actualización: **2026-08-24 (revisión 2)**. La v1 es del 2026-08-19 (`T-24`).
 
 ---
 
-## CTR-03 — Contrato del JSON de "adivinar el tema"
+## Nota de versionado
 
-- **Estado:** **vigente con un valor de trabajo marcado.** Todo el contrato se puede usar
-  hoy salvo **una** decisión que no es mía: si la respuesta se da con opción múltiple o
-  con texto (`CTR-03.5`). El schema soporta las dos y la elección cambia **una clave**.
-- **Por qué recién ahora.** `US-02` estuvo sin insumo todo el ciclo 1: nadie sabía qué
-  temas existían. `RES-20` cerró ese hueco con **105 temas en diez discos, con duración y
-  autoría por tema**, verificados contra el artículo de cada disco. Con 105 temas contra
-  un piso de 20 (`US-02`), el material sobra; lo que faltaba era el contrato.
-- **Para quién es esto:** para `contenido`, que va a cargar los 20 ítems, y para quien
-  escriba el motor del juego 2. Los dos números que a `contenido` le van a molestar
-  —`fragmento` completo y obligatorio, `fuentes` sin excepción— están explicados abajo con
-  su motivo; si molestan, decilo antes de cargar veinte ítems, no después.
+`CTR-03` pasa a **v2** y el archivo no se parte, por el mismo criterio que `CTR-01`: el
+contrato se cita por número desde el código, desde el propio archivo de datos —que ya
+declara `"contratoVersion": 2`— y desde `D-24`. **La redacción vieja no se borra: queda
+citada dentro de cada sección revisada, con fecha y motivo.**
+
+El cambio es grande y conviene decirlo en una línea antes de la tabla: **la v1 describía un
+banco de ítems que nunca se cargó, y la v2 describe un manifiesto de archivos de audio.**
+No hay migración porque no hay datos que migrar — `D-24` lo dejó anotado: es trabajo de
+`contenido` que la decisión borró, no que postergó.
 
 ---
 
-### CTR-03.1 — Archivo, envoltorio y presupuesto
+## Qué cambió, en una tabla
 
-**Archivo de datos:** `src/data/adivinar-tema.json`
-**Copia corrible del schema:** `src/data/_schema/adivinar-tema.schema.json`
+| Sección | Antes (v1, 2026-08-19) | Ahora (v2, 2026-08-24) | Por qué |
+|---|---|---|---|
+| `CTR-03.1` | Banco de 20 ítems, envoltorio con `items` | **Manifiesto de archivos**, con `fragmentos` | `D-24`: el catálogo sale de `RES-20` en build |
+| `CTR-03.2` | Trece campos por ítem, `TM-NNN` | **Cuatro campos por archivo**, sin ID de contenido | No hay ítems que identificar |
+| `CTR-03.3` | La respuesta es `fragmento.credito.tema` | La respuesta es la **identidad** del tema; se compara por slug | `modoRespuesta: "buscador"` |
+| `CTR-03.4` | Cinco pasos, `duracionSeg` ≥ 10,0 | **Seis pasos**, `duracionSeg` ≥ 15,0 (ventana de `CTR-01.3`) | `D-24`, `CNT-01` del 2026-08-24 |
+| `CTR-03.5` | `"opciones"` \| `"texto"`, sin decidir | **`"buscador"`, y es el único valor** | `D-24`, decisión del usuario |
+| `CTR-03.6` | `fuentes` obligatoria por ítem; `sensibleA` con `audio` | Las dos **cambian de lugar**: la fuente se verifica en build, el mapa es la carpeta | No hay ítem donde escribir un campo |
+| `CTR-03.7` | `spotify.trackId` opcional por ítem | **Retirado del dato** | `D-22`: el tema entero lo sirve el sitio |
+| `CTR-03.8` | Bloque JSON Schema para bajar a `src/data/_schema/` | Bloque normativo **que no se baja a archivo** | La validación real es el cruce contra los 105 |
 
-**Ninguno de los dos existe todavía y `T-24` no los crea** (§5 del plan del ciclo 2: la
-copia sale cuando exista el primer ítem, con su propia tarea y su ejecutor). Los nombro
-acá para que no se decidan dos veces.
+---
+
+## CTR-03 — Contrato del manifiesto de "adiviná el tema"
+
+- **Estado:** **vigente y sin nada abierto.** La única decisión que la v1 dejó marcada como
+  ajena —cómo se responde— la cerró el usuario en `D-24`.
+- **Para quién es:** para `scripts/generar-fragmentos.mjs`, que escribe el archivo, y para
+  `src/lib/tema/catalogo.ts`, que lo lee en build. **Ya no es para `contenido`**: no hay
+  nada que cargar a mano acá.
+- **Cambio que el archivo de datos necesita: ninguno.** `src/data/adivinar-tema.json`, tal
+  como está hoy, cumple este contrato entero. Lo digo explícito porque la tarea lo pedía:
+  **no dejo ningún cambio de datos pendiente para `T-107`.** Lo que sí dejo son dos
+  propuestas opcionales de código, marcadas como tales en `CTR-03.1` y `CTR-03.8`.
+
+---
+
+### CTR-03.1 — Archivo, envoltorio y presupuesto — **v2**
+
+**Archivo:** `src/data/adivinar-tema.json`.
+**Quién lo escribe:** `scripts/generar-fragmentos.mjs`, entero, en cada corrida.
+**Quién lo lee:** `catalogo()` en build. **Nunca se edita a mano.**
 
 ```json
 {
   "contrato": "CTR-03",
-  "contratoVersion": 1,
+  "contratoVersion": 2,
   "juego": "adivinar-tema",
-  "actualizado": "2026-08-19",
-  "modoRespuesta": "opciones",
-  "items": []
+  "modoRespuesta": "buscador",
+  "actualizado": "2026-08-23",
+  "nota": "Lista de archivos de audio que EXISTEN, no de temas. ...",
+  "fragmentos": []
 }
 ```
 
-El envoltorio es **el mismo que el de `CTR-02`** (`contrato`, `contratoVersion`, `juego`,
-`actualizado`, `items`), y eso es a propósito: un solo cargador de datos sirve para los
-cuatro juegos, y quien lea `src/data/` no tiene que aprender dos formas de la misma cosa.
-La única clave nueva a nivel archivo es `modoRespuesta`, y su motivo está en `CTR-03.5`.
-
-**Un banco por juego, no un banco único.** Descarté meter los temas dentro de
-`src/data/quiz.json` con una `categoria` nueva: son ítems con **forma distinta** (llevan
-audio obligatorio, no llevan `enunciado`) y compartir archivo obligaría a que el schema del
-quiz acepte campos que no le sirven, además de poner a dos tareas a escribir el mismo
-archivo — que es el choque que la §4 del plan del ciclo 2 pasó el ciclo entero evitando.
-
-**Presupuesto de tamaño:** 20 ítems × ~800 bytes ≈ **16 KB**, dos órdenes de magnitud
-debajo del techo de 150 KB de `CTR-02.1`. Aun con los 105 temas de `RES-20` cargados
-enteros serían ~85 KB: el archivo no es el problema.
-
-**Presupuesto de audio: no lo fija este contrato, lo fija `CTR-01.5` y no cambia con el
-tamaño del pool.** La ventana de precarga es *el tema en juego + 2*, con techo de 3
-buffers residentes (≈ 5,3 MB de RAM). **20 ítems en el JSON no son 20 buffers en
-memoria**; que el pool crezca de 20 a 105 no toca el presupuesto de gama baja en un solo
-byte. Lo escribo porque es la confusión más fácil de cometer al ver un piso de ítems.
-
----
-
-### CTR-03.2 — El ítem, campo por campo
-
-| Campo | Tipo | Obligatorio | Nota |
+| Clave | Tipo | Obligatoria | Nota |
 |---|---|---|---|
-| `id` | string `^TM-\d{3}$` | sí | Contador propio, **`TM-001`+**. No comparte contador con `QZ-NNN` del quiz. |
-| `us` | array de `^US-\d{2}$`, ≥ 1 | sí | Hoy siempre `["US-02"]`. Lo pide `.claude/rules/contenido-json.md`. |
-| `dificultad` | `facil` \| `media` \| `dificil` | sí | `BR-01`. Mismo vocabulario que `CTR-02`, a propósito. |
-| `fragmento` | objeto de **`CTR-01.8`** | sí | Completo. Trae adentro `credito.tema`, `credito.disco`, `credito.anio`. Ver `CTR-03.3`. |
-| `opciones` | array de exactamente 4 | **según `modoRespuesta`** | Solo si `modoRespuesta` es `"opciones"`. Ver `CTR-03.5`. |
-| `respuestasAceptadas` | array de string, ≥ 1 | **según `modoRespuesta`** | Solo si `modoRespuesta` es `"texto"`. El primer elemento es el título canónico. |
-| `explicacion` | string 10–400 | no | El dato de color que se muestra al revelar. Opcional a propósito (abajo). |
-| `rotulo` | objeto `{tipo, texto}` | no | Obligatorio **si** la `explicacion` no se apoya solo en hecho verificado. Ver `CTR-03.6`. |
-| `fuentes` | array de `^RES-\d{2}$`, ≥ 1 | **sí, siempre** | Sin excepción de leyenda. Ver `CTR-03.6`. |
-| `sensibleA` | array del enum `letra` \| `tapa` \| `audio` | **sí, y siempre contiene `audio`** | Ver `CTR-03.6`. |
-| `spotify` | objeto `{trackId}` | **no** | `ADR-01`: un ítem sin `trackId` es válido y jugable. Ver `CTR-03.7`. |
-| `estado` | `borrador` \| `listo` \| `retirado` | sí | Mismo enum que `CTR-02`. Las cuotas se cuentan solo sobre `listo`. |
-| `notaInterna` | string | no | No se muestra nunca. |
+| `contrato` | `"CTR-03"` | sí | |
+| `contratoVersion` | `2` | sí | La v1 nunca produjo un archivo. |
+| `juego` | `"adivinar-tema"` | sí | |
+| `modoRespuesta` | `"buscador"` | sí | Único valor. Ver `CTR-03.5`. |
+| `actualizado` | `AAAA-MM-DD` | sí | Fecha de la corrida del generador. Es también la trazabilidad de producción que `CTR-01.8` dejó de guardar por archivo. |
+| `nota` | string | no | Para el que abre el archivo sin contexto. No la lee ningún código. |
+| `fragmentos` | array | sí | Puede estar **vacío**, y hoy lo está. |
 
-**Lo que este ítem NO tiene, y por qué:**
+**`fragmentos` vacío es un estado válido, no un error.** Significa que el sitio todavía no
+tiene con qué sonar, porque el audio se produce desde la máquina del usuario (`D-23`). La
+pantalla lo dice y no se rompe; `catalogo()` devuelve los 105 temas con `jugable: false`.
+Es la misma postura que el resto del proyecto toma con los insumos que faltan: un hueco
+declarado antes que una excepción.
 
-- **No tiene `enunciado`.** El enunciado de este juego es el audio. Un campo de texto ahí
-  invitaría a escribir pistas —"un tema de 1988 que…"— y eso convierte el juego de
-  reconocimiento de oído en otra cosa. Si `producto` quiere una pista textual, es una
-  regla de negocio nueva (`UX-03` ya descartó la vía sin audio por ese mismo motivo), y
-  entra como campo nuevo en una v2.
-- **No tiene `tema`, `disco` ni `anio` a nivel ítem.** Ver `CTR-03.3`. Es la regla más
-  importante de este contrato.
-- **No tiene nada de los 5 pasos.** Ver `CTR-03.4`.
-- **No tiene `categoria`.** Las cuatro categorías (`historia`, `discos`, `letras`,
-  `mitologia`) son del quiz: acá todos los ítems son de la misma naturaleza. `US-02` pide
-  cuota por dificultad (≥ 5 fáciles), no por categoría.
+> **Revisado el 2026-08-24 (`T-104`): el envoltorio se aparta del común, a propósito.** La
+> v1 usaba el mismo envoltorio que `CTR-02` —`contrato`, `contratoVersion`, `juego`,
+> `actualizado`, `items`— con el argumento de que un solo cargador sirviera para los cuatro
+> juegos. Acá la clave se llama **`fragmentos`** y no `items`.
+>
+> **Por qué.** `items` prometería ítems de contenido: con `id`, `us`, `dificultad`,
+> `estado`. Adentro no hay nada de eso; hay archivos. Llamarlos `items` haría que el
+> archivo mienta sobre lo que tiene y que el día de mañana alguien le pida a `contenido`
+> que "complete los campos que faltan". Además, el cargador común tampoco existe para este
+> juego: el catálogo se arma en build desde `RES-20`, no desde este archivo.
+>
+> *Alternativa descartada:* mantener `items` por uniformidad. Se descarta por lo de arriba.
+> *Alternativa descartada:* renombrar el archivo a `fragmentos-audio.json`, que describiría
+> mejor su contenido. Se descarta por costo sin beneficio: la ruta está escrita en el
+> generador, en el catálogo, en dos tests y en `D-24`, y el nombre del juego sigue siendo
+> la mejor pista de para qué existe.
 
-**`explicacion` opcional y no obligatoria como en `CTR-02`.** Alternativa descartada:
-copiarle a `CTR-02` la obligatoriedad. La descarto porque el costo dominante de un ítem
-acá no es el texto sino **producir el audio** (`US-02`: "por qué 20 y no 40"), y exigir 400
-caracteres de prosa por ítem le agrega costo a un banco cuyo cuello de botella es el
-recorte manual del usuario. La revelación ya está completa sin ella: título, disco, año y
-puntaje son datos locales (`ADR-01`, fallback, punto 1).
+**Presupuesto de tamaño:** 104 entradas × ~110 bytes ≈ **12 KB**, contra el techo de 150 KB
+de `CTR-02.1`. El archivo no es el problema y nunca lo va a ser.
 
----
+**Presupuesto de audio: no lo fija este contrato, lo fija `CTR-01.5`.** Tres buffers
+residentes, ≤ 8,6 MB de RAM en el caso peor, ventana de dos adelantados. **104 entradas en
+el manifiesto no son 104 buffers en memoria**, y que el pozo pase de 20 a 104 no toca el
+presupuesto de gama baja en un solo byte. Se repite de la v1 porque es la confusión más
+fácil de cometer.
 
-### CTR-03.3 — Lo que este contrato **no** redeclara: tema, disco y año
-
-`CTR-01.8` declaró el objeto `credito` **fuente canónica** de tema/disco/año para
-cualquier juego con audio, con la instrucción explícita de que `CTR-03` no los vuelva a
-declarar. Acá se cumple, y en su forma más fuerte:
-
-> **La respuesta correcta del ítem *es* `fragmento.credito.tema`.** No hay un campo
-> `respuesta` que la duplique.
-
-Consecuencias, que conviene ver escritas:
-
-1. **Un tema no puede tener dos títulos dentro del mismo ítem.** No porque alguien lo
-   revise: porque no hay dónde escribir el segundo.
-2. **Si el modo es opción múltiple, la opción marcada `correcta: true` tiene que tener
-   `texto` idéntico a `fragmento.credito.tema`** — carácter por carácter. Es un chequeo de
-   script (`CTR-03.10`, chequeo 1), no de JSON Schema, y es el que impide que la opción
-   correcta diga "Ji ji ji" mientras el crédito dice "Jijiji".
-3. **Si el modo es texto, el primer elemento de `respuestasAceptadas` tiene que ser ese
-   mismo título**, y el resto son variantes aceptadas.
-4. **El título se copia literal de `RES-20`, nunca de memoria.** `RES-20` avisa que CMTV
-   tiene al menos un error de tipeo ("Superógico" por **Superlógico**) y que la fuente
-   buena es el artículo de cada disco. Y ojo con dos casos reales de esa misma ficha:
-   `RES-20` escribe **"Jijiji"** (Oktubre, track 7) mientras el resto del repo escribe
-   "Ji ji ji"; y lista **"Una piba con la remera de Greenpeace…"** con puntos suspensivos,
-   o sea **abreviado**. Un título que la ficha trae abreviado **no alcanza** para llenar
-   `credito.tema`: ese ítem no se carga hasta que una ficha lo traiga completo.
-5. **La respuesta viaja al cliente en texto plano.** No es novedad ni la trae este campo:
-   `CTR-01.8` ya lo dejó dicho —el archivo se pide como `/audio/fragmentos/<slug>.mp3`, así
-   que quien abra la pestaña de red ya tiene el título—. **Cuándo** se muestra el crédito
-   (solo al revelar) es de `experiencia`.
-
-**Alternativa descartada:** un campo `respuesta` a nivel ítem, más cómodo de leer para el
-motor. Descartada porque crea una segunda copia del título que puede desincronizarse del
-crédito, y el crédito es el que se publica al lado del audio: un crédito equivocado es un
-dato falso publicado junto a material de terceros. Que el motor tenga que escribir
-`item.fragmento.credito.tema` es más feo y no se puede romper.
+> **Propuesta opcional para el hilo principal (no bloquea, no es un cambio de datos).** La
+> interfaz `Manifiesto` de `src/lib/tema/catalogo.ts` declara cuatro claves y no incluye
+> `juego` ni `modoRespuesta`, así que un archivo con `modoRespuesta: "opciones"` pasaría
+> por el build sin que nadie lo note, jugándose igual como buscador. Es un modo de falla
+> barato de cerrar: sumar las dos claves a la interfaz y hacer que `indexarFragmentos()`
+> falle si no son las esperadas. *Alternativa:* dejarlo como está, apoyándose en que el
+> único que escribe el archivo es el generador. Es defendible mientras eso siga siendo
+> cierto; la propuesta cuesta cuatro líneas y deja de depender de que siga siéndolo.
 
 ---
 
-### CTR-03.4 — Los 5 pasos de `BR-02`, sin volver a fijar los segundos
+### CTR-03.2 — La entrada, campo por campo, y los doce campos que se retiran
 
-**El JSON no guarda ni un solo dato de los pasos.** Ni las duraciones, ni la cantidad, ni
-el puntaje. La escalera vive en **`CTR-01.9`** (0,1 / 0,5 / 2,0 / 5,0 / 10,0 s) y el
-puntaje en **`BR-02`** (100/80/60/40/20); el motor los lee de ahí como constantes.
+**La entrada entera está en `CTR-01.8` y no se redeclara acá.** Son cuatro campos:
+`slug`, `titulo`, `duracionSeg`, `entero`.
 
-Esto es posible por algo que `CTR-01.9` ya demostró y que conviene repetir: **los 5 pasos
-salen del mismo archivo**, no de cinco recortes. El motor reproduce
-`[t0, t0 + duración del paso]` sobre el `AudioBuffer` que ya tiene decodificado. Cinco
+> **Revisado el 2026-08-24 (`T-104`).** La v1 describía un ítem de trece campos. Abajo está
+> qué pasó con cada uno de los que se van. La tabla existe para que dentro de dos meses
+> nadie tenga que adivinar si un campo se olvidó o se retiró.
+
+| Campo de la v1 | Qué pasó | Por qué |
+|---|---|---|
+| `id` (`TM-001`+) | **Retirado, sin usar.** No se creó ni un `TM-NNN`. | Un archivo no es un ítem de contenido. La identidad del tema es su slug, que se deriva del título y no se inventa. Si algún día vuelve un banco, el contador arranca en `TM-001`: nunca se gastó. |
+| `us` | Retirado | El manifiesto entero pertenece a `US-02`. Repetirlo 104 veces no informa. |
+| `dificultad` | **Retirado, y tiene consecuencia para `producto`** | Ver "Consecuencias" al final: `BR-01` etiqueta ítems y acá no hay ítems. |
+| `fragmento` (objeto de `CTR-01.8`) | **Es la entrada misma** | El ítem se disolvió y quedó el archivo. |
+| `opciones` (4, una correcta) | **Retirado** | `D-24`: se responde con buscador. Ver `CTR-03.5`. |
+| `respuestasAceptadas` | **Retirado** | Nunca existió el modo texto. Ver `CTR-03.5`. |
+| `explicacion` | Retirado | El dato de color del reveal hoy es la ficha del tema (disco, año, pista) y el enlace a la letra, todo derivado. Si `contenido` quiere prosa por tema, es un banco nuevo y un contrato nuevo: no se cuelga de un manifiesto que reescribe un script. |
+| `rotulo` (`leyenda` \| `testimonio`) | Retirado **con `explicacion`** | El rótulo rotula una afirmación, y sin `explicacion` no hay afirmación que rotular. La regla de las tres casillas no se toca: vive en `CTR-02` y en `CTR-04`, donde sí hay prosa. |
+| `fuentes` | **Cambia de lugar, no desaparece** | `CTR-03.6`, regla 1. |
+| `sensibleA` | **Cambia de lugar, no desaparece** | `CTR-03.6`, regla 2. |
+| `spotify.trackId` | **Retirado** | `CTR-03.7`. |
+| `estado` (`borrador`/`listo`/`retirado`) | **Retirado** | Un archivo de audio no tiene borrador: existe o no existe. "Retirado" es borrar el mp3 y volver a correr el generador, que es exactamente lo que hay que hacer si llega un reclamo (`D-14`). |
+| `notaInterna` | Retirado | El generador reescribe el archivo entero en cada corrida: cualquier nota a mano se pierde. Un campo que no sobrevive a su propia herramienta es una trampa. |
+
+**Lo que la entrada tampoco tiene, y sigue sin tener por la misma razón que en la v1:**
+
+- **No tiene `enunciado`.** El enunciado de este juego es el audio.
+- **No tiene `tema`, `disco` ni `anio`.** Salen de `RES-20` y de la ficha del disco, en
+  build. El `titulo` que sí lleva es documentación, no dato de juego (`CTR-01.8`).
+- **No tiene nada de los seis pasos.** Ver `CTR-03.4`.
+- **No tiene `categoria`.** Las cuatro categorías son del quiz.
+
+---
+
+### CTR-03.3 — Qué es la respuesta correcta: una identidad, no un texto
+
+> **Revisado el 2026-08-24 (`T-104`).** La v1 decía: *"La respuesta correcta del ítem **es**
+> `fragmento.credito.tema`"*, y dedicaba tres consecuencias a que nadie escribiera el
+> título dos veces. La propiedad se conserva y se refuerza; lo que cambia es que el título
+> ya no se escribe **ninguna** vez.
+
+> **La respuesta correcta es el tema del catálogo, y la comparación es por `slug`.**
+
+`acierta(elegido, correcto)` compara `elegido.slug === correcto.slug`. En todo el juego no
+hay una sola comparación de títulos. Consecuencias, que conviene ver escritas:
+
+1. **La pregunta que la v1 dejó anotada como difícil desapareció.** El punto 4 de la v1
+   avisaba que `RES-20` escribe *Jijiji* y el resto del repo *Ji ji ji*, y que decidir si
+   son la misma respuesta no tiene una salida buena. Con buscador no hay que decidirlo: el
+   jugador **elige** de una lista y lo que viaja es la identidad. La tolerancia de tipeo es
+   un problema de **búsqueda** —perdonar tilde, espacio, palabra del medio— y no de
+   **corrección**, que es donde estaba mal puesto.
+2. **El título canónico es el de `RES-20`, literal, y no hay dónde escribir un segundo.**
+   Si la ficha trae un título abreviado, el tema aparece abreviado en el buscador y en el
+   reveal. Eso es un defecto de la ficha y se arregla en la ficha (`investigador`), no acá.
+3. **El slug es la única cosa que el manifiesto y el catálogo tienen que compartir**, y por
+   eso el build cruza uno contra otro (`CTR-03.6`, regla 1).
+4. **La respuesta viaja al cliente en texto plano.** No es novedad: el archivo se pide como
+   `/audio/fragmentos/<slug>.mp3`, así que quien abra la pestaña de red ya la tiene. Es un
+   juego de honor, como cualquier trivia sin backend. **Cuándo** se muestra el crédito
+   —solo al revelar— es de `experiencia`, y ya está resuelto en la pantalla.
+
+*Alternativa descartada (de la v1, sigue valiendo):* un campo `respuesta` a nivel dato. Crea
+una segunda copia del título que se puede desincronizar de la que se publica al lado del
+audio.
+
+---
+
+### CTR-03.4 — Los seis pasos, sin un solo dato en el JSON
+
+**El manifiesto no guarda ni un dato de los pasos.** Ni las duraciones, ni la cantidad, ni
+el puntaje. La escalera vive en `CTR-01.9` y su implementación en
+`src/lib/tema/escalera.ts`; el puntaje es de `BR-02`. El motor los lee como constantes.
+
+Esto es posible porque **los seis pasos salen del mismo archivo de audio**: el motor
+reproduce `[0, duración del paso]` sobre el `AudioBuffer` que ya tiene decodificado. Seis
 pasos cuestan lo mismo que uno.
 
-**La única atadura entre el dato y la escalera, y es una sola línea de aritmética:**
+**La única atadura entre el dato y la escalera, y es una línea de aritmética:**
 
-> `fragmento.duracionSeg` ≥ duración del **paso 5** de `CTR-01.9`.
+> `duracionSeg` ≥ duración del **paso 6** de `CTR-01.9`.
 
-Con los números de hoy, y sumando el techo de `CTR-01.3` (10,0 s con tolerancia de trama
-de 10,10 s), la ventana válida es **[10,00 – 10,10]**. Un fragmento más corto que el paso 5
-haría que el último escalón reproduzca silencio al final y que el jugador que pagó 80
-puntos de descuento reciba menos audio del que la tabla le promete.
+Con los números de hoy, y con la ventana de `CTR-01.3`, la franja válida es
+**[14,90 – 15,15]**, y el build rechaza cualquier fragmento por debajo de **14,85**
+(`indexarFragmentos()`, con el mensaje "el último paso sonaría a silencio"). Un fragmento
+más corto que el paso 6 le devolvería silencio justo al jugador que gastó cinco intentos
+para llegar ahí.
 
-**Qué pasa si algo cambia — las tres puertas, y ninguna toca `BR-02`:**
+> **Revisado el 2026-08-24:** la v1 decía "los 5 pasos" y fijaba la franja en
+> [10,00 – 10,10]. Cambiaron los dos números y **no cambió el diseño**: la propiedad que
+> este contrato fue a buscar en `T-24` —que cambiar la escalera no migre ni un dato— se
+> cumplió en el primer cambio real. `D-24` pasó de cinco pasos a seis y de 10 s a 15 s, y
+> el archivo de datos no necesitó una sola edición: se volvió a correr el generador.
+
+**Qué hay que tocar si algo cambia — y ninguna fila toca los datos a mano:**
 
 | Cambia… | Qué hay que tocar |
 |---|---|
-| El **máximo** de `CTR-01.3` (p. ej. si `RES-11`/`RES-12` obligan a bajar a 8,0 s) | La ventana de `duracionSeg` en la copia corrible, y re-exportar los fragmentos con `CTR-01.6` paso 2. **Ni un campo nuevo, ni un ítem editado a mano.** |
-| Las **duraciones** de la escalera (`CTR-01.9`) | Nada del JSON. Es una constante del motor. |
-| La **cantidad** de pasos (`BR-02`, y es de `producto`) | **Nada del JSON.** Cero migración de datos. Esta es la propiedad que buscaba el diseño. |
+| El **máximo** de `CTR-01.3` | La constante `DURACION_FRAGMENTO_SEG`, y re-correr el generador con `--rehacer`. |
+| Las **duraciones** de la escalera | Solo `escalera.ts`. Nada del JSON. |
+| La **cantidad** de pasos (es de `producto`) | Solo `escalera.ts`. Nada del JSON. Ya pasó, y salió así. |
+| La **tabla de puntaje** (`BR-02`) | Solo `escalera.ts`. |
 
-**Alternativas descartadas, las tres por el mismo motivo de fondo:**
-
-- **Guardar las 5 duraciones por ítem.** Permitiría que un archivo de datos contradiga a
-  `CTR-01.9`, y ahí ya no hay fuente única: gana el que se leyó último.
-- **Guardar `pasosDisponibles: 5` por ítem.** Redundante con `BR-02` y peligroso: un `4`
-  mal tipeado rompe la tabla de puntaje en silencio, sin que nada falle.
-- **Permitir un override por ítem para casos especiales** (un tema con intro larguísima).
-  Descartada: eso es renumerar `BR-02` de a un ítem por vez, que es exactamente lo que
-  `T-24` tiene prohibido. Si un tema no funciona con la escalera común, el problema es del
-  recorte (`CTR-01.2` permite mover `inicioEnTemaSeg`), no de la escalera.
-
-**Para `experiencia`:** `UX-03` necesita 5 estados visuales distinguibles y no necesita
-ningún dato del JSON para dibujarlos. La animación se sincroniza contra la constante, igual
-que el audio.
+**Alternativas descartadas (de la v1, siguen valiendo):** guardar las duraciones por ítem
+—habilitaría que un dato contradiga al contrato—; guardar `pasosDisponibles` —un número mal
+tipeado rompe el puntaje en silencio—; permitir un override por tema —eso es renumerar
+`BR-02` de a un tema por vez—.
 
 ---
 
-### CTR-03.5 — Las opciones de respuesta: qué decido y qué **no**
+### CTR-03.5 — `modoRespuesta`: **`"buscador"`**, y es el único valor
 
-#### Lo que decido (arquitectura)
+> **Cerrada el 2026-08-24 (`T-104`) con un valor que la v1 no contemplaba.** La v1 dejaba
+> dos —`"opciones"` y `"texto"`—, elegía `"opciones"` como valor de trabajo y le pedía a
+> `producto` que decidiera, con un pedido escrito en
+> `Docs/SUGERENCIAS/ARQ-para-producto-opciones-adivinar-tema.md`. **Decidió el usuario, en
+> `D-24`, y eligió un tercero.**
 
-**El schema soporta los dos mecanismos y obliga a elegir uno, a nivel archivo:**
+- `modoRespuesta: "buscador"` → el jugador escribe, **elige de una lista de sugerencias** y
+  lo que viaja es la identidad del tema. La lista son los 105 títulos de `RES-20` (o los
+  del disco elegido), tengan audio o no.
+- **El enum se reduce a un solo valor.** `"opciones"` y `"texto"` quedan registrados acá
+  como descartados, no en el schema.
+  *Por qué reducirlo:* ningún código del sitio implementa los otros dos, así que un archivo
+  que los declarara se jugaría igual como buscador. Un enum que acepta valores que nadie
+  respeta es una promesa falsa escrita en el contrato.
+  *Alternativa descartada:* dejar los tres por si vuelven. Volver cuesta una línea y una
+  revisión fechada; mantener la mentira cuesta que alguien la crea.
 
-- `modoRespuesta: "opciones"` → cada ítem lleva `opciones`: exactamente **4**, con
-  exactamente una `correcta: true`.
-- `modoRespuesta: "texto"` → cada ítem lleva `respuestasAceptadas`, lista no vacía cuyo
-  primer elemento es el título canónico.
+**Por qué `"buscador"` no es `"texto"` con otro nombre**, que es la confusión que hay que
+prevenir: con texto libre hay que decidir si dos escrituras del mismo título son la misma
+respuesta —el caso que la v1 anotó en `CTR-03.3`, punto 4— y esa decisión no tiene una
+salida buena. Con lista, la comparación es de identidad y la pregunta no existe. El costo
+de tipeo se paga en la **búsqueda**, donde equivocarse solo cuesta un resultado de más.
 
-**Por qué a nivel archivo y no por ítem.** Mezclar mecanismos de input entre ítems del
-mismo juego hace que la partida cambie de forma sin motivo visible para el jugador, y
-además vuelve la decisión de `producto` un dato disperso en veinte lugares. A nivel
-archivo es **una clave** el día que se decida.
-*Alternativa descartada:* `modoRespuesta` por ítem, que habilitaría "fácil con opciones,
-difícil tipeando". Es una idea razonable **y es de `producto`**: `BR-01` define la
-dificultad como una etiqueta de tres valores, no como un cambio de mecánica. Si la eligen,
-`CTR-03` va a v2 y el cambio es mover una clave de nivel — barato, y por eso no lo
-adelanto.
+**El corolario, y es el que reescribió el contrato entero: no hacen falta distractores.**
+Con buscador no hay tres títulos falsos que elegir por ítem, y como la respuesta correcta
+sale del catálogo, **un ítem no necesita ningún dato propio**. De ahí que el banco haya
+desaparecido y quede un manifiesto de archivos.
 
-**Techo de `opciones[].texto` y de `credito.tema`: 80 caracteres, no 60 como en `CTR-02`.**
-No es capricho y sale de contar, no de estimar: el título más largo de la discografía,
-según `RES-20`, es **"Las increíbles andanzas del Capitán Buscapina en Cybersiberia"**
-(*Último bondi a Finisterre*, track 1) y tiene **61 caracteres**. Con el techo de 60 de
-`CTR-02`, ese tema **no entra en una opción** — y no es un caso raro, es el track 1 de un
-disco. Los 80 dejan margen para el título abreviado de `Momo Sampler` cuando aparezca
-completo, sin llegar a permitir un párrafo.
+**Y el agujero aritmético de la v1 se cerró solo.** La v1 mostró que con cuatro opciones y
+errar gratis, el que no reconocía nada sacaba 70 puntos de promedio: el azar pagaba más que
+saber. `D-24` lo recalculó sobre 105 títulos: seis intentos al azar tienen ~5,5 % de sacar
+algo, y dejan 99 títulos sin probar. **El azar dejó de pagar, así que la mecánica pudo
+volverse generosa** —errar abre el escalón siguiente— sin vaciar la promesa de premiar al
+que sabe. La cuenta es de `D-24`; acá se cita porque era el motivo por el que este contrato
+no podía cerrar `CTR-03.5` solo.
 
-> **Para `experiencia`, y es consecuencia directa:** si gana opción múltiple, la pantalla
-> tiene que bancar **cuatro opciones de hasta ~61 caracteres reales** en zona pulgar,
-> además de los controles del reveal. No es el caso teórico del techo: es un tema del
-> banco.
+**Lo que este contrato **no** decide del buscador, y es de otros:**
 
-#### Lo que **no** decido, y por qué no es mío
+- **Qué tan tolerante es la búsqueda.** Hoy perdona tilde, espacio, palabra del medio y
+  letra salteada, y la salteada solo si no hay nada mejor. Es mecanismo de pantalla:
+  `experiencia`, con el mapa del juego de referencia como vara — que midió y descartó la
+  búsqueda difusa por distancia de edición, porque `zzzzq` ofrecía temas de ZZ Top.
+- **Cuántos resultados se muestran y hacia dónde se abre la lista.** `experiencia`.
+- **El pozo por disco** (`D-24`, parte 4). El manifiesto no lo declara: sale de cruzar los
+  temas jugables con el disco de cada uno, en `pozo()`.
 
-`BR-04` fija 4 opciones y dice, textual, **"Aplica a `US-01` y a `US-04`"**. No nombra a
-`US-02`, y `US-02` deja el mecanismo de input explícitamente fuera de la historia. O sea:
-**hoy no existe una regla de producto que diga cómo se responde en este juego.**
-
-Hay un argumento fuerte a favor de la opción múltiple —`D-09`, "jugable con el pulgar", es
-no negociable, y `US-04` lo cita para prohibir el tipeo— y **por eso dejo `"opciones"`
-como valor de trabajo**. Pero encontré una consecuencia aritmética que hace que la
-coherencia con `BR-04` **no sea automática**, y no me corresponde resolverla:
-
-> **Con 4 opciones y la mecánica de `BR-02` tal como está escrita, adivinar al azar en el
-> paso 1 rinde más que acertar de verdad en el paso 5.**
->
-> `BR-02` dice que errar antes no cambia el cálculo: el puntaje depende solo del paso más
-> alto alcanzado al acertar. Entonces tirar una opción en cada paso es gratis y va
-> descartando:
->
-> | Paso | Opciones que quedan | Prob. de pegarla ahí | Puntos | Aporte |
-> |---|---|---|---|---|
-> | 1 | 4 | 1/4 | 100 | 25 |
-> | 2 | 3 | 1/3 | 80 | 20 |
-> | 3 | 2 | 1/2 | 60 | 15 |
-> | 4 | 1 | 1/1 | 40 | 10 |
-> | | | | **Esperado** | **70** |
->
-> Un jugador que **no reconoce absolutamente nada** saca 70 puntos de promedio y **nunca
-> baja de 40**, sin escuchar. El que se lo sabe de memoria saca 100. La distancia entre
-> saber y no saber se reduce a 30 puntos sobre 100, y el paso 5 (20 puntos) queda
-> inalcanzable: nadie lo usa nunca. Eso vacía la promesa de "premiar al que sabe" (`D-09`)
-> igual que lo hacían las 3 opciones que `BR-04` descartó, y por la misma cuenta de azar
-> que `BR-04` usó para descartarlas — solo que multiplicada por cinco intentos gratis.
-
-Las salidas son todas de `producto` y no elijo ninguna: extender `BR-04` igual y aceptar
-la cuenta; que un error consuma un paso; que las opciones aparezcan recién en el paso N;
-o que el juego se responda con texto. **Pedido dejado en**
-`Docs/SUGERENCIAS/ARQ-para-producto-opciones-adivinar-tema.md`.
-
-**Lo bueno: la decisión no frena la carga de contenido.** Como la respuesta correcta vive
-en `fragmento.credito.tema` y no en `opciones` (`CTR-03.3`), un ítem se puede cargar entero
-antes de que `producto` conteste. Lo único que depende de la respuesta son los **tres
-distractores** —y salen de la lista de 105 títulos de `RES-20`, que ya está en disco—.
-Ningún trabajo de `contenido` se pierde por esperar.
+**Techo de largo del título: 80 caracteres**, igual que la v1 y por la misma cuenta: el más
+largo de la discografía tiene 61 (`RES-20`, track 1 de *Último bondi a Finisterre*). Ya no
+hay opciones que dibujar, pero el buscador y el reveal tienen que bancar esos 61 caracteres
+reales en pantalla chica.
 
 ---
 
-### CTR-03.6 — Las dos reglas de veracidad de `CTR-02`, adaptadas y **más duras**
+### CTR-03.6 — Las dos reglas de veracidad: **cambian de lugar, no se aflojan**
 
-`CTR-02` convirtió dos criterios blandos en validaciones de máquina. Acá las dos siguen
-vivas, y las dos se endurecen. El motivo es uno solo: **un ítem de este juego publica
-material de terceros al lado de una afirmación**, cosa que una pregunta de texto no hace.
+> **Reescrita el 2026-08-24 (`T-104`).** La v1 volvía corribles dos criterios: `fuentes`
+> obligatoria sin excepción, y `sensibleA` conteniendo siempre `audio`. Las dos eran campos
+> del ítem, y no hay ítems. **Ninguna de las dos se retira: las dos se mudan al lugar donde
+> hoy se pueden verificar de verdad.** El pedido del hilo principal las marcó como "no
+> implementadas" y quería que se viera antes de que pareciera un olvido; esto es la
+> respuesta.
 
-#### Regla 1 — `fuentes` es obligatoria **siempre**, sin la salida de la leyenda
+#### Regla 1 — La fuente no es un campo: es un cruce que rompe el build
 
-En `CTR-02`, `fuentes` se exige salvo que el ítem esté rotulado como leyenda. **Acá no hay
-salvo.** `fuentes` tiene `minItems: 1` y punto.
+Lo que este juego afirma de cada tema es **título, disco, año y pista**. La v1 exigía
+`fuentes: ["RES-20"]` en cada ítem para respaldarlo.
 
-**Por qué se puede ser más duro:** lo que este ítem afirma en su núcleo es
-**tema + disco + año**, y eso es dato discográfico. No existe la versión "leyenda" de en
-qué disco está un tema: o está fichado o no se carga. Con `RES-20` en disco, exigirlo no
-cuesta nada — la ficha cubre los 105 temas.
+**Ahora esos cuatro datos no los afirma un dato: los lee de `RES-20` en build.** `catalogo()`
+parsea la ficha, arma los 105 slugs y **cada entrada del manifiesto tiene que resolver
+contra uno de ellos**. La que no resuelve rompe el build nombrando el archivo culpable. Es
+la puerta de `D-13`, la misma que usa el cancionero, aplicada al audio.
 
-**Y la leyenda no se pierde, se muda al lugar donde sí puede aparecer:** el dato de color
-de `explicacion`. Para eso está `rotulo`:
+**Por qué esto es más fuerte que el campo, y no una excusa:**
 
-```json
-"rotulo": { "tipo": "testimonio", "texto": "<quién lo cuenta y dónde>" }
-```
+| | `fuentes: ["RES-20"]` en el ítem | El cruce en build |
+|---|---|---|
+| Qué comprueba la máquina | Que el string tenga el formato `RES-\d{2}` | Que el tema **exista en la ficha**, con ese título exacto |
+| Un ítem sobre un tema inventado | **Valida** | Rompe el build |
+| Un `RES-` que no sostiene lo que el ítem afirma | Valida (es el hallazgo `FIND-10`) | No puede pasar: el dato **sale** de la ficha |
+| Quién lo puede olvidar | Quien carga | Nadie: no hay campo |
 
-- `tipo`: `leyenda` | `testimonio`.
-- `texto`: 20 a 200 caracteres, y tiene que decir **quién lo cuenta y dónde** — misma
-  exigencia que `CTR-02` le pone a `rotuloLeyenda`.
-- **Regla que la máquina no puede ver y `revisor` sí:** si la `explicacion` afirma algo que
-  las `fuentes` del ítem no respaldan, falta el `rotulo`. Es el hallazgo tipo `FIND-10`
-  (cita verdadera que no sostiene la afirmación) aplicado a este banco.
-- El schema sí verifica lo que puede: que `rotulo` no exista sin `explicacion`, y que si
-  existe traiga `tipo` y un `texto` de largo mínimo — un rótulo vacío no valida.
+**La leyenda no se pierde ni se muda a la fuerza.** La v1 mandaba lo no fichado a
+`explicacion` con su `rotulo`. Acá no hay prosa por tema, así que **no hay nada que
+rotular**: el juego no afirma nada más que la discografía. Las tres casillas de `D-14`
+—hecho, leyenda, testimonio— siguen vivas y sin un rasguño en `CTR-02` (quiz) y `CTR-04`
+(letras), y en la Redondopedia. Si algún día el reveal de este juego suma un dato de color,
+vuelve el par `explicacion` + `rotulo` tal como la v1 lo dejó escrito, y vuelve con la
+regla de `revisor`: si la explicación afirma algo que la fuente no sostiene, falta el
+rótulo.
 
-> **Dependencia declarada con `T-16`, y se resuelve a favor de `CTR-02`.** Mientras escribo
-> esto, otro tramo está agregando la categoría **testimonio** a `CTR-02` y todavía no tiene
-> nombre de campo. **No adiviné el nombre ni copié el bloque.** Si `CTR-02` v2 nombra ese
-> rótulo distinto de `rotulo`/`tipo: "testimonio"`, **manda `CTR-02`** y esta sección se
-> alinea en `CTR-03` v2: es renombrar una clave en un archivo que hoy no tiene ítems, o
-> sea gratis. Lo que **no** se negocia en ninguna de las dos versiones es la propiedad: el
-> rótulo dice quién lo cuenta y dónde, o no valida.
+#### Regla 2 — El mapa de derechos no es un campo: es la carpeta, y se lista con un comando
 
-#### Regla 2 — `sensibleA` nunca está vacío: **todo ítem de este juego contiene `audio`**
+`sensibleA` existía para una sola cosa (`D-14`): poder encontrar en diez segundos qué hay
+que bajar si llega un reclamo. La v1 lo garantizaba con `contains: {const: "audio"}`.
 
-En `src/data/quiz.json` los quince ítems vigentes tienen `sensibleA: []`, y está bien: son
-texto. Acá eso es imposible por schema —`minItems: 1` más `contains: {const: "audio"}`—
-porque **`fragmento` es obligatorio**: no existe un ítem de `US-02` sin audio.
+**Acá el mapa es más directo:** `public/audio/fragmentos/` son, uno a uno, los temas que el
+sitio publica en audio, y `public/audio/temas/` son los que publica **enteros**, que es la
+superficie mayor que abrió `D-22`. El manifiesto los lista a los dos —con el `titulo`
+legible al lado y el booleano `entero`—, y el comando 3 de `CTR-03.10` los imprime.
 
-Vocabulario compartido con `CTR-02`, sin inventar valores nuevos: `letra`, `tapa`, `audio`.
-`letra` se suma si la `explicacion` cita versos (tope de `BR-03`); `tapa`, si la pantalla
-de revelación muestra la tapa del disco.
+**Qué se gana y qué se pierde, sin adornar:**
 
-**Para qué sirve que esto sea un campo y no una advertencia.** `D-07` es un gate real de
-publicación, y `CTR-02` lo volvió **corrible**. Acá la consecuencia es más fuerte y hay que
-decirla completa:
+- **Se gana** que el mapa no se puede desincronizar: el generador lo escribe leyendo el
+  disco, y el comando compara el disco contra el manifiesto y avisa si hay un mp3 sin
+  declarar.
+- **Se gana** granularidad de derechos: el booleano `entero` distingue 15 segundos de una
+  grabación completa, cosa que el enum `letra | tapa | audio` no distinguía.
+- **Se pierde** poder marcar como sensible a `letra` o a `tapa` una entrada de este juego.
+  Hoy no hace falta —la pantalla del reveal no muestra tapa ni versos, muestra ficha y un
+  enlace a la letra—, y el día que muestre alguna de las dos, la sensibilidad la declara la
+  pantalla, no el manifiesto. Eso es de `experiencia` y de `UX-05`, que ya lleva el catálogo
+  de dónde aparece cada tapa.
 
-> Mientras la nota de derechos del audio siga abierta (`CNT-01` sección A, fichas `RES-11`
-> y `RES-12` pedidas en `T-22`), **el subconjunto publicable de `adivinar-tema.json` es
-> vacío, por construcción, y se puede demostrar con un comando** (`CTR-03.10`, comando 3).
-> El juego entero está detrás del gate. Eso no es una opinión sobre el riesgo: es lo que
-> el filtro devuelve.
-
-Esto también hace visible algo que `D-05` deja implícito: `US-04` es el primero que se cae
-por derechos, pero **`US-02` es el segundo**, y su exposición no se mitiga recortando el
-piso — se mitiga solo con la ficha o bajando la duración de `CTR-01.3`.
-
-**Alternativa descartada:** dejar `sensibleA` libre como en `CTR-02` y confiar en que
-`contenido` ponga `["audio"]` en cada ítem. Descartada por el mismo argumento que `D-12`
-dejó documentado: la autoverificación falla incluso con buen criterio. Si el campo se puede
-olvidar, un día se olvida, y el ítem olvidado es justo el que se cuela cuando alguien filtre
-por "lo que sí se puede publicar".
+**Y una cosa que la v1 escribía y hay que retirar explícitamente:** decía que *"el
+subconjunto publicable de `adivinar-tema.json` es vacío, por construcción"*, porque el gate
+de `D-07` estaba cerrado. **`D-14` sacó ese cerrojo**: hoy nada se frena esperando permiso,
+el riesgo lo asume el usuario y si llega un reclamo se baja el fragmento puntual. El comando
+que la v1 usaba para contar lo publicable pierde sentido; el que lo reemplaza cuenta lo
+publicado, que es lo que ahora sirve.
 
 ---
 
-### CTR-03.7 — Spotify: opcional, y la partida no depende de él
+### CTR-03.7 — Spotify: retirado del dato
 
-```json
-"spotify": { "trackId": "<22 caracteres alfanuméricos>" }
-```
+> **Retirado el 2026-08-24 (`T-104`).** La v1 reservaba `spotify: { trackId }` opcional por
+> ítem, con el argumento de que servía igual para las dos vías que `ADR-01` mantenía vivas.
 
-- **El objeto entero es opcional.** Un ítem sin `spotify` **es válido, es jugable y llega
-  al final de la partida** — punto 3 del fallback de `ADR-01`, que está cerrado y no espera
-  ninguna evidencia. Ningún validador rechaza un tema por no estar en Spotify.
-- `trackId` es el mismo dato para las dos opciones que siguen vivas en `ADR-01` (embed y
-  deep link), así que **`contenido` puede cargar IDs hoy sin riesgo de trabajo perdido**,
-  gane la que gane cuando cierren `E-04` y `E-07`.
-- **`trackId` no es inventable.** Sale de la URL del tema en Spotify y `contenido` no tiene
-  acceso a la web. Antes que un ID plausible, **el campo se omite**: un ID inventado pasa el
-  patrón de 22 caracteres, no falla ninguna validación y manda al jugador a otro tema o a un
-  404. Es el modo de falla más caro de detectar de todo el contrato.
-- **Qué se le promete al jugador con este campo: lo que dice `BR-06`**, un acceso directo
-  para escuchar el tema en Spotify, **sin garantizar que suene completo sin salir del
-  sitio**. El copy no es mío, pero el campo no habilita más que eso.
-- **Nada de Spotify durante la partida** (`ADR-01`, fallback, punto 7): el `trackId` se usa
-  recién después de revelar y solo si el jugador toca el botón.
+**`D-22` cambió la pregunta:** el tema completo lo sirve el sitio en mp3, sin cuenta y sin
+Premium, así que Spotify bajó de ser la promesa a ser, como mucho, un enlace extra. El
+manifiesto no lleva `trackId` y la partida no toca Spotify en ningún momento —lo que
+`codigo-juegos.md` pedía y que ahora se cumple por ausencia, no por disciplina—.
+
+**Qué pasa si vuelve.** No vuelve como campo de este archivo: un `trackId` no lo puede
+averiguar el generador —no sale del disco del usuario— y `contenido` no tiene acceso a la
+web. Volvería como un mapa aparte `slug → trackId`, cargado a mano, que el reveal consulta
+si existe. **Un ID inventado es el peor modo de falla del proyecto**: pasa cualquier
+validación de formato, no falla nunca, y manda al jugador a otro tema.
+
+**`ADR-01` sigue abierto en esa parte**, y no la cierra este contrato: si Spotify se queda
+como enlace externo al revelar o se retira del todo es decisión de `ADR-01` con `BR-06`.
+Hoy el código no lo usa, que es la opción conservadora y la que no compromete ninguna de
+las dos salidas.
 
 ---
 
-### CTR-03.8 — El bloque JSON Schema, completo y listo para pegar
+### CTR-03.8 — El bloque normativo, y por qué **no** se baja a archivo
 
-Draft 2020-12, igual que `CTR-02`. **Este documento manda sobre la copia:** si mañana
-`src/data/_schema/adivinar-tema.schema.json` se desincroniza de esto, manda esto.
+Draft 2020-12, igual que los otros contratos. **Este documento manda sobre cualquier copia.**
 
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ricotaarcade.local/schema/adivinar-tema/1",
-  "title": "CTR-03 — Banco de adivinar el tema",
+  "$id": "https://ricotaarcade.local/schema/adivinar-tema/2",
+  "title": "CTR-03 v2 — Manifiesto de fragmentos de adiviná el tema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["contrato", "contratoVersion", "juego", "actualizado", "modoRespuesta", "items"],
+  "required": ["contrato", "contratoVersion", "juego", "modoRespuesta", "actualizado", "fragmentos"],
   "properties": {
     "contrato": { "const": "CTR-03" },
-    "contratoVersion": { "const": 1 },
+    "contratoVersion": { "const": 2 },
     "juego": { "const": "adivinar-tema" },
+    "modoRespuesta": { "const": "buscador" },
     "actualizado": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
-    "modoRespuesta": { "enum": ["opciones", "texto"] },
-    "items": {
+    "nota": { "type": "string" },
+    "fragmentos": {
       "type": "array",
-      "minItems": 1,
-      "items": { "$ref": "#/$defs/item" }
+      "minItems": 0,
+      "items": { "$ref": "#/$defs/fragmento" }
     }
   },
-  "allOf": [
-    {
-      "if": {
-        "required": ["modoRespuesta"],
-        "properties": { "modoRespuesta": { "const": "opciones" } }
-      },
-      "then": {
-        "properties": { "items": { "items": { "required": ["opciones"] } } }
-      }
-    },
-    {
-      "if": {
-        "required": ["modoRespuesta"],
-        "properties": { "modoRespuesta": { "const": "texto" } }
-      },
-      "then": {
-        "properties": { "items": { "items": { "required": ["respuestasAceptadas"] } } }
-      }
-    }
-  ],
   "$defs": {
-    "item": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["id", "us", "dificultad", "fragmento", "fuentes", "sensibleA", "estado"],
-      "properties": {
-        "id": { "type": "string", "pattern": "^TM-\\d{3}$" },
-        "us": {
-          "type": "array", "minItems": 1,
-          "items": { "type": "string", "pattern": "^US-\\d{2}$" }
-        },
-        "dificultad": { "enum": ["facil", "media", "dificil"] },
-        "fragmento": { "$ref": "#/$defs/fragmento" },
-        "opciones": {
-          "type": "array",
-          "minItems": 4,
-          "maxItems": 4,
-          "uniqueItems": true,
-          "items": { "$ref": "#/$defs/opcion" },
-          "contains": {
-            "type": "object",
-            "required": ["correcta"],
-            "properties": { "correcta": { "const": true } }
-          },
-          "minContains": 1,
-          "maxContains": 1
-        },
-        "respuestasAceptadas": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": { "type": "string", "minLength": 1, "maxLength": 80 }
-        },
-        "explicacion": { "type": "string", "minLength": 10, "maxLength": 400 },
-        "rotulo": { "$ref": "#/$defs/rotulo" },
-        "fuentes": {
-          "type": "array", "minItems": 1, "uniqueItems": true,
-          "items": { "type": "string", "pattern": "^RES-\\d{2}$" }
-        },
-        "sensibleA": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": { "enum": ["letra", "tapa", "audio"] },
-          "contains": { "const": "audio" },
-          "minContains": 1
-        },
-        "spotify": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["trackId"],
-          "properties": {
-            "trackId": { "type": "string", "pattern": "^[A-Za-z0-9]{22}$" }
-          }
-        },
-        "estado": { "enum": ["borrador", "listo", "retirado"] },
-        "notaInterna": { "type": "string" }
-      },
-      "allOf": [
-        {
-          "if": { "required": ["rotulo"] },
-          "then": { "required": ["explicacion"] }
-        }
-      ]
-    },
     "fragmento": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "archivo", "duracionSeg", "inicioEnTemaSeg",
-        "canales", "origen", "fechaCorte", "credito"
-      ],
+      "required": ["slug", "titulo", "duracionSeg", "entero"],
       "properties": {
-        "archivo": { "type": "string", "pattern": "^[a-z0-9]+(-{1,2}[a-z0-9]+)*$" },
-        "duracionSeg": { "type": "number", "minimum": 10.0, "maximum": 10.10 },
-        "inicioEnTemaSeg": { "type": "number", "minimum": 0 },
-        "canales": { "enum": [1, 2] },
-        "origen": { "type": "string", "minLength": 3 },
-        "fechaCorte": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
-        "credito": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["tema", "disco", "anio"],
-          "properties": {
-            "tema": { "type": "string", "minLength": 1, "maxLength": 80 },
-            "disco": { "type": "string", "minLength": 1, "maxLength": 80 },
-            "anio": { "type": "integer", "minimum": 1985, "maximum": 2000 }
-          }
-        }
-      }
-    },
-    "opcion": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["texto", "correcta"],
-      "properties": {
-        "texto": { "type": "string", "minLength": 1, "maxLength": 80 },
-        "correcta": { "type": "boolean" },
-        "nota": { "type": "string", "maxLength": 200 }
-      }
-    },
-    "rotulo": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["tipo", "texto"],
-      "properties": {
-        "tipo": { "enum": ["leyenda", "testimonio"] },
-        "texto": { "type": "string", "minLength": 20, "maxLength": 200 }
+        "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+        "titulo": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "duracionSeg": { "type": "number", "minimum": 14.90, "maximum": 15.15 },
+        "entero": { "type": "boolean" }
       }
     }
   }
 }
 ```
 
-**Tres números del bloque que salen de otro lado y no se tocan acá:**
+**Tres números que salen de otro lado y no se tocan acá:** `minimum: 14.90` y
+`maximum: 15.15` son la ventana de `CTR-01.3`; el patrón de `slug` es el de `CTR-01.4` y es
+lo que produce `slugDeTitulo()`; los 80 caracteres de `titulo` son el techo de `CTR-03.5`.
+**Si `CTR-01.3` mueve el máximo, estos dos literales se mueven con él.**
 
-- `duracionSeg` **`minimum: 10.0`** ← paso 5 de `CTR-01.9`. `maximum: 10.10` ← tolerancia
-  de trama de `CTR-01.3`. **Si `CTR-01.3` cambia el máximo, estos dos literales cambian con
-  él**: son la única parte del schema acoplada a la duración, y por eso están juntos.
-- `credito.anio` **1985–2000** ← rango real de la discografía según `RES-20` (*Gulp!* 1985,
-  *Momo Sampler* 17-nov-2000). No es un rango de gusto: atrapa el `1898` por `1988` y el
-  año de un disco que no es de la banda. Si algún día entra material fuera del rango, se
-  sube el techo **con la ficha en la mano**, no con un parche.
-- `archivo` acepta el doble guion (`-{1,2}`) por la regla de colisión de `CTR-01.4`
-  (`ji-ji-ji--en-directo`).
-
-**`$defs.fragmento` es la transcripción a schema de `CTR-01.8`, no una segunda
-declaración.** Si difieren, manda `CTR-01`. **Recomendación para cuando se baje a archivo:**
-sacarlo a `src/data/_schema/fragmento.schema.json` y que `CTR-03` (y cualquier contrato
-futuro con audio) lo traiga por `$ref`. Con un solo juego con audio la copia es tolerable;
-con dos deja de serlo.
+> **Decisión: no se crea `src/data/_schema/adivinar-tema.schema.json`.** Es lo contrario de
+> lo que hicieron `CTR-02` y `CTR-04`, así que va con su motivo.
+>
+> 1. **La validación real ya existe y es más fuerte.** `indexarFragmentos()` corre en cada
+>    build y comprueba lo único que un JSON Schema **no puede**: que el slug corresponda a
+>    uno de los 105 temas de `RES-20`. Un schema diría que `tema-inventado` tiene forma de
+>    slug; el build dice que ese tema no existe.
+> 2. **El archivo lo escribe un script, no una persona.** Los schemas de `CTR-02` y `CTR-04`
+>    protegen contra el error de carga a mano. Acá nadie carga a mano; el generador escribe
+>    el archivo entero en cada corrida y pisa cualquier edición.
+> 3. **Un schema suelto se desincroniza.** Sería una tercera copia de la ventana de
+>    duración —después del contrato y de `escalera.ts`— y el día que el máximo cambie,
+>    la que nadie va a acordarse de tocar es esa.
+>
+> *Alternativa descartada:* bajarlo igual, por uniformidad con los otros bancos. Se descarta
+> por lo de arriba: la uniformidad valdría si el modo de falla fuera el mismo, y no lo es.
+> **Cuándo se revierte:** el día que este archivo se edite a mano por cualquier motivo. Ahí
+> el schema vuelve, y el bloque de arriba está listo para copiar.
+>
+> *Cambio de datos que esta decisión deja pendiente:* **ninguno.** El archivo de hoy valida
+> contra este bloque tal como está.
 
 ---
 
-### CTR-03.9 — Ejemplo, con los inventos marcados como inventos
+### CTR-03.9 — Ejemplo, con lo que todavía no existe marcado
 
-> **Advertencia sobre este ejemplo, y viene de un error propio.** El ejemplo canónico de
-> `CTR-02` salió con tres defectos que llegaron hasta `contenido`: citaba una ficha que no
-> correspondía, después otra que tampoco sostenía la afirmación, el hecho era falso, y
-> llevaba un `trackId` inventado que **pasa el schema y no apunta a nada**. Acá: el hecho
-> es verdadero y verificado, la ficha citada es la que lo sostiene, y **todo valor que hoy
-> no existe está puesto de forma que NO valide**, para que un copiar-pegar reviente en vez
-> de colarse.
+> **Advertencia que la v1 se ganó a pulso:** su ejemplo canónico salió con una ficha que no
+> correspondía, un hecho falso y un `trackId` inventado que pasaba el schema y no apuntaba
+> a nada. Acá los dos temas son reales y verificados contra `RES-20`, y **lo que no existe
+> está puesto de forma que no valide**.
 
 ```json
 {
-  "id": "TM-001",
-  "us": ["US-02"],
-  "dificultad": "facil",
-  "fragmento": {
-    "archivo": "todo-un-palo",
-    "duracionSeg": 10.0,
-    "inicioEnTemaSeg": 0,
-    "canales": 1,
-    "origen": "youtube",
-    "fechaCorte": "<AAAA-MM-DD del recorte — NO EXISTE TODAVIA, no inventar>",
-    "credito": {
-      "tema": "Todo un palo",
-      "disco": "Un baión para el ojo idiota",
-      "anio": 1988
-    }
-  },
-  "opciones": [
-    { "texto": "Todo un palo", "correcta": true },
-    { "texto": "Vencedores vencidos", "correcta": false },
-    { "texto": "Nuestro amo juega al esclavo", "correcta": false },
-    { "texto": "Un poco de amor francés", "correcta": false }
-  ],
-  "fuentes": ["RES-20"],
-  "sensibleA": ["audio"],
-  "estado": "borrador"
+  "contrato": "CTR-03",
+  "contratoVersion": 2,
+  "juego": "adivinar-tema",
+  "modoRespuesta": "buscador",
+  "actualizado": "<AAAA-MM-DD de la corrida — lo escribe el generador, no se pone a mano>",
+  "nota": "Lista de archivos de audio que EXISTEN, no de temas.",
+  "fragmentos": [
+    { "slug": "todo-un-palo", "titulo": "Todo un palo", "duracionSeg": 15.02, "entero": true },
+    { "slug": "vencedores-vencidos", "titulo": "Vencedores vencidos", "duracionSeg": 15.05, "entero": false }
+  ]
 }
 ```
 
-**Qué es verdadero acá y con qué ficha, uno por uno:**
+**Qué es verdadero acá y con qué ficha:**
 
-- **"Todo un palo" es el track 8 de *Un baión para el ojo idiota*, disco de 1988** (9 de
-  mayo de 1988, Del Cielito). Fuente: **`RES-20`**, sección "Un baión para el ojo idiota",
-  en `Docs/INVESTIGACION/INV-20-fuentes-primarias.md`. **Por qué esa ficha y no otra:**
-  `RES-20` es la que lista ese tema exacto dentro de ese disco exacto con su duración —que
-  es literalmente lo que el ítem afirma—. `RES-02` da los álbumes pero no los temas, así
-  que **no** sostendría esta afirmación y citarla sería el error de `FIND-10`.
-- **Los tres distractores son títulos reales de la misma ficha:** "Vencedores vencidos"
-  (mismo disco, track 5), "Nuestro amo juega al esclavo" (*¡Bang! ¡Bang!… Estás
-  liquidado*, track 9) y "Un poco de amor francés" (*La mosca y la sopa*, track 3).
-  **Un distractor inventado sería un dato falso mostrado al jugador**, aunque nunca sea la
-  respuesta correcta: en un juego sobre una banda real, cuatro títulos en pantalla son
-  cuatro afirmaciones de que esos temas existen. Chequeo 3 de `CTR-03.10`.
-- **El slug `todo-un-palo`** sale de aplicar `CTR-01.4` al título; es el mismo que ese
-  contrato usa de ejemplo.
+- **"Todo un palo" y "Vencedores vencidos" son temas reales de *Un baión para el ojo
+  idiota* (1988)**, tracks 8 y 5. Fuente: **`RES-20`**, sección de ese disco, en
+  `Docs/INVESTIGACION/INV-20-fuentes-primarias.md`. Es la ficha que lista el tema exacto
+  dentro del disco exacto, que es lo que el manifiesto necesita para resolver.
+- **Los slugs** son los que produce `slugDeTitulo()` sobre esos títulos.
+- **Las duraciones** son valores plausibles **dentro de la ventana**, del tipo que devuelve
+  `ffprobe`: nunca 15,00 exacto, porque la trama del mp3 no lo permite.
+- **`entero: true` en el primero** muestra el caso en que además existe
+  `public/audio/temas/todo-un-palo.mp3`. Es el booleano que marca la superficie mayor de
+  `D-22`.
 
-**Qué está marcado como inventado, y cómo:**
-
-| Valor | Estado real | Cómo está puesto |
-|---|---|---|
-| `fechaCorte` | **No existe ningún fragmento todavía** (`CTR-01`: "el audio no existe todavía"). Lo sabe solo quien recorte. | Texto que **no pasa** el patrón `AAAA-MM-DD`. Si alguien copia el ejemplo tal cual, el validador falla. |
-| `duracionSeg: 10.0` | Es el valor **esperado** si se recorta con `CTR-01.6`, no una medición. | Se reemplaza por el `duration` real que devuelve `ffprobe` (`CTR-01.7`). |
-| `spotify` | El `trackId` de este tema **no lo tengo y no puedo tenerlo** (sin acceso a la web). | **El objeto no está.** Es la forma correcta de no saberlo, y de paso muestra que un ítem sin Spotify es válido (`ADR-01`). |
-| `estado: "borrador"` | Sin audio no hay ítem `listo`. | Explícito. |
-
-**Segundo ejemplo, parcial: cómo se ve un `rotulo` de testimonio.** Se apoya en `RES-22`,
-que trae del memoir que **el Indio no quería ni editar "Mi perro dinamita" y terminó siendo
-uno de los más populares** — tema real: *La mosca y la sopa* (1991), track 4, uno de los
-dos únicos con **Semilla Bucciarelli** como tercer autor (`RES-20`).
-
-```json
-"explicacion": "El Indio contó que no quería ni editar este tema, y terminó siendo uno de los más populares de la banda.",
-"rotulo": {
-  "tipo": "testimonio",
-  "texto": "Lo cuenta el propio Indio Solari en «Recuerdos que mienten un poco» (ficha RES-22)"
-},
-"fuentes": ["RES-20", "RES-22"]
-```
-
-> **Y este ítem, tal como está, todavía no se carga.** `RES-22` no dice en qué capítulo
-> aparece, y el rótulo de testimonio tiene que decir **dónde**. Falta el capítulo, así que
-> falta el rótulo completo. Lo dejo escrito en vez de rellenarlo con algo verosímil: eso —
-> tildar la casilla y seguir — es el riesgo declarado del ciclo 2, y un ejemplo del
-> contrato es el peor lugar para dar el mal ejemplo.
+**Qué está marcado como inexistente:** `actualizado`, con un texto que **no pasa** el patrón
+de fecha. Si alguien copia este ejemplo tal cual, el comando 1 de `CTR-03.10` falla en vez
+de dejar pasar una fecha verosímil e inventada.
 
 ---
 
-### CTR-03.10 — Verificación: qué correr, cuándo, y **quién**
+### CTR-03.10 — Verificación: qué correr, y quién
 
-**Hoy `T-24` se verifica de forma documental y no hay nada que ejecutar**, porque no
-existen ni `src/data/adivinar-tema.json` ni la copia del schema. Criterio documental: el
-contrato expresa los 5 pasos de `BR-02` sin renumerarlos (`CTR-03.4`) y reserva los campos
-de `CTR-01.8` sin redeclararlos (`CTR-03.3`).
-
-**No tengo herramienta de ejecución (`D-12`) y no la voy a simular.** Lo de abajo es lo que
-habrá que correr cuando el banco exista, y **lo corre el hilo principal o `revisor`, nunca
-`arquitectura` sola** — misma regla que puso `T-18` para el gate del quiz.
+`arquitectura` no tiene con qué ejecutar (`D-12`) y no lo simula. **Lo corre el hilo
+principal en `T-107`**, o `revisor`.
 
 ```bash
-# (1) valida contra el schema + ids, slugs y temas únicos
-python -c "import json,jsonschema;d=json.load(open('src/data/adivinar-tema.json',encoding='utf-8'));s=json.load(open('src/data/_schema/adivinar-tema.schema.json',encoding='utf-8'));jsonschema.validate(d,s);i=d['items'];[__import__('sys').exit('repetido: '+k) for k in ['id'] if len({x['id'] for x in i})!=len(i)];assert len({x['fragmento']['archivo'] for x in i})==len(i),'slug repetido';assert len({x['fragmento']['credito']['tema'] for x in i})==len(i),'tema repetido';print('OK',len(i))"
+# (1) el manifiesto contra este contrato: envoltorio, patron de slug y ventana de duracion
+node -e "import('node:fs').then(({readFileSync})=>{const j=JSON.parse(readFileSync('src/data/adivinar-tema.json','utf8'));const p=/^[a-z0-9]+(-[a-z0-9]+)*$/,f=[];if(j.contrato!=='CTR-03')f.push('contrato');if(j.contratoVersion!==2)f.push('contratoVersion');if(j.juego!=='adivinar-tema')f.push('juego');if(j.modoRespuesta!=='buscador')f.push('modoRespuesta');if(!/^\d{4}-\d{2}-\d{2}$/.test(j.actualizado??''))f.push('actualizado');if(!Array.isArray(j.fragmentos))f.push('fragmentos');for(const x of j.fragmentos??[]){if(!p.test(x.slug??''))f.push('slug '+x.slug);if(!(x.duracionSeg>=14.90&&x.duracionSeg<=15.15))f.push('duracion '+x.slug);if(typeof x.titulo!=='string'||typeof x.entero!=='boolean')f.push('campos '+x.slug);if(Object.keys(x).length!==4)f.push('campos de mas en '+x.slug);}console.log(f.length?'DESALINEADO: '+f.join(', '):'OK CTR-03.1/.2/.8 · '+j.fragmentos.length+' fragmentos')})"
 
-# (2) cuotas de US-02/BR-01 sobre los ítems listo: piso 20, mínimo 5 faciles
-python -c "import json;from collections import Counter;i=[x for x in json.load(open('src/data/adivinar-tema.json',encoding='utf-8'))['items'] if x['estado']=='listo'];print(len(i),'/20',Counter(x['dificultad'] for x in i),'con spotify:',sum(1 for x in i if 'spotify' in x))"
+# (2) la regla 1 de CTR-03.6: cada slug resuelve contra los 105 de RES-20, y el pozo real
+node -e "Promise.all([import('./src/lib/tema/catalogo.ts'),import('node:fs')]).then(([c,{readFileSync}])=>{const m=JSON.parse(readFileSync('src/data/adivinar-tema.json','utf8'));const cat=c.catalogo(m);console.log('catalogo:',cat.temas.length,'temas | jugables:',cat.jugables,'| piso de US-02: 30 =>',cat.jugables>=30?'cumplido':'faltan '+(30-cat.jugables))})"
 
-# (3) el gate de D-07, corrible: cuántos ítems son publicables hoy
-python -c "import json;i=[x for x in json.load(open('src/data/adivinar-tema.json',encoding='utf-8'))['items'] if x['estado']=='listo'];print('sensibles a audio:',sum(1 for x in i if 'audio' in x['sensibleA']),'de',len(i),'| publicables con el gate abierto: 0')"
+# (3) la regla 2 de CTR-03.6: el mapa de derechos, y que no haya mp3 sin declarar
+node -e "import('node:fs').then(({readFileSync,existsSync,readdirSync})=>{const j=JSON.parse(readFileSync('src/data/adivinar-tema.json','utf8'));const ls=(p)=>existsSync(p)?readdirSync(p).filter(x=>x.endsWith('.mp3')):[];const fr=ls('public/audio/fragmentos'),te=ls('public/audio/temas');console.log('fragmentos publicados:',fr.length,'| temas enteros:',te.length,'| declarados:',j.fragmentos.length,'(con entero:',j.fragmentos.filter(x=>x.entero).length+')');const h=fr.filter(a=>!j.fragmentos.some(x=>x.slug+'.mp3'===a));console.log(h.length?'MP3 SIN DECLARAR: '+h.join(', '):'todo mp3 en disco esta en el manifiesto');for(const x of j.fragmentos)console.log('  ·',x.slug,'—',x.titulo,x.entero?'[fragmento + entero]':'[fragmento]')})"
 
-# (4) la respuesta correcta es el credito, y los distractores son titulos reales
-#     (requiere la lista de los 105 titulos de RES-20 en un .json auxiliar)
-python -c "import json;d=json.load(open('src/data/adivinar-tema.json',encoding='utf-8'));t=set(json.load(open('src/data/_schema/titulos-res-20.json',encoding='utf-8')));
-[print('MAL',x['id']) for x in d['items'] if d['modoRespuesta']=='opciones' and (next(o['texto'] for o in x['opciones'] if o['correcta'])!=x['fragmento']['credito']['tema'] or not all(o['texto'] in t for o in x['opciones']) or len({o['texto'] for o in x['opciones']})!=4)];print('chequeo 4 corrido')"
+# (4) CTR-03.4 y CTR-03.5: la escalera y la comparacion por identidad, con los tests que ya existen
+node --test src/lib/tema/catalogo.test.ts src/lib/tema/escalera.test.ts src/lib/tema/buscador.test.ts
 ```
 
 **Qué chequea la máquina y qué no** — la tabla existe para que nadie confunda "validó" con
@@ -669,59 +518,60 @@ python -c "import json;d=json.load(open('src/data/adivinar-tema.json',encoding='
 
 | # | Chequeo | Quién |
 |---|---|---|
-| 1 | Schema, `id`/slug/tema únicos | comando (1) |
-| 2 | Piso de 20 y mínimo 5 `facil` (`US-02`, `BR-01`) | comando (2) |
-| 3 | La opción `correcta` es igual al crédito; 4 textos distintos; los 4 son títulos reales de `RES-20` | comando (4) |
-| 4 | Cuántos ítems toca el gate de `D-07` | comando (3) |
-| 5 | El mp3 existe y pasa la tabla de `CTR-01.7` (codec, rate, canales, ≤ 10,10 s, ≤ 140.000 bytes) | `scripts/validar_fragmentos.py`, pendiente en `CTR-01.7` |
-| 6 | Que el título esté copiado **literal** de `RES-20` y no abreviado | humano, contra la ficha |
-| 7 | **Pertinencia de la cita**: que la ficha sostenga lo que el ítem afirma | **`revisor`** (`FIND-10`) |
-| 8 | Que el `rotulo` diga quién lo cuenta **y dónde** | **`revisor`** |
-| 9 | Que los primeros 100 ms del fragmento suenen | humano, con los oídos (`CTR-01.7`) |
+| 1 | Envoltorio, patrón de slug, ventana de duración, cuatro campos y nada más | comando (1) |
+| 2 | Que cada slug sea uno de los 105 de `RES-20` (regla 1 de `CTR-03.6`) | comando (2), y el build |
+| 3 | El piso de temas jugables de `US-02` | comando (2) |
+| 4 | El mapa de derechos publicado, fragmento y entero (regla 2) | comando (3) |
+| 5 | Que la respuesta se compare por identidad y no por texto | comando (4), `buscador.test.ts` |
+| 6 | Que el mp3 exista y pase la tabla de `CTR-01.7` | el generador, al producirlo |
+| 7 | Que los primeros 100 ms suenen | humano, con los oídos (`CTR-01.7`) |
+| 8 | Que el título de `RES-20` esté completo y no abreviado | humano, contra la ficha |
 
 ---
 
 ### Consecuencias
 
-- **`contenido` no puede cargar un ítem antes de que exista su mp3, y es a propósito.**
-  `fragmento` es obligatorio y completo, y dos de sus campos —`origen` y `fechaCorte`— los
-  sabe **solo quien recortó** (`CTR-01.8`). *Alternativa descartada:* hacer `fragmento`
-  opcional mientras el ítem está en `borrador`. Lo único que se ganaría es adelantar los
-  distractores, que salen de una lista que ya está en disco; a cambio se abriría la puerta
-  a un `fechaCorte` verosímil e inventado, que es justo el modo de falla que `CTR-01.8`
-  cerró. **Consecuencia de planificación: no tiene sentido abrir una tarea de `contenido`
-  para `US-02` antes de que el usuario recorte los primeros fragmentos.**
-- **Lo que le impone al motor:** nada nuevo sobre `CTR-01.5`. Lee la escalera de `CTR-01.9`
-  como constante, el puntaje de `BR-02` como constante, y del JSON solo saca el slug, el
-  crédito y las opciones.
-- **Lo que le impone a `experiencia`:** cuatro opciones de hasta ~61 caracteres reales en
-  zona pulgar si gana opción múltiple; el crédito (tema, disco, año) visible al revelar
-  —`CTR-01.8` ya lo pedía—; y los 5 estados visuales de `UX-03`, que no necesitan ningún
-  dato del JSON.
-- **Fácil:** cambiar de mecanismo de respuesta. Una clave a nivel archivo y los distractores
-  de una lista que ya existe.
-- **Fácil:** que cambie la duración máxima del fragmento. Dos literales en el schema y una
-  re-exportación con `CTR-01.6` — **siempre que el usuario haya guardado el máster en WAV**,
-  que es la única parte de `CTR-01` donde saltarse un paso duele después.
-- **Difícil:** volver atrás con `TM-NNN` una vez cargados veinte ítems, y volver atrás con
-  la decisión de que la respuesta viva en el crédito. Las dos son baratas hoy y caras con
-  el banco lleno.
-- **Este contrato no habilita publicar nada.** Todo ítem de `US-02` es sensible a `audio`,
-  el gate de `D-07` está abierto, y `CTR-03.10` comando (3) lo dice sin que nadie tenga que
-  acordarse.
+- **`contenido` no tiene nada que cargar en este juego, y es definitivo, no una espera.**
+  `D-24` borró los veinte ítems con cuatro distractores cada uno. La consecuencia de
+  planificación de la v1 —"no abrir una tarea de `contenido` para `US-02` hasta que haya
+  audio"— se reemplaza por una más simple: **no hay tarea de `contenido` para `US-02`.**
+> **Nota del hilo principal al integrar el ciclo 7, 2026-08-24.** Los números de este punto
+> se escribieron mientras `producto` los estaba moviendo: `T-99` y `T-104` corrieron en
+> paralelo. Hoy `US-02` pide **30 ítems con al menos 8 fáciles**, no 20 con 5. **La pregunta
+> no se cae, se afila:** la cuota por dificultad pasó de 5 a 8 sobre un pozo más grande, y
+> sigue sin tener dónde vivir. El párrafo queda como lo escribió `arquitectura`, con los
+> números viejos a la vista, porque corregirlos yo sería contestar por `producto`. El
+> comando (2) sí lo actualicé a 30: ahí el número no es un argumento, es una medición.
+
+- **Queda una pregunta para `producto`, y la dejo señalada sin resolverla:** `US-02` pide un
+  piso de 20 ítems con **al menos 5 fáciles** (`BR-01`), y la dificultad era una etiqueta
+  por ítem que ya no existe. El piso de 20 sí se puede medir —son 20 temas con fragmento en
+  disco, comando (2)—, pero la cuota por dificultad no tiene dónde vivir: en un pozo de 105
+  temas sorteados, qué tema es fácil depende del jugador, no de una etiqueta. Salidas
+  posibles, todas de `producto`: retirar la cuota de `US-02`; reemplazarla por una regla de
+  producción ("los primeros 20 fragmentos son de los temas más conocidos"); o pedir una
+  etiqueta por tema, que sería un dato nuevo y **no** iría en el manifiesto —iría en el
+  catálogo, al lado de `RES-20`—. *No lo decido: `BR-01` es de `producto` y `T-99` ya está
+  reescribiendo `BR-02`.*
+- **Lo que le impone al motor:** nada nuevo sobre `CTR-01.5`. Del manifiesto saca cuatro
+  campos; todo lo demás lo deriva.
+- **Lo que le impone a `experiencia`:** un buscador que ofrezca los 105 títulos con hasta 61
+  caracteres reales en pantalla chica, y el crédito visible al revelar. Las cuatro opciones
+  en zona pulgar que la v1 dejaba pedidas **ya no hacen falta**: ese pedido queda retirado.
+- **Fácil:** cambiar la escalera, la duración o el bitrate. Se vuelve a correr el generador
+  y ningún dato migra. Ya se demostró con `D-24`.
+- **Difícil:** volver a un banco de ítems con prosa por tema. No imposible —el contrato
+  viejo está entero acá arriba, sección por sección— pero sería un archivo nuevo al lado de
+  este, no este archivo con campos agregados: el generador lo pisa en cada corrida.
+- **Este contrato no frena nada.** El encuadre es `D-14`: si llega un reclamo, se borra el
+  mp3, se vuelve a correr el generador y el tema desaparece del pozo sin tocar una línea de
+  código.
 
 ### Qué NO decide este contrato
 
-- **Si se responde con opción múltiple o tipeando** — `producto`, pedido en
-  `Docs/SUGERENCIAS/ARQ-para-producto-opciones-adivinar-tema.md`. Valor de trabajo:
-  `"opciones"`.
-- **La tolerancia de matching** si gana el texto libre (tildes, mayúsculas, tipeos):
-  `experiencia` el mecanismo, `contenido` qué cuenta como correcto (`PRD-alcance-v1.md`,
-  PENDIENTE).
-- **Qué 20 temas entran y cuál es fácil**: `contenido`, con `RES-20` y `CNT-03`.
-- **Desde qué punto del tema se recorta** cuando no es el segundo 0: es regla de juego,
-  `producto`/`contenido` (`CTR-01.2`); el contrato solo guarda `inicioEnTemaSeg`.
-- **Cómo se ve la revelación, dónde va el crédito y cuándo aparecen las opciones en
-  pantalla**: `experiencia`.
-- **Si el embed o el deep link tienen implicancias de derechos**: `contenido`, nota de
-  derechos.
+- **La tolerancia del buscador y cómo se ve la lista:** `experiencia`.
+- **La tabla de puntaje y la mecánica de intentos:** `producto` (`BR-02`, `T-99`).
+- **La cuota por dificultad de `US-02`:** `producto`, señalado arriba.
+- **El techo de duración del fragmento:** `contenido` (`CNT-01`, sección A).
+- **Qué temas se generan primero:** el usuario, con su carpeta y un comando.
+- **Si Spotify vuelve como enlace al revelar:** `ADR-01`, abierto.

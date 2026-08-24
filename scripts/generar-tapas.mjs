@@ -36,20 +36,31 @@ const TOPE_KB_FONDO = 60;
 /**
  * Ficha: slug del articulo de la Redondopedia -> master.
  *
- * OJO CON `la-mosca-y-la-sopa`: su archivo `-frontal` NO es arte de Rocambole. `RES-44`
- * lo confirmo (es un rediseno: foto de recital con el titulo estampado, sin el gato
- * momificado ni los cerdos y peces que documentan `RES-06`/`RES-22`), y por eso
- * `contenido` lo dejo afuera del banco de `US-04`. Acreditarselo a Rocambole seria decir
- * algo falso, asi que la ficha de ese disco sale de la `-trasera`, que si trae el collage
- * real. Queda pendiente que el pie de esa imagen diga que es la contratapa — eso es
- * `contenido`, no este script.
+ * OJO CON `la-mosca-y-la-sopa`, que tiene historia y conviene leerla entera antes de
+ * volver a moverla.
+ *
+ * Hasta el 2026-08-24 este mapa apuntaba a la `-trasera`, y no por error: `RES-44` habia
+ * dictaminado que el `-frontal` del repo era un **rediseno** y no arte de Rocambole (foto
+ * de recital con el titulo estampado, sin el gato momificado ni los cerdos y peces que
+ * documentan `RES-06`/`RES-22`), asi que `contenido` lo dejo afuera del banco de `US-04`
+ * y la ficha del disco mostraba la contratapa.
+ *
+ * **El usuario lo corrigio el 2026-08-24**: trajo la tapa real y pidio que se use. Es la
+ * misma obra que el `-frontal` que ya estaba —campo rojo, foto de recital, bloque amarillo
+ * torcido con la mosca—, en otra edicion y a mas resolucion (1079 px contra 953).
+ *
+ * **Lo que eso deja abierto, y no lo resuelve este script:** `RES-44` sigue diciendo que
+ * esta tapa es un rediseno. Su evidencia para esa fila es la mas floja de las 35 de la
+ * tabla —un snippet, con el fetch devolviendo 403— asi que puede estar equivocada. Hasta
+ * que alguien la vuelva a mirar, **el pie de esta imagen no se le acredita a Rocambole**.
+ * Pedido en `Docs/SUGERENCIAS/HILO-para-investigador-tapa-de-la-mosca.md`.
  */
 const FICHAS = {
   gulp: 'gulp-frontal.jpg',
   oktubre: 'oktubre-frontal.jpg',
   'un-baion-para-el-ojo-idiota': 'un-baion-para-el-ojo-idiota-frontal.jpg',
   'bang-bang-estas-liquidado': 'bang-bang-estas-liquidado-frontal.jpg',
-  'la-mosca-y-la-sopa': 'la-mosca-y-la-sopa-trasera.jpg',
+  'la-mosca-y-la-sopa': 'la-mosca-y-la-sopa-frontal-real.jpg',
   'lobo-suelto': 'lobo-suelto-cordero-atado-cd1-frontal.jpg',
   'cordero-atado': 'lobo-suelto-cordero-atado-cd2-frontal.jpg',
   luzbelito: 'luzbelito-frontal.jpg',

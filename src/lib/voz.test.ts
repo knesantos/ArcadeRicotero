@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
 import * as sitio from './sitio/copy.ts';
 import * as quiz from './quiz/copy.ts';
@@ -45,9 +46,45 @@ const MODULOS: ReadonlyArray<readonly [string, Record<string, unknown>]> = [
   ['tapa', tapa],
 ];
 
-const VISIBLE: ReadonlyArray<readonly [string, string]> = MODULOS.flatMap(([donde, modulo]) =>
-  cadenas(modulo).map((texto) => [donde, texto] as const),
-);
+/**
+ * El banco del test de dos ejes (`US-06`), que no vive en un `copy.ts` sino en un JSON.
+ *
+ * **Por que hay un recolector aparte.** El `cadenas()` de arriba recorre todo y sirve para
+ * un modulo de copy, donde todo lo que hay es texto que se lee. En este JSON conviven las
+ * cadenas visibles con identificadores —`EJ-001`, `luz-oscuridad`, `orden`, `listo`— que
+ * `D-17` deja explicitamente afuera: son nombres de cosas del codigo, no algo que alguien
+ * lea en pantalla. Recorrerlo entero llenaria la auditoria de falsos positivos.
+ *
+ * **Y por que existe.** Hasta el ciclo 8 este archivo miraba solo los cinco `copy.ts`, asi
+ * que las 44 cadenas que el test de dos ejes le muestra al jugador —20 enunciados, 40
+ * opciones, 4 nombres de cuadrante y 4 bajadas— no pasaban por ninguna de las siete reglas
+ * de la seccion 8. En un proyecto cuya postura es que **se audita a maquina lo auditable**,
+ * eso era un hueco: pasaba lo que nadie mirara.
+ */
+function cadenasDelBanco(): string[] {
+  interface Crudo {
+    readonly items: readonly {
+      readonly enunciado: string;
+      readonly opciones: readonly { readonly texto: string }[];
+      readonly estado: string;
+    }[];
+    readonly cuadrantes: readonly { readonly nombre: string; readonly bajada: string }[];
+  }
+  const banco = JSON.parse(readFileSync('src/data/dos-ejes.json', 'utf-8')) as Crudo;
+  const salida: string[] = [];
+  // Un item retirado ya no se le muestra a nadie: auditarlo seria pedirle correccion a algo
+  // que el juego no sirve. El historial se conserva; la vara se aplica a lo que se lee.
+  for (const i of banco.items.filter((x) => x.estado === 'listo')) {
+    salida.push(i.enunciado, ...i.opciones.map((o) => o.texto));
+  }
+  for (const c of banco.cuadrantes) salida.push(c.nombre, c.bajada);
+  return salida;
+}
+
+const VISIBLE: ReadonlyArray<readonly [string, string]> = [
+  ...MODULOS.flatMap(([donde, modulo]) => cadenas(modulo).map((texto) => [donde, texto] as const)),
+  ...cadenasDelBanco().map((texto) => ['dos-ejes', texto] as const),
+];
 
 const sinTilde = (s: string): string => s.normalize('NFD').replace(/[̀-ͯ]/g, '');
 

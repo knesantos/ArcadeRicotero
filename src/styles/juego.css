@@ -946,3 +946,112 @@
   color: var(--texto-tenue);
   font-size: 0.85rem;
 }
+
+/* ------------------------------------------------------------------
+   El test de dos ejes (US-06). Viste Luzbelito por la mezcla D-19.
+
+   Estas clases van aca y no en el <style> de `dos-ejes.astro` por el
+   defecto que el ciclo 6 dejo documentado: el estilo de un `.astro`
+   tiene alcance y **no llega a lo que crea el JavaScript**. Toda esta
+   pantalla la pinta la isla, asi que ahi no la alcanzaria ninguna regla.
+   ------------------------------------------------------------------ */
+
+.ejes-progreso {
+  color: var(--texto-tenue);
+  font-size: 0.85rem;
+  margin: var(--espacio-3) 0 var(--espacio-1);
+}
+
+.ejes-enunciado {
+  font-family: var(--fuente);
+  font-size: 1.35rem;
+  line-height: 1.3;
+  margin: 0 0 var(--espacio-4);
+}
+
+.ejes-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+}
+
+/* Las dos opciones tienen exactamente el mismo peso visual: en este juego
+   ninguna es la correcta, y una que se vea distinta seria la respuesta. */
+.ejes-opcion {
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: var(--espacio-2);
+  text-align: left;
+  font-size: 1.05rem;
+  background: transparent;
+  color: var(--texto);
+  border: var(--linea) solid var(--borde);
+  border-radius: var(--radio);
+}
+
+/* Sin verde, sin festejo, sin marca de acierto: no hay acierto. Lo unico
+   que confirma el toque es la tinta del borde, y no se mueve nada. */
+.ejes-opcion:active {
+  border-color: var(--disco-luzbelito-tinta);
+  color: var(--disco-luzbelito-tinta);
+}
+
+.ejes-rotulo {
+  color: var(--texto-tenue);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: var(--espacio-3) 0 var(--espacio-1);
+}
+
+.ejes-nombre {
+  font-family: var(--fuente-rotulada);
+  font-size: 1.9rem;
+  line-height: 1.15;
+  color: var(--disco-luzbelito-tinta);
+  margin: 0 0 var(--espacio-3);
+}
+
+.ejes-plano {
+  display: block;
+  width: min(100%, 17rem);
+  margin: 0 auto var(--espacio-3);
+}
+
+/* Los cuatro cuadrantes con el mismo relleno: darle un tono distinto a cada
+   uno seria reintroducir por color la jerarquia que el rombo evita. */
+.ejes-rombo {
+  fill: var(--disco-luzbelito-apoyo);
+  stroke: var(--borde);
+  stroke-width: 3;
+}
+
+.ejes-diagonal {
+  stroke: var(--borde);
+  stroke-width: 2;
+}
+
+.ejes-punta {
+  fill: var(--texto-tenue);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+}
+
+.ejes-punto {
+  fill: var(--disco-luzbelito-tinta);
+  stroke: var(--fondo);
+  stroke-width: 2;
+}
+
+.ejes-bajada {
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
+.ejes-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+  margin-top: var(--espacio-4);
+}

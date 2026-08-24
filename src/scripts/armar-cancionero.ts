@@ -13,7 +13,7 @@
 import { renglonDeAcordes, type Marca } from '../lib/cancionero/acordes.ts';
 
 interface LineaJson {
-  t: 'letra' | 'tab' | 'instrumental';
+  t: 'letra' | 'tab' | 'anotacion' | 'instrumental';
   texto?: string;
   acordes?: Marca[];
 }
@@ -123,8 +123,9 @@ function cuerpoDeTema(tema: TemaJson): string {
     const etiqueta = seccion.etiqueta?.replace(/^\[|\]$/g, '').replace(/:$/, '').trim();
     if (etiqueta) partes.push(`<span class="eti">${escapar(etiqueta)}</span>`);
     for (const linea of seccion.lineas) {
-      if (linea.t === 'tab') {
-        partes.push(`<div class="tab">${escapar(linea.texto ?? '')}</div>`);
+      if (linea.t === 'tab' || linea.t === 'anotacion') {
+        const clase = linea.t === 'tab' ? 'tab' : 'ano';
+        partes.push(`<div class="${clase}">${escapar(linea.texto ?? '')}</div>`);
         continue;
       }
       if (linea.acordes?.length) {
@@ -222,9 +223,10 @@ h2{font-size:1.4rem;margin:0 0 .2rem;text-transform:uppercase;color:var(--tinta)
 .sec{margin:0 0 1.2rem}
 .eti{display:inline-block;margin-bottom:.3rem;padding:2px 8px;border:1px solid var(--borde);
  border-radius:3px;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tenue)}
-.ac,.le,.tab{font-family:ui-monospace,'Consolas',monospace;font-size:.95rem;line-height:1.35;white-space:pre;overflow-x:auto}
+.ac,.le,.tab,.ano{font-family:ui-monospace,'Consolas',monospace;font-size:.95rem;line-height:1.35;white-space:pre;overflow-x:auto}
 .ac{color:var(--tinta);font-weight:700}
 .tab{color:var(--tenue)}
+.ano{color:var(--tenue);font-style:italic}
 .fte{color:var(--tenue);font-size:.8rem;font-style:italic;margin-top:1rem}
 .arriba{font-size:.85rem}
 .arriba a{color:var(--tenue)}

@@ -1,0 +1,639 @@
+{
+  "contrato": "CTR-07",
+  "contratoVersion": 1,
+  "fuente": "youtube",
+  "actualizado": "2026-08-24",
+  "vigenciaDias": 180,
+  "temas": [
+    {
+      "slug": "barbazul-versus-el-amor-letal",
+      "disco": "gulp",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "la-bestia-pop",
+      "disco": "gulp",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "roto-y-mal-parado",
+      "disco": "gulp",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "pierre-el-vitricida",
+      "disco": "gulp",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "unos-pocos-peligros-sensatos",
+      "disco": "gulp",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "yo-no-me-cai-del-cielo",
+      "disco": "gulp",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "te-voy-a-atornillar",
+      "disco": "gulp",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "superlogico",
+      "disco": "gulp",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "nam-fri-frufi-fali-fru",
+      "disco": "gulp",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "el-infierno-esta-encantador-esta-noche",
+      "disco": "gulp",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "criminal-mambo",
+      "disco": "gulp",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "pianito-jam",
+      "disco": "gulp",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "fuegos-de-octubre",
+      "disco": "oktubre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "preso-en-mi-ciudad",
+      "disco": "oktubre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "musica-para-pastillas",
+      "disco": "oktubre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "semen-up",
+      "disco": "oktubre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "divina-tv-fuhrer",
+      "disco": "oktubre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "motor-psico",
+      "disco": "oktubre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "jijiji",
+      "disco": "oktubre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "cancion-para-naufragios",
+      "disco": "oktubre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "ya-nadie-va-a-escuchar-tu-remera",
+      "disco": "oktubre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "masacre-en-el-puticlub",
+      "disco": "un-baion-para-el-ojo-idiota",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "noticias-de-ayer",
+      "disco": "un-baion-para-el-ojo-idiota",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "aquella-solitaria-vaca-cubana",
+      "disco": "un-baion-para-el-ojo-idiota",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "todo-preso-es-politico",
+      "disco": "un-baion-para-el-ojo-idiota",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "vencedores-vencidos",
+      "disco": "un-baion-para-el-ojo-idiota",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "vamos-las-bandas",
+      "disco": "un-baion-para-el-ojo-idiota",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "ella-debe-estar-tan-linda",
+      "disco": "un-baion-para-el-ojo-idiota",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "todo-un-palo",
+      "disco": "un-baion-para-el-ojo-idiota",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "heroe-del-whisky",
+      "disco": "bang-bang-estas-liquidado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "rock-para-los-dientes",
+      "disco": "bang-bang-estas-liquidado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "la-parabellum-del-buen-psicopata",
+      "disco": "bang-bang-estas-liquidado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "un-pacman-en-el-savoy",
+      "disco": "bang-bang-estas-liquidado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "nadie-es-perfecto",
+      "disco": "bang-bang-estas-liquidado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "esa-estrella-era-mi-lujo",
+      "disco": "bang-bang-estas-liquidado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "maldicion-va-a-ser-un-dia-hermoso",
+      "disco": "bang-bang-estas-liquidado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "ropa-sucia",
+      "disco": "bang-bang-estas-liquidado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "nuestro-amo-juega-al-esclavo",
+      "disco": "bang-bang-estas-liquidado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "toxi-taxi",
+      "disco": "la-mosca-y-la-sopa",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "fusilados-por-la-cruz-roja",
+      "disco": "la-mosca-y-la-sopa",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "un-poco-de-amor-frances",
+      "disco": "la-mosca-y-la-sopa",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "mi-perro-dinamita",
+      "disco": "la-mosca-y-la-sopa",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "blues-de-la-artilleria",
+      "disco": "la-mosca-y-la-sopa",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "tarea-fina",
+      "disco": "la-mosca-y-la-sopa",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "el-pibe-de-los-astilleros",
+      "disco": "la-mosca-y-la-sopa",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "nueva-roma",
+      "disco": "la-mosca-y-la-sopa",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "salando-las-heridas",
+      "disco": "la-mosca-y-la-sopa",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "queso-ruso",
+      "disco": "la-mosca-y-la-sopa",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "invocacion",
+      "disco": "lobo-suelto",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "rock-para-el-negro-atila",
+      "disco": "lobo-suelto",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "sorpresa-de-shangai",
+      "disco": "lobo-suelto",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "shopping-disco-zen",
+      "disco": "lobo-suelto",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "un-angel-para-tu-soledad",
+      "disco": "lobo-suelto",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "buenas-noticias",
+      "disco": "lobo-suelto",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "susanita",
+      "disco": "lobo-suelto",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "capricho-magyar",
+      "disco": "lobo-suelto",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "espejismo",
+      "disco": "lobo-suelto",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "gran-lady",
+      "disco": "lobo-suelto",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "la-hija-del-fletero",
+      "disco": "lobo-suelto",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "el-lobo-caido",
+      "disco": "lobo-suelto",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "sushi",
+      "disco": "lobo-suelto",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "yo-canibal",
+      "disco": "cordero-atado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "ladron-de-mi-cerebro",
+      "disco": "cordero-atado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "es-hora-de-levantarse-querido",
+      "disco": "cordero-atado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "perdiendo-el-tiempo",
+      "disco": "cordero-atado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "cana-seca-y-un-membrillo",
+      "disco": "cordero-atado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "soga-de-cain",
+      "disco": "cordero-atado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "lavi-rap",
+      "disco": "cordero-atado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "el-arte-del-buen-comer",
+      "disco": "cordero-atado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "lobo-estas",
+      "disco": "cordero-atado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "botija-rapado",
+      "disco": "cordero-atado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "san-telmo",
+      "disco": "cordero-atado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "etiqueta-negra",
+      "disco": "cordero-atado",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "luzbelito-y-las-sirenas",
+      "disco": "luzbelito",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "cruz-diablo",
+      "disco": "luzbelito",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "ella-baila-con-todos",
+      "disco": "luzbelito",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "fanfarria-del-cabrio",
+      "disco": "luzbelito",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "nuotatori-professionisti",
+      "disco": "luzbelito",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "blues-de-la-libertad",
+      "disco": "luzbelito",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "la-dicha-no-es-una-cosa-alegre",
+      "disco": "luzbelito",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "me-matan-limon",
+      "disco": "luzbelito",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "rock-yugular",
+      "disco": "luzbelito",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "mariposa-pontiac-rock-del-pais",
+      "disco": "luzbelito",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "juguetes-perdidos",
+      "disco": "luzbelito",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
+      "disco": "ultimo-bondi-a-finisterre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "estas-frito-angelito",
+      "disco": "ultimo-bondi-a-finisterre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "el-arbol-del-gran-bonete",
+      "disco": "ultimo-bondi-a-finisterre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "gualicho",
+      "disco": "ultimo-bondi-a-finisterre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "pogo",
+      "disco": "ultimo-bondi-a-finisterre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "alien-duce",
+      "disco": "ultimo-bondi-a-finisterre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "la-pequena-novia-del-carioca",
+      "disco": "ultimo-bondi-a-finisterre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "drogocop",
+      "disco": "ultimo-bondi-a-finisterre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "scaramanzia",
+      "disco": "ultimo-bondi-a-finisterre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "esto-es-to-to-todo-amigos",
+      "disco": "ultimo-bondi-a-finisterre",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "templo-de-momo",
+      "disco": "momo-sampler",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "morta-punto-com",
+      "disco": "momo-sampler",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "la-murga-de-los-renegados",
+      "disco": "momo-sampler",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "dr-saturno",
+      "disco": "momo-sampler",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "murga-de-la-virgencita",
+      "disco": "momo-sampler",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "pool-averna-y-papusa",
+      "disco": "momo-sampler",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "murga-purga",
+      "disco": "momo-sampler",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "sheriff",
+      "disco": "momo-sampler",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "pensando-como-una-acelga",
+      "disco": "momo-sampler",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "una-piba-con-la-remera-de-greenpeace",
+      "disco": "momo-sampler",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    },
+    {
+      "slug": "rato-molhado",
+      "disco": "momo-sampler",
+      "estado": "sin-video",
+      "motivo": "Todavia nadie corrio la fase de resolucion: no hay videoId declarado."
+    }
+  ]
+}

@@ -3,13 +3,15 @@
 - **Fecha:** 2026-08-19 — v2, reescrita en `T-32` del ciclo 3. **Corrección puntual
   2026-08-21** en la sección B, por hallazgo de la revisión de cierre del ciclo 4: `D-21`
   soltó las tapas a toda la pantalla y el origen real de las imágenes es Coveralia, no el
-  Cover Art Archive que esta nota seguía citando.
+  Cover Art Archive que esta nota seguía citando. **Revisión puntual 2026-08-24** en la
+  sección A, tarea `T-101` del ciclo 7: el techo del fragmento pasa de 10,0 s a 15,0 s.
 - **Estado:** mapa activo, sin vencimiento. No es un cerrojo y no lo fue nunca desde `D-14`.
 - **Consume:** `Docs/BRIEF.md` (sección "La postura: molinetes abiertos"), `D-14`, `D-06`,
-  `D-04`, `D-13`, `D-08`, `D-21` (`Docs/DECISIONES.md`), `RES-03` (`INV-01`), `RES-06`,
-  `RES-09` (`INV-02`), `RES-11`, `RES-12` (`INV-04`), `RES-13`, `RES-14` (`INV-05`), `RES-25`,
-  `RES-26` (`INV-22`), `RES-44`, `RES-46` (`INV-44`), `Docs/UX/UX-05-tapas-en-pantalla.md`, y
-  `ADR-01` (`Docs/ARQ/ARQ-spotify-integracion.md`, cerrado en opción B por `T-31`).
+  `D-04`, `D-13`, `D-08`, `D-21`, `D-23`, `D-24` (`Docs/DECISIONES.md`), `RES-03` (`INV-01`),
+  `RES-06`, `RES-09` (`INV-02`), `RES-11`, `RES-12` (`INV-04`), `RES-13`, `RES-14` (`INV-05`),
+  `RES-25`, `RES-26` (`INV-22`), `RES-44`, `RES-46` (`INV-44`),
+  `Docs/UX/UX-05-tapas-en-pantalla.md`, y `ADR-01` (`Docs/ARQ/ARQ-spotify-integracion.md`,
+  cerrado en opción B por `T-31`).
 
 ## Qué es esto ahora, y qué dejó de ser
 
@@ -69,11 +71,38 @@ no como semáforo.
 
 ### A. Fragmentos de audio
 
+> **Revisado el 2026-08-24, tarea `T-101` del ciclo 7.** El techo pasa de **10,0 s** (fijado
+> acá el 2026-08-19, `T-09` del ciclo 1) a **15,0 s**. No es una relajación silenciosa: es
+> el número que ya corre en el juego construido, con su fundamento escrito.
+>
+> **Motivo.** `D-23` (2026-08-23) fijó 15 s al partir el audio en dos niveles, porque el
+> juego "adivinar el tema" necesita 15 segundos de reveal para cerrar su escalón final, no
+> dos minutos. `D-24` (2026-08-23) lo confirmó al copiar el juego de referencia: la escalera
+> quedó en seis pasos — **0,1 · 0,5 · 2 · 4 · 8 · 15** — y hoy está construida y jugable así.
+> Sostener 10,0 s le recortaría el último escalón a un juego que ya funciona con el de
+> arriba, sin que haya aparecido evidencia legal nueva que lo exija.
+>
+> **La coincidencia que conviene dejar escrita.** El fundamento original de 10,0 s
+> descartó explícitamente apoyarse en el cálculo de 8 compases del Art. 10 (Ley 11.723,
+> `RES-03`), porque a 120 BPM en 4/4 da ~16 s y **el tempo real de cada tema no está
+> fichado tema por tema** — ese descarte sigue siendo correcto y sigue sin resolverse acá.
+> Pero 15,0 s, elegido por una necesidad de juego completamente ajena a ese cálculo, cae
+> **por debajo** de esa misma referencia de orden de magnitud. Dos caminos independientes
+> — diseño de mecánica y techo legal aproximado — llegan cerca del mismo número: eso no
+> convierte al Art. 10 en zona segura confirmada (`RES-11` sigue diciendo que la excepción
+> cubre la obra y no el fonograma, y que "fin didáctico" para un juego de trivia sigue sin
+> criterio), pero es un segundo dato, no solo uno, y vale más que un número elegido a ojo.
+>
+> **Lo que no cambia.** Sigue siendo precaución editorial de `contenido`, explícitamente
+> sin respaldo legal — el mismo encuadre de 2026-08-19, ahora sobre un valor distinto. Y
+> bajo `D-14` esta nota no bloquea nada: si algún día hiciera falta bajar el número, se
+> baja el fragmento puntual, no el juego.
+
 | | |
 |---|---|
-| **Qué se usa** | Fragmentos cortos (techo de contenido: 10,0 s) de la grabación original, para el reveal progresivo del juego "adivinar el tema". Con crédito visible: tema, disco, año. |
+| **Qué se usa** | Fragmentos cortos (techo de contenido: **15,0 s**, revisión 2026-08-24 — ver nota arriba; antes 10,0 s) de la grabación original, para el reveal progresivo del juego "adivinar el tema". Con crédito visible: tema, disco, año. |
 | **De dónde salió** | Se bajan de YouTube con un conversor a mp3 y se recortan desde un máster en WAV guardado **fuera del repo** (`D-06`, `CTR-01.6`). No hay material propio ni licencia de origen. |
-| **Qué dice la evidencia** | Dos riesgos separados, no uno (`RES-03`, `RES-11`, `RES-12`): descargar contraviene el ToS de YouTube, independientemente de qué se haga después con el archivo; y publicar el fragmento puede tocar el derecho sobre el fonograma, con el derecho de cita del Art. 10 aplicando (si aplica) a la obra y no a la grabación. Ninguna fuente cubre ni descarta el uso. |
+| **Qué dice la evidencia** | Dos riesgos separados, no uno (`RES-03`, `RES-11`, `RES-12`): descargar contraviene el ToS de YouTube, independientemente de qué se haga después con el archivo; y publicar el fragmento puede tocar el derecho sobre el fonograma, con el derecho de cita del Art. 10 aplicando (si aplica) a la obra y no a la grabación. Ninguna fuente cubre ni descarta el uso. El techo de 15,0 s queda, por vía independiente del diseño del juego, por debajo del orden de magnitud de los 8 compases (~16 s a 120 BPM) — dato que corrobora sin confirmar zona segura. |
 | **Qué haríamos si llega un reclamo** | Se baja ese fragmento puntual del sitio. El máster WAV queda fuera del repo justamente para poder re-exportar más corto o directamente no volver a subirlo, sin tener que bajar el tema de nuevo. El crédito visible ya deja claro qué es y de dónde salió — no hay nada que ocultar ni que negociar. |
 
 ### B. Tapas de Rocambole
@@ -158,7 +187,7 @@ como siempre.
 
 | Superficie | Qué se usa | Si preguntan o reclaman |
 |---|---|---|
-| Audio | Fragmento ≤10,0 s de la grabación, con crédito | Se baja ese fragmento puntual |
+| Audio | Fragmento ≤15,0 s de la grabación, con crédito | Se baja ese fragmento puntual |
 | Tapas de Rocambole | Tapa real en baja resolución: ficha en el juego y en la Redondopedia, detalle y fondo en todo el sitio (`D-21`, `UX-05`) | Se baja esa tapa, o el juego entero (es el primero en caer, `D-05`) |
 | Letras | Verso o estrofa puntual, reveal decreciente | Se saca esa cita puntual del banco |
 | Nombre y marca | Uso nominativo del nombre de la banda | Se refuerza el disclaimer; el nombre del proyecto se puede cambiar |

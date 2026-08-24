@@ -22,6 +22,8 @@
 import { readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { leerTemas, resolverTema, indiceDuro, normalizarDuro } from '../src/lib/letra/temas.ts';
+import { normalizarAcorde, normalizarAcordes } from '../src/lib/cancionero/notacion.ts';
+import { esAnotacion } from '../src/lib/cancionero/anotacion.ts';
 
 const ORIGEN_POR_DEFECTO = 'C:/Users/santi/Proyectos/TemasRedo/cancionero/data';
 const SALIDA = 'src/data/cancionero.json';
@@ -78,10 +80,22 @@ function clasificar(crudo, secciones) {
  * ~14.000 líneas. La columna es la que la fuente ya calculó alineando contra la letra.
  */
 function aLinea(l) {
-  const acordes = (l.acordes || []).map((a) => [a.acorde, a.col]);
+  // `normalizarAcorde` hace dos cosas y las dos importan: pasa la notacion latina de
+  // lacuerda.net a la anglosajona que entiende el transpositor, y tira lo que nunca fue
+  // un acorde ("Intro", "Solo de saxo", una secuencia entera sin separar). Lo que no es
+  // acorde no se convierte en uno: se descarta, y la linea queda sin esa columna.
+  const acordes = (l.acordes || [])
+    .map((a) => [normalizarAcorde(a.acorde), a.col])
+    .filter(([nombre]) => nombre !== null);
   if (l.tipo_linea === 'tab') return { t: 'tab', texto: l.texto ?? '', ...(acordes.length ? { acordes } : {}) };
   if (l.tipo_linea === 'instrumental') return { t: 'instrumental', acordes };
-  return { t: 'letra', texto: l.letra ?? '', ...(acordes.length ? { acordes } : {}) };
+  // La fuente marca como letra todo lo que no es tablatura, y en una pagina de cifras eso
+  // incluye lo que escribio el transcriptor: `GUITARRA:`, `(X4)`, `VERSO 1: (Riff 2) X7`.
+  // No se tira —le sirve al que toca— pero no entra como verso: el banco de `US-03` elige
+  // huecos de aca, y sobre esto llego a producir un item que decia `VERSO 1: [Riff] 2) X7`.
+  const texto = l.letra ?? '';
+  const t = esAnotacion(texto) ? 'anotacion' : 'letra';
+  return { t, texto, ...(acordes.length ? { acordes } : {}) };
 }
 
 function main() {
@@ -152,7 +166,7 @@ function main() {
       anio: ANIO[canonico.disco],
       tono: crudo.metadata_musical?.tono ?? null,
       capo: crudo.metadata_musical?.capo ?? null,
-      acordesUsados: crudo.acordes_usados ?? [],
+      acordesUsados: normalizarAcordes(crudo.acordes_usados ?? []),
       // Un tema sin letra no es un tema roto. El índice dice cuál de los tres es.
       contenido,
       fuente: {
