@@ -41,7 +41,11 @@ function erroresDe(datos: string, esquema: string): readonly string[] {
   return (validar.errors ?? []).map((e) => `${e.instancePath} ${e.message ?? ''}`.trim());
 }
 
-for (const archivo of ['quiz', 'letra', 'tapa', 'cancionero'] as const) {
+// Un archivo entra a esta lista **cuando existen el schema y el dato**, no antes: sumarlo
+// con el dato sin escribir pinta el build de rojo por un archivo que nadie cargó todavía,
+// y eso es ruido, no una guarda. `popularidad` y `dos-ejes` entraron en el ciclo 8, cada
+// uno el día que su JSON apareció.
+for (const archivo of ['quiz', 'letra', 'tapa', 'cancionero', 'popularidad', 'dos-ejes'] as const) {
   test(`${archivo}.json valida contra su schema`, () => {
     const errores = erroresDe(archivo, archivo);
     assert.deepEqual(errores, [], `${archivo}.json rompe su contrato:\n${errores.join('\n')}`);

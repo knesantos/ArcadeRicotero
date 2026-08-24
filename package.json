@@ -13,7 +13,8 @@
     "ingerir": "node --experimental-strip-types scripts/ingerir-cancionero.mjs",
     "generar-letra": "node --experimental-strip-types scripts/generar-letra.mjs",
     "hoja-de-escucha": "node --experimental-strip-types scripts/hoja-de-escucha.mjs",
-    "generar-fragmentos": "node --experimental-strip-types scripts/generar-fragmentos.mjs"
+    "generar-fragmentos": "node --experimental-strip-types scripts/generar-fragmentos.mjs",
+    "ingerir-popularidad": "node --experimental-strip-types scripts/ingerir-popularidad.mjs"
   },
   "dependencies": {
     "astro": "^5.14.1"

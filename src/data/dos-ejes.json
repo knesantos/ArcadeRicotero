@@ -1,0 +1,367 @@
+{
+  "contrato": "CTR-08",
+  "contratoVersion": 1,
+  "juego": "dos-ejes",
+  "actualizado": "2026-08-24",
+  "preguntasPorEje": 5,
+  "cuadrantes": [
+    {
+      "id": "CU-1",
+      "luzOscuridad": "luz",
+      "ordenCaos": "orden",
+      "nombre": "Estrella fija",
+      "bajada": "Te gusta que las cosas tengan su hora, y no te la guardás: lo que te entusiasma, lo contás.",
+      "estado": "listo"
+    },
+    {
+      "id": "CU-2",
+      "luzOscuridad": "luz",
+      "ordenCaos": "caos",
+      "nombre": "Cometa suelto",
+      "bajada": "No armás planes, pero si te cruzás con alguien te quedás horas, hablando de cualquier cosa.",
+      "estado": "listo"
+    },
+    {
+      "id": "CU-3",
+      "luzOscuridad": "oscuridad",
+      "ordenCaos": "orden",
+      "nombre": "Luna llena",
+      "bajada": "Tenés tu horario y lo cumplís solo. Lo que te pasa por dentro lo resolvés en silencio, antes de que alguien pregunte.",
+      "estado": "listo"
+    },
+    {
+      "id": "CU-4",
+      "luzOscuridad": "oscuridad",
+      "ordenCaos": "caos",
+      "nombre": "Eclipse repentino",
+      "bajada": "Cuando te agarra algo fuerte, te lo guardás y lo masticás solo, sin agenda y sin avisar.",
+      "estado": "listo"
+    }
+  ],
+  "items": [
+    {
+      "id": "EJ-001",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "enunciado": "Terminó el recital y salís a la calle. ¿Cómo te sentís?",
+      "opciones": [
+        { "texto": "Con la sonrisa puesta", "polo": "luz" },
+        { "texto": "Con el cuerpo hecho pomada", "polo": "oscuridad" }
+      ],
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-126): no son alternativas del mismo eje (ánimo contra cuerpo) y la lectura se invierte — salir hecho pomada certifica presencia hasta el final, no lo contrario. Reemplazado por EJ-023."
+    },
+    {
+      "id": "EJ-002",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "enunciado": "Se te corta la luz en plena noche. ¿Qué hacés?",
+      "opciones": [
+        { "texto": "Aviso a los vecinos", "polo": "luz" },
+        { "texto": "Prendo velas y sigo leyendo", "polo": "oscuridad" }
+      ],
+      "estado": "listo"
+    },
+    {
+      "id": "EJ-003",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "enunciado": "Un perro te sigue por la vereda. ¿Qué hacés?",
+      "opciones": [
+        { "texto": "Silbo y seguimos los dos", "polo": "luz" },
+        { "texto": "Apuro el paso y sigo", "polo": "oscuridad" }
+      ],
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-127): mide condición (miedo a los perros), no temperamento — mismo defecto que EJ-006, en el mismo lote que nadie había revisado. Reemplazado por EJ-026."
+    },
+    {
+      "id": "EJ-004",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "enunciado": "Te despierta una tormenta a la madrugada. ¿Qué hacés?",
+      "opciones": [
+        { "texto": "Busco compañía y me quedo", "polo": "luz" },
+        { "texto": "Salgo a ver los rayos", "polo": "oscuridad" }
+      ],
+      "estado": "listo"
+    },
+    {
+      "id": "EJ-005",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "enunciado": "Te encontrás plata tirada en la calle. ¿Qué hacés?",
+      "opciones": [
+        { "texto": "Compro algo para compartir", "polo": "luz" },
+        { "texto": "Me lo guardo para mí", "polo": "oscuridad" }
+      ],
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-127): las opciones no son compañía contra soledad, son generoso contra amarrete — un constructo distinto, y el que peor pasa la prueba de decirse en voz alta con el mismo orgullo. Reemplazado por EJ-027."
+    },
+    {
+      "id": "EJ-006",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "enunciado": "Se cruza un gato negro en tu camino. ¿Qué pensás?",
+      "opciones": [
+        { "texto": "Qué lindo gato, lo saludo", "polo": "luz" },
+        { "texto": "Mal augurio, apuro el paso", "polo": "oscuridad" }
+      ],
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-126): mide superstición, no temperamento — la opción B no está disponible para quien no cree, así que su respuesta real vive adentro de la A. Reemplazado por EJ-021."
+    },
+    {
+      "id": "EJ-007",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "enunciado": "Es tu cumpleaños. ¿Cómo te gusta pasarlo?",
+      "opciones": [
+        { "texto": "Con torta y mesa larga", "polo": "luz" },
+        { "texto": "En pijama, con algo rico", "polo": "oscuridad" }
+      ],
+      "estado": "listo"
+    },
+    {
+      "id": "EJ-008",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "enunciado": "Tenés una tarde libre y nada planeado. ¿Qué hacés?",
+      "opciones": [
+        { "texto": "Llamo a alguien y salimos", "polo": "luz" },
+        { "texto": "Cierro la puerta y respiro", "polo": "oscuridad" }
+      ],
+      "estado": "listo"
+    },
+    {
+      "id": "EJ-009",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "enunciado": "Se corta la señal del celular. ¿Qué sentís?",
+      "opciones": [
+        { "texto": "Me pongo nervioso, la busco", "polo": "luz" },
+        { "texto": "Alivio, nadie me ubica", "polo": "oscuridad" }
+      ],
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-126): asimetría de opciones — el alivio compite con una emoción incómoda nombrada, la B gana sin competir. Reemplazado por EJ-022."
+    },
+    {
+      "id": "EJ-010",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "enunciado": "Te desvela algo a la madrugada. ¿Qué hacés?",
+      "opciones": [
+        { "texto": "Le escribo a alguien igual", "polo": "luz" },
+        { "texto": "Anoto todo en un cuaderno", "polo": "oscuridad" }
+      ],
+      "estado": "listo"
+    },
+    {
+      "id": "EJ-011",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "enunciado": "Te enterás de un recital para esta noche. ¿Qué hacés?",
+      "opciones": [
+        { "texto": "Reviso bien antes de salir", "polo": "orden" },
+        { "texto": "Salgo ya, después veo", "polo": "caos" }
+      ],
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-126): el 'sabor ricotero' funciona como credencial de pertenencia, la línea que BR-17 no deja cruzar. Reemplazado por EJ-025."
+    },
+    {
+      "id": "EJ-012",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "enunciado": "Organizás un asado con amigos. ¿Cómo lo armás?",
+      "opciones": [
+        { "texto": "Con lista y horario fijo", "polo": "orden" },
+        { "texto": "Aviso esa misma mañana", "polo": "caos" }
+      ],
+      "estado": "listo"
+    },
+    {
+      "id": "EJ-013",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "enunciado": "Armás el bolso para un viaje. ¿Cuándo lo hacés?",
+      "opciones": [
+        { "texto": "Una semana antes, con lista", "polo": "orden" },
+        { "texto": "La noche antes, nomás", "polo": "caos" }
+      ],
+      "estado": "listo"
+    },
+    {
+      "id": "EJ-014",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "enunciado": "Tenés que armar un mueble nuevo. ¿Cómo empezás?",
+      "opciones": [
+        { "texto": "Leo el manual entero", "polo": "orden" },
+        { "texto": "Pruebo hasta que encastre", "polo": "caos" }
+      ],
+      "estado": "listo"
+    },
+    {
+      "id": "EJ-015",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "enunciado": "Alguien te cambia el plan de golpe, ya con todo armado. ¿Qué hacés?",
+      "opciones": [
+        { "texto": "Sigo con lo que armé", "polo": "orden" },
+        { "texto": "Me subo al cambio nuevo", "polo": "caos" }
+      ],
+      "estado": "listo"
+    },
+    {
+      "id": "EJ-016",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "enunciado": "Guardás la ropa limpia recién lavada. ¿Cómo la ponés?",
+      "opciones": [
+        { "texto": "Doblada y por color", "polo": "orden" },
+        { "texto": "Toda junta en el cajón", "polo": "caos" }
+      ],
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-126): prolijo contra desprolijo literal — la opción de caos no describe una manera de guardar, describe no haberlo hecho. Reemplazado por EJ-024."
+    },
+    {
+      "id": "EJ-017",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "enunciado": "Cocinás algo para varios. ¿Usás receta?",
+      "opciones": [
+        { "texto": "Sí, con gramos y todo", "polo": "orden" },
+        { "texto": "Voy probando y le pongo", "polo": "caos" }
+      ],
+      "estado": "listo"
+    },
+    {
+      "id": "EJ-018",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "enunciado": "Te regalan una planta. ¿Cómo la cuidás?",
+      "opciones": [
+        { "texto": "Le pongo un horario fijo", "polo": "orden" },
+        { "texto": "La riego según el momento", "polo": "caos" }
+      ],
+      "estado": "listo"
+    },
+    {
+      "id": "EJ-019",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "enunciado": "Se junta la barra para elegir peli. ¿Vos qué hacés?",
+      "opciones": [
+        { "texto": "Propongo una y cierro rápido", "polo": "orden" },
+        { "texto": "Sigo la charla sin apuro", "polo": "caos" }
+      ],
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-127): 'Sigo la charla sin apuro' es conducta del eje luz-oscuridad (quedarse con la gente), no de orden-caos — una persona sociable y ordenada la elige por motivos de luz, y el test la corre hacia caos. Reemplazado por EJ-028."
+    },
+    {
+      "id": "EJ-020",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "enunciado": "Te mandan a comprar unas cosas para casa. ¿Cómo vas?",
+      "opciones": [
+        { "texto": "Anoto todo antes de salir", "polo": "orden" },
+        { "texto": "Compro todo sobre la marcha", "polo": "caos" }
+      ],
+      "estado": "listo"
+    },
+    {
+      "id": "EJ-021",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "enunciado": "Arman una sorpresa para alguien y te suman al grupo. ¿Qué hacés?",
+      "opciones": [
+        { "texto": "Me sumo a armarla", "polo": "luz" },
+        { "texto": "Preparo mi regalo aparte", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (T-126), reemplaza a EJ-006. Reescrito en T-127: la opción B contradecía el enunciado ('te enterás' / 'prefiero enterarme después') y ganaba por descarte, no por competir. Ahora la escena es antes del hecho, con dos acciones reales: sumarse al grupo o resolverlo por su cuenta."
+    },
+    {
+      "id": "EJ-022",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "enunciado": "Te quedás sin batería en el celular, lejos de casa. ¿Qué hacés?",
+      "opciones": [
+        { "texto": "Corro a buscar dónde cargar", "polo": "luz" },
+        { "texto": "Aprovecho y camino tranquilo", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (T-126), reemplaza a EJ-009. Reescrito en T-127: la frase 'nadie me ubica' era la misma que hundió a EJ-009 — se retiró el id y se conservó el problema. Ahora la opción de oscuridad es un plan propio y disfrutable, no un alivio por la desconexión."
+    },
+    {
+      "id": "EJ-023",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "enunciado": "Se sienta alguien a tu lado en el bondi. ¿Qué hacés?",
+      "opciones": [
+        { "texto": "Charlo con quien se sienta", "polo": "luz" },
+        { "texto": "Me pongo música y canto", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (T-126), reemplaza a EJ-001. Ajustado en T-127: el enunciado decía 'con alguien al lado' pero la opción hablaba de 'quien se sienta' — tiempos de dos escenas distintas. Ahora el enunciado queda en el momento en que alguien se sienta, y la opción de oscuridad pasa de solo aislarse a una actividad propia."
+    },
+    {
+      "id": "EJ-024",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "enunciado": "Vas a salir a una reunión importante. ¿Cómo te preparás?",
+      "opciones": [
+        { "texto": "Reviso todo mil veces", "polo": "orden" },
+        { "texto": "Salgo como estoy, ya fue", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (T-126), reemplaza a EJ-016. Corregido en T-127: 'reviso todo y llego tarde' le colgaba a orden el fracaso emblemático de caos (llegar tarde), y ninguna opción se decía con orgullo. Ahora el costo de orden es propio — revisar de más — sin robarle a caos su firma."
+    },
+    {
+      "id": "EJ-025",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "enunciado": "Te anotás para correr una carrera el mes que viene. ¿Cómo entrenás?",
+      "opciones": [
+        { "texto": "Sigo el plan aunque llueva", "polo": "orden" },
+        { "texto": "Corro cuando tengo ganas", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (T-126), reemplaza a EJ-011. Corregido en T-127: 'cuando puedo' describía disponibilidad, no carácter — para quien trabaja doble turno era la descripción de su vida. Ahora dice 'cuando tengo ganas', y el costo de orden queda escrito en la opción misma ('aunque llueva'), no solo en este documento."
+    },
+    {
+      "id": "EJ-026",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "enunciado": "En la plaza se arma una ronda de mate. ¿Qué hacés?",
+      "opciones": [
+        { "texto": "Me sumo a la ronda", "polo": "luz" },
+        { "texto": "Me quedo con mi libro", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (T-127), reemplaza a EJ-003 (el perro). Compañía activa contra soledad elegida con una actividad propia, sin condición externa (miedo, alergia) de por medio."
+    },
+    {
+      "id": "EJ-027",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "enunciado": "Encontrás una playa vacía y hermosa. ¿Qué hacés?",
+      "opciones": [
+        { "texto": "Aviso a todos y vuelvo", "polo": "luz" },
+        { "texto": "Vuelvo solo, a disfrutarla", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (T-127), reemplaza a EJ-005 (la plata tirada). Compañía contra soledad elegida frente al mismo hallazgo, sin generosidad ni tacañería de por medio."
+    },
+    {
+      "id": "EJ-028",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "enunciado": "Cortan la calle de siempre para volver a tu casa. ¿Qué hacés?",
+      "opciones": [
+        { "texto": "Reviso el mapa y elijo", "polo": "orden" },
+        { "texto": "Doblo en la primera", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (T-127), reemplaza a EJ-019 (elegir peli). Decisión individual, no de grupo: saca el cruce con el eje luz-oscuridad que traía la escena social."
+    }
+  ]
+}

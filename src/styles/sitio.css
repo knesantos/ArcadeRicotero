@@ -374,13 +374,6 @@
   gap: var(--espacio-1);
 }
 
-.casete-disco {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--tinte);
-}
-
 /* La accion es un sello de goma: rectangulo de borde fino, mayusculas, apenas
    torcido — nunca la pastilla capsula generica. */
 .casete-accion {

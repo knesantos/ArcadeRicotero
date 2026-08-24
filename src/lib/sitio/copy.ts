@@ -38,11 +38,17 @@ export const PORTAL = {
     'en baja resolución.',
 } as const;
 
-/** Los cinco casetes del portal. `viste` es la mezcla D-19: que disco viste cada uno. */
+/**
+ * Los cinco casetes del portal.
+ *
+ * **Habia un campo `viste`** que imprimia debajo de cada casete que disco lo vestia
+ ("Viste Oktubre", "Viste Lobo suelto"). Lo saco el usuario el 2026-08-24: la mezcla
+ * `D-19` se ve en el color, no hace falta anunciarla con letras. El mapa seccion->disco
+ * sigue vivo donde tiene que estar, en `UX-04` y en los tokens.
+ */
 export interface Casete {
   readonly titulo: string;
   readonly baja: string;
-  readonly viste: string;
   readonly variante: 'marca' | 'historia' | 'discos' | 'letras' | 'mitologia';
   readonly arte: string;
   readonly href?: string;
@@ -53,7 +59,6 @@ export const JUEGOS: readonly Casete[] = [
   {
     titulo: 'Preguntas ricoteras',
     baja: 'Ocho preguntas y ninguna piadosa. Historia, discos, letras y mitología, en dos minutos.',
-    viste: 'Viste Oktubre',
     variante: 'marca',
     arte: '/arte/casete.svg',
     href: '/quiz/',
@@ -62,7 +67,6 @@ export const JUEGOS: readonly Casete[] = [
   {
     titulo: 'Adiviná el tema',
     baja: 'Con una décima te tiene que alcanzar. Si no, te damos más, hasta quince segundos: cuanto antes la pegues, más vale.',
-    viste: 'Viste Lobo suelto',
     variante: 'mitologia',
     arte: '/arte/lobo.svg',
     href: '/juegos/adivinar-el-tema/',
@@ -71,7 +75,6 @@ export const JUEGOS: readonly Casete[] = [
   {
     titulo: 'Completá la letra',
     baja: 'Lo tenés en la punta de la lengua. Falta una palabra del verso y hay cuatro para elegir.',
-    viste: 'Viste La mosca y la sopa',
     variante: 'letras',
     arte: '/arte/mosca.svg',
     href: '/juegos/completar-la-letra/',
@@ -81,7 +84,6 @@ export const JUEGOS: readonly Casete[] = [
     // La bajada decia "de a pedacitos" cuando la pantalla era una promesa. El juego
     // muestra la tapa entera, asi que ahora dice lo que hace.
     baja: 'Rocambole dibujó; vos ponés el disco. La tapa entera en pantalla y cuatro discos para elegir.',
-    viste: 'Viste Último bondi',
     variante: 'discos',
     arte: '/arte/casete.svg',
     href: '/juegos/adivinar-la-tapa/',
@@ -98,7 +100,6 @@ export const JUEGOS: readonly Casete[] = [
 export const CASETE_CANCIONERO: Casete = {
   titulo: 'Letras y acordes',
   baja: 'Los diez discos, con los dedos puestos. Acordes arriba de cada verso, transporte, y armás tu cancionero.',
-  viste: 'Viste La mosca y la sopa',
   variante: 'letras',
   arte: '/arte/mosca.svg',
   href: '/letras-y-acordes/',
@@ -108,7 +109,6 @@ export const CASETE_CANCIONERO: Casete = {
 export const CASETE_REDONDOPEDIA: Casete = {
   titulo: 'La Redondopedia',
   baja: 'El hecho como hecho, la leyenda como leyenda. La historia entera, navegable, con la ficha de dónde salió cada dato.',
-  viste: 'Viste Gulp!',
   variante: 'historia',
   arte: '/arte/perro.svg',
   href: '/redondopedia/',

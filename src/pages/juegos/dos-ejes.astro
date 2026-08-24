@@ -1,0 +1,113 @@
+---
+/**
+ * "¿Qué tipo de ricotero sos?" (`US-06`). El quinto juego, y el único que no puntúa.
+ *
+ * Es el juego con el molinete más abierto de los cinco (`UX-06` §0): no pide saber nada de
+ * la banda. Ninguna pregunta tiene respuesta correcta y ningún resultado es mejor que otro
+ * — eso es `BR-17`, y es la única regla estricta que este juego tiene.
+ *
+ * Viste **Luzbelito** por la mezcla `D-19`: la asociación es Luzbel y la dualidad
+ * luz-oscuridad, y está rotulada como criterio propio de `experiencia` sin ficha detrás
+ * (`UX-06` §5). Reusa dos tokens ya medidos y ya testeados; no agrega ninguno.
+ *
+ * Arquitectura de islas (`D-02`): HTML estático, y el único JavaScript es
+ * `partida-dos-ejes.ts`. El banco se resuelve en build — al navegador llega el JSON con
+ * los ítems `listo` y sin notas internas.
+ */
+import '../../styles/tokens.css';
+import '../../styles/juego.css';
+import '../../styles/sitio.css';
+import { PANTALLA_0 } from '../../lib/dos-ejes/copy.ts';
+import { PORTAL } from '../../lib/sitio/copy.ts';
+import crudo from '../../data/dos-ejes.json';
+
+/**
+ * Lo que viaja al navegador. Se sacan los retirados y las notas internas: un ítem que el
+ * juego no sirve no tiene por qué llegar, y `notaInterna` es trabajo de `contenido`.
+ */
+const banco = {
+  preguntasPorEje: crudo.preguntasPorEje,
+  cuadrantes: crudo.cuadrantes.map(({ id, luzOscuridad, ordenCaos, nombre, bajada }) => ({
+    id,
+    luzOscuridad,
+    ordenCaos,
+    nombre,
+    bajada,
+    estado: 'listo',
+  })),
+  items: crudo.items
+    .filter((i) => i.estado === 'listo')
+    .map(({ id, eje, enunciado, opciones, estado }) => ({
+      id,
+      eje,
+      enunciado,
+      opciones: opciones.map(({ texto, polo }) => ({ texto, polo })),
+      estado,
+    })),
+};
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={PANTALLA_0.subtitulo} />
+    <title>¿Qué tipo de ricotero sos? — Arcade Ricotero</title>
+  </head>
+  <body class="con-grano">
+    <main id="app">
+      <section id="inicio" class="pantalla">
+        <header class="cabecera-sitio">
+          <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
+        </header>
+        <p class="marca" aria-label="Arcade Ricotero">ARCADE RICOTERO</p>
+        <h1>{PANTALLA_0.titulo}</h1>
+        <p class="tenue">{PANTALLA_0.subtitulo}</p>
+        <button id="empezar" class="primario" type="button">{PANTALLA_0.boton}</button>
+      </section>
+
+      <section id="pregunta" class="pantalla" hidden></section>
+      <section id="resultado" class="pantalla" hidden></section>
+
+      <footer class="pie-sitio">{PORTAL.pie}</footer>
+    </main>
+
+    <script type="application/json" id="banco" set:html={JSON.stringify(banco)} />
+    <script>
+      import '../../scripts/partida-dos-ejes.ts';
+    </script>
+
+    <style>
+      main {
+        max-width: 34rem;
+        margin: 0 auto;
+        position: relative;
+        min-height: 100vh;
+      }
+      .marca {
+        font-family: var(--fuente-titular);
+        font-size: 2.1rem;
+        line-height: 0.96;
+        color: var(--marca-rojo);
+        margin: var(--espacio-3) 0 var(--espacio-2);
+        max-width: 7ch;
+      }
+      h1 {
+        font-family: var(--fuente-rotulada);
+        font-size: 1.5rem;
+        line-height: 1.2;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--disco-luzbelito-tinta);
+        margin-top: 0;
+      }
+      .tenue {
+        color: var(--texto-tenue);
+      }
+      .pantalla[hidden] {
+        display: none;
+      }
+    </style>
+  </body>
+</html>

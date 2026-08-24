@@ -6,7 +6,98 @@
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
 **Última actualización:** 2026-08-24
-**Ciclo actual:** **7 — CERRADO.** Plan en `Docs/ORQ/ORQ-plan-ciclo-7.md`, tareas
+**Ciclo actual:** **8 — CERRADO.** Plan en `Docs/ORQ/ORQ-plan-ciclo-8.md`, tareas
+`T-113`..`T-127`. `npm test` **224/224**, `npm run check` 0 errores, build de **148
+páginas**. Dos pedidos del usuario en la misma frase, y uno de los dos se cayó.
+
+> ### El quinto juego se juega: `/juegos/dos-ejes/`
+>
+> **"¿Qué tipo de ricotero sos?"** — `IDEA-09` promovida a `US-06` (`T-115`) con los ejes
+> que fijó el usuario: `luz ↔ oscuridad` y `orden ↔ caos`. Diez preguntas, cuatro
+> cuadrantes, **una identidad y ningún puntaje**. Verificado jugándolo a 375×812: sirve las
+> diez, el rombo pinta, el punto cae en la cara correcta, y **no hay un solo dígito en la
+> pantalla de resultado**.
+>
+> **`US-06` queda fuera del "Listo" de la v1**, y lo decidió `producto` con argumento:
+> `D-05` fijó cuatro juegos en el kickoff y no se redefine el contrato porque apareció una
+> quinta idea buena. Entra al sitio igual, como la Redondopedia.
+>
+> ### 🔴 Spotify está cerrado, y no por dificultad técnica
+>
+> `RES-51` (`INV-25`) lo cierra en negativo, en tres escalones: **el número de
+> reproducciones nunca existió** en la API pública; el índice `popularity` que sí existía
+> **lo removieron en febrero de 2026**; y la única modalidad que lo conserva exige
+> organización legal registrada y **250.000 usuarios activos por mes**. No hay frase que el
+> sitio pueda escribir con un número de Spotify, porque no hay número.
+>
+> **YouTube sí** (`RES-52`, `INV-26`), y mejor de lo esperado: hay canal Topic, y los
+> términos **autorizan explícitamente** guardar y mostrar el conteo (Developer Policies
+> III.E.4) a cambio de mantenerlo fresco y atribuir. `BR-18` fijó qué se promete: **el
+> orden, no la cifra**, refresco cada 180 días, y nunca sumar YouTube con Spotify.
+>
+> **Falta la clave**, y es lo único que falta de este frente:
+> `YT_API_KEY=... npm run ingerir-popularidad -- --resolver`. Sin clave el script no falla:
+> deja los 105 temas declarados y dice el comando.
+>
+> ### Lo que este ciclo le dio a la v1, que es una sola cosa y estaba trabada
+>
+> `BR-18` (f) cerró el hueco que el ciclo 7 dejó abierto: **"fácil" en `US-02` pasa a ser el
+> top-8 del ranking de YouTube**, no un campo manual ni un umbral fijo que se corrompería
+> solo. La cuota de fáciles vuelve a ser medible.
+>
+> ### El banco del test tardó tres vueltas, y las tres hicieron falta
+>
+> `T-121` lo escribió. Dos revisiones independientes: `revisor` no encontró nada
+> bloqueante, y una pasada adversarial encontró que **el eje `luz-oscuridad` medía cuatro
+> cosas distintas** —con sorteo de 5 sobre 10, la misma persona caía en polos opuestos
+> según qué cinco le tocaran— y que **`CU-1` nombraba pertenencia** y **`CU-3` se llamaba
+> como el hincha de San Lorenzo**. Rehecho en `T-126`.
+>
+> La segunda pasada encontró que **la asimetría no se había cerrado: se había mudado de
+> eje** — ocho de diez opciones de `oscuridad` eran *no hacer lo que hace `luz`*, y como
+> extraversión es un rasgo socialmente premiado, el test tenía un lado bueno. Cerrado en
+> `T-127`: hoy ninguna opción de `oscuridad` es una negación.
+>
+> **Está en `REV-07` y vale como vara:** dos ciclos seguidos, la pasada adversarial encontró
+> lo que la verificación no, y las dos veces por el mismo motivo — **el defecto no estaba en
+> ningún ítem, estaba en el conjunto.**
+>
+> ### Lo que el usuario trajo a mitad de ciclo
+>
+> - **La tapa real de *La mosca y la sopa*** reemplaza a la contratapa que el sitio usaba.
+>   ⚠ `RES-44` sigue diciendo que es un rediseño; su evidencia para esa fila es la más floja
+>   de las 35 (fetch 403, snippet). **El pie no le acredita nada a Rocambole** hasta que
+>   alguien vuelva a mirarlo — pedido en `Docs/SUGERENCIAS/HILO-para-investigador-tapa-de-la-mosca.md`.
+> - **Tres recortes reales**: la mosca (17 KB), Lupus el lobo (48 KB) y el ojo de buey de
+>   *Último bondi* (29 KB). Ninguno necesitó código: el mapa `RECORTE_REAL` ya los esperaba.
+> - **El "Viste (disco)" del portal, afuera** — la mezcla `D-19` se ve en el color.
+>
+> ### Dos verificaciones nuevas, las dos por huecos que encontró una revisión
+>
+> 1. **`voz.test.ts` no miraba el banco del test.** 44 cadenas visibles sin auditar en un
+>    proyecto cuya postura es que se audita a máquina lo auditable. Ya las mira.
+> 2. **El schema de `dos-ejes` no tenía tarea asignada en el plan.** Lo notó `arquitectura`;
+>    era un hueco mío.
+>
+> ### Deuda declarada
+>
+> - **21 temas de lacuerda.net** afuera del banco de letras: fuente nueva sin ficha. Pedido
+>   escrito. El generador tiene el mapa en una constante.
+> - **`RES-48` tiene una cita falsa** sobre el origen de *Mi perro dinamita*. La Redondopedia
+>   ya está corregida contra el memoir; la ficha no, y es de `investigador`.
+> - **No queda rastro de la banda en las 20 preguntas** del test — es lo que `US-06` pide,
+>   pero `producto` no lo confirmó de frente. Anotado en `CNT-09`.
+> - **`ADR-02`** (link compartido) lleva puntaje y este juego no tiene.
+> - Los tres hallazgos abiertos de `REV-06` y la cuota de fáciles de `US-02`.
+>
+> **Rangos consumidos por el ciclo 8:** `T-113`..`T-127`, `RES-51`, `RES-52`, `US-06`,
+> `BR-17`, `BR-18`, `CTR-07`, `CTR-08`, `UX-06`, `CNT-09`, `REV-07`, `FIND-25`..`FIND-27`.
+> Libres: `T-128`+, `D-25`+, `RES-53`+, `CNT-10`+, `REV-08`+, `UX-07`+, `BR-19`+,
+> `IDEA-12`+.
+
+---
+
+**Ciclo 7 — CERRADO.** Plan en `Docs/ORQ/ORQ-plan-ciclo-7.md`, tareas
 `T-97`..`T-112`. `npm test` **212/212**, `npm run check` 0 errores, build de 147 páginas.
 
 > ### Lo que cerró el ciclo

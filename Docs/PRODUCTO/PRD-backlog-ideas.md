@@ -274,6 +274,14 @@ diferencia entre cambiar de opinión y perder el hilo.
 
 ### IDEA-09 — Test: qué tipo de ricotero sos
 
+> ✅ **PROMOVIDA a `US-06` por `T-115` (ciclo 8), 2026-08-24.** El usuario fijó los ejes
+> —*"un eje luz oscuridad y otro eje orden caos"*— y confirmó que lo que se ubica en el
+> plano es el jugador, no los 105 temas: la única pregunta que esta ficha dejaba abierta
+> quedó contestada. Historia, criterios y piso en
+> `Docs/PRODUCTO/PRD-alcance-v1.md` (`US-06`, `BR-17`). Esta ficha se queda tal cual estaba
+> escrita, como registro de por qué se tomó (`Docs/IDS.md`, un `IDEA-XX` promovido no se
+> borra).
+
 **Tal cual la dijo el usuario:** *"Test que tipo de ricotero sos tipico 2 ejes"*.
 **Tipo:** original del sitio; el formato de dos ejes es el genérico (la brújula de toda la
 vida), pero el motor es tan chico que no aplica `BR-15`.
@@ -398,7 +406,7 @@ palabra más frecuente de todas.
 | `IDEA-06` | Zoológico | original (¿tipo nuevo de `US-05`?) | `BR-07`..`BR-12`, motor de artículos | mueve el piso de `US-05` |
 | `IDEA-07` | Pacman en el Savoy | clon vestido | — | motor + licencia (el más barato de los cinco) |
 | `IDEA-08` | Letras y acordes | original (no es juego) | — | deroga `BR-03`/`BR-12`; acordes sin fuente |
-| `IDEA-09` | Test de 2 ejes | original | `UX-02` | elegir ejes que no midan nivel |
+| `IDEA-09` | Test de 2 ejes | original | `UX-02` | ✅ **promovida a `US-06`** (`T-115`, ciclo 8) |
 | `IDEA-10` | Guitar Hero | clon vestido | el mp3 entero (`D-22`) | ~~bloqueo de audio~~ **levantado por `D-22`**; ahora falta la partitura |
 | `IDEA-11` | Mayor o menor con palabras del cancionero | original (género conocido, motor mínimo) | `cancionero.json` (104 temas), `UX-02` | el conteo es respuesta correcta — corpus limpiado por `T-103`, falta reconfirmar |
 
