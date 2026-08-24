@@ -24,6 +24,8 @@ import {
 } from '../../lib/redondopedia.ts';
 import { recorte, tapa, STICKER_DISCO, detalleArticulo, discosDe } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/redondopedia.json';
+import cancionero from '../../data/cancionero.json';
+import { cargar as cargarCancionero, slugDeLetra, type Cancionero } from '../../lib/cancionero/banco.ts';
 
 export function getStaticPaths() {
   const todos = (crudo as unknown as { articulos: Articulo[] }).articulos;
@@ -40,6 +42,19 @@ interface Props {
 const { articulo } = Astro.props as Props;
 const todos = (crudo as unknown as { articulos: Articulo[] }).articulos;
 const titulos = new Map(todos.map((a) => [a.slug, a.titulo]));
+
+/**
+ * Si el articulo es de un tema y tenemos su letra, se enlaza.
+ *
+ * Es el puente que faltaba entre las dos mitades del sitio: el articulo cuenta de que
+ * habla la cancion, el cancionero la trae entera con los acordes. Cruzar por titulo
+ * normalizado y no por slug — la Redondopedia escribe `ji-ji-ji` y el cancionero
+ * `jijiji`, del mismo tema.
+ */
+const letra =
+  articulo.tipo === 'tema'
+    ? slugDeLetra(articulo.titulo, cargarCancionero(cancionero as unknown as Cancionero))
+    : null;
 
 const categoria = TIPO_A_CATEGORIA[articulo.tipo];
 const laTapa = articulo.tipo === 'disco' ? tapa(articulo.slug) : null;
@@ -93,6 +108,14 @@ const etiquetaRotulo = (seg: Segmento): string =>
     }
 
     <p class="articulo-resumen">{articulo.resumen}</p>
+
+    {
+      letra && (
+        <p class="ir-a-la-letra">
+          <a href={`/letras-y-acordes/${letra}/`}>Leé la letra entera, con los acordes →</a>
+        </p>
+      )
+    }
 
     {
       articulo.datos.length > 0 && (

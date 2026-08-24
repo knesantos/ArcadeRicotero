@@ -790,3 +790,20 @@
   display: block;
   margin-bottom: var(--espacio-1);
 }
+
+/* El puente del articulo de un tema a su letra entera (ciclo 6). Es un renglon de
+   accion, no una tarjeta: la ficha ya tiene bastantes cajas. */
+.ir-a-la-letra {
+  margin: var(--espacio-2) 0 var(--espacio-3);
+}
+
+.ir-a-la-letra a {
+  display: inline-block;
+  min-height: var(--toque-min);
+  padding: 12px 0;
+  color: var(--cat-letras);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}

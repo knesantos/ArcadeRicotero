@@ -19,7 +19,7 @@ const { articulos } = JSON.parse(readFileSync('src/data/redondopedia.json', 'utf
   articulos: Articulo[];
 };
 
-const TIPOS: TipoArticulo[] = ['disco', 'persona', 'hito', 'concepto', 'leyenda'];
+const TIPOS: TipoArticulo[] = ['disco', 'tema', 'persona', 'hito', 'concepto', 'leyenda'];
 const ROTULOS = ['hecho', 'leyenda', 'testimonio'];
 const slugs = new Set(articulos.map((a) => a.slug));
 

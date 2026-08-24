@@ -60,7 +60,7 @@ test('los rotulos se distinguen por forma ademas de por color', () => {
 test('ni juego.css ni sitio.css traen un color literal: todo sale de los tokens', () => {
   // El circuito de diseno-marca: el UNICO archivo del repo donde vive un hex es
   // tokens.css. Un hex suelto en una hoja de componentes romperia esa separacion.
-  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css']) {
+  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css']) {
     const hexes = leer(hoja).match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];
     assert.deepEqual(hexes, [], `${hoja} tiene colores literales: ${hexes.join(', ')}`);
   }
@@ -73,7 +73,7 @@ test('anti-slop: sin pastillas capsula ni barras de acento laterales', () => {
   // una tarjeta. La UNICA barra lateral permitida es la sangria de cita de los
   // parrafos rotulados de la Redondopedia (.parrafo--leyenda / .parrafo--testimonio),
   // que es tipografia editorial y mecanismo de BR-08, no decoracion.
-  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css']) {
+  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css']) {
     const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
     assert.ok(!css.includes('999px'), `${hoja}: pastilla capsula (border-radius 999px)`);
     for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
@@ -95,7 +95,7 @@ test('D-21: ninguna tapa entra de fondo sin su velo', () => {
   // texto sobre una foto: es justo el caso que la regla de marca veta como "foto a
   // sangre con texto encima". Se exige en el mismo bloque de declaraciones, no en la
   // hoja entera, para que no alcance con que el velo aparezca en cualquier otro lado.
-  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css']) {
+  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css']) {
     const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
     for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
       const declaraciones = regla[2]!;
@@ -118,4 +118,65 @@ test('toda clase de estado usada en el CSS existe de verdad en el codigo', () =>
   for (const base of bases) {
     assert.ok(JS.includes(base), `el CSS estila "${base}…" pero el codigo no crea ninguna`);
   }
+});
+
+/* ==================================================================
+   Adivinar el tema (US-02): el mismo control que FIND-15, para el juego nuevo
+   ================================================================== */
+
+const JS_TEMA = leer('src/scripts/partida-tema.ts');
+
+/** Las clases de estado que crea la isla del tema y que tienen que verse distinto. */
+const ESTADOS_TEMA = [
+  '.intento--libre',
+  '.intento--fallado',
+  '.intento--pasado',
+  '.barra-tramo--abierto',
+  '.escuchar--sonando',
+  '.arriesgar--listo',
+  '.sugerencia--marcada',
+  '.sugerencia--vacia',
+  '.resumen-fila--ok',
+  '.resumen-fila--no',
+  '.restantes--ultimo',
+];
+
+test('US-02: toda clase de estado que crea la isla del tema tiene una regla que la pinta', () => {
+  const sinRegla = ESTADOS_TEMA.filter((c) => !CSS.includes(c));
+  assert.deepEqual(sinRegla, [], `clases creadas por el codigo y sin estilo: ${sinRegla.join(', ')}`);
+});
+
+test('US-02: las clases que el CSS estila las crea de verdad la isla', () => {
+  // El reves del anterior: estilos huerfanos. Se busca la base de cada familia, porque
+  // el codigo arma varias con plantilla.
+  const bases = [...new Set(ESTADOS_TEMA.map((c) => c.replace(/^\./, '').replace(/--.*$/, '--')))];
+  for (const base of bases) {
+    assert.ok(JS_TEMA.includes(base), `el CSS estila "${base}..." pero la isla no crea ninguna`);
+  }
+});
+
+test('US-02: el intento fallado, el pasado y el resumen no se comunican solo con color', () => {
+  // UX-01. En este juego el simbolo lo escribe el JavaScript (es contenido del renglon,
+  // no decoracion de la caja), asi que se verifica ahi y no en el CSS.
+  for (const simbolo of ['✕', '·', '✔']) {
+    assert.ok(JS_TEMA.includes(simbolo), `la isla no escribe el simbolo ${simbolo} en ningun estado`);
+  }
+});
+
+test('US-02: el boton de escuchar dice con un simbolo si esta sonando o no', () => {
+  // Es el unico control que cambia de funcion sin cambiar de lugar: tiene que
+  // distinguirse de un vistazo, no leyendo.
+  const bloque = CSS.slice(CSS.indexOf('.escuchar::before'));
+  assert.ok(bloque.includes('content:'), 'el boton de escuchar no lleva simbolo');
+  assert.ok(
+    CSS.includes('.escuchar--sonando::before'),
+    'el boton no cambia de simbolo cuando esta sonando',
+  );
+});
+
+test('US-02: la barra de tramos no tapa el primer paso con un ancho de cero', () => {
+  // El primer tramo es el 0,67% de la barra: medio pixel en un celular. Sin `min-width`
+  // el jugador no ve el escalon que esta usando.
+  const bloque = CSS.slice(CSS.indexOf('.barra-tramo {'), CSS.indexOf('.barra-tramo:first-child'));
+  assert.match(bloque, /min-width:\s*\d/, '.barra-tramo no tiene ancho minimo');
 });

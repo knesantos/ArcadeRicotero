@@ -3,7 +3,9 @@
 - **Fecha:** 2026-08-21
 - **Origen:** el usuario, textual: *"analizar a fondo letras, entrevistas y demas archivo
   del indio solari para que la pagina intente hablar como el"*.
-- **Estado: idea guardada. NO se hace ahora** — lo dijo el usuario en el mismo pedido
+- **Estado: TOMADA el 2026-08-23.** Ver "Qué pasó cuando se tomó" al final: la regla
+  existe (`.claude/rules/voz-ricotera.md`), el test existe, y quedan dos encargos.
+- **Estado original (2026-08-21): idea guardada, NO se hace ahora** — lo dijo el usuario en el mismo pedido
   (*"Agrega como idea futura, no para hacerla ahora"*). No es tarea del ciclo 4, no entra
   al tablero, no tiene ID todavía.
 
@@ -52,3 +54,78 @@ contra ellos. **Hoy no hay test que audite el texto** — `src/lib/estilos.test.
 el CSS (anti-slop visual), no el copy, y `D-17` se cumple a ojo. Si la guía nueva deja
 algo chequeable a máquina (lista de anglicismos vetados, por ejemplo), el test hay que
 escribirlo: es la parte que hoy no existe.
+
+
+---
+
+## Qué pasó cuando se tomó — 2026-08-23
+
+El usuario la pidió de nuevo, esta vez para hacerla: *"un análisis profundo de la forma de
+hablar y escribir del Indio Solari [...] que presente los juegos como si fuese un tema"*.
+
+**Lo que se hizo, y dónde vive:** `.claude/rules/voz-ricotera.md`, escrita por el hilo
+principal con el mismo estatuto que `diseno-marca.md` — obliga a todos, roles incluidos.
+Los números salen de medir dos corpus **que ya estaban en el repo**, sin salir a la web:
+el memoir (`RES-21`, 192.464 palabras) y las letras de los 104 temas del cancionero.
+
+**Las tres preguntas de arriba quedaron contestadas así:**
+
+1. **¿Habla como él o citándolo?** Citándolo, cuando hable él. El sitio usa sus
+   procedimientos —largo de frase, rodeo, duda declarada, cómo nombra a la gente— y
+   **nunca firma una frase con su nombre.** Sección 1 de la regla, con las tres razones.
+2. **Dónde aplica.** Resuelto con tres registros (sección 5): *el que canta* (títulos,
+   casetes, botones), *el que cuenta* (Redondopedia, explicaciones) y *el que rotula*
+   (leyenda, testimonio, errores, avisos, y los tres temas de `CNT-04`/`CNT-06`), que va
+   seco. Y la regla de las dos líneas: una nombra, la otra canta; tapá la que canta y el
+   que llegó de afuera tiene que seguir sabiendo qué tocar.
+3. **Que no termine en imitación de manual.** El corpus dio el antídoto medido: en 192.464
+   palabras dice *che* 9 veces, *viste* 15 y *digamos* 3. La imitación de manual es
+   justamente lo que **no** suena a él. Tabla de tics vetados en la sección 7.
+
+**El test que este documento decía que no existía, ahora existe:** `src/lib/voz.test.ts`,
+seis pruebas sobre las cadenas visibles de los cinco módulos de copy. 185/185 en verde.
+
+### Los dos encargos que quedan, y son de otras carpetas
+
+**1. Para `contenido` — once botones cambiaron en el código y `CNT-05` todavía dice lo
+viejo.** El test encontró once cadenas en infinitivo, que `D-17` no permite ("voseo en
+cada botón"). Se corrigieron en el producto, que es lo que se ve, con el mismo criterio
+que ya se había usado con la variante *"¡Con la gorra bien puesta!"*:
+
+| Dónde | Decía | Dice |
+|---|---|---|
+| `quiz` (C4, C5 de `CNT-05`) | `COMPARTIR` · `JUGAR DE NUEVO` | `COMPARTÍ` · `JUGÁ DE NUEVO` |
+| `sitio` | `VOLVER` | `VOLVÉ` |
+| `letra` | `Empezar` · `Seguir` · `Volver al arcade` · `Ver las letras enteras` · `Ir a letras y acordes` | `Empezá` · `Seguí` · `Volvé al arcade` · `Mirá las letras enteras` · `Andá a letras y acordes` |
+| `tapa` | `Empezar` · `Seguir` · `Volver al arcade` | `Empezá` · `Seguí` · `Volvé al arcade` |
+
+Los identificadores `C4`/`C5` de `CNT-05` siguen trazando; lo que cambió es el texto. **El
+mismo par aparece en `UX-01`, `UX-02`, `UX-04` y `UX-05`**, que son de `experiencia`: ahí
+no se tocó nada, y conviene que el ejemplo de `UX-04` ("COMPARTIR") se actualice para no
+seguir citando como modelo lo que el test ahora rechaza.
+
+**2. Para `contenido` — la guía fina que `CNT-02` no tiene.** La regla nueva fija los
+números y los registros; lo que le falta es lo que `CNT-02` hace mejor que nadie: **pares
+bien/mal concretos** para las preguntas del quiz, que son el terreno de `contenido` y
+donde la voz **no** puede entrar (el enunciado tiene que entenderse antes que sonar). La
+regla dice qué registro va en cada superficie; `CNT-02` sigue mandando adentro del
+enunciado.
+
+### Y hay un tercer encargo, del barrido del mismo día
+
+El usuario aprobó aplicar la voz a las superficies que presentan. **Dos cadenas del quiz
+que `CNT-05` fija cambiaron de texto** (los identificadores siguen siendo los mismos):
+
+| `CNT-05` | Decía | Dice |
+|---|---|---|
+| C2, tramo medio | Ya sabés más de lo que pensabas. Seguí así. | Ya sabés más de lo que creías. Una vuelta más y los tenés. |
+| C3, tramo alto | Te la sabés de memoria. Grande, campeón. | Te la sabés de memoria. Sos de los que abren el molinete. |
+
+El motivo del segundo: *"grande, campeón"* es aliento de cancha genérico, y el tramo alto
+es justo donde el sitio puede decir algo que solo este sitio puede decir. El que se la sabe
+es el que abre el molinete para el que recién llega — que es el principio de `D-14`
+devuelto como devolución.
+
+**Nada de esto toca el enunciado de una sola pregunta.** El barrido se detuvo en la puerta
+de la partida a propósito: adentro sigue mandando `CNT-02`, porque ahí entender va antes
+que sonar.

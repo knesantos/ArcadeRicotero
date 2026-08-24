@@ -1,0 +1,130 @@
+---
+/**
+ * La ficha de un tema: la letra con los acordes arriba de cada verso.
+ *
+ * La referencia declarada es cifraclub, que es donde el que toca ya sabe leer: acordes
+ * en monoespaciada sobre la sílaba exacta, tono arriba, transporte a mano. Lo que el
+ * sitio agrega es que **la página viste el disco al que pertenece el tema** y que dice
+ * de dónde salió la letra.
+ *
+ * **Dos cosas que se hacen en el navegador y no en build**, porque dependen de quién
+ * está mirando: transportar (el que canta no llega a la nota del disco) y el autoscroll
+ * (las manos están ocupadas con la guitarra). El resto es HTML estático — `D-02`,
+ * arquitectura de islas.
+ */
+import Base from '../../layouts/Base.astro';
+import '../../styles/cancionero.css';
+import crudo from '../../data/cancionero.json';
+import { cargar, AVISO_SIN_LETRA, type Cancionero, type TemaCancionero } from '../../lib/cancionero/banco.ts';
+import { pintarTema, creditoDeFuente } from '../../lib/cancionero/vista.ts';
+import { FICHAS } from '../../lib/cancionero/banco.ts';
+
+export function getStaticPaths() {
+  const temas = cargar(crudo as unknown as Cancionero);
+  return temas.map((tema) => ({ params: { slug: tema.slug }, props: { tema } }));
+}
+
+interface Props {
+  tema: TemaCancionero;
+}
+
+const { tema } = Astro.props;
+const ficha = FICHAS.find((f) => f.slug === tema.disco)!;
+const secciones = pintarTema(tema);
+const credito = creditoDeFuente(tema);
+const aviso = tema.contenido === 'letra' ? null : AVISO_SIN_LETRA[tema.contenido];
+---
+
+<Base
+  titulo={`${tema.titulo} — letra y acordes — Arcade Ricotero`}
+  descripcion={`La letra de ${tema.titulo}, de ${ficha.titulo} (${ficha.anio}), con los acordes para tocarla.`}
+  volverA={{ href: '/letras-y-acordes/', texto: 'Letras y acordes' }}
+>
+  <article
+    class="tema"
+    style={`--tinta: var(--disco-${tema.disco}-tinta); --apoyo: var(--disco-${tema.disco}-apoyo);`}
+    data-tono={tema.tono ?? ''}
+  >
+    <header class="tema-cabecera">
+      <h1 class="tema-titulo">{tema.titulo}</h1>
+      <p class="tema-origen">
+        {ficha.titulo}, {ficha.anio} · pista {tema.pista}
+        {tema.capo && <> · cejilla en {tema.capo}</>}
+      </p>
+    </header>
+
+    {
+      tema.acordesUsados.length > 0 && (
+        <div class="herramientas">
+          {tema.tono && (
+            <div class="herramienta">
+              <span class="herramienta-nombre">Tono</span>
+              <span class="herramienta-valor" data-tono-actual>{tema.tono}</span>
+            </div>
+          )}
+          <div class="herramienta">
+            <span class="herramienta-nombre">Transportar</span>
+            <button type="button" data-transportar="-1" aria-label="Bajar medio tono">−</button>
+            <span class="herramienta-valor" data-semitonos>0</span>
+            <button type="button" data-transportar="1" aria-label="Subir medio tono">+</button>
+          </div>
+          <div class="herramienta">
+            <span class="herramienta-nombre">Solo</span>
+            <button type="button" data-autoscroll aria-pressed="false">Bajar solo</button>
+            <button type="button" data-velocidad="-1" aria-label="Más lento">−</button>
+            <span class="herramienta-valor" data-velocidad-valor>2</span>
+            <button type="button" data-velocidad="1" aria-label="Más rápido">+</button>
+          </div>
+        </div>
+      )
+    }
+
+    {
+      tema.acordesUsados.length > 0 && (
+        <ul class="acordes-del-tema" aria-label="Acordes del tema">
+          {tema.acordesUsados.map((a) => (
+            <li data-acorde={a}>{a}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    {aviso && <p class="aviso-sin-letra">{aviso}</p>}
+
+    <div class="cancion">
+      {
+        secciones.map((seccion) => (
+          <section class="seccion-cancion">
+            {seccion.etiqueta && <span class="seccion-etiqueta">{seccion.etiqueta}</span>}
+            {seccion.renglones.map((r) =>
+              r.clase === 'tab' ? (
+                <div class="renglon renglon-tab">{r.texto}</div>
+              ) : (
+                <>
+                  {r.marcas.length > 0 && (
+                    <div class="renglon renglon-acordes" data-marcas={JSON.stringify(r.marcas)}>
+                      {r.acordes}
+                    </div>
+                  )}
+                  {r.clase === 'letra' && <div class="renglon renglon-letra">{r.texto}</div>}
+                </>
+              ),
+            )}
+          </section>
+        ))
+      }
+    </div>
+
+    <p class="tema-origen" style="margin-top: var(--espacio-3)">
+      {credito}
+      {tema.fuente.url && (
+        <>
+          {' '}
+          <a href={tema.fuente.url} rel="nofollow noopener" target="_blank">Ver el original</a>.
+        </>
+      )}
+    </p>
+  </article>
+
+  <script src="../../scripts/cancion.ts"></script>
+</Base>

@@ -5,8 +5,138 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-08-21
-**Ciclo actual:** **4 — CERRADO.** Las 20 tareas `T-44`..`T-63`, más los hallazgos de las
+**Última actualización:** 2026-08-23
+**Ciclo actual:** **6 — construido, a la espera de una confirmación humana.** Plan en
+`Docs/ORQ/ORQ-plan-ciclo-6.md`, tareas `T-82`..`T-96`. **El usuario trajo el material que
+faltaba** —149 JSON con letra y acordes, raspados con scraper propio de cifraclub y
+letras.com— y eso desbloqueó de un saque los tres frentes que esperaban versos.
+
+> ### Lo que quedó andando
+>
+> - **`/letras-y-acordes/`: la sección nueva.** 104 de los 105 temas de `RES-20`
+>   (falta *Sushi*, instrumental), **ordenados por disco y cada disco vestido con su
+>   propia paleta real** (`RES-37`, las diez, no las cuatro de `D-19`). Cada disco muestra
+>   su **tracklist entero**: lo que no tenemos aparece tachado y con el motivo.
+> - **Ficha por tema** con los acordes alineados sobre la sílaba, **transporte** (±6
+>   semitonos, respeta bemoles) y **"bajar solo"** (autoscroll con velocidad).
+> - **Armá tu cancionero**: elegís temas y bajás **un HTML autocontenido** con índice,
+>   acordes y autoscroll. **Cero recursos externos** — abre sin internet. Verificado.
+> - **La Redondopedia enlaza la letra** de sus 6 artículos `tema`.
+> - **147 páginas** (eran 35), **135 tests** (eran 77), `tsc` limpio.
+>
+> ### 🔴 Lo único que falta, y no lo puede hacer un programa
+>
+> **El juego de completar la letra NO está jugable, a propósito.** Hay **226 versos
+> candidatos** en `src/data/letra.json`, todos `borrador`. `CTR-04` no deja jugar un verso
+> sin dos fuentes de letra o **confirmación de oído contra el disco**, y ponerle `listo` a
+> un verso que nadie escuchó sería la mentira que `CLAUDE.md` declara como lo único
+> estricto: si la respuesta está mal, **el juego le marca error justo al que se sabe el
+> tema**.
+>
+> **Y no hay atajo por la otra puerta:** letras.com aportó 14 temas con letra y cifraclub
+> 82, con **solapamiento cero**, así que hoy ningún ítem puede llegar a `listo` por "dos
+> fuentes". Alguien tiene que escuchar. Medido el 2026-08-23.
+>
+> **Para prenderlo, y ya cuesta veinte minutos en vez de una semana:**
+>
+> 1. `npm run hoja-de-escucha` — deja **24 versos** elegidos en
+>    `src/data/letra-confirmaciones.json` con el minuto en blanco (`_:__`), repartidos
+>    entre 13 temas y los tres niveles de `BR-03`, y con el verso anotado al lado.
+> 2. Se escucha, se reemplaza cada `_:__` por el minuto (`"1:24"`). Quién / fecha / dónde
+>    salen una sola vez de `porDefecto`; **el minuto no tiene defecto y por eso no se
+>    autocompleta.**
+> 3. `npm run generar-letra`. Con 15 confirmados se cumple el piso de `US-03` y la pantalla
+>    se prende sola: los dos estados ya están escritos y el banco decide cuál sale.
+>
+> ### Tres hallazgos del ciclo, que eran defectos viejos
+>
+> 1. **`leerTemas()` cortaba mal 6 de los 105 títulos** — se le pegaba la prosa de la nota
+>    que sigue en `RES-20`. El cruce de `D-13` daba 83/105 y rechazaba temas legítimos.
+>    Con el arreglo y una tabla de alias: **104/105**. Cubierto por `temas.test.ts`.
+> 2. **`banco.ts` leía mal `BR-03`**: sumaba los dos lados del contexto y los comparaba
+>    contra el número de una sola columna de la tabla, así que un ítem fácil correcto
+>    (2 antes + 2 después) era rechazado. El schema lo tenía bien. No se notó antes porque
+>    el banco estaba vacío.
+> 3. **Seis temas no eran instrumentales**: la fuente les transcribió solo la tablatura.
+>    `contenido` pasó de booleano a tres estados (`letra` / `instrumental` /
+>    `solo-tablatura`) para no decir algo falso sobre la obra.
+>
+> ### Deuda declarada
+>
+> **El banco sale de 14 temas, no de 96.** Solo letras.com tiene ficha (`RES-23`);
+> cifraclub, que aportó 82 temas, no tiene ninguna. Pedido concreto a `investigador` en
+> `Docs/SUGERENCIAS/HILO-para-investigador-fichar-cifraclub.md`. El generador tiene la
+> fuente en una constante: cuando la ficha exista, son dos líneas.
+>
+> **Rangos consumidos por el ciclo 6:** `T-82`..`T-96`, `CTR-06`. Consumidos por la sesión
+> suelta del 2026-08-23: `D-23`. Pedidos y sin escribir: `RES-49` (cifraclub), `RES-50`
+> (límites de Vercel). Libres: `T-97`+, `D-24`+, `RES-51`+, `CNT-08`+, `REV-06`+, `UX-06`+,
+> `BR-16`+.
+
+---
+
+## Sesión suelta del 2026-08-23 — el audio, y el candado de las letras
+
+No es un ciclo: son dos preguntas del usuario resueltas de punta a punta.
+
+**`D-23` — los 2,5 GB no entran al repo.** El usuario trajo el número que faltaba desde
+`D-22`: la discografía completa que tiene pesa 2,5 GB. Contra las ~7,2 h de `RES-20` eso
+da ~770 kbps promedio — **no es mp3, es lossless o casi**, y el mismo catálogo a 128 kbps
+son ~400 MB. Decidido: los 2,5 GB se quedan en la máquina como material de trabajo, y al
+sitio va un derivado en **dos niveles** — fragmento de `CTR-01` para los 104 temas
+(**12,5 MB** en total) y tema entero solo para los que un juego revela (~40, ~160 MB).
+**Se descartó guardar medio tema** (idea del usuario) por aritmética: `US-02` necesita 15
+segundos, no dos minutos, y medio tema pesa doce veces más que el fragmento para el mismo
+juego. Queda pedida `RES-50` a `investigador` en
+`Docs/SUGERENCIAS/HILO-para-investigador-limites-de-vercel-para-audio.md`: **la única
+pregunta que puede mover algo es si Vercel Hobby banca ~180 MB de mp3 en el repo.** La
+decisión no depende de la respuesta, solo dónde viven los archivos.
+
+**Tres candados nuevos en el juego de las letras, porque no había ninguno.** La regla de
+`CTR-04` que decide si el juego miente —para estar en `listo`, o te escucharon o tenés dos
+fichas de letra— **vivía solo en `letra.schema.json`, que ningún test corría.** Ahora:
+
+1. Está en `src/lib/letra/banco.ts` y rompe el build. Seis tests nuevos.
+2. `generar-letra` **aborta sin escribir** ante una confirmación que no es una escucha:
+   minuto vacío, `"si"`, `"1:60"`, fecha inválida, `donde` inventado, id inexistente.
+3. **Guardián de ids.** Los ids son posicionales (`CL-001`...): un banco regenerado los
+   corre y una confirmación se mudaría **en silencio** a un verso que nadie escuchó. La
+   hoja guarda el verso como huella y el generador compara.
+
+**Dos defectos del banco, encontrados al mirarlo:** el banco bajó de **313 a 226**
+candidatos y es una mejora — **79 repetidos** (el mismo verso de estribillo entraba una
+vez por repetición) y **8 sin verso alrededor** (la `Invocación` de *Lobo suelto* daba tres
+ítems cuyo enunciado entero era `____ !`; ese tema salió completo).
+
+**Verificado:** `npm test` → 135/135. `npm run check` → 0 errores.
+
+**Ciclo anterior:** **5 — EN CURSO.** Plan en `Docs/ORQ/ORQ-plan-ciclo-5.md`: 17 tareas,
+`T-64`..`T-80`. **Foco: el sitio sale a la calle y el quiz se viste.** Lo segundo es la
+mitad del pedido del ciclo 4 que quedó sin hacer (`UX-05` §2, siete superficies).
+**Los versos siguen sin transcribirse y es deliberado:** son material de origen, como los
+recortes de audio de `US-02`, y entran por la mano del usuario. El ciclo deja lista toda la
+maquinaria de `US-03` alrededor, y le pregunta a `producto` si un artículo `tema` se
+sostiene sin citar verso — si dice que sí, `US-05` llega a 35/35 sin un solo verso.
+
+> ✅ **`T-71` (`experiencia`) — cerrada.** `UX-04` pasa a v4 y `UX-05` a v2. Confirmados
+> los dos desvíos que reportó el hilo principal (`Docs/SUGERENCIAS/HILO-para-experiencia-
+> desvios-de-UX-05.md`): `letras` sale entera de la trasera de *La mosca y la sopa* (tres
+> filas corregidas), y el fondo de Oktubre queda anclado en la franja inferior del portal,
+> nunca detrás de la cabecera. Los números de 480/640 px bajaron al techo real del
+> material (másters 953×953/1181×929 px, catálogo real 210–591 px, destino real 34–96 px);
+> el tope de 60 KB queda igual, con nota de que hoy nadie lo roza (máximo real 53 KB).
+> **Hallazgo propio, no pedido:** el mismo problema del desvío 2 (texto sin par testeado
+> sobre velo) iba a repetirse en dos pantallas que el ciclo 4 no llegó a construir —
+> `--marca-rojo` en la presentación del quiz y `--acento` (tramo medio, ~4,48:1 calculado a
+> mano) en el resultado —, así que `UX-05` v2 ya las deja acotadas antes de que `T-72` las
+> construya. `UX-05` §2 suma el mecanismo del "sello de esquina" en detalle (dónde cae, qué
+> tamaño, cómo convive con el pulgar) para que `T-72`..`T-74` lo lean y no vuelvan a
+> preguntar. Queda anotado y sin resolver, fuera de la carpeta de `experiencia`: la ficha
+> de disco de *La mosca y la sopa* en la Redondopedia todavía muestra el mismo frontal que
+> `RES-44` descartó — es de código (`generar-tapas.mjs`) y de `contenido` (el texto de esa
+> ficha), no algo que UX pueda mover sola.
+
+> **Ciclo 4 — CERRADO.** Las 20 tareas `T-44`..`T-63`, más los hallazgos de las
 dos revisiones, corregidos y verificados. **Las tapas reales entraron al sitio y hay un
 segundo juego jugable**: `US-04` (adivinar la tapa) cerró su piso en 10/10 y se juega de
 punta a punta. La Redondopedia pasó de 26 a **29 de 35** artículos. **77 tests**, `tsc`
@@ -90,6 +220,145 @@ Los ciclos 1, 2 y 3 también están cerrados. **Ningún ciclo tiene nada abierto
 > sin saberlo. **No cambia el alcance ni los cuatro juegos.** Deja dos cosas por decidir, en
 > `Docs/SUGERENCIAS/INV-para-producto-y-contenido-muerte-indio.md`.
 
+## Sesión suelta del 2026-08-23 (2) — la voz del sitio, medida
+
+El usuario pidió **analizar a fondo cómo habla y escribe el Indio** para que el sitio no
+tenga texto genérico y para que los juegos se presenten *como si fueran un tema*. Era la
+idea que estaba guardada desde el 21 en
+`Docs/SUGERENCIAS/HILO-para-contenido-e-investigador-voz-del-indio.md`: **se tomó**, y ese
+archivo ahora cierra con lo que se resolvió y lo que queda.
+
+**Regla nueva: `.claude/rules/voz-ricotera.md`**, con el mismo estatuto que
+`diseno-marca.md` — obliga a todos, roles incluidos. Los números salen de medir dos corpus
+que ya estaban en el repo, **sin salir a la web**: el memoir (`RES-21`, 192.464 palabras) y
+las letras de los 104 temas del cancionero (2.958 versos).
+
+**Los tres hallazgos que más corrigen la intuición:**
+
+1. **No es el porteño de la caricatura.** En 192.464 palabras dice *che* **9** veces,
+   *viste* **15**, *digamos* **3**. Meter esas muletillas para sonar argentino es
+   exactamente lo que no suena a él.
+2. **Dice "la gente"** (333) y casi nunca "el público" (39) ni "los fans" (**2**).
+3. **Declara la duda todo el tiempo** (*creo que* 81, *no sé* 71, *puede ser* 41) y **no
+   tiene épica militante** (*lucha* 6, *resistencia* 7). El sitio no arenga: rodea, atenúa
+   y avisa cuando no sabe — que es, de casualidad perfecta, el mecanismo que Wikipedia no
+   puede usar y que `D-20` fue a buscar para la Redondopedia.
+
+**Tres registros, y mezclarlos es el defecto:** *el que canta* (títulos, casetes, botones;
+techo de 8 palabras, que es el percentil 90 del verso), *el que cuenta* (Redondopedia,
+explicaciones; oración de ~13 palabras) y *el que rotula* (leyenda, testimonio, errores,
+avisos, y los tres temas de `CNT-04`/`CNT-06`), que va **seco y sin voz**.
+
+**La línea que no se cruza, escrita antes que nada:** el sitio escribe como aprendió
+escuchándolo, **nunca se hace pasar por él**. Murió hace once semanas (`RES-04`) y, sobre
+todo, una frase inventada con su firma envenenaría el rótulo `testimonio`, que es lo único
+que el sitio promete de verdad.
+
+**El test que faltaba existe: `src/lib/voz.test.ts`**, seis pruebas sobre las cadenas
+visibles de los cinco módulos de copy. Encontró **once botones en infinitivo** —que `D-17`
+no permite— y se corrigieron: `COMPARTIR`→`COMPARTÍ`, `JUGAR DE NUEVO`→`JUGÁ DE NUEVO`,
+`VOLVER`→`VOLVÉ`, y los `Empezar`/`Seguir`/`Volver` de `letra` y `tapa`. **185/185 en
+verde.** `CNT-05` (de `contenido`) y `UX-01`/`UX-02`/`UX-04`/`UX-05` (de `experiencia`)
+todavía citan el texto viejo: quedó anotado en la sugerencia, no se tocaron.
+
+**El barrido se aplicó**, con las dos decisiones del usuario tomadas en la misma sesión:
+la Redondopedia va con **prosa con voz y rótulo seco**, y el copy nuevo entra en **las
+superficies que presentan** — portada, los seis casetes, la pantalla 0 de cada juego y los
+tramos del resultado. **No se tocó nada de adentro de la partida**: enunciados, opciones e
+instrucciones siguen bajo `CNT-02` y `UX-01`, donde entender va antes que sonar.
+
+Ahora cada casete abre con un verso de ocho palabras o menos y explica después — "Ocho
+preguntas y ninguna piadosa", "Lo tenés en la punta de la lengua", "Rocambole dibujó; vos
+ponés el disco", "El hecho como hecho, la leyenda como leyenda" —, y la portada arranca con
+"Entrá, que los molinetes van abiertos". Verificado en el sitio construido (147 páginas,
+sin errores de consola). **186/186 tests, `tsc` con 0 errores.**
+
+## Sesión suelta del 2026-08-23 (3) — "Adiviná el tema" salió de la cocina
+
+El usuario trajo el juego que quiere **calcado**: https://lessgames.com/songless. Pidió el
+relevamiento antes que el código —*"no hay que reinventar la rueda"*— y tres cosas
+concretas: elegir **todos los temas o por disco**, **autocompletado** para no perder el
+tiempo tipeando, y que el **botón de escuchar sea fácil y rápido**. Y la escalera:
+**0,1 · 0,5 · 2 · 4 · 8 · 15 segundos**.
+
+**El mapa está en `Docs/SUGERENCIAS/HILO-mapa-del-juego-de-referencia.md`**, jugado y
+medido con el navegador, no mirado de costado: la escalera se sacó apretando *Skip* cinco
+veces y leyendo la etiqueta; los anchos de la barra, del CSS; la búsqueda difusa, probando
+`zzzzq` y viendo que ofrece temas de ZZ Top. Trae la tabla de qué se copió y qué **no**, y
+por qué.
+
+### Lo que quedó andando
+
+**`/juegos/adivinar-el-tema/` se juega.** Pantalla nueva de punta a punta, verificada en el
+navegador a 390×844 y a 412×860:
+
+- **Elegís el pozo**: todos los discos, o uno. Los discos sin audio salen apagados y con
+  el motivo escrito, no escondidos.
+- **Seis renglones de intento**, visibles desde el arranque: la escalera se ve antes de
+  gastarla. **Errar abre el escalón siguiente** — es el corazón del juego, y es lo
+  contrario de lo que decía `BR-02`.
+- **Barra de seis tramos**, cada uno del ancho de lo que *ese* paso agrega. El último se
+  come la mitad, porque de 8 a 15 hay siete segundos nuevos.
+- **Un solo botón grande que cambia de nombre**: con la caja vacía dice *Pasá*; con un tema
+  elegido dice *Arriesgá*. Mismo lugar, mismo pulgar.
+- **El buscador**, que es la pieza que el usuario marcó como importante. Perdona tildes,
+  espacios (`jijiji` = `Ji ji ji`), empezar por el medio del título y letras salteadas
+  (`vncdrs` → *Vencedores vencidos*). **La lista se abre para arriba**, que es lo único que
+  el teclado del celular no tapa. Ofrece **los 105 títulos**, no los que tienen audio: si
+  ofreciera solo los jugables, el desplegable sería la respuesta.
+- **El reveal** da tema, disco, año, pista, puntos, el enlace a la letra y los acordes, y
+  el tema entero si el archivo existe (`D-22`).
+- **185 tests en verde**, `npm run check` sin errores, 147 páginas.
+
+### 🔴 Lo único que falta, y es un archivo, no una decisión
+
+**No hay audio.** `public/audio/` no existe y el manifiesto está vacío, así que la portada
+dice que no hay con qué jugar y da el comando. **La pantalla no se rompe: lo declara.**
+
+Para prenderlo, con la discografía que el usuario ya tiene en la máquina (`D-23`):
+
+```
+npm run generar-fragmentos -- "<carpeta con los discos>"
+```
+
+Empareja cada archivo con los 105 de `RES-20` por la misma puerta de `D-13` que usa el
+cancionero —**lo que no resuelve se informa y no se genera**—, corre los dos comandos de
+`CTR-01.6` (`loudnorm` sobre el tema entero, después el recorte a 96 kbps mono) y verifica
+la tabla de `CTR-01.7` archivo por archivo. Con `--enteros` deja además el tema completo
+para el reveal.
+
+**Necesita ffmpeg y en esta máquina no está.** `winget install Gyan.FFmpeg`, o pasarle la
+ruta con `--ffmpeg=`.
+
+### Lo que hay que corregir, y no es del hilo principal
+
+- **`BR-02` quedó al revés de lo que el juego hace** (intento único vs. seis intentos con
+  desbloqueo) y le falta la sexta fila de puntaje. Pedido en
+  `HILO-para-producto-mecanica-y-escalera-de-us02.md`. **La tabla que puse —100/80/60/40/
+  20/10— es provisoria.**
+- **`CTR-01.9` sigue con cinco pasos y 10 s.** `D-23` ya había escrito los 15 s; el máximo
+  de `CTR-01.3` sale de `CNT-01` y quien tiene que confirmarlo es `contenido`. Pedido en
+  `HILO-para-arquitectura-escalera-de-seis-y-modo-buscador.md`, junto con el
+  `modoRespuesta: "buscador"` que cierra `CTR-03.5` con un valor que no estaba en la lista.
+- **`D-23` tiene un número viejo, y a favor:** dice 12,5 MB para los 104 fragmentos, pero
+  eso son 120 KB cada uno, que es el peso de **10** segundos. A 15 s son ~180 KB → **~19 MB**.
+
+### Dos hallazgos al costado
+
+1. **La letra de la firma no tiene acentos** (`RES-42`), así que el botón `Compartí` salía
+   partido a la mitad de la palabra — se veía roto de verdad, no en teoría. Resuelto como
+   la regla de marca ya mandaba: la palabra va en `--fuente-rotulada` y **no** se le saca la
+   tilde (`D-17` no negocia el voseo). Clase `.primario.firma.con-tilde`, que se borra el
+   día que los acentos existan.
+2. **Los `<style>` de un `.astro` tienen alcance y no llegan a lo que crea el JavaScript.**
+   Por eso el botón de compartir salía angosto — en este juego **y en el quiz**. Se movió
+   la caja de `.primario.firma` a `juego.css`; ahora los dos empatan con el botón de abajo.
+
+**Rangos consumidos por esta sesión:** `D-24`. Libres: `T-97`+, `D-25`+, `RES-51`+,
+`CNT-08`+, `REV-06`+, `UX-06`+, `BR-16`+.
+
+---
+
 ## Próximo paso
 
 **Correr `/ciclo` para el ciclo 5.** El ciclo 4 cerró entero. Hay **dos juegos jugables**
@@ -117,8 +386,24 @@ aplicación eran el portal, las pantallas en la cocina y la Redondopedia. No es 
 ahora, es una tarea del ciclo 5 — o una fila que `experiencia` retira del catálogo.
 
 **Rangos:** el ciclo 4 consumió `T-44`..`T-63`, `D-21`, `RES-44`..`RES-46`, `CTR-04`,
-`CTR-05`, `BR-12`, `CNT-06`, `UX-05`, `REV-05`. Libres: `T-64`+, `D-22`+, `RES-47`..`RES-49`,
-`CNT-07`+, `REV-06`+, `UX-06`+.
+`CTR-05`, `BR-12`, `CNT-06`, `UX-05`, `REV-05`.
+
+> ⚠ **Ojo con `D-22`: lo tomó la otra sesión, no este ciclo.** Esta línea decía que estaba
+> libre y para cuando el ciclo 5 arrancó ya estaba escrito — es exactamente el choque de
+> numeración que `Docs/IDS.md` avisa que pasa cuando dos sesiones escriben el mismo repo, y
+> pasó igual. **`D-22` es "los temas enteros se alojan en el sitio, en mp3"**, y no es un
+> detalle: saca "alojar los temas completos" de Fuera de alcance, baja a Spotify de promesa
+> a extra, y mete un problema nuevo que es el peso (unas 7,2 horas de audio, entre 300 MB y
+> 1 GB según bitrate). Su propia consecuencia 4 dice que **los límites de Vercel para ese
+> volumen no están fichados y conviene chequearlos antes y no después** — o sea que hace
+> falta un `RES-XX` antes de subir el primer mp3.
+
+Consumido por el ciclo 5 hasta ahora: `T-64`..`T-68`, `T-70`, `T-71`, `T-76`, `T-77`, `T-81`,
+`RES-47`, `RES-48`, `BR-14`, `BR-15`, `CNT-07`. Libres: `T-82`+, `D-23`+, `RES-49`,
+`CNT-08`+, `REV-06`+, `UX-06`+, `BR-16`+.
+**Actualización 2026-08-22:** `D-22` ya está tomado (los mp3 enteros) — el próximo libre es
+**`D-23`**. También se consumieron `BR-15`/`BR-16` e `IDEA-01`..`IDEA-10` (backlog de
+ideas), y el ciclo 5 tiene reservados `BR-13`/`BR-14` para `T-66`/`T-67`.
 
 > 🆕 **La Redondopedia ya está construida y navegable con 26 de los 35 artículos del piso**
 > (sesión 2026-08-21 — ver bitácora). El sitio entero tiene esqueleto: portal collage en
@@ -260,22 +545,59 @@ Estados posibles: `pendiente` · `en curso` · `bloqueado` · `hecho` · `cancel
 ## Ideas guardadas — no se hacen ahora
 
 > Pedidos del usuario registrados a propósito **fuera** del ciclo en curso. No son
-> bloqueos ni tareas: son cosas que van a pasar, todavía sin ID y sin fecha. Cada una
-> tiene su propuesta escrita en `Docs/SUGERENCIAS/`.
+> bloqueos ni tareas: son cosas que van a pasar, todavía sin fecha. Las dos primeras siguen
+> sin ID, con su propuesta en `Docs/SUGERENCIAS/`; las diez ideas de juegos del 2026-08-22
+> ya tienen ID propio — ver abajo.
 
 | Idea | Origen | Dueños cuando se tome | Puntero |
 |---|---|---|---|
 | **Que el sitio intente hablar como el Indio.** Analizar a fondo letras, entrevistas y demás archivo para destilar una guía de voz por encima de `CNT-02` y `D-17`. El usuario la marcó como idea futura, con esas palabras | usuario, 2026-08-21 | `investigador` junta el corpus (única puerta a la web), `contenido` destila la guía | `Docs/SUGERENCIAS/HILO-para-contenido-e-investigador-voz-del-indio.md` |
 | **Las bandas ricoteras de después de la separación entran a la Redondopedia.** El usuario nombró tres: *La Kermesse Redonda*, *Indio y los Fundamentalistas del Aire Acondicionado* y *Skay y los Fakires*. **Que entran no está en discusión**; falta ficha que verifique los nombres y decisión de `producto` sobre tipo y piso | usuario, 2026-08-21 | `investigador` (ficha), `producto` (tipo + piso), `contenido` (escribe) | `Docs/SUGERENCIAS/HILO-para-producto-y-contenido-bandas-post-separacion.md` |
 
+### Las diez ideas de juegos — `IDEA-01`..`IDEA-10`, guardadas el 2026-08-22
+
+El usuario tiró diez ideas de una y pidió **guardarlas todas sin empezar ninguna**. Están
+en `Docs/PRODUCTO/PRD-backlog-ideas.md`, cada una con su ancla ricotera verificada contra
+los 105 temas de `RES-20` y con el choque que tiene contra lo ya decidido.
+
+| ID | Idea | Tipo |
+|---|---|---|
+| `IDEA-01` | Separar los temas en pistas y adivinar | original (probable modo de `US-02`) |
+| `IDEA-02` | Doom gore — *Masacre en el puticlub* | clon vestido |
+| `IDEA-03` | Crazy Toxi-Taxi | clon vestido |
+| `IDEA-04` | Plataformas — *Último bondi a Finisterre* | clon vestido |
+| `IDEA-05` | Dibujá tu bandera y colgala | original |
+| `IDEA-06` | Zoológico de los personajes | original (probable tipo nuevo de `US-05`) |
+| `IDEA-07` | Un Pacman en el Savoy | clon vestido |
+| `IDEA-08` | Letras y acordes | original, no es juego |
+| `IDEA-09` | Test de dos ejes: qué tipo de ricotero sos | original |
+| `IDEA-10` | Guitar Hero ricotero | clon vestido |
+
+Dos reglas nuevas salieron de ahí: **`BR-15`** (los clones se adoptan vestidos, no se
+escriben — instrucción transversal del usuario) y **`BR-16`** (una idea no entra a un ciclo
+sin promoverse antes a `US-XX`). Prefijo `IDEA-` registrado en `Docs/IDS.md`.
+
+**Nada de esto es alcance de la v1 y nada de esto está empezado.** Tres preguntas quedaron
+abiertas al usuario, listadas al final del PRD: qué es "el gordo Pier" (no figura en los
+105), qué es "la tumba del Indio" de `IDEA-05`, y cuál de las tres salidas de audio quiere
+para `IDEA-10`.
+
 ## Bloqueos abiertos
 
 - **`ADR-01` espera evidencia, no trabajo.** Solo `E-04` y `E-07`; `E-02`, `E-03` y `E-08`
   quedaron **anuladas** (no pendientes) al descartarse la opción C. No frena construir: el
   fallback está cerrado y `US-02` criterio 3 queda cubierto igual.
-  **`E-07` es ahora la pregunta que más pesa:** con C y D descartadas, el deep link es el
+  ~~**`E-07` es ahora la pregunta que más pesa:** con C y D descartadas, el deep link es el
   único camino que queda al tema completo, así que si un usuario free en Argentina no
-  puede reproducir a demanda, **ninguna vía cumple la promesa del brief**.
+  puede reproducir a demanda, **ninguna vía cumple la promesa del brief**.~~
+  ✅ **LEVANTADO por `D-22` (2026-08-22): el sitio aloja los temas enteros en mp3.** El deep
+  link dejó de ser el único camino al tema completo, así que `E-07` y `E-04` dejan de decidir
+  si la promesa se cumple. **En su lugar quedan tres preguntas nuevas, y son de peso y de
+  infraestructura, no de Spotify:** dónde viven ~7,2 horas de audio (entre 300 MB y 1 GB
+  según bitrate), si van adentro del repo que Vercel construye, y cuáles son los límites de
+  Vercel para ese volumen — lo último **sin ficha**, y es lo único que conviene chequear
+  antes de subir el primer archivo. Detalle en `D-22` y en
+  `Docs/SUGERENCIAS/HILO-para-arquitectura-audio-alojado.md`.
 - **`CNT-01` no puede pasar de esbozo a cerrable** hasta que `investigador` responda las
   11 preguntas de `Docs/SUGERENCIAS/CNT-para-investigador-derechos.md`. **Esto es lo que
   bloquea publicar** (`D-07`). No bloquea nada más.
@@ -420,3 +742,6 @@ Estados posibles: `pendiente` · `en curso` · `bloqueado` · `hecho` · `cancel
 | 2026-08-21 | **Tres cosas que el ciclo 4 encontró y que valen como lección.** (1) **La imagen de *La mosca y la sopa* no era de Rocambole:** el frontal que se había bajado es un rediseño con una foto de recital. Lo detectó `contenido` al no poder cargar el décimo ítem y lo confirmó el hilo principal mirándola. La contratapa sí trae el collage real, así que de ahí salen ahora la ficha de ese disco y los recortes de la sección `letras`. (2) **Una invariante propia rompió el build de más:** rechazaba toda reedición como respuesta correcta, cuando `RES-44` solo la veta *si la pregunta depende de la edición*. Se relajó a lo indefendible —"no determinable"— y quedó como test. (3) **`UX-05` mandaba poner *Oktubre* detrás de la marca grande**, que es el único texto del sitio que no llega a AA sobre tapa velada (3,38:1, y al 92% de velo sigue sin llegar). El fondo va anclado abajo. Las dos desviaciones quedaron en `Docs/SUGERENCIAS/` esperando a `experiencia`; `revisor` las revisó y las dio por bien resueltas y bien documentadas. |
 | 2026-08-21 | **Las dos revisiones del ciclo encontraron nueve hallazgos y los importantes se corrigieron en la misma ráfaga.** El más serio: **`TP-010` mostraba la contratapa con el título del disco impreso y legible en la propia imagen** —la respuesta escrita adentro de la pregunta, y encima rotulado difícil—. Se cambió al recorte de la olla, que no lleva texto. También: `TP-002` mezclaba un hecho verificado con una afirmación reportada y ahora la lleva rotulada como leyenda; `CNT-01` seguía diciendo que las tapas se usaban en un solo juego y que venían del Cover Art Archive, y quedó al día; y **el crédito por pantalla de la condición 1 de `D-21` estaba implementado genérico** — ahora cada página declara qué tapas usa y el pie las nombra. `REV-05` quedó escrita con los cinco hallazgos de `US-04`, tres de ellos abiertos y con dueño (`arquitectura`: la ruta de `detalle` en `CTR-05.4`, la ventana de precarga, y el crédito compartido de *Lobo suelto*/*Cordero atado*). |
 | 2026-08-21 | **El lienzo de marca se actualizó de verdad, y con eso el circuito de `.claude/rules/diseno-marca.md` quedó cumplido por primera vez.** La regla manda diseño → tokens → test y nunca al revés, pero el lienzo es un artefacto publicado que lleva su propio editor adentro: la sesión frenó y le preguntó al usuario antes de tocarlo, porque republicarlo reescribe lo que él edita a mano. Confirmó que nunca lo había editado. Se extrajeron las once hojas, se le agregó a la **hoja 05** la sección de `D-21` (las tres formas con su tamaño y su regla, los dos velos con su peor caso medido, el rojo de marca marcado como prohibido sobre tapa velada, el mecanismo de crédito y lo que sigue vetado), y se volvió a publicar en la misma URL con las otras diez hojas intactas. Queda anotado el techo real del material, que el catálogo no sabía: los frontales miden 953×953, así que **ningún recorte llega a los 480/640 px que pide `UX-04`** — el generador no agranda y avisa cuál quedó corto. |
+| 2026-08-22 | **Diez ideas de juegos guardadas como `IDEA-01`..`IDEA-10`, sin empezar ninguna** (`Docs/PRODUCTO/PRD-backlog-ideas.md`). El usuario las tiró de una y pidió explícitamente guardarlas sin desarrollar. Se les creó prefijo propio en vez de escribirlas como `US-`: un `US-XX` acá es un contrato con Given/When/Then y piso, y forzarlo sobre diez ideas sin comprometer habría sido inventarles alcance. Cada título quedó **verificado contra los 105 temas de `RES-20`** antes de escribirlo — *Masacre en el puticlub* (Un baión, 1988), *Toxi-Taxi* (La mosca y la sopa, 1991), *Un Pacman en el Savoy* (¡Bang! ¡Bang!, 1989), *Último bondi a Finisterre* (1998), *Gran Lady* y *Rock para el negro Atila* (Lobo suelto vol. 1, 1993). **Dos reglas nuevas:** `BR-15` (la instrucción transversal del usuario — los clones se adoptan de un genérico y se visten, no se escriben; con las tres consecuencias que arrastra: licencia del motor, el skin es la parte cara, y la música de fondo en loop no está cubierta por ningún ADR) y `BR-16` (una idea no entra a un ciclo sin promoverse antes a `US-XX`). **Tres cosas quedaron abiertas y ninguna la puede contestar la sesión:** "el gordo Pier" no figura en los 105 —lo más cercano es *Pierre, el vitricida*, Gulp! 1985—, "la tumba del Indio" de `IDEA-05` no se dio ni por cierta ni por falsa, y `IDEA-10` (Guitar Hero) tiene bloqueo estructural de audio con tres salidas posibles. Ninguna de las diez es alcance de la v1: `US-02` y `US-03` siguen sin un solo ítem cargado. |
+| 2026-08-22 | **`D-22`: los temas enteros se alojan en el sitio, en mp3.** Decisión directa del usuario — *"Vamos a alojar temas enteros en .mp3 seguro."* **Sacó de Fuera de alcance la línea más estable que tenía el proyecto**, y el motivo no fue una concesión: esa línea contradecía a `D-14`, porque el tema completo era lo único que el sitio le negaba al jugador sin Premium, y los molinetes van abiertos. Corregidos los dos lugares que quedaban diciendo lo contrario (`Docs/BRIEF.md` y `CLAUDE.md`, alcance y motor de audio). **Lo que se cayó:** `E-07` —que `ESTADO.md` tenía como "la pregunta que más pesa"— y `E-04` dejan de decidir si la promesa se cumple; Spotify baja de vía a extra; `BR-06` quedó describiendo un sitio que ya no existe y lleva aviso, sin reescribirse todavía porque depende de si Spotify se queda. **Lo que se cayó del lado bueno:** `IDEA-10` (Guitar Hero) era la única de las diez con bloqueo estructural y el bloqueo era exactamente este — desbloqueada el mismo día, aunque ahora le falta de dónde sale la partitura. **Lo que apareció en su lugar, y es aritmética:** contra las duraciones de `RES-20` (94 de 105 temas, 385 min fichados) el catálogo son **~7,2 horas de audio** — ~300 MB a 96 kbps, ~400 MB a 128, ~600 MB a 192, ~1 GB a 320. El problema pasó de ser de alcance a ser de peso e infraestructura: dónde viven los archivos, si van adentro del repo que Vercel construye, y los límites de Vercel para ese volumen, **que no están fichados y es lo único que conviene chequear antes de subir el primer archivo** (`RES-15` ya descartó el susto de la factura: en Hobby no hay cargo posible). Se le dejó a `arquitectura` todo junto en `Docs/SUGERENCIAS/HILO-para-arquitectura-audio-alojado.md`, incluida la consecuencia que más horas ahorra: si los pasos del reveal se derivan del mp3 entero, el recorte manual de `D-06` casi desaparece. |
+| 2026-08-23 | **La voz del sitio dejó de ser intuición y pasó a estar medida** (`.claude/rules/voz-ricotera.md`). Se tomó la idea guardada del 21. Dos corpus del propio repo: el memoir (`RES-21`, 192.464 palabras) y las letras de los 104 temas (2.958 versos). Lo que salió: el verso mediano son **5 palabras** y el 90% no pasa de 8 — de ahí el techo de las líneas grandes; la letra le habla a alguien (*tu/tus* 146 contra *mi/mis* 115) y prefiere el cuerpo a los colores (75 contra 17); y el habla es corta (oración mediana de 13 palabras), rodea en vez de definir (*una especie de* 49, *más bien* 55) y **declara la duda** (*creo que* 81, *no sé* 71). Los tres antídotos contra la imitación: *che* 9 / *viste* 15 / *digamos* 3 en 192 mil palabras; *los fans* 2 contra *la gente* 333; y épica militante casi nula (*lucha* 6). **La regla prohíbe expresamente que el sitio se haga pasar por él**: una frase inventada con su firma rompería el rótulo `testimonio`, que es la promesa que sostiene todo lo demás (`D-14`). Nació también `src/lib/voz.test.ts` —lo que la sugerencia del 21 marcaba como inexistente—: seis pruebas sobre el copy visible, que encontraron y corrigieron **once botones en infinitivo** contra `D-17`. 185/185. **Y el barrido entró el mismo día**, con las dos decisiones del usuario: la Redondopedia va con prosa con voz y rótulo seco (registro 2 + 3), y el copy nuevo alcanza solo a las superficies que presentan — portada, seis casetes, pantalla 0 y tramos de resultado—, nunca a lo que hay que entender para jugar. 186/186. |

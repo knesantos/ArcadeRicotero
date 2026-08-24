@@ -95,7 +95,13 @@ siendo el riesgo 6, pero no frena una entrega.
 - Cuentas de usuario y ranking global.
 - Backend y base de datos. El sitio es estático; el contenido vive en JSON versionado.
 - Multijugador en tiempo real.
-- Alojar los temas completos. Solo fragmentos cortos y reproducción vía Spotify.
+- ~~Alojar los temas completos. Solo fragmentos cortos y reproducción vía Spotify.~~
+  **SACADO DE FUERA DE ALCANCE por `D-22` (2026-08-22).** El sitio aloja los temas enteros
+  en mp3 y los sirve él mismo. El motivo no fue la tentación que este bloque advierte más
+  abajo, sino que la línea contradecía a `D-14`: el tema completo era lo único que el sitio
+  le negaba al jugador sin Premium, y los molinetes van abiertos. Lo que ahora manda es el
+  peso, no el alcance — unas 7,2 horas de audio, entre 300 MB y 1 GB según bitrate, con los
+  límites de Vercel todavía sin fichar (`D-22`, consecuencia 4).
 
 Lo que está acá no se discute durante la v1. Si aparece la tentación, va al backlog de
 la v2, no al ciclo actual.

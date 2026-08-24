@@ -29,6 +29,8 @@ a la otra qué número tomó.
 | `RES-20` … `RES-29` | **Segunda sesión paralela de investigación, en curso.** Si estás en esa sesión, **tomá de acá**: `RES-10`+ ya está reclamado por la principal | 2026-08-19 | **activa** |
 | `RES-30` … `RES-43` | Sesión del sistema de marca (tipografía, lettering y paletas de tapas) | 2026-08-21 | **cerrada — rango consumido entero** (`INV-07-tipografia-lettering-tapas.md`) |
 | `RES-44` … `RES-49` | **Ciclo 4.** `RES-44` es la auditoría de edición de las tapas (`T-47`), `RES-45` la fuente de letras (`T-60`) | 2026-08-21 | **activa** |
+| `BR-13`, `BR-14` | **Ciclo 5**, tareas `T-66` y `T-67` de `producto`, ambas en `PRD-redondopedia.md` | 2026-08-22 | **activa** |
+| `BR-15`, `BR-16` + `IDEA-01` … `IDEA-10` | **Sesión del backlog de ideas** (`PRD-backlog-ideas.md`). Tomó 15 y 16 salteando 13 y 14 porque el ciclo 5 ya los tenía reservados — ver nota abajo | 2026-08-22 | **cerrada — rango consumido entero** |
 
 ### Los nombres de archivo son otro contador compartido
 
@@ -69,6 +71,20 @@ Aplica al mismo problema con cualquier prefijo. En el ciclo 1 se reservaron adem
 `FIND-10`+ entre las dos revisiones. El detalle vive en
 `Docs/ORQ/ORQ-plan-ciclo-1.md`, secciones 0.2 y 0.3.
 
+**Y el 2026-08-22 la colisión de `BR-` pasó de verdad, esta vez con final feliz.** La sesión
+del backlog de ideas leyó el disco, vio `BR-12` como último, y escribió `BR-13` y `BR-14`.
+Al ir a cerrar chequeó `git status` y encontró que otra sesión estaba escribiendo el ciclo 5
+en el mismo momento: `T-66` y `T-67` ya tenían esos dos números reservados, uno de ellos ya
+escrito en `PRD-redondopedia.md`. Renumeró lo suyo a `BR-15`/`BR-16` antes de terminar.
+
+Dos cosas que deja esa mordida, y valen más que la anécdota:
+1. **Mirar el disco no alcanza: hay que mirar `git status`.** El trabajo de la otra sesión
+   puede estar sin commitear y por lo tanto invisible para cualquier búsqueda de IDs que
+   solo mire el árbol de trabajo de un archivo por vez.
+2. **Reservar antes es más barato que renumerar después.** Acá salió gratis porque los
+   `BR-13`/`BR-14` recién nacidos no tenían todavía ninguna cita apuntándoles. Un día más y
+   habría habido tareas y revisiones citándolos.
+
 Cuando una sesión termina, **su rango no se libera**: los números consumidos quedan
 consumidos y los libres del rango se dan por quemados. Es más barato saltear seis números
 que arriesgar una cita ambigua.
@@ -84,6 +100,7 @@ contienen. Un archivo `Docs/PRODUCTO/PRD-quiz-juego1.md` puede contener varias h
 |---|---|---|---|---|
 | `PRD-` | `US-` | Historia de usuario con criterio Given/When/Then | `producto` | `Docs/PRODUCTO/` |
 | `PRD-` | `BR-` | Regla de negocio (ej. cómo puntúa el reveal de audio) | `producto` | `Docs/PRODUCTO/` |
+| `PRD-` | `IDEA-` | Idea guardada sin compromiso: sin criterio Given/When/Then y sin piso de ítems | `producto` | `Docs/PRODUCTO/PRD-backlog-ideas.md` |
 | `ARQ-` | `ADR-` | Decisión de arquitectura, con alternativas descartadas | `arquitectura` | `Docs/ARQ/` |
 | `ARQ-` | `CTR-` | Contrato o schema (ej. el JSON de un juego) | `arquitectura` | `Docs/ARQ/` |
 | `INV-` | `RES-` | Ficha de hallazgo con URL y fecha, o leyenda rotulada | `investigador` | `Docs/INVESTIGACION/` |
@@ -97,6 +114,11 @@ contienen. Un archivo `Docs/PRODUCTO/PRD-quiz-juego1.md` puede contener varias h
 - Todo entregable arranca listando los IDs que consume.
 - Toda tarea `T-XX` traza a al menos un requisito (`US-XX`, `BR-XX`) o a un hallazgo
   (`FIND-XX`). Una tarea sin origen es trabajo que nadie pidió.
+- **Un `IDEA-XX` no es un requisito y no traza tareas.** Es una idea guardada a pedido del
+  usuario, sin criterio de aceptación y sin piso de ítems, y por eso `orquestador` no puede
+  cortarle un `T-XX`. Para entrar a un ciclo se promueve antes a `US-XX` (`BR-16`); al
+  promoverse, el `IDEA-XX` no se borra: se marca *promovida a `US-XX`* y se queda donde
+  está, igual que un ID cancelado.
 - Todo hallazgo `FIND-XX` cita el ID del criterio que se incumple.
 - Toda pregunta del banco de `contenido` que afirme un dato verificable cita la ficha
   `RES-XX` que lo respalda, o lleva la marca explícita de leyenda.

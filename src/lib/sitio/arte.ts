@@ -51,10 +51,9 @@ export const DETALLE_POR_VARIANTE: Record<string, string> = {
 };
 
 /** Que fondo velado viste cada pantalla "en la cocina" (`UX-05`).
- *  "Adivinar la tapa" ya no esta aca: salio de la cocina en el ciclo 4 y su pagina
- *  pide el fondo directo. */
+ *  "Adivinar la tapa" y "Adivinar el tema" ya no estan aca: salieron de la cocina y
+ *  sus paginas piden el fondo directo. */
 export const FONDO_COCINA: Record<string, string> = {
-  'adivinar-el-tema': 'lobo-tiras',
   'completar-la-letra': 'mosca-olla',
 };
 

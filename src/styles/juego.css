@@ -285,12 +285,44 @@
 
 /* ---- La firma (D-19): compartir lleva el lettering del logo ---- */
 
+/*
+ * OJO CON LA FORMA, y es la razon por la que estas seis lineas estan aca y no en el
+ * <style> de una pagina: los `<style>` de un `.astro` tienen ALCANCE, y el alcance no
+ * llega a los elementos que crea el JavaScript — les falta el atributo que Astro le pone
+ * a los del template. El boton de compartir lo crea la isla, asi que cualquier ancho
+ * definido en la pagina no lo tocaba y salia angosto, mas chico que el "Otra vuelta" que
+ * tiene debajo. Se veia asi de verdad, medido en la pantalla de resultado.
+ */
 .primario.firma {
+  display: block;
+  width: 100%;
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-2);
+  border: none;
+  border-radius: var(--radio);
   font-family: var(--fuente-marca-firma);
   font-size: 1.35rem;
   letter-spacing: 0.04em;
   background: var(--cat-historia); /* el resultado viste Gulp! */
   color: var(--fondo);
+}
+
+/*
+ * La deuda de tildes de la regla de marca, hecha clase.
+ *
+ * La letra de la firma es una digitalizacion fan (`RES-42`) y **no tiene acentos**: un
+ * boton que dice "Comparti" con tilde sale con esa letra hasta la I y despues salta a la
+ * de repuesto a mitad de palabra. Se ve roto, y se veia roto de verdad — medido en la
+ * pantalla de resultado de `US-02`, no supuesto.
+ *
+ * La regla ya decia que hacer: hasta derivar los acentos, esas palabras van en
+ * `--fuente-rotulada`, que es completa. Lo que la regla PROHIBE es la otra salida —
+ * escribir "COMPARTI" sin tilde para que entre en la fuente: `D-17` no negocia el voseo.
+ * El dia que los acentos existan, esta clase se borra y no queda rastro.
+ */
+.primario.firma.con-tilde {
+  font-family: var(--fuente-rotulada);
+  font-size: 1.15rem;
 }
 
 /* ---- Adivinar la tapa (US-04) ----
@@ -318,4 +350,599 @@
   color: var(--texto-tenue);
   font-size: 0.85rem;
   margin: 0 0 var(--espacio-1);
+}
+
+/* ------------------------------------------------------------------
+   Completar la letra (US-03): el verso con el hueco
+   ------------------------------------------------------------------ */
+
+/*
+ * El bloque de versos. El contexto de alrededor va mas apagado que el verso del hueco:
+ * BR-03 lo pone ahi como ayuda, no como la pregunta, y tienen que distinguirse de un
+ * vistazo o el que juega no sabe donde mirar.
+ */
+.verso-bloque {
+  margin: var(--espacio-2) 0 var(--espacio-3);
+  padding: var(--espacio-2);
+  border: var(--linea) solid var(--cat-letras);
+  border-radius: var(--radio);
+  /* Sombra dura desplazada, como recorte pegado. Nada de elevacion difusa. */
+  box-shadow: 4px 4px 0 var(--borde);
+}
+
+.verso-contexto {
+  margin: 0 0 var(--espacio-1);
+  color: var(--texto-tenue);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.verso-hueco {
+  margin: var(--espacio-1) 0;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--texto);
+}
+
+/* El hueco: subrayado grueso, no una caja. Es un renglon para completar a mano. */
+.hueco {
+  display: inline-block;
+  min-width: 6ch;
+  padding: 0 4px;
+  border-bottom: var(--linea) solid var(--acento-2);
+  color: var(--acento-2);
+  font-family: var(--fuente-rotulada);
+  letter-spacing: 0.05em;
+}
+
+/* Ya contestado: la palabra ocupa su lugar y el renglon se apaga. */
+.hueco.resuelto {
+  border-bottom-color: var(--acento-3);
+  color: var(--acento-3);
+  letter-spacing: 0;
+}
+
+/* ==================================================================
+   Adiviná el tema (US-02): el reveal progresivo
+   ==================================================================
+
+   Esta pantalla viste Lobo suelto (D-19, seccion mitologia): la tinta es
+   `--cat-mitologia` y el apoyo `--cat-mitologia-apoyo`, que es borde y relleno y
+   NUNCA lleva texto encima.
+
+   REGLA QUE ORDENA TODO EL BLOQUE: **la tinta se apoya sobre `--fondo`**, nunca sobre
+   `--fondo-elevado`. No es capricho — `contraste.test.ts` deja escrito que las tintas
+   de disco no llegan a AA sobre el elevado, y la regla anti-slop pedia lo mismo por
+   otro motivo ("la pieza se recorta por borde grueso y cinta, y la tinta queda sobre
+   --fondo, que es el par testeado"). Asi que las piezas de este juego se separan por
+   borde grueso y sombra dura desplazada, no por un gris arriba de otro gris.
+
+   Las clases las crea `src/scripts/partida-tema.ts` y las cubre `estilos.test.ts`. */
+
+/* ---- El texto tenue creado desde JavaScript ----
+   `.tenue` esta definido en el <style> de cada .astro, y los estilos con alcance NO
+   llegan a los elementos que crea el JavaScript: les falta el atributo que Astro le
+   pone a los del template. Aca queda global, para los tres juegos. */
+
+.tenue {
+  color: var(--texto-tenue);
+}
+
+/* ---- Portada: elegir el pozo (todos los discos, o uno) ---- */
+
+.pozos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espacio-1);
+  margin: 0 0 var(--espacio-2);
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 24rem) {
+  .pozos {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* El primero es "todos los discos" y ocupa el ancho entero: es la puerta de entrada
+   por defecto, no una opcion mas de la grilla. */
+.pozos > li:first-child {
+  grid-column: 1 / -1;
+}
+
+.pozo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: var(--espacio-1) var(--espacio-2);
+  background: var(--fondo);
+  color: var(--texto);
+  border: var(--linea) solid var(--borde);
+  /* Esquina de estampa, no de burbuja. */
+  border-radius: 3px;
+  text-align: left;
+}
+
+.pozo[aria-pressed='true'] {
+  border-color: var(--cat-mitologia);
+  /* Sombra dura desplazada: papel sobre papel, no elevacion difusa. */
+  box-shadow: 3px 3px 0 var(--cat-mitologia-apoyo);
+}
+
+.pozo[aria-pressed='true'] .pozo-titulo {
+  color: var(--cat-mitologia);
+}
+
+.pozo:disabled {
+  cursor: default;
+  border-style: dashed;
+  color: var(--texto-tenue);
+}
+
+.pozo-titulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
+.pozo-dato {
+  font-size: 0.8rem;
+  color: var(--texto-tenue);
+}
+
+/* ---- Cabecera de la partida ---- */
+
+.restantes {
+  margin: 0;
+  margin-left: auto;
+  color: var(--texto-tenue);
+}
+
+.restantes--ultimo {
+  color: var(--acento-2);
+  font-weight: 700;
+}
+
+/* ---- Los seis renglones de intento ----
+   Papel con renglones, que es idioma del sitio: cada intento es una linea que se
+   escribe. Los seis se dibujan desde el arranque — la altura de la escalera tiene que
+   verse antes de empezar a gastarla. */
+
+.intentos {
+  margin: 0 0 var(--espacio-3);
+  padding: 0;
+  list-style: none;
+}
+
+.intento {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+  min-height: 2rem;
+  padding: 0.15rem 0.4rem;
+  border-bottom: 2px solid var(--borde);
+  font-size: 0.95rem;
+}
+
+.intento--libre {
+  /* Vacio no es apagado: el renglon se ve, y por eso se sabe cuantos quedan. */
+  border-bottom-style: dashed;
+}
+
+/* Ningun estado se comunica solo con color: la marca es un simbolo (UX-01). */
+.intento-marca {
+  flex: none;
+  width: 1.25rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.intento--fallado {
+  color: var(--acento-4);
+  border-bottom-color: var(--acento-4);
+}
+
+.intento--pasado {
+  color: var(--texto-tenue);
+}
+
+.intento-texto {
+  overflow-wrap: anywhere;
+}
+
+/* ---- El reproductor: la barra de seis tramos y el boton grande ---- */
+
+.reproductor {
+  margin-bottom: var(--espacio-2);
+}
+
+.barra {
+  display: flex;
+  gap: 2px;
+  width: 100%;
+  height: 1.75rem;
+}
+
+/*
+ * Un tramo por paso. El ancho lo escribe el JavaScript con `flex-grow`, proporcional a
+ * lo que ESE paso agrega sobre el anterior (`anchosDeTramos()`): el ultimo tramo se
+ * come casi la mitad de la barra porque de 8 a 15 segundos hay siete segundos nuevos.
+ *
+ * `min-width` existe porque el primer tramo es el 0,67% de la barra — medio pixel en un
+ * celular. Es un ajuste de dibujo, no de aritmetica: el audio dura lo que dice la
+ * escalera, aunque el tramo se vea un poco mas ancho de lo que le tocaria.
+ */
+.barra-tramo {
+  position: relative;
+  flex-basis: 0;
+  flex-shrink: 1;
+  min-width: 8px;
+  overflow: hidden;
+  background: var(--fondo);
+  border: 2px solid var(--borde);
+  border-radius: 0;
+}
+
+.barra-tramo:first-child {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.barra-tramo:last-child {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+/* Desbloqueado: el borde se tine. Cerrado sigue siendo visible — el jugador tiene que
+   ver cuanto audio le queda por delante. */
+.barra-tramo--abierto {
+  border-color: var(--cat-mitologia-apoyo);
+}
+
+.barra-relleno {
+  position: absolute;
+  inset: 0;
+  width: 0;
+  background: var(--cat-mitologia);
+}
+
+.barra-etiqueta {
+  margin: var(--espacio-1) 0 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cat-mitologia);
+}
+
+/*
+ * El boton de escuchar. El pedido fue "facil y rapido": ancho completo, alto de sobra
+ * para el pulgar y en el mismo lugar de la pantalla siempre. Lo rapido no lo da el
+ * boton sino la precarga (ver `audio.ts`), pero lo facil se dibuja aca.
+ */
+.escuchar {
+  display: block;
+  width: 100%;
+  min-height: 3.25rem;
+  margin-top: var(--espacio-1);
+  padding: var(--espacio-1) var(--espacio-2);
+  background: var(--cat-mitologia);
+  color: var(--fondo);
+  border: none;
+  border-radius: var(--radio);
+  font-family: var(--fuente-rotulada);
+  font-size: 1.2rem;
+  letter-spacing: 0.04em;
+}
+
+/* Simbolo ademas de texto: se reconoce sin leer, que es lo que uno hace con un play. */
+.escuchar::before {
+  content: '\25B6  ';
+}
+
+.escuchar--sonando {
+  background: var(--fondo);
+  color: var(--cat-mitologia);
+  box-shadow: inset 0 0 0 var(--linea) var(--cat-mitologia);
+}
+
+.escuchar--sonando::before {
+  content: '\25A0  ';
+}
+
+.escuchar:disabled {
+  background: var(--borde);
+  color: var(--texto-tenue);
+}
+
+.aviso-sonido {
+  margin: 0 0 var(--espacio-2);
+  font-size: 0.8rem;
+  color: var(--texto-tenue);
+}
+
+/* ---- El buscador con autocompletado ----
+   Es la pieza que decide si el juego se juega con una mano. Va abajo de todo, en la
+   zona del pulgar, y la lista se abre PARA ARRIBA: el teclado del celular se come la
+   mitad de abajo de la pantalla. */
+
+.buscador {
+  margin-top: var(--espacio-2);
+}
+
+.buscador[hidden] {
+  display: none;
+}
+
+.buscador-fila {
+  position: relative;
+  display: flex;
+  gap: var(--espacio-1);
+}
+
+.buscador-caja {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--toque-min);
+  padding: 0 var(--espacio-1);
+  background: var(--fondo);
+  color: var(--texto);
+  border: var(--linea) solid var(--borde);
+  border-radius: 3px;
+  font-family: var(--fuente);
+  /* 1rem y no menos: abajo de 16px, iOS hace zoom al enfocar y descuadra la pantalla. */
+  font-size: 1rem;
+}
+
+.buscador-caja:focus {
+  outline: none;
+  border-color: var(--acento-2);
+}
+
+.buscador-caja:disabled {
+  color: var(--texto-tenue);
+}
+
+.buscador-borrar {
+  flex: none;
+  width: var(--toque-min);
+  background: transparent;
+  color: var(--texto-tenue);
+  border: var(--linea) solid var(--borde);
+  border-radius: 3px;
+  font-size: 1.1rem;
+}
+
+.buscador-ayuda {
+  margin: var(--espacio-1) 0 0;
+  font-size: 0.8rem;
+  color: var(--texto-tenue);
+}
+
+/* La lista: recorte pegado sobre el fondo, con borde grueso y sombra dura. */
+.sugerencias {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + var(--espacio-1));
+  z-index: 2;
+  max-height: 15rem;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--fondo);
+  border: var(--linea) solid var(--cat-mitologia-apoyo);
+  border-radius: 3px;
+  box-shadow: 4px 4px 0 var(--borde);
+}
+
+.sugerencias[hidden] {
+  display: none;
+}
+
+.sugerencia {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: var(--espacio-1) var(--espacio-2);
+  background: transparent;
+  color: var(--texto);
+  border: none;
+  border-bottom: 1px solid var(--borde);
+  text-align: left;
+}
+
+.sugerencia:last-child {
+  border-bottom: none;
+}
+
+/* Marcada con el teclado: se contornea, no se pinta de otro color de fondo. Asi el
+   texto sigue apoyado sobre `--fondo`, que es el par testeado. */
+.sugerencia--marcada {
+  outline: 2px solid var(--acento-2);
+  outline-offset: -2px;
+}
+
+.sugerencia--vacia {
+  padding: var(--espacio-2);
+  color: var(--texto-tenue);
+  font-size: 0.9rem;
+}
+
+.sugerencia-titulo {
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+/* El tramo que coincide con lo tipeado. `mark` viene con fondo amarillo de fabrica:
+   se apaga y se resuelve con tinta, que es como pinta este sitio. */
+.sugerencia-coincide {
+  background: transparent;
+  color: var(--acento-2);
+  font-weight: 700;
+}
+
+.sugerencia-disco {
+  font-size: 0.78rem;
+  color: var(--texto-tenue);
+}
+
+/*
+ * El boton principal de la partida, que cambia de nombre y de peso segun lo que hace.
+ *
+ * Con la caja vacia dice "Pasa" y se dibuja como accion secundaria — porque pasar lo
+ * es. En cuanto elegis un tema de la lista dice "Arriesga" y se llena con la tinta del
+ * disco. El mismo lugar de la pantalla, el mismo pulgar, dos pesos distintos.
+ */
+.arriesgar {
+  display: block;
+  width: 100%;
+  margin-top: var(--espacio-2);
+  padding: var(--espacio-2);
+  min-height: var(--toque-min);
+  background: transparent;
+  color: var(--texto);
+  border: var(--linea) solid var(--borde);
+  border-radius: var(--radio);
+  font-family: var(--fuente-rotulada);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+}
+
+.arriesgar--listo {
+  background: var(--cat-mitologia);
+  color: var(--fondo);
+  border-color: var(--cat-mitologia);
+}
+
+.arriesgar:disabled {
+  color: var(--texto-tenue);
+  cursor: default;
+}
+
+/* ---- La revelacion ----
+   Reusa `.feedback` (borde completo tenido por el estado, nunca una barra lateral) y le
+   agrega lo propio de este juego: el titulo, la ficha del disco y las dos salidas. */
+
+.revelacion {
+  margin-top: var(--espacio-3);
+}
+
+.revelacion[hidden] {
+  display: none;
+}
+
+.revelacion-titulo {
+  margin: var(--espacio-1) 0 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.25rem;
+  line-height: 1.2;
+  color: var(--texto);
+}
+
+.revelacion-ficha {
+  margin: 0.15rem 0 0;
+  color: var(--texto-tenue);
+  font-size: 0.9rem;
+}
+
+.revelacion-puntos {
+  margin: var(--espacio-1) 0 0;
+  color: var(--acento-3);
+  font-weight: 700;
+}
+
+.revelacion-escuchar {
+  margin: var(--espacio-2) 0 0.25rem;
+  font-size: 0.85rem;
+  color: var(--texto-tenue);
+}
+
+.revelacion-audio {
+  width: 100%;
+}
+
+.revelacion-letra {
+  display: inline-block;
+  margin-top: var(--espacio-2);
+  min-height: var(--toque-min);
+  padding: var(--espacio-1) var(--espacio-2);
+  color: var(--cat-letras);
+  border: 2px solid var(--cat-letras);
+  border-radius: 3px;
+  text-decoration: none;
+  line-height: var(--toque-min);
+}
+
+.seguir {
+  display: block;
+  width: 100%;
+  margin-top: var(--espacio-2);
+  padding: var(--espacio-2);
+  min-height: var(--toque-min);
+  background: var(--cat-mitologia);
+  color: var(--fondo);
+  border: none;
+  border-radius: var(--radio);
+  font-family: var(--fuente-rotulada);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+}
+
+/* ---- El resumen del final ---- */
+
+.resumen-titulo {
+  margin: var(--espacio-3) 0 var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--texto-tenue);
+}
+
+.resumen {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resumen-fila {
+  display: flex;
+  align-items: baseline;
+  gap: var(--espacio-1);
+  padding: 0.35rem 0.4rem;
+  border-bottom: 2px solid var(--borde);
+}
+
+.resumen-marca {
+  flex: none;
+  width: 1.25rem;
+  font-weight: 700;
+}
+
+.resumen-fila--ok .resumen-marca {
+  color: var(--acento-3);
+}
+
+.resumen-fila--no .resumen-marca {
+  color: var(--acento-4);
+}
+
+.resumen-tema {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+
+.resumen-dato {
+  flex: none;
+  color: var(--texto-tenue);
+  font-size: 0.85rem;
 }

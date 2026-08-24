@@ -64,17 +64,17 @@ export const TRAMOS: Record<Tramo, { titulo: string; bajada: string }> = {
   },
   medio: {
     titulo: 'Ya la vas agarrando',
-    bajada: 'Ya sabés más de lo que pensabas. Seguí así.',
+    bajada: 'Ya sabés más de lo que creías. Una vuelta más y los tenés.',
   },
   alto: {
     titulo: 'Sos de la vieja guardia',
-    bajada: 'Te la sabés de memoria. Grande, campeón.',
+    bajada: 'Te la sabés de memoria. Sos de los que abren el molinete.',
   },
 };
 
 /** C4, C5 — botones del resultado. */
-export const BOTON_COMPARTIR = 'COMPARTIR';
-export const BOTON_DE_NUEVO = 'JUGAR DE NUEVO';
+export const BOTON_COMPARTIR = 'COMPARTÍ';
+export const BOTON_DE_NUEVO = 'JUGÁ DE NUEVO';
 
 /**
  * D2 — el mensaje que ve quien llego por un desafio, comparado con quien lo mando.

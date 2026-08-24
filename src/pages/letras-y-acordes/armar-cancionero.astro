@@ -1,0 +1,91 @@
+---
+/**
+ * Armá tu cancionero: elegís temas y te llevás un HTML tuyo.
+ *
+ * **Qué es lo que se lleva.** Una página sola, sin nada del sitio adentro: índice arriba,
+ * las canciones abajo en el orden de los discos, los acordes alineados igual que acá, y
+ * el "bajar solo" adentro. Un archivo, cero dependencias, abre en cualquier navegador
+ * aunque no haya internet — que es el caso de una ronda en una casa con mal wifi.
+ *
+ * **Por qué se genera en el navegador y no en el servidor.** No hay servidor (`D-15`), y
+ * pre-generar cada combinación posible de 104 temas no es una opción. El navegador baja
+ * solo los temas elegidos —un JSON chico por tema— y arma el archivo ahí mismo.
+ *
+ * Molinetes abiertos (`D-14`): no pide cuenta, ni mail, ni nada. Elegís y te lo llevás.
+ */
+import Base from '../../layouts/Base.astro';
+import '../../styles/cancionero.css';
+import crudo from '../../data/cancionero.json';
+import { cargar, porDisco, seCanta, type Cancionero } from '../../lib/cancionero/banco.ts';
+
+const temas = cargar(crudo as unknown as Cancionero);
+// Solo entran los que se pueden cantar: un instrumental o una tablatura suelta no son
+// una canción para un cancionero, y ofrecerlos sería prometer algo que no está.
+const discos = porDisco(temas).map((d) => ({
+  ...d,
+  pistas: d.pistas.filter((p) => p.tema && seCanta(p.tema)),
+}));
+const total = discos.reduce((n, d) => n + d.pistas.length, 0);
+---
+
+<Base
+  titulo="Armá tu cancionero — Arcade Ricotero"
+  descripcion="Elegí los temas y llevate un cancionero propio: un HTML con índice, acordes y autoscroll."
+  volverA={{ href: '/letras-y-acordes/', texto: 'Letras y acordes' }}
+>
+  <section class="cancionero-intro">
+    <h1>Armá tu cancionero</h1>
+    <p>
+      Marcá los temas que querés y llevátelos en un solo archivo: índice arriba, los
+      acordes alineados igual que acá, y el botón de bajar solo para cuando tengas las
+      manos ocupadas. Se abre sin internet.
+    </p>
+    <p>Hay {total} temas para elegir.</p>
+  </section>
+
+  <div class="armador-barra">
+    <span class="armador-cuenta" data-cuenta>0 elegidos</span>
+    <button class="boton-recorte" type="button" data-armar disabled>Armar el cancionero</button>
+    <button class="boton-recorte" type="button" data-limpiar>Empezar de nuevo</button>
+    <span class="armador-vacio" data-estado></span>
+  </div>
+
+  <form data-armador>
+    {
+      discos.map((disco) => (
+        <section
+          class="disco"
+          style={`--tinta: var(--disco-${disco.slug}-tinta); --apoyo: var(--disco-${disco.slug}-apoyo);`}
+          aria-labelledby={`elegir-${disco.slug}`}
+        >
+          <header class="disco-cabecera">
+            <h2 class="disco-titulo" id={`elegir-${disco.slug}`}>
+              {disco.titulo}
+              <span class="disco-dato">{disco.anio} · {disco.pistas.length} temas</span>
+            </h2>
+          </header>
+          <ul class="pistas">
+            {disco.pistas.map((p) => (
+              <li class="pista">
+                <label class="elegir">
+                  <input
+                    type="checkbox"
+                    name="tema"
+                    value={p.tema!.slug}
+                    data-titulo={p.titulo}
+                    data-disco={disco.titulo}
+                  />
+                  <span class="pista-numero">{p.pista}</span>
+                  <span class="pista-titulo">{p.titulo}</span>
+                  {p.tema!.acordesUsados.length > 0 && <span class="sello-cifra">cifra</span>}
+                </label>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </form>
+
+  <script src="../../scripts/armar-cancionero.ts"></script>
+</Base>

@@ -10,19 +10,19 @@
  * Molinetes abiertos (`D-14`): esta pantalla no pide nada — ni cuenta ni saber.
  */
 import Base from '../layouts/Base.astro';
-import { PORTAL, JUEGOS, CASETE_REDONDOPEDIA, type Casete } from '../lib/sitio/copy.ts';
+import { PORTAL, JUEGOS, CASETE_REDONDOPEDIA, CASETE_CANCIONERO, type Casete } from '../lib/sitio/copy.ts';
 import { conRecorteReal, detalleTapa, discosDe, DETALLE_POR_VARIANTE } from '../lib/sitio/arte.ts';
 
 // Los discos que se ven acá: el de cada casete mas la franja de Oktubre del fondo.
 // El pie los nombra (`D-21`, condicion 1).
 const tapasUsadas = discosDe([
   'oktubre-banderas',
-  ...[...JUEGOS, CASETE_REDONDOPEDIA].map((c) => DETALLE_POR_VARIANTE[c.variante]),
+  ...[...JUEGOS, CASETE_CANCIONERO, CASETE_REDONDOPEDIA].map((c) => DETALLE_POR_VARIANTE[c.variante]),
 ]);
 
 const lados: Array<{ titulo: string; casetes: readonly Casete[] }> = [
   { titulo: PORTAL.ladoA, casetes: JUEGOS },
-  { titulo: PORTAL.ladoB, casetes: [CASETE_REDONDOPEDIA] },
+  { titulo: PORTAL.ladoB, casetes: [CASETE_CANCIONERO, CASETE_REDONDOPEDIA] },
 ];
 ---
 
