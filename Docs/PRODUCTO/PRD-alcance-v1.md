@@ -32,6 +32,23 @@
 > con ese mismo dato, resuelve la salida 2 que `arquitectura` había dejado abierta para el
 > piso de Fáciles de `US-02`. Toca `BR-01` y `US-02` (nota, no reescritura) y el resumen de
 > pisos. El resto del documento no se tocó.
+>
+> **Revisión 2026-08-25 (`T-129`, ciclo 9).** Sobre el pedido del usuario en
+> `Docs/ORQ/ORQ-plan-ciclo-9.md`: el quiz deja de repartir una ronda fija de 8 preguntas
+> con resultado en "aciertos sobre 8" y pasa a jugarse **con 3 vidas**, hasta perderlas o
+> hasta agotar el banco entero. Suma `BR-19`. Toca `US-01` (reescribe criterios 1 y 2,
+> agrega 4, 5 y 6), `BR-01` (nota, sus tres puntos siguen intactos), `BR-05` (se retira
+> de `US-01`, queda disponible para `US-04`) y el resumen de pisos (nota). El resto del
+> documento no se tocó.
+>
+> **Corrección el mismo día, sobre la misma `T-129`.** La primera versión de `BR-19` no
+> decía nada sobre cuánto dura la partida, y el apartado sobre molinetes afirmaba que el
+> modelo nuevo "encaja mejor con la sesión de 2-3 minutos" comparando contra una ronda de
+> 8 que, medida de verdad, **ya la incumplía** (~4:30). Se agrega `BR-19` apartado 7
+> (duración medida, y una salida de "retirada voluntaria" como tercer desenlace) y se
+> corrige la afirmación en el apartado 8. Toca además `US-01` (agrega criterio 6) y el
+> apartado 6 de `BR-19` (el resultado y el payload de `ADR-02` pasan de dos desenlaces a
+> tres).
 
 ## Por qué existe el piso de ítems
 
@@ -62,6 +79,14 @@ etiqueta de dificultad de 3 valores — **Fácil / Media / Difícil** — asigna
 > —primer ítem Fácil, la dificultad no baja dentro de la partida— sigue igual para los
 > cuatro juegos, `US-02` incluido.
 
+> **Nota `US-01`, añadida `BR-19` (ciclo 9).** Los tres puntos de esta regla siguen
+> intactos para `US-01` bajo el modo de vidas — el detalle completo está en `BR-19`,
+> apartado 4. Lo único que `BR-19` documenta y que esta regla no preveía cuando se
+> escribió sobre una ronda de 8: con vidas, un jugador que no pierde durante el primer
+> escalón llega a ver el pozo Fácil **completo**, no solo su primer ítem. No es una
+> violación del punto 3 —el primer ítem sigue variando entre los 10 candidatos— es una
+> consecuencia nueva que esta regla no imaginaba.
+
 **Regla:**
 1. El primer ítem que se sirve en cualquier partida nueva, en cualquiera de los 4
    juegos, es siempre de nivel **Fácil**. Nunca Media ni Difícil.
@@ -81,27 +106,35 @@ está etiquetado Fácil. Es un chequeo binario, sin ambigüedad.
 
 **Prioridad:** Alta (P0) — **la primera que se construye.**
 
-Como jugador que llega por un link de Twitter sin saber nada de los Redondos, quiero
-jugar una ronda corta de preguntas de dificultad creciente, para completar una partida
-en dos o tres minutos y ver cuánto sé sin sentirme excluido si no sé nada.
+> **Revisión 2026-08-25 (`T-129`, ciclo 9), sobre `BR-19`.** El criterio 1 describía una
+> **ronda fija de 8 preguntas** con resultado en "aciertos sobre 8"; el criterio 2 asumía
+> que la partida sigue entera pase lo que pase. El pedido del usuario cambia las dos
+> cosas a la vez: el quiz se juega **con 3 vidas**, y la partida puede terminar antes de
+> la pregunta 8 (si se pierden las 3 vidas) o mucho después (hasta la 40, si nunca se
+> pierden). Se reescriben los criterios 1 y 2, y se agregan 4, 5 y 6 (escalón, victoria y
+> retirada voluntaria). El criterio 3 no cambia. El detalle de la mecánica —cuánto dura
+> cada escalón, cuánto dura la partida entera, cómo se cierra el hueco de los 10 fáciles
+> exactos, qué sobrevive de `BR-01` y de `BR-05`— vive en `BR-19`, igual que `BR-02`
+> sostiene el detalle de `US-02`.
 
-**Criterio 1 — caso feliz:**
+Como jugador que llega por un link de Twitter sin saber nada de los Redondos, quiero
+jugar una partida de preguntas de dificultad creciente con margen para equivocarme, para
+demostrar cuánto sé sin que una sola respuesta mala me saque del juego.
+
+**Criterio 1 — caso feliz (arranca con 3 vidas y avanza):**
 - **Given** un jugador nuevo, sin partidas previas, abre el quiz.
 - **When** arranca una partida.
-- **Then** el sistema sirve una ronda de 8 preguntas *(supuesto de duración de sesión: a
-  ~15-20 seg por pregunta con una sola mano, 8 preguntas caen dentro de los 2-3 minutos
-  declarados; `experiencia` valida el tiempo real y puede ajustar el número vía
-  `Docs/SUGERENCIAS/`)*, ordenadas según `BR-01`, cubriendo al menos 2 de las 4
-  categorías (historia, discos, letras, mitología), y al terminar la última pregunta se
-  muestra un resultado (aciertos sobre 8) sin que el jugador haya necesitado crear
-  cuenta ni loguearse.
+- **Then** el sistema le da **3 vidas** y sirve preguntas una por una, empezando siempre
+  por una de nivel Fácil (`BR-01`); cada respuesta incorrecta le resta una vida (`BR-19`)
+  y cada respuesta —correcta o no— lo lleva a la pregunta siguiente sin pedir cuenta ni
+  login.
 
-**Criterio 2 — caso borde (no sabe nada):**
-- **Given** un jugador responde mal las primeras 3 preguntas seguidas.
-- **When** sigue jugando la misma ronda.
-- **Then** el juego no lo bloquea ni corta la partida: sigue mostrando la pregunta
-  siguiente con la misma estructura, y al final se muestra el resultado igual (aunque
-  sea 0 de 8), habilitando jugar de nuevo sin fricción.
+**Criterio 2 — caso borde (no sabe nada, se queda sin vidas):**
+- **Given** un jugador acumula 3 respuestas incorrectas.
+- **When** responde la que le cuesta la tercera vida.
+- **Then** el juego no lo corta a mitad de pregunta: primero ve la explicación de ese
+  ítem igual que en cualquier respuesta, y recién al tocar `SEGUÍ` la partida termina
+  mostrando el resultado de derrota (`BR-19`), habilitando jugar de nuevo sin fricción.
 
 **Criterio 3 — caso borde (veracidad):**
 - **Given** una pregunta del banco afirma un dato verificable.
@@ -109,19 +142,328 @@ en dos o tres minutos y ver cuánto sé sin sentirme excluido si no sé nada.
 - **Then** esa pregunta cita en su ficha de `contenido` la ficha `RES-XX` que la
   respalda, o lleva la marca explícita de leyenda (`D-09`, ningún dato falso).
 
+**Criterio 4 — caso borde (el escalón sube):**
+- **Given** un jugador respondió, bien o mal, todas las preguntas del pozo Fácil sin
+  perder sus 3 vidas.
+- **When** arranca la siguiente pregunta.
+- **Then** el ítem servido es de nivel Media, nunca vuelve a ser Fácil en esa partida, y
+  lo mismo ocurre al agotarse el pozo Media: la siguiente pregunta es Difícil (`BR-19`).
+
+**Criterio 5 — caso borde (agota el banco, gana):**
+- **Given** un jugador respondió, bien o mal, todas las preguntas del pozo Difícil sin
+  perder sus 3 vidas.
+- **When** responde la última pregunta del banco.
+- **Then** la partida termina mostrando un resultado de **victoria**, distinto del de
+  derrota (`BR-19`) — agotar el banco es un desenlace previsto, no un caso sin pantalla.
+
+**Criterio 6 — caso borde (se retira antes de tiempo):**
+- **Given** un jugador viene jugando una partida y todavía tiene vidas y preguntas por
+  responder.
+- **When** decide cerrarla sin llegar a perder ni a agotar el banco.
+- **Then** ve un resultado de retirada (`BR-19`), distinto del de derrota y del de
+  victoria, sin que el sitio le exija seguir jugando para tener algo que mostrar o
+  compartir.
+
 **Piso de ítems: 40 preguntas.**
 - Mínimo 10 por categoría (historia, discos, letras, mitología) — 4 categorías × 10.
 - De esas 40, mínimo 10 de nivel Fácil, 15 Media, 15 Difícil (para que `BR-01` no
   repita siempre la misma pregunta como "primer ítem").
 - **Por qué 40 y no 12:** es el contenido más barato de producir del banco — texto puro,
   sin audio ni imagen con derechos — y es el juego que se construye primero, así que
-  fija el piso más alto de los cuatro. Con una ronda de 8 preguntas por partida, un pool
-  de 40 hace que un jugador que vuelve a jugar varias veces no vea siempre el mismo
-  octeto, que es exactamente el riesgo 4 del brief.
+  fija el piso más alto de los cuatro. **Desde `BR-19` (ciclo 9) el piso ya no solo evita
+  que una ronda de 8 repita octeto: es el largo entero de la partida por vidas** — los 40
+  ítems son, a la vez, el contenido y el mapa de los tres escalones (10/15/15). Un piso
+  más alto ya no es solo "más variedad": es directamente "la partida dura más antes de
+  poder ganarse", que es el riesgo 4 del brief aplicado a este mecanismo nuevo.
 
 **Queda fuera de esta historia:** el copy exacto de la pantalla de resultado y el
 mecanismo de compartir (dueño `experiencia`, ver `D-10`); la tolerancia de matching si
 alguna pregunta usa texto libre en vez de opción múltiple (dueño `experiencia`).
+
+---
+
+## BR-19 — La partida del quiz por vidas
+
+**Aplica a:** `US-01`. Fija lo que el pedido del usuario dejó como intención y no como
+número: *"en vez de una nota sobre 8 que sea con 3 vidas y si erras perdes una vida, a
+medida que vas avanzando cada 10 preguntas aumenta la dificultad"*, más su respuesta
+directa a qué pasa al terminar los tres niveles —*"se queda en difícil hasta perder"*—
+y a qué pasa si nunca pierde: agota el banco de 40 y gana.
+
+**Aviso de frente, para que la desviación del pedido no quede enterrada en el medio de
+un apartado:** el usuario pidió textualmente *"cada 10 preguntas aumenta la
+dificultad"*; lo que sigue **no hace eso** para el segundo y el tercer escalón — hace
+10/15/15 (apartado 2). La razón: un escalón parejo de 10 para los tres niveles deja
+ítems sin usar (5 medias, y no alcanza para completar el pozo difícil), y eso vuelve
+**imposible** cumplir la otra instrucción textual del mismo usuario —*"si agotás el
+banco de 40, ganaste"*—, que fue su respuesta a una pregunta puntual que le hice yo.
+Entre las dos, sostuve la que responde a esa pregunta sobre el desenlace del juego, no
+la cifra que traje yo mismo al preguntarle. Si el usuario prefiere lo contrario —un
+escalón de 10 parejo para los tres niveles, aunque eso vuelva inalcanzable la victoria
+por agotar el banco o la obligue a redefinirse— es una decisión suya, no mía, y queda
+pedida acá.
+
+### 1. Las vidas: cuántas, y la única cosa que las gasta
+
+**Tres vidas.** Se pierde una únicamente por **responder incorrecto**. No hay una
+segunda vía que decidir: el quiz no tiene "pasar" —cada pregunta es de múltiple choice,
+4 opciones (`BR-04`), se responde tocando una— ni límite de tiempo por pregunta, que
+`UX-01` v2 ya sacó explícitamente por incumplir WCAG 2.2.1 (`src/scripts/partida.ts`,
+`responder`/`avanzar`: "el avance lo manda el dedo, siempre. No hay temporizador"). Con
+solo dos acciones posibles —acertar o errar— la única que cuesta vida es la segunda.
+
+Perder la tercera vida termina la partida en la lógica, pero no de golpe en la pantalla:
+el jugador todavía ve la explicación del ítem que se la costó, igual que después de
+cualquier respuesta (`US-01` criterio 2 no se pierde, se hereda). Recién al tocar
+`SEGUÍ` pasa al resultado de derrota. Cortarlo antes, sin mostrarle la explicación de la
+pregunta que lo sacó, sería la primera vez que este sitio interrumpe una partida a mitad
+de un ítem — y es justo lo que el criterio de continuidad de `US-01` existe para impedir.
+
+### 2. El largo del escalón — y el cierre del hueco de los 10 fáciles exactos
+
+**El pedido literal era "cada 10 preguntas". El banco de hoy tiene pozos de 10 / 15 /
+15, no de 10 / 10 / 10 — y ahí nace el hueco que abrió esta tarea.**
+
+Medí las tres salidas que planteó `orquestador` contra la restricción que fijó el propio
+usuario al responder mi pregunta de qué pasa al agotar los niveles —*"se queda en
+difícil hasta perder"*, y si agota el banco entero, gana— y **dos de las tres quedan
+descartadas por esa misma restricción, no por gusto:**
+
+- **"El escalón sortea un subconjunto del pozo"** (dejar, por ejemplo, 8 de los 10
+  fáciles) da variedad real entre partidas — pero un ítem que un escalón deja afuera
+  **nunca vuelve a estar disponible en esa partida** (la dificultad no baja, `BR-01`
+  punto 2), así que agotar el banco de 40 dejaría de ser alcanzable: quedarían ítems que
+  ninguna partida, ni la más perfecta, podría llegar a ver. Contradice de frente la
+  respuesta del usuario. **Descartada.**
+- **"El escalón dura menos de 10"**, aplicado parejo a los tres niveles, tiene el mismo
+  problema (deja ítems sin usar, el banco se vuelve inalcanzable) y además **no** cierra
+  la partida en 40 preguntas sino en menos — otra promesa rota. **Descartada.**
+- **"El banco de fáciles crece"** (subir el piso mínimo de Fácil más allá de 10) sí
+  ayudaría a que el escalón 1 no sea siempre el mismo bloque completo — pero le pide a
+  `contenido` escribir preguntas nuevas antes de poder cerrar un ciclo que
+  `Docs/ORQ/ORQ-plan-ciclo-9.md` armó, en su tramo A, justamente para cerrar **sin**
+  escritura de contenido nueva. No es gratis y no es de esta ráfaga: **queda en
+  `PENDIENTE` como la palanca correcta para más adelante, no para ahora.**
+
+**La que uso es una cuarta, que no estaba en la lista porque nace de mirar el motor que
+ya existe.** `armarRonda` (`src/lib/quiz/ronda.ts`) ya sabe repartir un banco por nivel
+en la proporción exacta del piso (`MEZCLA`: 10 fácil / 15 media / 15 difícil) y servirlo
+**ordenado**: primero el pozo Fácil entero (barajado), después el Media entero
+(barajado), después el Difícil entero (barajado) — es lo que hace hoy con `largo = 8`,
+tomando una porción proporcional de cada pozo. **Si se la llama con `largo` igual al
+tamaño del banco entero (40, hoy) en vez de con 8, devuelve, sin cambiar una sola línea
+de `ronda.ts`, exactamente los tres bloques completos, en orden, sin dejar ningún ítem
+afuera y sin repetir ninguno.** El "escalón" de esta regla no es un número que alguien
+escribe aparte para vidas: es el punto donde cambia el campo `dificultad` del ítem que
+`armarRonda` ya venía sirviendo. `T-142` (`src/lib/quiz/vidas.ts`) compone sobre esto sin
+tocar `ronda.ts`, tal como pide el plan del ciclo.
+
+**Los números de hoy, con el banco en 40 (10/15/15):**
+
+| Escalón | Nivel | Cuánto dura | Preguntas (hoy) |
+|---|---|---|---|
+| 1 | Fácil | el pozo Fácil entero | 1 a 10 |
+| 2 | Media | el pozo Media entero | 11 a 25 |
+| 3 | Difícil | el pozo Difícil entero, y ahí se queda | 26 a 40 |
+
+**Por qué el primer escalón cae justo en 10 y los otros dos no, y por qué eso es
+correcto y no una traición al pedido:** el pedido importa más en el primer escalón que
+en los otros dos — es el que decide si el que recién llega se siente expulsado (`D-09`,
+`D-14`), y ahí "cada 10" se cumple literal porque el piso mínimo de Fácil ya es 10. Para
+el segundo y el tercero, cortar en 10 exigiría descartar 5 medias y usar solo una
+fracción del pozo difícil, y **eso es matemáticamente incompatible con "si agotás el
+banco, ganaste"**: no se puede agotar un banco de 40 dejando ítems adentro que la
+partida nunca visita. Si en el futuro `contenido` pareja los tres pozos a 10 cada uno
+(hoy son 10/15/15), los escalones 2 y 3 van a durar 10 también, sin tocar esta regla: el
+número no está hardcodeado, sale del tamaño real del pozo.
+
+**Por qué esto no es el bug del ciclo 7, aunque se le parezca de lejos.** Ahí la
+dificultad **nunca** subía — 300 rondas simuladas dieron 2.400 preguntas, las 2.400
+fáciles, y la categoría `letras` era inalcanzable pasara lo que pasara. Acá la dificultad
+sube siempre, en la pregunta 11 en punto, la conozca o no el jugador — es la garantía
+estructural que `armarRonda` ya tenía y que esta regla hereda entera. Lo que sigue
+habiendo, y no tiene arreglo sin pagar uno de los dos costos que descarté arriba, es que
+**cualquier jugador que gane el escalón Fácil sin perder ve, en esa partida, el pozo
+Fácil completo** — es la vidriera fija que preocupaba a `orquestador`, pero reducida a su
+mínima expresión posible: ya no es "toda la partida", es "el primer tercio, y solo si el
+jugador no pierde ahí". Elijo no pagar el costo de recortarla ahora —descartar contenido
+ya pago es el riesgo 4 del brief tratado al revés— y anoto en `PENDIENTE` que cada Fácil
+que `contenido` sume por encima del piso de 10 diluye esto solo, sin tocar una letra de
+esta regla.
+
+### 3. Qué pasa al agotar los tres niveles, y qué pasa al agotar el banco
+
+- **Al terminar el escalón Difícil sin haber perdido las 3 vidas: no hay un cuarto
+  nivel.** La partida sigue sirviendo preguntas Difíciles —hoy, las que le queden del
+  pozo de 15 sin repetir ninguna— tal como pide *"se queda en difícil hasta perder"*.
+- **Si el pozo Difícil se agota y las 3 vidas siguen en pie: victoria.** El jugador
+  respondió, bien o mal en distinta medida, las 40 preguntas del banco sin quedarse sin
+  vidas. Es un desenlace previsto y distinto del de derrota, no un caso límite sin
+  pantalla (`US-01` criterio 5).
+- **Perder la tercera vida termina la partida en cualquier punto**, así sea en la
+  pregunta 3 o en la 40 — incluso si esa era la última del banco: quedarse sin vidas en
+  la última pregunta es derrota, no victoria. "Sin morir" (la condición que puso el
+  usuario) manda por sobre "llegó hasta el final".
+
+### 4. Qué de `BR-01` sigue en pie, y qué reemplaza `BR-19`
+
+Los tres puntos de `BR-01` **siguen enteros, en su letra** — lo que reemplaza `BR-19` es
+el `largo` con el que se llama a `armarRonda` (pasa de 8 fijo a "el banco entero"), no
+la lógica de `BR-01` en sí:
+
+1. **El primer ítem es Fácil siempre.** Sigue, y queda más blindado que antes: ya no
+   depende de una ronda corta que podría, en teoría, no tener ningún Fácil disponible —
+   con el banco entero como `largo`, el pozo Fácil siempre está completo.
+2. **La dificultad no baja dentro de la partida.** Sigue, y con vidas se vuelve más
+   estricta todavía: no solo "no baja" — hay exactamente tres tramos posibles y cada uno
+   se agota entero antes de pasar al siguiente (apartado 2).
+3. **Mínimo de Fáciles para que "el primer ítem" no sea siempre el mismo.** Sigue
+   textual — con 10 Fáciles el primer ítem varía entre 10 candidatos, cosa que el
+   apartado 2 no toca. Lo que `BR-19` **agrega**, porque `BR-01` no lo preveía cuando se
+   escribió sobre una ronda de 8 y nunca el banco entero, es la consecuencia de que ahora
+   un jugador puede llegar a ver el pozo Fácil **completo**, no solo su primer ítem —
+   documentada y asumida en el apartado 2, no escondida.
+
+### 5. Qué pasa con `BR-05`
+
+**Se retira de `US-01`.** `BR-05` fija tramos de resultado (bajo/medio/alto) sobre un
+**% de aciertos de una ronda de largo fijo** — y con vidas no hay largo fijo: la partida
+puede cerrar en la pregunta 3 o en la 40, así que "% de aciertos sobre el total de la
+ronda" deja de estar definido de antemano; el resultado pasa a ser **hasta dónde
+llegaste** (apartado 6), no una nota. Los dos cortes de `BR-05` (30% / 70%) no se
+derogan ni se reescriben: quedan disponibles para **`US-04`**, que sigue jugando con el
+modelo clásico de `armarRonda` de largo constante y las mismas 4 opciones de `BR-04`, y
+hoy no tiene tramos de resultado propios. Si `experiencia` decide sumarle tramos a la
+pantalla de resultado de `US-04`, estos son los cortes que corresponde citar sin que
+`producto` los redacte de nuevo — esa extensión no está confirmada acá, es decisión de
+`experiencia`.
+
+### 6. Qué muestra la pantalla de resultado (el dato, no el diseño)
+
+Ya no hay "aciertos sobre 8" ni tramo bajo/medio/alto. Lo que el resultado tiene que
+poder decir, como mínimo —el copy exacto es de `contenido` (`CNT-10`) y la pantalla es
+de `experiencia` (`UX-07`), esto solo fija qué datos tienen que estar disponibles:
+
+1. **Desenlace: tres estados posibles, no dos.** Ganó (agotó el banco), perdió (se
+   quedó sin vidas), o se retiró (cerró la partida por su cuenta, sin perder ni agotar
+   el banco — apartado 7). Los tres necesitan una pantalla distinta entre sí, y de los
+   tres solo la derrota se presenta como algo que salió mal: retirarse no es perder.
+2. **Hasta dónde llegó:** el número de la última pregunta respondida sobre el total del
+   banco (p. ej. "pregunta 23 de 40") y el nivel en el que estaba (Fácil, Media o
+   Difícil) al momento del desenlace.
+3. **Cuánto acertó de lo que jugó:** aciertos sobre preguntas respondidas (p. ej. 18 de
+   23) — dato secundario, ya no determina ningún tramo.
+4. **Si se retiró, cuántas vidas le quedaban.** Es lo que distingue una retirada
+   tranquila (3 vidas intactas) de una al límite (1 vida), y solo existe en ese
+   desenlace — no aplica a victoria (siempre le quedó al menos 1) ni a derrota (siempre
+   0).
+
+**Esto cambia el payload de `ADR-02`.** El link de resultado compartido hoy lleva
+`puntaje` y `total` sobre 8 (`src/scripts/partida.ts`, `compartirResultado`); con vidas
+esos dos campos no alcanzan para describir ninguno de los tres desenlaces. No resuelvo
+yo el esquema del link —es de `arquitectura`, `T-132`— pero dejo dicho qué tiene que
+poder representar: cuál de los tres desenlaces fue, pregunta alcanzada sobre el total,
+aciertos sobre respondidas, y vidas restantes cuando el desenlace es una retirada.
+
+### 7. Cuánto dura la partida — el problema nuevo va para el otro lado
+
+Medido contra el texto real del banco (`src/data/quiz.json`: enunciado 140 caracteres de
+mediana, opciones 72, explicación 171), a ~17 caracteres por segundo de lectura más 4
+segundos de decidir y tocar:
+
+| Preguntas | Duración estimada |
+|---|---|
+| 8 (la ronda fija de hoy) | ~4 min 30 s |
+| 10 (fin del escalón Fácil) | ~4 min 25 s |
+| 25 (fin del escalón Media) | ~11 min |
+| 40 (banco agotado = victoria) | **~18 min 40 s** |
+
+**Dos cosas salen de esta tabla, y las dos hay que decirlas de frente.**
+
+Primera: **la ronda de 8 de hoy ya mide más que los 2-3 minutos que declara el brief.**
+No es un problema que crea `BR-19` — lo hereda de `US-01` tal como está construida, y ya
+estaba anotado sin validar en `PENDIENTE` ("Validación del tiempo real de partida",
+dueño `experiencia`). Lo que sí era mío, y estaba mal: el apartado 8 (antes de esta
+corrección) decía que una partida más corta bajo vidas "encaja mejor todavía con la
+sesión de 2-3 minutos... que una ronda que fuerza siempre 8 preguntas completas" —
+comparando contra un modelo que **también** incumplía esa sesión. Queda corregido ahí.
+
+Segunda, y es la que importa: **ganar cuesta ~18 minutos y 40 segundos, y el jugador que
+llega ahí es exactamente el que el sitio dice querer premiar** — el que se sabe el tema
+(`Docs/BRIEF.md`, "Para quién"). El que no sabe nada se va en dos o tres preguntas,
+sesión corta cumplida; al que más sabe, la mecánica le rompe esa misma promesa justo
+cuando más la mereció cumplida.
+
+**Lo que hago con esto, y por qué esta salida y no las otras dos:**
+
+- **"Cortar antes" (que ganar sea llegar a un número menor que 40)** queda descartada:
+  chocaría de frente contra el apartado 2 entero — cualquier corte por debajo de 40 deja
+  ítems sin usar y reabre el mismo problema matemático que ya resolví ahí (agotar el
+  banco dejaría de significar agotarlo). No lo reabro para resolver esto.
+- **"Asumirlo por escrito y listo"** no alcanza solo: dejaría a quien más sabe sin
+  ninguna salida corta, y el riesgo 1 del brief (dedicación en ráfagas, sesiones
+  impredecibles) aplica tanto al jugador como al equipo — nadie que juega en un rato
+  suelto tiene por qué comprometerse a 18 minutos para llevarse algo que valga la pena
+  compartir.
+- **La que uso es "salida limpia a mitad".** El jugador puede terminar la partida
+  cuando quiera, sin haber perdido las 3 vidas ni agotado el banco, y se queda con un
+  resultado real de "hasta acá llegué" — ni derrota ni victoria, un tercer desenlace
+  (apartado 6). Esto no acorta la victoria por agotar el banco —sigue entera, disponible
+  para quien quiera ir por los 18 minutos como un logro opcional, tipo maratón— pero
+  saca la obligación: nadie necesita jugar 18 minutos para llevarse algo compartible.
+  Es, además, lo que más se parece a cómo trabaja este mismo proyecto en ráfagas
+  irregulares (`Docs/BRIEF.md`, restricción de tiempo): se corta en cualquier punto sin
+  dejar nada roto.
+
+**El botón de salida tiene que estar disponible desde la primera pregunta**, no recién
+a partir de cierto punto — si apareciera tarde, seguiría obligando a un tramo largo
+antes de poder cortar con dignidad. El texto exacto y dónde vive en pantalla son de
+`experiencia` (`UX-07`) y `contenido` (`CNT-10`); esto solo fija que existe, que está
+siempre disponible, y qué tiene que mostrar al usarlo (apartado 6).
+
+### 8. Por qué esto sigue sin ser un muro (`D-14`)
+
+Tres vidas con dificultad creciente puede terminar una partida en la pregunta 3 — más
+corto que el piso garantizado de 8 preguntas que tenía el modelo anterior. Sigue sin ser
+un muro por lo mismo que nunca lo fue el modelo viejo, no por algo nuevo:
+
+- **Ninguna cantidad de errores deja al jugador sin pantalla.** Perder las 3 vidas
+  siempre resuelve en un resultado legible (apartado 6), nunca en un estado roto o a
+  medio cargar — la continuidad de `US-01` criterio 2 se hereda entera (apartado 1).
+- **`Jugá de nuevo` sigue a un toque de distancia**, sin fricción, igual que hoy.
+- **El primer ítem sigue siendo Fácil siempre** (`BR-01` punto 1, apartado 4): el que no
+  sabe nada tiene, igual que antes, la mejor chance posible de arrancar bien.
+- **Nada de esto pide cuenta, login, ni haber jugado antes.** Los molinetes que importan
+  acá —poder empezar una partida y poder terminarla con una pantalla que la cierre— están
+  intactos. Lo que cambia es cuánto dura la partida de quien sabe poco: puede cerrar en
+  la pregunta 3, más corto que el piso de 8 que garantizaba el modelo anterior — un
+  modelo que, medido de verdad (apartado 7), tampoco entraba en los 2-3 minutos del
+  brief. No es una mejora sobre un modelo que cumplía la sesión corta: es más corto que
+  uno que no la cumplía tampoco, y a cambio suma la salida limpia del apartado 7 para
+  que el que sabe mucho no quede obligado a los 18 minutos que cuesta ganar del todo.
+
+### Criterio de aceptación (verificable)
+
+1. **Vida por error:** en una partida jugada con al menos una respuesta incorrecta, el
+   contador de vidas baja exactamente en 1 por cada respuesta incorrecta y no baja con
+   ninguna correcta.
+2. **Escalón por pozo, no por número fijo:** en cualquier partida jugada hasta el final
+   (con o sin derrota), comparando la secuencia servida contra el banco cargado — los
+   ítems de índice 1 a 10 son exactamente el pozo Fácil completo (10 de 10, sin
+   repetidos), del 11 al 25 el pozo Media completo (15 de 15), del 26 al 40 el pozo
+   Difícil completo (15 de 15). Ningún ítem se sirve dos veces en la misma partida.
+3. **Derrota en cualquier punto:** una partida que acumula 3 respuestas incorrectas,
+   sea en la pregunta 3 o en la 40, termina en el resultado de derrota — nunca en el de
+   victoria, aunque la última pregunta respondida haya sido la número 40.
+4. **Victoria solo sin perder:** el resultado de victoria aparece si y solo si el
+   jugador respondió las 40 preguntas del banco sin haber llegado nunca a 0 vidas.
+5. **Continuidad:** ninguna respuesta —ni la que cuesta la tercera vida— corta la
+   partida antes de mostrar la explicación de ese ítem.
+6. **Salida voluntaria, disponible desde el arranque:** en cualquier punto de la
+   partida —desde la primera pregunta— el jugador puede cerrarla sin haber perdido las
+   3 vidas ni agotado el banco, y el resultado que ve es de retirada, distinto de
+   derrota y de victoria, con los mismos datos del apartado 6 (pregunta alcanzada,
+   nivel, aciertos sobre respondidas, vidas restantes).
 
 ---
 
@@ -438,7 +780,19 @@ rigor no justifican ceder un criterio que no cede.
 
 ## BR-05 — Cortes de puntaje de los tres tramos de resultado (bajo / medio / alto)
 
-**Aplica a:** `US-01`, pantalla de resultado del quiz. Pedido por `experiencia` en
+> **Revisión 2026-08-25 (`T-129`, ciclo 9), sobre `BR-19`.** Esta regla necesita una
+> ronda de **largo fijo** para que "% de aciertos sobre el total" signifique algo —
+> `BR-19` saca a `US-01` de ese modelo: con vidas, la partida cierra en la pregunta 3 o
+> en la 40, nunca en un total conocido de antemano. **Se retira de `US-01`.** Los dos
+> cortes de abajo (30% / 70%) y su argumento no se derogan: quedan escritos y
+> disponibles para **`US-04`**, que sigue jugando con `armarRonda` de largo constante y
+> las mismas 4 opciones de `BR-04`, y hoy no tiene tramos de resultado propios. Si
+> `experiencia` le suma tramos a la pantalla de `US-04`, estos son los que corresponde
+> citar — esa decisión no está tomada acá, es de `experiencia`.
+
+**Aplica a:** ~~`US-01`~~ retirada por `BR-19` (ciclo 9, ver nota arriba). Disponible
+para `US-04` si `experiencia` decide sumarle tramos de resultado — no confirmado. Pedido
+originalmente por `experiencia` en
 `Docs/SUGERENCIAS/UX-para-producto-historias-quiz-y-audio.md` — única cosa que quedó
 abierta tras `UX-01` (pantalla final) y `UX-02` (tarjeta compartible): ambas diseñan la
 *estructura* de tres niveles y esperan de acá el % de aciertos que separa cada tramo.
@@ -549,6 +903,11 @@ motor terminado.
 **Nota `T-116` (ciclo 8):** el "Mínimo Fácil" de `US-02` (8) dejó de ser una etiqueta que
 `contenido` asigna a mano — desde esta ráfaga sale del ranking de vistas de YouTube
 (`BR-18`, apartado f). Los otros tres juegos siguen con etiqueta manual, sin cambios.
+
+**Nota `T-129` (ciclo 9):** el piso de `US-01` (40) dejó de ser solo "el pool del que
+sale una ronda de 8": con `BR-19`, es el largo entero de la partida por vidas y el mapa
+de sus tres escalones (10/15/15). Sigue siendo 40 —no sube por esto— pero ahora
+significa más.
 
 **Esta tabla es la de los cuatro juegos que `D-05` fijó como "Listo" de la v1.** `US-06`,
 a continuación, es historia nueva y queda fuera de esa cuenta a propósito — ver el primer
@@ -874,3 +1233,17 @@ Fáciles — exactamente como hoy, porque sigue en 0 de su piso de 30.
   180 días de `BR-18` apartado d arranca a correr recién cuando exista una primera
   medición guardada. Dueño: `arquitectura` (la corrida) y `contenido` (el criterio de
   video), en la ráfaga que produzca el dato real.
+- **`ADR-02` (link de resultado compartido) tiene que dejar de llevar `puntaje`/`total`
+  sobre 8 para `US-01`.** `BR-19` apartado 6 dice qué tiene que poder representar el
+  payload nuevo — ahora **tres** desenlaces posibles (ganó/perdió/se retiró), no dos:
+  cuál de los tres fue, pregunta alcanzada sobre el total, aciertos sobre respondidas, y
+  vidas restantes si el desenlace es una retirada. El esquema exacto no lo fijo acá.
+  Dueño: `arquitectura`, `T-132`.
+- **El piso mínimo de Fácil de `US-01` (10) es también, desde `BR-19`, el largo del
+  primer escalón de la partida por vidas.** Cualquier Fácil que `contenido` sume por
+  encima de ese piso reduce la vidriera fija que `BR-19` apartado 2 documenta y asume
+  (todo jugador que gana el escalón Fácil ve el pozo completo). No bloquea nada de este
+  ciclo — es la mitigación de fondo, no la de ahora. Dueño: `contenido`, sin fecha.
+- **Si `BR-05` se extiende a `US-04`** (tramos de resultado bajo/medio/alto, cortes ya
+  fijados) **es decisión de `experiencia`, no confirmada por este documento.** `BR-19`
+  apartado 5 deja los cortes disponibles, no obligatorios. Dueño: `experiencia`.

@@ -110,7 +110,7 @@ const RECORTE_REAL: Record<string, string> = {
   '/arte/mosca.svg': 'mosca.png',
   '/arte/banderas.svg': 'multitud-banderas.png',
   '/arte/perro.svg': 'perro.png',
-  '/arte/lobo.svg': 'lobo-lupus.png',
+  '/arte/lobo.svg': 'lobo-recortado.png',
 };
 
 /** Si el usuario ya pego el recorte real de esta pieza, usarlo; si no, el dibujo. */
@@ -174,6 +174,6 @@ export const STICKER_DISCO: Record<string, string> = {
   luzbelito: 'luzbelito-vela.png',
   'ultimo-bondi-a-finisterre': 'bondi-interplanetario.png',
   'momo-sampler': 'banda-superheroes.png',
-  'lobo-suelto': 'lobo-lupus.png',
+  'lobo-suelto': 'lobo-recortado.png',
   'cordero-atado': 'cordero-rulo.png',
 };

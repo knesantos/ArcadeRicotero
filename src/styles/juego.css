@@ -1109,3 +1109,124 @@
   gap: var(--espacio-2);
   margin-top: var(--espacio-4);
 }
+
+/* ==========================================================================
+   La partida por vidas (`BR-19`, `UX-07`, `T-143`).
+   Ni un hex: todo sale de tokens.css, que es el unico lugar donde vive un color.
+   ========================================================================== */
+
+/* El marcador de tres vidas. Ningun estado se comunica solo con color: el simbolo
+   cambia ademas de la tinta, y la palabra VIDAS esta siempre. */
+.vidas {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.vidas-rotulo {
+  color: var(--texto-tenue);
+  margin-right: 0.15em;
+}
+
+.vida {
+  font-size: 0.95em;
+  line-height: 1;
+}
+
+.vida--viva {
+  color: var(--acento-2);
+}
+
+/* Comparte la tinta del error a proposito: errar es la unica causa posible de perder
+   una vida (`BR-19` apartado 1). Un tono propio sugeriria una segunda causa que no
+   existe. */
+.vida--ida {
+  color: var(--acento-4);
+  opacity: 0.75;
+}
+
+/* El aviso de escalon: una sola vez por salto, sin pantalla intermedia ni toque extra.
+   Borde, no relleno — es un rotulo de registro 3, no un festejo. */
+.escalon {
+  margin: 0 0 var(--espacio-2);
+  padding: calc(var(--espacio-1) * 0.75) var(--espacio-2);
+  border: 2px solid var(--acento-2);
+  border-radius: 3px;
+  color: var(--acento-2);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+/* La retirada voluntaria. Lejos de la zona pulgar y en texto chico: si quedara a mano
+   de las opciones, la gente cerraria la partida sin querer. */
+.retirada {
+  margin: var(--espacio-3) 0 0;
+  text-align: center;
+}
+
+.retirada-disparador {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--borde);
+  color: var(--texto-tenue);
+  font: inherit;
+  font-size: 0.85rem;
+  padding: var(--espacio-1);
+  min-height: var(--toque-min);
+  cursor: pointer;
+}
+
+.retirada-disparador:hover,
+.retirada-disparador:focus-visible {
+  color: var(--texto);
+  border-bottom-color: var(--acento-2);
+}
+
+/* La confirmacion de dos pasos. Muestra hasta donde llegaste ANTES de decidir: ese dato
+   es el que hace la decision. Sin temporizador — un limite de tiempo que no se puede
+   apagar es WCAG 2.2.1 (Nivel A), el mismo motivo por el que se fue el auto-avance. */
+.retirada--confirma {
+  border: 2px solid var(--borde);
+  border-radius: var(--radio);
+  padding: var(--espacio-2);
+}
+
+.retirada-pregunta {
+  font-family: var(--fuente-rotulada);
+  font-size: 1.1rem;
+  margin: 0 0 var(--espacio-1);
+}
+
+/* El rotulo del desenlace: seco, arriba de todo, dice que hay adentro y se calla. */
+.rotulo-desenlace {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--texto-tenue);
+}
+
+/* Los tres desenlaces. La derrota es el unico que se presenta como algo que salio mal;
+   la retirada no lleva simbolo nuevo ni tinta de error, porque retirarse no es perder. */
+.tramo--victoria {
+  color: var(--acento-3);
+}
+
+.tramo--derrota {
+  color: var(--acento-4);
+}
+
+.tramo--retirada {
+  color: var(--acento);
+}
+
+/* La linea de recorrido reemplaza al viejo "6/8": ya no hay un numero grande solo, hay
+   una frase corta. Baja de 3,5rem, que era tamano de cifra. */
+.rotulo-desenlace + .tramo + .puntaje,
+.puntaje {
+  font-size: 1.6rem;
+}
