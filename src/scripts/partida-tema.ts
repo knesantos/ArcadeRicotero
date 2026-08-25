@@ -627,17 +627,24 @@ function pintarResultado(): void {
 }
 
 /**
- * El link de desafío lleva **temas acertados**, no puntos.
+ * El link de desafío lleva **puntos**, igual que el texto que lo acompaña.
  *
- * `ADR-02` acota el total a 100 y una vuelta acá vale hasta 400 puntos, así que mandar
- * el puntaje daría un link que el propio `leerDesafio()` rechaza. Y además "3 de 4" es
- * lo que se entiende de un vistazo; los puntos son la letra chica del que jugó.
+ * Antes llevaba temas acertados, y el motivo escrito acá era que `ADR-02` acotaba el
+ * total a 100 mientras una vuelta vale hasta 400 puntos: mandar el puntaje daba un link
+ * que el propio `leerDesafio()` rechazaba.
+ *
+ * **`ADR-02` v2 subió ese tope a 9999 justamente por esto**, y al hacerlo dejó a la vista
+ * el defecto que la restricción tapaba: el texto compartido decía "160 de 400" y el link
+ * que iba pegado decía "3 de 4". Dos números para la misma partida, y el que abría el
+ * desafío veía el que no correspondía. Ahora los dos dicen lo mismo.
  */
 async function compartirResultado(aciertos: number): Promise<void> {
+  void aciertos; // se sigue recibiendo para no cambiar la firma; el link va en puntos
   const url = armarLink(location.origin + location.pathname, {
+    forma: 'marcador',
     juego: 'tema',
-    puntaje: aciertos,
-    total: ronda.length,
+    puntaje,
+    total: puntajeMaximo(ronda.length),
   });
   try {
     await navigator.clipboard.writeText(`${RESULTADO.de(puntaje, puntajeMaximo(ronda.length))} — ${url}`);

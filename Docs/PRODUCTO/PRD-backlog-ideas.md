@@ -394,6 +394,99 @@ palabra más frecuente de todas.
 
 ---
 
+### IDEA-13 — La extensión a Supabase: separar correcciones, puntajes y jugadores
+
+**Tal cual la dijo el usuario:** *"la idea no es que se vea la correccion primero, sino que
+nos llegue a nosotros, luego se podria extender con una base de datos gratis de supabase
+para guardar scores y los jugadores y correcciones."*
+**Tipo:** no es un juego — es infraestructura de persistencia para tres cosas que hoy son
+tres estados distintos: una corrección que hoy sale por mail/portapapeles (`CTR-10`, ciclo
+9), un puntaje que hoy vive en `localStorage` de un solo aparato, y un jugador que hoy **no
+existe como entidad** en ningún lado del sitio.
+**Origen:** `Docs/SUGERENCIAS/HILO-para-producto-supabase-scores-y-correcciones.md`, sobre
+pedido directo del usuario, 2026-08-25.
+
+**"Guardar en una base de Supabase" es una frase, pero son tres decisiones con tres pisos
+de riesgo distintos.** Separarlas es el trabajo de esta ficha, y va contra la forma en que
+está pedida: tratarlas como un solo salto de infraestructura es exactamente lo que hace que
+la más difícil de las tres pase colada detrás de la más fácil.
+
+| Qué guardaría | Con qué choca | Decisión de `producto` |
+|---|---|---|
+| **Correcciones** | nada | Entra primera, y sin pedir nada nuevo por escrito. Es el destino natural de `CTR-10`: el transporte ya queda **detrás de una interfaz** y el payload **ya viaja sin identidad de la persona** (`T-150`, ciclo 9). Cambiar mail/portapapeles por Supabase es reemplazar el transporte, no abrir un molinete — no hace falta ni una `D-XX` nueva para esta parte. |
+| **Puntajes** | *"Fuera de alcance: ranking global"* (`CLAUDE.md`) | No entra tal como está pedida. El brief ya resolvió la mitad barata y la confirmó por omisión: *"Puntajes y rachas en `localStorage`, sin sincronización entre dispositivos."* Lo único que Supabase sumaría por encima de eso es justo lo que sigue Fuera de alcance: sincronizar puntaje entre aparatos o exponer un ranking entre jugadores. Y esa conversación **ya tiene dueño y ya quedó abierta en otro lado**: `D-15` la dejó dicha con su propia advertencia — *"un ranking sin cuentas es difícil y un ranking con cuentas cierra un molinete"*. No la reabro acá: si se quiere retomar, se retoma en `D-15`. |
+| **Jugadores** | *"Fuera de alcance: cuentas de usuario"* **y `D-14`, los molinetes** | El choque duro. Se desarrolla abajo — es el único de los tres que no cierra en una fila de tabla. |
+
+#### El choque con `D-14`, nombrado de frente
+
+`D-14` no dice "conviene no tener cuentas": dice que **nada acá se le niega a nadie por no
+tener con qué entrar**, y nombra sin cuentas, sin login, sin Premium. Es la decisión que
+unificó `D-08`, `D-09` y el "Fuera de alcance" del brief bajo una sola imagen —los
+molinetes abiertos— y es lo más parecido que tiene este proyecto a una idea rectora.
+
+Y "Supabase + jugadores" no llega virgen a esta pared: **`D-15` ya la chocó una vez**, en
+la misma sesión que decidió el hosting, y dejó escrita la frase que más pesa acá: *"una
+cuenta es, literalmente, un molinete — es pedirle algo al jugador para dejarlo entrar, y
+es lo único que el principio rector prohíbe por nombre."* `D-15` cerró esa puerta para
+**cuentas** en el sentido de login, mail, contraseña, recuperación. Esa parte no se
+reabre acá: sigue cerrada.
+
+#### La salida que propone la ficha del hilo principal, evaluada
+
+Un identificador anónimo generado en el propio aparato, sin mail, sin contraseña, sin
+recuperación: guarda el historial en ese teléfono y **no le pide nada a nadie para
+entrar** — el que llega por un enlace juega igual, exactamente como hoy.
+
+**Mi lectura: eso no es la misma cosa que "una cuenta", y por eso puede tener una
+respuesta distinta a la que ya dio `D-15`.** El molinete de `D-14` es un pedido: algo que
+el jugador tiene que aportar —credencial, dato, permiso— para poder entrar. Un id que el
+aparato genera solo, sin preguntarle nada al jugador, sin bloquear ninguna pantalla si no
+existe o si se borra, no le pide nada: es contabilidad interna, no un portón. Bajo esa
+lectura, **sí, un jugador puede existir sin cuenta**, siempre que sea exactamente esa
+forma y ninguna otra — anónimo, silencioso, opcional, sin dato personal, sin login — y
+nunca la variante con mail y contraseña, que sigue cerrada por `D-14`/`D-15` sin
+excepción.
+
+**Lo que esta lectura no hace es mover sola el "Fuera de alcance".** `D-14` es una
+decisión del usuario tomada con toda la evidencia sobre la mesa, y `D-15` ya escribió en
+el mismo tema sin distinguir variantes de "cuenta". Decir que un id anónimo no cuenta
+como "cuenta de usuario" a los efectos del Fuera de alcance es un movimiento del mismo
+tamaño que el que hizo `D-22` con "alojar los temas completos": saca algo de Fuera de
+alcance porque, mirada de cerca, la línea dejó de sostenerse igual para todos los casos.
+Y como con `D-22`, **eso lo escribe el usuario con una `D-XX` nueva cuando se tome la
+idea, no `producto` adentro de un backlog** (`Docs/IDS.md`: el prefijo `D-` lo asigna la
+sesión principal). Lo que dejo hecho acá es la lectura y el filtro: si algún día se
+construye un "jugador", entra únicamente por esta puerta angosta, nunca por la de login.
+
+#### Lo que queda por resolver si se toma, y de quién es
+
+1. **La `D-XX` que autorice el id anónimo**, con el texto explícito de que no es "cuenta"
+   a los efectos de `D-14` y del Fuera de alcance. Dueño: el usuario / hilo principal.
+2. **El costo real de Supabase en el tier gratuito, transversal a las tres.** `D-15` ya
+   midió que ese tier **pausa proyectos por inactividad**, y un fan site de poco tráfico
+   es justo el caso que se apaga solo. Guardar ahí correcciones, puntajes o jugadores
+   hereda ese riesgo por igual. Dueño: `arquitectura`, cuando se tome la primera de las
+   tres — no lo resuelvo yo acá.
+3. **Si "puntajes" se retoma alguna vez, la conversación es `D-15`, no esta ficha.** No la
+   duplico.
+4. **Piso de ítems y criterios de aceptación**, si esto se promueve a `US-XX`, se fijan al
+   promoverse (`BR-16`), no antes.
+
+#### Orden si se toma
+
+No las tres juntas. **(1) Correcciones** — no pide nada nuevo y `CTR-10` ya la deja lista;
+es la única parte "gratis" de la frase del usuario. **(2) Jugador anónimo** — solo si
+existe la `D-XX` del punto 1. **(3) Puntajes o ranking compartido** — sigue siendo la
+conversación de `D-15` y no entra sin que esa conversación se retome.
+
+#### Es backlog, confirmado
+
+*"Luego se podría extender"* es backlog, no v1 ni v2 con fecha. Nada de esto corre en el
+ciclo 9: lo que corre ahí es el botón de corrección con mail y portapapeles (`BR-21`,
+`CTR-10`), que sigue funcionando igual el día que, si acaso, se cambie el transporte.
+
+---
+
 ## Resumen
 
 | ID | Idea | Tipo | Reutiliza | Choque principal |
@@ -409,6 +502,7 @@ palabra más frecuente de todas.
 | `IDEA-09` | Test de 2 ejes | original | `UX-02` | ✅ **promovida a `US-06`** (`T-115`, ciclo 8) |
 | `IDEA-10` | Guitar Hero | clon vestido | el mp3 entero (`D-22`) | ~~bloqueo de audio~~ **levantado por `D-22`**; ahora falta la partitura |
 | `IDEA-11` | Mayor o menor con palabras del cancionero | original (género conocido, motor mínimo) | `cancionero.json` (104 temas), `UX-02` | el conteo es respuesta correcta — corpus limpiado por `T-103`, falta reconfirmar |
+| `IDEA-13` | Supabase: correcciones, puntajes, jugadores | infraestructura (no es juego) | `CTR-10` (transporte detrás de interfaz) | correcciones no choca; puntajes remite a `D-15`; jugadores choca con `D-14`/Fuera de alcance — entra solo como id anónimo, nunca como cuenta |
 
 ## Preguntas abiertas al usuario
 

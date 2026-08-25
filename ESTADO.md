@@ -5,8 +5,155 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-08-24
-**Ciclo actual:** **8 — CERRADO.** Plan en `Docs/ORQ/ORQ-plan-ciclo-8.md`, tareas
+**Última actualización:** 2026-08-25
+**Ciclo actual:** **9 — EN CURSO.** Plan en
+`Docs/ORQ/ORQ-plan-ciclo-9.md`, tareas `T-128`..`T-160` (`T-148` cancelado). **Cinco
+frentes en dos tramos**: el juego nuevo por letras (`US-07`), `US-03` que sale entero, el
+quiz que pasa a vidas, el botón de corrección, y la pulida de escritorio más los recortes
+reales.
+
+> ### ✅ TRAMO A CERRADO (2026-08-25) — el quiz ya se juega por vidas
+>
+> **Diez tareas hechas y verificadas.** `npm test` **251/251** (eran 224), `npm run check`
+> 0 errores, build de **148 páginas**, y la partida jugada entera en el navegador.
+>
+> | Tarea | Qué quedó |
+> |---|---|
+> | `T-128` | **`D-25`**: `US-03` sale con letras de fuente única. La decisión escrita, con sus tres mitigaciones y qué la revierte |
+> | `T-129` | **`BR-19`**: 3 vidas · escalón por pozo (10/15/15, **no** 10/10/10) · tres desenlaces |
+> | `T-130` | **`US-07` + `BR-20`**: "Sacalo por la letra", escalera 1/2/4/8 versos, piso **60**, fuera del "Listo" de la v1 |
+> | `T-132` | **`ADR-02` v2**: tres formas de link (`marcador`/`recorrido`/`identidad`). Salda la deuda de `dos-ejes` |
+> | `T-134` | **`UX-07`**: vidas, escalón y retirada en pantalla. Ningún par de color nuevo |
+> | `T-136` | **`CNT-10`**: los tres encabezados comparten la imagen de la vida como luz |
+> | `T-142` | **`vidas.ts`** + 22 tests. **Aditivo: `ronda.ts` y `tramo.ts` intactos** |
+> | `T-143` | La isla del quiz. Arregla `FIND-28` |
+> | `T-149` | **`BR-21`**: el sitio promete solo lo que puede verificar con un comando |
+> | `T-155` | **`IDEA-13`**: Supabase separado en tres, con el choque contra `D-14` nombrado |
+>
+> **Verificado jugando, no deducido:** derrota (`DERROTA` · "Se te apagaron las tres
+> vidas." · "Pregunta 3 de 40 · nivel Fácil"), retirada (`RETIRADA` · "Pregunta 12 de 40" ·
+> "Vidas al cerrar: 3 de 3"), y el aviso `NIVEL MEDIA` apareciendo **una sola vez**, en la
+> pregunta 11.
+>
+> ### 🔴 `FIND-28` — un defecto vivo que se encontró y se arregló en el mismo ciclo
+>
+> `leerDesafio()` devolvía el campo `g` y **el quiz nunca lo miraba**. Reproducido en el
+> navegador: `/quiz/?g=tapa&p=10&t=10&n=Fulano` pintaba *"Fulano sacó 10/10"* — desafío de
+> otro juego, puntaje imposible en una ronda de 8. **Estaba en producción.** Arreglado en la
+> firma (`leerDesafio(query, juegoPropio)`, segundo parámetro obligatorio) para que la clase
+> entera de bug sea imposible, no improbable.
+>
+> De paso salió otra: el tuit de `US-02` decía "160 de 400" y su propio link "3 de 4". El
+> tope de `t` subió de 100 a 9999 y ahora los dos dicen lo mismo.
+>
+> ### 🔜 Para retomar: el tramo B, entero
+>
+> `T-131` `T-133` `T-135` `T-137` `T-138` `T-139` `T-140` `T-141` `T-144` `T-145`, más
+> `T-146` (`REV-08`), `T-147` (`ESTADO.md`) y el frente E (`T-157`..`T-160`, escritorio).
+> **Empezar por `T-131`** (`arquitectura`, `CTR-04`), que es la que destraba `US-03`.
+>
+> **Dos cosas que esperan al usuario, ninguna urgente:**
+> 1. **Una casilla de correo** para el botón de corrección (`T-153`). El repo no tiene
+>    ninguna, y poner un Gmail personal en un `mailto:` de un sitio público es entregárselo
+>    a los raspadores de spam.
+> 2. **Si el lobo va igual al casete de la Redondopedia.** Se frenó porque ese casete es
+>    `variante: 'historia'` y por `D-19` viste *Gulp!*; el lobo es de *Lobo suelto*. Además
+>    el perro que está hoy es un personaje fichado de *Un baión*. Queda en `T-160`.
+
+> ### `T-134` cerrada — `UX-07`, cómo se ven las tres vidas y el escalón
+>
+> `Docs/UX/UX-07-quiz-por-vidas.md` (nuevo). Sobre `BR-19`: cabecera con vidas (tres
+> sellos lleno/tachado + "VIDAS", tinta compartida con el error `--acento-4` a propósito
+> — es la única causa posible de perder una) y etiqueta ambiente de nivel ("MEDIA ·
+> 4/15", reemplaza el viejo "N de 8"); aviso puntual de escalón una sola vez por salto
+> (borde `--acento-2`, arriba del enunciado, sin pantalla nueva); botón de retirada fijo
+> en una esquina superior, lejos del pulgar, con confirmación de dos pasos que muestra
+> "hasta dónde llegaste" antes de decidir; tres pantallas de resultado (victoria
+> `--acento-3`/✔, derrota `--acento-4`/✕, retirada `--acento`, sin símbolo, única con el
+> widget de vidas). **Ningún par de color nuevo** para `contraste.test.ts`: todo reusa
+> tokens ya testeados. Deja pendiente para quien la retome: `UX-01` queda con su sección
+> de "N de 8" y el tramo de tres niveles desactualizada para el quiz (sigue vigente para
+> `US-04`) — no se editó por estar fuera del alcance de `T-134`.
+>
+> **Siguiente para este frente:** `T-136` (`contenido`, `CNT-10`, el texto exacto de todo
+> lo nuevo) y `T-132` (`arquitectura`, `ADR-02`, el payload del link para los tres
+> desenlaces) — las dos ya pueden arrancar. `T-143` (hilo principal, la isla del quiz
+> pasa a vidas) espera a `T-142`, `T-134` (esta), `T-136` y `T-132`.
+
+> ### 🚀 El sitio está desplegado
+>
+> Lo confirmó el usuario el 2026-08-25. **Cada cambio del ciclo 9 sale a la calle**, el
+> quiz que pasa a vidas incluido. Deja de haber red.
+>
+> ### Lo que el ciclo 9 va a hacer, y lo que no
+>
+> Tres pedidos del usuario en una frase, y **tres decisiones suyas** que los acotan:
+>
+> 1. **`US-07` — adiviná el tema por la letra.** Juego nuevo. El usuario eligió que
+>    **conviva** con el de audio en vez de reemplazarlo, así que **`US-02` sigue en 0/30 y
+>    la v1 no cierra en este ciclo**. Queda a un solo juego, y ese juego necesita ffmpeg.
+> 2. **`US-03` sale entero, con fuente única.** El candado de `CTR-04` (dos fuentes o
+>    confirmación de oído) se abre por decisión del usuario: *"salen con los temas que ya
+>    tenemos, si hay que cambiar algo lo veo jugando el juego"*. Se toma por escrito en
+>    `D-25`, con los versos de menor riesgo (`T-138`) y con la fuente a la vista del
+>    jugador (`T-145`), que es el mecanismo de "lo veo jugando".
+> 3. **El quiz pasa a 3 vidas**, con escalón cada 10 preguntas, se queda en difícil al
+>    acabarse los niveles, y ganás si agotás el banco.
+> 4. **Un botón para corregir** en los tres juegos, como componente compartido porque se
+>    expande a todo el sitio. Ver el frente D más abajo.
+>
+> ### 🔴 Lo que medí al planificar, y cambia lo que se puede prometer
+>
+> - **Solapamiento cero entre fuentes de letra.** Cada tema tiene **una sola** fuente
+>   (cifraclub 78 · lacuerda 21 · letras.com 5) y los 149 archivos crudos de
+>   `TemasRedo/cancionero/data` son **uno por tema**. La vía "dos fuentes" de `CTR-04` no
+>   estaba difícil: estaba **cerrada**. Por eso hizo falta `D-25`.
+> - **El banco tiene exactamente 10 fáciles**, y el escalón que pidió el usuario dura 10
+>   preguntas. Sin cambiar nada, **toda partida mostraría el banco entero de fáciles** —
+>   la "vidriera fija" que `BR-01` punto 3 existe para impedir, y que el ciclo 7 ya tuvo
+>   que arreglar una vez. Lo cierra `producto` en `T-129`.
+> - **`armarRonda` lo comparten los cuatro juegos** (quiz, tapa, letra, tema). La máquina
+>   de vidas es **aditiva** (`src/lib/quiz/vidas.ts`): quien edite `ronda.ts` rompe tres
+>   juegos que hoy andan.
+>
+> ### 🆕 El cuarto pedido: el botón de corrección (frente D)
+>
+> *"agreguemos un boton o algo como para dejar un comentario para corregir... es mas como
+> para construir conocimiento entre todos. Esto para estos juegos pero se expandira a todo
+> el sitio"*. **Es la pieza que le faltaba a `D-25`**: `US-03` sale con fuente única, y el
+> usuario dijo que lo iba a validar jugando. Esto le da con qué.
+>
+> **El transporte cambió a mitad de la planificación y manda la segunda versión:** *"la idea
+> no es que se vea la correccion primero, sino que nos llegue a nosotros, luego se podria
+> extender con una base de datos gratis de supabase"*. Así que **no va por issue de GitHub**
+> —eso costaba abrir el repo y exigir cuenta, dos costos que se pagaban para que *se viera*—
+> sino por mail y portapapeles: cero infraestructura, cero cuenta, molinete abierto.
+> **`T-148` quedó `[CANCELADO]`** por eso.
+>
+> **`CTR-10` deja el transporte detrás de una interfaz**, así que el salto a Supabase no va a
+> tocar el botón. La propuesta de alcance de ese salto está en
+> `Docs/SUGERENCIAS/HILO-para-producto-supabase-scores-y-correcciones.md` y **no es menor**:
+> *puntajes* y *jugadores* son ranking global y cuentas de usuario, las dos en Fuera de
+> alcance y las dos rozando `D-14`. Queda como `IDEA-13` (`T-155`), sin empezar.
+>
+> ### 🟢 Medido de paso: el repo es privado, y abrirlo no expondría nada nuevo
+>
+> `gh repo view` → `PRIVATE`, con issues habilitados. El `.gitignore` ya excluye `*.pdf`,
+> `*.epub`, `*.wav` y `*.mp3`, así que **el memoir del Indio no está versionado**. Lo que sí
+> está —71 tapas y el corpus de letras— **ya lo publica el sitio desplegado**. Queda medido
+> para cuando haga falta.
+>
+> ### El riesgo del ciclo
+>
+> **`US-03` y `US-07` salen del mismo corpus de fuente única, y no corren el mismo
+> riesgo.** En `US-03` el jugador escribe la palabra que falta: si la transcripción está
+> mal, **el juego le marca error al que se sabe el tema**. En `US-07` adivina cuál es el
+> tema, y una palabra mal no cambia de qué tema se trata. Por eso uno sale sin discusión y
+> el otro sale con `D-25` encima.
+
+---
+
+**Ciclo 8 — CERRADO.** Plan en `Docs/ORQ/ORQ-plan-ciclo-8.md`, tareas
 `T-113`..`T-127`. `npm test` **224/224**, `npm run check` 0 errores, build de **148
 páginas**. Dos pedidos del usuario en la misma frase, y uno de los dos se cayó.
 
@@ -599,6 +746,33 @@ ruta con `--ffmpeg=`.
 
 ## Próximo paso
 
+**Empezar el ciclo 9 por `T-128`, `T-129` y `T-130`**, que son las tres que arrancan sin
+depender de nada: la decisión `D-25`, la regla del quiz por vidas (`BR-19`) y la historia
+del juego nuevo (`US-07`). Plan entero en `Docs/ORQ/ORQ-plan-ciclo-9.md`.
+
+Estado de los pisos, medido el 2026-08-25 contra los JSON del repo:
+
+| Historia | Piso | Hoy | Qué falta |
+|---|---|---|---|
+| `US-01` Quiz | 40 | **40** ✅ | pasa a vidas en el ciclo 9 |
+| `US-02` Adiviná el tema *(audio)* | 30 | **0** | **ffmpeg y los mp3** — lo único que separa a la v1 de cerrar |
+| `US-03` Completá la letra | 15 | **0** de 1.784 | lo destraba el ciclo 9 (`D-25`) |
+| `US-04` Adiviná la tapa | 10 | **10** ✅ | — |
+| `US-05` Redondopedia | 35 | **35** ✅ | — |
+| `US-06` Dos ejes *(fuera de v1)* | — | 28 | — |
+| `US-07` Por la letra *(nuevo)* | a fijar | 0 | lo construye el ciclo 9 |
+
+**Lo que no toca el ciclo 9 y sigue esperándote:** los fragmentos de audio de `US-02`
+(ffmpeg **no está instalado en esta máquina** — verificado el 2026-08-25) y la clave de
+YouTube (`popularidad.json` tiene los **105 temas en `sin-video`**).
+
+> ⚠ **Lo que sigue abajo de esta línea quedó del ciclo 4 y está desactualizado.** Se deja
+> por trazabilidad: los pisos que menciona son los viejos (40/20/15/10, hoy 40/30/15/10),
+> "desplegar en Vercel" ya está hecho, y la Redondopedia ya cerró su piso de 35. **No
+> tomes ninguna instrucción de acá para abajo sin cruzarla con el encabezado.**
+
+### Histórico — el próximo paso tal como se escribió en el ciclo 4
+
 **Correr `/ciclo` para el ciclo 5.** El ciclo 4 cerró entero. Hay **dos juegos jugables**
 (el quiz y adivinar la tapa) y las tapas reales visten el sitio.
 
@@ -735,7 +909,7 @@ bloquean entre sí**:
 
 | Ítem | Rol | Estado | Nota |
 |---|---|---|---|
-| Historias, pisos de ítems y reglas de negocio de los 4 juegos | `producto` | hecho | `US-01`..`US-04`, `BR-01`..`BR-03` en `Docs/PRODUCTO/PRD-alcance-v1.md`. Pisos: **40 / 20 / 15 / 10** |
+| Historias, pisos de ítems y reglas de negocio de los 4 juegos | `producto` | hecho | `US-01`..`US-04`, `BR-01`..`BR-03` en `Docs/PRODUCTO/PRD-alcance-v1.md`. Pisos: **40 / 30 / 15 / 10** — el de `US-02` subió de 20 a 30 en `T-99` (ciclo 7) |
 | `T-01` — `BR-04`: opciones por pregunta | `producto` | hecho | **4 opciones**, mismo número para `US-01` y `US-04`. Fundamento: con 3 el azar sube a 33% y vacía "premiar al que sabe"; con 5 cede "jugable con el pulgar". `CTR-02.5` pasa de valor de trabajo a **confirmado** sin editar `Docs/ARQ/` |
 | `ADR-01` — vía de integración con Spotify | `arquitectura` | **en curso** | `Docs/ARQ/ARQ-spotify-integracion.md`, revisión 2. **C y D descartadas con evidencia** (`RES-01`). Quedan A (embed) contra B (deep link), y solo faltan `E-04` y `E-07`. **El fallback ya está cerrado**, así que no frena a nadie |
 | `CTR-01` — fragmento de audio | `arquitectura` | hecho | MP3 mono 44,1 kHz 96 kbps, máx **10,0 s — cerrado por `CNT-01`, ya no es valor de trabajo** (`T-09` + `T-10`). Escalera del reveal **0,1 / 0,5 / 2,0 / 5,0 / 10,0 s**; precarga recalculada a **5,3 MB**. Crédito (tema/disco/año) ahora es campo **obligatorio**: publicar audio sin firmar no valida. `BR-02` sobrevive sin cambios |
@@ -777,6 +951,11 @@ bloquean entre sí**:
 | Esqueleto del sitio: portal, rutas y collage | hilo principal | **hecho** | Portal en `/` (lado A juegos, lado B lectura), quiz en `/quiz/` con redirección de desafíos viejos, 3 pantallas "en la cocina", `Base.astro`, `sitio.css` sin un hex, recortes reemplazables en `public/arte/` con despiece fundado en `RES-06`/`RES-22` (README de esa carpeta). Tokens nuevos `--papel` y `--textura-grano` — **deuda: aterrizarlos en el lienzo, hoja 07** |
 | Redondopedia v1 — primera tanda cargada | hilo principal | **hecho, 26/35** | `src/data/redondopedia.json`: 10 `disco` + 5 `persona` + 5 `hito` + 4 `concepto` + 2 `leyenda`, desde las fichas `RES-` vía redacción + verificación adversarial (21 hallazgos, 5 bloqueantes, todos corregidos — el patrón repetido: inflar "Patricio Rey Discos" a "sello propio de la banda" sin ficha). `BR-08` como segmentos con rótulo+fuente; `BR-09` como test. Faltan 6 `tema` (`D-13`) y Bulacio/Olavarría (`CNT-04`) |
 | Tapas reales bajadas y en las fichas de disco | hilo principal | hecho | 35 imágenes de Coveralia (frontal/trasera/CD/interior según disponibilidad) en `Docs/INVESTIGACION/TapasDiscos/`; bajas de 320 px en `public/tapas/` (`node scripts/generar-tapas.mjs`) — solo en artículos `disco`, con crédito a Rocambole (`BR-07`, `D-04`, `UX-04`) |
+
+> ⚠ **Este Tablero es histórico y algunas filas quedaron viejas.** Las conocidas al
+> 2026-08-25: la Redondopedia dice 26/35 y **cerró en 35/35**; `CTR-03`..`CTR-05` figuran
+> pendientes y **están escritos**; `ADR-01` figura en curso y `RES-51` lo cerró en
+> negativo. **Para el estado real de los pisos, mirá la tabla de "Próximo paso".**
 
 Estados posibles: `pendiente` · `en curso` · `bloqueado` · `hecho` · `cancelado`
 

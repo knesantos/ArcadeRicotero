@@ -1033,3 +1033,106 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   son de `producto` (`BR-02`); la escalera en segundos y el `modoRespuesta`, de
   `arquitectura` (`CTR-01.9`, `CTR-03.5`). Lo construido por el hilo principal se ajusta a
   lo que esos dos escriban.
+
+---
+
+## D-25 — `US-03` sale con letras de fuente única, y se corrige jugando
+
+- **Fecha:** 2026-08-25
+- **Estado:** aceptada — decisión directa del usuario, tomada con la advertencia sobre la
+  mesa. Se le ofrecieron tres salidas y se le dijo cuál era el riesgo de esta. Textual:
+  *"salen con los temas que ya tenemos, si hay que cambiar algo lo veo jugando el juego"*.
+
+- **Contexto: las dos vías de `CTR-04.6` están cerradas, y eso se midió, no se supuso.**
+
+  El juego de completar la letra está construido desde el ciclo 6 y no se juega a propósito.
+  `CTR-04.6` pone una sola condición de estado: para que un verso sea `listo` necesita **o**
+  confirmación de oído contra el disco, **o** dos fichas de fuente de letra. Hoy hay 1.784
+  versos candidatos y **los 1.784 están en `borrador`**.
+
+  Al planificar el ciclo 9 se fue a ver por qué, y las dos vías están cerradas por motivos
+  distintos:
+
+  1. **Dos fuentes: imposible con lo que hay.** Cada tema del cancionero tiene **una sola**
+     fuente —cifraclub 78, lacuerda.net 21, letras.com 5— y los 149 archivos crudos del
+     scraper son **uno por tema**. Solapamiento cero, comprobado en el material crudo y no
+     solo en el derivado. No es que sea caro cruzar: **no hay con qué cruzar**.
+  2. **De oído:** los 26 huecos `_:__` de `src/data/letra-confirmaciones.json` siguen en
+     blanco desde el ciclo 6. Son veinte minutos de una persona, y llevan tres ciclos sin
+     que nadie los haga.
+
+- **Decisión:** un verso puede llegar a `"estado": "listo"` **con una sola fuente de letra
+  declarada**, sin confirmación de oído. `arquitectura` escribe la vía nueva en `CTR-04`.
+
+  **Lo que la decisión cambia de verdad no es el rigor, es el orden.** Antes era *verificar y
+  después publicar*; ahora es *publicar y corregir*. El usuario no dijo que los datos estén
+  bien: dijo que se va a enterar jugando. Eso es una apuesta sobre **cuándo** aparece el
+  error, no sobre si existe.
+
+- **Lo que no cambia, y conviene que esté escrito porque es lo que evita que esto sea barra
+  libre:**
+
+  1. **El ítem sigue necesitando su fuente declarada.** Lo que se relaja es *cuántas*, no
+     *si hay*. Un verso sin fuente sigue sin validar.
+  2. **El tema sigue teniendo que estar en los 105 de `RES-20`.** Ese filtro no lo toca nada.
+  3. **El rótulo sigue sin poder mentir.** Si el sitio muestra un verso sostenido por una
+     sola transcripción de fans, no puede presentarlo como si estuviera cotejado.
+  4. **Esto vale para `US-03` y para nada más.** No es una regla general sobre la veracidad
+     del sitio. El banco del quiz sigue con `CTR-02` intacto.
+
+- **🔴 Lo que esta decisión erosiona, dicho sin adornos.** `D-14` abrió casi todos los
+  molinetes del proyecto y dejó **una sola cosa estricta**, con este argumento: si la
+  respuesta está mal, *"el juego le marca error justo al que se sabe el tema"*. `CTR-04.6`
+  es la traducción de esa frase a una regla corrible, y su propio contrato la nombra como
+  *"la que protege lo único estricto del proyecto"*.
+
+  **`D-25` la afloja.** No la borra —la fuente sigue siendo obligatoria— pero la afloja, y
+  hay que decirlo así y no como una mejora de proceso. El proyecto acepta que en `US-03`
+  algún jugador va a recibir un error injusto antes de que alguien lo corrija.
+
+- **Las tres mitigaciones que hacen que la apuesta sea razonable**, en orden de cuánto
+  aportan:
+
+  1. **El botón de corrección** (frente D del ciclo 9). Es lo que convierte *"lo veo jugando
+     el juego"* de una intención en un mecanismo, y lo extiende a cualquiera que juegue, no
+     solo al que mantiene el sitio. **Sin el botón, esta decisión es solo un riesgo asumido;
+     con el botón es un método.**
+  2. **Elegir los versos menos riesgosos** (`T-138`). De 1.784 candidatos se eligen 15. Una
+     transcripción se equivoca más en una palabra rara, en un pasaje mascullado o en una
+     línea que no rima; se equivoca poco en un estribillo repetido y rimado. No cuesta nada
+     y baja el riesgo más que cualquier regla.
+  3. **Mostrar la fuente en el juego** (`T-145`). Cuando el jugador se topa con un verso
+     dudoso, ve de dónde salió. Un error con la fuente a la vista se lee como una
+     transcripción floja; el mismo error sin fuente se lee como que el sitio no sabe.
+
+- **Por qué `US-07` no necesitó esta decisión, aunque toma del mismo corpus.** Los dos juegos
+  salen de las mismas transcripciones de fuente única y **no corren el mismo riesgo**. En
+  `US-03` el jugador escribe la palabra que falta: si la transcripción está mal, el error es
+  suyo aunque tenga razón. En `US-07` ve unos versos y adivina **cuál es el tema**, y una
+  palabra mal transcripta no cambia de qué tema se trata. Por eso uno sale con una decisión
+  encima y el otro sale sin discusión.
+
+- **Qué la revierte.** Cualquiera de estas tres, y ninguna requiere volver a discutir:
+
+  - **Que aparezca una segunda fuente fichada** para los temas del banco. Ahí `CTR-04.6`
+    vuelve a cerrar sola, sin tocar nada: la vía de las dos fuentes ya está escrita.
+  - **Que alguien haga los 26 minutos de escucha.** La hoja está generada y esperando.
+  - **Que las correcciones que lleguen muestren que el corpus está peor de lo que se
+    pensaba.** Si el botón trae errores seguido, la apuesta salió mal y lo va a decir el
+    propio mecanismo — que es, en el fondo, para lo que sirve.
+
+- **Consecuencias:**
+
+  1. **`CTR-04.6` se rescribe** (`T-131`, `arquitectura`). La condición de estado pasa de dos
+     vías a tres, y la tercera tiene que dejar rastro de cuál es: un ítem `listo` por fuente
+     única no se puede confundir con uno confirmado de oído.
+  2. **El frente D deja de ser un agregado y pasa a ser parte de la mitigación.** Si el ciclo
+     se corta y el botón queda afuera, `US-03` sale con una pata menos. Anotado en el plan.
+  3. **`producto` no tiene que bajar el piso de `US-03`.** Los 15 salen de sobra de 1.784
+     candidatos; lo que faltaba era la vía, no el material.
+  4. **Queda una deuda que esta decisión no toca:** los 21 temas de lacuerda.net siguen fuera
+     del banco por no tener ficha. Con 80 temas alcanza, así que no se fuerza.
+
+- **Dueños:** la decisión es del usuario. La regla corrible es de `arquitectura` (`CTR-04`);
+  la elección de los versos, de `contenido`; el botón y lo que promete, de `producto`
+  (`BR-21`) y del hilo principal.

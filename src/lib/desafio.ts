@@ -28,12 +28,36 @@
 
 export const LARGO_MAX_NOMBRE = 20;
 
-export interface Desafio {
-  readonly juego: string;
-  readonly puntaje: number;
-  readonly total: number;
-  readonly nombre?: string;
-}
+/**
+ * El tope de `t`, subido de 100 a 9999 por `ADR-02` v2.
+ *
+ * No es holgura por las dudas: la escalera de `US-02` puntua sobre 400, y con el tope
+ * viejo el juego no podia mandar puntos, asi que mandaba aciertos. El resultado era que
+ * el tuit decia "160 de 400" y su propio link decia "3 de 4" — dos numeros para la misma
+ * partida.
+ */
+export const TOTAL_MAX = 9999;
+
+/** Los tres desenlaces de una partida por vidas (`BR-19` apartado 6). Enum cerrado. */
+export const DESENLACES = ['victoria', 'derrota', 'retirada'] as const;
+export type DesenlaceDesafio = (typeof DESENLACES)[number];
+
+/**
+ * Un desafio, en las tres formas que `ADR-02` v2 reconoce.
+ *
+ * **Es una union discriminada por `forma`, y eso es lo que hace el trabajo.** Mismo
+ * mecanismo que ya usa `src/lib/dos-ejes/partida.ts`, y por la misma razon escrita alla:
+ * *lo que no esta en el tipo no se puede mostrar*. Un `identidad` no tiene de donde sacar
+ * un puntaje ni por accidente, asi que la pantalla de los dos ejes no puede inventar un
+ * numero que ese juego no produce.
+ */
+export type Desafio =
+  /** Cuanto saco sobre cuanto podia. `US-04`, y los links de la v1. */
+  | { readonly forma: 'marcador'; readonly juego: string; readonly puntaje: number; readonly total: number; readonly nombre?: string }
+  /** Hasta donde llego y como termino. `US-01` bajo `BR-19`. */
+  | { readonly forma: 'recorrido'; readonly juego: string; readonly puntaje: number; readonly total: number; readonly desenlace: DesenlaceDesafio; readonly nombre?: string }
+  /** Que le salio. Sin numero. `US-06`. */
+  | { readonly forma: 'identidad'; readonly juego: string; readonly identidad: string; readonly nombre?: string };
 
 /**
  * Deja el nombre en algo seguro de mostrar como texto.
@@ -59,16 +83,33 @@ function limpiarNombre(crudo: string): string {
     .slice(0, LARGO_MAX_NOMBRE);
 }
 
-/** Arma el link para compartir. Devuelve la URL completa. */
+/**
+ * Arma el link para compartir. Devuelve la URL completa.
+ *
+ * Tira `RangeError` ante lo imposible, y eso es a proposito: **un link invalido no se
+ * genera.** Se rompe el build o el test, no la pantalla de la gente.
+ */
 export function armarLink(base: string, d: Desafio): string {
-  if (!Number.isInteger(d.puntaje) || d.puntaje < 0) throw new RangeError('puntaje invalido');
-  if (!Number.isInteger(d.total) || d.total <= 0) throw new RangeError('total invalido');
-  if (d.puntaje > d.total) throw new RangeError('el puntaje no puede superar el total');
-
   const url = new URL(base);
   url.searchParams.set('g', d.juego);
-  url.searchParams.set('p', String(d.puntaje));
-  url.searchParams.set('t', String(d.total));
+
+  if (d.forma === 'identidad') {
+    if (!/^[A-Za-z0-9-]{1,12}$/.test(d.identidad)) throw new RangeError('identidad invalida');
+    url.searchParams.set('r', d.identidad);
+  } else {
+    if (!Number.isInteger(d.puntaje) || d.puntaje < 0) throw new RangeError('puntaje invalido');
+    if (!Number.isInteger(d.total) || d.total <= 0 || d.total > TOTAL_MAX) {
+      throw new RangeError('total invalido');
+    }
+    if (d.puntaje > d.total) throw new RangeError('el puntaje no puede superar el total');
+    url.searchParams.set('p', String(d.puntaje));
+    url.searchParams.set('t', String(d.total));
+    if (d.forma === 'recorrido') {
+      if (!DESENLACES.includes(d.desenlace)) throw new RangeError('desenlace invalido');
+      url.searchParams.set('d', d.desenlace);
+    }
+  }
+
   const n = d.nombre ? limpiarNombre(d.nombre) : '';
   if (n) url.searchParams.set('n', n);
   return url.toString();
@@ -81,7 +122,7 @@ export function armarLink(base: string, d: Desafio): string {
  * visitas no traen desafio, y el sitio tiene que abrir igual. Un link roto **nunca**
  * puede dejar a alguien afuera — eso seria cerrar un molinete (`D-14`).
  */
-export function leerDesafio(query: string): Desafio | null {
+export function leerDesafio(query: string, juegoPropio: string): Desafio | null {
   let p: URLSearchParams;
   try {
     p = new URLSearchParams(query.startsWith('?') ? query.slice(1) : query);
@@ -90,14 +131,48 @@ export function leerDesafio(query: string): Desafio | null {
   }
 
   const juego = p.get('g');
-  const puntaje = Number(p.get('p'));
-  const total = Number(p.get('t'));
-
   if (!juego || !/^[a-z-]{1,20}$/.test(juego)) return null;
-  if (!Number.isInteger(puntaje) || puntaje < 0) return null;
-  if (!Number.isInteger(total) || total <= 0 || total > 100) return null;
-  if (puntaje > total) return null;
+
+  // `FIND-28`, y es la razon por la que `juegoPropio` es obligatorio y no opcional.
+  //
+  // Hasta el ciclo 9 esta funcion devolvia el campo `g` y **nadie lo miraba**: abrir
+  // `/quiz/?g=tapa&p=10&t=10&n=Fulano` pintaba "Fulano saco 10/10" en el quiz, con un
+  // puntaje imposible en una ronda de 8. Reproducido en el navegador el 2026-08-25, con
+  // el sitio ya desplegado.
+  //
+  // Se arregla en la **firma** y no en cada sitio de llamada a proposito: mientras el
+  // segundo parametro sea obligatorio, no se puede leer un desafio sin decir de que juego
+  // sos, y la clase entera de bug pasa de improbable a imposible. Es el mismo criterio
+  // con el que `ronda.ts` resolvio lo de la opcion correcta siempre primera.
+  if (juego !== juegoPropio) return null;
 
   const nombre = limpiarNombre(p.get('n') ?? '');
-  return { juego, puntaje, total, ...(nombre ? { nombre } : {}) };
+  const conNombre = nombre ? { nombre } : {};
+
+  const crudoR = p.get('r');
+  const crudoP = p.get('p');
+  const crudoT = p.get('t');
+  const crudoD = p.get('d');
+
+  // Forma `identidad`: `r` sola. Mezclarla con `p`/`t`/`d` no describe nada real, asi
+  // que no se interpreta a medias — se rechaza entera.
+  if (crudoR !== null) {
+    if (crudoP !== null || crudoT !== null || crudoD !== null) return null;
+    if (!/^[A-Za-z0-9-]{1,12}$/.test(crudoR)) return null;
+    return { forma: 'identidad', juego, identidad: crudoR, ...conNombre };
+  }
+
+  const puntaje = Number(crudoP);
+  const total = Number(crudoT);
+  if (crudoP === null || crudoT === null) return null;
+  if (!Number.isInteger(puntaje) || puntaje < 0) return null;
+  if (!Number.isInteger(total) || total <= 0 || total > TOTAL_MAX) return null;
+  if (puntaje > total) return null;
+
+  // Sin `d` es un `marcador`, que es exactamente la forma de los links de la v1: un
+  // `?g=quiz&p=6&t=8` de antes del ciclo 9 se sigue leyendo y no rompe nada.
+  if (crudoD === null) return { forma: 'marcador', juego, puntaje, total, ...conNombre };
+
+  if (!DESENLACES.includes(crudoD as DesenlaceDesafio)) return null;
+  return { forma: 'recorrido', juego, puntaje, total, desenlace: crudoD as DesenlaceDesafio, ...conNombre };
 }

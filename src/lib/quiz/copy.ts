@@ -11,6 +11,8 @@
 
 import type { ClaseDeFuente, Item } from './banco.ts';
 import type { Tramo } from './tramo.ts';
+import type { Resultado } from './vidas.ts';
+import type { Desafio } from '../desafio.ts';
 
 /** A1, A2, A3, A4 — Pantalla 0. */
 export const PANTALLA_0 = {
@@ -19,10 +21,22 @@ export const PANTALLA_0 = {
   botón: 'JUGÁ',
 } as const;
 
-/** A3 — reemplaza al subtitulo cuando alguien llega por un desafio. */
-export function subtituloDesafio(nombre: string | undefined, puntaje: number, total: number): string {
-  const quien = nombre ?? 'Alguien';
-  return `${quien} sacó ${puntaje}/${total}. ¿Te la bancás?`;
+/**
+ * A3 — reemplaza al subtitulo cuando alguien llega por un desafio.
+ *
+ * Con `BR-19` el quiz dejo de tener "6 de 8": lo que se manda es **hasta donde llegaste**.
+ * Por eso la invitacion cambio de "saco X/Y" a "llego a la pregunta N", que es lo unico
+ * que un desafio de partida por vidas puede afirmar sin mentir.
+ *
+ * La forma `marcador` sigue existiendo para los links de la v1, que circulan desde antes
+ * del ciclo 9 porque el sitio ya estaba desplegado (`ADR-02` v2). Un link viejo dice lo
+ * que decia; no se lo reinterpreta como si fuera una partida por vidas.
+ */
+export function subtituloDesafio(d: Desafio): string {
+  const quien = d.nombre ?? 'Alguien';
+  if (d.forma === 'identidad') return `${quien} ya se lo hizo. ¿Y vos qué sos?`;
+  if (d.forma === 'marcador') return `${quien} sacó ${d.puntaje}/${d.total}. ¿Te la bancás?`;
+  return `${quien} llegó a la pregunta ${d.puntaje} de ${d.total}. ¿Te la bancás?`;
 }
 
 /** B1 — cuatro variantes que rotan.
@@ -110,24 +124,87 @@ export const BOTON_DE_NUEVO = 'JUGÁ DE NUEVO';
  * el componente. Las tres variantes son de `CNT-05`, y la del medio importa: **no dice
  * "perdiste"**, invita a otra vuelta, mismo espiritu que el tramo bajo.
  */
-export function comparacion(
-  puntaje: number,
-  total: number,
-  nombre: string | undefined,
-  suyo: number,
-  suTotal: number,
-): string {
-  const quien = nombre ?? 'quien te lo mando';
-  const mio = `Vos: ${puntaje}/${total}`;
-  if (puntaje > suyo) return `${mio} — le ganaste a ${quien} (${suyo}/${suTotal}).`;
-  if (puntaje < suyo) return `${mio} — todavía no alcanzás a ${quien} (${suyo}/${suTotal}). Dale una más.`;
+export function comparacion(r: Resultado, d: Desafio): string {
+  const quien = d.nombre ?? 'quien te lo mando';
+  const mio = `Vos: llegaste a la pregunta ${r.pregunta} (${r.aciertos}/${r.respondidas} acertadas)`;
+
+  // `ADR-02` v2: **se compara si coinciden `g`, forma y `t`.** Un link de otra epoca
+  // —forma `marcador`, o una escala distinta— se muestra como invitacion y no se compara.
+  // Comparar 23-sobre-40 contra 6-sobre-8 seria inventar un numero que nadie saco.
+  if (d.forma !== 'recorrido' || d.total !== r.total) {
+    return `${mio}. El desafío de ${quien} venía con otra cuenta, así que no hay con qué compararlo.`;
+  }
+
+  const suN = d.puntaje;
+  if (r.pregunta > suN) return `${mio} — le ganaste a ${quien}, que llegó a la ${suN}.`;
+  if (r.pregunta < suN) return `${mio} — todavía no alcanzás a ${quien}, que llegó a la ${suN}. Dale una más.`;
+
+  // Empate en la pregunta alcanzada. El desenlace **no ordena** (retirada y derrota
+  // empatan: `BR-19` apartado 6, retirarse no es perder), con una sola excepcion que fijo
+  // el usuario en el apartado 3: llegar al final **sin morir** le gana a llegar al final.
+  if (r.pregunta === r.total && r.desenlace !== d.desenlace) {
+    if (r.desenlace === 'victoria') return `${mio} — los dos llegaron al final, pero vos sin perder las vidas.`;
+    if (d.desenlace === 'victoria') return `${mio} — ${quien} también llegó al final, y sin perder las vidas.`;
+  }
   return `${mio} — empate con ${quien}. Van a tener que desempatar.`;
 }
 
-/** D1 — texto del tuit. */
-export function textoParaCompartir(puntaje: number, total: number): string {
-  return `Saqué ${puntaje}/${total} en el arcade ricotero. ¿Vos cuánto sacás?`;
+/** D1 — texto del tuit, uno por desenlace (`CNT-10` S1, S2, S3). */
+export function textoParaCompartir(r: Resultado): string {
+  if (r.desenlace === 'victoria') {
+    return `Agoté las ${r.total} preguntas del arcade ricotero sin perder una vida. ¿Vos cuántas aguantás?`;
+  }
+  if (r.desenlace === 'derrota') {
+    return `Las tres vidas se me apagaron en la pregunta ${r.pregunta} del arcade ricotero. ¿Vos hasta dónde llegás?`;
+  }
+  return `Llegué hasta la pregunta ${r.pregunta} del arcade ricotero, con ${r.vidasRestantes} vidas en pie. ¿Vos hasta dónde llegás?`;
 }
+
+/** E1, E2, E3 — el encabezado de cada desenlace (`CNT-10`, registro 1). */
+export const DESENLACES: Record<Resultado['desenlace'], { titulo: string; rotulo: string }> = {
+  derrota: { titulo: 'Se te apagaron las tres vidas.', rotulo: 'DERROTA' },
+  victoria: { titulo: 'Llegaste con las tres vidas prendidas.', rotulo: 'VICTORIA' },
+  retirada: { titulo: 'Te vas con las vidas que te quedan.', rotulo: 'RETIRADA' },
+};
+
+/** N2, N3, N4 — el dato, en registro 3: dice qué hay y se calla. */
+export const NOMBRE_NIVEL: Record<string, string> = {
+  facil: 'Fácil',
+  media: 'Media',
+  dificil: 'Difícil',
+};
+export function lineaRecorrido(r: Resultado): string {
+  const n = r.nivel ? ` · nivel ${NOMBRE_NIVEL[r.nivel] ?? r.nivel}` : '';
+  return `Pregunta ${r.pregunta} de ${r.total}${n}`;
+}
+export function lineaAciertos(r: Resultado): string {
+  return `${r.aciertos} de ${r.respondidas} acertadas`;
+}
+export function lineaVidas(r: Resultado): string | null {
+  return r.vidasRestantes === null ? null : `Vidas al cerrar: ${r.vidasRestantes} de 3`;
+}
+
+/** R1 — el botón que cierra la partida. Ni `Salir` (infinitivo) ni `Rendite` (no es
+ *  derrota): nombra el objeto completo, y su raíz no se parece a la de `SEGUÍ`. */
+export const BOTON_RETIRARSE = 'Cerrá la partida';
+export const RETIRADA_CONFIRMA = {
+  pregunta: '¿Cerrás acá?',
+  aceptar: 'Cerrá igual',
+  volver: 'Seguí jugando',
+} as const;
+
+/** L1, L2 — el aviso de escalón, registro 3. Rótulo seco, sin festejo. */
+export function avisoEscalon(nivel: string): string {
+  return `NIVEL ${(NOMBRE_NIVEL[nivel] ?? nivel).toUpperCase()}`;
+}
+
+/** La etiqueta ambiente de la cabecera (`UX-07`): reemplaza al viejo "N de 8". */
+export function etiquetaNivel(nivel: string, enElNivel: number, delNivel: number): string {
+  return `${(NOMBRE_NIVEL[nivel] ?? nivel).toUpperCase()} · ${enElNivel}/${delNivel}`;
+}
+
+/** El rótulo del marcador de vidas. Ningún estado se comunica solo con color (`UX-07`). */
+export const VIDAS_ROTULO = 'VIDAS';
 
 /**
  * La insignia de una palabra que va **antes** de responder (`UX-01` v2).

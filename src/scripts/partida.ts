@@ -1,31 +1,55 @@
 /**
- * La isla del quiz: partida, resultado y compartir. `T-40`, `T-41`, `T-42`.
+ * La isla del quiz: partida, resultado y compartir. `T-40`, `T-41`, `T-42`, `T-143`.
  *
- * Implementa `UX-01` v2, `BR-01`, `BR-02`(no aplica aca), `BR-04`, `BR-05` y `ADR-02`.
- * Todo el texto sale de `copy.ts` y toda la logica de reglas de `lib/quiz/`: este archivo
- * es solo el pegamento con el DOM.
+ * Implementa `UX-01` v2, `BR-01`, `BR-04`, `BR-19`, `UX-07`, `CNT-10` y `ADR-02` v2. Todo
+ * el texto sale de `copy.ts` y toda la logica de reglas de `lib/quiz/`: este archivo es
+ * solo el pegamento con el DOM.
  *
  * **Regla que atraviesa todo el archivo: nada se escribe con `innerHTML`.** El unico dato
  * externo que entra al sitio es el nombre del desafio, y `ADR-02` fue explicito en que un
  * nombre inyectado desde la URL es XSS reflejado de manual. Usar `textContent` en todos
  * lados hace que la clase entera de bug sea imposible, no improbable.
+ *
+ * ## Lo que cambio en el ciclo 9
+ *
+ * El quiz dejo de ser una ronda fija de 8 con nota final y paso a **partida por vidas**
+ * (`BR-19`). Este archivo ya no llama a `armarRonda` ni a `tramo` — los dos siguen
+ * existiendo intactos porque los usan los otros juegos —, sino a `lib/quiz/vidas.ts`, que
+ * compone sobre ellos. Toda la logica de cuando termina una partida vive alla y esta
+ * testeada; aca solo se pinta.
  */
 
-import { armarRonda, contarAciertos } from '../lib/quiz/ronda.ts';
-import { tramo } from '../lib/quiz/tramo.ts';
+import {
+  comenzar as comenzarPartida,
+  responder as responderPartida,
+  retirarse,
+  actual,
+  abreEscalon,
+  resultado as resultadoDe,
+  type Partida,
+} from '../lib/quiz/vidas.ts';
 import { leerDesafio, armarLink } from '../lib/desafio.ts';
 import { botonSpotify } from './spotify.ts';
 import type { Item } from '../lib/quiz/banco.ts';
 import {
   ACIERTOS,
   BOTON_COMPARTIR,
-  comparacion,
   BOTON_DE_NUEVO,
+  BOTON_RETIRARSE,
   BOTON_SEGUIR,
+  DESENLACES,
   ERRORES,
-  TRAMOS,
+  RETIRADA_CONFIRMA,
+  VIDAS_ROTULO,
+  avisoEscalon,
+  comparacion,
   etiquetaCategoria,
+  etiquetaNivel,
   insignia,
+  lineaAciertos,
+  lineaRecorrido,
+  lineaVidas,
+  NOMBRE_NIVEL,
   selloRevelado,
   subtituloDesafio,
   textoParaCompartir,
@@ -33,7 +57,8 @@ import {
 } from '../lib/quiz/copy.ts';
 import { PORTAL } from '../lib/sitio/copy.ts';
 
-const LARGO_RONDA = 8; // US-01 criterio 1
+/** Quien soy, para `leerDesafio`. Ver `FIND-28` en `desafio.ts`. */
+const JUEGO = 'quiz';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const portada = $('portada');
@@ -41,11 +66,9 @@ const zonaPartida = $('partida');
 const zonaResultado = $('resultado');
 
 const banco: Item[] = JSON.parse($('banco').textContent ?? '[]');
-const desafio = leerDesafio(location.search);
+const desafio = leerDesafio(location.search, JUEGO);
 
-let ronda: readonly Item[] = [];
-let indice = 0;
-let elegidas: (string | null)[] = [];
+let partida: Partida<Item>;
 let ultimoFeedback: string | null = null;
 
 /** Crea un elemento con texto. Nunca HTML: ver la nota del encabezado. */
@@ -83,28 +106,58 @@ function enfocar(destino: HTMLElement): void {
 }
 
 // Pantalla 0: si se llego por un desafio, el subtitulo lo dice.
-if (desafio) {
-  $('subtitulo').textContent = subtituloDesafio(desafio.nombre, desafio.puntaje, desafio.total);
-}
+if (desafio) $('subtitulo').textContent = subtituloDesafio(desafio);
 
 $('jugar').addEventListener('click', comenzar);
 
 function comenzar(): void {
-  ronda = armarRonda(banco, LARGO_RONDA);
-  indice = 0;
-  elegidas = [];
+  partida = comenzarPartida(banco);
   mostrar(zonaPartida);
   pintarPregunta();
 }
 
+/**
+ * Cuantas van del escalon en curso, y cuantas tiene.
+ *
+ * No sale de ninguna constante: se cuenta sobre el orden real que armo `vidas.ts`. Es la
+ * misma razon por la que `vidas.ts` no tiene un largo de escalon — el escalon **es** el
+ * pozo, y el pozo lo define el banco (`BR-19` apartado 2).
+ */
+function posicionEnEscalon(p: Partida<Item>): { nivel: string; van: number; total: number } {
+  const nivel = p.orden[p.indice]!.dificultad;
+  const delNivel = p.orden.filter((i) => i.dificultad === nivel);
+  const primero = p.orden.findIndex((i) => i.dificultad === nivel);
+  return { nivel, van: p.indice - primero + 1, total: delNivel.length };
+}
+
+/** El marcador de vidas: tres sellos, y la palabra. `UX-07` — ningun estado por color solo. */
+function marcadorVidas(vidas: number): HTMLElement {
+  const caja = el('div', 'vidas');
+  caja.append(el('span', 'vidas-rotulo', VIDAS_ROTULO));
+  for (let i = 0; i < 3; i++) {
+    const viva = i < vidas;
+    // El simbolo va ademas del color, no en su lugar: el trazo es el mismo `✕` que ya
+    // marca la opcion errada, porque errar es la unica causa posible de perder una vida.
+    caja.append(el('span', `vida ${viva ? 'vida--viva' : 'vida--ida'}`, viva ? '◆' : '✕'));
+  }
+  caja.setAttribute('role', 'img');
+  caja.setAttribute('aria-label', `${VIDAS_ROTULO}: ${vidas} de 3`);
+  return caja;
+}
+
 /** `T-40` — la pregunta, con la insignia de rotulo **antes** de responder (`UX-01` v2). */
 function pintarPregunta(): void {
-  const item = ronda[indice]!;
+  const item = actual(partida)!;
   zonaPartida.replaceChildren();
 
   const cab = el('div', 'cabecera');
   cab.id = 'cabecera-pregunta';
-  cab.append(el('span', 'paso', `${indice + 1} de ${ronda.length}`));
+  cab.append(marcadorVidas(partida.vidas));
+
+  const pos = posicionEnEscalon(partida);
+  // Reemplaza al viejo "N de 8". La fraccion sobre 40 se reserva para el resultado y para
+  // el momento de retirarse, donde si importa saber cuanto falta (`UX-07`).
+  cab.append(el('span', 'paso', etiquetaNivel(pos.nivel, pos.van, pos.total)));
   // La clase sigue llevando el identificador (la mezcla D-19 la pinta por ahi); lo que se
   // lee sale de la tabla de etiquetas, porque `mitologia` en mayusculas se leia sin tilde.
   cab.append(el('span', `categoria categoria--${item.categoria}`, etiquetaCategoria(item.categoria)));
@@ -115,10 +168,18 @@ function pintarPregunta(): void {
   if (ins) cab.append(el('span', `insignia insignia--${item.clase}`, ins));
   zonaPartida.append(cab);
 
+  // El aviso de escalon aparece una sola vez por salto y no corta el ritmo con una
+  // pantalla intermedia: `UX-07` descarto el "¡subiste de nivel!" por ese motivo.
+  if (abreEscalon(partida)) {
+    const aviso = el('p', 'escalon', avisoEscalon(pos.nivel));
+    aviso.setAttribute('role', 'status');
+    zonaPartida.append(aviso);
+  }
+
   const enunciado = el('h2', 'enunciado', item.enunciado);
-  // El foco aterriza en la pregunta, pero el paso, la categoria y —sobre todo— la
-  // insignia de rotulo tienen que llegar con ella: saber que se pregunta "que se cuenta"
-  // y no "que paso" es justo lo que `UX-01` v2 pide que se sepa ANTES de responder.
+  // El foco aterriza en la pregunta, pero las vidas, el nivel, la categoria y —sobre
+  // todo— la insignia de rotulo tienen que llegar con ella: saber que se pregunta "que se
+  // cuenta" y no "que paso" es justo lo que `UX-01` v2 pide que se sepa ANTES de responder.
   enunciado.setAttribute('aria-describedby', cab.id);
   zonaPartida.append(enunciado);
 
@@ -131,20 +192,74 @@ function pintarPregunta(): void {
   }
   zonaPartida.append(lista);
 
+  zonaPartida.append(disparadorRetirada());
   enfocar(enunciado);
 }
 
+/**
+ * El boton que cierra la partida. `BR-19` apartado 7.
+ *
+ * Va **lejos de la zona pulgar** y en texto chico, no como boton primario: si quedara a
+ * mano de las opciones, la gente se retiraria sin querer. Y lleva **confirmacion de dos
+ * pasos** que muestra hasta donde llegaste antes de decidir — `UX-07` descarto el "tocar y
+ * deshacer con temporizador" por el mismo motivo por el que `UX-01` ya habia sacado el
+ * auto-avance: un limite de tiempo que no se puede apagar es WCAG 2.2.1 (Nivel A).
+ */
+function disparadorRetirada(): HTMLElement {
+  const caja = el('p', 'retirada');
+  const b = el('button', 'retirada-disparador', BOTON_RETIRARSE);
+  b.type = 'button';
+  b.addEventListener('click', () => pintarConfirmacionRetirada());
+  caja.append(b);
+  return caja;
+}
+
+function pintarConfirmacionRetirada(): void {
+  const previo = zonaPartida.querySelector('.retirada');
+  if (!previo) return;
+  const caja = el('div', 'retirada retirada--confirma');
+  caja.setAttribute('role', 'group');
+
+  const pos = posicionEnEscalon(partida);
+  caja.append(el('p', 'retirada-pregunta', RETIRADA_CONFIRMA.pregunta));
+  // Mostrar hasta donde llegaste **antes** de decidir: es el dato que hace la decision.
+  caja.append(el('p', 'tenue', `Pregunta ${partida.indice + 1} de ${partida.orden.length} · nivel ${NOMBRE_NIVEL[pos.nivel] ?? pos.nivel}`));
+
+  const si = el('button', 'secundario', RETIRADA_CONFIRMA.aceptar);
+  si.type = 'button';
+  si.addEventListener('click', () => {
+    partida = retirarse(partida);
+    pintarResultado();
+  });
+  const no = el('button', 'primario', RETIRADA_CONFIRMA.volver);
+  no.type = 'button';
+  no.addEventListener('click', () => {
+    caja.replaceWith(disparadorRetirada());
+  });
+  caja.append(no, si);
+  previo.replaceWith(caja);
+  enfocar(no);
+}
+
 function responder(texto: string): void {
-  const item = ronda[indice]!;
+  const item = actual(partida)!;
   const correcta = item.opciones.find((o) => o.correcta)!;
   const acerto = texto === correcta.texto;
-  elegidas.push(texto);
+  const antes = partida;
+  partida = responderPartida(partida, texto);
 
   for (const b of zonaPartida.querySelectorAll<HTMLButtonElement>('.opcion')) {
     b.disabled = true;
     if (b.textContent === correcta.texto) b.classList.add('es-correcta');
     else if (b.textContent === texto) b.classList.add('es-elegida');
   }
+  // Al perder una vida, el marcador cambia en el mismo tick que el feedback y se anuncia
+  // en la misma region viva: son la misma noticia (`UX-07`). `CNT-10` decidio que no lleva
+  // texto propio — el conteo ya se ve, y una frase extra sumaria dureza al que menos sabe.
+  if (!acerto) {
+    zonaPartida.querySelector('.vidas')?.replaceWith(marcadorVidas(partida.vidas));
+  }
+  void antes;
 
   const fuente = acerto ? ACIERTOS : ERRORES;
   ultimoFeedback = variante(fuente, ultimoFeedback, Math.random);
@@ -199,38 +314,42 @@ function responder(texto: string): void {
 }
 
 function avanzar(): void {
-  indice++;
-  if (indice < ronda.length) pintarPregunta();
+  // Quien decide si la partida sigue es `vidas.ts`, no esta funcion: aca solo se mira el
+  // desenlace que ya quedo fijado al responder.
+  if (partida.desenlace === 'jugando') pintarPregunta();
   else pintarResultado();
 }
 
-/** `T-41` y `T-42` — resultado, tramo y compartir. */
+/** `T-41`, `T-42` y `T-143` — el resultado, que ahora son tres desenlaces y no tres tramos. */
 function pintarResultado(): void {
-  const aciertos = contarAciertos(ronda, elegidas);
-  const t = tramo(aciertos, ronda.length);
-  const { titulo, bajada } = TRAMOS[t];
+  const r = resultadoDe(partida)!;
+  const { titulo, rotulo } = DESENLACES[r.desenlace];
 
   zonaResultado.replaceChildren();
 
-  const marcador = el('p', 'puntaje', `${aciertos}/${ronda.length}`);
-  marcador.id = 'puntaje';
+  // Registro 3 primero: el rotulo dice que hay adentro y se calla.
+  const marcador = el('p', `rotulo-desenlace rotulo--${r.desenlace}`, rotulo);
+  marcador.id = 'rotulo-desenlace';
   zonaResultado.append(marcador);
 
-  // El foco aterriza en el titulo del tramo, que es el encabezado de la pantalla, y se
-  // lleva puestos el puntaje y la bajada: los tres son una sola noticia.
-  const encabezado = el('h2', `tramo tramo--${t}`, titulo);
-  const bajadaTramo = el('p', 'tenue', bajada);
-  bajadaTramo.id = 'bajada-tramo';
-  encabezado.setAttribute('aria-describedby', `${marcador.id} ${bajadaTramo.id}`);
-  zonaResultado.append(encabezado);
-  zonaResultado.append(bajadaTramo);
+  const recorrido = el('p', 'puntaje', lineaRecorrido(r));
+  recorrido.id = 'recorrido';
+  const acertadas = el('p', 'tenue', lineaAciertos(r));
+  acertadas.id = 'acertadas';
 
-  // FIND-17: las tres variantes de `D2` en `CNT-05`, no un string inventado aca.
-  if (desafio) {
-    zonaResultado.append(
-      el('p', 'comparacion', comparacion(aciertos, ronda.length, desafio.nombre, desafio.puntaje, desafio.total)),
-    );
-  }
+  // El foco aterriza en el encabezado, que es la noticia, y se lleva puestos el rotulo y
+  // los dos datos: los cuatro son una sola cosa.
+  const encabezado = el('h2', `tramo tramo--${r.desenlace}`, titulo);
+  encabezado.setAttribute('aria-describedby', `${marcador.id} ${recorrido.id} ${acertadas.id}`);
+  zonaResultado.append(encabezado, recorrido, acertadas);
+
+  // Solo la retirada muestra las vidas: en victoria siempre quedo al menos una y en
+  // derrota siempre cero, asi que ahi el dato no distingue nada (`BR-19` apartado 6.4).
+  const vidas = lineaVidas(r);
+  if (vidas) zonaResultado.append(el('p', 'tenue', vidas));
+
+  // FIND-17: las variantes de `CNT-10`, no un string inventado aca.
+  if (desafio) zonaResultado.append(el('p', 'comparacion', comparacion(r, desafio)));
 
   // `con-tilde` porque `BOTON_COMPARTIR` dejo de ser "COMPARTIR" y paso a "COMPARTÍ" al
   // aplicarse `D-17`. La letra de la firma es una digitalizacion fan (`RES-42`) y **no
@@ -239,7 +358,7 @@ function pintarResultado(): void {
   // `--fuente-rotulada`, que es completa, sin sacarle la tilde — `D-17` no la negocia.
   const compartir = el('button', 'primario firma con-tilde', BOTON_COMPARTIR);
   compartir.type = 'button';
-  compartir.addEventListener('click', () => void compartirResultado(aciertos));
+  compartir.addEventListener('click', () => void compartirResultado());
   zonaResultado.append(compartir);
 
   const denuevo = el('button', 'secundario', BOTON_DE_NUEVO);
@@ -266,13 +385,19 @@ function pintarResultado(): void {
   enfocar(encabezado);
 }
 
-async function compartirResultado(aciertos: number): Promise<void> {
+async function compartirResultado(): Promise<void> {
+  const r = resultadoDe(partida)!;
+  // Forma `recorrido` de `ADR-02` v2: hasta donde llego y como termino. No viajan ni los
+  // aciertos ni las vidas — el resultado propio y el desafio que viaja no son el mismo
+  // dato, y bajo vidas los aciertos son casi la pregunta alcanzada.
   const url = armarLink(location.origin + location.pathname, {
-    juego: 'quiz',
-    puntaje: aciertos,
-    total: ronda.length,
+    forma: 'recorrido',
+    juego: JUEGO,
+    puntaje: r.pregunta,
+    total: r.total,
+    desenlace: r.desenlace,
   });
-  const texto = textoParaCompartir(aciertos, ronda.length);
+  const texto = textoParaCompartir(r);
 
   if (navigator.share) {
     try {
@@ -284,11 +409,9 @@ async function compartirResultado(aciertos: number): Promise<void> {
   }
   try {
     await navigator.clipboard.writeText(`${texto} ${url}`);
-    const aviso = el('p', 'tenue', 'Link copiado.');
-    zonaResultado.append(aviso);
+    zonaResultado.append(el('p', 'tenue', 'Link copiado.'));
   } catch {
     // Sin portapapeles tampoco: mostrar el link para copiarlo a mano. Nadie queda afuera.
-    const campo = el('p', 'link', url);
-    zonaResultado.append(campo);
+    zonaResultado.append(el('p', 'link', url));
   }
 }
