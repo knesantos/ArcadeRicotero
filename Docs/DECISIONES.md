@@ -1165,3 +1165,78 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 - **Dueños:** la escalera es de `arquitectura` (`CTR-01.9`) y la tabla de puntaje de
   `producto`; el puntaje **no cambia** (100/80/60/40/20/10). Esta decisión solo toca
   segundos.
+
+---
+
+## D-27 — La dificultad de "Sacalo por la letra" se infiere de las escuchas
+
+- **Fecha:** 2026-08-27
+- **Estado:** aceptada — decisión directa del usuario. Textual: *"Las dificultades podes
+  inferirlas de la popularidad de la cancion, con la informacion de escuchas que sacamos
+  inferi las dificultades, sin escucha por ahora es difícil"*.
+
+- **Contexto.** `REV-08` encontró (`FIND-29`) que `US-07` repartía la ronda con un barajado
+  puro: **`dificultad` no se leía en ningún punto del código**, y los 89 temas estaban en
+  `sin-clasificar` porque el archivo de curaduría que `CTR-09.7` preveía nunca se escribió.
+  El que llegaba sin saber nada podía recibir el tema más oscuro del catálogo como primera
+  pregunta — el muro de entrada que `D-09` y `BR-01` existen para impedir.
+
+  La salida obvia era pedirle a `contenido` **89 juicios a mano** de "qué tan conocido es
+  este tema". El usuario eligió la otra.
+
+- **Decisión:** la dificultad sale del ranking de escuchas de `src/data/popularidad.json`.
+  Los temas **con medición** se ordenan por vistas y se parten en tercios —`facil`, `media`,
+  `dificil`—; un tema **sin medición es `dificil`**.
+
+- **Por qué es mejor que la etiqueta a mano, y no solo más barato.** No es una idea nueva
+  del proyecto: **`BR-18` apartado (f) ya había hecho exactamente esto para `US-02`** en el
+  ciclo 8, con este argumento — una etiqueta manual de "qué tan conocido es" se corrompe
+  sola y nadie la mantiene.
+
+  Y acá encaja todavía mejor que allá: en este juego **"qué tan conocido es el tema" no es
+  un proxy de la dificultad, es la dificultad**. Sacar *Ji Ji Ji* por un verso es fácil
+  porque lo cantó todo el mundo; sacar un lado B de *Momo Sampler* es difícil por lo mismo
+  al revés. La medición no aproxima lo que se quiere medir: lo mide.
+
+- **Un detalle del reparto que no es obvio:** los temas sin medición **no entran al
+  ranking**, se les asigna `dificil` directo. Si ocuparan lugar en los tercios, empujarían
+  a los medidos hacia arriba y un tema de popularidad media pasaría a `facil` por el peso
+  de los que nadie midió — la etiqueta diría "fácil" por un motivo que no tiene nada que
+  ver con lo conocido que es el tema.
+
+- **🔴 Lo que esta decisión produce hoy, y hay que decirlo en vez de festejar.**
+  `popularidad.json` tiene los **105 temas en `sin-video` y cero mediciones**: la clave de
+  YouTube (`YT_API_KEY`) nunca se cargó, así que la fase de resolución no corrió nunca.
+  Con eso, la regla devuelve **`dificil` para los 89**, y el juego **sigue sin escalonar**.
+
+  La diferencia con antes no es de funcionamiento, es de honestidad: antes el barajado era
+  **accidental** —nadie había conectado la dificultad— y ahora es la **consecuencia
+  declarada** de que falta un dato. El generador lo grita en cada corrida en vez de dejar
+  que el tablero diga ✅.
+
+- **Qué lo prende, y es un comando:**
+
+  ```
+  YT_API_KEY=... npm run ingerir-popularidad -- --resolver
+  ```
+
+  El día que eso corra, los tercios aparecen solos y `BR-01` empieza a cumplirse **sin
+  tocar una línea de código**. Es la única cosa que separa a `US-07` de tener
+  escalonamiento real.
+
+- **Consecuencias:**
+
+  1. **`CTR-09.7` cambia de eje.** El archivo de curaduría manual (`por-la-letra-curaduria.json`)
+     deja de ser el camino previsto y no se escribe. `dificultadSegun` queda fijo en
+     `'youtube'`, que era el "plan B declarado" del contrato y pasa a ser el plan A.
+  2. **`sin-clasificar` deja de usarse** en la práctica. Sigue en el enum del schema: sacarlo
+     obligaría a una versión de contrato por un valor que ya no se emite.
+  3. **La cuota de fáciles de `US-07`** (mínimo 15 sobre el piso de 60) **no se cumple hoy**,
+     y no se puede cumplir sin la clave. Es de `producto` decidir si eso frena algo — mi
+     lectura es que no, porque `US-07` está fuera del "Listo" de la v1 por `D-05`.
+  4. **Le sirve también a `US-02`**, que tiene la misma dependencia por `BR-18` (f). Una sola
+     corrida de la clave destraba los dos juegos.
+
+- **Dueños:** la decisión es del usuario. El ranking y su vigencia son de `BR-18`
+  (`producto`); el reparto en tercios vive en `src/lib/por-la-letra/dificultad.ts` con sus
+  cinco pruebas.
