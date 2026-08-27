@@ -12,6 +12,49 @@ frentes en dos tramos**: el juego nuevo por letras (`US-07`), `US-03` que sale e
 quiz que pasa a vidas, el botón de corrección, y la pulida de escritorio más los recortes
 reales.
 
+> ### 🔴 `REV-08`: cuatro hallazgos bloqueantes, y cómo verificar mal
+>
+> **La revisión encontró lo que la verificación no, por tercer ciclo seguido y por el mismo
+> motivo**: el defecto no estaba en ningún ítem, estaba en el conjunto. Está en `REV-08`,
+> `FIND-29`..`FIND-33`. Los cuatro bloqueantes están arreglados.
+>
+> **`FIND-29` — el peor.** *"Sacalo por la letra"* repartía la ronda con `barajar(banco)`
+> sobre los 89 temas, **sin mirar `dificultad` en ningún punto del archivo**. El que llega
+> sin saber nada podía recibir el tema más oscuro del catálogo como primera pregunta: el
+> muro de entrada exacto que `D-09` y `BR-01` existen para impedir, en un juego que el
+> tablero ya daba por cumplido. Ahora escalona; mientras `contenido` no cargue la curaduría
+> de `CTR-09.7`, degrada a barajado **declarado** en vez de accidental.
+>
+> **`FIND-30` y `FIND-31` — el filtro dejaba pasar cifra como verso.** Mi regla pedía que
+> **todas** las palabras fueran acordes, y una sola palabra suelta salvaba el renglón. Seis
+> vueltas de endurecimiento contra el corpus real (`VERSION_FILTRO` 1 → 6).
+>
+> ### 🔴 La lección, que vale más que el arreglo: verifiqué el filtro contra sí mismo
+>
+> Corrí `motivoDescarteVerso()` sobre un banco que **ese mismo filtro había generado** y me
+> dio cero ruido — obviamente. Recién una auditoría con un heurístico **independiente**
+> encontró seis patrones más. **Toda verificación de contenido generado tiene que hacerse
+> con un método distinto del que generó**, o no verifica nada.
+>
+> Y en el camino casi me como un pedazo del cancionero: la regla "acorde + palabra de
+> estructura" mataba *"Mi bajo continuo suena mal"* y *"Toco la guitarra en el balcón"* —
+> porque **`Mi` y `La` son a la vez acordes y palabras corrientes**. Por eso las listas
+> quedaron partidas en dura y blanda.
+>
+> **`FIND-32`** — el botón de corrección faltaba en el quiz, el juego con más ítems del
+> sitio. `BR-21` lo pedía en los tres. Ya está.
+>
+> **Y un defecto mío que la revisión no vio:** la selección de `T-138` **no tenía el
+> guardián de anclas** que sí tenían las confirmaciones de oído. Los ids son posicionales,
+> así que cada endurecimiento del filtro los corre y la curaduría se mudaría sola a versos
+> que nadie eligió — y bajo `D-25` esos ítems van **directo a la pantalla sin cotejar**.
+> Ahora cada selección lleva su verso como ancla y el generador aborta si no coincide.
+> **Disparó tres veces durante esta tanda**, que es exactamente lo que tenía que hacer.
+>
+> ⚠ **Lo que queda estructural, para el próximo ciclo:** los ids posicionales (`CL-NNN`)
+> hacen que cada cambio de filtro invalide la curaduría entera. La curaduría es sobre el
+> **verso**, no sobre el id. Un id derivado del contenido lo cerraría de raíz.
+
 > ### ✅ ESCRITORIO (`UX-10`): el defecto no era el ancho
 >
 > Medí el sitio a 1440 px antes de pedirle nada a `experiencia`, y el diagnóstico
@@ -91,7 +134,7 @@ reales.
 > | `US-04` Adiviná la tapa | 10 | **10** | ✅ |
 > | `US-05` Redondopedia | 35 | **35** | ✅ |
 > | `US-06` Dos ejes *(fuera de v1)* | — | 28 | ✅ |
-> | `US-07` Sacalo por la letra *(nuevo, fuera de v1)* | 60 | **93** | ✅ |
+> | `US-07` Sacalo por la letra *(nuevo, fuera de v1)* | 60 | **89** | ✅ |
 >
 > **Lo que destrabó el audio.** El PR #8 trajo 95 fragmentos recortados a mano; se
 > renombraron al slug canónico y `scripts/ingerir-fragmentos.mjs` escribió el manifiesto

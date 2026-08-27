@@ -39,7 +39,28 @@ distinto", y esto no se lee distinto.
 
 ---
 
-## Qué cambió, en una tabla
+## Qué cambió en la revisión 3 (2026-08-27), en una tabla
+
+Cierra `FIND-33` de `REV-08`: el snippet de verificación de `CTR-03.10` exigía la ventana
+14,90–15,15 y contra `src/data/adivinar-tema.json` daba **"DESALINEADO" en los 95
+fragmentos**, que miden 10,06 s. El código estaba bien; el contrato, viejo.
+
+| Sección | Antes (revisión 2) | Ahora (revisión 3) | Por qué |
+|---|---|---|---|
+| `CTR-03.1` | Lo escribe `generar-fragmentos.mjs` | Lo escribe **cualquiera de los dos scripts**, y el `nota` del archivo lo dice | `D-26`, PR #8 |
+| `CTR-03.4` | Franja **[14,90 – 15,15]**, build ≥ 14,85 | Franja **[9,90 – 10,40]**, build ≥ 9,85, las dos derivadas de `D` | `D-26` |
+| `CTR-03.6` | El mapa de derechos, vacío | **95 fragmentos, cero enteros**, y el comando que lo imprime | Hay audio en disco |
+| `CTR-03.8` | `minimum: 14.90` · `maximum: 15.15` | **`minimum: 9.90` · `maximum: 10.40`**, marcados como instancia de `D` | `D-26` |
+| `CTR-03.9` | Ejemplo con `duracionSeg: 15.02` | Ejemplo con **`10.06`**, que es el valor real | Ídem |
+| `CTR-03.10` | Comando (1) con la ventana vieja | **Comando (1) que pasa contra el archivo real** | Es el hallazgo mismo |
+
+**Lo que no cambió:** los cuatro campos, el envoltorio, `contratoVersion: 2`, el buscador
+como único `modoRespuesta`, las dos reglas de veracidad y la decisión de no bajar el schema
+a archivo. **Ningún cambio de datos**: `src/data/adivinar-tema.json` valida tal como está.
+
+---
+
+## Qué cambió en la v2, en una tabla
 
 | Sección | Antes (v1, 2026-08-19) | Ahora (v2, 2026-08-24) | Por qué |
 |---|---|---|---|
@@ -56,22 +77,27 @@ distinto", y esto no se lee distinto.
 
 ## CTR-03 — Contrato del manifiesto de "adiviná el tema"
 
-- **Estado:** **vigente y sin nada abierto.** La única decisión que la v1 dejó marcada como
+- **Estado:** **vigente y sin nada abierto**, y desde el 2026-08-27 describiendo un archivo
+  que existe y está lleno: **95 fragmentos**. La única decisión que la v1 dejó marcada como
   ajena —cómo se responde— la cerró el usuario en `D-24`.
-- **Para quién es:** para `scripts/generar-fragmentos.mjs`, que escribe el archivo, y para
+- **Para quién es:** para los **dos** scripts que escriben el archivo
+  —`scripts/generar-fragmentos.mjs` y `scripts/ingerir-fragmentos.mjs` (`CTR-01.6`)— y para
   `src/lib/tema/catalogo.ts`, que lo lee en build. **Ya no es para `contenido`**: no hay
   nada que cargar a mano acá.
-- **Cambio que el archivo de datos necesita: ninguno.** `src/data/adivinar-tema.json`, tal
-  como está hoy, cumple este contrato entero. Lo digo explícito porque la tarea lo pedía:
-  **no dejo ningún cambio de datos pendiente para `T-107`.** Lo que sí dejo son dos
-  propuestas opcionales de código, marcadas como tales en `CTR-03.1` y `CTR-03.8`.
+- **Cambio que el archivo de datos necesita: ninguno, y eso se verificó en esta revisión.**
+  `src/data/adivinar-tema.json` cumple este contrato entero: 95 entradas de cuatro campos,
+  todas de 10,06 s, todas dentro de la ventana nueva. Lo que se corrigió fue el contrato.
+  Lo que sí quedan son dos propuestas opcionales de código, marcadas como tales en
+  `CTR-03.1` y `CTR-03.8`.
 
 ---
 
 ### CTR-03.1 — Archivo, envoltorio y presupuesto — **v2**
 
 **Archivo:** `src/data/adivinar-tema.json`.
-**Quién lo escribe:** `scripts/generar-fragmentos.mjs`, entero, en cada corrida.
+**Quién lo escribe:** **cualquiera de los dos scripts de `CTR-01.6`** —
+`generar-fragmentos.mjs` (régimen A, con ffmpeg) o `ingerir-fragmentos.mjs` (régimen B,
+sobre lo ya recortado)— **entero, en cada corrida**.
 **Quién lo lee:** `catalogo()` en build. **Nunca se edita a mano.**
 
 ```json
@@ -80,11 +106,19 @@ distinto", y esto no se lee distinto.
   "contratoVersion": 2,
   "juego": "adivinar-tema",
   "modoRespuesta": "buscador",
-  "actualizado": "2026-08-23",
-  "nota": "Lista de archivos de audio que EXISTEN, no de temas. ...",
+  "actualizado": "2026-08-27",
+  "nota": "Lista de archivos de audio que EXISTEN, no de temas. La escriben scripts/generar-fragmentos.mjs (desde los masters, con ffmpeg) o scripts/ingerir-fragmentos.mjs (desde fragmentos ya recortados, PR #8). ...",
   "fragmentos": []
 }
 ```
+
+> **Revisado el 2026-08-27 (`FIND-33`): hay dos productores, y el `nota` es el único lugar
+> del dato donde se ve cuál corrió.** No se agrega un campo para eso. El manifiesto describe
+> **qué archivos hay**, no cómo se hicieron; el "cómo" es de `CTR-01.6` y de `D-26`, y por
+> corrida es uno solo. *Alternativa descartada:* un campo `productor` en el envoltorio.
+> Cuesta tocar dos scripts, el schema y la interfaz `Manifiesto` para guardar un dato que no
+> cambia ninguna decisión de lectura — y que ya está, en prosa, en el `nota` que los dos
+> scripts escriben.
 
 | Clave | Tipo | Obligatoria | Nota |
 |---|---|---|---|
@@ -92,15 +126,17 @@ distinto", y esto no se lee distinto.
 | `contratoVersion` | `2` | sí | La v1 nunca produjo un archivo. |
 | `juego` | `"adivinar-tema"` | sí | |
 | `modoRespuesta` | `"buscador"` | sí | Único valor. Ver `CTR-03.5`. |
-| `actualizado` | `AAAA-MM-DD` | sí | Fecha de la corrida del generador. Es también la trazabilidad de producción que `CTR-01.8` dejó de guardar por archivo. |
-| `nota` | string | no | Para el que abre el archivo sin contexto. No la lee ningún código. |
-| `fragmentos` | array | sí | Puede estar **vacío**, y hoy lo está. |
+| `actualizado` | `AAAA-MM-DD` | sí | Fecha de la corrida. Es también la trazabilidad de producción que `CTR-01.8` dejó de guardar por archivo. |
+| `nota` | string | no | Para el que abre el archivo sin contexto. **No la lee ningún código**, y por eso puede decir cosas que ningún campo dice — como cuál de los dos scripts corrió. |
+| `fragmentos` | array | sí | Puede estar **vacío**. **Hoy tiene 95.** |
 
-**`fragmentos` vacío es un estado válido, no un error.** Significa que el sitio todavía no
-tiene con qué sonar, porque el audio se produce desde la máquina del usuario (`D-23`). La
-pantalla lo dice y no se rompe; `catalogo()` devuelve los 105 temas con `jugable: false`.
-Es la misma postura que el resto del proyecto toma con los insumos que faltan: un hueco
-declarado antes que una excepción.
+**`fragmentos` vacío sigue siendo un estado válido, no un error**, aunque hoy no sea el
+estado. Significa que el sitio todavía no tiene con qué sonar. La pantalla lo dice y no se
+rompe; `catalogo()` devuelve los 105 temas con `jugable: false`. Es la misma postura que el
+resto del proyecto toma con los insumos que faltan: un hueco declarado antes que una
+excepción. **Conviene que esa rama siga escrita y probada**: el día que llegue un reclamo,
+bajar los 95 mp3 y volver a correr el ingestor deja el manifiesto vacío en un minuto, que
+es exactamente lo que `D-14` promete poder hacer.
 
 > **Revisado el 2026-08-24 (`T-104`): el envoltorio se aparta del común, a propósito.** La
 > v1 usaba el mismo envoltorio que `CTR-02` —`contrato`, `contratoVersion`, `juego`,
@@ -119,14 +155,15 @@ declarado antes que una excepción.
 > generador, en el catálogo, en dos tests y en `D-24`, y el nombre del juego sigue siendo
 > la mejor pista de para qué existe.
 
-**Presupuesto de tamaño:** 104 entradas × ~110 bytes ≈ **12 KB**, contra el techo de 150 KB
-de `CTR-02.1`. El archivo no es el problema y nunca lo va a ser.
+**Presupuesto de tamaño:** las 95 entradas de hoy, con el JSON indentado, dan ~11 KB;
+las 104 del catálogo completo darían ~12 KB, contra el techo de 150 KB de `CTR-02.1`. El
+archivo no es el problema y nunca lo va a ser.
 
 **Presupuesto de audio: no lo fija este contrato, lo fija `CTR-01.5`.** Tres buffers
-residentes, ≤ 8,6 MB de RAM en el caso peor, ventana de dos adelantados. **104 entradas en
-el manifiesto no son 104 buffers en memoria**, y que el pozo pase de 20 a 104 no toca el
-presupuesto de gama baja en un solo byte. Se repite de la v1 porque es la confusión más
-fácil de cometer.
+residentes, **≤ 6,0 MB** de RAM en el caso peor —bajó de 8,6 con `D-26`, porque el
+fragmento dura 10 s y no 15—, ventana de dos adelantados. **95 entradas en el manifiesto no
+son 95 buffers en memoria**, y que el pozo pase de 20 a 95 no toca el presupuesto de gama
+baja en un solo byte. Se repite de la v1 porque es la confusión más fácil de cometer.
 
 > **Propuesta opcional para el hilo principal (no bloquea, no es un cambio de datos).** La
 > interfaz `Manifiesto` de `src/lib/tema/catalogo.ts` declara cuatro claves y no incluye
