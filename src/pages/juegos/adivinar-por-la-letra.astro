@@ -25,7 +25,6 @@ import '../../styles/sitio.css';
 import Cabeza from '../../components/Cabeza.astro';
 import { PANTALLA_0 } from '../../lib/por-la-letra/copy.ts';
 import { PORTAL } from '../../lib/sitio/copy.ts';
-import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import { leerTemas, slugDeTitulo } from '../../lib/letra/temas.ts';
 import { FICHAS } from '../../lib/cancionero/banco.ts';
 import bancoCrudo from '../../data/por-la-letra.json';
@@ -54,11 +53,11 @@ const catalogo = leerTemas().map((t) => ({
   disco: t.disco,
   discoTitulo: porDisco.get(t.disco)?.titulo ?? t.disco,
   pista: t.pista,
+  // El año sale de la misma ficha de disco que ya se está leyendo dos líneas arriba: es
+  // lo que le falta a la revelación para decir de dónde salió el tema, y no cuesta
+  // ninguna consulta nueva.
+  anio: porDisco.get(t.disco)?.anio ?? 0,
 }));
-
-const FONDO = 'momo-medallon';
-const fondo = fondoTapa(FONDO);
-const tapasUsadas = fondo ? discosDe([FONDO]) : [];
 
 const TITULO = 'Sacalo por la letra — Arcade Ricotero';
 ---
@@ -74,15 +73,14 @@ const TITULO = 'Sacalo por la letra — Arcade Ricotero';
   </head>
   <body class="con-grano juego-por-la-letra">
     <main id="app">
-      {fondo && <div class="tapa-fondo tapa-fondo--momo-medallon" aria-hidden="true" />}
-
       <section id="portada" class="pantalla sobre-tapa">
         <header class="cabecera-sitio">
           <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
         </header>
         <p class="marca" aria-label="Arcade Ricotero">ARCADE RICOTERO</p>
         <h1>{PANTALLA_0.titulo}</h1>
-        <p class="tenue">{PANTALLA_0.subtitulo}</p>
+        {/* La isla reemplaza esta bajada cuando alguien llega por un desafío (`ADR-02`). */}
+        <p id="subtitulo" class="tenue">{PANTALLA_0.subtitulo}</p>
 
         <div class="arranque">
           <p class="tenue">{PANTALLA_0.hay(items.length)}</p>
@@ -93,14 +91,81 @@ const TITULO = 'Sacalo por la letra — Arcade Ricotero';
       <section id="partida" class="pantalla sobre-tapa" hidden></section>
       <section id="resultado" class="pantalla sobre-tapa" hidden></section>
 
-      <footer class="pie-sitio sobre-tapa">
-        {tapasUsadas.length > 0 && <p class="credito-tapas">{PORTAL.creditoTapas(tapasUsadas)}</p>}
-        {PORTAL.pie}
-      </footer>
+      <footer class="pie-sitio sobre-tapa">{PORTAL.pie}</footer>
     </main>
 
     <script type="application/json" id="banco" set:html={JSON.stringify(items)} />
     <script type="application/json" id="catalogo" set:html={JSON.stringify(catalogo)} />
     <script src="../../scripts/partida-por-la-letra.ts"></script>
+
+    <style>
+      /*
+       * Esta página no tenía bloque de estilo. Ninguno.
+       *
+       * Y no era una economía: era un agujero. `.marca` no existe en ninguna hoja global
+       * —`sitio.css` define `.marca-chica`, `.marca-grande` y `.marca-rotulo`, ninguna de
+       * ellas— y no hay regla que alcance al `h1`. Medido antes de tocar nada: el título
+       * del juego salía a 32 px, que es el `2em` por defecto **del navegador**, en la
+       * letra del sistema y en el color del texto común. O sea que el único juego del
+       * sitio cuyo título no vestía nada era éste, y encima el nombre del sitio arriba
+       * salía igual de crudo.
+       *
+       * El molde es el del hermano ya pulido (`adivinar-el-tema.astro`), con la tinta que
+       * le toca a este juego: Momo Sampler, que es lo que `UX-08` le asignó.
+       */
+      main {
+        max-width: 34rem;
+        margin: 0 auto;
+        position: relative;
+        /* El alto de la ventana MENOS lo que el `body` gasta en su propio margen. Con
+           `100svh` pelado la portada arrancaba con 32 px de scroll que no llevaban a
+           ninguna parte. Mismo arreglo que el hermano. */
+        min-height: calc(100svh - var(--espacio-2) * 2);
+      }
+
+      /* La firma del sitio es un sello, no el titular: el nombre del juego manda. */
+      .marca {
+        font-family: var(--fuente-titular);
+        font-size: 1.45rem;
+        line-height: 0.96;
+        letter-spacing: 0.02em;
+        color: var(--marca-rojo);
+        margin: var(--espacio-2) 0;
+        max-width: 7ch;
+      }
+
+      h1 {
+        font-family: var(--fuente-rotulada);
+        font-size: 2.3rem;
+        line-height: 1.02;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        text-wrap: balance;
+        /* La plata de la tapa de Momo Sampler (`RES-37`), 13,29:1 sobre el fondo. */
+        color: var(--disco-momo-sampler-tinta);
+        margin: 0 0 var(--espacio-1);
+      }
+
+      .tenue {
+        color: var(--texto-tenue);
+      }
+
+      .pantalla[hidden] {
+        display: none;
+      }
+
+      /*
+       * La acción vive en la zona del pulgar y no se va de la pantalla. Es la misma cinta
+       * pegada abajo que el hermano, y acá hace todavía más falta: entre el botón y el pie
+       * había cuatrocientos píxeles de nada.
+       */
+      .arranque {
+        margin-top: var(--espacio-4);
+      }
+
+      #jugar {
+        margin-top: var(--espacio-1);
+      }
+    </style>
   </body>
 </html>

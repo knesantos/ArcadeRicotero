@@ -491,6 +491,33 @@
   color: var(--texto-tenue);
 }
 
+/* ---- La tinta real de cada disco (paleta.ts) ----
+ *
+ * `D-19` viste CATEGORIAS: esta pantalla es `mitologia` y le toca Lobo suelto. Eso no se
+ * toca — la portada, la barra, el boton de escuchar y el de arriesgar siguen naranjas, y
+ * la base (fondo, grano, zona pulgar, acierto, error) no rota nunca.
+ *
+ * Lo que rota es **el tema revelado**, que no es una parte de la pantalla: es la
+ * respuesta. Los diez colores estan muestreados de las tapas reales (`RES-37`) y los diez
+ * pasan AA sobre `--fondo`; hasta hoy este juego no usaba ninguno y revelaba los 105
+ * temas con el mismo naranja. El precedente esta escrito en `tokens.css`: el cancionero
+ * ya viste cada disco con el suyo, "la misma idea llevada a su conclusion".
+ *
+ * OJO: `--tinta-disco` lleva texto y va SOBRE `--fondo`. Sobre `--fondo-elevado` no llega
+ * a AA, y `contraste.test.ts` deja escrito por que. `--apoyo-disco` es borde y relleno, y
+ * nunca lleva texto. */
+
+.disco--gulp { --tinta-disco: var(--disco-gulp-tinta); --apoyo-disco: var(--disco-gulp-apoyo); }
+.disco--oktubre { --tinta-disco: var(--disco-oktubre-tinta); --apoyo-disco: var(--disco-oktubre-apoyo); }
+.disco--un-baion-para-el-ojo-idiota { --tinta-disco: var(--disco-un-baion-para-el-ojo-idiota-tinta); --apoyo-disco: var(--disco-un-baion-para-el-ojo-idiota-apoyo); }
+.disco--bang-bang-estas-liquidado { --tinta-disco: var(--disco-bang-bang-estas-liquidado-tinta); --apoyo-disco: var(--disco-bang-bang-estas-liquidado-apoyo); }
+.disco--la-mosca-y-la-sopa { --tinta-disco: var(--disco-la-mosca-y-la-sopa-tinta); --apoyo-disco: var(--disco-la-mosca-y-la-sopa-apoyo); }
+.disco--lobo-suelto { --tinta-disco: var(--disco-lobo-suelto-tinta); --apoyo-disco: var(--disco-lobo-suelto-apoyo); }
+.disco--cordero-atado { --tinta-disco: var(--disco-cordero-atado-tinta); --apoyo-disco: var(--disco-cordero-atado-apoyo); }
+.disco--luzbelito { --tinta-disco: var(--disco-luzbelito-tinta); --apoyo-disco: var(--disco-luzbelito-apoyo); }
+.disco--ultimo-bondi-a-finisterre { --tinta-disco: var(--disco-ultimo-bondi-a-finisterre-tinta); --apoyo-disco: var(--disco-ultimo-bondi-a-finisterre-apoyo); }
+.disco--momo-sampler { --tinta-disco: var(--disco-momo-sampler-tinta); --apoyo-disco: var(--disco-momo-sampler-apoyo); }
+
 /* ---- Portada: elegir el pozo (todos los discos, o uno) ---- */
 
 .pozos {
@@ -530,14 +557,17 @@
   text-align: left;
 }
 
+/* El disco elegido se enciende con SU tinta, no con la de la seccion. "Todos los discos"
+   no tiene disco propio, asi que cae en el naranja de la pantalla — que es lo correcto:
+   es la puerta de entrada, no un disco mas. */
 .pozo[aria-pressed='true'] {
-  border-color: var(--cat-mitologia);
+  border-color: var(--tinta-disco, var(--cat-mitologia));
   /* Sombra dura desplazada: papel sobre papel, no elevacion difusa. */
-  box-shadow: 3px 3px 0 var(--cat-mitologia-apoyo);
+  box-shadow: 3px 3px 0 var(--apoyo-disco, var(--cat-mitologia-apoyo));
 }
 
 .pozo[aria-pressed='true'] .pozo-titulo {
-  color: var(--cat-mitologia);
+  color: var(--tinta-disco, var(--cat-mitologia));
 }
 
 .pozo:disabled {
@@ -591,8 +621,22 @@
   font-size: 0.95rem;
 }
 
+/*
+ * Un renglon todavia sin escribir es una RAYA, no una fila.
+ *
+ * Vacio no es apagado: el renglon se ve, y por eso se sabe cuantos quedan. Pero medido a
+ * 375x812 antes de tocar nada, los seis a alto completo se llevaban **192 px** — la
+ * cuarta parte de la pantalla — para no decir absolutamente nada, y empujaban la
+ * revelacion abajo del pliegue.
+ *
+ * Y ademas eran la tercera vez que se contaba lo mismo: la cabecera ya dice "te quedan 4
+ * intentos" y la barra ya dibuja los seis escalones. Achicarlos no saca informacion de la
+ * pantalla; saca una repeticion que costaba una cuarta parte del celular.
+ */
 .intento--libre {
-  /* Vacio no es apagado: el renglon se ve, y por eso se sabe cuantos quedan. */
+  min-height: 0;
+  height: 0.6rem;
+  padding-block: 0;
   border-bottom-style: dashed;
 }
 
@@ -673,8 +717,53 @@
   background: var(--cat-mitologia);
 }
 
+/* ---- La regla graduada de abajo de la barra ----
+ *
+ * La escalera se anunciaba de a un escalon por vez ("Tenes 0,1 s de audio"), asi que **su
+ * forma no se veia**: para saber que despues de 0,1 vienen 0,5, 2, 4, 8 y 10 habia que
+ * gastarlos. Los seis renglones de intento se dibujan todos desde el arranque justamente
+ * por lo contrario — "la altura de la escalera tiene que verse antes de empezar a
+ * gastarla" — y a la barra, que ES la escalera, eso no se le habia aplicado.
+ *
+ * Cada numero va pegado al borde derecho de su tramo porque marca **cuanto audio llevas
+ * acumulado si llegaste hasta ahi**: es el eje de un grafico que ya estaba dibujado sin
+ * eje. Los cortes entre tramos hacen de marcas de la regla; no hace falta dibujar
+ * ninguna raya mas.
+ *
+ * Los dos primeros tramos no llevan numero: se llevan el 1% y el 4% de la barra, tres
+ * pixeles y trece en un celular. Quien lo decide es `tramosConEtiqueta()`, que lo calcula
+ * de los mismos anchos y esta testeado — no una consulta de contenedor en CSS. */
+
+.barra-escala {
+  display: flex;
+  gap: 2px;
+  margin-top: 5px;
+}
+
+.barra-marca {
+  display: flex;
+  justify-content: flex-end;
+  flex-basis: 0;
+  flex-shrink: 1;
+  min-width: 8px;
+}
+
+.barra-valor {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  letter-spacing: 0.02em;
+  color: var(--texto-tenue);
+  white-space: nowrap;
+}
+
+/* El numero del escalon que ya tenes deja de ser una promesa y pasa a ser un dato: la
+   misma senal que el borde de su tramo, en la misma columna. */
+.barra-marca--abierta .barra-valor {
+  color: var(--cat-mitologia);
+}
+
 .barra-etiqueta {
-  margin: var(--espacio-1) 0 0;
+  margin: var(--espacio-2) 0 0;
   font-family: var(--fuente-rotulada);
   font-size: 0.85rem;
   letter-spacing: 0.06em;
@@ -820,7 +909,10 @@
   padding: 0;
   list-style: none;
   background: var(--fondo);
-  border: var(--linea) solid var(--cat-mitologia-apoyo);
+  /* Con el teclado abierto esta es la pieza mas grande del tablero, asi que la viste el
+     juego que la abre y no siempre Lobo suelto. Cada tablero declara su `--tinte-lista`;
+     sin declararlo, queda el de "adivina el tema", que es donde nacio. */
+  border: var(--linea) solid var(--tinte-lista, var(--cat-mitologia-apoyo));
   border-radius: 3px;
   box-shadow: 4px 4px 0 var(--borde);
 }
@@ -901,10 +993,12 @@
   letter-spacing: 0.04em;
 }
 
+/* Se llena con la tinta del tablero, no con la de "adivina el tema". El fallback deja al
+   hermano exactamente donde estaba: solo `.juego-por-la-letra` declara `--tinte-accion`. */
 .arriesgar--listo {
-  background: var(--cat-mitologia);
+  background: var(--tinte-accion, var(--cat-mitologia));
   color: var(--fondo);
-  border-color: var(--cat-mitologia);
+  border-color: var(--tinte-accion, var(--cat-mitologia));
 }
 
 .arriesgar:disabled {
@@ -916,20 +1010,44 @@
    Reusa `.feedback` (borde completo tenido por el estado, nunca una barra lateral) y le
    agrega lo propio de este juego: el titulo, la ficha del disco y las dos salidas. */
 
+/*
+ * La revelacion se apoya sobre `--fondo`, no sobre el elevado que trae `.feedback`.
+ *
+ * Los dos motivos apuntan al mismo lado. El de contraste: el titulo del tema se pinta con
+ * la tinta real de su disco, y `contraste.test.ts` deja escrito que **esas tintas no
+ * llegan a AA sobre `--fondo-elevado`** — el naranja de La mosca y la sopa da 4,32:1. El
+ * de marca: la cabecera de este bloque ya pedia lo mismo por otro camino ("las piezas de
+ * este juego se separan por borde grueso y sombra dura desplazada, no por un gris arriba
+ * de otro gris"), y el gris sobre gris es un tic vetado por nombre.
+ *
+ * La pieza se recorta con el borde grueso que `.feedback` ya le da —tenido de verde o de
+ * rojo segun como salio— y una sombra dura en el apoyo del disco, que es papel sobre
+ * papel. Es el mismo recurso del pozo elegido en la portada.
+ */
 .revelacion {
   margin-top: var(--espacio-3);
+  background: var(--fondo);
+  box-shadow: 4px 4px 0 var(--apoyo-disco, var(--borde));
 }
 
 .revelacion[hidden] {
   display: none;
 }
 
+/*
+ * El titulo del tema, en la tinta de SU disco.
+ *
+ * Es el premio: el jugador se lleva el disco, no un numero. Sube de 1,25rem a 1,6rem
+ * porque es la respuesta de la pantalla — antes era mas chico que el "¡La sacaste!" que
+ * tiene arriba, que es el comentario, no el dato.
+ */
 .revelacion-titulo {
   margin: var(--espacio-1) 0 0;
   font-family: var(--fuente-rotulada);
-  font-size: 1.25rem;
-  line-height: 1.2;
-  color: var(--texto);
+  font-size: 1.6rem;
+  line-height: 1.15;
+  text-wrap: balance;
+  color: var(--tinta-disco, var(--texto));
 }
 
 .revelacion-ficha {
@@ -939,9 +1057,18 @@
 }
 
 .revelacion-puntos {
-  margin: var(--espacio-1) 0 0;
+  margin: var(--espacio-2) 0 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.05rem;
   color: var(--acento-3);
-  font-weight: 700;
+}
+
+/* Lo que costo el tema, en las dos monedas del juego: audio y reloj. Registro 3 — dice
+   que hay adentro y se calla. Va tenue: es la ficha del dato, no el dato. */
+.revelacion-costo {
+  margin: 0.15rem 0 0;
+  color: var(--texto-tenue);
+  font-size: 0.9rem;
 }
 
 .revelacion-escuchar {
@@ -998,11 +1125,19 @@
   list-style: none;
 }
 
+/*
+ * El setlist de la vuelta, que paso de nota al pie a pieza central.
+ *
+ * Antes cada fila decia el titulo y, a la derecha, `0,1 s` o un guion. Ahora dice **que
+ * disco era, cuanto audio hizo falta y cuanto tardaste**, que es lo que el usuario pidio
+ * que el resultado contara. Y cada titulo va en la tinta real de su tapa: leido de un
+ * saque, el resultado es una lista de discos, no una lista de aciertos.
+ */
 .resumen-fila {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   gap: var(--espacio-1);
-  padding: 0.35rem 0.4rem;
+  padding: var(--espacio-1) 0.4rem;
   border-bottom: 2px solid var(--borde);
 }
 
@@ -1010,6 +1145,8 @@
   flex: none;
   width: 1.25rem;
   font-weight: 700;
+  /* La marca se alinea con la primera linea del titulo, que es mas grande que el pie. */
+  line-height: 1.35;
 }
 
 .resumen-fila--ok .resumen-marca {
@@ -1020,15 +1157,99 @@
   color: var(--acento-4);
 }
 
-.resumen-tema {
+.resumen-cuerpo {
+  display: flex;
+  flex-direction: column;
   flex: 1;
-  overflow-wrap: anywhere;
+  min-width: 0;
 }
 
-.resumen-dato {
-  flex: none;
+.resumen-tema {
+  font-family: var(--fuente-rotulada);
+  font-size: 1rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  color: var(--tinta-disco, var(--texto));
+}
+
+/* Disco, audio y reloj. Tenue y chico: el titulo es el dato, esto es la ficha. */
+.resumen-pie {
+  margin-top: 1px;
+  font-size: 0.78rem;
+  line-height: 1.35;
   color: var(--texto-tenue);
+}
+
+/* ---- La cifra grande del resultado ----
+ *
+ * El numero grande de esta pantalla es lo que distingue una vuelta de otra, y es el
+ * cambio de jerarquia que
+ * pidio el usuario: *"mas que el puntaje es importante y divertido saber en cuanto tiempo
+ * y que temas adivino"*. El puntaje no desaparece — queda en su renglon, abajo —, deja de
+ * ser lo primero que se lee.
+ *
+ * **Que cuenta depende del juego, y por eso la clase no se llama `reloj`.** En "adivina
+ * el tema" es el tiempo, porque escuchar una decima y decidir es una carrera. En "sacalo
+ * por la letra" son los versos que gastaste, porque cronometrar a alguien que lee castiga
+ * al lector lento sin medir nada del juego. La maqueta es la misma; el dato, no.
+ *
+ * Viste Gulp!, porque asi reparte `D-19` ("resultado=Gulp!+logo") y asi lo tenia ya el
+ * boton de compartir de esta misma pantalla. */
+
+.cifra {
+  margin: var(--espacio-3) 0 0;
+}
+
+.cifra-rotulo {
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+.cifra-numero {
+  margin: 0.1rem 0 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 3rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: var(--cat-historia);
+}
+
+.cifra-pie {
+  margin: var(--espacio-1) 0 0;
+  color: var(--texto-tenue);
+}
+
+/* ---- Lo que compartir deja en pantalla ----
+ *
+ * Una caja sola, que se REEMPLAZA en cada intento. Antes cada clic apilaba un parrafo
+ * nuevo abajo del boton y a los tres clics habia tres avisos iguales uno debajo del otro.
+ * Es el respaldo de escritorio: en un celular el menu del sistema se lleva el gesto y
+ * esta caja no llega a aparecer. */
+
+.compartir-salida:empty {
+  display: none;
+}
+
+.compartir-aviso {
+  margin: var(--espacio-2) 0 0;
   font-size: 0.85rem;
+  color: var(--texto-tenue);
+}
+
+/* La tarjeta a mano, para el que quiere la imagen y no el menu de compartir. Es un
+   enlace de descarga, asi que necesita lo que `.secundario` da por sentado de un boton. */
+.compartir-bajar {
+  display: block;
+  width: 100%;
+  margin-top: var(--espacio-1);
+  padding: var(--espacio-2);
+  min-height: var(--toque-min);
+  text-align: center;
+  text-decoration: none;
 }
 
 /* ------------------------------------------------------------------
@@ -1285,8 +1506,50 @@
    versos que crece y scrollea sola, buscador anclado en la zona pulgar.
    ========================================================================== */
 
+/*
+ * Los dos tintes de este juego, y por que son dos y no uno.
+ *
+ * **`--tinte-accion` era el `-apoyo` y estaba mal.** El peltre de Momo contra el fondo da
+ * **3,66:1**: el unico boton primario del sitio que no llegaba a AA. Y no era
+ * un descuido de medicion, era usar un token fuera de su mandato — `tokens.css` dice de
+ * los `-apoyo`, con todas las letras, que son "para bordes y rellenos" y que "NO se usa
+ * como texto". Un relleno de apoyo que LLEVA texto encima es exactamente el caso que esa
+ * frase excluye. La tinta —la plata de la tapa— da **13,29:1** y ademas es el color
+ * identificatorio del disco, no su sombra. `contraste.test.ts` guarda el par para que la
+ * cuenta no dependa de este comentario.
+ *
+ * **`--tinte-lista` sigue siendo el apoyo, y ahi si corresponde**: es el borde de la
+ * lista de sugerencias, que es borde y no lleva texto encima. Existe porque esa lista, con
+ * el teclado abierto, es la pieza mas grande del tablero — y venia con el borde de Lobo
+ * suelto, o sea que la unica tinta de disco visible durante la partida de este juego era
+ * la del hermano.
+ */
 .juego-por-la-letra {
-  --tinte-accion: var(--disco-momo-sampler-apoyo);
+  --tinte-accion: var(--disco-momo-sampler-tinta);
+  --tinte-lista: var(--disco-momo-sampler-apoyo);
+}
+
+/* La cabecera no pone su propio margen aca: la columna flex ya reparte con `gap`, y los
+   dos juntos daban el doble de aire del que esta pantalla puede pagar. */
+.juego-por-la-letra .cabecera {
+  margin-bottom: 0;
+}
+
+/*
+ * El pie no existe mientras se juega.
+ *
+ * El tablero mide `100svh` y el pie del sitio quedaba **debajo**: medido a 375x812, el
+ * documento daba 945 px contra 812 de ventana, o sea 133 px de scroll que no llevaban a
+ * ninguna parte y que en escritorio ademas invocaban la barra lateral — y con ella el
+ * contenido centrado se corria 7 px justo al empezar la partida. Un tablero de alto fijo
+ * con algo colgando abajo no es un tablero de alto fijo.
+ *
+ * Se puede esconder sin perder nada porque el credito de tapas de `D-21` ya no vive aca:
+ * esta pantalla no muestra ninguna tapa. Si algun dia entra la de Momo, el credito tiene
+ * que mudarse adentro del tablero ANTES de que esta regla siga en pie.
+ */
+body.juego-por-la-letra:has(#partida:not([hidden])) .pie-sitio {
+  display: none;
 }
 
 /* La columna de alto fijo. `svh` y no `vh`: descuenta la barra del navegador movil,
@@ -1315,20 +1578,149 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
 /* La unica franja que crece, y la unica que scrollea. `min-height: 0` es lo que deja
    que un hijo flex se encoja por debajo de su contenido: sin eso, ocho versos empujan
    el buscador fuera de la pantalla en vez de scrollear acá adentro. */
+/*
+ * El rotulo del conteo de versos: le pone nombre a la hoja y avisa cuando sube el escalon.
+ *
+ * Registro 3 — dice que hay adentro y se calla. Va pegado a la hoja y no flotando: el
+ * margen negativo le come parte del `gap` de la columna, porque un rotulo separado de lo
+ * que rotula deja de rotularlo.
+ */
+.rotulo-versos {
+  margin: 0 0 calc(var(--espacio-1) - var(--espacio-2));
+  font-family: var(--fuente-rotulada);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+/*
+ * La hoja es un RECORTE PEGADO, y esto lo especifico `UX-08` seccion 4 hace un ciclo.
+ *
+ * Lo que habia eran tres propiedades de layout y ninguna de dibujo: el verso —que es todo
+ * el contenido de este juego— salia como texto suelto sobre tinta plana, sin nada que lo
+ * recortara del resto de la pantalla. La spec estaba escrita y sin construir:
+ *
+ *   "la hoja entera es un recorte pegado, borde completo (las cuatro caras, nunca solo la
+ *   izquierda - esa es justo la barra lateral que la regla antislop veto primero) en
+ *   --disco-momo-sampler-apoyo, fondo --fondo-elevado (el par ya testeado 'texto sobre
+ *   fondo elevado') ... y esquina de estampa (border-radius: 3px, no la burbuja pareja
+ *   que tambien veto esa regla)."
+ *
+ * **Lo unico de esa spec que no se construye es la rotacion**, y con motivo: esta hoja es
+ * el contenedor de scroll (`overflow-y: auto`), no un recorte estatico como el
+ * `.verso-bloque` de `US-03`. Un `transform` ahi crea bloque contenedor y contexto de
+ * apilado, y complica el scroll y cualquier hijo posicionado. El borde tenido, el fondo
+ * elevado y la sombra dura desplazada ya son el recorte pegado; la inclinacion era la
+ * parte prescindible.
+ *
+ * OJO CON EL CONTRASTE: sobre `--fondo-elevado` el par testeado es `--texto`, que es lo
+ * que `.verso` hereda. **Ninguna tinta de disco como texto aca adentro** — no llegan a AA
+ * sobre el elevado, y `contraste.test.ts` deja escrito por que.
+ */
 .hoja-versos {
-  flex: 1 1 auto;
+  /*
+   * La hoja **crece con los versos** en vez de ocupar todo el hueco desde el arranque.
+   *
+   * Con `flex: 1 1 auto` la hoja se estiraba a toda la banda libre: medido, **545 px de
+   * recorte con un solo verso adentro**, o sea una hoja casi vacia. Con `0 1 auto` toma el
+   * alto de su contenido, y el `margin-bottom: auto` se come el sobrante — asi el buscador
+   * sigue clavado abajo, en la zona del pulgar, que es lo que `UX-08` no negocia.
+   *
+   * Y hace literal lo que esa misma hoja de `UX-08` dice de la escalera: *"la barra no
+   * existe, los versos acumulados SON la barra"*. Si la hoja crece a cada escalon, la
+   * barra se dibuja sola con el contenido, sin dibujar ninguna barra.
+   *
+   * `min-height: 0` y `overflow-y: auto` siguen: cuando los ocho versos no entran, la hoja
+   * se encoge y scrollea adentro en vez de empujar el buscador fuera de la pantalla.
+   */
+  flex: 0 1 auto;
+  margin-bottom: auto;
   min-height: 0;
   overflow-y: auto;
+  padding: var(--espacio-2);
+  background: var(--fondo-elevado);
+  border: var(--linea) solid var(--disco-momo-sampler-apoyo);
+  border-radius: 3px;
+  box-shadow: 4px 4px 0 var(--borde);
+}
+
+/*
+ * Al revelar, la hoja deja de pelear por el alto.
+ *
+ * El tablero es una columna de `100svh` con la hoja en `flex: 1 1 auto`, asi que el panel
+ * de respuesta appendeado le comia el alto: medido, **de 515 px a 59 px**. Los versos que
+ * el jugador estaba tratando de sacar quedaban ilegibles justo en el momento en que
+ * aparece la respuesta — que es cuando mas ganas dan de releerlos.
+ *
+ * Con el tema cerrado ya no hay ninguna razon para el alto fijo: la partida termino, y la
+ * pantalla puede scrollear como cualquier otra del sitio.
+ */
+.juego-por-la-letra #partida.partida--revelada {
+  height: auto;
+  min-height: 100svh;
+}
+
+.partida--revelada .hoja-versos {
+  flex: 0 0 auto;
+  overflow: visible;
 }
 
 /* El verso es la pieza central de la pantalla, no una nota al pie: un poco mas grande
    que el cuerpo. Texto largo -> `--fuente`, nunca letra de disco (`UX-01`). */
+/*
+ * Cada verso ocupa su renglon, con filete. Tambien es `UX-08` seccion 4, sin construir:
+ *
+ *   "Un fino filete inferior en --borde separa cada renglon del siguiente - mismo recurso
+ *   que ya usa .intento para 'papel con renglones', reaplicado aca a versos."
+ *
+ * **Y no es decoracion: es el marcador del juego.** Lo dice la misma spec — "ver dos
+ * lineas en vez de una ya dice 'subiste de escalon' antes de leer la cabecera". Sin el
+ * filete, lo unico que separaba dos versos eran 8 px de margen contra los ~25 px que hay
+ * entre las dos lineas de un verso que envuelve; o sea que en los temas de versos largos
+ * —hay cinco con algun verso de mas de 60 caracteres— no se podia distinguir "dos versos"
+ * de "un verso largo". Y en este juego contar versos **es contar el precio**: dos
+ * renglones significan un intento gastado y el tema valiendo 80 en vez de 100.
+ *
+ * El tamano (1.05rem) y la fuente (`--fuente`, nunca letra de disco) los fija la misma
+ * spec y no se tocan: es texto para leer de corrido, y eso lo manda `UX-01`.
+ */
 .verso {
   font-family: var(--fuente);
   font-size: 1.05rem;
   line-height: 1.5;
-  margin: 0 0 var(--espacio-1);
+  margin: 0;
+  padding-block: var(--espacio-1);
+  border-bottom: 1px solid var(--borde);
   text-wrap: pretty;
+}
+
+.verso:first-child {
+  padding-top: 0;
+}
+
+.verso:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/*
+ * Los versos que trajo el escalon en curso.
+ *
+ * Al pasar del escalon 3 al 4 aparecen cuatro versos de golpe entre los cuatro que ya
+ * estabas leyendo, todos iguales, y la hoja ademas se baja hasta el final: lo que acabas
+ * de ganar podia quedar mezclado sin ninguna pista de donde empieza. El filete tenido lo
+ * dice sin agregar un solo elemento ni una sola palabra.
+ *
+ * Se tine el APOYO del disco y no la tinta: es una linea, no texto.
+ */
+.verso--nuevo {
+  border-bottom-color: var(--disco-momo-sampler-apoyo);
+}
+
+/* El ultimo verso nuevo no pierde su marca por ser el ultimo de la hoja. */
+.verso--nuevo:last-child {
+  border-bottom: 1px solid var(--disco-momo-sampler-apoyo);
 }
 
 /* Los intentos gastados. Sello de goma, no pastilla capsula: esquina casi viva, borde
@@ -1340,6 +1732,19 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+/*
+ * Sin esto, `chips.hidden = intentos.length === 0` no apaga nada.
+ *
+ * `display: flex` de autor le gana siempre al `display: none` de la hoja del navegador, y
+ * el motor confiaba en que la regla existia. Resultado: en el paso 1, una lista vacia se
+ * llevaba su renglon y su `gap` de la unica pantalla del sitio que pelea el espacio por
+ * pixel. El repo ya lo sabia y lo tiene resuelto tres veces —`.buscador[hidden]`,
+ * `.sugerencias[hidden]`, `.revelacion[hidden]`—; a esta le faltaba.
+ */
+.chips[hidden] {
+  display: none;
 }
 
 .chip {
@@ -1520,27 +1925,90 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
   margin-inline: auto;
 }
 
+/*
+ * Escritorio, segunda parte: **elegir con que jugar no es leer**.
+ *
+ * `UX-10` ensancho el portal y el indice de la Redondopedia a 46rem con ese argumento
+ * escrito ("el tope de 34rem existe para proteger la medida de linea, y aca no hay linea
+ * que proteger"). La portada de este juego es exactamente lo mismo: once discos para
+ * elegir, que en dos columnas son seis filas y en tres son cuatro. El tablero de partida
+ * y el resultado se quedan en 34rem, que es donde ya estaban calibrados.
+ */
+@media (min-width: 46rem) {
+  .pantalla:has(.pozos) {
+    max-width: 46rem;
+  }
+
+  .pozos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* Con mas aire, el numero grande del resultado puede ser mas grande de verdad. */
+  .cifra-numero {
+    font-size: 3.75rem;
+  }
+}
+
 /* El hover de lo clickeable del juego. Mismo criterio que en `sitio.css`: reusa el
-   tinte que el elemento ya tiene, sin elevacion ni escala. */
+   tinte que el elemento ya tiene, sin elevacion ni escala.
+   
+   **Los cinco de abajo faltaban**, y entre ellos estaba `.escuchar` — el boton mas
+   tocado de "adivina el tema", el que se aprieta seis veces por tema. Con mouse no daba
+   ninguna senal de ser un boton hasta que lo apretabas. Es el mismo hallazgo de `UX-10`
+   ("ningun elemento clickeable del sitio tenia :hover"), que habia quedado a medio
+   cerrar en esta pantalla. */
 @media (hover: hover) and (pointer: fine) {
   .opcion:hover:not(:disabled) {
     border-color: var(--acento-2);
   }
 
   .primario:hover,
-  .arriesgar:hover:not(:disabled) {
+  .arriesgar:hover:not(:disabled),
+  .escuchar:hover:not(:disabled),
+  .seguir:hover {
     /* El precedente ya existe: `.boton-recorte:hover` invierte fondo y tinta con los
        dos tokens que ya usa en reposo. */
     filter: brightness(1.12);
   }
 
-  .secundario:hover {
+  /* Sonando, el boton es tinta sobre fondo: aclararlo no se ve. Se contornea, que es lo
+     que ese estado ya usa para distinguirse. */
+  .escuchar--sonando:hover:not(:disabled) {
+    filter: none;
+    box-shadow: inset 0 0 0 var(--linea) var(--acento-2);
+  }
+
+  .secundario:hover,
+  .compartir-bajar:hover {
     border-color: var(--acento-2);
     color: var(--texto);
   }
 
+  .buscador-borrar:hover {
+    border-color: var(--acento-2);
+    color: var(--texto);
+  }
+
+  /* Reusa la tinta del disco de letras, que es la que ya tiene en reposo. */
+  .revelacion-letra:hover {
+    background: var(--cat-letras);
+    color: var(--fondo);
+  }
+
   .sugerencia:hover {
     background: var(--velo-tapa, transparent);
+    color: var(--texto);
+  }
+
+  /* "Sacalo por la letra" no tenia ni uno: con mouse, la unica senal de que algo era un
+     boton era apretarlo. Mismo criterio que el resto — reusa el tinte que el elemento ya
+     tiene, sin elevacion ni escala. */
+  .correccion-disparador:hover,
+  .fuente-verso-enlace:hover {
+    color: var(--texto);
+  }
+
+  .retirada-disparador:hover {
     color: var(--texto);
   }
 }

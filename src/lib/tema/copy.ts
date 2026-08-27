@@ -40,6 +40,9 @@ export const PARTIDA = {
   /** Lo que anuncia el lector de pantalla cuando cambia el paso. */
   pasoActual: (etiqueta: string) => `Tenés ${etiqueta} de audio`,
   buscar: 'Escribí el tema',
+  /** El rótulo del botón de la cruz. Solo lo lee quien no ve la pantalla — y va en voseo
+   *  igual: `D-17` no distingue entre texto a la vista y texto para el lector. */
+  borrar: 'Borrá lo escrito',
   buscarAyuda:
     'Empezá a escribir y elegí de la lista. Sin tildes anda igual, y con el título por ' +
     'la mitad también.',
@@ -99,7 +102,16 @@ export const REVELACION = {
   /** Disco y año, para que el que no la sacó se lleve el dato. */
   ficha: (disco: string, anio: number, pista: number) => `${disco} (${anio}), pista ${pista}`,
   puntos: (n: number) => (n === 1 ? '1 punto' : `${n} puntos`),
-  enQuePaso: (etiqueta: string) => `Con ${etiqueta} de audio`,
+  /**
+   * Lo que costó el tema, en las dos monedas del juego: audio y reloj.
+   *
+   * El puntaje mide cuánto audio necesitaste; el reloj, cuánto tardaste en decidir. Son
+   * dos cosas distintas y por eso van juntas y separadas por el punto medio, no sumadas
+   * en un número solo.
+   */
+  costo: (audio: string, tiempo: string) => `Con ${audio} de audio · ${tiempo} de reloj`,
+  /** Al que no la sacó también le corresponde su tiempo: jugó los seis intentos. */
+  tardaste: (tiempo: string) => `${tiempo} de reloj`,
   escucharEntero: 'Escuchalo entero',
   verLetra: 'Mirá la letra y los acordes',
   seguir: 'Seguí',
@@ -108,13 +120,57 @@ export const REVELACION = {
 
 export const RESULTADO = {
   titulo: 'Cómo te fue',
-  de: (puntaje: number, maximo: number) => `${puntaje} de ${maximo}`,
+  puntos: (puntaje: number, maximo: number) => `${puntaje} de ${maximo} puntos`,
+  /**
+   * El rótulo del número grande del resultado, que desde hoy es **el tiempo** y no el
+   * puntaje.
+   *
+   * Lo pidió el usuario con estas palabras: *"más que el puntaje es importante y
+   * divertido saber en cuánto tiempo y qué temas adivinó"*. El puntaje no desaparece —
+   * sigue abajo, en su renglón—, pero deja de ser lo primero que se lee.
+   */
+  rotuloTiempo: 'Tardaste',
   /** El detalle tema por tema, para volver a mirar qué se falló. */
   detalle: 'Los temas de esta vuelta',
   denuevo: 'Otra vuelta',
   volver: 'Volvé al arcade',
   compartir: 'Compartí',
+  /** Mientras el canvas dibuja. Dura un parpadeo, pero un botón mudo se toca dos veces. */
+  armando: 'Armando la tarjeta',
+  /** La salida para el que quiere la imagen y no el menú de compartir del sistema. */
+  bajarTarjeta: 'Bajá la tarjeta',
   copiado: 'Copiado. Pegalo donde quieras.',
+  /** Cuando no hubo ni menú de compartir ni portapapeles: queda a la vista, seleccionable. */
+  aManoTitulo: 'Copiá esto y mandalo',
+} as const;
+
+/**
+ * Lo que se lee **adentro de la imagen** que se comparte (`tarjeta.ts`).
+ *
+ * Es casi todo registro 3, y a propósito: la tarjeta la mira alguien que no jugó, sin el
+ * sitio alrededor que le explique nada. Un rótulo con onda adentro de una imagen suelta
+ * no se entiende — dice qué hay adentro y se calla. La única línea que canta es el tramo,
+ * que ya está escrito en `TRAMOS` y se reusa tal cual.
+ *
+ * **La dirección del sitio no se escribe acá**: la pone la isla desde `location`, porque
+ * el sitio puede vivir en más de un lado y una dirección escrita a mano envejece sola.
+ *
+ * **Y la firma del sitio tampoco**: desde que la tarjeta la comparten los dos juegos
+ * (`D-30`), "ARCADE RICOTERO" vive en el pincel, que es lo que no cambia entre juegos. Lo
+ * que queda acá es solo lo que este juego dice distinto del otro.
+ */
+export const TARJETA = {
+  juego: 'Adiviná el tema',
+  rotuloTiempo: 'Tiempo total',
+  /** El renglón de un tema que salió: disco, cuánto audio hizo falta y cuánto tardó. */
+  pieAcierto: (disco: string, audio: string, tiempo: string) =>
+    `${disco} · ${audio} de audio · ${tiempo}`,
+  /**
+   * El de un tema que no salió. Lleva "no salió" escrito además de la cruz: en una
+   * imagen que se mira chiquita, un símbolo solo no alcanza — es `UX-01` aplicado a algo
+   * que ni siquiera es una pantalla.
+   */
+  pieFallo: (disco: string, tiempo: string) => `${disco} · no salió · ${tiempo}`,
 } as const;
 
 /** Los tres tramos del resultado, con la voz del proyecto. Espeja `quiz/copy.ts`. */

@@ -27,6 +27,7 @@ import { PANTALLA_0, PARTIDA } from '../../lib/tema/copy.ts';
 import Cabeza from '../../components/Cabeza.astro';
 import { PORTAL } from '../../lib/sitio/copy.ts';
 import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
+import { claseDisco } from '../../lib/tema/paleta.ts';
 import manifiesto from '../../data/adivinar-tema.json';
 import cancionero from '../../data/cancionero.json';
 
@@ -79,7 +80,7 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
                 {cat.discos.map((d) => (
                   <li>
                     <button
-                      class:list={['pozo', `pozo--${d.slug}`, { 'pozo--vacio': d.jugables === 0 }]}
+                      class:list={['pozo', claseDisco(d.slug)]}
                       type="button"
                       data-disco={d.slug}
                       aria-pressed="false"
@@ -134,25 +135,56 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
         max-width: 34rem;
         margin: 0 auto;
         position: relative;
-        min-height: 100vh;
+        /*
+         * El alto de la ventana MENOS lo que el `body` ya gasta en su propio margen.
+         *
+         * Con `100vh` pelado la pagina media 812 + 16 + 16 = 844 en un celular de 812, o
+         * sea que **la portada arrancaba con 32 px de scroll que no llevaban a ninguna
+         * parte**: se podia arrastrar la hoja y no aparecia nada. Es el mismo defecto que
+         * `UX-08` corrigio en "sacalo por la letra", y por el mismo motivo estaba: el
+         * `min-height` no descontaba el `padding` del `body`.
+         *
+         * `svh` y no `vh` por lo que ya dejo escrito `juego.css`: descuenta la barra del
+         * navegador movil, que `vh` ignora.
+         */
+        min-height: calc(100svh - var(--espacio-2) * 2);
+      }
+      /* La portada ensancha porque es un tablero de once discos para elegir; el resto de
+         las pantallas lo sigue topeando `.pantalla` en 34rem desde `juego.css`. Mismo
+         corte y mismo argumento que `UX-10` uso para el portal. */
+      @media (min-width: 46rem) {
+        main {
+          max-width: 46rem;
+        }
       }
       /* Esta pantalla viste Lobo suelto (D-19, seccion mitologia). */
+      /*
+       * La firma del sitio es un sello, no el titular.
+       *
+       * Estaba en 2,1rem contra un h1 de 1,5rem: en la pantalla de un juego, el nombre
+       * del sitio le ganaba en tamano al nombre del juego. Un diario no imprime la
+       * cabecera mas grande que el titulo de la nota. La firma baja a sello —sigue
+       * siendo el calco de la tapa, sigue siendo el rojo de Oktubre— y el titular se
+       * queda con la voz alta.
+       */
       .marca {
         font-family: var(--fuente-titular);
-        font-size: 2.1rem;
+        font-size: 1.45rem;
         line-height: 0.96;
+        letter-spacing: 0.02em;
         color: var(--marca-rojo);
-        margin: var(--espacio-3) 0 var(--espacio-2);
+        margin: var(--espacio-2) 0 var(--espacio-2);
         max-width: 7ch;
       }
       h1 {
         font-family: var(--fuente-rotulada);
-        font-size: 1.5rem;
-        line-height: 1.2;
+        font-size: 2.3rem;
+        line-height: 1.02;
         text-transform: uppercase;
-        letter-spacing: 0.04em;
+        letter-spacing: 0.02em;
+        text-wrap: balance;
         color: var(--cat-mitologia);
-        margin-top: 0;
+        margin: 0 0 var(--espacio-1);
       }
       .tenue {
         color: var(--texto-tenue);

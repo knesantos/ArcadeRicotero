@@ -1240,3 +1240,210 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 - **Dueños:** la decisión es del usuario. El ranking y su vigencia son de `BR-18`
   (`producto`); el reparto en tercios vive en `src/lib/por-la-letra/dificultad.ts` con sus
   cinco pruebas.
+
+## D-28 — El reloj entra a "Adiviná el tema", corre callado, y la vuelta se comparte como tarjeta
+
+- **Fecha:** 2026-08-27
+- **Estado:** aceptada — pedido directo del usuario. Textual: *"Ademas arma el boton
+  compartir que arme un link para jugar y la imagen de como le fue al jugador, mas que el
+  puntaje es importante y divertido saber en cuanto tiempo y que temas adivino"*. Las tres
+  bifurcaciones se le consultaron por separado y eligió las tres recomendadas.
+
+- **Contexto.** `US-02` puntuaba una sola cosa: **cuánto audio necesitaste** (la escalera
+  de `D-24`, topeada por `D-26`). Eso es la mitad del juego. La otra mitad es lo que
+  cualquiera cuenta al salir de una partida —*la saqué al toque*— y no se medía en ningún
+  lado. Compartir, además, era una línea de texto con un número: `160 de 400`. Nadie puede
+  leer eso sin abrir el juego, y sobre todo **no dice qué temas salieron**, que es
+  justamente lo que da ganas de contar.
+
+- **Decisión, en tres partes.**
+
+  1. **El reloj corre callado.** Se mide por tema, se muestra al revelar y se suma en el
+     resultado, pero **no hay ningún número subiendo en pantalla mientras se juega**. La
+     alternativa —un contador a la vista en la cabecera— es más deportiva y se descartó por
+     `D-14`: un cronómetro corriendo convierte una partida de dos minutos en una prueba, y
+     el que llega sin saber nada ya tiene bastante. El dato aparece cuando es premio, no
+     cuando es presión.
+
+     Dos reglas lo hacen honesto, y están en `src/lib/tema/reloj.ts` con doce pruebas: para
+     cuando la pestaña se esconde (atender el teléfono no puede arruinar la vuelta) y mide
+     **solo el tema, no la ficha** — leer la revelación es gratis.
+
+  2. **El tema revelado viste la tinta real de su disco.** Los diez colores están
+     muestreados de las tapas (`RES-37`), viven en `tokens.css` y los diez pasan AA sobre
+     `--fondo`. Este juego no usaba ninguno: revelaba los 105 temas con el mismo naranja de
+     Lobo suelto, que es el color de la **sección**, no del tema. Y acá el tema no es el
+     contenido de la pantalla, **es la respuesta**.
+
+     No contradice a `D-19`, que reparte un disco por **categoría**: la pantalla sigue
+     siendo `mitologia` y la base no rota (fondo, grano, zona pulgar, acierto y error
+     siguen igual). Lo que rota es la ficha del tema. El precedente ya estaba escrito en
+     `tokens.css` para el cancionero: *"la misma idea llevada a su conclusión, no una idea
+     nueva"*.
+
+  3. **La vuelta se comparte en dos piezas que dicen lo mismo:** la dirección de siempre
+     (`armarLink`, `ADR-02`, que es el molinete abierto) y **una tarjeta de 1080 × 1350**
+     dibujada en el navegador con el setlist de la vuelta: qué temas salieron, cuánto audio
+     hizo falta en cada uno y cuánto se tardó, con el tiempo total abajo de todo. Vertical y
+     no apaisada porque lo que se manda por teléfono se mira en vertical; el apaisado
+     `1200 × 630` sigue siendo el de la previsualización del sitio (`public/tarjeta.png`) y
+     no se toca.
+
+- **Consecuencias:**
+
+  1. **La jerarquía del resultado se da vuelta.** El número grande de la pantalla pasa a
+     ser **el tiempo**; el puntaje se queda, en su renglón, abajo. El setlist deja de ser
+     una nota al pie y pasa a ser la pieza central.
+  2. **Compartir puede fallar sin dejar a nadie afuera.** Si la tarjeta no se dibuja, se
+     comparte igual sin ella; si no hay menú del sistema, se copia; si no hay portapapeles,
+     la dirección queda escrita y seleccionable. Misma escalera que el botón de corrección.
+  3. **La tarjeta no lleva ningún dato de la persona** — ni nombre, ni aparato, ni de dónde
+     entró. Lo que no se junta no se puede filtrar (`armar.ts`, mismo criterio).
+  4. **Sale un archivo nuevo de infraestructura, `src/lib/letra/discos.ts`.** La lista de
+     los diez discos vivía en `temas.ts`, que importa `node:fs`; el navegador ahora la
+     necesita. Ver `D-29`.
+
+- **Dueños:** la decisión es del usuario. Los criterios de aceptación de `US-02` son de
+  `producto`, y el pedido de actualizarlos quedó en
+  `Docs/SUGERENCIAS/HILO-para-producto-reloj-y-tarjeta-US-02.md`.
+
+## D-29 — Ninguna isla puede importar un módulo de Node, y ahora hay un test que lo mira
+
+- **Fecha:** 2026-08-27
+- **Estado:** aceptada — es la corrección de un defecto que produje construyendo `D-28`.
+
+- **Contexto, que es el defecto.** `src/lib/tema/paleta.ts` necesitaba la lista de los diez
+  discos y la importó de `src/lib/letra/temas.ts`, que la exportaba — y que **importa
+  `node:fs` en su primera línea** porque parsea la ficha `RES-20`. En el navegador eso es
+  fatal: el módulo queda afuera, la importación tira, y **con la isla muerta el juego entero
+  deja de responder**. La portada quedaba dibujada y no pasaba nada al tocar un disco.
+
+- **🔴 Lo grave no es el error, es quién no lo vio.** `npm test` pasó (en Node existe `fs`).
+  `npm run check` pasó (los tipos estaban perfectos). `npm run build` no se quejó (la página
+  es estática y sale igual). **Lo agarró abrir la página en un navegador**, que es
+  exactamente la clase de verificación que este proyecto decidió no dejar librada a que
+  alguien se acuerde de mirar.
+
+  Es el mismo patrón que `REV-08` ya había señalado por cuarto ciclo: el defecto no estaba
+  en ningún ítem, estaba en el conjunto — acá, en el grafo de importaciones.
+
+- **Decisión, en dos partes.**
+
+  1. **La lista se muda a un archivo hoja, `src/lib/letra/discos.ts`, que no importa nada.**
+     `temas.ts` la re-exporta, así que nada de lo que ya la usaba cambió. No es un patrón
+     nuevo: `temas.ts` ya lo había hecho con los normalizadores de texto, y con el mismo
+     argumento escrito ahí. Lo que faltaba era aplicárselo a la lista de discos. **Sigue
+     habiendo una sola lista.**
+  2. **`src/lib/islas.test.ts` recorre el grafo de importaciones desde cada archivo de
+     `src/scripts/` y falla si en el camino aparece un `node:*`.** No mira solo el archivo
+     de la isla, mira **todo lo que alcanza** — que es lo que importa, porque `paleta.ts` no
+     tenía una sola línea de Node y sin embargo lo traía. Informa el camino entero, no el
+     archivo culpable: cuando esto falla, lo que hace falta saber es por dónde se llegó.
+
+- **Consecuencias:**
+
+  1. **Los `import type` no cuentan**, y está probado con un caso real. TypeScript los borra
+     al compilar. La primera versión del test los contaba y acusó a `completar-la-letra` de
+     arrastrar `node:fs` cuando lo único que importa de ahí son dos tipos. **Un guardián que
+     grita por algo que no pasa se termina apagando, y con él se apagan los avisos que sí
+     importan.**
+  2. **El test se prueba contra un camino que existe de verdad** (`catalogo.ts`, que llega a
+     `node:fs` en dos saltos). Un test que solo verifica ausencias no demuestra que sepa
+     buscar, y se vuelve verde por vago sin que nadie se entere.
+
+- **Dueños:** hilo principal. La regla que esto hace cumplir ya estaba escrita en
+  `.claude/rules/codigo-juegos.md` ("arquitectura de islas") y en el encabezado de
+  `temas.ts` ("corre en build y en los tests, nunca en el navegador"); lo que no había era
+  con qué verificarla.
+
+## D-30 — En el juego que se lee, el número grande son los versos y no el reloj
+
+- **Fecha:** 2026-08-27
+- **Estado:** aceptada — sale del ciclo estético de `US-07` que pidió el usuario ("el mismo
+  ciclo estético" que `US-02`). Es la decisión que **se apartó** de copiar al hermano, y por
+  eso está escrita.
+
+- **Contexto.** `D-28` le puso reloj a "Adiviná el tema" y dejó el tiempo como el número
+  grande del resultado, porque el usuario pidió saber *"en cuánto tiempo y qué temas
+  adivinó"*. Al pedir el mismo ciclo para "Sacalo por la letra", lo obvio era portar
+  `reloj.ts` y listo.
+
+- **Decisión: no se porta el reloj.** El hermano **se escucha** y éste **se lee**, y eso
+  cambia qué mide un cronómetro:
+
+  - Allá el audio dura 0,1 segundos y después decidís: el reloj mide **decisión**.
+  - Acá, en el cuarto escalón, hay que **leer ocho versos**. El reloj mide velocidad de
+    lectura, que no es una habilidad de este juego. Cronometrarla castiga al lector lento
+    por leer, y eso es cerrar un molinete (`D-14`) en la única pantalla del sitio hecha de
+    texto.
+
+  Lo que va en su lugar es la moneda propia del juego, la de `BR-20`: **con cuántos versos
+  lo sacaste**. Es el equivalente exacto del "cuánto audio te hizo falta" del hermano, y
+  además es un dato que el juego ya producía en cada tema **y tiraba** — lo único que
+  sobrevivía a la vuelta era `puntaje`.
+
+- **Consecuencias:**
+
+  1. **La clase del bloque grande dejó de llamarse `reloj`.** Es `.cifra`, en los dos
+     juegos: la maqueta es la misma, el dato no. Una clase llamada `reloj` conteniendo
+     "40 versos" es una mentira esperando al próximo que lea.
+  2. **La tarjeta compartible se volvió compartida** (`lib/tarjeta/plan.ts` y
+     `scripts/tarjeta.ts`, antes `lib/tema/tarjeta.ts` y `scripts/tarjeta-tema.ts`). No
+     sabe de qué juego es: recibe el nombre, el token que lo viste, y **un número grande
+     con su rótulo**. Por eso el campo se llama `hero` y no `tiempo` — un módulo que
+     hablara de milisegundos obligaría a este juego a inventarse un reloj que no le sirve.
+  3. **El tramo se calcula sobre temas sacados, jamás sobre puntos.** Cinco de cinco
+     sacados siempre en el último escalón dan 200 sobre 500 (40%), y el que los sacó todos
+     se llevaría la línea del que sacó la mitad.
+
+- **Dueños:** la decisión es del hilo principal, sobre el pedido del usuario. `BR-20` (la
+  escalera de versos) es de `producto`; el reparto de registros por pantalla, de
+  `experiencia`.
+
+## D-31 — La hoja de versos es un recorte pegado que crece, y `UX-08` ya lo decía
+
+- **Fecha:** 2026-08-27
+- **Estado:** aceptada. **No es una idea nueva: es una spec de `experiencia` que llevaba un
+  ciclo escrita y sin construir.**
+
+- **Contexto, y es lo incómodo.** El hallazgo más grave del ciclo estético de `US-07` no
+  fue un defecto de gusto: fue que `UX-08` §4 especificaba la pieza central del juego con
+  todas las letras —*"la hoja entera es un recorte pegado, borde completo (las cuatro
+  caras, nunca solo la izquierda), fondo `--fondo-elevado`, esquina de estampa"*, más *"un
+  fino filete inferior separa cada renglón del siguiente"*— y lo que había en `juego.css`
+  eran **tres propiedades de layout y ninguna de dibujo**.
+
+  O sea: el juego se construyó, el tablero decía ✅, y la mitad visual de la hoja de
+  `experiencia` no había entrado nunca. Es la misma clase de hueco que `REV-08` viene
+  encontrando desde el ciclo 8 — el defecto no está en ningún ítem, está en el conjunto.
+
+- **Decisión, en tres partes.**
+
+  1. **Se construye la spec**: borde completo en el apoyo de Momo, fondo elevado, esquina
+     de estampa, sombra dura desplazada, y filete por verso. El filete **no es adorno**: en
+     este juego contar versos es contar el precio, y sin él un verso largo que envuelve se
+     leía como dos versos, o sea como un intento gastado que no se gastó.
+  2. **No se construye la rotación** que esa misma spec pedía. La hoja es el contenedor de
+     scroll, no un recorte estático: un `transform` ahí crea bloque contenedor y complica
+     el scroll. El borde teñido y la sombra ya son el recorte pegado.
+  3. **Y se agrega algo que la spec no pedía: la hoja crece con los versos.** Estaba en
+     `flex: 1 1 auto`, o sea que ocupaba toda la banda libre desde el arranque — medido,
+     **545 px de recorte con un solo verso adentro**. Con `flex: 0 1 auto` y
+     `margin-bottom: auto` toma el alto de su contenido y el buscador sigue clavado abajo.
+     Y hace **literal** lo que `UX-08` §0 decía de la escalera: *"la barra no existe, los
+     versos acumulados SON la barra"*. Si la hoja crece a cada escalón, la barra se dibuja
+     sola con el contenido, sin dibujar ninguna barra. Medido: 63 → 106 → 216 → 385 px.
+
+- **Consecuencias:**
+
+  1. El aviso de escalón dejó de ser invisible: `.verso--nuevo` tiñe el filete de los
+     versos que trajo el escalón en curso, y un rótulo vivo dice cuántos tenés. Ese rótulo
+     **es además el nombre accesible de la hoja** — antes la hoja era `role="status"` con
+     `aria-label`, así que al abrir cada tema el lector de pantalla anunciaba el contador
+     **en vez del verso**.
+  2. **La pieza más grande del tablero dejó de vestir el disco equivocado.** La lista del
+     buscador tenía el borde de Lobo suelto en el juego de Momo Sampler; ahora cada tablero
+     declara su `--tinte-lista`.
+
+- **Dueños:** `UX-08` es de `experiencia` y no se tocó — se construyó. La única parte que
+  se apartó de la spec (la rotación) está justificada arriba y queda anotada como tal.

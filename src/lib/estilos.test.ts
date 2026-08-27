@@ -136,6 +136,10 @@ const ESTADOS_TEMA = [
   '.intento--fallado',
   '.intento--pasado',
   '.barra-tramo--abierto',
+  // La regla graduada de abajo de la barra: el numero del escalon que ya tenes cambia de
+  // tinta igual que su tramo. Sin regla que lo pinte, la regla queda toda del mismo gris
+  // y deja de decir donde estas.
+  '.barra-marca--abierta',
   '.escuchar--sonando',
   '.arriesgar--listo',
   '.sugerencia--marcada',
@@ -183,4 +187,58 @@ test('US-02: la barra de tramos no tapa el primer paso con un ancho de cero', ()
   // el jugador no ve el escalon que esta usando.
   const bloque = CSS.slice(CSS.indexOf('.barra-tramo {'), CSS.indexOf('.barra-tramo:first-child'));
   assert.match(bloque, /min-width:\s*\d/, '.barra-tramo no tiene ancho minimo');
+});
+
+/* ==================================================================
+   Sacalo por la letra (US-07): el mismo control, para el tercer juego
+   ================================================================== */
+
+const JS_LETRA = leer('src/scripts/partida-por-la-letra.ts');
+
+/** Las clases de estado que crea la isla de la letra y que tienen que verse distinto. */
+const ESTADOS_LETRA = [
+  '.chip--fallado',
+  '.chip--pasado',
+  '.verso--nuevo',
+  '.arriesgar--listo',
+  '.sugerencia--marcada',
+  '.sugerencia--vacia',
+  '.restantes--ultimo',
+  '.resumen-fila--ok',
+  '.resumen-fila--no',
+  '.partida--revelada',
+];
+
+test('US-07: toda clase de estado que crea la isla de la letra tiene una regla que la pinta', () => {
+  const sinRegla = ESTADOS_LETRA.filter((c) => !CSS.includes(c));
+  assert.deepEqual(sinRegla, [], `clases creadas por el codigo y sin estilo: ${sinRegla.join(', ')}`);
+});
+
+test('US-07: las clases que el CSS estila las crea de verdad la isla', () => {
+  const bases = [...new Set(ESTADOS_LETRA.map((c) => c.replace(/^\./, '').replace(/--.*$/, '--')))];
+  for (const base of bases) {
+    assert.ok(JS_LETRA.includes(base), `el CSS estila "${base}..." pero la isla no crea ninguna`);
+  }
+});
+
+test('US-07: el estado de un intento gastado no se comunica solo con color', () => {
+  // UX-01. El simbolo lo escribe el JavaScript: es contenido del chip, no decoracion.
+  for (const simbolo of ['✕', '·', '✔']) {
+    assert.ok(JS_LETRA.includes(simbolo), `la isla no escribe el simbolo ${simbolo}`);
+  }
+});
+
+test('US-07: lo que se esconde con `hidden` tiene su regla, o no se esconde nada', () => {
+  // El defecto que este test existe para cazar ya paso: `.chips` declaraba `display: flex`
+  // y `chips.hidden = true` no apagaba nada, porque el estilo de autor le gana siempre a
+  // la hoja del navegador. Es silencioso: no hay error, solo un renglon vacio ocupando
+  // pantalla en el unico tablero del sitio que pelea el espacio por pixel.
+  for (const clase of ['.chips', '.buscador', '.sugerencias', '.revelacion']) {
+    const declaraDisplay = new RegExp(`\\${clase} \\{[^}]*display:`).test(CSS);
+    if (!declaraDisplay) continue;
+    assert.ok(
+      CSS.includes(`${clase}[hidden]`),
+      `${clase} declara display propio y no tiene regla [hidden]: esconderla no hace nada`,
+    );
+  }
 });

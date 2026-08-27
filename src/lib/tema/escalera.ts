@@ -118,3 +118,33 @@ export function anchosDeTramos(): readonly number[] {
     return ancho;
   });
 }
+
+/**
+ * Qué porción de la barra necesita un tramo para que le quepa el número escrito debajo.
+ *
+ * La barra se lee como una regla graduada: abajo de cada tramo va, alineado a su borde
+ * derecho, **cuánto audio llevás acumulado si llegaste hasta ahí**. Eso convierte la
+ * escalera de una idea abstracta —"te van dando más"— en algo que se ve antes de
+ * gastarlo, que es lo mismo que ya hacen los seis renglones de intento.
+ *
+ * Diez por ciento no es un número redondo elegido de arriba: un número como `0,5 s` mide
+ * unos 34 px al cuerpo chico del rótulo, y la barra más angosta que dibuja el sitio es la
+ * de un celular de 375 px, donde el tablero mide 343. El 10% de eso son 34 px justos.
+ * Arriba de ese piso el número entra a cualquier ancho; abajo, se pisaría con el vecino.
+ */
+export const PISO_ETIQUETA_PCT = 10;
+
+/**
+ * Cuáles de los seis tramos llevan su número escrito.
+ *
+ * Los dos primeros no: `0,1 s` y `0,5 s` se llevan el 1% y el 4% de la barra, que en un
+ * celular son tres píxeles y trece. **Y que no lo lleven está bien**, porque el número
+ * que importa mientras se juega ya está escrito grande en el rótulo del paso actual; la
+ * regla de abajo es para ver la forma de la escalera, no para leerla renglón por renglón.
+ *
+ * Se decide acá y no con una consulta de contenedor en CSS a propósito: es aritmética de
+ * la escalera, sale del mismo lugar que los anchos, y así queda testeada.
+ */
+export function tramosConEtiqueta(): readonly boolean[] {
+  return anchosDeTramos().map((ancho) => ancho >= PISO_ETIQUETA_PCT);
+}

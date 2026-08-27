@@ -74,6 +74,12 @@ const PARES: Array<[string, string, string]> = [
   ['Luzbelito sobre fondo', 'disco-luzbelito-tinta', 'fondo'],
   ['Ultimo bondi sobre fondo', 'disco-ultimo-bondi-a-finisterre-tinta', 'fondo'],
   ['Momo Sampler sobre fondo', 'disco-momo-sampler-tinta', 'fondo'],
+  // El boton primario de "sacalo por la letra": tinta del fondo SOBRE la plata de Momo.
+  // Va invertido a proposito — el token es el relleno y `--fondo` es lo que se escribe
+  // encima. Estaba pintado con el `-apoyo` de ese disco y daba **3,66:1**, el unico
+  // primario del sitio debajo de AA; con la tinta da 13,29:1. `diseno-marca.md` dice que
+  // un color sin par testeado no existe, y este par no estaba.
+  ['boton primario de por-la-letra', 'fondo', 'disco-momo-sampler-tinta'],
 ];
 
 /**

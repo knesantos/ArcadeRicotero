@@ -24,12 +24,24 @@
  */
 
 import { sugerir, acierta, MAX_SUGERENCIAS, type TemaBuscable, type Resultado } from '../lib/tema/buscador.ts';
-import { ESCALERA, INTENTOS, paso, puntos, puntajeMaximo, anchosDeTramos } from '../lib/tema/escalera.ts';
+import {
+  ESCALERA,
+  INTENTOS,
+  paso,
+  puntos,
+  puntajeMaximo,
+  anchosDeTramos,
+  tramosConEtiqueta,
+} from '../lib/tema/escalera.ts';
 import { Reproductor, urlDeTema } from '../lib/tema/audio.ts';
-import { PARTIDA, REVELACION, RESULTADO, TRAMOS, PANTALLA_0, SIN_SONIDO } from '../lib/tema/copy.ts';
+import { PARTIDA, REVELACION, RESULTADO, TARJETA, TRAMOS, PANTALLA_0, SIN_SONIDO } from '../lib/tema/copy.ts';
 import { esIOS, esMovil, navegadorIncrustado } from '../lib/sitio/aparato.ts';
 import { tramo } from '../lib/quiz/tramo.ts';
 import { armarLink } from '../lib/desafio.ts';
+import { Cronometro, duracion, total as sumarTiempos } from '../lib/tema/reloj.ts';
+import { claseDisco } from '../lib/tema/paleta.ts';
+import { nombreArchivo } from '../lib/tarjeta/plan.ts';
+import { dibujarTarjeta } from './tarjeta.ts';
 
 /** Un tema como llega del build. Espeja `TemaDelJuego` de `catalogo.ts`. */
 interface Tema extends TemaBuscable {
@@ -66,6 +78,16 @@ let intentos: (Tema | null)[] = [];
 let puntaje = 0;
 /** Uno por tema de la ronda: el paso en que lo acertó, o 0 si no lo sacó. */
 let marcador: number[] = [];
+/**
+ * El reloj de la vuelta (`reloj.ts`). Corre callado: no hay número subiendo en pantalla
+ * mientras se juega, y el dato aparece recién al revelar. Es lo que el usuario eligió el
+ * 2026-08-27 sobre la alternativa de un contador a la vista — un cronómetro visible
+ * convierte un juego de dos minutos en una prueba, y el que llega sin idea ya tiene
+ * bastante (`D-14`).
+ */
+const cronometro = new Cronometro();
+/** Uno por tema: cuánto tardó el jugador en cerrarlo, en milisegundos. */
+let tiempos: number[] = [];
 /** Índice de la sugerencia marcada con el teclado. -1 es ninguna. */
 let marcada = -1;
 let sugerencias: readonly Resultado[] = [];
@@ -86,6 +108,32 @@ function el<K extends keyof HTMLElementTagNameMap>(
 function mostrar(seccion: HTMLElement): void {
   for (const s of [portada, zonaPartida, zonaResultado]) s.hidden = s !== seccion;
 }
+
+/**
+ * El reloj para cuando la pestaña se esconde, y sigue cuando vuelve.
+ *
+ * Atender el teléfono en medio de una vuelta no puede arruinar el tiempo: un número que
+ * castiga por vivir no lo quiere compartir nadie, y la tarjeta que se comparte lleva ese
+ * número adelante. Es la regla 2 de `reloj.ts`, enchufada acá.
+ *
+ * `visibilitychange` es el evento correcto y no `blur`: cambiar de ventana en una
+ * computadora sin irse de la página no interrumpe nada, y ahí el reloj tiene que seguir.
+ */
+let temaEnCurso = false;
+document.addEventListener('visibilitychange', () => {
+  if (!temaEnCurso) return;
+  if (document.hidden) {
+    cronometro.pausar();
+    // Si estaba sonando, se corta: el audio de un tema escondido no se escucha igual y
+    // volver a una barra que avanzo sola desorienta.
+    if (sonando) {
+      reproductor.detener();
+      frenar();
+    }
+  } else {
+    cronometro.reanudar();
+  }
+});
 
 // ---------------------------------------------------------------- portada
 
@@ -155,6 +203,7 @@ function comenzar(): void {
   indice = 0;
   puntaje = 0;
   marcador = [];
+  tiempos = [];
   armarPantalla();
   mostrar(zonaPartida);
   arrancarTema();
@@ -168,7 +217,13 @@ function arrancarTema(): void {
   buscadorInput.value = '';
   buscadorInput.disabled = false;
   cajaBuscador.hidden = false;
+  // Lo gastado vuelve a verse: la revelacion del tema anterior las habia escondido.
+  renglones.hidden = false;
   pintarTodo();
+  // El reloj arranca con el tema listo para jugar, no antes: lo que se mide es decidir,
+  // no cargar la pantalla.
+  temaEnCurso = true;
+  cronometro.arrancar();
   void precargar();
 }
 
@@ -223,6 +278,33 @@ function armarPantalla(): void {
     barra.append(tramoBarra);
   }
   reproductorCaja.append(barra);
+
+  /*
+   * La regla graduada de abajo de la barra.
+   *
+   * Antes la escalera solo se anunciaba de a un escalon por vez ("Tenes 0,1 s de
+   * audio"), asi que **la forma de la escalera no se veia**: para saber que despues de
+   * 0,1 vienen 0,5, 2, 4, 8 y 10 habia que gastarlos. Los seis renglones de intento se
+   * dibujan todos desde el arranque justamente por lo contrario — "la altura de la
+   * escalera tiene que verse antes de empezar a gastarla" — y a la barra, que ES la
+   * escalera, eso no se le habia aplicado.
+   *
+   * Cada numero va alineado al borde derecho de su tramo, porque marca **cuanto audio
+   * llevas acumulado si llegaste hasta ahi**. Los dos primeros no llevan numero: se
+   * llevan el 1% y el 4% de la barra (`tramosConEtiqueta`).
+   *
+   * Es decoracion cero: es el eje de un grafico que ya estaba dibujado sin eje.
+   */
+  const escala = el('div', 'barra-escala');
+  escala.setAttribute('aria-hidden', 'true');
+  const conEtiqueta = tramosConEtiqueta();
+  for (let i = 0; i < ESCALERA.length; i++) {
+    const marca = el('span', 'barra-marca');
+    marca.style.flexGrow = String(anchos[i]);
+    if (conEtiqueta[i]) marca.append(el('span', 'barra-valor', ESCALERA[i]!.etiqueta));
+    escala.append(marca);
+  }
+  reproductorCaja.append(escala);
 
   etiquetaPaso = el('p', 'barra-etiqueta');
   etiquetaPaso.setAttribute('aria-live', 'polite');
@@ -282,7 +364,7 @@ function armarBuscador(): HTMLElement {
 
   const borrar = el('button', 'buscador-borrar', '✕︎');
   borrar.type = 'button';
-  borrar.setAttribute('aria-label', 'Borrar lo escrito');
+  borrar.setAttribute('aria-label', PARTIDA.borrar);
   borrar.addEventListener('click', () => {
     buscadorInput.value = '';
     elegido = null;
@@ -352,6 +434,13 @@ function pintarBarra(transcurrido: number): void {
     relleno.style.width = `${largo > 0 ? (dentro / largo) * 100 : 0}%`;
     previo = p.segundos;
   }
+  // La regla de abajo se tine con la barra: el numero del escalon que ya tenes deja de
+  // ser una promesa y pasa a ser un dato. Es la misma senal, en la misma columna.
+  const marcas = barra.parentElement?.querySelectorAll<HTMLElement>('.barra-marca') ?? [];
+  marcas.forEach((marca, i) => {
+    marca.classList.toggle('barra-marca--abierta', ESCALERA[i]!.n <= pasoActual);
+  });
+
   const p = paso(pasoActual);
   etiquetaPaso.textContent = PARTIDA.pasoActual(p.etiqueta);
 }
@@ -597,6 +686,11 @@ function cerrarTema(acerto: boolean): void {
   reproductor.detener();
   frenar();
 
+  // El reloj para antes que nada: leer la revelacion es gratis, y lo que se mide es
+  // cuanto tardaste en decidir, no cuanto tardaste en enterarte.
+  temaEnCurso = false;
+  tiempos.push(cronometro.cerrar());
+
   const ganados = acerto ? puntos(pasoActual) : 0;
   puntaje += ganados;
   marcador.push(acerto ? pasoActual : 0);
@@ -605,10 +699,32 @@ function cerrarTema(acerto: boolean): void {
   // del resultado es un control muerto ocupando la zona del pulgar.
   cajaBuscador.hidden = true;
   buscadorInput.disabled = true;
-  botonEscuchar.disabled = true;
   cerrarLista();
 
-  // El fragmento se abre entero al revelar: ya no hay nada que esconder.
+  /*
+   * Los renglones de intento se esconden, y es el mismo argumento del buscador aplicado a
+   * lo que ya no sirve.
+   *
+   * Medido a 375x812 antes de tocar nada: los seis renglones ocupan **192 px** — casi la
+   * cuarta parte de la pantalla — y la revelacion arrancaba en y=489 con la hoja
+   * scrolleando hasta 963. O sea: el premio del juego caia abajo del pliegue, tapado por
+   * la lista de lo que erraste, y habia que scrollear para encontrar el boton de seguir.
+   *
+   * Se esconden y no se borran: la vuelta anterior no se pierde, vuelve entera en el
+   * resultado. Lo que se gana es que la respuesta quede arriba, que es donde va.
+   */
+  renglones.hidden = true;
+
+  /*
+   * El boton de escuchar **queda vivo**, y eso cambia respecto de antes.
+   *
+   * Se deshabilitaba al revelar, y era un control muerto de 52 px en el medio de la
+   * pantalla — exactamente lo que el comentario del buscador, tres lineas mas arriba,
+   * daba como motivo para esconderlo. Pero ademas se perdia algo: solo unos pocos temas
+   * tienen el archivo entero (`D-22`), asi que para la mayoria **el fragmento de diez
+   * segundos es lo unico que hay para escuchar**, y es justo despues de saber cual era
+   * cuando dan ganas de volver a oirlo.
+   */
   pasoActual = ESCALERA.length;
   pintarBarra(ESCALERA[ESCALERA.length - 1]!.segundos);
 
@@ -617,17 +733,39 @@ function cerrarTema(acerto: boolean): void {
 
 function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
   revelacion.replaceChildren();
-  revelacion.className = `revelacion feedback ${acerto ? 'ok' : 'no'}`;
+  /*
+   * La ficha viste **la tinta real del disco del tema**, no la de la seccion (`paleta.ts`).
+   *
+   * Los diez colores estan medidos de las tapas (`RES-37`) y pasan AA; hasta hoy este
+   * juego no usaba ninguno y revelaba los 105 temas con el mismo naranja de Lobo suelto.
+   * Aca el tema no es el contenido de la pantalla: **es la respuesta**. Que Oktubre se
+   * revele en rojo Oktubre es el premio mas barato que el sitio puede dar.
+   *
+   * El acierto y el error **no rotan**: `.ok` y `.no` siguen poniendo el verde y el rojo
+   * de siempre en el borde y en la linea de arriba. Es la base que no rota nunca.
+   */
+  const disco = claseDisco(tema.disco);
+  revelacion.className = `revelacion feedback ${acerto ? 'ok' : 'no'}${disco ? ` ${disco}` : ''}`;
   revelacion.hidden = false;
 
   revelacion.append(el('p', 'micro', acerto ? REVELACION.acerto : REVELACION.fallo));
   revelacion.append(el('h2', 'revelacion-titulo', `${REVELACION.eraEl} ${tema.titulo}`));
   revelacion.append(el('p', 'revelacion-ficha', REVELACION.ficha(tema.discoTitulo, tema.anio, tema.pista)));
 
+  /*
+   * Lo que costo el tema, en las dos monedas del juego.
+   *
+   * Antes esta linea solo aparecia al acertar y solo decia los puntos. Ahora dice tambien
+   * el reloj, y **aparece igual cuando el tema se escapa**: el que gasto los seis
+   * intentos tambien jugo, y su tiempo es parte de la vuelta que despues se comparte.
+   */
+  const reloj = duracion(tiempos[tiempos.length - 1] ?? 0);
   if (acerto) {
-    revelacion.append(
-      el('p', 'revelacion-puntos', `${REVELACION.puntos(ganados)} · ${REVELACION.enQuePaso(paso(marcador[marcador.length - 1]!).etiqueta)}`),
-    );
+    const audio = paso(marcador[marcador.length - 1]!).etiqueta;
+    revelacion.append(el('p', 'revelacion-puntos', REVELACION.puntos(ganados)));
+    revelacion.append(el('p', 'revelacion-costo', REVELACION.costo(audio, reloj)));
+  } else {
+    revelacion.append(el('p', 'revelacion-costo', REVELACION.tardaste(reloj)));
   }
 
   // `D-22`: el tema entero lo sirve el sitio. Si todavía no está el archivo, no se
@@ -656,6 +794,18 @@ function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
 }
 
 function avanzar(): void {
+  /*
+   * Cortar el sonido antes de pasar, y no es cosmetico.
+   *
+   * Desde que el boton de escuchar queda vivo durante la revelacion, el fragmento del
+   * tema que se acaba de revelar **puede estar sonando** cuando se toca "Segui". Sin esto
+   * seguiria sonando arriba del tema siguiente: el jugador escucharia la respuesta
+   * anterior mientras trata de adivinar la nueva. Es un defecto que no existia antes y
+   * que el cambio de la revelacion habilita.
+   */
+  reproductor.detener();
+  frenar();
+
   indice += 1;
   if (indice >= ronda.length) {
     pintarResultado();
@@ -666,24 +816,63 @@ function avanzar(): void {
 
 // ---------------------------------------------------------------- resultado
 
+/** El pie de un tema en el resumen y en la tarjeta: disco, audio que hizo falta, reloj. */
+function pieDeTema(i: number): string {
+  const tema = ronda[i]!;
+  const p = marcador[i] ?? 0;
+  const reloj = duracion(tiempos[i] ?? 0);
+  return p > 0
+    ? TARJETA.pieAcierto(tema.discoTitulo, paso(p).etiqueta, reloj)
+    : TARJETA.pieFallo(tema.discoTitulo, reloj);
+}
+
+/**
+ * El resultado, reordenado por lo que el jugador realmente quiere contar.
+ *
+ * Antes esta pantalla abria con el puntaje en cifra grande y el detalle de los temas
+ * decia, por tema, `0,1 s` o un guion. El pedido del usuario del 2026-08-27 la da vuelta:
+ * *"mas que el puntaje es importante y divertido saber en cuanto tiempo y que temas
+ * adivino"*.
+ *
+ * Asi que la jerarquia es otra. La linea que canta es el tramo; el numero grande es **el
+ * tiempo**; el setlist —que era una nota al pie— pasa a ser la pieza central, con cada
+ * tema vestido con la tinta real de su disco; y el puntaje se queda, en su renglon, abajo
+ * del tiempo. No desaparece: deja de ser lo primero que se lee.
+ *
+ * La pantalla viste **Gulp!** y no Lobo suelto, porque asi lo reparte `D-19`
+ * ("resultado=Gulp!+logo") y asi lo tenia ya el boton de compartir.
+ */
 function pintarResultado(): void {
   const aciertos = marcador.filter((p) => p > 0).length;
   const t = tramo(aciertos, ronda.length);
+  const maximo = puntajeMaximo(ronda.length);
 
   zonaResultado.replaceChildren();
-  zonaResultado.append(el('h2', undefined, RESULTADO.titulo));
-  zonaResultado.append(el('p', 'puntaje', String(puntaje)));
-  zonaResultado.append(el('p', 'tenue', RESULTADO.de(puntaje, puntajeMaximo(ronda.length))));
-  zonaResultado.append(el('p', `tramo tramo--${t}`, TRAMOS[t]));
+
+  // Registro 3 arriba de todo: dice que hay adentro y se calla. Es el mismo rotulo que
+  // ya usa el desenlace del quiz, para que las dos pantallas se lean igual.
+  zonaResultado.append(el('p', 'rotulo-desenlace', RESULTADO.titulo));
+  const encabezado = el('h2', `tramo tramo--${t}`, TRAMOS[t]);
+  zonaResultado.append(encabezado);
+
+  // El reloj: el dato que el jugador cuenta cuando sale de la partida.
+  const reloj = el('div', 'cifra');
+  reloj.append(el('p', 'cifra-rotulo', RESULTADO.rotuloTiempo));
+  reloj.append(el('p', 'cifra-numero', duracion(sumarTiempos(tiempos))));
+  reloj.append(el('p', 'cifra-pie', RESULTADO.puntos(puntaje, maximo)));
+  zonaResultado.append(reloj);
 
   zonaResultado.append(el('h3', 'resumen-titulo', RESULTADO.detalle));
   const detalle = el('ol', 'resumen');
   ronda.forEach((tema, i) => {
     const p = marcador[i] ?? 0;
-    const li = el('li', `resumen-fila resumen-fila--${p > 0 ? 'ok' : 'no'}`);
+    const disco = claseDisco(tema.disco);
+    const li = el('li', `resumen-fila resumen-fila--${p > 0 ? 'ok' : 'no'}${disco ? ` ${disco}` : ''}`);
     li.append(el('span', 'resumen-marca', p > 0 ? '✔︎' : '✕︎'));
-    li.append(el('span', 'resumen-tema', tema.titulo));
-    li.append(el('span', 'resumen-dato', p > 0 ? paso(p).etiqueta : '—'));
+    const cuerpo = el('span', 'resumen-cuerpo');
+    cuerpo.append(el('span', 'resumen-tema', tema.titulo));
+    cuerpo.append(el('span', 'resumen-pie', pieDeTema(i)));
+    li.append(cuerpo);
     detalle.append(li);
   });
   zonaResultado.append(detalle);
@@ -694,8 +883,15 @@ function pintarResultado(): void {
   // la tilde para que entre — `D-17` no negocia el voseo.
   const compartir = el('button', 'primario firma con-tilde', RESULTADO.compartir);
   compartir.type = 'button';
-  compartir.addEventListener('click', () => void compartirResultado(aciertos));
+  compartir.addEventListener('click', () => void compartirResultado(compartir));
   zonaResultado.append(compartir);
+
+  // La caja donde cae lo que compartir tenga para decir. Existe vacia desde el arranque
+  // para que cada intento REEMPLACE al anterior: antes cada clic apilaba un parrafo
+  // nuevo, y a los tres clics la pantalla tenia tres avisos iguales uno abajo del otro.
+  salidaCompartir = el('div', 'compartir-salida');
+  salidaCompartir.setAttribute('aria-live', 'polite');
+  zonaResultado.append(salidaCompartir);
 
   const denuevo = el('button', 'secundario', RESULTADO.denuevo);
   denuevo.type = 'button';
@@ -707,33 +903,134 @@ function pintarResultado(): void {
   zonaResultado.append(volver);
 
   mostrar(zonaResultado);
+  encabezado.tabIndex = -1;
+  encabezado.focus();
 }
 
 /**
- * El link de desafío lleva **puntos**, igual que el texto que lo acompaña.
+ * Compartir la vuelta: la dirección para jugarla y la tarjeta para mirarla.
  *
- * Antes llevaba temas acertados, y el motivo escrito acá era que `ADR-02` acotaba el
- * total a 100 mientras una vuelta vale hasta 400 puntos: mandar el puntaje daba un link
- * que el propio `leerDesafio()` rechazaba.
+ * ## Las dos piezas, y por qué van juntas
  *
- * **`ADR-02` v2 subió ese tope a 9999 justamente por esto**, y al hacerlo dejó a la vista
- * el defecto que la restricción tapaba: el texto compartido decía "160 de 400" y el link
- * que iba pegado decía "3 de 4". Dos números para la misma partida, y el que abría el
- * desafío veía el que no correspondía. Ahora los dos dicen lo mismo.
+ * - **La dirección** ya existía (`armarLink`, `ADR-02`). Es el molinete abierto: el que
+ *   la recibe toca y juega, sin cuenta y sin bajar nada.
+ * - **La tarjeta** es nueva (`lib/tarjeta/plan.ts` la planifica, `scripts/tarjeta.ts` la
+ *   lo que hacía falta para que se pueda contar *qué* temas salieron y en cuánto tiempo,
+ *   que es lo que el usuario pidió y lo que una línea de texto no puede decir.
+ *
+ * El link sigue llevando **puntos**, igual que el texto que lo acompaña. Antes llevaba
+ * temas acertados porque `ADR-02` acotaba el total a 100 y una vuelta vale hasta 400;
+ * `ADR-02` v2 subió el tope a 9999 justamente por esto, y al hacerlo dejó a la vista el
+ * defecto que la restricción tapaba: el texto decía "160 de 400" y su propio link decía
+ * "3 de 4". Ahora los dos dicen lo mismo.
+ *
+ * ## La escalera de salidas, de la mejor a la que no puede fallar
+ *
+ * 1. Menú del sistema **con la imagen** (`navigator.share` con archivos). Es lo que hay
+ *    en un celular, que es donde se comparte esto.
+ * 2. Menú del sistema **sin la imagen**, cuando el navegador comparte pero no archivos.
+ * 3. Portapapeles, y la tarjeta queda a mano en un botón para bajarla.
+ * 4. La dirección escrita y seleccionable.
+ *
+ * Nunca se corta antes de tiempo: **si la tarjeta no se puede dibujar, se comparte igual
+ * sin ella.** Una imagen que falló no puede dejar a nadie sin poder compartir — es la
+ * misma escalera de `D-14` que ya usa el botón de corrección.
  */
-async function compartirResultado(aciertos: number): Promise<void> {
-  void aciertos; // se sigue recibiendo para no cambiar la firma; el link va en puntos
+let salidaCompartir: HTMLElement | null = null;
+
+async function compartirResultado(boton: HTMLButtonElement): Promise<void> {
+  const maximo = puntajeMaximo(ronda.length);
   const url = armarLink(location.origin + location.pathname, {
     forma: 'marcador',
     juego: 'tema',
     puntaje,
-    total: puntajeMaximo(ronda.length),
+    total: maximo,
   });
+  const aciertos = marcador.filter((p) => p > 0).length;
+  const t = tramo(aciertos, ronda.length);
+  const tiempoTotal = duracion(sumarTiempos(tiempos));
+  const texto = `${TRAMOS[t]} ${tiempoTotal} · ${RESULTADO.puntos(puntaje, maximo)}`;
+
+  // Dibujar puede tardar un parpadeo (hay que esperar las letras). Un boton mudo se toca
+  // dos veces, asi que dice lo que esta haciendo y no se deja tocar de nuevo.
+  const rotuloOriginal = boton.textContent ?? RESULTADO.compartir;
+  boton.disabled = true;
+  boton.textContent = RESULTADO.armando;
+
+  let imagen: Blob | null = null;
   try {
-    await navigator.clipboard.writeText(`${RESULTADO.de(puntaje, puntajeMaximo(ronda.length))} — ${url}`);
-    zonaResultado.append(el('p', 'link', RESULTADO.copiado));
+    imagen = await dibujarTarjeta({
+      juego: TARJETA.juego,
+      tinteJuego: '--cat-mitologia',
+      tramo: TRAMOS[t],
+      filas: ronda.map((tema, i) => ({
+        acerto: (marcador[i] ?? 0) > 0,
+        titulo: tema.titulo,
+        pie: pieDeTema(i),
+        disco: tema.disco,
+      })),
+      rotuloHero: TARJETA.rotuloTiempo,
+      hero: tiempoTotal,
+      puntaje: RESULTADO.puntos(puntaje, maximo),
+      sitio: location.host + location.pathname,
+    });
   } catch {
-    // Sin permiso de portapapeles: se muestra el link para copiarlo a mano.
-    zonaResultado.append(el('p', 'link', url));
+    // La tarjeta es el premio, no el camino: si el canvas falla, se comparte sin ella.
+    imagen = null;
   }
+
+  boton.disabled = false;
+  boton.textContent = rotuloOriginal;
+
+  const archivo = imagen
+    ? new File([imagen], nombreArchivo('adivina-el-tema'), { type: 'image/png' })
+    : null;
+
+  if (archivo && navigator.canShare?.({ files: [archivo] })) {
+    try {
+      await navigator.share({ files: [archivo], text: texto, url });
+      return;
+    } catch {
+      // Canceló, o el navegador la rechazó. Cae al escalón siguiente.
+    }
+  }
+  if (navigator.share) {
+    try {
+      await navigator.share({ text: texto, url });
+      return;
+    } catch {
+      // Ídem.
+    }
+  }
+
+  mostrarSalidaDeCompartir(url, imagen);
+}
+
+/** El respaldo de escritorio: el aviso de copiado, y la tarjeta a mano para bajarla. */
+function mostrarSalidaDeCompartir(url: string, imagen: Blob | null): void {
+  const caja = salidaCompartir;
+  if (!caja) return;
+  caja.replaceChildren();
+
+  void navigator.clipboard
+    ?.writeText(url)
+    .then(() => {
+      caja.prepend(el('p', 'compartir-aviso', RESULTADO.copiado));
+    })
+    .catch(() => {
+      // Sin portapapeles: la direccion queda escrita y seleccionable. Nadie queda afuera.
+      caja.prepend(el('p', 'link', url));
+      caja.prepend(el('p', 'compartir-aviso', RESULTADO.aManoTitulo));
+    });
+
+  if (!imagen) return;
+  const bajar = el('a', 'secundario compartir-bajar', RESULTADO.bajarTarjeta);
+  bajar.href = URL.createObjectURL(imagen);
+  bajar.download = nombreArchivo('adivina-el-tema');
+  // La direccion temporal se suelta despues de usarla: sin esto la imagen queda en
+  // memoria hasta que se cierra la pestania, y una vuelta son 1080x1350 pixeles.
+  bajar.addEventListener('click', () => {
+    setTimeout(() => URL.revokeObjectURL(bajar.href), 60_000);
+  });
+  caja.append(bajar);
 }
