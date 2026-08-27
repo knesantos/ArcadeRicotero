@@ -222,7 +222,7 @@ function pintarChips(): void {
       li.append(el('span', 'chip-texto', PARTIDA.paso));
     } else {
       li.classList.add('chip--fallado');
-      li.append(el('span', 'chip-marca', '✕'));
+      li.append(el('span', 'chip-marca', '✕︎'));
       li.append(el('span', 'chip-texto', intento.titulo));
     }
     chips.append(li);
@@ -254,7 +254,7 @@ function armarBuscador(): HTMLElement {
   entrada.addEventListener('keydown', alTeclear);
   fila.append(entrada);
 
-  const borrar = el('button', 'buscador-borrar', '✕');
+  const borrar = el('button', 'buscador-borrar', '✕︎');
   borrar.type = 'button';
   borrar.setAttribute('aria-label', 'Borrar lo escrito');
   borrar.addEventListener('click', () => {

@@ -140,7 +140,7 @@ function marcadorVidas(vidas: number): HTMLElement {
     const viva = i < vidas;
     // El simbolo va ademas del color, no en su lugar: el trazo es el mismo `✕` que ya
     // marca la opcion errada, porque errar es la unica causa posible de perder una vida.
-    caja.append(el('span', `vida ${viva ? 'vida--viva' : 'vida--ida'}`, viva ? '◆' : '✕'));
+    caja.append(el('span', `vida ${viva ? 'vida--viva' : 'vida--ida'}`, viva ? '◆' : '✕︎'));
   }
   caja.setAttribute('role', 'img');
   caja.setAttribute('aria-label', `${VIDAS_ROTULO}: ${vidas} de 3`);

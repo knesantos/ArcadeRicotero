@@ -109,7 +109,16 @@
   opacity: 1; /* deshabilitada no es igual a apagada: hay que poder leerla despues */
 }
 
-/* Acierto y error: simbolo + color + borde. Nunca solo color. */
+/* Acierto y error: simbolo + color + borde. Nunca solo color.
+   
+   Los dos llevan pegado un selector de variacion de texto (U+FE0E), y no es adorno: el
+   tilde pesado (U+2714) tiene **presentacion de emoji por defecto** en iOS y en Android,
+   asi que salia a color y redondeado en el celular aunque en escritorio se viera como
+   tinta plana. El selector lo obliga a presentacion de texto en todos lados.
+
+   Es el mismo defecto que tenia el triangulo del boton de play, que se resolvio de la
+   otra manera: dibujandolo. Cuando el simbolo es funcional y esta testeado (`UX-01`) se
+   fuerza el texto; cuando es un control grande de la pantalla, se dibuja. */
 .opcion.es-correcta {
   border-color: var(--acento-3);
   color: var(--acento-3);
@@ -117,7 +126,7 @@
 }
 
 .opcion.es-correcta::after {
-  content: ' ✔';
+  content: ' ✔︎';
 }
 
 .opcion.es-elegida {
@@ -126,7 +135,7 @@
 }
 
 .opcion.es-elegida::after {
-  content: ' ✕';
+  content: ' ✕︎';
 }
 
 /* ---- Feedback ---- */
@@ -693,9 +702,26 @@
   letter-spacing: 0.04em;
 }
 
-/* Simbolo ademas de texto: se reconoce sin leer, que es lo que uno hace con un play. */
+/* Simbolo ademas de texto: se reconoce sin leer, que es lo que uno hace con un play.
+ *
+ * **Dibujado, no tipografiado, y es la correccion de un defecto real.** Antes esto era el
+ * glifo del triangulo negro. En escritorio salia como tinta; en el celular **iOS y Android
+ * le dan presentacion de emoji** y aparecia el play a color, redondeado y brillante — la
+ * estetica exacta que `.claude/rules/diseno-marca.md` veta, metida por la puerta de la
+ * fuente del sistema en vez de por la del diseno.
+ *
+ * La forma se recorta con `clip-path` sobre `currentColor`: es tinta plana de verdad,
+ * hereda el color del boton en cada estado, no depende de ninguna fuente y **ningun
+ * sistema puede decidir pintarla de otra cosa**. */
 .escuchar::before {
-  content: '\25B6  ';
+  content: '';
+  display: inline-block;
+  width: 0.7em;
+  height: 0.7em;
+  margin-right: 0.55em;
+  vertical-align: -0.01em;
+  background: currentColor;
+  clip-path: polygon(8% 0%, 100% 50%, 8% 100%);
 }
 
 .escuchar--sonando {
@@ -704,8 +730,12 @@
   box-shadow: inset 0 0 0 var(--linea) var(--cat-mitologia);
 }
 
+/* El cuadrado de parar, mismo tratamiento. Va apenas torcido: es el idioma de sello de
+   goma del sitio, y en un cuadrado se lee como estampa sin perder legibilidad. */
 .escuchar--sonando::before {
-  content: '\25A0  ';
+  clip-path: none;
+  border-radius: 1px;
+  transform: rotate(-2deg);
 }
 
 .escuchar:disabled {

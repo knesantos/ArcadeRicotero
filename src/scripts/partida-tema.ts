@@ -245,7 +245,7 @@ function armarBuscador(): HTMLElement {
   buscadorInput.addEventListener('keydown', alTeclear);
   fila.append(buscadorInput);
 
-  const borrar = el('button', 'buscador-borrar', '✕');
+  const borrar = el('button', 'buscador-borrar', '✕︎');
   borrar.type = 'button';
   borrar.setAttribute('aria-label', 'Borrar lo escrito');
   borrar.addEventListener('click', () => {
@@ -296,7 +296,7 @@ function pintarRenglones(): void {
       li.append(el('span', 'intento-texto', PARTIDA.pasado));
     } else {
       li.classList.add('intento--fallado');
-      li.append(el('span', 'intento-marca', '✕'));
+      li.append(el('span', 'intento-marca', '✕︎'));
       li.append(el('span', 'intento-texto', PARTIDA.fallado(fallado!.titulo)));
     }
     renglones.append(li);
@@ -598,7 +598,7 @@ function pintarResultado(): void {
   ronda.forEach((tema, i) => {
     const p = marcador[i] ?? 0;
     const li = el('li', `resumen-fila resumen-fila--${p > 0 ? 'ok' : 'no'}`);
-    li.append(el('span', 'resumen-marca', p > 0 ? '✔' : '✕'));
+    li.append(el('span', 'resumen-marca', p > 0 ? '✔︎' : '✕︎'));
     li.append(el('span', 'resumen-tema', tema.titulo));
     li.append(el('span', 'resumen-dato', p > 0 ? paso(p).etiqueta : '—'));
     detalle.append(li);

@@ -71,6 +71,8 @@ export class Reproductor {
   private repuesto: HTMLAudioElement | null = null;
   private cuadro = 0;
   private cortar = 0;
+  /** Si ya sono el buffer mudo que destraba el audio en los celulares. */
+  private desbloqueado = false;
 
   /** `true` si este navegador no nos dio Web Audio y estamos con la etiqueta `<audio>`. */
   public get enRepuesto(): boolean {
@@ -85,21 +87,61 @@ export class Reproductor {
    * con esa política.
    */
   public despertar(): void {
-    if (this.ctx) {
-      // Volver de una pestaña en segundo plano deja el contexto suspendido.
-      if (this.ctx.state === 'suspended') void this.ctx.resume();
-      return;
+    if (!this.ctx) {
+      const Ctor = (window.AudioContext ??
+        (window as unknown as { webkitAudioContext?: ConstructorDeContexto }).webkitAudioContext) as
+        | ConstructorDeContexto
+        | undefined;
+      if (!Ctor) return; // sin Web Audio: queda el repuesto
+      try {
+        this.ctx = new Ctor();
+      } catch {
+        this.ctx = null;
+        return;
+      }
     }
-    const Ctor = (window.AudioContext ??
-      (window as unknown as { webkitAudioContext?: ConstructorDeContexto }).webkitAudioContext) as
-      | ConstructorDeContexto
-      | undefined;
-    if (!Ctor) return; // sin Web Audio: queda el repuesto
+    // Volver de una pestaña en segundo plano, o de una llamada, deja el contexto parado.
+    //
+    // El `.catch` no es prolijidad: un navegador que rechaza el `resume` dejaba una
+    // promesa sin capturar, y eso es ruido en la consola de la gente por algo que el
+    // motor ya sabe manejar — cuando toque "Escuchá" se vuelve a intentar, y si tampoco
+    // sale, cae al repuesto.
+    if (this.ctx.state !== 'running') void this.ctx.resume().catch(() => {});
+    this.desbloquear();
+  }
+
+  /**
+   * El desbloqueo de los celulares, que **no es lo mismo que `resume()`**.
+   *
+   * En iOS un `AudioContext` recién creado nace `suspended`, y hay versiones donde
+   * `resume()` solo no alcanza: el contexto queda listo recién cuando **sonó algo** desde
+   * adentro de un gesto de la persona. Un buffer de una muestra en silencio es ese algo —
+   * no se oye, no molesta, y deja el motor destrabado para el primer "Escuchá".
+   *
+   * Se hace una sola vez. Si el navegador lo rechaza, no pasa nada: el camino de repuesto
+   * con `<audio>` sigue estando.
+   */
+  private desbloquear(): void {
+    if (!this.ctx || this.desbloqueado) return;
     try {
-      this.ctx = new Ctor();
-      void this.ctx.resume();
+      const mudo = this.ctx.createBuffer(1, 1, this.ctx.sampleRate);
+      const fuente = this.ctx.createBufferSource();
+      fuente.buffer = mudo;
+      fuente.connect(this.ctx.destination);
+      fuente.start(0);
+      this.desbloqueado = true;
     } catch {
-      this.ctx = null;
+      // Un navegador que no deja ni esto va a caer al repuesto igual.
+    }
+    // El `<audio>` de repuesto también se crea acá, adentro del gesto: en iOS un elemento
+    // creado fuera de un gesto no puede reproducir después por más que se lo pida.
+    if (!this.repuesto) {
+      try {
+        this.repuesto = new Audio();
+        this.repuesto.preload = 'auto';
+      } catch {
+        this.repuesto = null;
+      }
     }
   }
 
@@ -155,27 +197,68 @@ export class Reproductor {
   public sonar(slug: string, segundos: number, escucha: Escucha = {}): void {
     this.detener();
     const limite = Math.min(segundos, DURACION_FRAGMENTO_SEG);
-    const buffer = this.buffers.get(slug);
 
-    if (this.ctx && buffer) {
-      // Renovar el buffer en la cola del LRU: el que suena es el último que se tira.
-      this.buffers.delete(slug);
-      this.buffers.set(slug, buffer);
+    /*
+     * **El destrabe va primero, y siempre — haya buffer o no.**
+     *
+     * Estamos adentro del clic en "Escuchá", que es un gesto: el único momento en que el
+     * navegador acepta destrabar el audio. Hacerlo acá, y no solo en "Empezá", es lo que
+     * arregla el celular. Y hacerlo **antes** de mirar el buffer arregla el segundo caso,
+     * que apareció escribiendo la prueba: si el fragmento todavía se está bajando —muy
+     * probable en un teléfono con datos— el camino viejo se iba derecho al repuesto y
+     * dejaba el contexto parado **para el resto de la partida**, así que los toques
+     * siguientes tampoco sonaban aunque el buffer ya estuviera.
+     */
+    this.desbloquear();
 
-      const fuente = this.ctx.createBufferSource();
-      fuente.buffer = buffer;
-      fuente.connect(this.ctx.destination);
-      const arranque = this.ctx.currentTime;
-      fuente.start(arranque, 0, limite);
-      this.fuente = fuente;
-      fuente.onended = () => {
-        if (this.fuente === fuente) this.terminar(escucha);
-      };
-      this.seguir(() => this.ctx!.currentTime - arranque, limite, escucha);
+    /*
+     * **El chequeo de estado, que faltaba, y era el defecto que reportó el usuario.**
+     *
+     * Si el contexto no está `running`, `fuente.start()` programa contra un reloj que no
+     * avanza: **no suena nada, `onended` nunca dispara**, el botón queda trabado en
+     * "Parar" y la barra no se mueve. En escritorio no pasaba porque ahí el contexto nace
+     * corriendo; en el celular nace `suspended`, y Safari además tiene un estado propio,
+     * `interrupted`, en el que cae después de una llamada o de Siri.
+     */
+    if (this.ctx && this.ctx.state !== 'running') {
+      void this.ctx.resume().then(
+        () => this.reproducir(slug, limite, escucha),
+        // Si ni resumiendo arranca, mejor el `<audio>` impreciso que el silencio.
+        () => this.sonarConRepuesto(slug, limite, escucha),
+      );
       return;
     }
 
+    this.reproducir(slug, limite, escucha);
+  }
+
+  /** Elige el camino según lo que hay: buffer con contexto vivo, o el repuesto. */
+  private reproducir(slug: string, limite: number, escucha: Escucha): void {
+    const buffer = this.buffers.get(slug);
+    if (this.ctx && this.ctx.state === 'running' && buffer) {
+      this.sonarConBuffer(slug, buffer, limite, escucha);
+      return;
+    }
     this.sonarConRepuesto(slug, limite, escucha);
+  }
+
+  /** El camino bueno: el buffer ya decodificado, con el contexto corriendo. */
+  private sonarConBuffer(slug: string, buffer: AudioBuffer, limite: number, escucha: Escucha): void {
+    if (!this.ctx) return;
+    // Renovar el buffer en la cola del LRU: el que suena es el último que se tira.
+    this.buffers.delete(slug);
+    this.buffers.set(slug, buffer);
+
+    const fuente = this.ctx.createBufferSource();
+    fuente.buffer = buffer;
+    fuente.connect(this.ctx.destination);
+    const arranque = this.ctx.currentTime;
+    fuente.start(arranque, 0, limite);
+    this.fuente = fuente;
+    fuente.onended = () => {
+      if (this.fuente === fuente) this.terminar(escucha);
+    };
+    this.seguir(() => this.ctx!.currentTime - arranque, limite, escucha);
   }
 
   /**
@@ -185,8 +268,18 @@ export class Reproductor {
    * un paso 1 impreciso a una pantalla muda.
    */
   private sonarConRepuesto(slug: string, limite: number, escucha: Escucha): void {
-    const el = this.repuesto ?? new Audio();
-    this.repuesto = el;
+    let el = this.repuesto;
+    if (!el) {
+      try {
+        el = new Audio();
+      } catch {
+        // Ni Web Audio ni `<audio>`: no hay con que sonar. Se avisa que termino para que
+        // el boton no quede trabado en "Parar" esperando algo que no va a pasar.
+        this.terminar(escucha);
+        return;
+      }
+      this.repuesto = el;
+    }
     if (!el.src.endsWith(`${slug}.mp3`)) el.src = urlDeFragmento(slug);
     el.currentTime = 0;
     const promesa = el.play();
