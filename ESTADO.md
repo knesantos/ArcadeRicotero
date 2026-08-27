@@ -12,6 +12,47 @@ frentes en dos tramos**: el juego nuevo por letras (`US-07`), `US-03` que sale e
 quiz que pasa a vidas, el botón de corrección, y la pulida de escritorio más los recortes
 reales.
 
+> ### ✅ EL BOTÓN DE CORRECCIÓN, Y DOS DEFECTOS QUE APARECIERON MIDIENDO (2026-08-27)
+>
+> `npm test` **276/276** · `npm run check` limpio · build de **149 páginas**.
+>
+> **El frente D cerró.** `CTR-10` (payload de once campos, dos transportes detrás de una
+> interfaz), `CNT-12` (todo registro 3), `UX-09` (dónde vive) y el componente enganchado
+> en `US-03` y `US-07`.
+>
+> **Lo que protege el diseño, y se audita a máquina:** `src/lib/correccion/armar.ts` **no
+> puede tocar el navegador** —ni `navigator`, ni `Date`, ni `location`— y hay un test que
+> **lee el fuente** para comprobarlo. `BR-21` fija que al que corrige no se le pide nada, y
+> un módulo que no puede leer el navegador no puede filtrarlo ni por accidente. El
+> renderizador es lista blanca, no un recorrido del objeto: un campo de más no se imprime.
+> Verificado jugando: el mensaje sale completo y accionable, **sin una sola traza de la
+> persona**.
+>
+> **Sin casilla configurada el mail no existe** —ni botón muerto, ni `mailto:` hacia
+> ningún lado— y la cadena termina siempre en el texto a la vista, que no puede fallar.
+> Nadie queda sin poder corregir (`D-14`). Prenderlo es una línea en `destino.ts`.
+>
+> ### 🔴 Los dos defectos que aparecieron midiendo, no leyendo
+>
+> 1. **En "Sacalo por la letra", el buscador caía 16 px abajo del pliegue** a 375×812 con
+>    los 8 versos del último escalón — justo lo que las tres franjas de `UX-08` existen para
+>    evitar. Eran el `padding` del `body`, y `min-height` dejaba crecer la columna en vez de
+>    obligar a la hoja a scrollear. Ahora cierra en 812 exacto.
+> 2. **`"Link copiado."` llevaba tres ciclos en producción** en el quiz, escondido del
+>    auditor de voz **por estar escrito a mano en la isla en vez de en un `copy.ts`**.
+>    `D-17` veta ese anglicismo. El auditor lo cazó recién cuando sumé los módulos nuevos.
+>    *La lección, para el próximo: una cadena visible fuera de un `copy.ts` es una cadena
+>    que nadie audita.*
+>
+> ### La decisión del lobo, resuelta en contra de ponerlo
+>
+> `UX-12` cerró lo que yo había frenado, y con un argumento mejor que el mío: **`D-19`
+> gobierna paleta y letra grande por sección, no qué personaje suelto acompaña la
+> pantalla** — eso es `UX-04`, anterior a la mezcla. Y el perro está fichado (`RES-06`,
+> `RES-22`) como **transversal a toda la obra**, no como propiedad de *Un baión*; de hecho
+> `STICKER_DISCO` le asigna a ese disco el muñeco, no el perro. **El lobo se queda donde
+> está y no hizo falta tocar código.**
+
 > ### ✅ LA v1 CUMPLE SUS CINCO PISOS (2026-08-27)
 >
 > `npm test` **264/264** · `npm run check` limpio · build de **149 páginas**.
