@@ -50,7 +50,7 @@ en disco sale de no saber cuál de los dos miraste.
 | Necesita ffmpeg | sí | **no** |
 | Duración | la que pida `D` (ver abajo) | **10,06 s medidos**, los 95 iguales |
 | Bitrate | **96 kbps** CBR, forzado con `-b:a 96k` | **64 kbps** CBR |
-| Canales / rate | mono y 44.100 Hz, forzados con `-ac 1 -ar 44100` | mono y 44.100 Hz **declarados en el PR, no verificados acá** (deuda 6) |
+| Canales / rate | mono y 44.100 Hz, forzados con `-ac 1 -ar 44100` | **el contrato los sigue exigiendo**; `D-26` los declara mono, pero el ingestor no mide ni canales ni rate (deuda 6) |
 | Normalización | `loudnorm` (con la deuda 3) | **ninguna**: el archivo entra como vino |
 | Cómo mide la duración | `ffprobe` | los frames del mp3, `bytes × 8 ÷ bitrate` — exacto en CBR |
 | Qué escribe | los mp3 **y** el manifiesto | **solo** el manifiesto |
@@ -95,7 +95,9 @@ documento, que es exactamente el reparto de `D-12`.
 Lo que **no** cambió: mp3, 44.100 Hz, mono, sin metadatos, sin fades en el archivo,
 `public/audio/fragmentos/<slug>.mp3`, los cuatro campos del manifiesto, los cinco primeros
 escalones de la escalera, la tabla de puntaje (es de `producto`) y el principio de que los
-datos guardan el slug y nunca la ruta.
+datos guardan el slug y nunca la ruta. *El rate y los canales siguen siendo exigencia del
+contrato; lo que esta revisión agrega es que en el régimen B nadie los está comprobando
+(deuda 6).*
 
 ---
 
@@ -569,9 +571,13 @@ no los corrige ninguna herramienta y se detectan escuchando, igual que los 100 m
 
 ### CTR-01.7 — Verificación de un fragmento
 
-**Ya no es un pendiente.** La v1 dejaba pedido un `scripts/validar_fragmentos.py` que nunca
-se escribió; la verificación está **adentro del generador**, corriendo sobre cada archivo
-apenas se produce. Suelta, sobre un archivo cualquiera:
+**Ya no es un pendiente, y desde el 2026-08-27 tampoco es una sola.** La v1 dejaba pedido un
+`scripts/validar_fragmentos.py` que nunca se escribió; la verificación vive **adentro de los
+productores**, y cada régimen comprueba lo que puede: el A, las cinco condiciones con
+`ffprobe`; el B, **la primera** —que sea un MPEG-1 Layer III legible— y nada más: **mide**
+la duración y la escribe, pero quien la hace cumplir es el build y el comando (1) de
+`CTR-03.10`, y los criterios 2, 3 y 5 no los mira nadie (deuda 6). Suelta, sobre un archivo
+cualquiera y **solo si hay ffmpeg** —hoy no lo hay, ver el comando sin ffmpeg más abajo—:
 
 ```bash
 ffprobe -v error \
@@ -587,8 +593,8 @@ Un fragmento **pasa** si cumple las cinco:
 | 1 | `codec_name` | `mp3` | régimen A con `ffprobe` · régimen B leyendo el header del frame |
 | 2 | `sample_rate` | `44100` | **solo el régimen A** — el ingestor no lo mira (deuda 6) |
 | 3 | `channels` | `1` — **sin la excepción de estéreo** | **solo el régimen A** — ídem (deuda 6) |
-| 4 | `duration` | **`9.90` a `10.15`** (malla fina) · el manifiesto acepta hasta `10.40` | los dos, cada uno con su malla (`CTR-01.3`) |
-| 5 | `size` | ≤ `(bitrate ÷ 8) × techo de la ventana × 1,15` | régimen A, con `TOPE_BYTES` |
+| 4 | `duration` | **`9.90` a `10.15`** (malla fina) · el manifiesto acepta hasta `10.40` | régimen A con su malla fina · en el B **la mide el ingestor y la hacen cumplir el build y el comando (1) de `CTR-03.10`** |
+| 5 | `size` | ≤ `(bitrate ÷ 8) × techo de la ventana × 1,15` | **solo el régimen A**, con `TOPE_BYTES` — ver el recuadro de abajo antes de darle importancia |
 
 **El tope de peso ya no es un literal, y el motivo es que hay dos bitrates.** La regla:
 
@@ -608,8 +614,8 @@ mirando, no del que el contrato prefiere.
 > de seguridad para el VBR y para el archivo corrupto. El 210.000 que el generador tiene
 > escrito quedó dimensionado para 15 s: hoy es flojo, no es falso, y no deja pasar nada que
 > la malla de duración no atrape primero. Se deja como está a propósito, para no tocar
-> código por un número que no manda (`D-12`). **Si algún día el generador vuelve a correr a
-> 10 s, el que manda sigue siendo el criterio 4.**
+> código por un número que no manda (`D-12`). **El que atrapa un archivo inflado es el
+> criterio 4, no el 5.**
 
 **Los criterios 2 y 3 en el régimen B, sin ffmpeg.** Los 95 del PR #8 se declararon mono y
 el ingestor no lo verifica. Esto lee el primer frame de cada mp3 y agrupa lo que encuentra

@@ -12,6 +12,29 @@ frentes en dos tramos**: el juego nuevo por letras (`US-07`), `US-03` que sale e
 quiz que pasa a vidas, el botón de corrección, y la pulida de escritorio más los recortes
 reales.
 
+> ### `D-27` — la dificultad sale de las escuchas, no de una etiqueta a mano
+>
+> Cerrando `FIND-29`, la salida obvia era pedirle a `contenido` **89 juicios a mano** de
+> "qué tan conocido es este tema". El usuario eligió la otra: **inferirla de la
+> popularidad**, con los temas sin escucha como `dificil`.
+>
+> No es una idea nueva del proyecto — `BR-18` (f) ya había hecho esto para `US-02`, porque
+> una etiqueta manual de "qué tan conocido es" se corrompe sola. Y acá encaja mejor que
+> allá: en este juego **"qué tan conocido es el tema" no es un proxy de la dificultad, es
+> la dificultad**.
+>
+> **🔴 Y lo que produce hoy hay que decirlo: los 89 quedaron en `dificil`.**
+> `popularidad.json` tiene los 105 temas en `sin-video` y **cero mediciones** — la clave de
+> YouTube nunca se cargó. Así que el juego **sigue sin escalonar**.
+>
+> La diferencia con antes no es de funcionamiento, es de honestidad: antes el barajado era
+> **accidental** (nadie había conectado la dificultad) y ahora es la **consecuencia
+> declarada** de que falta un dato. El generador lo grita en cada corrida en vez de dejar
+> que el tablero diga ✅.
+>
+> **Un comando lo prende, y destraba `US-02` y `US-07` de una sola vez:**
+> `YT_API_KEY=... npm run ingerir-popularidad -- --resolver`
+
 > ### 🔴 `REV-08`: cuatro hallazgos bloqueantes, y cómo verificar mal
 >
 > **La revisión encontró lo que la verificación no, por tercer ciclo seguido y por el mismo

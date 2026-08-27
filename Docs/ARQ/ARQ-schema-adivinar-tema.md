@@ -259,26 +259,50 @@ pasos cuestan lo mismo que uno.
 
 > `duracionSeg` ≥ duración del **paso 6** de `CTR-01.9`.
 
-Con los números de hoy, y con la ventana de `CTR-01.3`, la franja válida es
-**[14,90 – 15,15]**, y el build rechaza cualquier fragmento por debajo de **14,85**
+Con los números de hoy —`D = 10` por `D-26`— y con la ventana de `CTR-01.3`, la franja
+válida es **[9,90 – 10,40]**, y el build rechaza cualquier fragmento por debajo de **9,85**
 (`indexarFragmentos()`, con el mensaje "el último paso sonaría a silencio"). Un fragmento
 más corto que el paso 6 le devolvería silencio justo al jugador que gastó cinco intentos
 para llegar ahí.
 
-> **Revisado el 2026-08-24:** la v1 decía "los 5 pasos" y fijaba la franja en
-> [10,00 – 10,10]. Cambiaron los dos números y **no cambió el diseño**: la propiedad que
-> este contrato fue a buscar en `T-24` —que cambiar la escalera no migre ni un dato— se
-> cumplió en el primer cambio real. `D-24` pasó de cinco pasos a seis y de 10 s a 15 s, y
-> el archivo de datos no necesitó una sola edición: se volvió a correr el generador.
+**Los dos regímenes, que es lo que hay que poder leer acá dentro de seis meses:**
+
+| | `D = 10` — **hoy** (`D-26`) | `D = 15` — `D-24`, si se regenera |
+|---|---|---|
+| Paso 6 de `CTR-01.9` | 10 s | 15 s |
+| Franja del manifiesto | **[9,90 – 10,40]** | [14,90 – 15,40] |
+| Piso del build | ≥ 9,85 | ≥ 14,85 |
+| Qué hay en disco | **95 fragmentos de 10,06 s**, recortados a mano (PR #8) | nada todavía |
+| Cómo se llega | ya está | `escalera.ts` a 15 y `npm run generar-fragmentos -- "<carpeta>" --rehacer`, **en ese orden** (`CTR-01.3`) |
+
+> **Revisado el 2026-08-27 (`FIND-33` de `REV-08`): la franja baja a [9,90 – 10,40].** La
+> revisión 2 fijaba [14,90 – 15,15] y **contra el archivo real daba "DESALINEADO" en las 95
+> entradas**. `D-26` (2026-08-26) bajó la escalera a 10 porque los 95 fragmentos que trajo
+> el PR #8 miden 10,06 s y `indexarFragmentos()` rechaza el manifiesto entero si un
+> fragmento no llega al último paso. **Ese rechazo no es un obstáculo que haya que sortear:
+> es el chequeo que impide que el escalón más caro devuelva silencio, y es lo que forzó a
+> `D-26` a elegir entre el número lindo y el material real.** Eligió el material.
+>
+> **Y el diseño de este contrato volvió a aguantar, que es lo que había que probar.** La
+> propiedad que `T-24` fue a buscar —que cambiar la escalera no migre ni un dato— se
+> cumplió por segunda vez: `D-24` pasó de 5 pasos a 6 y de 10 a 15 sin tocar el JSON; `D-26`
+> volvió de 15 a 10 sin tocarlo tampoco. **Lo único que se editó fueron dos líneas de
+> `escalera.ts`.** El manifiesto lo reescribió un script leyendo el disco.
+>
+> *Para no perder la cuenta: la v1 (`T-24`) fijaba cinco pasos y la franja en
+> [10,00 – 10,10]; la revisión 2 (`T-104`), seis pasos y [14,90 – 15,15]; esta, seis pasos y
+> [9,90 – 10,40]. El techo de hoy es más ancho que el de la v1 aunque la duración sea la
+> misma, y el motivo está en `CTR-01.3`: entonces recortaba ffmpeg y ahora también recorta
+> una mano.*
 
 **Qué hay que tocar si algo cambia — y ninguna fila toca los datos a mano:**
 
 | Cambia… | Qué hay que tocar |
 |---|---|
-| El **máximo** de `CTR-01.3` | La constante `DURACION_FRAGMENTO_SEG`, y re-correr el generador con `--rehacer`. |
+| El **máximo** de `CTR-01.3` | La constante `DURACION_FRAGMENTO_SEG` **y el paso 6**, y después re-producir el audio: `--rehacer` con el generador, o dejar los mp3 nuevos y correr el ingestor. **En ese orden**: el generador lee la constante, así que si se corre antes, vuelve a recortar a la duración vieja. Y entre los dos pasos **el build se cae** — es el chequeo funcionando, no un daño (`CTR-01.3`). |
 | Las **duraciones** de la escalera | Solo `escalera.ts`. Nada del JSON. |
 | La **cantidad** de pasos (es de `producto`) | Solo `escalera.ts`. Nada del JSON. Ya pasó, y salió así. |
-| La **tabla de puntaje** (`BR-02`) | Solo `escalera.ts`. |
+| La **tabla de puntaje** (`BR-02`) | Solo `escalera.ts`. `D-26` no la tocó: sigue 100/80/60/40/20/10. |
 
 **Alternativas descartadas (de la v1, siguen valiendo):** guardar las duraciones por ítem
 —habilitaría que un dato contradiga al contrato—; guardar `pasosDisponibles` —un número mal
@@ -389,12 +413,22 @@ sitio publica en audio, y `public/audio/temas/` son los que publica **enteros**,
 superficie mayor que abrió `D-22`. El manifiesto los lista a los dos —con el `titulo`
 legible al lado y el booleano `entero`—, y el comando 3 de `CTR-03.10` los imprime.
 
+> **Estado del mapa al 2026-08-27, que es la primera vez que hay algo que mapear:** **95
+> fragmentos de ~10 s a 64 kbps mono** (`D-26`, PR #8) y **cero temas enteros** —
+> `public/audio/temas/` no existe o está vacío, y las 95 entradas tienen `entero: false`.
+>
+> **La superficie publicada es, entonces, la chica**: diez segundos por tema, de 95 de los
+> 105. Lo que `D-22` habilitó —servir el tema completo en mp3, para no negarle al que no
+> tiene Premium lo que `D-14` promete— **todavía no tiene ni un archivo**. No es una
+> objeción: es el estado, y este contrato ya tiene escrito el nivel 2 y el booleano que lo
+> declara, así que el día que aparezcan los enteros no hay que cambiar nada acá.
+
 **Qué se gana y qué se pierde, sin adornar:**
 
 - **Se gana** que el mapa no se puede desincronizar: el generador lo escribe leyendo el
   disco, y el comando compara el disco contra el manifiesto y avisa si hay un mp3 sin
   declarar.
-- **Se gana** granularidad de derechos: el booleano `entero` distingue 15 segundos de una
+- **Se gana** granularidad de derechos: el booleano `entero` distingue diez segundos de una
   grabación completa, cosa que el enum `letra | tapa | audio` no distinguía.
 - **Se pierde** poder marcar como sensible a `letra` o a `tapa` una entrada de este juego.
   Hoy no hace falta —la pantalla del reveal no muestra tapa ni versos, muestra ficha y un
@@ -467,7 +501,7 @@ Draft 2020-12, igual que los otros contratos. **Este documento manda sobre cualq
       "properties": {
         "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
         "titulo": { "type": "string", "minLength": 1, "maxLength": 80 },
-        "duracionSeg": { "type": "number", "minimum": 14.90, "maximum": 15.15 },
+        "duracionSeg": { "type": "number", "minimum": 9.90, "maximum": 10.40 },
         "entero": { "type": "boolean" }
       }
     }
@@ -475,10 +509,17 @@ Draft 2020-12, igual que los otros contratos. **Este documento manda sobre cualq
 }
 ```
 
-**Tres números que salen de otro lado y no se tocan acá:** `minimum: 14.90` y
-`maximum: 15.15` son la ventana de `CTR-01.3`; el patrón de `slug` es el de `CTR-01.4` y es
-lo que produce `slugDeTitulo()`; los 80 caracteres de `titulo` son el techo de `CTR-03.5`.
-**Si `CTR-01.3` mueve el máximo, estos dos literales se mueven con él.**
+**Tres números que salen de otro lado y no se deciden acá:** `minimum: 9.90` y
+`maximum: 10.40` son la ventana de `CTR-01.3`, instanciada en `D = 10` (`D-26`) — la regla
+es `D − 0,10` y `D + 0,40`; el patrón de `slug` es el de `CTR-01.4` y es lo que produce
+`slugDeTitulo()`; los 80 caracteres de `titulo` son el techo de `CTR-03.5`.
+
+> **Este bloque y el comando (1) de `CTR-03.10` son los dos únicos lugares del proyecto
+> donde la ventana está escrita con números en vez de con la regla**, y por eso son los dos
+> únicos que hay que editar a mano si `D` vuelve a moverse. Con `D = 15` van
+> `minimum: 14.90` y `maximum: 15.40`. Está dicho acá y en el paso 5 del recuadro de
+> `CTR-01.3`, en los dos lados, a propósito: **este es el número que en la revisión anterior
+> se quedó viejo y produjo `FIND-33`.**
 
 > **Decisión: no se crea `src/data/_schema/adivinar-tema.schema.json`.** Es lo contrario de
 > lo que hicieron `CTR-02` y `CTR-04`, así que va con su motivo.
@@ -520,8 +561,8 @@ lo que produce `slugDeTitulo()`; los 80 caracteres de `titulo` son el techo de `
   "actualizado": "<AAAA-MM-DD de la corrida — lo escribe el generador, no se pone a mano>",
   "nota": "Lista de archivos de audio que EXISTEN, no de temas.",
   "fragmentos": [
-    { "slug": "todo-un-palo", "titulo": "Todo un palo", "duracionSeg": 15.02, "entero": true },
-    { "slug": "vencedores-vencidos", "titulo": "Vencedores vencidos", "duracionSeg": 15.05, "entero": false }
+    { "slug": "todo-un-palo", "titulo": "Todo un palo", "duracionSeg": 10.06, "entero": true },
+    { "slug": "vencedores-vencidos", "titulo": "Vencedores vencidos", "duracionSeg": 10.06, "entero": false }
   ]
 }
 ```
@@ -533,11 +574,14 @@ lo que produce `slugDeTitulo()`; los 80 caracteres de `titulo` son el techo de `
   `Docs/INVESTIGACION/INV-20-fuentes-primarias.md`. Es la ficha que lista el tema exacto
   dentro del disco exacto, que es lo que el manifiesto necesita para resolver.
 - **Los slugs** son los que produce `slugDeTitulo()` sobre esos títulos.
-- **Las duraciones** son valores plausibles **dentro de la ventana**, del tipo que devuelve
-  `ffprobe`: nunca 15,00 exacto, porque la trama del mp3 no lo permite.
-- **`entero: true` en el primero** muestra el caso en que además existe
-  `public/audio/temas/todo-un-palo.mp3`. Es el booleano que marca la superficie mayor de
-  `D-22`.
+- **Las duraciones ya no son plausibles: son las reales.** Las dos entradas están tal cual
+  en `src/data/adivinar-tema.json` con `10.06`, que es lo que miden los 95 fragmentos del
+  PR #8 (`D-26`). Nunca da 10,00 exacto, porque la trama del mp3 no lo permite. *Con el
+  régimen de 15 s este ejemplo decía `15.02` y `15.05`.*
+- **`entero: true` en el primero es lo único inventado del ejemplo, y va marcado:** muestra
+  el caso en que además existe `public/audio/temas/todo-un-palo.mp3`, que es el booleano de
+  la superficie mayor de `D-22`. **Hoy no hay ni un fragmento con `entero: true`** — las 95
+  entradas reales lo tienen en `false` (`CTR-03.6`, regla 2).
 
 **Qué está marcado como inexistente:** `actualizado`, con un texto que **no pasa** el patrón
 de fecha. Si alguien copia este ejemplo tal cual, el comando 1 de `CTR-03.10` falla en vez
@@ -548,16 +592,24 @@ de dejar pasar una fecha verosímil e inventada.
 ### CTR-03.10 — Verificación: qué correr, y quién
 
 `arquitectura` no tiene con qué ejecutar (`D-12`) y no lo simula. **Lo corre el hilo
-principal en `T-107`**, o `revisor`.
+principal o `revisor`.**
 
 ```bash
 # (1) el manifiesto contra este contrato: envoltorio, patron de slug y ventana de duracion
-node -e "import('node:fs').then(({readFileSync})=>{const j=JSON.parse(readFileSync('src/data/adivinar-tema.json','utf8'));const p=/^[a-z0-9]+(-[a-z0-9]+)*$/,f=[];if(j.contrato!=='CTR-03')f.push('contrato');if(j.contratoVersion!==2)f.push('contratoVersion');if(j.juego!=='adivinar-tema')f.push('juego');if(j.modoRespuesta!=='buscador')f.push('modoRespuesta');if(!/^\d{4}-\d{2}-\d{2}$/.test(j.actualizado??''))f.push('actualizado');if(!Array.isArray(j.fragmentos))f.push('fragmentos');for(const x of j.fragmentos??[]){if(!p.test(x.slug??''))f.push('slug '+x.slug);if(!(x.duracionSeg>=14.90&&x.duracionSeg<=15.15))f.push('duracion '+x.slug);if(typeof x.titulo!=='string'||typeof x.entero!=='boolean')f.push('campos '+x.slug);if(Object.keys(x).length!==4)f.push('campos de mas en '+x.slug);}console.log(f.length?'DESALINEADO: '+f.join(', '):'OK CTR-03.1/.2/.8 · '+j.fragmentos.length+' fragmentos')})"
+#     La ventana 9.90-10.40 es la de CTR-01.3 con D = 10 (D-26). Con D = 15: 14.90-15.40.
+#     Esperado hoy: "OK CTR-03.1/.2/.8 · 95 fragmentos · 10.06-10.06 s"
+node -e "import('node:fs').then(({readFileSync})=>{const j=JSON.parse(readFileSync('src/data/adivinar-tema.json','utf8'));const p=/^[a-z0-9]+(-[a-z0-9]+)*$/,f=[];if(j.contrato!=='CTR-03')f.push('contrato');if(j.contratoVersion!==2)f.push('contratoVersion');if(j.juego!=='adivinar-tema')f.push('juego');if(j.modoRespuesta!=='buscador')f.push('modoRespuesta');if(!/^\d{4}-\d{2}-\d{2}$/.test(j.actualizado??''))f.push('actualizado');if(!Array.isArray(j.fragmentos))f.push('fragmentos');for(const x of j.fragmentos??[]){if(!p.test(x.slug??''))f.push('slug '+x.slug);if(!(x.duracionSeg>=9.90&&x.duracionSeg<=10.40))f.push('duracion '+x.slug+' ('+x.duracionSeg+')');if(typeof x.titulo!=='string'||x.titulo.length>80||typeof x.entero!=='boolean')f.push('campos '+x.slug);if(Object.keys(x).length!==4)f.push('campos de mas en '+x.slug);}const d=(j.fragmentos??[]).map(x=>x.duracionSeg);console.log(f.length?'DESALINEADO: '+f.slice(0,5).join(', ')+(f.length>5?' (+'+(f.length-5)+' mas)':''):'OK CTR-03.1/.2/.8 · '+j.fragmentos.length+' fragmentos · '+(d.length?Math.min(...d)+'-'+Math.max(...d)+' s':'sin audio, estado valido'))})"
+
+# (1b) la atadura de CTR-03.4 contra el codigo, sin literales: ningun fragmento
+#      declarado puede ser mas corto que el ultimo paso de la escalera
+node -e "Promise.all([import('./src/lib/tema/escalera.ts'),import('node:fs')]).then(([e,{readFileSync}])=>{const j=JSON.parse(readFileSync('src/data/adivinar-tema.json','utf8'));const u=e.ESCALERA[e.ESCALERA.length-1].segundos;const c=j.fragmentos.filter(x=>x.duracionSeg+0.15<e.DURACION_FRAGMENTO_SEG);console.log(c.length?'DESALINEADO: '+c.length+' fragmentos por debajo del paso 6 ('+u+' s) — el build los rechaza':'OK los '+j.fragmentos.length+' llegan al paso 6 ('+u+' s)')})"
 
 # (2) la regla 1 de CTR-03.6: cada slug resuelve contra los 105 de RES-20, y el pozo real
+#     Esperado hoy: 105 temas | jugables: 95 | piso de US-02: 30 => cumplido
 node -e "Promise.all([import('./src/lib/tema/catalogo.ts'),import('node:fs')]).then(([c,{readFileSync}])=>{const m=JSON.parse(readFileSync('src/data/adivinar-tema.json','utf8'));const cat=c.catalogo(m);console.log('catalogo:',cat.temas.length,'temas | jugables:',cat.jugables,'| piso de US-02: 30 =>',cat.jugables>=30?'cumplido':'faltan '+(30-cat.jugables))})"
 
 # (3) la regla 2 de CTR-03.6: el mapa de derechos, y que no haya mp3 sin declarar
+#     Esperado hoy: 95 fragmentos publicados, 0 enteros, 95 declarados (con entero: 0)
 node -e "import('node:fs').then(({readFileSync,existsSync,readdirSync})=>{const j=JSON.parse(readFileSync('src/data/adivinar-tema.json','utf8'));const ls=(p)=>existsSync(p)?readdirSync(p).filter(x=>x.endsWith('.mp3')):[];const fr=ls('public/audio/fragmentos'),te=ls('public/audio/temas');console.log('fragmentos publicados:',fr.length,'| temas enteros:',te.length,'| declarados:',j.fragmentos.length,'(con entero:',j.fragmentos.filter(x=>x.entero).length+')');const h=fr.filter(a=>!j.fragmentos.some(x=>x.slug+'.mp3'===a));console.log(h.length?'MP3 SIN DECLARAR: '+h.join(', '):'todo mp3 en disco esta en el manifiesto');for(const x of j.fragmentos)console.log('  ·',x.slug,'—',x.titulo,x.entero?'[fragmento + entero]':'[fragmento]')})"
 
 # (4) CTR-03.4 y CTR-03.5: la escalera y la comparacion por identidad, con los tests que ya existen
@@ -570,6 +622,7 @@ node --test src/lib/tema/catalogo.test.ts src/lib/tema/escalera.test.ts src/lib/
 | # | Chequeo | Quién |
 |---|---|---|
 | 1 | Envoltorio, patrón de slug, ventana de duración, cuatro campos y nada más | comando (1) |
+| 1b | Que ningún fragmento quede por debajo del paso 6 **según el código, no según un literal** | comando (1b), y el build |
 | 2 | Que cada slug sea uno de los 105 de `RES-20` (regla 1 de `CTR-03.6`) | comando (2), y el build |
 | 3 | El piso de temas jugables de `US-02` | comando (2) |
 | 4 | El mapa de derechos publicado, fragmento y entero (regla 2) | comando (3) |
@@ -609,8 +662,14 @@ node --test src/lib/tema/catalogo.test.ts src/lib/tema/escalera.test.ts src/lib/
 - **Lo que le impone a `experiencia`:** un buscador que ofrezca los 105 títulos con hasta 61
   caracteres reales en pantalla chica, y el crédito visible al revelar. Las cuatro opciones
   en zona pulgar que la v1 dejaba pedidas **ya no hacen falta**: ese pedido queda retirado.
-- **Fácil:** cambiar la escalera, la duración o el bitrate. Se vuelve a correr el generador
-  y ningún dato migra. Ya se demostró con `D-24`.
+- **El piso de `US-02` está cumplido en número desde `D-26`:** 95 temas jugables contra los
+  30 que pide `T-99`. Lo que sigue sin resolverse es la **cuota por dificultad**, que es de
+  `producto` y está señalada más arriba. Un pozo de 95 no la resuelve: la vuelve menos
+  urgente y más difícil de etiquetar.
+- **Fácil:** cambiar la escalera, la duración o el bitrate. Se vuelve a producir el audio y
+  ningún dato migra. **Ya se demostró dos veces**: `D-24` subió de 10 a 15 sin tocar el JSON
+  y `D-26` bajó de 15 a 10 sin tocarlo tampoco — la segunda vez con 95 archivos ya en disco,
+  que es la prueba que faltaba.
 - **Difícil:** volver a un banco de ítems con prosa por tema. No imposible —el contrato
   viejo está entero acá arriba, sección por sección— pero sería un archivo nuevo al lado de
   este, no este archivo con campos agregados: el generador lo pisa en cada corrida.
@@ -623,6 +682,12 @@ node --test src/lib/tema/catalogo.test.ts src/lib/tema/escalera.test.ts src/lib/
 - **La tolerancia del buscador y cómo se ve la lista:** `experiencia`.
 - **La tabla de puntaje y la mecánica de intentos:** `producto` (`BR-02`, `T-99`).
 - **La cuota por dificultad de `US-02`:** `producto`, señalado arriba.
-- **El techo de duración del fragmento:** `contenido` (`CNT-01`, sección A).
+- **El techo de duración del fragmento:** `contenido` (`CNT-01`, sección A). **Ojo con la
+  diferencia:** `CNT-01` pone el **techo** —hoy 15,0 s—; los **10,0 s de hoy no salen de
+  ahí**, salen del material real que trajo el PR #8 y que `D-26` aceptó. Están por debajo
+  del techo, así que no lo contradicen; el día que se regenere a 15 se vuelve a rozar y ahí
+  el dueño del número sigue siendo `contenido`.
+- **Si se vuelve al régimen de 15 s:** es del usuario, y necesita ffmpeg y los másters.
+  `arquitectura` solo deja escrito el precio y el orden (`CTR-01.3`).
 - **Qué temas se generan primero:** el usuario, con su carpeta y un comando.
 - **Si Spotify vuelve como enlace al revelar:** `ADR-01`, abierto.

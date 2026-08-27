@@ -34,9 +34,10 @@ import {
   ventanaValida,
   VERSION_FILTRO,
 } from '../src/lib/por-la-letra/filtro.ts';
+import { repartirPorPopularidad } from '../src/lib/por-la-letra/dificultad.ts';
 
 const CANCIONERO = join('src', 'data', 'cancionero.json');
-const CURADURIA = join('src', 'data', 'por-la-letra-curaduria.json');
+const POPULARIDAD = join('src', 'data', 'popularidad.json');
 const DESTINO = join('src', 'data', 'por-la-letra.json');
 
 const FICHA_POR_SITIO = {
@@ -46,9 +47,12 @@ const FICHA_POR_SITIO = {
 };
 
 const cancionero = JSON.parse(readFileSync(CANCIONERO, 'utf-8'));
-const curaduria = existsSync(CURADURIA)
-  ? JSON.parse(readFileSync(CURADURIA, 'utf-8'))
-  : { temas: {} };
+// `D-27`: la dificultad se infiere de la popularidad, no se etiqueta a mano. Es el
+// mismo mecanismo que `BR-18` (f) ya habia fijado para `US-02`.
+const popularidad = existsSync(POPULARIDAD)
+  ? JSON.parse(readFileSync(POPULARIDAD, 'utf-8'))
+  : { temas: [] };
+const reparto = repartirPorPopularidad(popularidad.temas ?? []);
 
 const items = [];
 const descartes = new Map(); // motivo -> cuantos
@@ -91,16 +95,16 @@ for (const tema of cancionero.temas) {
     continue;
   }
 
-  const etiqueta = curaduria.temas?.[tema.slug];
   const ficha = FICHA_POR_SITIO[tema.fuente.sitio];
   items.push({
     slug: tema.slug,
     titulo: tema.titulo,
     desde: ventana.desde,
     versos: ventana.versos.map((v) => v.texto),
-    dificultad: etiqueta?.dificultad ?? 'sin-clasificar',
-    // CTR-09.7: 'youtube' recien cuando el ranking exista y una corrida lo use.
-    dificultadSegun: 'curaduria',
+    // `D-27`. Sin medicion es `dificil`, tal como lo fijo el usuario — y hoy eso es
+    // TODOS, porque `popularidad.json` sigue sin la clave de YouTube.
+    dificultad: reparto.porSlug.get(tema.slug) ?? 'dificil',
+    dificultadSegun: 'youtube',
     fuente: {
       sitio: tema.fuente.sitio,
       url: tema.fuente.url,
@@ -133,6 +137,7 @@ console.log(`
   Temas en el banco:   ${items.length} de ${cancionero.temas.length} del cancionero
   Por dificultad:      ${JSON.stringify(porDif)}
   Filtro:              CNT-11 v${VERSION_FILTRO}
+  Dificultad:          D-27, desde popularidad (${reparto.medidos} temas medidos de ${(popularidad.temas ?? []).length})
   Descartes:`);
 for (const [motivo, n] of [...descartes].sort((a, b) => b[1] - a[1])) {
   console.log(`    ${String(n).padStart(4)}  ${motivo}`);
@@ -141,4 +146,19 @@ if (afuera.length) {
   console.log(`\n  Temas afuera (${afuera.length}):`);
   for (const t of afuera) console.log(`    - ${t}`);
 }
-console.log(`\n  Piso de US-07: 60. ${items.length >= 60 ? 'CUMPLIDO' : 'NO llega'} con ${items.length}.\n`);
+console.log(`\n  Piso de US-07: 60. ${items.length >= 60 ? 'CUMPLIDO' : 'NO llega'} con ${items.length}.`);
+
+// El aviso que evita que el tablero diga ✅ sobre un juego que no escalona. `D-27` deja
+// la regla puesta, pero sin mediciones la regla devuelve `dificil` para todos.
+if (reparto.medidos === 0) {
+  console.log(`
+  🔴 NINGUN tema tiene medicion de escuchas, asi que TODOS quedaron en 'dificil'
+     (D-27: sin escucha es dificil). El juego reparte sin escalonar de verdad, y
+     BR-01 no se puede cumplir porque no hay pozo facil del que sacar el primero.
+
+     Un comando lo cambia, y no hay que tocar una linea de codigo:
+       YT_API_KEY=... npm run ingerir-popularidad -- --resolver
+`);
+} else {
+  console.log('');
+}
