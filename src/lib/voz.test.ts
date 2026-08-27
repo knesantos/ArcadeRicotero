@@ -7,6 +7,8 @@ import * as quiz from './quiz/copy.ts';
 import * as tema from './tema/copy.ts';
 import * as letra from './letra/copy.ts';
 import * as tapa from './tapa/copy.ts';
+import * as porLaLetra from './por-la-letra/copy.ts';
+import * as correccion from './correccion/copy.ts';
 
 /**
  * La auditoria a maquina de `.claude/rules/voz-ricotera.md`, seccion 8.
@@ -44,6 +46,10 @@ const MODULOS: ReadonlyArray<readonly [string, Record<string, unknown>]> = [
   ['tema', tema],
   ['letra', letra],
   ['tapa', tapa],
+  // Los dos del ciclo 9. `US-07` es un juego nuevo, y el copy de correccion es todo
+  // registro 3 — el que mas tienta decorar, y el que menos puede.
+  ['por-la-letra', porLaLetra],
+  ['correccion', correccion],
 ];
 
 /**

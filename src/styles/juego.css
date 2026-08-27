@@ -1260,11 +1260,25 @@
 }
 
 /* La columna de alto fijo. `svh` y no `vh`: descuenta la barra del navegador movil,
-   que es lo que hace que el buscador quede de verdad donde el pulgar lo espera. */
+   que es lo que hace que el buscador quede de verdad donde el pulgar lo espera.
+   
+   **`height`, no `min-height`.** Con `min-height` la columna crece cuando el contenido
+   no entra, y entonces `.hoja-versos` nunca se ve obligada a scrollear — que es justo
+   lo que la hoja existe para hacer. Medido a 375x812 en el paso 4 (8 versos): el
+   buscador terminaba en 828 px, **16 px abajo del pliegue**, con la hoja sin scrollear.
+   
+   Los 16 px eran el `padding` del `body`, que es del sitio entero y no de este juego.
+   Se neutraliza **solo mientras se juega** con `:has()`, y vuelve solo en la portada y
+   en el resultado: la regla de abajo no existe si `#partida` esta oculto. */
+.juego-por-la-letra body:has(#partida:not([hidden])),
+body.juego-por-la-letra:has(#partida:not([hidden])) {
+  padding-block: 0;
+}
+
 .juego-por-la-letra #partida:not([hidden]) {
   display: flex;
   flex-direction: column;
-  min-height: 100svh;
+  height: 100svh;
   gap: var(--espacio-2);
 }
 
@@ -1338,4 +1352,132 @@
   font-size: 0.85rem;
   letter-spacing: 0.06em;
   margin: var(--espacio-1) 0 0;
+}
+
+/* ==========================================================================
+   El boton de correccion (`BR-21`, `CTR-10`, `CNT-12`, `UX-09`).
+   Componente compartido: **sin color de disco ni de categoria** — no pertenece a
+   ninguna seccion de la mezcla `D-19`. Y sin rotacion: es formulario funcional,
+   no una pieza del collage.
+   ========================================================================== */
+
+.correccion {
+  margin: var(--espacio-2) 0 0;
+  text-align: center;
+}
+
+.correccion-disparador {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--borde);
+  color: var(--texto-tenue);
+  font: inherit;
+  font-size: 0.8rem;
+  padding: var(--espacio-1);
+  min-height: var(--toque-min);
+  cursor: pointer;
+}
+
+.correccion-disparador:hover,
+.correccion-disparador:focus-visible {
+  color: var(--texto);
+  border-bottom-color: var(--acento-2);
+}
+
+/* Tinta plana, sin blur ni sombra difusa: el mismo criterio que `--velo-tapa`. */
+.correccion-panel {
+  margin-top: var(--espacio-2);
+  padding: var(--espacio-2);
+  border: 2px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--fondo);
+  text-align: left;
+}
+
+.correccion-titulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 1rem;
+  margin: 0 0 var(--espacio-1);
+}
+
+.correccion-etiqueta {
+  display: block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--texto-tenue);
+  margin: var(--espacio-2) 0 calc(var(--espacio-1) / 2);
+}
+
+.correccion-campo {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  font-family: var(--fuente);
+  color: var(--texto);
+  background: transparent;
+  border: 1px solid var(--borde);
+  border-radius: 3px;
+  padding: var(--espacio-1);
+  min-height: var(--toque-min);
+  resize: vertical;
+}
+
+.correccion-campo:focus-visible {
+  border-color: var(--acento-2);
+  outline: none;
+}
+
+/* La linea de no-promesa. Va junto a las salidas, que es donde se decide mandar. */
+.correccion-nota {
+  font-size: 0.78rem;
+  color: var(--texto-tenue);
+  margin: var(--espacio-2) 0 var(--espacio-1);
+}
+
+.correccion-salidas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+}
+
+/* La confirmacion **no** usa el verde de acierto ni el simbolo de verificado: pintar de
+   "verificado" un mensaje que nadie reviso violaria `BR-21` visualmente aunque el texto
+   este bien escrito (`UX-09`). Destaque neutro. */
+.correccion-confirmacion {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.9rem;
+  color: var(--acento-2);
+  margin: 0 0 var(--espacio-1);
+}
+
+/* El piso de `D-14`: el texto a la vista, seleccionable, cuando no hubo ninguna via. */
+.correccion-texto {
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 12rem;
+  overflow-y: auto;
+  border: 1px dashed var(--borde);
+  padding: var(--espacio-1);
+  color: var(--texto-tenue);
+}
+
+.correccion-cerrar {
+  background: none;
+  border: none;
+  color: var(--texto-tenue);
+  font: inherit;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: var(--espacio-1);
+  min-height: var(--toque-min);
+  margin-top: var(--espacio-1);
+  cursor: pointer;
+}
+
+.correccion-cerrar:hover,
+.correccion-cerrar:focus-visible {
+  color: var(--texto);
 }

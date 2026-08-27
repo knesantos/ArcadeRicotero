@@ -23,6 +23,7 @@ import {
 import { sugerir, acierta, MAX_SUGERENCIAS, type TemaBuscable, type Resultado } from '../lib/tema/buscador.ts';
 import { PANTALLA_0, PARTIDA, RESULTADO } from '../lib/por-la-letra/copy.ts';
 import { PORTAL } from '../lib/sitio/copy.ts';
+import { botonCorreccion } from './correccion.ts';
 
 /** Un ítem del banco, tal como lo escribe `generar-por-la-letra.mjs` (`CTR-09.2`). */
 interface ItemDelBanco {
@@ -403,12 +404,23 @@ function cerrarTema(acerto: boolean): void {
   verLetra.href = `/letras-y-acordes/${item.slug}/`;
   panel.append(verLetra);
 
+  const correccion = botonCorreccion(() => ({
+      juego: 'por-la-letra',
+      itemId: item.slug,
+      ubicacion: 'los versos',
+      dice: `${item.versos.slice(0, pasoDeVersos(pasoActual).versos).join(' / ')} → ${item.titulo}`,
+      fuente: { sitio: item.fuente.sitio, url: item.fuente.url },
+      banco: { contrato: 'CTR-09', version: 1 },
+  }));
+
   zonaPartida.append(panel);
 
   const seguir = el('button', 'primario', PARTIDA.seguir);
   seguir.type = 'button';
   seguir.addEventListener('click', avanzar, { once: true });
   zonaPartida.append(seguir);
+  // `UX-09`: despues de `Seguí` y afuera del panel, que es `role="status"`.
+  zonaPartida.append(correccion);
   seguir.focus();
 }
 

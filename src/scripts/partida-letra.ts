@@ -15,6 +15,7 @@
  */
 
 import { armarRonda, contarAciertos } from '../lib/quiz/ronda.ts';
+import { botonCorreccion } from './correccion.ts';
 import type { Item, Opcion } from '../lib/letra/banco.ts';
 import { PARTIDA, RESULTADO } from '../lib/letra/copy.ts';
 
@@ -172,12 +173,31 @@ function responder(texto: string): void {
     panel.append(linea);
   }
 
+  // `BR-21` / `D-25`: el boton de correccion, en el panel donde la persona acaba de ver
+  // el dato. Va antes de `Seguí` y como texto chico: es un control secundario que no
+  // puede competir con el que manda el avance.
+  const correccion = botonCorreccion(() => ({
+      juego: 'letra',
+      itemId: item.id,
+      ubicacion: 'el hueco',
+      dice: `${item.hueco.antes}[${item.hueco.respuesta}]${item.hueco.despues}`,
+      ...(item.fuenteLetra?.[0]
+        ? { fuente: { sitio: item.fuenteLetra[0].sitio, url: item.fuenteLetra[0].url, fichas: item.fuenteLetra.map((f) => f.ficha) } }
+        : {}),
+      banco: { contrato: 'CTR-04', version: 2 },
+  }));
+
   const seguir = el('button', 'primario', PARTIDA.seguir);
   seguir.type = 'button';
   seguir.addEventListener('click', avanzar, { once: true });
   panel.append(seguir);
-
+  // `UX-09`: despues de `Seguí`, y **afuera** del panel de respuesta. Ese panel se lee
+  // solo; meterle un control adentro haria que el lector anuncie "Corregí esto, boton"
+  // mezclado con el resultado.
   zonaPartida.append(panel);
+  // Va **despues** del panel en el orden del DOM, que es el orden en que se lee y se
+  // tabula: `UX-09` lo quiere despues de `Seguí`, no antes del resultado.
+  zonaPartida.append(correccion);
   seguir.focus();
 }
 

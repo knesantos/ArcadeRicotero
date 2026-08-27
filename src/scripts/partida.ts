@@ -38,6 +38,7 @@ import {
   BOTON_RETIRARSE,
   BOTON_SEGUIR,
   DESENLACES,
+  ENLACE_COPIADO,
   ERRORES,
   RETIRADA_CONFIRMA,
   VIDAS_ROTULO,
@@ -409,7 +410,7 @@ async function compartirResultado(): Promise<void> {
   }
   try {
     await navigator.clipboard.writeText(`${texto} ${url}`);
-    zonaResultado.append(el('p', 'tenue', 'Link copiado.'));
+    zonaResultado.append(el('p', 'tenue', ENLACE_COPIADO));
   } catch {
     // Sin portapapeles tampoco: mostrar el link para copiarlo a mano. Nadie queda afuera.
     zonaResultado.append(el('p', 'link', url));

@@ -114,6 +114,16 @@ export const TRAMOS: Record<Tramo, { titulo: string; bajada: string }> = {
 };
 
 /** C4, C5 — botones del resultado. */
+/**
+ * El aviso de que el enlace quedó copiado.
+ *
+ * Estaba escrito a mano en `partida.ts` como "Link copiado.", y por eso **el auditor de
+ * voz nunca lo vio**: `voz.test.ts` recorre los módulos de copy, no las cadenas sueltas
+ * de una isla. Un anglicismo que `D-17` veta llevaba tres ciclos en producción escondido
+ * ahí. Vive acá para que se audite.
+ */
+export const ENLACE_COPIADO = 'Se copió el enlace.';
+
 export const BOTON_COMPARTIR = 'COMPARTÍ';
 export const BOTON_DE_NUEVO = 'JUGÁ DE NUEVO';
 

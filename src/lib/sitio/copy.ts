@@ -70,7 +70,10 @@ export const PORTAL = {
 export interface Casete {
   readonly titulo: string;
   readonly baja: string;
-  readonly variante: 'marca' | 'historia' | 'discos' | 'letras' | 'mitologia';
+  /** 'momo' la suma `US-07` (`UX-08`): Momo Sampler era la unica de las diez tapas sin
+   *  tomar como identidad de seccion, y vestirlo como su hermano de audio haria que dos
+   *  juegos casi gemelos se leyeran como el mismo con dos nombres. */
+  readonly variante: 'marca' | 'historia' | 'discos' | 'letras' | 'mitologia' | 'momo';
   readonly arte: string;
   readonly href?: string;
   readonly accion?: string;

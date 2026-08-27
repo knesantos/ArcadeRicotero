@@ -41,7 +41,7 @@ export const RESULTADO = {
   de: (puntos: number, maximo: number) => `${puntos} de ${maximo}`,
   compartir: 'COMPARTÍ',
   deNuevo: 'JUGÁ DE NUEVO',
-  copiado: 'Link copiado.',
+  copiado: 'Se copió el enlace.',
   paraCompartir: (puntos: number, maximo: number) =>
     `Saqué ${puntos} de ${maximo} sacando temas por la letra en el arcade ricotero. ¿Vos cuántos sacás?`,
 } as const;
