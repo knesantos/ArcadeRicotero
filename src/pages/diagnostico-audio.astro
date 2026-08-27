@@ -1,0 +1,130 @@
+---
+/**
+ * Diagnóstico de audio. No es una pantalla del juego: es una herramienta.
+ *
+ * Existe porque el audio no suena en el celular del usuario y sí en escritorio, y el
+ * primer arreglo no cambió nada. Adivinar a ciegas sale caro: esto **mide** en el propio
+ * teléfono y muestra el resultado ahí mismo, para leerlo o sacarle una foto.
+ *
+ * No se enlaza desde ningún lado a propósito. Se llega escribiendo la dirección.
+ */
+import '../styles/tokens.css';
+import '../styles/sitio.css';
+import Cabeza from '../components/Cabeza.astro';
+import { PORTAL } from '../lib/sitio/copy.ts';
+
+const TITULO = 'Diagnóstico de audio — Arcade Ricotero';
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>{TITULO}</title>
+    <Cabeza titulo={TITULO} descripcion="Herramienta para ver por qué no suena el audio." />
+  </head>
+  <body class="con-grano">
+    <main id="app">
+      <section class="pantalla contenido-sitio">
+        <header class="cabecera-sitio">
+          <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
+        </header>
+
+        <h1>Diagnóstico de audio</h1>
+        <p class="tenue">
+          Esto no es un juego. Mide qué pasa con el sonido en este aparato y lo escribe acá abajo.
+          Sacale una foto a lo que salga.
+        </p>
+
+        <button id="correr" class="primario" type="button">Revisá el audio</button>
+
+        <ol id="resultados" class="diagnostico"></ol>
+
+        <h2 class="dg-titulo">Las dos pruebas de sonido</h2>
+        <p class="tenue">
+          Subí el volumen antes. Y si es un iPhone, fijate que la llave lateral no esté en silencio:
+          apaga el audio del navegador sin avisar.
+        </p>
+        <p class="tenue">
+          Duran <strong>tres segundos</strong> a propósito. El primer paso del juego dura una décima
+          de segundo, y en un parlante de teléfono eso puede no oírse aunque funcione todo.
+        </p>
+
+        <div class="dg-botones">
+          <button id="probar-web" class="secundario" type="button">Probá por Web Audio</button>
+          <button id="probar-etiqueta" class="secundario" type="button">Probá con el reproductor común</button>
+        </div>
+      </section>
+
+      <footer class="pie-sitio">{PORTAL.pie}</footer>
+    </main>
+
+    <script src="../scripts/diagnostico-audio.ts"></script>
+
+    <style>
+      .diagnostico {
+        list-style: none;
+        padding: 0;
+        margin: var(--espacio-3) 0;
+        display: grid;
+        gap: var(--espacio-1);
+      }
+
+      .dg {
+        display: flex;
+        gap: var(--espacio-2);
+        align-items: flex-start;
+        padding: var(--espacio-2);
+        border: var(--linea) solid var(--borde);
+        border-radius: 3px;
+      }
+
+      /* Simbolo ademas de color, como en todo el sitio. */
+      .dg-marca {
+        font-family: var(--fuente-rotulada);
+        font-size: 1.1rem;
+        line-height: 1.2;
+        min-width: 1.2em;
+        text-align: center;
+      }
+
+      .dg--ok { border-color: var(--acento-3); }
+      .dg--ok .dg-marca { color: var(--acento-3); }
+      .dg--mal { border-color: var(--acento-4); }
+      .dg--mal .dg-marca { color: var(--acento-4); }
+      .dg--aviso { border-color: var(--acento-2); }
+      .dg--aviso .dg-marca { color: var(--acento-2); }
+      .dg--dato .dg-marca { color: var(--texto-tenue); }
+
+      .dg-que {
+        margin: 0;
+        font-weight: 700;
+      }
+
+      .dg-valor {
+        margin: 0.2em 0 0;
+        font-family: var(--fuente);
+        word-break: break-word;
+      }
+
+      .dg-nota {
+        margin: 0.4em 0 0;
+        color: var(--texto-tenue);
+        font-size: 0.85rem;
+      }
+
+      .dg-titulo {
+        margin-top: var(--espacio-4, 2rem);
+      }
+
+      .dg-botones {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--espacio-2);
+        margin-top: var(--espacio-2);
+      }
+    </style>
+  </body>
+</html>
