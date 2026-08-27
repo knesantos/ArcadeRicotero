@@ -6,83 +6,117 @@
     "fecha": "2026-08-24",
     "donde": "streaming"
   },
-  "confirmados": {
-    "CL-1518": "_:__",
-    "CL-242": "_:__",
-    "CL-564": "_:__",
-    "CL-1277": "_:__",
-    "CL-1138": "_:__",
-    "CL-838": "_:__",
-    "CL-1054": "_:__",
-    "CL-177": "_:__",
-    "CL-100": "_:__",
-    "CL-1166": "_:__",
-    "CL-1608": "_:__",
-    "CL-1555": "_:__",
-    "CL-1106": "_:__",
-    "CL-083": "_:__",
-    "CL-945": "_:__",
-    "CL-609": "_:__",
-    "CL-1204": "_:__",
-    "CL-307": "_:__",
-    "CL-1011": "_:__",
-    "CL-437": "_:__",
-    "CL-880": "_:__",
-    "CL-1226": "_:__",
-    "CL-507": "_:__",
-    "CL-892": "_:__"
-  },
-  "versos": {
-    "CL-1518": "Dios es [digital] ...",
-    "CL-242": "Patricio Rey Aquella solitaria vaca [cubana] (TAB)",
-    "CL-564": "que te [quitó] el sueño, el sueño.",
-    "CL-1277": "E [amor] ... G9 (C7 -C9 ) G9 G7 (C7 _C9 )",
-    "CL-1138": "Estuvo grabando [paredes]",
-    "CL-838": "Esa banda inconsolable de perros sin [folleto] ,",
-    "CL-1054": "Negrita yace [asustada]",
-    "CL-177": "Es tan chiflado y obnubilado que [puede] ser",
-    "CL-100": "es un criminal [mambo]",
-    "CL-1166": "se mandó en una [picada] ,",
-    "CL-1608": "De misas [cómicas] mal",
-    "CL-1555": "[Drogocop] , oh",
-    "CL-1106": "el mejor culo para su [sillón]",
-    "CL-083": "Son or acaso [ustedes] hoy",
-    "CL-945": "Que no [escuchaba] mas.",
-    "CL-609": "Fue unos meses a caseros y su strato [roja]",
-    "CL-1204": "SOBD [BAJO] :",
-    "CL-307": "Conduje toda la noche reventando los [cambios]",
-    "CL-1011": "Que iban al [grano]",
-    "CL-437": "[Parte] 3 de 3",
-    "CL-880": "Lo mejor de nuestra [piel]",
-    "CL-1226": "por descuido del [Señor]",
-    "CL-507": "°Estos son algunos arreglos que Skay toca en los [versos] en A ,",
-    "CL-892": "[fill] 1"
-  },
+  "confirmados": {},
+  "versos": {},
   "fuenteUnica": {
-    "_comentario": "Seleccion de T-138 bajo D-25: estos items se promueven a listo con regimen fuente-unica. El criterio de eleccion esta en cada motivo. Los 21 son 'facil' porque en este corpus facil correlaciona con estribillo repetido o linea de remera, que es exactamente el proxy de menor riesgo de transcripcion que pide la tarea.",
+    "_comentario": "Seleccion de T-138 rehecha tras REV-08/FIND-30. El campo `verso` es el ancla: la curaduria es sobre el verso, no sobre el id, que es solo una direccion posicional.",
     "decision": "D-25",
     "items": [
-      { "id": "CL-020", "motivo": "'Humano roto y mal parado.', el titulo del tema como cierre de estrofa, se repite igual en el estribillo" },
-      { "id": "CL-021", "motivo": "'¡Fuego, fuego! mentiras.', exclamacion corta que se repite identica dos veces antes del hueco" },
-      { "id": "CL-033", "motivo": "'nena no quiero perderte', linea de apertura muy citada de un tema de Gulp, sin cifrado alrededor" },
-      { "id": "CL-034", "motivo": "'si quieres puedes apostar.', continua la misma estrofa que CL-033, mismo tema, palabra comun sin ambiguedad" },
-      { "id": "CL-101", "motivo": "'es un criminal mambo', estribillo titulo repetido cuatro veces identico en la transcripcion" },
-      { "id": "CL-142", "motivo": "'En este film velado', verso de apertura de Jijiji, tema muy popular, transcripcion letras.com-cifraclub sin marcas de acorde en la linea" },
-      { "id": "CL-144", "motivo": "'El hijo tenaz de tu enemigo', sigue la misma estrofa que CL-142, palabra de uso comun" },
-      { "id": "CL-188", "motivo": "'luces efimeras. (Pero te creo...)', frase parentetica reconocible del estribillo de 'Ya nadie va a escuchar tu remera'" },
-      { "id": "CL-189", "motivo": "'Es casi hipnotico', linea corta y de sintaxis simple, sin acordes ni notas de guitarra alrededor" },
-      { "id": "CL-209", "motivo": "'Buena faena de tajo y talon', integra el esquema de rima en -on de la estrofa (talon/canon/salon), la rima fija la palabra" },
-      { "id": "CL-210", "motivo": "'ruedan los dientes del negro canon', misma rima en -on que CL-209, refuerza confianza en ambas palabras" },
-      { "id": "CL-227", "motivo": "'para gran consumo.', cierra la estrofa que antecede al estribillo mas repetido de 'Noticias de ayer' ('extra! extra!')" },
-      { "id": "CL-228", "motivo": "'Se desgracio el campeon del hiper futbol', linea muy citada y distintiva, sin ambiguedad de vocabulario" },
-      { "id": "CL-245", "motivo": "'Miraba el cielo justo a tiempo,' se repite identica dos veces seguidas en la letra, y rima con 'viento' (CL-250)" },
-      { "id": "CL-250", "motivo": "'Rumiaba el silbido del viento,' se repite identica dos veces seguidas, rima con 'tiempo' (CL-245)" },
-      { "id": "CL-258", "motivo": "'Vencedores vencidos!', el titulo del tema como estribillo, aparece identico dos veces en la fuente" },
-      { "id": "CL-260", "motivo": "'den la alarma!', exclamacion corta e inequivoca dentro del mismo estribillo que CL-258" },
-      { "id": "CL-1011", "motivo": "'Que iban al grano', letras.com (no cifraclub): fuente de solo texto, sin cifrado mezclado en la linea" },
-      { "id": "CL-1014", "motivo": "'Que soldaste con primor', misma fuente letras.com, cierra un pareado con 'temor' que ancla la rima" },
-      { "id": "CL-1610", "motivo": "'¿Querés creer? Oh, no!', letras.com, frase muy citada del estribillo de Dr. Saturno" },
-      { "id": "CL-1611", "motivo": "'Dr. Saturno, dame un turno!', letras.com, el titulo del tema dentro del estribillo, sin ambiguedad" }
+      {
+        "id": "CL-835",
+        "verso": "Que iban al [grano]",
+        "motivo": "Frase hecha ('ir al grano'), letras.com, contexto sin ninguna anotacion de guitarra alrededor."
+      },
+      {
+        "id": "CL-839",
+        "verso": "Y el carozo del asunto es tu [temor]",
+        "motivo": "Cierra un pareado con 'primor' (rima consonante en -or), contexto limpio de letras.com."
+      },
+      {
+        "id": "CL-1376",
+        "verso": "Dr. Saturno, dame un [turno] !",
+        "motivo": "Estribillo que repite el titulo del tema, la linea mas citada de la cancion."
+      },
+      {
+        "id": "CL-1372",
+        "verso": "Estoy hasta la [pasta] !",
+        "motivo": "Frase coloquial muy fijada ('estar hasta la pasta'); dificultad dificil, sin contexto que pueda traer ruido."
+      },
+      {
+        "id": "CL-412",
+        "verso": "Un poco de amor [francés]",
+        "motivo": "El hueco cae sobre la palabra del titulo, repetida como estribillo: minimo margen de error de transcripcion."
+      },
+      {
+        "id": "CL-422",
+        "verso": "De esa miel no comen las [hormigas]",
+        "motivo": "Imagen animal muy citada del tema, contexto limpio de cifraclub sin marcas de acorde."
+      },
+      {
+        "id": "CL-658",
+        "verso": "Tu esqueleto te trajo hasta [aquí]",
+        "motivo": "Verso muy citado del tema, ya lejos (en el orden del texto) de los rotulos 'Parte X de Y' de la fuente."
+      },
+      {
+        "id": "CL-657",
+        "verso": "Cuando [anochezca]",
+        "motivo": "Verbo comun conjugado, contexto limpio, fuera del tramo con rotulos de particion del tema."
+      },
+      {
+        "id": "CL-394",
+        "verso": "Violencia es [mentir]",
+        "motivo": "Verso corto y sentencioso, contexto limpio, lejos del tramo con la marca '(Repite Intro)' de la misma fuente."
+      },
+      {
+        "id": "CL-387",
+        "verso": "Con sus muecas rotas [cromadas]",
+        "motivo": "Contexto limpio pegado al primer verso del tema; palabra poco intercambiable, exige saberse la letra."
+      },
+      {
+        "id": "CL-080",
+        "verso": "es un criminal [mambo] .",
+        "motivo": "Estribillo repetido igual varias veces seguidas en el propio tema: la repeticion confirma la transcripcion."
+      },
+      {
+        "id": "CL-119",
+        "verso": "No mires, por [favor]",
+        "motivo": "Frase muy comun ('por favor'), contexto limpio, tema muy conocido de Oktubre."
+      },
+      {
+        "id": "CL-117",
+        "verso": "Y se [ofreció]",
+        "motivo": "Verbo comun en preterito, contexto limpio, bajo riesgo de mal oido del transcriptor."
+      },
+      {
+        "id": "CL-043",
+        "verso": "[Superlógico] , sí, sí, sí.",
+        "motivo": "El hueco es la palabra del titulo, repetida identica como estribillo varias veces en el tema."
+      },
+      {
+        "id": "CL-048",
+        "verso": "[Superrígido] , sí.",
+        "motivo": "Estribillo espejo de 'Superlogico', repetido identico varias veces en el mismo tema."
+      },
+      {
+        "id": "CL-211",
+        "verso": "Vencedores [vencidos] !",
+        "motivo": "El hueco es la segunda mitad del titulo, cantada como estribillo del tema."
+      },
+      {
+        "id": "CL-212",
+        "verso": "Te has fugado ! me hago [humo] !",
+        "motivo": "Frase hecha ('hacerse humo'), contexto limpio, tema muy conocido de Un baion para el ojo idiota."
+      },
+      {
+        "id": "CL-450",
+        "verso": "tu breto y tus ojos [grises] .",
+        "motivo": "Imagen fisica concreta (ojos), contexto limpio de cifraclub sin marcas de continuacion."
+      },
+      {
+        "id": "CL-451",
+        "verso": "yo no soy de [aconsejar]",
+        "motivo": "Verbo comun en contexto limpio, sin encabezado de seccion ni marca de anotacion cerca."
+      },
+      {
+        "id": "CL-094",
+        "verso": "Rockeros bonitos, [educaditos]",
+        "motivo": "Dificultad dificil, sin contexto mostrado: no hay linea de anotacion que pueda colarse alrededor."
+      },
+      {
+        "id": "CL-097",
+        "verso": "Que los buenos [volvieron]",
+        "motivo": "Contexto limpio entre dos versos cantados, palabra comun en preterito."
+      }
     ]
   }
 }

@@ -57,6 +57,7 @@ import {
   variante,
 } from '../lib/quiz/copy.ts';
 import { PORTAL } from '../lib/sitio/copy.ts';
+import { botonCorreccion } from './correccion.ts';
 
 /** Quien soy, para `leerDesafio`. Ver `FIND-28` en `desafio.ts`. */
 const JUEGO = 'quiz';
@@ -311,6 +312,26 @@ function responder(texto: string): void {
   seguir.type = 'button';
   seguir.addEventListener('click', avanzar, { once: true });
   zonaPartida.append(seguir);
+
+  // `BR-21` criterio 4: el boton de correccion va en `US-01`, `US-03` y `US-07`. Faltaba
+  // aca, y lo encontro `REV-08` (`FIND-32`) — el quiz es el juego con mas items del sitio
+  // y el que mas afirma cosas verificables, asi que era justo donde mas hacia falta.
+  //
+  // Va **despues** de `Seguí` y afuera del panel de feedback, que es `role="status"`.
+  zonaPartida.append(
+    botonCorreccion(() => ({
+      juego: 'quiz',
+      itemId: item.id,
+      ubicacion: 'la respuesta correcta',
+      dice: `${item.enunciado} → ${correcta.texto}`,
+      // `clase` ya es el enum de `D-14` (hecho | leyenda | testimonio) y viaja al
+      // cliente; `esLeyenda` y `fuentes` se quedan del lado del build a proposito
+      // (`aPayload`), asi que no hay de donde sacarlas ni falta.
+      rotulo: item.clase,
+      banco: { contrato: 'CTR-02', version: 1 },
+    })),
+  );
+
   seguir.focus();
 }
 

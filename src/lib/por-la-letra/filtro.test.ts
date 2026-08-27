@@ -114,6 +114,41 @@ test('ventanaValida re-chequea la ventana entera y devuelve el motivo, no un boo
   assert.match(ventanaValida(conTitulo, { slug: 'gato-azul', titulo: 'Gato azul' }) ?? '', /delata el titulo/);
 });
 
-test('VERSION_FILTRO existe y es 1: subirla es el mecanismo de CNT-11 para endurecerse', () => {
-  assert.equal(VERSION_FILTRO, 1);
+test('VERSION_FILTRO acompana cada endurecimiento de CNT-11', () => {
+  // Subio a 2 con `REV-08` / `FIND-30`: la regla de acordes exigia que TODAS las palabras
+  // lo fueran, y nueve de los 93 items publicados mostraban cifra como verso escapandose
+  // por una sola palabra suelta. El numero es lo que impide que un banco generado con la
+  // regla vieja se haga pasar por filtrado.
+  assert.equal(VERSION_FILTRO, 6);
+});
+
+test('FIND-30: el ruido que se colaba por una palabra suelta ahora se caza', () => {
+  // Los seis casos reales que `REV-08` encontro en el banco publicado. Cada uno se
+  // escapaba porque `esSecuenciaDeAcordes` pedia que **todas** las palabras fueran
+  // acordes, y una sola palabra suelta salvaba el renglon entero.
+  const reales = [
+    'D PITE PUENTE  X2',
+    'Repite introducion',
+    'Bm             G      A    Bm   +(riff1)',
+    'E  amor...  G9         (C7 -C9 )    G9            G7',
+    'A  (puente)',
+    'C9                         puente1',
+  ];
+  for (const r of reales) {
+    assert.notEqual(motivoDescarteVerso(r), null, `se escapa: ${JSON.stringify(r)}`);
+  }
+});
+
+test('y el endurecimiento no se lleva puesto ningun verso cantado', () => {
+  // La contracara: el filtro peca de descartar, pero no puede comerse letra real.
+  for (const v of [
+    'Un ángel vino a verme esta mañana',
+    '(En las calles no me muestro más)',
+    'La sangre en el ojal era de él',
+    'Ella baila con todos pero duerme conmigo',
+    'y el puente se cayó',
+    'Nadie puede vivir del amor',
+  ]) {
+    assert.equal(motivoDescarteVerso(v), null, `perdido: ${JSON.stringify(v)}`);
+  }
 });

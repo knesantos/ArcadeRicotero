@@ -34,6 +34,7 @@
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { sirveComoVerso } from '../src/lib/cancionero/anotacion.ts';
+import { motivoDescarteVerso } from '../src/lib/por-la-letra/filtro.ts';
 
 const CANCIONERO = 'src/data/cancionero.json';
 const CONFIRMACIONES = 'src/data/letra-confirmaciones.json';
@@ -254,7 +255,15 @@ function versosDe(tema) {
     // en la pantalla, marcar de mas borra un verso y nadie lo ve; aca, marcar de menos
     // le pone al jugador un hueco sobre la palabra `Riff`. Con 1.900 candidatos y un piso
     // de 15, perder algunos no cuesta nada.
-    const lineas = seccion.lineas.filter((l) => l.t === 'letra' && sirveComoVerso(l.texto));
+    //
+    // **`REV-08` / `FIND-31`:** `sirveComoVerso` sola no alcanzaba. Seis de los 21 items
+    // promovidos por `D-25` mostraban en su `contexto` cosas como "TEMA (E7):",
+    // "Tabbed by ..." o "Repite introducion" — el mismo ruido que `FIND-30` encontro en
+    // `US-07`, entrando por la otra puerta. Ahora los dos juegos comparten el filtro
+    // endurecido de `CNT-11`, que es donde vive la regla.
+    const lineas = seccion.lineas.filter(
+      (l) => l.t === 'letra' && sirveComoVerso(l.texto) && motivoDescarteVerso(l.texto) === null,
+    );
     lineas.forEach((linea, i) => {
       salida.push({ texto: linea.texto.trim(), enSeccion: i, deSeccion: lineas });
     });
@@ -450,10 +459,24 @@ function main() {
   const seleccion = archivoConf.fuenteUnica?.items ?? [];
   const porId = new Map(items.map((i) => [i.id, i]));
   const noEncontrados = [];
-  for (const { id, motivo } of seleccion) {
+  const corridos = [];
+  for (const { id, motivo, verso } of seleccion) {
     const item = porId.get(id);
     if (!item) {
       noEncontrados.push(id);
+      continue;
+    }
+
+    // **El mismo guardian que `confirmados`, y hacia falta.** Los ids son posicionales,
+    // asi que un banco regenerado con otro filtro los corre: el verso que hoy es
+    // `CL-045` manana puede ser otro, y la curaduria de `T-138` se mudaria sola a un
+    // verso que nadie eligio. `REV-08` lo encontro de la peor manera — al endurecer el
+    // filtro por `FIND-30`, varias anclas apuntaban a ruido (`"[Parte] 1 de 2"`,
+    // `"[fill] 1"`). Bajo `D-25` esos items van directo a la pantalla sin que nadie los
+    // coteje, asi que un corrimiento silencioso es exactamente el dano que `CTR-04`
+    // existe para impedir.
+    if (verso && verso !== renglon(item)) {
+      corridos.push(`${id}: elegiste «${verso}» y ahora ahi hay «${renglon(item)}»`);
       continue;
     }
     if (item.estado === 'listo') continue; // ya promovido por oído
@@ -464,6 +487,12 @@ function main() {
     }
     item.estado = 'listo';
     item.notaInterna = `Promovido por T-138 bajo D-25 (fuente unica). Motivo: ${motivo}`;
+  }
+  if (corridos.length) {
+    console.error(`\n✕ ${CONFIRMACIONES}, fuenteUnica: ${corridos.length} seleccion(es) apuntan a otro verso. No escribi nada.`);
+    for (const c of corridos) console.error(`   · ${c}`);
+    console.error('   El banco se regenero y los ids se corrieron. Rehace la seleccion.\n');
+    process.exit(1);
   }
   if (noEncontrados.length) {
     console.error(`\n✕ ${CONFIRMACIONES}, fuenteUnica: ${noEncontrados.length} id(s) no existen en el banco generado: ${noEncontrados.join(', ')}.`);

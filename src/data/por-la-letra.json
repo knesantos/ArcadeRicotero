@@ -9,7 +9,7 @@
   ],
   "filtro": {
     "regla": "CNT-11",
-    "version": 1
+    "version": 6
   },
   "nota": "Lo escribe scripts/generar-por-la-letra.mjs desde el cancionero. Es la lista de lo que existe y valido contra CNT-11, no de deseos. No se edita a mano.",
   "items": [
@@ -36,41 +36,18 @@
       }
     },
     {
-      "slug": "la-bestia-pop",
-      "titulo": "La bestia pop",
-      "desde": 1,
-      "versos": [
-        "lo siguiente:",
-        "En una transcripcion dice F#m pero queda mejo F#",
-        "1 guitarra:",
-        "A brillar mi amor",
-        "Vamos a brillar, mi amor",
-        "A brillar E   amor",
-        "vamos A brillar   E  amor",
-        "y mientras tanto la otra guitarra en el estribillo hace"
-      ],
-      "dificultad": "sin-clasificar",
-      "dificultadSegun": "curaduria",
-      "fuente": {
-        "sitio": "cifraclub.com",
-        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/la-bestia-pop/",
-        "consultado": "2026-08-24",
-        "ficha": "RES-49"
-      }
-    },
-    {
       "slug": "roto-y-mal-parado",
       "titulo": "Roto y mal parado",
       "desde": 1,
       "versos": [
-        "Quemás tu vida en este día,",
         "en esta tibia, tibia fila.",
         "Quemás, Quemás, Quemás...",
         "Quemás, Quemás, Quemás... tu vida.",
         "¿Comó te vá en estos dias?",
         "¡Fuego, fuego!",
         "¡Fuego, fuego! mentiras.",
-        "D PITE PUENTE  X2"
+        "Tu loca voluntad humeando,",
+        "graznando fiero y sin estilo."
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -84,7 +61,7 @@
     {
       "slug": "pierre-el-vitricida",
       "titulo": "Pierre, el vitricida",
-      "desde": 2,
+      "desde": 1,
       "versos": [
         "Como se rie el gordo Pierre",
         "y rompio el vidrio el gordo Pierre",
@@ -241,40 +218,18 @@
       }
     },
     {
-      "slug": "fuegos-de-octubre",
-      "titulo": "Fuegos de octubre",
-      "desde": 0,
-      "versos": [
-        "sigue asi...",
-        "hace esto de fondo.",
-        "De regreso a Octubre",
-        "(desde Octubre)",
-        "Sin un estandarte, de mi parte:",
-        "\"te  prefiero...igual",
-        "internacional\"",
-        "%: silencio"
-      ],
-      "dificultad": "sin-clasificar",
-      "dificultadSegun": "curaduria",
-      "fuente": {
-        "sitio": "lacuerda.net",
-        "url": "https://acordes.lacuerda.net/patricio_rey/fuegos_de_octubre.shtml",
-        "consultado": "2026-08-24"
-      }
-    },
-    {
       "slug": "preso-en-mi-ciudad",
       "titulo": "Preso en mi ciudad",
       "desde": 1,
       "versos": [
-        "era un \"pop\" violento que guió el gran estilo siniestro.",
         "Ahora ya no llora...",
         "Casi ya no llora, ¡atrapado en libertad!",
         "Practicamos tiro al pichón",
         "y un test para ir al espacio",
         "con mi delicioso campeón",
         "y el rock como todo llanto",
-        "Casi ya no llora,"
+        "Casi ya no llora,",
+        "¡atrapado en libertad!"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -355,7 +310,7 @@
     {
       "slug": "motor-psico",
       "titulo": "Motor psico",
-      "desde": 1,
+      "desde": 0,
       "versos": [
         "Un susurro muy especial",
         "Lo que debes, cómo puedes quedártelo.",
@@ -377,16 +332,16 @@
     {
       "slug": "jijiji",
       "titulo": "Jijiji",
-      "desde": 3,
+      "desde": 2,
       "versos": [
-        "En este film velado",
-        "En blanca noche",
         "El hijo tenaz de tu enemigo",
         "El muy verdugo cena distinguido",
         "Una noche de cristal que se hace añicos",
         "No lo soñé, yeh",
         "Se enderezó y brindó",
-        "A tu suerte"
+        "A tu suerte",
+        "Y se ofreció",
+        "Mejor que nunca"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -430,9 +385,9 @@
         "puso un huevo y la cosa exploto",
         "Rock fuerte en el puticlub",
         "cambio la suerte del puticlub",
-        "Repite introducion",
         "Buena faena de tajo y talon",
-        "ruedan los dientes del negro canon"
+        "ruedan los dientes del negro canon",
+        "su mala leche no siente dolor"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -560,16 +515,16 @@
     {
       "slug": "todo-un-palo",
       "titulo": "Todo un palo",
-      "desde": 8,
+      "desde": 2,
       "versos": [
         "El futuro llegó hace rato",
         "Veámoslo un poco con tus ojos",
         "El futuro ya llegó",
-        "Parte 1 de 3",
-        "Parte 2 de 3",
-        "Parte 3 de 3",
         "Yo voy en trenes",
-        "No tengo donde ir"
+        "No tengo donde ir",
+        "Algo me late",
+        "Y no es mi corazón",
+        "¿Cómo no sentirme así"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -697,7 +652,7 @@
     {
       "slug": "esa-estrella-era-mi-lujo",
       "titulo": "Esa estrella era mi lujo",
-      "desde": 5,
+      "desde": 2,
       "versos": [
         "No nos dimos nada más",
         "Solo un buen gesto",
@@ -705,8 +660,8 @@
         "Siempre un iluso",
         "Nuestra estrella se agotó",
         "Y era mi lujo",
-        "[Interlúdio 2] Am  F  G  E7",
-        "Parte 1 de 2"
+        "Ella fue, por esa vez",
+        "Mi héroe vivo, ¡bah!"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -749,9 +704,9 @@
         "(mientras bailamos tangos fatales).",
         "sigue...",
         "aca cambia",
-        "BG UE EL VERSO:",
         "El tango que ocultamos mejor",
-        "(Del que preferimos no hablar)"
+        "(Del que preferimos no hablar)",
+        "HACE TOC  DE VUELTA ;  (menos el ultimo F  que la hace asi)"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -770,11 +725,11 @@
         "Con sus muecas rotas cromadas",
         "Y por las carreteras valladas",
         "Escuchás caer tus lágrimas",
-        "(Repite Intro)",
         "De esta tierra que es una herida",
         "Que se abre todos los días",
         "A pura muerte, a todo gramo",
-        "D      C            G (repite intro)"
+        "Violencia es mentir",
+        "Sólo de viola"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -793,11 +748,11 @@
         "preso como un animal",
         "como un animal feroz",
         "así las cosas, la fiera más fiera ¿dónde está?",
-        "y tu sombra va detrás (Fill 1)",
+        "y tu sombra va detrás",
         "de hordas de notables con los secretos para ser",
-        "un negocio tan pequeño y simple como vos. (Fill 2)",
+        "un negocio tan pequeño y simple como vos.",
         "Un toque por si las moscas van",
-        "C                    Bb        (Fill 3)"
+        "y otro toque por si vas detrás"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -816,10 +771,10 @@
         "Es tipa vino a consolarte",
         "No muerde su lengua, no",
         "No es sincera, pero te gusta oírla",
-        "[Pasaje] C  Am  G",
         "Es una linda ración",
         "Con un defecto (con uno o dos)",
-        "Y es un cocktel que no se mezcla solo"
+        "Y es un cocktel que no se mezcla solo",
+        "Quiere, si quiere mas"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -835,14 +790,14 @@
       "titulo": "Mi perro dinamita",
       "desde": 1,
       "versos": [
-        "¿porque, si es un rock'n roll?",
         "Yo no se, si a tu perro le gusta ladrar a lo bobo",
         "mi perro ­no! no quiere ­no!",
         "con el hocico afiebrado ­no!",
         "recuperando palitos, corriendo a lo bobo",
-        "C     (silencio)                        G",
         "¿porque, si es su rock'n roll?",
-        "No es culo mojado"
+        "No es culo mojado",
+        "­no! quizá  algún fueguito...",
+        "Aquí¡ y allá  algún fueguito ensaya mi perro"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -858,14 +813,14 @@
       "titulo": "Blues de la artillería",
       "desde": 1,
       "versos": [
-        "1er VERSO:   (Igual que la intro)",
         "Sos el as del Club París",
         "as, lo tuyo no es el Rock",
         "cierran los bares por donde vas,",
         "tu breto y tus ojos grises.",
         "yo no soy de aconsejar",
         "pero estás jodiendo al personal",
-        "debiste poner en Rio ese restorán"
+        "debiste poner en Rio ese restorán",
+        "que te quitó el sueño, el sueño."
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -904,14 +859,14 @@
       "titulo": "El pibe de los astilleros",
       "desde": 1,
       "versos": [
-        "Fue unos meses a caseros y su strato roja",
         "Se hizo el torbellino que hoy suena en la radio",
         "La ceniza no caía desde su cigarro",
         "Y estaba en sus ojos desarmandote",
         "Alquiló una rana rubia, tibia y haragana",
         "Se moría de ganas de matarla",
         "Una linda damita de Concordia",
-        "El más bello fuselaje que jamás lustro"
+        "El más bello fuselaje que jamás lustro",
+        "Le hizo un par de promesas imprudentes"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -923,32 +878,9 @@
       }
     },
     {
-      "slug": "nueva-roma",
-      "titulo": "Nueva Roma",
-      "desde": 1,
-      "versos": [
-        "dicen mil rockanroles por los satélites,",
-        "dicen mil rockanroles desde los satélites.",
-        "2do VERSO:  (igual)",
-        "A un perro se lo cura como (ay) se cura a un perro,",
-        "PD _ESTRIBILLO:",
-        "¡Te cura o te mata!",
-        "¡ya está!",
-        "1er G  O DE GUITARRA:"
-      ],
-      "dificultad": "sin-clasificar",
-      "dificultadSegun": "curaduria",
-      "fuente": {
-        "sitio": "cifraclub.com",
-        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/nueva-roma/",
-        "consultado": "2026-08-24",
-        "ficha": "RES-49"
-      }
-    },
-    {
       "slug": "salando-las-heridas",
       "titulo": "Salando las heridas",
-      "desde": 2,
+      "desde": 1,
       "versos": [
         "Este arpegio que al final hace",
         "Un LAm. se repite durante 3",
@@ -973,14 +905,14 @@
       "titulo": "Queso ruso",
       "desde": 1,
       "versos": [
-        "Paso de moda el golfo como todo ¿viste vos?",
         "Como tanta otra tristeza a la que te acostumbras",
         "Ahora vas comprando perlas truchas sin chistar",
         "\"Calles inteligentes\" alemanas para armar.",
         "*:tambien se puede poner los arreglos del pre-verso.",
         "sigue asi...",
-        "Bm             G      A    Bm   +(riff1)",
-        "Y muchos marines de los mandarines"
+        "Y muchos marines de los mandarines",
+        "que cuidan por vos las puertas del nuevo cielo.",
+        "El bronceador \"Charlotte\" te cuida de la radiación"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1023,10 +955,10 @@
         "estoy acalorado",
         "voy a chasquear la lengua, un poco",
         "voy a escupir misiles",
-        "E               D    Riff1",
         "¡Puro veneno,",
-        "NI                D    Riff2",
-        "risas que duelen!"
+        "risas que duelen!",
+        "Acostumbre el pellejo",
+        "a los ultravioletas"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1062,16 +994,16 @@
     {
       "slug": "un-angel-para-tu-soledad",
       "titulo": "Un ángel para tu soledad",
-      "desde": 2,
+      "desde": 1,
       "versos": [
-        "Ya sufriste cosas mejores que estas",
         "Y vas a andar está ruta hoy",
         "Cuando anochezca",
         "Tu esqueleto te trajo hasta aquí",
         "Con un cuerpo hambriento veloz",
         "Y aquí ¡gracias a Dios!",
         "Uno cree en lo que oye",
-        "Ángel de la sole__dad"
+        "Ángel de la sole__dad",
+        "Y de la desola_ción"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1113,11 +1045,11 @@
         "vino un gato y festejo a la nena",
         "que tu padre trajo",
         "Asi es este amor",
-        "A  (puente)",
         "(no television)",
-        "A                                 E                                       PD- verso",
         "Su pelo endulza",
-        "(y a nadie le amarga un dulce)"
+        "(y a nadie le amarga un dulce)",
+        "vino un gato y festejo lo dulce",
+        "BAJ0 (durante el solo de saxo)"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1140,7 +1072,7 @@
         "y sus jugadas que siguen saliendo bien.",
         "Lo mejor de nuestra piel",
         "es que no nos deja huir...",
-        "G  O DE VIOLIN::"
+        "VIOLIN (arreglo para guitarra)"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1159,11 +1091,11 @@
         "y alli la conoci..",
         "en un tugurio de frontera",
         "visteando en portuñol .",
-        "fill 1",
         "Lionel Ritchie en el Bar Princesa",
-        "fill 2",
         "soñaba en soñador",
-        "en una hamaca tibia al sol ."
+        "en una hamaca tibia al sol .",
+        "todo bonito y barato",
+        "playeras marca \"top\""
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1179,14 +1111,14 @@
       "titulo": "La hija del fletero",
       "desde": 1,
       "versos": [
-        "Fm de la intro tiene que ser con bajo",
         "Volvio a Madrid donde parece que es feliz",
         "Ese dia me mando al descenso",
         "Recuerdo como su mirada me volteo",
         "Pero dos que se quieren se dicen cualquier cosa",
         "Ay! si pudieras recordar sin rencor",
         "En mi buzon hay un par de cartas suyas",
-        "Fueron juntandose y no tengo el valor"
+        "Fueron juntandose y no tengo el valor",
+        "Todavia su amor me da descargas"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1202,14 +1134,14 @@
       "titulo": "El lobo caído",
       "desde": 1,
       "versos": [
-        "Que no escuchaba  mas.",
         "entre tanto montaje sonso",
         "tanta infidelidad.",
         "\"Maté... y maté... y maté!.....y maté\"",
         "Muy mucha merca, poco bongó",
         "y el mal gusto encallo",
         "en un manantial frí dije",
-        "frío de visturí...."
+        "frío de visturí....",
+        "*engancha con.."
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1248,14 +1180,14 @@
       "titulo": "Ladrón de mi cerebro",
       "desde": 1,
       "versos": [
-        "Cacería     hecha con dos naipes...",
-        "...Datos feos,    por eso brindamos",
         "El mejor testigo se puede contradecir",
         "Por eso brindamos...",
         "(el resto sigue igual)",
         "Trato hecho sobre un tapete",
         "comodines y las jotas abren",
-        "Ella es bailarina de la caja musical"
+        "Ella es bailarina de la caja musical",
+        "él es el peligro,",
+        "A  (el resto sigue igual)"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1364,13 +1296,13 @@
       "desde": 1,
       "versos": [
         "el mejor culo para su sillón",
-        "F#5                               B5     puente",
         "y sabe bien que hoy su chance es gorda.",
         "Le ha puesto al fin su nombre al toallón,",
         "compró marfiles de la selva del Congo",
         "y en su coco siempre hay un petardo.",
         "Rodeado de grandanesas",
-        "que se salen de la blusa"
+        "que se salen de la blusa",
+        "con bestial dulzura, rush"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1437,8 +1369,8 @@
         "aunque corria ese rumor",
         "y hoy tiene una entre otras cruces",
         "en este bosque siempre cruel.",
-        "Dejó un billete     que pide a gritos que lo gasten",
-        "(RE FA7 LAm) 2 veces  SOL"
+        "Como una hoja",
+        "derivó en tu mismo turbio rio."
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1499,14 +1431,14 @@
       "titulo": "Ella baila con todos",
       "desde": 1,
       "versos": [
-        "la intro sigue asi....",
-        "SOBD  BAJO:",
-        "\"Es una de esas noches",
         "Donde a todos nos gusta",
         "La misma bailarina, ay",
         "y el mismo lunar\"",
-        "POS-VERSO: (RIFF3)",
-        "Sobre BASE:"
+        "\"Hay un par de mocosos",
+        "con suspiros teatrales",
+        "al ver cielos despendejados, ay",
+        "de todo placer",
+        "INTERMEDIO"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1545,14 +1477,14 @@
       "titulo": "Nuotatori professionisti",
       "desde": 1,
       "versos": [
-        "Cuando la marea los quiere tapar en el corazón de la noche",
         "Pagan con promesas los nenes de oro.",
-        "2°VERSO:",
         "Cómo actúan esos tipos felices",
         "Cómo brillan sus muecas festivas",
         "Si acarician pasteles de culo",
         "Sanos, muy fuertes y azucarados.",
-        "3° VERSO:"
+        "Sudar no les cambia la racha, no.",
+        "Llevan el juego en la sangre y van.",
+        "Descarados, lindos, varoncitos de oro."
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1569,13 +1501,13 @@
       "desde": 1,
       "versos": [
         "es oración, fastidio y buena suerte.",
-        "E  amor...  G9         (C7 -C9 )    G9            G7            (C7 _C9 )",
-        "C9                         puente1",
         "que está invitando a zozobrar.",
-        "D9             puente 2     C9",
         "Otra vulgaridad social igual,",
         "siempre igual, todo igual",
-        "todo lo mismo..."
+        "todo lo mismo...",
+        "* los puentes tambien los hace el saxo.",
+        "Mi amor, la libertad no es fantástica.",
+        "No es tormenta mental que da el prestigio loco"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1589,16 +1521,16 @@
     {
       "slug": "la-dicha-no-es-una-cosa-alegre",
       "titulo": "La dicha no es una cosa alegre",
-      "desde": 1,
+      "desde": 4,
       "versos": [
-        "\"una rumbita se armo..",
-        "SOBD  GUITARRA",
-        "una fea carcajada",
-        "Incombustible no sos,",
         "¿como bancás ese infierno?",
         "Soñás la hoguera donde siempre sos la leña.",
-        "\"esclavizado asi.....          estas hundido a fondo....",
-        "¿Cuánto tiempo más vas   a   estar"
+        "Esclavizado así",
+        "D  fugia C  en tu so le  dad?",
+        "estas hundido a fondo a fondo",
+        "Estás tomando de más",
+        "y estás tolerando todo.",
+        "Lastimas tu corazón"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1635,16 +1567,16 @@
     {
       "slug": "rock-yugular",
       "titulo": "Rock yugular",
-      "desde": 1,
+      "desde": 2,
       "versos": [
-        "2 veses   / 4 veses   / 4 veses        / 4 veses   /",
-        "Todo esto se repite dos veses",
-        "una sola vez",
         "-Dame... dame tu vida.",
         "Dame y tendras mi piedad.",
         "dame la sed de tus ojos acorazados",
         "y dame tu insolencia tambien.",
-        "-Rara vez esta vida tiene sentido, amor"
+        "-Rara vez esta vida tiene sentido, amor",
+        "y asi ves que hasta mi sombra brilla",
+        "en esta ciudad.",
+        "-Caen, caen al fin, caen los disfrases"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1684,13 +1616,13 @@
       "desde": 2,
       "versos": [
         "Ondeando, luzca el Sol o no",
-        "Banderas rojas,   banderas negras",
         "De lienzo blanco, en tu cora__zón",
         "Perfume al filo del dolor",
         "Así, invisible",
         "Licor venéreo del amor",
         "Que está en las pieles",
-        "sedas de sedas"
+        "sedas de sedas",
+        "Que guarda nombres en tu cora__zón"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1775,12 +1707,12 @@
       "versos": [
         "y en un edificio en llamas te encanó",
         "nadando en ese minestrón",
-        "C                MOTIVO  1",
         "va Porco Rex a Porno Rock!",
         "Si su look \"bola de efectos\" te palmó",
         "y recoges tu hígado desde un rincón",
         "Flotando en ese minestrón",
-        "E       G          Bb        MOTIVO 2"
+        "Va escribiendo su evangelio",
+        "en los tickets de Carrefour"
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1821,12 +1753,12 @@
       "versos": [
         "Juicio fantasma de los muertos queridos",
         "y una muy larga botella de gin",
-        "Acá viene la parte del efecto, que se hace así:",
         "las cuerdas, solo tocando las a todas",
         "(esto es para que no suene como una nota)",
         "a la altura de los micrófonos y al segundo golpe se desliza",
         "dos veces seguidas. Vuelve a golpear a la altura de los micrófono,",
-        "y va al seis y repite eso creo que dos veces, si escuchan la"
+        "y va al seis y repite eso creo que dos veces, si escuchan la",
+        "canción se van a dar cuenta."
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -1998,16 +1930,16 @@
     {
       "slug": "pool-averna-y-papusa",
       "titulo": "Pool, averna y papusa",
-      "desde": 1,
+      "desde": 4,
       "versos": [
-        "Am: Lo toca de esta manera:",
-        "Solo de la introducion:",
-        "v: vibrato",
-        "s: estira",
-        "d: desliza",
-        "Am(se toca como en la introducion)",
-        "Su llave arrojo",
-        "puteando por lo bajo se marcho"
+        "puteando por lo bajo se marcho",
+        "dejo sonando como confesion",
+        "Sin bulchitear a nobody, man",
+        "una corazonada fue esta vez...",
+        "lo puso en la ruta...(bie bie!)",
+        "con pases de chabona y lagrimas.",
+        "Con un platino de American Express",
+        "trucho, pero un lindo 'camaleon'."
       ],
       "dificultad": "sin-clasificar",
       "dificultadSegun": "curaduria",
@@ -2083,29 +2015,6 @@
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/pensando-como-una-acelga/",
-        "consultado": "2026-08-24",
-        "ficha": "RES-49"
-      }
-    },
-    {
-      "slug": "una-piba-con-la-remera-de-greenpeace",
-      "titulo": "Una piba con la remera de Greenpeace…",
-      "desde": 1,
-      "versos": [
-        "~ = Vibratos                  p = Lidago descendente o Pull off",
-        "^ = Estiradas o Bends         r = Soltar la estirada",
-        "t = tapping",
-        "*La cancion es en Si mayor",
-        "Esta dormida o finge que duerme.....",
-        "ya se canso de dormir tanto tiempo en sillones",
-        "Se aparta corriendo de mamones soquetes y fiolos pipiolos",
-        "y por las dudas nunca esta cerca de las vias sin mirar atras mirar atras"
-      ],
-      "dificultad": "sin-clasificar",
-      "dificultadSegun": "curaduria",
-      "fuente": {
-        "sitio": "cifraclub.com",
-        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/una-piba-con-la-remera-de-greenpeace/",
         "consultado": "2026-08-24",
         "ficha": "RES-49"
       }

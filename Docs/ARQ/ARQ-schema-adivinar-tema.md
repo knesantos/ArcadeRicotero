@@ -1,13 +1,15 @@
 # ARQ — Schema de "adiviná el tema" (`US-02`)
 
 > Rol dueño: `arquitectura`. Consume: `US-02`, `BR-01`, `BR-02`, `BR-04`, `BR-06`,
-> `CTR-01` v2 (en especial `CTR-01.3`, `CTR-01.4`, `CTR-01.5`, `CTR-01.7`, `CTR-01.8`,
-> `CTR-01.9`), `ADR-01`, `RES-20`, `D-13`, `D-14`, `D-22`, `D-23`, `D-24`,
+> **`CTR-01` v3** (en especial `CTR-01.3`, `CTR-01.4`, `CTR-01.5`, `CTR-01.7`, `CTR-01.8`,
+> `CTR-01.9`), `ADR-01`, `RES-20`, `D-13`, `D-14`, `D-22`, `D-23`, `D-24`, **`D-26`**,
+> **`FIND-33` de `REV-08`**,
 > `Docs/SUGERENCIAS/HILO-para-arquitectura-escalera-de-seis-y-modo-buscador.md`,
 > `Docs/SUGERENCIAS/HILO-mapa-del-juego-de-referencia.md`,
 > `.claude/rules/contenido-json.md`.
-> Produce: **`CTR-03` v2**. Tarea: `T-104` del ciclo 7.
-> Última actualización: **2026-08-24 (revisión 2)**. La v1 es del 2026-08-19 (`T-24`).
+> Produce: **`CTR-03` v2, revisión 3**. Tarea: cierre de `FIND-33`.
+> Última actualización: **2026-08-27 (revisión 3)**. La revisión 2 es del 2026-08-24
+> (`T-104`); la v1, del 2026-08-19 (`T-24`).
 
 ---
 
@@ -22,6 +24,18 @@ El cambio es grande y conviene decirlo en una línea antes de la tabla: **la v1 
 banco de ítems que nunca se cargó, y la v2 describe un manifiesto de archivos de audio.**
 No hay migración porque no hay datos que migrar — `D-24` lo dejó anotado: es trabajo de
 `contenido` que la decisión borró, no que postergó.
+
+**Y por qué el 2026-08-27 esto es una revisión 3 y no una v3, mientras `CTR-01` sí sube a
+v3.** `D-26` movió la duración del fragmento, y allá eso cambia el artefacto entero:
+duración, bitrate, peso, RAM y el último escalón. Acá cambia **un rango de validación**, y
+nada más: los cuatro campos son los mismos, el envoltorio es el mismo y el archivo de datos
+de hoy sigue validando. Subir `contratoVersion` obligaría a tocar `src/data/adivinar-tema.json`
+y los **dos** scripts que lo escriben, para no informar nada nuevo: el consumidor del dato
+no tiene que cambiar de comportamiento. **`contratoVersion` sigue en `2`.**
+
+*Alternativa descartada:* bumpear a 3 igual, para que el número de contrato acompañe al de
+`CTR-01`. Se descarta porque la versión del dato no es un sello de fecha: dice "esto se lee
+distinto", y esto no se lee distinto.
 
 ---
 

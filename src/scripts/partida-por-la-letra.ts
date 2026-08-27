@@ -96,8 +96,53 @@ function barajar<T>(xs: readonly T[]): T[] {
 
 $('jugar').addEventListener('click', comenzar);
 
+/** El orden de `BR-01`. Un tema sin etiquetar se trata como el mas duro: ver abajo. */
+const ORDEN_DIFICULTAD: Record<string, number> = {
+  facil: 0,
+  media: 1,
+  dificil: 2,
+  'sin-clasificar': 3,
+};
+
+/**
+ * Arma la ronda **escalonada**, no barajada. `BR-01`, y lo encontro `REV-08` (`FIND-29`).
+ *
+ * Hasta la revision esto era `barajar(banco).slice(0, 5)`: un barajado puro sobre los 92
+ * temas, sin mirar `dificultad` en ningun punto del archivo. Con eso, **el que llega sin
+ * saber nada de los Redondos podia recibir el tema mas oscuro del catalogo como primera
+ * pregunta** — el muro de entrada exacto que `D-09` y `BR-01` existen para impedir, en un
+ * juego que el tablero ya daba por cumplido.
+ *
+ * La logica es la de `armarRonda` del quiz, adaptada: **el primero sale del pozo mas
+ * facil que exista, y de ahi la dificultad no baja.** Adentro de cada nivel se baraja,
+ * para que dos partidas seguidas no sean iguales.
+ *
+ * **Mientras `contenido` no cargue la curaduria de `CTR-09.7`, los 92 estan en
+ * `sin-clasificar`**, y entonces esta funcion degrada a un barajado — que es lo que habia
+ * antes, pero ahora **declarado** en vez de accidental, y con el mecanismo listo para
+ * funcionar solo el dia que las etiquetas existan.
+ */
+function armarRondaEscalonada(): ItemDelBanco[] {
+  const porNivel = new Map<string, ItemDelBanco[]>();
+  for (const it of banco) {
+    const nivel = it.dificultad in ORDEN_DIFICULTAD ? it.dificultad : 'sin-clasificar';
+    if (!porNivel.has(nivel)) porNivel.set(nivel, []);
+    porNivel.get(nivel)!.push(it);
+  }
+
+  const niveles = [...porNivel.keys()].sort((a, b) => ORDEN_DIFICULTAD[a]! - ORDEN_DIFICULTAD[b]!);
+  const salida: ItemDelBanco[] = [];
+  for (const nivel of niveles) {
+    for (const it of barajar(porNivel.get(nivel)!)) {
+      if (salida.length >= LARGO_RONDA) return salida;
+      salida.push(it);
+    }
+  }
+  return salida;
+}
+
 function comenzar(): void {
-  ronda = barajar(banco).slice(0, Math.min(LARGO_RONDA, banco.length));
+  ronda = armarRondaEscalonada();
   indice = 0;
   puntaje = 0;
   mostrar(zonaPartida);
