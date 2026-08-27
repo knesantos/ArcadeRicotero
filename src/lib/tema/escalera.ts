@@ -1,5 +1,6 @@
 /**
- * La escalera del reveal de "adiviná el tema" (`US-02`): seis pasos, de 0,1 s a 15 s.
+ * La escalera del reveal de "adiviná el tema" (`US-02`): seis pasos, de 0,1 s a 10 s
+ * (eran 15 — ver `D-26` sobre la constante de abajo).
  *
  * ## De dónde salen estos números, y qué contradicen
  *
@@ -11,7 +12,8 @@
  * en `Docs/SUGERENCIAS/`.
  *
  * Los tres primeros pasos son los mismos que ya tenía `CTR-01.9`. Lo que cambia es la
- * cola: donde el contrato viejo iba 5 → 10, éste va 4 → 8 → 15. Es una escalera que
+ * cola: donde el contrato viejo iba 5 → 10, éste iba 4 → 8 → 15 (`D-26` la topea hoy
+ * en 10). Es una escalera que
  * **duplica**, y esa es toda su lógica: cada paso te da el doble de lo que tenías, así
  * que la sensación de "me están dando más" no se apaga nunca.
  *
@@ -48,11 +50,18 @@ export interface Paso {
 }
 
 /**
- * La duración del fragmento que sirve el sitio, en segundos (`D-23`, nivel "fragmento").
+ * La duración del fragmento que sirve el sitio, en segundos.
  * Tiene que ser **igual o mayor** que el último paso, o el escalón más caro devolvería
- * silencio.
+ * silencio — y `catalogo.ts` rechaza el manifiesto entero si no se cumple.
+ *
+ * **`D-26`: es 10 y no los 15 de `D-23`, porque los fragmentos reales miden 10.** El
+ * PR #8 trajo 95 fragmentos recortados a mano (10 s, 64 kbps, mono) y el usuario pidió
+ * terminar el juego con ellos. Entre una escalera que promete 15 y reproduce 10, y una
+ * que promete 10 y cumple, gana la que no miente. Si algún día los fragmentos se
+ * regeneran a 15 s (`generar-fragmentos.mjs`, con ffmpeg), esto vuelve a 15 y el último
+ * paso también — son las dos únicas líneas que cambian.
  */
-export const DURACION_FRAGMENTO_SEG = 15;
+export const DURACION_FRAGMENTO_SEG = 10;
 
 export const ESCALERA: readonly Paso[] = [
   { n: 1, segundos: 0.1, puntos: 100, etiqueta: '0,1 s' },
@@ -60,7 +69,8 @@ export const ESCALERA: readonly Paso[] = [
   { n: 3, segundos: 2, puntos: 60, etiqueta: '2 s' },
   { n: 4, segundos: 4, puntos: 40, etiqueta: '4 s' },
   { n: 5, segundos: 8, puntos: 20, etiqueta: '8 s' },
-  { n: 6, segundos: 15, puntos: 10, etiqueta: '15 s' },
+  // `D-26`: 10 y no los 15 de `D-24`, mientras los fragmentos del PR #8 midan 10.
+  { n: 6, segundos: 10, puntos: 10, etiqueta: '10 s' },
 ];
 
 /** Cuántos intentos tiene el jugador por tema. Es la altura de la escalera, no un tope

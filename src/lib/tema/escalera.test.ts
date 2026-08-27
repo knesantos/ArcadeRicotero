@@ -23,7 +23,9 @@ const LA_QUE_PIDIO_EL_USUARIO: Array<[number, number]> = [
   [3, 2],
   [4, 4],
   [5, 8],
-  [6, 15],
+  // `D-26`: el sexto paso pedia 15; los fragmentos reales del PR #8 miden 10, y la
+  // escalera no promete audio que el archivo no tiene. Vuelve a 15 con fragmentos de 15.
+  [6, 10],
 ];
 
 test('los seis pasos son exactamente los que pidió el usuario', () => {
@@ -83,12 +85,13 @@ test('los anchos de la barra suman el 100% de la línea de tiempo', () => {
 });
 
 test('el ancho de cada tramo es lo que ESE paso agrega, no su duración total', () => {
-  // El último tramo va de 8 a 15 segundos: siete segundos nuevos sobre quince totales.
+  // El último tramo va de 8 a 10 segundos: dos segundos nuevos sobre diez totales.
   const anchos = anchosDeTramos();
-  assert.ok(Math.abs(anchos[5]! - ((15 - 8) / 15) * 100) < 0.0001);
+  assert.ok(Math.abs(anchos[5]! - ((10 - 8) / 10) * 100) < 0.0001);
   // Y el primero es apenas la décima: por eso el CSS le pone un `min-width`.
-  assert.ok(Math.abs(anchos[0]! - (0.1 / 15) * 100) < 0.0001);
-  assert.ok(anchos[0]! < 1, 'el primer tramo tendría que ser casi invisible sin el min-width');
+  assert.ok(Math.abs(anchos[0]! - (0.1 / 10) * 100) < 0.0001);
+  // Con el total en 10 (`D-26`) la decima da exactamente el 1%; con 15 daba 0,67%.
+  assert.ok(anchos[0]! <= 1, 'el primer tramo tendría que ser casi invisible sin el min-width');
 });
 
 test('el puntaje máximo de una vuelta son todos los temas acertados en el paso 1', () => {

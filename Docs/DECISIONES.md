@@ -1136,3 +1136,32 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 - **Dueños:** la decisión es del usuario. La regla corrible es de `arquitectura` (`CTR-04`);
   la elección de los versos, de `contenido`; el botón y lo que promete, de `producto`
   (`BR-21`) y del hilo principal.
+
+---
+
+## D-26 — La escalera se topea en los 10 segundos de los fragmentos reales
+
+- **Fecha:** 2026-08-26
+- **Estado:** aceptada — consecuencia directa de dos decisiones del usuario que chocan
+  entre sí, resuelta a favor de la más nueva.
+- **Contexto:** `D-24` fijó la escalera del reveal en seis pasos que terminan en **15
+  segundos**, y `D-23` dimensionó los fragmentos en 15 s. Pero lo que llegó de verdad fue
+  otra cosa: el **PR #8** trajo **95 fragmentos recortados a mano, de 10,06 s** (64 kbps,
+  mono, CBR — medidos por `scripts/ingerir-fragmentos.mjs`), con el pedido de terminar el
+  juego con ellos. Y `catalogo.ts` rechaza el manifiesto entero si un fragmento dura menos
+  que el último paso de la escalera — ese chequeo existe justamente para que el escalón
+  más caro no devuelva silencio.
+- **Decisión:** el sexto paso baja de 15 a **10 segundos** (`0,1 / 0,5 / 2 / 4 / 8 / 10`)
+  y `DURACION_FRAGMENTO_SEG` baja a 10, **mientras los fragmentos midan 10**. Entre una
+  escalera que promete 15 y reproduce 10, y una que promete 10 y cumple, gana la que no
+  miente — es la regla del rótulo de `D-14` aplicada a un botón de audio.
+- **Lo que se pierde, dicho de frente:** el último salto ya no duplica (8 → 10 en vez de
+  8 → 15). La lógica de "cada paso te da el doble" de `D-24` se conserva en los cinco
+  primeros y se achata en el último. Es el costo de usar el material real en vez de
+  esperar el ideal.
+- **Qué la revierte:** regenerar los fragmentos a 15 s con `generar-fragmentos.mjs`
+  (necesita ffmpeg y los masters). Son dos líneas en `escalera.ts` y una en su test;
+  ningún dato migra, porque la escalera nunca vivió en el JSON (`CTR-03.4`).
+- **Dueños:** la escalera es de `arquitectura` (`CTR-01.9`) y la tabla de puntaje de
+  `producto`; el puntaje **no cambia** (100/80/60/40/20/10). Esta decisión solo toca
+  segundos.

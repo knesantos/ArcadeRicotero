@@ -18,7 +18,7 @@ export const PANTALLA_0 = {
   titulo: 'Adiviná el tema',
   subtitulo:
     'Con una décima te tiene que alcanzar. Si no, te damos más: medio segundo, dos, ' +
-    'cuatro, ocho, quince. Cuanto antes la pegues, más vale.',
+    'cuatro, ocho, diez. Cuanto antes la pegues, más vale.',
   elegiPozo: '¿Con qué jugás?',
   todos: 'Todos los discos',
   boton: 'Empezá',

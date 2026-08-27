@@ -15,7 +15,8 @@
     "hoja-de-escucha": "node --experimental-strip-types scripts/hoja-de-escucha.mjs",
     "generar-fragmentos": "node --experimental-strip-types scripts/generar-fragmentos.mjs",
     "generar-marca-social": "node scripts/generar-marca-social.mjs",
-    "ingerir-popularidad": "node --experimental-strip-types scripts/ingerir-popularidad.mjs"
+    "ingerir-popularidad": "node --experimental-strip-types scripts/ingerir-popularidad.mjs",
+    "ingerir-fragmentos": "node --experimental-strip-types scripts/ingerir-fragmentos.mjs"
   },
   "dependencies": {
     "astro": "^5.14.1"

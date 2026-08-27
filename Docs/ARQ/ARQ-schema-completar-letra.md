@@ -1,19 +1,56 @@
 # ARQ — Schema de "completar la letra" (`US-03`)
 
 > Rol dueño: `arquitectura`. Consume: `US-03`, `BR-01`, `BR-03`, `BR-04`, `BR-12`, `D-13`,
-> `D-14`, `D-12`, `RES-03`, `RES-11`, `RES-14`, `RES-20`, `RES-23`,
+> `D-14`, `D-12`, **`D-25`**, `RES-03`, `RES-11`, `RES-14`, `RES-20`, `RES-23`, **`RES-49`**,
 > `Docs/INVESTIGACION/INV-21-letras-y-fuimos-reyes.md` (las cinco mitigaciones del final),
 > `CTR-01.4`, `CTR-02`, `CTR-03`, `.claude/rules/contenido-json.md`.
-> Produce: **`CTR-04`**. Tarea: `T-62` del ciclo 4.
-> Fecha: 2026-08-21.
+> Produce: **`CTR-04`**. Tareas: `T-62` del ciclo 4 (v1) · **`T-131` del ciclo 9 (v2)**.
+> Fecha: 2026-08-21 · **revisado el 2026-08-27**.
+
+---
+
+## Revisión del 2026-08-27 — `CTR-04` pasa a `contratoVersion: 2`
+
+**Qué la pide:** `D-25`. El usuario decidió que `US-03` sale con letras de **fuente única**,
+sin confirmación de oído, y `D-25` le encarga a `arquitectura` una consecuencia puntual: *"la
+condición de estado pasa de dos vías a tres, y la tercera tiene que dejar rastro de cuál es:
+un ítem `listo` por fuente única no se puede confundir con uno confirmado de oído"*.
+
+**Las tres cosas que cambian, y nada más:**
+
+1. **`CTR-04.6` pasa de dos vías a tres**, y las tres se declaran en un campo nuevo,
+   `cotejo.regimen`. Las dos viejas quedan escritas y vigentes: cuando aparezca una segunda
+   fuente o alguien escuche, el ítem **sube de régimen** y `D-25` se revierte sola.
+2. **`fuenteLetra` deja de ser una lista de `RES-NN` y pasa a ser una lista de objetos** con
+   `ficha`, `sitio`, `url` y `consultado`. Lo pide `T-145`: el panel de respuesta muestra qué
+   sitio transcribió el verso, con su enlace, y hoy el ítem no tiene con qué.
+3. **`CTR-04.1`** corrige un presupuesto que dejó de aplicar hace tres ciclos, y
+   **`CTR-04.13`** deja especificado, línea por línea, el cambio del schema corrible para que
+   lo aplique el hilo principal en `T-144` (`D-12`: yo no corro ni edito código).
+
+**Lo que NO cambia, y conviene leerlo antes de festejar:** todo lo demás. El ítem sigue
+necesitando fuente declarada, el tema sigue teniendo que estar entre los 105 de `RES-20`, el
+hueco sigue sin poder comerse el verso, el contexto sigue atado a `BR-03` y el tope de versos
+sigue en 5 por ítem y 8 por tema. **La vía nueva relaja *cuántas* fuentes, no *si hay***
+(`D-25`, "lo que no cambia", punto 1). La lista completa de lo que el schema sigue rechazando
+está en `CTR-04.6`, sección "Qué sigue rechazando el schema".
+
+**Y una cosa que este contrato tiene que decir aunque no le guste**, porque es la que va a
+importar dentro de dos meses: `CTR-04.6` v1 era, en palabras de este mismo archivo, *"la que
+protege lo único estricto del proyecto"*. `D-25` la afloja a sabiendas y lo escribe sin
+adornos. Esta revisión **no reconstruye esa protección por otro lado ni finge hacerlo**: lo
+que hace es dejar la pérdida **visible, medible y reversible por ítem**. Eso es todo lo que
+un schema puede aportar acá; el resto son las tres mitigaciones de `D-25`, y dos de ellas
+—`T-138` y el botón de corrección— no son mías.
 
 ---
 
 ## CTR-04 — Contrato de `src/data/letra.json`
 
-- **Estado:** vigente, con **un** valor de trabajo marcado: si se responde eligiendo o
-  tipeando (`CTR-04.8`). Es la misma vacante que tuvo `CTR-03` y por el mismo motivo —
-  `BR-04` fija 4 opciones para `US-01`, `US-02` y `US-04`, y **no nombra a `US-03`**.
+- **Estado:** vigente en **v2** (`contratoVersion: 2`), con **un** valor de trabajo marcado:
+  si se responde eligiendo o tipeando (`CTR-04.8`). Es la misma vacante que tuvo `CTR-03` y
+  por el mismo motivo — `BR-04` fija 4 opciones para `US-01`, `US-02` y `US-04`, y **no
+  nombra a `US-03`**.
 - **Para quién es:** para `contenido`, que en el ciclo 5 carga los 15 ítems de `US-03` y
   necesita saber qué forma tiene un ítem antes de sentarse a escuchar discos; y para quien
   escriba el motor del juego 3.
@@ -39,7 +76,7 @@ armar un ítem, y `BR-12` acaba de corregir la misma frase del lado de la Redond
 | Ruta de datos | `src/data/letra.json` |
 | Copia corrible del schema | `src/data/_schema/letra.schema.json` (existe desde `T-62`) |
 | Codificación | UTF-8 sin BOM, saltos `LF` |
-| Presupuesto de tamaño | ≤ 150 KB, el mismo techo de `CTR-02.1`. 15 ítems × ~900 bytes ≈ 14 KB |
+| Presupuesto de tamaño | **≤ 150 KB de *payload*** — ver abajo, cambió en v2 |
 
 El nombre del archivo de datos sale del nombre del schema que fijó el plan del ciclo
 (`letra.schema.json`), para que el par se lea de un vistazo. El valor de `juego` es
@@ -49,13 +86,37 @@ existe.
 ```json
 {
   "contrato": "CTR-04",
-  "contratoVersion": 1,
+  "contratoVersion": 2,
   "juego": "completar-la-letra",
-  "actualizado": "2026-08-21",
+  "actualizado": "2026-08-27",
   "modoRespuesta": "opciones",
   "items": []
 }
 ```
+
+#### El presupuesto de tamaño se corrige acá, porque venía midiendo lo que no era
+
+v1 decía "≤ 150 KB, 15 ítems × ~900 bytes ≈ 14 KB" y lo aplicaba al archivo de datos. **Esa
+cuenta caducó en el ciclo 6 y nadie lo dijo:** `src/data/letra.json` tiene hoy **1.784 ítems**
+generados por `scripts/generar-letra.mjs`, así que por la propia cuenta de v1 anda por el
+orden de 1,5 MB. El techo lleva tres ciclos incumplido y el sitio anda bien, lo cual es la
+señal de que el número medía la cosa equivocada.
+
+**Lo que hay que presupuestar es lo que viaja, y no es el archivo.**
+`completar-la-letra.astro` importa el JSON **en build**, lo filtra con `cargarBanco` —que se
+queda solo con los `listo`— y serializa el resultado en `<script id="banco">`. Los borradores,
+las notas internas y todo lo que `aPayload` recorta **no salen del build**. Entonces:
+
+| Qué | Techo | Cuánto es hoy |
+|---|---|---|
+| `src/data/letra.json`, el archivo de origen | **sin techo** | 1.784 ítems, ninguno viaja entero |
+| El payload serializado en la página | **≤ 150 KB** | ~30 ítems `listo` × ~1,1 KB ≈ 33 KB |
+
+Los ~1,1 KB por ítem ya incluyen el `fuenteLetra` de v2, que le suma unos 140 bytes al ítem
+que viaja (`CTR-04.6`). Con el piso de 15 de `US-03` sobra techo por diez veces; el número
+existe para que el día que alguien decida servir el banco entero, la decisión se tope con un
+límite escrito en vez de con un celular de gama baja. **La medición la deja corrible
+`CTR-04.12`, chequeo 10.**
 
 Mismo envoltorio que `CTR-02` y `CTR-03`, más `modoRespuesta` a nivel archivo por el mismo
 motivo que `CTR-03.5`: mezclar mecanismos de respuesta entre ítems cambia la forma de la
@@ -82,8 +143,9 @@ que no toca el presupuesto de precarga de gama baja.
 | `explicacion` | string 10–400 | no | El dato de color al revelar. Opcional, igual que en `CTR-03`. |
 | `rotulo` | objeto `{tipo, texto}` | no | `leyenda` o `testimonio`, si la `explicacion` no se apoya solo en hecho verificado. Ver `CTR-04.9`. |
 | `fuentes` | array de `RES-NN`, ≥ 1, **contiene `RES-20`** | sí | Sostiene tema, disco, pista y año. Ver `CTR-04.5`. |
-| `fuenteLetra` | array de `RES-NN`, 1 a 4 | sí | De dónde salió el **texto del verso**. Campo aparte de `fuentes`. Ver `CTR-04.6`. |
-| `confirmadoDeOido` | objeto de 4 subcampos | no, pero condiciona `listo` | La mitigación 5 de `D-13`. Ver `CTR-04.6`. |
+| `fuenteLetra` | **array de objetos** `{ficha, sitio, url, consultado}`, 1 a 4 | sí | De dónde salió el **texto del verso**. Campo aparte de `fuentes`. **Cambió de forma en v2**: es lo que el juego muestra en pantalla (`T-145`). Ver `CTR-04.6`. |
+| `confirmadoDeOido` | objeto de 4 subcampos | no, pero habilita el régimen `oido` | La mitigación 5 de `D-13`. Ver `CTR-04.6`. |
+| `cotejo` | objeto `{regimen, decision}` | **sí si `estado: "listo"`** | **Nuevo en v2.** Por cuál de las tres vías se sostiene este ítem. Es el rastro que pide `D-25`. Ver `CTR-04.6`. |
 | `sensibleA` | array enum, ≥ 1, **contiene `letra`** | sí | Todo ítem de este juego muestra letra: no existe el caso vacío. |
 | `spotify` | objeto `{trackId}` | no | Igual que `CTR-03.7`. Un ítem sin Spotify es válido y jugable (`ADR-01`). |
 | `estado` | `borrador` · `listo` · `retirado` | sí | Las cuotas del piso se cuentan solo sobre `listo`. |
@@ -268,32 +330,124 @@ cruce sin correr es un cruce que no se hizo.
 
 ---
 
-### CTR-04.6 — Las dos mitigaciones de `D-13` que deciden si un ítem está `listo`
+### CTR-04.6 — Las tres vías que deciden si un ítem está `listo`
 
-`INV-21` dice cuál de las cinco cierra de verdad: **confirmar de oído contra el disco**, y
-aclara por qué es realista — con 2/1/0 versos, el piso de `US-03` son ~30 versos, y eso se
-verifica en una tarde escuchando. La 2, dos fuentes que coincidan, es la más barata que baja
-el riesgo sin escuchar nada.
+> **v1 tenía dos vías y las dos están cerradas de hecho.** `D-25` lo midió y no lo supuso:
+> cada tema del cancionero tiene **una sola** fuente (cifraclub 78 · lacuerda.net 21 ·
+> letras.com 5) y los 149 archivos crudos del scraper son uno por tema — **solapamiento
+> cero**, así que no hay con qué cruzar; y los 26 huecos `_:__` de
+> `src/data/letra-confirmaciones.json` siguen en blanco desde el ciclo 6. Con las dos vías
+> cerradas, los 1.784 candidatos quedaron en `borrador` y el juego, apagado. La tercera vía
+> es la salida que eligió el usuario, con la advertencia sobre la mesa.
 
-**La regla, y es la única condición de estado de este contrato:**
+`INV-21` dice cuál de las cinco mitigaciones de `D-13` cierra de verdad: **confirmar de oído
+contra el disco**. La 2, dos fuentes que coincidan, es la más barata que baja el riesgo sin
+escuchar nada. La tercera no baja ningún riesgo: **lo asume y lo deja anotado.**
 
-> Para que un ítem tenga `"estado": "listo"` necesita **o** el objeto `confirmadoDeOido`,
-> **o** `fuenteLetra` con al menos dos fichas. Un verso con una sola fuente de fans y sin
-> confirmar de oído se queda en `borrador`.
+**La regla, y sigue siendo la única condición de estado de este contrato:**
 
-No estrangula la carga: `contenido` puede cargar quince ítems en `borrador` con una sola
-fuente y subirlos después, en la tarde de escuchar. Lo que no puede es que un verso sin
-ninguna de las dos mitigaciones cuente para el piso de `US-03`.
+> Para que un ítem tenga `"estado": "listo"` necesita el objeto **`cotejo`**, que declara por
+> cuál de las tres vías se sostiene, y la evidencia que esa vía exige:
+>
+> | `cotejo.regimen` | Qué exige además | Qué dice de verdad |
+> |---|---|---|
+> | `oido` | el objeto `confirmadoDeOido` | alguien puso el disco y encontró el verso |
+> | `dos-fuentes` | `fuenteLetra` con **≥ 2** entradas, de **sitios distintos** | dos transcripciones independientes coinciden |
+> | `fuente-unica` | `fuenteLetra` con **exactamente 1** entrada, **sin** `confirmadoDeOido`, y `decision: "D-25"` | una sola transcripción de fans, sin cotejar, publicada a sabiendas |
+>
+> Un ítem sin `cotejo` no puede estar `listo`. Un ítem cuyo `cotejo` no coincida con su
+> evidencia **no valida** — la declaración no se cree sola.
 
-**`fuenteLetra` va aparte de `fuentes` a propósito.** Son dos afirmaciones distintas: `fuentes`
-sostiene que el tema existe, en qué disco y en qué pista; `fuenteLetra` sostiene que el texto
-del verso dice lo que dice. Meterlas en el mismo arreglo haría imposible medir la mitigación
-2 —¿dos fichas de qué?— y borraría la trazabilidad que pide la mitigación 4: el día que se
-corrija una transcripción, se filtra por `fuenteLetra` y aparecen los ítems afectados sin
-auditar el banco entero.
+**Las tres son excluyentes por schema**, y ahí está lo que pide `D-25`. `fuente-unica` no
+admite `confirmadoDeOido` ni una segunda ficha: si aparecen, el ítem **tiene que** cambiar de
+régimen. Por eso un ítem `listo` por fuente única no se puede confundir con uno confirmado de
+oído ni por descuido ni queriendo, y por eso `grep '"regimen": "fuente-unica"'` devuelve
+exactamente los ítems que `D-25` aflojó — que es la lista que hay que mirar el día que
+alguien decida revertirla.
 
-**`confirmadoDeOido` es un objeto de cuatro subcampos, no un booleano**, por la lección de
-`CTR-02.4` regla 3: una casilla que se tilda bajo presión de ráfaga se tilda sola.
+**El ítem sube de régimen, nunca baja solo.** Si mañana `investigador` ficha lacuerda.net, o
+aparece una segunda transcripción del mismo tema, o alguien hace los 26 minutos de escucha,
+el ítem pasa a `dos-fuentes` o a `oido` **sin tocar el schema**: las dos vías viejas ya están
+escritas y siguen vigentes. Es lo que `D-25` llama "qué la revierte", y no requiere volver a
+discutir nada. `T-144` deja especificado que el generador **elija siempre el régimen más
+fuerte que la evidencia permita** (`CTR-04.13`, punto 8): nadie tiene que acordarse de subir
+un ítem a mano.
+
+#### `fuenteLetra` en v2: la ficha, el sitio y el enlace, por ítem
+
+```json
+"fuenteLetra": [
+  {
+    "ficha": "RES-49",
+    "sitio": "cifraclub.com",
+    "url": "https://www.cifraclub.com/los-redonditos-de-ricota/todo-un-palo/",
+    "consultado": "2026-08-24"
+  }
+]
+```
+
+| Subcampo | Qué exige el schema | Por qué |
+|---|---|---|
+| `ficha` | `^RES-\d{2}$` | Lo único que había en v1. Es lo que ata la fuente a una evaluación escrita: `RES-23` para letras.com, `RES-49` para cifraclub. **Un sitio sin ficha no se puede declarar**, y por eso los 21 temas de lacuerda.net siguen afuera del banco — el generador lo hace cumplir con `FICHA_POR_SITIO` y esta revisión no lo toca (la ficha es de `investigador`). |
+| `sitio` | dominio en minúsculas, 4 a 40, sin esquema ni ruta | Es lo que se lee en pantalla (`T-145`). Va el dominio pelado y no un nombre de fantasía: el rótulo es **registro 3** (`voz-ricotera.md`), dice qué hay adentro y se calla. |
+| `url` | `https://…`, ≤ 200, sin espacios ni `<` `>` | El enlace al tema en ese sitio, **no a la home**. Es la mitad que convierte "salió de cifraclub" en algo que el jugador puede ir a mirar en un toque. |
+| `consultado` | `AAAA-MM-DD` | Cuándo se leyó esa página. Una transcripción de fans cambia sin avisar; sin fecha no se sabe si la que se comparó es la misma. |
+
+**De dónde sale el dato: ya existe y no se tipea a mano.** Cada tema de
+`src/data/cancionero.json` trae `fuente: {sitio, url, consultado}` con exactamente esa forma,
+así que el generador lo copia del tema y le pega la `ficha` que ya resolvía por
+`FICHA_POR_SITIO`. Ningún campo nuevo se inventa: **v2 no le pide a nadie un dato que el repo
+no tenga.**
+
+#### Por qué `fuenteLetra` cambió de forma en vez de sumarse un campo al lado
+
+`T-145` necesita sitio + URL por ítem. La alternativa obvia era dejar `fuenteLetra:
+["RES-49"]` como estaba y agregar un `transcripcion: {sitio, url}` aparte. **Está descartada
+por lo mismo que este contrato descartó `indicePalabra` y el verso duplicado**: serían dos
+campos afirmando de dónde salió la misma letra, y el día que uno se corrija sin el otro, el
+ítem cita una ficha y muestra otro sitio **sin que nada falle**. Con la ficha adentro del
+mismo objeto que el sitio, esa desincronización no tiene dónde ocurrir.
+
+El costo es real y se paga: **la forma de v1 deja de validar**, así que `contratoVersion` va a
+2 y el archivo se regenera entero. Se puede pagar porque `letra.json` lo escribe un script, no
+una persona: no hay trabajo humano que se pierda. Si mañana el banco lo cargara alguien a
+mano, esta misma migración costaría una tarde y la decisión sería otra.
+
+#### Qué viaja al cliente en v2, que es de lo que depende `T-145`
+
+Hasta hoy `aPayload` recorta `fuenteLetra`, `cotejo`, `confirmadoDeOido`, `fuentes`,
+`sensibleA`, `estado` y `notaInterna`: al navegador llegan solo el ítem jugable y su
+explicación. **Con `T-145` eso deja de alcanzar**, porque el panel de respuesta tiene que
+mostrar qué sitio transcribió el verso, con su enlace. El contrato pasa a exigir:
+
+| Campo | ¿Viaja? | Por qué |
+|---|---|---|
+| `fuenteLetra` | **sí, entero** | Es el dato que se muestra. Van las 1 a 4 entradas: si un ítem tiene dos, la pantalla puede decir que dos sitios coinciden, que es información y no ruido. |
+| `cotejo.regimen` | **sí** | Sin él, el panel no puede distinguir "esto lo escuchó alguien" de "esto salió de una sola transcripción" — y decir lo segundo como si fuera lo primero es el rótulo que miente. |
+| `confirmadoDeOido` | **no** | Lleva el nombre de una persona y el minuto exacto: es trazabilidad interna, no información para el jugador. Que un verso esté confirmado se dice con `cotejo.regimen: "oido"`. |
+| `notaInterna` | **no**, nunca | Igual que en v1. |
+
+Son unos 140 bytes por ítem sobre el payload, contra el techo de 150 KB de `CTR-04.1`: no
+mueve la aguja.
+
+**Cómo se ve eso en pantalla no lo decide este contrato**, y conviene decirlo porque es
+tentador: el enunciado, el largo y dónde se apoya el enlace son de `experiencia`, y el texto,
+de `contenido`. Lo único que el contrato fija es que el dato esté disponible y que el rótulo
+sea **registro 3** (`voz-ricotera.md`): dice de dónde salió el verso y se calla.
+
+#### `fuenteLetra` va aparte de `fuentes`, y eso no cambió
+
+Son dos afirmaciones distintas: `fuentes` sostiene que el tema existe, en qué disco y en qué
+pista; `fuenteLetra` sostiene que el texto del verso dice lo que dice. Meterlas en el mismo
+arreglo haría imposible medir el régimen `dos-fuentes` —¿dos fichas de qué?— y borraría la
+trazabilidad que pide la mitigación 4 de `D-13`: el día que se corrija una transcripción, se
+filtra por `fuenteLetra` y aparecen los ítems afectados sin auditar el banco entero. En v2 ese
+filtro además se puede hacer **por sitio**, sin pasar por la ficha.
+
+#### `confirmadoDeOido` no cambió, y sigue siendo un objeto
+
+**Es un objeto de cuatro subcampos, no un booleano**, por la lección de `CTR-02.4` regla 3:
+una casilla que se tilda bajo presión de ráfaga se tilda sola.
 
 | Subcampo | Qué exige | Por qué |
 |---|---|---|
@@ -306,20 +460,105 @@ auditar el banco entero.
 máquina mira la forma, la persona mira la verdad — igual que siempre, y acá la persona la
 tiene fácil porque le alcanza con poner el tema.
 
+#### `cotejo`: el rastro, y qué garantiza de verdad
+
+```json
+"cotejo": { "regimen": "fuente-unica", "decision": "D-25" }
+```
+
+| Subcampo | Qué exige el schema | Por qué |
+|---|---|---|
+| `regimen` | enum cerrado: `oido` · `dos-fuentes` · `fuente-unica` | La vía por la que este ítem llegó a `listo`. Es lo que se filtra, se cuenta y se muestra. |
+| `decision` | `const: "D-25"`, **obligatorio si `regimen` es `fuente-unica`** y **prohibido en los otros dos** | La huella dactilar. Bajo qué decisión escrita se aflojó la regla para este ítem. Un `const` significa que no puede decir otra cosa: nadie va a poder apoyar una promoción futura en una decisión que no existe sin tocar el schema. |
+
+**Sí, `regimen` es derivable de la evidencia. Está puesto igual, y a propósito.** Este
+contrato rechazó tres veces un campo redundante —`indicePalabra`, el verso completo,
+`versosVisibles`—, así que hay que decir por qué acá la redundancia entra: **aquellas no las
+podía chequear nadie**, y esta la chequea el schema entero, en el mismo archivo, con cuatro
+ramas `if/then`. Una redundancia verificada a máquina no es una segunda fuente de verdad: es
+un dígito de control. Si la declaración y la evidencia se separan, el archivo **no valida** —
+en vez de mostrarle al jugador algo distinto de lo que dice el JSON, que es el modo de falla
+que aquellos tres tenían.
+
+Lo que se gana pagando ese byte de más: un ítem `listo` **dice en su propio cuerpo por qué lo
+está**. Sin `regimen`, "una ficha y `listo`" es indistinguible de un bug —de hecho es
+exactamente el bug que v1 rechazaba—, y dentro de dos meses nadie va a poder decir si eso fue
+una decisión o un descuido.
+
+**Lo que `cotejo` NO garantiza, dicho antes de que alguien lo suponga:** no prueba que se haya
+hecho ningún trabajo. `minuto`, en `confirmadoDeOido`, solo se puede escribir habiendo
+encontrado el verso en la grabación; `regimen: "fuente-unica"` lo escribe un script en un
+milisegundo. **No es un descuido de diseño: bajo `D-25` no hay trabajo que probar**, porque la
+decisión es justamente publicar sin cotejar. Pretender lo contrario con un campo ceremonial
+sería peor que no tenerlo — sería un rótulo que miente sobre lo que hay adentro, que es lo
+único que `D-14` dejó prohibido. Lo que `cotejo` garantiza es lo que sí se puede garantizar:
+que la pérdida sea **visible por ítem, contable en un comando y revertible por filtro**.
+
+#### Qué sigue rechazando el schema
+
+`D-25` relaja *cuántas* fuentes, no *si hay*. Todo esto sigue sin validar, igual que en v1:
+
+1. **Un ítem sin ninguna fuente de letra.** `fuenteLetra` sigue siendo obligatorio con
+   `minItems: 1`, y ahora cada entrada tiene que traer **ficha, sitio, URL y fecha**: en v2 es
+   más difícil declarar una fuente que en v1, no menos. Un sitio sin ficha `RES-NN` no se
+   puede escribir, y por eso lacuerda.net sigue afuera.
+2. **Un tema que no esté entre los 105 de `RES-20`.** Intacto y por triplicado: `fuentes`
+   tiene que contener `RES-20`, `tema.disco` es un enum de los diez discos con año y pista
+   máxima atados por disco, y el cruce del título lo corre `verificarInvariantes` en build
+   contra la ficha parseada (`src/lib/letra/temas.ts`). `D-25` no toca nada de esto.
+3. **Un ítem `listo` sin `cotejo`**, o con un `cotejo` que su evidencia no sostiene: `oido`
+   sin `confirmadoDeOido`, `dos-fuentes` con una sola ficha, `fuente-unica` con dos, o
+   `fuente-unica` con `confirmadoDeOido` encima.
+4. **Un `confirmadoDeOido` sin minuto en `M:SS`.** La vía del oído no se ablandó ni un poco:
+   quien la use sigue teniendo que decir quién, cuándo, dónde y en qué minuto.
+5. **Todo lo demás de v1**, que esta revisión no tocó: el hueco que se come el verso entero,
+   una respuesta de cinco palabras, `<` o `>` en cualquier texto, el contexto que no coincide
+   con `dificultad` (`BR-03`), `sensibleA` vacío o sin `letra`, `opciones` que no sean cuatro
+   con exactamente una correcta, `rotulo` sin `explicacion`, y cualquier campo inventado
+   (`additionalProperties: false`).
+
 #### Alternativas descartadas
+
+**De v1, sobre las dos vías originales** (siguen valiendo, porque las dos vías siguen vivas):
 
 1. **`confirmadoDeOido: true`, un booleano.** Es la traducción literal de la mitigación y es
    justo el campo que se llena por inercia. Descartada por `CTR-02.4` regla 3.
 2. **Exigir `fuenteLetra` con dos fichas siempre, sin la salida del oído.** Estrangula la
    carga hoy: las fichas de fuentes de letras que existen son `RES-23` (letras.com,
-   evaluada en negativo pero admitida por `D-13`) y la que salga de `T-60` sobre
-   redondossubtitulados. Y es peor de fondo: dos fans que se copiaron entre sí no valen más
-   que uno, mientras que el disco es el disco.
+   evaluada en negativo pero admitida por `D-13`) y `RES-49` (cifraclub). Y es peor de fondo:
+   dos fans que se copiaron entre sí no valen más que uno, mientras que el disco es el disco.
 3. **Exigir el oído siempre.** Es lo más seguro y bloquea la carga a la velocidad de una
    sola persona con auriculares. La dejo como la forma preferida —y medible, consulta 7 de
    `CTR-04.12`— sin volverla obligatoria.
 4. **Un campo libre `fuente: "letras.com, consultado el ..."`.** Descartada por lo mismo que
    `CTR-02.4` descartó `fuentePrimaria`: una string no se valida por partes ni se filtra.
+
+**De v2, sobre cómo se declara la fuente única** (`T-131`). Las cuatro son formas reales de
+cumplir `D-25`, no espantapájaros:
+
+5. **No declarar nada: dejar que `listo` con una sola ficha sea legal y listo.** Es la más
+   barata —una rama `if/then` menos en el schema— y la que el generador podría hacer en dos
+   líneas. Descartada porque es exactamente lo que `D-25` prohíbe: sin marca, un ítem
+   promovido a sabiendas y un ítem promovido por un bug del generador **son el mismo JSON**.
+   Y peor: el día que se revierta la decisión, no hay forma de saber cuáles bajar, porque el
+   régimen viejo y el nuevo no se distinguen.
+6. **Un valor nuevo de `estado`: `listo-sin-cotejar`.** Es la marca más imposible de
+   confundir que existe, y por eso la consideré primero. Descartada por dos motivos, y el
+   segundo es el que la mata: mezcla dos ejes distintos —dónde está el ítem en su ciclo de
+   vida y con qué evidencia se lo sostiene—, y **rompe a todo el que filtra por
+   `estado === 'listo'`**: `cargarBanco`, los seis comandos de `CTR-04.12` y las cuotas del
+   piso de `US-03` empezarían a contar de menos, en silencio, hasta que alguien note que el
+   juego sirve la mitad de los ítems. Un régimen no es un estado.
+7. **Un booleano `fuenteUnica: true`.** La forma más corta de dejar rastro. Descartada por
+   `CTR-02.4` regla 3 **agravada**: aquel booleano se tildaba por inercia y no cambiaba nada;
+   este *baja la vara* — un tilde que habilita `listo`. Y no admite las otras dos vías, así
+   que dejaría el régimen declarado en un lado (el booleano) y los otros dos deducidos en
+   otro. Con `regimen` los tres se leen del mismo campo.
+8. **Meter la marca adentro de `notaInterna`.** El campo ya existe, no toca el schema y
+   admite cualquier explicación. Descartada porque `notaInterna` **nunca se renderiza ni se
+   valida** (`CTR-04.2`): es prosa suelta, no se filtra por comando, no se cuenta, y un typo
+   la hace invisible sin que nada falle. Lo que `D-25` pide es lo contrario de una nota: un
+   dato con enum.
 
 ---
 
@@ -454,16 +693,24 @@ y este documento se corrige**: es al revés que en `CTR-02.5` y es a propósito 
 se bajó una tarea después y hubo un tramo con dos versiones. Acá nacen juntas, y tener el
 bloque duplicado en dos lugares es exactamente lo que produce ese problema.
 
-Lo que hay que saber del bloque sin abrirlo:
+> **Ojo con el párrafo de arriba entre el 2026-08-27 y `T-144`.** Esa regla —manda la copia
+> del archivo— vale cuando los dos están sincronizados, y hoy no lo están: la revisión de
+> `T-131` está escrita acá y **el schema todavía es el de v1**, porque `D-12` me impide
+> editarlo. En ese tramo manda `CTR-04.13`, que es la especificación del cambio. Cuando
+> `T-144` la aplique, vuelve a mandar el archivo y `CTR-04.13` pasa a ser historia.
 
-- Draft 2020-12, `$id` `https://ricotaarcade.local/schema/letra/1`, `contratoVersion` en 1.
+Lo que hay que saber del bloque sin abrirlo, **una vez aplicado `CTR-04.13`**:
+
+- Draft 2020-12, `$id` `https://ricotaarcade.local/schema/letra/2`, `contratoVersion` en 2.
 - `additionalProperties: false` en el ítem y en todos los objetos: un campo inventado no
   entra en silencio.
-- Cinco ramas `allOf` a nivel ítem: las tres de `BR-03`, la de `estado: listo` y la de
-  `rotulo` sin `explicacion`.
+- **Ocho** ramas `allOf` a nivel ítem: las tres de `BR-03`, la de `rotulo` sin `explicacion`,
+  la de `estado: listo` (que ahora exige `cotejo`) y **las tres nuevas de régimen**, una por
+  valor de `cotejo.regimen`.
 - Diez ramas `allOf` dentro de `tema`: año y pista máxima por disco.
 - Dos ramas `allOf` a nivel archivo: `modoRespuesta` decide si se exige `opciones` o
   `variantesAceptadas`.
+- Dos `$defs` nuevos: `fuenteDeLetra` y `cotejo`.
 
 **Lo que el schema NO puede verificar**, y por eso existe `CTR-04.12`:
 
@@ -476,6 +723,13 @@ Lo que hay que saber del bloque sin abrirlo:
 6. Que un `RES-NN` citado exista y sea pertinente.
 7. Las cuotas del piso de `US-03` y la cota de 8 versos por tema: son propiedades del
    conjunto.
+8. **Que las dos entradas de un `dos-fuentes` sean de sitios distintos.** JSON Schema sabe
+   pedir que los elementos de un arreglo sean únicos, pero no que un *subcampo* no se repita
+   entre ellos: dos entradas del mismo sitio con URL distinta pasarían. Y dos páginas del
+   mismo sitio no son dos fuentes independientes — es el régimen entero cobrando algo que no
+   hizo. Chequeo 8 de `CTR-04.12`.
+9. **Que el host de `url` sea el `sitio` declarado.** Un ítem que dice `cifraclub.com` y
+   enlaza a otra parte le muestra al jugador una fuente y lo manda a otra. Chequeo 9.
 
 ---
 
@@ -514,10 +768,38 @@ Lo que hay que saber del bloque sin abrirlo:
     { "texto": "<distractor 3>", "correcta": false }
   ],
   "fuentes": ["RES-20"],
-  "fuenteLetra": ["RES-23"],
+  "fuenteLetra": [
+    {
+      "ficha": "RES-49",
+      "sitio": "cifraclub.com",
+      "url": "https://www.cifraclub.com/los-redonditos-de-ricota/todo-un-palo/",
+      "consultado": "2026-08-24"
+    }
+  ],
   "sensibleA": ["letra"],
   "estado": "borrador"
 }
+```
+
+**El mismo ítem promovido por la vía nueva** cambia dos cosas y ninguna más — el `estado` y
+el `cotejo`:
+
+```json
+  "estado": "listo",
+  "cotejo": { "regimen": "fuente-unica", "decision": "D-25" }
+```
+
+Y por la vía del oído, que sigue existiendo y sigue siendo la preferida:
+
+```json
+  "estado": "listo",
+  "cotejo": { "regimen": "oido" },
+  "confirmadoDeOido": {
+    "quien": "<nombre de quien escuchó>",
+    "fecha": "2026-08-27",
+    "donde": "streaming",
+    "minuto": "1:24"
+  }
 ```
 
 **Qué es verdadero acá y con qué ficha.** "Todo un palo" es la pista 8 de *Un baión para el
@@ -529,8 +811,9 @@ sostendría la pista y citarla sería el error tipo `FIND-10`.
 
 | Valor | Estado real | Cómo está puesto |
 |---|---|---|
-| Los versos y el hueco | No hay letras en el repo. Salen de la fuente de fans (`D-13`) más el oído. | Con `<` y `>`, que ningún campo de texto admite. **No valida.** |
-| `fuenteLetra: ["RES-23"]` | `RES-23` sí existe y es la ficha de letras.com, admitida por `D-13`. | Es válida como forma, y con una sola ficha el ítem **no puede pasar a `listo`** sin `confirmadoDeOido`. Por eso está en `borrador`. |
+| Los versos y el hueco | Los hay en `src/data/cancionero.json` desde el ciclo 6, pero **no los escribo de memoria acá**. | Con `<` y `>`, que ningún campo de texto admite. **No valida.** |
+| `fuenteLetra` | **Verdadero, copiado del repo.** *Todo un palo* está en `cancionero.json` con `fuente: {cifraclub.com, esa URL, 2026-08-24}`, y `RES-49` es la ficha de cifraclub que usa `FICHA_POR_SITIO`. | Es la forma exacta que va a producir `T-144`. Con una sola entrada, el ítem solo puede llegar a `listo` por el régimen `fuente-unica`. |
+| `confirmadoDeOido.quien` del tercer bloque | Nadie escuchó ese verso. | Con `<` y `>`; además `quien` exige arrancar en mayúscula. **No valida.** |
 | `spotify` | No tengo el `trackId` y no puedo tenerlo (sin acceso a la web). | **El objeto no está.** Es la forma correcta de no saberlo. |
 
 Un ítem `media` del mismo tema se ve igual con `contexto.antes` y `contexto.despues` de un
@@ -545,15 +828,17 @@ Hoy no existe `src/data/letra.json`, así que lo único ejecutable en esta ráfa
 
 #### Casos de prueba del schema
 
-Cada caso es un archivo mínimo con un ítem. Doce tienen que **fallar** y dos **pasar**; si
-alguno de los que tienen que fallar pasa, el schema no está haciendo su trabajo.
+Cada caso es un archivo mínimo con un ítem. **Veintitrés tienen que fallar y tres validar**,
+más el caso 0 que solo parsea; si alguno de los que tienen que fallar pasa, el schema no está
+haciendo su trabajo. Los casos **15 a 26 son de v2** y no se pueden correr hasta que `T-144`
+aplique `CTR-04.13`.
 
 | # | Qué se arma | Resultado esperado |
 |---|---|---|
 | 0 | El schema mismo se parsea como JSON | pasa |
 | 1 | Ítem completo, `facil`, 2+2 versos, `borrador`, una `fuenteLetra` | **valida** |
-| 2 | Igual al 1 pero `estado: "listo"` sin `confirmadoDeOido` y con una sola `fuenteLetra` | **rechaza** (regla de `CTR-04.6`) |
-| 3 | Igual al 2 pero con `confirmadoDeOido` completo | **valida** |
+| 2 | Igual al 1 pero `estado: "listo"` **sin `cotejo`** | **rechaza** (`CTR-04.6`) |
+| 3 | Igual al 2 pero con `cotejo: {"regimen": "oido"}` y `confirmadoDeOido` completo | **valida** |
 | 4 | `dificil` con un verso en `contexto.antes` | **rechaza** (`BR-03`) |
 | 5 | `facil` con un solo verso en `contexto.antes` | **rechaza** (`BR-03`) |
 | 6 | `facil` con 3 versos en `contexto.despues` | **rechaza** (tope de 5 versos por ítem) |
@@ -565,6 +850,18 @@ alguno de los que tienen que fallar pasa, el schema no está haciendo su trabajo
 | 12 | `sensibleA: []` | **rechaza** |
 | 13 | `confirmadoDeOido` con `minuto: "el estribillo"` | **rechaza** (patrón `M:SS`) |
 | 14 | `opciones` con 3 elementos, o con dos `correcta: true` | **rechaza** |
+| **15** | **Ítem `listo` por fuente única, entero y bien: una `fuenteLetra` completa y `cotejo: {"regimen": "fuente-unica", "decision": "D-25"}`** | **valida** — es el caso que `T-144` tiene que producir |
+| 16 | `regimen: "fuente-unica"` sin `decision` | **rechaza** |
+| 17 | `regimen: "fuente-unica"` con `decision: "D-14"` | **rechaza** (`const`) |
+| 18 | `regimen: "fuente-unica"` **con** `confirmadoDeOido` | **rechaza** (los tres regímenes son excluyentes) |
+| 19 | `regimen: "fuente-unica"` con dos entradas en `fuenteLetra` | **rechaza** |
+| 20 | `regimen: "oido"` sin `confirmadoDeOido` | **rechaza** |
+| 21 | `regimen: "oido"` con `decision: "D-25"` | **rechaza** (`decision` solo va en `fuente-unica`) |
+| 22 | `regimen: "dos-fuentes"` con una sola entrada en `fuenteLetra` | **rechaza** |
+| 23 | `regimen: "cotejado"` o cualquier valor fuera del enum | **rechaza** |
+| 24 | `fuenteLetra: ["RES-49"]` — la forma de v1, strings sueltas | **rechaza** (es el caso que obliga a `contratoVersion: 2`) |
+| 25 | Una entrada de `fuenteLetra` sin `url`, o con `url` en `http://`, o con `sitio: "Cifra Club"` | **rechaza** |
+| 26 | `estado: "borrador"` con `cotejo: {"regimen": "oido"}` y sin `confirmadoDeOido` | **rechaza** — la coherencia del régimen se exige siempre, no solo en `listo` |
 
 ```bash
 # (0) el schema parsea. Es lo unico corrible hoy, y verifica T-62.
@@ -583,9 +880,19 @@ python -c "import json,jsonschema;d=json.load(open('src/data/letra.json',encodin
 # (2) cuotas de US-03 y BR-01 sobre los items listo: piso 15, minimo 4 faciles
 python -c "import json;from collections import Counter;i=[x for x in json.load(open('src/data/letra.json',encoding='utf-8'))['items'] if x['estado']=='listo'];print(len(i),'/15',Counter(x['dificultad'] for x in i),'temas:',len({x['tema']['slug'] for x in i}))"
 
-# (3) el cruce de D-13: la terna disco+pista+titulo es una de las 105 de RES-20
-#     (necesita src/data/_schema/titulos-res-20.json, que todavia no existe)
-python -c "import json;d=json.load(open('src/data/letra.json',encoding='utf-8'));t={(x['disco'],x['pista'],x['titulo']) for x in json.load(open('src/data/_schema/titulos-res-20.json',encoding='utf-8'))};m=[x['id'] for x in d['items'] if (x['tema']['disco'],x['tema']['pista'],x['tema']['titulo']) not in t];print('fuera de RES-20:',m or 'ninguno')"
+# (3) el cruce de D-13, terna completa. YA NO necesita `titulos-res-20.json`, y ese pedido
+#     de v1 queda cancelado: `src/lib/letra/temas.ts` parsea los 105 desde la ficha misma y
+#     expone `resolverTema`, que es la puerta de D-13 hecha funcion (con la tabla ALIAS
+#     resolviendo los titulos que la normalizacion no reconcilia). Parsear la ficha es mejor
+#     que copiarla: hay una sola verdad y no dos que se desincronizan.
+node --experimental-strip-types --input-type=module -e "
+import {readFileSync} from 'node:fs';
+import {resolverTema} from './src/lib/letra/temas.ts';
+const d = JSON.parse(readFileSync('src/data/letra.json','utf-8'));
+const mal = d.items.filter((x) => { const t = resolverTema(x.tema.titulo);
+  return !t || t.disco !== x.tema.disco || t.pista !== x.tema.pista; }).map((x) => x.id);
+console.log('terna fuera de RES-20:', mal.length ? mal.length + ': ' + mal.slice(0,10).join(', ') : 'ninguna');
+"
 
 # (4) distractores: la correcta es la respuesta, y ninguna opcion la repite normalizada
 python -c "import json,unicodedata as u;n=lambda s:''.join(c for c in u.normalize('NFD',s.lower()) if u.category(c)!='Mn').strip();d=json.load(open('src/data/letra.json',encoding='utf-8'));[print('MAL',x['id']) for x in d['items'] if d['modoRespuesta']=='opciones' and (next(o['texto'] for o in x['opciones'] if o['correcta'])!=x['hueco']['respuesta'] or len({n(o['texto']) for o in x['opciones']})!=4 or any(n(o['texto']) in n(' '.join(x['contexto']['antes']+x['contexto']['despues'])).split() for o in x['opciones'] if not o['correcta']))];print('chequeo 4 corrido')"
@@ -596,8 +903,18 @@ python -c "import json;from collections import defaultdict;v=defaultdict(set);[v
 # (6) US-03 criterio 2: ningun tema aparece solo en dificil
 python -c "import json;i=[x for x in json.load(open('src/data/letra.json',encoding='utf-8'))['items'] if x['estado']=='listo'];f={x['tema']['slug'] for x in i if x['dificultad']!='dificil'};print('temas que solo existen en dificil:',{x['tema']['slug'] for x in i if x['dificultad']=='dificil'}-f or 'ninguno')"
 
-# (7) senal, no piso: cuantos items descansan solo en fuentes de fans
-python -c "import json;i=[x for x in json.load(open('src/data/letra.json',encoding='utf-8'))['items'] if x['estado']=='listo'];print('confirmados de oido:',sum(1 for x in i if 'confirmadoDeOido' in x),'de',len(i))"
+# (7) senal, no piso: por que via esta listo cada item (D-25). Es la medida de cuanto pesa
+#     la decision, y la que hay que mirar el dia que se la quiera revertir.
+python -c "import json;from collections import Counter;i=[x for x in json.load(open('src/data/letra.json',encoding='utf-8'))['items'] if x['estado']=='listo'];print(Counter(x.get('cotejo',{}).get('regimen','SIN COTEJO') for x in i))"
+
+# (8) v2: 'dos-fuentes' con dos entradas del mismo sitio no son dos fuentes
+python -c "import json;i=json.load(open('src/data/letra.json',encoding='utf-8'))['items'];m=[x['id'] for x in i if x.get('cotejo',{}).get('regimen')=='dos-fuentes' and len({f['sitio'] for f in x['fuenteLetra']})<2];print('dos-fuentes falsos:',m or 'ninguno')"
+
+# (9) v2: el enlace que se le muestra al jugador va al sitio que se le nombra
+python -c "import json;from urllib.parse import urlparse;i=json.load(open('src/data/letra.json',encoding='utf-8'))['items'];m=[(x['id'],f['url']) for x in i for f in x['fuenteLetra'] if not urlparse(f['url']).hostname.endswith(f['sitio'])];print('url que no es del sitio:',m or 'ninguna')"
+
+# (10) CTR-04.1: el presupuesto se mide sobre lo que viaja, no sobre el archivo
+python -c "import json;d=json.load(open('src/data/letra.json',encoding='utf-8'));i=[x for x in d['items'] if x['estado']=='listo'];v=[{k:x[k] for k in ('id','dificultad','tema','hueco','contexto','opciones','fuenteLetra') if k in x} for x in i];kb=len(json.dumps(v,ensure_ascii=False).encode())/1024;print(f'payload {kb:.1f} KB de 150 con {len(i)} items listo')"
 ```
 
 #### Las cuotas del piso, contadas sobre `estado: "listo"`
@@ -608,7 +925,15 @@ python -c "import json;i=[x for x in json.load(open('src/data/letra.json',encodi
 | 2 | Ítems `listo` con `dificultad: "facil"` | ≥ 4 (`US-03`) |
 | 3 | Temas con ítem `dificil` que no tienen ningún ítem `facil` o `media` | **0** (`US-03` criterio 2) |
 | 4 | Temas cuyo conjunto de versos distintos pase de 8 | **0** (`CTR-04.4`) |
-| 5 | Ítems `listo` sin `confirmadoDeOido` ni segunda `fuenteLetra` | **0** — lo garantiza el schema; el comando lo confirma |
+| 5 | Ítems `listo` sin `cotejo`, o con un `cotejo` que su evidencia no sostiene | **0** — lo garantiza el schema; el comando lo confirma |
+| 6 | Ítems `listo` con `regimen: "fuente-unica"` | **sin piso: es una señal, no una cuota** |
+| 7 | Payload serializado en la página | ≤ 150 KB (`CTR-04.1`, chequeo 10) |
+
+**La consulta 6 no tiene número a propósito y es la más importante de las nuevas.** Mide
+cuánto del banco descansa en `D-25`. Hoy va a dar el 100% de los `listo`, y está bien: es lo
+que el usuario decidió. Sirve para dos cosas — para ver la deuda bajar sola cuando alguien
+haga los 26 minutos de escucha, y para saber, el día que llegue una tanda de correcciones,
+sobre cuántos ítems hay que volver.
 
 La consulta 3 traduce a número el criterio 2 de `US-03`: *nunca se introduce un tema
 completamente nuevo solo en modo difícil*. Si un tema solo existe en `dificil`, la partida se
@@ -619,6 +944,143 @@ exactamente lo que el usuario pidió que no pasara en `/kickoff`.
 tope de 5 versos por artículo): sumar los versos de `letra.json` y los de `redondopedia.json`
 por tema. No le pongo un piso porque el segundo archivo no es mío; lo dejo anotado para
 `revisor`, que es quien mira los dos.
+
+---
+
+### CTR-04.13 — El cambio del schema, especificado para que lo aplique `T-144`
+
+**Yo no lo edito** (`D-12`: los cuatro roles que escriben no corren nada, y `arquitectura` no
+escribe código de producción). Lo de abajo es el cambio entero, listo para pegar, sobre
+`src/data/_schema/letra.schema.json`. **Cuando esté aplicado, manda el archivo y esta sección
+queda como historia** (`CTR-04.10`).
+
+**Los ocho cambios en el schema:**
+
+1. `"contratoVersion": { "const": 1 }` → **`{ "const": 2 }`**.
+2. `"$id"` → `https://ricotaarcade.local/schema/letra/2`.
+3. **`$defs` nuevo**, `fuenteDeLetra`:
+
+```json
+"fuenteDeLetra": {
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ficha", "sitio", "url", "consultado"],
+  "properties": {
+    "ficha": { "type": "string", "pattern": "^RES-\\d{2}$" },
+    "sitio": { "type": "string", "minLength": 4, "maxLength": 40, "pattern": "^[a-z0-9.-]+\\.[a-z]{2,}$" },
+    "url": { "type": "string", "maxLength": 200, "pattern": "^https://[^\\s<>\"]+$" },
+    "consultado": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+  }
+}
+```
+
+4. **`$defs` nuevo**, `cotejo`:
+
+```json
+"cotejo": {
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["regimen"],
+  "properties": {
+    "regimen": { "enum": ["oido", "dos-fuentes", "fuente-unica"] },
+    "decision": { "const": "D-25" }
+  },
+  "allOf": [
+    {
+      "if": { "required": ["regimen"], "properties": { "regimen": { "const": "fuente-unica" } } },
+      "then": { "required": ["decision"] },
+      "else": { "not": { "required": ["decision"] } }
+    }
+  ]
+}
+```
+
+5. En `$defs/item/properties`, **`fuenteLetra` cambia de items** (lo demás del campo queda
+   igual: `minItems: 1`, `maxItems: 4`, `uniqueItems: true`):
+
+```json
+"fuenteLetra": {
+  "type": "array",
+  "minItems": 1,
+  "maxItems": 4,
+  "uniqueItems": true,
+  "items": { "$ref": "#/$defs/fuenteDeLetra" }
+}
+```
+
+6. En `$defs/item/properties`, **campo nuevo**: `"cotejo": { "$ref": "#/$defs/cotejo" }`.
+7. En `$defs/item/allOf`, **se reemplaza** la rama de `estado: listo` —la del `anyOf` con
+   `confirmadoDeOido` / `fuenteLetra` `minItems: 2`— por esta, que solo pide el rastro:
+
+```json
+{
+  "if": { "required": ["estado"], "properties": { "estado": { "const": "listo" } } },
+  "then": { "required": ["cotejo"] }
+}
+```
+
+8. En `$defs/item/allOf`, **tres ramas nuevas**: cada régimen contra su evidencia. Son las que
+   hacen que la declaración no se crea sola.
+
+```json
+{
+  "if": {
+    "required": ["cotejo"],
+    "properties": { "cotejo": { "required": ["regimen"], "properties": { "regimen": { "const": "oido" } } } }
+  },
+  "then": { "required": ["confirmadoDeOido"] }
+},
+{
+  "if": {
+    "required": ["cotejo"],
+    "properties": { "cotejo": { "required": ["regimen"], "properties": { "regimen": { "const": "dos-fuentes" } } } }
+  },
+  "then": { "properties": { "fuenteLetra": { "minItems": 2 } } }
+},
+{
+  "if": {
+    "required": ["cotejo"],
+    "properties": { "cotejo": { "required": ["regimen"], "properties": { "regimen": { "const": "fuente-unica" } } } }
+  },
+  "then": {
+    "properties": { "fuenteLetra": { "maxItems": 1 } },
+    "not": { "required": ["confirmadoDeOido"] }
+  }
+}
+```
+
+> El `"required": ["cotejo"]` de cada `if` no es adorno: sin él, `properties` pasa en vacío
+> cuando el campo no está y las tres ramas se aplicarían a los ítems sin `cotejo`.
+
+#### 🔴 Y lo que rompe el build si se aplica solo el schema
+
+**`CTR-04.6` v1 está escrita dos veces**: en el schema y en `src/lib/letra/banco.ts`, a
+propósito y con el motivo anotado ahí mismo —el schema no lo corría ningún test hasta el
+ciclo 7—. Esa copia **corre en build**, así que si `T-144` promueve ítems por la vía nueva sin
+tocarla, `npm run build` falla en cada ítem con `esta en 'listo' sin confirmacion de oido y
+con una sola ficha de letra`. Los cuatro cambios:
+
+| Archivo | Qué |
+|---|---|
+| `src/lib/letra/banco.ts` | `ItemCrudo.fuenteLetra` pasa de `readonly string[]` a la interfaz nueva `{ficha, sitio, url, consultado}`; se agrega `cotejo?: {regimen, decision?}`. La invariante de `listo` pasa a exigir `cotejo` y a verificar el régimen contra su evidencia — **misma regla que las ramas 7 y 8**, no una parecida. El chequeo de `fuenteLetra.length === 0` se queda tal cual. |
+| `src/lib/letra/banco.ts`, `aPayload` | Suma `fuenteLetra` y `cotejo.regimen` a lo que viaja (`CTR-04.6`, "qué viaja al cliente"). `confirmadoDeOido` y `notaInterna` siguen sin viajar. |
+| `src/lib/letra/banco.test.ts` | Los fixtures usan `fuenteLetra: ['pendiente de carga']` y `['RES-23','RES-99']`: pasan a la forma nueva. Y el caso "una ficha y `listo` no valida" cambia de sentido — ahora lo que no valida es **sin `cotejo`**, y hay que sumar el caso de que sí valide con `fuente-unica`. |
+| `scripts/generar-letra.mjs` | Escribe `contratoVersion: 2`; arma `fuenteLetra` con `{ficha: FICHA_POR_SITIO[sitio], ...tema.fuente}` —`sitio`, `url` y `consultado` salen tal cual del cancionero—; y promueve con **el régimen más fuerte que la evidencia permita**: `oido` si hay confirmación, si no `dos-fuentes` con dos entradas, si no `fuente-unica` con `decision: "D-25"`. El encabezado del script dice hoy "no marca nada como `listo`": esa frase queda vieja y hay que rescribirla, no borrarla. |
+
+**Va todo en la misma corrida.** El schema, el generador y `letra.json` regenerado son un solo
+cambio: `src/lib/esquemas.test.ts` valida `letra.json` contra `letra.schema.json` en cada
+`npm test`, así que un schema en v2 con datos en v1 pinta el build de rojo, y al revés
+también.
+
+**Cómo se verifica que esto quedó bien**, y es lo que `revisor` mira en `T-146`:
+
+```bash
+npm run generar-letra && npm test && npm run build
+# y despues, los tres que cuentan la historia de D-25:
+#   chequeo (2) — el piso de US-03: >= 15 listo
+#   chequeo (7) — por que via esta listo cada uno
+#   chequeo (9) — el enlace que ve el jugador va al sitio que se le nombra
+```
 
 ---
 

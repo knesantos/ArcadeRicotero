@@ -87,7 +87,7 @@ export const JUEGOS: readonly Casete[] = [
   },
   {
     titulo: 'Adiviná el tema',
-    baja: 'Con una décima te tiene que alcanzar. Si no, te damos más, hasta quince segundos: cuanto antes la pegues, más vale.',
+    baja: 'Con una décima te tiene que alcanzar. Si no, te damos más, hasta diez segundos: cuanto antes la pegues, más vale.',
     variante: 'mitologia',
     arte: '/arte/lobo.svg',
     href: '/juegos/adivinar-el-tema/',
