@@ -809,3 +809,52 @@
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
+
+/* ==========================================================================
+   Escritorio (`UX-10`). Dos cortes, y ninguno toca el celular.
+   ========================================================================== */
+
+/* El corte de ancho: 46rem. No es un numero de framework — es el ancho que la ficha de
+   acordes ya pedia (`cancionero.css` lo tenia escrito e inerte, tapado por el tope de
+   34rem de afuera) y el que dejan dos casetes comodos. */
+@media (min-width: 46rem) {
+  /* El portal y el indice: "elegir que leer" no es "leer", asi que ensanchan. */
+  .casetera,
+  .indice-articulos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* El cancionero ensancha por funcion: el acorde alineado sobre la silaba necesita
+     ese ancho para no partir renglon. Los dos valores ya estaban escritos.
+     
+     El portal ensancha por otro motivo: es "elegir", no "leer" — el tope de 34rem
+     existe para proteger la medida de linea, y aca no hay linea que proteger. Con 46rem
+     cada casete queda en ~344 px en vez de 264. */
+  .contenido-sitio:has(.tema),
+  .contenido-sitio:has(.casetera),
+  .contenido-sitio:has(.indice-articulos) {
+    max-width: 46rem;
+  }
+}
+
+/* El corte de capacidad, separado del de ancho a proposito: lo que falta saber es si
+   hay mouse, no si la pantalla es angosta. Un telefono no dispara `hover: hover`.
+   
+   **Este es el hallazgo que mas pesa de `UX-10`:** hasta hoy ningun elemento clickeable
+   principal tenia `:hover`. Con mouse, la unica senal de "esto es un boton" era hacer
+   clic y ver que pasaba.
+   
+   La regla es una, no once: el hover reusa el color que ese elemento **ya** usa para su
+   estado activo, nunca uno nuevo — asi no entra ningun par que `contraste.test.ts` no
+   conozca. Y **nunca elevacion, escala ni sombra**: la tabla de tics vetados de
+   `diseno-marca.md` prohibe el "hover que levanta o infla", y aca aplica letra por letra. */
+@media (hover: hover) and (pointer: fine) {
+  .casete:hover,
+  .tarjeta-articulo:hover {
+    border-color: var(--tinte, var(--acento-2));
+  }
+
+  .pozo:hover:not(:disabled) {
+    border-color: var(--acento-2);
+  }
+}

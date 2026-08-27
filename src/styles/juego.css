@@ -1481,3 +1481,36 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
 .correccion-cerrar:focus-visible {
   color: var(--texto);
 }
+
+/* Escritorio (`UX-10`): el mismo tope para los seis tableros de juego.
+   `completar-la-letra` y `adivinar-por-la-letra` no tenian ninguno —los otros cuatro
+   lo repiten a mano—, y esa asimetria la encontro `UX-10` leyendo el codigo. */
+.pantalla {
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
+/* El hover de lo clickeable del juego. Mismo criterio que en `sitio.css`: reusa el
+   tinte que el elemento ya tiene, sin elevacion ni escala. */
+@media (hover: hover) and (pointer: fine) {
+  .opcion:hover:not(:disabled) {
+    border-color: var(--acento-2);
+  }
+
+  .primario:hover,
+  .arriesgar:hover:not(:disabled) {
+    /* El precedente ya existe: `.boton-recorte:hover` invierte fondo y tinta con los
+       dos tokens que ya usa en reposo. */
+    filter: brightness(1.12);
+  }
+
+  .secundario:hover {
+    border-color: var(--acento-2);
+    color: var(--texto);
+  }
+
+  .sugerencia:hover {
+    background: var(--velo-tapa, transparent);
+    color: var(--texto);
+  }
+}

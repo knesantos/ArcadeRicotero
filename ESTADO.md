@@ -12,6 +12,32 @@ frentes en dos tramos**: el juego nuevo por letras (`US-07`), `US-03` que sale e
 quiz que pasa a vidas, el botón de corrección, y la pulida de escritorio más los recortes
 reales.
 
+> ### ✅ ESCRITORIO (`UX-10`): el defecto no era el ancho
+>
+> Medí el sitio a 1440 px antes de pedirle nada a `experiencia`, y el diagnóstico
+> intuitivo estaba mal en las dos puntas: **el portal no tenía el problema** (su grilla
+> llenaba en dos columnas) y **la Redondopedia ya estaba bien** (66 caracteres por línea,
+> dentro del rango cómodo). Lo que sí era cierto: el contenido y los juegos quedaban en
+> una tira de **544 px con 448 px de vacío a cada lado**.
+>
+> **Y `UX-10` encontró el defecto de verdad, que no era de tamaño:** *ningún elemento
+> clicable del sitio tenía `:hover`.* Con mouse, la única señal de que algo era un botón
+> era hacer clic y ver qué pasaba.
+>
+> **Dos cortes, separados a propósito:** uno de **ancho** (46rem — un valor que
+> `cancionero.css` ya tenía escrito e inerte, tapado por el tope de afuera) y otro de
+> **capacidad** (`hover: hover and pointer: fine`), porque lo que falta saber es si hay
+> mouse, no si la pantalla es angosta.
+>
+> Verificado: el cancionero y el portal ensanchan a **736 px** (dos columnas de 360 en vez
+> de 264), el artículo y el tablero de juego se quedan en 34rem **con fundamento** —el uno
+> protege la medida de línea, el otro ya está calibrado y agrandarlo solo agrega recorrido
+> de mouse—, y **el celular no se movió**: una columna de 343 px, sin desborde.
+>
+> De paso salió una asimetría: `completar-la-letra` y `adivinar-por-la-letra` **no tenían
+> ningún `max-width`**, mientras los otros cuatro juegos lo repetían a mano. Ahora es una
+> sola regla en `.pantalla`.
+
 > ### ✅ EL BOTÓN DE CORRECCIÓN, Y DOS DEFECTOS QUE APARECIERON MIDIENDO (2026-08-27)
 >
 > `npm test` **276/276** · `npm run check` limpio · build de **149 páginas**.
