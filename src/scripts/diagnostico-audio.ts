@@ -55,19 +55,94 @@ const SLUG = 'queso-ruso';
 let ctx: AudioContext | null = null;
 let buffer: AudioBuffer | null = null;
 
-/** El navegador, sin pretender adivinar el modelo: lo que importa es el motor. */
-function quienEs(): string {
+/**
+ * Navegadores incrustados adentro de otra aplicación.
+ *
+ * **Es la sospecha que más rinde y la que menos se mira.** Si el enlace se abrió desde
+ * WhatsApp, Instagram, Facebook o Telegram, la página no corre en el navegador del
+ * teléfono: corre en una ventana que esas aplicaciones traen adentro. Esas ventanas
+ * recortan cosas —el audio entre ellas— de maneras que el navegador de verdad no.
+ *
+ * Y encaja con el síntoma como un guante: en la computadora el enlace se abre en el
+ * navegador normal y anda; en el teléfono se toca desde el chat donde llegó y no.
+ */
+function navegadorIncrustado(ua: string): string | null {
+  if (/FBAN|FBAV|FB_IAB/i.test(ua)) return 'Facebook';
+  if (/Instagram/i.test(ua)) return 'Instagram';
+  if (/WhatsApp/i.test(ua)) return 'WhatsApp';
+  if (/Telegram/i.test(ua)) return 'Telegram';
+  if (/TikTok|musical_ly|BytedanceWebview/i.test(ua)) return 'TikTok';
+  if (/Twitter/i.test(ua)) return 'Twitter/X';
+  if (/Line\//i.test(ua)) return 'LINE';
+  if (/; wv\)/.test(ua)) return 'una aplicación (WebView de Android)';
+  return null;
+}
+
+/** Qué navegador es de verdad, no cuál dice ser. */
+function queNavegador(ua: string, esIOS: boolean): string {
+  if (esIOS) {
+    // En iPhone TODO navegador usa WebKit por obligación de Apple: Chrome y Firefox
+    // son Safari con otra cara, así que comparten sus políticas de audio al pie.
+    if (/CriOS/.test(ua)) return 'Chrome en iPhone (por dentro es Safari)';
+    if (/FxiOS/.test(ua)) return 'Firefox en iPhone (por dentro es Safari)';
+    if (/EdgiOS/.test(ua)) return 'Edge en iPhone (por dentro es Safari)';
+    return 'Safari';
+  }
+  if (/SamsungBrowser/.test(ua)) return 'Samsung Internet';
+  if (/Firefox|FxiOS/.test(ua)) return 'Firefox';
+  if (/OPR|Opera/.test(ua)) return 'Opera';
+  if (/Edg\//.test(ua)) return 'Edge';
+  if (/Chrome/.test(ua)) return 'Chrome';
+  return 'otro';
+}
+
+/** La versión de iOS, que importa: las políticas de audio cambiaron entre versiones. */
+function versionIOS(ua: string): string | null {
+  const m = /OS (\d+)[_.](\d+)/.exec(ua);
+  return m ? `${m[1]}.${m[2]}` : null;
+}
+
+/** El aparato y su motor. Lo que importa no es la marca: es qué reglas de audio aplica. */
+function quienEs(): { texto: string; incrustado: string | null; esIOS: boolean } {
   const ua = navigator.userAgent;
-  const esIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const esIOS =
+    /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const esAndroid = /Android/.test(ua);
-  const motor = esIOS ? 'WebKit (iOS: todo navegador en iPhone es Safari por dentro)' : /Firefox/.test(ua) ? 'Gecko' : 'Blink/otro';
-  return `${esIOS ? 'iPhone/iPad' : esAndroid ? 'Android' : 'escritorio u otro'} — ${motor}`;
+  const sistema = esIOS ? `iPhone/iPad${versionIOS(ua) ? ` (iOS ${versionIOS(ua)})` : ''}` : esAndroid ? 'Android' : 'escritorio u otro';
+  const motor = esIOS ? 'WebKit' : /Firefox/.test(ua) ? 'Gecko' : 'Blink';
+  return {
+    texto: `${sistema} · ${queNavegador(ua, esIOS)} · motor ${motor}`,
+    incrustado: navegadorIncrustado(ua),
+    esIOS,
+  };
 }
 
 async function correr(): Promise<void> {
   salida.replaceChildren();
 
-  fila('dato', 'Qué aparato es', quienEs());
+  const quien = quienEs();
+  fila('dato', 'Qué aparato y qué navegador', quien.texto);
+
+  // La sospecha que más rinde, y va arriba de todo para que no se pase por alto.
+  if (quien.incrustado) {
+    fila(
+      'mal',
+      'Estás adentro de otra aplicación',
+      `Esta página se abrió dentro de ${quien.incrustado}, no en el navegador del teléfono.`,
+      'Esas ventanas recortan el audio de maneras que el navegador de verdad no. Abrí el enlace en Chrome o Safari y probá de nuevo: si ahí suena, la causa era esta.',
+    );
+  } else {
+    fila('ok', 'Navegador de verdad', 'No estás adentro de otra aplicación.');
+  }
+
+  if (quien.esIOS) {
+    fila(
+      'aviso',
+      'Es un iPhone, y eso trae una trampa',
+      'La llave lateral de silencio apaga el audio de Web Audio.',
+      'Aunque el volumen esté alto, si esa llave está en silencio el navegador no suena y no avisa. Es la causa más común de todas.',
+    );
+  }
 
   // ---- 1. ¿Existe Web Audio?
   const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
