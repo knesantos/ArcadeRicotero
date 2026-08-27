@@ -69,6 +69,31 @@ export interface RotuloCrudo {
   readonly texto: string;
 }
 
+/**
+ * De donde salio el texto del verso, con lo que `T-145` muestra en pantalla (`CTR-04.6`
+ * v2): la ficha que respalda a la fuente, el sitio y el enlace exacto. Antes era un
+ * arreglo de strings `RES-XX`; el objeto existe porque el jugador tiene que poder ver
+ * de donde salio el verso sin abrir el repo.
+ */
+export interface FuenteDeLetra {
+  readonly ficha: string;
+  readonly sitio: string;
+  readonly url: string;
+  readonly consultado: string;
+}
+
+/**
+ * Por que via un item esta `listo` (`CTR-04.6` v2, `D-25`). Los tres regimenes son
+ * excluyentes y cada uno se verifica contra su evidencia en `verificarInvariantes`:
+ * `oido` exige `confirmadoDeOido`, `dos-fuentes` exige dos fichas, y `fuente-unica`
+ * exige exactamente una y la referencia a `D-25` — para que un item promovido sin
+ * cotejar no se pueda confundir nunca con uno verificado.
+ */
+export interface Cotejo {
+  readonly regimen: 'oido' | 'dos-fuentes' | 'fuente-unica';
+  readonly decision?: 'D-25';
+}
+
 export interface ItemCrudo {
   readonly id: string;
   readonly us: readonly string[];
@@ -81,7 +106,8 @@ export interface ItemCrudo {
   readonly explicacion?: string;
   readonly rotulo?: RotuloCrudo;
   readonly fuentes: readonly string[];
-  readonly fuenteLetra: readonly string[];
+  readonly fuenteLetra: readonly FuenteDeLetra[];
+  readonly cotejo?: Cotejo;
   readonly confirmadoDeOido?: ConfirmadoDeOido;
   readonly sensibleA: readonly string[];
   readonly estado: Estado;
@@ -114,6 +140,10 @@ export interface Item {
   readonly variantesAceptadas?: readonly string[];
   readonly explicacion?: string;
   readonly rotulo?: RotuloCrudo;
+  /** De donde salio el verso. Viaja para que `T-145` lo muestre en el panel (`D-25`). */
+  readonly fuenteLetra: readonly FuenteDeLetra[];
+  /** Por que via esta `listo`. Solo el regimen: la referencia a `D-25` es del repo. */
+  readonly cotejoRegimen?: Cotejo['regimen'];
 }
 
 export class BancoInvalido extends Error {}
@@ -157,6 +187,8 @@ export function aPayload(item: ItemCrudo): Item {
     ...(item.variantesAceptadas ? { variantesAceptadas: item.variantesAceptadas } : {}),
     ...(item.explicacion ? { explicacion: item.explicacion } : {}),
     ...(item.rotulo ? { rotulo: item.rotulo } : {}),
+    fuenteLetra: item.fuenteLetra,
+    ...(item.cotejo ? { cotejoRegimen: item.cotejo.regimen } : {}),
   };
 }
 
@@ -217,16 +249,38 @@ export function verificarInvariantes(
       throw new BancoInvalido(`${it.id}: no declara de donde salio la letra`);
     }
 
-    // CTR-04, la regla que decide si el juego miente: un item pasa a `listo` con
-    // confirmacion de oido contra el disco **o** con dos fichas de letra distintas.
-    // Hasta hoy esto vivia solo en `letra.schema.json`, que ningun test corre — el
-    // unico guardian real era que el generador se portara bien. Aca abajo es codigo y
-    // rompe el build, que es donde tiene que romperse.
-    if (it.estado === 'listo' && !it.confirmadoDeOido && it.fuenteLetra.length < 2) {
-      throw new BancoInvalido(
-        `${it.id}: esta en 'listo' sin confirmacion de oido y con una sola ficha de letra ` +
-          `(${it.fuenteLetra.join(', ')}). CTR-04 pide una de las dos cosas.`,
-      );
+    // CTR-04.6 v2, la regla que decide si el juego miente. En v1 un item pasaba a
+    // `listo` solo con oido o con dos fuentes; `D-25` sumo la tercera via, y lo que
+    // esta regla garantiza ahora no es la verificacion sino EL RASTRO: por que via
+    // esta `listo` cada item, sin que un regimen se pueda disfrazar de otro. Es la
+    // misma regla que las ramas 7 y 8 del schema — no una parecida — y vive tambien
+    // aca porque corre en build, que es donde tiene que romperse.
+    if (it.estado === 'listo') {
+      const c = it.cotejo;
+      if (!c) {
+        throw new BancoInvalido(
+          `${it.id}: esta en 'listo' sin cotejo. CTR-04.6 v2 exige declarar la via.`,
+        );
+      }
+      if (c.regimen === 'oido' && !it.confirmadoDeOido) {
+        throw new BancoInvalido(`${it.id}: cotejo 'oido' sin confirmadoDeOido`);
+      }
+      if (c.regimen === 'dos-fuentes' && it.fuenteLetra.length < 2) {
+        throw new BancoInvalido(`${it.id}: cotejo 'dos-fuentes' con ${it.fuenteLetra.length} ficha`);
+      }
+      if (c.regimen === 'fuente-unica') {
+        if (it.fuenteLetra.length !== 1) {
+          throw new BancoInvalido(`${it.id}: cotejo 'fuente-unica' con ${it.fuenteLetra.length} fichas`);
+        }
+        if (c.decision !== 'D-25') {
+          throw new BancoInvalido(`${it.id}: cotejo 'fuente-unica' sin la referencia a D-25`);
+        }
+        if (it.confirmadoDeOido) {
+          throw new BancoInvalido(
+            `${it.id}: cotejo 'fuente-unica' con confirmadoDeOido — le corresponde el regimen 'oido'`,
+          );
+        }
+      }
     }
 
     // Y si dice estar confirmado, que la confirmacion sea una confirmacion. `minuto` es

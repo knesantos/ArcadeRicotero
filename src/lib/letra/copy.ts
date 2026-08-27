@@ -26,6 +26,13 @@ export const PARTIDA = {
   deQueDisco: (titulo: string, disco: string) => `De "${titulo}", en ${disco}`,
   progreso: (n: number, total: number) => `${n} de ${total}`,
   hueco: '________',
+  /**
+   * La fuente del verso, a la vista (`T-145`, `D-25`). Registro 3: rotulo seco, sin
+   * decorar. Es el mecanismo de "lo veo jugando" — quien se tope con un verso dudoso ve
+   * en un toque de donde salio, y un error con la fuente a la vista se lee como una
+   * transcripcion floja, no como que el sitio no sabe.
+   */
+  fuenteDe: (sitio: string) => `Letra transcripta por ${sitio}`,
 } as const;
 
 export const RESULTADO = {

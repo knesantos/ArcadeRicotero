@@ -158,6 +158,20 @@ function responder(texto: string): void {
     );
   }
 
+  // T-145 / D-25: la fuente del verso, con su enlace, en el mismo panel que la
+  // respuesta. Bajo fuente unica el jugador tiene derecho a saber de donde salio lo que
+  // el juego acaba de darle por bueno — y si esta mal, a que el error tenga direccion.
+  const fuente = item.fuenteLetra?.[0];
+  if (fuente) {
+    const linea = el('p', 'fuente-verso');
+    const enlace = el('a', 'fuente-verso-enlace', PARTIDA.fuenteDe(fuente.sitio));
+    enlace.href = fuente.url;
+    enlace.target = '_blank';
+    enlace.rel = 'noopener';
+    linea.append(enlace);
+    panel.append(linea);
+  }
+
   const seguir = el('button', 'primario', PARTIDA.seguir);
   seguir.type = 'button';
   seguir.addEventListener('click', avanzar, { once: true });

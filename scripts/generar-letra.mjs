@@ -1,17 +1,19 @@
 /**
  * Genera el banco candidato de "completar la letra" (`US-03`, `CTR-04`).
  *
- * ─── Lo que este script NO hace, y es lo más importante ─────────────────────────────
+ * ─── Quién decide qué pasa a `listo`, y es lo más importante ────────────────────────
  *
- * **No marca nada como `listo`.** Todo sale `borrador`. `CTR-04` pide, para que un ítem
- * entre a la partida, o dos fuentes de letra o una confirmación de oído contra el disco
- * — y ninguna de las dos cosas la puede producir un programa. Ponerle `listo` a un verso
- * que nadie escuchó sería exactamente la mentira que `CLAUDE.md` declara como lo único
- * estricto que le queda al proyecto: si la respuesta está mal, **el juego le marca error
- * al que se sabe el tema**.
+ * **Este script no elige nada: promueve lo que una persona decidió.** Hasta el ciclo 8
+ * la única vía era la confirmación de oído; `D-25` (decisión del usuario) abrió la
+ * tercera: salir con **fuente única declarada**. Las dos entran por
+ * `src/data/letra-confirmaciones.json` — `confirmados` para el oído, `fuenteUnica.items`
+ * para la selección curada de `T-138` — y todo lo que no esté en ninguna de las dos
+ * queda en `borrador`. Un programa que promoviera los 1.784 candidatos porque "tienen
+ * una fuente" convertiría la curaduría en un pase de lista, y `D-25` en barra libre.
  *
- * La confirmación entra por `src/data/letra-confirmaciones.json`, que llena una persona
- * con la fecha, dónde escuchó y en qué minuto. Este script la lee y promueve solo eso.
+ * Cada ítem `listo` declara su vía en `cotejo` (`CTR-04.6` v2), con el régimen **más
+ * fuerte que su evidencia permita**: `oido` si alguien escuchó, `dos-fuentes` si hay dos
+ * fichas, y recién si no, `fuente-unica` con la referencia a `D-25`.
  *
  * **Y no genera de todo el cancionero, sino de los temas cuya fuente tiene ficha.**
  * `CTR-04` obliga a que cada ítem declare `fuenteLetra` como una lista de fichas `RES-XX`,
@@ -399,7 +401,14 @@ function main() {
         contexto: { antes: ctxAntes.map((l) => l.texto.trim()), despues: ctxDespues.map((l) => l.texto.trim()) },
         opciones,
         fuentes: ['RES-20'],
-        fuenteLetra: [FICHA_POR_SITIO[tema.fuente.sitio]],
+        // CTR-04.6 v2: la ficha que respalda al sitio, y el enlace exacto que T-145
+        // muestra en el panel. sitio/url/consultado salen tal cual del cancionero.
+        fuenteLetra: [{
+          ficha: FICHA_POR_SITIO[tema.fuente.sitio],
+          sitio: tema.fuente.sitio,
+          url: tema.fuente.url,
+          consultado: tema.fuente.consultado,
+        }],
         sensibleA: ['letra'],
         // Sin confirmación de oído no hay `listo`, y no lo decide un programa. La
         // promoción es un paso aparte, más abajo, y solo la mueve una escucha.
@@ -428,8 +437,38 @@ function main() {
     const conf = confirmadas.get(item.id);
     if (!conf) continue;
     item.confirmadoDeOido = conf;
+    item.cotejo = { regimen: 'oido' };
     item.estado = 'listo';
     item.notaInterna = `Verso confirmado de oído por ${conf.quien} el ${conf.fecha} (${conf.donde}, ${conf.minuto}).`;
+  }
+
+  // ─── La tercera vía: la selección curada de `T-138`, bajo `D-25` ──────────────────
+  //
+  // Solo los ids que `contenido` eligió a mano. Si el ítem ya está `listo` por oído, el
+  // régimen fuerte gana y la selección no lo pisa. `dos-fuentes` se evalúa por si algún
+  // día una segunda ficha aparece: hoy no puede darse (solapamiento cero, `D-25`).
+  const seleccion = archivoConf.fuenteUnica?.items ?? [];
+  const porId = new Map(items.map((i) => [i.id, i]));
+  const noEncontrados = [];
+  for (const { id, motivo } of seleccion) {
+    const item = porId.get(id);
+    if (!item) {
+      noEncontrados.push(id);
+      continue;
+    }
+    if (item.estado === 'listo') continue; // ya promovido por oído
+    if (item.fuenteLetra.length >= 2) {
+      item.cotejo = { regimen: 'dos-fuentes' };
+    } else {
+      item.cotejo = { regimen: 'fuente-unica', decision: 'D-25' };
+    }
+    item.estado = 'listo';
+    item.notaInterna = `Promovido por T-138 bajo D-25 (fuente unica). Motivo: ${motivo}`;
+  }
+  if (noEncontrados.length) {
+    console.error(`\n✕ ${CONFIRMACIONES}, fuenteUnica: ${noEncontrados.length} id(s) no existen en el banco generado: ${noEncontrados.join(', ')}.`);
+    console.error('   Los ids cambian si cambia el cancionero. Revisa la seleccion. No escribi nada.\n');
+    process.exit(1);
   }
 
   const hoy = new Date().toISOString().slice(0, 10);
@@ -438,7 +477,7 @@ function main() {
     JSON.stringify(
       {
         contrato: 'CTR-04',
-        contratoVersion: 1,
+        contratoVersion: 2,
         juego: 'completar-la-letra',
         actualizado: hoy,
         modoRespuesta: 'opciones',

@@ -57,5 +57,32 @@
     "CL-1226": "por descuido del [Señor]",
     "CL-507": "°Estos son algunos arreglos que Skay toca en los [versos] en A ,",
     "CL-892": "[fill] 1"
+  },
+  "fuenteUnica": {
+    "_comentario": "Seleccion de T-138 bajo D-25: estos items se promueven a listo con regimen fuente-unica. El criterio de eleccion esta en cada motivo. Los 21 son 'facil' porque en este corpus facil correlaciona con estribillo repetido o linea de remera, que es exactamente el proxy de menor riesgo de transcripcion que pide la tarea.",
+    "decision": "D-25",
+    "items": [
+      { "id": "CL-020", "motivo": "'Humano roto y mal parado.', el titulo del tema como cierre de estrofa, se repite igual en el estribillo" },
+      { "id": "CL-021", "motivo": "'¡Fuego, fuego! mentiras.', exclamacion corta que se repite identica dos veces antes del hueco" },
+      { "id": "CL-033", "motivo": "'nena no quiero perderte', linea de apertura muy citada de un tema de Gulp, sin cifrado alrededor" },
+      { "id": "CL-034", "motivo": "'si quieres puedes apostar.', continua la misma estrofa que CL-033, mismo tema, palabra comun sin ambiguedad" },
+      { "id": "CL-101", "motivo": "'es un criminal mambo', estribillo titulo repetido cuatro veces identico en la transcripcion" },
+      { "id": "CL-142", "motivo": "'En este film velado', verso de apertura de Jijiji, tema muy popular, transcripcion letras.com-cifraclub sin marcas de acorde en la linea" },
+      { "id": "CL-144", "motivo": "'El hijo tenaz de tu enemigo', sigue la misma estrofa que CL-142, palabra de uso comun" },
+      { "id": "CL-188", "motivo": "'luces efimeras. (Pero te creo...)', frase parentetica reconocible del estribillo de 'Ya nadie va a escuchar tu remera'" },
+      { "id": "CL-189", "motivo": "'Es casi hipnotico', linea corta y de sintaxis simple, sin acordes ni notas de guitarra alrededor" },
+      { "id": "CL-209", "motivo": "'Buena faena de tajo y talon', integra el esquema de rima en -on de la estrofa (talon/canon/salon), la rima fija la palabra" },
+      { "id": "CL-210", "motivo": "'ruedan los dientes del negro canon', misma rima en -on que CL-209, refuerza confianza en ambas palabras" },
+      { "id": "CL-227", "motivo": "'para gran consumo.', cierra la estrofa que antecede al estribillo mas repetido de 'Noticias de ayer' ('extra! extra!')" },
+      { "id": "CL-228", "motivo": "'Se desgracio el campeon del hiper futbol', linea muy citada y distintiva, sin ambiguedad de vocabulario" },
+      { "id": "CL-245", "motivo": "'Miraba el cielo justo a tiempo,' se repite identica dos veces seguidas en la letra, y rima con 'viento' (CL-250)" },
+      { "id": "CL-250", "motivo": "'Rumiaba el silbido del viento,' se repite identica dos veces seguidas, rima con 'tiempo' (CL-245)" },
+      { "id": "CL-258", "motivo": "'Vencedores vencidos!', el titulo del tema como estribillo, aparece identico dos veces en la fuente" },
+      { "id": "CL-260", "motivo": "'den la alarma!', exclamacion corta e inequivoca dentro del mismo estribillo que CL-258" },
+      { "id": "CL-1011", "motivo": "'Que iban al grano', letras.com (no cifraclub): fuente de solo texto, sin cifrado mezclado en la linea" },
+      { "id": "CL-1014", "motivo": "'Que soldaste con primor', misma fuente letras.com, cierra un pareado con 'temor' que ancla la rima" },
+      { "id": "CL-1610", "motivo": "'¿Querés creer? Oh, no!', letras.com, frase muy citada del estribillo de Dr. Saturno" },
+      { "id": "CL-1611", "motivo": "'Dr. Saturno, dame un turno!', letras.com, el titulo del tema dentro del estribillo, sin ambiguedad" }
+    ]
   }
 }

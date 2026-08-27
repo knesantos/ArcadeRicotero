@@ -1230,3 +1230,22 @@
 .puntaje {
   font-size: 1.6rem;
 }
+
+/* La fuente del verso en el panel de respuesta (`T-145`, `D-25`). Registro 3: letra
+   chica y tenue — informa, no decora. El subrayado fino es el idioma de enlace del
+   sitio, no una barra de acento. */
+.fuente-verso {
+  margin: var(--espacio-1) 0 0;
+  font-size: 0.8rem;
+}
+
+.fuente-verso-enlace {
+  color: var(--texto-tenue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.fuente-verso-enlace:hover,
+.fuente-verso-enlace:focus-visible {
+  color: var(--texto);
+}

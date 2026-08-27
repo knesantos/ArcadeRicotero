@@ -1,355 +1,943 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ricotaarcade.local/schema/letra/1",
-  "title": "CTR-04 — Banco de completar la letra",
-  "type": "object",
-  "additionalProperties": false,
-  "required": ["contrato", "contratoVersion", "juego", "actualizado", "modoRespuesta", "items"],
-  "properties": {
-    "contrato": { "const": "CTR-04" },
-    "contratoVersion": { "const": 1 },
-    "juego": { "const": "completar-la-letra" },
-    "actualizado": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
-    "modoRespuesta": { "enum": ["opciones", "texto"] },
-    "items": {
-      "type": "array",
-      "minItems": 1,
-      "items": { "$ref": "#/$defs/item" }
-    }
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://ricotaarcade.local/schema/letra/2",
+ "title": "CTR-04 — Banco de completar la letra",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "contrato",
+  "contratoVersion",
+  "juego",
+  "actualizado",
+  "modoRespuesta",
+  "items"
+ ],
+ "properties": {
+  "contrato": {
+   "const": "CTR-04"
   },
-  "allOf": [
-    {
-      "if": {
-        "required": ["modoRespuesta"],
-        "properties": { "modoRespuesta": { "const": "opciones" } }
-      },
-      "then": {
-        "properties": { "items": { "items": { "required": ["opciones"] } } }
-      }
-    },
-    {
-      "if": {
-        "required": ["modoRespuesta"],
-        "properties": { "modoRespuesta": { "const": "texto" } }
-      },
-      "then": {
-        "properties": { "items": { "items": { "required": ["variantesAceptadas"] } } }
-      }
+  "contratoVersion": {
+   "const": 2
+  },
+  "juego": {
+   "const": "completar-la-letra"
+  },
+  "actualizado": {
+   "type": "string",
+   "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+  },
+  "modoRespuesta": {
+   "enum": [
+    "opciones",
+    "texto"
+   ]
+  },
+  "items": {
+   "type": "array",
+   "minItems": 1,
+   "items": {
+    "$ref": "#/$defs/item"
+   }
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "required": [
+     "modoRespuesta"
+    ],
+    "properties": {
+     "modoRespuesta": {
+      "const": "opciones"
+     }
     }
-  ],
-  "$defs": {
-    "item": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "id", "us", "dificultad", "tema", "hueco", "contexto",
-        "fuentes", "fuenteLetra", "sensibleA", "estado"
-      ],
-      "properties": {
-        "id": {
-          "type": "string",
-          "pattern": "^CL-\\d{3,5}$",
-          "description": "Tres a cinco dígitos. Eran tres cuando el banco salía de 13 temas y daba 226 candidatos; el 2026-08-24 el cancionero sumó fuentes, el banco pasó a 80 temas y ~1.780 candidatos, y CL-1000 dejó de validar. El patrón no es un límite de diseño: es la capacidad que se le supuso al contador."
-        },
-        "us": {
-          "type": "array",
-          "minItems": 1,
-          "items": { "type": "string", "pattern": "^US-\\d{2}$" }
-        },
-        "dificultad": { "enum": ["facil", "media", "dificil"] },
-        "tema": { "$ref": "#/$defs/tema" },
-        "hueco": { "$ref": "#/$defs/hueco" },
-        "contexto": { "$ref": "#/$defs/contexto" },
-        "opciones": {
-          "type": "array",
-          "minItems": 4,
-          "maxItems": 4,
-          "uniqueItems": true,
-          "items": { "$ref": "#/$defs/opcion" },
-          "contains": {
-            "type": "object",
-            "required": ["correcta"],
-            "properties": { "correcta": { "const": true } }
-          },
-          "minContains": 1,
-          "maxContains": 1
-        },
-        "variantesAceptadas": {
-          "type": "array",
-          "maxItems": 6,
-          "uniqueItems": true,
-          "items": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 40,
-            "pattern": "^[^<>\\s]+( [^<>\\s]+){0,3}$"
-          }
-        },
-        "explicacion": { "type": "string", "minLength": 10, "maxLength": 400 },
-        "rotulo": { "$ref": "#/$defs/rotulo" },
-        "fuentes": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": { "type": "string", "pattern": "^RES-\\d{2}$" },
-          "contains": { "const": "RES-20" },
-          "minContains": 1
-        },
-        "fuenteLetra": {
-          "type": "array",
-          "minItems": 1,
-          "maxItems": 4,
-          "uniqueItems": true,
-          "items": { "type": "string", "pattern": "^RES-\\d{2}$" }
-        },
-        "confirmadoDeOido": { "$ref": "#/$defs/confirmadoDeOido" },
-        "sensibleA": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": { "enum": ["letra", "tapa", "audio"] },
-          "contains": { "const": "letra" },
-          "minContains": 1
-        },
-        "spotify": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["trackId"],
-          "properties": {
-            "trackId": { "type": "string", "pattern": "^[A-Za-z0-9]{22}$" }
-          }
-        },
-        "estado": { "enum": ["borrador", "listo", "retirado"] },
-        "notaInterna": { "type": "string" }
-      },
-      "allOf": [
-        {
-          "if": {
-            "required": ["dificultad"],
-            "properties": { "dificultad": { "const": "facil" } }
-          },
-          "then": {
-            "properties": {
-              "contexto": {
-                "properties": {
-                  "antes": { "minItems": 2 },
-                  "despues": { "minItems": 2 }
-                }
-              }
-            }
-          }
-        },
-        {
-          "if": {
-            "required": ["dificultad"],
-            "properties": { "dificultad": { "const": "media" } }
-          },
-          "then": {
-            "properties": {
-              "contexto": {
-                "properties": {
-                  "antes": { "minItems": 1, "maxItems": 1 },
-                  "despues": { "minItems": 1, "maxItems": 1 }
-                }
-              }
-            }
-          }
-        },
-        {
-          "if": {
-            "required": ["dificultad"],
-            "properties": { "dificultad": { "const": "dificil" } }
-          },
-          "then": {
-            "properties": {
-              "contexto": {
-                "properties": {
-                  "antes": { "maxItems": 0 },
-                  "despues": { "maxItems": 0 }
-                }
-              }
-            }
-          }
-        },
-        {
-          "if": {
-            "required": ["estado"],
-            "properties": { "estado": { "const": "listo" } }
-          },
-          "then": {
-            "anyOf": [
-              { "required": ["confirmadoDeOido"] },
-              {
-                "required": ["fuenteLetra"],
-                "properties": { "fuenteLetra": { "minItems": 2 } }
-              }
-            ]
-          }
-        },
-        {
-          "if": { "required": ["rotulo"] },
-          "then": { "required": ["explicacion"] }
-        }
-      ]
+   },
+   "then": {
+    "properties": {
+     "items": {
+      "items": {
+       "required": [
+        "opciones"
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "required": [
+     "modoRespuesta"
+    ],
+    "properties": {
+     "modoRespuesta": {
+      "const": "texto"
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "items": {
+      "items": {
+       "required": [
+        "variantesAceptadas"
+       ]
+      }
+     }
+    }
+   }
+  }
+ ],
+ "$defs": {
+  "item": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "id",
+    "us",
+    "dificultad",
+    "tema",
+    "hueco",
+    "contexto",
+    "fuentes",
+    "fuenteLetra",
+    "sensibleA",
+    "estado"
+   ],
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^CL-\\d{3,5}$",
+     "description": "Tres a cinco dígitos. Eran tres cuando el banco salía de 13 temas y daba 226 candidatos; el 2026-08-24 el cancionero sumó fuentes, el banco pasó a 80 temas y ~1.780 candidatos, y CL-1000 dejó de validar. El patrón no es un límite de diseño: es la capacidad que se le supuso al contador."
+    },
+    "us": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "type": "string",
+      "pattern": "^US-\\d{2}$"
+     }
+    },
+    "dificultad": {
+     "enum": [
+      "facil",
+      "media",
+      "dificil"
+     ]
     },
     "tema": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["slug", "titulo", "disco", "pista", "anio"],
-      "properties": {
-        "slug": {
-          "type": "string",
-          "maxLength": 80,
-          "pattern": "^[a-z0-9]+(-{1,2}[a-z0-9]+)*$"
-        },
-        "titulo": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 80,
-          "pattern": "^[^<>]+$"
-        },
-        "disco": {
-          "enum": [
-            "gulp",
-            "oktubre",
-            "un-baion-para-el-ojo-idiota",
-            "bang-bang-estas-liquidado",
-            "la-mosca-y-la-sopa",
-            "lobo-suelto",
-            "cordero-atado",
-            "luzbelito",
-            "ultimo-bondi-a-finisterre",
-            "momo-sampler"
-          ]
-        },
-        "pista": { "type": "integer", "minimum": 1, "maximum": 13 },
-        "anio": { "type": "integer", "minimum": 1985, "maximum": 2000 },
-        "articulo": {
-          "type": "string",
-          "maxLength": 80,
-          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
-        }
-      },
-      "allOf": [
-        {
-          "if": { "required": ["disco"], "properties": { "disco": { "const": "gulp" } } },
-          "then": { "properties": { "anio": { "const": 1985 }, "pista": { "maximum": 12 } } }
-        },
-        {
-          "if": { "required": ["disco"], "properties": { "disco": { "const": "oktubre" } } },
-          "then": { "properties": { "anio": { "const": 1986 }, "pista": { "maximum": 9 } } }
-        },
-        {
-          "if": { "required": ["disco"], "properties": { "disco": { "const": "un-baion-para-el-ojo-idiota" } } },
-          "then": { "properties": { "anio": { "const": 1988 }, "pista": { "maximum": 8 } } }
-        },
-        {
-          "if": { "required": ["disco"], "properties": { "disco": { "const": "bang-bang-estas-liquidado" } } },
-          "then": { "properties": { "anio": { "const": 1989 }, "pista": { "maximum": 9 } } }
-        },
-        {
-          "if": { "required": ["disco"], "properties": { "disco": { "const": "la-mosca-y-la-sopa" } } },
-          "then": { "properties": { "anio": { "const": 1991 }, "pista": { "maximum": 10 } } }
-        },
-        {
-          "if": { "required": ["disco"], "properties": { "disco": { "const": "lobo-suelto" } } },
-          "then": { "properties": { "anio": { "const": 1993 }, "pista": { "maximum": 13 } } }
-        },
-        {
-          "if": { "required": ["disco"], "properties": { "disco": { "const": "cordero-atado" } } },
-          "then": { "properties": { "anio": { "const": 1993 }, "pista": { "maximum": 12 } } }
-        },
-        {
-          "if": { "required": ["disco"], "properties": { "disco": { "const": "luzbelito" } } },
-          "then": { "properties": { "anio": { "const": 1996 }, "pista": { "maximum": 11 } } }
-        },
-        {
-          "if": { "required": ["disco"], "properties": { "disco": { "const": "ultimo-bondi-a-finisterre" } } },
-          "then": { "properties": { "anio": { "const": 1998 }, "pista": { "maximum": 10 } } }
-        },
-        {
-          "if": { "required": ["disco"], "properties": { "disco": { "const": "momo-sampler" } } },
-          "then": { "properties": { "anio": { "const": 2000 }, "pista": { "maximum": 11 } } }
-        }
-      ]
+     "$ref": "#/$defs/tema"
     },
     "hueco": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["antes", "respuesta", "despues"],
-      "properties": {
-        "antes": { "type": "string", "maxLength": 70, "pattern": "^[^<>]*$" },
-        "respuesta": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 40,
-          "pattern": "^[^<>\\s]+( [^<>\\s]+){0,3}$"
-        },
-        "despues": { "type": "string", "maxLength": 70, "pattern": "^[^<>]*$" }
-      },
-      "anyOf": [
-        { "required": ["antes"], "properties": { "antes": { "minLength": 1 } } },
-        { "required": ["despues"], "properties": { "despues": { "minLength": 1 } } }
-      ]
+     "$ref": "#/$defs/hueco"
     },
     "contexto": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["antes", "despues"],
-      "properties": {
-        "antes": { "$ref": "#/$defs/versos" },
-        "despues": { "$ref": "#/$defs/versos" }
-      }
+     "$ref": "#/$defs/contexto"
     },
-    "versos": {
-      "type": "array",
-      "maxItems": 2,
-      "items": {
-        "type": "string",
-        "minLength": 1,
-        "maxLength": 90,
-        "pattern": "^[^<>]+$"
-      }
-    },
-    "opcion": {
+    "opciones": {
+     "type": "array",
+     "minItems": 4,
+     "maxItems": 4,
+     "uniqueItems": true,
+     "items": {
+      "$ref": "#/$defs/opcion"
+     },
+     "contains": {
       "type": "object",
-      "additionalProperties": false,
-      "required": ["texto", "correcta"],
+      "required": [
+       "correcta"
+      ],
       "properties": {
-        "texto": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 40,
-          "pattern": "^[^<>\\s]+( [^<>\\s]+){0,3}$"
-        },
-        "correcta": { "type": "boolean" },
-        "nota": { "type": "string", "maxLength": 200 }
+       "correcta": {
+        "const": true
+       }
       }
+     },
+     "minContains": 1,
+     "maxContains": 1
     },
-    "confirmadoDeOido": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["quien", "fecha", "donde", "minuto"],
-      "properties": {
-        "quien": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 60,
-          "pattern": "^[A-ZÁÉÍÓÚÑ]"
-        },
-        "fecha": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
-        "donde": { "enum": ["disco-fisico", "streaming", "video"] },
-        "minuto": { "type": "string", "pattern": "^\\d{1,2}:[0-5]\\d$" }
-      }
+    "variantesAceptadas": {
+     "type": "array",
+     "maxItems": 6,
+     "uniqueItems": true,
+     "items": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40,
+      "pattern": "^[^<>\\s]+( [^<>\\s]+){0,3}$"
+     }
+    },
+    "explicacion": {
+     "type": "string",
+     "minLength": 10,
+     "maxLength": 400
     },
     "rotulo": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["tipo", "texto"],
-      "properties": {
-        "tipo": { "enum": ["leyenda", "testimonio"] },
-        "texto": { "type": "string", "minLength": 20, "maxLength": 200 }
+     "$ref": "#/$defs/rotulo"
+    },
+    "fuentes": {
+     "type": "array",
+     "minItems": 1,
+     "uniqueItems": true,
+     "items": {
+      "type": "string",
+      "pattern": "^RES-\\d{2}$"
+     },
+     "contains": {
+      "const": "RES-20"
+     },
+     "minContains": 1
+    },
+    "fuenteLetra": {
+     "type": "array",
+     "minItems": 1,
+     "maxItems": 4,
+     "uniqueItems": true,
+     "items": {
+      "$ref": "#/$defs/fuenteDeLetra"
+     }
+    },
+    "confirmadoDeOido": {
+     "$ref": "#/$defs/confirmadoDeOido"
+    },
+    "sensibleA": {
+     "type": "array",
+     "minItems": 1,
+     "uniqueItems": true,
+     "items": {
+      "enum": [
+       "letra",
+       "tapa",
+       "audio"
+      ]
+     },
+     "contains": {
+      "const": "letra"
+     },
+     "minContains": 1
+    },
+    "spotify": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "trackId"
+     ],
+     "properties": {
+      "trackId": {
+       "type": "string",
+       "pattern": "^[A-Za-z0-9]{22}$"
       }
+     }
+    },
+    "estado": {
+     "enum": [
+      "borrador",
+      "listo",
+      "retirado"
+     ]
+    },
+    "notaInterna": {
+     "type": "string"
+    },
+    "cotejo": {
+     "$ref": "#/$defs/cotejo"
     }
+   },
+   "allOf": [
+    {
+     "if": {
+      "required": [
+       "dificultad"
+      ],
+      "properties": {
+       "dificultad": {
+        "const": "facil"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "contexto": {
+        "properties": {
+         "antes": {
+          "minItems": 2
+         },
+         "despues": {
+          "minItems": 2
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "dificultad"
+      ],
+      "properties": {
+       "dificultad": {
+        "const": "media"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "contexto": {
+        "properties": {
+         "antes": {
+          "minItems": 1,
+          "maxItems": 1
+         },
+         "despues": {
+          "minItems": 1,
+          "maxItems": 1
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "dificultad"
+      ],
+      "properties": {
+       "dificultad": {
+        "const": "dificil"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "contexto": {
+        "properties": {
+         "antes": {
+          "maxItems": 0
+         },
+         "despues": {
+          "maxItems": 0
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "estado"
+      ],
+      "properties": {
+       "estado": {
+        "const": "listo"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "cotejo"
+      ]
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "rotulo"
+      ]
+     },
+     "then": {
+      "required": [
+       "explicacion"
+      ]
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "cotejo"
+      ],
+      "properties": {
+       "cotejo": {
+        "required": [
+         "regimen"
+        ],
+        "properties": {
+         "regimen": {
+          "const": "oido"
+         }
+        }
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "confirmadoDeOido"
+      ]
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "cotejo"
+      ],
+      "properties": {
+       "cotejo": {
+        "required": [
+         "regimen"
+        ],
+        "properties": {
+         "regimen": {
+          "const": "dos-fuentes"
+         }
+        }
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "fuenteLetra": {
+        "minItems": 2
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "cotejo"
+      ],
+      "properties": {
+       "cotejo": {
+        "required": [
+         "regimen"
+        ],
+        "properties": {
+         "regimen": {
+          "const": "fuente-unica"
+         }
+        }
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "fuenteLetra": {
+        "maxItems": 1
+       }
+      },
+      "not": {
+       "required": [
+        "confirmadoDeOido"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "tema": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "slug",
+    "titulo",
+    "disco",
+    "pista",
+    "anio"
+   ],
+   "properties": {
+    "slug": {
+     "type": "string",
+     "maxLength": 80,
+     "pattern": "^[a-z0-9]+(-{1,2}[a-z0-9]+)*$"
+    },
+    "titulo": {
+     "type": "string",
+     "minLength": 1,
+     "maxLength": 80,
+     "pattern": "^[^<>]+$"
+    },
+    "disco": {
+     "enum": [
+      "gulp",
+      "oktubre",
+      "un-baion-para-el-ojo-idiota",
+      "bang-bang-estas-liquidado",
+      "la-mosca-y-la-sopa",
+      "lobo-suelto",
+      "cordero-atado",
+      "luzbelito",
+      "ultimo-bondi-a-finisterre",
+      "momo-sampler"
+     ]
+    },
+    "pista": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 13
+    },
+    "anio": {
+     "type": "integer",
+     "minimum": 1985,
+     "maximum": 2000
+    },
+    "articulo": {
+     "type": "string",
+     "maxLength": 80,
+     "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    }
+   },
+   "allOf": [
+    {
+     "if": {
+      "required": [
+       "disco"
+      ],
+      "properties": {
+       "disco": {
+        "const": "gulp"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "anio": {
+        "const": 1985
+       },
+       "pista": {
+        "maximum": 12
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "disco"
+      ],
+      "properties": {
+       "disco": {
+        "const": "oktubre"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "anio": {
+        "const": 1986
+       },
+       "pista": {
+        "maximum": 9
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "disco"
+      ],
+      "properties": {
+       "disco": {
+        "const": "un-baion-para-el-ojo-idiota"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "anio": {
+        "const": 1988
+       },
+       "pista": {
+        "maximum": 8
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "disco"
+      ],
+      "properties": {
+       "disco": {
+        "const": "bang-bang-estas-liquidado"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "anio": {
+        "const": 1989
+       },
+       "pista": {
+        "maximum": 9
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "disco"
+      ],
+      "properties": {
+       "disco": {
+        "const": "la-mosca-y-la-sopa"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "anio": {
+        "const": 1991
+       },
+       "pista": {
+        "maximum": 10
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "disco"
+      ],
+      "properties": {
+       "disco": {
+        "const": "lobo-suelto"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "anio": {
+        "const": 1993
+       },
+       "pista": {
+        "maximum": 13
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "disco"
+      ],
+      "properties": {
+       "disco": {
+        "const": "cordero-atado"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "anio": {
+        "const": 1993
+       },
+       "pista": {
+        "maximum": 12
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "disco"
+      ],
+      "properties": {
+       "disco": {
+        "const": "luzbelito"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "anio": {
+        "const": 1996
+       },
+       "pista": {
+        "maximum": 11
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "disco"
+      ],
+      "properties": {
+       "disco": {
+        "const": "ultimo-bondi-a-finisterre"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "anio": {
+        "const": 1998
+       },
+       "pista": {
+        "maximum": 10
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "disco"
+      ],
+      "properties": {
+       "disco": {
+        "const": "momo-sampler"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "anio": {
+        "const": 2000
+       },
+       "pista": {
+        "maximum": 11
+       }
+      }
+     }
+    }
+   ]
+  },
+  "hueco": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "antes",
+    "respuesta",
+    "despues"
+   ],
+   "properties": {
+    "antes": {
+     "type": "string",
+     "maxLength": 70,
+     "pattern": "^[^<>]*$"
+    },
+    "respuesta": {
+     "type": "string",
+     "minLength": 1,
+     "maxLength": 40,
+     "pattern": "^[^<>\\s]+( [^<>\\s]+){0,3}$"
+    },
+    "despues": {
+     "type": "string",
+     "maxLength": 70,
+     "pattern": "^[^<>]*$"
+    }
+   },
+   "anyOf": [
+    {
+     "required": [
+      "antes"
+     ],
+     "properties": {
+      "antes": {
+       "minLength": 1
+      }
+     }
+    },
+    {
+     "required": [
+      "despues"
+     ],
+     "properties": {
+      "despues": {
+       "minLength": 1
+      }
+     }
+    }
+   ]
+  },
+  "contexto": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "antes",
+    "despues"
+   ],
+   "properties": {
+    "antes": {
+     "$ref": "#/$defs/versos"
+    },
+    "despues": {
+     "$ref": "#/$defs/versos"
+    }
+   }
+  },
+  "versos": {
+   "type": "array",
+   "maxItems": 2,
+   "items": {
+    "type": "string",
+    "minLength": 1,
+    "maxLength": 90,
+    "pattern": "^[^<>]+$"
+   }
+  },
+  "opcion": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "texto",
+    "correcta"
+   ],
+   "properties": {
+    "texto": {
+     "type": "string",
+     "minLength": 1,
+     "maxLength": 40,
+     "pattern": "^[^<>\\s]+( [^<>\\s]+){0,3}$"
+    },
+    "correcta": {
+     "type": "boolean"
+    },
+    "nota": {
+     "type": "string",
+     "maxLength": 200
+    }
+   }
+  },
+  "confirmadoDeOido": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "quien",
+    "fecha",
+    "donde",
+    "minuto"
+   ],
+   "properties": {
+    "quien": {
+     "type": "string",
+     "minLength": 3,
+     "maxLength": 60,
+     "pattern": "^[A-ZÁÉÍÓÚÑ]"
+    },
+    "fecha": {
+     "type": "string",
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "donde": {
+     "enum": [
+      "disco-fisico",
+      "streaming",
+      "video"
+     ]
+    },
+    "minuto": {
+     "type": "string",
+     "pattern": "^\\d{1,2}:[0-5]\\d$"
+    }
+   }
+  },
+  "rotulo": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "tipo",
+    "texto"
+   ],
+   "properties": {
+    "tipo": {
+     "enum": [
+      "leyenda",
+      "testimonio"
+     ]
+    },
+    "texto": {
+     "type": "string",
+     "minLength": 20,
+     "maxLength": 200
+    }
+   }
+  },
+  "fuenteDeLetra": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "ficha",
+    "sitio",
+    "url",
+    "consultado"
+   ],
+   "properties": {
+    "ficha": {
+     "type": "string",
+     "pattern": "^RES-\\d{2}$"
+    },
+    "sitio": {
+     "type": "string",
+     "minLength": 4,
+     "maxLength": 40,
+     "pattern": "^[a-z0-9.-]+\\.[a-z]{2,}$"
+    },
+    "url": {
+     "type": "string",
+     "maxLength": 200,
+     "pattern": "^https://[^\\s<>\"]+$"
+    },
+    "consultado": {
+     "type": "string",
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+   }
+  },
+  "cotejo": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "regimen"
+   ],
+   "properties": {
+    "regimen": {
+     "enum": [
+      "oido",
+      "dos-fuentes",
+      "fuente-unica"
+     ]
+    },
+    "decision": {
+     "const": "D-25"
+    }
+   },
+   "allOf": [
+    {
+     "if": {
+      "required": [
+       "regimen"
+      ],
+      "properties": {
+       "regimen": {
+        "const": "fuente-unica"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "decision"
+      ]
+     },
+     "else": {
+      "not": {
+       "required": [
+        "decision"
+       ]
+      }
+     }
+    }
+   ]
   }
+ }
 }

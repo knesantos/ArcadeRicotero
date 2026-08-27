@@ -15,6 +15,10 @@ import { DISCOS, indiceDeTemas, leerTemas, normalizar } from './temas.ts';
 
 const CRUDO = JSON.parse(readFileSync('src/data/letra.json', 'utf-8')) as BancoCrudo;
 const TEMAS = leerTemas();
+/** Fixtures de fuente de letra con la forma de CTR-04.6 v2. */
+const FICHA_LETRAS = { ficha: 'RES-23', sitio: 'letras.com', url: 'https://www.letras.com/x', consultado: '2026-08-22' } as const;
+const FICHA_CIFRA = { ficha: 'RES-49', sitio: 'cifraclub.com', url: 'https://www.cifraclub.com/x', consultado: '2026-08-24' } as const;
+
 const INDICE = indiceDeTemas(TEMAS);
 
 /**
@@ -43,9 +47,10 @@ const base: ItemCrudo = {
     { texto: 'cuarta', correcta: false },
   ],
   fuentes: ['RES-20'],
-  fuenteLetra: ['pendiente de carga'],
-  // Una sola ficha de letra, asi que este item jugable se sostiene por la otra puerta de
-  // `CTR-04`: alguien lo escuchó. Es la forma que va a tener el banco de verdad.
+  fuenteLetra: [FICHA_LETRAS],
+  // Una sola ficha de letra, asi que este item jugable se sostiene por la puerta del
+  // oido, declarada en `cotejo` (CTR-04.6 v2): alguien lo escuchó.
+  cotejo: { regimen: 'oido' },
   confirmadoDeOido: { quien: 'Santiago', fecha: '2026-08-23', donde: 'disco-fisico', minuto: '1:24' },
   sensibleA: ['letra'],
   estado: 'listo',
@@ -94,22 +99,70 @@ test('D-13: todo ítem declara de dónde salió la letra', () => {
 
 // ------------------------------------------------- CTR-04, las dos puertas hacia `listo`
 
-test('CTR-04: sin oído y con una sola ficha de letra, no puede estar en `listo`', () => {
-  // Es lo único estricto que le queda al proyecto: si la respuesta está mal, el juego le
-  // marca error justo al que se sabe el tema. Hasta este test la regla vivía solo en
-  // `letra.schema.json`, que no lo corre nadie.
-  const sinRespaldo = con({ confirmadoDeOido: undefined, fuenteLetra: ['RES-23'] });
-  assert.throws(() => verificarInvariantes([sinRespaldo], 'opciones', INDICE), BancoInvalido);
+test('CTR-04.6 v2: `listo` sin cotejo no valida — la via se declara siempre', () => {
+  // En v1 lo estricto era la verificacion; D-25 la aflojo, y lo que quedo estricto es
+  // el RASTRO: por que via esta listo cada item. Un listo sin cotejo es indistinguible
+  // de un bug, y por eso rompe el build.
+  const sinCotejo = con({ cotejo: undefined });
+  assert.throws(() => verificarInvariantes([sinCotejo], 'opciones', INDICE), BancoInvalido);
 });
 
-test('CTR-04: dos fichas de letra alcanzan, sin que nadie escuche', () => {
-  const dosFichas = con({ confirmadoDeOido: undefined, fuenteLetra: ['RES-23', 'RES-99'] });
-  assert.doesNotThrow(() => verificarInvariantes([dosFichas], 'opciones', INDICE));
+test('CTR-04.6 v2: cada regimen se verifica contra su evidencia', () => {
+  // oido sin confirmacion
+  assert.throws(
+    () => verificarInvariantes([con({ cotejo: { regimen: 'oido' }, confirmadoDeOido: undefined })], 'opciones', INDICE),
+    BancoInvalido,
+  );
+  // dos-fuentes con una sola ficha
+  assert.throws(
+    () => verificarInvariantes([con({ cotejo: { regimen: 'dos-fuentes' }, confirmadoDeOido: undefined })], 'opciones', INDICE),
+    BancoInvalido,
+  );
+  // dos-fuentes con dos fichas: valida sin que nadie escuche
+  assert.doesNotThrow(() =>
+    verificarInvariantes(
+      [con({ cotejo: { regimen: 'dos-fuentes' }, confirmadoDeOido: undefined, fuenteLetra: [FICHA_LETRAS, FICHA_CIFRA] })],
+      'opciones',
+      INDICE,
+    ),
+  );
+});
+
+test('D-25: `fuente-unica` valida con una ficha y la referencia a la decision', () => {
+  const promovido = con({
+    cotejo: { regimen: 'fuente-unica', decision: 'D-25' },
+    confirmadoDeOido: undefined,
+    fuenteLetra: [FICHA_CIFRA],
+  });
+  assert.doesNotThrow(() => verificarInvariantes([promovido], 'opciones', INDICE));
+});
+
+test('D-25: `fuente-unica` sin la referencia, o con oido encima, no valida', () => {
+  // Sin decision: el rastro quedaria mudo sobre por que se aflojo la regla.
+  assert.throws(
+    () =>
+      verificarInvariantes(
+        [con({ cotejo: { regimen: 'fuente-unica' }, confirmadoDeOido: undefined, fuenteLetra: [FICHA_CIFRA] })],
+        'opciones',
+        INDICE,
+      ),
+    BancoInvalido,
+  );
+  // Con confirmacion de oido le corresponde el regimen fuerte, no el debil.
+  assert.throws(
+    () =>
+      verificarInvariantes(
+        [con({ cotejo: { regimen: 'fuente-unica', decision: 'D-25' }, fuenteLetra: [FICHA_CIFRA] })],
+        'opciones',
+        INDICE,
+      ),
+    BancoInvalido,
+  );
 });
 
 test('CTR-04: en `borrador` no se le pide respaldo a nadie', () => {
-  // El banco candidato entero vive acá: 313 versos esperando que alguien ponga el disco.
-  const borrador = con({ confirmadoDeOido: undefined, fuenteLetra: ['RES-23'], estado: 'borrador' });
+  // El banco candidato entero vive acá: 1.784 versos esperando.
+  const borrador = con({ confirmadoDeOido: undefined, cotejo: undefined, estado: 'borrador' });
   assert.doesNotThrow(() => verificarInvariantes([borrador], 'opciones', INDICE));
 });
 
@@ -217,13 +270,20 @@ test('el payload manda el verso partido, nunca armado', () => {
 
 // ---------------------------------------------------------------- el banco real
 
-test('US-03: el banco arranca vacío y eso no rompe nada', () => {
-  // El texto de los versos es material de origen y entra por la mano del usuario, igual
-  // que los recortes de audio de US-02. Hasta entonces el juego se muestra en la cocina.
+test('US-03: el banco real cumple su piso, y cada jugable declara su vía', () => {
+  // Hasta el ciclo 9 este test afirmaba que el banco cargaba vacío — era la época en que
+  // ningún verso podía llegar a `listo`. `D-25` abrió la tercera vía y `T-138` eligió los
+  // versos; lo que ahora protege este test es el piso de `US-03` (15) y el RASTRO: que
+  // ningún ítem llegue al jugador sin decir por qué vía está listo, ni sin su fuente.
   const items = cargarBanco(CRUDO, INDICE);
-  assert.deepEqual(items, []);
+  assert.ok(items.length >= 15, `el piso de US-03 es 15 y el banco jugable tiene ${items.length}`);
+  for (const it of items) {
+    assert.ok(it.fuenteLetra.length >= 1, `${it.id}: viaja sin fuente de letra`);
+    assert.ok(it.cotejoRegimen, `${it.id}: viaja sin regimen de cotejo`);
+  }
   assert.equal(CRUDO.modoRespuesta, 'opciones');
   assert.equal(CRUDO.contrato, 'CTR-04');
+  assert.equal(CRUDO.contratoVersion, 2);
 });
 
 test('los borradores y los retirados no llegan al jugador', () => {

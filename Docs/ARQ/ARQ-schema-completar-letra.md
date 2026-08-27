@@ -57,7 +57,9 @@ un schema puede aportar acá; el resto son las tres mitigaciones de `D-25`, y do
 - **Lo que este contrato hace y ningún documento hacía todavía:** convertir las mitigaciones
   de `D-13` en algo que una máquina rechaza. Hasta hoy eran cinco viñetas de una ficha; acá
   dos de ellas —el cruce contra los 105 temas de `RES-20` y la confirmación de oído— son
-  condición para que un ítem exista o para que pase a `listo`.
+  condición para que un ítem exista o para que pase a `listo`. **En v2 la segunda dejó de ser
+  condición y pasó a ser una de tres vías declaradas** (`D-25`, `CTR-04.6`); la primera está
+  igual que el día uno.
 
 **Este juego no reproduce letras. Trabaja con versos sueltos, y el schema lo hace
 estructural.** El piso de 15 ítems de `US-03` necesita **del orden de 30 versos**, no 15
@@ -113,10 +115,11 @@ las notas internas y todo lo que `aPayload` recorta **no salen del build**. Ento
 | El payload serializado en la página | **≤ 150 KB** | ~30 ítems `listo` × ~1,1 KB ≈ 33 KB |
 
 Los ~1,1 KB por ítem ya incluyen el `fuenteLetra` de v2, que le suma unos 140 bytes al ítem
-que viaja (`CTR-04.6`). Con el piso de 15 de `US-03` sobra techo por diez veces; el número
-existe para que el día que alguien decida servir el banco entero, la decisión se tope con un
-límite escrito en vez de con un celular de gama baja. **La medición la deja corrible
-`CTR-04.12`, chequeo 10.**
+que viaja (`CTR-04.6`). Con el piso de 15 de `US-03` son unos 17 KB: sobra techo por nueve
+veces. El número no está para apretar hoy, sino para que el día que alguien decida servir el
+banco entero —1.784 ítems, más de 1 MB en la página— la decisión se tope con un límite escrito
+en vez de con un celular de gama baja. **Las dos cuentas de arriba son estimaciones mías: la
+medición de verdad la deja corrible `CTR-04.12`, chequeo 10, y `D-12` me impide correrla.**
 
 Mismo envoltorio que `CTR-02` y `CTR-03`, más `modoRespuesta` a nivel archivo por el mismo
 motivo que `CTR-03.5`: mezclar mecanismos de respuesta entre ítems cambia la forma de la
@@ -325,8 +328,17 @@ de RES-20>"}`, derivado de `Docs/INVESTIGACION/INV-20-fuentes-primarias.md` copi
 pegando, no de memoria. Sirve para el chequeo 3 de `CTR-04.12` y para el chequeo 4 de
 `CTR-03.10`, que hoy no se puede correr por lo mismo.
 
-**Mientras esa lista no exista, un ítem se puede cargar pero no puede pasar a `listo`**: el
-cruce sin correr es un cruce que no se hizo.
+> **Actualización del 2026-08-27 (`T-131`): los dos párrafos de arriba están saldados y de
+> mejor manera.** El ciclo 6 escribió `src/lib/letra/temas.ts`, que **parsea los 105 desde la
+> ficha** en vez de copiarlos —una sola verdad, no dos que se desincronizan— y expone
+> `resolverTema()`, la puerta de `D-13` hecha función. La lista auxiliar `titulos-res-20.json`
+> **no se va a escribir**, el chequeo 3 quedó reescrito contra `temas.ts` en `CTR-04.12`, y
+> el cruce del título ya corre en cada build dentro de `verificarInvariantes`.
+>
+> **Y con eso cae la frase que decía "mientras esa lista no exista, ningún ítem puede pasar a
+> `listo`".** Estaba escrita para un faltante que se resolvió hace tres ciclos, y si nadie la
+> tachaba iba a bloquear `T-144` por un motivo que ya no existe. Lo que sigue sin correr
+> automático es la mitad `disco` + `pista` de la terna: eso lo cubre el chequeo 3, a mano.
 
 ---
 
@@ -415,10 +427,10 @@ mano, esta misma migración costaría una tarde y la decisión sería otra.
 
 #### Qué viaja al cliente en v2, que es de lo que depende `T-145`
 
-Hasta hoy `aPayload` recorta `fuenteLetra`, `cotejo`, `confirmadoDeOido`, `fuentes`,
-`sensibleA`, `estado` y `notaInterna`: al navegador llegan solo el ítem jugable y su
-explicación. **Con `T-145` eso deja de alcanzar**, porque el panel de respuesta tiene que
-mostrar qué sitio transcribió el verso, con su enlace. El contrato pasa a exigir:
+Hasta hoy `aPayload` recorta todo lo que no se juega —`fuenteLetra`, `confirmadoDeOido`,
+`fuentes`, `sensibleA`, `estado`, `notaInterna`—: al navegador llegan el ítem jugable y su
+explicación, y nada más. **Con `T-145` eso deja de alcanzar**, porque el panel de respuesta
+tiene que mostrar qué sitio transcribió el verso, con su enlace. El contrato pasa a exigir:
 
 | Campo | ¿Viaja? | Por qué |
 |---|---|---|
@@ -664,8 +676,14 @@ canónica, y la canónica nunca se duplica ahí.
 **El verso no lleva rótulo, y hay que entender por qué.** Las tres casillas de `D-14` —hecho,
 leyenda, testimonio— clasifican **afirmaciones**. Un verso no afirma nada sobre el mundo: es
 la letra. Lo que sí puede estar mal es la **transcripción**, y eso no se resuelve con un
-rótulo sino con `fuenteLetra` y `confirmadoDeOido` (`CTR-04.6`), que dicen de dónde salió el
-texto y si alguien lo escuchó.
+rótulo sino con `fuenteLetra`, `confirmadoDeOido` y, desde v2, `cotejo` (`CTR-04.6`), que
+dicen de dónde salió el texto, si alguien lo escuchó, y con cuánto respaldo se lo publicó.
+
+> **Y ahí está el punto 3 de `D-25`**: *"el rótulo sigue sin poder mentir — si el sitio
+> muestra un verso sostenido por una sola transcripción de fans, no puede presentarlo como si
+> estuviera cotejado"*. `cotejo.regimen` es exactamente ese rótulo, y por eso viaja al cliente
+> junto con `fuenteLetra`. Un verso publicado sin cotejar y mostrado sin decirlo sería una
+> leyenda vestida de hecho, que es lo único que `D-14` dejó prohibido.
 
 **Donde sí aplica el rotulado es en la `explicacion`**, que es la que afirma algo: qué quiere
 decir el verso, a qué alude, qué contó el Indio sobre ese tema. Ahí va `rotulo`, con la misma
@@ -1086,28 +1104,49 @@ npm run generar-letra && npm test && npm run build
 
 ### Consecuencias
 
+- **`US-03` se prende con lo que ya hay.** Los 1.784 candidatos que generó el ciclo 6 dejaron
+  de estar clavados en `borrador`: `T-138` elige los 15 de menor riesgo y `T-144` los promueve
+  por `fuente-unica`. Era la única de las tres mitigaciones de `D-25` que dependía de este
+  contrato, y con esto queda saldada.
 - **`contenido` puede cargar sin esperar nada**, en `borrador`, con una sola fuente de letra.
-  Lo que necesita para el piso es la tarde de escuchar, no una ficha nueva.
+  Y ahora también puede promover sin esperar nada, que es lo que cambió.
 - **Fácil:** rechazar un ítem con un tema que no es de Patricio Rey. No hace falta que nadie
   se acuerde de cruzar: `fuentes` sin `RES-20` no valida, y la terna la caza el chequeo 3.
 - **Fácil:** cambiar de modo de respuesta. Una clave a nivel archivo, y los distractores.
 - **Difícil, y a propósito:** cargar una letra entera. Cinco versos por ítem por forma del
   dato, ocho por tema por comando. Para meter una letra completa habría que repartirla en
   ítems de temas que no son, y eso lo caza el chequeo 5.
-- **Difícil, y a propósito:** que un ítem llegue a `listo` sin que nadie haya escuchado el
-  disco ni cruzado dos fuentes. Es la única condición de estado del contrato y es la que
-  protege lo único estricto del proyecto (`D-14`).
+- **🔴 Fácil ahora, y era difícil a propósito hasta el 2026-08-27:** que un ítem llegue a
+  `listo` sin que nadie haya escuchado el disco ni cruzado dos fuentes. Esta era **la** línea
+  del contrato que protegía lo único estricto del proyecto, y `D-25` la abrió sabiendo lo que
+  abría. Lo que queda del candado es más flaco y hay que llamarlo por su nombre: **la fuente
+  sigue siendo obligatoria y el régimen queda escrito en cada ítem.** Nada más. Que el verso
+  diga lo que dice el disco ya no lo garantiza nadie antes de publicar; lo va a decir el
+  jugador, con el botón de corrección (frente D del ciclo 9).
+- **Fácil, y es lo que compra el rastro:** revertir. `D-25` se cae con un filtro —los ítems
+  con `regimen: "fuente-unica"` vuelven a `borrador`— y las dos vías viejas siguen escritas,
+  así que no hay que rediscutir ni reescribir nada. Un ítem que consiga su segunda fuente o
+  su escucha **sube solo** en la próxima corrida del generador.
 - **Difícil, y asumido:** un tema que no esté en los 105 de `RES-20` no entra, aunque el
   jugador lo cante en la previa. Si algún día se decide incluir material del Indio solista o
   de Skay, no alcanza con tocar el schema: cambia el alcance del sitio, y eso es de
   `producto`.
-- **Queda bloqueado hasta que exista `src/data/_schema/titulos-res-20.json`:** el chequeo 3.
-  Mientras tanto, ningún ítem debería pasar a `listo`. Es una tarea de quien tenga Bash y
-  sirve también para el chequeo 4 de `CTR-03.10`, que arrastra el mismo faltante desde el
-  ciclo 2.
+- **Se cancela un bloqueo de v1 que ya no existe.** v1 decía: *"Queda bloqueado hasta que
+  exista `src/data/_schema/titulos-res-20.json`: el chequeo 3. Mientras tanto, ningún ítem
+  debería pasar a `listo`"*. Esa lista auxiliar **no hace falta y no se va a escribir**:
+  `src/lib/letra/temas.ts` parsea los 105 desde la ficha `RES-20` y expone `resolverTema`, que
+  es mejor que la copia que v1 pedía —una sola verdad en vez de dos—. El chequeo 3 quedó
+  reescrito arriba y corre hoy. **Si esa frase se dejaba en pie, bloqueaba `T-144` por un
+  faltante que se resolvió en el ciclo 6 y nadie vino a tachar acá.**
 - **`bestiarioredondo` no se puede citar todavía.** `D-13` la aceptó como fuente y no tiene
-  ficha `RES-NN`, así que no hay qué escribir en `fuenteLetra`. Hasta que exista, los ítems
-  se apoyan en `RES-23` y en lo que salga de `T-60`.
+  ficha `RES-NN`, así que no hay qué escribir en `fuenteLetra`. Las dos que sí tienen ficha
+  son `RES-23` (letras.com) y `RES-49` (cifraclub), y son las dos del mapa `FICHA_POR_SITIO`
+  del generador.
+- **Los 21 temas de lacuerda.net siguen afuera, y esta revisión lo confirma en vez de
+  aprovecharla.** Sería la tentación obvia —si aflojamos el cotejo, aflojemos también la
+  ficha—, y es exactamente lo que `D-25` excluyó: se relaja *cuántas* fuentes, no *si hay*.
+  `fuenteDeLetra.ficha` es obligatorio, así que un sitio sin ficha no se puede ni escribir.
+  Fichar lacuerda es de `investigador` y el pedido ya está en `Docs/SUGERENCIAS/`.
 
 ### Qué NO decide este contrato
 
@@ -1124,13 +1163,34 @@ npm run generar-letra && npm test && npm run build
   cuaderno: `experiencia`, con `.claude/rules/diseno-marca.md`.
 - **Si la nota de derechos necesita una fila nueva por los versos.** `sensibleA: ["letra"]`
   deja el mapa consultable; qué se escribe en `CNT-01` es de `contenido`.
+- **Cómo se lee la fuente en el panel de respuesta** (`T-145`): el contrato pone el dato
+  —`sitio`, `url`— y el registro —el 3, el que rotula—. Dónde va en la pantalla es de
+  `experiencia` (`UX-09` lo tiene al lado, con el botón de corrección) y qué dice exactamente
+  es de `contenido`.
+- **Cuáles son los 15 versos de menor riesgo** (`T-138`) y con qué criterio se eligen. Es de
+  `contenido`, y es la mitigación de `D-25` que más aporta después del botón. El schema no
+  puede distinguir un estribillo rimado de un pasaje mascullado.
+- **Qué promete el sitio cuando alguien corrige algo.** Es `BR-21` de `producto`, y el
+  contrato de la corrección es `CTR-10` (`T-150`), archivo aparte.
 
 ### Qué le pido a otros roles
 
 - A **`producto`**: cerrar el modo de respuesta de `US-03`; y corregir la frase del piso de
   `US-03` que todavía dice "15 letras completas, transcriptas y segmentadas en versos", que
   es el mismo arreglo que `BR-12` acaba de hacer del lado de la Redondopedia.
-- A **`investigador`**: una ficha de `bestiarioredondo` como fuente de texto, si es que sirve
-  para eso — `INV-21` sospecha que es obra ilustrada y no transcripción.
-- A **quien tenga Bash**: `src/data/_schema/titulos-res-20.json`, copiado de `RES-20`, con la
-  terna `disco` + `pista` + `titulo` de los 105 temas.
+- A **`investigador`**, y ahora es el pedido de más palanca del proyecto: **una segunda fuente
+  de letras fichada revierte `D-25` sola.** Con el schema de v2 no hace falta decidir nada de
+  nuevo — el generador ve dos entradas y promueve por `dos-fuentes`. Dos candidatas, por
+  orden: **lacuerda.net**, que ya tiene 21 temas en el cancionero esperando ficha (pedido en
+  `Docs/SUGERENCIAS/HILO-para-investigador-fichar-lacuerda.md`), y **`bestiarioredondo`**, que
+  `D-13` aceptó y `INV-21` sospecha que es obra ilustrada y no transcripción.
+- A **`contenido`** (`T-138`): que los 15 elegidos salgan de temas cuya fuente tenga ficha
+  —cifraclub o letras.com—, porque los de lacuerda.net no pueden declarar `fuenteLetra` y el
+  generador los va a saltear. Con 80 temas y 1.784 candidatos, sobra.
+- A **quien escriba código** (`T-144`): `CTR-04.13`, y sobre todo el recuadro rojo. **El
+  schema no es el único lugar donde vive esta regla**; `src/lib/letra/banco.ts` tiene la copia
+  que corre en build, y si se aplica uno solo de los dos, el build falla o —peor— pasa
+  dejando la regla vieja andando.
+- ~~A **quien tenga Bash**: `src/data/_schema/titulos-res-20.json`~~ **[CANCELADO** el
+  2026-08-27**]** — `src/lib/letra/temas.ts` lo resolvió mejor parseando la ficha. Ver
+  Consecuencias.
