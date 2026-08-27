@@ -26,21 +26,16 @@ export { normalizar, normalizarDuro, slugDeTitulo };
 
 const FICHA = 'Docs/INVESTIGACION/INV-20-fuentes-primarias.md';
 
-/** Los diez discos, con el slug que usan el schema y la Redondopedia. */
-export const DISCOS = [
-  'gulp',
-  'oktubre',
-  'un-baion-para-el-ojo-idiota',
-  'bang-bang-estas-liquidado',
-  'la-mosca-y-la-sopa',
-  'lobo-suelto',
-  'cordero-atado',
-  'luzbelito',
-  'ultimo-bondi-a-finisterre',
-  'momo-sampler',
-] as const;
-
-export type Disco = (typeof DISCOS)[number];
+/**
+ * Los diez discos viven en `discos.ts` y se re-exportan desde acá.
+ *
+ * Mismo motivo que los normalizadores de arriba: la lista **también la necesita el
+ * navegador** (`tema/paleta.ts`, para saber que disco tiene que tinta), y este archivo
+ * no entra a un bundle de cliente. Se re-exporta para que nada de lo que ya la importaba
+ * de acá tenga que cambiar, y para que siga habiendo una sola lista.
+ */
+export { DISCOS, type Disco } from './discos.ts';
+import type { Disco } from './discos.ts';
 
 export interface TemaDelDisco {
   readonly disco: Disco;

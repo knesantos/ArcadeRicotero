@@ -8,6 +8,8 @@ import {
   puntos,
   puntajeMaximo,
   anchosDeTramos,
+  tramosConEtiqueta,
+  PISO_ETIQUETA_PCT,
 } from './escalera.ts';
 
 /**
@@ -97,4 +99,23 @@ test('el ancho de cada tramo es lo que ESE paso agrega, no su duración total', 
 test('el puntaje máximo de una vuelta son todos los temas acertados en el paso 1', () => {
   assert.equal(puntajeMaximo(4), 400);
   assert.equal(puntos(1), 100);
+});
+
+test('la regla de abajo de la barra numera los tramos que tienen lugar', () => {
+  // Los dos primeros se llevan el 1% y el 4% de la barra: en un celular, tres pixeles y
+  // trece. Numerarlos seria pisar un numero con el otro.
+  assert.deepEqual(tramosConEtiqueta(), [false, false, true, true, true, true]);
+});
+
+test('ningun tramo numerado es mas angosto que el numero que lleva', () => {
+  const anchos = anchosDeTramos();
+  tramosConEtiqueta().forEach((lleva, i) => {
+    if (lleva) assert.ok(anchos[i]! >= PISO_ETIQUETA_PCT, `el tramo ${i + 1} no da el ancho`);
+  });
+});
+
+test('el ultimo tramo siempre lleva numero: es el final de la escalera', () => {
+  // Si el ultimo no estuviera numerado, la regla no diria cuanto audio hay en total.
+  const marcados = tramosConEtiqueta();
+  assert.equal(marcados[marcados.length - 1], true);
 });

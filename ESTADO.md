@@ -12,6 +12,132 @@ frentes en dos tramos**: el juego nuevo por letras (`US-07`), `US-03` que sale e
 quiz que pasa a vidas, el botón de corrección, y la pulida de escritorio más los recortes
 reales.
 
+> ### ✅ "SACALO POR LA LETRA" PASÓ POR SU CICLO ESTÉTICO (`D-30`, `D-31`)
+>
+> `npm test` **344/344** · `npm run check` limpio · build de **150 páginas** · detector de
+> diseño en cero.
+>
+> El análisis se hizo con seis críticos independientes y un escéptico por dimensión:
+> **31 hallazgos sobrevivieron y 14 se cayeron refutados**, y cuatro de los tumbados eran
+> ideas mías —agrandar el verso, dibujarle una barra al juego, mostrar los versos que
+> faltaban al revelar, sacarle las mayúsculas al copy—. Las cuatro las había decidido
+> `UX-08` en contra, con argumento escrito. Buena lección: **antes de "mejorar" una
+> pantalla, leer si el rol dueño ya decidió eso.**
+>
+> ### 🔴 El hallazgo grande: la spec estaba escrita y sin construir
+>
+> `UX-08` §4 especificaba la hoja de versos con todas las letras —recorte pegado, borde
+> completo, fondo elevado, esquina de estampa, filete por verso— y en `juego.css` había
+> **tres propiedades de layout y ninguna de dibujo**. El juego se había construido, el
+> tablero decía ✅, y la mitad visual de la pieza central no entró nunca. Está en `D-31`.
+>
+> **Lo medido a 375×812, antes y después:**
+>
+> | | Antes | Ahora |
+> |---|---|---|
+> | La hoja con **un** verso | 545 px de recorte casi vacío | 63 px, y crece a 106 → 216 → 385 |
+> | Scroll durante la partida | 945 px contra 812 de ventana | 812 exactos |
+> | Salto horizontal al empezar | 7 px (el desborde invocaba la barra) | 0 |
+> | **Al revelar, los versos** | se aplastaban de 515 px a **59** | quedan enteros |
+> | **El buscador al revelar** | vivo, 174 px arriba de la respuesta | escondido y apagado |
+> | Contraste del botón principal | **3,66:1** (usaba un token `-apoyo`) | 13,29:1 |
+> | Colores de tapa que usaba | uno, y en el borde de otro disco | los diez, por tema |
+>
+> ### Tres agujeros que la medición encontró y el ojo no
+>
+> 1. **Repuntuación.** Al acertar, el buscador quedaba vivo con el tema correcto todavía
+>    elegido: otro toque en `Arriesgá` **volvía a sumar cien puntos** y apilaba un segundo
+>    panel. Por el otro camino —agotar los intentos— pasaba lo mismo con `Pasá`.
+> 2. **`chips.hidden` no escondía nada**: `.chips` declara `display: flex` y le gana al
+>    atributo. Una lista vacía se llevaba su renglón en el tablero que pelea el espacio por
+>    píxel. Ahora hay un test que exige la regla `[hidden]` a todo lo que declare `display`.
+> 3. **Cuatro cadenas visibles escritas a mano en la isla**, fuera de todo auditor — el
+>    mismo defecto que dejó `"Link copiado."` tres ciclos en producción. Una de ellas,
+>    `"Borrar lo escrito"`, en infinitivo y en los dos juegos: solo la lee quien no ve la
+>    pantalla, así que nadie la había mirado nunca. Ya hay test que lo caza.
+>
+> ### Lo que NO se hizo, y por qué
+>
+> **No se portó el reloj** (`D-30`). El hermano se escucha y éste se lee: en el cuarto
+> escalón hay que leer ocho versos, así que un cronómetro mide velocidad de lectura y
+> castiga al lector lento por leer. El número grande son **los versos que gastaste**, que
+> es la moneda de `BR-20` y el equivalente exacto del "cuánto audio te hizo falta".
+>
+> **No se generó `momo-medallon.jpg`.** De las cuatro piezas que un fondo de tapa necesita
+> (el jpg, la regla `.tapa-fondo--*` con su velo, la entrada en `DISCO_DE` y el
+> `position: relative`), esta página tenía **solo el nombre**: se sacó el cableado muerto.
+> Poner la tapa sin las otras tres deja una tapa sin firma, contra la condición 1 de `D-21`.
+>
+> **La tarjeta compartible ahora es compartida** por los dos juegos (`lib/tarjeta/plan.ts`),
+> y no sabe de qué juego es: recibe el nombre, el token que lo viste y un número grande con
+> su rótulo. Acá ese número son versos; allá, minutos.
+>
+> ### Dos cosas que quedan abiertas y no son mías
+>
+> - **El `h1` del quiz tiene diez palabras** (*"Entrá a jugar con los Redondos, sepas lo
+>   que sepas."*) y la regla de las ocho es de `voz-ricotera.md`. No lo toqué: es copy de
+>   otro juego y decisión de `producto`. Por eso `voz.test.ts` **todavía no audita los
+>   títulos de portada** — cerrar ese hueco rompe el build hasta que esa línea se recorte.
+> - **Un verso del banco viene corrupto**: *"Pintan mal las cosas para ,l mi viejo"* sale
+>   así desde `cancionero.json` (`maldicion-va-a-ser-un-dia-hermoso`). Es 1 de 712 y tiene
+>   dueño y mecanismo — la vía de corrección de `D-25`.
+>
+> Los dos quedaron pedidos en `Docs/SUGERENCIAS/HILO-para-producto-y-contenido-huecos-US-07.md`.
+
+> ### ✅ "ADIVINÁ EL TEMA" PASÓ POR LA PULIDA ESTÉTICA, Y ENTRÓ EL RELOJ (`D-28`)
+>
+> `npm test` **334/334** · `npm run check` limpio · build de **150 páginas** · detector de
+> diseño en cero.
+>
+> El usuario pidió *"un ciclo completamente estético"* sobre `US-02` y, adentro del mismo
+> pedido, algo que no es estético: **"más que el puntaje es importante y divertido saber en
+> cuánto tiempo y qué temas adivinó"**. Las tres bifurcaciones se consultaron y eligió las
+> tres recomendadas: reloj callado, tarjeta vertical, revelación con el color del disco.
+>
+> **Lo que se midió antes de tocar nada, a 375×812**, porque el diagnóstico a ojo se
+> equivoca:
+>
+> | | Antes | Ahora |
+> |---|---|---|
+> | Los seis renglones de intento, vacíos | **192 px** (24% de la pantalla) | 58 px |
+> | Dónde caía la revelación | y=489, con la hoja en 963 | y=301, y entra en el pliegue |
+> | Alto de la hoja en escritorio | 32 px de scroll que no llevaban a nada | 900 exactos |
+> | Colores de tapa usados por este juego | **cero de diez** | los diez |
+>
+> **Los cuatro cambios que valen:**
+>
+> 1. **El tema revelado viste la tinta real de su disco.** Los diez valores de `RES-37` ya
+>    estaban en `tokens.css`, pasaban AA y este juego no usaba ninguno. Ahora Oktubre se
+>    revela en rojo Oktubre. No contradice `D-19` —la base no rota, la sección sigue siendo
+>    Lobo suelto—, es el precedente del cancionero llevado acá.
+> 2. **La barra es una regla graduada.** La escalera se anunciaba de a un escalón por vez,
+>    así que su forma no se veía: para saber que después de 0,1 vienen 0,5, 2, 4, 8 y 10
+>    había que gastarlos. Ahora los números están escritos abajo de sus tramos — los cuatro
+>    que tienen lugar, y quién tiene lugar lo decide `tramosConEtiqueta()`, que está testeado.
+> 3. **El reloj**, con dos reglas que lo hacen honesto: para con la pestaña escondida, y
+>    mide el tema y no la ficha. Doce pruebas en `reloj.ts`.
+> 4. **La tarjeta compartible**, 1080×1350, dibujada en canvas con las letras reales del
+>    sitio y los colores leídos de `tokens.css` — cero hex nuevos. El plan vive en
+>    `lib/tema/tarjeta.ts` con test; el pincel, en `scripts/tarjeta-tema.ts`.
+>
+> ### 🔴 Y un defecto mío que ningún test podía ver — `D-29`
+>
+> `paleta.ts` importó la lista de discos de `letra/temas.ts`, que **importa `node:fs`**. En
+> el navegador la isla muere entera: la portada queda dibujada y no responde a un solo toque.
+>
+> **Pasaron los tres controles.** `npm test` (en Node existe `fs`), `npm run check` (los
+> tipos estaban bien) y `npm run build` (la página es estática y sale igual). Lo agarró
+> abrir la página.
+>
+> Ahora hay `src/lib/islas.test.ts`: recorre el grafo de importaciones desde cada archivo de
+> `src/scripts/` y falla si en el camino aparece un `node:*`. **No mira el archivo, mira todo
+> lo que alcanza** — `paleta.ts` no tenía una línea de Node y sin embargo lo traía. De paso
+> encontró que hay que exceptuar los `import type`, o acusa a `completar-la-letra` de algo
+> que no hace: *un guardián que grita por algo que no pasa se termina apagando.*
+>
+> **Queda pedido a `producto`:** `Docs/SUGERENCIAS/HILO-para-producto-reloj-y-tarjeta-US-02.md`
+> — los criterios de `US-02` no nombran el tiempo, y hoy el juego lo mide y lo comparte.
+
 > ### `D-27` — la dificultad sale de las escuchas, no de una etiqueta a mano
 >
 > Cerrando `FIND-29`, la salida obvia era pedirle a `contenido` **89 juicios a mano** de

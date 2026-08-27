@@ -182,3 +182,23 @@ test('la lista blanca sigue dejando afuera todo lo que arma una etiqueta', () =>
     assert.equal(leido?.nombre, 'Anax', `sobrevivio ${c}`);
   }
 });
+
+test('el desafio de "sacalo por la letra" ida y vuelta', () => {
+  // `US-07` empezo a mandar desafios en el ciclo estetico: hasta entonces compartia la
+  // portada pelada. Los dos numeros de este juego —500 de maximo, y el nombre con guion—
+  // tienen que pasar los validadores, y el nombre ademas cumple /^[a-z-]{1,20}$/.
+  const url = armarLink('https://arcade.example/juegos/adivinar-por-la-letra/', {
+    forma: 'marcador',
+    juego: 'por-la-letra',
+    puntaje: 320,
+    total: 500,
+  });
+  const leido = leerDesafio(new URL(url).search, 'por-la-letra');
+  assert.deepEqual(leido, { forma: 'marcador', juego: 'por-la-letra', puntaje: 320, total: 500 });
+});
+
+test('un desafio de otro juego no entra a "sacalo por la letra"', () => {
+  // `FIND-28`: sin el segundo argumento, `?g=tapa&p=10&t=10` pintaba un puntaje ajeno.
+  assert.equal(leerDesafio('?g=tapa&p=10&t=10', 'por-la-letra'), null);
+  assert.equal(leerDesafio('?g=por-la-letra&p=10&t=10', 'tapa'), null);
+});

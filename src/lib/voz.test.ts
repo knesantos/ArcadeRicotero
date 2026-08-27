@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 import * as sitio from './sitio/copy.ts';
 import * as quiz from './quiz/copy.ts';
@@ -125,6 +125,11 @@ test('voz 4.2 (D-17): ningun boton ni enlace en infinitivo', () => {
     'empezar', 'comenzar', 'jugar', 'seguir', 'continuar', 'volver', 'compartir', 'escuchar',
     'parar', 'arriesgar', 'pasar', 'ver', 'mirar', 'ir', 'elegir', 'buscar', 'copiar',
     'descargar', 'bajar', 'armar', 'tocar', 'leer', 'probar', 'reintentar', 'cerrar', 'abrir',
+    // Sumados en el ciclo de `US-07`. 'borrar' entro por un caso real: el boton de la cruz
+    // del buscador decia "Borrar lo escrito" en los dos juegos, y como solo lo lee quien
+    // usa lector de pantalla, nadie lo habia mirado nunca. `D-17` no distingue entre texto
+    // a la vista y texto para el lector.
+    'borrar', 'sacar', 'mostrar', 'enviar', 'guardar', 'corregir', 'subir', 'entrar',
   ]);
   const malos = VISIBLE.filter(([, texto]) => {
     const primera = sinTilde(texto.trim().split(/\s+/)[0] ?? '').toLowerCase().replace(/[^a-z]/g, '');
@@ -166,6 +171,58 @@ test('voz 5: la bajada de un casete arranca cantando, y el verso no pasa de ocho
   assert.deepEqual(largos, []);
 });
 
+/**
+ * Las cadenas que producen las **funciones** del copy.
+ *
+ * `cadenas()` las saltea a proposito, con un motivo escrito: "se invocan con datos y no se
+ * pueden auditar sin inventarlos". Pero inventar los datos es exactamente lo que hace un
+ * test, y el agujero no era chico: en `por-la-letra/copy.ts` son 10 de 25 claves, y entre
+ * ellas esta `paraCompartir`, que es **la unica cadena de ese modulo que sale del sitio**.
+ *
+ * Se las llama con dos juegos de comodines —un numero y un texto— porque desde afuera no
+ * se sabe que espera cada una, y se junta lo que salga de cualquiera de los dos.
+ *
+ * **Solo se les aplican las reglas que no dependen del dato**: anglicismos, formulas de
+ * folleto y como se nombra a la gente. Las de largo y las de puntuacion quedan afuera a
+ * proposito — con un comodin adentro, contar palabras no mide el texto, mide el comodin.
+ */
+function cadenasDeFunciones(): Array<readonly [string, string]> {
+  const salida: Array<readonly [string, string]> = [];
+  for (const [donde, modulo] of MODULOS) {
+    for (const [clave, valor] of Object.entries(modulo)) {
+      if (typeof valor !== 'object' || valor === null) continue;
+      for (const [sub, fn] of Object.entries(valor as Record<string, unknown>)) {
+        if (typeof fn !== 'function') continue;
+        for (const comodin of [1, 'X'] as const) {
+          try {
+            const r = (fn as (...a: unknown[]) => unknown)(comodin, comodin, comodin);
+            if (typeof r === 'string') salida.push([`${donde}.${clave}.${sub}()`, r] as const);
+          } catch {
+            // Una funcion que no aguanta el comodin no se audita: no es su culpa.
+          }
+        }
+      }
+    }
+  }
+  return salida;
+}
+
+test('las funciones del copy tampoco pueden traer un anglicismo ni una formula de folleto', () => {
+  const glosario = /\b(feedback|reveal|display|quiz|link|score|player|gaming|ranking|challenge|share|tips?|loading|hint|combo|streak|highscore)\b/;
+  const folleto =
+    /(descubri todo|sumergite|la experiencia (definitiva|unica)|y listo!|a jugar!|increible|imperdible|la mejor forma de)/;
+  const gente = /\b(los fans|las? usuarios?|los? usuarios?|nuestra comunidad)\b/;
+
+  const malas: string[] = [];
+  for (const [donde, texto] of cadenasDeFunciones()) {
+    const limpio = sinTilde(texto).toLowerCase();
+    for (const [nombre, patron] of [['anglicismo', glosario], ['folleto', folleto], ['la gente', gente]] as const) {
+      if (patron.test(limpio)) malas.push(`${donde} [${nombre}]: "${texto}"`);
+    }
+  }
+  assert.deepEqual(malas, []);
+});
+
 test('voz 3.7: no hay puntos suspensivos en un boton ni en un rotulo', () => {
   // El suspensivo es de la prosa que cuenta. En una instruccion no es estilo, es
   // ambiguedad.
@@ -173,4 +230,48 @@ test('voz 3.7: no hay puntos suspensivos en un boton ni en un rotulo', () => {
     ([, texto]) => texto.trim().split(/\s+/).length <= 4 && /(…|\.\.\.)/.test(texto),
   ).map(([donde, texto]) => `${donde}: "${texto}"`);
   assert.deepEqual(cortos, []);
+});
+
+/**
+ * Ninguna isla escribe a mano un texto que alguien va a leer.
+ *
+ * Es la red que faltaba, y la escribio un caso real que se repitio dos veces. Primero
+ * `"Link copiado."`, que estuvo **tres ciclos en produccion** con un anglicismo que `D-17`
+ * veta, escondido de este auditor por vivir en la isla y no en un `copy.ts`. `ESTADO.md`
+ * lo dejo anotado: *"una cadena visible fuera de un copy.ts es una cadena que nadie
+ * audita"*. Y despues, en `US-07`, cuatro mas: el placeholder del buscador, su rotulo, el
+ * "no hay resultados" y el boton de borrar — este ultimo, encima, en infinitivo.
+ *
+ * Se miran los dos lugares por donde entra texto que este auditor no puede ver de otra
+ * forma: `placeholder` y `aria-label`. Son justo los que **solo lee quien no ve la
+ * pantalla**, o sea los que nadie revisa mirando.
+ */
+test('ninguna isla escribe a mano un placeholder ni un aria-label', () => {
+  const islas = readdirSync('src/scripts').filter((f) => f.endsWith('.ts'));
+  const malas: string[] = [];
+  for (const isla of islas) {
+    const fuente = readFileSync(`src/scripts/${isla}`, 'utf-8');
+    for (const m of fuente.matchAll(/\.placeholder\s*=\s*(['"])/g)) {
+      malas.push(`${isla}: placeholder escrito a mano`);
+      void m;
+    }
+    for (const m of fuente.matchAll(/setAttribute\(\s*['"]aria-label['"]\s*,\s*(['"])/g)) {
+      malas.push(`${isla}: aria-label escrito a mano`);
+      void m;
+    }
+  }
+  assert.deepEqual(malas, [], `cadenas visibles fuera de un copy.ts:\n  ${malas.join('\n  ')}`);
+});
+
+test('ese control sabe encontrar: se prueba contra las dos formas que ya aparecieron', () => {
+  // Un test que solo verifica ausencias no demuestra que sepa buscar, y se vuelve verde
+  // por vago sin que nadie se entere. Las dos primeras lineas son textuales las que
+  // estaban en `partida-por-la-letra.ts` antes de este ciclo.
+  const placeholder = /\.placeholder\s*=\s*(['"])/;
+  const rotulo = /setAttribute\(\s*['"]aria-label['"]\s*,\s*(['"])/;
+  assert.match("  entrada.placeholder = 'Escribi el tema';", placeholder);
+  assert.match("  entrada.setAttribute('aria-label', 'Escribi el tema');", rotulo);
+  // Y no se queja de la forma correcta, que es la que quedo.
+  assert.doesNotMatch('  entrada.placeholder = PARTIDA.buscar;', placeholder);
+  assert.doesNotMatch("  entrada.setAttribute('aria-label', PARTIDA.buscar);", rotulo);
 });
