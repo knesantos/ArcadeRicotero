@@ -64,12 +64,32 @@ function conEntorno(estado: Estado, resumeFunciona = true) {
   g.AudioContext = function () {
     return ctx;
   };
+  // El `<audio>` de mentira **avanza su reloj**, como el de verdad: el corte del repuesto
+  // ahora depende de `currentTime`, asi que un doble congelado no probaria nada.
   g.Audio = function () {
-    const el = { src: '', currentTime: 0, preload: '', play: () => Promise.resolve(), pause() {} };
+    const el = {
+      src: '',
+      currentTime: 0,
+      preload: '',
+      play() {
+        el.currentTime = 0;
+        const reloj = setInterval(() => {
+          el.currentTime += 0.02;
+        }, 5);
+        (el as Record<string, unknown>).reloj = reloj;
+        return Promise.resolve();
+      },
+      pause() {
+        clearInterval((el as Record<string, unknown>).reloj as never);
+      },
+    };
     audios.push(el as never);
     return el;
   };
-  g.requestAnimationFrame = () => 0;
+  // Un `requestAnimationFrame` que de verdad vuelve a llamar: sin esto, el bucle que
+  // vigila la posicion del audio no corre nunca y el corte no llega.
+  g.requestAnimationFrame = (fn: () => void) => setTimeout(fn, 8) as unknown as number;
+  g.cancelAnimationFrame = (id: number) => clearTimeout(id as never);
   // `setTimeout` delega en el real: el camino de repuesto corta por temporizador, y un
   // doble que nunca dispara haria fallar la prueba por un motivo que no es del producto.
   g.window = {
@@ -85,7 +105,11 @@ function conEntorno(estado: Estado, resumeFunciona = true) {
     restaurar() {
       g.AudioContext = previos.AudioContext;
       g.Audio = previos.Audio;
-      g.requestAnimationFrame = previos.requestAnimationFrame;
+      // Se apagan los relojes de los `<audio>` y se deja un `requestAnimationFrame` que
+      // NO vuelve a llamar: asi el bucle que vigila la posicion se corta solo en el
+      // proximo tick en vez de seguir corriendo despues de que la prueba termino.
+      for (const a of audios) (a as { pause?: () => void }).pause?.();
+      g.requestAnimationFrame = previos.requestAnimationFrame ?? (() => 0);
       g.window = previos.window;
     },
   };
@@ -129,7 +153,7 @@ test('🔴 el defecto: con el contexto suspendido, sonar NO puede quedarse mudo'
 
     let termino = false;
     r.sonar('un-tema', 0.01, { alTerminar: () => (termino = true) });
-    await new Promise((res) => setTimeout(res, 40));
+    await new Promise((res) => setTimeout(res, 120));
 
     assert.equal(e.ctx.state, 'running', 'tiene que haber pedido volver antes de sonar');
     assert.ok(
@@ -162,7 +186,7 @@ test('si el contexto no vuelve, cae al repuesto en vez de dejar el boton trabado
     r.despertar();
     let termino = false;
     r.sonar('un-tema', 0.01, { alTerminar: () => (termino = true) });
-    await new Promise((res) => setTimeout(res, 40));
+    await new Promise((res) => setTimeout(res, 120));
     // El repuesto es `<audio>`: lo que importa es que ALGO haya pasado y que el juego no
     // se quede esperando un `onended` que no va a llegar.
     assert.ok(e.audios.length > 0 || termino, 'sin salida ni aviso, el boton queda en "Parar" para siempre');
@@ -181,6 +205,48 @@ test('con el contexto corriendo suena directo, sin resume de mas', () => {
     r.sonar('un-tema', 5, {});
     assert.equal(e.registro.resumes, resumesTrasDespertar, 'un contexto corriendo no necesita volver');
   } finally {
+    e.restaurar();
+  }
+});
+
+test('🔴 el LRU no puede desalojar el tema que esta por sonar', async () => {
+  // El defecto que encontro el analisis, simulado con la ronda real: 4 temas,
+  // MAX_BUFFERS = 3 y una ventana de precarga de 2. Al arrancar el tema 2, precargar el
+  // tema 4 disparaba el desalojo y el que salia era **el buffer del tema 2**, el que
+  // estaba por sonar. Caia al repuesto <audio>, que en los primeros pasos era mudo por
+  // construccion: el segundo tema de cada vuelta no sonaba.
+  const e = conEntorno('running');
+  const fetchPrevio = globalThis.fetch;
+  try {
+    (globalThis as Record<string, unknown>).fetch = async () => ({
+      ok: true,
+      arrayBuffer: async () => new ArrayBuffer(8),
+    });
+    const r = new Reproductor();
+    r.despertar();
+
+    const ronda = ['a', 'b', 'c', 'd'];
+    // Tema 1: se precarga el actual y los dos que vienen.
+    await r.precargar('a');
+    await r.precargar('b');
+    await r.precargar('c');
+    r.sonar('a', 1, {});
+
+    // Tema 2: se vuelve a pedir el actual (acierto de cache) y entra el cuarto.
+    await r.precargar('b');
+    await r.precargar('c');
+    await r.precargar('d');
+
+    // La pregunta que importa: al tocar "Escucha" en el tema 2, ¿esta su buffer?
+    r.sonar('b', 1, {});
+    assert.equal(
+      e.registro.arrancados >= 2,
+      true,
+      'el tema 2 tuvo que sonar por Web Audio, no caer al repuesto',
+    );
+    void ronda;
+  } finally {
+    (globalThis as Record<string, unknown>).fetch = fetchPrevio;
     e.restaurar();
   }
 });

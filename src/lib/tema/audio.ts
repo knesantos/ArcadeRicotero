@@ -73,6 +73,10 @@ export class Reproductor {
   private cortar = 0;
   /** Si ya sono el buffer mudo que destraba el audio en los celulares. */
   private desbloqueado = false;
+  /** El tema que se esta jugando: nunca lo desaloja el LRU. */
+  private enJuego: string | null = null;
+  /** El ultimo error que se trago un `catch`, para que el diagnostico lo pueda mostrar. */
+  public ultimoError: string | null = null;
 
   /** `true` si este navegador no nos dio Web Audio y estamos con la etiqueta `<audio>`. */
   public get enRepuesto(): boolean {
@@ -150,7 +154,25 @@ export class Reproductor {
    * cuesta nada. Devuelve `false` si el archivo no está — el juego lo maneja, no explota.
    */
   public async precargar(slug: string): Promise<boolean> {
-    if (this.buffers.has(slug)) return true;
+    const yaEsta = this.buffers.get(slug);
+    if (yaEsta) {
+      /*
+       * **Refrescar el orden acá era lo que faltaba, y era un defecto de verdad.**
+       *
+       * El `Map` es la cola del LRU: el primero en salir es el primero que entró. Al
+       * volver temprano sin tocar el orden, un tema que se acababa de pedir quedaba
+       * marcado como el más viejo — y el desalojo se lo llevaba puesto.
+       *
+       * Simulado con la ronda real de cuatro temas, `MAX_BUFFERS = 3` y una ventana de
+       * precarga de 2: al arrancar el tema 2, precargar el tema 4 dispara el desalojo, y
+       * el que sale es **el buffer del tema 2, el que estaba por sonar**. Caía al repuesto
+       * `<audio>`, que en los primeros pasos es mudo por construcción (ver
+       * `sonarConRepuesto`). O sea: el segundo tema de cada vuelta no sonaba.
+       */
+      this.buffers.delete(slug);
+      this.buffers.set(slug, yaEsta);
+      return true;
+    }
     if (!this.ctx) return false; // en repuesto, `<audio>` descarga solo
     const yaVa = this.enVuelo.get(slug);
     if (yaVa) {
@@ -165,8 +187,11 @@ export class Reproductor {
         const crudo = await resp.arrayBuffer();
         const buffer = await this.ctx!.decodeAudioData(crudo);
         this.guardar(slug, buffer);
-      } catch {
-        // Un fragmento que no baja no rompe la partida: el motor cae al repuesto.
+      } catch (e) {
+        // Un fragmento que no baja no rompe la partida: el motor cae al repuesto. Pero
+        // el error se guarda: era el unico dato que nadie podia ver desde afuera, y sin
+        // el no hay forma de distinguir "no bajo" de "no se pudo decodificar".
+        this.ultimoError = `${slug}: ${String(e)}`;
       } finally {
         this.enVuelo.delete(slug);
       }
@@ -181,9 +206,12 @@ export class Reproductor {
   private guardar(slug: string, buffer: AudioBuffer): void {
     this.buffers.set(slug, buffer);
     while (this.buffers.size > MAX_BUFFERS) {
-      const masViejo = this.buffers.keys().next().value;
-      if (masViejo === undefined) break;
-      this.buffers.delete(masViejo);
+      // El tema en juego **nunca** se desaloja, ni siquiera si quedó al fondo de la cola.
+      // Es el cinturón sobre el arreglo del orden: aunque alguien vuelva a introducir el
+      // defecto de arriba, el buffer que hace falta ahora mismo no se puede tirar.
+      const candidato = [...this.buffers.keys()].find((k) => k !== this.enJuego);
+      if (candidato === undefined) break;
+      this.buffers.delete(candidato);
     }
   }
 
@@ -234,6 +262,7 @@ export class Reproductor {
 
   /** Elige el camino según lo que hay: buffer con contexto vivo, o el repuesto. */
   private reproducir(slug: string, limite: number, escucha: Escucha): void {
+    this.enJuego = slug;
     const buffer = this.buffers.get(slug);
     if (this.ctx && this.ctx.state === 'running' && buffer) {
       this.sonarConBuffer(slug, buffer, limite, escucha);
@@ -281,14 +310,44 @@ export class Reproductor {
       this.repuesto = el;
     }
     if (!el.src.endsWith(`${slug}.mp3`)) el.src = urlDeFragmento(slug);
+
+    /*
+     * **El corte va por posición del audio, no por reloj de pared, y era el otro defecto.**
+     *
+     * Antes esto cortaba con `setTimeout(..., limite * 1000)` contado desde que se pedía
+     * `play()`. En el paso 1 eso son **100 milisegundos**: un `<audio>` recién apuntado a
+     * un `src` no llega a emitir una sola muestra en ese tiempo en ningún teléfono, así
+     * que se pausaba antes de empezar. **Los primeros pasos de este camino eran mudos por
+     * construcción**, y nadie se enteraba porque el juego reportaba que había terminado.
+     *
+     * Ahora el reloj es `currentTime`, que solo avanza cuando el audio suena de verdad:
+     * el corte cae donde tiene que caer aunque el arranque tarde. Y queda un tope de
+     * seguridad generoso por si nunca arranca, para que el botón no se trabe.
+     */
+    const cortar = () => {
+      el.pause();
+      this.terminar(escucha);
+    };
+    // El mismo bucle mueve la barra y decide el corte: son la misma pregunta —cuánto
+    // sonó de verdad— y separarlas fue justamente lo que dejó el corte contando otra cosa.
+    const vigilar = (): void => {
+      const t = el.currentTime;
+      escucha.alAvanzar?.(Math.min(t, limite));
+      if (t >= limite) {
+        cortar();
+        return;
+      }
+      this.cuadro = requestAnimationFrame(vigilar);
+    };
+
     el.currentTime = 0;
     const promesa = el.play();
     if (promesa) promesa.catch(() => this.terminar(escucha));
-    this.cortar = window.setTimeout(() => {
-      el.pause();
-      this.terminar(escucha);
-    }, limite * 1000);
-    this.seguir(() => el.currentTime, limite, escucha);
+    // Tope de seguridad: el largo del paso más cinco segundos de gracia para que el
+    // archivo arranque. Sin esto, un audio que nunca suena deja el botón en "Parar".
+    this.cortar = window.setTimeout(cortar, (limite + 5) * 1000);
+    escucha.alAvanzar?.(0);
+    this.cuadro = requestAnimationFrame(vigilar);
   }
 
   /** El bucle de cuadros que mueve la barra mientras suena. */
