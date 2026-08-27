@@ -75,6 +75,14 @@ function esCredito(texto: string): boolean {
 export function motivoDescarteVerso(texto: string): string | null {
   const t = texto.trim();
   if (!sirveComoVerso(t)) return 'no pasa sirveComoVerso';
+  // La regla del schema de CTR-09, espejada aca: una linea que es toda un corchete es
+  // del que transcribio, no un verso. Cierra el caso medido `[A  G]`, que ademas venia
+  // con los corchetes pegados a los acordes y esquivaba la regla (b).
+  if (/^\s*\[[^\]]*\]\s*$/.test(t)) return 'linea toda entre corchetes (CTR-09)';
+  // La segunda regla de verso del schema, espejada: al menos una palabra de cuatro
+  // letras. "uh uh uh" o "no no no" pueden ser canto de verdad, pero como enunciado de
+  // este juego no identifican nada — y el schema los rechazaria de todos modos.
+  if (!/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{4,}/.test(t)) return 'sin ninguna palabra de cuatro letras (CTR-09)';
   if (ROTULO_LIBRE.test(t)) return 'rotulo de tramo con nombre libre (CNT-11 a)';
   if (esSecuenciaDeAcordes(t)) return 'secuencia de acordes sueltos (CNT-11 b)';
   if (esCredito(t)) return 'linea de credito de la fuente (CNT-11 c)';

@@ -48,6 +48,9 @@ export const DETALLE_POR_VARIANTE: Record<string, string> = {
   letras: 'mosca-olla',
   discos: 'bondi-circuito',
   historia: 'gulp-pincelada',
+  // `US-07`. El recorte de Momo todavia no existe; `detalleTapa` devuelve null y la
+  // pantalla se pinta igual, solo con el color. `UX-08` dejo pedido el brief de arte.
+  momo: 'momo-medallon',
 };
 
 /** Que fondo velado viste cada pantalla "en la cocina" (`UX-05`).

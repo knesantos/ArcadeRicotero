@@ -1,0 +1,238 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://ricotaarcade.local/schema/por-la-letra/1",
+ "title": "CTR-09 — Banco de Sacalo por la letra (US-07)",
+ "description": "Lo escribe scripts/generar-por-la-letra.mjs desde src/data/cancionero.json. Es la lista de lo que existe y validó, no de deseos: si un ítem está acá, pasó el filtro de CNT-11 y se puede jugar. No se edita a mano.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "contrato",
+  "contratoVersion",
+  "juego",
+  "modoRespuesta",
+  "actualizado",
+  "sensibleA",
+  "filtro",
+  "items"
+ ],
+ "properties": {
+  "contrato": {
+   "const": "CTR-09"
+  },
+  "contratoVersion": {
+   "const": 1
+  },
+  "juego": {
+   "const": "por-la-letra"
+  },
+  "modoRespuesta": {
+   "const": "buscador",
+   "comment": "Único valor, igual que CTR-03.5. Sin distractores: la respuesta es la identidad del tema y se compara por slug."
+  },
+  "actualizado": {
+   "type": "string",
+   "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+  },
+  "sensibleA": {
+   "comment": "D-14: el mapa de qué publica el sitio. Va acá y no por ítem porque los 101 son letra.",
+   "type": "array",
+   "minItems": 1,
+   "maxItems": 1,
+   "items": {
+    "const": "letra"
+   }
+  },
+  "filtro": {
+   "comment": "CTR-09.5. `version` tiene que ser igual a VERSION_FILTRO de src/lib/por-la-letra/filtro.ts: es lo que impide que un banco generado con la regla vieja se haga pasar por filtrado.",
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "regla",
+    "version"
+   ],
+   "properties": {
+    "regla": {
+     "const": "CNT-11"
+    },
+    "version": {
+     "type": "integer",
+     "minimum": 1
+    }
+   }
+  },
+  "nota": {
+   "type": "string",
+   "maxLength": 400
+  },
+  "items": {
+   "type": "array",
+   "minItems": 1,
+   "items": {
+    "$ref": "#/$defs/item"
+   }
+  }
+ },
+ "$defs": {
+  "item": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "slug",
+    "titulo",
+    "desde",
+    "versos",
+    "dificultad",
+    "dificultadSegun",
+    "fuente"
+   ],
+   "properties": {
+    "slug": {
+     "comment": "La identidad del tema y la respuesta correcta. Que sea uno de los 105 de RES-20 no lo puede decir un schema: lo dice el cruce en build (D-13, CTR-09.10 fila 1).",
+     "type": "string",
+     "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+     "maxLength": 90
+    },
+    "titulo": {
+     "type": "string",
+     "minLength": 1,
+     "maxLength": 80,
+     "pattern": "^[^<>]+$"
+    },
+    "desde": {
+     "comment": "Índice del primer verso de la ventana dentro de la lista de versos jugables del tema (los que pasan sirveComoVerso), base 0. Es lo que permite re-derivar el ítem contra el cancionero y detectar un banco viejo.",
+     "type": "integer",
+     "minimum": 0
+    },
+    "versos": {
+     "comment": "Exactamente 8: es el paso 4 de BR-20. Ni 7 (el último escalón no agregaría nada) ni 9 (el dato contradiría al contrato). Si BR-20 cambia, este número cambia y el banco se regenera.",
+     "type": "array",
+     "minItems": 8,
+     "maxItems": 8,
+     "items": {
+      "$ref": "#/$defs/verso"
+     }
+    },
+    "dificultad": {
+     "enum": [
+      "facil",
+      "media",
+      "dificil",
+      "sin-clasificar"
+     ]
+    },
+    "dificultadSegun": {
+     "comment": "CTR-09.7. 'curaduria' = lo juzgó contenido a mano. 'youtube' = salió del ranking de CTR-07, que hoy no tiene un solo tema medido.",
+     "enum": [
+      "curaduria",
+      "youtube"
+     ]
+    },
+    "fuente": {
+     "$ref": "#/$defs/fuente"
+    }
+   }
+  },
+  "verso": {
+   "comment": "CTR-09.4. El schema es la red, no el filtro: el filtro de verdad es sirveComoVerso() + ventanaValida() en el generador. Estas dos reglas cierran el caso medido `[A  G]`, que hoy pasa sirveComoVerso.",
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 90,
+   "allOf": [
+    {
+     "comment": "Ni `<` ni `>`, igual que CTR-04: aparecen donde hay taller de guitarra, no donde hay canto.",
+     "pattern": "^[^<>]+$"
+    },
+    {
+     "comment": "Al menos una palabra de cuatro letras. Deja afuera `[A  G]`, `RE MI` y `RE  MIx3`, que hoy pasan por verso.",
+     "pattern": "[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{4,}"
+    },
+    {
+     "comment": "Una línea que es toda un corchete recto es del que transcribió, no un verso. Los paréntesis NO entran acá: el corpus tiene versos cantados entre paréntesis, como `(En las calles no me muestro más)` en Dr. Saturno.",
+     "not": {
+      "pattern": "^\\s*\\[[^\\]]*\\]\\s*$"
+     }
+    }
+   ]
+  },
+  "fuente": {
+   "comment": "CTR-09.6. Más estricto que CTR-06: acá ninguno de los tres puede ser null. Un tema cuya fuente no dijo de dónde salió no entra al banco.",
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "sitio",
+    "url",
+    "consultado"
+   ],
+   "properties": {
+    "sitio": {
+     "comment": "Enum cerrado a propósito: un sitio nuevo rompe la validación en vez de entrar sin que nadie lo mire, igual que FICHA_POR_SITIO en generar-letra.mjs.",
+     "enum": [
+      "cifraclub.com",
+      "letras.com",
+      "lacuerda.net"
+     ]
+    },
+    "url": {
+     "type": "string",
+     "pattern": "^https?://",
+     "maxLength": 300
+    },
+    "consultado": {
+     "type": "string",
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "ficha": {
+     "type": "string",
+     "pattern": "^RES-\\d{2}$"
+    }
+   },
+   "allOf": [
+    {
+     "comment": "Los dos sitios fichados citan su ficha. lacuerda.net todavía no tiene, y su ausencia es la declaración (D-14).",
+     "if": {
+      "required": [
+       "sitio"
+      ],
+      "properties": {
+       "sitio": {
+        "const": "cifraclub.com"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "ficha"
+      ],
+      "properties": {
+       "ficha": {
+        "const": "RES-49"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "sitio"
+      ],
+      "properties": {
+       "sitio": {
+        "const": "letras.com"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "ficha"
+      ],
+      "properties": {
+       "ficha": {
+        "const": "RES-23"
+       }
+      }
+     }
+    }
+   ]
+  }
+ }
+}

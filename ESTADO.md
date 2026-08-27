@@ -5,12 +5,61 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-08-25
+**Última actualización:** 2026-08-27
 **Ciclo actual:** **9 — EN CURSO.** Plan en
 `Docs/ORQ/ORQ-plan-ciclo-9.md`, tareas `T-128`..`T-160` (`T-148` cancelado). **Cinco
 frentes en dos tramos**: el juego nuevo por letras (`US-07`), `US-03` que sale entero, el
 quiz que pasa a vidas, el botón de corrección, y la pulida de escritorio más los recortes
 reales.
+
+> ### ✅ LA v1 CUMPLE SUS CINCO PISOS (2026-08-27)
+>
+> `npm test` **264/264** · `npm run check` limpio · build de **149 páginas**.
+>
+> | Historia | Piso | Hoy | |
+> |---|---|---|---|
+> | `US-01` Quiz *(ahora por vidas)* | 40 | **40** | ✅ |
+> | `US-02` Adiviná el tema *(audio)* | 30 | **95** | ✅ |
+> | `US-03` Completá la letra | 15 | **21** | ✅ |
+> | `US-04` Adiviná la tapa | 10 | **10** | ✅ |
+> | `US-05` Redondopedia | 35 | **35** | ✅ |
+> | `US-06` Dos ejes *(fuera de v1)* | — | 28 | ✅ |
+> | `US-07` Sacalo por la letra *(nuevo, fuera de v1)* | 60 | **93** | ✅ |
+>
+> **Lo que destrabó el audio.** El PR #8 trajo 95 fragmentos recortados a mano; se
+> renombraron al slug canónico y `scripts/ingerir-fragmentos.mjs` escribió el manifiesto
+> **sin ffmpeg**, midiendo la duración en los frames del mp3. `D-26` bajó el último paso
+> de la escalera de 15 s a 10 — no era opinable: `catalogo.ts` rechaza el manifiesto si un
+> fragmento dura menos que el escalón más caro. Entre prometer 15 y reproducir 10, o
+> prometer 10 y cumplir, gana la que no miente.
+>
+> **Lo que destrabó las letras.** `CTR-04` pasó a v2 en una sola corrida (schema,
+> `banco.ts`, tests y generador): `cotejo` con tres regímenes excluyentes, cada uno
+> verificado contra su evidencia. Lo que quedó estricto ya no es la verificación sino **el
+> rastro**: por qué vía está `listo` cada ítem, sin que un régimen se pueda disfrazar de
+> otro. `T-138` eligió 21 versos de bajo riesgo y el panel muestra **quién transcribió el
+> verso, con su enlace** — el mecanismo de "lo veo jugando" de `D-25`.
+>
+> **`US-07` nació entero:** `CNT-11` como filtro corrible (`filtro.ts`, 10 tests con los
+> patrones de ruido reales del corpus), la escalera 1/2/4/8, el generador (93 de 104
+> temas; los 11 que faltan quedan afuera **con el motivo escrito**) y la página, que viste
+> Momo Sampler. **744 versos y ninguno delata su título** — verificado sobre el banco.
+>
+> **Verificado jugando, no deducido:** el quiz por vidas hasta perder y retirándose;
+> "Queso ruso" acertado con 0,1 s de audio; "den la [alarma]" de *Vencedores vencidos*;
+> y "Drogocop" sacado en el paso 4 con la escalera duplicando 1→2→4→8.
+>
+> ### 🔜 Para retomar
+>
+> Queda el **frente E** (`T-157`..`T-160`): la pulida de escritorio y la regla de que todo
+> ícono de repuesto termine siendo un recorte real. Más `T-146` (`REV-08`, la revisión del
+> ciclo) y `T-147`.
+>
+> **Tres cosas esperan al usuario:**
+> 1. **Una casilla de correo** para el botón de corrección (`T-153`, sin empezar).
+> 2. **Si el lobo va al casete de la Redondopedia**, pisando la mezcla `D-19`.
+> 3. **El arte de Momo Sampler** (`momo-medallon`): no existe, y la pantalla de `US-07`
+>    se pinta igual solo con el color — `UX-08` dejó el brief pedido.
 
 > ### ✅ TRAMO A CERRADO (2026-08-25) — el quiz ya se juega por vidas
 >

@@ -1,0 +1,2137 @@
+{
+  "contrato": "CTR-09",
+  "contratoVersion": 1,
+  "juego": "por-la-letra",
+  "modoRespuesta": "buscador",
+  "actualizado": "2026-08-27",
+  "sensibleA": [
+    "letra"
+  ],
+  "filtro": {
+    "regla": "CNT-11",
+    "version": 1
+  },
+  "nota": "Lo escribe scripts/generar-por-la-letra.mjs desde el cancionero. Es la lista de lo que existe y valido contra CNT-11, no de deseos. No se edita a mano.",
+  "items": [
+    {
+      "slug": "barbazul-versus-el-amor-letal",
+      "titulo": "Barbazul versus el amor letal",
+      "desde": 1,
+      "versos": [
+        "te va a gustar.",
+        "El reo semental se va a licuar",
+        "En la prisión.",
+        "Gatas lindas, sirenas llenas.",
+        "Camisa apretada, pezón radioactivo.",
+        "Reclamando el botín para la prisión",
+        "Del dios prisión feliz prisión... Del dios",
+        "Barbazul de esta prisión."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/barba_azul_vs_el_amor_letal.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "la-bestia-pop",
+      "titulo": "La bestia pop",
+      "desde": 1,
+      "versos": [
+        "lo siguiente:",
+        "En una transcripcion dice F#m pero queda mejo F#",
+        "1 guitarra:",
+        "A brillar mi amor",
+        "Vamos a brillar, mi amor",
+        "A brillar E   amor",
+        "vamos A brillar   E  amor",
+        "y mientras tanto la otra guitarra en el estribillo hace"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/la-bestia-pop/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "roto-y-mal-parado",
+      "titulo": "Roto y mal parado",
+      "desde": 1,
+      "versos": [
+        "Quemás tu vida en este día,",
+        "en esta tibia, tibia fila.",
+        "Quemás, Quemás, Quemás...",
+        "Quemás, Quemás, Quemás... tu vida.",
+        "¿Comó te vá en estos dias?",
+        "¡Fuego, fuego!",
+        "¡Fuego, fuego! mentiras.",
+        "D PITE PUENTE  X2"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/roto-y-mal-parado/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "pierre-el-vitricida",
+      "titulo": "Pierre, el vitricida",
+      "desde": 2,
+      "versos": [
+        "Como se rie el gordo Pierre",
+        "y rompio el vidrio el gordo Pierre",
+        "como rajó el gordo Pierre",
+        "y como tose el gordo Pierre, Pierre, Pierre",
+        "y como se rie el gordo Pierre",
+        "y como tose el gordo Pierre",
+        "el vitricida el gordo Pierre",
+        "y rompio el vidrio el gordo Pierre, Pierre, Pierre"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/pierre_el_vitricida.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "unos-pocos-peligros-sensatos",
+      "titulo": "Unos pocos peligros sensatos",
+      "desde": 3,
+      "versos": [
+        "en la tiniebla y con los gatos.",
+        "Golpe de suerte.",
+        "Si vos cuidás que tu animal",
+        "No nos muestre libremente",
+        "Lo que ya sabe",
+        "del cuento de la muerte.",
+        "Todo este estúpido viaje mi amor",
+        "Por los astros sólidos, sólidos bólidos"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/unos_pocos_peligros_sensatos.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "yo-no-me-cai-del-cielo",
+      "titulo": "Yo no me caí del cielo",
+      "desde": 1,
+      "versos": [
+        "Nena no quiero perderte",
+        "no pases de todo",
+        "que no esta tan mal",
+        "Pero si de un bar muy triste",
+        "Nena,",
+        "nena hay mucho olor a gato",
+        "si quieres puedes apostar.",
+        "hay alegrias y alegrias"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/yo-no-me-cai-del-cielo/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "te-voy-a-atornillar",
+      "titulo": "Te voy a atornillar",
+      "desde": 4,
+      "versos": [
+        "POS-VERSO: (PArte B)",
+        "¿Cómo puede ser que te alboroten mis placeres?",
+        "Te espumo mucho.",
+        "Te asfixio mucho.",
+        "Te parto mucho.",
+        "Te siento mucho.",
+        "Yo te quisiera asaltar.",
+        "Te voy a herir un poquito más."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/te-voy-a-atornillar/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "superlogico",
+      "titulo": "Superlógico",
+      "desde": 4,
+      "versos": [
+        "Ahí van los machos para consumar",
+        "Una hermosa dotación vital.",
+        "El club de mantis muy nervioso está.",
+        "Esas hembras no son dulces, no.",
+        "Tal orgía van a banquetear.",
+        "Sin descanso van a devorar.",
+        "Superrígido, sí.",
+        "Superrígido, sí, sí, sí."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/superlogico/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "nam-fri-frufi-fali-fru",
+      "titulo": "Ñam fri frufi fali fru",
+      "desde": 1,
+      "versos": [
+        "Que está borracha por demás otra vez",
+        "Me llama nene, doctor",
+        "Yo no la cambio por nada",
+        "Cuando empieza a cabalgar",
+        "Que mordió el vidrio por demás otra vez",
+        "Me llama nene, sifón",
+        "Cuando me muerda alocada",
+        "Aguanten LOS REDONDOS"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/nam-fri-frufi-fali-fru/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "el-infierno-esta-encantador-esta-noche",
+      "titulo": "El infierno está encantador esta noche",
+      "desde": 2,
+      "versos": [
+        "pueden acaso vever el vino",
+        "por ustedes enbasado",
+        "Puede alguien decirme",
+        "me voy a comer tu dolor",
+        "y repetirme",
+        "te voy a salvar esta noche",
+        "El infierno esta encantador",
+        "este infierno esta embriagador"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/el-infierno-esta-encantador-esta-noche/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "fuegos-de-octubre",
+      "titulo": "Fuegos de octubre",
+      "desde": 0,
+      "versos": [
+        "sigue asi...",
+        "hace esto de fondo.",
+        "De regreso a Octubre",
+        "(desde Octubre)",
+        "Sin un estandarte, de mi parte:",
+        "\"te  prefiero...igual",
+        "internacional\"",
+        "%: silencio"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/fuegos_de_octubre.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "preso-en-mi-ciudad",
+      "titulo": "Preso en mi ciudad",
+      "desde": 1,
+      "versos": [
+        "era un \"pop\" violento que guió el gran estilo siniestro.",
+        "Ahora ya no llora...",
+        "Casi ya no llora, ¡atrapado en libertad!",
+        "Practicamos tiro al pichón",
+        "y un test para ir al espacio",
+        "con mi delicioso campeón",
+        "y el rock como todo llanto",
+        "Casi ya no llora,"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/preso_en_mi_ciudad.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "musica-para-pastillas",
+      "titulo": "Música para pastillas",
+      "desde": 5,
+      "versos": [
+        "La más hermosa niña del mundo",
+        "Puede dar sólo lo que tiene para dar",
+        "Y mucha cuchillería",
+        "Pará, mi amor, esto está muy Shanghai",
+        "Rockeros bonitos, educaditos",
+        "Con grandes gastos, educaditos",
+        "Emboquen el tiro libre",
+        "Que los buenos volvieron"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/musica-para-pastillas/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "semen-up",
+      "titulo": "Semen-Up",
+      "desde": 1,
+      "versos": [
+        "que es para mí la mejor manzana",
+        "su estilo desprecia mi soñar",
+        "con ella soy rico, gratis.",
+        "La veo casi como un demonio",
+        "y rasco la alfombra por su amor  ( Ay )",
+        "Saludable y católica",
+        "no le gusta que ande solo",
+        "se ha montado en mi nariz"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/semen-up/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "divina-tv-fuhrer",
+      "titulo": "Divina TV. Führer",
+      "desde": 1,
+      "versos": [
+        "Me estoy por ahogar, me voy a pique",
+        "Me est  por hundir, mi fiel fantasma",
+        "bu buuu",
+        "Si no me protege el empleado mayor",
+        "que proyecta todo el tiempo",
+        "MI televisor",
+        "Ser, promovido para navidad",
+        "Como no se nos ocurrió."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/divina_tv_fuhrer.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "motor-psico",
+      "titulo": "Motor psico",
+      "desde": 1,
+      "versos": [
+        "Un susurro muy especial",
+        "Lo que debes, cómo puedes quedártelo.",
+        "Junto a la hemoglobina me fui",
+        "y ya no sangro más.",
+        "De la nada a la gloria me voy",
+        "Voy jugando de acuerdo al dolor",
+        "(fichando de más...).",
+        "Mi dios no juega dados, quizás..."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/motorpsico.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "jijiji",
+      "titulo": "Jijiji",
+      "desde": 3,
+      "versos": [
+        "En este film velado",
+        "En blanca noche",
+        "El hijo tenaz de tu enemigo",
+        "El muy verdugo cena distinguido",
+        "Una noche de cristal que se hace añicos",
+        "No lo soñé, yeh",
+        "Se enderezó y brindó",
+        "A tu suerte"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/jijiji/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "ya-nadie-va-a-escuchar-tu-remera",
+      "titulo": "Ya nadie va a escuchar tu remera",
+      "desde": 2,
+      "versos": [
+        "¡Cómo corre el tiem - po!",
+        "Tic-tac efímero",
+        "luces efímeras. (Pero te creo...)",
+        "Es casi hipnótico",
+        "(el tic no alcanza a tac)",
+        "ni me moja el paladar",
+        "¡el ritmo efímero!",
+        "¡el grito efímero! (Pero te creo...)"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/ya-nadie-va-a-escuchar-tu-remera/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "masacre-en-el-puticlub",
+      "titulo": "Masacre en el puticlub",
+      "desde": 1,
+      "versos": [
+        "la gran masacre del puticlub",
+        "con pastillita en tren gladiador",
+        "puso un huevo y la cosa exploto",
+        "Rock fuerte en el puticlub",
+        "cambio la suerte del puticlub",
+        "Repite introducion",
+        "Buena faena de tajo y talon",
+        "ruedan los dientes del negro canon"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/masacre-en-el-puticlub/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "noticias-de-ayer",
+      "titulo": "Noticias de ayer",
+      "desde": 1,
+      "versos": [
+        "(a veces me agarra)",
+        "perdí mi cupo para gas nervioso",
+        "y noticias piratas",
+        "buenos atracos perfectos atentados",
+        "bien iluminados",
+        "las monjas verdes revolucionarias",
+        "para gran consumo.",
+        "Se desgracio el campeon del hiper futbol"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/noticias-de-ayer/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "todo-preso-es-politico",
+      "titulo": "Todo preso es político",
+      "desde": 1,
+      "versos": [
+        "reos de la sociedad",
+        "si tu preso es politico uoooooooo",
+        "el ascensor ya sube",
+        "tu confesion ya sube",
+        "medio",
+        "detenganlos",
+        "detenganloooos",
+        "detenganme"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/todo_preso_es_politico.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "vencedores-vencidos",
+      "titulo": "Vencedores vencidos",
+      "desde": 1,
+      "versos": [
+        "en este tiempo de plumaje blanco",
+        "Un mudo con tu voz y un ciego como yo",
+        "Te has fugado ! me hago humo!",
+        "den la alarma!",
+        "Ensayo general para la farsa actual",
+        "teatro antidisturbio",
+        "Se rompe loca, la anatomía",
+        "con el humor de los sobrevivientes"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/vencedores-vencidos/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "vamos-las-bandas",
+      "titulo": "Vamos las bandas",
+      "desde": 1,
+      "versos": [
+        "de expertos cinicos y botones dorados",
+        "Y cuanto vale ser la banda nueva",
+        "y andar trepando radares militares?",
+        "Rajen del cielo",
+        "Y cuanto vale tu estomago crispado?",
+        "y tus narices temblando por el miedo?",
+        "Y cuanto vale todo lo registrado?",
+        "si el sueño llega la imagen te condena"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/vamos-las-bandas/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "ella-debe-estar-tan-linda",
+      "titulo": "Ella debe estar tan linda",
+      "desde": 1,
+      "versos": [
+        "con mis ojos de durax lastimados.",
+        "¡Por Dios! ¡la ruta está trabada y fría!",
+        "y cae la lluvia en estofadas finas.",
+        "con sus ojos oscuros delatando.",
+        "Quiero morder el tallo de su rosa",
+        "aunque me clave sus uñas espinas.",
+        "¡Ella está tan linda! ¡Ella es tan linda! No puede durar.",
+        "Y ahora estoy en líos por mi furia"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/ella-debe-estar-tan-linda/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "todo-un-palo",
+      "titulo": "Todo un palo",
+      "desde": 8,
+      "versos": [
+        "El futuro llegó hace rato",
+        "Veámoslo un poco con tus ojos",
+        "El futuro ya llegó",
+        "Parte 1 de 3",
+        "Parte 2 de 3",
+        "Parte 3 de 3",
+        "Yo voy en trenes",
+        "No tengo donde ir"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/todo-un-palo/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "heroe-del-whisky",
+      "titulo": "Héroe del whisky",
+      "desde": 1,
+      "versos": [
+        "De bebedores entrenados, no digo más (¡Vamos!)",
+        "[Refrão ]]",
+        "Y regresará a su ciudad, En la caja de un camión",
+        "Las estrellas ahí nomás, a su alcance, frías",
+        "Tiene metido hasta las cejas un triste papel",
+        "En un menú muy complicado de Tony Soirée (¡Vamos!)",
+        "Es lo que puede ofrecer papeles tristes y sed",
+        "De boca floja y perdón para su lengua (La-la-la-la-la-la)"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/heroe-del-whisky/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "rock-para-los-dientes",
+      "titulo": "Rock para los dientes",
+      "desde": 2,
+      "versos": [
+        "Este mundo, esta empresa, este mundo de hoy",
+        "que te esnifa la cabeza una y otra vez",
+        "Es una línea y otra línea y otra línea más",
+        "Voy cumpliendo como puedo, yo trabajo acá!",
+        "Y te esnifo la cabeza",
+        "Cada día más, cada día más.",
+        "Y me esnifan la cabeza",
+        "y nada ni nadie lo puede, lo puede parar."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/rock-para-los-dientes/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "la-parabellum-del-buen-psicopata",
+      "titulo": "La parabellum del buen psicópata",
+      "desde": 1,
+      "versos": [
+        "Pura tontera del punto 'G'.",
+        "Y el joven lobo quemándose de amor.",
+        "Está en la cima del volcán.",
+        "Nunca pudo ser muy fiel.",
+        "Tímidamente moja el Suavestar.",
+        "Y atrapa migajas de rock maravilla para este mundo.",
+        "Y traga esas migas in des crip ti bles.",
+        "Y traga esas migas in des crip ti bles  tru cos de pla cer..."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/la_parabellum_del_buen_psicopata.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "un-pacman-en-el-savoy",
+      "titulo": "Un Pacman en el Savoy",
+      "desde": 1,
+      "versos": [
+        "Todo lo que está en mi nube",
+        "es nada más que tu sermón fatal.",
+        "Si tu grito es un ladrido,",
+        "y mi cuchillo es un rayo cruel.",
+        "Toda esa batería",
+        "de risa rubia, de barrio especial.",
+        "Las nuevas supersticiones",
+        "la bobera del nuevo pac-man."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/un-pac-man-en-el-savoy/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "nadie-es-perfecto",
+      "titulo": "Nadie es perfecto",
+      "desde": 1,
+      "versos": [
+        "Experto del re-mundo actual",
+        "Quiso ir a New York",
+        "(Quiso ir a las series)",
+        "Quiso deslizar patés",
+        "Le hizo Crack! el hueso al final",
+        "Que ruido Crack! hasta astillar",
+        "Nunca nada especial",
+        "Cañito de metal de acero cromo-ñiquel"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/nadie-es-perfecto/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "esa-estrella-era-mi-lujo",
+      "titulo": "Esa estrella era mi lujo",
+      "desde": 5,
+      "versos": [
+        "No nos dimos nada más",
+        "Solo un buen gesto",
+        "Mordí el anzuelo una vez más",
+        "Siempre un iluso",
+        "Nuestra estrella se agotó",
+        "Y era mi lujo",
+        "[Interlúdio 2] Am  F  G  E7",
+        "Parte 1 de 2"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/esa-estrella-era-mi-lujo/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "maldicion-va-a-ser-un-dia-hermoso",
+      "titulo": "Maldición, va a ser un día hermoso",
+      "desde": 1,
+      "versos": [
+        "Se de alguien que ha declarado",
+        "contra su moscardón imaginario",
+        "impecable testigo de caricias",
+        "que se esfumaron cuando bajó la guardia",
+        "(dejó)",
+        "Pintan mal las cosas para ,l mi viejo",
+        "pintan mal",
+        "S, de alguien que enturbia sus sentidos"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/maldicion_va_a_ser_un_dia_hermoso.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "ropa-sucia",
+      "titulo": "Ropa sucia",
+      "desde": 1,
+      "versos": [
+        "¿Donde usas los dientes mi amor?",
+        "-clavados en el cuello, por hoy...",
+        "(mientras bailamos tangos fatales).",
+        "sigue...",
+        "aca cambia",
+        "BG UE EL VERSO:",
+        "El tango que ocultamos mejor",
+        "(Del que preferimos no hablar)"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/ropa-sucia/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "nuestro-amo-juega-al-esclavo",
+      "titulo": "Nuestro amo juega al esclavo",
+      "desde": 1,
+      "versos": [
+        "Con sus muecas rotas cromadas",
+        "Y por las carreteras valladas",
+        "Escuchás caer tus lágrimas",
+        "(Repite Intro)",
+        "De esta tierra que es una herida",
+        "Que se abre todos los días",
+        "A pura muerte, a todo gramo",
+        "D      C            G (repite intro)"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/nuestro-amo-juega-al-esclavo/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "toxi-taxi",
+      "titulo": "Toxi-Taxi",
+      "desde": 2,
+      "versos": [
+        "preso como un animal",
+        "como un animal feroz",
+        "así las cosas, la fiera más fiera ¿dónde está?",
+        "y tu sombra va detrás (Fill 1)",
+        "de hordas de notables con los secretos para ser",
+        "un negocio tan pequeño y simple como vos. (Fill 2)",
+        "Un toque por si las moscas van",
+        "C                    Bb        (Fill 3)"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/toxi__taxi.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "un-poco-de-amor-frances",
+      "titulo": "Un poco de amor francés",
+      "desde": 1,
+      "versos": [
+        "Como te gusta a vos",
+        "Es tipa vino a consolarte",
+        "No muerde su lengua, no",
+        "No es sincera, pero te gusta oírla",
+        "[Pasaje] C  Am  G",
+        "Es una linda ración",
+        "Con un defecto (con uno o dos)",
+        "Y es un cocktel que no se mezcla solo"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/un-poco-de-amor-frances/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "mi-perro-dinamita",
+      "titulo": "Mi perro dinamita",
+      "desde": 1,
+      "versos": [
+        "¿porque, si es un rock'n roll?",
+        "Yo no se, si a tu perro le gusta ladrar a lo bobo",
+        "mi perro ­no! no quiere ­no!",
+        "con el hocico afiebrado ­no!",
+        "recuperando palitos, corriendo a lo bobo",
+        "C     (silencio)                        G",
+        "¿porque, si es su rock'n roll?",
+        "No es culo mojado"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/mi-perro-dinamita/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "blues-de-la-artilleria",
+      "titulo": "Blues de la artillería",
+      "desde": 1,
+      "versos": [
+        "1er VERSO:   (Igual que la intro)",
+        "Sos el as del Club París",
+        "as, lo tuyo no es el Rock",
+        "cierran los bares por donde vas,",
+        "tu breto y tus ojos grises.",
+        "yo no soy de aconsejar",
+        "pero estás jodiendo al personal",
+        "debiste poner en Rio ese restorán"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/blues-de-la-artilleria/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "tarea-fina",
+      "titulo": "Tarea fina",
+      "desde": 1,
+      "versos": [
+        "¿Vas a volver a herirme otra vez?",
+        "En tu ternura está acechándome",
+        "Una buena traición de mujer",
+        "Que echa hielo y brasas en mi corazón",
+        "Fumando en la oscuridad.",
+        "Sobrio no te puedo ni hablar.",
+        "Estoy perdido sin mi estupidez.",
+        "Un auto guapo va a venir por vos"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/tarea-fina/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "el-pibe-de-los-astilleros",
+      "titulo": "El pibe de los astilleros",
+      "desde": 1,
+      "versos": [
+        "Fue unos meses a caseros y su strato roja",
+        "Se hizo el torbellino que hoy suena en la radio",
+        "La ceniza no caía desde su cigarro",
+        "Y estaba en sus ojos desarmandote",
+        "Alquiló una rana rubia, tibia y haragana",
+        "Se moría de ganas de matarla",
+        "Una linda damita de Concordia",
+        "El más bello fuselaje que jamás lustro"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/el-pibe-de-los-astilleros/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "nueva-roma",
+      "titulo": "Nueva Roma",
+      "desde": 1,
+      "versos": [
+        "dicen mil rockanroles por los satélites,",
+        "dicen mil rockanroles desde los satélites.",
+        "2do VERSO:  (igual)",
+        "A un perro se lo cura como (ay) se cura a un perro,",
+        "PD _ESTRIBILLO:",
+        "¡Te cura o te mata!",
+        "¡ya está!",
+        "1er G  O DE GUITARRA:"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/nueva-roma/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "salando-las-heridas",
+      "titulo": "Salando las heridas",
+      "desde": 2,
+      "versos": [
+        "Este arpegio que al final hace",
+        "Un LAm. se repite durante 3",
+        "Compases",
+        "Que toca un G dicha parte también es",
+        "Luego",
+        "Viene la segunda parte",
+        "Esta parte es muteando",
+        "Las cuerdas"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/salando-las-heridas/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "queso-ruso",
+      "titulo": "Queso ruso",
+      "desde": 1,
+      "versos": [
+        "Paso de moda el golfo como todo ¿viste vos?",
+        "Como tanta otra tristeza a la que te acostumbras",
+        "Ahora vas comprando perlas truchas sin chistar",
+        "\"Calles inteligentes\" alemanas para armar.",
+        "*:tambien se puede poner los arreglos del pre-verso.",
+        "sigue asi...",
+        "Bm             G      A    Bm   +(riff1)",
+        "Y muchos marines de los mandarines"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/queso-ruso/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "rock-para-el-negro-atila",
+      "titulo": "Rock para el negro Atila",
+      "desde": 1,
+      "versos": [
+        "al que nunca pueden atrapar.",
+        "Y apretar el tu bolsillo,",
+        "todo el metálico brillo, sin temor.",
+        "Quiero verte oler como el ratón,",
+        "el peligro del gato matón.",
+        "Que ha cambiado la sirena,",
+        "y compró matraca nueva, de ocasión.",
+        "Quiero verte hundido en tu gabán,"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/rock-para-el-negro-atila/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "sorpresa-de-shangai",
+      "titulo": "Sorpresa de Shangai",
+      "desde": 1,
+      "versos": [
+        "Tengo el hocico listo",
+        "estoy acalorado",
+        "voy a chasquear la lengua, un poco",
+        "voy a escupir misiles",
+        "E               D    Riff1",
+        "¡Puro veneno,",
+        "NI                D    Riff2",
+        "risas que duelen!"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/sorpresa-de-shangai/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "shopping-disco-zen",
+      "titulo": "Shopping Disco-Zen",
+      "desde": 1,
+      "versos": [
+        "Tengo buenas y malas noticias para vos",
+        "la belleza es lo que te da felicidad",
+        "Un desayuno de campeones ordenas",
+        "y con tu propia lenga te extrangulas",
+        "Una coctelera no es una maraca gil!",
+        "aprende del qeu pone a tu gata el cascabel",
+        "Das un paso mas y sos carne muerta ois!?",
+        "esta calle es mas angosta de lo que pensas"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/shopping_discozen.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "un-angel-para-tu-soledad",
+      "titulo": "Un ángel para tu soledad",
+      "desde": 2,
+      "versos": [
+        "Ya sufriste cosas mejores que estas",
+        "Y vas a andar está ruta hoy",
+        "Cuando anochezca",
+        "Tu esqueleto te trajo hasta aquí",
+        "Con un cuerpo hambriento veloz",
+        "Y aquí ¡gracias a Dios!",
+        "Uno cree en lo que oye",
+        "Ángel de la sole__dad"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/un-angel-para-tu-soledad/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "buenas-noticias",
+      "titulo": "Buenas noticias",
+      "desde": 1,
+      "versos": [
+        "brujas de alma sencilla, patéticos viajantes.",
+        "Pobres tontos, pobres diablos, lunáticos diamantes",
+        "prometidos de carne, lánguidos, impalpables",
+        "son mis amantes...",
+        "Llegan buenas nuevas de los escondidos,",
+        "de los convalescientes para los sonados.",
+        "Mi aliento ya no espera",
+        "(no hay fiera en mi colmillo)"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/buenas-noticias/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "susanita",
+      "titulo": "Susanita",
+      "desde": 1,
+      "versos": [
+        "vino un gato y festejo a la nena",
+        "que tu padre trajo",
+        "Asi es este amor",
+        "A  (puente)",
+        "(no television)",
+        "A                                 E                                       PD- verso",
+        "Su pelo endulza",
+        "(y a nadie le amarga un dulce)"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/susanita/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "espejismo",
+      "titulo": "Espejismo",
+      "desde": 1,
+      "versos": [
+        "La tierra gira hoy, menos veloz,",
+        "(en ciertas cosas, el diablo siempre es neutral)",
+        "pasará, ya pasará",
+        "Cerrás los ojos y ves la boutique del rock",
+        "y sus jugadas que siguen saliendo bien.",
+        "Lo mejor de nuestra piel",
+        "es que no nos deja huir...",
+        "G  O DE VIOLIN::"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/espejismo/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "gran-lady",
+      "titulo": "Gran Lady",
+      "desde": 1,
+      "versos": [
+        "y alli la conoci..",
+        "en un tugurio de frontera",
+        "visteando en portuñol .",
+        "fill 1",
+        "Lionel Ritchie en el Bar Princesa",
+        "fill 2",
+        "soñaba en soñador",
+        "en una hamaca tibia al sol ."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/gran-lady/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "la-hija-del-fletero",
+      "titulo": "La hija del fletero",
+      "desde": 1,
+      "versos": [
+        "Fm de la intro tiene que ser con bajo",
+        "Volvio a Madrid donde parece que es feliz",
+        "Ese dia me mando al descenso",
+        "Recuerdo como su mirada me volteo",
+        "Pero dos que se quieren se dicen cualquier cosa",
+        "Ay! si pudieras recordar sin rencor",
+        "En mi buzon hay un par de cartas suyas",
+        "Fueron juntandose y no tengo el valor"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/la-hija-del-fletero/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "el-lobo-caido",
+      "titulo": "El lobo caído",
+      "desde": 1,
+      "versos": [
+        "Que no escuchaba  mas.",
+        "entre tanto montaje sonso",
+        "tanta infidelidad.",
+        "\"Maté... y maté... y maté!.....y maté\"",
+        "Muy mucha merca, poco bongó",
+        "y el mal gusto encallo",
+        "en un manantial frí dije",
+        "frío de visturí...."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/el-lobo-caido/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "yo-canibal",
+      "titulo": "Yo caníbal",
+      "desde": 1,
+      "versos": [
+        "Soy un gourmet que huele eternamente mal.",
+        "Viejas compotas que no dan respiro",
+        "Al caníbal que hay en mí,",
+        "Que no es bien recibido en un banquete así.",
+        "Se amasan las fortunas, se cargan los bolsillos.",
+        "De presa seca, de oro falso, de vermouth",
+        "Me acaban el cerebro a mordiscos",
+        "Bebiendo el jugo de mi corazón"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/yo-canibal/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "ladron-de-mi-cerebro",
+      "titulo": "Ladrón de mi cerebro",
+      "desde": 1,
+      "versos": [
+        "Cacería     hecha con dos naipes...",
+        "...Datos feos,    por eso brindamos",
+        "El mejor testigo se puede contradecir",
+        "Por eso brindamos...",
+        "(el resto sigue igual)",
+        "Trato hecho sobre un tapete",
+        "comodines y las jotas abren",
+        "Ella es bailarina de la caja musical"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/ladron-de-mi-cerebro/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "es-hora-de-levantarse-querido",
+      "titulo": "¡Es hora de levantarse querido!",
+      "desde": 2,
+      "versos": [
+        "Que iban al grano",
+        "Jugando a los gangsters",
+        "Dormís colgado en la rama",
+        "Que soldaste con primor",
+        "Y el carozo del asunto es tu temor",
+        "Es solo tu temor que es tan puro",
+        "Y tan elegante",
+        "Sentado en tu dedo"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "letras.com",
+        "url": "https://www.letras.com/los-redonditos-de-ricota/203002/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-23"
+      }
+    },
+    {
+      "slug": "perdiendo-el-tiempo",
+      "titulo": "Perdiendo el tiempo",
+      "desde": 1,
+      "versos": [
+        "Veo el ferry en que te vas",
+        "El amor empezó a quedarte chico",
+        "Y el silencio lo enredó",
+        "Ángeles, yo ya no me puedo partir",
+        "Oh, no, me ata un fuego",
+        "Y mi sueño duerme aquí",
+        "Ella sí que era el fuego",
+        "Ella sí que bailaba en las llamas"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/perdiendo-el-tiempo/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "cana-seca-y-un-membrillo",
+      "titulo": "Caña seca y un membrillo",
+      "desde": 1,
+      "versos": [
+        "La hormiga se le durmio",
+        "Dios ya no quiere que baile me dijo",
+        "Me dijo y me sofoco",
+        "Vamos negrita baila hasta el fin",
+        "Vamos negrita hacelo por mi",
+        "La curva no se ha mojado",
+        "Ni patinó mi animal",
+        "Morena, vi tu camisa colgada"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/caa-seca-un-membrillo/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "lavi-rap",
+      "titulo": "Lavi-rap",
+      "desde": 1,
+      "versos": [
+        "El morta, huesito y mister ed",
+        "van a saltar otra vez sin red",
+        "se enrollan, se baten,",
+        "se agitan y mojan",
+        "Al comprar el 'pajarito'",
+        "debieron preguntar, tal vez,",
+        "cuanto costaba",
+        "A  linda jaula"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/lavi-rap/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "el-arte-del-buen-comer",
+      "titulo": "El arte del buen comer",
+      "desde": 1,
+      "versos": [
+        "el mejor culo para su sillón",
+        "F#5                               B5     puente",
+        "y sabe bien que hoy su chance es gorda.",
+        "Le ha puesto al fin su nombre al toallón,",
+        "compró marfiles de la selva del Congo",
+        "y en su coco siempre hay un petardo.",
+        "Rodeado de grandanesas",
+        "que se salen de la blusa"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/el-arte-del-buen-comer/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "lobo-estas",
+      "titulo": "¡¿Lobo estás?!",
+      "desde": 1,
+      "versos": [
+        "(¡no se puede soportar!).",
+        "Fíjense señores, cuando esa tormenta suena,",
+        "provoca calamidad.",
+        "Por donde esas nubes van,",
+        "ya no late el animal,",
+        "no late más.",
+        "Pasan los coches, ligeros",
+        "conductores mudos que amenazan con flipar."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/lobo_estas.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "botija-rapado",
+      "titulo": "Botija rapado",
+      "desde": 1,
+      "versos": [
+        "un rato antes de fugar, del cepo a la bolsa",
+        "de la vieja colonia berro,",
+        "y tarareando su la-lan.",
+        "Quiso pilotar sus sueños",
+        "y pasó la raya la-la-lan",
+        "corazones, y cada flecha en su lugar",
+        "dibujadas, adormilado,",
+        "ventanas muy abiertas"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/botija-rapado/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "etiqueta-negra",
+      "titulo": "Etiqueta negra",
+      "desde": 1,
+      "versos": [
+        "a él, que era rey de esta jungla,",
+        "se le soltó un patín...",
+        "Su corazón no, no era un hotel",
+        "aunque corria ese rumor",
+        "y hoy tiene una entre otras cruces",
+        "en este bosque siempre cruel.",
+        "Dejó un billete     que pide a gritos que lo gasten",
+        "(RE FA7 LAm) 2 veces  SOL"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/etiqueta_negra.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "luzbelito-y-las-sirenas",
+      "titulo": "Luzbelito y las sirenas",
+      "desde": 0,
+      "versos": [
+        "Luzbelito sabe que su destino es de soledad",
+        "De tambien que los demas se dan cuenta de la risa que le da",
+        "Un par de culos va a patear de los que le juran más lealtad",
+        "Y llorará su corazón como un nazareno del Cuzco",
+        "La vida sin problemas es matar el tiempo a lo bobo",
+        "Si un dios bobeta -Bim bum bam! toca tu roncanrol lacrimógeno",
+        "Estos ojos...de quién son? de quién son mis deseos de hoy?",
+        "Y éste insomnio de quién es? (Luzbelito pregunta una y otra vez...)"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/luzbelito-y-las-sirenas/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "cruz-diablo",
+      "titulo": "Cruz diablo!",
+      "desde": 1,
+      "versos": [
+        "se mandó en una picada,",
+        "chistando a su mala sombra",
+        "sin copiloto ni nada.",
+        "Zippo va camino del infirno",
+        "cagando leches!",
+        "No supo repartir sus fichas",
+        "y su cielo ennegrece...",
+        "Nunca fue un listo de pesos"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/cruz-diablo/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "ella-baila-con-todos",
+      "titulo": "Ella baila con todos",
+      "desde": 1,
+      "versos": [
+        "la intro sigue asi....",
+        "SOBD  BAJO:",
+        "\"Es una de esas noches",
+        "Donde a todos nos gusta",
+        "La misma bailarina, ay",
+        "y el mismo lunar\"",
+        "POS-VERSO: (RIFF3)",
+        "Sobre BASE:"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/ella-baila-con-todos/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "fanfarria-del-cabrio",
+      "titulo": "Fanfarria del cabrío",
+      "desde": 1,
+      "versos": [
+        "por descuido del Señor",
+        "llegó el que no tiene tiempo",
+        "el diablo más veloz",
+        "arrastrando los pies.",
+        "Ni cuando robó el fuego",
+        "tuvo esa rapidez.",
+        "No vino hasta éste mundo",
+        "a caerte en gracia a vos."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/fanfarria-del-cabrio/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "nuotatori-professionisti",
+      "titulo": "Nuotatori professionisti",
+      "desde": 1,
+      "versos": [
+        "Cuando la marea los quiere tapar en el corazón de la noche",
+        "Pagan con promesas los nenes de oro.",
+        "2°VERSO:",
+        "Cómo actúan esos tipos felices",
+        "Cómo brillan sus muecas festivas",
+        "Si acarician pasteles de culo",
+        "Sanos, muy fuertes y azucarados.",
+        "3° VERSO:"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/nuotatori-professionisti/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "blues-de-la-libertad",
+      "titulo": "Blues de la libertad",
+      "desde": 1,
+      "versos": [
+        "es oración, fastidio y buena suerte.",
+        "E  amor...  G9         (C7 -C9 )    G9            G7            (C7 _C9 )",
+        "C9                         puente1",
+        "que está invitando a zozobrar.",
+        "D9             puente 2     C9",
+        "Otra vulgaridad social igual,",
+        "siempre igual, todo igual",
+        "todo lo mismo..."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/blues-de-la-libertad/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "la-dicha-no-es-una-cosa-alegre",
+      "titulo": "La dicha no es una cosa alegre",
+      "desde": 1,
+      "versos": [
+        "\"una rumbita se armo..",
+        "SOBD  GUITARRA",
+        "una fea carcajada",
+        "Incombustible no sos,",
+        "¿como bancás ese infierno?",
+        "Soñás la hoguera donde siempre sos la leña.",
+        "\"esclavizado asi.....          estas hundido a fondo....",
+        "¿Cuánto tiempo más vas   a   estar"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/la-dicha-no-es-una-cosa-alegre/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "me-matan-limon",
+      "titulo": "Me matan, Limón!",
+      "desde": 5,
+      "versos": [
+        "Por los techos viene el bloque",
+        "Oh, otra vez",
+        "Pasan las dos",
+        "Delatándolo",
+        "Apenas las dos",
+        "Delatándolo a las dos",
+        "De la tarde y zumba feo algún moscón",
+        "Voy sangrando, Limón"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/me-matan-limon/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "rock-yugular",
+      "titulo": "Rock yugular",
+      "desde": 1,
+      "versos": [
+        "2 veses   / 4 veses   / 4 veses        / 4 veses   /",
+        "Todo esto se repite dos veses",
+        "una sola vez",
+        "-Dame... dame tu vida.",
+        "Dame y tendras mi piedad.",
+        "dame la sed de tus ojos acorazados",
+        "y dame tu insolencia tambien.",
+        "-Rara vez esta vida tiene sentido, amor"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/rock-yugular/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "mariposa-pontiac-rock-del-pais",
+      "titulo": "Mariposa Pontiac - Rock del país",
+      "desde": 1,
+      "versos": [
+        "Me obseciona tu prisión",
+        "Me obsesiona tu prisión",
+        "¡Ay! Mariposa pontiac, ¿qué va a ser de mí?",
+        "Sin tus caricias, nena, ¿qué va a ser de mí?... X2",
+        "Me vine a ver un recital de rocanrol del país",
+        "Y miren toda la cacona que juntaron aquí",
+        "Será que pueden calentarnos el pavito aún más, para gastarlo!",
+        "Verte feliz no es nada"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/mariposa-pontiac/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "juguetes-perdidos",
+      "titulo": "Juguetes perdidos",
+      "desde": 2,
+      "versos": [
+        "Ondeando, luzca el Sol o no",
+        "Banderas rojas,   banderas negras",
+        "De lienzo blanco, en tu cora__zón",
+        "Perfume al filo del dolor",
+        "Así, invisible",
+        "Licor venéreo del amor",
+        "Que está en las pieles",
+        "sedas de sedas"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/juguetes-perdidos/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
+      "titulo": "Las increíbles andanzas del Capitán Buscapina en Cybersiberia",
+      "desde": 1,
+      "versos": [
+        "Ay, mientras Wálter invade nuestra fiesta",
+        "El Capitán Buscapina salda deudas.",
+        "Sentado, en bolas, watcheando la tele",
+        "Donde se matan, hoy, el pincha y los canallas.",
+        "Wálter invade la Tierra.",
+        "Dandy border.",
+        "Dandy dominó.",
+        "Su princesita, ay, se transformó en sapito"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/capitan-buscapina/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "el-arbol-del-gran-bonete",
+      "titulo": "El árbol del gran bonete",
+      "desde": 1,
+      "versos": [
+        "el señor en los cielos.",
+        "Miren lo que este bicho logró",
+        "al confiar en sus sueños.",
+        "Soy jocker comodín,",
+        "en la \"Estrella del Sur\".",
+        "Sacudido del árbol cayó",
+        "un fruto dulce muy raro,",
+        "tropecé con mis ganglios y vi,"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/el_arbol_del_gran_bonete.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "gualicho",
+      "titulo": "Gualicho",
+      "desde": 1,
+      "versos": [
+        "del Bondi a Finisterre",
+        "rajando del amor",
+        "detrás de un beso nuevo",
+        "Con lo que cuesta armar un full",
+        "armar algún puto full",
+        "y jugarlo en este paño, Dios!",
+        "apretado en las manos",
+        "las despedidas son"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/gualicho.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "alien-duce",
+      "titulo": "Alien duce",
+      "desde": 1,
+      "versos": [
+        "y en un edificio en llamas te encanó",
+        "nadando en ese minestrón",
+        "C                MOTIVO  1",
+        "va Porco Rex a Porno Rock!",
+        "Si su look \"bola de efectos\" te palmó",
+        "y recoges tu hígado desde un rincón",
+        "Flotando en ese minestrón",
+        "E       G          Bb        MOTIVO 2"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/alien-duce/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "la-pequena-novia-del-carioca",
+      "titulo": "La pequeña novia del carioca",
+      "desde": 4,
+      "versos": [
+        "y el rió quedo, al fin, quieto.",
+        "Solo un cuento fue",
+        "que ayudo a pasar un buen rato",
+        "Un castillo de",
+        "naipes que callo",
+        "y palabras baratas.",
+        "En el aire entre los dos",
+        "brillo una copa rota"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/la-pequena-novia-del-carioca/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "drogocop",
+      "titulo": "Drogocop",
+      "desde": 1,
+      "versos": [
+        "Juicio fantasma de los muertos queridos",
+        "y una muy larga botella de gin",
+        "Acá viene la parte del efecto, que se hace así:",
+        "las cuerdas, solo tocando las a todas",
+        "(esto es para que no suene como una nota)",
+        "a la altura de los micrófonos y al segundo golpe se desliza",
+        "dos veces seguidas. Vuelve a golpear a la altura de los micrófono,",
+        "y va al seis y repite eso creo que dos veces, si escuchan la"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/drogocop/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "scaramanzia",
+      "titulo": "Scaramanzia",
+      "desde": 1,
+      "versos": [
+        "Donde sos la heroína.",
+        "Y voy a comer del pastel",
+        "Que llamás 'la vampira'.",
+        "Yo sólo espero",
+        "vivir tus juegos",
+        "Y luego no quiero que vuelvas a ser nunca más",
+        "Como eras antes, no.",
+        "Me voy a ir junto a vos"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/scaramanzia.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "esto-es-to-to-todo-amigos",
+      "titulo": "¡Esto es to-to-todo amigos!",
+      "desde": 1,
+      "versos": [
+        "de mierda de guerra",
+        "LA armada buscapina",
+        "ahora va a pirar",
+        "acabaran sus dia de cohiba",
+        "en muerte sexy",
+        "sexy demas.",
+        "tu diablo.....",
+        "la sole se fue"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/esto_es_toto_todo_amigos.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "templo-de-momo",
+      "titulo": "Templo de Momo",
+      "desde": 1,
+      "versos": [
+        "pura flor chillona y pura ambriaguez",
+        "Santo fumador, de alla de La Plata",
+        "Sali del letargo veni a desfilar",
+        "Ademas, de tu sonrisa",
+        "ademas, de tus dolores",
+        "vas a copiar del templo del Momo,",
+        "Un amor salvaje y al pulso del trip.",
+        "Tambien hay pastel de ponsoña salada"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/el-templo-de-momo/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "morta-punto-com",
+      "titulo": "Morta punto com",
+      "desde": 1,
+      "versos": [
+        "Se tira a todo santo, ja",
+        "No pregunta más por el menú",
+        "Como si se la machacara contra un cascote, quiere gozar",
+        "Va perdiendo aceite, relincha de más",
+        "Con sus gambas de poli brinca y cae levemente hacia su estribor",
+        "Quitó esa vieja foto del negro Chuck Berry del placard",
+        "fellatio diluvio, man",
+        "y guateque-hot-porno escolar"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "lacuerda.net",
+        "url": "https://acordes.lacuerda.net/patricio_rey/morta_punto_com.shtml",
+        "consultado": "2026-08-24"
+      }
+    },
+    {
+      "slug": "la-murga-de-los-renegados",
+      "titulo": "La murga de los renegados",
+      "desde": 1,
+      "versos": [
+        "entre sopores,modorras ciegas",
+        "y oscuridad de bodega sin luz",
+        "va esa murga desencantada",
+        "que lleva siglos asi",
+        "putas serenas que son tan lindas",
+        "que dan miedo cuando las miras",
+        "para vos ellas son capaces",
+        "de erirte con su dolor"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/la-murga-de-los-renegados/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "dr-saturno",
+      "titulo": "Dr. Saturno",
+      "desde": 1,
+      "versos": [
+        "De misas cómicas mal",
+        "A prueba de bobos y a las tres en casa",
+        "¿Querés creer? Oh, no!",
+        "Te pido una mejoría",
+        "Estoy meando la puerta en tu cueva, doctor de amor",
+        "Los remos muy pinchados",
+        "A la moda del rock'n roll",
+        "Me cago en mis huesos"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "letras.com",
+        "url": "https://www.letras.com/los-redonditos-de-ricota/202986/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-23"
+      }
+    },
+    {
+      "slug": "murga-de-la-virgencita",
+      "titulo": "Murga de la virgencita",
+      "desde": 1,
+      "versos": [
+        "Con bomberos del cuartel",
+        "Su barrio que es tan inclemente",
+        "Y su comparsa siempre es cruel",
+        "Sueña con que su rollo sea",
+        "Película de amores suaves",
+        "Es aguijón picante y miel",
+        "Se tambalea en sus tacones",
+        "No tiene nada que perder"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/murga-de-la-virgencita/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "pool-averna-y-papusa",
+      "titulo": "Pool, averna y papusa",
+      "desde": 1,
+      "versos": [
+        "Am: Lo toca de esta manera:",
+        "Solo de la introducion:",
+        "v: vibrato",
+        "s: estira",
+        "d: desliza",
+        "Am(se toca como en la introducion)",
+        "Su llave arrojo",
+        "puteando por lo bajo se marcho"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/pool-averna-y-papusa/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "murga-purga",
+      "titulo": "Murga purga",
+      "desde": 2,
+      "versos": [
+        "Vos bola de mierda",
+        "Ya no hay mas propina",
+        "Un borracho malo,",
+        "Carne que camina",
+        "Parida con un pedo triste.",
+        "Sos un moscón zumbón",
+        "Que quedó atrapado",
+        "En un vaso boca abajo."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/murga-purga/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "sheriff",
+      "titulo": "Sheriff",
+      "desde": 1,
+      "versos": [
+        "si ali baba se va!",
+        "todo en su sitio asi",
+        "son tres tiros a un peso",
+        "y la guita es miel...",
+        "sos como el fuego en un cañaveral!",
+        "un kamikase que amenisa la funcion!",
+        "tarde en la noche plaza constitucion!",
+        "hay sangre rancia de trmontina tajeador!......."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/sheriff/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "pensando-como-una-acelga",
+      "titulo": "Pensando como una acelga",
+      "desde": 2,
+      "versos": [
+        "Tan fuera de foco,",
+        "Meloneando el coco,",
+        "Parpadeando a lo gurú-vudú.",
+        "Definitivamente limpio.",
+        "Definitivamente curado.",
+        "Así también te ves bien.",
+        "Ciego de felicidad,",
+        "Tu cerebro es un jabón."
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/pensando-como-una-acelga/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "una-piba-con-la-remera-de-greenpeace",
+      "titulo": "Una piba con la remera de Greenpeace…",
+      "desde": 1,
+      "versos": [
+        "~ = Vibratos                  p = Lidago descendente o Pull off",
+        "^ = Estiradas o Bends         r = Soltar la estirada",
+        "t = tapping",
+        "*La cancion es en Si mayor",
+        "Esta dormida o finge que duerme.....",
+        "ya se canso de dormir tanto tiempo en sillones",
+        "Se aparta corriendo de mamones soquetes y fiolos pipiolos",
+        "y por las dudas nunca esta cerca de las vias sin mirar atras mirar atras"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/una-piba-con-la-remera-de-greenpeace/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    },
+    {
+      "slug": "rato-molhado",
+      "titulo": "Rato molhado",
+      "desde": 1,
+      "versos": [
+        "mira vos que tan lejos llego",
+        "va por un golpe mas de borbon",
+        "y a la plaza Irlanda a guapear",
+        "roseado con kenzo yangler",
+        "moldeado por internova",
+        "desayuno en la cama con dios",
+        "para el chino chipero que es",
+        "juega siempre a que mata de amor"
+      ],
+      "dificultad": "sin-clasificar",
+      "dificultadSegun": "curaduria",
+      "fuente": {
+        "sitio": "cifraclub.com",
+        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/rato-molhado/",
+        "consultado": "2026-08-24",
+        "ficha": "RES-49"
+      }
+    }
+  ]
+}

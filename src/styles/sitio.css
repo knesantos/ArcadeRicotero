@@ -418,6 +418,7 @@
 .casete--discos { --tinte: var(--cat-discos); }
 .casete--letras { --tinte: var(--cat-letras); }
 .casete--mitologia { --tinte: var(--cat-mitologia); }
+.casete--momo { --tinte: var(--disco-momo-sampler-apoyo); }
 
 /* ---- Pie del sitio ---- */
 

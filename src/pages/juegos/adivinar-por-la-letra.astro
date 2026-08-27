@@ -1,0 +1,106 @@
+---
+/**
+ * "Sacalo por la letra" (`US-07`). El juego nuevo del ciclo 9.
+ *
+ * Se muestran versos y hay que sacar de qué tema son, con el mismo buscador sobre los
+ * 105 títulos que usa "Adiviná el tema". La escalera son cuatro pasos que duplican
+ * (`BR-20`): 1 / 2 / 4 / 8 versos acumulados, y errar —o pasar— abre el siguiente.
+ *
+ * **Convive con `US-02`, no lo reemplaza** (decisión del usuario, 2026-08-25). Uno se
+ * juega de oído y el otro leyendo; comparten catálogo, buscador y escala de puntos.
+ *
+ * Viste **Momo Sampler** (`UX-08`): ninguna de las diez tapas estaba tomada como
+ * identidad de sección salvo las cuatro de `D-19`, y vestirlo igual que su hermano
+ * mecánico (Lobo suelto) o que su primo de contenido (La mosca y la sopa) haría que dos
+ * juegos casi gemelos se leyeran como el mismo con dos nombres.
+ *
+ * **El banco sale de `cancionero.json` vía `CTR-09`**, filtrado por `CNT-11`: ningún
+ * verso mostrado contiene el título, o el juego se ganaría solo.
+ *
+ * **Molinetes abiertos (`D-14`):** no pide nada. Ni cuenta, ni login, ni saber.
+ */
+import '../../styles/tokens.css';
+import '../../styles/juego.css';
+import '../../styles/sitio.css';
+import Cabeza from '../../components/Cabeza.astro';
+import { PANTALLA_0 } from '../../lib/por-la-letra/copy.ts';
+import { PORTAL } from '../../lib/sitio/copy.ts';
+import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
+import { leerTemas, slugDeTitulo } from '../../lib/letra/temas.ts';
+import { FICHAS } from '../../lib/cancionero/banco.ts';
+import bancoCrudo from '../../data/por-la-letra.json';
+
+/** Lo que viaja del banco: sin `desde` ni `dificultadSegun`, que son de generación. */
+const items = (bancoCrudo as { items: Array<Record<string, unknown>> }).items.map((i) => ({
+  slug: i.slug,
+  titulo: i.titulo,
+  versos: i.versos,
+  dificultad: i.dificultad,
+  fuente: { sitio: (i.fuente as Record<string, string>).sitio, url: (i.fuente as Record<string, string>).url },
+}));
+
+/**
+ * El catálogo del buscador: **los 105 de `RES-20`, no los 93 del banco.**
+ *
+ * Es a propósito y es el mismo criterio que `D-24` fijó para el hermano: la lista de
+ * títulos entre los que se elige tiene que ser la discografía entera. Si solo trajera los
+ * que están en el banco, el buscador filtraría la respuesta — el que sabe que faltan doce
+ * temas los descartaría sin escuchar nada.
+ */
+const porDisco = new Map(FICHAS.map((f) => [f.slug, f]));
+const catalogo = leerTemas().map((t) => ({
+  slug: slugDeTitulo(t.titulo),
+  titulo: t.titulo,
+  disco: t.disco,
+  discoTitulo: porDisco.get(t.disco)?.titulo ?? t.disco,
+  pista: t.pista,
+}));
+
+const FONDO = 'momo-medallon';
+const fondo = fondoTapa(FONDO);
+const tapasUsadas = fondo ? discosDe([FONDO]) : [];
+
+const TITULO = 'Sacalo por la letra — Arcade Ricotero';
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={PANTALLA_0.subtitulo} />
+    <title>{TITULO}</title>
+    <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} />
+  </head>
+  <body class="con-grano juego-por-la-letra">
+    <main id="app">
+      {fondo && <div class="tapa-fondo tapa-fondo--momo-medallon" aria-hidden="true" />}
+
+      <section id="portada" class="pantalla sobre-tapa">
+        <header class="cabecera-sitio">
+          <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
+        </header>
+        <p class="marca" aria-label="Arcade Ricotero">ARCADE RICOTERO</p>
+        <h1>{PANTALLA_0.titulo}</h1>
+        <p class="tenue">{PANTALLA_0.subtitulo}</p>
+
+        <div class="arranque">
+          <p class="tenue">{PANTALLA_0.hay(items.length)}</p>
+          <button id="jugar" class="primario" type="button">{PANTALLA_0.boton}</button>
+        </div>
+      </section>
+
+      <section id="partida" class="pantalla sobre-tapa" hidden></section>
+      <section id="resultado" class="pantalla sobre-tapa" hidden></section>
+
+      <footer class="pie-sitio sobre-tapa">
+        {tapasUsadas.length > 0 && <p class="credito-tapas">{PORTAL.creditoTapas(tapasUsadas)}</p>}
+        {PORTAL.pie}
+      </footer>
+    </main>
+
+    <script type="application/json" id="banco" set:html={JSON.stringify(items)} />
+    <script type="application/json" id="catalogo" set:html={JSON.stringify(catalogo)} />
+    <script src="../../scripts/partida-por-la-letra.ts"></script>
+  </body>
+</html>

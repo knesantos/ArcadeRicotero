@@ -164,21 +164,21 @@ perfecto del folleto vetado — *"¡Ayudanos a mejorar!"*, *"nuestra comunidad"*
 | `T-128` | ✅ **hecho** | **`D-25`**: el candado de `CTR-04` se abre — `US-03` sale con fuente única declarada, y el usuario valida jugando. Deja escritas las consecuencias y qué la revierte | `Docs/DECISIONES.md` | `D-25` existe y nombra la mitigación que reemplaza a la confirmación de oído | `[P]` |
 | `T-129` | ✅ **hecho** | **`BR-19`**: la partida de vidas. 3 vidas · escalón cada 10 · se queda en difícil · victoria al agotar el banco. **Y cierra el hueco de los 10 fáciles exactos** | `Docs/PRODUCTO/PRD-alcance-v1.md` | `BR-19` dice qué de `BR-01` y `BR-05` queda en pie y qué reemplaza | `[P]` |
 | `T-130` | ✅ **hecho** | **`US-07` + `BR-20`**: el juego nuevo, su piso y la escalera de versos. Corpus disponible: 101 temas | `Docs/PRODUCTO/PRD-adivinar-por-la-letra.md` *(nuevo)* | `US-07` tiene piso, criterios de aceptación y prioridad | `[P]` |
-| `T-131` | `arquitectura` | **`CTR-04` revisión**: la tercera vía de confirmación que habilita `D-25`, con el campo que declara la fuente por ítem | `Docs/ARQ/ARQ-schema-completar-letra.md` | el schema acepta `listo` por la vía nueva y **sigue rechazando** un ítem sin fuente declarada | tras `T-128` |
+| `T-131` | ✅ **hecho** | **`CTR-04` v2**: la tercera vía de confirmación que habilita `D-25`, con el campo que declara la fuente por ítem | `Docs/ARQ/ARQ-schema-completar-letra.md` | el schema acepta `listo` por la vía nueva y **sigue rechazando** un ítem sin fuente declarada | tras `T-128` |
 | `T-132` | ✅ **hecho** | **`ADR-02` v2**: qué se comparte cuando no hay puntaje sobre 8. **Salda de paso la deuda de `dos-ejes`**, que tampoco tiene puntaje | `Docs/ARQ/ARQ-link-resultado-compartido.md` | el formato cubre quiz-por-vidas y `US-06`, y la vista previa sigue sin filtrar el resultado | tras `T-129` |
-| `T-133` | `arquitectura` | **`CTR-09`**: schema del banco de `US-07` | `Docs/ARQ/ARQ-schema-adivinar-por-la-letra.md` *(nuevo)* | corre en `src/lib/esquemas.test.ts` | tras `T-130` |
+| `T-133` | ✅ **hecho** | **`CTR-09`**: schema del banco de `US-07` | `Docs/ARQ/ARQ-schema-adivinar-por-la-letra.md` *(nuevo)* | corre en `src/lib/esquemas.test.ts` | tras `T-130` |
 | `T-134` | ✅ **hecho** | **`UX-07`**: las 3 vidas y el cambio de escalón en pantalla. Sin emoji, y ningún estado comunicado solo por color | `Docs/UX/UX-07-quiz-por-vidas.md` *(nuevo)* | `npm test` (contraste) y la tabla de `diseno-marca.md` | tras `T-129` |
-| `T-135` | `experiencia` | **`UX-08`**: la pantalla de `US-07` y qué disco la viste según la mezcla `D-19` | `Docs/UX/UX-08-adivinar-por-la-letra.md` *(nuevo)* | el disco elegido no pisa el de otra sección; pares de color en el test | tras `T-130` |
+| `T-135` | ✅ **hecho** | **`UX-08`**: la pantalla de `US-07` y qué disco la viste según la mezcla `D-19` | `Docs/UX/UX-08-adivinar-por-la-letra.md` *(nuevo)* | el disco elegido no pisa el de otra sección; pares de color en el test | tras `T-130` |
 | `T-136` | ✅ **hecho** | **`CNT-10`**: el copy del resultado por vidas — registro 1 el encabezado, registro 3 el número | `Docs/CONTENIDO/CNT-10-copy-quiz-vidas.md` *(nuevo)* | `node --test src/lib/voz.test.ts` | tras `T-129` |
-| `T-137` | `contenido` | **`CNT-11`**: la regla de elección de versos de `US-07`. **El verso revelado no puede contener el título** — si no, el juego se gana solo | `Docs/CONTENIDO/CNT-11-versos-de-us07.md` *(nuevo)* | la regla es verificable a máquina por `T-139` | tras `T-130` |
-| `T-138` | `contenido` | Elige los **15+ versos de menor riesgo de transcripción** para `US-03`, con el criterio escrito | `src/data/letra-confirmaciones.json` | ≥15 elegidos, cada uno con su tema dentro de los 105 de `RES-20` | tras `T-131` |
-| `T-139` | hilo principal | Generador del banco de `US-07` desde el cancionero → JSON de datos. **Aplica `CNT-11` como filtro corrible** | `scripts/generar-por-la-letra.mjs`, `src/data/por-la-letra.json` *(nuevos)* | el JSON valida contra `CTR-09` y ningún ítem filtra el título | tras `T-133`, `T-137` |
-| `T-140` | hilo principal | La escalera de versos de `US-07`, reusando `buscador.ts` y `catalogo.ts` de `src/lib/tema/` | `src/lib/por-la-letra/` *(nuevo)* | `node --test src/lib/por-la-letra/*.test.ts` | tras `T-133` |
-| `T-141` | hilo principal | La página y la isla de `US-07` | `src/pages/juegos/adivinar-por-la-letra.astro`, `src/scripts/partida-por-la-letra.ts` | jugada entera a 375×812; `npm run build` | tras `T-139`, `T-140`, `T-135` |
+| `T-137` | ✅ **hecho** | **`CNT-11`**: la regla de elección de versos de `US-07`. **El verso revelado no puede contener el título** — si no, el juego se gana solo | `Docs/CONTENIDO/CNT-11-versos-de-us07.md` *(nuevo)* | la regla es verificable a máquina por `T-139` | tras `T-130` |
+| `T-138` | ✅ **hecho** | Eligió los **15+ versos de menor riesgo de transcripción** para `US-03`, con el criterio escrito | `src/data/letra-confirmaciones.json` | ≥15 elegidos, cada uno con su tema dentro de los 105 de `RES-20` | tras `T-131` |
+| `T-139` | ✅ **hecho** | Generador del banco de `US-07` desde el cancionero → JSON de datos. **Aplica `CNT-11` como filtro corrible** | `scripts/generar-por-la-letra.mjs`, `src/data/por-la-letra.json` *(nuevos)* | el JSON valida contra `CTR-09` y ningún ítem filtra el título | tras `T-133`, `T-137` |
+| `T-140` | ✅ **hecho** | La escalera de versos de `US-07`, reusando `buscador.ts` y `catalogo.ts` de `src/lib/tema/` | `src/lib/por-la-letra/` *(nuevo)* | `node --test src/lib/por-la-letra/*.test.ts` | tras `T-133` |
+| `T-141` | ✅ **hecho** | La página y la isla de `US-07` | `src/pages/juegos/adivinar-por-la-letra.astro`, `src/scripts/partida-por-la-letra.ts` | jugada entera a 375×812; `npm run build` | tras `T-139`, `T-140`, `T-135` |
 | `T-142` | ✅ **hecho** | **`src/lib/quiz/vidas.ts`**: la máquina de escalones y vidas. **Aditivo — no toca `ronda.ts`** | `src/lib/quiz/vidas.ts`, `vidas.test.ts` *(nuevos)* | `npm test`, y los otros tres juegos siguen pasando | tras `T-129` |
 | `T-143` | ✅ **hecho** | La isla del quiz pasa a vidas: se va el "N de 8", entran las tres vidas y el escalón. **Arrastra `FIND-28`, ver abajo** | `src/scripts/partida.ts`, `src/pages/quiz.astro`, `src/lib/quiz/copy.ts` | partida jugada hasta perder las 3 vidas, hasta agotar el banco y retirándose a mitad | tras `T-142`, `T-134`, `T-136`, `T-132` |
-| `T-144` | hilo principal | `generar-letra` promueve por la vía nueva → **≥15 ítems `listo`** en `US-03` | `scripts/generar-letra.mjs`, `src/data/letra.json` | `npm run generar-letra` y el conteo de `listo` ≥ 15 | tras `T-131`, `T-138` |
-| `T-145` | hilo principal | `completar-la-letra` sale de la cocina. **El panel muestra qué sitio transcribió el verso, con enlace** — es el mecanismo de *"lo veo jugando"* | `src/pages/juegos/completar-la-letra.astro`, `src/scripts/partida-letra.ts` | partida entera a 375×812; la fuente se ve en cada ítem | tras `T-144` |
+| `T-144` | ✅ **hecho** | `generar-letra` promueve por la vía nueva → **≥15 ítems `listo`** en `US-03` | `scripts/generar-letra.mjs`, `src/data/letra.json` | `npm run generar-letra` y el conteo de `listo` ≥ 15 | tras `T-131`, `T-138` |
+| `T-145` | ✅ **hecho** | `completar-la-letra` sale de la cocina. **El panel muestra qué sitio transcribió el verso, con enlace** — es el mecanismo de *"lo veo jugando"* | `src/pages/juegos/completar-la-letra.astro`, `src/scripts/partida-letra.ts` | partida entera a 375×812; la fuente se ve en cada ítem | tras `T-144` |
 | `T-146` | `revisor` | **`REV-08`**: los tres frentes contra sus criterios declarados | `Docs/REVISIONES/REV-08-ciclo-9.md` *(nuevo)* | hallazgos `FIND-28`+ con evidencia y criterio incumplido | tras `T-141`, `T-143`, `T-145` |
 | `T-147` | hilo principal | `ESTADO.md` al día. **Y arregla "Próximo paso" y el Tablero, cuatro ciclos atrasados** | `ESTADO.md` | la sección dice el ciclo 9, y el Tablero los pisos 40/30/15/10 | último |
 
@@ -249,6 +249,12 @@ que también entra en paralelo. Después, cada fila dice de qué depende.
 > sea imposible en vez de improbable. Es el mismo criterio con el que `ronda.ts` resolvió
 > lo de la opción correcta siempre primera: arreglarlo una vez y para siempre, en lugar de
 > pedirle a cada sitio de llamada que se acuerde.
+
+## ✅ Tramos A y B cerrados — los seis juegos se juegan
+
+Al 2026-08-27: `npm test` **264/264**, `npm run check` limpio, build de **149 páginas**.
+**Los cinco pisos de la v1 están cumplidos**, y `US-07` nació y llegó al suyo en el mismo
+ciclo. Queda el frente E (escritorio, `T-157`..`T-160`), `T-146` (`REV-08`) y `T-147`.
 
 ## ✅ Tramo A cerrado el 2026-08-25
 

@@ -16,7 +16,8 @@
     "generar-fragmentos": "node --experimental-strip-types scripts/generar-fragmentos.mjs",
     "generar-marca-social": "node scripts/generar-marca-social.mjs",
     "ingerir-popularidad": "node --experimental-strip-types scripts/ingerir-popularidad.mjs",
-    "ingerir-fragmentos": "node --experimental-strip-types scripts/ingerir-fragmentos.mjs"
+    "ingerir-fragmentos": "node --experimental-strip-types scripts/ingerir-fragmentos.mjs",
+    "generar-por-la-letra": "node --experimental-strip-types scripts/generar-por-la-letra.mjs"
   },
   "dependencies": {
     "astro": "^5.14.1"

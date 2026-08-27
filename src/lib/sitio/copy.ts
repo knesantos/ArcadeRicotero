@@ -94,6 +94,17 @@ export const JUEGOS: readonly Casete[] = [
     accion: 'JUGÁ',
   },
   {
+    titulo: 'Sacalo por la letra',
+    baja: 'Un verso te tiene que alcanzar. Si no, te damos más: dos, cuatro, ocho.',
+    // `UX-08`: viste Momo Sampler, la única de las diez tapas que no estaba tomada como
+    // identidad de sección. Vestirlo igual que su hermano de audio haría que dos juegos
+    // casi gemelos se leyeran como el mismo con dos nombres.
+    variante: 'momo',
+    arte: '/arte/casete.svg',
+    href: '/juegos/adivinar-por-la-letra/',
+    accion: 'JUGÁ',
+  },
+  {
     titulo: 'Completá la letra',
     baja: 'Lo tenés en la punta de la lengua. Falta una palabra del verso y hay cuatro para elegir.',
     variante: 'letras',

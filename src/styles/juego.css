@@ -1249,3 +1249,93 @@
 .fuente-verso-enlace:focus-visible {
   color: var(--texto);
 }
+
+/* ==========================================================================
+   "Sacalo por la letra" (`US-07`, `UX-08`). Tres franjas: cabecera fija, hoja de
+   versos que crece y scrollea sola, buscador anclado en la zona pulgar.
+   ========================================================================== */
+
+.juego-por-la-letra {
+  --tinte-accion: var(--disco-momo-sampler-apoyo);
+}
+
+/* La columna de alto fijo. `svh` y no `vh`: descuenta la barra del navegador movil,
+   que es lo que hace que el buscador quede de verdad donde el pulgar lo espera. */
+.juego-por-la-letra #partida:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  gap: var(--espacio-2);
+}
+
+/* La unica franja que crece, y la unica que scrollea. `min-height: 0` es lo que deja
+   que un hijo flex se encoja por debajo de su contenido: sin eso, ocho versos empujan
+   el buscador fuera de la pantalla en vez de scrollear acá adentro. */
+.hoja-versos {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* El verso es la pieza central de la pantalla, no una nota al pie: un poco mas grande
+   que el cuerpo. Texto largo -> `--fuente`, nunca letra de disco (`UX-01`). */
+.verso {
+  font-family: var(--fuente);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  margin: 0 0 var(--espacio-1);
+  text-wrap: pretty;
+}
+
+/* Los intentos gastados. Sello de goma, no pastilla capsula: esquina casi viva, borde
+   fino, apenas torcido (regla anti-slop). Nunca se predibujan los que faltan. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  border: 1px solid var(--borde);
+  border-radius: 3px;
+  padding: 0.15em 0.5em;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transform: rotate(-0.4deg);
+}
+
+.chip--fallado {
+  color: var(--acento-4);
+  border-color: var(--acento-4);
+}
+
+.chip--pasado {
+  color: var(--texto-tenue);
+}
+
+.chip-texto {
+  max-width: 14ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Cuando queda un solo intento, el dato se pone urgente — con peso ademas de tinta. */
+.restantes--ultimo {
+  color: var(--acento-2);
+  font-weight: 700;
+}
+
+.puntaje-paso {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  margin: var(--espacio-1) 0 0;
+}
