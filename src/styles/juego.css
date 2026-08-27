@@ -1544,3 +1544,105 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
     color: var(--texto);
   }
 }
+
+/* ==========================================================================
+   "Si no se escucha": la puerta para el que no oye nada.
+   Existe porque la llave lateral de silencio del iPhone apaga el audio del
+   navegador sin avisar, y **ninguna API de la web puede detectarla**. Lo unico
+   que se puede hacer es explicarlo bien y en el momento justo.
+   ========================================================================== */
+
+.sin-sonido {
+  margin: var(--espacio-1) 0 0;
+  text-align: center;
+}
+
+/* Chico y tenue a proposito: es una puerta, no un aviso. Al que escucha bien no
+   tiene que robarle atencion del juego. */
+.sin-sonido-abrir {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--borde);
+  color: var(--texto-tenue);
+  font: inherit;
+  font-size: 0.8rem;
+  padding: var(--espacio-1);
+  min-height: var(--toque-min);
+  cursor: pointer;
+}
+
+.sin-sonido-abrir:hover,
+.sin-sonido-abrir:focus-visible {
+  color: var(--texto);
+  border-bottom-color: var(--acento-2);
+}
+
+.sin-sonido-panel {
+  margin-top: var(--espacio-2);
+  padding: var(--espacio-2);
+  border: 2px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--fondo);
+  text-align: left;
+}
+
+.sin-sonido-titulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 1rem;
+  margin: 0 0 var(--espacio-1);
+}
+
+.sin-sonido-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--espacio-2);
+}
+
+.sin-sonido-punto {
+  color: var(--texto-tenue);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+/* El primero de la lista es el que se llevo puesta una partida entera, asi que se
+   separa del resto. **Borde completo, no barra al costado**: la barra de acento en
+   el borde izquierdo es el tic que `diseno-marca.md` veta por nombre, y la unica
+   excepcion declarada es la sangria de cita de la Redondopedia. */
+.sin-sonido-punto--primero {
+  color: var(--texto);
+  border: 2px solid var(--acento-2);
+  border-radius: 3px;
+  padding: var(--espacio-2);
+}
+
+.sin-sonido-diagnostico,
+.sin-sonido-cerrar {
+  display: inline-block;
+  margin-top: var(--espacio-2);
+  color: var(--texto-tenue);
+  font: inherit;
+  font-size: 0.85rem;
+  background: none;
+  border: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: var(--espacio-1);
+  min-height: var(--toque-min);
+  cursor: pointer;
+}
+
+.sin-sonido-diagnostico:hover,
+.sin-sonido-cerrar:hover,
+.sin-sonido-diagnostico:focus-visible,
+.sin-sonido-cerrar:focus-visible {
+  color: var(--texto);
+}
+
+/* El aviso de la portada, cuando el aparato es uno de los que tienen la trampa. */
+.aviso-llave {
+  display: block;
+  margin-top: var(--espacio-1);
+  color: var(--acento-2);
+}

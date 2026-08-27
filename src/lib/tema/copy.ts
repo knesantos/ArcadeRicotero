@@ -56,6 +56,42 @@ export const PARTIDA = {
     'y sin sonido no se puede jugar.',
 } as const;
 
+/**
+ * Qué mirar cuando no se escucha nada. Registro 3: dice qué hay y se calla.
+ *
+ * **Por qué existe una pantalla entera para esto.** Un jugador no pudo escuchar ni un
+ * tema, y después de arreglar dos defectos reales del motor resultó ser **la llave
+ * lateral de silencio del iPhone**: apaga el audio del navegador aunque el volumen esté
+ * alto, y no avisa. El juego entero es de oído — sin sonido no hay juego, y quien se
+ * topa con esto no tiene forma de saber por qué.
+ *
+ * **Y no se puede detectar.** Ninguna API de la web dice si esa llave está puesta, así
+ * que el aviso no puede aparecer solo cuando corresponde. Lo único honesto es decírselo
+ * a quien tiene un iPhone —que es donde la trampa existe— y dejarle a todos una puerta
+ * para cuando igual no se escuche.
+ */
+export const SIN_SONIDO = {
+  /** El enlace que abre esto. Chico y siempre a mano, para cualquier aparato. */
+  disparador: '¿No se escucha?',
+  titulo: 'Si no se escucha',
+  /** Solo en iPhone y iPad. Es la causa más común, y la más invisible de todas. */
+  llaveIphone:
+    'En iPhone, la llave lateral de silencio apaga el sonido del navegador. Aunque el ' +
+    'volumen esté alto, y sin avisar. Es lo primero que hay que mirar.',
+  volumen:
+    'El volumen de los videos es una perilla distinta de la del timbre. Las teclas del ' +
+    'costado solo lo mueven mientras algo está sonando.',
+  /** Cuando la página corre adentro de otra aplicación en vez del navegador. */
+  incrustado: (donde: string) =>
+    `Abriste esto adentro de ${donde}, no en el navegador del teléfono. Esas ventanas ` +
+    `recortan el sonido: abrilo aparte y probá de nuevo.`,
+  auriculares:
+    'Con auriculares se escucha mejor: el primer paso dura una décima de segundo y por ' +
+    'el parlante del teléfono puede pasar de largo.',
+  verDiagnostico: 'Revisá el audio de este aparato',
+  cerrar: 'Cerrá',
+} as const;
+
 export const REVELACION = {
   acerto: '¡La sacaste!',
   fallo: 'Se te escapó.',

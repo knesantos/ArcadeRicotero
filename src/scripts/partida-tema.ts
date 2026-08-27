@@ -26,7 +26,8 @@
 import { sugerir, acierta, MAX_SUGERENCIAS, type TemaBuscable, type Resultado } from '../lib/tema/buscador.ts';
 import { ESCALERA, INTENTOS, paso, puntos, puntajeMaximo, anchosDeTramos } from '../lib/tema/escalera.ts';
 import { Reproductor, urlDeTema } from '../lib/tema/audio.ts';
-import { PARTIDA, REVELACION, RESULTADO, TRAMOS, PANTALLA_0 } from '../lib/tema/copy.ts';
+import { PARTIDA, REVELACION, RESULTADO, TRAMOS, PANTALLA_0, SIN_SONIDO } from '../lib/tema/copy.ts';
+import { esIOS, esMovil, navegadorIncrustado } from '../lib/sitio/aparato.ts';
 import { tramo } from '../lib/quiz/tramo.ts';
 import { armarLink } from '../lib/desafio.ts';
 
@@ -98,6 +99,30 @@ for (const boton of portada.querySelectorAll<HTMLButtonElement>('[data-disco]'))
     $('cuantos').textContent = PANTALLA_0.hay(cuantos);
     $<HTMLButtonElement>('jugar').disabled = cuantos === 0;
   });
+}
+
+/*
+ * El aviso de la llave del iPhone, en la portada y **antes** de que haga falta el audio.
+ *
+ * Va en JavaScript y no en el HTML porque la pagina es estatica: en build no se sabe que
+ * aparato hay del otro lado, y mostrarle a todo el mundo un aviso sobre una llave que
+ * solo existe en iPhone es ruido para la mayoria.
+ *
+ * `US-02` criterio 2 ya pedia un aviso de sonido antes de arrancar, y ya estaba puesto
+ * (`.aviso-sonido`). Lo que faltaba era **decir cual es la causa concreta**: "fijate el
+ * volumen" no alcanza cuando el volumen esta alto y la llave es lo que manda.
+ */
+const avisoSonido = document.querySelector('.aviso-sonido');
+if (avisoSonido) {
+  const donde = navegadorIncrustado();
+  if (esIOS()) {
+    const extra = el('strong', 'aviso-llave', SIN_SONIDO.llaveIphone);
+    avisoSonido.append(document.createTextNode(' '), extra);
+  }
+  if (donde) {
+    const extra = el('strong', 'aviso-llave', SIN_SONIDO.incrustado(donde));
+    avisoSonido.append(document.createTextNode(' '), extra);
+  }
 }
 
 $('jugar').addEventListener('click', () => {
@@ -207,6 +232,16 @@ function armarPantalla(): void {
   botonEscuchar.type = 'button';
   botonEscuchar.addEventListener('click', alternarSonido);
   reproductorCaja.append(botonEscuchar);
+
+  // La salida para cuando igual no se escucha. Va pegada al boton que produce el sonido,
+  // que es donde aparece la duda, y en letra chica: es una puerta, no un aviso.
+  const ayuda = el('p', 'sin-sonido');
+  const abrir = el('button', 'sin-sonido-abrir', SIN_SONIDO.disparador);
+  abrir.type = 'button';
+  abrir.addEventListener('click', () => abrirAyudaDeSonido(ayuda));
+  ayuda.append(abrir);
+  reproductorCaja.append(ayuda);
+
   zonaPartida.append(reproductorCaja);
 
   // El panel de revelación vive acá y se muestra cuando el tema se cierra. El aviso de
@@ -336,6 +371,54 @@ function pintarBotonPrincipal(): void {
 // ---------------------------------------------------------------- el sonido
 
 let sonando = false;
+
+/**
+ * Que mirar cuando no se escucha nada.
+ *
+ * El orden **no es alfabetico ni tematico: es por probabilidad**, y el primero de la
+ * lista es el que se llevo puesta una partida entera. La llave del iPhone va arriba y
+ * solo en iPhone; el resto lo ve cualquiera.
+ */
+function abrirAyudaDeSonido(ancla: HTMLElement): void {
+  if (ancla.querySelector('.sin-sonido-panel')) return;
+
+  const panel = el('div', 'sin-sonido-panel');
+  panel.setAttribute('role', 'group');
+  const titulo = el('p', 'sin-sonido-titulo', SIN_SONIDO.titulo);
+  titulo.id = 'sin-sonido-titulo';
+  panel.setAttribute('aria-labelledby', titulo.id);
+  panel.append(titulo);
+
+  const lista = el('ul', 'sin-sonido-lista');
+  const punto = (texto: string, fuerte = false): void => {
+    const li = el('li', fuerte ? 'sin-sonido-punto sin-sonido-punto--primero' : 'sin-sonido-punto', texto);
+    lista.append(li);
+  };
+
+  // Primero lo que no se puede detectar y mas caro sale: la llave del iPhone.
+  if (esIOS()) punto(SIN_SONIDO.llaveIphone, true);
+  const donde = navegadorIncrustado();
+  if (donde) punto(SIN_SONIDO.incrustado(donde), true);
+  if (esMovil()) punto(SIN_SONIDO.volumen);
+  punto(SIN_SONIDO.auriculares);
+  panel.append(lista);
+
+  const diag = el('a', 'sin-sonido-diagnostico', SIN_SONIDO.verDiagnostico);
+  diag.href = '/diagnostico-audio/';
+  panel.append(diag);
+
+  const cerrar = el('button', 'sin-sonido-cerrar', SIN_SONIDO.cerrar);
+  cerrar.type = 'button';
+  cerrar.addEventListener('click', () => {
+    panel.remove();
+    ancla.querySelector<HTMLButtonElement>('.sin-sonido-abrir')?.focus();
+  });
+  panel.append(cerrar);
+
+  ancla.append(panel);
+  titulo.tabIndex = -1;
+  titulo.focus();
+}
 
 function alternarSonido(): void {
   if (sonando) {

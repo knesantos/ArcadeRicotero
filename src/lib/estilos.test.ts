@@ -77,7 +77,11 @@ test('anti-slop: sin pastillas capsula ni barras de acento laterales', () => {
     const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
     assert.ok(!css.includes('999px'), `${hoja}: pastilla capsula (border-radius 999px)`);
     for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
-      if (regla[2]!.includes('border-inline-start')) {
+      // **`border-left` tambien, no solo la propiedad logica.** El chequeo miraba unicamente
+      // `border-inline-start` y por ese hueco entro una barra lateral de verdad, escrita con
+      // la propiedad fisica, en el panel de "si no se escucha". Un auditor que solo conoce
+      // una de las dos formas de escribir lo mismo no audita nada.
+      if (/border-(inline-start|left)\s*:/.test(regla[2]!)) {
         assert.match(
           regla[1]!.trim(),
           /^\.parrafo--/,
