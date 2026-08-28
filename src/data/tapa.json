@@ -6,252 +6,490 @@
   "items": [
     {
       "id": "TP-001",
-      "us": ["US-04"],
+      "us": [
+        "US-04"
+      ],
       "dificultad": "facil",
       "imagen": {
-        "archivo": "gulp",
-        "encuadre": "entera",
+        "archivo": "gulp-zoom",
+        "encuadre": "detalle",
         "disco": "Gulp!",
         "edicion": "LP argentino, sello Wormo, 1985",
         "auditoria": "coincide con la original, sin marcador que lo pruebe",
-        "credito": { "autor": "Rocambole (Ricardo Cohen)", "origen": "coveralia" }
+        "credito": {
+          "autor": "Rocambole (Ricardo Cohen)",
+          "origen": "coveralia"
+        }
       },
       "opciones": [
-        { "texto": "Gulp!", "correcta": true },
-        { "texto": "Oktubre", "correcta": false },
-        { "texto": "Un baión para el ojo idiota", "correcta": false },
-        { "texto": "¡Bang! ¡Bang!... Estás liquidado", "correcta": false }
+        {
+          "texto": "Gulp!",
+          "correcta": true
+        },
+        {
+          "texto": "Oktubre",
+          "correcta": false
+        },
+        {
+          "texto": "Un baión para el ojo idiota",
+          "correcta": false
+        },
+        {
+          "texto": "¡Bang! ¡Bang!... Estás liquidado",
+          "correcta": false
+        }
       ],
       "explicacion": "El título no es una tipografía: Rocambole lo pintó a mano con un tubo de plasticola cargado de esmalte sintético, y lo pasaron a serigrafía sobre seda en tres pasadas.",
-      "fuentes": ["RES-44", "RES-02", "RES-33"],
-      "sensibleA": ["tapa"],
-      "estado": "listo"
+      "fuentes": [
+        "RES-44",
+        "RES-02",
+        "RES-33"
+      ],
+      "sensibleA": [
+        "tapa"
+      ],
+      "estado": "listo",
+      "notaInterna": "Ciclo 9, 2026-08-28, pedido del usuario: el juego funciona como los juegos de splash — no se muestra la tapa entera nunca, se muestra un zoom alto. El lado del recorte sale de la dificultad del item (facil 0.40 del master, media 0.26, dificil 0.22), asi que BR-01 escalona de verdad y no solo por que tapa toca. De paso muere el defecto anterior: si el titulo impreso no entra en el recorte, no hay nada que leer. Los centros estan en scripts/generar-tapas.mjs y le deben una entrada a UX-05."
     },
     {
       "id": "TP-002",
-      "us": ["US-04"],
+      "us": [
+        "US-04"
+      ],
       "dificultad": "facil",
       "imagen": {
-        "archivo": "oktubre",
-        "encuadre": "entera",
+        "archivo": "oktubre-zoom",
+        "encuadre": "detalle",
         "disco": "Oktubre",
         "edicion": "LP/casete argentino, sellos Wormo y Del Cielito, 1986",
         "auditoria": "coincide con la original, sin marcador que lo pruebe",
-        "credito": { "autor": "Rocambole (Ricardo Cohen)", "origen": "coveralia" }
+        "credito": {
+          "autor": "Rocambole (Ricardo Cohen)",
+          "origen": "coveralia"
+        }
       },
       "opciones": [
-        { "texto": "Oktubre", "correcta": true },
-        { "texto": "Gulp!", "correcta": false },
-        { "texto": "Un baión para el ojo idiota", "correcta": false },
-        { "texto": "Luzbelito", "correcta": false }
+        {
+          "texto": "Oktubre",
+          "correcta": true
+        },
+        {
+          "texto": "Gulp!",
+          "correcta": false
+        },
+        {
+          "texto": "Un baión para el ojo idiota",
+          "correcta": false
+        },
+        {
+          "texto": "Luzbelito",
+          "correcta": false
+        }
       ],
       "explicacion": "La letra del título es un alfabeto que Rocambole inventó él mismo, a mano, con aire cirílico y una B espejada: no deriva de ninguna tipografía existente, y aprovechó su oficio previo de cartelista.",
       "rotulo": {
         "tipo": "leyenda",
         "texto": "Que el alfabeto fue un homenaje a la Revolución Rusa de 1917 circula consistente en varias fuentes, pero sale de una entrevista de 1999 sin verificar en fuente primaria (RES-06)."
       },
-      "fuentes": ["RES-44", "RES-02", "RES-31", "RES-06"],
-      "sensibleA": ["tapa"],
-      "estado": "listo"
+      "fuentes": [
+        "RES-44",
+        "RES-02",
+        "RES-31",
+        "RES-06"
+      ],
+      "sensibleA": [
+        "tapa"
+      ],
+      "estado": "listo",
+      "notaInterna": "Ciclo 9, 2026-08-28, pedido del usuario: el juego funciona como los juegos de splash — no se muestra la tapa entera nunca, se muestra un zoom alto. El lado del recorte sale de la dificultad del item (facil 0.40 del master, media 0.26, dificil 0.22), asi que BR-01 escalona de verdad y no solo por que tapa toca. De paso muere el defecto anterior: si el titulo impreso no entra en el recorte, no hay nada que leer. Los centros estan en scripts/generar-tapas.mjs y le deben una entrada a UX-05."
     },
     {
       "id": "TP-003",
-      "us": ["US-04"],
+      "us": [
+        "US-04"
+      ],
       "dificultad": "facil",
       "imagen": {
-        "archivo": "luzbelito",
-        "encuadre": "entera",
+        "archivo": "luzbelito-zoom",
+        "encuadre": "detalle",
         "disco": "Luzbelito",
         "edicion": "CD argentino, sello Del Cielito, 1996",
         "auditoria": "coincide con la original, sin marcador que lo pruebe",
-        "credito": { "autor": "Rocambole (Ricardo Cohen)", "origen": "coveralia" }
+        "credito": {
+          "autor": "Rocambole (Ricardo Cohen)",
+          "origen": "coveralia"
+        }
       },
       "opciones": [
-        { "texto": "Luzbelito", "correcta": true },
-        { "texto": "Último bondi a Finisterre", "correcta": false },
-        { "texto": "Momo Sampler", "correcta": false },
-        { "texto": "Oktubre", "correcta": false }
+        {
+          "texto": "Luzbelito",
+          "correcta": true
+        },
+        {
+          "texto": "Último bondi a Finisterre",
+          "correcta": false
+        },
+        {
+          "texto": "Momo Sampler",
+          "correcta": false
+        },
+        {
+          "texto": "Oktubre",
+          "correcta": false
+        }
       ],
       "explicacion": "Esta tapa le ganó a Rocambole el premio ACE al mejor diseño de portada de disco.",
-      "fuentes": ["RES-44", "RES-02", "RES-06"],
-      "sensibleA": ["tapa"],
-      "estado": "listo"
+      "fuentes": [
+        "RES-44",
+        "RES-02",
+        "RES-06"
+      ],
+      "sensibleA": [
+        "tapa"
+      ],
+      "estado": "listo",
+      "notaInterna": "Ciclo 9, 2026-08-28, pedido del usuario: el juego funciona como los juegos de splash — no se muestra la tapa entera nunca, se muestra un zoom alto. El lado del recorte sale de la dificultad del item (facil 0.40 del master, media 0.26, dificil 0.22), asi que BR-01 escalona de verdad y no solo por que tapa toca. De paso muere el defecto anterior: si el titulo impreso no entra en el recorte, no hay nada que leer. Los centros estan en scripts/generar-tapas.mjs y le deben una entrada a UX-05."
     },
     {
       "id": "TP-004",
-      "us": ["US-04"],
+      "us": [
+        "US-04"
+      ],
       "dificultad": "media",
       "imagen": {
-        "archivo": "un-baion-para-el-ojo-idiota",
-        "encuadre": "entera",
+        "archivo": "un-baion-para-el-ojo-idiota-zoom",
+        "encuadre": "detalle",
         "disco": "Un baión para el ojo idiota",
         "edicion": "LP argentino, sello Wormo, 1988",
         "auditoria": "coincide con la original, sin marcador que lo pruebe",
-        "credito": { "autor": "Rocambole (Ricardo Cohen)", "origen": "coveralia" }
+        "credito": {
+          "autor": "Rocambole (Ricardo Cohen)",
+          "origen": "coveralia"
+        }
       },
       "opciones": [
-        { "texto": "Un baión para el ojo idiota", "correcta": true },
-        { "texto": "¡Bang! ¡Bang!... Estás liquidado", "correcta": false },
-        { "texto": "Gulp!", "correcta": false },
-        { "texto": "La mosca y la sopa", "correcta": false }
+        {
+          "texto": "Un baión para el ojo idiota",
+          "correcta": true
+        },
+        {
+          "texto": "¡Bang! ¡Bang!... Estás liquidado",
+          "correcta": false
+        },
+        {
+          "texto": "Gulp!",
+          "correcta": false
+        },
+        {
+          "texto": "La mosca y la sopa",
+          "correcta": false
+        }
       ],
       "explicacion": "El televisor es 'el ojo idiota'. El muñeco con antifaz y chupete es la hija de Rocambole, Marilú, disfrazada; el perro apareció después, porque para él hay un perro en toda la mitología solariana.",
       "rotulo": {
         "tipo": "testimonio",
         "texto": "Lo cuenta el Indio Solari citando a Rocambole en sus memorias 'Recuerdos que mienten un poco' (2019)."
       },
-      "fuentes": ["RES-44", "RES-02", "RES-22"],
-      "sensibleA": ["tapa"],
-      "estado": "listo"
+      "fuentes": [
+        "RES-44",
+        "RES-02",
+        "RES-22"
+      ],
+      "sensibleA": [
+        "tapa"
+      ],
+      "estado": "listo",
+      "notaInterna": "Ciclo 9, 2026-08-28, pedido del usuario: el juego funciona como los juegos de splash — no se muestra la tapa entera nunca, se muestra un zoom alto. El lado del recorte sale de la dificultad del item (facil 0.40 del master, media 0.26, dificil 0.22), asi que BR-01 escalona de verdad y no solo por que tapa toca. De paso muere el defecto anterior: si el titulo impreso no entra en el recorte, no hay nada que leer. Los centros estan en scripts/generar-tapas.mjs y le deben una entrada a UX-05."
     },
     {
       "id": "TP-005",
-      "us": ["US-04"],
+      "us": [
+        "US-04"
+      ],
       "dificultad": "media",
       "imagen": {
-        "archivo": "bang-bang-estas-liquidado",
-        "encuadre": "entera",
+        "archivo": "bang-bang-estas-liquidado-zoom",
+        "encuadre": "detalle",
         "disco": "¡Bang! ¡Bang!... Estás liquidado",
         "edicion": "LP argentino, sello Del Cielito, 1989",
         "auditoria": "coincide con la original, sin marcador que lo pruebe",
-        "credito": { "autor": "Rocambole (Ricardo Cohen)", "origen": "coveralia" }
+        "credito": {
+          "autor": "Rocambole (Ricardo Cohen)",
+          "origen": "coveralia"
+        }
       },
       "opciones": [
-        { "texto": "¡Bang! ¡Bang!... Estás liquidado", "correcta": true },
-        { "texto": "Un baión para el ojo idiota", "correcta": false },
-        { "texto": "La mosca y la sopa", "correcta": false },
-        { "texto": "Oktubre", "correcta": false }
+        {
+          "texto": "¡Bang! ¡Bang!... Estás liquidado",
+          "correcta": true
+        },
+        {
+          "texto": "Un baión para el ojo idiota",
+          "correcta": false
+        },
+        {
+          "texto": "La mosca y la sopa",
+          "correcta": false
+        },
+        {
+          "texto": "Oktubre",
+          "correcta": false
+        }
       ],
       "explicacion": "Salió por Del Cielito en 1989, el año antes de que la banda tocara por primera vez fuera de la Argentina, en Montevideo.",
-      "fuentes": ["RES-44", "RES-02", "RES-05"],
-      "sensibleA": ["tapa"],
-      "estado": "listo"
+      "fuentes": [
+        "RES-44",
+        "RES-02",
+        "RES-05"
+      ],
+      "sensibleA": [
+        "tapa"
+      ],
+      "estado": "listo",
+      "notaInterna": "Ciclo 9, 2026-08-28, pedido del usuario: el juego funciona como los juegos de splash — no se muestra la tapa entera nunca, se muestra un zoom alto. El lado del recorte sale de la dificultad del item (facil 0.40 del master, media 0.26, dificil 0.22), asi que BR-01 escalona de verdad y no solo por que tapa toca. De paso muere el defecto anterior: si el titulo impreso no entra en el recorte, no hay nada que leer. Los centros estan en scripts/generar-tapas.mjs y le deben una entrada a UX-05."
     },
     {
       "id": "TP-006",
-      "us": ["US-04"],
+      "us": [
+        "US-04"
+      ],
       "dificultad": "media",
       "imagen": {
-        "archivo": "ultimo-bondi-a-finisterre",
-        "encuadre": "entera",
+        "archivo": "ultimo-bondi-a-finisterre-zoom",
+        "encuadre": "detalle",
         "disco": "Último bondi a Finisterre",
         "edicion": "CD argentino, sello Patricio Rey Discos, 1998",
         "auditoria": "coincide con la original, sin marcador que lo pruebe",
-        "credito": { "autor": "Rocambole (Ricardo Cohen)", "origen": "coveralia" }
+        "credito": {
+          "autor": "Rocambole (Ricardo Cohen)",
+          "origen": "coveralia"
+        }
       },
       "opciones": [
-        { "texto": "Último bondi a Finisterre", "correcta": true },
-        { "texto": "Momo Sampler", "correcta": false },
-        { "texto": "Luzbelito", "correcta": false },
-        { "texto": "Lobo suelto", "correcta": false }
+        {
+          "texto": "Último bondi a Finisterre",
+          "correcta": true
+        },
+        {
+          "texto": "Momo Sampler",
+          "correcta": false
+        },
+        {
+          "texto": "Luzbelito",
+          "correcta": false
+        },
+        {
+          "texto": "Lobo suelto",
+          "correcta": false
+        }
       ],
       "explicacion": "La nave con cúpula traslúcida nació de una idea del Indio, un bondi tipo Mad Max, que Rocambole transformó en nave interplanetaria inspirado en el repujado plateado de una caja de whisky Chivas Regal.",
       "rotulo": {
         "tipo": "testimonio",
         "texto": "Contado por el Indio Solari en sus memorias 'Recuerdos que mienten un poco' (2019), sobre una charla con Rocambole."
       },
-      "fuentes": ["RES-44", "RES-02", "RES-22"],
-      "sensibleA": ["tapa"],
-      "estado": "listo"
+      "fuentes": [
+        "RES-44",
+        "RES-02",
+        "RES-22"
+      ],
+      "sensibleA": [
+        "tapa"
+      ],
+      "estado": "listo",
+      "notaInterna": "Ciclo 9, 2026-08-28, pedido del usuario: el juego funciona como los juegos de splash — no se muestra la tapa entera nunca, se muestra un zoom alto. El lado del recorte sale de la dificultad del item (facil 0.40 del master, media 0.26, dificil 0.22), asi que BR-01 escalona de verdad y no solo por que tapa toca. De paso muere el defecto anterior: si el titulo impreso no entra en el recorte, no hay nada que leer. Los centros estan en scripts/generar-tapas.mjs y le deben una entrada a UX-05."
     },
     {
       "id": "TP-007",
-      "us": ["US-04"],
+      "us": [
+        "US-04"
+      ],
       "dificultad": "dificil",
       "imagen": {
-        "archivo": "lobo-suelto",
-        "encuadre": "entera",
+        "archivo": "lobo-suelto-zoom",
+        "encuadre": "detalle",
         "disco": "Lobo suelto",
         "edicion": "CD argentino, sello Del Cielito, 1993 (vol. 1 del doble)",
         "auditoria": "coincide con la original, sin marcador que lo pruebe",
-        "credito": { "autor": "Rocambole (Ricardo Cohen)", "origen": "coveralia" }
+        "credito": {
+          "autor": "Rocambole (Ricardo Cohen)",
+          "origen": "coveralia"
+        }
       },
       "opciones": [
-        { "texto": "Lobo suelto", "correcta": true },
-        { "texto": "Cordero atado", "correcta": false },
-        { "texto": "La mosca y la sopa", "correcta": false },
-        { "texto": "Momo Sampler", "correcta": false }
+        {
+          "texto": "Lobo suelto",
+          "correcta": true
+        },
+        {
+          "texto": "Cordero atado",
+          "correcta": false
+        },
+        {
+          "texto": "La mosca y la sopa",
+          "correcta": false
+        },
+        {
+          "texto": "Momo Sampler",
+          "correcta": false
+        }
       ],
-      "explicacion": "Las letras del título no son de Rocambole: son un alfabeto creado por Semilla Bucciarelli, el bajista, que Rocambole definió como aerografías gigantes.",
-      "fuentes": ["RES-44", "RES-02", "RES-36"],
-      "sensibleA": ["tapa"],
+      "explicacion": "El alfabeto con el que está escrito el título de este disco no lo dibujó Rocambole: es de Semilla Bucciarelli, el bajista, y Rocambole lo describió como aerografías gigantes.",
+      "fuentes": [
+        "RES-44",
+        "RES-02",
+        "RES-36"
+      ],
+      "sensibleA": [
+        "tapa"
+      ],
       "estado": "listo",
-      "notaInterna": "RES-40 da el crédito de tapa como 'Visiones: Rocambole, Semilla y Meroyuela' para los dos volúmenes, sin separar aportes. Este ítem usa Rocambole por ser el único valor del enum credito.autor de CTR-05.4. Si arquitectura amplía ese enum para créditos compartidos, revisar junto con TP-008."
+      "notaInterna": "Ciclo 9, 2026-08-28, pedido del usuario: el juego funciona como los juegos de splash — no se muestra la tapa entera nunca, se muestra un zoom alto. El lado del recorte sale de la dificultad del item (facil 0.40 del master, media 0.26, dificil 0.22), asi que BR-01 escalona de verdad y no solo por que tapa toca. De paso muere el defecto anterior: si el titulo impreso no entra en el recorte, no hay nada que leer. Los centros estan en scripts/generar-tapas.mjs y le deben una entrada a UX-05."
     },
     {
       "id": "TP-008",
-      "us": ["US-04"],
+      "us": [
+        "US-04"
+      ],
       "dificultad": "dificil",
       "imagen": {
-        "archivo": "cordero-atado",
-        "encuadre": "entera",
+        "archivo": "cordero-atado-zoom",
+        "encuadre": "detalle",
         "disco": "Cordero atado",
         "edicion": "CD argentino, sello Del Cielito, 1993 (vol. 2 del doble)",
         "auditoria": "coincide con la original, sin marcador que lo pruebe",
-        "credito": { "autor": "Rocambole (Ricardo Cohen)", "origen": "coveralia" }
+        "credito": {
+          "autor": "Rocambole (Ricardo Cohen)",
+          "origen": "coveralia"
+        }
       },
       "opciones": [
-        { "texto": "Cordero atado", "correcta": true },
-        { "texto": "Lobo suelto", "correcta": false },
-        { "texto": "La mosca y la sopa", "correcta": false },
-        { "texto": "¡Bang! ¡Bang!... Estás liquidado", "correcta": false }
+        {
+          "texto": "Cordero atado",
+          "correcta": true
+        },
+        {
+          "texto": "Lobo suelto",
+          "correcta": false
+        },
+        {
+          "texto": "La mosca y la sopa",
+          "correcta": false
+        },
+        {
+          "texto": "¡Bang! ¡Bang!... Estás liquidado",
+          "correcta": false
+        }
       ],
       "explicacion": "Salió el mismo día que el volumen 1, como las dos mitades de un álbum doble sobre dos personajes opuestos: Lupus el Lobo y Rulo el Cordero.",
-      "fuentes": ["RES-44", "RES-02", "RES-20"],
-      "sensibleA": ["tapa"],
+      "fuentes": [
+        "RES-44",
+        "RES-02",
+        "RES-20"
+      ],
+      "sensibleA": [
+        "tapa"
+      ],
       "estado": "listo",
-      "notaInterna": "Misma salvedad de crédito que TP-007. RES-44 anota este frontal como 'arte naif azul/naranja (autoría Semilla Bucciarelli, no Rocambole)', mientras RES-40 da un crédito conjunto sin separar por volumen. Se cargó con Rocambole por el enum único de credito.autor — es decisión de contenido, no un hecho cerrado. Marcar para revisor."
+      "notaInterna": "Ciclo 9, 2026-08-28, pedido del usuario: el juego funciona como los juegos de splash — no se muestra la tapa entera nunca, se muestra un zoom alto. El lado del recorte sale de la dificultad del item (facil 0.40 del master, media 0.26, dificil 0.22), asi que BR-01 escalona de verdad y no solo por que tapa toca. De paso muere el defecto anterior: si el titulo impreso no entra en el recorte, no hay nada que leer. Los centros estan en scripts/generar-tapas.mjs y le deben una entrada a UX-05."
     },
     {
       "id": "TP-009",
-      "us": ["US-04"],
+      "us": [
+        "US-04"
+      ],
       "dificultad": "dificil",
       "imagen": {
-        "archivo": "momo-sampler",
-        "encuadre": "entera",
+        "archivo": "momo-sampler-zoom",
+        "encuadre": "detalle",
         "disco": "Momo Sampler",
         "edicion": "CD argentino, sello Patricio Rey Discos, 2000",
         "auditoria": "coincide con la original, sin marcador que lo pruebe",
-        "credito": { "autor": "Rocambole (Ricardo Cohen)", "origen": "coveralia" }
+        "credito": {
+          "autor": "Rocambole (Ricardo Cohen)",
+          "origen": "coveralia"
+        }
       },
       "opciones": [
-        { "texto": "Momo Sampler", "correcta": true },
-        { "texto": "Último bondi a Finisterre", "correcta": false },
-        { "texto": "Luzbelito", "correcta": false },
-        { "texto": "Gulp!", "correcta": false }
+        {
+          "texto": "Momo Sampler",
+          "correcta": true
+        },
+        {
+          "texto": "Último bondi a Finisterre",
+          "correcta": false
+        },
+        {
+          "texto": "Luzbelito",
+          "correcta": false
+        },
+        {
+          "texto": "Gulp!",
+          "correcta": false
+        }
       ],
       "explicacion": "La edición en CD traía adentro un medallón metálico; una entrevista de 1999 a Rocambole dice que pesaba 38 gramos, aunque en otras versiones circula como 36.",
       "rotulo": {
         "tipo": "leyenda",
         "texto": "El dato del medallón circula reportado desde una entrevista de 1999 a Rocambole que no pude verificar en fuente primaria (RES-06)."
       },
-      "fuentes": ["RES-44", "RES-02", "RES-06"],
-      "sensibleA": ["tapa"],
-      "estado": "listo"
+      "fuentes": [
+        "RES-44",
+        "RES-02",
+        "RES-06"
+      ],
+      "sensibleA": [
+        "tapa"
+      ],
+      "estado": "listo",
+      "notaInterna": "Ciclo 9, 2026-08-28, pedido del usuario: el juego funciona como los juegos de splash — no se muestra la tapa entera nunca, se muestra un zoom alto. El lado del recorte sale de la dificultad del item (facil 0.40 del master, media 0.26, dificil 0.22), asi que BR-01 escalona de verdad y no solo por que tapa toca. De paso muere el defecto anterior: si el titulo impreso no entra en el recorte, no hay nada que leer. Los centros estan en scripts/generar-tapas.mjs y le deben una entrada a UX-05."
     },
     {
       "id": "TP-010",
-      "us": ["US-04"],
+      "us": [
+        "US-04"
+      ],
       "dificultad": "dificil",
       "imagen": {
-        "archivo": "mosca-olla",
+        "archivo": "la-mosca-y-la-sopa-zoom",
         "encuadre": "detalle",
         "disco": "La mosca y la sopa",
         "edicion": "Recorte de la contratapa del CD, sello Del Cielito Records; álbum de 1991, año de esta reedición sin confirmar",
         "auditoria": "reedicion confirmada",
-        "credito": { "autor": "Rocambole (Ricardo Cohen)", "origen": "coveralia" }
+        "credito": {
+          "autor": "Rocambole (Ricardo Cohen)",
+          "origen": "coveralia"
+        }
       },
       "opciones": [
-        { "texto": "La mosca y la sopa", "correcta": true },
-        { "texto": "Un baión para el ojo idiota", "correcta": false },
-        { "texto": "Lobo suelto", "correcta": false },
-        { "texto": "Momo Sampler", "correcta": false }
+        {
+          "texto": "La mosca y la sopa",
+          "correcta": true
+        },
+        {
+          "texto": "Un baión para el ojo idiota",
+          "correcta": false
+        },
+        {
+          "texto": "Lobo suelto",
+          "correcta": false
+        },
+        {
+          "texto": "Momo Sampler",
+          "correcta": false
+        }
       ],
       "explicacion": "Este es un recorte de la contratapa, sin título ni lista de temas a la vista: se ve la olla de metal con el cucharón, el objeto que le da nombre al disco. La única cara frontal disponible resultó un rediseño con una foto de recital, no el arte de Rocambole (RES-44).",
-      "fuentes": ["RES-44", "RES-02", "RES-06"],
-      "sensibleA": ["tapa"],
+      "fuentes": [
+        "RES-44",
+        "RES-02",
+        "RES-06"
+      ],
+      "sensibleA": [
+        "tapa"
+      ],
       "estado": "listo",
-      "notaInterna": "Corregido por REV-05 (hallazgo 1): antes usaba archivo='la-mosca-y-la-sopa' + encuadre='entera', que resolvía a la contratapa ENTERA con el título impreso y legible — la respuesta estaba escrita en la pregunta, y encima rotulada 'dificil'. Ahora archivo='mosca-olla' + encuadre='detalle' apunta al recorte que T-49 dejó en public/tapas/detalle/mosca-olla.jpg (rutaImagen() en src/lib/tapa/banco.ts ya resuelve por subcarpeta), que muestra la olla sin texto de por medio. 'dificultad: dificil' se mantiene: ahora sí es de verdad difícil, sin título a la vista. Sigue en pie el hueco 2 de Docs/SUGERENCIAS/CNT-para-arquitectura-detalle-en-us04.md: el schema no tiene campo estructurado para declarar 'contratapa' — esa honestidad vive en 'edicion' y 'explicacion', no en el enunciado fijo que escribe experiencia (CTR-05.2). El hueco 1 de esa misma nota (texto de CTR-05.4 desactualizado sobre la ruta de detalle) no es mío y no frena esto: el código que corre ya usa la ruta de subcarpeta."
+      "notaInterna": "Ciclo 9, 2026-08-28, pedido del usuario: el juego funciona como los juegos de splash — no se muestra la tapa entera nunca, se muestra un zoom alto. El lado del recorte sale de la dificultad del item (facil 0.40 del master, media 0.26, dificil 0.22), asi que BR-01 escalona de verdad y no solo por que tapa toca. De paso muere el defecto anterior: si el titulo impreso no entra en el recorte, no hay nada que leer. Los centros estan en scripts/generar-tapas.mjs y le deben una entrada a UX-05."
     }
   ]
 }

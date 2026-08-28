@@ -5,12 +5,144 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-08-27
+**Última actualización:** 2026-08-28
 **Ciclo actual:** **9 — EN CURSO.** Plan en
 `Docs/ORQ/ORQ-plan-ciclo-9.md`, tareas `T-128`..`T-160` (`T-148` cancelado). **Cinco
 frentes en dos tramos**: el juego nuevo por letras (`US-07`), `US-03` que sale entero, el
 quiz que pasa a vidas, el botón de corrección, y la pulida de escritorio más los recortes
 reales.
+
+> ### ✅ "ADIVINÁ LA TAPA" AHORA ES UN JUEGO DE ZOOM (2026-08-28)
+
+> `npm test` **352/352** · `npm run check` limpio · guarda en `src/lib/tapa/encuadre.test.ts`
+> · diez zooms nuevos por `scripts/generar-tapas.mjs`.
+>
+> Salió auditando el quiz y terminó en otra cosa. **El defecto:** abrí los diez masters de
+> a uno y **ocho de las diez tapas traen el título impreso en la cara frontal**, mientras
+> ocho de los diez ítems mostraban la tapa entera. El juego promete reconocer una tapa y se
+> ganaba **leyendo**. En `TP-007` y `TP-008` era doble: las dos tapas del álbum doble
+> imprimen los dos títulos, así que descartaban dos opciones de cuatro.
+>
+> Las únicas dos que **no** imprimen el título: `gulp` —lo manuscrito es «Patricio Rey y
+> sus Redonditos de Ricota», el nombre de la banda— y `bang-bang`, sin una sola letra.
+>
+> ### El usuario cortó por lo sano, y quedó mejor que el arreglo que yo había hecho
+>
+> Mi primera pasada fue recortar solo los `media`/`dificil` y dejar enteras las faciles. El
+> pedido fue otro: *"que funcione como los juegos splash — no mostrar la tapa entera sino
+> un zoom alto como para que sea difícil"*. **Ninguna tapa se muestra entera**, y de paso
+> el defecto muere solo: si el título no entra en el recorte, no hay nada que leer.
+>
+> **Lo que escalona ahora es el lado del zoom, no si hay recorte:**
+>
+> | nivel | zoom | del master | qué se ve |
+> |---|---|---|---|
+> | `facil` | 0,40 | ~381 px | un motivo entero — la multitud de *Oktubre*, el óvalo de *Luzbelito* |
+> | `media` | 0,26 | ~248 px | una parte — el muñeco con antifaz, las caras en la cúpula |
+> | `dificil` | 0,22 | ~210 px | un rasgo suelto — los colmillos, un ojo verde, la olla |
+>
+> Los diez centros están mirados uno por uno contra el master: ninguno cae sobre el título.
+> Verificado a 375×812 — los diez llegan 480×480, se dibujan 326×326, 32 px de scroll en
+> toda la pantalla, sin errores de consola.
+>
+> ### 🔴 Tres deudas declaradas, no tapadas
+>
+> 1. **`UX-05` no tiene esta forma.** El script dice *«Si cambia el catálogo, cambia esta
+>    tabla — no al revés»* y acá fui al revés. Todo —zooms y centros— en
+>    `Docs/SUGERENCIAS/HILO-para-experiencia-tapas-sin-titulo.md` para que `experiencia`
+>    los adopte o los corrija.
+> 2. **Reemplacé una regla del contrato.** `tapa.schema.json` decía *`encuadre: "detalle"`
+>    ⟹ `dificultad ∈ {media, dificil}`*, que codificaba el modelo viejo y **bloqueaba
+>    justamente los tres faciles**. Ahora dice: `estado: "listo"` ⟹ `encuadre === "detalle"`.
+>    Es más fuerte, y el `$comment` de la regla cuenta por qué. Es de `arquitectura`.
+> 3. **Esta forma agranda, y es la única del script que lo hace.** Un `dificil` sale de
+>    210 px a 480 y se ve blando. En un juego de zoom eso es el género — pero negarse a
+>    agrandar habría topeado en silencio cuán fuerte podía ser el zoom.
+>
+> ### 🔜 La pieza que falta, y es de `experiencia` + `arquitectura`
+>
+> **Mostrar la tapa entera al revelar**, que es el premio del formato splash: adivinás por
+> un pedazo y al acertar ves la obra. Hoy no se puede — `aPayload` manda una sola ruta.
+> También arreglaría que las explicaciones de `TP-002` y `TP-007`, que hablan del alfabeto
+> del título, quedaron señalando algo que ya no está en pantalla.
+
+> ### ✅ EL BANCO DEL QUIZ PASÓ POR UNA AUDITORÍA DE FUGAS (2026-08-28)
+
+> `npm test` **349/349** · `npm run check` limpio · guarda nueva en `src/lib/quiz/fugas.test.ts`.
+>
+> Lo levantó el usuario jugando, con dos ejemplos que alcanzaban: *"de qué provincia del
+> **norte** era"* con una sola provincia del norte entre las opciones, y *"tocó dos veces en
+> **años consecutivos**, una fue el 93"*, que deja 1992 y 1994 y nada más. La auditoría
+> encontró **catorce ítems con fuga sobre cuarenta**, en seis formas distintas:
+>
+> | Forma | Qué pasa | Ítems |
+> |---|---|---|
+> | La pregunta nombra una clase y solo una opción pertenece | «del norte», «del Ejército», «una mujer», «del oeste» | `QZ-018` `QZ-016` `QZ-022` `QZ-012` |
+> | La pregunta define la respuesta | «el balneario más clásico y masivo» = Mar del Plata | `QZ-011` |
+> | Eco entre el enunciado y una sola opción | «detalle canino» → jauría · «el gato» → gatos | `QZ-013` `QZ-028` `QZ-017` `QZ-015` |
+> | Se elimina por lógica, sin saber el dato | tres distractores contradecían la premisa | `QZ-029` `QZ-020` |
+> | Atajo que evita el dato preguntado | elegir el año más nuevo · «años consecutivos» · «el anteúltimo» | `QZ-024` `QZ-021` `QZ-026` |
+> | Distractor muerto o correcta más específica | Sony Music en 1985 · la única con marca propia | `QZ-003` `QZ-030` `QZ-031` `QZ-014` `QZ-023` |
+>
+> ### 🔴 Lo que no se veía leyendo un ítem: la fuga entre ítems
+>
+> **Nueve ítems contestaban la pregunta de otro.** La explicación de `QZ-018` traía la cita
+> con la que se responde `QZ-020`. El enunciado de `QZ-019` decía *Salta*, que es la
+> respuesta de `QZ-018`. `QZ-005` cerraba con *«Momo Sampler (2000)»* y `QZ-006` pregunta
+> justo ese año. `QZ-007` decía *«dos años después de Oktubre»* y `QZ-002` pregunta qué
+> disco es de 1986.
+>
+> Solo importa cuando `BR-01` puede servir al que regala **primero** — facil antes que
+> media antes que dificil. Con ese filtro quedaban ocho pares reales y nueve menciones
+> inocentes; los ocho se arreglaron y las nueve están en la lista blanca del test, cada una
+> con el motivo escrito.
+>
+> ### 🔴 El segundo hallazgo: el banco tenía un molinete cerrado
+>
+> **Diez de cuarenta ítems solo los podía contestar quien leyó *Recuerdos que mienten un
+> poco*, y dos de esos diez estaban en `facil`** — o sea, `BR-01` abría la partida con
+> ellos. Es exactamente el muro que `D-14` prohíbe, montado sin querer. Además `historia`
+> tenía cinco ítems de memoir sobre diez, tres de ellos anécdotas de tapa de Rocambole:
+> la categoría se había vuelto «la del libro» y no tenía **ni una pregunta sobre de dónde
+> salió la banda**.
+>
+> ### El reparto por nivel también mentía
+>
+> | | Antes | Ahora |
+> |---|---|---|
+> | Faciles de `letras` | **0** de 10 (8 eran dificiles) | 2 |
+> | Faciles que salían de `mitologia` | 5 de 10 — media partida abría con una leyenda | 3 de 10 |
+> | Categorías que podían abrir una partida | 3 de 4 | **4 de 4** |
+> | Ítems de memoir en `facil` | 2 | **0** |
+>
+> **Retirados tres, entran tres.** `QZ-027` (el muñeco de Marilú) por `QZ-041`, la banda en
+> La Plata y La Cofradía de la Flor Solar. `QZ-034` porque su respuesta era «Todo un palo»,
+> igual que `QZ-038` — dos ítems con la misma respuesta y el segundo sale gratis. `QZ-037`
+> por ser el gemelo débil de `QZ-029` (los dos, el sobre interno de *Oktubre*). Los tres
+> quedan en el archivo como `retirado`, con el motivo en `notaInterna`.
+>
+> ### Lo que ahora se audita a máquina — `src/lib/quiz/fugas.test.ts`
+>
+> Cinco guardas: fuga entre ítems con lista blanca justificada · la correcta no es la más
+> larga más seguido que el azar · dos opciones nunca dicen lo mismo · toda categoría tiene
+> al menos dos faciles para poder abrir una partida · ningún ítem `facil` depende del
+> memoir. **Lo que sigue sin poder auditarse es la fuga semántica dentro de un ítem** —
+> «de qué provincia del norte» con una sola del norte. Eso lo agarra el ojo, con la tabla
+> de arriba como vara.
+>
+> ### 🔜 Queda abierto, y no es mío
+>
+> 1. **`QZ-007` afirma que *Un baión* salió por Wormo y `RES-20` dice Del Cielito.** No lo
+>    resolví: saqué el sello del texto visible y dejé la contradicción anotada. Es de
+>    `investigador`.
+> 2. **`QZ-025` (Bulacio) mantiene su fuga a propósito.** La Corte Interamericana es la
+>    única de las cuatro que aplica a un caso argentino, así que se acierta con civismo y
+>    sin saber nada de la banda. No lo toqué porque el ítem es la copia literal del ejemplo
+>    de `CNT-04`, que es decisión editorial de `contenido`. La salida que la propia regla
+>    habilita —preguntar cuánto tardó la Justicia argentina, veinte años— la tiene que
+>    elegir `contenido`, no yo.
+> 3. **`adivinar-la-tapa` tiene el mismo problema sin auditar:** nueve de diez ítems usan
+>    la tapa entera, y casi todas las tapas traen el título impreso. No lo miré a fondo.
 
 > ### ✅ "SACALO POR LA LETRA" PASÓ POR SU CICLO ESTÉTICO (`D-30`, `D-31`)
 >
