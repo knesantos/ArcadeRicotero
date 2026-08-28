@@ -104,6 +104,56 @@ const DERIVADOS = [
   { nombre: 'bondi-engranajes', forma: 'fondo', master: 'ultimo-bondi-a-finisterre-trasera.jpg', caja: [0.55, 0.05, 1.0, 0.5] },
 ];
 
+/**
+ * ZOOMS — la imagen que **juega** en `US-04`. Pedido del usuario el 2026-08-28:
+ *
+ *   "el adivinar las tapas debe funcionar como los juegos splash: no mostrar la tapa
+ *    entera sino un zoom alto como para que sea dificil"
+ *
+ * Cambia el juego de reconocer una tapa a reconocer un pedazo. **Ninguna tapa se muestra
+ * entera**, asi que de paso muere entero el defecto que motivo el cambio anterior: si el
+ * titulo impreso no entra en el recorte, no hay nada que leer.
+ *
+ * `zoom` es el lado del recorte como fraccion del lado corto del master, y sale de la
+ * dificultad del item en `tapa.json` — es lo que hace que `BR-01` escalone de verdad:
+ *
+ *   facil   0.40  ~381 px del master: se ve un motivo entero
+ *   media   0.26  ~248 px: se ve una parte de un motivo
+ *   dificil 0.22  ~210 px: se ve un rasgo suelto, y hay que saber
+ *
+ * `centro` es donde cae ese cuadrado, en fracciones del master. Elegidos mirando los diez
+ * masters de a uno: cada uno cae sobre el motivo que un ricotero reconoce, nunca sobre el
+ * titulo. La eleccion es discutible y por eso esta en una tabla y no adentro del codigo.
+ *
+ * ESTA FORMA SI AGRANDA, y es la unica. El resto del script no agranda nunca (`UX-04`),
+ * porque ahi la nitidez es todo. Aca no: negarse a agrandar seria topear en silencio cuan
+ * fuerte puede ser el zoom, que es justo lo que se pidio. Un dificil sale de 210 px a 480
+ * y se ve blando — en un juego de zoom eso no es un defecto, es el genero.
+ *
+ * DEUDA CON `UX-05`: el catalogo de `experiencia` no tiene esta forma. Propuesta en
+ * `Docs/SUGERENCIAS/HILO-para-experiencia-tapas-sin-titulo.md`.
+ */
+const ZOOM = { facil: 0.4, media: 0.26, dificil: 0.22 };
+
+const JUEGO = [
+  // slug del item -> de que master sale el zoom y donde cae el centro
+  { slug: 'gulp', master: 'gulp-frontal.jpg', centro: [0.42, 0.33], nivel: 'facil' },
+  // El titulo rojo esta arriba; el centro va a la multitud de caras grises, que es el
+  // motivo de la tapa y no dice ni una letra.
+  { slug: 'oktubre', master: 'oktubre-frontal.jpg', centro: [0.5, 0.83], nivel: 'facil' },
+  { slug: 'luzbelito', master: 'luzbelito-frontal.jpg', centro: [0.5, 0.52], nivel: 'facil' },
+  { slug: 'un-baion-para-el-ojo-idiota', master: 'un-baion-para-el-ojo-idiota-frontal.jpg', centro: [0.72, 0.35], nivel: 'media' },
+  { slug: 'bang-bang-estas-liquidado', master: 'bang-bang-estas-liquidado-frontal.jpg', centro: [0.8, 0.33], nivel: 'media' },
+  { slug: 'ultimo-bondi-a-finisterre', master: 'ultimo-bondi-a-finisterre-frontal.jpg', centro: [0.5, 0.5], nivel: 'media' },
+  { slug: 'lobo-suelto', master: 'lobo-suelto-cordero-atado-cd1-frontal.jpg', centro: [0.53, 0.47], nivel: 'dificil' },
+  { slug: 'cordero-atado', master: 'lobo-suelto-cordero-atado-cd2-frontal.jpg', centro: [0.68, 0.28], nivel: 'dificil' },
+  { slug: 'momo-sampler', master: 'momo-sampler-frontal.jpg', centro: [0.57, 0.48], nivel: 'dificil' },
+  // Sale de la trasera y no del frontal, por el mismo lio de siempre con esta tapa. OJO:
+  // esa cara tiene el titulo dos veces en el lomo y la lista de temas arriba. El centro cae
+  // sobre la olla con el cucharon —el motivo que UX-05 ya habia elegido— y ahi no hay texto.
+  { slug: 'la-mosca-y-la-sopa', master: 'la-mosca-y-la-sopa-trasera.jpg', centro: [0.79, 0.5], nivel: 'dificil' },
+];
+
 const kb = (ruta) => fs.statSync(ruta).size / 1024;
 
 /** Recorta por fracciones y devuelve el pipeline listo para redimensionar. */
@@ -190,6 +240,47 @@ for (const forma of ['detalle', 'fondo']) {
       `q${calidad}`.padEnd(5),
       `${Math.round(kb(hasta))} KB`.padStart(7),
       corto ? '  <- por debajo del objetivo' : '',
+    );
+  }
+}
+
+// --- zooms del juego --------------------------------------------------------
+// Van a `public/tapas/detalle/` porque es la carpeta que `rutaImagen` ya sabe servir para
+// `encuadre: "detalle"`. El sufijo `-zoom` los separa de los recortes decorativos, que
+// viven en la misma carpeta y los usa el sistema visual, no el juego.
+{
+  const carpeta = path.join(destino, 'detalle');
+  fs.mkdirSync(carpeta, { recursive: true });
+  console.log(`\nZOOMS DEL JUEGO (${ANCHO.detalle} px, esta forma si agranda)`);
+
+  for (const z of JUEGO) {
+    const desde = path.join(origen, z.master);
+    if (!fs.existsSync(desde)) {
+      avisos.push(`falta el master ${z.master} (zoom ${z.slug})`);
+      console.log('  FALTA', z.master);
+      continue;
+    }
+    const meta = await sharp(desde).metadata();
+    // El recorte es cuadrado en pixeles, no en fracciones: hay masters de traseras que no
+    // son cuadrados y una fraccion pareja les saldria rectangular.
+    const lado = Math.round(ZOOM[z.nivel] * Math.min(meta.width, meta.height));
+    const [cx, cy] = z.centro;
+    const left = Math.min(Math.max(0, Math.round(cx * meta.width - lado / 2)), meta.width - lado);
+    const top = Math.min(Math.max(0, Math.round(cy * meta.height - lado / 2)), meta.height - lado);
+
+    const hasta = path.join(carpeta, `${z.slug}-zoom.jpg`);
+    await sharp(desde)
+      .extract({ left, top, width: lado, height: lado })
+      .resize({ width: ANCHO.detalle })
+      .jpeg({ quality: 82 })
+      .toFile(hasta);
+
+    console.log(
+      '  OK',
+      `${z.slug}-zoom.jpg`.padEnd(30),
+      `${z.nivel}`.padEnd(8),
+      `${lado}px del master`.padEnd(18),
+      `${Math.round(kb(hasta))} KB`.padStart(7),
     );
   }
 }
