@@ -148,6 +148,50 @@
   --fuente-marca-firma: 'Patricio Rey Fan', 'Archivo Black', sans-serif;
   --fuente: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
+  /* ------------------------------------------------------------------
+     Movimiento y aire (hoja 12). La doctrina es de `UX-20`: **el movimiento es del
+     lugar, no del elemento**. Nada se mueve para llamar la atencion sobre si mismo; lo
+     que se mueve es la camara — el aire, el fondo, la tinta, el paso de una pantalla a
+     la otra.
+
+     Hasta el ciclo 11 no habia un solo token de movimiento y el sitio entero tenia dos:
+     los 120 ms del borde de `.opcion` (escritos a mano en `juego.css`) y el vuelo de la
+     mosca (escrito a mano en `sitio.css`). Los dos entran aca sin cambiar de valor: el
+     valor nunca fue el problema, el problema era que no tenian nombre.
+
+     LOS TECHOS, y de quien son: un paso no pasa de 400 ms y una capa de fondo no recorre
+     mas del 8 % (`UX-20` §1, de `experiencia`); el cruce entre dos pantallas no pasa de
+     200 ms (`ADR-03` §6.2, de `arquitectura`) — manda el mas chico de los dos.
+     ------------------------------------------------------------------ */
+
+  /* INFORMACION, no atmosfera: que el dedo llego. Es la unica duracion que el corte de
+     movimiento reducido NO apaga, y por eso esta separada de las de abajo. */
+  --duracion-toque: 120ms;
+
+  /* Atmosfera. Las tres se van a cero con `prefers-reduced-motion`. */
+  --duracion-paso: 200ms; /* el cruce entre dos pantallas (ADR-03) */
+  --duracion-umbral: 380ms; /* cada sub-paso del asentamiento de la portada */
+  /* El escalon entre un sub-paso del umbral y el siguiente. `UX-20` §4 nombro la
+     duracion de cada sub-paso y no la separacion entre ellos; sin un token para eso, los
+     retrasos quedaban escritos a mano en `sitio.css`, que es justo lo que esta hoja
+     existe para impedir. Propuesta para que `experiencia` lo adopte o lo corrija en
+     `Docs/SUGERENCIAS/HILO-para-experiencia-desvios-del-ciclo-11.md`. */
+  --escalon-umbral: 70ms;
+  --duracion-vuelo: 17s; /* el ciclo de la mosca, lo unico vivo del sitio */
+
+  /* Una sola curva para todo, para que se note que es la misma camara en todos lados.
+     Arranca rapido —la cinta engancha— y afloja largo —el carrete recoge—. SIN REBOTE:
+     el sobrepaso es el primer tic de la tabla anti-slop. */
+  --curva-cinta: cubic-bezier(0.2, 0.7, 0.25, 1);
+
+  /* Cuanto se hunde la tinta MIENTRAS dura el paso, y vuelve. No es un segundo `--fondo`:
+     `D-19` dice que la base no rota, y esto no la rota — entrar se siente como bajar un
+     escalon, no como cambiar de piso (`UX-20` §0, correccion 1). */
+  --hondura-transito: 0.82;
+
+  /* Cuanto se corre una capa de fondo al desplazar, como maximo (`UX-20` §1.4). */
+  --deriva-capa-fondo: 8%;
+
   /* Espaciado pensado para el pulgar (D-09) */
   --toque-min: 48px;
   --espacio-1: 0.5rem;
@@ -200,11 +244,91 @@ a[role='button'] {
   outline-offset: 2px;
 }
 
+/* ==========================================================================
+   El paso de una pantalla a la otra (`ADR-03`)
+
+   Adhesion UNICA, y va aca porque `tokens.css` es la hoja que importan las trece
+   paginas del repo — directo o via `Base.astro`. El transito entre documentos exige que
+   los DOS documentos adhieran: una adhesion por pagina seria una matriz de pares que
+   nadie mantiene, y el primer par que falte se cae en silencio.
+
+   CERO JAVASCRIPT, y ese cero es la decision, no el resultado. `ADR-03` descarto el
+   enrutador de cliente por escrito: las seis islas del repo capturan el DOM en el ambito
+   del modulo y estan escritas contra la suposicion de que cada pantalla es un documento
+   nuevo. Donde el navegador no soporta esta regla-@, la descarta entera y se ve el sitio
+   de siempre: el repuesto es el estado actual, asi que no hay repuesto que escribir.
+   ========================================================================== */
+
+@view-transition {
+  navigation: auto;
+}
+
+/* Una sola camara para todo lo que cruza. Sin esto, cada grupo del transito —la marca, el
+   fondo del lugar, la mosca— corre con la duracion por defecto del navegador (250 ms) y
+   el paso se desarma en tres tiempos distintos. Va con `*` a proposito: alcanza tambien a
+   los nombres que existen de un solo lado, que son los que mas se notan. */
+::view-transition-group(*) {
+  animation-duration: var(--duracion-paso);
+  animation-timing-function: var(--curva-cinta);
+}
+
+/* El paso: la tinta se hunde y vuelve. Sin desplazamiento, sin escala, sin rebote — la
+   camara baja un escalon y se acomoda. `both` deja el estado final aplicado durante todo
+   el cuadro de captura; sin eso, el navegador parpadea al soltar la instantanea. */
+::view-transition-old(root) {
+  animation: paso-sale var(--duracion-paso) var(--curva-cinta) both;
+}
+
+::view-transition-new(root) {
+  animation: paso-entra var(--duracion-paso) var(--curva-cinta) both;
+}
+
+@keyframes paso-sale {
+  to {
+    opacity: 0;
+    filter: brightness(var(--hondura-transito));
+  }
+}
+
+@keyframes paso-entra {
+  from {
+    opacity: 0;
+    filter: brightness(var(--hondura-transito));
+  }
+}
+
+/* ==========================================================================
+   Movimiento reducido: se apaga la camara, NUNCA la respuesta al dedo.
+
+   Esto era un `*, *::before, *::after` con `!important` que llevaba toda duracion a
+   0,01 ms. Apagaba la mosca, que esta bien, y de paso apagaba los 120 ms del borde de
+   `.opcion`, **que son la unica confirmacion de que el sitio recibio el toque**. La
+   auditoria de `impeccable` lo dejo anotado como P3 el 2026-08-24 y `UX-20` §5 lo
+   resolvio con una regla que se puede decir en una linea:
+
+     el corte deja de operar por selector y pasa a operar por familia de token.
+
+   Todo lo de "atmosfera" se va a cero; `--duracion-toque` no esta en esta lista y no
+   entra nunca. Lo que no se apaga bajando un tiempo —una animacion en bucle— declara su
+   equivalente quieto al lado de su propia regla, y `movimiento.test.ts` falla el build
+   si alguna se olvida.
+
+   Y OJO CON EL TRANSITO: el selector universal NO alcanzaba a `::view-transition-*`, que
+   viven en un arbol de pseudo-elementos aparte. Con el corte viejo, quien pedia menos
+   movimiento habria recibido el unico movimiento nuevo del ciclo. Se apaga el mecanismo,
+   no sus sintomas (`ADR-03` §6.4).
+   ========================================================================== */
+
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
+  @view-transition {
+    navigation: none;
+  }
+
+  :root {
+    --duracion-paso: 0ms;
+    --duracion-umbral: 0ms;
+    --escalon-umbral: 0ms;
+    --hondura-transito: 1;
+    --deriva-capa-fondo: 0%;
   }
 }

@@ -1447,3 +1447,77 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 
 - **Dueños:** `UX-08` es de `experiencia` y no se tocó — se construyó. La única parte que
   se apartó de la spec (la rotación) está justificada arriba y queda anotada como tal.
+
+---
+
+## D-32 — El movimiento es del lugar, no del elemento
+
+- **Fecha:** 2026-09-01
+- **Estado:** aceptada. Ciclo 11, construida y verificada antes de escribirse acá.
+- **Consume:** `UX-20` (la doctrina, de `experiencia`), `ADR-03` (el mecanismo del
+  tránsito), `ADR-04` (la cama de cinta), `CNT-13` (los nombres del lugar), `D-14`
+  (molinetes abiertos), `D-19` (la mezcla), `.claude/rules/diseno-marca.md`.
+
+- **Contexto.** El usuario pidió que el sitio entero fuera una experiencia inmersiva, *"que
+  cada paso se sienta como meterse en un universo mitológico misterioso"*. La medición del
+  punto de partida es de dos líneas: **todo el sitio tenía dos movimientos** —los 120 ms del
+  borde de una opción y el vuelo de la mosca— y **ni un solo token de movimiento**. El mundo
+  estaba construido y no se movía.
+
+  Y con el pedido venía una trampa: **casi todo lo que se hace cuando piden "inmersivo" ya
+  estaba vetado en este repo.** El resplandor, el desenfoque, el degradado, la tarjeta que
+  se levanta, el héroe que aparece con fundido, el micro-rebote. Un ciclo de inmersión sin
+  doctrina era la corrida anti-slop al revés.
+
+- **La decisión, en una línea:**
+
+  > **Nada en este sitio se mueve para llamar la atención sobre sí mismo. Lo que se mueve es
+  > la cámara: el aire, el fondo, la tinta, el paso de una pantalla a la otra.**
+
+  Un botón que rebota es un botón pidiendo aplausos. Una sala que respira es un lugar.
+
+- **Los cuatro límites que la vuelven ejecutable** (`UX-20` §1, con número):
+
+  1. **400 ms** el paso más largo — y **200 ms** el cruce entre pantallas (`ADR-03` §6.2).
+  2. **2 capas** de fondo como techo: el grano, que no rota nunca, más un recorte real
+     velado. Tres capas dejan de tener un peor caso que `contraste.test.ts` pueda auditar.
+  3. **0 ms** hasta que la acción principal es tocable. Es `D-14` aplicado a una animación:
+     una pantalla que hay que esperar es un molinete nuevo, con forma de animación.
+  4. **8 %** de recorrido máximo de una capa al desplazar.
+
+- **Y la contracara, que es lo que hace creíble al resto: el misterio lo sostiene el rótulo
+  frío.** `LEYENDA`, `TESTIMONIO`, la ficha `RES-` y las tres pantallas de registro 3
+  —Bulacio, Olavarría, la muerte del Indio— **no se decoran, no se atmosferan y no suenan.**
+  Un sitio donde todo es niebla no tiene misterio: tiene humo. El misterio necesita piso
+  firme en algún lado, y el piso es el rótulo.
+
+- **Lo que se construyó con esto, y por qué cada cosa pasó el filtro:**
+
+  | Pieza | Se mueve | Por qué no es el elemento pidiendo aplausos |
+  |---|---|---|
+  | El umbral de la portada | el grano, la figura, el ángulo de la marca | ninguna de las tres es tocable, y la marca **llega ya estampada**: se endereza, no aparece |
+  | El paso entre pantallas | la tinta entera | es la cámara bajando un escalón, no un elemento entrando |
+  | La deriva de la franja | una sola capa fija, 8 % | es aire; adentro de una caja acotada descubriría su borde, y ahí no se puso |
+  | La mosca | sigue volando | hace catorce ciclos que está ahí y es lo único vivo del sitio |
+  | El borde de una opción | 120 ms | **no es atmósfera, es información**, y por eso es lo único que el corte de movimiento reducido no apaga |
+
+- **Consecuencias, y la primera es la que más importa:**
+
+  1. **El corte de `prefers-reduced-motion` dejó de ser una guillotina.** Era un `*` con
+     `!important` que apagaba todo, incluida la respuesta al toque. Ahora **opera por familia
+     de token**: se apaga la cámara, nunca el dedo. Era un P3 abierto desde el 2026-08-24.
+  2. **Un tiempo suelto en un componente pasa a ser el mismo defecto que un hex suelto.**
+     `src/lib/movimiento.test.ts` falla el build si aparece una duración o una curva fuera
+     de `tokens.css`, si una animación no declara su equivalente quieto, o si alguien mete
+     un enrutador de cliente.
+  3. **El sistema de marca tiene hoja de movimiento** (hoja 12 del lienzo), y el circuito se
+     respetó en el orden que manda: lienzo → `tokens.css` → componentes.
+  4. **Lo que no se puede auditar a máquina queda dicho como se reconoce que falla**
+     (`UX-20` §6): un elemento con animación propia que ningún otro comparte, un paso que
+     pasa de 400 ms, y —la más barata y la más importante— que con el movimiento apagado el
+     sitio diga **menos** que con el movimiento prendido.
+
+- **Lo que esta decisión no dice.** No dice que el adentro de la partida tenga que moverse:
+  el paso entre pregunta y devolución quedó fuera del ciclo a propósito, porque es el gesto
+  que más se repite y donde un beat de más se paga cuarenta veces por vuelta. Si `REV-10`
+  dice que la doctrina funciona afuera, el adentro es el ciclo siguiente.

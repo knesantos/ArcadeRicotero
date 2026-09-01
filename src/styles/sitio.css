@@ -30,6 +30,125 @@
   z-index: 40;
 }
 
+/* ==========================================================================
+   El umbral: la portada llega en un tiempo (`T-185`, `UX-20` §2)
+
+   Es la unica pantalla del sitio con entrada propia. En todas las demas la atmosfera ya
+   esta puesta cuando el paso termina; aca el sitio se abre.
+
+   TRES COSAS QUE NO HACE, y son las que lo separan de la intro de cualquier plantilla:
+
+   1. **No bloquea, ni un cuadro.** El contenido esta dibujado desde el primer cuadro y el
+      `JUGÁ` responde mientras el aire todavia se acomoda. Lo que se mueve son las tres
+      capas decorativas —el grano, la figura, el angulo de la marca—, ninguna tocable.
+      Es el limite de 0 ms de `UX-20` §1.3, que es `D-14` aplicado a una animacion.
+   2. **No aparece de la nada.** Ni la figura ni la marca arrancan invisibles y "hacen
+      fade": el fundido de entrada de todo es el tic de plantilla numero uno. La marca
+      llega **ya estampada** y lo unico que hace es asentarse en su angulo, como un sello
+      de goma que termina de apoyar. La figura ya esta ahi; baja los ultimos pixeles.
+   3. **No corre dos veces.** Una vez por visita, decidido en la cabeza del documento
+      (`index.astro`). Volver de un juego es volver, no entrar.
+
+   El corte de movimiento reducido no necesita regla propia: `--duracion-umbral` vale
+   `0ms` bajo `prefers-reduced-motion` y las tres animaciones, con relleno `both`, saltan
+   a su estado final en el primer cuadro. La portada aparece entera y quieta — no "mas
+   rapido", directamente sin secuencia. Es `UX-20` §5: el corte opera por familia de
+   token, no por selector.
+   ========================================================================== */
+
+/* 1. El grano se asienta: el papel llega antes que lo impreso.
+
+   **Arranca en 0.03 y no en cero, y la diferencia importa.** Con `opacity: 0` esto era, en
+   la letra de la tabla anti-slop, "una aparición con fundido" — el tic de plantilla número
+   uno, aunque fuera el grano y no el contenido. Arrancando con el papel **ya puesto** y solo
+   subiendo a su valor de reposo, lo que se ve es una textura que se asienta, no algo que
+   aparece. Lo marcó `REV-10` y tiene razón: la regla no distingue entre fundir contenido y
+   fundir textura, y no tiene por qué. */
+html[data-umbral] .con-grano::after {
+  animation: umbral-grano var(--duracion-umbral) var(--curva-cinta) both;
+}
+
+@keyframes umbral-grano {
+  from {
+    opacity: 0.03;
+  }
+}
+
+/* 2. La figura encadenada baja los ultimos pixeles hasta su lugar.
+      Se anima `translate` y no `transform` a proposito: la rotacion de 6 grados vive en
+      `transform` y las dos propiedades se componen sin pisarse. */
+html[data-umbral] .recorte-portada {
+  animation: umbral-figura var(--duracion-umbral) var(--curva-cinta) var(--escalon-umbral) both;
+}
+
+/* **Sin opacidad, y esto también lo corrigió `REV-10`.** Iba de `0.35` a `0.9` mientras
+   bajaba, que es el fundido-con-deslizamiento de cualquier plantilla, y el comentario de
+   arriba prometía justo lo contrario. Ahora la figura **está desde el primer cuadro, con su
+   opacidad de reposo**, y lo único que hace es terminar de acomodarse. Es la misma lógica
+   del sello: lo que llega no aparece, se apoya. */
+@keyframes umbral-figura {
+  from {
+    translate: 0 -10px;
+  }
+}
+
+/* 3. La marca termina de apoyar. Sin fundido y sin escala: llega opaca, torcida, y se
+      endereza. Un sello de goma no aparece — se despega. */
+html[data-umbral] .marca-grande {
+  animation: umbral-sello var(--duracion-umbral) var(--curva-cinta) calc(var(--escalon-umbral) * 2) both;
+}
+
+@keyframes umbral-sello {
+  from {
+    rotate: -2.2deg;
+    translate: 0 2px;
+  }
+  to {
+    rotate: 0deg;
+    translate: 0 0;
+  }
+}
+
+/* ==========================================================================
+   El nombre del lugar (`CNT-13`, `T-188`)
+
+   Un renglon por pantalla que dice **donde estas parado**, no que es la pantalla. El
+   titulo ya hace lo segundo. Es la "linea que canta" de la regla de las dos lineas
+   (`.claude/rules/voz-ricotera.md` §5), y por eso se puede tapar entera sin que nadie
+   pierda nada: si el que llego de un enlace deja de saber que boton tocar cuando esta
+   linea desaparece, la linea estaba haciendo un trabajo que no le toca — y eso es un
+   molinete. `CNT-13` §5 corrio esa prueba lugar por lugar antes de que existiera este CSS.
+
+   Se distingue de la bajada que a veces la sigue por la raya de apertura, no por el peso
+   ni por el color: es una acotacion, como en una obra impresa. Va en la pila del sistema
+   —texto que se lee, `UX-01`— y no en la letra rotulada, que ya carga el titulo justo
+   arriba: dos renglones seguidos en Archivo Black se empastan.
+
+   No se mueve, no entra con fundido y no tiene animacion propia. `UX-20` §6 punto 1
+   nombra eso como el primer sintoma de que el ciclo fallo.
+   ========================================================================== */
+
+.donde-estas {
+  margin: 0 0 var(--espacio-2);
+  /* 40ch y no menos: los ocho renglones tienen entre 33 y 41 caracteres, y con la medida
+     angosta que tenían antes casi todos partían en dos aunque entraran holgados en la
+     columna. Una acotación de un renglón se lee de un vistazo; partida en dos parece un
+     párrafo corto, que es otra cosa. */
+  max-width: 40ch;
+  font-size: 1.02rem;
+  line-height: 1.4;
+  color: var(--texto);
+  text-wrap: balance;
+  transform: rotate(-0.3deg);
+}
+
+/* La raya de apertura de una acotación. No es un ícono ni un adorno: es el signo con el
+   que la tipografía impresa marca desde hace siglos que lo que viene es un aparte. */
+.donde-estas::before {
+  content: '— ';
+  color: var(--texto-tenue);
+}
+
 /* ---- Recortes que viven en el fondo ---- */
 
 /* La gente con banderas (Oktubre) marcha detras de todo, apenas visible. */
@@ -62,6 +181,59 @@
   border-radius: inherit;
   pointer-events: none;
   user-select: none;
+  /* El segundo de los tres nombres del transito (`ADR-03` §6.3). Cada pantalla tiene
+     como mucho una `.tapa-fondo` —verificado pagina por pagina antes de escribir esto—,
+     asi que el nombre es unico en el documento, que es lo que la propiedad exige.
+     Es lo que hace que pasar de la portada a un juego se lea como cambiar de sala: el
+     fondo de un disco se convierte en el fondo del otro en vez de parpadear. */
+  view-transition-name: lugar;
+}
+
+/* ---- La deriva: la capa de fondo se corre mas lento que el contenido ----
+
+   Es la profundidad de `UX-20` §1.4, y viene con dos candados puestos:
+
+   - **Techo de 8 %** (`--deriva-capa-fondo`), que es lo que hace que se note que hay aire
+     y no que hay algo moviendose. Mas que eso descubre el borde del recorte y arriesga el
+     desborde horizontal que la auditoria midio en cero a 320, 375 y 1280 px.
+   - **Cero JavaScript.** La linea de tiempo es el propio desplazamiento
+     (`animation-timeline: scroll()`); donde el navegador no la soporta, la capa se queda
+     quieta y el sitio se ve como se veia. Mismo criterio que el transito de `ADR-03`.
+
+   El corte de movimiento reducido no necesita una regla propia aca: bajo
+   `prefers-reduced-motion`, `--deriva-capa-fondo` vale `0%` y la animacion se convierte en
+   un traslado de cero. Es la doctrina de `UX-20` §5 funcionando — el corte opera por
+   familia de token, no por selector.
+
+   `animation-duration: auto` va escrito aparte y NO con la forma corta: la forma corta
+   pone la duracion en `0s`, y con una linea de tiempo de desplazamiento eso deja la
+   animacion inerte. Es una trampa conocida y cuesta una linea evitarla. */
+@keyframes deriva-de-capa {
+  to {
+    transform: translateY(calc(-1 * var(--deriva-capa-fondo)));
+  }
+}
+
+/* **Y la lleva una sola capa: la franja fija del portal.** No es una limitacion de
+   tiempo, es lo que salio de mirarlo en pantalla.
+
+   Las otras `.tapa-fondo` viven adentro de una caja acotada —la cabecera de la
+   Redondopedia, el `main` de cada juego—, y correr hacia arriba una imagen que llena su
+   caja **descubre el borde de abajo**: aparece una franja de fondo pelado donde antes
+   habia foto. Ademas, una capa que se corre adentro de una caja que no se desplaza no es
+   profundidad: es un elemento moviendose, que es exactamente lo que la doctrina prohibe
+   en su primera frase.
+
+   La franja del portal si es el caso legitimo: esta **fija** al pie de la ventana, o sea
+   ya se queda quieta mientras el contenido sube, y lo que la deriva agrega es que se
+   corra un poco con el — el aire adelantandose apenas al piso. */
+@supports (animation-timeline: scroll()) {
+  .tapa-fondo--portal {
+    animation-name: deriva-de-capa;
+    animation-timing-function: linear;
+    animation-duration: auto;
+    animation-timeline: scroll(root block);
+  }
 }
 
 /* Anclada abajo y fija, como la franja de multitud que ya vivia ahi dibujada.
@@ -69,8 +241,18 @@
    velada no llega a AA (3,38:1) — lo verifica contraste.test.ts. */
 .tapa-fondo--portal {
   position: fixed;
-  inset: auto 0 0 0;
-  height: 30vh;
+  /* La franja se extiende por debajo del borde de la ventana **exactamente lo que la
+     deriva la va a correr hacia arriba**. Sin eso, al desplazar aparecería una tira de
+     fondo pelado en el pie: la capa se corre y descubre por dónde termina.
+
+     Las cuentas cierran solas y sin números nuevos: `--deriva-capa-fondo` es un
+     porcentaje, y en un elemento fijo los porcentajes de `height` y de `bottom` se
+     resuelven contra la ventana. Con `8%`, la franja mide 38vh y arranca 8vh por debajo
+     del borde, así que **lo que se ve es la misma banda de 30vh de siempre**. Con
+     movimiento reducido el token vale `0%` y la geometría vuelve a ser la de antes,
+     letra por letra. */
+  inset: auto 0 calc(-1 * var(--deriva-capa-fondo)) 0;
+  height: calc(30vh + var(--deriva-capa-fondo));
   background-position: bottom;
   background-image: linear-gradient(var(--velo-tapa), var(--velo-tapa)),
     url('/tapas/fondo/oktubre-banderas.jpg');
@@ -133,8 +315,22 @@
   z-index: 1;
 }
 
-/* La mosca (La mosca y la sopa) vuela por la pantalla. Con reduced-motion el
-   token global congela la animacion y queda quieta en su rincon de arranque. */
+/* La mosca (La mosca y la sopa) vuela por la pantalla. Es lo unico vivo del sitio.
+
+   TRES COSAS CAMBIARON EN EL CICLO 11, y ninguna cambia como se ve en reposo:
+
+   1. **El tiempo y la curva salen de tokens** (`--duracion-vuelo`, `--curva-cinta`, hoja
+      12 del lienzo). El 17s es el mismo de siempre. La curva compartida le da peso: la
+      mosca arranca de golpe y afloja, como algo que vuela, en vez de interpolarse parejo.
+   2. **Cruza el paso entre pantallas** (`view-transition-name: mosca`, `ADR-03` §6.3).
+      Ojo con lo que eso significa y con lo que no: el vuelo **vuelve a empezar** en cada
+      documento, porque no hay forma de transportar la fase de una animacion sin
+      JavaScript. Lo que se compra es que este en el mismo lugar de un lado y del otro,
+      que a 200 ms es lo que el ojo ve.
+   3. **Declara su propio equivalente quieto**, abajo. Antes lo apagaba el `*` global de
+      `tokens.css`; ese `*` se fue porque tambien apagaba la respuesta al toque, que es
+      informacion. Ahora cada animacion se hace cargo de la suya, y
+      `movimiento.test.ts` falla el build si alguna se olvida. */
 .mosca-viva {
   position: fixed;
   top: 4vh;
@@ -144,7 +340,17 @@
   pointer-events: none;
   z-index: 30;
   opacity: 0.85;
-  animation: vuelo-de-mosca 17s ease-in-out infinite;
+  view-transition-name: mosca;
+  animation: vuelo-de-mosca var(--duracion-vuelo) var(--curva-cinta) infinite;
+}
+
+/* El equivalente quieto de la mosca: queda parada donde arranca. No se acelera a
+   0,01 ms —eso es un truco para que parezca apagada—, se apaga. Y no se pierde nada:
+   es la unica pieza del sitio que no lleva informacion encima. */
+@media (prefers-reduced-motion: reduce) {
+  .mosca-viva {
+    animation: none;
+  }
 }
 
 @keyframes vuelo-de-mosca {
@@ -175,6 +381,12 @@
   justify-content: space-between;
   gap: var(--espacio-2);
   margin-bottom: var(--espacio-3);
+  /* El renglón envuelve desde el ciclo 11, cuando pasó a tener un tercer elemento.
+     Medido a 375 px: la cinta de regreso, la estampa de la cinta y la marca chica suman
+     369 px contra 343 disponibles. Sin `wrap`, lo que se partía en dos renglones era
+     **la salida de la pantalla** ("← AL / ARCADE"), que es lo último que puede ceder.
+     Con `wrap` y la estampa al final, la que baja sola es la estampa (`UX-21` §1). */
+  flex-wrap: wrap;
 }
 
 /* El regreso es una tira de cinta adhesiva pegada arriba a la izquierda. */
@@ -194,6 +406,92 @@
   box-shadow: 0 2px 0 color-mix(in srgb, var(--papel-borde) 60%, transparent);
 }
 
+/* ==========================================================================
+   El interruptor de la cinta (`UX-21`, `ADR-04`)
+
+   Es la misma estampa que ya usa el sitio para el sello de accion de un casete: rectangulo
+   de esquina casi viva, borde fino, mayusculas rotuladas, apenas torcido. **No es una
+   pastilla capsula, no es un icono de libreria y no es un altavoz tachado** — los tres
+   estan vetados por nombre en `.claude/rules/diseno-marca.md`, y los tres son lo que sale
+   por defecto cuando a alguien le piden un control de sonido.
+
+   VA EN TOKENS NEUTROS, nunca en un `--cat-*`. Vive en el renglon de la cabecera, al lado
+   de `.volver` y de `.marca-chica`, que tampoco visten disco: la mezcla `D-19` rota el
+   acento y la letra grande, no la base, y la cama es base (`UX-21` §2).
+
+   EL ESTADO NO SE COMUNICA SOLO CON COLOR, y son tres senales independientes: la palabra
+   cambia (APAGADA / SONANDO / CALLADA / BLOQUEADA), el simbolo cambia de **silueta** —
+   triangulo hueco, triangulo lleno, dos barras—, y el borde cambia de trazo. La cuarta no
+   es visual: `aria-pressed`, que escribe la isla.
+
+   Y NO SE MUEVE. Ni pulsa, ni titila, ni gira cuando la cinta suena. `UX-20` §6 nombra
+   "un elemento clickeable con su propia animacion" como el primer sintoma de que este
+   ciclo fallo, y un interruptor de sonido es donde mas tienta ponerla.
+   ========================================================================== */
+
+.cinta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: var(--toque-min);
+  padding: 0 var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--texto-tenue);
+  background: transparent;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  transform: rotate(-1.1deg);
+  transition: border-color var(--duracion-toque), color var(--duracion-toque);
+  /* Dos palabras que no se parten nunca: una estampa partida en dos renglones deja de
+     leerse como una estampa. Si no entra en el renglón, baja entera. */
+  white-space: nowrap;
+  /* Pegada a la derecha, esté sola en su renglón o compartiéndolo. */
+  margin-left: auto;
+}
+
+/* Prendida: la estampa se aclara y el borde se afirma. Sigue sin disco y sin acento de
+   estado — el verde y el rojo son del acierto y del error, y nada mas (`UX-20` §3.2). */
+.cinta[data-estado='sonando'] {
+  color: var(--texto);
+  border-color: var(--papel-borde);
+}
+
+/* Callada por otro sonido: prendida, pero muda. Se dice con la palabra y con las dos
+   barras; el borde queda como cuando esta prendida, porque prendida esta. */
+.cinta[data-estado='callada'] {
+  color: var(--texto-tenue);
+  border-color: var(--papel-borde);
+}
+
+/* Bloqueada: el mismo borde punteado que ya usa `.casete-pronto` para decir "esto quedo a
+   mitad de camino". No es un error del sitio y no se pinta como tal. */
+.cinta[data-estado='bloqueada'] {
+  border-style: dashed;
+}
+
+.cinta-simbolo {
+  font-size: 0.9em;
+  line-height: 1;
+}
+
+/* La linea que explica el bloqueo. Registro 3: nombra el hecho y se calla. */
+.cinta-motivo {
+  flex-basis: 100%;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--texto-tenue);
+}
+
+/* La portada no tiene cabecera —no hay a donde volver desde la puerta—, asi que la isla le
+   arma una fila propia para colgar la estampa. Va pegada a la derecha y sin margen abajo:
+   no es una barra de navegacion, es un control en la esquina. */
+.cabecera-sitio--solo-cinta {
+  justify-content: flex-end;
+  margin-bottom: 0;
+}
+
 .marca-chica {
   font-family: var(--fuente-titular);
   font-size: 1.05rem;
@@ -202,6 +500,7 @@
   text-decoration: none;
   max-width: 8ch;
   text-align: right;
+  view-transition-name: marca;
 }
 
 /* ---- La marca grande del portal ---- */
@@ -213,6 +512,13 @@
   color: var(--marca-rojo);
   margin: var(--espacio-3) 0 var(--espacio-1);
   max-width: 7ch;
+  /* El tercero de los tres nombres (`ADR-03` §6.3). La firma es la misma de un lado y del
+     otro, asi que el navegador la mueve de su lugar en la portada al suyo en la cabecera
+     en vez de dibujarla dos veces. Las tres formas de la marca —esta, la chica del
+     cascaron y la de la cabecera de cada juego (`juego.css`)— llevan el mismo nombre y
+     **nunca conviven en un mismo documento**: la portada no tiene cabecera de regreso, y
+     una pantalla con cabecera no tiene marca grande. */
+  view-transition-name: marca;
 }
 
 .bajada-portal {
@@ -635,6 +941,36 @@
   line-height: 1.55;
   color: var(--texto);
   margin: 0 0 var(--espacio-3);
+}
+
+/* ---- La capitular: la Redondopedia se lee como una página, no como una pantalla ----
+
+   Es lo único que suma `T-187`, y la contención es la decisión, no una limitación de
+   tiempo. `UX-20` §2 dice de un artículo, textual: *"Nada de movimiento nuevo — un
+   artículo es lectura, se entra y se sale"*. Un artículo con clima propio, capas que se
+   corren y una entrada coreografiada no sería más inmersivo: sería más difícil de leer, y
+   **borraría la frontera entre el hecho y la leyenda**, que es lo único que sostiene a la
+   Redondopedia (`voz-ricotera.md` §6). Así que la inmersión acá es tipográfica y nada más.
+
+   La letra grande la escribe `--tinte`, o sea el disco de la categoría del artículo
+   (`D-19`): es la mezcla haciendo su trabajo en el lugar donde `D-19` ya la había puesto
+   —el acento y la letra grande—, sin inventar un mecanismo nuevo. Los cuatro tintes están
+   medidos AA sobre `--fondo` en `contraste.test.ts`, y una capitular es texto grande: si
+   pasan a 17 px, pasan a 54.
+
+   Va en `--fuente-rotulada` y no en una letra de disco por la deuda declarada en
+   `.claude/rules/diseno-marca.md`: las letras calcadas no tienen acentos ni Ñ, y acá la
+   primera letra la elige el artículo, no nosotros. Archivo Black las tiene todas.
+
+   **No la lleva `.parrafo`, solo la bajada.** El cuerpo rotulado es donde vive `BR-08`, y
+   ahí no entra ningún adorno que compita con el rótulo. */
+.articulo:not(.articulo--grave) .articulo-resumen::first-letter {
+  float: left;
+  font-family: var(--fuente-rotulada);
+  font-size: 3.1em;
+  line-height: 0.78;
+  padding: 0.04em 0.1em 0 0;
+  color: var(--tinte);
 }
 
 /* La ficha del articulo es la etiqueta de papel del cassette: tinta sobre papel. */

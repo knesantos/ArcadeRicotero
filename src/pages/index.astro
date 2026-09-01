@@ -10,7 +10,7 @@
  * Molinetes abiertos (`D-14`): esta pantalla no pide nada — ni cuenta ni saber.
  */
 import Base from '../layouts/Base.astro';
-import { PORTAL, JUEGOS, CASETE_REDONDOPEDIA, CASETE_CANCIONERO, type Casete } from '../lib/sitio/copy.ts';
+import { PORTAL, LUGARES, JUEGOS, CASETE_REDONDOPEDIA, CASETE_CANCIONERO, type Casete } from '../lib/sitio/copy.ts';
 import { conRecorteReal, detalleTapa, discosDe, medidas, recorte, DETALLE_POR_VARIANTE } from '../lib/sitio/arte.ts';
 
 // Los discos que se ven acá: el de cada casete mas la franja de Oktubre del fondo.
@@ -64,6 +64,31 @@ const conArte = lados.map((lado) => ({
     // El quiz vivia en la raiz: los links de desafio viejos (`?g=quiz&p=...`) siguen
     // valiendo — se redirigen a /quiz/ con la query intacta (ADR-02 no cambia).
     if (/(^|[?&])g=/.test(location.search)) location.replace('/quiz/' + location.search);
+
+    /**
+     * El umbral corre UNA VEZ POR VISITA (`T-185`, `UX-20` §2, `ADR-03` §5).
+     *
+     * Volver a la portada despues de jugar tiene que sentirse como volver, no como
+     * entrar de nuevo: si el umbral corriera en cada carga, el que va y viene entre dos
+     * juegos lo veria seis veces por sesion, y ahi deja de ser una entrada y pasa a ser
+     * un peaje. `ADR-03` §5 lo pone como condicion dura: el umbral y el transito no se
+     * disparan en la misma navegacion.
+     *
+     * Va en linea y en la cabeza a proposito: tiene que decidir **antes del primer
+     * cuadro**. Un atributo puesto despues de pintar seria un parpadeo.
+     *
+     * Si `sessionStorage` no esta —ventana privada, almacenamiento bloqueado— no hay
+     * umbral y la portada aparece entera y quieta. Degradar sin umbral es correcto;
+     * degradar corriendolo siempre seria justo el defecto que esto evita.
+     */
+    try {
+      if (!sessionStorage.getItem('umbral')) {
+        document.documentElement.dataset.umbral = '';
+        sessionStorage.setItem('umbral', '1');
+      }
+    } catch (e) {
+      /* sin almacenamiento no hay umbral, y no pasa nada */
+    }
   </script>
 
   <header class="portada-arcade">
@@ -77,6 +102,7 @@ const conArte = lados.map((lado) => ({
       height={medidaPortada?.alto}
     />
     <h1 class="marca-grande">ARCADE RICOTERO</h1>
+    <p class="donde-estas">{LUGARES.portal}</p>
     <p class="bajada-portal">{PORTAL.bajada}</p>
   </header>
 

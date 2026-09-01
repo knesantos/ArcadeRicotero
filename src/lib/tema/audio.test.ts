@@ -16,6 +16,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Reproductor } from './audio.ts';
+import { reiniciarAudioParaPruebas, salidaOcupada } from '../audio/contexto.ts';
 
 type Estado = 'running' | 'suspended' | 'interrupted' | 'closed';
 
@@ -111,6 +112,13 @@ function conEntorno(estado: Estado, resumeFunciona = true) {
       for (const a of audios) (a as { pause?: () => void }).pause?.();
       g.requestAnimationFrame = previos.requestAnimationFrame ?? (() => 0);
       g.window = previos.window;
+      // El contexto ya no vive adentro del `Reproductor`: lo presta `audio/contexto.ts`,
+      // que lo guarda en su ambito de modulo (`ADR-04.2`). Sin este reinicio, el contexto
+      // del caso anterior sobrevive al `new Reproductor()` del siguiente y el
+      // `assert.equal(e.registro.mudos, 1)` empieza a contar buffers mudos ajenos. Ademas
+      // apaga los cortes por temporizador que `sonar()` deja armados, que si no dejan el
+      // proceso de las pruebas esperandolos.
+      reiniciarAudioParaPruebas();
     },
   };
 }
@@ -247,6 +255,46 @@ test('🔴 el LRU no puede desalojar el tema que esta por sonar', async () => {
     void ronda;
   } finally {
     (globalThis as Record<string, unknown>).fetch = fetchPrevio;
+    e.restaurar();
+  }
+});
+
+test('🔴 frenar antes de que vuelva el contexto frena de verdad, y no deja un sonido huerfano', async () => {
+  /*
+   * La carrera que encontro una refutacion adversarial del ciclo 11, no una prueba.
+   *
+   * Con el contexto dormido, `sonar()` pide `resume()` y se va a esperar. Si en ese hueco
+   * entra `detener()` —tocar "Escuchar" y tocar "Parar" antes de que Safari conteste—, la
+   * promesa resolvia igual y **el fragmento arrancaba despues de que la persona lo freno**.
+   *
+   * Ese defecto ya estaba y era molesto. Con el token de la salida (`ADR-04.3`) paso a ser
+   * peor: `detener()` ya solto la salida, asi que ese sonido huerfano suena con la salida
+   * declarada **libre** y la cama de cinta vuelve a subir encima. Sin sintoma para nadie.
+   *
+   * La ventana es angosta en escritorio y ancha volviendo de una llamada, que es justo
+   * cuando aparece `interrupted`.
+   */
+  const e = conEntorno('suspended');
+  try {
+    const r = new Reproductor();
+    r.despertar();
+    const arrancadosAntes = e.registro.arrancados;
+
+    r.sonar('un-tema', 15, {});
+    // En la misma vuelta sincronica, antes de que resuelva el `resume()`.
+    r.detener();
+    assert.equal(salidaOcupada(), false, 'detener tiene que soltar la salida');
+
+    // Se le da tiempo a la promesa del `resume()` a resolver.
+    await new Promise((listo) => setTimeout(listo, 30));
+
+    assert.equal(
+      e.registro.arrancados,
+      arrancadosAntes,
+      'arranco un fragmento despues de frenar: suena solo y con la salida declarada libre',
+    );
+    assert.equal(salidaOcupada(), false, 'la salida quedo tomada por un sonido que nadie pidio');
+  } finally {
     e.restaurar();
   }
 });

@@ -101,7 +101,11 @@
   border: var(--linea) solid var(--borde);
   border-radius: var(--radio);
   text-align: left;
-  transition: border-color 120ms, background-color 120ms;
+  /* Los 120 ms viven en `--duracion-toque` desde el ciclo 11 (hoja 12 del lienzo). Es
+     el mismo valor de siempre; lo que cambia es que ahora tiene nombre, y que el corte
+     de `prefers-reduced-motion` **no lo apaga**: esto no es atmosfera, es la unica
+     confirmacion de que el sitio recibio el dedo (`UX-20` §5). */
+  transition: border-color var(--duracion-toque), background-color var(--duracion-toque);
 }
 
 .opcion:disabled {
@@ -2113,4 +2117,51 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
   display: block;
   margin-top: var(--espacio-1);
   color: var(--acento-2);
+}
+
+/* ==========================================================================
+   El paso entre pantallas (`ADR-03` §6.3): los nombres del transito
+
+   `view-transition-name` es un identificador GLOBAL del documento: dos elementos con el
+   mismo nombre en la misma pagina hacen que el transito no ocurra, y no avisa. Por eso
+   el vocabulario se fija en el ADR y no en cada pantalla, y por eso hay exactamente tres
+   nombres en todo el repo: `marca`, `lugar` y `mosca`.
+
+   Aca vive `marca`, que es la firma ARCADE RICOTERO de la cabecera de cada juego. Cruza
+   de una pantalla a la otra sin volver a dibujarse: es lo que hace que el paso se lea
+   como moverse adentro del mismo sitio y no como cargar otro.
+
+   Las otras dos (`lugar` y `mosca`) viven en `sitio.css`, que es donde vive el cascaron.
+
+   NINGUNA pantalla de partida lleva nombre — `#portada`, `#partida` y `#resultado` son
+   las zonas que las islas vacian y rellenan con `replaceChildren()`, y nombrarlas seria
+   pedirle al navegador que interpole algo que la isla esta por borrar.
+   ========================================================================== */
+
+/* La firma de la cabecera de cada juego, como componente global.
+
+   ESTABA DEFINIDA CINCO VECES EN EL ALCANCE DE CINCO PAGINAS, y eso tuvo dos costos.
+   El chico, que es el P3 que la auditoria del 2026-08-24 anoto: dos paginas la fijaban en
+   `2.1rem` y el portal usaba `clamp()`, o sea la misma marca con dos comportamientos.
+   **El grande no lo habia visto nadie: `completar-la-letra.astro` escribe
+   `<p class="marca">` y no declaraba ninguna regla, asi que esa pantalla mostraba la marca
+   en la letra por defecto del sistema.** Es el patron de fondo numero 1 de esa auditoria —
+   componentes definidos en el alcance de la pagina en vez de la hoja global— y ya habia
+   roto siete botones antes.
+
+   EL NUMERO NO CAMBIA NADA A 375 px, que es la medida de referencia del proyecto: `9vw`
+   de 375 px son exactamente 33,75 px, o sea los `2.1rem` que estaban escritos a mano. Lo
+   que cambia es que ahora respira en pantallas mas chicas y mas grandes.
+
+   Las dos pantallas mas densas —`adivinar-el-tema` y `adivinar-por-la-letra`, que pelean
+   el espacio por pixel— la achican en su propio alcance a proposito. El alcance de Astro
+   agrega un atributo al selector, asi que su regla le gana a esta sin `!important`. */
+.marca {
+  font-family: var(--fuente-titular);
+  font-size: clamp(1.9rem, 9vw, 2.6rem);
+  line-height: 0.96;
+  color: var(--marca-rojo);
+  margin: var(--espacio-3) 0 var(--espacio-2);
+  max-width: 7ch;
+  view-transition-name: marca;
 }

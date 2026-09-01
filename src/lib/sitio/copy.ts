@@ -60,6 +60,62 @@ export const PORTAL = {
 } as const;
 
 /**
+ * Los nombres del lugar (`CNT-13`, `T-184`/`T-188` del ciclo 11).
+ *
+ * Un renglón por lugar del sitio, y hace un trabajo que ningún degradado hace: **decir
+ * dónde estás parado**. El título ya dice qué es la pantalla; esto dice en qué lugar te
+ * deja. Es la línea que canta de la regla de las dos líneas
+ * (`.claude/rules/voz-ricotera.md` §5), y por eso todos cumplen lo mismo: ocho palabras o
+ * menos, segunda persona, una imagen física y barata —moneda, aguja, papel, diente,
+ * tinta, guitarra, archivo, puerta— y ninguno explica lo que acaba de decir.
+ *
+ * **La prueba que los ocho tienen que pasar, y `CNT-13` §5 la corrió uno por uno:** tapá
+ * el renglón. Si el que llegó por un enlace todavía sabe qué es esto y qué botón tocar,
+ * está bien escrito. Ninguno de los ocho es la única fuente de nada: si se borraran todos,
+ * el sitio seguiría siendo jugable y entendible. Eso es lo que los deja ser atmósfera.
+ *
+ * **`dos-ejes` no tiene renglón, y es a propósito:** todavía no tiene puerta en el portal.
+ * Un lugar sin nombre es mejor que un nombre de relleno (`CNT-13` §1).
+ */
+export const LUGARES = {
+  portal: 'Estás en la puerta, con las dos cintas.',
+  quiz: 'Se te cae una moneda en la ranura.',
+  tema: 'La aguja te tiembla sobre el surco.',
+  porLaLetra: 'Un papel arrugado te pesa en el bolsillo.',
+  letra: 'Te falta un diente en la sonrisa.',
+  tapa: 'Tenés tinta fresca pegada en los dedos.',
+  cancionero: 'Tenés la guitarra cruzada en las piernas.',
+  redondopedia: 'Tenés todo el archivo tirado en el piso.',
+} as const;
+
+/**
+ * El interruptor de la cinta (`UX-21`, `ADR-04`).
+ *
+ * Ocho cadenas: cuatro estampas, una línea de contexto y tres nombres accesibles. Viven
+ * acá y no adentro de `sitio/cinta.ts` por un motivo con antecedentes: `voz.test.ts` audita
+ * los módulos de copy y no el código suelto, y ya atrapó dos veces texto que se había
+ * escrito a mano fuera de un `copy.ts`. Esta pieza tenía ocho oportunidades de repetirlo.
+ *
+ * **Las cuatro estampas van en registro 3** — seco, sin puntos suspensivos, sin
+ * infinitivo. No es un botón que invita a algo: es un **rótulo de estado**, como `LEYENDA`
+ * o `TESTIMONIO`. Un aparato de cinta real tampoco dice "presioná para grabar": dice `REC`.
+ *
+ * **El nombre accesible sí lleva verbo, y por eso va en voseo** (`D-17`): la estampa
+ * nombra el estado, el `aria-label` nombra lo que hace el toque.
+ */
+export const CINTA = {
+  apagada: 'CINTA APAGADA',
+  sonando: 'CINTA SONANDO',
+  callada: 'CINTA CALLADA',
+  bloqueada: 'CINTA BLOQUEADA',
+  /** `BLOQUEADA` sola no explica por qué, y sin una palabra más se lee como que el sitio
+   *  se rompió. Nombra el hecho y se detiene: no culpa a nadie ni manda a probar otra cosa. */
+  porQueBloqueada: 'El navegador no la deja sonar acá',
+  prender: 'Prendé la cinta',
+  apagar: 'Apagá la cinta',
+} as const;
+
+/**
  * Los cinco casetes del portal.
  *
  * **Habia un campo `viste`** que imprimia debajo de cada casete que disco lo vestia

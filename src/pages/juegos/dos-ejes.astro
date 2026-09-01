@@ -82,20 +82,18 @@ const TITULO = '¿Qué tipo de ricotero sos? — Arcade Ricotero';
       import '../../scripts/partida-dos-ejes.ts';
     </script>
 
+    <script>
+      // El interruptor de la cinta (`UX-21`). Isla propia: no sabe nada del juego
+      // y el juego no sabe nada de ella.
+      import '../../scripts/cinta.ts';
+    </script>
+
     <style>
       main {
         max-width: 34rem;
         margin: 0 auto;
         position: relative;
         min-height: 100vh;
-      }
-      .marca {
-        font-family: var(--fuente-titular);
-        font-size: 2.1rem;
-        line-height: 0.96;
-        color: var(--marca-rojo);
-        margin: var(--espacio-3) 0 var(--espacio-2);
-        max-width: 7ch;
       }
       h1 {
         font-family: var(--fuente-rotulada);

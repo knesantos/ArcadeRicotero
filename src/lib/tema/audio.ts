@@ -35,6 +35,7 @@
  */
 
 import { DURACION_FRAGMENTO_SEG } from './escalera.ts';
+import { contextoDeAudio, tomarLaSalida } from '../audio/contexto.ts';
 
 /** Dónde viven los fragmentos (`CTR-01.4`). */
 export const CARPETA_FRAGMENTOS = '/audio/fragmentos';
@@ -52,8 +53,6 @@ export function urlDeTema(slug: string): string {
   return `${CARPETA_TEMAS}/${slug}.mp3`;
 }
 
-type ConstructorDeContexto = new () => AudioContext;
-
 export interface Escucha {
   /** Cuánto lleva sonando, en segundos. Se llama una vez por cuadro. */
   readonly alAvanzar?: (transcurrido: number) => void;
@@ -70,9 +69,25 @@ export class Reproductor {
   private fuente: AudioBufferSourceNode | null = null;
   private repuesto: HTMLAudioElement | null = null;
   private cuadro = 0;
+  /**
+   * Qué vuelta de reproducción está vigente.
+   *
+   * Sube en cada `limpiar()`, o sea cada vez que se deja de sonar por cualquier puerta. Lo
+   * mira la promesa de `resume()` antes de arrancar: si la vuelta cambió mientras esperaba,
+   * es porque alguien frenó, y frenar quiere decir frenar.
+   */
+  private vuelta = 0;
   private cortar = 0;
   /** Si ya sono el buffer mudo que destraba el audio en los celulares. */
   private desbloqueado = false;
+  /**
+   * Como soltar la salida mientras suena un fragmento (`ADR-04.3`).
+   *
+   * El motor no sabe quien escucha esto y no lo tiene que saber: avisa que la salida esta
+   * ocupada y sigue con lo suyo. La cama de cinta es la que se calla; si manana hay otra
+   * cosa, se calla tambien sin que este archivo cambie.
+   */
+  private soltarSalida: (() => void) | null = null;
   /** El tema que se esta jugando: nunca lo desaloja el LRU. */
   private enJuego: string | null = null;
   /** El ultimo error que se trago un `catch`, para que el diagnostico lo pueda mostrar. */
@@ -92,17 +107,20 @@ export class Reproductor {
    */
   public despertar(): void {
     if (!this.ctx) {
-      const Ctor = (window.AudioContext ??
-        (window as unknown as { webkitAudioContext?: ConstructorDeContexto }).webkitAudioContext) as
-        | ConstructorDeContexto
-        | undefined;
-      if (!Ctor) return; // sin Web Audio: queda el repuesto
-      try {
-        this.ctx = new Ctor();
-      } catch {
-        this.ctx = null;
-        return;
-      }
+      /*
+       * **El contexto ya no lo construye este motor: se lo pide prestado** (`ADR-04.2`).
+       *
+       * Uno solo para todo el sitio. No es prolijidad: dos contextos no pueden callarse
+       * entre ellos, y la cama de cinta tiene que quedarse muda justo cuando este motor
+       * suena. Encima, este ciclo de vida —nace `suspended` en el celular, cae en
+       * `interrupted` cuando entra una llamada— costó dos defectos aprenderlo, y no se
+       * escribe dos veces.
+       *
+       * De acá para abajo no cambió una coma: el `resume()` con su `.catch` y el
+       * `desbloquear()` son la parte que arregló el celular del usuario.
+       */
+      this.ctx = contextoDeAudio();
+      if (!this.ctx) return; // sin Web Audio: queda el repuesto
     }
     // Volver de una pestaña en segundo plano, o de una llamada, deja el contexto parado.
     //
@@ -240,6 +258,20 @@ export class Reproductor {
     this.desbloquear();
 
     /*
+     * **El aviso de que la salida está ocupada** (`ADR-04.3`, oído 1).
+     *
+     * Va acá arriba, pegado al destrabe, y no más adentro: de esta línea para abajo el
+     * motor se bifurca en dos caminos y el de repuesto sale por un `<audio>` que nunca
+     * entra al documento, así que nadie que mire el grafo de Web Audio o los eventos de la
+     * página lo vería sonar. El aviso no pregunta por dónde sale el sonido: dice que el
+     * motor está sonando, que es lo único que hace falta saber.
+     *
+     * El tope copia el que este archivo ya tenía para el repuesto, `limite + 5`: un aviso
+     * que se filtra dejaría la atmósfera muda para siempre y sin síntoma. Se suelta solo.
+     */
+    this.soltarSalida = tomarLaSalida('fragmento', limite + 5);
+
+    /*
      * **El chequeo de estado, que faltaba, y era el defecto que reportó el usuario.**
      *
      * Si el contexto no está `running`, `fuente.start()` programa contra un reloj que no
@@ -249,10 +281,34 @@ export class Reproductor {
      * `interrupted`, en el que cae después de una llamada o de Siri.
      */
     if (this.ctx && this.ctx.state !== 'running') {
+      /*
+       * **La vuelta que se toma antes de irse a esperar, y por qué hace falta.**
+       *
+       * Entre este `resume()` y su promesa hay un hueco, y en ese hueco entra el dedo: se
+       * toca "Escuchar" con el contexto dormido y se toca "Parar" antes de que Safari
+       * conteste. Sin esta marca, cuando la promesa resolvía **el fragmento arrancaba
+       * igual**, después de que la persona lo frenó.
+       *
+       * Ese defecto ya estaba antes del ciclo 11 y era solo molesto. Con el token de la
+       * salida (`ADR-04.3`) pasó a ser peor: `detener()` ya soltó la salida, así que ese
+       * sonido huérfano suena **con la salida declarada libre** y la cama de cinta vuelve a
+       * subir a los seis segundos, encima de un fragmento de quince. Es exactamente lo que
+       * el oído 1 existe para impedir, y sin ningún síntoma para el que escucha.
+       *
+       * Lo encontró una refutación adversarial del ciclo 11 corriendo la carrera, no un
+       * test. La ventana es angosta en escritorio y ancha volviendo de una llamada, que es
+       * justo cuando aparece `interrupted`.
+       */
+      const vuelta = ++this.vuelta;
+      const sigueVigente = (): boolean => vuelta === this.vuelta;
       void this.ctx.resume().then(
-        () => this.reproducir(slug, limite, escucha),
+        () => {
+          if (sigueVigente()) this.reproducir(slug, limite, escucha);
+        },
         // Si ni resumiendo arranca, mejor el `<audio>` impreciso que el silencio.
-        () => this.sonarConRepuesto(slug, limite, escucha),
+        () => {
+          if (sigueVigente()) this.sonarConRepuesto(slug, limite, escucha);
+        },
       );
       return;
     }
@@ -367,11 +423,20 @@ export class Reproductor {
   }
 
   private limpiar(): void {
+    // Cada vez que se deja de sonar, la vuelta que estaba en curso deja de estar vigente:
+    // cualquier promesa de `resume()` que resuelva después de acá ya no arranca nada. Ver
+    // el comentario largo de `sonar()`.
+    this.vuelta += 1;
     if (this.cuadro) cancelAnimationFrame(this.cuadro);
     if (this.cortar) clearTimeout(this.cortar);
     this.cuadro = 0;
     this.cortar = 0;
     this.fuente = null;
+    // La salida se suelta acá porque acá pasan las dos únicas puertas por las que se deja
+    // de sonar —`terminar()` y `detener()`— y escribir la línea dos veces es escribir dos
+    // veces la posibilidad de olvidarse de una.
+    this.soltarSalida?.();
+    this.soltarSalida = null;
   }
 
   /** Frena lo que esté sonando. Es seguro llamarlo siempre, suene o no. */

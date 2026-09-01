@@ -10,7 +10,7 @@
  * el lector sabe desde la puerta que casilla es cada cosa.
  */
 import Base from '../../layouts/Base.astro';
-import { PORTAL, REDONDOPEDIA } from '../../lib/sitio/copy.ts';
+import { PORTAL, LUGARES, REDONDOPEDIA } from '../../lib/sitio/copy.ts';
 import { porTipo, TIPO_A_CATEGORIA, type Articulo } from '../../lib/redondopedia.ts';
 import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/redondopedia.json';
@@ -36,6 +36,7 @@ const recortar = (texto: string): string =>
   <div class="portada-redondopedia">
     {fondoCabecera && <div class="tapa-fondo tapa-fondo--gulp-pincelada" aria-hidden="true" />}
     <h1 class="titulo-seccion">{REDONDOPEDIA.titulo}</h1>
+    <p class="donde-estas">{LUGARES.redondopedia}</p>
     <p class="bajada-portal">{REDONDOPEDIA.bajada}</p>
 
     <p class="leyenda-rotulos">

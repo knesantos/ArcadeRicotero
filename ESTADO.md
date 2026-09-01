@@ -7,15 +7,128 @@
 
 **Última actualización:** 2026-09-01
 
-> ⚠ **Hay un ciclo 11 corriendo en paralelo, en otra sesión** — la inmersión de UI/UX que
-> pediste, con plan en `Docs/ORQ/ORQ-plan-ciclo-11.md`. **No lo escribí yo y no está
-> reflejado abajo.** Las dos sesiones se cruzaron en un punto y salió bien: planificamos el
-> mismo día leyendo el mismo disco, las dos vimos que el último documento de `experiencia`
-> era `UX-12` y **las dos escribimos un `UX-13` distinto**. La otra sesión lo detectó
-> mirando `git status`, se corrió a `UX-20`+ y dejó la traza en `Docs/IDS.md`. El zoom de
-> tapas se queda con `UX-13`. **Ningún archivo más se tocó de los dos lados.**
+**Ciclo actual:** **11 — CERRADO.** El ciclo 10 también, y en el mismo día, en dos sesiones
+que no se veían. Plan del 11 en `Docs/ORQ/ORQ-plan-ciclo-11.md`, tareas `T-176`..`T-194`.
+`npm test` **417/417** (eran 372), `npm run check` limpio, build de **150 páginas**.
 
-**Ciclo actual:** **10 — CERRADO en una ráfaga.** Plan en
+> ## 🎞 EL CICLO 11: EL SITIO DEJÓ DE MOSTRARSE Y EMPEZÓ A HABITARSE
+>
+> Lo pediste así: *"todo de mejora completa de ui/ux; que toda la página sea una experiencia
+> inmersiva, que cada paso se sienta como meterse en un universo mitológico misterioso"*.
+>
+> **El punto de partida, medido y no recordado:** todo el sitio tenía **dos movimientos**
+> —los 120 ms del borde de una opción y el vuelo de la mosca— y **ni un solo token de
+> movimiento**. El mundo estaba construido y no se movía.
+>
+> **La trampa que traía el pedido, y es lo que ordenó el ciclo entero:** casi todo lo que se
+> hace cuando piden "inmersivo" ya estaba vetado en este repo. El resplandor, el desenfoque,
+> el degradado, la tarjeta que se levanta, el héroe que aparece con fundido. Un ciclo de
+> inmersión sin doctrina era la corrida anti-slop al revés. Por eso la vara se escribió
+> **antes** de mover nada: `UX-20` (de `experiencia`), y de ahí salió **`D-32`**:
+>
+> > **El movimiento es del lugar, no del elemento.** Lo que se mueve es la cámara: el aire,
+> > el fondo, la tinta, el paso de una pantalla a la otra. Un botón que rebota es un botón
+> > pidiendo aplausos; una sala que respira es un lugar.
+>
+> ### Lo que hay ahora que antes no estaba
+>
+> | Qué | Dónde | Cuánto pesa |
+> |---|---|---|
+> | **El tránsito entre pantallas.** Ir de la portada a un juego dejó de ser un documento nuevo: la tinta se hunde y vuelve. `@view-transition` de CSS entre documentos (`ADR-03`) | `tokens.css`, una sola adhesión para las 150 páginas | **cero JavaScript**, y donde el navegador no lo soporta no pasa nada |
+> | **El umbral.** La portada llega en un tiempo: el grano se asienta, la figura baja, la marca termina de apoyar. **Una vez por visita** | `index.astro`, `sitio.css` | 0 ms de retraso del dedo |
+> | **La cama de cinta.** Ruido de cinta **sintetizado** en el navegador, apagado por defecto, que se calla sola cuando suena un fragmento (`ADR-04`, `UX-21`) | `audio/contexto.ts`, `sitio/cinta.ts`, `scripts/cinta.ts` | **cero archivos de audio**; 2,4 KB comprimidos de módulo |
+> | **Los nombres del lugar.** Ocho renglones que dicen dónde estás parado (`CNT-13`) | `LUGARES` en `sitio/copy.ts`, ocho pantallas | ocho cadenas |
+> | **La capitular de la Redondopedia** y la deriva de la franja del portal | `sitio.css` | — |
+>
+> ### Los tres arreglos que el ciclo trajo de arrastre, y valen tanto como lo nuevo
+>
+> 1. **El corte de `prefers-reduced-motion` dejó de ser una guillotina.** Era un `*` con
+>    `!important` que apagaba todo, **incluida la respuesta al toque**. Ahora opera por
+>    familia de token: se apaga la cámara, nunca el dedo. Era un P3 abierto desde el 24-ago.
+> 2. **`completar-la-letra` mostraba la marca sin ningún estilo.** `.marca` estaba definida
+>    en el alcance de cinco páginas y esa no la tenía: el nombre del sitio salía en la letra
+>    por defecto del navegador. Nadie lo había visto. Ahora es componente global.
+> 3. **El portal bajaba 109 KB de más** en recortes sobredimensionados (`oktubre-cadena.png`
+>    pesaba 113 KB para un hueco de 132 px). `scripts/optimizar-arte.mjs` los ajusta al
+>    triple del hueco real, y la letra titular se pide con `preload`: el título ya no
+>    parpadea de Arial Black a la calcada en cada carga fría.
+>
+> ### Y un guardián nuevo, porque el movimiento era lo único sin auditor
+>
+> `src/lib/movimiento.test.ts` falla el build si aparece una duración o una curva fuera de
+> `tokens.css`, si una animación no declara su equivalente quieto, si vuelve el `*` global,
+> si alguien mete un enrutador de cliente, o si aparece un cuarto nombre de tránsito.
+>
+> ### 🟡 `REV-10` CIERRA EN AMARILLO, Y EL MOTIVO NO ES EL CÓDIGO
+>
+> `Docs/REVISIONES/REV-10-el-sitio-como-lugar.md`. Ocho hallazgos, `FIND-38`..`FIND-45`.
+> **Los que tenían arreglo están arreglados**; los que son de `experiencia` quedaron como
+> propuesta en `Docs/SUGERENCIAS/HILO-para-experiencia-desvios-del-ciclo-11.md`.
+>
+> **`FIND-39`, el que más duele y el mejor encontrado:** el umbral del grano y de la figura
+> **eran el fundido de entrada que el comentario de al lado decía no usar**. El grano
+> arrancaba en `opacity: 0` y la figura en `0.35`: fundido y deslizamiento, el tic de
+> plantilla número uno, adentro del ciclo escrito para que eso no pasara. Arreglado: ninguno
+> de los tres sub-pasos toca la opacidad, lo que llega **no aparece, se apoya**.
+>
+> **`FIND-38`:** el plan decía que este ciclo no tocaba `quiz.astro` ni
+> `adivinar-el-tema.astro`, y los tocó. **No hubo conflicto** —el otro agente había cerrado y
+> commiteado el ciclo 10 a mitad de camino, así que los archivos ya eran de nadie— pero el
+> documento que ordena el ciclo dejó de describirlo, y eso lo encontró la revisión leyendo el
+> plan contra el disco. Corregido en el plan, con la fecha y el motivo.
+>
+> **La cuarta pregunta —¿se siente un lugar, o una web con animaciones?— quedó en 🟡:**
+> *"pesa hacia lugar, pero no se puede firmar todavía"*. Y el argumento es bueno: *"un lugar
+> no se declara por la atmósfera que tiene, se declara por si sus límites se sostienen"*.
+>
+> ### 🔴 LO QUE FALTA, Y NECESITA UN TELÉFONO EN LA MANO
+>
+> **El cruce entre pantallas no se vio funcionando.** El navegador de la sesión mantiene el
+> documento en `visibilityState: "hidden"` y Chrome **saltea las transiciones de vista en
+> documentos escondidos**. Sí está verificado que las dos reglas existen y se aplican (leídas
+> del CSSOM), que los tres nombres resuelven de los dos lados de una navegación, y que el
+> navegador soporta el mecanismo. Falta ver el cruce.
+>
+> La lista completa está al final de `REV-10`. Las seis, en orden:
+>
+> 1. Ver el cruce entre pantallas de punta a punta, con la pestaña visible.
+> 2. Confirmar **con el dedo** que el botón responde durante el umbral y durante el paso.
+> 3. Prender la cinta y jugar una vuelta con sonido de verdad: que se calle y que vuelva.
+> 4. Ver el umbral a 375×812 y decidir si los 520 ms se sienten como una cosa o como espera.
+> 5. Que `quiz.astro` y `adivinar-el-tema.astro` quedaron coherentes.
+> 6. Prender "reducir movimiento" **en el sistema operativo del teléfono**, no en las
+>    devtools, y jugar una vuelta entera sin que falte una sola confirmación.
+>
+> ### Y dos defectos que encontró la refutación adversarial de la cama, ya arreglados
+>
+> Ninguno lo había encontrado una prueba. Los encontró alguien leyendo con la consigna de
+> **refutar**, no de confirmar:
+>
+> - **Dos toques que se pisaban armaban dos camas**, y la segunda dejaba a la primera sonando
+>   sin apagador. El candado estaba del lado equivocado del `await`.
+> - **Frenar un fragmento antes de que volviera el contexto no frenaba nada:** el sonido
+>   arrancaba igual cuando la promesa resolvía, y —peor, desde este ciclo— con la salida ya
+>   declarada libre, así que la cama volvía a subir encima. La mitad vieja de ese defecto
+>   **ya estaba en el repo desde antes**: tocar "Escuchar" y "Parar" rápido con el teléfono
+>   volviendo de una llamada hacía sonar el fragmento igual.
+>
+> Los dos con su caso de regresión: `cinta.test.ts` y `audio.test.ts`.
+>
+> **Y uno que quedó anotado y no se arregló, porque es de otro juego y está latente:** el
+> reproductor del tema entero de `US-02` **sigue sonando en la pantalla de resultado** si
+> alguien toca "Seguí" mientras suena. Hoy no se nota porque todavía no hay temas enteros
+> alojados (`D-22`); el día que los haya, se nota.
+
+> ### Las dos sesiones del 2026-09-01, y lo que dejaron aprendido
+>
+> Los ciclos 10 y 11 se planificaron el mismo día, leyendo el mismo disco, sin verse. Las
+> dos vieron que el último documento de `experiencia` era `UX-12` y **las dos escribieron un
+> `UX-13` distinto**. Lo detectó la sesión del 11 mirando `git status` antes de dar nada por
+> cerrado, no porque nadie avisara. El zoom de tapas se quedó con `UX-13`; el ciclo 11 se
+> corrió a **`UX-20`+** y la reserva quedó en `Docs/IDS.md`, que es donde corresponde.
+> **Ningún otro archivo se pisó de los dos lados.**
+
+**Ciclo 10: CERRADO en una ráfaga.** Plan en
 `Docs/ORQ/ORQ-plan-ciclo-10.md`. **Catorce de quince tareas hechas**; la que falta es
 `T-165`, la clave de YouTube, que es tuya. `npm test` **372/372** (eran 352), `npm run
 check` limpio, build de **150 páginas**.
