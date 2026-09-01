@@ -78,13 +78,48 @@ test('US-05: el piso de 35 articulos de la Redondopedia sigue cumplido', () => {
 });
 
 /**
- * Los dos que faltan, y lo que falta de cada uno. No se testean todavia porque un test
- * que falla a proposito no es una guarda: es ruido que se aprende a ignorar.
+ * 🔴 **Los dos que faltaban llegaron el 2026-08-27, y nadie prendio su guarda.**
  *
- *  · `US-02` — piso **30** temas (subido de 20 por `producto` el 2026-08-24, `T-99`).
- *    Hoy: 0. Espera los mp3 — `npm run generar-fragmentos`, que necesita ffmpeg y la
- *    discografia del usuario. Ningun rol lo puede producir.
- *  · `US-03` — piso 15 versos. Hoy: 0 en `listo` sobre 226 candidatos. `CTR-04` no deja
- *    jugar un verso sin confirmacion de oido contra el disco, y eso no lo hace un
- *    programa sin mentir.
+ * El encabezado de este archivo fija la regla: las lineas de un piso *"se prenden el dia
+ * que se cumplen, en el mismo ciclo que las cumpla"*. `US-02` paso de 0 a 95 y `US-03` de
+ * 0 a 21 en el ciclo 9, y el comentario que decia "Hoy: 0" para los dos siguio ahi cinco
+ * dias — describiendo un repo que ya no existia.
+ *
+ * Lo encontro `REV-09` (`FIND-34`) y lo cierra `T-174` del ciclo 10. **Es exactamente el
+ * riesgo que este archivo existe para cubrir:** los dos pisos que mas costaron —cuatro
+ * ciclos el del audio— eran los unicos dos sin guarda de no regresion. Borrar un mp3 los
+ * bajaba en silencio.
  */
+
+/**
+ * `US-02`, piso **30** temas con fragmento (subido de 20 por `producto` el 2026-08-24,
+ * `T-99`). Cumplido el 2026-08-27 con los 95 fragmentos del PR #8.
+ *
+ * **Se cuenta sobre el manifiesto, que es la lista de archivos que existen de verdad.**
+ * La cuota de 8 Faciles de `BR-18` (f) **no se testea aca y no es un olvido**: la
+ * dificultad de este juego no vive en el dato, se deriva en build de las escuchas
+ * (`D-27`, `CTR-03.11`), y hoy no hay mediciones. Lo que pasa con esa cuota mientras
+ * tanto lo decide `BR-18` apartado (g), y quien guarda el mecanismo es
+ * `src/lib/tema/catalogo.test.ts`.
+ */
+test('US-02: el piso de 30 temas con fragmento sigue cumplido', () => {
+  const { fragmentos } = leer<{ fragmentos: readonly unknown[] }>('adivinar-tema');
+  assert.ok(fragmentos.length >= 30, `el piso de US-02 es 30 y hay ${fragmentos.length}`);
+});
+
+/**
+ * `US-03`, piso 15 versos. Cumplido el 2026-08-27 con 21, cuando `D-25` abrio el candado
+ * de `CTR-04` y `T-138` eligio los versos de menor riesgo de transcripcion.
+ *
+ * Se cuenta sobre `estado: "listo"` y no sobre el total: el archivo tiene ~1.500
+ * candidatos y contar esos seria contar otra cosa.
+ */
+test('US-03: el piso de 15 versos jugables sigue cumplido', () => {
+  const { items } = leer<{ items: readonly { estado: string; dificultad: string }[] }>('letra');
+  const jugables = items.filter((i) => i.estado === 'listo');
+  assert.ok(jugables.length >= 15, `el piso de US-03 es 15 y hay ${jugables.length} en listo`);
+
+  // `BR-01` necesita con que abrir la partida. Sin un solo facil, `armarRonda` tira.
+  const faciles = jugables.filter((i) => i.dificultad === 'facil').length;
+  assert.ok(faciles >= 1, 'US-03 no tiene ningun verso facil: BR-01 no puede abrir la partida');
+});

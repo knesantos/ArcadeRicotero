@@ -6,7 +6,9 @@
 > `src/lib/quiz/banco.ts`, `.claude/rules/contenido-json.md`,
 > `.claude/rules/diseno-marca.md`.
 > Produce: **`CTR-05`**. Tarea: `T-53` del ciclo 4.
-> Fecha: 2026-08-21. **Revisión 2: 2026-08-22, `T-70` del ciclo 5.**
+> Fecha: 2026-08-21. **Revisión 2: 2026-08-22, `T-70` del ciclo 5. Revisión 3: 2026-09-01,
+> `T-172` del ciclo 10** — ratifica la regla de `encuadre` que el juego de zoom reemplazó, y
+> apunta a `UX-13`.
 
 ---
 
@@ -492,6 +494,51 @@ Un recorte es más difícil que la tapa entera del mismo disco, y `BR-01` pone u
 primero en toda partida nueva. Sin esta regla, el jugador que llega sin idea puede recibir de
 entrada un pedazo de cuadro sin contexto, que es un muro de entrada con otra forma (`D-09`).
 La regla es un piso de `BR-01`, no una decisión de mecánica.
+
+> ### 🔄 Revisión 3 (2026-09-01, `T-172`): esa regla ya no está, y la reemplazó su contraria
+>
+> **El párrafo de arriba quedó viejo el 2026-08-28 y este contrato no se enteró hasta hoy.**
+> Se deja escrito porque el razonamiento sigue siendo correcto **para el juego que
+> describía**, y porque la forma en que dejó de serlo es lo interesante.
+>
+> **Qué pasó.** El usuario pidió que `US-04` funcione como los juegos de splash: *"no
+> mostrar la tapa entera sino un zoom alto como para que sea difícil"*. Eso **da vuelta el
+> caso normal**: antes el recorte era la excepción y la tapa entera lo corriente; ahora
+> ninguna tapa se muestra entera y lo que escalona es **el lado del zoom** —0,40 del master
+> para `facil`, 0,26 para `media`, 0,22 para `dificil`— y no si hay recorte o no.
+>
+> Con ese modelo, la regla vieja **bloqueaba justamente los tres `facil`**, que son los que
+> `BR-01` necesita para abrir una partida. Era un piso de `BR-01` que pasó a impedir
+> `BR-01`.
+>
+> **La regla que rige, y la ratifico:**
+>
+> > **Un ítem con `estado: "listo"` tiene que tener `encuadre: "detalle"`.** El schema lo
+> > rechaza si no.
+>
+> Es **más fuerte** que la anterior, no más laxa: aquella dejaba jugar una tapa entera
+> mientras no fuera `facil`; esta prohíbe jugar una tapa entera, punto. Y ahí estaba la
+> fuga que motivó todo — **ocho de las diez tapas imprimen su título en la cara frontal**,
+> así que una tapa entera se acertaba leyendo. En el álbum doble era doble.
+>
+> **Verifiqué que no tenga agujeros antes de ratificarla**, porque una regla condicional en
+> JSON Schema los tiene fácil: `properties` no exige que la clave exista. No los tiene, y
+> por dos requisitos que ya estaban puestos — `imagen` es `required` a nivel ítem
+> (`CTR-05.3`) y `encuadre` es `required` adentro de `imagen` (`CTR-05.4`). Sin esos dos,
+> un ítem `listo` sin `imagen`, o con `imagen` sin `encuadre`, pasaría de largo. **Quedan
+> anotados acá como lo que sostiene esta regla**, para que nadie los saque creyendo que
+> solo declaran campos.
+>
+> **Lo que la escribió, y no debería repetirse.** La cambió el hilo principal en el mismo
+> tirón en que arregló el juego, para no dejar el defecto en producción; el `$comment` del
+> schema tenía el único registro del porqué. **El contrato manda sobre la copia** —lo dice
+> `CTR-05.7`— así que tenerlo solo en el JSON era la inversión exacta que esta revisión
+> cierra.
+>
+> **Y lo que ahora sí decidió `experiencia`:** el párrafo de abajo dice que *"cuál tapa se
+> recorta, por dónde y cómo se ve el recorte es de `UX-05`"*. Ya no está pendiente:
+> **`UX-13`** cataloga los diez encuadres, uno por uno, con el centro de cada zoom y la
+> regla de que ninguno puede contener el título del disco.
 
 **Lo que no decido, y es de `experiencia`:** `US-04` deja explícitamente fuera de la historia
 *"si la tapa se muestra completa o recortada/pixelada como parte de la mecánica de

@@ -40,6 +40,7 @@ import { tramo } from '../lib/quiz/tramo.ts';
 import { armarLink } from '../lib/desafio.ts';
 import { Cronometro, duracion, total as sumarTiempos } from '../lib/tema/reloj.ts';
 import { claseDisco } from '../lib/tema/paleta.ts';
+import { escalonar } from '../lib/escalonar.ts';
 import { nombreArchivo } from '../lib/tarjeta/plan.ts';
 import { dibujarTarjeta } from './tarjeta.ts';
 
@@ -49,6 +50,14 @@ interface Tema extends TemaBuscable {
   readonly jugable: boolean;
   readonly entero: boolean;
   readonly letra: string | null;
+  /**
+   * Espejo de `TemaDelJuego.dificultad` (`CTR-03.11`). La estampa `catalogo()` en build
+   * desde las escuchas; acá llega ya resuelta, dentro del JSON que la pagina serializa.
+   *
+   * Se declara de nuevo y no se importa el tipo de `catalogo.ts` porque ese modulo lee el
+   * disco y ninguna isla puede tocar un modulo de Node (`D-29`).
+   */
+  readonly dificultad: string;
 }
 
 /** Cuántos temas tiene una vuelta. Cuatro entran en los dos o tres minutos del brief. */
@@ -192,14 +201,24 @@ function buscables(): Tema[] {
 
 // ---------------------------------------------------------------- la vuelta
 
+/*
+ * La vuelta se arma **escalonada**, no barajada. `BR-01`, y es `FIND-29` — el mismo
+ * defecto que `REV-08` encontro en "Sacalo por la letra", que aca siguio vivo un ciclo
+ * mas y pesaba mas, porque este juego si esta adentro del "Listo" de la v1.
+ *
+ * Hasta el ciclo 10 esto era un Fisher-Yates sobre el pozo entero y la palabra
+ * `dificultad` no aparecia una sola vez en este archivo: **el que llegaba sin saber nada
+ * podia recibir el tema mas oscuro del catalogo como primer fragmento**, que es el muro
+ * de entrada que `D-09` y `BR-01` existen para impedir. Y `PRD-alcance-v1.md` le pide a
+ * este juego un minimo de 8 Faciles, que sin el campo eran 0.
+ *
+ * El nivel lo estampa `catalogo()` en build desde las escuchas (`D-27`, `CTR-03.11`).
+ * **Mientras `popularidad.json` no tenga mediciones los 95 caen en `dificil`** y esto
+ * degrada a un barajado — el mismo reparto que antes, pero declarado, y andando solo el
+ * dia que corra `npm run ingerir-popularidad`.
+ */
 function comenzar(): void {
-  const disponibles = [...pozo()];
-  // Barajado de Fisher-Yates: sin repetir tema dentro de la misma vuelta.
-  for (let i = disponibles.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [disponibles[i], disponibles[j]] = [disponibles[j]!, disponibles[i]!];
-  }
-  ronda = disponibles.slice(0, Math.min(LARGO_RONDA, disponibles.length));
+  ronda = escalonar(pozo(), LARGO_RONDA);
   indice = 0;
   puntaje = 0;
   marcador = [];

@@ -2,7 +2,7 @@
   "contrato": "CTR-04",
   "contratoVersion": 2,
   "juego": "completar-la-letra",
-  "actualizado": "2026-08-27",
+  "actualizado": "2026-09-01",
   "modoRespuesta": "opciones",
   "items": [
     {
@@ -82498,15 +82498,15 @@
           "correcta": true
         },
         {
-          "texto": "tragaba",
+          "texto": "pick-up",
           "correcta": false
         },
         {
-          "texto": "ademas",
+          "texto": "dormida",
           "correcta": false
         },
         {
-          "texto": "condena",
+          "texto": "mirás",
           "correcta": false
         }
       ],
@@ -82555,7 +82555,7 @@
       },
       "opciones": [
         {
-          "texto": "cómicas",
+          "texto": "sonrisa",
           "correcta": false
         },
         {
@@ -82563,11 +82563,11 @@
           "correcta": true
         },
         {
-          "texto": "aguijón",
+          "texto": "chinesca",
           "correcta": false
         },
         {
-          "texto": "salvaje",
+          "texto": "gurú-vudú",
           "correcta": false
         }
       ],
@@ -82618,7 +82618,7 @@
       },
       "opciones": [
         {
-          "texto": "dame",
+          "texto": "finge",
           "correcta": false
         },
         {
@@ -82626,11 +82626,11 @@
           "correcta": true
         },
         {
-          "texto": "espadas",
+          "texto": "turno",
           "correcta": false
         },
         {
-          "texto": "arrojo",
+          "texto": "Marita",
           "correcta": false
         }
       ],
@@ -82685,15 +82685,15 @@
           "correcta": true
         },
         {
-          "texto": "barrio",
+          "texto": "también",
           "correcta": false
         },
         {
-          "texto": "Legenda",
+          "texto": "servís",
           "correcta": false
         },
         {
-          "texto": "higado",
+          "texto": "coches",
           "correcta": false
         }
       ],
@@ -82744,15 +82744,15 @@
       },
       "opciones": [
         {
-          "texto": "puede",
+          "texto": "busca",
           "correcta": false
         },
         {
-          "texto": "Muerde",
+          "texto": "funciona",
           "correcta": false
         },
         {
-          "texto": "chipero",
+          "texto": "feliz",
           "correcta": false
         },
         {
@@ -82807,11 +82807,11 @@
       },
       "opciones": [
         {
-          "texto": "volcás",
+          "texto": "cago",
           "correcta": false
         },
         {
-          "texto": "Tambien",
+          "texto": "camaleon",
           "correcta": false
         },
         {
@@ -82819,7 +82819,7 @@
           "correcta": true
         },
         {
-          "texto": "oscuridad",
+          "texto": "murga",
           "correcta": false
         }
       ],
@@ -82870,11 +82870,11 @@
       },
       "opciones": [
         {
-          "texto": "suicida",
+          "texto": "temblar",
           "correcta": false
         },
         {
-          "texto": "propina",
+          "texto": "brindo",
           "correcta": false
         },
         {
@@ -82882,7 +82882,7 @@
           "correcta": true
         },
         {
-          "texto": "Plata",
+          "texto": "lucas",
           "correcta": false
         }
       ],
@@ -82937,15 +82937,15 @@
           "correcta": true
         },
         {
-          "texto": "temblar",
+          "texto": "servís",
           "correcta": false
         },
         {
-          "texto": "tacones",
+          "texto": "puede",
           "correcta": false
         },
         {
-          "texto": "peso",
+          "texto": "escupio",
           "correcta": false
         }
       ],
@@ -82996,15 +82996,15 @@
       },
       "opciones": [
         {
-          "texto": "festín",
+          "texto": "sabe",
           "correcta": false
         },
         {
-          "texto": "suaves",
+          "texto": "nariz",
           "correcta": false
         },
         {
-          "texto": "risa",
+          "texto": "nuevas",
           "correcta": false
         },
         {
@@ -83059,11 +83059,11 @@
       },
       "opciones": [
         {
-          "texto": "chillona",
+          "texto": "cadena",
           "correcta": false
         },
         {
-          "texto": "barrio",
+          "texto": "finge",
           "correcta": false
         },
         {
@@ -83071,7 +83071,7 @@
           "correcta": true
         },
         {
-          "texto": "bendicion",
+          "texto": "Santo",
           "correcta": false
         }
       ],
@@ -83122,7 +83122,7 @@
       },
       "opciones": [
         {
-          "texto": "aguijón",
+          "texto": "rollo",
           "correcta": false
         },
         {
@@ -83130,11 +83130,11 @@
           "correcta": true
         },
         {
-          "texto": "manga",
+          "texto": "cueva",
           "correcta": false
         },
         {
-          "texto": "Mojada",
+          "texto": "bola",
           "correcta": false
         }
       ],
@@ -83189,15 +83189,15 @@
           "correcta": true
         },
         {
-          "texto": "pasta",
+          "texto": "camina",
           "correcta": false
         },
         {
-          "texto": "ciego",
+          "texto": "soñar",
           "correcta": false
         },
         {
-          "texto": "curdas",
+          "texto": "trucho",
           "correcta": false
         }
       ],
@@ -83252,15 +83252,15 @@
           "correcta": true
         },
         {
-          "texto": "huevos",
+          "texto": "tanta",
           "correcta": false
         },
         {
-          "texto": "progresar",
+          "texto": "lagrimas",
           "correcta": false
         },
         {
-          "texto": "jamon",
+          "texto": "estira",
           "correcta": false
         }
       ],
@@ -83311,15 +83311,15 @@
       },
       "opciones": [
         {
-          "texto": "pudo",
+          "texto": "rancia",
           "correcta": false
         },
         {
-          "texto": "vuelve",
+          "texto": "letargo",
           "correcta": false
         },
         {
-          "texto": "Vienen",
+          "texto": "hecho",
           "correcta": false
         },
         {
@@ -83435,7 +83435,7 @@
       },
       "opciones": [
         {
-          "texto": "Licor",
+          "texto": "armado",
           "correcta": false
         },
         {
@@ -83443,11 +83443,11 @@
           "correcta": true
         },
         {
-          "texto": "ponsoña",
+          "texto": "galpon",
           "correcta": false
         },
         {
-          "texto": "desfilar",
+          "texto": "capaces",
           "correcta": false
         }
       ],
@@ -83496,15 +83496,15 @@
           "correcta": true
         },
         {
-          "texto": "alla",
+          "texto": "suicida",
           "correcta": false
         },
         {
-          "texto": "sonrisa",
+          "texto": "Licor",
           "correcta": false
         },
         {
-          "texto": "prueba",
+          "texto": "cuartel",
           "correcta": false
         }
       ],
@@ -83555,15 +83555,15 @@
       },
       "opciones": [
         {
-          "texto": "también",
+          "texto": "fulana",
           "correcta": false
         },
         {
-          "texto": "Volanteás",
+          "texto": "cadena",
           "correcta": false
         },
         {
-          "texto": "chillona",
+          "texto": "enceguecio",
           "correcta": false
         },
         {
@@ -83620,15 +83620,15 @@
           "correcta": true
         },
         {
-          "texto": "kamikase",
+          "texto": "pasta",
           "correcta": false
         },
         {
-          "texto": "pulgar",
+          "texto": "pido",
           "correcta": false
         },
         {
-          "texto": "foco",
+          "texto": "pudo",
           "correcta": false
         }
       ],
@@ -83673,7 +83673,7 @@
       },
       "opciones": [
         {
-          "texto": "ademas",
+          "texto": "tonto",
           "correcta": false
         },
         {
@@ -83681,11 +83681,11 @@
           "correcta": true
         },
         {
-          "texto": "zumbón",
+          "texto": "festín",
           "correcta": false
         },
         {
-          "texto": "creer",
+          "texto": "Santo",
           "correcta": false
         }
       ],
@@ -83734,15 +83734,15 @@
           "correcta": true
         },
         {
-          "texto": "tapping",
+          "texto": "virgen",
           "correcta": false
         },
         {
-          "texto": "cañaveral",
+          "texto": "empolva",
           "correcta": false
         },
         {
-          "texto": "galpon",
+          "texto": "chinesca",
           "correcta": false
         }
       ],
@@ -83786,7 +83786,7 @@
           "no da mas la murga de los renegados"
         ],
         "despues": [
-          "entre sopores,modorras ciegas"
+          "entre sopores, modorras ciegas"
         ]
       },
       "opciones": [
@@ -83838,7 +83838,7 @@
         "anio": 2000
       },
       "hueco": {
-        "antes": "entre sopores,modorras",
+        "antes": "entre sopores, modorras",
         "respuesta": "ciegas",
         "despues": ""
       },
@@ -83908,7 +83908,7 @@
       "contexto": {
         "antes": [
           "no da mas la murga sin la bendicion",
-          "entre sopores,modorras ciegas"
+          "entre sopores, modorras ciegas"
         ],
         "despues": [
           "va esa murga desencantada",
@@ -83970,7 +83970,7 @@
       },
       "contexto": {
         "antes": [
-          "entre sopores,modorras ciegas",
+          "entre sopores, modorras ciegas",
           "y oscuridad de bodega sin luz"
         ],
         "despues": [
@@ -84043,11 +84043,11 @@
       },
       "opciones": [
         {
-          "texto": "sillones",
+          "texto": "cueva",
           "correcta": false
         },
         {
-          "texto": "desayuno",
+          "texto": "cruel",
           "correcta": false
         },
         {
@@ -84055,7 +84055,7 @@
           "correcta": true
         },
         {
-          "texto": "guita",
+          "texto": "poliéster",
           "correcta": false
         }
       ],
@@ -84106,15 +84106,15 @@
       },
       "opciones": [
         {
-          "texto": "raro",
+          "texto": "rubio",
           "correcta": false
         },
         {
-          "texto": "Express",
+          "texto": "coches",
           "correcta": false
         },
         {
-          "texto": "pasta",
+          "texto": "bostezos",
           "correcta": false
         },
         {
@@ -84173,15 +84173,15 @@
           "correcta": true
         },
         {
-          "texto": "copiar",
+          "texto": "besar",
           "correcta": false
         },
         {
-          "texto": "bola",
+          "texto": "lava",
           "correcta": false
         },
         {
-          "texto": "momo",
+          "texto": "fumador",
           "correcta": false
         }
       ],
@@ -84232,7 +84232,7 @@
       },
       "opciones": [
         {
-          "texto": "Marita",
+          "texto": "fuera",
           "correcta": false
         },
         {
@@ -84240,11 +84240,11 @@
           "correcta": true
         },
         {
-          "texto": "duerme",
+          "texto": "gastan",
           "correcta": false
         },
         {
-          "texto": "ambriaguez",
+          "texto": "propio",
           "correcta": false
         }
       ],
@@ -84299,15 +84299,15 @@
           "correcta": true
         },
         {
-          "texto": "desliza",
+          "texto": "templo",
           "correcta": false
         },
         {
-          "texto": "buen",
+          "texto": "mentir",
           "correcta": false
         },
         {
-          "texto": "bodega",
+          "texto": "Mojada",
           "correcta": false
         }
       ],
@@ -84352,15 +84352,15 @@
       },
       "opciones": [
         {
-          "texto": "templo",
+          "texto": "Sali",
           "correcta": false
         },
         {
-          "texto": "triste",
+          "texto": "coches",
           "correcta": false
         },
         {
-          "texto": "diablo",
+          "texto": "enjuaga",
           "correcta": false
         },
         {
@@ -84417,15 +84417,15 @@
           "correcta": true
         },
         {
-          "texto": "Estoy",
+          "texto": "pinchados",
           "correcta": false
         },
         {
-          "texto": "mejoría",
+          "texto": "miedo",
           "correcta": false
         },
         {
-          "texto": "despidio",
+          "texto": "borde",
           "correcta": false
         }
       ],
@@ -84478,15 +84478,15 @@
           "correcta": true
         },
         {
-          "texto": "Momo",
+          "texto": "bendicion",
           "correcta": false
         },
         {
-          "texto": "letargo",
+          "texto": "putas",
           "correcta": false
         },
         {
-          "texto": "feliz",
+          "texto": "propio",
           "correcta": false
         }
       ],
@@ -84531,7 +84531,7 @@
       },
       "opciones": [
         {
-          "texto": "dolores",
+          "texto": "tarde",
           "correcta": false
         },
         {
@@ -84539,11 +84539,11 @@
           "correcta": true
         },
         {
-          "texto": "baladas",
+          "texto": "plaza",
           "correcta": false
         },
         {
-          "texto": "pinchados",
+          "texto": "Película",
           "correcta": false
         }
       ],
@@ -84592,15 +84592,15 @@
           "correcta": true
         },
         {
-          "texto": "enjuaga",
+          "texto": "momo",
           "correcta": false
         },
         {
-          "texto": "muestro",
+          "texto": "jamon",
           "correcta": false
         },
         {
-          "texto": "labio",
+          "texto": "condena",
           "correcta": false
         }
       ],
@@ -84653,15 +84653,15 @@
       },
       "opciones": [
         {
-          "texto": "alla",
+          "texto": "ensueguida",
           "correcta": false
         },
         {
-          "texto": "corriendo",
+          "texto": "cerebro",
           "correcta": false
         },
         {
-          "texto": "Será",
+          "texto": "Saturno",
           "correcta": false
         },
         {
@@ -84720,15 +84720,15 @@
           "correcta": true
         },
         {
-          "texto": "corazon",
+          "texto": "veni",
           "correcta": false
         },
         {
-          "texto": "ponsoña",
+          "texto": "algo",
           "correcta": false
         },
         {
-          "texto": "flor",
+          "texto": "conga",
           "correcta": false
         }
       ],
@@ -84779,7 +84779,7 @@
       },
       "opciones": [
         {
-          "texto": "negro",
+          "texto": "bostezos",
           "correcta": false
         },
         {
@@ -84787,11 +84787,11 @@
           "correcta": true
         },
         {
-          "texto": "lejos",
+          "texto": "tacones",
           "correcta": false
         },
         {
-          "texto": "flor",
+          "texto": "tonto",
           "correcta": false
         }
       ],
@@ -84846,15 +84846,15 @@
           "correcta": true
         },
         {
-          "texto": "mata",
+          "texto": "dolores",
           "correcta": false
         },
         {
-          "texto": "Vienen",
+          "texto": "puteando",
           "correcta": false
         },
         {
-          "texto": "Nunca",
+          "texto": "muerte",
           "correcta": false
         }
       ],
@@ -84909,15 +84909,15 @@
       },
       "opciones": [
         {
-          "texto": "sonaja",
+          "texto": "Dios",
           "correcta": false
         },
         {
-          "texto": "siglos",
+          "texto": "pone",
           "correcta": false
         },
         {
-          "texto": "tanta",
+          "texto": "besar",
           "correcta": false
         },
         {
@@ -84976,15 +84976,15 @@
           "correcta": true
         },
         {
-          "texto": "dormida",
+          "texto": "picante",
           "correcta": false
         },
         {
-          "texto": "amenisa",
+          "texto": "ponsoña",
           "correcta": false
         },
         {
-          "texto": "templo",
+          "texto": "escapa",
           "correcta": false
         }
       ],
@@ -85035,7 +85035,7 @@
       },
       "opciones": [
         {
-          "texto": "Irlanda",
+          "texto": "condena",
           "correcta": false
         },
         {
@@ -85043,11 +85043,11 @@
           "correcta": true
         },
         {
-          "texto": "gallos",
+          "texto": "mentir",
           "correcta": false
         },
         {
-          "texto": "chipero",
+          "texto": "armado",
           "correcta": false
         }
       ],
@@ -85098,7 +85098,7 @@
       },
       "opciones": [
         {
-          "texto": "duerme",
+          "texto": "chabona",
           "correcta": false
         },
         {
@@ -85106,11 +85106,11 @@
           "correcta": true
         },
         {
-          "texto": "gracias",
+          "texto": "zumbón",
           "correcta": false
         },
         {
-          "texto": "cien",
+          "texto": "murga",
           "correcta": false
         }
       ],
@@ -85165,15 +85165,15 @@
           "correcta": true
         },
         {
-          "texto": "bendicion",
+          "texto": "pudo",
           "correcta": false
         },
         {
-          "texto": "miel",
+          "texto": "tacones",
           "correcta": false
         },
         {
-          "texto": "duran",
+          "texto": "miras",
           "correcta": false
         }
       ],
@@ -85224,15 +85224,15 @@
       },
       "opciones": [
         {
-          "texto": "bebas",
+          "texto": "vivir",
           "correcta": false
         },
         {
-          "texto": "Santo",
+          "texto": "flor",
           "correcta": false
         },
         {
-          "texto": "pedo",
+          "texto": "foco",
           "correcta": false
         },
         {
@@ -85291,15 +85291,15 @@
           "correcta": true
         },
         {
-          "texto": "prepara",
+          "texto": "esqueleto",
           "correcta": false
         },
         {
-          "texto": "condena",
+          "texto": "espolon",
           "correcta": false
         },
         {
-          "texto": "medicinas",
+          "texto": "gracias",
           "correcta": false
         }
       ],
@@ -85350,7 +85350,7 @@
       },
       "opciones": [
         {
-          "texto": "marcho",
+          "texto": "camaleon",
           "correcta": false
         },
         {
@@ -85358,11 +85358,11 @@
           "correcta": true
         },
         {
-          "texto": "templo",
+          "texto": "tristezas",
           "correcta": false
         },
         {
-          "texto": "sonaja",
+          "texto": "desencantada",
           "correcta": false
         }
       ],
@@ -85417,15 +85417,15 @@
           "correcta": true
         },
         {
-          "texto": "nuevas",
+          "texto": "tambaleando",
           "correcta": false
         },
         {
-          "texto": "Merlin",
+          "texto": "funcion",
           "correcta": false
         },
         {
-          "texto": "oscuridad",
+          "texto": "brindás",
           "correcta": false
         }
       ],
@@ -85476,11 +85476,11 @@
       },
       "opciones": [
         {
-          "texto": "sonrisa",
+          "texto": "cerebro",
           "correcta": false
         },
         {
-          "texto": "tragaba",
+          "texto": "pantalla",
           "correcta": false
         },
         {
@@ -85543,15 +85543,15 @@
           "correcta": true
         },
         {
-          "texto": "mucho",
+          "texto": "salada",
           "correcta": false
         },
         {
-          "texto": "espero",
+          "texto": "coches",
           "correcta": false
         },
         {
-          "texto": "menos",
+          "texto": "suaves",
           "correcta": false
         }
       ],
@@ -85602,7 +85602,7 @@
       },
       "opciones": [
         {
-          "texto": "mira",
+          "texto": "otra",
           "correcta": false
         },
         {
@@ -85610,11 +85610,11 @@
           "correcta": true
         },
         {
-          "texto": "nariz",
+          "texto": "salvaje",
           "correcta": false
         },
         {
-          "texto": "risa",
+          "texto": "pick-up",
           "correcta": false
         }
       ],
@@ -85669,15 +85669,15 @@
           "correcta": true
         },
         {
-          "texto": "kamikase",
+          "texto": "hace",
           "correcta": false
         },
         {
-          "texto": "salada",
+          "texto": "Vinos",
           "correcta": false
         },
         {
-          "texto": "creer",
+          "texto": "brotando",
           "correcta": false
         }
       ],
@@ -85732,15 +85732,15 @@
           "correcta": true
         },
         {
-          "texto": "servir",
+          "texto": "rock'n",
           "correcta": false
         },
         {
-          "texto": "chulos",
+          "texto": "nuevas",
           "correcta": false
         },
         {
-          "texto": "vivir",
+          "texto": "tiempo",
           "correcta": false
         }
       ],
@@ -85791,15 +85791,15 @@
       },
       "opciones": [
         {
-          "texto": "lindo",
+          "texto": "corazón",
           "correcta": false
         },
         {
-          "texto": "Carne",
+          "texto": "volcás",
           "correcta": false
         },
         {
-          "texto": "lleva",
+          "texto": "golpe",
           "correcta": false
         },
         {
@@ -85854,11 +85854,11 @@
       },
       "opciones": [
         {
-          "texto": "lleva",
+          "texto": "sonrisa",
           "correcta": false
         },
         {
-          "texto": "brindás",
+          "texto": "muerte",
           "correcta": false
         },
         {
@@ -85866,7 +85866,7 @@
           "correcta": true
         },
         {
-          "texto": "chivato",
+          "texto": "ponsoña",
           "correcta": false
         }
       ],
@@ -85917,7 +85917,7 @@
       },
       "opciones": [
         {
-          "texto": "huevos",
+          "texto": "pulgar",
           "correcta": false
         },
         {
@@ -85925,11 +85925,11 @@
           "correcta": true
         },
         {
-          "texto": "dolor",
+          "texto": "arcoiris",
           "correcta": false
         },
         {
-          "texto": "servís",
+          "texto": "muerte",
           "correcta": false
         }
       ],
@@ -85984,15 +85984,15 @@
           "correcta": true
         },
         {
-          "texto": "guita",
+          "texto": "galpon",
           "correcta": false
         },
         {
-          "texto": "rock'n",
+          "texto": "alla",
           "correcta": false
         },
         {
-          "texto": "gritar",
+          "texto": "manga",
           "correcta": false
         }
       ],
@@ -86043,15 +86043,15 @@
       },
       "opciones": [
         {
-          "texto": "cago",
+          "texto": "tren",
           "correcta": false
         },
         {
-          "texto": "risa",
+          "texto": "consejito",
           "correcta": false
         },
         {
-          "texto": "expresiva",
+          "texto": "dolor",
           "correcta": false
         },
         {
@@ -86106,11 +86106,11 @@
       },
       "opciones": [
         {
-          "texto": "trago",
+          "texto": "funciona",
           "correcta": false
         },
         {
-          "texto": "gurú-vudú",
+          "texto": "ambriaguez",
           "correcta": false
         },
         {
@@ -86118,7 +86118,7 @@
           "correcta": true
         },
         {
-          "texto": "flaco",
+          "texto": "capaces",
           "correcta": false
         }
       ],
@@ -86169,7 +86169,7 @@
       },
       "opciones": [
         {
-          "texto": "templo",
+          "texto": "puteando",
           "correcta": false
         },
         {
@@ -86177,11 +86177,11 @@
           "correcta": true
         },
         {
-          "texto": "tambien",
+          "texto": "sillones",
           "correcta": false
         },
         {
-          "texto": "mentir",
+          "texto": "Pilchitas",
           "correcta": false
         }
       ],
@@ -86230,15 +86230,15 @@
           "correcta": true
         },
         {
-          "texto": "Mojada",
+          "texto": "despidio",
           "correcta": false
         },
         {
-          "texto": "amores",
+          "texto": "limpio",
           "correcta": false
         },
         {
-          "texto": "enceguecio",
+          "texto": "tanta",
           "correcta": false
         }
       ],
@@ -86283,15 +86283,15 @@
       },
       "opciones": [
         {
-          "texto": "condena",
+          "texto": "arcoiris",
           "correcta": false
         },
         {
-          "texto": "meando",
+          "texto": "borracho",
           "correcta": false
         },
         {
-          "texto": "templo",
+          "texto": "lindas",
           "correcta": false
         },
         {
@@ -86348,15 +86348,15 @@
           "correcta": true
         },
         {
-          "texto": "higado",
+          "texto": "mentir",
           "correcta": false
         },
         {
-          "texto": "bobo",
+          "texto": "Bendita",
           "correcta": false
         },
         {
-          "texto": "pinchados",
+          "texto": "servís",
           "correcta": false
         }
       ],
@@ -86407,15 +86407,15 @@
       },
       "opciones": [
         {
-          "texto": "pantalla",
+          "texto": "oscuridad",
           "correcta": false
         },
         {
-          "texto": "tambior",
+          "texto": "virgencita",
           "correcta": false
         },
         {
-          "texto": "funcion",
+          "texto": "inprovizar",
           "correcta": false
         },
         {
@@ -86474,15 +86474,15 @@
           "correcta": true
         },
         {
-          "texto": "triste",
+          "texto": "Burgundy",
           "correcta": false
         },
         {
-          "texto": "flor",
+          "texto": "dame",
           "correcta": false
         },
         {
-          "texto": "baladas",
+          "texto": "Vienen",
           "correcta": false
         }
       ],
@@ -86533,11 +86533,11 @@
       },
       "opciones": [
         {
-          "texto": "galpon",
+          "texto": "pastel",
           "correcta": false
         },
         {
-          "texto": "santidad",
+          "texto": "putas",
           "correcta": false
         },
         {
@@ -86545,7 +86545,7 @@
           "correcta": true
         },
         {
-          "texto": "manga",
+          "texto": "funciona",
           "correcta": false
         }
       ],
@@ -86600,15 +86600,15 @@
           "correcta": true
         },
         {
-          "texto": "vuelve",
+          "texto": "salada",
           "correcta": false
         },
         {
-          "texto": "cadena",
+          "texto": "gallos",
           "correcta": false
         },
         {
-          "texto": "golpe",
+          "texto": "capaces",
           "correcta": false
         }
       ],
@@ -86659,15 +86659,15 @@
       },
       "opciones": [
         {
-          "texto": "Abracada",
+          "texto": "felicidad",
           "correcta": false
         },
         {
-          "texto": "gruesos",
+          "texto": "medicinas",
           "correcta": false
         },
         {
-          "texto": "nostalgias",
+          "texto": "impalas",
           "correcta": false
         },
         {
@@ -86726,15 +86726,15 @@
           "correcta": true
         },
         {
-          "texto": "empolva",
+          "texto": "salada",
           "correcta": false
         },
         {
-          "texto": "ciegas",
+          "texto": "galpon",
           "correcta": false
         },
         {
-          "texto": "Tambien",
+          "texto": "temblar",
           "correcta": false
         }
       ],
@@ -86785,11 +86785,11 @@
       },
       "opciones": [
         {
-          "texto": "inprovizar",
+          "texto": "loquito",
           "correcta": false
         },
         {
-          "texto": "buen",
+          "texto": "feliz",
           "correcta": false
         },
         {
@@ -86797,7 +86797,7 @@
           "correcta": true
         },
         {
-          "texto": "impalas",
+          "texto": "misas",
           "correcta": false
         }
       ],
@@ -86848,11 +86848,11 @@
       },
       "opciones": [
         {
-          "texto": "pido",
+          "texto": "piel",
           "correcta": false
         },
         {
-          "texto": "Plata",
+          "texto": "fantasma",
           "correcta": false
         },
         {
@@ -86860,7 +86860,7 @@
           "correcta": true
         },
         {
-          "texto": "bobos",
+          "texto": "meando",
           "correcta": false
         }
       ],
@@ -86911,15 +86911,15 @@
       },
       "opciones": [
         {
-          "texto": "roll",
+          "texto": "capaces",
           "correcta": false
         },
         {
-          "texto": "desfilar",
+          "texto": "Entán",
           "correcta": false
         },
         {
-          "texto": "impalas",
+          "texto": "comparsa",
           "correcta": false
         },
         {
@@ -86974,7 +86974,7 @@
       },
       "opciones": [
         {
-          "texto": "Santo",
+          "texto": "amores",
           "correcta": false
         },
         {
@@ -86982,11 +86982,11 @@
           "correcta": true
         },
         {
-          "texto": "tarde",
+          "texto": "acarician",
           "correcta": false
         },
         {
-          "texto": "creer",
+          "texto": "amor",
           "correcta": false
         }
       ],
@@ -87037,11 +87037,11 @@
       },
       "opciones": [
         {
-          "texto": "rock'n",
+          "texto": "miras",
           "correcta": false
         },
         {
-          "texto": "esqueleto",
+          "texto": "Plata",
           "correcta": false
         },
         {
@@ -87049,7 +87049,7 @@
           "correcta": true
         },
         {
-          "texto": "galpon",
+          "texto": "borde",
           "correcta": false
         }
       ],
@@ -87100,11 +87100,11 @@
       },
       "opciones": [
         {
-          "texto": "momo",
+          "texto": "chino",
           "correcta": false
         },
         {
-          "texto": "corazón",
+          "texto": "rubio",
           "correcta": false
         },
         {
@@ -87167,15 +87167,15 @@
           "correcta": true
         },
         {
-          "texto": "higado",
+          "texto": "algo",
           "correcta": false
         },
         {
-          "texto": "creer",
+          "texto": "curado",
           "correcta": false
         },
         {
-          "texto": "dormida",
+          "texto": "vias",
           "correcta": false
         }
       ],
@@ -87226,7 +87226,7 @@
       },
       "opciones": [
         {
-          "texto": "meta",
+          "texto": "aplaste",
           "correcta": false
         },
         {
@@ -87234,11 +87234,11 @@
           "correcta": true
         },
         {
-          "texto": "dolores",
+          "texto": "puso",
           "correcta": false
         },
         {
-          "texto": "veni",
+          "texto": "perder",
           "correcta": false
         }
       ],
@@ -87289,11 +87289,11 @@
       },
       "opciones": [
         {
-          "texto": "chino",
+          "texto": "Entán",
           "correcta": false
         },
         {
-          "texto": "hacen",
+          "texto": "galpon",
           "correcta": false
         },
         {
@@ -87301,7 +87301,7 @@
           "correcta": true
         },
         {
-          "texto": "Querés",
+          "texto": "fumador",
           "correcta": false
         }
       ],
@@ -87352,15 +87352,15 @@
       },
       "opciones": [
         {
-          "texto": "mamones",
+          "texto": "medula",
           "correcta": false
         },
         {
-          "texto": "tanto",
+          "texto": "Antibalas",
           "correcta": false
         },
         {
-          "texto": "cadena",
+          "texto": "aguijón",
           "correcta": false
         },
         {
@@ -87419,15 +87419,15 @@
           "correcta": true
         },
         {
-          "texto": "turno",
+          "texto": "menos",
           "correcta": false
         },
         {
-          "texto": "embaucar",
+          "texto": "brindás",
           "correcta": false
         },
         {
-          "texto": "ponsoña",
+          "texto": "salvaje",
           "correcta": false
         }
       ],
@@ -87478,11 +87478,11 @@
       },
       "opciones": [
         {
-          "texto": "Dios",
+          "texto": "Marita",
           "correcta": false
         },
         {
-          "texto": "sonaja",
+          "texto": "miel",
           "correcta": false
         },
         {
@@ -87490,7 +87490,7 @@
           "correcta": true
         },
         {
-          "texto": "gritar",
+          "texto": "Santo",
           "correcta": false
         }
       ],
@@ -87541,11 +87541,11 @@
       },
       "opciones": [
         {
-          "texto": "quiere",
+          "texto": "Sali",
           "correcta": false
         },
         {
-          "texto": "huelen",
+          "texto": "lleva",
           "correcta": false
         },
         {
@@ -87553,7 +87553,7 @@
           "correcta": true
         },
         {
-          "texto": "ellas",
+          "texto": "lejos",
           "correcta": false
         }
       ],
@@ -87604,11 +87604,11 @@
       },
       "opciones": [
         {
-          "texto": "chabona",
+          "texto": "guapear",
           "correcta": false
         },
         {
-          "texto": "Tambien",
+          "texto": "trampera",
           "correcta": false
         },
         {
@@ -87616,7 +87616,7 @@
           "correcta": true
         },
         {
-          "texto": "siempre",
+          "texto": "trmontina",
           "correcta": false
         }
       ],
@@ -87667,11 +87667,11 @@
       },
       "opciones": [
         {
-          "texto": "pases",
+          "texto": "pedo",
           "correcta": false
         },
         {
-          "texto": "desliza",
+          "texto": "prueba",
           "correcta": false
         },
         {
@@ -87679,7 +87679,7 @@
           "correcta": true
         },
         {
-          "texto": "Mojada",
+          "texto": "Ciego",
           "correcta": false
         }
       ],
@@ -87734,15 +87734,15 @@
           "correcta": true
         },
         {
-          "texto": "busca",
+          "texto": "fumador",
           "correcta": false
         },
         {
-          "texto": "mentir",
+          "texto": "rock'n",
           "correcta": false
         },
         {
-          "texto": "moda",
+          "texto": "puso",
           "correcta": false
         }
       ],
@@ -87793,15 +87793,15 @@
       },
       "opciones": [
         {
-          "texto": "hecho",
+          "texto": "Irlanda",
           "correcta": false
         },
         {
-          "texto": "tiros",
+          "texto": "erirte",
           "correcta": false
         },
         {
-          "texto": "pulgar",
+          "texto": "sopores",
           "correcta": false
         },
         {
@@ -87860,15 +87860,15 @@
           "correcta": true
         },
         {
-          "texto": "suicida",
+          "texto": "lava",
           "correcta": false
         },
         {
-          "texto": "plato",
+          "texto": "dormir",
           "correcta": false
         },
         {
-          "texto": "Express",
+          "texto": "duerme",
           "correcta": false
         }
       ],
@@ -87919,11 +87919,11 @@
       },
       "opciones": [
         {
-          "texto": "nariz",
+          "texto": "moda",
           "correcta": false
         },
         {
-          "texto": "funcion",
+          "texto": "bodega",
           "correcta": false
         },
         {
@@ -87931,7 +87931,7 @@
           "correcta": true
         },
         {
-          "texto": "sonaja",
+          "texto": "Saturno",
           "correcta": false
         }
       ],
@@ -87986,15 +87986,15 @@
           "correcta": true
         },
         {
-          "texto": "alla",
+          "texto": "Plata",
           "correcta": false
         },
         {
-          "texto": "quedó",
+          "texto": "escupio",
           "correcta": false
         },
         {
-          "texto": "trucho",
+          "texto": "templo",
           "correcta": false
         }
       ],
@@ -88045,15 +88045,15 @@
       },
       "opciones": [
         {
-          "texto": "barrio",
+          "texto": "prisión",
           "correcta": false
         },
         {
-          "texto": "Momo-Sampler",
+          "texto": "dormir",
           "correcta": false
         },
         {
-          "texto": "muertos",
+          "texto": "aparta",
           "correcta": false
         },
         {
@@ -88112,15 +88112,15 @@
           "correcta": true
         },
         {
-          "texto": "curabichero",
+          "texto": "ponsoña",
           "correcta": false
         },
         {
-          "texto": "espero",
+          "texto": "corazonada",
           "correcta": false
         },
         {
-          "texto": "perder",
+          "texto": "gruesos",
           "correcta": false
         }
       ],
@@ -88171,11 +88171,11 @@
       },
       "opciones": [
         {
-          "texto": "Ademas",
+          "texto": "templo",
           "correcta": false
         },
         {
-          "texto": "hormonas",
+          "texto": "tambalea",
           "correcta": false
         },
         {
@@ -88183,7 +88183,7 @@
           "correcta": true
         },
         {
-          "texto": "Antibalas",
+          "texto": "ahogar",
           "correcta": false
         }
       ],
@@ -88234,15 +88234,15 @@
       },
       "opciones": [
         {
-          "texto": "quetejedi",
+          "texto": "Burgundy",
           "correcta": false
         },
         {
-          "texto": "conga",
+          "texto": "ponsoña",
           "correcta": false
         },
         {
-          "texto": "sabe",
+          "texto": "duelen",
           "correcta": false
         },
         {
@@ -88297,11 +88297,11 @@
       },
       "opciones": [
         {
-          "texto": "hace",
+          "texto": "flor",
           "correcta": false
         },
         {
-          "texto": "Marita",
+          "texto": "Masticás",
           "correcta": false
         },
         {
@@ -88309,7 +88309,7 @@
           "correcta": true
         },
         {
-          "texto": "ciegas",
+          "texto": "cueva",
           "correcta": false
         }
       ],
@@ -88360,11 +88360,11 @@
       },
       "opciones": [
         {
-          "texto": "Estoy",
+          "texto": "chulos",
           "correcta": false
         },
         {
-          "texto": "sabe",
+          "texto": "flaco",
           "correcta": false
         },
         {
@@ -88372,7 +88372,7 @@
           "correcta": true
         },
         {
-          "texto": "veni",
+          "texto": "Burgundy",
           "correcta": false
         }
       ],
@@ -88421,15 +88421,15 @@
           "correcta": true
         },
         {
-          "texto": "gusto",
+          "texto": "condena",
           "correcta": false
         },
         {
-          "texto": "perder",
+          "texto": "templo",
           "correcta": false
         },
         {
-          "texto": "pasta",
+          "texto": "bingo",
           "correcta": false
         }
       ],
@@ -88474,15 +88474,15 @@
       },
       "opciones": [
         {
-          "texto": "hecho",
+          "texto": "sabe",
           "correcta": false
         },
         {
-          "texto": "tonteando",
+          "texto": "misas",
           "correcta": false
         },
         {
-          "texto": "huevos",
+          "texto": "pierde",
           "correcta": false
         },
         {
@@ -88535,11 +88535,11 @@
       },
       "opciones": [
         {
-          "texto": "trip",
+          "texto": "desfilar",
           "correcta": false
         },
         {
-          "texto": "corazon",
+          "texto": "quetejedi",
           "correcta": false
         },
         {
@@ -88547,7 +88547,7 @@
           "correcta": true
         },
         {
-          "texto": "espolon",
+          "texto": "bodega",
           "correcta": false
         }
       ],
@@ -88598,11 +88598,11 @@
       },
       "opciones": [
         {
-          "texto": "sonrisa",
+          "texto": "flor",
           "correcta": false
         },
         {
-          "texto": "lava",
+          "texto": "poco",
           "correcta": false
         },
         {
@@ -88610,7 +88610,7 @@
           "correcta": true
         },
         {
-          "texto": "bodega",
+          "texto": "chipero",
           "correcta": false
         }
       ],
@@ -88665,15 +88665,15 @@
           "correcta": true
         },
         {
-          "texto": "chipero",
+          "texto": "leve",
           "correcta": false
         },
         {
-          "texto": "sonrisa",
+          "texto": "vivir",
           "correcta": false
         },
         {
-          "texto": "gallo",
+          "texto": "tanto",
           "correcta": false
         }
       ],
@@ -88724,15 +88724,15 @@
       },
       "opciones": [
         {
-          "texto": "festín",
+          "texto": "chofer",
           "correcta": false
         },
         {
-          "texto": "vivir",
+          "texto": "kamikase",
           "correcta": false
         },
         {
-          "texto": "momo",
+          "texto": "Masticás",
           "correcta": false
         },
         {
@@ -88791,15 +88791,15 @@
           "correcta": true
         },
         {
-          "texto": "espolon",
+          "texto": "erirte",
           "correcta": false
         },
         {
-          "texto": "abismo",
+          "texto": "duerme",
           "correcta": false
         },
         {
-          "texto": "tambalea",
+          "texto": "cómicas",
           "correcta": false
         }
       ],
@@ -88854,15 +88854,15 @@
           "correcta": true
         },
         {
-          "texto": "yangler",
+          "texto": "atrapado",
           "correcta": false
         },
         {
-          "texto": "Volanteás",
+          "texto": "momo",
           "correcta": false
         },
         {
-          "texto": "galpon",
+          "texto": "Momo",
           "correcta": false
         }
       ],
@@ -88913,15 +88913,15 @@
       },
       "opciones": [
         {
-          "texto": "serenas",
+          "texto": "aplaste",
           "correcta": false
         },
         {
-          "texto": "tragaba",
+          "texto": "Burgundy",
           "correcta": false
         },
         {
-          "texto": "oscuridad",
+          "texto": "escupio",
           "correcta": false
         },
         {
@@ -88976,11 +88976,11 @@
       },
       "opciones": [
         {
-          "texto": "corazon",
+          "texto": "finge",
           "correcta": false
         },
         {
-          "texto": "tambior",
+          "texto": "aflige",
           "correcta": false
         },
         {
@@ -88988,7 +88988,7 @@
           "correcta": true
         },
         {
-          "texto": "pick-up",
+          "texto": "mucho",
           "correcta": false
         }
       ],
@@ -89039,7 +89039,7 @@
       },
       "opciones": [
         {
-          "texto": "falta",
+          "texto": "tanto",
           "correcta": false
         },
         {
@@ -89047,11 +89047,11 @@
           "correcta": true
         },
         {
-          "texto": "Orquesta",
+          "texto": "felicidad",
           "correcta": false
         },
         {
-          "texto": "cuartel",
+          "texto": "pastel",
           "correcta": false
         }
       ],
@@ -89106,15 +89106,15 @@
           "correcta": true
         },
         {
-          "texto": "ambriaguez",
+          "texto": "tiene",
           "correcta": false
         },
         {
-          "texto": "sabe",
+          "texto": "rollo",
           "correcta": false
         },
         {
-          "texto": "templo",
+          "texto": "baba",
           "correcta": false
         }
       ],
@@ -89165,15 +89165,15 @@
       },
       "opciones": [
         {
-          "texto": "chillona",
+          "texto": "religión",
           "correcta": false
         },
         {
-          "texto": "cerca",
+          "texto": "corazonada",
           "correcta": false
         },
         {
-          "texto": "Ademas",
+          "texto": "amores",
           "correcta": false
         },
         {
@@ -89228,11 +89228,11 @@
       },
       "opciones": [
         {
-          "texto": "letargo",
+          "texto": "progresar",
           "correcta": false
         },
         {
-          "texto": "mejorar",
+          "texto": "Carne",
           "correcta": false
         },
         {
@@ -89240,7 +89240,7 @@
           "correcta": true
         },
         {
-          "texto": "dormir",
+          "texto": "templo",
           "correcta": false
         }
       ],
@@ -89291,11 +89291,11 @@
       },
       "opciones": [
         {
-          "texto": "vias",
+          "texto": "algo",
           "correcta": false
         },
         {
-          "texto": "suicida",
+          "texto": "aguijón",
           "correcta": false
         },
         {
@@ -89303,7 +89303,7 @@
           "correcta": true
         },
         {
-          "texto": "quetejedi",
+          "texto": "destino",
           "correcta": false
         }
       ],
@@ -89358,15 +89358,15 @@
           "correcta": true
         },
         {
-          "texto": "Marita",
+          "texto": "impalas",
           "correcta": false
         },
         {
-          "texto": "letargo",
+          "texto": "hormonas",
           "correcta": false
         },
         {
-          "texto": "aflige",
+          "texto": "pinchados",
           "correcta": false
         }
       ],
@@ -89417,15 +89417,15 @@
       },
       "opciones": [
         {
-          "texto": "miras",
+          "texto": "flor",
           "correcta": false
         },
         {
-          "texto": "armado",
+          "texto": "chinesca",
           "correcta": false
         },
         {
-          "texto": "aguijón",
+          "texto": "boca",
           "correcta": false
         },
         {
@@ -89480,11 +89480,11 @@
       },
       "opciones": [
         {
-          "texto": "mejoría",
+          "texto": "bendicion",
           "correcta": false
         },
         {
-          "texto": "mejoria",
+          "texto": "higado",
           "correcta": false
         },
         {
@@ -89492,7 +89492,7 @@
           "correcta": true
         },
         {
-          "texto": "diablo",
+          "texto": "ilusión",
           "correcta": false
         }
       ],
@@ -89547,15 +89547,15 @@
           "correcta": true
         },
         {
-          "texto": "Plata",
+          "texto": "fumador",
           "correcta": false
         },
         {
-          "texto": "cruel",
+          "texto": "chillona",
           "correcta": false
         },
         {
-          "texto": "bodega",
+          "texto": "letargo",
           "correcta": false
         }
       ],
@@ -89606,15 +89606,15 @@
       },
       "opciones": [
         {
-          "texto": "duran",
+          "texto": "tren",
           "correcta": false
         },
         {
-          "texto": "curdas",
+          "texto": "viva",
           "correcta": false
         },
         {
-          "texto": "yangler",
+          "texto": "Muerde",
           "correcta": false
         },
         {
@@ -89669,11 +89669,11 @@
       },
       "opciones": [
         {
-          "texto": "letargo",
+          "texto": "fumador",
           "correcta": false
         },
         {
-          "texto": "porron",
+          "texto": "Ciego",
           "correcta": false
         },
         {
@@ -89681,7 +89681,7 @@
           "correcta": true
         },
         {
-          "texto": "galpon",
+          "texto": "trago",
           "correcta": false
         }
       ],
@@ -89732,11 +89732,11 @@
       },
       "opciones": [
         {
-          "texto": "Orquesta",
+          "texto": "ambriaguez",
           "correcta": false
         },
         {
-          "texto": "templados",
+          "texto": "Meloneando",
           "correcta": false
         },
         {
@@ -89744,7 +89744,7 @@
           "correcta": true
         },
         {
-          "texto": "paranormal",
+          "texto": "embaucar",
           "correcta": false
         }
       ],
@@ -89799,15 +89799,15 @@
           "correcta": true
         },
         {
-          "texto": "boca",
+          "texto": "Mojada",
           "correcta": false
         },
         {
-          "texto": "base",
+          "texto": "dame",
           "correcta": false
         },
         {
-          "texto": "gallos",
+          "texto": "chabona",
           "correcta": false
         }
       ],
@@ -89858,15 +89858,15 @@
       },
       "opciones": [
         {
-          "texto": "renegados",
+          "texto": "oscuridad",
           "correcta": false
         },
         {
-          "texto": "sonrisa",
+          "texto": "American",
           "correcta": false
         },
         {
-          "texto": "fumador",
+          "texto": "pentatonica",
           "correcta": false
         },
         {
@@ -89921,11 +89921,11 @@
       },
       "opciones": [
         {
-          "texto": "duran",
+          "texto": "tres",
           "correcta": false
         },
         {
-          "texto": "Santo",
+          "texto": "trucho",
           "correcta": false
         },
         {
@@ -89933,7 +89933,7 @@
           "correcta": true
         },
         {
-          "texto": "templo",
+          "texto": "festín",
           "correcta": false
         }
       ],
@@ -89982,11 +89982,11 @@
       },
       "opciones": [
         {
-          "texto": "gallo",
+          "texto": "Otra",
           "correcta": false
         },
         {
-          "texto": "velos",
+          "texto": "amores",
           "correcta": false
         },
         {
@@ -89994,7 +89994,7 @@
           "correcta": true
         },
         {
-          "texto": "boca",
+          "texto": "Estás",
           "correcta": false
         }
       ],
@@ -90039,11 +90039,11 @@
       },
       "opciones": [
         {
-          "texto": "enceguecio",
+          "texto": "pinchados",
           "correcta": false
         },
         {
-          "texto": "confesion",
+          "texto": "Antibalas",
           "correcta": false
         },
         {
@@ -90051,7 +90051,7 @@
           "correcta": true
         },
         {
-          "texto": "pinchados",
+          "texto": "Volanteás",
           "correcta": false
         }
       ],
@@ -90096,11 +90096,11 @@
       },
       "opciones": [
         {
-          "texto": "tragaba",
+          "texto": "pana",
           "correcta": false
         },
         {
-          "texto": "medula",
+          "texto": "templo",
           "correcta": false
         },
         {
@@ -90108,7 +90108,7 @@
           "correcta": true
         },
         {
-          "texto": "Santo",
+          "texto": "flor",
           "correcta": false
         }
       ],
@@ -90157,7 +90157,7 @@
       },
       "opciones": [
         {
-          "texto": "zumba",
+          "texto": "gruesos",
           "correcta": false
         },
         {
@@ -90165,11 +90165,11 @@
           "correcta": true
         },
         {
-          "texto": "gallos",
+          "texto": "túnel",
           "correcta": false
         },
         {
-          "texto": "vinagre",
+          "texto": "buen",
           "correcta": false
         }
       ],
@@ -90224,15 +90224,15 @@
           "correcta": true
         },
         {
-          "texto": "salada",
+          "texto": "coches",
           "correcta": false
         },
         {
-          "texto": "llego",
+          "texto": "cueva",
           "correcta": false
         },
         {
-          "texto": "claridad",
+          "texto": "comparsa",
           "correcta": false
         }
       ],
@@ -90283,15 +90283,15 @@
       },
       "opciones": [
         {
-          "texto": "base",
+          "texto": "rock'n",
           "correcta": false
         },
         {
-          "texto": "maquilla",
+          "texto": "puso",
           "correcta": false
         },
         {
-          "texto": "flor",
+          "texto": "tambalea",
           "correcta": false
         },
         {
@@ -90346,11 +90346,11 @@
       },
       "opciones": [
         {
-          "texto": "fulana",
+          "texto": "casa",
           "correcta": false
         },
         {
-          "texto": "chino",
+          "texto": "meando",
           "correcta": false
         },
         {
@@ -90358,7 +90358,7 @@
           "correcta": true
         },
         {
-          "texto": "gracias",
+          "texto": "veni",
           "correcta": false
         }
       ],
@@ -90407,7 +90407,7 @@
       },
       "opciones": [
         {
-          "texto": "ponsoña",
+          "texto": "mayor",
           "correcta": false
         },
         {
@@ -90415,11 +90415,11 @@
           "correcta": true
         },
         {
-          "texto": "amores",
+          "texto": "coco",
           "correcta": false
         },
         {
-          "texto": "felicidad",
+          "texto": "erirte",
           "correcta": false
         }
       ],
@@ -90468,15 +90468,15 @@
           "correcta": true
         },
         {
-          "texto": "Junto",
+          "texto": "gracias",
           "correcta": false
         },
         {
-          "texto": "cama",
+          "texto": "final",
           "correcta": false
         },
         {
-          "texto": "siglos",
+          "texto": "espadas",
           "correcta": false
         }
       ],
@@ -90521,15 +90521,15 @@
       },
       "opciones": [
         {
-          "texto": "pudo",
+          "texto": "gentil",
           "correcta": false
         },
         {
-          "texto": "fumador",
+          "texto": "tonto",
           "correcta": false
         },
         {
-          "texto": "dormir",
+          "texto": "baladas",
           "correcta": false
         },
         {
@@ -90582,11 +90582,11 @@
       },
       "opciones": [
         {
-          "texto": "gastan",
+          "texto": "tonteando",
           "correcta": false
         },
         {
-          "texto": "cueva",
+          "texto": "cancion",
           "correcta": false
         },
         {
@@ -90594,7 +90594,7 @@
           "correcta": true
         },
         {
-          "texto": "brotando",
+          "texto": "gastan",
           "correcta": false
         }
       ],
@@ -90645,11 +90645,11 @@
       },
       "opciones": [
         {
-          "texto": "bingo",
+          "texto": "nadie",
           "correcta": false
         },
         {
-          "texto": "moldeado",
+          "texto": "Licor",
           "correcta": false
         },
         {
@@ -90657,7 +90657,7 @@
           "correcta": true
         },
         {
-          "texto": "remos",
+          "texto": "chillona",
           "correcta": false
         }
       ],
@@ -90708,15 +90708,15 @@
       },
       "opciones": [
         {
-          "texto": "aparta",
+          "texto": "tongo",
           "correcta": false
         },
         {
-          "texto": "esqueleto",
+          "texto": "momo",
           "correcta": false
         },
         {
-          "texto": "putas",
+          "texto": "vienen",
           "correcta": false
         },
         {
@@ -90769,11 +90769,11 @@
       },
       "opciones": [
         {
-          "texto": "borde",
+          "texto": "quiere",
           "correcta": false
         },
         {
-          "texto": "guapear",
+          "texto": "algo",
           "correcta": false
         },
         {
@@ -90781,7 +90781,7 @@
           "correcta": true
         },
         {
-          "texto": "boquita",
+          "texto": "flor",
           "correcta": false
         }
       ],
@@ -90826,7 +90826,7 @@
       },
       "opciones": [
         {
-          "texto": "viva",
+          "texto": "copiar",
           "correcta": false
         },
         {
@@ -90834,11 +90834,11 @@
           "correcta": true
         },
         {
-          "texto": "propina",
+          "texto": "polilla",
           "correcta": false
         },
         {
-          "texto": "lleva",
+          "texto": "ambriaguez",
           "correcta": false
         }
       ],
@@ -90891,15 +90891,15 @@
           "correcta": true
         },
         {
-          "texto": "maquilla",
+          "texto": "internova",
           "correcta": false
         },
         {
-          "texto": "Santo",
+          "texto": "amor",
           "correcta": false
         },
         {
-          "texto": "espero",
+          "texto": "sangre",
           "correcta": false
         }
       ],
@@ -90950,15 +90950,15 @@
       },
       "opciones": [
         {
-          "texto": "kenzo",
+          "texto": "flor",
           "correcta": false
         },
         {
-          "texto": "pido",
+          "texto": "lucas",
           "correcta": false
         },
         {
-          "texto": "busca",
+          "texto": "hace",
           "correcta": false
         },
         {
@@ -91017,15 +91017,15 @@
           "correcta": true
         },
         {
-          "texto": "suaves",
+          "texto": "letargo",
           "correcta": false
         },
         {
-          "texto": "nunca",
+          "texto": "momo",
           "correcta": false
         },
         {
-          "texto": "envejece",
+          "texto": "Nunca",
           "correcta": false
         }
       ],
@@ -91076,7 +91076,7 @@
       },
       "opciones": [
         {
-          "texto": "Nunca",
+          "texto": "bola",
           "correcta": false
         },
         {
@@ -91084,11 +91084,11 @@
           "correcta": true
         },
         {
-          "texto": "temblar",
+          "texto": "duelen",
           "correcta": false
         },
         {
-          "texto": "borde",
+          "texto": "Santo",
           "correcta": false
         }
       ],
@@ -91143,15 +91143,15 @@
           "correcta": true
         },
         {
-          "texto": "colilla",
+          "texto": "sonaja",
           "correcta": false
         },
         {
-          "texto": "bobo",
+          "texto": "dormida",
           "correcta": false
         },
         {
-          "texto": "calles",
+          "texto": "cerebro",
           "correcta": false
         }
       ],
@@ -91202,15 +91202,15 @@
       },
       "opciones": [
         {
-          "texto": "amores",
+          "texto": "abismo",
           "correcta": false
         },
         {
-          "texto": "quiere",
+          "texto": "suicida",
           "correcta": false
         },
         {
-          "texto": "santidad",
+          "texto": "Antibalas",
           "correcta": false
         },
         {
@@ -91269,15 +91269,15 @@
           "correcta": true
         },
         {
-          "texto": "capaces",
+          "texto": "dudas",
           "correcta": false
         },
         {
-          "texto": "lleva",
+          "texto": "chillona",
           "correcta": false
         },
         {
-          "texto": "desliza",
+          "texto": "corazón",
           "correcta": false
         }
       ],
@@ -91383,15 +91383,15 @@
       },
       "opciones": [
         {
-          "texto": "lleva",
+          "texto": "jabón",
           "correcta": false
         },
         {
-          "texto": "cañaveral",
+          "texto": "templo",
           "correcta": false
         },
         {
-          "texto": "corriendo",
+          "texto": "golpe",
           "correcta": false
         },
         {
@@ -91444,15 +91444,15 @@
           "correcta": true
         },
         {
-          "texto": "misas",
+          "texto": "baba",
           "correcta": false
         },
         {
-          "texto": "templo",
+          "texto": "salada",
           "correcta": false
         },
         {
-          "texto": "malo",
+          "texto": "reliquias",
           "correcta": false
         }
       ],
@@ -91501,11 +91501,11 @@
       },
       "opciones": [
         {
-          "texto": "desfilar",
+          "texto": "atrapado",
           "correcta": false
         },
         {
-          "texto": "Masticás",
+          "texto": "enganchar",
           "correcta": false
         },
         {
@@ -91513,7 +91513,7 @@
           "correcta": true
         },
         {
-          "texto": "condena",
+          "texto": "espadas",
           "correcta": false
         }
       ],
@@ -91568,15 +91568,15 @@
           "correcta": true
         },
         {
-          "texto": "kenzo",
+          "texto": "vivir",
           "correcta": false
         },
         {
-          "texto": "ilusión",
+          "texto": "Solo",
           "correcta": false
         },
         {
-          "texto": "Momo",
+          "texto": "dolores",
           "correcta": false
         }
       ],
@@ -91627,15 +91627,15 @@
       },
       "opciones": [
         {
-          "texto": "prueba",
+          "texto": "barrio",
           "correcta": false
         },
         {
-          "texto": "roll",
+          "texto": "borbon",
           "correcta": false
         },
         {
-          "texto": "momo",
+          "texto": "espolon",
           "correcta": false
         },
         {
@@ -91694,11 +91694,11 @@
           "correcta": true
         },
         {
-          "texto": "expresiva",
+          "texto": "mandinga",
           "correcta": false
         },
         {
-          "texto": "escala",
+          "texto": "galpon",
           "correcta": false
         },
         {
@@ -91753,11 +91753,11 @@
       },
       "opciones": [
         {
-          "texto": "bomberos",
+          "texto": "trmontina",
           "correcta": false
         },
         {
-          "texto": "lleva",
+          "texto": "Momo",
           "correcta": false
         },
         {
@@ -91765,7 +91765,7 @@
           "correcta": true
         },
         {
-          "texto": "brindás",
+          "texto": "marcho",
           "correcta": false
         }
       ],
@@ -91820,15 +91820,15 @@
           "correcta": true
         },
         {
-          "texto": "Muerde",
+          "texto": "kamikase",
           "correcta": false
         },
         {
-          "texto": "remos",
+          "texto": "loquito",
           "correcta": false
         },
         {
-          "texto": "maquilla",
+          "texto": "pulso",
           "correcta": false
         }
       ],
@@ -91879,15 +91879,15 @@
       },
       "opciones": [
         {
-          "texto": "galpon",
+          "texto": "boquita",
           "correcta": false
         },
         {
-          "texto": "brindo",
+          "texto": "sonrisa",
           "correcta": false
         },
         {
-          "texto": "duelen",
+          "texto": "Entán",
           "correcta": false
         },
         {
@@ -91942,7 +91942,7 @@
       },
       "opciones": [
         {
-          "texto": "dolores",
+          "texto": "oscuridad",
           "correcta": false
         },
         {
@@ -91950,11 +91950,11 @@
           "correcta": true
         },
         {
-          "texto": "sonrisa",
+          "texto": "limpio",
           "correcta": false
         },
         {
-          "texto": "funciona",
+          "texto": "arcoiris",
           "correcta": false
         }
       ],
@@ -92005,11 +92005,11 @@
       },
       "opciones": [
         {
-          "texto": "feliz",
+          "texto": "copiar",
           "correcta": false
         },
         {
-          "texto": "virgen",
+          "texto": "Santo",
           "correcta": false
         },
         {
@@ -92017,7 +92017,7 @@
           "correcta": true
         },
         {
-          "texto": "baladas",
+          "texto": "pido",
           "correcta": false
         }
       ],
@@ -92068,15 +92068,15 @@
       },
       "opciones": [
         {
-          "texto": "cuartel",
+          "texto": "sofocados",
           "correcta": false
         },
         {
-          "texto": "bingo",
+          "texto": "escupio",
           "correcta": false
         },
         {
-          "texto": "Parida",
+          "texto": "creer",
           "correcta": false
         },
         {
@@ -92135,15 +92135,15 @@
           "correcta": true
         },
         {
-          "texto": "alla",
+          "texto": "templo",
           "correcta": false
         },
         {
-          "texto": "foco",
+          "texto": "tres",
           "correcta": false
         },
         {
-          "texto": "oscuridad",
+          "texto": "pantalla",
           "correcta": false
         }
       ],
@@ -92194,7 +92194,7 @@
       },
       "opciones": [
         {
-          "texto": "muerte",
+          "texto": "fulana",
           "correcta": false
         },
         {
@@ -92202,11 +92202,11 @@
           "correcta": true
         },
         {
-          "texto": "poco",
+          "texto": "muerte",
           "correcta": false
         },
         {
-          "texto": "Parida",
+          "texto": "mata",
           "correcta": false
         }
       ],
@@ -92257,11 +92257,11 @@
       },
       "opciones": [
         {
-          "texto": "chino",
+          "texto": "gallo",
           "correcta": false
         },
         {
-          "texto": "dudas",
+          "texto": "yangler",
           "correcta": false
         },
         {
@@ -92269,7 +92269,7 @@
           "correcta": true
         },
         {
-          "texto": "lindo",
+          "texto": "gallos",
           "correcta": false
         }
       ],
@@ -92320,15 +92320,15 @@
       },
       "opciones": [
         {
-          "texto": "tongo",
+          "texto": "coco",
           "correcta": false
         },
         {
-          "texto": "aplaste",
+          "texto": "pulgar",
           "correcta": false
         },
         {
-          "texto": "momo",
+          "texto": "dolores",
           "correcta": false
         },
         {
@@ -92387,15 +92387,15 @@
           "correcta": true
         },
         {
-          "texto": "fumador",
-          "correcta": false
-        },
-        {
-          "texto": "santidad",
+          "texto": "tapping",
           "correcta": false
         },
         {
           "texto": "chillona",
+          "correcta": false
+        },
+        {
+          "texto": "comparsa",
           "correcta": false
         }
       ],
@@ -92446,7 +92446,7 @@
       },
       "opciones": [
         {
-          "texto": "malo",
+          "texto": "base",
           "correcta": false
         },
         {
@@ -92454,11 +92454,11 @@
           "correcta": true
         },
         {
-          "texto": "gritar",
+          "texto": "pedo",
           "correcta": false
         },
         {
-          "texto": "baladas",
+          "texto": "Express",
           "correcta": false
         }
       ],
@@ -92509,11 +92509,11 @@
       },
       "opciones": [
         {
-          "texto": "muertos",
+          "texto": "Santo",
           "correcta": false
         },
         {
-          "texto": "prisión",
+          "texto": "templo",
           "correcta": false
         },
         {
@@ -92521,7 +92521,7 @@
           "correcta": true
         },
         {
-          "texto": "curdas",
+          "texto": "rancia",
           "correcta": false
         }
       ],
@@ -92572,15 +92572,15 @@
       },
       "opciones": [
         {
-          "texto": "rubio",
+          "texto": "meando",
           "correcta": false
         },
         {
-          "texto": "Entán",
+          "texto": "pasta",
           "correcta": false
         },
         {
-          "texto": "baba",
+          "texto": "desfilar",
           "correcta": false
         },
         {
@@ -92635,11 +92635,11 @@
       },
       "opciones": [
         {
-          "texto": "Ademas",
+          "texto": "aguijón",
           "correcta": false
         },
         {
-          "texto": "ademas",
+          "texto": "Momo",
           "correcta": false
         },
         {
@@ -92647,7 +92647,7 @@
           "correcta": true
         },
         {
-          "texto": "Querés",
+          "texto": "dejo",
           "correcta": false
         }
       ],
@@ -92698,11 +92698,11 @@
       },
       "opciones": [
         {
-          "texto": "zumbón",
+          "texto": "bostezos",
           "correcta": false
         },
         {
-          "texto": "corazon",
+          "texto": "Ademas",
           "correcta": false
         },
         {
@@ -92710,7 +92710,7 @@
           "correcta": true
         },
         {
-          "texto": "Dios",
+          "texto": "bebas",
           "correcta": false
         }
       ],
@@ -92765,15 +92765,15 @@
           "correcta": true
         },
         {
-          "texto": "mejoria",
+          "texto": "gritar",
           "correcta": false
         },
         {
-          "texto": "otra",
+          "texto": "nada",
           "correcta": false
         },
         {
-          "texto": "festín",
+          "texto": "American",
           "correcta": false
         }
       ],
@@ -92824,15 +92824,15 @@
       },
       "opciones": [
         {
-          "texto": "muerte",
+          "texto": "dormida",
           "correcta": false
         },
         {
-          "texto": "desayuno",
+          "texto": "Querés",
           "correcta": false
         },
         {
-          "texto": "llave",
+          "texto": "online",
           "correcta": false
         },
         {
@@ -92887,11 +92887,11 @@
       },
       "opciones": [
         {
-          "texto": "guapear",
+          "texto": "fuera",
           "correcta": false
         },
         {
-          "texto": "Estoy",
+          "texto": "gastan",
           "correcta": false
         },
         {
@@ -92899,7 +92899,7 @@
           "correcta": true
         },
         {
-          "texto": "mandinga",
+          "texto": "amor",
           "correcta": false
         }
       ],
@@ -92950,11 +92950,11 @@
       },
       "opciones": [
         {
-          "texto": "desbarranco",
+          "texto": "ilusión",
           "correcta": false
         },
         {
-          "texto": "abismo",
+          "texto": "clientela",
           "correcta": false
         },
         {
@@ -92962,7 +92962,7 @@
           "correcta": true
         },
         {
-          "texto": "Intermedio",
+          "texto": "medula",
           "correcta": false
         }
       ],
@@ -93017,15 +93017,15 @@
           "correcta": true
         },
         {
-          "texto": "gallos",
+          "texto": "progresar",
           "correcta": false
         },
         {
-          "texto": "cago",
+          "texto": "algo",
           "correcta": false
         },
         {
-          "texto": "servir",
+          "texto": "lindo",
           "correcta": false
         }
       ],
@@ -93076,15 +93076,15 @@
       },
       "opciones": [
         {
-          "texto": "aguijón",
+          "texto": "gallos",
           "correcta": false
         },
         {
-          "texto": "guapear",
+          "texto": "sonrisa",
           "correcta": false
         },
         {
-          "texto": "chillona",
+          "texto": "pastel",
           "correcta": false
         },
         {
@@ -93143,15 +93143,15 @@
           "correcta": true
         },
         {
-          "texto": "pulso",
+          "texto": "chipero",
           "correcta": false
         },
         {
-          "texto": "Entán",
+          "texto": "fuego",
           "correcta": false
         },
         {
-          "texto": "rubio",
+          "texto": "casa",
           "correcta": false
         }
       ],
@@ -93202,11 +93202,11 @@
       },
       "opciones": [
         {
-          "texto": "cerca",
+          "texto": "pastel",
           "correcta": false
         },
         {
-          "texto": "amores",
+          "texto": "chinesca",
           "correcta": false
         },
         {
@@ -93214,7 +93214,7 @@
           "correcta": true
         },
         {
-          "texto": "poros",
+          "texto": "plato",
           "correcta": false
         }
       ],
@@ -93259,11 +93259,11 @@
       },
       "opciones": [
         {
-          "texto": "lucas",
+          "texto": "solo",
           "correcta": false
         },
         {
-          "texto": "gracias",
+          "texto": "alla",
           "correcta": false
         },
         {
@@ -93271,7 +93271,7 @@
           "correcta": true
         },
         {
-          "texto": "gritar",
+          "texto": "tonto",
           "correcta": false
         }
       ],
@@ -93324,15 +93324,15 @@
           "correcta": true
         },
         {
-          "texto": "rock'n",
+          "texto": "Estás",
           "correcta": false
         },
         {
-          "texto": "dejo",
+          "texto": "gentil",
           "correcta": false
         },
         {
-          "texto": "quite",
+          "texto": "plaza",
           "correcta": false
         }
       ],
@@ -93383,15 +93383,15 @@
       },
       "opciones": [
         {
-          "texto": "picante",
+          "texto": "enjuaga",
           "correcta": false
         },
         {
-          "texto": "dame",
+          "texto": "nobody",
           "correcta": false
         },
         {
-          "texto": "chillona",
+          "texto": "bodega",
           "correcta": false
         },
         {
@@ -93450,15 +93450,15 @@
           "correcta": true
         },
         {
-          "texto": "Tumberito",
+          "texto": "Junto",
           "correcta": false
         },
         {
-          "texto": "Quien",
+          "texto": "tambior",
           "correcta": false
         },
         {
-          "texto": "American",
+          "texto": "muertos",
           "correcta": false
         }
       ],
@@ -93509,11 +93509,11 @@
       },
       "opciones": [
         {
-          "texto": "oscuridad",
+          "texto": "capaces",
           "correcta": false
         },
         {
-          "texto": "festín",
+          "texto": "boquita",
           "correcta": false
         },
         {
@@ -93521,7 +93521,7 @@
           "correcta": true
         },
         {
-          "texto": "poquito",
+          "texto": "curabichero",
           "correcta": false
         }
       ],
@@ -93574,15 +93574,15 @@
           "correcta": true
         },
         {
-          "texto": "tragaba",
+          "texto": "Saturno",
           "correcta": false
         },
         {
-          "texto": "amores",
+          "texto": "armado",
           "correcta": false
         },
         {
-          "texto": "lleva",
+          "texto": "chillona",
           "correcta": false
         }
       ],
@@ -93627,15 +93627,15 @@
       },
       "opciones": [
         {
-          "texto": "cómicas",
+          "texto": "bobos",
           "correcta": false
         },
         {
-          "texto": "prueba",
+          "texto": "Loco",
           "correcta": false
         },
         {
-          "texto": "vaso",
+          "texto": "pudo",
           "correcta": false
         },
         {
@@ -93688,15 +93688,15 @@
           "correcta": true
         },
         {
-          "texto": "Muerde",
+          "texto": "Santo",
           "correcta": false
         },
         {
-          "texto": "online",
+          "texto": "soñar",
           "correcta": false
         },
         {
-          "texto": "cerebro",
+          "texto": "viejas",
           "correcta": false
         }
       ],
@@ -93745,11 +93745,11 @@
       },
       "opciones": [
         {
-          "texto": "cuartel",
+          "texto": "muertos",
           "correcta": false
         },
         {
-          "texto": "cómicas",
+          "texto": "comparsa",
           "correcta": false
         },
         {
@@ -93757,7 +93757,7 @@
           "correcta": true
         },
         {
-          "texto": "trip",
+          "texto": "chillona",
           "correcta": false
         }
       ],
@@ -93808,7 +93808,7 @@
       },
       "opciones": [
         {
-          "texto": "solo",
+          "texto": "espolon",
           "correcta": false
         },
         {
@@ -93816,11 +93816,11 @@
           "correcta": true
         },
         {
-          "texto": "foco",
+          "texto": "peso",
           "correcta": false
         },
         {
-          "texto": "dame",
+          "texto": "lucas",
           "correcta": false
         }
       ],
@@ -93875,15 +93875,15 @@
           "correcta": true
         },
         {
-          "texto": "Sueña",
+          "texto": "cama",
           "correcta": false
         },
         {
-          "texto": "desayuno",
+          "texto": "Ciego",
           "correcta": false
         },
         {
-          "texto": "bola",
+          "texto": "Ademas",
           "correcta": false
         }
       ],
@@ -93934,15 +93934,15 @@
       },
       "opciones": [
         {
-          "texto": "nada",
+          "texto": "guita",
           "correcta": false
         },
         {
-          "texto": "vivir",
+          "texto": "arrojo",
           "correcta": false
         },
         {
-          "texto": "enjuaga",
+          "texto": "pastel",
           "correcta": false
         },
         {
@@ -93997,11 +93997,11 @@
       },
       "opciones": [
         {
-          "texto": "trampera",
+          "texto": "fiolos",
           "correcta": false
         },
         {
-          "texto": "Saturno",
+          "texto": "templo",
           "correcta": false
         },
         {
@@ -94009,7 +94009,7 @@
           "correcta": true
         },
         {
-          "texto": "vienen",
+          "texto": "online",
           "correcta": false
         }
       ],
@@ -94060,11 +94060,11 @@
       },
       "opciones": [
         {
-          "texto": "galpon",
+          "texto": "tanto",
           "correcta": false
         },
         {
-          "texto": "pocas",
+          "texto": "coco",
           "correcta": false
         },
         {
@@ -94072,7 +94072,7 @@
           "correcta": true
         },
         {
-          "texto": "lleva",
+          "texto": "buen",
           "correcta": false
         }
       ],
@@ -94127,15 +94127,15 @@
           "correcta": true
         },
         {
-          "texto": "solo",
+          "texto": "trip",
           "correcta": false
         },
         {
-          "texto": "cómicas",
+          "texto": "abismo",
           "correcta": false
         },
         {
-          "texto": "pepa",
+          "texto": "diablo",
           "correcta": false
         }
       ],
@@ -94186,15 +94186,15 @@
       },
       "opciones": [
         {
-          "texto": "abajo",
+          "texto": "perder",
           "correcta": false
         },
         {
-          "texto": "huelen",
+          "texto": "Santo",
           "correcta": false
         },
         {
-          "texto": "amores",
+          "texto": "llego",
           "correcta": false
         },
         {
@@ -94249,11 +94249,11 @@
       },
       "opciones": [
         {
-          "texto": "fumador",
+          "texto": "alla",
           "correcta": false
         },
         {
-          "texto": "Querés",
+          "texto": "sonrisa",
           "correcta": false
         },
         {
@@ -94261,7 +94261,7 @@
           "correcta": true
         },
         {
-          "texto": "duran",
+          "texto": "momo",
           "correcta": false
         }
       ],
@@ -94310,7 +94310,7 @@
       },
       "opciones": [
         {
-          "texto": "copiar",
+          "texto": "sonaja",
           "correcta": false
         },
         {
@@ -94318,11 +94318,11 @@
           "correcta": true
         },
         {
-          "texto": "consejito",
+          "texto": "progresar",
           "correcta": false
         },
         {
-          "texto": "sonando",
+          "texto": "consejito",
           "correcta": false
         }
       ],
@@ -94371,15 +94371,15 @@
           "correcta": true
         },
         {
-          "texto": "templados",
+          "texto": "pases",
           "correcta": false
         },
         {
-          "texto": "mamones",
+          "texto": "desayuno",
           "correcta": false
         },
         {
-          "texto": "camaleon",
+          "texto": "tambior",
           "correcta": false
         }
       ],
@@ -94428,15 +94428,15 @@
           "correcta": true
         },
         {
-          "texto": "Dios",
+          "texto": "trmontina",
           "correcta": false
         },
         {
-          "texto": "huevos",
+          "texto": "veni",
           "correcta": false
         },
         {
-          "texto": "quiere",
+          "texto": "tapping",
           "correcta": false
         }
       ],
@@ -94485,15 +94485,15 @@
       },
       "opciones": [
         {
-          "texto": "dudas",
+          "texto": "feliz",
           "correcta": false
         },
         {
-          "texto": "túnel",
+          "texto": "tambalea",
           "correcta": false
         },
         {
-          "texto": "limpio",
+          "texto": "tanto",
           "correcta": false
         },
         {
@@ -94552,15 +94552,15 @@
           "correcta": true
         },
         {
-          "texto": "arrojo",
+          "texto": "inprovizar",
           "correcta": false
         },
         {
-          "texto": "soñar",
+          "texto": "brindás",
           "correcta": false
         },
         {
-          "texto": "pick-up",
+          "texto": "dios",
           "correcta": false
         }
       ],
@@ -94611,11 +94611,11 @@
       },
       "opciones": [
         {
-          "texto": "murga",
+          "texto": "pone",
           "correcta": false
         },
         {
-          "texto": "Santo",
+          "texto": "templo",
           "correcta": false
         },
         {
@@ -94623,7 +94623,7 @@
           "correcta": true
         },
         {
-          "texto": "sebo",
+          "texto": "arcadas",
           "correcta": false
         }
       ],
@@ -94678,15 +94678,15 @@
           "correcta": true
         },
         {
-          "texto": "pido",
+          "texto": "misas",
           "correcta": false
         },
         {
-          "texto": "creer",
+          "texto": "Licor",
           "correcta": false
         },
         {
-          "texto": "flor",
+          "texto": "guita",
           "correcta": false
         }
       ],
@@ -94737,15 +94737,15 @@
       },
       "opciones": [
         {
-          "texto": "misas",
+          "texto": "tajeador",
           "correcta": false
         },
         {
-          "texto": "Muerde",
+          "texto": "alla",
           "correcta": false
         },
         {
-          "texto": "vivir",
+          "texto": "fantasma",
           "correcta": false
         },
         {
@@ -94804,15 +94804,15 @@
           "correcta": true
         },
         {
-          "texto": "putas",
+          "texto": "bulchitear",
           "correcta": false
         },
         {
-          "texto": "Plata",
+          "texto": "galpon",
           "correcta": false
         },
         {
-          "texto": "letargo",
+          "texto": "duran",
           "correcta": false
         }
       ],
@@ -94863,11 +94863,11 @@
       },
       "opciones": [
         {
-          "texto": "ruede",
+          "texto": "siglos",
           "correcta": false
         },
         {
-          "texto": "bajo",
+          "texto": "muertos",
           "correcta": false
         },
         {
@@ -94875,7 +94875,7 @@
           "correcta": true
         },
         {
-          "texto": "Saturno",
+          "texto": "cuartel",
           "correcta": false
         }
       ],
@@ -94926,11 +94926,11 @@
       },
       "opciones": [
         {
-          "texto": "tanta",
+          "texto": "algo",
           "correcta": false
         },
         {
-          "texto": "cuartel",
+          "texto": "coches",
           "correcta": false
         },
         {
@@ -94938,7 +94938,7 @@
           "correcta": true
         },
         {
-          "texto": "besar",
+          "texto": "feliz",
           "correcta": false
         }
       ],
@@ -94989,15 +94989,15 @@
       },
       "opciones": [
         {
-          "texto": "moldeado",
+          "texto": "vuelve",
           "correcta": false
         },
         {
-          "texto": "clientela",
+          "texto": "finge",
           "correcta": false
         },
         {
-          "texto": "Penas",
+          "texto": "tanto",
           "correcta": false
         },
         {
@@ -95052,15 +95052,15 @@
       },
       "opciones": [
         {
-          "texto": "Tambien",
+          "texto": "Querés",
           "correcta": false
         },
         {
-          "texto": "tristezas",
+          "texto": "rollo",
           "correcta": false
         },
         {
-          "texto": "Santo",
+          "texto": "Vienen",
           "correcta": false
         },
         {
@@ -95113,11 +95113,11 @@
       },
       "opciones": [
         {
-          "texto": "nadie",
+          "texto": "modorras",
           "correcta": false
         },
         {
-          "texto": "Santo",
+          "texto": "huesos",
           "correcta": false
         },
         {
@@ -95125,7 +95125,7 @@
           "correcta": true
         },
         {
-          "texto": "cañaveral",
+          "texto": "velos",
           "correcta": false
         }
       ],
@@ -95170,7 +95170,7 @@
       },
       "opciones": [
         {
-          "texto": "perder",
+          "texto": "taxi",
           "correcta": false
         },
         {
@@ -95178,11 +95178,11 @@
           "correcta": true
         },
         {
-          "texto": "viejas",
+          "texto": "salvaje",
           "correcta": false
         },
         {
-          "texto": "Dicen",
+          "texto": "cueva",
           "correcta": false
         }
       ],

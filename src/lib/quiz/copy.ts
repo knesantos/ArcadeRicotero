@@ -16,7 +16,7 @@ import type { Desafio } from '../desafio.ts';
 
 /** A1, A2, A3, A4 — Pantalla 0. */
 export const PANTALLA_0 = {
-  titulo: 'Entrá a jugar con los Redondos, sepas lo que sepas.',
+  titulo: 'Entrá, sepas lo que sepas.',
   subtitulo: 'Preguntas de historia, discos, letras y mitología ricotera.',
   botón: 'JUGÁ',
 } as const;

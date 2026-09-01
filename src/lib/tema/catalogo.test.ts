@@ -139,3 +139,75 @@ test('el manifiesto que está en el repo es válido', () => {
   assert.equal(cat.temas.length, 105);
   assert.equal(cat.jugables, real.fragmentos.length);
 });
+
+// ------------------------------------------------- la dificultad (CTR-03.11, FIND-29)
+
+/**
+ * `T-162` del ciclo 10. Estos tests existen porque el campo que validan **no existía** y
+ * su ausencia dejaba `BR-01` incumplido en un juego de la v1, con el tablero en verde.
+ */
+
+const medido = (slug: string, vistas: number) => ({
+  slug,
+  estado: 'medido',
+  medicion: { vistas },
+});
+
+test('CTR-03.11: todo tema del catálogo trae dificultad, siempre', () => {
+  const cat = catalogo(VACIO);
+  assert.equal(cat.temas.length, 105);
+  assert.ok(
+    cat.temas.every((t) => t.dificultad === 'facil' || t.dificultad === 'media' || t.dificultad === 'dificil'),
+    'algún tema salió sin nivel, o con uno que BR-01 no sabe ordenar',
+  );
+});
+
+test('CTR-03.11 punto 1: nunca sale "sin-clasificar", que es de US-07 y acá no aplica', () => {
+  const cat = catalogo(VACIO);
+  assert.equal(cat.temas.filter((t) => (t.dificultad as string) === 'sin-clasificar').length, 0);
+});
+
+test('sin mediciones el reparto es plano y medidos lo dice, en vez de haber que deducirlo', () => {
+  const cat = catalogo(VACIO);
+  assert.equal(cat.medidos, 0);
+  assert.ok(cat.temas.every((t) => t.dificultad === 'dificil'), 'D-27: sin escucha, difícil');
+});
+
+test('D-27: con mediciones aparecen los tercios, sin tocar una línea de código', () => {
+  const base = catalogo(VACIO).temas;
+  const treinta = base.slice(0, 30);
+  const cat = catalogo(
+    VACIO,
+    [],
+    treinta.map((t, i) => medido(t.slug, 1_000_000 - i * 1000)),
+  );
+
+  assert.equal(cat.medidos, 30);
+  const porNivel = { facil: 0, media: 0, dificil: 0 };
+  for (const t of treinta) porNivel[cat.temas.find((x) => x.slug === t.slug)!.dificultad]++;
+  assert.equal(porNivel.facil, 10);
+  assert.equal(porNivel.media, 10);
+  assert.equal(porNivel.dificil, 10);
+});
+
+test('el más escuchado es el más fácil: la medición no aproxima la dificultad, la mide', () => {
+  const base = catalogo(VACIO).temas;
+  const cat = catalogo(VACIO, [], [medido(base[0]!.slug, 9_000_000), medido(base[1]!.slug, 12), medido(base[2]!.slug, 500)]);
+  assert.equal(cat.temas.find((t) => t.slug === base[0]!.slug)!.dificultad, 'facil');
+  assert.equal(cat.temas.find((t) => t.slug === base[1]!.slug)!.dificultad, 'dificil');
+});
+
+/**
+ * 🔴 `FIND-29` en `US-02`, convertido en guarda.
+ *
+ * El defecto no era que faltara el campo: era que **la vuelta se armaba sin mirarlo**.
+ * Este test afirma que el pozo trae con qué escalonar, que es la mitad que le toca al
+ * catálogo; la otra mitad —que la isla escalone— la afirma `escalonar.test.ts`.
+ */
+test('🔴 el pozo real trae dificultad en todos, así la isla puede escalonar', () => {
+  const real = JSON.parse(readFileSync('src/data/adivinar-tema.json', 'utf-8')) as Manifiesto;
+  const cat = catalogo(real);
+  const jugables = cat.temas.filter((t) => t.jugable);
+  assert.ok(jugables.length >= 30, `US-02 pide un piso de 30 y hay ${jugables.length}`);
+  assert.ok(jugables.every((t) => typeof t.dificultad === 'string' && t.dificultad.length > 0));
+});

@@ -41,6 +41,16 @@
 > de `US-01`, queda disponible para `US-04`) y el resumen de pisos (nota). El resto del
 > documento no se tocó.
 >
+> **Revisión 2026-09-01 (`T-164` y `T-166`, ciclo 10).** Consume además `D-27`, `CTR-03.11`
+> y `FIND-29` de `REV-08`. El ciclo 10 midió que `US-02` **no escalonaba** —la vuelta salía
+> de un barajado puro y el campo `dificultad` no existía— y que por lo tanto el mínimo de
+> **8 Fáciles** que este documento le exige estaba en **0**. El mecanismo ya está puesto
+> (`T-162`, `T-163`); lo que faltaba era la decisión de `producto` sobre qué hace el "Listo"
+> de la v1 mientras `popularidad.json` no tenga mediciones. **Suma el apartado (g) a
+> `BR-18`** y una nota al piso de `US-02`. Y `T-166` recorta el `h1` del quiz, que tenía
+> diez palabras contra el techo de ocho de `voz-ricotera.md` 4.1. El resto del documento no
+> se tocó.
+>
 > **Corrección el mismo día, sobre la misma `T-129`.** La primera versión de `BR-19` no
 > decía nada sobre cuánto dura la partida, y el apartado sobre molinetes afirmaba que el
 > modelo nuevo "encaja mejor con la sesión de 2-3 minutos" comparando contra una ronda de
@@ -175,6 +185,28 @@ demostrar cuánto sé sin que una sola respuesta mala me saque del juego.
   ítems son, a la vez, el contenido y el mapa de los tres escalones (10/15/15). Un piso
   más alto ya no es solo "más variedad": es directamente "la partida dura más antes de
   poder ganarse", que es el riesgo 4 del brief aplicado a este mecanismo nuevo.
+
+> **El `h1` de la portada del quiz se recorta a ocho palabras (2026-09-01, `T-166`).**
+> Decía *"Entrá a jugar con los Redondos, sepas lo que sepas."* — **diez palabras**, contra
+> el techo de ocho que `voz-ricotera.md` 4.1 fija para toda línea grande del sitio. **Pasa
+> a decir "Entrá, sepas lo que sepas."**
+>
+> Se recorta y no se declara una excepción, por tres motivos:
+>
+> 1. **Es una línea, no un patrón.** Los otros cinco juegos tienen títulos de dos a cinco
+>    palabras y pasan holgados. Una excepción por un solo caso deja el techo sin dientes.
+> 2. **Lo que sobraba era el trabajo de la otra línea.** El subtítulo ya nombra el juego
+>    —*"Preguntas de historia, discos, letras y mitología ricotera."*— así que *"a jugar con
+>    los Redondos"* estaba diciendo por segunda vez lo que ya estaba dicho, y el botón
+>    `JUGÁ` lo dice por tercera. La regla de las dos líneas se cumple igual: **tapá la que
+>    canta y el que llegó por un enlace todavía sabe qué es esto y qué botón tocar.**
+> 3. **Lo que se conserva es lo único que no se puede perder.** *"Sepas lo que sepas"* es
+>    la promesa de los molinetes abiertos (`D-09`, `D-14`) dicha en cinco palabras, y
+>    *"Entrá"* es literalmente esa imagen. La línea quedó más corta y más de este proyecto.
+>
+> **Consecuencia, y es la que motivó la tarea:** con esto `voz.test.ts` puede auditar los
+> `PANTALLA_0.titulo` de los cinco juegos, que hasta hoy quedaban afuera del auditor porque
+> sumarlos rompía el build por esta línea sola (`T-167`).
 
 **Queda fuera de esta historia:** el copy exacto de la pantalla de resultado y el
 mecanismo de compartir (dueño `experiencia`, ver `D-10`); la tolerancia de matching si
@@ -484,7 +516,9 @@ posible y ganar más puntos cuanto menos necesité escuchar.
 
 **Criterio 1 — caso feliz:**
 - **Given** un jugador arranca un ítem nuevo, que por `BR-01` es de nivel Fácil si es el
-  primero de la partida.
+  primero de la partida — **con la salvedad medida de `BR-18` apartado (g)**: mientras
+  `popularidad.json` no tenga mediciones, todos los temas son `dificil` y este "si es el
+  primero" no se cumple. El mecanismo está puesto y se enciende con un comando.
 - **When** se reproduce el paso 1 del reveal (0,1 seg) y el jugador busca un título en el
   buscador de los 105 temas de `RES-20` y **arriesga** una respuesta, o **pasa** si no
   tiene ningún candidato — tiene **seis intentos por tema**, uno por escalón (`BR-02`).
@@ -506,12 +540,26 @@ posible y ganar más puntos cuanto menos necesité escuchar.
   deja adivinar "a ciegas" sin saber que el audio no sonó (el brief pide degradar con
   dignidad, no fallar en silencio).
 
-**Criterio 3 — caso borde (Spotify no disponible):**
+**Criterio 3 — caso borde (el tema entero no está disponible):**
 - **Given** un jugador acierta o agota los pasos de un ítem.
-- **When** intenta escuchar el tema completo vía Spotify al revelar.
-- **Then** si no tiene la app o no tiene Premium (`D-08`), igual puede ver el resultado
+- **When** intenta escuchar el tema completo al revelar.
+- **Then** si ese tema todavía no tiene su mp3 en el sitio, igual puede ver el resultado
   del ítem (acertó o no, puntos ganados) sin que un enlace roto le impida cerrar la
   partida.
+
+> **Reescrito el 2026-09-01 (`FIND-35` de `REV-09`). Redacción anterior, por trazabilidad:**
+> *"When intenta escuchar el tema completo **vía Spotify** al revelar. Then si no tiene la
+> app o no tiene Premium (`D-08`), igual puede ver el resultado…"*
+>
+> **`D-22` sacó a Spotify del camino** —el sitio sirve los temas enteros en mp3— y en
+> `src/scripts/partida-tema.ts` no queda una sola mención a Spotify. El criterio quedó
+> describiendo una integración que no existe, y contra eso no se puede aceptar ni rechazar
+> nada.
+>
+> **Lo que el criterio protege no cambió, y por eso se reescribe en vez de retirarse:** que
+> un camino roto al tema entero **no le impida al jugador cerrar la partida**. Ahora ese
+> camino es el mp3, y el caso borde es real —95 fragmentos contra 105 temas, así que hay
+> temas sin entero—, no hipotético.
 
 **Piso de ítems: 30 temas** (subido de 20 — revisión 2026-08-24, ver nota abajo), cada
 uno con fragmento de audio propio.
@@ -522,6 +570,13 @@ uno con fragmento de audio propio.
   de 5 a 8 en la misma proporción que el piso, manteniendo el ~25-27% que ya usan los
   otros tres juegos (10/40 del quiz, 4/15 de letras), para que `BR-01` no repita siempre
   el mismo puñado de temas fáciles.
+
+> **Nota del 2026-09-01 (`T-164`): hoy esos 8 Fáciles son 0, y aun así el "Listo" de la v1
+> no se frena. El motivo está en `BR-18` apartado (g), y no es "es poca cosa".** El
+> mecanismo que los produce está construido y verificado; lo que falta es el insumo
+> (`YT_API_KEY`), que no lo puede traer ningún rol. Mientras falte, el reparto es plano y
+> `catalogo().medidos` vale 0 — **declarado y medible, no supuesto**. El día que la clave
+> corra, los ocho aparecen sin tocar una línea de código.
 - **Por qué sube de 20 a 30 y no se queda ni iguala al quiz (revisión 2026-08-24, sobre
   `D-24`):** el piso original cargaba **dos** costos por ítem — producir el fragmento de
   audio (`D-06`) y curar tres distractores para el múltiple choice que `BR-04` le exigía
@@ -703,9 +758,19 @@ asociación con el título.
 - **Given** cualquier ítem de este juego, en cualquier nivel.
 - **When** se renderiza en pantalla.
 - **Then** nunca muestra más de 5 versos completos de una misma canción a la vez (tope
-  fijado en `BR-03`), y el juego completo no se publica hasta que la nota de derechos de
-  `contenido` lo habilite explícitamente — gate de publicación, no de construcción (ver
-  "El gate de derechos" en `Docs/BRIEF.md`).
+  fijado en `BR-03`). Si llega un reclamo, el juego se da de baja (`D-14`).
+
+> **Reescrito el 2026-09-01 (`FIND-35` de `REV-09`). Redacción anterior, por trazabilidad:**
+> *"…y el juego completo **no se publica hasta que la nota de derechos de `contenido` lo
+> habilite explícitamente** — gate de publicación, no de construcción."*
+>
+> **`D-14` sacó ese cerrojo**, y lo hizo nombrando la alternativa que descartaba:
+> *"sostener el gate de `D-07`"*. La nota de derechos (`CNT-01`) sigue existiendo pero
+> cambió de función — **ya no es un gate, es un mapa** de qué se usa y de dónde salió.
+>
+> **El tope de 5 versos no se toca**: ese sí es una regla viva de `BR-03` y se cumple en
+> `banco.ts`. Lo que se retira es la condición de publicación, que el sitio ya incumplía
+> por decisión tomada: **está publicado desde hace días, con este juego adentro.**
 
 **Piso de ítems: 15 letras completas**, transcriptas y segmentadas en versos.
 - Mínimo 4 de nivel Fácil.
@@ -867,10 +932,22 @@ cierra igual de rápido que las otras tres.
 
 **Criterio 3 — caso borde (es el primero que se cae):**
 - **Given** este es el juego con mayor exposición a la obra de Rocambole.
-- **When** llega el momento de publicar el sitio.
-- **Then** es el primero en quedar fuera de la versión publicada si la nota de derechos
-  de `contenido` no cubre explícitamente el uso de tapas reales, sin que eso bloquee la
-  publicación de los otros tres juegos (orden de corte, `D-05`).
+- **When** llega un reclamo de quien corresponda.
+- **Then** es el primero en darse de baja, sin que eso arrastre a los otros tres juegos
+  (orden de corte, `D-05`; postura, `D-14`).
+
+> **Reescrito el 2026-09-01 (`FIND-35` de `REV-09`). Redacción anterior, por trazabilidad:**
+> *"When llega el momento de publicar el sitio. Then es el primero en quedar fuera de la
+> versión publicada **si la nota de derechos de `contenido` no cubre explícitamente el uso
+> de tapas reales**."*
+>
+> Mismo motivo que en `US-03`: **`D-14` retiró el cerrojo**. Y acá el criterio viejo era
+> además contrafáctico — el sitio está publicado, con las diez tapas adentro y el crédito a
+> Rocambole a la vista.
+>
+> **El orden de corte se conserva entero**, que es lo que este criterio existe para fijar:
+> si hay que sacar algo, este juego sale primero. Lo que cambió es qué lo dispara — antes
+> una nota que nunca se cerró, ahora un reclamo, que es el hecho real del que habla `D-14`.
 
 **Piso de ítems: 10 tapas o discos.**
 - Mínimo 3 de nivel Fácil.
@@ -1187,6 +1264,63 @@ reales las trae `arquitectura` (resolver los 105 `videoId` una vez, `RES-52` apa
 `contenido` (el criterio de video declarado, apartado c de esta regla) en la próxima
 ráfaga que toque esto. Hasta entonces, `US-02` sigue sin poder verificar su cuota de
 Fáciles — exactamente como hoy, porque sigue en 0 de su piso de 30.
+
+---
+
+### g) Qué hace el "Listo" de la v1 con la cuota de Fáciles sin medir — **2026-09-01, `T-164`**
+
+El apartado (f) dejó la frase *"hasta entonces, `US-02` sigue sin poder verificar su cuota
+de Fáciles"* y la dejó cómoda, porque el piso estaba en 0 de 30 y la pregunta no apremiaba.
+**Ahora apremia:** el piso está en 95, los otros cuatro también están cumplidos, y esto es
+lo único que separa a la v1 de poder declararse. Así que se contesta.
+
+**La decisión: la cuota de Fáciles sin medir NO frena el "Listo" de la v1.** Y no es por
+conveniencia — se decide con tres condiciones que se pueden correr, y si alguna cae, cae la
+decisión.
+
+**El argumento, que es el que importa.** El mínimo de 8 Fáciles no es un fin: existe para
+servir a `BR-01` punto 1, *nunca un muro en la primera pantalla*. La pregunta entonces no
+es "¿hay ocho fáciles?" sino **"¿este juego le pone un muro al que llega sin saber nada?"**,
+y en `US-02` la respuesta es distinta que en los otros tres, por una razón que ninguna de
+las tres comparte:
+
+> **`US-02` tiene una segunda rampa, adentro de cada ítem.** Por `D-24` el tema se revela en
+> **seis pasos** —0,1 · 0,5 · 2 · 5 · 10 segundos— y **errar abre más audio** en vez de
+> cerrar la puerta. El que no reconoce el tema en el primer pestañeo no pierde: escucha más.
+>
+> En el quiz, en las tapas y en las letras la primera pantalla es de una sola oportunidad —
+> sabés el dato o no lo sabés—, y ahí el orden de los ítems **es** la única rampa que hay.
+> Por eso `BR-01` punto 1 pesa distinto en cada juego, y por eso acá se puede sostener sin
+> los ocho.
+
+**Las tres condiciones, y cómo se verifican.** La decisión vale mientras las tres se
+cumplan; el día que una falle, la cuota vuelve a ser bloqueante:
+
+1. **La escalera de seis pasos sigue existiendo y errar sigue abriendo audio** (`BR-02`,
+   `D-24`). Es la rampa que reemplaza al orden. Se verifica en `src/lib/tema/escalera.test.ts`.
+2. **El mecanismo está puesto, no prometido.** El campo existe, la vuelta escalona y el día
+   que haya mediciones los ocho aparecen solos. Se verifica en
+   `src/lib/tema/catalogo.test.ts` y `src/lib/escalonar.test.ts`.
+3. **La degradación se declara y se puede leer.** `catalogo().medidos === 0` dice "este
+   juego no escalona" sin que haya que deducirlo jugando, y el sitio no afirma en ningún
+   lado que escalona. Un ✅ sobre esto sería lo mismo que un dato falso puesto como
+   respuesta correcta: le miente al que sabe.
+
+**Lo que esta decisión NO hace, para que nadie la estire.** No retira la cuota de 8 Fáciles
+—sigue escrita, sigue siendo el objetivo y sigue esperando la clave—, no la extiende a los
+otros tres juegos, y no dice que `BR-01` sea opcional. Dice una cosa sola: que en el juego
+que reparte audio progresivo, el orden de los ítems no es el único molinete abierto.
+
+*Alternativa descartada:* **frenar la v1 hasta que corra la clave.** Se descarta porque
+dejaría el "Listo" del proyecto colgado de una credencial de un tercero, cuando el juego
+se juega hoy de punta a punta en un celular y su rampa propia funciona. `D-14` ya fijó la
+proporción del proyecto para este tipo de decisión, y `D-05` fijó que el alcance se
+defiende recortando antes que no salir.
+
+*Alternativa descartada:* **etiquetar ocho temas a mano** para cumplir la letra de la
+cuota. Es lo que `D-27` y el apartado (f) de esta misma regla descartaron dos veces, con el
+mismo motivo: una etiqueta manual de "qué tan conocido es" se corrompe sola. Cumplir la
+cuota con un dato peor es cumplirla en el papel y romperla en la pantalla.
 
 ---
 
