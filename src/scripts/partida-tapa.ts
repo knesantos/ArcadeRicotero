@@ -14,6 +14,7 @@
 import { armarRonda, contarAciertos } from '../lib/quiz/ronda.ts';
 import type { Item } from '../lib/tapa/banco.ts';
 import { PARTIDA, RESULTADO } from '../lib/tapa/copy.ts';
+import { estampaDe, slugDeRecorte } from '../lib/tapa/pasadas.ts';
 
 const LARGO_RONDA = 6; // US-04: banco chico, ronda mas corta que la del quiz
 
@@ -102,8 +103,19 @@ function responder(texto: string): void {
     if (b.textContent === texto && !acerto) b.classList.add('es-elegida');
   }
 
+  // El zoom se abre (`UX-22` §11, `T-206`): la pieza que `UX-13` §4 dejo escrita como
+  // pendiente. Va antes del panel porque el panel se agrega despues de la figura y el
+  // orden de la pantalla no cambia: imagen, enunciado, opciones, feedback.
+  const seImprimio = abrirElRecorte(item, correcta.texto, acerto);
+
   const panel = el('div', `feedback ${acerto ? 'ok' : 'no'}`);
-  panel.append(el('p', 'micro', acerto ? PARTIDA.ok : `${PARTIDA.no} ${PARTIDA.eraLa} ${correcta.texto}.`));
+  // Al fallar, la tapa llega en una sola tinta, y la linea lo dice con las mismas
+  // palabras que "Adivina el tema" (`CNT-14` §3). Si el disco no tiene estampa, no hay
+  // tinta de la que hablar y la frase queda como estaba.
+  const linea = acerto
+    ? PARTIDA.ok
+    : `${PARTIDA.no} ${PARTIDA.eraLa} ${correcta.texto}${seImprimio ? `, ${PARTIDA.enClave}` : '.'}`;
+  panel.append(el('p', 'micro', linea));
 
   // La edicion se cuenta recien acá: antes de responder es una pista de mas.
   panel.append(el('p', 'edicion-tapa', PARTIDA.edicion(item.imagen.edicion)));
@@ -125,11 +137,94 @@ function responder(texto: string): void {
   panel.append(seguir);
 
   zonaPartida.append(panel);
-  seguir.focus();
+  /*
+   * El foco va al boton de seguir, como siempre, pero SIN que el navegador se lleve la
+   * pantalla hasta el (`preventScroll`), y la vista se va a la figura. Es la misma
+   * correccion que `partida-tema.ts` hizo con la estampa, por el mismo motivo: enfocar el
+   * boton dejaba el premio afuera de la vista, y aca el premio es la tapa que se termina
+   * de imprimir. El boton queda abajo, ya enfocado —quien juega con teclado aprieta Enter
+   * sin moverse— y a un pulgar de distancia para el resto. Sin `smooth`: un
+   * desplazamiento animado seria movimiento que el corte de movimiento reducido no apaga.
+   *
+   * Si no hubo estampa que imprimir, no hay premio arriba y el boton se lleva la vista
+   * como toda la vida.
+   */
+  if (seImprimio) {
+    seguir.focus({ preventScroll: true });
+    zonaPartida.querySelector('.figura-tapa-juego')?.scrollIntoView({ block: 'start' });
+  } else {
+    seguir.focus();
+  }
+}
+
+/**
+ * El zoom se abre (`UX-22` §11, `T-206`).
+ *
+ * Se jugo mirando un recorte de la tapa —uno de los diez encuadres de `UX-13` §3— y al
+ * responder deja de haber zoom: la tapa entera se imprime a su tamano de ficha real, por
+ * las mismas pasadas del reveal de "Adivina el tema" (clara, media, clave, el fijado de
+ * la foto). No es un mecanismo nuevo: es el del `§2`, con las mismas clases, los mismos
+ * tokens y el mismo techo de tiempo. Al fallar, la clave sola: la tapa de un item que no
+ * se acerto no se completa nunca.
+ *
+ * **La asimetria del recorte, dicha en voz alta.** Al acertar, el recorte con el que se
+ * jugo queda de capa de abajo: las tintas llegan encima y la foto lo tapa entero al
+ * fijarse, asi que se ve literalmente como el pedazo que mirabas se abre al resto. Al
+ * fallar no queda: la clave sola sobre un recorte ampliado del mismo dibujo serian dos
+ * versiones desalineadas de la misma tapa, que no es registro imperfecto sino ruido. Sin
+ * la tapa completa no hay nada que abrir, y lo que queda es lo mismo que en el otro
+ * juego: una tinta sobre el papel.
+ *
+ * La `<figure>` y su `figcaption.credito-tapa` no se tocan (`D-21`, condicion 1): el
+ * credito ya estaba pegado a la imagen y sigue estando pegado a la que la reemplaza.
+ *
+ * Devuelve si de verdad se imprimio algo: un disco fuera de los diez no tiene estampa y
+ * la pantalla queda como era, sin hueco (`ADR-05.5`).
+ */
+function abrirElRecorte(item: Item, disco: string, acerto: boolean): boolean {
+  const figura = zonaPartida.querySelector<HTMLElement>('.figura-tapa-juego');
+  const recorte = figura?.querySelector<HTMLImageElement>('.tapa-juego');
+  const slug = slugDeRecorte(item.imagen.ruta);
+  const e = slug ? estampaDe(slug) : null;
+  if (!figura || !recorte || !e) return false;
+
+  figura.classList.add('figura-tapa-juego--abierta');
+
+  // El papel se mete en el lugar del recorte y se lo lleva adentro: asi la caja de la
+  // figura no salta de tamano al reemplazar una imagen por otra.
+  const papel = el('span', 'estampa-papel estampa-papel--abre');
+  recorte.replaceWith(papel);
+  if (acerto) {
+    papel.append(recorte);
+    // Deja de ser lo que se lee: arriba llega la tapa entera, que es la que habla.
+    recorte.alt = '';
+  }
+
+  const capas: Array<[nombre: string, ruta: string]> = acerto
+    ? [['clara', e.pasadas[0]], ['media', e.pasadas[1]], ['clave', e.pasadas[2]]]
+    : [['clave', e.pasadas[2]]];
+  for (const [nombre, ruta] of capas) {
+    const tinta = el('img', `pasada pasada--${nombre}`);
+    tinta.src = ruta;
+    tinta.decoding = 'async';
+    tinta.alt = acerto ? '' : PARTIDA.altTapaClave(disco);
+    papel.append(tinta);
+  }
+
+  if (acerto) {
+    const foto = el('img', 'estampa-foto');
+    foto.src = e.ficha;
+    foto.decoding = 'async';
+    foto.alt = PARTIDA.altTapaEntera(disco);
+    papel.append(foto);
+  }
+
+  return true;
 }
 
 function avanzar(): void {
   indice += 1;
+
   if (indice >= ronda.length) {
     pintarResultado();
     return;

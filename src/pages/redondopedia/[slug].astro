@@ -117,17 +117,23 @@ const etiquetaRotulo = (seg: Segmento): string =>
 
     {
       laTapa && (
+        /* La ficha estampada y quieta (`UX-22` §9): el papel, el sello y la sombra de
+           registro son el MARCO; la foto de adentro es el mismo JPEG a color de siempre.
+           Y no se anima nada — `UX-20` §2: un articulo no se mueve. */
         <figure class="figura-tapa">
-          <img
-            class="tapa-disco"
-            src={laTapa}
-            alt={`Tapa de ${articulo.titulo}`}
-            loading="lazy"
-          />
-          <figcaption class="credito-tapa">
+          <span class="papel-ficha">
+            <img
+              class="tapa-disco"
+              src={laTapa}
+              alt={`Tapa de ${articulo.titulo}`}
+              loading="lazy"
+            />
+          </span>
+          <figcaption class="credito-tapa sello-credito">
             Tapa: Rocambole (Ricardo Cohen), en baja resolución.
           </figcaption>
         </figure>
+
       )
     }
 

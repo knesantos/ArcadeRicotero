@@ -720,10 +720,10 @@ html[data-umbral] .marca-grande {
 
 /* Variantes de disco (mezcla D-19). El acento rota; la base, nunca. */
 .casete--marca { --tinte: var(--marca-rojo); }
-.casete--historia { --tinte: var(--cat-historia); }
-.casete--discos { --tinte: var(--cat-discos); }
-.casete--letras { --tinte: var(--cat-letras); }
-.casete--mitologia { --tinte: var(--cat-mitologia); }
+.casete--historia { --tinte: var(--cat-historia); --tinta-registro: var(--cat-historia-apoyo); }
+.casete--discos { --tinte: var(--cat-discos); --tinta-registro: var(--cat-discos-apoyo); }
+.casete--letras { --tinte: var(--cat-letras); --tinta-registro: var(--cat-letras-apoyo); }
+.casete--mitologia { --tinte: var(--cat-mitologia); --tinta-registro: var(--cat-mitologia-apoyo); }
 .casete--momo { --tinte: var(--disco-momo-sampler-apoyo); }
 
 /* ---- Pie del sitio ---- */
@@ -771,10 +771,10 @@ html[data-umbral] .marca-grande {
   letter-spacing: 0.04em;
 }
 
-.cocina--historia { --tinte: var(--cat-historia); }
-.cocina--discos { --tinte: var(--cat-discos); }
-.cocina--letras { --tinte: var(--cat-letras); }
-.cocina--mitologia { --tinte: var(--cat-mitologia); }
+.cocina--historia { --tinte: var(--cat-historia); --tinta-registro: var(--cat-historia-apoyo); }
+.cocina--discos { --tinte: var(--cat-discos); --tinta-registro: var(--cat-discos-apoyo); }
+.cocina--letras { --tinte: var(--cat-letras); --tinta-registro: var(--cat-letras-apoyo); }
+.cocina--mitologia { --tinte: var(--cat-mitologia); --tinta-registro: var(--cat-mitologia-apoyo); }
 
 .cocina-arte {
   width: clamp(90px, 30vw, 140px);
@@ -843,6 +843,79 @@ html[data-umbral] .marca-grande {
   margin: 0 0 var(--espacio-3);
 }
 
+/* ---- La ficha de disco, estampada y QUIETA (`UX-22` §9) ----
+
+   Los diez articulos de disco ganan el idioma del ciclo alrededor de la imagen que ya
+   mostraban: papel, sello de credito, sombra de registro. Lo que NO ganan es la
+   separacion en tres tintas. La estampa por pasadas tiene sentido donde hay una accion
+   de imprimir para mirar —el reveal del tema, el zoom que se abre—; aca el disco ya
+   esta impreso hace rato, asi que lo que se estampa es EL MARCO y no la fotografia, que
+   sigue siendo el mismo JPEG a color de siempre.
+
+   Y llega asi desde el primer cuadro: `UX-20` §2 dice que un articulo no se mueve, y
+   nada de este ciclo lo revisa. Ni pasadas, ni fijado, ni ninguna duracion la toca. */
+.papel-ficha {
+  display: inline-block;
+  padding: var(--espacio-1);
+  background: var(--papel);
+  border: var(--linea) solid var(--papel-borde);
+  border-radius: 3px;
+  rotate: -1.2deg;
+  /* La sombra de registro del `§8`, en el marco: offset plano, sin difuminar. */
+  box-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
+}
+
+/* Adentro del papel la ficha deja de ser un objeto suelto: el objeto es el papel. */
+.papel-ficha .tapa-disco {
+  margin: 0;
+  transform: none;
+  box-shadow: none;
+}
+
+/* El credito como sello de goma: la condicion 1 de `D-21` dicha en el idioma del ciclo.
+   Tinta sobre papel de etiqueta, que es par testeado (`contraste.test.ts`). Se escribe
+   solo en la ficha del articulo: el mismo `figcaption` en el juego de tapas no cambia. */
+.figura-tapa .sello-credito {
+  display: inline-block;
+  margin: var(--espacio-2) 0 var(--espacio-3);
+  padding: 0.3em 0.75em;
+  background: var(--papel);
+  color: var(--fondo);
+  border: 2px solid var(--papel-borde);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  rotate: -1.6deg;
+}
+
+/* ---- El rodillo (`UX-22` §9) ----
+
+   El separador de seccion de las paginas largas: la veta que deja un rodillo entintado
+   al pasar. Es una TEXTURA enmascarando `currentColor`, nunca una linea lisa ni un
+   degradado —las dos cosas que la tabla anti-slop veta por nombre—, asi que toma la
+   tinta del lugar donde vive y no trae una propia. Estatico: no se anima nada. */
+.rodillo {
+  height: 10px;
+
+  margin: var(--espacio-3) 0;
+  border: 0;
+  /* El navegador le pone gris propio a un `hr`, y un gris propio es justo lo que este
+     separador NO tiene: la tinta la pone el lugar donde vive. */
+  color: inherit;
+
+  background: currentColor;
+  -webkit-mask-image: var(--textura-rodillo);
+  mask-image: var(--textura-rodillo);
+  -webkit-mask-size: 240px 10px;
+  mask-size: 240px 10px;
+
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+}
+
 /* ---- Redondopedia: portada e indice ---- */
 
 .titulo-seccion {
@@ -908,10 +981,49 @@ html[data-umbral] .marca-grande {
   --tinte: var(--texto-tenue);
 }
 
-.articulo--historia, .tarjeta-articulo--historia { --tinte: var(--cat-historia); }
-.articulo--discos, .tarjeta-articulo--discos { --tinte: var(--cat-discos); }
-.articulo--letras, .tarjeta-articulo--letras { --tinte: var(--cat-letras); }
-.articulo--mitologia, .tarjeta-articulo--mitologia { --tinte: var(--cat-mitologia); }
+.articulo--historia, .tarjeta-articulo--historia { --tinte: var(--cat-historia); --tinta-registro: var(--cat-historia-apoyo); }
+.articulo--discos, .tarjeta-articulo--discos { --tinte: var(--cat-discos); --tinta-registro: var(--cat-discos-apoyo); }
+.articulo--letras, .tarjeta-articulo--letras { --tinte: var(--cat-letras); --tinta-registro: var(--cat-letras-apoyo); }
+.articulo--mitologia, .tarjeta-articulo--mitologia { --tinte: var(--cat-mitologia); --tinta-registro: var(--cat-mitologia-apoyo); }
+
+/* ==========================================================================
+   El registro imperfecto (`UX-22` §8, ciclo 12)
+
+   El mismo desvio que corre las tintas de la estampa —2 px, siempre en la misma
+   direccion— queda como recurso permanente detras de la letra grande de todo el sitio:
+   un eco del mismo texto, en el color de APOYO del disco de esa seccion, como una
+   imprenta barata que no calzo el segundo color.
+
+   TRES COSAS QUE NO SON:
+   1. No es movimiento. Es como queda la letra en reposo, llego asi desde el primer
+      cuadro y no hay nada que apagar con `prefers-reduced-motion`.
+   2. No es la tinta que se lee. Va DETRAS de la real, que sigue siendo la que pasa AA
+      sobre su fondo de siempre: cero pares nuevos en `contraste.test.ts` (`UX-22` §8).
+   3. No es la rotacion de las estampas de goma. Los `rotate(-1.6deg)` de `.casete-accion`
+      o `.categoria` tuercen un objeto entero y no se tocan. Esto es una sombra de
+      segunda tinta, y en texto se hace con `text-shadow` —la unica sombra que
+      `diseno-marca.md` admite, offset plano y duro—, igual que `.estampa-disco` en
+      `juego.css`. El medio grado del `§2.3` vive donde hay capas de imagen de verdad:
+      una sombra de texto no rota, y duplicar el texto en un `::before` para rotarlo lo
+      haria leer dos veces a un lector de pantalla.
+
+   DONDE NO VA, NUNCA: cuerpo de texto, rotulos de registro 3, estados de acierto y
+   error, y los tres articulos de tono grave —Bulacio, Olavarria, la muerte del Indio—,
+   que ni en su letra grande llevan adorno (`UX-20` §3.4). `estilos.test.ts` lo vigila
+   con una lista cerrada de selectores.
+   ========================================================================== */
+
+.marca-grande,
+.casete-titulo,
+.articulo:not(.articulo--grave) h1 {
+  text-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
+}
+
+/* El portal viste Oktubre (mezcla `D-19`), asi que su marca lleva atras el gris que el
+   propio Rocambole conto que le agrego a esa tapa. */
+.marca-grande {
+  --tinta-registro: var(--disco-oktubre-apoyo);
+}
 
 .articulo-tipo {
   display: inline-block;

@@ -141,7 +141,16 @@
      cualquier fondo sin taparlo. */
   --textura-grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0.55 0.55 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
 
+  /* El rodillo (`UX-22` §9): la marca que deja un rodillo entintado al pasar. Mismo
+     principio que el grano —turbulencia, alfa sola, sin color propio—, pero anisotropa:
+     frecuencia casi nula a lo ancho y alta a lo alto, que es lo que estira el ruido en
+     vetas horizontales de arrastre en vez de grano fino. Se usa como MASCARA sobre
+     `currentColor`, asi que toma la tinta del lugar donde vive y no trae una suya.
+     No lleva credito: es un motivo generico de la tecnica, no un recorte de ninguna tapa. */
+  --textura-rodillo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='14'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.06 0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.85 0.85 0.85 0 -0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
+
   /* Tipografia (hoja 04). Titular: el calco real. Rotulada: grita corto.
+
      Texto: pila del sistema — el enunciado y las opciones van SIEMPRE aca. */
   --fuente-titular: 'Oktubre Calco', 'Archivo Black', 'Arial Black', sans-serif;
   --fuente-rotulada: 'Archivo Black', 'Arial Black', sans-serif;
@@ -218,6 +227,14 @@
      movimiento reducido no lo toca. Dos pixeles y medio grado: una imprenta a mano. */
   --registro: 2px;
   --registro-angulo: 0.4deg;
+
+  /* La tinta del eco: el segundo color que no calzo. Cada parte del sitio la pisa con el
+     apoyo de su disco (`UX-22` §8, mezcla `D-19`); donde nadie la pisa es el borde del
+     papel, que es lo mismo que ya hace la estampa con `--apoyo-disco`.
+     Es color de apoyo, no tinta de texto: va DETRAS de la letra real —que sigue siendo la
+     que pasa AA sobre su fondo de siempre— y por eso no entra a `contraste.test.ts`,
+     igual que el resto de los `-apoyo`. Nadie lee el eco para enterarse de nada. */
+  --tinta-registro: var(--borde);
 
   /* Las fuentes fan que escriben el nombre de un disco con su propia letra, verificado
      glifo por glifo (`RES-42`, `RES-43`, `CNT-14` §2.7). Solo tres nombres las usan;

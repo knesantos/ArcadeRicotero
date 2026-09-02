@@ -48,11 +48,15 @@ const recortar = (texto: string): string =>
     </p>
   </div>
 
+  {/* El rodillo separa una categoria de la siguiente (`UX-22` §9). Se filtran los grupos
+      vacios ANTES de numerar para que el primero que se ve nunca arranque con separador. */}
   {
-    [...grupos.entries()].map(
-      ([tipo, lista]) =>
-        lista.length > 0 && (
+    [...grupos.entries()].filter(([, lista]) => lista.length > 0).map(
+      ([tipo, lista], i) => (
+        <>
+          {i > 0 && <hr class="rodillo" aria-hidden="true" />}
           <section>
+
             <h2 class="lado">{REDONDOPEDIA.secciones[tipo]}</h2>
             <ul class="indice-articulos">
               {lista.map((a) => (
@@ -68,7 +72,9 @@ const recortar = (texto: string): string =>
               ))}
             </ul>
           </section>
-        ),
+        </>
+      ),
     )
   }
+
 </Base>

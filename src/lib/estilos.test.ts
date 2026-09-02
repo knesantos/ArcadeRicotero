@@ -136,7 +136,40 @@ test('ADR-05.7: ninguna isla escribe una imagen de fondo en linea; una tapa entr
   assert.deepEqual(malas, [], malas.join('\n  '));
 });
 
+test('UX-22 §8: el registro imperfecto vive solo en la letra grande, nunca en un parrafo', () => {
+  /*
+   * El eco de segunda tinta es la unica sombra que `diseno-marca.md` admite, y por eso es
+   * la mas facil de convertir en tic: una sombra dura corrida queda "bien" en cualquier
+   * cosa. Esta lista es CERRADA. Sumar un selector es una decision de `UX-22` §8 —que
+   * dice donde si y donde no—, no un descuido de quien pasa por la hoja.
+   *
+   * Lo que el test protege de verdad son los cuatro "nunca" de esa tabla: cuerpo de
+   * texto, rotulos de registro 3, estados de acierto y error, y los tres articulos de
+   * tono grave. Ninguno puede aparecer aca sin que alguien lo escriba a proposito.
+   */
+  const PERMITIDOS = new Set([
+    '.marca-grande', // la marca del portal
+    '.marca', // la marca de la cabecera de cada juego
+    '.pantalla h1', // el h1 de cada juego
+    '.casete-titulo', // el titulo de un casete
+    '.articulo:not(.articulo--grave) h1', // el titulo de articulo, salvo los tres graves
+    '.estampa-disco', // el nombre del disco en la estampa (`UX-22` §2)
+  ]);
+  const encontrados: string[] = [];
+  for (const hoja of ['src/styles/sitio.css', 'src/styles/juego.css', 'src/styles/cancionero.css']) {
+    const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
+    for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+      if (!/text-shadow[^;]*var\(\s*--registro\s*\)/.test(regla[2]!)) continue;
+      for (const sel of regla[1]!.split(',')) encontrados.push(sel.trim().replace(/\s+/g, ' '));
+    }
+  }
+  assert.ok(encontrados.length > 0, 'el registro imperfecto desaparecio de las hojas');
+  const intrusos = encontrados.filter((s) => !PERMITIDOS.has(s));
+  assert.deepEqual(intrusos, [], `UX-22 §8 no nombra estos lugares: ${intrusos.join(', ')}`);
+});
+
 test('toda clase de estado usada en el CSS existe de verdad en el codigo', () => {
+
   // El reves del primer test: estilos huerfanos de clases que ya nadie crea.
   //
   // El codigo arma varias con plantilla —`insignia--${clase}`, `tramo--${t}`— asi que

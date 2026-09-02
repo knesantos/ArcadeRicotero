@@ -2164,6 +2164,15 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
   margin: var(--espacio-3) 0 var(--espacio-2);
   max-width: 7ch;
   view-transition-name: marca;
+  /* El registro imperfecto (`UX-22` §8): la explicacion entera esta en `sitio.css`. */
+  text-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
+}
+
+/* El h1 de cada juego. Un juego no viste ningun disco —la mezcla `D-19` reparte discos
+   por seccion de contenido, no por juego—, asi que el eco cae al borde del papel, que es
+   el mismo repuesto que usa la estampa cuando no hay `--apoyo-disco`. */
+.pantalla h1 {
+  text-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
 }
 
 /* ==========================================================================
@@ -2385,7 +2394,42 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
   outline-offset: 6px;
 }
 
+/* ---- El zoom se abre (`UX-22` §11, `T-206`) ----
+   "Adivina la tapa" se juega mirando un recorte, y al responder deja de haber zoom: la
+   tapa entera se imprime a su tamano de ficha real (320 px, sin agrandar), con las MISMAS
+   clases de arriba —`.estampa-papel`, `.pasada`, `.estampa-foto`— y por lo tanto con el
+   mismo orden de pasadas, el mismo registro corrido y el mismo techo de tiempo. Lo unico
+   propio es la caja: aca el papel no vive adentro de una hoja que se da vuelta, asi que
+   se pone su medida el mismo. */
+.estampa-papel--abre {
+  width: min(100%, 320px);
+  height: auto;
+  aspect-ratio: 1;
+  /* El margen de abajo es del papel y no del `figcaption`: el papel esta apenas torcido y
+     su esquina baja se le venia encima al credito, que es justo lo que `D-21` no permite
+     que quede ilegible. */
+  margin: 0 auto var(--espacio-2);
+}
+
+/* El recorte con el que se jugo pasa a ser la capa de abajo, y solo al acertar: las
+   tintas llegan encima y la foto lo tapa entero al fijarse. Pierde el borde y la rotacion
+   que tenia como ficha suelta —ahora el objeto es el papel, que ya los lleva— y se estira
+   a la caja, que es cuadrada como el recorte. */
+.figura-tapa-juego--abierta .tapa-juego {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  transform: none;
+  object-fit: cover;
+}
+
 /* ---- La sala se vuelve el disco (`UX-22`, `T-202`) ----
+
    Al acertar, la tapa que sacaste pasa a ser el fondo velado de la pantalla, en el
    tiempo de un fijado, y vuelve al tema siguiente. NO lleva `.tapa-fondo`: ese nombre
    de transito es unico por documento (`ADR-03`). Es la misma ficha de 320 px, velada
