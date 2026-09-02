@@ -27,6 +27,7 @@ import { botonCorreccion } from './correccion.ts';
 import { claseDisco } from '../lib/tema/paleta.ts';
 import { tramo } from '../lib/quiz/tramo.ts';
 import { armarLink, leerDesafio } from '../lib/desafio.ts';
+import { escalonar } from '../lib/escalonar.ts';
 import { nombreArchivo } from '../lib/tarjeta/plan.ts';
 import { dibujarTarjeta } from './tarjeta.ts';
 
@@ -129,15 +130,6 @@ function enfocar(destino: HTMLElement): void {
   destino.focus();
 }
 
-function barajar<T>(xs: readonly T[]): T[] {
-  const a = [...xs];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j]!, a[i]!];
-  }
-  return a;
-}
-
 /*
  * Si alguien llego por un desafio, la bajada de la portada lo dice.
  *
@@ -159,53 +151,26 @@ if (desafio && desafio.forma !== 'identidad') {
 
 $('jugar').addEventListener('click', comenzar);
 
-/** El orden de `BR-01`. Un tema sin etiquetar se trata como el mas duro: ver abajo. */
-const ORDEN_DIFICULTAD: Record<string, number> = {
-  facil: 0,
-  media: 1,
-  dificil: 2,
-  'sin-clasificar': 3,
-};
-
-/**
- * Arma la ronda **escalonada**, no barajada. `BR-01`, y lo encontro `REV-08` (`FIND-29`).
+/*
+ * La ronda se arma **escalonada**, no barajada. `BR-01`, y lo encontro `REV-08`
+ * (`FIND-29`).
  *
- * Hasta la revision esto era `barajar(banco).slice(0, 5)`: un barajado puro sobre los 92
+ * Hasta esa revision esto era `barajar(banco).slice(0, 5)`: un barajado puro sobre los 92
  * temas, sin mirar `dificultad` en ningun punto del archivo. Con eso, **el que llega sin
  * saber nada de los Redondos podia recibir el tema mas oscuro del catalogo como primera
  * pregunta** — el muro de entrada exacto que `D-09` y `BR-01` existen para impedir, en un
  * juego que el tablero ya daba por cumplido.
  *
- * La logica es la de `armarRonda` del quiz, adaptada: **el primero sale del pozo mas
- * facil que exista, y de ahi la dificultad no baja.** Adentro de cada nivel se baraja,
- * para que dos partidas seguidas no sean iguales.
+ * La funcion vivia aca y en el ciclo 10 se mudo a `src/lib/escalonar.ts`, cuando `US-02`
+ * necesito exactamente lo mismo (`T-163`). Misma logica, un solo lugar.
  *
- * **Mientras `contenido` no cargue la curaduria de `CTR-09.7`, los 92 estan en
- * `sin-clasificar`**, y entonces esta funcion degrada a un barajado — que es lo que habia
- * antes, pero ahora **declarado** en vez de accidental, y con el mecanismo listo para
- * funcionar solo el dia que las etiquetas existan.
+ * **Mientras `popularidad.json` no tenga mediciones los 89 caen todos en `dificil`**
+ * (`D-27`), y entonces escalonar degrada a un barajado — lo que habia antes, pero
+ * **declarado** en vez de accidental, y andando solo el dia que la clave exista.
  */
-function armarRondaEscalonada(): ItemDelBanco[] {
-  const porNivel = new Map<string, ItemDelBanco[]>();
-  for (const it of banco) {
-    const nivel = it.dificultad in ORDEN_DIFICULTAD ? it.dificultad : 'sin-clasificar';
-    if (!porNivel.has(nivel)) porNivel.set(nivel, []);
-    porNivel.get(nivel)!.push(it);
-  }
-
-  const niveles = [...porNivel.keys()].sort((a, b) => ORDEN_DIFICULTAD[a]! - ORDEN_DIFICULTAD[b]!);
-  const salida: ItemDelBanco[] = [];
-  for (const nivel of niveles) {
-    for (const it of barajar(porNivel.get(nivel)!)) {
-      if (salida.length >= LARGO_RONDA) return salida;
-      salida.push(it);
-    }
-  }
-  return salida;
-}
 
 function comenzar(): void {
-  ronda = armarRondaEscalonada();
+  ronda = escalonar(banco, LARGO_RONDA);
   indice = 0;
   puntaje = 0;
   hechos = [];

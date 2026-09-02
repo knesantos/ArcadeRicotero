@@ -97,7 +97,29 @@ export const SIN_SONIDO = {
 
 export const REVELACION = {
   acerto: '¡La sacaste!',
-  fallo: 'Se te escapó.',
+  /**
+   * `CNT-14` §2.1: la tapa que no sacaste se imprime en una sola tinta, y la línea lo
+   * dice sin explicar el truco. Antes: "Se te escapó."
+   */
+  fallo: 'Se te escapó, en una tinta sola.',
+  /**
+   * El control que da vuelta la estampa (`CNT-14` §2.3). Nombres accesibles, y viven acá
+   * y no en la isla porque `voz.test.ts` agarra todo `aria-label` escrito a mano.
+   */
+  girar: 'Dala vuelta',
+  volverATapa: 'Volvé a la tapa',
+  /** El sello de la trasera: la pista que sacaste (`CNT-14` §2.4). Misma palabra que `ficha`. */
+  pista: (n: number) => `PISTA ${n}`,
+  /**
+   * La palabra pegada al casete mientras la cinta corre (`CNT-14` §2.5, `UX-22` §6). Esta
+   * en los dos modos —con el carrete girando o quieto— y no esta el resto del tiempo: su
+   * presencia es la senal. Registro 3, una palabra.
+   */
+  sonando: 'SONANDO',
+  /** Lo que lee quien no ve la estampa. Nombra el disco: al revelar ya no es la respuesta. */
+  altTapa: (disco: string) => `Tapa de ${disco}`,
+  altTapaClave: (disco: string) => `Tapa de ${disco}, en una tinta`,
+  altTrasera: (disco: string) => `Trasera de ${disco}`,
   eraEl: 'Era',
   /** Disco y año, para que el que no la sacó se lleve el dato. */
   ficha: (disco: string, anio: number, pista: number) => `${disco} (${anio}), pista ${pista}`,
@@ -120,6 +142,11 @@ export const REVELACION = {
 
 export const RESULTADO = {
   titulo: 'Cómo te fue',
+  /**
+   * La línea que canta del afiche (`CNT-14` §2.6): el resultado se pega en la pared como
+   * un afiche de recital. `detalle` sigue siendo la que nombra la lista de abajo.
+   */
+  afiche: 'Tu vuelta quedó pegada en la pared.',
   puntos: (puntaje: number, maximo: number) => `${puntaje} de ${maximo} puntos`,
   /**
    * El rótulo del número grande del resultado, que desde hoy es **el tiempo** y no el

@@ -101,7 +101,11 @@
   border: var(--linea) solid var(--borde);
   border-radius: var(--radio);
   text-align: left;
-  transition: border-color 120ms, background-color 120ms;
+  /* Los 120 ms viven en `--duracion-toque` desde el ciclo 11 (hoja 12 del lienzo). Es
+     el mismo valor de siempre; lo que cambia es que ahora tiene nombre, y que el corte
+     de `prefers-reduced-motion` **no lo apaga**: esto no es atmosfera, es la unica
+     confirmacion de que el sitio recibio el dedo (`UX-20` §5). */
+  transition: border-color var(--duracion-toque), background-color var(--duracion-toque);
 }
 
 .opcion:disabled {
@@ -1149,6 +1153,53 @@
   line-height: 1.35;
 }
 
+/* ---- La tirada como afiche (`UX-22` §10, `T-205`) ----
+
+   Cada tema del setlist lleva su tapa del tamano de un sello: a color si lo sacaste, en la
+   tinta de la clave si no —la misma diferencia que hace la revelacion—. Son los archivos
+   que la revelacion ya bajo, a 32 px, sobre el mismo papel y apenas torcidos, como los
+   sellos del sobre de un recital.
+
+   NO SE ANIMA. Un afiche se pega en la pared; no se imprime delante tuyo. El unico grito
+   del sitio es el acierto (`D-33`), y para cuando se ve esta pantalla ya paso. */
+.estampita {
+  flex: none;
+  display: block;
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  /* Mismo motivo que en `.estampa-papel` (`UX-22` §2.2, `FIND-48`): la tinta de la clave
+     se mezcla con el papel de la estampita, nunca con el fondo de la pantalla. */
+  isolation: isolate;
+
+  background: var(--papel);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  rotate: -2deg;
+}
+
+.estampita-foto,
+.estampita-tinta {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* La que no sacaste llega en una tinta sola, translucida sobre el papel. */
+.estampita-tinta {
+  mix-blend-mode: multiply;
+}
+
+/* La linea que canta del afiche. Va arriba del rotulo que nombra la lista, y chica: el
+   numero grande de esta pantalla es el tiempo, y no se le discute la jerarquia. */
+.afiche-canta {
+  margin: var(--espacio-3) 0 0;
+  color: var(--texto-tenue);
+  text-wrap: balance;
+}
+
+
 .resumen-fila--ok .resumen-marca {
   color: var(--acento-3);
 }
@@ -2113,4 +2164,416 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
   display: block;
   margin-top: var(--espacio-1);
   color: var(--acento-2);
+}
+
+/* ==========================================================================
+   El paso entre pantallas (`ADR-03` §6.3): los nombres del transito
+
+   `view-transition-name` es un identificador GLOBAL del documento: dos elementos con el
+   mismo nombre en la misma pagina hacen que el transito no ocurra, y no avisa. Por eso
+   el vocabulario se fija en el ADR y no en cada pantalla, y por eso hay exactamente tres
+   nombres en todo el repo: `marca`, `lugar` y `mosca`.
+
+   Aca vive `marca`, que es la firma ARCADE RICOTERO de la cabecera de cada juego. Cruza
+   de una pantalla a la otra sin volver a dibujarse: es lo que hace que el paso se lea
+   como moverse adentro del mismo sitio y no como cargar otro.
+
+   Las otras dos (`lugar` y `mosca`) viven en `sitio.css`, que es donde vive el cascaron.
+
+   NINGUNA pantalla de partida lleva nombre — `#portada`, `#partida` y `#resultado` son
+   las zonas que las islas vacian y rellenan con `replaceChildren()`, y nombrarlas seria
+   pedirle al navegador que interpole algo que la isla esta por borrar.
+   ========================================================================== */
+
+/* La firma de la cabecera de cada juego, como componente global.
+
+   ESTABA DEFINIDA CINCO VECES EN EL ALCANCE DE CINCO PAGINAS, y eso tuvo dos costos.
+   El chico, que es el P3 que la auditoria del 2026-08-24 anoto: dos paginas la fijaban en
+   `2.1rem` y el portal usaba `clamp()`, o sea la misma marca con dos comportamientos.
+   **El grande no lo habia visto nadie: `completar-la-letra.astro` escribe
+   `<p class="marca">` y no declaraba ninguna regla, asi que esa pantalla mostraba la marca
+   en la letra por defecto del sistema.** Es el patron de fondo numero 1 de esa auditoria —
+   componentes definidos en el alcance de la pagina en vez de la hoja global— y ya habia
+   roto siete botones antes.
+
+   EL NUMERO NO CAMBIA NADA A 375 px, que es la medida de referencia del proyecto: `9vw`
+   de 375 px son exactamente 33,75 px, o sea los `2.1rem` que estaban escritos a mano. Lo
+   que cambia es que ahora respira en pantallas mas chicas y mas grandes.
+
+   Las dos pantallas mas densas —`adivinar-el-tema` y `adivinar-por-la-letra`, que pelean
+   el espacio por pixel— la achican en su propio alcance a proposito. El alcance de Astro
+   agrega un atributo al selector, asi que su regla le gana a esta sin `!important`. */
+.marca {
+  font-family: var(--fuente-titular);
+  font-size: clamp(1.9rem, 9vw, 2.6rem);
+  line-height: 0.96;
+  color: var(--marca-rojo);
+  margin: var(--espacio-3) 0 var(--espacio-2);
+  max-width: 7ch;
+  view-transition-name: marca;
+  /* El registro imperfecto (`UX-22` §8): la explicacion entera esta en `sitio.css`. */
+  text-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
+}
+
+/* El h1 de cada juego. Un juego no viste ningun disco —la mezcla `D-19` reparte discos
+   por seccion de contenido, no por juego—, asi que el eco cae al borde del papel, que es
+   el mismo repuesto que usa la estampa cuando no hay `--apoyo-disco`. */
+.pantalla h1 {
+  text-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
+}
+
+/* ==========================================================================
+   La imprenta (`UX-22`, ciclo 12): la tapa que sacaste se imprime delante tuyo
+
+   Una serigrafia no aparece: se estampa por pasadas, un color por vez, con el registro
+   apenas corrido, sobre papel. Eso es exactamente lo que hace esta pieza. Tres `<img>`
+   con alfa —las separaciones que produce `scripts/generar-pasadas.mjs`, tenidas con los
+   colores MEDIDOS de esa tapa (`RES-37`)— apiladas con `multiply` sobre `--papel`, en el
+   orden en que se imprime de verdad (`RES-54`): clara, media, clave. Y recien despues la
+   foto se fija encima.
+
+   CADA PASADA ES UN BARRIDO, NUNCA UN FUNDIDO. La racleta arrastra la tinta de un lado
+   al otro de la pantalla: `clip-path` de un borde al otro. La opacidad no entra en
+   ninguna animacion de este bloque — es lo que `REV-10` (FIND-39) corrigio en el umbral
+   y aca se cumple desde el primer cuadro. Con movimiento reducido, las cuatro duraciones
+   valen cero y `both` deja el estado final: la estampa aparece ya impresa y fijada.
+
+   El registro corrido (`--registro`) QUEDA en reposo: es lo que hace que sea una
+   imprenta a mano y no una foto con filtro. No es movimiento y el corte no lo toca.
+   ========================================================================== */
+
+.estampa {
+  width: min(100%, 240px);
+  margin: var(--espacio-2) auto 0;
+  /* La profundidad del giro: sin esto, dar vuelta la hoja es un aplastamiento. */
+  perspective: 900px;
+}
+
+/* La hoja: lo que se da vuelta. Es un boton cuando hay trasera para mostrar. */
+.estampa-hoja {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  transform-style: preserve-3d;
+  rotate: y 0deg;
+  transition: rotate var(--duracion-giro) var(--curva-cinta);
+}
+
+.estampa-hoja[data-cara='dorso'] {
+  rotate: y 180deg;
+}
+
+.estampa-frente,
+.estampa-dorso {
+  position: absolute;
+  inset: 0;
+  display: block;
+  backface-visibility: hidden;
+}
+
+/* El dorso nace dado vuelta, para que el giro de la hoja lo traiga de frente. */
+.estampa-dorso {
+  rotate: y 180deg;
+}
+
+/* El papel: el mismo de las etiquetas de casete. Sobre el se apoyan las tintas. */
+.estampa-papel {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  /* `UX-22` §2.2: sin esto, el `multiply` de las tintas no se detiene en el papel — se
+     mezcla con lo que haya detras de la estampa, que en esta pantalla es una tapa velada.
+     La tinta tiene que oscurecer el papel y nada mas. Era `FIND-48` de `REV-11`. */
+  isolation: isolate;
+
+  background: var(--papel);
+  border: var(--linea) solid var(--borde);
+  border-radius: 3px;
+  rotate: -1.2deg;
+  box-shadow: 4px 4px 0 var(--apoyo-disco, var(--borde));
+}
+
+.pasada,
+.estampa-foto {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Cada tinta es translucida sobre el papel, como la tinta de verdad. */
+.pasada {
+  mix-blend-mode: multiply;
+  animation: pasada var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+/* La racleta cambia de sentido en cada pasada, como en el taller. `--racleta-desde` es
+   de donde arranca el barrido; el `@keyframes` lo lee de cada capa. */
+.pasada--clara {
+  --racleta-desde: inset(0 100% 0 0);
+}
+
+/* El registro se corre SIEMPRE en la misma direccion (`UX-22` §2.3): es una sola
+   imprenta un poco desalineada, no tres tiradas independientes. Cada pasada cae un
+   registro mas alla de la anterior, y queda asi para siempre. */
+.pasada--media {
+  --racleta-desde: inset(0 0 0 100%);
+  translate: var(--registro) calc(var(--registro) * -1);
+  rotate: var(--registro-angulo);
+  animation-delay: var(--escalon-pasada);
+}
+
+.pasada--clave {
+  --racleta-desde: inset(100% 0 0 0);
+  translate: calc(var(--registro) * 2) calc(var(--registro) * -2);
+  rotate: var(--registro-angulo);
+  animation-delay: calc(var(--escalon-pasada) * 2);
+}
+
+@keyframes pasada {
+  from {
+    clip-path: var(--racleta-desde, inset(0 100% 0 0));
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+/* La foto se fija de arriba a abajo, como la hoja que sale de la prensa. Es el cuarto
+   compas, con la misma duracion que los otros tres (`UX-22` §1.1). */
+.estampa-foto {
+  animation: fijado var(--duracion-pasada) var(--curva-cinta) both;
+  animation-delay: calc(var(--escalon-pasada) * 3);
+}
+
+@keyframes fijado {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+/* La trasera real, con la pista que sacaste estampada como sello (`CNT-14` §2.4). */
+.estampa-trasera {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* `contain` y no `cover`: la trasera no es cuadrada (320×252) y recortarla seria elegir
+     que parte de la contratapa se ve, que es del catalogo de `experiencia` y no de esta
+     regla (`ADR-05.6`). Lo que sobra es papel. */
+  object-fit: contain;
+  border: var(--linea) solid var(--borde);
+  border-radius: 3px;
+  background: var(--papel);
+}
+
+/* Texto de tinta sobre papel —par testeado— con el borde en la tinta del disco. */
+.sello-pista {
+  position: absolute;
+  right: 7%;
+  bottom: 8%;
+  padding: 0.2rem 0.55rem;
+  border: 2px solid var(--tinta-disco, var(--acento-2));
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--papel) 88%, transparent);
+  color: var(--fondo);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  rotate: -8deg;
+}
+
+/* Lo que dice el boton a la vista (`UX-22` §5, `CNT-14` §2.3): que la estampa se da
+   vuelta. Va abajo de la hoja, chico y en tenue: es una instruccion, registro 3. */
+.estampa-girar {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--texto-tenue);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* El pie de la estampa: el nombre del disco en su letra. */
+.estampa-pie {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: var(--espacio-2);
+}
+
+/* El nombre del disco, en la tinta de su disco y con la segunda tinta corrida: el
+   registro imperfecto de una imprenta a mano. `text-shadow` de desplazamiento plano,
+   que es la unica sombra que la regla de marca admite. */
+.estampa-disco {
+  font-family: var(--fuente-rotulada);
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  line-height: 1.1;
+  text-align: center;
+  color: var(--tinta-disco, var(--texto));
+  text-shadow: var(--registro) var(--registro) 0 var(--apoyo-disco, var(--borde));
+}
+
+/* Los tres nombres que tienen su propia letra calcada (`CNT-14` §2.7). */
+.estampa-disco--oktubre {
+  font-family: var(--fuente-titular);
+  font-size: 1.6rem;
+  letter-spacing: 0.02em;
+}
+
+.estampa-disco--lobo-suelto {
+  font-family: var(--fuente-lobo-suelto);
+  font-size: 1.45rem;
+}
+
+/* El boton de dar vuelta necesita foco visible sobre un objeto rotado: el anillo va
+   afuera del papel, no cortado por su `overflow`. */
+.estampa-hoja:focus-visible {
+  outline: var(--linea) solid var(--acento-2);
+  outline-offset: 6px;
+}
+
+/* ---- El zoom se abre (`UX-22` §11, `T-206`) ----
+   "Adivina la tapa" se juega mirando un recorte, y al responder deja de haber zoom: la
+   tapa entera se imprime a su tamano de ficha real (320 px, sin agrandar), con las MISMAS
+   clases de arriba —`.estampa-papel`, `.pasada`, `.estampa-foto`— y por lo tanto con el
+   mismo orden de pasadas, el mismo registro corrido y el mismo techo de tiempo. Lo unico
+   propio es la caja: aca el papel no vive adentro de una hoja que se da vuelta, asi que
+   se pone su medida el mismo. */
+.estampa-papel--abre {
+  width: min(100%, 320px);
+  height: auto;
+  aspect-ratio: 1;
+  /* El margen de abajo es del papel y no del `figcaption`: el papel esta apenas torcido y
+     su esquina baja se le venia encima al credito, que es justo lo que `D-21` no permite
+     que quede ilegible. */
+  margin: 0 auto var(--espacio-2);
+}
+
+/* El recorte con el que se jugo pasa a ser la capa de abajo, y solo al acertar: las
+   tintas llegan encima y la foto lo tapa entero al fijarse. Pierde el borde y la rotacion
+   que tenia como ficha suelta —ahora el objeto es el papel, que ya los lleva— y se estira
+   a la caja, que es cuadrada como el recorte. */
+.figura-tapa-juego--abierta .tapa-juego {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  transform: none;
+  object-fit: cover;
+}
+
+/* ---- La sala se vuelve el disco (`UX-22`, `T-202`) ----
+
+   Al acertar, la tapa que sacaste pasa a ser el fondo velado de la pantalla, en el
+   tiempo de un fijado, y vuelve al tema siguiente. NO lleva `.tapa-fondo`: ese nombre
+   de transito es unico por documento (`ADR-03`). Es la misma ficha de 320 px, velada
+   con `--velo-tapa` —el peor caso que `contraste.test.ts` ya mide—, sin archivo nuevo.
+   La imagen la pone la isla, siempre con el velo delante: `estilos.test.ts` lo vigila. */
+.sala-disco {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  /* La isla nunca escribe una imagen de fondo en linea: escribe `--tapa-de-la-sala`, y
+     el velo va ACA, en la misma regla, como en toda tapa de fondo del sitio. Es lo que
+     deja que `estilos.test.ts` lo audite (`ADR-05.7`). */
+  background-image: linear-gradient(var(--velo-tapa), var(--velo-tapa)), var(--tapa-de-la-sala, none);
+  clip-path: inset(0 0 100% 0);
+}
+
+/* Entra en el tiempo de un paso: es la camara cambiando de sala (`UX-22` §3, `ADR-03`). */
+.sala-disco--puesta {
+  animation: sala var(--duracion-paso) var(--curva-cinta) both;
+}
+
+@keyframes sala {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+/* ---- La cinta gira (`UX-22`, `T-204`) ----
+   El casete de `casete.ts`, con los carretes girando MIENTRAS suena el fragmento. Es
+   senal diegetica e informacion: quien no escucha nada ve que el sitio si esta sonando
+   (`UX-03`). Un bucle no se apaga bajando su duracion —quedaria girando rapidisimo—,
+   asi que con movimiento reducido va `animation: none`, como la mosca, y la palabra de
+   sello de al lado (`CNT-14` §2.5) dice lo mismo que el carrete. */
+.cinta-fila {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  margin: var(--espacio-1) 0 0;
+}
+
+.casete-vivo {
+  flex: none;
+  width: 4.75rem;
+  height: auto;
+  color: var(--cat-mitologia);
+}
+
+.casete-carrete {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: carrete var(--duracion-carrete) linear infinite;
+  animation-play-state: paused;
+}
+
+.reproductor--sonando .casete-carrete {
+  animation-play-state: running;
+}
+
+@keyframes carrete {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* La palabra de estado, SONANDO, pegada al casete (`UX-22` §6): esta SIEMPRE que la cinta
+   corre, con el movimiento prendido o apagado, y no esta el resto del tiempo. Es su
+   presencia la senal, nunca un cambio de color del casete sin ella. */
+.casete-estado {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  color: var(--texto-tenue);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+}
+
+.casete-estado[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .casete-carrete {
+    animation: none;
+  }
 }

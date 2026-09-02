@@ -101,9 +101,22 @@ const medidaMosca = medidas(arteMosca);
       }
       <slot />
       <footer class="pie-sitio">
-        {tapas.length > 0 && <span class="credito-pantalla">{PORTAL.creditoTapas(tapas)}</span>}
+        {tapas.length > 0 && <span class="credito-pantalla" data-tapas={JSON.stringify(tapas)}>{PORTAL.creditoTapas(tapas)}</span>}
         {PORTAL.pie}
       </footer>
     </div>
+
+    <script>
+      /**
+       * El interruptor de la cinta (`UX-21`), para todo lo que pasa por este cascarón: el
+       * portal, la Redondopedia y el cancionero. Las seis pantallas de juego no pasan por
+       * acá y lo cargan cada una por su cuenta.
+       *
+       * Es la única isla del sitio que no es un juego, y la más chica: dibuja una estampa
+       * y traduce un toque. **No se pinta sola en las tres pantallas de tono grave** —lo
+       * decide ella misma, mirando la ruta contra `sitio/graves.ts`.
+       */
+      import '../scripts/cinta.ts';
+    </script>
   </body>
 </html>

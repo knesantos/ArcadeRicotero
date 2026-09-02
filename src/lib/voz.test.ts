@@ -9,6 +9,7 @@ import * as letra from './letra/copy.ts';
 import * as tapa from './tapa/copy.ts';
 import * as porLaLetra from './por-la-letra/copy.ts';
 import * as correccion from './correccion/copy.ts';
+import * as dosEjes from './dos-ejes/copy.ts';
 
 /**
  * La auditoria a maquina de `.claude/rules/voz-ricotera.md`, seccion 8.
@@ -149,6 +150,17 @@ test('voz 4.1: la linea grande no pasa de ocho palabras', () => {
     ['casete redondopedia', sitio.CASETE_REDONDOPEDIA.titulo],
     ...Object.entries(quiz.TRAMOS).map(([k, v]) => [`quiz tramo ${k}`, v.titulo] as [string, string]),
     ...Object.entries(sitio.COCINA).map(([k, v]) => [`cocina ${k}`, v.titulo] as [string, string]),
+    // `T-167` del ciclo 10. Los seis `h1` de portada faltaban en esta lista, y no por
+    // olvido: sumarlos rompia el build por **una sola linea** — el `h1` del quiz, que
+    // tenia diez palabras. Cerrar el auditor dejando afuera al unico que fallaba habria
+    // sido escribir un test que mira para otro lado, asi que la linea se fue a `producto`
+    // (`T-166`) y el hueco se cerro despues, no antes.
+    ['h1 quiz', quiz.PANTALLA_0.titulo],
+    ['h1 adivinar el tema', tema.PANTALLA_0.titulo],
+    ['h1 completar la letra', letra.PANTALLA_0.titulo],
+    ['h1 adivinar la tapa', tapa.PANTALLA_0.titulo],
+    ['h1 sacalo por la letra', porLaLetra.PANTALLA_0.titulo],
+    ['h1 dos ejes', dosEjes.PANTALLA_0.titulo],
   ];
   const largos = grandes
     .filter(([, texto]) => texto.trim().split(/\s+/).length > 8)

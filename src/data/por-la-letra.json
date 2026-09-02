@@ -3,7 +3,7 @@
   "contratoVersion": 1,
   "juego": "por-la-letra",
   "modoRespuesta": "buscador",
-  "actualizado": "2026-08-27",
+  "actualizado": "2026-09-01",
   "sensibleA": [
     "letra"
   ],
@@ -682,7 +682,7 @@
         "impecable testigo de caricias",
         "que se esfumaron cuando bajó la guardia",
         "(dejó)",
-        "Pintan mal las cosas para ,l mi viejo",
+        "Pintan mal las cosas para él mi viejo",
         "pintan mal",
         "S, de alguien que enturbia sus sentidos"
       ],
@@ -1863,7 +1863,7 @@
       "titulo": "La murga de los renegados",
       "desde": 1,
       "versos": [
-        "entre sopores,modorras ciegas",
+        "entre sopores, modorras ciegas",
         "y oscuridad de bodega sin luz",
         "va esa murga desencantada",
         "que lleva siglos asi",

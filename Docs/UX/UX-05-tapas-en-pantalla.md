@@ -211,6 +211,14 @@ fila**: cada ronda va a mostrar un disco distinto y necesita su propio mecanismo
 sello que nombre el disco de esa ronda específica) — queda para el `UX-XX` propio del
 juego 4, todavía sin escribir.
 
+> **Ese `UX-XX` ya está escrito: es `UX-13` (2026-09-01, `T-171`).** `US-04` dejó de ser
+> cocina y pasó a ser un juego de **zoom** —ninguna tapa se muestra entera—, porque ocho de
+> las diez imprimen su título en la cara frontal y el juego se ganaba leyendo.
+> `Docs/UX/UX-13-zoom-de-tapas.md` cataloga los diez encuadres, uno por uno.
+>
+> **Esta fila no cambia:** sigue describiendo el fondo velado de la pantalla, que es otra
+> cosa que la imagen que juega.
+
 ---
 
 ## 6. `/redondopedia/` — la portada

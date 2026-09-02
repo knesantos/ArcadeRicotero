@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 /**
  * Impide que vuelva a pasar `FIND-15`.
@@ -99,11 +99,18 @@ test('D-21: ninguna tapa entra de fondo sin su velo', () => {
   // texto sobre una foto: es justo el caso que la regla de marca veta como "foto a
   // sangre con texto encima". Se exige en el mismo bloque de declaraciones, no en la
   // hoja entera, para que no alcance con que el velo aparezca en cualquier otro lado.
+  //
+  // Desde el ciclo 12 hay una tapa de fondo que NO vive en `/tapas/fondo/`: la sala que se
+  // vuelve el disco acertado usa la ficha de `/tapas/<slug>.jpg`, y la ruta la pone la
+  // isla en tiempo de ejecucion a traves de `--tapa-de-la-sala`. Por eso el patron cubre
+  // las dos vias (`ADR-05.7`): cualquier `/tapas/` en un `background`, y cualquier
+  // `var(--tapa-`. Toda propiedad personalizada que transporte una tapa se llama `--tapa-*`.
   for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css']) {
     const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
     for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
       const declaraciones = regla[2]!;
-      if (!declaraciones.includes('/tapas/fondo/')) continue;
+      const poneTapa = /background[^;]*(\/tapas\/|var\(--tapa-)/.test(declaraciones);
+      if (!poneTapa) continue;
       assert.ok(
         declaraciones.includes('--velo-tapa'),
         `${hoja}: "${regla[1]!.trim()}" pone una tapa de fondo sin velo`,
@@ -112,7 +119,80 @@ test('D-21: ninguna tapa entra de fondo sin su velo', () => {
   }
 });
 
+test('ADR-05.7: ninguna isla escribe una imagen de fondo en linea; una tapa entra por --tapa-*', () => {
+  // La unica tapa de fondo que se pone desde JavaScript seria la unica que ningun test de
+  // CSS mira. Se cierra por convencion: la isla escribe la variable, y el velo lo pone la
+  // regla de la hoja, donde el test de arriba lo ve.
+  const islas = readdirSync('src/scripts').filter((f) => f.endsWith('.ts'));
+  const malas: string[] = [];
+  for (const isla of islas) {
+    const fuente = leer(`src/scripts/${isla}`);
+    if (/style\.backgroundImage\s*=/.test(fuente)) malas.push(`${isla}: escribe style.backgroundImage`);
+    if (/setProperty\(\s*['"]background/.test(fuente)) malas.push(`${isla}: escribe background por setProperty`);
+    for (const m of fuente.matchAll(/setProperty\(\s*['"](--[\w-]+)['"]\s*,\s*`?url/g)) {
+      if (!m[1]!.startsWith('--tapa-')) malas.push(`${isla}: una url de imagen entra por ${m[1]} y no por --tapa-*`);
+    }
+  }
+  assert.deepEqual(malas, [], malas.join('\n  '));
+});
+
+test('CTR-12 caso 19 (candado 7 de ADR-05.9): la estampa se apoya en papel opaco y aislado', () => {
+  /*
+   * La enmienda `ADR-05.9` ratifica el papel como cuarta zona: hasta un 16 % de cada tapa
+   * NO se imprime, y ahi lo que se ve es el papel. Eso vuelve al fondo del contenedor una
+   * pieza del contrato, no una decoracion: **el papel no viaja en ningun archivo**, lo
+   * pone esta regla. Sin el, la zona sin imprimir es un agujero a la tapa velada de atras.
+   *
+   * Y con `isolation` pasa lo mismo por el otro lado: sin aislar, el `multiply` de las
+   * tintas se mezcla con lo que haya detras del contenedor en vez de detenerse en el
+   * papel. Ya paso una vez y se llamo `FIND-48`.
+   *
+   * Las dos declaraciones se exigen en el MISMO bloque, no en la hoja entera: que
+   * `--papel` e `isolation` aparezcan en algun otro lado no salva a la estampa.
+   */
+  const css = leer('src/styles/juego.css').replace(/\/\*[\s\S]*?\*\//g, '');
+  const bloque = css.match(/(^|\})\s*\.estampa-papel\s*\{([^}]*)\}/m);
+  assert.ok(bloque, 'no existe el bloque .estampa-papel en juego.css');
+  const declaraciones = bloque![2]!;
+  assert.match(declaraciones, /background:\s*var\(--papel\)/, '.estampa-papel perdio su papel opaco');
+  assert.match(declaraciones, /isolation:\s*isolate/, '.estampa-papel perdio el aislamiento del multiply');
+});
+
+test('UX-22 §8: el registro imperfecto vive solo en la letra grande, nunca en un parrafo', () => {
+
+  /*
+   * El eco de segunda tinta es la unica sombra que `diseno-marca.md` admite, y por eso es
+   * la mas facil de convertir en tic: una sombra dura corrida queda "bien" en cualquier
+   * cosa. Esta lista es CERRADA. Sumar un selector es una decision de `UX-22` §8 —que
+   * dice donde si y donde no—, no un descuido de quien pasa por la hoja.
+   *
+   * Lo que el test protege de verdad son los cuatro "nunca" de esa tabla: cuerpo de
+   * texto, rotulos de registro 3, estados de acierto y error, y los tres articulos de
+   * tono grave. Ninguno puede aparecer aca sin que alguien lo escriba a proposito.
+   */
+  const PERMITIDOS = new Set([
+    '.marca-grande', // la marca del portal
+    '.marca', // la marca de la cabecera de cada juego
+    '.pantalla h1', // el h1 de cada juego
+    '.casete-titulo', // el titulo de un casete
+    '.articulo:not(.articulo--grave) h1', // el titulo de articulo, salvo los tres graves
+    '.estampa-disco', // el nombre del disco en la estampa (`UX-22` §2)
+  ]);
+  const encontrados: string[] = [];
+  for (const hoja of ['src/styles/sitio.css', 'src/styles/juego.css', 'src/styles/cancionero.css']) {
+    const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
+    for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+      if (!/text-shadow[^;]*var\(\s*--registro\s*\)/.test(regla[2]!)) continue;
+      for (const sel of regla[1]!.split(',')) encontrados.push(sel.trim().replace(/\s+/g, ' '));
+    }
+  }
+  assert.ok(encontrados.length > 0, 'el registro imperfecto desaparecio de las hojas');
+  const intrusos = encontrados.filter((s) => !PERMITIDOS.has(s));
+  assert.deepEqual(intrusos, [], `UX-22 §8 no nombra estos lugares: ${intrusos.join(', ')}`);
+});
+
 test('toda clase de estado usada en el CSS existe de verdad en el codigo', () => {
+
   // El reves del primer test: estilos huerfanos de clases que ya nadie crea.
   //
   // El codigo arma varias con plantilla —`insignia--${clase}`, `tramo--${t}`— asi que

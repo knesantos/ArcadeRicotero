@@ -39,7 +39,7 @@
           "correcta": false
         }
       ],
-      "explicacion": "El título no es una tipografía: Rocambole lo pintó a mano con un tubo de plasticola cargado de esmalte sintético, y lo pasaron a serigrafía sobre seda en tres pasadas.",
+      "explicacion": "Lo que está pintado a mano no es el título: es el nombre de la banda. Rocambole lo hizo con un tubo de plasticola cargado de esmalte sintético, y de ahí lo pasaron a serigrafía sobre seda, en tres pasadas.",
       "fuentes": [
         "RES-44",
         "RES-02",
@@ -86,7 +86,7 @@
           "correcta": false
         }
       ],
-      "explicacion": "La letra del título es un alfabeto que Rocambole inventó él mismo, a mano, con aire cirílico y una B espejada: no deriva de ninguna tipografía existente, y aprovechó su oficio previo de cartelista.",
+      "explicacion": "Esa multitud de caras grises bajo las banderas rojas es el motivo central de la tapa. El título queda fuera del recorte, y vale saber cómo está escrito: con un alfabeto que Rocambole inventó a mano, de aire cirílico y con una B espejada. No deriva de ninguna tipografía existente — venía de su oficio anterior de cartelista.",
       "rotulo": {
         "tipo": "leyenda",
         "texto": "Que el alfabeto fue un homenaje a la Revolución Rusa de 1917 circula consistente en varias fuentes, pero sale de una entrevista de 1999 sin verificar en fuente primaria (RES-06)."
@@ -334,7 +334,7 @@
           "correcta": false
         }
       ],
-      "explicacion": "El alfabeto con el que está escrito el título de este disco no lo dibujó Rocambole: es de Semilla Bucciarelli, el bajista, y Rocambole lo describió como aerografías gigantes.",
+      "explicacion": "Ese hocico con dos colmillos es Lupus, el lobo del volumen 1. El título queda fuera del recorte, y no lo dibujó Rocambole: el alfabeto es de Semilla Bucciarelli, el bajista, y Rocambole lo describió como aerografías gigantes.",
       "fuentes": [
         "RES-44",
         "RES-02",

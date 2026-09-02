@@ -141,12 +141,105 @@
      cualquier fondo sin taparlo. */
   --textura-grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0.55 0.55 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
 
+  /* El rodillo (`UX-22` §9): la marca que deja un rodillo entintado al pasar. Mismo
+     principio que el grano —turbulencia, alfa sola, sin color propio—, pero anisotropa:
+     frecuencia casi nula a lo ancho y alta a lo alto, que es lo que estira el ruido en
+     vetas horizontales de arrastre en vez de grano fino. Se usa como MASCARA sobre
+     `currentColor`, asi que toma la tinta del lugar donde vive y no trae una suya.
+     No lleva credito: es un motivo generico de la tecnica, no un recorte de ninguna tapa. */
+  --textura-rodillo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='14'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.06 0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.85 0.85 0.85 0 -0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
+
   /* Tipografia (hoja 04). Titular: el calco real. Rotulada: grita corto.
+
      Texto: pila del sistema — el enunciado y las opciones van SIEMPRE aca. */
   --fuente-titular: 'Oktubre Calco', 'Archivo Black', 'Arial Black', sans-serif;
   --fuente-rotulada: 'Archivo Black', 'Arial Black', sans-serif;
   --fuente-marca-firma: 'Patricio Rey Fan', 'Archivo Black', sans-serif;
   --fuente: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* ------------------------------------------------------------------
+     Movimiento y aire (hoja 12). La doctrina es de `UX-20`: **el movimiento es del
+     lugar, no del elemento**. Nada se mueve para llamar la atencion sobre si mismo; lo
+     que se mueve es la camara — el aire, el fondo, la tinta, el paso de una pantalla a
+     la otra.
+
+     Hasta el ciclo 11 no habia un solo token de movimiento y el sitio entero tenia dos:
+     los 120 ms del borde de `.opcion` (escritos a mano en `juego.css`) y el vuelo de la
+     mosca (escrito a mano en `sitio.css`). Los dos entran aca sin cambiar de valor: el
+     valor nunca fue el problema, el problema era que no tenian nombre.
+
+     LOS TECHOS, y de quien son: un paso no pasa de 400 ms y una capa de fondo no recorre
+     mas del 8 % (`UX-20` §1, de `experiencia`); el cruce entre dos pantallas no pasa de
+     200 ms (`ADR-03` §6.2, de `arquitectura`) — manda el mas chico de los dos.
+     ------------------------------------------------------------------ */
+
+  /* INFORMACION, no atmosfera: que el dedo llego. Es la unica duracion que el corte de
+     movimiento reducido NO apaga, y por eso esta separada de las de abajo. */
+  --duracion-toque: 120ms;
+
+  /* Atmosfera. Las tres se van a cero con `prefers-reduced-motion`. */
+  --duracion-paso: 200ms; /* el cruce entre dos pantallas (ADR-03) */
+  --duracion-umbral: 380ms; /* cada sub-paso del asentamiento de la portada */
+  /* El escalon entre un sub-paso del umbral y el siguiente. `UX-20` §4 nombro la
+     duracion de cada sub-paso y no la separacion entre ellos; sin un token para eso, los
+     retrasos quedaban escritos a mano en `sitio.css`, que es justo lo que esta hoja
+     existe para impedir. Propuesta para que `experiencia` lo adopte o lo corrija en
+     `Docs/SUGERENCIAS/HILO-para-experiencia-desvios-del-ciclo-11.md`. */
+  --escalon-umbral: 70ms;
+  --duracion-vuelo: 17s; /* el ciclo de la mosca, lo unico vivo del sitio */
+
+  /* Una sola curva para todo, para que se note que es la misma camara en todos lados.
+     Arranca rapido —la cinta engancha— y afloja largo —el carrete recoge—. SIN REBOTE:
+     el sobrepaso es el primer tic de la tabla anti-slop. */
+  --curva-cinta: cubic-bezier(0.2, 0.7, 0.25, 1);
+
+  /* Cuanto se hunde la tinta MIENTRAS dura el paso, y vuelve. No es un segundo `--fondo`:
+     `D-19` dice que la base no rota, y esto no la rota — entrar se siente como bajar un
+     escalon, no como cambiar de piso (`UX-20` §0, correccion 1). */
+  --hondura-transito: 0.82;
+
+  /* Cuanto se corre una capa de fondo al desplazar, como maximo (`UX-20` §1.4). */
+  --deriva-capa-fondo: 8%;
+
+  /* ------------------------------------------------------------------
+     La imprenta (hoja 13). La doctrina es de `UX-22`: **el acierto es el unico grito
+     del sitio**, y por eso la estampa es lo unico que puede durar mas de un paso.
+
+     La tapa que sacaste no aparece: se imprime por pasadas, como una serigrafia
+     (`RES-54`): tinta clara, tinta media, clave, y recien despues se fija la foto.
+     Cada pasada es un barrido —la racleta que arrastra la tinta—, NUNCA un fundido:
+     la opacidad no entra en ninguna de estas animaciones (`REV-10`, FIND-39).
+     ------------------------------------------------------------------ */
+
+  /* Cada uno de los cuatro compases de la estampa —clara, media, clave, el fijado de la
+     foto— dura lo mismo (`UX-22` §1.1: cada uno ≤ 400 ms). */
+  --duracion-pasada: 300ms;
+  /* Entre el arranque de una pasada y el de la siguiente. El total —tres escalones mas
+     una pasada— no pasa de los 1200 ms de `UX-22` §1.1: 3 × 240 + 300 = 1020. */
+  --escalon-pasada: 240ms;
+  /* Dar vuelta la estampa (`UX-22` §5). Es manipulacion de quien juega, y dura un paso. */
+  --duracion-giro: 200ms;
+  /* Una vuelta entera del carrete mientras suena el fragmento. */
+  --duracion-carrete: 1.6s;
+
+  /* El registro imperfecto: cuanto se corre la segunda tinta respecto de la primera.
+     NO es movimiento, es como queda la estampa en reposo, y por eso el corte de
+     movimiento reducido no lo toca. Dos pixeles y medio grado: una imprenta a mano. */
+  --registro: 2px;
+  --registro-angulo: 0.4deg;
+
+  /* La tinta del eco: el segundo color que no calzo. Cada parte del sitio la pisa con el
+     apoyo de su disco (`UX-22` §8, mezcla `D-19`); donde nadie la pisa es el borde del
+     papel, que es lo mismo que ya hace la estampa con `--apoyo-disco`.
+     Es color de apoyo, no tinta de texto: va DETRAS de la letra real —que sigue siendo la
+     que pasa AA sobre su fondo de siempre— y por eso no entra a `contraste.test.ts`,
+     igual que el resto de los `-apoyo`. Nadie lee el eco para enterarse de nada. */
+  --tinta-registro: var(--borde);
+
+  /* Las fuentes fan que escriben el nombre de un disco con su propia letra, verificado
+     glifo por glifo (`RES-42`, `RES-43`, `CNT-14` §2.7). Solo tres nombres las usan;
+     los otros siete van en la rotulada, con su tilde real. */
+  --fuente-lobo-suelto: 'Lobo Suelto Fan', 'Archivo Black', sans-serif;
 
   /* Espaciado pensado para el pulgar (D-09) */
   --toque-min: 48px;
@@ -200,11 +293,98 @@ a[role='button'] {
   outline-offset: 2px;
 }
 
+/* ==========================================================================
+   El paso de una pantalla a la otra (`ADR-03`)
+
+   Adhesion UNICA, y va aca porque `tokens.css` es la hoja que importan las trece
+   paginas del repo — directo o via `Base.astro`. El transito entre documentos exige que
+   los DOS documentos adhieran: una adhesion por pagina seria una matriz de pares que
+   nadie mantiene, y el primer par que falte se cae en silencio.
+
+   CERO JAVASCRIPT, y ese cero es la decision, no el resultado. `ADR-03` descarto el
+   enrutador de cliente por escrito: las seis islas del repo capturan el DOM en el ambito
+   del modulo y estan escritas contra la suposicion de que cada pantalla es un documento
+   nuevo. Donde el navegador no soporta esta regla-@, la descarta entera y se ve el sitio
+   de siempre: el repuesto es el estado actual, asi que no hay repuesto que escribir.
+   ========================================================================== */
+
+@view-transition {
+  navigation: auto;
+}
+
+/* Una sola camara para todo lo que cruza. Sin esto, cada grupo del transito —la marca, el
+   fondo del lugar, la mosca— corre con la duracion por defecto del navegador (250 ms) y
+   el paso se desarma en tres tiempos distintos. Va con `*` a proposito: alcanza tambien a
+   los nombres que existen de un solo lado, que son los que mas se notan. */
+::view-transition-group(*) {
+  animation-duration: var(--duracion-paso);
+  animation-timing-function: var(--curva-cinta);
+}
+
+/* El paso: la tinta se hunde y vuelve. Sin desplazamiento, sin escala, sin rebote — la
+   camara baja un escalon y se acomoda. `both` deja el estado final aplicado durante todo
+   el cuadro de captura; sin eso, el navegador parpadea al soltar la instantanea. */
+::view-transition-old(root) {
+  animation: paso-sale var(--duracion-paso) var(--curva-cinta) both;
+}
+
+::view-transition-new(root) {
+  animation: paso-entra var(--duracion-paso) var(--curva-cinta) both;
+}
+
+@keyframes paso-sale {
+  to {
+    opacity: 0;
+    filter: brightness(var(--hondura-transito));
+  }
+}
+
+@keyframes paso-entra {
+  from {
+    opacity: 0;
+    filter: brightness(var(--hondura-transito));
+  }
+}
+
+/* ==========================================================================
+   Movimiento reducido: se apaga la camara, NUNCA la respuesta al dedo.
+
+   Esto era un `*, *::before, *::after` con `!important` que llevaba toda duracion a
+   0,01 ms. Apagaba la mosca, que esta bien, y de paso apagaba los 120 ms del borde de
+   `.opcion`, **que son la unica confirmacion de que el sitio recibio el toque**. La
+   auditoria de `impeccable` lo dejo anotado como P3 el 2026-08-24 y `UX-20` §5 lo
+   resolvio con una regla que se puede decir en una linea:
+
+     el corte deja de operar por selector y pasa a operar por familia de token.
+
+   Todo lo de "atmosfera" se va a cero; `--duracion-toque` no esta en esta lista y no
+   entra nunca. Lo que no se apaga bajando un tiempo —una animacion en bucle— declara su
+   equivalente quieto al lado de su propia regla, y `movimiento.test.ts` falla el build
+   si alguna se olvida.
+
+   Y OJO CON EL TRANSITO: el selector universal NO alcanzaba a `::view-transition-*`, que
+   viven en un arbol de pseudo-elementos aparte. Con el corte viejo, quien pedia menos
+   movimiento habria recibido el unico movimiento nuevo del ciclo. Se apaga el mecanismo,
+   no sus sintomas (`ADR-03` §6.4).
+   ========================================================================== */
+
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
+  @view-transition {
+    navigation: none;
+  }
+
+  :root {
+    --duracion-paso: 0ms;
+    --duracion-umbral: 0ms;
+    --escalon-umbral: 0ms;
+    --hondura-transito: 1;
+    --deriva-capa-fondo: 0%;
+    /* La imprenta (UX-22): la estampa aparece ya impresa y fijada; el giro es un cambio
+       directo. `--registro` NO se toca: es reposo, no movimiento. El carrete no se
+       apaga por token —quedaria girando rapidisimo— sino con `animation: none` en
+       juego.css, como la mosca. */
+    --duracion-pasada: 0ms;
+    --escalon-pasada: 0ms;
+    --duracion-giro: 0ms;
   }
 }

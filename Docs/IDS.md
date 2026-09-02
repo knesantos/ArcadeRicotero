@@ -34,6 +34,20 @@ a la otra qué número tomó.
 | `IDEA-11` | **Sesión del 2026-08-23.** Idea del usuario guardada como ficha en `Docs/SUGERENCIAS/HILO-para-producto-idea-11-mayor-o-menor.md`, todavía sin pegar en `PRD-backlog-ideas.md` — la carpeta es de `producto` | 2026-08-23 | **cerrada — pegada en el PRD por `T-100` del ciclo 7** |
 | `T-97` … `T-107` · `RES-49`, `RES-50` · `CNT-08` · `REV-06` | **Ciclo 7** (`ORQ-plan-ciclo-7.md`). `RES-49` y `RES-50` salen del rango del ciclo 4, que estaba abierto y las tenía pedidas | 2026-08-24 | **cerrada — `T-103` y `T-105` canceladas, sus números no se reutilizan** |
 | — | ⚠ **Hay otra sesión escribiendo este repo el 2026-08-24** y no reservó rango: dejó `Docs/SUGERENCIAS/HILO-para-producto-idea-04-la-meta-del-bondi.md`. No tomó IDs nuevos (reusa `IDEA-04`), así que no chocó — pero es el caso que esta tabla existe para evitar | 2026-08-24 | **abierta** |
+| `T-161` … `T-175` · `CTR-11` · `RES-53` · `REV-09` · **`UX-13`, `UX-14`** | **Ciclo 10** (`ORQ-plan-ciclo-10.md`), en una sesión que corre en paralelo a la del ciclo 11 | 2026-09-01 | **activa** |
+| `T-176` … `T-194` · `ADR-03`, `ADR-04` · `CNT-13` · `D-32` · `REV-10` · **`UX-20` … `UX-24`** | **Ciclo 11** (`ORQ-plan-ciclo-11.md`), la sesión de inmersión. **Toma `UX-20`+ y no `UX-15`+ a propósito:** el ciclo 10 avanza sobre el contador de `UX-` a su propio ritmo y las dos sesiones no se ven. Un bloque lejano cuesta lo mismo y no se pisa | 2026-09-01 | **activa** |
+| `T-195` … `T-210` · `UX-22` · `RES-54` (archivo `INV-54`) · `ADR-05`, `CTR-12` · `CNT-14` · `D-33` · `REV-11`, `FIND-46`+ | **Ciclo 12** (`ORQ-plan-ciclo-12.md`), la imprenta de Rocambole. Sesión única, sobre `ciclo-11/el-sitio-como-lugar`. `UX-22` es el primer número libre del bloque que reservó el ciclo 11 | 2026-09-01 | **cerrada — rango consumido entero.** `T-195`..`T-210` usadas, ninguna cancelada. `REV-11` llegó hasta `FIND-51` |
+
+
+> **El caso que esta tabla existe para evitar pasó igual, el 2026-09-01, y quedó anotado
+> porque es la mejor evidencia que tiene esta sección.** Las dos sesiones planificaron su
+> ciclo el mismo día leyendo el mismo disco: las dos vieron que el último documento de
+> `experiencia` era `UX-12`, y **las dos escribieron un `UX-13` distinto** — el zoom de
+> tapas del ciclo 10 y "el sitio como lugar" del ciclo 11. Se detectó porque la sesión del
+> ciclo 11 miró `git status` antes de dar nada por cerrado, no porque nadie avisara. La del
+> ciclo 11 se corrió a `UX-20`+; la del 10 se queda con `UX-13` y `UX-14`, que ya estaban
+> escritos. **Reservar el rango cuesta una línea; descubrirlo después cuesta renombrar
+> archivos y arreglar citas.**
 
 ### Los nombres de archivo son otro contador compartido
 

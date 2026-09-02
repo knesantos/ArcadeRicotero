@@ -5,12 +5,289 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-08-28
-**Ciclo actual:** **9 — EN CURSO.** Plan en
-`Docs/ORQ/ORQ-plan-ciclo-9.md`, tareas `T-128`..`T-160` (`T-148` cancelado). **Cinco
-frentes en dos tramos**: el juego nuevo por letras (`US-07`), `US-03` que sale entero, el
-quiz que pasa a vidas, el botón de corrección, y la pulida de escritorio más los recortes
-reales.
+**Última actualización:** 2026-09-02
+
+**Ciclo actual:** **12 — CERRADO (2026-09-02).** Plan en `Docs/ORQ/ORQ-plan-ciclo-12.md`,
+tareas `T-195`..`T-210`, las dieciséis cerradas y ninguna cancelada. Lo pidió el usuario el
+2026-09-01: *"otro ciclo de ui/UX inmersivo, aún más creativo; tomá la mística y la estética
+de Rocambole y aplicala a toda la página; sobre todo en adiviná el tema, que te sorprenda la
+tapa cuando adivinás"*. **La idea: el sitio no se dibuja, se imprime.** La doctrina quedó en
+`D-33` — *el acierto es el único grito del sitio*— y la hoja que la fija, en `UX-22`.
+
+`npm test` **437/437** (eran 417 al cerrar el 11), `npm run check` limpio, build de **150
+páginas**. La corrida del taller (`node scripts/generar-pasadas.mjs --ver`) sale con código 0
+y los números que `ADR-05.9` ratificó.
+
+**Qué hay ahora que no había:** la tapa que sacás **se imprime delante tuyo** por tres
+pasadas de tinta con los colores medidos de ese disco (`RES-37`), en el orden en que se
+imprime una serigrafía de verdad (`RES-54`), sobre papel y con el registro corrido; al fallar
+llega en **una sola tinta**. La sala se vuelve el disco que acertaste. El acierto suena
+entero, pero solo si prendiste el audio en ese tema. La estampa **se da vuelta** y muestra la
+trasera real con la pista estampada como sello —y la trasera no se baja hasta que la tocás—.
+Los carretes del casete giran mientras corre el fragmento. El resumen de la vuelta se maqueta
+como afiche, con las cuatro tapas chicas. En "Adiviná la tapa" el zoom **se abre** a la tapa
+entera: es la pieza que `UX-13 §4` había dejado escrita como pendiente. Y la imprenta salió
+de los juegos: el registro imperfecto vive detrás de la letra grande de todo el sitio, el
+rodillo separa las secciones del portal y del índice, y la ficha de disco de la Redondopedia
+está estampada — quieta, porque un artículo no se mueve.
+
+> **Cómo se trabajó, porque importa para la próxima.** El ciclo lo construyó una sesión que
+> se quedó sin contexto antes de guardar nada: `T-195`..`T-204` estaban en el árbol, sin
+> commitear y sin `ESTADO.md` al día. La sesión siguiente guardó eso primero, tal cual estaba
+> (`d3efb56`), y recién después terminó lo que faltaba. **Lo primero que hay que hacer con
+> trabajo ajeno sin commitear es guardarlo, no mejorarlo.**
+
+> **`REV-11` — los seis hallazgos, y dónde quedó cada uno.** La ficha está en
+> `Docs/REVISIONES/REV-11-la-imprenta.md`. Veredicto: 🟡 en las dos preguntas duras del plan
+> (*¿sorprende la tapa?* y *¿la imprenta se volvió plantilla?*), con el límite declarado de
+> que `revisor` no tiene pantalla para mirar.
+>
+> - **`FIND-46` (mayor) — CERRADO.** El crédito del pie no acumulaba: recalculaba la lista
+>   desde el `data-tapas` estático en cada tema y perdía el disco anterior, contra lo que
+>   pide `UX-22 §2.5`. Ahora vive en un `Set` de la sesión que no saca a nadie. Verificado a
+>   mano: acertar un tema de Oktubre deja "Lobo suelto y Oktubre" en el pie, y lo sigue
+>   diciendo en el tema siguiente.
+> - **`FIND-47` (bloqueante) — CERRADO.** `T-205` estaba declarada cerrada en el commit y no
+>   estaba construida: el resumen no llevaba las tapas ni usaba `RESULTADO.afiche`.
+>   Construida y verificada a 375×812 y a 320 px sin desborde.
+> - **`FIND-48` (mayor) — CERRADO.** Faltaba `isolation: isolate`, que `UX-22 §2.2` exige por
+>   nombre: sin eso el `multiply` de las tintas no se detiene en el papel. Agregado en
+>   `.estampa-papel` y en `.estampita`.
+> - **`FIND-49` (mayor) — CERRADO por `arquitectura`.** Ratificó **el papel como cuarta
+>   zona** en `ADR-05.9`, y encontró que el equivocado era el contrato, no el taller: su
+>   regla 5 contradecía a su propio `ADR-05.2`. De paso enmendó tres desvíos que el hallazgo
+>   no listaba. El hilo principal construyó el candado 7 (caso 19 de `estilos.test.ts`) y
+>   corrió la verificación entera, en verde.
+> - **`FIND-50` (menor) — CERRADO por `contenido`.** Retiró el sello de crédito de `CNT-14
+>   §2.2` en vez de reescribirlo: `UX-22 §2.5` no pide un sello con otra forma, pide que no
+>   exista ninguno.
+> - **`FIND-51` (menor) — CERRADO por `experiencia`, con una vuelta de corrección.**
+>   Ratificó en `UX-22 §1.4` el scroll que al revelar lleva la vista al premio en vez de al
+>   botón. La medición que pidió tumbó su primera condición —en "Adiviná la tapa", ítem
+>   `oktubre`, "Seguí" quedaba 457 px (56 % de la pantalla) debajo del pliegue—, así que
+>   `§1.4` pasó a v4: el `scrollIntoView` apunta con `block: 'end'` al bloque que **termina**
+>   en el botón. Construido y verificado: el botón entra entero en los cuatro casos, con 6 a
+>   19 px de sobra.
+
+> **Lo que este ciclo deja sabido y no resuelto, para el próximo.** La v4 de `UX-22 §1.4`
+> eligió, con todos los datos sobre la mesa, que **entre ver el premio y que el botón nunca
+> falte, gana el botón**. La consecuencia medida: en el ítem más cargado de "Adiviná la tapa"
+> —`oktubre`, con explicación larga y sello de leyenda— la pantalla queda parada en el panel
+> y **la tapa se imprime arriba del pliegue, fuera de vista**. No es un defecto, es la
+> jerarquía que `experiencia` fijó a propósito y dejó escrita; pero es exactamente el
+> problema que el ciclo 12 vino a resolver, reaparecido en un caso de borde. Si alguna vez se
+> quiere las dos cosas, la salida no es el scroll: es el maquetado —mover la figura abajo de
+> las opciones al revelar—, que es la opción 3 que `experiencia` descartó por tamaño.
+
+**Ciclo 11 — CERRADO.** El ciclo 10 también, y en el mismo día, en dos sesiones
+que no se veían. Plan del 11 en `Docs/ORQ/ORQ-plan-ciclo-11.md`, tareas `T-176`..`T-194`.
+`npm test` **417/417** (eran 372), `npm run check` limpio, build de **150 páginas**.
+
+> ## 🎞 EL CICLO 11: EL SITIO DEJÓ DE MOSTRARSE Y EMPEZÓ A HABITARSE
+>
+> Lo pediste así: *"todo de mejora completa de ui/ux; que toda la página sea una experiencia
+> inmersiva, que cada paso se sienta como meterse en un universo mitológico misterioso"*.
+>
+> **El punto de partida, medido y no recordado:** todo el sitio tenía **dos movimientos**
+> —los 120 ms del borde de una opción y el vuelo de la mosca— y **ni un solo token de
+> movimiento**. El mundo estaba construido y no se movía.
+>
+> **La trampa que traía el pedido, y es lo que ordenó el ciclo entero:** casi todo lo que se
+> hace cuando piden "inmersivo" ya estaba vetado en este repo. El resplandor, el desenfoque,
+> el degradado, la tarjeta que se levanta, el héroe que aparece con fundido. Un ciclo de
+> inmersión sin doctrina era la corrida anti-slop al revés. Por eso la vara se escribió
+> **antes** de mover nada: `UX-20` (de `experiencia`), y de ahí salió **`D-32`**:
+>
+> > **El movimiento es del lugar, no del elemento.** Lo que se mueve es la cámara: el aire,
+> > el fondo, la tinta, el paso de una pantalla a la otra. Un botón que rebota es un botón
+> > pidiendo aplausos; una sala que respira es un lugar.
+>
+> ### Lo que hay ahora que antes no estaba
+>
+> | Qué | Dónde | Cuánto pesa |
+> |---|---|---|
+> | **El tránsito entre pantallas.** Ir de la portada a un juego dejó de ser un documento nuevo: la tinta se hunde y vuelve. `@view-transition` de CSS entre documentos (`ADR-03`) | `tokens.css`, una sola adhesión para las 150 páginas | **cero JavaScript**, y donde el navegador no lo soporta no pasa nada |
+> | **El umbral.** La portada llega en un tiempo: el grano se asienta, la figura baja, la marca termina de apoyar. **Una vez por visita** | `index.astro`, `sitio.css` | 0 ms de retraso del dedo |
+> | **La cama de cinta.** Ruido de cinta **sintetizado** en el navegador, apagado por defecto, que se calla sola cuando suena un fragmento (`ADR-04`, `UX-21`) | `audio/contexto.ts`, `sitio/cinta.ts`, `scripts/cinta.ts` | **cero archivos de audio**; 2,4 KB comprimidos de módulo |
+> | **Los nombres del lugar.** Ocho renglones que dicen dónde estás parado (`CNT-13`) | `LUGARES` en `sitio/copy.ts`, ocho pantallas | ocho cadenas |
+> | **La capitular de la Redondopedia** y la deriva de la franja del portal | `sitio.css` | — |
+>
+> ### Los tres arreglos que el ciclo trajo de arrastre, y valen tanto como lo nuevo
+>
+> 1. **El corte de `prefers-reduced-motion` dejó de ser una guillotina.** Era un `*` con
+>    `!important` que apagaba todo, **incluida la respuesta al toque**. Ahora opera por
+>    familia de token: se apaga la cámara, nunca el dedo. Era un P3 abierto desde el 24-ago.
+> 2. **`completar-la-letra` mostraba la marca sin ningún estilo.** `.marca` estaba definida
+>    en el alcance de cinco páginas y esa no la tenía: el nombre del sitio salía en la letra
+>    por defecto del navegador. Nadie lo había visto. Ahora es componente global.
+> 3. **El portal bajaba 109 KB de más** en recortes sobredimensionados (`oktubre-cadena.png`
+>    pesaba 113 KB para un hueco de 132 px). `scripts/optimizar-arte.mjs` los ajusta al
+>    triple del hueco real, y la letra titular se pide con `preload`: el título ya no
+>    parpadea de Arial Black a la calcada en cada carga fría.
+>
+> ### Y un guardián nuevo, porque el movimiento era lo único sin auditor
+>
+> `src/lib/movimiento.test.ts` falla el build si aparece una duración o una curva fuera de
+> `tokens.css`, si una animación no declara su equivalente quieto, si vuelve el `*` global,
+> si alguien mete un enrutador de cliente, o si aparece un cuarto nombre de tránsito.
+>
+> ### 🟡 `REV-10` CIERRA EN AMARILLO, Y EL MOTIVO NO ES EL CÓDIGO
+>
+> `Docs/REVISIONES/REV-10-el-sitio-como-lugar.md`. Ocho hallazgos, `FIND-38`..`FIND-45`.
+> **Los que tenían arreglo están arreglados**; los que son de `experiencia` quedaron como
+> propuesta en `Docs/SUGERENCIAS/HILO-para-experiencia-desvios-del-ciclo-11.md`.
+>
+> **`FIND-39`, el que más duele y el mejor encontrado:** el umbral del grano y de la figura
+> **eran el fundido de entrada que el comentario de al lado decía no usar**. El grano
+> arrancaba en `opacity: 0` y la figura en `0.35`: fundido y deslizamiento, el tic de
+> plantilla número uno, adentro del ciclo escrito para que eso no pasara. Arreglado: ninguno
+> de los tres sub-pasos toca la opacidad, lo que llega **no aparece, se apoya**.
+>
+> **`FIND-38`:** el plan decía que este ciclo no tocaba `quiz.astro` ni
+> `adivinar-el-tema.astro`, y los tocó. **No hubo conflicto** —el otro agente había cerrado y
+> commiteado el ciclo 10 a mitad de camino, así que los archivos ya eran de nadie— pero el
+> documento que ordena el ciclo dejó de describirlo, y eso lo encontró la revisión leyendo el
+> plan contra el disco. Corregido en el plan, con la fecha y el motivo.
+>
+> **La cuarta pregunta —¿se siente un lugar, o una web con animaciones?— quedó en 🟡:**
+> *"pesa hacia lugar, pero no se puede firmar todavía"*. Y el argumento es bueno: *"un lugar
+> no se declara por la atmósfera que tiene, se declara por si sus límites se sostienen"*.
+>
+> ### 🔴 LO QUE FALTA, Y NECESITA UN TELÉFONO EN LA MANO
+>
+> **El cruce entre pantallas no se vio funcionando.** El navegador de la sesión mantiene el
+> documento en `visibilityState: "hidden"` y Chrome **saltea las transiciones de vista en
+> documentos escondidos**. Sí está verificado que las dos reglas existen y se aplican (leídas
+> del CSSOM), que los tres nombres resuelven de los dos lados de una navegación, y que el
+> navegador soporta el mecanismo. Falta ver el cruce.
+>
+> La lista completa está al final de `REV-10`. Las seis, en orden:
+>
+> 1. Ver el cruce entre pantallas de punta a punta, con la pestaña visible.
+> 2. Confirmar **con el dedo** que el botón responde durante el umbral y durante el paso.
+> 3. Prender la cinta y jugar una vuelta con sonido de verdad: que se calle y que vuelva.
+> 4. Ver el umbral a 375×812 y decidir si los 520 ms se sienten como una cosa o como espera.
+> 5. Que `quiz.astro` y `adivinar-el-tema.astro` quedaron coherentes.
+> 6. Prender "reducir movimiento" **en el sistema operativo del teléfono**, no en las
+>    devtools, y jugar una vuelta entera sin que falte una sola confirmación.
+>
+> ### Y dos defectos que encontró la refutación adversarial de la cama, ya arreglados
+>
+> Ninguno lo había encontrado una prueba. Los encontró alguien leyendo con la consigna de
+> **refutar**, no de confirmar:
+>
+> - **Dos toques que se pisaban armaban dos camas**, y la segunda dejaba a la primera sonando
+>   sin apagador. El candado estaba del lado equivocado del `await`.
+> - **Frenar un fragmento antes de que volviera el contexto no frenaba nada:** el sonido
+>   arrancaba igual cuando la promesa resolvía, y —peor, desde este ciclo— con la salida ya
+>   declarada libre, así que la cama volvía a subir encima. La mitad vieja de ese defecto
+>   **ya estaba en el repo desde antes**: tocar "Escuchar" y "Parar" rápido con el teléfono
+>   volviendo de una llamada hacía sonar el fragmento igual.
+>
+> Los dos con su caso de regresión: `cinta.test.ts` y `audio.test.ts`.
+>
+> **Y uno que quedó anotado y no se arregló, porque es de otro juego y está latente:** el
+> reproductor del tema entero de `US-02` **sigue sonando en la pantalla de resultado** si
+> alguien toca "Seguí" mientras suena. Hoy no se nota porque todavía no hay temas enteros
+> alojados (`D-22`); el día que los haya, se nota.
+
+> ### Las dos sesiones del 2026-09-01, y lo que dejaron aprendido
+>
+> Los ciclos 10 y 11 se planificaron el mismo día, leyendo el mismo disco, sin verse. Las
+> dos vieron que el último documento de `experiencia` era `UX-12` y **las dos escribieron un
+> `UX-13` distinto**. Lo detectó la sesión del 11 mirando `git status` antes de dar nada por
+> cerrado, no porque nadie avisara. El zoom de tapas se quedó con `UX-13`; el ciclo 11 se
+> corrió a **`UX-20`+** y la reserva quedó en `Docs/IDS.md`, que es donde corresponde.
+> **Ningún otro archivo se pisó de los dos lados.**
+
+**Ciclo 10: CERRADO en una ráfaga.** Plan en
+`Docs/ORQ/ORQ-plan-ciclo-10.md`. **Catorce de quince tareas hechas**; la que falta es
+`T-165`, la clave de YouTube, que es tuya. `npm test` **372/372** (eran 352), `npm run
+check` limpio, build de **150 páginas**.
+
+> ### ✅ LA v1 SE PUEDE DECLARAR, Y EL MOTIVO POR EL QUE NO SE PODÍA NO ERA CÓDIGO
+>
+> `REV-09` (`Docs/REVISIONES/REV-09-cierre-v1.md`) abrió en 🟡 y cerró en 🟢.
+>
+> **El defecto que motivó el ciclo, arreglado:** `US-02` armaba la vuelta con un
+> Fisher-Yates sobre los 95 temas y **la palabra `dificultad` no aparecía una sola vez en
+> el archivo**. Era `FIND-29` —lo que `REV-08` encontró en `US-07`— vivo en un juego de la
+> v1. Ahora el catálogo estampa el nivel en build desde las escuchas (`CTR-03.11`) y la
+> vuelta escalona.
+>
+> **El hallazgo que no esperaba, y era el que bloqueaba de verdad (`FIND-35`):** tres de
+> los criterios de aceptación de la v1 describían **un producto que ya no existe**.
+> `US-02` c3 condicionaba a Spotify, que `D-22` sacó; `US-03` c3 y `US-04` c3 condicionaban
+> al cerrojo de derechos, que `D-14` sacó — y el sitio está publicado desde hace días con
+> los dos juegos adentro. **Contra esa vara la v1 no se podía ni aprobar ni rechazar.**
+> Los tres están reescritos, con su redacción vieja citada.
+>
+> **El segundo (`FIND-34`):** `US-02` y `US-03` llegaron a su piso el 27-ago y **nadie
+> prendió su guarda**. Eran los dos únicos pisos sin test de no regresión, y el archivo
+> seguía diciendo "Hoy: 0". Borrar un mp3 los bajaba en silencio. Ya están prendidas.
+>
+> ### 🔴 Las dos salvedades con las que se declara — no se declara ignorándolas
+>
+> 1. **`US-02` no escalona todavía**, y su mínimo de 8 Fáciles es 0. El mecanismo está
+>    puesto y verificado; falta el insumo. `BR-18` apartado **(g)** decide por escrito que
+>    eso **no frena** el "Listo", y el argumento no es "es poca cosa": es que `US-02`
+>    tiene una **segunda rampa que los otros tres no tienen** —los seis pasos de `D-24`,
+>    donde errar abre más audio—, así que el orden de los ítems no es su único molinete
+>    abierto. La decisión vale mientras se cumplan tres condiciones corribles, listadas ahí.
+> 2. **`FIND-37`: nada de este ciclo lo miró alguien que no lo hubiera construido.** Las
+>    quince tareas y la revisión salieron de la misma mano, incluidas decisiones que son de
+>    `producto`, `arquitectura` y `experiencia`. Está declarado en `REV-09` y es lo único
+>    que separa a la v1 de estar cerrada del todo. **Si hay que correr `revisor` de verdad
+>    sobre algo, es sobre `src/lib/escalonar.ts` y `catalogo().dificultad`.**
+
+**Ciclo 11: PLANIFICADO, sin empezar, y corre en paralelo al 10.** Plan en
+`Docs/ORQ/ORQ-plan-ciclo-11.md`, tareas `T-176`..`T-194`. Lo pidió el usuario el 2026-09-01:
+*"toda la página una experiencia inmersiva, que cada paso se sienta como meterse en un
+universo mitológico misterioso"*. Empieza por `T-176`, `T-180`, `T-184` y `T-189`.
+
+> **Los dos ciclos conviven a propósito y no comparten ningún archivo salvo `ESTADO.md`.**
+> El plan del 11 abre con el mapa de conflictos: los archivos del ciclo 10 —`partida-tema.ts`,
+> `quiz.astro`, `voz.test.ts`, los JSON de banco, los schemas, `PRD-alcance-v1.md`, `UX-05`—
+> **no los toca ninguna tarea del 11**. `T-182` deja el quiz afuera del tránsito hasta que
+> cierre `T-167`, y eso es deuda anotada, no olvido. **El que llegue segundo a `ESTADO.md`
+> (`T-175` o `T-194`) lo relee antes de escribir.**
+>
+> El punto de partida del 11 también está medido, no recordado: **todo el sitio tiene dos
+> movimientos** —los 120 ms de `.opcion` en `juego.css:104` y el vuelo de la mosca en
+> `sitio.css:147`—, no hay un solo token de movimiento en `tokens.css`, y el corte de
+> `prefers-reduced-motion` (`tokens.css:205`) apaga también la respuesta al toque, que es
+> información. La doctrina que el ciclo propone, y que `UX-13` fija o corrige: **el
+> movimiento es del lugar, no del elemento.**
+
+**Ciclo 9: cerrado entero** (`T-128`..`T-160`, `T-148` cancelado). Los cinco frentes, más
+`REV-08` y la puesta al día.
+
+> ### 🔴 EL CICLO 10 ARRANCA CON UN DEFECTO YA MEDIDO (2026-09-01)
+>
+> **Los cinco pisos de la v1 están cumplidos y la v1 no está lista.** `US-02` incumple una
+> regla que su propia historia declara por escrito, y está verificado en el código, no
+> deducido del tablero:
+>
+> `src/scripts/partida-tema.ts:196-202` arma la vuelta con un Fisher-Yates sobre los 95
+> temas y corta cuatro. **La palabra `dificultad` no aparece una sola vez en ese archivo**,
+> y `src/data/adivinar-tema.json` no tiene el campo en ninguno de sus 95 ítems. Es
+> `FIND-29` —el defecto que `REV-08` encontró en `US-07`— vivo en un juego de la v1.
+>
+> `PRD-alcance-v1.md` le exige a `US-02` **mínimo 8 de nivel Fácil**, definidos por
+> `BR-18` (f) desde el ranking de YouTube. Hoy son **0**, y `BR-01` no se cumple: la
+> primera pregunta sale del azar.
+>
+> **Y el segundo hallazgo del mismo tirón:** `adivinar-tema.json` es el **único banco de
+> juego sin schema**. `src/lib/esquemas.test.ts` valida siete archivos y ese no está.
+> Los 95 ítems del banco más grande de la v1 son los únicos que nadie valida a máquina.
+>
+> **Sigue esperándote la clave de YouTube.** `popularidad.json` tiene los 105 temas en
+> `sin-video` y cero mediciones. Un comando prende el escalonamiento de `US-02` y `US-07`
+> a la vez, sin tocar código:
+> `YT_API_KEY=... npm run ingerir-popularidad -- --resolver`
+> El ciclo 10 **no se cuelga de eso**: el frente A degrada a barajado declarado, como
+> `US-07`. Lo que cambia no es que el juego escalone, es que deje de decir ✅ sobre un
+> criterio que no cumple.
 
 > ### ✅ "ADIVINÁ LA TAPA" AHORA ES UN JUEGO DE ZOOM (2026-08-28)
 
@@ -1186,25 +1463,47 @@ ruta con `--ffmpeg=`.
 
 ## Próximo paso
 
-**Empezar el ciclo 9 por `T-128`, `T-129` y `T-130`**, que son las tres que arrancan sin
-depender de nada: la decisión `D-25`, la regla del quiz por vidas (`BR-19`) y la historia
-del juego nuevo (`US-07`). Plan entero en `Docs/ORQ/ORQ-plan-ciclo-9.md`.
+**El ciclo 10 cerró. Lo que sigue es tuyo, y son dos comandos y una decisión.**
 
-Estado de los pisos, medido el 2026-08-25 contra los JSON del repo:
+1. **La clave de YouTube** (`T-165`, lo único del ciclo 10 que quedó sin hacer). Enciende
+   el escalonamiento real de `US-02` **y** de `US-07` sin tocar una línea de código, y con
+   eso se cae la salvedad 1 de arriba:
+   `YT_API_KEY=... npm run ingerir-popularidad -- --resolver`
+2. **Una casilla de correo** para el botón de corrección (`T-153` del ciclo 9). Prenderla
+   es una línea en `src/lib/correccion/destino.ts`. Sin ella nadie queda sin poder
+   corregir: la cadena termina en el texto a la vista.
+3. **Si querés que `revisor` mire el frente A de verdad** antes de dar la v1 por cerrada
+   (`FIND-37`). Es la salvedad 2.
+
+**Y si el próximo ciclo es de crecer y no de cerrar**, lo que está esperando con ficha
+escrita es: la tapa entera al revelar (`experiencia` + `arquitectura`), los ids
+posicionales `CL-NNN` de `US-03` (`arquitectura`, deuda estructural de `REV-08`), Supabase
+(`IDEA-13`) y las once ideas de juego de `PRD-backlog-ideas.md`.
+
+Estado de los pisos, medido el **2026-09-01** contra los JSON del repo:
 
 | Historia | Piso | Hoy | Qué falta |
 |---|---|---|---|
-| `US-01` Quiz | 40 | **40** ✅ | pasa a vidas en el ciclo 9 |
-| `US-02` Adiviná el tema *(audio)* | 30 | **0** | **ffmpeg y los mp3** — lo único que separa a la v1 de cerrar |
-| `US-03` Completá la letra | 15 | **0** de 1.784 | lo destraba el ciclo 9 (`D-25`) |
-| `US-04` Adiviná la tapa | 10 | **10** ✅ | — |
+| `US-01` Quiz *(por vidas)* | 40 | **40** ✅ | el `h1` de portada tiene diez palabras y la regla topea en ocho (`T-166`) |
+| `US-02` Adiviná el tema *(audio)* | 30 | **95** ✅ | 🔴 **el piso está y el criterio no**: 0 Fáciles de los 8 que pide, sin escalonar y sin schema (frente A) |
+| `US-03` Completá la letra | 15 | **21** ✅ | — |
+| `US-04` Adiviná la tapa | 10 | **10** ✅ | dos explicaciones señalan el título, que el zoom sacó de pantalla (`T-173`) |
 | `US-05` Redondopedia | 35 | **35** ✅ | — |
 | `US-06` Dos ejes *(fuera de v1)* | — | 28 | — |
-| `US-07` Por la letra *(nuevo)* | a fijar | 0 | lo construye el ciclo 9 |
+| `US-07` Sacalo por la letra *(fuera de v1)* | 60 | **89** ✅ | sin escalonar hasta que corra la clave de YouTube (`D-27`) |
 
-**Lo que no toca el ciclo 9 y sigue esperándote:** los fragmentos de audio de `US-02`
-(ffmpeg **no está instalado en esta máquina** — verificado el 2026-08-25) y la clave de
-YouTube (`popularidad.json` tiene los **105 temas en `sin-video`**).
+**Contando ítems, la v1 está.** Lo que falta es que `US-02` cumpla `BR-01`, y que una
+revisión que no construyó las piezas lo confirme — eso es el ciclo 10 entero.
+
+**Lo que sigue esperándote, y no lo puede hacer ningún rol:**
+
+1. **La clave de YouTube** (`T-165`). Prende el escalonamiento de `US-02` y `US-07` con un
+   comando. Es lo que más rinde por minuto en todo el proyecto.
+2. **Una casilla de correo** para el botón de corrección (`T-153` del ciclo 9, sin empezar).
+   Sin ella el mail no existe y la cadena termina en el texto a la vista: nadie queda sin
+   poder corregir, así que no bloquea la v1.
+3. **El arte de Momo Sampler** (`momo-medallon`): la pantalla de `US-07` se pinta solo con
+   el color. `UX-08` dejó el brief pedido.
 
 > ⚠ **Lo que sigue abajo de esta línea quedó del ciclo 4 y está desactualizado.** Se deja
 > por trazabilidad: los pisos que menciona son los viejos (40/20/15/10, hoy 40/30/15/10),
@@ -1513,47 +1812,46 @@ versos en borrador.
 
 ## Decisiones pendientes
 
-- **La promesa del brief "escuchar el tema completo vía Spotify" probablemente no se
-  cumpla** para un jugador sin Premium. Sale de `RES-01` y `ADR-01` la escaló. Es decisión
-  de **`producto`**, no de `arquitectura`: o se reformula la promesa (por ejemplo "saltar
-  al tema en Spotify"), o se acepta un preview dentro del sitio, o se declara que depende
-  de la sesión del jugador. **Toca la definición de "Listo" de la v1.**
-- Vía primaria de `ADR-01`: A (embed) contra B (deep link). Dueños: `investigador` trae
-  `E-04` y `E-07`, `arquitectura` decide.
-- **Cantidad de opciones por pregunta.** `CTR-02` usa 4 como valor de trabajo (2×2 apto
-  para el pulgar). Dueño: `producto`, con una `BR-XX`. **Cerralo antes del primer lote**,
-  o hay que rehacer preguntas.
-- Cortes de puntaje de los tres tramos de resultado del quiz, que `UX-01` y `UX-02` usan
-  para elegir el arte. Dueño: `producto`.
-- ✅ **Resuelto por `RES-20`: el sello de *Luzbelito* es Del Cielito Records** — cuarta
-  fuente coincidente, contra Wikipedia en inglés. `contenido` puede usarlo.
-- ⚠ **Sigue abierto y ahora con más evidencia en contra: cómo contar *Lobo suelto, cordero
-  atado*.** Wikipedia en español le da **un artículo a cada volumen** y a la vez los llama
-  álbum doble. **Sigue siendo trampa.** Se suma una tercera: **la fecha de *Gulp!* tiene
-  tres versiones** (22-abr / 20-jul / agosto de 1985). El año sí es firme.
-- Redacción original de esta decisión (queda por trazabilidad):
-  Cómo contar *Lobo suelto, cordero atado* (¿9 o 10 discos?) y qué sello lleva *Luzbelito*.
-  Las dos discrepancias de `RES-02`. Dueño: `contenido`. **No usar ninguna de las dos como
-  pregunta de quiz hasta resolverlas** — son trampas con dos respuestas defendibles.
-- Cierre de la nota de derechos antes de publicar. Dueño: `contenido` + vos.
-- **Límite editorial sobre las dos muertes.** Walter Bulacio (1991) y Olavarría (2017) son
-  hitos centrales de la historia de la banda y a la vez muertes de personas con nombre
-  (`RES-07`). La categoría "historia" del quiz va a chocar con esto. Dueño: `contenido`.
-  **Decidilo antes del primer lote**, no después de tener cuarenta preguntas escritas.
-- **Si el sitio menciona en algún lado que el Indio murió, y dónde.** Sale de `RES-04`.
-  Dueño: `contenido`, con `producto` si toca la definición de "Listo" (probablemente no).
-- **Bajo qué tipo entran las bandas ricoteras de después de la separación, y qué le hace
-  eso al piso de 35.** `BR-07` tiene seis tipos y ninguno es `banda`: o se agrega el tipo,
-  o van como un `concepto` de cultura, o van adentro de `la-separacion` / `indio-solari` /
-  `skay-beilinson`. Dueño: **`producto`**. Que entren lo decidió el usuario; el cómo, no.
-  **Y con una línea que hay que escribir igual: material de esas bandas puede ser artículo,
-  pero no ítem de juego** mientras `US-01`..`US-04` sigan definidos sobre los 105 temas de
-  `RES-20`. Propuesta en
-  `Docs/SUGERENCIAS/HILO-para-producto-y-contenido-bandas-post-separacion.md`.
-- **Qué se hace con "Huracán en el 89".** `Docs/BRIEF.md` y `CLAUDE.md` lo usan como
-  ejemplo del fan que sabe, pero en 1989 no hubo Huracán: fue 1993 y 1994 (`RES-05`). Como
-  frase retórica no rompe nada; el riesgo es que alguien la convierta en pregunta. Dueño:
-  vos, porque son archivos de raíz.
+> **Limpiado el 2026-09-01 (`T-175`).** Esta sección tenía trece entradas y **siete ya
+> estaban resueltas**, algunas hacía dos semanas — con la de "cerrá esto antes del primer
+> lote" todavía puesta sobre lotes que ya se cargaron enteros. Una lista de pendientes con
+> mayoría de resueltos no se lee: se saltea. Las resueltas se van con su resolución
+> anotada, en una tabla, para no perder la traza.
+
+### Lo que sigue abierto
+
+- **Cómo contar *Lobo suelto, cordero atado*** (¿9 o 10 discos?). Wikipedia en español le
+  da un artículo a cada volumen y a la vez los llama álbum doble. **Sigue siendo trampa** y
+  `CNT-03` la veda como pregunta. Dueño: `contenido`.
+- **La fecha de *Gulp!* tiene tres versiones** (22-abr / 20-jul / agosto de 1985). El año
+  sí es firme. Misma familia que la anterior, mismo dueño.
+- **El sello de *Un baión*.** `RES-02` dice Wormo, `RES-20` dice Del Cielito, y `RES-44`
+  dice Wormo con reedición en Del Cielito. **Probablemente no sea contradicción sino dos
+  ediciones**, y la evidencia cruzada está armada en
+  `Docs/SUGERENCIAS/HILO-para-investigador-sello-de-un-baion.md`. Falta la ficha `RES-53`.
+  Dueño: `investigador`, que es la única puerta a la web. **No hay nada roto en pantalla**:
+  la Redondopedia ya declara la discrepancia de frente.
+- **Bajo qué tipo entran las bandas post-separación**, y qué le hace eso al piso de 35 de
+  la Redondopedia. `BR-07` tiene seis tipos y ninguno es `banda`. Que entren lo decidió el
+  usuario; el cómo, no. Dueño: `producto`.
+- **Qué se hace con "Huracán en el 89"** en `Docs/BRIEF.md` y `CLAUDE.md`. En el 89 fue el
+  debut en Obras; Huracán fue 93 y 94 (`RES-05`). Como frase retórica no rompe nada; el
+  riesgo es que alguien la convierta en pregunta. Dueño: vos, porque son archivos de raíz.
+- **`ADR-01`, vía primaria de Spotify.** Formalmente abierto y **materialmente muerto**:
+  `RES-26` mostró que la Developer Policy prohíbe los juegos y `D-22` sacó a Spotify del
+  camino sirviendo los mp3. Queda para cerrarlo por escrito, no para decidirlo.
+
+### Lo que se resolvió y seguía figurando acá
+
+| Decía | Cómo se resolvió |
+|---|---|
+| La promesa de "escuchar el tema completo vía Spotify" | **`D-22`**: el sitio sirve los temas enteros en mp3. `BR-06` ya lo había reformulado y `US-02` c3 quedó reescrito hoy (`FIND-35`) |
+| Cantidad de opciones por pregunta | **`BR-04`, `T-01` del ciclo 1**: cuatro. Cerrado antes del primer lote, como pedía |
+| Cortes de puntaje de los tres tramos | **`BR-05`, `T-02`**: 30% y 70% |
+| El sello de *Luzbelito* | **`RES-20`**: Del Cielito, cuarta fuente coincidente |
+| Cierre de la nota de derechos antes de publicar | **`D-14`** sacó el cerrojo. `CNT-01` sigue existiendo pero **como mapa, no como gate** |
+| Límite editorial sobre Bulacio y Olavarría | **`CNT-04`** y **`CNT-06`**. Y `QZ-025` se reformuló hoy (`T-169`) porque se acertaba con civismo |
+| Si el sitio menciona que el Indio murió, y dónde | **`CNT-06`** y la Redondopedia, en registro 3 |
 
 ## Bitácora
 
@@ -1638,3 +1936,5 @@ versos en borrador.
 | 2026-08-24 | **`IDEA-04` tiene tema: *Gualicho*, y el tema corrigió un dato que yo había medido mal el día anterior.** El usuario avisó que el bondi a Finisterre está cantado ahí. **Mi frase del 23 —"*Finisterre* no aparece nunca en las letras"— era falsa, y el modo de fallar vale más que el dato:** medí el corpus del repo y lo escribí como si fuera un hecho sobre las canciones. Es exactamente lo que `CLAUDE.md` llama poner una leyenda disfrazada de dato, con el agravante de que la fuente era un archivo propio. Corregido en la bitácora del 23 y en `Docs/SUGERENCIAS/HILO-para-producto-idea-04-la-meta-del-bondi.md`. **Lo que el tema aporta a la idea:** el destino deja de ser un título de tapa y pasa a estar cantado; el verbo del juego sale de la letra —no es *tomar* el bondi, es **colgarse**—; *Gualicho* es la pista 4 del mismo disco, así que tema, tapa y paleta (`RES-37`, `D-19`) son la misma cosa; y con `D-22` el mp3 existe, lo que vuelve concreta la consecuencia 3 de `BR-15` (música de fondo en loop, sin ADR que la cubra). **`IDEA-04` es hoy la única de las cinco ideas de clon con su música decidida.** **El agujero que apareció al ir a buscar el verso, medido sobre `src/data/cancionero.json`:** *Gualicho* está marcado `contenido: "letra"` y **no tiene una sola línea cantada** —sus tres líneas tipadas `letra` son cifrado—; en el mismo disco *Pogo* tiene 0 de 24 (es una tablatura entera) y *El árbol del gran bonete* 1 de 4. Los otros seis con letra están completos y *Scaramanzia* está bien declarada como solo tablatura. Los tres agujeros vienen de cifraclub, fuente de 82 de los 104 temas. **Y hay un defecto vivo, chico pero visible:** `/letras-y-acordes/gualicho/` promete la letra de un tema y muestra tres líneas de acordes. La invariante de `src/lib/cancionero/banco.ts` que debería atajarlo existe pero cuenta como verso cualquier línea tipada `letra`, así que el cifrado le pasa por al lado. |
 | 2026-08-24 | **Auditoría de detalles con la skill `impeccable`** sobre el portal y el quiz: 15/20, 4 P1 y 7 P2, todos arreglados y verificados en pantalla el mismo día. El grueso: `.primario` era una regla con alcance de página y los botones que crea el JavaScript salían sin estilo (siete botones en cuatro juegos); el auto-avance de 1,2 s se comía la explicación en 22 de 40 ítems; el foco se caía al `<body>` en cada cambio de pantalla; y el link de `COMPARTÍ` no tenía tarjeta. Informe en `Docs/SUGERENCIAS/HILO-auditoria-impeccable-portal-y-quiz.md`. Entró además la figura encadenada a la portada, **sin atribuirle disco** hasta que haya ficha. |
 | 2026-08-27 | **`T-133`: `CTR-09`, el schema del banco de `US-07`** (`Docs/ARQ/ARQ-schema-adivinar-por-la-letra.md`). El banco es `src/data/por-la-letra.json`, un ítem **por tema**, con la ventana de **8 versos** que revela la escalera de `BR-20` y **ni un dato de la escalera**: los pasos se cortan con `slice(0, 1|2|4|8)`. Sin `id` posicional —la identidad es el slug, que sale de `RES-20` y no se corre—, sin `estado` y sin distractores. El schema **sí** se baja a `src/data/_schema/por-la-letra.schema.json` (al revés que `CTR-03.8`, con el motivo escrito) y entra a `esquemas.test.ts` con un token. **El enganche de `CNT-11`**: una función `ventanaValida()` que devuelve el motivo del descarte, más `filtro.version` en el envoltorio comparado contra `VERSION_FILTRO` — así un banco generado con la regla vieja no se puede hacer pasar por filtrado. La dificultad manual va a `src/data/por-la-letra-curaduria.json` (de `contenido`, keyed por slug) y un tema sin etiqueta **entra igual** como `sin-clasificar`, para no repetir el pozo de tres ciclos de `US-03`. **Hallazgo medido de paso: `sirveComoVerso("[A  G]")` devuelve `true`** — está en `letra.json` como contexto de `CL-265` y `CL-266`. En `US-03` era un renglón feo; en `US-07` sería el enunciado entero del paso 1. Tapado por schema en `CTR-09.4`; el arreglo de fondo, en `Docs/SUGERENCIAS/ARQ-para-hilo-principal-verso-de-acordes.md`. |
+| 2026-09-01 | **`/ciclo` planificó el ciclo 10** (`Docs/ORQ/ORQ-plan-ciclo-10.md`, `T-161`..`T-175`, dos tramos). Es un ciclo de **cierre**: no agrega un juego, un ítem ni una pantalla — mira lo construido contra lo escrito. **Lo que lo motiva salió de medir, no de recordar: los cinco pisos de la v1 están cumplidos y la v1 no está lista.** `src/scripts/partida-tema.ts:196-202` arma la vuelta de `US-02` con un Fisher-Yates sobre los 95 temas y corta cuatro; **la palabra `dificultad` no aparece una sola vez en el archivo** y `adivinar-tema.json` no tiene el campo en ninguno de sus 95 ítems. Es `FIND-29` —el defecto que `REV-08` encontró en `US-07`— **vivo en un juego de la v1**, donde pesa más porque `US-07` está fuera del "Listo" por `D-05`. Contra eso, `PRD-alcance-v1.md` le exige a `US-02` **mínimo 8 de nivel Fácil** por `BR-18` (f): hoy son 0 y `BR-01` no se cumple. **Segundo hallazgo del mismo tirón:** `adivinar-tema.json` es el **único banco de juego sin schema** — `esquemas.test.ts` valida siete archivos y ese no está, así que los 95 ítems del banco más grande de la v1 son los únicos que nadie valida a máquina. El frente A (`T-161`..`T-165`) cierra las dos cosas y **está construido para andar con cero mediciones**: degrada a barajado declarado como `US-07`, así que el ciclo no se cuelga de la clave de YouTube. Cierra `T-174` (`REV-09`), la revisión que declara la v1 o dice qué falta. |
+| 2026-09-01 | **Ciclo 10 hecho entero en una ráfaga: `T-161`..`T-175`, catorce de quince** (falta `T-165`, la clave de YouTube, que es del usuario). `npm test` **372/372** (eran 352), `check` limpio, build de 150 páginas. **El defecto que lo motivó:** `US-02` armaba la vuelta con un Fisher-Yates sobre los 95 temas y `dificultad` no aparecía una sola vez en el archivo — `FIND-29` vivo en un juego de la v1. **La salida resultó más chica y mejor ubicada que la que yo había planificado, y porque `arquitectura` ya la había escrito hace un ciclo:** *"sería un dato nuevo y no iría en el manifiesto — iría en el catálogo, al lado de `RES-20`"*. Así que `CTR-03` revisión 4 (`CTR-03.11`) pone la dificultad en `catalogo()`, derivada en build de las escuchas, **sin tocar el archivo de datos**; `CTR-03.8` —la decisión de no bajar el schema a archivo— se re-evaluó y **se ratificó**, porque el campo nuevo tampoco se carga a mano. **Mi plan decía que `adivinar-tema.json` era "el único banco sin contrato" y era falso:** tiene `CTR-03` y la falta del `.schema.json` es una decisión con tres motivos escritos. De paso, dos reglas que estaban duplicándose se unificaron: `repartirPorPopularidad` (`D-27`) pasó a `src/lib/popularidad.ts` y el escalonado de `BR-01` a `src/lib/escalonar.ts`, que ahora comparten `US-02` y `US-07` — `ronda.ts` no se tocó. **`REV-09` abrió en 🟡 y cerró en 🟢**, con cuatro hallazgos: `FIND-34` (los pisos de `US-02` y `US-03` llegaron el 27-ago y nadie prendió su guarda), `FIND-35` (tres criterios de aceptación de la v1 describían un producto que ya no existe: Spotify y el cerrojo de derechos que `D-22` y `D-14` retiraron), `FIND-36` y `FIND-37`. **Lo demás del ciclo:** el `h1` del quiz bajó de diez palabras a cinco —*"Entrá, sepas lo que sepas."*— y con eso `voz.test.ts` audita los seis `h1` de portada, hueco que llevaba un ciclo abierto; `QZ-025` (Bulacio) dejó de acertarse con civismo y pasó al ángulo que `CNT-04` ya fichaba, el tiempo que tardó la Justicia; el verso `",l mi viejo"` se arregló en `cancionero.json` **y un barrido independiente encontró de paso cuatro candidatos de `US-03` cuyo "verso" es prosa del transcriptor de cifraclub — ninguno llegó a `listo`**; `UX-13` adoptó los diez zooms de tapas que el hilo principal había elegido sin `experiencia`; `CTR-05.5` ratificó la regla de `encuadre` que se le había reemplazado sin ser su dueño; y tres explicaciones de tapa que hablaban del título dejaron de señalar algo que el zoom sacó de pantalla — `TP-001` además **llamaba "título" al nombre de la banda**, verificado abriendo la imagen. **La deuda de método, declarada y no tapada (`FIND-37`): las quince tareas y la revisión salieron de la misma mano**, incluidas decisiones de `producto`, `arquitectura` y `experiencia`. Es la tercera vez en tres ciclos que el proyecto tropieza con lo mismo. |

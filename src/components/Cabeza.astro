@@ -35,6 +35,25 @@ const imagen = new URL('/tarjeta.png', Astro.site).href;
 
 <meta name="theme-color" content={token('--fondo')} />
 
+{/*
+  Las dos letras de marca se piden antes de que el CSS las descubra.
+
+  El defecto que esto cierra es un P3 de la auditoria del 2026-08-24: una fuente
+  declarada en `@font-face` no se baja hasta que el navegador **encuentra el elemento que
+  la usa**, o sea despues de parsear `tokens.css` y armar el arbol. Con `font-display:
+  swap` eso se ve: el titulo mas grande del sitio se dibuja en Arial Black y a los pocos
+  cientos de milisegundos salta a la calcada. En una carga fria, en un celular, el salto
+  es visible.
+
+  No suma peso: los dos archivos se bajaban igual en cada pantalla —`--fuente-titular`
+  escribe la marca y `--fuente-rotulada` cada titulo y cada boton—, solo que mas tarde.
+  Suman 16,5 KB entre las dos. `crossorigin` es obligatorio aunque sean del propio sitio:
+  las fuentes viajan en modo anonimo, y sin el atributo el navegador baja el archivo dos
+  veces.
+*/}
+<link rel="preload" href="/fuentes/oktubre-calco.woff" as="font" type="font/woff" crossorigin />
+<link rel="preload" href="/fuentes/archivo-black.woff2" as="font" type="font/woff2" crossorigin />
+
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="/icono-180.png" />
 

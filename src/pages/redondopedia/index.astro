@@ -10,7 +10,7 @@
  * el lector sabe desde la puerta que casilla es cada cosa.
  */
 import Base from '../../layouts/Base.astro';
-import { PORTAL, REDONDOPEDIA } from '../../lib/sitio/copy.ts';
+import { PORTAL, LUGARES, REDONDOPEDIA } from '../../lib/sitio/copy.ts';
 import { porTipo, TIPO_A_CATEGORIA, type Articulo } from '../../lib/redondopedia.ts';
 import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/redondopedia.json';
@@ -36,6 +36,7 @@ const recortar = (texto: string): string =>
   <div class="portada-redondopedia">
     {fondoCabecera && <div class="tapa-fondo tapa-fondo--gulp-pincelada" aria-hidden="true" />}
     <h1 class="titulo-seccion">{REDONDOPEDIA.titulo}</h1>
+    <p class="donde-estas">{LUGARES.redondopedia}</p>
     <p class="bajada-portal">{REDONDOPEDIA.bajada}</p>
 
     <p class="leyenda-rotulos">
@@ -47,11 +48,15 @@ const recortar = (texto: string): string =>
     </p>
   </div>
 
+  {/* El rodillo separa una categoria de la siguiente (`UX-22` §9). Se filtran los grupos
+      vacios ANTES de numerar para que el primero que se ve nunca arranque con separador. */}
   {
-    [...grupos.entries()].map(
-      ([tipo, lista]) =>
-        lista.length > 0 && (
+    [...grupos.entries()].filter(([, lista]) => lista.length > 0).map(
+      ([tipo, lista], i) => (
+        <>
+          {i > 0 && <hr class="rodillo" aria-hidden="true" />}
           <section>
+
             <h2 class="lado">{REDONDOPEDIA.secciones[tipo]}</h2>
             <ul class="indice-articulos">
               {lista.map((a) => (
@@ -67,7 +72,9 @@ const recortar = (texto: string): string =>
               ))}
             </ul>
           </section>
-        ),
+        </>
+      ),
     )
   }
+
 </Base>

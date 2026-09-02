@@ -1,5 +1,20 @@
 /**
- * La dificultad de un tema de "Sacalo por la letra", derivada de la popularidad.
+ * La dificultad de un tema, derivada de cuánto se lo escucha. **Regla de `D-27`, y vive
+ * acá una sola vez.**
+ *
+ * ## Por qué está en `src/lib/` y no adentro de un juego
+ *
+ * Nació en `src/lib/por-la-letra/dificultad.ts` para "Sacalo por la letra" y se mudó acá
+ * en el ciclo 10 (`T-162`, `CTR-03.11`), cuando `US-02` pasó a repartir con la misma
+ * regla. **Dos copias de una regla es el modo de falla que el motivo 3 de `CTR-03.8`
+ * describe**: el día que el reparto cambie —de tercios a cuartos, o el criterio del tema
+ * sin medición— la copia que nadie se acuerda de tocar queda mintiendo.
+ *
+ * La usan `scripts/generar-por-la-letra.mjs` (escribe `dificultad` en el banco de `US-07`)
+ * y `src/lib/tema/catalogo.ts` (la estampa en build sobre los temas de `US-02`). Los dos
+ * caminos son distintos a propósito y están explicados en `CTR-03.11`: allá el nivel se
+ * escribe en el dato, acá se deriva, porque el audio no se regenera cada 180 días y la
+ * popularidad sí se revisa (`BR-18` apartado d).
  *
  * ## De dónde sale esto
  *

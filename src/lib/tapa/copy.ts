@@ -24,7 +24,22 @@ export const PARTIDA = {
   ok: '¡La tenías!',
   no: 'No era esa.',
   eraLa: 'Era',
+  /**
+   * `CNT-14` §3: al fallar, la tapa entera se imprime en una sola tinta (`T-206`) y la
+   * frase lo dice con las mismas palabras que "Adiviná el tema" — es el mismo efecto.
+   * Se compone: `${no} ${eraLa} ${disco}, ${enClave}` → "No era esa. Era Oktubre, en una tinta."
+   */
+  enClave: 'en una tinta.',
+  /**
+   * Lo que lee quien no ve la tapa que se terminó de imprimir (`T-206`). Acá sí nombra el
+   * disco: la respuesta ya se dio, y `altImagen` —la del recorte, que la calla— queda para
+   * mientras se juega. La de la clave dice que llegó una sola tinta, que es la diferencia
+   * que se ve.
+   */
+  altTapaEntera: (disco: string) => `Tapa de ${disco}`,
+  altTapaClave: (disco: string) => `Tapa de ${disco}, en una tinta`,
   credito: (autor: string) => `Tapa: ${autor}, en baja resolución.`,
+
   edicion: (e: string) => `La imagen es de: ${e}.`,
   progreso: (n: number, total: number) => `${n} de ${total}`,
 } as const;

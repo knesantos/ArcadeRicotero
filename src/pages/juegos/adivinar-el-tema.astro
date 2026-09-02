@@ -25,17 +25,24 @@ import '../../styles/sitio.css';
 import { catalogo, type Manifiesto } from '../../lib/tema/catalogo.ts';
 import { PANTALLA_0, PARTIDA } from '../../lib/tema/copy.ts';
 import Cabeza from '../../components/Cabeza.astro';
-import { PORTAL } from '../../lib/sitio/copy.ts';
+import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
 import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import { claseDisco } from '../../lib/tema/paleta.ts';
 import manifiesto from '../../data/adivinar-tema.json';
 import cancionero from '../../data/cancionero.json';
+import popularidad from '../../data/popularidad.json';
 
 const conLetra = (cancionero as { temas: Array<{ slug: string; titulo: string }> }).temas.map(
   (t) => ({ slug: t.slug, titulo: t.titulo }),
 );
 
-const cat = catalogo(manifiesto as unknown as Manifiesto, conLetra);
+// `CTR-03.11`: la dificultad se deriva en build de las escuchas (`D-27`). Hoy
+// `popularidad.json` no tiene una sola medicion, asi que `cat.medidos` es 0 y el juego
+// no escalona — declarado, no accidental. Lo prende `npm run ingerir-popularidad`.
+const medidos = (popularidad as { temas?: Array<{ slug: string; estado: string; medicion?: { vistas: number } }> })
+  .temas ?? [];
+
+const cat = catalogo(manifiesto as unknown as Manifiesto, conLetra, medidos);
 const hayAudio = cat.jugables > 0;
 
 const FONDO = 'lobo-tiras';
@@ -64,6 +71,7 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
         </header>
         <p class="marca" aria-label="Arcade Ricotero">ARCADE RICOTERO</p>
         <h1>{PANTALLA_0.titulo}</h1>
+        <p class="donde-estas">{LUGARES.tema}</p>
         <p class="tenue">{PANTALLA_0.subtitulo}</p>
 
         {
@@ -116,7 +124,13 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
       <section id="resultado" class="pantalla sobre-tapa" hidden></section>
 
       <footer class="pie-sitio sobre-tapa">
-        {tapasUsadas.length > 0 && <p class="credito-tapas">{PORTAL.creditoTapas(tapasUsadas)}</p>}
+        {/* `data-tapas`: la isla recalcula esta linea cuando la sala se vuelve el disco que
+            sacaste (`UX-22` §2.5, `D-21` condicion 1), y necesita saber con que arranca. */}
+        {tapasUsadas.length > 0 && (
+          <p class="credito-tapas" data-tapas={JSON.stringify(tapasUsadas)}>
+            {PORTAL.creditoTapas(tapasUsadas)}
+          </p>
+        )}
         {PORTAL.pie}
       </footer>
     </main>
@@ -129,6 +143,12 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
         </script>
       )
     }
+
+    <script>
+      // El interruptor de la cinta (`UX-21`). Isla propia: no sabe nada del juego
+      // y el juego no sabe nada de ella.
+      import '../../scripts/cinta.ts';
+    </script>
 
     <style>
       main {
@@ -167,9 +187,13 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
        * siendo el calco de la tapa, sigue siendo el rojo de Oktubre— y el titular se
        * queda con la voz alta.
        */
+      /* La marca es componente global desde el ciclo 11 (`juego.css`). Esta pantalla la
+         achica a proposito: es la mas densa del sitio y pelea el espacio por pixel. Lo
+         unico que se sobrescribe es el tamano y el aire — y ahora tambien respira, en vez
+         de quedar clavado en un rem fijo. A 375 px da lo mismo que antes. */
       .marca {
         font-family: var(--fuente-titular);
-        font-size: 1.45rem;
+        font-size: clamp(1.3rem, 6vw, 1.8rem);
         line-height: 0.96;
         letter-spacing: 0.02em;
         color: var(--marca-rojo);

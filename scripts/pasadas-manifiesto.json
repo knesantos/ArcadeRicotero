@@ -1,0 +1,342 @@
+{
+  "generado": "node scripts/generar-pasadas.mjs",
+  "contrato": "CTR-12",
+  "discos": {
+    "gulp": {
+      "ficha": "public/tapas/gulp.jpg",
+      "hashFicha": "4a14163e",
+      "ancho": 320,
+      "alto": 320,
+      "pasadas": {
+        "clara": {
+          "hex": "#e6e4bd",
+          "cobertura": 0.1504,
+          "bytes": 7998
+        },
+        "media": {
+          "hex": "#df5744",
+          "cobertura": 0.2056,
+          "bytes": 10680
+        },
+        "clave": {
+          "hex": "#14100e",
+          "cobertura": 0.4889,
+          "bytes": 7023
+        }
+      },
+      "papel": 0.1551,
+      "repartoPorLuz": false,
+      "avisos": [
+        "la clara (#e6e4bd) es del color del papel: 1.02:1, pasada muda"
+      ],
+      "trasera": {
+        "master": "Docs/INVESTIGACION/TapasDiscos/gulp-trasera.jpg",
+        "bytes": 23993,
+        "calidad": 82,
+        "ancho": 320,
+        "alto": 252
+      }
+    },
+    "oktubre": {
+      "ficha": "public/tapas/oktubre.jpg",
+      "hashFicha": "f02a442a",
+      "ancho": 320,
+      "alto": 320,
+      "pasadas": {
+        "clara": {
+          "hex": "#9a9490",
+          "cobertura": 0.0813,
+          "bytes": 5981
+        },
+        "media": {
+          "hex": "#f8360d",
+          "cobertura": 0.1204,
+          "bytes": 3822
+        },
+        "clave": {
+          "hex": "#14100e",
+          "cobertura": 0.6706,
+          "bytes": 5218
+        }
+      },
+      "papel": 0.1276,
+      "repartoPorLuz": false,
+      "avisos": [],
+      "trasera": {
+        "master": "Docs/INVESTIGACION/TapasDiscos/oktubre-trasera.jpg",
+        "bytes": 17800,
+        "calidad": 82,
+        "ancho": 320,
+        "alto": 252
+      }
+    },
+    "un-baion-para-el-ojo-idiota": {
+      "ficha": "public/tapas/un-baion-para-el-ojo-idiota.jpg",
+      "hashFicha": "9df85402",
+      "ancho": 320,
+      "alto": 320,
+      "pasadas": {
+        "clara": {
+          "hex": "#579ec5",
+          "cobertura": 0.0325,
+          "bytes": 5252
+        },
+        "media": {
+          "hex": "#457eb1",
+          "cobertura": 0.4816,
+          "bytes": 8144
+        },
+        "clave": {
+          "hex": "#14100e",
+          "cobertura": 0.3474,
+          "bytes": 5708
+        }
+      },
+      "papel": 0.1386,
+      "repartoPorLuz": false,
+      "avisos": [],
+      "trasera": {
+        "master": "Docs/INVESTIGACION/TapasDiscos/un-baion-para-el-ojo-idiota-trasera.jpg",
+        "bytes": 17196,
+        "calidad": 82,
+        "ancho": 320,
+        "alto": 252
+      }
+    },
+    "bang-bang-estas-liquidado": {
+      "ficha": "public/tapas/bang-bang-estas-liquidado.jpg",
+      "hashFicha": "29a5d257",
+      "ancho": 320,
+      "alto": 320,
+      "pasadas": {
+        "clara": {
+          "hex": "#aeb9b4",
+          "cobertura": 0.2604,
+          "bytes": 7954
+        },
+        "media": {
+          "hex": "#927051",
+          "cobertura": 0.2604,
+          "bytes": 8488
+        },
+        "clave": {
+          "hex": "#14100e",
+          "cobertura": 0.3408,
+          "bytes": 4895
+        }
+      },
+      "papel": 0.1384,
+      "repartoPorLuz": true,
+      "avisos": [],
+      "trasera": {
+        "master": "Docs/INVESTIGACION/TapasDiscos/bang-bang-estas-liquidado-trasera.jpg",
+        "bytes": 25513,
+        "calidad": 82,
+        "ancho": 320,
+        "alto": 252
+      }
+    },
+    "la-mosca-y-la-sopa": {
+      "ficha": "public/tapas/la-mosca-y-la-sopa.jpg",
+      "hashFicha": "8539d5c0",
+      "ancho": 320,
+      "alto": 320,
+      "pasadas": {
+        "clara": {
+          "hex": "#ce5c29",
+          "cobertura": 0.2881,
+          "bytes": 2268
+        },
+        "media": {
+          "hex": "#114b58",
+          "cobertura": 0.2881,
+          "bytes": 4633
+        },
+        "clave": {
+          "hex": "#14100e",
+          "cobertura": 0.3404,
+          "bytes": 2785
+        }
+      },
+      "papel": 0.0834,
+      "repartoPorLuz": true,
+      "avisos": [],
+      "trasera": {
+        "master": "Docs/INVESTIGACION/TapasDiscos/la-mosca-y-la-sopa-trasera.jpg",
+        "bytes": 21101,
+        "calidad": 82,
+        "ancho": 320,
+        "alto": 252
+      }
+    },
+    "lobo-suelto": {
+      "ficha": "public/tapas/lobo-suelto.jpg",
+      "hashFicha": "29c645c5",
+      "ancho": 320,
+      "alto": 320,
+      "pasadas": {
+        "clara": {
+          "hex": "#f28b16",
+          "cobertura": 0.4093,
+          "bytes": 5870
+        },
+        "media": {
+          "hex": "#0b7792",
+          "cobertura": 0.1204,
+          "bytes": 6413
+        },
+        "clave": {
+          "hex": "#14100e",
+          "cobertura": 0.3405,
+          "bytes": 4349
+        }
+      },
+      "papel": 0.1298,
+      "repartoPorLuz": false,
+      "avisos": [],
+      "trasera": {
+        "master": "Docs/INVESTIGACION/TapasDiscos/lobo-suelto-cordero-atado-cd1-trasera.jpg",
+        "bytes": 20290,
+        "calidad": 82,
+        "ancho": 320,
+        "alto": 252
+      }
+    },
+    "cordero-atado": {
+      "ficha": "public/tapas/cordero-atado.jpg",
+      "hashFicha": "56d1247e",
+      "ancho": 320,
+      "alto": 320,
+      "pasadas": {
+        "clara": {
+          "hex": "#f28b16",
+          "cobertura": 0.2674,
+          "bytes": 4937
+        },
+        "media": {
+          "hex": "#030d0b",
+          "cobertura": 0.2432,
+          "bytes": 6654
+        },
+        "clave": {
+          "hex": "#14100e",
+          "cobertura": 0.3505,
+          "bytes": 5385
+        }
+      },
+      "papel": 0.1389,
+      "repartoPorLuz": false,
+      "avisos": [
+        "la media (#030d0b) es del color de la clave: 1.04:1, pasada muda"
+      ],
+      "trasera": {
+        "master": "Docs/INVESTIGACION/TapasDiscos/lobo-suelto-cordero-atado-cd2-trasera.jpg",
+        "bytes": 20286,
+        "calidad": 82,
+        "ancho": 320,
+        "alto": 252
+      }
+    },
+    "luzbelito": {
+      "ficha": "public/tapas/luzbelito.jpg",
+      "hashFicha": "18691e5a",
+      "ancho": 320,
+      "alto": 320,
+      "pasadas": {
+        "clara": {
+          "hex": "#af9178",
+          "cobertura": 0.2476,
+          "bytes": 8147
+        },
+        "media": {
+          "hex": "#69635c",
+          "cobertura": 0.2476,
+          "bytes": 8811
+        },
+        "clave": {
+          "hex": "#14100e",
+          "cobertura": 0.3649,
+          "bytes": 5133
+        }
+      },
+      "papel": 0.1398,
+      "repartoPorLuz": true,
+      "avisos": [],
+      "trasera": {
+        "master": "Docs/INVESTIGACION/TapasDiscos/luzbelito-trasera.jpg",
+        "bytes": 21976,
+        "calidad": 82,
+        "ancho": 320,
+        "alto": 252
+      }
+    },
+    "ultimo-bondi-a-finisterre": {
+      "ficha": "public/tapas/ultimo-bondi-a-finisterre.jpg",
+      "hashFicha": "13543cc3",
+      "ancho": 320,
+      "alto": 320,
+      "pasadas": {
+        "clara": {
+          "hex": "#8f8b84",
+          "cobertura": 0.2526,
+          "bytes": 8940
+        },
+        "media": {
+          "hex": "#74726e",
+          "cobertura": 0.2526,
+          "bytes": 10678
+        },
+        "clave": {
+          "hex": "#14100e",
+          "cobertura": 0.3556,
+          "bytes": 6664
+        }
+      },
+      "papel": 0.1393,
+      "repartoPorLuz": true,
+      "avisos": [],
+      "trasera": {
+        "master": "Docs/INVESTIGACION/TapasDiscos/ultimo-bondi-a-finisterre-trasera.jpg",
+        "bytes": 18431,
+        "calidad": 82,
+        "ancho": 320,
+        "alto": 252
+      }
+    },
+    "momo-sampler": {
+      "ficha": "public/tapas/momo-sampler.jpg",
+      "hashFicha": "39206e6b",
+      "ancho": 320,
+      "alto": 320,
+      "pasadas": {
+        "clara": {
+          "hex": "#cedae2",
+          "cobertura": 0.0273,
+          "bytes": 2828
+        },
+        "media": {
+          "hex": "#656f70",
+          "cobertura": 0.0273,
+          "bytes": 2179
+        },
+        "clave": {
+          "hex": "#14100e",
+          "cobertura": 0.8063,
+          "bytes": 1189
+        }
+      },
+      "papel": 0.1391,
+      "repartoPorLuz": true,
+      "avisos": [
+        "la clara (#cedae2) es del color del papel: 1.12:1, pasada muda"
+      ],
+      "trasera": {
+        "master": "Docs/INVESTIGACION/TapasDiscos/momo-sampler-trasera.jpg",
+        "bytes": 10193,
+        "calidad": 82,
+        "ancho": 320,
+        "alto": 252
+      }
+    }
+  }
+}

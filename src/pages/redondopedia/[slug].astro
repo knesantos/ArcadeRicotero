@@ -22,7 +22,14 @@ import {
   type Articulo,
   type Segmento,
 } from '../../lib/redondopedia.ts';
-import { recorte, tapa, STICKER_DISCO, detalleArticulo, discosDe } from '../../lib/sitio/arte.ts';
+import {
+  recorte,
+  tapa,
+  STICKER_DISCO,
+  detalleArticulo,
+  discosDe,
+  SIN_DETALLE_POR_TONO,
+} from '../../lib/sitio/arte.ts';
 import crudo from '../../data/redondopedia.json';
 import cancionero from '../../data/cancionero.json';
 import { cargar as cargarCancionero, slugDeLetra, type Cancionero } from '../../lib/cancionero/banco.ts';
@@ -86,24 +93,47 @@ const etiquetaRotulo = (seg: Segmento): string =>
   volverA={{ href: '/redondopedia/', texto: REDONDOPEDIA.volverPortada }}
   tapas={tapasUsadas}
 >
-  <article class={`articulo articulo--${categoria}`}>
+  {/*
+    `articulo--grave` marca los tres artículos de tono grave — Bulacio, Olavarría y la
+    muerte del Indio — para que la hoja de estilos sepa que ahí no va ningún adorno. Hoy
+    lo único que se apaga con esa clase es la capitular de la bajada (`T-187`), y la lista
+    es la misma que ya usa `detalleArticulo()` para no ponerles el recorte de tapa: si
+    algún día se corrige quiénes son, se corrige en un solo lugar.
+
+    `UX-20` §3.4 lo pide para la pantalla entera, no solo para el párrafo rotulado. Una
+    letra capitular de tres renglones arriba de un artículo sobre un pibe que la policía
+    mató es exactamente la clase de decoración que ese apartado prohíbe.
+  */}
+  <article
+    class:list={[
+      'articulo',
+      `articulo--${categoria}`,
+      { 'articulo--grave': SIN_DETALLE_POR_TONO.has(articulo.slug) },
+    ]}
+  >
     <span class="articulo-tipo">{articulo.tipo}</span>
     {detalle && <img class="detalle-articulo" src={detalle} alt="" aria-hidden="true" loading="lazy" />}
     <h1>{articulo.titulo}</h1>
 
     {
       laTapa && (
+        /* La ficha estampada y quieta (`UX-22` §9): el papel, el sello y la sombra de
+           registro son el MARCO; la foto de adentro es el mismo JPEG a color de siempre.
+           Y no se anima nada — `UX-20` §2: un articulo no se mueve. */
         <figure class="figura-tapa">
-          <img
-            class="tapa-disco"
-            src={laTapa}
-            alt={`Tapa de ${articulo.titulo}`}
-            loading="lazy"
-          />
-          <figcaption class="credito-tapa">
+          <span class="papel-ficha">
+            <img
+              class="tapa-disco"
+              src={laTapa}
+              alt={`Tapa de ${articulo.titulo}`}
+              loading="lazy"
+            />
+          </span>
+          <figcaption class="credito-tapa sello-credito">
             Tapa: Rocambole (Ricardo Cohen), en baja resolución.
           </figcaption>
         </figure>
+
       )
     }
 

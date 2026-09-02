@@ -9,6 +9,10 @@
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+// La lista de los tres articulos de tono grave vive en un modulo hoja que no importa
+// nada, porque tambien la necesita una isla (la cama de cinta, `T-191`) y este archivo
+// arrastra `node:fs`. Ver el comentario de cabecera de `graves.ts`.
+import { SLUGS_GRAVES } from './graves.ts';
 
 /** URL publica del recorte si ya existe; si no, el repuesto (o nada). */
 export function recorte(archivo: string, repuesto: string | null = null): string | null {
@@ -96,7 +100,7 @@ export function discosDe(nombres: readonly (string | null | undefined)[]): reado
  * de tono sin ficha detras y queda pendiente que lo confirme `contenido`, dueño de
  * `CNT-04` y de `CNT-06`. Mientras tanto rige la opcion conservadora.
  */
-export const SIN_DETALLE_POR_TONO = new Set(['muerte-del-indio', 'walter-bulacio', 'olavarria-2017']);
+export const SIN_DETALLE_POR_TONO = new Set(SLUGS_GRAVES);
 
 /**
  * El detalle de tapa que acompaña al titulo de un articulo que NO es de disco

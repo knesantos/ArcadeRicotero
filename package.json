@@ -1,7 +1,7 @@
 {
   "name": "ricotaarcade",
   "type": "module",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Juegos sobre Patricio Rey y sus Redonditos de Ricota. Fan site sin fines de lucro.",
   "scripts": {

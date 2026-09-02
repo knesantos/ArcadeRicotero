@@ -1447,3 +1447,159 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 
 - **Dueños:** `UX-08` es de `experiencia` y no se tocó — se construyó. La única parte que
   se apartó de la spec (la rotación) está justificada arriba y queda anotada como tal.
+
+---
+
+## D-32 — El movimiento es del lugar, no del elemento
+
+- **Fecha:** 2026-09-01
+- **Estado:** aceptada. Ciclo 11, construida y verificada antes de escribirse acá.
+- **Consume:** `UX-20` (la doctrina, de `experiencia`), `ADR-03` (el mecanismo del
+  tránsito), `ADR-04` (la cama de cinta), `CNT-13` (los nombres del lugar), `D-14`
+  (molinetes abiertos), `D-19` (la mezcla), `.claude/rules/diseno-marca.md`.
+
+- **Contexto.** El usuario pidió que el sitio entero fuera una experiencia inmersiva, *"que
+  cada paso se sienta como meterse en un universo mitológico misterioso"*. La medición del
+  punto de partida es de dos líneas: **todo el sitio tenía dos movimientos** —los 120 ms del
+  borde de una opción y el vuelo de la mosca— y **ni un solo token de movimiento**. El mundo
+  estaba construido y no se movía.
+
+  Y con el pedido venía una trampa: **casi todo lo que se hace cuando piden "inmersivo" ya
+  estaba vetado en este repo.** El resplandor, el desenfoque, el degradado, la tarjeta que
+  se levanta, el héroe que aparece con fundido, el micro-rebote. Un ciclo de inmersión sin
+  doctrina era la corrida anti-slop al revés.
+
+- **La decisión, en una línea:**
+
+  > **Nada en este sitio se mueve para llamar la atención sobre sí mismo. Lo que se mueve es
+  > la cámara: el aire, el fondo, la tinta, el paso de una pantalla a la otra.**
+
+  Un botón que rebota es un botón pidiendo aplausos. Una sala que respira es un lugar.
+
+- **Los cuatro límites que la vuelven ejecutable** (`UX-20` §1, con número):
+
+  1. **400 ms** el paso más largo — y **200 ms** el cruce entre pantallas (`ADR-03` §6.2).
+  2. **2 capas** de fondo como techo: el grano, que no rota nunca, más un recorte real
+     velado. Tres capas dejan de tener un peor caso que `contraste.test.ts` pueda auditar.
+  3. **0 ms** hasta que la acción principal es tocable. Es `D-14` aplicado a una animación:
+     una pantalla que hay que esperar es un molinete nuevo, con forma de animación.
+  4. **8 %** de recorrido máximo de una capa al desplazar.
+
+- **Y la contracara, que es lo que hace creíble al resto: el misterio lo sostiene el rótulo
+  frío.** `LEYENDA`, `TESTIMONIO`, la ficha `RES-` y las tres pantallas de registro 3
+  —Bulacio, Olavarría, la muerte del Indio— **no se decoran, no se atmosferan y no suenan.**
+  Un sitio donde todo es niebla no tiene misterio: tiene humo. El misterio necesita piso
+  firme en algún lado, y el piso es el rótulo.
+
+- **Lo que se construyó con esto, y por qué cada cosa pasó el filtro:**
+
+  | Pieza | Se mueve | Por qué no es el elemento pidiendo aplausos |
+  |---|---|---|
+  | El umbral de la portada | el grano, la figura, el ángulo de la marca | ninguna de las tres es tocable, y la marca **llega ya estampada**: se endereza, no aparece |
+  | El paso entre pantallas | la tinta entera | es la cámara bajando un escalón, no un elemento entrando |
+  | La deriva de la franja | una sola capa fija, 8 % | es aire; adentro de una caja acotada descubriría su borde, y ahí no se puso |
+  | La mosca | sigue volando | hace catorce ciclos que está ahí y es lo único vivo del sitio |
+  | El borde de una opción | 120 ms | **no es atmósfera, es información**, y por eso es lo único que el corte de movimiento reducido no apaga |
+
+- **Consecuencias, y la primera es la que más importa:**
+
+  1. **El corte de `prefers-reduced-motion` dejó de ser una guillotina.** Era un `*` con
+     `!important` que apagaba todo, incluida la respuesta al toque. Ahora **opera por familia
+     de token**: se apaga la cámara, nunca el dedo. Era un P3 abierto desde el 2026-08-24.
+  2. **Un tiempo suelto en un componente pasa a ser el mismo defecto que un hex suelto.**
+     `src/lib/movimiento.test.ts` falla el build si aparece una duración o una curva fuera
+     de `tokens.css`, si una animación no declara su equivalente quieto, o si alguien mete
+     un enrutador de cliente.
+  3. **El sistema de marca tiene hoja de movimiento** (hoja 12 del lienzo), y el circuito se
+     respetó en el orden que manda: lienzo → `tokens.css` → componentes.
+  4. **Lo que no se puede auditar a máquina queda dicho como se reconoce que falla**
+     (`UX-20` §6): un elemento con animación propia que ningún otro comparte, un paso que
+     pasa de 400 ms, y —la más barata y la más importante— que con el movimiento apagado el
+     sitio diga **menos** que con el movimiento prendido.
+
+- **Lo que esta decisión no dice.** No dice que el adentro de la partida tenga que moverse:
+  el paso entre pregunta y devolución quedó fuera del ciclo a propósito, porque es el gesto
+  que más se repite y donde un beat de más se paga cuarenta veces por vuelta. Si `REV-10`
+  dice que la doctrina funciona afuera, el adentro es el ciclo siguiente.
+
+---
+
+## D-33 — El acierto es el único grito del sitio
+
+- **Fecha:** 2026-09-02
+- **Estado:** aceptada. Ciclo 12, construida y verificada antes de escribirse acá.
+- **Consume:** `UX-22` (la doctrina, de `experiencia`), `RES-54` (cómo se imprime una
+  serigrafía de verdad), `ADR-05` + `CTR-12` (las separaciones), `CNT-14` (las palabras de
+  la imprenta), `D-32` (el movimiento es del lugar), `D-19` (la mezcla), `D-21` (el crédito
+  de tapa), `RES-06` y `RES-37`.
+- **La probaron:** `T-199`..`T-208`. La estampa por pasadas (`T-200`), el acierto que suena
+  entero (`T-201`), la sala que se vuelve el disco (`T-202`), "dala vuelta" (`T-203`), la
+  cinta que gira (`T-204`), la tirada como afiche (`T-205`), el zoom que se abre (`T-206`),
+  el registro en toda la página (`T-207`) y el rodillo con la ficha estampada (`T-208`).
+
+- **Contexto.** `D-32` convirtió el sitio en un lugar y dejó una cosa deliberadamente
+  afuera: **el premio**. Cuando alguien sacaba un tema, la revelación era una ficha de
+  texto —el título, la pista, los puntos, un botón—, correcta y sobria, y **la tapa no
+  aparecía**. El jugador se llevaba el nombre del disco y no el disco. Y eso pasaba con las
+  diez tapas ya en el repo, con su paleta medida píxel por píxel viviendo en `tokens.css`
+  desde `RES-37`: todo el material de Rocambole bajado y fichado, y el momento en que más
+  se lo necesita sin usarlo.
+
+  El pedido del usuario fue textual: *"que te sorprenda la tapa cuando adivinás"*.
+
+- **La decisión, en una línea:**
+
+  > **El acierto es el único momento en que algo puede durar más de un paso y ocupar la
+  > pantalla. No es un elemento pidiendo aplausos: es la sala volviéndose el disco.**
+
+  Es la excepción de `D-32`, y es una sola. `voz-ricotera.md` §7 ya lo decía del texto
+  —*"solo grita el acierto, que es un grito de verdad"*—; esto lo extiende al movimiento.
+
+- **El techo, que es lo que impide que la excepción se coma la regla** (`UX-22` §1.1):
+  cada pasada **≤ 400 ms**, la secuencia entera de cuatro compases —clara, media, clave, el
+  fijado de la foto— **≤ 1200 ms**, y el fallo es **una sola tinta**. Los cuatro límites de
+  `UX-20` siguen enteros: nada bloquea, nada retrasa el dedo, nada pisa un par testeado, y
+  con el movimiento apagado la estampa aparece ya impresa y el sitio dice lo mismo.
+
+- **Y la forma que toma: el sitio no se dibuja, se imprime.** `RES-06` dice cómo trabaja
+  Rocambole —*"artesanal, con rodillo y serigrafía"*—. El ciclo 11 tomó el collage; este
+  toma la serigrafía. La tapa que sacaste no se muestra: **se estampa por pasadas**, un
+  color por vez, con el registro apenas corrido, sobre papel. Si no la sacaste, te queda en
+  la tinta de la clave: lo que una imprenta te da cuando no pagaste el color.
+
+- **Las tres cosas que separan esto de un "efecto de impresión" de biblioteca**, y las tres
+  se verifican:
+
+  1. **Los colores son los medidos de esa tapa** (`RES-37`), no una paleta. Los lee el
+     taller de `tokens.css`, el único lugar del repo donde puede vivir un hex, y
+     `pasadas.test.ts` falla si una separación deja de llevar el color de su disco.
+  2. **El orden de las pasadas es el de una serigrafía de verdad** (`RES-54`), no el que
+     queda lindo: clara, media, clave, y la clave última.
+  3. **La clave sola del fallo es una decisión del juego** —te faltó el color—, no un
+     estado a medio cargar.
+
+- **Consecuencias:**
+
+  1. **El registro imperfecto quedó como recurso permanente y estático** en la letra grande
+     de todo el sitio (`UX-22` §8): un eco del texto corrido 2 px en el apoyo del disco de
+     esa sección. **No es movimiento** —llega así desde el primer cuadro— y **no es la
+     tinta que se lee**, así que no agrega un par a `contraste.test.ts`. Como es la única
+     sombra que `diseno-marca.md` admite, es la más fácil de volver tic: `estilos.test.ts`
+     la encierra en una lista cerrada de selectores y falla si toca un párrafo, un rótulo o
+     uno de los tres artículos de tono grave.
+  2. **La tapa entró en las dos puntas del juego de tapas.** `UX-13` §4 había dejado por
+     escrito que el premio del formato splash es ver la obra entera después de adivinar por
+     un pedazo, y que no se podía. Ahora se puede, y sin mecanismo nuevo: es el mismo de
+     acá (`T-206`).
+  3. **Nada de esto se estampa en un artículo.** `UX-20` §2 dice que un artículo no se
+     mueve, y este ciclo no lo revisa: la ficha de disco de la Redondopedia gana el marco
+     —papel, sello, registro— y llega así desde el primer cuadro. Lo que se estampa es el
+     marco, nunca la fotografía de adentro.
+  4. **No se inventó una letra que no existe.** Las fuentes fan que el sitio aloja cubren,
+     verificado glifo por glifo, tres nombres de disco. Esos tres se estampan con su letra;
+     los otros siete van en la rotulada, con su tilde real.
+
+- **Lo que esta decisión no dice.** No dice que el quiz ni "Completá la letra" tengan que
+  imprimir nada: ahí el premio es la explicación, y un ciclo que imprime tapas no tiene qué
+  imprimirles. Tampoco toca la tarjeta que se comparte: `D-21` dice que una tapa afuera del
+  sitio viaja sin su crédito, y lo que se imprime acá se imprime adentro.

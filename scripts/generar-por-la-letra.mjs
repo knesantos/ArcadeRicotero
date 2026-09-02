@@ -34,7 +34,7 @@ import {
   ventanaValida,
   VERSION_FILTRO,
 } from '../src/lib/por-la-letra/filtro.ts';
-import { repartirPorPopularidad } from '../src/lib/por-la-letra/dificultad.ts';
+import { repartirPorPopularidad } from '../src/lib/popularidad.ts';
 
 const CANCIONERO = join('src', 'data', 'cancionero.json');
 const POPULARIDAD = join('src', 'data', 'popularidad.json');

@@ -15,7 +15,7 @@ import Base from '../../layouts/Base.astro';
 import '../../styles/cancionero.css';
 import crudo from '../../data/cancionero.json';
 import { cargar, porDisco, tieneAcordes, type Cancionero } from '../../lib/cancionero/banco.ts';
-import { PORTAL } from '../../lib/sitio/copy.ts';
+import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
 import { tapa } from '../../lib/sitio/arte.ts';
 
 const temas = cargar(crudo as unknown as Cancionero);
@@ -33,6 +33,7 @@ const totalConAcordes = temas.filter(tieneAcordes).length;
 >
   <section class="cancionero-intro">
     <h1>Letras y acordes</h1>
+    <p class="donde-estas">{LUGARES.cancionero}</p>
     <p>
       Los diez discos completos, en orden. {totalConLetra} temas con la letra entera y
       {totalConAcordes} con los acordes arriba de cada verso, para tocarlos.

@@ -7,9 +7,35 @@
 > `Docs/SUGERENCIAS/HILO-para-arquitectura-escalera-de-seis-y-modo-buscador.md`,
 > `Docs/SUGERENCIAS/HILO-mapa-del-juego-de-referencia.md`,
 > `.claude/rules/contenido-json.md`.
-> Produce: **`CTR-03` v2, revisión 3**. Tarea: cierre de `FIND-33`.
-> Última actualización: **2026-08-27 (revisión 3)**. La revisión 2 es del 2026-08-24
-> (`T-104`); la v1, del 2026-08-19 (`T-24`).
+> Produce: **`CTR-03` v2, revisión 4**. Tarea: `T-161` del ciclo 10.
+> Última actualización: **2026-09-01 (revisión 4)**. La revisión 3 es del 2026-08-27
+> (`FIND-33`); la 2, del 2026-08-24 (`T-104`); la v1, del 2026-08-19 (`T-24`).
+> Suma `D-27`, `BR-18`, `FIND-29` de `REV-08`.
+
+---
+
+## Qué cambió en la revisión 4 (2026-09-01), en una tabla
+
+**El motivo:** el ciclo 10 midió que `US-02` no escalona. `src/scripts/partida-tema.ts`
+armaba la vuelta con un barajado puro sobre los 95 fragmentos y **la palabra `dificultad`
+no aparecía una sola vez en el archivo** — es `FIND-29`, el defecto que `REV-08` encontró
+en `US-07`, vivo en un juego de la v1. Contra eso, `PRD-alcance-v1.md` le exige a `US-02`
+un mínimo de **8 Fáciles** por `BR-18` (f), y hoy son 0.
+
+| Sección | Antes (revisión 3) | Ahora (revisión 4) | Por qué |
+|---|---|---|---|
+| `CTR-03.11` | — | **Nueva**: dónde vive la dificultad de un tema jugable, y de dónde sale | `FIND-29`, `D-27` |
+| `CTR-03.8` | Decisión de no bajar el schema, con tres motivos | **Ratificada**, con el motivo por el que el campo nuevo no la revierte | El campo nuevo tampoco se carga a mano |
+| Consecuencias | *"Queda una pregunta para `producto`"* sobre la cuota por dificultad | **La mitad de `arquitectura` está contestada**; lo que queda de `producto` se acota | `D-27` eligió la fuente |
+
+**Lo que no cambió, y es lo más importante de esta revisión:** los cuatro campos, el
+envoltorio, `contratoVersion: 2`, y **el archivo de datos**. `src/data/adivinar-tema.json`
+no se toca. Esta revisión agrega un campo al **catálogo**, que es otra cosa que el
+manifiesto y se arma en build.
+
+> **Por qué esto es una revisión y no una v3.** Ni un consumidor del manifiesto cambia de
+> comportamiento, ni el archivo de datos cambia de forma. `contratoVersion` sigue en `2`,
+> por el mismo criterio que la revisión 3.
 
 ---
 
@@ -543,6 +569,96 @@ es `D − 0,10` y `D + 0,40`; el patrón de `slug` es el de `CTR-01.4` y es lo q
 > *Cambio de datos que esta decisión deja pendiente:* **ninguno.** El archivo de hoy valida
 > contra este bloque tal como está.
 
+> **Ratificada en la revisión 4 (2026-09-01), y conviene decir por qué se volvió a mirar.**
+> `CTR-03.11` agrega un campo (`dificultad`) que este bloque no valida, y eso parecía
+> revertir el motivo 1: un JSON Schema **sí** sabría rechazar `dificultad: "regular"`,
+> cosa que el cruce contra los 105 no hace.
+>
+> **No lo revierte, y la razón es la condición de reversión que este mismo bloque escribió:**
+> *"el día que este archivo se edite a mano"*. El campo nuevo **no entra al manifiesto** —
+> vive en el catálogo, que se arma en build— así que nadie lo carga a mano tampoco. Y su
+> validación va donde `CTR-03.8` dice que va la validación real de este juego: **en
+> `catalogo.ts`, en build**, donde además se puede comprobar lo que un schema no puede —que
+> el nivel salga de una medición y no de una etiqueta suelta.
+>
+> Dicho al revés, para que quede la vara: **el día que alguien tenga que abrir
+> `src/data/adivinar-tema.json` en un editor, esta decisión cae y el bloque de arriba se
+> baja a archivo.** Ese día no llegó.
+
+---
+
+### CTR-03.11 — La dificultad de un tema jugable: en el catálogo, no en el manifiesto — **revisión 4**
+
+**El manifiesto no la lleva, y no es una omisión: es la misma frase que ya estaba escrita
+en las Consecuencias de la v2**, cuando `arquitectura` enumeró las tres salidas posibles
+para la cuota de `BR-01`:
+
+> *"…o pedir una etiqueta por tema, que sería un dato nuevo y **no** iría en el manifiesto
+> —iría en el catálogo, al lado de `RES-20`—"*
+
+`D-27` eligió esa salida y le cambió la fuente: la etiqueta no se pide, **se deriva de las
+escuchas**. Esta sección la instrumenta.
+
+**El argumento, en una línea:** `CTR-03.1` define el manifiesto como *"lista de archivos de
+audio que EXISTEN, no de temas"*, y la dificultad **es una propiedad del tema, no del
+archivo**. *Ji Ji Ji* es fácil de reconocer con o sin mp3 en disco. Meterla en el manifiesto
+sería declarar del archivo algo que el archivo no sabe.
+
+#### Dónde vive
+
+En `TemaDelJuego`, que arma `catalogo()` en build cruzando tres insumos:
+
+| Insumo | Qué aporta | Si falta |
+|---|---|---|
+| `src/data/adivinar-tema.json` | qué temas son `jugable` | el juego no suena, y la pantalla lo dice |
+| `RES-20` vía `leerTemas()` | los 105 temas, su disco y su pista | el build falla |
+| `src/data/popularidad.json` | las vistas de cada tema | **`dificil` para todos, declarado** |
+
+El tercero es opcional **con el mismo criterio que `temasConLetra`**, que ya estaba en la
+firma: *un insumo que todavía no está no puede romper la pantalla*. `catalogo()` lo recibe
+como tercer parámetro y devuelve `medidos`, que dice cuántos temas tenían medición de
+verdad. **`medidos === 0` significa "este juego no escalona", y se puede leer desde afuera**
+en vez de tener que deducirlo.
+
+#### De dónde sale el nivel
+
+De `repartirPorPopularidad()`, la función de `D-27` — **la misma, no una copia**. Vivía en
+`src/lib/por-la-letra/` y en la revisión 4 se muda a `src/lib/popularidad.ts`, porque
+`US-02` y `US-07` reparten con la misma regla y **dos copias de una regla es exactamente el
+modo de falla que el motivo 3 de `CTR-03.8` describe**.
+
+La regla, que no se decide acá y está en `D-27`: los temas **con medición** se ordenan por
+vistas y se parten en tercios; un tema **sin medición es `dificil`** y no entra al ranking.
+
+#### Lo que este contrato le exige a quien lo consuma
+
+1. **`dificultad` es `'facil' | 'media' | 'dificil'`, nunca ausente ni `sin-clasificar`.**
+   `US-07` necesitó ese cuarto valor porque su fuente prevista era una curaduría a mano que
+   podía faltar por tema; acá la fuente es una medición que falta *para todos o para
+   ninguno*, y el faltante ya tiene nivel asignado por `D-27`. Un valor menos es una rama
+   menos en la pantalla.
+2. **Quien sortea una vuelta escalona.** `BR-01` punto 1: el primero sale del pozo más fácil
+   que exista, y de ahí la dificultad no baja. Un barajado sobre el pozo entero incumple el
+   contrato aunque el campo esté cargado — que es exactamente lo que pasó hasta hoy.
+3. **La degradación se declara, no se disimula.** Con `medidos === 0` el reparto es plano y
+   el escalonamiento no existe. Eso **no es un error que haya que ocultar**: es la
+   consecuencia de que falte la clave de YouTube, y el juego, el generador y el test tienen
+   que poder decirlo.
+
+#### Verificación
+
+```
+node --test src/lib/tema/catalogo.test.ts    # dificultad presente y bien repartida
+node --test src/lib/popularidad.test.ts      # la regla de D-27, una sola vez
+```
+
+*Alternativa descartada:* que el manifiesto lleve `dificultad` y los dos scripts la escriban,
+como hace `generar-por-la-letra.mjs` con `por-la-letra.json`. Se descarta por dos motivos.
+El primero es el de arriba — el manifiesto describe archivos. El segundo es más concreto:
+**la popularidad se revisa cada 180 días (`BR-18` apartado d) y el audio no se regenera cada
+180 días.** Un nivel escrito en el manifiesto quedaría viejo hasta la próxima corrida de
+ffmpeg; derivado en build, se actualiza solo el día que `popularidad.json` cambia.
+
 ---
 
 ### CTR-03.9 — Ejemplo, con lo que todavía no existe marcado
@@ -666,6 +782,23 @@ node --test src/lib/tema/catalogo.test.ts src/lib/tema/escalera.test.ts src/lib/
   30 que pide `T-99`. Lo que sigue sin resolverse es la **cuota por dificultad**, que es de
   `producto` y está señalada más arriba. Un pozo de 95 no la resuelve: la vuelve menos
   urgente y más difícil de etiquetar.
+
+> **Revisión 4 (2026-09-01): la mitad de `arquitectura` de esa pregunta está contestada.**
+> Los dos párrafos de arriba quedan como los escribió la v2 —con la pregunta abierta y los
+> números viejos— porque así se ve qué se movió.
+>
+> Lo que se movió: la cuota por dificultad **ya tiene dónde vivir**. Es `CTR-03.11`, y es
+> la tercera de las tres salidas que la v2 enumeró, con la fuente que le puso `D-27`. La
+> frase *"en un pozo de 105 temas sorteados, qué tema es fácil depende del jugador, no de
+> una etiqueta"* era cierta cuando la etiqueta la iba a poner una persona; con las escuchas
+> de `BR-18` (f) deja de serlo, porque lo que se mide es **cuánta gente lo escuchó**, que no
+> depende de qué jugador cayó.
+>
+> **Lo que sigue siendo de `producto`, y se acotó a una sola pregunta:** qué hace el "Listo"
+> de la v1 con el mínimo de 8 Fáciles **mientras `popularidad.json` no tenga mediciones**.
+> Con el mecanismo puesto y la clave sin cargar, el reparto es plano y los Fáciles son 0.
+> `arquitectura` no decide eso — solo garantiza que el día que la clave corra, los ocho
+> aparecen sin tocar una línea de código. Es `T-164`.
 - **Fácil:** cambiar la escalera, la duración o el bitrate. Se vuelve a producir el audio y
   ningún dato migra. **Ya se demostró dos veces**: `D-24` subió de 10 a 15 sin tocar el JSON
   y `D-26` bajó de 15 a 10 sin tocarlo tampoco — la segunda vez con 95 archivos ya en disco,

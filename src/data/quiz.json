@@ -859,32 +859,33 @@
       ],
       "categoria": "historia",
       "dificultad": "dificil",
-      "enunciado": "Una detención masiva en un operativo policial cerca de Obras, en 1991, terminó años después en un caso ante un tribunal internacional. ¿Cuál?",
+      "enunciado": "El operativo policial de 1991 cerca de Obras derivó en una causa en la Argentina. ¿Cuánto tardó en llegar el primer juicio oral?",
       "opciones": [
         {
-          "texto": "La Corte Interamericana de Derechos Humanos",
+          "texto": "Dos años",
+          "correcta": false
+        },
+        {
+          "texto": "Ocho años",
+          "correcta": false
+        },
+        {
+          "texto": "Veinte años",
           "correcta": true
         },
         {
-          "texto": "La Corte Penal Internacional",
-          "correcta": false
-        },
-        {
-          "texto": "El Tribunal Europeo de Derechos Humanos",
-          "correcta": false
-        },
-        {
-          "texto": "La Corte Internacional de Justicia (La Haya)",
+          "texto": "Treinta años",
           "correcta": false
         }
       ],
-      "explicacion": "El operativo fue el 19 de abril de 1991, antes de un recital en Obras. Entre los más de 80 detenidos estaba Walter Bulacio, de 17 años, que murió días después. El primer juicio oral en Argentina recién se hizo veinte años más tarde, en 2011, y terminó marcando un antes y un después en cómo el Estado debe tratar la detención de menores.",
+      "explicacion": "El operativo fue el 19 de abril de 1991, antes de un recital en Obras. Entre los más de 80 detenidos estaba Walter Bulacio, de 17 años, que murió días después. El primer juicio oral en la Argentina llegó recién en 2011, veinte años más tarde; antes el caso había pasado por la Corte Interamericana de Derechos Humanos.",
       "fuentes": [
         "RES-07"
       ],
       "esLeyenda": false,
       "sensibleA": [],
-      "estado": "listo"
+      "estado": "listo",
+      "notaInterna": "Ciclo 10, T-169. La version anterior preguntaba QUE tribunal internacional, con cuatro cortes como opciones — y la Corte Interamericana es la unica de las cuatro que aplica a un caso argentino, asi que se acertaba con civismo y sin saber nada de la banda. Es la forma de fuga «la pregunta nombra una clase y solo una opcion pertenece» de la auditoria del ciclo 9. La salida la habilita CNT-04, que ficha DOS hechos institucionales y no uno: el tribunal y que el primer juicio oral tardo veinte anios (1991 -> 2011). Se pasa al segundo. El tribunal no se pierde: quedo en la explicacion. Los distractores se eligieron para que veinte NO sea el extremo — treinta es mayor y es plausible—, o se acertaba tirando al numero mas grande, que es el atajo que la misma auditoria llama «elegir el anio mas nuevo». Sigue cumpliendo CNT-04: se puntua un dato institucional, el nombre del pibe aparece una sola vez y en la explicacion."
     },
     {
       "id": "QZ-026",
@@ -1381,7 +1382,7 @@
           "correcta": false
         }
       ],
-      "explicacion": "Fue durante «Todo un palo». El gesto se viralizó porque Skay y el Indio llevaban más de veinte años separados, sin reconciliación pública.",
+      "explicacion": "Fue durante «Todo un palo». El gesto se viralizó porque Skay y el Indio llevaban más de dos décadas separados, sin reconciliación pública.",
       "fuentes": [
         "RES-48"
       ],

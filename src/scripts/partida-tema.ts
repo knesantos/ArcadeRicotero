@@ -32,14 +32,19 @@ import {
   puntajeMaximo,
   anchosDeTramos,
   tramosConEtiqueta,
+  DURACION_FRAGMENTO_SEG,
 } from '../lib/tema/escalera.ts';
 import { Reproductor, urlDeTema } from '../lib/tema/audio.ts';
 import { PARTIDA, REVELACION, RESULTADO, TARJETA, TRAMOS, PANTALLA_0, SIN_SONIDO } from '../lib/tema/copy.ts';
+import { estampaDe } from '../lib/tapa/pasadas.ts';
+import { armarCasete } from '../lib/tema/casete.ts';
+import { PORTAL } from '../lib/sitio/copy.ts';
 import { esIOS, esMovil, navegadorIncrustado } from '../lib/sitio/aparato.ts';
 import { tramo } from '../lib/quiz/tramo.ts';
 import { armarLink } from '../lib/desafio.ts';
 import { Cronometro, duracion, total as sumarTiempos } from '../lib/tema/reloj.ts';
 import { claseDisco } from '../lib/tema/paleta.ts';
+import { escalonar } from '../lib/escalonar.ts';
 import { nombreArchivo } from '../lib/tarjeta/plan.ts';
 import { dibujarTarjeta } from './tarjeta.ts';
 
@@ -49,6 +54,14 @@ interface Tema extends TemaBuscable {
   readonly jugable: boolean;
   readonly entero: boolean;
   readonly letra: string | null;
+  /**
+   * Espejo de `TemaDelJuego.dificultad` (`CTR-03.11`). La estampa `catalogo()` en build
+   * desde las escuchas; acá llega ya resuelta, dentro del JSON que la pagina serializa.
+   *
+   * Se declara de nuevo y no se importa el tipo de `catalogo.ts` porque ese modulo lee el
+   * disco y ninguna isla puede tocar un modulo de Node (`D-29`).
+   */
+  readonly dificultad: string;
 }
 
 /** Cuántos temas tiene una vuelta. Cuatro entran en los dos o tres minutos del brief. */
@@ -192,14 +205,24 @@ function buscables(): Tema[] {
 
 // ---------------------------------------------------------------- la vuelta
 
+/*
+ * La vuelta se arma **escalonada**, no barajada. `BR-01`, y es `FIND-29` — el mismo
+ * defecto que `REV-08` encontro en "Sacalo por la letra", que aca siguio vivo un ciclo
+ * mas y pesaba mas, porque este juego si esta adentro del "Listo" de la v1.
+ *
+ * Hasta el ciclo 10 esto era un Fisher-Yates sobre el pozo entero y la palabra
+ * `dificultad` no aparecia una sola vez en este archivo: **el que llegaba sin saber nada
+ * podia recibir el tema mas oscuro del catalogo como primer fragmento**, que es el muro
+ * de entrada que `D-09` y `BR-01` existen para impedir. Y `PRD-alcance-v1.md` le pide a
+ * este juego un minimo de 8 Faciles, que sin el campo eran 0.
+ *
+ * El nivel lo estampa `catalogo()` en build desde las escuchas (`D-27`, `CTR-03.11`).
+ * **Mientras `popularidad.json` no tenga mediciones los 95 caen en `dificil`** y esto
+ * degrada a un barajado — el mismo reparto que antes, pero declarado, y andando solo el
+ * dia que corra `npm run ingerir-popularidad`.
+ */
 function comenzar(): void {
-  const disponibles = [...pozo()];
-  // Barajado de Fisher-Yates: sin repetir tema dentro de la misma vuelta.
-  for (let i = disponibles.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [disponibles[i], disponibles[j]] = [disponibles[j]!, disponibles[i]!];
-  }
-  ronda = disponibles.slice(0, Math.min(LARGO_RONDA, disponibles.length));
+  ronda = escalonar(pozo(), LARGO_RONDA);
   indice = 0;
   puntaje = 0;
   marcador = [];
@@ -210,6 +233,9 @@ function comenzar(): void {
 }
 
 function arrancarTema(): void {
+  escuchoEsteTema = false;
+  // La sala vuelve a ser Lobo suelto: el disco anterior ya no es la respuesta.
+  sacarLaSala();
   pasoActual = 1;
   elegido = null;
   intentos = [];
@@ -250,6 +276,28 @@ let cajaBuscador!: HTMLElement;
 let progreso!: HTMLElement;
 let restantesEl!: HTMLElement;
 let revelacion!: HTMLElement;
+let reproductorCaja!: HTMLElement;
+/** La palabra de sello que dice si la cinta corre (`CNT-14` §2.5). La lee quien no ve girar. */
+let palabraCinta!: HTMLElement;
+/** La capa que convierte la sala en el disco que sacaste (`UX-22`, `T-202`). Nace al primer acierto. */
+let sala: HTMLElement | null = null;
+/**
+ * Si la persona prendio el audio en ESTE tema. Es lo que decide si el acierto suena entero
+ * (`UX-22`, `T-201`): quien jugo a ciegas no recibe diez segundos de sonido que no pidio.
+ */
+let escuchoEsteTema = false;
+/**
+ * Los discos que se imprimieron o vistieron el fondo en esta sesion (`UX-22` §2.5, `D-21`).
+ *
+ * **Acumula y no saca.** El pie tiene que nombrar cada tapa que estuvo en pantalla durante
+ * la sesion, deduplicada, y no solo la del cuadro actual: era `FIND-46` de `REV-11`, y el
+ * defecto estaba en recalcular la lista desde el `data-tapas` estatico en cada tema, con lo
+ * cual el disco acreditado en el tema anterior se perdia apenas empezaba el siguiente.
+ */
+const tapasDeLaSesion = new Set<string>();
+/** Si ya se sembro el conjunto con las tapas que la pagina traia escritas en build. */
+let tapasSembradas = false;
+
 
 /** Arma la pantalla de partida una sola vez por vuelta. Después solo se actualiza. */
 function armarPantalla(): void {
@@ -268,7 +316,7 @@ function armarPantalla(): void {
   zonaPartida.append(renglones);
 
   // La barra: un tramo por paso, de ancho proporcional a lo que ese paso agrega.
-  const reproductorCaja = el('div', 'reproductor');
+  reproductorCaja = el('div', 'reproductor');
   barra = el('div', 'barra');
   const anchos = anchosDeTramos();
   for (let i = 0; i < ESCALERA.length; i++) {
@@ -306,9 +354,24 @@ function armarPantalla(): void {
   }
   reproductorCaja.append(escala);
 
+  /*
+   * La cinta gira (`UX-22`, `T-204`). El casete dibujado, con los carretes que giran
+   * mientras suena el fragmento, va en el mismo renglon que "Tenes N s de audio": es la
+   * misma informacion —cuanto audio hay y si esta corriendo— dicha dos veces, una con
+   * palabras y otra con el objeto. Para quien no escucha nada es la unica prueba de que
+   * el sitio si esta sonando (`UX-03`). Con movimiento reducido el carrete no gira y la
+   * palabra de sello de al lado dice lo mismo (`CNT-14` §2.5).
+   */
+  const fila = el('div', 'cinta-fila');
+  fila.append(armarCasete());
+  const textos = el('div', 'cinta-textos');
   etiquetaPaso = el('p', 'barra-etiqueta');
   etiquetaPaso.setAttribute('aria-live', 'polite');
-  reproductorCaja.append(etiquetaPaso);
+  palabraCinta = el('span', 'casete-estado', REVELACION.sonando);
+  palabraCinta.hidden = true;
+  textos.append(etiquetaPaso, palabraCinta);
+  fila.append(textos);
+  reproductorCaja.append(fila);
 
   botonEscuchar = el('button', 'escuchar', PARTIDA.escuchar);
   botonEscuchar.type = 'button';
@@ -515,12 +578,28 @@ function alternarSonido(): void {
     frenar();
     return;
   }
+  sonar(paso(pasoActual).segundos);
+}
+
+/**
+ * Hace sonar el tema en curso hasta `segundos`, y pone la cinta a girar.
+ *
+ * Separado de `alternarSonido` porque ahora tiene dos puertas: el boton de escuchar, y
+ * el acierto, que hace sonar el fragmento entero (`UX-22`, `T-201`) si el audio estuvo
+ * prendido en este tema. Las dos ponen el mismo estado en los mismos tres lugares —el
+ * boton, la caja del reproductor, la palabra de la cinta— para que no haya forma de que
+ * uno diga "sonando" y otro "quieta".
+ */
+function sonar(segundos: number): void {
   const tema = ronda[indice];
   if (!tema) return;
   sonando = true;
+  escuchoEsteTema = true;
   botonEscuchar.textContent = PARTIDA.parar;
   botonEscuchar.classList.add('escuchar--sonando');
-  reproductor.sonar(tema.slug, paso(pasoActual).segundos, {
+  reproductorCaja.classList.add('reproductor--sonando');
+  palabraCinta.hidden = false;
+  reproductor.sonar(tema.slug, segundos, {
     alAvanzar: (t) => pintarBarra(t),
     alTerminar: frenar,
   });
@@ -530,6 +609,8 @@ function frenar(): void {
   sonando = false;
   botonEscuchar.textContent = PARTIDA.escuchar;
   botonEscuchar.classList.remove('escuchar--sonando');
+  reproductorCaja.classList.remove('reproductor--sonando');
+  palabraCinta.hidden = true;
   pintarBarra(paso(pasoActual).segundos);
 }
 
@@ -729,6 +810,19 @@ function cerrarTema(acerto: boolean): void {
   pintarBarra(ESCALERA[ESCALERA.length - 1]!.segundos);
 
   pintarRevelacion(tema, acerto, ganados);
+
+  /*
+   * El acierto es el unico grito del sitio (`UX-22`, `D-33`).
+   *
+   * Al acertar pasan dos cosas mas que al fallar, y las dos son la sala, no un elemento:
+   * el fondo de la pantalla se vuelve la tapa que sacaste (`T-202`), y si el audio estuvo
+   * prendido en este tema, el fragmento entero de diez segundos arranca solo y la estampa
+   * se imprime con la musica (`T-201`). Quien jugo a ciegas no recibe sonido que no pidio.
+   */
+  if (acerto) {
+    ponerLaSala(tema);
+    if (escuchoEsteTema) sonar(DURACION_FRAGMENTO_SEG);
+  }
 }
 
 function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
@@ -749,6 +843,9 @@ function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
   revelacion.hidden = false;
 
   revelacion.append(el('p', 'micro', acerto ? REVELACION.acerto : REVELACION.fallo));
+  // La estampa va ANTES del titulo: es el premio, y el titulo es su pie.
+  const estampa = armarEstampa(tema, acerto);
+  if (estampa) revelacion.append(estampa);
   revelacion.append(el('h2', 'revelacion-titulo', `${REVELACION.eraEl} ${tema.titulo}`));
   revelacion.append(el('p', 'revelacion-ficha', REVELACION.ficha(tema.discoTitulo, tema.anio, tema.pista)));
 
@@ -790,8 +887,216 @@ function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
   seguir.type = 'button';
   seguir.addEventListener('click', avanzar, { once: true });
   revelacion.append(seguir);
-  seguir.focus();
+  /*
+   * A donde mira la pantalla al revelar (`UX-22` §1.4, que ratifico esto al resolver
+   * `FIND-51`). El foco va al boton de seguir, como siempre, pero SIN que el navegador se
+   * lleve la pantalla hasta el (`preventScroll`): enfocar el boton dejaba el premio afuera
+   * de la vista, que es justo lo que este ciclo existe para que no pase. Sin `smooth`: un
+   * desplazamiento animado seria movimiento que el corte de movimiento reducido no apaga.
+   *
+   * Las dos condiciones con las que `UX-22` §1.4 lo acota, y que antes no se cumplian:
+   *
+   *  1. **Vale solo si hay premio de verdad.** Un tema de un disco fuera de los diez no
+   *     tiene estampa, y entonces no hay nada que mirar: la pantalla vuelve al
+   *     comportamiento generico de cualquier revelacion de texto del sitio —el foco se
+   *     lleva la vista consigo—, igual que el quiz y "sacalo por la letra".
+   *  2. **El blanco es el bloque que TERMINA en el boton, alineado al pie**
+   *     (`block: 'end'`), no la imagen alineada arriba. Apuntar al premio se medio bien
+   *     aca de casualidad —este panel es corto— y rompia el otro juego, donde entre la
+   *     tapa y el boton hay enunciado, cuatro opciones, explicacion y sello: el boton
+   *     terminaba 457 px abajo del pliegue. Con el pie alineado, el boton **nunca queda
+   *     afuera, por construccion**, y lo que varia con el largo del contenido es cuanto
+   *     del premio se ve arriba. Esa jerarquia es a proposito: entre ver el premio y que
+   *     el boton este, gana el boton.
+   */
+  if (estampa) {
+    seguir.focus({ preventScroll: true });
+    revelacion.scrollIntoView({ block: 'end' });
+  } else {
+    seguir.focus();
+  }
 }
+
+
+
+/**
+ * La estampa: la tapa que sacaste, impresa por pasadas sobre papel (`UX-22`, `T-200`).
+ *
+ * Tres `<img>` con alfa —las separaciones de `scripts/generar-pasadas.mjs`, tenidas con
+ * los colores medidos de esa tapa (`RES-37`)— y la foto que se fija encima. El orden es el
+ * de una serigrafia (`RES-54`): clara, media, clave. Al fallar, la clave sola: te la
+ * dejamos en una tinta. Todo el movimiento lo pone `juego.css` desde tokens; aca solo se
+ * arma el objeto.
+ *
+ * Es un objeto: se da vuelta (`T-203`). La trasera real no se baja hasta que alguien la
+ * pide con el dedo. Y lleva su sello de credito, que es la condicion 1 de `D-21`.
+ *
+ * Devuelve `null` si el disco no tiene estampa —no es uno de los diez—: la revelacion
+ * queda como era, sin hueco.
+ */
+function armarEstampa(tema: Tema, acerto: boolean): HTMLElement | null {
+  const e = estampaDe(tema.disco);
+  if (!e) return null;
+
+  const figura = el('figure', `estampa${acerto ? '' : ' estampa--clave'}`);
+
+  const papel = el('span', 'estampa-papel');
+  const capas: Array<[nombre: string, ruta: string]> = acerto
+    ? [['clara', e.pasadas[0]], ['media', e.pasadas[1]], ['clave', e.pasadas[2]]]
+    : [['clave', e.pasadas[2]]];
+  for (const [nombre, ruta] of capas) {
+    const tinta = el('img', `pasada pasada--${nombre}`);
+    tinta.src = ruta;
+    tinta.decoding = 'async';
+    // Las tintas son partes de una sola imagen: la que habla es la foto, o la clave sola.
+    tinta.alt = !acerto && nombre === 'clave' ? REVELACION.altTapaClave(tema.discoTitulo) : '';
+    papel.append(tinta);
+  }
+  if (acerto) {
+    const foto = el('img', 'estampa-foto');
+    foto.src = e.ficha;
+    foto.decoding = 'async';
+    foto.alt = REVELACION.altTapa(tema.discoTitulo);
+    papel.append(foto);
+  }
+
+  const frente = el('span', 'estampa-frente');
+  frente.append(papel);
+
+  // El dorso nace con el sello de la pista y SIN la imagen: la trasera no se baja hasta
+  // que alguien la pide con el dedo (`ADR-05.6`). Quien nunca da vuelta la tapa no baja
+  // un byte de las diez traseras.
+  const dorso = el('span', 'estampa-dorso');
+  dorso.append(el('span', 'sello-pista', REVELACION.pista(tema.pista)));
+
+  // Un boton con `aria-pressed` (`UX-22` §5): apretado es "mostrando el dorso". El nombre
+  // accesible y el rotulo a la vista dicen lo mismo, y los dos salen del copy.
+  const hoja = el('button', 'estampa-hoja');
+  hoja.type = 'button';
+  hoja.dataset.cara = 'frente';
+  hoja.setAttribute('aria-pressed', 'false');
+  hoja.setAttribute('aria-label', REVELACION.girar);
+  hoja.append(frente, dorso);
+  figura.append(hoja);
+  const girar = el('span', 'estampa-girar', REVELACION.girar);
+  girar.setAttribute('aria-hidden', 'true');
+  figura.append(girar);
+  hoja.addEventListener('click', () => darVuelta(hoja, dorso, girar, e.trasera, tema.discoTitulo));
+
+  // El pie nombra el disco en su letra. El credito NO va aca: lo lleva el pie de la
+  // pantalla, que se recalcula con cada disco que se imprime (`UX-22` §2.5, `D-21`).
+  const pie = el('figcaption', 'estampa-pie');
+  pie.append(el('span', `estampa-disco${e.letra ? ` estampa-disco--${e.letra}` : ''}`, e.nombreEstampado));
+  figura.append(pie);
+
+  return figura;
+}
+
+/** Da vuelta la estampa. La trasera se crea, y se baja, recien la primera vez que alguien la pide. */
+function darVuelta(hoja: HTMLButtonElement, dorso: HTMLElement, girar: HTMLElement, ruta: string, disco: string): void {
+  const alDorso = hoja.dataset.cara !== 'dorso';
+  if (alDorso && !dorso.querySelector('.estampa-trasera')) {
+    const trasera = el('img', 'estampa-trasera');
+    trasera.alt = REVELACION.altTrasera(disco);
+    trasera.decoding = 'async';
+    trasera.src = ruta;
+    dorso.prepend(trasera);
+  }
+  hoja.dataset.cara = alDorso ? 'dorso' : 'frente';
+  hoja.setAttribute('aria-pressed', String(alDorso));
+  hoja.setAttribute('aria-label', alDorso ? REVELACION.volverATapa : REVELACION.girar);
+  girar.textContent = alDorso ? REVELACION.volverATapa : REVELACION.girar;
+}
+
+/**
+ * La sala se vuelve el disco (`UX-22`, `T-202`).
+ *
+ * Al acertar, el fondo velado de la pantalla pasa a ser la ficha de la tapa que sacaste.
+ * No es un elemento que aparece: es el lugar que cambia, que es lo unico que `D-32` deja
+ * mover. Cero archivos nuevos —es la misma ficha de 320 px que la estampa ya bajo—, y
+ * siempre detras de `--velo-tapa`, que es el peor caso que `contraste.test.ts` mide. La
+ * capa vive en `#app`, debajo de las secciones (`.sobre-tapa` va con z-index 1), y no
+ * lleva `.tapa-fondo` porque ese nombre de transito es unico por documento (`ADR-03`).
+ *
+ * Y el pie de la pantalla dice que tapa se ve (`D-21`, condicion 1): mientras la sala es
+ * el disco, el credito nombra al disco.
+ */
+function ponerLaSala(tema: Tema): void {
+  const e = estampaDe(tema.disco);
+  const app = document.getElementById('app');
+  if (!e || !app) return;
+  if (!sala) {
+    sala = el('div', 'sala-disco');
+    sala.setAttribute('aria-hidden', 'true');
+    app.append(sala);
+  }
+  // Nunca una imagen de fondo en linea: la ruta viaja en `--tapa-de-la-sala` y el velo lo
+  // pone la regla de `juego.css`, donde `estilos.test.ts` lo puede ver (`ADR-05.7`).
+  sala.style.setProperty('--tapa-de-la-sala', `url("${e.ficha}")`);
+  sala.classList.add('sala-disco--puesta');
+  creditoDePantalla([tema.discoTitulo]);
+}
+
+function sacarLaSala(): void {
+  if (!sala) return;
+  sala.classList.remove('sala-disco--puesta');
+  sala.style.removeProperty('--tapa-de-la-sala');
+  creditoDePantalla([]);
+}
+
+/**
+ * El credito del pie nombra las tapas que se ven en la pantalla (`D-21`, condicion 1).
+ *
+ * Arranca con las que la pagina trae escritas y le suma las que la isla pone en tiempo de
+ * ejecucion: la sala que se vuelve el disco (`T-202`) y las estampas chicas del setlist
+ * (`T-205`). Una sola vez por disco, aunque aparezca en los tres lugares.
+ */
+function creditoDePantalla(discos: readonly string[]): void {
+  // Las paginas con `Base.astro` lo llaman `.credito-pantalla`; esta, que arma su pie a
+  // mano, `.credito-tapas`. Los dos llevan `data-tapas` con la lista con la que arrancan.
+  const credito = document.querySelector<HTMLElement>('.credito-tapas, .credito-pantalla');
+  if (!credito) return;
+  if (!tapasSembradas) {
+    try {
+      for (const t of JSON.parse(credito.dataset.tapas ?? '[]') as string[]) tapasDeLaSesion.add(t);
+    } catch {
+      // Un `data-tapas` roto no puede dejar la pantalla sin credito: se sigue con lo que venga.
+    }
+    tapasSembradas = true;
+  }
+  for (const d of discos) tapasDeLaSesion.add(d);
+  if (tapasDeLaSesion.size > 0) credito.textContent = PORTAL.creditoTapas([...tapasDeLaSesion]);
+}
+
+
+/**
+ * La estampa chica del setlist (`UX-22` §10, `T-205`): la tirada como afiche.
+ *
+ * Cada tema de la vuelta lleva su tapa del tamano de un sello — a color si lo sacaste, en
+ * la tinta de la clave si no, que es la misma diferencia que hace la revelacion. Son los
+ * archivos que la revelacion ya bajo, a 32 px: cero archivos nuevos.
+ *
+ * **No se anima**, y es a proposito: un afiche se pega en la pared, no se imprime delante
+ * tuyo. El grito es el acierto (`D-33`), y ya paso.
+ *
+ * **El simbolo ✔/✕ se queda.** Una tapa a color no le sirve a quien no distingue tintas, y
+ * la fila no puede comunicar el resultado solo con color (`US-02`). La estampa va escondida
+ * del lector de pantalla: el simbolo y el pie ya dicen todo lo que dice.
+ */
+function armarEstampita(tema: Tema, acerto: boolean): HTMLElement | null {
+  const e = estampaDe(tema.disco);
+  if (!e) return null;
+  const caja = el('span', 'estampita');
+  caja.setAttribute('aria-hidden', 'true');
+  const img = el('img', acerto ? 'estampita-foto' : 'estampita-tinta');
+  img.src = acerto ? e.ficha : e.pasadas[2];
+  img.alt = '';
+  img.loading = 'lazy';
+  img.decoding = 'async';
+  caja.append(img);
+  return caja;
+}
+
 
 function avanzar(): void {
   /*
@@ -862,6 +1167,9 @@ function pintarResultado(): void {
   reloj.append(el('p', 'cifra-pie', RESULTADO.puntos(puntaje, maximo)));
   zonaResultado.append(reloj);
 
+  // La linea que canta del afiche (`CNT-14` §2.6): la vuelta se pega en la pared. La que
+  // nombra es el `h3` de abajo, que sigue diciendo que hay en la lista (`UX-22` §10).
+  zonaResultado.append(el('p', 'afiche-canta', RESULTADO.afiche));
   zonaResultado.append(el('h3', 'resumen-titulo', RESULTADO.detalle));
   const detalle = el('ol', 'resumen');
   ronda.forEach((tema, i) => {
@@ -869,6 +1177,8 @@ function pintarResultado(): void {
     const disco = claseDisco(tema.disco);
     const li = el('li', `resumen-fila resumen-fila--${p > 0 ? 'ok' : 'no'}${disco ? ` ${disco}` : ''}`);
     li.append(el('span', 'resumen-marca', p > 0 ? '✔︎' : '✕︎'));
+    const estampita = armarEstampita(tema, p > 0);
+    if (estampita) li.append(estampita);
     const cuerpo = el('span', 'resumen-cuerpo');
     cuerpo.append(el('span', 'resumen-tema', tema.titulo));
     cuerpo.append(el('span', 'resumen-pie', pieDeTema(i)));
@@ -876,6 +1186,15 @@ function pintarResultado(): void {
     detalle.append(li);
   });
   zonaResultado.append(detalle);
+
+  /*
+   * El pie nombra TODAS las tapas que se ven en esta pantalla (`D-21`, condicion 1,
+   * `UX-22` §10): las que la pagina traia, la que quedo de sala, y ahora las cuatro
+   * estampas chicas del setlist. Una sola vez por disco aunque aparezca en los tres
+   * lugares — de eso se encarga `creditoDePantalla`.
+   */
+  creditoDePantalla(ronda.map((t) => t.discoTitulo));
+
 
   // `con-tilde` no es un apaño: es la deuda declarada en .claude/rules/diseno-marca.md.
   // La letra de la firma (`RES-42`) no tiene acentos, y 'Compartí' lleva uno. La regla

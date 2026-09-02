@@ -8,7 +8,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { repartirPorPopularidad, type TemaMedido } from './dificultad.ts';
+import { repartirPorPopularidad, type TemaMedido } from './popularidad.ts';
 
 const medido = (slug: string, vistas: number): TemaMedido => ({
   slug,
