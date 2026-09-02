@@ -7,7 +7,33 @@
 
 **Última actualización:** 2026-09-01
 
-**Ciclo actual:** **11 — CERRADO.** El ciclo 10 también, y en el mismo día, en dos sesiones
+**Ciclo actual:** **12 — PLANIFICADO, en curso.** Plan en `Docs/ORQ/ORQ-plan-ciclo-12.md`, tareas `T-195`..`T-210`. Lo pidió el usuario el 2026-09-01: *"otro ciclo de ui/UX inmersivo, aún más creativo; tomá la mística y la estética de Rocambole y aplicala a toda la página; sobre todo en adiviná el tema, que te sorprenda la tapa cuando adivinás"*. **La idea: el sitio no se dibuja, se imprime** — la tapa que sacaste se estampa por pasadas de serigrafía con sus colores medidos, sobre papel, y la sala se vuelve el disco. Empieza por `T-195`..`T-198`, los cuatro documentos.
+
+> **`T-195` — CERRADO (2026-09-01).** `experiencia` escribió `Docs/UX/UX-22-la-imprenta-
+> de-rocambole.md`. Fija la corrección de doctrina que pedía el plan —**el acierto es el
+> único grito del sitio**, con techo propio (cada pasada ≤ 400 ms, la secuencia entera de
+> cuatro compases —clara, media, clave, el fijado de la foto— ≤ 1200 ms, el fallo es una
+> sola tinta clave)— y las otras seis piezas: el orden y la mezcla de las pasadas (sobre
+> `--papel`, registro corrido de 2 px/0,4° que nunca se corrige, `multiply`, la clave
+> siempre `--fondo` para los diez discos por igual — cero pares nuevos en
+> `contraste.test.ts`); la sala volviéndose el disco acertado (reusa `--duracion-paso`,
+> vuelve a Lobo suelto al fallar); el acierto sonando entero solo si hubo audio en ese
+> tema; "dala vuelta" como manipulación permitida (no rompe la tabla anti-slop porque la
+> inicia la persona); la cinta con los carretes girando como señal diegética, con su
+> palabra siempre presente (nunca solo color); la letra propia de Oktubre/Lobo
+> suelto/Cordero atado y `--fuente-rotulada` para el resto; el registro imperfecto
+> estático en la letra grande de todo el sitio; el rodillo como separador; la tirada como
+> afiche; y el cierre de la pieza que `UX-13 §4` había dejado pendiente (el zoom de
+> "Adiviná la tapa" que se abre a la tapa entera al acertar, reusando el
+> `figcaption.credito-tapa` que ya existe). Catálogo de cinco tokens nuevos, sin valores
+> (`--duracion-pasada`, `--escalon-pasada`, `--duracion-giro`, `--duracion-carrete`,
+> `--registro`/`--registro-angulo`, más `--textura-rodillo` y `--fuente-lobo-suelto`).
+> **Próximo paso:** `T-196` (`RES-54`, investigador), `T-197` (`ADR-05`+`CTR-12`,
+> arquitectura) y `T-198` (`CNT-14`, contenido) siguen abiertas — las tres corren en
+> paralelo con `T-195` ya cerrada. `T-199` (el hilo principal) recién arranca cuando
+> `T-197` esté lista.
+
+**Ciclo 11 — CERRADO.** El ciclo 10 también, y en el mismo día, en dos sesiones
 que no se veían. Plan del 11 en `Docs/ORQ/ORQ-plan-ciclo-11.md`, tareas `T-176`..`T-194`.
 `npm test` **417/417** (eran 372), `npm run check` limpio, build de **150 páginas**.
 

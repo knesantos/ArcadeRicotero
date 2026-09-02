@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 /**
  * Impide que vuelva a pasar `FIND-15`.
@@ -99,17 +99,41 @@ test('D-21: ninguna tapa entra de fondo sin su velo', () => {
   // texto sobre una foto: es justo el caso que la regla de marca veta como "foto a
   // sangre con texto encima". Se exige en el mismo bloque de declaraciones, no en la
   // hoja entera, para que no alcance con que el velo aparezca en cualquier otro lado.
+  //
+  // Desde el ciclo 12 hay una tapa de fondo que NO vive en `/tapas/fondo/`: la sala que se
+  // vuelve el disco acertado usa la ficha de `/tapas/<slug>.jpg`, y la ruta la pone la
+  // isla en tiempo de ejecucion a traves de `--tapa-de-la-sala`. Por eso el patron cubre
+  // las dos vias (`ADR-05.7`): cualquier `/tapas/` en un `background`, y cualquier
+  // `var(--tapa-`. Toda propiedad personalizada que transporte una tapa se llama `--tapa-*`.
   for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css']) {
     const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
     for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
       const declaraciones = regla[2]!;
-      if (!declaraciones.includes('/tapas/fondo/')) continue;
+      const poneTapa = /background[^;]*(\/tapas\/|var\(--tapa-)/.test(declaraciones);
+      if (!poneTapa) continue;
       assert.ok(
         declaraciones.includes('--velo-tapa'),
         `${hoja}: "${regla[1]!.trim()}" pone una tapa de fondo sin velo`,
       );
     }
   }
+});
+
+test('ADR-05.7: ninguna isla escribe una imagen de fondo en linea; una tapa entra por --tapa-*', () => {
+  // La unica tapa de fondo que se pone desde JavaScript seria la unica que ningun test de
+  // CSS mira. Se cierra por convencion: la isla escribe la variable, y el velo lo pone la
+  // regla de la hoja, donde el test de arriba lo ve.
+  const islas = readdirSync('src/scripts').filter((f) => f.endsWith('.ts'));
+  const malas: string[] = [];
+  for (const isla of islas) {
+    const fuente = leer(`src/scripts/${isla}`);
+    if (/style\.backgroundImage\s*=/.test(fuente)) malas.push(`${isla}: escribe style.backgroundImage`);
+    if (/setProperty\(\s*['"]background/.test(fuente)) malas.push(`${isla}: escribe background por setProperty`);
+    for (const m of fuente.matchAll(/setProperty\(\s*['"](--[\w-]+)['"]\s*,\s*`?url/g)) {
+      if (!m[1]!.startsWith('--tapa-')) malas.push(`${isla}: una url de imagen entra por ${m[1]} y no por --tapa-*`);
+    }
+  }
+  assert.deepEqual(malas, [], malas.join('\n  '));
 });
 
 test('toda clase de estado usada en el CSS existe de verdad en el codigo', () => {

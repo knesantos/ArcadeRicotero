@@ -107,9 +107,17 @@ test('los tokens de movimiento que UX-20 §4 nombra existen de verdad', () => {
     '--curva-cinta',
     '--hondura-transito',
     '--deriva-capa-fondo',
+    // La imprenta (`UX-22` §13).
+    '--duracion-pasada',
+    '--escalon-pasada',
+    '--duracion-giro',
+    '--duracion-carrete',
+    '--registro',
+    '--registro-angulo',
+    '--fuente-lobo-suelto',
   ];
   const faltan = pedidos.filter((t) => !new RegExp(`^\\s*${t}\\s*:`, 'm').test(cssTokens));
-  assert.deepEqual(faltan, [], `UX-20 §4 los nombra y tokens.css no los declara: ${faltan.join(', ')}`);
+  assert.deepEqual(faltan, [], `UX-20 §4 y UX-22 §13 los nombran y tokens.css no los declara: ${faltan.join(', ')}`);
 });
 
 /* ==================================================================
@@ -143,6 +151,11 @@ const ANIMACIONES = [
   { nombre: 'umbral-sello', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/sitio.css' },
   { nombre: 'vuelo-de-mosca', apaga: 'regla', valor: '.mosca-viva', hoja: 'src/styles/sitio.css' },
   { nombre: 'deriva-de-capa', apaga: 'recorrido', valor: '--deriva-capa-fondo', hoja: 'src/styles/sitio.css' },
+  // La imprenta (`UX-22`, ciclo 12). Las cuatro son barridos de `clip-path`: sin opacidad.
+  { nombre: 'pasada', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
+  { nombre: 'fijado', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
+  { nombre: 'sala', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },
+  { nombre: 'carrete', apaga: 'regla', valor: '.casete-carrete', hoja: 'src/styles/juego.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

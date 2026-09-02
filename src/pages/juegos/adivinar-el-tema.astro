@@ -124,7 +124,13 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
       <section id="resultado" class="pantalla sobre-tapa" hidden></section>
 
       <footer class="pie-sitio sobre-tapa">
-        {tapasUsadas.length > 0 && <p class="credito-tapas">{PORTAL.creditoTapas(tapasUsadas)}</p>}
+        {/* `data-tapas`: la isla recalcula esta linea cuando la sala se vuelve el disco que
+            sacaste (`UX-22` §2.5, `D-21` condicion 1), y necesita saber con que arranca. */}
+        {tapasUsadas.length > 0 && (
+          <p class="credito-tapas" data-tapas={JSON.stringify(tapasUsadas)}>
+            {PORTAL.creditoTapas(tapasUsadas)}
+          </p>
+        )}
         {PORTAL.pie}
       </footer>
     </main>

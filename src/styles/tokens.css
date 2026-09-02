@@ -192,6 +192,38 @@
   /* Cuanto se corre una capa de fondo al desplazar, como maximo (`UX-20` §1.4). */
   --deriva-capa-fondo: 8%;
 
+  /* ------------------------------------------------------------------
+     La imprenta (hoja 13). La doctrina es de `UX-22`: **el acierto es el unico grito
+     del sitio**, y por eso la estampa es lo unico que puede durar mas de un paso.
+
+     La tapa que sacaste no aparece: se imprime por pasadas, como una serigrafia
+     (`RES-54`): tinta clara, tinta media, clave, y recien despues se fija la foto.
+     Cada pasada es un barrido —la racleta que arrastra la tinta—, NUNCA un fundido:
+     la opacidad no entra en ninguna de estas animaciones (`REV-10`, FIND-39).
+     ------------------------------------------------------------------ */
+
+  /* Cada uno de los cuatro compases de la estampa —clara, media, clave, el fijado de la
+     foto— dura lo mismo (`UX-22` §1.1: cada uno ≤ 400 ms). */
+  --duracion-pasada: 300ms;
+  /* Entre el arranque de una pasada y el de la siguiente. El total —tres escalones mas
+     una pasada— no pasa de los 1200 ms de `UX-22` §1.1: 3 × 240 + 300 = 1020. */
+  --escalon-pasada: 240ms;
+  /* Dar vuelta la estampa (`UX-22` §5). Es manipulacion de quien juega, y dura un paso. */
+  --duracion-giro: 200ms;
+  /* Una vuelta entera del carrete mientras suena el fragmento. */
+  --duracion-carrete: 1.6s;
+
+  /* El registro imperfecto: cuanto se corre la segunda tinta respecto de la primera.
+     NO es movimiento, es como queda la estampa en reposo, y por eso el corte de
+     movimiento reducido no lo toca. Dos pixeles y medio grado: una imprenta a mano. */
+  --registro: 2px;
+  --registro-angulo: 0.4deg;
+
+  /* Las fuentes fan que escriben el nombre de un disco con su propia letra, verificado
+     glifo por glifo (`RES-42`, `RES-43`, `CNT-14` §2.7). Solo tres nombres las usan;
+     los otros siete van en la rotulada, con su tilde real. */
+  --fuente-lobo-suelto: 'Lobo Suelto Fan', 'Archivo Black', sans-serif;
+
   /* Espaciado pensado para el pulgar (D-09) */
   --toque-min: 48px;
   --espacio-1: 0.5rem;
@@ -330,5 +362,12 @@ a[role='button'] {
     --escalon-umbral: 0ms;
     --hondura-transito: 1;
     --deriva-capa-fondo: 0%;
+    /* La imprenta (UX-22): la estampa aparece ya impresa y fijada; el giro es un cambio
+       directo. `--registro` NO se toca: es reposo, no movimiento. El carrete no se
+       apaga por token —quedaria girando rapidisimo— sino con `animation: none` en
+       juego.css, como la mosca. */
+    --duracion-pasada: 0ms;
+    --escalon-pasada: 0ms;
+    --duracion-giro: 0ms;
   }
 }

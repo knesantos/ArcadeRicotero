@@ -101,7 +101,7 @@ const medidaMosca = medidas(arteMosca);
       }
       <slot />
       <footer class="pie-sitio">
-        {tapas.length > 0 && <span class="credito-pantalla">{PORTAL.creditoTapas(tapas)}</span>}
+        {tapas.length > 0 && <span class="credito-pantalla" data-tapas={JSON.stringify(tapas)}>{PORTAL.creditoTapas(tapas)}</span>}
         {PORTAL.pie}
       </footer>
     </div>
