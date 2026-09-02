@@ -1001,18 +1001,24 @@ function ponerLaSala(tema: Tema): void {
   // pone la regla de `juego.css`, donde `estilos.test.ts` lo puede ver (`ADR-05.7`).
   sala.style.setProperty('--tapa-de-la-sala', `url("${e.ficha}")`);
   sala.classList.add('sala-disco--puesta');
-  creditoDePantalla(tema.discoTitulo);
+  creditoDePantalla([tema.discoTitulo]);
 }
 
 function sacarLaSala(): void {
   if (!sala) return;
   sala.classList.remove('sala-disco--puesta');
   sala.style.removeProperty('--tapa-de-la-sala');
-  creditoDePantalla(null);
+  creditoDePantalla([]);
 }
 
-/** El credito del pie nombra las tapas que se ven: las de la pagina, y la del disco si la sala lo es. */
-function creditoDePantalla(disco: string | null): void {
+/**
+ * El credito del pie nombra las tapas que se ven en la pantalla (`D-21`, condicion 1).
+ *
+ * Arranca con las que la pagina trae escritas y le suma las que la isla pone en tiempo de
+ * ejecucion: la sala que se vuelve el disco (`T-202`) y las estampas chicas del setlist
+ * (`T-205`). Una sola vez por disco, aunque aparezca en los tres lugares.
+ */
+function creditoDePantalla(discos: readonly string[]): void {
   // Las paginas con `Base.astro` lo llaman `.credito-pantalla`; esta, que arma su pie a
   // mano, `.credito-tapas`. Los dos llevan `data-tapas` con la lista con la que arrancan.
   const credito = document.querySelector<HTMLElement>('.credito-tapas, .credito-pantalla');
@@ -1023,9 +1029,39 @@ function creditoDePantalla(disco: string | null): void {
   } catch {
     base = [];
   }
-  const tapas = disco && !base.includes(disco) ? [...base, disco] : base;
+  const tapas = [...base];
+  for (const d of discos) if (!tapas.includes(d)) tapas.push(d);
   if (tapas.length > 0) credito.textContent = PORTAL.creditoTapas(tapas);
 }
+
+/**
+ * La estampa chica del setlist (`UX-22` §10, `T-205`): la tirada como afiche.
+ *
+ * Cada tema de la vuelta lleva su tapa del tamano de un sello — a color si lo sacaste, en
+ * la tinta de la clave si no, que es la misma diferencia que hace la revelacion. Son los
+ * archivos que la revelacion ya bajo, a 32 px: cero archivos nuevos.
+ *
+ * **No se anima**, y es a proposito: un afiche se pega en la pared, no se imprime delante
+ * tuyo. El grito es el acierto (`D-33`), y ya paso.
+ *
+ * **El simbolo ✔/✕ se queda.** Una tapa a color no le sirve a quien no distingue tintas, y
+ * la fila no puede comunicar el resultado solo con color (`US-02`). La estampa va escondida
+ * del lector de pantalla: el simbolo y el pie ya dicen todo lo que dice.
+ */
+function armarEstampita(tema: Tema, acerto: boolean): HTMLElement | null {
+  const e = estampaDe(tema.disco);
+  if (!e) return null;
+  const caja = el('span', 'estampita');
+  caja.setAttribute('aria-hidden', 'true');
+  const img = el('img', acerto ? 'estampita-foto' : 'estampita-tinta');
+  img.src = acerto ? e.ficha : e.pasadas[2];
+  img.alt = '';
+  img.loading = 'lazy';
+  img.decoding = 'async';
+  caja.append(img);
+  return caja;
+}
+
 
 function avanzar(): void {
   /*
@@ -1096,6 +1132,9 @@ function pintarResultado(): void {
   reloj.append(el('p', 'cifra-pie', RESULTADO.puntos(puntaje, maximo)));
   zonaResultado.append(reloj);
 
+  // La linea que canta del afiche (`CNT-14` §2.6): la vuelta se pega en la pared. La que
+  // nombra es el `h3` de abajo, que sigue diciendo que hay en la lista (`UX-22` §10).
+  zonaResultado.append(el('p', 'afiche-canta', RESULTADO.afiche));
   zonaResultado.append(el('h3', 'resumen-titulo', RESULTADO.detalle));
   const detalle = el('ol', 'resumen');
   ronda.forEach((tema, i) => {
@@ -1103,6 +1142,8 @@ function pintarResultado(): void {
     const disco = claseDisco(tema.disco);
     const li = el('li', `resumen-fila resumen-fila--${p > 0 ? 'ok' : 'no'}${disco ? ` ${disco}` : ''}`);
     li.append(el('span', 'resumen-marca', p > 0 ? '✔︎' : '✕︎'));
+    const estampita = armarEstampita(tema, p > 0);
+    if (estampita) li.append(estampita);
     const cuerpo = el('span', 'resumen-cuerpo');
     cuerpo.append(el('span', 'resumen-tema', tema.titulo));
     cuerpo.append(el('span', 'resumen-pie', pieDeTema(i)));
@@ -1110,6 +1151,15 @@ function pintarResultado(): void {
     detalle.append(li);
   });
   zonaResultado.append(detalle);
+
+  /*
+   * El pie nombra TODAS las tapas que se ven en esta pantalla (`D-21`, condicion 1,
+   * `UX-22` §10): las que la pagina traia, la que quedo de sala, y ahora las cuatro
+   * estampas chicas del setlist. Una sola vez por disco aunque aparezca en los tres
+   * lugares — de eso se encarga `creditoDePantalla`.
+   */
+  creditoDePantalla(ronda.map((t) => t.discoTitulo));
+
 
   // `con-tilde` no es un apaño: es la deuda declarada en .claude/rules/diseno-marca.md.
   // La letra de la firma (`RES-42`) no tiene acentos, y 'Compartí' lleva uno. La regla

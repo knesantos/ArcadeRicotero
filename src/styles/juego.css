@@ -1153,6 +1153,49 @@
   line-height: 1.35;
 }
 
+/* ---- La tirada como afiche (`UX-22` §10, `T-205`) ----
+
+   Cada tema del setlist lleva su tapa del tamano de un sello: a color si lo sacaste, en la
+   tinta de la clave si no —la misma diferencia que hace la revelacion—. Son los archivos
+   que la revelacion ya bajo, a 32 px, sobre el mismo papel y apenas torcidos, como los
+   sellos del sobre de un recital.
+
+   NO SE ANIMA. Un afiche se pega en la pared; no se imprime delante tuyo. El unico grito
+   del sitio es el acierto (`D-33`), y para cuando se ve esta pantalla ya paso. */
+.estampita {
+  flex: none;
+  display: block;
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  background: var(--papel);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  rotate: -2deg;
+}
+
+.estampita-foto,
+.estampita-tinta {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* La que no sacaste llega en una tinta sola, translucida sobre el papel. */
+.estampita-tinta {
+  mix-blend-mode: multiply;
+}
+
+/* La linea que canta del afiche. Va arriba del rotulo que nombra la lista, y chica: el
+   numero grande de esta pantalla es el tiempo, y no se le discute la jerarquia. */
+.afiche-canta {
+  margin: var(--espacio-3) 0 0;
+  color: var(--texto-tenue);
+  text-wrap: balance;
+}
+
+
 .resumen-fila--ok .resumen-marca {
   color: var(--acento-3);
 }
