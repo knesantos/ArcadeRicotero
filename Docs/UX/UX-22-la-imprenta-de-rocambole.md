@@ -14,6 +14,16 @@
 > condiciones que el código de hoy no cumple del todo — una ya construida en
 > `partida-tapa.ts` y ausente en `partida-tema.ts`. No reabre el resto de `REV-11`:
 > `FIND-46`, `FIND-48`, `FIND-49` y `FIND-50` son de otros roles.
+>
+> **v4 — corrige la condición 2 de `§1.4` tras medición real, 2026-09-02:** el hilo
+> principal construyó las dos condiciones de la v3 y midió "Adiviná la tapa" con un ítem
+> de contenido cargado: "Seguí" quedaba 457 px (56 % de la pantalla) debajo del pliegue.
+> La v3 suponía que apuntar el scroll a la imagen bastaba porque el premio y el botón
+> quedan cerca — cierto en "Adiviná el tema", falso en "Adiviná la tapa", donde entre la
+> imagen y el botón viven el enunciado y las cuatro opciones, que no se pueden saltear. La
+> condición 2 se reemplaza: el blanco pasa a ser el bloque que termina en `Seguí`, alineado
+> por abajo (`block: 'end'`) en vez de apuntar a la imagen alineada por arriba. El techo
+> deja de ser un número a medir y pasa a ser una garantía de construcción.
 
 > Rol dueño: `experiencia`. `T-195`, ciclo 12, frente A.
 >
@@ -217,10 +227,12 @@ no existía; esta hoja lo fija ahora, acá, sin tocar ninguno de los cuatro lím
 único grito del sitio, y un premio impreso fuera de la vista no es un premio. Para quien
 navega con teclado, con switch o con lector de pantalla el cambio es una mejora sin
 costo — el foco ya está en `Seguí`, nadie recorre nada de más con `Tab`. El costo es del
-pulgar, y el dato medido lo acota: a 375×812, con la figura a 320 px más su crédito, el
-panel de devolución arranca cerca del borde de abajo — el botón queda a **un
-desplazamiento corto**, no a media pantalla, y en la misma dirección en la que la persona
-ya venía leyendo. Un gesto de pulgar, no una búsqueda con las dos manos.
+pulgar, y **varía según cuánto contenido viva entre el premio y el botón**: en "Adiviná el
+tema" es corto, porque la estampa vive adentro del mismo panel compacto que `Seguí`; en
+"Adiviná la tapa" puede pasar de media pantalla, porque entre la imagen y el botón están
+el enunciado completo y las cuatro opciones, que son la pregunta y la marca de qué
+elegiste, no relleno que se pueda saltear. La condición 2, más abajo, es la que hace que
+ese costo tenga un techo fijo en vez de depender de cuánto texto traiga cada ítem.
 
 **Condición 1 — la excepción vale solo cuando hay premio de verdad.** Si el disco no es
 uno de los diez y no hay estampa que imprimir, no hay premio que mirar, y la pantalla
@@ -236,25 +248,41 @@ una lectura válida de esta excepción, es el defecto que la deja sin acotar: pi
 corrija para que el par `preventScroll`/`scrollIntoView` corra únicamente cuando
 `armarEstampa` no devolvió `null`, calcado del patrón que `partida-tapa.ts` ya tiene.
 
-**Condición 2 — la vista apunta al premio, no al panel entero.** Lo que hay que mirar es
-la imagen, no la ficha completa de revelación con su título, su costo y lo que venga
-después. `partida-tapa.ts` ya apunta bien: `scrollIntoView` corre sobre
-`.figura-tapa-juego`, no sobre `zonaPartida`. `partida-tema.ts` apunta a `revelacion`, el
-contenedor entero — hoy la diferencia práctica es chica porque la estampa es casi el
-primer hijo de ese contenedor, pero es la regla incorrecta: si algún día se agrega
-contenido antes de la estampa, el blanco tiene que seguir siendo la imagen, no lo que la
-precede. Pido que apunte al elemento que devuelve `armarEstampa`, no a `revelacion`.
+**Condición 2 — el blanco es el bloque que termina en `Seguí`, alineado por abajo (v4,
+reemplaza la condición 2 de la v3).** La v3 pedía apuntar el `scrollIntoView` a la propia
+imagen (`.figura-tapa-juego`, el elemento de `armarEstampa`) con `block: 'start'` —
+alinear el *techo* del premio con el techo del viewport. Esa regla suponía que el premio y
+el botón siempre quedan cerca, y `REV-11` la midió con las dos condiciones ya construidas:
+en "Adiviná la tapa", con un ítem de explicación larga y sello, "Seguí" quedaba **457 px
+(56 % de la pantalla)** debajo del pliegue. Apuntar a la imagen no dice nada sobre dónde
+termina el contenido que viene después.
 
-**Lo que esta hoja no fija.** Un techo en píxeles o en porcentaje de viewport para la
-distancia entre el premio y `Seguí`. No lo invento: el dato de `REV-11` es sobre "Adiviná
-la tapa" con un panel liviano, y no cubre el caso más cargado de ninguna de las dos
-pantallas — un tema con reproductor del tema entero *y* enlace a la letra, o una tapa con
-explicación larga *y* sello de leyenda o testimonio, todo apilado entre la imagen y el
-botón. Antes de dar esto por cerrado del todo, quien construya mide esos dos casos a
-375×812 con las condiciones 1 y 2 ya aplicadas, y confirma que "Seguí" sigue quedando a un
-desplazamiento corto. Si no lo está, la salida no es agrandar el número de esta hoja: es
-acortar el panel — por ejemplo, moviendo el reproductor o el enlace a la letra a después
-de `Seguí` — antes de tocar esta regla otra vez.
+La regla nueva apunta al final, no al principio: el elemento cuyo último hijo es `Seguí`
+— `revelacion` en "Adiviná el tema" (ya termina en el botón, sin que haga falta tocar
+nada más) y `panel` en "Adiviná la tapa" (la variable local de `responder()`, no
+`.figura-tapa-juego`) — con `scrollIntoView({ block: 'end' })` en vez de `'start'`. La
+consecuencia es una garantía de construcción, no un número que haya que medir por ítem:
+**el borde inferior de `Seguí` queda alineado con el borde inferior del viewport (o lo
+más cerca que el documento permita), así que el botón entra entero en pantalla sin
+excepción**, sea cual sea el largo del enunciado, las opciones, la explicación o el
+sello. Lo que varía con el contenido deja de ser "si el botón entra" — eso ya no varía —
+y pasa a ser **cuánto del premio se alcanza a ver por encima de él**: todo, si lo que
+sigue es corto (el caso de hoy en "Adiviná el tema"); solo la parte de abajo y su
+crédito, si lo que sigue es largo (el caso cargado de "Adiviná la tapa"); en el peor caso
+imaginable —una explicación tan larga que por sí sola llena el viewport— nada del premio,
+pero `Seguí` sigue entero y tocable. Esa jerarquía es a propósito: entre "ver el premio" y
+"que el botón nunca quede afuera", gana siempre el segundo, porque es lo que `UX-20 §1.3`
+no negocia — ver el premio es el motivo de esta excepción, no su condición.
+
+**Lo que esta hoja ya no necesita fijar.** La v3 dejaba pendiente medir, por ítem, un
+techo en píxeles para la distancia premio→botón. La v4 lo vuelve innecesario: con la
+condición 2 nueva esa distancia no puede superar el alto del viewport, por construcción
+—no hay número que medir, hay que confirmar que el mecanismo está bien puesto (`Cómo se
+verifica`, más abajo)—. Lo único que queda abierto, y no es para reabrir esta regla, es
+una decisión de contenido: si algún día una `explicacion` real resulta tan larga que tapa
+el premio por completo incluso en el caso más liviano, la salida es acortar ese texto o
+mover el reproductor/enlace a la letra a después de `Seguí`, no tocar el mecanismo de
+scroll otra vez.
 
 ---
 
@@ -846,15 +874,17 @@ queda para quien construya (`D-12`):
   confirmar que las tres tintas de cada uno salen de sus propios `--disco-*-tinta`/
   `-apoyo` en `tokens.css`, no de una paleta compartida — es la vara de `REV-11`
   (`T-209`).
-- **`§1.4` (a dónde apunta el scroll automático):** dos condiciones, ninguna se audita
-  con un test de esta hoja (`D-12`, no invento uno solo para esto). **Condición 1**, en
-  código: `partida-tema.ts` tiene que envolver su `seguir.focus({ preventScroll: true })`
-  + `revelacion.scrollIntoView(...)` en el mismo tipo de rama que ya usa
-  `partida-tapa.ts:152-157` (`if (armarEstampa(...) devolvió algo) {...} else {
-  seguir.focus(); }`) — un `grep` sobre las dos funciones alcanza para confirmarlo.
-  **Condición 2**, también en código: el `scrollIntoView` de `partida-tema.ts` tiene que
-  correr sobre el elemento que devuelve `armarEstampa`, no sobre `revelacion`. Y con el
-  dedo, a 375×812: jugar el caso más cargado de cada juego (tema con reproductor entero +
-  enlace a la letra; tapa con explicación larga + sello) y confirmar que "Seguí" sigue a
-  un desplazamiento corto de la vista, no a media pantalla — si no lo está, se acorta el
-  panel, no se reabre el número de esta hoja.
+- **`§1.4` (a dónde apunta el scroll automático — v4):** ninguna condición se audita con
+  un test de esta hoja (`D-12`, no invento uno solo para esto). **Condición 1**, en
+  código: `partida-tema.ts` y `partida-tapa.ts` solo llaman `scrollIntoView` (con su
+  `focus({ preventScroll: true })`) cuando hay premio real — `grep` sobre las dos
+  funciones alcanza para confirmar que la rama sin premio hace `seguir.focus()` a secas.
+  **Condición 2**, la que corrige la v4: el `scrollIntoView` corre con `block: 'end'`
+  sobre el elemento que termina en `Seguí` — `revelacion` en un juego, `panel` en el
+  otro —, nunca sobre la imagen. Se confirma con el dedo o con la consola a 375×812, en
+  los dos juegos, con y sin contenido pesado (tapa con explicación larga + sello; tema con
+  reproductor entero + enlace a la letra): apenas termina de revelar, antes de tocar
+  nada, `document.querySelector('.seguir, .primario').getBoundingClientRect().bottom <=
+  window.innerHeight` da `true` en los cuatro casos. Esa comparación es la garantía
+  completa — no hace falta medir cuánto del premio queda arriba, eso varía a propósito
+  (ver el cierre de `§1.4`).

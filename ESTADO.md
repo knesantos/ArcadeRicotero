@@ -7,55 +7,77 @@
 
 **Última actualización:** 2026-09-02
 
-**Ciclo actual:** **12 — PLANIFICADO, en curso.** Plan en `Docs/ORQ/ORQ-plan-ciclo-12.md`, tareas `T-195`..`T-210`. Lo pidió el usuario el 2026-09-01: *"otro ciclo de ui/UX inmersivo, aún más creativo; tomá la mística y la estética de Rocambole y aplicala a toda la página; sobre todo en adiviná el tema, que te sorprenda la tapa cuando adivinás"*. **La idea: el sitio no se dibuja, se imprime** — la tapa que sacaste se estampa por pasadas de serigrafía con sus colores medidos, sobre papel, y la sala se vuelve el disco. Empieza por `T-195`..`T-198`, los cuatro documentos.
+**Ciclo actual:** **12 — CERRADO (2026-09-02).** Plan en `Docs/ORQ/ORQ-plan-ciclo-12.md`,
+tareas `T-195`..`T-210`, las dieciséis cerradas y ninguna cancelada. Lo pidió el usuario el
+2026-09-01: *"otro ciclo de ui/UX inmersivo, aún más creativo; tomá la mística y la estética
+de Rocambole y aplicala a toda la página; sobre todo en adiviná el tema, que te sorprenda la
+tapa cuando adivinás"*. **La idea: el sitio no se dibuja, se imprime.** La doctrina quedó en
+`D-33` — *el acierto es el único grito del sitio*— y la hoja que la fija, en `UX-22`.
 
-> **`T-195` — CERRADO (2026-09-01).** `experiencia` escribió `Docs/UX/UX-22-la-imprenta-
-> de-rocambole.md`. Fija la corrección de doctrina que pedía el plan —**el acierto es el
-> único grito del sitio**, con techo propio (cada pasada ≤ 400 ms, la secuencia entera de
-> cuatro compases —clara, media, clave, el fijado de la foto— ≤ 1200 ms, el fallo es una
-> sola tinta clave)— y las otras seis piezas: el orden y la mezcla de las pasadas (sobre
-> `--papel`, registro corrido de 2 px/0,4° que nunca se corrige, `multiply`, la clave
-> siempre `--fondo` para los diez discos por igual — cero pares nuevos en
-> `contraste.test.ts`); la sala volviéndose el disco acertado (reusa `--duracion-paso`,
-> vuelve a Lobo suelto al fallar); el acierto sonando entero solo si hubo audio en ese
-> tema; "dala vuelta" como manipulación permitida (no rompe la tabla anti-slop porque la
-> inicia la persona); la cinta con los carretes girando como señal diegética, con su
-> palabra siempre presente (nunca solo color); la letra propia de Oktubre/Lobo
-> suelto/Cordero atado y `--fuente-rotulada` para el resto; el registro imperfecto
-> estático en la letra grande de todo el sitio; el rodillo como separador; la tirada como
-> afiche; y el cierre de la pieza que `UX-13 §4` había dejado pendiente (el zoom de
-> "Adiviná la tapa" que se abre a la tapa entera al acertar, reusando el
-> `figcaption.credito-tapa` que ya existe). Catálogo de cinco tokens nuevos, sin valores
-> (`--duracion-pasada`, `--escalon-pasada`, `--duracion-giro`, `--duracion-carrete`,
-> `--registro`/`--registro-angulo`, más `--textura-rodillo` y `--fuente-lobo-suelto`).
-> **Próximo paso:** `T-196` (`RES-54`, investigador), `T-197` (`ADR-05`+`CTR-12`,
-> arquitectura) y `T-198` (`CNT-14`, contenido) siguen abiertas — las tres corren en
-> paralelo con `T-195` ya cerrada. `T-199` (el hilo principal) recién arranca cuando
-> `T-197` esté lista.
+`npm test` **437/437** (eran 417 al cerrar el 11), `npm run check` limpio, build de **150
+páginas**. La corrida del taller (`node scripts/generar-pasadas.mjs --ver`) sale con código 0
+y los números que `ADR-05.9` ratificó.
 
-> **`FIND-51` de `REV-11` — RESUELTO (2026-09-02).** `experiencia` agregó `UX-22 §1.4`
-> (v3) y una nota en `UX-20 §1.3`. El scroll automático que al revelar lleva la vista al
-> premio (la estampa) en vez de al botón "Seguí" queda **ratificado como excepción
-> acotada**: `UX-20 §1.3` mide cuánto tarda en responder la acción principal (0 ms,
-> intacto), no dónde queda parada en pantalla — es un eje que no existía antes de este
-> ciclo, y esta hoja lo fija sin tocar los cuatro límites de `UX-20 §1`. La ratificación
-> trae **dos condiciones que el código de hoy no cumple del todo**, pendientes para quien
-> construya:
-> 1. La excepción vale solo si hay premio de verdad (`armarEstampa`/`estampaDe` no
->    `null`). `partida-tapa.ts:152-157` ya lo hace bien (`if (seImprimio) {...} else {
->    seguir.focus(); }`); **`partida-tema.ts` no**: hoy scrollea siempre, aunque el disco
->    no sea uno de los diez y no haya nada que mirar. Hay que envolver su
->    `preventScroll`/`scrollIntoView` en la misma rama.
-> 2. El `scrollIntoView` de `partida-tema.ts` apunta a `revelacion` (el panel entero);
->    tiene que apuntar al elemento que devuelve `armarEstampa`, calcado de como
->    `partida-tapa.ts` ya apunta a `.figura-tapa-juego` y no a `zonaPartida`.
+**Qué hay ahora que no había:** la tapa que sacás **se imprime delante tuyo** por tres
+pasadas de tinta con los colores medidos de ese disco (`RES-37`), en el orden en que se
+imprime una serigrafía de verdad (`RES-54`), sobre papel y con el registro corrido; al fallar
+llega en **una sola tinta**. La sala se vuelve el disco que acertaste. El acierto suena
+entero, pero solo si prendiste el audio en ese tema. La estampa **se da vuelta** y muestra la
+trasera real con la pista estampada como sello —y la trasera no se baja hasta que la tocás—.
+Los carretes del casete giran mientras corre el fragmento. El resumen de la vuelta se maqueta
+como afiche, con las cuatro tapas chicas. En "Adiviná la tapa" el zoom **se abre** a la tapa
+entera: es la pieza que `UX-13 §4` había dejado escrita como pendiente. Y la imprenta salió
+de los juegos: el registro imperfecto vive detrás de la letra grande de todo el sitio, el
+rodillo separa las secciones del portal y del índice, y la ficha de disco de la Redondopedia
+está estampada — quieta, porque un artículo no se mueve.
+
+> **Cómo se trabajó, porque importa para la próxima.** El ciclo lo construyó una sesión que
+> se quedó sin contexto antes de guardar nada: `T-195`..`T-204` estaban en el árbol, sin
+> commitear y sin `ESTADO.md` al día. La sesión siguiente guardó eso primero, tal cual estaba
+> (`d3efb56`), y recién después terminó lo que faltaba. **Lo primero que hay que hacer con
+> trabajo ajeno sin commitear es guardarlo, no mejorarlo.**
+
+> **`REV-11` — los seis hallazgos, y dónde quedó cada uno.** La ficha está en
+> `Docs/REVISIONES/REV-11-la-imprenta.md`. Veredicto: 🟡 en las dos preguntas duras del plan
+> (*¿sorprende la tapa?* y *¿la imprenta se volvió plantilla?*), con el límite declarado de
+> que `revisor` no tiene pantalla para mirar.
 >
-> No fijé un techo en píxeles para la distancia premio→botón: el dato de `REV-11` mide el
-> panel liviano de "Adiviná la tapa", no el caso más cargado de ninguno de los dos juegos
-> (tema con reproductor + enlace a la letra; tapa con explicación larga + sello). Ese
-> techo queda para quien construya, medido con el dedo a 375×812 — el comando exacto está
-> en `UX-22`, sección "Cómo se verifica". El resto de `REV-11` (`FIND-46`, `FIND-48`,
-> `FIND-49`, `FIND-50`) sigue abierto y no es mío.
+> - **`FIND-46` (mayor) — CERRADO.** El crédito del pie no acumulaba: recalculaba la lista
+>   desde el `data-tapas` estático en cada tema y perdía el disco anterior, contra lo que
+>   pide `UX-22 §2.5`. Ahora vive en un `Set` de la sesión que no saca a nadie. Verificado a
+>   mano: acertar un tema de Oktubre deja "Lobo suelto y Oktubre" en el pie, y lo sigue
+>   diciendo en el tema siguiente.
+> - **`FIND-47` (bloqueante) — CERRADO.** `T-205` estaba declarada cerrada en el commit y no
+>   estaba construida: el resumen no llevaba las tapas ni usaba `RESULTADO.afiche`.
+>   Construida y verificada a 375×812 y a 320 px sin desborde.
+> - **`FIND-48` (mayor) — CERRADO.** Faltaba `isolation: isolate`, que `UX-22 §2.2` exige por
+>   nombre: sin eso el `multiply` de las tintas no se detiene en el papel. Agregado en
+>   `.estampa-papel` y en `.estampita`.
+> - **`FIND-49` (mayor) — CERRADO por `arquitectura`.** Ratificó **el papel como cuarta
+>   zona** en `ADR-05.9`, y encontró que el equivocado era el contrato, no el taller: su
+>   regla 5 contradecía a su propio `ADR-05.2`. De paso enmendó tres desvíos que el hallazgo
+>   no listaba. El hilo principal construyó el candado 7 (caso 19 de `estilos.test.ts`) y
+>   corrió la verificación entera, en verde.
+> - **`FIND-50` (menor) — CERRADO por `contenido`.** Retiró el sello de crédito de `CNT-14
+>   §2.2` en vez de reescribirlo: `UX-22 §2.5` no pide un sello con otra forma, pide que no
+>   exista ninguno.
+> - **`FIND-51` (menor) — CERRADO por `experiencia`, con una vuelta de corrección.**
+>   Ratificó en `UX-22 §1.4` el scroll que al revelar lleva la vista al premio en vez de al
+>   botón. La medición que pidió tumbó su primera condición —en "Adiviná la tapa", ítem
+>   `oktubre`, "Seguí" quedaba 457 px (56 % de la pantalla) debajo del pliegue—, así que
+>   `§1.4` pasó a v4: el `scrollIntoView` apunta con `block: 'end'` al bloque que **termina**
+>   en el botón. Construido y verificado: el botón entra entero en los cuatro casos, con 6 a
+>   19 px de sobra.
+
+> **Lo que este ciclo deja sabido y no resuelto, para el próximo.** La v4 de `UX-22 §1.4`
+> eligió, con todos los datos sobre la mesa, que **entre ver el premio y que el botón nunca
+> falte, gana el botón**. La consecuencia medida: en el ítem más cargado de "Adiviná la tapa"
+> —`oktubre`, con explicación larga y sello de leyenda— la pantalla queda parada en el panel
+> y **la tapa se imprime arriba del pliegue, fuera de vista**. No es un defecto, es la
+> jerarquía que `experiencia` fijó a propósito y dejó escrita; pero es exactamente el
+> problema que el ciclo 12 vino a resolver, reaparecido en un caso de borde. Si alguna vez se
+> quiere las dos cosas, la salida no es el scroll: es el maquetado —mover la figura abajo de
+> las opciones al revelar—, que es la opción 3 que `experiencia` descartó por tamaño.
 
 **Ciclo 11 — CERRADO.** El ciclo 10 también, y en el mismo día, en dos sesiones
 que no se veían. Plan del 11 en `Docs/ORQ/ORQ-plan-ciclo-11.md`, tareas `T-176`..`T-194`.

@@ -900,18 +900,23 @@ function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
    *     tiene estampa, y entonces no hay nada que mirar: la pantalla vuelve al
    *     comportamiento generico de cualquier revelacion de texto del sitio —el foco se
    *     lleva la vista consigo—, igual que el quiz y "sacalo por la letra".
-   *  2. **La vista apunta al premio, no al panel entero.** El blanco es la imagen, no la
-   *     ficha completa con su titulo y su costo. Hoy la diferencia es de unos pixeles
-   *     porque la estampa va casi primera, pero la regla tiene que ser la imagen: si
-   *     manana entra algo antes, el blanco no se mueve.
+   *  2. **El blanco es el bloque que TERMINA en el boton, alineado al pie**
+   *     (`block: 'end'`), no la imagen alineada arriba. Apuntar al premio se medio bien
+   *     aca de casualidad —este panel es corto— y rompia el otro juego, donde entre la
+   *     tapa y el boton hay enunciado, cuatro opciones, explicacion y sello: el boton
+   *     terminaba 457 px abajo del pliegue. Con el pie alineado, el boton **nunca queda
+   *     afuera, por construccion**, y lo que varia con el largo del contenido es cuanto
+   *     del premio se ve arriba. Esa jerarquia es a proposito: entre ver el premio y que
+   *     el boton este, gana el boton.
    */
   if (estampa) {
     seguir.focus({ preventScroll: true });
-    estampa.scrollIntoView({ block: 'start' });
+    revelacion.scrollIntoView({ block: 'end' });
   } else {
     seguir.focus();
   }
 }
+
 
 
 /**

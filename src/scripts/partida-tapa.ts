@@ -138,24 +138,34 @@ function responder(texto: string): void {
 
   zonaPartida.append(panel);
   /*
-   * El foco va al boton de seguir, como siempre, pero SIN que el navegador se lleve la
-   * pantalla hasta el (`preventScroll`), y la vista se va a la figura. Es la misma
-   * correccion que `partida-tema.ts` hizo con la estampa, por el mismo motivo: enfocar el
-   * boton dejaba el premio afuera de la vista, y aca el premio es la tapa que se termina
-   * de imprimir. El boton queda abajo, ya enfocado —quien juega con teclado aprieta Enter
-   * sin moverse— y a un pulgar de distancia para el resto. Sin `smooth`: un
-   * desplazamiento animado seria movimiento que el corte de movimiento reducido no apaga.
+   * A donde mira la pantalla al revelar (`UX-22` §1.4 v4, que resolvio `FIND-51`).
    *
-   * Si no hubo estampa que imprimir, no hay premio arriba y el boton se lleva la vista
-   * como toda la vida.
+   * El foco va al boton de seguir, como siempre, pero SIN que el navegador se lleve la
+   * pantalla hasta el (`preventScroll`): enfocar el boton dejaba la tapa recien impresa
+   * afuera de la vista, que es el problema que este ciclo existe para resolver. Sin
+   * `smooth`: un desplazamiento animado seria movimiento que el corte de movimiento
+   * reducido no apaga.
+   *
+   * **El blanco es el panel, alineado al PIE** (`block: 'end'`), no la figura alineada
+   * arriba. Apuntar a la figura era lo que rompia esta pantalla: entre la tapa y el boton
+   * hay enunciado, cuatro opciones, explicacion y sello, y en el item mas cargado el
+   * boton terminaba 457 px abajo del pliegue —mas de media pantalla, el techo que
+   * `UX-22` §1.4 no queria cruzar—. Con el pie del panel alineado al pie del viewport, el
+   * boton **nunca queda afuera, por construccion**, sin importar cuanto contenido haya
+   * antes; lo que varia es cuanto del premio se ve arriba. Entre ver el premio y que el
+   * boton este, gana el boton.
+   *
+   * Si no hubo estampa que imprimir, no hay premio que mirar y el boton se lleva la vista
+   * como en cualquier otra revelacion de texto del sitio.
    */
   if (seImprimio) {
     seguir.focus({ preventScroll: true });
-    zonaPartida.querySelector('.figura-tapa-juego')?.scrollIntoView({ block: 'start' });
+    panel.scrollIntoView({ block: 'end' });
   } else {
     seguir.focus();
   }
 }
+
 
 /**
  * El zoom se abre (`UX-22` §11, `T-206`).
