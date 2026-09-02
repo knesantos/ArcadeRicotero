@@ -1,7 +1,11 @@
 # CNT-14 — Las palabras de la imprenta
 
 - **Rol dueño:** `contenido`
-- **Fecha:** 2026-09-01
+- **Fecha:** 2026-09-01 — **corrección puntual 2026-09-02, en §2.2**, por `FIND-50`
+  (`REV-11`, ciclo 12): se retira el sello de crédito de la estampa (`ROCAMBOLE` /
+  `BAJA RESOLUCIÓN`) porque `UX-22` §2.5 fijó que la estampa **no** lleva sello propio —
+  exactamente la condición de reapertura que esta misma pieza había dejado escrita en su
+  cabecera y que nadie ejecutó a tiempo. Detalle completo en §2.2.
 - **Estado:** cierra `T-198` del ciclo 12, frente A. Insumo directo de `T-200`..`T-206`
   (hilo principal, que cablea estas líneas en `src/lib/tema/copy.ts` y en
   `src/lib/tapa/copy.ts` — archivos que esta pieza **no toca**, por regla del encargo).
@@ -40,17 +44,23 @@
   imprime nadie. Si `UX-22` termina fijando algo que contradiga una de estas líneas, se
   reabre esta pieza — no antes.
 
+  **Y eso pasó: `UX-22` aterrizó y su §2.5 contradice de frente el sello de crédito que
+  escribí en §2.2.** No se reabrió sola — hizo falta `FIND-50` de `REV-11` (ciclo 12) para
+  notarlo. Queda corregido ahí, con fecha y motivo.
+
 - **Resuelve:** `T-198`.
 
 ## 0. Qué es esto, y qué no es
 
-Nueve renglones (más un criterio sin texto propio, el punto 7). Ninguno reemplaza el
-título de una pantalla, el subtítulo de mecánica o un botón que ya existe y que
-`CNT-05`/`CNT-13`/el hilo principal ya escribieron — eso sigue igual, y sigue siendo lo
-que **nombra**. Lo que agrego acá son las palabras nuevas que la imprenta necesita para
-tener voz: el grito de la tinta, el sello frío del crédito, el control que da vuelta el
-objeto, el estado de la cinta sin movimiento, y el título del afiche en el que se
-convierte el resultado.
+**Siete renglones** (más un criterio sin texto propio, el punto 7). Eran nueve hasta la
+corrección del 2026-09-02: los dos que se cayeron eran el sello de crédito de la estampa,
+retirado en §2.2 porque `UX-22` §2.5 dice que la estampa no lleva uno propio — el detalle
+completo, ahí. Ninguno de los siete que quedan reemplaza el título de una pantalla, el
+subtítulo de mecánica o un botón que ya existe y que `CNT-05`/`CNT-13`/el hilo principal ya
+escribieron — eso sigue igual, y sigue siendo lo que **nombra**. Lo que agrego acá son las
+palabras nuevas que la imprenta necesita para tener voz: el grito de la tinta, el control
+que da vuelta el objeto, el sello de la pista en la trasera, el estado de la cinta sin
+movimiento, y el título del afiche en el que se convierte el resultado.
 
 **Nada de lo que sigue necesita ficha `RES-XX` nueva.** Es tono y forma, no un hecho
 verificable sobre la banda. Donde toco algo que sí tiene ficha detrás —qué técnicas usa
@@ -66,16 +76,16 @@ no escribir algo que le pegue en contra a la tinta real de cada tapa.
 Cada renglón nuevo cumple:
 
 - **Registro explícito** (`voz-ricotera.md` §5): 1 (canta), 2 (cuenta) o 3 (rotula). Los
-  nueve de acá son 1 o 3 — no hay prosa larga que requiera el 2.
+  siete de acá son 1 o 3 — no hay prosa larga que requiera el 2.
 - **Techo de palabras** según el tipo: 8 para toda línea que canta (4.1), sin techo
   formal pero sí brevedad de sello (una o dos palabras en mayúsculas) para lo que rotula.
 - **Imagen física cuando el registro es 1** (4.3): cuerpo, objeto, animal o plata — nunca
   color suelto ni psicodelia de utilería. Donde el registro es 3, **no** hace falta
   imagen: `voz-ricotera.md` §5 lo dice explícito — "seco, sin imagen, sin chiste".
-- **Intruso:** ninguno de los nueve trae uno. Mismo argumento que `CNT-13` §2: la regla
-  4.5 dice "puede traer", no "tiene que traer", y con nueve piezas ya hay variedad de
-  imagen (tinta, papel, pared, cinta) sin forzar una marca o un nombre propio que solo
-  cumpliría cuota.
+- **Intruso:** ninguno de los siete trae uno. Mismo argumento que `CNT-13` §2: la regla
+  4.5 dice "puede traer", no "tiene que traer", y con siete piezas ya hay variedad de
+  imagen (tinta, un objeto que se da vuelta, pared, cinta) sin forzar una marca o un
+  nombre propio que solo cumpliría cuota.
 - **No explica el truco** (4.6, y la fila de `voz-ricotera.md` §7 "explicar el chiste en
   la línea siguiente"): donde el efecto visual ya dice algo (la tapa se imprime en
   colores, la tapa se imprime en una tinta), el texto no repite en palabras lo que el ojo
@@ -84,7 +94,7 @@ Cada renglón nuevo cumple:
 
 ---
 
-## 2. Las nueve piezas
+## 2. Las siete piezas
 
 ### 2.1 El acierto y el fallo de "Adiviná el tema" — la metáfora de la tinta
 
@@ -119,31 +129,56 @@ distinto. "Una tinta" nombra la causa real del efecto (te faltó pagar el resto 
 pasadas) en vez de describir el resultado con un adjetivo ("gris", "sin color") que
 suena a estado técnico de pantalla apagada, no a objeto de imprenta.
 
-### 2.2 El sello de crédito de la estampa — registro 3, seco
+### 2.2 El crédito de la estampa — reabierto, sin sello propio (`FIND-50`)
 
-Hoy "Adiviná el tema" no muestra ninguna tapa, así que no existe crédito en esa pantalla.
-Con la estampa (`T-200`), aparece una tapa real por primera vez ahí, y `D-21` no negocia:
-**crédito obligatorio, baja resolución declarada.**
+**Esta sección se reescribe entera el 2026-09-02.** Lo que sigue abajo, entre líneas, es
+lo que decía antes y por qué quedó mal — lo dejo a la vista porque es la evidencia de la
+propia condición de reapertura que esta pieza se había puesto: *"si `UX-22` termina
+fijando algo que contradiga una de estas líneas, se reabre esta pieza."* Pasó, y el
+código ya lo sabía antes que este documento: `src/lib/tema/copy.ts` nunca tuvo
+`REVELACION.credito.autor` ni `.resolucion`, la estampa no lleva sello, y estas dos
+cadenas quedaron como texto muerto hasta que `FIND-50` (`REV-11`) lo marcó.
 
-`PARTIDA.credito` en `tapa/copy.ts` (`'Tapa: Rocambole, en baja resolución.'`) es una
-frase de figcaption — vive al lado de una imagen dentro de una isla sin `Base.astro`,
-que es exactamente el caso que `UX-04` ya resuelve con "sello de esquina, mismo patrón de
-texto". **No sirve igual para la estampa**, y no por el contenido sino por la forma: la
-estampa es un objeto impreso, no una fotografía con pie de foto — necesita el
-**componente "sello de goma"** de `diseno-marca.md` (rectángulo de esquina casi viva,
-borde fino, mayúsculas rotuladas, apenas torcido), y ese componente pide texto corto, no
-una oración. Decido: **dos renglones cortos**, no una oración.
+**Lo que decía, y por qué estaba mal.** Escribí un sello propio para la estampa —dos
+renglones, `ROCAMBOLE` / `BAJA RESOLUCIÓN`, con el componente "sello de goma" de
+`diseno-marca.md`— razonando que `PARTIDA.credito` (la frase de figcaption de "adiviná la
+tapa") no le servía a un objeto que se imprime en vez de una foto con pie. El razonamiento
+sobre la forma era correcto; la solución, no: `UX-22` §2.5 resuelve el mismo problema **sin
+agregar un sello nuevo en ningún lado**, y esa es la que manda porque es de quien decide
+dónde vive cada pieza en la pantalla, no de quien escribe las palabras.
 
-> **`ROCAMBOLE`**
-> **`BAJA RESOLUCIÓN`**
+**Lo que dice ahora.** `D-21` sigue exactamente igual de estricto —**crédito obligatorio,
+baja resolución declarada, en cualquier pantalla donde aparezca una tapa**—, pero el
+mecanismo que lo cumple acá no es un sello en la estampa: es el pie de página que ya existe
+(`footer.pie-sitio`, `credito-tapas`, `PORTAL.creditoTapas` en `src/lib/sitio/copy.ts`),
+que `T-200`/`T-202` recalculan en el navegador sumando cada disco que se imprimió o vistió
+el fondo durante la sesión, deduplicado (`UX-22` §2.5 y §3). Es el mismo mecanismo que ya
+sostiene el crédito de esta pantalla hoy —hasta ahora estático, fijo en Lobo suelto— y que
+la trasera de la estampa (`UX-22` §5) reusa sin agregar una segunda línea.
 
-Registro 3. Primer renglón, 1 palabra (el autor, sin verbo — así se leen los créditos de
-tapa reales, nunca como frase). Segundo renglón, 2 palabras, y dice literalmente "baja"
-como pide el encargo. Mayúsculas porque así se leen los otros sellos que ya existen en el
-sitio (`LEYENDA`, `TESTIMONIO`) — coherencia de familia de componente, no un capricho.
-Sin "(Ricardo Cohen)": sigo el precedente que ya está en producción en `tapa/copy.ts`
-(`PARTIDA.credito` tampoco lo lleva), y agregarlo acá sin agregarlo allá sería inventar
-una inconsistencia nueva en vez de resolver una vieja.
+**No hace falta escribir ninguna palabra nueva para esto.** `PORTAL.creditoTapas` ya arma
+la frase para uno o para varios discos —*"En esta pantalla, arte de la tapa de..."* /
+*"...de las tapas de X, Y y Z, en baja resolución"*— y ya está en producción. Vive en
+`sitio/copy.ts`, no en `tema/copy.ts`: no es un campo que esta pieza tenga que llenar, y
+el propio archivo ya deja anotado que es candidato a que `contenido` lo revise algún día
+con su vara — eso queda como pendiente aparte, no como parte de esta corrección. Retirar
+el sello no deja ningún hueco: la estampa se imprime sin firma propia, y el pie de página
+dice de dónde salió cada tapa que apareció en la sesión, crédito incluido.
+
+**Queda cancelado, y el nombre no se reutiliza:** `REVELACION.credito.autor` y
+`REVELACION.credito.resolucion` (§3, filas marcadas `[CANCELADO]`). Si algún día la
+estampa necesita un sello propio por otro motivo, es una pieza nueva con su propio
+criterio — no la reapertura de esta.
+
+> Lo que decía la versión retirada, para que quede el rastro:
+>
+> `ROCAMBOLE`
+> `BAJA RESOLUCIÓN`
+>
+> — dos renglones, registro 3, mayúsculas de sello, sin "(Ricardo Cohen)" siguiendo el
+> precedente de `PARTIDA.credito`. El razonamiento de por qué no llevaba paréntesis con el
+> nombre real sigue siendo válido en general; simplemente ya no aplica a nada, porque no
+> hay sello que lo lleve.
 
 ### 2.3 "Dala vuelta" / "Volvé a la tapa" — el control que gira la estampa
 
@@ -253,14 +288,16 @@ tienen glifo de tilde), no un criterio de estilo que valga para el resto del sit
 Para que `T-200`..`T-206` la transcriban a `src/lib/tema/copy.ts` (bloque `REVELACION` y
 `RESULTADO`) y a `src/lib/tapa/copy.ts` (bloque `PARTIDA`). Los nombres de campo son
 sugerencia, no mandato — el nombre final es de quien cablea (mismo criterio que `CNT-13`
-§6).
+§6). **Las dos filas `[CANCELADO]` no se transcriben a ningún lado** — quedan en la tabla,
+sin reutilizar el nombre de campo, por la misma regla de `Docs/IDS.md` que un ítem
+cancelado se marca y se queda donde está en vez de desaparecer.
 
 | Archivo | Campo sugerido | Valor | Registro | Palabras | Estado |
 |---|---|---|---|---|---|
 | `tema/copy.ts` | `REVELACION.acerto` | `¡La sacaste!` | 1 | 2 | **Sin cambios** |
 | `tema/copy.ts` | `REVELACION.fallo` | `Se te escapó, en una tinta sola.` | 1 | 7 | **Modifica** (antes: `Se te escapó.`) |
-| `tema/copy.ts` | `REVELACION.credito.autor` | `ROCAMBOLE` | 3 | 1 | **Nuevo** |
-| `tema/copy.ts` | `REVELACION.credito.resolucion` | `BAJA RESOLUCIÓN` | 3 | 2 | **Nuevo** |
+| `tema/copy.ts` | `REVELACION.credito.autor` | `ROCAMBOLE` | 3 | 1 | **[CANCELADO]** — ver §2.2, `FIND-50` |
+| `tema/copy.ts` | `REVELACION.credito.resolucion` | `BAJA RESOLUCIÓN` | 3 | 2 | **[CANCELADO]** — ver §2.2, `FIND-50` |
 | `tema/copy.ts` | `REVELACION.girar` | `Dala vuelta` | 1 | 2 | **Nuevo** (`aria-label`, ver `2.3`) |
 | `tema/copy.ts` | `REVELACION.volverATapa` | `Volvé a la tapa` | 1 | 4 | **Nuevo** (`aria-label`) |
 | `tema/copy.ts` | `REVELACION.pista` | `(n) => \`PISTA ${n}\`` | 3 | — | **Nuevo** |
@@ -282,25 +319,26 @@ siente como dos equipos que no se hablaron.
 
 ## 4. Bloqueos y pendientes
 
-- **Ninguna ficha `RES-XX` pendiente para esta pieza.** Las nueve líneas son tono y
-  forma; lo único que cita una ficha es `2.1` (`RES-06`, por qué "una tinta" y no "un
-  color") y `2.7` (`RES-42`/`RES-43`, por qué la excepción de tildes es de tres discos y
-  no de más).
-- **`UX-22` y `RES-54` no existen todavía en disco** (ver cabecera). Ninguna línea de acá
-  depende de un dato que esas dos piezas puedan traer — si `RES-54` confirma un orden de
-  pasadas distinto al que imagina el plan, no cambia una palabra de este documento, que
-  no describe un orden técnico, solo usa "tinta" y "clave" como sustantivos.
+- **Ninguna ficha `RES-XX` pendiente para esta pieza.** Las siete líneas que quedan son
+  tono y forma; lo único que cita una ficha es `2.1` (`RES-06`, por qué "una tinta" y no
+  "un color") y `2.7` (`RES-42`/`RES-43`, por qué la excepción de tildes es de tres discos
+  y no de más).
+- **`UX-22` ya aterrizó (`RES-54` seguía pendiente al momento de esta corrección).** La
+  parte que sí tocaba a esta pieza —el crédito de la estampa— ya se resolvió en `2.2`.
+  Ninguna otra línea de acá depende de un dato que `RES-54` pueda traer: si confirma un
+  orden de pasadas distinto al que imagina el plan, no cambia una palabra de este
+  documento, que no describe un orden técnico, solo usa "tinta" y "clave" como sustantivos.
 - **`REVELACION.girar` / `volverATapa` tienen que nacer en `copy.ts`, no en el script de
   la isla** — lo marco en `2.3` porque `voz.test.ts` ya tiene el test puntual que agarra
   justo ese defecto, y ya pasó una vez con "Link copiado" y con el placeholder del
   buscador de `US-07`.
-- **La forma exacta del sello (un `<p>` con `<br>`, dos `<p>` separados, `data-*` con dos
-  atributos) es de `T-200`/`T-203`, no mía** — dejo los dos renglones como dos cadenas
-  separadas justamente para no forzar una decisión de marcado que no me toca.
+- **`REVELACION.credito.autor` / `.resolucion` no se cablean.** Quedaban pendientes de
+  `T-200`/`T-203` decidir su marcado exacto; ese pendiente se cierra solo, por cancelación
+  del campo entero (`2.2`), no porque alguien haya resuelto la forma.
 
 ## Cómo se verifica
 
-Hoy, a mano: cada una de las nueve líneas contra las siete reglas de `voz.test.ts` §8 —
+Hoy, a mano: cada una de las siete líneas contra las siete reglas de `voz.test.ts` §8 —
 ninguna trae anglicismo, ninguna es fórmula de folleto, ninguna nombra a la gente como
 "fans" o "usuarios", ninguna es un botón en infinitivo (`Dala`, `Volvé`, `Se` no están en
 la lista vetada), las dos líneas que cantan entran en 8 palabras, ninguna lleva puntos
@@ -312,7 +350,7 @@ Una vez que `T-200`..`T-206` las cableen en los dos `copy.ts`:
 node --test src/lib/voz.test.ts
 ```
 
-tiene que seguir en verde con las nueve cadenas nuevas adentro del recorrido de
+tiene que seguir en verde con las siete cadenas nuevas adentro del recorrido de
 `VISIBLE` — `cadenas()` ya barre `tema/copy.ts` y `tapa/copy.ts`, así que las va a
 encontrar solas apenas existan, sin que haya que tocar el propio test. Lo único que sí
 necesita atención manual de quien cablee: agregar `REVELACION.girar` y

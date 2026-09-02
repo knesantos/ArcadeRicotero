@@ -1,7 +1,19 @@
 # ARQ — Las separaciones de tapa: la imprenta, en archivos
 
 > Rol dueño: `arquitectura`. **Produce: `ADR-05` + `CTR-12`.** Fecha: **2026-09-01**.
-> Versión: **v1**.
+> Versión: **v2 — enmendada el 2026-09-02 por `ADR-05.9`**, que **ratifica el papel como
+> cuarta zona** y pone `ADR-05.1` (reglas 3, 4 y 5) y `CTR-12` (§3, §4, §5, §6) a describir
+> lo que el taller hace de verdad. **Resuelve `FIND-49` de `REV-11`.** Cada párrafo
+> enmendado está marcado; lo que decía antes, palabra por palabra, está en `ADR-05.9`.
+>
+> **Por qué se enmienda acá y no hay un `-v2.md`.** Este rol versiona en archivo aparte
+> cuando el cambio **invalida** la decisión previa, y esta no se invalidó: `ADR-05` sigue
+> entero —tres PNG pre-teñidos, máscaras disjuntas, tinta plana, color leído de
+> `tokens.css`, ruta por convención de slug, el taller fuera del build—. Lo que cayó son
+> tres números que nunca tuvieron una línea de justificación y una cláusula que no sostenía
+> nada. Un archivo nuevo dejaría huérfanas las referencias que ya apuntan a esta ruta desde
+> `scripts/generar-pasadas.mjs`, `src/lib/tapa/pasadas.test.ts`, `ORQ-plan-ciclo-12.md` y
+> las dos sugerencias del ciclo, y eso cuesta más trazabilidad de la que ahorra.
 >
 > **Consume** — leído para escribir esto, no citado de memoria: `CLAUDE.md` (la postura y
 > las reglas), `.claude/rules/diseno-marca.md` (el circuito diseño → tokens → test, la
@@ -27,14 +39,30 @@
 > `pintarResultado`, líneas 703-919), `src/lib/tema/copy.ts`, `src/data/tapa.json`,
 > `package.json`, `.gitignore`.
 >
-> **Resuelve:** `T-197`. **Habilita:** `T-199` (el taller), `T-200` (la estampa), `T-203`
-> (dala vuelta), `T-202` (la sala), `T-206` (el zoom que se abre).
+> **Consumido de más para la enmienda del 2026-09-02** (`ADR-05.9`), y todo leído, no
+> recordado: `Docs/INVESTIGACION/INV-54-serigrafia.md` (`RES-54` entero, que llegó),
+> `Docs/SUGERENCIAS/HILO-para-arquitectura-el-papel-de-la-estampa.md`,
+> `scripts/generar-pasadas.mjs` entero, `scripts/pasadas-manifiesto.json` entero (las diez
+> corridas reales), `src/lib/tapa/pasadas.ts`, `src/lib/tapa/pasadas.test.ts` entero, y el
+> bloque de la imprenta de `src/styles/juego.css` (líneas 2225-2330: `.estampa-papel`,
+> `.pasada`, y el arreglo de `FIND-48`).
+>
+> **Resuelve:** `T-197` y **`FIND-49`** (`REV-11`, ciclo 12). **Habilita:** `T-199` (el
+> taller), `T-200` (la estampa), `T-203` (dala vuelta), `T-202` (la sala), `T-206` (el zoom
+> que se abre).
 >
 > **No resuelve, y no se mete:** cómo se ve la impresión, cuánto dura cada pasada y qué se
 > estampa y qué no — eso es `UX-22` (`T-195`, `experiencia`); las palabras — `CNT-14`
-> (`T-198`, `contenido`); **el orden de las pasadas de una serigrafía de verdad** —
-> `RES-54` (`T-196`, `investigador`), y el apartado `ADR-05.1` está construido para que ese
-> orden llegue **sin obligar a regenerar un solo archivo**.
+> (`T-198`, `contenido`).
+>
+> **`RES-54` llegó, y el desacople funcionó** (`T-196`, fichada el 2026-09-01, pegada el
+> 02): el orden es **clara → media → clave, la clave última**, por la convención fotográfica
+> del oficio (`RES-54.1`-`.4`, `.9`) y **no** por la del bloque-contorno-primero de la
+> xilografía (`RES-54.8`). Se cambió un retraso de CSS. **Cero archivos regenerados**, que
+> es exactamente lo que `ADR-05.1` regla 5 fue a comprar. Ojo con el rótulo que manda sobre
+> todo el sitio: ese orden es *"así se imprime una serigrafía"*, nunca *"así imprimía
+> Rocambole esta tapa"* — y dos de las diez tapas fueron aerografía, no serigrafía
+> (`RES-54.12`).
 
 ---
 
@@ -54,8 +82,15 @@ sobre la obra o la técnica de Rocambole sale de `RES-06` o de `RES-44`, y nada 
 trabaja *"artesanal, con rodillo y serigrafía; también aerografía, grabado, collage e
 ilustración"* es `RES-06`. Que la contratapa de `lobo-suelto-cordero-atado-cd1` trae el
 tracklist de 13 temas que coincide exacto con `RES-20` es `RES-44`. **Cómo se imprime una
-serigrafía —cuántas pasadas, en qué orden, por qué la clave va última— no lo afirmo acá:
-es `RES-54`, todavía pendiente**, y por eso el diseño no depende de la respuesta.
+serigrafía —en qué orden y por qué la clave va última— es `RES-54`, que llegó el
+2026-09-01**, y se cita por número donde se usa.
+
+**Lo que `RES-54` fue a buscar y no encontró, que importa tanto como lo que trajo:**
+`RES-54.13` dice con todas las letras que **ninguna fuente da un número de tintas ni un
+orden que Rocambole haya usado en una tapa**. Así que la separación en tres tintas más el
+papel **sigue siendo criterio propio de este rol**, apoyado en que tres a cinco tintas es
+lo verosímil en un taller de afiches (`RES-54.14`, guía de taller, no cifra dura). No es
+una reconstrucción de su método, y ninguna pieza del sitio puede decir que lo sea.
 
 Los contrastes de color que aparecen más abajo son **cálculo a mano sobre los valores de
 `tokens.css`, no una corrida** (`D-12`: este rol no tiene con qué correr nada). Están para
@@ -65,9 +100,9 @@ que quien construya no los rehaga, y el que manda es el que imprima el taller.
 
 ## ADR-05 — Las separaciones de tapa
 
-- **Estado:** **aceptada**, con **un pendiente declarado que no la bloquea** (`RES-54`, el
-  orden de las pasadas). Ver `ADR-05.1`: la decisión de máscaras disjuntas hace que el
-  orden sea un dato de la pantalla y no del archivo.
+- **Estado:** **aceptada y construida**, **enmendada el 2026-09-02** por `ADR-05.9` (el
+  papel es la cuarta zona). El pendiente que tenía —`RES-54`, el orden de las pasadas— se
+  cerró sin tocar un archivo, que era la apuesta de `ADR-05.1` regla 5.
 - **Contexto.** El ciclo 12 quiere que la tapa **se imprima** al acertar: tres pasadas de
   tinta con los colores medidos de esa tapa, la foto que se fija encima, y una sola tinta
   —la clave— cuando el tema se escapó. El material ya está: las diez fichas de 320 px
@@ -89,9 +124,10 @@ que quien construya no los rehaga, y el que manda es el que imprima el taller.
   sin un schema tocado, y con un guardián que **falla el build si el color de un archivo
   dejó de ser el del token**.
 
-### Los seis candados, antes de los detalles
+### Los siete candados, antes de los detalles
 
-Si alguien afloja uno, que sepa cuál:
+Si alguien afloja uno, que sepa cuál. **El séptimo lo agrega la enmienda del 2026-09-02**
+(`ADR-05.9`) y es el que paga el papel: eran seis:
 
 1. **El color sale de `tokens.css` y de ningún otro lado.** El taller lo lee y lo hornea.
    Nadie copia un hex a mano, ni al script, ni al test, ni al CSS.
@@ -107,21 +143,36 @@ Si alguien afloja uno, que sepa cuál:
 6. **El corrimiento de registro no se hornea.** Los tres archivos comparten el mismo marco,
    perfectamente registrados. El registro imperfecto lo pone el CSS con `--registro`
    (`T-207`), que es lo único que se puede apagar bajo `prefers-reduced-motion`.
+7. **La estampa se apoya siempre en una superficie opaca de `--papel`** (`ADR-05.9`). Desde
+   que el papel es una zona de verdad, las tres tintas **no cubren la imagen entera**: hay
+   hasta un 20 % de la tapa que no lleva tinta y muestra el soporte. Si esa superficie
+   falta, o es translúcida, o es de otro color, el papel deja de ser papel y pasa a ser un
+   agujero por el que se ve lo que haya detrás — que en esta pantalla es una tapa velada.
+   **Ya pasó una vez:** es `FIND-48` de `REV-11`, arreglado con `isolation: isolate` en
+   `.estampa-papel` (**medido en el repo**, `juego.css:2294`). Un candado nace de un golpe.
 
 ---
 
-## ADR-05.1 — Qué es cada archivo: tres tintas y una clave
+## ADR-05.1 — Qué es cada archivo: tres tintas, una clave y el papel
 
-*(Todo este apartado es **criterio propio del rol**, salvo donde se cita `RES-06`.)*
+*(Todo este apartado es **criterio propio del rol**, salvo donde se cita `RES-06` o
+`RES-54`. **Enmendado el 2026-09-02**: reglas 3, 4 y 5, y la cuarta fila de la tabla. El
+detalle del cambio y lo que decía antes están en `ADR-05.9`.)*
 
-Una separación es una máscara: qué parte de la tapa imprime esa tinta. Se saca de la
-luminancia de la propia ficha, y las tres reparten la imagen entera:
+Una separación es una máscara: qué parte de la tapa imprime esa tinta. Se saca de la propia
+ficha, y **las tres reparten casi toda la imagen: lo que queda es el papel**.
 
-| Archivo | Qué zona lleva | Con qué tinta |
-|---|---|---|
-| `<slug>-clara.png` | las zonas más luminosas de la tapa | el **más luminoso** de los dos colores medidos del disco |
-| `<slug>-media.png` | los medios | el **menos luminoso** de los dos |
-| `<slug>-clave.png` | las sombras | **`--fondo`**: la tinta del sitio, la base que `D-19` dice que no rota nunca |
+| Zona | Qué lleva | Con qué tinta | Archivo |
+|---|---|---|---|
+| clara | las zonas luminosas, sin llegar a las más blancas | el **más luminoso** de los dos colores medidos del disco | `<slug>-clara.png` |
+| media | los medios | el **menos luminoso** de los dos | `<slug>-media.png` |
+| clave | las sombras | **`--fondo`**: la tinta del sitio, la base que `D-19` dice que no rota nunca | `<slug>-clave.png` |
+| **papel** | **lo más blanco de la tapa** | **ninguna: es `--papel`, el soporte** | **ninguno** |
+
+**La cuarta zona no produce archivo, y ahí está la mitad de su gracia.** No se sirve, no se
+baja, no pesa y no puede faltar: es lo que se ve donde las tres máscaras no imprimen. El
+color es `--papel` (`#ede4ce`), un token que ya existía y que el taller ya leía para avisar
+las pasadas mudas — **el papel no agrega ni un hex, ni un token, ni un byte de red**.
 
 **La clave es `--fondo` y no un negro nuevo, por dos motivos que van juntos.** El primero
 es de regla: un `#000000` sería un hex nuevo, y el único lugar del repo donde vive un hex
@@ -130,7 +181,7 @@ color con coartada, que es exactamente lo que el bloque de las diez paletas de `
 prohíbe por escrito. El segundo es de sentido: la clave es **la única tinta que no rota**,
 igual que la base de `D-19`. Cada tapa aporta sus dos colores; el negro es del sitio.
 
-### Las cinco reglas de la separación
+### Las seis reglas de la separación
 
 1. **Se saca de la ficha, no del máster.** `public/tapas/<slug>.jpg`, la misma imagen de
    320 px que después se fija encima. Dos motivos: **registro exacto** (una máscara sacada

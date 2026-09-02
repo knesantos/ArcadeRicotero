@@ -1168,6 +1168,10 @@
   width: 32px;
   height: 32px;
   overflow: hidden;
+  /* Mismo motivo que en `.estampa-papel` (`UX-22` §2.2, `FIND-48`): la tinta de la clave
+     se mezcla con el papel de la estampita, nunca con el fondo de la pantalla. */
+  isolation: isolate;
+
   background: var(--papel);
   border: 2px solid var(--borde);
   border-radius: 3px;
@@ -2284,6 +2288,11 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  /* `UX-22` §2.2: sin esto, el `multiply` de las tintas no se detiene en el papel — se
+     mezcla con lo que haya detras de la estampa, que en esta pantalla es una tapa velada.
+     La tinta tiene que oscurecer el papel y nada mas. Era `FIND-48` de `REV-11`. */
+  isolation: isolate;
+
   background: var(--papel);
   border: var(--linea) solid var(--borde);
   border-radius: 3px;

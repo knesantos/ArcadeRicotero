@@ -286,6 +286,18 @@ let sala: HTMLElement | null = null;
  * (`UX-22`, `T-201`): quien jugo a ciegas no recibe diez segundos de sonido que no pidio.
  */
 let escuchoEsteTema = false;
+/**
+ * Los discos que se imprimieron o vistieron el fondo en esta sesion (`UX-22` §2.5, `D-21`).
+ *
+ * **Acumula y no saca.** El pie tiene que nombrar cada tapa que estuvo en pantalla durante
+ * la sesion, deduplicada, y no solo la del cuadro actual: era `FIND-46` de `REV-11`, y el
+ * defecto estaba en recalcular la lista desde el `data-tapas` estatico en cada tema, con lo
+ * cual el disco acreditado en el tema anterior se perdia apenas empezaba el siguiente.
+ */
+const tapasDeLaSesion = new Set<string>();
+/** Si ya se sembro el conjunto con las tapas que la pagina traia escritas en build. */
+let tapasSembradas = false;
+
 
 /** Arma la pantalla de partida una sola vez por vuelta. Después solo se actualiza. */
 function armarPantalla(): void {
@@ -1023,16 +1035,18 @@ function creditoDePantalla(discos: readonly string[]): void {
   // mano, `.credito-tapas`. Los dos llevan `data-tapas` con la lista con la que arrancan.
   const credito = document.querySelector<HTMLElement>('.credito-tapas, .credito-pantalla');
   if (!credito) return;
-  let base: string[] = [];
-  try {
-    base = JSON.parse(credito.dataset.tapas ?? '[]') as string[];
-  } catch {
-    base = [];
+  if (!tapasSembradas) {
+    try {
+      for (const t of JSON.parse(credito.dataset.tapas ?? '[]') as string[]) tapasDeLaSesion.add(t);
+    } catch {
+      // Un `data-tapas` roto no puede dejar la pantalla sin credito: se sigue con lo que venga.
+    }
+    tapasSembradas = true;
   }
-  const tapas = [...base];
-  for (const d of discos) if (!tapas.includes(d)) tapas.push(d);
-  if (tapas.length > 0) credito.textContent = PORTAL.creditoTapas(tapas);
+  for (const d of discos) tapasDeLaSesion.add(d);
+  if (tapasDeLaSesion.size > 0) credito.textContent = PORTAL.creditoTapas([...tapasDeLaSesion]);
 }
+
 
 /**
  * La estampa chica del setlist (`UX-22` §10, `T-205`): la tirada como afiche.
