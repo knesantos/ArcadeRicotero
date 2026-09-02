@@ -136,7 +136,30 @@ test('ADR-05.7: ninguna isla escribe una imagen de fondo en linea; una tapa entr
   assert.deepEqual(malas, [], malas.join('\n  '));
 });
 
+test('CTR-12 caso 19 (candado 7 de ADR-05.9): la estampa se apoya en papel opaco y aislado', () => {
+  /*
+   * La enmienda `ADR-05.9` ratifica el papel como cuarta zona: hasta un 16 % de cada tapa
+   * NO se imprime, y ahi lo que se ve es el papel. Eso vuelve al fondo del contenedor una
+   * pieza del contrato, no una decoracion: **el papel no viaja en ningun archivo**, lo
+   * pone esta regla. Sin el, la zona sin imprimir es un agujero a la tapa velada de atras.
+   *
+   * Y con `isolation` pasa lo mismo por el otro lado: sin aislar, el `multiply` de las
+   * tintas se mezcla con lo que haya detras del contenedor en vez de detenerse en el
+   * papel. Ya paso una vez y se llamo `FIND-48`.
+   *
+   * Las dos declaraciones se exigen en el MISMO bloque, no en la hoja entera: que
+   * `--papel` e `isolation` aparezcan en algun otro lado no salva a la estampa.
+   */
+  const css = leer('src/styles/juego.css').replace(/\/\*[\s\S]*?\*\//g, '');
+  const bloque = css.match(/(^|\})\s*\.estampa-papel\s*\{([^}]*)\}/m);
+  assert.ok(bloque, 'no existe el bloque .estampa-papel en juego.css');
+  const declaraciones = bloque![2]!;
+  assert.match(declaraciones, /background:\s*var\(--papel\)/, '.estampa-papel perdio su papel opaco');
+  assert.match(declaraciones, /isolation:\s*isolate/, '.estampa-papel perdio el aislamiento del multiply');
+});
+
 test('UX-22 §8: el registro imperfecto vive solo en la letra grande, nunca en un parrafo', () => {
+
   /*
    * El eco de segunda tinta es la unica sombra que `diseno-marca.md` admite, y por eso es
    * la mas facil de convertir en tic: una sombra dura corrida queda "bien" en cualquier

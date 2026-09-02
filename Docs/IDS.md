@@ -36,7 +36,8 @@ a la otra qué número tomó.
 | — | ⚠ **Hay otra sesión escribiendo este repo el 2026-08-24** y no reservó rango: dejó `Docs/SUGERENCIAS/HILO-para-producto-idea-04-la-meta-del-bondi.md`. No tomó IDs nuevos (reusa `IDEA-04`), así que no chocó — pero es el caso que esta tabla existe para evitar | 2026-08-24 | **abierta** |
 | `T-161` … `T-175` · `CTR-11` · `RES-53` · `REV-09` · **`UX-13`, `UX-14`** | **Ciclo 10** (`ORQ-plan-ciclo-10.md`), en una sesión que corre en paralelo a la del ciclo 11 | 2026-09-01 | **activa** |
 | `T-176` … `T-194` · `ADR-03`, `ADR-04` · `CNT-13` · `D-32` · `REV-10` · **`UX-20` … `UX-24`** | **Ciclo 11** (`ORQ-plan-ciclo-11.md`), la sesión de inmersión. **Toma `UX-20`+ y no `UX-15`+ a propósito:** el ciclo 10 avanza sobre el contador de `UX-` a su propio ritmo y las dos sesiones no se ven. Un bloque lejano cuesta lo mismo y no se pisa | 2026-09-01 | **activa** |
-| `T-195` … `T-210` · `UX-22` · `RES-54` (archivo `INV-54`) · `ADR-05`, `CTR-12` · `CNT-14` · `D-33` · `REV-11`, `FIND-46`+ | **Ciclo 12** (`ORQ-plan-ciclo-12.md`), la imprenta de Rocambole. Sesión única, sobre `ciclo-11/el-sitio-como-lugar`. `UX-22` es el primer número libre del bloque que reservó el ciclo 11 | 2026-09-01 | **activa** |
+| `T-195` … `T-210` · `UX-22` · `RES-54` (archivo `INV-54`) · `ADR-05`, `CTR-12` · `CNT-14` · `D-33` · `REV-11`, `FIND-46`+ | **Ciclo 12** (`ORQ-plan-ciclo-12.md`), la imprenta de Rocambole. Sesión única, sobre `ciclo-11/el-sitio-como-lugar`. `UX-22` es el primer número libre del bloque que reservó el ciclo 11 | 2026-09-01 | **cerrada — rango consumido entero.** `T-195`..`T-210` usadas, ninguna cancelada. `REV-11` llegó hasta `FIND-51` |
+
 
 > **El caso que esta tabla existe para evitar pasó igual, el 2026-09-01, y quedó anotado
 > porque es la mejor evidencia que tiene esta sección.** Las dos sesiones planificaron su

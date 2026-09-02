@@ -5,7 +5,7 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-09-01
+**Última actualización:** 2026-09-02
 
 **Ciclo actual:** **12 — PLANIFICADO, en curso.** Plan en `Docs/ORQ/ORQ-plan-ciclo-12.md`, tareas `T-195`..`T-210`. Lo pidió el usuario el 2026-09-01: *"otro ciclo de ui/UX inmersivo, aún más creativo; tomá la mística y la estética de Rocambole y aplicala a toda la página; sobre todo en adiviná el tema, que te sorprenda la tapa cuando adivinás"*. **La idea: el sitio no se dibuja, se imprime** — la tapa que sacaste se estampa por pasadas de serigrafía con sus colores medidos, sobre papel, y la sala se vuelve el disco. Empieza por `T-195`..`T-198`, los cuatro documentos.
 
@@ -32,6 +32,30 @@
 > arquitectura) y `T-198` (`CNT-14`, contenido) siguen abiertas — las tres corren en
 > paralelo con `T-195` ya cerrada. `T-199` (el hilo principal) recién arranca cuando
 > `T-197` esté lista.
+
+> **`FIND-51` de `REV-11` — RESUELTO (2026-09-02).** `experiencia` agregó `UX-22 §1.4`
+> (v3) y una nota en `UX-20 §1.3`. El scroll automático que al revelar lleva la vista al
+> premio (la estampa) en vez de al botón "Seguí" queda **ratificado como excepción
+> acotada**: `UX-20 §1.3` mide cuánto tarda en responder la acción principal (0 ms,
+> intacto), no dónde queda parada en pantalla — es un eje que no existía antes de este
+> ciclo, y esta hoja lo fija sin tocar los cuatro límites de `UX-20 §1`. La ratificación
+> trae **dos condiciones que el código de hoy no cumple del todo**, pendientes para quien
+> construya:
+> 1. La excepción vale solo si hay premio de verdad (`armarEstampa`/`estampaDe` no
+>    `null`). `partida-tapa.ts:152-157` ya lo hace bien (`if (seImprimio) {...} else {
+>    seguir.focus(); }`); **`partida-tema.ts` no**: hoy scrollea siempre, aunque el disco
+>    no sea uno de los diez y no haya nada que mirar. Hay que envolver su
+>    `preventScroll`/`scrollIntoView` en la misma rama.
+> 2. El `scrollIntoView` de `partida-tema.ts` apunta a `revelacion` (el panel entero);
+>    tiene que apuntar al elemento que devuelve `armarEstampa`, calcado de como
+>    `partida-tapa.ts` ya apunta a `.figura-tapa-juego` y no a `zonaPartida`.
+>
+> No fijé un techo en píxeles para la distancia premio→botón: el dato de `REV-11` mide el
+> panel liviano de "Adiviná la tapa", no el caso más cargado de ninguno de los dos juegos
+> (tema con reproductor + enlace a la letra; tapa con explicación larga + sello). Ese
+> techo queda para quien construya, medido con el dedo a 375×812 — el comando exacto está
+> en `UX-22`, sección "Cómo se verifica". El resto de `REV-11` (`FIND-46`, `FIND-48`,
+> `FIND-49`, `FIND-50`) sigue abierto y no es mío.
 
 **Ciclo 11 — CERRADO.** El ciclo 10 también, y en el mismo día, en dos sesiones
 que no se veían. Plan del 11 en `Docs/ORQ/ORQ-plan-ciclo-11.md`, tareas `T-176`..`T-194`.

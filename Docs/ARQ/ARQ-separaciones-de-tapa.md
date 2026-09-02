@@ -2,8 +2,8 @@
 
 > Rol dueño: `arquitectura`. **Produce: `ADR-05` + `CTR-12`.** Fecha: **2026-09-01**.
 > Versión: **v2 — enmendada el 2026-09-02 por `ADR-05.9`**, que **ratifica el papel como
-> cuarta zona** y pone `ADR-05.1` (reglas 3, 4 y 5) y `CTR-12` (§3, §4, §5, §6) a describir
-> lo que el taller hace de verdad. **Resuelve `FIND-49` de `REV-11`.** Cada párrafo
+> cuarta zona** y pone `ADR-05.1` (las reglas 3 a 6 — eran cinco y ahora son seis) y
+> `CTR-12` (§3, §4, §5, §6) a describir lo que el taller hace de verdad. **Resuelve `FIND-49` de `REV-11`.** Cada párrafo
 > enmendado está marcado; lo que decía antes, palabra por palabra, está en `ADR-05.9`.
 >
 > **Por qué se enmienda acá y no hay un `-v2.md`.** Este rol versiona en archivo aparte
@@ -59,7 +59,8 @@
 > 02): el orden es **clara → media → clave, la clave última**, por la convención fotográfica
 > del oficio (`RES-54.1`-`.4`, `.9`) y **no** por la del bloque-contorno-primero de la
 > xilografía (`RES-54.8`). Se cambió un retraso de CSS. **Cero archivos regenerados**, que
-> es exactamente lo que `ADR-05.1` regla 5 fue a comprar. Ojo con el rótulo que manda sobre
+> es exactamente lo que compró la disjunción de `ADR-05.1` (hoy regla 6; antes de la
+> enmienda, regla 5). Ojo con el rótulo que manda sobre
 > todo el sitio: ese orden es *"así se imprime una serigrafía"*, nunca *"así imprimía
 > Rocambole esta tapa"* — y dos de las diez tapas fueron aerografía, no serigrafía
 > (`RES-54.12`).
@@ -102,7 +103,7 @@ que quien construya no los rehaga, y el que manda es el que imprima el taller.
 
 - **Estado:** **aceptada y construida**, **enmendada el 2026-09-02** por `ADR-05.9` (el
   papel es la cuarta zona). El pendiente que tenía —`RES-54`, el orden de las pasadas— se
-  cerró sin tocar un archivo, que era la apuesta de `ADR-05.1` regla 5.
+  cerró sin tocar un archivo, que era la apuesta de la disjunción (`ADR-05.1`, regla 6).
 - **Contexto.** El ciclo 12 quiere que la tapa **se imprima** al acertar: tres pasadas de
   tinta con los colores medidos de esa tapa, la foto que se fija encima, y una sola tinta
   —la clave— cuando el tema se escapó. El material ya está: las diez fichas de 320 px
@@ -192,26 +193,51 @@ igual que la base de `D-19`. Cada tapa aporta sus dos colores; el negro es del s
    relativa de WCAG —la que ya computa `contraste.test.ts`— y se la vuelve a codificar con
    la curva sRGB, para que 0 sea negro, 1 sea blanco y 0,5 caiga donde el ojo pone el medio.
    El sitio tiene **una sola** definición de "qué tan claro es esto"; esta no es la segunda.
-3. **Suavizado antes del umbral.** Un desenfoque leve (`SIGMA_SUAVIZADO`) antes de cortar.
-   Sin eso, el umbral persigue el ruido del JPEG y el borde sale hecho pelusa; con eso, el
-   borde sale en bloques. **Es la diferencia entre una serigrafía y un filtro**: `RES-06`
-   dice que el trabajo es de rodillo y serigrafía, y una serigrafía tiene bordes duros de
-   forma grande, no granulados.
-4. **Los umbrales son percentiles de la propia tapa, no números fijos.** La clara se lleva
-   el 25 % más luminoso, la media el 40 % siguiente, la clave el 35 % restante. Con umbrales
-   fijos, *Cordero atado* —que es casi negra— imprimiría una sola pasada y *Gulp!* no
-   tendría casi clave: haría falta afinar diez juegos de números a mano y volver a
-   afinarlos cada vez que se regenere una ficha. Con percentiles, **cada tapa entrega sus
-   tres tintas sola**, y de paso la cobertura de cada archivo se vuelve un número esperado
-   que el guardián puede verificar.
-5. **Las tres máscaras son disjuntas y suman la imagen entera.** Ningún píxel pertenece a
-   dos pasadas. **Y esta es la regla que desacopla este documento de `RES-54`:** con
-   máscaras disjuntas y tinta opaca, **el resultado final es el mismo cualquiera sea el
-   orden de impresión**, así que `RES-54` puede decir que la clave va última, o primera, o
-   en el medio, y no se regenera un solo archivo — cambia un retraso en el CSS. Con
+3. **Mediana y después suavizado, antes del umbral** *(enmendada)*. Primero un filtro de
+   mediana (`MEDIANA`), que saca el ruido del JPEG **sin comerse los bordes**, y recién
+   después un desenfoque leve (`SIGMA_SUAVIZADO`). Sin nada de eso el umbral persigue el
+   ruido y el borde sale hecho pelusa; con las dos cosas sale en bloques. **Es la diferencia
+   entre una serigrafía y un filtro**: `RES-06` dice que el trabajo es de rodillo y
+   serigrafía, y una serigrafía tiene bordes duros de forma grande, no granulados. La
+   mediana es la que permite que el sigma **baje** de 1,4 a 0,9: se limpia el ruido sin
+   ablandar la forma, que es justo lo que un desenfoque más fuerte hacía mal.
+4. **Los dos cortes salen de la propia tapa, con un tope absoluto cada uno** *(enmendada)*.
+   No hay tres umbrales: hay dos, y los dos son percentiles del histograma de esa tapa
+   **acotados por un valor duro**. La **clave** se lleva el `CUOTA_CLAVE` más oscuro, y
+   además **todo lo que esté por debajo de `PISO_CLAVE` va a la clave aunque sea más que la
+   cuota** — sin ese piso, en una tapa con un negro plano grande el percentil se agota
+   adentro del negro y **el ruido del JPEG sobre ese negro se va a la tinta clara**, que fue
+   exactamente cómo *Oktubre* perdió el fondo. El **papel** se queda con el `CUOTA_PAPEL`
+   más luminoso, y además **nada por encima de `TECHO_PAPEL` lleva tinta nunca**: los
+   blancos de la tapa son siempre el soporte. Con umbrales fijos e iguales para las diez,
+   *Cordero atado* —casi negra— imprimiría una sola pasada y *Gulp!* no tendría casi clave.
+   Con percentiles solos, las tapas con grandes planos se desarman. Los topes absolutos son
+   los que hacen que **cada tapa entregue sus tintas sola** sin diez juegos de números a
+   mano.
+5. **En el medio manda el color, no la luz** *(enmendada)*. Cada píxel que quedó entre la
+   clave y el papel va **a la tinta más cercana de las dos**, por distancia en RGB. Es lo
+   que hace una separación de tintas planas de verdad, y es lo que le devuelve a *Oktubre*
+   el rojo de las letras y las banderas, que un corte por luminancia repartía entre las dos
+   pantallas. **Esto no crea una segunda definición de "qué tan claro es esto"** —la
+   luminancia de la regla 2 sigue siendo la única, y sigue siendo la que corta la clave y el
+   papel—: la distancia en RGB responde otra pregunta, "a cuál de estas dos tintas se
+   parece". Es una métrica barata y no perceptual, y se la banca **porque el conjunto de
+   entrada está cerrado**: son diez tapas fijas, todas miradas de a una. Si una tinta queda
+   con menos de `MINIMO_TINTA` del medio, el reparto por color no dijo nada útil y **el
+   medio se parte por luminancia**, que es el repuesto. Pasa en cinco de los diez discos, y
+   el manifiesto lo declara disco por disco (`repartoPorLuz`).
+6. **Las máscaras son disjuntas, y lo que no imprimen es papel** *(enmendada: antes decía
+   que sumaban la imagen entera)*. Ningún píxel pertenece a dos pasadas. **Y esta es la
+   regla que desacopló este documento de `RES-54`:** con máscaras disjuntas, **el resultado
+   final es el mismo cualquiera sea el orden de impresión**, así que `RES-54` pudo decir que
+   la clave va última y no se regeneró un solo archivo — se cambió un retraso en el CSS.
+   Sigue valiendo con la composición real, que es `multiply` sobre el papel: multiplicar es
+   conmutativo, y donde las máscaras no se pisan cada píxel recibe una sola tinta. Con
    máscaras acumulativas (cada tinta imprimiendo también lo más oscuro que ella), el orden
-   quedaría horneado en los archivos y una ficha de `investigador` costaría treinta
-   regeneraciones.
+   quedaría horneado en los archivos y una ficha de `investigador` habría costado treinta
+   regeneraciones. **Lo que no vale es dejar que el papel crezca sin límite:** por encima de
+   `TECHO_PAPEL` de cobertura la estampa se lee a medio imprimir, y eso lo topea el guardián
+   (`CTR-12` §5, caso 11).
 
 **Consecuencia visible de la disjunción, y es la correcta:** con el registro corrido dos
 píxeles, en un borde queda una hendija de papel y en el de enfrente un solapamiento de
@@ -273,9 +299,12 @@ Que *Gulp!* imprima los claros en crema y los medios en el rojo del título manu
 comentario de `RES-37`) y los medios en el rojo de la bandera, **es la tapa**. Si alguien
 lo hubiera puesto en una tabla a mano, habría escrito lo contrario.
 
-### Las dos pasadas mudas, que existen y no son un defecto
+### Las tres pasadas mudas, que existen y no son un defecto
 
-Dos casos reales, encontrados calculando, que el taller tiene que **avisar** y **no
+*(Enmendado el 2026-09-02: **eran dos y son tres**. La tercera la encontró el refutador de
+este rol y la confirmó la corrida del taller. El número está en el manifiesto.)*
+
+Tres casos reales, encontrados calculando, que el taller tiene que **avisar** y **no
 convertir en error**:
 
 1. **La clara de `gulp` es del color del papel.** `--papel` es `#ede4ce` y el apoyo de
@@ -286,6 +315,11 @@ convertir en error**:
 2. **La media de `cordero-atado` es del color de la clave.** El apoyo es `#030d0b` y
    `--fondo` es `#14100e`: contraste **1,04:1**. La estampa de *Cordero atado* se lee como
    naranja sobre negro, que es la tapa.
+3. **La clara de `momo-sampler` también es del color del papel.** La tinta es `#cedae2`
+   contra `#ede4ce`: contraste **1,12:1** (**medido en el repo**: el aviso está en
+   `pasadas-manifiesto.json`). *Momo* es una tapa casi entera oscura —su clave cubre el
+   **81 %**— y lo poco claro que tiene se lee como papel apenas frío. Es la misma técnica
+   del caso 1, en la tapa donde menos se nota.
 
 **Regla:** si una tinta queda a menos de **1,5:1** del papel o de la clave, el taller lo
 imprime en la lista de avisos con el número, y sigue. **Emite las tres pasadas siempre**,
@@ -380,6 +414,16 @@ export function rutaTrasera(slug: string): string | null;
 export function rutaFicha(slug: string): string | null;
 ```
 
+**El módulo construido creció dos funciones más, y las ratifico acá mismo** (enmienda del
+2026-09-02, para que el contrato no le quede corto al código): **`estampaDe(slug)`**, que
+devuelve las cuatro rutas de una tapa juntas en vez de que cada isla las arme de a una, y
+**`slugDeRecorte(archivo)`**, que es la prosa de más abajo —"el slug sale de sacarle el
+sufijo `-zoom`"— convertida en función y por lo tanto testeable contra el banco entero. Las
+dos respetan el invariante de acá abajo: `null` ante lo desconocido. Y `Estampa` carga
+además `letra` y `nombreEstampado`: **el módulo los transporta, pero esos strings son de
+`CNT-14` §2.7, no míos** — qué disco se escribe en su propia letra y con qué tildes lo
+decide `contenido`, y lo verifica el caso 20.
+
 **Devolver `null` ante un slug desconocido es la parte importante**, y es el criterio que
 ya escribió `paleta.ts` para su caso: un disco que no está en la lista no arma una ruta
 inventada que después va a dar 404. La pantalla pinta la revelación de siempre y listo.
@@ -409,6 +453,14 @@ regla, en orden de gravedad, y **ninguno de los tres casos mueve un píxel del b
 | Las tres | Queda la foto sola (la ficha), que es el estado final de la estampa igual |
 | También la ficha | La revelación de hoy: título, ficha de texto, puntos, botón. **El juego no pierde nada de lo que ya daba** |
 | La trasera, al tocar | El objeto no gira y el control se retira. Las palabras son de `CNT-14`, en registro 3 |
+
+**Lo que `RES-54` agregó a esta tabla, y no la cambia pero la ordena** (enmienda del
+2026-09-02): las tres pérdidas no valen lo mismo. *"La clave sola —sin color— sigue siendo
+una imagen legible; las tintas clara y media solas, sin la clave, no lo son"* (`INV-54`).
+Así que **la capa que no puede faltar es la clave**: sin ella quedan dos manchas de color
+sobre papel. Es el mismo hecho que sostiene el piso de `MINIMO_CLAVE` y la pantalla de
+fallo. No cambia el mecanismo —las tres se piden juntas y cada una degrada sola—, pero si
+alguna vez hay que elegir un orden de pedido, la clave va primera.
 
 **Las tres condiciones técnicas que hacen que eso sea cierto y no una intención:**
 
@@ -558,6 +610,126 @@ progresivo de 0,1 s es lo único de este sitio que no puede esperar.
 
 ---
 
+## ADR-05.9 — Enmienda del 2026-09-02: el papel es la cuarta zona
+
+- **Estado:** **aceptada**. Resuelve **`FIND-49`** de `REV-11` y contesta
+  `Docs/SUGERENCIAS/HILO-para-arquitectura-el-papel-de-la-estampa.md`.
+- **La pregunta que llegó:** el taller construido introduce una cuarta zona —papel sin
+  imprimir, hasta el 20 % de la tapa— que el contrato no contempla. ¿Es una decisión de
+  arquitectura que faltaba escribir, o es un error del taller?
+- **La respuesta: es una decisión, y la ratifico.** El que estaba mal era el contrato.
+
+### Qué decía este documento antes de hoy, para que se pueda leer dentro de dos meses
+
+> **Regla 4.** *"Los umbrales son percentiles de la propia tapa, no números fijos. La clara
+> se lleva el 25 % más luminoso, la media el 40 % siguiente, la clave el 35 % restante."*
+>
+> **Regla 5.** *"Las tres máscaras son disjuntas **y suman la imagen entera**."*
+>
+> Y en `CTR-12` §3 vivían `CUOTA_CLARA` `0.25`, `CUOTA_MEDIA` `0.40` y
+> `TOLERANCIA_COBERTURA` `0.12`; en §5, el caso 11 pedía *"ninguno transparente en las
+> tres"* y el caso 12, *"la cobertura de cada pasada cae dentro de su cuota"*.
+
+### Las cuatro razones de la ratificación
+
+**1. La cláusula que se cae ya se contradecía con el propio `ADR-05`.** `ADR-05.2` escribió,
+para explicar la pasada muda de *Gulp!*: *"en serigrafía eso es exactamente lo que pasa: el
+blanco de una serigrafía es el papel que no se imprimió"*. Y la regla 5 decía que las tres
+tintas suman la imagen entera — o sea, que **no hay un solo píxel de papel en ninguna de las
+diez tapas**. Las dos frases no pueden ser ciertas juntas. Se cae la que no tenía nada
+detrás.
+
+**2. Ahora hay ficha, y la ficha dice papel.** `RES-54.2` describe la secuencia de una
+serigrafía multicolor **sobre soporte claro** así: *"blanco (si aplica) → amarillo →
+magenta → cian → negro/clave, siempre último"*. **"Si aplica"** es el punto: el blanco es
+una tinta más solo cuando el soporte no es blanco. Sobre papel claro —que es lo que esta
+pieza simula, y el token existe: `--papel`— el blanco **es** el soporte. La versión 2 del
+taller, la que obedecía la regla 5 al pie, tuvo que imprimir la multitud de *Oktubre* con
+la tinta gris `#9a9490` porque no le quedaba dónde poner el blanco; el resultado, dicho por
+quien lo miró, fue barro.
+
+**3. Lo que la regla 5 iba a comprar se compró igual.** Su motivo declarado era uno solo:
+que el orden de impresión no quede horneado en los archivos, para que `RES-54` no costara
+treinta regeneraciones. **La disjunción es lo que compra eso, y la disjunción no se tocó.**
+La prueba llegó sola: `RES-54` se fichó el 2026-09-01 diciendo clave última, y se cambió un
+retraso de CSS. Cero archivos. La cláusula "suman la imagen entera" viajaba de garrón en
+esa oración, sin hacer trabajo.
+
+**4. Y la razón que convierte esto en una decisión y no en un ajuste de gusto: el piso de
+la clave es el contrato de la pantalla de fallo.** `ADR-05.8` ya había decidido que al que
+no acertó se le imprime **la clave sola**. `RES-54.3` dice que la clave es la que *"sostiene
+el registro de las demás"*, y la lectura de `INV-54` lo dice para este juego con todas las
+letras: *"la clave sola —sin color— sigue siendo una imagen legible; las tintas clara y
+media solas, sin la clave, no lo son"*. Con el reparto viejo —35 % con tolerancia ±12— la
+clave podía bajar al 23 % y **la pantalla de fallo quedaba ilegible sin que ningún test se
+quejara**. `PISO_CLAVE` y el mínimo del guardián no son estética: son lo que sostiene la
+lectura de "te faltó el color".
+
+### Los números, medidos sobre las diez tapas
+
+**Medido en el repo**, `scripts/pasadas-manifiesto.json`, corrida del 2026-09-02:
+
+| Disco | clave | papel | el medio se repartió por |
+|---|---|---|---|
+| `gulp` | 48,9 % | 15,5 % | color |
+| `oktubre` | 67,1 % | 12,8 % | color |
+| `un-baion-para-el-ojo-idiota` | 34,7 % | 13,9 % | color |
+| `bang-bang-estas-liquidado` | 34,1 % | 13,8 % | **luz** (ceniza y ocre se pisan) |
+| `la-mosca-y-la-sopa` | 34,0 % | **8,3 %** | **luz** |
+| `lobo-suelto` | 34,1 % | 13,0 % | color |
+| `cordero-atado` | 35,1 % | 13,9 % | color |
+| `luzbelito` | 36,5 % | 14,0 % | **luz** (cuero y topo se pisan) |
+| `ultimo-bondi-a-finisterre` | 35,6 % | 13,9 % | **luz** (plata y acero se pisan) |
+| `momo-sampler` | **80,6 %** | 13,9 % | **luz** |
+
+Y los pesos, que sobran contra el presupuesto de `ADR-05.8` y por eso **no se toca ni un
+tope**: la pasada más pesada es `gulp-media` con **10,4 KB** (tope 20) y el disco más pesado
+es `ultimo-bondi-a-finisterre` con **25,7 KB** las tres (tope 48). Quedan escritos acá para
+que una regeneración futura que duplique el peso se lea como lo que sería —una regresión— y
+no como "entra en el tope".
+
+**Lo que estos números dicen y hay que leer:** el papel se mueve poco (8 a 16 %) porque
+`CUOTA_PAPEL` manda casi siempre; la clave se mueve muchísimo (34 a 81 %) porque `PISO_CLAVE`
+la deja crecer en las tapas oscuras, que es lo correcto — *Momo Sampler* **es** casi toda
+negra. Por eso el guardián topea el papel y **pone piso a la clave, sin techo**: los dos
+controles miran hacia el único lado por donde esto se rompe.
+
+### Lo que no cambia, y conviene decirlo porque es casi todo
+
+Los seis candados originales, la decisión de `ADR-05` en una línea, `ADR-05.3` (PNG
+pre-teñido), `ADR-05.4` (la convención de ruta), `ADR-05.5` (degradar por capa), `ADR-05.6`
+(la trasera), `ADR-05.7` (el velo y `--tapa-*`) y `ADR-05.8` (el presupuesto entero, con
+sus topes intactos). **Ni un archivo se regenera por esta enmienda**: los cuarenta que hay
+en `public/` ya cumplen lo que este apartado ratifica.
+
+### Lo que se paga, dicho de frente
+
+1. **La composición pasa a ser tinta sobre papel, y eso tiene un corolario que no puedo
+   esconder.** Las pasadas se apilan con `mix-blend-mode: multiply` sobre `--papel`
+   (**medido en el repo**, `juego.css:2314`), así que **el color que se ve en pantalla es la
+   tinta multiplicada por el papel, no la tinta**. Lo que el candado 1 promete y el guardián
+   prueba es sobre **el archivo**: ahí el píxel lleva el hex medido de `RES-37`, exacto.
+   Sobre el vidrio lo tiñe el soporte, como lo tiñe el papel de verdad. Si alguien alguna
+   vez necesita que el color de pantalla sea el medido sin más, lo que hay que sacar es el
+   `multiply`, no el test.
+2. **Una dependencia nueva entre el archivo y la pantalla**, que es el candado 7. Antes las
+   tres capas se bastaban; ahora hay un cuarto color que **no viaja en ningún archivo** y lo
+   tiene que poner el CSS. Si mañana la estampa se apoya en otra superficie, el papel se
+   vuelve un agujero. Por eso pasa a haber un caso de test (`CTR-12` §5, caso 19).
+3. **Un invariante más flojo, a cambio de que sea verdad.** "Ningún píxel transparente en
+   las tres" era barato de testear y falso; "no más de `TECHO_PAPEL` de cobertura sin tinta"
+   es un tope y hay que elegirlo. Se eligió en **20 %**, con las diez tapas entre 8 y 16:
+   deja cuatro puntos de aire y **no deja pasar una estampa a medio imprimir**.
+4. **El papel no tiene piso, y está bien.** Una tapa sin blancos imprime sin papel — *La
+   mosca y la sopa* ya está en 8,3 % — y eso es la tapa hablando, no un defecto. La cuarta
+   zona existe cuando la tapa la tiene.
+5. **Un borde que hay que conocer:** si alguien subiera `CUOTA_CLAVE` y `CUOTA_PAPEL` hasta
+   cruzarlos, el medio quedaría vacío y **la clara y la media saldrían en blanco**. No es
+   silencioso: lo caza el caso 10 (`una pasada no puede ser un archivo vacío`). La salida es
+   bajar una de las dos cuotas, **nunca aflojar el test**.
+
+---
+
 # CTR-12 — El contrato de las separaciones
 
 Lo que sigue es lo que `T-199` tiene que producir y lo que
@@ -593,17 +765,32 @@ subir el suavizado, revisar la ficha, o volver a este documento.
 Mismo criterio que `ADR-04.1` y que `D-32`: ningún número se escribe dos veces ni queda
 suelto. Viven al principio de `scripts/generar-pasadas.mjs`.
 
+**Enmendada el 2026-09-02** (`ADR-05.9`): esta tabla describe el taller que hay, no el que
+se había imaginado. Lo que decía antes está citado en `ADR-05.9`.
+
 | Constante | Valor | Qué pasa si se mueve |
 |---|---|---|
-| `SIGMA_SUAVIZADO` | `1.4` | menos, y el borde persigue el ruido del JPEG; **techo `3.0`**, arriba de eso la tapa deja de reconocerse |
-| `CUOTA_CLARA` | `0.25` | la fracción de píxeles de la pasada clara |
-| `CUOTA_MEDIA` | `0.40` | la de la media. La clave se lleva el resto (`0.35`) |
-| `TOLERANCIA_COBERTURA` | `0.12` | cuánto puede apartarse la cobertura real de su cuota. Existe porque una tapa con grandes zonas planas empata en el histograma |
+| `MEDIANA` | `3` | el filtro que saca el ruido del JPEG sin comerse el borde. Es lo que permite que el sigma sea bajo |
+| `SIGMA_SUAVIZADO` | `0.9` | menos, y el borde persigue lo que la mediana no limpió; **techo `3.0`**, arriba de eso la tapa deja de reconocerse |
+| `CUOTA_CLAVE` | `0.34` | la fracción más oscura que se lleva la clave, como percentil de esa tapa |
+| `PISO_CLAVE` | `44` | **luminancia absoluta (0..255)**: todo lo más oscuro que esto va a la clave aunque pase la cuota. Sin esto, el ruido sobre un negro plano se va a la tinta clara |
+| `CUOTA_PAPEL` | `0.14` | la fracción más luminosa que queda sin tinta |
+| `TECHO_PAPEL` | `218` | **luminancia absoluta**: nada más claro que esto lleva tinta nunca. Es "el blanco es el papel", hecho número |
+| `MINIMO_TINTA` | `0.06` | si el reparto por color deja una tinta con menos que esto del medio, el medio se parte por luminancia |
 | `MIN_CONTRASTE_ENTRE_TINTAS` | `1.5` | por debajo, la pasada es **muda** y se avisa. No es error (`ADR-05.2`) |
-| `TOPE_KB_PASADA` | `20` | por archivo |
-| `TOPE_KB_PASADAS` | `48` | por disco, las tres juntas |
+| `TOPE_KB_PASADA` | `20` | por archivo. La real más pesada mide 10,4 |
+| `TOPE_KB_PASADAS` | `48` | por disco, las tres juntas. El disco real más pesado mide 25,7 |
 | `TOPE_KB_TRASERA` | `40` | por archivo |
+| `ANCHO` | `320` | el ancho de la separación. **Nunca agranda** (`withoutEnlargement`): sale de la ficha, que ya mide 320 |
 | `ANCHO_TRASERA` | `320` | lado largo. `D-04`: el máster no llega al sitio |
+
+**Y las dos del guardián**, que son del contrato y no del taller — a propósito: si el
+guardián leyera las constantes del script, no estaría verificando nada, estaría copiando.
+
+| Constante (en `pasadas.test.ts`) | Valor | Qué afirma |
+|---|---|---|
+| `MAXIMO_PAPEL` | `0.20` | ninguna estampa deja sin tinta más de un quinto de la tapa (`ADR-05.9`) |
+| `MINIMO_CLAVE` | `0.30` | la clave siempre sostiene el dibujo, y con eso la pantalla de fallo se lee (`RES-54.3`) |
 
 ## 4. El manifiesto: una declaración que se verifica, no una verdad
 
@@ -611,6 +798,14 @@ suelto. Viven al principio de `scripts/generar-pasadas.mjs`.
 `public/`.** Por disco: los dos hex usados y a qué pasada fue cada uno, la cobertura de
 cada máscara, los bytes de cada archivo, los avisos de pasada muda, y el **hash corto
 (SHA-1, 8 dígitos) de la ficha de la que salieron**.
+
+**Y tres campos más desde la enmienda** (`ADR-05.9`), porque lo que no está declarado no se
+puede comprobar: **`papel`**, la fracción que quedó sin tinta; **`repartoPorLuz`**, si el
+medio se repartió por color o cayó al repuesto por luminancia (regla 5); y el bloque
+**`trasera`** con su máster, sus bytes, su calidad y sus medidas. Que el manifiesto diga
+`repartoPorLuz` importa más de lo que parece: es el único lugar donde queda escrito que en
+cinco de los diez discos el reparto por color no alcanzó, y **es el número que hay que mirar
+si algún día se cambia una tinta en `tokens.css`**.
 
 El hash es lo único que el guardián no podría deducir solo, y cierra el agujero que ningún
 otro control cubre: **una ficha regenerada con pasadas viejas.** El test recalcula el hash
@@ -633,20 +828,32 @@ Cada caso cierra un apartado. Sin esto, el `ADR-05` es una opinión.
 | 8 | La clave de los diez discos es **`--fondo`** | `ADR-05.1` |
 | 9 | **Tinta plana:** no existe un solo píxel con alfa distinta de 0 y de 255 | candado 2 |
 | 10 | Hay al menos un píxel opaco y al menos uno transparente. **Una pasada no puede ser un rectángulo lleno ni un archivo vacío** | `ADR-05.1` |
-| 11 | Las tres máscaras de un disco son **disjuntas** y cubren la imagen entera: ningún píxel opaco en dos, ninguno transparente en las tres | `ADR-05.1` |
-| 12 | La cobertura de cada pasada cae dentro de su cuota ± `TOLERANCIA_COBERTURA` | `ADR-05.1` |
+| 11 | **Disjuntas, y el papel topeado** *(enmendado)*: ningún píxel opaco en dos pasadas, y lo que no lleva tinta **no pasa de `MAXIMO_PAPEL`** | `ADR-05.9` |
+| 12 | **La clave cubre al menos `MINIMO_CLAVE`** *(enmendado)*. No hay cuota para la clara ni para la media: el reparto lo manda la tapa, y que no queden vacías ya lo dice el caso 10 | `ADR-05.9`, `RES-54.3` |
 | 13 | El hash de ficha del manifiesto coincide con el de `public/tapas/<slug>.jpg` | `CTR-12.4` |
 | 14 | `rutaPasada`/`rutaTrasera`/`rutaFicha` devuelven **`null`** para un slug que no está en `DISCOS`, y para `''` | `ADR-05.4` |
 | 15 | `rutaFicha(slug)` devuelve **lo mismo** que `arte.ts:tapa(slug)` para los diez. Dos convenciones de ruta que se separan en silencio es un 404 esperando | `ADR-05.4` |
 | 16 | `src/lib/tapa/pasadas.ts` **no importa `node:*`** ni nada que lo arrastre (lo cubre `islas.test.ts`, se corre igual) | `D-29` |
+| 20 | El nombre estampado de cada disco y **cuáles tres tienen letra propia** son los que fijó `CNT-14` §2.7, y los tres calcados **solo usan glifos que su fuente tiene** | `ADR-05.4`, `diseno-marca.md` |
+| 21 | `slugDeRecorte` saca el disco de un `<slug>-zoom`, y **todo ítem `listo` con encuadre `detalle` de `tapa.json` delata su disco** | `ADR-05.4`, `T-206` |
+| 22 | El taller y `discos.ts` **listan los mismos diez discos**: el `.mjs` repite la lista y esto es lo que impide que se separen | `ADR-05.4` |
 
-**Y dos que no son de este archivo pero son de este contrato**, y las tiene que hacer
-`T-200`/`T-202` en `src/lib/estilos.test.ts`:
+*(Los casos 20-22 los agrega la enmienda: ya existían en el guardián y faltaban en el
+contrato. No se reusan los números 11 y 12, que quedaron enmendados en su lugar.)*
+
+**Y tres que no son de este archivo pero son de este contrato**, en
+`src/lib/estilos.test.ts`:
 
 | # | Caso | Cierra |
 |---|---|---|
 | 17 | El patrón del guardián del velo pasa de `/tapas/fondo/` a `/tapas/` **o** `var(--tapa-` | `ADR-05.7` |
 | 18 | Ninguna isla escribe `style.backgroundImage` con una ruta de tapa: la imagen entra por `--tapa-*` | `ADR-05.7` |
+| 19 | **La superficie donde se apilan las pasadas declara `background: var(--papel)` y es opaca.** Concreto y greppable: el bloque `.estampa-papel` de `juego.css` lleva `background: var(--papel)` y `isolation: isolate`, y ninguno de los dos se puede borrar | **candado 7**, `ADR-05.9`, y es la vuelta de `FIND-48` |
+
+**El caso 19 es nuevo y lo escribe el hilo principal**, no este rol (`D-12`). Es el único
+trabajo de código que genera esta enmienda, y es de una línea de test: sin él, el color de
+la cuarta zona —el único que no viaja en ningún archivo— es lo único de toda la estampa que
+nadie audita. Es la misma forma exacta del agujero que `ADR-05.7` encontró para el velo.
 
 ## 6. Lo prohibido, en una lista para revisar
 
@@ -662,6 +869,14 @@ Cada caso cierra un apartado. Sin esto, el `ADR-05` es una opinión.
 10. Que el taller corra dentro de `npm run build` (ver el apartado siguiente).
 11. Afirmar año, sello o edición a partir de una trasera (`ADR-05.6`).
 12. Emitir menos de tres pasadas por disco, aunque una sea muda.
+13. **Apilar las pasadas sobre cualquier cosa que no sea una superficie opaca de `--papel`.**
+    Sin ella el papel no es papel: es un agujero (candado 7, `FIND-48`).
+14. **Una cuarta tinta blanca para imprimir los blancos.** Sería un hex nuevo fuera de
+    `tokens.css` y, encima, al revés de la técnica: sobre soporte claro el blanco se imprime
+    *"si aplica"* (`RES-54.2`), y acá no aplica.
+15. **Dejar sin tinta más de `MAXIMO_PAPEL` de la tapa**, o que la clave baje de
+    `MINIMO_CLAVE`. Lo primero se ve a medio imprimir; lo segundo deja ilegible la pantalla
+    de fallo, que es la clave sola.
 
 ## 7. El taller no entra al build, y esto no es una preferencia
 
@@ -692,10 +907,23 @@ generadores están ahí— **mientras no se lo cuelgue de `build`**.
 | **Un manifiesto que la isla lea en el navegador para saber qué archivos existen** | Un pedido de red más, en la pantalla que menos lo necesita, para evitar un 404 que ya está manejado por capa (`ADR-05.5`) |
 | **Generar las pasadas en el build de Astro (a demanda)** | Ata el despliegue a `sharp` (apartado 7), y convierte cuarenta archivos deterministas en trabajo repetido en cada publicación |
 | **Sumar las dos formas nuevas a `generar-tapas.mjs`** | Ese script produce lo que ya funciona y trata los faltantes como avisos; el taller nuevo tiene que **fallar**. Dos políticas de error en un archivo terminan siendo una sola, la más floja |
-| **No emitir las pasadas mudas** (`gulp` clara, `cordero-atado` media) | Convierte "existen los 40" en "existen entre 34 y 40" y obliga a la isla a saber cuáles faltan. El ahorro es de dos archivos de pocos KB |
+| **No emitir las pasadas mudas** (`gulp` clara, `cordero-atado` media, `momo-sampler` clara) | Convierte "existen los 40" en "existen entre 33 y 40" y obliga a la isla a saber cuáles faltan. El ahorro es de tres archivos de pocos KB |
 | **Un negro propio para la clave** | Un hex nuevo fuera del circuito del lienzo, para reemplazar a un token que ya existe y que además es la base que `D-19` dice que no rota |
 | **Recortar la trasera a cuadrado en build** | Elegir qué parte de la contratapa se ve es del catálogo de `experiencia` (`UX-05`), no del taller |
 | **Precargar las pasadas del tema en curso mientras se juega** | Compite con el fragmento de audio, que es lo único de este sitio que no puede esperar (`CTR-01`, `D-26`) |
+
+**Y las que descartó la enmienda del 2026-09-02** (`ADR-05.9`), que son las salidas que
+tenía enfrente en vez de ratificar el papel:
+
+| Alternativa | Por qué no |
+|---|---|
+| **Sostener el contrato y corregir el taller: que las tres tintas vuelvan a cubrir la imagen entera** | Es la versión 2 del taller, y ya se probó sobre las diez tapas: la multitud de *Oktubre* se imprime con la tinta gris porque no queda dónde poner el blanco. Y contradice al propio `ADR-05.2`, que ya había escrito que el blanco de una serigrafía es el papel |
+| **Una cuarta tinta blanca, `<slug>-blanca.png`** | Un hex nuevo fuera de `tokens.css` para pintar de blanco algo que ya es del color del papel; diez archivos más y ~10 % más de peso por disco; y al revés de la técnica, que sobre soporte claro imprime blanco solo *"si aplica"* (`RES-54.2`) |
+| **Dejar el papel sin techo, puro percentil** | El tope es lo único que separa "una serigrafía tiene papel" de "esta estampa no terminó de imprimirse". Sin número, la diferencia queda en el ojo de quien mire, que es exactamente lo que el riesgo del ciclo pide no hacer |
+| **Repartir el medio siempre por luminancia** (sin la tinta más cercana) | Es la versión 2 otra vez para las tapas de dos tintas separadas en color: *Oktubre* pierde el rojo. El reparto por color sirve en cinco de los diez, y en los otros cinco el repuesto por luz entra solo |
+| **Repartir el medio siempre por color** (sin el repuesto de `MINIMO_TINTA`) | En cinco discos las dos tintas están tan cerca —plata y acero, cuero y topo— que una se queda con casi todo y la otra sale un archivo casi vacío. El repuesto es lo que garantiza tres tintas visibles |
+| **Un `-v2.md` del documento entero** | El cambio no invalida `ADR-05`: invalida tres números. Un archivo nuevo dejaría huérfanas las referencias del taller, del guardián, del plan del ciclo y de las dos sugerencias, para preservar una historia que esta enmienda preserva citando lo que decía |
+| **Aflojar el guardián para que pase lo que salga del taller** | Es la salida que convierte un contrato en un acta. Los dos números del guardián (`MAXIMO_PAPEL`, `MINIMO_CLAVE`) están **elegidos con aire contra lo medido**, no calcados de la corrida: si mañana una tapa se va a 25 % de papel, tiene que romper |
 
 ---
 
@@ -710,7 +938,9 @@ generadores están ahí— **mientras no se lo cuelgue de `build`**.
 - Si `RES-37` remuestrea una tapa, el sitio y la estampa **no pueden desincronizarse en
   silencio**: el build queda en rojo con el nombre del disco.
 - Si `RES-54` dice que el orden de las pasadas es otro, se cambia un retraso en el CSS.
-  Cero archivos regenerados.
+  Cero archivos regenerados. **Ya pasó**, el 2026-09-01: dijo clave última y costó eso.
+- **El papel sale gratis.** La cuarta zona no tiene archivo, no tiene token nuevo, no tiene
+  hex nuevo y no pesa: es lo que se ve donde las tres máscaras no imprimen (`ADR-05.9`).
 
 **Lo que se paga:**
 
@@ -721,8 +951,13 @@ generadores están ahí— **mientras no se lo cuelgue de `build`**.
 - **El guardián tiene que decodificar un PNG a mano**, con `node:zlib`. Son unas setenta
   líneas de test que nadie va a querer escribir, y son las que sostienen la afirmación más
   cara del ciclo.
-- **Dos tapas imprimen dos tintas visibles en vez de tres**, y no hay nada que arreglar:
-  es lo que da la paleta medida de esas tapas.
+- **Tres tapas imprimen dos tintas visibles en vez de tres** —*Gulp!*, *Cordero atado* y
+  *Momo Sampler*—, y no hay nada que arreglar: es lo que da la paleta medida de esas tapas.
+- **La estampa quedó atada a apoyarse en `--papel`** (candado 7). Es la única dependencia
+  que la enmienda agrega, y es la que paga que la cuarta zona no cueste un archivo.
+- **Lo que se ve en pantalla es la tinta multiplicada por el papel, no la tinta.** El hex
+  medido está exacto en el archivo, que es donde el guardián lo prueba; sobre el vidrio lo
+  tiñe el soporte, como el papel de verdad (`ADR-05.9`).
 - **Nada de esto prueba que la estampa se vea a serigrafía.** Los tests fijan el material y
   las prohibiciones; que parezca impresa lo decide un ojo, con `UX-22` de vara y `REV-11`
   de juez.
@@ -744,7 +979,9 @@ generadores están ahí— **mientras no se lo cuelgue de `build`**.
   "Adiviná el tema" viste un solo disco fijo. El mecanismo ya está definido en `UX-04`
   (sello de esquina en islas de partida); lo que cambia es que el texto pasa a depender del
   tema. Lo construye `T-200`.
-- **El orden de las pasadas**: `RES-54` (`T-196`). No lo escribo de memoria.
+- **El orden de las pasadas**: era `RES-54` (`T-196`) y **llegó** — clara → media → clave,
+  la clave última, por convención del oficio (`RES-54.1`-`.4`, `.9`). No lo escribí de
+  memoria y no lo escribo ahora tampoco: se cita la ficha.
 - **La construcción y la verificación**: hilo principal (`T-199`..`T-206`) y `revisor`.
   Este rol no tiene con qué correr un comando (`D-12`).
 
@@ -752,15 +989,21 @@ generadores están ahí— **mientras no se lo cuelgue de `build`**.
 
 Ninguno frena esta decisión.
 
-1. **`RES-54`, ya pedida en `T-196`:** el orden real de las pasadas de una serigrafía y por
-   qué la clave va última. **Cambia un retraso de CSS, no un archivo** (`ADR-05.1`).
+1. ~~**`RES-54`, ya pedida en `T-196`**~~ — **cerrada el 2026-09-01**. Costó un retraso de
+   CSS y cero archivos, que era la apuesta.
 2. **Soporte real de `mask-image` y sus prefijos** en los navegadores de gama baja. Hoy no
    lo afirmo en ninguna dirección; el diseño está hecho para que no importe. Serviría el
    día que alguien quiera reabrir `ADR-05.3`.
-3. **Si existe algo escrito sobre cómo separaba Rocambole sus propias tapas** — cuántas
-   tintas, con qué criterio. Si aparece, este documento se revisa entero: hoy la separación
-   en tres es criterio propio del rol apoyado en `RES-06` (rodillo y serigrafía), no una
-   reconstrucción de su método.
+3. **Cómo separaba Rocambole sus propias tapas** — cuántas tintas, con qué criterio, cuánto
+   papel dejaba. **`investigador` ya lo buscó y no lo encontró** (`RES-54.13`, con todas las
+   letras: ninguna fuente da un número de tintas ni un orden), así que sigue abierta pero
+   **por dos vías que no son web**: la entrevista de Clarín del 18-jun-1999 contra el
+   original, y el libro *Solos y de noche*. Mientras tanto, la separación en tres tintas más
+   el papel es **criterio propio de este rol** apoyado en `RES-06` y `RES-54.14`, y ninguna
+   pieza del sitio puede decir que así imprimía él.
+4. **Nuevo, y no frena nada:** si aparece algo sobre **cuánto papel deja un afiche
+   serigrafiado de edición limitada**, el techo del 20 % pasa de criterio propio a número
+   con respaldo. Hoy sale de mirar diez tapas, y está escrito como tal.
 
 ---
 
@@ -788,9 +1031,31 @@ node --test src/lib/tapa/pasadas.test.ts
 node --test src/lib/islas.test.ts     # D-29: pasadas.ts no arrastra node:*
 ```
 
-La corrida del taller tiene que terminar con **código 0**, cuarenta archivos, y **exactamente
-dos avisos de pasada muda** —`gulp` clara contra el papel, `cordero-atado` media contra la
-clave—. Un tercer aviso es un dato nuevo: se mira antes de seguir.
+La corrida del taller tiene que terminar con **código 0**, cuarenta archivos, y
+**exactamente tres avisos de pasada muda** *(enmendado el 2026-09-02: decía dos)* — `gulp`
+clara contra el papel (1,02:1), `cordero-atado` media contra la clave (1,04:1) y
+`momo-sampler` clara contra el papel (1,12:1). **Un cuarto aviso es un dato nuevo: se mira
+antes de seguir.**
+
+**Para verificar la enmienda `ADR-05.9`. La corre el hilo principal, no este rol (`D-12`), y
+no hay que regenerar nada: los cuarenta archivos que están ya cumplen lo que se ratificó.**
+
+```bash
+# 1. El guardián tiene que seguir pasando tal como está, sin tocar un archivo.
+node --test src/lib/tapa/pasadas.test.ts
+
+# 2. El taller, sin escribir nada, tiene que imprimir los mismos numeros de ADR-05.9:
+#    clave entre 34 % y 81 %, papel entre 8 % y 16 %, tres avisos de pasada muda,
+#    ninguna pasada sobre 10,4 KB, ningun disco sobre 25,7 KB las tres.
+node scripts/generar-pasadas.mjs --ver
+
+# 3. Cuando este escrito el caso 19 (candado 7): el bloque .estampa-papel de juego.css
+#    conserva `background: var(--papel)` y `isolation: isolate`.
+node --test src/lib/estilos.test.ts
+```
+
+Si (1) pasa y (2) imprime otros números, **lo que cambió es una ficha, no el contrato**: hay
+que mirar el `hashFicha` del manifiesto antes que cualquier otra cosa.
 
 **Después de `T-200`..`T-203` (la estampa, la sala, la trasera):**
 
@@ -818,3 +1083,10 @@ node --test src/lib/estilos.test.ts
 6. *Gulp!* y *Cordero atado*, de a una: **se reconocen igual** aunque impriman dos tintas.
 7. Con `public/tapas/pasadas/` renombrada a mano: la revelación cae a la foto sola y
    después al texto, **sin un solo ícono de imagen rota y sin que el botón se corra**.
+8. **El papel se lee como papel, no como un agujero** (`ADR-05.9`, candado 7): donde la
+   tapa no lleva tinta se ve el crema de `--papel`, nunca la tapa velada del fondo. *Gulp!*
+   es la prueba más fácil —es la que más papel deja, 15,5 %— y *Oktubre* la que más importa:
+   la multitud tiene que leerse en papel y negro, **no en gris**.
+9. **Ninguna de las diez se lee a medio imprimir.** Es la pregunta que la enmienda deja
+   abierta al ojo: el número topea el 20 %, pero que el 15 % de *Gulp!* sea "una serigrafía"
+   y no "una imagen que no cargó" lo dice `REV-11`, no el guardián.

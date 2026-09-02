@@ -888,15 +888,31 @@ function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
   seguir.addEventListener('click', avanzar, { once: true });
   revelacion.append(seguir);
   /*
-   * El foco va al boton de seguir, como siempre, pero SIN que el navegador se lleve la
-   * pantalla hasta el (`preventScroll`): con la estampa arriba del titulo, enfocar el
-   * boton dejaba el premio afuera de la vista. Se lleva la revelacion entera al borde de
-   * arriba, y el boton queda a un pulgar de distancia. Sin `smooth`: un desplazamiento
-   * animado seria movimiento que el corte de movimiento reducido no puede apagar.
+   * A donde mira la pantalla al revelar (`UX-22` §1.4, que ratifico esto al resolver
+   * `FIND-51`). El foco va al boton de seguir, como siempre, pero SIN que el navegador se
+   * lleve la pantalla hasta el (`preventScroll`): enfocar el boton dejaba el premio afuera
+   * de la vista, que es justo lo que este ciclo existe para que no pase. Sin `smooth`: un
+   * desplazamiento animado seria movimiento que el corte de movimiento reducido no apaga.
+   *
+   * Las dos condiciones con las que `UX-22` §1.4 lo acota, y que antes no se cumplian:
+   *
+   *  1. **Vale solo si hay premio de verdad.** Un tema de un disco fuera de los diez no
+   *     tiene estampa, y entonces no hay nada que mirar: la pantalla vuelve al
+   *     comportamiento generico de cualquier revelacion de texto del sitio —el foco se
+   *     lleva la vista consigo—, igual que el quiz y "sacalo por la letra".
+   *  2. **La vista apunta al premio, no al panel entero.** El blanco es la imagen, no la
+   *     ficha completa con su titulo y su costo. Hoy la diferencia es de unos pixeles
+   *     porque la estampa va casi primera, pero la regla tiene que ser la imagen: si
+   *     manana entra algo antes, el blanco no se mueve.
    */
-  seguir.focus({ preventScroll: true });
-  revelacion.scrollIntoView({ block: 'start' });
+  if (estampa) {
+    seguir.focus({ preventScroll: true });
+    estampa.scrollIntoView({ block: 'start' });
+  } else {
+    seguir.focus();
+  }
 }
+
 
 /**
  * La estampa: la tapa que sacaste, impresa por pasadas sobre papel (`UX-22`, `T-200`).

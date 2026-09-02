@@ -136,6 +136,13 @@ asentarse" para poder tocar es un molinete nuevo, con la forma de una animación
 de la forma de un login. El número es cero porque cualquier número mayor que cero es,
 otra vez, un molinete.
 
+**Nota agregada tras `FIND-51` (ciclo 12, `UX-22 §1.4`).** Este límite mide **cuánto
+tarda en responder** la acción principal, no **dónde queda parada** en la pantalla
+después de que la vista se movió sola. Son dos ejes distintos: el segundo no existía
+hasta que el ciclo 12 hizo que un reveal desplazara el viewport hacia un premio sin que
+el dedo lo pidiera, así que este `§1.3` no lo cubre y no lo relaja. La excepción acotada
+para ese eje nuevo —cuándo, y con qué techo— vive en `UX-22 §1.4`, no acá.
+
 ### 1.4 Por qué 8 %
 
 El objetivo del parallax es que se note que hay profundidad, no que se note que algo se

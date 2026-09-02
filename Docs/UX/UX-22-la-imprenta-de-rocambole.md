@@ -7,6 +7,13 @@
 > cada pasada, y las contradicciones internas de `§4`, `§6` y `§8`) y los menores que
 > correspondían; el detalle de qué se aceptó y qué no queda en el reporte del encargo, no
 > acá — acá solo queda el texto ya corregido.
+>
+> **v3 — resuelve `FIND-51` de `REV-11`, 2026-09-02:** agrega `§1.4`. El ciclo 12 hizo que,
+> al revelar, la vista se desplace sola hacia el premio (la estampa) en vez de hacia el
+> botón "Seguí", sin que ninguna hoja lo ratificara. Queda ratificado, acotado a dos
+> condiciones que el código de hoy no cumple del todo — una ya construida en
+> `partida-tapa.ts` y ausente en `partida-tema.ts`. No reabre el resto de `REV-11`:
+> `FIND-46`, `FIND-48`, `FIND-49` y `FIND-50` son de otros roles.
 
 > Rol dueño: `experiencia`. `T-195`, ciclo 12, frente A.
 >
@@ -184,6 +191,70 @@ explica de dónde sale su color exacto), así que el fallo se ve consistente ent
 tapas — no hay un disco "más generoso" al fallar porque su tinta clara sea más vistosa. Y
 porque leyéndolo así, el fallo cuenta la misma historia con cualquier disco: te faltó
 plata para el color, acá tenés el trazo.
+
+### 1.4 A dónde mira la pantalla al revelar — resuelve `FIND-51`
+
+`REV-11` encontró un movimiento que esta hoja nunca fijó: al responder, `Seguí` recibe el
+foco sin arrastrar la vista (`focus({ preventScroll: true })`) y la vista, en cambio, se
+va sola hacia el premio (`scrollIntoView({ block: 'start' })` sobre la estampa en
+`partida-tema.ts:897-898`, sobre la figura en `partida-tapa.ts:153-154`). Antes, enfocar
+`Seguí` se llevaba la pantalla hasta el botón y **la tapa quedaba impresa fuera de
+vista** — el ciclo 12 entero se organiza alrededor de que eso no pase. Es un intercambio
+razonado por escrito en el propio código, no un descuido, pero ninguna hoja de
+`experiencia` lo había ratificado. Lo ratifico, con dos condiciones.
+
+**Por qué se ratifica: son dos ejes distintos, y `UX-20 §1.3` mide solo uno.** `§1.3` de
+esa hoja topea en 0 ms **cuánto tarda en responder** la acción principal, y eso se sigue
+cumpliendo a la letra — `Seguí` ya tiene el foco y su `addEventListener` puesto desde el
+primer cuadro de la revelación, tocarlo o apretar `Enter` responde de inmediato. Lo que
+`FIND-51` señala es otro eje, **dónde queda parado** ese control después de que la
+pantalla se movió sola — algo que hasta este ciclo no pasaba nunca: ningún paso anterior
+del sitio desplazaba el viewport sin que el dedo lo pidiera. `UX-20 §1` no lo mide porque
+no existía; esta hoja lo fija ahora, acá, sin tocar ninguno de los cuatro límites de
+`UX-20 §1`.
+
+**El argumento a favor es el mismo que sostiene todo `§1`:** la estampa es el premio, el
+único grito del sitio, y un premio impreso fuera de la vista no es un premio. Para quien
+navega con teclado, con switch o con lector de pantalla el cambio es una mejora sin
+costo — el foco ya está en `Seguí`, nadie recorre nada de más con `Tab`. El costo es del
+pulgar, y el dato medido lo acota: a 375×812, con la figura a 320 px más su crédito, el
+panel de devolución arranca cerca del borde de abajo — el botón queda a **un
+desplazamiento corto**, no a media pantalla, y en la misma dirección en la que la persona
+ya venía leyendo. Un gesto de pulgar, no una búsqueda con las dos manos.
+
+**Condición 1 — la excepción vale solo cuando hay premio de verdad.** Si el disco no es
+uno de los diez y no hay estampa que imprimir, no hay premio que mirar, y la pantalla
+tiene que volver al comportamiento genérico de cualquier otra revelación de texto del
+sitio (el que ya usan el quiz y "sacalo por la letra", `partida.ts:335`): el foco se lleva
+la vista consigo, sin `preventScroll` — `seguir.focus()`, sin más. **`partida-tapa.ts` ya
+cumple esto**: el `if (seImprimio) {...} else { seguir.focus(); }` de sus líneas 152-157
+es exactamente esta condición. **`partida-tema.ts` no lo cumple**: `pintarRevelacion`
+llama `revelacion.scrollIntoView({ block: 'start' })` siempre, aunque `armarEstampa` haya
+devuelto `null` porque el tema es de un disco fuera de los diez — en ese caso no hay nada
+que mirar y la pantalla igual se desplaza sola, sin ninguna razón que lo justifique. No es
+una lectura válida de esta excepción, es el defecto que la deja sin acotar: pido que se
+corrija para que el par `preventScroll`/`scrollIntoView` corra únicamente cuando
+`armarEstampa` no devolvió `null`, calcado del patrón que `partida-tapa.ts` ya tiene.
+
+**Condición 2 — la vista apunta al premio, no al panel entero.** Lo que hay que mirar es
+la imagen, no la ficha completa de revelación con su título, su costo y lo que venga
+después. `partida-tapa.ts` ya apunta bien: `scrollIntoView` corre sobre
+`.figura-tapa-juego`, no sobre `zonaPartida`. `partida-tema.ts` apunta a `revelacion`, el
+contenedor entero — hoy la diferencia práctica es chica porque la estampa es casi el
+primer hijo de ese contenedor, pero es la regla incorrecta: si algún día se agrega
+contenido antes de la estampa, el blanco tiene que seguir siendo la imagen, no lo que la
+precede. Pido que apunte al elemento que devuelve `armarEstampa`, no a `revelacion`.
+
+**Lo que esta hoja no fija.** Un techo en píxeles o en porcentaje de viewport para la
+distancia entre el premio y `Seguí`. No lo invento: el dato de `REV-11` es sobre "Adiviná
+la tapa" con un panel liviano, y no cubre el caso más cargado de ninguna de las dos
+pantallas — un tema con reproductor del tema entero *y* enlace a la letra, o una tapa con
+explicación larga *y* sello de leyenda o testimonio, todo apilado entre la imagen y el
+botón. Antes de dar esto por cerrado del todo, quien construya mide esos dos casos a
+375×812 con las condiciones 1 y 2 ya aplicadas, y confirma que "Seguí" sigue quedando a un
+desplazamiento corto. Si no lo está, la salida no es agrandar el número de esta hoja: es
+acortar el panel — por ejemplo, moviendo el reproductor o el enlace a la letra a después
+de `Seguí` — antes de tocar esta regla otra vez.
 
 ---
 
@@ -775,3 +846,15 @@ queda para quien construya (`D-12`):
   confirmar que las tres tintas de cada uno salen de sus propios `--disco-*-tinta`/
   `-apoyo` en `tokens.css`, no de una paleta compartida — es la vara de `REV-11`
   (`T-209`).
+- **`§1.4` (a dónde apunta el scroll automático):** dos condiciones, ninguna se audita
+  con un test de esta hoja (`D-12`, no invento uno solo para esto). **Condición 1**, en
+  código: `partida-tema.ts` tiene que envolver su `seguir.focus({ preventScroll: true })`
+  + `revelacion.scrollIntoView(...)` en el mismo tipo de rama que ya usa
+  `partida-tapa.ts:152-157` (`if (armarEstampa(...) devolvió algo) {...} else {
+  seguir.focus(); }`) — un `grep` sobre las dos funciones alcanza para confirmarlo.
+  **Condición 2**, también en código: el `scrollIntoView` de `partida-tema.ts` tiene que
+  correr sobre el elemento que devuelve `armarEstampa`, no sobre `revelacion`. Y con el
+  dedo, a 375×812: jugar el caso más cargado de cada juego (tema con reproductor entero +
+  enlace a la letra; tapa con explicación larga + sello) y confirmar que "Seguí" sigue a
+  un desplazamiento corto de la vista, no a media pantalla — si no lo está, se acorta el
+  panel, no se reabre el número de esta hoja.
