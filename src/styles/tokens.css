@@ -347,6 +347,14 @@ body {
 body > main,
 body > .contenido-sitio {
   flex: 1 0 auto;
+  /* `width: 100%` no es redundante: **es lo que arregla lo que el flex rompió.** Un ítem
+     de flex con `margin-inline: auto` deja de estirarse y pasa a medirse por su contenido
+     (`fit-content`), y en el cancionero el contenido tiene versos largos a propósito. Sin
+     esta línea, `/letras-y-acordes/susanita/` medía 544 px de ancho en una ventana de 375
+     y **la página entera se arrastraba de costado**, en vez de scrollear sólo la caja del
+     verso como pide `.cancion`. El tope de columna lo siguen poniendo `juego.css` y
+     `sitio.css` con su `max-width`. */
+  width: 100%;
   padding: var(--espacio-2);
 }
 

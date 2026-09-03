@@ -174,6 +174,19 @@ html[data-umbral] .marca-grande {
 .tapa-fondo {
   position: absolute;
   inset: 0;
+  /* **Techo de una ventana, y no el alto del documento.**
+
+     Con `inset: 0` pelado la capa medía lo que midiera su caja, y en las pantallas de
+     juego esa caja es el `main` entero. Medido a 375×812: `.tapa-fondo--lobo-tiras` salía
+     343×1513 sobre un archivo de 591×381, así que `cover` la escalaba a 2347×1513 y se
+     veía **el 14,6 % de la tapa con un aumento de 4×** — una tira vertical borrosa de algo
+     irreconocible. `D-19` pide que cada parte vista la paleta real de un disco; un sliver
+     ampliado cuatro veces no viste ningún disco, viste una mancha.
+
+     Con `top`, `bottom` y `height` los tres puestos, `bottom` se ignora: la capa queda
+     anclada arriba de su caja y topeada en una ventana. En la misma pantalla pasa a
+     343×812 y a 2,1× — la mitad del aumento— y deja de estirarse con el documento. */
+  height: min(100%, 100svh);
   z-index: 0;
   background-repeat: no-repeat;
   background-position: center;
@@ -181,11 +194,33 @@ html[data-umbral] .marca-grande {
   border-radius: inherit;
   pointer-events: none;
   user-select: none;
-  /* El segundo de los tres nombres del transito (`ADR-03` §6.3). Cada pantalla tiene
-     como mucho una `.tapa-fondo` —verificado pagina por pagina antes de escribir esto—,
-     asi que el nombre es unico en el documento, que es lo que la propiedad exige.
-     Es lo que hace que pasar de la portada a un juego se lea como cambiar de sala: el
-     fondo de un disco se convierte en el fondo del otro en vez de parpadear. */
+  /* Y se acaba hacia abajo, en vez de cortar. Es la misma receta de dos capas de
+     `.pasada-pie` dada vuelta: acá la pasada entra por arriba y la racleta levanta al
+     final. Sin esto, el borde de abajo de la capa es una línea recta de borde a borde a
+     mitad de pantalla — que es, literalmente, el corte que el usuario nombró. */
+  -webkit-mask-image: var(--textura-rodillo),
+    linear-gradient(to top, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
+  mask-image: var(--textura-rodillo),
+    linear-gradient(to top, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
+  -webkit-mask-size: 240px var(--desgaste), 100% 100%;
+  mask-size: 240px var(--desgaste), 100% 100%;
+  -webkit-mask-repeat: repeat-x, no-repeat;
+  mask-repeat: repeat-x, no-repeat;
+  -webkit-mask-position: bottom left, bottom left;
+  mask-position: bottom left, bottom left;
+  /* El segundo de los tres nombres del transito (`ADR-03` §6.3): tiene que ser unico en el
+     documento o el paso **no ocurre, y no avisa**.
+
+     Acá decia "verificado pagina por pagina antes de escribir esto", y era falso: en
+     `/redondopedia/` habia DOS —la franja de Oktubre que inyectaba `conBanderas` y el
+     fondo Gulp! de la cabecera—, o sea que el tránsito estaba apagado en silencio justo en
+     la ruta que mas se cruza con el portal. Lo encontro la auditoria del 2026-09-02
+     leyendo el CSSOM, no leyendo el comentario.
+
+     Ahora es cierto, y **por estructura y no por cuidado**: `conBanderas` salio de esa
+     pagina, y el pie de imprenta —que es lo unico que se agrego a las trece pantallas—
+     NO lleva `.tapa-fondo`. Lleva una pasada como mascara sobre tinta plana, que no es una
+     foto y no necesita este nombre. */
   view-transition-name: lugar;
 }
 
@@ -1386,19 +1421,15 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   margin: 0;
 }
 
-/* La fuente de un dato, adentro de la ficha, tiene dos correcciones que solo hacen falta
-   acá: el papel debajo, y el ancho de la tarjeta.
+/* La fuente de un dato, adentro de la ficha, cambia de tinta y solo de tinta.
 
-   1. **La tinta.** `.fuente-chip` se pinta con `--texto-tenue`, que esta calibrado contra
-      `--fondo`. Sobre `--papel` da 1,78:1 (medido, 11,5 px): crema sobre crema. Va con
-      `--papel-tenue`, que es el mismo gesto —tinta apagada— hecho para este papel.
-   2. **El corte de renglon.** El `nowrap` de la regla general existe para que una ficha
-      corta no se parta al medio; adentro de una tarjeta de 345 px, con fichas que a veces
-      traen una frase entera, lo que hacia era empujar el renglon fuera del papel. Acá
-      envuelve. */
+   `.fuente-chip` se pinta con `--texto-tenue`, que está calibrado contra `--fondo`. Sobre
+   `--papel` da **1,78:1** (medido, a 11,5 px): crema sobre crema, ilegible. Y es el
+   renglón que dice de dónde salió cada dato de una ficha de disco — o sea lo único que
+   `D-14` deja estricto. Va con `--papel-tenue`, que es el mismo gesto —tinta apagada—
+   hecho para este papel: 5,39:1, par nuevo en `contraste.test.ts`. */
 .ficha .fuente-chip {
   color: var(--papel-tenue);
-  white-space: normal;
 }
 
 /* ---- El rotulado en prosa (BR-08): la marca vive en el punto exacto ---- */
@@ -1439,12 +1470,20 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   margin-bottom: 0.15em;
 }
 
-/* La fuente de un hecho: chiquita, al final del segmento, sin gritar. */
+/* La fuente de un hecho: chiquita, al final del segmento, sin gritar.
+
+   **Sin `nowrap`, y la medición explica por qué.** Lo traía para que una ficha corta no se
+   partiera al medio, y la idea era razonable mientras las fichas fueran `RES-02 (INV-01)`.
+   Pero acá adentro va lo que escribió `contenido`, y a veces es una oración entera:
+   *"hecho · RES-20 (INV-20), que resolvió la discrepancia de RES-02; veto levantado en
+   CNT-03 apartado 1"*. Medido a 375 px en `/redondopedia/luzbelito/`: **un chip de 981 px
+   de ancho que estiraba el documento a 997** — la página entera se arrastraba de costado y
+   el rótulo terminaba fuera de la pantalla. Es el rótulo que dice de dónde salió el dato,
+   o sea lo único que `D-14` deja estricto, y no se podía leer entero. Envuelve. */
 .fuente-chip {
   font-size: 0.72rem;
   color: var(--texto-tenue);
   letter-spacing: 0.06em;
-  white-space: nowrap;
 }
 
 /* Enlaces internos: subrayado grueso, el color no alcanza solo. */
