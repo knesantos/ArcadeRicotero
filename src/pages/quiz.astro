@@ -18,6 +18,7 @@ import '../styles/tokens.css';
 import '../styles/juego.css';
 import '../styles/sitio.css';
 import Cabeza from '../components/Cabeza.astro';
+import PieImprenta from '../components/PieImprenta.astro';
 import { cargarBanco, type BancoCrudo } from '../lib/quiz/banco.ts';
 import { PANTALLA_0 } from '../lib/quiz/copy.ts';
 import { PORTAL, LUGARES } from '../lib/sitio/copy.ts';
@@ -59,6 +60,8 @@ const TITULO = 'Preguntas ricoteras — Arcade Ricotero';
       <section id="resultado" class="pantalla" hidden></section>
     </main>
 
+    <PieImprenta disco="oktubre" />
+
     <script type="application/json" id="banco" set:html={JSON.stringify(items)} />
     <script>
       import '../scripts/partida.ts';
@@ -71,10 +74,9 @@ const TITULO = 'Preguntas ricoteras — Arcade Ricotero';
     </script>
 
     <style>
-      main {
-        max-width: 34rem;
-        margin: 0 auto;
-      }
+      /* El cascaron —ancho, centrado, `position: relative` y el alto minimo de una
+         ventana— vive en `juego.css` (`body > main`) desde el 2026-09-02: estaba copiado
+         a mano en cinco paginas y en dos de ellas se habia desincronizado. */
       /* La portada viste Oktubre (D-19): la titular calcada, el rojo de la tapa.
          Los tres tamaños de esta pantalla —20 px el boton, 21,6 px el titulo, 33,6 px la
          marca— estaban tan pegados que el boton competia con el titulo en vez de

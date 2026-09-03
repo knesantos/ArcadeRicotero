@@ -50,6 +50,24 @@ const HUECOS = [
     hueco: 84,
     donde: 'sitio.css `.sticker-ficha` — clamp(56px, 18vw, 84px)',
   },
+  /* Los tres recortes que trajo el usuario el 2026-09-02, ya con el nombre que el codigo
+     busca. Llegaron a 320×320 RGBA y entre 118 y 155 KB — de cuatro a siete veces lo que
+     pesan sus hermanos ya ajustados para el mismo hueco de 84 px. */
+  {
+    archivo: 'cordero-rulo.png',
+    hueco: 84,
+    donde: 'sitio.css `.sticker-ficha` — clamp(56px, 18vw, 84px)',
+  },
+  {
+    archivo: 'luzbelito-vela.png',
+    hueco: 84,
+    donde: 'sitio.css `.sticker-ficha` — clamp(56px, 18vw, 84px)',
+  },
+  {
+    archivo: 'momo-medallon.png',
+    hueco: 84,
+    donde: 'sitio.css `.sticker-ficha` — clamp(56px, 18vw, 84px)',
+  },
   {
     archivo: 'mosca.png',
     // La mosca del casete son 54 px, pero la misma pieza decora la pantalla "en la

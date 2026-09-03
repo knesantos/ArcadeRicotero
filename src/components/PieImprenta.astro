@@ -1,0 +1,106 @@
+---
+/**
+ * El pie de imprenta: cómo termina una hoja impresa.
+ *
+ * Toda pantalla del sitio cierra con esta franja, a sangre por los dos costados: la
+ * costura de rodillo, la segunda tinta de la serigrafía de su disco subiendo desde el
+ * pie, una figura recortada que se corta contra el borde derecho, y el crédito.
+ *
+ * ## Por qué existe
+ *
+ * El sitio terminaba donde terminaba su texto. Medido a 375×812 el 2026-09-02, en
+ * `/juegos/dos-ejes/` el pie flotaba con **337 px de negro debajo** — el 41 % de la
+ * ventana, por afuera de todo. Y una capa de fondo apoyada sobre eso no tiene dónde
+ * apoyarse: por eso su borde de abajo siempre se leyó como una guillotina.
+ *
+ * ## Lo que arregla por estructura y no por parche
+ *
+ * - La atmósfera del disco deja de medir el alto del documento. En un `main` de 1513 px,
+ *   `cover` sobre un archivo de 591 px mostraba el 14,6 % de la foto ampliada 4 veces:
+ *   una tira vertical borrosa de algo irreconocible. Acá la franja mide ~180 px.
+ * - La capa sale de adentro de `main`, así que no hay carrera de apilado con las
+ *   secciones del juego y ninguna página tiene que acordarse de `.sobre-tapa`.
+ * - El crédito de `D-21` deja de ser un renglón legal al pie de la nada: **se imprime
+ *   sobre la tinta del disco que acredita**. No se puede poner una tapa sin poner el
+ *   crédito, porque son la misma pieza.
+ *
+ * ## Lo que NO hace
+ *
+ * - **No pinta el fondo de la franja con la tinta del disco.** Eso sería la tarjeta gris
+ *   sobre fondo gris que la tabla anti-slop veta por nombre, y metería un par
+ *   texto/fondo que nadie midió. El fondo es `--fondo`; la tinta vive en la costura, en
+ *   la pasada y en la figura.
+ * - **No lleva una `.tapa-fondo`.** La franja no muestra ninguna foto: la pasada entra
+ *   como alfa y lo que llega a pantalla es un color medido de `tokens.css`. Así sigue
+ *   habiendo como mucho una `.tapa-fondo` por documento, que es lo que el
+ *   `view-transition-name: lugar` de `ADR-03` necesita para que el paso ocurra.
+ */
+import { PORTAL } from '../lib/sitio/copy.ts';
+import { pasadaDeDisco, figuraDeDisco, medidas, TITULO_DE_DISCO } from '../lib/sitio/arte.ts';
+
+interface Props {
+  /**
+   * De qué disco se viste la franja (mezcla `D-19`). Sin esto la franja sale desnuda:
+   * costura en tinta apagada y nada más. Es lo que corresponde en las pantallas de tono
+   * grave y en las herramientas.
+   */
+  disco?: string;
+  /**
+   * Apagar la pasada aunque haya disco. Existe por un caso concreto y con nombre: en
+   * "Adiviná la tapa", el motivo de Último bondi **es la respuesta correcta de `TP-006`**
+   * y distractor en `TP-003` y `TP-009`. Una silueta de ese disco al pie del tablero le
+   * sopla la respuesta al que está jugando.
+   */
+  sinPasada?: boolean;
+  /** Discos que la pantalla ya acredita por su cuenta; la franja les suma el suyo. */
+  tapas?: readonly string[];
+}
+
+const { disco, sinPasada = false, tapas = [] } = Astro.props;
+
+const pasada = disco && !sinPasada ? pasadaDeDisco(disco) : null;
+const figura = disco && !sinPasada ? figuraDeDisco(disco) : null;
+const medidaFigura = figura ? medidas(figura) : null;
+
+/**
+ * El crédito junta lo que la pantalla ya mostraba y lo que agrega la franja.
+ *
+ * `D-21` condición 1 no pide una firma genérica: pide que la pantalla diga **qué tapas
+ * se usaron en ella**. La pasada y la figura salen las dos de la misma tapa, así que
+ * suman un disco y uno solo.
+ */
+const delPie = disco && (pasada || figura) ? TITULO_DE_DISCO[disco] : undefined;
+const acreditados = [...tapas, ...(delPie && !tapas.includes(delPie) ? [delPie] : [])];
+---
+
+<footer class:list={['pie-imprenta', disco && `pie-imprenta--${disco}`]}>
+  {pasada && <div class="pasada-pie" style={`--pasada-del-disco: url("${pasada}")`} aria-hidden="true" />}
+  {
+    figura && (
+      <img
+        class="figura-pie"
+        src={figura}
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        decoding="async"
+        width={medidaFigura?.ancho}
+        height={medidaFigura?.alto}
+      />
+    )
+  }
+  <p class="pie-sitio">
+    {
+      acreditados.length > 0 && (
+        /* `data-tapas` no es decoración: la isla de "adiviná el tema" recalcula este
+           renglón cuando la sala se vuelve el disco que sacaste (`UX-22` §2.5), y
+           necesita saber con qué lista arranca. Lo busca por `.credito-tapas,
+           .credito-pantalla`, así que el nombre de la clase también es contrato. */
+        <span class="credito-pantalla" data-tapas={JSON.stringify(acreditados)}>
+          {PORTAL.creditoTapas(acreditados)}
+        </span>
+      )
+    }
+    {PORTAL.pie}
+  </p>
+</footer>

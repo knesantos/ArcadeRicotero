@@ -25,6 +25,7 @@ import '../../styles/sitio.css';
 import { catalogo, type Manifiesto } from '../../lib/tema/catalogo.ts';
 import { PANTALLA_0, PARTIDA } from '../../lib/tema/copy.ts';
 import Cabeza from '../../components/Cabeza.astro';
+import PieImprenta from '../../components/PieImprenta.astro';
 import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
 import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import { claseDisco } from '../../lib/tema/paleta.ts';
@@ -123,17 +124,9 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
       <section id="partida" class="pantalla sobre-tapa" hidden></section>
       <section id="resultado" class="pantalla sobre-tapa" hidden></section>
 
-      <footer class="pie-sitio sobre-tapa">
-        {/* `data-tapas`: la isla recalcula esta linea cuando la sala se vuelve el disco que
-            sacaste (`UX-22` §2.5, `D-21` condicion 1), y necesita saber con que arranca. */}
-        {tapasUsadas.length > 0 && (
-          <p class="credito-tapas" data-tapas={JSON.stringify(tapasUsadas)}>
-            {PORTAL.creditoTapas(tapasUsadas)}
-          </p>
-        )}
-        {PORTAL.pie}
-      </footer>
     </main>
+
+    <PieImprenta disco="lobo-suelto" tapas={tapasUsadas} />
 
     <script type="application/json" id="catalogo" set:html={JSON.stringify(cat.temas)} />
     {
@@ -151,24 +144,16 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
     </script>
 
     <style>
-      main {
-        max-width: 34rem;
-        margin: 0 auto;
-        position: relative;
-        /*
-         * El alto de la ventana MENOS lo que el `body` ya gasta en su propio margen.
-         *
-         * Con `100vh` pelado la pagina media 812 + 16 + 16 = 844 en un celular de 812, o
-         * sea que **la portada arrancaba con 32 px de scroll que no llevaban a ninguna
-         * parte**: se podia arrastrar la hoja y no aparecia nada. Es el mismo defecto que
-         * `UX-08` corrigio en "sacalo por la letra", y por el mismo motivo estaba: el
-         * `min-height` no descontaba el `padding` del `body`.
-         *
-         * `svh` y no `vh` por lo que ya dejo escrito `juego.css`: descuenta la barra del
-         * navegador movil, que `vh` ignora.
-         */
-        min-height: calc(100svh - var(--espacio-2) * 2);
-      }
+      /*
+       * El cascaron ya no vive aca: es `body > main` en `juego.css` desde el 2026-09-02.
+       *
+       * Lo que estaba escrito en este lugar —el alto de la ventana MENOS lo que el `body`
+       * gasta en su propio margen, y `svh` en vez de `vh` para descontar la barra del
+       * navegador movil— era correcto y era **el unico de los seis juegos que lo tenia
+       * bien junto con "sacalo por la letra"**. `adivinar-la-tapa` y `dos-ejes` seguian en
+       * `100vh` con los 32 px de desplazamiento muerto, y `quiz` y `completar-la-letra` no
+       * tenian nada. Por eso se mudo: el argumento estaba bien, el lugar estaba mal.
+       */
       /* La portada ensancha porque es un tablero de once discos para elegir; el resto de
          las pantallas lo sigue topeando `.pantalla` en 34rem desde `juego.css`. Mismo
          corte y mismo argumento que `UX-10` uso para el portal. */
@@ -276,9 +261,6 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
       }
       .falta-audio {
         margin-top: var(--espacio-3);
-      }
-      .credito-tapas {
-        margin: 0 0 var(--espacio-1);
       }
     </style>
   </body>

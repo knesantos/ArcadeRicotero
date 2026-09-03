@@ -119,6 +119,85 @@ test('D-21: ninguna tapa entra de fondo sin su velo', () => {
   }
 });
 
+test('ciclo 13: el velo se queda plano; lo que se desvanece es la capa entera', () => {
+  /*
+   * El agujero que este test tapa es de los que pasan en verde.
+   *
+   * El test de arriba exige `--velo-tapa` en el mismo bloque que la tapa, y lo hace por
+   * subcadena. O sea que `linear-gradient(var(--velo-tapa), transparent)` **lo pasa** — y
+   * deja media foto desnuda debajo del texto, que es exactamente lo que el velo existe
+   * para impedir. Es la forma obvia de "integrar" un fondo cuando a alguien le molesta el
+   * borde, y el ciclo 13 la nombró como la trampa a evitar antes de escribir una línea.
+   *
+   * La regla: el velo es un lavado PLANO —dos paradas idénticas— y el borde se resuelve
+   * con máscara, que es alfa y no toca el color. Se verifica que las dos paradas del
+   * gradiente del velo sean el mismo valor.
+   */
+  const malos: string[] = [];
+  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css']) {
+    const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
+    for (const m of css.matchAll(/linear-gradient\(\s*var\(--velo-tapa[^)]*\)\s*,\s*([^),]+)\)/g)) {
+      const segunda = m[1]!.trim();
+      if (!/^var\(--velo-tapa/.test(segunda)) malos.push(`${hoja}: velo que se desvanece hacia "${segunda}"`);
+    }
+  }
+  assert.deepEqual(malos, [], malos.join('\n  '));
+});
+
+test('ciclo 13: una imagen de /tapas/ que entra por mascara solo puede ser una pasada', () => {
+  /*
+   * El pie de imprenta abrió una vía nueva para que un archivo de `/tapas/` llegue a
+   * pantalla: la máscara. Y esa vía **no la mira ninguno de los tests de arriba**, porque
+   * todos buscan la palabra `background`.
+   *
+   * La diferencia importa y no es formal. Una máscara usa el canal ALFA: lo que se ve es
+   * tinta de `tokens.css` recortada con una silueta, no un píxel de nadie — por eso no
+   * lleva velo y por eso no entra al peor caso de `contraste.test.ts`. Pero si por ahí
+   * entrara un `fondo/` o una tapa entera, sería una foto sin velo con coartada de
+   * máscara.
+   *
+   * Entonces: por máscara sólo pasan las separaciones de `/tapas/pasadas/`, que es lo
+   * único del repo que se produce como alfa (`generar-pasadas.mjs`, `ADR-05`).
+   */
+  const malos: string[] = [];
+  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css']) {
+    const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
+    for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+      for (const decl of regla[2]!.split(';')) {
+        if (!/mask[a-z-]*\s*:/.test(decl) || !decl.includes('/tapas/')) continue;
+        for (const url of decl.matchAll(/\/tapas\/[^"')\s]+/g)) {
+          if (!url[0]!.startsWith('/tapas/pasadas/')) {
+            malos.push(`${hoja}: "${regla[1]!.trim()}" enmascara con ${url[0]}, que no es una pasada`);
+          }
+        }
+      }
+    }
+  }
+  /*
+   * Y la otra via, que es la que el marcado usa: la franja recibe su pasada por una
+   * propiedad `--pasada-*` escrita en linea. Ahi la ruta es una expresion, no un literal,
+   * asi que no hay nada que leer en el `.astro` — **lo que se audita es el unico lugar
+   * donde la ruta existe de verdad**, que es la funcion que la arma. Es el mismo criterio
+   * que `ADR-05.7` uso para las islas: se cierra por convencion de nombre, y el nombre
+   * `--pasada-*` esta elegido para que este test lo encuentre.
+   */
+  const arte = leer('src/lib/sitio/arte.ts');
+  const desde = arte.indexOf('export function pasadaDeDisco');
+  assert.ok(desde > 0, 'arte.ts ya no exporta pasadaDeDisco: la franja arma la ruta en otro lado');
+  const cuerpo = arte.slice(desde, arte.indexOf('\n}', desde));
+  for (const url of cuerpo.matchAll(/\/tapas\/[^`'")\s]+/g)) {
+    if (!url[0]!.startsWith('/tapas/pasadas/')) malos.push(`arte.ts: pasadaDeDisco devuelve ${url[0]}`);
+  }
+  const pie = leer('src/components/PieImprenta.astro');
+  if (!pie.includes('pasadaDeDisco')) {
+    malos.push('PieImprenta.astro arma la ruta de la pasada a mano en vez de pedirsela a arte.ts');
+  }
+  for (const m of pie.matchAll(/--pasada-[\w-]+:\s*url\(["']?(\/[^"')]+)/g)) {
+    if (!m[1]!.startsWith('/tapas/pasadas/')) malos.push(`PieImprenta.astro: --pasada-* trae ${m[1]}`);
+  }
+  assert.deepEqual(malos, [], malos.join('\n  '));
+});
+
 test('ADR-05.7: ninguna isla escribe una imagen de fondo en linea; una tapa entra por --tapa-*', () => {
   // La unica tapa de fondo que se pone desde JavaScript seria la unica que ningun test de
   // CSS mira. Se cierra por convencion: la isla escribe la variable, y el velo lo pone la

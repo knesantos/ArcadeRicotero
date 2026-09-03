@@ -1603,3 +1603,141 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   imprimir nada: ahí el premio es la explicación, y un ciclo que imprime tapas no tiene qué
   imprimirles. Tampoco toca la tarjeta que se comparte: `D-21` dice que una tapa afuera del
   sitio viaja sin su crédito, y lo que se imprime acá se imprime adentro.
+
+---
+
+## D-34 — Una capa de fondo es una pasada, no un campo
+
+- **Fecha:** 2026-09-02
+- **Estado:** aceptada. Ciclo 13, construida y verificada antes de escribirse acá.
+- **Consume:** `D-19` (la mezcla), `D-21` (el crédito de tapa), `D-32` (el movimiento es
+  del lugar), `D-33` (el acierto es el único grito), `UX-04` (la regla madre del despiece),
+  `UX-20` §3.4 (las tres pantallas graves), `ADR-05.1` (la clave lleva `--fondo`),
+  `RES-06` y `RES-54` (cómo se imprime una serigrafía).
+- **La probó:** el ciclo 13 entero, y sobre todo la corrida de auditoría del 2026-09-02 que
+  midió, pantalla por pantalla, dónde cortaba cada capa.
+
+- **Contexto.** El pedido fue textual: *"que no quede duro ni cortado, que los fondos se
+  integren bien"*. Medido antes de tocar nada, a 375×812, había dos cosas distintas y una
+  era la causa de la otra:
+
+  - **La franja del portal arrancaba en y=568 con una línea geométrica de x=0 a x=375.** El
+    velo es un lavado plano —dos paradas idénticas— que vale lo mismo en el centro que en
+    el último píxel, así que la multitud de *Oktubre* empezaba de golpe.
+  - **Y la capa medía el alto del documento.** En `adivinar-el-tema`, `.tapa-fondo` salía
+    343×1513 sobre un archivo de 591×381: `cover` la escalaba a 2347×1513 y se veía **el
+    14,6 % de la tapa con un aumento de cuatro veces**. Una tira vertical borrosa de algo
+    irreconocible, cuyo borde de abajo era otra línea recta.
+
+- **La decisión.** Una capa de fondo **tiene una dirección, un principio y un final**. Los
+  dos extremos de la pasada se apagan en mota; los costados los corta el esténcil. Si la
+  pasada sigue de largo por un lado —se va de la ventana—, **ese lado no se desgasta**.
+
+  Y el techo: una capa no puede medir más de una ventana. Lo que se estira con el documento
+  deja de ser un lugar y pasa a ser una mancha.
+
+- **Cómo se hace, y por qué no es un degradado.** La tabla anti-slop veta el degradado
+  decorativo por nombre, y con razón. Lo que hay acá es una máscara de dos capas: un núcleo
+  transparente hasta el 55 % de la franja de desgaste, y encima la veta de
+  `--textura-rodillo`. **En la mitad exterior de la franja la única alfa que existe es la
+  de la textura**, así que lo que se ve no es un desvanecido: es la racleta levantando. Es
+  la misma decisión que ya había tomado `.rodillo` cuando eligió enmascarar `currentColor`
+  en vez de dibujar una línea.
+
+  Sin `mask-composite`, además, y no por pereza: sin operador declarado las capas se unen,
+  que es exactamente lo que hace falta, así que un motor que no lo entienda no puede
+  arruinarlo.
+
+- **Lo que esto le da al sitio, más allá del borde.** El sitio es 80 % negro y ese negro no
+  significaba nada: era el rectángulo muerto donde no pusieron nada. Con esta regla es **el
+  papel donde no llegó la tinta**.
+
+- **Consecuencias:**
+
+  1. **El velo no se toca nunca.** `linear-gradient(var(--velo-tapa), transparent)` es la
+     forma obvia de "integrar" un fondo y **pasa el test viejo por subcadena**, dejando
+     media foto desnuda debajo del texto. El velo se queda plano y lo que se desvanece es
+     el alfa de la capa entera. Hay un test nuevo que lo mira.
+  2. **Enmascarar sólo puede mejorar el contraste.** El peso de la foto en el compuesto
+     pasa de 0,14 a 0,14·m y nunca sube, así que el peor caso que mide `contraste.test.ts`
+     sigue siendo el peor caso y no entra ni un par nuevo.
+  3. **Es reposo, no movimiento.** No hay `@keyframes`, no hay tiempos, no hay curvas: la
+     lista `ANIMACIONES` de `movimiento.test.ts` queda intacta y el corte de
+     `prefers-reduced-motion` no tiene nada nuevo que apagar. Es del mismo material que
+     `--registro`.
+
+- **Lo que esta decisión no dice.** No dice que toda pantalla tenga que tener fondo: cinco
+  no lo tienen y está bien que así sea. Y no habilita el campo fijo con desgaste en los
+  cuatro bordes: eso es una viñeta, que es lo único en lo que esto se puede convertir si se
+  usa mal. Ninguna máquina puede verificar esa diferencia — la sostiene esta entrada.
+
+---
+
+## D-35 — Toda pantalla termina en un pie de imprenta, y el crédito vive ahí
+
+- **Fecha:** 2026-09-02
+- **Estado:** aceptada. Ciclo 13, construida y verificada antes de escribirse acá.
+- **Consume:** `D-19`, `D-21` (condición 1: la pantalla nombra qué tapas usó), `D-34`,
+  `ADR-03` (el tránsito y su nombre único), `ADR-05.1`, `UX-04` (piezas sueltas, nunca la
+  composición entera), `UX-20` §3.4, `D-33`.
+
+- **Contexto.** El sitio terminaba donde terminaba su texto. Medido a 375×812: en
+  `/juegos/dos-ejes/` el pie flotaba a media pantalla con **337 px de negro debajo** —el
+  41 % de la ventana, por afuera de todo—, y `document.scrollHeight` daba 844 contra 812 de
+  ventana: 32 px de arrastre que no llevaban a ninguna parte. Cinco pantallas no tenían
+  ningún fondo y tres de ellas **declaraban por escrito, en su propio CSS, el disco que no
+  vestían**.
+
+  Y una capa de fondo apoyada sobre eso no tiene dónde apoyarse: por eso su borde de abajo
+  siempre se leyó como una guillotina. El corte no era un problema de máscara.
+
+- **La decisión.** El `body` es la mesa: columna flex de una ventana. La hoja crece hasta
+  el pie. Y abajo, hermana de la hoja, hay una franja a sangre por los dos costados: la
+  costura de rodillo, la segunda tinta de la serigrafía de su disco, una figura recortada
+  que se corta contra el borde derecho, y el crédito impreso encima.
+
+  **El crédito de `D-21` deja de ser una promesa y pasa a ser estructura**: la tapa y su
+  crédito son el mismo componente, y no se pueden escribir por separado.
+
+- **Va la `-media`, nunca la `-clave`.** Las tres razones son verificables en el repo:
+
+  1. Las diez claves están teñidas con el valor de `--fondo` a propósito (`ADR-05.1`: *"el
+     negro es del sitio"*), así que sobre el fondo del sitio dan 1:1 y no se ven.
+  2. La clave es **la silueta de la composición entera de una tapa**, que es lo que
+     `public/arte/README.md` prohíbe por escrito en su regla madre.
+  3. La estampa completa es la carta que el sitio se guarda para el acierto (`D-33`). De
+     empapelado se gasta.
+
+- **Y no lleva `.tapa-fondo`.** La franja no muestra ninguna foto: la pasada entra como
+  alfa y lo que llega a pantalla es un color medido de `tokens.css`. Eso deja como mucho
+  **una `.tapa-fondo` por documento**, que es lo que el `view-transition-name: lugar` de
+  `ADR-03` necesita para que el paso ocurra. En `/redondopedia/` había dos y el tránsito
+  estaba apagado en silencio, justo en la ruta que más se cruza con el portal.
+
+- **Las excepciones, declaradas:**
+
+  1. **Los tres artículos de tono grave** (`SLUGS_GRAVES`) llevan la franja desnuda: sin
+     pasada y sin figura. `UX-20` §3.4 les apaga la pantalla entera y
+     `.claude/rules/voz-ricotera.md` §6 dice que ahí no hay voz que valga.
+  2. **Las herramientas** —el armador de cancionero y el diagnóstico de audio— también: una
+     herramienta no es una hoja impresa.
+  3. **"Adiviná la tapa" va sin pasada y sin figura, y por un motivo que no es de tono**:
+     el motivo de *Último bondi* es la respuesta correcta de `TP-006` y distractor en
+     `TP-003` y `TP-009`. Una silueta de ese disco al pie del tablero le sopla la respuesta
+     al que está jugando.
+  4. **Oktubre va sin figura**: la única pieza calcada que hay de ese disco es la figura
+     encadenada, y el despiece prohíbe atribuirle álbum *"ni en el crédito del pie"*
+     (`INV-02`, reportado y no verificado).
+  5. **Momo Sampler va con la banda casi sin pasada, y no es un error**: su `-media` cubre
+     el 2,73 % de la lámina. Esa pantalla se sostiene con la costura y con el medallón.
+
+- **El peso de la pasada no lo decide el gusto.** `contraste.test.ts` mezcla
+  `--peso-pasada` con las diez tintas y falla si alguna deja el crédito por debajo de AA. Y
+  falla **también por lo contrario**: si el salto sobre el fondo baja de 12 niveles de 255,
+  porque una atmósfera que puede leerse como nada no es sutileza, es relleno con coartada.
+
+- **Lo que esta decisión no dice.** No dice que la franja tenga que llevar la foto de la
+  tapa: la tapa real sigue apareciendo donde una foto corresponde —la ficha del artículo,
+  el zoom del juego, la estampa del acierto—. Y no saca la franja fija de *Oktubre* del
+  portal: esa es la única imagen que hay sobre el pliegue de la pantalla de entrada, y
+  cambiarla por un pie al que se llega desplazando era mal negocio.

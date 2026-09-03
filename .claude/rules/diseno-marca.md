@@ -70,6 +70,8 @@ tics vetados, con su reemplazo:
 | Superficie "elevada" (card gris sobre fondo gris) como forma de separar | La pieza se recorta por borde grueso y cinta, como recorte pegado — y la tinta queda sobre `--fondo`, que es el par testeado |
 | Sombra difusa de elevación, glow, glassmorphism/blur | Sombra dura desplazada (offset plano, como papel sobre papel) o nada |
 | Degradados decorativos, texto en gradiente | Tinta plana de los tokens |
+| **Velo que se desvanece** (`linear-gradient(var(--velo-tapa), transparent)`) — pasa el test de `D-21` por subcadena y deja media foto desnuda debajo del texto | El velo es **plano**, dos paradas idénticas. Lo que se desvanece es el alfa de la capa entera, con máscara. `estilos.test.ts` lo mira desde el ciclo 13 |
+| **Máscara de gradiente liso como borde de una capa** — es el mismo aerógrafo con otro nombre | La máscara se cruza con la textura, como hace `.rodillo`: en la mitad exterior de la franja de desgaste la única alfa que existe es la de `--textura-rodillo`. Es la racleta levantando, no un fundido (`D-34`) |
 | Hover que "levanta" o infla la tarjeta, micro-rebotes | Cambio de tinta o de borde; el único movimiento decorativo del sitio es la mosca |
 | Emoji o ícono de librería como decoración de UI | Ya lo vetaba `UX-04`; los símbolos funcionales testeados (✔ ✕ en opciones, ◆ leyenda, ❝ testimonio) no son decoración y se quedan |
 | Esquinas redondeadas uniformes en todo | `--radio` queda para lo tocable grande (botones, casetes); lo chico va a 3px de estampa |

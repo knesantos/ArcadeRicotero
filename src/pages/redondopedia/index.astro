@@ -26,12 +26,26 @@ const recortar = (texto: string): string =>
   texto.length > 150 ? `${texto.slice(0, 147).trimEnd()}…` : texto;
 ---
 
+{/*
+  **Sin `conBanderas`, y no es una poda de adorno.** Esa prop hace que `Base.astro` pinte
+  la franja fija de *Oktubre*, y esta pantalla ya pintaba su propio fondo de *Gulp!* en la
+  cabecera: eran DOS `.tapa-fondo` en el mismo documento, y las dos declaran
+  `view-transition-name: lugar`. Dos elementos con el mismo nombre de tránsito **cancelan
+  el tránsito entero, y no avisan** — o sea que el paso de `ADR-03` estaba apagado en
+  silencio justo en la ruta que más se cruza con el portal. Verificado en el navegador el
+  2026-09-02: `querySelectorAll('.tapa-fondo')` devolvía dos.
+
+  De paso arregla el crédito: el pie decía "arte de la tapa de Gulp!" mientras la multitud
+  de *Oktubre* estaba ahí abajo, a la vista. La franja de Oktubre es identidad del portal;
+  acá la sección viste Gulp!, que es lo que `D-19` le da. Y el pie de imprenta le pone el
+  piso que la franja le daba.
+*/}
 <Base
   titulo="La Redondopedia — Arcade Ricotero"
   descripcion={REDONDOPEDIA.bajada}
-  conBanderas
   volverA={{ href: '/', texto: PORTAL.volverAlArcade }}
   tapas={tapasUsadas}
+  discoDelPie="gulp"
 >
   <div class="portada-redondopedia">
     {fondoCabecera && <div class="tapa-fondo tapa-fondo--gulp-pincelada" aria-hidden="true" />}

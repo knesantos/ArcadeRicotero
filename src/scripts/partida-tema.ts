@@ -807,7 +807,24 @@ function cerrarTema(acerto: boolean): void {
    * cuando dan ganas de volver a oirlo.
    */
   pasoActual = ESCALERA.length;
-  pintarBarra(ESCALERA[ESCALERA.length - 1]!.segundos);
+
+  /*
+   * La barra se llena **solo si nada la va a volver a mover en el cuadro siguiente**.
+   *
+   * `pasoActual` se queda donde esta: eso es informacion —tine el borde de cada tramo y
+   * la regla graduada de abajo— y no depende de que suene nada. Lo que se movio es el
+   * relleno. Estaba puesto acá arriba y trece lineas mas abajo, si habias acertado con el
+   * audio prendido, `sonar()` entra en `audio.ts` y ese avisa `alAvanzar(0)`: los seis
+   * tramos se llenaban al 100 % y se vaciaban de golpe en el cuadro siguiente, para
+   * volver a llenarse durante los diez segundos del fragmento. La barra decia "tenes
+   * todo el audio" y un cuadro despues decia "no tenes nada".
+   *
+   * En los otros dos caminos —fallar, o acertar sin haber prendido el audio— la barra
+   * tiene que quedar llena igual, porque ahi ya nadie la vuelve a tocar hasta el tema
+   * siguiente.
+   */
+  const vaASonar = acerto && escuchoEsteTema;
+  if (!vaASonar) pintarBarra(ESCALERA[ESCALERA.length - 1]!.segundos);
 
   pintarRevelacion(tema, acerto, ganados);
 
@@ -821,7 +838,7 @@ function cerrarTema(acerto: boolean): void {
    */
   if (acerto) {
     ponerLaSala(tema);
-    if (escuchoEsteTema) sonar(DURACION_FRAGMENTO_SEG);
+    if (vaASonar) sonar(DURACION_FRAGMENTO_SEG);
   }
 }
 
@@ -1113,6 +1130,18 @@ function avanzar(): void {
 
   indice += 1;
   if (indice >= ronda.length) {
+    /*
+     * Y sacar la sala, que es la otra cosa que quedaba prendida.
+     *
+     * `sacarLaSala()` se llamaba solo desde `arrancarTema()`, o sea por el camino del
+     * tema siguiente. Cuando el que se cerraba era el ULTIMO, la salida es esta, y la
+     * pantalla de resultado quedaba **vestida con la tapa del ultimo tema**: si lo
+     * acertaste, con ese disco; si lo erraste, con Lobo suelto, que es el fondo de la
+     * pagina. La misma pantalla se veia de dos maneras segun como habia salido el
+     * ultimo tema, y ninguna de las dos estaba elegida. El afiche del resumen ya trae
+     * sus cuatro estampas: no necesita una tapa entera atras.
+     */
+    sacarLaSala();
     pintarResultado();
     return;
   }

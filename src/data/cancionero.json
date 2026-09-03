@@ -1,7 +1,7 @@
 {
  "contrato": "CTR-06",
  "contratoVersion": 1,
- "actualizado": "2026-08-24",
+ "actualizado": "2026-09-02",
  "origen": "C:/Users/santi/Proyectos/TemasRedo/cancionero/data",
  "temas": [
   {
@@ -331,7 +331,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "REPITE TODA LA CANCION OTRA VEZ (EXEPTO EL INTRO)"
       },
       {
@@ -410,7 +410,7 @@
      "etiqueta": null,
      "lineas": [
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "El estribillo queda bien haciendolo a 2 guitarras..una que haga"
       },
       {
@@ -428,7 +428,7 @@
      "etiqueta": "estribillo:",
      "lineas": [
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "En una transcripcion dice F#m pero queda mejo F#"
       },
       {
@@ -512,15 +512,15 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "y mientras tanto la otra guitarra en el estribillo hace"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "un arpegio con los mismos tonos así:"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "2 guitarra"
       },
       {
@@ -7705,7 +7705,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "ESTRIBILLO Final:"
       },
       {
@@ -8859,7 +8859,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "TodoUnPalo:Si Tecabe, mandame un mail asi nos intercambiamos temasos."
       }
      ]
@@ -14406,7 +14406,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Repite introducion"
       },
       {
@@ -15931,11 +15931,11 @@
      "etiqueta": null,
      "lineas": [
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Patricio Rey Aquella solitaria vaca cubana (TAB)"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Tabbed by maria de los angeles cambra : *"
       },
       {
@@ -16403,7 +16403,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "un saludo para el fan n°1 de los redondos , para vos yamo"
       },
       {
@@ -16749,7 +16749,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "un saludo para el fan n°1 de los redondos , para vos yamo"
       },
       {
@@ -18908,11 +18908,11 @@
      "etiqueta": null,
      "lineas": [
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Patricio ReyElla debe estar tan linda (TAB)"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Tabbed by maria de los angeles cambra : *"
       },
       {
@@ -18946,7 +18946,7 @@
        "texto": "con mis ojos de durax lastimados."
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "RIFF 4v"
       },
       {
@@ -18954,7 +18954,7 @@
        "texto": "¡Por Dios! ¡la ruta está trabada y fría!"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "RIFF 4v"
       },
       {
@@ -18976,7 +18976,7 @@
        "texto": "con sus ojos oscuros delatando."
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "RIFF 4v"
       },
       {
@@ -18984,7 +18984,7 @@
        "texto": "Quiero morder el tallo de su rosa"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "RIFF 4v"
       },
       {
@@ -19048,7 +19048,7 @@
        "texto": "con mis ojos de durax lastimados."
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "RIFF 4v"
       },
       {
@@ -19056,7 +19056,7 @@
        "texto": "Y ahora estoy en líos por mi furia"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "RIFF 4v"
       },
       {
@@ -19078,7 +19078,7 @@
        "texto": "está tendiendo la trampa para nuestro amor."
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "RIFF 4v"
       },
       {
@@ -19110,7 +19110,7 @@
        "texto": "con mis ojos de durax lastimados."
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "RIFF 4v"
       },
       {
@@ -19118,7 +19118,7 @@
        "texto": "¡Por Dios! ¡la ruta está trabada y fría!"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "RIFF 4v"
       },
       {
@@ -19140,7 +19140,7 @@
        "texto": "con sus ojos oscuros delatando."
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "RIFF 4v"
       },
       {
@@ -19148,7 +19148,7 @@
        "texto": "Quiero morder el tallo de su rosa"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "RIFF 4v"
       },
       {
@@ -20084,7 +20084,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "[Pre-Estribillo]"
       },
       {
@@ -20652,7 +20652,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "[Pre-Estribillo]"
       },
       {
@@ -21009,7 +21009,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "[Pre-Estribillo]"
       },
       {
@@ -21315,7 +21315,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "[Pre-Estribillo]"
       },
       {
@@ -22319,7 +22319,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Parte 10 de 13             Bb"
       },
       {
@@ -23240,7 +23240,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Escuchen el tema. Se van a dar cuenta."
       },
       {
@@ -23388,7 +23388,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "(Como en intro)"
       },
       {
@@ -23990,7 +23990,7 @@
        "texto": "-------------------------------------------------------------------"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Es mejor hacerlo con quintas y, obviamente, bastante distorsionado."
       },
       {
@@ -23998,7 +23998,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "D:    x 5 7 7 x x",
        "acordes": [
         [
@@ -24028,15 +24028,15 @@
        ]
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "C:    x 3 5 5 x x"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "B:    x 2 4 4 x x "
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Bb:   x 1 3 3 x x"
       },
       {
@@ -24044,15 +24044,15 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Dm:   x 5 7 7 6 x"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Bb/C: x 3 3 3 x x"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "A:    x 0 2 2 x x"
       },
       {
@@ -24060,11 +24060,11 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "En las partes con C del estribillo ('...de rock maravilla PARA este mundo...')"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "podés hacer Bb/C, pero suena mejor con Do."
       },
       {
@@ -24072,7 +24072,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "En el estribillo creo que Skay no hace ese La en 'IN descriptibles'."
       },
       {
@@ -24416,7 +24416,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "(Como en intro)"
       },
       {
@@ -25867,7 +25867,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "[Interlúdio 2] Am  F  G  E7",
        "acordes": [
         [
@@ -26611,7 +26611,7 @@
       },
       {
        "t": "letra",
-       "texto": "Pintan mal las cosas para él mi viejo",
+       "texto": "Pintan mal las cosas para ,l mi viejo",
        "acordes": [
         [
          "B",
@@ -26683,7 +26683,7 @@
       },
       {
        "t": "letra",
-       "texto": "pintan mal las cosas para él mi viejo,",
+       "texto": "pintan mal las cosas para ,l mi viejo,",
        "acordes": [
         [
          "B",
@@ -28242,7 +28242,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "D PETIR EL ESTRIBILLO:::"
       },
       {
@@ -28539,7 +28539,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "(Repite Intro)"
       },
       {
@@ -28571,7 +28571,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "D      C            G (repite intro)"
       },
       {
@@ -28836,7 +28836,7 @@
        ]
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "C              Dm Gm Intro",
        "acordes": [
         [
@@ -32316,7 +32316,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "1er VERSO:   (Igual que la intro)"
       },
       {
@@ -33104,11 +33104,11 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "G  O DE SAXO:"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "(Mismas notas del estribillo)"
       },
       {
@@ -33396,7 +33396,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "ESTRIBILLO FINAL ;  es casi igual, nada mas se alarga el final..."
       },
       {
@@ -33604,7 +33604,7 @@
      "etiqueta": null,
      "lineas": [
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Tabbed by maria de los angeles cambra : *"
       },
       {
@@ -33937,7 +33937,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "  Em G D G  -  Em G D Em , repite"
       },
       {
@@ -35504,7 +35504,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "D PITE ESTRIBILLO:"
       },
       {
@@ -36117,11 +36117,11 @@
      "etiqueta": null,
      "lineas": [
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Esta es la figura que hace"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "En la intro"
       },
       {
@@ -36153,15 +36153,15 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Este arpegio que al final hace"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Un LAm. se repite durante 3"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Compases"
       },
       {
@@ -36197,11 +36197,11 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Que toca un G dicha parte también es"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Una parte del riff principal"
       },
       {
@@ -36209,23 +36209,23 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Luego"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Viene la segunda parte"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Del riff"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Esta parte es muteando"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Las cuerdas"
       },
       {
@@ -36257,47 +36257,47 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Aclaración"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "La parte en la que"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Hay que tocar acordes"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Que no sean desplegados"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "El acorde base es un Lam"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Que va cambiando"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "El bajo"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Por eso si tocan acordes como"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Un sol"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": " Que si hay un LAm con bajo alli"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Va a sonar extraño"
       },
       {
@@ -36497,7 +36497,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Luego sigue el solo que tiene esta base"
       },
       {
@@ -37260,7 +37260,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "*:tambien se puede poner los arreglos del pre-verso."
       },
       {
@@ -38306,7 +38306,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "repite ESTRIBILLO:"
       },
       {
@@ -38340,7 +38340,7 @@
        "texto": "Sentís la mosca joder detrás de la oreja"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "      Bm          G      A      Bm      (A  - D  +solo de saxo)"
       },
       {
@@ -38608,7 +38608,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "D PITE EL ESTRIBILLO:  X 6 hasta el final"
       },
       {
@@ -39550,7 +39550,7 @@
        "texto": "    vuelta 1"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "¿A quien le importa?          *la vuelta es una de las 4 veces que se toca el outro."
       },
       {
@@ -42486,7 +42486,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "             E  + riff 1",
        "acordes": [
         [
@@ -42688,7 +42688,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "             E  + riff 1",
        "acordes": [
         [
@@ -43168,7 +43168,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "             E  + riff 1",
        "acordes": [
         [
@@ -43334,7 +43334,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Guitarra;  [ D5 --E5 -A5 --D5 --A5 --E5 -] y el \"FINAL\""
       },
       {
@@ -43408,7 +43408,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "     E           final  D     F#     la´    A"
       },
       {
@@ -45395,7 +45395,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "D PITE ESTRIBILLO 2"
       },
       {
@@ -45639,7 +45639,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "repite OUTRO:"
       },
       {
@@ -45747,7 +45747,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "D PITE ESTRIBILLO (HASTA EL FINAL)"
       },
       {
@@ -45950,15 +45950,15 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Cabe recalcar que el"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Fm de la intro tiene que ser con bajo"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "En la 5ta cuerda traste 8"
       },
       {
@@ -47106,7 +47106,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "*engancha con.."
       },
       {
@@ -47802,7 +47802,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "*D PITE ESTRIBILLO*"
       },
       {
@@ -47982,7 +47982,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "*D PITE ESTRIBILLO*"
       },
       {
@@ -48926,7 +48926,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Espero que les guste :)"
       },
       {
@@ -50415,7 +50415,7 @@
        "texto": "- Es una canción arpegiada, para arriba"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "- En el estribillo es regido"
       }
      ]
@@ -50634,7 +50634,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "G5 - A5 (4 Veces) F5 - G5 (4 veces) G5 - A5 (4 veces)"
       },
       {
@@ -50642,7 +50642,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Riff I y pasa a D5"
       },
       {
@@ -51032,7 +51032,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Solo de Saxo <Igual que en el intro, G5 - A5 (4v) F5 - G5 (4v) G5 - A5 (4v>"
       },
       {
@@ -51236,7 +51236,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Fin con el Riff I"
       },
       {
@@ -51458,7 +51458,7 @@
        "texto": "el mejor culo para su sillón"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "  F#5                               B5     puente"
       },
       {
@@ -51898,7 +51898,7 @@
        ]
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "B5  + Puente"
       },
       {
@@ -52102,7 +52102,7 @@
        "texto": "el mejor culo para su sillón"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "F#5                                B5  + puente"
       },
       {
@@ -52214,7 +52214,7 @@
        ]
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "B5  + Puente"
       },
       {
@@ -52286,7 +52286,7 @@
      "etiqueta": null,
      "lineas": [
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "A este tema lo tienen que tocar con cejilla para que suene bien"
       },
       {
@@ -52755,115 +52755,115 @@
      "etiqueta": null,
      "lineas": [
       {
-       "t": "letra",
-       "texto": "SAN TELMO\r"
+       "t": "anotacion",
+       "texto": "SAN TELMO"
       },
       {
        "t": "letra",
-       "texto": "\r"
-      },
-      {
-       "t": "letra",
-       "texto": "MELODIA.  (acordeon)\r"
-      },
-      {
-       "t": "letra",
-       "texto": "\r"
-      },
-      {
-       "t": "tab",
-       "texto": "E|----------------------|---------|-----|-----------|-------------------------------------|\r"
-      },
-      {
-       "t": "tab",
-       "texto": "B|----------------------|---------|-----|-----------|-------------------------------------|\r"
+       "texto": ""
       },
       {
        "t": "anotacion",
-       "texto": "G|-9-8-9-10-9-8--10~--9-|---------|--%--|-----------|-------------------------------------|\r"
+       "texto": "MELODIA.  (acordeon)"
+      },
+      {
+       "t": "letra",
+       "texto": ""
+      },
+      {
+       "t": "tab",
+       "texto": "E|----------------------|---------|-----|-----------|-------------------------------------|"
+      },
+      {
+       "t": "tab",
+       "texto": "B|----------------------|---------|-----|-----------|-------------------------------------|"
       },
       {
        "t": "anotacion",
-       "texto": "D|----------------------|-10-(9)--|-----|-12-10-(9)-|/-7-(7)--6-7-9-7-6-7-9-7--6-8-9-(9)--|\r"
-      },
-      {
-       "t": "tab",
-       "texto": "A|----------------------|---------|-----|-----------|-------------------------------------|\r"
-      },
-      {
-       "t": "tab",
-       "texto": "E|----------------------|---------|-----|-----------|-------------------------------------|\r"
-      },
-      {
-       "t": "letra",
-       "texto": "\r"
-      },
-      {
-       "t": "tab",
-       "texto": "E|---|----------|-----------|--------------------|-------------------------------|-------------\r"
-      },
-      {
-       "t": "tab",
-       "texto": "B|---|----------|-----------|-10-9-8-------------|-------------------------------|-------------\r"
+       "texto": "G|-9-8-9-10-9-8--10~--9-|---------|--%--|-----------|-------------------------------------|"
       },
       {
        "t": "anotacion",
-       "texto": "G|-%-|---7-(10)-|---7-(9)-7-|---------11-10-9----|-corta con \"Heroes del Whisky\"-|-------------\r"
+       "texto": "D|----------------------|-10-(9)--|-----|-12-10-(9)-|/-7-(7)--6-7-9-7-6-7-9-7--6-8-9-(9)--|"
       },
       {
        "t": "tab",
-       "texto": "D|---|-9--------|-9---------|-----------------12-|-------------------------------|------------\r"
+       "texto": "A|----------------------|---------|-----|-----------|-------------------------------------|"
       },
       {
        "t": "tab",
-       "texto": "A|---|----------|-----------|--------------------|-------------------------------|------------\r"
-      },
-      {
-       "t": "tab",
-       "texto": "E|---|----------|-----------|--------------------|-------------------------------|------------\r"
+       "texto": "E|----------------------|---------|-----|-----------|-------------------------------------|"
       },
       {
        "t": "letra",
-       "texto": "\r"
+       "texto": ""
       },
       {
        "t": "tab",
-       "texto": "E|---------------------------------------------------|-------------------|----------------------\r"
+       "texto": "E|---|----------|-----------|--------------------|-------------------------------|-------------"
       },
       {
        "t": "tab",
-       "texto": "B|--------------13-12-11-----------------------------|----------------13-|-----------------------\r"
+       "texto": "B|---|----------|-----------|-10-9-8-------------|-------------------------------|-------------"
       },
       {
        "t": "anotacion",
-       "texto": "G|-12-14-13-12------------14-13-12---(14)--12--(12)~-|--(14)-14-16-17----|-17-17-16--14-14-(13)~~\r"
+       "texto": "G|-%-|---7-(10)-|---7-(9)-7-|---------11-10-9----|-corta con \"Heroes del Whisky\"-|-------------"
       },
       {
        "t": "tab",
-       "texto": "D|---------------------------------------------------|-------------------|-----------------------\r"
+       "texto": "D|---|-9--------|-9---------|-----------------12-|-------------------------------|------------"
       },
       {
        "t": "tab",
-       "texto": "A|---------------------------------------------------|-------------------|-----------------------\r"
+       "texto": "A|---|----------|-----------|--------------------|-------------------------------|------------"
       },
       {
        "t": "tab",
-       "texto": "E|---------------------------------------------------|-------------------|----------------------\r"
+       "texto": "E|---|----------|-----------|--------------------|-------------------------------|------------"
       },
       {
        "t": "letra",
-       "texto": "\r"
+       "texto": ""
+      },
+      {
+       "t": "tab",
+       "texto": "E|---------------------------------------------------|-------------------|----------------------"
+      },
+      {
+       "t": "tab",
+       "texto": "B|--------------13-12-11-----------------------------|----------------13-|-----------------------"
+      },
+      {
+       "t": "anotacion",
+       "texto": "G|-12-14-13-12------------14-13-12---(14)--12--(12)~-|--(14)-14-16-17----|-17-17-16--14-14-(13)~~"
+      },
+      {
+       "t": "tab",
+       "texto": "D|---------------------------------------------------|-------------------|-----------------------"
+      },
+      {
+       "t": "tab",
+       "texto": "A|---------------------------------------------------|-------------------|-----------------------"
+      },
+      {
+       "t": "tab",
+       "texto": "E|---------------------------------------------------|-------------------|----------------------"
       },
       {
        "t": "letra",
-       "texto": "FIN.\r"
+       "texto": ""
       },
       {
        "t": "letra",
-       "texto": "\r"
+       "texto": "FIN."
       },
       {
        "t": "letra",
+       "texto": ""
+      },
+      {
+       "t": "anotacion",
        "texto": "*yo tampoco crei que se podia tocar con guitarra..."
       }
      ]
@@ -53266,11 +53266,11 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Ay, ay, ay que risa le da! Riff 1"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Ay, ay, ay que risa le da! Riff 2"
       },
       {
@@ -53330,11 +53330,11 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Ay! Ay! Ay! ésa lágrima! Riff 1"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Ay! Ay! Ay! que risa le dá! Riff 2"
       },
       {
@@ -53398,11 +53398,11 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Ay! Ay! Ay! ésa lágrima! Riff 1"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Ay! Ay! Ay! que risa le dá! Riff 2"
       },
       {
@@ -53466,11 +53466,11 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Ay! Ay! Ay! mis deseos de hoy... Riff 1"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Ay! Ay! Ay! mis deseos de hoy... Riff 2"
       },
       {
@@ -55481,7 +55481,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "en la intro violin (creo) hace...."
       },
       {
@@ -55513,7 +55513,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "la intro sigue asi...."
       },
       {
@@ -56380,7 +56380,7 @@
        "texto": "Intro:G5   C#5  C5  x4"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "      G5   C#5  F5  x2 G5"
       },
       {
@@ -57796,7 +57796,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "2do Solo De Guitarra: (fade out en el final)"
       },
       {
@@ -58205,7 +58205,7 @@
        "texto": "que está invitando a zozobrar."
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "D9             puente 2     C9"
       },
       {
@@ -58379,7 +58379,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "* los puentes tambien los hace el saxo."
       },
       {
@@ -59021,7 +59021,7 @@
        "texto": "que está invitando a zozobrar."
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "D9             puente 2     C9"
       },
       {
@@ -59591,7 +59591,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "PARTE 2 De la Intro:"
       },
       {
@@ -61472,7 +61472,7 @@
      "etiqueta": null,
      "lineas": [
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Introducion:"
       },
       {
@@ -64882,7 +64882,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Intro Con D#7 RIFF1 RIFF2"
       },
       {
@@ -64904,7 +64904,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "D#7 (como intro)",
        "acordes": [
         [
@@ -64940,7 +64940,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "D#7 (como intro)",
        "acordes": [
         [
@@ -64976,7 +64976,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "D#7 (como intro)"
       },
       {
@@ -65006,7 +65006,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "D#7 (como intro)",
        "acordes": [
         [
@@ -65046,7 +65046,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "D#7 (como intro)",
        "acordes": [
         [
@@ -65086,7 +65086,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "D#7 (como intro)",
        "acordes": [
         [
@@ -65155,7 +65155,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "   Con Riff 2"
       },
       {
@@ -65179,7 +65179,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "   Con Riff 1"
       },
       {
@@ -66423,7 +66423,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "**INTERMEDIO:  (con BATERIA G  a)**"
       },
       {
@@ -66833,7 +66833,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "E   G   Bb    MOTIVO 2 (esto 2 veces)"
       },
       {
@@ -67242,7 +67242,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Instrumental en Bbm - F# - F"
       },
       {
@@ -67322,7 +67322,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Instrumental en F# - C#"
       },
       {
@@ -67578,11 +67578,11 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "(\"Eb/Bb - C#/Ab - F#/b - Eb/Ab\" son las notas que tienen que apretar,"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": " para que se forme el acorde, ya que el nombre en"
       },
       {
@@ -67960,55 +67960,55 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Acá viene la parte del efecto, que se hace así:"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "-Se ponen los dedos a la altura del traste 3, si apretar"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "las cuerdas, solo tocando las a todas"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "(esto es para que no suene como una nota)"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "-Luego con la púa se golpea 2 veces en la 4º,5º y 6º cuerda"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "a la altura de los micrófonos y al segundo golpe se desliza"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "por esas cuerdas hasta el traste 6 mas o menos,"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "se golpea de vuelta por el traste 6 y vuelve hacia el 12,"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "dos veces seguidas. Vuelve a golpear a la altura de los micrófono,"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "y va al seis y repite eso creo que dos veces, si escuchan la"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "canción se van a dar cuenta."
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Esta parte va con distorción, en realidad lleva otro efecto"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "ademas que no se cual es."
       },
       {
@@ -68318,15 +68318,15 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Espero que les sirva, yo la saque viendo el vídeo de"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Racing en el 98, recomiendo que lo miren y les va a salir mejor"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Federico Zabala"
       }
      ]
@@ -68501,7 +68501,7 @@
        "texto": "Como eras antes, no."
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "[Em D/F# D]x2",
        "acordes": [
         [
@@ -68656,7 +68656,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Con RIFF"
       },
       {
@@ -68730,7 +68730,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "con RIFF"
       },
       {
@@ -68776,7 +68776,7 @@
        "texto": "RIFF x4"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "con RIFF",
        "acordes": [
         [
@@ -69030,7 +69030,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Solo con base en E5"
       },
       {
@@ -69402,7 +69402,7 @@
       },
       {
        "t": "letra",
-       "texto": "entre sopores, modorras ciegas",
+       "texto": "entre sopores,modorras ciegas",
        "acordes": [
         [
          "E5",
@@ -70206,7 +70206,7 @@
      "etiqueta": null,
      "lineas": [
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Introducion:"
       },
       {
@@ -70214,7 +70214,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Am: Lo toca de esta manera:"
       },
       {
@@ -70246,7 +70246,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Solo de la introducion:"
       },
       {
@@ -70442,7 +70442,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Am(se toca como en la introducion)"
       },
       {
@@ -70458,7 +70458,7 @@
        "texto": "puteando por lo bajo se marcho"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Un killer riff en su contestador"
       },
       {
@@ -70888,11 +70888,11 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "y se pierde en Am improvisando en la escala"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "pentatonica de Am"
       },
       {
@@ -72236,7 +72236,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "*La cancion es en Si mayor"
       },
       {

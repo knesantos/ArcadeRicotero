@@ -86,6 +86,28 @@
   /* BR-04 son 4 opciones, y D-09 pide pulgar: 2x2 en pantallas que lo permitan. */
   grid-template-columns: 1fr;
   gap: var(--espacio-1);
+  /* ---------------------------------------------------------------------
+     El quiz arma esto como `<div>` y los otros dos juegos de cuatro opciones
+     —`adivinar-la-tapa` y `completar-la-letra`— como `<ul>` con un `<li>` por opcion.
+     Esta regla solo conocia la primera forma, asi que en los otros dos la hoja del
+     navegador ponia lo suyo y **las opciones salian con vineta, sangradas 40 px y
+     encogidas al ancho del texto**: 120, 226, 76 y 117 px en la misma pregunta
+     (medido a 375 px el 2026-09-02). Cuatro botones de distinto ancho, corridos a la
+     derecha y con un punto negro al lado, en dos de los cuatro juegos de la v1.
+
+     No es solo estetica: `D-09` pide pulgar, y un boton de 76 px de ancho no es la
+     zona tocable que el resto del sitio promete. --------------------------------- */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* El `<li>` deja de ser una caja intermedia que encoge al boton: se vuelve rejilla y el
+   boton estira hasta el borde, igual que cuando el padre es un `<div>`. Sigue siendo un
+   `<li>` de verdad —la lista se lee como lista— y por eso no se usa `display: contents`,
+   que en algunos navegadores todavia se lleva puesta la semantica. */
+.opciones > li {
+  display: grid;
 }
 
 @media (min-width: 24rem) {
@@ -1966,6 +1988,51 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
 .correccion-cerrar:hover,
 .correccion-cerrar:focus-visible {
   color: var(--texto);
+}
+
+/* ==========================================================================
+   El cascaron de las seis pantallas de juego
+
+   `body > main` y no `#app`: la especificidad tiene que quedar POR DEBAJO de la de un
+   `<style>` de Astro —que compila a `main[data-astro-cid-…]`, (0,1,1)— para que cada
+   pagina pueda seguir corrigiendo lo suyo. Un `#app` (1,0,0) les ganaria a las seis y
+   habria que ir a desarmar los seis bloques.
+
+   POR QUE ESTA REGLA EXISTE. Las mismas cuatro declaraciones estaban copiadas a mano en
+   cinco `<style>` de pagina, y copiadas quiere decir **desincronizadas**:
+
+   | pagina | `position` | `min-height` |
+   |---|---|---|
+   | `adivinar-el-tema` | relative | `calc(100svh - espacio*2)` ✔ |
+   | `adivinar-por-la-letra` | relative | `calc(100svh - espacio*2)` ✔ |
+   | `adivinar-la-tapa` | relative | `100vh` ✘ |
+   | `dos-ejes` | relative | `100vh` ✘ |
+   | `quiz` | — | — |
+   | `completar-la-letra` | — | — |
+
+   Las dos de `100vh` arrastraban el defecto que `adivinar-el-tema` ya tenia anotado al
+   lado del suyo: `100vh` no descuenta el `padding` del `body`, asi que la pagina medi­a
+   812 + 16 + 16 en un telefono de 812 y **arrancaba con 32 px de desplazamiento que no
+   llevan a ningun lado** — se arrastra la hoja y no aparece nada. Y `vh` ademas ignora la
+   barra del navegador movil, que es lo que `svh` descuenta.
+
+   Las dos que no tenian nada quedaban **cortadas**: el contenido terminaba a media
+   pantalla y abajo empezaba un rectangulo muerto sin fondo, sin piso y sin borde. Es
+   literalmente lo que el usuario nombro el 2026-09-02 — "que no quede duro ni cortado".
+   Un `main` que siempre llega al pie de la ventana es la condicion previa de cualquier
+   fondo: sin eso, la tinta no tiene donde apoyarse.
+
+   **El alto minimo ya no esta acá, y es a proposito.** Lo pone `tokens.css`: el `body`
+   mide una ventana y es columna flex, y la hoja crece con `flex: 1 0 auto`. Asi el alto
+   deja de ser una cuenta contra el `padding` del `body` —que es lo que dos paginas
+   escribieron mal— y pasa a ser una consecuencia del reparto. Acá queda lo que es de las
+   pantallas de juego y de nadie mas: el tope de columna y el `position` que le da caja a
+   la capa de fondo.
+   ========================================================================== */
+body > main {
+  position: relative;
+  max-width: 34rem;
+  margin-inline: auto;
 }
 
 /* Escritorio (`UX-10`): el mismo tope para los seis tableros de juego.

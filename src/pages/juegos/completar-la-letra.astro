@@ -21,13 +21,18 @@ import '../../styles/sitio.css';
 import { cargarBanco, type BancoCrudo } from '../../lib/letra/banco.ts';
 import { PANTALLA_0, SIN_BANCO } from '../../lib/letra/copy.ts';
 import Cabeza from '../../components/Cabeza.astro';
+import PieImprenta from '../../components/PieImprenta.astro';
 import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
-import { fondoTapa } from '../../lib/sitio/arte.ts';
+import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/letra.json';
 
 const items = cargarBanco(crudo as unknown as BancoCrudo);
 const hayJuego = items.length > 0;
-const fondo = fondoTapa('mosca-olla');
+const FONDO = 'mosca-olla';
+const fondo = fondoTapa(FONDO);
+// `D-21` condicion 1: la pantalla que muestra una tapa velada tiene que nombrar de que
+// disco es. Esta pagina la mostraba y no lo nombraba.
+const tapasUsadas = fondo ? discosDe([FONDO]) : [];
 
 const TITULO = 'Completá la letra — Arcade Ricotero';
 ---
@@ -77,8 +82,9 @@ const TITULO = 'Completá la letra — Arcade Ricotero';
       <section id="partida" class="pantalla" hidden></section>
       <section id="resultado" class="pantalla" hidden></section>
 
-      <footer class="pie-sitio">{PORTAL.pie}</footer>
     </main>
+
+    <PieImprenta disco="la-mosca-y-la-sopa" tapas={tapasUsadas} />
 
     {/* El banco viaja ya filtrado: sin borradores, sin notas internas. */}
     <script id="banco" type="application/json" set:html={JSON.stringify(items)} />

@@ -174,6 +174,19 @@ html[data-umbral] .marca-grande {
 .tapa-fondo {
   position: absolute;
   inset: 0;
+  /* **Techo de una ventana, y no el alto del documento.**
+
+     Con `inset: 0` pelado la capa medía lo que midiera su caja, y en las pantallas de
+     juego esa caja es el `main` entero. Medido a 375×812: `.tapa-fondo--lobo-tiras` salía
+     343×1513 sobre un archivo de 591×381, así que `cover` la escalaba a 2347×1513 y se
+     veía **el 14,6 % de la tapa con un aumento de 4×** — una tira vertical borrosa de algo
+     irreconocible. `D-19` pide que cada parte vista la paleta real de un disco; un sliver
+     ampliado cuatro veces no viste ningún disco, viste una mancha.
+
+     Con `top`, `bottom` y `height` los tres puestos, `bottom` se ignora: la capa queda
+     anclada arriba de su caja y topeada en una ventana. En la misma pantalla pasa a
+     343×812 y a 2,1× — la mitad del aumento— y deja de estirarse con el documento. */
+  height: min(100%, 100svh);
   z-index: 0;
   background-repeat: no-repeat;
   background-position: center;
@@ -181,11 +194,33 @@ html[data-umbral] .marca-grande {
   border-radius: inherit;
   pointer-events: none;
   user-select: none;
-  /* El segundo de los tres nombres del transito (`ADR-03` §6.3). Cada pantalla tiene
-     como mucho una `.tapa-fondo` —verificado pagina por pagina antes de escribir esto—,
-     asi que el nombre es unico en el documento, que es lo que la propiedad exige.
-     Es lo que hace que pasar de la portada a un juego se lea como cambiar de sala: el
-     fondo de un disco se convierte en el fondo del otro en vez de parpadear. */
+  /* Y se acaba hacia abajo, en vez de cortar. Es la misma receta de dos capas de
+     `.pasada-pie` dada vuelta: acá la pasada entra por arriba y la racleta levanta al
+     final. Sin esto, el borde de abajo de la capa es una línea recta de borde a borde a
+     mitad de pantalla — que es, literalmente, el corte que el usuario nombró. */
+  -webkit-mask-image: var(--textura-rodillo),
+    linear-gradient(to top, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
+  mask-image: var(--textura-rodillo),
+    linear-gradient(to top, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
+  -webkit-mask-size: 240px var(--desgaste), 100% 100%;
+  mask-size: 240px var(--desgaste), 100% 100%;
+  -webkit-mask-repeat: repeat-x, no-repeat;
+  mask-repeat: repeat-x, no-repeat;
+  -webkit-mask-position: bottom left, bottom left;
+  mask-position: bottom left, bottom left;
+  /* El segundo de los tres nombres del transito (`ADR-03` §6.3): tiene que ser unico en el
+     documento o el paso **no ocurre, y no avisa**.
+
+     Acá decia "verificado pagina por pagina antes de escribir esto", y era falso: en
+     `/redondopedia/` habia DOS —la franja de Oktubre que inyectaba `conBanderas` y el
+     fondo Gulp! de la cabecera—, o sea que el tránsito estaba apagado en silencio justo en
+     la ruta que mas se cruza con el portal. Lo encontro la auditoria del 2026-09-02
+     leyendo el CSSOM, no leyendo el comentario.
+
+     Ahora es cierto, y **por estructura y no por cuidado**: `conBanderas` salio de esa
+     pagina, y el pie de imprenta —que es lo unico que se agrego a las trece pantallas—
+     NO lleva `.tapa-fondo`. Lleva una pasada como mascara sobre tinta plana, que no es una
+     foto y no necesita este nombre. */
   view-transition-name: lugar;
 }
 
@@ -256,6 +291,35 @@ html[data-umbral] .marca-grande {
   background-position: bottom;
   background-image: linear-gradient(var(--velo-tapa), var(--velo-tapa)),
     url('/tapas/fondo/oktubre-banderas.jpg');
+
+  /* LA TINTA SE ACABA HACIA ARRIBA — y este es el corte que el usuario nombró primero.
+
+     Medido antes de tocar nada, a 375×812: la franja arrancaba en y=568 con una línea
+     geométrica de x=0 a x=375. El velo es un lavado plano —dos paradas idénticas— que
+     vale lo mismo en el centro que en el último píxel, así que la foto de la multitud
+     empezaba de golpe. Ninguna máscara, ninguna textura, ningún regreso al fondo.
+
+     Ahora se apaga en mota, con la misma receta de dos capas que usa `.pasada-pie` y por
+     los mismos motivos: sin `mask-composite` las capas se unen, que es exactamente lo que
+     hace falta, y un motor que no lo entienda no puede arruinarlo. Abajo NO se desgasta:
+     esa pasada sigue de largo por debajo del borde de la ventana, y la multitud tiene que
+     quedar apoyada en el piso de la pantalla. Una capa que se desvanece por los cuatro
+     lados es una viñeta, que es lo único en lo que esto se puede convertir si se usa mal.
+
+     La deriva no se toca: la máscara viaja con el elemento, así que la tinta no se corre
+     de su propio borde. Y el velo tampoco: enmascarar sólo puede BAJAR el peso de la foto
+     en el compuesto, así que el peor caso que mide `contraste.test.ts` sigue siendo el
+     peor caso y no entra ni un par nuevo. */
+  -webkit-mask-image: var(--textura-rodillo),
+    linear-gradient(to bottom, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
+  mask-image: var(--textura-rodillo),
+    linear-gradient(to bottom, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
+  -webkit-mask-size: 240px var(--desgaste), 100% 100%;
+  mask-size: 240px var(--desgaste), 100% 100%;
+  -webkit-mask-repeat: repeat-x, no-repeat;
+  mask-repeat: repeat-x, no-repeat;
+  -webkit-mask-position: top left, top left;
+  mask-position: top left, top left;
 }
 
 .tapa-fondo--lobo-tiras {
@@ -307,9 +371,23 @@ html[data-umbral] .marca-grande {
    La capa de fondo esta posicionada, y en el orden de pintado de CSS eso la deja
    arriba del contenido en flujo: sin esto, el velo taparia el texto en vez de
    sostenerlo. Se resuelve por contenedor y no elemento por elemento para que sumar un
-   parrafo despues no obligue a acordarse de nada. */
+   parrafo despues no obligue a acordarse de nada.
+
+   **Y esa promesa no se estaba cumpliendo donde mas importaba.** La lista de abajo cubria
+   la pieza de la cocina, la portada de la Redondopedia y todo lo que llevara `.sobre-tapa`
+   escrito a mano — o sea, cubria a quien se acordara. En `completar-la-letra.astro` las
+   secciones `#partida` y `#resultado` no lo llevaban, y el resultado no era un detalle:
+   **al tocar "Empezá" la tapa velada se pintaba encima del juego entero y la pantalla
+   quedaba en blanco** (fondo de La mosca y la sopa, sin una sola letra visible). Medido a
+   375×812 el 2026-09-02: `#partida` en `position: static` debajo de una `.tapa-fondo`
+   absoluta. Un juego invisible.
+
+   La regla de abajo lo cierra por estructura: si un `<main>` tiene una capa de fondo,
+   **todos** sus hijos que no sean esa capa van por encima. `.sobre-tapa` se queda porque
+   sigue sirviendo para las piezas sueltas, pero ya no es lo unico que sostiene el texto. */
 .cocina > *:not(.tapa-fondo),
 .portada-redondopedia > *:not(.tapa-fondo),
+main:has(> .tapa-fondo) > *:not(.tapa-fondo),
 .sobre-tapa {
   position: relative;
   z-index: 1;
@@ -554,11 +632,21 @@ html[data-umbral] .marca-grande {
 
 /* ---- Los lados del cassette ---- */
 
+/* El encabezado tiene que encabezar, y no encabezaba.
+
+   Medido en el portal a 375 px: el h2 LADO A terminaba en y=415 y el primer casete
+   arrancaba en y=428 —13 px—, y entre casete y casete había 11. **Dos píxeles de
+   diferencia entre "soy el título de esta lista" y "soy otro ítem de la lista."** El mismo
+   `--espacio-2` estaba haciendo tres trabajos distintos: separar casetes, separar el
+   título de su lista, y el aire interno de cada casete.
+
+   Ahora el aire va donde separa grupos y sale de donde los une: mucho arriba, poco abajo.
+   Con el solapamiento de la casetera, la relación pasa de 13:11 a 8:-10. */
 .lado {
   display: flex;
   align-items: center;
   gap: var(--espacio-2);
-  margin: var(--espacio-4) 0 var(--espacio-2);
+  margin: var(--espacio-4) 0 var(--espacio-1);
   font-family: var(--fuente-rotulada);
   font-size: 0.85rem;
   letter-spacing: 0.14em;
@@ -574,12 +662,31 @@ html[data-umbral] .marca-grande {
 
 /* ---- El casete: cada juego es un cassette apilado en el collage ---- */
 
+/* **Los casetes se pisan.** Es una pila de cosas apiladas a mano, y una pila de cosas
+   apiladas a mano se toca.
+
+   Medido antes: los siete casetes medían 345 px y arrancaban en x=14 o x=15 — un píxel de
+   diferencia entre uno y otro—, separados por 16 px de aire parejo. Eso no es un collage,
+   es una lista. Y el sitio se declara collage desde `UX-04`.
+
+   Dos cambios y ninguno es decorativo: el `gap` se vuelve solapamiento, y cada uno se
+   corre para su lado. Ahí recién la cinta adhesiva tiene una costura que cruzar. */
 .casetera {
   display: grid;
-  gap: var(--espacio-2);
+  gap: 0;
   list-style: none;
   padding: 0;
   margin: 0;
+}
+
+.casetera > li + li {
+  margin-top: -10px;
+}
+
+/* Que se alterne cuál pisa a cuál: si siempre pisara el de abajo, sería un acordeón. */
+.casetera > li:nth-child(even) {
+  position: relative;
+  z-index: 1;
 }
 
 .casete {
@@ -594,8 +701,14 @@ html[data-umbral] .marca-grande {
   /* Sin superficie "elevada": la pieza se recorta del fondo por borde grueso y
      cinta, como en serigrafia — y de paso la tinta de cada disco queda siempre
      sobre --fondo, que es el par que el test AA verifica (sobre el elevado,
-     cat-letras baja a 4,32:1 y no llega). */
-  background: transparent;
+     cat-letras baja a 4,32:1 y no llega).
+
+     **`--fondo` opaco y no `transparent`**, que es lo que estaba: un casete transparente
+     encima de otro deja ver el borde del de abajo cruzándolo, y entonces no se pisan, se
+     superponen como dos calcos. Sigue sin ser superficie elevada —es exactamente el mismo
+     color que el fondo del sitio, o sea el mismo par que el test ya mide— y es lo que ya
+     hacía `.pozo` por el mismo motivo. */
+  background: var(--fondo);
   border: var(--linea) solid color-mix(in srgb, var(--tinte) 55%, var(--borde));
   border-radius: var(--radio);
   text-decoration: none;
@@ -603,18 +716,34 @@ html[data-umbral] .marca-grande {
   min-height: var(--toque-min);
 }
 
-/* Apilados a mano: ninguno queda perfectamente derecho. */
-.casetera > li:nth-child(odd) .casete { transform: rotate(-0.9deg); }
-.casetera > li:nth-child(even) .casete { transform: rotate(0.7deg); }
+/* Apilados a mano: ninguno queda perfectamente derecho, y ninguno arranca en el mismo x.
+   El corrimiento lateral es lo que de verdad da la sensación de mano — más que el giro,
+   que sobre una caja de ancho completo sólo puede meter las esquinas en el margen. */
+.casetera > li:nth-child(odd) .casete {
+  transform: rotate(-0.9deg);
+  margin-right: 14px;
+}
 
-/* La cinta adhesiva que sujeta el casete al fondo. */
+.casetera > li:nth-child(even) .casete {
+  transform: rotate(0.7deg);
+  margin-left: 14px;
+}
+
+/* La cinta adhesiva que sujeta el casete al de al lado.
+
+   Estaba a `top: -9px` con 18 px de alto: asomaba 9 px por encima del casete, y entre
+   casetes vecinos había 11 px de aire. Le quedaban dos píxeles: **nunca llegaba a apoyar
+   sobre la pieza de arriba.** Lo que se veía era un rectángulo gris flotando sobre el
+   negro, pegado de un solo lado — y una cinta que no cruza una costura no es una cinta.
+   Ahora apoya ~15 px arriba y ~15 abajo, o sea que cruza. */
 .casete::before {
   content: '';
   position: absolute;
-  top: -9px;
+  top: -15px;
   left: 14%;
-  width: 64px;
-  height: 18px;
+  width: 78px;
+  height: 30px;
+  z-index: 2;
   background: color-mix(in srgb, var(--papel) 30%, transparent);
   transform: rotate(-3deg);
   border-radius: 2px;
@@ -813,12 +942,31 @@ html[data-umbral] .marca-grande {
 }
 
 /* El recorte que decora la ficha de un disco: calcomania pegada, apenas torcida.
-   Cero medidas inline en el marcado — la regla de marca lo exige. */
+   Cero medidas inline en el marcado — la regla de marca lo exige.
+
+   **Flotaba, y flotar no servia.** `.ficha dl` es `display: grid`, y una rejilla no
+   esquiva un flotante: los items se maquetan como si no estuviera. Medido a 375 px en la
+   ficha de *Luzbelito*, la calcomania se pintaba encima de dos `dd`. No se veia antes
+   porque de las diez fichas de disco solo dos tenian el archivo puesto — llegaron cinco
+   recortes mas el 2026-09-02 y el defecto salio a la luz en las tres nuevas de una.
+
+   Ahora se pega en la esquina de abajo a la derecha y **asoma por fuera del papel**, que
+   es lo que hace una calcomania de verdad: media pegada, media colgando. Como sale del
+   flujo, la ficha le abre lugar con un `padding` propio (la regla de al lado) en vez de
+   pelear con la rejilla. Y de paso hace contrapeso a la cinta adhesiva, que esta arriba
+   a la izquierda. */
 .sticker-ficha {
-  float: inline-end;
+  position: absolute;
+  right: -10px;
+  bottom: -16px;
   width: clamp(56px, 18vw, 84px);
-  margin: 0 0 var(--espacio-1) var(--espacio-1);
-  transform: rotate(-2deg);
+  transform: rotate(-6deg);
+}
+
+/* El lugar que la calcomania ocupa, reservado sobre el papel y no sobre el texto.
+   `:has()` para que una ficha sin recorte no cargue con un margen que no usa. */
+.ficha:has(.sticker-ficha) {
+  padding-block-end: calc(var(--espacio-2) + 26px);
 }
 
 /* ---- La tapa real, solo donde el contrato la permite (D-04) ---- */
@@ -915,6 +1063,182 @@ html[data-umbral] .marca-grande {
   -webkit-mask-repeat: repeat-x;
   mask-repeat: repeat-x;
 }
+
+/* ==========================================================================
+   El pie de imprenta: cómo termina una hoja impresa (ciclo 13)
+
+   El sitio se sentía cortado por dos motivos distintos y este bloque atiende el segundo,
+   que es el de fondo: **la hoja no terminaba**. El contenido se acumulaba desde arriba,
+   el pie caía donde caía, y lo de abajo era un rectángulo negro sin borde ni motivo —337
+   px en `/juegos/dos-ejes/`, el 41 % de la ventana. Una capa de fondo apoyada en eso no
+   tiene dónde apoyarse: por eso su borde de abajo siempre se leyó como una guillotina.
+
+   La franja es hermana de la hoja, hija directa del `body`, así que llega a los dos
+   bordes de la ventana sin `100vw`, sin márgenes negativos y sin `overflow-x`. Adentro,
+   en orden de pintado: la tapa velada, la figura recortada, y el crédito con el pie.
+
+   TRES COSAS QUE SE ARREGLAN POR ESTRUCTURA, NO POR PARCHE:
+
+   1. La tapa deja de medir el alto del documento. `cover` sobre una franja de ~180 px
+      es ~1×; sobre un `main` de 1513 px era 4× de un archivo de 591 px de ancho.
+   2. La capa de fondo sale de adentro de `main`, así que no hay carrera de apilado con
+      las secciones del juego y ninguna página tiene que acordarse de `.sobre-tapa`.
+   3. Queda **una sola** `.tapa-fondo` por documento, que es lo que el
+      `view-transition-name: lugar` necesita para que el tránsito de `ADR-03` ocurra.
+      En `/redondopedia/` había dos y el paso estaba apagado en silencio.
+
+   Y una que es de composición: el crédito de `D-21` deja de ser un renglón legal al pie
+   de la nada y **se imprime sobre la tinta del disco que acredita**. No se puede poner
+   una tapa sin poner el crédito, porque son la misma pieza.
+   ========================================================================== */
+
+.pie-imprenta {
+  /* El tinte lo pone la variante de disco (mezcla `D-19`), igual que en el casete. */
+  --tinte: var(--texto-tenue);
+  flex: none;
+  position: relative;
+  /* `clip` y no `hidden`: `hidden` crea contenedor de desplazamiento y se lleva puesto el
+     `position: sticky` del arranque de "adiviná el tema". */
+  overflow: clip;
+  min-height: var(--alto-pie-imprenta);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: calc(var(--espacio-4) + 10px) var(--espacio-2) var(--espacio-2);
+  /* La tinta de la costura, rebajada. A tinta plena, el rojo de Oktubre cruzando el pie de
+     cada pantalla le pelea el grito al acierto, y `D-33` dice que el acierto es el único
+     grito del sitio. Un rodillo que ya pasó deja menos tinta que uno recién cargado. */
+  color: color-mix(in srgb, var(--tinte) 62%, var(--fondo));
+}
+
+/* La costura: una pasada de rodillo, no una línea. Misma técnica que `.rodillo` —textura
+   enmascarando `currentColor`— a escala de página. Va en `::before` y encima de la foto:
+   un borde recto deja de leerse como un corte cuando algo lo cruza. */
+.pie-imprenta::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 10px;
+  z-index: 2;
+  background: currentColor;
+  -webkit-mask-image: var(--textura-rodillo);
+  mask-image: var(--textura-rodillo);
+  -webkit-mask-size: 240px 10px;
+  mask-size: 240px 10px;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+}
+
+/* La pasada: la segunda tinta de esa serigrafía, subiendo desde el pie.
+
+   **No es una foto y por eso no lleva velo.** El archivo entra como ALFA: la máscara
+   recorta tinta plana del disco (`--tinte`), así que lo que llega a pantalla es un color
+   medido de `tokens.css` y no un píxel de nadie. `D-21` cubre la tapa como imagen; acá no
+   hay imagen que velar.
+
+   **Y va la `-media`, nunca la `-clave`.** Las tres razones son verificables en el repo y
+   ninguna es de gusto:
+
+   1. Las diez `-clave` están teñidas con `--fondo` a propósito (`ADR-05.1`: "el negro es
+      del sitio"). El manifiesto lo confirma disco por disco: los diez llevan el valor
+      exacto de `--fondo`, o sea que sobre el fondo del sitio dan 1:1 y no se ven.
+      (El valor no se escribe acá: el test que prohíbe un color literal en esta hoja
+      tampoco perdona un comentario, y hace bien.)
+   2. La `-clave` es la silueta de la composición ENTERA de una tapa, y eso es lo que
+      `public/arte/README.md` prohíbe por escrito en su regla madre: "piezas sueltas,
+      nunca la composición entera de una tapa".
+   3. La estampa completa es la carta que el sitio se guarda para el acierto (`D-33`,
+      `UX-22`). De empapelado se gasta.
+
+   La `-media` es un motivo suelto —el logo, un puñado de banderas, un garabato— y trae la
+   tinta real de esa tapa: `oktubre-media` es `--marca-rojo` clavado.
+
+   El borde de arriba se acaba en mota. DOS CAPAS Y NINGÚN `mask-composite`, y no es
+   pereza: sin operador declarado las capas se unen, que es exactamente lo que hace falta,
+   así que un motor que no lo entienda no puede arruinarlo. La de abajo es el núcleo
+   —transparente hasta el 55 % del desgaste y recién ahí tinta llena—; la de arriba es la
+   mota, la misma veta del rodillo estirada al alto del desgaste. El 55 % es lo que separa
+   esto de un aerógrafo: en la mitad exterior la ÚNICA alfa que existe es la de la
+   textura. `currentColor` y no un negro escrito: en una máscara sólo importa el alfa, y
+   un color literal rompe el build en la primera corrida. */
+.pasada-pie {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  background: color-mix(in srgb, var(--tinte) var(--peso-pasada), var(--fondo));
+  -webkit-mask-image: var(--pasada-del-disco), var(--textura-rodillo),
+    linear-gradient(to bottom, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
+  mask-image: var(--pasada-del-disco), var(--textura-rodillo),
+    linear-gradient(to bottom, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
+  -webkit-mask-size: cover, 240px var(--desgaste), 100% 100%;
+  mask-size: cover, 240px var(--desgaste), 100% 100%;
+  -webkit-mask-repeat: no-repeat, repeat-x, no-repeat;
+  mask-repeat: no-repeat, repeat-x, no-repeat;
+  -webkit-mask-position: bottom center, top left, top left;
+  mask-position: bottom center, top left, top left;
+  /* La pasada es lo que dibuja; las otras dos capas sólo dicen hasta dónde llega la
+     tinta. Por eso la primera se INTERSECTA con la unión de las otras dos. Si un motor
+     no entiende `mask-composite`, el valor por defecto es unión y la franja se ve como
+     una banda de tinta plana con el borde desgastado: menos dibujo, nunca un fade liso. */
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* La figura de la franja: un recorte que se corta contra el borde derecho de la ventana,
+   como una pieza que no entró entera. No es decoración de esquina — es lo que le da
+   escala a la franja y lo que hace que el borde de la foto no sea lo único que se mira. */
+.figura-pie {
+  position: absolute;
+  right: calc(-1 * var(--espacio-1));
+  bottom: calc(-1 * var(--espacio-1));
+  width: clamp(88px, 28vw, 128px);
+  /* `height: auto` no es opcional: el marcado declara `width` y `height` reales para que
+     el navegador no maquete dos veces, y sin esto el atributo de alto gana sobre el ancho
+     de CSS y el recorte sale estirado. Medido: 145×260 donde debía ser 145×145. */
+  height: auto;
+  z-index: 1;
+  opacity: 0.85;
+  rotate: -4deg;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* El pie y el crédito, sobre todo lo demás. */
+.pie-imprenta .pie-sitio,
+.pie-imprenta .credito-tapas,
+.pie-imprenta .credito-pantalla {
+  position: relative;
+  z-index: 2;
+}
+
+.pie-imprenta .pie-sitio {
+  margin: 0;
+}
+
+/* Donde hay figura, el texto le hace lugar. El recorte vive por debajo del renglón en el
+   orden de apilado, así que sin esto el crédito se lee sobre el dibujo — y es un crédito,
+   o sea registro 3: tiene que poder leerse sin pelear con nada. De paso el pie deja de
+   estar centrado en la ventana y queda corrido, que es la asimetría que al collage le
+   faltaba. `:has()` para que una franja sin figura no cargue con una sangría que no usa. */
+.pie-imprenta:has(.figura-pie) .pie-sitio {
+  padding-inline-end: clamp(76px, 26vw, 118px);
+}
+
+/* De qué disco se viste la franja de cada pantalla (mezcla `D-19`). Son las mismas diez
+   tintas medidas de `RES-37` que ya usa el cancionero, aplicadas al mismo mecanismo que
+   el casete del portal: la variante pone `--tinte` y todo lo demás lo lee de ahí. */
+.pie-imprenta--gulp { --tinte: var(--disco-gulp-tinta); }
+.pie-imprenta--oktubre { --tinte: var(--disco-oktubre-tinta); }
+.pie-imprenta--un-baion-para-el-ojo-idiota { --tinte: var(--disco-un-baion-para-el-ojo-idiota-tinta); }
+.pie-imprenta--bang-bang-estas-liquidado { --tinte: var(--disco-bang-bang-estas-liquidado-tinta); }
+.pie-imprenta--la-mosca-y-la-sopa { --tinte: var(--disco-la-mosca-y-la-sopa-tinta); }
+.pie-imprenta--lobo-suelto { --tinte: var(--disco-lobo-suelto-tinta); }
+.pie-imprenta--cordero-atado { --tinte: var(--disco-cordero-atado-tinta); }
+.pie-imprenta--luzbelito { --tinte: var(--disco-luzbelito-tinta); }
+.pie-imprenta--ultimo-bondi-a-finisterre { --tinte: var(--disco-ultimo-bondi-a-finisterre-tinta); }
+.pie-imprenta--momo-sampler { --tinte: var(--disco-momo-sampler-tinta); }
 
 /* ---- Redondopedia: portada e indice ---- */
 
@@ -1117,9 +1441,19 @@ html[data-umbral] .marca-grande {
   border-radius: 2px;
 }
 
+/* Las dos columnas estaban en `auto 1fr` y las dos podian desbordar, cada una por su
+   lado. Medido a 375 px en la ficha de *Luzbelito*: `dd` de **589 px dentro de una
+   tarjeta de 345**, con el final de cada dato cortado contra el borde derecho del papel.
+   La causa es que un item de rejilla tiene `min-width: auto` —no se encoge por debajo de
+   su contenido mas ancho— y `.fuente-chip` traia `white-space: nowrap`, asi que una ficha
+   larga ("hecho · RES-20 (INV-20), que resolvio la disputa") estiraba la columna entera.
+
+   Las dos columnas quedan acotadas. La etiqueta con un techo —hay una que dice MENCIONES
+   EN EL LIBRO DE MEMORIAS DEL INDIO y con `auto` se comia la tarjeta— y el valor con
+   `minmax(0, 1fr)`, que es lo que le permite encoger y envolver. */
 .ficha dl {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: clamp(4.5rem, 34%, 9rem) minmax(0, 1fr);
   gap: 0.25em var(--espacio-2);
   margin: 0;
   font-size: 0.92rem;
@@ -1136,6 +1470,17 @@ html[data-umbral] .marca-grande {
 
 .ficha dd {
   margin: 0;
+}
+
+/* La fuente de un dato, adentro de la ficha, cambia de tinta y solo de tinta.
+
+   `.fuente-chip` se pinta con `--texto-tenue`, que está calibrado contra `--fondo`. Sobre
+   `--papel` da **1,78:1** (medido, a 11,5 px): crema sobre crema, ilegible. Y es el
+   renglón que dice de dónde salió cada dato de una ficha de disco — o sea lo único que
+   `D-14` deja estricto. Va con `--papel-tenue`, que es el mismo gesto —tinta apagada—
+   hecho para este papel: 5,39:1, par nuevo en `contraste.test.ts`. */
+.ficha .fuente-chip {
+  color: var(--papel-tenue);
 }
 
 /* ---- El rotulado en prosa (BR-08): la marca vive en el punto exacto ---- */
@@ -1176,12 +1521,20 @@ html[data-umbral] .marca-grande {
   margin-bottom: 0.15em;
 }
 
-/* La fuente de un hecho: chiquita, al final del segmento, sin gritar. */
+/* La fuente de un hecho: chiquita, al final del segmento, sin gritar.
+
+   **Sin `nowrap`, y la medición explica por qué.** Lo traía para que una ficha corta no se
+   partiera al medio, y la idea era razonable mientras las fichas fueran `RES-02 (INV-01)`.
+   Pero acá adentro va lo que escribió `contenido`, y a veces es una oración entera:
+   *"hecho · RES-20 (INV-20), que resolvió la discrepancia de RES-02; veto levantado en
+   CNT-03 apartado 1"*. Medido a 375 px en `/redondopedia/luzbelito/`: **un chip de 981 px
+   de ancho que estiraba el documento a 997** — la página entera se arrastraba de costado y
+   el rótulo terminaba fuera de la pantalla. Es el rótulo que dice de dónde salió el dato,
+   o sea lo único que `D-14` deja estricto, y no se podía leer entero. Envuelve. */
 .fuente-chip {
   font-size: 0.72rem;
   color: var(--texto-tenue);
   letter-spacing: 0.06em;
-  white-space: nowrap;
 }
 
 /* Enlaces internos: subrayado grueso, el color no alcanza solo. */
@@ -1239,6 +1592,15 @@ html[data-umbral] .marca-grande {
 .credito-pantalla {
   display: block;
   margin-bottom: var(--espacio-1);
+}
+
+/* El mismo crédito, en las páginas de juego, que no pasan por `Base.astro` y arman su pie
+   a mano. Vivía en el `<style>` de `adivinar-el-tema.astro`, que era la única de las tres
+   páginas con tapa de fondo que acreditaba: las otras dos mostraban una tapa velada y no
+   nombraban ningún disco, o sea la condición 1 de `D-21` incumplida en silencio. Sube acá
+   porque ahora la usan tres. */
+.credito-tapas {
+  margin: 0 0 var(--espacio-1);
 }
 
 /* El puente del articulo de un tema a su letra entera (ciclo 6). Es un renglon de

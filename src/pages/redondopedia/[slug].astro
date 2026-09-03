@@ -26,6 +26,7 @@ import {
   recorte,
   tapa,
   STICKER_DISCO,
+  DISCO_DE_CATEGORIA,
   detalleArticulo,
   discosDe,
   SIN_DETALLE_POR_TONO,
@@ -83,6 +84,24 @@ const detalle = detalleArticulo(articulo.tipo, articulo.slug, categoria);
 const nombreDetalle = detalle?.split('/').pop()?.replace(/\.jpg$/, '') ?? null;
 const tapasUsadas = laTapa ? [articulo.titulo] : discosDe([nombreDetalle]);
 
+/**
+ * De que disco se viste el pie de imprenta de este articulo.
+ *
+ * Si el articulo ES un disco, el suyo: la ficha de *Luzbelito* termina en tinta de
+ * Luzbelito y no en la de la categoria. Si no, el que `D-19` le da a su categoria.
+ *
+ * **Los tres de tono grave no llevan ninguno**, y no es una omision: `UX-20` §3.4 les
+ * apaga la pantalla entera —sin velo, sin capa de fondo mas alla del grano—, y una
+ * silueta de disco al pie de la muerte del Indio es exactamente el adorno que
+ * `.claude/rules/voz-ricotera.md` §6 saca de esas tres pantallas. La franja se pinta
+ * igual, con la costura en tinta apagada: termina la hoja sin decorar nada.
+ */
+const discoDelPie = SIN_DETALLE_POR_TONO.has(articulo.slug)
+  ? undefined
+  : articulo.tipo === 'disco'
+    ? articulo.slug
+    : DISCO_DE_CATEGORIA[categoria];
+
 const etiquetaRotulo = (seg: Segmento): string =>
   seg.rotulo === 'leyenda' ? 'Leyenda' : `Lo contó ${seg.quien ?? 'alguien'}`;
 ---
@@ -92,6 +111,7 @@ const etiquetaRotulo = (seg: Segmento): string =>
   descripcion={articulo.resumen}
   volverA={{ href: '/redondopedia/', texto: REDONDOPEDIA.volverPortada }}
   tapas={tapasUsadas}
+  discoDelPie={discoDelPie}
 >
   {/*
     `articulo--grave` marca los tres artículos de tono grave — Bulacio, Olavarría y la
