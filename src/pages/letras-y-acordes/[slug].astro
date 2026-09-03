@@ -39,6 +39,7 @@ const aviso = tema.contenido === 'letra' ? null : AVISO_SIN_LETRA[tema.contenido
   titulo={`${tema.titulo} — letra y acordes — Arcade Ricotero`}
   descripcion={`La letra de ${tema.titulo}, de ${ficha.titulo} (${ficha.anio}), con los acordes para tocarla.`}
   volverA={{ href: '/letras-y-acordes/', texto: 'Letras y acordes' }}
+  discoDelPie={tema.disco}
 >
   <article
     class="tema"

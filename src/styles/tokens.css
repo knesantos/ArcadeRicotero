@@ -253,6 +253,42 @@
      los otros siete van en la rotulada, con su tilde real. */
   --fuente-lobo-suelto: 'Lobo Suelto Fan', 'Archivo Black', sans-serif;
 
+  /* ------------------------------------------------------------------
+     El pie de imprenta (ciclo 13). Cómo termina una hoja impresa.
+
+     Toda pantalla del sitio cierra con una franja a sangre: la pasada de rodillo, la
+     tinta del disco que viste esa parte (`D-19`), la tapa velada y el crédito de `D-21`.
+     Existe porque el sitio terminaba donde terminaba su texto: medido a 375×812 el
+     2026-09-02, en `/juegos/dos-ejes/` el pie flotaba con 337 px de negro debajo.
+
+     Y trae de arrastre el arreglo que ninguna máscara podía dar: la tapa deja de medir
+     el alto del documento y pasa a medir el alto de una franja. `lobo-tiras.jpg` es
+     591×381 y estirado a un `main` de 343×1513 mostraba **el 14,6 % de la foto ampliada
+     4 veces** — una tira vertical borrosa de algo irreconocible. En una franja de
+     375×~180 entra a ~1× y se ve más de la mitad.
+     ------------------------------------------------------------------ */
+  --alto-pie-imprenta: clamp(8.5rem, 22vh, 13rem);
+
+  /* Cuánto tarda la tinta en acabarse contra el borde de una pasada.
+
+     NO ES UN DEGRADADO DECORATIVO, y la diferencia es medible: en el 55 % exterior de
+     esta franja **no hay ninguna caída lisa debajo** — la única alfa que existe ahí es la
+     de `--textura-rodillo`. Un desvanecido liso es el tic que la tabla anti-slop veta por
+     nombre; un desvanecido cuyo tramo visible es puramente textura es la racleta
+     levantando. Es la misma decisión que ya tomó `.rodillo` cuando eligió enmascarar
+     `currentColor` en vez de dibujar una línea. */
+  --desgaste: 3.5rem;
+
+  /* Cuánta tinta deja la pasada de la franja sobre el fondo.
+
+     NO ES UNA PREFERENCIA: el techo lo fija el texto más apagado que se escribe encima,
+     que es `--texto-tenue` (el crédito y el pie). `contraste.test.ts` mezcla este peso
+     con las diez tintas de disco y falla si alguna deja ese texto por debajo de AA. Con
+     18 % y el naranja de Lobo suelto el piso pasa de `#14100e` a `#35220f` —33 niveles de
+     255 en el rojo—, que es lo que hace falta para que se vea en un celular al sol y no
+     sea relleno. Subirlo no se decide a ojo: lo dice el test. */
+  --peso-pasada: 18%;
+
   /* Espaciado pensado para el pulgar (D-09) */
   --toque-min: 48px;
   --espacio-1: 0.5rem;
@@ -272,13 +308,45 @@
   box-sizing: border-box;
 }
 
+/*
+ * El `body` es la mesa, no la hoja.
+ *
+ * Tenia el `padding` puesto acá y el contenido se acumulaba desde arriba en flujo
+ * normal, asi que **cada pantalla terminaba donde terminaba su texto** y lo que quedaba
+ * abajo era un rectangulo negro sin borde, sin piso y sin motivo. Medido a 375×812 el
+ * 2026-09-02: en `/juegos/dos-ejes/` el pie flotaba a media pantalla con 337 px de negro
+ * DEBAJO — el 41 % de la ventana, por afuera de todo. Es el "queda cortado" del pedido,
+ * en su forma mas cruda: no falta un fondo, falta el final de la hoja.
+ *
+ * Ahora la mesa mide una ventana, la hoja crece hasta el pie (`flex: 1 0 auto`) y la
+ * sangria se muda del `body` a la hoja. Dos consecuencias que no son de estilo:
+ *
+ * - Se cae solo el `calc(100svh - var(--espacio-2) * 2)` que cinco paginas repetian a
+ *   mano y dos tenian mal escrito con `100vh`: los 32 px de arrastre muerto no se
+ *   parchean, dejan de poder existir.
+ * - El flex vive en el `body` **y no en la hoja**. Adentro de `main` y de
+ *   `.contenido-sitio` sigue habiendo flujo de bloque, asi que los margenes siguen
+ *   colapsando igual que siempre y el ritmo vertical de las trece pantallas no se mueve
+ *   un pixel. Un flex sobre la hoja habria cambiado en silencio todas las separaciones.
+ */
 body {
   margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
   background: var(--fondo);
   color: var(--texto);
   font-family: var(--fuente);
   line-height: 1.5;
-  /* Movil primero: nada de ancho fijo. */
+}
+
+/* La hoja: crece hasta el pie y nunca se encoge. La sangria es de acá, no de la mesa.
+   Movil primero: nada de ancho fijo — el tope de columna lo ponen `juego.css` y
+   `sitio.css`, cada uno para lo suyo. */
+body > main,
+body > .contenido-sitio {
+  flex: 1 0 auto;
   padding: var(--espacio-2);
 }
 

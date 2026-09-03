@@ -256,6 +256,35 @@ html[data-umbral] .marca-grande {
   background-position: bottom;
   background-image: linear-gradient(var(--velo-tapa), var(--velo-tapa)),
     url('/tapas/fondo/oktubre-banderas.jpg');
+
+  /* LA TINTA SE ACABA HACIA ARRIBA — y este es el corte que el usuario nombró primero.
+
+     Medido antes de tocar nada, a 375×812: la franja arrancaba en y=568 con una línea
+     geométrica de x=0 a x=375. El velo es un lavado plano —dos paradas idénticas— que
+     vale lo mismo en el centro que en el último píxel, así que la foto de la multitud
+     empezaba de golpe. Ninguna máscara, ninguna textura, ningún regreso al fondo.
+
+     Ahora se apaga en mota, con la misma receta de dos capas que usa `.pasada-pie` y por
+     los mismos motivos: sin `mask-composite` las capas se unen, que es exactamente lo que
+     hace falta, y un motor que no lo entienda no puede arruinarlo. Abajo NO se desgasta:
+     esa pasada sigue de largo por debajo del borde de la ventana, y la multitud tiene que
+     quedar apoyada en el piso de la pantalla. Una capa que se desvanece por los cuatro
+     lados es una viñeta, que es lo único en lo que esto se puede convertir si se usa mal.
+
+     La deriva no se toca: la máscara viaja con el elemento, así que la tinta no se corre
+     de su propio borde. Y el velo tampoco: enmascarar sólo puede BAJAR el peso de la foto
+     en el compuesto, así que el peor caso que mide `contraste.test.ts` sigue siendo el
+     peor caso y no entra ni un par nuevo. */
+  -webkit-mask-image: var(--textura-rodillo),
+    linear-gradient(to bottom, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
+  mask-image: var(--textura-rodillo),
+    linear-gradient(to bottom, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
+  -webkit-mask-size: 240px var(--desgaste), 100% 100%;
+  mask-size: 240px var(--desgaste), 100% 100%;
+  -webkit-mask-repeat: repeat-x, no-repeat;
+  mask-repeat: repeat-x, no-repeat;
+  -webkit-mask-position: top left, top left;
+  mask-position: top left, top left;
 }
 
 .tapa-fondo--lobo-tiras {
@@ -948,6 +977,182 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   -webkit-mask-repeat: repeat-x;
   mask-repeat: repeat-x;
 }
+
+/* ==========================================================================
+   El pie de imprenta: cómo termina una hoja impresa (ciclo 13)
+
+   El sitio se sentía cortado por dos motivos distintos y este bloque atiende el segundo,
+   que es el de fondo: **la hoja no terminaba**. El contenido se acumulaba desde arriba,
+   el pie caía donde caía, y lo de abajo era un rectángulo negro sin borde ni motivo —337
+   px en `/juegos/dos-ejes/`, el 41 % de la ventana. Una capa de fondo apoyada en eso no
+   tiene dónde apoyarse: por eso su borde de abajo siempre se leyó como una guillotina.
+
+   La franja es hermana de la hoja, hija directa del `body`, así que llega a los dos
+   bordes de la ventana sin `100vw`, sin márgenes negativos y sin `overflow-x`. Adentro,
+   en orden de pintado: la tapa velada, la figura recortada, y el crédito con el pie.
+
+   TRES COSAS QUE SE ARREGLAN POR ESTRUCTURA, NO POR PARCHE:
+
+   1. La tapa deja de medir el alto del documento. `cover` sobre una franja de ~180 px
+      es ~1×; sobre un `main` de 1513 px era 4× de un archivo de 591 px de ancho.
+   2. La capa de fondo sale de adentro de `main`, así que no hay carrera de apilado con
+      las secciones del juego y ninguna página tiene que acordarse de `.sobre-tapa`.
+   3. Queda **una sola** `.tapa-fondo` por documento, que es lo que el
+      `view-transition-name: lugar` necesita para que el tránsito de `ADR-03` ocurra.
+      En `/redondopedia/` había dos y el paso estaba apagado en silencio.
+
+   Y una que es de composición: el crédito de `D-21` deja de ser un renglón legal al pie
+   de la nada y **se imprime sobre la tinta del disco que acredita**. No se puede poner
+   una tapa sin poner el crédito, porque son la misma pieza.
+   ========================================================================== */
+
+.pie-imprenta {
+  /* El tinte lo pone la variante de disco (mezcla `D-19`), igual que en el casete. */
+  --tinte: var(--texto-tenue);
+  flex: none;
+  position: relative;
+  /* `clip` y no `hidden`: `hidden` crea contenedor de desplazamiento y se lleva puesto el
+     `position: sticky` del arranque de "adiviná el tema". */
+  overflow: clip;
+  min-height: var(--alto-pie-imprenta);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: calc(var(--espacio-4) + 10px) var(--espacio-2) var(--espacio-2);
+  /* La tinta de la costura, rebajada. A tinta plena, el rojo de Oktubre cruzando el pie de
+     cada pantalla le pelea el grito al acierto, y `D-33` dice que el acierto es el único
+     grito del sitio. Un rodillo que ya pasó deja menos tinta que uno recién cargado. */
+  color: color-mix(in srgb, var(--tinte) 62%, var(--fondo));
+}
+
+/* La costura: una pasada de rodillo, no una línea. Misma técnica que `.rodillo` —textura
+   enmascarando `currentColor`— a escala de página. Va en `::before` y encima de la foto:
+   un borde recto deja de leerse como un corte cuando algo lo cruza. */
+.pie-imprenta::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 10px;
+  z-index: 2;
+  background: currentColor;
+  -webkit-mask-image: var(--textura-rodillo);
+  mask-image: var(--textura-rodillo);
+  -webkit-mask-size: 240px 10px;
+  mask-size: 240px 10px;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+}
+
+/* La pasada: la segunda tinta de esa serigrafía, subiendo desde el pie.
+
+   **No es una foto y por eso no lleva velo.** El archivo entra como ALFA: la máscara
+   recorta tinta plana del disco (`--tinte`), así que lo que llega a pantalla es un color
+   medido de `tokens.css` y no un píxel de nadie. `D-21` cubre la tapa como imagen; acá no
+   hay imagen que velar.
+
+   **Y va la `-media`, nunca la `-clave`.** Las tres razones son verificables en el repo y
+   ninguna es de gusto:
+
+   1. Las diez `-clave` están teñidas con `--fondo` a propósito (`ADR-05.1`: "el negro es
+      del sitio"). El manifiesto lo confirma disco por disco: los diez llevan el valor
+      exacto de `--fondo`, o sea que sobre el fondo del sitio dan 1:1 y no se ven.
+      (El valor no se escribe acá: el test que prohíbe un color literal en esta hoja
+      tampoco perdona un comentario, y hace bien.)
+   2. La `-clave` es la silueta de la composición ENTERA de una tapa, y eso es lo que
+      `public/arte/README.md` prohíbe por escrito en su regla madre: "piezas sueltas,
+      nunca la composición entera de una tapa".
+   3. La estampa completa es la carta que el sitio se guarda para el acierto (`D-33`,
+      `UX-22`). De empapelado se gasta.
+
+   La `-media` es un motivo suelto —el logo, un puñado de banderas, un garabato— y trae la
+   tinta real de esa tapa: `oktubre-media` es `--marca-rojo` clavado.
+
+   El borde de arriba se acaba en mota. DOS CAPAS Y NINGÚN `mask-composite`, y no es
+   pereza: sin operador declarado las capas se unen, que es exactamente lo que hace falta,
+   así que un motor que no lo entienda no puede arruinarlo. La de abajo es el núcleo
+   —transparente hasta el 55 % del desgaste y recién ahí tinta llena—; la de arriba es la
+   mota, la misma veta del rodillo estirada al alto del desgaste. El 55 % es lo que separa
+   esto de un aerógrafo: en la mitad exterior la ÚNICA alfa que existe es la de la
+   textura. `currentColor` y no un negro escrito: en una máscara sólo importa el alfa, y
+   un color literal rompe el build en la primera corrida. */
+.pasada-pie {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  background: color-mix(in srgb, var(--tinte) var(--peso-pasada), var(--fondo));
+  -webkit-mask-image: var(--pasada-del-disco), var(--textura-rodillo),
+    linear-gradient(to bottom, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
+  mask-image: var(--pasada-del-disco), var(--textura-rodillo),
+    linear-gradient(to bottom, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
+  -webkit-mask-size: cover, 240px var(--desgaste), 100% 100%;
+  mask-size: cover, 240px var(--desgaste), 100% 100%;
+  -webkit-mask-repeat: no-repeat, repeat-x, no-repeat;
+  mask-repeat: no-repeat, repeat-x, no-repeat;
+  -webkit-mask-position: bottom center, top left, top left;
+  mask-position: bottom center, top left, top left;
+  /* La pasada es lo que dibuja; las otras dos capas sólo dicen hasta dónde llega la
+     tinta. Por eso la primera se INTERSECTA con la unión de las otras dos. Si un motor
+     no entiende `mask-composite`, el valor por defecto es unión y la franja se ve como
+     una banda de tinta plana con el borde desgastado: menos dibujo, nunca un fade liso. */
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* La figura de la franja: un recorte que se corta contra el borde derecho de la ventana,
+   como una pieza que no entró entera. No es decoración de esquina — es lo que le da
+   escala a la franja y lo que hace que el borde de la foto no sea lo único que se mira. */
+.figura-pie {
+  position: absolute;
+  right: calc(-1 * var(--espacio-1));
+  bottom: calc(-1 * var(--espacio-1));
+  width: clamp(88px, 28vw, 128px);
+  /* `height: auto` no es opcional: el marcado declara `width` y `height` reales para que
+     el navegador no maquete dos veces, y sin esto el atributo de alto gana sobre el ancho
+     de CSS y el recorte sale estirado. Medido: 145×260 donde debía ser 145×145. */
+  height: auto;
+  z-index: 1;
+  opacity: 0.85;
+  rotate: -4deg;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* El pie y el crédito, sobre todo lo demás. */
+.pie-imprenta .pie-sitio,
+.pie-imprenta .credito-tapas,
+.pie-imprenta .credito-pantalla {
+  position: relative;
+  z-index: 2;
+}
+
+.pie-imprenta .pie-sitio {
+  margin: 0;
+}
+
+/* Donde hay figura, el texto le hace lugar. El recorte vive por debajo del renglón en el
+   orden de apilado, así que sin esto el crédito se lee sobre el dibujo — y es un crédito,
+   o sea registro 3: tiene que poder leerse sin pelear con nada. De paso el pie deja de
+   estar centrado en la ventana y queda corrido, que es la asimetría que al collage le
+   faltaba. `:has()` para que una franja sin figura no cargue con una sangría que no usa. */
+.pie-imprenta:has(.figura-pie) .pie-sitio {
+  padding-inline-end: clamp(76px, 26vw, 118px);
+}
+
+/* De qué disco se viste la franja de cada pantalla (mezcla `D-19`). Son las mismas diez
+   tintas medidas de `RES-37` que ya usa el cancionero, aplicadas al mismo mecanismo que
+   el casete del portal: la variante pone `--tinte` y todo lo demás lo lee de ahí. */
+.pie-imprenta--gulp { --tinte: var(--disco-gulp-tinta); }
+.pie-imprenta--oktubre { --tinte: var(--disco-oktubre-tinta); }
+.pie-imprenta--un-baion-para-el-ojo-idiota { --tinte: var(--disco-un-baion-para-el-ojo-idiota-tinta); }
+.pie-imprenta--bang-bang-estas-liquidado { --tinte: var(--disco-bang-bang-estas-liquidado-tinta); }
+.pie-imprenta--la-mosca-y-la-sopa { --tinte: var(--disco-la-mosca-y-la-sopa-tinta); }
+.pie-imprenta--lobo-suelto { --tinte: var(--disco-lobo-suelto-tinta); }
+.pie-imprenta--cordero-atado { --tinte: var(--disco-cordero-atado-tinta); }
+.pie-imprenta--luzbelito { --tinte: var(--disco-luzbelito-tinta); }
+.pie-imprenta--ultimo-bondi-a-finisterre { --tinte: var(--disco-ultimo-bondi-a-finisterre-tinta); }
+.pie-imprenta--momo-sampler { --tinte: var(--disco-momo-sampler-tinta); }
 
 /* ---- Redondopedia: portada e indice ---- */
 

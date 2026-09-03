@@ -23,6 +23,7 @@ import '../../styles/tokens.css';
 import '../../styles/juego.css';
 import '../../styles/sitio.css';
 import Cabeza from '../../components/Cabeza.astro';
+import PieImprenta from '../../components/PieImprenta.astro';
 import { PANTALLA_0 } from '../../lib/por-la-letra/copy.ts';
 import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
 import { leerTemas, slugDeTitulo } from '../../lib/letra/temas.ts';
@@ -92,8 +93,9 @@ const TITULO = 'Sacalo por la letra — Arcade Ricotero';
       <section id="partida" class="pantalla sobre-tapa" hidden></section>
       <section id="resultado" class="pantalla sobre-tapa" hidden></section>
 
-      <footer class="pie-sitio sobre-tapa">{PORTAL.pie}</footer>
     </main>
+
+    <PieImprenta disco="momo-sampler" />
 
     <script type="application/json" id="banco" set:html={JSON.stringify(items)} />
     <script type="application/json" id="catalogo" set:html={JSON.stringify(catalogo)} />

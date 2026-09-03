@@ -17,6 +17,7 @@ import '../../styles/sitio.css';
 import { cargarBanco, type BancoCrudo } from '../../lib/tapa/banco.ts';
 import { PANTALLA_0 } from '../../lib/tapa/copy.ts';
 import Cabeza from '../../components/Cabeza.astro';
+import PieImprenta from '../../components/PieImprenta.astro';
 import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
 import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/tapa.json';
@@ -58,13 +59,9 @@ const TITULO = 'Adiviná la tapa — Arcade Ricotero';
       <section id="partida" class="pantalla sobre-tapa" hidden></section>
       <section id="resultado" class="pantalla sobre-tapa" hidden></section>
 
-      <footer class="pie-sitio sobre-tapa">
-        {tapasUsadas.length > 0 && (
-          <p class="credito-tapas">{PORTAL.creditoTapas(tapasUsadas)}</p>
-        )}
-        {PORTAL.pie}
-      </footer>
     </main>
+
+    <PieImprenta disco="ultimo-bondi-a-finisterre" sinPasada tapas={tapasUsadas} />
 
     <script type="application/json" id="banco" set:html={JSON.stringify(items)} />
     <script>

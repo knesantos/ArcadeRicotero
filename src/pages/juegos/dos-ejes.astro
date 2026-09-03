@@ -19,6 +19,7 @@ import '../../styles/juego.css';
 import '../../styles/sitio.css';
 import { PANTALLA_0 } from '../../lib/dos-ejes/copy.ts';
 import Cabeza from '../../components/Cabeza.astro';
+import PieImprenta from '../../components/PieImprenta.astro';
 import { PORTAL } from '../../lib/sitio/copy.ts';
 import crudo from '../../data/dos-ejes.json';
 
@@ -74,8 +75,9 @@ const TITULO = '¿Qué tipo de ricotero sos? — Arcade Ricotero';
       <section id="pregunta" class="pantalla" hidden></section>
       <section id="resultado" class="pantalla" hidden></section>
 
-      <footer class="pie-sitio">{PORTAL.pie}</footer>
     </main>
+
+    <PieImprenta disco="luzbelito" />
 
     <script type="application/json" id="banco" set:html={JSON.stringify(banco)} />
     <script>

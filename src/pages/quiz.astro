@@ -18,6 +18,7 @@ import '../styles/tokens.css';
 import '../styles/juego.css';
 import '../styles/sitio.css';
 import Cabeza from '../components/Cabeza.astro';
+import PieImprenta from '../components/PieImprenta.astro';
 import { cargarBanco, type BancoCrudo } from '../lib/quiz/banco.ts';
 import { PANTALLA_0 } from '../lib/quiz/copy.ts';
 import { PORTAL, LUGARES } from '../lib/sitio/copy.ts';
@@ -58,6 +59,8 @@ const TITULO = 'Preguntas ricoteras — Arcade Ricotero';
       <section id="partida" class="pantalla" hidden></section>
       <section id="resultado" class="pantalla" hidden></section>
     </main>
+
+    <PieImprenta disco="oktubre" />
 
     <script type="application/json" id="banco" set:html={JSON.stringify(items)} />
     <script>

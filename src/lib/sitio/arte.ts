@@ -135,6 +135,83 @@ export function conRecorteReal(ruta: string): string {
   return real ? (recorte(real, ruta) as string) : ruta;
 }
 
+/* ==================================================================
+   El pie de imprenta (ciclo 13)
+
+   La franja con la que termina toda pantalla del sitio. Necesita tres cosas de un disco:
+   la pasada que dibuja el fondo de la franja, la figura recortada que la pisa, y el
+   titulo con el que el credito de `D-21` lo nombra.
+   ================================================================== */
+
+/**
+ * La segunda tinta de la serigrafia de ese disco, la que dibuja la franja.
+ *
+ * **Va la `-media` y nunca la `-clave`**, y las tres razones estan en el CSS de
+ * `.pasada-pie`: la clave esta teñida con `--fondo` (no se ve), es la silueta de la
+ * composicion ENTERA de una tapa (lo que `public/arte/README.md` prohibe por escrito), y
+ * es la carta que el sitio se guarda para el acierto (`D-33`).
+ *
+ * Devuelve `null` si el taller no corrio todavia: la franja se pinta igual, con la
+ * costura y la tinta, que es el mismo criterio de reemplazo del resto del collage.
+ */
+export function pasadaDeDisco(slug: string): string | null {
+  return existsSync(join(process.cwd(), 'public', 'tapas', 'pasadas', `${slug}-media.png`))
+    ? `/tapas/pasadas/${slug}-media.png`
+    : null;
+}
+
+/**
+ * La figura recortada que pisa la franja de cada disco.
+ *
+ * Solo los que tienen recorte real puesto; el resto no lleva figura y la franja se
+ * sostiene con la costura y la pasada. **Oktubre no tiene, y es a proposito:** la unica
+ * calcada que hay de ese disco es la figura encadenada, y esa tiene prohibicion escrita
+ * de atribucion de album (`INV-02`, `public/arte/README.md`).
+ */
+const FIGURA_DE_DISCO: Record<string, string> = {
+  'lobo-suelto': 'lobo-recortado.png',
+  'cordero-atado': 'cordero-rulo.png',
+  luzbelito: 'luzbelito-vela.png',
+  'momo-sampler': 'momo-medallon.png',
+  'la-mosca-y-la-sopa': 'mosca.png',
+  'ultimo-bondi-a-finisterre': 'bondi-interplanetario.png',
+};
+
+export function figuraDeDisco(slug: string): string | null {
+  const archivo = FIGURA_DE_DISCO[slug];
+  return archivo ? recorte(archivo) : null;
+}
+
+/**
+ * Que disco viste cada categoria, escrito con el slug del disco.
+ *
+ * Es **el mismo mapa de `D-19`** que ya cumple `DETALLE_POR_VARIANTE` unas lineas mas
+ * arriba, dicho en la otra unidad: alla es el nombre del recorte de tapa, aca es el slug
+ * del disco. No es un mapa nuevo — si alguno de los dos cambia, cambian los dos.
+ */
+export const DISCO_DE_CATEGORIA: Record<string, string> = {
+  historia: 'gulp',
+  discos: 'ultimo-bondi-a-finisterre',
+  letras: 'la-mosca-y-la-sopa',
+  mitologia: 'lobo-suelto',
+  marca: 'oktubre',
+  momo: 'momo-sampler',
+};
+
+/** Como se llama cada disco cuando el credito de `D-21` lo nombra. */
+export const TITULO_DE_DISCO: Record<string, string> = {
+  gulp: 'Gulp!',
+  oktubre: 'Oktubre',
+  'un-baion-para-el-ojo-idiota': 'Un baión para el ojo idiota',
+  'bang-bang-estas-liquidado': '¡Bang! ¡Bang!… Estás liquidado',
+  'la-mosca-y-la-sopa': 'La mosca y la sopa',
+  'lobo-suelto': 'Lobo suelto',
+  'cordero-atado': 'Cordero atado',
+  luzbelito: 'Luzbelito',
+  'ultimo-bondi-a-finisterre': 'Último bondi a Finisterre',
+  'momo-sampler': 'Momo Sampler',
+};
+
 /**
  * Las medidas reales de una pieza del collage, leidas del archivo en build.
  *

@@ -2021,10 +2021,16 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
    literalmente lo que el usuario nombro el 2026-09-02 — "que no quede duro ni cortado".
    Un `main` que siempre llega al pie de la ventana es la condicion previa de cualquier
    fondo: sin eso, la tinta no tiene donde apoyarse.
+
+   **El alto minimo ya no esta acá, y es a proposito.** Lo pone `tokens.css`: el `body`
+   mide una ventana y es columna flex, y la hoja crece con `flex: 1 0 auto`. Asi el alto
+   deja de ser una cuenta contra el `padding` del `body` —que es lo que dos paginas
+   escribieron mal— y pasa a ser una consecuencia del reparto. Acá queda lo que es de las
+   pantallas de juego y de nadie mas: el tope de columna y el `position` que le da caja a
+   la capa de fondo.
    ========================================================================== */
 body > main {
   position: relative;
-  min-height: calc(100svh - var(--espacio-2) * 2);
   max-width: 34rem;
   margin-inline: auto;
 }

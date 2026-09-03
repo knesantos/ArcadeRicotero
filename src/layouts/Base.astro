@@ -11,7 +11,7 @@
 import '../styles/tokens.css';
 import '../styles/sitio.css';
 import Cabeza from '../components/Cabeza.astro';
-import { PORTAL } from '../lib/sitio/copy.ts';
+import PieImprenta from '../components/PieImprenta.astro';
 import { conRecorteReal, fondoTapa, medidas } from '../lib/sitio/arte.ts';
 
 interface Props {
@@ -28,9 +28,23 @@ interface Props {
    * propia firma, asi que el credito puntual se junta acá.
    */
   tapas?: readonly string[];
+  /**
+   * De que disco se viste el pie de imprenta (mezcla `D-19`). Sin esto la franja sale
+   * desnuda —costura en tinta apagada y nada mas—, que es lo que corresponde en las
+   * pantallas de tono grave y en las herramientas.
+   */
+  discoDelPie?: string;
 }
 
-const { titulo, descripcion, conBanderas = false, conMosca = false, volverA, tapas = [] } = Astro.props;
+const {
+  titulo,
+  descripcion,
+  conBanderas = false,
+  conMosca = false,
+  volverA,
+  tapas = [],
+  discoDelPie,
+} = Astro.props;
 
 /**
  * La franja de multitud con banderas de *Oktubre*. Si el recorte real de la tapa ya
@@ -100,11 +114,13 @@ const medidaMosca = medidas(arteMosca);
         )
       }
       <slot />
-      <footer class="pie-sitio">
-        {tapas.length > 0 && <span class="credito-pantalla" data-tapas={JSON.stringify(tapas)}>{PORTAL.creditoTapas(tapas)}</span>}
-        {PORTAL.pie}
-      </footer>
     </div>
+
+    {/* El pie de imprenta es HERMANO de la hoja, no hijo: por eso llega a los dos bordes
+        de la ventana sin `100vw`, sin margenes negativos y sin `overflow-x`. Y por eso el
+        credito de `D-21` deja de ser un renglon al pie de la nada y queda impreso sobre la
+        tinta del disco que acredita. */}
+    <PieImprenta disco={discoDelPie} tapas={tapas} />
 
     <script>
       /**

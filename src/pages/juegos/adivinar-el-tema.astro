@@ -25,6 +25,7 @@ import '../../styles/sitio.css';
 import { catalogo, type Manifiesto } from '../../lib/tema/catalogo.ts';
 import { PANTALLA_0, PARTIDA } from '../../lib/tema/copy.ts';
 import Cabeza from '../../components/Cabeza.astro';
+import PieImprenta from '../../components/PieImprenta.astro';
 import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
 import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import { claseDisco } from '../../lib/tema/paleta.ts';
@@ -123,17 +124,9 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
       <section id="partida" class="pantalla sobre-tapa" hidden></section>
       <section id="resultado" class="pantalla sobre-tapa" hidden></section>
 
-      <footer class="pie-sitio sobre-tapa">
-        {/* `data-tapas`: la isla recalcula esta linea cuando la sala se vuelve el disco que
-            sacaste (`UX-22` §2.5, `D-21` condicion 1), y necesita saber con que arranca. */}
-        {tapasUsadas.length > 0 && (
-          <p class="credito-tapas" data-tapas={JSON.stringify(tapasUsadas)}>
-            {PORTAL.creditoTapas(tapasUsadas)}
-          </p>
-        )}
-        {PORTAL.pie}
-      </footer>
     </main>
+
+    <PieImprenta disco="lobo-suelto" tapas={tapasUsadas} />
 
     <script type="application/json" id="catalogo" set:html={JSON.stringify(cat.temas)} />
     {

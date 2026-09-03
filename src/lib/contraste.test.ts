@@ -187,6 +187,102 @@ test('los rotulos de leyenda y testimonio se distinguen entre si', () => {
   assert.ok(r >= 1.2, `los dos rotulos son casi el mismo color: ${r.toFixed(2)}:1`);
 });
 
+/* ==================================================================
+   El pie de imprenta (ciclo 13): el techo del peso de la pasada
+
+   La franja con la que termina cada pantalla se pinta mezclando la tinta de ese disco con
+   `--fondo`, en `--peso-pasada`. Es un color que **no existe como token** —lo arma
+   `color-mix` en el navegador—, asi que si nadie lo calcula acá, nadie lo mide.
+
+   Y hay que medirlo, porque es un piso nuevo debajo de texto real: el credito de `D-21` y
+   el pie del sitio, los dos en `--texto-tenue`. El peso no es una preferencia de diseño:
+   es lo mas alto que puede subir sin bajar ese texto de AA. Diez discos, diez pisos.
+   ================================================================== */
+
+/** El peso de la pasada, leido del token: `18%` -> 0,18. */
+function pesoPasada(): number {
+  const m = CSS.match(/--peso-pasada:\s*([\d.]+)%/);
+  assert.ok(m, 'no se encontro el token --peso-pasada en tokens.css');
+  return Number(m![1]) / 100;
+}
+
+/**
+ * El piso que deja la pasada de un disco: `color-mix(in srgb, tinta p%, fondo)`.
+ *
+ * `in srgb` interpola en el espacio **con gamma**, o sea canal por canal sobre los valores
+ * de 0 a 255 tal como se escriben. Es una interpolacion lineal simple: la misma cuenta que
+ * hace el navegador, no una aproximacion.
+ */
+function pisoDePasada(slugDisco: string, peso: number): string {
+  const tinta = token(`disco-${slugDisco}-tinta`);
+  const fondo = token('fondo');
+  const canal = (i: number) =>
+    Math.round(peso * parseInt(tinta.slice(i, i + 2), 16) + (1 - peso) * parseInt(fondo.slice(i, i + 2), 16));
+  return `#${[1, 3, 5].map((i) => canal(i).toString(16).padStart(2, '0')).join('')}`;
+}
+
+/** Los diez discos, con el slug con el que se nombran sus tokens. */
+const DISCOS_DEL_PIE = [
+  'gulp',
+  'oktubre',
+  'un-baion-para-el-ojo-idiota',
+  'bang-bang-estas-liquidado',
+  'la-mosca-y-la-sopa',
+  'lobo-suelto',
+  'cordero-atado',
+  'luzbelito',
+  'ultimo-bondi-a-finisterre',
+  'momo-sampler',
+];
+
+test('el pie de imprenta: sobre la pasada de cualquier disco, el credito sigue en AA', () => {
+  const peso = pesoPasada();
+  const fallas: string[] = [];
+  for (const disco of DISCOS_DEL_PIE) {
+    const piso = pisoDePasada(disco, peso);
+    for (const tinta of ['texto', 'texto-tenue']) {
+      const r = contraste(token(tinta), piso);
+      if (r < 4.5) fallas.push(`${tinta} sobre la pasada de ${disco} (${piso}): ${r.toFixed(2)}:1`);
+    }
+  }
+  assert.deepEqual(
+    fallas,
+    [],
+    `subir --peso-pasada dejo texto por debajo de 4,5:1:\n  ${fallas.join('\n  ')}\n` +
+      'El peso de la pasada no se decide a ojo: este es el techo.',
+  );
+});
+
+test('el pie de imprenta: la pasada se ve de verdad, no es relleno', () => {
+  /*
+   * El reverso del test de arriba, y hace falta tanto como el.
+   *
+   * Una atmosfera que "puede leerse como nada" no es sutileza: es relleno con coartada.
+   * Es el argumento que hundio a la direccion de la plancha en el ciclo 13 — gastaba el
+   * presupuesto entero de contraste para comprar entre 3 y 10 niveles de 255, o sea nada
+   * en un celular al sol.
+   *
+   * El piso se mide contra `--fondo` en el canal donde mas se aparta. Doce niveles de 255
+   * es poco y se ve; menos que eso, en una pantalla de telefono con brillo de calle, no.
+   */
+  const peso = pesoPasada();
+  const flojas: string[] = [];
+  const fondo = token('fondo');
+  for (const disco of DISCOS_DEL_PIE) {
+    const piso = pisoDePasada(disco, peso);
+    const salto = Math.max(
+      ...[1, 3, 5].map((i) => Math.abs(parseInt(piso.slice(i, i + 2), 16) - parseInt(fondo.slice(i, i + 2), 16))),
+    );
+    if (salto < 12) flojas.push(`${disco}: ${salto} niveles sobre el fondo (${piso})`);
+  }
+  assert.deepEqual(
+    flojas,
+    [],
+    `pasadas que no se van a ver en un telefono:\n  ${flojas.join('\n  ')}\n` +
+      'O sube --peso-pasada (mirando el techo del test de arriba), o esos discos van sin pasada.',
+  );
+});
+
 test('el area de toque minima cumple lo que pide jugable con el pulgar', () => {
   const m = CSS.match(/--toque-min:\s*(\d+)px/);
   assert.ok(m, 'no hay token de area de toque');
