@@ -60,6 +60,11 @@ export const DETALLE_POR_VARIANTE: Record<string, string> = {
      "JUGÁ" se iba al borde izquierdo. Una tarjeta desalineada por un archivo que no
      estaba. */
   momo: 'momo-medallon',
+  /* `US-08`. El zoom de la tapa de ¡Bang! ¡Bang! ya lo producia `generar-tapas.mjs` con
+     los otros nueve (`UX-13`): es el unico de los diez recortes de detalle que ninguna
+     seccion estaba usando. Va con su fila en `DISCO_DE`, unas lineas mas abajo — sin ella,
+     la tapa se veria en el portal y **el credito de `D-21` la perderia en silencio**. */
+  bang: 'bang-bang-estas-liquidado-zoom',
 };
 
 /** Que fondo velado viste cada pantalla "en la cocina" (`UX-05`).
@@ -90,6 +95,7 @@ const DISCO_DE: Record<string, string> = {
      aca es una tapa que se ve y no se acredita, o sea la condicion 1 de `D-21`
      incumplida en silencio — `discosDe` lo descarta sin decir nada. */
   'momo-medallon': 'Momo Sampler',
+  'bang-bang-estas-liquidado-zoom': '¡Bang! ¡Bang!… Estás liquidado',
 };
 
 /** Los discos que aparecen en una pantalla, sin repetir y en orden de aparicion. */
@@ -196,6 +202,7 @@ export const DISCO_DE_CATEGORIA: Record<string, string> = {
   mitologia: 'lobo-suelto',
   marca: 'oktubre',
   momo: 'momo-sampler',
+  bang: 'bang-bang-estas-liquidado',
 };
 
 /** Como se llama cada disco cuando el credito de `D-21` lo nombra. */

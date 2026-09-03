@@ -854,6 +854,12 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
 .casete--letras { --tinte: var(--cat-letras); --tinta-registro: var(--cat-letras-apoyo); }
 .casete--mitologia { --tinte: var(--cat-mitologia); --tinta-registro: var(--cat-mitologia-apoyo); }
 .casete--momo { --tinte: var(--disco-momo-sampler-apoyo); }
+/* `US-08`. Va con la `-tinta` y no con el `-apoyo` como Momo: la ceniza de ¡Bang! ¡Bang!
+   pasa AA sobre `--fondo` y ya tiene su par en `contraste.test.ts`. */
+.casete--bang {
+  --tinte: var(--disco-bang-bang-estas-liquidado-tinta);
+  --tinta-registro: var(--disco-bang-bang-estas-liquidado-apoyo);
+}
 
 /* ---- Pie del sitio ---- */
 

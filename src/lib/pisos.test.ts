@@ -20,6 +20,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
+import { leerTemas, slugDeTitulo } from './letra/temas.ts';
+import { FICHAS } from './cancionero/banco.ts';
+import { conjuntosOfrecidos } from './ponelos/conjuntos.ts';
+
 interface ItemQuiz {
   readonly categoria: string;
   readonly dificultad: string;
@@ -122,4 +126,36 @@ test('US-03: el piso de 15 versos jugables sigue cumplido', () => {
   // `BR-01` necesita con que abrir la partida. Sin un solo facil, `armarRonda` tira.
   const faciles = jugables.filter((i) => i.dificultad === 'facil').length;
   assert.ok(faciles >= 1, 'US-03 no tiene ningun verso facil: BR-01 no puede abrir la partida');
+});
+
+/**
+ * `US-08`, piso **14 conjuntos ordenables**. Cumplido el dia que se construyo el juego.
+ *
+ * **Se cuenta en conjuntos y no en fichas, y esa es la parte que hay que entender.** Las
+ * 105 fichas ya estaban en el repo antes del juego: salen de `RES-20` y de `FICHAS`, no las
+ * cargo nadie una por una. Un piso por item habria medido trabajo que nadie hizo y se
+ * habria cumplido solo el dia uno. Lo que de verdad se puede agotar en este juego es **la
+ * cantidad de listas distintas que hay para armar** — un conjunto ordenado queda ordenado
+ * para siempre—, y eso es lo que este numero protege.
+ *
+ * Producto lo fijo en el techo entero y no en un subconjunto (`PRD-ponelos-en-fila.md`):
+ * con el contenido ya disponible, un piso mas bajo dejaria material gratis afuera.
+ */
+test('US-08: el piso de 14 conjuntos ordenables sigue cumplido', () => {
+  const catalogo = {
+    temas: leerTemas().map((t) => ({
+      slug: slugDeTitulo(t.titulo),
+      titulo: t.titulo,
+      disco: t.disco,
+      pista: t.pista,
+    })),
+    discos: FICHAS.map((f) => ({ slug: f.slug, titulo: f.titulo, anio: f.anio })),
+  };
+  const ofrecidos = conjuntosOfrecidos(catalogo);
+  assert.ok(ofrecidos.length >= 14, `el piso de US-08 es 14 y hay ${ofrecidos.length}`);
+
+  // Y ninguno puede quedar sin fichas: un conjunto vacio en el menu es una puerta que no
+  // abre, que es la version de este juego del "banco a medio llenar" del riesgo 4.
+  const vacios = ofrecidos.filter((c) => c.cuantas === 0).map((c) => c.id);
+  assert.deepEqual(vacios, []);
 });

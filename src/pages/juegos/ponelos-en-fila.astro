@@ -1,0 +1,134 @@
+---
+/**
+ * "Ponelos en fila" (`US-08`). El séptimo juego, y el segundo que no puntúa.
+ *
+ * El jugador reparte un conjunto de cosas de la banda —los diez discos, las diez tapas,
+ * los temas de un disco, doce sorteados— en cuatro filas que son **lugares de un recital**
+ * y no notas de boletín, y se lleva la lista como lámina y como dirección. La regla que lo
+ * gobierna es `BR-22`: el sitio no tiene un orden correcto, así que no hay puntaje, no hay
+ * promedio de la gente y no hay comparación contra ninguna lista que el jugador no haya
+ * cargado él mismo.
+ *
+ * Viste **¡Bang! ¡Bang!… Estás liquidado** por la mezcla `D-19`. Era uno de los tres
+ * discos libres: *Cordero atado* quedó afuera porque `RES-37` lo midió junto con *Lobo
+ * suelto* y comparten el mismo hex —el juego se leería como "Adiviná el tema"—, y *Un
+ * baión* porque su celeste choca con `--rotulo-testimonio`, que no rota nunca.
+ *
+ * ## Lo que esta página hace en build, y por qué no manda los conjuntos armados
+ *
+ * Manda **el catálogo**: los 105 temas de `RES-20` y las diez fichas de disco, ~10 KB. Los
+ * conjuntos los arma la isla.
+ *
+ * La razón es concreta y no de gusto: uno de los conjuntos es **doce temas sorteados con
+ * una semilla que viaja adentro del id**, así que los conjuntos posibles no son catorce,
+ * son infinitos. Si se armaran en build, una lista sorteada no se podría compartir — el
+ * que recibe el link no tendría de dónde sacar esos doce. Con el catálogo del lado del
+ * navegador, cualquier id se resuelve contra la misma lista.
+ *
+ * `leerTemas()` y `FICHAS` importan `node:fs` y **corren solo acá, en el frontmatter**. Lo
+ * que la isla importa es `lib/ponelos/*`, que no llega a Node por ningún camino — lo
+ * verifica `islas.test.ts`, que existe porque un juego entero se murió por traer `node:fs`
+ * dos saltos más allá, con `npm test`, `check` y `build` los tres en verde.
+ *
+ * ## El crédito (`D-21`, condición 1)
+ *
+ * Dos de los conjuntos muestran las diez tapas reales, así que la pantalla las acredita
+ * **todas las diez**, no las de un disco. Y como la lámina sale del sitio y afuera no hay
+ * pie donde apoyar la firma, el crédito va además **impreso adentro de la imagen** — el
+ * caso que `D-33` había dejado escrito y abierto.
+ */
+import '../../styles/tokens.css';
+import '../../styles/juego.css';
+import '../../styles/sitio.css';
+import Cabeza from '../../components/Cabeza.astro';
+import PieImprenta from '../../components/PieImprenta.astro';
+import { PANTALLA_0 } from '../../lib/ponelos/copy.ts';
+import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
+import { TITULO_DE_DISCO } from '../../lib/sitio/arte.ts';
+import { leerTemas, slugDeTitulo } from '../../lib/letra/temas.ts';
+import { FICHAS } from '../../lib/cancionero/banco.ts';
+import { DISCOS } from '../../lib/letra/discos.ts';
+
+/**
+ * El catálogo que viaja al navegador (`CTR-13`).
+ *
+ * Solo cuatro campos por tema y tres por disco: lo mínimo con lo que se arma cualquier
+ * conjunto. El slug se deriva del título con la misma función que nombra los mp3 de
+ * "Adiviná el tema", así que las dos partes del sitio llaman igual al mismo tema.
+ */
+const catalogo = {
+  temas: leerTemas().map((t) => ({
+    slug: slugDeTitulo(t.titulo),
+    titulo: t.titulo,
+    disco: t.disco,
+    pista: t.pista,
+  })),
+  discos: FICHAS.map((f) => ({ slug: f.slug, titulo: f.titulo, anio: f.anio })),
+};
+
+/** Las diez tapas se pueden ver en esta pantalla, así que las diez se acreditan. */
+const tapasUsadas = DISCOS.map((d) => TITULO_DE_DISCO[d]).filter((t): t is string => Boolean(t));
+
+const TITULO = `${PANTALLA_0.titulo} — Arcade Ricotero`;
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={PANTALLA_0.subtitulo} />
+    <title>{TITULO}</title>
+    <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} />
+  </head>
+  <body class="con-grano">
+    <main id="app" class="ponelos">
+      <section id="inicio" class="pantalla">
+        <header class="cabecera-sitio">
+          <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
+        </header>
+        <p class="marca" aria-label="Arcade Ricotero">ARCADE RICOTERO</p>
+        <h1>{PANTALLA_0.titulo}</h1>
+        <p class="donde-estas">{LUGARES.ponelos}</p>
+        <p class="tenue">{PANTALLA_0.subtitulo}</p>
+        <button id="empezar" class="primario" type="button">{PANTALLA_0.boton}</button>
+      </section>
+
+      <section id="eleccion" class="pantalla" hidden></section>
+      <section id="tablero" class="pantalla" hidden></section>
+    </main>
+
+    <PieImprenta disco="bang-bang-estas-liquidado" tapas={tapasUsadas} />
+
+    <script type="application/json" id="catalogo" set:html={JSON.stringify(catalogo)} />
+    <script>
+      import '../../scripts/partida-ponelos.ts';
+    </script>
+
+    <script>
+      // El interruptor de la cinta (`UX-21`). Isla propia: no sabe nada del juego
+      // y el juego no sabe nada de ella.
+      import '../../scripts/cinta.ts';
+    </script>
+
+    <style>
+      /* El cascarón —ancho, centrado, `position: relative`— vive en `juego.css`
+         (`body > main`). Acá queda solo lo que es de esta pantalla. */
+      h1 {
+        font-family: var(--fuente-rotulada);
+        font-size: 1.5rem;
+        line-height: 1.2;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--disco-bang-bang-estas-liquidado-tinta);
+        margin-top: 0;
+      }
+      .tenue {
+        color: var(--texto-tenue);
+      }
+      .pantalla[hidden] {
+        display: none;
+      }
+    </style>
+  </body>
+</html>

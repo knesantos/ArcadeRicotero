@@ -2644,3 +2644,453 @@ body > main {
     animation: none;
   }
 }
+
+/* ==========================================================================
+   Ponelos en fila (`US-08`) — el tablero de repartir
+
+   Es, de los siete juegos, **el que más superficie tiene para la estética genérica de
+   IA**, porque el género "tier list" tiene una plantilla tan reconocible como la que
+   genera una IA por defecto. Los seis tics que el cuerpo pide acá, con lo que hay en su
+   lugar (`.claude/rules/diseno-marca.md`, tabla anti-slop):
+
+   | Lo que el género pide | Lo que hay acá |
+   |---|---|
+   | La barra de color a la izquierda de cada fila — *el* significante del formato | Sello de goma con el nombre, borde completo teñido y rotación leve. Y `estilos.test.ts` **rompe el build** ante un `border-left` fuera de `.parrafo--*` |
+   | La rampa rojo → amarillo → verde entre filas | **Ninguna fila tiene color.** `--acento-3` es acierto y `--acento-4` es error, y una fila verde arriba le diría al que jugó al quiz que ésa está bien (`BR-22`) |
+   | La ficha que se levanta al agarrarla | Cambia el borde y aparece el rótulo `EN LA MANO`. Nada se infla |
+   | La pastilla cápsula del rótulo de fila | 3 px de estampa. `999px` rompe el build |
+   | La tarjeta gris sobre fondo gris | La fila se recorta por borde grueso, y la tinta queda sobre `--fondo`, que es el par testeado |
+   | La animación de reacomodo al soltar | Nada. Acá no hay un solo `@keyframes` — solo transiciones de borde, con `--duracion-toque`, que es la respuesta al toque y el corte de movimiento reducido no la apaga |
+
+   Y una prohibición más, que no es de forma: **ninguna de las cuatro filas se distingue
+   por tinte**. Se distinguen por nombre, por posición y por su contador. Es lo único que
+   impide que la de arriba se lea como un premio.
+   ========================================================================== */
+
+.ponelos {
+  /* La mezcla `D-19`: este juego viste ¡Bang! ¡Bang!… Estás liquidado. La ceniza pasa AA
+     sobre `--fondo` y su par está declarado en `contraste.test.ts`. */
+  --tinte-juego: var(--disco-bang-bang-estas-liquidado-tinta);
+  --apoyo-juego: var(--disco-bang-bang-estas-liquidado-apoyo);
+  --tinte-accion: var(--tinte-juego);
+}
+
+/* ---- Pantalla 1: qué repartís ---- */
+
+.eleccion-titulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  margin: 0 0 var(--espacio-2);
+}
+
+.conjuntos {
+  display: grid;
+  gap: var(--espacio-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * Cada conjunto es una tarjeta recortada, con la tinta de su disco cuando lo tiene.
+ *
+ * Los cinco que cruzan discos —los diez discos, las tapas, los que abren, los que cierran,
+ * y los doce sorteados— no llevan ninguna: teñirlos con un disco cualquiera sería decir que
+ * ese conjunto es de ese disco, y no lo es.
+ */
+.conjunto {
+  display: grid;
+  gap: 0.2em;
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: var(--espacio-2);
+  text-align: start;
+  background: var(--fondo);
+  color: var(--texto);
+  border: var(--linea) solid color-mix(in srgb, var(--tinta-disco, var(--tinte-juego)) 45%, var(--borde));
+  border-radius: var(--radio);
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
+}
+
+.conjunto-titulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tinta-disco, var(--tinte-juego));
+}
+
+.conjunto-baja {
+  font-size: 0.9rem;
+  line-height: 1.35;
+  color: var(--texto);
+}
+
+.conjunto-dato {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+/* ---- Pantalla 2: el tablero ---- */
+
+.tablero-cabecera {
+  margin-bottom: var(--espacio-1);
+}
+
+.tablero-titulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tinte-juego);
+  margin: 0;
+}
+
+.tablero-baja {
+  margin: 0.2em 0 0;
+  font-size: 0.9rem;
+  color: var(--texto-tenue);
+}
+
+/* El renglón que avisa que la lista llegó de afuera. Registro 3: dice qué hay y se calla.
+   No compara contra nada — comparar sería el ranking que `BR-22` no deja tener. */
+.lista--compartida {
+  margin: var(--espacio-1) 0 0;
+  padding: 0.2em 0.7em;
+  display: inline-block;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  border: 2px dashed var(--borde);
+  border-radius: 3px;
+  transform: rotate(-1deg);
+}
+
+/*
+ * La mano: la única línea que dice qué está pasando, y la única región viva del juego.
+ *
+ * Va pegada arriba mientras se juega. Con trece fichas y cuatro filas, la bandeja y el
+ * destino no entran juntos en 375 px: si esta línea se fuera con el desplazamiento, el
+ * jugador perdería de vista qué tiene en la mano justo cuando va a soltarlo.
+ */
+.mano {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--espacio-1);
+  min-height: 1.6em;
+  margin: 0 0 var(--espacio-2);
+  padding: 0.4em 0;
+  background: var(--fondo);
+  border-bottom: 2px solid var(--borde);
+  font-size: 0.85rem;
+  color: var(--texto-tenue);
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
+}
+
+.mano--cargada {
+  border-bottom-color: var(--acento-2);
+}
+
+/* El rótulo es texto, no un tinte: `UX-01` no admite un estado que solo se vea. */
+.mano-rotulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--acento-2);
+  border: 2px solid var(--acento-2);
+  border-radius: 3px;
+  padding: 0.1em 0.6em;
+  transform: rotate(-1.4deg);
+}
+
+.mano-dice {
+  color: var(--texto);
+}
+
+/* ---- Las cuatro filas ---- */
+
+.filas {
+  display: grid;
+  gap: var(--espacio-2);
+  margin-bottom: var(--espacio-3);
+}
+
+/*
+ * Una fila es un recorte pegado, no una superficie elevada: fondo igual al del sitio,
+ * borde grueso, y apenas torcida. Ninguna de las cuatro cambia de tinte respecto de las
+ * otras — el borde sale del disco del juego, que es el mismo para todas.
+ */
+.fila {
+  padding: var(--espacio-1);
+  background: var(--fondo);
+  border: var(--linea) solid color-mix(in srgb, var(--tinte-juego) 40%, var(--borde));
+  border-radius: var(--radio);
+}
+
+.filas > .fila:nth-child(odd) {
+  transform: rotate(-0.35deg);
+}
+
+.filas > .fila:nth-child(even) {
+  transform: rotate(0.3deg);
+}
+
+/*
+ * El destino: la banda entera, no un blanco chico. Es el botón que recibe la ficha que
+ * tenés en la mano, y ocupa el ancho completo de la fila porque el pulgar apunta mal.
+ */
+.fila-destino {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-1);
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: 0.3em var(--espacio-1);
+  background: transparent;
+  color: var(--texto);
+  border: 0;
+  border-bottom: 2px dashed var(--borde);
+  border-radius: 0;
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
+}
+
+/* El sello de goma con el nombre del lugar. Registro 3, apenas torcido, esquina de 3 px:
+   nunca la pastilla cápsula. */
+.fila-sello {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  padding: 0.2em 0.7em;
+  transform: rotate(-1.2deg);
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
+}
+
+.fila-cuenta {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.9rem;
+  color: var(--texto-tenue);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Las cuatro se abren a la vez cuando hay algo en la mano. A la vez y no una: el jugador
+   elige entre las cuatro, y destacar una sería el sitio opinando. */
+.fila--abierta .fila-destino {
+  border-bottom-color: var(--acento-2);
+}
+
+.fila--abierta .fila-sello {
+  border-color: var(--acento-2);
+}
+
+.fila-piezas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+  margin: var(--espacio-1) 0 0;
+  padding: 0;
+  list-style: none;
+  /* El navegador re-ancla el desplazamiento cuando el árbol cambia arriba de la vista, y
+     acá el árbol cambia con cada ficha que se mueve: sin esto, el tablero salta solo. */
+  overflow-anchor: none;
+}
+
+.fila-piezas:empty {
+  display: none;
+}
+
+/* ---- La pieza, que es la ficha que se mueve ----
+
+   **Se llama `pieza` y no `ficha` porque `.ficha` ya existe**: es la tarjeta lateral de un
+   articulo de la Redondopedia, en `sitio.css`, con papel rayado y cinta adhesiva. El
+   choque se descubrio con el tablero ya dibujado, viendo las fichas de los discos salir
+   vestidas de otra cosa. Dos componentes con el mismo nombre de clase es la verdad
+   duplicada de siempre, con el agravante de que no avisa. ---- */
+
+.pieza {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+  min-height: var(--toque-min);
+  padding: 0.4em 0.7em;
+  text-align: start;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 2px solid color-mix(in srgb, var(--tinta-disco, var(--borde)) 65%, var(--borde));
+  border-radius: var(--radio);
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
+  /* Sin el retardo de 300 ms ni el zoom de doble toque. `manipulation` y no `none`: acá no
+     hay arrastre táctil que proteger, y `none` le sacaría el desplazamiento a la bandeja. */
+  touch-action: manipulation;
+}
+
+.pieza--puesta {
+  font-size: 0.9rem;
+}
+
+/* Lo que tenés en la mano: borde de destaque **y** el rótulo de abajo. Dos canales, porque
+   uno solo sería color (`UX-01`). */
+.pieza--en-mano {
+  border-color: var(--acento-2);
+  border-width: var(--linea);
+}
+
+.pieza-tapa {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  transform: rotate(-1.5deg);
+  flex: none;
+}
+
+.pieza-cuerpo {
+  display: grid;
+  gap: 0.1em;
+}
+
+.pieza-titulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+.pieza-pie {
+  font-size: 0.7rem;
+  color: var(--texto-tenue);
+}
+
+.pieza-mano {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--acento-2);
+  border: 2px solid var(--acento-2);
+  border-radius: 3px;
+  padding: 0.1em 0.4em;
+  transform: rotate(-2deg);
+  flex: none;
+}
+
+/* ---- La bandeja ---- */
+
+.bandeja {
+  padding: var(--espacio-2);
+  background: var(--fondo);
+  border: 2px dashed var(--borde);
+  border-radius: var(--radio);
+  overflow-anchor: none;
+}
+
+/*
+ * La bandeja es **la unica zona con desplazamiento propio**, y es lo que hace jugable el
+ * tablero en un telefono.
+ *
+ * Medido a 375 x 812 con los diez discos: las cuatro filas ocupan ~600 px y la bandeja
+ * llena ~900 px mas. Sin tope, agarrar una tapa del fondo de la bandeja y llevarla a
+ * "contra la valla" son novecientos pixeles de arrastre de hoja **por cada ficha**, diez
+ * veces seguidas. Con la bandeja acotada, las cuatro filas y la bandeja entran juntas y el
+ * pulgar no viaja.
+ *
+ * Es ademas lo que hace el formato en la web: la bandeja es el unico panel que se
+ * desplaza solo. No se le pone tope a las filas, que crecen hacia abajo como corresponde.
+ */
+.bandeja .fila-piezas {
+  max-height: 42vh;
+  overflow-y: auto;
+  /* Sin esto, el desplazamiento de la bandeja arrastra la hoja entera al llegar al final. */
+  overscroll-behavior: contain;
+}
+
+.bandeja-rotulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-1);
+  margin: 0;
+  font-size: 1rem;
+}
+
+.bandeja-sello {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  padding: 0.2em 0.7em;
+  transform: rotate(0.9deg);
+}
+
+/* Vacía no desaparece: sigue ahí, dicha con palabras. Una zona que se esfuma deja al
+   jugador sin saber si terminó o si se rompió algo. */
+.bandeja--vacia {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--tinte-juego) 45%, var(--borde));
+}
+
+.bandeja-lista {
+  margin: var(--espacio-1) 0 0;
+  font-size: 0.85rem;
+  color: var(--texto-tenue);
+}
+
+/* ---- La lámina ---- */
+
+.lamina {
+  margin-top: var(--espacio-3);
+}
+
+.lamina-titulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tinte-juego);
+  margin: 0;
+}
+
+/* ---- Escritorio (`UX-10`): elegir con qué jugar no es leer ---- */
+
+@media (min-width: 46rem) {
+  .pantalla:has(.conjuntos) {
+    max-width: 46rem;
+  }
+
+  .conjuntos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---- El hover de lo clickeable, con el mismo criterio del resto del sitio: reusa el
+        tinte que el elemento ya tiene, sin elevación ni escala. ---- */
+
+@media (hover: hover) and (pointer: fine) {
+  .conjunto:hover,
+  .pieza:hover {
+    border-color: var(--acento-2);
+  }
+
+  .fila-destino:hover {
+    border-bottom-color: var(--acento-2);
+  }
+}

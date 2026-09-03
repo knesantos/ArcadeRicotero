@@ -10,6 +10,8 @@ import * as tapa from './tapa/copy.ts';
 import * as porLaLetra from './por-la-letra/copy.ts';
 import * as correccion from './correccion/copy.ts';
 import * as dosEjes from './dos-ejes/copy.ts';
+import * as ponelos from './ponelos/copy.ts';
+import { FILAS } from './ponelos/filas.ts';
 
 /**
  * La auditoria a maquina de `.claude/rules/voz-ricotera.md`, seccion 8.
@@ -51,6 +53,10 @@ const MODULOS: ReadonlyArray<readonly [string, Record<string, unknown>]> = [
   // registro 3 — el que mas tienta decorar, y el que menos puede.
   ['por-la-letra', porLaLetra],
   ['correccion', correccion],
+  // `US-08`. Entra con el juego y no despues: el copy de "Ponelos en fila" son treinta
+  // cadenas y **la mitad solo las escucha quien usa lector de pantalla**, que es justo la
+  // mitad que nadie revisa mirando.
+  ['ponelos', ponelos],
 ];
 
 /**
@@ -88,9 +94,32 @@ function cadenasDelBanco(): string[] {
   return salida;
 }
 
+/**
+ * Los cuatro nombres de fila de `US-08`, que no viven en un `copy.ts` sino en `filas.ts`.
+ *
+ * **Por que estan aca y no importados con el resto.** `filas.ts` es un modulo hoja que no
+ * importa nada —esa es la condicion para que lo puedan leer la pagina, la isla y el
+ * empaquetado del link—, asi que los nombres viven con los numeros de fila y con la clave
+ * de cada una. Recorrer el modulo entero con `cadenas()` auditaria tambien `valla`,
+ * `medio`, `atras` y `vereda`, que son identificadores del codigo y `D-17` los deja
+ * explicitamente afuera. Mismo criterio, y mismo recolector aparte, que el banco de dos
+ * ejes de mas arriba.
+ *
+ * **Y por que hay que auditarlos igual, que es lo que este bloque cierra.** Son las cuatro
+ * cadenas mas sensibles del juego: nombran los cuatro lugares que `BR-22` prohibe
+ * jerarquizar, y se leen en tres lados —el sello de la fila, el nombre accesible del boton
+ * de destino, y la lamina impresa que sale del sitio—. Estuvieron fuera del barrido hasta
+ * que `revisor` lo encontro (`FIND-54`): cumplian las siete reglas de la seccion 8 por
+ * decision de quien las escribio, no porque algo lo verificara.
+ */
+function cadenasDeLasFilas(): string[] {
+  return FILAS.map((f) => f.nombre);
+}
+
 const VISIBLE: ReadonlyArray<readonly [string, string]> = [
   ...MODULOS.flatMap(([donde, modulo]) => cadenas(modulo).map((texto) => [donde, texto] as const)),
   ...cadenasDelBanco().map((texto) => ['dos-ejes', texto] as const),
+  ...cadenasDeLasFilas().map((texto) => ['ponelos/filas', texto] as const),
 ];
 
 const sinTilde = (s: string): string => s.normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -102,8 +131,19 @@ function infracciones(patron: RegExp): string[] {
   );
 }
 
+/*
+ * `tier`, `list` y `top` entraron al glosario con `US-08`, y por un caso real: el juego
+ * nuevo es del genero que la web llama "tier list", y hasta ese ciclo esas palabras
+ * **pasaban el build** — el glosario tenia `ranking` y `score` pero no las del formato. Es
+ * el mismo motivo por el que `borrar` entro al set de infinitivos: no se agrega lo que uno
+ * imagina, se agrega lo que ya se colo una vez.
+ *
+ * Los limites de palabra estan puestos a proposito: `\blist\b` no toca "lista" ni
+ * "listo", y `\btop\b` no toca "tope". La regla es contra el anglicismo, no contra el
+ * castellano que se le parece.
+ */
 test('D-17: no entra un anglicismo en lo que se lee', () => {
-  const glosario = /\b(feedback|reveal|display|quiz|link|score|player|gaming|ranking|challenge|share|tips?|loading|hint|combo|streak|highscore)\b/;
+  const glosario = /\b(feedback|reveal|display|quiz|link|score|player|gaming|ranking|challenge|share|tips?|loading|hint|combo|streak|highscore|tier|list|top)\b/;
   assert.deepEqual(infracciones(glosario), []);
 });
 
@@ -161,6 +201,7 @@ test('voz 4.1: la linea grande no pasa de ocho palabras', () => {
     ['h1 adivinar la tapa', tapa.PANTALLA_0.titulo],
     ['h1 sacalo por la letra', porLaLetra.PANTALLA_0.titulo],
     ['h1 dos ejes', dosEjes.PANTALLA_0.titulo],
+    ['h1 ponelos en fila', ponelos.PANTALLA_0.titulo],
   ];
   const largos = grandes
     .filter(([, texto]) => texto.trim().split(/\s+/).length > 8)
@@ -220,7 +261,7 @@ function cadenasDeFunciones(): Array<readonly [string, string]> {
 }
 
 test('las funciones del copy tampoco pueden traer un anglicismo ni una formula de folleto', () => {
-  const glosario = /\b(feedback|reveal|display|quiz|link|score|player|gaming|ranking|challenge|share|tips?|loading|hint|combo|streak|highscore)\b/;
+  const glosario = /\b(feedback|reveal|display|quiz|link|score|player|gaming|ranking|challenge|share|tips?|loading|hint|combo|streak|highscore|tier|list|top)\b/;
   const folleto =
     /(descubri todo|sumergite|la experiencia (definitiva|unica)|y listo!|a jugar!|increible|imperdible|la mejor forma de)/;
   const gente = /\b(los fans|las? usuarios?|los? usuarios?|nuestra comunidad)\b/;
@@ -286,4 +327,34 @@ test('ese control sabe encontrar: se prueba contra las dos formas que ya apareci
   // Y no se queja de la forma correcta, que es la que quedo.
   assert.doesNotMatch('  entrada.placeholder = PARTIDA.buscar;', placeholder);
   assert.doesNotMatch("  entrada.setAttribute('aria-label', PARTIDA.buscar);", rotulo);
+});
+
+test('BR-22: ningun nombre de fila califica — son lugares, no notas', () => {
+  /*
+   * La regla propia de `US-08`, y la unica de este archivo que no sale de
+   * `voz-ricotera.md`: las cuatro filas ordenan **sin decir cual es el bueno**.
+   *
+   * Vive aca y no solo en `tablero.test.ts` —donde ya hay un caso igual sobre `FILAS`—
+   * porque acá alcanza a **todo el texto visible del juego**, no solo a los cuatro nombres:
+   * el dia que alguien escriba "la mejor" en una bajada o en un rotulo, lo frena esto.
+   * Es la contracara textual de lo que `estilos.test.ts` audita en el color.
+   */
+  const juicio = /\b(mejor(es)?|peor(es)?|bueno|malo|excelente|pesimo|superior|inferior|nivel|puesto|podio|campeon|ganador)\b/;
+  const malas = VISIBLE.filter(
+    ([donde, texto]) => donde.startsWith('ponelos') && juicio.test(sinTilde(texto).toLowerCase()),
+  ).map(([donde, texto]) => `${donde}: "${texto}"`);
+  assert.deepEqual(malas, [], `US-08 no puede decir que una fila vale mas que otra: ${malas.join(' / ')}`);
+});
+
+test('ese control sabe encontrar: se prueba contra una fila que si calificaria', () => {
+  // Un test que solo verifica ausencias no demuestra que sepa buscar. Estas cuatro son las
+  // que se descartaron al elegir los lugares, y las cuatro tienen que dar positivo.
+  const juicio = /\b(mejor(es)?|peor(es)?|bueno|malo|excelente|pesimo|superior|inferior|nivel|puesto|podio|campeon|ganador)\b/;
+  for (const mala of ['LAS MEJORES', 'NIVEL ALTO', 'EL PODIO', 'LAS PEORES']) {
+    assert.ok(juicio.test(sinTilde(mala).toLowerCase()), `no atrapo "${mala}"`);
+  }
+  // Y no se queja de los cuatro que quedaron.
+  for (const buena of FILAS.map((f) => f.nombre)) {
+    assert.ok(!juicio.test(sinTilde(buena).toLowerCase()), `falso positivo con "${buena}"`);
+  }
 });

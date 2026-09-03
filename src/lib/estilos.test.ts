@@ -401,3 +401,128 @@ test('US-07: lo que se esconde con `hidden` tiene su regla, o no se esconde nada
     );
   }
 });
+
+/* ==================================================================
+   Ponelos en fila (US-08): el mismo control que FIND-15, para el septimo juego
+   ================================================================== */
+
+const JS_PONELOS = leer('src/scripts/partida-ponelos.ts');
+
+/** Las clases de estado que crea la isla de repartir y que tienen que verse distinto. */
+const ESTADOS_PONELOS = [
+  '.fila--abierta',
+  '.pieza--puesta',
+  '.pieza--en-mano',
+  '.bandeja--vacia',
+  '.mano--cargada',
+  '.lista--compartida',
+];
+
+test('US-08: toda clase de estado que crea la isla de repartir tiene una regla que la pinta', () => {
+  const sinRegla = ESTADOS_PONELOS.filter((c) => !CSS.includes(c));
+  assert.deepEqual(sinRegla, [], `clases creadas por el codigo y sin estilo: ${sinRegla.join(', ')}`);
+});
+
+test('US-08: las clases que el CSS estila las crea de verdad la isla', () => {
+  const bases = [...new Set(ESTADOS_PONELOS.map((c) => c.replace(/^\./, '').replace(/--.*$/, '--')))];
+  for (const base of bases) {
+    assert.ok(JS_PONELOS.includes(base), `el CSS estila "${base}..." pero la isla no crea ninguna`);
+  }
+});
+
+test('US-08: lo que tenes en la mano no se comunica solo con color', () => {
+  // `UX-01`. En este juego la senal ademas del borde es **texto**: el rotulo `EN LA MANO`,
+  // que sale de `copy.ts` y que la isla escribe en dos lugares (la ficha y la franja de
+  // arriba). Un borde dorado entre otros trece bordes se pierde; una palabra, no.
+  assert.ok(JS_PONELOS.includes('enLaMano'), 'la isla dejo de escribir el rotulo de la mano');
+  assert.ok(JS_PONELOS.includes('aria-pressed'), 'la ficha dejo de decir si esta tomada');
+  // Y el punto medio que distingue el renglon chico de una ficha puesta, sin depender del tinte.
+  assert.ok(JS_PONELOS.includes('·'), 'la isla no escribe el simbolo del renglon de una ficha puesta');
+});
+
+/**
+ * `BR-22` hecho test: **ninguna fila de este juego tiene color propio.**
+ *
+ * Es el defecto mas probable de todo el juego y el mas dificil de ver revisando: la tier
+ * list del genero pinta la fila de arriba de verde y la de abajo de rojo, y en este sitio
+ * `--acento-3` es acierto y `--acento-4` es error. Una rampa asi le diria al que jugo al
+ * quiz que la fila de arriba **esta bien**, que es exactamente la afirmacion que este juego
+ * no puede hacer. Y no alcanza con no usar esos dos tokens: cualquier tinte que varie entre
+ * filas reintroduce la jerarquia por la ventana.
+ *
+ * Se mira el bloque entero del juego, que arranca en su encabezado y llega hasta el final
+ * de la hoja.
+ */
+test('US-08 (BR-22): ninguna fila se distingue por tinte, y el acierto no le presta el suyo', () => {
+  const css = leer('src/styles/juego.css').replace(/\/\*[\s\S]*?\*\//g, '');
+  const desde = css.indexOf('.ponelos {');
+  assert.ok(desde > 0, 'el bloque de "Ponelos en fila" desaparecio de juego.css');
+  const bloque = css.slice(desde);
+
+  for (const reservado of ['--acento-3', '--acento-4']) {
+    assert.ok(
+      !bloque.includes(reservado),
+      `el tablero de repartir usa ${reservado}, que es acierto o error y no rota (BR-22)`,
+    );
+  }
+
+  // Ninguna regla de fila puede pedir una tinta de disco: las cuatro se visten con el
+  // mismo `--tinte-juego`, que es el del juego y no el de ninguna de ellas.
+  for (const regla of bloque.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+    const selector = regla[1]!.trim();
+    if (!/^\.fila\b|^\.fila--/.test(selector)) continue;
+    assert.ok(
+      !/--tinta-disco|--disco-/.test(regla[2]!),
+      `"${selector}" le pone tinta propia a una fila`,
+    );
+  }
+});
+
+test('US-08: la ficha y la banda de destino entran en la zona de pulgar', () => {
+  // `D-09` ("jugable con el pulgar") y `--toque-min`. Las dos son blancos de toque, y la
+  // banda tiene que serlo entera: apuntarle a un sello de 24 px con el dedo no es jugable.
+  const css = leer('src/styles/juego.css').replace(/\/\*[\s\S]*?\*\//g, '');
+  for (const clase of ['.pieza', '.fila-destino', '.conjunto']) {
+    const bloque = css.match(new RegExp(`(^|\\})\\s*\\${clase}\\s*\\{([^}]*)\\}`, 'm'));
+    assert.ok(bloque, `no existe el bloque ${clase} en juego.css`);
+    assert.match(
+      bloque![2]!,
+      /min-height:\s*var\(--toque-min\)/,
+      `${clase} no reserva la zona de pulgar`,
+    );
+  }
+});
+
+/**
+ * **El foco no se cae al `<body>` cuando el tablero se rehace.**
+ *
+ * De todos los defectos posibles de este juego, éste es el que más lejos llega sin que
+ * nadie lo vea: con mouse no se nota nada, y con teclado el juego es injugable — cada ficha
+ * colocada devuelve el foco al principio del documento.
+ *
+ * Pasa porque `pintarTablero()` rehace el tablero entero en cada toque (que es lo que hace
+ * imposible que la pantalla y el reparto se desincronicen), y al reemplazar los hijos **el
+ * botón que tenía el foco deja de existir**. Es el mismo defecto que la auditoría del
+ * 2026-08-24 encontró en el quiz, y por eso las siete islas hacen `focus()` después de
+ * repintar.
+ *
+ * Acá se verifica en el fuente y no en el navegador porque en Node no hay DOM. Lo que se
+ * exige es el mecanismo, no el resultado: que exista quien devuelve el foco, que se lo
+ * llame al final del repintado, y que las piezas y las filas lleven la marca con la que se
+ * las vuelve a encontrar. El resultado se probó en el navegador el 2026-09-03: tomar,
+ * ubicar y `Escape` dejan el foco en una pieza o en una fila, nunca en el `<body>`.
+ */
+test('US-08: el tablero se rehace entero, y el foco no se cae con el', () => {
+  const isla = leer('src/scripts/partida-ponelos.ts');
+  assert.match(isla, /function devolverElFoco/, 'la isla ya no devuelve el foco tras repintar');
+  // Y se lo llama DESPUES de rehacer el tablero, no antes: antes enfocaria un boton que
+  // esta por dejar de existir, que es exactamente el defecto que esto ataja.
+  const rehace = isla.indexOf('zonaTablero.append(pintarAcciones())');
+  const devuelve = isla.indexOf('devolverElFoco(veniaDeAdentro)');
+  assert.ok(rehace > 0 && devuelve > rehace, 'devolverElFoco dejo de llamarse al final de pintarTablero');
+  // Sin estas dos marcas, `devolverElFoco` no tiene contra que buscar el elemento nuevo.
+  assert.match(isla, /dataset\.i = String\(indice\)/, 'la pieza perdio su indice');
+  assert.match(isla, /dataset\.fila = String\(/, 'la fila de destino perdio su numero');
+  // Y el foco no puede quedar en algo que ya no existe: se resuelve DESPUES de repintar.
+  assert.match(isla, /querySelector<HTMLElement>\(`\.pieza\[data-i=/, 'ya no busca la pieza repintada');
+});

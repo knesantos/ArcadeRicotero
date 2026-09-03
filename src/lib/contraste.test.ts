@@ -85,6 +85,11 @@ const PARES: Array<[string, string, string]> = [
   // primario del sitio debajo de AA; con la tinta da 13,29:1. `diseno-marca.md` dice que
   // un color sin par testeado no existe, y este par no estaba.
   ['boton primario de por-la-letra', 'fondo', 'disco-momo-sampler-tinta'],
+  // El boton primario de "Ponelos en fila" (`US-08`), tambien invertido: la ceniza de
+  // ¡Bang! ¡Bang! es el relleno y `--fondo` es lo que se escribe encima. Era el ultimo de
+  // los diez discos que ninguna seccion habia tomado, y entra al test el mismo dia que
+  // empieza a llevar texto — un color sin par testeado no existe (`diseno-marca.md`).
+  ['boton primario de ponelos-en-fila', 'fondo', 'disco-bang-bang-estas-liquidado-tinta'],
 ];
 
 /**
