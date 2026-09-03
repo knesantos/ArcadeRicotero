@@ -632,11 +632,21 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
 
 /* ---- Los lados del cassette ---- */
 
+/* El encabezado tiene que encabezar, y no encabezaba.
+
+   Medido en el portal a 375 px: el h2 LADO A terminaba en y=415 y el primer casete
+   arrancaba en y=428 —13 px—, y entre casete y casete había 11. **Dos píxeles de
+   diferencia entre "soy el título de esta lista" y "soy otro ítem de la lista."** El mismo
+   `--espacio-2` estaba haciendo tres trabajos distintos: separar casetes, separar el
+   título de su lista, y el aire interno de cada casete.
+
+   Ahora el aire va donde separa grupos y sale de donde los une: mucho arriba, poco abajo.
+   Con el solapamiento de la casetera, la relación pasa de 13:11 a 8:-10. */
 .lado {
   display: flex;
   align-items: center;
   gap: var(--espacio-2);
-  margin: var(--espacio-4) 0 var(--espacio-2);
+  margin: var(--espacio-4) 0 var(--espacio-1);
   font-family: var(--fuente-rotulada);
   font-size: 0.85rem;
   letter-spacing: 0.14em;
@@ -652,12 +662,31 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
 
 /* ---- El casete: cada juego es un cassette apilado en el collage ---- */
 
+/* **Los casetes se pisan.** Es una pila de cosas apiladas a mano, y una pila de cosas
+   apiladas a mano se toca.
+
+   Medido antes: los siete casetes medían 345 px y arrancaban en x=14 o x=15 — un píxel de
+   diferencia entre uno y otro—, separados por 16 px de aire parejo. Eso no es un collage,
+   es una lista. Y el sitio se declara collage desde `UX-04`.
+
+   Dos cambios y ninguno es decorativo: el `gap` se vuelve solapamiento, y cada uno se
+   corre para su lado. Ahí recién la cinta adhesiva tiene una costura que cruzar. */
 .casetera {
   display: grid;
-  gap: var(--espacio-2);
+  gap: 0;
   list-style: none;
   padding: 0;
   margin: 0;
+}
+
+.casetera > li + li {
+  margin-top: -10px;
+}
+
+/* Que se alterne cuál pisa a cuál: si siempre pisara el de abajo, sería un acordeón. */
+.casetera > li:nth-child(even) {
+  position: relative;
+  z-index: 1;
 }
 
 .casete {
@@ -672,8 +701,14 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   /* Sin superficie "elevada": la pieza se recorta del fondo por borde grueso y
      cinta, como en serigrafia — y de paso la tinta de cada disco queda siempre
      sobre --fondo, que es el par que el test AA verifica (sobre el elevado,
-     cat-letras baja a 4,32:1 y no llega). */
-  background: transparent;
+     cat-letras baja a 4,32:1 y no llega).
+
+     **`--fondo` opaco y no `transparent`**, que es lo que estaba: un casete transparente
+     encima de otro deja ver el borde del de abajo cruzándolo, y entonces no se pisan, se
+     superponen como dos calcos. Sigue sin ser superficie elevada —es exactamente el mismo
+     color que el fondo del sitio, o sea el mismo par que el test ya mide— y es lo que ya
+     hacía `.pozo` por el mismo motivo. */
+  background: var(--fondo);
   border: var(--linea) solid color-mix(in srgb, var(--tinte) 55%, var(--borde));
   border-radius: var(--radio);
   text-decoration: none;
@@ -681,18 +716,34 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   min-height: var(--toque-min);
 }
 
-/* Apilados a mano: ninguno queda perfectamente derecho. */
-.casetera > li:nth-child(odd) .casete { transform: rotate(-0.9deg); }
-.casetera > li:nth-child(even) .casete { transform: rotate(0.7deg); }
+/* Apilados a mano: ninguno queda perfectamente derecho, y ninguno arranca en el mismo x.
+   El corrimiento lateral es lo que de verdad da la sensación de mano — más que el giro,
+   que sobre una caja de ancho completo sólo puede meter las esquinas en el margen. */
+.casetera > li:nth-child(odd) .casete {
+  transform: rotate(-0.9deg);
+  margin-right: 14px;
+}
 
-/* La cinta adhesiva que sujeta el casete al fondo. */
+.casetera > li:nth-child(even) .casete {
+  transform: rotate(0.7deg);
+  margin-left: 14px;
+}
+
+/* La cinta adhesiva que sujeta el casete al de al lado.
+
+   Estaba a `top: -9px` con 18 px de alto: asomaba 9 px por encima del casete, y entre
+   casetes vecinos había 11 px de aire. Le quedaban dos píxeles: **nunca llegaba a apoyar
+   sobre la pieza de arriba.** Lo que se veía era un rectángulo gris flotando sobre el
+   negro, pegado de un solo lado — y una cinta que no cruza una costura no es una cinta.
+   Ahora apoya ~15 px arriba y ~15 abajo, o sea que cruza. */
 .casete::before {
   content: '';
   position: absolute;
-  top: -9px;
+  top: -15px;
   left: 14%;
-  width: 64px;
-  height: 18px;
+  width: 78px;
+  height: 30px;
+  z-index: 2;
   background: color-mix(in srgb, var(--papel) 30%, transparent);
   transform: rotate(-3deg);
   border-radius: 2px;

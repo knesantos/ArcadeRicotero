@@ -7,7 +7,120 @@
 
 **Última actualización:** 2026-09-02
 
-**Ciclo actual:** **12 — CERRADO (2026-09-02).** Plan en `Docs/ORQ/ORQ-plan-ciclo-12.md`,
+**Ciclo actual:** **13 — EN CURSO (2026-09-02).** Sin plan de `orquestador`: lo pidió el
+usuario directo, en una ráfaga, y se trabajó contra una auditoría medida en vez de contra
+una lista de `T-`. El pedido, textual: *"Sigamos puliendo el ui/UX, que no quede duro ni
+cortado, que los fondos se integren bien. Se agregaron nuevos recortes y videos a las
+carpetas donde están las tapas, también usemos las pasadas que quedaron buenas para
+fondos."*
+
+`npm test` **441/441** (eran 437 al cerrar el 12), `npm run check` limpio, build de **150
+páginas**. Rama `ciclo-13/que-no-corte`.
+
+> ## 🖨 EL CICLO 13: LA HOJA TERMINA, Y LA TINTA SE ACABA EN VEZ DE CORTARSE
+>
+> **La doctrina quedó en `D-34` y `D-35`.** La primera dice *una capa de fondo es una
+> pasada, no un campo*: tiene dirección, principio y final, los extremos se apagan en mota,
+> y si la pasada sigue de largo por un lado ese lado no se desgasta. La segunda dice que
+> **toda pantalla termina en un pie de imprenta y el crédito de `D-21` vive ahí**, porque la
+> tapa y su crédito son el mismo componente y no se pueden escribir por separado.
+>
+> ### Lo que estaba pasando, medido y no recordado
+>
+> Antes de tocar nada, a 375×812:
+>
+> | Qué | Dónde | Cuánto |
+> |---|---|---|
+> | **"Completá la letra" era injugable** | `#partida` y `#resultado` sin `sobre-tapa`, y el único `main` estático de los seis | Al tocar "Empezá" la tapa velada se pintaba **encima del juego entero**: pantalla en blanco |
+> | Opciones con viñeta y de distinto ancho | `.opciones` como `<ul>` en dos de los cuatro juegos | 120, 226, 76 y 117 px, sangradas 40 |
+> | El pie flotando con negro debajo | `/juegos/dos-ejes/` | **337 px**, el 41 % de la ventana |
+> | Desplazamiento muerto | `adivinar-la-tapa` y `dos-ejes`, en `100vh` | 32 px que no llevan a ningún lado |
+> | La franja del portal cortaba en línea recta | `.tapa-fondo--portal`, y=568 | de x=0 a x=375 |
+> | La tapa de fondo estirada al alto del documento | `adivinar-el-tema`: 343×1513 sobre un archivo de 591×381 | se veía **el 14,6 % de la foto, ampliada 4×** |
+> | El rótulo de fuente de las fichas, ilegible | `.ficha .fuente-chip`, `--texto-tenue` sobre `--papel` | **1,78:1** a 11,5 px |
+> | La ficha desbordaba el papel | `white-space: nowrap` + columnas `auto 1fr` | `dd` de **589 px** en una tarjeta de 345 |
+> | Y la página entera se arrastraba de costado | el mismo `nowrap`, en la prosa | chip de **981 px**, documento a 997 |
+> | Cinco pantallas sin ningún fondo | quiz, dos-ejes, por-la-letra y las dos de cancionero | tres **declaraban por escrito el disco que no vestían** |
+> | Dos `.tapa-fondo` en la misma página | `/redondopedia/` | el tránsito de `ADR-03` **apagado en silencio** |
+>
+> ### Lo que hay ahora que no había
+>
+> - **El pie de imprenta**, en las trece rutas: costura de rodillo, la `-media` de la
+>   serigrafía de su disco como máscara sobre tinta plana, una figura recortada cortada
+>   contra el borde derecho, y el crédito impreso encima. Componente:
+>   `src/components/PieImprenta.astro`.
+> - **El desgaste**: ninguna capa de fondo corta. Dos capas de máscara —núcleo transparente
+>   hasta el 55 % y encima la veta de `--textura-rodillo`—, **sin `mask-composite`**, así
+>   que un motor que no lo entienda no puede arruinarlo.
+> - **Los tres recortes que trajo el usuario**, con el nombre que el despiece pedía desde
+>   hace ciclos: `cordero-rulo.png`, `luzbelito-vela.png` y `momo-medallon.png`. De 393 KB a
+>   89 KB. Los másteres en `Docs/UX/recortes-master/`, afuera de `public/`.
+> - **El casete del portal se pisa con el de al lado** y la cinta adhesiva cruza la costura.
+>   Antes los siete medían 345 px y arrancaban en x=14 o 15: una lista, no un collage.
+>
+> ### Los dos guardianes nuevos, y el segundo es el que importa
+>
+> - `contraste.test.ts` mezcla `--peso-pasada` con las diez tintas y falla si alguna deja el
+>   crédito por debajo de AA. **Y falla también por lo contrario**: si el salto sobre el
+>   fondo baja de 12 niveles de 255. Una atmósfera que puede leerse como nada no es
+>   sutileza, es relleno con coartada.
+> - `estilos.test.ts` cierra dos agujeros: el velo que se desvanece —que **pasaba el test
+>   viejo por subcadena** y dejaba media foto desnuda bajo el texto— y la máscara, que era
+>   una vía nueva para que un archivo de `/tapas/` llegue a pantalla sin que nadie la mire.
+>
+> ### Cómo se decidió, porque importa para la próxima
+>
+> No se eligió la dirección a ojo. Ocho auditores midieron el repo por dimensión, tres
+> direcciones independientes se desarrollaron hasta el hueso, y cuatro jueces —doctrina,
+> build, móvil y pedido— las puntuaron por separado. Ganó *el pie de imprenta* (8,5 · 8 · 8
+> · 8). **Perdió, y es el hallazgo que más ahorró: vestir cada pantalla con la `-clave` de
+> su disco a sangre completa** (4,5 · 3 · 4 · 4). Se veía bien en el prototipo y estaba mal
+> por tres razones verificables: las diez claves están teñidas con el valor de `--fondo`
+> (`ADR-05.1`), son la silueta de la composición **entera** de una tapa —que
+> `public/arte/README.md` prohíbe por escrito—, y son la carta que el sitio se guarda para
+> el acierto (`D-33`).
+>
+> ### 🔴 LO QUE FALTA, Y NECESITA UN TELÉFONO EN LA MANO
+>
+> 1. **La costura y el desgaste en un teléfono real**, no en el emulador: `mask-composite`
+>    saca la capa del camino rápido en varios motores móviles, y la franja del portal además
+>    se traslada con `animation-timeline: scroll()`.
+> 2. **Que las trece pantallas no terminen todas igual.** Es el riesgo más caro de una regla
+>    de composición uniforme y el único sin guardián. Lo que las separa es la tinta, el
+>    dibujo de la pasada y la figura. Si al pasar de una a otra se lee como plantilla, la
+>    salida es variar el encuadre de la pasada (`mask-position`), no agregar adornos.
+> 3. **La pasada al sol.** Con `--peso-pasada: 18%` el piso salta 33 niveles en el rojo de
+>    Lobo suelto. Si en Luzbelito o en Último bondi no se ve, esos dos van sin pasada — **no
+>    se sube el peso**: para eso está el test.
+> 4. Ver el cruce entre pantallas de punta a punta con la pestaña visible, que sigue
+>    pendiente del ciclo 11 y ahora vuelve a ser posible en `/redondopedia/`.
+>
+> ### Lo que queda sabido y no resuelto
+>
+> - **El video de Último bondi no entró, y está escrito por qué**: 3.114 KB son 52 veces el
+>   techo por derivado, y su índice está en el último 0,2 % del archivo (sin `faststart` no
+>   se pinta un cuadro hasta bajar los 3 MB). El máster quedó en `Docs/UX/video-master/`, y
+>   el comando de recodificado, el rótulo en registro 3 y dónde iría están en
+>   `Docs/SUGERENCIAS/HILO-para-experiencia-y-contenido-video-ultimo-bondi.md`. **Esta
+>   máquina no tiene `ffmpeg`.** El rótulo es la parte que no se puede saltear: el dibujo es
+>   de Rocambole, el movimiento no, y el crédito de tapa a secas mentiría.
+> - **Momo Sampler es el único disco cuya banda va casi sin pasada**: su `-media` cubre el
+>   2,73 % de la lámina. Esa pantalla se sostiene con la costura y con el medallón.
+> - **Oktubre es el único sin figura**: la única pieza calcada que hay de ese disco es la
+>   figura encadenada, y el despiece prohíbe atribuirle álbum *"ni en el crédito del pie"*.
+> - **Tres discos siguen sin entrada en `STICKER_DISCO`** —Gulp!, Oktubre y ¡Bang! ¡Bang!—.
+>   Es deuda de decisión de `experiencia`, no de archivo.
+> - **Los dos cortes horizontales siguen ahí**: el verso largo de `.cancion` termina en un
+>   píxel seco contra el borde de su caja, y el último ítem visible de `.sugerencias` se
+>   parte contra su borde. La receta del desgaste sirve para los dos con los ejes dados
+>   vuelta; no se aplicó porque sobre una hoja de acordes una máscara al final del scroll
+>   apaga los últimos caracteres, y eso hay que mirarlo con la guitarra en la mano.
+> - **En las pantallas más cortas (`/quiz`, `/juegos/dos-ejes`) sigue habiendo ~200 px de
+>   aire entre el botón y la franja.** Ya no es un rectángulo muerto —la hoja termina—, pero
+>   si alguna vez molesta, la salida es de maquetado y no de fondo.
+
+
+**Ciclo anterior:** **12 — CERRADO (2026-09-02).** Plan en `Docs/ORQ/ORQ-plan-ciclo-12.md`,
 tareas `T-195`..`T-210`, las dieciséis cerradas y ninguna cancelada. Lo pidió el usuario el
 2026-09-01: *"otro ciclo de ui/UX inmersivo, aún más creativo; tomá la mística y la estética
 de Rocambole y aplicala a toda la página; sobre todo en adiviná el tema, que te sorprenda la
