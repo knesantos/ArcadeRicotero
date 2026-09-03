@@ -24,10 +24,12 @@ import { join } from 'node:path';
 import { leerTemas, resolverTema, indiceDuro, normalizarDuro } from '../src/lib/letra/temas.ts';
 import { normalizarAcorde, normalizarAcordes } from '../src/lib/cancionero/notacion.ts';
 import { esAnotacion } from '../src/lib/cancionero/anotacion.ts';
+import { motivosDeTaller, esTituloDePagina } from '../src/lib/cancionero/taller.ts';
 
 const ORIGEN_POR_DEFECTO = 'C:/Users/santi/Proyectos/TemasRedo/cancionero/data';
 const SALIDA = 'src/data/cancionero.json';
 const CUARENTENA = 'src/data/cancionero-cuarentena.json';
+const NOTAS = 'src/data/cancionero-notas.json';
 
 /** El año de cada disco. Los mismos que hace cumplir `letra.schema.json`. */
 const ANIO = {
@@ -75,6 +77,17 @@ function clasificar(crudo, secciones) {
 }
 
 /**
+ * El retorno de carro que dejó el raspado.
+ *
+ * Solo lo trae `san-telmo` —27 renglones—, y no es cosmético: `"SAN TELMO\r"` viaja hasta
+ * el HTML y hasta el banco de los juegos como parte del texto. La sangría de adelante **no
+ * se toca**: la fuente alineó los acordes contando caracteres, y recortarla los corre.
+ */
+function limpiar(texto) {
+  return String(texto ?? '').replace(/\r/g, '');
+}
+
+/**
  * Pasa una línea de la forma raspada a la del sitio.
  * Los acordes viajan como `[nombre, columna]`: es la mitad de bytes que un objeto y son
  * ~14.000 líneas. La columna es la que la fuente ya calculó alineando contra la letra.
@@ -87,15 +100,38 @@ function aLinea(l) {
   const acordes = (l.acordes || [])
     .map((a) => [normalizarAcorde(a.acorde), a.col])
     .filter(([nombre]) => nombre !== null);
-  if (l.tipo_linea === 'tab') return { t: 'tab', texto: l.texto ?? '', ...(acordes.length ? { acordes } : {}) };
+  if (l.tipo_linea === 'tab') return { t: 'tab', texto: limpiar(l.texto), ...(acordes.length ? { acordes } : {}) };
   if (l.tipo_linea === 'instrumental') return { t: 'instrumental', acordes };
   // La fuente marca como letra todo lo que no es tablatura, y en una pagina de cifras eso
   // incluye lo que escribio el transcriptor: `GUITARRA:`, `(X4)`, `VERSO 1: (Riff 2) X7`.
   // No se tira —le sirve al que toca— pero no entra como verso: el banco de `US-03` elige
   // huecos de aca, y sobre esto llego a producir un item que decia `VERSO 1: [Riff] 2) X7`.
-  const texto = l.letra ?? '';
+  const texto = limpiar(l.letra);
   const t = esAnotacion(texto) ? 'anotacion' : 'letra';
   return { t, texto, ...(acordes.length ? { acordes } : {}) };
+}
+
+/** Cuántas líneas movió a `anotacion` la segunda pasada, para que la corrida lo diga. */
+const despegadas = [];
+
+/**
+ * La segunda pasada: la que mira el párrafo entero.
+ *
+ * Nada se borra —la línea queda con `t: "anotacion"` y se sigue pintando en la página, que
+ * es lo que le sirve al que toca—, pero deja de ser letra: fuera del cancionero cantado y
+ * fuera de los bancos de `US-03` y `US-07`.
+ */
+function despegarNotas(lineas, titulo) {
+  const motivos = motivosDeTaller(lineas);
+  return lineas.map((l, i) => {
+    if (l.t !== 'letra') return l;
+    const motivo = esTituloDePagina(l.texto, titulo)
+      ? 'el titulo de la pagina, no un verso'
+      : motivos[i];
+    if (motivo === null || motivo === undefined) return l;
+    despegadas.push({ slug: aSlug(titulo), titulo, texto: l.texto.trim(), motivo });
+    return { ...l, t: 'anotacion' };
+  });
 }
 
 function main() {
@@ -151,7 +187,11 @@ function main() {
       .map((s) => ({
         tipo: s.tipo ?? 'desconocida',
         etiqueta: s.etiqueta ?? null,
-        lineas: (s.lineas || []).map(aLinea),
+        // Dos pasadas y en este orden. `aLinea` mira el renglon solo, que es lo unico que
+        // `anotacion.ts` sabe hacer; `despegarNotas` mira el parrafo, que es la forma real
+        // en que el transcriptor escribe. Sin la segunda, "El bajo" y "Compases" seguian
+        // siendo versos porque solos no tienen ninguna firma — ver `taller.ts`.
+        lineas: despegarNotas((s.lineas || []).map(aLinea), canonico.titulo),
       }))
       .filter((s) => s.lineas.length > 0);
 
@@ -193,6 +233,26 @@ function main() {
     JSON.stringify({ contrato: 'CTR-06', contratoVersion: 1, actualizado: hoy, origen, temas }, null, 1),
     'utf-8',
   );
+  // La segunda pasada tambien deja registro: que renglon se saco de la letra y por que.
+  // Un descarte silencioso no se puede auditar, y aca se despegan renglones que alguien
+  // podria querer de vuelta — el archivo es la unica forma de discutirlo.
+  const vivos = new Set(temas.map((t) => t.slug));
+  const notas = despegadas.filter((n) => vivos.has(n.slug));
+  writeFileSync(
+    NOTAS,
+    JSON.stringify(
+      {
+        actualizado: hoy,
+        regla: 'src/lib/cancionero/taller.ts',
+        explicacion:
+          'Renglones que la fuente guardo en la columna de la letra y son del que transcribio. No se borraron: en cancionero.json quedaron como t: "anotacion", se siguen viendo en la pagina y no entran a los juegos.',
+        despegados: notas,
+      },
+      null,
+      1,
+    ),
+    'utf-8',
+  );
   writeFileSync(
     CUARENTENA,
     JSON.stringify(
@@ -214,6 +274,7 @@ function main() {
   console.log(`instrumentales:        ${temas.filter((t) => t.contenido === 'instrumental').length}`);
   console.log(`solo tablatura:        ${temas.filter((t) => t.contenido === 'solo-tablatura').length}`);
   console.log(`cuarentena:  ${cuarentena.length} apartados → ${CUARENTENA}`);
+  console.log(`notas:       ${notas.length} renglones despegados de la letra → ${NOTAS}`);
   if (faltantes.length) {
     console.log(`\nsin material (${faltantes.length}):`);
     for (const t of faltantes) console.log(`  · ${t.disco} ${t.pista} — ${t.titulo}`);
