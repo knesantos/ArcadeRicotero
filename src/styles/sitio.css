@@ -1299,6 +1299,15 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   margin-bottom: var(--espacio-1);
 }
 
+/* El mismo crédito, en las páginas de juego, que no pasan por `Base.astro` y arman su pie
+   a mano. Vivía en el `<style>` de `adivinar-el-tema.astro`, que era la única de las tres
+   páginas con tapa de fondo que acreditaba: las otras dos mostraban una tapa velada y no
+   nombraban ningún disco, o sea la condición 1 de `D-21` incumplida en silencio. Sube acá
+   porque ahora la usan tres. */
+.credito-tapas {
+  margin: 0 0 var(--espacio-1);
+}
+
 /* El puente del articulo de un tema a su letra entera (ciclo 6). Es un renglon de
    accion, no una tarjeta: la ficha ya tiene bastantes cajas. */
 .ir-a-la-letra {

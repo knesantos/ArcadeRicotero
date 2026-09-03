@@ -18,11 +18,15 @@ import { cargarBanco, type BancoCrudo } from '../../lib/tapa/banco.ts';
 import { PANTALLA_0 } from '../../lib/tapa/copy.ts';
 import Cabeza from '../../components/Cabeza.astro';
 import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
-import { fondoTapa } from '../../lib/sitio/arte.ts';
+import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/tapa.json';
 
 const items = cargarBanco(crudo as unknown as BancoCrudo);
-const fondo = fondoTapa('bondi-engranajes');
+const FONDO = 'bondi-engranajes';
+const fondo = fondoTapa(FONDO);
+// `D-21` condicion 1: la pantalla que muestra una tapa velada tiene que nombrar de que
+// disco es. Esta pagina la mostraba y no lo nombraba.
+const tapasUsadas = fondo ? discosDe([FONDO]) : [];
 
 const TITULO = 'Adiviná la tapa — Arcade Ricotero';
 ---
@@ -54,7 +58,12 @@ const TITULO = 'Adiviná la tapa — Arcade Ricotero';
       <section id="partida" class="pantalla sobre-tapa" hidden></section>
       <section id="resultado" class="pantalla sobre-tapa" hidden></section>
 
-      <footer class="pie-sitio sobre-tapa">{PORTAL.pie}</footer>
+      <footer class="pie-sitio sobre-tapa">
+        {tapasUsadas.length > 0 && (
+          <p class="credito-tapas">{PORTAL.creditoTapas(tapasUsadas)}</p>
+        )}
+        {PORTAL.pie}
+      </footer>
     </main>
 
     <script type="application/json" id="banco" set:html={JSON.stringify(items)} />

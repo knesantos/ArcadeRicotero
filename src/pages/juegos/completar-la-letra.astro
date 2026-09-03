@@ -22,12 +22,16 @@ import { cargarBanco, type BancoCrudo } from '../../lib/letra/banco.ts';
 import { PANTALLA_0, SIN_BANCO } from '../../lib/letra/copy.ts';
 import Cabeza from '../../components/Cabeza.astro';
 import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
-import { fondoTapa } from '../../lib/sitio/arte.ts';
+import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/letra.json';
 
 const items = cargarBanco(crudo as unknown as BancoCrudo);
 const hayJuego = items.length > 0;
-const fondo = fondoTapa('mosca-olla');
+const FONDO = 'mosca-olla';
+const fondo = fondoTapa(FONDO);
+// `D-21` condicion 1: la pantalla que muestra una tapa velada tiene que nombrar de que
+// disco es. Esta pagina la mostraba y no lo nombraba.
+const tapasUsadas = fondo ? discosDe([FONDO]) : [];
 
 const TITULO = 'Completá la letra — Arcade Ricotero';
 ---
@@ -77,7 +81,12 @@ const TITULO = 'Completá la letra — Arcade Ricotero';
       <section id="partida" class="pantalla" hidden></section>
       <section id="resultado" class="pantalla" hidden></section>
 
-      <footer class="pie-sitio">{PORTAL.pie}</footer>
+      <footer class="pie-sitio sobre-tapa">
+        {tapasUsadas.length > 0 && (
+          <p class="credito-tapas">{PORTAL.creditoTapas(tapasUsadas)}</p>
+        )}
+        {PORTAL.pie}
+      </footer>
     </main>
 
     {/* El banco viaja ya filtrado: sin borradores, sin notas internas. */}
