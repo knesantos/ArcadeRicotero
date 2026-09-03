@@ -12,7 +12,7 @@
 import type { ClaseDeFuente, Item } from './banco.ts';
 import type { Tramo } from './tramo.ts';
 import type { Resultado } from './vidas.ts';
-import type { Desafio } from '../desafio.ts';
+import type { DesafioDeQuery } from '../desafio.ts';
 
 /** A1, A2, A3, A4 — Pantalla 0. */
 export const PANTALLA_0 = {
@@ -32,7 +32,7 @@ export const PANTALLA_0 = {
  * del ciclo 9 porque el sitio ya estaba desplegado (`ADR-02` v2). Un link viejo dice lo
  * que decia; no se lo reinterpreta como si fuera una partida por vidas.
  */
-export function subtituloDesafio(d: Desafio): string {
+export function subtituloDesafio(d: DesafioDeQuery): string {
   const quien = d.nombre ?? 'Alguien';
   if (d.forma === 'identidad') return `${quien} ya se lo hizo. ¿Y vos qué sos?`;
   if (d.forma === 'marcador') return `${quien} sacó ${d.puntaje}/${d.total}. ¿Te la bancás?`;
@@ -134,7 +134,7 @@ export const BOTON_DE_NUEVO = 'JUGÁ DE NUEVO';
  * el componente. Las tres variantes son de `CNT-05`, y la del medio importa: **no dice
  * "perdiste"**, invita a otra vuelta, mismo espiritu que el tramo bajo.
  */
-export function comparacion(r: Resultado, d: Desafio): string {
+export function comparacion(r: Resultado, d: DesafioDeQuery): string {
   const quien = d.nombre ?? 'quien te lo mando';
   const mio = `Vos: llegaste a la pregunta ${r.pregunta} (${r.aciertos}/${r.respondidas} acertadas)`;
 

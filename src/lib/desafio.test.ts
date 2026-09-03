@@ -1,6 +1,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { armarLink, leerDesafio, LARGO_MAX_NOMBRE, TOTAL_MAX } from './desafio.ts';
+import {
+  armarLink,
+  leerDesafio,
+  LARGO_MAX_NOMBRE,
+  TOTAL_MAX,
+  // `ADR-06`: la cuarta forma, la que viaja en el fragmento (`US-08`).
+  leerReparto,
+  empaquetarReparto,
+  desempaquetarReparto,
+  MAX_CASILLA,
+} from './desafio.ts';
 
 const BASE = 'https://ricotaarcade.example/';
 
@@ -201,4 +211,152 @@ test('un desafio de otro juego no entra a "sacalo por la letra"', () => {
   // `FIND-28`: sin el segundo argumento, `?g=tapa&p=10&t=10` pintaba un puntaje ajeno.
   assert.equal(leerDesafio('?g=tapa&p=10&t=10', 'por-la-letra'), null);
   assert.equal(leerDesafio('?g=por-la-letra&p=10&t=10', 'tapa'), null);
+});
+
+/* ==================================================================
+   `ADR-06` — la cuarta forma: `reparto`, en el fragmento (`US-08`)
+
+   Lo que estos casos protegen no es el empaquetado en sí: es que **una lista compartida se
+   lea igual que como se armó**. Un bit corrido no rompe nada visible — devuelve una lista
+   válida, distinta, y nadie se entera. Por eso casi todo es ida y vuelta con valores que
+   ocupan los tres bits, y por eso los rechazos son tan puntillosos con el largo.
+   ================================================================== */
+
+/** El catálogo de mentira que `leerReparto` pide como tercer parámetro. */
+const CUANTAS: Record<string, number> = { discos: 10, tapas: 10, t6: 13, 'az-a1b2c3': 12 };
+const fichasDe = (id: string): number | null => CUANTAS[id] ?? null;
+
+/** Un reparto de prueba del largo que se pida, con las cuatro filas usadas. */
+const repartoDe = (n: number): number[] => Array.from({ length: n }, (_, i) => i % 5);
+
+test('ADR-06: ida y vuelta con los cinco valores que el juego usa', () => {
+  // Trece fichas: el conjunto más largo (los temas de Lobo suelto), y un número que NO es
+  // múltiplo de ocho bits, que es donde se rompen los empaquetados escritos a ojo.
+  const casillas = [0, 1, 2, 3, 4, 4, 3, 2, 1, 0, 1, 4, 2];
+  const carga = empaquetarReparto(casillas);
+  assert.deepEqual(desempaquetarReparto(carga, casillas.length), casillas);
+});
+
+test('ADR-06: los tres bits enteros van y vuelven, aunque el juego hoy escriba cinco', () => {
+  // El transporte aguanta 5, 6 y 7 aunque `armarLink` no los escriba: si no los aguantara,
+  // sumar una quinta fila algún día rompería el formato en vez de solo la versión.
+  const valores = [7, 6, 5, 4, 3, 2, 1, 0];
+  assert.deepEqual(desempaquetarReparto(empaquetarReparto(valores), 8), valores);
+});
+
+test('ADR-06: los tamaños son los que el formato promete', () => {
+  // Las tres cuentas que hacen que esto entre en cualquier lado. Si alguna sube, el
+  // formato cambió y hay que subir `VERSION_REPARTO`.
+  const de = (n: number) => empaquetarReparto(new Array<number>(n).fill(MAX_CASILLA)).length;
+  assert.equal(de(10), 6, 'los diez discos tienen que dar 6 caracteres');
+  assert.equal(de(13), 7, 'el disco más largo tiene que dar 7 caracteres');
+  assert.equal(de(105), 54, 'los 105 temas tienen que dar 54 caracteres');
+});
+
+test('ADR-06: un reparto vacío no se confunde con uno lleno', () => {
+  // `SIN_UBICAR` vale 0 justamente para esto: la carga de un tablero recién abierto son
+  // todos ceros, y tiene que volver como todos ceros.
+  const vacio = new Array<number>(10).fill(0);
+  assert.deepEqual(desempaquetarReparto(empaquetarReparto(vacio), 10), vacio);
+});
+
+test('ADR-06: una carga de otro conjunto se rechaza, no se completa con ceros', () => {
+  // El caso que de verdad importa: completar sería inventarle al que compartió una lista
+  // que no armó.
+  const carga = empaquetarReparto(repartoDe(10));
+  assert.equal(desempaquetarReparto(carga, 13), null, 'aceptó una carga corta');
+  assert.equal(desempaquetarReparto(carga, 8), null, 'aceptó una carga larga');
+  assert.equal(desempaquetarReparto(carga, 10)?.length, 10);
+});
+
+test('ADR-06: una carga con un carácter que no es del alfabeto no abre', () => {
+  assert.equal(desempaquetarReparto('*' + empaquetarReparto(repartoDe(10)).slice(1), 10), null);
+});
+
+test('ADR-06: no se genera un link inválido', () => {
+  // Mismo criterio que las otras tres formas: se rompe el test, no la pantalla de la gente.
+  const link = (conjunto: string, casillas: number[]) =>
+    armarLink(BASE, { forma: 'reparto', juego: 'ponelos', conjunto, casillas });
+  assert.throws(() => link('discos', []), RangeError);
+  assert.throws(() => link('discos', [5]), RangeError, 'escribió una casilla reservada');
+  assert.throws(() => link('discos', [-1]), RangeError);
+  assert.throws(() => link('discos', [1.5]), RangeError);
+  assert.throws(() => link('Discos Con Mayúsculas', [1]), RangeError);
+  assert.throws(() => link('discos', new Array<number>(121).fill(1)), RangeError);
+});
+
+test('ADR-06: el reparto viaja en el fragmento, y el juego se queda en la query', () => {
+  // La razón entera de esta forma, y la que la protege de `FIND-28`. Si algún día alguien
+  // mueve el reparto a la query, o saca la `g`, esto falla.
+  const url = new URL(
+    armarLink(BASE, { forma: 'reparto', juego: 'ponelos', conjunto: 'discos', casillas: repartoDe(10) }),
+  );
+  assert.equal(url.searchParams.get('g'), 'ponelos');
+  assert.equal(url.searchParams.get('o'), null, 'el reparto se filtró a la query');
+  assert.match(url.hash, /^#o=1\.discos\./);
+  assert.equal(url.searchParams.get('n'), null, 'la forma reparto no lleva nombre');
+});
+
+test('ADR-06: ida y vuelta por la dirección entera', () => {
+  const casillas = repartoDe(10);
+  const url = armarLink(BASE, { forma: 'reparto', juego: 'ponelos', conjunto: 'tapas', casillas });
+  assert.deepEqual(leerReparto(url, 'ponelos', fichasDe), {
+    forma: 'reparto',
+    juego: 'ponelos',
+    conjunto: 'tapas',
+    casillas,
+  });
+});
+
+test('ADR-06: FIND-28 tampoco pasa por el fragmento', () => {
+  // El reparto de otro juego no se pinta como propio, igual que en la query.
+  const url = armarLink(BASE, { forma: 'reparto', juego: 'ponelos', conjunto: 'discos', casillas: repartoDe(10) });
+  assert.equal(leerReparto(url, 'quiz', fichasDe), null);
+});
+
+test('ADR-06: los siete pasos de la validación, uno por uno', () => {
+  // `null` significa "entraste normal", no "hubo un error" (`D-14`): el juego abre con el
+  // tablero vacío en los siete casos.
+  const casos: Array<[string, string]> = [
+    ['no soy una dirección', 'la dirección no parsea'],
+    [`${BASE}#o=1.discos.iSZiCg`, 'sin g en la query'],
+    [`${BASE}?g=ponelos`, 'sin fragmento'],
+    [`${BASE}?g=ponelos#seccion-cualquiera`, 'un fragmento que no es un reparto'],
+    [`${BASE}?g=ponelos#o=1.discos`, 'le falta una parte'],
+    [`${BASE}?g=ponelos#o=1.discos.iSZiCg.iSZiCg`, 'le sobra una parte'],
+    [`${BASE}?g=ponelos#o=2.discos.iSZiCg`, 'otra versión del empaquetado'],
+    [`${BASE}?g=ponelos#o=1.DISCOS.iSZiCg`, 'el conjunto tiene alfabeto cerrado'],
+    [`${BASE}?g=ponelos#o=1.-discos.iSZiCg`, 'el conjunto no puede arrancar con guion'],
+    [`${BASE}?g=ponelos#o=1.inventado.iSZiCg`, 'un conjunto que no existe'],
+    [`${BASE}?g=ponelos#o=1.discos.no+es+base64url`, 'la carga no es del alfabeto'],
+    [`${BASE}?g=ponelos#o=1.t6.iSZiCg`, 'la carga es de un conjunto de otro largo'],
+  ];
+  for (const [direccion, por] of casos) {
+    assert.equal(leerReparto(direccion, 'ponelos', fichasDe), null, `abrió ${por}`);
+  }
+});
+
+test('ADR-06: una casilla reservada descarta el reparto entero, no la ficha suelta', () => {
+  // Media lista ajena es una lista inventada. Se llega a este caso por un link de una
+  // versión futura, o por alguien editando el fragmento a mano.
+  const carga = empaquetarReparto([1, 2, 3, 4, 7, 1, 2, 3, 4, 1]);
+  assert.equal(leerReparto(`${BASE}?g=ponelos#o=1.discos.${carga}`, 'ponelos', fichasDe), null);
+});
+
+test('ADR-06: ningún campo del fragmento es texto', () => {
+  // La regla 4 de `ADR-02`, y esta forma es la única de las cuatro que la cumple entera:
+  // lo que entra son un slug de alfabeto cerrado y una tira de enteros. Nada que alguien
+  // pueda escribir llega a la pantalla.
+  const url = armarLink(BASE, { forma: 'reparto', juego: 'ponelos', conjunto: 'discos', casillas: repartoDe(10) });
+  const leido = leerReparto(url, 'ponelos', fichasDe)!;
+  assert.ok(leido);
+  assert.match(leido.conjunto, /^[a-z0-9-]+$/);
+  for (const c of leido.casillas) assert.equal(typeof c, 'number');
+  assert.equal(Object.keys(leido).includes('nombre'), false);
+});
+
+test('ADR-06: el reparto y las tres formas de la query no se mezclan', () => {
+  // Son dos canales distintos. Un desafío no puede colarse como reparto ni al revés.
+  assert.equal(leerDesafio('?g=ponelos', 'ponelos'), null);
+  assert.equal(leerReparto(`${BASE}?g=quiz&p=1&t=8`, 'quiz', fichasDe), null);
 });

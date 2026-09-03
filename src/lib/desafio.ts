@@ -9,6 +9,16 @@
  *   t  total        obligatorio, entero > 0
  *   n  nombre       opcional, <= 20 caracteres
  *
+ * Y desde `ADR-06` hay una cuarta forma que **no viaja en la query sino en el fragmento**,
+ * porque lo que comparte `US-08` no es un puntaje sino donde quedo cada ficha:
+ *
+ * Forma: `https://<sitio>/juegos/ponelos-en-fila/?g=ponelos#o=1.<conjunto>.<carga>`
+ *
+ *   g  juego        obligatorio, en la query, igual que las otras tres
+ *   o  reparto      en el fragmento: version, conjunto, y tres bits por ficha
+ *
+ * Vive en la mitad de abajo de este archivo, con su propio encabezado.
+ *
  * **Este archivo es la unica puerta por la que entra dato de afuera a todo el sitio.**
  * No hay backend, no hay login, no hay formularios: la URL es la unica superficie de
  * entrada que existe. Por eso las dos reglas de abajo no son celo, son la superficie
@@ -57,7 +67,31 @@ export type Desafio =
   /** Hasta donde llego y como termino. `US-01` bajo `BR-19`. */
   | { readonly forma: 'recorrido'; readonly juego: string; readonly puntaje: number; readonly total: number; readonly desenlace: DesenlaceDesafio; readonly nombre?: string }
   /** Que le salio. Sin numero. `US-06`. */
-  | { readonly forma: 'identidad'; readonly juego: string; readonly identidad: string; readonly nombre?: string };
+  | { readonly forma: 'identidad'; readonly juego: string; readonly identidad: string; readonly nombre?: string }
+  /**
+   * Donde puso cada ficha. Sin numero y **sin nombre**. `US-08` bajo `ADR-06`.
+   *
+   * Es la unica de las cuatro que cumple entera la regla 4 de `ADR-02` ("ningun campo es
+   * texto"): `casillas` son enteros que eligen una fila de `FILAS`, y `conjunto` es un
+   * slug que **no se muestra nunca** — se busca en el catalogo y lo que se pinta es el
+   * nombre propio del conjunto, igual que hace `r` en la forma `identidad`.
+   *
+   * No lleva `n` a proposito. Las otras tres cuentan lo que hizo alguien, asi que el
+   * nombre agrega algo; un reparto no es un logro de nadie (`BR-22`), y el nombre seria
+   * el unico texto libre de esta forma a cambio de nada.
+   */
+  | { readonly forma: 'reparto'; readonly juego: string; readonly conjunto: string; readonly casillas: readonly number[] };
+
+/**
+ * Las tres formas que viajan **en la query**, o sea todo lo que `leerDesafio` puede
+ * devolver.
+ *
+ * Existe como nombre propio para que las pantallas que muestran un desafio ajeno —el quiz,
+ * y las que vengan— puedan pedir exactamente eso. Sin este alias tendrian que preguntar
+ * por `reparto`, que por la query no entra nunca (`ADR-06.5`), y esa rama muerta se
+ * volveria una invitacion a inventarle un puntaje al reparto.
+ */
+export type DesafioDeQuery = Exclude<Desafio, { forma: 'reparto' }>;
 
 /**
  * Deja el nombre en algo seguro de mostrar como texto.
@@ -93,6 +127,20 @@ export function armarLink(base: string, d: Desafio): string {
   const url = new URL(base);
   url.searchParams.set('g', d.juego);
 
+  // `ADR-06`: el reparto sale por el fragmento y se va antes de tocar `n`, que esta forma
+  // no tiene. `g` se queda en la query, que es lo que le permite a `leerReparto` rechazar
+  // un reparto de otro juego sin repetir el descuido de `FIND-28`.
+  if (d.forma === 'reparto') {
+    if (!CONJUNTO.test(d.conjunto)) throw new RangeError('conjunto invalido');
+    for (const c of d.casillas) {
+      if (!Number.isInteger(c) || c < 0 || c > MAX_CASILLA) {
+        throw new RangeError(`casilla fuera de las cuatro filas: ${c}`);
+      }
+    }
+    url.hash = `o=${VERSION_REPARTO}.${d.conjunto}.${empaquetarReparto(d.casillas)}`;
+    return url.toString();
+  }
+
   if (d.forma === 'identidad') {
     if (!/^[A-Za-z0-9-]{1,12}$/.test(d.identidad)) throw new RangeError('identidad invalida');
     url.searchParams.set('r', d.identidad);
@@ -121,8 +169,16 @@ export function armarLink(base: string, d: Desafio): string {
  * `null` significa "entraste normal", no "hubo un error": la enorme mayoria de las
  * visitas no traen desafio, y el sitio tiene que abrir igual. Un link roto **nunca**
  * puede dejar a alguien afuera — eso seria cerrar un molinete (`D-14`).
+ *
+ * **Devuelve las tres formas de la query y nunca `reparto`**, y eso esta dicho en el tipo
+ * y no solo en esta prosa: el reparto viaja en el fragmento, asi que por aca no puede
+ * entrar (`ADR-06.5`). Sin esa exclusion, los seis juegos que ya usan esta funcion
+ * tendrian que preguntar por una forma que jamas les va a llegar.
  */
-export function leerDesafio(query: string, juegoPropio: string): Desafio | null {
+export function leerDesafio(
+  query: string,
+  juegoPropio: string,
+): DesafioDeQuery | null {
   let p: URLSearchParams;
   try {
     p = new URLSearchParams(query.startsWith('?') ? query.slice(1) : query);
@@ -175,4 +231,227 @@ export function leerDesafio(query: string, juegoPropio: string): Desafio | null 
 
   if (!DESENLACES.includes(crudoD as DesenlaceDesafio)) return null;
   return { forma: 'recorrido', juego, puntaje, total, desenlace: crudoD as DesenlaceDesafio, ...conNombre };
+}
+
+/* ==================================================================
+   `ADR-06` — la cuarta forma: `reparto`, y por qué viaja en el fragmento
+
+   Las tres formas de arriba caben en la query porque son **un puñado de números**: un
+   puntaje, un total, un desenlace de tres valores. `US-08` comparte otra cosa — dónde
+   puso el jugador cada una de las fichas de un conjunto —, y eso no entra en ninguna de
+   las tres: `identidad` acota `r` a doce caracteres y exige que resuelva contra un enum
+   del juego, y un reparto arbitrario no resuelve contra nada.
+
+   **Sigue siendo esta puerta y no otra.** El encabezado de este archivo dice que es la
+   única por la que entra dato de afuera a todo el sitio, y partirla en dos módulos sería
+   dejar la mitad del tráfico sin ese encabezado encima. Así que la forma nueva se escribe
+   acá, con las mismas dos reglas:
+
+   **1. Ningún campo es texto.** Un reparto es una tira de enteros de 0 a 7, y el id del
+   conjunto es un slug de alfabeto cerrado. No hay una sola cadena que alguien pueda
+   escribir y que termine en la pantalla: lo que no es número se rechaza entero.
+
+   **2. El reparto no se puede confiar, y acá ni siquiera importa.** Cualquiera edita el
+   fragmento. En `marcador` eso era un puntaje inflado; acá no hay puntaje que inflar —
+   `BR-22` prohíbe que el sitio tenga un orden correcto, así que un reparto "falso" es
+   simplemente otro reparto. Lo único que un fragmento roto puede hacer es no abrir, y
+   ante eso el juego abre vacío: **un link roto nunca deja a nadie afuera** (`D-14`).
+
+   **Por qué el fragmento y no la query.** Lo que va después de `#` no se manda al
+   servidor (RFC 3986 §3.5): no entra en el registro de acceso de Vercel ni en el
+   `Referer` que el navegador le pasa al próximo sitio. Un reparto es una opinión sobre
+   una banda, y no tiene por qué quedar escrita en el registro de nadie.
+
+   **Lo que se pierde, dicho de frente:** ningún previsualizador de enlaces —WhatsApp,
+   Telegram, X, Discord— lee lo que hay después del `#`, así que el enlace compartido
+   muestra la tarjeta genérica del sitio. No es un defecto que haya que arreglar: es
+   exactamente por qué existe la lámina. **La imagen es el previsualizador.**
+   ================================================================== */
+
+/** Tres bits por ficha: ocho valores, y hoy se usan cinco (sin ubicar más cuatro filas). */
+export const BITS_POR_FICHA = 3;
+
+/**
+ * La versión del empaquetado, y es el campo más importante de los tres.
+ *
+ * La carga **no dice qué ficha es cada valor**: los valores van en el orden canónico del
+ * conjunto, que vive en el código y no viaja. Si ese orden cambiara —un tema que se
+ * renumera, un disco que se parte en dos—, los links viejos se leerían corridos un lugar
+ * y **nadie se enteraría**: la lista abriría, sería una lista válida, y estaría mal. Subir
+ * este número es lo que convierte ese defecto silencioso en un link que no abre.
+ */
+export const VERSION_REPARTO = 1;
+
+/**
+ * El techo de fichas de un reparto (`ADR-06.4`, paso 5). 120 son 45 bytes y 60 caracteres
+ * de carga: el conjunto más grande que este juego puede llegar a tener —los 105 temas—
+ * entra con lugar de sobra. Existe para que una carga inventada no haga trabajar al
+ * navegador de balde.
+ */
+export const MAX_ITEMS_REPARTO = 120;
+
+/**
+ * La casilla más alta que se puede **escribir** hoy: la cuarta fila.
+ *
+ * Los tres bits aguantan hasta 7, y los tres valores de arriba quedan reservados para
+ * filas que todavía no existen. Pero escribirlos ahora sería generar un link que esta
+ * versión no sabe leer, así que `armarLink` los rechaza y `leerReparto` los descarta. El
+ * día que haya una quinta fila, sube `VERSION_REPARTO` y sube esto.
+ */
+export const MAX_CASILLA = 4;
+
+/** El id de un conjunto ordenable. Alfabeto cerrado, igual que `g` y que `r`. */
+const CONJUNTO = /^[a-z0-9][a-z0-9-]{0,23}$/;
+
+/** base64url (RFC 4648 §5), sin relleno: viaja entero por cualquier lado. */
+const ALFABETO = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+
+/**
+ * Empaqueta los valores en base64url. Cada valor ocupa tres bits, el menos significativo
+ * primero, corridos byte a byte.
+ *
+ * Tira `RangeError` ante lo imposible, igual que `armarLink` y por el mismo motivo: **un
+ * link inválido no se genera**. Se rompe el test, no la pantalla de la gente.
+ */
+export function empaquetarReparto(valores: readonly number[]): string {
+  if (valores.length < 1 || valores.length > MAX_ITEMS_REPARTO) {
+    throw new RangeError(`un reparto de ${valores.length} fichas no se puede empaquetar`);
+  }
+  for (const v of valores) {
+    if (!Number.isInteger(v) || v < 0 || v > 7) {
+      throw new RangeError(`valor fuera de tres bits: ${v}`);
+    }
+  }
+
+  const bytes = new Uint8Array(Math.ceil((valores.length * BITS_POR_FICHA) / 8));
+  valores.forEach((v, i) => {
+    for (let k = 0; k < BITS_POR_FICHA; k++) {
+      if (((v >> k) & 1) === 0) continue;
+      const bit = i * BITS_POR_FICHA + k;
+      bytes[bit >> 3] |= 1 << (bit & 7);
+    }
+  });
+
+  let salida = '';
+  for (let i = 0; i < bytes.length; i += 3) {
+    const a = bytes[i]!;
+    const b = i + 1 < bytes.length ? bytes[i + 1]! : null;
+    const c = i + 2 < bytes.length ? bytes[i + 2]! : null;
+    salida += ALFABETO[a >> 2]! + ALFABETO[((a & 3) << 4) | ((b ?? 0) >> 4)]!;
+    if (b === null) break;
+    salida += ALFABETO[((b & 15) << 2) | ((c ?? 0) >> 6)]!;
+    if (c === null) break;
+    salida += ALFABETO[c & 63]!;
+  }
+  return salida;
+}
+
+/**
+ * Abre una carga y devuelve exactamente `cuantas` valores, o `null` si no cierra.
+ *
+ * **Es estricto con el largo, y ahí está el trabajo.** Una carga que da menos bytes de los
+ * que el conjunto necesita se rechaza en vez de completarse con ceros: completar sería
+ * inventarle al que compartió una lista que no armó. Una que da de más también, porque
+ * significa que la carga es de otro conjunto.
+ */
+export function desempaquetarReparto(carga: string, cuantas: number): number[] | null {
+  if (!Number.isInteger(cuantas) || cuantas < 1 || cuantas > MAX_ITEMS_REPARTO) return null;
+  const bytesEsperados = Math.ceil((cuantas * BITS_POR_FICHA) / 8);
+  if (carga.length !== Math.ceil((bytesEsperados * 4) / 3)) return null;
+
+  const bytes = new Uint8Array(bytesEsperados);
+  let acumulado = 0;
+  let sueltos = 0;
+  let escritos = 0;
+  for (const c of carga) {
+    const n = ALFABETO.indexOf(c);
+    if (n < 0) return null;
+    acumulado = (acumulado << 6) | n;
+    sueltos += 6;
+    if (sueltos < 8) continue;
+    sueltos -= 8;
+    if (escritos >= bytesEsperados) return null;
+    bytes[escritos++] = (acumulado >> sueltos) & 0xff;
+  }
+  if (escritos !== bytesEsperados) return null;
+
+  const valores: number[] = [];
+  for (let i = 0; i < cuantas; i++) {
+    let v = 0;
+    for (let k = 0; k < BITS_POR_FICHA; k++) {
+      const bit = i * BITS_POR_FICHA + k;
+      v |= ((bytes[bit >> 3]! >> (bit & 7)) & 1) << k;
+    }
+    valores.push(v);
+  }
+  return valores;
+}
+
+/**
+ * Lee un reparto de una dirección entera. Devuelve `null` si no hay uno válido.
+ *
+ * **Los siete pasos de `ADR-06.4`, en orden**: la dirección parsea, `g` es de este juego,
+ * hay un `o=` en el fragmento, tiene las tres partes, la versión es la que este código
+ * sabe leer, el conjunto existe *y dice cuántas fichas tiene*, y la carga abre en
+ * exactamente esa cantidad de casillas válidas.
+ *
+ * `fichasDelConjunto` es **una función y no una tabla importada**, y ese detalle sostiene
+ * todo el archivo: `desafio.ts` no importa nada, que es la condición para que lo puedan
+ * importar los dos lados. El catálogo de `CTR-13` sale de `RES-20` y arrastra `node:fs`;
+ * si entrara acá, `islas.test.ts` tendría razón en fallar y se llevaría puestos los siete
+ * juegos que ya usan esta puerta.
+ *
+ * Y `juegoPropio` es obligatorio por lo mismo que en `leerDesafio`: `FIND-28` fue
+ * exactamente esto —un desafío de otro juego pintado como propio— y se arregló en la
+ * firma, no en cada sitio de llamada.
+ *
+ * Devolver `null` significa "entraste normal", no "hubo un error": un link roto **nunca**
+ * puede dejar a alguien afuera (`D-14`). El juego abre con el tablero vacío.
+ */
+export function leerReparto(
+  direccion: string,
+  juegoPropio: string,
+  fichasDelConjunto: (id: string) => number | null,
+): Extract<Desafio, { forma: 'reparto' }> | null {
+  let url: URL;
+  try {
+    url = new URL(direccion);
+  } catch {
+    return null;
+  }
+
+  const juego = url.searchParams.get('g');
+  if (!juego || !/^[a-z-]{1,20}$/.test(juego) || juego !== juegoPropio) return null;
+
+  const crudo = url.hash.startsWith('#') ? url.hash.slice(1) : url.hash;
+  if (!crudo) return null;
+
+  let p: URLSearchParams;
+  try {
+    p = new URLSearchParams(crudo);
+  } catch {
+    return null;
+  }
+  const valor = p.get('o');
+  if (!valor) return null;
+
+  const partes = valor.split('.');
+  if (partes.length !== 3) return null;
+  const [version, conjunto, carga] = partes as [string, string, string];
+  if (version !== String(VERSION_REPARTO)) return null;
+  if (!CONJUNTO.test(conjunto)) return null;
+  // 120 fichas son 45 bytes, y 45 bytes son 60 caracteres. El largo exacto lo decide el
+  // conjunto un par de lineas mas abajo; esto solo acota lo que se mira.
+  if (!/^[A-Za-z0-9_-]{1,80}$/.test(carga)) return null;
+
+  const cuantas = fichasDelConjunto(conjunto);
+  if (cuantas === null) return null;
+
+  const casillas = desempaquetarReparto(carga, cuantas);
+  if (!casillas) return null;
+  // Un valor reservado (5, 6 o 7) es un reparto de una version que este codigo no conoce.
+  // Se descarta **entero** y no la ficha suelta: media lista ajena es una lista inventada.
+  if (casillas.some((c) => c > MAX_CASILLA)) return null;
+
+  return { forma: 'reparto', juego, conjunto, casillas };
 }
