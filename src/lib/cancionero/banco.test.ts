@@ -72,13 +72,20 @@ test('los tres estados de contenido están poblados y cada uno dice la verdad', 
   // Los que la fuente transcribió solo como tablatura. NO son instrumentales: tienen
   // letra, simplemente nadie la escribió en la página de la que salieron.
   //
-  // **Este test ya cambió una vez, y era lo que tenía que pasar.** La versión anterior
-  // listaba seis. El 2026-08-24 el cancionero se rehizo sumando lacuerda.net como fuente y
-  // **cinco de los seis aparecieron con letra**: `divina-tv-fuhrer`, `etiqueta-negra`,
-  // `fuegos-de-octubre`, `san-telmo` y `scaramanzia`. Queda uno.
-  assert.deepEqual((porEstado.get('solo-tablatura') ?? []).sort(), ['soga-de-cain']);
+  // **Este test ya cambió dos veces, y las dos era lo que tenía que pasar.** La primera
+  // versión listaba seis. El 2026-08-24 el cancionero se rehizo sumando lacuerda.net como
+  // fuente y **cinco de los seis aparecieron con letra**: `divina-tv-fuhrer`,
+  // `etiqueta-negra`, `fuegos-de-octubre`, `san-telmo` y `scaramanzia`.
+  //
+  // **`san-telmo` volvió, y esta vez el rótulo se había equivocado.** Lo que lacuerda.net
+  // transcribió ahí es pentagrama de punta a punta; lo único que la ingesta contaba como
+  // verso eran cuatro renglones que no canta nadie — el título de la página (`SAN TELMO`),
+  // `MELODIA.  (acordeon)`, un `FIN.` y la acotación del que lo subió. `taller.ts` los
+  // despegó y el tema quedó donde siempre debió estar. Un tema sin letra no es un tema
+  // roto: el índice tiene que decir cuál de los tres es, y ahora lo dice bien.
+  assert.deepEqual((porEstado.get('solo-tablatura') ?? []).sort(), ['san-telmo', 'soga-de-cain']);
 
-  assert.equal((porEstado.get('letra') ?? []).length, 101);
+  assert.equal((porEstado.get('letra') ?? []).length, 100);
 });
 
 test('lo que no se canta trae su aviso escrito, no un hueco mudo', () => {

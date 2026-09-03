@@ -21,6 +21,7 @@
  */
 
 import { sirveComoVerso } from '../cancionero/anotacion.ts';
+import { sinEtiquetaFinal } from '../cancionero/taller.ts';
 import { normalizarDuro } from '../texto.ts';
 
 /**
@@ -31,8 +32,14 @@ import { normalizarDuro } from '../texto.ts';
  * **v2 (`REV-08` / `FIND-30`):** la regla de acordes exigia que TODAS las palabras lo
  * fueran, y nueve de los 93 items publicados mostraban cifra como verso escapandose por
  * una sola palabra suelta. Ahora basta con mayoria de acordes, o con sangria ancha.
+ *
+ * **v7 (limpieza de letras):** dos cambios que llegan de afuera de este archivo. El
+ * cancionero se re-ingirio con `taller.ts`, que despega del texto los parrafos de nota del
+ * transcriptor —175 renglones—, asi que la entrada del filtro ya viene mas limpia; y
+ * `sinAnotacionFinal` ahora corta tambien la etiqueta sin parentesis (`"...le da! Riff 1"`),
+ * que perdia ocho renglones del estribillo de *Luzbelito y las sirenas*.
  */
-export const VERSION_FILTRO = 6;
+export const VERSION_FILTRO = 7;
 
 export interface VersoDelTema {
   readonly texto: string;
@@ -225,10 +232,13 @@ export function motivoDescarteVerso(texto: string): string | null {
  * tac)"`, `"(mientras bailamos tangos fatales)"`), no se tocan.
  */
 function sinAnotacionFinal(texto: string): string {
-  const m = /^(.*\S)\s*\(([^()]*)\)\s*\.?\s*$/.exec(texto.trim());
-  if (!m) return texto.trim();
+  // La misma idea sin paréntesis: `"Ay, ay, ay que risa le da! Riff 1"`. Ocho renglones de
+  // *Luzbelito y las sirenas* son eso, y descartarlos enteros perdía el estribillo.
+  const limpio = sinEtiquetaFinal(texto).trim();
+  const m = /^(.*\S)\s*\(([^()]*)\)\s*\.?\s*$/.exec(limpio);
+  if (!m) return limpio;
   const adentro = m[2]!.split(/\s+/).filter(Boolean);
-  if (adentro.length === 0 || !adentro.every(noAportaLetra)) return texto.trim();
+  if (adentro.length === 0 || !adentro.every(noAportaLetra)) return limpio;
   return m[1]!.trim();
 }
 

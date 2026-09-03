@@ -1,7 +1,7 @@
 {
  "contrato": "CTR-06",
  "contratoVersion": 1,
- "actualizado": "2026-09-02",
+ "actualizado": "2026-09-03",
  "origen": "C:/Users/santi/Proyectos/TemasRedo/cancionero/data",
  "temas": [
   {
@@ -8677,7 +8677,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "FIN."
       }
      ]
@@ -24072,7 +24072,7 @@
        "texto": ""
       },
       {
-       "t": "anotacion",
+       "t": "letra",
        "texto": "En el estribillo creo que Skay no hace ese La en 'IN descriptibles'."
       },
       {
@@ -34501,7 +34501,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "      G D C D  (x3) -  em d c"
       },
       {
@@ -36513,7 +36513,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "Acá sigue con la misma base"
       },
       {
@@ -40093,7 +40093,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "y final con: [Mi5 ]"
       },
       {
@@ -52743,7 +52743,7 @@
    "tono": null,
    "capo": null,
    "acordesUsados": [],
-   "contenido": "letra",
+   "contenido": "solo-tablatura",
    "fuente": {
     "sitio": "lacuerda.net",
     "url": "https://acordes.lacuerda.net/patricio_rey/san_telmo.shtml",
@@ -52855,7 +52855,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "FIN."
       },
       {
@@ -53049,7 +53049,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "(RE FA7 LAm) 2 veces  SOL",
        "acordes": [
         [
@@ -53266,11 +53266,11 @@
        "texto": ""
       },
       {
-       "t": "anotacion",
+       "t": "letra",
        "texto": "Ay, ay, ay que risa le da! Riff 1"
       },
       {
-       "t": "anotacion",
+       "t": "letra",
        "texto": "Ay, ay, ay que risa le da! Riff 2"
       },
       {
@@ -53330,11 +53330,11 @@
        "texto": ""
       },
       {
-       "t": "anotacion",
+       "t": "letra",
        "texto": "Ay! Ay! Ay! ésa lágrima! Riff 1"
       },
       {
-       "t": "anotacion",
+       "t": "letra",
        "texto": "Ay! Ay! Ay! que risa le dá! Riff 2"
       },
       {
@@ -53398,11 +53398,11 @@
        "texto": ""
       },
       {
-       "t": "anotacion",
+       "t": "letra",
        "texto": "Ay! Ay! Ay! ésa lágrima! Riff 1"
       },
       {
-       "t": "anotacion",
+       "t": "letra",
        "texto": "Ay! Ay! Ay! que risa le dá! Riff 2"
       },
       {
@@ -53466,11 +53466,11 @@
        "texto": ""
       },
       {
-       "t": "anotacion",
+       "t": "letra",
        "texto": "Ay! Ay! Ay! mis deseos de hoy... Riff 1"
       },
       {
-       "t": "anotacion",
+       "t": "letra",
        "texto": "Ay! Ay! Ay! mis deseos de hoy... Riff 2"
       },
       {
@@ -65227,7 +65227,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "   1er Solo de Trompeta: [LAm7-SIb]x3 [LAm7-SOL7]"
       },
       {
@@ -65235,7 +65235,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "   Solo de Guitarra:   [FA7-SOL7]x3"
       },
       {
@@ -65243,7 +65243,7 @@
        "texto": ""
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "   2do Solo de Trompeta: [LAm7-SIb]x2"
       },
       {
@@ -65867,15 +65867,15 @@
        "texto": "-----------------------------------------------------------"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "NOTA: En solo de trompeta la guitarra acompaña"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "     despacio con Mim y REsus. cuando termina el solo,"
       },
       {
-       "t": "letra",
+       "t": "anotacion",
        "texto": "     se toca RE Y REsus con el ritmo normal varias veces."
       }
      ]
@@ -70458,7 +70458,7 @@
        "texto": "puteando por lo bajo se marcho"
       },
       {
-       "t": "anotacion",
+       "t": "letra",
        "texto": "Un killer riff en su contestador"
       },
       {

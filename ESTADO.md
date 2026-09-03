@@ -14,9 +14,74 @@ cortado, que los fondos se integren bien. Se agregaron nuevos recortes y videos 
 carpetas donde están las tapas, también usemos las pasadas que quedaron buenas para
 fondos."*
 
-`npm test` **441/441** (eran 437 al cerrar el 12), `npm run check` limpio, build de **150
-páginas**. Rama `ciclo-13/que-no-corte`.
+`npm test` **456/456** (eran 437 al cerrar el 12), `npm run check` limpio, build de **150
+páginas**, validador `APTA` con los dos avisos de siempre. Rama `ciclo-13/que-no-corte`.
 
+> ## 🧹 LIMPIEZA DE LAS LETRAS (2026-09-02, misma ráfaga del ciclo 13)
+>
+> Pedido del usuario, textual: *"Hace una limpieza de las letras. Hay algunos acordes
+> metidos en las letras, algunas tienen mensajes que no son del tema como saludos o cosas
+> asi, o en la letra dice [Instrumental] y rompe el juego de las letras."*
+>
+> ### Por qué el filtro que ya existía no alcanzaba
+>
+> `anotacion.ts` mira **un renglón** y le busca una firma. Sirve para `(X4)` y para
+> `GUITARRA:`, y no puede servir para esto, porque el ruido que quedaba **no viene suelto**:
+> el que sube una cifra escribe un párrafo entero en la columna de la letra y la fuente lo
+> parte en renglones cortos. En *Salando las heridas*, `Compases`, `El bajo` y `Que va
+> cambiando` no tienen ninguna firma propia — son tres frases castellanas cualquiera. Pegadas
+> a `Hay que tocar acordes`, no hay duda de qué son. **El contexto era la evidencia que
+> nadie estaba mirando.**
+>
+> ### Lo que hay ahora
+>
+> - **`src/lib/cancionero/taller.ts`**: clasifica **por bloque**. Un renglón cae solo si
+>   trae señal fuerte; el bloque entero cae si tiene al menos una fuerte y el 60 % de sus
+>   renglones acompaña. El bloque lo cortan el renglón en blanco y la tablatura, que es
+>   exactamente como se ve el párrafo en la página de origen.
+> - **177 renglones despegados de la letra** en 53 temas, **nada borrado**: pasan a
+>   `t: "anotacion"`, se siguen viendo en `/letras-y-acordes/` con su estilo, y salen de los
+>   bancos de `US-03` y `US-07`. El registro completo, con el motivo de cada uno, en
+>   **`src/data/cancionero-notas.json`** — mismo criterio que la cuarentena de `D-13`.
+> - **Los 27 `\r` de `san-telmo`** se limpian en la ingesta. Viajaban hasta el HTML.
+> - **`san-telmo` pasó a `solo-tablatura`**, que es lo que siempre fue: lo único que la
+>   ingesta contaba como verso ahí eran el título de la página, `MELODIA.  (acordeon)`, un
+>   `FIN.` y la acotación del que lo subió.
+> - **`sinEtiquetaFinal`**: corta la etiqueta pegada al final de un verso cantado
+>   (`"Ay, ay, ay que risa le da! Riff 1"`). Antes ese renglón entraba con la basura puesta;
+>   descartarlo entero habría perdido ocho renglones del estribillo de *Luzbelito y las
+>   sirenas*. `VERSION_FILTRO` subió a **7** por esto y por la re-ingesta.
+> - **`npm run generar-letra -- --reanclar`**: los ids de `letra.json` son posicionales, así
+>   que cualquier cambio del filtro corre las 21 anclas curadas de `T-138` y el guardián
+>   aborta —con razón—. El atajo mueve el ancla al id nuevo **solo si el verso elegido sigue
+>   existiendo, idéntico y en un único ítem**: se conserva la decisión de `contenido`, que es
+>   lo que se eligió; el número nunca fue el dato. Las 21 se movieron limpias.
+>
+> ### El precio, medido y no supuesto
+>
+> Se revisaron **los 177 renglones uno por uno** contra el corpus: ninguno es un verso
+> cantado. Dos falsos positivos aparecieron en la primera pasada y los dos se arreglaron con
+> regla, no con excepción: `"Un killer riff en su contestador"` (de *Pool, Averna y papusa*
+> — `riff` cantado adentro de una frase larga ya no alcanza para marcar) y las ocho líneas de
+> *Luzbelito*. Queda **uno declarado**: en *Sorpresa de Shangai*, `"¿A quien le importa?"`
+> comparte renglón con una nota separada por sangría ancha, y el renglón entero cae. Es un
+> verso corto y genérico que los juegos ya descartaban por otra regla.
+>
+> **Un `\b` de JavaScript es ASCII**, y lo agarró el test: `distorsión`, `compás` y `Acá`
+> terminan en una letra que `\b` no considera palabra, así que media docena de reglas nunca
+> enganchaban. Ahora los bordes cuentan la tilde (`INI`/`FIN` en `taller.ts`).
+>
+> ### Lo que queda sabido y no resuelto
+>
+> - **El raspador de origen se come palabras cantadas cuando coinciden con una cifra
+>   latina.** `"A brillar mi amor"` quedó como `"A brillar E amor"` (*mi* → `E`), `"LA linda
+>   jaula"` como `"A  linda jaula"`, y `"SOLO DE SAXO"` como `"G  O DE SAXO"`. **Esto no es
+>   ruido del transcriptor: es letra rota, y esta limpieza no lo toca** — el arreglo es en
+>   `TemasRedo`, afuera del repo. Mientras tanto hay versos con un agujero en el medio.
+> - **`la-bestia-pop` quedó con 1 verso utilizable** y salió del banco de `US-07` (89 → 88
+>   temas, piso 60 igual cumplido). No es una pérdida: esa página de cifraclub es casi toda
+>   taller de guitarra, y lo poco de letra que tiene está mangleado por lo de arriba.
+>
 > ## 🖨 EL CICLO 13: LA HOJA TERMINA, Y LA TINTA SE ACABA EN VEZ DE CORTARSE
 >
 > **La doctrina quedó en `D-34` y `D-35`.** La primera dice *una capa de fondo es una

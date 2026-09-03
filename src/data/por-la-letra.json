@@ -3,13 +3,13 @@
   "contratoVersion": 1,
   "juego": "por-la-letra",
   "modoRespuesta": "buscador",
-  "actualizado": "2026-09-01",
+  "actualizado": "2026-09-03",
   "sensibleA": [
     "letra"
   ],
   "filtro": {
     "regla": "CNT-11",
-    "version": 6
+    "version": 7
   },
   "nota": "Lo escribe scripts/generar-por-la-letra.mjs desde el cancionero. Es la lista de lo que existe y valido contra CNT-11, no de deseos. No se edita a mano.",
   "items": [
@@ -561,7 +561,7 @@
     {
       "slug": "rock-para-los-dientes",
       "titulo": "Rock para los dientes",
-      "desde": 2,
+      "desde": 1,
       "versos": [
         "Este mundo, esta empresa, este mundo de hoy",
         "que te esnifa la cabeza una y otra vez",
@@ -682,7 +682,7 @@
         "impecable testigo de caricias",
         "que se esfumaron cuando bajó la guardia",
         "(dejó)",
-        "Pintan mal las cosas para él mi viejo",
+        "Pintan mal las cosas para ,l mi viejo",
         "pintan mal",
         "S, de alguien que enturbia sus sentidos"
       ],
@@ -882,14 +882,14 @@
       "titulo": "Salando las heridas",
       "desde": 1,
       "versos": [
-        "Este arpegio que al final hace",
-        "Un LAm. se repite durante 3",
-        "Compases",
-        "Que toca un G dicha parte también es",
-        "Luego",
-        "Viene la segunda parte",
-        "Esta parte es muteando",
-        "Las cuerdas"
+        "De la pista a respirar",
+        "A reclutar, bien maquillado",
+        "Y ocultando tu lunar",
+        "Un dia el bote volco",
+        "Y el premio a pique se fue",
+        "Todos te daban por muerto",
+        "Y vos alli en tu remolque",
+        "Sin luz, como un polizon"
       ],
       "dificultad": "dificil",
       "dificultadSegun": "youtube",
@@ -908,11 +908,11 @@
         "Como tanta otra tristeza a la que te acostumbras",
         "Ahora vas comprando perlas truchas sin chistar",
         "\"Calles inteligentes\" alemanas para armar.",
-        "*:tambien se puede poner los arreglos del pre-verso.",
         "sigue asi...",
         "Y muchos marines de los mandarines",
         "que cuidan por vos las puertas del nuevo cielo.",
-        "El bronceador \"Charlotte\" te cuida de la radiación"
+        "El bronceador \"Charlotte\" te cuida de la radiación",
+        "rematan el electro de Elvis al morir"
       ],
       "dificultad": "dificil",
       "dificultadSegun": "youtube",
@@ -1111,14 +1111,14 @@
       "titulo": "La hija del fletero",
       "desde": 1,
       "versos": [
-        "Volvio a Madrid donde parece que es feliz",
         "Ese dia me mando al descenso",
         "Recuerdo como su mirada me volteo",
         "Pero dos que se quieren se dicen cualquier cosa",
         "Ay! si pudieras recordar sin rencor",
         "En mi buzon hay un par de cartas suyas",
         "Fueron juntandose y no tengo el valor",
-        "Todavia su amor me da descargas"
+        "Todavia su amor me da descargas",
+        "(Nunca tuvo higo seco junto a mi)"
       ],
       "dificultad": "dificil",
       "dificultadSegun": "youtube",
@@ -1141,7 +1141,7 @@
         "y el mal gusto encallo",
         "en un manantial frí dije",
         "frío de visturí....",
-        "*engancha con.."
+        "La Ruta esta repleta [pesadilla]"
       ],
       "dificultad": "dificil",
       "dificultadSegun": "youtube",
@@ -1272,14 +1272,14 @@
       "titulo": "Lavi-rap",
       "desde": 1,
       "versos": [
-        "El morta, huesito y mister ed",
         "van a saltar otra vez sin red",
         "se enrollan, se baten,",
         "se agitan y mojan",
         "Al comprar el 'pajarito'",
         "debieron preguntar, tal vez,",
         "cuanto costaba",
-        "A  linda jaula"
+        "A  linda jaula",
+        "Onambolicos asteroides"
       ],
       "dificultad": "dificil",
       "dificultadSegun": "youtube",
@@ -1505,9 +1505,9 @@
         "Otra vulgaridad social igual,",
         "siempre igual, todo igual",
         "todo lo mismo...",
-        "* los puentes tambien los hace el saxo.",
         "Mi amor, la libertad no es fantástica.",
-        "No es tormenta mental que da el prestigio loco"
+        "No es tormenta mental que da el prestigio loco",
+        "Es mar gruesa y oscuridad."
       ],
       "dificultad": "dificil",
       "dificultadSegun": "youtube",
@@ -1747,29 +1747,6 @@
       }
     },
     {
-      "slug": "drogocop",
-      "titulo": "Drogocop",
-      "desde": 1,
-      "versos": [
-        "Juicio fantasma de los muertos queridos",
-        "y una muy larga botella de gin",
-        "las cuerdas, solo tocando las a todas",
-        "(esto es para que no suene como una nota)",
-        "a la altura de los micrófonos y al segundo golpe se desliza",
-        "dos veces seguidas. Vuelve a golpear a la altura de los micrófono,",
-        "y va al seis y repite eso creo que dos veces, si escuchan la",
-        "canción se van a dar cuenta."
-      ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
-      "fuente": {
-        "sitio": "cifraclub.com",
-        "url": "https://www.cifraclub.com/los-redonditos-de-ricota/drogocop/",
-        "consultado": "2026-08-24",
-        "ficha": "RES-49"
-      }
-    },
-    {
       "slug": "scaramanzia",
       "titulo": "Scaramanzia",
       "desde": 1,
@@ -1863,7 +1840,7 @@
       "titulo": "La murga de los renegados",
       "desde": 1,
       "versos": [
-        "entre sopores, modorras ciegas",
+        "entre sopores,modorras ciegas",
         "y oscuridad de bodega sin luz",
         "va esa murga desencantada",
         "que lleva siglos asi",

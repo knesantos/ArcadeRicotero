@@ -35,6 +35,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { sirveComoVerso } from '../src/lib/cancionero/anotacion.ts';
 import { motivoDescarteVerso } from '../src/lib/por-la-letra/filtro.ts';
+import { sinEtiquetaFinal } from '../src/lib/cancionero/taller.ts';
 
 const CANCIONERO = 'src/data/cancionero.json';
 const CONFIRMACIONES = 'src/data/letra-confirmaciones.json';
@@ -265,7 +266,10 @@ function versosDe(tema) {
       (l) => l.t === 'letra' && sirveComoVerso(l.texto) && motivoDescarteVerso(l.texto) === null,
     );
     lineas.forEach((linea, i) => {
-      salida.push({ texto: linea.texto.trim(), enSeccion: i, deSeccion: lineas });
+      // `sinEtiquetaFinal` saca la marca que el transcriptor pego al final del verso
+      // (`"...le da! Riff 1"`): sin esto el hueco puede caer sobre `Riff`, y ahi el que se
+      // sabe el tema no tiene forma de acertar.
+      salida.push({ texto: sinEtiquetaFinal(linea.texto).trim(), enSeccion: i, deSeccion: lineas });
     });
   }
   return salida;
@@ -458,6 +462,49 @@ function main() {
   // día una segunda ficha aparece: hoy no puede darse (solapamiento cero, `D-25`).
   const seleccion = archivoConf.fuenteUnica?.items ?? [];
   const porId = new Map(items.map((i) => [i.id, i]));
+
+  // ─── `--reanclar`: mover el ancla al id nuevo, sin tocar qué verso eligió nadie ────
+  //
+  // El guardián de abajo tiene razón en abortar, pero deja al que limpió el cancionero
+  // sin salida: los ids son posicionales, así que **cualquier** cambio del filtro los
+  // corre y las 21 anclas de `T-138` quedan colgadas. Rehacer la curaduría a mano sería
+  // repetir un trabajo que ya se hizo, y sobre los mismos versos.
+  //
+  // Este atajo mueve el ancla **solo si el verso elegido sigue existiendo, idéntico y en
+  // un único ítem**. Lo que se conserva es la decisión —*este verso va*—, que es lo que
+  // `contenido` eligió; el número nunca fue el dato. Si el verso ya no está, o está dos
+  // veces, no se adivina: se informa y se aborta, como siempre.
+  if (process.argv.includes('--reanclar')) {
+    const porVerso = new Map();
+    for (const i of items) {
+      const r = renglon(i);
+      porVerso.set(r, porVerso.has(r) ? null : i.id); // null = ambiguo, no se toca
+    }
+    const movidas = [];
+    const perdidas = [];
+    for (const ancla of seleccion) {
+      if (!ancla.verso) continue;
+      if (porId.get(ancla.id) && renglon(porId.get(ancla.id)) === ancla.verso) continue;
+      const nuevo = porVerso.get(ancla.verso);
+      if (!nuevo) {
+        perdidas.push(`${ancla.id}: «${ancla.verso}» ${nuevo === null ? 'aparece en más de un ítem' : 'ya no está en el banco'}`);
+        continue;
+      }
+      movidas.push(`${ancla.id} → ${nuevo}: «${ancla.verso}»`);
+      ancla.id = nuevo;
+    }
+    if (perdidas.length) {
+      console.error(`\n✕ --reanclar: ${perdidas.length} ancla(s) no se pueden mover solas. No escribí nada.\n`);
+      for (const p of perdidas) console.error(`   · ${p}`);
+      console.error('   Esas hay que rehacerlas a mano: el verso que eligió contenido ya no está igual.\n');
+      process.exit(1);
+    }
+    writeFileSync(CONFIRMACIONES, JSON.stringify(archivoConf, null, 2), 'utf-8');
+    console.log(`↻ ${CONFIRMACIONES}: ${movidas.length} ancla(s) movidas al id nuevo.`);
+    for (const m of movidas) console.log(`   · ${m}`);
+    console.log('');
+  }
+
   const noEncontrados = [];
   const corridos = [];
   for (const { id, motivo, verso } of seleccion) {

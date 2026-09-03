@@ -119,7 +119,9 @@ test('VERSION_FILTRO acompana cada endurecimiento de CNT-11', () => {
   // lo fueran, y nueve de los 93 items publicados mostraban cifra como verso escapandose
   // por una sola palabra suelta. El numero es lo que impide que un banco generado con la
   // regla vieja se haga pasar por filtrado.
-  assert.equal(VERSION_FILTRO, 6);
+  // Subio a 7 con la limpieza de letras: el cancionero se re-ingirio con `taller.ts` y
+  // `sinAnotacionFinal` aprendio a cortar la etiqueta sin parentesis.
+  assert.equal(VERSION_FILTRO, 7);
 });
 
 test('FIND-30: el ruido que se colaba por una palabra suelta ahora se caza', () => {

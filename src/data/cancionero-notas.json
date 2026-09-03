@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-02",
+ "actualizado": "2026-09-03",
  "regla": "src/lib/cancionero/taller.ts",
  "explicacion": "Renglones que la fuente guardo en la columna de la letra y son del que transcribio. No se borraron: en cancionero.json quedaron como t: \"anotacion\", se siguen viendo en la pagina y no entran a los juegos.",
  "despegados": [
@@ -13,7 +13,7 @@
    "slug": "aquella-solitaria-vaca-cubana",
    "titulo": "Aquella solitaria vaca cubana",
    "texto": "Patricio Rey Aquella solitaria vaca cubana (TAB)",
-   "motivo": "nota del transcriptor"
+   "motivo": "bloque de nota del transcriptor (2/2)"
   },
   {
    "slug": "aquella-solitaria-vaca-cubana",
@@ -85,7 +85,7 @@
    "slug": "drogocop",
    "titulo": "Drogocop",
    "texto": "Acá viene la parte del efecto, que se hace así:",
-   "motivo": "bloque de nota del transcriptor (13/13)"
+   "motivo": "nota del transcriptor"
   },
   {
    "slug": "drogocop",
@@ -190,6 +190,24 @@
    "motivo": "nota del transcriptor"
   },
   {
+   "slug": "el-arbol-del-gran-bonete",
+   "titulo": "El árbol del gran bonete",
+   "texto": "1er Solo de Trompeta: [LAm7-SIb]x3 [LAm7-SOL7]",
+   "motivo": "nota del transcriptor"
+  },
+  {
+   "slug": "el-arbol-del-gran-bonete",
+   "titulo": "El árbol del gran bonete",
+   "texto": "Solo de Guitarra:   [FA7-SOL7]x3",
+   "motivo": "nota del transcriptor"
+  },
+  {
+   "slug": "el-arbol-del-gran-bonete",
+   "titulo": "El árbol del gran bonete",
+   "texto": "2do Solo de Trompeta: [LAm7-SIb]x2",
+   "motivo": "nota del transcriptor"
+  },
+  {
    "slug": "el-arte-del-buen-comer",
    "titulo": "El arte del buen comer",
    "texto": "F#5                               B5     puente",
@@ -238,6 +256,12 @@
    "motivo": "nota del transcriptor"
   },
   {
+   "slug": "el-pibe-de-los-astilleros",
+   "titulo": "El pibe de los astilleros",
+   "texto": "G D C D  (x3) -  em d c",
+   "motivo": "nota del transcriptor"
+  },
+  {
    "slug": "templo-de-momo",
    "titulo": "Templo de Momo",
    "texto": "Solo con base en E5",
@@ -259,7 +283,7 @@
    "slug": "ella-debe-estar-tan-linda",
    "titulo": "Ella debe estar tan linda",
    "texto": "Patricio ReyElla debe estar tan linda (TAB)",
-   "motivo": "nota del transcriptor"
+   "motivo": "bloque de nota del transcriptor (2/2)"
   },
   {
    "slug": "ella-debe-estar-tan-linda",
@@ -400,9 +424,21 @@
    "motivo": "nota del transcriptor"
   },
   {
+   "slug": "etiqueta-negra",
+   "titulo": "Etiqueta negra",
+   "texto": "(RE FA7 LAm) 2 veces  SOL",
+   "motivo": "nota del transcriptor"
+  },
+  {
    "slug": "fanfarria-del-cabrio",
    "titulo": "Fanfarria del cabrío",
    "texto": "G5   C#5  F5  x2 G5",
+   "motivo": "nota del transcriptor"
+  },
+  {
+   "slug": "fuegos-de-octubre",
+   "titulo": "Fuegos de octubre",
+   "texto": "FIN.",
    "motivo": "nota del transcriptor"
   },
   {
@@ -421,6 +457,24 @@
    "slug": "gran-lady",
    "titulo": "Gran Lady",
    "texto": "D PITE ESTRIBILLO (HASTA EL FINAL)",
+   "motivo": "nota del transcriptor"
+  },
+  {
+   "slug": "gualicho",
+   "titulo": "Gualicho",
+   "texto": "NOTA: En solo de trompeta la guitarra acompaña",
+   "motivo": "bloque de nota del transcriptor (3/3)"
+  },
+  {
+   "slug": "gualicho",
+   "titulo": "Gualicho",
+   "texto": "despacio con Mim y REsus. cuando termina el solo,",
+   "motivo": "nota del transcriptor"
+  },
+  {
+   "slug": "gualicho",
+   "titulo": "Gualicho",
+   "texto": "se toca RE Y REsus con el ritmo normal varias veces.",
    "motivo": "nota del transcriptor"
   },
   {
@@ -538,12 +592,6 @@
    "motivo": "nota del transcriptor"
   },
   {
-   "slug": "la-parabellum-del-buen-psicopata",
-   "titulo": "La parabellum del buen psicópata",
-   "texto": "En el estribillo creo que Skay no hace ese La en 'IN descriptibles'.",
-   "motivo": "nota del transcriptor"
-  },
-  {
    "slug": "la-pequena-novia-del-carioca",
    "titulo": "La pequeña novia del carioca",
    "texto": "Instrumental en Bbm - F# - F",
@@ -604,54 +652,6 @@
    "motivo": "nota del transcriptor"
   },
   {
-   "slug": "luzbelito-y-las-sirenas",
-   "titulo": "Luzbelito y las sirenas",
-   "texto": "Ay, ay, ay que risa le da! Riff 1",
-   "motivo": "nota del transcriptor"
-  },
-  {
-   "slug": "luzbelito-y-las-sirenas",
-   "titulo": "Luzbelito y las sirenas",
-   "texto": "Ay, ay, ay que risa le da! Riff 2",
-   "motivo": "nota del transcriptor"
-  },
-  {
-   "slug": "luzbelito-y-las-sirenas",
-   "titulo": "Luzbelito y las sirenas",
-   "texto": "Ay! Ay! Ay! ésa lágrima! Riff 1",
-   "motivo": "nota del transcriptor"
-  },
-  {
-   "slug": "luzbelito-y-las-sirenas",
-   "titulo": "Luzbelito y las sirenas",
-   "texto": "Ay! Ay! Ay! que risa le dá! Riff 2",
-   "motivo": "nota del transcriptor"
-  },
-  {
-   "slug": "luzbelito-y-las-sirenas",
-   "titulo": "Luzbelito y las sirenas",
-   "texto": "Ay! Ay! Ay! ésa lágrima! Riff 1",
-   "motivo": "nota del transcriptor"
-  },
-  {
-   "slug": "luzbelito-y-las-sirenas",
-   "titulo": "Luzbelito y las sirenas",
-   "texto": "Ay! Ay! Ay! que risa le dá! Riff 2",
-   "motivo": "nota del transcriptor"
-  },
-  {
-   "slug": "luzbelito-y-las-sirenas",
-   "titulo": "Luzbelito y las sirenas",
-   "texto": "Ay! Ay! Ay! mis deseos de hoy... Riff 1",
-   "motivo": "nota del transcriptor"
-  },
-  {
-   "slug": "luzbelito-y-las-sirenas",
-   "titulo": "Luzbelito y las sirenas",
-   "texto": "Ay! Ay! Ay! mis deseos de hoy... Riff 2",
-   "motivo": "nota del transcriptor"
-  },
-  {
    "slug": "masacre-en-el-puticlub",
    "titulo": "Masacre en el puticlub",
    "texto": "Repite introducion",
@@ -709,12 +709,6 @@
    "slug": "pool-averna-y-papusa",
    "titulo": "Pool, averna y papusa",
    "texto": "Am(se toca como en la introducion)",
-   "motivo": "nota del transcriptor"
-  },
-  {
-   "slug": "pool-averna-y-papusa",
-   "titulo": "Pool, averna y papusa",
-   "texto": "Un killer riff en su contestador",
    "motivo": "nota del transcriptor"
   },
   {
@@ -805,7 +799,7 @@
    "slug": "salando-las-heridas",
    "titulo": "Salando las heridas",
    "texto": "Un LAm. se repite durante 3",
-   "motivo": "bloque de nota del transcriptor (3/3)"
+   "motivo": "nota del transcriptor"
   },
   {
    "slug": "salando-las-heridas",
@@ -913,7 +907,7 @@
    "slug": "salando-las-heridas",
    "titulo": "Salando las heridas",
    "texto": "Que si hay un LAm con bajo alli",
-   "motivo": "bloque de nota del transcriptor (7/11)"
+   "motivo": "nota del transcriptor"
   },
   {
    "slug": "salando-las-heridas",
@@ -928,6 +922,12 @@
    "motivo": "nota del transcriptor"
   },
   {
+   "slug": "salando-las-heridas",
+   "titulo": "Salando las heridas",
+   "texto": "Acá sigue con la misma base",
+   "motivo": "nota del transcriptor"
+  },
+  {
    "slug": "san-telmo",
    "titulo": "San Telmo",
    "texto": "SAN TELMO",
@@ -937,6 +937,12 @@
    "slug": "san-telmo",
    "titulo": "San Telmo",
    "texto": "MELODIA.  (acordeon)",
+   "motivo": "nota del transcriptor"
+  },
+  {
+   "slug": "san-telmo",
+   "titulo": "San Telmo",
+   "texto": "FIN.",
    "motivo": "nota del transcriptor"
   },
   {
@@ -955,6 +961,12 @@
    "slug": "sorpresa-de-shangai",
    "titulo": "Sorpresa de Shangai",
    "texto": "¿A quien le importa?          *la vuelta es una de las 4 veces que se toca el outro.",
+   "motivo": "nota del transcriptor"
+  },
+  {
+   "slug": "sorpresa-de-shangai",
+   "titulo": "Sorpresa de Shangai",
+   "texto": "y final con: [Mi5 ]",
    "motivo": "nota del transcriptor"
   },
   {

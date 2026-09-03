@@ -46,6 +46,23 @@ export interface LineaClasificable {
 export type Senal = 'fuerte' | 'debil' | null;
 
 /**
+ * **El borde de palabra de JavaScript es ASCII, y estas palabras llevan tilde.**
+ *
+ * `\b` mira si de un lado hay `[A-Za-z0-9_]` y del otro no. En `distorsión`, `compás` o
+ * `Acá` la última letra ya **no** es palabra para `\b`, así que el borde nunca cierra y la
+ * regla no engancha nunca. Lo agarró el test: `senalDeTaller("Acá sigue con la misma
+ * base")` daba `debil` en vez de `fuerte` por un borde que no existía. Estos dos sí cuentan
+ * la tilde, y todas las reglas de abajo se arman con ellos.
+ */
+const INI = '(?<![A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9_])';
+const FIN = '(?![A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9_])';
+
+/** Arma la regla de "esta palabra suelta", con el borde que entiende las tildes. */
+function palabras(alternativas: string, banderas = 'i'): RegExp {
+  return new RegExp(`${INI}(?:${alternativas})${FIN}`, banderas);
+}
+
+/**
  * **Palabras de taller de guitarra que en una letra de los Redondos no aparecen nunca.**
  *
  * No es una intuición: se midieron los 2.466 versos que hoy pasan el filtro y ninguna de
@@ -57,8 +74,10 @@ export type Senal = 'fuerte' | 'debil' | null;
  * Plata es el que manda, no la cejilla), `escala` y `nota` (palabras corrientes), y
  * `afinar` (*"Contra las cuerdas vas a desafinar"*, de *Espejismo*, es un verso cantado).
  */
-const TALLER_DURO =
-  /\b(traste|trastes|p[uú]a|p[uú]as|cejilla|arpegio|arpegios|rasgueo|rasgueos|punteo|muteando|mutear|distorsi[oó]n|distorsionad[oa]|micr[oó]fono|micr[oó]fonos|pentat[oó]nica|tablatura|tablaturas|transcripci[oó]n|afinaci[oó]n|semitono|semitonos|comp[aá]s|compases|acorde|acordes|acorde[oó]n|intro|introducci[oó]n|introducion|estribillo|outro|riff|tab|bpm)\b/i;
+const TALLER_DURO_TODAS = palabras(
+  'traste|trastes|p[uú]a|p[uú]as|cejilla|arpegio|arpegios|rasgueo|rasgueos|punteo|muteando|mutear|distorsi[oó]n|distorsionad[oa]|micr[oó]fono|micr[oó]fonos|pentat[oó]nica|tablatura|tablaturas|transcripci[oó]n|afinaci[oó]n|semitono|semitonos|comp[aá]s|compases|acorde|acordes|acorde[oó]n|intro|introducci[oó]n|introducion|estribillo|outro|riff|tab|bpm',
+  'gi',
+);
 
 /**
  * Palabras que marcan estructura o instrumento **y que también pueden ser letra**.
@@ -67,20 +86,23 @@ const TALLER_DURO =
  * nuestro pulgar"*, *"Solo un buen gesto"*, *"Bajo este pulso"*—, así que solas no dicen
  * nada. Sirven únicamente para **medir cuánto del bloque acompaña**, nunca para marcar.
  */
-const TALLER_BLANDO =
-  /\b(verso|puente|solo|coro|base|figura|efecto|cuerda|cuerdas|dedo|dedos|golpe|golpes|guitarra|guitarras|bajo|bater[ií]a|saxo|teclado|piano|viol[ií]n|trompeta|percusi[oó]n|nota|notas|tono|quintas|parte|partes|final)\b/i;
+const TALLER_BLANDO = palabras(
+  'verso|puente|solo|coro|base|figura|efecto|cuerda|cuerdas|dedo|dedos|golpe|golpes|guitarra|guitarras|bajo|bater[ií]a|saxo|teclado|piano|viol[ií]n|trompeta|percusi[oó]n|nota|notas|tono|quintas|parte|partes|final',
+);
 
 /** Verbos con los que se explica cómo se toca algo. */
-const VERBO_DE_TALLER =
-  /\b(toca|tocan|tocar|tocando|toc[aá]s|repite|repiten|repetir|repit[ae]|suena|suenan|suene|hacerlo|apretar|aprieta|aprietan|apret[aá]|golpea|golpear|desliza|pisar|pisa|rasguea|puntea|transporta|sigue|siguen|arranca|alarga)\b/i;
+const VERBO_DE_TALLER = palabras(
+  'toca|tocan|tocar|tocando|toc[aá]s|repite|repiten|repetir|repit[ae]|suena|suenan|suene|hacerlo|apretar|aprieta|aprietan|apret[aá]|golpea|golpear|desliza|pisar|pisa|rasguea|puntea|transporta|sigue|siguen|arranca|alarga',
+);
 
 /**
  * El acorde escrito de forma **inconfundible**: o trae `#`/`b`, o trae un número, o es una
- * cifra latina con sufijo (`LAm`, `REsus`, `SOL7`). El `A` suelto no cuenta — es un
+ * cifra latina con sufijo (`LAm`, `REsus`, `SOL7`) — y va sin distinguir mayusculas,
+ * porque la fuente escribe `LAm` tanto como `Lam`. El `A` suelto no cuenta: es un
  * artículo, una nota y media letra del alfabeto, y confundirlo sale caro.
  */
 const ACORDE_DURO =
-  /(?:^|[\s([{"'/,.-])(?:(?:do|re|mi|fa|sol|la|si)(?:#|b)?(?:m|M|sus|maj|dim|aum|add)?\d*(?:m|sus\d?|maj\d?|dim|aum|add\d?|\d)|[A-G](?:#|b)(?:m|M|sus|maj|dim|aum|add|º|°)?\d*|[A-G](?:m|maj|min|dim|aug|sus|add|º|°)\d*|[A-G]\d|[A-G](?:#|b)?(?:m|M)?\/[A-G])(?=$|[\s)\]}"',.;:!?/-])/;
+  /(?:^|[\s([{"'/,.-])(?:(?:do|re|mi|fa|sol|la|si)(?:#|b)?(?:m|M|sus|maj|dim|aum|add)?\d*(?:m|sus\d?|maj\d?|dim|aum|add\d?|\d)|[A-G](?:#|b)(?:m|M|sus|maj|dim|aum|add|º|°)?\d*|[A-G](?:m|maj|min|dim|aug|sus|add|º|°)\d*|[A-G]\d|[A-G](?:#|b)?(?:m|M)?\/[A-G])(?=$|[\s)\]}"',.;:!?/-])/i;
 
 /** `x2`, `(4 veces)`, `X 6`: la marca de repetición metida en medio de una frase. */
 const REPETICION = /(\b[xX]\s*\d+\b|\b\d+\s*[xX]\b|\(\s*\d+\s*veces?\s*\)|\b\d+\s*veces\b)/;
@@ -92,21 +114,125 @@ const REPETICION = /(\b[xX]\s*\d+\b|\b\d+\s*[xX]\b|\(\s*\d+\s*veces?\s*\)|\b\d+\
  * cantada (*"Y gracias por el trago, man."*, *"Y aquí ¡gracias a Dios!"*), así que solo
  * entran las formas que le hablan al que lee la cifra, no al que escucha el disco.
  */
-const MENSAJE =
-  /(espero que (les|le|te)\b|\bles (guste|sirva|salga)\b|\brecomiendo\b|\bmand[aá](me)? un mail\b|\bun mail\b|\bun saludo\b|\bsaludos\b|\btabbed by\b|\byo la saqu[eé]\b|\bla saqu[eé] (de|viendo)\b|\bsi alguien (sabe|tiene|quiere|la)\b|\bcualquier (duda|correcci[oó]n)\b|\baclaraci[oó]n\b|\bse van a dar cuenta\b|\bno s[eé] cu[aá]l es\b|\bfade ?out\b)/i;
+const MENSAJE = palabras(
+  [
+    'espero que (?:les|le|te)',
+    'les (?:guste|sirva|salga)',
+    'recomiendo',
+    'mand[aá](?:me)? un mail',
+    'un mail',
+    'un saludo',
+    'saludos',
+    'tabbed by',
+    'yo la saqu[eé]',
+    'la saqu[eé] (?:de|viendo)',
+    'si alguien (?:sabe|tiene|quiere|la)',
+    'cualquier (?:duda|correcci[oó]n)',
+    'aclaraci[oó]n',
+    'se van a dar cuenta',
+    'no s[eé] cu[aá]l es',
+    'fade ?out',
+  ].join('|'),
+);
 
 /** `Instrumental en Bbm - F# - F`, `[Interludio] Am F G`. La fuente rotula el tramo sin voz. */
-const TRAMO_SIN_VOZ = /^[\s*[(]*\s*(instrumental|interl[uú]d(io|e))\b/i;
+const TRAMO_SIN_VOZ = new RegExp(
+  `^[\\s*[(]*\\s*(?:instrumental|interl[uú]d(?:io|e))${FIN}`,
+  'i',
+);
 
 /**
  * El renglón que arranca señalando: *"Acá sigue con la misma base"*, *"Luego con la púa se
  * golpea"*. El deíctico solo no dice nada —una letra puede empezar con *"Ahora"*— pero
  * pegado a una palabra de taller es la voz del que explica, no la del que canta.
  */
-const DEICTICO = /^[\s*(-]*\s*(ac[aá]|aqu[ií]|ah[ií]|luego|despu[eé]s|ahora|primero|entonces)\b/i;
+const DEICTICO = new RegExp(
+  `^[\\s*(-]*\\s*(?:ac[aá]|aqu[ií]|ah[ií]|luego|despu[eé]s|ahora|primero|entonces)${FIN}`,
+  'i',
+);
 
 /** El asterisco al margen: nadie canta con asterisco, y el transcriptor lo usa para acotar. */
 const ASTERISCO_AL_MARGEN = /^\s*\*/;
+
+/**
+ * `FIN.` — el renglón con que el transcriptor cierra la cifra.
+ *
+ * Angosto a propósito: **la línea entera, en mayúsculas**. Así no toca *"y este es el fin
+ * de la joda"*, que sí se canta. Vale la pena por un caso concreto: *San Telmo* es una
+ * transcripción de guitarra sin una sola letra, y este renglón solo le hacía decir al
+ * índice que el tema tiene letra — justo el error que `clasificar()` existe para no
+ * cometer.
+ */
+const MARCA_DE_CIERRE = /^\s*(?:fin|the end)\s*[.:]*\s*$/i;
+
+/**
+ * Los rótulos de tramo que **también se cantan**.
+ *
+ * `riff` está en la lista dura porque casi siempre es el que transcribió marcando un
+ * pasaje… y una vez no: *"Un killer riff en su contestador / dejo sonando como confesión"*,
+ * de *Pool, Averna y papusa*, es un verso. Lo mismo puede pasarle a `intro` o `final` en
+ * una letra que hable de un final.
+ *
+ * La salida no es sacarlos de la lista —perder `Con Riff 2` y `En la intro` cuesta más—
+ * sino **mirar la frase**: si el rótulo viene solo, adentro de una oración larga y sin nada
+ * más de taller alrededor, deja de alcanzar para marcar. Un rótulo de cifra es corto y
+ * viene acompañado; un verso es una frase.
+ */
+const ETIQUETA_DE_TRAMO = /^(intro|introducci[oó]n|introducion|estribillo|outro|riff|tab)$/i;
+
+/** Desde cuántas palabras una línea deja de parecer un rótulo y empieza a parecer una frase. */
+const PALABRAS_DE_FRASE = 6;
+
+/** Un token que puede formar parte de la etiqueta pegada al final de un verso. */
+function esTokenDeEtiqueta(token: string): boolean {
+  const t = token.replace(/^[([{"'¡¿*+-]+|[)\]}"',.;:!?*+-]+$/g, '');
+  if (!t) return true;
+  if (/^(riff|intro|outro|fill|tab|estribillo|bis|final|solo)$/i.test(t)) return true;
+  if (/^\d+$/.test(t) || /^[IVX]+$/.test(t)) return true;
+  if (/^\d*[xX]\s*\d*$/.test(t)) return true;
+  if (/^\d+v$/i.test(t)) return true;
+  return /^[A-G](#|b)?(m|M|maj|min|dim|aug|sus|add|º|°)?\d*(\/[A-G](#|b)?)?$/.test(t);
+}
+
+/** ¿Este token de la etiqueta es el que la delata: un rótulo de tramo o un acorde? */
+function delataEtiqueta(token: string): boolean {
+  const t = token.replace(/^[([{"'¡¿*+-]+|[)\]}"',.;:!?*+-]+$/g, '');
+  if (/^(riff|intro|outro|fill|tab|estribillo|bis)$/i.test(t)) return true;
+  return /^[A-G](#|b)?(m|M|maj|min|dim|aug|sus|add|º|°)?\d*(\/[A-G](#|b)?)?$/.test(t) && t.length > 1;
+}
+
+/**
+ * Le saca al verso la etiqueta que el transcriptor le pegó al final.
+ *
+ * *"Ay, ay, ay que risa le da! Riff 1"* es **un verso cantado con basura colgada**, y las
+ * dos salidas fáciles son malas: dejarlo entero mete `Riff 1` en el juego, y descartarlo
+ * pierde ocho renglones de *Luzbelito y las sirenas*. Se corta la etiqueta y se queda el
+ * verso.
+ *
+ * Dos candados para no comerse una palabra cantada: la etiqueta tiene que **delatarse**
+ * (un rótulo de tramo o un acorde escrito de forma inconfundible), y tiene que estar
+ * **separada** —la frase cierra con puntuación, o hay dos espacios de por medio—. Sin
+ * ellos, `"...hasta el final"` perdería su última palabra.
+ */
+export function sinEtiquetaFinal(texto: unknown): string {
+  const x = String(texto ?? '');
+  const tokens = x.split(/\s+/);
+  let corte = tokens.length;
+  while (corte > 0 && esTokenDeEtiqueta(tokens[corte - 1]!)) corte--;
+  const etiqueta = tokens.slice(corte);
+  if (etiqueta.length === 0 || etiqueta.length > 4) return x;
+  if (!etiqueta.some(delataEtiqueta)) return x;
+
+  const prefijo = tokens.slice(0, corte).join(' ').trim();
+  if (prefijo.split(/\s+/).filter((p) => /[a-záéíóúüñ]/i.test(p)).length < 3) return x;
+
+  const separado = /[.!?…]["')\]]?$/.test(prefijo) || new RegExp(`${escapar(prefijo)}\\s{2,}`).test(x);
+  return separado ? prefijo : x;
+}
+
+function escapar(x: string): string {
+  return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 /** La forma dura de un texto: sin tildes, sin puntuación, sin espacios. */
 function duro(x: string): string {
@@ -124,25 +250,40 @@ function duro(x: string): string {
  * es lo que se cuenta para decidir si el bloque entero es una nota.
  */
 export function senalDeTaller(texto: unknown): Senal {
-  const x = String(texto ?? '');
-  if (!x.trim()) return null;
-
-  if (TALLER_DURO.test(x)) return 'fuerte';
-  if (MENSAJE.test(x)) return 'fuerte';
-  if (TRAMO_SIN_VOZ.test(x)) return 'fuerte';
-  if (ASTERISCO_AL_MARGEN.test(x)) return 'fuerte';
+  const bruto = String(texto ?? '');
+  if (!bruto.trim()) return null;
+  // Lo primero: si esto es un verso con una etiqueta colgada, la etiqueta no cuenta. Se
+  // juzga lo que quedó, que es lo que se canta.
+  const x = sinEtiquetaFinal(bruto);
 
   const acorde = ACORDE_DURO.test(x);
   const blando = TALLER_BLANDO.test(x);
   const verbo = VERBO_DE_TALLER.test(x);
+  const repeticion = REPETICION.test(x);
+
+  if (MENSAJE.test(x)) return 'fuerte';
+  if (TRAMO_SIN_VOZ.test(x)) return 'fuerte';
+  if (ASTERISCO_AL_MARGEN.test(x)) return 'fuerte';
+  if (MARCA_DE_CIERRE.test(x) && !/[a-záéíóúüñ]/.test(x)) return 'fuerte';
+
+  const duras = x.match(TALLER_DURO_TODAS) ?? [];
+  if (duras.length > 0) {
+    const soloRotulos = duras.every((d) => ETIQUETA_DE_TRAMO.test(d));
+    const palabras = x.split(/\s+/).filter((p) => /[a-záéíóúüñ]/i.test(p)).length;
+    // El rótulo suelto adentro de una frase larga y sin nada más de taller alrededor no
+    // alcanza: ahí es una palabra cantada. Con cualquier otra señal, vuelve a alcanzar.
+    const esFrase = soloRotulos && palabras >= PALABRAS_DE_FRASE && !acorde && !blando && !verbo;
+    if (!esFrase) return 'fuerte';
+    return 'debil';
+  }
 
   // Un acorde escrito con todas las letras **más** algo que lo explique. Ni el acorde solo
   // (una cifra suelta ya la caza `anotacion.ts`) ni la palabra sola (`bajo` es letra).
-  if (acorde && (blando || verbo || REPETICION.test(x))) return 'fuerte';
+  if (acorde && (blando || verbo || repeticion)) return 'fuerte';
   // El que señala mientras explica.
   if (DEICTICO.test(x) && (blando || verbo || acorde)) return 'fuerte';
 
-  return acorde || blando || verbo || REPETICION.test(x) ? 'debil' : null;
+  return acorde || blando || verbo || repeticion ? 'debil' : null;
 }
 
 /**
