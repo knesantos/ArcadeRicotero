@@ -127,6 +127,18 @@
      El borde del papel no se usa como texto — como los -apoyo, no entra al test AA. */
   --papel: #ede4ce;
   --papel-borde: #c9bda0;
+  /* La tinta apagada DEL PAPEL, y existe porque faltaba.
+     `--texto-tenue` es tinta clara: esta calibrada para escribir sobre `--fondo` y ahi
+     da 7,29:1. Sobre `--papel` da **1,78:1** — medido en el navegador el 2026-09-02 en
+     `.ficha .fuente-chip`, a 11,5 px. O sea que el rotulo que dice de donde salio cada
+     dato de una ficha de disco era, literalmente, ilegible: crema sobre crema. No lo
+     agarraba ningun test porque el par nunca se habia declarado; se veia solo abriendo
+     un articulo de disco y mirando.
+     Duele mas que un contraste cualquiera: `D-14` dice que lo unico estricto es que el
+     rotulo diga la verdad sobre lo que hay adentro, y un rotulo que no se lee no dice
+     nada. Es la mezcla de `--fondo` al 65% sobre `--papel`: 5,39:1, sigue siendo tinta
+     apagada y ahora se lee. Par nuevo en `contraste.test.ts`. */
+  --papel-tenue: #605a51;
 
   /* Velo de tapa (D-21, UX-04). Una tapa real de fondo no es un token: es una imagen con
      mil valores adentro, asi que no alcanza con medir "tinta sobre color". Lo que se

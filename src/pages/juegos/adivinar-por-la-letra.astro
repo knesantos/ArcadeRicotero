@@ -120,15 +120,9 @@ const TITULO = 'Sacalo por la letra — Arcade Ricotero';
        * El molde es el del hermano ya pulido (`adivinar-el-tema.astro`), con la tinta que
        * le toca a este juego: Momo Sampler, que es lo que `UX-08` le asignó.
        */
-      main {
-        max-width: 34rem;
-        margin: 0 auto;
-        position: relative;
-        /* El alto de la ventana MENOS lo que el `body` gasta en su propio margen. Con
-           `100svh` pelado la portada arrancaba con 32 px de scroll que no llevaban a
-           ninguna parte. Mismo arreglo que el hermano. */
-        min-height: calc(100svh - var(--espacio-2) * 2);
-      }
+      /* El cascaron —ancho, centrado, `position: relative` y el alto minimo de una
+         ventana— se mudo a `juego.css` (`body > main`) el 2026-09-02, porque estaba
+         copiado en cinco paginas y en dos se habia desincronizado. */
 
       /* La firma del sitio es un sello, no el titular: el nombre del juego manda. */
       /* Igual que su hermano de audio: la marca es global (`juego.css`) y esta pantalla

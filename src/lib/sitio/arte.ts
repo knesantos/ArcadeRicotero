@@ -52,8 +52,13 @@ export const DETALLE_POR_VARIANTE: Record<string, string> = {
   letras: 'mosca-olla',
   discos: 'bondi-circuito',
   historia: 'gulp-pincelada',
-  // `US-07`. El recorte de Momo todavia no existe; `detalleTapa` devuelve null y la
-  // pantalla se pinta igual, solo con el color. `UX-08` dejo pedido el brief de arte.
+  /* `US-07`. **El hueco se lleno el 2026-09-02** y el comentario que estaba aca —"el
+     recorte de Momo todavia no existe"— quedo viejo. Se genera con el resto, desde el
+     master, en `scripts/generar-tapas.mjs`. Vale anotar que se veia: `detalleTapa`
+     devolvia null, el casete de "Sacalo por la letra" era el unico de los siete sin
+     tapa, y como `.casete-pie` reparte con `space-between`, con un solo hijo el sello
+     "JUGÁ" se iba al borde izquierdo. Una tarjeta desalineada por un archivo que no
+     estaba. */
   momo: 'momo-medallon',
 };
 
@@ -81,6 +86,10 @@ const DISCO_DE: Record<string, string> = {
   'gulp-pincelada': 'Gulp!',
   'gulp-montana': 'Gulp!',
   'gulp-logo': 'Gulp!',
+  /* Va junto con el derivado, no despues: un derivado que llega a pantalla sin su fila
+     aca es una tapa que se ve y no se acredita, o sea la condicion 1 de `D-21`
+     incumplida en silencio — `discosDe` lo descarta sin decir nada. */
+  'momo-medallon': 'Momo Sampler',
 };
 
 /** Los discos que aparecen en una pantalla, sin repetir y en orden de aparicion. */
@@ -174,13 +183,28 @@ export function medidas(rutaPublica: string): { ancho: number; alto: number } | 
   return null;
 }
 
-/** Que pieza del despiece decora la ficha de cada disco en la Redondopedia. */
+/**
+ * Que pieza del despiece decora la ficha de cada disco en la Redondopedia.
+ *
+ * **Tres de estas empezaron a verse el 2026-09-02**, cuando el usuario dejo los recortes:
+ * `luzbelito-vela.png` y `cordero-rulo.png` ya estaban pedidas por nombre en
+ * `public/arte/README.md` y el archivo nunca habia llegado, asi que `recorte()` devolvia
+ * null y la ficha salia sin calcomania. `momo-sampler` esperaba `banda-superheroes.png`
+ * —el grupo de figuras de la tapa de *Ultimo bondi*— y se queda con el medallon de su
+ * propia tapa, que es lo que llego: la ficha de un disco lleva mejor un motivo de ese
+ * disco que uno prestado del vecino. `banda-superheroes.png` sigue en el despiece, en la
+ * lista de piezas para producir.
+ *
+ * Faltan tres discos —Gulp!, Oktubre y ¡Bang! ¡Bang!— y no estan por descuido: no hay
+ * pieza elegida. Para Oktubre, ademas, la unica calcada que hay es la figura encadenada,
+ * y esa tiene prohibicion escrita de atribucion de album (`INV-02`, README).
+ */
 export const STICKER_DISCO: Record<string, string> = {
   'un-baion-para-el-ojo-idiota': 'muneco-antifaz.png',
   'la-mosca-y-la-sopa': 'gato-momificado.png',
   luzbelito: 'luzbelito-vela.png',
   'ultimo-bondi-a-finisterre': 'bondi-interplanetario.png',
-  'momo-sampler': 'banda-superheroes.png',
+  'momo-sampler': 'momo-medallon.png',
   'lobo-suelto': 'lobo-recortado.png',
   'cordero-atado': 'cordero-rulo.png',
 };

@@ -53,6 +53,11 @@ const PARES: Array<[string, string, string]> = [
   ['marca (rojo de Oktubre) sobre fondo', 'marca-rojo', 'fondo'],
   // El collage de cassette: las etiquetas de papel llevan la tinta del fondo encima.
   ['tinta sobre papel de etiqueta', 'fondo', 'papel'],
+  // Y la tinta APAGADA del papel, que hasta el 2026-09-02 no existia: el rotulo de
+  // fuente de la ficha de disco se pintaba con `--texto-tenue`, que esta calibrado para
+  // el fondo oscuro, y sobre papel daba 1,78:1. Un par que no se declara es un par que
+  // nadie mide.
+  ['tinta apagada sobre papel de etiqueta', 'papel-tenue', 'papel'],
   ['historia (Gulp!) sobre fondo', 'cat-historia', 'fondo'],
   ['discos (Ultimo bondi) sobre fondo', 'cat-discos', 'fondo'],
   ['letras (La mosca) sobre fondo', 'cat-letras', 'fondo'],

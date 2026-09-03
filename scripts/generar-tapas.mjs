@@ -92,6 +92,14 @@ const DERIVADOS = [
   { nombre: 'gulp-montana', forma: 'detalle', master: 'gulp-trasera.jpg', caja: [0.6, 0.02, 0.97, 0.26] },
   // El sello manuscrito "Gulp." — el lettering que `D-19` pide para resultado y compartir.
   { nombre: 'gulp-logo', forma: 'detalle', master: 'gulp-trasera.jpg', caja: [0.54, 0.27, 0.72, 0.39] },
+  /* El medallon de Momo Sampler. `arte.ts` declara este hueco desde `US-07` y hasta el
+     2026-09-02 estuvo vacio: era **el unico casete del portal sin tapa**, y como
+     `.casete-pie` reparte con `space-between`, con un solo hijo el sello "JUGÁ" se iba
+     al borde izquierdo. O sea que un archivo que faltaba se veia como una tarjeta rota.
+     La caja sale de mirar el master (953x953): el medallon cae al centro, apenas corrido
+     a la derecha, sobre negro. Se recorta ajustado para que a 34 px en el casete se vea
+     la cara y no el campo negro de alrededor. */
+  { nombre: 'momo-medallon', forma: 'detalle', master: 'momo-sampler-frontal.jpg', caja: [0.38, 0.27, 0.81, 0.72] },
 
   // --- fondos (detras del contenido, siempre con velo) ---
   // Baja respecto de lo que dice UX-05 para que no asome el pie del wordmark, que el

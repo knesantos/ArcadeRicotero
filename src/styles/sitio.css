@@ -307,9 +307,23 @@ html[data-umbral] .marca-grande {
    La capa de fondo esta posicionada, y en el orden de pintado de CSS eso la deja
    arriba del contenido en flujo: sin esto, el velo taparia el texto en vez de
    sostenerlo. Se resuelve por contenedor y no elemento por elemento para que sumar un
-   parrafo despues no obligue a acordarse de nada. */
+   parrafo despues no obligue a acordarse de nada.
+
+   **Y esa promesa no se estaba cumpliendo donde mas importaba.** La lista de abajo cubria
+   la pieza de la cocina, la portada de la Redondopedia y todo lo que llevara `.sobre-tapa`
+   escrito a mano — o sea, cubria a quien se acordara. En `completar-la-letra.astro` las
+   secciones `#partida` y `#resultado` no lo llevaban, y el resultado no era un detalle:
+   **al tocar "Empezá" la tapa velada se pintaba encima del juego entero y la pantalla
+   quedaba en blanco** (fondo de La mosca y la sopa, sin una sola letra visible). Medido a
+   375×812 el 2026-09-02: `#partida` en `position: static` debajo de una `.tapa-fondo`
+   absoluta. Un juego invisible.
+
+   La regla de abajo lo cierra por estructura: si un `<main>` tiene una capa de fondo,
+   **todos** sus hijos que no sean esa capa van por encima. `.sobre-tapa` se queda porque
+   sigue sirviendo para las piezas sueltas, pero ya no es lo unico que sostiene el texto. */
 .cocina > *:not(.tapa-fondo),
 .portada-redondopedia > *:not(.tapa-fondo),
+main:has(> .tapa-fondo) > *:not(.tapa-fondo),
 .sobre-tapa {
   position: relative;
   z-index: 1;
@@ -813,12 +827,31 @@ html[data-umbral] .marca-grande {
 }
 
 /* El recorte que decora la ficha de un disco: calcomania pegada, apenas torcida.
-   Cero medidas inline en el marcado — la regla de marca lo exige. */
+   Cero medidas inline en el marcado — la regla de marca lo exige.
+
+   **Flotaba, y flotar no servia.** `.ficha dl` es `display: grid`, y una rejilla no
+   esquiva un flotante: los items se maquetan como si no estuviera. Medido a 375 px en la
+   ficha de *Luzbelito*, la calcomania se pintaba encima de dos `dd`. No se veia antes
+   porque de las diez fichas de disco solo dos tenian el archivo puesto — llegaron cinco
+   recortes mas el 2026-09-02 y el defecto salio a la luz en las tres nuevas de una.
+
+   Ahora se pega en la esquina de abajo a la derecha y **asoma por fuera del papel**, que
+   es lo que hace una calcomania de verdad: media pegada, media colgando. Como sale del
+   flujo, la ficha le abre lugar con un `padding` propio (la regla de al lado) en vez de
+   pelear con la rejilla. Y de paso hace contrapeso a la cinta adhesiva, que esta arriba
+   a la izquierda. */
 .sticker-ficha {
-  float: inline-end;
+  position: absolute;
+  right: -10px;
+  bottom: -16px;
   width: clamp(56px, 18vw, 84px);
-  margin: 0 0 var(--espacio-1) var(--espacio-1);
-  transform: rotate(-2deg);
+  transform: rotate(-6deg);
+}
+
+/* El lugar que la calcomania ocupa, reservado sobre el papel y no sobre el texto.
+   `:has()` para que una ficha sin recorte no cargue con un margen que no usa. */
+.ficha:has(.sticker-ficha) {
+  padding-block-end: calc(var(--espacio-2) + 26px);
 }
 
 /* ---- La tapa real, solo donde el contrato la permite (D-04) ---- */
@@ -1117,9 +1150,19 @@ html[data-umbral] .marca-grande {
   border-radius: 2px;
 }
 
+/* Las dos columnas estaban en `auto 1fr` y las dos podian desbordar, cada una por su
+   lado. Medido a 375 px en la ficha de *Luzbelito*: `dd` de **589 px dentro de una
+   tarjeta de 345**, con el final de cada dato cortado contra el borde derecho del papel.
+   La causa es que un item de rejilla tiene `min-width: auto` —no se encoge por debajo de
+   su contenido mas ancho— y `.fuente-chip` traia `white-space: nowrap`, asi que una ficha
+   larga ("hecho · RES-20 (INV-20), que resolvio la disputa") estiraba la columna entera.
+
+   Las dos columnas quedan acotadas. La etiqueta con un techo —hay una que dice MENCIONES
+   EN EL LIBRO DE MEMORIAS DEL INDIO y con `auto` se comia la tarjeta— y el valor con
+   `minmax(0, 1fr)`, que es lo que le permite encoger y envolver. */
 .ficha dl {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: clamp(4.5rem, 34%, 9rem) minmax(0, 1fr);
   gap: 0.25em var(--espacio-2);
   margin: 0;
   font-size: 0.92rem;
@@ -1136,6 +1179,21 @@ html[data-umbral] .marca-grande {
 
 .ficha dd {
   margin: 0;
+}
+
+/* La fuente de un dato, adentro de la ficha, tiene dos correcciones que solo hacen falta
+   acá: el papel debajo, y el ancho de la tarjeta.
+
+   1. **La tinta.** `.fuente-chip` se pinta con `--texto-tenue`, que esta calibrado contra
+      `--fondo`. Sobre `--papel` da 1,78:1 (medido, 11,5 px): crema sobre crema. Va con
+      `--papel-tenue`, que es el mismo gesto —tinta apagada— hecho para este papel.
+   2. **El corte de renglon.** El `nowrap` de la regla general existe para que una ficha
+      corta no se parta al medio; adentro de una tarjeta de 345 px, con fichas que a veces
+      traen una frase entera, lo que hacia era empujar el renglon fuera del papel. Acá
+      envuelve. */
+.ficha .fuente-chip {
+  color: var(--papel-tenue);
+  white-space: normal;
 }
 
 /* ---- El rotulado en prosa (BR-08): la marca vive en el punto exacto ---- */
