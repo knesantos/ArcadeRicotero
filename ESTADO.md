@@ -5,7 +5,100 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-09-02
+**Última actualización:** 2026-09-03
+
+> ## ✅ `US-08` — "Ponelos en fila": el séptimo juego, construido y andando (2026-09-03)
+>
+> **Lo pidió el usuario directo, en una ráfaga**, con estas palabras: *"Arma completamente
+> el juego de armar tierlist y poder compartirlas. Tierlists de temas, temas por album,
+> albumes y otros mas que se te ocurran, investiga como funcionan en la web y como armar el
+> tipico, no reinventes la rueda."* Se investigó primero —el formato canónico, el arrastre
+> en táctil, cómo se comparte, qué rankean los fans— y con eso se decidió, se documentó y
+> se construyó, todo en la misma sesión.
+>
+> **Estado: jugable de punta a punta, verificado en el navegador a 375×812 y en
+> escritorio.** `npm test` en verde, `npm run check` con 0 errores, build de 151 páginas.
+>
+> **Qué es.** Se elige qué repartir entre **15 conjuntos** —los diez discos, las diez
+> tapas, los que abren, los que cierran, doce temas sorteados, y el tracklist de cada uno de
+> los diez discos— y se reparten las fichas en **cuatro filas que son lugares de un
+> recital**: `CONTRA LA VALLA` · `EN EL MEDIO` · `ATRÁS DE TODO` · `EN LA VEREDA`, más la
+> bandeja `SIN UBICAR`. Al final se comparte: una **lámina PNG** de 1080×1350 (con las tapas
+> reales dibujadas cuando el conjunto es de discos) y una **dirección** que reconstruye la
+> lista exacta.
+>
+> **Las tres decisiones que lo definen, todas en `D-36`:**
+>
+> 1. **Las filas no tienen color.** La rampa rojo→verde del formato le diría al que jugó al
+>    quiz que la fila de arriba está bien — y `--acento-3` y `--acento-4` son acierto y
+>    error, reservados. Se distinguen por nombre, posición y contador. Lo audita
+>    `estilos.test.ts`.
+> 2. **Son lugares, no notas.** S/A/B/C/D/F son notas de boletín anglosajón y "F" es *fail*.
+>    Un lugar ordena sin calificar.
+> 3. **Se toca, no se arrastra.** Ningún motor dispara `dragstart` con el dedo: "arrastrar
+>    en el celular" es escribir un motor propio con cuatro trampas, encima de una vía sin
+>    arrastre que hay que escribir igual (WCAG 2.5.7, `D-09`, `D-14`). El arrastre nativo
+>    queda como agregado para quien tiene mouse, llamando a la misma función.
+>
+> **Lo que se escribió:**
+>
+> | Qué | Dónde |
+> |---|---|
+> | `US-08` + `BR-22` (sin resultado correcto), piso de 14 conjuntos | `Docs/PRODUCTO/PRD-ponelos-en-fila.md` |
+> | `ADR-06` (la cuarta forma `reparto`) + `CTR-13` (el conjunto ordenable) | `Docs/ARQ/ARQ-reparto-compartido.md` |
+> | `UX-23` (las tres pantallas, tocar-tocar, la tabla anti-slop del género) | `Docs/UX/UX-23-ponelos-en-fila.md` |
+> | `D-36` (por qué no hay colores de fila, y por qué no se arrastra) | `Docs/DECISIONES.md` |
+> | El motor, el empaquetado, los conjuntos, la lámina | `src/lib/ponelos/`, `src/lib/desafio.ts` |
+> | La isla, el pincel de la lámina, la página | `src/scripts/partida-ponelos.ts`, `src/scripts/lamina.ts`, `src/pages/juegos/ponelos-en-fila.astro` |
+>
+> **`ADR-06`, en una línea:** el reparto viaja en el **fragmento** (`#o=1.<conjunto>.<carga>`)
+> con `g=ponelos` en la query, tres bits por ficha en base64url. Los diez discos dan **6
+> caracteres**, el disco más largo **7**, los 105 temas **54** — la dirección entera de una
+> lista terminada mide ~70. El fragmento no viaja al servidor ni entra en ningún registro;
+> lo que se pierde a cambio es la previsualización del enlace, y por eso **la imagen es el
+> previsualizador**. Verificado ida y vuelta en el navegador: un link armado en una partida
+> reconstruye exactamente las mismas cuatro filas.
+>
+> **Dos cosas que se encontraron construyendo, y que valen más que el juego:**
+>
+> - **`voz.test.ts` no tenía `tier`, `list` ni `top` en el glosario de `D-17`.** O sea que
+>   "tier list" **pasaba el build**. Entraron los tres, con límites de palabra para que
+>   `list` no toque "lista" ni `top` toque "tope".
+> - **`.ficha` ya existía**: es la tarjeta lateral de un artículo de la Redondopedia. El
+>   choque se descubrió con el tablero ya dibujado, viendo las tapas de los discos salir con
+>   papel rayado y cinta adhesiva que nadie les había puesto. Las del juego se llaman
+>   `.pieza`. **Ningún test miraba las colisiones de nombre de clase entre secciones**, y
+>   sigue sin mirarlas.
+>
+> **`revisor` lo revisó al cerrar, y encontró tres cosas — las tres arregladas:**
+>
+> - **`FIND-52` (alta):** "Los diez discos" y "Las diez tapas" se armaban **idénticos**, con
+>   las mismas diez tapas y de diferencia el título. Dos conjuntos que son el mismo dejaban
+>   el piso contando catorce donde había trece. Arreglado siguiendo `CTR-13.2`: `discos` va
+>   sin tapa (título y año) y `tapas` con tapa, así los dos comparten las fichas y son
+>   preguntas distintas — uno ordena el disco, el otro ordena el dibujo.
+> - **`FIND-53` (media):** el test que debía atajarlo miraba **la coherencia interna del
+>   código con sí mismo** —"si el formato dice tapa, que haya imagen"— y por eso pasaba en
+>   verde con los dos conjuntos gemelos. Ahora compara contra la tabla del contrato, y hay
+>   una guarda nueva que falla si dos conjuntos cualesquiera son idénticos.
+> - **`FIND-54` (media):** los cuatro nombres de fila viven en `filas.ts` y no en `copy.ts`,
+>   así que **`voz.test.ts` no los miraba** — justo las cuatro cadenas que `BR-22` prohíbe
+>   jerarquizar. Entraron al barrido con un recolector aparte, como el banco de dos ejes, y
+>   se sumó la guarda que `BR-22` necesitaba y que ninguna de las siete reglas de la voz
+>   cubría: **ningún texto visible del juego puede calificar** (mejor, peor, nivel, podio…).
+>
+> Las tres guardas nuevas se probaron **rompiendo el código a propósito** y comprobando que
+> fallan. Al hacerlo apareció una cuarta cosa, que no había visto nadie: la guarda de
+> `BR-22` tenía un byte de control adentro de su expresión regular en vez de un ``, así
+> que **no podía coincidir con nada**. Estaba viva por casualidad, como un test verde que no
+> mira. Reparada, y verificada contra las cuatro palabras que sí tiene que atrapar.
+>
+> **Lo que queda abierto, en `Docs/SUGERENCIAS/HILO-para-arquitectura-y-producto-el-conjunto-sorteado.md`:**
+> el conjunto sorteado (`az-<semilla>`) es un quinceavo que ningún documento nombra —hay que
+> decidir si entra al piso y agregarlo a `CTR-13`—, y la página manda **el catálogo** en vez
+> de los conjuntos armados, que es lo que hace posible reconstruir un sorteo ajeno. Y sigue
+> abierto de `UX-23`: **`UX-04` no tiene la fila de *¡Bang! ¡Bang!… Estás liquidado*** en el
+> mapa sección→disco, aunque el código ya la tiene en los tres lugares donde el mapa vive.
 
 **Ciclo actual:** **13 — EN CURSO (2026-09-02).** Sin plan de `orquestador`: lo pidió el
 usuario directo, en una ráfaga, y se trabajó contra una auditoría medida en vez de contra

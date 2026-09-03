@@ -1741,3 +1741,117 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   el zoom del juego, la estampa del acierto—. Y no saca la franja fija de *Oktubre* del
   portal: esa es la única imagen que hay sobre el pliegue de la pantalla de entrada, y
   cambiarla por un pie al que se llega desplazando era mal negocio.
+
+## D-36 — El juego de ordenar no tiene colores de fila: tiene lugares de un recital
+
+- **Fecha:** 2026-09-03
+- **Estado:** aceptada. Ciclo 14, decidida antes de escribir una línea del juego y
+  verificada con el juego construido.
+- **Consume:** `D-09` (jugable con el pulgar, sin muro de entrada), `D-14` (molinetes
+  abiertos), `D-17` (sin anglicismos), `D-19` (la mezcla: una sección viste un disco),
+  `D-21` (la pantalla nombra qué tapas usó), `D-33` (el grito es del acierto),
+  `BR-17`/`US-06` (el precedente del juego sin respuesta correcta), `BR-22`, `ADR-06`,
+  `CTR-13`, `UX-23`.
+
+- **Contexto.** El usuario pidió el juego de armar *tier lists* y compartirlas, con una
+  instrucción explícita: *"investiga como funcionan en la web y como armar el tipico, no
+  reinventes la rueda"*. La investigación se hizo (TierMaker y sus clones, el arrastre en
+  táctil, cómo se comparte, qué rankean los fans de música) y trajo un choque que no era
+  de gusto sino de significado.
+
+  **El formato estándar pinta las filas de rojo a verde.** En este sitio `--acento-3` es
+  el verde del acierto y `--acento-4` el rojo del error, los dos reservados por
+  `.claude/rules/diseno-marca.md` y ya atados en `juego.css` a `.feedback.ok`,
+  `.feedback.no` y a los tramos de victoria y derrota del quiz. Una fila verde arriba y
+  una roja abajo **le dicen a cualquiera que ya jugó al quiz que la de arriba está bien**.
+
+  Y esa es exactamente la afirmación que este juego no puede hacer. El sitio no tiene un
+  orden correcto de los discos de esta banda; si lo tuviera, el juego dejaría de ser del
+  jugador. Es el mismo criterio con el que `US-06` se negó a asignarles coordenadas a los
+  105 temas: una posición fija por tema es una afirmación sobre la obra, y habría que
+  defenderla tema por tema.
+
+  Las letras del formato —**S A B C D F**— traen el mismo problema por otra puerta: son
+  notas de boletín anglosajón, "F" es *fail*, y encima `D-17` veta el anglicismo.
+
+- **La decisión, en tres partes.**
+
+  **1. Las filas no tienen color. Tienen nombre, posición y contador.** Un sello de goma a
+  la izquierda con el nombre, el borde completo teñido con el disco del juego —el mismo
+  para las cuatro—, y el número de fichas. Ninguna de las cuatro se distingue de las otras
+  por tinte. Se abren las cuatro a la vez cuando hay algo en la mano: destacar una sería el
+  sitio opinando.
+
+  **2. Las filas son lugares de un recital, no notas.** `CONTRA LA VALLA` · `EN EL MEDIO`
+  · `ATRÁS DE TODO` · `EN LA VEREDA`, y la bandeja es `SIN UBICAR`. Un lugar ordena sin
+  calificar: contra la valla se está más cerca que en el medio, y eso es geografía, no un
+  juicio — nadie que se quedó atrás de todo *se equivocó*. Y es la imagen que este
+  proyecto ya tiene en el centro desde `D-14`: los molinetes, la valla, el que entró y el
+  que se quedó en la vereda.
+
+  **Cuatro y no seis.** TierMaker trae seis porque es una fábrica de plantillas y quien la
+  usa arma las suyas; acá el conjunto viene armado y las filas no se editan, así que el
+  número lo decide otra cosa: cuántos lugares distintos hay de verdad en esa imagen. Hay
+  cuatro, y ninguno se confunde con el de al lado. Un quinto —"en el pogo", "adelante"—
+  obligaría al jugador a decidir si está más cerca o más lejos que la valla, y una fila
+  cuyo orden se puede discutir no ordena nada.
+
+  **3. Se toca, no se arrastra.** Tocás una ficha, tocás una fila. El arrastre queda como
+  agregado para quien tiene mouse, llamando a la misma función.
+
+- **Por qué no se arrastra, que es la parte que más parece un recorte y no lo es.** El
+  arrastre de HTML5 tiene la API presente en iOS Safari y Chrome Android desde hace años,
+  pero **ningún motor dispara `dragstart` con el dedo**: piden mouse, trackpad, lápiz o
+  modo escritorio. O sea que "arrastrar en el celular" no es usar una función del
+  navegador: es escribir un motor propio con Pointer Events, y con él `touch-action: none`,
+  el clic fantasma del `touchend`, el desplazamiento automático de los bordes y
+  `overflow-anchor`.
+
+  Ese motor iría **encima de una vía sin arrastre que hay que escribir igual**, no en
+  lugar de ella: WCAG 2.5.7 la pide, `D-09` dice "jugable con el pulgar", y `D-14` no deja
+  poner un molinete nuevo con forma de gesto. Un juego que solo se puede jugar arrastrando
+  le cierra la puerta a quien no puede hacer ese gesto — que es literalmente lo que este
+  proyecto decidió no hacer nunca.
+
+  De yapa, con botones el teclado y el lector de pantalla salen gratis, y el único atajo
+  propio del juego es `Escape` para soltar lo que tenés en la mano.
+
+- **Lo que sí se copia del formato, tal cual.** Bandas horizontales apiladas con la
+  etiqueta a la izquierda; la bandeja de lo no ubicado debajo, con desplazamiento propio;
+  sacar una ficha de una fila la devuelve a la bandeja y **nunca la borra**; el orden es
+  100 % manual, sin sugerencia ni comparación por pares; y la salida es una imagen que se
+  arma en el navegador y se baja. Eso es "no reinventar la rueda": la estructura es la del
+  género y lo que cambia es lo que este sitio no puede decir.
+
+- **Alternativas descartadas.**
+
+  1. **La rampa rojo→verde con hexes medidos de `RES-37`.** Tentadora porque no inventaría
+     ningún color. Descartada porque **lo que colisiona es el significado, no el hex**: en
+     un sitio donde el verde ya significa acierto, un verde arriba de todo significa
+     acierto aunque salga de la tapa de *Gulp!*.
+  2. **Un disco distinto por fila.** Contradice `D-19` —una sección viste un disco— y,
+     peor, **jerarquiza los discos entre sí**: pondría a Oktubre arriba de Momo Sampler por
+     decisión del sitio.
+  3. **S / A / B / C / D / F.** Ver arriba: notas, anglicismo, y "F" reintroduce el error.
+  4. **Escribir el motor de arrastre táctil.** Ver arriba: cuatro trampas propias, encima
+     de algo que hay que escribir igual, para un sitio de ratos sueltos.
+  5. **Promedio de las listas de la gente** (los *Community Rankings* del formato).
+     Necesita backend, que `D-15` cerró, y **sería el orden correcto que `BR-22` prohíbe**
+     entrando por la puerta de atrás.
+
+- **Consecuencias.**
+
+  1. `voz.test.ts` suma `tier`, `list` y `top` al glosario de `D-17`. Hasta este ciclo
+     "tier list" **pasaba el build**.
+  2. `estilos.test.ts` verifica que el bloque del juego no use `--acento-3` ni `--acento-4`
+     y que ninguna regla de fila pida tinta de disco. La barra de acento lateral —el
+     significante del formato— ya rompía el build por la regla anti-slop.
+  3. El juego viste **¡Bang! ¡Bang!… Estás liquidado**, el último de los diez discos que
+     ninguna sección había tomado. *Cordero atado* quedó afuera porque `RES-37` lo midió
+     junto con *Lobo suelto* y comparten hex; *Un baión*, porque su celeste choca con
+     `--rotulo-testimonio`, que no rota.
+  4. `D-33` no le presta el grito: no hay estampa por pasadas al terminar, porque no hay
+     acierto. Lo que hay es una lámina, que llega ya impresa.
+  5. El crédito de `D-21` se imprime **adentro de la lámina** —dice lo que hay en esa
+     imagen y no lo que suele haber—, cerrando el caso que `D-33` había dejado abierto: una
+     tapa que sale del sitio viajaba sin su firma.
