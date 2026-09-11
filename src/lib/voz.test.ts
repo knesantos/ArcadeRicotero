@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
 
 import * as sitio from './sitio/copy.ts';
 import * as quiz from './quiz/copy.ts';
@@ -57,7 +58,88 @@ const MODULOS: ReadonlyArray<readonly [string, Record<string, unknown>]> = [
   // cadenas y **la mitad solo las escucha quien usa lector de pantalla**, que es justo la
   // mitad que nadie revisa mirando.
   ['ponelos', ponelos],
+  // `US-06`. **Estuvo importado y fuera del barrido hasta el censo de mas abajo**, que es
+  // justo el defecto que el censo existe para que no vuelva a pasar: el modulo se importaba
+  // arriba para sacarle el `h1` a la prueba de largo, asi que desde afuera parecia
+  // auditado. Su propio docstring lo afirmaba —"Las audita `voz.test.ts`"— y era falso: lo
+  // que audita el recolector de mas abajo son las 44 cadenas del **JSON**, no las once de
+  // este archivo.
+  ['dos-ejes', dosEjes],
 ];
+
+/*
+ * El censo de modulos de copy, y por que no alcanza con la lista de arriba.
+ *
+ * La lista de arriba es una declaracion: dice quien entra al barrido. Lo que no puede hacer
+ * sola es **enterarse de lo que existe**. Mientras fue lo unico que habia, un `copy.ts`
+ * nuevo no rompia nada — simplemente dejaba de mirarse, y el build seguia verde con
+ * anglicismos y botones en infinitivo adentro. Es el mismo agujero por el que `"Link
+ * copiado"` estuvo tres ciclos en produccion, corrido un nivel: antes se escapaba la cadena
+ * suelta adentro de una isla, ahora se escapa el archivo entero.
+ *
+ * El mecanismo esta copiado del censo de paginas de `sitio/rutas-sonoras.test.ts`, y el
+ * criterio es el mismo: **no declara nada solo —eso seria adivinar— pero tampoco deja pasar
+ * de largo**. Quien sume un modulo tiene que abrir este archivo, importarlo y ponerlo en
+ * `MODULOS`. Si no lo hace, el build se cae aca con el nombre del archivo.
+ */
+
+/** Todos los `copy.ts` que hay en disco, nombrados igual que las claves de `MODULOS`. */
+function copyEnDisco(): string[] {
+  const raiz = 'src/lib';
+  const encontrados: string[] = [];
+  const recorrer = (dir: string): void => {
+    for (const entrada of readdirSync(dir, { withFileTypes: true })) {
+      const completa = join(dir, entrada.name);
+      if (entrada.isDirectory()) recorrer(completa);
+      else if (entrada.name === 'copy.ts') {
+        encontrados.push(relative(raiz, completa).split(sep).join('/'));
+      }
+    }
+  };
+  recorrer(raiz);
+  return encontrados.sort();
+}
+
+/** Lo que esta de un lado y no del otro. Aparte, para poder probarlo contra un caso falso. */
+function sinDeclarar(enDisco: readonly string[], declarados: readonly string[]): string[] {
+  return enDisco.filter((p) => !declarados.includes(p));
+}
+
+const DECLARADOS = MODULOS.map(([nombre]) => `${nombre}/copy.ts`).sort();
+
+test('el censo: no hay un modulo de copy que nadie audite', () => {
+  assert.deepEqual(
+    sinDeclarar(copyEnDisco(), DECLARADOS),
+    [],
+    'hay modulos de copy fuera del barrido: importalos arriba y agregalos a `MODULOS`',
+  );
+});
+
+test('el censo tampoco deja un modulo declarado que ya no existe', () => {
+  // El reves, y no es simetria por prolijidad: una entrada fantasma en `MODULOS` no audita
+  // nada y ademas **miente sobre la cobertura**, que es peor que el hueco declarado.
+  assert.deepEqual(sinDeclarar(DECLARADOS, copyEnDisco()), []);
+});
+
+test('ese censo sabe encontrar: se prueba contra un modulo que nadie declaro', () => {
+  /*
+   * Un test que solo verifica ausencias no demuestra que sepa buscar, y se vuelve verde por
+   * vago sin que nadie se entere. El caso es el que viene: un juego nuevo trae su `copy.ts`
+   * y nadie se acuerda de esta lista.
+   *
+   * **Las dos listas son inventadas a proposito, y no mezcladas con el disco.** La primera
+   * version de esta prueba le sumaba el intruso a `copyEnDisco()`, y eso la hacia depender
+   * de que el nombre inventado no existiera: cuando se creo `src/lib/skayboy/copy.ts` de
+   * verdad —para demostrar que el censo rompia— el intruso aparecio dos veces y el caso de
+   * prueba fallo por una razon que no tenia nada que ver con lo que mide.
+   */
+  const enDisco = ['quiz/copy.ts', 'skayboy/copy.ts', 'tema/copy.ts'];
+  const declarados = ['quiz/copy.ts', 'tema/copy.ts'];
+  assert.deepEqual(sinDeclarar(enDisco, declarados), ['skayboy/copy.ts']);
+  // Y no se queja cuando esta todo declarado, ni cuando sobra una declaracion.
+  assert.deepEqual(sinDeclarar(declarados, declarados), []);
+  assert.deepEqual(sinDeclarar(declarados, enDisco), []);
+});
 
 /**
  * El banco del test de dos ejes (`US-06`), que no vive en un `copy.ts` sino en un JSON.

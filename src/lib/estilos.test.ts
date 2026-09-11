@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 
 /**
  * Impide que vuelva a pasar `FIND-15`.
@@ -32,11 +33,6 @@ const ESTADOS = [
   '.tramo--medio',
   '.tramo--alto',
 ];
-
-test('FIND-15: toda clase de estado que el codigo crea tiene una regla que la pinta', () => {
-  const sinRegla = ESTADOS.filter((c) => !CSS.includes(c));
-  assert.deepEqual(sinRegla, [], `clases creadas por el codigo y sin estilo: ${sinRegla.join(', ')}`);
-});
 
 test('el acierto y el error no se comunican solo con color', () => {
   // UX-01, checklist de accesibilidad. Quien no distingue rojo de verde tiene que poder
@@ -270,19 +266,6 @@ test('UX-22 §8: el registro imperfecto vive solo en la letra grande, nunca en u
   assert.deepEqual(intrusos, [], `UX-22 §8 no nombra estos lugares: ${intrusos.join(', ')}`);
 });
 
-test('toda clase de estado usada en el CSS existe de verdad en el codigo', () => {
-
-  // El reves del primer test: estilos huerfanos de clases que ya nadie crea.
-  //
-  // El codigo arma varias con plantilla —`insignia--${clase}`, `tramo--${t}`— asi que
-  // buscar la cadena completa daria falsos positivos. Se busca la **base**: si el codigo
-  // no menciona `tramo--` en ningun lado, las tres reglas de tramo son huerfanas.
-  const bases = [...new Set(ESTADOS.map((c) => c.replace(/^\./, '').split('.').pop()!.replace(/--.*$/, '--')))];
-  for (const base of bases) {
-    assert.ok(JS.includes(base), `el CSS estila "${base}…" pero el codigo no crea ninguna`);
-  }
-});
-
 /* ==================================================================
    Adivinar el tema (US-02): el mismo control que FIND-15, para el juego nuevo
    ================================================================== */
@@ -307,20 +290,6 @@ const ESTADOS_TEMA = [
   '.resumen-fila--no',
   '.restantes--ultimo',
 ];
-
-test('US-02: toda clase de estado que crea la isla del tema tiene una regla que la pinta', () => {
-  const sinRegla = ESTADOS_TEMA.filter((c) => !CSS.includes(c));
-  assert.deepEqual(sinRegla, [], `clases creadas por el codigo y sin estilo: ${sinRegla.join(', ')}`);
-});
-
-test('US-02: las clases que el CSS estila las crea de verdad la isla', () => {
-  // El reves del anterior: estilos huerfanos. Se busca la base de cada familia, porque
-  // el codigo arma varias con plantilla.
-  const bases = [...new Set(ESTADOS_TEMA.map((c) => c.replace(/^\./, '').replace(/--.*$/, '--')))];
-  for (const base of bases) {
-    assert.ok(JS_TEMA.includes(base), `el CSS estila "${base}..." pero la isla no crea ninguna`);
-  }
-});
 
 test('US-02: el intento fallado, el pasado y el resumen no se comunican solo con color', () => {
   // UX-01. En este juego el simbolo lo escribe el JavaScript (es contenido del renglon,
@@ -368,18 +337,6 @@ const ESTADOS_LETRA = [
   '.partida--revelada',
 ];
 
-test('US-07: toda clase de estado que crea la isla de la letra tiene una regla que la pinta', () => {
-  const sinRegla = ESTADOS_LETRA.filter((c) => !CSS.includes(c));
-  assert.deepEqual(sinRegla, [], `clases creadas por el codigo y sin estilo: ${sinRegla.join(', ')}`);
-});
-
-test('US-07: las clases que el CSS estila las crea de verdad la isla', () => {
-  const bases = [...new Set(ESTADOS_LETRA.map((c) => c.replace(/^\./, '').replace(/--.*$/, '--')))];
-  for (const base of bases) {
-    assert.ok(JS_LETRA.includes(base), `el CSS estila "${base}..." pero la isla no crea ninguna`);
-  }
-});
-
 test('US-07: el estado de un intento gastado no se comunica solo con color', () => {
   // UX-01. El simbolo lo escribe el JavaScript: es contenido del chip, no decoracion.
   for (const simbolo of ['✕', '·', '✔']) {
@@ -417,18 +374,6 @@ const ESTADOS_PONELOS = [
   '.mano--cargada',
   '.lista--compartida',
 ];
-
-test('US-08: toda clase de estado que crea la isla de repartir tiene una regla que la pinta', () => {
-  const sinRegla = ESTADOS_PONELOS.filter((c) => !CSS.includes(c));
-  assert.deepEqual(sinRegla, [], `clases creadas por el codigo y sin estilo: ${sinRegla.join(', ')}`);
-});
-
-test('US-08: las clases que el CSS estila las crea de verdad la isla', () => {
-  const bases = [...new Set(ESTADOS_PONELOS.map((c) => c.replace(/^\./, '').replace(/--.*$/, '--')))];
-  for (const base of bases) {
-    assert.ok(JS_PONELOS.includes(base), `el CSS estila "${base}..." pero la isla no crea ninguna`);
-  }
-});
 
 test('US-08: lo que tenes en la mano no se comunica solo con color', () => {
   // `UX-01`. En este juego la senal ademas del borde es **texto**: el rotulo `EN LA MANO`,
@@ -525,4 +470,302 @@ test('US-08: el tablero se rehace entero, y el foco no se cae con el', () => {
   assert.match(isla, /dataset\.fila = String\(/, 'la fila de destino perdio su numero');
   // Y el foco no puede quedar en algo que ya no existe: se resuelve DESPUES de repintar.
   assert.match(isla, /querySelector<HTMLElement>\(`\.pieza\[data-i=/, 'ya no busca la pieza repintada');
+});
+
+/* ==================================================================
+   El censo de islas: nadie suma un tablero sin que este archivo se entere
+   ==================================================================
+
+   ## Por que existe esta seccion
+
+   Hasta el ciclo 14 los controles de `FIND-15` venian de a pares escritos a mano, uno por
+   juego, y habia **cuatro pares para siete islas**: `partida-letra.ts`, `partida-tapa.ts` y
+   `partida-dos-ejes.ts` no tenian ninguno. No rompian el build — simplemente nadie los
+   miraba, que es la unica forma en que `FIND-15` se repite sin que se note.
+
+   Agregar los tres pares que faltaban habria dejado el mismo agujero para el octavo juego.
+   Asi que la lista **se deriva del disco**, con el mecanismo del censo de paginas de
+   `sitio/rutas-sonoras.test.ts`: no clasifica nada sola —eso seria adivinar— pero **falla
+   con el nombre del archivo** cuando encuentra una isla que nadie declaro.
+
+   ## Los tres candados, y por que hacen falta los tres
+
+   1. **El censo.** Una isla nueva en `src/scripts/` que no este en `ISLAS` rompe el build.
+   2. **El par reciproco**, ahora uno solo para las siete: lo declarado tiene regla, y lo
+      que el CSS estila lo crea de verdad la isla.
+   3. **La red derivada**, que cubre lo que el par no puede: el par audita lo *declarado*, y
+      una clase que nadie puso en la lista se le escapa igual. Esta lee la isla y exige
+      regla para **toda** clase modificadora que encuentre. Es la que encontro las dos que
+      estaban sueltas hoy, `estampa--clave` y `rotulo--…`, ver mas abajo.
+*/
+
+const JS_COMPLETAR = leer('src/scripts/partida-letra.ts');
+const JS_TAPA = leer('src/scripts/partida-tapa.ts');
+const JS_EJES = leer('src/scripts/partida-dos-ejes.ts');
+
+/*
+ * Ojo con los nombres, que es una trampa real de este repo: `partida-letra.ts` es
+ * **"completa la letra"** (`US-03`) y `partida-por-la-letra.ts` es **"sacalo por la letra"**
+ * (`US-07`). La constante `JS_LETRA` de mas arriba es la del segundo, no la del primero, y
+ * por eso el primero se llama aca `JS_COMPLETAR` en vez de seguir la serie.
+ */
+
+/** `US-03`. Calca la mecanica del quiz, y le suma el hueco del verso resuelto. */
+const ESTADOS_COMPLETAR = [
+  '.es-correcta',
+  '.es-elegida',
+  '.feedback.ok',
+  '.feedback.no',
+  '.sello--leyenda',
+  '.sello--testimonio',
+  // El hueco que se rellena al contestar: es la recompensa de haber respondido y tiene que
+  // distinguirse del resto del verso, que ya estaba ahi.
+  '.resuelto',
+];
+
+/** `US-04`. El quiz, mas lo que le pasa al recorte de tapa cuando se abre. */
+const ESTADOS_TAPA = [
+  '.es-correcta',
+  '.es-elegida',
+  '.feedback.ok',
+  '.feedback.no',
+  '.sello--leyenda',
+  '.sello--testimonio',
+  '.figura-tapa-juego--abierta',
+  '.estampa-papel--abre',
+  // Las tres tintas de la serigrafia (`RES-06`): cuando se acierta entran las tres, cuando
+  // se falla entra sola la clave. Si la clave no tuviera regla propia, acertar y fallar se
+  // verian igual.
+  '.pasada--clara',
+  '.pasada--media',
+  '.pasada--clave',
+];
+
+/**
+ * `US-06`, y **la lista vacia es la declaracion, no un olvido**.
+ *
+ * El test de dos ejes no tiene acierto ni error —`BR-17`: los ejes no miden nivel, y
+ * ningun resultado vale mas que otro— asi que no hay ningun estado que comunicar con tinta. Lo unico que cambia entre pantallas es
+ * `hidden`, que lo apaga la hoja del navegador y no necesita regla de autor.
+ *
+ * Declararlo vacio no lo deja sin auditar: la **red derivada** de mas abajo lee la isla y
+ * romperia el dia que alguien le agregue una clase modificadora sin regla. Eso es lo que
+ * hace que un `[]` sea una declaracion honesta y no un agujero.
+ */
+const ESTADOS_EJES: string[] = [];
+
+interface Tablero {
+  /** De que juego es, para que el mensaje de error no obligue a abrir el archivo. */
+  readonly juego: string;
+  readonly fuente: string;
+  readonly estados: readonly string[];
+}
+interface SinTablero {
+  /** Por que esta isla no tiene clases de estado de partida. Escrito, no supuesto. */
+  readonly sinTablero: string;
+}
+
+/**
+ * Todas las islas del repo, una por una. Las siete que pintan un tablero traen su lista de
+ * estados; las otras ocho dicen por escrito por que no tienen ninguno.
+ *
+ * **Las ocho de abajo no son relleno.** Mientras el universo fuera "los archivos que se
+ * llaman `partida-*.ts`", una isla de juego con cualquier otro nombre se escapaba del censo
+ * entero — y como se llama un archivo no es una garantia de nada. Declarando las quince, el
+ * unico camino para sumar una isla pasa por esta tabla.
+ */
+const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
+  'partida.ts': { juego: 'US-01, el quiz', fuente: JS, estados: ESTADOS },
+  'partida-tema.ts': { juego: 'US-02, adivinar el tema', fuente: JS_TEMA, estados: ESTADOS_TEMA },
+  'partida-letra.ts': { juego: 'US-03, completar la letra', fuente: JS_COMPLETAR, estados: ESTADOS_COMPLETAR },
+  'partida-tapa.ts': { juego: 'US-04, adivinar la tapa', fuente: JS_TAPA, estados: ESTADOS_TAPA },
+  'partida-dos-ejes.ts': { juego: 'US-06, el test de dos ejes', fuente: JS_EJES, estados: ESTADOS_EJES },
+  'partida-por-la-letra.ts': { juego: 'US-07, sacalo por la letra', fuente: JS_LETRA, estados: ESTADOS_LETRA },
+  'partida-ponelos.ts': { juego: 'US-08, ponelos en fila', fuente: JS_PONELOS, estados: ESTADOS_PONELOS },
+
+  'armar-cancionero.ts': { sinTablero: 'arma un HTML autocontenido que se descarga; sus estilos viajan adentro de ese archivo, no en las hojas del sitio' },
+  'cancion.ts': { sinTablero: 'transportar y bajar solo en la ficha de un tema; no hay partida ni respuesta que senalar' },
+  'cinta.ts': { sinTablero: 'el interruptor de la cinta; su unica clase de estado vive en sitio.css y la cubre la red derivada' },
+  'correccion.ts': { sinTablero: 'el boton de correccion compartido; abre un formulario, no pinta estado de partida' },
+  'diagnostico-audio.ts': { sinTablero: 'pantalla de medicion; sus reglas viven en el <style> de su propia pagina y la cubre la red derivada' },
+  'lamina.ts': { sinTablero: 'pincel de canvas (US-08); dibuja pixeles, no crea nodos con clase' },
+  'spotify.ts': { sinTablero: 'un <a> y nada mas, que es literalmente RQ-B2 de ADR-01' },
+  'tarjeta.ts': { sinTablero: 'pincel de canvas (US-02 y US-07); dibuja pixeles, no crea nodos con clase' },
+};
+
+const esTablero = (i: Tablero | SinTablero): i is Tablero => 'estados' in i;
+
+/** Las islas que hay en disco: lo unico del repo que llega al telefono de la gente. */
+function islasEnDisco(): string[] {
+  return readdirSync('src/scripts')
+    .filter((f) => f.endsWith('.ts') && !f.endsWith('.test.ts'))
+    .sort();
+}
+
+/** Lo que esta de un lado y no del otro. Aparte, para poder probarlo contra un caso falso. */
+function faltantes(unos: readonly string[], otros: readonly string[]): string[] {
+  return unos.filter((x) => !otros.includes(x));
+}
+
+test('el censo: no hay una isla que nadie haya declarado', () => {
+  assert.deepEqual(
+    faltantes(islasEnDisco(), Object.keys(ISLAS)),
+    [],
+    'hay islas sin declarar: abri `ISLAS` en este archivo y deci si pintan un tablero, o por que no',
+  );
+});
+
+test('el censo tampoco deja declarada una isla que ya no existe', () => {
+  // Una entrada fantasma no audita nada y ademas **miente sobre la cobertura**, que es peor
+  // que el hueco declarado: el que lee la tabla cuenta quince y se queda tranquilo.
+  assert.deepEqual(faltantes(Object.keys(ISLAS), islasEnDisco()), []);
+});
+
+test('ese censo sabe encontrar: se prueba contra una isla que nadie declaro', () => {
+  // Un test que solo verifica ausencias no demuestra que sepa buscar. Las dos listas son
+  // inventadas a proposito: mezclarlas con el disco ata el caso de prueba a que el nombre
+  // inventado no exista nunca de verdad, y eso ya rompio una vez la prueba hermana de
+  // `voz.test.ts` el dia que el intruso se creo para ver el auditor fallar.
+  const enDisco = ['partida.ts', 'partida-skayboy.ts', 'tarjeta.ts'];
+  const declaradas = ['partida.ts', 'tarjeta.ts'];
+  assert.deepEqual(faltantes(enDisco, declaradas), ['partida-skayboy.ts']);
+  assert.deepEqual(faltantes(declaradas, declaradas), []);
+});
+
+test('FIND-15, los siete tableros: toda clase de estado declarada tiene una regla que la pinta', () => {
+  // El reemplazo de los cuatro pares escritos a mano. Mismo control, pero la lista de
+  // tableros sale de `ISLAS`, y el censo de arriba garantiza que `ISLAS` este completa.
+  const sinRegla: string[] = [];
+  for (const [archivo, isla] of Object.entries(ISLAS)) {
+    if (!esTablero(isla)) continue;
+    for (const clase of isla.estados) {
+      if (!CSS.includes(clase)) sinRegla.push(`${archivo} (${isla.juego}): ${clase}`);
+    }
+  }
+  assert.deepEqual(sinRegla, [], `clases creadas por el codigo y sin estilo:\n  ${sinRegla.join('\n  ')}`);
+});
+
+test('FIND-15 al reves: las clases que el CSS estila las crea de verdad su isla', () => {
+  // El codigo arma varias con plantilla —`insignia--${clase}`, `tramo--${t}`— asi que
+  // buscar la cadena completa daria falsos positivos. Se busca la **base**: si la isla no
+  // menciona `tramo--` en ningun lado, las tres reglas de tramo son huerfanas.
+  const huerfanas: string[] = [];
+  for (const [archivo, isla] of Object.entries(ISLAS)) {
+    if (!esTablero(isla)) continue;
+    const bases = [
+      ...new Set(isla.estados.map((c) => c.replace(/^\./, '').split('.').pop()!.replace(/--.*$/, '--'))),
+    ];
+    for (const base of bases) {
+      if (!isla.fuente.includes(base)) {
+        huerfanas.push(`${archivo} (${isla.juego}): el CSS estila "${base}..." y la isla no crea ninguna`);
+      }
+    }
+  }
+  assert.deepEqual(huerfanas, [], `\n  ${huerfanas.join('\n  ')}`);
+});
+
+/* ------------------------------------------------------------------
+   La red derivada: lo que el par reciproco no puede ver
+   ------------------------------------------------------------------ */
+
+/**
+ * Todo lo que puede pintar una clase: las cuatro hojas mas los `<style>` de las paginas.
+ *
+ * **Los `<style>` no son un detalle**: `diagnostico-audio.ts` crea `dg--ok` y `dg--mal`, y
+ * esas reglas viven adentro de `src/pages/diagnostico-audio.astro`, no en `src/styles/`. Un
+ * auditor que mirara solo las hojas las daria por huerfanas y estaria mintiendo.
+ *
+ * Se recorta el `<style>` en vez de leer la pagina entera, y es a proposito: si entrara el
+ * marcado, una clase **nombrada** en el HTML contaria como clase **pintada**, que es
+ * exactamente lo contrario de lo que este test mide.
+ */
+function todoElCss(): string {
+  let css = readdirSync('src/styles')
+    .filter((f) => f.endsWith('.css'))
+    .map((f) => leer(`src/styles/${f}`))
+    .join('\n');
+  const paginas: string[] = [];
+  const recorrer = (dir: string): void => {
+    for (const entrada of readdirSync(dir, { withFileTypes: true })) {
+      const completa = join(dir, entrada.name);
+      if (entrada.isDirectory()) recorrer(completa);
+      else if (entrada.name.endsWith('.astro')) paginas.push(completa);
+    }
+  };
+  recorrer('src');
+  for (const pagina of paginas) {
+    for (const bloque of leer(pagina).matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)) css += '\n' + bloque[1];
+  }
+  return css;
+}
+
+/** Saca los comentarios: un `foo--bar` nombrado en prosa no es una clase que el codigo cree. */
+function sinComentarios(fuente: string): string {
+  return fuente.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/[^\n]*/g, '$1 ');
+}
+
+/**
+ * Las clases modificadoras que una isla **crea de verdad**, leidas de sus literales.
+ *
+ * Solo mira adentro de comillas y plantillas, porque una clase nace de un literal siempre. Y
+ * las que se arman con plantilla quedan como la base —`sello--`—, que es exactamente lo que
+ * el par reciproco ya sabe buscar.
+ *
+ * El `(?<![\w-])` es el que evita el falso positivo caro: sin el, el `--marca-rojo` de un
+ * `getPropertyValue()` entraria como si fuera una clase.
+ */
+function modificadores(fuente: string): string[] {
+  const encontrados = new Set<string>();
+  for (const m of sinComentarios(fuente).matchAll(/'([^'\n]*)'|"([^"\n]*)"|`([^`]*)`/g)) {
+    const literal = m[1] ?? m[2] ?? m[3] ?? '';
+    for (const clase of literal.matchAll(/(?<![\w-])([a-z][a-z0-9-]*?--[a-z0-9-]*)/g)) {
+      encontrados.add(clase[1]!);
+    }
+  }
+  return [...encontrados].sort();
+}
+
+test('ninguna isla crea una clase modificadora que ninguna hoja pinte', () => {
+  /*
+   * La red que el par reciproco no puede tender, porque el par audita **lo declarado** y
+   * esto audita **lo que hay**. Las dos que encontro el dia que se escribio estaban vivas
+   * desde hacia ciclos, y las dos eran invisibles para las listas a mano:
+   *
+   *  · `estampa--clave` en `partida-tema.ts`: la figura de la revelacion se marcaba cuando
+   *    el jugador fallaba, y ninguna hoja la pintaba.
+   *  · `rotulo--victoria` / `--derrota` / `--retirada` en `partida.ts`: el rotulo del
+   *    desenlace del quiz, igual.
+   *
+   * Las dos se sacaron en vez de pintarlas, y el motivo es el circuito de
+   * `.claude/rules/diseno-marca.md`: darles tinta es una decision que empieza en el lienzo,
+   * no en un test. Sacar un gancho que no pinta nada no mueve un solo pixel; inventarle un
+   * color lo moveria, y por la puerta de atras.
+   */
+  const CSS_TODO = todoElCss();
+  const sueltas: string[] = [];
+  for (const archivo of islasEnDisco()) {
+    for (const clase of modificadores(leer(`src/scripts/${archivo}`))) {
+      if (!CSS_TODO.includes(`.${clase}`)) sueltas.push(`${archivo}: .${clase}`);
+    }
+  }
+  assert.deepEqual(
+    sueltas,
+    [],
+    `clases que una isla crea y ninguna hoja pinta:\n  ${sueltas.join('\n  ')}`,
+  );
+});
+
+test('esa red sabe encontrar: se prueba contra fuentes inventadas', () => {
+  // Un test que solo verifica ausencias no demuestra que sepa buscar.
+  assert.deepEqual(modificadores(`const f = el('div', 'ficha ficha--rota');`), ['ficha--rota']);
+  // La plantilla queda en la base, que es lo que el par reciproco busca.
+  assert.deepEqual(modificadores('const s = el("p", `sello sello--${tipo}`);'), ['sello--']);
+  // Un nombre en un comentario no es una clase que el codigo cree.
+  assert.deepEqual(modificadores('// ya no existe ficha--rota\nconst x = 1;'), []);
+  assert.deepEqual(modificadores('/* ficha--rota se saco en el ciclo 9 */\nconst x = 1;'), []);
+  // Y una variable de CSS no es una clase: el falso positivo que el lookbehind evita.
+  assert.deepEqual(modificadores(`getComputedStyle(d).getPropertyValue('--marca-rojo');`), []);
+  // El caso entero, contra una clase que ninguna hoja tiene.
+  assert.deepEqual(modificadores(`el('div', 'pieza pieza--que-nadie-pinta');`), ['pieza--que-nadie-pinta']);
+  assert.ok(!todoElCss().includes('.pieza--que-nadie-pinta'), 'el caso de prueba dejo de ser inventado');
 });

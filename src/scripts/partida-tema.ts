@@ -955,7 +955,12 @@ function armarEstampa(tema: Tema, acerto: boolean): HTMLElement | null {
   const e = estampaDe(tema.disco);
   if (!e) return null;
 
-  const figura = el('figure', `estampa${acerto ? '' : ' estampa--clave'}`);
+  // Sin modificador por fallo: `estampa--clave` se creaba aca y **ninguna hoja la
+  // pintaba** (lo encontro la red derivada de `estilos.test.ts`). Lo que de verdad
+  // distingue fallar de acertar son las capas de abajo: con acierto entran las tres
+  // tintas y la foto, sin acierto entra sola la clave. Darle tinta propia al fallo es
+  // una decision que empieza en el lienzo (`.claude/rules/diseno-marca.md`), no aca.
+  const figura = el('figure', 'estampa');
 
   const papel = el('span', 'estampa-papel');
   const capas: Array<[nombre: string, ruta: string]> = acerto
