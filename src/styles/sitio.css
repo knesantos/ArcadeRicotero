@@ -562,6 +562,70 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   color: var(--texto-tenue);
 }
 
+/* ------------------------------------------------------------------ la rocola (`UX-26`)
+
+   El renglón que cuelga del interruptor cuando la rocola pone un tema: qué suena y el
+   control para cambiarlo. Va DEBAJO de la estampa y no adentro — el botón es registro 3,
+   nombra un estado y se calla, y el título de un tema no es un estado. Adentro convertiría
+   la estampa en un cartel que cambia de ancho cada diez segundos, arriba de todo.
+
+   Ocupa el renglón entero y se alinea a la derecha, abajo de la estampa, que es donde la
+   estampa ya vive (`margin-left: auto`). */
+/* `display: flex` pisa el `display: none` que trae el atributo `hidden`, así que el
+   renglón oculto seguía ocupando su lugar: medido a 375×812, le sumaba 60 px a la cabecera
+   de toda pantalla con la cinta apagada, que es el estado por defecto de la primera visita.
+   No se veía nada y el aire estaba igual. Por eso esta regla va primero y es explícita. */
+.cinta-pieza[hidden] {
+  display: none;
+}
+
+.cinta-pieza {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+  margin-top: calc(var(--espacio-1) / 2);
+}
+
+/* El título del tema va en la fuente legible y no en una letra de disco: es texto que
+   cambia solo cada diez segundos y que incluye nombres con tilde y con Ñ, que las fuentes
+   calcadas de las tapas no tienen (`diseno-marca.md`, deuda declarada). */
+.cinta-suena {
+  font-size: 0.76rem;
+  line-height: 1.3;
+  color: var(--texto-tenue);
+  text-align: right;
+}
+
+/* Sello de goma, como el resto de los controles chicos del sitio: rectángulo de esquina
+   casi viva, borde fino, mayúsculas rotuladas y apenas torcido. Nunca la pastilla cápsula
+   que `diseno-marca.md` veta por nombre. Se tuerce para el otro lado que la estampa para
+   que no parezcan la misma pieza repetida. */
+.cinta-accion {
+  min-height: var(--toque-min);
+  padding: 0 var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  letter-spacing: 0.09em;
+  color: var(--texto-tenue);
+  background: transparent;
+  border: 1px solid var(--borde);
+  border-radius: 3px;
+  transform: rotate(0.8deg);
+  transition: border-color var(--duracion-toque), color var(--duracion-toque);
+  white-space: nowrap;
+}
+
+/* Cambio de tinta y de borde, nunca un levantar ni un inflar: el único movimiento
+   decorativo de este sitio es la mosca. */
+.cinta-accion:hover,
+.cinta-accion:focus-visible {
+  color: var(--texto);
+  border-color: var(--papel-borde);
+}
+
 /* La portada no tiene cabecera —no hay a donde volver desde la puerta—, asi que la isla le
    arma una fila propia para colgar la estampa. Va pegada a la derecha y sin margen abajo:
    no es una barra de navegacion, es un control en la esquina. */
@@ -588,7 +652,8 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   font-size: clamp(2.6rem, 13vw, 4rem);
   line-height: 0.92;
   color: var(--marca-rojo);
-  margin: var(--espacio-3) 0 var(--espacio-1);
+  /* `UX-25` §1: el aire de arriba cede, la letra no. De `--espacio-3` a `--espacio-2`. */
+  margin: var(--espacio-2) 0 var(--espacio-1);
   max-width: 7ch;
   /* El tercero de los tres nombres (`ADR-03` §6.3). La firma es la misma de un lado y del
      otro, asi que el navegador la mueve de su lugar en la portada al suyo en la cabecera
@@ -601,7 +666,8 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
 
 .bajada-portal {
   color: var(--texto-tenue);
-  margin: 0 0 var(--espacio-3);
+  /* `UX-25` §1: de `--espacio-3` a `--espacio-2`. El texto no cambia una letra. */
+  margin: 0 0 var(--espacio-2);
   text-wrap: balance;
 }
 
@@ -646,7 +712,8 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   display: flex;
   align-items: center;
   gap: var(--espacio-2);
-  margin: var(--espacio-4) 0 var(--espacio-1);
+  /* `UX-25` §1: de `--espacio-4` a `--espacio-3`. El de abajo no se toca. */
+  margin: var(--espacio-3) 0 var(--espacio-1);
   font-family: var(--fuente-rotulada);
   font-size: 0.85rem;
   letter-spacing: 0.14em;
@@ -864,11 +931,73 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
 /* ---- Pie del sitio ---- */
 
 .pie-sitio {
-  margin: var(--espacio-4) 0 var(--espacio-2);
+  /* El margen de arriba baja de `--espacio-4` a `--espacio-3`: con el texto en 42
+     caracteres el pie ya no necesita tanto aire para separarse de la hoja, y esos 16 px
+     son parte del presupuesto de `UX-24` y `UX-25`. */
+  margin: var(--espacio-3) 0 var(--espacio-2);
   color: var(--texto-tenue);
   font-size: 0.8rem;
   text-align: center;
   text-wrap: balance;
+}
+
+/* La firma: lo único que se lee siempre. De quién es el sitio, y nada más. */
+.pie-firma {
+  margin: 0;
+}
+
+/* ---- El desplegable del crédito (`CNT-16`, `D-21` condición 1) ----
+
+   Lo que decía el pie de antes no se borró: está acá, a un toque. El crédito de tapas es
+   dinámico por pantalla, así que no podía irse a una página aparte sin fabricar una
+   sincronización nueva — por eso vive donde ya vivía, plegado. */
+.pie-creditos {
+  margin-top: calc(var(--espacio-1) / 2);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+/* Sin pastilla cápsula y sin ícono de librería: subrayado punteado, que es lo que ya
+   usa el sitio para decir "esto se abre" sin inventar una forma nueva. El triángulo que
+   los navegadores dibujan solos se saca — es un ícono de sistema, y `diseno-marca.md`
+   veta el ícono de librería como decoración. */
+.pie-creditos-abrir {
+  display: inline-block;
+  /* La zona del pulgar también acá: un enlace de 12 px de alto en el pie es una trampa. */
+  min-height: var(--toque-min);
+  padding: var(--espacio-1) var(--espacio-2);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  cursor: pointer;
+  border-bottom: 1px dotted var(--borde);
+  transition: color var(--duracion-toque), border-color var(--duracion-toque);
+}
+
+.pie-creditos-abrir::-webkit-details-marker {
+  display: none;
+}
+.pie-creditos-abrir::marker {
+  content: '';
+}
+
+.pie-creditos-abrir:hover,
+.pie-creditos-abrir:focus-visible {
+  color: var(--texto);
+  border-bottom-color: var(--papel-borde);
+}
+
+/* Abierto, el cuerpo es prosa corriente: dos renglones de tinta sobre `--fondo`, que es
+   el par testeado. Nada de tarjeta elevada — eso lo veta la tabla anti-slop por nombre. */
+.pie-creditos-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--espacio-1) / 2);
+  max-width: 46ch;
+  margin: var(--espacio-1) auto 0;
+  text-wrap: pretty;
 }
 
 /* ---- Pantallas "en la cocina" (los juegos que vienen) ---- */
@@ -1054,7 +1183,8 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
 .rodillo {
   height: 10px;
 
-  margin: var(--espacio-3) 0;
+  /* `UX-25` §1: de `--espacio-3` a `--espacio-2` de los dos lados. */
+  margin: var(--espacio-2) 0;
   border: 0;
   /* El navegador le pone gris propio a un `hr`, y un gris propio es justo lo que este
      separador NO tiene: la tinta la pone el lugar donde vive. */

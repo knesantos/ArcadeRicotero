@@ -567,6 +567,73 @@
   grid-column: 1 / -1;
 }
 
+/* ---- Los diez discos, plegados (`UX-24` §2, `T-221`) ----
+
+   Medido a 375x812 antes de tocarlo: once pozos de 63 px en una columna eran 693 px, mas
+   de media pantalla, y dejaban "Empeza" abajo del pliegue en un juego que promete dos
+   minutos. "Todos los discos" queda fijo arriba —es el default correcto— y estos diez se
+   abren con un toque.
+
+   **Dos columnas SIEMPRE, tambien a 375 px**, a diferencia de `.pozos` suelto: adentro del
+   pliegue el ancho ya no compite con nada, y en una sola columna el desplegable abierto
+   volveria a medir 693. */
+.pozos--todos {
+  margin-bottom: var(--espacio-1);
+}
+
+.pozos--discos {
+  grid-template-columns: 1fr 1fr;
+  margin-top: var(--espacio-1);
+}
+
+/* Adentro del pliegue ya no hay un "primero" que mande: los diez pesan lo mismo. */
+.pozos--discos > li:first-child {
+  grid-column: auto;
+}
+
+.pozos-plegado {
+  margin-bottom: var(--espacio-2);
+}
+
+/* Sello de goma, como el resto de los controles chicos: esquina casi viva, borde fino,
+   mayusculas rotuladas. Nunca la pastilla capsula, y sin el triangulo que el navegador
+   dibuja solo — es un icono de sistema, y la tabla anti-slop veta el icono de libreria. */
+.pozos-abrir {
+  display: flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  padding: 0 var(--espacio-2);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  cursor: pointer;
+  border: var(--linea) dashed var(--borde);
+  border-radius: 3px;
+  transition: color var(--duracion-toque), border-color var(--duracion-toque);
+}
+
+.pozos-abrir::-webkit-details-marker {
+  display: none;
+}
+.pozos-abrir::marker {
+  content: '';
+}
+
+/* Abierto, el borde se afirma: dice "esto esta desplegado" sin depender del color. */
+.pozos-plegado[open] > .pozos-abrir {
+  color: var(--texto);
+  border-style: solid;
+  border-color: var(--papel-borde);
+}
+
+.pozos-abrir:hover,
+.pozos-abrir:focus-visible {
+  color: var(--texto);
+  border-color: var(--papel-borde);
+}
+
 .pozo {
   display: flex;
   flex-direction: column;
@@ -929,7 +996,18 @@
   right: 0;
   bottom: calc(100% + var(--espacio-1));
   z-index: 2;
-  max-height: 15rem;
+  /* **Los seis resultados entran enteros, sin scroll adentro** (`UX-24` §3, `T-222`).
+
+     Medido a 375x812 antes de tocarlo: seis sugerencias suman 318 px de contenido y el
+     tope estaba en 15rem = 240. Entraban cuatro y media, y la lista nacia con una barra de
+     desplazamiento adentro de una caja que ya estaba adentro de un tablero. El tope de
+     15rem nunca se habia medido contra seis resultados reales: se eligio cuando la lista
+     mostraba menos.
+
+     21rem = 336 px, que es lo que ocupan los seis con el alto de item fijado abajo. El
+     `overflow-y` se queda como red: si un dia el item crece, la lista se desplaza en vez de
+     desbordar el tablero. */
+  max-height: 21rem;
   overflow-y: auto;
   margin: 0;
   padding: 0;
@@ -954,6 +1032,11 @@
   gap: 1px;
   width: 100%;
   min-height: var(--toque-min);
+  /* El alto del item se fija para que seis sean siempre seis y no "depende del titulo".
+     Sin esto, `Aquella solitaria vaca cubana` parte en dos renglones, el item mide 76 px en
+     vez de 53, y el presupuesto de `UX-24` §3 deja de cerrar en el unico caso que importa:
+     el del titulo largo. Los dos renglones se recortan abajo. */
+  max-height: var(--toque-min);
   padding: var(--espacio-1) var(--espacio-2);
   background: transparent;
   color: var(--texto);
@@ -990,6 +1073,19 @@
   background: transparent;
   color: var(--acento-2);
   font-weight: 700;
+}
+
+/* Un renglon cada uno, recortado con puntos suspensivos del navegador si no entra.
+   **No es el suspensivo de `voz-ricotera.md` §3.7**: aquel es una decision de redaccion y
+   este es un recorte tipografico que hace el motor cuando el texto no cabe — el titulo
+   completo sigue estando en el DOM y lo lee entero un lector de pantalla. */
+.sugerencia-titulo,
+.sugerencia-disco {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sugerencia-disco {

@@ -1855,3 +1855,74 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   5. El crédito de `D-21` se imprime **adentro de la lámina** —dice lo que hay en esa
      imagen y no lo que suele haber—, cerrando el caso que `D-33` había dejado abierto: una
      tapa que sale del sitio viajaba sin su firma.
+
+---
+
+## D-37 — La cinta pasa a poner temas, y de sus cinco candados caen dos
+
+- **Fecha:** 2026-09-11
+- **Estado:** aceptada. Ciclo 14, decidida en `ADR-07` antes de escribir una línea y
+  construida en `T-217`/`T-218`.
+- **Consume:** `D-14` (molinetes abiertos, riesgo asumido), `D-22` (el sitio sirve los temas
+  enteros en mp3), `D-23` (el audio en dos niveles), `D-26` (la escalera del reveal), `D-29`
+  (ninguna isla arrastra `node:*`), `ADR-03` (tránsito entre documentos), `ADR-04` (la cama
+  de cinta y sus cinco candados), `ADR-07`, `CTR-14`, `UX-21`, `UX-26`, `RES-50`.
+
+- **Contexto.** El usuario pidió, textual: *"que encender la cinta toque uno de los temas al
+  azar de los redondos con el filtro vintage, uno de los temas enteros, cuando no haya mas
+  que ponga los recortes enteros y cambiando entre tema y tema haga un ruido como cambia el
+  vinilo o el cassete medio vintage"*.
+
+  Hasta el ciclo 13 la cinta era **ruido sintetizado**: cero archivos, cero bytes prendida o
+  apagada, y adentro de un `Math.random()` filtrado no hay obra de nadie. `ADR-04` había
+  dejado sus cinco candados escritos **con nombre**, y la instrucción de que quien afloje
+  uno sepa cuál está aflojando. Este pedido afloja dos.
+
+- **Decisión.**
+
+  1. **El candado 2 ("cero archivos") cae, pero cae la mitad.** Apagada, la cinta sigue
+     transfiriendo **cero bytes**, y la rocola **no agrega un solo archivo al repo**: usa los
+     que ya están, los recortes de `US-02` y los temas enteros de `D-22`. Lo que cae es
+     "prendida = cero bytes". La mitad que queda importa: un mp3 de siseo sigue prohibido, y
+     ese es el argumento que hay que poder defender mañana.
+  2. **El candado 4 ("no lleva información") cae en su letra y se conserva en su
+     consecuencia.** El que prende una rocola quiere saber qué suena, y `UX-26` lo resuelve:
+     el título y si es recorte o completo. **Nunca el disco** — hay diez discos contra
+     noventa y cinco temas, así que nombrarlo soplaría una respuesta de "Adiviná la tapa"
+     casi diez veces más fuerte.
+  3. **Los candados 1, 3 y 5 se quedan**, y el 3 se refuerza: además de callarse cuando algo
+     suena, ahora hay que preguntar antes **si esta ruta puede oír un tema**.
+  4. **Una pantalla de juego no pone temas. Ninguna, sin excepción.** No se discute juego por
+     juego si su respuesta es soplable: `dos-ejes` no tiene respuesta correcta y
+     `ponelos-en-fila` no tiene orden correcto, y van igual, porque uno de sus conjuntos son
+     doce temas sorteados. Afinar el criterio caso por caso significa que el octavo juego
+     llegue con una discusión en vez de con una respuesta.
+  5. **Ahí vuelve la cama, no el silencio.** La cama no puede soplar nada y cuesta cero
+     bytes. Apagar la cinta entera en los juegos sería sacarle a la gente algo que ya tenía y
+     que no molesta a nadie: molinete al revés.
+  6. **La lista es blanca, y hay un censo que rompe el build.** Un juego nuevo nace mudo, y
+     una página que nadie clasificó hace fallar `rutas-sonoras.test.ts` con el nombre del
+     archivo. No se agrega sola, pero tampoco puede pasar de largo.
+  7. **Se transmite, no se decodifica**, y no se precarga nunca. Un tema de cuatro minutos en
+     `AudioBuffer` son decenas de MB de RAM en un teléfono, y son 3–4 MB de red en un sitio
+     que promete partidas de dos minutos.
+
+- **Por qué no lo contrario.** Apagar la cinta entera en los juegos era más simple de
+  explicar y peor para la gente. Una lista negra era más corta de escribir y deja al juego
+  nuevo naciendo sonando, con el error descubriéndose jugando. Y decodificar habría reusado
+  el motor que ya existe, al precio de que el navegador mate la pestaña en el teléfono de
+  alguien.
+
+- **Consecuencias.**
+  1. **El argumento de que la cinta era una pieza intocable se termina acá.** Estaba apoyado
+     en el candado 2, y el candado 2 ya no está entero. Queda escrito para que dentro de dos
+     meses no se cite como si siguiera en pie.
+  2. `ADR-04` **no se versiona**: sigue vigente y describe la cama, que no cambió una
+     constante. `ADR-07` es la capa de arriba.
+  3. Apareció una hoja nueva, `src/lib/audio/rutas-de-audio.ts`, porque la rocola necesitaba
+     saber dónde vive el audio y traerlo de `tema/audio.ts` **cruzaba la flecha** que `ADR-04`
+     había puesto entre los dos motores. Lo cazó el test que ese ADR dejó puesto.
+  4. El riesgo número uno del ciclo no es técnico: es que el mapa de rutas salga corto en una
+     ruta y el sitio le sople la respuesta al que se sabe el tema. Por eso el mapa es parte de
+     la decisión y no del código, por eso hay una prueba que falla si suena donde no debe, y
+     por eso `T-225` lo mira ruta por ruta en vez de confiar en el test.

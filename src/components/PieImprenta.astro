@@ -89,18 +89,50 @@ const acreditados = [...tapas, ...(delPie && !tapas.includes(delPie) ? [delPie] 
       />
     )
   }
-  <p class="pie-sitio">
-    {
-      acreditados.length > 0 && (
-        /* `data-tapas` no es decoración: la isla de "adiviná el tema" recalcula este
-           renglón cuando la sala se vuelve el disco que sacaste (`UX-22` §2.5), y
-           necesita saber con qué lista arranca. Lo busca por `.credito-tapas,
-           .credito-pantalla`, así que el nombre de la clase también es contrato. */
-        <span class="credito-pantalla" data-tapas={JSON.stringify(acreditados)}>
-          {PORTAL.creditoTapas(acreditados)}
-        </span>
-      )
-    }
-    {PORTAL.pie}
-  </p>
+  {/*
+      **Esto era un `<p>` hasta el ciclo 14, y tenía que dejar de serlo.**
+
+      `CNT-16` mete el crédito adentro de un `<details>`, y **un `<details>` no puede vivir
+      adentro de un `<p>`**: el analizador del navegador cierra el párrafo solo, antes de
+      abrirlo, y la estructura que llega al DOM no es la que está escrita. No tira error, no
+      rompe el build, y el CSS de `.pie-sitio` deja de alcanzar a la mitad de su contenido.
+      Se descubre mirando el árbol, nunca leyendo el archivo.
+
+      Es un `<div>` con el mismo nombre de clase, así que el estilo no se entera.
+  */}
+  <div class="pie-sitio">
+    {/*
+        El pie corto (`CNT-16`, `T-220`). Lo que decía antes no se borró: está acá abajo,
+        a un toque. Lo que se ve siempre es de quién es el sitio; lo que se abre es de
+        dónde salió lo que muestra.
+    */}
+    <p class="pie-firma">{PORTAL.pie}</p>
+
+    {/*
+        El desplegable, sin una línea de JavaScript.
+
+        `<details>` nativo y no un botón con isla: este pie vive en las trece rutas, y una
+        isla acá sería JavaScript en toda pantalla para abrir un párrafo. Además, sin
+        JavaScript el crédito tiene que seguir siendo alcanzable — es el mapa de `CNT-01` y
+        la condición 1 de `D-21`, no un adorno.
+    */}
+    <details class="pie-creditos">
+      <summary class="pie-creditos-abrir">{PORTAL.creditosRotulo}</summary>
+      <div class="pie-creditos-cuerpo">
+        {
+          acreditados.length > 0 && (
+            /* `data-tapas` no es decoración: la isla de "adiviná el tema" recalcula este
+               renglón cuando la sala se vuelve el disco que sacaste (`UX-22` §2.5), y
+               necesita saber con qué lista arranca. Lo busca por `.credito-tapas,
+               .credito-pantalla`, así que el nombre de la clase también es contrato.
+               **Cambió de padre, no de nombre ni de comportamiento.** */
+            <span class="credito-pantalla" data-tapas={JSON.stringify(acreditados)}>
+              {PORTAL.creditoTapas(acreditados)}
+            </span>
+          )
+        }
+        <span class="pie-legal">{PORTAL.creditosCuerpo}</span>
+      </div>
+    </details>
+  </div>
 </footer>

@@ -661,3 +661,42 @@ este ADR, y sin ellos el ADR es una opinión—:
    vuelve.
 6. Escuchar tres minutos seguidos sin tocar nada: **el bucle no se tiene que oír como bucle**.
    Si aparece un patrón, el sospechoso es `BAMBOLEO_HZ` contra `LARGO_BUCLE_SEG`.
+
+---
+
+## Nota de revisión — 2026-09-11, `ADR-07` afloja dos candados de acá
+
+> Escrita por `arquitectura` en `T-212` del ciclo 14. **`ADR-04` no se reemplaza y no se
+> versiona: sigue vigente entero.** Lo que cambió es que la cinta, además de ser una cama,
+> ahora puede poner temas. Eso se decide en **`Docs/ARQ/ARQ-rocola.md` (`ADR-07`)**, y el
+> apartado que hay que leer antes que ninguno es `ADR-07.1`, que toma los cinco candados de
+> arriba uno por uno.
+
+En una tabla, para el que llegó a este archivo buscando por qué algo suena distinto:
+
+| Candado de `ADR-04` | Estado después de `ADR-07` |
+|---|---|
+| 1 — Apagada por defecto | **se queda, y se endurece**: además de no sonar, la primera visita no baja un byte. Ningún byte de audio se pide sin un gesto sobre el interruptor |
+| 2 — **Cero archivos** | **cae, y cae la mitad exacta.** Sigue en pie *apagada = 0 bytes* y sigue en pie *ninguna pieza nueva que producir*: la rocola pone los archivos que el sitio ya sirve. Lo que cae es *prendida = 0 bytes* |
+| 3 — Muda cuando algo suena | **se queda, y se refuerza.** La rocola está exenta de sí misma **por una marca explícita** en su `<audio>` (`ADR-07.3`), nunca por accidente. Todo lo demás la sigue callando |
+| 4 — **No lleva información** | **cae en su letra.** La rocola nombra la pieza que pone. Se conserva la consecuencia que `ADR-04.8` necesitaba: apagar la cinta no cuesta una sola información **del sitio** |
+| 5 — Un solo `AudioContext` | **se queda, intacto y más necesario que antes**: el `<audio>` de la rocola entra al mismo grafo |
+
+**Los tres apartados de este documento que `ADR-07` revisa, y en qué:**
+
+- **`ADR-04.1`** — la prohibición de *"cualquier evento sonoro puntual"* sigue entera para los
+  eventos de **interfaz**. La única excepción escrita es **la púa** (`ADR-07.7`), que no la
+  dispara un dedo sino el aparato cambiando de pieza.
+- **`ADR-04.6`** — el contrato del módulo crece: `ModoCinta`, `modoDeLaCinta()`,
+  `piezaSonando()`, `prenderCinta(modo?)` y `ROCOLA_HABILITADA`. Los cuatro estados
+  (`apagada | sonando | callada | bloqueada`) **no cambian**. La prohibición de importar
+  `src/data/*.json` **sigue valiendo para `cinta.ts`**: la lista de piezas la imprime la
+  página en build y llega como argumento (`ADR-07.9`).
+- **`ADR-04.8`** — la preferencia 2, la de atención, **se invierte para la rocola y solo para
+  ella**: con la página escondida la cama se calla y **el tema sigue**. `visibilityState` dice
+  que la persona dejó de mirar, no que dejó de escuchar (`ADR-07.8`). Las preferencias 1 y 3
+  no cambian.
+
+Y lo que este archivo **no** sabía y ahora es la pregunta anterior a todo: **dónde puede
+sonar la cinta y en qué modo lo decide la ruta**, con lista blanca y censo de páginas
+(`ADR-07.2`). Los tres graves de `graves.ts` siguen mudos del todo, con un candado más.

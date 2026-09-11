@@ -78,31 +78,49 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
         {
           hayAudio ? (
             <>
+              {/*
+                  **Los once pozos entran en 119 px, no en 693** (`UX-24` §2).
+
+                  Medido a 375×812 antes de tocarlo: once botones de 63 px en una columna
+                  eran más de la mitad de la pantalla, y el juego entero no entraba en la
+                  ventana. Ahora "Todos los discos" queda fijo y preseleccionado —que es el
+                  default correcto, el mismo que ya defendía el `sticky` de `.arranque`— y
+                  los otros diez se pliegan en dos columnas.
+
+                  **Esto no es un molinete.** No se le niega nada a nadie: los diez están a
+                  un toque, sin cuenta y sin saber nada. Lo que se saca es la obligación de
+                  hacer dos pantallas de scroll para llegar al botón de empezar.
+              */}
               <h2 class="elegi">{PANTALLA_0.elegiPozo}</h2>
-              <ul class="pozos">
+              <ul class="pozos pozos--todos">
                 <li>
                   <button class="pozo" type="button" data-disco="" aria-pressed="true">
                     <span class="pozo-titulo">{PANTALLA_0.todos}</span>
                     <span class="pozo-dato">{PANTALLA_0.hay(cat.jugables)}</span>
                   </button>
                 </li>
-                {cat.discos.map((d) => (
-                  <li>
-                    <button
-                      class:list={['pozo', claseDisco(d.slug)]}
-                      type="button"
-                      data-disco={d.slug}
-                      aria-pressed="false"
-                      disabled={d.jugables === 0}
-                    >
-                      <span class="pozo-titulo">{d.titulo}</span>
-                      <span class="pozo-dato">
-                        {d.jugables === 0 ? PANTALLA_0.sinAudio : PANTALLA_0.hay(d.jugables)}
-                      </span>
-                    </button>
-                  </li>
-                ))}
               </ul>
+              <details class="pozos-plegado">
+                <summary class="pozos-abrir">{PANTALLA_0.elegiDisco}</summary>
+                <ul class="pozos pozos--discos">
+                  {cat.discos.map((d) => (
+                    <li>
+                      <button
+                        class:list={['pozo', claseDisco(d.slug)]}
+                        type="button"
+                        data-disco={d.slug}
+                        aria-pressed="false"
+                        disabled={d.jugables === 0}
+                      >
+                        <span class="pozo-titulo">{d.titulo}</span>
+                        <span class="pozo-dato">
+                          {d.jugables === 0 ? PANTALLA_0.sinAudio : PANTALLA_0.hay(d.jugables)}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </details>
               {/* `US-02` criterio 2: el aviso va **antes de arrancar la partida**, no
                   durante. Nadie puede adivinar a ciegas sin saber que el audio no sonó. */}
               <p class="aviso-sonido">{PARTIDA.sinSonido}</p>
@@ -176,13 +194,27 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
          achica a proposito: es la mas densa del sitio y pelea el espacio por pixel. Lo
          unico que se sobrescribe es el tamano y el aire — y ahora tambien respira, en vez
          de quedar clavado en un rem fijo. A 375 px da lo mismo que antes. */
+      /*
+       * Los márgenes de esta pantalla, apretados contra el presupuesto de `UX-24` §1.
+       *
+       * **No se achicó ni una letra**: el `h1`, la bajada y el aviso de sonido miden lo
+       * mismo que antes. Lo que cede es el aire entre bloques, que es lo que sobraba en la
+       * pantalla más densa del sitio. Va acotado acá y no en `juego.css` porque los otros
+       * cinco tableros no tienen once pozos y no necesitan apretarse.
+       */
+      .cabecera-sitio {
+        margin-bottom: var(--espacio-1);
+      }
+      .donde-estas {
+        margin-bottom: var(--espacio-1);
+      }
       .marca {
         font-family: var(--fuente-titular);
         font-size: clamp(1.3rem, 6vw, 1.8rem);
         line-height: 0.96;
         letter-spacing: 0.02em;
         color: var(--marca-rojo);
-        margin: var(--espacio-2) 0 var(--espacio-2);
+        margin: var(--espacio-1) 0 var(--espacio-1);
         max-width: 7ch;
       }
       h1 {

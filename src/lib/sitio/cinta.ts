@@ -43,9 +43,20 @@ import {
   despertarSalida,
   salidaOcupada,
 } from '../audio/contexto.ts';
-// La lista de las tres pantallas donde el sitio se saca la voz. Es un módulo hoja que no
-// importa nada: si trajera algo de `arte.ts` arrastraría `node:fs` al navegador (`D-29`).
-import { esPantallaGrave } from './graves.ts';
+// El mapa de `ADR-07.2`: qué puede hacer la cinta en cada ruta.
+//
+// Reemplaza al `esPantallaGrave` que este archivo importaba directamente hasta el ciclo 13.
+// **No se perdió un candado, se movió**: `rutas-sonoras.ts` lee los tres graves de
+// `graves.ts` y no los reescribe, así que sigue habiendo una sola verdad sobre quiénes son
+// los tres. Y sigue siendo un módulo hoja que no arrastra `node:*` (`D-29`).
+import { type ModoCinta, esPantallaMuda, modoEnRuta } from './rutas-sonoras.ts';
+import {
+  ROCOLA_HABILITADA,
+  apagarRocola,
+  prenderRocola,
+  proximaPieza as proximaPiezaDeLaRocola,
+  rocolaSembrada,
+} from './rocola.ts';
 
 /**
  * El apagado de emergencia (`ADR-04.7`).
@@ -127,6 +138,15 @@ interface Nodos {
 }
 
 let estado: EstadoCinta = 'apagada';
+/**
+ * Con qué se prendió esta vez (`ADR-07.9`).
+ *
+ * **No es un quinto estado**, y `UX-26` insiste en que no lo sea: los cuatro de `EstadoCinta`
+ * describen el sonido —si suena, si se calló, si quedó trabada— y el modo describe qué se le
+ * permite poner. Son dos capas ortogonales, y mezclarlas obligaría a pintar ocho casillas en
+ * el interruptor en vez de cuatro más una etiqueta.
+ */
+let modoPedido: ModoCinta = 'cama';
 let nodos: Nodos | null = null;
 /**
  * El bucle de ruido, generado una vez por página y conservado aunque se apague.
@@ -191,7 +211,13 @@ export function cintaDisponible(): boolean {
   // respuesta era que sí. Bulacio, Olavarría y la muerte del Indio son las tres pantallas
   // donde `voz-ricotera.md` §6 dice que el sitio se saca la voz, y `UX-20` §3.4 lo extiende
   // a la pantalla entera. Una cama de aire sonando ahí es exactamente eso.
-  if (esPantallaGrave(window.location?.pathname ?? '')) return false;
+  //
+  // Desde el ciclo 14 la pregunta se le hace a `rutas-sonoras.ts`, que **incluye a los tres
+  // graves** —los lee de `graves.ts`, una sola verdad— y le suma `/diagnostico-audio/`. Esa
+  // última no es una falta de respeto: esa página **mide el audio**, y cualquier sonido que
+  // el sitio agregue ahí es una lectura falsa. En la práctica ya estaba muda, pero "en la
+  // práctica" no es un candado (`ADR-07.2`).
+  if (esPantallaMuda(window.location?.pathname ?? '')) return false;
   // Acá se **mira** el constructor, no se lo llama: el único `new` de todo el sitio está en
   // `audio/contexto.ts`. Vale la aclaración porque el `grep` de `ADR-04.10` —el que busca
   // `new AudioContext|webkitAudioContext|new Ctor()`— va a nombrar este archivo por esta
@@ -206,6 +232,30 @@ export function cintaDisponible(): boolean {
 /** Qué está pasando ahora. Barato: no crea nada, no toca el contexto. */
 export function estadoDeLaCinta(): EstadoCinta {
   return estado;
+}
+
+/**
+ * Qué puede hacer la cinta acá. **Lo decide la ruta, nunca la persona** (`ADR-07.2`).
+ *
+ * Barato: no crea nada. Devuelve `cama` cuando la rocola está apagada por emergencia o
+ * cuando la página no sembró piezas — el candado C, que hace que el olvido caiga del lado
+ * del silencio en vez del de la música.
+ */
+export function modoDeLaCinta(): ModoCinta {
+  if (!ROCOLA_HABILITADA) return 'cama';
+  if (typeof window === 'undefined') return 'cama';
+  if (modoEnRuta(window.location?.pathname ?? '') !== 'rocola') return 'cama';
+  return rocolaSembrada() ? 'rocola' : 'cama';
+}
+
+/**
+ * Pasar a la que sigue. **Solo desde un gesto: mueve bytes.**
+ *
+ * Es el control "poné otro tema" de `UX-26`. En modo cama no hace nada y no es un error:
+ * no hay pieza que saltear.
+ */
+export function proximaPieza(): void {
+  proximaPiezaDeLaRocola();
 }
 
 /**
@@ -591,9 +641,30 @@ function medioDelEvento(evento: Event): HTMLMediaElement | null {
   return blanco as HTMLMediaElement;
 }
 
+/**
+ * La exención del barrido para el medio de la rocola (`ADR-07.3`, forma 2).
+ *
+ * **Sin esto, la rocola se calla a sí misma en el primer segundo**: pondría un tema, el
+ * barrido lo vería sonar, y la cama —que es la que decide— mandaría callar a todo el mundo,
+ * la rocola incluida. Y peor: el conjunto no se vaciaría hasta que el tema terminara, así
+ * que quedaría muda todo ese rato sin que nadie entienda por qué.
+ *
+ * Hoy alcanzaría con que el elemento viva fuera del documento, y vive. Esto es el segundo
+ * candado, para el día que alguien lo inserte —controles nativos, la pantalla bloqueada del
+ * sistema— y descubra el defecto escuchando en vez de leyendo.
+ *
+ * **Lo que esta exención NO hace:** aflojar el candado 3 para nadie más. Un medio sin marca
+ * sigue callando la cama exactamente igual, y eso tiene su propia prueba.
+ */
+function esDeLaRocola(medio: HTMLMediaElement): boolean {
+  const marca = (medio as unknown as { dataset?: { cinta?: string } }).dataset;
+  return marca?.cinta === 'rocola';
+}
+
 function anotarMedio(evento: Event): void {
   const medio = medioDelEvento(evento);
   if (!medio) return;
+  if (esDeLaRocola(medio)) return;
   medios.add(medio);
   reevaluar();
 }
@@ -643,6 +714,10 @@ function registrarOidos(): void {
       const encontrados = document.querySelectorAll?.('audio, video');
       for (const medio of encontrados ?? []) {
         const m = medio as HTMLMediaElement;
+        // El otro lugar donde se mira medios, y el que se olvida. La exención de
+        // `ADR-07.3` tiene que estar en los dos: si estuviera solo en el escucha, una
+        // rocola ya sonando al prender la cama la callaría para siempre.
+        if (esDeLaRocola(m)) continue;
         if (!m.paused && !m.ended) medios.add(m);
       }
     } catch {
@@ -696,11 +771,19 @@ function desregistrarOidos(): void {
  * - **la preferencia no se guarda**: nunca se recuerda algo que no llegó a pasar;
  * - **cero nodos vivos**, y el estado queda en `bloqueada` para que el interruptor lo diga.
  */
-export async function prenderCinta(): Promise<EstadoCinta> {
+export async function prenderCinta(modo?: ModoCinta): Promise<EstadoCinta> {
   if (!cintaDisponible()) {
     cambiarEstado('apagada');
     return estado;
   }
+  /*
+   * Con qué prender (`ADR-07.9`).
+   *
+   * Sin argumento, lo que permita la ruta. Con argumento, **lo que se pida acotado por la
+   * ruta**: nadie puede pedir rocola en una pantalla de juego, ni desde acá ni desde
+   * ningún lado. Es el primero de los dos candados; el segundo lo pone `prenderRocola()`.
+   */
+  modoPedido = modo === 'rocola' && modoDeLaCinta() !== 'rocola' ? 'cama' : (modo ?? modoDeLaCinta());
   // El segundo toque sobre una cama ya armada no arma un segundo grafo: sería una cama
   // encima de la otra, al doble de volumen y sin forma de apagar la de abajo.
   //
@@ -747,7 +830,37 @@ async function armarYSonar(): Promise<EstadoCinta> {
     rampar(GANANCIA_CAMA, SUBIDA_SEG);
     cambiarEstado('sonando');
   }
+
+  /*
+   * La rocola se cuelga **arriba** de la cama, no en su lugar.
+   *
+   * El siseo, el arrastre y el bamboleo de `ADR-04` siguen corriendo abajo del tema: eso es
+   * precisamente lo que hace que suene salido de un casete y no a un tema con un filtro
+   * puesto encima. Y es lo que deja al silencio entre pieza y pieza sin ser silencio — que
+   * es sobre lo que cae la púa.
+   *
+   * Si `prenderRocola()` dice que no —pantalla de juego, nada sembrado, un navegador sin
+   * `createMediaElementSource`— no pasa nada: queda la cama, que ya está sonando. **La
+   * rocola es lo que se suma; la cama es lo que no puede faltar.**
+   */
+  if (modoPedido === 'rocola') {
+    prenderRocola(ctx, ctx.destination, alRendirseLaRocola);
+  }
   return estado;
+}
+
+/**
+ * La rocola se rindió: tres piezas seguidas que no bajaron.
+ *
+ * **Se cae a cama, no a silencio.** Un teléfono que perdió la red termina con la cama
+ * sonando, que no cuesta bytes, en vez de mudo. El silencio se leería como que la cinta se
+ * rompió, y la persona la tocaría pensando eso.
+ *
+ * No se cambia de estado: la cama sigue exactamente como estaba, y lo único que cambia es
+ * que ya no hay pieza. El interruptor se entera por `alCambiarLaPieza()`.
+ */
+function alRendirseLaRocola(): void {
+  modoPedido = 'cama';
 }
 
 /**
@@ -762,6 +875,10 @@ export function apagarCinta(): void {
   cancelarRevision();
   desarmarRearme();
   desregistrarOidos();
+  // Primero la rocola: es la que está bajando bytes. Dejarla para después del desarme sería
+  // seguir descargando un tema que ya nadie va a oír.
+  apagarRocola();
+  modoPedido = 'cama';
   if (nodos) {
     rampar(0, BAJADA_SEG);
     desarmar();
@@ -791,7 +908,16 @@ export function rearmarCinta(): () => void {
   }
   const alPrimerToque = (): void => {
     desarmarRearme();
-    void prenderCinta();
+    /*
+     * **El rearme prende `cama`, siempre, incluso en una ruta de rocola** (`ADR-07.8`).
+     *
+     * La persona declaró con el dedo que quiere la cinta, no que quiere que cada pantalla
+     * que abra se baje 4 MB. Volver de un juego al portal y que arranque un tema solo son
+     * bytes que nadie pidió — y este sitio no le cierra la puerta al que tiene datos
+     * contados (`D-14`). Para que suene un tema hace falta otro dedo, que es el control
+     * "poné un tema" de `UX-26`.
+     */
+    void prenderCinta('cama');
   };
   toqueArmado = alPrimerToque;
   document.addEventListener('pointerdown', alPrimerToque, { once: true, capture: true });
@@ -820,9 +946,11 @@ export function reiniciarCintaParaPruebas(): void {
   cancelarRevision();
   desarmarRearme();
   desregistrarOidos();
+  apagarRocola();
   nodos = null;
   cintaRuido = null;
   preferenciaEnMemoria = null;
   estado = 'apagada';
+  modoPedido = 'cama';
   oyentes.clear();
 }

@@ -21,6 +21,14 @@ export const PANTALLA_0 = {
     'cuatro, ocho, diez. Cuanto antes la pegues, más vale.',
   elegiPozo: '¿Con qué jugás?',
   todos: 'Todos los discos',
+  /**
+   * El disparador que abre los diez discos (`UX-24` §2, `T-221`).
+   *
+   * Voseo, tres palabras, y dice exactamente lo que hay adentro. Va plegado porque once
+   * botones de 63 px eran 693 px —más de media pantalla— y dejaban el botón de empezar
+   * abajo del pliegue. No se le niega nada a nadie: están a un toque.
+   */
+  elegiDisco: 'Elegí un disco',
   boton: 'Empezá',
   /** Cuántos temas hay para sortear en lo que el jugador eligió. */
   hay: (n: number) => (n === 1 ? '1 tema' : `${n} temas`),

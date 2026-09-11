@@ -25,8 +25,33 @@ export const PORTAL = {
   enLaCocina: 'En la cocina',
   volver: 'VOLVÉ',
   volverAlArcade: 'AL ARCADE',
-  pie:
-    'Sitio de fans, sin fines de lucro. El arte de las tapas es de Rocambole ' +
+  /**
+   * El pie, en 42 caracteres (`CNT-16`, `T-220`).
+   *
+   * Lo pidió el usuario textual: *"achicar el mensaje de abajo dejando 'sitio hecho por
+   * ricoteros para ricoteros'"*. La coma la suma `contenido`: marca la vuelta de la frase
+   * —quién lo hizo / para quién es— sin agregar una palabra.
+   *
+   * **Lo que decía antes no se borró, se mudó** al desplegable de acá abajo: sin fines de
+   * lucro, el crédito a Rocambole y a la banda, y la postura de `D-14`. El mapa de `CNT-01`
+   * sigue completo; lo que cambió es que está a un toque en vez de a la vista.
+   *
+   * Sobre `voz-ricotera.md` §3.8 ("la gente", no "los fans"): acá no hace falta la excepción
+   * del pie, porque la frase no dice "fans" ni "usuarios". Dice **ricoteros**, y nombra con
+   * la misma palabra al que lo hizo y al que lo juega, en el mismo gesto.
+   */
+  pie: 'Sitio hecho por ricoteros, para ricoteros.',
+  /** El disparador del desplegable. Registro 1: es un control que se toca, en voseo. */
+  creditosRotulo: 'Mirá los créditos',
+  /**
+   * El cuerpo del desplegable: el pie de antes, palabra por palabra, con un solo recorte.
+   *
+   * Sale "Sitio de fans, " del arranque, porque ese trabajo ya lo hace la frase corta de
+   * afuera, y "sin fines de lucro" pasa de cierre de esa oración a apertura de esta. Nada del
+   * crédito ni de la postura cambia una letra.
+   */
+  creditosCuerpo:
+    'Sin fines de lucro: el arte de las tapas es de Rocambole ' +
     '(Ricardo Cohen); la música, de Patricio Rey y sus Redonditos de Ricota. ' +
     'Si algo molesta a quien corresponde, se baja y listo.',
   /**
@@ -117,6 +142,29 @@ export const CINTA = {
   porQueBloqueada: 'El navegador no la deja sonar acá',
   prender: 'Prendé la cinta',
   apagar: 'Apagá la cinta',
+
+  // Lo que suma la rocola (`UX-26`, ciclo 14). Los cuatro estados de arriba no cambian:
+  // describen el sonido, no el modo, y mezclar las dos capas obligaría a pintar ocho
+  // casillas en vez de cuatro más una etiqueta.
+
+  /**
+   * La línea que cuelga del interruptor cuando la rocola pone un tema.
+   *
+   * **Nunca nombra el disco**, y no es un olvido: hay diez discos contra noventa y cinco
+   * temas, así que nombrar el disco sopla una respuesta de "Adiviná la tapa" casi diez
+   * veces más fuerte de lo que el título solo sopla cualquier otra cosa (`UX-26` §1.3).
+   */
+  suena: (titulo: string, entero: boolean) => `${titulo} · ${entero ? 'completo' : 'recorte'}`,
+  /**
+   * Sube la cinta de cama a rocola sin apagar nada (`UX-26` §3.1).
+   *
+   * Existe por `ADR-07.8`: el rearme al cambiar de pantalla siempre arma en modo cama, así
+   * que quien navega con la cinta prendida llega a una pantalla que podría sonar y se
+   * encuentra con la cama. Sin esto, el único camino sería apagar y volver a prender.
+   */
+  ponerTema: 'PONÉ UN TEMA',
+  /** Pasa a la próxima pieza. Mueve bytes, así que pide un dedo (`UX-26` §3.1). */
+  otroTema: 'PONÉ OTRO TEMA',
 } as const;
 
 /**

@@ -29,16 +29,19 @@
  *    no rompe nada: durante una partida con audio la cama está callada igual.
  */
 import { CINTA } from '../lib/sitio/copy.ts';
-import { esPantallaGrave } from '../lib/sitio/graves.ts';
+import { esPantallaMuda, modoEnRuta } from '../lib/sitio/rutas-sonoras.ts';
 import {
   alCambiarLaCinta,
   apagarCinta,
   cintaDisponible,
   estadoDeLaCinta,
+  modoDeLaCinta,
   prenderCinta,
+  proximaPieza,
   rearmarCinta,
   type EstadoCinta,
 } from '../lib/sitio/cinta.ts';
+import { type Pieza, alCambiarLaPieza, piezaSonando, sembrarRocola } from '../lib/sitio/rocola.ts';
 
 /** Qué dice la estampa y qué dice el nombre accesible, por estado (`UX-21` §3). */
 const ROTULO: Record<EstadoCinta, string> = {
@@ -101,6 +104,30 @@ function pintar(boton: HTMLButtonElement, estado: EstadoCinta): void {
 }
 
 /**
+ * Lee la lista que la página imprimió en build y se la pasa a la rocola (`ADR-07.9`).
+ *
+ * **Sin pedido de red y sin `await`**: es un `<script type="application/json">` que ya está
+ * en el documento. Eso es lo que permite que elegir el tema ocurra adentro del gesto, que es
+ * lo único que el navegador acepta para dejar sonar algo.
+ *
+ * En las pantallas de juego y en las tres graves ese bloque **no existe** —`Base.astro` no lo
+ * imprime—, así que acá no se siembra nada y la cinta se queda con la cama. Es el candado C:
+ * el olvido cae del lado del silencio.
+ */
+function sembrarDesdeLaPagina(): void {
+  if (modoEnRuta(location.pathname) !== 'rocola') return;
+  const bloque = document.getElementById('piezas-rocola');
+  if (!bloque?.textContent) return;
+  try {
+    const piezas = JSON.parse(bloque.textContent) as Pieza[];
+    if (Array.isArray(piezas) && piezas.length > 0) sembrarRocola(piezas);
+  } catch {
+    // Un JSON que no parsea deja la cinta en modo cama, que suena igual y no cuesta nada.
+    // Romper la isla entera por esto apagaría también el interruptor.
+  }
+}
+
+/**
  * Dónde se cuelga la estampa.
  *
  * Si la pantalla ya tiene su renglón de cabecera, se suma ahí — es lo que pide `UX-21`
@@ -123,7 +150,15 @@ function dondeVa(): HTMLElement | null {
 
 function montar(): void {
   if (!cintaDisponible()) return;
-  if (esPantallaGrave(location.pathname)) return;
+  // El primer candado de los dos: la isla no se pinta donde no suena nada. El segundo lo
+  // pone `cintaDisponible()` adentro del módulo, para que la preferencia guardada tampoco
+  // pueda prenderla. Desde el ciclo 14 la lista incluye `/diagnostico-audio/` (`ADR-07.2`).
+  if (esPantallaMuda(location.pathname)) return;
+
+  // **La siembra va antes que todo lo demás** (`ADR-07.9`): sin ella `modoDeLaCinta()`
+  // devuelve `cama`, y el primer toque prendería la cama en una pantalla donde podía sonar
+  // un tema. Es texto que ya está en el documento, así que no hay pedido de red ni `await`.
+  sembrarDesdeLaPagina();
 
   const lugar = dondeVa();
   if (!lugar) return;
@@ -138,18 +173,98 @@ function montar(): void {
     if (estado === 'sonando' || estado === 'callada') {
       apagarCinta();
       pintar(boton, estadoDeLaCinta());
+      pintarRocola();
       return;
     }
     // Un segundo toque después de un bloqueo es un gesto nuevo de la persona, no un
     // reintento automático: `UX-21` §3.1 lo permite explícitamente y `ADR-04.4` solo
     // prohíbe que reintente el módulo por su cuenta.
-    void prenderCinta().then((nuevo) => pintar(boton, nuevo));
+    //
+    // Sin argumento: prende **con lo que la ruta permita** (`ADR-07.9`). En una pantalla
+    // que puede sonar, el primer toque ya pone un tema — un segundo botón para eso sería
+    // un segundo toque para lo que el primero ya hace (`UX-26` §3.2).
+    void prenderCinta().then((nuevo) => {
+      pintar(boton, nuevo);
+      pintarRocola();
+    });
   });
+
+  /*
+   * El renglón de la rocola: qué tema suena, y el control para cambiarlo (`UX-26`).
+   *
+   * Va **debajo** del interruptor y no adentro: el botón es registro 3 —nombra un estado y
+   * se calla— y el título de un tema no es un estado. Meterlo adentro de la estampa la
+   * convertiría en un cartel que cambia de ancho cada diez segundos, arriba de todo y en la
+   * cabecera.
+   */
+  const renglon = document.createElement('div');
+  renglon.className = 'cinta-pieza';
+  renglon.hidden = true;
+
+  const queSuena = document.createElement('span');
+  queSuena.className = 'cinta-suena';
+  // La pieza cambia sola cada diez segundos: sin esto, quien no ve la pantalla no se entera
+  // nunca de qué está sonando. `polite` y no `assertive`: no interrumpe lo que se esté
+  // leyendo, que sería el sitio pisándole la lectura a alguien cada diez segundos.
+  queSuena.setAttribute('aria-live', 'polite');
+
+  const accion = document.createElement('button');
+  accion.type = 'button';
+  accion.className = 'cinta-accion';
+  accion.addEventListener('click', () => {
+    if (piezaSonando()) {
+      // Ya hay una sonando: se saltea. Mueve bytes, y por eso pide este dedo.
+      proximaPieza();
+      return;
+    }
+    // Modo cama en una ruta que puede sonar: se sube de modo sin apagar nada. Es la
+    // consecuencia de `ADR-07.8` —el rearme siempre arma en cama— y sin este botón el
+    // único camino sería apagar y volver a prender.
+    void prenderCinta('rocola').then(() => pintarRocola());
+  });
+
+  renglon.append(queSuena, accion);
+
+  /** Pinta el renglón según la tabla de `UX-26` §4. Nada acá inventa un quinto estado. */
+  function pintarRocola(): void {
+    const estado = estadoDeLaCinta();
+    const puede = modoDeLaCinta() === 'rocola';
+    const pieza = piezaSonando();
+    const prendida = estado === 'sonando' || estado === 'callada';
+
+    if (!puede || !prendida) {
+      renglon.hidden = true;
+      return;
+    }
+    renglon.hidden = false;
+
+    // El título se **congela** durante `callada` en vez de desaparecer: la pieza no cambió,
+    // solo dejó de oírse porque algo más importante está sonando. Borrarlo sería mentir por
+    // omisión, como si la rocola se hubiera olvidado de qué estaba poniendo. El `❚❚` del
+    // interruptor ya dice "no se oye ahora".
+    queSuena.textContent = pieza ? CINTA.suena(pieza.titulo, pieza.entero) : '';
+
+    // Saltear una pieza que no se puede oír gasta bytes sin ningún beneficio, así que el
+    // control desaparece mientras la cinta está callada.
+    const ofreceSaltar = pieza !== null && estado === 'sonando';
+    const ofrecePoner = pieza === null;
+    accion.hidden = !ofreceSaltar && !ofrecePoner;
+    accion.textContent = pieza ? CINTA.otroTema : CINTA.ponerTema;
+  }
 
   // El módulo avisa cuando la cama se calla sola porque arrancó un fragmento. Sin esto,
   // la estampa diría SONANDO mientras no suena, y la persona tocaría el interruptor
   // pensando que se rompió.
-  alCambiarLaCinta((estado) => pintar(boton, estado));
+  alCambiarLaCinta((estado) => {
+    pintar(boton, estado);
+    pintarRocola();
+  });
+
+  // Y este es el aviso que `UX-21` no tenía y que `UX-26` encontró leyendo el contrato:
+  // pasar de un tema al siguiente **no cambia el estado** —sigue `sonando`—, así que sin
+  // esto el renglón mostraría para siempre el título de la primera pieza.
+  alCambiarLaPieza(() => pintarRocola());
+  pintarRocola();
 
   /*
    * **La preferencia tiene que significar algo cuando se cambia de pantalla.**
@@ -178,6 +293,10 @@ function montar(): void {
   // renglón en `flex-wrap`, la que baja a la segunda línea es ella sola; con la cinta en el
   // medio, lo que se partía en dos era la salida de la pantalla.
   lugar.append(boton);
+  // El renglón de la rocola se cuelga **después** de que el botón esté en el árbol: `after()`
+  // sobre un nodo suelto no hace nada y no avisa, así que hacerlo antes dejaba el renglón
+  // construido, vivo y en ninguna parte. Se descubrió mirando el DOM, no leyendo.
+  boton.after(renglon);
 }
 
 montar();

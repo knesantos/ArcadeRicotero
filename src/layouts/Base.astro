@@ -13,6 +13,8 @@ import '../styles/sitio.css';
 import Cabeza from '../components/Cabeza.astro';
 import PieImprenta from '../components/PieImprenta.astro';
 import { conRecorteReal, fondoTapa, medidas } from '../lib/sitio/arte.ts';
+import { modoEnRuta } from '../lib/sitio/rutas-sonoras.ts';
+import manifiestoDeAudio from '../data/adivinar-tema.json';
 
 interface Props {
   titulo: string;
@@ -62,6 +64,30 @@ const arteBanderas = conRecorteReal('/arte/banderas.svg');
 const arteMosca = conRecorteReal('/arte/mosca.svg');
 const medidaBanderas = medidas(arteBanderas);
 const medidaMosca = medidas(arteMosca);
+
+/**
+ * La siembra de la rocola (`ADR-07.9`), y **solo donde puede sonar**.
+ *
+ * El problema que esto resuelve: elegir qué tema poner hay que hacerlo **adentro del gesto**,
+ * sincrónicamente, antes del `play()`. Un `import()` dinámico resuelve rápido pero resuelve
+ * *después*, y del otro lado del `await` ya no estamos adentro del gesto — el navegador no
+ * deja sonar nada. Y meter el JSON como importación estática de la isla lo mandaría también a
+ * las seis pantallas de juego, donde la rocola no suena nunca.
+ *
+ * Así que la lista la imprime la página en build, como texto que ya está en el documento. En
+ * las pantallas de juego y en las tres graves **este bloque no se imprime**: ahí la cinta
+ * transfiere cero bytes, igual que antes del ciclo 14. Es el mismo patrón con el que el sitio
+ * ya resuelve los bancos de los juegos.
+ *
+ * Y es el **candado C** de `ADR-07.2`: una pantalla que no siembra no tiene con qué sonar, así
+ * que un olvido cae del lado del silencio y no del de la música.
+ */
+const ponesTemas = modoEnRuta(Astro.url.pathname) === 'rocola';
+const piezasDeLaRocola = ponesTemas
+  ? (manifiestoDeAudio as { fragmentos: Array<{ slug: string; titulo: string; entero: boolean }> }).fragmentos.map(
+      (f) => ({ slug: f.slug, titulo: f.titulo, entero: f.entero }),
+    )
+  : [];
 ---
 
 <!doctype html>
@@ -121,6 +147,12 @@ const medidaMosca = medidas(arteMosca);
         credito de `D-21` deja de ser un renglon al pie de la nada y queda impreso sobre la
         tinta del disco que acredita. */}
     <PieImprenta disco={discoDelPie} tapas={tapas} />
+
+    {
+      ponesTemas && (
+        <script type="application/json" id="piezas-rocola" set:html={JSON.stringify(piezasDeLaRocola)} />
+      )
+    }
 
     <script>
       /**

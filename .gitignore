@@ -39,6 +39,11 @@ tmp/
 *.wav
 *.mp3
 !public/audio/fragmentos/*.mp3
+# Los temas enteros son el nivel 2 de D-23 y el sitio los sirve por D-22: sin esta
+# linea se generan en disco, se ven en `public/audio/temas/`, y no llegan nunca a
+# produccion — en silencio, que es la peor forma. RES-50 ya midio que ~180 MB no
+# molestan ni a Vercel Hobby ni a GitHub.
+!public/audio/temas/*.mp3
 
 # Generado por Astro
 .astro/

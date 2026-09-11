@@ -37,21 +37,23 @@
 import { DURACION_FRAGMENTO_SEG } from './escalera.ts';
 import { contextoDeAudio, tomarLaSalida } from '../audio/contexto.ts';
 
-/** Dónde viven los fragmentos (`CTR-01.4`). */
-export const CARPETA_FRAGMENTOS = '/audio/fragmentos';
-/** Dónde viven los temas enteros (`D-23`, nivel 2). */
-export const CARPETA_TEMAS = '/audio/temas';
+/*
+ * Dónde vive el audio: bajó a `audio/rutas-de-audio.ts` en el ciclo 14, y se vuelve a
+ * exportar desde acá para que nadie que ya lo importaba tenga que cambiar una línea.
+ *
+ * **El motivo del traslado no es orden, es un candado.** La rocola (`sitio/rocola.ts`) las
+ * necesita, y para traerlas de acá tendría que importar este archivo — lo que cruza la
+ * flecha que `ADR-04` puso a propósito entre los dos motores de audio. La hoja deja que los
+ * dos miren la misma verdad sin mirarse entre ellos. El archivo nuevo lo explica entero.
+ */
+export { CARPETA_FRAGMENTOS, CARPETA_TEMAS, urlDeFragmento, urlDeTema } from '../audio/rutas-de-audio.ts';
+// Y además se importa, porque este archivo las usa adentro: `export ... from` vuelve a
+// publicar el nombre pero **no lo trae al ámbito local**, y sin esta línea el motor de
+// fragmentos se queda sin saber de dónde bajar un recorte.
+import { urlDeFragmento } from '../audio/rutas-de-audio.ts';
 
 /** Cuántos buffers decodificados se sostienen a la vez (`CTR-01.5`). */
 const MAX_BUFFERS = 3;
-
-export function urlDeFragmento(slug: string): string {
-  return `${CARPETA_FRAGMENTOS}/${slug}.mp3`;
-}
-
-export function urlDeTema(slug: string): string {
-  return `${CARPETA_TEMAS}/${slug}.mp3`;
-}
 
 export interface Escucha {
   /** Cuánto lleva sonando, en segundos. Se llama una vez por cuadro. */

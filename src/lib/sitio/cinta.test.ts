@@ -271,11 +271,23 @@ interface MedioFalso {
   paused: boolean;
   ended: boolean;
   isConnected: boolean;
+  /** La marca de `ADR-07.3`. Ausente en todo medio que no sea el de la rocola. */
+  dataset?: { cinta?: string };
 }
 
 /** Un `<audio>` de mentira: alcanza con lo que el barrido de `ADR-04.3` le pregunta. */
 function medioFalso(): MedioFalso {
   return { paused: false, ended: false, isConnected: true };
+}
+
+/**
+ * El medio de la rocola: el mismo, pero con la marca de `ADR-07.3`.
+ *
+ * En producción además vive fuera del documento, que es la forma 1. Acá se prueba la forma
+ * 2 sola, a propósito: es la que tiene que aguantar el día que alguien lo inserte.
+ */
+function medioDeLaRocola(): MedioFalso {
+  return { paused: false, ended: false, isConnected: true, dataset: { cinta: 'rocola' } };
 }
 
 interface Programado {
@@ -451,14 +463,40 @@ test('la cama no importa nada que la pueda matar en el navegador', () => {
    * - **cualquier JSON de datos**: la cama no tiene datos. Cero bytes es cero bytes.
    *
    * **Desvío declarado:** el ADR dice "lo único que puede importar es `contexto.ts`" y acá
-   * hay dos, porque el ciclo agregó `sitio/graves.ts` —las tres pantallas donde el sitio se
-   * saca la voz— para que la preferencia guardada no pueda prender la cinta en la pantalla
-   * de un muerto. Es un módulo hoja que no importa nada, así que la razón de fondo del ADR
-   * (que la cama no arrastre nada al navegador) queda intacta.
+   * hay tres. Los dos que se sumaron y por qué la razón de fondo sigue intacta:
+   *
+   * - **`./rutas-sonoras.ts`** (ciclo 14) reemplaza al `./graves.ts` que estaba acá hasta el
+   *   ciclo 13. No se perdió el candado de las tres pantallas donde el sitio se saca la voz:
+   *   se movió, y el módulo nuevo **lee la lista de `graves.ts` en vez de reescribirla**, así
+   *   que sigue habiendo una sola verdad sobre quiénes son los tres. Le suma
+   *   `/diagnostico-audio/` y el mapa de `ADR-07.2`.
+   * - **`./rocola.ts`** (ciclo 14) es el motor que pone temas. Importa `pua.ts` (hoja),
+   *   `rutas-sonoras.ts` y `audio/rutas-de-audio.ts` (hoja), y ningún JSON: la lista de
+   *   piezas **llega como argumento** desde la página, que es lo que mantiene en pie el
+   *   "cero bytes" de las pantallas donde la rocola no suena.
+   *
+   * **Y `tema/audio.ts` sigue prohibido, que es el punto que esta prueba cuida de verdad.**
+   * Al construir `T-217` la rocola lo importó por `urlDeFragmento()`, esta prueba saltó, y
+   * tenía razón: eso cruzaba la flecha. La salida no fue aflojar el candado sino bajar las
+   * dos rutas de audio a `audio/rutas-de-audio.ts`, una hoja que no importa nada. Los dos
+   * motores miran la misma verdad **sin mirarse entre ellos**.
    */
   const fuente = readFileSync('src/lib/sitio/cinta.ts', 'utf-8');
   const importa = [...fuente.matchAll(/from\s+'([^']+)'/g)].map((m) => m[1]!);
-  assert.deepEqual(importa, ['../audio/contexto.ts', './graves.ts']);
+  assert.deepEqual(importa, ['../audio/contexto.ts', './rutas-sonoras.ts', './rocola.ts']);
+
+  // El candado de fondo, ahora sobre el grafo y no sobre una lista: ni la cama ni nada de
+  // lo que arrastra puede tocar el otro motor ni un JSON de datos.
+  for (const modulo of ['src/lib/sitio/rocola.ts', 'src/lib/sitio/rutas-sonoras.ts', 'src/lib/sitio/pua.ts']) {
+    const texto = readFileSync(modulo, 'utf-8');
+    for (const prohibido of ['node:', 'tema/audio.ts', '.json']) {
+      assert.ok(!texto.includes(`from '${prohibido}`), `${modulo} importa algo de ${prohibido}`);
+      assert.ok(
+        ![...texto.matchAll(/from\s+'([^']+)'/g)].some((m) => m[1]!.includes(prohibido)),
+        `${modulo} importa ${prohibido}, que ADR-04.6 prohíbe en esta cadena`,
+      );
+    }
+  }
 });
 
 // ---------------------------------------------------------------------------------------
@@ -709,6 +747,66 @@ test('un <audio> del documento que emite play en captura también la calla', asy
     e.doc.disparar('pause', audio);
     e.correrTemporizadores();
     assert.equal(estadoDeLaCinta(), 'sonando');
+  } finally {
+    e.restaurar();
+  }
+});
+
+test('🔴 caso 7: el medio DE LA ROCOLA no calla la cama, y uno sin marca sí', async () => {
+  /*
+   * **Sin esta exención la rocola se calla a sí misma en el primer segundo** (`ADR-07.3`):
+   * pondría un tema, el barrido lo vería sonar, y la cama —que es la que decide— mandaría
+   * callar a todo el mundo, la rocola incluida. Peor: el conjunto no se vacía hasta que el
+   * tema termine, así que quedaría muda todo ese rato y el síntoma sería "a veces no suena".
+   *
+   * Y la segunda mitad es la que importa igual o más: **la exención no se comió el candado
+   * 3**. Un medio sin marca —el reproductor del tema entero al revelar, el de un juego
+   * futuro— sigue callando la cama exactamente como antes.
+   */
+  const e = conEntorno({ estado: 'running' });
+  try {
+    await prenderCinta();
+    assert.equal(estadoDeLaCinta(), 'sonando');
+
+    const deLaRocola = medioDeLaRocola();
+    e.doc.disparar('play', deLaRocola);
+    assert.equal(estadoDeLaCinta(), 'sonando', 'la rocola se calló a sí misma');
+
+    const cualquiera = medioFalso();
+    e.doc.disparar('play', cualquiera);
+    assert.equal(estadoDeLaCinta(), 'callada', 'la exención se comió el candado 3');
+
+    cualquiera.paused = true;
+    e.doc.disparar('pause', cualquiera);
+    e.correrTemporizadores();
+    assert.equal(estadoDeLaCinta(), 'sonando');
+  } finally {
+    e.restaurar();
+  }
+});
+
+test('🔴 caso 8: el barrido de arranque también ignora al marcado, que es el lugar que se olvida', async () => {
+  /*
+   * El otro lugar donde `cinta.ts` mira medios es el barrido de `registrarOidos()`, y es el
+   * que se olvida porque corre una sola vez por encendido.
+   *
+   * El caso real: la rocola ya está sonando y la cama se prende encima —vuelve de `callada`,
+   * o la persona apagó y volvió a prender—. Si el barrido contara al medio de la rocola, la
+   * cama nacería muda **y no habría ningún evento futuro que la despierte**, porque el tema
+   * ya estaba sonando desde antes. Quedaría muda hasta que ese tema terminara.
+   */
+  const e = conEntorno({ estado: 'running' });
+  try {
+    const deLaRocola = medioDeLaRocola();
+    const otro = medioFalso();
+    otro.paused = true; // presente pero en silencio: no tiene que contar
+    (e.doc as unknown as { querySelectorAll: (s: string) => MedioFalso[] }).querySelectorAll = () => [
+      deLaRocola,
+      otro,
+    ];
+
+    await prenderCinta();
+    assert.equal(estadoDeLaCinta(), 'sonando', 'el barrido de arranque contó al medio de la rocola');
   } finally {
     e.restaurar();
   }

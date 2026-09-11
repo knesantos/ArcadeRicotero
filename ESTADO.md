@@ -5,7 +5,205 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-09-03
+**Última actualización:** 2026-09-11
+
+> ## 🎛 CICLO 14 CONSTRUIDO — LA CINTA PONE TEMAS (2026-09-11)
+>
+> **`T-212`..`T-225` cerradas.** `npm test` **574/574** (eran 526), `npm run check` 0 errores,
+> `npm run build` 151 páginas, validador `APTA`. Verificado en el navegador a 375×812.
+>
+> ### Lo que hay ahora que no había
+>
+> - **La rocola** (`ADR-07`, `D-37`): prender la cinta en el portal, el cancionero o la
+>   Redondopedia pone **un tema de los Redondos al azar**, con filtro de casete propio
+>   (cuerpo, brillo y un `DelayNode` modulado que le arrastra la afinación 0,26 %) sobre la
+>   cama sintetizada de `ADR-04`, que sigue corriendo abajo. Entre pieza y pieza cae **la
+>   púa** (`src/lib/sitio/pua.ts`): golpe, barrido y surco con polvo, sintetizados, cero
+>   archivos. Hoy suenan los **95 recortes enteros** —los diez segundos completos, no la
+>   escalera de `D-26`— porque no hay ni un tema entero en disco; cuando los haya, salen
+>   primero y los recortes después.
+> - **El mapa de rutas** (`src/lib/sitio/rutas-sonoras.ts`): lista blanca con censo. Cinco
+>   rutas ponen temas, ocho quedan en cama (el quiz y los siete juegos), cuatro mudas del
+>   todo (los tres graves y `/diagnostico-audio/`). **Un juego nuevo nace mudo**, y una
+>   página que nadie clasificó **rompe el build**.
+> - **El pie corto**: *"Sitio hecho por ricoteros, para ricoteros."* — 42 caracteres contra
+>   379. Lo demás se mudó a un `<details>` nativo, sin JavaScript.
+>
+> ### Lo medido, antes y después, a 375×812
+>
+> | Qué | Antes | Ahora |
+> |---|---|---|
+> | Portal | 2396 px (2,95 pantallas) | **2021 px (2,49)** |
+> | Portada de "adiviná el tema" | 1591 px (1,96) | **883 px (1,09)** |
+> | Los once pozos | 693 px | **111 px** |
+> | Pie de imprenta | 227 px | **179 px** |
+> | Texto del pie | 379 caracteres | **42** |
+>
+> ### ⚠ Tres cosas que quedaron cortas contra el presupuesto, y no son las hojas
+>
+> **Son desvíos reales, no redondeos.** El que retome tiene que saberlos:
+>
+> 1. **El pie mide 179 px, no los ≤120 de `UX-25` §5.** La causa no es el texto —bajó a 42
+>    caracteres— sino `--alto-pie-imprenta`, el token de la franja de `D-35`. Bajarlo cambia
+>    la franja en las trece rutas y es decisión del lienzo, no del que construye.
+> 2. **El casete del portal quedó en 198 px, no en los 136 de `UX-25` §2.5.** Se sacó la tapa
+>    chica y se cortó la bajada en el punto, como pide la hoja. Lo que no baja es el título:
+>    ocupa dos renglones en letra de display, y eso es tipografía de marca.
+> 3. **Por lo anterior, el portal quedó en 2,49 pantallas y no en las 1,83** que presupuestó
+>    `UX-25` §1. Igual bajó casi media pantalla.
+>
+> ### Dos defectos encontrados construyendo, que ninguna hoja preveía
+>
+> - **`.gitignore` tiraba los temas enteros al vacío.** Ignoraba `*.mp3` con una sola
+>   excepción, `fragmentos/`. Correr `--enteros` los dejaba en disco, a la vista, y **no
+>   llegaba ni uno a producción**, sin error y sin aviso. Esperaba desde que se tomó `D-22`.
+> - **La flecha entre los dos motores de audio se cruzó**, y el test que `ADR-04` había
+>   dejado puesto lo cazó. La salida no fue aflojar el candado: las dos rutas de audio
+>   bajaron a `src/lib/audio/rutas-de-audio.ts`, una hoja que no importa nada.
+>
+> ### Lo que sigue sin estar, y no es un olvido
+>
+> **No hay un solo tema entero en `public/audio/temas/`.** El mecanismo está y la puerta
+> quedó abierta; los archivos salen de tus discos, igual que los recortes (`D-23`):
+> `npm run generar-fragmentos -- "<carpeta>" --enteros`. El README de esa carpeta lo explica.
+>
+> Rangos consumidos: `T-212`..`T-225`, `D-37`, `ADR-07`, `CTR-14`, `UX-24`..`UX-26`, `CNT-16`,
+> `REV-13`. Pedidas a `investigador` y sin responder: `RES-56`, `RES-57`, `RES-58` — ninguna
+> frena nada, las tres tienen repuesto declarado en `ADR-07`.
+
+> ## 📋 EL PLAN DEL CICLO 14, COMO SE ESCRIBIÓ (2026-09-10)
+>
+> **Plan completo en `Docs/ORQ/ORQ-plan-ciclo-14.md`.** Catorce tareas, `T-212`..`T-225`,
+> cortadas en tres ráfagas. Nada construido todavía: esto es el plan, no el resultado.
+>
+> **Lo pidió el usuario en una ráfaga**, y son dos frentes que no se parecen: pulir la UX
+> del portal y de "adiviná el tema" hasta dejarla para producción (sin scroll para ver los
+> temas, sin espacio muerto, con el pie achicado a *"sitio hecho por ricoteros para
+> ricoteros"*), y **convertir la cinta en una rocola** que ponga un tema de los Redondos al
+> azar con filtro vintage, caiga a los recortes enteros cuando no haya temas, y meta un
+> ruido de cambio de disco entre uno y otro.
+>
+> ### Lo que se midió antes de planificar (2026-09-10, `npm run dev`, 375×812)
+>
+> | Qué | Dónde | Cuánto |
+> |---|---|---|
+> | El portal mide casi tres pantallas | `/` | **2396 px** = 2,95 pantallas, 8 casetes de ~210 px |
+> | El pie se come un cuarto de la ventana | `.pie-imprenta` | **227 px** y **379 caracteres** |
+> | La portada del juego no entra | `/juegos/adivinar-el-tema/` | **1591 px** = 1,96 pantallas; 693 px son los 11 pozos |
+> | Durante la partida, el bloque más grande no juega | `#partida` | la partida entra justa, pero **208 px (25,6 %)** son pie |
+> | La lista de temas nace con scroll adentro | `.sugerencias` | `scrollHeight` **318 px** en una caja de **240**: entran 4,5 de 6 |
+> | La revelación desborda | al cerrar un tema | **622 px** llevan el documento a **1169** = 1,44 pantallas |
+> | No hay un solo tema entero | `public/audio/temas/` | la carpeta no existe; `"entero": true` aparece **0 veces** |
+>
+> ### Las tres cosas que hay que decidir antes de construir
+>
+> 1. **La rocola afloja dos de los cinco candados de `ADR-04`**: el 2 ("cero archivos") cae
+>    entero, y el 4 ("no lleva información") también. `D-14` y `D-22` lo cubren, pero el
+>    argumento de que la cinta era una pieza intocable **se termina acá**, y queda escrito.
+> 2. **Los recortes SON la respuesta de `US-02`.** Una rocola que suene en
+>    `/juegos/adivinar-el-tema/` le sopla la respuesta al que está jugando; el tema entero
+>    hace lo mismo en `completar-la-letra` y en `adivinar-por-la-letra`. **El mapa de rutas
+>    mudas es parte de la decisión, no del código**, y es el riesgo número uno del ciclo.
+> 3. **El pie corto choca con `D-21` condición 1** (la pantalla nombra qué tapas usó). La
+>    línea corta se hace igual; lo que decide `CNT-16` es **a dónde se muda el crédito**, no
+>    si se borra.
+>
+> ### La trampa que ya está en el repo, para el que construya
+>
+> `cinta.ts` barre los `<audio>` del documento para callarse cuando algo suena (`ADR-04.3`,
+> fijado en `cinta.test.ts:691`, `:717` y `:932`). **Una rocola que ponga temas por un
+> `<audio>` se calla a sí misma en el primer segundo.** Y `tema/audio.ts` decodifica a
+> `AudioBuffer`: un tema de cuatro minutos así son decenas de MB de RAM en un teléfono. La
+> rocola transmite, no decodifica.
+>
+> ### Lo que NO entra, y conviene saberlo antes de empezar
+>
+> **Los temas enteros mismos.** Entra el mecanismo (`T-219` abre la puerta con `--enteros`),
+> pero los archivos salen de los discos que tenés en la máquina, igual que los recortes
+> (`D-23`). Hasta que los cargues, la rocola pone **recortes enteros** — que es la caída que
+> el propio pedido nombra.
+>
+> Rangos consumidos por el plan: `T-212`..`T-225`. Reservados: `D-37`, `ADR-07`,
+> `UX-24`..`UX-26`, `CNT-16`, `REV-13`.
+>
+> ### `T-215` (`UX-25`) entregado — `experiencia`, 2026-09-11
+>
+> `Docs/UX/UX-25-el-portal-mas-corto.md`. Presupuesto de píxeles por bloque para el
+> portal: de 2396 px a **~1486 px (1,83 pantallas)**, con los ocho casetes puestos. La
+> pieza que más pesa: el casete baja de ~210-252 px a **136 px**, sacándole la tapa
+> chica (real, `D-21`/`UX-05` — decisión propia, `D-21` lo permite pero no lo exige, y
+> el casete ya dice de qué disco es con el color) y mostrando **solo la primera oración**
+> de la bajada de cada casete (corte por template en el punto que el texto ya tiene, sin
+> `line-clamp` ni "…" — `voz-ricotera.md §3.7` reserva el suspensivo para la Redondopedia).
+> Corrida la prueba de las dos líneas en los ocho casetes: los ocho pasan tapando la
+> bajada. Efecto colateral para otra tarea: sin la tapa chica, `tapasUsadas` en
+> `index.astro` pasa de acreditar ocho o nueve discos a acreditar uno solo
+> (`oktubre-banderas`), lo que achica el crédito del pie de arriba — anotado para
+> `T-224`, no construido acá. **Asume pie ≤ 120 px** (el propio techo de `T-220`, no
+> uno nuevo); si `CNT-16` entrega más largo, el presupuesto no cierra. No toca el umbral
+> ni el tránsito. No contradice `UX-10` (el corte de 46rem no se toca). Pendiente:
+> `UX-05` va a quedar desactualizado en la fila de casetes del portal — no se corrige acá
+> (una sola hoja por tarea), queda para quien retome esa ficha.
+>
+> ### `T-214` (`UX-24`) entregado — `experiencia`, 2026-09-11
+>
+> `Docs/UX/UX-24-la-portada-en-una-pantalla.md`. Presupuesto de píxeles para las tres
+> pantallas de "adiviná el tema": portada, partida y revelación.
+>
+> - **Portada:** de 1591 px (1,96 pantallas) a **≤ 812 px**. La pieza que lo permite: los
+>   11 pozos dejan de ser una lista vertical de 693 px y pasan a ser **"Todos los discos"
+>   solo y preseleccionado + un `<details>`/`<summary>` plegado** con los otros diez en
+>   grilla de 2 columnas — 119 px en vez de 693. El resto de la portada (`h1`, bajada,
+>   aviso de sonido, arranque) queda igual; lo único que se achica son los márgenes de la
+>   cabecera y la marca. Pide al pie ≤ 205 px — el de hoy (208) casi alcanza solo, y con
+>   el de `CNT-16` (< 120) sobran ~85 px de margen.
+> - **Sugerencias sin scroll:** se queda en 6 ítems (no baja a 5); sube `.sugerencias` de
+>   15rem a 21rem y trunca título/disco a una línea para que el alto de cada ítem sea fijo
+>   (~56 px) y 6 × 56 = 336 entre debajo del nuevo tope. Con el teclado abierto el cálculo
+>   da 447-527 px libres arriba de la caja de texto contra 336 que hacen falta — sin
+>   aparato real para confirmarlo (`D-12`), comando dejado para `revisor`.
+> - **Revelación:** no toca el mecanismo de `UX-22 §1.4` (`scrollIntoView({block:'end'})`,
+>   ya construido). Solo mide: 622 px hoy, ~722 con el reproductor de tema entero que
+>   todavía no existe, ~780-812 en el peor caso (título de disco largo a dos líneas) —
+>   siempre ≤ 812, así que el panel entero sigue entrando sin scroll por construcción.
+> - **Pie durante la partida:** decisión de no tocar nada. `D-35` ya hace que un pie más
+>   chico achique el documento en vez de dejar un hueco — no hace falta que el tablero
+>   crezca para "llenar" lo que el pie deja libre.
+> - Bloqueos: el texto exacto del `<summary>` y la bajada acortada a dos líneas quedan
+>   para quien construya `T-221`, con `voz-ricotera.md` como vara.
+>
+> ### `T-216` (`UX-26`) entregado — `experiencia`, 2026-09-11
+>
+> `Docs/UX/UX-26-la-rocola.md`. Consume `ADR-07` (entregado en la misma ráfaga por
+> `arquitectura`) y resuelve lo que le dejó pendiente: qué se ve cuando la rocola pone un
+> tema (candado 4 de `ADR-04` caído), el crédito de lo que suena, el control de "poné
+> otro", los cuatro estados de `UX-21` revisados y el hueco del primer arranque.
+>
+> - **Se ve el título del tema + si es recorte o completo. Nunca el disco.** El riesgo que
+>   `ADR-07` dejó explícito para acá —leer un título en el portal y que sea la respuesta de
+>   un juego treinta segundos después— se resuelve con un cálculo, no con prudencia
+>   genérica: nombrar el disco filtraría sobre solo **10 discos** (`tapa.json`, contados a
+>   mano), casi diez veces más específico que nombrar el tema sobre **95 recortes**
+>   (`adivinar-tema.json`). Por eso el disco no se nombra nunca y el tema sí.
+> - **El crédito no necesita mecanismo nuevo.** `D-21` es de tapas (imágenes con problema
+>   de edición); la música ya la acredita `PORTAL.pie` de forma incondicional en toda
+>   pantalla (`PieImprenta.astro:104`). Único pedido a `contenido`: que `CNT-16` no le saque
+>   esa frase al pie al reescribirlo.
+> - **El control de "poné otro" existe, en dos formas:** `PONÉ UN TEMA` (sube de cama a
+>   rocola sin apagar nada — resuelve el caso de `ADR-07.8` en que `rearmarCinta()` arma
+>   siempre en cama) y `PONÉ OTRO TEMA` (`proximaPieza()`, solo con una pieza sonando de
+>   verdad). Viven debajo de la cabecera, nunca compiten por su renglón.
+> - **El hueco del primer arranque no lleva indicador de carga** (sería "cargando", vetado
+>   por `voz.test.ts`, o un ícono vetado por `diseno-marca.md`): la cama+púa ya suenan de
+>   verdad durante la espera, y la línea del tema aparece recién cuando hay algo cierto que
+>   mostrar. Si falla tres veces seguidas, cae a `cama` sola, sin ningún aviso de error.
+> - Las tres cadenas nuevas (`ponerTema`, `otroTema`, la función `suena`) verificadas a
+>   mano contra las siete reglas de `voz.test.ts`.
+> - **Bloqueo dejado en `Docs/SUGERENCIAS/UX-para-arquitectura-cambio-de-pieza.md`:**
+>   `alCambiarLaCinta()` no dispara cuando la rocola pasa de un tema a otro sin salir de
+>   `sonando` (la guarda `if (estado === nuevo) return`), así que la isla no tiene forma de
+>   saber que tiene que repintar el título — hace falta un aviso nuevo en el contrato de
+>   `cinta.ts`/`rocola.ts`, y no es decisión de pantalla.
 
 > ## ✅ `US-08` — "Ponelos en fila": el séptimo juego, construido y andando (2026-09-03)
 >
@@ -1733,6 +1931,20 @@ ruta con `--ffmpeg=`.
 ---
 
 ## Próximo paso
+
+> ⚠ **El ciclo 14 cerró el 2026-09-11.** Ver el bloque 🎛 del encabezado. Lo que dejó
+> pendiente, por orden de valor:
+>
+> 1. **Cargar los temas enteros**, que es lo único que le falta a la rocola para hacer lo que
+>    el pedido decía: `npm run generar-fragmentos -- "<carpeta>" --enteros`. Sin eso suenan
+>    los recortes, que es la caída declarada, no un defecto.
+> 2. **Decidir los tres desvíos de presupuesto** del bloque de arriba (el pie en 179, el
+>    casete en 198, el portal en 2,49 pantallas). Los tres se resuelven tocando tipografía o
+>    el token de la franja, y las dos cosas son del lienzo y de `experiencia`, no del que
+>    construye.
+> 3. **Leer `REV-13`** (`Docs/REVISIONES/`), la revisión del ciclo.
+>
+> **Lo de abajo sigue valiendo como pendientes sueltos, no como el próximo paso.**
 
 **El ciclo 10 cerró. Lo que sigue es tuyo, y son dos comandos y una decisión.**
 

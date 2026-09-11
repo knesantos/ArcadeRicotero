@@ -15,10 +15,13 @@ import { conRecorteReal, detalleTapa, discosDe, medidas, recorte, DETALLE_POR_VA
 
 // Los discos que se ven acá: el de cada casete mas la franja de Oktubre del fondo.
 // El pie los nombra (`D-21`, condicion 1).
-const tapasUsadas = discosDe([
-  'oktubre-banderas',
-  ...[...JUEGOS, CASETE_CANCIONERO, CASETE_REDONDOPEDIA].map((c) => DETALLE_POR_VARIANTE[c.variante]),
-]);
+/*
+ * Desde `UX-25` §2.2 los casetes ya no llevan la tapa chica, así que **acá queda un disco
+ * solo**: la franja de Oktubre del fondo. El crédito del pie se achica con él, y eso no es
+ * una pérdida — `D-21` condición 1 pide que la pantalla nombre **lo que usó**, y ahora usa
+ * menos. Acreditar ocho tapas que ya no se ven sería el defecto contrario.
+ */
+const tapasUsadas = discosDe(['oktubre-banderas']);
 
 /**
  * El personaje de portada.
@@ -49,12 +52,31 @@ const lados: Array<{ titulo: string; casetes: readonly Casete[] }> = [
   { titulo: PORTAL.ladoB, casetes: [CASETE_CANCIONERO, CASETE_REDONDOPEDIA] },
 ];
 
+/**
+ * La bajada, cortada en el punto que el texto ya tiene (`UX-25` §2.4).
+ *
+ * Medido a 375×812: los ocho casetes sumaban ~1757 px y el portal medía 2,95 pantallas. La
+ * primera oración de cada bajada es la que canta —la que hace el trabajo de `CNT-02`— y el
+ * resto es detalle que se lee entrando.
+ *
+ * **Se corta en el punto, no con `line-clamp`.** Un recorte por altura mete puntos
+ * suspensivos, y el suspensivo en este sitio es del Indio y de la Redondopedia
+ * (`voz-ricotera.md` §3.7), no de un casete. Cortar en la puntuación que el autor ya puso
+ * deja una oración entera, no una frase mutilada.
+ *
+ * **El texto completo no se toca**: sigue entero en `copy.ts`, que es lo que audita
+ * `voz.test.ts`. Lo que cambia es cuánto se imprime.
+ */
+function primeraOracion(texto: string): string {
+  const corte = texto.indexOf('. ');
+  return corte === -1 ? texto : texto.slice(0, corte + 1);
+}
+
 const conArte = lados.map((lado) => ({
   titulo: lado.titulo,
   casetes: lado.casetes.map((c) => {
     const arte = conRecorteReal(c.arte);
-    const tapa = detalleTapa(DETALLE_POR_VARIANTE[c.variante] ?? '');
-    return { ...c, arte, medidaArte: medidas(arte), tapa, medidaTapa: tapa ? medidas(tapa) : null };
+    return { ...c, arte, medidaArte: medidas(arte), baja: primeraOracion(c.baja) };
   }),
 }));
 ---
@@ -136,19 +158,19 @@ const conArte = lados.map((lado) => ({
                   <strong class="casete-titulo">{c.titulo}</strong>
                   <span class="casete-baja">{c.baja}</span>
                 </span>
+                {/*
+                    **La tapa chica salió del casete** (`UX-25` §2.2).
+
+                    Eran 34×34 px de foto real de la tapa, y su fila completa: sacarla es lo
+                    que baja el casete de ~210 px a 136. `D-21` permite la tapa ahí pero no
+                    la exige, y el casete ya dice de qué disco es por su color (`D-19`).
+
+                    Consecuencia que hay que saber: `tapasUsadas` de esta pantalla pasa de
+                    acreditar ocho discos a acreditar uno. El crédito del pie se achica solo,
+                    porque acredita lo que realmente se ve — que es exactamente lo que pide
+                    `D-21` condición 1.
+                */}
                 <span class="casete-pie">
-                  {c.tapa && (
-                    <img
-                      class="casete-tapa"
-                      src={c.tapa}
-                      alt=""
-                      aria-hidden="true"
-                      loading="lazy"
-                      decoding="async"
-                      width={c.medidaTapa?.ancho}
-                      height={c.medidaTapa?.alto}
-                    />
-                  )}
                   {c.accion ? (
                     <span class="casete-accion">{c.accion}</span>
                   ) : (
