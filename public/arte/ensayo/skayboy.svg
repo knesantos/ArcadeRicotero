@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 192" role="img" aria-label="Skayboy, de pie">
+  <!-- ENSAYO, no es pieza de produccion. Ver README.md de esta carpeta.
+       Se dibuja por INSIGNIA y no por parecido facial (D-38, baranda 2): sombrero
+       Panama, pelo largo atado y la SG roja son cosas que el exhibe ante camaras.
+       No hay cara: los anteojos son una barra, no un rostro.
+       La SG usa la tinta marca-rojo; en produccion el color sale de tokens.css, no de aca. -->
+  <defs>
+    <!-- El borde tipo tijera, en vector. Es la respuesta al "nunca vector liso" del
+         README de public/arte: no es una curva limpia, es una curva desplazada por
+         ruido, que es como se rompe un papel recortado a mano. -->
+    <filter id="tijera-sk" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.08" numOctaves="3" seed="11" result="r"/>
+      <feDisplacementMap in="SourceGraphic" in2="r" scale="4.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="grano-sk" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" result="g"/>
+      <feColorMatrix in="g" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.35 0.35 0.35 0 0"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#tijera-sk)">
+    <g fill="ivory">
+      <!-- ala del sombrero, apenas torcida -->
+      <path d="M14 44 C 30 34, 50 30, 66 30 C 84 30, 104 34, 116 44 C 104 50, 84 53, 65 53 C 46 53, 26 50, 14 44 Z"/>
+      <!-- copa -->
+      <path d="M44 34 C 45 20, 52 12, 65 12 C 78 12, 85 20, 86 34 C 76 31, 54 31, 44 34 Z"/>
+      <!-- pelo: cae por debajo del ala, los dos lados, mas la cola atada -->
+      <path d="M36 48 C 30 66, 30 86, 34 104 C 38 100, 40 88, 41 74 C 42 62, 40 54, 44 50 Z"/>
+      <path d="M90 48 C 96 66, 97 88, 92 108 C 88 102, 86 88, 85 74 C 84 62, 86 54, 82 50 Z"/>
+      <path d="M60 96 C 66 100, 72 104, 74 116 C 76 128, 72 138, 66 142 C 68 130, 66 118, 60 110 Z"/>
+      <!-- cabeza, sin rasgos -->
+      <path d="M50 50 C 50 62, 56 70, 65 70 C 74 70, 80 62, 80 50 C 70 53, 58 53, 50 50 Z"/>
+      <!-- torso: camisa estampada, apenas abierta -->
+      <path d="M44 72 C 52 68, 78 68, 86 72 C 92 86, 94 106, 92 126 C 78 130, 52 130, 38 126 C 36 106, 38 86, 44 72 Z"/>
+      <!-- piernas -->
+      <path d="M46 128 C 46 146, 44 164, 44 178 C 50 179, 56 179, 60 178 C 60 162, 60 144, 60 128 Z"/>
+      <path d="M68 128 C 68 144, 70 162, 72 178 C 78 179, 84 179, 88 178 C 86 162, 84 144, 82 128 Z"/>
+      <!-- brazo del mastil -->
+      <path d="M86 78 C 96 84, 104 94, 108 104 C 104 108, 100 108, 96 106 C 92 98, 88 90, 82 86 Z"/>
+    </g>
+
+    <!-- huecos de recorte: no son detalles, son aire. Se leen a 32 px -->
+    <g fill="black" opacity="0.55">
+      <!-- anteojos: una barra, nunca una cara -->
+      <rect x="53" y="56" width="24" height="5" rx="1"/>
+      <!-- camisa apenas abierta -->
+      <path d="M63 74 C 61 84, 61 94, 63 102 C 66 94, 66 84, 65 74 Z"/>
+      <!-- amuleto colgante -->
+      <circle cx="64" cy="106" r="3.5"/>
+    </g>
+
+    <!-- la SG roja: la insignia mas fichada que tiene (RES-64.3, RES-64.5) -->
+    <g>
+      <path d="M22 116 C 16 108, 18 98, 28 96 C 34 95, 38 98, 42 102 C 46 98, 52 96, 58 99 C 66 103, 66 114, 58 118 C 52 121, 46 119, 42 115 C 38 120, 30 122, 22 116 Z" fill="#f8360d"/>
+      <path d="M56 104 L 104 84 L 108 92 L 60 112 Z" fill="#f8360d"/>
+      <path d="M102 80 L 114 76 L 117 85 L 105 89 Z" fill="#f8360d"/>
+      <path d="M44 104 C 52 101, 60 98, 66 96" stroke="black" stroke-width="2.5" fill="none" opacity="0.5"/>
+    </g>
+  </g>
+
+  <!-- grano encima de todo, como la tinta cargada de la serigrafia -->
+  <g filter="url(#grano-sk)" opacity="0.22">
+    <rect x="10" y="10" width="110" height="175" fill="#14100e"/>
+  </g>
+</svg>

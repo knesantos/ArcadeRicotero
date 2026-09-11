@@ -1,4 +1,4 @@
-# PRD — Backlog de ideas: diez títulos guardados, ninguno empezado
+# PRD — Backlog de ideas: catorce IDs, doce guardadas, una promovida, una nunca abierta
 
 > **Consume:** pedido directo del usuario, 2026-08-22 (las diez ideas y la instrucción
 > transversal sobre los clones). `Docs/BRIEF.md` (riesgo 4, "Fuera de alcance"),
@@ -7,7 +7,11 @@
 > `BR-03`, `BR-12` (topes de exposición de letra), `CTR-01.3` (fragmento ≤ 15 s),
 > `US-02`, `US-05`, `UX-02`.
 >
-> **Produce:** `IDEA-01`..`IDEA-10`, `BR-15`, `BR-16`.
+> **Produce:** `IDEA-01`..`IDEA-14`, `BR-15`, `BR-16`.
+>
+> **Sumado el 2026-09-11 para `IDEA-14`:** `Docs/INVESTIGACION/INV-60-skayboy-poligirl.md`
+> (`RES-60`..`RES-65` más tres mediciones sobre el repo), `D-32`, `D-37`, `D-38`, `D-39`,
+> `D-40`, `BR-18`, `public/arte/README.md`, `public/arte/ensayo/README.md`.
 >
 > **Por qué las reglas arrancan en 15 y no en 13:** este archivo se escribió con `BR-12`
 > como último en disco, así que las reglas nacieron `BR-13` y `BR-14`. Antes de cerrar, el
@@ -19,13 +23,21 @@
 ## Qué es este archivo y qué no
 
 El usuario dijo, textual: *"no hace falta que las hagamos todas, pero sí guardémoslas. No
-empieces a desarrollar ninguna."* Esto es eso y nada más: las diez ideas escritas con
-suficiente detalle para que dentro de tres meses se entiendan solas, con su ancla ricotera
-verificada y con lo que cada una choca contra lo que ya está decidido.
+empieces a desarrollar ninguna."* Esto es eso: las ideas escritas con suficiente detalle
+para que dentro de tres meses se entiendan solas, con su ancla ricotera verificada y con lo
+que cada una choca contra lo que ya está decidido.
 
-**Ninguna de estas diez es alcance de la v1.** El alcance sigue siendo el de
+**Lo que cambió el 2026-09-11, y hay que decirlo acá arriba:** `IDEA-14` llegó con la
+instrucción opuesta — *"comencemos a desarrollar"*. Se guarda igual y en el mismo formato,
+porque empezar sigue pasando por promoverla a `US-XX` (`BR-16`). Lo que sí cambia es que esa
+ficha ya no espera información: espera dos dueños y un piso.
+
+**Ninguna de estas ideas es alcance de la v1** — ni las diez del pedido original ni las que
+se sumaron después. El alcance sigue siendo el de
 `PRD-alcance-v1.md` (`US-01`..`US-04`) más la Redondopedia (`US-05`), y ese alcance **no
-está cerrado**: `US-02` y `US-03` no tienen un solo ítem cargado y `US-05` va 29 de 35.
+está cerrado**: `US-03` no tiene un solo ítem cargado, `US-02` tiene su pool pero **0 de los
+8 Fáciles** que pide su piso (`BR-18` apartado g: falta la `YT_API_KEY`) y `US-05` iba 29 de
+35 cuando esto se escribió.
 
 ## Por qué prefijo `IDEA-` y no `US-`
 
@@ -85,7 +97,7 @@ se cumple. Guardar es gratis. Empezar, no.
 
 ---
 
-## Las diez ideas
+## Las ideas — las diez del pedido original, y las que llegaron después
 
 ### IDEA-01 — Separar los temas en pistas y adivinar
 
@@ -487,6 +499,309 @@ ciclo 9: lo que corre ahí es el botón de corrección con mail y portapapeles (
 
 ---
 
+### IDEA-14 — Skayboy y Poligirl
+
+> **La primera idea que el usuario pidió empezar, no guardar.** Las diez del 2026-08-22
+> llegaron con *"no empieces a desarrollar ninguna"*. Esta llegó con *"comencemos a
+> desarrollar"*. Eso no saltea `BR-16` — empezar sigue siendo promoverla a `US-XX` con
+> criterio y piso —, pero sí cambia de qué lado está la carga de la prueba: lo que falta
+> para promoverla ya no es información. El relevamiento que `BR-15` consecuencia 1 manda
+> hacer antes está hecho, y es el más grande que tuvo cualquier idea de este archivo:
+> `Docs/INVESTIGACION/INV-60-skayboy-poligirl.md`, `RES-60`..`RES-65` más tres mediciones
+> sobre el repo.
+
+**Tal cual la dijo el usuario:** *"Agrega a ideas y comencemos a desarrollar un juego que sea
+como un fireboy y watergirl que se llame skayboy y poligirl. Comenza la investigacion para
+construir el juego."* (2026-09-11).
+
+**Cinco respuestas del mismo día, que cierran lo que el relevamiento dejó abierto.** Van
+arriba porque cambian la ficha entera, y ninguna se rediscute acá:
+
+1. **El par elemental es cielo / infierno**, no fuego / agua. El fundamento está medido:
+   `agua` aparece **una vez** en los 2913 versos del cancionero, y cielo/infierno es la
+   familia más alta del catálogo — dos títulos propios, «El infierno está encantador esta
+   noche» y «Yo no me caí del cielo», los dos de *Gulp!*, más «Cruz diablo!» y «Un ángel
+   para tu soledad». Y arriba/abajo es la geometría nativa de un plataformas: no obliga a
+   distinguir dos tintas de piso de un vistazo en un teléfono.
+2. **Se juega de a dos, en un teléfono en horizontal**, cada uno agarrando una punta y
+   usando los botones de su lado.
+3. **`D-38`** autoriza el nombre y la caricatura de dos personas reales vivas, con tres
+   barandas: el personaje nunca dice "yo" ni lleva texto atribuido, el diseño va por
+   insignia —sombrero, guitarra— y no por parecido facial, y nada narra la relación real
+   entre Skay, Poli y el Indio.
+4. **`D-39`** abre para este juego la excepción a `D-37` punto 4: suena entero.
+5. **`D-40`** contesta la pregunta que abrían las otras cuatro: se juega de a dos **y además**
+   hay un camino para uno solo, con el botón de cambio de personaje — el inactivo queda
+   quieto donde lo dejaron. Un acompañante no estaba en la lista de `D-14`, pero tiene la
+   misma forma. Es la única de las cinco que **cambia el trabajo** y no solo la respuesta: lo
+   que arrastra está más abajo, en el piso y en la lista del final.
+
+**Tipo:** clon vestido (`BR-15`), y el primero que obligó a un chequeo previo que `BR-15` no
+había previsto. La consecuencia 1 existe porque el autor de un motor no se conforma con que
+se baje el sitio. Acá apareció un segundo reclamante posible con exactamente esa forma: dos
+personas vivas de 74 y 75 años (`RES-64.1`, `RES-64.2`, `RES-64.9`) cuyo nombre estaría en el
+título. A quien se sintió mal representado, bajar el sitio tampoco le devuelve nada. `D-38`
+es lo que resuelve ese chequeo, y por eso la idea sigue.
+
+**Ancla verificada — y la aclaración vale más que el ancla.** Lo anclado es **el elemento**,
+no la persona y no el nombre. En los 105 títulos de `RES-20` y en los 2913 versos no hay un
+solo título ni un solo verso que asocie a Skay con un elemento ni a Poli con otro: "skay"
+aparece dos veces en líneas tipadas letra y las dos son notas del transcriptor sobre cómo
+toca la guitarra; "poli" solo vive adentro de "político" y "polizón"; "boy" y "girl" dan
+cero. **Quién es inmune a qué es criterio del sitio y se declara como criterio del sitio.**
+Una pantalla que diga "Skayboy es inmune a X **porque** Y" inventa el porqué, y eso cae bajo
+lo único que `CLAUDE.md` declara estricto. El chiste del nombre es nuestro, a diferencia de
+«Toxi-Taxi» (`IDEA-03`), donde se arma solo — con el precedente de que un videojuego ya entró
+al vocabulario del catálogo: «Un Pacman en el Savoy», *¡Bang! ¡Bang!… Estás liquidado*
+(1989), pista 4.
+
+**Y el nombre dejó de explicarse por el par.** "Skayboy y Poligirl" calcaba el par del juego
+de origen; con cielo/infierno decidido, el calco se corta. Si el nombre se queda, se queda
+porque suena bien, no porque el par lo justifique. Es de `contenido` (`CNT-02`, `D-17`), y lo
+puso el usuario: `contenido` propone, el usuario confirma.
+
+**Lo que sí tiene verso propio, y no hubo que forzarlo:** el escenario — «Templo de Momo»
+(*Momo Sampler* 2000, pista 1), "Un galpon de luz, es el templo del momo" —, el coleccionable
+— «Juguetes perdidos» (*Luzbelito* 1996, pista 11), "Y un par de sienes ardientes / Que son
+todo el tesoro" — y la puerta con el guardia adentro, que es justo la figura que `D-14`
+invierte: «Queso ruso» (*La mosca y la sopa* 1991, pista 10), "que cuidan por vos las puertas
+del nuevo cielo".
+
+#### ¿Esto es `IDEA-04` con otros personajes?
+
+La pregunta hay que hacerla porque el precedente está escrito. Cuando el usuario pidió el
+plataformas del bondi, el hilo principal **no abrió** `IDEA-12` — *"Un ID nuevo para la misma
+idea es exactamente lo que `Docs/IDS.md` está para evitar"* — y dejó la puerta entornada:
+*"Si al usuario le interesaba un segundo plataformas distinto, esto se separa después y ahí
+sí toma número propio"* (`HILO-para-producto-idea-04-la-meta-del-bondi.md`).
+
+**Mi lectura: son dos juegos distintos y este toma número propio.** `IDEA-04` es correr y
+saltar hacia algo que ya se está yendo — el verbo es *colgarse*, sale de la letra de
+«Gualicho», y el nivel lo corta el bondi que arranca. Esto es un puzzle cooperativo donde dos
+personajes que no pueden pisar lo mismo se abren paso el uno al otro y llegan juntos a la
+puerta (`RES-61.2`). Verbo distinto, control distinto, diseño de nivel distinto, y uno se
+juega solo y el otro de a dos.
+
+**Pero comparten el gasto caro, y va escrito acá para que no se pague dos veces:** el motor
+2D con licencia (`BR-15` consecuencia 1) y la convención de sprites que hoy no existe. El que
+se tome primero paga las dos cosas; el segundo las hereda. De ahí sale una decisión de
+alcance que sí es mía: **no se toman los dos en paralelo.** El orden ya está dado —el usuario
+pidió este—, así que `IDEA-04` queda enganchada detrás. Lo que la ficha deja dicho para el
+día que haya que elegir: el criterio no es cuál idea gusta más, es cuál pone menos cosas
+nuevas a la vez. `IDEA-04` pone motor y sprites; esta pone motor, sprites, orientación
+horizontal, dos zonas de pulgar, dos personas y sonido de partida.
+
+#### El motor ya no es el bloqueo
+
+`BR-15` consecuencia 1 pedía una ficha por motor candidato **antes**. Está hecha: `RES-62`
+trae ocho licencias leídas en el archivo `LICENSE` crudo, y las de riesgo alto releídas por
+una segunda vía. El orden que quedó: **Kaplay** 3001.0.19 (MIT, ~65 KB gzip, cero
+dependencias), **LittleJS** (MIT, ~46 KB, con ejemplo de plataformas armado) y **Phaser
+pineado a 3.90.0** (MIT, ~347 KB, el de comunidad más grande). Afuera, con motivo:
+PlayCanvas por peso, melonJS por peso y por dar cinco versiones distintas en cinco fuentes,
+Excalibur por física de cuerpo rígido que este juego no necesita, y Matter.js / Planck.js por
+no ser motores — son solo física, y adoptarlos obliga a escribir el resto a mano, que es lo
+que `BR-15` dice que no se hace. El editor también quedó resuelto: LDtk es MIT de punta a
+punta y **Tiled dejó de estar en la lista negra**, porque `RES-63.8` cerró que un mapa no
+hereda la GPL del editor.
+
+**Lo que falta no es una ficha: es que alguien nombre un candidato.** Sin candidato no hay
+nada más que fichar; con candidato, lo que sigue —isla de Astro con salida estática, `eval()`
+contra una CSP, tipos para `npm run check`, código vendorizado adentro del paquete— es de
+`arquitectura` y ya está traspasado, junto con el hueco de auditoría que un `<canvas>` y una
+hoja de CSS nueva atraviesan sin que nadie se entere.
+
+Y una advertencia que no es de licencia: **no hay clon web adoptable.** Los seis repos que
+aparecieron no tienen `LICENSE`, y el único con MIT está escrito en Assembly (`RES-63.1`..
+`RES-63.4`). Ningún motor trae la mecánica de dos personajes con elementos excluyentes: se
+construye encima de cualquiera, así que tampoco desempata entre ellos.
+
+#### El choque principal: el arte, y un hueco de propiedad
+
+Lo caro nunca fue el motor (`BR-15` consecuencia 2), y acá el costo no es una cantidad: es
+una **incompatibilidad declarada por escrito**. `public/arte/README.md`, que es donde vive el
+contrato del arte, manda *"PNG con fondo transparente, borde tipo tijera (irregular, con
+grano — nunca vector liso)"*, y un sprite legible a 32 px pide lo contrario: a ese tamaño el
+borde rasgado es ruido. Las 13 piezas que hay hoy son recortes de collage de 400-800 px:
+**cero sprites**. La cuenta de 42 piezas para un solo nivel jugable que trae el dossier es
+una cuenta con criterio, no una medición — y el problema es anterior a la cantidad.
+
+**Y de los siete roles, ninguno es dueño del diseño de niveles ni de la producción de
+sprites.** Eso no lo cierro yo: o `experiencia` declara la convención nueva y la agrega a ese
+README (`UX-04` es suyo y el README es donde el contrato se escribe), o el hilo principal le
+pone dueño en `Docs/EQUIPO.md`, que es donde se justifica un rol. Mientras el formato
+declarado y el que el género necesita se contradigan por escrito, cualquier piso de niveles
+que yo fije es un número sin nadie que lo produzca.
+
+Del mismo README sale una prohibición que en un juego de dos personajes es lo primero a lo
+que va a ir la mano: **el par lobo/cordero no se usa como código de acierto/error.** No se
+negocia acá.
+
+#### Lo que `D-39` cuesta, dicho una vez
+
+El usuario eligió que el juego suene entero sabiendo el costo, y el costo se escribe igual.
+`D-37` punto 4 y `ADR-07.2` dicen que una pantalla de juego no pone temas, *"sin excepción, y
+sin discutir juego por juego si su respuesta es soplable"* — y esa frase está escrita así
+porque `dos-ejes` ya pidió la excepción por el mismo argumento ("no tiene respuesta que
+soplar") y se le puso cama igual. Abrir la excepción acá **reabre la discusión caso por caso
+que `D-37` existe para cerrar**, y el que la abre paga la próxima vez que alguien la pida.
+Queda anotado, no es un reclamo: `D-39` es la decisión del usuario y manda.
+
+Lo que `D-39` **no** cubre: los efectos de sonido — salto, muerte, moneda, puerta. Un efecto
+no es un tema, no es la cama y no es un fragmento de `CTR-01.3`, y no hay una sola línea en
+el repo que diga si puede sonar ni de dónde sale. Dueño: `arquitectura`, ya traspasado.
+
+#### Lo que arrastra jugar de a dos — y de a uno
+
+El usuario eligió conservar el corazón cooperativo contra la recomendación del relevamiento
+(un pulgar alternando personaje, que es como lo resuelve la versión móvil oficial del juego
+de origen, `RES-65.1`). **`D-40` no desarmó esa elección: le puso la segunda puerta al lado.**
+El de a dos en horizontal sigue siendo el juego; lo que el relevamiento recomendaba deja de
+ser la alternativa descartada y pasa a ser el otro camino del mismo juego. Lo que eso
+arrastra va sin maquillar:
+
+- **Cada nivel se resuelve de las dos maneras, y eso prohíbe un puzzle por construcción**
+  (`D-40` consecuencia 1). El salto sincronizado, la plataforma que solo aguanta si los dos
+  saltan juntos: afuera, salvo que tengan una segunda solución para el que juega solo. Es
+  restricción de diseño y no preferencia, y va escrita antes de que se dibuje el primer nivel
+  porque después sale carísima.
+- **Cuál de los dos modos se ofrece primero no lo fijo yo** (`D-40` consecuencia 3, y punto 11
+  de la lista del final). El que llega solo no puede tener que elegir un modo para empezar:
+  elegir un modo es una pantalla previa y `D-32` límite 3 no la deja. De `experiencia`.
+- **No hay precedente del esquema en este género.** "Dos personas, un teléfono" existe y se
+  publica, pero los títulos encontrados son minijuegos de duelo o carrera, no plataformeros
+  de salto y física fina (`RES-65.8`). Lo que sí hay es el precedente del esquema en sí:
+  *Galaxus*, *"cada jugador agarra una punta del teléfono y usa los botones de su lado"*
+  (`RES-65.10`).
+- **El sitio no fija orientación.** El viewport de `Base.astro` no bloquea el horizontal, o
+  sea que nada hay que romper — pero tampoco hay nada escrito que lo sostenga, y el cálculo
+  que decía que dos mandos no entran solo se hizo en vertical.
+- **Dos zonas de pulgar, cada una con `--toque-min` ≥ 48 px, sin tapar el nivel.** El piso
+  del proyecto coincide con el estándar (48×48 dp, `RES-65.6`), así que el problema no es el
+  número: es el reparto de una pantalla de ~812×375 entre dos personas y un nivel. De
+  `experiencia` (`UX-04`, `UX-07`).
+- **No toca "sin backend", y conviene decirlo para que nadie lo levante como bloqueo:** son
+  dos personas en un aparato, no dos aparatos. El multijugador entre teléfonos sí estaría
+  afuera, y quedó descartado con fundamento doble (`RES-65.9`).
+
+#### El riesgo 4 del brief está corriendo, y este sería el juego número ocho
+
+Hoy hay siete rutas de juego en el sitio: `/quiz/` más las seis de `src/pages/juegos/`. Y
+`US-02` sigue con **0 de los 8 ítems Fáciles** que pide su piso (`BR-01`, `BR-18` apartado
+f). El motivo está declarado y no es desidia —el mecanismo está construido y verificado, lo
+que falta es la `YT_API_KEY`, que no la puede traer ningún rol (`BR-18` apartado g)—, y por
+eso el "Listo" de la v1 no se frenó. Explica por qué no está bloqueado; no cambia lo que se
+ve desde afuera, que es un juego de la v1 sin su escalón fácil.
+
+Abrir el octavo frente con el segundo así es, literal, el riesgo 4 del brief: cuatro juegos
+hermosos con doce preguntas adentro. **`BR-16` está escrita exactamente por eso.** No es un
+veto —el usuario pidió este juego y pidió empezarlo—: es la condición. Se promueve con piso y
+con dueño del arte, o se queda guardada como las demás.
+
+#### Mi lectura: por dónde empezar, y no es el motor
+
+El dossier cierra recomendando un personaje quieto y un tile, dibujados a mano, puestos en el
+cascarón que ya existe, sin motor y sin física, para contestar si esa pantalla se ve como
+este sitio. **Lo compro, y con una razón de producto, no de oficio:** es la única de todas
+las preguntas abiertas que después no se puede desdecir. El motor se cambia, la paleta se
+cambia, el piso se cambia; que el juego se vea como cualquier plataformas de plantilla no lo
+arregla ninguna de esas tres cosas, y lo veta `diseno-marca.md` sin necesidad de discutirlo.
+
+Y hoy es mejor experimento que ayer: con el par decidido, ese tile no es un tile genérico —
+es borde de cielo o piso de infierno, y se dibuja en serio.
+
+**La condición es `BR-16`:** ese experimento no promueve la idea ni empieza el juego, y no
+habilita a escribir la página, la isla ni el copy. Es una pieza de arte adentro de un
+cascarón. Lo que desbloquea si sale bien no es el motor: es la convención de sprites del
+README, que es el bloqueo real. Lo que **no** contesta, y conviene que esté escrito antes de
+que alguien lo use como prueba de que el juego cierra: cuánto dura un nivel, si entra en una
+sesión de dos o tres minutos, y si el esquema de dos manos funciona en la mano.
+
+> **Se hizo en la misma ráfaga, y contestó que sí.** Vive en `public/arte/ensayo/` con su
+> propio `README.md`: las dos figuras quietas y la pantalla de 812×375 armada, sin motor y
+> sin física. Un sprite se puede dibujar en el idioma de este sitio — el borde sale de
+> desplazar el contorno, no de dejarlo liso. Y dejó tres hallazgos que nadie había pedido,
+> **dos de los cuales caen justo sobre el punto 1 de la lista de abajo**: `sharp` no puede
+> rasterizarlo, porque librsvg no implementa `feDisplacementMap`, así que rasterizar necesita
+> un navegador o la máquina del usuario, como los recortes de `D-06`; y sobre el piso claro
+> la figura casi desaparece, porque la tinta marfil está calibrada para fondo oscuro y
+> `contraste.test.ts` no puede cazar un fondo que es superficie dibujada. El tercero es de
+> paridad y lo lee el punto 5. No los repito acá: están en ese README.
+
+#### El piso, si se promoviera — lectura de `producto`, no número fijado
+
+`BR-16` dice que el piso se fija al promover, así que esto es lectura. **Seis niveles,
+repartidos 2 / 2 / 2.** De dónde sale, porque un número sin fundamento es lo que este archivo
+viene evitando:
+
+- **Un nivel no se consume como un ítem.** En el quiz, ver dos veces la misma pregunta es un
+  defecto; en un plataformas, repetir el nivel hasta pasarlo **es** el juego. Por eso el piso
+  puede estar muy por debajo de los 40 / 30 / 15 / 10 de la v1 sin que el juego quede vacío:
+  lo que sostiene la sesión no es el banco, es el reintento.
+- **Pero el escalonamiento no se negocia** (`BR-01`, criterio no negociable del brief). Un
+  escalón necesita más de un nivel o es un muro. Tres escalones de a dos es el mínimo con el
+  que "nunca un muro en la primera pantalla" se puede verificar mirando el juego.
+- **Los dos primeros enseñan jugando.** El juego de origen enseña con cuatro niveles de
+  tutorial; acá `D-32` límite 3 no deja poner una pantalla previa y los molinetes abiertos
+  exigen que el que llega por un enlace juegue igual. Así que el primero no se puede perder y
+  el segundo introduce la puerta doble, que es el corazón: los dos parados al mismo tiempo.
+- **El costo marginal se desploma después del primero.** Las 42 piezas de la cuenta con
+  criterio incluyen personajes, mandos, tileset, casete y fondo; el nivel dos paga diseño de
+  nivel, no arte nuevo, salvo que sume un mecanismo. Seis se puede cerrar. Los 32 del
+  *Forest Temple* de 2009 son un producto comercial, no una vara.
+- **El que llega solo juega, y ya no es una condición: es `D-40`.** El efecto quedó más chico
+  de lo que esta lectura temía. **El piso no sube; sube el trabajo por nivel.** Siguen siendo
+  seis, 2/2/2, pero cada uno se verifica dos veces —dos personas moviéndose a la vez y una
+  sola alternando— y ninguno puede exigir simultaneidad sin tener una segunda solución para
+  el que juega solo. Seis niveles que valen por doce en diseño, no doce niveles.
+
+**Lo que el piso no promete:** que el juego cierre en dos o tres minutos. Eso lo decide la
+duración de un nivel para alguien que no juega plataformas, y el dossier la dejó sin cerrar
+con dos versiones que no se promedian. Se mide, no se cita.
+
+#### A resolver antes de promoverla
+
+1. **Quién dibuja los niveles y los sprites, y bajo qué convención.** Es el bloqueo real. El
+   ensayo del 2026-09-11 no lo cierra, pero le dejó dos condiciones a la convención que se
+   escriba: con qué se rasteriza, ya que `sharp` no puede, y qué contorno lleva la figura
+   sobre terreno claro (`public/arte/ensayo/README.md`). Dueño: `experiencia` para la
+   convención en `public/arte/README.md` (`UX-04`); el hilo principal si hace falta dueño
+   nuevo en `Docs/EQUIPO.md`.
+2. **Nombrar el motor**, con el orden de `RES-62` ya servido. Dueño: `arquitectura`.
+3. **La orientación horizontal y las dos zonas de pulgar** sin tapar el nivel — y la misma
+   pantalla tiene que servirle a un par de pulgares solo (`D-40`). Dueño: `experiencia`.
+4. **Los efectos de sonido**, que `D-39` no cubre. Dueño: `arquitectura`.
+5. **La paridad de Poligirl. Sería una `BR-` nueva y todavía no le pongo número.** Su texto:
+   *el peso, la pantalla y la agencia de los dos personajes son iguales; que sean distintos
+   es la mecánica, que uno valga menos es el defecto*. Por qué existe: el sitio ya publica
+   sobre `la-negra-poli`, **rotulado `hecho`**, que fue *"no una colaboradora ni una
+   acompañante: un pilar, con el mismo rango que la voz y la guitarra"*. Si el juego le da el
+   rol de apoyo, el sitio se contradice a sí mismo sobre una persona viva. Dueño: `producto`
+   al promover.
+6. **Qué es el fracaso. Otra `BR-` sin número:** *el fracaso no se narra como la muerte de
+   Skay ni de Poli*. Un plataformas mata al avatar cada treinta segundos; `D-38` baranda (c)
+   prohíbe narrar la vida real de los dos; y el sitio reserva registro 3 para las tres
+   muertes que publica. Nadie preguntó todavía qué registro rige la muerte repetida del
+   muñeco de alguien que está vivo, ni si conviene que el fracaso sea otra cosa que muerte.
+   Dueño: `producto` con `contenido`; qué se ve, `experiencia`.
+7. **El nombre, ahora que el par no lo justifica.** Dueño: `contenido` (`CNT-02`, `D-17`),
+   confirma el usuario. Y una restricción que sale del relevamiento y afecta a lo que se
+   publica: **el nombre del juego de origen no se escribe en ningún lado** — ni en texto
+   visible, ni en metadata, ni en comentarios del código (`RES-60`).
+8. **Qué se comparte al terminar.** `src/lib/tarjeta/` existe y todos los juegos terminan en
+   una tarjeta; ningún frente preguntó qué comparte un plataformas, y menos uno que se juega
+   de a dos: si la tarjeta la firma una persona o dos. Dueño: `experiencia` con `producto`.
+9. **Cuánto dura un nivel**, medido y no citado. Es lo que decide si entra en la sesión
+   corta. Dueño: `experiencia`.
+10. **Piso de niveles y criterio Given/When/Then.** Dueño: `producto` al promover (`BR-16`).
+    Con `D-40` adentro, el criterio se escribe dos veces por nivel: se pasa de a dos y se
+    pasa solo, o el nivel no está.
+11. **Cuál de los dos modos se ofrece primero**, ahora que `D-40` fijó que hay dos. El que
+    llega solo no puede tener que elegir un modo antes de jugar: elegir un modo es una
+    pantalla previa y `D-32` límite 3 no la deja. Dueño: `experiencia`.
+
+---
+
 ## Resumen
 
 | ID | Idea | Tipo | Reutiliza | Choque principal |
@@ -503,11 +818,12 @@ ciclo 9: lo que corre ahí es el botón de corrección con mail y portapapeles (
 | `IDEA-10` | Guitar Hero | clon vestido | el mp3 entero (`D-22`) | ~~bloqueo de audio~~ **levantado por `D-22`**; ahora falta la partitura |
 | `IDEA-11` | Mayor o menor con palabras del cancionero | original (género conocido, motor mínimo) | `cancionero.json` (104 temas), `UX-02` | el conteo es respuesta correcta — corpus limpiado por `T-103`, falta reconfirmar |
 | `IDEA-13` | Supabase: correcciones, puntajes, jugadores | infraestructura (no es juego) | `CTR-10` (transporte detrás de interfaz) | correcciones no choca; puntajes remite a `D-15`; jugadores choca con `D-14`/Fuera de alcance — entra solo como id anónimo, nunca como cuenta |
+| `IDEA-14` | Skayboy y Poligirl: dos personajes, una puerta, cielo e infierno | clon vestido | el molde de página y el cascarón, `tokens.css`, `src/lib/tarjeta/`, las ocho licencias ya leídas (`RES-62`) y el ensayo de arte hecho (`public/arte/ensayo/`) | el arte: el formato que manda `public/arte/README.md` y el que pide un sprite son incompatibles por escrito, y **ningún rol es dueño de los niveles ni de los sprites**. Motor desbloqueado (`RES-62`), personas reales autorizadas (`D-38`), suena (`D-39`), y se juega solo o de a dos (`D-40`) — lo que duplica la verificación de cada nivel, no el piso |
 
 ## Preguntas abiertas al usuario
 
-Ninguna frena nada — las diez quedan guardadas igual. Son las tres cosas que no puedo
-contestar yo sin inventar:
+Ninguna frena nada — las ideas quedan guardadas igual. Son las cosas que no puedo contestar
+yo sin inventar:
 
 1. **`IDEA-06`: "el gordo Pier".** No figura con ese nombre en los 105 temas de `RES-20`.
    ¿Es *Pierre, el vitricida* (Gulp!, 1985)? ¿Es otro personaje que no viene de un título de
@@ -518,12 +834,39 @@ contestar yo sin inventar:
 3. ~~**`IDEA-10`: Guitar Hero.** Cuál de las tres salidas de arriba, si alguna.~~
    **CONTESTADA el 2026-08-22:** el usuario eligió la salida 1 — alojar los temas enteros en
    mp3 (`D-22`). En su lugar queda otra, más chica: de dónde sale la partitura.
+4. ~~**`IDEA-14`: ¿el que llega solo juega?** Las cuatro preguntas grandes de este juego
+   quedaron contestadas el 2026-09-11 y no se reabren — el par es cielo/infierno, se juega de
+   a dos en horizontal, `D-38` autoriza a las dos personas y `D-39` lo deja sonar. La que se
+   abre es otra, y nace de la segunda: **si el juego pide una segunda persona para poder
+   jugarse, el que llega solo por un enlace no juega**, y `D-14` nombra por su nombre lo que
+   no se le pide a nadie para entrar — cuenta, login, Premium, saber lo suficiente. Un
+   acompañante no está en esa lista, pero tiene la misma forma. Dos salidas, y no las elijo
+   yo: **(a)** el juego tiene además un camino para uno solo —que es exactamente el botón de
+   cambio de personaje que usa la versión móvil oficial del juego de origen (`RES-65.1`), así
+   que existe y está documentado—, o **(b)** es un juego declaradamente de a dos y el sitio
+   lo dice de frente antes de entrar, en registro 3, como dice cuánto dura un fragmento.
+   Ninguna de las dos rompe nada; la segunda sube el piso de niveles, la primera lo duplica
+   en diseño.~~
+   **CONTESTADA el mismo día, 2026-09-11:** el usuario eligió la salida **(a)** — el juego
+   tiene las dos puertas, y la de uno solo es el botón de cambio de personaje (`D-40`).
+   Avisar que hay un molinete no lo abre. Lo que arrastra está metido en la ficha: cada nivel
+   se resuelve de las dos maneras, el piso de seis 2/2/2 no sube pero se verifica dos veces,
+   y queda una pregunta nueva, más chica, para `experiencia` — cuál de los dos modos se
+   ofrece primero, sin pantalla previa (punto 11 de `IDEA-14`).
 
 ## PENDIENTE
 
-- Ninguna de las diez tiene piso de ítems, y es a propósito: el piso se fija al promover a
-  `US-XX` (`BR-16`), no antes.
-- Licencia de cada motor genérico candidato: ficha `RES-XX` de `investigador`, una por
-  motor, cuando se tome la primera de las cinco (`BR-15`, consecuencia 1).
-- Música de fondo en loop dentro de una partida: no hay decisión que lo cubra. Dueño:
-  `arquitectura`, cuando se tome cualquiera de los cinco clones.
+- Ninguna idea tiene piso de ítems, y es a propósito: el piso se fija al promover a
+  `US-XX` (`BR-16`), no antes. La única con lectura escrita de cuál sería es `IDEA-14`
+  (seis niveles, 2/2/2 — y desde `D-40`, cada uno verificado dos veces), y es lectura, no
+  compromiso.
+- ~~Licencia de cada motor genérico candidato: ficha `RES-XX` de `investigador`, una por
+  motor, cuando se tome la primera de las cinco (`BR-15`, consecuencia 1).~~ **Hecho el
+  2026-09-11 para todas:** `RES-62` trae ocho licencias leídas en el archivo `LICENSE` crudo,
+  y sirve igual a `IDEA-02`, `IDEA-03`, `IDEA-04` y `IDEA-07`. Lo que falta es nombrar un
+  candidato, no fichar otro.
+- Música de fondo en loop dentro de una partida: `D-39` la habilitó **solo para `IDEA-14`**.
+  Para los otros cuatro clones sigue sin decisión que la cubra, y ahora con el agravante de
+  que `D-37` punto 4 la prohíbe por nombre. Dueño: `arquitectura` para el cómo, el usuario
+  para el permiso. Y en ningún caso están cubiertos los efectos de sonido, que no son un
+  tema, ni la cama, ni un fragmento de `CTR-01.3`.

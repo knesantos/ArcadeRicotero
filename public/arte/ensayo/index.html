@@ -1,0 +1,130 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ensayo — Skayboy y Poligirl</title>
+<style>
+  /* Los valores estan copiados de src/styles/tokens.css porque esta hoja vive en
+     public/ y no puede importar nada del sitio. Es una lamina de ensayo: en
+     produccion ningun hex vive fuera de tokens.css. */
+  :root {
+    --fondo: #14100e;
+    --papel: #e6e4bd;
+    --tinta: #f1ece2;
+    --tenue: #9d958a;
+    --brasa: #df5744;
+    --luz: #f5c544;
+    --linea: 3px;
+  }
+  body {
+    margin: 0;
+    padding: 24px 16px 64px;
+    background: var(--fondo);
+    color: var(--tinta);
+    font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 21px; margin: 0 0 4px; letter-spacing: .3px; }
+  h2 {
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--tenue); margin: 36px 0 12px; font-weight: 700;
+  }
+  p { max-width: 62ch; }
+  .tenue { color: var(--tenue); }
+  .lamina { width: 100%; height: auto; border: var(--linea) solid var(--papel); display: block; }
+  .fila { display: flex; gap: 26px; align-items: flex-end; flex-wrap: wrap; }
+  .fila figure { margin: 0; text-align: center; }
+  .fila figcaption {
+    font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase;
+    color: var(--tenue); margin-top: 8px;
+  }
+  .sobre-papel { background: var(--papel); padding: 12px; }
+  .sobre-brasa { background: var(--brasa); padding: 12px; }
+  .nota {
+    border: 2px solid var(--brasa); padding: 12px 14px; margin: 18px 0;
+    transform: rotate(-.4deg);
+  }
+  .nota strong { color: var(--brasa); }
+  .hallazgo { border: 2px solid var(--luz); padding: 12px 14px; margin: 18px 0; }
+  .hallazgo strong { color: var(--luz); }
+  code { color: var(--luz); font-size: .92em; }
+</style>
+
+<main>
+  <h1>Ensayo — Skayboy y Poligirl</h1>
+  <p class="tenue">
+    Un personaje quieto y un terreno, dibujados a mano, sin motor y sin física.
+    No es una pantalla del sitio y no promueve <code>IDEA-14</code>.
+    Contesta una sola pregunta: si esto se ve como este sitio.
+  </p>
+
+  <div class="nota">
+    <strong>Lo que esta lámina sí contesta:</strong> si un sprite se puede dibujar en el
+    idioma del proyecto sin caer en el vector liso que veta
+    <code>public/arte/README.md</code>. El borde no es una curva limpia: es una curva
+    desplazada por ruido, que es como se rompe un papel recortado a mano.<br>
+    <strong>Lo que no contesta:</strong> cuánto dura un nivel, si el esquema de dos manos
+    funciona en la mano, y si el juego cierra en dos o tres minutos. Eso se mide, no se mira.
+  </div>
+
+  <h2>La pantalla, a 812 × 375</h2>
+  <img class="lamina" src="ensayo-pantalla.svg" alt="Ensayo de pantalla horizontal">
+  <p class="tenue">
+    Arriba el cielo, abajo el infierno, y la puerta que se abre de a dos — que es el
+    molinete de <code>D-14</code> puesto al derecho. Las plantillas de la izquierda son de
+    uno y las de la derecha del otro: los caminos se cruzan y ninguno llega solo. Las dos
+    planchas oscuras de abajo son las zonas de pulgar, una por punta del teléfono, con las
+    teclas al piso de 48&nbsp;px que el proyecto ya usa.
+  </p>
+
+  <h2>Las dos figuras, al mismo peso</h2>
+  <div class="fila">
+    <figure>
+      <img src="skayboy.svg" height="170" alt="Skayboy">
+      <figcaption>Sombrero, pelo atado, SG roja</figcaption>
+    </figure>
+    <figure>
+      <img src="poligirl.svg" height="170" alt="Poligirl">
+      <figcaption>La mata de pelo, el llavero</figcaption>
+    </figure>
+    <figure>
+      <img src="skayboy.svg" height="48" alt="">
+      <figcaption>48 px</figcaption>
+    </figure>
+    <figure>
+      <img src="poligirl.svg" height="48" alt="">
+      <figcaption>48 px</figcaption>
+    </figure>
+  </div>
+  <p class="tenue">
+    Ninguno tiene cara: los anteojos son una barra. Es la baranda 2 de <code>D-38</code> —
+    se dibuja por insignia y no por parecido, porque cuanto más se parece a la insignia que
+    ellos mismos exhiben, más lejos queda del derecho a la imagen.
+  </p>
+
+  <div class="hallazgo">
+    <strong>Hallazgo, medido y no supuesto:</strong> el borde de tijera es
+    <code>feTurbulence</code> + <code>feDisplacementMap</code>, y
+    <strong><code>sharp</code> no lo sabe hacer</strong>. Se probó el 2026-09-11 rasterizando
+    estas dos figuras a 256×384 con el <code>sharp</code> que ya trae el repo como
+    dependencia transitiva de Astro: librsvg no implementa <code>feDisplacementMap</code> y
+    devolvió la silueta plana, sin borde y con el grano convertido en un rectángulo gris.
+    Los PNG se borraron.<br>
+    Consecuencia para el día que esto sea un juego: el sprite que llega al teléfono va
+    rasterizado —es lo que <code>public/arte/README.md</code> ya pide, PNG y no vector—,
+    pero <strong>el paso de rasterizar necesita un motor que sí soporte filtros SVG</strong>:
+    un navegador, o la herramienta del usuario en su máquina, igual que los recortes de
+    audio de <code>D-06</code>. No hay hoy en el repo con qué hacerlo desatendido.
+  </div>
+
+  <h2>Sobre los dos pisos: ¿siguen siendo legibles?</h2>
+  <div class="fila">
+    <div class="sobre-papel"><img src="skayboy.svg" height="88" alt=""></div>
+    <div class="sobre-brasa"><img src="poligirl.svg" height="88" alt=""></div>
+  </div>
+  <p class="tenue">
+    La tinta marfil está calibrada para <code>--fondo</code>. Sobre el papel del cielo casi
+    desaparece, y ese es el segundo hallazgo: es el mismo problema que <code>D-21</code>
+    resolvió para las tapas con un velo plano, y que <code>contraste.test.ts</code> no puede
+    medir, porque mide pares de CSS y acá el fondo es una superficie dibujada.
+  </p>
+</main>

@@ -7,6 +7,132 @@
 
 **Última actualización:** 2026-09-11
 
+> ## 🎮 SKAYBOY Y POLIGIRL — IDEA GUARDADA Y RELEVADA, NADA CONSTRUIDO (2026-09-11)
+>
+> **Ráfaga aparte de la del ciclo 14**, sobre el mismo árbol. El usuario pidió: *"Agrega a
+> ideas y comencemos a desarrollar un juego que sea como un fireboy y watergirl que se llame
+> skayboy y poligirl. Comenza la investigacion para construir el juego."*
+>
+> **No se tocó una sola línea de `src/`.** Lo que hay es documentación: la idea guardada, el
+> relevamiento, dos decisiones del usuario y dos traspasos. `IDEA-14` **no está promovida**
+> (`BR-16`), así que no traza `T-XX` y no hay nada que construir todavía.
+>
+> ### Lo que quedó en disco
+>
+> | Archivo | Qué es |
+> |---|---|
+> | `Docs/PRODUCTO/PRD-backlog-ideas.md` | **`IDEA-14`**, escrita por `producto`. Fila en el Resumen, pregunta abierta 4, encabezado y PENDIENTE al día |
+> | `Docs/INVESTIGACION/INV-60-skayboy-poligirl.md` | El relevamiento: **`RES-60`..`RES-65`** más tres mediciones sobre el repo (el ancla ricotera, los choques, el costo de la pieza). 763 líneas |
+> | `Docs/DECISIONES.md` | **`D-38`** (se pueden dibujar dos personas vivas, con tres barandas), **`D-39`** (este juego suena entero) y **`D-40`** (un acompañante también es un molinete: se puede jugar solo) |
+> | `public/arte/ensayo/` | **El ensayo dibujado**: `ensayo-pantalla.svg` a 812×375, `skayboy.svg`, `poligirl.svg`, la lámina `index.html` y su `README.md`. Vive en `public/` y **no en `src/pages/`** a propósito: una ruta nueva entra al censo de `rutas-sonoras.ts`, y cuando se dibujó ese código todavía estaba sin commitear |
+> | `Docs/SUGERENCIAS/HILO-para-experiencia-skayboy-y-poligirl.md` | Lo que quedó con nombre de `experiencia` |
+> | `Docs/SUGERENCIAS/HILO-para-arquitectura-el-motor-y-el-sonido-del-juego.md` | Lo que quedó con nombre de `arquitectura` |
+> | `Docs/IDS.md` | La fila de reserva: `IDEA-14`, `RES-60`..`RES-69`, `D-38`, `D-39` |
+>
+> ### Cómo se relevó, porque el método importa más que el resultado
+>
+> Nueve frentes en paralelo —cinco a la web por el rol `investigador`, cuatro midiendo sobre
+> el repo—, y **cada uno pasó después por refutación adversarial**: los cuatro caros, por dos
+> refutadores independientes que fueron a la fuente primaria a voltear lo que la ficha
+> afirmaba. Tres hallazgos cambiaron de signo hacia arriba y dos hacia abajo. **Lo que se
+> cayó quedó escrito con el estado corregido**, que es lo que hace útil al archivo.
+>
+> Se cayeron, entre otras cosas: tres conteos del cancionero inflados hasta siete veces
+> (`\bmar\b` en JavaScript matchea "María", porque la í no es carácter de palabra), la
+> co-titularidad de Erks S.A. —de verificado a **reportado**, fuente única replicada— y el
+> cálculo que cerraba la puerta al control simultáneo, que solo valía en vertical.
+>
+> ### Las cinco respuestas del usuario, que cierran el diseño grueso
+>
+> 1. **El par es cielo / infierno**, no fuego / agua. `agua` aparece **una vez** en los 2913
+>    versos del cancionero; cielo/infierno tiene dos títulos propios y arriba/abajo es la
+>    geometría nativa de un plataformas. **Consecuencia: el nombre deja de calcar el par del
+>    juego de origen** y hay que poder explicarlo. Es de `contenido`.
+> 2. **Se juega de a dos, en un teléfono en horizontal.** Contra la recomendación del
+>    relevamiento (un pulgar alternando, que es como lo resuelve la versión móvil oficial del
+>    juego de origen). No toca "sin backend": son dos personas en un aparato.
+> 3. **`D-38`**: se autoriza el nombre y la caricatura. Nace porque `D-14` **no alcanzaba** —
+>    el "si llega un reclamo se baja" está calibrado para el titular de una obra, y a alguien
+>    que se sintió mal representado bajar el sitio no le devuelve nada.
+> 4. **`D-39`**: suena entero. Es la **primera excepción a `D-37`**, escrita el mismo día.
+> 5. **`D-40`**: además hay camino para uno solo, con botón de cambio de personaje. Lo levantó
+>    `producto` y es la mejor objeción de toda la ráfaga: **si el juego pide una segunda
+>    persona, el que llega solo por un enlace no juega**, y eso tiene la forma de un molinete
+>    aunque `D-14` no nombre a un acompañante. Cuesta caro: cada nivel tiene que ser resoluble
+>    de las dos maneras, así que queda **prohibido por construcción** el puzzle que exige
+>    simultaneidad sin segunda solución.
+>
+> ### 🔴 La deuda que abrió `D-39`, con nombre
+>
+> **`dos-ejes` pidió esa misma excepción con ese mismo argumento** —"no tiene respuesta
+> correcta, no hay nada que soplar"— y `D-37` se la negó por escrito, en su propia tabla. Hoy
+> hay dos pantallas con el mismo fundamento y distinta respuesta. O el criterio se vuelve a
+> escribir diciendo qué las separa, o el noveno juego llega con la discusión que `D-37`
+> existe para cerrar. Está anotada en las consecuencias de `D-39`.
+>
+> ### Lo que bloquea de verdad, y no es el motor
+>
+> El motor dejó de ser bloqueo: `RES-62` trae **ocho licencias leídas en el archivo `LICENSE`
+> crudo** —Kaplay (MIT, ~65 KB), LittleJS (MIT, ~46 KB), Phaser pineado a 3.90.0— y sirve
+> igual a `IDEA-02`, `IDEA-03`, `IDEA-04` y `IDEA-07`. Falta **nombrar** un candidato, no
+> fichar otro. Y Tiled salió de la lista negra: un mapa no hereda la GPL del editor.
+>
+> Lo que sí bloquea:
+>
+> - **El arte, y es un choque escrito contra otro escrito.** `public/arte/README.md` manda
+>   *"PNG con fondo transparente, borde tipo tijera — nunca vector liso"*, y un sprite legible
+>   a 32 px pide lo contrario. Las 13 piezas que hay hoy son recortes de collage: **cero
+>   sprites**. Peor: **de los siete roles, ninguno es dueño del diseño de niveles ni de la
+>   producción de sprites.**
+> - ~~**La pregunta abierta 4 del PRD**: si el juego pide una segunda persona, el que llega
+>   solo no juega.~~ **CONTESTADA el mismo día, `D-40`:** hay camino para uno solo. Lo que
+>   deja abierto es el costo — cada nivel resoluble de las dos maneras.
+> - **El riesgo 4 del brief está corriendo:** `US-02` sigue con **0 de 8 ítems Fáciles**
+>   (falta la `YT_API_KEY`, `BR-18` apartado g). Este sería el juego número ocho.
+>
+> ### ✅ El ensayo se hizo, y dejó tres hallazgos
+>
+> El usuario pidió hacerlo en la misma ráfaga. Está en `public/arte/ensayo/`, se mira en
+> `/arte/ensayo/index.html` con el sitio andando, y **no promueve `IDEA-14`**: no hay página
+> del sitio, ni isla, ni copy, ni motor, ni física.
+>
+> **Lo que contestó, que era la única pregunta:** sí, un sprite se puede dibujar en el idioma
+> del sitio sin caer en el vector liso que veta `public/arte/README.md`. El mecanismo es que
+> el borde no sea una curva limpia — `feTurbulence` + `feDisplacementMap` desplazan el
+> contorno, que es como se rompe un papel recortado a mano.
+>
+> **Los tres hallazgos:**
+>
+> 1. **`sharp` no puede rasterizar esto.** Medido: librsvg **no implementa
+>    `feDisplacementMap`** y devolvió la silueta plana, sin borde, con el grano vuelto un
+>    rectángulo gris. Los PNG se borraron. El sprite que llegue al teléfono va rasterizado
+>    igual, pero **ese paso necesita un motor con filtros SVG** — un navegador, o la
+>    herramienta del usuario, como los recortes de audio de `D-06`. Hoy el repo no tiene con
+>    qué hacerlo desatendido.
+> 2. **Sobre el piso claro la figura casi desaparece.** La tinta marfil está calibrada para
+>    `--fondo`, que es tinta oscura; el cielo es papel claro. No lo caza `contraste.test.ts`,
+>    que mide pares declarados en CSS y acá el fondo es una superficie dibujada. O las figuras
+>    llevan contorno, o los dos terrenos no pueden ser los dos claros.
+> 3. **A 48 px las dos se leen, pero no igual de bien.** El sombrero y la SG le dan a Skayboy
+>    una silueta reconocible en miniatura; la mata de pelo de Poligirl se empasta y la salva
+>    el oro del llavero. Si la paridad de `D-38` va en serio, eso se corrige en el dibujo.
+>
+> **Y una cosa que es propuesta, no hallazgo:** el llavero de Poligirl **no está fichado**. El
+> sombrero y la SG de Skay sí (`RES-64.3`, `RES-64.5`). Las llaves salen de su rol documentado
+> cruzado con el molinete. Ninguna pantalla puede decir *"Poli llevaba llaves porque…"*.
+> Confirmarlas o cambiarlas es de `experiencia`.
+>
+> ### Próximo paso, si se retoma esto
+>
+> Mirar el ensayo y decidir. Lo que desbloquea si el dibujo convence no es el motor: es **la
+> convención de sprites en `public/arte/README.md`**, que es de `experiencia` y es el bloqueo
+> real. Después, nombrar el motor (`RES-62` ya sirve el orden) y recién ahí promover a
+> `US-XX` con piso y criterio (`BR-16`).
+>
+> Lectura de piso, **no compromiso**: seis niveles, 2/2/2. Un nivel no se consume como un
+> ítem —repetirlo *es* el juego—, pero `BR-01` exige tres escalones y un escalón de un nivel
+> es un muro.
+
 > ## 🎛 CICLO 14 CONSTRUIDO — LA CINTA PONE TEMAS (2026-09-11)
 >
 > **`T-212`..`T-225` cerradas.** `npm test` **574/574** (eran 526), `npm run check` 0 errores,
@@ -2212,6 +2338,8 @@ los 105 temas de `RES-20` y con el choque que tiene contra lo ya decidido.
 | `IDEA-09` | Test de dos ejes: qué tipo de ricotero sos | original |
 | `IDEA-10` | Guitar Hero ricotero | clon vestido |
 | `IDEA-11` | Mayor o menor: qué palabra se dice más en el cancionero | original (género conocido, motor mínimo) |
+| `IDEA-13` | Supabase: correcciones, puntajes, jugadores | infraestructura, no es juego |
+| `IDEA-14` | Skayboy y Poligirl: dos personajes, una puerta, cielo e infierno | clon vestido — **relevada a fondo el 2026-09-11**, ver el bloque del principio de este archivo |
 
 Dos reglas nuevas salieron de ahí: **`BR-15`** (los clones se adoptan vestidos, no se
 escriben — instrucción transversal del usuario) y **`BR-16`** (una idea no entra a un ciclo

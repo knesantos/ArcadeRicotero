@@ -1926,3 +1926,202 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
      ruta y el sitio le sople la respuesta al que se sabe el tema. Por eso el mapa es parte de
      la decisión y no del código, por eso hay una prueba que falla si suena donde no debe, y
      por eso `T-225` lo mira ruta por ruta en vez de confiar en el test.
+
+---
+
+## D-38 — Dos personas vivas se pueden dibujar, y hay tres barandas que dicen hasta dónde
+
+- **Fecha:** 2026-09-11
+- **Estado:** aceptada. Decidida por el usuario sobre el relevamiento `RES-64`, con la
+  medición legal sobre la mesa.
+- **Consume:** `D-14` (los molinetes abiertos, y el "si llega un reclamo se baja"), `D-17`,
+  `RES-04` (la muerte del Indio, 5-jun-2026), `RES-09`, `RES-64` entero
+  (`INV-60-skayboy-poligirl.md`), `BR-15` consecuencia 1, `IDEA-14`, y la sección 1 de
+  `.claude/rules/voz-ricotera.md`.
+
+- **Contexto.** `IDEA-14` propone un juego cuyos dos personajes son **Eduardo Beilinson y
+  Carmen Castro**, personas reales, vivas, de 74 y 75 años, dibujadas como muñecos con sus
+  apodos por nombre. El relevamiento midió lo que hay debajo y no es lo que la intuición
+  dice:
+
+  - *"Sin fines de lucro no pasa nada"* es medio cierto, y por eso peligroso. Es cierto para
+    el art. 31 de la ley 11.723, que se dispara con el **retrato fotográfico puesto en el
+    comercio**: un dibujo gratis no lo activa. **No** es cierto para el art. 53 del Código
+    Civil y Comercial, que dice "de cualquier modo que se haga" y no menciona fin comercial.
+  - Y es directamente falso para el que importa: **el art. 71 inc. c está redactado para
+    este caso exacto** — el nombre de una persona usado *"para la designación de cosas o
+    personajes de fantasía"* —, solo exige **perjuicio**, y el Código vigente **eliminó el
+    requisito de malicia**. No pide lucro. El art. 72 remata: el **seudónimo notorio** goza
+    de la tutela del nombre, así que "Skay" y "la Negra Poli" no son apodos sueltos —usar
+    el apodo **sube** el riesgo, no lo baja, porque es justo aquello por lo que se los
+    identifica sin confusión.
+  - **La parodia no es defensa legislada en Argentina** (`RES-64.18`). "Es un homenaje
+    cariñoso" es un argumento de tono, no jurídico.
+  - Y el dato que más pesa y no es legal: **estas dos personas concretas ya reclamaron**
+    por uso no autorizado de su propia marca compartida, en 2020, contra el Indio
+    (`RES-64.13`).
+
+  **Por qué `D-14` no alcanza, y esto es lo único nuevo de esta decisión.** Todo el
+  andamiaje de "si llega un reclamo, se baja y listo" está calibrado para el reclamo de un
+  **titular de una obra**, a quien bajar el sitio le devuelve lo suyo. Acá el reclamante
+  posible es un hombre que salió a tocar en agosto y su mujer, y lo que estaría en juego es
+  **su nombre**. Bajar el sitio no le devuelve nada a quien se sintió mal representado. Es
+  la misma excepción que `BR-15` consecuencia 1 ya escribió para la licencia del motor,
+  entrando por otra puerta: **hay un segundo chequeo previo que `D-14` no cubre.**
+
+- **Decisión.** Se autoriza usar el nombre, el apodo y la caricatura de Eduardo Beilinson y
+  Carmen Castro como personajes de `IDEA-14`. **Con tres barandas, y no son de estilo:**
+
+  1. **El personaje nunca dice "yo".** Sin bocadillo, sin cartel en primera persona, sin
+     frase con su firma. Un sprite que corre y salta no habla, y por eso no es lo que veta
+     la sección 1 de `voz-ricotera.md`; una línea atribuida sí lo sería, y envenena el
+     rótulo `testimonio` de todo el sitio. El muñeco puede gruñir, no puede opinar.
+  2. **Se dibuja por insignia, no por parecido.** Sombrero, pelo atado, SG roja: cosas que
+     él exhibe ante cámaras todas las noches. Cuanto más se parezca el sprite a la insignia
+     y menos a la cara, más lejos queda del derecho a la imagen.
+  3. **Nada narra la relación real entre Skay, Poli y el Indio.** Ni por mecánica ni por
+     texto. Que resuelvan un nivel juntos es mecánica; que se peleen, se separen o que uno
+     abandone al otro es contar la historia real de tres personas, una de las cuales murió
+     hace tres meses. Y **Poligirl no es la compañera de Skayboy**: el propio sitio publica
+     sobre ella, rotulado `hecho`, que fue *"un pilar, con el mismo rango que la voz y la
+     guitarra"*. Paridad de peso, de pantalla y de agencia — que es distinto de simetría de
+     habilidades, porque el género existe justamente porque los personajes son asimétricos.
+
+  Y un pie en registro 3, seco, en la pantalla del juego: que es un homenaje de fans, que
+  no es oficial, y que ni Eduardo Beilinson ni Carmen Castro tuvieron nada que ver.
+
+- **Alternativas descartadas.** **Nombrarlos solo por sus emblemas**, sin los nombres:
+  sacaba el art. 71 de la mesa y conservaba casi todo el chiste, pero costaba el título del
+  juego, que es lo que el usuario pidió textual. **Esperar**: deja la idea guardada sin
+  costo, y el usuario decidió con la medición delante.
+
+- **Consecuencias.**
+  1. **El riesgo real no es que demanden: es que lo vean y les moleste.** Eso no lo mide un
+     abogado, lo mide el tono. Las tres barandas son el instrumento de medición.
+  2. **Hay una asimetría entre los dos que la ley no distingue y el criterio sí.** Skay sube
+     a un escenario; Poli construyó cincuenta años de perfil bajo deliberado, y su método
+     era el aislamiento mediático. El único dato jugoso que circula sobre ella está
+     contradicho entre fuentes (`RES-64.11`, rotulado **leyenda**) y el juego no se apoya en
+     ningún vínculo sentimental, bajo ningún concepto.
+  3. **Queda una pregunta sin dueño y es de diseño, no de derecho:** un plataformas mata al
+     jugador decenas de veces por partida. Nadie decidió todavía qué registro rige la muerte
+     repetida del muñeco de alguien que está vivo, ni si el fracaso puede ser otra cosa que
+     muerte. Es de `experiencia`, antes de dibujar la primera animación.
+
+---
+
+## D-39 — El juego de plataformas suena entero, y es la primera excepción a `D-37`
+
+- **Fecha:** 2026-09-11
+- **Estado:** aceptada. Decidida por el usuario el mismo día que `D-37`, con la advertencia
+  sobre la mesa.
+- **Consume:** `D-37` punto 4, `D-22` (el sitio sirve los temas enteros en mp3), `D-14`,
+  `ADR-07` y `CTR-14` (`ARQ-rocola.md`), `BR-15` consecuencia 3, `IDEA-14`, `D-38`.
+
+- **Contexto.** `D-37` punto 4 se escribió esta misma mañana y dice, sin rodeos: *"Una
+  pantalla de juego no pone temas. Ninguna, sin excepción."* El fundamento no era el
+  derecho —`D-22` ya alojó los temas— sino **no soplarle la respuesta al que está
+  jugando**, y sobre todo **no discutirlo juego por juego**: *"afinar el criterio caso por
+  caso significa que el octavo juego llegue con una discusión en vez de con una
+  respuesta."*
+
+  Y el octavo juego llegó esa misma tarde. `BR-15`, la regla que gobierna los clones, fue
+  escrita sobre una instrucción del usuario cuya segunda mitad era literal: *"ponerle un
+  skin y **música redonda**"*. Las dos reglas son del usuario y se contradicen en este
+  caso puntual.
+
+- **Decisión.** `IDEA-14` **suena**: un tema entero de los Redondos durante la partida.
+  Es una excepción declarada a `D-37` punto 4, para este juego y para el tipo de juego que
+  representa — **el que no tiene una respuesta que soplar porque no hay nada que adivinar**.
+
+  Tres condiciones, que salen del fundamento de `D-37` y no se negocian por separado:
+
+  1. **Se transmite, no se decodifica, y no se precarga nunca** (`D-37` punto 7). Un tema de
+     cuatro minutos en `AudioBuffer` son decenas de MB de RAM en un teléfono. Esa parte de
+     `D-37` no se toca: es la que evita que el navegador mate la pestaña.
+  2. **La ruta entra al censo igual que todas.** `modoEnRuta()` devuelve `cama` por defecto y
+     `rutas-sonoras.ts` rompe el build con el nombre del archivo si nadie la declara. La
+     excepción se escribe **ahí**, a la vista, nunca como un caso especial escondido en la
+     isla del juego.
+  3. **El tema no se nombra en pantalla durante la partida si eso sopla algo de otro juego.**
+     Es la misma cautela que `UX-26` ya resolvió para la rocola: título sí, disco nunca,
+     porque hay diez discos contra noventa y cinco temas.
+
+- **Alternativas descartadas.** **Solo efectos de sonido** —salto, muerte, puerta— y ningún
+  tema: era lo más barato, no tocaba `D-37` y era mi recomendación. **Mudo como los otros
+  siete**: cero trabajo y cero decisiones, al precio de que la mitad del pedido original de
+  `BR-15` no se cumpla nunca.
+
+- **Consecuencias, y la primera es un costo que conviene mirar de frente.**
+  1. **Se reabre la discusión caso por caso que `D-37` existe para cerrar.** Y el precedente
+     ya es incómodo: **`dos-ejes` pidió esta misma excepción con este mismo argumento** —"no
+     tiene respuesta correcta, no hay nada que soplar"— y `D-37` se lo negó por escrito, en
+     su propia tabla. Hoy hay dos pantallas con el mismo fundamento y distinta respuesta. O
+     el criterio se vuelve a escribir para que diga qué separa a una de otra, o el noveno
+     juego llega con la discusión que `D-37` quería evitar. **Esto no lo resuelve esta
+     decisión: lo deja anotado como deuda, con nombre.**
+  2. **Los efectos de sonido siguen sin cubrir.** Un efecto de 200 ms no es un tema, no es la
+     cama y no es un fragmento de `CTR-01.3`. `D-37` punto 7 prohíbe `decodeAudioData` sobre
+     un tema entero y no dice nada de un sample corto. De dónde salen, quién los produce y si
+     se decodifican es de `arquitectura`, y está traspasado en
+     `Docs/SUGERENCIAS/HILO-para-arquitectura-el-motor-y-el-sonido-del-juego.md`.
+  3. **Falta elegir el tema, y no es un detalle de producción.** `IDEA-04` ya tiene el suyo
+     (*Gualicho*, porque el verbo del juego está cantado adentro). Acá el par elemental es
+     cielo/infierno, así que el candidato natural sale de esa familia. Es de `contenido` con
+     `experiencia`.
+  4. **El peso deja de ser despreciable.** El arte de un plataformas no movía la aguja contra
+     los límites de Vercel; un tema entero sonando en cada partida sí toca la transferencia
+     que `RES-50` y `RES-15` acotan. Hay que medirlo antes de publicar, no después.
+
+---
+
+## D-40 — Un acompañante también es un molinete: el juego se puede jugar solo
+
+- **Fecha:** 2026-09-11
+- **Estado:** aceptada. Decidida por el usuario sobre la pregunta abierta 4 que `producto`
+  dejó en `PRD-backlog-ideas.md`.
+- **Consume:** `D-14` (los molinetes abiertos), `D-08`, `D-09`, `D-15`, `D-38`, `D-39`,
+  `RES-65.1`, `RES-65.3`, `RES-65.4`, `IDEA-14`, `BR-01`.
+
+- **Contexto.** `IDEA-14` se juega **de a dos en un teléfono en horizontal**: cada uno agarra
+  una punta y usa los botones de su lado. Es lo que el usuario eligió para conservar el
+  corazón cooperativo del género.
+
+  `producto` levantó lo que eso arrastra, y es la mejor objeción que salió de toda la sesión:
+  **si el juego pide una segunda persona para poder jugarse, el que llega solo por un enlace
+  no juega.** `D-14` nombra por su nombre lo que no se le pide a nadie para entrar — cuenta,
+  login, Premium, saber lo suficiente. **Un acompañante no está en esa lista, pero tiene
+  exactamente la misma forma:** algo que el jugador tiene que aportar para poder pasar.
+
+  Y este sitio se llega por un enlace compartido. Esa es su forma de circular.
+
+- **Decisión.** El juego tiene **las dos puertas**: de a dos en horizontal, como está
+  decidido, **y además un camino para uno solo**, con el botón de cambio de personaje — el
+  inactivo queda quieto y a salvo donde lo dejaron.
+
+  No es un invento para tapar el agujero: **es exactamente cómo resuelve este mismo problema
+  la versión móvil oficial del juego de origen** (`RES-65.1`, su FAQ dice que en un teléfono
+  se juega alternando), y *The Lost Vikings* y *Trine* muestran que el patrón aguanta puzzle
+  y acción (`RES-65.3`, `RES-65.4`).
+
+- **Alternativas descartadas.** **Declararlo de a dos y avisarlo antes**, en registro 3, como
+  el sitio ya avisa cuánto dura un fragmento: honesto, barato, y no duplicaba nada. Se
+  descartó porque avisar que hay un molinete no lo abre — deja al que llegó solo mirando la
+  puerta con un cartel bien redactado.
+
+- **Consecuencias.**
+  1. **El diseño de niveles se duplica.** Cada nivel tiene que ser resoluble de las dos
+     maneras: con dos personas moviéndose a la vez, y con una sola alternando. Eso prohíbe
+     por construcción el puzzle que **exige** simultaneidad —el salto sincronizado, la
+     plataforma que solo aguanta si los dos saltan juntos— salvo que tenga una segunda
+     solución para el que juega solo. **Es una restricción de diseño, no una preferencia**, y
+     va escrita antes de que se dibuje el primer nivel porque después sale carísima.
+  2. **El piso de niveles no sube, pero el trabajo por nivel sí.** La lectura de `producto`
+     —seis niveles, 2/2/2— sigue en pie; lo que cambia es que cada uno se verifica dos veces.
+     El piso definitivo se fija al promover a `US-XX` (`BR-16`).
+  3. **Hay que decidir cuál de los dos modos es el que se ofrece primero**, y eso es de
+     `experiencia`: el que llega solo no tiene que elegir un modo antes de jugar, porque
+     elegir un modo es una pantalla previa y `D-32` límite 3 no la deja.
+  4. **Queda dicho para todo lo que venga:** un juego de este sitio no puede necesitar a otra
+     persona para arrancar. Es la extensión natural de `D-14` al único caso que no estaba en
+     su lista.
