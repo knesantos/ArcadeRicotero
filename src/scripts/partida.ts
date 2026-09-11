@@ -350,7 +350,12 @@ function pintarResultado(): void {
   zonaResultado.replaceChildren();
 
   // Registro 3 primero: el rotulo dice que hay adentro y se calla.
-  const marcador = el('p', `rotulo-desenlace rotulo--${r.desenlace}`, rotulo);
+  //
+  // Sin modificador por desenlace: `rotulo--victoria`, `--derrota` y `--retirada` se
+  // creaban aca y **ninguna hoja las pintaba** (lo encontro la red derivada de
+  // `estilos.test.ts`). Y es coherente con el registro: lo que dice como te fue es la
+  // palabra —VICTORIA, DERROTA, RETIRADA—, no el color, que es lo que pide `UX-01`.
+  const marcador = el('p', 'rotulo-desenlace', rotulo);
   marcador.id = 'rotulo-desenlace';
   zonaResultado.append(marcador);
 
