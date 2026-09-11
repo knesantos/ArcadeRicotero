@@ -154,28 +154,35 @@ const conArte = lados.map((lado) => ({
                   width={c.medidaArte?.ancho}
                   height={c.medidaArte?.alto}
                 />
-                <span class="casete-etiqueta">
-                  <strong class="casete-titulo">{c.titulo}</strong>
-                  <span class="casete-baja">{c.baja}</span>
-                </span>
                 {/*
-                    **La tapa chica salió del casete** (`UX-25` §2.2).
+                    **La tapa chica salió del casete, y el sello bajó adentro de la
+                    etiqueta** (`UX-25` §2.2 y §2.3).
 
-                    Eran 34×34 px de foto real de la tapa, y su fila completa: sacarla es lo
-                    que baja el casete de ~210 px a 136. `D-21` permite la tapa ahí pero no
-                    la exige, y el casete ya dice de qué disco es por su color (`D-19`).
+                    La tapa eran 34×34 px de foto real. El sello tenía **una fila entera del
+                    grid para él solo** (`grid-column: 1 / -1`), que existía para enfrentarlo
+                    con la tapa; sin la tapa esa fila ya no enfrenta nada y eran ~40 px por
+                    casete, ocho veces.
+
+                    Por eso `.casete-pie` va ahora **adentro** de `.casete-etiqueta`: fuera de
+                    ella, con la fila completa sacada, el grid lo mandaría a la columna del
+                    dibujo. No es un detalle de anidado, es lo que lo deja donde `UX-25` lo
+                    puso — debajo de la bajada, en la misma columna, a la izquierda.
 
                     Consecuencia que hay que saber: `tapasUsadas` de esta pantalla pasa de
                     acreditar ocho discos a acreditar uno. El crédito del pie se achica solo,
                     porque acredita lo que realmente se ve — que es exactamente lo que pide
                     `D-21` condición 1.
                 */}
-                <span class="casete-pie">
-                  {c.accion ? (
-                    <span class="casete-accion">{c.accion}</span>
-                  ) : (
-                    <span class="casete-pronto">{PORTAL.enLaCocina}</span>
-                  )}
+                <span class="casete-etiqueta">
+                  <strong class="casete-titulo">{c.titulo}</strong>
+                  <span class="casete-baja">{c.baja}</span>
+                  <span class="casete-pie">
+                    {c.accion ? (
+                      <span class="casete-accion">{c.accion}</span>
+                    ) : (
+                      <span class="casete-pronto">{PORTAL.enLaCocina}</span>
+                    )}
+                  </span>
                 </span>
               </a>
             </li>

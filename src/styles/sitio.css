@@ -764,7 +764,9 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   grid-template-columns: auto 1fr;
   gap: var(--espacio-2);
   align-items: center;
-  padding: var(--espacio-2);
+  /* `UX-25` §2.5: de 16 px parejos a 12. Ocho casetes por cuatro lados: es de los pocos
+     lugares del sitio donde cuatro pixeles se notan en el total. */
+  padding: 12px;
   /* Sin superficie "elevada": la pieza se recorta del fondo por borde grueso y
      cinta, como en serigrafia — y de paso la tinta de cada disco queda siempre
      sobre --fondo, que es el par que el test AA verifica (sobre el elevado,
@@ -864,24 +866,39 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
 .casete-titulo {
   display: block;
   font-family: var(--fuente-rotulada);
-  font-size: 1.05rem;
+  /* `UX-25` §2.5: de 1,05rem a 0,95rem. Sigue siendo el que manda en el casete —el sello
+     esta en 0,62 y la bajada en 0,8— y a 375 px es lo que deja a los ocho titulos en dos
+     renglones en vez de tres. */
+  font-size: 0.95rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
 .casete-baja {
   display: block;
-  font-size: 0.85rem;
-  line-height: 1.35;
+  /* `UX-25` §2.4: de 0,85rem/1,35 a 0,8rem/1,3. La hoja midio las ocho primeras oraciones
+     contra el ancho real de la columna a 375 px y las ocho entran en **dos renglones
+     siempre** — 34 px, no una variable por casete. */
+  font-size: 0.8rem;
+  line-height: 1.3;
 }
 
-/* El pie del casete: que disco viste y que boton tiene. */
+/* El pie del casete: el sello de accion.
+
+   **Dejo de ser una fila propia del grid** (`UX-25` §2.3). Tenia `grid-column: 1 / -1` para
+   enfrentar el sello con la tapa chica; sin la tapa esa fila ya no enfrenta nada, y una fila
+   entera del grid para un sello de 24 px de alto eran ~40 px por casete, ocho veces.
+
+   Baja adentro de la columna de etiqueta, debajo de la bajada, alineado a la izquierda.
+   **No va al lado del titulo**, aunque siete de los ocho entrarian: "Completa la letra" con
+   "EN LA COCINA" no entra a 375 px, y un criterio parejo para los ocho se sostiene solo,
+   mientras que una excepcion para uno hay que recordarla el dia que cambie un texto. */
 .casete-pie {
-  grid-column: 1 / -1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--espacio-1);
+  margin-top: var(--espacio-1);
 }
 
 /* La accion es un sello de goma: rectangulo de borde fino, mayusculas, apenas

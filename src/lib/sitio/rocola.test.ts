@@ -487,3 +487,69 @@ test('un oyente con un defecto no apaga la rocola', () => {
   assert.ok(piezaSonando(), 'un interruptor roto se llevó puesta la música');
   limpiar();
 });
+
+// ---------------------------------------------------------------------------------------
+// Los dos casos que faltaban (`FIND-54`, `REV-13`)
+// ---------------------------------------------------------------------------------------
+
+test('🔴 caso 19: el apagado de emergencia es un literal que se puede grepear y cambiar', () => {
+  /*
+   * `ADR-07.9` lo pide con las mismas palabras que `ADR-04.7` pide el de la cama: **que se
+   * pueda cambiar sin entender el módulo**. Un valor calculado —una variable de entorno, una
+   * función— obligaría a mirar la configuración del despliegue para saber si el sitio pone
+   * música.
+   *
+   * Por qué esto se prueba leyendo el archivo y no llamando a la función: la constante se
+   * evalúa al cargar el módulo, así que una prueba no puede ponerla en `false` sin volver a
+   * importar todo. Lo que sí se puede fijar —y es lo que el ADR promete— es **la forma**.
+   */
+  const fuente = readFileSync('src/lib/sitio/rocola.ts', 'utf-8');
+  assert.match(fuente, /^export const ROCOLA_HABILITADA = (true|false);$/m);
+
+  // Y que esté mirado antes que nada en la puerta de entrada: si estuviera después de crear
+  // el elemento, apagarla igual pediría bytes.
+  const cuerpo = fuente.slice(fuente.indexOf('export function prenderRocola'));
+  assert.ok(
+    cuerpo.indexOf('ROCOLA_HABILITADA') < cuerpo.indexOf('crearElemento'),
+    'el apagado de emergencia se mira después de empezar a construir',
+  );
+});
+
+test('🔴 caso 17: con la pantalla escondida la rocola sigue, y la cama se calla sola', () => {
+  /*
+   * **Los dos lados de esto viven en capas distintas, y por eso es fácil romperlo sin
+   * darse cuenta.** La cama se calla con `document.hidden` porque `debeCallarse()` lo
+   * pregunta (`cinta.ts`). La rocola **no se entera**: un tema que se corta porque alguien
+   * miró un mensaje y vuelve no es una atmósfera, es un reproductor roto — y el navegador ya
+   * decide solo qué hacer con el audio de una pestaña escondida.
+   *
+   * Lo que fija esta prueba es que **la rocola no tenga ningún escucha de visibilidad**:
+   * mientras no lo tenga, esconder la pantalla no puede tocarla. `ADR-07.8` lo declara como
+   * desvío de `ADR-04.8`, y hasta `FIND-54` no lo cubría ninguna prueba.
+   */
+  const { ctx, salida } = caso('/');
+  sembrarRocola(recortes(6));
+  prenderRocola(ctx as unknown as AudioContext, salida as unknown as AudioNode);
+  const antes = piezaSonando();
+  assert.ok(antes, 'no arrancó');
+
+  // El navegador esconde la pestaña. La rocola no tiene por dónde enterarse.
+  (globalThis as Record<string, unknown>).document = {
+    hidden: true,
+    addEventListener() {
+      throw new Error('la rocola registró un escucha de visibilidad');
+    },
+  };
+  try {
+    assert.equal(piezaSonando()?.slug, antes.slug, 'la pieza cambió al esconder la pantalla');
+    assert.equal(ultimoMedio?.paused, false, 'el tema se pausó solo');
+  } finally {
+    delete (globalThis as Record<string, unknown>).document;
+  }
+
+  const fuente = readFileSync('src/lib/sitio/rocola.ts', 'utf-8');
+  const codigo = fuente.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+  assert.ok(!codigo.includes('visibilitychange'), 'la rocola escucha visibilidad y no debe');
+  assert.ok(!codigo.includes('document.hidden'), 'la rocola mira `document.hidden` y no debe');
+  limpiar();
+});

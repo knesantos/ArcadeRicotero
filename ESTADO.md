@@ -165,18 +165,43 @@
 > | Pie de imprenta | 227 px | **179 px** |
 > | Texto del pie | 379 caracteres | **42** |
 >
-> ### ⚠ Tres cosas que quedaron cortas contra el presupuesto, y no son las hojas
+> ### ✅ `REV-13` cerró la revisión, y corrigió dos cosas mías
+>
+> `revisor` miró con contexto fresco (`Docs/REVISIONES/REV-13-ciclo-14.md`). **El riesgo
+> número uno quedó sin hallazgos**: verificó el mapa ruta por ruta contra el código, probó el
+> censo creando y borrando una página, y confirmó que los dos candados de la ruta son reales
+> y ninguno es decorativo. También que los tres casos de `cinta.test.ts` (691/717/932) están
+> intactos byte por byte y que `D-21` se sigue cumpliendo sin JavaScript.
+>
+> Tres hallazgos, dos corregidos el mismo día:
+>
+> - **`FIND-52` (corregido).** Al portal le faltaban **cuatro de las cinco medidas de
+>   `UX-25`**: yo había sacado la tapa chica y cortado la bajada, pero no toqué una sola regla
+>   `.casete*` de `sitio.css`. Aplicadas: `padding` 16→12, título 1,05→0,95rem, bajada
+>   0,85/1,35→0,8/1,3, y el sello bajando adentro de `.casete-etiqueta` en vez de ocupar una
+>   fila entera del grid. **Casete de 198 a 174 px; portal de 2021 a 1751 (2,16 pantallas).**
+> - **`FIND-54` (corregido a medias, a propósito).** Los casos **17 y 19** de los veinte de
+>   `ADR-07` no tenían prueba. Ya la tienen (`rocola.test.ts`, 20/20). La otra mitad —que
+>   `ADR-07.8` describe un mecanismo que el código no tiene, aunque el comportamiento sea el
+>   correcto— quedó como propuesta para `arquitectura`: **no reescribí la función que decide
+>   si el reveal de `US-02` se oye limpio para que calce con un párrafo.**
+> - **`FIND-53` (no es mío).** `UX-25` §5 pide un pie de ≤120 px, y
+>   `--alto-pie-imprenta: clamp(8.5rem, 22vh, 13rem)` tiene **piso de 136**. El techo era
+>   imposible sea cual sea el texto. Es de `experiencia`.
+>
+> Al cerrar: `npm test` **576/576**, `check` 0 errores, `build` 151 páginas.
+>
+> ### ⚠ Lo que quedó corto contra el presupuesto, y por qué
 >
 > **Son desvíos reales, no redondeos.** El que retome tiene que saberlos:
 >
-> 1. **El pie mide 179 px, no los ≤120 de `UX-25` §5.** La causa no es el texto —bajó a 42
->    caracteres— sino `--alto-pie-imprenta`, el token de la franja de `D-35`. Bajarlo cambia
->    la franja en las trece rutas y es decisión del lienzo, no del que construye.
-> 2. **El casete del portal quedó en 198 px, no en los 136 de `UX-25` §2.5.** Se sacó la tapa
->    chica y se cortó la bajada en el punto, como pide la hoja. Lo que no baja es el título:
->    ocupa dos renglones en letra de display, y eso es tipografía de marca.
-> 3. **Por lo anterior, el portal quedó en 2,49 pantallas y no en las 1,83** que presupuestó
->    `UX-25` §1. Igual bajó casi media pantalla.
+> 1. **El pie mide 179 px, no los ≤120 de `UX-25` §5.** `REV-13`/`FIND-53` lo cerró: el techo
+>    era **imposible**, porque `--alto-pie-imprenta` tiene piso de 136 px. El texto sí hizo lo
+>    suyo, de 379 a 42 caracteres. Defecto del presupuesto, no del pie.
+> 2. **El casete quedó en 174 px, no en los 136 de `UX-25` §2.5** — después de corregir
+>    `FIND-52`. Lo que no baja es el título en letra de display, y eso es tipografía de marca.
+> 3. **El portal quedó en 1751 px (2,16 pantallas), no en las 1,83** de `UX-25` §1. Bajó
+>    **645 px**, casi una pantalla entera.
 >
 > ### Dos defectos encontrados construyendo, que ninguna hoja preveía
 >
