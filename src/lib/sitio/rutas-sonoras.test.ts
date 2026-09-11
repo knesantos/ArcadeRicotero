@@ -9,7 +9,7 @@
  *
  * Lo que se prueba acá es lo que no se puede ver mirando la pantalla:
  *
- * - que las **ocho** rutas de juego caigan en `cama`, una por una y por nombre;
+ * - que las **siete** rutas de juego caigan en `cama`, una por una y por nombre;
  * - que los tres graves y el instrumento caigan en `muda`, que **no es lo mismo** que `cama`;
  * - que una ruta que nadie clasificó caiga del lado del silencio y no del de la música;
  * - y **el censo**: que no exista una página en `src/pages/` que nadie haya clasificado. Ese
@@ -23,7 +23,17 @@ import { join, relative, sep } from 'node:path';
 import { PAGINAS_DECLARADAS, RUTAS_CON_ROCOLA, esPantallaMuda, modoEnRuta } from './rutas-sonoras.ts';
 import { SLUGS_GRAVES } from './graves.ts';
 
-/** Las ocho pantallas donde se juega. El quiz no está en `/juegos/`, y por eso va aparte. */
+/**
+ * Las **siete** pantallas donde se juega: las seis de `src/pages/juegos/` más `/quiz/`, que
+ * no vive ahí y por eso va aparte.
+ *
+ * Decía "ocho" en dos lugares y el array siempre tuvo siete. No faltaba un elemento: estaba
+ * mal el comentario. Contado contra el disco por `INV-60` — `adivinar-el-tema`,
+ * `adivinar-la-tapa`, `adivinar-por-la-letra`, `completar-la-letra`, `dos-ejes`,
+ * `ponelos-en-fila`, más el quiz.
+ *
+ * El octavo juego entra por el censo de más abajo, no por esta lista.
+ */
 const RUTAS_DE_JUEGO = [
   '/quiz/',
   '/juegos/adivinar-el-tema/',
