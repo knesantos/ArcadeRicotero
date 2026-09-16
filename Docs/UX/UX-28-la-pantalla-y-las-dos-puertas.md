@@ -56,7 +56,8 @@ guardada. Nada de eso existe.
 
 ## 2. El reparto de la pantalla, con números
 
-Todo en píxeles CSS. El área y su contenido, en `UX-27`.
+Todo en píxeles CSS, **salvo el tile, que se mide en nativos y va dicho cada vez**: el tile
+es de 16 nativos, o sea 32 CSS a ×2. El área y su contenido, en `UX-27`.
 
 ```
  ← 812 (peor caso útil: 724 con muescas laterales) →
@@ -65,7 +66,7 @@ Todo en píxeles CSS. El área y su contenido, en `UX-27`.
 │          │ b │                                │ b │          │
 │  mando   │ i │        ÁREA DE JUEGO           │ i │  mando   │
 │ izquierdo│ s │        480 × 288  (×2)         │ s │ derecho  │
-│  112     │ e │        15 × 9 tiles de 16      │ e │   112    │
+│  112     │ e │   15 × 9 tiles de 16 nativos   │ e │   112    │
 │          │ l │                                │ l │          │
 │          │   ├────────────────────────────────┤   │          │
 │          │   │  chapa 24 — el pie de homenaje │   │          │

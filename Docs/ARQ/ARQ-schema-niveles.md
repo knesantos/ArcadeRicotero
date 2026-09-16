@@ -9,7 +9,7 @@
 > `CTR-17`, `CTR-02`, `CTR-08` (forma del envoltorio), **`UX-27 §2`** (la grilla),
 > **`UX-28 §1`** (dos columnas, ningún modo que elegir), **`UX-29 §7`** (el terreno ajeno
 > devuelve a la entrada, y el nivel es una sala cerrada), **`REV-14`** (`FIND-55`, `FIND-58`,
-> y `FIND-59` que queda abierto), `src/lib/esquemas.test.ts`.
+> y `FIND-59`), **`US-09` criterio 4**, `src/lib/esquemas.test.ts`.
 >
 > **Qué NO es:** no es el diseño de los niveles ni el piso de cuántos hay. El piso lo fija
 > `producto` al promover (`BR-16`), y a quién devuelve cada terreno es **criterio del sitio**
@@ -276,15 +276,10 @@ elección es fácil — **el defecto que el mapa hace imposible es el que nadie 
    (`RES-61.2`). No es un campo: es la regla del juego, y está acá escrita para que nadie la
    parametrice por nivel. Un nivel que se gana con uno solo en la puerta es otro juego.
 
-> **`FIND-59` sigue abierto sobre estas dos reglas, y no lo cierro yo.** `US-09` criterio 4 y
-> la tabla de escalones de `PRD-skayboy-y-poligirl.md` le dan al nivel 1 **una sola puerta**;
-> la regla 1 de acá exige una por personaje. No pueden ser ciertas las dos. `REV-14` lo
-> asignó a **`producto` con `arquitectura`** (`T-231`) y por eso queda marcado en vez de
-> resuelto: **un choque declarado no es un choque resuelto**, y este documento no puede
-> decidir solo cuál de los dos cede. Lo que aporto para esa conversación es el costo: si el
-> nivel 1 se gana con uno en la puerta, la regla deja de ser del juego y pasa a ser un campo
-> por nivel, con su `if`/`then` y su verificación — y el escalón 1 pasa a enseñar una regla
-> que el escalón 2 cambia.
+> **`FIND-59` cerrado a favor de estas dos reglas: rigen desde el nivel 1.** `US-09` criterio
+> 4 le da al primer nivel **las dos entradas y las dos puertas**, y `producto` lo confirmó
+> cediendo su lado (`T-231`). Las reglas 1 y 2 quedan como están: ningún campo por nivel,
+> ningún `if`/`then`.
 
 ---
 

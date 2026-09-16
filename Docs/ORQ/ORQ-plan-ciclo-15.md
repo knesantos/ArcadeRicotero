@@ -19,9 +19,10 @@
 >
 > **Enmendado el mismo 2026-09-16, a la tarde, después de `REV-14`.** Este plan se cortó a la
 > mañana y el revisor lo leyó a la tarde. Dos hallazgos son míos y se cierran acá: **`FIND-61`**
-> (le di a `revisor` dos tareas que no son suyas) y **`FIND-62`** (16 de 25 tareas sin comando
-> corrible, contra `CLAUDE.md` §8 y `D-12`). Entran además **`D-42`** y **`D-43`**, que el plan
-> no podía conocer, y las cuatro cadenas que `arquitectura` dejó viejas en
+> (le di a `revisor` dos tareas que no son suyas — y su residuo, **`FIND-66`**: el plan le seguía
+> dando el archivo de la revisión, que también escribe el hilo principal) y **`FIND-62`** (16 de
+> 25 tareas sin comando corrible, contra `CLAUDE.md` §8 y `D-12`). Entran además **`D-42`** y
+> **`D-43`**, que el plan no podía conocer, y las cuatro cadenas que `arquitectura` dejó viejas en
 > `Docs/SUGERENCIAS/ARQ-para-orquestador-lo-que-cerro-y-lo-que-el-plan-dice-de-mas.md`.
 > **Nada se borra: lo enmendado se marca.** El detalle, en `§3.2` y `§3.3`; el rango se amplió
 > a `T-260` en `Docs/IDS.md` y de esa ampliación tomo tres: `T-251`, `T-252` y `T-253`. Quedan
@@ -172,7 +173,7 @@ mismo día que se escribieron:
 
 | ID | Rol | Qué | Archivos | Verifica con | [P] |
 |---|---|---|---|---|---|
-| `T-226` | **hilo principal** (era `revisor` — `FIND-61`) | La compuerta de `ADR-08.1`: las cinco condiciones del motor, una por una, con su consecuencia escrita. **Antes de la primera línea de isla** | `package.json`, `package-lock.json`, `src/scripts/humo-motor.ts` (temporal). **Ya no `REV-14`**: ese archivo es de `revisor` y las cinco respuestas se le pasan para que las asiente al cerrar (`T-250`) | `npm i -E kaplay@3001.0.19`; humo con `kaplay({ global:false, canvas })`; `npm run build`; `npm run check`; `grep -rn "new Function\|eval(" node_modules/kaplay/dist/`; medir el chunk en `dist/_astro/` contra los ≤ 90 KB de `ADR-08.10` — **y rehacer la vara con `npm run build` antes de comparar** | **[P]** |
+| `T-226` | **hilo principal** (era `revisor` — `FIND-61`) | La compuerta de `ADR-08.1`: las cinco condiciones del motor, una por una, con su consecuencia escrita. **Antes de la primera línea de isla** | `package.json`, `package-lock.json`, `src/scripts/humo-motor.ts` (temporal). **Ya no `REV-14`**: devuelve cinco respuestas, las verifica `revisor` al cerrar (`T-250`) y el archivo lo pega el hilo principal (`FIND-66`) | `npm i -E kaplay@3001.0.19`; humo con `kaplay({ global:false, canvas })`; `npm run build`; `npm run check`; `grep -rn "new Function\|eval(" node_modules/kaplay/dist/`; medir el chunk en `dist/_astro/` contra los ≤ 90 KB de `ADR-08.10` — **y rehacer la vara con `npm run build` antes de comparar** | **[P]** |
 | `T-227` | `investigador` | Las cuatro fichas del paquete que `ADR-08` declara condición y no se pueden afirmar de memoria | `Docs/INVESTIGACION/INV-61-motor-kaplay.md` (`RES-70`+) | **Sin comando, y el hueco queda declarado:** una ficha no la audita ninguna máquina. Las cuatro preguntas de `ARQ-para-investigador-motor-kaplay.md`, con URL y fecha y leídas en el paquete publicado y no en la documentación, **las mira `revisor` en `T-250`**. Lo único cruzable a máquina es el número de versión y su fecha: `npm view kaplay@3001.0.19 version time`, y lo corre `T-226` | **[P]** |
 | `T-228` | `arquitectura` — **CERRADA** | `CTR-15.2` recibe el desenlace medido (`§1.1`): qué deja de ser el recorte, y qué pasa con el fondo por coincidencia exacta de `CTR-15.4` | `Docs/ARQ/ARQ-atlas-de-sprites.md` | `rg -n "N = 1" Docs/ARQ/ARQ-atlas-de-sprites.md` (devuelve el desenlace elegido, :141) y `rg -n "coincidencia exacta" Docs/ARQ/` (:200, la regla declarada muerta). Los otros dos desenlaces quedan como tabla histórica, no como opción viva — eso lo mira `revisor` | **[P]** |
 | `T-229` | `experiencia` | `UX-27 §6` reescrito para una hoja que no está sobre grilla: el circuito de cuantización, el umbral de fondo con tolerancia y qué se pierde en el camino. **Toma además la línea de la carpeta** — ver `§3.2` punto 5 | `Docs/UX/UX-27-la-convencion-del-pixel.md` | `rg -n "public/arte/pixel" Docs/UX/UX-27-la-convencion-del-pixel.md` **sin resultados** (hoy devuelve :227 y :258, y `FIND-56` está cerrado de un lado solo). Que los siete pasos vuelvan a ser corribles y que el paso 3 deje de suponer que hay un píxel nativo medible **no tiene comando: lo mira `revisor`** | **[P]** |
@@ -195,8 +196,8 @@ mismo día que se escribieron:
 | `T-246` | **sin dueño — ver `§5`** | Los dos atlas a ×1, en grilla, en paleta y con alfa binario | `public/sprites/` (ya ganó en `T-230`) | `node scripts/auditar-paleta-pixel.mjs` en verde; los dos JSON con las mismas animaciones y la misma cantidad de cuadros; y a ojo, tapando el color, las dos siluetas se leen igual a 32 × 48 CSS (`UX-27 §10`, `BR-23` punto 3) | dep. `T-228`..`T-230`, `T-238`, y la hoja del usuario |
 | `T-247` | hilo principal | La isla: motor apagado de sus cuatro cosas, atlas cargado, los dos personajes moviéndose, y el terreno ajeno que devuelve a la entrada | `src/scripts/partida-skayboy.ts`, `src/lib/skayboy/motor.test.ts` | `node --test src/lib/skayboy/motor.test.ts` (falla si aparece texto, fuente, audio del motor o un `kaplay(` sin `global:false`); `npm run check`. **Lo del teléfono —cuatro dedos a la vez y el inactivo quieto y a salvo— no lo corre ningún rol ni ningún agente: es del usuario** (`§5` punto 3), y se hace junto con `T-249` en la misma sentada | dep. `T-226`, `T-242`, `T-246` |
 | `T-248` | hilo principal | La puerta doble y el fin del nivel 1 | `src/scripts/partida-skayboy.ts`, `src/lib/skayboy/niveles.ts`, **`src/lib/skayboy/niveles.test.ts`** | **`node --test src/lib/skayboy/niveles.test.ts`**, con tres casos sobre la condición de victoria: **falla** si se cumple con uno solo en la puerta, **pasa** con los dos, y el que llegó primero no acumula costo mientras espera. Que pasar al siguiente no cueste más de un toque es dedo, y es de `T-249` | dep. `T-247` |
-| `T-249` | **usuario** (era `revisor` — `FIND-61`) | La planilla de `BR-25` del nivel 1, **jugada**. `D-43` le sacó la mitad del trabajo: sin botón de cambio, probar que el nivel se resuelve solo es físico y barato — **una persona, un dedo por vez, una columna y después la otra.** Si así no se pasa, el nivel está mal | **No escribe ningún archivo:** el resultado se le pasa a `revisor`, que lo asienta en `REV-14 §2` al cerrar (`T-250`) | Un teléfono en horizontal y el nivel 1 abierto, las seis filas de `BR-25`: **(a)** se pasa de a dos, con las dos columnas a la vez; **(b)** se pasa solo, una columna y después la otra, **sin ningún botón que aprender** (`D-43`); **(c)** ninguna acción pidió entrada simultánea; **(d)** el que quedó quieto siguió a salvo; **(e)** el reintento fue gratis; **(f)** la paridad quedó anotada. **Ningún rol ni agente puede correr esto** (`§5` punto 3). Si una fila falla, el nivel queda en `borrador` y las dos verificaciones en `false` | dep. `T-248`, y del usuario |
-| `T-250` | `revisor` | Cerrar `REV-14`: el ciclo contra los criterios, y la tabla de `§1` vuelta a medir | `Docs/REVISIONES/REV-14-ciclo-15.md` | `npm test`, `npm run check`, `npm run build`, el validador del instanciador, y la prueba de la captura de `UX-29 §9` punto 5. **Suma acá lo que no tuvo comando propio** (`§3.3`): la ficha de `T-227`, los cuatro documentos de `contenido` y la geometría de `T-230` en 812 × 375 | dep. todo |
+| `T-249` | **usuario** (era `revisor` — `FIND-61`) | La planilla de `BR-25` del nivel 1, **jugada**. `D-43` le sacó la mitad del trabajo: sin botón de cambio, probar que el nivel se resuelve solo es físico y barato — **una persona, un dedo por vez, una columna y después la otra.** Si así no se pasa, el nivel está mal | **No escribe ningún archivo:** el resultado se le pasa a `revisor`, que lo verifica al cerrar (`T-250`) y lo devuelve en su reporte; a `REV-14 §2` lo pega el hilo principal (`FIND-66`) | Un teléfono en horizontal y el nivel 1 abierto, las seis filas de `BR-25`: **(a)** se pasa de a dos, con las dos columnas a la vez; **(b)** se pasa solo, una columna y después la otra, **sin ningún botón que aprender** (`D-43`); **(c)** ninguna acción pidió entrada simultánea; **(d)** el que quedó quieto siguió a salvo; **(e)** el reintento fue gratis; **(f)** la paridad quedó anotada. **Ningún rol ni agente puede correr esto** (`§5` punto 3). Si una fila falla, el nivel queda en `borrador` y las dos verificaciones en `false` | dep. `T-248`, y del usuario |
+| `T-250` | `revisor` | Verificar el cierre del ciclo contra los criterios, y la tabla de `§1` vuelta a medir | **No escribe** (`FIND-66`): `revisor` es read-only y las fichas las pega el hilo principal (`Docs/REVISIONES/README.md`). Devuelve el reporte y con él se escribe `Docs/REVISIONES/REV-14-ciclo-15.md` | `npm test`, `npm run check`, `npm run build`, el validador del instanciador, y la prueba de la captura de `UX-29 §9` punto 5. **Suma acá lo que no tuvo comando propio** (`§3.3`): la ficha de `T-227`, los cuatro documentos de `contenido` y la geometría de `T-230` en 812 × 375 | dep. todo |
 | `T-251` | hilo principal | `FIND-58`, la mitad que un schema no puede: el caso que **cuenta** los molinetes — exactamente uno que devuelva solo a `skayboy`, uno solo a `poligirl`, uno a los dos (`CTR-16.4`). JSON Schema no sabe contar propiedades por su contenido, así que si nadie la escribe a mano, esa regla no la verifica nada | `src/lib/esquemas.test.ts` | `npm test` en verde; y **rojo** contra un nivel de prueba con dos molinetes que devuelven a lo mismo. **Mismo archivo que `T-242`: no es `[P]` con ella y va inmediatamente después** | dep. `T-242` |
 | `T-252` | `revisor` | El barrido de vocabulario retirado: que ningún número ni palabra que una enmienda mató siga vivo como regla en otro archivo. Es la advertencia con la que cierra `REV-14` —*un choque declarado no es un choque resuelto*— vuelta tarea | **No escribe**: lee `Docs/ARQ/`, `Docs/UX/`, `Docs/PRODUCTO/`, `src/`, `public/arte/README.md`. Si algo sobrevive es un `FIND-` nuevo, y lo pega el hilo principal | `rg -n 'inmuneA\|"letal"\|mata: \[\|32 tintas\|416 × 192\|26 × 12\|public/arte/pixel' Docs/ARQ/ Docs/UX/ Docs/PRODUCTO/ src/ public/arte/README.md` — **probado el 2026-09-16: devuelve 16 líneas**, catorce de ellas enmiendas rotuladas y dos que son la regla viva que `T-229` tiene que sacar (`UX-27`:227 y :258). El criterio es ese: **toda línea devuelta tiene que ser una enmienda o una cita histórica**, ninguna una regla viva. `DECISIONES.md` y este plan quedan fuera del barrido a propósito: ahí lo viejo se guarda. Cubre `FIND-55`, `FIND-56`, `FIND-57`, `FIND-58` y `FIND-60` de una pasada | dep. `T-229`, `T-230`, `T-236`, `T-237` |
 | `T-253` | hilo principal | Lo que queda del criterio 4 de `US-09` cuando `FIND-59` se cierra a favor del contrato: **el primer nivel del piso no usa en su grilla ningún caracter de `tipo` `molinete`, `mecanismo` ni `caja`** — es decir, no se puede perder. Lo pidió `producto` en su traspaso y **es condicional**: si `arquitectura` prefiere que no exista, la fila cae en la planilla de `BR-25` (`T-249`) y esta tarea se cancela | `src/lib/esquemas.test.ts` | `npm test` en verde; y **rojo** contra un nivel 1 de prueba con un molinete en la grilla. Cómo se identifica "el primero" lo dice `arquitectura` (`id` o `escalon`). **Mismo archivo que `T-242` y `T-251`: van los tres en fila, ninguno `[P]` con otro** | dep. `T-242`, y de que `arquitectura` la acepte |
@@ -216,7 +217,8 @@ y eso tiene dueño: `T-228` y `T-229`.
    read-only por diseño —verifica, no arregla— y el que escribe código en este proyecto es el
    **hilo principal** (`.claude/rules/codigo-juegos.md`: *no hay rol de implementación*). Le
    saqué además `REV-14` de la lista de archivos: la compuerta devuelve cinco respuestas y el
-   que las asienta es `revisor` al cerrar.
+   que las verifica es `revisor` al cerrar. El archivo no lo escribe ninguno de los dos: lo pega
+   el hilo principal (`FIND-66`).
 2. **`T-249` no es de ningún agente** (`FIND-61`). Pide jugar una partida de a dos en un
    teléfono. No hay rol que pueda hacerlo, ni con permisos: **es del usuario**, y por eso
    pasa a `§5` con las otras dos.
@@ -269,13 +271,13 @@ Para las que quedan, la regla de este plan es la de `CLAUDE.md` §8 leída de fr
 declarado es mejor que un hueco.** Lo que no tiene comando lo dice, dice quién lo mira y en
 qué tarea se mira:
 
-| Qué no se puede correr | Quién lo mira | Dónde queda asentado |
+| Qué no se puede correr | Quién lo verifica | Dónde queda asentado — **el archivo lo pega el hilo principal** (`FIND-66`) |
 |---|---|---|
-| La ficha de `T-227`: cuatro respuestas con URL y fecha | `revisor` | `REV-14` (`T-250`) |
-| Los documentos de `T-228`..`T-231`, `T-236`, `T-237`: que la regla enmendada no deje viva la vieja | `revisor`, con el `rg` de cada fila y con `T-252` | `REV-14` (`T-250`) |
-| El registro 3 del pie, la prueba de las dos líneas, que el tema no explique la mecánica | `revisor`, con `voz-ricotera.md` §5 al lado | `REV-14` (`T-250`) |
-| Las medidas de `T-240` a 812 × 375 y el vertical a ×1 | ojo, en el navegador — lo mira quien revisa | `REV-14` (`T-250`) |
-| Las seis filas de `BR-25` jugadas (`T-249`) y los cuatro dedos de `T-247` | **el usuario, con un teléfono** | `REV-14 §2`, lo asienta `revisor` |
+| La ficha de `T-227`: cuatro respuestas con URL y fecha | `revisor` | reporte de `T-250` → `REV-14` |
+| Los documentos de `T-228`..`T-231`, `T-236`, `T-237`: que la regla enmendada no deje viva la vieja | `revisor`, con el `rg` de cada fila y con `T-252` | reporte de `T-250` → `REV-14` |
+| El registro 3 del pie, la prueba de las dos líneas, que el tema no explique la mecánica | `revisor`, con `voz-ricotera.md` §5 al lado | reporte de `T-250` → `REV-14` |
+| Las medidas de `T-240` a 812 × 375 y el vertical a ×1 | ojo, en el navegador — lo mira quien revisa | reporte de `T-250` → `REV-14` |
+| Las seis filas de `BR-25` jugadas (`T-249`) y los cuatro dedos de `T-247` | **el usuario, con un teléfono**; lo verifica `revisor` en `T-250` | reporte de `T-250` → `REV-14 §2` |
 
 **Lo que no está en esa tabla tiene comando** — propio, o diferido a la tarea donde el texto
 aterriza en el código. Un criterio sin comando, sin dueño y sin tarea donde se mire es el hueco
@@ -300,10 +302,12 @@ que `FIND-62` fue a buscar; con las dos cosas escritas deja de serlo, aunque sig
   Depende de la hoja del usuario y de un dueño que no existe (`§5`).
 - **Las seis tareas de documento de la ráfaga 2 (`T-232`..`T-237`) son paralelas de verdad**:
   seis archivos, cuatro roles, ninguna lee la salida de otra.
-- **`REV-14` lo escribe una sola tarea, y es `T-250`.** Era el peor conflicto del plan viejo:
+- **`REV-14` sale de un solo reporte, y es el de `T-250`.** Era el peor conflicto del plan viejo:
   `T-226`, `T-249` y `T-250` escribían el mismo archivo, y dos de las tres ni siquiera eran de
   `revisor`. Con `FIND-61` cerrado, `T-226` devuelve sus cinco respuestas y `T-249` su planilla
-  jugada, y **las dos las asienta `revisor` al cerrar**. Un archivo, un dueño, una tarea.
+  jugada, y **las dos las verifica `revisor` al cerrar**. Con `FIND-66`, **ninguna de las tres
+  escribe el archivo**: `revisor` es read-only y la ficha la pega el hilo principal. Un archivo,
+  un reporte, una mano que lo pega.
 - **`T-251` toca `src/lib/esquemas.test.ts`, que es de `T-242`.** No son `[P]`: va inmediatamente
   después, en la misma ráfaga, porque la mitad de `FIND-58` que le toca no tiene sentido sin el
   dato y el schema que `T-242` crea.
@@ -340,7 +344,8 @@ al final, con el teléfono en la mano: `T-249`, y después `T-252` y `T-250`.
    aprender, así que la prueba entera es **una persona, un dedo por vez, una columna y después
    la otra, y después las dos con alguien al lado**. Si con un dedo por vez el nivel no se
    pasa, el nivel está mal y queda en `borrador` — que es exactamente lo que `BR-25` quiere que
-   pase. El resultado se lo pasás a `revisor` y lo asienta en `REV-14 §2`.
+   pase. El resultado se lo pasás a `revisor`, que lo verifica en `T-250`; a `REV-14 §2` lo
+   pega el hilo principal (`FIND-66`).
 
 > **La planilla ya habla el idioma de `D-43`, y no hubo que pedirlo.** `BR-25` fila **(b)**
 > decía *"alternando con el botón de cambio"*; `producto` la enmendó la misma tarde y ahora

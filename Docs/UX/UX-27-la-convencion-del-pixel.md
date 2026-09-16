@@ -125,8 +125,9 @@ arreglarlo al recortar, y la regla que queda escrita para siempre es esta:
 
 ## 4. La paleta acotada: 16 colores, y cuatro no se eligen
 
-`D-41` pide "paleta acotada" y no da el número. **El número es 16 por escena**, repartidos
-así, y el reparto es la mitad de la decisión:
+`D-41` pide "paleta acotada" y no da el número. **El número es 16 para toda el área, no 16
+por escena**: no hay paleta por nivel ni por atlas, y el nivel 2 no declara otras dieciséis
+(`CTR-15.4`, `FIND-68`). Se reparten así, y el reparto es la mitad de la decisión:
 
 | Franja | Cuántos | Qué son |
 |---|---|---|
@@ -224,7 +225,7 @@ node --test src/lib/contraste.test.ts     # los 16 --px-* contra --px-clave, umb
 node scripts/auditar-paleta-pixel.mjs     # ningún PNG del área trae un color fuera de los 16
 ```
 
-El segundo no existe todavía y es barato: leer los PNG de `public/arte/pixel/`, juntar los
+El segundo no existe todavía y es barato: leer los PNG de `public/sprites/`, juntar los
 colores distintos y fallar si aparece uno que no esté en la lista de `tokens.css`, o si hay
 un píxel con alfa intermedio. **Un color de más en un PNG es el mismo defecto que un hex
 suelto en un componente**, y hasta que ese script exista el área no tiene auditor.
@@ -234,19 +235,29 @@ suelto en un componente**, y hasta que ese script exista el área no tiene audit
 ## 6. Cómo se recorta la hoja que trajo el usuario
 
 `public/arte/skayboy_poligirl.png` (1299 × 725) **es una hoja de concepto, no un atlas** y
-no se usa como está. Lo que trae, medido el 2026-09-16: el fondo verde azulado es opaco, las
-poses no están en grilla, cada una tiene su tamaño, y hay texto pegado adentro de la imagen
-—los dos encabezados y las cuatro etiquetas.
+no se usa como está. Lo que trae, medido el 2026-09-16: el fondo verde azulado es opaco **y
+no es un solo color** —un bloque liso de 40 × 40 trae 52 tintas alrededor de
+`rgb(23,110,119)`, y la hoja entera tiene 108.705 colores—, las poses no están en grilla,
+cada una tiene su tamaño, y hay texto pegado adentro de la imagen —los dos encabezados y las
+cuatro etiquetas.
 
-**El orden del recorte, que es también el orden en que se pierde lo que no va:**
+**Los pasos 1 y 2 son a mano sobre esta hoja, y no hay tijera que los haga.** Está medido: la
+banda del personaje masculino sale como una sola pieza de 1072 px porque las flechas de los
+rótulos puentean las poses, y enmascarar el crema de las cajas no mejoró nada
+(`ARQ-para-experiencia-la-carpeta-y-el-recorte-a-mano.md`, `CTR-15.1`). Lo automático empieza
+en el paso 4. **El orden sigue siendo el orden en que se pierde lo que no va:**
 
 1. **Fuera el texto.** Los encabezados y las cuatro etiquetas no llegan a producción de
    ninguna forma. Ninguna de esas palabras se muestra nunca en el sitio (ver `§7`).
-2. **Fuera el fondo.** Se saca el verde azulado por color y se fuerza el alfa a binario
-   (`§3`). Ojo con los píxeles del borde: si la hoja trae halo, se recorta el halo, no se
-   lo suaviza.
+2. **Fuera el fondo, y no por color.** Con 52 tintas alrededor del verde azulado, sacarlo
+   por color no se puede, y con tolerancia aparece el halo que `§3` prohíbe. **El alfa sale
+   del dibujo, no de la hoja**: recortada la pose a mano, el fondo no se "saca" — nunca se
+   dibuja. El alfa queda binario (`§3`) porque nunca hubo otra cosa.
 3. **Se mide el píxel nativo** antes de tocar nada: el bloque repetido más chico de la
-   imagen. Ese es el píxel real del dibujo, y la hoja está ampliada respecto de él.
+   imagen. Ese es el píxel real del dibujo, y la hoja está ampliada respecto de él. **No se
+   mide sobre la hoja entera:** los rótulos son texto suavizado y contestan `N = 1` aunque
+   los dibujos estén en grilla. Se mide sobre una pose ya recortada y se confirma con una
+   del otro personaje.
 4. **Se reduce a ×1 por vecino más cercano** hasta ese píxel nativo. Nunca bilineal, nunca
    "suavizar".
 5. **Recién ahí se pone en grilla**, cada pose centrada en su celda de 16 × 24, con el pie
@@ -255,7 +266,9 @@ poses no están en grilla, cada una tiene su tamaño, y hay texto pegado adentro
 6. **Se ajusta a la paleta** de `§4`: cada color de la hoja se reemplaza por el más cercano
    de los 16, y si algo no entra, se cambia la paleta a propósito y se anota. No se agrega
    un color número 17 en silencio.
-7. **Sale un PNG por personaje**, con sus poses en fila, a ×1, en `public/arte/pixel/`.
+7. **Sale un PNG por personaje**, con sus poses en fila, a ×1, en `public/sprites/` — fuera
+   de `public/arte/`, porque una subcarpeta adentro de la casa del collage es la pieza
+   compartida que `D-41` punto 4 prohíbe (`CTR-15.5`, `FIND-56`).
 
 Lo único de la hoja que **no** pasa por este circuito son las dos cabezas de perfil: son
 retrato, no sprite (`D-42` precisión 3), y **no entran a producción en este ciclo**. No hay
@@ -375,7 +388,7 @@ Comandos que dejo escritos y **corre otro** (`D-12`):
 
 ```
 node --test src/lib/contraste.test.ts       # los 16 --px-* contra la clave, 3:1
-node scripts/auditar-paleta-pixel.mjs       # colores fuera de paleta y alfa intermedio  (no existe todavía)
+node scripts/auditar-paleta-pixel.mjs       # escanea public/sprites/: color fuera de paleta y alfa intermedio  (no existe todavía)
 node --test src/lib/estilos.test.ts         # que el área no se comunique solo con color
 npm test                                    # todo lo demás
 ```

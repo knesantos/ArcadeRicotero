@@ -49,8 +49,10 @@
 ```markdown
 ## El otro idioma: el pixel art del área de juego (`D-41`)
 
-Vive en `public/arte/pixel/`. **Nada de esta carpeta sigue las reglas de arriba**, y nada de
-arriba entra a esa carpeta. La convención completa —grilla, paleta, alfa, escalado, el
+Vive en `public/sprites/`, **fuera de esta carpeta y a propósito**: una subcarpeta acá
+adentro sería la pieza compartida que `D-41` punto 4 prohíbe, y este README tendría que
+mandar dos formatos incompatibles a la vez. **Nada de `public/sprites/` sigue las reglas de
+arriba**, y nada de arriba entra ahí. La convención completa —grilla, paleta, alfa, escalado, el
 recorte de la hoja de concepto, el inventario de poses y el mecanismo de contraste— está en
 `Docs/UX/UX-27-la-convencion-del-pixel.md`. Acá va lo mínimo para no romper nada sin
 tener que abrirlo:
@@ -68,8 +70,11 @@ tener que abrirlo:
 
 **La hoja de concepto no es un atlas.** `public/arte/skayboy_poligirl.png` (1299 × 725) es
 una lámina con el fondo opaco, las poses fuera de grilla y etiquetas pegadas adentro de la
-imagen. No se usa como está: hay que recortarla siguiendo los siete pasos de `UX-27 §6`, y
-**ninguna de las palabras que trae pegadas llega al sitio**.
+imagen. Se queda acá: es material de origen, no una pieza de producción. No se usa como está:
+hay que recortarla siguiendo los siete pasos de `UX-27 §6`, y **los dos primeros son a mano**
+—está medido: las flechas de los rótulos puentean las poses y el fondo son 52 tintas, así que
+no hay tijera ni "quitar fondo por color" que sirva—. **Ninguna de las palabras que trae
+pegadas llega al sitio.**
 
 **Lo que se verifica antes de dar por buena una pieza nueva:**
 
@@ -84,7 +89,7 @@ node scripts/auditar-paleta-pixel.mjs     # color fuera de paleta, o alfa interm
 ## 4. Bloque C — fila nueva para "Lo que NO va acá"
 
 ```markdown
-- **Sprites y tiles.** Van en `public/arte/pixel/` y siguen la convención de `UX-27`, no la
+- **Sprites y tiles.** Van en `public/sprites/` y siguen la convención de `UX-27`, no la
   de este archivo. Un sprite con borde de tijera es un defecto: a 16 px ese borde es ruido.
 ```
 
@@ -135,7 +140,7 @@ de los diez colores derivados los fija el lienzo.
 1. **`contraste.test.ts`**: cada `--px-*` contra `--px-clave`, umbral **3:1**. No es texto,
    es una línea de contorno separando dos superficies — 3:1 es el umbral de elemento
    gráfico, y `UX-27 §5.3` explica por qué alcanza.
-2. **`scripts/auditar-paleta-pixel.mjs`** (no existe): lee los PNG de `public/arte/pixel/`,
+2. **`scripts/auditar-paleta-pixel.mjs`** (no existe): lee los PNG de `public/sprites/`,
    junta los colores distintos y falla si aparece uno que no esté en la lista, o si hay un
    píxel con alfa entre 1 y 254. **Un color de más en un PNG es el mismo defecto que un hex
    suelto en un componente**, y hasta que ese script exista el área no tiene auditor.
