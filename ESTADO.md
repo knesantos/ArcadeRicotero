@@ -5,7 +5,111 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-09-11
+**Última actualización:** 2026-09-16
+
+> ## 🕹 CICLO 15 PLANIFICADO Y REVISADO, SIN CONSTRUIR (2026-09-16)
+>
+> **El usuario trajo la hoja de sprites y pidió seguir.** Textual: *"Agregue los sprites
+> continua con el siguiente ciclo"*. Lo que hay es **el ciclo entero en papel**: la historia
+> promovida, el motor elegido, los contratos, la pantalla, el plan y dos rondas de revisión.
+> **Cero código.** `npm test` sigue en 578, que son los mismos de antes.
+>
+> **Plan completo en `Docs/ORQ/ORQ-plan-ciclo-15.md`** — `T-226`..`T-253`.
+>
+> ### Lo que trajo el usuario, medido
+>
+> `public/arte/skayboy_poligirl.png`: 1299×725, RGBA **con el alfa lleno** (el fondo verde
+> azulado es píxel opaco, no transparencia). Poses por personaje: quieto de frente, de perfil,
+> mirando a la derecha, corriendo, saltando, cayendo. Más dos cabezas de perfil y una guitarra.
+>
+> **🔴 No se puede recortar a máquina, y eso es lo más caro que dejó el ciclo.** Los rótulos y
+> sus flechas puentean los sprites: la banda del personaje masculino sale como **un solo bloque
+> de 1072 px**. Enmascarar el crema de las cajas no alcanza — las que puentean son las flechas,
+> oscuras, dentro del rango de la tinta. Y `arquitectura` midió después que **no hay grilla
+> latente** (N = 1). Los dos hechos juntos dicen que los sprites de producción hay que
+> **redibujarlos sobre grilla, no recortarlos**. La hoja sirve de referencia de pose, insignia
+> y tono, que es lo valioso — no es la fuente de los píxeles.
+>
+> **Lo barato es del usuario:** reexportar sin anotaciones, con fondo transparente y sobre
+> grilla. Eso tira abajo todo el trabajo de recorte a mano. Conviene pedirlo antes de gastarlo.
+>
+> También apareció `public/arte/bondiAfinisterreAnimado.mp4` (3,2 MB): es para `IDEA-04`, otro
+> juego. No es de este ciclo.
+>
+> ### Las tres decisiones del usuario, escritas
+>
+> - **`D-41` — pixel adentro, imprenta afuera.** El área de juego es pixel art; el marco, el
+>   pie, los rótulos y los casetes siguen siendo la imprenta de `UX-22`. La metáfora es la
+>   regla: un fichín son dos cosas pegadas, un tubo de píxeles adentro de un mueble
+>   serigrafiado. La frontera se ve, y los dos idiomas no se mezclan en la misma pieza.
+> - **`D-42` — enmienda la baranda 2 de `D-38`: los muñecos tienen cara.** La baranda no era un
+>   principio, era **una estimación de riesgo**, y estaba escrita como tal. `RES-64` no se movió
+>   una coma; lo que se movió es dónde está el perjuicio: **el nombre ya está en el título del
+>   juego**, así que la cara no agrega identificación que el nombre no haya dado. Ahora el tono
+>   es la baranda —nunca denigrante, ridiculizante ni sexualizado— y **el pie de homenaje pasó a
+>   ser obligatorio**.
+> - **`D-43` — no hay botón de cambio.** Cada columna de mando maneja siempre al mismo
+>   personaje; el que no tiene un dedo encima se queda quieto y a salvo. Con dos personas se
+>   usan las dos columnas a la vez; con una, una y después la otra. **Eso es el botón de cambio,
+>   sin botón y sin nada que aprender** — y de paso cumple la consecuencia 3 de `D-40`, que
+>   exigía que el que llega solo no elija un modo. Lo propuso `UX-28` con mejor argumento que la
+>   decisión original; se enmendó con número porque `D-42` acababa de fijar esa regla.
+>
+> ### Las cuatro entregas
+>
+> | Rol | Qué |
+> |---|---|
+> | `producto` | **`US-09`** en `PRD-skayboy-y-poligirl.md`, nueve criterios Given/When/Then y piso. `BR-23`..`BR-28`. **`IDEA-14` queda marcada como promovida**, no borrada |
+> | `arquitectura` | **`ADR-08`: el motor es Kaplay 3001.0.19**, pineado exacto, MIT, cero dependencias — **con compuerta**: cinco condiciones que no se pueden verificar desde un documento, cada una con su comando y su consecuencia. Si falla, se cae a LittleJS. Más `CTR-15` (atlas), `CTR-16` (niveles) y `CTR-17` (efectos) |
+> | `experiencia` | `UX-27` (convención del pixel), `UX-28` (la pantalla y las dos puertas), `UX-29` (el fracaso no es la muerte), `UX-30` (cielo e infierno en la mezcla) |
+> | `orquestador` | El plan. **Cortó tres cuartas partes de las tareas para que se construyan sin un solo sprite** — ruta, censo, marco, teclas, schema, sonido, auditores. Si el arte no llega, el ciclo entrega igual |
+>
+> ### 🔑 El piso del juego no es el cierre del ciclo, y está escrito
+>
+> **El ciclo 15 cierra con UN nivel jugable, no con los seis de `BR-25`. `US-09` no queda
+> cumplida al cerrar.** Lo declaró `orquestador` en el §6 "Qué NO entra" y el revisor lo
+> confirmó como lo que hace que esto sea un ciclo y no un deseo. **No lo aflojes en la
+> ejecución.**
+>
+> ### Dos rondas de revisión, y la segunda es la que importa
+>
+> `REV-14` encontró **once hallazgos, cuatro ALTA, todos de coherencia entre roles** — cuatro
+> roles escribiendo el mismo día sin verse. Los peores: **dos geometrías vigentes para la misma
+> pantalla** (416×192 contra 240×144, y los dos escribiendo "32×48" con distinto significado),
+> el fracaso sonando en un contrato y mudo en el otro, la puerta del nivel 1, y dos que **ningún
+> rol vio**: un schema que nombra terrenos que él mismo no declara, y dos topes de paleta.
+>
+> **El desempate lo fijó el hilo principal antes de mandar a arreglar**, o se arreglaba dos
+> veces y distinto: **lo que el jugador ve y oye lo fija `experiencia`; dónde viven los archivos
+> y qué forma tienen lo fija `arquitectura`.** En la geometría ganó la UX y no por jerarquía: a
+> 812×375 menos las dos columnas de mando, el área jugable ronda los 480 px, que es 240 a escala
+> 2×. Los 416 nativos no entran.
+>
+> **Segunda pasada: siete cerrados y verificados en disco, uno cerrado mal, uno a medias, dos
+> abiertos, cinco nuevos.** Los números ya no están en disputa: **área 240×144 nativos · 15×9
+> tiles de 16 · celda 16×24 nativos (32×48 CSS a ×2) · caja 10×20 · 16 tintas ·
+> `public/sprites/`**.
+>
+> ### 🔴 Lo que queda abierto al retomar
+>
+> | Qué | Dueño |
+> |---|---|
+> | **`FIND-59` cerrado mal:** la puerta se decidió (el nivel 1 tiene **las dos**), pero `ARQ-schema-niveles.md`:279-287 sigue diciendo "sigue abierto, no lo cierro yo", y el plan ya marca `T-231` cerrada. Es el archivo que se lee antes de escribir el primer nivel | `arquitectura`, una tijera |
+> | **`FIND-56`:** `UX-27` sigue mandando `public/arte/pixel/` contra `public/sprites/`. Tiene tarea (`T-229`) | `experiencia` |
+> | **`FIND-66`:** el plan todavía le da a `revisor` el archivo de `REV-14`, y `revisor` es read-only | `orquestador`, tres renglones |
+> | **`FIND-69`:** el texto que `T-237` va a pegar en `public/arte/README.md` manda la carpeta vieja, y el barrido de `T-252` no mira `Docs/SUGERENCIAS/` | quien ejecute `T-237` |
+> | `FIND-68` (alcance de la paleta: "por escena" contra "toda el área") y `FIND-70` (un renglón sin aclarar nativo/CSS) | `experiencia` |
+> | **Quién dibuja los niveles y los sprites: sigue sin dueño.** De los siete roles, ninguno produce arte | usuario / `Docs/EQUIPO.md` |
+> | **`BR-28`:** si al cerrar el ciclo 15 `US-02` sigue en 0 de 8 Fáciles, el ciclo 16 **no abre un noveno juego** hasta que llegue la `YT_API_KEY` o se retire la cuota por escrito | usuario |
+>
+> ### Próximo paso
+>
+> **`T-226`, la compuerta del motor, y va sola y primera:** instalar Kaplay pineado y probar que
+> entra en una isla de Astro con salida estática, contra CSP y contra `npm run check`. Es el
+> primer paquete de terceros que va a correr en el teléfono de la gente y cambia tres cosas a la
+> vez — árbol de dependencias, la premisa de `islas.test.ts` y la superficie de una CSP. Si
+> falla, se cae a LittleJS y media planificación se reescribe. **Es del hilo principal**, no de
+> `revisor`: se corrigió en `FIND-61`.
 
 > ## 🎮 SKAYBOY Y POLIGIRL — IDEA GUARDADA Y RELEVADA, NADA CONSTRUIDO (2026-09-11)
 >

@@ -1,4 +1,4 @@
-# PRD — Backlog de ideas: catorce IDs, doce guardadas, una promovida, una nunca abierta
+# PRD — Backlog de ideas: catorce IDs, once guardadas, dos promovidas, una nunca abierta
 
 > **Consume:** pedido directo del usuario, 2026-08-22 (las diez ideas y la instrucción
 > transversal sobre los clones). `Docs/BRIEF.md` (riesgo 4, "Fuera de alcance"),
@@ -12,6 +12,11 @@
 > **Sumado el 2026-09-11 para `IDEA-14`:** `Docs/INVESTIGACION/INV-60-skayboy-poligirl.md`
 > (`RES-60`..`RES-65` más tres mediciones sobre el repo), `D-32`, `D-37`, `D-38`, `D-39`,
 > `D-40`, `BR-18`, `public/arte/README.md`, `public/arte/ensayo/README.md`.
+>
+> **Sumado el 2026-09-16:** `D-41`, `D-42`, la hoja de sprites
+> `public/arte/skayboy_poligirl.png`, y `Docs/PRODUCTO/PRD-skayboy-y-poligirl.md` —
+> **`IDEA-14` quedó promovida a `US-09`** (`BR-23`..`BR-28`) y esa ficha ya no espera
+> nada: lo que falta de ese juego está escrito como historia, no como idea.
 >
 > **Por qué las reglas arrancan en 15 y no en 13:** este archivo se escribió con `BR-12`
 > como último en disco, así que las reglas nacieron `BR-13` y `BR-14`. Antes de cerrar, el
@@ -31,6 +36,12 @@ que cada una choca contra lo que ya está decidido.
 instrucción opuesta — *"comencemos a desarrollar"*. Se guarda igual y en el mismo formato,
 porque empezar sigue pasando por promoverla a `US-XX` (`BR-16`). Lo que sí cambia es que esa
 ficha ya no espera información: espera dos dueños y un piso.
+
+**Y el 2026-09-16 los tuvo: `IDEA-14` es `US-09`.** El piso quedó fijado (seis niveles) y el
+juego salió de este archivo para tener el suyo, `PRD-skayboy-y-poligirl.md`. La ficha se
+queda acá, marcada, como el registro de qué se sabía el día que se decidió. **Eso no mueve
+el alcance de la v1:** `US-09` entra al sitio por la misma puerta que `US-06`, `US-07` y
+`US-08` — construible sin esperar a nada, y contado aparte de los cuatro de `D-05`.
 
 **Ninguna de estas ideas es alcance de la v1** — ni las diez del pedido original ni las que
 se sumaron después. El alcance sigue siendo el de
@@ -501,6 +512,18 @@ ciclo 9: lo que corre ahí es el botón de corrección con mail y portapapeles (
 
 ### IDEA-14 — Skayboy y Poligirl
 
+> ✅ **PROMOVIDA a `US-09`, 2026-09-16, ciclo 15.** El usuario trajo la hoja de sprites
+> (`public/arte/skayboy_poligirl.png`) y pidió seguir. Historia, criterios Given/When/Then,
+> piso y reglas en **`Docs/PRODUCTO/PRD-skayboy-y-poligirl.md`** (`US-09`, `BR-23`..`BR-28`).
+> Entre medio se escribieron `D-41` (pixel adentro, imprenta afuera) y `D-42` (los muñecos
+> tienen cara; el pie de homenaje pasa a obligatorio, enmendando la baranda 2 de `D-38`).
+> **El piso quedó fijado en seis niveles, 2/2/2** — el número de la lectura de abajo se
+> confirma, con dos correcciones que están en el PRD: se cuentan niveles **listos**
+> (`BR-25`), no niveles que existen, y el fundamento de los dos por escalón no es el que
+> esta ficha citaba. Esta ficha **se queda tal cual estaba escrita**, como registro de por
+> qué se tomó y de qué se sabía al tomarla (`Docs/IDS.md`: un `IDEA-XX` promovido no se
+> borra).
+
 > **La primera idea que el usuario pidió empezar, no guardar.** Las diez del 2026-08-22
 > llegaron con *"no empieces a desarrollar ninguna"*. Esta llegó con *"comencemos a
 > desarrollar"*. Eso no saltea `BR-16` — empezar sigue siendo promoverla a `US-XX` con
@@ -761,6 +784,20 @@ con dos versiones que no se promedian. Se mide, no se cita.
 
 #### A resolver antes de promoverla
 
+> **Al promover (2026-09-16) quedaron cerrados los puntos 5, 6, 8 y 10:** la paridad de
+> Poligirl es `BR-23`, el fracaso que no se narra como muerte es `BR-24`, qué se comparte al
+> terminar es `BR-27`, y el piso con su criterio Given/When/Then es `US-09` más `BR-25` (qué
+> cuenta como nivel listo). El punto 1 cambió de forma con `D-41`: la convención que falta
+> ya no es la del recorte, es la del pixel. Los demás siguen abiertos con el dueño que esta
+> ficha les puso.
+>
+> **Y dos lecturas de esta ficha quedaron desmentidas el mismo día. No las reescribo —una
+> ficha es registro de lo que se pensó— pero no se ejecutan desde acá:** (1) *"el segundo
+> introduce la puerta doble"* (lectura del piso, arriba) **es falso**: el nivel 1 tiene las
+> dos puertas, lo cerró `FIND-59` en `PRD-skayboy-y-poligirl.md`; (2) el **botón de cambio**
+> que esta ficha menciona dos veces **no existe**, lo sacó `D-43` — cada columna de mando
+> maneja siempre al mismo personaje. Lo vigente es `US-09`.
+
 1. **Quién dibuja los niveles y los sprites, y bajo qué convención.** Es el bloqueo real. El
    ensayo del 2026-09-11 no lo cierra, pero le dejó dos condiciones a la convención que se
    escriba: con qué se rasteriza, ya que `sharp` no puede, y qué contorno lleva la figura
@@ -818,7 +855,7 @@ con dos versiones que no se promedian. Se mide, no se cita.
 | `IDEA-10` | Guitar Hero | clon vestido | el mp3 entero (`D-22`) | ~~bloqueo de audio~~ **levantado por `D-22`**; ahora falta la partitura |
 | `IDEA-11` | Mayor o menor con palabras del cancionero | original (género conocido, motor mínimo) | `cancionero.json` (104 temas), `UX-02` | el conteo es respuesta correcta — corpus limpiado por `T-103`, falta reconfirmar |
 | `IDEA-13` | Supabase: correcciones, puntajes, jugadores | infraestructura (no es juego) | `CTR-10` (transporte detrás de interfaz) | correcciones no choca; puntajes remite a `D-15`; jugadores choca con `D-14`/Fuera de alcance — entra solo como id anónimo, nunca como cuenta |
-| `IDEA-14` | Skayboy y Poligirl: dos personajes, una puerta, cielo e infierno | clon vestido | el molde de página y el cascarón, `tokens.css`, `src/lib/tarjeta/`, las ocho licencias ya leídas (`RES-62`) y el ensayo de arte hecho (`public/arte/ensayo/`) | el arte: el formato que manda `public/arte/README.md` y el que pide un sprite son incompatibles por escrito, y **ningún rol es dueño de los niveles ni de los sprites**. Motor desbloqueado (`RES-62`), personas reales autorizadas (`D-38`), suena (`D-39`), y se juega solo o de a dos (`D-40`) — lo que duplica la verificación de cada nivel, no el piso |
+| `IDEA-14` | Skayboy y Poligirl: dos personajes, una puerta, cielo e infierno | clon vestido | el molde de página y el cascarón, `tokens.css`, `src/lib/tarjeta/`, las ocho licencias ya leídas (`RES-62`) y el ensayo de arte hecho (`public/arte/ensayo/`) | ✅ **promovida a `US-09`** (2026-09-16, ciclo 15 — `PRD-skayboy-y-poligirl.md`, piso de seis niveles 2/2/2). El choque del arte se resolvió por otro lado: `D-41` metió el pixel art adentro del área de juego y dejó la imprenta afuera, así que lo que falta no es una excepción al README sino **la convención del pixel**, que sigue sin escribirse |
 
 ## Preguntas abiertas al usuario
 
@@ -856,10 +893,11 @@ yo sin inventar:
 
 ## PENDIENTE
 
-- Ninguna idea tiene piso de ítems, y es a propósito: el piso se fija al promover a
-  `US-XX` (`BR-16`), no antes. La única con lectura escrita de cuál sería es `IDEA-14`
-  (seis niveles, 2/2/2 — y desde `D-40`, cada uno verificado dos veces), y es lectura, no
-  compromiso.
+- Ninguna idea **guardada** tiene piso de ítems, y es a propósito: el piso se fija al
+  promover a `US-XX` (`BR-16`), no antes. ~~La única con lectura escrita de cuál sería es
+  `IDEA-14` (seis niveles, 2/2/2 — y desde `D-40`, cada uno verificado dos veces), y es
+  lectura, no compromiso.~~ **`IDEA-14` dejó de ser lectura el 2026-09-16:** el piso es
+  compromiso y está en `US-09` — seis niveles **listos** según `BR-25`, 2/2/2.
 - ~~Licencia de cada motor genérico candidato: ficha `RES-XX` de `investigador`, una por
   motor, cuando se tome la primera de las cinco (`BR-15`, consecuencia 1).~~ **Hecho el
   2026-09-11 para todas:** `RES-62` trae ocho licencias leídas en el archivo `LICENSE` crudo,

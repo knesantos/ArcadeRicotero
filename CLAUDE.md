@@ -151,7 +151,7 @@ python3 ../InstanciadorProyectos/scripts/validar_instancia.py .
 
 El validador **vive en el instanciador, no acá** (`D-11`): valida frontmatter de agentes
 y skills, presupuestos y colisiones de ruteo, desde afuera de la instancia. Se corre desde
-la raíz del proyecto. Sale `APTA` con **un aviso esperado** — siete roles sobre un tope de
+la raíz del proyecto. Sale `APTA` con **dos avisos esperados** — el largo de este archivo, que se acerca al tope de 200 líneas, y siete roles sobre un tope de
 seis, justificado en `Docs/EQUIPO.md`. Un aviso no es un error: el código de salida es 0.
 
 `/kickoff` la primera vez · `/estado` al empezar · `/ciclo` para planificar el próximo

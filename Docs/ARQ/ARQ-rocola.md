@@ -603,6 +603,14 @@ El resto de las razones —un medio ajeno sonando, la salida tomada, el contexto
 
 ## ADR-07.9 — Los módulos, y el contrato revisado de la cinta
 
+> **Enmendado el 2026-09-16 por `ADR-08.9`** (`Docs/ARQ/ARQ-motor-de-juego.md`). `ModoCinta`
+> gana un cuarto valor, **`tema-fijo`**: un tema declarado por el dato de la pantalla, en
+> repetición, con el mismo transporte, la misma cadena, el mismo interruptor y el mismo
+> rótulo de `UX-26` que `rocola`. Lo único que cambia es que no sortea. Existe por `D-39`, es
+> la única excepción del sitio y se declara en `PAGINAS_DECLARADAS`, no en
+> `RUTAS_CON_ROCOLA`: `modoEnRuta()` sigue devolviendo `cama` por defecto y una ruta nueva
+> sigue naciendo muda. **`ADR-07` no se versiona: sigue vigente entero, con esta enmienda.**
+
 ### Los tres archivos nuevos, y qué puede importar cada uno
 
 | Archivo | Qué es | Qué importa |

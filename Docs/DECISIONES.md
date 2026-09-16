@@ -2125,3 +2125,194 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   4. **Queda dicho para todo lo que venga:** un juego de este sitio no puede necesitar a otra
      persona para arrancar. Es la extensión natural de `D-14` al único caso que no estaba en
      su lista.
+
+---
+
+## D-41 — Pixel adentro, imprenta afuera: el sitio es un fichín, no una pantalla suelta
+
+- **Fecha:** 2026-09-16
+- **Estado:** aceptada. El usuario trajo la hoja de sprites y eligió esta salida sobre las
+  otras dos.
+- **Consume:** `D-18`, `D-19`, `D-21`, `D-33`, `D-38`, `UX-04`, `UX-20`, `UX-22`, `RES-06`,
+  `IDEA-14`, `.claude/rules/diseno-marca.md`, `public/arte/README.md`.
+
+- **Contexto.** `IDEA-14` necesita sprites, y el usuario produjo la hoja
+  (`public/arte/skayboy_poligirl.png`, 1299×725): **pixel art 8 bits**, con las poses de
+  quieto, correr, saltar y caer para los dos personajes.
+
+  Eso choca con lo único que el sistema visual no había tenido que negociar nunca. El
+  README de `public/arte/` manda *"PNG con fondo transparente, borde tipo tijera
+  (irregular, con grano — **nunca vector liso**)"*, y `diseno-marca.md` resuelve todo en el
+  idioma de la serigrafía: tinta plana, borde grueso, registro corrido. **El pixel art no es
+  ninguno de los dos.** No es serigrafía y tampoco es el vector liso que la regla veta: es
+  un tercer idioma, con su propia tradición y su propia honestidad — la grilla se ve, como
+  se ve la trama de una serigrafía.
+
+- **Decisión. La frontera es la pantalla de juego, y la metáfora no es decorativa: es un
+  fichín.** Un fichín de verdad son dos cosas distintas pegadas: **un tubo que muestra
+  píxeles** y **un mueble serigrafiado** alrededor. Acá igual.
+
+  1. **Adentro del área de juego manda el pixel art.** Sprites, tiles, charcos, puerta,
+     coleccionables. Grilla visible, paleta acotada, sin antialias: `image-rendering:
+     pixelated` y escalado por múltiplos enteros, o el píxel se ensucia y deja de ser un
+     idioma para pasar a ser un archivo mal escalado.
+  2. **Afuera manda la imprenta, sin cambiar una coma.** El marco, el pie, los rótulos, los
+     casetes del portal, la tarjeta al compartir, los botones y el HUD que vive fuera del
+     área de juego siguen siendo `UX-22`: tinta plana, borde de tijera, sello de goma.
+  3. **La frontera se ve.** El área de juego es un recorte con borde, como todo lo demás del
+     sitio — no un `<canvas>` a sangre contra el borde de la ventana. El píxel está
+     **adentro de** algo impreso, y esa es justamente la idea.
+  4. **Los dos idiomas no se mezclan en la misma pieza.** Ni un sprite con borde rasgado ni
+     un sello de goma pixelado. Cada pieza es de un lado de la frontera o del otro.
+
+- **Alternativas descartadas.** **Que el pixel art mande en todos los juegos**: más simple
+  de ejecutar, pero parte el sistema visual en dos mitades que no se hablan y obliga a
+  explicar dónde está la frontera en cada pantalla nueva — que es el problema que esta
+  decisión resuelve de una vez. **Redibujar los sprites en serigrafía**: el ensayo del
+  2026-09-11 probó que se puede (`public/arte/ensayo/`), pero costaba redibujar catorce
+  piezas que el usuario ya produjo, y perdía lo que el pixel art le da a un juego de
+  plataformas: legibilidad a 32 px, que es justo donde el ensayo flaqueaba.
+
+- **Consecuencias.**
+  1. **`public/arte/README.md` deja de valer para todo y pasa a valer para el collage.** Hay
+     que escribir la convención del pixel —grilla, paleta, tamaño de tile, alfa— al lado de
+     la del recorte, y decir cuál rige dónde. Es de `experiencia` (`UX-04`).
+  2. **El ensayo del 2026-09-11 queda como registro, no como camino.** Contestó su pregunta
+     —se podía— y la respuesta dejó de ser la que se usa. No se borra.
+  3. **Aparece un problema de contraste que el sitio no tenía.** `contraste.test.ts` mide
+     pares declarados en CSS; adentro del área de juego el fondo es un tileset. Sigue sin
+     vara corrible, y ahora con más superficie. El mecanismo lo debe `experiencia`, como el
+     velo plano de `D-21`.
+  4. **El píxel entra por el juego, no por la marca.** Ni el logo, ni los títulos, ni la
+     tarjeta compartible se pixelan. Si algún día se quiere eso, es otra decisión.
+
+---
+
+## D-42 — La baranda 2 de `D-38` se enmienda: los muñecos tienen cara
+
+- **Fecha:** 2026-09-16
+- **Estado:** aceptada. **Enmienda `D-38`**, que no se versiona ni se borra: sigue vigente
+  entera salvo su baranda 2, que esta decisión reemplaza.
+- **Consume:** `D-38`, `D-14`, `RES-64` (`INV-60`), `D-41`, `IDEA-14`.
+
+- **Contexto.** `D-38` autorizó dibujar a dos personas reales y vivas, con tres barandas. La
+  segunda decía, textual: *"se dibuja por insignia, no por parecido facial. Sombrero, pelo
+  atado y SG roja son cosas que él exhibe ante cámaras; cuanto más se parezca el sprite a la
+  insignia y menos a la cara, más lejos queda del derecho a la imagen."*
+
+  La hoja de sprites que trajo el usuario el 2026-09-16 **no cumple esa baranda**: los dos
+  personajes tienen cara, y las dos cabezas de perfil son caricaturas reconocibles — la
+  propia hoja rotula *"Nariz Aguileña"*. Se le planteó el choque con las tres salidas
+  posibles y eligió enmendar.
+
+  **Por qué la enmienda se sostiene, y no es solo "el usuario quiso".** La baranda 2 no era
+  un principio: era una **estimación de riesgo**, y estaba escrita como tal. El razonamiento
+  legal de `RES-64` sigue intacto y no cambia: el art. 71 inc. c del Código Civil y
+  Comercial protege el nombre usado para designar personajes de fantasía y solo exige
+  perjuicio; el art. 72 extiende la tutela al seudónimo notorio; la parodia no es defensa
+  legislada en Argentina. Nada de eso se movió. Lo que se mueve es la lectura de dónde está
+  el perjuicio: **el nombre ya está en el título del juego**, así que la cara no agrega
+  identificación que el nombre no haya dado antes. Y `RES-64` ya había cerrado que el riesgo
+  real *"no es que demanden: es que lo vean y les moleste"*, y eso lo mide el tono, no la
+  nariz.
+
+- **Decisión.** **La baranda 2 de `D-38` queda reemplazada por esta:**
+
+  > **Se dibuja con cara, en caricatura declarada, y el tono es la baranda.** El muñeco
+  > puede ser reconocible. Lo que no puede ser, nunca, es **denigrante, ridiculizante ni
+  > sexualizado** — que es el eje que `RES-64.19` identificó como el que separa los fallos
+  > permisivos del que terminó en resarcimiento, junto con el lucro, que acá no existe.
+
+  Tres precisiones que la enmienda arrastra:
+
+  1. **El pie en registro 3 pasa de conveniente a obligatorio.** Con cara, el aviso de que
+     es un homenaje de fans, que no es oficial, y que ni Eduardo Beilinson ni Carmen Castro
+     tuvieron nada que ver, tiene que estar en la pantalla del juego. Antes era criterio;
+     ahora es condición.
+  2. **La muerte del avatar se mira de nuevo.** `D-38` ya dejó abierto qué registro rige la
+     muerte repetida del muñeco de alguien vivo. Con cara reconocible, la pregunta pesa más,
+     no menos: un sprite con la cara de alguien muriéndose cuarenta veces por partida es
+     exactamente la clase de imagen que "lo vean y les moleste" contempla. Sigue siendo de
+     `experiencia`, y ahora es bloqueante antes de animar la derrota.
+  3. **Las cabezas de perfil de la hoja son retrato, no sprite.** Entran a la producción
+     solo si alguna pantalla las necesita, y esa pantalla la mira `experiencia` con esta
+     decisión al lado. El sprite jugable es otra cosa: a 32 px la caricatura de 8 bits
+     identifica mucho menos que un perfil dibujado.
+
+- **Lo que NO se enmienda, y sigue igual de firme.** Las barandas **1** y **3** de `D-38`:
+  el muñeco **nunca dice "yo"** —sin bocadillo, sin cartel en primera persona, sin frase con
+  firma, porque eso envenena el rótulo `testimonio` de todo el sitio— y **nada narra la
+  relación real entre Skay, Poli y el Indio**, ni por mecánica ni por texto.
+
+- **Alternativas descartadas.** **Dejar la cara en el sprite y sacar los dos perfiles**: era
+  el punto medio y no obligaba a tocar `D-38`; se descartó porque dejaba la regla escrita
+  diciendo una cosa y el arte haciendo otra, que es peor que cambiarla. **Respetar `D-38`
+  como estaba**: obligaba a retocar arte que el usuario ya produjo, para comprar un margen
+  de riesgo que `RES-64` no mide como decisivo.
+
+- **Consecuencias.**
+  1. **Un `D-XX` no se contradice en silencio: se enmienda con número.** Es la primera vez
+     que este proyecto enmienda una baranda en vez de reemplazar una decisión entera, y
+     queda como precedente de cómo se hace.
+  2. **El pie de homenaje entra al alcance de `IDEA-14`** como requisito, no como detalle de
+     copy. Dueño: `contenido`, en registro 3.
+  3. **Si alguna vez llega un reclamo, se baja igual** (`D-14`). Eso no cambió nunca.
+
+---
+
+## D-43 — El botón de cambio no era el mecanismo: era el nombre de un mecanismo peor
+
+- **Fecha:** 2026-09-16
+- **Estado:** aceptada. **Enmienda `D-40`**, que sigue vigente entera: lo que cambia es el
+  mecanismo, no el principio.
+- **Consume:** `D-40`, `D-14`, `D-32` límite 3, `D-42` consecuencia 1, `UX-28`, `CTR-17`,
+  `FIND-63` (`REV-14`).
+
+- **Contexto.** `D-40` decidió que el juego se puede jugar solo, y escribió el mecanismo con
+  todas las letras: *"un camino para uno solo, **con el botón de cambio de personaje** — el
+  inactivo queda quieto y a salvo donde lo dejaron"*. Venía del relevamiento (`RES-65.1`): es
+  como la versión móvil oficial del juego de origen resuelve este mismo problema.
+
+  `UX-28` lo eliminó, y lo argumentó bien: **cada columna de mando maneja siempre al mismo
+  personaje**. Dos personas tocan una columna cada una y se mueven a la vez; una persona toca
+  una columna, después la otra, y el que dejó atrás se queda parado y a salvo.
+
+  Eso **es** el botón de cambio, palabra por palabra lo que `D-40` pedía — salvo que no es un
+  botón: es tocar del otro lado. Y resuelve además la consecuencia 3 de la propia `D-40`, que
+  exigía que el que llega solo no tenga que elegir un modo, porque `D-32` límite 3 no deja
+  poner una pantalla previa. Con un botón de cambio hay algo que aprender antes de jugar. Con
+  dos columnas no hay nada que elegir: **no hay dos modos, hay una pantalla y dos maneras de
+  agarrarla.**
+
+  Pero `D-40` sigue diciendo "botón" en el disco, y `D-42` consecuencia 1 acaba de fijar la
+  regla: **un `D-XX` no se contradice en silencio, se enmienda con número.** Esta es la
+  enmienda.
+
+- **Decisión.** La frase *"con el botón de cambio de personaje"* de `D-40` queda reemplazada
+  por:
+
+  > **Cada columna de mando maneja siempre al mismo personaje.** El que no tiene un dedo
+  > encima se queda quieto y a salvo donde lo dejaron — que es lo que hace cualquier
+  > plataformas cuando no apretás nada. Con dos personas, las dos columnas se usan a la vez.
+  > Con una, se usa una y después la otra. **No hay modo que elegir, ni botón que aprender.**
+
+  Todo lo demás de `D-40` queda **intacto**: cada nivel resoluble de las dos maneras, y
+  prohibido por construcción el puzzle que exige simultaneidad sin segunda solución.
+
+- **Alternativas descartadas.** **Dejar el botón y que `UX-28` se ajuste**: era defender la
+  letra de una decisión contra un diseño mejor, y el botón traía una pantalla que enseñarlo.
+  **Dejarlo contradicho en silencio**: es exactamente lo que `D-42` consecuencia 1 prohibió
+  hace unas horas, y el primer caso de esa regla no puede ser su primera excepción.
+
+- **Consecuencias.**
+  1. **El efecto de sonido "cambio" de `CTR-17.1` se queda sin disparador y hay que sacarlo.**
+     Estaba fundado en *"lo pide `D-40`"* y `D-40` ya no lo pide. Dueño: `arquitectura`. Es
+     `FIND-63`, y es la mitad que esta decisión no puede cerrar sola.
+  2. **La verificación de `D-40` consecuencia 1 se abarata y se vuelve física**, como observó
+     `UX-28`: si una persona sola no puede resolver el nivel con un dedo por vez, el nivel
+     está mal. No hace falta un modo aparte para probarlo — y eso le saca la mitad del trabajo
+     a `T-249`.
+  3. **`RES-65.1` no queda desmentida.** El juego de origen alterna con un ícono porque su
+     pantalla móvil es vertical y de un solo jugador. Acá la pantalla es horizontal y hay dos
+     columnas desde el principio (`D-40`), así que el mismo problema tiene una salida mejor.
+     La ficha sigue siendo cierta sobre aquel juego.
