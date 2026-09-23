@@ -1,0 +1,270 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ricotaarcade.local/schema/skayboy/1",
+  "title": "CTR-16 — Los niveles de Skayboy y Poligirl",
+  "comment": "Lo que este schema NO hace, y hay que saberlo antes de confiar en él: no cuenta los molinetes de la leyenda (JSON Schema no sabe contar propiedades de un objeto por su contenido — CTR-16.4), no sabe si un caracter de la grilla está declarado en la leyenda, y no compara los renglones contra `ancho` del envoltorio. Esas tres viven en `src/lib/esquemas.test.ts` y en `src/lib/skayboy/niveles.ts`, que es donde se pueden hacer de verdad.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contrato", "contratoVersion", "juego", "actualizado",
+    "tile", "ancho", "alto", "temaFijo", "personajes", "leyenda", "niveles"
+  ],
+  "properties": {
+    "contrato": { "const": "CTR-16" },
+    "contratoVersion": { "const": 1 },
+    "juego": { "const": "skayboy" },
+    "actualizado": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "tile": {
+      "comment": "CTR-16.2: 16 px nativos, no CSS. El dato de nivel no sabe a qué escala se va a ver.",
+      "const": 16
+    },
+    "ancho": {
+      "comment": "15 tiles (UX-27 §2, corregido por FIND-55: decía 26). Está en el dato para que el validador compare cada renglón contra este número y no contra uno escrito en el código.",
+      "const": 15
+    },
+    "alto": {
+      "comment": "9 tiles (UX-27 §2, corregido por FIND-55: decía 12).",
+      "const": 9
+    },
+    "temaFijo": {
+      "comment": "D-39: el tema que la cinta repite. `null` es el estado seguro y suena a cama, como los otros ocho juegos. Lo elige `contenido` con `experiencia`, y hasta entonces queda en null.",
+      "type": ["string", "null"],
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "personajes": {
+      "comment": "CTR-16.3: exactamente dos, y un personaje es un id y un atlas. Ningún campo de habilidad, a propósito — un campo por personaje invita al segundo.",
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/personaje" },
+      "allOf": [
+        {
+          "contains": { "properties": { "id": { "const": "skayboy" } }, "required": ["id"] },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": { "properties": { "id": { "const": "poligirl" } }, "required": ["id"] },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      ]
+    },
+    "leyenda": {
+      "comment": "CTR-16.4: es del archivo entero, no de cada nivel. Un caracter que significa una cosa en el nivel 2 y otra en el 5 es un defecto esperando. Que las claves sean de un caracter y no se repitan lo hace cumplir el mapa, gratis.",
+      "type": "object",
+      "propertyNames": { "pattern": "^.$" },
+      "minProperties": 2,
+      "additionalProperties": { "$ref": "#/$defs/caracter" }
+    },
+    "niveles": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/nivel" }
+    }
+  },
+  "$defs": {
+    "quien": { "enum": ["skayboy", "poligirl"] },
+    "quienes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/quien" }
+    },
+    "personaje": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "atlas"],
+      "properties": {
+        "id": { "$ref": "#/$defs/quien" },
+        "atlas": { "type": "string", "pattern": "^[a-z]+\\.v\\d+$" }
+      }
+    },
+    "caracter": {
+      "comment": "El enum de `tipo` no trae ninguna palabra de daño: FIND-58 las sacó y UX-29 §7.2 explica por qué. Un tipo que se llame como se llamaba antes termina siendo una clase de CSS, un nombre de función y, tarde o temprano, una palabra en pantalla — y el dato es justo donde ese vocabulario sobrevive más tiempo. El terreno ajeno no lastima: devuelve.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tipo"],
+      "properties": {
+        "tipo": {
+          "enum": ["aire", "solido", "molinete", "tesoro", "entrada", "puerta", "mecanismo", "caja"]
+        },
+        "devuelve": { "$ref": "#/$defs/quienes" },
+        "para": { "$ref": "#/$defs/quienes" },
+        "de": { "$ref": "#/$defs/quien" }
+      },
+      "allOf": [
+        {
+          "comment": "CTR-16.4: `devuelve` es la única declaración de quién no pasa, y es obligatoria en todo molinete. No hay un segundo lugar donde decirlo — eso era FIND-58.",
+          "if": { "required": ["tipo"], "properties": { "tipo": { "const": "molinete" } } },
+          "then": {
+            "required": ["devuelve"],
+            "properties": { "para": false, "de": false }
+          }
+        },
+        {
+          "if": { "required": ["tipo"], "properties": { "tipo": { "const": "tesoro" } } },
+          "then": {
+            "required": ["para"],
+            "properties": { "devuelve": false, "de": false }
+          }
+        },
+        {
+          "if": {
+            "required": ["tipo"],
+            "properties": { "tipo": { "enum": ["entrada", "puerta"] } }
+          },
+          "then": {
+            "required": ["de"],
+            "properties": { "devuelve": false, "para": false }
+          }
+        },
+        {
+          "comment": "El terreno que no le habla a nadie no nombra a nadie: un `devuelve` colgado de un `aire` sería una regla que no corre y que alguien va a leer como si corriera.",
+          "if": {
+            "required": ["tipo"],
+            "properties": { "tipo": { "enum": ["aire", "solido", "mecanismo", "caja"] } }
+          },
+          "then": {
+            "properties": { "devuelve": false, "para": false, "de": false }
+          }
+        }
+      ]
+    },
+    "coordenada": {
+      "comment": "[columna, fila] en tiles, adentro de la sala: 0..14 y 0..8. Los topes son `ancho` y `alto` menos uno, y están escritos porque un schema no puede mirar un valor hermano.",
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [
+        { "type": "integer", "minimum": 0, "maximum": 14 },
+        { "type": "integer", "minimum": 0, "maximum": 8 }
+      ],
+      "items": false
+    },
+    "mecanismo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "en", "abre", "sostenido"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^MEC-\\d{2}$" },
+        "en": { "$ref": "#/$defs/coordenada" },
+        "abre": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^PUE-\\d{2}$" }
+        },
+        "sostenido": { "type": "boolean" },
+        "alternativaSolo": { "type": "string", "minLength": 10 }
+      },
+      "allOf": [
+        {
+          "comment": "CTR-16.6, que es D-40 consecuencia 1 hecho schema. Un schema no puede probar que un nivel se resuelve; sí puede hacer imposible declarar un puzzle que exige simultaneidad sin escribir la segunda solución. `sostenido` es obligatorio en todo mecanismo justamente para que no haya por dónde esquivarlo.",
+          "if": { "required": ["sostenido"], "properties": { "sostenido": { "const": true } } },
+          "then": { "required": ["alternativaSolo"] }
+        }
+      ]
+    },
+    "caja": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["en"],
+      "properties": { "en": { "$ref": "#/$defs/coordenada" } }
+    },
+    "nivel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "nombre", "escalon", "estado", "grilla", "mecanismos", "cajas", "verificaciones"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^NIV-\\d{2}$" },
+        "nombre": {
+          "comment": "Es una línea grande del sitio: le rige el techo de 8 palabras de voz-ricotera.md §4.1. Vacío mientras `contenido` no lo escriba — el texto no es de quien dibuja el nivel.",
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^$|^\\S+( \\S+){0,7}$"
+        },
+        "escalon": {
+          "comment": "BR-01 vuelto verificable: 1, 2 o 3, para que el escalonamiento no haya que contarlo a mano.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3
+        },
+        "estado": { "enum": ["borrador", "listo"] },
+        "grilla": {
+          "comment": "Nueve renglones de quince caracteres. El schema mide el largo y nada más: qué caracteres valen lo dice la leyenda, y repetir acá su alfabeto sería el segundo lugar que FIND-58 vino a sacar. Que cada caracter esté declarado lo verifica `niveles.ts` contra la leyenda de verdad.",
+          "type": "array",
+          "minItems": 9,
+          "maxItems": 9,
+          "items": { "type": "string", "pattern": "^.{15}$" },
+          "allOf": [
+            {
+              "comment": "CTR-16.5 regla 1, entrada de skayboy. Ningún renglón trae dos `1`, y exactamente un renglón trae uno: entre las dos, exactamente un `1` en toda la sala. Cero es un nivel que no se puede terminar; dos es un nivel con dos finales y ningún motivo.",
+              "items": { "pattern": "^[^1]*1?[^1]*$" },
+              "contains": { "pattern": "1" },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "comment": "Regla 1, entrada de poligirl.",
+              "items": { "pattern": "^[^2]*2?[^2]*$" },
+              "contains": { "pattern": "2" },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "comment": "Regla 1, puerta de skayboy. Y regla 2 de rebote: la victoria es que los dos estén en la suya al mismo tiempo, así que las dos puertas existen desde el nivel 1 (FIND-59, cerrado a favor del contrato).",
+              "items": { "pattern": "^[^A]*A?[^A]*$" },
+              "contains": { "pattern": "A" },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "comment": "Regla 1, puerta de poligirl.",
+              "items": { "pattern": "^[^B]*B?[^B]*$" },
+              "contains": { "pattern": "B" },
+              "minContains": 1,
+              "maxContains": 1
+            }
+          ]
+        },
+        "mecanismos": {
+          "comment": "Obligatorio aunque vaya vacío: `[]` dice «este nivel no tiene ninguno», y un campo ausente no dice nada.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/mecanismo" }
+        },
+        "cajas": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/caja" }
+        },
+        "verificaciones": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["deDos", "solo"],
+          "properties": {
+            "deDos": { "type": "boolean" },
+            "solo": { "type": "boolean" }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "comment": "CTR-16.7, que es D-40 consecuencia 2: `listo` cuesta dos pasadas, dos personas moviéndose a la vez y una sola alternando. Un booleano no prueba nada por sí mismo — lo que hace es que nadie pueda marcar un nivel terminado sin escribir, con la mano, que lo probó de las dos maneras. Los pone el que jugó.",
+          "if": { "required": ["estado"], "properties": { "estado": { "const": "listo" } } },
+          "then": {
+            "properties": {
+              "verificaciones": {
+                "properties": {
+                  "deDos": { "const": true },
+                  "solo": { "const": true }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

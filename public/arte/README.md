@@ -16,6 +16,36 @@
 > Formato: PNG con fondo transparente, borde tipo tijera (irregular, con grano — nunca
 > vector liso). Tamaño orientativo: 400–800 px del lado largo alcanza.
 
+## Ojo: este README manda sobre el collage, y el collage no es todo el sitio
+
+`D-41` partió el arte en dos idiomas, y este archivo describe **uno solo**. La metáfora es
+la regla: un fichín son dos cosas pegadas, un tubo de píxeles adentro de un mueble
+serigrafiado. La frontera se ve, y los dos idiomas no se mezclan en la misma pieza.
+
+| | El collage | El pixel |
+|---|---|---|
+| **Dónde rige** | Todo el sitio: portal, Redondopedia, casetes, fichas de disco, tarjeta compartible. Y en el juego de plataformas, el **marco**: chapa, bisel, rótulos, pie | Solo **adentro del área de juego** de ese juego |
+| **Carpeta** | `public/arte/` — esta | **`public/sprites/`** |
+| **Borde** | Tijera: irregular, con grano. Nunca vector liso | Duro, de píxel. El grano acá es suciedad |
+| **Tamaño** | 400–800 px del lado largo, y se escala | Nativo y exacto: celda de **16 × 24 nativos** (32 × 48 CSS a ×2) |
+| **Color** | Libre, dentro de la paleta de la sección | **16 tintas para toda el área**, las `--px-*` de `tokens.css`, y ninguna más |
+| **Alfa** | Todo el rango: el borde rasgado lo necesita | **Binario**: 0 o 255, nada en el medio |
+| **Quién lo fija** | `UX-04` y este archivo | `UX-27`, y el contrato `CTR-15` de `arquitectura` |
+
+**Entonces la línea de "borde tipo tijera — nunca vector liso" del encabezado es del
+collage y no viaja.** Aplicársela a un sprite lo arruina: a 16 px de ancho, un borde con
+grano es ruido, y un alfa intermedio deja un halo que el auditor de paleta rechaza.
+
+Al revés también: un recorte de tapa cuantizado a 16 colores no es pixel art, es un
+recorte roto. **La hoja que trajo el usuario** (`skayboy_poligirl.png`) vive acá y **es
+referencia de pose, insignia y tono — no es la fuente de los píxeles**: se midió y no está
+sobre grilla, así que los sprites de producción se redibujan, no se recortan. El circuito
+entero está en `UX-27`.
+
+Lo que se audita a máquina: `node scripts/auditar-paleta-pixel.mjs` mira `public/sprites/`
+y falla si aparece un color fuera de las 16 o un alfa intermedio. Esta carpeta no pasa por
+ahí, y no tiene que pasar.
+
 ## Ya cableadas en el código (con reemplazo dibujado mientras tanto)
 
 | Archivo | Pieza | De dónde | Cómo recortar | Dónde se pega |

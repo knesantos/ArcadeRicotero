@@ -189,6 +189,7 @@ test('🔴 el censo y el mapa dicen lo mismo: cada página declarada resuelve a 
     'juegos/completar-la-letra.astro': '/juegos/completar-la-letra/',
     'juegos/dos-ejes.astro': '/juegos/dos-ejes/',
     'juegos/ponelos-en-fila.astro': '/juegos/ponelos-en-fila/',
+    'juegos/skayboy-y-poligirl.astro': '/juegos/skayboy-y-poligirl/',
     'letras-y-acordes/index.astro': '/letras-y-acordes/',
     'letras-y-acordes/[slug].astro': '/letras-y-acordes/un-tema/',
     'letras-y-acordes/armar-cancionero.astro': '/letras-y-acordes/armar-cancionero/',

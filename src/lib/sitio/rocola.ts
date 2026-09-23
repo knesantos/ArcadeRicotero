@@ -8,6 +8,23 @@
  * estrenar— pone **los recortes enteros**, los diez segundos completos, no la escalera de
  * `D-26`.
  *
+ * ## El cuarto modo: `tema-fijo` (`D-39`, `ADR-08.9`, `T-244`)
+ *
+ * El mismo aparato pone además **un** tema, siempre el mismo, en la única pantalla que lo
+ * declara (`CNT-20`). Mismo transporte, misma cadena, mismo interruptor, mismo rótulo. Dos
+ * cosas lo separan de la rocola, y las dos son de lo que **no** hace:
+ *
+ * - **No sortea.** No hay vuelta, no se llama a `mezclar()`, y no le importa lo que la página
+ *   haya sembrado: `sacarProxima()` devuelve la pieza fija y se termina. Es lo que hace
+ *   defendible la excepción a `D-37`: un tema que no se sortea no es la respuesta de nadie,
+ *   así que no hay nada que soplar.
+ * - **No autoarranca.** El primer byte sigue necesitando un dedo sobre el interruptor
+ *   (`ADR-07.8`, `ADR-08.9` regla 2). Y acá eso es por construcción, no por promesa: este
+ *   módulo no registra un solo escucha ni programa nada al cargarse, así que la única forma
+ *   de que suene es que alguien llame a `prenderTemaFijo()`, y el único que la llama es
+ *   `cinta.ts` adentro del gesto. **Un juego que arranca música solo sería el primer molinete
+ *   al revés del sitio.**
+ *
  * ## Las tres reglas que no se negocian, y por qué
  *
  * 1. **Se transmite, no se decodifica.** `tema/audio.ts` decodifica a `AudioBuffer` con un
@@ -89,7 +106,12 @@ export const FALLAS_SEGUIDAS = 3;
 const Q_CUERPO = 0.7;
 const Q_BRILLO = 0.5;
 
-/** El apagado de emergencia de la rocola, aparte del de la cama. Literal, para grepear. */
+/**
+ * El apagado de emergencia de este módulo, aparte del de la cama. Literal, para grepear.
+ *
+ * Apaga **los dos modos que transfieren**, la rocola y `tema-fijo`: lo que corta es que el
+ * sitio ponga temas, y el nombre quedó del día en que ese era el único.
+ */
 export const ROCOLA_HABILITADA = true;
 
 // ---------------------------------------------------------------------------------------
@@ -103,6 +125,32 @@ export interface Pieza {
   /** ¿Existe el tema entero? Si no, suena el recorte, completo. */
   readonly entero: boolean;
 }
+
+/**
+ * La pieza del cuarto modo. **Una, y siempre la misma** (`CNT-20`, `D-39`).
+ *
+ * La eligió `contenido` con `experiencia`, y el `slug` y el título salen de
+ * `src/data/cancionero.json` —leídos ahí antes de escribirlos acá, no citados de memoria—.
+ * **El disco no se nombra**, ni en pantalla ni en este archivo: `D-39` condición 3 y
+ * `UX-30 §5`. Cuál es está en la ficha.
+ *
+ * Está en el código y no la siembra la página, y conviene decir por qué. El candado C —la
+ * siembra— existe para que una pantalla que se olvida de declarar sus temas se quede muda en
+ * vez de sonar de más. Acá no hay nada que olvidarse: es una pieza, la misma siempre, y la
+ * ruta que la habilita ya pasó por el censo de `PAGINAS_DECLARADAS`. Lo que queda como deuda
+ * es de dónde sale el dato: `ADR-08.9` lo quiere en `temaFijo` de `src/data/skayboy.json`
+ * (`CTR-16.2`), que todavía no existe.
+ *
+ * **`entero: true` con la carpeta de temas vacía es a propósito.** `D-39` promete el tema
+ * entero, no diez segundos en repetición durante toda una partida. Mientras
+ * `public/audio/temas/` no lo tenga, el pedido falla una vez y la cinta se cae a `cama` —que
+ * es para lo que existe `rendirse()`—; el día que el mp3 baje, suena sin tocar una línea.
+ */
+export const TEMA_FIJO: Pieza = {
+  slug: 'nam-fri-frufi-fali-fru',
+  titulo: 'Ñam fri frufi fali fru',
+  entero: true,
+};
 
 /** Los cinco nodos del inserto de `ADR-07.5`, vivos solo mientras la rocola está puesta. */
 interface NodosRocola {
@@ -126,6 +174,15 @@ let piezas: readonly Pieza[] = [];
  * tiene (`D-14`). Con la cadena o sin ella, la rocola está puesta.
  */
 let puesta = false;
+/**
+ * La pieza del modo `tema-fijo`, o `null` si lo que está puesto es la rocola.
+ *
+ * **Es el modo entero, escrito en un solo lugar.** No hay una variable `modo` además de
+ * esta: mientras haya pieza fija no se sortea, no hay próxima y una falla no se reintenta, y
+ * las tres cosas se preguntan por acá. Un booleano al lado de la pieza sería un segundo
+ * estado que puede quedar desalineado con el primero.
+ */
+let fija: Pieza | null = null;
 let vuelta: Pieza[] = [];
 let sonando: Pieza | null = null;
 let ultimaQueSono: Pieza | null = null;
@@ -202,6 +259,10 @@ function armarVuelta(): Pieza[] {
 
 /** La próxima pieza de la vuelta, rearmándola si se agotó. `null` si no hay con qué sonar. */
 function sacarProxima(): Pieza | null {
+  // El cuarto modo no sortea, y acá se ve: la pieza fija se devuelve antes de mirar la
+  // vuelta, antes de `mezclar()` y antes de preguntar qué sembró la página. Aunque la
+  // pantalla hubiera sembrado los 95 recortes, lo que suena es este tema y ningún otro.
+  if (fija) return fija;
   if (piezas.length === 0) return null;
   if (vuelta.length === 0) vuelta = armarVuelta();
   return vuelta.shift() ?? null;
@@ -393,10 +454,14 @@ function ponerProxima(): void {
  *
  * Queda gastada para esta vuelta —ya salió de `vuelta` en `sacarProxima()`— y se pasa a la
  * siguiente **sin reintentar el mismo archivo**. A las `FALLAS_SEGUIDAS`, la rocola se rinde.
+ *
+ * En `tema-fijo` no hay siguiente, así que la regla de arriba se cumple cayendo a `cama` de
+ * una: volver a pedir el archivo que acaba de no bajar es exactamente el reintento que esta
+ * función no hace, y con la púa encima cada vez.
  */
 function fallo(): void {
   fallas++;
-  if (fallas >= FALLAS_SEGUIDAS) {
+  if (fija || fallas >= FALLAS_SEGUIDAS) {
     rendirse();
     return;
   }
@@ -450,18 +515,54 @@ export function rocolaSembrada(): boolean {
  * que no sembró, y en los dos casos la cinta se queda con la cama.
  */
 export function prenderRocola(ctx: AudioContext, salida: AudioNode, alRendirseFn?: () => void): boolean {
+  return prender('rocola', null, ctx, salida, alRendirseFn);
+}
+
+/**
+ * Arranca el cuarto modo: **un** tema, el de `TEMA_FIJO` (`D-39`, `ADR-08.9`).
+ *
+ * **Solo desde adentro de un gesto**, igual que la rocola, y solo en la ruta que lo declara.
+ * `false` no es un error: es cualquier otra pantalla, y ahí la cinta se queda con la cama.
+ *
+ * No pide siembra —la pieza es esta, no la que imprimió la página— y por eso el candado C no
+ * aplica: no hay olvido posible cuando no hay nada que declarar.
+ */
+export function prenderTemaFijo(ctx: AudioContext, salida: AudioNode, alRendirseFn?: () => void): boolean {
+  return prender('tema-fijo', TEMA_FIJO, ctx, salida, alRendirseFn);
+}
+
+/**
+ * El cuerpo de los dos, que es el mismo: un elemento, una cadena, una pieza y a sonar.
+ *
+ * Lo único que cambia entre modos son las dos primeras líneas —qué ruta lo habilita y de
+ * dónde sale la pieza—, y por eso se escriben como argumento en vez de como un segundo
+ * aparato. Dos rocolas paralelas serían dos elementos, dos cadenas y dos formas de apagar.
+ */
+function prender(
+  modo: 'rocola' | 'tema-fijo',
+  pieza: Pieza | null,
+  ctx: AudioContext,
+  salida: AudioNode,
+  alRendirseFn?: () => void,
+): boolean {
   if (!ROCOLA_HABILITADA) return false;
   if (typeof window === 'undefined') return false;
   // El segundo candado sobre la misma puerta. El primero lo pone la isla; este está acá para
   // que no pueda sonar en una pantalla de juego **la toque quien la toque y desde donde la
   // toque**. Los recortes son las respuestas de `US-02`.
-  if (modoEnRuta(window.location?.pathname ?? '') !== 'rocola') return false;
-  if (!rocolaSembrada()) return false;
+  //
+  // Se compara contra el modo que se está prendiendo y no contra `'rocola'` a secas: pedir
+  // rocola en la pantalla del tema fijo, o tema fijo en el portal, cae del mismo lado.
+  if (modoEnRuta(window.location?.pathname ?? '') !== modo) return false;
+  if (modo === 'rocola' && !rocolaSembrada()) return false;
   if (puesta) return true;
 
   const medio = elemento ?? crearElemento();
   if (!medio) return false;
   elemento = medio;
+  // Después del elemento y no antes: un navegador sin `Audio` se va por el `return false` de
+  // arriba, y dejarle el modo puesto sería un estado que nadie va a apagar.
+  fija = pieza;
 
   /*
    * Si la cadena no se puede armar, **la rocola se pone igual, sin filtro** (`ADR-07.4`,
@@ -524,6 +625,9 @@ export function apagarRocola(): void {
   cancelarDescanso();
   puesta = false;
   sonando = null;
+  // El modo se apaga con el aparato: si la pieza fija sobreviviera al apagado, la rocola de
+  // la pantalla siguiente arrancaría creyendo que no tiene que sortear.
+  fija = null;
   alRendirse = null;
   if (nodos) {
     rampar(0, BAJADA_ROCOLA_SEG);
@@ -559,9 +663,15 @@ export function apagarRocola(): void {
  *
  * Es el control "poné otro tema" de `UX-26`. No descansa ni espera el `ended`: el dedo ya
  * dijo que este no.
+ *
+ * **En `tema-fijo` no hace nada, y es lo correcto:** no hay otra pieza, así que lo único que
+ * podría hacer es volver a empezar la misma — un control que dice "otro tema" y pone el
+ * mismo. El interruptor tampoco lo ofrece ahí (`UX-26`), pero eso se decide en la isla y esto
+ * es el módulo: dos candados sobre la misma puerta, como siempre.
  */
 export function proximaPieza(): void {
   if (!puesta) return;
+  if (fija) return;
   fallas = 0;
   ponerProxima();
 }
@@ -571,6 +681,7 @@ export function reiniciarRocolaParaPruebas(): void {
   cancelarDescanso();
   piezas = [];
   puesta = false;
+  fija = null;
   vuelta = [];
   sonando = null;
   ultimaQueSono = null;

@@ -1,0 +1,50 @@
+{
+  "contrato": "CTR-16",
+  "contratoVersion": 1,
+  "juego": "skayboy",
+  "actualizado": "2026-09-20",
+  "tile": 16,
+  "ancho": 15,
+  "alto": 9,
+  "temaFijo": "nam-fri-frufi-fali-fru",
+  "personajes": [
+    { "id": "skayboy", "atlas": "skayboy.v1" },
+    { "id": "poligirl", "atlas": "poligirl.v1" }
+  ],
+  "leyenda": {
+    ".": { "tipo": "aire" },
+    "#": { "tipo": "solido" },
+    "C": { "tipo": "molinete", "devuelve": ["skayboy"] },
+    "I": { "tipo": "molinete", "devuelve": ["poligirl"] },
+    "X": { "tipo": "molinete", "devuelve": ["skayboy", "poligirl"] },
+    "o": { "tipo": "tesoro", "para": ["skayboy", "poligirl"] },
+    "1": { "tipo": "entrada", "de": "skayboy" },
+    "2": { "tipo": "entrada", "de": "poligirl" },
+    "A": { "tipo": "puerta", "de": "skayboy" },
+    "B": { "tipo": "puerta", "de": "poligirl" },
+    "=": { "tipo": "mecanismo" },
+    "n": { "tipo": "caja" }
+  },
+  "niveles": [
+    {
+      "id": "NIV-01",
+      "nombre": "",
+      "escalon": 1,
+      "estado": "borrador",
+      "grilla": [
+        "###############",
+        "#.............#",
+        "#.............#",
+        "#.............#",
+        "#.............#",
+        "#.............#",
+        "#.............#",
+        "#A.o.1...2.o.B#",
+        "###############"
+      ],
+      "mecanismos": [],
+      "cajas": [],
+      "verificaciones": { "deDos": false, "solo": false }
+    }
+  ]
+}

@@ -1,0 +1,510 @@
+/*
+ * El marco impreso de Skayboy y Poligirl (`T-240`, ciclo 15).
+ *
+ * **Pixel adentro, imprenta afuera** (`D-41`). Un fichin son dos cosas pegadas: un tubo
+ * que muestra pixeles y un mueble serigrafiado alrededor, y **la frontera se ve**. Esta
+ * hoja dibuja el mueble —la chapa, el bisel, la chapa del pie, las dos columnas de
+ * mando— y le deja el hueco al tubo. El tubo lo llena `T-247`.
+ *
+ * EL AREA VA VACIA, Y NO ES UN OLVIDO. Los 16 `--px-*` son `T-238` y dependen del
+ * lienzo, asi que no existe todavia un solo color del area. Lo unico que se pinta
+ * adentro es `--fondo`, y eso no inventa nada: `--px-clave` es su alias declarado
+ * (`UX-27 §4`), o sea que el hueco ya esta pintado con el color que le toca.
+ *
+ * MISMA REGLA QUE `juego.css` Y `sitio.css`: ni un hex aca adentro. Todo sale de
+ * `var(--...)` de `tokens.css`, que es el unico archivo del repo donde vive un hex
+ * (`.claude/rules/diseno-marca.md`). La mezcla de este juego la fija `UX-30`: el disco
+ * es *Gulp!*, y de ahi salen la tinta del titulo, el eco de registro y el borde de las
+ * seis teclas.
+ *
+ * TODA MEDIDA DICE SU UNIDAD (`FIND-55`, cerrado). Las de esta hoja son **px CSS** salvo
+ * donde diga "nativos": el area mide 240 x 144 **nativos** y el mueble que la rodea
+ * —chapa, bisel, teclas— mide px CSS que no escalan con ella. A x2, que es el telefono,
+ * el area son 480 x 288 px CSS y el marco entero mide **720 de ancho por 324 de alto**
+ * (`UX-28 §2`).
+ *
+ * TODO VA COLGADO DE `.juego-skayboy`, la clase del `body` de esta pagina. No es prolijidad:
+ * `.recorte`, `.mando` y `.tecla` son nombres que cualquier otra pantalla podria querer, y
+ * una hoja de un solo juego que pinta fuera de su juego es un defecto que tarda ciclos en
+ * aparecer.
+ */
+
+/* ==========================================================================
+   La hoja: el mueble no entra en la medida de linea
+
+   `.pantalla` topea en 34rem (544 px CSS) para proteger la medida de linea de un
+   enunciado, y ese techo es correcto para el texto y falso para el mueble: a x2 el
+   fichin mide 720 px CSS y a x4 mide 1200. Se le saca el techo a la pantalla y se le
+   devuelve al texto, que es de quien era.
+   ========================================================================== */
+
+.juego-skayboy .pantalla {
+  max-width: none;
+}
+
+.juego-skayboy .encabezado-juego {
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
+/* El titulo viste *Gulp!* (`UX-30 §4`), con el eco de segunda tinta en el apoyo del mismo
+   disco. El `text-shadow` no se escribe aca: ya lo pone `.pantalla h1` en `juego.css`, que
+   es uno de los seis selectores de la lista cerrada de `UX-22 §8`. Lo que se cambia es la
+   tinta del eco, que es una variable.
+
+   Y va en `--fuente-rotulada` y no en el calco de Oktubre porque el calco solo tiene
+   A B C D E I K O R T U (`RES-43`): "Skayboy y Poligirl" no entra ni de casualidad. Es la
+   deuda declarada de `.claude/rules/diseno-marca.md`, no un descuido. */
+.juego-skayboy .pantalla h1 {
+  --tinta-registro: var(--disco-gulp-apoyo);
+  font-family: var(--fuente-rotulada);
+  color: var(--disco-gulp-tinta);
+}
+
+.juego-skayboy .tenue {
+  color: var(--texto-tenue);
+}
+
+/* ==========================================================================
+   El fichin: las dos columnas de mando y el mueble en el medio
+
+   El reparto entero es de `UX-28 §2` y `§2.1`, y las cuentas son suyas:
+
+     columna 112 + (chapa 4 + bisel 4) + area 480 + (bisel 4 + chapa 4) + columna 112 = 720
+     (chapa 4 + bisel 4) + area 288 + (bisel 4 + chapa 24) = 324
+
+   Los 720 entran en 724, que es 812 menos el peor caso de muescas laterales (44 + 44).
+   Sobran 4 px CSS, y por eso la sangria de la hoja se devuelve mas abajo: 16 px de
+   `padding` a cada lado se comen esos 4 y 28 mas.
+   ========================================================================== */
+
+.juego-skayboy .fichin {
+  /* La escala del tubo. Arranca en x1 —el telefono en vertical, `UX-28 §4`— y sube por
+     enteros donde entre. Nunca una fraccion: un pixel de 16 nativos mide 16, 32, 48 o 64
+     px CSS y nada en el medio (`UX-27 §2.1`). */
+  --escala: 1;
+  --area-ancho: calc(240px * var(--escala)); /* 240 nativos */
+  --area-alto: calc(144px * var(--escala)); /* 144 nativos */
+
+  /* Las tres capas del borde, de afuera hacia adentro (`UX-27 §1.1`). En px CSS, y **no
+     escalan con el area**: el mueble es imprenta y la imprenta no se mide en tiles. */
+  --chapa: 4px;
+  --chapa-pie-alto: 24px;
+  --bisel: 4px;
+
+  /* La columna de mando y sus tres teclas (`UX-28 §2.1`). */
+  --columna: 112px;
+  --columna-comoda: 140px;
+  --tecla-ancho: 52px;
+  --tecla-alto: 64px;
+  --tecla-aire: 8px;
+  --salto-alto: 244px;
+  /* 244 + 64 = 308, y la columna mide 324: los 16 px CSS que sobran de la cuenta de
+     `UX-28 §2.1` son la separacion entre el bloque de saltar y el piso de direccion. No
+     hay otro lugar donde puedan ir sin achicarle el blanco a una tecla, y achicar el
+     blanco del salto es justo lo que esa seccion prohibe. */
+  --mando-aire: 16px;
+  --mando-alto: calc(var(--salto-alto) + var(--mando-aire) + var(--tecla-alto)); /* 324 */
+
+  display: grid;
+  grid-template-areas:
+    'mueble mueble'
+    'izquierda derecha';
+  grid-template-columns: repeat(2, minmax(var(--columna), var(--columna-comoda)));
+  justify-content: center;
+  justify-items: center;
+  gap: var(--espacio-2) var(--tecla-aire);
+  margin-block: var(--espacio-3);
+}
+
+/* ---- La chapa: el mueble (`UX-27 §1.1`, capa 1) ----
+
+   `--papel` es la misma tinta de etiqueta de casete que ya usa el collage. Lleva 4 px CSS
+   arriba y a los costados, y **24 abajo**, que es donde va atornillada la placa del pie
+   de homenaje: no es un pie de pagina que se cae abajo de todo, es donde un fichin de
+   verdad dice quien lo fabrico (`D-42` precision 1).
+
+   **El ancho se declara, no se deduce.** Un bloque de papel con un parrafo adentro se
+   estira hasta donde llegue la linea mas larga, y la linea mas larga de este mueble es el
+   pie de homenaje: sin esta cuenta, a x1 el mueble se estira hasta el ancho del pie —unos
+   430 px CSS— en vez de los 256 que mide el area con su borde. Ahora manda el area, que es
+   lo que tiene que mandar, y el pie envuelve adentro.
+
+   **El borde del papel no se dibuja con `border`.** Dibujarlo sumaria 3 px CSS por lado a
+   una cuenta que `UX-28 §2` ya cerro en 720, y 726 no entran en el peor caso de muescas.
+   El corte lo hace el propio papel contra la tinta del fondo, que es como se recorta todo
+   en este sitio, y el eco de segunda tinta lo hace la sombra — offset plano, duro, sin
+   difuminar, la unica que `diseno-marca.md` admite (`UX-22 §8`), y que no ocupa lugar.
+
+   **Y no se pega torcido.** Todo el resto del sitio lleva su rotacion leve; el mueble no,
+   porque adentro tiene un tubo y un pixel art rotado deja de ser pixel art (`UX-27 §1.2`
+   punto 2). La imperfeccion vive en el corte y en el eco de tinta, no en el angulo. */
+.juego-skayboy .gabinete {
+  --tinta-registro: var(--disco-gulp-apoyo);
+  grid-area: mueble;
+  width: calc(var(--area-ancho) + 2 * var(--bisel) + 2 * var(--chapa));
+  padding: var(--chapa) var(--chapa) 0;
+  background: var(--papel);
+  border-radius: 3px;
+  box-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
+}
+
+/* ---- El bisel y el area (`UX-27 §1.1`, capas 2 y 3) ----
+
+   El bisel es una linea plana de `--fondo` —la clave, la tinta del sitio entero— entre la
+   chapa y el area. **Es la linea que se ve** cuando alguien pregunta donde termina un
+   idioma y empieza el otro (`D-41` punto 3).
+
+   El `z-index` no es un truco de apilado: es la primera de las cuatro cosas que hacen
+   visible la frontera (`UX-27 §1.2` punto 1). El grano de serigrafia cubre el sitio
+   entero desde un `::after` fijo del `body` en `z-index: 40`, y **no entra al area**;
+   levantar el recorte por encima de esa capa es como se corta. De paso deja afuera a la
+   mosca, que vive en 30 y que tiene prohibido volar sobre el area. */
+.juego-skayboy .recorte {
+  position: relative;
+  z-index: 41;
+  border: var(--bisel) solid var(--fondo);
+  background: var(--fondo);
+}
+
+.juego-skayboy #juego {
+  display: block;
+  width: var(--area-ancho);
+  height: var(--area-alto);
+  /* Sin esto el navegador difumina al agrandar y el pixel deja de ser un idioma para
+     pasar a ser un archivo mal escalado (`UX-27 §2.1`). */
+  image-rendering: pixelated;
+}
+
+/* El rotulo estatico de `ADR-08.2`, que dice que ahi va a haber un juego y no promete
+   nada. Registro 3: seco, en la rotulada, sin adorno. Tinta apagada sobre `--fondo`, que
+   es par testeado. **Vive en el encabezado, afuera del area** (`UX-27 §5.1`: adentro no
+   hay texto, ni un rotulo), y de costado va en la misma franja acostada que el titulo. */
+.juego-skayboy .rotulo-carga {
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  color: var(--texto-tenue);
+}
+
+/* ---- La placa del pie (`CNT-17`, `D-42`, `BR-26`) ----
+
+   24 px CSS de alto, que es lo que `UX-27 §1.1` reservo para que entre sin empujar el
+   area. Entra en una sola linea a x2 —los 480 px CSS del area dan de sobra para las 90
+   letras del pie a este cuerpo— y a x1 el area mide 240 y el texto necesita envolver: la
+   placa crece hacia abajo y **el area no se mueve**, que es lo unico que esa medida
+   protege. Por eso `min-height` y no `height`.
+
+   Tinta apagada del papel sobre papel: `--papel-tenue` existe porque `--texto-tenue`
+   sobre `--papel` da 1,78:1, y este par si esta medido (5,39:1) en `contraste.test.ts`.
+   Y la placa va limpia, sin pasada de rodillo debajo: ese par se midio contra `--papel`
+   pelado, y meterle tinta abajo lo volveria un par que nadie midio. */
+.juego-skayboy .chapa-pie {
+  display: grid;
+  place-items: center;
+  min-height: var(--chapa-pie-alto);
+  margin: 0;
+  padding-inline: var(--chapa);
+  color: var(--papel-tenue);
+  font-size: 0.6rem;
+  line-height: 1.25;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* La linea del vertical (`UX-28 §4`): una linea seca en la placa del mueble que dice que
+   de costado se ve el doble de grande. **No es una pantalla, no tapa nada y no hay que
+   tocarla para seguir** — un cartel de "gira el telefono" seria una pantalla previa, y
+   `D-32` limite 3 no la deja.
+
+   Se va en cuanto el telefono esta de costado, mas abajo: ahi ya se cumplio sola. */
+.juego-skayboy .chapa-linea {
+  margin: 0;
+  padding: 2px var(--chapa);
+  color: var(--papel-tenue);
+  font-size: 0.7rem;
+  line-height: 1.3;
+  text-align: center;
+}
+
+/* ==========================================================================
+   Las seis teclas: tres por columna, una columna por personaje (`D-43`)
+
+   No hay boton de cambio y no hay modo que elegir: **cada columna maneja siempre al
+   mismo personaje**, y el que no tiene un dedo encima se queda quieto y a salvo. Con dos
+   personas se usan las dos a la vez; con una, se usa una y despues la otra.
+
+   Saltar se lleva el bloque grande (112 x 244 px CSS) y correr se lleva 52 x 64. El
+   motivo esta en `UX-28 §2.1` y es la respuesta al criterio 2 del brief: un plataformas
+   es timing, y el timing no se arregla achicando el juego, se arregla agrandando el
+   blanco de la accion que hay que acertar en el momento justo.
+
+   Las tres son toques. No se deslizan, no tienen doble toque, no hay mantener para
+   cargar: cualquier gesto es precision fina con otro nombre.
+   ========================================================================== */
+
+.juego-skayboy .mando {
+  display: grid;
+  grid-template-rows: var(--salto-alto) var(--tecla-alto);
+  row-gap: var(--mando-aire);
+  width: 100%;
+  height: var(--mando-alto);
+}
+
+.juego-skayboy .mando--izquierda {
+  grid-area: izquierda;
+}
+
+.juego-skayboy .mando--derecha {
+  grid-area: derecha;
+}
+
+/* El piso de la columna: las dos de direccion, donde cae el pulgar de la mano que agarra
+   (`UX-28 §2.2`). Cuando sobra ancho se ensanchan ellas, nunca el area. */
+.juego-skayboy .mando-piso {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: var(--tecla-aire);
+}
+
+/* La tecla: la tinta del disco para el borde, y el relleno de cualquier control del sitio
+   (`UX-30 §4`). Rectangulo de borde grueso, sin pastilla capsula y sin sombra de
+   elevacion — el `--radio` del sistema es para lo tocable grande, que es exactamente esto.
+
+   Cada una pasa `--toque-min` por arriba: 52 x 64 px CSS las de direccion, 112 x 244 el
+   salto, contra los 48 de `tokens.css` y los 48 dp de `RES-65.6`.
+
+   En pantalla son formas: el nombre lo lleva el `aria-label`, que sale de `CNT-18` por
+   `copy.ts`. Nada de emoji ni de icono de libreria (`UX-04`). */
+.juego-skayboy .tecla {
+  display: grid;
+  place-items: center;
+  min-width: var(--tecla-ancho);
+  padding: 0;
+  color: var(--disco-gulp-tinta);
+  background: var(--fondo);
+  border: var(--linea) solid currentColor;
+  border-radius: var(--radio);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  /* El resaltado gris del sistema al tocar es de Android, no del sitio; la confirmacion
+     del toque la da la tinta dada vuelta, dos reglas mas abajo. */
+  -webkit-tap-highlight-color: transparent;
+  /* `--duracion-toque` es informacion —que el dedo llego— y es la unica duracion que el
+     corte de movimiento reducido no apaga (`UX-20 §5`). */
+  transition: background-color var(--duracion-toque), color var(--duracion-toque);
+}
+
+/* Apretada, la tecla se da vuelta: la tinta pasa al relleno y la figura queda en hueco.
+   Es cambio de tinta, no de tamaño — la tabla anti-slop veta el control que se infla o
+   rebota al tocarlo. */
+.juego-skayboy .tecla:active,
+.juego-skayboy .tecla--apretada {
+  background: var(--disco-gulp-tinta);
+  color: var(--fondo);
+}
+
+/* `.tecla--apretada` la pone la isla (`T-247`), y existe porque `:active` no alcanza: en
+   un telefono con cuatro dedos encima el navegador marca activo a uno solo, y la persona
+   que sostiene la direccion tiene que ver que su tecla sigue apretada. Mismo par de tinta
+   que `:active`, que ya esta medido.
+
+   Y en las teclas no hay gesto del navegador: sostener una direccion y correr el pulgar un
+   poco no puede volverse un desplazamiento de la pagina, que cancela el puntero y suelta
+   la tecla sola (`ADR-08.10`). */
+.juego-skayboy .mando .tecla {
+  touch-action: none;
+}
+
+/* El aviso para el lector de pantalla (`UX-29 §5`): existe para quien no ve, asi que no
+   ocupa lugar en el reparto de `UX-28 §2`, que entra por tres pixeles. */
+.juego-skayboy .aviso-juego {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Las figuras: tinta plana recortada, tres triangulos. No hay tipografia adentro de una
+   tecla —una flecha de fuente es una letra que cada sistema dibuja distinto— ni icono de
+   libreria. Miden px CSS y no se mueven con la escala del area. */
+.juego-skayboy .tecla-figura {
+  display: block;
+  background: currentColor;
+}
+
+.juego-skayboy .tecla--izquierda .tecla-figura {
+  width: 18px;
+  height: 24px;
+  clip-path: polygon(100% 0, 100% 100%, 0 50%);
+}
+
+.juego-skayboy .tecla--derecha .tecla-figura {
+  width: 18px;
+  height: 24px;
+  clip-path: polygon(0 0, 0 100%, 100% 50%);
+}
+
+.juego-skayboy .tecla--salto {
+  grid-row: 1;
+}
+
+.juego-skayboy .tecla--salto .tecla-figura {
+  width: 44px;
+  height: 34px;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+/* ==========================================================================
+   Los escalones de escala (`UX-27 §2`, `UX-28 §2` y `§5`)
+
+   El area no crece con la pantalla: **tiene tamaño fijo por escala**. Lo que crece cuando
+   hay lugar son las columnas de mando y el aire alrededor. Si el area creciera libre
+   habria que elegir entre romper la grilla y recortar el nivel, y las dos son peores que
+   dejar aire.
+   ========================================================================== */
+
+/* El telefono de costado: x2, el area a 480 x 288 px CSS y las tres piezas en fila.
+
+   El umbral es 720 y no 760 a proposito: en un telefono con muesca el navegador ya
+   descuenta la muesca del viewport, asi que a 812 con muescas quedan 724 px CSS utiles
+   y el marco pide 720. Pedir mas seria mandar a x1 justo al telefono que `UX-28` uso de
+   peor caso. */
+@media (min-width: 720px) and (min-height: 330px) {
+  .juego-skayboy .fichin {
+    --escala: 2;
+    grid-template-areas: 'izquierda mueble derecha';
+    grid-template-columns:
+      minmax(var(--columna), var(--columna-comoda))
+      auto
+      minmax(var(--columna), var(--columna-comoda));
+    align-items: center;
+    gap: 0;
+    /* La sangria de la hoja se devuelve. `tokens.css` le da 16 px CSS a cada lado a
+       `main` y la cuenta de `UX-28 §2` no los tiene: 724 menos 32 son 692, y el marco
+       pide 720. El aire de la hoja es correcto para el texto y el mueble no es texto. */
+    margin-inline: calc(-1 * var(--espacio-2));
+    /* Y si alguna vez el viewport deja de descontar la muesca —`viewport-fit: cover`—,
+       esto la descuenta de nuevo. Con el `meta viewport` de hoy los dos valen 0. */
+    padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
+  }
+
+  /* De costado ya se ve el doble de grande: la linea que lo avisa cumplio su trabajo y se
+     va. No se esconde una instruccion que haga falta — se saca una que quedo contestada. */
+  .juego-skayboy .chapa-linea {
+    display: none;
+  }
+}
+
+/* Lo de arriba resuelve el ancho; esto resuelve el alto, que es donde el telefono de
+   costado aprieta de verdad. 324 px CSS de mueble en una ventana de 375 dejan 51 para
+   todo lo demas, asi que el encabezado se acuesta en una sola franja al lado del enlace
+   de volver, en vez de apilar marca, titulo y bajada.
+
+   **No se esconde nada**: los tres textos siguen ahi, del mismo tamaño de cuerpo, y el
+   enlace de volver conserva su zona de pulgar. Se acomodan, que es distinto. */
+@media (min-width: 720px) and (max-height: 500px) {
+  /* **Acá el alto no sobra: falta.** La cuenta de `UX-28 §2` reparte 375 px CSS entre el
+     mueble (324) y 30 de aire, y esa cuenta **no tiene una cabecera adentro**. La cabecera
+     existe igual —volver al arcade es un molinete abierto y no se saca— y su enlace mide
+     `--toque-min` de alto porque tiene que poder tocarse.
+
+     48 + 324 = 372. Entra en 375 **por tres pixeles**, y solo si arriba y abajo no se
+     suma ni uno mas. Por eso acá el aire es cero: no es descuido, es lo unico que hay.
+     El choque con `UX-28 §2` quedo escrito en `Docs/SUGERENCIAS/` para `experiencia`,
+     que es de quien es el reparto de la pantalla. */
+  .juego-skayboy > main {
+    padding-block: 0;
+  }
+
+  /* El `:not([hidden])` no es decoracion: un `display` con id adentro le gana a la regla
+     de `[hidden]` del navegador, y la pantalla que alguien esconda manana —`T-247` va a
+     tener mas de una— seguiria visible. Al repo ya le paso tres veces (`.buscador`,
+     `.sugerencias`, `.revelacion`) y una cuarta con `.chips`. */
+  .juego-skayboy #portada:not([hidden]) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: var(--espacio-2);
+  }
+
+  .juego-skayboy .cabecera-sitio {
+    margin: 0;
+  }
+
+  .juego-skayboy .encabezado-juego {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: var(--espacio-2);
+    max-width: none;
+  }
+
+  .juego-skayboy .encabezado-juego > * {
+    margin: 0;
+  }
+
+  .juego-skayboy .marca {
+    font-size: 1rem;
+    max-width: none;
+  }
+
+  .juego-skayboy .pantalla h1 {
+    font-size: 1.05rem;
+  }
+
+  /* La bajada del casete **no entra, y no es cuestion de achicarla**. La cuenta de
+     `UX-28 §2` deja 51 px CSS para todo lo que no es el fichin (375 - 324), y esta bajada
+     acostada se parte en seis lineas: 136 px CSS ella sola. Con eso el mueble arrancaba en
+     y = 152 y terminaba 101 px CSS **fuera de la pantalla** — las dos teclas de direccion,
+     que son las que se mantienen apretadas y donde cae el pulgar de la mano que agarra
+     (`UX-28 §2.2`), quedaban invisibles y habia que scrollear para jugar.
+
+     Se va, y no se pierde nada: la bajada es **la que canta** (`voz-ricotera.md` §5) y su
+     trabajo es que entres, en el casete del portal. Adentro ya lo hizo. Lo que manda en
+     esta pantalla es el registro 3 — el rotulo, la linea del vertical y los nombres de las
+     teclas. El titulo y la marca se quedan porque son cortos y nombran donde estas.
+
+     No se saca del documento: sigue en el `<meta name="description">` y el `h1` queda a la
+     vista, asi que ni el buscador ni un lector de pantalla pierden nada. */
+  .juego-skayboy .encabezado-juego .tenue {
+    display: none;
+  }
+
+  /* El rotulo de carga, de costado, **toma el renglon de la marca** mientras el motor no
+     dibuja. No hay otro lugar: la franja del encabezado usa sus dos renglones en 48 px CSS,
+     el mueble entra por tres y la placa tiene cuatro libres (medido el 2026-09-22 a
+     812 x 375). Un tercer renglon empuja las cuatro teclas de direccion fuera de la
+     pantalla, y un rotulo oculto deja la pantalla publicada **muda** — con el nivel 1 en
+     borrador el motor ni se baja, asi que este rotulo es lo unico que la pantalla dice.
+     La marca cede porque es la unica pieza que se repite: el titulo nombra donde estas.
+     Cuando el motor arranca la isla esconde el rotulo y la marca vuelve sola.
+     Es interino: el reparto de este alto es de `experiencia` (`UX-28 §2.2`). */
+  .juego-skayboy .encabezado-juego:has(.rotulo-carga:not([hidden])) .marca {
+    display: none;
+  }
+
+  .juego-skayboy .fichin {
+    grid-column: 1 / -1;
+    margin-block: 0;
+  }
+}
+
+/* El escritorio (`UX-28 §5`, `UX-10`): la escala sube por enteros mientras entre, y las
+   columnas de mando no desaparecen porque haya un teclado — una pantalla tactil grande
+   existe. x3 pide 960 x 468 px CSS de marco; x4 pide 1200 x 612. */
+@media (min-width: 980px) and (min-height: 520px) {
+  .juego-skayboy .fichin {
+    --escala: 3;
+  }
+}
+
+@media (min-width: 1220px) and (min-height: 660px) {
+  .juego-skayboy .fichin {
+    --escala: 4;
+  }
+}

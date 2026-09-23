@@ -19,6 +19,8 @@
 > `REV-14`**: `FIND-55` cambió la grilla —el envoltorio de `CTR-16.2` decía 26 × 12 y ahora
 > dice 15 × 9— y `FIND-58` rehízo `CTR-16.3` y `CTR-16.4`, que decían dos veces quién se
 > lastima y una de las dos no era computable. Cada enmienda está marcada donde pasó).
+> **2026-09-22:** el ejemplo de `CTR-16.4` tenía `C` e `I` invertidos respecto del dato y de
+> `UX-30 §3`; enmendado en el lugar.
 >
 > **Regla de escritura que nace de `FIND-55`: toda medida de píxel dice si es _nativa_ o
 > _CSS_. En este documento todo es nativo, porque un dato de nivel no sabe a qué escala se
@@ -179,8 +181,8 @@ existe, y eso cae bajo lo único que `CLAUDE.md` declara estricto.
 "leyenda": {
   ".": { "tipo": "aire" },
   "#": { "tipo": "solido" },
-  "C": { "tipo": "molinete", "devuelve": ["poligirl"] },
-  "I": { "tipo": "molinete", "devuelve": ["skayboy"] },
+  "C": { "tipo": "molinete", "devuelve": ["skayboy"] },
+  "I": { "tipo": "molinete", "devuelve": ["poligirl"] },
   "X": { "tipo": "molinete", "devuelve": ["skayboy", "poligirl"] },
   "o": { "tipo": "tesoro", "para": ["skayboy", "poligirl"] },
   "1": { "tipo": "entrada", "de": "skayboy" },
@@ -191,6 +193,18 @@ existe, y eso cae bajo lo único que `CLAUDE.md` declara estricto.
   "n": { "tipo": "caja" }
 }
 ```
+
+> **Enmendado el 2026-09-22: el reparto de `C` e `I` estaba al revés.** El ejemplo decía
+> `C → ["poligirl"]` e `I → ["skayboy"]`. El dato real (`src/data/skayboy.json`, leyenda) y
+> `UX-30 §3` coinciden entre sí y dicen lo contrario: **Skayboy camina el infierno y Poligirl
+> el cielo** (reparto por legibilidad de silueta, `UX-30 §3`), así que el cielo (`C`)
+> devuelve a Skayboy y el infierno (`I`) devuelve a Poligirl. **Manda el dato con `UX-30`:**
+> el reparto es de `experiencia` (`CTR-16.3`), este ejemplo solo lo ilustraba. El dato no
+> se toca. Dos cosas quedan dichas: la lectura `C` = cielo, `I` = infierno es la de las
+> iniciales, y **ningún lugar del contrato la declara** (el schema solo ve `devuelve`);
+> y el contrato no se movió — el test de `esquemas.test.ts` exige uno solo por personaje
+> más el de los dos, y lo cumplían las dos versiones. Lo que estaba mal era el ejemplo, que
+> es lo que copia quien diseña un nivel.
 
 **Por qué `molinete` y no `letal`, `peligro` o `dañino`.** `UX-29 §7.2` decidió la mecánica y
 le puso nombre en la misma línea: *"el elemento ajeno devuelve a la entrada… no te consume,

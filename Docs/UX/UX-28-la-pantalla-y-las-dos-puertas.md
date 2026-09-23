@@ -1,6 +1,15 @@
 # UX-28 — La pantalla a 812 × 375, y por qué no hay un modo que elegir
 
-> Rol dueño: `experiencia`. Ciclo 15, 2026-09-16.
+> Rol dueño: `experiencia`. Ciclo 15, primera versión 2026-09-16, **enmendada el
+> 2026-09-22 en `§2.2` (nueva)**: el hilo principal midió `T-240` en el navegador y las
+> piezas dan bien por separado, pero la cuenta de `§2` nunca sumó la cabecera del sitio, y
+> contra el peor caso real de alto —354 px CSS útiles, que `§2` ya nombraba pero no
+> restaba de nada— **faltan 18 px que ningún margen resuelve**. El traspaso completo está
+> en `Docs/SUGERENCIAS/HILO-para-experiencia-la-cabecera-no-entra-en-el-reparto.md`. `§2.2`
+> es la salida: no se achica la cabecera ni el mueble —ninguno de los dos tiene margen
+> legal para achicarse—, **el fichín cae un escalón entero de escala en el sub-caso donde
+> no entra**, que es exactamente el mecanismo que `§4` ya usa en vertical. Lo viejo de `§2`
+> no se borra: sigue describiendo el caso donde sí entra.
 >
 > **Consume:** `D-40` entero (las dos puertas, y su consecuencia 3, que es literalmente este
 > documento), `D-41` (la frontera, el área con borde), `D-42` (el pie de homenaje
@@ -122,6 +131,137 @@ opuesta la sostiene el otro. Entonces cada jugador tiene dos puntos de contacto:
 
 Y en solitario el mismo reparto funciona sin cambiar nada: el teléfono agarrado con las dos
 manos, un pulgar por columna, el mismo lugar para las mismas teclas.
+
+### 2.2 La cabecera no tiene lugar en `§2`, y el escalón que la resuelve
+
+> **Enmendado el 2026-09-22, cierra el traspaso
+> `Docs/SUGERENCIAS/HILO-para-experiencia-la-cabecera-no-entra-en-el-reparto.md`.**
+
+**El agujero.** `§2` reparte 375 px CSS de alto entre el mueble (324) y "30 de aire". Ese
+aire no existe: la cabecera del sitio —el enlace de volver, `--toque-min` de alto porque
+tiene que poder tocarse, más el interruptor de la cinta al lado, en la misma fila— mide
+**48 px CSS**, y nadie la había puesto en la cuenta.
+
+```
+48  (cabecera: volver + interruptor de la cinta, una sola fila)
++ 324 (el mueble, a ×2: 8 + 288 + 28)
+-----
+  372
+```
+
+Contra los tres altos reales, en orden de aprieto:
+
+| Alto disponible | De dónde sale | 372 entra? |
+|---|---|---|
+| 375 (el teléfono sin barra de gesto) | el caso ingenuo | Por 3 px, y solo con el aire en cero — un empate técnico, no un reparto |
+| **354** | 375 menos la barra de gesto de abajo, que **`§2` ya cita como el caso real** | **No. Faltan 18** |
+| 330 | el piso que esta misma hoja usa para activar el modo horizontal (`min-height: 330px` en `skayboy.css`) | No. Faltan 42 |
+
+**Por qué no lo arregla un margen.** El mueble no tiene margen que darle: `324` sale de
+sumar el área a ×2 (288, invariante por `UX-27 §2.1`) más la imprenta que la rodea (8 +
+28, invariante por `UX-27 §1.1`). La cabecera tampoco: 48 es el piso de `--toque-min`, y
+no es negociable. Dos medidas fijas que suman 372 no entran en un hueco de 354 aunque el
+margen entre ellas sea cero, porque el margen entre ellas **ya es cero** desde que el
+hilo principal lo llevó ahí. **No sobra nada que sacarle a ninguna de las dos partes.**
+
+**La salida: la escala baja un escalón entero, no la cabecera ni el mueble.**
+`UX-27 §2.1` ya deja los escalones de escala como la única forma legal de que el área
+cambie de tamaño — múltiplos enteros, nunca una fracción — y `§4` de este mismo documento
+ya usa el escalón de ×1 para el caso angosto (el teléfono en vertical). Acá es el mismo
+mecanismo para el caso bajo: cuando el alto disponible no le alcanza a ×2, el fichín no
+se recorta ni se solapa con nada — **entra entero a ×1**.
+
+```
+A ×1:
+  8 + 144 + 28  =  180   (el mueble: área de 144 en vez de 288, misma imprenta)
++  48                    (la cabecera, entera, en su fila, sin achicar nada)
+-----
+  228
+```
+
+228 contra el peor caso de 354 deja **126 px CSS de sobra** — más que los "51 px CSS para
+todo lo que no es el fichín" que `skayboy.css` calculaba para el ×2 apretado. Con esa
+sobra **no hace falta esconder la bajada del casete ni llevar los márgenes a cero**: los
+ajustes que el hilo principal dejó acotados a `max-height: 500px` eran remiendos para el
+×2 que no entraba, y a ×1 no hacen falta — se quedan solo para la franja donde ×2 sí
+entra (ver abajo).
+
+**El umbral, con número.** ×2 pide 372 (48 + 324). Se le da margen porque el alto que
+mide una media query no siempre coincide con el alto útil real —la barra de gesto no
+siempre se descuenta igual— así que el corte no va pegado a 372: va en **400**, veinte
+y pico de aire de sobra para ese margen de error y ninguno para el drama.
+
+> - **Alto disponible < 330:** no aplica esta sección — es el ancho angosto de `§4`
+>   (vertical), que ya usa ×1 por su cuenta.
+> - **330 ≤ alto disponible ≤ 400:** ×1. Cabecera entera, mueble entero, sin recortar
+>   nada. Es la franja nueva de esta enmienda.
+> - **Alto disponible > 400:** ×2, con los ajustes que ya existían (aire cero, bajada
+>   fuera de pantalla — ver `skayboy.css`).
+
+**Por qué no se eligió ninguna de las otras dos salidas del traspaso.** El traspaso
+ofrecía tres: la cabecera al aire lateral, la cabecera atornillada al mueble (solapada,
+sin fila propia), o `§2` reescrito con el mueble más bajo.
+
+- **Al aire lateral, descartada:** el aire lateral que sobra (92 px a 812, 46 por lado)
+  **no existe siempre** — en el peor caso de ancho (el teléfono con muesca, 724 px
+  útiles) sobran 4, y una cabecera de 48 no entra parada de costado en 4 px. Resolvería
+  el caso cómodo y dejaría roto justo el caso que más importa, que es el mismo error que
+  esta enmienda vino a corregir.
+- **Atornillada al mueble (solapada), descartada:** para no sumar altura tendría que
+  ocupar el mismo renglón que ya ocupan el bisel (4 px) o la chapa (4 u 8 px) del mueble,
+  y ninguno de los dos tiene 48 px para darle sin invadir el área de juego o el bloque de
+  saltar de una columna — exactamente lo que `UX-27 §1.2` punto 3 prohíbe ("ningún sello
+  de goma entra" al área) y lo que este mismo documento prohíbe para las teclas (una zona
+  de toque no se comparte con otra).
+- **`§2` reescrito con el mueble más bajo, descartada:** bajar el mueble por debajo de
+  324 a ×2 significa bajar el área por debajo de 288, y eso es achicar el área fuera de
+  sus escalones enteros — lo que `UX-27 §2.1` prohíbe en su primera línea.
+
+La única pieza de las tres que **sí** tenía margen legal para moverse era la escala
+misma, porque `UX-27 §2.1` ya la declaró movible por escalones. No es una cuarta opción
+inventada: es la que el propio documento de la grilla ya dejaba abierta y el traspaso no
+miró.
+
+**Lo que esto no toca.** El caso de ancho de `§2` (720 contra 724 útiles) sigue igual, sin
+tocar. La franja de escala ×2 con sus remiendos sigue igual, solo que ahora acotada a
+`min-height: 401px` en vez de aplicarse siempre que el ancho alcance. La línea del
+vertical de `§4` no cambia. Ningún cartel nuevo, ningún bloqueo de orientación.
+
+#### Qué tiene que cambiar en el código
+
+Todo en `src/styles/skayboy.css`, sin un hex nuevo — solo `var(--...)` y el `--escala`
+que la hoja ya declara:
+
+1. **Bajar el piso de la regla que hoy fuerza `--escala: 2`.** La regla
+   `@media (min-width: 720px) and (min-height: 330px)` deja de fijar `--escala: 2` para
+   toda esa franja. Pasa a fijarla solo cuando el alto también supere el nuevo umbral.
+2. **Agregar la franja nueva**, entre el piso angosto y el techo apretado:
+   `@media (min-width: 720px) and (min-height: 330px) and (max-height: 400px)` fija
+   `--escala: 1` en `.juego-skayboy .fichin`. No toca ningún otro selector: a ×1 la
+   cabecera y la bajada entran solas, así que **no** se le suman las reglas que esconden
+   `.encabezado-juego .tenue` ni las que ponen `padding-block: 0` en `main` ni
+   `margin: 0` en `.cabecera-sitio` — esas son remiendos del ×2 apretado y acá no hacen
+   falta.
+3. **Acotar la franja existente al alto alto.** El bloque
+   `@media (min-width: 720px) and (max-height: 500px)` —el que hoy esconde la bajada,
+   pone `padding-block: 0` y acuesta la cabecera— pasa a
+   `@media (min-width: 720px) and (min-height: 401px) and (max-height: 500px)`. El
+   contenido del bloque no cambia, solo el rango que lo activa.
+4. **Nada en `UX-27` ni en `tokens.css` se toca.** El área, la paleta y los 16 `--px-*`
+   siguen exactamente como están: esta enmienda mueve un umbral de media query, no una
+   medida de marca.
+
+**Cómo se verifica**, comando ya existente, corrido a tres alturas (330, 400, 500, todas
+con ancho 720+):
+
+```
+node --test src/lib/estilos.test.ts    # --toque-min en las seis teclas y en la cabecera, en las tres franjas
+```
+
+Y a ojo, con un teléfono o el inspector puesto en 812 × 354 (Chrome DevTools permite un
+alto de viewport que no es el de ningún preset, y es el número que hace falta probar):
+que el mueble entre completo, que la cabecera se lea entera y que ninguna tecla quede
+recortada por el borde de la pantalla.
 
 ---
 

@@ -4,20 +4,42 @@
     {
       "name": "vista-previa",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "preview"],
+      "runtimeArgs": [
+        "run",
+        "preview"
+      ],
       "port": 4321
     },
     {
       "name": "dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 4321
     },
     {
       "name": "dev-4325",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["astro", "dev", "--port", "4325"],
+      "runtimeArgs": [
+        "astro",
+        "dev",
+        "--port",
+        "4325"
+      ],
       "port": 4325
+    },
+    {
+      "name": "dev-4331",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "astro",
+        "dev",
+        "--port",
+        "4331"
+      ],
+      "port": 4331
     }
   ]
 }

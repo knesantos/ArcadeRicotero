@@ -49,10 +49,13 @@ import {
   apagarCinta,
   cintaDisponible,
   estadoDeLaCinta,
+  modoDeLaCinta,
   prenderCinta,
   rearmarCinta,
   reiniciarCintaParaPruebas,
 } from './cinta.ts';
+import { TEMA_FIJO, piezaSonando, reiniciarRocolaParaPruebas } from './rocola.ts';
+import { RUTA_TEMA_FIJO } from './rutas-sonoras.ts';
 import { reiniciarAudioParaPruebas, tomarLaSalida } from '../audio/contexto.ts';
 
 const TASA = 44100;
@@ -1083,4 +1086,137 @@ test('la isla llama a rearmarCinta: la preferencia significa algo al cambiar de 
     /rearmarCinta\(\)/,
     'la isla no rearma la cinta: quien la prendió en la portada la ve apagada en cada juego',
   );
+});
+
+// ---------------------------------------------------------------------------------------
+// El cuarto modo, del lado de la cinta (`D-39`, `ADR-08.9`, `T-244`)
+// ---------------------------------------------------------------------------------------
+
+/** La ruta sale del módulo: si la página se renombra, esto sigue mirando la buena. */
+const RUTA_DEL_TEMA_FIJO = `/juegos/${RUTA_TEMA_FIJO}/`;
+
+/**
+ * La ventana de `conEntorno()` no tiene `location`, así que todo el archivo corre en la
+ * portada. Esto le pone una ruta sin pisarle el constructor de audio que ya le dejó.
+ */
+function enLaRuta(ruta: string): void {
+  const ventana = (globalThis as Record<string, unknown>).window as Record<string, unknown>;
+  ventana.location = { pathname: ruta };
+}
+
+interface AudioDeMentira {
+  src: string;
+  preload: string;
+  volume: number;
+  paused: boolean;
+  dataset: { cinta?: string };
+  addEventListener(): void;
+  play(): Promise<void>;
+  pause(): void;
+  removeAttribute(): void;
+}
+
+/**
+ * El `<audio>` de la rocola, de mentira.
+ *
+ * El resto del archivo corre **sin** `Audio` a propósito: un `<audio>` que no existe es la
+ * forma más corta de probar que la cama no pide un byte. Acá hace falta, porque lo que se
+ * mira es justamente si el tema se pidió o no — y para eso el elemento tiene que poder
+ * existir. Se instala por caso y se saca en el `finally`.
+ */
+function conAudioDeMentira() {
+  const g = globalThis as Record<string, unknown>;
+  const previo = g.Audio;
+  const creados: AudioDeMentira[] = [];
+  const pedidos: string[] = [];
+  g.Audio = function AudioFalso(this: unknown) {
+    const medio: AudioDeMentira = {
+      src: '',
+      preload: '',
+      volume: 1,
+      paused: true,
+      dataset: {},
+      addEventListener() {},
+      play() {
+        medio.paused = false;
+        pedidos.push(medio.src);
+        return Promise.resolve();
+      },
+      pause() {
+        medio.paused = true;
+      },
+      removeAttribute() {
+        medio.src = '';
+      },
+    };
+    creados.push(medio);
+    return medio;
+  } as unknown as typeof Audio;
+  return {
+    creados,
+    pedidos,
+    restaurar() {
+      g.Audio = previo;
+    },
+  };
+}
+
+test('🔴 el cuarto modo NO autoarranca: el rearme prende cama y no pide un byte de tema', async () => {
+  /*
+   * Es la mitad de `ADR-08.9` regla 2, y la que se rompe sin que nadie se entere: la persona
+   * llega a la pantalla del juego con la cinta prendida de la anterior, toca cualquier cosa,
+   * y el rearme prende. Si ese camino pusiera el tema, el sitio estaría bajando 4 MB por un
+   * dedo que no los pidió — **un juego que arranca música solo sería el primer molinete al
+   * revés del sitio** (`D-14`).
+   *
+   * El rearme prende `cama` siempre, incluso donde podría sonar un tema (`ADR-07.8`), y acá
+   * se mira que eso siga siendo cierto en la ruta nueva.
+   */
+  const e = conEntorno({ estado: 'running', guardado: '1' });
+  const audio = conAudioDeMentira();
+  try {
+    enLaRuta(RUTA_DEL_TEMA_FIJO);
+    assert.equal(modoDeLaCinta(), 'tema-fijo', 'la ruta dejó de declarar el cuarto modo');
+
+    rearmarCinta();
+    e.doc.disparar('pointerdown');
+    await respirar();
+
+    assert.equal(estadoDeLaCinta(), 'sonando', 'el rearme no prendió ni la cama');
+    assert.equal(piezaSonando(), null, 'puso el tema sin que nadie tocara el interruptor');
+    assert.equal(audio.creados.length, 0, 'creó el <audio> del tema: son 3–4 MB que nadie pidió');
+    assert.deepEqual(audio.pedidos, [], 'pidió el tema solo');
+  } finally {
+    audio.restaurar();
+    // El tercer módulo con estado propio: sin esto, el <audio> de este caso queda vivo y el
+    // siguiente lo reusa sin crear el suyo. `reiniciarCintaParaPruebas()` reinicia los otros dos.
+    reiniciarRocolaParaPruebas();
+    e.restaurar();
+  }
+});
+
+test('con el dedo en el interruptor sí suena, y lo que suena es el tema elegido', async () => {
+  // La otra mitad: que el gesto alcance. Si esto falla, el juego se juega mudo para siempre
+  // y `D-39` no se cumple en ninguna pantalla.
+  const e = conEntorno({ estado: 'running' });
+  const audio = conAudioDeMentira();
+  try {
+    enLaRuta(RUTA_DEL_TEMA_FIJO);
+    await prenderCinta();
+
+    assert.equal(estadoDeLaCinta(), 'sonando');
+    assert.equal(piezaSonando()?.slug, TEMA_FIJO.slug, 'no puso el tema de `CNT-20`');
+    assert.equal(audio.pedidos.length, 1, 'pidió el tema más de una vez, o ninguna');
+    // La cama sigue corriendo abajo: el tema se cuelga arriba, no en su lugar (`ADR-07.5`).
+    assert.ok(nodosDeLaCama(e.registro) > 0, 'la cama no quedó armada abajo del tema');
+
+    apagarCinta();
+    assert.equal(piezaSonando(), null, 'apagar la cinta dejó el tema bajando');
+  } finally {
+    audio.restaurar();
+    // El tercer módulo con estado propio: sin esto, el <audio> de este caso queda vivo y el
+    // siguiente lo reusa sin crear el suyo. `reiniciarCintaParaPruebas()` reinicia los otros dos.
+    reiniciarRocolaParaPruebas();
+    e.restaurar();
+  }
 });

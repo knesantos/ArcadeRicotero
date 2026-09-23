@@ -60,8 +60,13 @@ import { SLUGS_GRAVES } from './graves.ts';
  *   bytes. **No es silencio**: apagar la cinta entera en los juegos sería sacarle a la gente
  *   algo que ya tenía y que no molesta a nadie.
  * - `muda` — no suena nada, ni cama. Los tres graves y el instrumento de medición.
+ * - `tema-fijo` — suena **un** tema, siempre el mismo, elegido de antemano por `contenido`
+ *   (`CNT-20`). Es el cuarto modo, y nace con `US-09` por `D-39`: ese juego suena entero.
+ *   **No sortea y no autoarranca**, que son las dos cosas que lo separan de `rocola`: sin
+ *   sorteo no hay tema que soplar —el tema es siempre el mismo y no es la respuesta de
+ *   nada—, y sin autoarranque sigue haciendo falta un gesto de la persona.
  */
-export type ModoCinta = 'rocola' | 'cama' | 'muda';
+export type ModoCinta = 'rocola' | 'cama' | 'muda' | 'tema-fijo';
 
 /**
  * Las rutas donde la rocola puede poner temas. **Esta lista es el candado A.**
@@ -98,6 +103,9 @@ export const RUTAS_CON_ROCOLA: ReadonlyArray<{
  */
 export const RUTA_INSTRUMENTO = 'diagnostico-audio';
 
+/** La unica pantalla en modo `tema-fijo` (`D-39`, `CNT-20`). Bajo `/juegos/`. */
+export const RUTA_TEMA_FIJO = 'skayboy-y-poligirl';
+
 /**
  * Las catorce páginas de `src/pages/`, clasificadas una por una. **Es el candado B.**
  *
@@ -115,6 +123,9 @@ export const PAGINAS_DECLARADAS: Readonly<Record<string, ModoCinta>> = {
   'juegos/completar-la-letra.astro': 'cama',
   'juegos/dos-ejes.astro': 'cama',
   'juegos/ponelos-en-fila.astro': 'cama',
+  // `US-09`. El unico juego que no cae a `cama`: `D-39` lo hizo sonar entero, y es la
+  // primera excepcion a `D-37`. Puede hacerlo porque su respuesta no es un tema.
+  'juegos/skayboy-y-poligirl.astro': 'tema-fijo',
   'letras-y-acordes/index.astro': 'rocola',
   'letras-y-acordes/[slug].astro': 'rocola',
   'letras-y-acordes/armar-cancionero.astro': 'rocola',
@@ -152,6 +163,9 @@ export function esPantallaMuda(ruta: string): boolean {
 export function modoEnRuta(ruta: string): ModoCinta {
   if (esPantallaMuda(ruta)) return 'muda';
   const s = segmentosDe(ruta);
+  // El cuarto modo se resuelve por ruta exacta y no por lista blanca: es **una** pantalla
+  // con **un** tema, y una regla generica invitaria a que manana entre otra sin decidirlo.
+  if (s.length === 2 && s[0] === 'juegos' && s[1] === RUTA_TEMA_FIJO) return 'tema-fijo';
   for (const regla of RUTAS_CON_ROCOLA) {
     if (regla.acepta(s)) return 'rocola';
   }

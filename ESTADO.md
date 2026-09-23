@@ -5,7 +5,309 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-09-16
+**Última actualización:** 2026-09-22
+
+> ## 🕹 CICLO 15 CONSTRUIDO: EL MOTOR DECIDIDO Y TRECE TAREAS CERRADAS (2026-09-22)
+>
+> **`npm test` 673 en verde · `npm run check` 0 errores · `npm run build` 152 páginas ·
+> validador `APTA`.** Eran 578 tests al abrir la ráfaga: **entraron 78 pruebas nuevas.**
+>
+> **Nada está commiteado.** Son ~35 archivos sin guardar y el usuario no pidió commit
+> todavía. Es lo primero que conviene resolver al retomar.
+>
+> ### 🔑 Las dos decisiones del usuario, tomadas
+>
+> 1. **El motor se queda: `kaplay@3001.0.19`, salida A.** La compuerta `ADR-08.1` falló la
+>    condición 4 —la licencia no es MIT, trae una cláusula anti-IA— y el usuario eligió
+>    **quedarse y corregir el rótulo**, que era lo que de verdad estaba mal. La restricción
+>    prohíbe entrenar modelos con el código; no toca lo que hace este sitio.
+> 2. **El nombre queda: `Skayboy y Poligirl`.** Confirmado sabiendo que el par cambió de
+>    fuego/agua a cielo/infierno. `CNT-19` quedó cerrada.
+>
+> ### Cómo se trabajó, porque cambia lo que hay que revisar
+>
+> **Dos sesiones en paralelo sobre el mismo árbol**, con reparto acordado por mensaje y sin
+> pisarse un archivo. Y un **workflow de 13 agentes** que cerró ocho tareas de una pasada.
+> Todo lo que sigue está verificado contra el disco, no contra lo que reportó cada agente.
+>
+> ### Lo cerrado
+>
+> | Tarea | Qué quedó |
+> |---|---|
+> | `T-226` | La compuerta corrida entera: 4 de 5 condiciones pasan. Resultado en `Docs/SUGERENCIAS/HILO-para-arquitectura-la-compuerta-del-motor-corrida.md` |
+> | `T-227` | **`INV-61`** (`RES-70`..`RES-72`). `RES-62.4` refutada, `RES-62.7`/`.8` ampliadas |
+> | `T-229` | `UX-27` reescrito. Cierra `FIND-56`, `FIND-68`, `FIND-70` |
+> | `T-232`..`T-235` | **`CNT-17`..`CNT-20`** |
+> | `T-237` | `public/arte/README.md` con la frontera de `D-41` |
+> | `T-239` | La ruta, `copy.ts`, y el cuarto modo `tema-fijo` en el censo |
+> | `T-240` | **El marco impreso.** Medido en el navegador: ancho 720 exacto, área 480×288, alto 324, teclas 52×64 y 112×244. Clavó `UX-28 §2` |
+> | `T-241` | **Los auditores dejaron de estar ciegos.** Lista blanca `PAQUETES_DE_CLIENTE` y los dos escáneres de estética **barriendo del disco**, no una lista a mano |
+> | `T-242`/`T-251`/`T-253` | El schema, el dato del nivel 1 en `borrador`, y los casos que un schema no puede: contar molinetes, y el nivel 1 que no se puede perder |
+> | `T-244` | El modo `tema-fijo` en `cinta.ts` y `rocola.ts`: no sortea y no autoarranca |
+> | `T-245` | Los **tres** efectos sintetizados, cero bytes en `public/` |
+> | `T-254` | **`mundo.ts`: la simulación pura, sin motor ni arte.** Y `niveles.test.ts` con la mitad lógica de `T-248` |
+> | `ADR-08` | Reescrito con el rótulo corregido, la compuerta cerrada, y **`ADR-08.2.1`**, que declara el `AudioContext` del motor como segunda excepción de `ADR-07.10` punto 7 |
+>
+> ### Las guardas nuevas, probadas en rojo a mano
+>
+> No se le creyó a ningún agente. Se rompieron y se vieron fallar: **hex, `999px` y
+> `border-left`** en la hoja nueva (`estilos.test.ts`), **tiempo y curva sueltos**
+> (`movimiento.test.ts`), y **un paquete de npm no declarado** en una isla
+> (`islas.test.ts`). Las tres en rojo, las tres restauradas.
+>
+> ### 🔴 El defecto que encontró el ojo, arreglado y con deuda declarada
+>
+> **A 812 × 375 el mueble se iba 101 px fuera de la pantalla.** Las cuatro teclas de
+> dirección —donde cae el pulgar de la mano que agarra— quedaban invisibles: había que
+> scrollear para poder correr. La bajada del casete, acostada, se comía 136 px de los 51
+> que hay. **Arreglado**: mueble de y=48 a y=372, `teclasFuera: 0`.
+>
+> **Pero entraba por tres píxeles y el aire había quedado en cero.** Y a 354 útiles (375
+> menos la barra de gesto, el caso que `UX-28 §2` ya citaba) 48 de cabecera + 324 de mueble
+> = 372 no entraba: faltaban 18, y ningún margen los resolvía porque ni la cabecera
+> (`--toque-min`) ni el mueble (área + imprenta invariantes) tenían margen legal para
+> achicarse.
+>
+> **Cerrado por `experiencia` el 2026-09-22 (`UX-28 §2.2`, nueva):** ni la cabecera ni el
+> mueble se tocan — **la escala baja un escalón entero** cuando el alto no le alcanza a
+> ×2, el mismo mecanismo que `§4` ya usaba en vertical. A ×1 el mueble mide 180: 48 +
+> 180 = 228, y sobran 126 contra el peor caso. El umbral queda en `min-height: 330px` a
+> `max-height: 400px` para ×1, y `min-height: 401px` a `max-height: 500px` para el ×2 con
+> los remiendos que ya existían. **Falta implementarlo en `skayboy.css`**: mover el piso de
+> la regla que fuerza `--escala: 2`, sumar la franja `330–400` en `--escala: 1`, y correr
+> `min-height: 401px` en la franja que ya esconde la bajada. Ningún hex nuevo, tres
+> selectores tocados. El detalle completo, con la tabla de umbrales y por qué se
+> descartaron las otras dos salidas del traspaso, está en `UX-28 §2.2`.
+>
+> ### La verificación adversarial, y los dos `ALTA` que encontró
+>
+> Cuatro lentes independientes —contratos, guardas, estética, completitud— revisaron lo
+> construido **sin haberlo armado**. Dos hallazgos graves, y el primero lo vieron las cuatro
+> por separado, que es lo que lo hace indiscutible:
+>
+> - **🔴 `ALTA` — el rótulo de carga se pinta ADENTRO del área de juego.** `.rotulo-carga`
+>   vive en `.recorte`, el mismo contenedor que el `<canvas>`, con `inset: 0`. Y `UX-27 §5.1`
+>   no admite excepción: *"Adentro del área no hay texto. Ninguno. Ni rótulos"*; `ADR-08.2`
+>   punto 4 lo repite. **Es un defecto del hilo principal** —se escribió en `T-239` y `T-240`
+>   lo conservó—, y **quedó abierto a propósito**: lo toma `T-247` junto con la isla, porque
+>   toca los mismos dos archivos y el rótulo hay que sacarlo igual cuando el motor dibuje.
+>   Ojo al moverlo: la pantalla horizontal entra por tres píxeles.
+> - **🔴 `ALTA` — `tema-fijo` no leía el tema del dato.** `rocola.ts` lo tenía escrito en una
+>   constante mientras `skayboy.json` decía `temaFijo: null`, contra `ADR-08.9`, que manda
+>   que el tema lo declare el dato. **Arreglado a medias y con la atadura puesta**: el dato ya
+>   trae `nam-fri-frufi-fali-fru`, y una prueba nueva en `rocola.test.ts` **rompe el build si
+>   el dato y el código nombran temas distintos** (probada en rojo). El arreglo de fondo —que
+>   la página siembre el tema y `rocola.ts` deje de conocer a un juego por su nombre— entra
+>   con `T-247`.
+>
+> ### Lo que la verificación dejó abierto, con dueño
+>
+> | Gravedad | Qué | Dónde |
+> |---|---|---|
+> | `MEDIA` | `cinta.ts:231` solo pinta el renglón de qué suena si el modo es `rocola`, y `ADR-08.9` promete "mismo rótulo de `UX-26`" también para `tema-fijo` | `T-247` |
+> | `MEDIA` | **El reparto de `devuelve` está invertido** entre el ejemplo de `CTR-16.4` y el dato real. Dos lentes lo vieron. Manda `UX-30` | `arquitectura` |
+> | `MEDIA` | `T-253` es condicional —"si `arquitectura` prefiere que no exista, se cancela"— y **ningún documento registra esa aceptación**. El test existe igual | `arquitectura` |
+> | `BAJA` | `mecanismo.abre` acepta `^PUE-\d{2}$` y no hay ninguna puerta con ese `id`: las puertas son los caracteres `A`/`B` de la grilla | `arquitectura` |
+>
+> Y lo que **no** encontró, que también es resultado: **cero tics de estética genérica de IA,
+> cero hex fuera de `tokens.css`, cero anglicismos, cero infinitivos en botón, cero
+> suspensivos en rótulo.** La lente de estética pasó limpia.
+>
+> ### `T-247` cerrada: **el juego se juega**
+>
+> La isla existe y el nivel 1 se pasa de punta a punta, verificado en el navegador a
+> 812 × 375: dos personajes, tesoros, las dos puertas, y **uno solo en su puerta no gana**.
+> `partida-skayboy.ts` escucha las seis teclas con `pointerdown`/`pointerup` **y captura**
+> —contando punteros por tecla, que es lo que hace falta con cuatro dedos encima—, llama a
+> `paso()` una vez por cuadro y dibuja con tinta plana. El motor entra con `import()` y
+> **solo si hay nivel sembrado**. `motor.test.ts` suma 16 casos, cada uno probado en rojo.
+>
+> **Y apareció que el `close()` era la mitad del arreglo.** Kaplay hace `suspend()` al
+> esconderse la pestaña y `resume()` al volver, **sobre el contexto ya cerrado**, y cada
+> vuelta tira `InvalidStateError`. Se mide en el navegador. El arreglo es `backgroundAudio:
+> true` en el init, que saltea esas dos llamadas sin encender nada. Está puesto y exigido por
+> test. **`ADR-08.2.1` todavía no lo dice** — es de `arquitectura`.
+>
+> ### La pantalla muda, arreglada — y las dos `MEDIA`, cerradas
+>
+> **El rótulo ya no está oculto en horizontal: toma el renglón de la marca** mientras el
+> motor no dibuja, así que se lee *"Skayboy y Poligirl / Acá va el juego."* sin gastar un
+> píxel de alto. Cuando el motor arranca, la isla lo esconde y la marca vuelve sola. Medido:
+> `teclasFuera 0`, `maxBottom 372`. **Es interino**: la decisión de fondo sigue siendo de
+> `experiencia` (ver el addendum del traspaso).
+>
+> - **`cinta.ts` ya pinta el renglón de `UX-26` en `tema-fijo`**, sin la acción de poner otro
+>   tema —`D-39` no sortea— y escondiéndose si no hay pieza. Verificado en el navegador: el
+>   botón existe pero sale con `hidden`, y el rótulo de pieza también.
+> - **El `devuelve` invertido, cerrado por `arquitectura`**: mandan el dato y `UX-30`. Quedó
+>   anotado que **en ningún lado del contrato está escrito que `C` sea cielo**: sale solo de
+>   las iniciales, que es una convención sin declarar.
+> - **`ADR-08.2.1` suma la condición 5, `backgroundAudio: true`.** El `close()` era la mitad:
+>   Kaplay hace `suspend()`/`resume()` **sobre el contexto ya cerrado** cada vez que la
+>   pestaña se esconde y vuelve, y tira `InvalidStateError`. Medido en el navegador, no
+>   deducido.
+>
+> ### 🔴 El tema del juego no suena, y no es un defecto de código
+>
+> `D-39` dice que este juego **suena entero**, y hoy no suena: el pedido de
+> `/audio/temas/nam-fri-frufi-fali-fru.mp3` devuelve **404**. La causa no es el código —
+> **`public/audio/temas/` está vacía**, y su propio README lo explica: los temas enteros
+> *"no salen de este repo y ningún rol los puede producir"*. Los pone el usuario:
+>
+> ```
+> npm run generar-fragmentos -- "<ruta a los discos>" --enteros
+> ```
+>
+> **La degradación es digna y se verificó**: la cama ya está sonando por debajo y el tema se
+> cuelga arriba; si no baja, `alRendirseLaRocola()` deja la cama. El rótulo dice "CINTA
+> SONANDO" y **es verdad** —suena la cama—, y el renglón de pieza se esconde en vez de
+> nombrar un tema que no está. Nada miente. Pero **`D-39` no se cumple hasta que el archivo
+> exista**, y son ~3-4 MB que solo el usuario tiene.
+>
+> ### 🔴 El hallazgo que queda abierto, y es el que más importa
+>
+> **En lo publicado, en horizontal, la pantalla del juego está muda.** El rótulo salió del
+> área —mi `ALTA` bien resuelto— pero **afuera no había lugar**, así que quedó
+> `clip-path: inset(50%)`: solo para lector de pantalla. Y como en producción el banco sale
+> con `"niveles":[]` (correcto, `NIV-01` sigue en `borrador` hasta `T-249`), **el motor nunca
+> baja**: el rótulo no es un cartel de 114 ms, es el estado permanente.
+>
+> Lo que ve el que entra, medido en `dist/`: **un rectángulo negro de 480 × 288, seis teclas
+> que no hacen nada, y ni una palabra.** Eso es un molinete de los que `D-14` nombra.
+>
+> **No es un defecto de CSS y por eso no lo arreglé:** medido, el gabinete tiene **4 px
+> libres** (324 = 296 de área + 24 de chapa del pie). Son **tres reglas que juntas no se
+> pueden cumplir** en horizontal — `UX-27 §5.1` (adentro del área no hay texto), `ADR-08.2`
+> (hay un rótulo y es lo que se mira), `UX-28 §2` (el reparto, que no deja un píxel). Las
+> cuatro salidas posibles están escritas en
+> `Docs/SUGERENCIAS/HILO-para-experiencia-la-cabecera-no-entra-en-el-reparto.md`, addendum
+> del 2026-09-22. **Es de `experiencia`.**
+>
+> ### Lo demás que dejó `T-247`, sin dueño todavía
+>
+> - **En vertical (375 × 812) las teclas de dirección quedan abajo del borde**: se ven los
+>   dos bloques de saltar y hay que scrollear para correr. Mismo defecto que ya se arregló en
+>   horizontal, en la otra orientación.
+> - **`UX-28` tiene dos secciones numeradas `§2.2`** (`:117` el agarre, `:135` la nueva del
+>   alto). Dos ramas con el mismo número es cómo nació `FIND-55`.
+> - La `§2.2` nueva baja a ×1 cuando el alto no alcanza, y si se aplica **la línea de
+>   `CNT-18` "De costado se ve el doble de grande" pasa a mentir** (`UX-28 §4` dice que el
+>   doble es lo único que esa línea promete). Arrastra a `contenido`.
+>
+> ### 🔴 Lo que espera al usuario
+>
+> | Qué | Traba |
+> |---|---|
+> | **Commitear las ~35 piezas** | Nada las respalda hoy |
+> | **Los 16 `--px-*` en el lienzo** (`T-238`) | `T-243` (auditor de paleta) y `T-246` (los atlas) |
+> | **Quién dibuja los sprites** | Sigue sin dueño. La hoja que hay **no es fuente de píxeles**: se midió que no está sobre grilla, se redibuja |
+> | **`T-249`**: jugar el nivel 1 en un teléfono | Es la planilla de `BR-25` y **no la puede correr ningún rol ni agente** |
+>
+> ### Próximo paso
+>
+> **`T-247`, la isla**: llamar a `paso()` una vez por cuadro, dibujar, escuchar las seis
+> teclas con `pointerdown`/`pointerup` **con captura** (el repo no tiene ningún control que
+> se mantenga apretado todavía), y el caso de `motor.test.ts` que exige
+> `void k.audioCtx.close()`. Con eso el nivel 1 se puede jugar y se abre `T-249`.
+
+> ## 🕹 CICLO 15 EN EJECUCIÓN: LA COMPUERTA SE CORRIÓ Y FALLÓ POR LA LICENCIA (2026-09-19)
+>
+> **Se dejó de planificar y se empezó a construir.** El plan del ciclo 15 estaba entero en
+> papel desde el 16; esta ráfaga ejecutó **nueve tareas** y dejó **una decisión del usuario
+> trabando el motor**. `npm test` cierra en **578 en verde**, `npm run check` en 0 errores y
+> `npm run build` en 152 páginas.
+>
+> ### 🔴 Lo primero, porque bloquea: `T-226` falló la condición 4 y hay que decidir
+>
+> La compuerta de `ADR-08.1` se corrió entera. **Cuatro condiciones pasan, una falla.**
+>
+> | # | Condición | Resultado |
+> |---|---|---|
+> | 1 | Entra en isla de Astro y el sitio construye | ✅ y además **dibuja en el navegador**, no solo compila |
+> | 2 | Sin `eval()` ni `new Function()` | ✅ cero coincidencias en los tres bundles |
+> | 3 | Tipos propios, `npm run check` sin tocar `tsconfig` | ✅ 0 errores |
+> | 4 | Nada con licencia ajena adentro | 🔴 **falla, y por donde nadie miraba** |
+> | 5 | Peso bajo el techo de 90 KB gzip | ✅ **66,8 KB**, pero ver abajo |
+>
+> **`kaplay@3001.0.19` no es MIT.** Su `LICENSE.md` trae tres restricciones anti-IA
+> agregadas, y su `package.json` **declara `"license": "MIT"`** igual — el metadato
+> contradice al archivo del mismo paquete, así que una auditoría automática no ve nada.
+>
+> **El matiz que cambia la lectura (`RES-70.3`): el proyecto ya había sacado esa cláusula.**
+> El revert a MIT plano es de mayo de 2025, pero ocurrió en `master` y en la línea `4000.x`,
+> **no** en la rama 3001.x, que se tagueó un mes después arrastrando la versión vieja. No es
+> una postura: es una rama que quedó atrás.
+>
+> **`RES-62.4` quedó refutada, y la lección es transferible:** consultó
+> `.../kaplay/`**`master`**`/LICENSE`, donde la afirmación *es* cierta. Leyó bien el archivo
+> equivocado. **Una licencia se lee en el tag de la versión que se instala, nunca en la
+> rama** — y el campo `license` del `package.json` no es una fuente.
+>
+> **Las tres salidas están escritas con su costo** en
+> `Docs/SUGERENCIAS/HILO-para-arquitectura-la-compuerta-del-motor-corrida.md` §2: **(A)**
+> quedarse y corregir el rótulo, **(B)** caer a LittleJS, **(C)** el alfa, que el propio
+> `ADR-08` veta. **Dato para B: LittleJS hoy mide 62 KB gzip, no los ~46 fichados** — el
+> ahorro de peso que justificaba tenerlo de repuesto ya no existe (menos de 5 KB).
+> `BR-15` consecuencia 1 saca esto de la órbita de `D-14`: **hay que decidirlo antes, y es
+> del usuario.** Traba `T-241`, `T-247` y `T-248`.
+>
+> ### Los tres hallazgos que la compuerta no buscaba y encontró igual
+>
+> - **🔴 El audio del motor no se apaga por opción.** `ADR-08.2` punto 3 dice "apagado" como
+>   si hubiera un flag: **ninguna de las 29 opciones del init toca el audio**, y el init hace
+>   `a.audio = sa()` incondicionalmente. Verificado en el navegador: aparece un
+>   `AudioContext` en estado **`running`**, contra `ADR-07.10` punto 7. **Hay mitigación
+>   probada**: `void k.audioCtx.close()` después del init lo deja en `closed` y **el motor
+>   sigue dibujando**. Hay que escribirla en el contrato y testearla en `T-247`.
+> - **El motor no se tree-shakea.** El humo mínimo —un rectángulo— pesa 66,8 KB gzip contra
+>   los ~65 del import completo. **La salida que `ADR-08.1` condición 5 dejaba escrita ("se
+>   recorta uso de API hasta entrar") no existe**: no hay API que recortar. Margen real
+>   contra el techo: **23,2 KB gzip** para isla, lógica y datos.
+> - **`islas.test.ts` se quedó ciego.** Su comentario afirma que "este proyecto no tiene
+>   ningún paquete de npm del lado del cliente", y eso dejó de ser cierto: con el humo puesto
+>   **ninguna prueba dijo una palabra** del `import kaplay`. Lo tapa `T-241`; hasta entonces,
+>   cualquier isla puede importar cualquier cosa. Lo que **sí** funcionó fue el censo: los
+>   únicos dos rojos fueron los de la página sin declarar.
+>
+> ### Y un hueco de `ADR-08.10` quedó medido
+>
+> **Tiempo hasta jugable: 114 ms** (escritorio, servidor local — **no es el número del
+> teléfono**, es el piso). `D-32` límite 3 pide 0 ms, así que el rótulo estático de
+> `ADR-08.2` deja de ser precaución. **La vara del bundle, rehecha:** el sitio sin el motor
+> son **116,3 KB bruto / 50,9 KB gzip** en 27 chunks, no los "113 KB" que circulaban. El
+> motor **no se comparte**: vive en un chunk, cargado por una sola página.
+>
+> ### Las nueve tareas cerradas
+>
+> | Tarea | Qué quedó |
+> |---|---|
+> | `T-226` | La compuerta corrida entera. Resultado y pedidos a `arquitectura` en el traspaso de `Docs/SUGERENCIAS/` |
+> | `T-227` | **`INV-61`** con `RES-70`..`RES-72`. `RES-62.4` marcada refutada en `INV-60`, y `RES-62.7`/`RES-62.8` ampliadas (LittleJS vendoriza Box2D bajo zlib; su peso envejeció) |
+> | `T-229` | `UX-27` reescrito por `experiencia` para una hoja que no está sobre grilla. **Cierra `FIND-56`, `FIND-68` y `FIND-70`** |
+> | `T-232`..`T-235` | **`CNT-17`..`CNT-20`** de `contenido`: el pie de homenaje, el texto de la pantalla, el nombre y el tema que suena (`nam-fri-frufi-fali-fru`, de *Gulp!*, verificado en el cancionero) |
+> | `T-237` | `public/arte/README.md` con la frontera de `D-41`: qué idioma rige dónde, y que su "borde tipo tijera" **no viaja** al pixel |
+> | `T-239` | **La ruta existe y se ve.** `src/lib/skayboy/copy.ts`, la página, y el cuarto modo `tema-fijo` en el censo. Verificado en el navegador a 375 px, sin errores de consola |
+> | `T-252` | El barrido corrido: 14 líneas sobreviven y **las 14 son enmiendas o citas históricas**, ninguna es regla viva |
+>
+> **`voz.test.ts` ahora audita `skayboy`**: los textos de `contenido` pasaron las siete
+> reglas de verdad, no a ojo. Registrarlo en `MODULOS` fue parte de `T-239` — la lección de
+> `dos-ejes`, que pasó un ciclo pareciendo auditado sin estarlo.
+>
+> ### 🔴 Las cuatro cosas que esperan al usuario
+>
+> | Qué | Por qué traba |
+> |---|---|
+> | **La licencia del motor** (A, B o C) | `T-241`, `T-247`, `T-248`. Es lo único que impide seguir con el juego |
+> | **El nombre**, `Skayboy y Poligirl` | `CNT-19` lo deja pendiente: se eligió cuando el par era fuego/agua y hoy es cielo/infierno. `contenido` argumenta que no hace falta cambiarlo —promete una dupla, no un elemento— pero la confirmación no está |
+> | **Los 16 `--px-*` en el lienzo** (`T-238`) | Traba `T-243` (el auditor de paleta) y `T-246` (los atlas) |
+> | **Quién dibuja los sprites** | Sigue sin dueño. Y la hoja que hay **no sirve de fuente de píxeles**: se redibuja sobre grilla |
+>
+> ### Próximo paso
+>
+> **Contestar la licencia.** Con eso destrabado, la fila es `T-241` (los auditores, que hoy
+> están ciegos), `T-242` + `T-251` + `T-253` (el schema y sus tres casos, los tres en el
+> mismo archivo y en fila), `T-240` (el marco impreso) y `T-244`/`T-245` (la cinta y los
+> tres efectos). Nada de eso necesita un sprite: el plan se cortó así a propósito.
 
 > ## 🕹 CICLO 15 PLANIFICADO Y REVISADO, SIN CONSTRUIR (2026-09-16)
 >

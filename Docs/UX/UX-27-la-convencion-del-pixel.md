@@ -1,6 +1,11 @@
 # UX-27 — La convención del pixel, y dónde está la frontera
 
-> Rol dueño: `experiencia`. Ciclo 15, 2026-09-16.
+> Rol dueño: `experiencia`. Ciclo 15, primera versión 2026-09-16, **enmendada el
+> 2026-09-18 en `§6` (`T-229`)**: `CTR-15.2` midió la hoja con `sharp` y el resultado es
+> `N = 1` — no hay píxel nativo que medir. `§6` queda reescrito para ese resultado, cierra
+> `FIND-56` (la carpeta) del lado de acá y deja corregidas las dos menciones de píxel sin
+> unidad que traía `§2`. Lo viejo no se borra: queda citado donde hace falta explicar qué
+> cambió.
 >
 > **Consume:** `D-41` entero (pixel adentro, imprenta afuera — los cuatro puntos y las tres
 > consecuencias), `D-42` (los muñecos tienen cara, en caricatura declarada; el tono es la
@@ -15,7 +20,10 @@
 > collage, que a partir de acá deja de ser el único), `public/arte/ensayo/README.md` (los
 > tres hallazgos del 2026-09-11), `src/styles/tokens.css` (leído: las diez paletas de
 > disco, `--papel`, `--velo-tapa`, `--textura-grano`, `--toque-min`, `--radio`),
-> `.claude/rules/diseno-marca.md` (el circuito y la tabla anti-slop).
+> `.claude/rules/diseno-marca.md` (el circuito y la tabla anti-slop). **Sumado en la
+> enmienda del 2026-09-18:** `CTR-15.1`, `CTR-15.2` y `CTR-15.5` (la hoja medida con
+> `sharp`, el desenlace `N = 1` y la carpeta), `Docs/REVISIONES/REV-14-ciclo-15.md`
+> (`FIND-56`, `FIND-68`), `ORQ-plan-ciclo-15.md §1.1` y `§3` fila `T-229`.
 >
 > **Resuelve:** la consecuencia 1 de `D-41` (escribir la convención del pixel al lado de la
 > del recorte y decir cuál rige dónde) y su consecuencia 3 (el contraste adentro del área,
@@ -85,9 +93,9 @@ lógicos salvo donde diga CSS.
 
 | Cosa | Medida | Por qué ese número |
 |---|---|---|
-| **Tile** | **16 × 16** | Es el tamaño del pixel art de 8 bits de toda la vida, y es lo que la hoja que trajo el usuario ya dibuja de hecho: sus figuras miden alrededor de 24 px de alto nativos |
-| **Área de juego** | **15 × 9 tiles = 240 × 144** | El ancho sale de lo que sobra en un teléfono en horizontal con dos columnas de mando y el peor caso de muescas (`UX-28 §1`). El alto sale de que la chapa del pie entre sin empujar nada |
-| **Celda de personaje** | **16 × 24** (1 tile de ancho, 1,5 de alto) | La figura ocupa 14 × 22 adentro de la celda, con 1 px de aire a cada lado para que el contorno no toque el borde de la celda |
+| **Tile** | **16 × 16 nativos** | Es el tamaño del pixel art de 8 bits de toda la vida, y es lo que la hoja que trajo el usuario ya dibuja de hecho: sus figuras miden alrededor de 24 px de alto nativos |
+| **Área de juego** | **15 × 9 tiles = 240 × 144 nativos** | El ancho sale de lo que sobra en un teléfono en horizontal con dos columnas de mando y el peor caso de muescas (`UX-28 §1`). El alto sale de que la chapa del pie entre sin empujar nada |
+| **Celda de personaje** | **16 × 24 nativos** (1 tile de ancho, 1,5 de alto) | La figura ocupa 14 × 22 nativos adentro de la celda, con 1 px nativo de aire a cada lado para que el contorno no toque el borde de la celda |
 | **Escala en teléfono** | **×2** | El personaje queda en **32 × 48 px CSS**. `IDEA-14` pedía "legible a 32 px" y el ensayo del 2026-09-11 midió que "a 48 px las dos se leen". Los dos números caen adentro de esta celda, y no lo busqué: salió |
 | **Escala en escritorio** | ×3 o ×4, el mayor entero que entre | `UX-10`. Nunca ×2,5 |
 
@@ -109,12 +117,15 @@ lógicos salvo donde diga CSS.
 ## 3. El alfa y el formato
 
 La hoja que trajo el usuario tiene el alfa lleno: el verde azulado del fondo (~`#186877`,
-medido por el hilo principal el 2026-09-16) es píxel opaco, no transparencia. Eso hay que
-arreglarlo al recortar, y la regla que queda escrita para siempre es esta:
+medido por el hilo principal el 2026-09-16) es píxel opaco, no transparencia. La regla de
+producción no cambia aunque el circuito que la cumple sí cambió (`§6`): sale de la hoja
+como referencia y no como fuente, así que el alfa nunca hereda su fondo opaco. La regla que
+queda escrita para siempre es esta:
 
 - **PNG-32 con alfa binario: 0 o 255, nunca un valor intermedio.** Un píxel al 40 % de alfa
   es antialias con otro nombre, y con `pixelated` se ve como un borde sucio que nadie
-  pidió. Después de recortar, el alfa se fuerza a binario con umbral en la mitad.
+  pidió. Con el circuito de `§6`, el binario sale solo: la celda nace transparente y el
+  fondo nunca se dibuja, así que no hay alfa intermedio que forzar después.
 - **Los tiles van opacos enteros.** El alfa es de los sprites, no del terreno.
 - **Nada de canal alfa para hacer sombras.** Si hace falta una sombra, es un color de la
   paleta, no una opacidad.
@@ -232,43 +243,94 @@ suelto en un componente**, y hasta que ese script exista el área no tiene audit
 
 ---
 
-## 6. Cómo se recorta la hoja que trajo el usuario
+## 6. Cómo se produce el sprite: ya no es un recorte, es un dibujo nuevo con la hoja al lado
 
-`public/arte/skayboy_poligirl.png` (1299 × 725) **es una hoja de concepto, no un atlas** y
-no se usa como está. Lo que trae, medido el 2026-09-16: el fondo verde azulado es opaco **y
-no es un solo color** —un bloque liso de 40 × 40 trae 52 tintas alrededor de
-`rgb(23,110,119)`, y la hoja entera tiene 108.705 colores—, las poses no están en grilla,
-cada una tiene su tamaño, y hay texto pegado adentro de la imagen —los dos encabezados y las
-cuatro etiquetas.
+> **Enmendado el 2026-09-18 (`T-229`, ciclo 15, cierra `FIND-56` y responde a `REV-14`).**
+> Esta sección medía un píxel nativo y cuantizaba la pieza a partir de él, como si la hoja
+> estuviera ampliada de forma pareja sobre una grilla real. **Eso dejó de ser cierto:**
+> `CTR-15.2` corrió el comando con `sharp` sobre `public/arte/skayboy_poligirl.png` y el
+> resultado es **`N = 1`** — no hay ningún módulo que se repita. No es que el píxel nativo
+> sea difícil de medir: **no existe.** La versión de abajo es el circuito que sí se puede
+> correr con ese resultado adentro, y de paso quedan corregidas las dos líneas que todavía
+> nombraban la carpeta vieja: la que manda ahora, la única, es `public/sprites/`
+> (`CTR-15.5`, `FIND-56`).
 
-**Los pasos 1 y 2 son a mano sobre esta hoja, y no hay tijera que los haga.** Está medido: la
-banda del personaje masculino sale como una sola pieza de 1072 px porque las flechas de los
-rótulos puentean las poses, y enmascarar el crema de las cajas no mejoró nada
-(`ARQ-para-experiencia-la-carpeta-y-el-recorte-a-mano.md`, `CTR-15.1`). Lo automático empieza
-en el paso 4. **El orden sigue siendo el orden en que se pierde lo que no va:**
+`public/arte/skayboy_poligirl.png` (1299 × 725) **es una hoja de concepto, no un atlas.**
+Lo que trae, medido con `sharp` el 2026-09-16 (`CTR-15.2`, `ORQ-plan-ciclo-15.md §1.1`): el
+fondo verde azulado es opaco —el alfa está lleno, no es transparencia— **y no es un solo
+color**: un bloque liso de 40 × 40 trae 52 tintas alrededor de `rgb(23,110,119)`, la hoja
+entera tiene 108.705 colores, y con tolerancia de color cambian 1221 de 1298 columnas y 679
+de 724 filas repartidas parejo en todas las fases de grilla probadas (`N` = 2 a 16). **La
+hoja tiene estética de píxel; no está dibujada sobre una grilla de píxel.** Sumado a que los
+rótulos y sus flechas puentean los sprites —la banda del personaje masculino sale como una
+sola pieza de 1072 px, y enmascarar el crema de las cajas no mejoró nada (`CTR-15.1`)—, el
+recorte automático no es una opción hoy. Lo que sigue no separa: **dibuja de nuevo, usando
+la hoja como modelo de pose, insignia y tono** (`CTR-15.2`), nunca como fuente de píxeles.
 
-1. **Fuera el texto.** Los encabezados y las cuatro etiquetas no llegan a producción de
-   ninguna forma. Ninguna de esas palabras se muestra nunca en el sitio (ver `§7`).
-2. **Fuera el fondo, y no por color.** Con 52 tintas alrededor del verde azulado, sacarlo
-   por color no se puede, y con tolerancia aparece el halo que `§3` prohíbe. **El alfa sale
-   del dibujo, no de la hoja**: recortada la pose a mano, el fondo no se "saca" — nunca se
-   dibuja. El alfa queda binario (`§3`) porque nunca hubo otra cosa.
-3. **Se mide el píxel nativo** antes de tocar nada: el bloque repetido más chico de la
-   imagen. Ese es el píxel real del dibujo, y la hoja está ampliada respecto de él. **No se
-   mide sobre la hoja entera:** los rótulos son texto suavizado y contestan `N = 1` aunque
-   los dibujos estén en grilla. Se mide sobre una pose ya recortada y se confirma con una
-   del otro personaje.
-4. **Se reduce a ×1 por vecino más cercano** hasta ese píxel nativo. Nunca bilineal, nunca
-   "suavizar".
-5. **Recién ahí se pone en grilla**, cada pose centrada en su celda de 16 × 24, con el pie
-   de la figura apoyado en el borde de abajo de la celda — el pie es lo que tiene que caer
-   siempre en el mismo lugar, no el centro del cuerpo.
-6. **Se ajusta a la paleta** de `§4`: cada color de la hoja se reemplaza por el más cercano
-   de los 16, y si algo no entra, se cambia la paleta a propósito y se anota. No se agrega
-   un color número 17 en silencio.
-7. **Sale un PNG por personaje**, con sus poses en fila, a ×1, en `public/sprites/` — fuera
-   de `public/arte/`, porque una subcarpeta adentro de la casa del collage es la pieza
-   compartida que `D-41` punto 4 prohíbe (`CTR-15.5`, `FIND-56`).
+**Nada de esto es transparencia mal leída.** El verde azulado del fondo tiene alfa 255 en
+todo el lienzo: si se carga la hoja tal cual, cada figura llega adentro de un rectángulo
+opaco. Separar el fondo por eso no alcanza — es justo el problema que resuelve `§6.2` más
+abajo.
+
+### 6.1 Los siete pasos, corribles con lo que hay
+
+1. **Recorte grueso, a mano, por pose.** No hay tijera automática que separe una figura de
+   sus rótulos y flechas: se recorta a mano un rectángulo generoso alrededor de cada pose,
+   fondo incluido. Este recorte **no es el sprite**, es la lámina de trabajo del paso 4 —y
+   es también el punto donde quedan afuera los dos encabezados y las cuatro etiquetas de la
+   hoja: ninguna de esas palabras se dibuja de nuevo en el paso 4, así que ninguna llega a
+   producción (ver `§7` y `§8.1`).
+2. **Una máscara de fondo por umbral de tolerancia, y se usa una sola vez, para mirar — no
+   para producir.** El fondo no es un color exacto: es un halo de tintas alrededor de
+   `rgb(23,110,119)`, sobre un lienzo con el alfa lleno. Un umbral de distancia de color al
+   verde azulado separa "probablemente fondo" de "probablemente tinta" y da un contorno
+   aproximado de la figura, rápido de mirar sin ir píxel por píxel. **Esa máscara no se
+   guarda ni se usa como alfa de producción**: con tolerancia aparecen píxeles a medio
+   camino —halos—, que es exactamente lo que `§3` prohíbe (alfa binario, 0 o 255, nunca un
+   valor intermedio). Sirve para ver la silueta un momento; se descarta después.
+3. **No hay píxel nativo que medir, y no se busca uno.** La versión anterior de este paso
+   decía "medí el bloque repetido más chico de la imagen": ese bloque no existe (`N = 1`,
+   `CTR-15.2`). El tamaño de destino no se descubre mirando la hoja: **ya está decidido**,
+   es la celda de **16 × 24 px nativos** de `§2`, fija de antemano y la misma para los dos
+   personajes.
+4. **Se redibuja la pose adentro de la celda, píxel por píxel.** Con el recorte del paso 1
+   y la máscara del paso 2 al lado como referencia de silueta, postura e insignia —nunca
+   como fuente de píxeles—, se dibuja de nuevo, del tamaño final, con las 16 tintas de
+   `§4`. No hay un paso posterior de "buscar el color más cercano" porque nunca se parte de
+   un color fuera de esa lista: se dibuja directamente con ellas. **Esto es dibujo, no un
+   paso técnico, y tiene dueño** (`CTR-15.2`): cuesta lo que cuesta dibujar una figura de 14
+   × 22 px nativos, no lo que cuesta correr un script.
+5. **El alfa nace binario porque el fondo nunca se dibuja.** No hay nada que "sacar": la
+   celda arranca transparente y se queda así salvo donde hay tinta. Es la misma regla de
+   `§3` mirada del lado de adentro: no hace falta un paso de recorte de fondo si el fondo
+   nunca existió en el archivo nuevo.
+6. **El pie ancla la celda.** Centrado en el ancho, apoyado en el borde de abajo — es lo
+   que tiene que caer siempre en el mismo lugar, no el centro del cuerpo, igual para las dos
+   figuras.
+7. **Sale un PNG por personaje**, con sus poses redibujadas en fila, a ×1, sin escalar, en
+   **`public/sprites/`** — fuera de `public/arte/`, porque una subcarpeta adentro de la casa
+   del collage es la pieza compartida que `D-41` punto 4 prohíbe (`CTR-15.5`, `FIND-56`).
+
+### 6.2 Qué se pierde en el camino, y por qué se acepta igual
+
+- **La hoja deja de ser la fuente de los píxeles.** Pasa a ser referencia de pose, insignia
+  y tono (`CTR-15.2`) —que es muchísimo, y es lo caro del trabajo— pero ningún píxel del
+  sprite final sale de copiar un píxel de la hoja. Si el usuario reexporta la hoja sobre una
+  grilla real, este circuito se cae solo y vuelve a haber un recorte mecánico (`CTR-15.1`).
+- **El detalle fino del dibujo original no entra.** La hoja tiene degradados y bordes
+  suavizados que una celda de 16 × 24 nativos con 16 tintas no puede sostener: lo que se
+  traduce a este tamaño es la forma, no la textura. Donde la hoja pedía una estampa
+  psicodélica en la camisa, `§4.2` ya resolvió que entra por dither, no por copiar el
+  degradado.
+- **La silueta es una interpretación, no una copia exacta.** Redibujar a mano sobre una
+  celda fija no reproduce la hoja píxel por píxel: reproduce lo que se lee de ella a ese
+  tamaño. Es el mismo motivo por el que `§10` audita "que la silueta se lea igual de bien…
+  tapando el color" en vez de comparar contra la hoja pixel a pixel — no hay con qué
+  comparar.
+- **Esto deja de correrse solo.** Es dibujo, cuesta lo que cuesta dibujar, y no hay script
+  que lo repita si algo cambia: una pose nueva o una corrección de paleta se vuelve a
+  dibujar a mano. Es el mismo aviso que ya dejó `CTR-15.2`: *"no es un paso técnico, es
+  dibujo, y tiene dueño."*
 
 Lo único de la hoja que **no** pasa por este circuito son las dos cabezas de perfil: son
 retrato, no sprite (`D-42` precisión 3), y **no entran a producción en este ciclo**. No hay
@@ -325,8 +387,10 @@ Y de paso arregla algo que necesito para otra cosa: **un sombrero claro le da a 
 silueta que se lee sobre el terreno oscuro**, que es la mitad del criterio de reparto de
 `UX-30 §3`.
 
-**La palabra "fedora" nunca llega al sitio**: está pegada adentro de la hoja de concepto y
-el paso 1 de `§6` la recorta antes que nada. La discrepancia es interna y muere acá.
+**La palabra "fedora" nunca llega al sitio**: está pegada adentro de la hoja de concepto,
+que desde `§6` es solo referencia y nunca la fuente de los píxeles — el sprite de
+producción se redibuja entero en el paso 4 y no copia texto de ningún lado. La discrepancia
+es interna y muere acá.
 
 ### 8.2 Ni la guitarra ni ningún objeto en la mano
 

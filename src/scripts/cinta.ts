@@ -228,11 +228,18 @@ function montar(): void {
   /** Pinta el renglón según la tabla de `UX-26` §4. Nada acá inventa un quinto estado. */
   function pintarRocola(): void {
     const estado = estadoDeLaCinta();
-    const puede = modoDeLaCinta() === 'rocola';
+    const modo = modoDeLaCinta();
+    // `tema-fijo` muestra el mismo renglón que la rocola —`ADR-08.9` promete "mismo rótulo
+    // de `UX-26`"— porque la persona tiene que poder saber qué está sonando. Lo que no tiene
+    // es la acción: el tema de esa pantalla es uno, elegido, y no se sortea (`D-39`).
+    const fijo = modo === 'tema-fijo';
+    const puede = modo === 'rocola' || fijo;
     const pieza = piezaSonando();
     const prendida = estado === 'sonando' || estado === 'callada';
 
-    if (!puede || !prendida) {
+    // En `tema-fijo` sin pieza no hay nada que decir ni nada que ofrecer: un renglón vacío
+    // sería una promesa rota.
+    if (!puede || !prendida || (fijo && pieza === null)) {
       renglon.hidden = true;
       return;
     }
@@ -248,7 +255,7 @@ function montar(): void {
     // control desaparece mientras la cinta está callada.
     const ofreceSaltar = pieza !== null && estado === 'sonando';
     const ofrecePoner = pieza === null;
-    accion.hidden = !ofreceSaltar && !ofrecePoner;
+    accion.hidden = fijo || (!ofreceSaltar && !ofrecePoner);
     accion.textContent = pieza ? CINTA.otroTema : CINTA.ponerTema;
   }
 

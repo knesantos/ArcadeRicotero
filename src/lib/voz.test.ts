@@ -12,6 +12,7 @@ import * as porLaLetra from './por-la-letra/copy.ts';
 import * as correccion from './correccion/copy.ts';
 import * as dosEjes from './dos-ejes/copy.ts';
 import * as ponelos from './ponelos/copy.ts';
+import * as skayboy from './skayboy/copy.ts';
 import { FILAS } from './ponelos/filas.ts';
 
 /**
@@ -65,6 +66,10 @@ const MODULOS: ReadonlyArray<readonly [string, Record<string, unknown>]> = [
   // que audita el recolector de mas abajo son las 44 cadenas del **JSON**, no las once de
   // este archivo.
   ['dos-ejes', dosEjes],
+  // `US-09`, el juego del ciclo 15. Entra con el primer archivo del juego y no despues,
+  // que es la leccion de `dos-ejes`: un modulo que llega tarde al barrido pasa un tiempo
+  // pareciendo auditado sin estarlo. Las cadenas salen de `CNT-17`..`CNT-19`.
+  ['skayboy', skayboy],
 ];
 
 /*

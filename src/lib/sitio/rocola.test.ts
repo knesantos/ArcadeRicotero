@@ -14,6 +14,11 @@
  * - Que **la vuelta no repita un tema**, y que los enteros salgan antes que los recortes, que
  *   es literalmente lo que pidió el usuario.
  * - Que **una pieza que no baja no deje la cinta en silencio**.
+ *
+ * Desde `T-244` se prueba además el cuarto modo, y ahí lo que no se descubre escuchando son
+ * las dos cosas que lo definen: que **no sortee** —con la pantalla sembrada de más, que es el
+ * caso adverso— y que **no arranque sin un dedo**. Lo segundo se mira desde el otro lado, en
+ * `cinta.test.ts`, que es donde vive el rearme.
  */
 
 import { test } from 'node:test';
@@ -24,16 +29,19 @@ import {
   GANANCIA_ROCOLA,
   PROFUNDIDAD_BAMBOLEO_ROCOLA,
   RETARDO_BASE_SEG,
+  TEMA_FIJO,
   type Pieza,
   apagarRocola,
   alCambiarLaPieza,
   piezaSonando,
   prenderRocola,
+  prenderTemaFijo,
   proximaPieza,
   reiniciarRocolaParaPruebas,
   rocolaSembrada,
   sembrarRocola,
 } from './rocola.ts';
+import { RUTA_TEMA_FIJO } from './rutas-sonoras.ts';
 
 // ---------------------------------------------------------------------------------------
 // Los dobles
@@ -552,4 +560,164 @@ test('🔴 caso 17: con la pantalla escondida la rocola sigue, y la cama se call
   assert.ok(!codigo.includes('visibilitychange'), 'la rocola escucha visibilidad y no debe');
   assert.ok(!codigo.includes('document.hidden'), 'la rocola mira `document.hidden` y no debe');
   limpiar();
+});
+
+// ---------------------------------------------------------------------------------------
+// El cuarto modo: `tema-fijo` (`D-39`, `ADR-08.9`, `T-244`)
+// ---------------------------------------------------------------------------------------
+
+/** La ruta sale del módulo y no de una cadena escrita acá: si la página se renombra, sigue. */
+const RUTA_FIJA = `/juegos/${RUTA_TEMA_FIJO}/`;
+
+/**
+ * El descanso entre piezas, en la mano.
+ *
+ * Sin esto, ver la repetición costaría 0,8 segundos de espera real por vuelta, y una prueba
+ * que hay que esperar es una prueba que nadie corre. Es el mismo modal que usa
+ * `cinta.test.ts` con sus temporizadores, y por el mismo motivo.
+ */
+function conDescansoEnLaMano<T>(cuerpo: (correr: () => void) => T): T {
+  const g = globalThis as Record<string, unknown>;
+  const previos = { setTimeout: g.setTimeout, clearTimeout: g.clearTimeout };
+  const pendientes = new Map<number, () => void>();
+  let proximoId = 0;
+  g.setTimeout = (fn: () => void) => {
+    pendientes.set(++proximoId, fn);
+    return proximoId;
+  };
+  g.clearTimeout = (id: number) => {
+    pendientes.delete(id);
+  };
+  try {
+    return cuerpo(() => {
+      const listos = [...pendientes.values()];
+      pendientes.clear();
+      for (const fn of listos) fn();
+    });
+  } finally {
+    g.setTimeout = previos.setTimeout;
+    g.clearTimeout = previos.clearTimeout;
+  }
+}
+
+test('🔴 el cuarto modo NO sortea: con 95 recortes sembrados suena el mismo tema, vuelta tras vuelta', () => {
+  conDescansoEnLaMano((correrDescanso) => {
+    const { ctx, salida } = caso(RUTA_FIJA);
+    // La siembra de más es el caso adverso a propósito: si el modo mirara la vuelta en vez de
+    // su pieza, acá sonaría cualquiera de los 95 y el defecto pasaría por música.
+    sembrarRocola(recortes(95));
+    const arranco = prenderTemaFijo(ctx as unknown as AudioContext, salida as unknown as AudioNode);
+
+    assert.equal(arranco, true, 'no arrancó en la única pantalla que lo declara');
+    assert.equal(piezaSonando()?.slug, TEMA_FIJO.slug, 'sorteó: puso un tema que nadie eligió');
+
+    // Doce vueltas: el tema termina, descansa y vuelve a empezar. Siempre el mismo.
+    for (let vuelta = 0; vuelta < 12; vuelta++) {
+      disparar('ended');
+      correrDescanso();
+      assert.equal(piezaSonando()?.slug, TEMA_FIJO.slug, `en la vuelta ${vuelta} cambió de tema`);
+    }
+
+    const pedidos = ultimoMedio!.pedidos;
+    assert.equal(pedidos.length, 13, 'no volvió a empezar: el tema no queda en repetición');
+    assert.equal(new Set(pedidos).size, 1, `pidió más de un archivo: ${[...new Set(pedidos)].join(', ')}`);
+    limpiar();
+  });
+});
+
+test('🔴 las dos puertas no se abren en la pantalla de la otra', () => {
+  // Es el candado de `caso 5` para el modo nuevo, en los dos sentidos. El de ida importa
+  // porque la pantalla del tema fijo es un juego: una rocola sorteando ahí pondría los 95
+  // recortes, que son las respuestas de `US-02`.
+  const enLaFija = caso(RUTA_FIJA);
+  sembrarRocola(recortes(95));
+  assert.equal(
+    prenderRocola(enLaFija.ctx as unknown as AudioContext, enLaFija.salida as unknown as AudioNode),
+    false,
+    'la rocola sorteó en la pantalla del tema fijo',
+  );
+  assert.equal(ultimoMedio, null, 'creó el elemento igual');
+  assert.equal(piezaSonando(), null);
+
+  for (const ruta of ['/', '/letras-y-acordes/', '/redondopedia/', '/juegos/dos-ejes/', '/quiz/']) {
+    const { ctx, salida } = caso(ruta);
+    sembrarRocola(recortes(95));
+    const arranco = prenderTemaFijo(ctx as unknown as AudioContext, salida as unknown as AudioNode);
+    assert.equal(arranco, false, `el tema fijo sonó en ${ruta}, que no lo declara`);
+    assert.equal(ultimoMedio, null, `creó el elemento en ${ruta}`);
+    assert.equal(piezaSonando(), null);
+  }
+  limpiar();
+});
+
+test('"poné otro tema" no hace nada en el cuarto modo: no hay otro', () => {
+  // Volver a empezar la misma pieza sería un control que dice una cosa y hace otra. El
+  // interruptor tampoco lo ofrece ahí (`UX-26`), y son dos candados sobre la misma puerta.
+  const { ctx, salida } = caso(RUTA_FIJA);
+  prenderTemaFijo(ctx as unknown as AudioContext, salida as unknown as AudioNode);
+  const pedidos = ultimoMedio!.pedidos.length;
+  proximaPieza();
+  proximaPieza();
+  assert.equal(ultimoMedio!.pedidos.length, pedidos, 'volvió a empezar el mismo tema');
+  assert.equal(piezaSonando()?.slug, TEMA_FIJO.slug);
+  limpiar();
+});
+
+test('🔴 en el cuarto modo una pieza que no baja se cae a cama de una, sin reintentar', () => {
+  // `FALLAS_SEGUIDAS` cuenta piezas distintas, y acá hay una sola: reintentar sería pedir
+  // tres veces el archivo que acaba de no bajar, con la púa encima cada vez.
+  const { ctx, salida } = caso(RUTA_FIJA);
+  let rendida = 0;
+  prenderTemaFijo(ctx as unknown as AudioContext, salida as unknown as AudioNode, () => {
+    rendida++;
+  });
+  const pedidos = ultimoMedio!.pedidos.length;
+  assert.equal(pedidos, 1);
+
+  disparar('error');
+  assert.equal(rendida, 1, 'no avisó que se rendía: la cinta se quedaría en silencio, no con la cama');
+  assert.equal(piezaSonando(), null);
+  assert.equal(ultimoMedio!.pedidos.length, pedidos, 'reintentó el archivo que ya había fallado');
+  limpiar();
+});
+
+test('🔴 el tema fijo existe de verdad: el slug y el título son los del cancionero', () => {
+  /*
+   * Un slug mal escrito acá no rompe nada al construir. Se descubre el día que alguien
+   * prende la cinta en esa pantalla y no baja nada — o sea, no se descubre. `CNT-20` eligió
+   * el tema leyendo este JSON, y esta prueba es la que mantiene atadas las dos puntas.
+   */
+  const cancionero = JSON.parse(readFileSync('src/data/cancionero.json', 'utf-8')) as {
+    temas: Array<{ slug: string; titulo: string }>;
+  };
+  const tema = cancionero.temas.find((t) => t.slug === TEMA_FIJO.slug);
+  assert.ok(tema, `el slug "${TEMA_FIJO.slug}" no está en el cancionero`);
+  assert.equal(tema.titulo, TEMA_FIJO.titulo, 'el título no es el que dice el cancionero');
+});
+
+test('🔴 ADR-08.9: el tema fijo sale del dato del juego, y el codigo no lo puede contradecir', () => {
+  /*
+   * `ADR-08.9` es explícito sobre dónde vive el tema: **lo declara `temaFijo` en
+   * `src/data/skayboy.json`**, lo elige `contenido` (`CNT-20`) y la cinta lo repite. Hoy el
+   * código además lo tiene escrito en `TEMA_FIJO`, y eso deja **dos verdades sobre la misma
+   * cosa**.
+   *
+   * Mientras sean dos, esta prueba las obliga a decir lo mismo. El defecto que impide es
+   * silencioso y de los peores: alguien cambia el tema en el JSON —que es el lugar que el
+   * contrato manda tocar—, la cinta sigue poniendo el viejo, y nada se rompe. Se descubre
+   * escuchando, o no se descubre.
+   *
+   * **Esto no reemplaza el arreglo de fondo**, que es que la página siembre el tema como
+   * siembra el banco (el candado C de `ADR-07.9`) y que `rocola.ts` deje de conocer a un
+   * juego por su nombre. Eso entra con la isla, en `T-247`. Hasta entonces, acá está la
+   * atadura.
+   */
+  const dato = JSON.parse(readFileSync('src/data/skayboy.json', 'utf-8')) as {
+    temaFijo: string | null;
+  };
+  assert.equal(
+    dato.temaFijo,
+    TEMA_FIJO.slug,
+    'el dato del juego y la constante de la cinta nombran temas distintos: manda el dato (`ADR-08.9`)',
+  );
 });

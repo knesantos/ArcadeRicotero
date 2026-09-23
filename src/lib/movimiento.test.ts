@@ -51,11 +51,36 @@ const leer = (ruta: string): string => readFileSync(ruta, 'utf-8').replace(/\r\n
 const sinComentarios = (css: string): string => css.replace(/\/\*[\s\S]*?\*\//g, '');
 
 const TOKENS = 'src/styles/tokens.css';
-/** Las hojas de componentes: acá no puede vivir ni un tiempo ni una curva. */
-const COMPONENTES = ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css'];
+
+/**
+ * Las hojas de componentes: acá no puede vivir ni un tiempo ni una curva.
+ *
+ * **Se barren del disco, no se escriben a mano**, desde el ciclo 15. Eran tres literales, y
+ * `ADR-08.8` marcó lo que pasaba con la cuarta: una hoja nueva quedaba afuera de este
+ * escáner y del de `estilos.test.ts` sin romper nada — o sea, con sus `@keyframes` sin
+ * equivalente quieto y sus duraciones escritas a mano, que es exactamente lo que este
+ * archivo existe para impedir. El mecanismo es el mismo que usa `estilos.test.ts` para su
+ * lista de hojas y `voz.test.ts` para su censo de módulos.
+ *
+ * `tokens.css` va aparte y no acá: es el único lugar donde un tiempo y una curva pueden
+ * vivir, así que mezclarlo con las hojas que se auditan sería auditarlo contra sí mismo.
+ */
+const COMPONENTES = readdirSync('src/styles')
+  .filter((f) => f.endsWith('.css') && f !== 'tokens.css')
+  .map((f) => `src/styles/${f}`)
+  .sort();
 
 const cssTokens = leer(TOKENS);
 const cssComponentes = COMPONENTES.map((h) => ({ hoja: h, css: sinComentarios(leer(h)) }));
+
+test('el barrido de hojas no se vuelve verde por vago: encuentra las que hay en disco', () => {
+  // Con una lista vacia, las tres reglas de este archivo pasarian sin mirar nada. Las tres
+  // hojas de abajo son un piso, no un techo: la que entre manana entra sola.
+  for (const hoja of ['juego.css', 'sitio.css', 'cancionero.css']) {
+    assert.ok(COMPONENTES.includes(`src/styles/${hoja}`), `el barrido perdio ${hoja}`);
+  }
+  assert.ok(!COMPONENTES.includes(TOKENS), 'tokens.css no se audita contra si mismo');
+});
 
 /** El bloque de `prefers-reduced-motion` de `tokens.css`, que es el corte del sitio. */
 function corteDeMovimiento(): string {

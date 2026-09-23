@@ -1,0 +1,205 @@
+---
+/**
+ * "Skayboy y Poligirl" (`US-09`). **El mueble y el juego: el nivel 1 se juega en desarrollo.**
+ *
+ * `T-239` abrió la ruta y puso el texto de `CNT-17`..`CNT-19` donde `voz.test.ts` lo
+ * audita. `T-240` —esto— le pone el marco impreso: la chapa, el bisel, la chapa del pie
+ * con el homenaje, y las seis teclas con sus medidas. `T-247` enciende el motor adentro
+ * del área, con tintas provisorias hasta que lleguen los 16 `--px-*` de `T-238`.
+ *
+ * **Los dos idiomas de `D-41`, ahora dibujados:** todo lo que rodea al recorte es la
+ * imprenta del sitio —papel, borde grueso, tinta plana, el eco de segunda tinta— y lo que
+ * va a pasar adentro del `<canvas>` es pixel. La frontera se ve, y es el bisel.
+ *
+ * Arquitectura de islas (`D-02`): HTML estático y dos islas que no se conocen — el
+ * interruptor de la cinta y la partida (`T-247`, `src/scripts/partida-skayboy.ts`). Las
+ * seis teclas son botones de verdad, con su `aria-label` y su zona de pulgar; la partida
+ * las escucha por `data-mando` y `data-tecla`.
+ *
+ * **Molinetes abiertos (`D-14`):** no pide nada. Ni cuenta, ni login, ni saber. Y desde
+ * `D-43`, tampoco una segunda persona: cada columna de mando maneja siempre al mismo
+ * personaje, así que el que llega solo usa una y después la otra.
+ */
+import '../../styles/tokens.css';
+import '../../styles/juego.css';
+import '../../styles/sitio.css';
+import '../../styles/skayboy.css';
+import Cabeza from '../../components/Cabeza.astro';
+import PieImprenta from '../../components/PieImprenta.astro';
+import { PORTAL } from '../../lib/sitio/copy.ts';
+import { CASETE, PANTALLA, PIE_HOMENAJE, TECLAS } from '../../lib/skayboy/copy.ts';
+import { nivelesListos, problemasDelBanco, type Banco } from '../../lib/skayboy/niveles.ts';
+import datos from '../../data/skayboy.json';
+
+/**
+ * El nivel que se siembra para la isla (`T-247`). **En producción, solo los `listo`**
+ * (`nivelesListos()`, `CTR-16.7`): un `borrador` que se escapa al bundle es un nivel sin
+ * jugar en el teléfono de alguien. Mientras el nivel 1 siga en borrador —hasta que alguien lo
+ * juegue en un teléfono, `T-249`— lo publicado muestra el rótulo impreso y el motor ni se
+ * baja. **En desarrollo se siembran todos**, porque es la única manera de jugar el borrador
+ * para poder pasarlo a `listo`.
+ *
+ * Y un banco que no pasa `problemasDelBanco()` no se siembra: rompe el build con el renglón
+ * exacto, en vez de dibujar una pared que falta.
+ */
+const BANCO = datos as unknown as Banco;
+const problemas = problemasDelBanco(BANCO);
+if (problemas.length > 0) throw new Error(`skayboy.json no pasa CTR-16.5: ${problemas.join(' · ')}`);
+const SEMBRADO: Banco = {
+  ...BANCO,
+  niveles: import.meta.env.DEV ? BANCO.niveles : nivelesListos(BANCO),
+};
+
+const TITULO = `${CASETE.titulo} — Arcade Ricotero`;
+
+/**
+ * Las dos columnas de mando, que son **iguales**: tres teclas cada una, y cada una maneja
+ * siempre al mismo personaje (`D-43`, que sacó el botón de cambio). Se escriben una sola
+ * vez a propósito — el día que las dos columnas dejen de ser iguales, el juego tiene dos
+ * modos y `UX-28 §1` dice que no puede tenerlos.
+ *
+ * Los nombres salen enteros de `TECLAS`, que es donde `contenido` los dejó (`CNT-18`) y
+ * donde `voz.test.ts` los audita. Acá no se escribe ni una palabra que lea nadie.
+ */
+const MANDOS = [
+  { lado: 'izquierda', nombre: TECLAS.mandoIzquierdo },
+  { lado: 'derecha', nombre: TECLAS.mandoDerecho },
+] as const;
+
+/** El piso de cada columna: las dos de dirección, donde cae el pulgar (`UX-28 §2.2`). */
+const PISO = [
+  { tecla: 'izquierda', nombre: TECLAS.izquierda },
+  { tecla: 'derecha', nombre: TECLAS.derecha },
+] as const;
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={CASETE.baja} />
+    <title>{TITULO}</title>
+    <Cabeza titulo={TITULO} descripcion={CASETE.baja} />
+  </head>
+  <body class="con-grano juego-skayboy">
+    <main id="app">
+      <section id="portada" class="pantalla">
+        <header class="cabecera-sitio">
+          <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
+        </header>
+
+        <div class="encabezado-juego">
+          <p class="marca" aria-label="Arcade Ricotero">ARCADE RICOTERO</p>
+          <h1>{CASETE.titulo}</h1>
+          <p class="tenue">{CASETE.baja}</p>
+          {/*
+            El rótulo estático de `ADR-08.2`: dice qué va a haber y no promete nada, y se va
+            cuando el motor ya dibuja (`T-247`). **Vive acá y no adentro del recorte**:
+            `UX-27 §5.1` no admite ni un rótulo adentro del área. Tampoco va en la placa del
+            mueble, porque de costado el mueble entra por tres píxeles y una línea más deja
+            las teclas afuera; en esta franja, acostada en un renglón, no cuesta alto.
+          */}
+          <p class="rotulo-carga">{PANTALLA.rotuloCarga}</p>
+        </div>
+
+        {/*
+          El fichín: dos cosas pegadas (`D-41`). En el medio el mueble, con el tubo adentro;
+          a cada lado una columna de mando. El reparto entero —112 + 8 + 480 + 8 + 112 de
+          ancho, 8 + 288 + 28 de alto, todo en px CSS a ×2— es de `UX-28 §2`.
+        */}
+        <div class="fichin">
+          {/*
+            El mueble: chapa de `--papel` con 4 px CSS arriba y a los costados y 24 abajo
+            (`UX-27 §1.1`). El bisel de `--fondo` es la línea que se ve entre un idioma y
+            el otro; de ahí para adentro manda el pixel.
+
+            240 × 144 son píxeles **nativos** (`FIND-55`, y la regla de que toda medida
+            diga su unidad). El canvas va en el HTML y **no lo crea el motor** —`ADR-08.2`
+            punto 2, verificado en `T-226`—: si lo creara él, se pega a sangre contra el
+            borde de la ventana, que es justo lo que `D-41` punto 3 no quiere.
+          */}
+          <div class="gabinete">
+            <div class="recorte">
+              <canvas id="juego" width="240" height="144" aria-label={CASETE.titulo}></canvas>
+            </div>
+
+            {/*
+              El aviso de `UX-29 §5`: cuando un personaje vuelve a la entrada, el lector de
+              pantalla dice **el lugar, no a la persona**. No se ve: en pantalla la vuelta
+              ya se ve sola. Lo escribe la isla, con el texto de `CNT-18`.
+            */}
+            <p id="aviso-juego" class="aviso-juego" role="status" aria-live="polite"></p>
+
+            {/*
+              La línea del vertical (`UX-28 §4`), en la placa del mueble y no en una
+              pantalla previa. De costado se va sola: ahí ya está contestada.
+            */}
+            <p class="chapa-linea">{PANTALLA.lineaVertical}</p>
+
+            {/*
+              El pie de homenaje (`CNT-17`), obligatorio desde `D-42`. Va acá, atornillado
+              al mueble en su chapa de 24 px CSS (`UX-27 §1.1`): es imprenta, no pixel, y no
+              es un pie de página que se cae abajo de todo — es donde un fichín de verdad
+              dice quién lo fabricó.
+            */}
+            <p class="chapa-pie">{PIE_HOMENAJE}</p>
+          </div>
+
+          {/*
+            Las seis teclas: tres por columna, y las dos columnas escritas de una sola
+            plantilla porque son iguales (`D-43`). Van después del mueble en el orden del
+            documento —primero lo que se mira, después lo que se toca— y el lugar en la
+            pantalla lo pone la grilla de `skayboy.css`, no este orden.
+
+            Saltar arriba, en el bloque grande; izquierda y derecha abajo, en el piso donde
+            cae el pulgar de la mano que agarra (`UX-28 §2.1` y `§2.2`).
+          */}
+          {
+            MANDOS.map((mando) => (
+              <div class={`mando mando--${mando.lado}`} role="group" aria-label={mando.nombre}>
+                <button
+                  type="button"
+                  class="tecla tecla--salto"
+                  data-mando={mando.lado}
+                  data-tecla="salto"
+                  aria-label={TECLAS.salto}
+                >
+                  <span class="tecla-figura" aria-hidden="true" />
+                </button>
+                <div class="mando-piso">
+                  {PISO.map((t) => (
+                    <button
+                      type="button"
+                      class={`tecla tecla--${t.tecla}`}
+                      data-mando={mando.lado}
+                      data-tecla={t.tecla}
+                      aria-label={t.nombre}
+                    >
+                      <span class="tecla-figura" aria-hidden="true" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+    </main>
+
+    <PieImprenta disco="gulp" />
+
+    <script type="application/json" id="banco-skayboy" set:html={JSON.stringify(SEMBRADO)} />
+
+    <script>
+      // El interruptor de la cinta (`UX-21`). Isla propia: no sabe nada del juego
+      // y el juego no sabe nada de ella.
+      import '../../scripts/cinta.ts';
+    </script>
+    <script>
+      // La isla del juego (`T-247`). Escucha las seis teclas, le pasa el mando al mundo
+      // (`src/lib/skayboy/mundo.ts`) y dibuja. El motor se baja solo si hay nivel sembrado.
+      import '../../scripts/partida-skayboy.ts';
+    </script>
+  </body>
+</html>

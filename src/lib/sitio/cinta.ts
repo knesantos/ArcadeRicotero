@@ -54,6 +54,7 @@ import {
   ROCOLA_HABILITADA,
   apagarRocola,
   prenderRocola,
+  prenderTemaFijo,
   proximaPieza as proximaPiezaDeLaRocola,
   rocolaSembrada,
 } from './rocola.ts';
@@ -240,11 +241,17 @@ export function estadoDeLaCinta(): EstadoCinta {
  * Barato: no crea nada. Devuelve `cama` cuando la rocola está apagada por emergencia o
  * cuando la página no sembró piezas — el candado C, que hace que el olvido caiga del lado
  * del silencio en vez del de la música.
+ *
+ * **`tema-fijo` no pasa por la siembra** (`ADR-08.9`): su pieza está en el código y es una
+ * sola, así que no hay olvido posible que el candado C tenga que atajar. Lo que sí lo apaga
+ * es el mismo interruptor de emergencia, porque lo que transfiere bytes es el mismo aparato.
  */
 export function modoDeLaCinta(): ModoCinta {
   if (!ROCOLA_HABILITADA) return 'cama';
   if (typeof window === 'undefined') return 'cama';
-  if (modoEnRuta(window.location?.pathname ?? '') !== 'rocola') return 'cama';
+  const enLaRuta = modoEnRuta(window.location?.pathname ?? '');
+  if (enLaRuta === 'tema-fijo') return 'tema-fijo';
+  if (enLaRuta !== 'rocola') return 'cama';
   return rocolaSembrada() ? 'rocola' : 'cama';
 }
 
@@ -252,7 +259,8 @@ export function modoDeLaCinta(): ModoCinta {
  * Pasar a la que sigue. **Solo desde un gesto: mueve bytes.**
  *
  * Es el control "poné otro tema" de `UX-26`. En modo cama no hace nada y no es un error:
- * no hay pieza que saltear.
+ * no hay pieza que saltear. En `tema-fijo` tampoco, y por un motivo distinto: hay una sola
+ * pieza y volver a empezarla no es poner otra.
  */
 export function proximaPieza(): void {
   proximaPiezaDeLaRocola();
@@ -782,8 +790,15 @@ export async function prenderCinta(modo?: ModoCinta): Promise<EstadoCinta> {
    * Sin argumento, lo que permita la ruta. Con argumento, **lo que se pida acotado por la
    * ruta**: nadie puede pedir rocola en una pantalla de juego, ni desde acá ni desde
    * ningún lado. Es el primero de los dos candados; el segundo lo pone `prenderRocola()`.
+   *
+   * Desde `tema-fijo` la regla se escribe de una vez para los cuatro valores en vez de
+   * nombrar uno: **lo único que se puede pedir es lo que la ruta permite, o cama**. El día
+   * que aparezca un quinto modo no hay que acordarse de agregarlo acá, que es exactamente el
+   * olvido que este archivo viene evitando desde `ADR-07.2`.
    */
-  modoPedido = modo === 'rocola' && modoDeLaCinta() !== 'rocola' ? 'cama' : (modo ?? modoDeLaCinta());
+  const permitido = modoDeLaCinta();
+  const pedido = modo ?? permitido;
+  modoPedido = pedido === permitido ? pedido : 'cama';
   // El segundo toque sobre una cama ya armada no arma un segundo grafo: sería una cama
   // encima de la otra, al doble de volumen y sin forma de apagar la de abajo.
   //
@@ -845,6 +860,11 @@ async function armarYSonar(): Promise<EstadoCinta> {
    */
   if (modoPedido === 'rocola') {
     prenderRocola(ctx, ctx.destination, alRendirseLaRocola);
+  } else if (modoPedido === 'tema-fijo') {
+    // La otra puerta del mismo aparato (`ADR-08.9`). Se llama desde el mismo lugar y adentro
+    // del mismo gesto: **este es el único punto del sitio desde donde el cuarto modo puede
+    // empezar a sonar**, y por eso no hay forma de que arranque solo.
+    prenderTemaFijo(ctx, ctx.destination, alRendirseLaRocola);
   }
   return estado;
 }

@@ -19,6 +19,37 @@ const leer = (ruta: string): string => readFileSync(ruta, 'utf-8').replace(/\r\n
 const CSS = leer('src/styles/juego.css') + leer('src/styles/tokens.css');
 const JS = leer('src/scripts/partida.ts');
 
+/**
+ * Las hojas de componentes: todo `src/styles/` menos `tokens.css`, **barrido del disco y no
+ * escrito a mano**.
+ *
+ * Hasta el ciclo 15 esto era una lista literal de tres, repetida en seis controles, y
+ * `ADR-08.8` la nombró como el agujero más barato de todos: **una hoja nueva se escapaba de
+ * los dos escáneres de estética sin que nadie se enterara**. Sin chequeo de 999px, sin barra
+ * lateral, sin velo. Nadie rompe nada al agregarla; simplemente nadie la mira, que es la
+ * única forma en que un defecto de marca entra sin discusión.
+ *
+ * El mecanismo no se inventa acá: es el de `todoElCss()`, abajo, que barre el directorio
+ * desde el ciclo 14. Lo mismo hacen el censo de islas de más abajo y el de `voz.test.ts`.
+ *
+ * **`tokens.css` queda afuera a propósito**: es el único archivo del repo donde un hex, una
+ * fuente o una duración pueden vivir (`.claude/rules/diseno-marca.md`).
+ */
+const HOJAS = readdirSync('src/styles')
+  .filter((f) => f.endsWith('.css') && f !== 'tokens.css')
+  .map((f) => `src/styles/${f}`)
+  .sort();
+
+test('el barrido de hojas no se vuelve verde por vago: encuentra las que hay en disco', () => {
+  // Si `readdirSync` devolviera una lista vacia, los seis controles de abajo pasarian sin
+  // mirar nada y el archivo entero seria decorativo. Estas tres son un piso, no un techo:
+  // la hoja que entre manana entra sola, que es justo el punto.
+  for (const hoja of ['juego.css', 'sitio.css', 'cancionero.css']) {
+    assert.ok(HOJAS.includes(`src/styles/${hoja}`), `el barrido perdio ${hoja}`);
+  }
+  assert.ok(!HOJAS.includes('src/styles/tokens.css'), 'tokens.css no es una hoja de componentes');
+});
+
 /** Las clases de estado que el codigo crea y que tienen que verse distinto. */
 const ESTADOS = [
   '.es-correcta',
@@ -53,10 +84,11 @@ test('los rotulos se distinguen por forma ademas de por color', () => {
   assert.ok(CSS.includes('border: 2px dashed'), 'el sello no se distingue por borde');
 });
 
-test('ni juego.css ni sitio.css traen un color literal: todo sale de los tokens', () => {
+test('ninguna hoja de componentes trae un color literal: todo sale de los tokens', () => {
   // El circuito de diseno-marca: el UNICO archivo del repo donde vive un hex es
   // tokens.css. Un hex suelto en una hoja de componentes romperia esa separacion.
-  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css']) {
+  // El titulo nombraba dos hojas y las miraba a las tres; ahora mira las que haya.
+  for (const hoja of HOJAS) {
     const hexes = leer(hoja).match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];
     assert.deepEqual(hexes, [], `${hoja} tiene colores literales: ${hexes.join(', ')}`);
   }
@@ -69,7 +101,7 @@ test('anti-slop: sin pastillas capsula ni barras de acento laterales', () => {
   // una tarjeta. La UNICA barra lateral permitida es la sangria de cita de los
   // parrafos rotulados de la Redondopedia (.parrafo--leyenda / .parrafo--testimonio),
   // que es tipografia editorial y mecanismo de BR-08, no decoracion.
-  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css']) {
+  for (const hoja of HOJAS) {
     const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
     assert.ok(!css.includes('999px'), `${hoja}: pastilla capsula (border-radius 999px)`);
     for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
@@ -101,7 +133,7 @@ test('D-21: ninguna tapa entra de fondo sin su velo', () => {
   // isla en tiempo de ejecucion a traves de `--tapa-de-la-sala`. Por eso el patron cubre
   // las dos vias (`ADR-05.7`): cualquier `/tapas/` en un `background`, y cualquier
   // `var(--tapa-`. Toda propiedad personalizada que transporte una tapa se llama `--tapa-*`.
-  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css']) {
+  for (const hoja of HOJAS) {
     const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
     for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
       const declaraciones = regla[2]!;
@@ -130,7 +162,7 @@ test('ciclo 13: el velo se queda plano; lo que se desvanece es la capa entera', 
    * gradiente del velo sean el mismo valor.
    */
   const malos: string[] = [];
-  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css']) {
+  for (const hoja of HOJAS) {
     const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
     for (const m of css.matchAll(/linear-gradient\(\s*var\(--velo-tapa[^)]*\)\s*,\s*([^),]+)\)/g)) {
       const segunda = m[1]!.trim();
@@ -156,7 +188,7 @@ test('ciclo 13: una imagen de /tapas/ que entra por mascara solo puede ser una p
    * único del repo que se produce como alfa (`generar-pasadas.mjs`, `ADR-05`).
    */
   const malos: string[] = [];
-  for (const hoja of ['src/styles/juego.css', 'src/styles/sitio.css', 'src/styles/cancionero.css']) {
+  for (const hoja of HOJAS) {
     const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
     for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
       for (const decl of regla[2]!.split(';')) {
@@ -254,7 +286,7 @@ test('UX-22 §8: el registro imperfecto vive solo en la letra grande, nunca en u
     '.estampa-disco', // el nombre del disco en la estampa (`UX-22` §2)
   ]);
   const encontrados: string[] = [];
-  for (const hoja of ['src/styles/sitio.css', 'src/styles/juego.css', 'src/styles/cancionero.css']) {
+  for (const hoja of HOJAS) {
     const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
     for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
       if (!/text-shadow[^;]*var\(\s*--registro\s*\)/.test(regla[2]!)) continue;
@@ -559,6 +591,13 @@ interface Tablero {
   readonly juego: string;
   readonly fuente: string;
   readonly estados: readonly string[];
+  /**
+   * La hoja propia del juego, si sus estados viven ahi y no en `juego.css`. Nace con
+   * `US-09`, el primer juego con hoja propia: se nombra la hoja **de ese juego** y no se
+   * suma todo `src/styles/` al control, que dejaria pasar un estado pintado en la hoja de
+   * otro juego — o sea, un estado que en su pantalla no se ve.
+   */
+  readonly hoja?: string;
 }
 interface SinTablero {
   /** Por que esta isla no tiene clases de estado de partida. Escrito, no supuesto. */
@@ -582,6 +621,14 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'partida-dos-ejes.ts': { juego: 'US-06, el test de dos ejes', fuente: JS_EJES, estados: ESTADOS_EJES },
   'partida-por-la-letra.ts': { juego: 'US-07, sacalo por la letra', fuente: JS_LETRA, estados: ESTADOS_LETRA },
   'partida-ponelos.ts': { juego: 'US-08, ponelos en fila', fuente: JS_PONELOS, estados: ESTADOS_PONELOS },
+  // `US-09`: el area es un canvas y no tiene clases; lo unico que la isla pinta en el DOM es
+  // la tecla que sigue apretada, que `:active` no alcanza a mostrar con cuatro dedos.
+  'partida-skayboy.ts': {
+    juego: 'US-09, skayboy y poligirl',
+    fuente: leer('src/scripts/partida-skayboy.ts'),
+    estados: ['.tecla--apretada'],
+    hoja: 'src/styles/skayboy.css',
+  },
 
   'armar-cancionero.ts': { sinTablero: 'arma un HTML autocontenido que se descarga; sus estilos viajan adentro de ese archivo, no en las hojas del sitio' },
   'cancion.ts': { sinTablero: 'transportar y bajar solo en la ficha de un tema; no hay partida ni respuesta que senalar' },
@@ -638,8 +685,9 @@ test('FIND-15, los siete tableros: toda clase de estado declarada tiene una regl
   const sinRegla: string[] = [];
   for (const [archivo, isla] of Object.entries(ISLAS)) {
     if (!esTablero(isla)) continue;
+    const hoja = isla.hoja === undefined ? CSS : leer(isla.hoja);
     for (const clase of isla.estados) {
-      if (!CSS.includes(clase)) sinRegla.push(`${archivo} (${isla.juego}): ${clase}`);
+      if (!hoja.includes(clase)) sinRegla.push(`${archivo} (${isla.juego}): ${clase}`);
     }
   }
   assert.deepEqual(sinRegla, [], `clases creadas por el codigo y sin estilo:\n  ${sinRegla.join('\n  ')}`);
