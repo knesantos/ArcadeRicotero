@@ -727,6 +727,18 @@ al motor en el presupuesto, no se le apila.
 5. Pedir un byte de audio sin un gesto sobre el interruptor — incluido el rearme de página.
 6. Un segundo `MediaElementAudioSourceNode` sobre el mismo elemento, o un segundo elemento.
 7. Un `AudioContext` fuera de `contexto.ts` (excepción única: `diagnostico-audio.ts`).
+
+   > **Enmendado el 2026-09-22: las excepciones son dos, no una.** La línea de arriba queda
+   > como se escribió. Desde `ADR-08.2.1` (`ARQ-motor-de-juego.md`, 2026-09-18) hay una
+   > segunda y última: **el `AudioContext` que Kaplay construye en su init**, que ninguna
+   > opción apaga (`T-226`, hallazgo 3.1) y que la isla cierra con
+   > `void k.audioCtx.close()` en la línea siguiente al `kaplay()`. Lo que se acepta es no
+   > poder impedir que nazca, no que siga vivo: las cuatro condiciones que la arrastran están
+   > en `ADR-08.2.1` y la prohibición, reformulada, en `ADR-08.11` punto 1. **Ojo con la
+   > verificación de abajo:** el `grep` sobre `src/lib` y `src/scripts` sigue dando dos
+   > resultados, porque el contexto del motor vive en `node_modules/`. Ese tercer contexto no
+   > lo ve el `grep`; lo ve `motor.test.ts` (`ADR-08.8`).
+
 8. Un archivo nuevo para la cama o para la púa: mp3, worklet, respuesta de impulso. Cero.
 9. Guardar en `localStorage` qué temas sonaron, o cualquier clave nueva.
 10. Que la rocola toque `src/scripts/partida-tema.ts`, o que un juego le avise algo. La capa

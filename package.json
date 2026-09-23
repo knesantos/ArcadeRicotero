@@ -20,7 +20,8 @@
     "generar-por-la-letra": "node --experimental-strip-types scripts/generar-por-la-letra.mjs"
   },
   "dependencies": {
-    "astro": "^5.14.1"
+    "astro": "^5.14.1",
+    "kaplay": "3001.0.19"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",

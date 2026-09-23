@@ -618,9 +618,15 @@ horizontal, dos zonas de pulgar, dos personas y sonido de partida.
 
 `BR-15` consecuencia 1 pedía una ficha por motor candidato **antes**. Está hecha: `RES-62`
 trae ocho licencias leídas en el archivo `LICENSE` crudo, y las de riesgo alto releídas por
-una segunda vía. El orden que quedó: **Kaplay** 3001.0.19 (MIT, ~65 KB gzip, cero
-dependencias), **LittleJS** (MIT, ~46 KB, con ejemplo de plataformas armado) y **Phaser
-pineado a 3.90.0** (MIT, ~347 KB, el de comunidad más grande). Afuera, con motivo:
+una segunda vía. El orden que quedó: **Kaplay** 3001.0.19 (MIT con cláusula anti-IA, no
+OSI (`RES-70`), ~65 KB gzip, cero dependencias), **LittleJS** (MIT, ~46 KB, con ejemplo de
+plataformas armado) y **Phaser pineado a 3.90.0** (MIT, ~347 KB, el de comunidad más
+grande). *Nota del ciclo 15: el rótulo "Kaplay: MIT" de este renglón quedó refutado por
+`RES-70` — el `LICENSE.md` del tag instalado trae una cláusula que prohíbe usarlo para
+entrenar modelos de IA, aunque el `package.json` siga declarando `"MIT"`. El usuario decidió
+quedarse con Kaplay igual (`Docs/SUGERENCIAS/HILO-para-arquitectura-la-compuerta-del-motor-corrida.md`
+§2, salida A); lo que se corrige acá es solo el rótulo, no la elección. El peso también se
+remide: 66,8 KB gzip, no ~65.* Afuera, con motivo:
 PlayCanvas por peso, melonJS por peso y por dar cinco versiones distintas en cinco fuentes,
 Excalibur por física de cuerpo rígido que este juego no necesita, y Matter.js / Planck.js por
 no ser motores — son solo física, y adoptarlos obliga a escribir el resto a mano, que es lo

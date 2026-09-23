@@ -225,6 +225,13 @@ contexto recién nacido, es una herramienta, y esa página no se enlaza desde ni
 (`diagnostico-audio.astro:9`, **medido en el repo**). Queda como la **única** excepción
 escrita, y `ADR-04.10` la verifica con un `grep`.
 
+> **Enmendado el 2026-09-22: las excepciones son dos, no una.** El párrafo de arriba queda
+> como se escribió. Desde `ADR-08.2.1` (`ARQ-motor-de-juego.md`, 2026-09-18) hay una segunda
+> y última: el `AudioContext` que Kaplay construye en su init y que la isla cierra con
+> `void k.audioCtx.close()` en la línea siguiente al `kaplay()`. Misma enmienda que
+> `ADR-07.10` punto 7 (`ARQ-rocola.md:731-740`); ese contexto vive en `node_modules/`, así
+> que no lo ve el `grep` de `ADR-04.10` sino `motor.test.ts` (`ADR-08.8`).
+
 ---
 
 ## ADR-04.3 — La regla de convivencia: dos oídos, ninguno en la pantalla
@@ -520,6 +527,10 @@ caso peor, contexto a 48 kHz). La cama suma **una** línea a esa cuenta y no pue
 
 1. Un segundo `AudioContext` fuera de `contexto.ts` (excepción única y escrita:
    `src/scripts/diagnostico-audio.ts`).
+
+   > **Enmendado el 2026-09-22:** son dos excepciones. La segunda es el contexto de Kaplay
+   > que se cierra con `void k.audioCtx.close()` (`ADR-08.2.1`; prohibición reformulada en
+   > `ADR-08.11` punto 1; mismo texto que `ARQ-rocola.md:731-740`).
 2. Tocar `src/scripts/partida-tema.ts` para que la cama se calle.
 3. Que la cama suene un evento de interfaz: acierto, error, clic, cambio de pantalla.
 4. Que algo del sitio dependa de escuchar la cama.
