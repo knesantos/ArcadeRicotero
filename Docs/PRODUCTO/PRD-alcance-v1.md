@@ -1503,7 +1503,7 @@ tema o de la pregunta?"*).
 | Juego | ¿Con canciones? | Cómo decide hoy la dificultad | Cómo la decide desde `D-46` |
 |---|---|---|---|
 | `US-01` Quiz | **Parcial, y no cuenta.** El ítem es la pregunta, no el tema; algunas preguntas (categoría `letras`, o `discos` citando un tema) mencionan una canción, la mayoría no. | Manual: `contenido` etiqueta cada pregunta Fácil/Media/Difícil al cargarla (`BR-01`, taxonomía; escalones 10/15/15 de `BR-19`). | **No cambia.** La dificultad de una pregunta mide qué tan oscuro es el dato que pide, no cuán tocada en vivo está la canción que nombra — ver "Por qué el quiz no entra", abajo. |
-| `US-02` Adivinar el tema | **Sí.** El ítem es el tema: la respuesta es reconocer la canción. | **Ya inferida.** 8 Fáciles = top del conteo citado de setlist.fm dentro del pozo con audio (`BR-18` h, `CTR-19.5`); Media = figura y no es de los 8; Difícil = no figura. | **No cambia el mecanismo.** `D-46` confirma el principio que `D-45`/`BR-18` (h) ya le habían dado a este juego — es el juego de origen de la regla, no uno que la recibe ahora. |
+| `US-02` Adivinar el tema | **Sí.** El ítem es el tema: la respuesta es reconocer la canción. | **Ya inferida, enmendado 2026-09-24.** 8 Fáciles = top del conteo citado de setlist.fm dentro del pozo con audio (`BR-18` h, `CTR-19.5`); Media/Difícil = tercios sobre los 87 restantes (antes: Media = figura y no es de los 8, Difícil = no figura — ver "Media y Difícil de `US-02`" más abajo). | **No cambia el mecanismo.** `D-46` confirma el principio que `D-45`/`BR-18` (h) ya le habían dado a este juego — es el juego de origen de la regla, no uno que la recibe ahora. |
 | `US-03` Completar la letra | **Sí en el contenido** (el hueco sale de un verso de un tema), **no en el eje de dificultad.** | Manual: `contenido` etiqueta cada hueco (`BR-01`); el nivel define cuánto contexto rodea el hueco (`BR-03`: 2+2 versos y título/disco visibles en Fácil, verso pelado en Difícil). | **No cambia.** Ver "Por qué `US-03` no entra", abajo. |
 | `US-04` Adivinar la tapa | **No.** El ítem es una tapa o un disco, no una canción. | Manual (`BR-01`, taxonomía; mínimo 3 Fácil sobre 10). | No aplica: no hay canciones que medir. |
 | `US-06` Qué tipo de ricotero sos | **No.** El ítem es una pregunta de temperamento (`BR-17`). | **No usa dificultad.** `BR-17` ya fija que `BR-01` no aplica: ninguna pregunta pide saber de la banda. | No aplica: no hay dificultad que `D-46` pueda redirigir. |
@@ -1575,11 +1575,18 @@ con su propio argumento (tercios, no un top fijo). Cada uno se queda con la regl
 era suya.
 
 **Dónde se calcula el pozo de `US-07`.** Igual que en `US-02`: los tercios se calculan
-sobre el pozo del juego —los temas con letra ya cargada en el banco (piso de 60, hoy)—,
-no sobre los 105 del catálogo entero. Un tema fuera del pozo no compite por un tercio que
-no le corresponde.
+sobre el pozo del juego —los temas con letra ya cargada en el banco (88 hoy, sobre un
+piso de 60)—, no sobre los 105 del catálogo entero. Un tema fuera del pozo no compite por
+un tercio que no le corresponde.
 
 ### Media y Difícil de `US-02` — confirmando lo que dejó pedido `Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-corte-en-vivo-deja-abierto.md` §1
+
+> **Enmendado 2026-09-24 (ciclo 16, ráfaga 3), sin borrarse.** Lo que sigue es la regla tal
+> como se confirmó con el conteo parcial y la promesa de que "se corrige sola" cuando
+> llegara el conteo completo. Llegó (`Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-conteo-
+> completo-mueve.md` §1) y no se corrigió sola: se dio vuelta. La corrección real está
+> después del párrafo original, sin borrarlo — mismo criterio que usa `CLAUDE.md` con sus
+> propios avisos corregidos.
 
 Se confirma la regla que ya rige en `CTR-19.5` paso 5: **Media** son los temas del pozo
 que figuran en la página de estadísticas de setlist.fm y no quedaron entre los 8 Fáciles;
@@ -1589,6 +1596,31 @@ principio que gobierna todo lo demás en esta regla, sin inventar un número nue
 8/15/72, torcido hacia Difícil porque `RES-74` solo cubre un top-25; **eso se corrige
 solo** cuando `T-282` traiga el conteo completo, sin que esta regla tenga que
 reescribirse.
+
+**Con el conteo completo, de los 95 temas con fragmento 90 figuran** en la página de
+estadísticas —los 8 Fáciles son los mismos de siempre— y el reparto de la regla de arriba
+queda **8 Fácil, 82 Media, 5 Difícil**. Los 5 que no figuran son casi todos instrumentales
+o cortinas (*Invocación*, *Capricho Magyar*, *Sushi*, *Soga de Caín*, *San Telmo*), no
+temas poco tocados: "Difícil" deja de significar lo que `D-27` quiso decir —*"sin escucha
+por ahora es difícil"*, leído como "poco tocado"— y pasa a significar "nadie lo cargó
+nunca en setlist.fm". Y con 82 de 90 en un solo casillero, la partida deja de subir:
+pasada la cuota fija de 8, el jugador pasa el resto de la sesión en el mismo nivel salvo
+por 5 títulos sueltos. `BR-01` no pide solo que no haya muro en la primera pantalla: pide
+que la dificultad **escalone**, y un reparto 8/82/5 no escalona nada después del octavo
+ítem.
+
+**Se cambia la regla.** Para los 87 temas que no son de los 8 Fáciles, `US-02` pasa a usar
+la misma fuente de tercios que ya tiene asignada `US-07` (`CTR-19.15`, con el empate en el
+borde bajando entero, igual que ahí): el pozo de esos 87 se ordena por conteo y se parte
+en tres franjas iguales; la franja de abajo es **Difícil**, las dos de arriba son
+**Media**. Esto no reabre "La regla de reparto" de más arriba: el corte de 8 sigue fijo y
+sigue siendo lo que distingue a `US-02` de `US-07` (`BR-18` h); lo único que cambia es
+cómo se reparte lo que queda **después** de sacar esos 8. Motivo: le devuelve a "Difícil"
+el significado que tiene en el resto del sitio —poco tocado en vivo, no "sin registro en
+la página"— y sostiene la curva que pide `BR-01`. No fijo acá el número exacto de la
+partición nueva ni el criterio de empate: depende del conteo vigente, lo calcula
+`repartirEnVivo()` y es alcance de `arquitectura` (el mismo traspaso de un cambio de línea
+anotado en `Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-conteo-completo-mueve.md` §1).
 
 ### Qué pasa con un ítem que tenía dificultad a mano y la pierde
 
@@ -1620,14 +1652,15 @@ igual que hoy:
    `escalonar()`, no de dónde sale la etiqueta.
 3. **Piso mínimo de Fáciles.** `US-02` sigue con 8 fijos (`BR-18` h). `US-07` sigue con su
    mínimo de 15 sobre el piso de 60 (25%, ya fijado en `PRD-adivinar-por-la-letra.md`):
-   los tercios de un pozo de 60 dan ~20 por franja, que sostiene ese mínimo con margen —
-   no hace falta subir el número del piso para que la cuenta cierre. **Igual que le pasó a
-   `US-02` con `BR-18` (g), esto puede llegar degradado mientras `T-282` no traiga el
-   conteo completo** (con solo 25 líneas publicadas hoy, buena parte del pozo de 60 puede
-   caer en Difícil por falta de dato, no por ser realmente difícil). No frena nada porque
-   `US-07` no es uno de los cuatro juegos de `D-05`, y porque tiene la misma segunda rampa
-   que ya salvó a `US-02` en `BR-18` (g): errar o pasar abre el escalón siguiente
-   (`BR-20`), así que el orden de los ítems no es el único molinete abierto.
+   los tercios del pozo de hoy (88) dan 30 / 30 / 28 (`CTR-19.15`). Con un pozo de 60, el
+   piso, darían 20 por franja. El mínimo de 15 se sostiene en los dos casos — no hace
+   falta subir el número del piso para que la cuenta cierre. Si un tema del pozo se queda
+   sin línea en el conteo, cae en Difícil (`D-27`) y el generador lo nombra; con los tres
+   alias de `CTR-19.16` (`RES-90`), hoy eso no le pasa a ninguno de los 88, así que ya no
+   hay degradación por falta de dato. No frena nada porque `US-07` no es uno de los cuatro
+   juegos de `D-05`, y porque tiene la misma segunda rampa que ya salvó a `US-02` en
+   `BR-18` (g): errar o pasar abre el escalón siguiente (`BR-20`), así que el orden de los
+   ítems no es el único molinete abierto.
 
 ### El rótulo, en registro 3
 

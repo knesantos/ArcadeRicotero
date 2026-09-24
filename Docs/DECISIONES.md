@@ -2491,3 +2491,17 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
      aparte y no recupera la dificultad sin una decisión nueva (`D-45` consecuencia 1).
   4. **El rótulo de cada juego dice qué mide**, en registro 3: lo más tocado en vivo según
      los setlists que carga la gente. Nunca "el más popular" ni "el más escuchado".
+
+- **Precisión del 2026-09-24, decidida por el usuario: "Completá la letra" también.**
+  `BR-30` (`T-283`) había leído *"todo lo que sea con canciones"* dejando afuera el quiz y
+  `US-03`, con el argumento de que ahí la dificultad mide otra cosa (lo oscuro del dato, el
+  contexto del hueco). El usuario lo contestó textual: *"Completá la letra también sale del
+  conteo"*.
+  - **`US-03` pasa a dificultad inferida del conteo en vivo**, como `US-07`. El hueco de un
+    verso de un tema muy tocado es Fácil; el de un tema que casi no se tocó, Difícil.
+  - **El quiz queda como `BR-30` lo dejó**: el usuario no lo incluyó, y su dificultad es la
+    del dato, no la de una canción.
+  - **Arrastra `BR-03`**: hoy la cantidad de versos de contexto alrededor del hueco sale
+    del nivel del ítem (2, 1 o 0). Si el nivel pasa a salir del conteo, qué pasa con el
+    contexto lo fija `producto` (`T-286`), el contrato `arquitectura` (`CTR-04`, `T-287`)
+    y el código el hilo principal (`T-288`).

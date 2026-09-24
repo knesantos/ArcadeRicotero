@@ -607,6 +607,15 @@ es `D − 0,10` y `D + 0,40`; el patrón de `slug` es el de `CTR-01.4` y es lo q
 > Lo que **no** cambia, y es el corazón de esta sección: la dificultad sigue fuera del
 > manifiesto, se deriva en build y nunca se guarda.
 
+> **Nota del 2026-09-24 (`D-46`, `BR-30`, `T-284`): este contrato no cambia.** `BR-30` confirma
+> que `US-02` se queda con el corte de 8, y como el manifiesto no guarda la dificultad, no hay
+> ningún campo que agregar para decir de dónde sale. Eso lo dice la firma de `catalogo()`, que
+> recibe un conteo o nada. Hay dos cosas que se mueven fuera de este archivo. `NivelDificultad`
+> pasa a importarse de `en-vivo.ts`, porque `popularidad.ts` se retira (`CTR-19.15`). Y con el
+> conteo completo (`RES-90`) el reparto pasa de 8 / 15 / 72 a **8 / 82 / 5**: los 8 Fáciles son los
+> mismos y Difícil queda para cinco temas sin línea (`CTR-19.5`, enmienda). Si ese reparto cambia,
+> lo decide `producto`.
+
 **El manifiesto no la lleva, y no es una omisión: es la misma frase que ya estaba escrita
 en las Consecuencias de la v2**, cuando `arquitectura` enumeró las tres salidas posibles
 para la cuota de `BR-01`:

@@ -8,6 +8,15 @@
 > Produce: **`CTR-09`**. Tarea: `T-133` del ciclo 9.
 > Escrito el **2026-08-27**. Es la v1: no hay versión previa que citar.
 >
+> **Enmendado el 2026-09-24 por `T-284` (ciclo 16), después de `D-46` y `BR-30`. El banco pasa a
+> `contratoVersion: 2`.** La dificultad de `US-07` ya no sale de una etiqueta a mano ni de las vistas
+> de YouTube, sino **del conteo citado de veces tocado en vivo, en tercios** (`CTR-19.15`). Cambian
+> `CTR-09.1` (el envoltorio suma `conteo`), `CTR-09.2` (los valores de `dificultad` y
+> `dificultadSegun`), `CTR-09.7` (entero), `CTR-09.8` (el schema), `CTR-09.9` (el ejemplo),
+> `CTR-09.10` y `CTR-09.11` (qué se rechaza y cómo se prueba). Cada uno dice al principio qué decía
+> antes. **No cambia** nada de los versos, la escalera, el filtro ni la fuente. Consume además:
+> `D-27`, `D-46`, `BR-30`, `CTR-19` (`.3`, `.15`, `.16`), `RES-90`.
+>
 > **Depende de `CNT-11`, que `contenido` está escribiendo en paralelo (`T-137`).** Este
 > contrato **no** define qué verso puede abrir la escalera: define **dónde corre esa regla,
 > con qué firma, y cómo se declara en el dato que corrió** — que es lo que la vuelve
@@ -37,6 +46,10 @@ lo rechaza (`CTR-09.10`), y dónde se enchufa `CNT-11` (`CTR-09.5`).
   **no escribe este archivo** pero sí el de curaduría de `CTR-09.7`.
 - **Cambio de datos que deja pendiente:** el archivo entero, porque todavía no existe. Lo
   produce `T-139` en una corrida.
+- **Enmienda del 2026-09-24 (`T-284`):** el cambio pendiente es **regenerar el banco a
+  `contratoVersion: 2`** con la dificultad de `CTR-19.15`. Lo hace `T-285` en una corrida. El
+  banco de hoy (88 ítems, todos `dificil`/`youtube`) no valida con el schema enmendado, y está
+  bien que no valide.
 
 ---
 
@@ -53,15 +66,25 @@ lo rechaza (`CTR-09.10`), y dónde se enchufa `CNT-11` (`CTR-09.5`).
 > y el cambio en el test es exactamente un token agregado a su array:
 > `['quiz', 'letra', 'tapa', 'cancionero', 'popularidad', 'dos-ejes', 'por-la-letra']`.
 
+> **Enmendado el 2026-09-24 (`T-284`).** El envoltorio decía `"contratoVersion": 1` y no tenía
+> `conteo`. Ahora `contratoVersion` es **2** y hay una clave obligatoria nueva, **`conteo`**: la
+> `ficha` y la fecha (`consultado`) del bloque `conteo` de `setlistfm.json` con el que se calculó la
+> dificultad. Cumple el mismo papel que `filtro.version` en `CTR-09.5`: **impide que un banco
+> calculado con un conteo viejo pase por vigente**. Si se refresca el conteo y no se vuelve a correr
+> el generador, t14 se pone en rojo (`CTR-19.13`). Sirve además para el rótulo: si una pantalla de
+> `US-07` muestra el nivel, la fecha que pide `RNF-CTR-19-A` ya está en el banco. El número de cada
+> tema **no** se copia al banco, por lo mismo que no se copiaban las vistas (`CTR-09.7`).
+
 ```json
 {
   "contrato": "CTR-09",
-  "contratoVersion": 1,
+  "contratoVersion": 2,
   "juego": "por-la-letra",
   "modoRespuesta": "buscador",
   "actualizado": "AAAA-MM-DD",
   "sensibleA": ["letra"],
   "filtro": { "regla": "CNT-11", "version": 1 },
+  "conteo": { "ficha": "RES-90", "consultado": "2026-09-24" },
   "nota": "...",
   "items": []
 }
@@ -70,7 +93,8 @@ lo rechaza (`CTR-09.10`), y dónde se enchufa `CNT-11` (`CTR-09.5`).
 | Clave | Tipo | Obligatoria | Nota |
 |---|---|---|---|
 | `contrato` | `"CTR-09"` | sí | |
-| `contratoVersion` | `1` | sí | |
+| `contratoVersion` | `2` | sí | Era `1` hasta el 2026-09-24. |
+| `conteo` | objeto | sí | `{ ficha: "RES-NN", consultado: AAAA-MM-DD }`, copiado del bloque `conteo` de `setlistfm.json`. Nuevo el 2026-09-24. |
 | `juego` | `"por-la-letra"` | sí | Ver la nota de abajo sobre el nombre. |
 | `modoRespuesta` | `"buscador"` | sí | Único valor, igual que `CTR-03.5`. |
 | `actualizado` | `AAAA-MM-DD` | sí | Fecha de la corrida del generador. |
@@ -122,8 +146,8 @@ Siete campos. Ninguno opcional salvo `fuente.ficha`, que tiene su regla en `CTR-
 | `titulo` | string ≤ 80 | El título tal como lo escribe `RES-20`. Documentación **y operando del filtro** (ver abajo). |
 | `desde` | entero ≥ 0 | Índice del primer verso de la ventana dentro de la lista de versos jugables del tema. |
 | `versos` | array de **exactamente 8** strings | La ventana. En orden, contigua, tal como se canta. |
-| `dificultad` | `facil` \| `media` \| `dificil` \| `sin-clasificar` | `CTR-09.7`. |
-| `dificultadSegun` | `curaduria` \| `youtube` | De dónde salió la etiqueta. `CTR-09.7`. |
+| `dificultad` | `facil` \| `media` \| `dificil` | `CTR-09.7`. *Hasta el 2026-09-24 admitía también `sin-clasificar`.* |
+| `dificultadSegun` | `en-vivo` \| `sin-conteo` | De dónde salió la etiqueta. `CTR-09.7`. *Hasta el 2026-09-24 era `curaduria` \| `youtube`.* |
 | `fuente` | objeto | `{ sitio, url, consultado, ficha? }`. `CTR-09.6`. |
 
 **Por qué `titulo` está en el ítem aunque se pueda derivar del slug.** `CTR-03.2` lo justifica
@@ -269,6 +293,9 @@ lo hace (`Ji JiJi` por `Jijiji`), así que comparar con espacios dejaría pasar 
 casos que importan. **El costo es que puede pegar de más**, cruzando el borde entre dos
 palabras. Se acepta a propósito: **el filtro peca de descartar**, y descartar es barato — hay
 101 temas para un piso de 60, o sea 41 de margen.
+*(Nota del 2026-09-24, `T-284`: los 101 son los candidatos antes de filtrar. El banco que quedó,
+`src/data/por-la-letra.json`, tiene **88 ítems**, así que el margen real sobre el piso es de 28.
+El pozo de los tercios son esos 88, no el piso: `CTR-19.15`.)*
 
 **El enganche, que es lo que `T-137` y `T-139` necesitan que exista:**
 
@@ -363,6 +390,69 @@ buscar el slug, ver el sitio y la URL, y sacarlo por el archivo de curaduría.
 
 ### CTR-09.7 — La dificultad: un archivo de curaduría, y el plan B declarado
 
+> **Enmendado el 2026-09-24 (`T-284`, `D-46`, `BR-30`). Rige lo de este recuadro. Lo de abajo queda
+> como estaba, para que se vea de dónde viene.** Abajo se describe una etiqueta que pone
+> `contenido` a mano, con las vistas de YouTube como plan B. Eso quedó viejo dos veces. `D-27`
+> (2026-08-27) la volvió inferida de las vistas, y `generar-por-la-letra.mjs` ya lo hacía con
+> `dificultadSegun: "youtube"`, pero este documento nunca se enteró. Después `D-46` cambió la
+> medida. **Hoy el banco trae los 88 ítems en `dificil`/`youtube`**, porque la clave de YouTube no
+> llegó nunca.
+>
+> **La regla nueva.** La dificultad de cada ítem la da **`repartirEnTercios()`**
+> (`src/lib/en-vivo.ts`, `CTR-19.15`) aplicada al pozo del banco con el conteo citado de
+> `setlistfm.json`. Son los tercios de `D-27`, y un tema sin línea es `dificil`. Ninguna persona la
+> escribe y ninguna fuente la corrige a mano.
+>
+> **Lo que cambia en `scripts/generar-por-la-letra.mjs`, en orden:**
+>
+> 1. **Lee `src/data/setlistfm.json` y toma su bloque `conteo`.** Si el archivo no existe o no trae
+>    `conteo`, **aborta con un mensaje claro**. No arma un banco todo en `dificil`: el conteo está
+>    commiteado, y que falte es un repo roto, no un dato que todavía no llegó. Sacarlo sin avisar
+>    deshace lo único que `D-46` vino a arreglar.
+> 2. **Deja de leer `popularidad.json` y de importar `popularidad.ts`**, que se retira
+>    (`CTR-19.15`). Lo vigila t15.
+> 3. **Arma los ítems sin dificultad.** Es el mismo recorrido de hoy: filtro, ventana, fuente. Si
+>    algún día lee el archivo de curaduría, aplica `excluido` en este paso.
+> 4. **El pozo son los slugs de los ítems que quedaron**, y recién ahí llama a
+>    `repartirEnTercios(pozo, conteo)`. **Es un cambio de comportamiento, no de estilo.** Hoy el
+>    reparto se calcula sobre las 105 entradas de `popularidad.json` antes del recorrido, o sea
+>    sobre el catálogo entero. `BR-30` lo quiere sobre el pozo del juego, por la misma razón que
+>    `CTR-07.8` punto 2: los más tocados del catálogo no son los más tocados de lo que se juega.
+> 5. **A cada ítem le pone** `dificultad` (lo que da `porSlug`) y `dificultadSegun`: `sin-conteo` si
+>    el tema está en `sinConteo`, y `en-vivo` en los demás casos.
+> 6. **En el envoltorio escribe** `contratoVersion: 2` y `conteo: { ficha, consultado }`, copiados
+>    del bloque que leyó.
+> 7. **En el log imprime** cuántos quedaron en cada nivel, cuántos del pozo tienen conteo, la lista
+>    `sinConteo` con sus títulos, la ficha y la fecha del conteo, y el piso de 60 y la cuota de 15
+>    Fáciles de `US-07` como mediciones. Si faltan Fáciles, lo imprime en rojo y **no aborta**: la
+>    cuota es de `producto`. Se borra el aviso 🔴 de `YT_API_KEY`.
+>
+> **Por qué `dificultadSegun` sigue siendo por ítem**, y no una sola clave del envoltorio. El
+> conteo es uno para todo el banco, eso sí. Pero **un `dificil` puede decir dos cosas distintas**:
+> "está en el tercio de abajo" o "no tiene conteo". El rótulo tiene que decir cuál es, y
+> `sin-conteo` lo dice. El schema obliga a que `sin-conteo` vaya siempre con `dificil`.
+>
+> **El archivo de curaduría pierde la clave `dificultad`** (`D-46`: la dificultad no se etiqueta).
+> `excluido` sigue siendo la forma de bajar un tema (`D-14`). Hoy el generador no lee ese archivo, y
+> leerlo no es parte de esta tarea. Se retira `sin-clasificar`, que existía solo para los temas que
+> nadie había etiquetado. Ahora todos los temas tienen nivel, y un valor menos es una rama menos
+> (`CTR-03.11` punto 1). `escalonar()` sigue sabiendo ordenarlo porque lo usa para cualquier valor
+> que no conoce, y no hay que tocarlo.
+>
+> *Alternativa descartada:* **calcular la dificultad de `US-07` en build, como `US-02`**, y sacarla
+> del banco. No habría riesgo de banco viejo. Pero cambia la forma de `CTR-09` más que esta
+> enmienda: habría que borrar un campo obligatorio y que la página importe el conteo. Y `US-02` la
+> calcula en build porque su manifiesto es una lista de archivos, y un archivo no tiene
+> dificultad (`CTR-03.11`). Este banco es de ítems de contenido, y el nivel es una propiedad del
+> ítem tal como se juega. Con `conteo` en el envoltorio y t14, esta forma da la misma garantía de
+> estar al día con una corrida del generador.
+> *Alternativa descartada:* **degradar a todo `dificil` si falta `setlistfm.json`**, como hacía
+> `D-27` con las vistas. Allá el dato no existía todavía. Acá existe y está en el repo, así que
+> degradar en silencio taparía una rotura.
+>
+> **Lo que da hoy** (`CTR-19.15`, a confirmar con t14): **30 Fácil, 30 Media, 28 Difícil y ninguno
+> sin conteo**, sobre 88. La cuota de 15 Fáciles de `US-07` queda cumplida con 15 de margen.
+
 El generador puede sacar versos del cancionero. **Lo que no puede es saber qué tan conocido
 es un tema**, y `US-07` pide 60 ítems con **mínimo 15 Fácil** para que `BR-01` no repita
 siempre el mismo puñado. Esa etiqueta la pone `contenido` a mano.
@@ -438,21 +528,35 @@ Draft 2020-12, igual que el resto. **Este documento manda sobre cualquier copia.
 > riesgo real, y por eso el schema **no repite ni un número de la escalera** salvo el 8, que
 > es justamente el que tiene que fallar si `BR-20` se mueve.
 
+> **Enmendado el 2026-09-24 (`T-284`). `T-285` copia este bloque entero sobre
+> `src/data/_schema/por-la-letra.schema.json`.** Son siete cambios, y un banco viejo **no valida**
+> contra este schema. Es a propósito: obliga a volver a correr el generador.
+> (1) `$id` decía `…/por-la-letra/1` y ahora dice `…/2`.
+> (2) `contratoVersion` decía `const 1` y ahora dice `const 2`.
+> (3) `required` suma `conteo`.
+> (4) Aparece la propiedad `conteo`.
+> (5) `item.dificultad` decía `["facil", "media", "dificil", "sin-clasificar"]`.
+> (6) `item.dificultadSegun` decía `["curaduria", "youtube"]`, con el comment *"'curaduria' = lo
+> juzgó contenido a mano. 'youtube' = salió del ranking de CTR-07, que hoy no tiene un solo tema
+> medido."*
+> (7) `item` suma el `if`/`then` que ata `sin-conteo` a `dificil`. Todo lo demás está igual, letra
+> por letra.
+
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ricotaarcade.local/schema/por-la-letra/1",
+  "$id": "https://ricotaarcade.local/schema/por-la-letra/2",
   "title": "CTR-09 — Banco de Sacalo por la letra (US-07)",
   "description": "Lo escribe scripts/generar-por-la-letra.mjs desde src/data/cancionero.json. Es la lista de lo que existe y validó, no de deseos: si un ítem está acá, pasó el filtro de CNT-11 y se puede jugar. No se edita a mano.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "contrato", "contratoVersion", "juego", "modoRespuesta",
-    "actualizado", "sensibleA", "filtro", "items"
+    "actualizado", "sensibleA", "filtro", "conteo", "items"
   ],
   "properties": {
     "contrato": { "const": "CTR-09" },
-    "contratoVersion": { "const": 1 },
+    "contratoVersion": { "const": 2 },
     "juego": { "const": "por-la-letra" },
     "modoRespuesta": {
       "const": "buscador",
@@ -474,6 +578,16 @@ Draft 2020-12, igual que el resto. **Este documento manda sobre cualquier copia.
       "properties": {
         "regla": { "const": "CNT-11" },
         "version": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "conteo": {
+      "comment": "CTR-09.1 y CTR-09.7 (enmendados, D-46). Con que conteo citado se calculo la dificultad: la ficha y la fecha del bloque conteo de setlistfm.json. Un test los compara con ese archivo: si el conteo se refresco y el banco no, el banco quedo viejo. El numero de cada tema no se copia aca: vive en setlistfm.json.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ficha", "consultado"],
+      "properties": {
+        "ficha": { "type": "string", "pattern": "^RES-\\d{2,3}$" },
+        "consultado": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
       }
     },
     "nota": { "type": "string", "maxLength": 400 },
@@ -516,13 +630,15 @@ Draft 2020-12, igual que el resto. **Este documento manda sobre cualquier copia.
           "maxItems": 8,
           "items": { "$ref": "#/$defs/verso" }
         },
-        "dificultad": { "enum": ["facil", "media", "dificil", "sin-clasificar"] },
+        "dificultad": { "enum": ["facil", "media", "dificil"] },
         "dificultadSegun": {
-          "comment": "CTR-09.7. 'curaduria' = lo juzgó contenido a mano. 'youtube' = salió del ranking de CTR-07, que hoy no tiene un solo tema medido.",
-          "enum": ["curaduria", "youtube"]
+          "comment": "CTR-09.7 (enmendado, D-46). 'en-vivo' = salio de los tercios del conteo citado (CTR-19.15). 'sin-conteo' = el tema no tiene linea en el conteo y D-27 lo pone en dificil. Nadie lo escribe a mano.",
+          "enum": ["en-vivo", "sin-conteo"]
         },
         "fuente": { "$ref": "#/$defs/fuente" }
-      }
+      },
+      "if": { "required": ["dificultadSegun"], "properties": { "dificultadSegun": { "const": "sin-conteo" } } },
+      "then": { "properties": { "dificultad": { "const": "dificil" } } }
     },
     "verso": {
       "comment": "CTR-09.4. El schema es la red, no el filtro: el filtro de verdad es sirveComoVerso() + ventanaValida() en el generador. Estas dos reglas cierran el caso medido `[A  G]`, que hoy pasa sirveComoVerso.",
@@ -597,15 +713,23 @@ Draft 2020-12, igual que el resto. **Este documento manda sobre cualquier copia.
 > versos son los que hay hoy en `src/data/cancionero.json`**, y lo que no existe está puesto
 > de forma que **no valide**.
 
+> **Enmendado el 2026-09-24 (`T-284`).** El ejemplo decía `"contratoVersion": 1`, no tenía
+> `conteo` y llevaba `"dificultad": "media"` con `"dificultadSegun": "curaduria"`, una etiqueta
+> que, según el mismo ejemplo, era *"ilustrativa"*. Ahora la dificultad **no es ilustrativa**. Es la
+> que da la regla con `RES-90`: *Dr. Saturno* figura 3 veces, 86 de los 88 temas del pozo figuran al
+> menos 3 veces, y 86 es más que `2t = 60`. Por eso sale `dificil`, `en-vivo` (`CTR-19.15`, a
+> confirmar con t14). `actualizado` sigue puesto para que no valide.
+
 ```json
 {
   "contrato": "CTR-09",
-  "contratoVersion": 1,
+  "contratoVersion": 2,
   "juego": "por-la-letra",
   "modoRespuesta": "buscador",
   "actualizado": "<AAAA-MM-DD de la corrida — lo escribe el generador, no se pone a mano>",
   "sensibleA": ["letra"],
   "filtro": { "regla": "CNT-11", "version": 1 },
+  "conteo": { "ficha": "RES-90", "consultado": "2026-09-24" },
   "nota": "Un ítem por tema. Los versos son la ventana que revela la escalera de BR-20.",
   "items": [
     {
@@ -622,8 +746,8 @@ Draft 2020-12, igual que el resto. **Este documento manda sobre cualquier copia.
         "Mojada en vinagre de nostalgias",
         "Voy ciego, tonteando"
       ],
-      "dificultad": "media",
-      "dificultadSegun": "curaduria",
+      "dificultad": "dificil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "letras.com",
         "url": "https://www.letras.com/los-redonditos-de-ricota/202986/",
@@ -650,8 +774,10 @@ Draft 2020-12, igual que el resto. **Este documento manda sobre cualquier copia.
   incluye es la que arranca en 5, y es esta.
 - **La fuente** es la que declara el cancionero para ese tema, y `RES-23` es la ficha que
   `generar-letra.mjs` ya mapea a `letras.com`.
-- **`dificultad: "media"` es ilustrativa.** Esa etiqueta la emite `contenido` en el archivo de
-  curaduría (`CTR-09.7`); no la decido yo y no la fija este ejemplo.
+- ~~**`dificultad: "media"` es ilustrativa.** Esa etiqueta la emite `contenido` en el archivo de
+  curaduría (`CTR-09.7`); no la decido yo y no la fija este ejemplo.~~ *Reemplazado el
+  2026-09-24: ver el recuadro de arriba.* `conteo` es el de `RES-90`, que existe y se puede
+  verificar (`CTR-19.3`).
 
 **Qué está marcado como inexistente:** `actualizado`, con un texto que **no pasa** el patrón
 de fecha. Si alguien copia el ejemplo tal cual, el comando (1) falla, en vez de dejar pasar
@@ -678,6 +804,9 @@ La tabla existe para que nadie confunda *"validó"* con *"está bien"*.
 | 11 | **Un banco viejo contra un cancionero re-ingerido** | El comando (3), que re-deriva los 8 versos desde `desde` | Sale como desalineado |
 | 12 | **Un tema que `contenido` bajó** (`excluido`) | El generador, leyendo el archivo de curaduría | No entra al banco |
 | 13 | **Que el verso diga lo que la banda canta** | **Nadie, y hay que decirlo.** La fuente es única (`US-07` c.3) y este juego acepta el riesgo porque una palabra mal transcripta no cambia cuál es el tema | — |
+| 14 | **Un banco de antes de `D-46`** (`contratoVersion: 1`, `youtube`, `curaduria`, `sin-clasificar`, sin `conteo`) | El schema | No valida. Hay que volver a correr el generador. *Fila nueva, 2026-09-24* |
+| 15 | **Un banco calculado con otro conteo**, o un nivel tocado a mano | t14 (`CTR-19.13`): compara `conteo` con `setlistfm.json` y vuelve a calcular cada nivel con `repartirEnTercios()` | Falla, nombra el ítem y pide `npm run generar-por-la-letra`. *Fila nueva, 2026-09-24* |
+| 16 | **`sin-conteo` con un nivel que no es `dificil`** | El schema (`if`/`then`) | No valida. *Fila nueva, 2026-09-24* |
 
 La fila 13 no es un descuido: es el límite declarado de este contrato, y es la razón por la
 que `US-07` no necesitó que se abriera el candado que `D-25` tuvo que abrir para `US-03`.
@@ -702,6 +831,26 @@ node -e "Promise.all([import('./src/lib/cancionero/anotacion.ts'),import('node:f
 # (4) la escalera, el buscador y la version del filtro
 node --test src/lib/por-la-letra/*.test.ts
 ```
+
+> **Enmendado el 2026-09-24 (`T-284`).** El comando (4) ahora también corre
+> `src/lib/por-la-letra/banco.test.ts`, que es t14: el banco da los niveles de la regla con el
+> conteo vigente. El comando (2) sigue sirviendo tal como está: el contador de *"sin clasificar"*
+> va a dar siempre 0, y la cuota de 15 Fáciles pasa a ser una medición real. Casos del schema
+> enmendado, para escribir junto a los de `esquemas.test.ts` con su control en verde:
+>
+> | # | Caso | Se espera |
+> |---|---|---|
+> | p0 | el banco regenerado, tal cual | **valida** |
+> | p1 | un ítem con `dificultadSegun: "youtube"` | rechaza |
+> | p2 | un ítem con `dificultadSegun: "curaduria"` | rechaza |
+> | p3 | un ítem con `dificultad: "sin-clasificar"` | rechaza |
+> | p4 | `dificultadSegun: "sin-conteo"` con `dificultad: "facil"` | **rechaza** |
+> | p5 | banco sin `conteo` | rechaza |
+> | p6 | `contratoVersion: 1` | rechaza |
+> | p7 | `conteo.ficha: "74"` (sin la forma `RES-`) | rechaza |
+>
+> p1, p4 y p5 son las tres reglas que esta enmienda existe para hacer cumplir. Si una de las tres
+> valida, la enmienda no sirve.
 
 **Qué chequea la máquina y qué no:**
 
@@ -733,7 +882,7 @@ son las siete filas donde no:
 | Schema en `src/data/_schema/` | **No se baja** | **Se baja, y entra al test** | Acá el archivo lleva texto que lee la gente y un rótulo de fuente, y lo alimenta un archivo hecho a mano |
 | Los pasos | Ni un dato en el JSON | **8 versos por ítem**; los pasos siguen sin estar | Los 6 pasos de audio salen del mismo mp3; los 4 de texto necesitan los renglones |
 | Mover la escalera | No migra un solo dato | **Regenera el banco entero** | Consecuencia directa de la fila anterior. Se paga con una corrida, no con trabajo humano |
-| `dificultad` | Retirada: no hay ítems que etiquetar | **Está, con archivo de curaduría y plan B** | Acá hay un ítem por tema y `US-07` pide 15 fáciles |
+| `dificultad` | Retirada: no hay ítems que etiquetar | **Está, con archivo de curaduría y plan B.** *Desde el 2026-09-24: está, la escribe el generador con los tercios del conteo (`CTR-09.7`, enmendado). `US-02` la calcula en build con el corte de 8. Es la misma fuente con dos reglas, y las dos viven en `en-vivo.ts`* | Acá hay un ítem por tema y `US-07` pide 15 fáciles |
 | La fuente | Solo el cruce contra `RES-20`, sin campo | **Cruce + campo `fuente`** | El cruce respalda el título; nada respalda el verso salvo decir de dónde salió (`US-07` c.3) |
 
 ---
@@ -744,6 +893,11 @@ son las siete filas donde no:
   adentro de `ventanaValida()` (`CTR-09.5`), y las etiquetas de dificultad van a
   `src/data/por-la-letra-curaduria.json` (`CTR-09.7`), keyed por slug. El juego **no espera**
   a que estén las 60: sale con `sin-clasificar` y se ordena después.
+  *Enmendado el 2026-09-24 (`D-46`): la segunda entrega ya no existe. `contenido` no etiqueta
+  dificultad en este juego; en la curaduría le queda solo `excluido`.*
+- **Para el hilo principal (`T-285`), desde el 2026-09-24:** el generador de `CTR-09.7`
+  (enmendado), el schema de `CTR-09.8`, el banco regenerado y t14. El detalle de la regla está en
+  `CTR-19.15`.
 - **Para `producto`, señalado y no resuelto acá:** si un ítem `sin-clasificar` puede salir en
   el primer escalonamiento de `BR-01`. El dato lo permite; la ronda decide.
 - **Para `experiencia` (`UX-08`):** el paso 4 puede llegar a 720 caracteres en el peor caso,
@@ -773,8 +927,11 @@ son las siete filas donde no:
 
 - **Qué verso puede abrir la escalera, más allá del piso de `US-07` criterio 2:** `CNT-11`
   (`contenido`, `T-137`). Acá está el lugar donde esa regla corre y cómo se declara que corrió.
-- **La etiqueta de dificultad de cada tema:** `contenido`, en el archivo de curaduría.
-- **Si un ítem `sin-clasificar` entra al escalonamiento de `BR-01`:** `producto`.
+- ~~**La etiqueta de dificultad de cada tema:** `contenido`, en el archivo de curaduría.~~
+  *Desde el 2026-09-24 no la decide nadie tema por tema: sale de la regla de `CTR-19.15`. Cambiar
+  la regla es de `producto` (`BR-30`).*
+- ~~**Si un ítem `sin-clasificar` entra al escalonamiento de `BR-01`:** `producto`.~~ *Desde el
+  2026-09-24 ya no hay `sin-clasificar`.*
 - **El piso de 60 y la cuota de 15:** `producto` (`US-07`). Acá solo se miden.
 - **La pantalla, el disco que la viste y cómo entran 8 versos en 375 px:** `UX-08`
   (`experiencia`, `T-135`).

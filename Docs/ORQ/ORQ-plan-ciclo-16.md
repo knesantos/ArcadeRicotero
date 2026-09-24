@@ -155,6 +155,31 @@ de ahí"* (`D-46`). Cuatro tareas nuevas, del margen de `Docs/IDS.md`:
 | `T-284` | `arquitectura` | **Los contratos que cambian con `D-46`**: el conteo completo en `CTR-19`, y cada banco que pasa de dificultad escrita a mano a inferida (`CTR-03`, `CTR-04`, `CTR-09`, `CTR-07` retirado de la dificultad) | `Docs/ARQ/ARQ-schema-recitales.md` y los `ARQ-schema-*` que toque | `rg` de cada `CTR` enmendado; los fragmentos de schema validan con `ajv` | dep. `T-283` |
 | `T-285` | hilo principal | **La dificultad inferida del conteo, en cada juego con canciones**: `src/lib/popularidad.ts` (la regla de tercios de `D-27`, una sola vez) leyendo el conteo, y cada banco que `BR-30` nombre | `src/lib/popularidad.ts`, `src/lib/en-vivo.ts`, los bancos, sus tests | `npm test`: la dificultad de cada juego sale del conteo, un tema sin conteo es difícil, y ningún juego mezcla el conteo con las vistas (`CTR-07.7`) — cada regla vista en rojo | dep. `T-282`, `T-284` |
 
+**Y "Completá la letra" también (el usuario, 2026-09-24, precisión de `D-46`).** `BR-30` la
+había dejado afuera; el usuario la sumó. Tres tareas más, del margen:
+
+| ID | Rol | Qué | Archivos | Verifica con | [P] |
+|---|---|---|---|---|---|
+| `T-286` | `producto` | **`BR-30` enmendada: `US-03` saca la dificultad del conteo.** Qué pasa con el contexto de `BR-03` (2, 1 o 0 versos según el nivel) cuando el nivel ya no lo elige nadie, y cómo sigue cumpliendo `BR-01` | `Docs/PRODUCTO/PRD-alcance-v1.md` | la fila de `US-03` en la tabla de `BR-30` dice "del conteo"; `BR-03` marcada si cambia — lo mira `revisor` | — |
+| `T-287` | `arquitectura` | **`CTR-04` enmendado**: la dificultad de cada ítem de `US-03` se deriva del conteo de su tema, con la regla única de `T-284` | `Docs/ARQ/ARQ-schema-completar-letra.md` | `rg` de la enmienda; el fragmento de schema valida con `ajv` | dep. `T-286` |
+| `T-288` | hilo principal | **"Completá la letra" con la dificultad del conteo**: el banco, el generador y sus tests | `src/lib/letra/`, `scripts/generar-letra.mjs`, `src/data/letra.json`, tests | `npm test`: la dificultad de cada ítem sale de la regla única; el contexto cumple lo que fije `T-286`; el primer ítem es Fácil — cada regla vista en rojo | dep. `T-287` |
+
+### 2.5 La ráfaga 4: lo que dejó `REV-15`, y que ganar se vea
+
+`T-280` cerró con `REV-15`: un `ALTA` (`FIND-71`) y seis `BAJA`. Más el hueco que `T-278`
+dejó a la vista: ganar un nivel no se ve, porque la sala no tiene puerta abierta. Rango
+ampliado a `T-295` en `Docs/IDS.md`.
+
+| ID | Rol | Qué | Archivos | Verifica con | [P] |
+|---|---|---|---|---|---|
+| `T-289` | `experiencia` | **Ganar se ve.** Qué pasa en el área cuando los dos llegan a su puerta: la puerta abierta como forma (sin texto adentro, `UX-27 §5.1`), sin festejo de pareja (`BR-23`), y cómo sigue al próximo nivel en un toque (`US-09` c1) | `Docs/UX/UX-28` o un `UX-` nuevo | Sin comando: lo mira `revisor` contra `UX-27`, `BR-23`, `BR-24` | **[P]** |
+| `T-290` | hilo principal | **El dibujo y el código de ganar**: el tile de puerta abierta en `sala.txt`, reimpreso y auditado, y la isla que lo usa | `src/arte/pixel/sala.txt`, `public/sprites/sala.v*`, `partida-skayboy.ts`, `escena.ts`, tests | auditor en 0; `sala.test.ts` y `motor.test.ts` con el caso nuevo en rojo; captura en el navegador | dep. `T-289` |
+| `T-291` | `arquitectura` | **`FIND-71`**: `CTR-19.5` y `CTR-19.14` dicen qué rige para Media y Difícil de `US-02` (los tercios sobre los no Fáciles, como decidió `BR-30`). Y de paso, las colas de contrato de `REV-15`: `FIND-72` (los dos casos de "no arranca" que `mundo.ts` ya hace), `FIND-75` (el comando 3 de `CTR-09.11`) y `FIND-76` (dónde viven los casos p0-p7) | `Docs/ARQ/ARQ-schema-recitales.md`, `ARQ-schema-niveles.md`, `ARQ-schema-adivinar-por-la-letra.md` | `rg` de cada enmienda; lo mira `revisor` | **[P]** |
+| `T-292` | hilo principal | **`FIND-71` en código**: `US-02` reparte Media y Difícil en tercios con la regla única de `en-vivo.ts`, con un test que lo cuente | `src/lib/en-vivo.ts`, `src/lib/tema/catalogo.ts`, tests | `npm test` con el caso en rojo visto | dep. `T-291` |
+| `T-293` | hilo principal | **Las colas de código de `REV-15`**: `FIND-73` (el comentario de `escalonar.ts`) y `FIND-77` (las dos evasiones que el auditor de la isla no caza) | `src/lib/escalonar.ts`, `src/lib/skayboy/motor.test.ts` | los mutantes n02 y n03 de `FIND-77` caen en rojo | **[P]** |
+| `T-294` | `experiencia` | **`FIND-74`**: la justificación del cambio de `NIV-03` contra el boceto de `UX-31` | `Docs/UX/UX-31-los-seis-niveles.md` y el traspaso de `T-277` | lo mira `revisor` | **[P]** |
+| `T-295` | `revisor` | La revisión de la ráfaga 4: que `FIND-71` a `FIND-77` y `T-286`..`T-290` quedaron cerrados en el disco | no escribe; lo pega el hilo principal en `REV-15` | `npm test`, `npm run check`, `npm run build`, el validador | dep. todo |
+
 ## 3. Pasada de conflictos
 
 - **`src/data/skayboy.json` lo tocan `T-267` y `T-277`.** En fila: `T-267` le pone la traza a

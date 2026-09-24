@@ -1,7 +1,15 @@
 # ARQ — Los recitales: lo que se cita de setlist.fm y lo que se guarda entero
 
-> Rol dueño: `arquitectura`. **Produce: `CTR-19`** (`CTR-19.1` … `CTR-19.14`) y dos requisitos no
+> Rol dueño: `arquitectura`. **Produce: `CTR-19`** (`CTR-19.1` … `CTR-19.16`) y dos requisitos no
 > funcionales, `RNF-CTR-19-A` y `RNF-CTR-19-B`. Tarea `T-273` del ciclo 16. Fecha: 2026-09-23.
+>
+> **Enmendado el 2026-09-24 por `T-284` (ciclo 16, ráfaga 3), después de `D-46` y `BR-30`.**
+> Decía `CTR-19.1` … `CTR-19.14`. Entran tres cosas: el **conteo completo** de `RES-90` en lugar
+> del top-25 de `RES-74`, una **tercera forma de línea** (`grafiaDe`, `CTR-19.2`) y la **segunda
+> regla que sale del conteo, los tercios de `US-07`** (`CTR-19.15`). El cruce completo, caso por
+> caso, está en `CTR-19.16`. Cada apartado tocado dice al principio qué decía antes. Consume
+> además: `D-46`, `BR-30`, `RES-89` a `RES-92` (`INV-89`), `CTR-09`,
+> `scripts/generar-por-la-letra.mjs`, `src/data/por-la-letra.json`, `src/lib/en-vivo.ts`.
 >
 > **Consume:** `D-13`, `D-14`, `D-27`, **`D-45` y su enmienda del 2026-09-23**, `BR-01`,
 > `BR-18` (a), (b), (d), (f), (g) y **(h)** (lo escribe `T-274` en paralelo; lo leí en disco el
@@ -27,6 +35,10 @@
   la tabla de qué licencia entra en qué archivo (`CTR-19.8`). Esa tabla no se escribe de memoria
   y queda pedida como ficha. Si la ficha dice menos de lo que supone la tabla, la tabla se
   afloja y la forma del archivo no cambia.
+- **Enmienda del 2026-09-24 al estado.** Decía que la pieza 1 no tenía nada abierto. Con el conteo
+  completo le quedan dos huecos declarados, ninguno bloqueante: la cola de 51 títulos en 1 puede
+  tener huecos (`RES-89.4`), y eso ya lo dice `completo: false`; y cuatro inconsistencias chicas de
+  la ficha, pedidas a `investigador` (`CTR-19.16`, último punto).
 - **Para quién:** para `T-279`, que construye los dos archivos, sus schemas, el corte y el
   cambio de `catalogo.ts`. Y para `revisor`, que tiene que poder rechazar una línea o un recital
   sin preguntarle a nadie.
@@ -49,9 +61,15 @@
 | Fuente | una sola, `const` | varias; cada recital nombra la suya, y cada fuente trae su licencia textual |
 | Quién lo escribe | a mano, desde una ficha `RES-`. **Ningún script lee setlist.fm** (`ORQ-plan-ciclo-16.md §2.3`) | `scripts/ingerir-recitales.mjs`, por la vía que fiche `RES-76`+ |
 | Cómo envejece | vence, porque es una medición (`CTR-19.6`) | se acumula: un recital de 1993 no cambia |
-| Qué alimenta | el corte de Fáciles de `US-02` (`CTR-19.5`) | **nada en este ciclo.** Ningún módulo lo lee en build (`CTR-19.8`, regla 4) |
-| Presupuesto de tamaño | ≤ **80 KB** (conteo ~2 KB; índice de hasta 256 enlaces × ~230 B) | ≤ **400 KB** (256 recitales × ~1,2 KB, con margen para dos versiones de algunos) |
+| Qué alimenta | el corte de Fáciles de `US-02` (`CTR-19.5`) y **los tercios de `US-07`** (`CTR-19.15`) | **nada en este ciclo.** Ningún módulo lo lee en build (`CTR-19.8`, regla 4) |
+| Presupuesto de tamaño | ≤ **80 KB** (conteo ~25 KB con 198 líneas; índice de hasta 256 enlaces × ~230 B) | ≤ **400 KB** (256 recitales × ~1,2 KB, con margen para dos versiones de algunos) |
 | Presupuesto de cliente | **0 KB.** Se lee en build. Al navegador llegan solo la `dificultad`, que ya viaja con cada tema, y la fecha de consulta para el rótulo | **0 KB** |
+
+> **Enmendada el 2026-09-24 (`T-284`).** La fila *Qué alimenta* de la pieza 1 decía solo *"el
+> corte de Fáciles de `US-02` (`CTR-19.5`)"*, y la de tamaño *"conteo ~2 KB"*, que eran 25
+> líneas. Con 198 líneas y una `nota` en las que no cruzan, el bloque ronda los 25 KB: entra en el
+> techo de 80 sin moverlo. **El presupuesto de cliente no cambia**: `US-07` recibe el nivel ya
+> escrito en su banco, no el conteo (`CTR-19.15`).
 
 **Por qué se separan por licencia y no por tema.** Tres razones, y cada una alcanza sola:
 
@@ -102,6 +120,11 @@ hace más: el `vs.`→`versus`. Volver regla general ese único caso sería escr
 normalizador que decide distinto que el primero sobre cualquier título de cualquier fuente. Dos
 puertas son dos verdades. El `vs.` entra como alias.
 
+> **Enmendado el 2026-09-24 (`T-284`).** La tabla de abajo cuenta las 25 líneas de `RES-74` y se
+> deja como estaba. Sobre las 198 de `RES-90` hacen falta **tres filas más** —*Nuotatori
+> profesionisti*, *Es hora de levantarse querido ¿Dormiste bien?* y *Rock del país*—, con su
+> motivo en `CTR-19.16`.
+
 **Lo que necesita hoy `ALIAS`, contado sobre las 25 líneas de `RES-74`:** dos filas nuevas y una
 que ya existía.
 
@@ -123,7 +146,7 @@ fuera del catálogo se guarda en su lugar con una de cinco clases:
 |---|---|---|
 | `inedito` | tocado en vivo y nunca en los diez discos: demos, piezas anteriores a *Gulp!*, lo que solo salió en discos en vivo | `RES-75` |
 | `cover` | tema ajeno o colaboración | `RES-75` |
-| `intro` | cinta o grabación que suena antes de que entre la banda | `RES-75` |
+| `intro` | **no es un tema**: cinta o grabación que suena antes de que entre la banda, presentación, solo o zapada. *Enmendado el 2026-09-24: decía solo "cinta o grabación que suena antes de que entre la banda"; `RES-91` pone en la misma clase "intro/cinta/interludio, no es canción" (*Skay Guitar Solo*, *Instrumental Jam*). El valor del enum no cambia* | `RES-75`, `RES-91` |
 | `cantico` | lo que canta la gente, no la banda | `RES-75` |
 | `sin-identificar` | todavía nadie sabe qué es. **Exige `nota`** con lo que se sabe | este contrato: sin esta clase, un título raro frena la ingesta entera o termina en una clase que no le corresponde |
 
@@ -146,6 +169,27 @@ el sitio no lo sabe: la suma sería un número del sitio, no de setlist.fm. Una 
 pasa a `fuera: "sin-identificar"` con una `nota` que diga a qué tema corresponde y por qué no
 cuenta. El costo queda declarado: el tema se queda con el número de una sola de sus grafías.
 
+> **Enmendado el 2026-09-24 (`T-284`): la grafía que no cuenta lleva `grafiaDe`, no
+> `sin-identificar`.** Lo que dice el párrafo de arriba era una hipótesis y dejó de serlo:
+> *Mariposa Pontiac - Rock del país* figura de tres formas (`RES-91`). La salida que fijaba no se
+> puede cumplir y además mentiría. **No se puede cumplir** porque *Mariposa Pontiac / Rock del
+> país* resuelve sola por `normalizarDuro()`, y t1 pone en rojo una línea `fuera` que resuelve.
+> **Mentiría** porque `sin-identificar` dice que nadie sabe qué es, y de estas líneas se sabe.
+>
+> **La regla nueva:** entre las líneas que resuelven al mismo tema, **la que más figura lleva el
+> `slug`**. Las otras llevan `grafiaDe: "<ese slug>"` y una `nota` obligatoria, y no suman. Se queda
+> la mayor porque es el número que la página sostiene: el tema está, como mínimo, en esos setlists.
+> La suma sería un máximo, y la página tampoco lo sostiene, porque dos grafías pueden estar en el
+> mismo setlist. **Una línea `grafiaDe` no entra a ningún reparto ni sube ningún techo**
+> (`CTR-19.5` paso 2, `CTR-19.15` paso 1). Se sabe de qué tema es, y ese tema ya tiene su número.
+> Queda el costo que el párrafo de arriba ya declaraba, ahora con un número de ejemplo. *Mariposa
+> Pontiac* cuenta 43, no 43 + 37 + 10.
+>
+> *Alternativa descartada:* **sacar el alias `Mariposa Pontiac`** para que solo resuelva la forma
+> combinada. Lo usan el cancionero y el manifiesto de audio, que titulan la primera mitad sola, y
+> la cifra que quedaría (10) es la más chica de las tres. *Alternativa descartada:* **una sexta
+> clase `fuera`**. `fuera` quiere decir fuera del catálogo, y estas líneas son del catálogo.
+
 **Medleys y temas partidos (pieza 2).** Cada tema es una entrada. `pegadoAlAnterior: true` indica
 que se tocó sin corte después del anterior: un medley, un enganche, o un tema compuesto del
 catálogo que la fuente parte en dos. Nunca va en el primer tema. Dos entradas seguidas con el
@@ -155,6 +199,30 @@ que las revise una persona.
 ---
 
 ### CTR-19.3 — Pieza 1: el conteo citado
+
+> **Enmendado el 2026-09-24 (`T-284`, `D-46`).** El bloque pasa a ser **el conteo completo de
+> `RES-90`**: `consultado: "2026-09-24"`, `ficha: "RES-90"`, **198 líneas** (los 147 puestos
+> numerados y los 51 títulos de la cola en 1), `completo: false`. Lo de abajo describía el top-25 y
+> queda como estaba. Cambian tres lecturas:
+>
+> 1. **`completo`** decía *"si la página publica todos los temas tocados o solo un top"*. Ahora dice
+>    **si el bloque tiene todas las líneas que publica la página**. La página publica todos los
+>    temas, pero `RES-89.4` no garantiza que la cola esté completa, y el total de la página no se
+>    pudo verificar (`RES-89.5`, `RES-92.4`). Por eso queda en **`false`**. La lectura de siempre
+>    sigue igual: un tema que no figura tiene como mucho lo que la última línea, que ahora es
+>    **1**. No es cero. El *"246 títulos"* de `RES-89.5` no se usa en ningún lado.
+> 2. **"Son 25"** (en *Cómo se escribe*) pasa a 198. Se siguen copiando a mano desde el anexo de
+>    `INV-89` y en su orden: los puestos 1 a 147 y después la cola, en orden alfabético como en la
+>    página. `t2` pasa igual (`veces` no sube). **Ninguna regla depende del orden dentro de un
+>    empate** (`CTR-19.5` paso 3, `CTR-19.15` paso 4). Por eso la discrepancia de puesto de
+>    `RES-92.3` (143 o 147) no llega al dato: el puesto no se guarda.
+> 3. **El `titulo` es el de la página. Lo que aclara la ficha va a `nota`.** En la cola hay dos
+>    títulos que traen pegada una aclaración de `investigador`: *Hercules mío (cover de Vivi Tellas,
+>    distinto del de la banda)* y *"Olé olé olé olé, Patricio Rey" (Lange Jojo cover — confirmado en
+>    `RES-92`…)*. El `titulo` es el nombre sin la aclaración, y la aclaración va a `nota`. **La
+>    clase `fuera` sale de la ficha** (`RES-75`, `RES-91`), nunca de lo que recuerde quien copia.
+>    Lo que la ficha no clasifica va como `sin-identificar`, con esta nota: *"Fuera de los 105 de
+>    RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."*
 
 ```json
 "conteo": {
@@ -299,6 +367,17 @@ Roma* 61, *Mi perro dinamita* 58, *La bestia pop* 57. El techo del puesto 8 es
 (`adivinar-tema.json`), así que el reparto queda en **8 Fáciles, 15 Media y 72 Difícil**. *Un tal
 Brigitte Bardot* (80) y *Nene nena* (68) son `inedito` y no entran (`RES-75`).
 
+> **Con el conteo completo (enmienda del 2026-09-24, `T-284`).** Los 8 Fáciles son los mismos. El
+> techo del puesto 8 pasa a `max(55, 1, 32) = 55`. La última línea publicada es ahora 1, y el
+> `sin-identificar` más alto es *Blues del noticiero*, con 32. Como `57 > 55`, el corte **sigue
+> determinado**. Lo que se mueve mucho es el resto: de los 95 temas del pozo, 90 tienen línea y 5
+> no (*Invocación*, *Capricho Magyar*, *Sushi*, *Soga de Caín* y *San Telmo*). Con la regla del
+> paso 5, el reparto pasa de **8 / 15 / 72 a 8 / 82 / 5**. `BR-30` esperaba que el desvío hacia
+> Difícil *"se corrigiera solo"*, y lo que pasa es que se da vuelta hacia Media. Es una cuenta hecha
+> a mano sobre la ficha y la confirma `T-285`. Cambiar la regla es de `producto`, y la pregunta
+> quedó en `Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-conteo-completo-mueve.md`. Cambiar el
+> código sigue siendo tocar una línea (paso 5).
+
 **Media y Difícil: la extensión de lo que ya decidió el usuario, hasta que `BR-18` (h) diga otra
 cosa.** El apartado (h) fija los 8 Fáciles y no dice cómo se reparte el resto; `US-02` dice "resto
 repartido en Media/Difícil". La regla de arriba es la única que se puede escribir sin inventar un
@@ -341,6 +420,14 @@ un test:
 - **Aislamiento por texto** (`CTR-19.13`, t8): `src/lib/tema/catalogo.ts`, `src/lib/en-vivo.ts`
   y `adivinar-el-tema.astro` no nombran `popularidad.json`, ni `repartirPorPopularidad`, ni
   `recitales.json`.
+
+> **Enmendado el 2026-09-24 (`T-284`).** El párrafo que sigue quedó contestado. `D-46` eligió la
+> salida B, y más amplia de lo que se preguntaba. Los tercios de `US-07` leen el conteo, pero
+> **no desde `popularidad.ts`**: viven en `en-vivo.ts` como `repartirEnTercios()` (`CTR-19.15`).
+> `repartirPorPopularidad()` se retira, `NivelDificultad` se muda a `en-vivo.ts` y
+> `src/lib/popularidad.ts` deja de existir. Lo que el párrafo decía que la salida B *"no
+> resuelve"*, que el conteo era un top-25, lo resolvió `RES-90`. Lo que sigue en pie es *"una sola
+> fuente por llamada"*: `repartirEnTercios()` recibe un `ConteoCitado` y nada más.
 
 **`src/lib/popularidad.ts` no se toca**, salvo su comentario, que hoy dice que lo usa
 `catalogo.ts`. Lo mismo con tres comentarios que quedarían mintiendo: el encabezado de
@@ -385,6 +472,12 @@ despliegue**, porque Vercel corre `astro build`, no los tests.
 *Alternativa descartada:* **un script que lea la página de estadísticas.** Son 25 números cada seis
 meses, contra términos que prohíben los bots (`RES-73.1`, `RES-73.2`). El plan ya lo cerró
 (`§2.3`: ningún script baja páginas de setlist.fm) y el test t9 lo vigila.
+
+> **Enmendado el 2026-09-24 (`T-284`).** Donde dice *"25 números"* ahora son 198. El descarte no
+> cambia: son más líneas para copiar a mano, no un motivo para usar un bot. Y a cada refresco se le
+> suma **un cuarto paso**: volver a correr `npm run generar-por-la-letra`. El banco de `US-07`
+> guarda el nivel ya calculado junto con la ficha y la fecha del conteo que usó (`CTR-09.7`,
+> enmendado). Si el conteo cambia y el banco no, t14 se pone en rojo (`CTR-19.13`).
 
 ---
 
@@ -552,6 +645,12 @@ rótulo alcanza con **una vez por pantalla**, no al lado de cada tema. Hoy la vu
 muestra el nivel, así que este requisito no le pide nada a la isla hasta que `experiencia` decida
 mostrarlo.
 
+> **Enmendado el 2026-09-24 (`BR-30`, `T-284`).** `RNF-CTR-19-A` rige igual para toda pantalla
+> de `US-07` que muestre un nivel, un número o un puesto salido del conteo. Es el mismo dato con
+> otra regla. Para rotular no hace falta importar `setlistfm.json` en la página: el banco trae
+> `conteo.consultado` (`CTR-09.1`, enmendado). Hoy `US-07` no muestra el nivel, así que no le pide
+> nada a la isla.
+
 > **RNF-CTR-19-B — los recitales.** Toda pantalla que muestre un recital de `recitales.json`
 > muestra en el mismo bloque, sin que haya que tocar nada: el **nombre de la fuente** con enlace a
 > la **página de ese recital**, la **licencia de la fuente** con su enlace, la **nota de
@@ -566,12 +665,21 @@ mostrarlo.
 Draft 2020-12, como los demás. **Es texto normativo:** `T-279` lo copia idéntico a
 `src/data/_schema/setlistfm.schema.json`, y si alguna vez difieren, manda este bloque.
 
+> **Enmendado el 2026-09-24 (`T-284`). `T-285` copia este bloque entero sobre el archivo.** Hay tres
+> cambios, y ninguno invalida el archivo de `RES-74`. Por eso `contratoVersion` sigue en 1 y el
+> `$id` no cambia.
+> (1) `linea` suma una tercera forma, `grafiaDe`, con `nota` obligatoria (`CTR-19.2`). Antes el
+> `oneOf` tenía dos ramas (`slug` o `fuera`), cada una con un `not` de la otra.
+> (2) El `comment` de `completo` decía *"false = la pagina publica un top. Un tema que no figura
+> tiene como mucho el conteo de la ultima linea: no es cero."* Ahora dice lo de `CTR-19.3`.
+> (3) La `description` y el `comment` de `linea` nombran las dos reglas y la grafía.
+
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ricotaarcade.local/schema/setlistfm/1",
   "title": "CTR-19 pieza 1 — Lo que el sitio cita de setlist.fm",
-  "description": "Citado, no licenciado (RES-73.1): numeros con su pagina y su fecha, y enlaces. Nunca la lista de temas de un recital (D-45 enmendada). Se escribe a mano desde una ficha RES; ningun script lee setlist.fm.",
+  "description": "Citado, no licenciado (RES-73.1): numeros con su pagina y su fecha, y enlaces. Nunca la lista de temas de un recital (D-45 enmendada). Se escribe a mano desde una ficha RES; ningun script lee setlist.fm. Alimenta el corte de US-02 (CTR-19.5) y los tercios de US-07 (CTR-19.15), por D-46.",
   "type": "object",
   "additionalProperties": false,
   "required": ["contrato", "pieza", "contratoVersion", "fuente", "conteo"],
@@ -614,7 +722,7 @@ Draft 2020-12, como los demás. **Es texto normativo:** `T-279` lo copia idénti
         "setlistsCargados": { "type": "integer", "minimum": 1 },
         "completo": {
           "type": "boolean",
-          "comment": "false = la pagina publica un top. Un tema que no figura tiene como mucho el conteo de la ultima linea: no es cero."
+          "comment": "true solo si el bloque tiene TODAS las lineas que publica la pagina (CTR-19.3). false = puede faltar alguna (un top, o una cola transcripta con huecos): un tema que no figura tiene como mucho el conteo de la ultima linea, no cero."
         },
         "temas": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/linea" } }
       }
@@ -623,17 +731,22 @@ Draft 2020-12, como los demás. **Es texto normativo:** `T-279` lo copia idénti
       "type": "object",
       "additionalProperties": false,
       "required": ["titulo", "veces"],
-      "comment": "Una linea publicada: el titulo tal cual, cuantas veces figura, y a que tema del catalogo resuelve o por que no.",
+      "comment": "Una linea publicada: el titulo tal cual, cuantas veces figura, y una sola de tres: a que tema del catalogo resuelve (slug), de que tema es otra grafia (grafiaDe), o por que no es del catalogo (fuera).",
       "properties": {
         "titulo": { "type": "string", "minLength": 1, "maxLength": 120 },
         "veces": { "type": "integer", "minimum": 1 },
         "slug": { "$ref": "#/$defs/slug" },
+        "grafiaDe": {
+          "$ref": "#/$defs/slug",
+          "comment": "Otra forma de nombrar un tema que ya tiene su linea con slug: cuenta la grafia que mas figura. No suma, no entra a ningun reparto y no sube ningun techo (CTR-19.2)."
+        },
         "fuera": { "$ref": "#/$defs/fuera" },
         "nota": { "type": "string", "minLength": 10, "maxLength": 200 }
       },
       "oneOf": [
-        { "required": ["slug"], "not": { "required": ["fuera"] } },
-        { "required": ["fuera"], "not": { "required": ["slug"] } }
+        { "required": ["slug"], "not": { "anyOf": [{ "required": ["fuera"] }, { "required": ["grafiaDe"] }] } },
+        { "required": ["grafiaDe", "nota"], "not": { "anyOf": [{ "required": ["slug"] }, { "required": ["fuera"] }] } },
+        { "required": ["fuera"], "not": { "anyOf": [{ "required": ["slug"] }, { "required": ["grafiaDe"] }] } }
       ],
       "if": { "required": ["fuera"], "properties": { "fuera": { "const": "sin-identificar" } } },
       "then": { "required": ["nota"] }
@@ -814,6 +927,25 @@ de (`fecha`, `orden`, `fuente`) (t12); la compatibilidad de licencias entre fuen
 
 ### CTR-19.12 — Ejemplos
 
+> **Enmendado el 2026-09-24 (`T-284`).** El ejemplo de abajo **ya no es el archivo real**: es el
+> de `RES-74`. Sigue validando con el schema enmendado, y por eso queda como caso c1. El archivo real
+> lo copia `T-285` del anexo de `INV-89` con las reglas de `CTR-19.3` y `CTR-19.16`. Acá no se
+> pegan las 198 líneas, porque serían una segunda copia de la ficha, y la que manda es la ficha.
+> Estas son las cuatro formas de línea que el archivo nuevo tiene que poder decir, tomadas del
+> anexo:
+>
+> ```json
+> { "titulo": "Mariposa Pontiac", "veces": 43, "slug": "mariposa-pontiac-rock-del-pais" },
+> { "titulo": "Rock del país", "veces": 37, "grafiaDe": "mariposa-pontiac-rock-del-pais", "nota": "Segunda mitad del tema compuesto; cuenta la grafia que mas figura (Mariposa Pontiac, 43). No se suma (CTR-19.2, RES-91)." },
+> { "titulo": "Blues del noticiero", "veces": 32, "fuera": "sin-identificar", "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)." },
+> { "titulo": "Mariposa Pontiac / Rock del país", "veces": 10, "grafiaDe": "mariposa-pontiac-rock-del-pais", "nota": "El tema compuesto con su nombre entero; cuenta la grafia que mas figura (Mariposa Pontiac, 43). No se suma (CTR-19.2, RES-91)." },
+> { "titulo": "Hercules mío", "veces": 1, "fuera": "cover", "nota": "Cover de Vivi Tellas, distinto del Hercules mío de la banda (RES-89.3)." }
+> ```
+>
+> El bloque `conteo` del archivo nuevo lleva `"consultado": "2026-09-24"`, `"ficha": "RES-90"`,
+> `"setlistsCargados": 256` y `"completo": false`. `vigenciaDias` sigue en 180, y el índice no se
+> toca (sigue en `RES-74`).
+
 **Pieza 1: el archivo real, completo, para pegar.** Todo valor sale de `RES-74` (consultado el
 2026-09-22) y de `RES-75`. Los slugs son los que devuelve `resolverTema()` más los dos alias de
 `CTR-19.2`, y los 23 están en `adivinar-tema.json`. **Este ejemplo valida, y tiene que validar**:
@@ -992,6 +1124,42 @@ hacer cumplir. Si alguno valida, el contrato no sirve.
 | t11 | cada fuente entra en la salida declarada según la tabla de `CTR-19.8`, y `licencia.url` es la de esa salida | ídem | una fuente no entra; el mensaje nombra la fuente y la salida |
 | t12 | cada `recital.fuente` existe en `fuentes` y cada fuente se usa; (`fecha`, `orden`, `fuente`) no se repite; `pegadoAlAnterior` nunca va en el primer tema; ninguna fecha de consulta está en el futuro; y la fecha del recital es anterior a su consulta | ídem | integridad del archivo |
 
+> **Enmendado el 2026-09-24 (`T-284`).** Todo lo de este apartado se escribe y se corre en
+> **`T-285`**, que es del hilo principal. Cambian dos tests, se reemplaza uno y entran cinco casos
+> de schema y tres tests.
+>
+> - **t1** decía *"cada `slug` es `slugDeTitulo(resolverTema(titulo).titulo)`, y cada línea
+>   `fuera` sigue sin resolver"*. Ahora suma una condición: una línea `grafiaDe` **resuelve
+>   exactamente a su `grafiaDe`** por la puerta de `D-13`, existe una línea `slug` con ese slug, y
+>   esa línea tiene `veces` ≥ la de la grafía. El juicio de que *Rock del país* es ese tema vive en
+>   `ALIAS`, donde se discute leyendo una lista, y no en el dato.
+> - **t3** mantiene la regla. Cambia el mensaje de `problemasDelConteo()`: decía *"Una de las dos
+>   pasa a fuera sin-identificar con una nota"*, y ahora dice *"la de menos veces pasa a `grafiaDe`
+>   con una nota"*.
+> - **"Los 25 números son los de `RES-74`"** (test de `en-vivo.test.ts`, chequeo 8) se reemplaza
+>   por **"los 198 son los del anexo de `RES-90`, título por título"**. Se lee el anexo de `INV-89`
+>   (puestos `N. Título — veces` separados por ` · `, y la cola con `veces` 1). Las dos aclaraciones
+>   de la cola se comparan contra `titulo` + `nota`, como fija `CTR-19.3` punto 3. El test del
+>   índice sigue leyendo `INV-73`.
+>
+> | # | Caso del schema de la pieza 1 | Se espera |
+> |---|---|---|
+> | c28 | línea `grafiaDe` con `nota` | **valida** |
+> | c29 | `grafiaDe` sin `nota` | rechaza |
+> | c30 | `grafiaDe` y `slug` a la vez | rechaza |
+> | c31 | `grafiaDe` y `fuera` a la vez | rechaza |
+> | c32 | `grafiaDe` que no tiene forma de slug (`"Mariposa Pontiac"`) | rechaza |
+>
+> | # | Qué afirma | Archivo | Rojo cuando |
+> |---|---|---|---|
+> | t13 | `repartirEnTercios()` con conteos inventados: seis temas distintos dan 2/2/2; un tema sin línea es `dificil` y no ocupa lugar en los tercios; **un empate en un borde baja entero** y no depende del orden del arreglo; todo empatado da todo `dificil`; las líneas `grafiaDe`, `fuera` y `sin-identificar` no entran; con `completo: false`, un tema con la cifra de la última línea no queda arriba de uno sin línea; con `conteo === null`, todo `dificil` | `src/lib/en-vivo.test.ts` | la regla de `CTR-19.15` se aflojó, y cada caso con su control en verde |
+> | t14 | **el banco de `US-07` es el que da la regla**: su `conteo` (ficha y fecha) es igual al de `setlistfm.json`; y para cada ítem, `dificultad` es la que da `repartirEnTercios(<slugs del banco>, conteo)` y `dificultadSegun` es `sin-conteo` exactamente cuando el tema no tiene línea | `src/lib/por-la-letra/banco.test.ts` (nuevo) | se refrescó el conteo y el banco no se regeneró, o alguien tocó un nivel a mano. El mensaje dice `npm run generar-por-la-letra` |
+> | t15 | aislamiento: fuera de los tests, ningún `.ts`, `.mjs` ni `.astro` de `src/` o `scripts/` nombra `repartirPorPopularidad`, y `scripts/generar-por-la-letra.mjs` no nombra `popularidad.json` | `src/lib/en-vivo.test.ts`, junto a t8 | alguien volvió a sacar la dificultad de las vistas (`D-46` consecuencia 3, `CTR-07.7`) |
+>
+> t5 no cambia: con el pozo real siguen saliendo 8 Fáciles determinados. **No hay test del
+> 8 / 82 / 5 de `US-02`**, porque ese número depende de una regla que `producto` puede cambiar. Lo
+> muestra el comando (1).
+
 **Y los que ya existen, que tienen que seguir en verde con los alias nuevos:**
 `src/lib/letra/temas.test.ts` (cada alias apunta a uno de los 105 y ninguno sobra) y
 `src/lib/tema/catalogo.test.ts`. En este último, **los dos tests de tercios con vistas se
@@ -1006,7 +1174,10 @@ node --test src/lib/recitales.test.ts   # solo si existe recitales.json
 
 # (1) El cruce, línea por línea, para leerlo contra la ficha. Marca lo que no coincide con
 #     resolverTema() y lo que no tiene fragmento. Esperado con el ejemplo de CTR-19.12: ninguna marca.
-node -e "Promise.all([import('./src/lib/letra/temas.ts'),import('./src/lib/texto.ts'),import('node:fs')]).then(([t,x,{readFileSync}])=>{const c=JSON.parse(readFileSync('src/data/setlistfm.json','utf8')).conteo;const pozo=new Set(JSON.parse(readFileSync('src/data/adivinar-tema.json','utf8')).fragmentos.map(f=>f.slug));for(const l of c.temas){const r=t.resolverTema(l.titulo);const s=r?x.slugDeTitulo(r.titulo):null;console.log(String(l.veces).padStart(4),l.titulo,'->',l.slug??('fuera:'+l.fuera),s===(l.slug??null)?'':'  <<< resolverTema dice: '+s,l.slug&&!pozo.has(l.slug)?'  (sin fragmento)':'')}console.log('consultado',c.consultado,'| vigencia',c.vigenciaDias,'dias | completo',c.completo,'| ficha',c.ficha)})"
+#     Enmendado 2026-09-24 (T-284): imprime y compara también las líneas grafiaDe; antes una
+#     grafía salía como "fuera:undefined" con marca. Con RES-90, las únicas marcas esperadas son
+#     "(sin fragmento)" en los temas con línea que no están en el pozo de US-02.
+node -e "Promise.all([import('./src/lib/letra/temas.ts'),import('./src/lib/texto.ts'),import('node:fs')]).then(([t,x,{readFileSync}])=>{const c=JSON.parse(readFileSync('src/data/setlistfm.json','utf8')).conteo;const pozo=new Set(JSON.parse(readFileSync('src/data/adivinar-tema.json','utf8')).fragmentos.map(f=>f.slug));for(const l of c.temas){const r=t.resolverTema(l.titulo);const s=r?x.slugDeTitulo(r.titulo):null;console.log(String(l.veces).padStart(4),l.titulo,'->',l.slug??(l.grafiaDe?'grafia de:'+l.grafiaDe:'fuera:'+l.fuera),s===(l.slug??l.grafiaDe??null)?'':'  <<< resolverTema dice: '+s,l.slug&&!pozo.has(l.slug)?'  (sin fragmento)':'')}console.log('consultado',c.consultado,'| vigencia',c.vigenciaDias,'dias | completo',c.completo,'| ficha',c.ficha)})"
 
 # (2) La pieza 2, resumida para revisor: salida, fuentes con su licencia y cuántos recitales trae
 #     cada una (se compara con RES-76+), temas fuera de catálogo por clase, completitud.
@@ -1059,10 +1230,226 @@ Nada de esto frena `T-279`. Todo tiene un valor por defecto escrito arriba.
    mismo con cualquier fuente; pero hoy está tapado porque todo es Difícil, y aparece el día que
    `T-279` cuente los 8. Dueño de la regla: `producto`; del código: el hilo principal. Está en el
    mismo traspaso a `producto`.
-4. **Salida A o B de `D-27`.** Dueño: el usuario, como dice `BR-18` (h). El contrato aguanta las
-   dos (`CTR-19.5`).
+4. ~~**Salida A o B de `D-27`.** Dueño: el usuario, como dice `BR-18` (h). El contrato aguanta las
+   dos (`CTR-19.5`).~~ **[CERRADO 2026-09-24 por `D-46`]**: el usuario eligió la B, y más amplia.
+   Los tercios están en `CTR-19.15`.
 5. **Los dos alias nuevos** en `src/lib/letra/temas.ts`. Dueño: el hilo principal en `T-279`. Los
    respalda `RES-75`.
+
+*Enmienda del 2026-09-24 (`T-284`): se suman 6 a 8.*
+
+6. **Media y Difícil de `US-02` con el conteo completo: 8 / 82 / 5** (`CTR-19.5`, enmienda). Dueño:
+   `producto`, en `Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-conteo-completo-mueve.md`. Mientras
+   tanto rige el paso 5.
+7. **Cuatro inconsistencias chicas de `INV-89`.** Ninguna cambia un número de los que se usan.
+   Dueño: `investigador`, en `Docs/SUGERENCIAS/ARQ-para-investigador-lo-que-el-conteo-completo-deja-suelto.md`.
+   Mientras tanto manda el anexo (`CTR-19.16`).
+8. **Los tres alias nuevos** en `src/lib/letra/temas.ts` (`CTR-19.16`). Dueño: el hilo principal,
+   en `T-285`. Los respaldan `RES-90`, `RES-91` y dos filas que ya existen.
+
+---
+
+### CTR-19.15 — Los tercios de `US-07`: la segunda regla que sale del conteo — *nuevo, 2026-09-24*
+
+**La decisión en una línea.** La dificultad de "Sacalo por la letra" la calcula
+**`repartirEnTercios()`**, en `src/lib/en-vivo.ts` y al lado del corte de `US-02`, sobre el pozo del
+banco y con el conteo citado. **La usa un solo lugar**: `scripts/generar-por-la-letra.mjs`, que
+escribe el resultado en el banco (`CTR-09.7`, enmendado).
+
+**Qué regla es.** Es la de `D-27` con la medida de `D-46`, y no se inventa nada. Los temas del pozo
+que tienen línea se ordenan por `veces` y se parten en tercios. Un tema sin línea es `dificil` y no
+ocupa lugar en los tercios (*"sin escucha por ahora es difícil"*, con *escucha* leído igual que en
+`CTR-19.5`). Este apartado agrega una sola cosa: **qué pasa con un empate en el borde**. Con las
+vistas de YouTube casi no pasaba. Con conteos chicos es lo normal: en el anexo de `RES-90` hay
+empates en 49, 44, 41, 40, 39 y 36, todos dentro de los 30 primeros.
+
+```ts
+// src/lib/en-vivo.ts — junto a repartirEnVivo(), compartiendo el paso 1
+export type NivelDificultad = 'facil' | 'media' | 'dificil'; // se muda acá desde popularidad.ts
+
+export interface TerciosEnVivo {
+  /** Todo el pozo: cada tema del banco con su nivel. */
+  readonly porSlug: ReadonlyMap<string, NivelDificultad>;
+  /** Temas del pozo con una línea `slug`: sobre estos se parten los tercios. */
+  readonly conConteo: number;
+  /** Temas del pozo sin línea. Son `dificil` (D-27) y se nombran para que el log los muestre. */
+  readonly sinConteo: readonly string[];
+  readonly porNivel: Readonly<Record<NivelDificultad, number>>;
+}
+
+export function repartirEnTercios(
+  pozo: ReadonlySet<string>,
+  conteo: ConteoCitado | null,
+): TerciosEnVivo;
+```
+
+`LineaCitada` suma `readonly grafiaDe?: string`.
+
+**El algoritmo (normativo):**
+
+1. `L` son las líneas con `slug` dentro del `pozo`. Es el mismo paso 1 de `CTR-19.5`, escrito **una
+   sola vez** en una función interna que usan las dos reglas. Las líneas `grafiaDe` y `fuera` no
+   entran.
+2. `sinConteo` son los temas del pozo que no están en `L`, y quedan `dificil`. Con `conteo === null`
+   o con `L` vacío, todo el pozo queda `dificil`.
+3. `t = ⌈|L| / 3⌉`, lo mismo que hacía la regla de las vistas a la que reemplaza.
+4. Para cada línea ℓ de `L`, **`alcance(ℓ)` es cuántos temas del pozo figuran al menos tantas veces
+   como ℓ**, contando a ℓ. Si `completo` es `false` y ℓ no supera la última línea publicada, se
+   suman los de `sinConteo`, porque un tema que no figura puede tener hasta esa cifra (`CTR-19.3`).
+5. Si `alcance(ℓ) ≤ t`, es `facil`. Si `alcance(ℓ) ≤ 2t`, es `media`. Si no, `dificil`.
+
+**Por qué el paso 4 y no el puesto en el arreglo.** Es la regla de `CTR-19.5` aplicada a tres
+franjas: **un tema queda arriba solo si supera estrictamente a todo lo que quedó abajo**. Un grupo
+empatado en el borde baja entero y nunca se parte. Tampoco depende del orden del arreglo: dentro de
+un empate la página ordena por abecedario, y el abecedario no mide nada.
+
+*Alternativa descartada:* **el puesto con orden estable**, que es lo que hace hoy
+`repartirPorPopularidad()`. Partiría un empate por orden alfabético. *Queso ruso* y *Rock para los
+dientes* figuran 49 veces cada uno: si el borde cayera ahí, uno sería Fácil y el otro no por la
+letra con que empieza.
+*Alternativa descartada:* **que el empate suba entero** (el ranking de competencia). Es igual de
+determinista y le da más Fáciles al pozo. Se descarta por coherencia: el corte de `US-02` ya eligió
+tener un Fácil menos antes que uno dudoso (`CTR-19.5` paso 3). Si dos reglas del mismo módulo
+resolvieran el mismo caso al revés, el sitio tendría dos criterios de "Fácil".
+*Alternativa descartada:* **que los `sin-identificar` suban el techo, como en `US-02`.** Allá el
+techo protege una cuota fija de 8 contra un tema del pozo publicado con otro nombre. Acá no hay
+cuota, y un techo global aplicado a tres franjas deja vacía la del medio: con *Blues del noticiero*
+en 32, ningún tema por debajo de 33 podría quedar en Media. Además hoy no hace falta: **los 88 temas
+del pozo tienen su línea**, así que ningún `sin-identificar` puede ser uno de ellos con otro nombre.
+Y si fuera otra grafía, tampoco sumaría (`CTR-19.2`). Si mañana un tema del pozo se queda sin línea,
+cae en `dificil`, que es la salida prudente de `D-27`, y el generador lo nombra.
+
+**El costo que se acepta.** Si todo el pozo empatara, todo quedaría `dificil`. No es un caso real, y
+es lo que corresponde decir: ningún tema se tocó más que otro. **La regla no garantiza el piso de 15
+Fáciles** de `US-07` (`BR-30`): lo mide. El generador imprime `porNivel`, y el comando (2) de
+`CTR-09.11` ya lo compara con 15.
+
+**Lo que da hoy.** Es una lectura derivada de `RES-90` y de `src/data/por-la-letra.json` (88
+ítems), contada a mano y a confirmar con t14. Con los tres alias de `CTR-19.16`, los 88 tienen
+línea y `t = 30`. Los dos bordes caen limpios: *Todo un palo* (32) contra *Superlógico* y *Susanita*
+(29), y *Perdiendo el tiempo* y *Nuotatori professionisti* (9) contra tres temas en 8. Resultado:
+**30 Fácil, 30 Media, 28 Difícil y ninguno sin conteo.** Sin los alias daría 29 / 29 / 30, con
+*Nuotatori professionisti* y *¡Es hora de levantarse querido!* en Difícil por falta de dato.
+
+> **Nota del 2026-09-24, segunda vuelta de `T-284`.** `BR-30` todavía dice que el pozo es de
+> *"piso de 60, hoy"* y que los tercios dan *"~20 por franja"*. El pozo real es de **88**, y lo
+> midió `revisor` contando `items` de `por-la-letra.json`. **Manda este apartado**: el generador
+> calcula sobre el pozo que hay, no sobre un número escrito. El 60 sigue siendo el **piso**
+> de `US-07`, no el tamaño del pozo. La corrección de `BR-30` es de `producto` y está pedida en
+> `Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-conteo-completo-mueve.md` §2.
+
+**Quién la usa y quién no.** La usa **solo `scripts/generar-por-la-letra.mjs`**. No la usa
+`catalogo.ts`: `US-02` sigue con el corte de 8 (`BR-30`). Tampoco el quiz ni `US-03` (`BR-30`).
+Ninguna página ni isla la importa, porque el nivel llega al navegador ya escrito en el banco.
+
+**Por qué en `en-vivo.ts` y no en `popularidad.ts`**, que es donde la ponía el plan (`T-285`):
+
+1. `en-vivo.ts` ya tiene el tipo del conteo (`ConteoCitado`) y la guarda t8, que prueba buscando
+   texto que ahí no se nombran las vistas. Las dos reglas que salen del conteo comparten el paso 1 y
+   la guarda.
+2. `popularidad.ts` está hecho sobre la medición de YouTube (`TemaMedido`, `medicion.vistas`). Para
+   que lea el conteo habría que hacer una de dos cosas. Una es una firma que acepte vistas y conteo,
+   que es lo que prohíbe `CTR-07.7`. La otra es reescribirlo entero con un nombre que dice lo que
+   `D-45` punto 3 y `D-46` consecuencia 4 no dejan decir: que el tema es *popular*.
+
+**`repartirPorPopularidad()` se retira, con su test.** No la usa nadie más. Dejarla sería dejar una
+regla que no rige y un comentario que dice que la usa `generar-por-la-letra.mjs`. `NivelDificultad`
+se muda a `en-vivo.ts` (la importan `catalogo.ts` y `en-vivo.ts`, nadie más) y **`src/lib/popularidad.ts`
+deja de existir**. **Se quedan `popularidad.json`, su schema, `ingerir-popularidad.mjs` y `CTR-07`**:
+son el dato de un ranking de vistas que puede volver por separado (`D-45` consecuencia 1), no una
+regla de dificultad.
+*Alternativa descartada:* **dejarla guardada sin uso.** Una función que saca la dificultad de las
+vistas es justo lo que alguien volvería a enchufar el día que llegue la clave, y `D-46` consecuencia
+3 dice que para eso hace falta una decisión nueva. t15 lo vigila.
+
+**Lo que toca `T-285` por este apartado:** `en-vivo.ts` (la función, el tipo y el campo `grafiaDe`),
+`problemasDelConteo()` (t1 y t3), `catalogo.ts` (de dónde importa el tipo), borrar
+`popularidad.ts` y `popularidad.test.ts`, y cuatro comentarios que quedarían mintiendo: el
+encabezado de `en-vivo.ts` (*"La cuota de BR-01 para US-02"* sigue, pero el módulo ya no es solo
+de `US-02`), el de `generar-por-la-letra.mjs`, `partida-por-la-letra.ts:167` (*"mientras
+`popularidad.json` no tenga mediciones…"*) y el de `catalogo.ts:43`.
+
+---
+
+### CTR-19.16 — El cruce del conteo completo contra los 105 — *nuevo, 2026-09-24*
+
+Se hizo a mano con la puerta de `D-13` (`ALIAS` y después `normalizarDuro()`), sobre el anexo de
+`INV-89` y los tracklists de `RES-20`. Lo recuenta t1 en `T-285`. **Si t1 no da esto, manda t1**, y
+este apartado se corrige.
+
+| Qué resulta | Líneas | Qué se guarda |
+|---|---|---|
+| Resuelve y cuenta | **99** | `slug`: 99 de los 105 temas tienen su número |
+| Es otra grafía de un tema que ya cuenta | **2** | `grafiaDe` y `nota`: *Rock del país* (37), *Mariposa Pontiac / Rock del país* (10) |
+| No es del catálogo, y la ficha lo clasifica | **26** | `fuera`: 5 `inedito`, 9 `cover`, 7 `intro`, 5 `cantico` |
+| No es del catálogo, y la ficha no lo clasifica | **71** | `fuera: "sin-identificar"`, con la nota de `CTR-19.3` punto 3 |
+| **Total** | **198** | |
+
+**Los 6 temas del catálogo que no tienen línea**, y por eso no tienen conteo: *Pianito - Jam*,
+*Invocación*, *Capricho Magyar*, *Sushi*, *Soga de Caín* y *San Telmo*. En el pozo de `US-02` están
+cinco (todos menos *Pianito*), que quedan en Difícil. En el pozo de `US-07` no hay ninguno.
+
+**Tres filas nuevas en `ALIAS`**, y ninguna es una ocurrencia:
+
+| Título en setlist.fm | Título en `RES-20` | Por qué no alcanza la normalización | Respaldo |
+|---|---|---|---|
+| `Nuotatori profesionisti` | `Nuotatori professionisti` | le falta una "s" | `RES-91` |
+| `Es hora de levantarse querido ¿Dormiste bien?` | `¡Es hora de levantarse querido!` | trae el subtítulo pegado. Es el mismo juicio que la fila `'¡Es Hora de Levantarse, Querido! (¿Dormiste Bien?)'`, que ya existe, con otra puntuación, y `ALIAS` compara el título exacto | `RES-90`, más esa fila |
+| `Rock del país` | `Mariposa Pontiac - Rock del país` | nombra solo la segunda mitad del tema compuesto. Es la contracara de la fila `'Mariposa Pontiac'`, que ya existe | `RES-91` (*"confirmado sistemático"*) |
+
+`ALIAS` sirve para todas las fuentes. Que *Rock del país* resuelva también en la pieza 2 es lo que
+`CTR-19.2` ya preveía: dos entradas seguidas con el mismo slug y `pegadoAlAnterior`.
+
+**Las variantes que `RES-91` anota y que resuelven solas** (no llevan alias, y `temas.test.ts`
+rechazaría uno que sobre): *¡Cruz diablo!*, *Fanfarría del cabrío*, *¡Me matan limón!*, *Esto es
+to-to-todo amigos!*, *¡Lobo ¿estás?!*, *Fusilados por la Cruz Roja* y *Semen Up*, y además *Toxi-taxi*,
+*Gran lady*, *Lavi-Rap*, *Alien Duce*, *Un pacman en el Savoy*, *El árbol del Gran Bonete*, *Murga
+de la Virgencita* y *Una piba con la remera de Greenpeace...*.
+
+**Mariposa Pontiac, las tres formas.** Cuenta *Mariposa Pontiac* (43), que es la que más figura. Las
+otras dos son `grafiaDe` (`CTR-19.2`). En la cola hay además un medley de cuatro (*Mariposa Pontiac /
+Rock del país / Ese gordo tramposo / Un tal Brigitte Bardot*, 1) que no resuelve. `RES-91` lo pone
+entre las *"apariciones combinadas"* de los inéditos, así que va `inedito`, con una nota que dice
+qué tema del catálogo tiene adentro y que no se suma.
+
+**La cola empatada en 1: se copia entera, y no mueve nada.** Son 51 líneas que la página publica.
+Un 1 no es un 0, y lo que no cruza se declara en vez de tirarse (`CTR-19.2`). **Ninguna resuelve a
+un tema del catálogo.** Que pueda tener huecos lo dice `completo: false`, y por eso "no figurar"
+quiere decir "1 como mucho". No mueve ningún borde: el de `US-02` está en 57, y los de `US-07` en 32
+y en 9.
+
+**Los títulos que no son de la banda** van con `fuera: "cover"`. Se guardan, no suman nunca y no
+suben ningún techo, porque se sabe que no son del pozo. Dos títulos aparecen dos veces con distinto
+autor (`RES-89.3`, `RES-92.2`). *Hercules mío* de la banda (3) va `sin-identificar`: la ficha dice
+de quién es la línea, no si el tema es de ellos. El de Vivi Tellas (1) va `cover`. *Olé olé olé olé,
+Patricio Rey* de la banda (2) va `cantico`, y el de Lange Jojo (1) va `cover`.
+
+**Las 26 líneas que la ficha clasifica**, para copiar sin volver a leer `RES-91`:
+
+- `inedito` (5): *Un tal Brigitte Bardot*, *Nene nena*, *Ese gordo tramposo*, *El gordo tramposo /
+  Un tal Brigitte Bardot*, el medley de cuatro.
+- `cover` (9): *Es un sentimiento*, *Monólogo (Enrique Symns cover)*, *Mi mamá alemana (Vivi Tellas
+  cover)*, *Monólogo (Sergio "Mufercho" Martínez cover)*, *Desde el alma*, *Imperialismo espacial
+  (La Cofradía de la Flor Solar cover)*, *Cuando calienta el sol*, y los *Hercules mío* y *Olé…* de
+  la cola.
+- `intro` (7): *Patricio Disco Show*, *Patricio Super Show*, *Instrumental Jam*, *Skay Guitar Solo*,
+  *Willy Crook Saxophone Solo*, *Palabras iniciales por Mufercho*, *Presentacion*.
+- `cantico` (5): *"Pongan huevo Los Redondos"*, *"Vamos Redondos, con huevo vaya al frente"*,
+  *"Vamos Los Redo"*, *Olé olé olé olé, Patricio Rey* (el de la banda), *Himno Nacional Argentino*.
+
+**Lo que no se resuelve acá, y está pedido a `investigador`.** Ninguno de estos puntos cambia un
+número de los que se usan:
+
+1. *Perra dinamita* (2). ¿Es otra forma de escribir *Mi perro dinamita*? Hasta que una ficha lo diga,
+   va `sin-identificar` y sin alias. *Mi perro dinamita* tiene 58 y es Fácil en los dos juegos, así
+   que no mueve nada.
+2. `RES-91` dice *"Desde el alma (cola, 1)"*, y el anexo dice *"95. Desde el alma — 6"*. Se copia lo
+   del anexo.
+3. `RES-89.1` dice que los puestos 1 a 146 tienen conteos *"decrecientes y distintos"*, y el anexo
+   trae empates (49, 44, 41, 40…). Manda el anexo, y la regla de `CTR-19.15` existe justamente por
+   esos empates.
+4. De los dos títulos de la cola que traen una aclaración falta el título literal de la página.
+   Mientras tanto rige `CTR-19.3` punto 3.
 
 ---
 
@@ -1091,11 +1478,33 @@ Nada de esto frena `T-279`. Todo tiene un valor por defecto escrito arriba.
   `CTR-03.11` (el tercer insumo de `catalogo()` ya no es `popularidad.json`) y `CTR-07.8` (este
   dataset dejó de definir los Fáciles de `US-02`).
 
+**Lo que agrega la enmienda del 2026-09-24 (`T-284`, `D-46`):**
+
+- **`T-285` tiene ocho entregables:** (1) `setlistfm.json` reescrito entero desde `RES-90` y el
+  schema de `CTR-19.10`; (2) los tres alias; (3) `repartirEnTercios()`, `grafiaDe` y
+  `NivelDificultad` en `en-vivo.ts`; (4) t1 y t3 en `problemasDelConteo()`, el test de la ficha
+  pasado a `RES-90`, c28 a c32, t13 y t15; (5) el retiro de `popularidad.ts` y su test; (6)
+  `generar-por-la-letra.mjs` y el schema de `CTR-09.8`; (7) el banco regenerado; (8) t14 en
+  `src/lib/por-la-letra/banco.test.ts`.
+- **Fácil:** refrescar el conteo sigue siendo copiar una ficha, ahora más larga, y correr el
+  generador de `US-07`. Si alguien se olvida, t14 lo avisa.
+- **Caro, y asumido:** 198 líneas copiadas a mano. Es el precio de no usar bots contra setlist.fm
+  (`RES-73.1`), y el test de la ficha lo verifica título por título.
+- **Una sola decisión de reparto por juego, cada una en su función:** el corte de 8 de `US-02` y los
+  tercios de `US-07`. Las dos están en `en-vivo.ts`, leen el mismo `ConteoCitado`, y ninguna lee
+  vistas.
+- **`CTR-09` pasa a `contratoVersion: 2`** y **`CTR-07` deja de alimentar cualquier dificultad**.
+  Los dos están enmendados en su archivo. **`CTR-03` y `CTR-04` no cambian:** `US-02` ya derivaba
+  la dificultad en build y no la guarda en el manifiesto (`CTR-03.11`), y `US-03` no migra
+  (`BR-30`).
+
 ### Qué NO decide este contrato
 
 - **Qué fuentes abiertas hay ni por qué vía se bajan**: `RES-76`+ (`T-281`).
 - **Media y Difícil definitivos, el plazo definitivo y la salida de `D-27`**: `producto` y el
-  usuario.
+  usuario. *(La salida de `D-27` la cerró `D-46` el 2026-09-24.)*
+- **El piso de 15 Fáciles de `US-07` y si los tercios son la regla para siempre**: `producto`
+  (`BR-30`). Este contrato los mide, no los garantiza.
 - **El texto del rótulo y dónde va**: `contenido` y `experiencia`.
 - **Si los recitales se muestran, ni en qué juego**: `IDEA-15`, fuera de este ciclo.
 - **La lectura legal de las licencias**: una ficha. Acá hay una tabla prudente, no un dictamen.

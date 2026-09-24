@@ -7,6 +7,48 @@
 
 **Última actualización:** 2026-09-24
 
+> ## ✅ CICLO 16, RÁFAGA 3 CERRADA Y REVISADA: `REV-15` (2026-09-24)
+>
+> **`npm test` 1081/1081 (eran 673 al abrir el ciclo) · `npm run check` 0/0 · build 152 ·
+> validador `APTA` · auditor de paleta 0.** Todo commiteado en `main` y cada commit de código
+> probado en un worktree limpio. El último de código es `3fe5dc6`. **No se hizo push.**
+>
+> ### Lo que ya es juego
+>
+> - **Seis niveles de Skayboy y Poligirl**, en `borrador`, cada uno con su traza grabada
+>   que `npm test` vuelve a jugar: escalones 2/2/2, tolerancia sobre la de su escalón,
+>   paridad contada. Los mecanismos (palanca, placa, compuerta, caja) andan en el mundo.
+> - **La isla dibuja con los sprites aprobados.** Para verlo: `npm run dev` y
+>   `/juegos/skayboy-y-poligirl/?nivel=NIV-04` (el parámetro solo existe en desarrollo).
+> - **"Adiviná el tema" tiene 8 Fáciles por conteo en vivo** y **"Sacalo por la letra"
+>   saca la dificultad del conteo en tercios** (`D-46`). `popularidad.ts` ya no existe.
+>
+> ### `REV-15`: un `ALTA` y seis `BAJA`
+>
+> **`FIND-71` (`ALTA`):** en "Adiviná el tema" `BR-30` ya decidió tercios para Media y
+> Difícil, pero el código sigue con 8/82/5 y `CTR-19.14` lo lista como abierto. `FIND-72` a
+> `FIND-77` son colas chicas: traspasos a `arquitectura`, un comentario falso, una
+> justificación de `NIV-03` y dos evasiones que el auditor de la isla no caza.
+>
+> ### El usuario, hoy
+>
+> - **"Completá la letra" también sale del conteo** (precisión de `D-46`). Es `T-286` a
+>   `T-288` (`ORQ-plan-ciclo-16.md §2.4`).
+>
+> ### Próximo paso: la ráfaga 4 (`ORQ-plan-ciclo-16.md §2.5`)
+>
+> `T-286`..`T-288` ("Completá la letra"), `T-289`/`T-290` (que ganar se vea: hoy la sala no
+> tiene puerta abierta), `T-291`/`T-292` (`FIND-71`), `T-293`/`T-294` (las colas de
+> `REV-15`) y `T-295` (la revisión). Rango ampliado a `T-295` en `Docs/IDS.md`.
+>
+> ### 🔴 Lo que es del usuario
+>
+> | Qué | Traba |
+> |---|---|
+> | **Jugar los seis niveles en un teléfono**, de a dos y solo | que pasen a `listo` y producción los sirva |
+> | Los temas enteros: `npm run generar-fragmentos -- "<carpeta>" --enteros` | que el juego suene (`D-39`) |
+> | Push a GitHub | nada: `main` local tiene todo |
+
 > ## 🕹 CICLO 16, RÁFAGA 2 CASI CERRADA, Y TRES COMMITS EN MAIN (2026-09-24)
 >
 > ### Lo que decidió el usuario hoy
