@@ -823,6 +823,19 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   outline-offset: 3px;
 }
 
+/* El toque se ve: el borde toma la tinta entera del disco mientras el dedo esta encima.
+   En un telefono no hay hover, y hasta hoy tocar un casete no daba ninguna senal de haber
+   llegado antes de que cambiara la pantalla. Es respuesta al toque, asi que dura
+   `--duracion-toque`, que el corte de movimiento reducido no apaga. */
+.casete {
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.casete:active {
+  border-color: var(--tinte);
+}
+
 /* El recorte de tapa que decora cada casete. */
 .casete-arte {
   width: 54px;
@@ -901,17 +914,39 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   margin-top: var(--espacio-1);
 }
 
-/* La accion es un sello de goma: rectangulo de borde fino, mayusculas, apenas
-   torcido — nunca la pastilla capsula generica. */
+/* La accion es un sello de goma **entintado**: rectangulo lleno de la tinta del disco,
+   letra del fondo, apenas torcido — nunca la pastilla capsula generica.
+
+   Era un sello hueco con la letra en la tinta del disco, y **sobre el papel de la etiqueta
+   eso no se leia**: el naranja de Lobo suelto sobre `--papel` da 1,95:1, y el peor caso
+   del portal —el llamado a jugar— quedaba en la mitad de lo que pide AA. Lleno se invierte
+   el par: la letra es `--fondo` sobre la tinta del disco, que es el par que
+   `contraste.test.ts` ya mide para cada una. `--tinte-sello` existe porque dos casetes se
+   tiñen con un `-apoyo` para el borde, y el apoyo no lleva texto. */
 .casete-accion {
   font-family: var(--fuente-rotulada);
   font-size: 0.9rem;
   letter-spacing: 0.06em;
-  color: var(--tinte);
-  border: 2px solid var(--tinte);
+  color: var(--fondo);
+  background: var(--tinte-sello, var(--tinte));
+  border: 2px solid var(--tinte-sello, var(--tinte));
   border-radius: 3px;
-  padding: 0.35em 1em;
+  padding: 0.3em 1em;
   transform: rotate(-1.4deg);
+  /* La tinta del sello no llega pareja al borde: el eco de la segunda pasada, corrido. */
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--tinte-sello, var(--tinte)) 40%, var(--papel));
+}
+
+/* El numero de pista, escrito a mano en la etiqueta como en la tapita de un cassette
+   grabado en casa: A1, A2… Tinta apagada del papel, que es el par testeado; va a la
+   derecha del sello, en el renglon que tenia libre. */
+.casete-pista {
+  margin-left: auto;
+  font-family: var(--fuente-rotulada);
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  color: var(--papel-tenue);
+  transform: rotate(3deg);
 }
 
 /* Lo que todavia no salio: etiqueta escrita en lapiz, sin boton que engañe. */
@@ -937,7 +972,12 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
 .casete--discos { --tinte: var(--cat-discos); --tinta-registro: var(--cat-discos-apoyo); }
 .casete--letras { --tinte: var(--cat-letras); --tinta-registro: var(--cat-letras-apoyo); }
 .casete--mitologia { --tinte: var(--cat-mitologia); --tinta-registro: var(--cat-mitologia-apoyo); }
-.casete--momo { --tinte: var(--disco-momo-sampler-apoyo); }
+/* Momo se tiñe con su apoyo —el peltre— para el borde, y el apoyo no lleva letra: el sello
+   se llena con la plata de la tinta, que es el par que ya usa el boton de su juego. */
+.casete--momo {
+  --tinte: var(--disco-momo-sampler-apoyo);
+  --tinte-sello: var(--disco-momo-sampler-tinta);
+}
 /* `US-08`. Va con la `-tinta` y no con el `-apoyo` como Momo: la ceniza de ¡Bang! ¡Bang!
    pasa AA sobre `--fondo` y ya tiene su par en `contraste.test.ts`. */
 .casete--bang {

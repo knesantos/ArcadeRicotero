@@ -5,15 +5,79 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-09-22
+**Última actualización:** 2026-09-24
+
+> ## 🎛 PULIDO DE ARTE: EL PORTAL Y "ADIVINÁ EL TEMA" (2026-09-24)
+>
+> **Pedido del usuario, textual:** *"pulido intenso y mejora de arte del home y el juego de
+> adivinar el tema, debe quedar impecable en mobile [...] fácil de jugar, lindo de ver y
+> satisfactorio de ganar [...] tené en cuenta la UX como que para escribir necesitan
+> teclado. Mejoremos la barra de tiempo en el juego, se ve muy ai slop."*
+>
+> **Verificación:** `node --test 'src/**/*.test.ts'` **673 en verde** · `npm run check` 0
+> errores (los mismos 15 avisos menores de antes) · `npm run build` **152 páginas** ·
+> recorrido entero medido en el navegador sobre el build, a 390×664, 360×740 y 1280×860.
+> Ojo: `npm test` a secas corre 154, porque el `**` del script no lo expande el `sh` de
+> este contenedor; la cuenta de 673 es con el patrón entre comillas.
+>
+> ### La barra de tiempo dejó de ser una barra
+>
+> Las seis cajitas grises con relleno naranja y borde petróleo eran la barra de progreso
+> por defecto de cualquier reproductor. Ahora es **una tira de papel impresa como una
+> regla, que sale del casete**: cada escalón es un tramo separado por un corte de tinta,
+> con rayitas cada medio segundo; lo que todavía no te dimos está **tramado**, lo que te
+> dimos es papel limpio, y lo que escuchaste queda **entintado** en el naranja de Lobo
+> suelto con `multiply`. Una **aguja** corre mientras suena y se para en el tope. Los seis
+> números van abajo (antes faltaban 0,1 y 0,5) y el del tope se estampa. La tecla de
+> escuchar tiene canto, se hunde al tocarla y **queda trabada mientras suena**, como el
+> PLAY de una casetera.
+>
+> ### Con el teclado abierto, la pantalla es otra (`partida--tecleando`)
+>
+> En un teléfono el teclado tapaba justo lo que se usa: lista, caja y botón. Ahora, con el
+> foco en la caja y puntero táctil, la partida ocupa **exactamente la ventana visual**
+> (`visualViewport`) como columna pegada arriba del teclado: tecla + regla compacta, el
+> último intento, la lista (lo único que cede alto), la caja y el botón. **El teclado no se
+> cierra al tocar un botón de la partida** (`mousedown` prevenido): errar deja escribir de
+> nuevo en el acto mientras suena el escalón nuevo; acertar lo cierra. Enter ("Ir") elige
+> la primera sugerencia y, con un tema elegido, arriesga. Lo ya arriesgado queda tachado y
+> sin poder elegirse ("Ya lo probaste"). **Medido en emulación, no en un iPhone real.**
+>
+> ### Lo demás
+>
+> - **Portada del juego:** la chapa de puntajes en papel (audio / vale) reemplaza la mitad
+>   de la bajada que contaba la escalera en prosa.
+> - **Partida:** casillas de la vuelta en la cabecera (llena, tachada, la que va);
+>   renglones numerados con el audio de cada intento; "Vale 100"; **"Pasá (+0,4 s)"**
+>   dice cuánto audio compra, y en el último intento dice "Mirá cuál era".
+> - **El acierto:** "¡La sacaste!" y "+100" son sellos que caen y apoyan
+>   (`sello-golpe`, en el compás de `--duracion-pasada`, en `ANIMACIONES`), más un toque de
+>   vibración donde hay motor. Errar no se mueve ni vibra.
+> - **Resultado:** "3 de 4 temas · 260 de 400 puntos" y una **escalerita** por tema con lo
+>   que pasó en cada escalón (tachada, raya, llena), distinta por forma.
+> - **Portal:** el sello JUGÁ se leía a **1,95:1** (tinta del disco sobre papel): ahora es
+>   un sello lleno, `--fondo` sobre la tinta del disco, par ya testeado. Los casetes de
+>   "Sacalo por la letra" y "Adiviná la tapa" pegan el recorte real de su disco (medallón
+>   de Momo, bondi) en vez del casete dibujado; cada casete lleva su número de pista (A1…
+>   B2); tocar un casete da señal. **El crédito del pie ahora nombra los discos de los
+>   recortes** (antes el lobo y la mosca no se acreditaban): `discoDeRecorte` en `arte.ts`.
+>
+> ### Lo que queda, con dueño
+>
+> | Qué | Dueño |
+> |---|---|
+> | **Probar el modo teclado en un iPhone y un Android de verdad** (la emulación no abre teclado; se simuló achicando la ventana) | usuario |
+> | Reflejar la regla, los sellos del acierto y la escalerita en la hoja 08 del lienzo (no se tocó ningún hex ni token: todo sale de `tokens.css`) | `experiencia` |
+> | `.arriesgar` y `.seguir` tienen canto solo en este juego (`.juego-tema`): "sacalo por la letra" comparte las clases y no se tocó | `experiencia` |
+> | `escalera.ts` perdió `tramosConEtiqueta` y `PISO_ETIQUETA_PCT` (los seis números entran por ancho mínimo); suma `etiquetaDeRegla`, `extraAlPasar` y `formatoSegundos`, con test | — |
 
 > ## 🕹 CICLO 15 CONSTRUIDO: EL MOTOR DECIDIDO Y TRECE TAREAS CERRADAS (2026-09-22)
 >
 > **`npm test` 673 en verde · `npm run check` 0 errores · `npm run build` 152 páginas ·
 > validador `APTA`.** Eran 578 tests al abrir la ráfaga: **entraron 78 pruebas nuevas.**
 >
-> **Nada está commiteado.** Son ~35 archivos sin guardar y el usuario no pidió commit
-> todavía. Es lo primero que conviene resolver al retomar.
+> **Commiteado en `1478ae7`** (corregido el 2026-09-24: acá decía que nada estaba
+> guardado, y el disco dice que sí).
 >
 > ### 🔑 Las dos decisiones del usuario, tomadas
 >

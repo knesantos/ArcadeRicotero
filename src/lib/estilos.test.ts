@@ -309,12 +309,31 @@ const ESTADOS_TEMA = [
   '.intento--libre',
   '.intento--fallado',
   '.intento--pasado',
+  // El renglon que toca (su numero de escalon se enciende) y el ultimo que gastaste, que es
+  // el unico que queda a la vista con el teclado abierto.
+  '.intento--actual',
+  '.intento--ultimo',
+  // Las casillas de la vuelta en la cabecera: cuatro formas, ninguna de color solo.
+  '.vuelta-casilla--actual',
+  '.vuelta-casilla--ok',
+  '.vuelta-casilla--no',
   '.barra-tramo--abierto',
   // La regla graduada de abajo de la barra: el numero del escalon que ya tenes cambia de
   // tinta igual que su tramo. Sin regla que lo pinte, la regla queda toda del mismo gris
   // y deja de decir donde estas.
   '.barra-marca--abierta',
+  // Y el numero del tope se estampa: es hasta donde llega el audio que tenes.
+  '.barra-marca--actual',
   '.escuchar--sonando',
+  // La pantalla con el teclado abierto: sin regla que la pinte, la columna no existe y el
+  // teclado vuelve a tapar la caja.
+  '.partida--tecleando',
+  // Lo que ya arriesgaste sigue en la lista, tachado y sin poder elegirse.
+  '.sugerencia--probada',
+  // Los seis escalones de cada tema en el resultado.
+  '.escalerita-paso--fallo',
+  '.escalerita-paso--pasado',
+  '.escalerita-paso--acierto',
   '.arriesgar--listo',
   '.sugerencia--marcada',
   '.sugerencia--vacia',
