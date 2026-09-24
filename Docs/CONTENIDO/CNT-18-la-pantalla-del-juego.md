@@ -45,6 +45,17 @@ la otra sin que yo tenga que nombrar personajes:
 
 ## 2. La línea de vertical
 
+> **Enmendada el 2026-09-23 (`CNT-21`, ciclo 16, ráfaga 2).** Esta sección daba la frase de
+> abajo por cierta sin condición, en todos los tamaños. `UX-28 §4.1` se enmendó el mismo día
+> que se escribió esto (segunda enmienda, `T-261`) y encontró que **"el doble" solo es
+> verdad cuando el ancho vertical supera 400 px CSS y el alto llega a 720, las dos a la
+> vez** — y en los dos tamaños verticales que `UX-28 §2.5` mide (375 × 812 y 375 × 667) esa
+> condición nunca se cumple. La frase de abajo **no cambió** — sigue siendo la que se usa,
+> igual, registro 3, ocho palabras — pero ahora va condicionada: se muestra solo cuando se
+> cumplen las dos cosas a la vez, y en el resto de los casos **no aparece nada**, decisión y
+> argumento completos en `CNT-21 §2`. El párrafo original queda abajo sin editar, como
+> registro de qué se pensaba antes de la enmienda.
+
 `UX-28 §4`: quien entra con el teléfono parado juega igual, a la mitad de tamaño, y una
 línea en la chapa avisa que de costado se ve más grande — sin pedir nada, informando una
 ganancia.

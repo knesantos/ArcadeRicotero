@@ -16,7 +16,9 @@
   que este contrato tenía que aguantar sin conocer: qué se muestra, cada cuánto se refresca y
   qué pasa con un tema sin video canónico. El contrato se escribió antes de esa regla y
   **entró entera sin cambiarle la forma al archivo**: lo único que se movió fue un número del
-  envoltorio. El mapa de qué respondió cada apartado está en `CTR-07.8`.
+  envoltorio. El mapa de qué respondió cada apartado está en `CTR-07.8`. **Desde el
+  2026-09-23 este dataset ya no define los Fáciles de `US-02`**: los define `CTR-19`, y la
+  enmienda está al principio de `CTR-07.8`.
 - **Para quién:** para quien escriba `scripts/ingerir-popularidad.mjs` y el JSON en `T-118`;
   para quien ponga el orden en pantalla en `T-119`; y para `revisor`, que tiene que poder
   rechazar una entrada sin preguntarle a nadie.
@@ -415,6 +417,25 @@ tocar el schema, y tocar el schema es una tarea de `arquitectura` con la ficha e
 ---
 
 ### CTR-07.8 — Lo que decidió `BR-18`, y qué tocó cada respuesta en el dataset
+
+> **Enmendado el 2026-09-23 por `CTR-19`** (`Docs/ARQ/ARQ-schema-recitales.md`, `T-273`),
+> después de `D-45` enmendada y `BR-18` (h). **Este dataset ya no define los Fáciles de
+> `US-02`.** El orden sale ahora del conteo citado de setlist.fm (`src/data/setlistfm.json`,
+> `CTR-19.3`), y `catalogo()` deja de leer este archivo (`CTR-19.5`). Tres lecturas de este
+> documento quedan viejas y se dejan como estaban:
+>
+> - La fila **f** de la tabla de abajo y los dos puntos de *"una consecuencia nueva"* (una
+>   entrada sin `medicion` no entra al top-8; el top-8 es sobre el pool con fragmento). La
+>   segunda regla sigue valiendo, ahora en `CTR-19.5`.
+> - El punto 3 de `CTR-07.7`, que cita `BR-18` (f) como la regla vigente del corte.
+> - El último punto de *Consecuencias* (*"Este dataset toca la v1"*) y el chequeo 9 de
+>   `CTR-07.11`.
+>
+> **Lo que no cambia:** `CTR-07.7` sigue entero. Las vistas y el conteo en vivo son dos
+> archivos, dos contratos y dos órdenes, y ninguna firma los recibe juntos (`CTR-19.5`). Si la
+> clave de YouTube llega, este dataset vuelve a medir, pero **no recupera el corte sin una
+> decisión nueva** (`D-45` consecuencia 1). Sigue alimentando la regla de tercios de `D-27` para
+> `US-07`, mientras el usuario no elija la salida B de `BR-18` (h).
 
 El contrato se escribió mientras `T-116` corría, hecho para aguantar cualquiera de las
 respuestas. `BR-18` cerró, y esta tabla es el saldo:

@@ -2316,3 +2316,178 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
      pantalla móvil es vertical y de un solo jugador. Acá la pantalla es horizontal y hay dos
      columnas desde el principio (`D-40`), así que el mismo problema tiene una salida mejor.
      La ficha sigue siendo cierta sobre aquel juego.
+
+## D-44 — El pixel lo dibuja el hilo principal, como código
+
+- **Fecha:** 2026-09-22
+- **Estado:** aceptada. Decidida por el usuario al abrir el ciclo 16, con las tres salidas
+  sobre la mesa.
+- **Consume:** `D-38` (las tres barandas), `D-41` (pixel adentro, imprenta afuera), `D-42`
+  (los muñecos tienen cara), `BR-23`, `UX-27`, `CTR-15`, `ORQ-plan-ciclo-15.md` §1.1 y §5
+  punto 2, `Docs/EQUIPO.md`.
+
+- **Contexto.** El ciclo 15 midió la hoja de sprites que trajo el usuario y el resultado fue
+  el desenlace 2 de `CTR-15.2`: **no está sobre grilla de píxel**. 108.705 colores, un fondo
+  que son 52 tintas y bordes repartidos parejo en todas las fases de `N`. No se recorta: se
+  redibuja. Y el mismo plan dejó escrito el otro hueco, que es de equipo y no de dibujo: **de
+  los siete roles, ninguno produce arte.** Salían dos caminos —justificarlo en
+  `Docs/EQUIPO.md` o que lo produzca el usuario— y el juego quedó en tinta plana esperando.
+
+- **Decisión.** **Los sprites y los tiles del área de juego los dibuja el hilo principal,
+  como código**: cada cuadro es una grilla de texto donde cada caracter nombra una de las 16
+  tintas `--px-*` de `tokens.css`, un script la imprime a PNG con alfa binario, y el auditor
+  de paleta la controla. **La hoja del usuario pasa a ser referencia, no fuente**: de ahí
+  salen la silueta, el sombrero, la SG y la mata de pelo, no los píxeles.
+
+  **El usuario aprueba mirando.** Nada entra al atlas sin una hoja de contacto —los cuadros
+  a tamaño de juego, y los mismos en blanco y negro para la prueba de siluetas de `BR-23`
+  punto 3— que el usuario vio y dio por buena.
+
+- **Alternativas descartadas.** **Que el usuario reexporte la hoja**: era la salida barata
+  de `ORQ-plan-ciclo-15.md` §5 punto 1, y dejaba el juego esperando algo que no tiene fecha.
+  **Tinta plana definitiva**: el juego se jugaría, pero `D-42` le dio cara a los muñecos por
+  algo, y un rectángulo de dos tintas no la tiene.
+
+- **Consecuencias.**
+  1. **No es un rol nuevo, y por eso no toca el tope.** El hilo principal ya escribe todo
+     `src/` (`Docs/EQUIPO.md`, "Quién escribe el código"); una grilla de tintas impresa por
+     script es de la misma familia. La justificación quedó escrita en `Docs/EQUIPO.md`.
+  2. **Las barandas de `D-38` y `D-42` rigen igual para el que dibuja**, sea quien sea: la
+     cara sí, el cuerpo caído no, ninguna pose que narre la muerte (`BR-24`). La hoja de
+     contacto es el punto donde eso se mira.
+  3. **La paridad de `BR-23` punto 2 pasa a ser contable a máquina**: mismos estados y mismos
+     cuadros en los dos atlas se prueban comparando los dos JSON, no mirándolos.
+  4. **La cadena es reutilizable.** El día que `IDEA-04` (el bondi a Finisterre) se promueva,
+     hereda la paleta, la imprenta y el auditor sin volver a pagarlos.
+  5. **Si la hoja de contacto no convence, no se rompe nada**: la isla sigue dibujando en
+     tinta plana, como hoy.
+
+## D-45 — Fácil es lo más tocado en vivo, y los setlists se guardan enteros
+
+- **Fecha:** 2026-09-22
+- **Estado:** aceptada, **con una condición**: que `RES-73` muestre cobertura suficiente
+  para ordenar el primer puñado de temas sin empates que lo decidan el azar. Si no alcanza,
+  vuelve al usuario —no se cae en silencio a otra vara—.
+- **Consume:** `BR-18` apartados (f) y (g), `BR-28`, `D-27`, `CTR-07.7`, `RES-05`, `RES-20`,
+  `RES-51`, `RES-52`, `D-14`.
+
+- **Contexto.** `US-02` tiene su piso de 30 temas cumplido con 95 y **0 de los 8 Fáciles**
+  que `BR-01` le pide. La vara que fijó `BR-18` (f) son las vistas de YouTube, y la clave
+  para medirlas (`YT_API_KEY`) no llegó nunca: se pidió en el ciclo 8, se volvió a pedir en
+  el 10, y un mes después sigue sin estar. `BR-28` convirtió eso en un punto de control: si
+  al cerrar el ciclo 15 seguía en cero —y sigue—, **no se abre un noveno juego** hasta que la
+  clave llegue o hasta que una decisión escrita reemplace la cuota.
+
+- **Decisión.**
+  1. **"Fácil" en `US-02` pasa a ser lo más tocado en vivo**: dentro del pool de temas con
+     fragmento de audio producido, los 8 que más veces figuran en los setlists de
+     **setlist.fm**, que arma la gente que fue a los recitales. La cuota de 8 no se toca: se
+     cambia de dónde sale el orden.
+  2. **Los setlists se guardan enteros**, no solo la cuenta. Pedido del usuario, textual:
+     *"Guardemos los setlist que encuentre también"*. Cada recital entra con su fecha, su
+     lugar, los temas en el orden en que se tocaron y de dónde salió, como dato propio del
+     sitio (`src/data/recitales.json`, contrato de `arquitectura`). El conteo de Fáciles se
+     **deriva** de ese archivo en build y no se guarda —mismo motivo que `CTR-07.7`—.
+  3. **El rótulo dice qué mide y de dónde sale**, en registro 3: lo más tocado en vivo según
+     los setlists que carga la gente. Nunca "el más popular" ni "el más escuchado": un tema
+     que se tocó en cada misa no es por eso el que más suena hoy, y el sitio no afirma lo que
+     el dato no dice.
+
+- **Por qué esta vara y no solo "la que hay".** En esta banda el recital fue el lugar donde
+  la gente aprendió los temas: se cantaban enteros desde la tribuna. Lo que más veces se tocó
+  es, casi literalmente, lo que más veces cantó la gente. Y es conocimiento popular con
+  procedencia —cada setlist lo subió alguien que estuvo o que lo reconstruyó—, que es
+  exactamente lo que `D-14` dice que vale, siempre que el rótulo no mienta.
+
+- **Alternativas descartadas.** **Esperar la clave de YouTube**: un mes de espera y un juego
+  de la v1 incompleto con siete títulos alrededor tapándolo, que es la forma del riesgo 4 del
+  brief. **Retirar la cuota por escrito**: el argumento de la rampa de `BR-18` (g) se sostiene,
+  pero dejaba a `US-02` sin escalón fácil para siempre. **Spotify o kworb**: `RES-51` y
+  `BR-18` (a) ya los cerraron.
+
+- **Consecuencias.**
+  1. **`CTR-07.7` queda intacto.** Los recitales son otro archivo, otro contrato y otra
+     cuenta. Si la clave de YouTube llega algún día, el ranking de vistas vive aparte y
+     **no recupera el corte de Fáciles sin una decisión nueva**.
+  2. **La puerta de `BR-28` se abre cuando los 8 Fáciles existan y un test los cuente, no
+     cuando esta decisión se escribe.** Escribirla no alcanza: es la trampa de declarar un
+     choque como resuelto.
+  3. **`BR-18` (f) queda desactualizado** y lo enmienda su dueño, `producto`. Y queda una
+     pregunta que no se contesta acá: si los tercios de `D-27` —la dificultad de "Sacalo por
+     la letra", que hoy también esperan la clave— se alimentan de la misma cuenta. Es de
+     `producto` con el usuario.
+  4. **La única puerta a la web no se abre de más.** Qué se puede bajar de setlist.fm, con
+     qué términos y con qué licencia lo trae `investigador` (`RES-73`); el script que lo baja
+     es del hilo principal y corre por la vía que esa ficha diga, igual que
+     `ingerir-popularidad.mjs` corre por la de `RES-52`.
+  5. **Los setlists abren una puerta que esta decisión no cruza**: la Redondopedia puede
+     tener recitales, y un juego puede salir de "qué se tocó en Huracán en el 93". Ninguna de
+     las dos cosas entra con esta decisión.
+
+- **Enmienda del 2026-09-23 — los setlists se guardan de fuentes que lo permiten.** Decidida
+  por el usuario después de `RES-73` (`Docs/INVESTIGACION/INV-73-recitales-setlistfm.md`).
+  - **Lo que encontró la ficha.** Los términos de setlist.fm dan una licencia **para ver**:
+    prohíben reproducir el contenido y bajarlo con bots (`RES-73.1`, `RES-73.2`). La API es
+    gratis con clave, pero prohíbe retener sus datos más allá de una caché corta
+    (`RES-73.3`). El punto 2 de esta decisión, tal como estaba escrito, no se podía cumplir
+    desde setlist.fm de forma legítima con una máquina, y el sitio no va a bajar 256 páginas
+    contra los términos de nadie.
+  - **Punto 1, precisado.** El orden de los Fáciles sale del **conteo por tema que publica la
+    página de estadísticas de setlist.fm**, citado como dato —cuántas veces figura cada tema,
+    con URL y fecha de consulta—, no de contar setlists guardados. Un número con su fuente no
+    es reproducir el contenido de nadie. `RES-74` ya lo trae, y la condición de esta
+    decisión **se cumple**: no hay empate en el puesto 8.
+  - **Punto 2, reemplazado.** Los setlists enteros se guardan **solo desde fuentes cuya
+    licencia lo permite** —MusicBrainz, Wikipedia, sitios de fans que lo digan—, con la
+    fuente y la licencia de cada recital. De setlist.fm el sitio guarda el conteo citado y un
+    índice con enlaces (fecha, lugar, página), nunca las listas. Las busca `investigador`
+    (`T-281`).
+  - **Descartadas:** guardar solo el conteo, que dejaba el pedido del usuario sin camino;
+    transcribir a mano, que igual reproduce el contenido de setlist.fm y le cuesta el tiempo
+    al usuario; y pedir permiso, que queda abierta para cuando haga falta y no traba nada.
+  - **Arrastra:** `CTR-19` (`T-273`) pasa a contratar dos piezas, el conteo citado y el
+    archivo de recitales, sin derivar una de la otra; `T-279` construye las dos.
+
+## D-46 — La dificultad de todo juego con canciones sale de lo que más se tocó en vivo
+
+- **Fecha:** 2026-09-24
+- **Estado:** aceptada — decisión directa del usuario, al contestar la pregunta que `BR-18`
+  apartado (h) le dejó pedida. Textual: *"La dificultad de todo lo que sea con canciones sale
+  de ahí"*. **Enmienda `D-27`**, que sigue vigente en su principio.
+- **Consume:** `D-27`, `D-45` (y su enmienda del 2026-09-23), `BR-18` (f) y (h), `CTR-07`,
+  `CTR-19`, `RES-74`, `RES-75`.
+
+- **Contexto.** `D-27` decidió que la dificultad de "Sacalo por la letra" no se etiqueta a
+  mano, sino que **se infiere de cuánto circula el tema**, y eligió como medida las vistas de
+  YouTube. La clave para medirlas no llegó nunca, así que hoy todos los temas dan `dificil`.
+  `D-45` ya había llevado el corte de Fáciles de `US-02` al conteo de veces tocado en vivo
+  que publica setlist.fm. `producto` le preguntó al usuario si `D-27` seguía el mismo camino,
+  con la recomendación de no tocarlo todavía. El usuario contestó más amplio que la pregunta.
+
+- **Decisión.** **La dificultad de todo juego del sitio que trabaje con canciones se infiere
+  del conteo citado de veces tocado en vivo** (`CTR-19`, la pieza del conteo), no de las
+  vistas de YouTube ni de una etiqueta a mano. El principio de `D-27` queda entero —la
+  dificultad no se etiqueta, se infiere de cuánto circula el tema— y cambia la medida. La
+  regla de reparto de `D-27` también queda: los temas con conteo se ordenan y se parten en
+  tercios, y **un tema sin conteo es difícil** (*"sin escucha por ahora es difícil"*).
+
+- **Por qué es la misma idea y no otra.** En esta banda la gente aprendió los temas en los
+  recitales, cantándolos enteros. Lo que más veces se tocó es, casi literalmente, lo que más
+  veces cantó la gente. Es la medida que `D-27` buscaba con las vistas, pero sin clave, con
+  fuente citada, y más ricotera.
+
+- **Consecuencias.**
+  1. **El conteo tiene que cubrir el catálogo, no solo el top-25.** `RES-74` trajo los 25
+     primeros de la página de estadísticas de setlist.fm; para partir en tercios hacen falta
+     todos los temas que esa página lista. Lo trae `investigador`, como números citados
+     (`RES-73.1`: la página se puede ver; lo que no se hace es bajarla con un bot).
+  2. **Qué juegos son "con canciones" y cómo usa cada uno la dificultad lo fija
+     `producto`**: `US-02` y `US-07` seguro; `US-03` (el hueco de la letra), `US-08` y las
+     preguntas del quiz que son sobre temas, a revisar uno por uno. Un juego que hoy tiene
+     dificultad escrita a mano y pasa a inferida cambia de contrato: eso es de
+     `arquitectura`.
+  3. **Las vistas de YouTube dejan de decidir nada.** `CTR-07` y `popularidad.json` quedan
+     como estaban, sin uso para la dificultad. Si la clave llega algún día, es un ranking
+     aparte y no recupera la dificultad sin una decisión nueva (`D-45` consecuencia 1).
+  4. **El rótulo de cada juego dice qué mide**, en registro 3: lo más tocado en vivo según
+     los setlists que carga la gente. Nunca "el más popular" ni "el más escuchado".

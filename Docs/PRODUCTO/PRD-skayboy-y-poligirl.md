@@ -37,7 +37,7 @@
 > `.claude/rules/codigo-juegos.md`. `src/lib/tarjeta/plan.ts` (`MAX_FILAS = 6`, el campo
 > `hero`).
 >
-> **Produce:** `US-09`, `BR-23`, `BR-24`, `BR-25`, `BR-26`, `BR-27`, `BR-28`.
+> **Produce:** `US-09`, `BR-23`, `BR-24`, `BR-25`, `BR-26`, `BR-27`, `BR-28`, `BR-29`.
 >
 > **Enmendado el mismo día (2026-09-16), y no se versiona a `-v2`.** Dos cosas cambiaron
 > después de escribirlo, ninguna nace de esta carpeta: **`FIND-59`** —el choque de la puerta
@@ -504,8 +504,8 @@ qué no puede ser y en qué registro se habla.
 
 **Aplica a:** cada uno de los seis niveles del piso de `US-09`.
 
-Un nivel cuenta para el piso cuando cumple las seis condiciones. No hay niveles a medias:
-uno que falla cualquiera de las seis vale cero.
+Un nivel cuenta para el piso cuando cumple las siete condiciones. No hay niveles a medias:
+uno que falla cualquiera de las siete vale cero.
 
 **(a) Se pasa de a dos.** Dos personas moviéndose a la vez lo terminan. Verificado
 jugándolo, no leyéndolo.
@@ -539,11 +539,261 @@ aunque en teoría lo sea. El que espera queda **quieto y a salvo** —es la prom
 **(f) La paridad se cumple y está contada** (`BR-23` punto 1): quién le abre paso a quién,
 anotado por nivel para que la cuenta de los seis se pueda hacer.
 
-**Cómo se prueba.** Una planilla por nivel con estas seis filas, jugada en un teléfono en
-horizontal y después solo. La parte que sí puede mirar una máquina —que el dato del nivel
-declare su segunda solución— la deja pedida
-`Docs/SUGERENCIAS/PRD-para-arquitectura-el-nivel-declara-su-segunda-solucion.md`; el
-mecanismo es de `arquitectura`, la exigencia es de acá.
+**(g) Ningún estado alcanzable deja de poder ganar: no hay callejón sin salida.** *(Sumada
+el 2026-09-23, `T-262`, a pedido de `arquitectura`:
+`Docs/SUGERENCIAS/ARQ-para-experiencia-y-producto-mecanismos-y-callejones.md` §2.)* Una caja
+empujada contra una pared que no se puede tirar, una caja en un rincón, un pozo más hondo que
+el alcance: la física no los puede evitar, y desde ahí el nivel no se gana con nadie. **Que la
+traza grabada exista y gane no prueba esto**: prueba que hay un camino desde el principio, no
+que todo paso tenga vuelta. Un nivel con un solo estado así no cuenta para el piso, aunque su
+traza de uno sea perfecta.
+
+**Cómo se prueba.** Una planilla por nivel con las seis primeras filas —(a) a (f)—, jugada en
+un teléfono en horizontal y después solo. La parte que sí puede mirar una máquina —que el dato
+del nivel declare su segunda solución— la deja pedida
+`Docs/SUGERENCIAS/PRD-para-arquitectura-el-nivel-declara-su-segunda-solucion.md`; el mecanismo
+es de `arquitectura`, la exigencia es de acá. **La (g) no tiene planilla: la prueba una
+búsqueda que corre en cada build**, recorriendo desde los estados que ganan hacia atrás sobre
+el mismo grafo que ya explora el solucionador (`BR-29`, tabla del punto 1).
+
+> **Enmendado el 2026-09-22 (`T-262`, ciclo 16).** Esta planilla resolvía las seis filas en
+> una sola frase — "jugada en un teléfono en horizontal y después solo" — sin decir cuál de
+> las seis prueba una máquina y cuál solo un pulgar, ni con qué margen. Ahora que existe la
+> traza grabada (`CTR-18`, `ADR-09`), eso se puede repartir de verdad: `BR-29` dice, condición
+> por condición, qué la prueba y fija la tolerancia mínima que una traza necesita para contar.
+> **Las seis condiciones de acá no cambian una palabra**; cambia únicamente con qué se
+> verifica cada una.
+
+> **Sumada el 2026-09-23 (`T-262`, cierre de la ráfaga 1, ciclo 16).** La condición (g) es
+> nueva: no la pedía ningún hallazgo de `revisor`, la trajo `arquitectura` en el traspaso de
+> `T-264` porque la encontró construyendo los mecanismos del escalón Media —una caja se puede
+> empujar contra una pared o a un rincón sin vuelta— y avisó que **ninguna traza la ve**: una
+> traza ganadora prueba que hay un camino, no que no haya un pozo al lado. De las tres salidas
+> que proponía, elijo la que no le pide nada a la pantalla ni al que juega: que ningún nivel
+> tenga un callejón así sea condición de `listo`, probada por una búsqueda y no por una
+> persona. Las razones, en orden:
+>
+> 1. **Es la misma familia que las seis condiciones de acá arriba.** Un nivel con un
+>    callejón sin salida es lo que (b) y (d) ya existen para impedir en otras formas: un
+>    camino que en teoría existe pero que un estado intermedio rompe. No es una regla nueva
+>    de diseño, es la misma vara aplicada a un caso que las seis anteriores no cubrían.
+> 2. **Las otras dos salidas le piden algo a la pantalla o al que juega**, y las dos cuestan
+>    más de lo que resuelven. Una salida en pantalla es un control nuevo justo donde `UX-29`
+>    acaba de sacar toda pantalla de fin de partida — un botón que dice "empezá de nuevo" se
+>    lee como una fin de partida con otro nombre. Salir y volver a entrar ya existe gratis,
+>    pero **el que quedó trabado no tiene cómo enterarse de que irse lo arregla** — es un
+>    molinete con forma de instrucción no dicha, y `D-14` no lo deja pasar.
+> 3. **Con esto no hay nada que diseñar en pantalla**, que es el argumento con el que
+>    `arquitectura` cerró su propia recomendación: si ningún nivel `listo` puede tener un
+>    callejón, el que juega nunca ve el problema y no hace falta explicarle una salida de
+>    emergencia para algo que no le va a pasar.
+>
+> **Lo que esto no decide:** si salir y volver a entrar se deja como red además, para lo que
+> un `borrador` en construcción pueda tener antes de llegar a `listo`, o para un bug futuro
+> que la búsqueda no atrape. Es la pregunta que el traspaso le deja a `experiencia` —"si la 3
+> alcanza como red para lo que la 1 no cubra"— y sigue siendo suya: acá `listo` nunca tiene el
+> problema, así que no es una condición de `US-09`, es un cuidado de `experiencia` para el
+> resto del ciclo de vida de un nivel.
+
+---
+
+## BR-29 — Qué prueba la máquina y qué prueba el pulgar
+
+**Aplica a:** las siete condiciones de `BR-25`, en cada uno de los seis niveles del piso de
+`US-09`. Nace de `T-262` (ciclo 16), a la par de `T-263`/`ADR-09`/`CTR-18` (`arquitectura`,
+el formato de la traza) y `T-266` (el solucionador que la graba).
+
+**De dónde sale.** El ciclo 16 construye una máquina que juega sola: busca sobre la
+simulación pura de `mundo.ts` el camino de una persona con un dedo por vez, lo graba al lado
+del nivel (`CTR-18`) y `npm test` lo vuelve a jugar en cada corrida. `BR-25` ya decía "se
+prueba jugándolo, en un teléfono y después solo", pero esa frase no repartía: no decía cuál
+de las siete condiciones la prueba la traza y cuál solo un pulgar, ni con qué margen se puede
+confiar en un salto. Repartir eso mal en cualquiera de los dos sentidos es caro: si le pido a
+la traza algo que no puede probar, el piso queda con un agujero que nadie mira; si le pido al
+teléfono algo que la traza ya prueba mejor, seis niveles vuelven a costar doce partidas y el
+solucionador no sirvió de nada.
+
+### 1. Quién prueba cada condición, y por qué
+
+| Condición (`BR-25`) | La prueba | Por qué |
+|---|---|---|
+| **(a)** Se pasa de a dos | **El teléfono**, y solo el teléfono | Es la única de las siete que depende de dos manos reales y no de dos columnas que obedecen a un algoritmo: si las dos zonas de pulgar entran cómodas en el aparato, si el reflejo de una persona alcanza al de la otra, si la partida **se siente** bien jugada así. Nada de eso lo sabe una búsqueda. `BR-25` (a) ya lo pide con esas palabras: "verificado jugándolo, no leyéndolo" |
+| **(b)** Se pasa solo | **La traza grabada** | Es, literalmente, lo que la traza es: el camino de uno solo, cuadro por cuadro. Si `soluciones.test.ts` la reproduce y gana en cada `npm test`, (b) está probado sin que nadie la vuelva a jugar con el pulgar |
+| **(c)** Ninguna acción exige simultaneidad de entrada | **La traza grabada**, por construcción | El solucionador arma la traza de uno cambiando de columna solo con los dos personajes parados en el piso (`§2.1` del plan): nunca aprieta las dos columnas en el mismo cuadro. Si esa traza existe y gana, es exactamente la "segunda solución que no lo exija" que la propia (c) deja como excepción — su sola existencia alcanza, no hace falta revisar nada más del nivel |
+| **(d)** El que espera queda quieto y a salvo | **La traza grabada** | `soluciones.test.ts` recorre la traza cuadro por cuadro y comprueba que el personaje sin un dedo encima nunca vuelve a la entrada mientras el otro se mueve — sobre el mismo dato que prueba (b), no hace falta una corrida aparte |
+| **(e)** Se puede fracasar y reintentar sin costo (`BR-24.3`) | **El motor, una sola vez — no por nivel** | No es un dato de cada nivel: es una regla de `paso()` en `mundo.ts`, igual para los seis — sin contador que se agote, sin costo acumulado, reintento inmediato al tocar terreno ajeno. La prueba `mundo.test.ts` una sola vez, y todo nivel que corre sobre ese motor la hereda gratis. Pedirle a cada nivel que la vuelva a probar sería correr doce veces un test que ya corrió |
+| **(f)** La paridad se cumple y está contada (`BR-23.1`) | **La traza grabada** | `BR-23` punto 1 pide contar, sobre los seis niveles, cuántas veces cada personaje le abre paso al otro. Esa cuenta sale de mirar qué columna acciona cada mecanismo, cuadro por cuadro, en la traza — no de una impresión de quién "ayuda más" jugando en el teléfono |
+| **(g)** Ningún estado alcanzable deja de poder ganar — sin callejón sin salida *(sumada el 2026-09-23, `T-262`)* | **Una búsqueda aparte, no la traza** | Es la única de las siete que no prueba `soluciones.test.ts` repitiendo la traza grabada: hace falta recorrer el grafo de estados alcanzables y confirmar que desde cada uno se sigue pudiendo ganar —hacia atrás desde los estados ganadores, sobre el mismo `mundo.ts` que ya usa el solucionador (`arquitectura`, traspaso de `T-264`)—. El mecanismo exacto y dónde vive el test es de `arquitectura`; acá se fija que exista y que sea condición de `listo` |
+
+**La lectura de la tabla, en una línea:** de las siete, **seis** las prueba la máquina —cinco
+apenas existe la traza, y (g) con una búsqueda aparte—, y **una sola** —que dos personas la
+jueguen a la vez y que se sienta bien— sigue siendo del pulgar, porque nunca hubo manera de
+que fuera de otra cosa.
+
+### 2. Qué significa "escrito al lado del nivel" ahora que existe la traza
+
+`BR-25` (b) pedía que el camino de uno solo "esté escrito al lado del nivel — no 'se puede',
+sino 'así se hace'". Esa frase se escribió pensando en una línea de prosa, porque en ese
+momento no había otra forma de dejarlo dicho.
+
+**La traza la satisface entera, y no hace falta además una línea en palabras.** Un archivo
+que un test reproduce cuadro por cuadro y que gana es una prueba más fuerte que una frase: una
+frase puede estar mal escrita, quedar vieja o directamente mentir sin que nada la desmienta;
+la traza no puede — si miente, `npm test` sale rojo y nombra el nivel. "Así se hace" pasa a
+significar "así lo jugó la máquina, ahí está la traza" en vez de "así lo describió una
+persona". Y sigue siendo legible para quien no quiere leer JSON: `node scripts/resolver-niveles.mjs`
+la imprime con sus segundos y su tolerancia (`T-266`).
+
+> **Enmendado el 2026-09-22, misma ráfaga.** El párrafo de abajo decía que `alternativaSolo`
+> "sigue siendo obligatorio donde el schema ya lo exige" y que yo no tocaba ese campo porque
+> era de `arquitectura` (`CTR-16.6`). Eso quedó contradicho el mismo día por un contrato que
+> no había leído antes de cerrar esta entrega: **`CTR-16.10` (`T-264`) retira `sostenido` y
+> `alternativaSolo` del schema entero** —se van en `T-272`— y lo dice con el argumento que
+> este mismo apartado ya usaba dos párrafos más arriba: "una frase no gana un nivel; una
+> traza sí" (`CTR-16.6`, texto de la enmienda). No hay desacuerdo de fondo que resolver acá,
+> solo una entrega que se escribió sin cruzarla contra la otra que salía a la par. Lo que
+> decía el párrafo original queda citado abajo, como registro de qué se corrige y por qué.
+>
+> Texto original: *"Ese campo no prueba (b): es la explicación de diseño de un mecanismo
+> puntual con `sostenido: true` [...], y sigue siendo obligatorio donde el schema ya lo
+> exige. [...] No toco ese campo — es de `arquitectura` (`CTR-16.6`) — y dejo dicho que no
+> hace falta agregarle un tercero."*
+
+**Lo que la traza reemplaza, entonces, es exactamente `alternativaSolo`.** Ese campo de
+`CTR-16.6` explicaba en prosa el truco puntual de un mecanismo con `sostenido: true` —por
+ejemplo, "la caja de [7,9] tapa la placa y la deja abierta"—, y `sostenido` mismo sale del
+schema en la misma enmienda: ya no hace falta declarar a mano qué mecanismo pide dos
+cuerpos, porque ninguna pieza de `CTR-16.10` tiene reloj y la presencia —no la simultaneidad
+de entrada— la prueba la traza por construcción (fila (c) del punto 1, arriba). **Estoy de
+acuerdo con la baja, no la objeto:** sostener `alternativaSolo` como campo obligatorio
+hubiera sido pedirle al mismo nivel la frase y la traza para probar la misma cosa, que es
+exactamente el trabajo duplicado que este documento ya descartó dos párrafos arriba para
+"escrito al lado del nivel". Lo que puede seguir existiendo —sin ser campo de schema ni
+obligación de nadie— es una nota editorial libre para un mecanismo raro que un nivel futuro
+necesite explicar; eso ya no es un requisito de `BR-25` ni de este `BR-29`.
+
+### 3. La tolerancia mínima por escalón, en cuadros
+
+La definición que usan las tres tareas del ciclo (`T-262`, `T-263`/`CTR-18`, `T-266`),
+textual:
+
+> Para cada borde de la traza —el cuadro donde una tecla se aprieta o se suelta—, el mayor
+> **d** tal que correr ese borde cualquier cantidad de cuadros entre 1 y **d**, antes o
+> después, dejando todo lo demás igual, sigue ganando. **La tolerancia del nivel es el
+> mínimo sobre sus bordes.**
+
+| Escalón | Niveles | Tolerancia mínima | A 60 cps |
+|---|---|---|---|
+| **Fácil** | 1, 2 | **≥ 10 cuadros** | ≥ 0,167 s |
+| **Media** | 3, 4 | **≥ 6 cuadros** | ≥ 0,10 s |
+| **Difícil** | 5, 6 | **≥ 4 cuadros** | ≥ 0,067 s |
+
+Son pisos, no techos: un nivel puede tener más margen que el mínimo de su escalón, nunca
+menos, y `T-277` no deja entrar uno que no llegue.
+
+**Fundamento.** Dos citas de este mismo proyecto, no un número puesto a ojo:
+
+- **`Docs/BRIEF.md`, criterio 2:** "Jugable con el pulgar. Una mano, parado, en movimiento.
+  **Nada de precisión fina.**" Eso no es solo espacial —`UX-28` §2.1 ya le dio al salto un
+  blanco de 244 px por esa misma frase—; es también **temporal**: un borde que solo gana con
+  **d = 1** es un salto que se acierta en el instante exacto, y eso es precisión fina con otro
+  nombre, aunque el blanco del dedo sea enorme. Por eso el piso de Difícil —el más exigente de
+  los tres— es 4 cuadros y no 1: sigue lejos del filo, porque ni el fabricante del teléfono
+  garantiza que un toque caiga siempre en el mismo cuadro.
+- **La sección "Piso de ítems" de este mismo archivo, arriba:** "Lo que `BR-01` pide en el
+  primer escalón es menos exigencia, no otras reglas... Fácil es menos obstáculo, menos
+  distancia y **menos precisión**." Fácil pide más margen —10 cuadros, más del doble que
+  Difícil— exactamente por eso: es el escalón que `BR-01` punto 1 le da a cualquiera como
+  primer ítem de la partida, y "menos precisión" ahora tiene un número.
+
+Difícil combina mecanismos ya enseñados (Piso de ítems, arriba: "sin mecanismo nuevo") pero
+nunca pide más filo que Media y Fácil por debajo: la única variable que sube entre escalones
+es cuánto hay que combinar, no cuán exacto hay que ser.
+
+> **Verificado el 2026-09-23 (`T-262`, cierre de la ráfaga 1), contra el traspaso de
+> `arquitectura`** (`Docs/SUGERENCIAS/ARQ-para-producto-la-tolerancia-de-la-traza.md`). Los
+> tres pisos de arriba aguantan los dos límites que importan, y **no los muevo**:
+>
+> - **El piso técnico de `ADR-09.1`** —"con menos de 2 cuadros en cualquier escalón, un
+>   teléfono lento juega un nivel distinto del que probó la máquina"— lo pasan los tres con
+>   margen: hasta Difícil, el más ajustado, pide el doble del mínimo técnico (4 contra 2).
+> - **La referencia de `NIV-01`** —*"ningún escalón debería pedirle a `NIV-01` más que
+>   eso"*— también se cumple: `NIV-01` es Fácil, y el piso de Fácil es 10. El traspaso trae
+>   **un solo número** para la traza grabada de `NIV-01`: **21 cuadros**, contados a mano en
+>   `CTR-18.9` y confirmados en `Docs/ARQ/ARQ-solucion-grabada.md` ("Tolerancia: 21
+>   cuadros"). *(Enmendado el 2026-09-23, misma ráfaga: esta viñeta decía que el traspaso
+>   traía "dos números para `NIV-01` —21 o hasta 30 según `HOLGURA`—". Es una lectura
+>   equivocada: `30` no es una segunda medición de `NIV-01`, es `HOLGURA` en
+>   `solucionador.ts`, el tope con el que el buscador ensancha **cualquier** borde de
+>   **cualquier** nivel de la búsqueda — el propio comentario del código lo dice: "el piso
+>   más alto que pide `BR-29` es 10 cuadros, en Fácil: treinta es el triple". La cuenta no
+>   cambia: 21 le sobra margen al piso de 10 igual que antes.)*
+
+### 4. Si un nivel puede pasar a `listo` sin el teléfono
+
+**No, nunca.** Hoy `CTR-16.7` exige que `verificaciones.deDos` **y** `verificaciones.solo`
+sean las dos `true` para que un nivel cuente —eso cambia de forma, no de fondo, con la
+enmienda de abajo—, y la tabla del punto 1 deja una sola fila que **solo** prueba el pulgar:
+(a). Como `BR-25` no admite niveles a medias —"uno que falla cualquiera de las siete vale
+cero"— y (a) no tiene sustituto de máquina, **ningún nivel cierra el piso sin que dos
+personas lo hayan jugado a la vez en un aparato de verdad.** Confirma lo que recomienda el
+plan del ciclo (`§4` punto 3): la partida en el teléfono queda en la lista de lo que solo el
+usuario puede hacer, y `deDos` es el booleano que lo demuestra.
+
+> **Enmendado el 2026-09-22, misma ráfaga.** El párrafo de abajo describía `verificaciones.solo`
+> marcándose en `true` con un `npm test` en verde y a `revisor` mirando que la traza gane en
+> vez de volver a jugarla — es decir, dejaba el booleano escrito a mano pero vacío de trabajo
+> propio. `ADR-09.3` (`arquitectura`, `T-263`) ya había dejado esto como pregunta abierta para
+> acá, con la condición dicha con todas las letras: *"si `BR-29` no le deja al pulgar **nada**
+> del modo solo [...] entonces `verificaciones.solo` es un booleano que nadie tiene motivo
+> para escribir, y se retira en `CTR-16` versión 2."* El punto 1 de este mismo `BR-29` ya
+> cumple esa condición: las filas (b), (c) y (d) son enteras de la máquina, sin que le quede
+> nada al pulgar. Contesto la pregunta en vez de dejar el booleano en el limbo que describía
+> el párrafo original (texto citado abajo).
+>
+> Texto original: *"Lo que sí cambia con la máquina: `verificaciones.solo` puede marcarse en
+> `true` con una corrida de `npm test` en verde, sin que nadie tenga que repetir esa mitad con
+> el pulgar — quien prueba (`revisor`, por `CTR-16.7`) mira que la traza gane, no que la
+> vuelva a jugar él mismo. `deDos` no tiene ese atajo, y no lo va a tener: es la fila (a)."*
+
+**La respuesta: `verificaciones.solo` se retira, no se sostiene con un sentido nuevo.** No le
+dejo al pulgar ninguna mitad del modo solo, y lo digo por una razón de fondo, no solo porque
+la máquina ya alcanza: la única sensación que "se pasa solo" podía necesitar de un pulgar
+—que ningún salto pida precisión de un cuadro exacto— ya está traducida a número en el punto 3
+de acá arriba, la tolerancia mínima por escalón. No queda un "se siente bien" residual sin
+medir, como sí queda en (a) —ahí no hay número posible, porque depende de dos manos reales
+coordinando—. Un booleano que un ser humano firma para certificar algo que un test ya prueba
+mejor, y que además nadie puede fallar de un modo que el número de tolerancia no capture antes,
+es precisamente el campo vacío de sentido que `ADR-09.3` dijo no querer dejar. **Lo único que
+un nivel necesita para ser `listo`, del lado de la máquina, es que su traza esté grabada y gane
+en `npm test`** —condición pareja para todo nivel del banco, esté en `borrador` o en `listo`
+(`CTR-18.6`)— **y, del lado del pulgar, que `verificaciones.deDos` sea `true`.** `deDos` no
+tiene atajo y no lo va a tener: es la fila (a), la única que depende de dos manos reales.
+Mover `CTR-16.7` para que pida un solo booleano en vez de dos es tarea de `arquitectura`
+—lo dejo pedido en
+`Docs/SUGERENCIAS/PRD-para-arquitectura-verificaciones-solo-se-retira.md`—, no la resuelvo
+acá tocando su contrato.
+
+### 5. Qué pasa cuando se afina la gravedad o la velocidad después del teléfono
+
+1. **Las trazas grabadas quedan desactualizadas apenas cambia el motor.** Son una afirmación
+   sobre la física vieja, y `npm test` lo dice solo: la traza deja de ganar y el test nombra
+   el nivel (`T-267`).
+2. **Se regraban corriendo `scripts/resolver-niveles.mjs`** contra el motor ya afinado
+   (`T-266`), que produce una traza nueva y le mide la tolerancia de nuevo con la definición
+   del punto 3.
+3. **Si la traza nueva no llega al piso de su escalón, el nivel pierde el derecho a contar
+   para el piso:** `estado` vuelve a `borrador` y `verificaciones.deDos` vuelve a `false`
+   (y `verificaciones.solo` con él, mientras el campo siga existiendo), aunque antes hubiera
+   estado `listo`. No es un castigo — es que la condición que lo hacía `listo`, una traza con
+   margen suficiente, dejó de existir.
+4. **Y aunque la traza nueva sí llegue al piso, `deDos` no se hereda del ajuste anterior.**
+   Afinar la gravedad o la velocidad cambia cómo se siente jugarlo de a dos, que es
+   exactamente lo que solo prueba el teléfono (fila (a) del punto 1). Todo cambio de física
+   reabre la partida en el teléfono para cualquier nivel que ya hubiera estado `listo`.
+
+Es `BR-25` de siempre —"uno que falla cualquiera de las siete vale cero"— aplicado al
+caso en el que lo que cambió no fue el nivel: fue la física debajo de los seis.
 
 ---
 

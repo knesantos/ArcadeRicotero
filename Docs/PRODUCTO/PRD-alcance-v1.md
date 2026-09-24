@@ -59,6 +59,17 @@
 > corrige la afirmación en el apartado 8. Toca además `US-01` (agrega criterio 6) y el
 > apartado 6 de `BR-19` (el resultado y el payload de `ADR-02` pasan de dos desenlaces a
 > tres).
+>
+> **Revisión 2026-09-23 (`T-274`, ciclo 16, enmienda de `D-45`).** Consume además
+> `Docs/INVESTIGACION/INV-73-recitales-setlistfm.md` (`RES-73`..`RES-75`) y `BR-28`
+> (`Docs/PRODUCTO/PRD-skayboy-y-poligirl.md`). Suma el apartado (h) a `BR-18`: la vara de
+> Fáciles de `US-02` deja de salir del ranking de vistas de YouTube (apartado f, que queda
+> **enmendado, no borrado**) y pasa a salir del conteo citado de setlist.fm, leído contra
+> el filtro de catálogo. Dos cosas quedan explícitamente pendientes de otra mano — ninguna
+> de las dos se resuelve en esta revisión: si `D-27` (los tercios de "Sacalo por la
+> letra") también se alimenta de este conteo, pendiente **del usuario**; y la actualización
+> formal de `BR-28` en `PRD-skayboy-y-poligirl.md`, fuera del alcance de archivo de esta
+> tarea. El resto del documento no se tocó.
 
 ## Por qué existe el piso de ítems
 
@@ -1239,6 +1250,12 @@ fusionada con la de YouTube en un "popularidad" único.
 
 ### f) Resuelve la cuota de Fáciles de `US-02` (el hilo de `arquitectura`)
 
+> **Enmendado 2026-09-23 por el apartado (h), sin borrarse.** La fuente del orden de los 8
+> Fáciles deja de ser el ranking de vistas de YouTube y pasa a ser el conteo citado de
+> setlist.fm (`D-45`). Este apartado queda como registro de la regla original y de por qué
+> se llegó a "posición, no corte fijo" — ese razonamiento se hereda entero en (h). **La
+> vara vigente hoy es la de (h)**, más abajo.
+
 `Docs/SUGERENCIAS/HILO-para-producto-cuota-de-faciles-en-us02.md` dejó tres salidas sin
 elegir porque la etiqueta `dificultad` ya no vive en `adivinar-tema.json` (ese archivo es
 manifiesto de audio desde `D-24`, no banco de ítems). Con el ranking de YouTube de esta
@@ -1324,6 +1341,117 @@ cuota con un dato peor es cumplirla en el papel y romperla en la pantalla.
 
 ---
 
+### h) La vara de Fáciles cambia de fuente: lo más tocado en vivo — 2026-09-23, `T-274`, enmienda de `D-45`
+
+**El apartado (f) queda enmendado, no derogado.** Lo que sigue reemplaza únicamente **de
+dónde sale el orden** de los 8 Fáciles de `US-02`; la cuota (8), el pool sobre el que se
+calcula (temas con fragmento de audio producido) y el motivo de fondo (`BR-01` punto 3:
+que el primer ítem no sea siempre el mismo) siguen intactos y se heredan textuales del
+apartado (f). Se marca enmendado en vez de borrarse para que quede a la vista qué cambió
+y por qué — mismo criterio que usa `CLAUDE.md` con sus propios avisos corregidos.
+
+**Qué cambió y por qué.** `D-45` (decisión del usuario) mueve la fuente de "Fácil" de las
+vistas de YouTube a lo más tocado en vivo según setlist.fm, condicionada a que la
+cobertura alcanzara para ordenar sin que un empate lo decida el azar. `INV-73` confirmó
+la condición: el top-25 de la página de estadísticas de setlist.fm no tiene empate en el
+puesto 8 (`RES-74`), reverificado con dos fetches independientes que coinciden dígito por
+dígito.
+
+**La vara nueva.** Dentro del pool de temas con fragmento de audio producido (hoy 95),
+"Fácil" son los **8 títulos de mayor conteo citado** en la página de estadísticas de
+setlist.fm, contando solo los títulos que **resuelven a un slug del catálogo** — la
+normalización que `RES-75` deja propuesta y que fija `T-279`. Se recalcula cada vez que
+se refresque el índice de recitales; la fecha de ese primer refresco no está fijada
+todavía (ver `PENDIENTE`).
+
+**Cómo se lee con el filtro de catálogo.** setlist.fm cuenta *lo que la banda tocó*, no
+*lo que el sitio puede dar como respuesta*: `RES-75` encontró que 2 de los 8 puestos más
+altos del ranking crudo (`Un tal Brigitte Bardot`, puesto 4; `Nene nena`, puesto 7) son
+demos de RCA de 1982 que nunca entraron a los 10 discos de estudio — sin slug de
+catálogo, no pueden ser respuesta de ningún juego. El filtro de catálogo se aplica
+**antes** de cortar el top-8, no después: leyendo solo los títulos que resuelven a un
+slug, el top-25 de `RES-74` da, hoy — Jijiji, Ñam fri fruli fali fru, Vamos las bandas,
+Nadie es perfecto, Divina TV. Führer, Nueva Roma, Mi perro dinamita, La bestia pop —
+bajando hasta el puesto 10, sin empate en el corte (57 contra 55). **Esto es una lectura
+derivada de `INV-73`, no una lista que este documento congele**: la arma `T-279` contra
+el pool con fragmento vigente en cada ingesta, y si alguno de esos 8 títulos todavía no
+tiene su audio producido, el filtro sigue bajando en el ranking hasta completar 8 —
+mismo mecanismo que el apartado (f) ya preveía para YouTube, aplicado ahora a esta fuente.
+
+**Qué dice el rótulo — registro 3, sin excepción (`.claude/rules/voz-ricotera.md` §5).**
+El sitio dice **"lo más tocado en vivo"**, nunca "el más popular" ni "el más escuchado":
+son promesas distintas y la propia `D-45` explica por qué no son intercambiables — un
+tema que se tocó en cada misa no es por eso el que más suena hoy. Mismo patrón de tres
+datos juntos que ya exige el apartado (a) para YouTube —cifra, fecha, origen— trasladado
+a esta fuente: **qué mide** (cuántas veces figura el tema en los setlists cargados en
+setlist.fm), **de dónde sale** (la página de estadísticas de setlist.fm, con la fecha de
+consulta) y, si se muestra un número, que vaya chico y nunca como titular (apartado b
+sigue entero: es la misma razón — una cifra que solo puede subir envejece distinto que un
+orden). El copy exacto es de `contenido`/`experiencia`; esto fija qué tiene que poder
+decir sin mentirle a quien juega.
+
+**Si la clave de YouTube llega algún día (`D-45` consecuencia 1).** El ranking de vistas
+de YouTube, si algún día se resuelve, **vive aparte** — `CTR-07.7` queda intacto, es otro
+archivo y otra cuenta — y **no reactiva sola la vara del apartado (f)**. Si en el futuro
+conviene volver a YouTube, usar las dos fuentes a la vez, o quedarse con setlist.fm, es
+una decisión nueva de `producto` con el usuario, con el mismo peso que tuvo esta. Hasta
+entonces, la vara vigente para los 8 Fáciles de `US-02` es la de este apartado (h).
+
+**Cómo se levanta la puerta de `BR-28`.** `BR-28` frena un noveno juego mientras `US-02`
+siga en 0 de 8 Fáciles. Con esta vara, la puerta se abre **cuando un test cuente los 8**
+sobre el pool real de fragmentos — `T-279`, no antes: escribir esta regla no alcanza, es
+la misma trampa que `D-45` consecuencia 2 nombra ("declarar un choque como resuelto"). La
+condición original de `BR-28` apartado 3 ("la clave llega, o se decide por escrito que no
+va a llegar") queda superada por esta vara — ya no depende de la clave — y no la
+actualizo en su propio archivo (`Docs/PRODUCTO/PRD-skayboy-y-poligirl.md`) porque `T-274`
+no tiene ese archivo en su alcance; queda anotado en `PENDIENTE` para la próxima ráfaga de
+`producto` sobre ese documento.
+
+**La pregunta de `D-27`, para el usuario — no la contesto, dejo el costo de cada salida.**
+`D-45` consecuencia 3 deja abierto si los tercios de dificultad de "Sacalo por la letra"
+(`US-07`, `D-27`, `src/lib/popularidad.ts`) también se alimentan de este conteo en vez de
+seguir esperando la `YT_API_KEY`. Dos salidas, con su costo real:
+
+- **Salida A — no tocar `D-27`.** Sigue infiriendo dificultad de las vistas de YouTube y
+  sigue esperando la clave. Costo: **cero trabajo nuevo**, pero `US-07` sigue sin
+  escalonamiento real mientras la clave no llegue — el mismo estado ya declarado hoy
+  (`popularidad.ts`: `medidos === 0`, todos los temas `dificil`). A favor: no mezcla dos
+  promesas distintas — "cuánto se escucha" (la intención original de `D-27`) y "cuánto se
+  tocó en vivo" (`D-45`) miden cosas distintas, aunque estén correlacionadas.
+- **Salida B — `D-27` también lee del conteo citado de setlist.fm.** Costo real y no
+  chico: los tercios de `D-27` necesitan un ranking del **catálogo completo** (104 o 105
+  temas, según se reconcilie — ver `PENDIENTE` de `INV-73`), no un top-8 ni un top-25, y
+  lo único que `RES-74` trae hoy es la página pública de estadísticas, que solo expone un
+  top-25. Conseguir un conteo defendible para los ~80 temas que quedan fuera de ese
+  top-25 puede no ser alcanzable por la misma vía que `RES-73` ya validó (licencia "para
+  ver", sin bots, sin retención vía API más allá de caché corta) sin pedirle a
+  `investigador` una ficha nueva y a `arquitectura` un contrato que hoy no existe. Y el
+  rótulo de "Sacalo por la letra" tendría que dejar de decir lo que `D-27` promete hoy y
+  pasar a decir lo mismo que este apartado —"lo más tocado en vivo"—, que es un cambio de
+  promesa, no solo de fuente; `D-27` fue decisión directa del usuario, así que cambiarla
+  la pide él, no `producto` por su cuenta.
+
+  **A favor de la B, para que no quede descartada de arranque:** el argumento con el que
+  `D-45` eligió setlist.fm —"el recital fue donde la gente aprendió los temas, se
+  cantaban enteros desde la tribuna"— encaja con "Sacalo por la letra" tan bien como con
+  "Adiviná el tema", quizás mejor: saberse la letra de memoria se parece más a haberla
+  cantado en la cancha que a haberla escuchado en YouTube.
+
+  **Mi recomendación, si el usuario pide una: Salida A por ahora.** El costo de la B —un
+  ranking del catálogo completo, no solo un top-25 público— no está resuelto por ninguna
+  ficha existente, y `D-27` no está bloqueando nada hoy que no estuviera bloqueado antes
+  de `D-45` (`US-07` sigue con el mismo `PENDIENTE` que ya tenía). Pero la decisión es del
+  usuario, no mía — **queda pedida acá**, igual que `BR-19` dejó pedida la suya en su
+  momento.
+
+**Verificación:** `rg -n "^### h)" Docs/PRODUCTO/PRD-alcance-v1.md` devuelve la línea de
+este apartado. Que el apartado (f) haya quedado marcado enmendado (no borrado) y que la
+pregunta de `D-27` esté explícitamente rotulada como pendiente del usuario, lo mira
+`revisor`. El conteo real de los 8 —si el filtro de catálogo y el pool con fragmento dan
+efectivamente 8 títulos— lo corre `T-279` (`src/lib/escalonar.test.ts`).
+
+---
+
 ## PENDIENTE
 
 - ~~**Duración exacta en segundos de cada paso del reveal de audio.**~~ **[RESUELTO
@@ -1358,7 +1486,17 @@ cuota con un dato peor es cumplirla en el papel y romperla en la pantalla.
   (`RES-52`, apartado c) y que `contenido` aplique el criterio de video declarado del
   apartado c de `BR-18` en los temas sin canal Topic. Hasta que eso exista, `BR-18`
   apartado f (Fáciles de `US-02` por posición en el ranking) no tiene con qué calcular
-  nada — sigue igual de bloqueado que hoy, que es 0 de 30.
+  nada — sigue igual de bloqueado que hoy, que es 0 de 30. **Actualizado 2026-09-23: este
+  bloqueo dejó de frenar la cuota de Fáciles**, que desde el apartado (h) sale del conteo
+  citado de setlist.fm. Si algún día la clave llega, el ranking de YouTube se guarda igual
+  (sigue siendo la promesa de los apartados a-e) pero **no reemplaza la vara de Fáciles
+  sin una decisión nueva** (`D-45` consecuencia 1, apartado h).
+- **`BR-28` (`Docs/PRODUCTO/PRD-skayboy-y-poligirl.md`) sigue citando la condición vieja.**
+  Su apartado 3 dice que la puerta del noveno juego se abre cuando "la clave llega" o "se
+  decide por escrito que no va a llegar". Desde el apartado (h), la puerta se abre cuando
+  `T-279` cuenta los 8 Fáciles sobre la vara de setlist.fm — la clave de YouTube ya no es
+  la condición. No lo edito en este archivo porque `T-274` no tiene `PRD-skayboy-y-
+  poligirl.md` en su alcance. Dueño: `producto`, próxima ráfaga sobre ese documento.
 - **Dónde vive la pantalla del ranking de populares/oscuros.** No lo decido acá — `BR-18`
   fija la promesa y las reglas del dato, no el flujo ni la pantalla (`CLAUDE.md`, límites
   de `producto`). Dueño: `experiencia`, si decide que es una pantalla propia, una sección
