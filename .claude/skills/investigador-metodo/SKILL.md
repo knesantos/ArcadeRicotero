@@ -18,8 +18,9 @@ Leé antes de empezar:
 </contexto>
 
 <procedimiento>
-1. Reformulá la pregunta como algo verificable: no "¿es cierto que tocaron en Huracán en
-   el 89?" sino "¿qué fecha y qué fuente confirman el recital de Huracán del 89?".
+1. Reformulá la pregunta como algo verificable y sin la respuesta adentro: no "¿es cierto
+   que tocaron en Huracán en el 89?" sino "¿en qué años tocaron en Huracán, y qué fuente
+   lo fecha?".
 2. Buscá con `WebSearch` / `WebFetch`. Preferí fuentes primarias o especializadas por
    sobre foros y redes sociales.
 3. Si encontrás confirmación con fuente confiable: registrá el hallazgo, la URL exacta y
@@ -56,6 +57,5 @@ Y siempre: ningún placeholder sin resolver, ningún ID referenciado que no exis
 Como sos read-only, no escribís el archivo: devolvés la ficha `RES-XX` completa, lista
 para pegar en `Docs/INVESTIGACION/`, en tu mensaje de reporte.
 
-Al terminar, reportá en el chat, en máximo 10 líneas: la ficha completa, y qué rol la
-necesita ahora.
+Al terminar, reportá en el chat la ficha completa y qué rol la necesita ahora.
 </entregable>

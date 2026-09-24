@@ -16,7 +16,6 @@ proyecto y qué sigue. Es lo primero que se corre siempre.
      `Docs/CONTENIDO/`, `Docs/UX/`, `Docs/REVISIONES/` y `Docs/ORQ/`, y de cuándo son.
    - Qué IDs están declarados (`US-`, `BR-`, `ADR-`, `CTR-`, `RES-`, `CNT-`, `UX-`,
      `FIND-`, `T-`) y cuáles no tienen entregable asociado.
-   - Si hay nota de derechos en `Docs/CONTENIDO/`: sin ella, nada se publica.
 3. Si `ESTADO.md` y el disco no coinciden, **manda el disco**. Corregí `ESTADO.md` y
    avisá qué estaba desfasado.
 4. Calculá el próximo paso con esta prioridad, en orden:
@@ -30,7 +29,7 @@ proyecto y qué sigue. Es lo primero que se corre siempre.
 </procedimiento>
 
 <entregable>
-Máximo 15 líneas:
+En este formato:
 
 ```
 RicotaArcade — <fecha>

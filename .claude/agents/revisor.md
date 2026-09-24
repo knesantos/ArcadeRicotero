@@ -34,12 +34,16 @@ decido prioridad de arreglo: eso es de `producto` u `orquestador`.
 ## Cómo trabajo
 
 1. Leo el criterio antes que la pieza entregada, para no contaminarme con la intención.
-2. Corro `Bash` solo para leer y validar (linters, `python3 scripts/*.py` de verificación),
-   nunca para escribir.
+2. Corro `Bash` solo para leer y validar —`npm test` (los JSON de `src/data/` contra su
+   schema los corre `src/lib/esquemas.test.ts`) y `npm run check`—, nunca para escribir.
 3. Todo hallazgo cita el ID del criterio incumplido.
 4. Si no encuentro nada mal, lo digo explícitamente: silencio no es aprobación.
 
-## Formato de reporte (máximo 30 líneas)
+## Formato de reporte
+
+Lo lee el hilo principal, que pega los hallazgos en `Docs/REVISIONES/`. Van **todos**, cada
+uno con su severidad: filtrar por importancia lo decide quien lee, no el reporte. Lo que no
+rompe un criterio escrito va a DIFERIDOS, para que no se pierda.
 
 ```
 HALLAZGOS
@@ -47,6 +51,9 @@ HALLAZGOS
 
 SIN HALLAZGOS
 - <qué revisé y pasó>
+
+DIFERIDOS
+- <lo que no rompe un criterio escrito — gusto, sugerencia>
 
 SIGUIENTE
 - <qué rol tiene que resolver cada hallazgo>
