@@ -142,6 +142,19 @@ por su letra y no solo de oído ni por el título en la tapa.
   que el filtro de `CNT-11` apruebe el catálogo entero sin descartar ni un tema (por ejemplo,
   uno corto donde el título aparece en casi todos los versos). 60 deja margen para ese
   descarte sin acercarse al techo.
+
+> **Enmendado 2026-09-24 por `D-27` y `BR-30` (`Docs/PRODUCTO/PRD-alcance-v1.md`), sin
+> borrar el párrafo de abajo.** Lo que sigue queda desactualizado y se marca por
+> trazabilidad, no porque siga vigente: **`D-27`, decidido el mismo 2026-08-27**, ya había
+> convertido este "Plan B" en el mecanismo real de este juego —tercios por popularidad, no
+> etiqueta manual— aunque este documento nunca se volvió a tocar para decirlo. `D-46`
+> (2026-09-24) confirma que el mecanismo sigue siendo el de `D-27` y le cambia únicamente
+> la fuente: en vez de vistas de YouTube (que nunca llegaron), el conteo citado de
+> setlist.fm. La etiqueta de este juego **no es manual hoy**, y el "día que el ranking
+> exista" que el párrafo de abajo imagina como futuro **ya llegó**. `BR-30` tiene el
+> detalle completo, incluida la regla de reparto (tercios, no el corte de 8 de `US-02`) y
+> por qué el piso de 15 Fáciles sigue alcanzando.
+
 - **Plan B declarado para la etiqueta de dificultad, no vía principal todavía.** `BR-18`
   apartado (f) ya resolvió el mismo problema para `US-02`: "Fácil" dejó de ser etiqueta
   manual y pasó a ser el top-8 del ranking de vistas de YouTube, porque una etiqueta manual
@@ -275,6 +288,13 @@ la lógica de una escalera que duplica.
   `Docs/PRODUCTO/PRD-alcance-v1.md` para sumarlo a la lista de "Aplica a" de esa regla —no es
   mi archivo en esta tarea, lo está tocando `T-129` en paralelo— pero queda dicho acá para
   quien la toque después.
+
+  > **Enmendado 2026-09-24 por `BR-30`, sin borrar.** "Asignada a mano por `contenido`" ya
+  > no describe este juego: desde `D-27` (2026-08-27) y confirmado por `D-46`, la etiqueta
+  > sale del conteo en tercios, no de `contenido`. `BR-01` sigue aplicando entera —primer
+  > ítem Fácil, la dificultad no baja, piso mínimo de 15— solo que ya no por etiqueta
+  > manual. `US-01`, `US-03` y `US-04` sí siguen siendo manuales (`BR-30` lo confirma para
+  > `US-03`, que se lo planteó y decidió no migrarlo).
 - **La tabla resumen de piso de ítems de `PRD-alcance-v1.md`** ("Piso de ítems — resumen")
   no incluye a `US-07` todavía, por el mismo motivo de arriba. El número a sumar es este:
   60 temas, mínimo 15 Fácil, costo dominante "curación del filtro de título (`CNT-11`)".

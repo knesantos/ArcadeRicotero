@@ -142,6 +142,19 @@ para *ver* y prohíben los bots, y su API prohíbe guardar lo que devuelve. Tres
 la paleta del sitio, y esta es la de adentro del mueble (`D-41`). Y son **15 tintas, no 16**:
 `experiencia` le sacó la tinta a la puerta (`UX-27 §4.1.2`). Donde esta tabla dice "16", lee 15.
 
+### 2.4 Lo que abre `D-46`, y entra a la ráfaga 3
+
+El 2026-09-24 el usuario aprobó la paleta y los dibujos, y contestó la pregunta de `D-27`
+más amplio de lo que se le preguntó: *"La dificultad de todo lo que sea con canciones sale
+de ahí"* (`D-46`). Cuatro tareas nuevas, del margen de `Docs/IDS.md`:
+
+| ID | Rol | Qué | Archivos | Verifica con | [P] |
+|---|---|---|---|---|---|
+| `T-282` | `investigador` | **El conteo completo.** Todos los temas que lista la página de estadísticas de setlist.fm, no solo los 25 primeros de `RES-74`, con URL y fecha. Números citados, vistos, no bajados con un bot (`RES-73.1`) | `Docs/INVESTIGACION/INV-89-conteo-completo.md` (`RES-89`+; lo pega el hilo principal) | Sin comando: cada número con su página. Lo cruzable —que los 25 primeros coincidan con `RES-74`— lo recuenta `T-285` | **[P]** |
+| `T-283` | `producto` | **`BR-30`: qué juegos son "con canciones" y cómo usa cada uno la dificultad.** `US-02` y `US-07` seguro; `US-03`, `US-08` y las preguntas del quiz que son sobre temas, una por una. Qué pasa con los tercios de `D-27` cuando la medida es el conteo | `Docs/PRODUCTO/PRD-alcance-v1.md` (y los PRD de cada juego que cambie) | `rg -n "^## BR-30"`; una fila por juego del sitio, sin celdas vacías — lo mira `revisor` | **[P]** |
+| `T-284` | `arquitectura` | **Los contratos que cambian con `D-46`**: el conteo completo en `CTR-19`, y cada banco que pasa de dificultad escrita a mano a inferida (`CTR-03`, `CTR-04`, `CTR-09`, `CTR-07` retirado de la dificultad) | `Docs/ARQ/ARQ-schema-recitales.md` y los `ARQ-schema-*` que toque | `rg` de cada `CTR` enmendado; los fragmentos de schema validan con `ajv` | dep. `T-283` |
+| `T-285` | hilo principal | **La dificultad inferida del conteo, en cada juego con canciones**: `src/lib/popularidad.ts` (la regla de tercios de `D-27`, una sola vez) leyendo el conteo, y cada banco que `BR-30` nombre | `src/lib/popularidad.ts`, `src/lib/en-vivo.ts`, los bancos, sus tests | `npm test`: la dificultad de cada juego sale del conteo, un tema sin conteo es difícil, y ningún juego mezcla el conteo con las vistas (`CTR-07.7`) — cada regla vista en rojo | dep. `T-282`, `T-284` |
+
 ## 3. Pasada de conflictos
 
 - **`src/data/skayboy.json` lo tocan `T-267` y `T-277`.** En fila: `T-267` le pone la traza a
