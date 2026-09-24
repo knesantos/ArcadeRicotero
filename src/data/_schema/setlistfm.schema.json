@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ricotaarcade.local/schema/setlistfm/1",
+  "title": "CTR-19 pieza 1 — Lo que el sitio cita de setlist.fm",
+  "description": "Citado, no licenciado (RES-73.1): numeros con su pagina y su fecha, y enlaces. Nunca la lista de temas de un recital (D-45 enmendada). Se escribe a mano desde una ficha RES; ningun script lee setlist.fm.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contrato", "pieza", "contratoVersion", "fuente", "conteo"],
+  "properties": {
+    "contrato": { "const": "CTR-19" },
+    "pieza": { "const": "citado" },
+    "contratoVersion": { "const": 1 },
+    "fuente": {
+      "const": "setlist.fm",
+      "comment": "Const y no enum, como CTR-07: un archivo, una fuente. Un conteo de otra fuente es otro archivo y otro orden, nunca una suma (CTR-07.7)."
+    },
+    "nota": { "type": "string", "maxLength": 400 },
+    "conteo": { "$ref": "#/$defs/conteo" },
+    "indice": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/enlace" },
+      "comment": "Opcional. Fecha, lugar, ciudad y la pagina. Sin temas y sin cuantos temas (CTR-19.4)."
+    }
+  },
+  "$defs": {
+    "fecha": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "fechaDeRecital": { "type": "string", "pattern": "^\\d{4}(-\\d{2}(-\\d{2})?)?$" },
+    "ficha": { "type": "string", "pattern": "^RES-\\d{2,3}$" },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "maxLength": 90 },
+    "fuera": { "enum": ["inedito", "cover", "intro", "cantico", "sin-identificar"] },
+    "conteo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pagina", "consultado", "ficha", "vigenciaDias", "setlistsCargados", "completo", "temas"],
+      "properties": {
+        "pagina": { "type": "string", "pattern": "^https://www\\.setlist\\.fm/stats/[a-z0-9-]+\\.html$" },
+        "consultado": { "$ref": "#/$defs/fecha" },
+        "ficha": { "$ref": "#/$defs/ficha" },
+        "vigenciaDias": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 730,
+          "comment": "180 por BR-18 (d). Lo puede mover producto sin tocar el schema (CTR-19.6)."
+        },
+        "setlistsCargados": { "type": "integer", "minimum": 1 },
+        "completo": {
+          "type": "boolean",
+          "comment": "false = la pagina publica un top. Un tema que no figura tiene como mucho el conteo de la ultima linea: no es cero."
+        },
+        "temas": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/linea" } }
+      }
+    },
+    "linea": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["titulo", "veces"],
+      "comment": "Una linea publicada: el titulo tal cual, cuantas veces figura, y a que tema del catalogo resuelve o por que no.",
+      "properties": {
+        "titulo": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "veces": { "type": "integer", "minimum": 1 },
+        "slug": { "$ref": "#/$defs/slug" },
+        "fuera": { "$ref": "#/$defs/fuera" },
+        "nota": { "type": "string", "minLength": 10, "maxLength": 200 }
+      },
+      "oneOf": [
+        { "required": ["slug"], "not": { "required": ["fuera"] } },
+        { "required": ["fuera"], "not": { "required": ["slug"] } }
+      ],
+      "if": { "required": ["fuera"], "properties": { "fuera": { "const": "sin-identificar" } } },
+      "then": { "required": ["nota"] }
+    },
+    "enlace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fecha", "lugar", "ciudad", "url", "ficha"],
+      "properties": {
+        "fecha": { "$ref": "#/$defs/fechaDeRecital" },
+        "orden": { "type": "integer", "minimum": 2, "maximum": 9 },
+        "lugar": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "ciudad": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "url": {
+          "type": "string",
+          "pattern": "^https://www\\.setlist\\.fm/setlist/[a-z0-9-]+/\\d{4}/[a-z0-9-]+\\.html$"
+        },
+        "ficha": { "$ref": "#/$defs/ficha" }
+      }
+    }
+  }
+}

@@ -10,11 +10,11 @@
  * describe**: el día que el reparto cambie —de tercios a cuartos, o el criterio del tema
  * sin medición— la copia que nadie se acuerda de tocar queda mintiendo.
  *
- * La usan `scripts/generar-por-la-letra.mjs` (escribe `dificultad` en el banco de `US-07`)
- * y `src/lib/tema/catalogo.ts` (la estampa en build sobre los temas de `US-02`). Los dos
- * caminos son distintos a propósito y están explicados en `CTR-03.11`: allá el nivel se
- * escribe en el dato, acá se deriva, porque el audio no se regenera cada 180 días y la
- * popularidad sí se revisa (`BR-18` apartado d).
+ * La usa `scripts/generar-por-la-letra.mjs` (escribe `dificultad` en el banco de `US-07`).
+ * Hasta el ciclo 16 la usaba también `src/lib/tema/catalogo.ts` para `US-02`; desde `D-45`
+ * ese juego reparte por lo más tocado en vivo, con su propia regla en `en-vivo.ts`
+ * (`CTR-19.5`), y las vistas de YouTube no le llegan. Este archivo sigue siendo la regla de
+ * `D-27` para `US-07`, y la salida A o B de esa pregunta es del usuario (`BR-18` h).
  *
  * ## De dónde sale esto
  *

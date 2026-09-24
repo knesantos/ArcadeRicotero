@@ -100,11 +100,10 @@ test('US-05: el piso de 35 articulos de la Redondopedia sigue cumplido', () => {
  * `T-99`). Cumplido el 2026-08-27 con los 95 fragmentos del PR #8.
  *
  * **Se cuenta sobre el manifiesto, que es la lista de archivos que existen de verdad.**
- * La cuota de 8 Faciles de `BR-18` (f) **no se testea aca y no es un olvido**: la
- * dificultad de este juego no vive en el dato, se deriva en build de las escuchas
- * (`D-27`, `CTR-03.11`), y hoy no hay mediciones. Lo que pasa con esa cuota mientras
- * tanto lo decide `BR-18` apartado (g), y quien guarda el mecanismo es
- * `src/lib/tema/catalogo.test.ts`.
+ * La cuota de 8 Faciles **no se testea aca y no es un olvido**: la dificultad de este
+ * juego no vive en el dato, se deriva en build del conteo citado de setlist.fm (`D-45`,
+ * `BR-18` h, `CTR-19.5`). La cuenta de los 8 sobre el pozo real vive en
+ * `src/lib/escalonar.test.ts` y en `src/lib/en-vivo.test.ts` (t5).
  */
 test('US-02: el piso de 30 temas con fragmento sigue cumplido', () => {
   const { fragmentos } = leer<{ fragmentos: readonly unknown[] }>('adivinar-tema');

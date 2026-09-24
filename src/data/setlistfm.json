@@ -1,0 +1,426 @@
+{
+  "contrato": "CTR-19",
+  "pieza": "citado",
+  "contratoVersion": 1,
+  "fuente": "setlist.fm",
+  "nota": "Cuantas veces figura cada tema en los setlists que carga la gente en setlist.fm, citado de su pagina de estadisticas. No es cuantas veces lo toco la banda.",
+  "conteo": {
+    "pagina": "https://www.setlist.fm/stats/patricio-rey-y-sus-redonditos-de-ricota-bd615a2.html",
+    "consultado": "2026-09-22",
+    "ficha": "RES-74",
+    "vigenciaDias": 180,
+    "setlistsCargados": 256,
+    "completo": false,
+    "temas": [
+      {
+        "titulo": "Jijiji",
+        "veces": 101,
+        "slug": "jijiji"
+      },
+      {
+        "titulo": "Ñam fri fruli fali fru",
+        "veces": 93,
+        "slug": "nam-fri-frufi-fali-fru"
+      },
+      {
+        "titulo": "Vamos las bandas",
+        "veces": 90,
+        "slug": "vamos-las-bandas"
+      },
+      {
+        "titulo": "Un tal Brigitte Bardot",
+        "veces": 80,
+        "fuera": "inedito",
+        "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+      },
+      {
+        "titulo": "Nadie es perfecto",
+        "veces": 71,
+        "slug": "nadie-es-perfecto"
+      },
+      {
+        "titulo": "Divina TV. Führer",
+        "veces": 69,
+        "slug": "divina-tv-fuhrer"
+      },
+      {
+        "titulo": "Nene nena",
+        "veces": 68,
+        "fuera": "inedito",
+        "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+      },
+      {
+        "titulo": "Nueva Roma",
+        "veces": 61,
+        "slug": "nueva-roma"
+      },
+      {
+        "titulo": "Mi perro dinamita",
+        "veces": 58,
+        "slug": "mi-perro-dinamita"
+      },
+      {
+        "titulo": "La bestia pop",
+        "veces": 57,
+        "slug": "la-bestia-pop"
+      },
+      {
+        "titulo": "Aquella solitaria vaca cubana",
+        "veces": 55,
+        "slug": "aquella-solitaria-vaca-cubana"
+      },
+      {
+        "titulo": "La parabellum del buen psicópata",
+        "veces": 53,
+        "slug": "la-parabellum-del-buen-psicopata"
+      },
+      {
+        "titulo": "Unos pocos peligros sensatos",
+        "veces": 52,
+        "slug": "unos-pocos-peligros-sensatos"
+      },
+      {
+        "titulo": "Ya nadie va a escuchar tu remera",
+        "veces": 50,
+        "slug": "ya-nadie-va-a-escuchar-tu-remera"
+      },
+      {
+        "titulo": "Queso ruso",
+        "veces": 49,
+        "slug": "queso-ruso"
+      },
+      {
+        "titulo": "Rock para los dientes",
+        "veces": 49,
+        "slug": "rock-para-los-dientes"
+      },
+      {
+        "titulo": "Ella debe estar tan linda",
+        "veces": 47,
+        "slug": "ella-debe-estar-tan-linda"
+      },
+      {
+        "titulo": "Barbazul vs. el amor letal",
+        "veces": 46,
+        "slug": "barbazul-versus-el-amor-letal"
+      },
+      {
+        "titulo": "Roto y mal parado",
+        "veces": 45,
+        "slug": "roto-y-mal-parado"
+      },
+      {
+        "titulo": "El pibe de los astilleros",
+        "veces": 44,
+        "slug": "el-pibe-de-los-astilleros"
+      },
+      {
+        "titulo": "Maldición, va a ser un día hermoso",
+        "veces": 44,
+        "slug": "maldicion-va-a-ser-un-dia-hermoso"
+      },
+      {
+        "titulo": "Mariposa Pontiac",
+        "veces": 43,
+        "slug": "mariposa-pontiac-rock-del-pais"
+      },
+      {
+        "titulo": "Masacre en el puticlub",
+        "veces": 41,
+        "slug": "masacre-en-el-puticlub"
+      },
+      {
+        "titulo": "Música para pastillas",
+        "veces": 41,
+        "slug": "musica-para-pastillas"
+      },
+      {
+        "titulo": "Semen Up",
+        "veces": 41,
+        "slug": "semen-up"
+      }
+    ]
+  },
+  "indice": [
+    {
+      "fecha": "1992-07-18",
+      "lugar": "Microestadio Racing Club",
+      "ciudad": "Avellaneda",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/microestadio-racing-club-avellaneda-argentina-6bceba52.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-07-19",
+      "lugar": "Microestadio Racing Club",
+      "ciudad": "Avellaneda",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/microestadio-racing-club-avellaneda-argentina-1be6a124.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-08-07",
+      "lugar": "Teatro San Martín",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/teatro-san-martin-mar-del-plata-argentina-6be6a61e.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-08-08",
+      "lugar": "Teatro San Martín",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/teatro-san-martin-mar-del-plata-argentina-bcde582.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-09-19",
+      "lugar": "Estadio Cubierto Newell's Old Boys",
+      "ciudad": "Rosario",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/estadio-cubierto-newells-old-boys-rosario-argentina-1be6a118.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-09-26",
+      "lugar": "Flop Discotheque",
+      "ciudad": "Villa María",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/flop-discotheque-villa-maria-argentina-be6a11e.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-10-02",
+      "lugar": "Centro Municipal de Exposiciones",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/centro-municipal-de-exposiciones-buenos-aires-argentina-1bccd96c.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-10-03",
+      "lugar": "Centro Municipal de Exposiciones",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/centro-municipal-de-exposiciones-buenos-aires-argentina-6be6a612.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-10-30",
+      "lugar": "King Kong Stadium",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/king-kong-stadium-buenos-aires-argentina-6be6a60a.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-10-31",
+      "lugar": "King Kong Stadium",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/king-kong-stadium-buenos-aires-argentina-63e6a6fb.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-11-01",
+      "lugar": "King Kong Stadium",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/king-kong-stadium-buenos-aires-argentina-7be6a6f8.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1993-11-19",
+      "lugar": "Estadio Huracán",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1993/estadio-huracan-buenos-aires-argentina-2bd25062.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1993-11-20",
+      "lugar": "Estadio Huracán",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1993/estadio-huracan-buenos-aires-argentina-2bc7143a.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1993-12-10",
+      "lugar": "Sociedad Rural",
+      "ciudad": "Rosario",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1993/sociedad-rural-rosario-argentina-3bcce8a8.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1994-05-14",
+      "lugar": "Estadio Huracán",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1994/estadio-huracan-buenos-aires-argentina-33fd4445.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1994-08-12",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1994/go-disco-mar-del-plata-argentina-73e6a6e1.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1994-08-13",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1994/go-disco-mar-del-plata-argentina-53c8af4d.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1994-08-14",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1994/go-disco-mar-del-plata-argentina-be6a10a.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1994-12-16",
+      "lugar": "Estadio Huracán",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1994/estadio-huracan-buenos-aires-argentina-63e6a6db.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1994-12-17",
+      "lugar": "Estadio Huracán",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1994/estadio-huracan-buenos-aires-argentina-3c4f963.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1995-08-19",
+      "lugar": "Letoile Disco",
+      "ciudad": "San Carlos Centro",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1995/letoile-disco-san-carlos-centro-argentina-73e6a6ad.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1995-08-20",
+      "lugar": "Letoile Disco",
+      "ciudad": "San Carlos Centro",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1995/letoile-disco-san-carlos-centro-argentina-6be6a6a2.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1995-10-13",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1995/go-disco-mar-del-plata-argentina-53c8af95.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1995-10-14",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1995/go-disco-mar-del-plata-argentina-7bc8ae28.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1995-10-15",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1995/go-disco-mar-del-plata-argentina-4bc463d6.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1995-12-08",
+      "lugar": "Costa Chaval",
+      "ciudad": "Concordia",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1995/costa-chaval-concordia-argentina-13e6a101.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1995-12-09",
+      "lugar": "Costa Chaval",
+      "ciudad": "Concordia",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1995/costa-chaval-concordia-argentina-63e6a6a7.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1996-06-07",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1996/go-disco-mar-del-plata-argentina-7be6a6a4.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1996-06-08",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1996/go-disco-mar-del-plata-argentina-73e6a699.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1996-06-09",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1996/go-disco-mar-del-plata-argentina-3e6a1fb.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1998-05-23",
+      "lugar": "Anfiteatro Villa María",
+      "ciudad": "Villa María",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1998/anfiteatro-villa-maria-villa-maria-argentina-bdc955e.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1998-12-18",
+      "lugar": "Estadio Racing Club",
+      "ciudad": "Avellaneda",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1998/estadio-racing-club-avellaneda-argentina-3bd00c40.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1998-12-19",
+      "lugar": "Estadio Racing Club",
+      "ciudad": "Avellaneda",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1998/estadio-racing-club-avellaneda-argentina-73f75639.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1999-06-19",
+      "lugar": "Patinódromo Municipal",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1999/patinodromo-municipal-mar-del-plata-argentina-33d3b0ad.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1999-06-20",
+      "lugar": "Patinódromo Municipal",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1999/patinodromo-municipal-mar-del-plata-argentina-5bc71738.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "2000-04-15",
+      "lugar": "Estadio River Plate",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/2000/estadio-river-plate-buenos-aires-argentina-4bd54bd6.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "2000-04-16",
+      "lugar": "Estadio River Plate",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/2000/estadio-river-plate-buenos-aires-argentina-23d00c43.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "2001-04-22",
+      "lugar": "Estadio Centenario",
+      "ciudad": "Montevideo",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/2001/estadio-centenario-montevideo-uruguay-5bd04f7c.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "2001-04-23",
+      "lugar": "Estadio Centenario",
+      "ciudad": "Montevideo",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/2001/estadio-centenario-montevideo-uruguay-4bd04f72.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "2001-08-04",
+      "lugar": "Estadio Chateau Carreras",
+      "ciudad": "Córdoba",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/2001/estadio-chateau-carreras-cordoba-argentina-7bd65eb4.html",
+      "ficha": "RES-74"
+    }
+  ]
+}

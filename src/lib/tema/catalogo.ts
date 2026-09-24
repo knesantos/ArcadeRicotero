@@ -22,7 +22,12 @@
  * | Título y año de cada disco | `FICHAS`, de `cancionero/banco.ts` |
  * | Qué temas tienen audio | `src/data/adivinar-tema.json`, que escribe `scripts/generar-fragmentos.mjs` |
  * | El enlace a la letra | el cancionero, cruzado por título normalizado |
- * | **La dificultad de cada tema** | `src/data/popularidad.json`, por la regla de `D-27` |
+ * | **La dificultad de cada tema** | el conteo citado de setlist.fm (`src/data/setlistfm.json`), por el corte de `en-vivo.ts` (`D-45`, `CTR-19.5`) |
+ *
+ * La dificultad salía de las vistas de YouTube (`D-27`, `CTR-03.11`) hasta el ciclo 16, y
+ * nunca llegó a medir nada: la clave no se cargó. `D-45` la movió a lo más tocado en vivo.
+ * **Recibe un conteo o nada**: ninguna firma de este archivo acepta vistas y conteo a la
+ * vez, así que no hay dónde sumarlos (`D-45` consecuencia 1).
  *
  * El manifiesto de audio **no es una lista de temas**: es una lista de archivos que
  * existen. Cada entrada se cruza contra los 105 y si no resuelve, el build se cae. Es la
@@ -35,7 +40,8 @@ import { FICHAS } from '../cancionero/banco.ts';
 import { slugDeTitulo } from '../texto.ts';
 import type { TemaBuscable } from './buscador.ts';
 import { DURACION_FRAGMENTO_SEG } from './escalera.ts';
-import { repartirPorPopularidad, type TemaMedido, type NivelDificultad } from '../popularidad.ts';
+import type { NivelDificultad } from '../popularidad.ts';
+import { repartirEnVivo, type ConteoCitado } from '../en-vivo.ts';
 
 export class CatalogoInvalido extends Error {}
 
@@ -66,10 +72,11 @@ export interface TemaDelJuego extends TemaBuscable {
   /** Slug de la ficha de letra y acordes, si la tenemos. `null` es un hueco declarado. */
   readonly letra: string | null;
   /**
-   * Qué tan conocido es el tema, que en este juego **es** la dificultad (`D-27`).
+   * Qué tan conocido es el tema, que en este juego **es** la dificultad: desde `D-45`,
+   * cuánto figura en los setlists que carga la gente (`CTR-19.5`).
    *
-   * Nunca falta y nunca es `sin-clasificar` (`CTR-03.11` punto 1): sin mediciones, la
-   * regla asigna `dificil` a todos. Que el campo esté cargado no alcanza — quien sortea
+   * Nunca falta y nunca es `sin-clasificar` (`CTR-03.11` punto 1): sin conteo, la regla
+   * asigna `dificil` a todos. Que el campo esté cargado no alcanza — quien sortea
    * una vuelta tiene que **escalonar** con él, o `BR-01` sigue incumplido con el dato a la
    * vista. Eso fue exactamente `FIND-29`.
    */
@@ -90,13 +97,17 @@ export interface Catalogo {
   /** Cuántos temas pueden salir sorteados en total. Cero = el juego no se puede jugar. */
   readonly jugables: number;
   /**
-   * Cuántos temas traían medición de escuchas de verdad.
-   *
-   * **Cero significa "este juego no escalona"** y se puede leer desde afuera en vez de
-   * deducirlo comparando niveles (`CTR-03.11` punto 3). Hoy es cero: `popularidad.json`
-   * tiene los 105 temas en `sin-video` porque la clave de YouTube nunca se cargó.
+   * Cuántos temas del pozo quedaron en Fácil (`CTR-19.5`). Hereda la lectura que tenía
+   * `medidos`: **cero significa "este juego no escalona"**, y se puede leer desde afuera en
+   * vez de deducirlo comparando niveles (`CTR-03.11` punto 3).
    */
-  readonly medidos: number;
+  readonly faciles: number;
+  /** Cuántos temas del pozo figuran en la página de estadísticas. */
+  readonly conConteo: number;
+  /** `true` si el corte llenó la cuota sin que un empate lo decida. */
+  readonly corteDeterminado: boolean;
+  /** La fecha de consulta del conteo, para el rótulo (`RNF-CTR-19-A`). `null` sin conteo. */
+  readonly conteoConsultado: string | null;
 }
 
 /** Lo mínimo que el catálogo necesita saber del cancionero, para no acoplarse a él. */
@@ -147,15 +158,15 @@ export function indexarFragmentos(
  * enlace a la letra. Es el mismo criterio que `arte.ts` usa con los recortes — un
  * insumo que todavía no está no puede romper la pantalla.
  *
- * `temasMedidos` entró en el ciclo 10 (`CTR-03.11`) **con ese mismo criterio**, y hoy es
- * el caso vivo: `popularidad.json` no tiene una sola medición, así que sin él o con él el
- * reparto es el mismo —`dificil` para todos— y la pantalla no se rompe. La diferencia es
- * que ahora eso se puede afirmar leyendo `medidos`, en vez de descubrirlo jugando.
+ * `conteo` es el bloque `conteo` de `setlistfm.json` (`CTR-19.5`), **con ese mismo
+ * criterio**: sin él, todo el pozo cae en `dificil`, `faciles` da cero y la pantalla no se
+ * rompe. El corte se hace **sobre el pozo, no sobre los 105**: un tema sin fragmento no
+ * puede ocupar un lugar de Fácil que no se va a sortear nunca.
  */
 export function catalogo(
   manifiesto: Manifiesto,
   temasConLetra: readonly TemaConLetra[] = [],
-  temasMedidos: readonly TemaMedido[] = [],
+  conteo: ConteoCitado | null = null,
 ): Catalogo {
   const delDisco = leerTemas();
 
@@ -179,10 +190,10 @@ export function catalogo(
   const porFicha = new Map(FICHAS.map((f) => [f.slug, f]));
   const letraPorTitulo = new Map(temasConLetra.map((t) => [normalizarDuro(t.titulo), t.slug]));
 
-  // `D-27` vía `CTR-03.11`: el nivel se deriva acá, en build, y no vive en el manifiesto
-  // —que describe archivos de audio, no temas—. Sin mediciones cae `dificil` para todos,
-  // que es lo que hoy pasa con los 105.
-  const reparto = repartirPorPopularidad(temasMedidos);
+  // `D-45` vía `CTR-19.5`: el nivel se deriva acá, en build, y no vive en el manifiesto
+  // —que describe archivos de audio, no temas—. Sin conteo cae `dificil` para todos.
+  const elPozo = new Set(conSlug.filter((t) => fragmentos.has(t.slug)).map((t) => t.slug));
+  const corte = repartirEnVivo(elPozo, conteo);
 
   const temas: TemaDelJuego[] = conSlug.map((t) => {
     const ficha = porFicha.get(t.disco);
@@ -198,7 +209,7 @@ export function catalogo(
       jugable: frag !== undefined,
       entero: frag?.entero ?? false,
       letra: letraPorTitulo.get(normalizarDuro(t.titulo)) ?? null,
-      dificultad: reparto.porSlug.get(t.slug) ?? 'dificil',
+      dificultad: corte.porSlug.get(t.slug) ?? 'dificil',
     };
   });
 
@@ -217,7 +228,10 @@ export function catalogo(
     temas,
     discos,
     jugables: temas.filter((t) => t.jugable).length,
-    medidos: reparto.medidos,
+    faciles: corte.faciles,
+    conConteo: corte.conConteo,
+    corteDeterminado: corte.determinado,
+    conteoConsultado: conteo?.consultado ?? null,
   };
 }
 
