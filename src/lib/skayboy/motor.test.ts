@@ -149,3 +149,148 @@ test('una regla citada en un comentario no es una llamada', () => {
   const comentado = SANO + '\n// nunca k.play("x") acá\n/* ni k.text("y") */';
   assert.deepEqual(problemasDelMotor(comentado), []);
 });
+/**
+ * ## El paso fijo (`ADR-09.1`, `T-267`): lo que la máquina prueba es lo que corre en el teléfono
+ *
+ * No es un apagado del motor, pero vive acá porque es el mismo mecanismo: leer el fuente de la
+ * isla, que es lo único que no se puede cargar en Node. La traza grabada de cada nivel se juega
+ * en el build con `paso(…, CUADRO_SEG)`; si la isla le pasa otra cosa —el `k.dt()` del motor,
+ * que tiembla tic a tic—, cada salto integra con otro subpaso y la traza ganadora pasa a ser una
+ * afirmación sobre un juego parecido.
+ *
+ * **El tic entero vive en `mundo.ts`** (`crearReloj()` y `jugarTic()`), y `mundo.test.ts` lo
+ * juega: el reloj arranca en la fase, se queda con lo que sobró, juega los cuadros del reparto y
+ * ninguno más, y cada cuadro es un `paso(…, CUADRO_SEG)`. Así cada línea del acumulador se ve en
+ * rojo en Node. Lo que queda para este auditor es que **la isla no toque el tiempo por su
+ * cuenta**, y eso son cinco reglas:
+ *
+ * 1. **la isla no llama a `paso(` ni a `repartirEnCuadros(`**: el único camino del tiempo al
+ *    mundo es `jugarTic(`;
+ * 2. **hay un solo `jugarTic(`, y su cuarto argumento es `k.dt()`**, escrito así: ni un `1 / 60`
+ *    a mano —que dejaría a la isla jugando un cuadro por tic, al doble en una pantalla de 120 Hz
+ *    y a la mitad en una de 30—, ni `k.dt()` estirado, ni nada;
+ * 3. **su primer argumento es un reloj de `crearReloj()`**, declarado con `const` antes del
+ *    `onUpdate(`: uno nuevo por tic es un reloj que nunca junta nada;
+ * 4. **la isla no nombra `acumulado`**: el reloj no se toca desde afuera;
+ * 5. y que exista el `jugarTic(`, porque un auditor que no encuentra nada no está mirando nada.
+ */
+
+/** Los argumentos de primer nivel de una llamada, desde el carácter que sigue a su paréntesis. */
+function argumentos(codigo: string, desde: number): string[] {
+  const partes: string[] = [];
+  let hondura = 0;
+  let inicio = desde;
+  for (let i = desde; i < codigo.length; i++) {
+    const c = codigo[i];
+    if (c === '(' || c === '[' || c === '{') hondura++;
+    else if (c === ')' || c === ']' || c === '}') {
+      if (hondura === 0) {
+        partes.push(codigo.slice(inicio, i));
+        break;
+      }
+      hondura--;
+    } else if (c === ',' && hondura === 0) {
+      partes.push(codigo.slice(inicio, i));
+      inicio = i + 1;
+    }
+  }
+  return partes.map((p) => p.trim()).filter((p) => p !== '');
+}
+
+/** Los problemas de ese fuente contra el paso fijo de `ADR-09.1`, en castellano. Vacío es sano. */
+function problemasDelPaso(fuente: string): string[] {
+  const codigo = sinComentarios(fuente);
+  const problemas: string[] = [];
+
+  for (const prohibida of ['paso', 'repartirEnCuadros']) {
+    if (new RegExp(`(?<![\\w$.])${prohibida}\\s*\\(`).test(codigo)) {
+      problemas.push(`la isla llama a ${prohibida}( por su cuenta: el tiempo entra al mundo solo por jugarTic( (ADR-09.1)`);
+    }
+  }
+  if (/(?<![\w$])acumulado(?![\w$])/.test(codigo)) {
+    problemas.push('la isla nombra acumulado: el reloj lo lleva jugarTic(, no la isla (ADR-09.1)');
+  }
+
+  const tics = [...codigo.matchAll(/(?<![\w$.])jugarTic\s*\(/g)];
+  if (tics.length === 0) problemas.push('no hay ningún jugarTic(: este auditor no está mirando nada');
+  if (tics.length > 1) problemas.push(`hay ${tics.length} jugarTic(, y un tic del motor es uno solo`);
+
+  const onUpdate = codigo.search(/(?<![\w$])onUpdate\s*\(/);
+  for (const m of tics) {
+    const args = argumentos(codigo, m.index + m[0].length);
+    const dt = args[3];
+    if (dt !== 'k.dt()') {
+      problemas.push(`jugarTic( recibe «${dt ?? 'nada'}» de dt, y lo único que puede recibir es k.dt() (ADR-09.1)`);
+    }
+    const reloj = args[0] ?? '';
+    const declaracion = /^[A-Za-z_$][\w$]*$/.test(reloj)
+      ? new RegExp(`(?<![\\w$])const\\s+${reloj}\\s*=\\s*crearReloj\\s*\\(\\s*\\)`).exec(codigo)
+      : null;
+    if (declaracion === null) {
+      problemas.push(
+        `el reloj de jugarTic( («${reloj}») no es un const de crearReloj(): no arranca en la fase, o no guarda lo que sobra`,
+      );
+    } else if (onUpdate !== -1 && declaracion.index > onUpdate) {
+      problemas.push(`el reloj «${reloj}» se crea después del onUpdate(: un reloj nuevo por tic nunca junta nada`);
+    }
+  }
+  return problemas;
+}
+
+test('la isla de verdad corre a paso fijo: el tiempo del motor entra al mundo solo por jugarTic( (ADR-09.1)', () => {
+  assert.deepEqual(problemasDelPaso(readFileSync(ISLA, 'utf8')), []);
+});
+
+/** Un fuente sano de referencia para el paso fijo. Cada caso de abajo lo rompe en un solo lugar. */
+const SANO_PASO = `
+  const mundo = crearMundo(banco, nivel);
+  const reloj = crearReloj();
+  k.onUpdate(() => {
+    const ambos = { skayboy: s, poligirl: p };
+    atender(jugarTic(reloj, mundo, ambos, k.dt()));
+  });
+`;
+
+test('control: el fuente de referencia del paso fijo está sano', () => {
+  assert.deepEqual(problemasDelPaso(SANO_PASO), []);
+  // Una llamada citada en un comentario no cuenta, ni para bien ni para mal.
+  assert.deepEqual(problemasDelPaso(SANO_PASO + '\n// antes era paso(mundo, m, k.dt()) con su acumulado'), []);
+});
+
+const TIC = 'atender(jugarTic(reloj, mundo, ambos, k.dt()));';
+
+for (const [caso, roto, espera] of [
+  ['🔴 con paso( de vuelta en la isla, con k.dt()', SANO_PASO.replace(TIC, 'atender(paso(mundo, ambos, k.dt()));'), 'paso('],
+  [
+    '🔴 con paso( de vuelta en la isla, aunque sea con CUADRO_SEG',
+    SANO_PASO.replace(TIC, 'for (let i = 0; i < 1; i++) atender(paso(mundo, ambos, CUADRO_SEG));'),
+    'paso(',
+  ],
+  [
+    '🔴 con el acumulador de vuelta en la isla',
+    SANO_PASO.replace(TIC, 'const r = repartirEnCuadros(reloj.resto, k.dt());'),
+    'repartirEnCuadros(',
+  ],
+  ['🔴 con el cuadro escrito a mano en vez de k.dt()', SANO_PASO.replace('k.dt()));', '1 / 60));'), '«1 / 60»'],
+  ['🔴 con k.dt() estirado', SANO_PASO.replace('k.dt()));', 'k.dt() * 2));'), '«k.dt() * 2»'],
+  ['con jugarTic( de tres argumentos', SANO_PASO.replace(', k.dt()));', '));'), '«nada»'],
+  ['🔴 con el reloj arrancando en cero', SANO_PASO.replace('crearReloj()', '{ acumulado: 0 }'), 'nombra acumulado'],
+  ['🔴 con un reloj que no sale de crearReloj()', SANO_PASO.replace('crearReloj()', 'otroReloj()'), 'no es un const de crearReloj('],
+  ['🔴 con un reloj nuevo en cada tic', SANO_PASO.replace('jugarTic(reloj,', 'jugarTic(crearReloj(),'), 'no es un const de crearReloj('],
+  [
+    '🔴 con el reloj creado adentro del tic',
+    SANO_PASO.replace('  const reloj = crearReloj();\n', '').replace('const ambos', 'const reloj = crearReloj();\n    const ambos'),
+    'después del onUpdate(',
+  ],
+  ['🔴 con el reloj tocado desde afuera', SANO_PASO.replace(TIC, `reloj.acumulado = 0;\n    ${TIC}`), 'nombra acumulado'],
+  ['🔴 con dos tics por tic', SANO_PASO.replace(TIC, `${TIC}\n    ${TIC}`), 'hay 2 jugarTic('],
+  ['sin ningún jugarTic(', SANO_PASO.replace(TIC, 'atender([]);'), 'no hay ningún jugarTic('],
+] as const) {
+  test(`el auditor del paso fijo sabe encontrar: ${caso}`, () => {
+    const problemas = problemasDelPaso(roto);
+    assert.ok(
+      problemas.some((p) => p.includes(espera)),
+      `tenía que caer por «${espera}» y dijo:\n${problemas.join('\n') || '(nada)'}`,
+    );
+  });
+}

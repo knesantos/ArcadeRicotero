@@ -14,9 +14,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import type { Banco, IdPersonaje } from './niveles.ts';
-import { QUIETO, crearMundo, paso, type Mando, type Mandos, type Mundo, type Suceso } from './mundo.ts';
+import { CUADRO_SEG, QUIETO, crearMundo, paso, type Mando, type Mandos, type Mundo, type Suceso } from './mundo.ts';
 
-const CUADRO = 1 / 60;
+/** Un cuadro, el de la partida (`ADR-09.1`): el número vive en `mundo.ts`. */
+const CUADRO = CUADRO_SEG;
 const BANCO = JSON.parse(readFileSync('src/data/skayboy.json', 'utf-8')) as Banco;
 const NIVEL_1 = BANCO.niveles[0];
 
@@ -40,13 +41,15 @@ const HACIA_SU_PUERTA: Readonly<Record<IdPersonaje, Partial<Mando>>> = {
 };
 
 test('el nivel 1 es el que dice el contrato: dos entradas, dos puertas, nada que devuelva', () => {
-  // Si esto falla, los tres casos de abajo están probando otro nivel.
+  // Si esto falla, los tres casos de abajo están probando otro nivel. La lista es la de
+  // `CTR-16.5` desde `CTR-16.10`: el molinete y las cuatro piezas, escritas a mano.
   const caracteres = new Set(NIVEL_1.grilla.join(''));
   for (const c of caracteres) {
     const t = BANCO.leyenda[c];
     assert.ok(t !== undefined, `«${c}» no está en la leyenda`);
-    assert.ok(!['molinete', 'mecanismo', 'caja'].includes(t.tipo), `el nivel 1 trae un ${t.tipo}`);
+    assert.ok(!['molinete', 'palanca', 'placa', 'compuerta', 'caja'].includes(t.tipo), `el nivel 1 trae un ${t.tipo}`);
   }
+  assert.deepEqual([NIVEL_1.mecanismos, NIVEL_1.compuertas], [[], []], 'y no declara ni mecanismos ni compuertas');
 });
 
 test('🔴 T-248: uno solo en su puerta no gana, aunque se quede ahí todo lo que quiera', () => {

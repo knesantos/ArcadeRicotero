@@ -1,0 +1,15 @@
+{
+  "contrato": "CTR-18",
+  "contratoVersion": 1,
+  "juego": "skayboy",
+  "actualizado": "2026-09-23",
+  "cuadrosPorSegundo": 60,
+  "soluciones": {
+    "NIV-01": {
+      "deUno": [
+        "s< 69",
+        "p> 39"
+      ]
+    }
+  }
+}

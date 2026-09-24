@@ -7,6 +7,16 @@
  * mundo una vez por cuadro, y dibuja lo que el mundo dejó.** Si algún día hay que cambiar
  * de motor (`ADR-08.6`), se reescribe este archivo y el juego no se entera.
  *
+ * ## Un cuadro es siempre un cuadro (`ADR-09.1`, `T-267`)
+ *
+ * El motor llama a la isla con el tiempo que pasó desde el tic anterior, y ese tiempo tiembla.
+ * La isla no se lo pasa al mundo: se lo da a `jugarTic()`, que lo junta en un `Reloj` y le pasa
+ * al mundo **cuadros enteros de `CUADRO_SEG`** —con tope de tres por tic, y lo que sobra del tope
+ * se tira—. Es el mismo `dt` con que se juega la traza grabada de cada nivel en el build: sin
+ * esto, la máquina probaría una física parecida a la del teléfono, no la misma. El tic entero
+ * vive en `mundo.ts` y lo juega `mundo.test.ts`; `motor.test.ts` vigila que la isla no toque el
+ * tiempo por su cuenta.
+ *
  * ## El motor, con sus cuatro apagados (`ADR-08.2`) — y los vigila `motor.test.ts`
  *
  * 1. `global: false`: ni un nombre del motor en `window`.
@@ -46,13 +56,14 @@
 
 import type { KAPLAYCtx } from 'kaplay';
 import {
-  CAJA_ALTO,
-  CAJA_ANCHO,
+  CUERPO_ALTO,
+  CUERPO_ANCHO,
   PERSONAJES,
   QUIETO,
   TILE,
   crearMundo,
-  paso,
+  crearReloj,
+  jugarTic,
   poseDe,
   type Cuerpo,
   type Mando,
@@ -204,6 +215,9 @@ const aviso = document.querySelector<HTMLElement>('#aviso-juego');
 
 function atender(sucesos: readonly Suceso[]): void {
   for (const s of sucesos) {
+    // Callado también: la compuerta no suena (`CTR-16.10.7`, cuatro motivos) y el dibujo lee el
+    // estado del mundo, no el suceso. Lo consume la cuenta de la paridad (`CTR-18.8`), no la isla.
+    if (s.tipo === 'compuerta') continue;
     if (s.tipo === 'vuelta') {
       // Callado: `vuelta` no suena (`UX-29 §5`, `CTR-17.6`). El aviso nombra el lugar y no
       // a la persona, y se escribe una vez por vuelta para que el lector lo repita.
@@ -265,12 +279,12 @@ function dibujar(k: KAPLAYCtx, mundo: Mundo, tintas: Readonly<Record<keyof typeo
 function dibujarCuerpo(k: KAPLAYCtx, c: Cuerpo, cuerpo: ReturnType<KAPLAYCtx['rgb']>, ojo: ReturnType<KAPLAYCtx['rgb']>): void {
   const x = Math.round(c.x);
   const y = Math.round(c.y);
-  k.drawRect({ pos: k.vec2(x, y), width: CAJA_ANCHO, height: CAJA_ALTO, color: cuerpo });
+  k.drawRect({ pos: k.vec2(x, y), width: CUERPO_ANCHO, height: CUERPO_ALTO, color: cuerpo });
   if (poseDe(c) === 'frente') {
     k.drawRect({ pos: k.vec2(x + 2, y + 4), width: 2, height: 2, color: ojo });
-    k.drawRect({ pos: k.vec2(x + CAJA_ANCHO - 4, y + 4), width: 2, height: 2, color: ojo });
+    k.drawRect({ pos: k.vec2(x + CUERPO_ANCHO - 4, y + 4), width: 2, height: 2, color: ojo });
   } else {
-    const ojoX = c.mira > 0 ? x + CAJA_ANCHO - 3 : x + 1;
+    const ojoX = c.mira > 0 ? x + CUERPO_ANCHO - 3 : x + 1;
     k.drawRect({ pos: k.vec2(ojoX, y + 4), width: 2, height: 2, color: ojo });
   }
 }
@@ -334,13 +348,20 @@ async function arrancar(): Promise<void> {
     Object.entries(TINTAS).map(([clave, token]) => [clave, leerTinta(token)]),
   ) as Record<keyof typeof TINTAS, Rgb>;
   const mundo = crearMundo(banco, nivel);
+  const reloj = crearReloj();
 
   k.onUpdate(() => {
+    // Las teclas se leen una vez por tic y valen para todos los cuadros de ese tic (ADR-09.1).
     const mandos = {
       [COLUMNA.izquierda]: mandoDe('izquierda'),
       [COLUMNA.derecha]: mandoDe('derecha'),
     } as Record<IdPersonaje, Mando>;
-    atender(paso(mundo, { skayboy: mandos.skayboy ?? QUIETO, poligirl: mandos.poligirl ?? QUIETO }, k.dt()));
+    const ambos = { skayboy: mandos.skayboy ?? QUIETO, poligirl: mandos.poligirl ?? QUIETO };
+    // Paso fijo: el tiempo del motor se reparte en cuadros enteros, con tope, y el mundo avanza
+    // siempre de a un CUADRO_SEG. Es el mismo paso con que la máquina prueba cada nivel en el
+    // build, así que lo que se juega acá es, bit a bit, lo que se probó. Todo eso vive en
+    // jugarTic(), probado en Node: la isla solo le da el tiempo del motor.
+    atender(jugarTic(reloj, mundo, ambos, k.dt()));
   });
   k.onDraw(() => dibujar(k, mundo, tintas));
 

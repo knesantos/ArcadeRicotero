@@ -65,6 +65,7 @@ for (const archivo of [
   'dos-ejes',
   'por-la-letra',
   'skayboy',
+  'skayboy-soluciones',
 ] as const) {
   test(`${archivo}.json valida contra su schema`, () => {
     const errores = erroresDe(archivo, archivo);
@@ -86,22 +87,28 @@ for (const archivo of [
  */
 
 /**
- * ## Los niveles de Skayboy y Poligirl (`CTR-16`), y las tres reglas que hay que ver en rojo
+ * ## Los niveles de Skayboy y Poligirl (`CTR-16`), y las reglas que hay que ver en rojo
  *
  * El archivo de arriba prueba que cada dato cumple su contrato. Eso alcanza mientras el
- * contrato sea una lista de tipos; `CTR-16` no lo es. Tiene **tres reglas que existen para
- * que algo no se pueda escribir**, y una regla así no se verifica mirando el dato bueno: se
- * verifica escribiendo el dato malo y confirmando que el schema lo rechaza.
+ * contrato sea una lista de tipos; `CTR-16` no lo es. Tiene **reglas que existen para que algo
+ * no se pueda escribir**, y una regla así no se verifica mirando el dato bueno: se verifica
+ * escribiendo el dato malo y confirmando que el schema lo rechaza.
  *
- * Las tres, y de dónde salen:
+ * Las de acá, y de dónde salen:
  *
- * 1. **`sostenido: true` sin `alternativaSolo`** (`CTR-16.6`, que es `D-40`/`D-43` hechos
- *    schema). Si un puzzle exige que dos cuerpos estén a la vez, tiene que existir escrita la
- *    segunda solución — si no, el que llega solo no juega, y eso es un molinete nuevo.
- * 2. **`estado: "listo"` sin las dos verificaciones** (`CTR-16.7`). `listo` cuesta dos
- *    pasadas, y el booleano no prueba que se jugó: prueba que alguien se hizo cargo de decir
- *    que sí.
+ * 1. **Un mecanismo que abre una compuerta que no existe** (`E3` de `CTR-16.10.10`). Reemplaza
+ *    al caso de `CTR-16.6` —`sostenido: true` sin `alternativaSolo`—, que se fue con los dos
+ *    campos: la placa lo dice la grilla (`=`), y la segunda solución ya no es prosa sino la
+ *    traza de uno de `CTR-18`, que el build repite. Lo que queda por cazar es un `abre` que no
+ *    abre nada: el schema mira la forma (`COM-NN`) y `niveles.ts` que la compuerta sea del nivel.
+ * 2. **`estado: "listo"` sin `deDos`** (`CTR-16.7`, versión 2). `listo` cuesta dos pasadas: la
+ *    de uno la da la traza grabada en cada build (`CTR-18`), y la de dos personas es este
+ *    booleano, que no prueba que se jugó: prueba que alguien se hizo cargo de decir que sí. Y
+ *    **`solo` no vuelve**: se retiró (`BR-29` punto 4), y `additionalProperties: false` es la
+ *    guarda.
  * 3. **Un renglón corto** (`CTR-16.5`). Es la regla que más defectos caza y la más barata.
+ * 4. **La leyenda de `CTR-16.10`**: el molinete de uno solo dice de qué elemento es, y ningún
+ *    otro lo dice (`CTR-16.10.9`).
  *
  * Cada caso trae su control en verde al lado, y no es adorno: sin él, un test que solo mira
  * el rojo pasa igual con un schema que rechaza todo.
@@ -111,17 +118,20 @@ interface MecanismoDePrueba {
   id: string;
   en: [number, number];
   abre: string[];
-  sostenido: boolean;
-  alternativaSolo?: string;
+  /** Solo para escribir el caso en rojo de que el campo retirado no vuelva. */
+  sostenido?: boolean;
 }
 
 interface BancoDePrueba {
   ancho: number;
+  leyenda: Record<string, { tipo: string; elemento?: string; devuelve?: string[] }>;
   niveles: {
     estado: string;
     grilla: string[];
     mecanismos: MecanismoDePrueba[];
-    verificaciones: { deDos: boolean; solo: boolean };
+    compuertas: { id: string; en: [number, number] }[];
+    /** `solo` es opcional acá solo para poder escribir el caso en rojo de que no vuelva. */
+    verificaciones: { deDos: boolean; solo?: boolean };
   }[];
 }
 
@@ -134,43 +144,104 @@ function erroresSkayboy(banco: BancoDePrueba): readonly string[] {
   return erroresDeInstancia(banco, 'skayboy');
 }
 
-test('CTR-16.6: un mecanismo sostenido sin `alternativaSolo` no valida', () => {
-  const mecanismo: MecanismoDePrueba = {
-    id: 'MEC-01',
-    en: [7, 7],
-    abre: ['PUE-01'],
-    sostenido: true,
+/**
+ * El nivel 1 con una placa y una compuerta de tres celdas dibujadas, para que un mecanismo tenga
+ * dónde estar: la placa en la columna 3 y la compuerta en la 8, colgada de un ladrillo. Es la
+ * forma de `CTR-16.10.1`, y pasa las reglas de `niveles.ts`.
+ */
+function conPlacaYCompuerta(banco: BancoDePrueba, abre: string[]): BancoDePrueba {
+  const n = banco.niveles[0];
+  const cambia = (fila: number, columna: number, caracter: string): void => {
+    n.grilla[fila] = n.grilla[fila].slice(0, columna) + caracter + n.grilla[fila].slice(columna + 1);
   };
+  cambia(4, 8, '#');
+  for (const fila of [5, 6, 7]) cambia(fila, 8, '|');
+  cambia(7, 3, '=');
+  n.mecanismos.push({ id: 'MEC-01', en: [3, 7], abre });
+  n.compuertas.push({ id: 'COM-01', en: [8, 5] });
+  return banco;
+}
 
-  const roto = bancoSkayboy();
-  roto.niveles[0].mecanismos.push({ ...mecanismo });
-  const errores = erroresSkayboy(roto);
+test('CTR-16.10 (E3): un mecanismo que abre una compuerta que no existe no pasa', () => {
+  const roto = conPlacaYCompuerta(bancoSkayboy(), ['COM-02']);
+  assert.deepEqual(erroresSkayboy(roto), [], 'control: la forma es válida, y el schema no puede ver más que la forma');
+  const problemas = problemasDelBanco(roto as unknown as Banco);
   assert.ok(
-    errores.some((e) => e.includes('alternativaSolo')),
-    `El schema tenía que pedir la segunda solución y pidió otra cosa:\n${errores.join('\n')}`,
+    problemas.some((p) => p.includes('MEC-01 abre COM-02') && p.includes('(E3)')),
+    `El abre a una compuerta que no está tenía que caerse acá, nombrado:\n${problemas.join('\n')}`,
   );
-
-  const sano = bancoSkayboy();
-  sano.niveles[0].mecanismos.push({
-    ...mecanismo,
-    alternativaSolo: 'la caja de [7,9] tapa la placa y la deja abierta',
-  });
-  assert.deepEqual(erroresSkayboy(sano), [], 'Con la alternativa escrita tenía que validar');
+  const sano = conPlacaYCompuerta(bancoSkayboy(), ['COM-01']);
+  assert.deepEqual(problemasDelBanco(sano as unknown as Banco), [], 'Con el abre a la compuerta de verdad tenía que pasar');
+  assert.deepEqual(erroresSkayboy(sano), []);
 });
 
-test('CTR-16.7: un nivel `listo` sin las dos verificaciones no valida', () => {
+test('CTR-16.10.9: el prefijo viejo de `abre` y el `sostenido` retirado no validan', () => {
+  const conPue = conPlacaYCompuerta(bancoSkayboy(), ['PUE-01']);
+  assert.ok(
+    erroresSkayboy(conPue).some((e) => e.startsWith('/niveles/0/mecanismos/0/abre/0 ')),
+    `«PUE-01» no nombra ninguna pieza del juego y el schema tenía que rechazarlo:\n${erroresSkayboy(conPue).join('\n')}`,
+  );
+  const conSostenido = conPlacaYCompuerta(bancoSkayboy(), ['COM-01']);
+  conSostenido.niveles[0].mecanismos[0].sostenido = true;
+  assert.ok(
+    erroresSkayboy(conSostenido).some((e) => e.startsWith('/niveles/0/mecanismos/0 ') && e.includes('additional properties')),
+    `«sostenido» se fue con CTR-16.6 enmendado y no puede volver:\n${erroresSkayboy(conSostenido).join('\n')}`,
+  );
+});
+
+test('CTR-16.10.9: el molinete de uno solo dice su elemento, y el de los dos no', () => {
+  const sinElemento = bancoSkayboy();
+  delete sinElemento.leyenda['C'].elemento;
+  assert.ok(
+    erroresSkayboy(sinElemento).some((e) => e.startsWith('/leyenda/C ')),
+    `El cielo sin «elemento» tenía que caerse:\n${erroresSkayboy(sinElemento).join('\n')}`,
+  );
+  const alDeLosDos = bancoSkayboy();
+  alDeLosDos.leyenda['X'].elemento = 'cielo';
+  assert.ok(
+    erroresSkayboy(alDeLosDos).some((e) => e.startsWith('/leyenda/X')),
+    `El que devuelve a los dos no es de ningún elemento:\n${erroresSkayboy(alDeLosDos).join('\n')}`,
+  );
+  const aUnaPalanca = bancoSkayboy();
+  aUnaPalanca.leyenda['/'].elemento = 'infierno';
+  assert.ok(erroresSkayboy(aUnaPalanca).some((e) => e.startsWith('/leyenda/~1')), 'una palanca no es de ningún elemento');
+  assert.deepEqual(erroresSkayboy(bancoSkayboy()), [], 'control: la leyenda de verdad valida');
+});
+
+test('CTR-16.7: un nivel `listo` con `deDos` en false no valida', () => {
   const roto = bancoSkayboy();
   roto.niveles[0].estado = 'listo';
+  roto.niveles[0].verificaciones = { deDos: false };
   const errores = erroresSkayboy(roto);
   assert.ok(
-    errores.some((e) => e.includes('/verificaciones/deDos')),
-    `El schema tenía que pedir las dos pasadas y pidió otra cosa:\n${errores.join('\n')}`,
+    errores.some((e) => e.includes('/niveles/0/verificaciones/deDos')),
+    `El schema tenía que pedir la pasada de dos personas y pidió otra cosa:\n${errores.join('\n')}`,
   );
 
   const sano = bancoSkayboy();
   sano.niveles[0].estado = 'listo';
-  sano.niveles[0].verificaciones = { deDos: true, solo: true };
-  assert.deepEqual(erroresSkayboy(sano), [], 'Con las dos jugadas anotadas tenía que validar');
+  sano.niveles[0].verificaciones = { deDos: true };
+  assert.deepEqual(erroresSkayboy(sano), [], 'Con la pasada de a dos anotada tenía que validar');
+});
+
+/**
+ * La baja de `solo` (`BR-29` punto 4, `CTR-16.7` versión 2), vista en rojo: un `solo` que vuelve
+ * por costumbre —copiado de un nivel viejo o de un ejemplo— no valida. `erroresDeInstancia()` no
+ * imprime el nombre del campo sobrante, así que se mira el lugar y la queja, que es lo que
+ * `CTR-16.7` pidió mirar.
+ */
+test('CTR-16.7: un `solo` de más en `verificaciones` no valida, aunque `deDos` esté en true', () => {
+  const roto = bancoSkayboy();
+  roto.niveles[0].estado = 'listo';
+  roto.niveles[0].verificaciones = { deDos: true, solo: true };
+  const errores = erroresSkayboy(roto);
+  assert.ok(
+    errores.some((e) => e.startsWith('/niveles/0/verificaciones ') && e.includes('additional properties')),
+    `El schema tenía que rechazar el booleano retirado y dijo otra cosa:\n${errores.join('\n')}`,
+  );
+  // Control: el mismo banco sin el campo de más valida.
+  delete roto.niveles[0].verificaciones.solo;
+  assert.deepEqual(erroresSkayboy(roto), []);
 });
 
 test('CTR-16.5: un renglón más corto que el ancho no valida', () => {
@@ -227,6 +298,7 @@ test('CTR-16.5: la grilla se mide contra la leyenda y contra el `ancho` del dato
 interface TerrenoDePrueba {
   tipo: string;
   devuelve?: string[];
+  elemento?: string;
 }
 
 type LeyendaDePrueba = Record<string, TerrenoDePrueba>;
@@ -280,6 +352,19 @@ function problemasDeMolinetes(leyenda: LeyendaDePrueba): readonly string[] {
   for (const [firma, caracteres] of porFirma) {
     if (LOS_TRES_MOLINETES.some((m) => m.firma === firma)) continue;
     problemas.push(`«${caracteres.join('», «')}»: un molinete que no devuelve a nadie`);
+  }
+  // E7 (CTR-16.10.10): los dos de uno solo son uno de cielo y uno de infierno, no dos de cielo.
+  // Es la misma razón que la cuenta de arriba: el schema no cuenta por contenido en un mapa.
+  const deUnoSolo = Object.entries(leyenda).filter(([, t]) => t.tipo === 'molinete' && (t.devuelve ?? []).length === 1);
+  for (const elemento of ['cielo', 'infierno']) {
+    const cuales = deUnoSolo.filter(([, t]) => t.elemento === elemento).map(([c]) => c);
+    if (cuales.length !== 1) {
+      problemas.push(
+        `hay ${cuales.length} molinete(s) de uno solo de ${elemento}` +
+          (cuales.length > 0 ? ` («${cuales.join('», «')}»)` : '') +
+          ', y CTR-16.10 pide uno de cielo y uno de infierno (E7)',
+      );
+    }
   }
   return problemas;
 }
@@ -361,6 +446,27 @@ test('CTR-16.4: un molinete que no devuelve a ninguno de los dos tampoco pasa', 
 });
 
 /**
+ * **`E7` (`CTR-16.10.10`): los dos de uno solo son uno de cielo y uno de infierno.** Desde
+ * `CTR-16.10`, `C` es cielo e `I` es infierno porque lo dice `elemento`, no la inicial; y el schema
+ * obliga a cada uno a traerlo, pero no puede ver que no sean los dos del mismo. Se mira acá, en la
+ * misma cuenta, porque es la misma razón: en un mapa no se cuenta por contenido.
+ */
+test('CTR-16.10 (E7): dos molinetes de uno solo del mismo elemento no pasan', () => {
+  const leyenda = leyendaSkayboy();
+  const infierno = molineteQueDevuelveA(leyenda, 'poligirl');
+  leyenda[infierno] = { ...leyenda[infierno], elemento: 'cielo' };
+
+  const problemas = problemasDeMolinetes(leyenda);
+  assert.ok(
+    problemas.some((p) => p.includes('2 molinete(s) de uno solo de cielo') && p.includes('(E7)')),
+    `Dos de cielo tenían que caerse acá:\n${problemas.join('\n')}`,
+  );
+  assert.ok(problemas.some((p) => p.includes('0 molinete(s) de uno solo de infierno')), 'y el infierno que falta también');
+  // Control: la leyenda de verdad tiene uno de cada uno.
+  assert.deepEqual(problemasDeMolinetes(leyendaSkayboy()), []);
+});
+
+/**
  * ## El primer nivel no devuelve a nadie a la entrada (`US-09` criterio 4)
  *
  * Es lo único que quedó de ese criterio cuando `FIND-59` se cerró a favor del contrato: las
@@ -394,7 +500,7 @@ interface NivelDePrueba {
   estado: string;
   grilla: string[];
   mecanismos: unknown[];
-  cajas: unknown[];
+  compuertas: unknown[];
 }
 
 interface PisoDePrueba {
@@ -407,8 +513,11 @@ function pisoSkayboy(): PisoDePrueba {
   return JSON.parse(readFileSync('src/data/skayboy.json', 'utf-8')) as PisoDePrueba;
 }
 
-/** Los tres tipos que el primer nivel no usa. El resto del piso los usa todos. */
-const TIPOS_QUE_NO_ENTRAN: readonly string[] = ['molinete', 'mecanismo', 'caja'];
+/**
+ * Los tipos que el primer nivel no usa (`CTR-16.5`, con la lista que creció en `CTR-16.10`): el
+ * molinete y las cuatro piezas. El resto del piso los usa todos.
+ */
+const TIPOS_QUE_NO_ENTRAN: readonly string[] = ['molinete', 'palanca', 'placa', 'compuerta', 'caja'];
 
 function primerNivelDelPiso(piso: PisoDePrueba): NivelDePrueba {
   const porId = [...piso.niveles].sort((a, b) => a.id.localeCompare(b.id));
@@ -427,10 +536,11 @@ function caracterDeTipo(leyenda: LeyendaDePrueba, tipo: string): string {
 /**
  * Lo que el primer nivel no puede traer, mirado en los dos lados donde puede aparecer.
  *
- * La grilla es el que pidió `producto`. Los arreglos `mecanismos` y `cajas` van también porque
- * un mecanismo declarado y no dibujado esquivaría la regla por un costado, y el criterio dice
+ * La grilla es el que pidió `producto`. Los arreglos `mecanismos` y `compuertas` van también
+ * porque una pieza declarada y no dibujada esquivaría la regla por un costado, y el criterio dice
  * *"no hay **en él** ningún elemento que devuelva a nadie a la entrada"*, no "no se ve
- * ninguno".
+ * ninguno". *(Decía `mecanismos` y `cajas`: el arreglo `cajas` se fue con `CTR-16.10.1` —una caja
+ * se dibuja en la grilla y no conecta con nada—, y entró `compuertas`.)*
  */
 function problemasDelPrimerNivel(piso: PisoDePrueba): readonly string[] {
   const primero = primerNivelDelPiso(piso);
@@ -449,7 +559,7 @@ function problemasDelPrimerNivel(piso: PisoDePrueba): readonly string[] {
 
   for (const [campo, cuantos] of [
     ['mecanismos', primero.mecanismos.length],
-    ['cajas', primero.cajas.length],
+    ['compuertas', primero.compuertas.length],
   ] as const) {
     if (cuantos === 0) continue;
     problemas.push(
@@ -461,7 +571,7 @@ function problemasDelPrimerNivel(piso: PisoDePrueba): readonly string[] {
   return problemas;
 }
 
-test('US-09 criterio 4: el primer nivel del piso no trae molinete, mecanismo ni caja', () => {
+test('US-09 criterio 4: el primer nivel del piso no trae molinete, palanca, placa, compuerta ni caja', () => {
   const problemas = problemasDelPrimerNivel(pisoSkayboy());
   assert.deepEqual(
     problemas,
@@ -471,13 +581,15 @@ test('US-09 criterio 4: el primer nivel del piso no trae molinete, mecanismo ni 
 });
 
 /**
- * El caso en rojo nombra los tres **con la mano**, y no recorre `TIPOS_QUE_NO_ENTRAN`. Probado
+ * El caso en rojo nombra los cinco **con la mano**, y no recorre `TIPOS_QUE_NO_ENTRAN`. Probado
  * el 2026-09-20: recorriendo la constante, sacarle `molinete` a la guarda dejaba los dieciocho
  * tests en verde — el caso en rojo se achicaba junto con la regla y nadie se enteraba. Un test
- * que le pregunta al código qué tiene que prohibir no prueba nada.
+ * que le pregunta al código qué tiene que prohibir no prueba nada. *(Eran tres —molinete,
+ * mecanismo y caja— hasta `CTR-16.10`, que partió el mecanismo en palanca y placa y sumó la
+ * compuerta.)*
  */
-test('US-09 criterio 4: un molinete, un mecanismo o una caja en el primero no pasan', () => {
-  for (const tipo of ['molinete', 'mecanismo', 'caja']) {
+test('US-09 criterio 4: un molinete, una palanca, una placa, una compuerta o una caja en el primero no pasan', () => {
+  for (const tipo of ['molinete', 'palanca', 'placa', 'compuerta', 'caja']) {
     const piso = pisoSkayboy();
     const primero = primerNivelDelPiso(piso);
     const caracter = caracterDeTipo(piso.leyenda, tipo);
@@ -495,37 +607,100 @@ test('US-09 criterio 4: un molinete, un mecanismo o una caja en el primero no pa
 
 test('US-09 criterio 4: un mecanismo declarado y no dibujado tampoco pasa', () => {
   const piso = pisoSkayboy();
-  primerNivelDelPiso(piso).mecanismos.push({
-    id: 'MEC-01',
-    en: [7, 7],
-    abre: ['PUE-01'],
-    sostenido: false,
-  });
+  primerNivelDelPiso(piso).mecanismos.push({ id: 'MEC-01', en: [7, 7], abre: ['COM-01'] });
 
   const problemas = problemasDelPrimerNivel(piso);
   assert.ok(
-    problemas.some((p) => p.includes('mecanismos')),
+    problemas.some((p) => p.includes('«mecanismos»')),
     `Por el costado del arreglo tampoco entra:\n${problemas.join('\n')}`,
   );
 });
 
 /**
- * Y el mismo costado por el lado de las cajas, que es la mitad que faltaba. Probado el
- * 2026-09-22: sacándole a `problemasDelPrimerNivel` el renglón de `cajas`, los diecinueve
- * tests quedaban en verde. Esa mitad de la guarda estaba escrita y no la corría nadie, y una
- * guarda que nunca se vio en rojo no es una guarda.
- *
- * No es el caso de arriba con otro nombre: una caja empujable es un elemento propio —sirve de
- * escalón o de tapón (`RES-61.5`)— y se declara en su arreglo, aparte del mecanismo que abre.
- * El escalón Media es el que las trae. El nivel que se aprende moviendo no trae ninguna.
+ * Y el mismo costado por el lado de las compuertas. El caso que había acá era *"una caja
+ * declarada y no dibujada"*, y se fue con el arreglo `cajas` (`CTR-16.10.1`: la grilla es el único
+ * lugar de una caja). Lo que sí se declara aparte de la grilla es el nombre de una compuerta, y es
+ * la mitad de la guarda que tiene que verse en rojo: probado el 2026-09-22 con la de `cajas`,
+ * sacarle el renglón a `problemasDelPrimerNivel` dejaba todo en verde.
  */
-test('US-09 criterio 4: una caja declarada y no dibujada tampoco pasa', () => {
+test('US-09 criterio 4: una compuerta declarada y no dibujada tampoco pasa', () => {
   const piso = pisoSkayboy();
-  primerNivelDelPiso(piso).cajas.push({ en: [7, 7] });
+  primerNivelDelPiso(piso).compuertas.push({ id: 'COM-01', en: [7, 5] });
 
   const problemas = problemasDelPrimerNivel(piso);
   assert.ok(
-    problemas.some((p) => p.includes('«cajas»')),
+    problemas.some((p) => p.includes('«compuertas»')),
     `Por el costado del arreglo tampoco entra:\n${problemas.join('\n')}`,
   );
 });
+
+/**
+ * ## La solución grabada (`CTR-18`), y los cinco rojos de `CTR-18.10`
+ *
+ * `skayboy-soluciones.json` valida arriba, en la lista, contra su schema. Eso prueba que el dato
+ * bueno pasa; lo que `CTR-18.10` le pide a `T-267` es ver el dato malo rechazado, uno por uno, y
+ * el ejemplo del contrato aceptado tal como está escrito. **El renglón que nombra dos columnas es
+ * el que importa**: es lo que hace de esta la traza de una persona sola (`BR-25` b), y el formato
+ * lo hace imposible de escribir. `soluciones.test.ts` lo vuelve a mirar del lado del lector.
+ *
+ * Qué no hace este schema, y por eso no se prueba acá: jugar las trazas, cruzarlas con los
+ * niveles, ver dos renglones seguidos iguales, medir la tolerancia y contar la paridad. Eso es
+ * `soluciones.test.ts` (`CTR-18.6`).
+ */
+
+/** El ejemplo de `CTR-18.9`, copiado del contrato sin tocar una coma. */
+const EJEMPLO_CTR_18_9 = `{
+  "contrato": "CTR-18",
+  "contratoVersion": 1,
+  "juego": "skayboy",
+  "actualizado": "2026-09-22",
+  "cuadrosPorSegundo": 60,
+  "soluciones": {
+    "NIV-01": {
+      "deUno": [
+        "s< 60",
+        "p> 39"
+      ]
+    }
+  }
+}`;
+
+interface SolucionesDePrueba {
+  cuadrosPorSegundo: number;
+  soluciones: Record<string, { deUno: string[] }>;
+}
+
+const ejemploDeSoluciones = (): SolucionesDePrueba => JSON.parse(EJEMPLO_CTR_18_9) as SolucionesDePrueba;
+
+test('CTR-18.10: el ejemplo de CTR-18.9 valida tal como está', () => {
+  assert.deepEqual(erroresDeInstancia(ejemploDeSoluciones(), 'skayboy-soluciones'), []);
+});
+
+for (const [caso, romper, lugar] of [
+  [
+    'un renglón que nombra dos columnas («s< p> 4»)',
+    (s: SolucionesDePrueba) => (s.soluciones['NIV-01'].deUno[0] = 's< p> 4'),
+    '/soluciones/NIV-01/deUno/0',
+  ],
+  ['un renglón con «<>» («s<> 4»)', (s: SolucionesDePrueba) => (s.soluciones['NIV-01'].deUno[0] = 's<> 4'), '/soluciones/NIV-01/deUno/0'],
+  ['un renglón de cero cuadros («s< 0»)', (s: SolucionesDePrueba) => (s.soluciones['NIV-01'].deUno[0] = 's< 0'), '/soluciones/NIV-01/deUno/0'],
+  [
+    'una clave que no es NIV- y dos dígitos («NIV-1»)',
+    (s: SolucionesDePrueba) => {
+      s.soluciones['NIV-1'] = s.soluciones['NIV-01'];
+      delete s.soluciones['NIV-01'];
+    },
+    '/soluciones',
+  ],
+  ['otra unidad (cuadrosPorSegundo: 50)', (s: SolucionesDePrueba) => (s.cuadrosPorSegundo = 50), '/cuadrosPorSegundo'],
+] as const) {
+  test(`CTR-18.10: ${caso} no valida`, () => {
+    const roto = ejemploDeSoluciones();
+    romper(roto);
+    const errores = erroresDeInstancia(roto, 'skayboy-soluciones');
+    assert.ok(
+      errores.some((e) => e.startsWith(`${lugar} `)),
+      `El schema tenía que señalar ${lugar} y señaló otra cosa:\n${errores.join('\n') || '(nada)'}`,
+    );
+  });
+}

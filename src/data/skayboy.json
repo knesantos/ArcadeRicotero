@@ -1,8 +1,8 @@
 {
   "contrato": "CTR-16",
-  "contratoVersion": 1,
+  "contratoVersion": 2,
   "juego": "skayboy",
-  "actualizado": "2026-09-20",
+  "actualizado": "2026-09-24",
   "tile": 16,
   "ancho": 15,
   "alto": 9,
@@ -14,15 +14,17 @@
   "leyenda": {
     ".": { "tipo": "aire" },
     "#": { "tipo": "solido" },
-    "C": { "tipo": "molinete", "devuelve": ["skayboy"] },
-    "I": { "tipo": "molinete", "devuelve": ["poligirl"] },
+    "C": { "tipo": "molinete", "elemento": "cielo", "devuelve": ["skayboy"] },
+    "I": { "tipo": "molinete", "elemento": "infierno", "devuelve": ["poligirl"] },
     "X": { "tipo": "molinete", "devuelve": ["skayboy", "poligirl"] },
     "o": { "tipo": "tesoro", "para": ["skayboy", "poligirl"] },
     "1": { "tipo": "entrada", "de": "skayboy" },
     "2": { "tipo": "entrada", "de": "poligirl" },
     "A": { "tipo": "puerta", "de": "skayboy" },
     "B": { "tipo": "puerta", "de": "poligirl" },
-    "=": { "tipo": "mecanismo" },
+    "/": { "tipo": "palanca" },
+    "=": { "tipo": "placa" },
+    "|": { "tipo": "compuerta" },
     "n": { "tipo": "caja" }
   },
   "niveles": [
@@ -43,8 +45,8 @@
         "###############"
       ],
       "mecanismos": [],
-      "cajas": [],
-      "verificaciones": { "deDos": false, "solo": false }
+      "compuertas": [],
+      "verificaciones": { "deDos": false }
     }
   ]
 }

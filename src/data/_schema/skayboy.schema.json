@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ricotaarcade.local/schema/skayboy/1",
+  "$id": "https://ricotaarcade.local/schema/skayboy/2",
   "title": "CTR-16 — Los niveles de Skayboy y Poligirl",
-  "comment": "Lo que este schema NO hace, y hay que saberlo antes de confiar en él: no cuenta los molinetes de la leyenda (JSON Schema no sabe contar propiedades de un objeto por su contenido — CTR-16.4), no sabe si un caracter de la grilla está declarado en la leyenda, y no compara los renglones contra `ancho` del envoltorio. Esas tres viven en `src/lib/esquemas.test.ts` y en `src/lib/skayboy/niveles.ts`, que es donde se pueden hacer de verdad.",
+  "comment": "Lo que este schema NO hace, y hay que saberlo antes de confiar en él: no cuenta los molinetes de la leyenda ni mira que los de uno solo sean uno de cielo y uno de infierno (JSON Schema no sabe contar propiedades de un objeto por su contenido — CTR-16.4, E7), no sabe si un caracter de la grilla está declarado en la leyenda, no compara los renglones contra `ancho` del envoltorio, no mira la grilla desde los arreglos —que cada mecanismo caiga en una palanca o una placa, que cada tramo de compuerta tenga su nombre y quien la abra, que todo esté apoyado, E1 a E6 de CTR-16.10.10— y no sabe si cada entrada tiene dónde pararse (CTR-16.5 regla 3, E8). Todo eso vive en `src/lib/esquemas.test.ts` y en `src/lib/skayboy/niveles.ts` (`problemasDelBanco`), que es donde se puede hacer de verdad.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -11,7 +11,10 @@
   ],
   "properties": {
     "contrato": { "const": "CTR-16" },
-    "contratoVersion": { "const": 1 },
+    "contratoVersion": {
+      "comment": "CTR-16.10.9 punto 1: la versión 2 es la forma con la que cierra el ciclo 16, y sube una sola vez. La subió T-267 al retirar `verificaciones.solo` (CTR-16.7); los mecanismos de CTR-16.10 (T-272) entran en esta misma versión, no en una 3.",
+      "const": 2
+    },
     "juego": { "const": "skayboy" },
     "actualizado": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
     "tile": {
@@ -82,54 +85,55 @@
         "atlas": { "type": "string", "pattern": "^[a-z]+\\.v\\d+$" }
       }
     },
+    "elemento": {
+      "comment": "CTR-16.4 enmendado por CTR-16.10: de qué elemento es el molinete que devuelve a uno solo. Nombra el lugar; a quién rechaza lo dice `devuelve`, y eso es de experiencia (UX-30 §3).",
+      "enum": ["cielo", "infierno"]
+    },
     "caracter": {
-      "comment": "El enum de `tipo` no trae ninguna palabra de daño: FIND-58 las sacó y UX-29 §7.2 explica por qué. Un tipo que se llame como se llamaba antes termina siendo una clase de CSS, un nombre de función y, tarde o temprano, una palabra en pantalla — y el dato es justo donde ese vocabulario sobrevive más tiempo. El terreno ajeno no lastima: devuelve.",
+      "comment": "El enum de `tipo` no trae ninguna palabra de daño (FIND-58, UX-29 §7.2). CTR-16.10 partió `mecanismo` en `palanca` y `placa` —la física las corre distinto y la diferencia vivía en un booleano del arreglo— y sumó `compuerta`.",
       "type": "object",
       "additionalProperties": false,
       "required": ["tipo"],
       "properties": {
         "tipo": {
-          "enum": ["aire", "solido", "molinete", "tesoro", "entrada", "puerta", "mecanismo", "caja"]
+          "enum": ["aire", "solido", "molinete", "tesoro", "entrada", "puerta",
+                   "palanca", "placa", "compuerta", "caja"]
         },
         "devuelve": { "$ref": "#/$defs/quienes" },
+        "elemento": { "$ref": "#/$defs/elemento" },
         "para": { "$ref": "#/$defs/quienes" },
         "de": { "$ref": "#/$defs/quien" }
       },
       "allOf": [
         {
-          "comment": "CTR-16.4: `devuelve` es la única declaración de quién no pasa, y es obligatoria en todo molinete. No hay un segundo lugar donde decirlo — eso era FIND-58.",
+          "comment": "CTR-16.4: `devuelve` es la única declaración de quién no pasa, y es obligatoria en todo molinete.",
           "if": { "required": ["tipo"], "properties": { "tipo": { "const": "molinete" } } },
-          "then": {
-            "required": ["devuelve"],
-            "properties": { "para": false, "de": false }
-          }
+          "then": { "required": ["devuelve"], "properties": { "para": false, "de": false } }
+        },
+        {
+          "comment": "CTR-16.10: el molinete que devuelve a uno solo dice de qué elemento es. El que devuelve a los dos no es de ninguno, y ningún otro tipo tiene elemento. Que sean uno de cielo y uno de infierno lo cuenta esquemas.test.ts: en un mapa no se cuenta por contenido.",
+          "if": {
+            "required": ["tipo", "devuelve"],
+            "properties": { "tipo": { "const": "molinete" }, "devuelve": { "maxItems": 1 } }
+          },
+          "then": { "required": ["elemento"] },
+          "else": { "properties": { "elemento": false } }
         },
         {
           "if": { "required": ["tipo"], "properties": { "tipo": { "const": "tesoro" } } },
-          "then": {
-            "required": ["para"],
-            "properties": { "devuelve": false, "de": false }
-          }
+          "then": { "required": ["para"], "properties": { "devuelve": false, "de": false } }
         },
         {
-          "if": {
-            "required": ["tipo"],
-            "properties": { "tipo": { "enum": ["entrada", "puerta"] } }
-          },
-          "then": {
-            "required": ["de"],
-            "properties": { "devuelve": false, "para": false }
-          }
+          "if": { "required": ["tipo"], "properties": { "tipo": { "enum": ["entrada", "puerta"] } } },
+          "then": { "required": ["de"], "properties": { "devuelve": false, "para": false } }
         },
         {
-          "comment": "El terreno que no le habla a nadie no nombra a nadie: un `devuelve` colgado de un `aire` sería una regla que no corre y que alguien va a leer como si corriera.",
+          "comment": "El terreno que no le habla a nadie no nombra a nadie. Y palanca, placa, compuerta y caja son de los dos (CTR-16.10.8, BR-23 punto 1): un `de` en una palanca sería una palanca de uno.",
           "if": {
             "required": ["tipo"],
-            "properties": { "tipo": { "enum": ["aire", "solido", "mecanismo", "caja"] } }
+            "properties": { "tipo": { "enum": ["aire", "solido", "palanca", "placa", "compuerta", "caja"] } }
           },
-          "then": {
-            "properties": { "devuelve": false, "para": false, "de": false }
-          }
+          "then": { "properties": { "devuelve": false, "para": false, "de": false } }
         }
       ]
     },
@@ -145,9 +149,10 @@
       "items": false
     },
     "mecanismo": {
+      "comment": "CTR-16.10.1: una palanca o una placa. Cuál de las dos lo dice la celda `en` de la grilla y ningún otro lugar (`sostenido` era ese segundo lugar y se fue: CTR-16.6 enmendado). Acá vive solo con qué compuertas se conecta. Que `en` caiga en una palanca o una placa, que cada una tenga su entrada y que `abre` nombre compuertas del nivel lo verifica niveles.ts: un schema no mira la grilla desde un arreglo.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "en", "abre", "sostenido"],
+      "required": ["id", "en", "abre"],
       "properties": {
         "id": { "type": "string", "pattern": "^MEC-\\d{2}$" },
         "en": { "$ref": "#/$defs/coordenada" },
@@ -155,29 +160,24 @@
           "type": "array",
           "minItems": 1,
           "uniqueItems": true,
-          "items": { "type": "string", "pattern": "^PUE-\\d{2}$" }
-        },
-        "sostenido": { "type": "boolean" },
-        "alternativaSolo": { "type": "string", "minLength": 10 }
-      },
-      "allOf": [
-        {
-          "comment": "CTR-16.6, que es D-40 consecuencia 1 hecho schema. Un schema no puede probar que un nivel se resuelve; sí puede hacer imposible declarar un puzzle que exige simultaneidad sin escribir la segunda solución. `sostenido` es obligatorio en todo mecanismo justamente para que no haya por dónde esquivarlo.",
-          "if": { "required": ["sostenido"], "properties": { "sostenido": { "const": true } } },
-          "then": { "required": ["alternativaSolo"] }
+          "items": { "type": "string", "pattern": "^COM-\\d{2}$" }
         }
-      ]
+      }
     },
-    "caja": {
+    "compuerta": {
+      "comment": "CTR-16.10.4: el tramo lo dibuja la grilla —una columna de celdas `compuerta`, de sólido a sólido— y acá se nombra, por su celda de arriba. Una entrada por tramo, y el anclaje, los verifica niveles.ts.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["en"],
-      "properties": { "en": { "$ref": "#/$defs/coordenada" } }
+      "required": ["id", "en"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^COM-\\d{2}$" },
+        "en": { "$ref": "#/$defs/coordenada" }
+      }
     },
     "nivel": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "nombre", "escalon", "estado", "grilla", "mecanismos", "cajas", "verificaciones"],
+      "required": ["id", "nombre", "escalon", "estado", "grilla", "mecanismos", "compuertas", "verificaciones"],
       "properties": {
         "id": { "type": "string", "pattern": "^NIV-\\d{2}$" },
         "nombre": {
@@ -235,32 +235,28 @@
           "type": "array",
           "items": { "$ref": "#/$defs/mecanismo" }
         },
-        "cajas": {
+        "compuertas": {
+          "comment": "Obligatorio aunque vaya vacío, como `mecanismos`: `[]` dice «este nivel no tiene ninguna».",
           "type": "array",
-          "items": { "$ref": "#/$defs/caja" }
+          "items": { "$ref": "#/$defs/compuerta" }
         },
         "verificaciones": {
+          "comment": "CTR-16.7 enmendado el 2026-09-23: una sola pasada escrita a mano, la de dos personas a la vez en un teléfono (BR-25 a, BR-29 punto 1). La de uno la prueba la traza en cada build (CTR-18) y no vive acá: `solo` se retiró (BR-29 punto 4, ADR-09.3). additionalProperties false es lo que impide que vuelva.",
           "type": "object",
           "additionalProperties": false,
-          "required": ["deDos", "solo"],
+          "required": ["deDos"],
           "properties": {
-            "deDos": { "type": "boolean" },
-            "solo": { "type": "boolean" }
+            "deDos": { "type": "boolean" }
           }
         }
       },
       "allOf": [
         {
-          "comment": "CTR-16.7, que es D-40 consecuencia 2: `listo` cuesta dos pasadas, dos personas moviéndose a la vez y una sola alternando. Un booleano no prueba nada por sí mismo — lo que hace es que nadie pueda marcar un nivel terminado sin escribir, con la mano, que lo probó de las dos maneras. Los pone el que jugó.",
+          "comment": "CTR-16.7, que es D-40 consecuencia 2: `listo` cuesta dos pasadas. La de uno es de la máquina —la traza de CTR-18 gana en cada build, para todo nivel— y no es condición de este schema. La de dos es de dos personas en un teléfono (BR-25 a): el booleano no prueba que se jugó, prueba que alguien se hizo cargo de decir que sí.",
           "if": { "required": ["estado"], "properties": { "estado": { "const": "listo" } } },
           "then": {
             "properties": {
-              "verificaciones": {
-                "properties": {
-                  "deDos": { "const": true },
-                  "solo": { "const": true }
-                }
-              }
+              "verificaciones": { "properties": { "deDos": { "const": true } } }
             }
           }
         }
