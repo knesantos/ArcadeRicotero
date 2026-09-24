@@ -152,6 +152,28 @@ export function nivelesListos(banco: Banco): readonly Nivel[] {
   return banco.niveles.filter((n) => n.estado === 'listo');
 }
 
+/** Dónde se está construyendo la página: la única pregunta que decide qué se siembra. */
+export interface Entorno {
+  /** `import.meta.env.DEV`: el servidor de desarrollo. */
+  readonly desarrollo: boolean;
+  /** `process.env.VERCEL_ENV` al construir: `'production'`, `'preview'` o nada. */
+  readonly vercel?: string;
+}
+
+/**
+ * Qué niveles le llegan al navegador. **En producción, solo los `listo`** (`nivelesListos`).
+ * En desarrollo **y en las vistas previas de Vercel** —la de cada PR—, todos: un borrador
+ * pasa a `listo` recién cuando alguien lo juega en un teléfono (`BR-25` a, `BR-29`), y para
+ * jugarlo en un teléfono tiene que estar en una dirección que el teléfono pueda abrir. El
+ * servidor de desarrollo no la tiene; la vista previa del PR sí.
+ *
+ * Lo que no cambia: la dirección de producción nunca sirve un borrador. Esa es la frase de
+ * arriba y la que cuida el test.
+ */
+export function nivelesASembrar(banco: Banco, entorno: Entorno): readonly Nivel[] {
+  return entorno.desarrollo || entorno.vercel === 'preview' ? banco.niveles : nivelesListos(banco);
+}
+
 /** Qué hay en esa celda, o `undefined` si la coordenada cae afuera de la sala. */
 export function terrenoEn(banco: Banco, nivel: Nivel, en: Posicion): Terreno | undefined {
   const renglon = nivel.grilla[en.fila];

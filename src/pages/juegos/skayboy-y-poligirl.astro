@@ -29,7 +29,7 @@ import Cabeza from '../../components/Cabeza.astro';
 import PieImprenta from '../../components/PieImprenta.astro';
 import { PORTAL } from '../../lib/sitio/copy.ts';
 import { CASETE, PANTALLA, PIE_HOMENAJE, TECLAS } from '../../lib/skayboy/copy.ts';
-import { nivelesListos, problemasDelBanco, type Banco } from '../../lib/skayboy/niveles.ts';
+import { nivelesASembrar, problemasDelBanco, type Banco } from '../../lib/skayboy/niveles.ts';
 import datos from '../../data/skayboy.json';
 
 /**
@@ -37,8 +37,8 @@ import datos from '../../data/skayboy.json';
  * (`nivelesListos()`, `CTR-16.7`): un `borrador` que se escapa al bundle es un nivel sin
  * jugar en el teléfono de alguien. Mientras el nivel 1 siga en borrador —hasta que alguien lo
  * juegue en un teléfono, `T-249`— lo publicado muestra el rótulo impreso y el motor ni se
- * baja. **En desarrollo se siembran todos**, porque es la única manera de jugar el borrador
- * para poder pasarlo a `listo`.
+ * baja. **En desarrollo y en la vista previa de cada PR se siembran todos** (`nivelesASembrar`),
+ * porque jugar el borrador en un teléfono es la única manera de pasarlo a `listo`.
  *
  * Y un banco que no pasa `problemasDelBanco()` no se siembra: rompe el build con el renglón
  * exacto, en vez de dibujar una pared que falta.
@@ -48,7 +48,7 @@ const problemas = problemasDelBanco(BANCO);
 if (problemas.length > 0) throw new Error(`skayboy.json no pasa CTR-16.5: ${problemas.join(' · ')}`);
 const SEMBRADO: Banco = {
   ...BANCO,
-  niveles: import.meta.env.DEV ? BANCO.niveles : nivelesListos(BANCO),
+  niveles: nivelesASembrar(BANCO, { desarrollo: import.meta.env.DEV, vercel: process.env.VERCEL_ENV }),
 };
 
 const TITULO = `${CASETE.titulo} — Arcade Ricotero`;

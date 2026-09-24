@@ -13,7 +13,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import type { Banco, IdPersonaje } from './niveles.ts';
+import { nivelesASembrar, type Banco, type IdPersonaje } from './niveles.ts';
 import { CUADRO_SEG, QUIETO, crearMundo, paso, type Mando, type Mandos, type Mundo, type Suceso } from './mundo.ts';
 
 /** Un cuadro, el de la partida (`ADR-09.1`): el número vive en `mundo.ts`. */
@@ -104,4 +104,25 @@ test('🔴 después de ganar el mundo se congela: el reloj no corre y nadie se m
   assert.equal(mundo.tiempo, t);
   assert.equal(mundo.cuerpos.skayboy.x, x);
   assert.deepEqual(despues, []);
+});
+
+/**
+ * Qué le llega al navegador. La vista previa de cada PR siembra los borradores para que se
+ * puedan jugar en un teléfono; **la dirección de producción nunca**. Es la mitad que importa
+ * y la que este caso cuida: un borrador en producción es un nivel sin jugar en el teléfono
+ * de alguien (`CTR-16.7`).
+ */
+test('nivelesASembrar: producción solo los listo; la vista previa del PR y el desarrollo, todos', () => {
+  const mezcla: Banco = {
+    ...BANCO,
+    niveles: [
+      { ...BANCO.niveles[0]!, id: 'NIV-01', estado: 'listo' },
+      { ...BANCO.niveles[0]!, id: 'NIV-02', estado: 'borrador' },
+    ],
+  };
+  const ids = (n: readonly { id: string }[]) => n.map((x) => x.id);
+  assert.deepEqual(ids(nivelesASembrar(mezcla, { desarrollo: false, vercel: 'production' })), ['NIV-01']);
+  assert.deepEqual(ids(nivelesASembrar(mezcla, { desarrollo: false })), ['NIV-01'], 'un build sin Vercel es producción');
+  assert.deepEqual(ids(nivelesASembrar(mezcla, { desarrollo: false, vercel: 'preview' })), ['NIV-01', 'NIV-02']);
+  assert.deepEqual(ids(nivelesASembrar(mezcla, { desarrollo: true })), ['NIV-01', 'NIV-02']);
 });
