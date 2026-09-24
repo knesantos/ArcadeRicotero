@@ -57,6 +57,53 @@ export function barajar<T>(xs: readonly T[], azar: () => number = Math.random): 
 }
 
 /**
+ * Lo que se le puede pedir a `escalonar()` además del largo. Todo es opcional: sin nada,
+ * la función hace lo mismo que hizo siempre, y `US-07` no se entera.
+ */
+export interface OpcionesEscalonar {
+  /**
+   * Cuántos ítems, como mucho, salen del nivel más bajo que haya en el pozo. El resto de la
+   * ronda se sortea **parejo entre todos los niveles de arriba** y se ordena por nivel.
+   *
+   * Existe por `CTR-19.14` punto 3 (`FIND` de la verificación de `T-279`): llenar la ronda
+   * desde abajo hasta completar el largo convierte un pozo con 8 Fáciles y una vuelta de 4
+   * en una vidriera fija de 8 temas —los otros 87 no suenan nunca—, que es justo lo que
+   * `BR-01` punto 3 prohíbe. Con cupo, el primero sigue siendo del nivel más bajo (punto 1)
+   * y el orden sigue sin bajar (punto 2), pero todo el pozo puede sonar.
+   *
+   * Si arriba no alcanza para completar el largo, se completa con lo que sobró del nivel
+   * más bajo: quedarse corto por respetar el cupo sería romper la partida por un número.
+   * Un cupo de 0 se lee como 1: el punto 1 de `BR-01` no se negocia.
+   */
+  readonly cupoPrimerNivel?: number;
+}
+
+const nivelDe = (it: Escalonable): string =>
+  it.dificultad in ORDEN_DIFICULTAD ? it.dificultad : 'sin-clasificar';
+
+function escalonarConCupo<T extends Escalonable>(
+  items: readonly T[],
+  largo: number,
+  cupo: number,
+  azar: () => number,
+): T[] {
+  if (items.length === 0 || largo <= 0) return [];
+  const piso = Math.min(...items.map((it) => ORDEN_DIFICULTAD[nivelDe(it)]!));
+  const deAbajo = barajar(items.filter((it) => ORDEN_DIFICULTAD[nivelDe(it)] === piso), azar);
+  const deArriba = barajar(items.filter((it) => ORDEN_DIFICULTAD[nivelDe(it)] !== piso), azar);
+
+  const tope = Math.max(1, Math.min(cupo, largo));
+  const elegidos = deAbajo.slice(0, tope);
+  elegidos.push(...deArriba.slice(0, largo - elegidos.length));
+  elegidos.push(...deAbajo.slice(tope, tope + (largo - elegidos.length)));
+
+  // `sort` es estable: adentro de un nivel queda el orden del barajado.
+  return elegidos.sort(
+    (a, b) => ORDEN_DIFICULTAD[nivelDe(a)]! - ORDEN_DIFICULTAD[nivelDe(b)]!,
+  );
+}
+
+/**
  * Devuelve hasta `largo` ítems, del más fácil al más difícil, barajados dentro de cada
  * nivel para que dos partidas seguidas no sean iguales.
  *
@@ -68,7 +115,12 @@ export function escalonar<T extends Escalonable>(
   items: readonly T[],
   largo: number,
   azar: () => number = Math.random,
+  opciones: OpcionesEscalonar = {},
 ): T[] {
+  if (opciones.cupoPrimerNivel !== undefined) {
+    return escalonarConCupo(items, largo, opciones.cupoPrimerNivel, azar);
+  }
+
   const porNivel = new Map<string, T[]>();
   for (const it of items) {
     const nivel = it.dificultad in ORDEN_DIFICULTAD ? it.dificultad : 'sin-clasificar';
