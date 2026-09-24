@@ -5,7 +5,8 @@
  * `T-239` abrió la ruta y puso el texto de `CNT-17`..`CNT-19` donde `voz.test.ts` lo
  * audita. `T-240` —esto— le pone el marco impreso: la chapa, el bisel, la chapa del pie
  * con el homenaje, y las seis teclas con sus medidas. `T-247` enciende el motor adentro
- * del área, con tintas provisorias hasta que lleguen los 16 `--px-*` de `T-238`.
+ * del área. Las 15 `--px-*` existen desde el 2026-09-24 (`T-268`) y los atlas están en
+ * `public/sprites/`; que la isla los use en vez de las tintas provisorias es `T-278`.
  *
  * **Los dos idiomas de `D-41`, ahora dibujados:** todo lo que rodea al recorte es la
  * imprenta del sitio —papel, borde grueso, tinta plana, el eco de segunda tinta— y lo que
@@ -95,10 +96,12 @@ const PISO = [
           <p class="tenue">{CASETE.baja}</p>
           {/*
             El rótulo estático de `ADR-08.2`: dice qué va a haber y no promete nada, y se va
-            cuando el motor ya dibuja (`T-247`). **Vive acá y no adentro del recorte**:
-            `UX-27 §5.1` no admite ni un rótulo adentro del área. Tampoco va en la placa del
-            mueble, porque de costado el mueble entra por tres píxeles y una línea más deja
-            las teclas afuera; en esta franja, acostada en un renglón, no cuesta alto.
+            cuando el motor ya dibuja (`T-247`). **Vive acá, afuera del mueble, y no es
+            interino** (`UX-28 §2.6`): `UX-27 §5.1` no admite ni un rótulo adentro del área,
+            y con el banco sin ningún nivel `listo` el motor ni se baja — este renglón, al lado
+            del título, es lo que la pantalla publicada dice de sí misma. `UX-28 §2.3` y
+            `§2.4` le hacen lugar en todos los tamaños: arriba de todo cuando sobra alto,
+            adentro de la columna del mueble a ×1 de costado.
           */}
           <p class="rotulo-carga">{PANTALLA.rotuloCarga}</p>
         </div>
@@ -107,6 +110,12 @@ const PISO = [
           El fichín: dos cosas pegadas (`D-41`). En el medio el mueble, con el tubo adentro;
           a cada lado una columna de mando. El reparto entero —112 + 8 + 480 + 8 + 112 de
           ancho, 8 + 288 + 28 de alto, todo en px CSS a ×2— es de `UX-28 §2`.
+
+          **El orden del documento no cambia con la franja.** A ×1 de costado la cabecera y
+          el encabezado de arriba se mudan a la columna del mueble (`UX-28 §2.3`), pero eso
+          lo hace la grilla de `skayboy.css` —`.fichin` pasa a `display: contents` y la
+          grilla la arma `#portada`—, no un segundo encabezado escrito acá. Un solo `h1`, un
+          solo enlace de volver, en el mismo orden para el lector de pantalla.
         */}
         <div class="fichin">
           {/*
@@ -133,7 +142,9 @@ const PISO = [
 
             {/*
               La línea del vertical (`UX-28 §4`), en la placa del mueble y no en una
-              pantalla previa. De costado se va sola: ahí ya está contestada.
+              pantalla previa. **Está escondida casi siempre**: solo aparece cuando girar de
+              verdad dobla el juego —ancho de más de 400 y alto de 720 o más, `UX-28 §4.1`—, y
+              afuera de eso, silencio (`CNT-21 §2`). La condición vive en `skayboy.css`.
             */}
             <p class="chapa-linea">{PANTALLA.lineaVertical}</p>
 

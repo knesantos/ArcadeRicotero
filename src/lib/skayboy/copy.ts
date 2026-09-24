@@ -4,7 +4,8 @@
  * **Nada de esto lo escribió el hilo principal.** Las cadenas salen enteras de tres notas
  * de `contenido` y se copian acá sin retocar: `CNT-17` (el pie de homenaje), `CNT-18` (las
  * teclas, el rótulo de carga, la línea de vertical y el aviso) y `CNT-19` (el nombre y la
- * bajada del casete). Si alguna hay que cambiarla, se cambia allá primero.
+ * bajada del casete). `CNT-21` no trajo cadena nueva: fijó cuándo se muestra la línea de
+ * vertical. Si alguna hay que cambiarla, se cambia allá primero.
  *
  * **Y acá es donde se auditan de verdad.** Mientras vivían en un `.md` no las miraba
  * ninguna máquina; desde que están en este archivo, `voz.test.ts` les pasa sus siete
@@ -68,8 +69,16 @@ export const TECLAS = {
  * saca resultados correctos se termina apagando, y con él se apagan los que sí importan.
  */
 export const PANTALLA = {
-  rotuloCarga: 'Acá va el juego.',
+  /**
+   * Sigue siendo la frase de `CNT-18`, sin tocar una letra, pero **dejó de ser
+   * incondicional** (`CNT-21 §2`, `UX-28 §4.1`). A ×1 de costado la cabecera entra en la
+   * columna del mueble (`UX-28 §2.3`), y un teléfono de 375 o 390 de ancho gira y sigue en
+   * ×1: prometerle "el doble" sería mentirle a la mayoría. La hoja la muestra solo con
+   * ancho de más de 400 **y** alto de 720 o más, a la vez; afuera, silencio y no una frase
+   * de repuesto. Si esta cadena cambia, se cambia en `CNT-21` primero.
+   */
   lineaVertical: 'De costado se ve el doble de grande.',
+  rotuloCarga: 'Acá va el juego.',
   avisoEntrada: 'De vuelta en la entrada.',
 } as const;
 
