@@ -1,0 +1,246 @@
+/**
+ * Los dos muñecos (`T-275`, ciclo 16; `D-44`): Skayboy y Poligirl con los mismos estados, los
+ * mismos cuadros, la misma celda, y cada uno con sus tintas.
+ *
+ * Lee `src/arte/pixel/skayboy.txt` y `poligirl.txt` con el mismo lector que usa la imprenta
+ * (`leerDibujo`), así que lo que acá pasa es lo que se imprime. `D-44` consecuencia 3 lo dejó
+ * escrito: **la paridad de `BR-23.2` se cuenta comparando, no mirando.** Lo que se cuenta:
+ *
+ * 1. **Mismos estados, en el mismo orden, con los mismos cuadros, la misma velocidad y la misma
+ *    repetición** (`BR-23.2`, `CTR-15.7`). El orden es la fila del atlas, y la fila es de lo que
+ *    el motor da por cierto (`CTR-15.8`): un estado corrido de fila en uno solo dibuja a uno
+ *    corriendo con la pose del otro.
+ * 2. **La misma celda y la misma caja de colisión** (`CTR-15.3`): paridad mecánica, no estética.
+ * 3. **Cada uno con sus tres tintas y las dos fijas, nada más** (`UX-27 §4`). Una tinta de
+ *    personaje ajena es un pedazo del otro puesto encima (`D-38`). Y ninguno usa una tinta más
+ *    que el otro: *"ninguno de los dos tiene un color más que el otro"*.
+ * 4. **La misma altura, cuadro por cuadro**: la figura arranca y termina en el mismo renglón en
+ *    los dos (`BR-23.2`, *"mismo alto de sprite"*), entra en 14 × 22 con un píxel de aire a
+ *    cada costado (`UX-27 §2`), y en lo que está en el piso el pie apoya en el borde de abajo de
+ *    la celda (`CTR-15.3`), que es donde apoya la caja.
+ * 5. **El contorno** (`UX-27 §5.2`): ningún píxel de tinta toca el aire, ni el borde de la celda,
+ *    sin clave. Sin excepción, dice el contrato, y el pelo de Poli no es la clave (`§4.2`).
+ * 6. **Lo que la isla pide existe en los dos** (`UX-28 §3`): cada pose que devuelve `poseDe()`
+ *    tiene su estado en los dos atlas. `CTR-15.7` tiene `salta` y `cae`, y `mundo.ts` una sola
+ *    pose en el aire: se resuelve dentro de los contratos, las dos filas para `perfil-aire`, y la
+ *    isla elige por el signo de `vy` (`T-278`). `cae` se dibuja derecho y con los brazos abiertos
+ *    (`UX-27 §7`), nunca dado vuelta (`UX-29 §6`).
+ *
+ * Lo que no se puede contar —que las dos siluetas se reconozcan igual de bien a 32 × 48 CSS en
+ * color y en gris (`BR-23.3`), que ninguna pose narre nada ni ridiculice a nadie (`D-38`,
+ * `D-42`, `BR-24`)— lo mira `revisor` en la hoja de contacto y lo aprueba el usuario (`D-44`).
+ */
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { TRANSPARENTE, jsonDelAtlas, leerDibujo, tintasUsadas, type Dibujo } from '../pixel/fuente.ts';
+import { CAIDA_MAXIMA, IMPULSO_SALTO, PERSONAJES, VELOCIDAD, poseDe, type Cuerpo, type Pose } from './mundo.ts';
+import type { IdPersonaje } from './niveles.ts';
+
+const ARCHIVO: Readonly<Record<IdPersonaje, string>> = {
+  skayboy: 'src/arte/pixel/skayboy.txt',
+  poligirl: 'src/arte/pixel/poligirl.txt',
+};
+
+/** `UX-27 §4`: tres y tres, y ninguno tiene un color más que el otro. */
+const PROPIAS: Readonly<Record<IdPersonaje, readonly string[]>> = {
+  skayboy: ['--px-skay-1', '--px-skay-2', '--px-skay-3'],
+  poligirl: ['--px-poli-1', '--px-poli-2', '--px-poli-3'],
+};
+/** Los dos fijos del área: la clave es el contorno, la luz es el aire (`UX-27 §1.1`). */
+const FIJAS: readonly string[] = ['--px-clave', '--px-luz'];
+
+/** Lo que está en el piso apoya el pie en el borde de abajo de la celda (`CTR-15.3`). */
+const EN_EL_PISO: readonly string[] = ['quieto', 'corre', 'enPausa'];
+
+/**
+ * Qué estado del atlas dibuja cada pose de `poseDe()` (`UX-28 §3`). Está tipado contra `Pose`:
+ * si `mundo.ts` suma una pose, esto no compila hasta que alguien decida con qué se dibuja.
+ */
+const ESTADOS_DE_POSE: Readonly<Record<Pose, readonly string[]>> = {
+  frente: ['enPausa'],
+  'perfil-quieto': ['quieto'],
+  'perfil-corre': ['corre'],
+  'perfil-aire': ['salta', 'cae'],
+};
+
+/** `UX-27 §2`: la figura mide 14 × 22 adentro de la celda de 16 × 24, un píxel de aire a cada costado. */
+const COLUMNA_MIN = 1;
+const COLUMNA_MAX = 14;
+const FILA_MIN = 2;
+
+function leer(quien: IdPersonaje): Dibujo {
+  const archivo = ARCHIVO[quien];
+  const { dibujo, errores } = leerDibujo(readFileSync(archivo, 'utf-8'), archivo);
+  assert.ok(dibujo, `${archivo} no se deja leer:\n  ${errores.join('\n  ')}`);
+  return dibujo;
+}
+
+function losDos(): Readonly<Record<IdPersonaje, Dibujo>> {
+  return { skayboy: leer('skayboy'), poligirl: leer('poligirl') };
+}
+
+/** `"corre 3"` → la grilla. */
+function cuadrosDe(d: Dibujo): Map<string, readonly string[]> {
+  return new Map(d.cuadros.map((c) => [`${c.estado} ${c.indice}`, c.filas]));
+}
+
+/** Hasta dónde llega la figura en un cuadro: los renglones y columnas con tinta. */
+function extension(filas: readonly string[]): { arriba: number; abajo: number; izquierda: number; derecha: number } {
+  let arriba = Infinity;
+  let abajo = -Infinity;
+  let izquierda = Infinity;
+  let derecha = -Infinity;
+  filas.forEach((fila, y) =>
+    [...fila].forEach((car, x) => {
+      if (car === TRANSPARENTE) return;
+      arriba = Math.min(arriba, y);
+      abajo = Math.max(abajo, y);
+      izquierda = Math.min(izquierda, x);
+      derecha = Math.max(derecha, x);
+    }),
+  );
+  return { arriba, abajo, izquierda, derecha };
+}
+
+test('los dos se leen, y los dos son personajes: la misma celda y la misma caja (CTR-15.3)', () => {
+  const d = losDos();
+  const sk = jsonDelAtlas(d.skayboy);
+  const po = jsonDelAtlas(d.poligirl);
+  assert.deepEqual(po.celda, sk.celda, `la celda difiere: skayboy ${sk.celda.ancho} × ${sk.celda.alto}, poligirl ${po.celda.ancho} × ${po.celda.alto}`);
+  assert.deepEqual(po.colision, sk.colision, 'la caja de colisión difiere, y es paridad mecánica (CTR-15.3)');
+  for (const quien of PERSONAJES) {
+    assert.equal(d[quien].tipo, 'personaje', `${ARCHIVO[quien]}: un muñeco es un personaje de 16 × 24, no un tile`);
+  }
+  assert.deepEqual(sk.colision, { ancho: 10, alto: 20 }, 'la caja de CTR-15.3 es de 10 × 20');
+});
+
+test('los mismos estados, en el mismo orden, con los mismos cuadros (BR-23.2)', () => {
+  const d = losDos();
+  const problemas: string[] = [];
+  for (const [uno, otro] of [['skayboy', 'poligirl'], ['poligirl', 'skayboy']] as const) {
+    const delOtro = new Map(d[otro].estados.map((e) => [e.nombre, e]));
+    for (const e of d[uno].estados) {
+      if (!delOtro.has(e.nombre)) problemas.push(`a ${otro} le falta el estado ${e.nombre}, que ${uno} tiene`);
+    }
+    const cuadrosDelOtro = cuadrosDe(d[otro]);
+    for (const clave of cuadrosDe(d[uno]).keys()) {
+      if (!cuadrosDelOtro.has(clave)) problemas.push(`a ${otro} le falta el cuadro ${clave}, que ${uno} tiene`);
+    }
+  }
+  const po = new Map(d.poligirl.estados.map((e) => [e.nombre, e]));
+  for (const e of d.skayboy.estados) {
+    const par = po.get(e.nombre);
+    if (!par) continue;
+    if (par.cuadros !== e.cuadros) problemas.push(`${e.nombre}: skayboy tiene ${e.cuadros} cuadros y poligirl ${par.cuadros}`);
+    if (par.porSegundo !== e.porSegundo) problemas.push(`${e.nombre}: skayboy va a ${e.porSegundo} por segundo y poligirl a ${par.porSegundo}`);
+    if (par.repite !== e.repite) problemas.push(`${e.nombre}: uno repite y el otro no`);
+  }
+  const orden = (x: Dibujo) => x.estados.map((e) => e.nombre).join(', ');
+  if (orden(d.skayboy) !== orden(d.poligirl)) {
+    problemas.push(`las filas del atlas van en otro orden (CTR-15.8): skayboy ${orden(d.skayboy)} · poligirl ${orden(d.poligirl)}`);
+  }
+  assert.deepEqual(problemas, [], `los dos atlas no son pares:\n  ${problemas.join('\n  ')}`);
+});
+
+test('cada uno con sus tres tintas y las dos fijas: ninguna del otro, ninguna de más (UX-27 §4)', () => {
+  const d = losDos();
+  for (const quien of PERSONAJES) {
+    const permitidas = new Set([...PROPIAS[quien], ...FIJAS]);
+    for (const [car, nombre] of d[quien].leyenda) {
+      const ajena = PERSONAJES.find((otro) => otro !== quien && PROPIAS[otro].includes(nombre));
+      assert.ok(
+        ajena === undefined,
+        `${ARCHIVO[quien]}: "${car}" es ${nombre}, una tinta de ${ajena}: sería un pedazo del otro puesto encima (D-38, UX-27 §4)`,
+      );
+      assert.ok(permitidas.has(nombre), `${ARCHIVO[quien]}: "${car}" es ${nombre}, que no es de las suyas ni una fija (UX-27 §4)`);
+    }
+  }
+});
+
+test('ninguno de los dos tiene un color más que el otro (UX-27 §4)', () => {
+  const d = losDos();
+  const sk = tintasUsadas(d.skayboy);
+  const po = tintasUsadas(d.poligirl);
+  const fijas = (usadas: string[]) => usadas.filter((t) => FIJAS.includes(t)).sort().join(', ');
+  assert.equal(fijas(po), fijas(sk), `las fijas difieren: skayboy usa ${fijas(sk)}, poligirl ${fijas(po)}`);
+  assert.equal(po.length, sk.length, `skayboy usa ${sk.length} tintas y poligirl ${po.length}`);
+});
+
+test('la misma altura en cada cuadro, y la figura entra en 14 × 22 (BR-23.2, UX-27 §2, CTR-15.3)', () => {
+  const d = losDos();
+  const problemas: string[] = [];
+  const po = cuadrosDe(d.poligirl);
+  for (const [clave, filas] of cuadrosDe(d.skayboy)) {
+    const par = po.get(clave);
+    if (!par) continue; // falta el cuadro: lo dice el test de los estados
+    const a = extension(filas);
+    const b = extension(par);
+    if (a.arriba !== b.arriba) problemas.push(`${clave}: la figura arranca en el renglón ${a.arriba} en skayboy y en el ${b.arriba} en poligirl`);
+    if (a.abajo !== b.abajo) problemas.push(`${clave}: la figura termina en el renglón ${a.abajo} en skayboy y en el ${b.abajo} en poligirl`);
+  }
+  for (const quien of PERSONAJES) {
+    for (const [clave, filas] of cuadrosDe(d[quien])) {
+      const e = extension(filas);
+      if (e.arriba < FILA_MIN) problemas.push(`${quien} ${clave}: arranca en el renglón ${e.arriba}; la figura mide 22 y el pie va abajo`);
+      if (e.izquierda < COLUMNA_MIN || e.derecha > COLUMNA_MAX) {
+        problemas.push(`${quien} ${clave}: ocupa las columnas ${e.izquierda} a ${e.derecha}, y el aire de los costados es de un píxel`);
+      }
+      const estado = clave.split(' ')[0]!;
+      if (EN_EL_PISO.includes(estado) && e.abajo !== filas.length - 1) {
+        problemas.push(`${quien} ${clave}: está en el piso y el pie no apoya en el renglón de abajo (${e.abajo})`);
+      }
+    }
+  }
+  assert.deepEqual(problemas, [], problemas.join('\n  '));
+});
+
+test('ningún píxel de tinta toca el aire sin contorno de clave (UX-27 §5.2)', () => {
+  const d = losDos();
+  const problemas: string[] = [];
+  for (const quien of PERSONAJES) {
+    const dib = d[quien];
+    const clave = [...dib.leyenda].find(([, nombre]) => nombre === '--px-clave')?.[0];
+    assert.ok(clave, `${ARCHIVO[quien]}: no declara la clave, y el contorno es de clave`);
+    for (const [nombre, filas] of cuadrosDe(dib)) {
+      const alto = filas.length;
+      filas.forEach((fila, y) =>
+        [...fila].forEach((car, x) => {
+          if (car === TRANSPARENTE || car === clave) return;
+          const aire = (xx: number, yy: number) =>
+            yy < 0 || yy >= alto || xx < 0 || xx >= fila.length || [...filas[yy]!][xx] === TRANSPARENTE;
+          if (aire(x + 1, y) || aire(x - 1, y) || aire(x, y + 1) || aire(x, y - 1)) {
+            problemas.push(`${quien} ${nombre}: renglón ${y}, columna ${x} ("${car}", ${dib.leyenda.get(car)})`);
+          }
+        }),
+      );
+    }
+  }
+  assert.deepEqual(problemas, [], `tinta contra el aire, sin contorno:\n  ${problemas.join('\n  ')}`);
+});
+
+test('cada pose que pide la isla tiene su estado en los dos atlas (UX-28 §3)', () => {
+  const d = losDos();
+  // Todas las combinaciones de lo que poseDe() mira hoy, y la velocidad vertical por si mañana
+  // mira también eso: la pose de subir y la de bajar son dos estados del atlas.
+  const poses = new Set<Pose>();
+  for (const conDedo of [false, true]) {
+    for (const enSuelo of [false, true]) {
+      for (const vx of [-VELOCIDAD, 0, VELOCIDAD]) {
+        for (const vy of [-IMPULSO_SALTO, 0, CAIDA_MAXIMA]) {
+          poses.add(poseDe({ conDedo, enSuelo, vx, vy } as Cuerpo));
+        }
+      }
+    }
+  }
+  const faltan: string[] = [];
+  for (const pose of poses) {
+    const estados = ESTADOS_DE_POSE[pose];
+    assert.ok(estados, `poseDe() devuelve "${pose}" y nadie decidió con qué estado se dibuja`);
+    for (const quien of PERSONAJES) {
+      const hay = new Set(d[quien].estados.map((e) => e.nombre));
+      for (const e of estados) if (!hay.has(e)) faltan.push(`${quien}: la pose ${pose} se dibuja con ${e}, y no está`);
+    }
+  }
+  assert.deepEqual(faltan, [], faltan.join('\n  '));
+});

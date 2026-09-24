@@ -1,0 +1,310 @@
+# La sala de Skayboy y Poligirl: los tiles de 16 × 16 del área de juego (T-276, ciclo 16; D-44).
+#
+# Un estado por cada cosa que se dibuja de la leyenda de CTR-16.4 / CTR-16.10, y dos por cada
+# pieza con estado (CTR-16.10.8). Lo cuenta src/lib/skayboy/sala.test.ts.
+#
+# Las tintas (UX-27 §1.1 y §4): el aire es --px-luz y el sólido es --px-clave. Las tres del
+# cielo y las tres del infierno son solo de sus molinetes; el de los dos las mezcla. Palanca,
+# placa, compuerta, caja y las dos puertas van en clave y luz y se distinguen por forma
+# (CTR-16.10.8, UX-27 §4.1.2). Ninguna tinta de personaje entra acá.
+#
+# Los tres molinetes cierran la celda con clave a los costados y abajo (UX-27 §5.2): el ancla
+# del cielo queda a 1,024:1 del aire (§4) y, suelto contra el aire, sin ese marco no se sabía
+# dónde terminaba la celda. Arriba no llevan marco: el borde son las nubes y las llamas.
+#
+# Lo que NO tiene tile, a propósito:
+#   aire     es el fondo del área, --px-luz liso (UX-27 §1.1): se pinta una vez, no se embaldosa.
+#   entrada  es aire para el cuerpo y para el dibujo. Lo que la muestra es el muñeco parado ahí
+#            (UX-29 §3: 'el personaje está en la entrada, se ve'). Una marca por personaje
+#            serían dos piezas de uno más, sin tinta propia, compitiendo con las puertas.
+#
+# Para quien dibuja la sala (T-278):
+#   molinete  cielo = C (elemento cielo), infierno = I, el de los dos = X. Por elemento, no por devuelve.
+#   puerta    puertaSkayboy para la de 'de: skayboy', puertaPoligirl para la otra. Sin letras (UX-27 §5.1):
+#             el sombrero y la mata de pelo son la insignia de cada silueta (UX-30 §3).
+#   palanca   palancaReposo inclinada a la izquierda (arranca así), palancaActiva a la derecha:
+#             el lado para el que la cruzaste (CTR-16.10.2).
+#   placa     placaLibre levantada, placaPisada a ras (CTR-16.10.3).
+#   compuerta compuertaCerrada va en CADA celda del tramo: la reja se apila sin costura.
+#             compuertaAbierta va SOLO en la celda de arriba del tramo (compuertas[].en): es la
+#             reja recogida contra su anclaje; las otras celdas del tramo abierto son aire (CTR-16.10.4).
+#   caja      se dibuja encima de lo que tape: arriba de una placa, la placa no se ve.
+tipo: tile
+version: 1
+
+tinta: K --px-clave
+tinta: L --px-luz
+tinta: c --px-cielo
+tinta: d --px-cielo-2
+tinta: w --px-blanco-gulp
+tinta: r --px-infierno
+tinta: s --px-infierno-2
+tinta: t --px-infierno-3
+tinta: O --px-tesoro
+
+estado: solido  cuadros=1
+estado: molineteCielo  cuadros=1
+estado: molineteInfierno  cuadros=1
+estado: molineteDos  cuadros=1
+estado: tesoro  cuadros=1
+estado: puertaSkayboy  cuadros=1
+estado: puertaPoligirl  cuadros=1
+estado: palancaReposo  cuadros=1
+estado: palancaActiva  cuadros=1
+estado: placaLibre  cuadros=1
+estado: placaPisada  cuadros=1
+estado: compuertaCerrada  cuadros=1
+estado: compuertaAbierta  cuadros=1
+estado: caja  cuadros=1
+
+cuadro: solido 0
+KKKKKKKKKKKKKKKK
+KKKLKKKKKKKLKKKK
+KKKLKKKKKKKLKKKK
+KKKLKKKKKKKLKKKK
+KLLLLLLLLLLLLLLK
+KKKKKKKLKKKKKKKK
+KKKKKKKLKKKKKKKK
+KKKKKKKLKKKKKKKK
+KKKKKKKLKKKKKKKK
+KKKKKKKLKKKKKKKK
+KKKKKKKLKKKKKKKK
+KKKKKKKLKKKKKKKK
+KLLLLLLLLLLLLLLK
+KKKLKKKKKKKLKKKK
+KKKLKKKKKKKLKKKK
+KKKKKKKKKKKKKKKK
+
+cuadro: molineteCielo 0
+LLLLLLLLLLLLLLLL
+LLKKKKLLLLKKKKLL
+LKwwwwKLLKwwwwKL
+KwwwwwwKKwwwwwwK
+KwwwwdddwwwwwddK
+KdwwdddddwwwdddK
+KKddddKKKKddddKK
+KwKddKwwwwKddKwK
+KwwKKwwwwwwKKwwK
+KwwwwwwwwwwwwwwK
+KddddddddddddddK
+KdKKKKddddKKKKdK
+KKccccKddKccccKK
+KccccccKKccccccK
+KccccccccccccccK
+KKKKKKKKKKKKKKKK
+
+cuadro: molineteInfierno 0
+LLLLLLLLLLLLLLLL
+LLLKKLLLLLLKKLLL
+LLKttKLLLLKttKLL
+LLKttKLLLLKttKLL
+KKsttsKKKKsttsKK
+KKrssrKttKrssrKK
+KsrssrsttsrssrsK
+KrrrrrrssrrrrrrK
+KrrsrrrrrrrsrrrK
+KsrrrsrrrsrrrsrK
+KrrrrrrrrrrrrrrK
+KrsrrrrrrrsrrrrK
+KrrrrsrrrrrrrsrK
+KrrrrrrrrrrrrrrK
+KrrrrrrrrrrrrrrK
+KKKKKKKKKKKKKKKK
+
+cuadro: molineteDos 0
+LLLLLLLLLLLLLLLL
+LLKKKKLLLLLKKLLL
+LKwwwwKLLLKttKLL
+KwwwwwwKLLKttKLL
+KwwwwddKKKsttsKK
+KwwwddddKrsttsrK
+KwrrrsdddwrrrsdK
+KrrrsdddwrrrsddK
+KrrsdddwrrrsdddK
+KrsdddwrrrsdddwK
+KsdddwrrrsdddwrK
+KdddwrrrsdddwrrK
+KddwrrrsdddwrrrK
+KdwrrrsdddwrrrsK
+KwrrrsdddwrrrsdK
+KKKKKKKKKKKKKKKK
+
+cuadro: tesoro 0
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLKKKKKKKKLLLL
+LLLKOOOOOOOOKLLL
+LLKOLLOOOOOOOKLL
+LLKOLOOOOOOOOKLL
+LLKOOOOOOOOOOKLL
+LLLKOOOOOOOOKLLL
+LLLKOOOOOOOOKLLL
+LLLLKOOOOOOKLLLL
+LLLLKOOOOOOKLLLL
+LLLLLKOOOOKLLLLL
+LLLLLLKOOKLLLLLL
+LLLLLLLKKLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+
+cuadro: puertaSkayboy 0
+LLLKKKKKKKKKKLLL
+LLKKLLLLLLLLKKLL
+LKKLKKKKKKKKLKKL
+LKLKKKKKKKKKKLKL
+LKLKKKKKKKKKKLKL
+LKLKKKKKKKKKKLKL
+LKLKKKLLLLKKKLKL
+LKLKKKLLLLKKKLKL
+LKLKKKLLLLKKKLKL
+LKLKLLLLLLLLKLKL
+LKLKKKKKKKKKKLKL
+LKLKKKKKKKKKKLKL
+LKLKKKKKKKKKKLKL
+LKLKKKKKKKKKKLKL
+LKLKKKKKKKKKKLKL
+LKLKKKKKKKKKKLKL
+
+cuadro: puertaPoligirl 0
+LLLKKKKKKKKKKLLL
+LLKKLLLLLLLLKKLL
+LKKLKKKKKKKKLKKL
+LKLKKKKKKKKKKLKL
+LKLKKKLLLLKKKLKL
+LKLKKLLLLLLKKLKL
+LKLKKLLLLLLKKLKL
+LKLKKLLLLKLKKLKL
+LKLKKLLLKKLKKLKL
+LKLKKLLKKKLKKLKL
+LKLKKLLKKKLKKLKL
+LKLKKLLKKKKKKLKL
+LKLKKLKKKKKKKLKL
+LKLKKKKKKKKKKLKL
+LKLKKKKKKKKKKLKL
+LKLKKKKKKKKKKLKL
+
+cuadro: palancaReposo 0
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLKKLLLLLLLLLLLL
+LKLLKLLLLLLLLLLL
+LKLLKLLLLLLLLLLL
+LLKKKLLLLLLLLLLL
+LLLLKKLLLLLLLLLL
+LLLLLKKLLLLLLLLL
+LLLLLLKKLLLLLLLL
+LLLLLLLKKLLLLLLL
+LLLLLLLKKLLLLLLL
+LLLLLKKKKKKLLLLL
+LLLLKLLLLLLKLLLL
+LLLKLLLLLLLLKLLL
+LLLKLLLLLLLLKLLL
+LLLKKKKKKKKKKLLL
+
+cuadro: palancaActiva 0
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLKKLL
+LLLLLLLLLLLKLLKL
+LLLLLLLLLLLKLLKL
+LLLLLLLLLLLKKKLL
+LLLLLLLLLLKKLLLL
+LLLLLLLLLKKLLLLL
+LLLLLLLLKKLLLLLL
+LLLLLLLKKLLLLLLL
+LLLLLLLKKLLLLLLL
+LLLLLKKKKKKLLLLL
+LLLLKLLLLLLKLLLL
+LLLKLLLLLLLLKLLL
+LLLKLLLLLLLLKLLL
+LLLKKKKKKKKKKLLL
+
+cuadro: placaLibre 0
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLKKKKKKKKKKKKLL
+LKLLLLLLLLLLLLKL
+LKLKLKLKLKLKLLKL
+LKKKKKKKKKKKKKKL
+LLLKKLLLLLLKKLLL
+LLKKKKLLLLKKKKLL
+
+cuadro: placaPisada 0
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LKKKKKKKKKKKKKKL
+KKLKLKLKLKLKLKKK
+
+cuadro: compuertaCerrada 0
+KKLLLKKLLKKLLLKK
+KKLLLKKLLKKLLLKK
+KKLLLKKLLKKLLLKK
+KKKKKKKKKKKKKKKK
+KKKKKKKKKKKKKKKK
+KKLLLKKLLKKLLLKK
+KKLLLKKLLKKLLLKK
+KKLLLKKLLKKLLLKK
+KKLLLKKLLKKLLLKK
+KKLLLKKLLKKLLLKK
+KKLLLKKLLKKLLLKK
+KKKKKKKKKKKKKKKK
+KKKKKKKKKKKKKKKK
+KKLLLKKLLKKLLLKK
+KKLLLKKLLKKLLLKK
+KKLLLKKLLKKLLLKK
+
+cuadro: compuertaAbierta 0
+KKLLLKKLLKKLLLKK
+KKKKKKKKKKKKKKKK
+KKKKKKKKKKKKKKKK
+KKLLLKKLLKKLLLKK
+KKLLLKKLLKKLLLKK
+KKKKKKKKKKKKKKKK
+KKLLLKKLLKKLLLKK
+KLLLLKLLLLKLLLLK
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+
+cuadro: caja 0
+KKKKKKKKKKKKKKKK
+KLLLLLLLLLLLLLLK
+KLKKKKKKKKKKKKLK
+KLKKLLLLLLLLKKLK
+KLKLKKLLLLKKLKLK
+KLKLLKKLLKKLLKLK
+KLKLLLKKKKLLLKLK
+KLKLLLLKKLLLLKLK
+KLKLLLLKKLLLLKLK
+KLKLLLKKKKLLLKLK
+KLKLLKKLLKKLLKLK
+KLKLKKLLLLKKLKLK
+KLKKLLLLLLLLKKLK
+KLKKKKKKKKKKKKLK
+KLLLLLLLLLLLLLLK
+KKKKKKKKKKKKKKKK
