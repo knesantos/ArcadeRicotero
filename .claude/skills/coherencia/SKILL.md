@@ -34,13 +34,14 @@ dueño no es un hallazgo, es una queja.
 
 <criterios>
 Reportá solo lo que rompe la cadena. Un documento que podría estar mejor escrito no es
-un hueco de coherencia. La nota de derechos incompleta **sí** es un hueco de coherencia:
-bloquea la publicación entera. Si encontrás algo incidental sin ligazón causal con lo que
+un hueco de coherencia. Un rótulo que miente —una leyenda cargada como `hecho`— **sí** lo
+es, aunque el schema pase: es lo único que el proyecto no relaja (`D-14`). Si encontrás
+algo incidental sin ligazón causal con lo que
 se está construyendo ahora, anotalo como diferido y seguí.
 </criterios>
 
 <entregable>
-Máximo 25 líneas:
+En este formato:
 
 ```
 CAPA QUE FALLA: <requisitos | diseño | hechos | construcción | verificación | ninguna>

@@ -6,74 +6,56 @@ disable-model-invocation: true
 ---
 
 <objetivo>
-RicotaArcade se creó con una entrevista corta a propósito: en ese momento no había
-equipo, ni carpetas, ni contexto. Ahora sí. Esta skill hace la entrevista que **de
-verdad** define el proyecto, y la convierte en el primer entregable de cada rol.
+Esta skill hace la entrevista que define el proyecto —o que lo redefine, cuando el
+objetivo cambia de forma— y la convierte en un entregable para cada rol.
 
-Al terminar, `Docs/BRIEF.md` deja de tener supuestos sin confirmar y cada carpeta de rol
-tiene algo adentro. Ese es el arranque real.
+Al terminar, `Docs/BRIEF.md` no tiene un **PENDIENTE** que el usuario pueda contestar, y
+cada rol sabe qué le toca.
 </objetivo>
 
 <antes_de_empezar>
-Leé `Docs/BRIEF.md` y `Docs/EQUIPO.md` completos.
+Leé `Docs/BRIEF.md`, `Docs/EQUIPO.md` y `Docs/DECISIONES.md` completos.
 
-Marcá todo lo que figure bajo "Supuestos sin confirmar" como pregunta obligatoria. Los
-más urgentes: si los juegos 3 y 4 son "completar la letra" y "adivinar la tapa", si el
-usuario ya tiene fragmentos de audio propios, y qué tan cerrada está la nota de derechos.
-No vuelvas a preguntar nada que el brief ya conteste con confianza.
+Lo que la entrevista tiene que resolver es lo que el brief marca **PENDIENTE** y lo que el
+cambio de objetivo vuelve a abrir. No vuelvas a preguntar nada que el brief o una
+decisión `D-XX` vigente ya contesten con confianza.
 </antes_de_empezar>
 
 <procedimiento>
 
 ## Bloque 1 — Confirmar lo que se asumió (obligatorio)
 
-Una ronda de `AskUserQuestion` por cada supuesto de `Docs/BRIEF.md`, agrupados de a 4.
-Formato: el supuesto como primera opción ("Sí, es así"), y las alternativas reales.
-Incluí siempre: idioma y tono, juegos 3 y 4, origen de los fragmentos de audio, y si hay
-fecha límite real pese a que el brief diga que no la hay.
+Una ronda de `AskUserQuestion` por cada supuesto que el cambio de objetivo toque,
+agrupados de a 4. Formato: el supuesto como primera opción ("Sí, es así"), y las
+alternativas reales.
 
 ## Bloque 2 — Profundizar el objetivo
 
 1. **El día en la vida.** *Contame el momento exacto en que un fan abre esto en el
    celular. ¿Qué estaba haciendo antes? ¿Qué hace después de jugar una partida?*
 2. **El fracaso.** *Si en tres meses esto no sirvió, ¿cuál va a haber sido el motivo más
-   probable — derechos, Spotify, o que el banco de preguntas quedó corto?*
-3. **El corte.** *Si tuvieras la mitad del tiempo, ¿cuál de los cuatro juegos sacarías
-   primero?*
-4. **El material.** *¿Ya tenés fragmentos de audio grabados, o hay que planificar cómo
-   se producen?*
+   probable?*
+3. **El corte.** *Si tuvieras la mitad del tiempo, ¿qué sacarías primero?*
 
 ## Bloque 3 — Una pregunta por rol
 
-- `producto`: ¿los juegos 3 y 4 quedan como "completar la letra" y "adivinar la tapa", o
-  cambian?
-- `arquitectura`: ¿hay cuenta de Spotify Premium disponible para evaluar el Web Playback
-  SDK, o `ADR-01` debe asumir que no?
-- `investigador`: ¿hay alguna fuente de discografía o cronología que el usuario ya
-  confía y no hay que re-verificar?
-- `contenido`: ¿cuánto texto de una letra está dispuesto el usuario a citar antes de que
-  el riesgo de derechos se sienta real?
-- `experiencia`: ¿hay referencia visual concreta de Rocambole que el usuario ya tenga en
-  mente?
-- `revisor`: ¿hay algún criterio no negociable (ej. tiempo de carga) que si se rompe
-  bloquea todo lo demás?
-- `orquestador`: ¿de cuántos tokens o cuántas horas suele ser una ráfaga típica?
+Leé el último entregable de cada rol y preguntá, por rol, lo que solo el usuario puede
+contestar sobre lo que esa carpeta tiene abierto. Si un rol no tiene nada abierto que
+dependa del usuario, no se pregunta nada por él.
 
 ## Bloque 4 — Riesgos y restricciones duras
 
-Repasá los seis riesgos de `Docs/BRIEF.md` uno por uno: ¿sigue vigente, cambió, o se
-resolvió? Prestá atención especial a derechos y a Spotify: son los que bloquean publicar.
+Repasá los riesgos de `Docs/BRIEF.md` uno por uno: ¿sigue vigente, cambió, o se
+resolvió?
 
 ## Bloque 5 — Escribir
 
 1. Reescribí `Docs/BRIEF.md` completo: supuestos confirmados pasan a hechos, los
    corregidos se corrigen, lo que quede sin confirmar se marca **PENDIENTE**.
 2. Registrá en `Docs/DECISIONES.md` toda decisión nueva, con alternativas descartadas.
-3. Delegá a cada rol su primer entregable, en paralelo cuando sea posible: `producto`
-   confirma juegos 3 y 4 y el piso de ítems; `arquitectura` abre `ADR-01`;
-   `investigador` arranca las primeras fichas `RES-XX`; `contenido` esboza la nota de
-   derechos; `experiencia` propone el primer flujo del quiz.
-4. Actualizá `ESTADO.md`: kickoff hecho, primer entregable de cada rol, próximo paso.
+3. Delegá a cada rol el entregable que el cambio de objetivo le abre, en paralelo cuando
+   sea posible.
+4. Actualizá `ESTADO.md`: kickoff hecho, qué se le pidió a cada rol, próximo paso.
 
 </procedimiento>
 
@@ -86,7 +68,7 @@ resolvió? Prestá atención especial a derechos y a Spotify: son los que bloque
 </criterios>
 
 <entregable>
-Máximo 20 líneas en el chat: qué supuestos se confirmaron o corrigieron, el riesgo
-número uno con las palabras del usuario, qué produjo cada rol y en qué archivo, qué
-quedó PENDIENTE, y el próximo paso concreto.
+En el chat: qué supuestos se confirmaron o corrigieron, el riesgo número uno con las
+palabras del usuario, qué produjo cada rol y en qué archivo, qué quedó PENDIENTE, y el
+próximo paso concreto.
 </entregable>

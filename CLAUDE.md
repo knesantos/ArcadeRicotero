@@ -13,26 +13,11 @@ previa hasta el que sabe qué se tocó en Huracán en el 93. Dificultad escalona
 muro en la primera pantalla.
 **"Listo" de la v1:** cuatro juegos jugables de punta a punta en un celular, confirmados
 en `/kickoff` por `D-05` — quiz, adivinar el tema con reveal progresivo, completar la
-letra, y adivinar la tapa —, cada uno con su piso de ítems cumplido (40 / 20 / 15 / 10) y
-con el tema escuchable vía Spotify al revelar.
-
-> ⚠ **Tres avisos sobre el párrafo de arriba, para no repetir errores ajenos.** El primero:
-> decía "Huracán en el 89" y era falso — en el 89 fue el debut en Obras, Huracán fue 93 y
-> 94 (`RES-05`). El segundo: decía "el tema **completo**" vía Spotify, y `RES-01` mostró
-> que para un jugador sin Premium eso probablemente no se cumpla dentro del sitio. La
-> redacción definitiva de esa promesa la fija `producto` en `BR-06` (`T-03` del ciclo 1);
-> hasta entonces, no la cites como si estuviera cerrada.
->
-> **El tercero, del 2026-08-24: los pisos ya no son 40 / 20 / 15 / 10, son 40 / 30 / 15 /
-> 10.** `producto` subió el de "adivinar el tema" de 20 a 30 en `T-99` del ciclo 7, porque
-> `D-24` le sacó a ese juego el costo de curar distractores —ahora hay un buscador sobre
-> los 105 títulos, no cuatro opciones— y lo que quedaba caro por ítem era solo producir el
-> audio. **Sube la vara de la v1**, y el número que manda está en `PRD-alcance-v1.md`, no
-> acá. El de arriba queda escrito para que se vea qué cambió.
+letra, y adivinar la tapa —, cada uno con su piso de ítems cumplido y con el tema completo
+escuchable al revelar. **Los pisos que mandan están en `PRD-alcance-v1.md`**, no acá: un
+número copiado en este archivo ya quedó viejo una vez.
 **Fuera de alcance:** cuentas de usuario, ranking global, backend y multijugador en
-tiempo real. **`D-22` sacó de acá "alojar los temas completos"**: el sitio los sirve en mp3
-—era lo único que le negaba al que no tiene Premium, contra los molinetes de `D-14`— y lo
-que ahora manda es el peso (~7,2 h de audio) y los límites de Vercel, todavía sin ficha.
+tiempo real.
 
 ## 2. Cómo se trabaja acá
 
@@ -49,7 +34,7 @@ que ahora manda es el peso (~7,2 h de audio) y los límites de Vercel, todavía 
 | Rol | Misión | Carpeta | Prefijo ID |
 |---|---|---|---|
 | `producto` | Alcance de la v1, qué juegos entran, piso de ítems | `Docs/PRODUCTO/` | `US-`, `BR-` |
-| `arquitectura` | Stack, motor de audio, vía de Spotify, schema | `Docs/ARQ/` | `ADR-`, `CTR-` |
+| `arquitectura` | Stack, motor de audio y de juego, schema | `Docs/ARQ/` | `ADR-`, `CTR-` |
 | `investigador` | Hechos externos con URL y fecha, o leyenda rotulada | `Docs/INVESTIGACION/` | `RES-` |
 | `contenido` | Banco de preguntas, distractores, tono, derechos | `Docs/CONTENIDO/` | `CNT-` |
 | `experiencia` | Flujos de sesión corta en móvil, sistema visual | `Docs/UX/` | `UX-` |
@@ -123,10 +108,11 @@ leyenda **disfrazada de dato** hace quedar mal al jugador, no al sitio.
   comparte el resultado, se cierra. Todo lo que exija más está mal cortado.
 - **Stack: Astro + TypeScript**, islas, JSON versionado, sin backend, hosting estático
   gratuito. Detalle de código en `.claude/rules/codigo-juegos.md`.
-- **Motor de audio, revisado por `D-22`:** el reveal desde 0,1 seg sigue siendo fragmento
-  propio con Web Audio API; **el tema completo lo sirve el sitio en mp3**, ya no Spotify.
-  `ADR-01` cambió de pregunta: dónde viven los archivos, con qué bitrate, y si el reveal se
-  deriva del mp3 entero en vez de recortarse a mano (`D-06`).
+- **Motor de audio:** el reveal desde 0,1 seg es fragmento propio con Web Audio API, y
+  **el tema completo lo sirve el sitio en mp3** (`D-22`; niveles y peso en `D-23`, límites
+  de Vercel en `RES-50`), porque negarle el tema al que no tiene Premium cerraba un
+  molinete. Spotify es un enlace opcional por deep link (`ADR-01`, opción B), nunca la vía
+  al tema.
 - **Regla de veracidad, en su forma actual (`D-14`):** lo que importa es que **el rótulo
   diga la verdad sobre lo que hay adentro**, no de dónde salió el dato. Tres casillas:
   **hecho**, **leyenda** y **testimonio**, y el schema las hace cumplir. Una historia que
@@ -135,10 +121,9 @@ leyenda **disfrazada de dato** hace quedar mal al jugador, no al sitio.
   fuente, se cita; cuando no la hay, **se dice que no la hay y se usa igual**. Detalle en
   `.claude/rules/contenido-json.md`.
 - **Los derechos no bloquean nada, y si llega un reclamo se baja** (`D-14`). La nota de
-  `contenido` (`CNT-01`) sigue existiendo, pero cambió de función: **ya no es un gate, es
-  un mapa** de qué se está usando y de dónde salió, para poder responder rápido y bien si
-  alguien pregunta. `D-07` partía el mundo en "construir" y "publicar"; `D-14` sacó el
-  cerrojo de la segunda puerta.
+  `contenido` (`CNT-01`) **es un mapa, no un gate**: qué se está usando y de dónde salió,
+  para poder responder rápido y bien si alguien pregunta. Donde el repo todavía hable de un
+  cerrojo antes de publicar, es `D-07`, y `D-14` lo reemplazó.
 - **Dedicación en ráfagas.** El trabajo se corta en tareas `T-XX` autocontenidas que
   cierran enteras en una ráfaga. `ESTADO.md` tiene que alcanzar para retomar sin releer
   el repo entero.
