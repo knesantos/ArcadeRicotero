@@ -1,6 +1,6 @@
 # ARQ — Schema de los niveles: `src/data/skayboy.json`
 
-> Rol dueño: `arquitectura`. **Produce: `CTR-16`** (`CTR-16.1` … `CTR-16.9`).
+> Rol dueño: `arquitectura`. **Produce: `CTR-16`** (`CTR-16.1` … `CTR-16.10`).
 >
 > **Consume:** `CLAUDE.md` (*"nada de datos hardcodeados: el contenido viene siempre de
 > `src/data/*.json`"*), `D-14`, `D-32` (límite 3), `D-38`, `D-39`, `D-40`, `D-41`, `D-42`,
@@ -10,6 +10,14 @@
 > **`UX-28 §1`** (dos columnas, ningún modo que elegir), **`UX-29 §7`** (el terreno ajeno
 > devuelve a la entrada, y el nivel es una sala cerrada), **`REV-14`** (`FIND-55`, `FIND-58`,
 > y `FIND-59`), **`US-09` criterio 4**, `src/lib/esquemas.test.ts`.
+> **Sumado el 2026-09-22 para `CTR-16.10` (`T-264`):** `D-44`, `BR-23` puntos 1 y 4,
+> `BR-24`, `BR-25` (b), (c), (d) y (f), `UX-27 §4`, `§5.2` y `§9`, `UX-28 §2.1` y `§3`,
+> `UX-29 §3` y `§6`, `UX-30 §3`, `CTR-17.1`, `.3`, `.4` y `.6`, `RES-61.4`, `RES-61.5`,
+> `RES-61.6`, `ORQ-plan-ciclo-16.md` (`§2` fila `T-264`, `§2.1`, `§2.2`, `§5`, `§6`),
+> `src/lib/skayboy/mundo.ts`, `niveles.ts`, `src/data/_schema/skayboy.schema.json`, y las
+> dos colas del ciclo 15 en `ESTADO.md` ("Lo que la verificación dejó abierto").
+> `CTR-18` (`ARQ-solucion-grabada.md`) lo escribe `T-263` el mismo día, en paralelo: acá
+> se cita por su número reservado (`Docs/IDS.md`, fila del 2026-09-22).
 >
 > **Qué NO es:** no es el diseño de los niveles ni el piso de cuántos hay. El piso lo fija
 > `producto` al promover (`BR-16`), y a quién devuelve cada terreno es **criterio del sitio**
@@ -21,6 +29,22 @@
 > lastima y una de las dos no era computable. Cada enmienda está marcada donde pasó).
 > **2026-09-22:** el ejemplo de `CTR-16.4` tenía `C` e `I` invertidos respecto del dato y de
 > `UX-30 §3`; enmendado en el lugar.
+> **2026-09-22, más tarde (`T-264`, ciclo 16):** entra **`CTR-16.10`**, los mecanismos del
+> escalón Media, y con él cuatro enmiendas marcadas donde pasaron: `CTR-16.4` (el enum de
+> `tipo` y el `elemento` que declara que `C` es cielo e `I` infierno), `CTR-16.5` (el
+> ejemplo, la tabla, y la aceptación de `T-253`), `CTR-16.6` (`sostenido` y
+> `alternativaSolo` se van) y `CTR-16.9`.
+> **2026-09-23 (cierre de la ráfaga 1 del ciclo 16), cinco colas cerradas en el lugar,
+> cada una marcada donde pasó:** `CTR-16.7` pide un solo booleano, `deDos`, porque
+> `BR-29` retiró `verificaciones.solo` (arrastra `CTR-16.5`, `CTR-16.9`, `CTR-16.10.1` y
+> `CTR-16.10.9`); `CTR-16.5` suma la **regla 3**, cada entrada tiene dónde pararse;
+> `CTR-16.10.5` y `CTR-16.10.10` dejan de exigirle nada a una traza de a dos que no se graba;
+> `CTR-16.10.7` dice qué vale `por` cuando los dos hacen lo mismo en el mismo subpaso; y
+> `CTR-16.8` apunta a los módulos de `CTR-18.11`, que era deuda de `ADR-09`. **Consume
+> además:** `BR-29` puntos 1, 3 y 4,
+> `Docs/SUGERENCIAS/PRD-para-arquitectura-verificaciones-solo-se-retira.md`, `UX-31 §3` (los
+> bocetos) y lo que midió `T-266` en `src/lib/skayboy/solucionador.ts` y su test (la entrada
+> en el aire).
 >
 > **Regla de escritura que nace de `FIND-55`: toda medida de píxel dice si es _nativa_ o
 > _CSS_. En este documento todo es nativo, porque un dato de nivel no sabe a qué escala se
@@ -181,18 +205,36 @@ existe, y eso cae bajo lo único que `CLAUDE.md` declara estricto.
 "leyenda": {
   ".": { "tipo": "aire" },
   "#": { "tipo": "solido" },
-  "C": { "tipo": "molinete", "devuelve": ["skayboy"] },
-  "I": { "tipo": "molinete", "devuelve": ["poligirl"] },
+  "C": { "tipo": "molinete", "elemento": "cielo",    "devuelve": ["skayboy"] },
+  "I": { "tipo": "molinete", "elemento": "infierno", "devuelve": ["poligirl"] },
   "X": { "tipo": "molinete", "devuelve": ["skayboy", "poligirl"] },
   "o": { "tipo": "tesoro", "para": ["skayboy", "poligirl"] },
   "1": { "tipo": "entrada", "de": "skayboy" },
   "2": { "tipo": "entrada", "de": "poligirl" },
   "A": { "tipo": "puerta",  "de": "skayboy" },
   "B": { "tipo": "puerta",  "de": "poligirl" },
-  "=": { "tipo": "mecanismo" },
+  "/": { "tipo": "palanca" },
+  "=": { "tipo": "placa" },
+  "|": { "tipo": "compuerta" },
   "n": { "tipo": "caja" }
 }
 ```
+
+> **Enmendado el 2026-09-22 por `CTR-16.10` (`T-264`), en el lugar.** Tres cambios en el
+> bloque de arriba, y ninguno toca el reparto:
+>
+> 1. **`=` deja de ser `mecanismo` y pasa a ser `placa`; entran `/` (`palanca`) y `|`
+>    (`compuerta`).** `mecanismo` se partía en dos cosas que la física corre distinto, y la
+>    diferencia vivía en un booleano del arreglo (`sostenido`, `CTR-16.6`), no en la grilla.
+> 2. **`n` sigue siendo `caja`, pero ya no es un sólido quieto:** marca dónde **arranca** una
+>    caja que se empuja, y debajo de ella la celda es aire (`CTR-16.10.5`).
+> 3. **`C` es cielo e `I` es infierno, y desde hoy lo dice el dato**, no las iniciales. El
+>    molinete que devuelve a uno solo lleva `elemento`; el que devuelve a los dos no lleva
+>    ninguno. Cierra lo que la enmienda de abajo dejó dicho —*"ningún lugar del contrato la
+>    declara"*— y **no pisa el reparto**: `elemento` nombra el lugar, `devuelve` dice a quién
+>    rechaza, y lo segundo sigue siendo de `experiencia`. **Coincide con `UX-30 §3`:** el
+>    cielo es el terreno claro, lo camina Poligirl, y por eso `C` devuelve a Skayboy. Si
+>    algún día `experiencia` cambia el reparto, cambia `devuelve` y `C` sigue siendo cielo.
 
 > **Enmendado el 2026-09-22: el reparto de `C` e `I` estaba al revés.** El ejemplo decía
 > `C → ["poligirl"]` e `I → ["skayboy"]`. El dato real (`src/data/skayboy.json`, leyenda) y
@@ -213,7 +255,9 @@ el schema el vocabulario que `UX-29` retiró del juego, y el dato es justo el lu
 vocabulario sobrevive más tiempo: un `tipo: "letal"` en un JSON termina siendo una clase de
 CSS llamada `letal`, un nombre de función `mata()` y, tarde o temprano, una palabra en
 pantalla. **El enum completo de `tipo`** es entonces: `aire`, `solido`, `molinete`, `tesoro`,
-`entrada`, `puerta`, `mecanismo`, `caja`.
+`entrada`, `puerta`, `palanca`, `placa`, `compuerta`, `caja` — *enmendado el 2026-09-22 por
+`CTR-16.10`: eran ocho, con `mecanismo` donde ahora están `palanca` y `placa`, y sin
+`compuerta`.*
 
 - **La leyenda es del archivo entero, no de cada nivel.** Un caracter que significa una cosa
   en el nivel 2 y otra en el 5 es un defecto esperando.
@@ -235,11 +279,13 @@ por su contenido**, y afirmar que sí sería el mismo defecto que el hallazgo vi
 
 | Regla | Quién la hace cumplir |
 |---|---|
-| `tipo` es uno de los ocho del enum | `skayboy.schema.json`, `enum` |
+| `tipo` es uno de los **diez** del enum *(eran ocho; enmendado por `CTR-16.10`)* | `skayboy.schema.json`, `enum` |
 | Todo `molinete` trae `devuelve` con 1 o 2 entradas, `uniqueItems`, y cada entrada es `"skayboy"` o `"poligirl"` | el schema, con `if`/`then` sobre `tipo` |
 | `de` y `para` solo nombran esos mismos dos `id` | el schema |
 | Los caracteres de la leyenda son de un solo caracter y no se repiten | **el schema, gratis**: son claves de un objeto |
 | **Hay exactamente un molinete que devuelve solo a `skayboy`, exactamente uno que devuelve solo a `poligirl`, y exactamente uno que devuelve a los dos** | **un caso de prueba propio en `esquemas.test.ts`**, cuatro líneas de JavaScript sobre el JSON ya parseado |
+| *(Sumada por `CTR-16.10`)* Todo molinete de uno solo trae `elemento` (`cielo` \| `infierno`); el de los dos y cualquier otro `tipo` no lo traen | el schema, con `if`/`then`/`else` |
+| *(Sumada por `CTR-16.10`)* **Los dos molinetes de uno solo son uno de cielo y uno de infierno** — no dos de cielo | el mismo caso de prueba que cuenta los tres: el schema no cuenta por contenido en un mapa, y es la misma razón de la fila de arriba |
 
 **Alternativa descartada, y es la que parece mejor hasta que se mira de cerca:** hacer que
 `leyenda` sea un **arreglo** de `{ "caracter": …, "tipo": … }`. Con un arreglo, `contains` +
@@ -265,12 +311,24 @@ elección es fácil — **el defecto que el mapa hace imposible es el que nadie 
     "..."
   ],
   "mecanismos": [
-    { "id": "MEC-01", "en": [4, 7], "abre": ["PUE-01"], "sostenido": false }
+    { "id": "MEC-01", "en": [5, 7], "abre": ["COM-01"] }
   ],
-  "cajas": [ { "en": [7, 7] } ],
-  "verificaciones": { "deDos": false, "solo": false }
+  "compuertas": [
+    { "id": "COM-01", "en": [7, 5] }
+  ],
+  "verificaciones": { "deDos": false }
 }
 ```
+
+> **Enmendado el 2026-09-23:** `verificaciones` traía también el booleano `solo`, que
+> `BR-29` retiró (`CTR-16.7`, enmendado el mismo día).
+
+> **Enmendado el 2026-09-22 por `CTR-16.10` (`T-264`), y cierra la `BAJA` del ciclo 15:** el ejemplo decía `"abre": ["PUE-01"]`, un id que no tenía ninguna pieza del juego.
+> Las puertas son los caracteres `A` y `B`, y **una puerta no se abre: se llega** (regla 2
+> de abajo). Lo que un mecanismo abre es una **compuerta**, con id propio `COM-NN` y su
+> arreglo `compuertas`. Se fueron también `sostenido` (lo dice la leyenda: `CTR-16.6`
+> enmendado) y el arreglo `cajas` (una caja se dibuja en la grilla y no conecta con nada:
+> `CTR-16.10.1`). Un ejemplo completo y válido, con las cuatro piezas, está en `CTR-16.10.1`.
 
 | Campo | Regla del schema |
 |---|---|
@@ -279,25 +337,133 @@ elección es fácil — **el defecto que el mapa hace imposible es el que nadie 
 | `escalon` | entero **1, 2 o 3**. Es lo que hace verificable el escalonamiento de `BR-01` sin que nadie cuente a mano |
 | `estado` | `borrador` \| `listo`. La página sirve **solo** los `listo`, igual que `dos-ejes` (`CTR-08`) |
 | `grilla` | exactamente `alto` renglones de exactamente `ancho` caracteres, todos declarados en `leyenda`. Es la regla que más defectos caza y la más barata de correr |
-| `mecanismos`, `cajas` | coordenadas `[columna, fila]` en tiles, dentro de la grilla |
+| `mecanismos`, `compuertas` | *(enmendado por `CTR-16.10`: decía `mecanismos`, `cajas`)* coordenadas `[columna, fila]` en tiles, dentro de la grilla, e ids `MEC-NN` / `COM-NN` únicos **dentro del nivel**. Que cada `en` caiga en la celda que corresponde y que `abre` nombre compuertas que existen no lo puede ver el schema: lo hace `niveles.ts` (`CTR-16.10.10`) |
 | `verificaciones` | ver `CTR-16.7` |
 
-**Dos reglas de composición que el schema exige y no son estética:**
+**Tres reglas de composición que no son estética.** Las dos primeras las exige el schema; la
+tercera, `niveles.ts`, porque mira celdas vecinas *(eran dos hasta el 2026-09-23: la 3 se
+sumó ese día y su texto está abajo)*.
 
 1. **Exactamente una entrada y exactamente una puerta por personaje.** Cero es un nivel que no
    se puede terminar; dos es un nivel con dos finales y ningún motivo.
 2. **La condición de victoria es que los dos estén en su puerta al mismo tiempo**
    (`RES-61.2`). No es un campo: es la regla del juego, y está acá escrita para que nadie la
    parametrice por nivel. Un nivel que se gana con uno solo en la puerta es otro juego.
+3. **Cada entrada tiene dónde pararse.** Abajo de la celda de la entrada hay `solido`, o la
+   entrada está en la última fila y abajo está el borde. Y arriba, la entrada no está en la
+   fila 0, y la celda no es `solido` ni un `molinete` que devuelva a ese personaje: el cuerpo
+   mide 20 px nativos de alto sobre un tile de 16 (`CTR-15.3`, `CAJA_ALTO` en `mundo.ts:73`) y
+   `puntoDeEntrada()` lo para con 4 px metidos en la celda de arriba (`mundo.ts:179-182`). Por
+   qué existe, qué se descartó y quién la programa: al final de esta sección.
 
 > **`FIND-59` cerrado a favor de estas dos reglas: rigen desde el nivel 1.** `US-09` criterio
 > 4 le da al primer nivel **las dos entradas y las dos puertas**, y `producto` lo confirmó
 > cediendo su lado (`T-231`). Las reglas 1 y 2 quedan como están: ningún campo por nivel,
 > ningún `if`/`then`.
 
+> **`T-253` aceptada por `arquitectura` el 2026-09-22 (`T-264`).** Se registra acá porque el
+> test existía desde el ciclo 15 y ningún documento decía que yo lo había aceptado — la
+> tarea era condicional a eso, y la verificación del ciclo lo marcó `MEDIA`. **Se acepta
+> sin reservas:** es lo único que quedó del criterio 4 de `US-09` cuando `FIND-59` se cerró
+> a favor del contrato, y es de la misma familia que la cuenta de los tres molinetes — una
+> regla sobre el contenido del dato que ningún schema puede correr y que sin ese test no la
+> corre nadie.
+>
+> **Acepto también cómo identifica al primero**, que era la parte que me dejaba a mí: **el
+> `listo` de `id` más chico, y si no hay ninguno `listo`, el de `id` más chico del
+> archivo.** `escalon` no sirve —el nivel 2 también es Fácil, y es el que trae el primer
+> molinete propio—, y mirar primero los `listo` es mirar lo que la página sirve
+> (`CTR-16.8`).
+>
+> **Con `CTR-16.10` la lista crece, y la tiene que seguir el test:** el primero del piso no
+> trae en su grilla ningún `molinete`, `palanca`, `placa`, `compuerta` ni `caja`, y trae
+> `mecanismos` y `compuertas` vacíos. El caso en rojo los sigue nombrando **a mano**, que es
+> la lección que dejó ese mismo archivo el 2026-09-20.
+
+#### La regla 3: por qué existe, y por qué es regla del nivel y no cuenta del mundo
+
+> **Sumada el 2026-09-23** (cierre de la ráfaga 1). Lo que la originó lo midió `T-266` al
+> escribir el solucionador: **un cuerpo en una entrada dibujada en el aire salta en el aire en
+> el cuadro 0** —suceso `salto` y `vy = −255` al cerrar el cuadro, que es −270 más dos
+> subpasos de gravedad—. Ninguna regla de este contrato lo prohibía; lo dice el propio test del
+> solucionador (`FLOTA_POLIGIRL`, `solucionador.test.ts:133-148`).
+
+**El defecto está en una suposición del código, no en la física.** `crearMundo()` y
+`devolver()` paran al cuerpo en su entrada con `enSuelo: true` sin mirar la grilla
+(`mundo.ts:193` y `:318`). Con la regla 3, eso es cierto por construcción y el código no cambia
+de comportamiento. Sin ella pasan tres cosas; la primera es la que se midió, las otras dos
+salen de leer el código:
+
+1. **Salta en el aire en su primer cuadro**, el de arranque y el de cada vuelta a la entrada.
+2. **El que espera se mueve en el cuadro 0**: si la persona sola agarra primero la otra
+   columna, el que flota cae mientras el otro juega. Es la regla 7 de `CTR-18.6` en rojo en la
+   raíz, y `BR-25` (d) —el que espera, quieto— roto antes de la primera tecla. El solucionador
+   tuvo que escribirse una excepción para empezar (su poda 3, `solucionador.ts:800-805`).
+3. **Una entrada arriba de un molinete que la devuelve es una vuelta por subpaso, para
+   siempre**: cae, toca el molinete, vuelve a la entrada, cae. Ciento veinte por segundo, y ese
+   personaje no puede jugar. **No es hipotético: el boceto de `NIV-05` en `UX-31 §3` lo trae**
+   —la entrada `2` en la columna 9, arriba de la `X` de la fila 8—. Va dicho en
+   `Docs/SUGERENCIAS/ARQ-para-experiencia-los-bocetos-contra-las-reglas-de-la-sala.md`.
+
+**Por qué `solido` y nada más debajo.** Una caja se empuja (`CTR-16.10.5`): la primera vez que
+alguien la corre, la vuelta a esa entrada cae. Una compuerta no puede estar ahí de todos modos
+(`E4` le pide sólido arriba del tramo). Placa, palanca, tesoro y aire son aire para un cuerpo.
+En la celda de arriba, `compuerta` y `caja` tampoco pueden aparecer —las descartan `E4` y `E5`,
+que piden sólido o apoyo debajo, y la entrada no lo es—, así que alcanza con nombrar `solido` y
+el molinete.
+
+**Las puertas no llevan esta regla, y es a propósito.** El código no supone nada de una
+puerta: `estaEnSuPuerta()` pregunta el `enSuelo` que calculó la física (`mundo.ts:300`). Una
+puerta en el aire no es un estado falso, es un nivel que no se gana, y un nivel sin traza que
+gane no entra al banco (`CTR-18.6` reglas 1 y 5). Y la regla prohibiría un diseño legítimo:
+la puerta a la que se llega parado en una caja, que la tabla de `CTR-16.10.5` deja (la caja no
+entra en la celda de una puerta ni en la de arriba; en la de abajo, sí).
+
+**Quién la escribe:** `T-272`, como `E8` de `problemasDelBanco()` (`CTR-16.10.10`), con su caso
+en rojo —la sala `FLOTA_POLIGIRL` es exactamente ese caso—. Es la tarea que ya escribe `E1` a
+`E6` en `niveles.ts` y la que abre `mundo.ts`; va antes de `T-277`, que es la que dibuja
+niveles. **En `mundo.ts` no cambia una línea de lógica:** `enSuelo: true` en `cuerpoNuevo()` y
+en `devolver()` suma un comentario que cita esta regla. La excepción de la raíz del
+solucionador y sus dos pruebas `FLOTA_*` no contradicen nada —prueban una sala que el banco ya
+no admite—: si se quedan como robustez o se van lo decide el hilo principal.
+
+| | Opción | Por qué sí / por qué no |
+|---|---|---|
+| ✅ | **Regla de composición en el nivel, verificada por `niveles.ts`** | La suposición del código pasa a ser cierta por construcción, y un nivel que la rompe no entra al banco, con nombre y celda en el mensaje |
+| ✕ | **Que el mundo calcule `enSuelo` de verdad al crear** | No alcanza un campo: con `enSuelo: false` y `desdeElSuelo: 0`, el perdón tarde (`PERDON_TARDE_SEG` = 0,1 s, `mundo.ts:91` y `:343`) lo deja saltar en el aire seis cuadros más — el mismo defecto, corrido. Habría que tocar dos campos en dos lugares (`cuerpoNuevo()`, `devolver()`). Y no arregla nada del nivel: el que espera sigue cayendo en el cuadro 0, toda vuelta a esa entrada es una caída —`UX-29 §3` la quiere *de una*— y la entrada arriba de un molinete sigue en su vuelta infinita. **El mundo sería honesto sobre un nivel que sigue roto** |
+| ✕ | **Las dos cosas: la regla, y el cálculo de respaldo** | Dos lugares que dicen dónde puede empezar un cuerpo (`FIND-58`). Con la regla, el cálculo nunca da otra cosa que `true`, y un código que nunca cambia un resultado no lo prueba nada |
+| ✕ | **Dejárselo al solucionador**, que ya maneja la raíz flotante | Encuentra traza igual —el que flota cae primero—, y la traza no ve la vuelta a esa entrada porque no vuelve nadie (regla 6 de `CTR-18.6`). La entrada arriba del molinete daría "sin solución" sin nombrar la causa |
+| ✕ | **La misma regla para las puertas** | Por lo dicho dos párrafos antes: el código no supone nada de ellas, y la regla prohibiría la puerta sobre una caja |
+
 ---
 
 ### CTR-16.6 — `D-40` hecho cumplir por el schema, no por la buena voluntad
+
+> **Enmendado el 2026-09-22 por `CTR-16.10` (`T-264`): `sostenido` y `alternativaSolo` salen
+> del schema, y lo que protegían queda más protegido que antes, no menos.** Este bloque
+> obligaba a declarar a mano qué mecanismo pedía dos cuerpos y a escribir en prosa la
+> segunda solución, porque el schema no podía separar presencia de entrada (`BR-25` c) ni
+> probar que un nivel se resuelve. Eso dejó de ser cierto por tres lados:
+>
+> 1. **La simultaneidad de entrada ya no se puede construir con las piezas que hay.**
+>    `CTR-16.10` regla 1: ninguna pieza tiene reloj. Lo único que una placa pide es
+>    **presencia**, y la presencia la cumple el que juega solo dejando a uno quieto encima
+>    (`UX-28 §3`) o dejando una caja. Este bloque decía que `sostenido: true` *"pide dos
+>    cuerpos a la vez"*: los pide, pero de presencia — y eso `BR-25` (c) lo permite.
+> 2. **`sostenido` quería decir "placa", y eso ahora lo dice la leyenda** (`=`, `CTR-16.4`),
+>    que es lo que corre la física. No queda un segundo lugar donde declararlo distinto, que
+>    era justo la forma de esquivar esta regla que el texto de abajo dejaba en manos de
+>    `revisor` ("una mentira escrita a mano").
+> 3. **La segunda solución deja de ser prosa y pasa a ser prueba:** la traza de uno solo de
+>    `CTR-18` (`T-263`), grabada al lado del nivel y repetida por el build (`T-267`). Una
+>    frase no gana un nivel; una traza sí. Es lo que `BR-25` (b) pedía — *"no 'se puede',
+>    sino así se hace"* — dicho por una máquina.
+>
+> **Cuándo salen, para que no haya un solo commit sin segunda solución escrita:** en
+> `T-272`, que depende de `T-267`. Cuando `alternativaSolo` se va, la traza ya está en el
+> schema. Y de paso, porque lo iba a copiar alguien: el ejemplo de abajo decía *"la caja de
+> [7,9]"*, y la fila 9 no existe desde `FIND-55` (son 0 a 8). El texto original queda
+> debajo, como registro de por qué existió.
 
 `D-40` consecuencia 1 dice, textual: queda prohibido **por construcción** el puzzle que
 **exige** simultaneidad, salvo que tenga una segunda solución para el que juega solo. Un
@@ -324,24 +490,102 @@ carísima después.
 
 ---
 
-### CTR-16.7 — `listo` cuesta dos pasadas
+### CTR-16.7 — `listo` cuesta dos pasadas: una de la máquina, una de dos personas
+
+> **Enmendado el 2026-09-23 (cierre de la ráfaga 1): `verificaciones.solo` se retira.** Esta
+> sección pedía dos booleanos escritos a mano, `deDos` y `solo`, y el schema exigía los dos en
+> `true` para `listo`. El 2026-09-22 `ADR-09.3` le cambió el sentido a `solo` —"se pasa solo"
+> ya lo probaba la traza, así que pasaba a decir "una persona sola lo jugó en el teléfono"— y
+> dejó escrita una salida: si `BR-29` no le dejaba al pulgar nada del modo solo, el booleano se
+> retiraba en la versión 2. **`BR-29` punto 1 le dio (b), (c) y (d) enteras a la traza, y el
+> punto 4 lo retiró** (`Docs/SUGERENCIAS/PRD-para-arquitectura-verificaciones-solo-se-retira.md`).
+> El título decía *"`listo` cuesta dos pasadas"* y lo sigue diciendo: lo que cambió es quién
+> da cada una. El texto original queda al final de la sección.
 
 ```json
-"verificaciones": { "deDos": true, "solo": true }
+"verificaciones": { "deDos": true }
 ```
 
-El schema exige: **si `estado` es `listo`, los dos booleanos tienen que ser `true`.** Otro
-`if`/`then`.
+**Las dos pasadas de `D-40` consecuencia 2 siguen siendo dos**, y cada una se prueba donde se
+puede probar:
 
-Es `D-40` consecuencia 2 vuelta contrato: *"cada uno se verifica dos veces —dos personas
-moviéndose a la vez y una sola alternando"*. Seis niveles que valen por doce en diseño, no
-doce niveles.
+| Pasada | Qué prueba (`BR-25`) | Dónde vive | Quién la da |
+|---|---|---|---|
+| **De uno** | (b), (c), (d) y (f): se pasa solo, nada pide dos dedos a la vez, el que espera queda quieto, la paridad | la traza `deUno` de `skayboy-soluciones.json` (`CTR-18`), repetida por `soluciones.test.ts` en cada build | la máquina, **para todo nivel del banco, esté en `borrador` o en `listo`** |
+| **De a dos** | (a): dos personas a la vez, en un teléfono, lo terminan | **`verificaciones.deDos`** | escrito a mano después de la partida en el teléfono (`ORQ-plan-ciclo-16.md §4` punto 3); lo escribe quien tenga con qué (`D-12`) |
 
-**Quién los pone en `true`:** el que probó, y es `revisor` (`D-12`: los cuatro roles que
-escriben no tienen con qué correr nada). **Un booleano no prueba nada por sí mismo** — lo que
-hace es que nadie pueda marcar un nivel como terminado sin haber tenido que escribir, con la
-mano, que lo probó de las dos maneras. Es el mismo mecanismo que un rótulo: no garantiza el
-contenido, garantiza que alguien se hizo cargo.
+**El schema exige: si `estado` es `listo`, `verificaciones.deDos` es `true`.** El mismo
+`if`/`then`, con un booleano menos. La pasada de uno **no es condición de schema, es condición
+de build**: sin traza que gane, el nivel no entra al banco (`CTR-18.6` regla 1), y eso rige desde
+`borrador`.
+
+**Un booleano no prueba nada por sí mismo**, y eso no cambió: lo que hace es que nadie pueda
+marcar un nivel como terminado sin haber escrito, con la mano, que dos personas lo jugaron. Es
+el mismo mecanismo que un rótulo: no garantiza el contenido, garantiza que alguien se hizo
+cargo. **Regla de oficio que hereda de `ADR-09.3`:** el que toca la grilla de un nivel pone
+`deDos` en `false`.
+
+**`verificaciones` sigue siendo un objeto, con un solo campo.** Aplanarlo a un `deDos` suelto
+en el nivel sería un segundo cambio incompatible que no compra nada, y el objeto dice qué es
+lo que hay adentro: el registro de quién lo jugó. **`additionalProperties: false` se queda, y
+es la guarda de esta enmienda:** un `solo` que vuelve por costumbre —copiado de un nivel viejo o
+de un ejemplo— no valida.
+
+**Para pegar (`T-272`, en el mismo commit que `contratoVersion: 2`, `CTR-16.10.9` paso 6).** En
+`src/data/_schema/skayboy.schema.json`, `$defs.nivel.properties.verificaciones` se reemplaza
+entero por:
+
+```json
+"verificaciones": {
+  "comment": "CTR-16.7 enmendado el 2026-09-23: una sola pasada escrita a mano, la de dos personas a la vez en un teléfono (BR-25 a, BR-29 punto 1). La de uno la prueba la traza en cada build (CTR-18) y no vive acá: `solo` se retiró (BR-29 punto 4, ADR-09.3). additionalProperties false es lo que impide que vuelva.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["deDos"],
+  "properties": {
+    "deDos": { "type": "boolean" }
+  }
+}
+```
+
+y el primer elemento de `$defs.nivel.allOf` por:
+
+```json
+{
+  "comment": "CTR-16.7, que es D-40 consecuencia 2: `listo` cuesta dos pasadas. La de uno es de la máquina —la traza de CTR-18 gana en cada build, para todo nivel— y no es condición de este schema. La de dos es de dos personas en un teléfono (BR-25 a): el booleano no prueba que se jugó, prueba que alguien se hizo cargo de decir que sí.",
+  "if": { "required": ["estado"], "properties": { "estado": { "const": "listo" } } },
+  "then": {
+    "properties": {
+      "verificaciones": { "properties": { "deDos": { "const": true } } }
+    }
+  }
+}
+```
+
+**En el mismo commit:** `NIV-01` en `src/data/skayboy.json` pasa a `"verificaciones": { "deDos":
+false }`; la interfaz `Verificaciones` de `niveles.ts` pierde `solo`; y los niveles de prueba
+escritos en TypeScript que lo traen (`mundo.test.ts:46`, `solucionador.test.ts:66`,
+`esquemas.test.ts:124` y `:172`) lo pierden también. **Dos rojos a mano en `esquemas.test.ts`**,
+que reemplazan al caso de hoy: `listo` con `deDos: false` no valida (señala
+`/verificaciones/deDos`), y `deDos: true` con un `solo` de más no valida (señala
+`/niveles/0/verificaciones` con *additional properties*: `erroresDeInstancia()`, en
+`esquemas.test.ts:43-48`, no imprime el nombre del campo sobrante). El verde: `listo` con
+`{ "deDos": true }`.
+
+| | Opción | Por qué sí / por qué no |
+|---|---|---|
+| ✅ | **Un booleano, `deDos`; la pasada de uno es la traza** | Cada condición de `BR-25` se dice en un solo lugar, y el único booleano que queda dice algo que ninguna máquina puede decir |
+| ✕ | **Sostener `solo` con el sentido de `ADR-09.3`** ("una persona sola lo jugó y se deja jugar") | `BR-29` punto 4: la única sensación que le quedaba —que nada pida precisión de un cuadro— ya es un número, la tolerancia por escalón (`BR-29` punto 3). Un campo que nadie tiene motivo para escribir se llena por costumbre, y ahí miente |
+| ✕ | **Que `listo` pida además que la traza gane, dentro del schema** | Un schema no juega trazas. Y no hace falta: la traza ya es condición de build para todo nivel, antes de `listo` |
+| ✕ | **Aplanar `verificaciones` a un `deDos` suelto** | Arriba: un cambio incompatible más, sin nada a cambio |
+
+> **Texto original (2026-09-16), como registro.** El bloque de ejemplo traía los dos booleanos,
+> `deDos` y `solo`, en `true`. Decía: *"El schema exige: **si `estado` es `listo`, los dos
+> booleanos tienen que ser `true`.** Otro `if`/`then`. Es `D-40` consecuencia 2 vuelta
+> contrato: 'cada uno se verifica dos veces —dos personas moviéndose a la vez y una sola
+> alternando'. Seis niveles que valen por doce en diseño, no doce niveles. **Quién los pone en
+> `true`:** el que probó, y es `revisor` (`D-12`: los cuatro roles que escriben no tienen con
+> qué correr nada)."* Los seis niveles ya no valen por doce partidas: valen por seis, más una
+> traza que la máquina repite gratis.
 
 ---
 
@@ -365,6 +609,13 @@ Los módulos y sus límites, que es lo que evita el defecto de `D-29`:
 que la página ya sembró. Un `import` de JSON dentro de la isla mete el banco entero al bundle,
 incluidos los `borrador`.
 
+> **Sumado el 2026-09-23 (deuda de `ADR-09`, consecuencia 3).** Los módulos de la solución
+> grabada —`soluciones.ts`, `solucionador.ts`, `scripts/resolver-niveles.mjs`— y el archivo
+> `skayboy-soluciones.json` tienen su tabla en **`CTR-18.11`**, y **ninguno entra a la isla ni a
+> la página**: lo caza la regla 10 de `CTR-18.6`. No se copian acá para que la tabla viva en un
+> solo lugar. `mundo.ts` suma `CUADRO_SEG` (`ADR-09.1`), y sigue sin importar nada de lo de
+> arriba.
+
 ---
 
 ### CTR-16.9 — Lo que este contrato deja abierto a propósito
@@ -374,6 +625,688 @@ incluidos los `borrador`.
 | **El piso de niveles** y el criterio Given/When/Then | `producto` al promover (`BR-16`). La lectura que existe es 2/2/2, y `escalon` está en el schema para que ese número sea verificable |
 | **`temaFijo`** | `contenido` con `experiencia` (`D-39` consecuencia 3) |
 | **El reparto de `devuelve`** — qué molinete rechaza a quién | `experiencia` con `contenido`. Es criterio del sitio y no se explica en ninguna pantalla. (Se llamaba "el reparto `inmuneA` / `mata`" hasta `FIND-58`) |
-| **El rango por letra** de `RES-61.8` | **No está en este schema, y es a propósito.** `RES-61.8` avisa que el umbral de tiempo no se puede copiar de ningún lado y que es trabajo de afinación. Si `producto` lo quiere, entra como `contratoVersion: 2` con un campo `tiempoObjetivo` por nivel. Mientras tanto, **no se promete un puntaje que no está** |
-| **Los mecanismos que el juego de origen suma después** —espejos, portales, hielo, ventiladores (`RES-61.12` … `RES-61.15`) | Ampliación de un ciclo posterior. La leyenda es abierta por diseño: sumar un `tipo` es sumar una entrada al `enum` del schema y un tile |
+| **El rango por letra** de `RES-61.8` | **No está en este schema, y es a propósito.** `RES-61.8` avisa que el umbral de tiempo no se puede copiar de ningún lado y que es trabajo de afinación. Si `producto` lo quiere, entra como **la versión siguiente a la vigente** con un campo `tiempoObjetivo` por nivel. Mientras tanto, **no se promete un puntaje que no está**. *Enmendado el 2026-09-23: decía "entra como `contratoVersion: 2`", y la 2 ya es la de `CTR-16.10` con la baja de `verificaciones.solo` (`CTR-16.10.9`, `CTR-16.7`): `tiempoObjetivo` sería la 3* |
+| **Los mecanismos que el juego de origen suma después** —espejos, portales, hielo, ventiladores (`RES-61.12` … `RES-61.15`) | Ampliación de un ciclo posterior. La leyenda es abierta por diseño: sumar un `tipo` es sumar una entrada al `enum` del schema y un tile. *Enmendado el 2026-09-22:* **cualquier `tipo` nuevo tiene que pasar las cuatro reglas de `CTR-16.10`**, y por eso **las plataformas móviles y los ascensores (`RES-61.6`) no entran ni como ampliación** sin una decisión nueva: mueven al que espera (regla 2) y llevan reloj (regla 1) |
+| *(Sumada el 2026-09-22)* **El sonido de palanca, placa y compuerta** | Hoy no suenan, con fundamento (`CTR-16.10.7`). Si el teléfono dice que la palanca se siente muerta, es una enmienda de `CTR-17` en el ciclo 17, y el único candidato es la palanca |
+| *(Sumada el 2026-09-22)* **Los callejones sin salida** —una caja contra la pared, un pozo más hondo que el alcance— | No son física, son nivel, y la traza no los ve (`CTR-16.10.11`). Si un nivel puede tenerlos es de `producto`; qué hace el que cae en uno, de `experiencia`. Traspaso en `Docs/SUGERENCIAS/ARQ-para-experiencia-y-producto-mecanismos-y-callejones.md` |
+
+---
+
+## CTR-16.10 — Los mecanismos del escalón Media: palanca, placa, compuerta y caja
+
+- **Fecha:** 2026-09-22 (ciclo 16, `T-264`).
+- **Estado:** **vigente para construir.** Lo programa `T-272` —mundo, schema, dato y
+  pruebas— después de `T-267`; lo dibuja `T-276` (`D-44`); diseñan niveles con esto `T-265`
+  y `T-277`. No deja ningún valor abierto que sea mío: lo que queda afuera tiene dueño en
+  `CTR-16.10.11`.
+- **Para quién es:** para `T-272`, que tiene que poder programarlo sin preguntar; para
+  `T-266`, que lo busca; para quien dibuja y quien diseña niveles; y para `revisor`, que
+  tiene que poder rechazar un comportamiento citando una línea.
+
+> **De dónde sale el comportamiento, para que nadie lo lea como copia.** `RES-61.4` y
+> `RES-61.5` fundan que estas cuatro piezas son las del género: palancas y placas con las
+> que uno le abre paso al otro, cajas que sirven de escalón o de tapón. **Ninguna ficha dice
+> cómo se comporta cada una fino a fino, y no hace falta pedirla:** todo lo que sigue es
+> criterio del sitio, deducido de reglas que ya estaban escritas acá. Donde el juego de
+> origen haga otra cosa, manda esto — que es además la lectura que `INV-60` dejó sobre
+> `RES-60.4` y `RES-60.5`: la mecánica del género se toma, la expresión concreta no.
+
+### La decisión: cuatro reglas, y todo lo demás sale de ellas
+
+1. **Ninguna pieza tiene reloj.** Nada se abre por un rato, nada se cierra después de un
+   rato, nada arranca a moverse sin que alguien lo empuje (lo que sigue después es la
+   gravedad, o el tramo de una caja que ya empujaron: `CTR-16.10.5`). Una compuerta está
+   como la dejan sus mecanismos **en el mismo cuadro** — salvo que tenga a alguien adentro,
+   y eso depende de dónde está alguien, no de cuánto tiempo pasó (`CTR-16.10.4`). Es la
+   regla que convierte `D-40` consecuencia 1 en algo que se cumple por
+   construcción: sin tiempo en ninguna pieza **no hay con qué armar un puzzle de
+   simultaneidad de entrada** (`BR-25` c). Lo único que estas piezas pueden pedir es
+   presencia, y la presencia la cumple el que juega solo dejando a uno quieto (`UX-28 §3`).
+2. **Nada le mueve el piso a un cuerpo, salvo su propia columna de mando.** Ni el otro, ni
+   una caja, ni una compuerta. Es `BR-23` punto 4 (nadie es carga del otro), `BR-25` (d)
+   (quedarse quieto no te pierde) y `UX-28 §3` dichos en física: *"nada lo alcanza mientras
+   nadie lo toca"*.
+3. **El que ocupa, gana.** Una compuerta no se cierra sobre nadie; una caja no se empuja ni
+   cae sobre nadie. Ninguna pieza tiene con qué lastimar porque **ninguna tiene fuerza: solo
+   ocupan lugar libre.** Es `BR-24` y `UX-29 §6` sin excepción, en un juego donde por primera
+   vez las cosas se mueven.
+4. **El orden en que el mundo recorre a los dos no decide nada.** `mundo.ts` mueve primero a
+   `skayboy` y después a `poligirl` (`PERSONAJES`). Los mecanismos se resuelven **después de
+   mover a los dos** en cada subpaso, y cuando los dos hacen cosas opuestas en el mismo
+   subpaso, **se anulan**. Un empate que siempre gana el primero de una lista es `BR-23` roto
+   por el costado del código, y no lo vería nadie jugando.
+
+---
+
+### CTR-16.10.1 — Qué se escribe dónde: la grilla dibuja, los arreglos conectan
+
+Es la regla que `FIND-58` dejó para la leyenda —un hecho, un lugar— aplicada a las piezas:
+
+| Qué | Dónde vive | Qué **no** vive ahí |
+|---|---|---|
+| Qué es cada celda: palanca, placa, compuerta, dónde arranca una caja | **la grilla**, con su caracter de la leyenda | nada más |
+| Con qué compuertas se conecta una palanca o una placa | **`mecanismos[].abre`** | si es palanca o placa: lo dice la celda `en` |
+| Cómo se llama una compuerta | **`compuertas[].id`**, con `en` en la celda de arriba de su tramo | hasta dónde llega: lo dibuja la grilla |
+| Dónde arranca una caja | **la grilla** (`n`) | **el arreglo `cajas` se va**: solo traía `en`, que la grilla ya decía, y una caja no se conecta con nada |
+
+**La leyenda** suma `palanca` (`/`), `placa` (`=`) y `compuerta` (`|`), y pierde `mecanismo`
+(`CTR-16.4`, enmendado). Los caracteres se eligieron porque dibujan —una palanca inclinada,
+una chapa en el piso, una pared que se corre— pero **son dato, no contrato**: las pruebas
+buscan por `tipo`, no por caracter, igual que con los molinetes.
+
+**El nivel** trae dos arreglos, obligatorios aunque vayan vacíos (`[]` dice "no tiene"):
+
+- **`mecanismos`**: `{ "id": "MEC-NN", "en": [col, fila], "abre": ["COM-NN", …] }`. Una
+  entrada por cada celda `palanca` o `placa` de la grilla.
+- **`compuertas`**: `{ "id": "COM-NN", "en": [col, fila] }`. Una entrada por **tramo** —la
+  columna de celdas `compuerta` contiguas—, con `en` en la de arriba.
+
+**Los ids son del nivel, no del archivo:** `MEC-01` de `NIV-03` y `MEC-01` de `NIV-04` son
+dos cosas, porque `abre` nunca cruza de un nivel a otro. Dentro de un nivel no se repiten.
+
+> **Enmendado el 2026-09-22: `abre` aceptaba `PUE-NN`, y ese prefijo no nombraba ninguna pieza del juego.** Ahora
+> acepta `COM-NN` y **tiene que nombrar una compuerta de ese nivel**. Y la inversa: **toda
+> compuerta la abre al menos un mecanismo** — una compuerta que no abre nadie es una pared
+> disfrazada de puerta, el gemelo al revés del molinete que no devuelve a nadie y que
+> `esquemas.test.ts` ya caza.
+
+**Un nivel completo, válido contra el schema de `CTR-16.10.9` y contra las pruebas de
+`CTR-16.10.10`**, con las cuatro piezas. Es además la sala de prueba que el plan le pide a
+`T-272` —*"caja sobre placa"*—, porque acá la caja no es opcional:
+
+```json
+{
+  "id": "NIV-03",
+  "nombre": "",
+  "escalon": 2,
+  "estado": "borrador",
+  "grilla": [
+    "###############",
+    "#......#...#..#",
+    "#......#...#..#",
+    "#......#...#..#",
+    "#......#...#..#",
+    "#......|...|..#",
+    "#......|...|..#",
+    "#1.2n=.|./.|AB#",
+    "###############"
+  ],
+  "mecanismos": [
+    { "id": "MEC-01", "en": [5, 7], "abre": ["COM-01"] },
+    { "id": "MEC-02", "en": [9, 7], "abre": ["COM-02"] }
+  ],
+  "compuertas": [
+    { "id": "COM-01", "en": [7, 5] },
+    { "id": "COM-02", "en": [11, 5] }
+  ],
+  "verificaciones": { "deDos": false }
+}
+```
+
+*(Enmendado el 2026-09-23: `verificaciones` traía también `solo`, retirado por `CTR-16.7`. Y
+la frase que seguía al ejemplo decía "Más lo que sume `CTR-18` para la traza": no suma nada,
+la traza vive en su propio archivo, `ADR-09.2`. Las dos entradas cumplen la regla 3 de
+`CTR-16.5`: sólido abajo, aire arriba.)* Los dos entran por la izquierda y salen por la
+derecha. La placa (`MEC-01`) abre la primera compuerta **mientras algo la pisa**: si la pisa
+uno, pasa el otro y el que pisaba queda del lado equivocado, sin nadie que le devuelva el
+favor. **La caja arriba de la placa** —o trabada adentro de la compuerta abierta, que
+también vale (`CTR-16.10.4`)— es lo que deja pasar a los dos. La palanca (`MEC-02`) queda
+para el lado que la cruzás: el primero que pasa hacia la derecha abre la segunda, y queda
+abierta para el otro.
+
+---
+
+### CTR-16.10.2 — La palanca: queda para el lado que la cruzaste
+
+| | |
+|---|---|
+| Dónde va | una celda `palanca` con sólido (o el borde de la sala) **abajo** |
+| Para un cuerpo | aire: se camina a través |
+| Para una caja | no entra (`CTR-16.10.5`) |
+| Estado | activa o en reposo. **Arranca en reposo.** Mientras está activa, sus compuertas están mandadas abiertas |
+
+**Cómo se mueve, sin tecla nueva** (`UX-28 §2.1`: tres teclas, tres toques, ninguna más):
+**un cuerpo en el suelo, con los pies en la fila de la palanca, cuyo centro cruza el centro
+de la celda.** Cruzándola hacia la derecha queda activa; hacia la izquierda, en reposo. Es
+una palanca de verdad: la empujás con el cuerpo para el lado que caminás.
+
+**Qué no la mueve:**
+
+- **Saltarla por arriba.** Es la manera de cruzar sin tocarla, y es a propósito.
+- Pararse encima y darse vuelta: sin cruce no hay cambio.
+- Una caja.
+- **Volver a la entrada** (`UX-29 §3`): la vuelta cambia de lugar de una, no es un
+  recorrido, y no cruza nada en el camino.
+- Dos cuerpos que la cruzan en sentidos opuestos en el mismo subpaso: se anulan (regla 4).
+
+**Por qué por sentido y no "cada cruce la da vuelta":** así volver sobre tus pasos no
+deshace lo que hiciste. Cruzarla dos veces para el mismo lado la deja igual, y **lo que se
+ve —para qué lado está— es lo que elegiste.** Una palanca que se da vuelta cada vez que
+pasás obliga a acordarse de cuántas veces pasaste, que es precisión fina con otro nombre.
+
+---
+
+### CTR-16.10.3 — La placa: abre mientras algo la pisa
+
+| | |
+|---|---|
+| Dónde va | una celda `placa` con sólido (o el borde de la sala) abajo |
+| Para un cuerpo | aire |
+| Para una caja | aire: **una caja puede quedarse arriba**, y ese es el punto |
+| Estado | pisada o libre, **en el mismo subpaso** en que cambia lo que tiene encima |
+
+**Pisada** quiere decir: un cuerpo **en el suelo** con el punto medio de los pies en la
+columna de la placa y los pies en su piso —la misma medida que `estaEnSuPuerta()`, *"casi
+adentro cuenta"*—, **o** una caja quieta en esa celda. Un cuerpo en el aire no la pisa: el
+que salta de una placa la suelta.
+
+**El que espera la pisa para siempre, y eso es lo que la hace legal.** *"Uno la pisa para
+que pase el otro"* es presencia (`BR-25` c): el que juega solo deja a uno sin dedo encima
+parado en la placa (`UX-28 §3`) y agarra al otro. **La caja arriba de la placa** —el tapón
+de `RES-61.5`— es la otra manera de dejarla pisada, y la única cuando el que pisaba también
+tiene que pasar.
+
+**Reemplaza a `sostenido`** (`CTR-16.6`, enmendado): una placa era un mecanismo sostenido,
+y ahora lo dice la celda.
+
+---
+
+### CTR-16.10.4 — La compuerta: una pared que se corre, y no se cierra sobre nadie
+
+**La forma, y por qué es la que es.** Una compuerta es un **tramo vertical** de celdas
+`compuerta` en una columna, **de sólido a sólido**: arriba de la celda de arriba hay sólido
+(o el borde de la sala), y abajo de la de abajo, también. La consecuencia es la buscada:
+**arriba de una compuerta no puede haber nadie**, ni un cuerpo ni una caja, así que abrirla
+nunca le saca el piso a nadie (regla 2). **No hay compuertas horizontales:** un piso que se
+abre deja caer al que espera arriba, y por la mano del otro.
+
+| Estado | Para cuerpos y cajas |
+|---|---|
+| **Cerrada** (es la de arranque) | sólido |
+| **Abierta** | aire |
+
+**Qué la manda.** Está **mandada abierta si cualquiera de sus mecanismos** está activo o
+pisado: uno alcanza. Así cada lado de una compuerta puede tener su palanca o su placa, y
+**el que llega primero le abre al otro**, que es la paridad de `BR-23` punto 1 hecha algo
+que se puede programar en un nivel.
+
+**Abrir es inmediato** (arriba no hay nadie). **Cerrar también, salvo en un caso, que es la
+pregunta que había que contestar:**
+
+> **Si se manda a cerrar con alguien adentro, no se cierra.** Mientras la caja de colisión
+> de un cuerpo, o una caja, toque cualquier celda del tramo, la compuerta **se queda
+> abierta y espera**. Se cierra en el primer subpaso en que el tramo queda libre. No
+> devuelve a nadie a la entrada, no empuja a nadie para ningún lado, no suena, no dice nada:
+> **se queda abierta.**
+
+Por qué esa y no las otras tres:
+
+- **Devolverlo a la entrada** sería el fallo de uno causado por el otro (`UX-29 §3`: *"el
+  otro no se entera"*; `§6` prohíbe *"que el fallo de uno afecte al otro"*), y si el de
+  adentro es el que espera, es `BR-25` (d) roto de frente.
+- **Empujarlo afuera** es mover un cuerpo con algo que no es su columna (regla 2). ¿Para qué
+  lado? El de atrás puede ser un molinete.
+- **Cerrarse igual** es aplastarlo (`BR-24`, `UX-29 §6`).
+
+**Abierta o cerrada se dibuja de una**, como la vuelta a la entrada: sin animación de
+apertura. Lo que se ve es el estado de ese cuadro, y una compuerta dibujada a medio cerrar
+mientras la física ya la tiene cerrada es la pantalla mintiéndole al que la está cruzando.
+
+**Una consecuencia que conviene saber antes de diseñar: una caja que queda adentro de una
+compuerta abierta la traba abierta.** Es el tapón de `RES-61.5` aplicado a una puerta, es
+legítimo, y en el ejemplo de `CTR-16.10.1` es la segunda manera de pasar. Si un nivel no lo
+quiere, el problema es del nivel, y el solucionador lo va a encontrar antes que cualquier
+persona (`ORQ-plan-ciclo-16.md §6`, riesgo 3).
+
+**No confundir con la compuerta de `ADR-08.1`**, la del motor: esa nunca aparece en el dato,
+y en `skayboy.json` `compuerta` es siempre esta.
+
+---
+
+### CTR-16.10.5 — La caja: escalón y tapón, nunca martillo
+
+**Qué es.** Un tile, **16 × 16 nativos**. Arranca en su celda `n`, apoyada en sólido o en
+otra caja, y la celda de abajo del caracter es aire. **Nunca vuelve a la entrada:** los
+molinetes devuelven cuerpos (`CTR-16.4`), no cosas.
+
+> **Ojo con el nombre en el código.** En `mundo.ts`, `CAJA_ANCHO` y `CAJA_ALTO` son la caja
+> de colisión **del cuerpo** (`CTR-15.3`). En este documento "caja" es siempre la que se
+> empuja. Dos cajas distintas en el mismo archivo es un defecto esperando: conviene que
+> `T-272` renombre las constantes del cuerpo antes de escribir la primera línea de esta.
+
+**Descansa siempre en la grilla.** Se mueve de a un tile: cuando la empujan arranca un tramo
+hasta la celda siguiente, **y lo termina aunque el que empujaba se detenga.** Quieta, está
+siempre en una celda. Eso compra tres cosas:
+
+1. **Entra en un pozo de un tile sin apuntar.** Una caja de 16 de ancho libre en píxeles,
+   sobre un hueco de 16, cae solo si queda alineada al píxel: precisión fina, la misma que
+   `BR-29` va a medir en cuadros.
+2. **"La caja está en la placa" es sí o no**, no un umbral.
+3. **La sala quieta se puede escribir como una grilla**, que es lo que `T-266` cuantiza.
+
+**Para un cuerpo es sólido por todos lados, y se le puede subir encima.** Es el escalón de
+`RES-61.5`, y **sube el alcance un tile**: `ALCANCE_ALTO_TILES` se mide desde donde el cuerpo
+está parado, y parado en una caja está un tile más arriba. El que diseña niveles lo cuenta.
+
+**Se empuja caminando contra ella:** un cuerpo en el suelo, con los pies a la altura de la
+base de la caja, caminando contra su costado. Se mueve a `VELOCIDAD_EMPUJE`, constante
+provisional como las otras (`T-249`) y nunca mayor que `VELOCIDAD`. **El empujón no
+arranca** —la caja no se mueve y el cuerpo frena como contra una pared— si:
+
+1. **la celda siguiente no es libre para una caja** (tabla de abajo), o es otra caja: se
+   empuja una por vez;
+2. **tiene algo encima**, caja o cuerpo. Empujar una caja con el otro parado arriba es
+   llevarlo (`BR-23` punto 4), y empujar la de abajo de una pila es mover dos;
+3. **la caída no es limpia:** en la columna por la que caería, desde la celda de destino
+   hasta donde apoyaría, hay un cuerpo o una celda donde una caja no entra (regla 3);
+4. **los dos la empujan en sentidos opuestos en el mismo subpaso** (regla 4).
+
+| Una caja entra en | No entra en, y por qué |
+|---|---|
+| aire · placa · compuerta **abierta** | sólido · compuerta cerrada · otra caja · afuera de la grilla |
+| **molinete**: la caja no vuelve a ningún lado, y el que se le para encima no toca el molinete de abajo. Es el **tapón de trampa** de `RES-61.5` | **palanca**: la taparía y la dejaría sin alcance |
+| | **tesoro**: lo taparía |
+| | **entrada, y la celda de arriba de una entrada**: el que vuelve a su entrada aparece ahí (`UX-29 §3`), y aparecería adentro de una caja |
+| | **puerta, y la celda de arriba de una puerta**: el que llega a su puerta no entraría |
+
+**Cae** con la misma `GRAVEDAD` y la misma `CAIDA_MAXIMA` que los cuerpos —una sola física—
+y apoya alineada en sólido o en otra caja.
+
+**¿Puede apretar a un cuerpo? No, y es por construcción.** Solo se mueve a lugar libre, y
+para ella un cuerpo es sólido. La única manera de que una caja en movimiento y un cuerpo se
+crucen es una **carrera**: alguien camina justo debajo de una caja que ya está cayendo, o
+adentro de la celda a la que ya está yendo. Entonces **la caja frena contra el cuerpo y
+espera** (`espera`) hasta que el lugar se libere, y sigue. No empuja, no aprieta, no
+devuelve a nadie.
+
+> **El residuo, declarado para que nadie lo descubra solo.** Una caja que espera arriba de
+> la cabeza de alguien es un piso para el otro, y eso es un escalón humano con una caja en
+> el medio: `BR-23` punto 4 por la puerta de atrás. **No se prohíbe en la física**
+> —prohibirlo pide cajas que flotan o cuerpos que atraviesan cajas, y las dos cosas son
+> peores— **se prohíbe en la solución grabada:** la traza de uno (`CTR-18`), que es la única
+> que se graba (`CTR-18.4`), no pasa por ningún cuadro con una caja en `espera`, y
+> `soluciones.test.ts` lo mira en cada cuadro (regla 11 de `CTR-18.6`). Solo se llega por una
+> carrera, y en la traza de uno el que espera no se mueve (regla 7), así que **la única
+> carrera posible es la del que juega con su propia caja**: la empuja al borde y se mete
+> debajo mientras cae. Por eso la regla mira todos los cuadros y no solo los cambios de
+> columna. **Un nivel que solo se pasa así no es un nivel, y para descartarlo alcanza la
+> traza de uno:** si gana sin pasar por ahí, el nivel tiene otra manera. Lo que dos personas
+> hagan con una carrera en el teléfono es física permitida, no prueba de nada.
+>
+> *Enmendado el 2026-09-23 (cierre de la ráfaga 1). Decía: "Solo se llega por una carrera,
+> así que la traza de uno que cambia de columna con los dos quietos no lo produce; la de dos
+> sí podría, y por eso la prueba mira las dos." Tenía dos errores. La de a dos no se graba
+> (`CTR-18.4`), y lo que no se graba no se puede exigir en un test. Y la de uno sí podía
+> producirlo, por la carrera del que juega con su propia caja: por eso ahora dice cuál es.*
+
+**Qué recuerda.** Además de dónde está y si se mueve, la caja guarda `empujadaPor`: quién la
+empujó la última vez, o nadie si la empujaron los dos a la vez. Sirve para saber quién abrió
+una compuerta con una caja arriba de una placa (`CTR-16.10.7`).
+
+**Lo que la caja no hace:** no se tira, no se levanta, no se lleva. Tirar de una caja pediría
+una cuarta tecla o un gesto (`UX-28 §2.1`), y el callejón sin salida de una caja contra la
+pared no desaparecería: se mudaría a otro lado (`CTR-16.10.11`).
+
+---
+
+### CTR-16.10.6 — Los dos cuerpos: se atraviesan
+
+**Los dos cuerpos no chocan entre sí.** Se atraviesan: no se empujan, no se paran uno arriba
+del otro, no se frenan. Es `BR-23` punto 4 cumplido de la manera más corta que existe
+—*"ninguna mecánica convierte a un personaje en objeto que el otro levanta, empuja o
+transporta"*—: sin contacto no hay con qué. Y es la regla 4 también, porque con cuerpos
+sólidos, cuando los dos se empujan en el mismo subpaso, gana el que el mundo mueve primero.
+
+**Lo que se pierde, dicho:** *"que uno le haga de escalón al otro"*, que `UX-27 §8.3` dejaba
+pasar como mecánica que no narra. Aquella frase decía que no narra; `BR-23` punto 4,
+posterior y específica, dice que una persona no es un objeto del otro, y cierra con cuatro
+palabras: *"Cajas sí; personas no."* El escalón es la caja.
+
+**Cuando se superponen, arriba se dibuja el que tiene el dedo**, que es el que se está
+mirando; si lo tienen los dos o ninguno, el último que se movió. Nunca uno fijo arriba: es la
+regla 4 en el dibujo, y la aplica `T-278`.
+
+---
+
+### CTR-16.10.7 — Lo que el mundo avisa, y por qué no suena
+
+**Un suceso nuevo**, que se suma a los cuatro de `mundo.ts`:
+
+```ts
+| { readonly tipo: 'compuerta'; readonly id: string; readonly abierta: boolean;
+    readonly por: IdPersonaje | null }
+```
+
+- **Se emite cuando la compuerta cambia de verdad**, no cuando cambia el mandato: al abrirse,
+  y al cerrarse — también cuando se cierra tarde porque alguien estaba adentro.
+- **`por`** es de quién fue el acto que cambió el mandato: el que cruzó la palanca, el que
+  pisó o soltó la placa, o el `empujadaPor` de la caja que la pisa. **`null`** cuando no fue
+  nadie: el cierre que esperaba a que el tramo se liberara (lo cerró el lugar), o el empujón
+  de los dos a la vez.
+- **Palanca y placa no tienen suceso propio.** Importa lo que le hacen a una compuerta: una
+  palanca que se mueve mientras otra cosa mantiene abierta su compuerta no tiene nada que
+  avisar.
+
+> **Enmendado el 2026-09-23 (cierre de la ráfaga 1): faltaba qué vale `por` cuando el cambio
+> lo hacen los dos en el mismo subpaso.** El punto de arriba nombraba un solo caso de dos
+> —*"el empujón de los dos a la vez"*— y dejaba afuera el que la regla 4 deja más a mano:
+> **los dos pisan la misma placa en el mismo subpaso.** La regla, entera:
+>
+> **`por` es el autor del cambio si es uno solo, y `null` si no.** En el subpaso en que el
+> mandato de una compuerta cambia, se miran los mecanismos de esa compuerta que cambiaron en
+> ese subpaso **en el mismo sentido que el mandato** y quién los cambió —el cuerpo que cruzó la
+> palanca, el que pisó o soltó la placa, el `empujadaPor` de la caja que llegó o se fue—. Si
+> todo eso es un mismo cuerpo, `por` es ese cuerpo. Si aparecen los dos, o una caja con
+> `empujadaPor: null`, **`por` es `null`**. Casos: los dos pisan la misma placa; los dos
+> cruzan la misma palanca para el mismo lado; uno pisa una placa y el otro cruza la palanca de
+> la misma compuerta; a la placa llega la caja que empujó uno mientras el otro la pisa. **Vale
+> igual al cerrar**: los dos se bajan de la placa en el mismo subpaso, un cierre con
+> `por: null`.
+>
+> **La física no se anula, la autoría sí.** Los dos actos van para el mismo lado: la placa queda
+> pisada y la compuerta se abre, como con uno. Lo que no se puede decir es de quién fue, igual
+> que el `empujadaPor` de la caja que empujan los dos (`CTR-16.10.5`).
+>
+> | | Opción | Por qué sí / por qué no |
+> |---|---|---|
+> | ✅ | **`null`** | La regla 4 cumplida: el orden en que el mundo recorre a los dos no decide nada. Y es lo que ya valía para el empujón doble: una sola respuesta para "lo hicieron los dos" |
+> | ✕ | **El primero que recorre el mundo** | Es `skayboy` siempre (`PERSONAJES`): la apertura doble sería suya por el orden de una lista. La regla 4 rota, y no lo vería nadie jugando |
+> | ✕ | **Los dos**, con `por` como arreglo | Cambia el tipo del suceso para un caso que la cuenta de la paridad no puede ver —en la traza de uno se mueve un cuerpo por vez (`CTR-18.8`)— y no contesta la pregunta de la cuenta: si abrieron los dos y cruza uno, ¿se lo abrió el otro o se lo abrió él? |
+> | ✕ | **Dos sucesos**, uno por autor | La compuerta cambió una vez: dos sucesos contradicen la primera línea de esta sección |
+>
+> Lo prueba `M7` (`CTR-16.10.10`).
+
+**Quién lo usa:**
+
+1. **La cuenta de la paridad** (`BR-23` punto 1, `BR-25` f), que `T-277` hace sobre las
+   trazas. La lectura computable que propongo —la vara es `BR-23`, y el detalle de la cuenta
+   es de `T-265` y `T-262`: si la leen distinto, manda la de ellos—: **X le abrió paso a Y**
+   cuando a un suceso `compuerta` con `abierta: true` y `por: X` le sigue, antes de que esa
+   compuerta se cierre, que Y ≠ X cruce su columna. Una caja usada de tapón sobre un
+   molinete también abre paso, y esta lectura no la ve: si la cuenta la quiere, lo dice
+   `BR-23`.
+2. **La isla, que no lo hace sonar ni lo escribe.** El dibujo lee el estado del mundo, no el
+   suceso.
+
+**Por qué no suena, que era la pregunta.** El plan recomendaba no sumar un cuarto efecto en
+este ciclo. No es "este ciclo no"; son cuatro motivos, y ninguno vence solo:
+
+1. **La sala entera está a la vista:** 15 × 9 sin desplazamiento (`UX-27 §2`). Una compuerta
+   que se abre se ve, y `CTR-17.6` ya decidió que lo que se ve alcanza y que lo que suena
+   nunca es la única fuente.
+2. **No queda registro libre.** `CTR-17.3` repartió tres registros entre tres efectos y le
+   dejó al que sume un cuarto el trabajo de encontrarle uno que no choque con otro que pueda
+   sonar al mismo tiempo. Una compuerta se abre justo cuando alguien salta o llega a su
+   puerta.
+3. **La placa titila.** El que salta encima la suelta y la vuelve a pisar en pocos cuadros;
+   un sonido ahí tartamudea, y `CTR-17.4` corta en cuatro voces.
+4. **El sonido se afina escuchando** (`CTR-17.3`), y el oído de este ciclo es el teléfono del
+   final (`ORQ-plan-ciclo-16.md §4` punto 3), no este documento.
+
+**Consecuencia: `CTR-17` no se enmienda y `sonido.ts` no nombra `compuerta`.** Si el teléfono
+dice que la palanca se siente muerta, es la enmienda de `CTR-17` del ciclo 17 (`§5` del
+plan), y **el único candidato es la palanca**: es un acto a propósito, uno por cruce, del que
+tiene el dedo. Nunca la placa (titila) y nunca la compuerta misma (sonaría por lo que hizo el
+otro).
+
+**El lector de pantalla** tiene el suceso a mano si lo quiere, pero anunciarlo no es mío:
+`UX-29 §5` pidió solo la vuelta a la entrada, y qué se anuncia es de `experiencia`.
+
+---
+
+### CTR-16.10.8 — Con qué tintas se dibujan: condición para `T-276`
+
+El dibujo es del hilo principal (`D-44`). Lo que el contrato le pone como condición:
+
+`UX-27 §4` reparte las 16 tintas en fijos (2), terreno (6), personajes (3 y 3) y objetos (2:
+la puerta y el coleccionable). **Palanca, placa, compuerta y caja no tienen franja propia y
+no piden la 17.**
+
+**Van en la clave y la luz —los dos fijos— y se distinguen por forma.** El plan decía *"con
+las del terreno y la clave"*, y se precisa, porque las seis del terreno no son neutrales: son
+tres de cielo y tres de infierno (`UX-27 §4.1`). Por qué ninguna otra franja:
+
+| Si se pintara con… | Se leería como… | Y eso rompe |
+|---|---|---|
+| una rampa de un elemento | "de Skayboy" o "de Poligirl", según quién camina ese terreno (`UX-30 §3`) | la paridad (`BR-23` punto 1): toda pieza de este contrato es **de los dos**, y el schema le prohíbe el `de` |
+| las dos rampas mezcladas | el molinete que devuelve a los dos | que una pieza para usar parezca un peligro |
+| la tinta de la puerta | una salida, y "puerta" y "compuerta" ya comparten la mitad del nombre | la condición de victoria, que es llegar a la **puerta** |
+| la del coleccionable | un premio | `UX-27 §9`: nada de brillos de recompensa |
+| una de personaje | un pedazo de uno de los dos | `D-38` |
+
+Si hace falta un medio tono, es **trama** de clave y luz (`UX-27 §9`: dither, no un color).
+
+**El estado también va por forma, nunca solo por color** (`UX-27 §5.2`, y el primo de
+`CTR-17.6`): la palanca **inclinada** a un lado o al otro; la placa **levantada** libre y **a
+ras** pisada; la compuerta **llena** cerrada y **recogida** contra su anclaje de arriba
+abierta. La caja no tiene estado. Qué forma exacta, es del que dibuja.
+
+**Una condición que es la única cara: la compuerta cerrada no puede leerse como sólido.** Si
+parece pared, nadie busca la palanca, y el nivel se vuelve un muro sin que falle una sola
+prueba. Es forma otra vez —barrotes contra ladrillo, por ejemplo— y la mira `revisor` en la
+hoja de contacto en blanco y negro (`UX-30 §7`), donde con dos tintas el color ya no ayuda y
+queda solo la forma.
+
+**Lo que `sala.test.ts` puede contar:** un tile por cada `tipo` de `CTR-16.4`, y **dos por
+cada pieza con estado** —palanca, placa y compuerta—. La tinta 17 la caza el auditor de
+paleta (`T-268`).
+
+---
+
+### CTR-16.10.9 — El schema, para pegar (`T-272`)
+
+Qué se toca en `src/data/_schema/skayboy.schema.json`, en orden:
+
+1. **`contratoVersion`: `{ "const": 2 }`.** El cambio es incompatible —un valor del enum que
+   se va, un campo obligatorio que sale, otro que entra—, y `CTR-16.2` puso la versión adentro
+   del dato para que eso se sepa mirando el JSON. **Si `T-267` ya la subió a 2 por la traza
+   de `CTR-18`, no se sube de nuevo:** la versión 2 es la forma con la que cierra el ciclo 16,
+   traza y mecanismos juntos, y ningún banco con una sola de las dos llega a producción (no
+   hay un solo nivel `listo`).
+2. **`$defs.elemento`**: nuevo. **`$defs.caracter`**: se reemplaza entero.
+3. **`$defs.mecanismo`**: se reemplaza entero. **`$defs.compuerta`**: nuevo. **`$defs.caja`**:
+   se borra.
+4. **`$defs.nivel`**: en `required` sale `"cajas"` y entra `"compuertas"`; en `properties`
+   sale `cajas` y entra el bloque de abajo. **Lo demás de `nivel` no se toca**, incluido lo
+   que haya sumado `T-267`.
+5. **El `comment` de la raíz** suma una cosa más que el schema no hace: no mira la grilla
+   desde los arreglos (`CTR-16.10.10`). *(Sumado el 2026-09-23:)* ni si cada entrada tiene
+   dónde pararse (`CTR-16.5` regla 3, `E8`).
+6. *(Sumado el 2026-09-23.)* **`$defs.nivel.properties.verificaciones` y el primer elemento
+   de `$defs.nivel.allOf`**: se reemplazan por los dos fragmentos de `CTR-16.7`, que retiran
+   `solo`. Es otro cambio incompatible, y por eso va en esta misma versión 2 y no en una 3.
+
+```json
+"elemento": {
+  "comment": "CTR-16.4 enmendado por CTR-16.10: de qué elemento es el molinete que devuelve a uno solo. Nombra el lugar; a quién rechaza lo dice `devuelve`, y eso es de experiencia (UX-30 §3).",
+  "enum": ["cielo", "infierno"]
+},
+"caracter": {
+  "comment": "El enum de `tipo` no trae ninguna palabra de daño (FIND-58, UX-29 §7.2). CTR-16.10 partió `mecanismo` en `palanca` y `placa` —la física las corre distinto y la diferencia vivía en un booleano del arreglo— y sumó `compuerta`.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tipo"],
+  "properties": {
+    "tipo": {
+      "enum": ["aire", "solido", "molinete", "tesoro", "entrada", "puerta",
+               "palanca", "placa", "compuerta", "caja"]
+    },
+    "devuelve": { "$ref": "#/$defs/quienes" },
+    "elemento": { "$ref": "#/$defs/elemento" },
+    "para": { "$ref": "#/$defs/quienes" },
+    "de": { "$ref": "#/$defs/quien" }
+  },
+  "allOf": [
+    {
+      "comment": "CTR-16.4: `devuelve` es la única declaración de quién no pasa, y es obligatoria en todo molinete.",
+      "if": { "required": ["tipo"], "properties": { "tipo": { "const": "molinete" } } },
+      "then": { "required": ["devuelve"], "properties": { "para": false, "de": false } }
+    },
+    {
+      "comment": "CTR-16.10: el molinete que devuelve a uno solo dice de qué elemento es. El que devuelve a los dos no es de ninguno, y ningún otro tipo tiene elemento. Que sean uno de cielo y uno de infierno lo cuenta esquemas.test.ts: en un mapa no se cuenta por contenido.",
+      "if": {
+        "required": ["tipo", "devuelve"],
+        "properties": { "tipo": { "const": "molinete" }, "devuelve": { "maxItems": 1 } }
+      },
+      "then": { "required": ["elemento"] },
+      "else": { "properties": { "elemento": false } }
+    },
+    {
+      "if": { "required": ["tipo"], "properties": { "tipo": { "const": "tesoro" } } },
+      "then": { "required": ["para"], "properties": { "devuelve": false, "de": false } }
+    },
+    {
+      "if": { "required": ["tipo"], "properties": { "tipo": { "enum": ["entrada", "puerta"] } } },
+      "then": { "required": ["de"], "properties": { "devuelve": false, "para": false } }
+    },
+    {
+      "comment": "El terreno que no le habla a nadie no nombra a nadie. Y palanca, placa, compuerta y caja son de los dos (CTR-16.10.8, BR-23 punto 1): un `de` en una palanca sería una palanca de uno.",
+      "if": {
+        "required": ["tipo"],
+        "properties": { "tipo": { "enum": ["aire", "solido", "palanca", "placa", "compuerta", "caja"] } }
+      },
+      "then": { "properties": { "devuelve": false, "para": false, "de": false } }
+    }
+  ]
+},
+"mecanismo": {
+  "comment": "CTR-16.10.1: una palanca o una placa. Cuál de las dos lo dice la celda `en` de la grilla y ningún otro lugar (`sostenido` era ese segundo lugar y se fue: CTR-16.6 enmendado). Acá vive solo con qué compuertas se conecta. Que `en` caiga en una palanca o una placa, que cada una tenga su entrada y que `abre` nombre compuertas del nivel lo verifica niveles.ts: un schema no mira la grilla desde un arreglo.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "en", "abre"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^MEC-\\d{2}$" },
+    "en": { "$ref": "#/$defs/coordenada" },
+    "abre": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^COM-\\d{2}$" }
+    }
+  }
+},
+"compuerta": {
+  "comment": "CTR-16.10.4: el tramo lo dibuja la grilla —una columna de celdas `compuerta`, de sólido a sólido— y acá se nombra, por su celda de arriba. Una entrada por tramo, y el anclaje, los verifica niveles.ts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "en"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^COM-\\d{2}$" },
+    "en": { "$ref": "#/$defs/coordenada" }
+  }
+}
+```
+
+Y adentro de `$defs.nivel.properties`, en el lugar de `cajas`:
+
+```json
+"compuertas": {
+  "comment": "Obligatorio aunque vaya vacío, como `mecanismos`: `[]` dice «este nivel no tiene ninguna».",
+  "type": "array",
+  "items": { "$ref": "#/$defs/compuerta" }
+}
+```
+
+**El dato, en el mismo commit** (`src/data/skayboy.json`): la leyenda queda como el bloque de
+`CTR-16.4` —`elemento` en `C` e `I`, `/`, `=` y `|` con sus tipos nuevos—, y `NIV-01` cambia
+`"cajas": []` por `"compuertas": []` **y pierde `solo` en `verificaciones`** *(sumado el
+2026-09-23, `CTR-16.7`)*. `contratoVersion`, según el punto 1. La lista de archivos de prueba
+que arrastra la baja de `solo` está en `CTR-16.7`.
+
+---
+
+### CTR-16.10.10 — Lo que el schema no puede, y tiene que ser prueba
+
+**Estáticas, en `niveles.ts` (`problemasDelBanco`)**, para todos los niveles y cada una con
+su caso en rojo:
+
+| # | Regla | Por qué no la hace el schema |
+|---|---|---|
+| E1 | Cada `mecanismos[].en` cae en una celda `palanca` o `placa`, y cada celda de esas tiene **exactamente un** mecanismo | un schema no mira la grilla desde un arreglo |
+| E2 | Cada tramo de `compuerta` tiene **exactamente una** entrada en `compuertas`, con `en` en su celda de arriba; ninguna entrada apunta a otra cosa | ídem |
+| E3 | Ids únicos dentro del nivel; **cada id de `abre` es una compuerta de ese nivel**; **toda compuerta la abre al menos un mecanismo** | `uniqueItems` compara objetos enteros, no un campo, y JSON Schema no cruza dos arreglos. **Es la que cierra la `BAJA` del ciclo 15** |
+| E4 | Anclajes: tramo de compuerta con sólido o borde **arriba y abajo**; palanca y placa con sólido o borde **abajo** | mirar la celda vecina es mirar un valor hermano |
+| E5 | Toda caja de arranque apoyada: sólido, otra caja o borde abajo | ídem |
+| E6 | Un nivel de `escalon` 3 no usa ningún `tipo` que no aparezca en algún nivel de escalón menor | es la regla del último escalón de `PRD-skayboy-y-poligirl.md` ("Qué enseña cada escalón"), y la cuenta la hace mejor un test que un script que hay que acordarse de correr |
+| E8 | *(Sumada el 2026-09-23.)* **Cada entrada tiene dónde pararse** (`CTR-16.5` regla 3): abajo, `solido` o el borde; arriba, no es la fila 0 y la celda no es `solido` ni un `molinete` que devuelva a ese personaje. El mensaje nombra el nivel, el personaje, la celda y qué hay abajo o arriba. **Rojo:** la sala `FLOTA_POLIGIRL` de `solucionador.test.ts`, y una entrada con un molinete propio abajo | mira la celda vecina y lo que la leyenda dice de ella. (`E7` vive en `esquemas.test.ts`; por eso esta es la 8) |
+
+**Estáticas, en `esquemas.test.ts`:**
+
+- **E7.** Los dos molinetes de uno solo son **uno de cielo y uno de infierno.** Va adentro de
+  la cuenta de los tres (`problemasDeMolinetes`), con su caso en rojo.
+- **`T-253` sigue la lista nueva** (`CTR-16.5`): molinete, palanca, placa, compuerta y caja en
+  la grilla del primero, `mecanismos` y `compuertas` vacíos, y el caso en rojo nombrando los
+  cinco **a mano**. El caso de *"una caja declarada y no dibujada"* se va con el arreglo: la
+  grilla es el único lugar.
+- **El caso de `CTR-16.6`** (*"un mecanismo sostenido sin `alternativaSolo` no valida"*) se va
+  con los dos campos, y lo reemplaza el rojo de E3: **un `abre` que nombra una compuerta que
+  no existe no pasa.** Los `abre` de prueba que quedan en ese archivo con el prefijo viejo
+  pasan a `['COM-01']`.
+
+**Dinámicas, en `mundo.test.ts`.** Las tres que el plan le pide a `T-272` y cuatro que este
+contrato agrega porque son sus promesas *(eran tres: `M7` se sumó el 2026-09-23)*. Cada una con su rojo a mano, como manda el
+encabezado de ese archivo:
+
+| # | Caso | Verde | Cómo verla en rojo |
+|---|---|---|---|
+| M1 | **La placa sin nadie encima cierra** (plan) | un cuerpo pisa la placa y la compuerta se abre; se va, y se cierra en ese subpaso | dejar la placa enganchada |
+| M2 | **La caja no atraviesa un sólido** (plan) | empujada contra sólido, contra compuerta cerrada y contra otra caja, no se mueve un píxel | sacarle a la caja el chequeo de celda libre |
+| M3 | **Un cuerpo no empuja ni carga a otro** (plan, `BR-23` punto 4) | A camina a través de B y B no se mueve; A cae sobre B y apoya en el piso, no en B | hacer sólidos a los cuerpos entre sí |
+| M4 | **La compuerta no se cierra sobre nadie** (`CTR-16.10.4`) | B adentro del tramo y la placa suelta: queda abierta, B no se mueve, ningún suceso `vuelta`. B sale: se cierra, con `por: null` | que se cierre igual |
+| M5 | **La caja no cae sobre nadie** (regla 3) | B debajo de la cornisa y el empujón no arranca. Y en la carrera forzada, la caja frena contra B y en ningún cuadro se le mete adentro | sacar el chequeo de la columna de caída |
+| M6 | **El que espera no se mueve, haga lo que haga el otro; y la sala quieta no cambia** (reglas 1 y 2) | en la sala de `CTR-16.10.1`, con B quieto en cuatro lugares —el piso, la placa, adentro de una compuerta abierta, arriba de la caja—, 2.000 cuadros de mandos al azar **con semilla fija** para A: B no cambia de `x` ni de `y`, y no hay `vuelta` de B. Después, sin mandos: una vez que todo apoya, 600 cuadros más no cambian nada salvo el reloj | darle a la compuerta una demora de cierre, o dejar empujar una caja con alguien encima |
+| M7 | *(Sumada el 2026-09-23.)* **Lo que hacen los dos a la vez no es de ninguno** (`CTR-16.10.7`, regla 4) | los dos llegan a pisar la misma placa en el mismo subpaso —la prueba los puede poner a mano, a la misma distancia de lados opuestos—: **un** suceso `compuerta` con `abierta: true` y `por: null`. Se bajan en el mismo subpaso: **un** cierre con `por: null`. Control: uno solo pisa, y `por` es él | darle el `por` al primero de `PERSONAJES` |
+
+M6 cuesta unos 11.000 cuadros: a la velocidad medida en `ORQ-plan-ciclo-16.md §1`, unos
+50 ms. Es la prueba que más barato compra lo que el pulgar no puede probar: que ninguna
+combinación de lo que hace uno alcanza al otro.
+
+**Sobre la traza, en `soluciones.test.ts`** (el archivo es de `T-267`; la regla la suma el
+primero que lo toque después de `T-272`): **la traza de uno no pasa por ningún cuadro con una
+caja en `espera`** (`CTR-16.10.5`). Es la primera mitad de la regla 11 de `CTR-18.6`, y mira
+**cada cuadro**, no solo los cambios de columna: la carrera que la produce es la del que juega
+con su propia caja.
+
+*Enmendado el 2026-09-23: decía "ninguna traza grabada pasa por un cuadro con una caja en
+`espera`, ni la de uno ni la de dos". La de a dos no se graba (`CTR-18.4`), y lo que no se graba
+no se puede exigir en un test. Para lo que la regla protege alcanza la de uno
+(`CTR-16.10.5`, enmendado el mismo día).*
+
+---
+
+### CTR-16.10.11 — Lo que no entra, y lo que queda de otros
+
+| Qué | Por qué no, o de quién |
+|---|---|
+| Plataformas móviles y ascensores (`RES-61.6`) | Mueven al que espera y llevan reloj: reglas 1 y 2. No entran sin una decisión nueva que las cambie |
+| Compuertas horizontales, trampillas | Abrirse debajo de alguien le saca el piso, por la mano del otro: regla 2 |
+| Temporizadores, compuertas que se cierran "en un rato" | Regla 1. Y un "corré antes de que se cierre" es precisión, que es lo que `BR-29` va a medir en cuadros |
+| Una compuerta que piden dos mecanismos a la vez | Sería presencia, así que no rompe nada; no entra porque seis niveles no la necesitan. Si un nivel la pide, entra por decisión escrita |
+| **Los callejones sin salida** | Una caja empujada contra una pared no vuelve —no se tira— y un pozo más hondo que el alcance no tiene salida. **No es física, es nivel, y la traza no lo ve:** prueba que hay un camino desde el principio, no que no exista un paso sin vuelta en el medio. El solucionador lo podría probar (desde todo estado alcanzable se sigue pudiendo ganar); si un nivel puede tenerlos es de `producto`, y qué hace el que cae en uno, de `experiencia`. Traspaso: `Docs/SUGERENCIAS/ARQ-para-experiencia-y-producto-mecanismos-y-callejones.md` |
+| Lo que cuantiza `T-266` | Suma a la lista de `ORQ-plan-ciclo-16.md §2.1` cada palanca, cada compuerta **en su estado real** (no el mandato) y la celda de cada caja, con si se está moviendo. Y la traza de uno cambia de columna con los dos parados **y ninguna caja en movimiento** |
+| Los archivos que `T-272` toca de más | La fila del plan nombra cuatro; el cambio arrastra otros. Traspaso: `Docs/SUGERENCIAS/ARQ-para-hilo-principal-lo-que-arrastra-ctr-16-10.md` |
+
+---
+
+### Alternativas descartadas
+
+| Pregunta | Descartado | Por qué, puntual |
+|---|---|---|
+| Cómo se mueve la palanca | **saltando encima** | la tecla de saltar querría decir dos cosas; saltar *desde* una palanca la movería; y el efecto `salto` de `CTR-17` sonaría como si fuera ella |
+| | **cada cruce la da vuelta** | volver sobre tus pasos deshace lo que hiciste, y el estado depende de cuántas veces pasaste |
+| | **una tecla nueva** | `UX-28 §2.1`: tres teclas, ningún gesto. Una cuarta es algo que aprender antes de jugar, y en la columna no entra |
+| | **que también la mueva una caja** | la cuenta de `BR-23` punto 1 pierde al autor, y una caja estacionada encima la tapa |
+| La compuerta con alguien adentro | **devolverlo · empujarlo · cerrarse igual** | los tres motivos de `CTR-16.10.4` |
+| | **cerrarse con demora**, para dar tiempo a cruzar | pone reloj (regla 1): con demora se arma el "corré antes de que se cierre", que es simultaneidad de entrada con otro nombre |
+| El tipo del mecanismo | **un solo caracter `=` y `sostenido` en el arreglo**, que era lo que había | la grilla no muestra cuál es cuál, y la física corre una cosa mientras el dato puede declarar otra: `FIND-58` con otra ropa |
+| A qué apunta `abre` | **a las puertas `A` y `B`**, de donde salía el prefijo viejo | una puerta no se abre: se llega (`CTR-16.5` regla 2) |
+| Dónde vive una compuerta | **cada celda listada en el arreglo** | dos lugares que dibujan lo mismo; la grilla dibuja, el arreglo nombra |
+| | **un caracter de leyenda por compuerta** (`a`, `b`…) | la leyenda es del archivo (`CTR-16.4`): un caracter por compuerta es un id de nivel en un lugar de archivo |
+| La caja | **libre en píxeles, sin grilla** | cae en un pozo de su ancho solo si queda alineada al píxel; "pisa la placa" pasa a ser un umbral; el estado del solucionador deja de ser contable |
+| | **que se apoye en un cuerpo** al caer | un cuerpo sosteniendo una caja que sostiene al otro es un escalón humano (`BR-23` punto 4) |
+| | **que se pueda tirar** | cuarta tecla o gesto (`UX-28 §2.1`), y el callejón sin salida no desaparece: se muda |
+| | **seguir en el arreglo `cajas`** | solo traía `en`, que la grilla ya decía: dos lugares para un hecho y ninguna conexión que lo justifique |
+| Los cuerpos | **sólidos entre sí** | uno empuja al otro o se le para arriba (`BR-23` punto 4), y el orden del recorrido decide quién empuja a quién (regla 4) |
+| Las tintas | **las del terreno**, como sugería el plan | cada una es de un elemento: la pieza parecería de uno de los dos (`CTR-16.10.8`) |
+| El sonido | **un cuarto efecto ahora** | los cuatro motivos de `CTR-16.10.7` |
 | **Qué es el fracaso, y cómo se narra** (`D-42` precisión 2) | Era de `producto` con `contenido`, y **`UX-29` lo cerró el mismo día**: no se muere nadie, a alguien lo devuelven a la entrada, el fracaso no suena y no cuesta vidas sino reloj. Este schema nunca tuvo campo de muerte y ahora no lo va a tener: lo que hay es `devuelve` (`CTR-16.4`). Lo que sigue siendo de `producto` es **cuánto cuesta el reloj y si hay tope** (`UX-29 §4`) |

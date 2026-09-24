@@ -1,15 +1,19 @@
 {
   "contrato": "CTR-09",
-  "contratoVersion": 1,
+  "contratoVersion": 2,
   "juego": "por-la-letra",
   "modoRespuesta": "buscador",
-  "actualizado": "2026-09-03",
+  "actualizado": "2026-09-24",
   "sensibleA": [
     "letra"
   ],
   "filtro": {
     "regla": "CNT-11",
     "version": 7
+  },
+  "conteo": {
+    "ficha": "RES-90",
+    "consultado": "2026-09-24"
   },
   "nota": "Lo escribe scripts/generar-por-la-letra.mjs desde el cancionero. Es la lista de lo que existe y valido contra CNT-11, no de deseos. No se edita a mano.",
   "items": [
@@ -27,8 +31,8 @@
         "Del dios prisión feliz prisión... Del dios",
         "Barbazul de esta prisión."
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/barba_azul_vs_el_amor_letal.shtml",
@@ -49,8 +53,8 @@
         "Tu loca voluntad humeando,",
         "graznando fiero y sin estilo."
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/roto-y-mal-parado/",
@@ -72,8 +76,8 @@
         "el vitricida el gordo Pierre",
         "y rompio el vidrio el gordo Pierre, Pierre, Pierre"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/pierre_el_vitricida.shtml",
@@ -94,8 +98,8 @@
         "Todo este estúpido viaje mi amor",
         "Por los astros sólidos, sólidos bólidos"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/unos_pocos_peligros_sensatos.shtml",
@@ -116,8 +120,8 @@
         "si quieres puedes apostar.",
         "hay alegrias y alegrias"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/yo-no-me-cai-del-cielo/",
@@ -139,8 +143,8 @@
         "Yo te quisiera asaltar.",
         "Te voy a herir un poquito más."
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/te-voy-a-atornillar/",
@@ -162,8 +166,8 @@
         "Superrígido, sí.",
         "Superrígido, sí, sí, sí."
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/superlogico/",
@@ -185,8 +189,8 @@
         "Cuando me muerda alocada",
         "Aguanten LOS REDONDOS"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/nam-fri-frufi-fali-fru/",
@@ -208,8 +212,8 @@
         "El infierno esta encantador",
         "este infierno esta embriagador"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/el-infierno-esta-encantador-esta-noche/",
@@ -231,8 +235,8 @@
         "Casi ya no llora,",
         "¡atrapado en libertad!"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/preso_en_mi_ciudad.shtml",
@@ -253,8 +257,8 @@
         "Emboquen el tiro libre",
         "Que los buenos volvieron"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/musica-para-pastillas/",
@@ -276,8 +280,8 @@
         "no le gusta que ande solo",
         "se ha montado en mi nariz"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/semen-up/",
@@ -299,8 +303,8 @@
         "Ser, promovido para navidad",
         "Como no se nos ocurrió."
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/divina_tv_fuhrer.shtml",
@@ -321,8 +325,8 @@
         "(fichando de más...).",
         "Mi dios no juega dados, quizás..."
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/motorpsico.shtml",
@@ -343,8 +347,8 @@
         "Y se ofreció",
         "Mejor que nunca"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/jijiji/",
@@ -366,8 +370,8 @@
         "¡el ritmo efímero!",
         "¡el grito efímero! (Pero te creo...)"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/ya-nadie-va-a-escuchar-tu-remera/",
@@ -389,8 +393,8 @@
         "ruedan los dientes del negro canon",
         "su mala leche no siente dolor"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/masacre-en-el-puticlub/",
@@ -412,8 +416,8 @@
         "para gran consumo.",
         "Se desgracio el campeon del hiper futbol"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/noticias-de-ayer/",
@@ -435,8 +439,8 @@
         "detenganloooos",
         "detenganme"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/todo_preso_es_politico.shtml",
@@ -457,8 +461,8 @@
         "Se rompe loca, la anatomía",
         "con el humor de los sobrevivientes"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/vencedores-vencidos/",
@@ -480,8 +484,8 @@
         "Y cuanto vale todo lo registrado?",
         "si el sueño llega la imagen te condena"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/vamos-las-bandas/",
@@ -503,8 +507,8 @@
         "¡Ella está tan linda! ¡Ella es tan linda! No puede durar.",
         "Y ahora estoy en líos por mi furia"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/ella-debe-estar-tan-linda/",
@@ -526,8 +530,8 @@
         "Y no es mi corazón",
         "¿Cómo no sentirme así"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/todo-un-palo/",
@@ -549,8 +553,8 @@
         "Es lo que puede ofrecer papeles tristes y sed",
         "De boca floja y perdón para su lengua (La-la-la-la-la-la)"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/heroe-del-whisky/",
@@ -572,8 +576,8 @@
         "Y me esnifan la cabeza",
         "y nada ni nadie lo puede, lo puede parar."
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/rock-para-los-dientes/",
@@ -595,8 +599,8 @@
         "Y traga esas migas in des crip ti bles.",
         "Y traga esas migas in des crip ti bles  tru cos de pla cer..."
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/la_parabellum_del_buen_psicopata.shtml",
@@ -617,8 +621,8 @@
         "Las nuevas supersticiones",
         "la bobera del nuevo pac-man."
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/un-pac-man-en-el-savoy/",
@@ -640,8 +644,8 @@
         "Nunca nada especial",
         "Cañito de metal de acero cromo-ñiquel"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/nadie-es-perfecto/",
@@ -663,8 +667,8 @@
         "Ella fue, por esa vez",
         "Mi héroe vivo, ¡bah!"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/esa-estrella-era-mi-lujo/",
@@ -686,8 +690,8 @@
         "pintan mal",
         "S, de alguien que enturbia sus sentidos"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/maldicion_va_a_ser_un_dia_hermoso.shtml",
@@ -708,8 +712,8 @@
         "(Del que preferimos no hablar)",
         "HACE TOC  DE VUELTA ;  (menos el ultimo F  que la hace asi)"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/ropa-sucia/",
@@ -731,8 +735,8 @@
         "Violencia es mentir",
         "Sólo de viola"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/nuestro-amo-juega-al-esclavo/",
@@ -754,8 +758,8 @@
         "Un toque por si las moscas van",
         "y otro toque por si vas detrás"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/toxi__taxi.shtml",
@@ -776,8 +780,8 @@
         "Y es un cocktel que no se mezcla solo",
         "Quiere, si quiere mas"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/un-poco-de-amor-frances/",
@@ -799,8 +803,8 @@
         "­no! quizá  algún fueguito...",
         "Aquí¡ y allá  algún fueguito ensaya mi perro"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/mi-perro-dinamita/",
@@ -822,8 +826,8 @@
         "debiste poner en Rio ese restorán",
         "que te quitó el sueño, el sueño."
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/blues-de-la-artilleria/",
@@ -845,8 +849,8 @@
         "Estoy perdido sin mi estupidez.",
         "Un auto guapo va a venir por vos"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/tarea-fina/",
@@ -868,8 +872,8 @@
         "El más bello fuselaje que jamás lustro",
         "Le hizo un par de promesas imprudentes"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/el-pibe-de-los-astilleros/",
@@ -891,8 +895,8 @@
         "Y vos alli en tu remolque",
         "Sin luz, como un polizon"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/salando-las-heridas/",
@@ -914,8 +918,8 @@
         "El bronceador \"Charlotte\" te cuida de la radiación",
         "rematan el electro de Elvis al morir"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/queso-ruso/",
@@ -937,8 +941,8 @@
         "y compró matraca nueva, de ocasión.",
         "Quiero verte hundido en tu gabán,"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/rock-para-el-negro-atila/",
@@ -961,7 +965,7 @@
         "a los ultravioletas"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/sorpresa-de-shangai/",
@@ -983,8 +987,8 @@
         "Das un paso mas y sos carne muerta ois!?",
         "esta calle es mas angosta de lo que pensas"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/shopping_discozen.shtml",
@@ -1005,8 +1009,8 @@
         "Ángel de la sole__dad",
         "Y de la desola_ción"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/un-angel-para-tu-soledad/",
@@ -1028,8 +1032,8 @@
         "Mi aliento ya no espera",
         "(no hay fiera en mi colmillo)"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/buenas-noticias/",
@@ -1051,8 +1055,8 @@
         "vino un gato y festejo lo dulce",
         "BAJ0 (durante el solo de saxo)"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/susanita/",
@@ -1075,7 +1079,7 @@
         "VIOLIN (arreglo para guitarra)"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/espejismo/",
@@ -1098,7 +1102,7 @@
         "playeras marca \"top\""
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/gran-lady/",
@@ -1121,7 +1125,7 @@
         "(Nunca tuvo higo seco junto a mi)"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/la-hija-del-fletero/",
@@ -1143,8 +1147,8 @@
         "frío de visturí....",
         "La Ruta esta repleta [pesadilla]"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/el-lobo-caido/",
@@ -1166,8 +1170,8 @@
         "Me acaban el cerebro a mordiscos",
         "Bebiendo el jugo de mi corazón"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/yo-canibal/",
@@ -1189,8 +1193,8 @@
         "él es el peligro,",
         "A  (el resto sigue igual)"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/ladron-de-mi-cerebro/",
@@ -1213,7 +1217,7 @@
         "Sentado en tu dedo"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "letras.com",
         "url": "https://www.letras.com/los-redonditos-de-ricota/203002/",
@@ -1235,8 +1239,8 @@
         "Ella sí que era el fuego",
         "Ella sí que bailaba en las llamas"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/perdiendo-el-tiempo/",
@@ -1258,8 +1262,8 @@
         "Ni patinó mi animal",
         "Morena, vi tu camisa colgada"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/caa-seca-un-membrillo/",
@@ -1282,7 +1286,7 @@
         "Onambolicos asteroides"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/lavi-rap/",
@@ -1304,8 +1308,8 @@
         "que se salen de la blusa",
         "con bestial dulzura, rush"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/el-arte-del-buen-comer/",
@@ -1328,7 +1332,7 @@
         "conductores mudos que amenazan con flipar."
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/lobo_estas.shtml",
@@ -1349,8 +1353,8 @@
         "dibujadas, adormilado,",
         "ventanas muy abiertas"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/botija-rapado/",
@@ -1373,7 +1377,7 @@
         "derivó en tu mismo turbio rio."
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/etiqueta_negra.shtml",
@@ -1394,8 +1398,8 @@
         "Estos ojos...de quién son? de quién son mis deseos de hoy?",
         "Y éste insomnio de quién es? (Luzbelito pregunta una y otra vez...)"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/luzbelito-y-las-sirenas/",
@@ -1417,8 +1421,8 @@
         "y su cielo ennegrece...",
         "Nunca fue un listo de pesos"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/cruz-diablo/",
@@ -1441,7 +1445,7 @@
         "INTERMEDIO"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/ella-baila-con-todos/",
@@ -1463,8 +1467,8 @@
         "No vino hasta éste mundo",
         "a caerte en gracia a vos."
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/fanfarria-del-cabrio/",
@@ -1486,8 +1490,8 @@
         "Llevan el juego en la sangre y van.",
         "Descarados, lindos, varoncitos de oro."
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/nuotatori-professionisti/",
@@ -1509,8 +1513,8 @@
         "No es tormenta mental que da el prestigio loco",
         "Es mar gruesa y oscuridad."
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/blues-de-la-libertad/",
@@ -1532,8 +1536,8 @@
         "y estás tolerando todo.",
         "Lastimas tu corazón"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/la-dicha-no-es-una-cosa-alegre/",
@@ -1556,7 +1560,7 @@
         "Voy sangrando, Limón"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/me-matan-limon/",
@@ -1579,7 +1583,7 @@
         "-Caen, caen al fin, caen los disfrases"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/rock-yugular/",
@@ -1601,8 +1605,8 @@
         "Será que pueden calentarnos el pavito aún más, para gastarlo!",
         "Verte feliz no es nada"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "facil",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/mariposa-pontiac/",
@@ -1624,8 +1628,8 @@
         "sedas de sedas",
         "Que guarda nombres en tu cora__zón"
       ],
-      "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultad": "media",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/juguetes-perdidos/",
@@ -1648,7 +1652,7 @@
         "Su princesita, ay, se transformó en sapito"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/capitan-buscapina/",
@@ -1671,7 +1675,7 @@
         "tropecé con mis ganglios y vi,"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/el_arbol_del_gran_bonete.shtml",
@@ -1693,7 +1697,7 @@
         "las despedidas son"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/gualicho.shtml",
@@ -1715,7 +1719,7 @@
         "en los tickets de Carrefour"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/alien-duce/",
@@ -1738,7 +1742,7 @@
         "brillo una copa rota"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/la-pequena-novia-del-carioca/",
@@ -1761,7 +1765,7 @@
         "Me voy a ir junto a vos"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/scaramanzia.shtml",
@@ -1783,7 +1787,7 @@
         "la sole se fue"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/esto_es_toto_todo_amigos.shtml",
@@ -1805,7 +1809,7 @@
         "Tambien hay pastel de ponsoña salada"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/el-templo-de-momo/",
@@ -1828,7 +1832,7 @@
         "y guateque-hot-porno escolar"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "lacuerda.net",
         "url": "https://acordes.lacuerda.net/patricio_rey/morta_punto_com.shtml",
@@ -1850,7 +1854,7 @@
         "de erirte con su dolor"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/la-murga-de-los-renegados/",
@@ -1873,7 +1877,7 @@
         "Me cago en mis huesos"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "letras.com",
         "url": "https://www.letras.com/los-redonditos-de-ricota/202986/",
@@ -1896,7 +1900,7 @@
         "No tiene nada que perder"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/murga-de-la-virgencita/",
@@ -1919,7 +1923,7 @@
         "trucho, pero un lindo 'camaleon'."
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/pool-averna-y-papusa/",
@@ -1942,7 +1946,7 @@
         "En un vaso boca abajo."
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/murga-purga/",
@@ -1965,7 +1969,7 @@
         "hay sangre rancia de trmontina tajeador!......."
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/sheriff/",
@@ -1988,7 +1992,7 @@
         "Tu cerebro es un jabón."
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/pensando-como-una-acelga/",
@@ -2011,7 +2015,7 @@
         "juega siempre a que mata de amor"
       ],
       "dificultad": "dificil",
-      "dificultadSegun": "youtube",
+      "dificultadSegun": "en-vivo",
       "fuente": {
         "sitio": "cifraclub.com",
         "url": "https://www.cifraclub.com/los-redonditos-de-ricota/rato-molhado/",

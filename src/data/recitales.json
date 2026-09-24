@@ -1,0 +1,242 @@
+{
+  "contrato": "CTR-19",
+  "pieza": "recitales",
+  "contratoVersion": 1,
+  "actualizado": "2026-09-24",
+  "licencia": {
+    "id": "cc0-1.0",
+    "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  "cambios": "Los titulos se cruzaron contra los 105 temas de los diez discos y se les agrego el slug del catalogo; los que no cruzan quedan marcados fuera de catalogo, con su clase. Las secciones de bis y los comentarios de la fuente pasan a la nota de cada tema. Fecha, lugar, ciudad y orden de los temas, como los da cada fuente.",
+  "nota": "Semilla: MusicBrainz tiene dos recitales de la banda con setlist cargado (RES-76). Crece con cada fuente abierta que se fiche.",
+  "fuentes": [
+    {
+      "id": "musicbrainz",
+      "nombre": "MusicBrainz",
+      "sitio": "https://musicbrainz.org/",
+      "licencia": {
+        "familia": "cc0",
+        "version": "1.0",
+        "textual": "The core data of the database is licensed under the CC0, which is effectively placing the data into the Public Domain.",
+        "url": "https://musicbrainz.org/doc/About/Data_License",
+        "consultada": "2026-09-23"
+      },
+      "ficha": "RES-78"
+    }
+  ],
+  "recitales": [
+    {
+      "fecha": "1995-12-08",
+      "lugar": "Costa Chaval",
+      "ciudad": "Concordia",
+      "fuente": "musicbrainz",
+      "url": "https://musicbrainz.org/event/168415b3-7053-4b2b-9c0c-57cf13cf9f7f",
+      "consultado": "2026-09-24",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Un ángel para tu soledad",
+          "slug": "un-angel-para-tu-soledad"
+        },
+        {
+          "titulo": "Nadie es perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Un Pacman en el Savoy",
+          "slug": "un-pacman-en-el-savoy"
+        },
+        {
+          "titulo": "Botija rapado",
+          "slug": "botija-rapado"
+        },
+        {
+          "titulo": "El arte del buen comer",
+          "slug": "el-arte-del-buen-comer"
+        },
+        {
+          "titulo": "Nueva Roma",
+          "slug": "nueva-roma"
+        },
+        {
+          "titulo": "Etiqueta negra",
+          "slug": "etiqueta-negra"
+        },
+        {
+          "titulo": "Aquella solitaria vaca cubana",
+          "slug": "aquella-solitaria-vaca-cubana"
+        },
+        {
+          "titulo": "El lobo caído",
+          "slug": "el-lobo-caido"
+        },
+        {
+          "titulo": "Fusilados por la Cruz Roja",
+          "slug": "fusilados-por-la-cruz-roja"
+        },
+        {
+          "titulo": "Un poco de amor francés",
+          "slug": "un-poco-de-amor-frances"
+        },
+        {
+          "titulo": "Buenas noticias",
+          "slug": "buenas-noticias"
+        },
+        {
+          "titulo": "La parabellum del buen psicópata",
+          "slug": "la-parabellum-del-buen-psicopata"
+        },
+        {
+          "titulo": "Rock para los dientes",
+          "slug": "rock-para-los-dientes"
+        },
+        {
+          "titulo": "Ñam fri fruli fali fru",
+          "slug": "nam-fri-frufi-fali-fru"
+        },
+        {
+          "titulo": "Susanita",
+          "slug": "susanita"
+        },
+        {
+          "titulo": "Vamos las bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "Mi perro dinamita",
+          "slug": "mi-perro-dinamita"
+        },
+        {
+          "titulo": "Yo caníbal",
+          "slug": "yo-canibal"
+        },
+        {
+          "titulo": "Queso ruso",
+          "slug": "queso-ruso"
+        },
+        {
+          "titulo": "Jijiji",
+          "slug": "jijiji"
+        }
+      ]
+    },
+    {
+      "fecha": "1995-12-09",
+      "lugar": "Costa Chaval",
+      "ciudad": "Concordia",
+      "fuente": "musicbrainz",
+      "url": "https://musicbrainz.org/event/aff403c7-63d4-4122-a71b-8ae87e7cd729",
+      "consultado": "2026-09-24",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "El pibe de los astilleros",
+          "slug": "el-pibe-de-los-astilleros"
+        },
+        {
+          "titulo": "Nadie es perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Un ángel para tu soledad",
+          "slug": "un-angel-para-tu-soledad"
+        },
+        {
+          "titulo": "Nuestro amor juega al esclavo",
+          "slug": "nuestro-amo-juega-al-esclavo"
+        },
+        {
+          "titulo": "La parabellum del buen psicópata",
+          "slug": "la-parabellum-del-buen-psicopata"
+        },
+        {
+          "titulo": "El lobo caído",
+          "slug": "el-lobo-caido"
+        },
+        {
+          "titulo": "Desde el alma",
+          "fuera": "sin-identificar",
+          "nota": "La fuente lo enlaza a la obra \"Desde el alma\", vals de Rosita Melo: seria un cover, sin ficha que lo confirme. Comentario de la fuente: «Vals; played with the crowd»."
+        },
+        {
+          "titulo": "Semen-Up",
+          "slug": "semen-up"
+        },
+        {
+          "titulo": "Vamos las bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "Queso ruso",
+          "slug": "queso-ruso"
+        },
+        {
+          "titulo": "Ladrón de mi cerebro",
+          "slug": "ladron-de-mi-cerebro"
+        },
+        {
+          "titulo": "Fusilados por la Cruz Roja",
+          "slug": "fusilados-por-la-cruz-roja"
+        },
+        {
+          "titulo": "Rock para el negro Atila",
+          "slug": "rock-para-el-negro-atila"
+        },
+        {
+          "titulo": "Caña seca y un membrillo",
+          "slug": "cana-seca-y-un-membrillo"
+        },
+        {
+          "titulo": "Shopping Disco-Zen",
+          "slug": "shopping-disco-zen"
+        },
+        {
+          "titulo": "Yo caníbal",
+          "slug": "yo-canibal"
+        },
+        {
+          "titulo": "Es un sentimiento",
+          "fuera": "sin-identificar",
+          "nota": "Sin obra enlazada en la fuente. Podria ser un cantico de la gente; nadie lo clasifico con ficha. Comentario de la fuente: «played with the crowd»."
+        },
+        {
+          "titulo": "Aquella solitaria vaca cubana",
+          "slug": "aquella-solitaria-vaca-cubana"
+        },
+        {
+          "titulo": "Ñam fri fruli fali fru",
+          "slug": "nam-fri-frufi-fali-fru"
+        },
+        {
+          "titulo": "Ya nadie va a escuchar tu remera",
+          "slug": "ya-nadie-va-a-escuchar-tu-remera"
+        },
+        {
+          "titulo": "El arte del buen comer",
+          "slug": "el-arte-del-buen-comer",
+          "nota": "En la fuente, seccion «Encore»."
+        },
+        {
+          "titulo": "Nueva Roma",
+          "slug": "nueva-roma",
+          "nota": "En la fuente, seccion «Encore»."
+        },
+        {
+          "titulo": "Divina TV. Führer",
+          "slug": "divina-tv-fuhrer",
+          "nota": "En la fuente, seccion «Encore 2»."
+        },
+        {
+          "titulo": "Un tal Brigitte Bardot",
+          "fuera": "inedito",
+          "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75). En la fuente, seccion «Encore 2»."
+        },
+        {
+          "titulo": "Jijiji",
+          "slug": "jijiji",
+          "nota": "En la fuente, seccion «Encore 3»."
+        }
+      ]
+    }
+  ]
+}

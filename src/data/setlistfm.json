@@ -1,0 +1,1367 @@
+{
+  "contrato": "CTR-19",
+  "pieza": "citado",
+  "contratoVersion": 1,
+  "fuente": "setlist.fm",
+  "nota": "Cuantas veces figura cada tema en los setlists que carga la gente en setlist.fm, citado de su pagina de estadisticas. No es cuantas veces lo toco la banda.",
+  "conteo": {
+    "pagina": "https://www.setlist.fm/stats/patricio-rey-y-sus-redonditos-de-ricota-bd615a2.html",
+    "consultado": "2026-09-24",
+    "ficha": "RES-90",
+    "vigenciaDias": 180,
+    "setlistsCargados": 256,
+    "completo": false,
+    "temas": [
+      {
+        "titulo": "Jijiji",
+        "veces": 101,
+        "slug": "jijiji"
+      },
+      {
+        "titulo": "Ñam fri fruli fali fru",
+        "veces": 93,
+        "slug": "nam-fri-frufi-fali-fru"
+      },
+      {
+        "titulo": "Vamos las bandas",
+        "veces": 90,
+        "slug": "vamos-las-bandas"
+      },
+      {
+        "titulo": "Un tal Brigitte Bardot",
+        "veces": 80,
+        "fuera": "inedito",
+        "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+      },
+      {
+        "titulo": "Nadie es perfecto",
+        "veces": 71,
+        "slug": "nadie-es-perfecto"
+      },
+      {
+        "titulo": "Divina TV. Führer",
+        "veces": 69,
+        "slug": "divina-tv-fuhrer"
+      },
+      {
+        "titulo": "Nene nena",
+        "veces": 68,
+        "fuera": "inedito",
+        "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+      },
+      {
+        "titulo": "Nueva Roma",
+        "veces": 61,
+        "slug": "nueva-roma"
+      },
+      {
+        "titulo": "Mi perro dinamita",
+        "veces": 58,
+        "slug": "mi-perro-dinamita"
+      },
+      {
+        "titulo": "La bestia pop",
+        "veces": 57,
+        "slug": "la-bestia-pop"
+      },
+      {
+        "titulo": "Aquella solitaria vaca cubana",
+        "veces": 55,
+        "slug": "aquella-solitaria-vaca-cubana"
+      },
+      {
+        "titulo": "La parabellum del buen psicópata",
+        "veces": 53,
+        "slug": "la-parabellum-del-buen-psicopata"
+      },
+      {
+        "titulo": "Unos pocos peligros sensatos",
+        "veces": 52,
+        "slug": "unos-pocos-peligros-sensatos"
+      },
+      {
+        "titulo": "Ya nadie va a escuchar tu remera",
+        "veces": 50,
+        "slug": "ya-nadie-va-a-escuchar-tu-remera"
+      },
+      {
+        "titulo": "Queso ruso",
+        "veces": 49,
+        "slug": "queso-ruso"
+      },
+      {
+        "titulo": "Rock para los dientes",
+        "veces": 49,
+        "slug": "rock-para-los-dientes"
+      },
+      {
+        "titulo": "Ella debe estar tan linda",
+        "veces": 47,
+        "slug": "ella-debe-estar-tan-linda"
+      },
+      {
+        "titulo": "Barbazul vs. el amor letal",
+        "veces": 46,
+        "slug": "barbazul-versus-el-amor-letal"
+      },
+      {
+        "titulo": "Roto y mal parado",
+        "veces": 45,
+        "slug": "roto-y-mal-parado"
+      },
+      {
+        "titulo": "El pibe de los astilleros",
+        "veces": 44,
+        "slug": "el-pibe-de-los-astilleros"
+      },
+      {
+        "titulo": "Maldición, va a ser un día hermoso",
+        "veces": 44,
+        "slug": "maldicion-va-a-ser-un-dia-hermoso"
+      },
+      {
+        "titulo": "Mariposa Pontiac",
+        "veces": 43,
+        "slug": "mariposa-pontiac-rock-del-pais"
+      },
+      {
+        "titulo": "Masacre en el puticlub",
+        "veces": 41,
+        "slug": "masacre-en-el-puticlub"
+      },
+      {
+        "titulo": "Música para pastillas",
+        "veces": 41,
+        "slug": "musica-para-pastillas"
+      },
+      {
+        "titulo": "Semen Up",
+        "veces": 41,
+        "slug": "semen-up"
+      },
+      {
+        "titulo": "Fusilados por la Cruz Roja",
+        "veces": 40,
+        "slug": "fusilados-por-la-cruz-roja"
+      },
+      {
+        "titulo": "Héroe del whisky",
+        "veces": 40,
+        "slug": "heroe-del-whisky"
+      },
+      {
+        "titulo": "Todo preso es político",
+        "veces": 40,
+        "slug": "todo-preso-es-politico"
+      },
+      {
+        "titulo": "Yo no me caí del cielo",
+        "veces": 40,
+        "slug": "yo-no-me-cai-del-cielo"
+      },
+      {
+        "titulo": "Ese gordo tramposo",
+        "veces": 39,
+        "fuera": "inedito"
+      },
+      {
+        "titulo": "Nuestro amo juega al esclavo",
+        "veces": 39,
+        "slug": "nuestro-amo-juega-al-esclavo"
+      },
+      {
+        "titulo": "Un pacman en el Savoy",
+        "veces": 39,
+        "slug": "un-pacman-en-el-savoy"
+      },
+      {
+        "titulo": "Criminal Mambo",
+        "veces": 37,
+        "slug": "criminal-mambo"
+      },
+      {
+        "titulo": "Rock del país",
+        "veces": 37,
+        "grafiaDe": "mariposa-pontiac-rock-del-pais",
+        "nota": "Otra grafia de Mariposa Pontiac - Rock del pais (RES-91). Cuenta la que mas figura (43); esta no suma (CTR-19.2)."
+      },
+      {
+        "titulo": "Un ángel para tu soledad",
+        "veces": 36,
+        "slug": "un-angel-para-tu-soledad"
+      },
+      {
+        "titulo": "Un poco de amor francés",
+        "veces": 36,
+        "slug": "un-poco-de-amor-frances"
+      },
+      {
+        "titulo": "Vencedores vencidos",
+        "veces": 34,
+        "slug": "vencedores-vencidos"
+      },
+      {
+        "titulo": "Rock para el negro Atila",
+        "veces": 33,
+        "slug": "rock-para-el-negro-atila"
+      },
+      {
+        "titulo": "Blues del noticiero",
+        "veces": 32,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Todo un palo",
+        "veces": 32,
+        "slug": "todo-un-palo"
+      },
+      {
+        "titulo": "Es un sentimiento",
+        "veces": 31,
+        "fuera": "cover"
+      },
+      {
+        "titulo": "El regreso de Mao",
+        "veces": 29,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Roxana Porchelana",
+        "veces": 29,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Superlógico",
+        "veces": 29,
+        "slug": "superlogico"
+      },
+      {
+        "titulo": "Susanita",
+        "veces": 29,
+        "slug": "susanita"
+      },
+      {
+        "titulo": "El infierno está encantador esta noche",
+        "veces": 26,
+        "slug": "el-infierno-esta-encantador-esta-noche"
+      },
+      {
+        "titulo": "Monólogo (Enrique Symns cover)",
+        "veces": 26,
+        "fuera": "cover"
+      },
+      {
+        "titulo": "Toxi-taxi",
+        "veces": 26,
+        "slug": "toxi-taxi"
+      },
+      {
+        "titulo": "El arte del buen comer",
+        "veces": 24,
+        "slug": "el-arte-del-buen-comer"
+      },
+      {
+        "titulo": "El lobo caído",
+        "veces": 24,
+        "slug": "el-lobo-caido"
+      },
+      {
+        "titulo": "Motor psico",
+        "veces": 23,
+        "slug": "motor-psico"
+      },
+      {
+        "titulo": "Preso en mi ciudad",
+        "veces": 23,
+        "slug": "preso-en-mi-ciudad"
+      },
+      {
+        "titulo": "Juguetes perdidos",
+        "veces": 22,
+        "slug": "juguetes-perdidos"
+      },
+      {
+        "titulo": "Noticias de ayer",
+        "veces": 22,
+        "slug": "noticias-de-ayer"
+      },
+      {
+        "titulo": "Ropa sucia",
+        "veces": 20,
+        "slug": "ropa-sucia"
+      },
+      {
+        "titulo": "Blues de la libertad",
+        "veces": 19,
+        "slug": "blues-de-la-libertad"
+      },
+      {
+        "titulo": "Salando las heridas",
+        "veces": 19,
+        "slug": "salando-las-heridas"
+      },
+      {
+        "titulo": "Botija rapado",
+        "veces": 18,
+        "slug": "botija-rapado"
+      },
+      {
+        "titulo": "Buenas noticias",
+        "veces": 18,
+        "slug": "buenas-noticias"
+      },
+      {
+        "titulo": "Te voy a atornillar",
+        "veces": 18,
+        "slug": "te-voy-a-atornillar"
+      },
+      {
+        "titulo": "Shopping Disco-Zen",
+        "veces": 17,
+        "slug": "shopping-disco-zen"
+      },
+      {
+        "titulo": "Tarea fina",
+        "veces": 17,
+        "slug": "tarea-fina"
+      },
+      {
+        "titulo": "Yo caníbal",
+        "veces": 17,
+        "slug": "yo-canibal"
+      },
+      {
+        "titulo": "¡Cruz diablo!",
+        "veces": 16,
+        "slug": "cruz-diablo"
+      },
+      {
+        "titulo": "Caña seca y un membrillo",
+        "veces": 15,
+        "slug": "cana-seca-y-un-membrillo"
+      },
+      {
+        "titulo": "Canción para naufragios",
+        "veces": 13,
+        "slug": "cancion-para-naufragios"
+      },
+      {
+        "titulo": "La dicha no es una cosa alegre",
+        "veces": 13,
+        "slug": "la-dicha-no-es-una-cosa-alegre"
+      },
+      {
+        "titulo": "Patricio Disco Show",
+        "veces": 13,
+        "fuera": "intro"
+      },
+      {
+        "titulo": "Pierre, el vitricida",
+        "veces": 13,
+        "slug": "pierre-el-vitricida"
+      },
+      {
+        "titulo": "Blues de la artillería",
+        "veces": 12,
+        "slug": "blues-de-la-artilleria"
+      },
+      {
+        "titulo": "Ladrón de mi cerebro",
+        "veces": 12,
+        "slug": "ladron-de-mi-cerebro"
+      },
+      {
+        "titulo": "Pura suerte",
+        "veces": 12,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Esa estrella era mi lujo",
+        "veces": 11,
+        "slug": "esa-estrella-era-mi-lujo"
+      },
+      {
+        "titulo": "Fanfarría del cabrío",
+        "veces": 11,
+        "slug": "fanfarria-del-cabrio"
+      },
+      {
+        "titulo": "Luzbelito y las sirenas",
+        "veces": 11,
+        "slug": "luzbelito-y-las-sirenas"
+      },
+      {
+        "titulo": "Patricio Super Show",
+        "veces": 11,
+        "fuera": "intro"
+      },
+      {
+        "titulo": "Mariposa Pontiac / Rock del país",
+        "veces": 10,
+        "grafiaDe": "mariposa-pontiac-rock-del-pais",
+        "nota": "Otra grafia de Mariposa Pontiac - Rock del pais (RES-91). Cuenta la que mas figura (43); esta no suma (CTR-19.2)."
+      },
+      {
+        "titulo": "Mi genio amor",
+        "veces": 10,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "De estos polvos futuros lodos",
+        "veces": 9,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Mi mamá alemana (Vivi Tellas cover)",
+        "veces": 9,
+        "fuera": "cover"
+      },
+      {
+        "titulo": "Monólogo (Sergio \"Mufercho\" Martínez cover)",
+        "veces": 9,
+        "fuera": "cover"
+      },
+      {
+        "titulo": "Nuotatori profesionisti",
+        "veces": 9,
+        "slug": "nuotatori-professionisti"
+      },
+      {
+        "titulo": "Perdiendo el tiempo",
+        "veces": 9,
+        "slug": "perdiendo-el-tiempo"
+      },
+      {
+        "titulo": "Rock de las abejas",
+        "veces": 9,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "El hombre eléctrico",
+        "veces": 8,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Ella baila con todos",
+        "veces": 8,
+        "slug": "ella-baila-con-todos"
+      },
+      {
+        "titulo": "Instrumental Jam",
+        "veces": 8,
+        "fuera": "intro"
+      },
+      {
+        "titulo": "Las increíbles andanzas del Capitán Buscapina en Cybersiberia",
+        "veces": 8,
+        "slug": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia"
+      },
+      {
+        "titulo": "Rock yugular",
+        "veces": 8,
+        "slug": "rock-yugular"
+      },
+      {
+        "titulo": "Cua-cua amén",
+        "veces": 7,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Estás frito angelito",
+        "veces": 7,
+        "slug": "estas-frito-angelito"
+      },
+      {
+        "titulo": "Etiqueta negra",
+        "veces": 7,
+        "slug": "etiqueta-negra"
+      },
+      {
+        "titulo": "Fuegos de octubre",
+        "veces": 7,
+        "slug": "fuegos-de-octubre"
+      },
+      {
+        "titulo": "Alien Duce",
+        "veces": 6,
+        "slug": "alien-duce"
+      },
+      {
+        "titulo": "Desde el alma",
+        "veces": 6,
+        "fuera": "cover"
+      },
+      {
+        "titulo": "Drogocop",
+        "veces": 6,
+        "slug": "drogocop"
+      },
+      {
+        "titulo": "El árbol del Gran Bonete",
+        "veces": 6,
+        "slug": "el-arbol-del-gran-bonete"
+      },
+      {
+        "titulo": "Esto es to-to-todo amigos!",
+        "veces": 6,
+        "slug": "esto-es-to-to-todo-amigos"
+      },
+      {
+        "titulo": "Las piernas de Dolores",
+        "veces": 6,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Lavi-Rap",
+        "veces": 6,
+        "slug": "lavi-rap"
+      },
+      {
+        "titulo": "Pogo",
+        "veces": 6,
+        "slug": "pogo"
+      },
+      {
+        "titulo": "Quema el celo",
+        "veces": 6,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Sorpresa de Shangai",
+        "veces": 6,
+        "slug": "sorpresa-de-shangai"
+      },
+      {
+        "titulo": "Vals de los Redondos",
+        "veces": 6,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "¡Me matan limón!",
+        "veces": 5,
+        "slug": "me-matan-limon"
+      },
+      {
+        "titulo": "Crazy jazz",
+        "veces": 5,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "El bazar de Wakeman y Fripp",
+        "veces": 5,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Rodando",
+        "veces": 5,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Scaramanzia",
+        "veces": 5,
+        "slug": "scaramanzia"
+      },
+      {
+        "titulo": "\"Pongan huevo Los Redondos\"",
+        "veces": 4,
+        "fuera": "cantico"
+      },
+      {
+        "titulo": "Bajo las palmeras (El reggae de Patricio)",
+        "veces": 4,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Estopa dulce estopa",
+        "veces": 4,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Gualicho",
+        "veces": 4,
+        "slug": "gualicho"
+      },
+      {
+        "titulo": "Imperialismo espacial (La Cofradía de la Flor Solar cover)",
+        "veces": 4,
+        "fuera": "cover"
+      },
+      {
+        "titulo": "La hija del fletero",
+        "veces": 4,
+        "slug": "la-hija-del-fletero"
+      },
+      {
+        "titulo": "Skay Guitar Solo",
+        "veces": 4,
+        "fuera": "intro"
+      },
+      {
+        "titulo": "\"Vamos Redondos, con huevo vaya al frente\"",
+        "veces": 3,
+        "fuera": "cantico"
+      },
+      {
+        "titulo": "Dr. Saturno",
+        "veces": 3,
+        "slug": "dr-saturno"
+      },
+      {
+        "titulo": "Es hora de levantarse querido ¿Dormiste bien?",
+        "veces": 3,
+        "slug": "es-hora-de-levantarse-querido"
+      },
+      {
+        "titulo": "Espejismo",
+        "veces": 3,
+        "slug": "espejismo"
+      },
+      {
+        "titulo": "Gran lady",
+        "veces": 3,
+        "slug": "gran-lady"
+      },
+      {
+        "titulo": "Hercules mío",
+        "veces": 3,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Hidromedusa",
+        "veces": 3,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Intermedio",
+        "veces": 3,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "La murga de los renegados",
+        "veces": 3,
+        "slug": "la-murga-de-los-renegados"
+      },
+      {
+        "titulo": "Morta punto com",
+        "veces": 3,
+        "slug": "morta-punto-com"
+      },
+      {
+        "titulo": "Murga de la Virgencita",
+        "veces": 3,
+        "slug": "murga-de-la-virgencita"
+      },
+      {
+        "titulo": "Murga purga",
+        "veces": 3,
+        "slug": "murga-purga"
+      },
+      {
+        "titulo": "Pensando como una acelga",
+        "veces": 3,
+        "slug": "pensando-como-una-acelga"
+      },
+      {
+        "titulo": "Pool, averna y papusa",
+        "veces": 3,
+        "slug": "pool-averna-y-papusa"
+      },
+      {
+        "titulo": "Rato molhado",
+        "veces": 3,
+        "slug": "rato-molhado"
+      },
+      {
+        "titulo": "Recitador de Averno",
+        "veces": 3,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Sheriff",
+        "veces": 3,
+        "slug": "sheriff"
+      },
+      {
+        "titulo": "Templo de Momo",
+        "veces": 3,
+        "slug": "templo-de-momo"
+      },
+      {
+        "titulo": "Una piba con la remera de Greenpeace...",
+        "veces": 3,
+        "slug": "una-piba-con-la-remera-de-greenpeace"
+      },
+      {
+        "titulo": "\"Vamos Los Redo\"",
+        "veces": 2,
+        "fuera": "cantico"
+      },
+      {
+        "titulo": "A toda velocidad",
+        "veces": 2,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Blues del gallo malo",
+        "veces": 2,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Kazachok",
+        "veces": 2,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "La pequeña novia del carioca",
+        "veces": 2,
+        "slug": "la-pequena-novia-del-carioca"
+      },
+      {
+        "titulo": "Monona blues (Merca para vender)",
+        "veces": 2,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Mujeres aburridas",
+        "veces": 2,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Olé olé olé olé, Patricio Rey",
+        "veces": 2,
+        "fuera": "cantico"
+      },
+      {
+        "titulo": "Perra dinamita",
+        "veces": 2,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Por fin por fin",
+        "veces": 2,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Solita, dejala solita",
+        "veces": 2,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "¡Lobo ¿estás?!",
+        "veces": 1,
+        "slug": "lobo-estas"
+      },
+      {
+        "titulo": "¿Adónde van?",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "¿Cuándo habrá libertad?",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "\"Somos todos Redonditos, Redonditos de Ricota\"",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "A rocanrolear",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Aurora",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Ballet ricotero",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Blossom",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Blues del veraneo",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Cabaret",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Caminaré",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Crisis punk",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Cuando calienta el sol",
+        "veces": 1,
+        "fuera": "cover"
+      },
+      {
+        "titulo": "Dime lo que hay que hacer",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "El gordo tramposo / Un tal Brigitte Bardot",
+        "veces": 1,
+        "fuera": "inedito"
+      },
+      {
+        "titulo": "El petiso orejudo",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "El súper sport",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Espiroqueta",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Fruli mi dulce",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Hercules mío",
+        "veces": 1,
+        "fuera": "cover",
+        "nota": "La ficha (RES-89.3) aclara: cover de Vivi Tellas, distinto del de la banda."
+      },
+      {
+        "titulo": "Hernando's hideaway",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Himno Nacional Argentino",
+        "veces": 1,
+        "fuera": "cantico"
+      },
+      {
+        "titulo": "Honolulu",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Jackie Wild",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "La momia",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "La partita di pallone",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "La plegaria garchante",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Las mañanitas",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Magic Circus",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Mama",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Mariposa Pontiac / Rock del país / Ese gordo tramposo / Un tal Brigitte Bardot",
+        "veces": 1,
+        "fuera": "inedito",
+        "nota": "Medley de cuatro (RES-91). Adentro esta Mariposa Pontiac - Rock del pais, que ya tiene su numero: esta linea no le suma."
+      },
+      {
+        "titulo": "Me vuelvo cada día más loca",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Mejor no hablar de ciertas cosas",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Mensaje primaveral",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Monólogo: No hay juicio",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Mucha fe",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Nene, no comprendo tus ambiciones",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Noche en Bahía (Noche serena en el mar)",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "\"Olé olé olé olé, Patricio Rey\"",
+        "veces": 1,
+        "fuera": "cover",
+        "nota": "La ficha (RES-92.2) aclara: Lange Jojo cover, confirmado en RES-92, no es duplicado."
+      },
+      {
+        "titulo": "Omar Emir",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Orgasmos telepáticos",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Palabras iniciales por Mufercho",
+        "veces": 1,
+        "fuera": "intro"
+      },
+      {
+        "titulo": "Petit Suisse",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Presentacion",
+        "veces": 1,
+        "fuera": "intro"
+      },
+      {
+        "titulo": "Rock 18",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Sentimiento de blues",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Swin de los años 50",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Tiempo del corazón",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Tomalo de mi espera",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Tristezas de un vendedor callejero",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Una canción diferente",
+        "veces": 1,
+        "fuera": "sin-identificar",
+        "nota": "Fuera de los 105 de RES-20; la ficha no dice si es inédito, cover o variante (RES-91)."
+      },
+      {
+        "titulo": "Willy Crook Saxophone Solo",
+        "veces": 1,
+        "fuera": "intro"
+      }
+    ]
+  },
+  "indice": [
+    {
+      "fecha": "1992-07-18",
+      "lugar": "Microestadio Racing Club",
+      "ciudad": "Avellaneda",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/microestadio-racing-club-avellaneda-argentina-6bceba52.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-07-19",
+      "lugar": "Microestadio Racing Club",
+      "ciudad": "Avellaneda",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/microestadio-racing-club-avellaneda-argentina-1be6a124.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-08-07",
+      "lugar": "Teatro San Martín",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/teatro-san-martin-mar-del-plata-argentina-6be6a61e.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-08-08",
+      "lugar": "Teatro San Martín",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/teatro-san-martin-mar-del-plata-argentina-bcde582.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-09-19",
+      "lugar": "Estadio Cubierto Newell's Old Boys",
+      "ciudad": "Rosario",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/estadio-cubierto-newells-old-boys-rosario-argentina-1be6a118.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-09-26",
+      "lugar": "Flop Discotheque",
+      "ciudad": "Villa María",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/flop-discotheque-villa-maria-argentina-be6a11e.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-10-02",
+      "lugar": "Centro Municipal de Exposiciones",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/centro-municipal-de-exposiciones-buenos-aires-argentina-1bccd96c.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-10-03",
+      "lugar": "Centro Municipal de Exposiciones",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/centro-municipal-de-exposiciones-buenos-aires-argentina-6be6a612.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-10-30",
+      "lugar": "King Kong Stadium",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/king-kong-stadium-buenos-aires-argentina-6be6a60a.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-10-31",
+      "lugar": "King Kong Stadium",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/king-kong-stadium-buenos-aires-argentina-63e6a6fb.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1992-11-01",
+      "lugar": "King Kong Stadium",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1992/king-kong-stadium-buenos-aires-argentina-7be6a6f8.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1993-11-19",
+      "lugar": "Estadio Huracán",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1993/estadio-huracan-buenos-aires-argentina-2bd25062.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1993-11-20",
+      "lugar": "Estadio Huracán",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1993/estadio-huracan-buenos-aires-argentina-2bc7143a.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1993-12-10",
+      "lugar": "Sociedad Rural",
+      "ciudad": "Rosario",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1993/sociedad-rural-rosario-argentina-3bcce8a8.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1994-05-14",
+      "lugar": "Estadio Huracán",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1994/estadio-huracan-buenos-aires-argentina-33fd4445.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1994-08-12",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1994/go-disco-mar-del-plata-argentina-73e6a6e1.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1994-08-13",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1994/go-disco-mar-del-plata-argentina-53c8af4d.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1994-08-14",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1994/go-disco-mar-del-plata-argentina-be6a10a.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1994-12-16",
+      "lugar": "Estadio Huracán",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1994/estadio-huracan-buenos-aires-argentina-63e6a6db.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1994-12-17",
+      "lugar": "Estadio Huracán",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1994/estadio-huracan-buenos-aires-argentina-3c4f963.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1995-08-19",
+      "lugar": "Letoile Disco",
+      "ciudad": "San Carlos Centro",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1995/letoile-disco-san-carlos-centro-argentina-73e6a6ad.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1995-08-20",
+      "lugar": "Letoile Disco",
+      "ciudad": "San Carlos Centro",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1995/letoile-disco-san-carlos-centro-argentina-6be6a6a2.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1995-10-13",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1995/go-disco-mar-del-plata-argentina-53c8af95.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1995-10-14",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1995/go-disco-mar-del-plata-argentina-7bc8ae28.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1995-10-15",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1995/go-disco-mar-del-plata-argentina-4bc463d6.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1995-12-08",
+      "lugar": "Costa Chaval",
+      "ciudad": "Concordia",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1995/costa-chaval-concordia-argentina-13e6a101.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1995-12-09",
+      "lugar": "Costa Chaval",
+      "ciudad": "Concordia",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1995/costa-chaval-concordia-argentina-63e6a6a7.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1996-06-07",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1996/go-disco-mar-del-plata-argentina-7be6a6a4.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1996-06-08",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1996/go-disco-mar-del-plata-argentina-73e6a699.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1996-06-09",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1996/go-disco-mar-del-plata-argentina-3e6a1fb.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1998-05-23",
+      "lugar": "Anfiteatro Villa María",
+      "ciudad": "Villa María",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1998/anfiteatro-villa-maria-villa-maria-argentina-bdc955e.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1998-12-18",
+      "lugar": "Estadio Racing Club",
+      "ciudad": "Avellaneda",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1998/estadio-racing-club-avellaneda-argentina-3bd00c40.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1998-12-19",
+      "lugar": "Estadio Racing Club",
+      "ciudad": "Avellaneda",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1998/estadio-racing-club-avellaneda-argentina-73f75639.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1999-06-19",
+      "lugar": "Patinódromo Municipal",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1999/patinodromo-municipal-mar-del-plata-argentina-33d3b0ad.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "1999-06-20",
+      "lugar": "Patinódromo Municipal",
+      "ciudad": "Mar del Plata",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/1999/patinodromo-municipal-mar-del-plata-argentina-5bc71738.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "2000-04-15",
+      "lugar": "Estadio River Plate",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/2000/estadio-river-plate-buenos-aires-argentina-4bd54bd6.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "2000-04-16",
+      "lugar": "Estadio River Plate",
+      "ciudad": "Buenos Aires",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/2000/estadio-river-plate-buenos-aires-argentina-23d00c43.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "2001-04-22",
+      "lugar": "Estadio Centenario",
+      "ciudad": "Montevideo",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/2001/estadio-centenario-montevideo-uruguay-5bd04f7c.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "2001-04-23",
+      "lugar": "Estadio Centenario",
+      "ciudad": "Montevideo",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/2001/estadio-centenario-montevideo-uruguay-4bd04f72.html",
+      "ficha": "RES-74"
+    },
+    {
+      "fecha": "2001-08-04",
+      "lugar": "Estadio Chateau Carreras",
+      "ciudad": "Córdoba",
+      "url": "https://www.setlist.fm/setlist/patricio-rey-y-sus-redonditos-de-ricota/2001/estadio-chateau-carreras-cordoba-argentina-7bd65eb4.html",
+      "ficha": "RES-74"
+    }
+  ]
+}

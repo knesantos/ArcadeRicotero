@@ -589,6 +589,33 @@ es `D − 0,10` y `D + 0,40`; el patrón de `slug` es el de `CTR-01.4` y es lo q
 
 ### CTR-03.11 — La dificultad de un tema jugable: en el catálogo, no en el manifiesto — **revisión 4**
 
+> **Enmendado el 2026-09-23 por `CTR-19.5`** (`Docs/ARQ/ARQ-schema-recitales.md`, `T-273`),
+> después de `D-45` enmendada y `BR-18` (h). Lo de abajo queda como estaba, para que se vea de
+> dónde viene. Cambian tres cosas:
+>
+> 1. **El tercer insumo de `catalogo()` ya no es `src/data/popularidad.json`**, sino el
+>    `conteo` de `src/data/setlistfm.json`: cuántas veces figura cada tema en la página de
+>    estadísticas de setlist.fm, citado con URL y fecha. La fila *"`src/data/popularidad.json`
+>    · las vistas de cada tema"* de la tabla de insumos se lee así.
+> 2. **El nivel ya no sale de `repartirPorPopularidad()`**, sino de `repartirEnVivo()`
+>    (`src/lib/en-vivo.ts`): los 8 de mayor conteo dentro del pozo son `facil`, el resto con
+>    línea publicada es `media` y el pozo sin línea es `dificil`. La regla de tercios de `D-27`
+>    sigue viva para `US-07` y no se toca.
+> 3. **`medidos` pasa a llamarse `faciles`** y conserva la lectura del punto 3 de abajo:
+>    `faciles === 0` significa "este juego no escalona".
+>
+> Lo que **no** cambia, y es el corazón de esta sección: la dificultad sigue fuera del
+> manifiesto, se deriva en build y nunca se guarda.
+
+> **Nota del 2026-09-24 (`D-46`, `BR-30`, `T-284`): este contrato no cambia.** `BR-30` confirma
+> que `US-02` se queda con el corte de 8, y como el manifiesto no guarda la dificultad, no hay
+> ningún campo que agregar para decir de dónde sale. Eso lo dice la firma de `catalogo()`, que
+> recibe un conteo o nada. Hay dos cosas que se mueven fuera de este archivo. `NivelDificultad`
+> pasa a importarse de `en-vivo.ts`, porque `popularidad.ts` se retira (`CTR-19.15`). Y con el
+> conteo completo (`RES-90`) el reparto pasa de 8 / 15 / 72 a **8 / 82 / 5**: los 8 Fáciles son los
+> mismos y Difícil queda para cinco temas sin línea (`CTR-19.5`, enmienda). Si ese reparto cambia,
+> lo decide `producto`.
+
 **El manifiesto no la lleva, y no es una omisión: es la misma frase que ya estaba escrita
 en las Consecuencias de la v2**, cuando `arquitectura` enumeró las tres salidas posibles
 para la cuota de `BR-01`:

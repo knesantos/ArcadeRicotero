@@ -96,7 +96,7 @@ medir y no afirma nada sobre nadie:
 
 | Personaje | Camina | El motivo, que es de silueta |
 |---|---|---|
-| **Skayboy** | El infierno (terreno oscuro/rojo) | Su silueta la domina un **sombrero claro** — el Panamá beige de `RES-64.3`, ver `UX-27 §8.1`. Una masa clara arriba se lee mejor sobre terreno oscuro |
+| **Skayboy** | El infierno | Su silueta la domina un **sombrero claro** — el Panamá beige de `RES-64.3`, ver `UX-27 §8.1` |
 | **Poligirl** | El cielo (terreno claro) | Su silueta la domina una **masa de pelo oscuro**. Una masa oscura se lee mejor sobre terreno claro |
 
 Y arregla, de paso, el hallazgo 3 del ensayo del 2026-09-11 —*"la mata de pelo de Poligirl
@@ -105,6 +105,28 @@ se empasta más"*—: se empastaba porque estaba puesta sobre el terreno equivoc
 **Ninguna pantalla dice por qué.** Ni "Skayboy resiste el fuego", ni "Poligirl es de arriba",
 ni una línea que lo insinúe. El que juega lo aprende en tres segundos tocando, que es como
 lo aprende cualquiera en este género.
+
+> **Enmendado el 2026-09-23, respuesta a `Docs/SUGERENCIAS/HILO-para-experiencia-lo-que-la-paleta-del-pixel-no-decide.md §3`.** La fila de Skayboy decía "terreno oscuro/rojo" y daba
+> "una masa clara se lee mejor sobre terreno oscuro" como motivo. Medido sobre la paleta real
+> de `§1`, las dos partes son falsas: el infierno no es oscuro (su ancla da L\* 55, y `UX-27
+> §4.1` solo permite aclararlo, nunca oscurecerlo más — el mejor contraste posible del
+> sombrero contra el infierno es 3,76:1 y solo contra el blanco; contra el infierno-3 es
+> 2,53:1, por debajo del piso de `UX-27 §5.3`); y lo que de verdad toca el terreno son las
+> **piernas**, no el sombrero — el traje gris de Skayboy da entre 1,38:1 y 2,07:1 contra su
+> propio terreno, y ninguna tinta legal (≥ 3:1 contra la clave) lo arregla. **Es estructural,
+> no una elección de tinta que falte hacer:** si el infierno solo puede aclararse y nunca
+> oscurecerse, ningún elemento medio-oscuro de un personaje va a contrastar bien contra él, y
+> cambiar el reparto no lo resuelve — Poligirl sobre infierno tendría el mismo problema con su
+> propio elemento de contacto, y Skayboy sobre cielo empeora el suyo (claro sobre claro). La
+> fila queda corregida arriba: el motivo es la silueta contra el **aire** (β, `§1.1` de
+> `UX-27`), no contra el terreno. **Lo que decide esta enmienda, y es la respuesta a la
+> pregunta que dejó el traspaso:** se acepta que el mecanismo de legibilidad es el **contorno**
+> (`UX-27 §5.2`, ya doctrina para todo el área) y no el contraste contra el piso que se pisa.
+> `BR-23.3` ("las dos siluetas se reconocen igual de bien") **la decide la hoja de contacto en
+> blanco y negro** que `D-44` ya exige antes de aprobar los sprites — es literalmente lo que
+> ese criterio pide medir, y es donde `revisor` mira si el contorno alcanza sin que el color
+> haga el trabajo. No se revisa el reparto: revisarlo no arregla una asimetría que es del
+> terreno, no del personaje.
 
 ### 3.1 El cuidado de tono, que es la razón por la que este apartado existe
 
@@ -124,7 +146,8 @@ que mide el riesgo. Se desactiva por construcción, de tres maneras:
 
 ## 4. La mezcla afuera del área
 
-Adentro manda la paleta de 16 (`UX-27`). Afuera manda `UX-22`, sin cambios, y la base no
+Adentro manda la paleta de 15 (`UX-27`, enmienda del 2026-09-23: bajó de 16 a 15 cuando
+`§4.1.2` le sacó su tinta propia a la puerta). Afuera manda `UX-22`, sin cambios, y la base no
 rota (`D-19`, primera regla): fondo de tinta, grano, `--toque-min`, contraste AA.
 
 | Pieza | Tinta |

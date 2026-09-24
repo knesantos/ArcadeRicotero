@@ -1,8 +1,8 @@
 {
   "contrato": "CTR-16",
-  "contratoVersion": 1,
+  "contratoVersion": 2,
   "juego": "skayboy",
-  "actualizado": "2026-09-20",
+  "actualizado": "2026-09-24",
   "tile": 16,
   "ancho": 15,
   "alto": 9,
@@ -14,21 +14,23 @@
   "leyenda": {
     ".": { "tipo": "aire" },
     "#": { "tipo": "solido" },
-    "C": { "tipo": "molinete", "devuelve": ["skayboy"] },
-    "I": { "tipo": "molinete", "devuelve": ["poligirl"] },
+    "C": { "tipo": "molinete", "elemento": "cielo", "devuelve": ["skayboy"] },
+    "I": { "tipo": "molinete", "elemento": "infierno", "devuelve": ["poligirl"] },
     "X": { "tipo": "molinete", "devuelve": ["skayboy", "poligirl"] },
     "o": { "tipo": "tesoro", "para": ["skayboy", "poligirl"] },
     "1": { "tipo": "entrada", "de": "skayboy" },
     "2": { "tipo": "entrada", "de": "poligirl" },
     "A": { "tipo": "puerta", "de": "skayboy" },
     "B": { "tipo": "puerta", "de": "poligirl" },
-    "=": { "tipo": "mecanismo" },
+    "/": { "tipo": "palanca" },
+    "=": { "tipo": "placa" },
+    "|": { "tipo": "compuerta" },
     "n": { "tipo": "caja" }
   },
   "niveles": [
     {
       "id": "NIV-01",
-      "nombre": "",
+      "nombre": "De a dos, despacito",
       "escalon": 1,
       "estado": "borrador",
       "grilla": [
@@ -43,8 +45,128 @@
         "###############"
       ],
       "mecanismos": [],
-      "cajas": [],
-      "verificaciones": { "deDos": false, "solo": false }
+      "compuertas": [],
+      "verificaciones": { "deDos": false }
+    },
+    {
+      "id": "NIV-02",
+      "nombre": "Un piso con favoritos",
+      "escalon": 1,
+      "estado": "borrador",
+      "grilla": [
+        "###############",
+        "#.............#",
+        "#.............#",
+        "#.............#",
+        "#.............#",
+        "#.............#",
+        "#.............#",
+        "#A.1..I.C..2.B#",
+        "###############"
+      ],
+      "mecanismos": [],
+      "compuertas": [],
+      "verificaciones": { "deDos": false }
+    },
+    {
+      "id": "NIV-03",
+      "nombre": "Un favor que no se ve",
+      "escalon": 2,
+      "estado": "borrador",
+      "grilla": [
+        "###############",
+        "#..........#..#",
+        "#..........#..#",
+        "#..........#..#",
+        "#..........#..#",
+        "#..........#..#",
+        "#..........|..#",
+        "#1./.A.IC#B|.2#",
+        "###############"
+      ],
+      "mecanismos": [
+        { "id": "MEC-01", "en": [3, 7], "abre": ["COM-01"] }
+      ],
+      "compuertas": [
+        { "id": "COM-01", "en": [11, 6] }
+      ],
+      "verificaciones": { "deDos": false }
+    },
+    {
+      "id": "NIV-04",
+      "nombre": "Lo que pesa, se queda",
+      "escalon": 2,
+      "estado": "borrador",
+      "grilla": [
+        "###############",
+        "#.#...........#",
+        "#.#...........#",
+        "#.#...........#",
+        "#.#...........#",
+        "#.#.......#...#",
+        "#.|...........#",
+        "#1|A..X...2n=B#",
+        "###############"
+      ],
+      "mecanismos": [
+        { "id": "MEC-01", "en": [12, 7], "abre": ["COM-01"] }
+      ],
+      "compuertas": [
+        { "id": "COM-01", "en": [2, 6] }
+      ],
+      "verificaciones": { "deDos": false }
+    },
+    {
+      "id": "NIV-05",
+      "nombre": "El primer salto es a ciegas",
+      "escalon": 3,
+      "estado": "borrador",
+      "grilla": [
+        "###############",
+        "#..#........#.#",
+        "#..#........#.#",
+        "#..#........#.#",
+        "#..#........#.#",
+        "#..#........#.#",
+        "#..|.#......|.#",
+        "#1/|A=n....B|2#",
+        "########XX#####"
+      ],
+      "mecanismos": [
+        { "id": "MEC-01", "en": [2, 7], "abre": ["COM-02"] },
+        { "id": "MEC-02", "en": [5, 7], "abre": ["COM-01"] }
+      ],
+      "compuertas": [
+        { "id": "COM-01", "en": [3, 6] },
+        { "id": "COM-02", "en": [12, 6] }
+      ],
+      "verificaciones": { "deDos": false }
+    },
+    {
+      "id": "NIV-06",
+      "nombre": "El salto más largo de todos",
+      "escalon": 3,
+      "estado": "borrador",
+      "grilla": [
+        "###############",
+        "#..#.......#..#",
+        "#..#.......#..#",
+        "#..#.......#..#",
+        "#..|.......#..#",
+        "#..|.......#..#",
+        "#..|.....#.|..#",
+        "#A1|....n=B|2/#",
+        "####XXX########"
+      ],
+      "mecanismos": [
+        { "id": "MEC-01", "en": [9, 7], "abre": ["COM-02"] },
+        { "id": "MEC-02", "en": [13, 7], "abre": ["COM-01"] }
+      ],
+      "compuertas": [
+        { "id": "COM-01", "en": [3, 4] },
+        { "id": "COM-02", "en": [11, 6] }
+      ],
+      "verificaciones": { "deDos": false }
     }
   ]
 }

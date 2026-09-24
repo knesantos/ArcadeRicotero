@@ -59,6 +59,29 @@
 > corrige la afirmación en el apartado 8. Toca además `US-01` (agrega criterio 6) y el
 > apartado 6 de `BR-19` (el resultado y el payload de `ADR-02` pasan de dos desenlaces a
 > tres).
+>
+> **Revisión 2026-09-23 (`T-274`, ciclo 16, enmienda de `D-45`).** Consume además
+> `Docs/INVESTIGACION/INV-73-recitales-setlistfm.md` (`RES-73`..`RES-75`) y `BR-28`
+> (`Docs/PRODUCTO/PRD-skayboy-y-poligirl.md`). Suma el apartado (h) a `BR-18`: la vara de
+> Fáciles de `US-02` deja de salir del ranking de vistas de YouTube (apartado f, que queda
+> **enmendado, no borrado**) y pasa a salir del conteo citado de setlist.fm, leído contra
+> el filtro de catálogo. Dos cosas quedan explícitamente pendientes de otra mano — ninguna
+> de las dos se resuelve en esta revisión: si `D-27` (los tercios de "Sacalo por la
+> letra") también se alimenta de este conteo, pendiente **del usuario**; y la actualización
+> formal de `BR-28` en `PRD-skayboy-y-poligirl.md`, fuera del alcance de archivo de esta
+> tarea. El resto del documento no se tocó.
+>
+> **Revisión 2026-09-24 (`T-283`, ciclo 16, enmienda de `D-46`).** Consume además `D-46`
+> (decisión del usuario, textual: *"La dificultad de todo lo que sea con canciones sale de
+> ahí"*, que enmienda `D-27`) y `Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-corte-en-
+> vivo-deja-abierto.md`. Suma `BR-30`: una tabla con los ocho juegos del sitio, si trabajan
+> con canciones y cómo decide cada uno la dificultad hoy y desde `D-46`. Contesta, más
+> ancha de lo que se le había preguntado, la "Salida B" que `BR-18` (h) dejó pedida al
+> usuario en la revisión anterior — la respuesta es sí, con la fuente que `D-27` ya tenía
+> asignada (tercios), no la de `US-02` (corte de 8) — y confirma la regla de reparto
+> Media/Difícil de `US-02` que `Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-corte-en-
+> vivo-deja-abierto.md` §1 dejaba pedida. Marca la enmienda en `BR-18` (h), sin borrar. El
+> resto del documento no se tocó.
 
 ## Por qué existe el piso de ítems
 
@@ -1239,6 +1262,12 @@ fusionada con la de YouTube en un "popularidad" único.
 
 ### f) Resuelve la cuota de Fáciles de `US-02` (el hilo de `arquitectura`)
 
+> **Enmendado 2026-09-23 por el apartado (h), sin borrarse.** La fuente del orden de los 8
+> Fáciles deja de ser el ranking de vistas de YouTube y pasa a ser el conteo citado de
+> setlist.fm (`D-45`). Este apartado queda como registro de la regla original y de por qué
+> se llegó a "posición, no corte fijo" — ese razonamiento se hereda entero en (h). **La
+> vara vigente hoy es la de (h)**, más abajo.
+
 `Docs/SUGERENCIAS/HILO-para-producto-cuota-de-faciles-en-us02.md` dejó tres salidas sin
 elegir porque la etiqueta `dificultad` ya no vive en `adivinar-tema.json` (ese archivo es
 manifiesto de audio desde `D-24`, no banco de ítems). Con el ranking de YouTube de esta
@@ -1324,6 +1353,340 @@ cuota con un dato peor es cumplirla en el papel y romperla en la pantalla.
 
 ---
 
+### h) La vara de Fáciles cambia de fuente: lo más tocado en vivo — 2026-09-23, `T-274`, enmienda de `D-45`
+
+> **Enmendado 2026-09-24 por `BR-30` (`D-46`), sin borrarse.** Lo que sigue fijaba la vara
+> del conteo en vivo únicamente para `US-02`. `D-46` —*"la dificultad de todo lo que sea
+> con canciones sale de ahí"*— la extiende de principio, no de mecanismo: el corte de 8
+> fijo que define este apartado sigue siendo propio de `US-02` (`BR-30` no lo toca); lo que
+> se extiende a otros juegos con canciones —hoy, `US-07`— es la fuente (el conteo citado
+> de setlist.fm), repartida con la regla de tercios que ya tenía asignada `D-27`, no con
+> este corte de 8. El detalle completo, juego por juego, está en `BR-30`.
+
+**El apartado (f) queda enmendado, no derogado.** Lo que sigue reemplaza únicamente **de
+dónde sale el orden** de los 8 Fáciles de `US-02`; la cuota (8), el pool sobre el que se
+calcula (temas con fragmento de audio producido) y el motivo de fondo (`BR-01` punto 3:
+que el primer ítem no sea siempre el mismo) siguen intactos y se heredan textuales del
+apartado (f). Se marca enmendado en vez de borrarse para que quede a la vista qué cambió
+y por qué — mismo criterio que usa `CLAUDE.md` con sus propios avisos corregidos.
+
+**Qué cambió y por qué.** `D-45` (decisión del usuario) mueve la fuente de "Fácil" de las
+vistas de YouTube a lo más tocado en vivo según setlist.fm, condicionada a que la
+cobertura alcanzara para ordenar sin que un empate lo decida el azar. `INV-73` confirmó
+la condición: el top-25 de la página de estadísticas de setlist.fm no tiene empate en el
+puesto 8 (`RES-74`), reverificado con dos fetches independientes que coinciden dígito por
+dígito.
+
+**La vara nueva.** Dentro del pool de temas con fragmento de audio producido (hoy 95),
+"Fácil" son los **8 títulos de mayor conteo citado** en la página de estadísticas de
+setlist.fm, contando solo los títulos que **resuelven a un slug del catálogo** — la
+normalización que `RES-75` deja propuesta y que fija `T-279`. Se recalcula cada vez que
+se refresque el índice de recitales; la fecha de ese primer refresco no está fijada
+todavía (ver `PENDIENTE`).
+
+**Cómo se lee con el filtro de catálogo.** setlist.fm cuenta *lo que la banda tocó*, no
+*lo que el sitio puede dar como respuesta*: `RES-75` encontró que 2 de los 8 puestos más
+altos del ranking crudo (`Un tal Brigitte Bardot`, puesto 4; `Nene nena`, puesto 7) son
+demos de RCA de 1982 que nunca entraron a los 10 discos de estudio — sin slug de
+catálogo, no pueden ser respuesta de ningún juego. El filtro de catálogo se aplica
+**antes** de cortar el top-8, no después: leyendo solo los títulos que resuelven a un
+slug, el top-25 de `RES-74` da, hoy — Jijiji, Ñam fri fruli fali fru, Vamos las bandas,
+Nadie es perfecto, Divina TV. Führer, Nueva Roma, Mi perro dinamita, La bestia pop —
+bajando hasta el puesto 10, sin empate en el corte (57 contra 55). **Esto es una lectura
+derivada de `INV-73`, no una lista que este documento congele**: la arma `T-279` contra
+el pool con fragmento vigente en cada ingesta, y si alguno de esos 8 títulos todavía no
+tiene su audio producido, el filtro sigue bajando en el ranking hasta completar 8 —
+mismo mecanismo que el apartado (f) ya preveía para YouTube, aplicado ahora a esta fuente.
+
+**Qué dice el rótulo — registro 3, sin excepción (`.claude/rules/voz-ricotera.md` §5).**
+El sitio dice **"lo más tocado en vivo"**, nunca "el más popular" ni "el más escuchado":
+son promesas distintas y la propia `D-45` explica por qué no son intercambiables — un
+tema que se tocó en cada misa no es por eso el que más suena hoy. Mismo patrón de tres
+datos juntos que ya exige el apartado (a) para YouTube —cifra, fecha, origen— trasladado
+a esta fuente: **qué mide** (cuántas veces figura el tema en los setlists cargados en
+setlist.fm), **de dónde sale** (la página de estadísticas de setlist.fm, con la fecha de
+consulta) y, si se muestra un número, que vaya chico y nunca como titular (apartado b
+sigue entero: es la misma razón — una cifra que solo puede subir envejece distinto que un
+orden). El copy exacto es de `contenido`/`experiencia`; esto fija qué tiene que poder
+decir sin mentirle a quien juega.
+
+**Si la clave de YouTube llega algún día (`D-45` consecuencia 1).** El ranking de vistas
+de YouTube, si algún día se resuelve, **vive aparte** — `CTR-07.7` queda intacto, es otro
+archivo y otra cuenta — y **no reactiva sola la vara del apartado (f)**. Si en el futuro
+conviene volver a YouTube, usar las dos fuentes a la vez, o quedarse con setlist.fm, es
+una decisión nueva de `producto` con el usuario, con el mismo peso que tuvo esta. Hasta
+entonces, la vara vigente para los 8 Fáciles de `US-02` es la de este apartado (h).
+
+**Cómo se levanta la puerta de `BR-28`.** `BR-28` frena un noveno juego mientras `US-02`
+siga en 0 de 8 Fáciles. Con esta vara, la puerta se abre **cuando un test cuente los 8**
+sobre el pool real de fragmentos — `T-279`, no antes: escribir esta regla no alcanza, es
+la misma trampa que `D-45` consecuencia 2 nombra ("declarar un choque como resuelto"). La
+condición original de `BR-28` apartado 3 ("la clave llega, o se decide por escrito que no
+va a llegar") queda superada por esta vara — ya no depende de la clave — y no la
+actualizo en su propio archivo (`Docs/PRODUCTO/PRD-skayboy-y-poligirl.md`) porque `T-274`
+no tiene ese archivo en su alcance; queda anotado en `PENDIENTE` para la próxima ráfaga de
+`producto` sobre ese documento.
+
+**La pregunta de `D-27`, para el usuario — no la contesto, dejo el costo de cada salida.**
+`D-45` consecuencia 3 deja abierto si los tercios de dificultad de "Sacalo por la letra"
+(`US-07`, `D-27`, `src/lib/popularidad.ts`) también se alimentan de este conteo en vez de
+seguir esperando la `YT_API_KEY`. Dos salidas, con su costo real:
+
+> **Contestada el 2026-09-24 por `D-46`, sin borrar el razonamiento de abajo.** El usuario
+> eligió la **Salida B**, y más ancho de lo que se le preguntó acá: no solo `US-07`, sino
+> "todo lo que sea con canciones". El costo que esta salida señalaba —un ranking del
+> catálogo completo, no solo un top-25— sigue siendo real y lo está resolviendo `T-282`
+> (`Docs/ORQ/ORQ-plan-ciclo-16.md` §2.4); mientras tanto, `US-07` puede llegar degradado a
+> Difícil por falta de dato, no por decisión, igual que le pasó a `US-02` con `BR-18` (g).
+> El detalle está en `BR-30`.
+
+- **Salida A — no tocar `D-27`.** Sigue infiriendo dificultad de las vistas de YouTube y
+  sigue esperando la clave. Costo: **cero trabajo nuevo**, pero `US-07` sigue sin
+  escalonamiento real mientras la clave no llegue — el mismo estado ya declarado hoy
+  (`popularidad.ts`: `medidos === 0`, todos los temas `dificil`). A favor: no mezcla dos
+  promesas distintas — "cuánto se escucha" (la intención original de `D-27`) y "cuánto se
+  tocó en vivo" (`D-45`) miden cosas distintas, aunque estén correlacionadas.
+- **Salida B — `D-27` también lee del conteo citado de setlist.fm.** Costo real y no
+  chico: los tercios de `D-27` necesitan un ranking del **catálogo completo** (104 o 105
+  temas, según se reconcilie — ver `PENDIENTE` de `INV-73`), no un top-8 ni un top-25, y
+  lo único que `RES-74` trae hoy es la página pública de estadísticas, que solo expone un
+  top-25. Conseguir un conteo defendible para los ~80 temas que quedan fuera de ese
+  top-25 puede no ser alcanzable por la misma vía que `RES-73` ya validó (licencia "para
+  ver", sin bots, sin retención vía API más allá de caché corta) sin pedirle a
+  `investigador` una ficha nueva y a `arquitectura` un contrato que hoy no existe. Y el
+  rótulo de "Sacalo por la letra" tendría que dejar de decir lo que `D-27` promete hoy y
+  pasar a decir lo mismo que este apartado —"lo más tocado en vivo"—, que es un cambio de
+  promesa, no solo de fuente; `D-27` fue decisión directa del usuario, así que cambiarla
+  la pide él, no `producto` por su cuenta.
+
+  **A favor de la B, para que no quede descartada de arranque:** el argumento con el que
+  `D-45` eligió setlist.fm —"el recital fue donde la gente aprendió los temas, se
+  cantaban enteros desde la tribuna"— encaja con "Sacalo por la letra" tan bien como con
+  "Adiviná el tema", quizás mejor: saberse la letra de memoria se parece más a haberla
+  cantado en la cancha que a haberla escuchado en YouTube.
+
+  **Mi recomendación, si el usuario pide una: Salida A por ahora.** El costo de la B —un
+  ranking del catálogo completo, no solo un top-25 público— no está resuelto por ninguna
+  ficha existente, y `D-27` no está bloqueando nada hoy que no estuviera bloqueado antes
+  de `D-45` (`US-07` sigue con el mismo `PENDIENTE` que ya tenía). Pero la decisión es del
+  usuario, no mía — **queda pedida acá**, igual que `BR-19` dejó pedida la suya en su
+  momento.
+
+**Verificación:** `rg -n "^### h)" Docs/PRODUCTO/PRD-alcance-v1.md` devuelve la línea de
+este apartado. Que el apartado (f) haya quedado marcado enmendado (no borrado) y que la
+pregunta de `D-27` esté explícitamente rotulada como pendiente del usuario, lo mira
+`revisor`. El conteo real de los 8 —si el filtro de catálogo y el pool con fragmento dan
+efectivamente 8 títulos— lo corre `T-279` (`src/lib/escalonar.test.ts`).
+
+---
+
+## BR-30 — Qué juegos son "con canciones" y cómo cada uno usa la dificultad
+
+**Aplica a:** los ocho juegos del sitio — los cuatro de `D-05` (`US-01`..`US-04`) más
+`US-06`, `US-07`, `US-08` y `US-09`. Contesta el pedido de `Docs/ORQ/ORQ-plan-ciclo-16.md`
+§2.4 (`T-283`), sobre `D-46` — decisión del usuario, textual: *"La dificultad de todo lo
+que sea con canciones sale de ahí"*, que enmienda `D-27` y responde, más ancha de lo
+preguntado, la "Salida B" que `BR-18` (h) había dejado pedida al usuario.
+
+**Qué significa "con canciones" acá, y qué no.** Un juego trabaja con canciones si su
+ítem **es** un tema (la respuesta es "cuál canción es esta") o **sale** de un tema (su
+contenido se recorta de una canción puntual: un verso, una letra). Es una clasificación
+de **contenido**, no de dificultad — las dos preguntas de la tabla van en columnas
+separadas a propósito, porque la primera no contesta sola la segunda: un juego puede
+trabajar con canciones y seguir decidiendo su dificultad por otra cosa. Esa distinción es
+el tema de los dos apartados que siguen a la tabla, y es la respuesta a la pregunta que
+motivó esta tarea (*"las preguntas del quiz que son sobre un tema: ¿la dificultad es del
+tema o de la pregunta?"*).
+
+### La tabla, sin celdas vacías
+
+| Juego | ¿Con canciones? | Cómo decide hoy la dificultad | Cómo la decide desde `D-46` |
+|---|---|---|---|
+| `US-01` Quiz | **Parcial, y no cuenta.** El ítem es la pregunta, no el tema; algunas preguntas (categoría `letras`, o `discos` citando un tema) mencionan una canción, la mayoría no. | Manual: `contenido` etiqueta cada pregunta Fácil/Media/Difícil al cargarla (`BR-01`, taxonomía; escalones 10/15/15 de `BR-19`). | **No cambia.** La dificultad de una pregunta mide qué tan oscuro es el dato que pide, no cuán tocada en vivo está la canción que nombra — ver "Por qué el quiz no entra", abajo. |
+| `US-02` Adivinar el tema | **Sí.** El ítem es el tema: la respuesta es reconocer la canción. | **Ya inferida, enmendado 2026-09-24.** 8 Fáciles = top del conteo citado de setlist.fm dentro del pozo con audio (`BR-18` h, `CTR-19.5`); Media/Difícil = tercios sobre los 87 restantes (antes: Media = figura y no es de los 8, Difícil = no figura — ver "Media y Difícil de `US-02`" más abajo). | **No cambia el mecanismo.** `D-46` confirma el principio que `D-45`/`BR-18` (h) ya le habían dado a este juego — es el juego de origen de la regla, no uno que la recibe ahora. |
+| `US-03` Completar la letra | **Sí en el contenido** (el hueco sale de un verso de un tema), **no en el eje de dificultad.** | Manual: `contenido` etiqueta cada hueco (`BR-01`); el nivel define cuánto contexto rodea el hueco (`BR-03`: 2+2 versos y título/disco visibles en Fácil, verso pelado en Difícil). | **No cambia.** Ver "Por qué `US-03` no entra", abajo. |
+| `US-04` Adivinar la tapa | **No.** El ítem es una tapa o un disco, no una canción. | Manual (`BR-01`, taxonomía; mínimo 3 Fácil sobre 10). | No aplica: no hay canciones que medir. |
+| `US-06` Qué tipo de ricotero sos | **No.** El ítem es una pregunta de temperamento (`BR-17`). | **No usa dificultad.** `BR-17` ya fija que `BR-01` no aplica: ninguna pregunta pide saber de la banda. | No aplica: no hay dificultad que `D-46` pueda redirigir. |
+| `US-07` Sacalo por la letra | **Sí.** El ítem es el tema: la respuesta es reconocer la canción por sus versos. | **Ya inferida por `D-27`**, no manual — aunque `Docs/PRODUCTO/PRD-adivinar-por-la-letra.md` todavía la describe como "Plan B" sin activar (marcado, ver "Archivos"). Tercios por vistas de YouTube; degradada hoy a todo Difícil por falta de `YT_API_KEY`. | **Cambia la fuente, no el mecanismo.** Los tercios de `D-27` se calculan sobre el conteo citado de setlist.fm en vez de las vistas de YouTube — la "Salida B" de `BR-18` (h), confirmada. |
+| `US-08` Ponelos en fila | **Parcial.** De los 14 conjuntos, 10 son temas (aperturas, cierres, los diez tracklists); 4 son discos o tapas. | **No usa dificultad.** `US-08` lo dice explícito: `BR-01` no aplica porque no hay respuesta correcta (`BR-22`). | No aplica: no hay dificultad que `D-46` pueda redirigir. |
+| `US-09` Skayboy y Poligirl | **No.** El ítem es un nivel de plataformas. `D-39` hace sonar un tema entero de fondo, pero el tema no es el ítem ni decide nada. | Manual: el escalón de cada nivel lo fija quien lo diseña (`BR-25`, `BR-29`: niveles 1-2 Fácil, 3-4 Media, 5-6 Difícil, por cuánto mecanismo enseña, no por popularidad). | No aplica: no hay canciones que medir. |
+
+### Por qué el quiz no entra, aunque una pregunta hable de un tema
+
+Es el caso que motivó la pregunta del encargo. **La dificultad es de la pregunta, no del
+tema.** Una pregunta de la categoría `letras` puede citar *Ji Ji Ji* —hoy el tema más
+tocado en vivo del catálogo, `CTR-19.5`— y aun así pedir un dato oscuro: en qué compilado
+salió una versión en vivo puntual, quién tocó qué instrumento esa noche. Esa pregunta
+sigue siendo difícil aunque la canción sea facilísima de reconocer, porque lo que mide la
+dificultad de una pregunta de trivia no es "cuánto circula la canción": es **cuánto
+circula el dato que pide**, y las dos cosas coinciden a veces y a veces no. `D-46` mueve
+la dificultad de lo que sea "con canciones" en el sentido de *reconocer una canción*; una
+pregunta de trivia no le pide eso al jugador aunque una canción aparezca en el enunciado.
+**La etiqueta de dificultad del quiz sigue siendo de `contenido`, ítem por ítem, sin
+excepción por el tema que la pregunta mencione.**
+
+### Por qué `US-03` no entra, aunque su ítem salga de una canción
+
+Mismo tipo de caso, otra forma. El eje de dificultad de "Completar la letra" no es "qué
+tan conocida es la canción": es **cuánta letra queda visible alrededor del hueco**
+(`BR-03`). Un tema carísimo de reconocer puede tener un ítem Fácil (2 versos antes, 2
+después, título y disco a la vista — con eso el jugador ni necesita reconocer la canción
+de oído, completa por contexto) y un tema conocidísimo puede tener un ítem Difícil (verso
+pelado, sin título) donde solo lo saca quien se la sabe de memoria. Las dos cosas ya
+conviven en la misma canción según qué verso se eligió mostrar. Migrar esta dificultad al
+conteo en vivo mezclaría dos preguntas distintas —"¿cuánto contexto doy?" y "¿cuán tocada
+está esta canción?"— bajo una sola etiqueta, y la que ya existe (`BR-03`) mide justo lo
+que hace falta sin necesitar el dato externo.
+
+**La diferencia con `US-02`/`US-07` es el verbo de la tarea.** Esos dos piden *reconocer
+cuál canción es*, y ahí "cuán conocida es" es la dificultad en sí —el propio
+`PRD-adivinar-por-la-letra.md` ya lo dice con esas palabras para `US-07`—. `US-03` pide
+*completar una palabra*, y una canción muy tocada en vivo no vuelve automáticamente fácil
+completar un verso puntual si se lo muestra pelado.
+
+**La regla general que queda de esto, para el próximo caso parecido:** `D-46` gobierna la
+dificultad de un ítem cuando esa dificultad mide qué tan conocida es la canción misma —es
+decir, cuando la tarea del jugador es reconocerla o identificarla. No gobierna cuando la
+canción es el material del que sale el ítem pero la dificultad mide otra cosa (un dato de
+trivia, cuánto contexto queda visible).
+
+### La regla de reparto: los tercios de `D-27`, salvo el corte de 8 de `US-02`
+
+Dos juegos infieren dificultad de canciones, y usan **reglas distintas** — cada una
+vigente por motivo propio, no por descuido:
+
+- **`US-02` conserva el corte de 8**, fijo y no proporcional al pozo (`BR-18` h,
+  `CTR-19.5`). Es una regla más vieja que `D-46` y específica de este juego: nació de la
+  cuota original de `BR-18` (f) y `D-45`/`BR-18` (h) ya le cambiaron la fuente sin tocar
+  el número. `D-46` no reabre esto — es, con sus propias palabras, "el juego de origen de
+  la regla".
+- **`US-07` usa los tercios de `D-27`** —temas del pozo ordenados por conteo y partidos
+  en tres franjas iguales, *"sin conteo es difícil"*, textual del usuario— porque es la
+  regla que ya tenía asignada desde que `D-27` se escribió (2026-08-27) específicamente
+  para este juego, antes incluso de que existiera `BR-18` (f). `D-46` no inventa un
+  mecanismo nuevo acá: **reactiva el que ya tenía**, cambiándole la fuente de vistas de
+  YouTube (que nunca llegaron) a conteo en vivo (que sí existe, `RES-74`).
+
+**Por qué no homologar las dos en una sola regla.** Forzar a `US-02` a tercios rompería
+un número ya construido, testeado y citado en media docena de documentos sin ningún
+beneficio — el corte de 8 no le debe nada a `D-27`. Forzar a `US-07` al corte de 8
+ignoraría que ese juego **ya tenía su propia regla específica**, escrita por el usuario
+con su propio argumento (tercios, no un top fijo). Cada uno se queda con la regla que ya
+era suya.
+
+**Dónde se calcula el pozo de `US-07`.** Igual que en `US-02`: los tercios se calculan
+sobre el pozo del juego —los temas con letra ya cargada en el banco (88 hoy, sobre un
+piso de 60)—, no sobre los 105 del catálogo entero. Un tema fuera del pozo no compite por
+un tercio que no le corresponde.
+
+### Media y Difícil de `US-02` — confirmando lo que dejó pedido `Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-corte-en-vivo-deja-abierto.md` §1
+
+> **Enmendado 2026-09-24 (ciclo 16, ráfaga 3), sin borrarse.** Lo que sigue es la regla tal
+> como se confirmó con el conteo parcial y la promesa de que "se corrige sola" cuando
+> llegara el conteo completo. Llegó (`Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-conteo-
+> completo-mueve.md` §1) y no se corrigió sola: se dio vuelta. La corrección real está
+> después del párrafo original, sin borrarlo — mismo criterio que usa `CLAUDE.md` con sus
+> propios avisos corregidos.
+
+Se confirma la regla que ya rige en `CTR-19.5` paso 5: **Media** son los temas del pozo
+que figuran en la página de estadísticas de setlist.fm y no quedaron entre los 8 Fáciles;
+**Difícil**, los que no figuran. No escribo otra: es *"sin escucha por ahora es difícil"*
+de `D-27`, con "escucha" leído como "figura en lo que publicó la página" — mismo
+principio que gobierna todo lo demás en esta regla, sin inventar un número nuevo. Hoy da
+8/15/72, torcido hacia Difícil porque `RES-74` solo cubre un top-25; **eso se corrige
+solo** cuando `T-282` traiga el conteo completo, sin que esta regla tenga que
+reescribirse.
+
+**Con el conteo completo, de los 95 temas con fragmento 90 figuran** en la página de
+estadísticas —los 8 Fáciles son los mismos de siempre— y el reparto de la regla de arriba
+queda **8 Fácil, 82 Media, 5 Difícil**. Los 5 que no figuran son casi todos instrumentales
+o cortinas (*Invocación*, *Capricho Magyar*, *Sushi*, *Soga de Caín*, *San Telmo*), no
+temas poco tocados: "Difícil" deja de significar lo que `D-27` quiso decir —*"sin escucha
+por ahora es difícil"*, leído como "poco tocado"— y pasa a significar "nadie lo cargó
+nunca en setlist.fm". Y con 82 de 90 en un solo casillero, la partida deja de subir:
+pasada la cuota fija de 8, el jugador pasa el resto de la sesión en el mismo nivel salvo
+por 5 títulos sueltos. `BR-01` no pide solo que no haya muro en la primera pantalla: pide
+que la dificultad **escalone**, y un reparto 8/82/5 no escalona nada después del octavo
+ítem.
+
+**Se cambia la regla.** Para los 87 temas que no son de los 8 Fáciles, `US-02` pasa a usar
+la misma fuente de tercios que ya tiene asignada `US-07` (`CTR-19.15`, con el empate en el
+borde bajando entero, igual que ahí): el pozo de esos 87 se ordena por conteo y se parte
+en tres franjas iguales; la franja de abajo es **Difícil**, las dos de arriba son
+**Media**. Esto no reabre "La regla de reparto" de más arriba: el corte de 8 sigue fijo y
+sigue siendo lo que distingue a `US-02` de `US-07` (`BR-18` h); lo único que cambia es
+cómo se reparte lo que queda **después** de sacar esos 8. Motivo: le devuelve a "Difícil"
+el significado que tiene en el resto del sitio —poco tocado en vivo, no "sin registro en
+la página"— y sostiene la curva que pide `BR-01`. No fijo acá el número exacto de la
+partición nueva ni el criterio de empate: depende del conteo vigente, lo calcula
+`repartirEnVivo()` y es alcance de `arquitectura` (el mismo traspaso de un cambio de línea
+anotado en `Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-conteo-completo-mueve.md` §1).
+
+### Qué pasa con un ítem que tenía dificultad a mano y la pierde
+
+El caso real es `US-07`, no uno hipotético. Su propio documento
+(`Docs/PRODUCTO/PRD-adivinar-por-la-letra.md`, sección "Piso de ítems") describe hoy la
+etiqueta como manual, con la migración a un ranking automático anotada como "Plan B... no
+vía principal todavía". Eso quedó desactualizado el mismo 2026-08-27, el día en que
+`D-27` fijó exactamente esa migración para este juego —la propia decisión dice que el
+archivo de curaduría manual "no se escribe" y que el ranking automático "pasa a ser el
+plan A"— sin que nadie volviera a tocar el PRD para decirlo. Se marca la enmienda ahí
+(ver "Archivos"), sin borrar el texto original, con el mismo criterio que usa
+`CLAUDE.md` con sus propios avisos corregidos.
+
+**Ningún ítem pierde hoy una etiqueta que ya tenía escrita a mano.** Lo que cambia es de
+dónde sale la etiqueta la próxima vez que se recalcule el banco (dependiente de
+`T-285`): antes del recálculo, el campo puede seguir reflejando lo último que
+`contenido` escribió; después, lo pisa la fórmula. No hace falta un candado especial para
+esa transición porque `BR-20` (la escalera de versos) sigue intacta: cambia **cuál** tema
+entra en qué nivel, no **qué se ve** dentro de un nivel.
+
+### Cómo sigue cumpliendo `BR-01`
+
+Para los dos juegos con dificultad inferida, los tres puntos de `BR-01` se sostienen
+igual que hoy:
+
+1. **Primer ítem Fácil.** Sigue garantizado: mientras haya al menos un Fácil en el pozo
+   —lo mismo que ya asume `BR-18` (g) para `US-02`— el primero de la partida sale de ahí.
+2. **La dificultad no baja dentro de la partida.** No lo toca esta regla: es mecánica de
+   `escalonar()`, no de dónde sale la etiqueta.
+3. **Piso mínimo de Fáciles.** `US-02` sigue con 8 fijos (`BR-18` h). `US-07` sigue con su
+   mínimo de 15 sobre el piso de 60 (25%, ya fijado en `PRD-adivinar-por-la-letra.md`):
+   los tercios del pozo de hoy (88) dan 30 / 30 / 28 (`CTR-19.15`). Con un pozo de 60, el
+   piso, darían 20 por franja. El mínimo de 15 se sostiene en los dos casos — no hace
+   falta subir el número del piso para que la cuenta cierre. Si un tema del pozo se queda
+   sin línea en el conteo, cae en Difícil (`D-27`) y el generador lo nombra; con los tres
+   alias de `CTR-19.16` (`RES-90`), hoy eso no le pasa a ninguno de los 88, así que ya no
+   hay degradación por falta de dato. No frena nada porque `US-07` no es uno de los cuatro
+   juegos de `D-05`, y porque tiene la misma segunda rampa que ya salvó a `US-02` en
+   `BR-18` (g): errar o pasar abre el escalón siguiente (`BR-20`), así que el orden de los
+   ítems no es el único molinete abierto.
+
+### El rótulo, en registro 3
+
+Ya está escrito: `RNF-CTR-19-A` (`Docs/ARQ/ARQ-schema-recitales.md`) fija qué mide, de
+dónde sale y con qué fecha, para toda pantalla que muestre un número o un orden salido
+del conteo citado. **Esta regla no escribe uno nuevo**: extiende el mismo requisito a
+cualquier pantalla de `US-07` que muestre nivel, número o puesto salido de la misma
+fuente — es el mismo dato, `setlistfm.json`, así que es el mismo rótulo. Sigue sin decir
+"el más popular" ni "el más escuchado": dice **"lo más tocado en vivo"**, con la fuente y
+la fecha al lado si se muestra un número.
+
+### Qué no hace esta regla
+
+No fijo el campo de schema que guarda de dónde sale la dificultad de cada banco (`CTR-03`,
+`CTR-09`, y `CTR-07` retirado de ese rol): es de `arquitectura` (`T-284`). `CTR-04`
+(`US-03`) no entra a esa lista, por lo dicho arriba. No fijo la fórmula exacta de
+`repartirEnVivo()` para `US-07` ni el archivo donde vive: también de `arquitectura`. No
+decido si `experiencia` muestra el nivel en pantalla de `US-07`: eso sigue sin pedirle
+nada a la isla hasta que lo decida, igual que ya vale para `US-02` (`CTR-19.9`).
+
+**Verificación:** `rg -n "^## BR-30" Docs/PRODUCTO/PRD-alcance-v1.md` devuelve esta línea.
+Que la tabla no tenga celdas vacías y que las enmiendas de `BR-18` (h) y de
+`PRD-adivinar-por-la-letra.md` estén marcadas sin borrar, lo mira `revisor`.
+
+---
+
 ## PENDIENTE
 
 - ~~**Duración exacta en segundos de cada paso del reveal de audio.**~~ **[RESUELTO
@@ -1358,7 +1721,17 @@ cuota con un dato peor es cumplirla en el papel y romperla en la pantalla.
   (`RES-52`, apartado c) y que `contenido` aplique el criterio de video declarado del
   apartado c de `BR-18` en los temas sin canal Topic. Hasta que eso exista, `BR-18`
   apartado f (Fáciles de `US-02` por posición en el ranking) no tiene con qué calcular
-  nada — sigue igual de bloqueado que hoy, que es 0 de 30.
+  nada — sigue igual de bloqueado que hoy, que es 0 de 30. **Actualizado 2026-09-23: este
+  bloqueo dejó de frenar la cuota de Fáciles**, que desde el apartado (h) sale del conteo
+  citado de setlist.fm. Si algún día la clave llega, el ranking de YouTube se guarda igual
+  (sigue siendo la promesa de los apartados a-e) pero **no reemplaza la vara de Fáciles
+  sin una decisión nueva** (`D-45` consecuencia 1, apartado h).
+- **`BR-28` (`Docs/PRODUCTO/PRD-skayboy-y-poligirl.md`) sigue citando la condición vieja.**
+  Su apartado 3 dice que la puerta del noveno juego se abre cuando "la clave llega" o "se
+  decide por escrito que no va a llegar". Desde el apartado (h), la puerta se abre cuando
+  `T-279` cuenta los 8 Fáciles sobre la vara de setlist.fm — la clave de YouTube ya no es
+  la condición. No lo edito en este archivo porque `T-274` no tiene `PRD-skayboy-y-
+  poligirl.md` en su alcance. Dueño: `producto`, próxima ráfaga sobre ese documento.
 - **Dónde vive la pantalla del ranking de populares/oscuros.** No lo decido acá — `BR-18`
   fija la promesa y las reglas del dato, no el flujo ni la pantalla (`CLAUDE.md`, límites
   de `producto`). Dueño: `experiencia`, si decide que es una pantalla propia, una sección
@@ -1381,3 +1754,9 @@ cuota con un dato peor es cumplirla en el papel y romperla en la pantalla.
 - **Si `BR-05` se extiende a `US-04`** (tramos de resultado bajo/medio/alto, cortes ya
   fijados) **es decisión de `experiencia`, no confirmada por este documento.** `BR-19`
   apartado 5 deja los cortes disponibles, no obligatorios. Dueño: `experiencia`.
+- **`BR-30` (`T-283`) deja tres traspasos para `arquitectura` (`T-284`), dependiente de
+  esta tarea:** el campo de schema que declara de dónde sale la dificultad de cada banco
+  (`CTR-03`, `CTR-09`; `CTR-04` queda afuera, `US-03` no migra; `CTR-07` se retira de ese
+  rol), la fórmula `repartirEnVivo()` para `US-07` con reparto en tercios (no el corte de
+  8 de `CTR-19.5`), y el conteo completo de setlist.fm en `CTR-19` (dueño `investigador`,
+  `T-282`, del que depende la fórmula para no llegar degradada). Dueño: `arquitectura`.

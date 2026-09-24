@@ -33,7 +33,7 @@
 > | Dónde manda | Todo el sitio | **Solo adentro del área de juego** de los juegos que la tengan |
 > | Formato | PNG con fondo transparente, borde tipo tijera (irregular, con grano — nunca vector liso) | PNG-32 con alfa binario (0 o 255), sin antialias, sin perfil de color |
 > | Tamaño | 400–800 px del lado largo alcanza | Tile de 16 × 16 px lógicos; celda de personaje 16 × 24. Se entrega a ×1 |
-> | Color | Tinta plana de los tokens | Paleta cerrada de 16 colores, declarados como `--px-*` en `tokens.css` |
+> | Color | Tinta plana de los tokens | Paleta cerrada de 15 colores, declarados como `--px-*` en `tokens.css` |
 > | Borde | Rasgado, de tijera | Contorno de 1 px en `--px-clave`, siempre |
 > | Se escala | Libre | **Solo por múltiplos enteros**, con `image-rendering: pixelated` |
 >
@@ -63,7 +63,7 @@ tener que abrirlo:
 | Celda de personaje | 16 × 24 px lógicos (la figura ocupa 14 × 22, con 1 px de aire) |
 | Escala | Múltiplos enteros y nada más. ×2 en teléfono, ×1 en vertical, ×3/×4 en escritorio |
 | Alfa | Binario: 0 o 255. Un píxel semitransparente es antialias con otro nombre |
-| Paleta | 16 colores, ni uno más, declarados como `--px-*` en `src/styles/tokens.css` |
+| Paleta | 15 colores, ni uno más, declarados como `--px-*` en `src/styles/tokens.css` |
 | Contorno | 1 px de `--px-clave` en todo sprite y todo borde de tile |
 | Texto adentro | **Ninguno.** Todo lo que se lee vive afuera del área |
 | Archivo | PNG-32, a ×1, sin perfil de color ni metadatos |
@@ -79,7 +79,7 @@ pegadas llega al sitio.**
 **Lo que se verifica antes de dar por buena una pieza nueva:**
 
 ```
-node --test src/lib/contraste.test.ts     # los 16 --px-* contra la clave, umbral 3:1
+node --test src/lib/contraste.test.ts     # los 15 --px-* contra la clave, umbral 3:1
 node scripts/auditar-paleta-pixel.mjs     # color fuera de paleta, o alfa intermedio
 ```
 ```
@@ -103,7 +103,7 @@ los usa un componente. Lo que sigue son los **nombres y el reparto**, que son m�
 de los diez colores derivados los fija el lienzo.
 
 ```css
-/* El tubo del fichín (D-41, UX-27). Paleta cerrada: 16 y ningun mas.
+/* El tubo del fichín (D-41, UX-27). Paleta cerrada: 15 y ningun mas.
    Los dos primeros son alias, no hex nuevos: la clave y la luz del area son
    exactamente la tinta y el papel del sitio. */
 --px-clave: var(--fondo);
@@ -126,8 +126,9 @@ de los diez colores derivados los fija el lienzo.
 --px-poli-2: /* del lienzo */;
 --px-poli-3: /* del lienzo */;
 
-/* Objetos. */
---px-puerta: /* del lienzo */;
+/* Objetos: uno solo. La puerta ya no tiene tinta propia (UX-27 §4.1.2,
+   enmienda 2026-09-23): se dibuja con --px-clave y --px-luz, por forma,
+   igual que la palanca, la placa y la compuerta (CTR-16.10.8). */
 --px-tesoro: /* del lienzo */;
 
 /* Grilla. */

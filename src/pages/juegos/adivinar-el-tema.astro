@@ -31,19 +31,19 @@ import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import { claseDisco } from '../../lib/tema/paleta.ts';
 import manifiesto from '../../data/adivinar-tema.json';
 import cancionero from '../../data/cancionero.json';
-import popularidad from '../../data/popularidad.json';
+import setlistfm from '../../data/setlistfm.json';
+import type { ConteoCitado } from '../../lib/en-vivo.ts';
 
 const conLetra = (cancionero as { temas: Array<{ slug: string; titulo: string }> }).temas.map(
   (t) => ({ slug: t.slug, titulo: t.titulo }),
 );
 
-// `CTR-03.11`: la dificultad se deriva en build de las escuchas (`D-27`). Hoy
-// `popularidad.json` no tiene una sola medicion, asi que `cat.medidos` es 0 y el juego
-// no escalona — declarado, no accidental. Lo prende `npm run ingerir-popularidad`.
-const medidos = (popularidad as { temas?: Array<{ slug: string; estado: string; medicion?: { vistas: number } }> })
-  .temas ?? [];
+// `CTR-19.5`: la dificultad se deriva en build de lo mas tocado en vivo, segun el conteo
+// que publica setlist.fm y el sitio cita (`D-45`). Los 8 temas del pozo que mas figuran
+// son Faciles. Las vistas de YouTube ya no entran a este juego: son otra cuenta.
+const conteo: ConteoCitado = (setlistfm as { conteo: ConteoCitado }).conteo;
 
-const cat = catalogo(manifiesto as unknown as Manifiesto, conLetra, medidos);
+const cat = catalogo(manifiesto as unknown as Manifiesto, conLetra, conteo);
 const hayAudio = cat.jugables > 0;
 
 const FONDO = 'lobo-tiras';
