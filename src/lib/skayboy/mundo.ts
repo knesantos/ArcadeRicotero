@@ -822,17 +822,31 @@ function cuerpoEncima(mundo: Mundo, k: Caja): IdPersonaje | null {
   return null;
 }
 
+/**
+ * Si otra caja está apoyada arriba de `k`, **o va a apoyarse**. La segunda mitad es la que importa:
+ * una caja que anda ya decidió en el arranque dónde apoya (`dondeApoya`), y si ese apoyo es `k`,
+ * `k` es su piso desde ese subpaso. Empujarla mientras la otra todavía anda la dejaría quieta en
+ * el aire, porque el tramo y la caída terminan en la celda que se decidió sin volver a mirar abajo
+ * (`CTR-16.10.5`: *apoya alineada en sólido o en otra caja*). Con dos personas se llega: una empuja
+ * la de arriba y la otra, a la vez, la de abajo.
+ */
 function cajaEncima(mundo: Mundo, k: Caja): boolean {
-  return mundo.cajas.some((otra) => otra !== k && Math.abs(otra.y + TILE - k.y) < EPS && solapan(otra.x, TILE, k.x, TILE));
+  return mundo.cajas.some(
+    (otra) =>
+      otra !== k &&
+      ((Math.abs(otra.y + TILE - k.y) < EPS && solapan(otra.x, TILE, k.x, TILE)) ||
+        (otra.estado !== 'quieta' && otra.columna === k.columna && otra.fila === k.fila - 1)),
+  );
 }
 
 /**
  * Los empujones del subpaso, **después de mover a los dos** (regla 4). Una caja arranca un tramo
  * si está quieta, no tiene nada encima —ni caja ni cuerpo: empujarla con el otro arriba es
  * llevarlo (`BR-23` punto 4)—, la celda de al lado la deja entrar y la caída es limpia. Los dos
- * para lados opuestos: se anulan. Los dos para el mismo lado: arranca, y no es de ninguno. Y si
+ * para lados opuestos: se anulan. Los dos para el mismo lado: arranca, y no es de ninguno. Si
  * dos cajas piden el mismo lugar en el mismo subpaso, no arranca ninguna: decidiría el orden de
- * la lista.
+ * la lista. Y **la que es el apoyo de otra que arranca en el mismo subpaso no arranca**: es el
+ * caso de `cajaEncima` con las dos empujadas a la vez, y la de arriba ya contó con ella.
  */
 function empujar(mundo: Mundo, empujes: readonly Empuje[]): void {
   if (empujes.length === 0) return;
@@ -857,8 +871,13 @@ function empujar(mundo: Mundo, empujes: readonly Empuje[]): void {
     const quienes = [...new Set(pedidos.map((e) => e.quien))];
     arranques.push({ caja, direccion, columna: k.columna + direccion, desde: k.fila, apoya, quienes });
   });
-  for (const a of arranques) {
-    const choca = arranques.some((b) => b !== a && b.columna === a.columna && b.desde <= a.apoya && a.desde <= b.apoya);
+  const sostiene = (a: (typeof arranques)[number]): boolean => {
+    const k = mundo.cajas[a.caja];
+    return arranques.some((b) => b !== a && b.columna === k.columna && b.apoya + 1 === k.fila);
+  };
+  const quedan = arranques.filter((a) => !sostiene(a));
+  for (const a of quedan) {
+    const choca = quedan.some((b) => b !== a && b.columna === a.columna && b.desde <= a.apoya && a.desde <= b.apoya);
     if (choca) continue;
     const k = mundo.cajas[a.caja];
     k.estado = 'tramo';

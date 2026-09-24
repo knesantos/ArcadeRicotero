@@ -13,10 +13,15 @@
  *
  * ## La dificultad
  *
- * Sale de `src/data/por-la-letra-curaduria.json` si existe (etiquetas a mano de
- * `contenido`, `CTR-09.7`); si no, el ítem entra como `sin-clasificar` — bloquear un tema
- * por no tener etiqueta repetiría el pozo de tres ciclos de `US-03`, y defaultear a
- * "media" sería un rótulo que miente.
+ * **No la escribe nadie**: sale de lo más tocado en vivo (`D-46`, `CTR-09.7` enmendado).
+ * Con los ítems ya armados, el pozo son sus slugs, y `repartirEnTercios()`
+ * (`src/lib/en-vivo.ts`, `CTR-19.15`) los parte en tercios con el conteo citado de
+ * `src/data/setlistfm.json`. Un tema sin línea en el conteo es `dificil` (`D-27`) y queda
+ * marcado `sin-conteo`. El banco guarda la ficha y la fecha del conteo que usó: si el conteo
+ * se refresca y esto no se vuelve a correr, `banco.test.ts` (t14) se pone en rojo.
+ *
+ * Si falta `setlistfm.json` o no trae `conteo`, **aborta**: el conteo está commiteado, y que
+ * falte es un repo roto, no un dato que todavía no llegó (`CTR-09.7`).
  *
  * ## A diferencia de `generar-letra.mjs`, acá lacuerda.net SÍ entra
  *
@@ -34,11 +39,15 @@ import {
   ventanaValida,
   VERSION_FILTRO,
 } from '../src/lib/por-la-letra/filtro.ts';
-import { repartirPorPopularidad } from '../src/lib/popularidad.ts';
+import { repartirEnTercios } from '../src/lib/en-vivo.ts';
 
 const CANCIONERO = join('src', 'data', 'cancionero.json');
-const POPULARIDAD = join('src', 'data', 'popularidad.json');
+const CONTEO = join('src', 'data', 'setlistfm.json');
 const DESTINO = join('src', 'data', 'por-la-letra.json');
+
+/** El piso de `US-07` y su cuota de Fáciles (`PRD-adivinar-por-la-letra.md`). Se miden, no se fuerzan. */
+const PISO = 60;
+const CUOTA_FACILES = 15;
 
 const FICHA_POR_SITIO = {
   'letras.com': 'RES-23',
@@ -47,12 +56,17 @@ const FICHA_POR_SITIO = {
 };
 
 const cancionero = JSON.parse(readFileSync(CANCIONERO, 'utf-8'));
-// `D-27`: la dificultad se infiere de la popularidad, no se etiqueta a mano. Es el
-// mismo mecanismo que `BR-18` (f) ya habia fijado para `US-02`.
-const popularidad = existsSync(POPULARIDAD)
-  ? JSON.parse(readFileSync(POPULARIDAD, 'utf-8'))
-  : { temas: [] };
-const reparto = repartirPorPopularidad(popularidad.temas ?? []);
+
+// Paso 1 de `CTR-09.7`: el conteo citado, o nada se genera.
+const conteo = existsSync(CONTEO) ? JSON.parse(readFileSync(CONTEO, 'utf-8')).conteo : undefined;
+if (!conteo || !Array.isArray(conteo.temas)) {
+  console.error(`
+  ${CONTEO} no existe o no trae el bloque "conteo". La dificultad de US-07 sale de ahi
+  (D-46, CTR-09.7), y el archivo esta commiteado: si falta, el repo esta roto.
+  No se genera un banco todo en "dificil" para taparlo.
+`);
+  process.exit(1);
+}
 
 const items = [];
 const descartes = new Map(); // motivo -> cuantos
@@ -101,10 +115,9 @@ for (const tema of cancionero.temas) {
     titulo: tema.titulo,
     desde: ventana.desde,
     versos: ventana.versos.map((v) => v.texto),
-    // `D-27`. Sin medicion es `dificil`, tal como lo fijo el usuario — y hoy eso es
-    // TODOS, porque `popularidad.json` sigue sin la clave de YouTube.
-    dificultad: reparto.porSlug.get(tema.slug) ?? 'dificil',
-    dificultadSegun: 'youtube',
+    // Paso 3: el item se arma sin nivel. Lo pone el paso 5, cuando ya se sabe cual es el pozo.
+    dificultad: null,
+    dificultadSegun: null,
     fuente: {
       sitio: tema.fuente.sitio,
       url: tema.fuente.url,
@@ -114,14 +127,26 @@ for (const tema of cancionero.temas) {
   });
 }
 
+// Paso 4: el pozo son los temas que quedaron, no el catalogo entero (`BR-30`, `CTR-07.8` p. 2).
+const tercios = repartirEnTercios(new Set(items.map((i) => i.slug)), conteo);
+const sinConteo = new Set(tercios.sinConteo);
+
+// Paso 5.
+for (const i of items) {
+  i.dificultad = tercios.porSlug.get(i.slug);
+  i.dificultadSegun = sinConteo.has(i.slug) ? 'sin-conteo' : 'en-vivo';
+}
+
+// Paso 6.
 const banco = {
   contrato: 'CTR-09',
-  contratoVersion: 1,
+  contratoVersion: 2,
   juego: 'por-la-letra',
   modoRespuesta: 'buscador',
   actualizado: new Date().toISOString().slice(0, 10),
   sensibleA: ['letra'],
   filtro: { regla: 'CNT-11', version: VERSION_FILTRO },
+  conteo: { ficha: conteo.ficha, consultado: conteo.consultado },
   nota:
     'Lo escribe scripts/generar-por-la-letra.mjs desde el cancionero. Es la lista de ' +
     'lo que existe y valido contra CNT-11, no de deseos. No se edita a mano.',
@@ -130,35 +155,34 @@ const banco = {
 
 writeFileSync(DESTINO, `${JSON.stringify(banco, null, 2)}\n`, 'utf-8');
 
-const porDif = {};
-for (const i of items) porDif[i.dificultad] = (porDif[i.dificultad] ?? 0) + 1;
+// Paso 7: lo que salio, medido contra el piso y la cuota de `US-07`.
+const { facil, media, dificil } = tercios.porNivel;
+const titulo = new Map(items.map((i) => [i.slug, i.titulo]));
 
 console.log(`
   Temas en el banco:   ${items.length} de ${cancionero.temas.length} del cancionero
-  Por dificultad:      ${JSON.stringify(porDif)}
+  Por dificultad:      ${facil} Facil · ${media} Media · ${dificil} Dificil
+  Con conteo:          ${tercios.conConteo} de ${items.length} (tercios de D-27 sobre ellos, CTR-19.15)
+  Conteo:              ${conteo.ficha}, consultado el ${conteo.consultado}
   Filtro:              CNT-11 v${VERSION_FILTRO}
-  Dificultad:          D-27, desde popularidad (${reparto.medidos} temas medidos de ${(popularidad.temas ?? []).length})
   Descartes:`);
 for (const [motivo, n] of [...descartes].sort((a, b) => b[1] - a[1])) {
   console.log(`    ${String(n).padStart(4)}  ${motivo}`);
 }
 if (afuera.length) {
-  console.log(`\n  Temas afuera (${afuera.length}):`);
+  console.log(`
+  Temas afuera (${afuera.length}):`);
   for (const t of afuera) console.log(`    - ${t}`);
 }
-console.log(`\n  Piso de US-07: 60. ${items.length >= 60 ? 'CUMPLIDO' : 'NO llega'} con ${items.length}.`);
-
-// El aviso que evita que el tablero diga ✅ sobre un juego que no escalona. `D-27` deja
-// la regla puesta, pero sin mediciones la regla devuelve `dificil` para todos.
-if (reparto.medidos === 0) {
+if (tercios.sinConteo.length) {
   console.log(`
-  🔴 NINGUN tema tiene medicion de escuchas, asi que TODOS quedaron en 'dificil'
-     (D-27: sin escucha es dificil). El juego reparte sin escalonar de verdad, y
-     BR-01 no se puede cumplir porque no hay pozo facil del que sacar el primero.
-
-     Un comando lo cambia, y no hay que tocar una linea de codigo:
-       YT_API_KEY=... npm run ingerir-popularidad -- --resolver
-`);
-} else {
-  console.log('');
+  Sin conteo, en Dificil por D-27 (${tercios.sinConteo.length}):`);
+  for (const s of tercios.sinConteo) console.log(`    - ${titulo.get(s)}`);
 }
+console.log(`
+  Piso de US-07: ${PISO}. ${items.length >= PISO ? 'CUMPLIDO' : 'NO llega'} con ${items.length}.`);
+// La cuota es de `producto`: se mide y se avisa, no se aborta (`CTR-09.7` paso 7).
+const rojo = (t) => `\u001b[31m${t}\u001b[0m`;
+const cuota = `Cuota de Faciles de US-07: ${CUOTA_FACILES}. ${facil >= CUOTA_FACILES ? 'CUMPLIDA' : 'NO llega'} con ${facil}.`;
+console.log(`  ${facil >= CUOTA_FACILES ? cuota : rojo(cuota)}
+`);

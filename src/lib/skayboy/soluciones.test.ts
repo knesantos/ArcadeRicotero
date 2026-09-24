@@ -854,8 +854,16 @@ test('la paridad no pierde un cruce que se detiene justo sobre el centro de la c
 });
 
 test('los tramos de compuerta se leen de la grilla, con el id de su celda de arriba', () => {
-  // El banco de hoy no trae ningún tramo (`NIV-01` no tiene compuertas), y su paridad es cero a cero.
-  for (const nivel of BANCO.niveles) assert.deepEqual(tramosDeCompuertas(BANCO, nivel), [], nivel.id);
+  // En el banco de verdad, cada tramo que dibuja la grilla es exactamente una entrada de
+  // `compuertas`, con su `id` y su celda de arriba; y un nivel sin compuertas no trae ningún tramo.
+  // *(Decía que el banco no traía ningún tramo: era cierto con `NIV-01` solo, y dejó de serlo con
+  // `T-277`, que suma `NIV-03`..`NIV-06` con compuertas.)*
+  for (const nivel of BANCO.niveles) {
+    const leidos = tramosDeCompuertas(BANCO, nivel).map((t) => ({ id: t.id, en: [t.columna, t.desdeFila] }));
+    const nombrados = nivel.compuertas.map((c) => ({ id: c.id, en: [...c.en] }));
+    const porId = (a: { id: string }, b: { id: string }): number => a.id.localeCompare(b.id);
+    assert.deepEqual(leidos.sort(porId), nombrados.sort(porId), nivel.id);
+  }
 
   // Con la forma de CTR-16.10.1 y la leyenda de verdad (`|` es compuerta desde T-272): un tramo de
   // tres celdas en la columna 7 y uno de dos en la 11.
@@ -927,6 +935,9 @@ for (const nivel of BANCO.niveles) {
     const r = repetir(BANCO, nivel, trazaDe(nivel));
     assert.equal(r.cuadrosConCajaEnEspera, 0);
     assert.equal(r.cambiosConCajaAndando, 0);
+    // Y lo que nombra el mensaje de `exigirTraza()`: el contador solo no alcanza, porque un contador
+    // que dejó de contar también da cero (su rojo está abajo, en la prueba del cambio con la caja andando).
+    assert.deepEqual([r.primeraEspera, r.primerCambioConCajaAndando], [null, null]);
   });
 }
 
@@ -945,6 +956,7 @@ test('🔴 regla 11: agarrar la otra columna con la caja todavía andando no es 
   const r = repetir(banco, nivel, traza);
   assert.ok(r.gana && r.sobrantes === 0, 'control: gana, en su último cuadro');
   assert.equal(r.cuadrosConCajaEnEspera, 0, 'control: la caja no esperó a nadie');
+  assert.ok(r.cambiosConCajaAndando > 0, 'el contador cuenta el cambio: es lo que mira el solucionador para descartar la candidata');
   assert.throws(
     () => exigirTraza(banco, nivel, traza, 'uno'),
     (e: Error) =>

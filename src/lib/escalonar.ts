@@ -10,14 +10,15 @@
  *
  * Los juegos de pozo abierto no tienen ninguna de las dos cosas. "Adiviná el tema" y
  * "Sacalo por la letra" se responden con un buscador sobre los 105 títulos, así que no hay
- * opciones que barajar; y su dificultad se **deriva** de las escuchas (`D-27`), que hoy no
- * están medidas: sin la clave de YouTube los niveles caen todos en `dificil` y `armarRonda`
- * les cerraría la puerta en la cara al arrancar.
+ * opciones que barajar; y su dificultad se **deriva** de cuánto circula el tema (`D-27`). Se
+ * midió con las vistas de YouTube, que nunca llegaron, y los niveles caían todos en
+ * `dificil`: `armarRonda` les habría cerrado la puerta en la cara al arrancar. Desde `D-46`
+ * se mide con lo más tocado en vivo (`src/lib/en-vivo.ts`) y los dos juegos tienen Fáciles.
  *
  * Por eso esta función **degrada en vez de tirar**. Sin ningún `facil` reparte lo que hay,
  * que con un solo nivel es un barajado — el mismo resultado que el barajado accidental que
- * `FIND-29` encontró, pero declarado, y con el mecanismo listo para funcionar solo el día
- * que las mediciones existan.
+ * `FIND-29` encontró, pero declarado. Sigue haciendo falta: si el conteo en vivo faltara,
+ * el juego se juega igual.
  *
  * ## De dónde salió
  *

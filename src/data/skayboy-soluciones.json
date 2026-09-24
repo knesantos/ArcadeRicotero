@@ -2,13 +2,60 @@
   "contrato": "CTR-18",
   "contratoVersion": 1,
   "juego": "skayboy",
-  "actualizado": "2026-09-23",
+  "actualizado": "2026-09-24",
   "cuadrosPorSegundo": 60,
   "soluciones": {
     "NIV-01": {
       "deUno": [
         "s< 69",
         "p> 39"
+      ]
+    },
+    "NIV-02": {
+      "deUno": [
+        "s< 47",
+        "p> 17"
+      ]
+    },
+    "NIV-03": {
+      "deUno": [
+        "s> 36",
+        "p< 43",
+        "s> 3"
+      ]
+    },
+    "NIV-04": {
+      "deUno": [
+        "p> 37",
+        "p>^ 28",
+        "p> 23",
+        "s> 17"
+      ]
+    },
+    "NIV-05": {
+      "deUno": [
+        "s> 21",
+        "p< 30",
+        "p<^ 9",
+        "p< 34",
+        "- 1",
+        "p>^ 18",
+        "p> 21",
+        "s> 21",
+        "p> 5"
+      ]
+    },
+    "NIV-06": {
+      "deUno": [
+        "p> 25",
+        "s> 14",
+        "s>^ 18",
+        "s> 29",
+        "s< 8",
+        "s<^ 18",
+        "s< 34",
+        "p< 36",
+        "s< 5"
       ]
     }
   }

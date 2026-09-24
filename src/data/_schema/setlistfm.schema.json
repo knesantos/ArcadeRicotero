@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ricotaarcade.local/schema/setlistfm/1",
   "title": "CTR-19 pieza 1 — Lo que el sitio cita de setlist.fm",
-  "description": "Citado, no licenciado (RES-73.1): numeros con su pagina y su fecha, y enlaces. Nunca la lista de temas de un recital (D-45 enmendada). Se escribe a mano desde una ficha RES; ningun script lee setlist.fm.",
+  "description": "Citado, no licenciado (RES-73.1): numeros con su pagina y su fecha, y enlaces. Nunca la lista de temas de un recital (D-45 enmendada). Se escribe a mano desde una ficha RES; ningun script lee setlist.fm. Alimenta el corte de US-02 (CTR-19.5) y los tercios de US-07 (CTR-19.15), por D-46.",
   "type": "object",
   "additionalProperties": false,
   "required": ["contrato", "pieza", "contratoVersion", "fuente", "conteo"],
@@ -45,7 +45,7 @@
         "setlistsCargados": { "type": "integer", "minimum": 1 },
         "completo": {
           "type": "boolean",
-          "comment": "false = la pagina publica un top. Un tema que no figura tiene como mucho el conteo de la ultima linea: no es cero."
+          "comment": "true solo si el bloque tiene TODAS las lineas que publica la pagina (CTR-19.3). false = puede faltar alguna (un top, o una cola transcripta con huecos): un tema que no figura tiene como mucho el conteo de la ultima linea, no cero."
         },
         "temas": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/linea" } }
       }
@@ -54,17 +54,22 @@
       "type": "object",
       "additionalProperties": false,
       "required": ["titulo", "veces"],
-      "comment": "Una linea publicada: el titulo tal cual, cuantas veces figura, y a que tema del catalogo resuelve o por que no.",
+      "comment": "Una linea publicada: el titulo tal cual, cuantas veces figura, y una sola de tres: a que tema del catalogo resuelve (slug), de que tema es otra grafia (grafiaDe), o por que no es del catalogo (fuera).",
       "properties": {
         "titulo": { "type": "string", "minLength": 1, "maxLength": 120 },
         "veces": { "type": "integer", "minimum": 1 },
         "slug": { "$ref": "#/$defs/slug" },
+        "grafiaDe": {
+          "$ref": "#/$defs/slug",
+          "comment": "Otra forma de nombrar un tema que ya tiene su linea con slug: cuenta la grafia que mas figura. No suma, no entra a ningun reparto y no sube ningun techo (CTR-19.2)."
+        },
         "fuera": { "$ref": "#/$defs/fuera" },
         "nota": { "type": "string", "minLength": 10, "maxLength": 200 }
       },
       "oneOf": [
-        { "required": ["slug"], "not": { "required": ["fuera"] } },
-        { "required": ["fuera"], "not": { "required": ["slug"] } }
+        { "required": ["slug"], "not": { "anyOf": [{ "required": ["fuera"] }, { "required": ["grafiaDe"] }] } },
+        { "required": ["grafiaDe", "nota"], "not": { "anyOf": [{ "required": ["slug"] }, { "required": ["fuera"] }] } },
+        { "required": ["fuera"], "not": { "anyOf": [{ "required": ["slug"] }, { "required": ["grafiaDe"] }] } }
       ],
       "if": { "required": ["fuera"], "properties": { "fuera": { "const": "sin-identificar" } } },
       "then": { "required": ["nota"] }

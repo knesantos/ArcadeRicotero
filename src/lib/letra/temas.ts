@@ -167,6 +167,14 @@ export const ALIAS: Readonly<Record<string, string>> = {
   // **Sin ficha todavía:** el enlace a la obra lo consultó el hilo principal en `T-279`, no
   // `investigador`. Falta que se fiche (la próxima `RES-` libre) y citarla acá.
   'Nuestro amor juega al esclavo': 'Nuestro amo juega al esclavo',
+  // setlist.fm, conteo completo (`RES-90`, `CTR-19.16`), tres filas más:
+  // - le falta una "s" a "professionisti" (`RES-91`);
+  'Nuotatori profesionisti': 'Nuotatori professionisti',
+  // - trae el subtítulo pegado, con otra puntuación que la fila de arriba que ya lo resolvía;
+  'Es hora de levantarse querido ¿Dormiste bien?': '¡Es hora de levantarse querido!',
+  // - nombra solo la segunda mitad del tema compuesto: la contracara de 'Mariposa Pontiac'
+  //   (`RES-91`, "confirmado sistemático"). En el conteo es otra grafía y no suma (`CTR-19.2`).
+  'Rock del país': 'Mariposa Pontiac - Rock del país',
 };
 
 /** Índice por forma dura, para resolver un título de fuente contra los 105. */

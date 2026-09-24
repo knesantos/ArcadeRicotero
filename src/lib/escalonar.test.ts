@@ -94,10 +94,11 @@ test('barajar no pierde ni duplica un solo item', () => {
 /**
  * 🔴 Un pozo de un solo nivel, y por qué este test existe.
  *
- * `US-07` deriva su dificultad de las escuchas (`D-27`) y las vistas de YouTube no tienen
- * una sola medición: su pozo cae entero en `dificil`. Con un solo nivel, escalonar y
- * barajar dan lo mismo — y eso está bien mientras **se pueda decir**. (`US-02` salió de
- * ese estado en el ciclo 16: ver el test de abajo de todo.)
+ * `US-07` derivaba su dificultad de las vistas de YouTube (`D-27`), que no tuvieron una sola
+ * medición: su pozo caía entero en `dificil`. Con un solo nivel, escalonar y barajar dan lo
+ * mismo — y eso está bien mientras **se pueda decir**. Los dos juegos salieron de ese estado
+ * en el ciclo 16 (`US-02` con `D-45`, `US-07` con `D-46`: ver `por-la-letra/banco.test.ts`),
+ * y el caso queda como la degradación declarada si el conteo en vivo faltara.
  *
  * Si mañana alguien lee "ronda escalonada" y cree que el juego escalona, este test es el
  * que lo desmiente.

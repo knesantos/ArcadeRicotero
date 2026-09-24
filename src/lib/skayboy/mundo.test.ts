@@ -18,10 +18,12 @@ import { problemasDelBanco, type Banco, type CompuertaDelNivel, type IdPersonaje
 import {
   ALCANCE_ALTO_TILES,
   ALCANCE_HUECO_TILES,
+  CAIDA_MAXIMA,
   CUERPO_ALTO,
   CUERPO_ANCHO,
   CUADRO_SEG,
   FASE_SEG,
+  GRAVEDAD,
   PASO_MAXIMO_SEG,
   QUIETO,
   SUBPASO_SEG,
@@ -815,6 +817,119 @@ test('🔴 la palanca queda para el lado que la cruzaste caminando: vuelve a rep
   assert.deepEqual(compuertasDe(sucesos), []);
 });
 
+test('🔴 la palanca: un salto que despega pegado al centro la cruza en el aire, y no la mueve', () => {
+  // La prueba de arriba salta de lejos: los pies dejan la fila de la palanca antes del centro, y
+  // la fila sola ya la protege. Esta despega a menos de un paso del centro y lo cruza en el primer
+  // subpaso del salto, con los pies todavía en la fila: lo único que la cuida es pedir suelo.
+  const { banco, nivel } = salaCon(PALANCA, [{ id: 'MEC-01', en: [7, 7], abre: ['COM-01'] }], [{ id: 'COM-01', en: [12, 5] }]);
+  const mundo = crearMundo(banco, nivel);
+  const s = mundo.cuerpos.skayboy;
+  const centro = 7 * TILE + TILE / 2;
+  const unPaso = VELOCIDAD * SUBPASO_SEG;
+  for (let i = 0; i < 400 && medio(s) + unPaso < centro; i++) paso(mundo, mandos({ skayboy: { derecha: true } }), SUBPASO_SEG);
+  assert.ok(medio(s) < centro && medio(s) + unPaso >= centro, 'control: a menos de un paso del centro');
+  const sucesos = [...paso(mundo, mandos({ skayboy: { derecha: true, saltar: true } }), SUBPASO_SEG)];
+  assert.ok(medio(s) >= centro && !s.enSuelo, 'control: lo cruzó en el subpaso en que despegó');
+  assert.equal(Math.floor((s.y + CUERPO_ALTO - 1) / TILE), 7, 'control: con los pies todavía en la fila de la palanca');
+  sucesos.push(...hasta(mundo, mandos({ skayboy: { derecha: true } }), () => s.enSuelo));
+  assert.equal(mundo.palancas[0].activa, false, 'cruzada en el aire, sigue en reposo');
+  assert.deepEqual(compuertasDe(sucesos), []);
+});
+
+/** La palanca en el piso, debajo de una cornisa por la que se camina: la cornisa cruza su columna. */
+const PALANCA_BAJO_UNA_CORNISA = [
+  '###############',
+  '#.............#',
+  '#.............#',
+  '#.............#',
+  '#....1......#.#',
+  '#...######..|.#',
+  '#...........|.#',
+  '#A....../..2|B#',
+  '###############',
+];
+
+test('🔴 la palanca: caminar por arriba de su columna en otra fila no la mueve; hay que cruzarla con los pies en su fila', () => {
+  const { banco, nivel } = salaCon(PALANCA_BAJO_UNA_CORNISA, [{ id: 'MEC-01', en: [8, 7], abre: ['COM-01'] }], [{ id: 'COM-01', en: [12, 5] }]);
+  const mundo = crearMundo(banco, nivel);
+  const s = mundo.cuerpos.skayboy;
+  const centro = 8 * TILE + TILE / 2;
+  let sucesos: Suceso[] = [];
+  for (let i = 0; i < 200 && medio(s) < centro + 10; i++) sucesos.push(...paso(mundo, mandos({ skayboy: { derecha: true } }), CUADRO));
+  assert.ok(s.enSuelo && s.y + CUERPO_ALTO === 5 * TILE, 'control: cruzó la columna de la palanca caminando por la cornisa');
+  assert.equal(mundo.palancas[0].activa, false, 'desde la cornisa, la palanca no se enteró');
+  assert.deepEqual(compuertasDe(sucesos), []);
+  // Control: baja de la cornisa y la cruza en el piso, primero hacia la izquierda y después hacia la derecha.
+  hasta(mundo, mandos({ skayboy: { derecha: true } }), () => s.enSuelo && s.y + CUERPO_ALTO === 8 * TILE);
+  hasta(mundo, mandos({ skayboy: { izquierda: true } }), () => medio(s) < centro - 10);
+  sucesos = [];
+  for (let i = 0; i < 200 && medio(s) < centro + 10; i++) sucesos.push(...paso(mundo, mandos({ skayboy: { derecha: true } }), CUADRO));
+  assert.equal(mundo.palancas[0].activa, true, 'control: en el piso, la cruzó y quedó activa');
+  assert.deepEqual(compuertasDe(sucesos), [{ tipo: 'compuerta', id: 'COM-01', abierta: true, por: 'skayboy' }]);
+});
+
+test('🔴 la palanca: dos cruces opuestos en el mismo subpaso se anulan, para cualquier lado que esté (regla 4)', () => {
+  const { banco, nivel } = salaCon(PALANCA, [{ id: 'MEC-01', en: [7, 7], abre: ['COM-01'] }], [{ id: 'COM-01', en: [12, 5] }]);
+  const centro = 7 * TILE + TILE / 2;
+  const izquierda = centro - 0.3 - CUERPO_ANCHO / 2;
+  const derecha = centro + 0.3 - CUERPO_ANCHO / 2;
+  /** Un subpaso con los dos puestos a mano pegados al centro, y de qué lado quedó la palanca. */
+  const cruzan = (activa: boolean, quienes: readonly (readonly [IdPersonaje, 'izquierda' | 'derecha'])[]): { activa: boolean; sucesos: Suceso[] } => {
+    const mundo = crearMundo(banco, nivel);
+    const sucesos: Suceso[] = [];
+    if (activa) {
+      // A mano, cruzándola hacia la derecha: un subpaso y queda activa, con la compuerta abierta.
+      ponerEn(mundo.cuerpos.skayboy, izquierda);
+      paso(mundo, mandos({ skayboy: { derecha: true } }), SUBPASO_SEG);
+      assert.deepEqual([mundo.palancas[0].activa, mundo.compuertas[0].abierta], [true, true], 'control: activa');
+    }
+    for (const [id, hacia] of quienes) ponerEn(mundo.cuerpos[id], hacia === 'derecha' ? izquierda : derecha);
+    sucesos.push(...paso(mundo, mandos(Object.fromEntries(quienes.map(([id, hacia]) => [id, { [hacia]: true }]))), SUBPASO_SEG));
+    for (const [id, hacia] of quienes) {
+      const lado = medio(mundo.cuerpos[id]) < centro ? 'izquierda' : 'derecha';
+      assert.equal(lado, hacia, `control: ${id} la cruzó hacia la ${hacia} en ese subpaso`);
+    }
+    return { activa: mundo.palancas[0].activa, sucesos };
+  };
+  // Activa: Skayboy la cruza hacia la derecha y Poligirl hacia la izquierda. Y en reposo, al revés.
+  for (const [activa, quienes] of [
+    [true, [['skayboy', 'derecha'], ['poligirl', 'izquierda']]],
+    [false, [['skayboy', 'izquierda'], ['poligirl', 'derecha']]],
+  ] as const) {
+    const r = cruzan(activa, quienes);
+    assert.equal(r.activa, activa, `${activa ? 'activa' : 'en reposo'}, cruzada para los dos lados a la vez: quedó como estaba`);
+    assert.deepEqual(compuertasDe(r.sucesos), []);
+    // Control: el que la cruza hacia el lado contrario, solo, sí la cambia.
+    const [solo] = quienes.filter(([, hacia]) => (hacia === 'derecha') !== activa);
+    assert.equal(cruzan(activa, [solo]).activa, !activa, `control: ${solo[0]} solo la cambia`);
+  }
+});
+
+/** Una palanca entre la entrada de Skayboy y un molinete de los dos. */
+const PALANCA_Y_MOLINETE = [
+  '###############',
+  '#.............#',
+  '#.............#',
+  '#.............#',
+  '#...........#.#',
+  '#...........|.#',
+  '#...........|.#',
+  '#A1..../..X2|B#',
+  '###############',
+];
+
+test('🔴 la palanca: volver a la entrada no la cruza, aunque la entrada esté del otro lado', () => {
+  const { banco, nivel } = salaCon(PALANCA_Y_MOLINETE, [{ id: 'MEC-01', en: [7, 7], abre: ['COM-01'] }], [{ id: 'COM-01', en: [12, 5] }]);
+  const mundo = crearMundo(banco, nivel);
+  const s = mundo.cuerpos.skayboy;
+  const centro = 7 * TILE + TILE / 2;
+  const sucesos = hasta(mundo, mandos({ skayboy: { derecha: true } }), (x) => x.some((y) => y.tipo === 'vuelta'));
+  assert.ok(medio(s) < centro, 'control: volvió a la entrada, del lado izquierdo de la palanca');
+  assert.equal(mundo.palancas[0].activa, true, 'la cruzó caminando hacia la derecha, y la vuelta no la devolvió a reposo');
+  assert.deepEqual(compuertasDe(sucesos), []);
+  assert.equal(mundo.compuertas[0].abierta, true);
+});
+
 /** La caja en la columna 5, con la 6 libre. */
 const CAJA_LIBRE = [
   '###############',
@@ -962,7 +1077,21 @@ test('la caja cae con la misma gravedad, apoya alineada, y tapa el molinete: el 
   const k = mundo.cajas[0];
   hasta(mundo, mandos({ skayboy: { derecha: true } }), () => k.estado !== 'quieta');
   assert.deepEqual([k.columna, k.fila], [5, 8], 'va a caer al fondo del pozo, arriba del molinete');
-  hasta(mundo, mandos(), () => k.estado === 'quieta');
+  // Subpaso por subpaso, hasta que termina el tramo y arranca la caída.
+  for (let i = 0; i < 200 && k.estado === 'tramo'; i++) paso(mundo, mandos(), SUBPASO_SEG);
+  assert.deepEqual([k.estado, k.y, k.vy], ['cae', 7 * TILE, 0], 'control: cae desde el reposo');
+  // La misma cuenta que hace un cuerpo en `moverCuerpo`: sumar GRAVEDAD, topear en CAIDA_MAXIMA, mover.
+  let y = k.y;
+  let vy = 0;
+  let subpasos = 0;
+  while (k.estado === 'cae') {
+    paso(mundo, mandos(), SUBPASO_SEG);
+    vy = Math.min(vy + GRAVEDAD * SUBPASO_SEG, CAIDA_MAXIMA);
+    y = Math.min(y + vy * SUBPASO_SEG, 8 * TILE);
+    assert.ok(Math.abs(k.y - y) < 1e-9, `subpaso ${subpasos}: la caja está en y=${k.y} y con la gravedad de los cuerpos estaría en ${y}`);
+    assert.ok(++subpasos < 200, 'la caja no terminó de caer');
+  }
+  assert.ok(subpasos > 10, `control: la caída se midió en ${subpasos} subpasos, no de un salto`);
   assert.deepEqual([k.x, k.y], [5 * TILE, 8 * TILE], 'apoyada, alineada al tile');
   const cruza = correr(mundo, mandos({ poligirl: { izquierda: true } }), 2);
   assert.ok(!cruza.some((x) => x.tipo === 'vuelta'), 'con la caja en el pozo, nadie vuelve a la entrada');
@@ -1013,8 +1142,12 @@ const CORNISA_CON_CAJA = (entradaDePoligirl: number): string[] => [
 ];
 
 test('🔴 M5: la caja no cae sobre nadie: con alguien en la columna por la que caería, el empujón no arranca', () => {
-  const { banco, nivel } = salaCon(CORNISA_CON_CAJA(4));
+  // Poligirl entra lejos (columna 6) y se la pone a mano en la columna 4, en el piso. Con su
+  // entrada en la columna 4 la prueba no probaba esta regla: la caja no entra en la celda de
+  // arriba de una entrada, y el empujón no arrancaba por eso, con o sin nadie abajo.
+  const { banco, nivel } = salaCon(CORNISA_CON_CAJA(6));
   const mundo = crearMundo(banco, nivel);
+  ponerEn(mundo.cuerpos.poligirl, 4 * TILE + 3);
   const k = foto(mundo.cajas[0]);
   const p = { x: mundo.cuerpos.poligirl.x, y: mundo.cuerpos.poligirl.y };
   correr(mundo, mandos({ skayboy: { derecha: true } }), 2);
@@ -1059,6 +1192,314 @@ test('🔴 M5: en la carrera, la caja frena contra el cuerpo y espera; en ningú
   // Poligirl sale, y la caja sigue: termina de caer y apoya en el piso.
   for (let i = 0; i < 200 && k.estado !== 'quieta'; i++) cuadro(mandos({ poligirl: { derecha: true } }));
   assert.deepEqual([k.x, k.y, k.estado], [4 * TILE, 7 * TILE, 'quieta']);
+});
+
+/*
+ * ## Las reglas de la caja que el plan no numeró, cada una con su rojo (`CTR-16.10.5`)
+ *
+ * Las pidió la verificación de `T-272`: son reglas del contrato que `T-277` y `T-278` van a usar,
+ * y una regresión en cualquiera pasaba `npm test` en verde. Cada una se vio en rojo rompiendo la
+ * línea de `mundo.ts` que la sostiene.
+ */
+
+/** Si una caja quieta está apoyada: sólido, compuerta cerrada, otra caja quieta o el borde, abajo. */
+function apoyada(m: Mundo, k: Caja): boolean {
+  if (k.y !== k.fila * TILE || k.x !== k.columna * TILE) return false;
+  const abajo = m.nivel.grilla[k.fila + 1]?.[k.columna];
+  if (abajo === undefined || abajo === '#') return true;
+  const compuerta = m.compuertas.find((g) => g.columna === k.columna && g.desdeFila <= k.fila + 1 && k.fila + 1 <= g.hastaFila);
+  if (compuerta !== undefined && !compuerta.abierta) return true;
+  return m.cajas.some((o) => o !== k && o.estado === 'quieta' && o.columna === k.columna && o.fila === k.fila + 1);
+}
+
+/** Si dos cajas se meten una en la otra. Apoyarse no es meterse. */
+function cajasSeMeten(m: Mundo): boolean {
+  const eps = 1e-6;
+  return m.cajas.some((a, i) =>
+    m.cajas.some((b, j) => j > i && a.x < b.x + TILE - eps && b.x < a.x + TILE - eps && a.y < b.y + TILE - eps && b.y < a.y + TILE - eps),
+  );
+}
+
+/** Una cornisa con una caja en el borde; abajo, otra caja en la columna 4, por donde cae la primera. */
+const CAJA_SOBRE_CAJA = [
+  '###############',
+  '#.............#',
+  '#.............#',
+  '#.............#',
+  '#.............#',
+  '#1.n..........#',
+  '####..........#',
+  '#...n..2...AB.#',
+  '###############',
+];
+
+test('🔴 la caja que va a apoyar en otra le reserva el apoyo: la de abajo no se empuja, y ninguna queda quieta en el aire', () => {
+  const { banco, nivel } = salaCon(CAJA_SOBRE_CAJA);
+  // Dos personas: Skayboy empuja la de la cornisa, y Poligirl, mientras esa todavía anda, empuja
+  // la de abajo hacia la izquierda. La de arriba ya decidió que apoya en ella.
+  const mundo = crearMundo(banco, nivel);
+  const [arriba, abajo] = mundo.cajas;
+  const p = mundo.cuerpos.poligirl;
+  let contraLaDeAbajo = 0;
+  for (let i = 0; i < 300; i++) {
+    paso(mundo, mandos({ skayboy: { derecha: arriba.estado === 'quieta' && i < 60 }, poligirl: { izquierda: true } }), CUADRO);
+    if (arriba.estado !== 'quieta' && p.x === abajo.x + TILE) contraLaDeAbajo++;
+    for (const k of mundo.cajas) {
+      if (k.estado === 'quieta') assert.ok(apoyada(mundo, k), `cuadro ${i}: una caja quieta en (${k.columna}, ${k.fila}) sin nada abajo`);
+    }
+  }
+  assert.ok(contraLaDeAbajo > 0, 'control: Poligirl empujaba la de abajo mientras la de arriba andaba');
+  assert.deepEqual([arriba.x, arriba.y, arriba.estado], [4 * TILE, 6 * TILE, 'quieta'], 'la de arriba apoyó en la de abajo');
+  assert.deepEqual([abajo.x, abajo.y, abajo.estado], [4 * TILE, 7 * TILE, 'quieta'], 'y la de abajo no se movió');
+
+  // Lo mismo con los dos empujones en el mismo subpaso, a mano: la de abajo tampoco arranca.
+  const juntos = crearMundo(banco, nivel);
+  ponerEn(juntos.cuerpos.skayboy, 3 * TILE - CUERPO_ANCHO - 0.5, 6 * TILE - CUERPO_ALTO);
+  ponerEn(juntos.cuerpos.poligirl, 5 * TILE + 0.5);
+  paso(juntos, mandos({ skayboy: { derecha: true }, poligirl: { izquierda: true } }), SUBPASO_SEG);
+  assert.deepEqual([juntos.cajas[0].estado, juntos.cajas[0].fila], ['tramo', 6], 'control: la de arriba arrancó, y apoya en la de abajo');
+  assert.deepEqual(foto(juntos.cajas[1]), foto(mundo.cajas[1]), 'la de abajo, empujada en el mismo subpaso, no arrancó');
+  hasta(juntos, mandos({ poligirl: { izquierda: true } }), () => juntos.cajas[0].estado === 'quieta');
+  assert.ok(juntos.cajas.every((k) => apoyada(juntos, k)), 'las dos quietas, cada una apoyada');
+
+  // Control: sin la de arriba andando, Poligirl sí la empuja.
+  const sola = crearMundo(banco, nivel);
+  hasta(sola, mandos({ poligirl: { izquierda: true } }), () => sola.cajas[1].estado !== 'quieta');
+  assert.equal(sola.cajas[1].columna, 3);
+});
+
+/** La caja de la cornisa cae por la columna 4; abajo, otra caja en la 5 que se puede empujar hacia ahí. */
+const DOS_CAJAS_A_LA_COLUMNA_4 = [
+  '###############',
+  '#.............#',
+  '#.............#',
+  '#.............#',
+  '#.............#',
+  '#1.n..........#',
+  '####..........#',
+  '#....n2.....AB#',
+  '###############',
+];
+
+test('🔴 una caja que anda tiene su camino reservado, y dos cajas que piden el mismo lugar a la vez no arrancan', () => {
+  const { banco, nivel } = salaCon(DOS_CAJAS_A_LA_COLUMNA_4);
+  // La reserva: la de la cornisa arranca y va a caer hasta el piso de la columna 4. Mientras anda,
+  // Poligirl empuja la otra hacia esa columna, adonde la primera todavía no llegó.
+  const mundo = crearMundo(banco, nivel);
+  const [cornisa, piso] = mundo.cajas;
+  hasta(mundo, mandos({ skayboy: { derecha: true } }), () => cornisa.estado !== 'quieta');
+  assert.equal(cornisa.fila, 7, 'control: la de la cornisa va a apoyar en el piso');
+  const quieta = foto(piso);
+  let contra = 0;
+  for (let i = 0; i < 200; i++) {
+    const andaba = cornisa.estado !== 'quieta';
+    paso(mundo, mandos({ poligirl: { izquierda: true } }), CUADRO);
+    if (andaba && mundo.cuerpos.poligirl.x === piso.x + TILE) contra++;
+    assert.ok(!cajasSeMeten(mundo), `cuadro ${i}: dos cajas se metieron una en la otra`);
+  }
+  assert.ok(contra > 0, 'control: Poligirl empujaba mientras la otra andaba');
+  assert.deepEqual(foto(piso), quieta, 'la del piso no entró en el camino reservado');
+  assert.deepEqual([cornisa.x, cornisa.y, cornisa.estado], [4 * TILE, 7 * TILE, 'quieta'], 'y la de la cornisa llegó a su lugar');
+
+  // Las dos al mismo lugar en el mismo subpaso, a mano: no arranca ninguna. La lista no decide.
+  const juntos = crearMundo(banco, nivel);
+  const antes = juntos.cajas.map(foto);
+  ponerEn(juntos.cuerpos.skayboy, 3 * TILE - CUERPO_ANCHO - 0.5, 6 * TILE - CUERPO_ALTO);
+  ponerEn(juntos.cuerpos.poligirl, 6 * TILE + 0.5);
+  correr(juntos, mandos({ skayboy: { derecha: true }, poligirl: { izquierda: true } }), 1);
+  assert.deepEqual(juntos.cajas.map(foto), antes, 'empujadas a la vez hacia la misma celda, las dos se quedaron');
+  assert.equal(juntos.cuerpos.skayboy.x, 3 * TILE - CUERPO_ANCHO, 'control: Skayboy empujaba');
+  assert.equal(juntos.cuerpos.poligirl.x, 6 * TILE, 'control: Poligirl empujaba');
+
+  // Control: cualquiera de las dos sola, con la misma mano, arranca.
+  for (const [quien, mando] of [['skayboy', { derecha: true }], ['poligirl', { izquierda: true }]] as const) {
+    const solo = crearMundo(banco, nivel);
+    ponerEn(solo.cuerpos.skayboy, 3 * TILE - CUERPO_ANCHO - 0.5, 6 * TILE - CUERPO_ALTO);
+    ponerEn(solo.cuerpos.poligirl, 6 * TILE + 0.5);
+    paso(solo, mandos({ [quien]: mando }), CUADRO);
+    assert.ok(solo.cajas.some((k) => k.estado !== 'quieta'), `control: empujando ${quien} sola, arranca`);
+  }
+});
+
+/**
+ * Una sala con piezas donde **la grilla dice todo**: cada palanca o placa abre la única compuerta,
+ * que está en la columna 12. Para las salas de la tabla de abajo, que cambian una celda por caso.
+ */
+function salaDeGrilla(grilla: string[]): { banco: Banco; nivel: Nivel } {
+  const mecanismos: MecanismoDelNivel[] = [];
+  grilla.forEach((r, fila) =>
+    [...r].forEach((ch, columna) => {
+      if (ch === '/' || ch === '=') mecanismos.push({ id: `MEC-0${mecanismos.length + 1}`, en: [columna, fila], abre: ['COM-01'] });
+    }),
+  );
+  const compuertas: CompuertaDelNivel[] = grilla.some((r) => r.includes('|')) ? [{ id: 'COM-01', en: [12, 5] }] : [];
+  return salaCon(grilla, mecanismos, compuertas);
+}
+
+/** La caja en el piso, en la columna 5; lo que se prueba va en la 6. La compuerta es de relleno. */
+const EN_EL_PISO = (fila7: string): string[] => [
+  '###############',
+  '#.............#',
+  '#.............#',
+  '#.............#',
+  '#...........#.#',
+  '#...........|.#',
+  '#...........|.#',
+  fila7,
+  '###############',
+];
+/** La caja en un escalón de sólido, en (5, 6): lo que se prueba va abajo de la celda (6, 6). */
+const EN_UN_ESCALON = (fila7: string): string[] => [
+  '###############',
+  '#.............#',
+  '#.............#',
+  '#.............#',
+  '#.............#',
+  '#.............#',
+  '#....n........#',
+  fila7,
+  '###############',
+];
+
+/**
+ * La tabla de `CTR-16.10.5`, la columna de "no entra", menos lo que ya prueba `M2` (sólido,
+ * compuerta cerrada, otra caja). Cada caso trae su control: la misma sala con aire ahí.
+ *
+ * **Los dos casos de "la celda de arriba" no tienen rojo propio, y no es un descuido.** Una caja
+ * no puede quedar quieta arriba de una entrada o de una puerta, porque ninguna de las dos es
+ * apoyo: para ocupar esa celda tendría que caer a través de ella, y la de abajo ya la rechaza.
+ * Borrar esa línea de `cajaEntra` deja el mundo igual; los casos quedan para que la tabla del
+ * contrato esté entera, y se ponen en rojo si alguna vez una entrada o una puerta pasa a frenar.
+ */
+const DONDE_NO_ENTRA: readonly [string, string[], string[]][] = [
+  ['una palanca', EN_EL_PISO('#A1..n/...=2|B#'), EN_EL_PISO('#A1..n..../2|B#')],
+  ['un tesoro', EN_EL_PISO('#A1..no...=2|B#'), EN_EL_PISO('#A1..n..o.=2|B#')],
+  ['una entrada', EN_EL_PISO('#A1..n2...=.|B#'), EN_EL_PISO('#A1..n....=2|B#')],
+  ['una puerta', EN_EL_PISO('#.1..nA...=2|B#'), EN_EL_PISO('#A1..n....=2|B#')],
+  ['la celda de arriba de una entrada', EN_UN_ESCALON('#A1.##2......B#'), EN_UN_ESCALON('#A1.##.....2.B#')],
+  ['la celda de arriba de una puerta', EN_UN_ESCALON('#.1.##A.....2B#'), EN_UN_ESCALON('#A1.##.....2.B#')],
+];
+
+test('🔴 la caja no entra en palanca, tesoro, entrada ni puerta, ni en la celda de arriba de una entrada o una puerta', () => {
+  for (const [nombre, grilla, control] of DONDE_NO_ENTRA) {
+    const empujar = (g: string[]): Mundo => {
+      const { banco, nivel } = salaDeGrilla(g);
+      const mundo = crearMundo(banco, nivel);
+      const k = mundo.cajas[0];
+      // A mano: Poligirl lejos, para que lo único que haya en la celda sea la celda; y Skayboy, en
+      // la sala del escalón, parado en el sólido de al lado, con los pies a la altura de la base.
+      ponerEn(mundo.cuerpos.poligirl, 9 * TILE + 3);
+      if (k.fila === 6) ponerEn(mundo.cuerpos.skayboy, 5 * TILE - CUERPO_ANCHO - 3, 7 * TILE - CUERPO_ALTO);
+      correr(mundo, mandos({ skayboy: { derecha: true } }), 1);
+      return mundo;
+    };
+    const mundo = empujar(grilla);
+    const k = mundo.cajas[0];
+    assert.deepEqual([k.x, k.y, k.estado], [5 * TILE, k.fila * TILE, 'quieta'], `contra ${nombre}, la caja se movió`);
+    assert.equal(mundo.cuerpos.skayboy.x, 5 * TILE - CUERPO_ANCHO, `contra ${nombre}: control, Skayboy llegó a empujarla`);
+    assert.ok(empujar(control).cajas[0].x > 5 * TILE, `${nombre}, control: con aire en esa celda, la caja anda`);
+  }
+});
+
+test('🔴 en la carrera de costado, la caja frena contra el cuerpo y espera; no lo mueve ni se le mete adentro', () => {
+  const { banco, nivel } = salaCon(CAJA_LIBRE);
+  const mundo = crearMundo(banco, nivel);
+  const k = mundo.cajas[0];
+  const p = mundo.cuerpos.poligirl;
+  // A mano: Poligirl en la columna 7, fuera del camino de la caja cuando el empujón arranca.
+  ponerEn(p, 7 * TILE + 2);
+  const cuadro = (m: Mandos): void => {
+    paso(mundo, m, CUADRO);
+    for (const id of ['skayboy', 'poligirl'] as const) assert.ok(!seMeten(k, mundo.cuerpos[id]), `la caja se le metió adentro a ${id}`);
+  };
+  for (let i = 0; i < 200 && k.estado === 'quieta'; i++) cuadro(mandos({ skayboy: { derecha: true } }));
+  assert.equal(k.columna, 6, 'control: el empujón arrancó hacia la columna 6');
+  // Poligirl da un paso hacia la izquierda, adentro de la celda a la que va la caja, y se queda.
+  for (let i = 0; i < 20 && p.x >= 7 * TILE; i++) cuadro(mandos({ poligirl: { izquierda: true } }));
+  assert.ok(p.x < 7 * TILE && k.x + TILE <= p.x, 'control: Poligirl está en la celda de destino, delante de la caja');
+  const ella = { x: p.x, y: p.y };
+  let espero = false;
+  for (let i = 0; i < 60; i++) {
+    cuadro(mandos());
+    if (k.espera !== null) {
+      espero = true;
+      assert.deepEqual(k.espera, { quien: 'poligirl', donde: 'contra' });
+    }
+  }
+  assert.ok(espero, 'la caja tenía que esperar contra Poligirl');
+  assert.deepEqual([k.x + TILE, k.estado], [p.x, 'tramo'], 'frenó apoyada en su costado, sin terminar el tramo');
+  assert.deepEqual({ x: p.x, y: p.y }, ella, 'y a ella no la movió');
+  // Poligirl se va, y la caja termina su tramo.
+  for (let i = 0; i < 200 && k.estado !== 'quieta'; i++) cuadro(mandos({ poligirl: { derecha: true } }));
+  assert.deepEqual([k.x, k.y, k.estado], [6 * TILE, 7 * TILE, 'quieta']);
+});
+
+test('🔴 con alguien encima, la caja que anda se detiene: no le mueve el piso (regla 2)', () => {
+  const { banco, nivel } = salaCon(CAJA_LIBRE);
+  const mundo = crearMundo(banco, nivel);
+  const k = mundo.cajas[0];
+  const p = mundo.cuerpos.poligirl;
+  hasta(mundo, mandos({ skayboy: { derecha: true } }), () => k.estado === 'tramo');
+  paso(mundo, mandos(), CUADRO);
+  assert.ok(k.x > 5 * TILE && k.x < 6 * TILE, 'control: a mitad del tramo');
+  // A mano: Poligirl parada arriba de la caja, a mitad del tramo.
+  ponerEn(p, k.x + 3, k.y - CUERPO_ALTO);
+  const donde = { caja: k.x, x: p.x, y: p.y };
+  const sucesos = correr(mundo, mandos(), 1);
+  assert.deepEqual(k.espera, { quien: 'poligirl', donde: 'debajo' });
+  assert.deepEqual({ caja: k.x, x: p.x, y: p.y }, donde, 'con ella encima, la caja no anduvo ni la llevó');
+  assert.ok(p.enSuelo && !sucesos.some((x) => x.tipo === 'vuelta'), 'y ella sigue parada, sin volver a ningún lado');
+  // Se baja hacia atrás, y la caja termina su tramo.
+  for (let i = 0; i < 200 && k.estado !== 'quieta'; i++) paso(mundo, mandos({ poligirl: { izquierda: true } }), CUADRO);
+  assert.deepEqual([k.x, k.y, k.estado], [6 * TILE, 7 * TILE, 'quieta']);
+});
+
+/** La caja al lado de una placa que manda la compuerta de la columna 12. */
+const CAJA_A_LA_PLACA = EN_EL_PISO('#A1..n=...2.|B#');
+
+test('🔴 la caja que empujan los dos no es de ninguno, y lo que abre en la placa tampoco (CTR-16.10.7)', () => {
+  const { banco, nivel } = salaDeGrilla(CAJA_A_LA_PLACA);
+  const pegado = 5 * TILE - CUERPO_ANCHO - 0.5;
+  const empujon = (quienes: readonly IdPersonaje[]): { mundo: Mundo; sucesos: Suceso[] } => {
+    const mundo = crearMundo(banco, nivel);
+    // A mano: los que empujan, pegados a la caja, en el mismo lugar; se atraviesan (M3).
+    for (const id of quienes) ponerEn(mundo.cuerpos[id], pegado);
+    const m = mandos(Object.fromEntries(quienes.map((id) => [id, { derecha: true }])));
+    const sucesos = [...paso(mundo, m, SUBPASO_SEG)];
+    assert.equal(mundo.cajas[0].estado, 'tramo', `control: ${quienes.join(' y ')} la empujaron en el primer subpaso`);
+    sucesos.push(...hasta(mundo, mandos(), () => mundo.cajas[0].estado === 'quieta'));
+    sucesos.push(...correr(mundo, mandos(), 0.2));
+    return { mundo, sucesos };
+  };
+  const dos = empujon(['skayboy', 'poligirl']);
+  assert.equal(dos.mundo.cajas[0].empujadaPor, null, 'empujada por los dos a la vez, no es de ninguno');
+  assert.deepEqual(compuertasDe(dos.sucesos), [{ tipo: 'compuerta', id: 'COM-01', abierta: true, por: null }]);
+  // Control: de a uno, es del que empujó, y la apertura también.
+  for (const quien of ['skayboy', 'poligirl'] as const) {
+    const uno = empujon([quien]);
+    assert.equal(uno.mundo.cajas[0].empujadaPor, quien);
+    assert.deepEqual(compuertasDe(uno.sucesos), [{ tipo: 'compuerta', id: 'COM-01', abierta: true, por: quien }]);
+  }
+});
+
+test('🔴 una caja que anda no pisa la placa: la pisa en el subpaso en que queda quieta, y ni uno antes', () => {
+  const { banco, nivel } = salaDeGrilla(CAJA_A_LA_PLACA);
+  const mundo = crearMundo(banco, nivel);
+  const k = mundo.cajas[0];
+  hasta(mundo, mandos({ skayboy: { derecha: true } }), () => k.estado === 'tramo');
+  assert.equal(mundo.placas[0].pisada, false, 'control: arrancó hacia la placa, y todavía no la pisa');
+  // Una función y no la comparación suelta: `paso()` cambia la caja, y TypeScript no lo sabe.
+  const anda = (): boolean => k.estado !== 'quieta';
+  let abre: Suceso[] = [];
+  for (let i = 0; i < 200 && anda(); i++) {
+    abre = compuertasDe(paso(mundo, mandos(), SUBPASO_SEG));
+    if (anda()) {
+      assert.equal(mundo.placas[0].pisada, false, `subpaso ${i}: la caja anda (x=${k.x}) y ya pisaba la placa`);
+      assert.deepEqual(abre, []);
+    }
+  }
+  assert.deepEqual([k.x, k.estado, mundo.placas[0].pisada], [6 * TILE, 'quieta', true], 'quieta en la placa, y pisada en ese subpaso');
+  assert.deepEqual(abre, [{ tipo: 'compuerta', id: 'COM-01', abierta: true, por: 'skayboy' }], 'la compuerta se abrió en el mismo subpaso');
 });
 
 /** El ejemplo de `CTR-16.10.1`: las cuatro piezas, y es la sala de `M6`. */

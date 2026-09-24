@@ -40,8 +40,7 @@ import { FICHAS } from '../cancionero/banco.ts';
 import { slugDeTitulo } from '../texto.ts';
 import type { TemaBuscable } from './buscador.ts';
 import { DURACION_FRAGMENTO_SEG } from './escalera.ts';
-import type { NivelDificultad } from '../popularidad.ts';
-import { repartirEnVivo, type ConteoCitado } from '../en-vivo.ts';
+import { repartirEnVivo, type ConteoCitado, type NivelDificultad } from '../en-vivo.ts';
 
 export class CatalogoInvalido extends Error {}
 
