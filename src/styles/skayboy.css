@@ -196,6 +196,39 @@
   image-rendering: pixelated;
 }
 
+/* ---- Seguir, una vez ganado (`UX-32 §5`) ----
+
+   Un boton del tamano del area, encima del canvas: tocar el area ganada es tocar este boton.
+   No se ve nada de el —ni tinta, ni borde, ni texto: adentro del area no hay texto
+   (`UX-27 §5.1`) y lo que dice que se gano es la puerta abierta, no un cartel—. Lo unico que
+   dibuja es el foco del teclado, afuera del area, sobre el bisel: la misma tinta de las
+   teclas sobre `--fondo`, que es par testeado. Sin resaltado de toque del navegador, que
+   seria un destello gris sobre el area ganada y `UX-32 §2.3` no deja que nada se mueva.
+
+   `[hidden]` va escrito porque la regla de autor le gana a la hoja del navegador: el dia que
+   alguien le ponga un `display` a este boton, sin esta linea se podria tocar sin haber
+   ganado (el mismo defecto que ya tuvieron `.buscador`, `.sugerencias` y `.chips`). */
+.juego-skayboy .seguir-juego {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.juego-skayboy .seguir-juego[hidden] {
+  display: none;
+}
+
+.juego-skayboy .seguir-juego:focus-visible {
+  outline: var(--bisel) solid var(--disco-gulp-tinta);
+  outline-offset: 0;
+}
+
 /* El rotulo estatico de `ADR-08.2`, que dice que ahi va a haber un juego y no promete
    nada. Registro 3: seco, en la rotulada, sin adorno. Tinta apagada sobre `--fondo`, que
    es par testeado. **Vive en el encabezado, afuera del area** (`UX-27 §5.1`: adentro no

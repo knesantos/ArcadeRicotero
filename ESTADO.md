@@ -7,6 +7,36 @@
 
 **Última actualización:** 2026-09-24
 
+> ## 📱 EL USUARIO JUGÓ EN SU TELÉFONO: `D-47` Y LA RÁFAGA 5 (2026-09-24, tarde)
+>
+> **PR abierto: https://github.com/knesantos/ArcadeRicotero/pull/17** (rama
+> `ciclo-16/el-fichin-se-prueba-solo`). La vista previa de Vercel siembra los borradores
+> (`nivelesASembrar`, `7417923`) y está detrás del login de Vercel.
+>
+> **Lo que dijo después de jugar el nivel 1:** los controles se sienten bien; **el scroll
+> horizontal rompe los controles**; quiere pantalla completa con los controles medio
+> transparentes encima, los seis niveles en fila, una victoria donde los dos bailen, y
+> guitarras para Skay y cigarrillos para Poli. Todo en **`D-47`**, que enmienda la
+> prohibición de festejo de `BR-23`: **cada uno baila su propio baile, sin gestos de pareja.**
+>
+> **Ráfaga 4 cerrada y revisada** (`T-295`, "Segunda pasada" al final de `REV-15`): los siete
+> `FIND-71`..`FIND-77` cerrados en disco, `npm test` 1161/1161, check 0/0, build 152, auditor
+> 0, validador `APTA`. "Adiviná el tema" reparte 8/56/31; "Completá la letra" saca su nivel
+> del conteo (el contexto sigue al nivel, `BR-30`/`CTR-04.14`); la sala tiene puerta abierta
+> (`sala.v2`, `UX-32`) y el botón `#seguir-juego`. Dos anclas de la letra quedaron en
+> `fuenteUnica.enEspera` hasta que `contenido` elija versos nuevos
+> (`HILO-para-contenido-dos-anclas-sin-vecinos.md`).
+>
+> **Papel de la ráfaga 5 cerrado:** `BR-31`, `UX-33`, `CTR-16.4` (v3: un tesoro por personaje),
+> `CTR-16.11` (el avance, `arcade.skayboy.avance`), `CTR-15.7` (`baila`, 4 cuadros a 8/s),
+> `ADR-10` (`ARQ-pantalla-completa.md`) y `CNT-22`, verificados y alineados.
+>
+> **En curso: el código de la ráfaga 5** (`T-300` dibujos, `T-301` pantalla completa, `T-303`
+> guitarras y cigarrillos en paralelo; después `T-302` la victoria y la fila; `T-304` revisión).
+> Guion en el scratchpad de la sesión (`rafaga5-codigo.js`). Si se corta, se retoma con
+> `resumeFromRunId`. Al terminar: hoja del baile al usuario, commit probado en limpio, push a
+> la rama del PR.
+
 > ## ✅ CICLO 16, RÁFAGA 3 CERRADA Y REVISADA: `REV-15` (2026-09-24)
 >
 > **`npm test` 1081/1081 (eran 673 al abrir el ciclo) · `npm run check` 0/0 · build 152 ·
@@ -40,6 +70,11 @@
 > `T-286`..`T-288` ("Completá la letra"), `T-289`/`T-290` (que ganar se vea: hoy la sala no
 > tiene puerta abierta), `T-291`/`T-292` (`FIND-71`), `T-293`/`T-294` (las colas de
 > `REV-15`) y `T-295` (la revisión). Rango ampliado a `T-295` en `Docs/IDS.md`.
+>
+> **Lanzada el 2026-09-24 a las ~13:45 como el workflow `wf_46a0a8b5-004`.** Si se corta,
+> se retoma con `resumeFromRunId` y lo terminado vuelve de caché. Al terminar: pegar la
+> "Segunda pasada" que devuelve `T-295` al final de `REV-15`, commitear probando en un
+> worktree limpio, y mirar en el navegador que ganar se vea (`?nivel=NIV-01`).
 >
 > ### 🔴 Lo que es del usuario
 >

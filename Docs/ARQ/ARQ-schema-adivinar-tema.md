@@ -616,6 +616,15 @@ es `D − 0,10` y `D + 0,40`; el patrón de `slug` es el de `CTR-01.4` y es lo q
 > mismos y Difícil queda para cinco temas sin línea (`CTR-19.5`, enmienda). Si ese reparto cambia,
 > lo decide `producto`.
 
+> **Nota del 2026-09-24, más tarde (`T-291`, `FIND-71`): cambió, y este contrato sigue sin
+> cambiar.** `producto` lo decidió en `BR-30`. El resto del pozo, lo que no quedó Fácil, se
+> reparte con los tercios de `US-07` (`repartirEnTercios()`, `CTR-19.15`): el tercio de abajo es
+> Difícil y los dos de arriba son Media. Hoy da **8 / 56 / 31** (`CTR-19.5` paso 5, enmendado).
+> El punto 2 del recuadro anterior, *"el resto con línea publicada es `media` y el pozo sin línea
+> es `dificil`"*, ya no rige. Lo que dice ese mismo punto de dónde sale el nivel sigue valiendo,
+> porque sigue saliendo de `repartirEnVivo()`, que ahora llama a los tercios por dentro. El
+> manifiesto no se toca: la dificultad sigue sin guardarse.
+
 **El manifiesto no la lleva, y no es una omisión: es la misma frase que ya estaba escrita
 en las Consecuencias de la v2**, cuando `arquitectura` enumeró las tres salidas posibles
 para la cuota de `BR-01`:
@@ -826,6 +835,15 @@ node --test src/lib/tema/catalogo.test.ts src/lib/tema/escalera.test.ts src/lib/
 > Con el mecanismo puesto y la clave sin cargar, el reparto es plano y los Fáciles son 0.
 > `arquitectura` no decide eso — solo garantiza que el día que la clave corra, los ocho
 > aparecen sin tocar una línea de código. Es `T-164`.
+>
+> **Nota del 2026-09-24 (`T-291`, al volver sobre la verificación de `REV-15`): esta pregunta
+> ya no está abierta, y no se contestó acá.** `producto` la cerró en tres pasos, los tres en
+> `Docs/PRODUCTO/PRD-alcance-v1.md`. `BR-18` (g) (`T-164`, 2026-09-01) decidió que la cuota sin
+> medir no frena el "Listo". `BR-18` (h) (`T-274`, enmienda de `D-45`, 2026-09-23) cambió de
+> dónde sale el orden de los 8 Fáciles: ya no son las vistas, es el conteo de setlist.fm. Y
+> `BR-30` (`D-46`) fijó Media y Difícil en tercios sobre lo que no es Fácil. Lo que eso le
+> cambia a este contrato está en las notas de `CTR-03.11`. Los párrafos de arriba quedan como
+> estaban, con la pregunta abierta y `popularidad.json`, para que se vea de dónde viene.
 - **Fácil:** cambiar la escalera, la duración o el bitrate. Se vuelve a producir el audio y
   ningún dato migra. **Ya se demostró dos veces**: `D-24` subió de 10 a 15 sin tocar el JSON
   y `D-26` bajó de 15 a 10 sin tocarlo tampoco — la segunda vez con 95 archivos ya en disco,
@@ -841,7 +859,9 @@ node --test src/lib/tema/catalogo.test.ts src/lib/tema/escalera.test.ts src/lib/
 
 - **La tolerancia del buscador y cómo se ve la lista:** `experiencia`.
 - **La tabla de puntaje y la mecánica de intentos:** `producto` (`BR-02`, `T-99`).
-- **La cuota por dificultad de `US-02`:** `producto`, señalado arriba.
+- **La cuota por dificultad de `US-02`:** `producto`, señalado arriba. *2026-09-24 (`T-291`):
+  ya la contestó, en `BR-18` (g) y (h) y en `BR-30`. Ver la última nota de la revisión 4, en
+  Consecuencias.*
 - **El techo de duración del fragmento:** `contenido` (`CNT-01`, sección A). **Ojo con la
   diferencia:** `CNT-01` pone el **techo** —hoy 15,0 s—; los **10,0 s de hoy no salen de
   ahí**, salen del material real que trajo el PR #8 y que `D-26` aceptó. Están por debajo

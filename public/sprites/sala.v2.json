@@ -1,0 +1,112 @@
+{
+  "contrato": "CTR-15",
+  "contratoVersion": 1,
+  "pieza": "sala",
+  "celda": {
+    "ancho": 16,
+    "alto": 16
+  },
+  "paleta": [
+    "--px-clave",
+    "--px-luz",
+    "--px-cielo",
+    "--px-cielo-2",
+    "--px-blanco-gulp",
+    "--px-infierno",
+    "--px-infierno-2",
+    "--px-infierno-3",
+    "--px-tesoro"
+  ],
+  "animaciones": {
+    "solido": {
+      "fila": 0,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "molineteCielo": {
+      "fila": 1,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "molineteInfierno": {
+      "fila": 2,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "molineteDos": {
+      "fila": 3,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "tesoro": {
+      "fila": 4,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "puertaSkayboy": {
+      "fila": 5,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "puertaPoligirl": {
+      "fila": 6,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "puertaAbierta": {
+      "fila": 7,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "palancaReposo": {
+      "fila": 8,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "palancaActiva": {
+      "fila": 9,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "placaLibre": {
+      "fila": 10,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "placaPisada": {
+      "fila": 11,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "compuertaCerrada": {
+      "fila": 12,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "compuertaAbierta": {
+      "fila": 13,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "caja": {
+      "fila": 14,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    }
+  }
+}

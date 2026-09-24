@@ -3,8 +3,8 @@
  * dificultad que salen de él (`D-45` enmendada, `BR-18` apartado h, `D-46`, `BR-30`): el
  * corte de 8 Fáciles de `US-02` y los tercios de `US-07`.
  *
- * Son los t1 a t9, t13 y t15 de `CTR-19.13`, más la validación de `setlistfm.json` contra su
- * schema y los casos c1 a c13 y c28 a c32 del schema. **Esos últimos viven acá y no en
+ * Son los t1 a t9, t13 y t15 a t17 de `CTR-19.13`, más la validación de `setlistfm.json`
+ * contra su schema y los casos c1 a c13 y c28 a c32 del schema. **Esos últimos viven acá y no en
  * `esquemas.test.ts`** porque ese archivo lo toca otra tarea cada ráfaga; la línea
  * `'setlistfm'` de su lista se suma cuando se libere, y estos casos se pueden mudar con ella.
  * t14 —que el banco de `US-07` sea el que da la regla— vive con el banco, en
@@ -240,6 +240,56 @@ test('t5: con el pozo real, el corte queda determinado en 8 Fáciles (BR-18 h, a
   }
 });
 
+// ---------------------------------------------------------------- t17, el paso 5 con el pozo real
+
+/**
+ * Lo que el paso 5 de `CTR-19.5` exige de un reparto, en una lista de textos. Vacía = cumple.
+ * Se compara contra la regla y no contra una cifra: el número cambia con cada refresco del
+ * conteo (`CTR-19.6`) sin que nada esté roto. Es el criterio de t14.
+ */
+function desviosDelPaso5(
+  porSlug: ReadonlyMap<string, string>,
+  pozo: ReadonlySet<string>,
+  conteo: ConteoCitado,
+): string[] {
+  const desvios: string[] = [];
+  const resto = new Set([...pozo].filter((s) => porSlug.get(s) !== 'facil'));
+  const tercios = repartirEnTercios(resto, conteo);
+  for (const s of resto) {
+    const quiere = tercios.porSlug.get(s) === 'dificil' ? 'dificil' : 'media';
+    if (porSlug.get(s) !== quiere) desvios.push(`${s} es ${porSlug.get(s)} y los tercios del resto dicen ${quiere}`);
+  }
+  const conLinea = new Set(conteo.temas.flatMap((l) => (l.slug ? [l.slug] : [])));
+  if (![...resto].some((s) => conLinea.has(s) && porSlug.get(s) === 'dificil')) {
+    desvios.push('ningún tema con línea es Difícil: Difícil volvió a ser "no figura" (FIND-71)');
+  }
+  return desvios;
+}
+
+const repartoDe = (porSlug: ReadonlyMap<string, string>) => {
+  const n = { facil: 0, media: 0, dificil: 0 } as Record<string, number>;
+  for (const v of porSlug.values()) n[v] = (n[v] ?? 0) + 1;
+  return `${n.facil} / ${n.media} / ${n.dificil}`;
+};
+
+test('t17: con el pozo real, Media y Difícil salen de los tercios del resto (CTR-19.5 paso 5, FIND-71)', () => {
+  const corte = repartirEnVivo(POZO, CONTEO);
+  const desvios = desviosDelPaso5(corte.porSlug, POZO, CONTEO);
+  assert.deepEqual(desvios, [], `el reparto de US-02 es ${repartoDe(corte.porSlug)} (Fácil / Media / Difícil)`);
+  // Y el paso 5 no inventa Fáciles: siguen siendo los del corte.
+  assert.equal([...corte.porSlug.values()].filter((n) => n === 'facil').length, corte.faciles);
+});
+
+test('t17 sabe encontrar: la regla vieja ("figura = Media, no figura = Difícil") se pone en rojo', () => {
+  const corte = repartirEnVivo(POZO, CONTEO);
+  const conLinea = new Set(CONTEO.temas.flatMap((l) => (l.slug ? [l.slug] : [])));
+  const vieja = new Map(
+    [...corte.porSlug].map(([s, n]) => [s, n === 'facil' ? n : conLinea.has(s) ? 'media' : 'dificil'] as const),
+  );
+  const desvios = desviosDelPaso5(vieja, POZO, CONTEO);
+  assert.ok(desvios.some((d) => /FIND-71/.test(d)), `la regla vieja (${repartoDe(vieja)}) pasó la guarda`);
+});
+
 // ---------------------------------------------------------------- t6, t7, sintéticos
 
 /** Un conteo inventado: una línea por slug, en el orden dado. */
@@ -335,6 +385,51 @@ test('paso 1 de CTR-19.5: las líneas desordenadas dan el mismo corte que ordena
   assert.equal(mal.porSlug.get('t10'), 'media');
   assert.equal(mal.porSlug.get('t1'), 'facil');
   assert.equal(mal.determinado, true);
+});
+
+// ---------------------------------------------------------------- t16, el paso 5 con conteos inventados
+
+/**
+ * `CTR-19.5` paso 5 (enmendado por `T-291`, `FIND-71`): lo que no es Fácil se reparte con
+ * los tercios de `US-07` sobre el **resto**. La sala es la de `CTR-19.13` t16: ocho arriba
+ * (100, 95 … 65), seis abajo (30, 25, 20, 15, 10, 5) y uno sin línea.
+ */
+const OCHO_ARRIBA = Array.from({ length: 8 }, (_, i) => L(`p${i + 1}`, 100 - i * 5));
+const salaT16 = (abajo: readonly number[]) => {
+  const slugs = abajo.map((_, i) => `r${i + 1}`);
+  const pozo = new Set([...OCHO_ARRIBA.map((l) => l.slug!), ...slugs, 'sin-linea']);
+  const corte = repartirEnVivo(pozo, sintetico([...OCHO_ARRIBA, ...slugs.map((s, i) => L(s, abajo[i]!))]));
+  const porNivel = { facil: 0, media: 0, dificil: 0 };
+  for (const n of corte.porSlug.values()) porNivel[n]++;
+  return { corte, porNivel, nivel: (i: number) => corte.porSlug.get(`r${i + 1}`) };
+};
+
+test('t16: el resto se parte en tercios: 30, 25, 20 y 15 son Media; 10, 5 y el sin línea, Difícil', () => {
+  const { corte, porNivel, nivel } = salaT16([30, 25, 20, 15, 10, 5]);
+  assert.equal(corte.faciles, 8);
+  assert.equal(corte.determinado, true);
+  // (a) La regla vieja ("figura = media") daba 8 / 6 / 1: el 10 y el 5 quedaban en Media.
+  // (c) Los tercios sobre el pozo entero (14 líneas, t = 5) mandaban el 20 y el 15 a Difícil.
+  assert.deepEqual([0, 1, 2, 3, 4, 5].map(nivel), ['media', 'media', 'media', 'media', 'dificil', 'dificil']);
+  assert.equal(corte.porSlug.get('sin-linea'), 'dificil');
+  assert.deepEqual(porNivel, { facil: 8, media: 4, dificil: 3 });
+});
+
+test('t16: nunca un Fácil de más: el tercio de arriba del resto es Media, no Fácil', () => {
+  // (b) Copiar tal cual lo que devuelve repartirEnTercios() dejaba el 30 y el 25 en Fácil: 10 Fáciles.
+  const { corte, porNivel, nivel } = salaT16([30, 25, 20, 15, 10, 5]);
+  assert.equal(nivel(0), 'media');
+  assert.equal(nivel(1), 'media');
+  assert.equal(porNivel.facil, CUOTA_FACILES);
+  assert.equal(corte.faciles, CUOTA_FACILES);
+});
+
+test('t16: un empate en la frontera Media/Difícil baja entero, y Media queda con tres', () => {
+  const { porNivel, nivel } = salaT16([30, 25, 20, 10, 10, 5]);
+  assert.deepEqual([0, 1, 2, 3, 4, 5].map(nivel), ['media', 'media', 'media', 'dificil', 'dificil', 'dificil']);
+  assert.deepEqual(porNivel, { facil: 8, media: 3, dificil: 4 });
+  // El control es la misma sala sin empate: ahí el cuarto (15) es Media.
+  assert.equal(salaT16([30, 25, 20, 15, 10, 5]).nivel(3), 'media');
 });
 
 // ---------------------------------------------------------------- t13, los tercios de US-07

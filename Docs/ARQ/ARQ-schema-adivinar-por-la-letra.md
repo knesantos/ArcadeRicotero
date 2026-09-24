@@ -17,6 +17,18 @@
 > antes. **No cambia** nada de los versos, la escalera, el filtro ni la fuente. Consume además:
 > `D-27`, `D-46`, `BR-30`, `CTR-19` (`.3`, `.15`, `.16`), `RES-90`.
 >
+> **Enmendado otra vez el 2026-09-24 por `T-291` (ciclo 16, ráfaga 4), para cerrar `FIND-75` y
+> `FIND-76` de `REV-15`.** Hay dos cosas que el contrato decía distinto de lo que hace el código.
+> La primera: el comando (3) de `CTR-09.11` rearmaba los versos con `sirveComoVerso()` sola, y
+> el generador usa el filtro entero de `filtro.ts`. Esa es la raíz, y la definición de `desde` en
+> `CTR-09.2` (y el comentario del schema en `CTR-09.8`) decía lo mismo que el comando. La segunda:
+> los casos p0-p7 no están donde el contrato decía. Cambian `CTR-09.2`, `CTR-09.8` (un
+> `comment`), `CTR-09.9` (el ejemplo) y `CTR-09.11`. Cada uno dice qué decía antes. **El schema no
+> cambia su validación, y el banco no se regenera.** Consume además: `CNT-11` §4,
+> `src/lib/por-la-letra/filtro.ts`, `scripts/generar-por-la-letra.mjs`,
+> `src/lib/por-la-letra/banco.test.ts` y `src/data/por-la-letra.json`, leídos en disco el
+> 2026-09-24.
+>
 > **Depende de `CNT-11`, que `contenido` está escribiendo en paralelo (`T-137`).** Este
 > contrato **no** define qué verso puede abrir la escalera: define **dónde corre esa regla,
 > con qué firma, y cómo se declara en el dato que corrió** — que es lo que la vuelve
@@ -150,7 +162,23 @@ Siete campos. Ninguno opcional salvo `fuente.ficha`, que tiene su regla en `CTR-
 | `dificultadSegun` | `en-vivo` \| `sin-conteo` | De dónde salió la etiqueta. `CTR-09.7`. *Hasta el 2026-09-24 era `curaduria` \| `youtube`.* |
 | `fuente` | objeto | `{ sitio, url, consultado, ficha? }`. `CTR-09.6`. |
 
-**Por qué `titulo` está en el ítem aunque se pueda derivar del slug.** `CTR-03.2` lo justifica
+> **Enmendado el 2026-09-24 (`T-291`, `FIND-75`): qué es `desde`, de verdad.** La fila decía
+> *"Índice del primer verso de la ventana dentro de la lista de versos jugables del tema"*, y el
+> `comment` del schema (`CTR-09.8`) lo precisaba como *"los que pasan sirveComoVerso"*. Las dos
+> cosas se escribieron antes de que existiera `filtro.ts`, y **no es lo que escribe el
+> generador.** `desde` es el índice, base 0, en la lista que arma `elegirVentana()`: la lista de
+> `versosUtilizables()` (piso de `sirveComoVerso()`, reglas de `CNT-11`, limpieza de la anotación
+> final y sin renglones repetidos, regla (e)) **menos los versos que delatan el título**.
+> Es la *"lista ya filtrada (sin ruido, sin versos-título, sin repetidos)"* de `CNT-11` §4. Dos
+> consecuencias que la fila de `versos` no decía:
+> - *"Contigua"* quiere decir contigua en esa lista. En la canción, la ventana puede saltear un
+>   renglón que el filtro sacó. `CNT-11` §4 lo dice: *"los huecos que deja la limpieza […] no son
+>   un salto de fragmento"*.
+> - *"Tal como se canta"* quiere decir el texto ya limpio: sin la anotación que el transcriptor
+>   pega al final del renglón.
+>
+> Con la definición vieja, el comando (3) marcaba como desalineados ítems que estaban bien:
+> `FIND-75` midió unos 70 de 88 con el banco idéntico a `HEAD`. `CTR-03.2` lo justifica
 como documentación; acá hay un segundo motivo que pesa más: **el chequeo de `CNT-11` compara
 los versos contra el título**, y si el título no estuviera en el mismo archivo, ese chequeo
 necesitaría parsear `RES-20` para poder correr. Con `titulo` adentro, la comprobación es
@@ -542,6 +570,16 @@ Draft 2020-12, igual que el resto. **Este documento manda sobre cualquier copia.
 > (7) `item` suma el `if`/`then` que ata `sin-conteo` a `dificil`. Todo lo demás está igual, letra
 > por letra.
 
+> **Enmendado el 2026-09-24 (`T-291`, `FIND-75`): un `comment` y nada más.** El de `item.desde`
+> decía *"Índice del primer verso de la ventana dentro de la lista de versos jugables del tema (los
+> que pasan sirveComoVerso), base 0. Es lo que permite re-derivar el ítem contra el cancionero y
+> detectar un banco viejo."* Ahora dice qué lista es de verdad (`CTR-09.2`, enmendado). **La
+> validación no cambia**: ni el `$id`, ni `contratoVersion`, ni ninguna regla. El banco sigue
+> validando igual y no hace falta regenerarlo. La copia en
+> `src/data/_schema/por-la-letra.schema.json` sigue con el texto viejo en ese `comment`. La
+> actualiza el hilo principal la próxima vez que toque ese archivo: está en
+> `Docs/SUGERENCIAS/ARQ-para-hilo-principal-lo-que-arrastra-t291.md`.
+
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -619,7 +657,7 @@ Draft 2020-12, igual que el resto. **Este documento manda sobre cualquier copia.
           "pattern": "^[^<>]+$"
         },
         "desde": {
-          "comment": "Índice del primer verso de la ventana dentro de la lista de versos jugables del tema (los que pasan sirveComoVerso), base 0. Es lo que permite re-derivar el ítem contra el cancionero y detectar un banco viejo.",
+          "comment": "Índice del primer verso de la ventana, base 0, en la lista que arma elegirVentana(): versosUtilizables() menos los versos que delatan el título (CNT-11 §4, CTR-09.2 enmendado). Es lo que permite re-derivar el ítem contra el cancionero y detectar un banco viejo (CTR-09.11, comando 3).",
           "type": "integer",
           "minimum": 0
         },
@@ -720,6 +758,14 @@ Draft 2020-12, igual que el resto. **Este documento manda sobre cualquier copia.
 > menos 3 veces, y 86 es más que `2t = 60`. Por eso sale `dificil`, `en-vivo` (`CTR-19.15`, a
 > confirmar con t14). `actualizado` sigue puesto para que no valide.
 
+> **Enmendado el 2026-09-24 (`T-291`, `FIND-75`): la ventana.** El ejemplo decía `"desde": 5`, y
+> sus versos arrancaban en *"Te pido una mejoría"* y terminaban en *"Voy ciego, tonteando"*. Esa
+> ventana salía de la definición vieja de `desde` (`CTR-09.2`, enmendado), y no es la que arma el
+> generador. Ahora el ítem es el mismo que tiene `src/data/por-la-letra.json` para *Dr. Saturno*:
+> `desde: 1` y los 8 versos que empiezan en *"De misas cómicas mal"*. El cómo está en el punto
+> *"`desde: 1`"* de abajo. `filtro.version: 1` queda como estaba: el ejemplo no es el banco, y lo
+> que no valida a propósito sigue siendo `actualizado`.
+
 ```json
 {
   "contrato": "CTR-09",
@@ -735,16 +781,16 @@ Draft 2020-12, igual que el resto. **Este documento manda sobre cualquier copia.
     {
       "slug": "dr-saturno",
       "titulo": "Dr. Saturno",
-      "desde": 5,
+      "desde": 1,
       "versos": [
+        "De misas cómicas mal",
+        "A prueba de bobos y a las tres en casa",
+        "¿Querés creer? Oh, no!",
         "Te pido una mejoría",
         "Estoy meando la puerta en tu cueva, doctor de amor",
         "Los remos muy pinchados",
         "A la moda del rock'n roll",
-        "Me cago en mis huesos",
-        "Que gastan la pana",
-        "Mojada en vinagre de nostalgias",
-        "Voy ciego, tonteando"
+        "Me cago en mis huesos"
       ],
       "dificultad": "dificil",
       "dificultadSegun": "en-vivo",
@@ -764,14 +810,28 @@ Draft 2020-12, igual que el resto. **Este documento manda sobre cualquier copia.
 - **El tema.** *Dr. Saturno*, pista 4 de *Momo Sampler* (2000). Está en `cancionero.json` con
   `slug: "dr-saturno"`, y ese slug ya cruzó la puerta de `D-13`: la ingesta lo resolvió
   contra los 105 de `RES-20` con `resolverTema()` antes de escribirlo.
-- **Los ocho versos** son los renglones de letra del tema en `cancionero.json`, en orden,
-  salteando los renglones en blanco que separan estrofas (que `sirveComoVerso` descarta).
-- **`desde: 5` no es un número decorativo: es el primer valor que pasa el filtro.** Los cinco
+- ~~**Los ocho versos** son los renglones de letra del tema en `cancionero.json`, en orden,
+  salteando los renglones en blanco que separan estrofas (que `sirveComoVerso` descarta).~~
+- ~~**`desde: 5` no es un número decorativo: es el primer valor que pasa el filtro.** Los cinco
   versos anteriores son *"Estoy hasta la pasta!"*, *"De misas cómicas mal"*, *"A prueba de
   bobos y a las tres en casa"*, *"¿Querés creer? Oh, no!"* y **"Dr. Saturno, dame un
   turno!"** — el quinto dice el título entero. Cualquier ventana que arranque en 0, 1, 2, 3
   o 4 lo incluye, y las cinco se descartan por `US-07` criterio 2. La primera que no lo
-  incluye es la que arranca en 5, y es esta.
+  incluye es la que arranca en 5, y es esta.~~ *Reemplazados el 2026-09-24 (`T-291`) por los
+  dos puntos que siguen. Los versos que nombraban son reales. Lo que estaba mal era cómo se
+  corta la ventana.*
+- **Los ocho versos** son los de `src/data/por-la-letra.json` para este tema, copiados letra
+  por letra. Salen de los renglones de letra del cancionero después del filtro entero de
+  `filtro.ts`, no solo de `sirveComoVerso`.
+- **`desde: 1` no es un número decorativo.** La lista filtrada arranca *"Estoy hasta la
+  pasta!"*, *"De misas cómicas mal"*, *"A prueba de bobos y a las tres en casa"*, *"¿Querés
+  creer? Oh, no!"*, *"Te pido una mejoría"*… **"Dr. Saturno, dame un turno!"** no está: dice
+  el título entero, y `elegirVentana()` lo saca **antes** de cortar (`US-07` criterio 2, `CNT-11`
+  §4). Por eso la ventana pasa de *"¿Querés creer? Oh, no!"* a *"Te pido una mejoría"* sin el
+  renglón del medio, que es el hueco que `CNT-11` §4 declara. No arranca en 0 porque la cascada
+  de `CNT-11` no abre nunca en el primer verso (puerta A). El 1 es el primer lugar que la
+  cascada acepta. Lo confirma el comando (3) de `CTR-09.11`, que rearma este ítem desde el
+  cancionero.
 - **La fuente** es la que declara el cancionero para ese tema, y `RES-23` es la ficha que
   `generar-letra.mjs` ya mapea a `letras.com`.
 - ~~**`dificultad: "media"` es ilustrativa.** Esa etiqueta la emite `contenido` en el archivo de
@@ -825,8 +885,11 @@ node --test src/lib/esquemas.test.ts
 # (2) lo que el schema no puede: D-13, slugs repetidos, el piso de CNT-11 y los numeros de US-07
 node -e "Promise.all([import('./src/lib/letra/temas.ts'),import('node:fs')]).then(([t,{readFileSync}])=>{const j=JSON.parse(readFileSync('src/data/por-la-letra.json','utf8'));const ok=new Set(t.leerTemas().map(x=>t.slugDeTitulo(x.titulo)));const f=[],vistos=new Set();for(const it of j.items){if(!ok.has(it.slug))f.push('fuera de los 105: '+it.slug);if(vistos.has(it.slug))f.push('slug repetido: '+it.slug);vistos.add(it.slug);if(it.versos.length!==8)f.push('versos!=8: '+it.slug);const d=t.normalizarDuro(it.titulo);for(const v of it.versos)if(t.normalizarDuro(v).includes(d))f.push('delata el titulo: '+it.slug+' -- '+v);}const fac=j.items.filter(i=>i.dificultad==='facil').length,sc=j.items.filter(i=>i.dificultad==='sin-clasificar').length;console.log(f.length?'DESALINEADO:\n  '+f.join('\n  '):'OK '+j.items.length+' items');console.log('piso US-07 (60):',j.items.length>=60?'cumplido':'faltan '+(60-j.items.length),'| faciles (15):',fac>=15?'cumplida':'faltan '+(15-fac),'| sin clasificar:',sc)})"
 
-# (3) que el banco no haya quedado viejo: los 8 versos se re-derivan del cancionero desde `desde`
-node -e "Promise.all([import('./src/lib/cancionero/anotacion.ts'),import('node:fs')]).then(([a,{readFileSync}])=>{const c=JSON.parse(readFileSync('src/data/cancionero.json','utf8')),j=JSON.parse(readFileSync('src/data/por-la-letra.json','utf8'));const porSlug=new Map(c.temas.map(t=>[t.slug,t]));const f=[];for(const it of j.items){const t=porSlug.get(it.slug);if(!t){f.push('no esta en el cancionero: '+it.slug);continue;}const vs=t.secciones.flatMap(s=>s.lineas.filter(l=>l.t==='letra'&&a.sirveComoVerso(l.texto)).map(l=>l.texto.trim()));const esperado=vs.slice(it.desde,it.desde+8);if(JSON.stringify(esperado)!==JSON.stringify(it.versos))f.push('quedo viejo: '+it.slug);}console.log(f.length?'DESALINEADO:\n  '+f.join('\n  '):'OK: los '+j.items.length+' items se re-derivan del cancionero')})"
+# (3) que el banco no haya quedado viejo: cada item se vuelve a armar desde el cancionero con las
+#     mismas funciones del generador (filtro.ts: versosUtilizables, elegirVentana, ventanaValida),
+#     y se comparan `desde` y los 8 versos. Enmendado 2026-09-24 (T-291, FIND-75): la version
+#     anterior esta en el recuadro de abajo. Esperado hoy: OK con los 88.
+node -e "Promise.all([import('./src/lib/por-la-letra/filtro.ts'),import('node:fs')]).then(([f,{readFileSync}])=>{const c=JSON.parse(readFileSync('src/data/cancionero.json','utf8')),j=JSON.parse(readFileSync('src/data/por-la-letra.json','utf8'));const porSlug=new Map(c.temas.map(t=>[t.slug,t]));const m=[];for(const it of j.items){const t=porSlug.get(it.slug);if(!t){m.push('no esta en el cancionero: '+it.slug);continue;}if(t.contenido!=='letra'){m.push('ya no es letra: '+it.slug);continue;}const lineas=t.secciones.flatMap(s=>s.lineas.filter(l=>l.t==='letra'&&l.texto&&l.texto.trim()).map(l=>({texto:l.texto,seccion:s.tipo})));const v=f.elegirVentana(f.versosUtilizables(lineas),t.titulo);if(!v){m.push('ya no llega a 8 versos limpios: '+it.slug);continue;}const motivo=f.ventanaValida(v.versos,{slug:t.slug,titulo:t.titulo});if(motivo)m.push('ventanaValida la rechaza: '+it.slug+' -- '+motivo);if(v.desde!==it.desde||JSON.stringify(v.versos.map(x=>x.texto))!==JSON.stringify(it.versos))m.push('quedo viejo: '+it.slug+' (el banco dice desde '+it.desde+', hoy da '+v.desde+')');}console.log(m.length?'DESALINEADO:\n  '+m.join('\n  '):'OK: los '+j.items.length+' items se rearman igual desde el cancionero (filtro v'+f.VERSION_FILTRO+', el banco dice v'+j.filtro.version+')')})"
 
 # (4) la escalera, el buscador y la version del filtro
 node --test src/lib/por-la-letra/*.test.ts
@@ -852,6 +915,56 @@ node --test src/lib/por-la-letra/*.test.ts
 > p1, p4 y p5 son las tres reglas que esta enmienda existe para hacer cumplir. Si una de las tres
 > valida, la enmienda no sirve.
 
+> **Enmendado el 2026-09-24 (`T-291`, `FIND-76`): dónde viven p0-p7.** El recuadro de arriba dice
+> *"para escribir junto a los de `esquemas.test.ts`"*. **Están en
+> `src/lib/por-la-letra/banco.test.ts`**, y ahí se quedan. Los puso `T-285`, y el encabezado de
+> ese archivo dice por qué: `esquemas.test.ts` lo toca otra tarea en cada ráfaga, que es el mismo
+> motivo por el que los casos de `setlistfm` viven en `en-vivo.test.ts`. Los corre el comando (4).
+> La validación del banco entero contra el schema **sigue** en `esquemas.test.ts` (`'por-la-letra'`
+> en su lista) y la corre el comando (1). El control de p4 (*"sin-conteo con dificil sí valida"*)
+> está en el mismo archivo. `revisor` confirmó que se ponen en rojo bien. Lo único que no coincidía
+> era dónde decía el contrato que estaban.
+
+> **Enmendado el 2026-09-24 (`T-291`, `FIND-75`): el comando (3).** Decía:
+>
+> ```bash
+> # (3) que el banco no haya quedado viejo: los 8 versos se re-derivan del cancionero desde `desde`
+> node -e "Promise.all([import('./src/lib/cancionero/anotacion.ts'),import('node:fs')]).then(([a,{readFileSync}])=>{const c=JSON.parse(readFileSync('src/data/cancionero.json','utf8')),j=JSON.parse(readFileSync('src/data/por-la-letra.json','utf8'));const porSlug=new Map(c.temas.map(t=>[t.slug,t]));const f=[];for(const it of j.items){const t=porSlug.get(it.slug);if(!t){f.push('no esta en el cancionero: '+it.slug);continue;}const vs=t.secciones.flatMap(s=>s.lineas.filter(l=>l.t==='letra'&&a.sirveComoVerso(l.texto)).map(l=>l.texto.trim()));const esperado=vs.slice(it.desde,it.desde+8);if(JSON.stringify(esperado)!==JSON.stringify(it.versos))f.push('quedo viejo: '+it.slug);}console.log(f.length?'DESALINEADO:\n  '+f.join('\n  '):'OK: los '+j.items.length+' items se re-derivan del cancionero')})"
+> ```
+>
+> Lo escribí el 2026-08-27, cuando `filtro.ts` todavía era una firma en `CTR-09.5`, y nunca lo
+> reescribí cuando el generador pasó a filtrar con `CNT-11`. Se aparta del generador en tres
+> cosas, y cualquiera de las tres alcanza para correr `desde`:
+> 1. filtra solo con `sirveComoVerso()`. El generador suma las reglas de `CNT-11`, la limpieza de
+>    la anotación final y el deduplicado (`versosUtilizables()`);
+> 2. cuenta `desde` sobre esa lista. El generador lo cuenta después de sacar los versos que
+>    delatan el título (`elegirVentana()`, `CNT-11` §4);
+> 3. compara el renglón con `trim()`. El generador guarda el texto ya limpio.
+>
+> El resultado fue que `FIND-75` lo corrió con el banco idéntico a `HEAD` y le dio "DESALINEADO"
+> en unos 70 de 88 ítems. Era una alarma falsa, y una alarma falsa que se ignora tapa la verdadera.
+>
+> **El comando nuevo no copia el filtro: lo importa.** Llama a las tres funciones de `filtro.ts`
+> que llama el generador, en el mismo orden y con la misma entrada: los renglones `letra` no
+> vacíos, con el `tipo` de su sección. Si mañana `CNT-11` suma una regla, el comando la hereda
+> sin que nadie lo toque. Compara `desde` además de los versos, así que también ve una ventana que
+> se corrió. Y dice cuál es: `ya no llega a 8 versos limpios`, `ventanaValida la rechaza` o
+> `quedo viejo`, con los dos `desde`.
+>
+> *Alternativa descartada:* **arreglar el comando escribiendo el filtro de `CNT-11` adentro del
+> one-liner.** Es lo que pasó con `sirveComoVerso()`: una copia que nadie se acuerda de tocar
+> queda mintiendo, y esta se iba a quedar vieja en la próxima versión del filtro.
+> *Alternativa descartada:* **llamar solo a `ventanaValida()` sobre los versos guardados.** Sirve
+> para saber si la ventana guardada todavía pasa el filtro. No sirve para saber si el banco
+> corresponde al cancionero de hoy, que es lo que promete la fila 11 de `CTR-09.10`. Un banco
+> viejo con versos limpios pasaría.
+>
+> **Lo que sigue sin resolver, y lo dejo dicho.** Este chequeo es un comando, y un comando que no
+> corre en `npm test` queda viejo sin que nadie se entere: eso es `FIND-75` entero. Como test en
+> `banco.test.ts` correría en cada build. No lo pido en esta ráfaga, porque ninguna tarea del plan
+> toca ese archivo. Queda propuesto en
+> `Docs/SUGERENCIAS/ARQ-para-hilo-principal-lo-que-arrastra-t291.md`.
+
 **Qué chequea la máquina y qué no:**
 
 | # | Chequeo | Quién |
@@ -866,6 +979,7 @@ node --test src/lib/por-la-letra/*.test.ts
 | 8 | Que las reglas finas de `CNT-11` estén bien escritas | **humano**: `contenido` las escribe, `revisor` las lee contra `CNT-11` |
 | 9 | Que el verso diga lo que la banda canta | **nadie** — fila 13 de `CTR-09.10` |
 | 10 | Que el paso 4 entre en una pantalla de 375 px | **humano**, con `UX-08` a la vista |
+| 11 | *(Sumada el 2026-09-24, `T-291`.)* Que el schema v2 rechace un banco de antes de `D-46` (p1-p7, con p0 y el control de p4) | comando (4): viven en `src/lib/por-la-letra/banco.test.ts`, no en `esquemas.test.ts` |
 
 ---
 
@@ -910,6 +1024,9 @@ son las siete filas donde no:
   también: conviene que suba a `src/lib/cancionero/` con el `tipo` de sección al lado de cada
   verso, que es lo que `CNT-11` va a mirar. Y el log tiene que imprimir **el conteo de
   descartes por motivo**: un descarte silencioso no se audita.
+  *Nota del 2026-09-24 (`T-291`): esa función existe. Es `versosUtilizables()` en
+  `src/lib/por-la-letra/filtro.ts`, con el `tipo` de sección al lado. Desde hoy el comando (3)
+  la importa de ahí (`CTR-09.11`, enmendado).*
 - **Para el hilo principal (`T-140`):** `escalera.ts` de este juego es cuatro constantes;
   `buscador.ts` y `catalogo.ts` de `src/lib/tema/` se reusan sin tocarlos, igual que pide el
   plan. Lo único nuevo es cortar `versos.slice(0, n)`.

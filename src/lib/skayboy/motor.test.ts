@@ -18,9 +18,53 @@ import { readFileSync } from 'node:fs';
 
 const ISLA = 'src/scripts/partida-skayboy.ts';
 
-/** El fuente sin comentarios: una regla citada en un comentario no es una llamada. */
+/**
+ * El fuente sin comentarios: una regla citada en un comentario no es una llamada.
+ *
+ * Se lee de izquierda a derecha, y lo que está adentro de un texto (`'…'`, `"…"`, `` `…` ``) o
+ * de una expresión regular (`/…/`) **no abre un comentario**. Antes se borraba todo lo que
+ * quedaba entre un literal `'/*'` y un literal `'*\/'`, y por ahí pasaba código entero sin que
+ * ninguna regla lo viera (`FIND-77`, la revisión de `T-293`). Límite declarado: un `${…}` que
+ * adentro tiene otra comilla invertida se lee mal; la isla no tiene ninguno.
+ */
 function sinComentarios(fuente: string): string {
-  return fuente.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`])\/\/[^\n]*/g, '$1');
+  let salida = '';
+  let i = 0;
+  // Si una `/` acá abre una expresión regular: lo anterior no es un valor (`x / y`) sino algo
+  // que espera uno (`(`, `=`, `,`, `return`…).
+  const abreRegex = (): boolean => {
+    const previo = salida.trimEnd();
+    return previo === '' || /[(,=:[!&|?{};+\-*%<>~^]$/.test(previo) || /(?<![\w$])(return|typeof|case|in|of)$/.test(previo);
+  };
+  while (i < fuente.length) {
+    const c = fuente[i]!;
+    const d = fuente[i + 1];
+    if (c === '/' && d === '/') {
+      while (i < fuente.length && fuente[i] !== '\n') i++;
+    } else if (c === '/' && d === '*') {
+      const fin = fuente.indexOf('*/', i + 2);
+      i = fin === -1 ? fuente.length : fin + 2;
+      salida += ' ';
+    } else if (c === "'" || c === '"' || c === '`' || (c === '/' && abreRegex())) {
+      let j = i + 1;
+      let clase = false;
+      while (j < fuente.length) {
+        const e = fuente[j]!;
+        if (e === '\\') j++;
+        else if (c === '/' && e === '[') clase = true;
+        else if (c === '/' && e === ']') clase = false;
+        else if (e === c && !clase) break;
+        else if (e === '\n' && c !== '`') break;
+        j++;
+      }
+      salida += fuente.slice(i, j + 1);
+      i = j + 1;
+    } else {
+      salida += c;
+      i++;
+    }
+  }
+  return salida;
 }
 
 /** Los argumentos de cada `kaplay(...)`, con los paréntesis balanceados, y lo que sigue. */
@@ -328,9 +372,20 @@ for (const [caso, roto, espera] of [
  *    un `rutaDe(…)` —directo, o un `const` que lo es— o un literal `sprites/<pieza>.v<N>.<ext>`.
  *    Nada de post-procesar lo que devuelve `rutaDe(` (un `.replace(` le saca la versión), y la isla
  *    no nombra `CARPETA_DE_SPRITES`, que es con lo que se arma una ruta salteándose `rutaDe(`.
- *    Ningún literal nombra un archivo de `sprites/` sin versión.
+ *    Ningún literal nombra un archivo de `sprites/` sin versión. Y `fetch` y `loadSprite` **no se
+ *    nombran sin llamarlos**: un alias (`const pedir = fetch`) es un `fetch(` que esta regla no
+ *    ve, y por ahí sale un atlas sin versión (`FIND-77`).
  * 6. **el nivel que se juega en desarrollo** (`?nivel=`) se lee solo detrás de
- *    `import.meta.env.DEV ?`: en el build esa rama se va, y la dirección no elige nada.
+ *    `import.meta.env.DEV ?`: en el build esa rama se va, y la dirección no elige nada. La
+ *    condición es **entera** `import.meta.env.DEV`: lo que la precede abre una expresión (`=`,
+ *    `(`, `,`, `:`, `?`, `=>`, `return`), nunca un `!` que la da vuelta ni un `||`, `&&` o `??`
+ *    que la mezcla con otra cosa. Y la dirección es cualquier mención de `location` (también
+ *    `document.location` y `window.location`), de `URL`, `documentURI` o `baseURI` que no sea
+ *    `URL(` —así cae `document?.URL` y `{ URL: dir } = document`—, de `navigation` o
+ *    `getEntriesByType` (la entrada de navegación trae la dirección), o un `searchParams`
+ *    (`FIND-77`): fuera de la única lectura permitida, ninguna. Límites declarados: `history`
+ *    y un nombre armado por partes (`w['loc' + 'ation']`) no se ven; un auditor de texto no
+ *    sigue valores, y la isla no usa ninguno.
  */
 
 /** Todos los literales de texto del código, con comillas simples, dobles o invertidas. */
@@ -500,6 +555,9 @@ function problemasDelDibujo(fuente: string): string[] {
       problemas.push(`fetch( pide «${ruta || 'nada'}»: la isla solo pide atlas, y un atlas sin versión en el nombre se sirve viejo desde la caché (CTR-15.8); la ruta es rutaDe(…), entera`);
     }
   }
+  for (const m of codigo.matchAll(/(?<![\w$])(fetch|loadSprite(?:Atlas)?)(?![\w$])(?!\s*\()/g)) {
+    problemas.push(`nombra ${m[1]} sin llamarlo: un alias es una carga que esta regla no ve, y por ahí sale un atlas sin versión (CTR-15.8)`);
+  }
   if (/(?<![\w$])CARPETA_DE_SPRITES(?![\w$])/.test(codigo)) {
     problemas.push('nombra CARPETA_DE_SPRITES: una ruta armada con la carpeta se saltea rutaDe(, que es la que exige la versión (CTR-15.8)');
   }
@@ -511,10 +569,18 @@ function problemasDelDibujo(fuente: string): string[] {
   }
 
   // 6. La dirección elige nivel solo en desarrollo.
-  const detrasDeDev = /import\.meta\.env\.DEV\s*\?\s*new\s+URLSearchParams\s*\(\s*location\.search\s*\)/g;
+  // Lo que precede a la condición abre una expresión: ni `!`, ni `||`, `&&` o `??` (FIND-77).
+  const detrasDeDev =
+    /(?:=>|(?<![=!<>])=(?!=)|(?<!\?)\?|[(,:[{;]|(?<![\w$])return)\s*import\.meta\.env\.DEV\s*\?\s*new\s+URLSearchParams\s*\(\s*location\.search\s*\)/g;
   const permitidas = [...codigo.matchAll(detrasDeDev)].length;
-  const lecturas = [...codigo.matchAll(/(?<![\w$])location\s*\.\s*(search|hash|href)\b/g)].length;
-  const parametros = [...codigo.matchAll(/(?<![\w$])URLSearchParams\b/g)].length;
+  // Cualquier mención cuenta, venga de donde venga (`document?.URL`, `(document).URL`,
+  // `{ URL: dir } = document`, `document['URL']`), menos `URL(`: construir una dirección no es
+  // leer la de la página (la revisión de `T-293`).
+  const lecturas =
+    [...codigo.matchAll(/(?<![\w$])location(?![\w$])/g)].length +
+    [...codigo.matchAll(/(?<![\w$])(URL|documentURI|baseURI)(?![\w$])(?!\s*\()/g)].length +
+    [...codigo.matchAll(/(?<![\w$])(navigation|getEntriesByType)(?![\w$])/g)].length;
+  const parametros = [...codigo.matchAll(/(?<![\w$])(URLSearchParams|searchParams)(?![\w$])/g)].length;
   if (lecturas > permitidas || parametros > permitidas) {
     problemas.push('lee la dirección fuera de import.meta.env.DEV ?: en el build la dirección no elige nivel (T-278)');
   }
@@ -646,6 +712,78 @@ for (const [caso, roto, espera] of [
     'import.meta.env.DEV',
   ],
   ['🔴 la dirección leída por otro lado', SANO_DIBUJO + 'const n = location.hash.slice(1);', 'import.meta.env.DEV'],
+  // FIND-77: las evasiones que la guarda no cazaba hasta T-293.
+  [
+    '🔴 la condición dada vuelta: !import.meta.env.DEV ?',
+    SANO_DIBUJO.replace('import.meta.env.DEV ? new URLSearchParams', '!import.meta.env.DEV ? new URLSearchParams'),
+    'import.meta.env.DEV',
+  ],
+  [
+    '🔴 la condición mezclada: true || import.meta.env.DEV ?',
+    SANO_DIBUJO.replace('import.meta.env.DEV ? new URLSearchParams', 'true || import.meta.env.DEV ? new URLSearchParams'),
+    'import.meta.env.DEV',
+  ],
+  [
+    '🔴 la condición mezclada: algo ?? import.meta.env.DEV ?',
+    SANO_DIBUJO.replace('import.meta.env.DEV ? new URLSearchParams', 'algo ?? import.meta.env.DEV ? new URLSearchParams'),
+    'import.meta.env.DEV',
+  ],
+  [
+    '🔴 la dirección por document.URL y searchParams',
+    SANO_DIBUJO + "const n = new URL(document.URL).searchParams.get('nivel');",
+    'import.meta.env.DEV',
+  ],
+  ['🔴 la dirección por document.location', SANO_DIBUJO + "const n = String(document.location).split('nivel=')[1];", 'import.meta.env.DEV'],
+  ['🔴 la dirección por document.documentURI', SANO_DIBUJO + "const n = document.documentURI.split('nivel=')[1];", 'import.meta.env.DEV'],
+  ["🔴 la dirección por document['URL']", SANO_DIBUJO + "const n = document['URL'].split('nivel=')[1];", 'import.meta.env.DEV'],
+  [
+    '🔴 la dirección por otra puerta, pero leída con searchParams',
+    SANO_DIBUJO + "const n = new URL(navigation.currentEntry.url).searchParams.get('nivel');",
+    'import.meta.env.DEV',
+  ],
+  // La revisión de T-293: las que todavía pasaban.
+  ['🔴 la dirección por document?.URL', SANO_DIBUJO + "const n = document?.URL.split('nivel=')[1];", 'import.meta.env.DEV'],
+  ['🔴 la dirección por (document).URL', SANO_DIBUJO + "const n = (document).URL.split('nivel=')[1];", 'import.meta.env.DEV'],
+  [
+    '🔴 la dirección desestructurada: { URL: dir } = document',
+    SANO_DIBUJO + "const { URL: dir } = document; const n = dir.split('nivel=')[1];",
+    'import.meta.env.DEV',
+  ],
+  [
+    '🔴 la dirección por navigation.currentEntry.url, sin searchParams',
+    SANO_DIBUJO + "const n = navigation.currentEntry.url.split('nivel=')[1];",
+    'import.meta.env.DEV',
+  ],
+  [
+    '🔴 la dirección por la entrada de navegación de performance',
+    SANO_DIBUJO + "const n = performance.getEntriesByType('navigation')[0].name.split('nivel=')[1];",
+    'import.meta.env.DEV',
+  ],
+  [
+    "🔴 la lectura escondida entre un '/*' y un '*/' de texto",
+    SANO_DIBUJO + "const ab = '/*'; const n = new URL(document.URL).searchParams.get('nivel'); const ce = '*/';",
+    'import.meta.env.DEV',
+  ],
+  [
+    "🔴 un '//' de texto no se come el resto de la línea",
+    SANO_DIBUJO + "const ab = '//'; const n = document.URL.split('nivel=')[1];",
+    'import.meta.env.DEV',
+  ],
+  [
+    '🔴 una comilla adentro de una expresión regular no abre texto',
+    SANO_DIBUJO + "const r = /'/; const ab = '/*'; const n = document.URL.split('nivel=')[1]; const ce = '*/';",
+    'import.meta.env.DEV',
+  ],
+  [
+    '🔴 fetch nombrado sin paréntesis, para pedir por un alias',
+    SANO_DIBUJO + "const pedir = fetch; const j = await pedir(ruta.replace('.v1', ''));",
+    'nombra fetch sin llamarlo',
+  ],
+  [
+    '🔴 loadSprite nombrado sin paréntesis, para cargar por un alias',
+    SANO_DIBUJO + "const cargar = k.loadSprite; cargar(null, rutaDe(nombre, 'png').replace('.v1', ''));",
+    'nombra loadSprite sin llamarlo',
+  ],
 ] as const) {
   test(`el auditor del dibujo sabe encontrar: ${caso}`, () => {
     const problemas = problemasDelDibujo(roto);

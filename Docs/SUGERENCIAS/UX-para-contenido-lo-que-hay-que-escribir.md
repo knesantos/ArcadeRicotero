@@ -7,7 +7,8 @@
 > **Consume:** `D-42` precisión 1 (el pie de homenaje pasa de conveniente a obligatorio, y
 > su dueño sos vos), `D-38` barandas 1 y 3, `D-17` (voseo, sin infinitivo),
 > `.claude/rules/voz-ricotera.md` §5 (los tres registros y la regla de las dos líneas) y §8
-> (lo que audita `voz.test.ts`), `UX-27`, `UX-28`, `UX-29`, `UX-30`.
+> (lo que audita `voz.test.ts`), `UX-27`, `UX-28`, `UX-29`, `UX-30`. **`§6` suma
+> `UX-32-ganar-se-ve.md` (2026-09-24, `T-289`).**
 
 ---
 
@@ -103,3 +104,89 @@ Sale de `D-38` barandas 1 y 3, que `D-42` dejó intactas. No es estilo:
 | Nombrar el disco del tema que suena durante la partida | `D-39` condición 3: hay diez discos contra noventa y cinco temas, y nombrarlo le sopla el disco a otro juego |
 | Una frase de final feliz cuando los dos llegan a la puerta | `UX-29 §8`. La puerta se abre y eso es todo lo que pasa |
 | "Los fans", "los usuarios", "nuestra comunidad" | **La gente** |
+
+---
+
+## 6. El aviso de ganar, y la etiqueta del toque para seguir
+
+> Sumado el 2026-09-24 (`T-289`, ciclo 16), al cerrar `Docs/UX/UX-32-ganar-se-ve.md`. Es el
+> equivalente de `§2` para el otro lado: ahí el sitio calla, acá tiene que decir dos cosas
+> cortas, y las dos son tuyas.
+
+**El aviso de lector de pantalla, cuando los dos llegan a su puerta.** `PANTALLA.avisoEntrada`
+ya existe para el fallo (*"De vuelta en la entrada."*); ganar no tiene su par. Mismo molde
+que `§2`:
+
+- **Registro 3**, una sola línea.
+- **Nombra el lugar o el hecho, no a las personas.** Lo que pasó es que se llegó a las dos
+  puertas, no que "ganaron" — evitar el verbo que sugiera un logro compartido si eso abre la
+  puerta (nunca mejor dicho) a leerse como festejo.
+- **Sin suspensivos, sin signo de exclamación** (`voz-ricotera.md` §7 y §8, punto 7 de lo que
+  audita `voz.test.ts`).
+- **Molde de forma:** algo del orden de "las dos puertas, abiertas". Cuatro palabras, sin
+  emoción.
+
+**La etiqueta del control para seguir** (`UX-32 §5`). El sitio ya tiene el verbo: **`Seguí`**,
+nunca `Seguir` (`D-17`, y lo mismo que usa el resto del sitio después de revelar algo). No
+hace falta inventar una palabra nueva — si alcanza con reutilizar `Seguí` tal cual, no hay
+redacción pendiente; si el control necesita además un `aria-label` más largo porque el texto
+visible no alcanza sin contexto (por ejemplo, si vive superpuesto al área y no lleva letra
+visible), ese `aria-label` es tuyo, mismo registro 1 que un botón, mismo límite de
+`voz.test.ts` sobre infinitivos.
+
+---
+
+## 7. Pantalla completa y victoria bailada — cinco textos, para `CNT-22` (`T-299`)
+
+> Sumado el 2026-09-24 (`T-297`, ciclo 16, ráfaga 5), al cerrar
+> `Docs/UX/UX-33-pantalla-completa-y-victoria.md`. Sale de `D-47` y `BR-31`.
+
+### 7.1 El interruptor de pantalla completa — dos estados, mismo molde que la cinta (`UX-21 §3`)
+
+**Dónde vive:** un sello de goma superpuesto a una esquina del mueble (ventana) o del área
+(pantalla completa) — `UX-33 §1.2`/`§1.5`. Mismo patrón que la cinta: **la estampa visible
+nombra el estado actual** (no la acción), y el `aria-label` nombra el verbo, en voseo.
+
+| Estado | Estampa (registro 3, 2-3 palabras) | `aria-label` (voseo, sin infinitivo) |
+|---|---|---|
+| Ventana | algo del orden de **"PANTALLA NORMAL"** o el nombre que seas de lo que hay ahora | **"Entrá a pantalla completa"** o equivalente |
+| Pantalla completa | algo del orden de **"PANTALLA COMPLETA"** | **"Salí de pantalla completa"** o equivalente |
+
+Sin ícono (`UX-33 §1.2`: no hay un objeto propio del fichín que signifique "expandir", así
+que no se inventa uno — es la misma lógica por la que la cinta sí pudo usar un triángulo y
+esto no puede). Van en `--fuente-rotulada` en cuanto lleven tilde.
+
+**No hace falta texto distinto para iPhone.** El resultado que ve la persona es igual en
+cualquier plataforma (`UX-33 §1.8`).
+
+### 7.2 La línea de victoria — solo si hace falta más que el aviso de `UX-32 §6`
+
+`UX-32 §6` ya te pidió `PANTALLA.avisoEntrada` para cuando los dos llegan a la puerta ("las
+dos puertas, abiertas", o tu versión). Con el baile agregado (`UX-33 §2`), esa misma línea
+puede necesitar nombrar el hecho nuevo si el aviso de lector de pantalla se queda corto sin
+él — por ejemplo, si "las dos puertas, abiertas" ya no basta porque ahora también hay
+movimiento que un lector de pantalla no ve solo. Registro 3, una sola línea, sin
+suspensivos, sin exclamación, nombra el hecho — no a las personas ni el logro compartido.
+
+### 7.3 La línea del final del sexto nivel — distinta de la de cualquier otro
+
+`UX-33 §2.4`: al ganar el sexto nivel, el toque para seguir no lleva al próximo nivel, lleva
+a la pieza compartible (`BR-27`). Hace falta una línea corta que marque esa diferencia —
+puede vivir en el mismo lugar que el aviso de `§7.2`, o al lado del control para seguir.
+Restricciones: nada de "ganaron" ni de logro compartido (`voz-ricotera.md §5`, `BR-31`), y
+el registro es tuyo a elegir entre el 1 (canta) y el 3 (rotula), según si la línea informa
+un hecho o invita a un paso.
+
+### 7.4 El contador del coleccionable, si existe (`UX-33 §2.5`)
+
+Si el sitio muestra cuántas guitarras juntó Skayboy y cuántos cigarrillos Poligirl —en la
+pantalla de victoria de cada nivel, nunca durante la partida—, hacen falta las dos palabras
+en la forma exacta en que se van a leer al lado de un número: "guitarra(s)" y
+"cigarrillo(s)". Sin comparación entre los dos personajes en el texto (`BR-27` punto 2, la
+misma restricción que ya rige el tiempo).
+
+### 7.5 El anuncio de accesibilidad al levantar un objeto, opcional
+
+Si hace falta que un lector de pantalla anuncie que se juntó una guitarra o un cigarrillo:
+registro 3, cuatro palabras como techo, nombra el objeto y no narra nada más — el mismo
+molde que ya usa `§2` de este documento para el fracaso ("de vuelta en la entrada").

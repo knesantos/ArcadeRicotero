@@ -271,6 +271,22 @@ piso a nadie parado encima porque no hay dónde pararse encima):
 ###############
 ```
 
+**Nota agregada el 2026-09-24 (`T-294`, corrige `FIND-74`).** El traspaso de `T-277`
+(`Docs/SUGERENCIAS/HILO-para-experiencia-los-seis-niveles-contra-el-solucionador.md §1`)
+carga la grilla final de este nivel con un ladrillo en `[9, 7]`, pegado a la puerta de
+Poligirl — no en `[6, 7]`, junto a la de Skayboy, que es donde lo ponía la versión anterior
+de ese boceto. Ese traspaso decía que el ladrillo en `[6, 7]` "tampoco sirve ahí, medido:
+5", pero esa medición corre sobre la traza de **tres** turnos que quedó grabada —Skayboy
+frena "a un paso" de `A` sin necesitar nada contra qué frenar, y da el último paso recién
+al final—. Con la traza de **dos** turnos, en la que Skayboy camina derecho hasta `A` y
+frena contra lo primero que encuentra, el ladrillo en `[6, 7]` sí sirve — el mismo motivo
+por el que sirve en `[9, 7]` para Poligirl (punto 4 de `§0` del traspaso: "alguien tiene
+que llegar primero a su puerta y frenar ahí"). **La versión cierta: `[9, 7]` fue una
+elección entre dos lugares igual de válidos para dar tolerancia, no una obligación que la
+medición impusiera.** Ninguno enseña algo distinto del otro —los dos son "algo contra qué
+frenar, pegado a una puerta"—, así que la elección no mueve la columna "Qué enseña" de este
+nivel.
+
 ### NIV-04 — Media 2: lo que hace falta sostener, y lo que no perdona a nadie
 
 **Qué enseña (una sola cosa):** que hay una forma de mecanismo que necesita peso quieto
@@ -557,3 +573,34 @@ Lo que se audita a ojo, con esta vara:
 5. Que "Qué entra" nombre todo caracter que aparece en el boceto de la grilla —si el boceto
    trae `X`, `C` o `I`, el texto lo dice; si no lo trae, el texto no lo promete. Es lo que
    la verificación del ciclo 16 encontró roto en `NIV-05` y `NIV-06` y quedó corregido acá.
+
+---
+
+## 9. Respuesta al traspaso de `T-277` (`FIND-74`)
+
+> `Docs/SUGERENCIAS/HILO-para-experiencia-los-seis-niveles-contra-el-solucionador.md`,
+> leído entero para esta tarea (`T-294`).
+
+**Lo de `FIND-74` queda registrado en `§3`, NIV-03**: la versión cierta es que `[9, 7]` es
+una elección entre dos lugares igual de válidos para dar tolerancia, no una obligación que
+imponía la medición del ladrillo en `[6, 7]` — esa medición corría sobre una sola de las dos
+trazas posibles.
+
+**Lo que el traspaso pide de fondo — "que `UX-31 §3` refleje las grillas que quedaron
+cargadas" en `src/data/skayboy.json`**: no lo hago en esta tarea. `§3` ya avisa, en su
+primera línea, que los bocetos son "ilustrativos, no validados por el solucionador" y que
+"si una traza no cierra, ahí se corrige el boceto, no acá" — la fuente de verdad tile a
+tile es el dato cargado por `T-277`, y el traspaso mismo ya es el registro completo de qué
+cambió en cada nivel y por qué. Resincronizar las seis grillas ASCII de `§3` para que
+calquen ese dato es trabajo real —seis niveles, entradas y puertas que cambiaron de lado,
+techos bajos nuevos— y el plan de esta ráfaga (`ORQ-plan-ciclo-16.md §2.5`) le dio a
+`T-294` un alcance puntual: `FIND-74`. No lo absorbo sin que se corte como tarea propia. Si
+se quiere que `§3` deje de decir "boceto provisorio" y pase a ser el espejo exacto del
+dato cargado, es tarea de un próximo ciclo, no de esta.
+
+El resto del traspaso —los cuatro puntos de `§0`, el detalle nivel por nivel de `§1`, los
+callejones de `§2`, y "lo que no cambia" de `§3` del traspaso— no le pide nada más a este
+documento: son justificaciones de grilla y de física que quedan del lado de
+`arquitectura`/`mundo.ts`, y ninguna mueve "qué enseña cada nivel" (`§3` de acá), la
+paridad de `§4` (el traspaso mismo la confirma "igual, 3 a 3", contada sobre las trazas) ni
+el límite de nombres de `§7`.

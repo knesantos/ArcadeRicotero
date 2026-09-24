@@ -131,6 +131,15 @@ const PISO = [
           <div class="gabinete">
             <div class="recorte">
               <canvas id="juego" width="240" height="144" aria-label={CASETE.titulo}></canvas>
+              {/*
+                Seguir al próximo nivel (`UX-32 §5`, `US-09` criterio 1): **tocar el área, una
+                vez ganada**. Es un botón de verdad superpuesto al recorte entero —foco de
+                teclado, rol de botón, el verbo del sitio de etiqueta—, así que el toque en el
+                área y el Enter del teclado son el mismo control y no hay dos caminos. Nace
+                escondido y la isla lo muestra en el mismo cuadro en que se gana (`D-32` límite
+                3); sin texto visible, porque adentro del área no hay texto (`UX-27 §5.1`).
+              */}
+              <button type="button" id="seguir-juego" class="seguir-juego" hidden aria-label={PANTALLA.seguir}></button>
             </div>
 
             {/*

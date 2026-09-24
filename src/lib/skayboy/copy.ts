@@ -80,6 +80,15 @@ export const PANTALLA = {
   lineaVertical: 'De costado se ve el doble de grande.',
   rotuloCarga: 'Acá va el juego.',
   avisoEntrada: 'De vuelta en la entrada.',
+  /**
+   * La etiqueta del control para seguir al próximo nivel, una vez ganado (`UX-32 §5`). **No es
+   * una cadena nueva**: es el verbo que el sitio ya usa para continuar después de revelar algo
+   * (`letra`, `tapa`, `tema` y `por-la-letra` dicen lo mismo), y el traspaso a `contenido`
+   * (`Docs/SUGERENCIAS/UX-para-contenido-lo-que-hay-que-escribir.md §6`) deja escrito que, si
+   * alcanza con reutilizarlo tal cual, no hay redacción pendiente. Va de `aria-label`: el botón
+   * se superpone al área y adentro del área no hay texto (`UX-27 §5.1`).
+   */
+  seguir: 'Seguí',
 } as const;
 
 /**

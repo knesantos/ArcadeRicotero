@@ -34,7 +34,7 @@
  * ## El dibujo sale de los atlas, y de nada más (`T-278`, `CTR-15`)
  *
  * Adentro del área no hay un solo rectángulo de tinta plana: todo lo que se ve es un cuadro de
- * `public/sprites/` —`skayboy.v1`, `poligirl.v1`, `sala.v1`—, cargado a tamaño nativo y
+ * `public/sprites/` —`skayboy.v1`, `poligirl.v1`, `sala.v2`—, cargado a tamaño nativo y
  * escalado por el motor con un entero y sin suavizado (`crisp`, `texFilter: 'nearest'`,
  * `ADR-08.3`). **Qué** se dibuja, en qué estado y dónde lo decide `escena.ts`, probado en Node
  * (`escena.test.ts`): el mapeo de `poseDe()` a los estados del atlas, el espejo según `mira`,
@@ -46,11 +46,21 @@
  * o si un atlas no está o no es el que la escena espera, el juego no arranca y queda el rótulo
  * impreso: un área a medio pintar sería inventar lo que falta. Lo vigila `motor.test.ts`.
  *
- * **Un hueco declarado: ganar no se ve.** La isla anterior llenaba el marco de la puerta al
- * ganar; `sala.v1` no tiene una puerta abierta, y esta isla no inventa un tile ni lo tiñe. Con la
- * cinta apagada, llegar los dos a la puerta hoy no cambia nada en el área. `UX-29 §8` dice que la
- * puerta se abre y `CTR-16.4` que "una puerta no se abre: se llega"; el traspaso a `experiencia`
- * está en `Docs/SUGERENCIAS/` (`T-278`).
+ * ## Ganar se ve, y se sigue con un toque (`UX-32`, `T-290`)
+ *
+ * **Qué se ve lo decide `escena.ts`**, como todo el dibujo: con el mundo ganado, las dos puertas
+ * son `puertaAbierta` en el mismo cuadro y los dos muñecos van de frente. La isla no hace nada
+ * especial para eso — dibuja los trazos de siempre. Ni festejo, ni cartel, ni cámara: después de
+ * ese cuadro no se mueve nada, porque el reloj del mundo se congela al ganar.
+ *
+ * **Seguir es tocar el área.** Encima del canvas hay un `<button>` del tamaño del recorte
+ * (`#seguir-juego`, con el verbo del sitio de etiqueta), escondido mientras se juega. En el mismo
+ * tic en que el mundo termina la isla lo muestra —`mostrarSeguir()`, llamada después de cada
+ * `jugarTic(`—, y tocarlo cambia el mundo por el que arma `alTocarSeguir()`, el del nivel que sigue,
+ * **ahí mismo**: sin recargar, sin bajar nada, con el mismo motor y los mismos atlas (`D-32`
+ * límite 3). Las dos viven en `escena.ts` y se juegan en Node; la isla pone el pegamento y suelta
+ * las teclas al cambiar de nivel: el que arranca tiene que estar quieto (`UX-28 §3`). En el último
+ * nivel no aparece: a dónde lleva ahí es de `producto` (`UX-32 §5`, `BR-27`).
  *
  * ## Se carga solo si hay un nivel que jugar
  *
@@ -84,9 +94,11 @@ import type { Banco, IdPersonaje } from '../lib/skayboy/niveles.ts';
 import type { JsonDelAtlas } from '../lib/pixel/fuente.ts';
 import {
   PIEZAS,
+  alTocarSeguir,
   atlasDe,
   cuadroDelAtlas,
   grillaDelAtlas,
+  mostrarSeguir,
   nivelAJugar,
   problemasDelAtlas,
   problemasDelCuadro,
@@ -225,6 +237,9 @@ function engancharEfectos(): void {
    ========================================================================== */
 
 const aviso = document.querySelector<HTMLElement>('#aviso-juego');
+
+/** El botón del recorte que lleva al nivel que sigue (`UX-32 §5`). Nace escondido en el HTML. */
+const seguir = document.querySelector<HTMLButtonElement>('#seguir-juego');
 
 /**
  * `deFrente` junta a los que volvieron a la entrada en este tic: el cuadro que sigue se dibujan
@@ -386,9 +401,26 @@ async function arrancar(): Promise<void> {
 
   const cargados = await Promise.all(PIEZAS.map((pieza) => cargarAtlas(k, pieza, nombres[pieza], jsons[pieza])));
   const atlas = Object.fromEntries(PIEZAS.map((pieza, i) => [pieza, cargados[i]])) as Record<Pieza, Atlas>;
-  const mundo = crearMundo(banco, nivel);
+  // `let`: seguir al próximo nivel es cambiar este mundo por otro. El reloj no se cambia: es el
+  // del motor, y lo que guarda es menos de un cuadro de tiempo, no nada del nivel.
+  let mundo = crearMundo(banco, nivel);
   const reloj = crearReloj();
   const deFrente = new Set<IdPersonaje>();
+
+  // Qué hace el toque y cuándo se ve el botón lo deciden `alTocarSeguir()` y `mostrarSeguir()`,
+  // jugadas en Node; acá queda el pegamento con el DOM (`escena.test.ts` vigila que se llamen).
+  seguir?.addEventListener('click', () => {
+    const nuevo = alTocarSeguir(mundo, banco.niveles, deFrente);
+    if (nuevo === undefined) return;
+    // Si llegó con el teclado, el foco vuelve a la primera tecla: esconder el botón enfocado lo
+    // mandaría al `body`, y el que juega con Tab tendría que volver a buscar el mando.
+    const conTeclado = seguir.matches(':focus-visible');
+    mundo = nuevo;
+    // El que arranca tiene que estar quieto (`UX-28 §3`): ningún dedo pasa de un nivel al otro.
+    soltarTodas();
+    mostrarSeguir(seguir, mundo, banco.niveles);
+    if (conTeclado) document.querySelector<HTMLButtonElement>('button[data-mando][data-tecla]')?.focus();
+  });
 
   k.onUpdate(() => {
     // Las teclas se leen una vez por tic y valen para todos los cuadros de ese tic (ADR-09.1).
@@ -402,6 +434,8 @@ async function arrancar(): Promise<void> {
     // build, así que lo que se juega acá es, bit a bit, lo que se probó. Todo eso vive en
     // jugarTic(), probado en Node: la isla solo le da el tiempo del motor.
     atender(jugarTic(reloj, mundo, ambos, k.dt()), deFrente);
+    // En el mismo tic en que se gana, el toque para seguir ya es tocable (`D-32` límite 3).
+    mostrarSeguir(seguir, mundo, banco.niveles);
   });
   k.onDraw(() => {
     dibujar(k, mundo, atlas, deFrente);

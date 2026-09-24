@@ -2505,3 +2505,57 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     del nivel del ítem (2, 1 o 0). Si el nivel pasa a salir del conteo, qué pasa con el
     contexto lo fija `producto` (`T-286`), el contrato `arquitectura` (`CTR-04`, `T-287`)
     y el código el hilo principal (`T-288`).
+
+## D-47 — Skayboy y Poligirl a pantalla completa, con victoria bailada y un coleccionable para cada uno
+
+- **Fecha:** 2026-09-24
+- **Estado:** aceptada — decisión directa del usuario después de jugar el nivel 1 en su
+  teléfono, en la vista previa del PR #17. Textual: *"me parece que la mejor idea es hacerlo
+  pantalla completa con los controles medio transparentes en la pantalla. El scroll en
+  horizontal rompe los controles, que la pantalla completa use la disposición de los
+  controles del horizontal completo. Los controles se sienten bien, agrega la pantalla
+  completa y larga los demás niveles. Además debe haber una pantalla de victoria en la que
+  bailen los personajes. Skay debe juntar guitarras y Poli cigarrillos."*
+- **Consume y enmienda:** `D-41` (el mueble alrededor del área), `UX-27 §5.1`, `UX-28`,
+  `UX-32` (ganar: "nada más se mueve"), `BR-23` (la prohibición de "una animación de
+  festejo al llegar juntos a la puerta"), `US-09` criterios 1, 6 y 9, el tesoro para los dos
+  de `CTR-16.4`, `CTR-15.7` (los cinco estados de un muñeco).
+
+- **Lo que dijo el teléfono.** Los controles se sienten bien: es la primera observación del
+  pulgar que tiene el juego. Y el defecto que la máquina no podía ver: **en horizontal la
+  página scrollea y el scroll rompe los controles.**
+
+- **Decisión.**
+  1. **Pantalla completa.** El juego tiene un modo en el que el área ocupa la pantalla y
+     **los controles quedan superpuestos, medio transparentes, con la disposición del
+     horizontal**: salto grande a cada lado y las flechas abajo. En ese modo la página no
+     scrollea ni se mueve con el dedo. El mueble impreso de `D-41` sigue siendo la pantalla
+     de entrada; la pantalla completa es la manera de jugar.
+  2. **Los seis niveles, en fila.** Al ganar se pasa al siguiente, y el avance se guarda en
+     el aparato (`US-09` criterio 9).
+  3. **Pantalla de victoria: los personajes bailan.** Enmienda la prohibición de festejo de
+     `BR-23` y el "nada más se mueve" de `UX-32`. **Lo que no se enmienda es por qué existía
+     esa prohibición:** el juego no afirma ningún vínculo sentimental entre dos personas
+     reales (`D-38` baranda 3). Por eso **cada uno baila su propio baile**, con la misma
+     cantidad de cuadros (`BR-23` punto 2), y sin gestos de pareja: no se abrazan, no se
+     toman de la mano, no bailan juntos.
+  4. **Un coleccionable para cada uno: Skay junta guitarras, Poli junta cigarrillos.**
+     Reemplaza al tesoro que servía para los dos. La paridad de `BR-23` se vuelve contable:
+     la misma cantidad por nivel. Sigue sin ser condición para ganar. Y la guitarra se junta
+     del piso: `UX-27 §8.2` (ni la guitarra ni ningún objeto en la mano) sigue en pie.
+
+- **Una nota sobre el cigarrillo, sin veto.** Es un objeto que el sitio le asigna a una
+  persona real y viva. `D-38` pidió cuidado con lo que se le atribuye; el usuario lo decidió
+  sabiéndolo, y por `D-14`, si llega un reclamo, se cambia el objeto.
+
+- **Consecuencias.**
+  1. `producto` enmienda `US-09` y `BR-23` (`T-296`); `experiencia` diseña la pantalla
+     completa y la victoria (`T-297`, `UX-33`); `arquitectura` fija los coleccionables en la
+     leyenda, el sexto estado de los muñecos y el uso de la pantalla completa (`T-298`);
+     `contenido` escribe lo que se lee (`T-299`); y el hilo principal dibuja y construye
+     (`T-300`..`T-303`).
+  2. **En iPhone no existe la pantalla completa de verdad para una página** (Safari solo la
+     da para video). El modo tiene que andar igual sin ella: la página ocupa la ventana
+     entera y bloquea el scroll. Donde el sistema sí la da (Android, escritorio), se pide.
+  3. Los niveles siguen en `borrador` hasta que alguien juegue de a dos (`BR-25` a). Lo que
+     dijo el usuario cuenta como la primera mitad de esa prueba, no como la prueba entera.

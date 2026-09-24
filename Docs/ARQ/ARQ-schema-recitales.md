@@ -11,6 +11,16 @@
 > además: `D-46`, `BR-30`, `RES-89` a `RES-92` (`INV-89`), `CTR-09`,
 > `scripts/generar-por-la-letra.mjs`, `src/data/por-la-letra.json`, `src/lib/en-vivo.ts`.
 >
+> **Enmendado otra vez el 2026-09-24 por `T-291` (ciclo 16, ráfaga 4), para cerrar `FIND-71`
+> (`REV-15`).** `BR-30` ya había decidido cómo se reparten Media y Difícil de `US-02`, y este
+> contrato seguía diciendo la regla vieja y listándola como abierta. Cambian `CTR-19.5` (el paso
+> 5), `CTR-19.13` (t16 y t17), `CTR-19.14` (puntos 2 y 6), `CTR-19.15` (quién usa los tercios),
+> una frase de `CTR-19.16` que contradecía al dato (*¡Lobo ¿estás?!*, sin efecto en ningún
+> número) y las Consecuencias. Cada apartado dice qué decía antes. Consume además: `BR-30` (*"Media y
+> Difícil de `US-02`"*, la corrección de la ráfaga 3), `REV-15` (`FIND-71`),
+> `src/lib/en-vivo.ts` (`repartirEnVivo`, `repartirEnTercios`), `src/lib/tema/catalogo.test.ts`,
+> `src/data/setlistfm.json` y `src/data/adivinar-tema.json`, leídos en disco el 2026-09-24.
+>
 > **Consume:** `D-13`, `D-14`, `D-27`, **`D-45` y su enmienda del 2026-09-23**, `BR-01`,
 > `BR-18` (a), (b), (d), (f), (g) y **(h)** (lo escribe `T-274` en paralelo; lo leí en disco el
 > 2026-09-23), `BR-28`, `US-02`, `RES-20`, `RES-25`, `RES-52` (d), **`RES-73`, `RES-74`,
@@ -349,10 +359,27 @@ export function repartirEnVivo(
 4. `determinado` vale `m === cuota`. Si no, `motivo` dice por qué, por ejemplo: *"La bestia pop
    (57) empata con Aquella solitaria vaca cubana (57) en el puesto 8"*, *"hay 6 temas del pozo con
    conteo y la cuota es 8"*, o *"«X» (sin identificar) figura 60 veces, arriba del corte"*.
-5. **Media y Difícil**: `media` son las líneas de `L` que no quedaron en Fácil, y `dificil` los
-   temas del pozo sin línea publicada. Más abajo se explica por qué esta regla y de quién es.
+5. **Media y Difícil** *(enmendado el 2026-09-24, `T-291`; el texto anterior está abajo)*. El
+   **resto** es todo tema del pozo que no quedó en Fácil, tenga línea o no. El resto se reparte
+   con **`repartirEnTercios(resto, conteo)`** (`CTR-19.15`): la misma función que usa `US-07`,
+   llamada desde acá y no copiada. Lo que esa regla deja en `dificil` es **Difícil**. Lo que deja
+   en `facil` o en `media` es **Media**. **De este paso no sale ningún Fácil**: Fácil es solo el
+   corte de los pasos 1 a 4. Todo lo demás lo hereda de `CTR-19.15` sin agregar nada:
+   - un tema del resto sin línea es Difícil y no ocupa lugar en los tercios;
+   - `t = ⌈|L del resto| / 3⌉`, y la frontera Media/Difícil está en `alcance ≤ 2t`;
+   - un empate en esa frontera baja entero a Difícil;
+   - con `completo: false`, a una línea que no supera la última publicada se le suman al
+     alcance los temas sin línea;
+   - los `sin-identificar` no suben ningún techo.
+
+   Si el corte quedó sin determinar (`m < cuota`), los empatados en el borde de Fácil están en el
+   resto y se reparten igual.
+
+   *Decía:* *"`media` son las líneas de `L` que no quedaron en Fácil, y `dificil` los temas del
+   pozo sin línea publicada. Más abajo se explica por qué esta regla y de quién es."*
 6. Con `conteo === null`, todo el pozo queda en `dificil`, con `faciles: 0` y
-   `motivo: "sin conteo"`. Es la misma degradación declarada de hoy, con otro insumo.
+   `motivo: "sin conteo"`. Es la misma degradación declarada de hoy, con otro insumo. *(No cambia
+   con `T-291`: `repartirEnTercios()` con `null` también da todo `dificil`.)*
 
 **Si no alcanza, no se pasa en silencio a otro criterio (`D-45`).** Con `determinado: false` la
 página se arma igual, con los Fáciles que sí quedan separados (esos son indiscutibles), y **el test
@@ -378,8 +405,81 @@ Brigitte Bardot* (80) y *Nene nena* (68) son `inedito` y no entran (`RES-75`).
 > quedó en `Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-conteo-completo-mueve.md`. Cambiar el
 > código sigue siendo tocar una línea (paso 5).
 
+> **Enmendado el 2026-09-24 por `T-291` (`FIND-71`): Media y Difícil de `US-02` ya no son una
+> pregunta abierta.** `BR-30`, en *"Media y Difícil de `US-02`"*, contestó el pedido de
+> `Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-conteo-completo-mueve.md` §1 con la opción que
+> ese pase proponía: *"Para los 87 temas que no son de los 8 Fáciles, `US-02` pasa a usar la misma
+> fuente de tercios que ya tiene asignada `US-07` (`CTR-19.15`, con el empate en el borde bajando
+> entero, igual que ahí) […] la franja de abajo es **Difícil**, las dos de arriba son **Media**"*.
+> El paso 5 de arriba lo escribe como regla. Hasta hoy, este apartado seguía con 8 / 82 / 5 y
+> `CTR-19.14` punto 6 lo daba por abierto: esa es la contradicción que marcó `FIND-71`.
+>
+> **Una precisión, porque `BR-30` dice "87" y la cuenta se hace sobre 82.** Los 87 son el
+> **resto**, el pozo que se le pasa a la regla. Los tercios se parten sobre los 82 que tienen
+> línea, porque en `CTR-19.15` un tema sin línea es `dificil` y no ocupa lugar (paso 2). Es la
+> regla de `US-07` sin tocar, que es lo que pide `BR-30`. Si `producto` hubiera querido tercios
+> sobre los 87 con los cinco sin línea adentro, serían otra regla (t = 29) y una segunda copia.
+>
+> **Lo que da hoy.** Es una lectura derivada de `RES-90`, de `setlistfm.json` y de los 95 slugs de
+> `adivinar-tema.json`, contada a mano el 2026-09-24. La confirma t17 (`CTR-19.13`) y, si no
+> coincide, manda t17 y este párrafo se corrige.
+> - El resto son 87: 82 con línea y los 5 sin línea de siempre.
+> - `t = ⌈82 / 3⌉ = 28`, así que `2t = 56`.
+> - La frontera cae limpia. *Ella baila con todos*, *Las increíbles andanzas del Capitán Buscapina
+>   en Cybersiberia* y *Rock yugular* figuran 8 veces, y 56 temas del resto figuran al menos eso:
+>   son Media. *Estás frito angelito* y *Fuegos de octubre* figuran 7, con alcance 58: son
+>   Difícil. Ninguna línea del resto tiene 1 o menos, así que `completo: false` no suma nada.
+> - El reparto pasa de **8 / 82 / 5 a 8 / 56 / 31**. Los 31 Difíciles son 26 con línea (de 7 a 2
+>   veces, de *Estás frito angelito* a *La pequeña novia del carioca*) y los 5 sin línea. Difícil
+>   vuelve a querer decir "poco tocado", y no solo "nadie lo cargó".
+>
+> *Alternativa descartada:* **tercios sobre el pozo entero (95) y después pisar los 8 primeros con
+> Fácil.** `BR-30` lo dice textual: *"lo único que cambia es cómo se reparte lo que queda
+> **después** de sacar esos 8"*. Con los Fáciles adentro de la cuenta, `t` sale de 90 líneas y no
+> de 82, y la frontera se corre: hoy daría 8 / 52 / 35.
+> *Alternativa descartada:* **escribir los tercios otra vez adentro de `repartirEnVivo()`**, con
+> una frontera de dos tercios. Serían dos copias de la regla, que se separan el día que alguien
+> toque una. Es el modo de falla que `CTR-19.15` evitó al escribir el paso 1 una sola vez. Y el
+> plan le pide a `T-287` *"la regla única"* para `US-03` (precisión de `D-46`), así que una copia
+> más ya no sería la segunda sino la tercera.
+> *Alternativa descartada:* **contar el tercio de Difícil desde abajo** (`⌈n/3⌉` temas desde la
+> cola). Con 82, la frontera cae 28 lugares arriba de la cola, y hoy eso parte al grupo de los
+> tres que figuran 8 veces. Si se cuenta por puesto, el orden alfabético de la página decide
+> cuál de los tres es Difícil. Si se cuenta por alcance, el grupo **sube** entero a Media, que es
+> el lado contrario al que eligieron `CTR-19.15` y el corte de 8. Un tercer criterio de borde en
+> el mismo módulo es lo que `CTR-19.15` descarta.
+> *Alternativa descartada:* **que `catalogo()` llame a las dos funciones y combine**. La regla de
+> `US-02` quedaría partida entre dos archivos, y `CorteEnVivo.porSlug` diría `media` de temas que
+> la página muestra como `dificil`. La combinación vive en `repartirEnVivo()`, y **ni la firma ni
+> la forma de `CorteEnVivo` cambian**: `catalogo()` no se entera.
+>
+> **Lo que toca `T-292` por esta enmienda:**
+> 1. El paso 5 en `repartirEnVivo()`, llamando a `repartirEnTercios()`.
+> 2. t16 y t17 (`CTR-19.13`).
+> 3. El test `CTR-19.5: con conteo aparecen los 8 Fáciles` de `src/lib/tema/catalogo.test.ts`
+>    espera `{ facil: 8, media: 12, dificil: 10 }`. Esa es la regla vieja: 20 líneas con conteos
+>    distintos y 10 sin línea. Con esta, el resto tiene 12 líneas, `t = 4`, y da
+>    `{ facil: 8, media: 8, dificil: 14 }`. **Es el rojo que se tiene que ver**, y después se
+>    corrige.
+> 4. Cinco comentarios que quedarían mintiendo:
+>    - `en-vivo.ts`, la tabla del encabezado, fila `US-02`: dice *"el corte de 8 Fáciles"*, y
+>      ahora es el corte y después los tercios.
+>    - `en-vivo.ts`, la línea *"Los tercios de `US-07`"* de *"Las reglas, en una línea cada
+>      una"*.
+>    - `en-vivo.ts`, el comentario de `repartirEnVivo()`: dice *"Media: el resto de las líneas del
+>      pozo que figuran"* y *"Difícil: los temas del pozo que no figuran"*.
+>    - `en-vivo.ts`, el de `repartirEnTercios()` (*"La usa solo
+>      `scripts/generar-por-la-letra.mjs`"*), y `src/scripts/partida-tema.ts:218` (*"el resto
+>      de los que figuran `media`, y los que no figuran…"*).
+>
+> Los tests que ya existen de `repartirEnVivo()` siguen en verde con la regla nueva, contados a
+> mano: t6 (los dos empatados en 30 siguen en Media), t7 (*t9* sigue en Media), "sin conteo" y
+> "paso 1" (*t10* sigue en Media). Si alguno se pone en rojo, la cuenta de este párrafo está mal
+> y manda el test.
+
 **Media y Difícil: la extensión de lo que ya decidió el usuario, hasta que `BR-18` (h) diga otra
-cosa.** El apartado (h) fija los 8 Fáciles y no dice cómo se reparte el resto; `US-02` dice "resto
+cosa.** *(Reemplazado el 2026-09-24 por el recuadro de arriba. Se deja como estaba para que se
+vea de dónde se venía.)* El apartado (h) fija los 8 Fáciles y no dice cómo se reparte el resto; `US-02` dice "resto
 repartido en Media/Difícil". La regla de arriba es la única que se puede escribir sin inventar un
 número. *"Sin escucha por ahora es difícil"* es `D-27` con las palabras del usuario; acá
 "escucha" pasa a ser "figura en lo que publicó la página". Cambiarla es tocar **una línea** de
@@ -1160,6 +1260,21 @@ hacer cumplir. Si alguno valida, el contrato no sirve.
 > 8 / 82 / 5 de `US-02`**, porque ese número depende de una regla que `producto` puede cambiar. Lo
 > muestra el comando (1).
 
+> **Enmendado el 2026-09-24 (`T-291`, `FIND-71`).** La frase de arriba (*"No hay test del 8 / 82 /
+> 5"*) quedó vieja. `producto` ya eligió la regla (`BR-30`), y `REV-15` encontró el hueco que
+> dejaba: **ningún test cubría la distribución**, así que el código pudo quedarse con la regla vieja
+> sin que nada se pusiera en rojo. Entran dos tests, que los escribe y los corre **`T-292`**:
+>
+> | # | Qué afirma | Archivo | Rojo cuando |
+> |---|---|---|---|
+> | t16 | **El paso 5 de `CTR-19.5`, con conteos inventados.** Pozo de 15: ocho temas con 100, 95 … 65; seis con 30, 25, 20, 15, 10 y 5; y uno sin línea. Da 8 `facil`; 30, 25, 20 y 15 en `media`; 10, 5 y el sin línea en `dificil`. **Empate en la frontera:** con 30, 25, 20, 10, 10 y 5, los dos 10 son `dificil` y Media queda con tres. El control es la misma sala sin empate, donde el 15 es `media`. **Nunca un Fácil de más:** el 30 y el 25, que son el tercio de arriba del resto, son `media` y no `facil` | `src/lib/en-vivo.test.ts`, junto a t6 y t7 | Tres formas. (a) La regla vieja: el 10 y el 5 quedan en `media`, así que el reparto da 8/6/1. (b) Copiar tal cual lo que devuelve `repartirEnTercios()`: salen 10 Fáciles. (c) Hacer los tercios sobre el pozo entero: el 20 y el 15 caen en `dificil` |
+> | t17 | **El paso 5 con el pozo real** (`adivinar-tema.json`, `setlistfm.json`). Para cada tema del pozo que no es Fácil, su nivel es `dificil` si `repartirEnTercios(resto, conteo)` lo deja en `dificil`, y `media` si no. Además, **al menos un tema con línea es Difícil**. El mensaje imprime el reparto, que hoy es 8 / 56 / 31 (`CTR-19.5`) | `src/lib/en-vivo.test.ts`, junto a t5 | la regla vieja: con ella los únicos Difíciles son los cinco sin línea. Es el `FIND-71` |
+>
+> **t17 no compara contra el número 8 / 56 / 31.** Cambia cada vez que se refresca el conteo
+> (`CTR-19.6`), y un test que lo tuviera escrito se pondría en rojo en cada refresco sin que nada
+> esté roto. Es el mismo criterio de t14: se compara contra la regla, no contra una cifra. El
+> número lo compara `T-292` una sola vez, a mano, contra el recuadro de `CTR-19.5`.
+
 **Y los que ya existen, que tienen que seguir en verde con los alias nuevos:**
 `src/lib/letra/temas.test.ts` (cada alias apunta a uno de los 105 y ninguno sobra) y
 `src/lib/tema/catalogo.test.ts`. En este último, **los dos tests de tercios con vistas se
@@ -1200,6 +1315,7 @@ rg -n "^## CTR-19" Docs/ARQ/ARQ-schema-recitales.md
 | 9 | Que el texto de cada licencia diga lo que declara la `familia`, y un `permiso-escrito` deje redistribuir | **`revisor`**, contra `RES-76`+ |
 | 10 | Que la cantidad de recitales por fuente sea la que contó la ficha | **`revisor`**, con el comando (2) |
 | 11 | Que la pantalla rotule (`RNF-CTR-19-A`, `-B`) | **`revisor`**, cuando haya pantalla |
+| 12 | *(Sumada el 2026-09-24, `T-291`.)* Que Media y Difícil de `US-02` salgan de los tercios del resto, y no de "figura / no figura" (`FIND-71`) | t16, t17 |
 
 ---
 
@@ -1218,6 +1334,10 @@ Nada de esto frena `T-279`. Todo tiene un valor por defecto escrito arriba.
    deja viejas** (tres en (h) y una en (g)). Dueño: `producto`, en
    `Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-corte-en-vivo-deja-abierto.md`. Mientras tanto
    rige lo que dicen `CTR-19.5` y `CTR-19.6`.
+   *Enmendado el 2026-09-24 (`T-291`): **la parte de Media y Difícil está cerrada.** `BR-30` la
+   confirmó primero y la cambió después ("Media y Difícil de `US-02`"), y lo que rige es el paso 5
+   de `CTR-19.5`, enmendado. El plazo y las cuatro citas de `BR-18` no los mira esta tarea y
+   siguen como estaban.*
 3. **🔴 Con 8 Fáciles, cada vuelta de `US-02` con todos los discos sale de esos mismos 8
    temas.** `escalonar()` llena la vuelta desde el nivel más fácil hasta completar el largo, y la
    vuelta es de 4 (`partida-tema.ts:68`, `escalonar(pozo(), LARGO_RONDA)` en la línea 225). Con
@@ -1238,9 +1358,15 @@ Nada de esto frena `T-279`. Todo tiene un valor por defecto escrito arriba.
 
 *Enmienda del 2026-09-24 (`T-284`): se suman 6 a 8.*
 
-6. **Media y Difícil de `US-02` con el conteo completo: 8 / 82 / 5** (`CTR-19.5`, enmienda). Dueño:
+6. ~~**Media y Difícil de `US-02` con el conteo completo: 8 / 82 / 5** (`CTR-19.5`, enmienda). Dueño:
    `producto`, en `Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-conteo-completo-mueve.md`. Mientras
-   tanto rige el paso 5.
+   tanto rige el paso 5.~~ **[CERRADO 2026-09-24 por `BR-30`; lo escribe `T-291`]**. `producto`
+   eligió los tercios de `CTR-19.15` para el resto del pozo, que es la opción que proponía ese pase
+   §1. **Rige el paso 5 de `CTR-19.5`, enmendado**: el resto se reparte con
+   `repartirEnTercios()`, y hoy da 8 / 56 / 31. El paso 5 viejo (8 / 82 / 5) **ya no rige**. Si el
+   código todavía lo hace, es un defecto de código, y lo cierra `T-292` con t16 y t17
+   (`CTR-19.13`). *Decía "Mientras tanto rige el paso 5", sin decir cuál, y esa frase fue la mitad
+   de `FIND-71`.*
 7. **Cuatro inconsistencias chicas de `INV-89`.** Ninguna cambia un número de los que se usan.
    Dueño: `investigador`, en `Docs/SUGERENCIAS/ARQ-para-investigador-lo-que-el-conteo-completo-deja-suelto.md`.
    Mientras tanto manda el anexo (`CTR-19.16`).
@@ -1255,6 +1381,8 @@ Nada de esto frena `T-279`. Todo tiene un valor por defecto escrito arriba.
 **`repartirEnTercios()`**, en `src/lib/en-vivo.ts` y al lado del corte de `US-02`, sobre el pozo del
 banco y con el conteo citado. **La usa un solo lugar**: `scripts/generar-por-la-letra.mjs`, que
 escribe el resultado en el banco (`CTR-09.7`, enmendado).
+*Enmendado el 2026-09-24 (`T-291`): ya no es un solo lugar. También la llama `repartirEnVivo()`
+para repartir el resto de `US-02` (`CTR-19.5` paso 5). Ver "Quién la usa y quién no".*
 
 **Qué regla es.** Es la de `D-27` con la medida de `D-46`, y no se inventa nada. Los temas del pozo
 que tienen línea se ordenan por `veces` y se parten en tercios. Un tema sin línea es `dificil` y no
@@ -1342,6 +1470,20 @@ línea y `t = 30`. Los dos bordes caen limpios: *Todo un palo* (32) contra *Supe
 `catalogo.ts`: `US-02` sigue con el corte de 8 (`BR-30`). Tampoco el quiz ni `US-03` (`BR-30`).
 Ninguna página ni isla la importa, porque el nivel llega al navegador ya escrito en el banco.
 
+> **Enmendado el 2026-09-24 (`T-291`).** El párrafo de arriba quedó viejo en dos puntos:
+>
+> - **Hoy la usan dos.** `generar-por-la-letra.mjs`, para el banco entero de `US-07`, y
+>   `repartirEnVivo()` en el mismo módulo, para el resto de `US-02` después del corte de 8
+>   (`CTR-19.5` paso 5, `BR-30`). `catalogo.ts` sigue sin importarla: la recibe adentro de
+>   `repartirEnVivo()`, y su firma no cambia.
+> - **`US-03` entra por la precisión de `D-46`** (*"Completá la letra también sale del conteo"*),
+>   que llegó después de este apartado. Cómo entra lo fija `CTR-04` en `T-287`, que corre en
+>   paralelo, y este apartado no lo adelanta. El quiz sigue afuera.
+>
+> **Lo que no cambia es la regla.** Ninguno de los que la usan le agrega un caso. Si un juego
+> necesita otro borde, otro `t` u otro trato del tema sin línea, eso es una regla nueva con
+> nombre propio y decisión de `producto`, no un parámetro de esta.
+
 **Por qué en `en-vivo.ts` y no en `popularidad.ts`**, que es donde la ponía el plan (`T-285`):
 
 1. `en-vivo.ts` ya tiene el tipo del conteo (`ConteoCitado`) y la guarda t8, que prueba buscando
@@ -1417,6 +1559,13 @@ Un 1 no es un 0, y lo que no cruza se declara en vez de tirarse (`CTR-19.2`). **
 un tema del catálogo.** Que pueda tener huecos lo dice `completo: false`, y por eso "no figurar"
 quiere decir "1 como mucho". No mueve ningún borde: el de `US-02` está en 57, y los de `US-07` en 32
 y en 9.
+*Enmendado el 2026-09-24 (`T-291`): una sí resuelve.* *¡Lobo ¿estás?!* figura 1 vez, está guardada
+con `slug: "lobo-estas"` en `setlistfm.json` y es una de las 99 de la tabla de arriba. Este mismo
+apartado la nombra entre las variantes que resuelven solas. La frase en negrita la contradecía, y
+la encontré contando el resto de `US-02` para `CTR-19.5`. **No cambia ningún número.** No está en
+el pozo de `US-02`. En el de `US-07` está, y es `dificil`: con 1 vez queda debajo de la frontera
+de 9. Como tiene la cifra de la última línea publicada, el paso 4 de `CTR-19.15` le suma al
+alcance los temas sin línea, y en ese pozo son cero.
 
 **Los títulos que no son de la banda** van con `fuera: "cover"`. Se guardan, no suman nunca y no
 suben ningún techo, porque se sabe que no son del pozo. Dos títulos aparecen dos veces con distinto
@@ -1498,11 +1647,28 @@ número de los que se usan:
   la dificultad en build y no la guarda en el manifiesto (`CTR-03.11`), y `US-03` no migra
   (`BR-30`).
 
+**Lo que agrega la enmienda del 2026-09-24 (`T-291`, `FIND-71`):**
+
+- **Dos reglas en total, no una por juego.** El punto de arriba decía *"Una sola decisión de
+  reparto por juego, cada una en su función: el corte de 8 de `US-02` y los tercios de `US-07`"*.
+  Ahora `US-02` usa las dos en fila: el corte de 8 arriba y los tercios en el resto. Siguen siendo
+  dos funciones, y **los tercios existen una sola vez**.
+- **`T-292` tiene tres entregables:** el paso 5 en `repartirEnVivo()`, t16 y t17, y los
+  comentarios y el test viejo que lista el recuadro de `CTR-19.5`. `catalogo.ts` no cambia.
+- **Fácil:** cambiar la frontera de Difícil sigue siendo tocar una regla y ningún dato, pero ahora
+  la regla es compartida. Tocarla mueve `US-02`, `US-07` y, cuando entre, `US-03`, y eso está bien:
+  es la misma pregunta en los tres juegos.
+- **Lo que cierra:** `CTR-19.14` punto 6 y la parte de Media y Difícil del punto 2. Las
+  Consecuencias de arriba que dicen *"Cambiar Media y Difícil, que es una línea"* se leen como
+  historia: fue una línea, y la cambió `BR-30`.
+
 ### Qué NO decide este contrato
 
 - **Qué fuentes abiertas hay ni por qué vía se bajan**: `RES-76`+ (`T-281`).
 - **Media y Difícil definitivos, el plazo definitivo y la salida de `D-27`**: `producto` y el
-  usuario. *(La salida de `D-27` la cerró `D-46` el 2026-09-24.)*
+  usuario. *(La salida de `D-27` la cerró `D-46` el 2026-09-24. Media y Difícil de `US-02` los
+  cerró `BR-30` el mismo día, y este contrato los escribe en `CTR-19.5` paso 5 (`T-291`). Queda el
+  plazo.)*
 - **El piso de 15 Fáciles de `US-07` y si los tercios son la regla para siempre**: `producto`
   (`BR-30`). Este contrato los mide, no los garantiza.
 - **El texto del rótulo y dónde va**: `contenido` y `experiencia`.

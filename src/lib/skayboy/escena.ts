@@ -48,9 +48,28 @@
  * El aire no se dibuja: es el fondo del área, `--px-luz` liso (`UX-27 §1.1`), y lo pone la isla
  * como color de fondo del motor. La entrada tampoco: es aire, y lo que la muestra es el muñeco
  * parado ahí. La **caja** no se dibuja donde la grilla dice `n` —ahí arrancó— sino donde está
- * (`mundo.cajas`). Todo lo demás, un tile de `sala.v1` por celda, con el estado del mundo:
+ * (`mundo.cajas`). Todo lo demás, un tile de `sala.v2` por celda, con el estado del mundo:
  * palanca activa o en reposo, placa pisada o libre, compuerta abierta o cerrada, tesoro que
- * todavía no se juntó.
+ * todavía no se juntó, puerta cerrada o abierta.
+ *
+ * ## Ganar (`UX-32`, `T-290`)
+ *
+ * **Lo único que cambia en el área al ganar es la puerta, y cambia de forma.** Mientras
+ * `mundo.terminado` es falso, cada puerta es la suya —`puertaSkayboy`, `puertaPoligirl`, con la
+ * insignia calada en la hoja—; en el cuadro en que pasa a verdadero, **las dos** son
+ * `puertaAbierta`, en el mismo cuadro, porque `terminado` es un solo booleano (`UX-32 §2.3`). Es
+ * una sola abierta y no dos: la insignia vivía en la hoja, y sin hoja las dos puertas son el mismo
+ * marco vacío (`sala.test.ts` lo cuenta). Quién llegó a cuál lo dice el muñeco parado adelante.
+ *
+ * **Y los dos muñecos quedan de frente** aunque el último en llegar tenga un dedo encima
+ * (`UX-32 §3`): es el mismo `deFrente` del cuadro que sigue a una vuelta, forzado mientras dure el
+ * triunfo. Nada se mueve después de ese cuadro: el reloj del mundo se congela al ganar.
+ *
+ * **A dónde se sigue** lo contesta `siguienteAlGanar()`: el nivel que viene después en lo que la
+ * página sembró —en producción, los `listo`—, y solo con el mundo ganado. En el último no hay
+ * siguiente, y qué pasa ahí no es de esta escena (`UX-32 §5`, `BR-27`). **Y el control de seguir
+ * también vive acá**: `mostrarSeguir()` dice si el botón se ve, `alTocarSeguir()` arma el mundo al
+ * que lleva el toque. La isla las llama y pone el pegamento con el DOM.
  *
  * ## Todo en píxeles nativos y enteros (`ADR-08.3`, `UX-27 §2.1`)
  *
@@ -60,11 +79,15 @@
  */
 
 import type { JsonDelAtlas } from '../pixel/fuente.ts';
-import { CUERPO_ALTO, CUERPO_ANCHO, PERSONAJES, TILE, poseDe, type Cuerpo, type Mundo, type Pose } from './mundo.ts';
+import { CUERPO_ALTO, CUERPO_ANCHO, PERSONAJES, TILE, crearMundo, poseDe, type Cuerpo, type Mundo, type Pose } from './mundo.ts';
 import type { Banco, IdPersonaje, Nivel, Terreno } from './niveles.ts';
 
-/** El atlas de la sala (`T-276`). Sube de versión con `src/arte/pixel/sala.txt` (`CTR-15.8`). */
-export const ATLAS_DE_LA_SALA = 'sala.v1';
+/**
+ * El atlas de la sala (`T-276`). Sube de versión con `src/arte/pixel/sala.txt` (`CTR-15.8`): la v2
+ * suma la fila de `puertaAbierta` (`T-290`), y la v1 se queda en `public/sprites/` hasta que nada
+ * la pida — `CTR-15.8` no la borra en el mismo cambio.
+ */
+export const ATLAS_DE_LA_SALA = 'sala.v2';
 
 /** Dónde viven los atlas (`CTR-15.5`). Se piden por ruta, como cualquier archivo de `public/`. */
 export const CARPETA_DE_SPRITES = '/sprites/';
@@ -92,6 +115,7 @@ export const TILES_DE_LA_SALA = [
   'tesoro',
   'puertaSkayboy',
   'puertaPoligirl',
+  'puertaAbierta',
   'palancaReposo',
   'palancaActiva',
   'placaLibre',
@@ -123,6 +147,61 @@ export const ESTADOS_QUE_PIDE: Readonly<Record<Pieza, readonly string[]>> = {
 export function nivelAJugar(niveles: readonly Nivel[], pedido: string | null): Nivel | undefined {
   const id = pedido?.trim().toUpperCase() ?? '';
   return (id === '' ? undefined : niveles.find((n) => n.id === id)) ?? niveles[0];
+}
+
+/**
+ * **A dónde lleva el toque de seguir** (`UX-32 §5`, `US-09` criterio 1): con el mundo ganado, el
+ * nivel que sigue al que se jugó **en lo sembrado** —en producción, solo los `listo`; un borrador
+ * del medio no se salta a mano, ya no está—. Sin ganar, `undefined`: no hay nada que seguir. En
+ * el último, `undefined` también: si ahí el toque lleva a lo que se comparte es de `producto`
+ * (`BR-27`), y hasta que lo diga el área ganada se queda como está.
+ */
+export function siguienteAlGanar(mundo: Mundo, niveles: readonly Nivel[]): Nivel | undefined {
+  if (!mundo.terminado) return undefined;
+  const i = niveles.findIndex((n) => n.id === mundo.nivel.id);
+  return i < 0 ? undefined : niveles[i + 1];
+}
+
+/*
+ * El control de seguir vive acá y no en la isla (`T-290`, el hallazgo de su verificación): la isla
+ * no se puede cargar en Node, y lo que decide si el botón se ve y a qué mundo lleva el toque es
+ * justo lo que hay que ver en rojo. La isla se queda con el pegamento —buscar el botón, soltar las
+ * teclas, devolver el foco— y `escena.test.ts` vigila que llame a estas dos donde tiene que.
+ */
+
+/** Lo único del botón de seguir que toca la escena: si está escondido. */
+export interface BotonDeSeguir {
+  hidden: boolean;
+}
+
+/** Si el toque para seguir tiene que verse: ganado, y con un nivel después en lo sembrado. */
+export function seguirVisible(mundo: Mundo, niveles: readonly Nivel[]): boolean {
+  return siguienteAlGanar(mundo, niveles) !== undefined;
+}
+
+/**
+ * Pone el botón como tiene que estar con este mundo. La isla lo llama **después de cada
+ * `jugarTic(`**, así que en el tic en que se gana el botón ya es tocable (`D-32` límite 3), y
+ * apenas se sigue vuelve a esconderse. Solo escribe si cambia: el DOM no se toca sesenta veces
+ * por segundo. Sin botón en la página no hace nada.
+ */
+export function mostrarSeguir(boton: BotonDeSeguir | null, mundo: Mundo, niveles: readonly Nivel[]): void {
+  if (boton === null) return;
+  const esconder = !seguirVisible(mundo, niveles);
+  if (boton.hidden !== esconder) boton.hidden = esconder;
+}
+
+/**
+ * **Lo que hace el toque de seguir** (`UX-32 §5`): con el mundo ganado, el mundo del nivel que
+ * sigue, recién armado —el mismo que arma la isla al arrancar ese nivel—, y `deFrente` vacío:
+ * nadie arranca el nivel nuevo con el cuadro de frente del viejo. Sin ganar, o en el último,
+ * `undefined` y no toca nada: un toque que no debería haber llegado no cambia el juego.
+ */
+export function alTocarSeguir(mundo: Mundo, niveles: readonly Nivel[], deFrente: Set<IdPersonaje>): Mundo | undefined {
+  const siguiente = siguienteAlGanar(mundo, niveles);
+  if (siguiente === undefined) return undefined;
+  deFrente.clear();
+  return crearMundo(mundo.banco, siguiente);
 }
 
 /* =========================================================================================
@@ -280,9 +359,9 @@ export function tileDe(mundo: Mundo, t: Terreno | undefined, columna: number, fi
     case 'tesoro':
       return mundo.juntados.has(`${columna},${fila}`) ? null : 'tesoro';
     case 'puerta':
-      // Cerrada siempre, también al ganar: `sala.v1` no tiene la puerta abierta. Es un hueco, no
-      // una decisión — `UX-29 §8` dice que se abre y `CTR-16.4` que "se llega"; lo decide
-      // `experiencia` (traspaso en `Docs/SUGERENCIAS/`, `T-278`).
+      // Se abre en la imagen, nunca en la física (`UX-32 §6`): `mundo.ts` no le da estado a una
+      // puerta; la condición es que los dos llegaron, y con eso las dos cambian en el mismo cuadro.
+      if (mundo.terminado) return 'puertaAbierta';
       return t.de === 'poligirl' ? 'puertaPoligirl' : 'puertaSkayboy';
     case 'palanca':
       return mundo.palancas.find(en)?.activa === true ? 'palancaActiva' : 'palancaReposo';
@@ -305,7 +384,8 @@ export function celdaDelCuerpo(c: Cuerpo): { x: number; y: number } {
 
 /**
  * Todo lo que se dibuja en un cuadro, en el orden en que se dibuja: la sala, las cajas, los dos
- * muñecos. `deFrente` son los que acaban de volver a la entrada (`UX-29 §3`).
+ * muñecos. `deFrente` son los que acaban de volver a la entrada (`UX-29 §3`). Con el mundo ganado
+ * van de frente los dos, con dedo o sin él (`UX-32 §3`).
  */
 export function trazosDe(mundo: Mundo, deFrente: ReadonlySet<IdPersonaje> = new Set()): Trazo[] {
   const trazos: Trazo[] = [];
@@ -321,7 +401,7 @@ export function trazosDe(mundo: Mundo, deFrente: ReadonlySet<IdPersonaje> = new 
   }
   for (const id of PERSONAJES) {
     const c = mundo.cuerpos[id];
-    const { estado, espejo } = estadoDelCuerpo(c, deFrente.has(id));
+    const { estado, espejo } = estadoDelCuerpo(c, mundo.terminado || deFrente.has(id));
     trazos.push({ pieza: id, estado, ...celdaDelCuerpo(c), espejo });
   }
   return trazos;

@@ -20,6 +20,9 @@
  *    un test: lo mira `revisor` en la hoja de contacto (`UX-30 §7`).
  * 5. **Ninguna tinta de rampa llega al borde del tile** (`UX-27 §5.2`): el contorno es de clave,
  *    o el tile no sabría dónde termina contra el aire.
+ * 6. **La puerta abierta es la cerrada sin el tapón** (`UX-32 §2.2`, `T-290`): la misma silueta
+ *    —el marco no cambia un píxel—, y lo único que pasa es que la clave del vano se vuelve aire.
+ *    No suma ni un píxel de clave que la cerrada no tuviera: si sumara, sería otra puerta.
  *
  * La tinta diecisiete —un color que no está en `tokens.css`— no es de este archivo: la caza el
  * auditor de paleta sobre el PNG impreso (`T-268`).
@@ -49,7 +52,8 @@ const TILES_DE_LA_SALA: Readonly<Record<string, readonly string[] | { noSeDibuja
   molinete: ['molineteCielo', 'molineteInfierno', 'molineteDos'],
   tesoro: ['tesoro'],
   entrada: { noSeDibuja: 'es aire; lo que la muestra es el muñeco parado ahí (UX-29 §3)' },
-  puerta: ['puertaSkayboy', 'puertaPoligirl'],
+  // Las dos cerradas, y la abierta (`UX-32 §2`, `T-290`): una sola para las dos, ver abajo.
+  puerta: ['puertaSkayboy', 'puertaPoligirl', 'puertaAbierta'],
   palanca: ['palancaReposo', 'palancaActiva'],
   placa: ['placaLibre', 'placaPisada'],
   compuerta: ['compuertaCerrada', 'compuertaAbierta'],
@@ -230,3 +234,91 @@ test('cada caracter de la leyenda del dato cae en un tile de la sala, o en un ti
     assert.ok(hay.has(tile), `"${car}" (${e.tipo}) no tiene su tile ${tile} en sala.txt`);
   }
 });
+
+/**
+ * `UX-32 §2.2`: *"la misma silueta con el dintel retirado"*, y tres cosas que se pueden contar
+ * sin nombrar una coordenada:
+ *
+ * - **no suma clave**: cada píxel de clave de la abierta es clave en las dos cerradas. Es la
+ *   misma puerta con algo sacado, no otra puerta;
+ * - **la silueta es la misma**: en cada renglón, la primera y la última clave caen donde caen en
+ *   las cerradas. El contorno de `UX-27 §5.2` no se toca;
+ * - **el vano deja pasar**: hay una columna de aire desde abajo del arco hasta el borde de abajo
+ *   del tile;
+ * - **y adentro del marco no queda nada**: la clave de la abierta es, píxel por píxel, el marco de
+ *   las cerradas —la clave que se toca con la del renglón de arriba sin pasar por aire, de lado o
+ *   de arriba abajo—. Una columna de aire sola no alcanza: una hoja entera con una raja de un
+ *   píxel la cumple y se lee cerrada (lo encontró la verificación de `T-290`). Sin esto, lo que se
+ *   sacó fue un pedazo de hoja, no la hoja.
+ *
+ * **Qué se leyó por "dintel"** (`UX-32 §2.2` habla de retirar *"la clave sólida arriba del vano"*
+ * con aire *"hasta el borde del tile"*): en estas cerradas el arco de arriba es contorno, no tapón
+ * —es lo que las hace puerta y no sólido, y `UX-27 §5.2` pide contorno de clave en las dos
+ * formas—; el tapón es la hoja, que baja hasta el piso. Se saca la hoja, el arco se queda, y el
+ * aire llega hasta el borde de **abajo** del tile. Queda anotado en el traspaso a `experiencia`.
+ *
+ * Y es **una** abierta, no dos: la insignia —el sombrero, la mata de pelo— vivía en la hoja, y sin
+ * hoja no hay insignia (el primer punto lo obliga: donde las cerradas difieren no hay clave en
+ * las dos). Dos tiles abiertos serían el mismo dibujo con dos nombres; con uno solo, la paridad
+ * (`BR-23`) no se puede romper ahí. Quién llegó a cuál lo dice el muñeco parado adelante (`UX-32 §3`).
+ */
+test('la puerta abierta es la cerrada sin la hoja: no suma clave, la silueta no cambia, el vano deja pasar y adentro del marco no queda nada (UX-32 §2.2)', () => {
+  const d = leerSala();
+  const grilla = (estado: string) => d.cuadros.find((c) => c.estado === estado)?.filas;
+  const abierta = grilla('puertaAbierta');
+  const cerradas = [grilla('puertaSkayboy'), grilla('puertaPoligirl')];
+  assert.ok(abierta, 'sala.txt no tiene puertaAbierta: ganar no se ve (UX-32)');
+  assert.ok(cerradas.every((g) => g !== undefined), 'faltan las cerradas');
+  const clave = [...d.leyenda].find(([, n]) => n === '--px-clave')?.[0];
+  assert.ok(clave, 'la sala no nombra la clave');
+  const bordes = (fila: string) => [fila.indexOf(clave), fila.lastIndexOf(clave)];
+
+  for (let y = 0; y < abierta.length; y++) {
+    for (let x = 0; x < 16; x++) {
+      if (abierta[y]![x] !== clave) continue;
+      for (const g of cerradas) {
+        assert.equal(g![y]![x], clave, `puertaAbierta [${x}, ${y}] es clave y una cerrada ahí no: suma, no saca`);
+      }
+    }
+    for (const g of cerradas) {
+      assert.deepEqual(bordes(abierta[y]!), bordes(g![y]!), `renglón ${y}: la silueta de la abierta no es la de la cerrada`);
+    }
+  }
+  // Abajo del arco: el primer renglón donde la clave ya no cruza el tile de lado a lado sin aire.
+  const bajoElArco = abierta.findIndex((f, y) => y > 0 && /^[^K]*K+[^K]+K+[^K]*$/.test(f.replaceAll(clave, 'K')));
+  const pasa = [...Array(16).keys()].some((x) => abierta.slice(bajoElArco).every((f) => f[x] !== clave));
+  assert.ok(pasa, 'puertaAbierta: ninguna columna de aire llega desde el arco hasta el piso — el vano sigue tapado');
+  assert.ok(cerradas.every((g) => g!.slice(bajoElArco).some((f) => /K{6}/.test(f.replaceAll(clave, 'K')))), 'las cerradas no tienen hoja');
+
+  // Adentro del marco, aire: la clave de la abierta es exactamente el marco de cada cerrada.
+  const [marcoS, marcoP] = cerradas.map((g) => marcoDe(g!, clave));
+  assert.deepEqual(marcoS, marcoP, 'las dos cerradas no tienen el mismo marco: no hay una abierta que sea de las dos');
+  const sobra = clavesDe(abierta, clave).filter((p) => !marcoS!.includes(p));
+  const falta = marcoS!.filter((p) => !clavesDe(abierta, clave).includes(p));
+  assert.deepEqual(sobra, [], `puertaAbierta deja clave adentro del marco (${sobra.join(' ')}): queda hoja, y se lee cerrada`);
+  assert.deepEqual(falta, [], `puertaAbierta le saca al marco ${falta.join(' ')}: el marco no cambia un píxel`);
+});
+
+/** Las claves de una grilla, como `"x,y"` en orden de lectura. */
+function clavesDe(g: readonly string[], clave: string): string[] {
+  const hay: string[] = [];
+  g.forEach((f, y) => [...f].forEach((c, x) => c === clave && hay.push(`${x},${y}`)));
+  return hay;
+}
+
+/**
+ * El marco de una puerta: la clave que se alcanza desde la del renglón de arriba sin pasar por
+ * aire, moviéndose de lado o de arriba abajo (no en diagonal: en diagonal la hoja toca el arco en
+ * una esquina y no es el mismo trazo). En orden de lectura, para comparar con `clavesDe`.
+ */
+function marcoDe(g: readonly string[], clave: string): string[] {
+  const visto = new Set<string>();
+  const pila: [number, number][] = [...g[0]!].flatMap((c, x) => (c === clave ? [[x, 0] as [number, number]] : []));
+  while (pila.length > 0) {
+    const [x, y] = pila.pop()!;
+    if (y < 0 || y >= g.length || x < 0 || x >= g[y]!.length || g[y]![x] !== clave || visto.has(`${x},${y}`)) continue;
+    visto.add(`${x},${y}`);
+    pila.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+  }
+  return clavesDe(g, clave).filter((p) => visto.has(p));
+}

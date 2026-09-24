@@ -1,6 +1,6 @@
 {
  "$schema": "https://json-schema.org/draft/2020-12/schema",
- "$id": "https://ricotaarcade.local/schema/letra/2",
+ "$id": "https://ricotaarcade.local/schema/letra/3",
  "title": "CTR-04 — Banco de completar la letra",
  "type": "object",
  "additionalProperties": false,
@@ -10,14 +10,15 @@
   "juego",
   "actualizado",
   "modoRespuesta",
-  "items"
+  "items",
+  "conteo"
  ],
  "properties": {
   "contrato": {
    "const": "CTR-04"
   },
   "contratoVersion": {
-   "const": 2
+   "const": 3
   },
   "juego": {
    "const": "completar-la-letra"
@@ -31,6 +32,25 @@
     "opciones",
     "texto"
    ]
+  },
+  "conteo": {
+   "description": "CTR-04.14. Con que conteo citado se calcularon los niveles: la ficha y la fecha del bloque conteo de src/data/setlistfm.json. El test n1 los compara con ese archivo: si el conteo se refresco y el banco no, el banco quedo viejo. El numero de cada tema no se copia aca.",
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "ficha",
+    "consultado"
+   ],
+   "properties": {
+    "ficha": {
+     "type": "string",
+     "pattern": "^RES-\\d{2,3}$"
+    },
+    "consultado": {
+     "type": "string",
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+   }
   },
   "items": {
    "type": "array",
@@ -102,7 +122,8 @@
     "fuentes",
     "fuenteLetra",
     "sensibleA",
-    "estado"
+    "estado",
+    "dificultadSegun"
    ],
    "properties": {
     "id": {
@@ -119,10 +140,18 @@
      }
     },
     "dificultad": {
+     "description": "CTR-04.14 (D-46, BR-30). El nivel del tema: tercios del conteo citado sobre los temas de este banco (repartirEnTercios, CTR-19.15). Lo escribe el generador. Manda el largo del contexto (BR-03, las tres ramas del allOf).",
      "enum": [
       "facil",
       "media",
       "dificil"
+     ]
+    },
+    "dificultadSegun": {
+     "description": "CTR-04.14. en-vivo = el nivel salio de los tercios del conteo. sin-conteo = el tema no tiene linea en el conteo y D-27 lo pone en dificil. Nadie lo escribe a mano.",
+     "enum": [
+      "en-vivo",
+      "sin-conteo"
      ]
     },
     "tema": {
@@ -431,6 +460,25 @@
        "required": [
         "confirmadoDeOido"
        ]
+      }
+     }
+    },
+    {
+     "if": {
+      "required": [
+       "dificultadSegun"
+      ],
+      "properties": {
+       "dificultadSegun": {
+        "const": "sin-conteo"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "dificultad": {
+        "const": "dificil"
+       }
       }
      }
     }
