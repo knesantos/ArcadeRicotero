@@ -23,6 +23,16 @@ export const PANTALLA_0 = {
   titulo: 'Sacalo por la letra',
   subtitulo: 'Un verso te tiene que alcanzar. Si no, te damos más: dos, cuatro, ocho. Cuanto antes lo saques, más vale.',
   boton: 'JUGÁ',
+  /**
+   * La chapa de lo que vale cada escalón, impresa en la portada. Mismo mecanismo que el
+   * hermano: la bajada contaba la escalera en prosa —"dos, cuatro, ocho"— y la tabla lo dice
+   * de un vistazo. Registro 3: nombra y se calla.
+   */
+  premios: {
+    titulo: 'Cuánto vale cada paso',
+    versos: 'Versos',
+    vale: 'Vale',
+  },
   hay: (n: number) => `${n} temas en el pozo`,
   /**
    * Lo que dice la portada cuando alguien llega por un desafío de otro.
@@ -56,6 +66,16 @@ export const PARTIDA = {
   ayuda: 'Empezá a escribir y elegí de la lista. Sin tildes anda igual, y con el título por la mitad también.',
   arriesga: 'Arriesgá',
   pasa: 'Pasá',
+  /** El botón de pasar dice cuánta letra compra (`extraDeVersos`), como el del hermano. */
+  pasaSuma: (extra: string) => `Pasá (+${extra})`,
+  /** En el último intento no queda letra que pedir: pasar cierra el tema y lo muestra. */
+  rendirse: 'Mirá cuál era',
+  /** Lo que vale acertar en el paso en curso. Va al lado de los versos que tenés. */
+  vale: (puntos: number) => `Vale ${puntos}`,
+  /** Una sugerencia que ya arriesgaste en este tema: queda tachada y no se puede elegir. */
+  yaProbado: 'Ya lo probaste',
+  /** El sello de lo que sumaste, al lado del "¡Lo sacaste!". El número entero lo lee `puntos`. */
+  suma: (n: number) => `+${n}`,
   paso: 'pasaste',
   ok: '¡Lo sacaste!',
   /**
@@ -94,6 +114,8 @@ export const RESULTADO = {
   rotuloVersos: 'Gastaste',
   versos: (n: number) => (n === 1 ? '1 verso' : `${n} versos`),
   de: (puntos: number, maximo: number) => `${puntos} de ${maximo} puntos`,
+  /** Cuántos sacaste, dicho al lado del puntaje: el número que se cuenta en la previa. */
+  sacaste: (n: number, total: number) => `${n} de ${total} temas`,
   /** El detalle tema por tema. Es la pieza central del resultado, no una nota al pie. */
   detalle: 'Los temas de esta vuelta',
   /** El renglón chico de un tema que salió. Registro 3. */

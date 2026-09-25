@@ -5,7 +5,57 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-09-24
+**Última actualización:** 2026-09-25
+
+> ## 📝 EL MISMO PULIDO, EN "SACALO POR LA LETRA" (2026-09-25)
+>
+> **Pedido del usuario:** *"dale, hacé lo mismo con sacalo por la letra"*, después del pulido
+> de "Adiviná el tema" de abajo.
+>
+> **Verificación:** `node --test 'src/**/*.test.ts'` **676 en verde** (3 nuevos, de la
+> escalera de versos) · `npm run check` 0 errores · `npm run build` **152 páginas** · los
+> dos juegos recorridos enteros sobre el build a 390×664, 360×740 y 1280×860, sin
+> desborde lateral.
+>
+> ### Lo común pasó a un módulo: `src/scripts/sacar-temas.ts`
+>
+> La tapa impresa por pasadas, su crédito (`D-21`), las casillas de la vuelta, la
+> escalerita, la vibración del acierto y **el modo teclado** vivían solo en la isla de
+> audio. Ahora los usan las dos. Está declarado en el censo de `estilos.test.ts` como
+> tablero propio, con sus estados (`partida--tecleando`, `vuelta-casilla--*`,
+> `escalerita-paso--*`), que salieron de `ESTADOS_TEMA`.
+>
+> ### Qué cambió en el juego
+>
+> - **Portada:** chapa de puntajes (1 · 2 · 4 · 8 versos → 100 · 80 · 60 · 40) y JUGÁ con
+>   canto en el peltre de Momo.
+> - **Partida:** casillas de la vuelta; "Tenés 4 versos · Vale 60"; **"Pasá (+2 versos)"**
+>   y "Mirá cuál era" en el último; lo ya arriesgado tachado en la lista; Enter elige el
+>   primero. **La hoja de versos es papel** (tinta del fondo sobre `--papel`, par testeado,
+>   renglones en el borde del papel): el lugar del juego ya decía "un papel arrugado te pesa
+>   en el bolsillo". **Diverge de `UX-08` §4** (que pedía el gris elevado): queda para que
+>   `experiencia` lo ratifique.
+> - **Con teclado:** acá lo que no se puede perder son los versos. La hoja y la lista **se
+>   reparten el alto** (la hoja nunca baja de dos renglones) y la hoja vuelve sola al verso
+>   nuevo. Si el foco llega sin teclado, la cabecera vuelve (consulta de contenedor).
+> - **Revelación:** sellos "¡Lo sacaste!" / "+60", vibración, y **la tapa del disco impresa
+>   por pasadas**, que este juego no tenía. Por eso el pie ya no se esconde con el tema
+>   revelado: el crédito de la tapa vive ahí (la regla del pie lo había dejado escrito).
+> - **Resultado:** "1 de 5 temas · 60 de 500 puntos", estampitas y escalerita de 4.
+>
+> ### 🔴 Un defecto que se había colado en el pulido anterior, cerrado
+>
+> El sello "¡La sacaste!" se pintaba sobre `.revelacion.ok .micro`, que **también existe en
+> este juego**: acá ocupaba el renglón entero y, torcido, desbordaba la pantalla por el
+> costado. Ahora el sello mide lo que dice (`width: fit-content`) y los dos juegos lo llevan
+> en el mismo renglón de cabeza. Medido: 390 de ancho en los dos.
+>
+> ### Lo que queda
+>
+> | Qué | Dueño |
+> |---|---|
+> | Probar los dos modos teclado en un iPhone y un Android de verdad | usuario |
+> | Ratificar la hoja de papel contra `UX-08` §4, y pasar la regla, los sellos y la escalerita al lienzo (hoja 08) | `experiencia` |
 
 > ## 🎛 PULIDO DE ARTE: EL PORTAL Y "ADIVINÁ EL TEMA" (2026-09-24)
 >

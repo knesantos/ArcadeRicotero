@@ -693,12 +693,25 @@
   font-weight: 700;
 }
 
-/* La cabecera de esta pantalla va un punto mas chica que la del quiz: con las casillas de
-   la vuelta, a 360 px "Te quedan 6 intentos" bajaba a un segundo renglon y se comia 35 px
-   de la pantalla mas apretada del sitio. */
-.juego-tema .cabecera {
+/* La cabecera de los dos juegos de sacar temas va un punto mas chica que la del quiz: con
+   las casillas de la vuelta, a 360 px "Te quedan 6 intentos" bajaba a un segundo renglon y
+   se comia 35 px de las pantallas mas apretadas del sitio. */
+:is(.juego-tema, .juego-por-la-letra) .cabecera {
   font-size: 0.74rem;
   letter-spacing: 0.05em;
+}
+
+/* A 360 px, con las cinco casillas de "sacalo por la letra", la cabecera volvia a partirse
+   en dos renglones: se aprieta el tracking y la casilla, nunca la letra. */
+@media (max-width: 23.75rem) {
+  :is(.juego-tema, .juego-por-la-letra) .cabecera {
+    letter-spacing: 0.02em;
+  }
+
+  :is(.juego-tema, .juego-por-la-letra) .vuelta-casilla {
+    width: 0.65rem;
+    height: 0.65rem;
+  }
 }
 
 /* ---- La vuelta: "Tema 2 de 4" y una casilla por tema ----
@@ -729,7 +742,7 @@
 }
 
 .vuelta-casilla--actual {
-  border: var(--linea) solid var(--cat-mitologia);
+  border: var(--linea) solid var(--tinte-tecla, var(--cat-mitologia));
 }
 
 .vuelta-casilla--ok {
@@ -1368,16 +1381,19 @@
   cursor: default;
 }
 
-/* ---- Las teclas de "adiviná el tema" ----
+/* ---- Las teclas de los dos juegos de sacar temas ----
  *
- * Arriesgar/pasar y seguir tienen el mismo canto que la tecla de escuchar: una sombra dura
- * abajo que se hunde al apretar. Van acotadas a esta pantalla (`.juego-tema`) porque
- * `.arriesgar` es compartido con "sacalo por la letra", y este ciclo no toca ese juego. La
- * sombra del canto sale de la tinta del boton oscurecida contra el fondo, no de un color
- * nuevo: `color-mix` sobre dos tokens que ya existen. */
+ * Arriesgar/pasar y seguir tienen canto: una sombra dura abajo que se hunde al apretar,
+ * como la tecla de escuchar. Cada juego pone su tinta y su canto —Lobo suelto en el de
+ * audio, Momo Sampler en el de la letra (`D-19`, `UX-08`)— y la regla es una sola. Van
+ * acotadas a los dos juegos porque `.seguir` y `.arriesgar` no son de nadie mas. */
 
-.juego-tema .arriesgar,
-.juego-tema .seguir {
+.juego-tema {
+  --tinte-tecla: var(--cat-mitologia);
+  --canto-tecla: var(--cat-mitologia-apoyo);
+}
+
+:is(.juego-tema, .juego-por-la-letra) :is(.arriesgar, .seguir) {
   margin-bottom: 5px;
   box-shadow: 0 4px 0 var(--borde);
   transition:
@@ -1387,25 +1403,23 @@
   touch-action: manipulation;
 }
 
-.juego-tema .arriesgar--listo,
-.juego-tema .seguir {
-  box-shadow: 0 4px 0 color-mix(in srgb, var(--cat-mitologia) 45%, var(--fondo));
+:is(.juego-tema, .juego-por-la-letra) :is(.arriesgar--listo, .seguir) {
+  box-shadow: 0 4px 0 var(--canto-tecla);
 }
 
-.juego-tema .arriesgar:active:not(:disabled),
-.juego-tema .seguir:active {
+:is(.juego-tema, .juego-por-la-letra) :is(.arriesgar:active:not(:disabled), .seguir:active) {
   translate: 0 3px;
   box-shadow: 0 1px 0 var(--borde);
 }
 
 /* La caja de texto, un poco mas alta que el piso de toque: es donde el pulgar vuelve cada
    vez, y con el teclado abierto es lo unico que se escribe. */
-.juego-tema .buscador-caja {
+:is(.juego-tema, .juego-por-la-letra) .buscador-caja {
   min-height: 3.25rem;
   font-size: 1.05rem;
 }
 
-.juego-tema .buscador-borrar {
+:is(.juego-tema, .juego-por-la-letra) .buscador-borrar {
   width: 3.25rem;
 }
 
@@ -1451,6 +1465,9 @@
   background: var(--fondo);
   overflow: hidden;
   overscroll-behavior: contain;
+  /* Para preguntarle a la columna cuanto alto tiene (abajo): si el foco llego y el teclado
+     no se abrio —un teclado fisico, una tableta con funda— sobra alto y la cabecera vuelve. */
+  container-type: size;
   /* Arrastrar el dedo sobre la columna no mueve la hoja de atras: si la hoja se moviera,
      la ventana visual se correria y la columna tendria que perseguirla. Lo unico que se
      desplaza es la lista (abajo). Los toques siguen llegando. */
@@ -1472,6 +1489,14 @@
 .partida--tecleando .cabecera:has(.restantes--ultimo) {
   display: flex;
   margin-bottom: var(--espacio-1);
+}
+
+/* Con alto de sobra no hay teclado que tape nada: la cabecera vuelve, arriba de todo. */
+@container (min-height: 34rem) {
+  #partida.partida--tecleando .cabecera {
+    display: flex;
+    margin-bottom: auto;
+  }
 }
 
 /* De los renglones queda solo el ultimo que gastaste: es la respuesta a lo que acabas de
@@ -1583,7 +1608,7 @@
   background: var(--papel);
   color: var(--fondo);
   border: 2px solid var(--papel-borde);
-  box-shadow: 4px 4px 0 var(--cat-mitologia-apoyo);
+  box-shadow: 4px 4px 0 var(--canto-tecla, var(--cat-mitologia-apoyo));
   rotate: -0.8deg;
   font-family: var(--fuente-rotulada);
   text-align: center;
@@ -1686,6 +1711,10 @@
 }
 
 .revelacion.ok .micro {
+  /* Del ancho de lo que dice y no de la caja: un sello de renglon entero, torcido, se
+     salia de la pantalla por el costado (medido en "sacalo por la letra", que no tenia el
+     renglon de la cabecera que lo acota). */
+  width: fit-content;
   padding: 0.1rem 0.6rem;
   border: var(--linea) solid currentColor;
   border-radius: 3px;
@@ -1781,7 +1810,7 @@
   margin-top: var(--espacio-2);
   padding: var(--espacio-2);
   min-height: var(--toque-min);
-  background: var(--cat-mitologia);
+  background: var(--tinte-accion, var(--cat-mitologia));
   color: var(--fondo);
   border: none;
   border-radius: var(--radio);
@@ -2298,6 +2327,9 @@
 .juego-por-la-letra {
   --tinte-accion: var(--disco-momo-sampler-tinta);
   --tinte-lista: var(--disco-momo-sampler-apoyo);
+  /* Las teclas con canto (arriba, con las del hermano): la plata de la tapa y su peltre. */
+  --tinte-tecla: var(--disco-momo-sampler-tinta);
+  --canto-tecla: var(--disco-momo-sampler-apoyo);
 }
 
 /* La cabecera no pone su propio margen aca: la columna flex ya reparte con `gap`, y los
@@ -2315,11 +2347,13 @@
  * contenido centrado se corria 7 px justo al empezar la partida. Un tablero de alto fijo
  * con algo colgando abajo no es un tablero de alto fijo.
  *
- * Se puede esconder sin perder nada porque el credito de tapas de `D-21` ya no vive aca:
- * esta pantalla no muestra ninguna tapa. Si algun dia entra la de Momo, el credito tiene
- * que mudarse adentro del tablero ANTES de que esta regla siga en pie.
+ * **Y vuelve apenas se revela el tema**, que es la condicion que este comentario dejaba
+ * escrita: "si algun dia entra una tapa, el credito tiene que mudarse ANTES de que esta
+ * regla siga en pie". Entro — la revelacion imprime la tapa del disco desde el pulido de
+ * arte (2026-09-25)—, y el credito de `D-21` vive en este pie. Con el tema revelado el
+ * tablero ya no es de alto fijo, asi que el pie no le roba nada a nadie.
  */
-body.juego-por-la-letra:has(#partida:not([hidden])) .pie-sitio {
+body.juego-por-la-letra:has(#partida:not([hidden]):not(.partida--revelada)) .pie-sitio {
   display: none;
 }
 
@@ -2356,8 +2390,18 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
  * margen negativo le come parte del `gap` de la columna, porque un rotulo separado de lo
  * que rotula deja de rotularlo.
  */
-.rotulo-versos {
+/* El renglon del rotulo y de lo que vale: pegado a la hoja, por el mismo motivo que el
+   rotulo solo — el margen negativo le come parte del `gap` de la columna. */
+.versos-cabeza {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-1);
   margin: 0 0 calc(var(--espacio-1) - var(--espacio-2));
+}
+
+.rotulo-versos {
+  margin: 0;
   font-family: var(--fuente-rotulada);
   font-size: 0.72rem;
   letter-spacing: 0.12em;
@@ -2385,9 +2429,17 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
  * elevado y la sombra dura desplazada ya son el recorte pegado; la inclinacion era la
  * parte prescindible.
  *
- * OJO CON EL CONTRASTE: sobre `--fondo-elevado` el par testeado es `--texto`, que es lo
- * que `.verso` hereda. **Ninguna tinta de disco como texto aca adentro** — no llegan a AA
- * sobre el elevado, y `contraste.test.ts` deja escrito por que.
+ * **Desde el pulido de arte (2026-09-25) la hoja es PAPEL**, no el gris elevado de `UX-08`
+ * §4. El lugar de este juego lo dice con todas las letras —"un papel arrugado te pesa en el
+ * bolsillo" (`CNT-13`)— y la hoja era la unica pieza del tablero que no lo era: una caja
+ * gris sobre negro, que es el "gris arriba de otro gris" que la tabla anti-slop veta. Ahora
+ * es el papel de las etiquetas de casete, con los renglones en el borde del papel y la
+ * sombra dura en el peltre de Momo. Queda propuesto a `experiencia` para que lo ratifique
+ * en `UX-08`.
+ *
+ * OJO CON EL CONTRASTE: sobre `--papel` el par testeado es `--fondo` ("tinta sobre papel de
+ * etiqueta", 14:1), y es lo que `.verso` hereda de aca. **Ninguna tinta de disco como texto
+ * aca adentro.**
  */
 .hoja-versos {
   /*
@@ -2410,10 +2462,12 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
   min-height: 0;
   overflow-y: auto;
   padding: var(--espacio-2);
-  background: var(--fondo-elevado);
-  border: var(--linea) solid var(--disco-momo-sampler-apoyo);
+  background: var(--papel);
+  color: var(--fondo);
+  border: 2px solid var(--papel-borde);
   border-radius: 3px;
-  box-shadow: 4px 4px 0 var(--borde);
+  box-shadow: 4px 4px 0 var(--disco-momo-sampler-apoyo);
+  overscroll-behavior: contain;
 }
 
 /*
@@ -2462,7 +2516,8 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
   line-height: 1.5;
   margin: 0;
   padding-block: var(--espacio-1);
-  border-bottom: 1px solid var(--borde);
+  /* El renglon del papel: el borde de la etiqueta, como las rayas de `.casete-etiqueta`. */
+  border-bottom: 1px solid var(--papel-borde);
   text-wrap: pretty;
 }
 
@@ -2486,12 +2541,12 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
  * Se tine el APOYO del disco y no la tinta: es una linea, no texto.
  */
 .verso--nuevo {
-  border-bottom-color: var(--disco-momo-sampler-apoyo);
+  border-bottom: 2px solid var(--disco-momo-sampler-apoyo);
 }
 
 /* El ultimo verso nuevo no pierde su marca por ser el ultimo de la hoja. */
 .verso--nuevo:last-child {
-  border-bottom: 1px solid var(--disco-momo-sampler-apoyo);
+  border-bottom: 2px solid var(--disco-momo-sampler-apoyo);
 }
 
 /* Los intentos gastados. Sello de goma, no pastilla capsula: esquina casi viva, borde
@@ -2538,6 +2593,46 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
 
 .chip--pasado {
   color: var(--texto-tenue);
+}
+
+/* El ultimo intento gastado: el unico chip que queda con el teclado abierto (abajo). Sin
+   pintura propia fuera de esa pantalla — es un gancho, no un estado que se vea distinto. */
+.chip--ultimo {
+  rotate: 0.6deg;
+}
+
+/* ---- "Sacalo por la letra" con el teclado abierto (`partida--tecleando`) ----
+ *
+ * La columna es la de `sacar-temas.ts`, con lo que este juego no puede perder: **los
+ * versos**. Con el teclado arriba la lista los tapaba enteros y se elegia sin poder releer.
+ * Ahora la hoja y la lista **se reparten el alto**: las dos ceden, cada una en proporcion a
+ * lo que mide, y la hoja no baja nunca de dos renglones. La isla la vuelve a bajar al verso
+ * nuevo cada vez que la columna cambia de alto.
+ *
+ * Pisa la columna de alto fijo de este juego (`#partida:not([hidden])`, 100svh): con el
+ * teclado, el alto es el de la ventana visual, y el aire entre franjas se achica a la mitad. */
+.juego-por-la-letra #partida.partida--tecleando:not([hidden]) {
+  height: var(--vv-alto, 100%);
+  gap: var(--espacio-1);
+}
+
+.juego-por-la-letra .partida--tecleando .versos-cabeza {
+  margin: 0;
+}
+
+.juego-por-la-letra .partida--tecleando .hoja-versos {
+  flex: 0 1 auto;
+  min-height: 4.5rem;
+  margin-bottom: 0;
+  padding-block: var(--espacio-1);
+}
+
+.juego-por-la-letra .partida--tecleando .chip {
+  display: none;
+}
+
+.juego-por-la-letra .partida--tecleando .chip--ultimo {
+  display: inline-flex;
 }
 
 .chip-texto {
