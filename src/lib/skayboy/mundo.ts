@@ -70,6 +70,7 @@
 import {
   celdasDeTipo,
   devuelveA,
+  duenoDelTesoro,
   posicionDe,
   terrenoEn,
   tramosDeCompuertas,
@@ -349,7 +350,13 @@ export interface Mundo {
   readonly banco: Banco;
   readonly nivel: Nivel;
   readonly cuerpos: Readonly<Record<IdPersonaje, Cuerpo>>;
-  /** Tesoros ya juntados, como `"columna,fila"`. No vuelven al fallar: lo conseguido se queda. */
+  /**
+   * Tesoros ya juntados, como `"columna,fila"`. No vuelven al fallar: lo conseguido se queda.
+   * **Cada uno junta el suyo** (`D-47`): la guitarra solo Skayboy, el cigarrillo solo Poligirl; el
+   * otro pasa por encima y la celda sigue ahí. Cuántos juntó cada uno no es un contador aparte:
+   * se deriva de acá y de la leyenda (`juntadosPorPersonaje()`, `CTR-16.4` punto 7). **Y no
+   * decide nada**: se gana con los dos en su puerta, juntando todo o nada (`BR-31` punto 2).
+   */
   readonly juntados: Set<string>;
   /**
    * Las piezas de la sala con estado (`CTR-16.10`), en el orden de la grilla. Vacías en un nivel
@@ -735,7 +742,9 @@ function moverCuerpo(
       sucesos.push({ tipo: 'vuelta', quien: c.id });
       return true;
     }
-    if (t !== undefined && t.tipo === 'tesoro' && (t.para ?? []).includes(c.id)) {
+    // Solo el dueño lo junta (`D-47`). El otro pasa por encima: para su cuerpo es aire, no lo
+    // junta, no suena y la celda queda para el que es.
+    if (duenoDelTesoro(t) === c.id) {
       const clave = `${columna},${fila}`;
       if (!mundo.juntados.has(clave)) {
         mundo.juntados.add(clave);
@@ -744,6 +753,23 @@ function moverCuerpo(
     }
   }
   return false;
+}
+
+/**
+ * **Cuántos juntó cada uno** —guitarras Skayboy, cigarrillos Poligirl— en lo que va de la partida.
+ * Es lo que muestra la victoria (`UX-33 §2.5`, `BR-31` punto 2): un número de cada uno, **nunca la
+ * comparación entre los dos ni un puntaje**. Se deriva de `juntados` y la leyenda, y no es un
+ * contador del mundo (`CTR-16.4` punto 7): dos lugares que cuentan lo mismo terminan contando
+ * distinto. Cuántos había lo dice `tesorosDelNivel()`.
+ */
+export function juntadosPorPersonaje(mundo: Mundo): Record<IdPersonaje, number> {
+  const cuenta: Record<IdPersonaje, number> = { skayboy: 0, poligirl: 0 };
+  for (const clave of mundo.juntados) {
+    const [columna, fila] = clave.split(',').map(Number);
+    const dueno = duenoDelTesoro(terreno(mundo, columna ?? -1, fila ?? -1));
+    if (dueno !== null) cuenta[dueno]++;
+  }
+  return cuenta;
 }
 
 /* =========================================================================================

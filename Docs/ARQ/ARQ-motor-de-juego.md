@@ -31,6 +31,11 @@
 > gana una quinta condición —`backgroundAudio: true` en el init—, reflejada en el bloque de
 > código de `ADR-08.2` punto 3 y en `ADR-08.11` punto 1).
 >
+> **2026-09-24 (`T-298`, ciclo 16, ráfaga 5):** `ADR-08.3` y `ADR-08.11` punto 5 quedan
+> enmendados por `ADR-10` (`ARQ-pantalla-completa.md`), **solo para el modo de pantalla
+> completa** de `D-47`. En el mueble no cambia nada. Marcados en el lugar, sin `-v2`: la
+> decisión de fondo —la nitidez la da un `E` entero— es la misma, y ahora dice en qué unidad.
+>
 > Versión anterior de esta línea: 2026-09-16 (ciclo 15, primera versión, **enmendada el mismo día por
 > `REV-14`**: `FIND-55` cambió la resolución lógica en `ADR-08.3` y, con ella, la cuenta de
 > RAM de `ADR-08.10`. Se enmienda en el lugar y con la marca puesta, no se versiona: nada se
@@ -432,6 +437,18 @@ número no entero de píxeles nativos: eso sí se ve, y en movimiento.
 y reescalar el atlas en el paso de carga para "adaptarlo" al DPR — el atlas se carga una vez
 a tamaño nativo y **el escalado lo hace el dibujo** (`CTR-15.6`).
 
+> **Enmendado el 2026-09-24 por `ADR-10` (`ARQ-pantalla-completa.md`, `D-47`), solo para el
+> modo de pantalla completa.** En el mueble esta sección rige entera. En el modo no hay reparto
+> de `UX-28 §2` que proteger, así que se elige directo la unidad que hace nítido el píxel: **`E`
+> entera, en píxeles de dispositivo** (`encuadre()`, `ADR-10.4`). `escalaCSS` puede salir
+> fraccionaria (`E / dpr`, por ejemplo 8/3), y **el área crece con la pantalla**. El buffer
+> sigue siendo el que arma el init con `E₀`. Lo que cambia es solo la caja CSS, y el navegador
+> la lleva con `pixelated`. Con `E₀` y `E` enteros, cada píxel nativo ocupa exactamente `E`
+> píxeles de dispositivo. De la lista de "prohibido", **"un `escalaCSS` fraccionario" no rige
+> en el modo**. "Que el motor decida la escala por su cuenta mirando la ventana" sigue
+> prohibido: la decide `encuadre()`, no el motor, y por eso el init no lleva ni `stretch` ni
+> `letterbox`.
+
 ---
 
 ## ADR-08.4 — CSP, y el primer paquete de terceros que corre en el teléfono de la gente
@@ -712,6 +729,11 @@ repetición de eventos.
 3. El motor creando su propio `<canvas>` o pegándolo al `body`. `D-41` punto 3.
 4. `global: true`, o cualquier nombre del motor colgado de `globalThis`.
 5. Un canvas escalado por un factor no entero, o un `devicePixelRatio` ignorado. `D-41`.
+   *[Precisado el 2026-09-24 por `ADR-10.4`:]* el factor que tiene que ser entero es `E`,
+   píxeles de dispositivo por píxel nativo. En el mueble eso sale de una `escalaCSS` entera. En
+   el modo de pantalla completa, `escalaCSS` puede ser fraccionaria y `E` no. También quedan
+   prohibidos `stretch` y `letterbox` en el init, y `k.setFullscreen()` / `k.isFullscreen()`
+   (`ADR-10.6`).
 6. Un segundo paquete de npm del lado del cliente sin pasar por `ADR-08.6` y por la lista
    blanca de `ADR-08.7`.
 7. Aflojar `tsconfig.json` para que entre un paquete sin tipos. `ADR-08.5`.

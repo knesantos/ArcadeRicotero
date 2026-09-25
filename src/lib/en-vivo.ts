@@ -4,11 +4,16 @@
  *
  * | Juego | Regla | Función | Contrato |
  * |---|---|---|---|
- * | `US-02` Adiviná el tema | el corte de 8 Fáciles | `repartirEnVivo()` | `CTR-19.5` |
+ * | `US-02` Adiviná el tema | el corte de 8 Fáciles y el resto en tercios | `repartirEnVivo()` | `CTR-19.5` |
  * | `US-07` Sacalo por la letra | los tercios de `D-27` | `repartirEnTercios()` | `CTR-19.15` |
+ * | `US-03` Completá la letra | los tercios de `D-27` por tema, y el contexto sigue al nivel | `repartirEnTercios()` | `CTR-04.14` |
  *
  * Las dos arrancan del mismo paso 1 (`lineasDelPozo()`) y ninguna lee otra cosa que un
- * `ConteoCitado`. El quiz y `US-03` no entran: su dificultad mide otra cosa (`BR-30`).
+ * `ConteoCitado`. Desde `T-292` (`FIND-71`, `BR-30`) la de `US-02` **llama** a la de
+ * `US-07` para Media y Difícil: los tercios están escritos una vez, no dos. `US-03` usa la
+ * misma de `US-07`, sin cambiarle nada, desde la precisión de `D-46` (`BR-30`, `T-288`): lo
+ * único propio es su pozo, los temas de `letra.json`. El quiz no entra: su dificultad mide
+ * lo oscuro del dato, no lo tocado del tema (`BR-30`).
  *
  * ## De dónde sale
  *
@@ -22,10 +27,10 @@
  * ## Por qué es un módulo aparte, puro
  *
  * Sin `node:fs` y sin importar ningún JSON: recibe el conteo ya leído. Así lo pueden usar
- * `catalogo.ts` en build, `scripts/generar-por-la-letra.mjs` y los tests con conteos
- * inventados, y el aislamiento de `CTR-19.13` (t8, t15) se puede afirmar buscando texto:
- * este archivo no nombra el archivo de las vistas de YouTube ni el de los recitales
- * enteros. **El conteo no se mezcla con las vistas** —`D-45` consecuencia 1, `D-46`
+ * `catalogo.ts` en build, `scripts/generar-por-la-letra.mjs`, `scripts/generar-letra.mjs`
+ * y los tests con conteos inventados, y el aislamiento de `CTR-19.13` (t8, t15) se puede
+ * afirmar buscando texto: este archivo no nombra el archivo de las vistas de YouTube ni el
+ * de los recitales enteros. **El conteo no se mezcla con las vistas** —`D-45` consecuencia 1, `D-46`
  * consecuencia 3— porque ninguna firma de acá acepta las dos cosas a la vez.
  *
  * ## Las reglas, en una línea cada una
@@ -33,6 +38,8 @@
  * - **El corte de `US-02`**: los Fáciles son los primeros `m` del ranking del pozo, con `m`
  *   el mayor valor hasta la cuota tal que el último de ellos **supera estrictamente** todo lo
  *   que podría estar a su altura sin haber quedado adentro.
+ * - **Media y Difícil de `US-02`**: los tercios de abajo, sobre lo que no quedó Fácil. La
+ *   franja de abajo es Difícil y las dos de arriba son Media: de ahí no sale ningún Fácil.
  * - **Los tercios de `US-07`**: un tema queda en una franja solo si a lo sumo un tercio (o
  *   dos) del pozo figura al menos tantas veces como él.
  *
@@ -95,11 +102,15 @@ function lineasDelPozo(pozo: ReadonlySet<string>, conteo: ConteoCitado): LineaDe
 /**
  * Reparte el pozo en tres niveles según el conteo citado (`CTR-19.5`, pasos 1 a 6).
  *
- * - **Fácil**: los primeros `m` del ranking del pozo (arriba).
- * - **Media**: el resto de las líneas del pozo que figuran en la página.
- * - **Difícil**: los temas del pozo que no figuran. Es `D-27` con las palabras del usuario
- *   —"sin escucha por ahora es difícil"—, donde "escucha" pasa a ser "figura en lo que
- *   publicó la página". Cambiar esta regla es tocar esta función, no el dato.
+ * - **Fácil**: los primeros `m` del ranking del pozo (arriba). Solo de acá sale un Fácil.
+ * - **Media y Difícil**: el **resto** —todo tema del pozo que no quedó Fácil, tenga línea o
+ *   no— pasa por `repartirEnTercios(resto, conteo)`. Lo que esa regla deja en `dificil` es
+ *   Difícil; lo que deja en `facil` o `media` es Media (`BR-30`, `CTR-19.5` paso 5).
+ *   Hereda todo de `CTR-19.15`: un tema sin línea es Difícil y no ocupa lugar, y un empate
+ *   en la frontera baja entero.
+ *
+ * Hasta `T-292` Media era "figura en la página" y Difícil "no figura": con el conteo
+ * completo eso daba 8 / 82 / 5, y Difícil quería decir "nadie lo cargó" (`FIND-71`).
  */
 export function repartirEnVivo(
   pozo: ReadonlySet<string>,
@@ -135,8 +146,14 @@ export function repartirEnVivo(
     }
   }
 
-  // Paso 5.
-  L.forEach((l, i) => porSlug.set(l.slug, i < m ? 'facil' : 'media'));
+  // Paso 5 (`T-291`, `FIND-71`). Primero los Fáciles del corte; después el resto, con la
+  // regla de `US-07` llamada y no copiada. Su tercio de arriba es Media: Fácil es solo
+  // el corte, y copiar lo que devuelve daría Fáciles de más.
+  for (const l of L.slice(0, m)) porSlug.set(l.slug, 'facil');
+  const resto = new Set([...pozo].filter((s) => porSlug.get(s) !== 'facil'));
+  for (const [slug, nivel] of repartirEnTercios(resto, conteo).porSlug) {
+    porSlug.set(slug, nivel === 'dificil' ? 'dificil' : 'media');
+  }
 
   // Paso 4.
   const determinado = m === cuota;
@@ -193,8 +210,11 @@ export interface TerciosEnVivo {
  * cifra de la última línea publicada (`CTR-19.3`). Por eso a una línea que no la supera se
  * le suman al alcance los temas sin línea: no puede quedar arriba de ellos.
  *
- * La usa solo `scripts/generar-por-la-letra.mjs`, que escribe el nivel en el banco. No
- * garantiza el piso de 15 Fáciles de `US-07`: lo mide (`porNivel`).
+ * La usan tres lugares: `scripts/generar-por-la-letra.mjs`, que escribe el nivel en el
+ * banco de `US-07`; `scripts/generar-letra.mjs`, que escribe el nivel de cada ítem de
+ * `US-03` y con él su contexto (`CTR-04.14`); y `repartirEnVivo()`, que reparte con ella lo
+ * que no quedó Fácil en `US-02` (`CTR-19.5` paso 5). No garantiza ningún piso de Fáciles
+ * (ni los 15 de `US-07` ni los 4 de `US-03`): lo mide (`porNivel`).
  */
 export function repartirEnTercios(pozo: ReadonlySet<string>, conteo: ConteoCitado | null): TerciosEnVivo {
   const porSlug = new Map<string, NivelDificultad>();

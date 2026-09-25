@@ -128,6 +128,56 @@
 > | `.arriesgar` y `.seguir` tienen canto solo en este juego (`.juego-tema`): "sacalo por la letra" comparte las clases y no se tocó | `experiencia` |
 > | `escalera.ts` perdió `tramosConEtiqueta` y `PISO_ETIQUETA_PCT` (los seis números entran por ancho mínimo); suma `etiquetaDeRegla`, `extraAlPasar` y `formatoSegundos`, con test | — |
 
+> ## 📱 EL USUARIO JUGÓ EN SU TELÉFONO: `D-47` Y LA RÁFAGA 5 (2026-09-24, tarde)
+>
+> **PR para probar: https://github.com/knesantos/ArcadeRicotero/pull/18** (rama
+> `ciclo-16/pantalla-completa-y-victoria`, ráfagas 4 y 5). El #17 ya está mergeado en `main`
+> (`e5a2692`), junto con el #16, la auditoría de prompts; `main` local los integró en `b56dfaa`.
+> La vista previa de Vercel siembra los borradores (`nivelesASembrar`) y está detrás del login
+> de Vercel.
+>
+> **Lo que dijo después de jugar el nivel 1:** los controles se sienten bien; **el scroll
+> horizontal rompe los controles**; quiere pantalla completa con los controles medio
+> transparentes encima, los seis niveles en fila, una victoria donde los dos bailen, y
+> guitarras para Skay y cigarrillos para Poli. Todo en **`D-47`**, que enmienda la
+> prohibición de festejo de `BR-23`: **cada uno baila su propio baile, sin gestos de pareja.**
+>
+> **Ráfaga 4 cerrada y revisada** (`T-295`, "Segunda pasada" al final de `REV-15`): los siete
+> `FIND-71`..`FIND-77` cerrados en disco, `npm test` 1161/1161, check 0/0, build 152, auditor
+> 0, validador `APTA`. "Adiviná el tema" reparte 8/56/31; "Completá la letra" saca su nivel
+> del conteo (el contexto sigue al nivel, `BR-30`/`CTR-04.14`); la sala tiene puerta abierta
+> (`sala.v2`, `UX-32`) y el botón `#seguir-juego`. Dos anclas de la letra quedaron en
+> `fuenteUnica.enEspera` hasta que `contenido` elija versos nuevos
+> (`HILO-para-contenido-dos-anclas-sin-vecinos.md`).
+>
+> **Papel de la ráfaga 5 cerrado:** `BR-31`, `UX-33`, `CTR-16.4` (v3: un tesoro por personaje),
+> `CTR-16.11` (el avance, `arcade.skayboy.avance`), `CTR-15.7` (`baila`, 4 cuadros a 8/s),
+> `ADR-10` (`ARQ-pantalla-completa.md`) y `CNT-22`, verificados y alineados.
+>
+> **Código de la ráfaga 5 cerrado y revisado** (`T-300`..`T-304`, "Tercera pasada" de `REV-15`;
+> `FIND-78` y `FIND-79` cerrados por el hilo principal ahí mismo). `npm test` 1341/1341, check
+> 0/0, build 152, auditor 0 (7 PNG), validador `APTA`.
+>
+> - **Pantalla completa** (`ADR-10`, `UX-33 §1`): el sello de la esquina entra y sale; sin
+>   scroll ni zoom; la del sistema se pide sobre `.fichin` donde existe, y en iPhone el modo
+>   ocupa la ventana. `pantalla.ts` (encuadre entero) y `modo-pantalla.ts` (el modo, jugable en
+>   Node).
+> - **Victoria bailada** (`UX-33 §2`): `baila`, 4 cuadros a 8/s, coreografías distintas, sin
+>   moverse; el contador «1 guitarra» / «1 cigarrillo» solo ahí; el toque sigue. **Al ganar el
+>   sexto, el toque vuelve a `NIV-01`**: la pieza compartible de `BR-27` todavía no existe
+>   (traspaso a `producto` y `experiencia`).
+> - **La fila y el avance** (`CTR-16.11`): `arcade.skayboy.avance`, `avance.ts`.
+> - **Guitarras y cigarrillos** (`CTR-16.4` v3): 1/1, 1/1, 2/2, 2/2, 2/2, 2/2; solo el dueño
+>   junta el suyo; trazas regrabadas. Atlas `skayboy.v2`, `poligirl.v2`, `sala.v3`.
+> - **Hoja del baile para el usuario:** `hoja-baile.png` (scratchpad de la sesión). Espera su
+>   aprobación (`D-44`), igual que la hoja 14.
+>
+> **Abierto, sin trabar:** la puerta abierta queda detrás del muñeco (traspaso a
+> `experiencia`); si cada coleccionable tiene que probarse alcanzable en el build (traspaso a
+> `producto`/`arquitectura`); `E11` de `CTR-16.10.10` no está en `niveles.ts`; el sello muestra
+> el estado («PANTALLA NORMAL») con el molde de la cinta, y hay que ver en el teléfono si se
+> entiende que se toca para agrandar.
+
 > ## ✅ CICLO 16, RÁFAGA 3 CERRADA Y REVISADA: `REV-15` (2026-09-24)
 >
 > **`npm test` 1081/1081 (eran 673 al abrir el ciclo) · `npm run check` 0/0 · build 152 ·
@@ -161,6 +211,11 @@
 > `T-286`..`T-288` ("Completá la letra"), `T-289`/`T-290` (que ganar se vea: hoy la sala no
 > tiene puerta abierta), `T-291`/`T-292` (`FIND-71`), `T-293`/`T-294` (las colas de
 > `REV-15`) y `T-295` (la revisión). Rango ampliado a `T-295` en `Docs/IDS.md`.
+>
+> **Lanzada el 2026-09-24 a las ~13:45 como el workflow `wf_46a0a8b5-004`.** Si se corta,
+> se retoma con `resumeFromRunId` y lo terminado vuelve de caché. Al terminar: pegar la
+> "Segunda pasada" que devuelve `T-295` al final de `REV-15`, commitear probando en un
+> worktree limpio, y mirar en el navegador que ganar se vea (`?nivel=NIV-01`).
 >
 > ### 🔴 Lo que es del usuario
 >

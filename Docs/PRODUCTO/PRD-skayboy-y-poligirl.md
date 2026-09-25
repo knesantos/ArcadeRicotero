@@ -14,7 +14,9 @@
 > (este juego suena entero), `D-38` (dos personas vivas se pueden dibujar, tres barandas),
 > `D-40` (un acompañante también es un molinete), `D-41` (pixel adentro, imprenta afuera),
 > `D-42` (los muñecos tienen cara; el pie de homenaje pasa a obligatorio), **`D-43`** (no hay
-> botón de cambio: cada columna de mando maneja siempre al mismo personaje).
+> botón de cambio: cada columna de mando maneja siempre al mismo personaje), **`D-47`**
+> (pantalla completa con controles superpuestos y medio transparentes, los seis niveles en
+> fila, victoria bailada sin gestos de pareja, y un coleccionable por personaje).
 > **`Docs/REVISIONES/REV-14-ciclo-15.md`: `FIND-59`**, que este archivo cierra.
 > `Docs/ARQ/ARQ-schema-niveles.md`: `CTR-16.4` y `CTR-16.5`, leídos del disco el 2026-09-16
 > después de que `arquitectura` los enmendara por `FIND-58`.
@@ -37,7 +39,7 @@
 > `.claude/rules/codigo-juegos.md`. `src/lib/tarjeta/plan.ts` (`MAX_FILAS = 6`, el campo
 > `hero`).
 >
-> **Produce:** `US-09`, `BR-23`, `BR-24`, `BR-25`, `BR-26`, `BR-27`, `BR-28`, `BR-29`.
+> **Produce:** `US-09`, `BR-23`, `BR-24`, `BR-25`, `BR-26`, `BR-27`, `BR-28`, `BR-29`, `BR-31`.
 >
 > **Enmendado el mismo día (2026-09-16), y no se versiona a `-v2`.** Dos cosas cambiaron
 > después de escribirlo, ninguna nace de esta carpeta: **`FIND-59`** —el choque de la puerta
@@ -115,6 +117,14 @@ esperar a nada, contado aparte de los cuatro que definen si la v1 está lista.**
 - **When** cada una mueve su personaje y los dos quedan parados en su propia puerta al
   mismo tiempo (`RES-61.2`, `RES-61.3`).
 - **Then** el nivel se da por pasado, y pasar al siguiente no cuesta más de un toque.
+
+> **Enmendado el 2026-09-24 por `D-47`.** Entre "el nivel se da por pasado" y "pasar al
+> siguiente" se intercala ahora la pantalla de victoria que fija `BR-31`: los dos
+> personajes bailan, cada uno el suyo. No es un paso nuevo que sumarle al criterio — la
+> pantalla de victoria llena el instante que antes no mostraba nada —, y "no cuesta más de
+> un toque" sigue midiendo lo mismo: desde que se ve la victoria hasta el nivel siguiente,
+> un toque. Qué pasa cuando el que se gana es el sexto, donde no hay siguiente al que
+> pasar, lo fija `BR-31` punto 1.
 
 ### Criterio 2 — caso feliz, una sola persona
 
@@ -198,6 +208,20 @@ menos obstáculo, menos distancia y menos precisión. Fácil no es "se gana dist
   la parte del nivel que hay que mirar para jugar, y el área de juego es **un recorte con
   borde**, no un `<canvas>` contra el borde de la ventana (`D-41` punto 3).
 
+> **Enmendado el 2026-09-24 por `D-47`.** El usuario jugó el nivel 1 en su teléfono y trajo
+> de vuelta justo lo que ninguna máquina podía probar: los controles se sienten bien, y
+> **el scroll horizontal los rompe**. Eso es "no jugable con el pulgar" con la misma fuerza
+> que no llegar a los 48 px — un control que un gesto de juego desplaza es un control que
+> dejó de estar donde el dedo lo dejó. Se agrega una condición a este mismo criterio, no un
+> criterio aparte: **en el modo de pantalla completa que fija `BR-31`, ningún gesto de
+> juego mueve la página** —ni scroll, ni rebote, ni zoom— y los controles conservan su
+> `--toque-min` y su lugar todo el tiempo. El mueble de `D-41` —recorte con borde, nunca un
+> `<canvas>` a sangre— sigue intacto como pantalla de entrada; la pantalla completa es la
+> manera de jugar, no un reemplazo de esa regla. Donde el teléfono no ofrece pantalla
+> completa real (iPhone, `D-47` consecuencia 2), el criterio igual se cumple: lo que importa
+> es el resultado —que el scroll no rompa los controles—, no el mecanismo del sistema con
+> el que se logra.
+
 Va escrito como criterio de aceptación y no como detalle de pantalla por el mismo motivo
 por el que `US-08` escribió así su criterio 4: es el criterio no negociable "jugable con el
 pulgar" (`D-09`), y un juego que solo se juegue bien con teclado sería un molinete nuevo
@@ -229,6 +253,15 @@ sobre el repo), nunca la vía principal.
 - **Then** no tiene que rehacer lo que ya pasó: el avance se guarda en el aparato
   (`localStorage`, como el resto del sitio — brief, supuesto confirmado), sin cuenta y sin
   sincronización entre aparatos.
+
+> **Enmendado el 2026-09-24 por `D-47` punto 2 ("los seis niveles, en fila").** Este
+> criterio se escribió cuando solo existía `NIV-01` y "el avance" era una promesa sin nada
+> todavía que guardar. Con los seis niveles publicados juntos, la estructura que faltaba
+> decir queda fijada: se presentan **en fila**, en el orden de la tabla de escalones (Fácil
+> 1-2, Media 3-4, Difícil 5-6), y ganar el nivel *n* habilita el *n+1* — no hay pantalla que
+> pregunte por dónde empezar ni forma de saltear uno sin haber pasado el anterior antes. "El
+> avance se guarda" pasa a tener un valor concreto: **hasta qué nivel llegó**, un número
+> entre 0 y 6, no un puntaje ni un tiempo.
 
 **Por qué esto es un criterio y no un detalle:** el brief promete sesiones de dos o tres
 minutos, y este es el primer juego del sitio donde **la partida entera no entra en una
@@ -444,6 +477,18 @@ concepto** (`D-38` baranda 3, `RES-64.11`, que está rotulado **leyenda** y cont
 dos medios grandes). Ni por mecánica, ni por texto, ni por una animación de festejo al
 llegar juntos a la puerta. Llegan juntos porque el nivel se pasa de a dos, y eso es todo lo
 que el sitio afirma sobre ellos.
+
+> **Enmendado el 2026-09-24 por `D-47`.** La frase "ni... por una animación de festejo al
+> llegar juntos a la puerta" queda enmendada: `D-47` agrega una pantalla de victoria donde
+> los dos personajes bailan. **Lo que no se enmienda es el motivo por el que esa frase
+> existía.** El vínculo sentimental sigue prohibido bajo cualquier concepto, sin excepción
+> nueva, y la victoria bailada lo cumple por diseño y no por casualidad: `BR-31` exige que
+> **cada uno baile su propio baile**, con la misma cantidad de cuadros, y que ningún gesto
+> sugiera pareja — no se abrazan, no se toman de la mano, no bailan juntos —. Dos personas
+> bailando cada una lo suyo en la misma pantalla no es un festejo de a dos: es el mismo
+> "llegan juntos porque el nivel se pasa de a dos" de la frase de arriba, con un cuerpo en
+> movimiento en lugar de uno quieto. Todo lo demás de esta sección —mecánica, texto— sigue
+> exactamente como estaba.
 
 ---
 
@@ -925,6 +970,14 @@ de arte, no de alcance. Lo que sí fija producto: **si existe, no puede ser cond
 pasar el nivel ni para compartir.** Un coleccionable obligatorio es precisión fina
 convertida en requisito, y eso choca de frente con `D-09` y con los molinetes.
 
+> **Enmendado el 2026-09-24 por `D-47`.** Lo que acá era una decisión de arte todavía sin
+> tomar ya se tomó: el coleccionable existe, con nombre y con objeto —guitarras para
+> Skayboy, cigarrillos para Poligirl— y `BR-31` lo especifica. **Lo que este párrafo fijó
+> sigue en pie sin cambiar una palabra:** no es condición para pasar el nivel ni para
+> compartir. El «Juguetes perdidos» que cita `IDEA-14` como ancla del tesoro compartido
+> queda retirado como referencia de este coleccionable: el tesoro de los dos pasó a ser dos
+> coleccionables, uno por personaje, y `BR-31` es donde vive la regla nueva.
+
 ### No entra un segundo aparato
 
 Dos personas en **un** teléfono. El multijugador por red está fuera de alcance del brief y
@@ -979,6 +1032,99 @@ lo tapa.
 
    Lo que **no** es esta regla: un veto a `US-09` ni a ningún juego que el usuario pida. Es
    orden de construcción, que es de `producto`, y tiene salida por las dos puertas.
+
+---
+
+## BR-31 — Pantalla completa, victoria bailada y un coleccionable por personaje
+
+**Aplica a:** `US-09`. Enmienda `BR-23` (la prohibición de festejo) y los criterios 1, 6 y 9
+de `US-09` — marcados en su lugar, sin borrar nada de lo que decían.
+
+**De dónde sale.** `D-47`, el 2026-09-24: el usuario jugó el nivel 1 en su teléfono, en la
+vista previa del PR #17, y volvió con lo que solo un pulgar real podía traer —"los controles
+se sienten bien"— y con un defecto que ninguna máquina había visto: el scroll horizontal los
+rompe. Pidió pantalla completa con controles superpuestos y medio transparentes, largar los
+cinco niveles que faltan, una pantalla de victoria donde los personajes bailen, y un
+coleccionable propio para cada uno: guitarras para Skay, cigarrillos para Poli.
+
+### 1. La victoria
+
+- **Given** los dos personajes parados en su propia puerta al mismo tiempo (`US-09`
+  criterio 1).
+- **When** el nivel se da por pasado.
+- **Then** se ve una pantalla de victoria donde los dos personajes bailan: **cada uno el
+  suyo**, con **la misma cantidad de cuadros** (paridad de pantalla — extiende `BR-23`
+  punto 2 al estado nuevo), y **sin ningún gesto de pareja**: no se abrazan, no se toman de
+  la mano, no bailan el mismo paso ni comparten un solo movimiento coordinado entre los dos.
+  El porqué de esa restricción no es nuevo: lo fija `D-38` baranda 3 y `BR-23` ya lo
+  prohibía por otro camino — sigue sin haber ningún vínculo sentimental afirmado entre los
+  dos personajes, bajo ningún concepto.
+- **Y** pasar al nivel siguiente no cuesta más que un toque, como ya fijaba `US-09`
+  criterio 1: la pantalla de victoria llena un instante que antes no mostraba nada, no
+  agrega un paso.
+
+**Qué pasa al ganar el sexto.** No hay un séptimo nivel al que pasar —ya lo fija este mismo
+documento, "no entra un séptimo nivel a cuenta del piso"—, así que no hay "siguiente" que
+mostrar. La pantalla de victoria del sexto es la misma que la de cualquier otro nivel: los
+dos bailan igual, sin un festejo especial reservado para el final — este juego no tiene un
+final con más peso que los otros cinco. Lo único que cambia es adónde lleva el toque: en los
+niveles 1 a 5 lleva al nivel siguiente; en el 6, a la pieza compartible que ya fija `BR-27`.
+No es una pantalla nueva ni un cierre distinto: es la misma puerta de siempre, la de
+compartir lo que se jugó, con seis niveles en vez de menos.
+
+### 2. El coleccionable: uno por personaje, con la misma cuenta
+
+- **Skayboy junta guitarras. Poligirl junta cigarrillos.** Reemplaza al tesoro compartido
+  que este mismo documento había dejado como decisión de arte sin tomar (sección "No entra
+  el coleccionable como condición", más abajo, enmendada por esta misma regla).
+- **La cuenta es exacta, no aproximada.** `BR-23` punto 1 mide la agencia con una
+  tolerancia —diferencia máxima de uno, contada sobre los seis niveles— porque mide algo
+  que el diseño del nivel no siempre puede igualar al cuadro: quién le abre paso a quién.
+  Acá no hay esa restricción física: son dos objetos que un mismo diseño de nivel coloca a
+  propósito, así que la paridad de `BR-23` vuelta número para este caso es **la misma
+  cantidad de guitarras que de cigarrillos en cada uno de los seis niveles**. Si un nivel
+  tiene tres guitarras, tiene tres cigarrillos.
+- **No es condición para ganar el nivel ni para compartir.** Esto no es nuevo: ya lo fijaba
+  la sección "No entra el coleccionable como condición" para el coleccionable todavía sin
+  definir, y sigue valiendo palabra por palabra ahora que tiene nombre y objeto. Un
+  coleccionable obligatorio es precisión fina convertida en requisito, y eso sigue
+  chocando con `D-09` y con los molinetes.
+- **Si el sitio muestra cuánto juntó cada uno:** como mínimo, en la pantalla de victoria del
+  nivel recién terminado — es el lugar donde el juego ya está mostrando quietos a los dos
+  personajes, y hay lugar para contar sin competir con los controles. Puede mostrarse
+  también durante la partida, si `experiencia` decide que entra sin sacarle zona de pulgar a
+  los controles (`US-09` criterio 6) ni convertirse en una barra que compita con el marco
+  del nivel — esa decisión de dónde exactamente y con qué forma es suya, no de esta regla.
+  Si entra a la pieza compartible de `BR-27`, entra como dato de cada uno —cuántas
+  guitarras, cuántos cigarrillos— y nunca como comparación entre los dos ni como puntaje: la
+  misma restricción que `BR-27` punto 2 ya le puso al tiempo.
+
+### 3. Los seis niveles en fila, con el avance guardado
+
+Ya queda fijado en la enmienda de `US-09` criterio 9, arriba: los seis se presentan **en
+fila**, en el orden de la tabla de escalones (Fácil 1-2, Media 3-4, Difícil 5-6); ganar el
+nivel *n* habilita el *n+1*; el avance guardado en el aparato pasa a significar, en
+concreto, hasta qué nivel llegó. Esta regla no agrega nada nuevo acá — lo que agrega es la
+instrucción de construcción que la acompaña: **los cinco niveles que faltan se publican en
+cuanto pasan `BR-25`**, con el mismo piso de seis que ya estaba fijado (2/2/2) y sin esperar
+a nada más de esta enmienda.
+
+### 4. La pantalla completa, como parte de "jugable con el pulgar"
+
+Ya queda fijado en la enmienda de `US-09` criterio 6, arriba. La regla en una frase: **el
+scroll no puede romper los controles**, y eso es tan criterio de aceptación como el
+`--toque-min` de 48 px que ese mismo criterio ya exigía. Cómo se pide la pantalla completa
+al sistema, qué pasa en iPhone y cómo se ven los controles superpuestos y medio
+transparentes es de `arquitectura` (`ADR-10`) y de `experiencia` (`UX-33`); acá se fija que
+el defecto que trajo el teléfono —el scroll rompiendo los controles— es del tamaño de un
+criterio no negociable, no de un detalle de pulido.
+
+### Lo que esta regla no decide
+
+Los cuadros exactos del baile, el diseño de los controles superpuestos, dónde vive el
+contador del coleccionable si existe, y el mecanismo por el que se pide o se simula la
+pantalla completa. Todo eso es de `experiencia` (`UX-33`, `T-297`) y de `arquitectura`
+(`T-298`). Acá se fija qué tiene que ser cierto para que se pueda verificar, no cómo se ve.
 
 ---
 

@@ -4,8 +4,67 @@
 > `D-14`, `D-12`, **`D-25`**, `RES-03`, `RES-11`, `RES-14`, `RES-20`, `RES-23`, **`RES-49`**,
 > `Docs/INVESTIGACION/INV-21-letras-y-fuimos-reyes.md` (las cinco mitigaciones del final),
 > `CTR-01.4`, `CTR-02`, `CTR-03`, `.claude/rules/contenido-json.md`.
-> Produce: **`CTR-04`**. Tareas: `T-62` del ciclo 4 (v1) · **`T-131` del ciclo 9 (v2)**.
-> Fecha: 2026-08-21 · **revisado el 2026-08-27**.
+> Produce: **`CTR-04`**. Tareas: `T-62` del ciclo 4 (v1) · **`T-131` del ciclo 9 (v2)** ·
+> **`T-287` del ciclo 16 (v3)**.
+> Fecha: 2026-08-21 · **revisado el 2026-08-27** · **enmendado el 2026-09-24**.
+>
+> La enmienda del 2026-09-24 consume además: `D-27`, `D-46` (con su precisión del
+> 2026-09-24), `BR-30` (enmendada por `T-286`), `US-03` criterio 2, `CTR-09` v2 (el juego
+> hermano, que ya hizo este mismo cambio), `CTR-19.3`, `CTR-19.6`, `CTR-19.15`, `RES-90`, y
+> leídos en disco el 2026-09-24: `scripts/generar-letra.mjs`, `src/lib/letra/banco.ts`,
+> `src/lib/letra/banco.test.ts`, `src/lib/en-vivo.ts`, `src/lib/quiz/ronda.ts`,
+> `src/data/letra.json`, `src/data/letra-confirmaciones.json`, `src/data/setlistfm.json` y
+> `src/data/_schema/letra.schema.json`.
+>
+> **Cerrada el mismo 2026-09-24, en una segunda pasada**, con tres cosas que llegaron después
+> de la primera: la respuesta de `producto` sobre `US-03` criterio 2
+> (`Docs/SUGERENCIAS/PRD-para-arquitectura-us-03-criterio-2-resuelto.md`, y el criterio
+> enmendado en `PRD-alcance-v1.md`); lo que `T-288` dejó en disco (el schema, el generador,
+> `letra.json`, `letra-confirmaciones.json`, `src/lib/letra/versos.ts` y `banco.test.ts`,
+> leídos, no corridos); y su traspaso
+> `Docs/SUGERENCIAS/HILO-para-contenido-dos-anclas-sin-vecinos.md`.
+
+---
+
+## Enmienda del 2026-09-24 (`T-287`) — `CTR-04` pasa a `contratoVersion: 3`
+
+**Qué la pide:** la precisión de `D-46`, decidida por el usuario: *"Completá la letra también
+sale del conteo"*. `BR-30` (enmendada por `T-286`) fijó cómo: el nivel de un ítem pasa a ser
+el nivel de su **tema**, en tercios del conteo citado, igual que `US-07`. Y la tabla de
+`BR-03` no cambia: el contexto sigue al nivel.
+
+**Lo que cambia, y nada más:**
+
+1. **`dificultad` la da `repartirEnTercios()`** (`CTR-19.15`) sobre los temas del banco. Hoy la
+   da la posición del verso en su estrofa. El detalle está en `CTR-04.14`, que es nuevo.
+2. **El contexto son los vecinos del verso en el tema, no en la estrofa** (`CTR-04.7`,
+   enmendado). Un verso que no tiene los vecinos que pide su nivel no da ítem.
+3. **El envoltorio suma `conteo`, y el ítem suma `dificultadSegun`** (`CTR-04.1` y `CTR-04.2`,
+   enmendados). Es la misma forma que ya tiene `CTR-09` v2.
+4. **`verificarInvariantes` mide el contexto exacto, no el tope** (`CTR-04.14`). Hoy acepta un
+   Fácil con un verso de cada lado, y el schema no.
+5. **La cota de 8 versos por tema se mide sobre los `listo`**, y pierde una de sus dos salidas
+   (`CTR-04.4` y `CTR-04.12`, enmendados).
+
+**Lo que no cambia:** la tabla de `BR-03`, las tres ramas del schema que atan el contexto al
+nivel, el hueco, las tres vías de `cotejo`, `fuenteLetra`, lo que viaja al cliente y la regla
+del motor que muestra título y disco según el nivel.
+
+**La contradicción con `US-03` criterio 2 quedó resuelta por `producto` el mismo día.** Con
+el nivel por tema, un tema Difícil tiene **solo** ítems Difíciles, y el criterio decía
+*"nunca se introduce un tema completamente nuevo solo en modo difícil"*. `producto` adoptó la
+opción A: la precisión de `D-46` manda, y el criterio 2 se enmendó (marcado, con la redacción
+vieja al pie). Lo que queda de él es que el eje de dificultad sea cuánta letra se muestra
+(`BR-03`), que el tema sea siempre uno de los 105 de `RES-20`, y que la dificultad no baje
+(`BR-01` punto 2). **Con eso se retiran la consulta 3 y el comando (6) de `CTR-04.12`**, que
+esta enmienda había dejado en suspenso. El detalle está en `CTR-04.14`, "El criterio 2,
+resuelto". *Decía: "🔴 Y una contradicción que esta enmienda no puede resolver… La decide
+`producto` con el usuario. Mientras tanto la consulta 3 de `CTR-04.12` queda en suspenso."*
+
+**Y ya está en disco.** `T-288` aplicó el bloque `_parche` tal cual y regeneró el banco:
+19 ítems `listo`, **11 Fáciles, 4 Medios y 4 Difíciles** (leído en `letra.json` el
+2026-09-24). Desde ahí manda el archivo del schema (`CTR-04.10`). Que `npm test` lo dé verde
+lo dice la verificación de `T-288` y de `T-295`, no esta lectura.
 
 ---
 
@@ -47,7 +106,12 @@ un schema puede aportar acá; el resto son las tres mitigaciones de `D-25`, y do
 
 ## CTR-04 — Contrato de `src/data/letra.json`
 
-- **Estado:** vigente en **v2** (`contratoVersion: 2`), con **un** valor de trabajo marcado:
+- **Estado:** **v3, especificada el 2026-09-24 (`T-287`) y aplicada en disco por `T-288`**
+  (`$id …/letra/3` en el schema, `contratoVersion: 3` y `conteo` de `RES-90` en `letra.json`,
+  leídos el 2026-09-24). Manda el archivo del schema; para lo que el schema no ve —de dónde
+  sale el nivel y qué versos son el contexto— manda `CTR-04.14`. *Decía, en la primera pasada
+  del mismo día: "pendiente de aplicar (`T-288`)". Y antes: "vigente en **v2**
+  (`contratoVersion: 2`)", y seguía:* con **un** valor de trabajo marcado:
   si se responde eligiendo o tipeando (`CTR-04.8`). Es la misma vacante que tuvo `CTR-03` y
   por el mismo motivo — `BR-04` fija 4 opciones para `US-01`, `US-02` y `US-04`, y **no
   nombra a `US-03`**.
@@ -85,13 +149,22 @@ El nombre del archivo de datos sale del nombre del schema que fijó el plan del 
 `"completar-la-letra"`, igual que la ruta `src/pages/juegos/completar-la-letra.astro` que ya
 existe.
 
+> **Enmendado el 2026-09-24 (`T-287`).** El envoltorio decía `"contratoVersion": 2` y no tenía
+> `conteo`. Ahora `contratoVersion` es **3** y hay una clave obligatoria nueva, **`conteo`**:
+> la `ficha` y la fecha (`consultado`) del bloque `conteo` de `src/data/setlistfm.json` con el
+> que se calcularon los niveles. Es la misma clave de `CTR-09.1` y cumple el mismo papel.
+> Delata un banco calculado con un conteo viejo: si se refresca el conteo y nadie corre el
+> generador, el test `n1` se pone en rojo (`CTR-04.14`). El número de cada tema **no** se
+> copia al banco. Vive en `setlistfm.json` y en ningún otro lado.
+
 ```json
 {
   "contrato": "CTR-04",
-  "contratoVersion": 2,
+  "contratoVersion": 3,
   "juego": "completar-la-letra",
-  "actualizado": "2026-08-27",
+  "actualizado": "2026-09-24",
   "modoRespuesta": "opciones",
+  "conteo": { "ficha": "RES-90", "consultado": "2026-09-24" },
   "items": []
 }
 ```
@@ -137,7 +210,8 @@ que no toca el presupuesto de precarga de gama baja.
 |---|---|---|---|
 | `id` | `^CL-\d{3}$` | sí | Prefijo `CL-` reservado en `CTR-02.7`. Contador propio, no se reutiliza. |
 | `us` | array de `US-NN` | sí | Hoy siempre `["US-03"]`. |
-| `dificultad` | `facil` · `media` · `dificil` | sí | `BR-01`. Manda cuánto contexto puede traer el ítem — ver `CTR-04.7`. |
+| `dificultad` | `facil` · `media` · `dificil` | sí | `BR-01`. Manda cuánto contexto trae el ítem — ver `CTR-04.7`. **Desde v3 es el nivel del tema**: lo da `repartirEnTercios()` y lo escribe el generador. Nadie lo elige, ni a mano ni eligiendo un verso (`CTR-04.14`). |
+| `dificultadSegun` | `en-vivo` · `sin-conteo` | sí | **Nuevo en v3.** De dónde salió el nivel. `sin-conteo` quiere decir que el tema no tiene línea en el conteo, y por `D-27` es `dificil`: el schema lo obliga. No viaja al cliente. Ver `CTR-04.14`. |
 | `tema` | objeto | sí | El cruce con `RES-20`. Cinco subcampos obligatorios. Ver `CTR-04.5`. |
 | `hueco` | objeto `{antes, respuesta, despues}` | sí | El verso partido en tres. Ver `CTR-04.3`. |
 | `contexto` | objeto `{antes: [], despues: []}` | sí | Los versos de alrededor. Largo atado a `dificultad`. Ver `CTR-04.7`. |
@@ -241,6 +315,18 @@ una precaución propia del proyecto, no una regla legal, y lo elijo así: dos í
 disjuntos del mismo tema ya consumen 10 versos y no entran bajo la cota, o sea que obligan a
 solaparse o a que el segundo ítem sea media o difícil. Con eso, ningún tema queda
 reconstruible leyendo el banco, que es lo único que me importa evitar.
+
+> **Enmendado el 2026-09-24 (`T-287`).** La segunda salida del párrafo de arriba ya no existe.
+> Con v3 todos los ítems de un tema tienen el mismo nivel (`CTR-04.14`), así que el segundo
+> ítem de un tema Fácil **no puede** ser media. Quedan dos salidas: que los dos ítems se
+> solapen, o que el tema tenga un solo ítem Fácil `listo`. Es criterio de curaduría y es de
+> `contenido`.
+>
+> **Y la cota se mide sobre los `listo`, no sobre el archivo.** El comando (5) de `CTR-04.12`
+> contaba todos los ítems. Con los 1.784 borradores del generador eso cubre temas enteros y no
+> mide nada. Es el mismo arreglo que `CTR-04.1` v2 le hizo al presupuesto: se mide lo que el
+> sitio publica. El comando nuevo está en `CTR-04.12`. El generador lo imprime en cada corrida
+> (`CTR-04.14`, paso 9) y no aborta por esto: bajo `D-14` es una precaución, no un cerrojo.
 
 **Dónde queda esto contra lo que dice la investigación.** `RES-03` fijó el marco del Art. 10
 —hasta mil palabras de obra literaria u ocho compases en las musicales—; `RES-14` encontró
@@ -576,6 +662,23 @@ cumplir `D-25`, no espantapájaros:
 
 ### CTR-04.7 — La dificultad de `BR-03`, expresada en datos
 
+> **Enmendado el 2026-09-24 (`T-287`, `D-46`, `BR-30`). La decisión de este apartado queda
+> igual. Cambian dos cosas que estaban alrededor.**
+>
+> 1. **Quién pone el nivel.** Ya no sale de dónde cae el verso. Lo da el conteo del tema
+>    (`CTR-04.14`). La tabla de abajo sigue siendo la de `BR-03`, celda por celda.
+> 2. **De dónde salen los versos de contexto.** Este apartado nunca lo dijo, y el generador
+>    los tomaba **dentro de la estrofa**. Desde v3 son **los N versos inmediatamente
+>    anteriores y los N posteriores en la lista de versos del tema**, en el orden del
+>    cancionero y sin cortar en el borde de la estrofa. N es `CONTEXTO_POR_NIVEL[nivel]`
+>    (`src/lib/letra/banco.ts`). **Si el verso no tiene N de cada lado, no da ítem**: ni baja
+>    de nivel ni se rellena. El porqué y las alternativas están en `CTR-04.14`.
+>
+> **Cómo se declara que el contexto sigue al nivel:** no se declara con un campo. Lo declaran
+> las tres ramas `if/then` de siempre, que atan el largo de `contexto` a `dificultad`. Un campo
+> aparte sería justo la alternativa 4 de abajo (`versosVisibles`), que este contrato ya
+> descartó. `BR-30` pidió que el contexto no se desacople, y la forma del dato ya lo impide.
+
 **Decisión: el ítem guarda exactamente los versos que su nivel muestra, y el schema ata el
 largo del contexto a `dificultad`.**
 
@@ -730,6 +833,16 @@ Lo que hay que saber del bloque sin abrirlo, **una vez aplicado `CTR-04.13`**:
   `variantesAceptadas`.
 - Dos `$defs` nuevos: `fuenteDeLetra` y `cotejo`.
 
+> **Enmendado el 2026-09-24 (`T-287`).** Con v3 aplicada: `$id` `…/letra/3`,
+> `contratoVersion` en 3, `conteo` obligatorio en el envoltorio, `dificultadSegun` obligatorio
+> en el ítem y **nueve** ramas `allOf` a nivel ítem. La novena ata `sin-conteo` a `dificil`.
+> El cambio exacto es el bloque `_parche` de `CTR-04.14`, y **manda ese bloque** hasta que
+> `T-288` lo aplique, con el mismo criterio que este apartado usó con `CTR-04.13`.
+> **Aplicado:** el 2026-09-24 el schema del disco trae las cinco claves del bloque, valor por
+> valor (leído, no corrido). Desde ahí vuelve a mandar el archivo y el bloque es historia. Una cosa
+> que el schema sigue sin poder ver, y se suma a la lista de abajo: **que el nivel sea el que
+> da la regla.** Eso lo mira el test `n1`.
+
 **Lo que el schema NO puede verificar**, y por eso existe `CTR-04.12`:
 
 1. Que los `id` sean únicos dentro del archivo.
@@ -837,6 +950,19 @@ sostendría la pista y citarla sería el error tipo `FIND-10`.
 Un ítem `media` del mismo tema se ve igual con `contexto.antes` y `contexto.despues` de un
 verso cada uno; uno `dificil`, con los dos arreglos vacíos.
 
+> **Enmendado el 2026-09-24 (`T-287`).** Desde v3 esa última frase ya no puede darse: los
+> ítems de un mismo tema tienen todos el mismo nivel. El ítem suma
+> `"dificultadSegun": "en-vivo"` al lado de `dificultad`, y el envoltorio suma el `conteo` de
+> `CTR-04.1`. El `facil` del ejemplo **ya no es ilustrativo**, pero tampoco lo afirmo:
+> *Todo un palo* figura 32 veces (`RES-90`) y en el pozo de `US-07` es justo el último Fácil
+> (`CTR-19.15`, el borde contra *Superlógico*, que figura 29). El pozo de este juego es otro
+> (`CTR-04.14`), así que el borde puede correrse. Lo dice `n1`. El ejemplo sigue sin validar
+> a propósito, por los `<` y `>` de los versos.
+>
+> **Y se corrió.** En el banco que regeneró `T-288`, *Todo un palo* es `media` (leído en
+> `letra.json` el 2026-09-24). El ejemplo se queda en `facil` porque está para mostrar la
+> forma de 2 y 2, no el nivel de ese tema.
+
 ---
 
 ### CTR-04.12 — Verificación: casos de prueba, cuotas y comandos
@@ -935,13 +1061,35 @@ python -c "import json;from urllib.parse import urlparse;i=json.load(open('src/d
 python -c "import json;d=json.load(open('src/data/letra.json',encoding='utf-8'));i=[x for x in d['items'] if x['estado']=='listo'];v=[{k:x[k] for k in ('id','dificultad','tema','hueco','contexto','opciones','fuenteLetra') if k in x} for x in i];kb=len(json.dumps(v,ensure_ascii=False).encode())/1024;print(f'payload {kb:.1f} KB de 150 con {len(i)} items listo')"
 ```
 
+> **Enmendado el 2026-09-24 (`T-287`). Tres comandos cambian de sentido con v3.** Lo que decían
+> queda arriba, sin tocar.
+>
+> - **(2)** La cuota de 4 Fáciles deja de ser solo una lectura: la afirma el test `n4`
+>   (`CTR-04.14`). El comando sigue sirviendo para verla a mano.
+> - **(5)** Contaba sobre **todos** los ítems, y con los borradores no mide nada (`CTR-04.4`,
+>   enmendado). Se cuenta sobre los `listo`:
+>
+> ```bash
+> # (5) v3: la cota de CTR-04.4 sobre lo que el sitio publica
+> python -c "import json;from collections import defaultdict;v=defaultdict(set);[v[x['tema']['slug']].update(x['contexto']['antes']+x['contexto']['despues']+[x['hueco']['antes']+x['hueco']['respuesta']+x['hueco']['despues']]) for x in json.load(open('src/data/letra.json',encoding='utf-8'))['items'] if x['estado']=='listo'];print({k:len(s) for k,s in v.items() if len(s)>8} or 'ningun tema listo pasa de 8')"
+> ```
+>
+> - **(6)** y la consulta 3 de la tabla de abajo **se retiran** (segunda pasada del
+>   2026-09-24). Con v3, un tema Difícil tiene solo ítems Difíciles, así que el comando
+>   listaría todos los temas Difíciles con ítems `listo`, **por construcción**. `producto`
+>   enmendó `US-03` criterio 2 y ya no pide eso (`CTR-04.14`, "El criterio 2, resuelto"). El
+>   comando queda escrito arriba, sin correr. Lo que el criterio enmendado sigue pidiendo lo
+>   miden otros dos: que la dificultad no baje, `n4`; que el tema sea uno de los 105, el
+>   chequeo (3) y `verificarInvariantes`. *Decía: "quedan en suspenso… Vuelve a regir, o se
+>   retira, cuando `producto` lo resuelva con el usuario."*
+
 #### Las cuotas del piso, contadas sobre `estado: "listo"`
 
 | # | Consulta | Piso |
 |---|---|---|
 | 1 | Total de ítems `listo` | ≥ 15 (`US-03`) |
 | 2 | Ítems `listo` con `dificultad: "facil"` | ≥ 4 (`US-03`) |
-| 3 | Temas con ítem `dificil` que no tienen ningún ítem `facil` o `media` | **0** (`US-03` criterio 2) |
+| 3 | ~~Temas con ítem `dificil` que no tienen ningún ítem `facil` o `media`~~ | **[RETIRADA** el 2026-09-24**]** Pedía 0 por `US-03` criterio 2, y el criterio se enmendó (`CTR-04.14`, "El criterio 2, resuelto"). Con v3 da todos los temas Difíciles por construcción. Lo que queda del criterio lo mide `n4` |
 | 4 | Temas cuyo conjunto de versos distintos pase de 8 | **0** (`CTR-04.4`) |
 | 5 | Ítems `listo` sin `cotejo`, o con un `cotejo` que su evidencia no sostiene | **0** — lo garantiza el schema; el comando lo confirma |
 | 6 | Ítems `listo` con `regimen: "fuente-unica"` | **sin piso: es una señal, no una cuota** |
@@ -957,6 +1105,10 @@ La consulta 3 traduce a número el criterio 2 de `US-03`: *nunca se introduce un
 completamente nuevo solo en modo difícil*. Si un tema solo existe en `dificil`, la partida se
 lo presenta al jugador por primera vez sin título, sin disco y sin un verso alrededor, que es
 exactamente lo que el usuario pidió que no pasara en `/kickoff`.
+
+> **Retirada el 2026-09-24.** El párrafo de arriba es la lectura que `producto` corrigió: el
+> `/kickoff` habla de letra, no de que los temas se repitan dentro de una partida (`US-03`
+> criterio 2, enmendado). Queda escrito para que se vea por qué existió la consulta.
 
 **Chequeo cruzado con la Redondopedia, para cuando existan los artículos `tema`** (`BR-12`,
 tope de 5 versos por artículo): sumar los versos de `letra.json` y los de `redondopedia.json`
@@ -1102,6 +1254,452 @@ npm run generar-letra && npm test && npm run build
 
 ---
 
+### CTR-04.14 — La dificultad sale del conteo en vivo — *nuevo, 2026-09-24, `T-287`*
+
+**La decisión en una línea.** El nivel de cada ítem es el de su **tema**. Lo da
+`repartirEnTercios()` (`src/lib/en-vivo.ts`, `CTR-19.15`) sobre los temas del banco, con el
+conteo citado de `src/data/setlistfm.json`. Lo escribe `scripts/generar-letra.mjs`, y junto con
+el nivel escribe el contexto que ese nivel pide por `BR-03`. Nadie lo elige.
+
+Es la regla de `US-07` sin cambiarle nada (`BR-30`: *"no es una tercera fórmula"*). La misma
+función, el mismo borde (un empate baja entero), el mismo *"sin conteo es difícil"*. Lo único
+propio de este juego es el pozo, y que el nivel arrastra el contexto.
+
+#### Qué deja de decidir una persona, dicho con precisión
+
+La tarea preguntaba qué campo deja de escribirse a mano. **Ninguno, porque ninguno se
+escribía a mano.** Lo que cambia es otra cosa:
+
+- **Hoy `dificultad` la escribe el generador según dónde cae el verso.** Con dos versos antes
+  y dos después **dentro de su estrofa**, `facil`. Con uno y uno, `media`. Si no, `dificil`
+  (`generar-letra.mjs`, el bloque que empieza en *"BR-03: el contexto lo fija el nivel"*,
+  leído el 2026-09-24). *"Estoy hasta la pasta!"* (`CL-1326`) es `dificil` porque no tiene un
+  verso antes en su estrofa, no porque sea difícil.
+- **Lo que decide `contenido` es qué verso se promueve** (`letra-confirmaciones.json`,
+  `fuenteUnica.items`). Al elegir el verso elegía de rebote el nivel. **Eso es lo que se
+  pierde:** desde v3 el nivel es del tema, y elegir un verso ya no lo mueve.
+- **`letra-confirmaciones.json` no gana ningún campo de nivel.** Es lo único del circuito que
+  se escribe a mano, y nunca tuvo uno.
+
+  > **Enmendado en la segunda pasada del 2026-09-24.** Decía *"no cambia de forma"*, y sí
+  > cambió en una cosa: `T-288` le sumó **`fuenteUnica.enEspera`**. Es la lista de las anclas
+  > que dejaron de dar ítem por falta de vecinos (paso 8). No tiene nada de nivel, así que la
+  > decisión de arriba sigue en pie. Cada entrada es `{verso, motivo, idAnterior, espera}`:
+  > el ancla, el motivo de `contenido` tal cual, el id que tenía y por qué quedó apartada. El
+  > generador no la promueve. La lista en cada corrida, y avisa si alguna vuelve a dar ítem.
+  > Hoy tiene dos: *"Con sus muecas rotas [cromadas]"* y *"Que los buenos [volvieron]"*. **La
+  > acepto como parte del circuito.** Borrar el ancla perdía la elección de `contenido`, y
+  > dejarla en `items` dejaba el banco en v2, porque el generador aborta. Apartarla conserva
+  > las dos cosas.
+
+`BR-30` describe el "hoy" de este juego como *"Manual: `contenido` etiqueta cada hueco"*, y el
+código no hace eso. Se lo paso a `producto` en
+`Docs/SUGERENCIAS/ARQ-para-producto-la-letra-con-el-conteo.md`. No cambia la decisión. Sí
+cambia la premisa de *"ningún ítem pierde hoy una etiqueta que ya tenía escrita a mano"*,
+porque no había ninguna.
+
+#### Dónde se calcula cada cosa
+
+| Qué | Dónde | Por qué ahí |
+|---|---|---|
+| `dificultad` y `dificultadSegun` | el generador | El ítem guarda los versos que muestra (`CTR-04.7`), y cuántos depende del nivel. El nivel tiene que estar fijo cuando se escribe el archivo. |
+| `contexto` | el generador | Por lo mismo. |
+| `conteo` del envoltorio | el generador | Es el sello del conteo con el que se calculó. |
+| que el banco sea el que da la regla | el test `n1`, en `npm test` | El mismo lugar que `t14` de `US-07` (`CTR-19.13`). |
+| que el contexto tenga exactamente lo que pide el nivel | el schema, y `verificarInvariantes` en build | Ya estaba. `verificarInvariantes` pasa de tope a exacto. |
+| algo nuevo en build | **nada** | La página no importa el conteo: recibe el nivel ya escrito, igual que `US-07`. |
+
+#### El pozo: los temas del archivo, borradores incluidos
+
+**El pozo son los temas de todos los ítems de `letra.json` que no están `retirado`.** Es lo
+que dice `BR-30` al pie de la letra (*"los temas de los que salen los huecos ya cargados en
+`letra.json`"*), y es la forma que ya usa `US-07`: el pozo son los slugs del banco. Hoy son
+unos 80 temas, los que tienen letra de un sitio con ficha (la descripción de `id` en el
+schema). Los 21 `listo` salen de 11 de ellos.
+
+**El invariante, que es lo que mira el test:** los niveles se calculan sobre **exactamente**
+el conjunto de temas que quedan en el archivo. Hay una trampa y la tiene que evitar el
+generador: el nivel decide el contexto, y el contexto decide si un verso da ítem. Un tema
+Fácil podría quedarse sin ítems y salir del pozo que lo hizo Fácil. El paso 6 de abajo lo
+resuelve.
+
+#### El contexto: los vecinos del verso en el tema
+
+La regla quedó escrita en `CTR-04.7` (enmendado). Sus tres consecuencias:
+
+- **Un verso sin N vecinos de un lado no da ítem.** En un tema Fácil quedan afuera los dos
+  primeros versos y los dos últimos. En uno Medio, el primero y el último. En uno Difícil
+  entran todos.
+- **Un verso que ya tenía 2 y 2 dentro de su estrofa tiene los mismos 2 y 2**, porque los
+  vecinos en la estrofa son los vecinos en el tema. El contexto solo cambia donde antes lo
+  cortaba el borde de la estrofa.
+- **El verso repetido, el del estribillo, se deduplica después de mirar el contexto, no
+  antes.** Así la huella queda en la primera aparición que puede llevar el contexto de su
+  nivel. Hoy se deduplica antes. Con el nivel por tema, eso perdería el estribillo que abre la
+  canción aunque vuelva más abajo con sus vecinos completos.
+
+#### Lo que cambia en `scripts/generar-letra.mjs`, en orden
+
+1. **Lee `src/data/setlistfm.json` y toma su bloque `conteo`.** Si falta el archivo o el
+   bloque, **aborta** con un mensaje claro, igual que `CTR-09.7` paso 1. El conteo está
+   commiteado, y que falte es un repo roto, no un dato que todavía no llegó.
+2. **Primera pasada: los huecos, sin nivel y sin contexto.** Es el recorrido de hoy hasta el
+   verso pelado: `elegirPalabra`, los largos de `antes`, `respuesta` y `despues`, y el
+   descarte del verso pelado. La lista de versos del tema es la de hoy (`sirveComoVerso`,
+   `motivoDescarteVerso`, `sinEtiquetaFinal`), pero **aplanada**: una lista por tema, no una
+   por estrofa. Esa función se muda a `src/lib/letra/` y se exporta, porque el test `n3` la
+   usa. Si el test la copiara, la copia mentiría en la próxima versión del filtro (`FIND-75`).
+3. **El pozo son los temas con al menos un hueco.** Recién ahí se llama a
+   `repartirEnTercios(pozo, conteo)`.
+4. **Segunda pasada: el nivel y lo que depende de él.** Para cada hueco, N es
+   `CONTEXTO_POR_NIVEL[nivel del tema]`, **importado de `src/lib/letra/banco.ts`**. El
+   generador no escribe 2, 1 y 0 por su cuenta: la tabla de `BR-03` vive en un solo lugar. Si
+   el verso no tiene N vecinos de cada lado, no da ítem. Siguen después los descartes de hoy
+   que dependen del contexto: un verso de contexto de más de 90 caracteres, y menos de 3
+   distractores (los distractores excluyen lo que está a la vista, y lo que está a la vista
+   depende del contexto).
+5. **Deduplica por huella** (`tema|antes|respuesta|despues`), con el paso 4 ya hecho.
+6. **Si un tema del pozo se quedó sin ítems, lo saca del pozo y vuelve al paso 3.** Repite
+   hasta que el pozo no cambie. Como el pozo solo achica, termina. Al terminar vale el
+   invariante: los niveles son los de `repartirEnTercios` sobre los temas que quedaron. Es un
+   caso raro, un tema con huecos pero sin ninguno que lleve el contexto de su nivel. Pero sin
+   este paso `n1` se pondría en rojo después de una corrida limpia, y nadie entendería por qué.
+   Los ids se numeran sobre la lista final, como hoy.
+7. **Escribe** en cada ítem `dificultad` (lo que da `porSlug`) y `dificultadSegun`
+   (`sin-conteo` si el tema está en `sinConteo`; si no, `en-vivo`). En el envoltorio escribe
+   `contratoVersion: 3` y `conteo: { ficha, consultado }`, copiados del bloque que leyó.
+8. **Las anclas de `fuenteUnica` y de `confirmados` siguen igual:** son del verso, no del
+   nivel. Los ids se van a correr, porque hay versos que dejan de dar ítem y el deduplicado
+   cambió de lugar. Por eso la primera corrida va con `--reanclar`. **Se suma un caso con
+   mensaje propio:** un verso anclado que sigue en el cancionero pero no da ítem porque le
+   faltan vecinos para su nivel. El mensaje nombra el tema, el nivel y cuántos vecinos
+   faltan, y **aborta**, como ya aborta un ancla perdida. No es lo mismo que *"se corrieron los
+   ids"*, y decirlo igual manda a `contenido` a buscar en el lugar equivocado. Reemplazar ese
+   verso es de `contenido`. **Mientras tanto el ancla va a `fuenteUnica.enEspera`**, no se
+   borra. Lo agregó `T-288` y está descripto arriba, en *"Qué deja de decidir una persona"*.
+9. **En el log imprime**, además de lo de hoy: cuántos ítems hay en cada nivel, en total y en
+   `listo`; la lista `sinConteo` con sus títulos; la ficha y la fecha del conteo; los Fáciles
+   `listo` contra la cuota de 4; **los `listo` que cambiaron de nivel respecto del archivo
+   anterior**, cruzados por tema y verso (el slug y la huella de `renglon`) y no por id, con el nivel viejo y el
+   nuevo; y los temas `listo` que pasan de 8 versos distintos (`CTR-04.4`). Nada de esto
+   aborta: la cuota y la cota son de `producto` y de `contenido`.
+10. **Pone los comentarios al día.** El de *"BR-03: el contexto lo fija el nivel, no lo elige
+    quien carga"* sigue siendo cierto, pero hoy lo explica la posición del verso y tiene que
+    explicarlo el tema. El encabezado del script dice quién decide qué pasa a `listo`, pero
+    no de dónde sale el nivel, y tiene que sumarlo.
+
+**Fuera del generador, en `src/lib/letra/banco.ts`:** `ItemCrudo` suma
+`dificultadSegun: 'en-vivo' | 'sin-conteo'` y `BancoCrudo` suma `conteo`. `aPayload` **no** los
+manda al cliente: son de generación, igual que en `US-07` (`adivinar-por-la-letra.astro`).
+`verificarInvariantes` pasa de `versos.length > esperado` a `versos.length !== esperado`, con
+el mensaje *"BR-03 pide exactamente N"*. **Hoy un Fácil con un verso de cada lado pasa el build
+y no pasa el schema.** Con el acople de `BR-30` (*"no hay forma de que un ítem Fácil muestre
+menos de 2+2 versos"*), esa diferencia deja de ser tolerable.
+
+#### Qué valida el test
+
+Van en `src/lib/letra/banco.test.ts` y no en `esquemas.test.ts`, por lo mismo que en
+`CTR-09.11` (enmendado por `T-291`): el otro archivo lo toca otra tarea en cada ráfaga.
+**Cada regla va con su caso en rojo al lado.**
+
+| # | Qué afirma | En rojo con |
+|---|---|---|
+| `n1` | **El banco es el que da la regla.** El `conteo` del envoltorio es el `{ficha, consultado}` de `setlistfm.json`. El pozo son los slugs de los ítems que no están `retirado`. Cada uno de esos ítems tiene `dificultad === repartirEnTercios(pozo, conteo).porSlug.get(slug)`, y `dificultadSegun` es `sin-conteo` si el tema está en `sinConteo` o `en-vivo` si no. El mensaje termina en *"Corré `npm run generar-letra`"*. | (a) un conteo con otra ficha o fecha; (b) un nivel tocado a mano en un solo ítem, que tiene que dar **un** problema y nombrar ese ítem; (c) un conteo sin la línea de un tema Fácil: ese tema pasa a `dificil` y a `sin-conteo` |
+| `n2` | **El contexto sigue al nivel, exacto.** `verificarInvariantes` rechaza un Fácil con 1 y 1, y un Medio con 0 y 1. | Los dos casos. **El test que hoy afirma lo contrario se da vuelta:** *"BR-03: el contexto no puede pasarse…"* hoy espera que `facilConDos` (1 y 1) **no** tire error, y pasa a esperar que lo tire |
+| `n3` | **El contexto son los vecinos del verso en su tema.** Para cada `listo` que no es `dificil`, reconstruye la lista de versos del tema con la **misma función exportada** que usa el generador (paso 2). Busca una posición donde los N anteriores sean `contexto.antes`, el siguiente sea el verso del hueco y los N posteriores sean `contexto.despues`. El verso del hueco se compara sin espacios, porque la puntuación que colgaba de la respuesta pasó a `despues`. | un `listo` con un verso de contexto cambiado por otro del mismo tema |
+| `n4` | **`BR-01` con el banco real.** Hay al menos 4 `listo` en `facil` (la cuota de `US-03`), y `armarRonda()` sobre `cargarBanco()` abre en Fácil y no baja de nivel, con varias semillas. Si faltan Fáciles, el mensaje dice que es trabajo de `contenido`: cargar huecos de temas del tercio de arriba (`BR-30`). | un banco sin ningún Fácil `listo`: `armarRonda` tira `RondaImposible` |
+| `c0`..`c9` | **El schema v3**, con los diez casos del comando de abajo y sus dos controles (`c1`, `c3`). | los ocho que tienen que rechazar |
+
+Y dos tests que ya existen cambian: *"US-03: el banco real cumple su piso"* pasa a esperar
+`contratoVersion` 3, y el de `BR-03` que nombra la fila `n2`.
+
+*Sobre `n4`:* `CTR-09.8` no quiso los pisos de `US-07` en el schema, pero el `banco.test.ts` de
+`US-07` sí los afirma, y el de este juego ya afirma el piso de 15. Afirmar la cuota de 4 es lo
+mismo. Si se pone en rojo, el banco no está roto, está incompleto, y el mensaje lo dice.
+
+#### Lectura indicativa de lo que va a dar
+
+**No es una medición.** Es lo que sale de tomar prestados los bordes de `US-07` (`CTR-19.15`:
+Fácil desde 32 veces, Media desde 9) y aplicarlos a los 11 temas de los 21 `listo`, con los
+números de `RES-90`. El pozo de este juego es otro: no tiene los temas de lacuerda.net, y puede
+tener temas que en `US-07` no llegan a 8 versos limpios. Los bordes se van a correr. El número
+de verdad lo dan el generador y `n1`.
+
+| Tema | Veces (`RES-90`) | Ítems `listo` | Nivel hoy (por posición) | Nivel indicativo |
+|---|---|---|---|---|
+| *Jijiji* | 101 | `CL-116`, `CL-118` | facil, facil | facil |
+| *Música para pastillas* | 41 | `CL-093`, `CL-096` | dificil, media | facil |
+| *Nuestro amo juega al esclavo* | 39 | `CL-383`, `CL-390` | media, facil | facil |
+| *Criminal Mambo* | 37 | `CL-079` | facil | facil |
+| *Un ángel para tu soledad* | 36 | `CL-634`, `CL-635` | facil, facil | facil |
+| *Un poco de amor francés* | 36 | `CL-408`, `CL-418` | facil, facil | facil |
+| *Vencedores vencidos* | 34 | `CL-210`, `CL-211` | facil, facil | facil |
+| *Superlógico* | 29 | `CL-042`, `CL-047` | facil, facil | media |
+| *Blues de la artillería* | 12 | `CL-446`, `CL-447` | facil, facil | media |
+| *Dr. Saturno* | 3 | `CL-1326`, `CL-1330` | dificil, facil | dificil |
+| *Es hora de levantarse querido* | 3 | `CL-808`, `CL-812` | facil, facil | dificil |
+
+Pasaría de 17 / 2 / 2 a **13 / 4 / 4**, y la cuota de 4 Fáciles quedaría cumplida con margen.
+**Diez de los 21 cambian de nivel.** Tres ganan contexto (`CL-093`, `CL-096`, `CL-383`) y
+siete lo pierden: cuatro pasan de Fácil a Media y tres de Fácil a Difícil. `CL-093` se
+promovió con el motivo *"Dificultad dificil, sin contexto mostrado"*, y ahora mostraría dos
+versos de cada lado. Ese es el tipo de cambio que el paso 9 pone a la vista para `contenido`.
+
+> **Lo que dio de verdad (`T-288`, 2026-09-24).** Los once temas quedaron en el nivel que
+> decía la columna indicativa. Lo que se desvió fue la lista de ítems, no los bordes:
+>
+> - **19 `listo`, no 21: 11 Fáciles, 4 Medios, 4 Difíciles.** Lo conté ítem por ítem en
+>   `letra.json`. Las dos anclas que faltan son `CL-383` y `CL-096`. Sus temas quedaron
+>   Fáciles y a esos versos les falta un vecino: uno es el segundo verso del tema y el otro,
+>   el anteúltimo. Están en `fuenteUnica.enEspera`. Los 19 siguen arriba del piso de 15 y de
+>   la cuota de 4 Fáciles.
+> - **Cambiaron de nivel 8 `listo`, no 10**, según el traspaso del hilo principal
+>   (`HILO-para-contenido-dos-anclas-sin-vecinos.md`): los dos de las anclas apartadas no
+>   cuentan.
+> - **Dos temas `listo` pasan la cota de 8 versos**: *Jijiji* y *Un poco de amor francés*,
+>   con 9 cada uno. Es el caso que anticipó `CTR-04.4` (enmendado), ya traspasado a
+>   `contenido`.
+> - ***La bestia pop* salió del pozo.** Figura 57 veces (`setlistfm.json`), pero en el
+>   cancionero tiene **un solo** verso que pasa el filtro. Como tema Fácil, ese verso no
+>   tiene vecinos, así que no da ítem y el paso 6 lo saca. En v2 ese verso daba, a lo sumo,
+>   un ítem Difícil: no miré si estaba en el banco anterior. Ver "Consecuencias".
+
+#### El criterio 2, resuelto
+
+> **Reescrito en la segunda pasada del 2026-09-24.** Este apartado se llamaba *"La
+> contradicción con el criterio 2"* y la dejaba abierta. `producto` la resolvió el mismo día
+> (`Docs/SUGERENCIAS/PRD-para-arquitectura-us-03-criterio-2-resuelto.md`): adoptó la opción
+> A. **La precisión de `D-46` manda, y `US-03` criterio 2 quedó enmendado** en
+> `PRD-alcance-v1.md`, con la redacción vieja al pie.
+>
+> **Qué queda del criterio, y quién lo mide.** El criterio enmendado pide tres cosas. Que en
+> un Difícil se vea solo el verso con el hueco: lo miden el schema y `verificarInvariantes`
+> (en `banco.test.ts`, el test *"BR-03: el contexto no puede pasarse…"*). Que el tema sea
+> uno real de los 105: lo miden `fuentes` con `RES-20` y el chequeo
+> (3). Que la dificultad no baje dentro de la partida, que es el mitigante que eligió
+> `producto`: lo mide `n4` con quinientas partidas. **Un tema nuevo en Difícil ya no es una
+> falla, es lo esperado.** Por eso la consulta 3 y el comando (6) de `CTR-04.12` se retiran.
+> No se reemplazan.
+>
+> **Lo que no es mío y sigue abierto:** `Docs/BRIEF.md` todavía dice *"no cambiando de
+> tema"* sin la lectura nueva. `producto` lo anotó en su `PENDIENTE`. Le toca a quien
+> actualice el brief.
+>
+> Lo que sigue es el texto de la primera pasada, sin tocar, para que se vea de dónde salió
+> la pregunta.
+
+`US-03` criterio 2 dice: *"nunca se introduce un tema completamente nuevo solo en modo
+difícil; la dificultad escala mostrando menos letra del mismo universo de temas de la
+partida, no cambiando de tema (pedido explícito del usuario en `/kickoff`)"*. `Docs/BRIEF.md`
+lo dice igual: *"La dificultad escala mostrando menos letra, no cambiando de tema"*.
+
+**Con el nivel por tema, eso no puede cumplirse.** Un tema Difícil solo tiene ítems
+Difíciles, así que la partida lo presenta por primera vez sin título, sin disco y sin un verso
+alrededor. Y la dificultad escala cambiando de tema, de los más tocados a los menos tocados.
+En la tabla de arriba, *Dr. Saturno* y *Es hora de levantarse querido* hoy cumplen el criterio
+porque tienen un ítem Fácil al lado. Con v3 dejan de cumplirlo.
+
+**No lo decido yo, y tampoco lo tapo.** Las dos cosas las pidió el usuario. La precisión de
+`D-46` es la más nueva y la más explícita, así que el contrato sigue a `BR-30`. Pero `T-286`,
+al citar el brief para defender el acople, cortó la frase justo antes de *"no cambiando de
+tema"*, y la contradicción quedó sin ver. La resuelve `producto` con el usuario. El traspaso
+está en `Docs/SUGERENCIAS/ARQ-para-producto-la-letra-con-el-conteo.md`.
+
+**No frena `T-288`**, porque se resuelva como se resuelva, la forma del dato no cambia. Si el
+usuario confirma que la precisión reemplaza al *"no cambiando de tema"*, se enmienda el
+criterio 2 y se retira la consulta 3. Si pide conservarlo, eso es una regla de la ronda, no
+del banco: que un Difícil solo entre si su tema ya apareció, por ejemplo. Con el nivel por tema
+esa regla no tendría con qué cumplirse, y habría que decidir otra cosa. Mientras tanto la
+consulta 3 queda **en suspenso**, marcada en `CTR-04.12`.
+
+#### El schema de v2 a v3: el bloque para pegar
+
+**Por qué `contratoVersion` sube a 3:** un banco v2 no tiene `conteo` ni `dificultadSegun`, y
+tiene que no validar. Así nadie deja un banco con niveles por posición creyendo que ya sale del
+conteo. Es lo mismo que hizo `CTR-09` al pasar de 1 a 2.
+
+Cada clave es una ruta dentro de `src/data/_schema/letra.schema.json`. Si termina en `+`, el
+valor se agrega al final del arreglo que ya está ahí. Si no, reemplaza lo que haya. Lo que no
+está nombrado no cambia. `T-288` lo pega a mano. El comando de verificación lo lee de acá
+mismo, así que hay una sola copia.
+
+```json
+{
+  "_parche": "CTR-04.14",
+  "_como": "Rutas separadas por barra dentro de letra.schema.json. Con + al final se agrega al arreglo; sin + se reemplaza. Las claves que empiezan con guion bajo no se aplican.",
+  "$id": "https://ricotaarcade.local/schema/letra/3",
+  "properties/contratoVersion": { "const": 3 },
+  "required+": ["conteo"],
+  "properties/conteo": {
+    "description": "CTR-04.14. Con que conteo citado se calcularon los niveles: la ficha y la fecha del bloque conteo de src/data/setlistfm.json. El test n1 los compara con ese archivo: si el conteo se refresco y el banco no, el banco quedo viejo. El numero de cada tema no se copia aca.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["ficha", "consultado"],
+    "properties": {
+      "ficha": { "type": "string", "pattern": "^RES-\\d{2,3}$" },
+      "consultado": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+    }
+  },
+  "$defs/item/required+": ["dificultadSegun"],
+  "$defs/item/properties/dificultad": {
+    "description": "CTR-04.14 (D-46, BR-30). El nivel del tema: tercios del conteo citado sobre los temas de este banco (repartirEnTercios, CTR-19.15). Lo escribe el generador. Manda el largo del contexto (BR-03, las tres ramas del allOf).",
+    "enum": ["facil", "media", "dificil"]
+  },
+  "$defs/item/properties/dificultadSegun": {
+    "description": "CTR-04.14. en-vivo = el nivel salio de los tercios del conteo. sin-conteo = el tema no tiene linea en el conteo y D-27 lo pone en dificil. Nadie lo escribe a mano.",
+    "enum": ["en-vivo", "sin-conteo"]
+  },
+  "$defs/item/allOf+": [
+    {
+      "if": { "required": ["dificultadSegun"], "properties": { "dificultadSegun": { "const": "sin-conteo" } } },
+      "then": { "properties": { "dificultad": { "const": "dificil" } } }
+    }
+  ]
+}
+```
+
+> El `"required": ["dificultadSegun"]` del `if` no es adorno: sin él, `properties` pasa en
+> vacío cuando el campo falta. Es la misma nota de `CTR-04.13`, punto 8.
+
+**Cómo se verifica que el bloque valida con ajv**, antes y después de `T-288`. Va en bash,
+porque Windows PowerShell 5.1 no escapa las comillas dobles de un argumento que le pasa a un
+programa nativo. El comando lee el bloque de este archivo y lo aplica en memoria sobre el
+schema del disco; si el schema ya está en v3, no lo aplica y prueba el del disco. Después corre
+diez casos sobre `letra.json`:
+
+```bash
+node -e '
+const fs=require("fs"),A=require("ajv/dist/2020"),Ajv=A.default||A,F="`".repeat(3);
+const md=fs.readFileSync("Docs/ARQ/ARQ-schema-completar-letra.md","utf8");
+const i=md.search(/\{\s*"_parche": "CTR-04\.14"/);
+const parche=JSON.parse(md.slice(i,md.indexOf(F,i)));
+const s=JSON.parse(fs.readFileSync("src/data/_schema/letra.schema.json","utf8"));
+if(s.properties.contratoVersion.const!==3){for(const [k,v] of Object.entries(parche)){if(k.startsWith("_"))continue;const mas=k.endsWith("+"),r=(mas?k.slice(0,-1):k).split("/"),u=r.pop();let o=s;for(const x of r)o=o[x];o[u]=mas?[...o[u],...v]:v;}}
+const val=new Ajv({allErrors:true,strict:false}).compile(s);
+const hoy=JSON.parse(fs.readFileSync("src/data/letra.json","utf8"));
+const v2=()=>{const b=structuredClone(hoy);b.contratoVersion=2;delete b.conteo;for(const it of b.items)delete it.dificultadSegun;return b;};
+const v3=()=>{const b=structuredClone(hoy);b.contratoVersion=3;b.conteo={ficha:"RES-90",consultado:"2026-09-24"};for(const it of b.items)it.dificultadSegun??="en-vivo";return b;};
+const de=(b,n)=>b.items.find(x=>x.dificultad===n);
+const casos=[
+["c0 un banco v2, sin conteo ni dificultadSegun",v2,false],
+["c1 control: el mismo banco en v3",v3,true],
+["c2 sin-conteo con facil",()=>{const b=v3();de(b,"facil").dificultadSegun="sin-conteo";return b;},false],
+["c3 control: sin-conteo con dificil",()=>{const b=v3();de(b,"dificil").dificultadSegun="sin-conteo";return b;},true],
+["c4 v3 sin conteo",()=>{const b=v3();delete b.conteo;return b;},false],
+["c5 conteo.ficha sin la forma RES-",()=>{const b=v3();b.conteo.ficha="90";return b;},false],
+["c6 un item sin dificultadSegun",()=>{const b=v3();delete b.items[0].dificultadSegun;return b;},false],
+["c7 dificultadSegun curaduria",()=>{const b=v3();b.items[0].dificultadSegun="curaduria";return b;},false],
+["c8 contratoVersion 2 con todo lo demas de v3",()=>{const b=v3();b.contratoVersion=2;return b;},false],
+["c9 facil con un verso de contexto de cada lado",()=>{const b=v3(),f=de(b,"facil");f.contexto={antes:f.contexto.antes.slice(-1),despues:f.contexto.despues.slice(0,1)};return b;},false]];
+let mal=0;for(const [n,f,se] of casos){const ok=val(f());if(ok!==se)mal++;console.log((ok===se?"OK  ":"MAL ")+n+" -> "+(ok?"valida":"rechaza"));}
+console.log(mal?mal+" caso(s) no dan lo esperado":"los 10 casos dan lo esperado");process.exit(mal?1:0);'
+```
+
+Lo esperado: los diez con `OK`, y la última línea *"los 10 casos dan lo esperado"*. **`c2`,
+`c4` y `c6` son las tres reglas que esta enmienda existe para hacer cumplir.** Si alguna
+valida, el bloque no sirve. `c9` no es nuevo: es el acople de `BR-30`, que el schema ya hacía
+cumplir, y está para que nadie lo afloje de paso. *No lo corrí (`D-12`). Lo corre `revisor` o
+el hilo principal.*
+
+#### Alternativas descartadas
+
+1. **Que el pozo sean solo los temas con ítems `listo`.** Es la lectura más tentadora, porque
+   reparte en tercios lo que de verdad se juega y casi garantiza la cuota de 4 Fáciles.
+   Descartada por tres motivos. Con 11 temas los tercios son de 4, y "Fácil" pasa a querer
+   decir "de los 4 más tocados entre los que eligió `contenido`", que no dice nada del tema.
+   Cada promoción movería el nivel **de los otros temas**, y con el nivel su contexto: un ítem
+   curado cambiaría lo que muestra sin que nadie lo toque. Y `BR-30` dice *"ya cargados en
+   `letra.json`"*, no *"jugables"*.
+2. **Un solo pozo para los dos juegos de letra, el de `US-07`.** Así el mismo tema tendría el
+   mismo nivel en los dos juegos. Descartada: ese pozo trae temas de lacuerda.net que este
+   juego no puede usar (no tienen ficha, `CTR-04.6`) y deja afuera temas que no llegan a 8
+   versos limpios. Regenerar un banco obligaría a regenerar el otro, y `BR-30` pide el pozo de
+   cada juego. El costo que se acepta: un tema puede ser Fácil en un juego y Medio en el otro,
+   como ya pasa entre `US-02` y `US-07`.
+3. **Calcular el nivel en build, como `US-02`, y sacarlo del banco.** Descartada: el contexto
+   se guarda en el ítem (`CTR-04.7`) y depende del nivel. Calcular el nivel en build obligaría
+   a cortar también los versos en build, desde el cancionero. El archivo dejaría de ser lo que
+   ve el jugador, y las anclas de `contenido` apuntarían a ítems cuyo texto se decide en otro
+   lado. `US-02` puede hacerlo porque su manifiesto es una lista de archivos, y un archivo no
+   tiene nivel (`CTR-03.11`).
+4. **Tomar el contexto dentro de la estrofa, como hoy.** Descartada porque deja sin ítems a
+   los temas Fáciles: en una estrofa de 4 versos ninguno tiene 2 y 2, y en una de 5, uno solo.
+   Justo los temas más tocados, donde `BR-30` manda a `contenido` a cargar más si falta la
+   cuota, serían los que menos ítems dan.
+5. **Bajar de nivel el verso que no tiene sus vecinos.** Evita descartar. Descartada porque
+   el nivel volvería a salir de la posición del verso, que es lo que la precisión de `D-46`
+   vino a reemplazar.
+6. **Sin `dificultadSegun`: solo `conteo` en el envoltorio.** Descartada por lo mismo que en
+   `CTR-09.7`: `dificil` dice dos cosas distintas, *"tercio de abajo"* o *"sin conteo"*, y si
+   una pantalla muestra el nivel, el rótulo tiene que decir cuál de las dos.
+7. **Probar solo el largo del contexto, sin `n3`.** Es más barato, porque no obliga a mudar
+   la lista de versos a `src/lib/letra/`. Descartada: esta enmienda cambia qué versos rodean
+   al hueco, y un cambio de regla que ningún test ve es `FIND-75` otra vez.
+
+#### Consecuencias
+
+- **Fácil:** que el primer ítem de toda partida sea de un tema muy tocado, con dos versos de
+  cada lado, título y disco. Es el argumento 3 de `T-286`, y ahora lo sostiene la forma del
+  dato.
+- **Fácil:** saber por qué un ítem tiene su nivel. Es el de su tema, por su línea en
+  `RES-90`.
+- **Difícil, y aceptado por `BR-30`:** que `contenido` elija el nivel de un verso. Se pierde.
+- **Cada refresco del conteo** (180 días, `CTR-19.6`) puede pasar un tema de franja, y con eso
+  cambian el contexto de sus ítems `listo` y los ids. `n1` se pone en rojo hasta que alguien
+  corra `npm run generar-letra -- --reanclar`, y el paso 9 dice qué `listo` cambiaron.
+- **La cota de 8 versos por tema** (`CTR-04.4`) pierde la salida de *"que el segundo sea
+  media"*. Dos Fáciles del mismo tema tienen que solaparse.
+- **El archivo crece:** un tercio de los temas pasa a guardar 4 versos de contexto por ítem.
+  `CTR-04.1` no le pone techo al archivo, y lo que viaja sube unos cientos de bytes por cada
+  Fácil `listo`, contra un techo de 150 KB.
+- ~~🔴 `US-03` criterio 2 no puede cumplirse hasta que lo resuelvan `producto` y el usuario~~
+  **Resuelto el 2026-09-24:** `producto` enmendó el criterio (arriba, *"El criterio 2,
+  resuelto"*). **Difícil, y aceptado:** la dificultad sube también cambiando de tema, de los
+  más tocados a los menos tocados. Un tema del tercio de abajo aparece por primera vez sin
+  título, sin disco y sin versos alrededor, y siempre tarde en la partida (`BR-01` punto 2).
+- **Difícil, y recién visto al correr el generador: un tema muy tocado con pocos versos
+  limpios sale del juego.** Un tema Fácil necesita al menos cinco versos que pasen el
+  filtro, porque cada ítem lleva dos de cada lado. Si no los tiene, no da ítems y el paso 6
+  lo saca del pozo. Hoy le pasa a *La bestia pop*. No se arregla aflojando el contrato:
+  bajar de nivel el verso es la alternativa 5, descartada. Se arregla en el dato, limpiando
+  o retranscribiendo la letra en el cancionero. Ese trabajo es de `contenido` y lo anotó el
+  hilo principal en su traspaso. Si vuelve a entrar, lo hace solo en la próxima corrida.
+
+#### Lo que toca `T-288` por este apartado
+
+`scripts/generar-letra.mjs` (los 10 pasos); `src/lib/letra/banco.ts` (los tipos y
+`verificarInvariantes` exacto); un módulo de `src/lib/letra/`, nuevo o existente, con la lista
+de versos del tema exportada; `src/lib/letra/banco.test.ts` (`n1`..`n4`, `c0`..`c9` y los dos
+tests que cambian); `src/data/_schema/letra.schema.json` (el bloque `_parche`); y
+`src/data/letra.json`, regenerado. **Va todo en la misma corrida**, por lo mismo que
+`CTR-04.13`: `esquemas.test.ts` valida `letra.json` contra su schema en cada `npm test`.
+
+**Dos comentarios de `src/lib/en-vivo.ts` quedan mintiendo:** el encabezado (*"El quiz y
+`US-03` no entran"*, y la tabla de juegos sin la fila de `US-03`) y el de `repartirEnTercios()`
+(*"La usa solo `scripts/generar-por-la-letra.mjs`"*). **Ese archivo lo toca `T-292` en esta
+misma ráfaga.** Los corrige el que llegue segundo: si `T-292` ya cerró, `T-288`. En paralelo
+no.
+
+> **Leído el 2026-09-24, con `T-288` y `T-292` en disco: siguen los dos.** El encabezado
+> dice *"El quiz y `US-03` no entran"* y la tabla no tiene la fila de `US-03`. El comentario
+> de `repartirEnTercios()` ahora dice *"La usan dos lugares"* y nombra
+> `generar-por-la-letra.mjs` y `repartirEnVivo()`, pero no `generar-letra.mjs`, que es el
+> tercero. Es comentario, no comportamiento. Traspaso:
+> `Docs/SUGERENCIAS/ARQ-para-hilo-principal-lo-que-arrastra-t287.md`.
+>
+> **El resto de este apartado está hecho**, leído y no corrido: `src/lib/letra/versos.ts`
+> exporta `versosDelTema` y `vecinos`, `verificarInvariantes` compara exacto, y
+> `banco.test.ts` tiene `n1` con sus tres rojos, `n2`, `n3` con los borradores incluidos,
+> `n4` con su rojo y los diez casos del schema.
+
+```bash
+# Verificación de T-288
+npm run generar-letra -- --reanclar && npm test && npm run build
+# y el comando del bloque _parche, que con el schema ya en v3 prueba el archivo del disco
+```
+
+---
+
 ### Consecuencias
 
 - **`US-03` se prende con lo que ya hay.** Los 1.784 candidatos que generó el ciclo 6 dejaron
@@ -1147,9 +1745,19 @@ npm run generar-letra && npm test && npm run build
   ficha—, y es exactamente lo que `D-25` excluyó: se relaja *cuántas* fuentes, no *si hay*.
   `fuenteDeLetra.ficha` es obligatorio, así que un sitio sin ficha no se puede ni escribir.
   Fichar lacuerda es de `investigador` y el pedido ya está en `Docs/SUGERENCIAS/`.
+- **Las de v3 (2026-09-24) están en `CTR-04.14`, "Consecuencias".** La que más pesaba era
+  roja, *US-03 criterio 2 no puede cumplirse*, y `producto` la resolvió el mismo día
+  enmendando el criterio. La que queda para mirar es de dato: un tema muy tocado con menos
+  de cinco versos limpios no da ítems (*La bestia pop*).
 
 ### Qué NO decide este contrato
 
+- ~~**Si `US-03` criterio 2 sigue vigente bajo `D-46`**~~. Era de `producto`, y lo decidió el
+  2026-09-24: se enmienda (`CTR-04.14`, "El criterio 2, resuelto").
+- **Si la pantalla muestra el nivel.** Es de `experiencia` (`BR-30`, "Qué no hace esta
+  regla"). Si lo muestra, rige `RNF-CTR-19-A`, y el dato para el rótulo ya está: el `conteo`
+  del envoltorio y `dificultadSegun`, que en ese caso tendría que viajar. *Agregado el
+  2026-09-24.*
 - **Si se responde eligiendo o tipeando, y si `BR-04` se extiende a `US-03`.** Es de
   `producto`. Valor de trabajo: `"opciones"` con 4. Hoy no dejo la propuesta en
   `Docs/SUGERENCIAS/` porque `T-62` me limita a dos archivos: **queda pedido en el reporte de
@@ -1174,6 +1782,23 @@ npm run generar-letra && npm test && npm run build
   contrato de la corrección es `CTR-10` (`T-150`), archivo aparte.
 
 ### Qué le pido a otros roles
+
+> **Agregado el 2026-09-24 (`T-287`).**
+>
+> - ~~A **`producto`**: que resuelva con el usuario la contradicción entre `US-03` criterio 2
+>   y la precisión de `D-46`, y que corrija el "hoy" de `US-03` en la tabla de `BR-30`.~~
+>   **Hecho las dos cosas el 2026-09-24**
+>   (`Docs/SUGERENCIAS/PRD-para-arquitectura-us-03-criterio-2-resuelto.md`).
+> - A **`contenido`**: que mire los `listo` que cambian de nivel después de `T-288` (el paso 9
+>   de `CTR-04.14` los lista), que reemplace un ancla si alguna se pierde por falta de
+>   vecinos, y que tenga en cuenta la cota de 8 sin la salida del segundo ítem medio. Traspaso:
+>   `Docs/SUGERENCIAS/ARQ-para-contenido-la-letra-con-el-conteo.md`. **Ya no es un "si":**
+>   hay dos anclas en `enEspera`, ocho `listo` cambiaron de nivel (`CL-086` es el que más hay
+>   que mirar), dos temas pasan la cota y *La bestia pop* necesita letra limpia. El detalle
+>   medido está en `Docs/SUGERENCIAS/HILO-para-contenido-dos-anclas-sin-vecinos.md`.
+> - A **quien escriba código** (`T-288`): `CTR-04.14` entero, y el orden con `T-292` sobre
+>   `src/lib/en-vivo.ts`. Lo primero está hecho. Lo segundo no: los dos comentarios siguen, y
+>   el traspaso es `Docs/SUGERENCIAS/ARQ-para-hilo-principal-lo-que-arrastra-t287.md`.
 
 - A **`producto`**: cerrar el modo de respuesta de `US-03`; y corregir la frase del piso de
   `US-03` que todavía dice "15 letras completas, transcriptas y segmentadas en versos", que

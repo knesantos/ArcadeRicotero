@@ -32,8 +32,11 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { TRANSPARENTE, jsonDelAtlas, leerDibujo, tintasUsadas, type Dibujo } from '../pixel/fuente.ts';
+import { existsSync, readFileSync } from 'node:fs';
+import sharp from 'sharp';
+import { TRANSPARENTE, jsonDelAtlas, leerDibujo, sinBom, tintasUsadas, type Dibujo, type JsonDelAtlas } from '../pixel/fuente.ts';
+import { diferenciasConLoPublicado, rutaPublicada, type Publicado } from '../pixel/publicado.ts';
+import { paletaDelArea } from '../pixel/tokens.ts';
 import { CAIDA_MAXIMA, IMPULSO_SALTO, PERSONAJES, VELOCIDAD, poseDe, type Cuerpo, type Pose } from './mundo.ts';
 import type { IdPersonaje } from './niveles.ts';
 
@@ -50,8 +53,27 @@ const PROPIAS: Readonly<Record<IdPersonaje, readonly string[]>> = {
 /** Los dos fijos del área: la clave es el contorno, la luz es el aire (`UX-27 §1.1`). */
 const FIJAS: readonly string[] = ['--px-clave', '--px-luz'];
 
-/** Lo que está en el piso apoya el pie en el borde de abajo de la celda (`CTR-15.3`). */
-const EN_EL_PISO: readonly string[] = ['quieto', 'corre', 'enPausa'];
+/**
+ * Lo que está en el piso apoya el pie en el borde de abajo de la celda (`CTR-15.3`). `baila`
+ * también (`CTR-15.7`, *"Dónde está la figura"*; `UX-33 §2.2` punto 3): la energía del baile la
+ * dice la pose, no un saltito que saque la figura de la caja.
+ */
+const EN_EL_PISO: readonly string[] = ['quieto', 'corre', 'enPausa', 'baila'];
+
+/**
+ * El sexto estado (`D-47` punto 3, `CTR-15.7`): **cuatro cuadros** —el ancho que el atlas ya
+ * tiene, `UX-33 §2.2` punto 1— a **8 por segundo** —distinto de los 10 de `corre`, `UX-33 §2.2`,
+ * que elige adentro del rango de 3 a 10 de `CTR-15.7`— y **en bucle**: dura lo que la persona
+ * tarde en tocar para seguir.
+ */
+const BAILA = { cuadros: 4, porSegundo: 8, repite: true } as const;
+
+/**
+ * La parte del cuerpo que dice qué paso se baila: de la cintura al piso (`UX-33 §2.2` punto 2).
+ * Arriba de eso la silueta es la insignia —el sombrero, la mata de pelo— y ya distingue a los
+ * dos sin que nadie baile; abajo es donde dos pasos iguales se verían iguales.
+ */
+const DESDE_LA_CINTURA = 17;
 
 /**
  * Qué estado del atlas dibuja cada pose de `poseDe()` (`UX-28 §3`). Está tipado contra `Pose`:
@@ -243,4 +265,124 @@ test('cada pose que pide la isla tiene su estado en los dos atlas (UX-28 §3)', 
     }
   }
   assert.deepEqual(faltan, [], faltan.join('\n  '));
+});
+
+test('los dos bailan: cuatro cuadros a 8 por segundo, en bucle, en la última fila (D-47, CTR-15.7, UX-33 §2.2)', () => {
+  const d = losDos();
+  for (const quien of PERSONAJES) {
+    const estados = d[quien].estados;
+    const baila = estados.find((e) => e.nombre === 'baila');
+    assert.ok(baila, `${ARCHIVO[quien]}: no tiene el estado baila, y al ganar los dos bailan (D-47 punto 3)`);
+    assert.deepEqual(
+      { cuadros: baila.cuadros, porSegundo: baila.porSegundo, repite: baila.repite },
+      BAILA,
+      `${ARCHIVO[quien]}: baila va con ${BAILA.cuadros} cuadros, ${BAILA.porSegundo} por segundo y en bucle (UX-33 §2.2)`,
+    );
+    assert.equal(
+      estados.at(-1)?.nombre,
+      'baila',
+      `${ARCHIVO[quien]}: baila va en la última fila, la 5 — sumarla al final no mueve las otras cinco (CTR-15.7)`,
+    );
+  }
+});
+
+/**
+ * `UX-33 §2.2` punto 2 y `§2.6`: *"no es el mismo ciclo desfasado en el tiempo: es una
+ * coreografía distinta para cada uno"*. Lo que se cuenta: la silueta de la cintura para abajo,
+ * cuadro por cuadro, como una vuelta. Si la vuelta de uno es la del otro corrida —o espejada—,
+ * bailan el mismo paso, aunque uno lleve sombrero y la otra pelo. Que además no se miren ni
+ * hagan un gesto de pareja lo mira el ojo en la hoja de contacto (`UX-33 §5` punto 8).
+ */
+test('no bailan el mismo paso: la vuelta de uno no es la del otro corrida ni espejada (UX-33 §2.2, §2.6)', () => {
+  const d = losDos();
+  const silueta = (filas: readonly string[]) =>
+    filas.slice(DESDE_LA_CINTURA).map((f) => [...f].map((c) => (c === TRANSPARENTE ? '.' : '#')).join(''));
+  const vuelta = (quien: IdPersonaje) =>
+    d[quien].cuadros
+      .filter((c) => c.estado === 'baila')
+      .sort((a, b) => a.indice - b.indice)
+      .map((c) => silueta(c.filas).join('\n'));
+  const espejo = (s: string) => s.split('\n').map((f) => [...f].reverse().join('')).join('\n');
+  const sk = vuelta('skayboy');
+  const po = vuelta('poligirl');
+  assert.equal(sk.length, BAILA.cuadros, 'skayboy no tiene los cuadros de baila');
+  assert.equal(po.length, BAILA.cuadros, 'poligirl no tiene los cuadros de baila');
+  for (const [nombre, otra] of [['igual', po], ['espejada', po.map(espejo)]] as const) {
+    for (let corrida = 0; corrida < sk.length; corrida++) {
+      const iguales = sk.every((s, i) => s === otra[(i + corrida) % otra.length]);
+      assert.ok(
+        !iguales,
+        `la vuelta de poligirl, ${nombre} y corrida ${corrida}, es la de skayboy de la cintura para abajo: bailan el mismo paso (UX-33 §2.2)`,
+      );
+    }
+  }
+  // Y cada uno baila: una vuelta con los cuatro cuadros iguales es una pose, no un baile.
+  for (const [quien, v] of [['skayboy', sk], ['poligirl', po]] as const) {
+    const todos = d[quien].cuadros.filter((c) => c.estado === 'baila').map((c) => c.filas.join('\n'));
+    assert.ok(new Set(todos).size === todos.length, `${quien}: dos cuadros de baila son el mismo dibujo, y cada cuadro es un paso`);
+    assert.ok(new Set(v).size > 1, `${quien}: de la cintura para abajo no se mueve en ningún cuadro, y baila con el cuerpo`);
+  }
+});
+
+/**
+ * `CTR-15.7`, la fila *"Nada en la mano"* y `UX-27 §8.2`: ni guitarra, ni cigarrillo, ni ningún
+ * objeto. La tinta de los objetos es `--px-tesoro`; un muñeco que la nombra está cargando uno.
+ */
+test('nadie baila con un objeto en la mano: ningún muñeco usa la tinta de los objetos (UX-27 §8.2)', () => {
+  const d = losDos();
+  for (const quien of PERSONAJES) {
+    assert.ok(
+      ![...d[quien].leyenda.values()].includes('--px-tesoro'),
+      `${ARCHIVO[quien]}: nombra --px-tesoro, la tinta de la guitarra y el cigarrillo: nada en la mano (UX-27 §8.2)`,
+    );
+  }
+});
+
+/**
+ * Lo que la isla carga no es el `.txt`: es `public/sprites/<pieza>.v<N>.png` y su `.json`. Si lo
+ * publicado se separa de su fuente —un `.txt` tocado sin reimprimir, un JSON tocado a mano—,
+ * todos los tests de arriba siguen en verde y el auditor de paleta también, porque ninguno mira
+ * lo publicado (`T-300`, lo encontró la verificación: con `poligirl.v2.json` en `baila.cuadros=3`
+ * el auditor dio "todo en regla"). `CTR-15.7`: *"la paridad se verifica comparando los dos JSON"*.
+ */
+async function leerPublicado(d: Dibujo): Promise<Publicado & { json: JsonDelAtlas }> {
+  const base = rutaPublicada(d);
+  assert.ok(existsSync(`${base}.json`) && existsSync(`${base}.png`), `${d.archivo} es la v${d.version} y ${base}.png / .json no están: reimprimí`);
+  const json = JSON.parse(sinBom(readFileSync(`${base}.json`, 'utf-8'))) as JsonDelAtlas;
+  const { data, info } = await sharp(readFileSync(`${base}.png`)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  return { json, ancho: info.width, alto: info.height, rgba: new Uint8Array(data) };
+}
+
+test('los dos atlas publicados son pares: los mismos estados, cuadros, velocidad y repetición, y baila en 4 a 8 en bucle (CTR-15.7)', async () => {
+  const d = losDos();
+  const sk = (await leerPublicado(d.skayboy)).json;
+  const po = (await leerPublicado(d.poligirl)).json;
+  const problemas: string[] = [];
+  if (JSON.stringify(sk.celda) !== JSON.stringify(po.celda)) problemas.push('la celda publicada difiere');
+  if (JSON.stringify(sk.colision) !== JSON.stringify(po.colision)) problemas.push('la caja de colisión publicada difiere (CTR-15.3)');
+  const nombres = (j: JsonDelAtlas) => Object.keys(j.animaciones ?? {}).sort().join(', ');
+  if (nombres(sk) !== nombres(po)) problemas.push(`los estados publicados difieren: skayboy ${nombres(sk)} · poligirl ${nombres(po)}`);
+  for (const [nombre, a] of Object.entries(sk.animaciones ?? {})) {
+    const b = po.animaciones?.[nombre];
+    if (!b) continue;
+    for (const campo of ['fila', 'cuadros', 'porSegundo', 'repite'] as const) {
+      if (a[campo] !== b[campo]) problemas.push(`${nombre}.${campo}: skayboy publica ${a[campo]} y poligirl ${b[campo]}`);
+    }
+  }
+  for (const [quien, j] of [['skayboy', sk], ['poligirl', po]] as const) {
+    const b = j.animaciones?.baila;
+    if (!b) problemas.push(`${rutaPublicada(d[quien])}.json no publica baila`);
+    else if (b.cuadros !== BAILA.cuadros || b.porSegundo !== BAILA.porSegundo || b.repite !== BAILA.repite) {
+      problemas.push(`${rutaPublicada(d[quien])}.json publica baila con ${b.cuadros} cuadros a ${b.porSegundo} por segundo, repite=${b.repite} (UX-33 §2.2)`);
+    }
+  }
+  assert.deepEqual(problemas, [], `los dos atlas publicados no son pares:\n  ${problemas.join('\n  ')}`);
+});
+
+test('lo publicado es lo que imprime el dibujo: el JSON es el suyo y cada píxel del PNG también (CTR-15.7, CTR-15.8)', async () => {
+  const d = losDos();
+  const { tintas } = paletaDelArea(readFileSync('src/styles/tokens.css', 'utf-8'));
+  const problemas: string[] = [];
+  for (const quien of PERSONAJES) problemas.push(...diferenciasConLoPublicado(d[quien], tintas, await leerPublicado(d[quien])));
+  assert.deepEqual(problemas, [], `lo publicado se separó de su fuente:\n  ${problemas.join('\n  ')}`);
 });

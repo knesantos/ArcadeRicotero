@@ -20,7 +20,8 @@
  * - **El JSON de al lado** falta, o no cumple `CTR-15.7`: sin `contrato: "CTR-15"` o sin
  *   `contratoVersion: 1`; sin `pieza`, o con una que no es el nombre del PNG sin la
  *   versión; sin celda, con una celda que no es de `CTR-15.3` o con un PNG que no es
- *   múltiplo de ella; un personaje sin la caja de 10 × 20 o sin sus cinco animaciones; sin
+ *   múltiplo de ella; un personaje sin la caja de 10 × 20 o sin sus seis animaciones (un `.v1` de antes de
+ *   `D-47` pasa con las cinco de entonces, hasta que nada lo pida); sin
  *   `animaciones`, con una que no trae fila, cuadros, porSegundo y repite, con una fila o
  *   más cuadros que los que el PNG tiene, dos en la misma fila, o varios cuadros con
  *   `porSegundo: 0`; una paleta que nombra algo que no es un `--px-*` o un `--px-*` que la

@@ -94,10 +94,23 @@ export interface Cotejo {
   readonly decision?: 'D-25';
 }
 
+/**
+ * De dónde salió el nivel de un ítem (`CTR-04.14`, v3). `en-vivo`: de los tercios del
+ * conteo citado sobre los temas del banco. `sin-conteo`: el tema no tiene línea en el
+ * conteo, y por `D-27` es `dificil`. Nadie lo escribe a mano: lo escribe el generador.
+ */
+export type DificultadSegun = 'en-vivo' | 'sin-conteo';
+
 export interface ItemCrudo {
   readonly id: string;
   readonly us: readonly string[];
+  /**
+   * El nivel del **tema** del ítem, no del verso (`D-46`, `BR-30`, `CTR-04.14`): lo da
+   * `repartirEnTercios()` sobre los temas del banco, y manda cuánto contexto trae (`BR-03`).
+   */
   readonly dificultad: Dificultad;
+  /** No viaja al cliente: es de generación, igual que en `US-07`. */
+  readonly dificultadSegun: DificultadSegun;
   readonly tema: Tema;
   readonly hueco: Hueco;
   readonly contexto: Contexto;
@@ -121,6 +134,11 @@ export interface BancoCrudo {
   readonly juego: string;
   readonly actualizado: string;
   readonly modoRespuesta: ModoRespuesta;
+  /**
+   * Con qué conteo citado se calcularon los niveles: la ficha y la fecha del bloque `conteo`
+   * de `src/data/setlistfm.json` (`CTR-04.1` v3). El número de cada tema no se copia acá.
+   */
+  readonly conteo: { readonly ficha: string; readonly consultado: string };
   readonly items: readonly ItemCrudo[];
 }
 
@@ -221,11 +239,16 @@ export function verificarInvariantes(
 
     // BR-03: el contexto depende del nivel y no lo elige quien carga. Se mide cada lado
     // por separado, que es como esta escrita la tabla de la regla.
+    //
+    // **Exacto, no tope** (`CTR-04.14`, `n2`). Hasta v2 esto miraba `>`: un Facil con un
+    // verso de cada lado pasaba el build y no pasaba el schema. Con el acople de `BR-30`
+    // —el nivel sale del conteo del tema y el contexto lo sigue— un Facil flaco deja de ser
+    // tolerable: es la puerta del que llega sin saber nada.
     const esperado = CONTEXTO_POR_NIVEL[it.dificultad];
     for (const [lado, versos] of [['antes', it.contexto.antes], ['despues', it.contexto.despues]] as const) {
-      if (versos.length > esperado) {
+      if (versos.length !== esperado) {
         throw new BancoInvalido(
-          `${it.id}: es ${it.dificultad} y trae ${versos.length} versos ${lado} del hueco, BR-03 permite ${esperado}`,
+          `${it.id}: es ${it.dificultad} y trae ${versos.length} versos ${lado} del hueco, BR-03 pide exactamente ${esperado}`,
         );
       }
     }

@@ -1,6 +1,7 @@
 # ARQ — Schema de los niveles: `src/data/skayboy.json`
 
-> Rol dueño: `arquitectura`. **Produce: `CTR-16`** (`CTR-16.1` … `CTR-16.10`).
+> Rol dueño: `arquitectura`. **Produce: `CTR-16`** (`CTR-16.1` … `CTR-16.11`; la `.11` nació el
+> 2026-09-24).
 >
 > **Consume:** `CLAUDE.md` (*"nada de datos hardcodeados: el contenido viene siempre de
 > `src/data/*.json`"*), `D-14`, `D-32` (límite 3), `D-38`, `D-39`, `D-40`, `D-41`, `D-42`,
@@ -45,6 +46,33 @@
 > `Docs/SUGERENCIAS/PRD-para-arquitectura-verificaciones-solo-se-retira.md`, `UX-31 §3` (los
 > bocetos) y lo que midió `T-266` en `src/lib/skayboy/solucionador.ts` y su test (la entrada
 > en el aire).
+> **2026-09-24 (`T-291`, ciclo 16, ráfaga 4):** `CTR-16.10.5` suma los puntos 5, 6 y 7 de
+> "el empujón no arranca", que `mundo.ts` ya hacía y el contrato no decía (`FIND-72` de
+> `REV-15`). Está marcado en el lugar. **Consume además:** `REV-15`, y `src/lib/skayboy/mundo.ts`
+> (`cajaEncima()`, `hayOtraCajaEn()` y `empujar()`) y `mundo.test.ts`, leídos en disco ese día.
+> **2026-09-24, más tarde (`T-298`, ciclo 16, ráfaga 5): los contratos de `D-47`.**
+> `CTR-16.4` pasa del tesoro para los dos a **un coleccionable para cada uno** (subsección nueva,
+> `contratoVersion: 3`). Nace **`CTR-16.11`, el avance guardado en el aparato**. Hay enmiendas
+> marcadas en `CTR-16.3` (seis estados y los tesoros en la paridad), `CTR-16.8` (los módulos
+> nuevos), `CTR-16.9` (qué queda abierto) y `CTR-16.10.10` (`E9`, `E10`, `E11`). De paso,
+> `CTR-16.10.8` se pone al día con las 15 tintas: lo pedía
+> `Docs/SUGERENCIAS/UX-para-arquitectura-ctr-16-10-8-todavia-dice-16-tintas.md`. **Consume
+> además:** `D-47`, `US-09` criterios 1, 6 y 9 y `BR-23` con sus enmiendas del 2026-09-24
+> (`PRD-skayboy-y-poligirl.md`, y el párrafo *"No entra el coleccionable como condición"*),
+> `ADR-04.5` (el espacio de nombres `arcade.`), `ADR-10` (`ARQ-pantalla-completa.md`),
+> `CTR-15.7` y `CTR-15.8` enmendados hoy, `UX-27 §4.1.2` y `§8.2`, `UX-32 §3` y `§5`, y en
+> disco `src/data/skayboy.json` (un solo nivel con tesoros, `NIV-01`), `skayboy.schema.json`
+> (v2), `mundo.ts:343-353` y `:738-742`, `escena.ts:105-150` (de `ESTADOS_DE_PERSONAJE` a
+> `nivelAJugar()`) y `:359-365` (las ramas `tesoro` y `puerta` de `tileDe()`), y
+> `src/lib/sitio/cinta.ts:118-119` (`CLAVE_PREFERENCIA`) y `:300-324` (`preferenciaGuardada()` y
+> `guardarPreferencia()`). **`BR-31` y `UX-33` se escriben en paralelo**
+> y no estaban en disco: lo que es de ellos queda nombrado como suyo.
+> *Citas de línea corregidas el mismo día por la verificación de `T-298`:* las dos de
+> `escena.ts` de este párrafo y la de `CTR-16.11.2` no coincidían con el código. La segunda de
+> `cinta.ts` (decía `:310-320`) arrancaba en el medio de una función y ahora abarca las dos. Los
+> números son los del árbol de trabajo al corregir, con la ráfaga 4 todavía escribiendo en
+> `escena.ts`. **Si un número se corre, manda el símbolo** que va al lado, y se busca con
+> `rg -nF "<símbolo>" <archivo>`.
 >
 > **Regla de escritura que nace de `FIND-55`: toda medida de píxel dice si es _nativa_ o
 > _CSS_. En este documento todo es nativo, porque un dato de nivel no sabe a qué escala se
@@ -180,7 +208,11 @@ decisión.
 rotulado `hecho` sobre Carmen Castro):
 
 - Los dos usan la misma celda y la misma caja de colisión (`CTR-15.3`).
-- Los dos tienen las mismas cinco animaciones (`CTR-15.7`).
+- Los dos tienen las mismas seis animaciones (`CTR-15.7`). *(Decía "cinco" hasta el
+  2026-09-24: `baila` entra por `D-47`.)*
+- *(Sumado el 2026-09-24, `D-47` punto 4.)* Los dos tienen **exactamente un** coleccionable
+  propio en la leyenda, y cada nivel trae **la misma cantidad** del de uno que del del otro
+  (`CTR-16.4`, `E9` y `E10`).
 - Los dos tienen **exactamente un** terreno que los devuelve a ellos solos, y no es el mismo
   (`CTR-16.4`).
 - **No hay campos de habilidad por personaje en este schema, a propósito.** Si mañana uno
@@ -208,7 +240,8 @@ existe, y eso cae bajo lo único que `CLAUDE.md` declara estricto.
   "C": { "tipo": "molinete", "elemento": "cielo",    "devuelve": ["skayboy"] },
   "I": { "tipo": "molinete", "elemento": "infierno", "devuelve": ["poligirl"] },
   "X": { "tipo": "molinete", "devuelve": ["skayboy", "poligirl"] },
-  "o": { "tipo": "tesoro", "para": ["skayboy", "poligirl"] },
+  "g": { "tipo": "tesoro", "para": ["skayboy"] },
+  "-": { "tipo": "tesoro", "para": ["poligirl"] },
   "1": { "tipo": "entrada", "de": "skayboy" },
   "2": { "tipo": "entrada", "de": "poligirl" },
   "A": { "tipo": "puerta",  "de": "skayboy" },
@@ -219,6 +252,11 @@ existe, y eso cae bajo lo único que `CLAUDE.md` declara estricto.
   "n": { "tipo": "caja" }
 }
 ```
+
+> **Enmendado el 2026-09-24 por `D-47` (`T-298`), en el lugar.** El bloque traía
+> `"o": { "tipo": "tesoro", "para": ["skayboy", "poligirl"] }`, un tesoro que juntaba
+> cualquiera de los dos. Ahora son dos, **`g` para Skayboy y `-` para Poligirl**. Qué es cada uno
+> y cómo se retira `o`: subsección *"El coleccionable de cada uno"*, al final de esta sección.
 
 > **Enmendado el 2026-09-22 por `CTR-16.10` (`T-264`), en el lugar.** Tres cambios en el
 > bloque de arriba, y ninguno toca el reparto:
@@ -286,6 +324,9 @@ por su contenido**, y afirmar que sí sería el mismo defecto que el hallazgo vi
 | **Hay exactamente un molinete que devuelve solo a `skayboy`, exactamente uno que devuelve solo a `poligirl`, y exactamente uno que devuelve a los dos** | **un caso de prueba propio en `esquemas.test.ts`**, cuatro líneas de JavaScript sobre el JSON ya parseado |
 | *(Sumada por `CTR-16.10`)* Todo molinete de uno solo trae `elemento` (`cielo` \| `infierno`); el de los dos y cualquier otro `tipo` no lo traen | el schema, con `if`/`then`/`else` |
 | *(Sumada por `CTR-16.10`)* **Los dos molinetes de uno solo son uno de cielo y uno de infierno** — no dos de cielo | el mismo caso de prueba que cuenta los tres: el schema no cuenta por contenido en un mapa, y es la misma razón de la fila de arriba |
+| *(Sumada por `D-47`, 2026-09-24)* **Todo `tesoro` nombra a uno solo en `para`** | el schema: `maxItems: 1` en la rama de `tesoro` |
+| *(Sumada por `D-47`)* **Hay exactamente un `tesoro` de `skayboy` y exactamente uno de `poligirl`** (`E9`) | `esquemas.test.ts`, al lado de la cuenta de los molinetes, por la misma razón: el schema no cuenta por contenido en un mapa |
+| *(Sumada por `D-47`)* **Cada nivel trae la misma cantidad de celdas del tesoro de uno que del otro** (`E10`) | `niveles.ts` (`problemasDelBanco`): es contar caracteres de la grilla por lo que la leyenda dice de ellos, y eso no lo hace ningún schema |
 
 **Alternativa descartada, y es la que parece mejor hasta que se mira de cerca:** hacer que
 `leyenda` sea un **arreglo** de `{ "caracter": …, "tipo": … }`. Con un arreglo, `contains` +
@@ -294,6 +335,128 @@ quiere. Se descarta porque se pierde algo peor: en un arreglo **nada impide dos 
 el mismo caracter**, y eso el schema tampoco lo puede chequear. Entre "una regla de conteo
 vive en el test" y "un caracter duplicado entra en silencio y el segundo pisa al primero", la
 elección es fácil — **el defecto que el mapa hace imposible es el que nadie vería.**
+
+#### El coleccionable de cada uno: la guitarra y el cigarrillo (sumado el 2026-09-24, `D-47` punto 4, `T-298`)
+
+`D-47`: *"Skay debe juntar guitarras y Poli cigarrillos"*. **Reemplaza al tesoro que servía
+para los dos.** La paridad de `BR-23` se vuelve contable —la misma cantidad por nivel—, **sigue
+sin ser condición para ganar**, y la guitarra se junta del piso (`UX-27 §8.2` en pie).
+
+**La decisión, en siete puntos:**
+
+1. **El `tipo` sigue siendo `tesoro`.** Nombra la mecánica: algo que se junta, que no decide la
+   victoria y que no vuelve al fallar (`mundo.ts:352`, *"lo conseguido se queda"*). Qué objeto
+   es no lo dice el `tipo`, igual que `molinete` no dice si es cielo o infierno.
+2. **`para` nombra a uno solo.** El schema lo exige con `maxItems: 1` en la rama de `tesoro`. El
+   tesoro de los dos deja de validar: esa es la baja de `o`.
+3. **Un caracter por personaje: `g` es de Skayboy y `-` es de Poligirl.** `g` por guitarra, como
+   `C` e `I` son las iniciales del cielo y del infierno. `-` porque dibuja un cigarrillo tirado en
+   el piso. Son dato, no contrato: las pruebas buscan por `tipo` y `para`, nunca por caracter.
+4. **Qué objeto es lo dibuja la sala, no lo dice el dato.** Hay un tile por personaje,
+   **`tesoroSkayboy` y `tesoroPoligirl`**, como ya pasa con `puertaSkayboy` y `puertaPoligirl`.
+   `tileDe()` elige por `para[0]`, como hoy elige la puerta por `de`. Adentro del de Skayboy se
+   dibuja una guitarra, y adentro del de Poligirl, un cigarrillo. **`D-47` avisa que el
+   cigarrillo puede cambiar si llega un reclamo**: así, cambiarlo es redibujar un tile y subir
+   la versión de la sala, sin tocar ni el dato ni el schema.
+5. **La paridad: en cada nivel, la misma cantidad de celdas `g` que de celdas `-`** (`E10`).
+   Cero y cero cumple este contrato. **Si `BR-31` fija un mínimo por nivel**, entra en la misma
+   prueba como una constante con su cita. Leer *"la misma cantidad por nivel"* como *"la misma
+   cantidad en todos los niveles"* es otra regla, y la fija `BR-31`, no este contrato.
+6. **Nada más cambia en la física ni en el sonido.** `mundo.ts` ya junta solo al que figura en
+   `para` (`:738-742`), y `mundo.test.ts:364` ya lo prueba con un tesoro de uno solo. El suceso
+   sigue siendo `{ tipo: 'tesoro', quien }`. **Suena igual para los dos**: `CTR-17` no se
+   enmienda, y un mismo sonido es paridad gratis.
+7. **Si la victoria muestra cuántos juntó cada uno** (`UX-33`, `CNT-22`), la cuenta se deriva de
+   `mundo.juntados` y la leyenda. No se suma ningún contador al mundo.
+
+**Cómo se retira `o`: una migración en cinco pasos.**
+
+1. **El schema pasa a `contratoVersion: 3`** (fragmento de abajo). Es incompatible: el dato v2,
+   con `o` para los dos, no valida contra el v3.
+2. **El dato.** La leyenda pierde `o` y gana `g` y `-`. **`NIV-01` es el único nivel con tesoros**
+   (leído en disco el 2026-09-24): `"#A.o.1...2.o.B#"` pasa a **`"#A.g.1...2.-.B#"`**. La `o` de la
+   columna 3 está en el camino de Skayboy, de su entrada en la 5 a su puerta en la 1. La de la
+   columna 11 está en el de Poligirl, de la 9 a la 13. Queda uno y uno. `contratoVersion: 3`.
+   `deDos` sigue en `false`, que ya está.
+3. **Las trazas no se regraban por esto.** Para un cuerpo, un tesoro es aire y no decide la
+   victoria, y la traza se juega contra la grilla de hoy en cada build (`CTR-18`). La `deUno` de
+   `NIV-01` sigue ganando. El control de `soluciones.test.ts:559` (*"la copia juntó tesoros"*)
+   sigue en verde, porque Skayboy pasa por la columna 3 para llegar a su puerta.
+4. **El código** (hilo principal; la lista está en el traspaso): `escena.ts`, `sala.txt` y
+   `sala.test.ts` pasan de un tile `tesoro` a dos. Se suman `E9` en `esquemas.test.ts` y `E10` en
+   `niveles.ts`, cada una con su rojo. **`mundo.ts` no cambia.**
+5. **Un solo commit para 1, 2 y 4:** la escena que pide los dos tiles, la sala nueva que los trae
+   y el dato que usa `g` y `-` van juntos. Separados, la isla no arranca (`problemasDelAtlas()`
+   no encuentra un tile) o dibuja un tile que no existe.
+
+**Para pegar en `src/data/_schema/skayboy.schema.json`:**
+
+`$id` pasa a `https://ricotaarcade.local/schema/skayboy/3`, y `properties.contratoVersion` a:
+
+```json
+"contratoVersion": {
+  "comment": "CTR-16.4 enmendado por D-47 (T-298): el tesoro para los dos se retira y cada personaje tiene el suyo. Es incompatible con la versión 2 —un tesoro con dos en `para` deja de validar—, y por eso es la 3. `tiempoObjetivo` (CTR-16.9), si llega, sería la 4.",
+  "const": 3
+}
+```
+
+Y en `$defs.caracter.allOf`, la rama de `tesoro` se reemplaza entera por:
+
+```json
+{
+  "comment": "CTR-16.4 enmendado por D-47: cada tesoro es de uno solo —la guitarra de skayboy, el cigarrillo de poligirl— y el que servía para los dos se retiró. Qué objeto es lo dibuja la sala (tesoroSkayboy, tesoroPoligirl), no lo dice el dato. Que haya exactamente uno por personaje en la leyenda lo cuenta esquemas.test.ts (E9), y que cada nivel traiga la misma cantidad de los dos, niveles.ts (E10).",
+  "if": { "required": ["tipo"], "properties": { "tipo": { "const": "tesoro" } } },
+  "then": {
+    "required": ["para"],
+    "properties": { "para": { "maxItems": 1 }, "devuelve": false, "de": false }
+  }
+}
+```
+
+Y el `comment` de la raíz suma, antes de *"Todo eso vive en…"*: *"ni cuenta los tesoros de cada
+personaje en la leyenda (E9) ni en cada nivel (E10), ni mira que los niveles vayan en orden
+(CTR-16.11, E11)"*.
+
+**Los rojos que se tienen que ver** (el schema con `ajv`, y los tests):
+
+| Caso | Dónde da rojo |
+|---|---|
+| `"o": { "tipo": "tesoro", "para": ["skayboy", "poligirl"] }` en la leyenda | el schema, en `/leyenda/o/para` (`maxItems`) |
+| La leyenda sin `-`: solo el tesoro de Skayboy | `E9`, nombrando a `poligirl` |
+| `"g"` y `"h"`, los dos `tesoro` para `skayboy` | `E9`, nombrando los dos caracteres |
+| `NIV-01` con `"#A.g.1...2.g.B#"` | `E10`, nombrando el nivel: 2 de `skayboy` y 0 de `poligirl` |
+| Control en verde | el dato migrado del paso 2 |
+
+**Descartadas:**
+
+| Descartada | Por qué, puntual |
+|---|---|
+| **Renombrar el `tipo` a `coleccionable`** | La palabra no se lee en ninguna pantalla, y el cambio arrastra el nombre del efecto de `CTR-17`, el suceso de `mundo.ts`, la cuenta de `soluciones.ts`, `sonido.ts` y media docena de tests, sin cambiar un solo comportamiento. `tesoro` sigue nombrando bien la mecánica |
+| **Un campo `objeto` (`guitarra` \| `cigarrillo`) en la leyenda** | Pondría en dos lugares, dato y dibujo, qué objeto es de quién. Y es justo la pieza que `D-47` anticipa que puede cambiar: con el campo, cambiar el cigarrillo toca enum, schema, dato y tile; sin él, solo el tile. `elemento` no es precedente, porque nombra un lugar cuyo reparto puede cambiar solo (`CTR-16.4`, enmienda del 2026-09-22). Acá dueño y objeto los fija `D-47` juntos |
+| **Mantener `o` para los dos y sumar los de cada uno** | `D-47`: *"Reemplaza al tesoro que servía para los dos"* |
+| **Contar la paridad en el schema** | Las mismas dos razones de siempre: JSON Schema no cuenta propiedades de un mapa por su contenido (`E9`), y `minContains` cuenta renglones que contienen un caracter, no cuántas veces aparece (`E10`) |
+| **`c` para el cigarrillo** | En una grilla que ya usa `C` para el cielo, `c` y `C` se confunden a simple vista, y el que se confunde es quien diseña el nivel |
+
+**Lo que ninguna prueba mira todavía, y no decido yo solo: que cada uno se pueda juntar.** Una
+guitarra donde Skayboy no llega es un defecto que se ve. La traza de uno gana sin juntar nada, así
+que hoy no lo prueba. Hay tres salidas:
+
+- **(a)** que lo mire `revisor` en cada nivel;
+- **(b)** que la traza `deUno` grabada gane **juntando todo**: el build lo reprobaría en cada
+  corrida;
+- **(c)** que lo busque el solucionador sin grabarlo: queda afuera del build.
+
+**Recomiendo (b)**, con tres costos dichos:
+
+- es una enmienda de `CTR-18` que escribiría yo;
+- la búsqueda crece, porque los juntados ya entran en la clave de estado
+  (`solucionador.test.ts:899`), y es el riesgo *"el solucionador no converge"* del plan (§6);
+- la *"duración mínima"* de `BR-29` se tendría que seguir midiendo sobre una traza que no junta
+  nada.
+
+**Si es requisito o no lo decide `BR-31`** (`producto`). La fila `T-303` del plan dice *"con las
+trazas regrabadas"*: eso solo hace falta con (b). Traspaso:
+`Docs/SUGERENCIAS/ARQ-para-producto-y-experiencia-lo-que-deja-abierto-t298.md`.
 
 ---
 
@@ -604,10 +767,18 @@ Los módulos y sus límites, que es lo que evita el defecto de `D-29`:
 | `src/lib/skayboy/copy.ts` | el texto visible | idem. **Y entra a `MODULOS` de `voz.test.ts`** (`ADR-08.8`) |
 | `src/scripts/partida-skayboy.ts` | la isla: lo único que importa el motor | nada de `node:*`. Es el único archivo del repo con un import desnudo de npm, y está en la lista blanca de `ADR-08.7` |
 | `src/lib/skayboy/sonido.ts` | los efectos de `CTR-17` | el motor, y cualquier cosa que cree un `AudioContext` que no sea `contexto.ts` |
+| `src/lib/skayboy/avance.ts` *(sumado el 2026-09-24, `CTR-16.11`)* | el avance guardado: leerlo, sumarle un nivel, elegir el siguiente de la fila. Todo puro salvo dos funciones chicas que tocan `localStorage` | el motor, el DOM, `node:*`. Toca `localStorage` solo adentro de esas dos, con `try`/`catch` |
+| `src/lib/skayboy/pantalla.ts` *(sumado el 2026-09-24)* | `encuadre()`: la escala entera del modo de pantalla completa | su tabla vive en `ADR-10.6` (`ARQ-pantalla-completa.md`), no acá |
 
 **La isla no lee `src/data/` en tiempo de ejecución.** Lee el `<script type="application/json">`
 que la página ya sembró. Un `import` de JSON dentro de la isla mete el banco entero al bundle,
 incluidos los `borrador`.
+
+**Los seis niveles en fila viven en la isla** *(sumado el 2026-09-24, `D-47` punto 2)*. Pasar al
+siguiente es crear un mundo nuevo (`crearMundo(banco, siguiente)`) con el mismo motor y los
+mismos atlas. **No se navega ni se recarga la página**, por dos razones: una navegación saca de
+la pantalla completa del sistema (`ADR-10`), y la página ya sembró todos los niveles que hay para
+jugar. Qué nivel es "el siguiente" lo dice `CTR-16.11`.
 
 > **Sumado el 2026-09-23 (deuda de `ADR-09`, consecuencia 3).** Los módulos de la solución
 > grabada —`soluciones.ts`, `solucionador.ts`, `scripts/resolver-niveles.mjs`— y el archivo
@@ -625,10 +796,13 @@ incluidos los `borrador`.
 | **El piso de niveles** y el criterio Given/When/Then | `producto` al promover (`BR-16`). La lectura que existe es 2/2/2, y `escalon` está en el schema para que ese número sea verificable |
 | **`temaFijo`** | `contenido` con `experiencia` (`D-39` consecuencia 3) |
 | **El reparto de `devuelve`** — qué molinete rechaza a quién | `experiencia` con `contenido`. Es criterio del sitio y no se explica en ninguna pantalla. (Se llamaba "el reparto `inmuneA` / `mata`" hasta `FIND-58`) |
-| **El rango por letra** de `RES-61.8` | **No está en este schema, y es a propósito.** `RES-61.8` avisa que el umbral de tiempo no se puede copiar de ningún lado y que es trabajo de afinación. Si `producto` lo quiere, entra como **la versión siguiente a la vigente** con un campo `tiempoObjetivo` por nivel. Mientras tanto, **no se promete un puntaje que no está**. *Enmendado el 2026-09-23: decía "entra como `contratoVersion: 2`", y la 2 ya es la de `CTR-16.10` con la baja de `verificaciones.solo` (`CTR-16.10.9`, `CTR-16.7`): `tiempoObjetivo` sería la 3* |
+| **El rango por letra** de `RES-61.8` | **No está en este schema, y es a propósito.** `RES-61.8` avisa que el umbral de tiempo no se puede copiar de ningún lado y que es trabajo de afinación. Si `producto` lo quiere, entra como **la versión siguiente a la vigente** con un campo `tiempoObjetivo` por nivel. Mientras tanto, **no se promete un puntaje que no está**. *Enmendado el 2026-09-23: decía "entra como `contratoVersion: 2`", y la 2 ya es la de `CTR-16.10` con la baja de `verificaciones.solo` (`CTR-16.10.9`, `CTR-16.7`): `tiempoObjetivo` sería la 3.* *Enmendado otra vez el 2026-09-24: la 3 es la de los coleccionables de `D-47` (`CTR-16.4`). `tiempoObjetivo` sería la 4* |
 | **Los mecanismos que el juego de origen suma después** —espejos, portales, hielo, ventiladores (`RES-61.12` … `RES-61.15`) | Ampliación de un ciclo posterior. La leyenda es abierta por diseño: sumar un `tipo` es sumar una entrada al `enum` del schema y un tile. *Enmendado el 2026-09-22:* **cualquier `tipo` nuevo tiene que pasar las cuatro reglas de `CTR-16.10`**, y por eso **las plataformas móviles y los ascensores (`RES-61.6`) no entran ni como ampliación** sin una decisión nueva: mueven al que espera (regla 2) y llevan reloj (regla 1) |
 | *(Sumada el 2026-09-22)* **El sonido de palanca, placa y compuerta** | Hoy no suenan, con fundamento (`CTR-16.10.7`). Si el teléfono dice que la palanca se siente muerta, es una enmienda de `CTR-17` en el ciclo 17, y el único candidato es la palanca |
 | *(Sumada el 2026-09-22)* **Los callejones sin salida** —una caja contra la pared, un pozo más hondo que el alcance— | No son física, son nivel, y la traza no los ve (`CTR-16.10.11`). Si un nivel puede tenerlos es de `producto`; qué hace el que cae en uno, de `experiencia`. Traspaso en `Docs/SUGERENCIAS/ARQ-para-experiencia-y-producto-mecanismos-y-callejones.md` |
+| *(Sumada el 2026-09-24, `D-47`)* **Cuántos coleccionables por nivel como mínimo, y si cada uno tiene que probarse alcanzable** | `producto` (`BR-31`). El contrato exige la igualdad (`E10`). Si hay mínimo, entra en la misma prueba. Si hace falta probar que se alcanzan, la recomendación está al final de `CTR-16.4` y la enmienda de `CTR-18` sería mía |
+| *(Sumada el 2026-09-24, `D-47`)* **Qué pasa con la fila completa**: qué se ve al ganar el sexto y qué se juega al volver con los seis pasados | `producto` (`BR-31` punto 1) con `experiencia` (`UX-33`). `CTR-16.11` devuelve `null` como "no queda ninguno" y no decide qué se muestra |
+| *(Sumada el 2026-09-24, `D-47`)* **Si el avance guarda también los coleccionables** | `producto` (`BR-31`). Hoy no se guardan. La forma en que entrarían sin cambiar la clave está en `CTR-16.11` |
 
 ---
 
@@ -899,7 +1073,27 @@ arranca** —la caja no se mueve y el cuerpo frena como contra una pared— si:
    llevarlo (`BR-23` punto 4), y empujar la de abajo de una pila es mover dos;
 3. **la caída no es limpia:** en la columna por la que caería, desde la celda de destino
    hasta donde apoyaría, hay un cuerpo o una celda donde una caja no entra (regla 3);
-4. **los dos la empujan en sentidos opuestos en el mismo subpaso** (regla 4).
+4. **los dos la empujan en sentidos opuestos en el mismo subpaso** (regla 4);
+5. **otra caja que anda ya decidió apoyarse en ella.** Una caja que anda tiene decidido
+   desde el arranque dónde queda: el tramo y la caída terminan en esa celda, y no vuelven a
+   mirar abajo. Si ese apoyo es esta caja, esta caja es su piso desde ese subpaso. Empujarla
+   dejaría a la otra quieta en el aire. Es el punto 2 corrido en el tiempo: *"algo encima"*
+   incluye lo que **va a estar** encima. Con dos personas se llega: una empuja la caja de
+   arriba y la otra, mientras esa todavía anda, empuja la de abajo (`mundo.ts`, la segunda
+   mitad de `cajaEncima()`);
+6. **es el apoyo de otra caja que arranca en el mismo subpaso.** Es el caso 5 con los dos
+   empujones a la vez. Los arranques se deciden todos con la sala como estaba antes de mover
+   nada, así que la de arriba ya contó con esta para apoyarse. Arranca la de arriba y esta
+   no. El resultado es el mismo que si la de arriba se hubiera empujado un subpaso antes, y
+   eso es lo que se busca: la física no distingue entre "a la vez" y "uno detrás del otro"
+   (`mundo.ts`, `sostiene` adentro de `empujar()`);
+7. **su camino pisa el de otra caja.** Una caja que anda reserva su camino entero: la celda de
+   al lado y la columna por la que cae, hasta donde apoya. Una caja que entraría en ese camino
+   no arranca, y esto extiende los puntos 1 y 3 a lo que otra caja ya reservó. Si dos cajas
+   que arrancan en el mismo subpaso piden celdas que se pisan en la misma columna, **no
+   arranca ninguna**. Si arrancara una sola, decidiría el orden de la lista de cajas, y eso
+   es la regla 4 aplicada a las cajas (`mundo.ts`, `hayOtraCajaEn()` y `choca` adentro de
+   `empujar()`). *(5, 6 y 7: sumados el 2026-09-24, ver abajo de la tabla.)*
 
 | Una caja entra en | No entra en, y por qué |
 |---|---|
@@ -908,6 +1102,30 @@ arranca** —la caja no se mueve y el cuerpo frena como contra una pared— si:
 | | **tesoro**: lo taparía |
 | | **entrada, y la celda de arriba de una entrada**: el que vuelve a su entrada aparece ahí (`UX-29 §3`), y aparecería adentro de una caja |
 | | **puerta, y la celda de arriba de una puerta**: el que llega a su puerta no entraría |
+
+*Enmendado el 2026-09-24 (`T-291`, `FIND-72` de `REV-15`). La lista de "el empujón no arranca"
+tenía los puntos 1 a 4, y el punto 3 decía solo "un cuerpo o una celda donde una caja no entra".
+El código ya hacía los otros tres. Según `FIND-72`, el 5 y el 6 los agregó la corrección de
+`T-272`, que cerró un `ALTA`. El contrato no los decía: quien programara solo con el contrato
+habría hecho una caja que puede quedar quieta en el aire (sin el 5 y el 6) o dos cajas metidas
+una en la otra (sin el 7). `FIND-72` nombraba el 5 y el 6. El 7 lo agregué al leer el mismo
+código: es la misma familia de casos, y dejarlo afuera habría dejado el mismo hueco. Los tres
+tienen su prueba con rojo en `src/lib/skayboy/mundo.test.ts`: el 5 y el 6 en "la caja que va a
+apoyar en otra le reserva el apoyo…" (primera y segunda mitad), y el 7 en "una caja que anda
+tiene su camino reservado, y dos cajas que piden el mismo lugar a la vez no arrancan".*
+
+*Alternativa descartada, para los tres:* **que una caja en movimiento vuelva a mirar abajo en
+cada subpaso y corrija dónde apoya.** Con eso sobrarían los puntos 5 y 7, porque ninguna caja
+necesitaría reservar nada. Pero choca con lo que este apartado fija más arriba: la caja *"descansa
+siempre en la grilla"*, y el tramo, una vez que arranca, se termina en la celda que se decidió.
+Eso es lo que hace que la sala quieta se pueda escribir como una grilla (`T-266`). Además, si dos
+cajas se mueven en el mismo subpaso y una apoya en la otra, lo que ve la de arriba dependería de
+cuál de las dos movió primero el mundo, y eso es lo que prohíbe la regla 4.
+*Alternativa descartada, para el 6:* **que arranquen las dos.** La de abajo se va y la de arriba
+termina su caída en la celda que decidió, arriba de nada.
+*Alternativa descartada, para el 6:* **que arranque la de abajo y no la de arriba.** Sería tan
+determinista como la elegida, pero daría otro resultado que el caso 5, que es la misma situación
+con un subpaso de diferencia. Que dos personas coordinen al cuadro no puede cambiar lo que pasa.
 
 **Cae** con la misma `GRAVEDAD` y la misma `CAIDA_MAXIMA` que los cuerpos —una sola física—
 y apoya alineada en sólido o en otra caja.
@@ -1058,9 +1276,19 @@ otro).
 
 El dibujo es del hilo principal (`D-44`). Lo que el contrato le pone como condición:
 
-`UX-27 §4` reparte las 16 tintas en fijos (2), terreno (6), personajes (3 y 3) y objetos (2:
-la puerta y el coleccionable). **Palanca, placa, compuerta y caja no tienen franja propia y
-no piden la 17.**
+`UX-27 §4` reparte las 15 tintas en fijos (2), terreno (6), personajes (3 y 3) y objetos (1:
+el coleccionable). **Palanca, placa, compuerta y caja no tienen franja propia y no piden una
+tinta más.**
+
+> **Enmendado el 2026-09-24 (`T-298`), a pedido de
+> `Docs/SUGERENCIAS/UX-para-arquitectura-ctr-16-10-8-todavia-dice-16-tintas.md`.** Decía *"las 16
+> tintas… objetos (2: la puerta y el coleccionable)"*. `UX-27 §4.1.2`, enmendado el 2026-09-23,
+> le sacó la tinta a la puerta: son 15 y el tope de `CTR-15.4` sigue en 16. La fila de la puerta
+> en la tabla de abajo pasa de tinta a **forma**, que es la salida 2 del traspaso: es la que
+> sirve ahora que `T-290` dibuja la puerta abierta (`UX-32 §2.2`). **Y los coleccionables ahora
+> son dos, uno por personaje** (`CTR-16.4`, `D-47`). Con qué tintas se dibujan es de `UX-33`, con
+> dos condiciones: no hay tinta 17, y si hace falta la 16 nace en el lienzo (`diseno-marca.md`).
+> La fila del coleccionable de la tabla sigue valiendo: ningún mecanismo toma su tinta.
 
 **Van en la clave y la luz —los dos fijos— y se distinguen por forma.** El plan decía *"con
 las del terreno y la clave"*, y se precisa, porque las seis del terreno no son neutrales: son
@@ -1070,7 +1298,7 @@ tres de cielo y tres de infierno (`UX-27 §4.1`). Por qué ninguna otra franja:
 |---|---|---|
 | una rampa de un elemento | "de Skayboy" o "de Poligirl", según quién camina ese terreno (`UX-30 §3`) | la paridad (`BR-23` punto 1): toda pieza de este contrato es **de los dos**, y el schema le prohíbe el `de` |
 | las dos rampas mezcladas | el molinete que devuelve a los dos | que una pieza para usar parezca un peligro |
-| la tinta de la puerta | una salida, y "puerta" y "compuerta" ya comparten la mitad del nombre | la condición de victoria, que es llegar a la **puerta** |
+| *(enmendada el 2026-09-24: decía "la tinta de la puerta", que ya no existe)* **la forma de la puerta**: un vano, un marco, un dintel —cerrada o abierta (`UX-32 §2.2`)— | una salida, y "puerta" y "compuerta" ya comparten la mitad del nombre | la condición de victoria, que es llegar a la **puerta**. Sobre todo la compuerta **abierta**, recogida contra su anclaje: no puede parecerse a la puerta abierta |
 | la del coleccionable | un premio | `UX-27 §9`: nada de brillos de recompensa |
 | una de personaje | un pedazo de uno de los dos | `D-38` |
 
@@ -1229,11 +1457,17 @@ su caso en rojo:
 | E5 | Toda caja de arranque apoyada: sólido, otra caja o borde abajo | ídem |
 | E6 | Un nivel de `escalon` 3 no usa ningún `tipo` que no aparezca en algún nivel de escalón menor | es la regla del último escalón de `PRD-skayboy-y-poligirl.md` ("Qué enseña cada escalón"), y la cuenta la hace mejor un test que un script que hay que acordarse de correr |
 | E8 | *(Sumada el 2026-09-23.)* **Cada entrada tiene dónde pararse** (`CTR-16.5` regla 3): abajo, `solido` o el borde; arriba, no es la fila 0 y la celda no es `solido` ni un `molinete` que devuelva a ese personaje. El mensaje nombra el nivel, el personaje, la celda y qué hay abajo o arriba. **Rojo:** la sala `FLOTA_POLIGIRL` de `solucionador.test.ts`, y una entrada con un molinete propio abajo | mira la celda vecina y lo que la leyenda dice de ella. (`E7` vive en `esquemas.test.ts`; por eso esta es la 8) |
+| E10 | *(Sumada el 2026-09-24, `D-47`, `CTR-16.4`.)* **En cada nivel, tantas celdas del `tesoro` de `skayboy` como del de `poligirl`.** El mensaje nombra el nivel y las dos cuentas. **Rojo:** `NIV-01` con `"#A.g.1...2.g.B#"` (2 y 0) | contar caracteres de la grilla por lo que la leyenda dice de ellos. (`E9` vive en `esquemas.test.ts`) |
+| E11 | *(Sumada el 2026-09-24, `CTR-16.11`.)* **Los niveles del banco van en orden de `id`, sin ids repetidos, y el `escalon` no baja de uno al siguiente.** Así el primero del arreglo (`nivelAJugar()`), el de `id` más chico (`T-253`, `CTR-16.5`) y el primero de la fila son el mismo nivel por construcción. **Rojo:** una copia del banco con `NIV-02` y `NIV-03` cambiados de lugar | `uniqueItems` compara objetos enteros, y el orden de un arreglo según un campo no se expresa en JSON Schema |
 
 **Estáticas, en `esquemas.test.ts`:**
 
 - **E7.** Los dos molinetes de uno solo son **uno de cielo y uno de infierno.** Va adentro de
   la cuenta de los tres (`problemasDeMolinetes`), con su caso en rojo.
+- **E9.** *(Sumada el 2026-09-24, `D-47`.)* La leyenda tiene **exactamente un** `tesoro` de
+  `skayboy` y **exactamente uno** de `poligirl`. Va al lado de la cuenta de los molinetes, por
+  la misma razón. Rojos: la leyenda sin el de `poligirl`, y dos caracteres `tesoro` para
+  `skayboy` (`CTR-16.4`, tabla de rojos).
 - **`T-253` sigue la lista nueva** (`CTR-16.5`): molinete, palanca, placa, compuerta y caja en
   la grilla del primero, `mecanismos` y `compuertas` vacíos, y el caso en rojo nombrando los
   cinco **a mano**. El caso de *"una caja declarada y no dibujada"* se va con el arreglo: la
@@ -1310,3 +1544,115 @@ no se puede exigir en un test. Para lo que la regla protege alcanza la de uno
 | Las tintas | **las del terreno**, como sugería el plan | cada una es de un elemento: la pieza parecería de uno de los dos (`CTR-16.10.8`) |
 | El sonido | **un cuarto efecto ahora** | los cuatro motivos de `CTR-16.10.7` |
 | **Qué es el fracaso, y cómo se narra** (`D-42` precisión 2) | Era de `producto` con `contenido`, y **`UX-29` lo cerró el mismo día**: no se muere nadie, a alguien lo devuelven a la entrada, el fracaso no suena y no cuesta vidas sino reloj. Este schema nunca tuvo campo de muerte y ahora no lo va a tener: lo que hay es `devuelve` (`CTR-16.4`). Lo que sigue siendo de `producto` es **cuánto cuesta el reloj y si hay tope** (`UX-29 §4`) |
+
+---
+
+## CTR-16.11 — El avance guardado en el aparato
+
+- **Fecha:** 2026-09-24 (ciclo 16, ráfaga 5, `T-298`).
+- **Estado:** **vigente para construir** (`T-302`). La parte de los coleccionables es
+  **condicional**: no se guardan hasta que `BR-31` lo pida.
+- **De dónde sale:** `US-09` criterio 9 con su enmienda del 2026-09-24: los seis niveles **en
+  fila**, ganar el *n* habilita el *n + 1*, y *"el avance se guarda en el aparato
+  (`localStorage`…), sin cuenta y sin sincronización"*, con el valor que ve la persona:
+  **"hasta qué nivel llegó, un número entre 0 y 6, no un puntaje ni un tiempo"**. `D-47` punto 2.
+  `ADR-04.5` para el espacio de nombres y para qué hacer cuando `localStorage` falla.
+
+### CTR-16.11.1 — La clave y el valor
+
+| | |
+|---|---|
+| **Clave** | **`arcade.skayboy.avance`**. Es literal: no se arma con el campo `juego` ni con el nombre del archivo. **Si el juego cambia de nombre** (`CTR-16.1`), la clave no se mueve, y nadie pierde lo que jugó. El `arcade.` es el espacio de nombres del sitio (`ADR-04.5`), y hoy la única otra clave es `arcade.cinta` |
+| **Valor** | Texto JSON: `{"pasados":["NIV-01","NIV-02"]}` |
+| **`pasados`** | Los `id` de los niveles ganados en este aparato, en el orden en que se ganaron, sin repetir. **Nada más**: ni tiempo, ni puntaje, ni fecha, ni cuántas veces se falló (criterio 9) |
+| **Ausente** | Sin avance: se juega el primero de la fila. **No se escribe nada hasta la primera victoria** |
+| **Roto** | Si no es JSON, no es un objeto o `pasados` no es un arreglo, cuenta como **sin avance**, y la próxima victoria lo pisa. Las entradas que no son texto con la forma `^NIV-\d{2}$` se descartan, y las repetidas cuentan una vez. Un valor corrupto no es un avance (`ADR-04.5`) |
+| **Ids que la fila de hoy no tiene** | Se conservan al escribir y no cuentan al leer. Es el nivel que producción dejó de servir, o uno que todavía no pasó a `listo`: si vuelve, vuelve pasado |
+| **Campos que no conoce** | Se conservan al escribir (se lee, se modifica y se escribe) y se ignoran al leer. Así una versión posterior puede sumar un campo sin clave nueva, y una pestaña con el código viejo no se lo borra |
+| **Si `localStorage` tira** (Safari en privado, cuota llena) | **Se traga y se sigue**, con el avance en memoria mientras dure la página (`ADR-04.5`). Perder el avance es una molestia; romper el juego por no poder guardar sería ridículo |
+| **Cuándo se escribe** | **En el cuadro en que el mundo marca `terminado`**, no cuando la persona toca "seguí". Así, quien cierra el teléfono con la victoria en pantalla no pierde el nivel. Se lee lo que hay guardado, se suma el `id` y se escribe: **dos pestañas abiertas se juntan por unión** y ninguna borra a la otra |
+| **Cuándo se lee** | Una vez, al arrancar la isla, para elegir el nivel |
+
+**Lo que ve la persona se calcula, no se guarda.** *"Hasta qué nivel llegó"* es cuántos niveles
+de la fila de hoy, **empezando por el primero y sin saltear**, están en `pasados`: un número de 0
+a 6. Si se guardara el número, dejaría de decir la verdad el día en que la fila cambie. Por
+ejemplo, si un nivel del medio pasa a `listo` después, el 3 guardado apunta a otro nivel, y la
+persona se saltea uno sin enterarse o repite uno ya pasado.
+
+### CTR-16.11.2 — La fila, y dónde se retoma
+
+- **La fila son los niveles que la página sembró** (`CTR-16.8`: en producción, los `listo`; en
+  desarrollo y en la vista previa de cada PR, todos), **en orden de `id`**. `E11`
+  (`CTR-16.10.10`) exige que el arreglo ya venga en ese orden y que el `escalon` no baje. Por
+  eso el orden de la fila, el primero de `nivelAJugar()` y el de `id` más chico de `T-253` son
+  una sola cosa.
+- **Dónde se retoma:** en **el primer nivel de la fila que no está en `pasados`**. Si hay un
+  hueco (se ganó `NIV-01` y `NIV-03`, pero no `NIV-02`), se retoma en el hueco: *"no hay forma
+  de saltear uno sin haber pasado el anterior"* (criterio 9 enmendado).
+- **Si están todos:** la función devuelve `null`, que quiere decir "no queda ninguno". **Qué se
+  muestra y qué se juega entonces lo deciden `BR-31` punto 1 y `UX-33`, no este contrato.**
+- **El pedido de desarrollo** (`?nivel=`, que solo existe en desarrollo: lo resuelve
+  `nivelAJugar()`, con su comentario, en `escena.ts:140-150`, y la isla lo lee solo si
+  `import.meta.env.DEV`, en `partida-skayboy.ts:353-354`) **le gana al avance**. Si se gana así, se guarda igual: un `NIV-04` ganado sin haber pasado el
+  1 no saltea nada, porque se retoma en el primero que falte.
+- **Distintos orígenes no comparten nada**: `localhost`, cada vista previa de Vercel y
+  producción tienen cada uno su `localStorage`. No hay nada que hacer al respecto, y está bien
+  así.
+
+### CTR-16.11.3 — El módulo y las pruebas
+
+`src/lib/skayboy/avance.ts` (fila en `CTR-16.8`). Firmas orientativas: los nombres son del hilo
+principal, pero el reparto entre lo puro y lo que toca el aparato es contrato.
+
+```ts
+export interface Avance { readonly pasados: readonly string[]; readonly resto: Readonly<Record<string, unknown>> }
+export function leerAvance(texto: string | null): Avance;                        // pura
+export function conPasado(avance: Avance, id: string): Avance;                   // pura
+export function textoDeAvance(avance: Avance): string;                            // pura; conserva `resto`
+export function siguienteDeLaFila(fila: readonly Nivel[], avance: Avance): Nivel | null; // pura
+export function hastaDonde(fila: readonly Nivel[], avance: Avance): number;       // pura: de 0 a fila.length
+export function cargarAvance(): Avance;          // toca localStorage, con try/catch
+export function guardarPasado(id: string): Avance; // lee, suma, escribe; con try/catch
+```
+
+Las pruebas, en `avance.test.ts`, con un `localStorage` de mentira, como hace `cinta.test.ts`. Cada
+una con su rojo a mano:
+
+| Caso | Verde | Rojo que se tiene que ver |
+|---|---|---|
+| Valor roto | `null`, `''`, `'basura'`, `'{"pasados":"NIV-01"}'` y `'[]'` dan sin avance | Un `JSON.parse` sin `try`: el test explota en vez de dar rojo con nombre |
+| Entradas raras | `{"pasados":["NIV-01","xx",3,"NIV-01"]}` da `["NIV-01"]` | No filtrar |
+| Campo desconocido | `{"pasados":[],"otra":1}`, después de ganar `NIV-01`, se escribe con `"otra":1` | Escribir solo `pasados` |
+| Hueco en la fila | Con `pasados` `[NIV-01, NIV-03]`, el siguiente es `NIV-02` y `hastaDonde` da 1 | Retomar después del último ganado |
+| Todos pasados | `siguienteDeLaFila` da `null` y `hastaDonde` da 6 | — |
+| `localStorage` que tira | `guardarPasado` no tira, y el avance en memoria incluye el nivel | Sacar el `try` |
+| Dos pestañas | Lo guardado tiene `NIV-02`, esta pestaña gana `NIV-03`: queda con los dos | Escribir el avance en memoria sin leer antes |
+
+**Y en `niveles.ts`, `E11`** (`CTR-16.10.10`), con su rojo.
+
+### CTR-16.11.4 — Si `BR-31` pide guardar los coleccionables
+
+Entran **en la misma clave**, como un campo más, sin que el lector de hoy se rompa (se conserva y
+se ignora):
+
+```json
+{ "pasados": ["NIV-01"], "juntados": { "NIV-01": { "skayboy": 1, "poligirl": 1 } } }
+```
+
+**Guarda el mejor de cada nivel, por personaje, nunca la suma.** Si se sumara, rejugar un nivel
+inflaría la cuenta. **Sin ese pedido no se escribe**: *"no se guarda nada más"* (`ADR-04.5`)
+sigue valiendo.
+
+### CTR-16.11.5 — Descartadas
+
+| Descartada | Por qué, puntual |
+|---|---|
+| **Guardar el número de 0 a 6** (las palabras del criterio 9) | Deja de decir la verdad cuando la fila cambia, sin avisar: ver *"Lo que ve la persona se calcula"*. El número es lo que se muestra; el `id` es lo que se guarda |
+| **Guardar solo el `id` del último ganado** | Tiene la misma fragilidad si se agrega un nivel, y con el pedido de desarrollo (`?nivel=`) el "último" salta de lugar |
+| **Una clave por nivel** (`arcade.skayboy.NIV-01`) | Seis escrituras sueltas, y leer el avance pasa a ser recorrer claves. La unión entre pestañas deja de ser una sola lectura y una sola escritura |
+| **Armar la clave con el campo `juego`** | Un cambio de nombre borraría el avance de todos (`CTR-16.1`) |
+| **Cookie** | Viaja al servidor en cada pedido, y no hay servidor (`D-15`) |
+| **IndexedDB** | Es asincrónica y mucho más pesada para cuarenta bytes |
+| **`sessionStorage`** | Se muere con la pestaña, y el criterio 9 dice *"otro día"* |
+| **El avance en la dirección** (`#NIV-03`) | Un enlace compartido llevaría el avance de otro. Y *"vuelve otro día"* solo funcionaría con la dirección guardada |
+| **Escribir al tocar "seguí"** | Quien cierra el teléfono con la victoria en pantalla pierde el nivel que acaba de ganar |

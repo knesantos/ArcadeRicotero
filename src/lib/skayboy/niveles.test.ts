@@ -13,8 +13,18 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { nivelesASembrar, type Banco, type IdPersonaje } from './niveles.ts';
-import { CUADRO_SEG, QUIETO, crearMundo, paso, type Mando, type Mandos, type Mundo, type Suceso } from './mundo.ts';
+import { nivelesASembrar, problemasDelBanco, tesorosDelNivel, type Banco, type IdPersonaje } from './niveles.ts';
+import {
+  CUADRO_SEG,
+  QUIETO,
+  crearMundo,
+  juntadosPorPersonaje,
+  paso,
+  type Mando,
+  type Mandos,
+  type Mundo,
+  type Suceso,
+} from './mundo.ts';
 
 /** Un cuadro, el de la partida (`ADR-09.1`): el número vive en `mundo.ts`. */
 const CUADRO = CUADRO_SEG;
@@ -125,4 +135,90 @@ test('nivelesASembrar: producción solo los listo; la vista previa del PR y el d
   assert.deepEqual(ids(nivelesASembrar(mezcla, { desarrollo: false })), ['NIV-01'], 'un build sin Vercel es producción');
   assert.deepEqual(ids(nivelesASembrar(mezcla, { desarrollo: false, vercel: 'preview' })), ['NIV-01', 'NIV-02']);
   assert.deepEqual(ids(nivelesASembrar(mezcla, { desarrollo: true })), ['NIV-01', 'NIV-02']);
+});
+
+/* =========================================================================================
+   Guitarras y cigarrillos (D-47 punto 4, BR-31 punto 2, CTR-16.4 versión 3)
+   ========================================================================================= */
+
+/** Una copia del banco con la fila 7 de un nivel cambiada. */
+function conFila7(id: string, fila7: string): Banco {
+  return {
+    ...BANCO,
+    niveles: BANCO.niveles.map((n) => (n.id === id ? { ...n, grilla: n.grilla.map((r, f) => (f === 7 ? fila7 : r)) } : n)),
+  };
+}
+
+const deE10 = (problemas: readonly string[]) => problemas.filter((p) => p.includes('(BR-31 punto 2, E10)'));
+
+test('E10: cada nivel del banco trae tantas guitarras como cigarrillos', () => {
+  assert.deepEqual(deE10(problemasDelBanco(BANCO)), []);
+  for (const nivel of BANCO.niveles) {
+    const t = tesorosDelNivel(BANCO, nivel);
+    assert.equal(t.skayboy, t.poligirl, `${nivel.id}: ${t.skayboy} y ${t.poligirl}`);
+  }
+});
+
+test('🔴 E10: NIV-01 con dos guitarras y ningún cigarrillo no entra, y el mensaje dice el nivel y las dos cuentas', () => {
+  // La fila roja de la tabla de CTR-16.4.
+  const problemas = deE10(problemasDelBanco(conFila7('NIV-01', '#A.g.1...2.g.B#')));
+  assert.deepEqual(problemas, [
+    'NIV-01: trae 2 tesoro(s) de skayboy y 0 de poligirl, y cada nivel trae la misma cantidad de los dos (BR-31 punto 2, E10)',
+  ]);
+});
+
+test('🔴 E10: y al revés, NIV-01 con dos cigarrillos y ninguna guitarra tampoco entra', () => {
+  // La igualdad se mira de los dos lados: una E10 que solo frenara el sobrante de guitarras
+  // dejaría pasar un nivel cargado de cigarrillos.
+  const problemas = deE10(problemasDelBanco(conFila7('NIV-01', '#A.-.1...2.-.B#')));
+  assert.deepEqual(problemas, [
+    'NIV-01: trae 0 tesoro(s) de skayboy y 2 de poligirl, y cada nivel trae la misma cantidad de los dos (BR-31 punto 2, E10)',
+  ]);
+});
+
+test('🔴 E10: sacarle un cigarrillo a un nivel que traía dos y dos tampoco entra', () => {
+  const nivel = BANCO.niveles.find((n) => tesorosDelNivel(BANCO, n).poligirl >= 2);
+  assert.ok(nivel, 'control: hay un nivel con dos cigarrillos');
+  const cigarrillo = Object.entries(BANCO.leyenda).find(([, t]) => t.tipo === 'tesoro' && t.para?.[0] === 'poligirl')![0];
+  const fila = nivel.grilla.findIndex((r) => r.includes(cigarrillo));
+  const banco: Banco = {
+    ...BANCO,
+    niveles: BANCO.niveles.map((n) =>
+      n === nivel ? { ...n, grilla: n.grilla.map((r, f) => (f === fila ? r.replace(cigarrillo, '.') : r)) } : n,
+    ),
+  };
+  const problemas = deE10(problemasDelBanco(banco));
+  assert.equal(problemas.length, 1, problemas.join('\n'));
+  assert.ok(problemas[0]!.startsWith(`${nivel.id}: trae 2 tesoro(s) de skayboy y 1 de poligirl`), problemas[0]);
+});
+
+test('E10: cero y cero cumple (BR-31 no fija un mínimo), y uno y uno también', () => {
+  assert.deepEqual(deE10(problemasDelBanco(conFila7('NIV-01', '#A...1...2...B#'))), []);
+  assert.deepEqual(deE10(problemasDelBanco(conFila7('NIV-01', '#A.-.1...2.g.B#'))), [], 'da igual de qué lado esté cada uno');
+});
+
+/**
+ * **No es condición para ganar** (`BR-31` punto 2, y antes la sección "No entra el coleccionable
+ * como condición"): se gana con los dos en su puerta, juntando todo o nada. En `NIV-02` la guitarra
+ * está arriba del infierno y el cigarrillo arriba del cielo, del otro lado de cada entrada: ir
+ * derecho a la puerta no junta ninguno.
+ */
+test('🔴 BR-31: se gana sin juntar ni una guitarra ni un cigarrillo, y juntándolos todos también', () => {
+  const nivel = BANCO.niveles.find((n) => n.id === 'NIV-02')!;
+  const derecho = crearMundo(BANCO, nivel);
+  correr(derecho, mandos({ skayboy: { izquierda: true }, poligirl: { derecha: true } }), 3);
+  assert.deepEqual(juntadosPorPersonaje(derecho), { skayboy: 0, poligirl: 0 }, 'control: no juntó nada');
+  assert.ok(derecho.terminado, 'sin juntar nada, los dos en su puerta ganan');
+
+  // Ahora cada uno va primero a buscar el suyo —a la columna 6 él, a la 8 ella— y después a su puerta.
+  const todo = crearMundo(BANCO, nivel);
+  const hasta = (quien: IdPersonaje, hacia: 'izquierda' | 'derecha', x: (px: number) => boolean) => {
+    for (let i = 0; i < 300 && !x(todo.cuerpos[quien].x); i++) paso(todo, mandos({ [quien]: { [hacia]: true } }), CUADRO);
+  };
+  hasta('skayboy', 'derecha', (px) => px + 10 > 6 * 16 + 4);
+  hasta('poligirl', 'izquierda', (px) => px < 9 * 16 - 4);
+  assert.deepEqual(juntadosPorPersonaje(todo), tesorosDelNivel(BANCO, nivel), 'control: juntaron todo');
+  assert.ok(!todo.terminado);
+  correr(todo, mandos({ skayboy: { izquierda: true }, poligirl: { derecha: true } }), 3);
+  assert.ok(todo.terminado, 'juntando todo se gana igual: ni más ni menos');
 });

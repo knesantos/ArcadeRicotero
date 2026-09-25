@@ -194,7 +194,10 @@ test('CTR-19.5: con conteo aparecen los 8 Fáciles, sin tocar una línea de cód
   assert.equal(cat.conteoConsultado, '2026-09-22');
   const porNivel = { facil: 0, media: 0, dificil: 0 };
   for (const t of base) porNivel[cat.temas.find((x) => x.slug === t.slug)!.dificultad]++;
-  assert.deepEqual(porNivel, { facil: 8, media: 12, dificil: 10 });
+  // `CTR-19.5` paso 5 (`T-291`, `FIND-71`): el resto son 12 con línea (192 … 181) y 10 sin
+  // línea. Tercios sobre las 12: t = 4, así que Media son las 8 de más arriba y las 4 de
+  // abajo van a Difícil con las 10 sin línea. La regla vieja daba 8 / 12 / 10.
+  assert.deepEqual(porNivel, { facil: 8, media: 8, dificil: 14 });
 });
 
 test('el que más figura es Fácil, y el corte se hace sobre el pozo, no sobre los 105', () => {

@@ -59,7 +59,11 @@ export function barajar<T>(xs: readonly T[], azar: () => number = Math.random): 
 
 /**
  * Lo que se le puede pedir a `escalonar()` además del largo. Todo es opcional: sin nada,
- * la función hace lo mismo que hizo siempre, y `US-07` no se entera.
+ * la función hace lo mismo que hizo siempre, llenar desde abajo.
+ *
+ * Hoy los dos que la llaman piden cupo: `US-02` desde `src/lib/tema/vuelta.ts` (`T-279`) y
+ * `US-07` desde `src/lib/por-la-letra/ronda.ts` (`T-285`). Fuera de los tests nadie la
+ * llama sin opciones (`FIND-73`).
  */
 export interface OpcionesEscalonar {
   /**

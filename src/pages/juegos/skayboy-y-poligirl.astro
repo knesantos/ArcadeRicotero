@@ -28,7 +28,7 @@ import '../../styles/skayboy.css';
 import Cabeza from '../../components/Cabeza.astro';
 import PieImprenta from '../../components/PieImprenta.astro';
 import { PORTAL } from '../../lib/sitio/copy.ts';
-import { CASETE, PANTALLA, PIE_HOMENAJE, TECLAS } from '../../lib/skayboy/copy.ts';
+import { CASETE, PANTALLA, PANTALLA_COMPLETA, PIE_HOMENAJE, TECLAS } from '../../lib/skayboy/copy.ts';
 import { nivelesASembrar, problemasDelBanco, type Banco } from '../../lib/skayboy/niveles.ts';
 import datos from '../../data/skayboy.json';
 
@@ -131,7 +131,50 @@ const PISO = [
           <div class="gabinete">
             <div class="recorte">
               <canvas id="juego" width="240" height="144" aria-label={CASETE.titulo}></canvas>
+              {/*
+                Lo que juntó cada uno, **solo en la victoria** (`UX-33 §2.5`, `BR-31` punto 2): una
+                capa de HTML encima del área —la misma categoría que el botón de seguir, nunca
+                dibujada en el canvas—, con una etiqueta junto a cada muñeco, en registro 3 y sin
+                comparación. Nace escondida; qué dice cada etiqueta, dónde va y cuándo se ve lo
+                decide `mostrarContador()` (`escena.ts`), y la isla solo la llama. **Va antes del
+                botón de seguir, a propósito**: lo que viene después se pinta encima, así que el
+                botón transparente queda arriba de la capa y el toque le llega a él aunque alguien
+                le saque a la hoja el `pointer-events: none` (la verificación de `T-302`).
+              */}
+              <p id="contador-victoria" class="contador-victoria" hidden>
+                <span class="contador-etiqueta" data-de="skayboy" hidden></span>
+                <span class="contador-etiqueta" data-de="poligirl" hidden></span>
+              </p>
+              {/*
+                Seguir al próximo nivel (`UX-32 §5`, `US-09` criterio 1): **tocar el área, una
+                vez ganada**. Es un botón de verdad superpuesto al recorte entero —foco de
+                teclado, rol de botón, el verbo del sitio de etiqueta—, así que el toque en el
+                área y el Enter del teclado son el mismo control y no hay dos caminos. Nace
+                escondido y la isla lo muestra en el mismo cuadro en que se gana (`D-32` límite
+                3); sin texto visible, porque adentro del área no hay texto (`UX-27 §5.1`).
+              */}
+              <button type="button" id="seguir-juego" class="seguir-juego" hidden aria-label={PANTALLA.seguir}></button>
             </div>
+
+            {/*
+              El interruptor de pantalla completa (`D-47` punto 1, `UX-33 §1.2`, `ADR-10`). Un sello
+              de goma con dos estados, el mismo molde que la cinta (`UX-21`): la estampa nombra en
+              qué estado se está y el `aria-label` el verbo del toque (`CNT-22 §1`). **Vive adentro
+              del mueble y no en la cabecera**, porque con la pantalla completa del sistema lo que
+              no está adentro de `.fichin` no se ve (`ADR-10.5`): este mismo botón es el que saca.
+
+              Nace escondido: la isla lo muestra cuando el motor ya dibuja, igual que se va el
+              rótulo de carga. Sin nivel sembrado no hay nada que jugar, y no hay modo (`ADR-10.1`).
+              En vertical la hoja no lo muestra (`UX-33 §1.9`).
+            */}
+            <button
+              type="button"
+              id="pantalla-completa"
+              class="pantalla-completa"
+              hidden
+              aria-pressed="false"
+              aria-label={PANTALLA_COMPLETA.entrar}
+            >{PANTALLA_COMPLETA.ventana}</button>
 
             {/*
               El aviso de `UX-29 §5`: cuando un personaje vuelve a la entrada, el lector de

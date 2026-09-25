@@ -22,7 +22,7 @@
  * | Título y año de cada disco | `FICHAS`, de `cancionero/banco.ts` |
  * | Qué temas tienen audio | `src/data/adivinar-tema.json`, que escribe `scripts/generar-fragmentos.mjs` |
  * | El enlace a la letra | el cancionero, cruzado por título normalizado |
- * | **La dificultad de cada tema** | el conteo citado de setlist.fm (`src/data/setlistfm.json`), por el corte de `en-vivo.ts` (`D-45`, `CTR-19.5`) |
+ * | **La dificultad de cada tema** | el conteo citado de setlist.fm (`src/data/setlistfm.json`), por el corte de 8 Fáciles y los tercios del resto de `en-vivo.ts` (`D-45`, `BR-30`, `CTR-19.5`) |
  *
  * La dificultad salía de las vistas de YouTube (`D-27`, `CTR-03.11`) hasta el ciclo 16, y
  * nunca llegó a medir nada: la clave no se cargó. `D-45` la movió a lo más tocado en vivo.

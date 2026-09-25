@@ -180,6 +180,25 @@ ampliado a `T-295` en `Docs/IDS.md`.
 | `T-294` | `experiencia` | **`FIND-74`**: la justificación del cambio de `NIV-03` contra el boceto de `UX-31` | `Docs/UX/UX-31-los-seis-niveles.md` y el traspaso de `T-277` | lo mira `revisor` | **[P]** |
 | `T-295` | `revisor` | La revisión de la ráfaga 4: que `FIND-71` a `FIND-77` y `T-286`..`T-290` quedaron cerrados en el disco | no escribe; lo pega el hilo principal en `REV-15` | `npm test`, `npm run check`, `npm run build`, el validador | dep. todo |
 
+### 2.6 La ráfaga 5: lo que pidió el teléfono (`D-47`)
+
+El usuario jugó el nivel 1 en su teléfono, en la vista previa del PR #17: los controles se
+sienten bien, el scroll horizontal los rompe, y pidió pantalla completa con controles
+transparentes, los seis niveles en fila, una victoria donde los personajes bailen, y
+guitarras para Skay y cigarrillos para Poli (`D-47`). Rango ampliado a `T-310`.
+
+| ID | Rol | Qué | Archivos | Verifica con | [P] |
+|---|---|---|---|---|---|
+| `T-296` | `producto` | **`BR-31`**: la victoria bailada (cada uno su baile, sin gestos de pareja), un coleccionable por personaje con la misma cantidad por nivel, los seis niveles en fila con el avance guardado, y la pantalla completa como parte de "jugable con el pulgar". Enmiendas marcadas en `US-09` y `BR-23` | `Docs/PRODUCTO/PRD-skayboy-y-poligirl.md` | `rg -n "^## BR-31"`; lo mira `revisor` | **[P]** |
+| `T-297` | `experiencia` | **`UX-33`**: la pantalla completa (el área a toda la pantalla, los controles superpuestos y medio transparentes, sin scroll, qué pasa en iPhone, dónde queda el pie de homenaje, cómo se entra y se sale) y la victoria (el baile de cada uno, cuántos cuadros, cómo se sigue, qué pasa al terminar el sexto), y cómo se ven la guitarra y el cigarrillo | `Docs/UX/UX-33-pantalla-completa-y-victoria.md` (nuevo) | lo mira `revisor` contra `D-47`, `BR-23`, `UX-27` | **[P]** |
+| `T-298` | `arquitectura` | **Los contratos de `D-47`**: el coleccionable por personaje en la leyenda (`CTR-16.4`), el sexto estado de los muñecos, `baila` (`CTR-15.7`), el avance guardado, y `ADR-10`: cómo se pide la pantalla completa y qué se hace donde no existe | `Docs/ARQ/ARQ-schema-niveles.md`, `ARQ-atlas-de-sprites.md`, `ARQ-pantalla-completa.md` (nuevo) | `rg` de cada enmienda; fragmentos de schema que validan con `ajv` | **[P]** |
+| `T-299` | `contenido` | **`CNT-22`**: lo que se lee en la pantalla completa y en la victoria —el botón para entrar y salir, la línea de victoria, el final de los seis— | `Docs/CONTENIDO/CNT-22-pantalla-completa-y-victoria.md` (nuevo) | `voz.test.ts` cuando entra a `copy.ts` | dep. `T-297` |
+| `T-300` | hilo principal | **Los dibujos nuevos**: la guitarra y el cigarrillo en la sala, y el baile de los dos (mismos cuadros), impresos y auditados, con hoja de contacto para el usuario | `src/arte/pixel/`, `public/sprites/` | auditor 0; `atlas.test.ts` (paridad del baile) y `sala.test.ts` | dep. `T-297`, `T-298` |
+| `T-301` | hilo principal | **La pantalla completa**: el modo, los controles superpuestos, sin scroll, la pantalla completa real donde existe | `skayboy.css`, la página, `partida-skayboy.ts` | tests de estilos y de la isla; medido en el navegador | dep. `T-297`, `T-298`, `T-299` |
+| `T-302` | hilo principal | **La victoria y la fila**: el baile al ganar, el paso al siguiente en un toque, el final de los seis, el avance guardado | `partida-skayboy.ts`, `escena.ts`, tests | tests de la isla con cada regla en rojo; visto en el navegador | dep. `T-300`, `T-301` |
+| `T-303` | hilo principal | **Guitarras y cigarrillos en los seis niveles**, en la misma cantidad por nivel, con las trazas regrabadas | `src/data/skayboy.json`, `skayboy-soluciones.json` | `resolver-niveles.mjs --todos` y `npm test` | dep. `T-298`, `T-300` |
+| `T-304` | `revisor` | La revisión de la ráfaga 5 | no escribe | `npm test`, `check`, `build`, validador | dep. todo |
+
 ## 3. Pasada de conflictos
 
 - **`src/data/skayboy.json` lo tocan `T-267` y `T-277`.** En fila: `T-267` le pone la traza a

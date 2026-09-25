@@ -26,6 +26,16 @@
 > `HILO-para-experiencia-y-arquitectura-la-hoja-no-se-corta-sola.md` corrigió `CTR-15.1` y
 > `CTR-15.2`. Cada enmienda está marcada donde pasó).
 >
+> **2026-09-24 (`T-298`, ciclo 16, ráfaga 5): `D-47` punto 3 suma el sexto estado, `baila`**, el
+> de la pantalla de victoria. Enmienda `CTR-15.6` (la cuenta), `CTR-15.7` (el bloque, dos viñetas
+> y la subsección nueva *"El sexto estado"*) y `CTR-15.8` (qué versión sube). Cada enmienda está
+> marcada donde pasó. **Consume además:** `D-47`, `BR-23` punto 2 con su enmienda del
+> 2026-09-24, `UX-27 §8.2`, `UX-32 §3`, `ADR-08.8`, `ADR-09.1`, `ADR-10`,
+> `src/lib/skayboy/escena.ts` (`ESTADOS_DE_PERSONAJE`, `problemasDelAtlas`, `cuadroDelAtlas`),
+> `atlas.test.ts`, `src/arte/pixel/skayboy.txt` y `mundo.ts:364-367` (el reloj se congela al
+> ganar), leídos en disco ese día. **`UX-33` (`T-297`) se escribe en paralelo:** los números
+> del baile quedan como rango con un valor por defecto, y `UX-33` elige adentro del rango.
+>
 > **Regla de escritura que nace de `FIND-55`: toda medida de píxel de este documento dice si
 > es _nativa_ o _CSS_, en cada mención.** Este documento y `ARQ-motor-de-juego.md` escribían
 > los dos "32 × 48" queriendo decir cosas distintas, y eso fue la mitad del choque.
@@ -302,6 +312,11 @@ piden por ruta desde la isla, como cualquier archivo de `public/`.
   `ADR-08.10` era 0,5 MB y ahora sobra cuatro veces. **El techo no se baja**: un techo se
   ajusta cuando alguien mide el archivo de verdad, no cuando alguien rehace la estimación. En
   disco, los tres PNG son unos pocos KB.
+  *[Enmendado el 2026-09-24 por `baila` (`CTR-15.7`):]* son **seis filas**. Con el baile por
+  defecto (4 cuadros) el atlas mide **64 × 144 nativos**, unos 36 KB de bitmap por personaje. En
+  el tope del rango (8 cuadros) mide **128 × 144 nativos**, unos 72 KB. El peor caso de los dos
+  muñecos más la sala real (`sala.v1` es una columna de 16 nativos de ancho) queda cerca de
+  **0,16 MB**, contra el techo de 0,5 MB de `ADR-08.10`.
 - **Sin sprite atlas dinámico, sin generación en tiempo de ejecución, sin `<canvas>` auxiliar
   para teñir.** Si hace falta una variante de color, es otro PNG.
 
@@ -325,10 +340,14 @@ filas y velocidades.
     "corre":    { "fila": 1, "cuadros": 4, "porSegundo": 10, "repite": true },
     "salta":    { "fila": 2, "cuadros": 1, "porSegundo": 0,  "repite": false },
     "cae":      { "fila": 3, "cuadros": 1, "porSegundo": 0,  "repite": false },
-    "enPausa":  { "fila": 4, "cuadros": 1, "porSegundo": 0,  "repite": false }
+    "enPausa":  { "fila": 4, "cuadros": 1, "porSegundo": 0,  "repite": false },
+    "baila":    { "fila": 5, "cuadros": 4, "porSegundo": 6,  "repite": true }
   }
 }
 ```
+
+*(Enmendado el 2026-09-24 por `D-47`: se suma la fila de `baila`. El 4 y el 6 son los valores
+por defecto del rango de abajo, no un ejemplo: si `UX-33` no fija otros, valen estos.)*
 
 - **`celda` y `colision` están en píxeles nativos**, siempre, en este archivo y en todos. La
   escala a la que se ven en pantalla la fija `experiencia` y no vive acá (`ADR-08.3`).
@@ -338,19 +357,60 @@ filas y velocidades.
 - **`contrato` y `contratoVersion` adentro del dato**, igual que en `CTR-02` y `CTR-08`:
   dentro de dos meses, mirando solo el archivo, se tiene que poder saber contra qué documento
   validarlo.
-- **Las cinco animaciones son obligatorias y son las mismas para los dos personajes.** Si una
-  falta en uno, falta en los dos: la paridad se verifica comparando los dos JSON, que es algo
-  que un test hace en tres líneas.
+- **Las seis animaciones son obligatorias y son las mismas para los dos personajes** *(eran
+  cinco hasta el 2026-09-24: `baila` entra por `D-47`)*. Si una falta en uno, falta en los dos:
+  la paridad se verifica comparando los dos JSON, que es algo que un test hace en tres líneas.
 - **`enPausa` es la que la hoja no trae** y `D-43` necesita. Sin ella el que juega solo no ve
   cuál de los dos tiene el dedo encima. `UX-28 §3` ya le dio forma y **no hay que dibujar
   nada nuevo**: de frente es esperando, de perfil es en juego — las dos poses están en la
   hoja.
-- **No hay una sexta animación, y la que falta no falta: no existe.** `UX-29` decidió que en
+- **No hay una fila de derrota, y la que falta no falta: no existe.** `UX-29` decidió que en
   este juego **nadie se muere**; al fallar, el personaje queda un cuadro en su pose de frente
   y **lo que se mueve es el lugar**, no el muñeco. Un atlas con una fila de derrota sería un
   archivo invitando a animar lo que `D-42` precisión 2 declaró bloqueante.
+  *[Enmendado el 2026-09-24: el título decía "No hay una sexta animación". Desde `D-47` hay
+  una, y es la de la victoria, no la de la derrota. Lo que esta viñeta prohíbe sigue igual.]*
 - **`porSegundo: 0`** quiere decir cuadro fijo. No se usa `null` ni se omite el campo: un
   campo ausente es una pregunta, un cero es una respuesta.
+
+#### El sexto estado: `baila` (sumado el 2026-09-24, `D-47` punto 3, `T-298`)
+
+`D-47` enmienda el *"nada más se mueve"* de `UX-32` y la prohibición de festejo de `BR-23`, y
+deja en pie el motivo: **cada uno baila su propio baile, con la misma cantidad de cuadros, sin
+gestos de pareja.** Lo que le toca al atlas:
+
+| | Regla | Por qué |
+|---|---|---|
+| **Nombre y fila** | `baila`, **fila 5**, la última | Sumarla al final no mueve las filas 0 a 4. Igual sube de versión, porque el PNG crece (`CTR-15.8`) |
+| **`cuadros`** | entero, **de 2 a 8**. Por defecto, **4** | Con 1 es una pose, no un baile, y la pose quieta de frente ya existe (`enPausa`). El tope de 8 sale del costo: cada cuadro se dibuja a mano dos veces (`D-44`) con la misma altura en los dos, y el atlas pasa a tener tantas columnas como el estado más largo (`CTR-15.6`). **Con 4 no se ensancha**, porque `corre` ya tiene 4 |
+| **`porSegundo`** | entero, **de 3 a 10**. Por defecto, **6** | Con menos de 3 se lee como poses sueltas. Con más de 10 va más rápido que correr, el estado más rápido del atlas, y a 32 × 48 CSS se lee como temblor. Con 4 cuadros a 6 por segundo, la vuelta dura dos tercios de segundo |
+| **`repite`** | `true` | La victoria dura lo que la persona tarde en tocar para seguir. El baile no la demora: el control para seguir existe desde el cuadro en que se gana (`UX-32 §5`, `D-32` límite 3) |
+| **Paridad** | Los dos con los mismos `cuadros`, `porSegundo` y `repite` (`BR-23` punto 2), **y cada uno con su baile** (`D-47` punto 3) | Lo primero ya lo cuenta `atlas.test.ts`: el test *"los mismos estados, en el mismo orden, con los mismos cuadros"* mira los seis sin cambiar una línea. Lo segundo —bailes distintos, sin abrazo, sin mano, sin mirarse— no lo cuenta ninguna máquina: lo miran `revisor` en la hoja de contacto y el usuario (`D-44`) |
+| **Dónde está la figura** | En **todo** cuadro, el pie en el renglón de abajo de la celda y la figura adentro de 14 × 22. En cada cuadro, los dos arrancan y terminan en el mismo renglón | `CTR-15.3` ancla la figura abajo. Un saltito la saca de la caja de 14 × 22 o pide un desplazamiento por pose, que `CTR-15.3` descartó. **`baila` entra a `EN_EL_PISO` de `atlas.test.ts`**. La altura por cuadro ya la cuenta el test de altura |
+| **Nada en la mano** | Ni guitarra, ni cigarrillo, ni ningún objeto | `UX-27 §8.2`, que `D-47` punto 4 deja en pie: los coleccionables se juntan del piso y no aparecen en la mano, tampoco al festejar |
+| **Con movimiento reducido** | Se dibuja **fijo en el cuadro 0** | `ADR-08.8` vara 1: es el primer movimiento del juego que la persona no pidió con un dedo. Hasta hoy la isla no consultaba la preferencia porque nada se movía solo (`partida-skayboy.ts:84-88`, el apartado *"`prefers-reduced-motion`"* del comentario de cabecera; decía `:74-78`, corregido por la verificación de `T-298`). **Para quien dibuja: el cuadro 0 tiene que leerse solo como festejo** |
+| **El reloj** | El cuadro sale del **tiempo desde que se ganó**, contado con el reloj del motor: `cuadroDelAtlas(json, 'baila', t − tGanado)` | `mundo.tiempo` se congela al ganar (`mundo.ts:364-367`). Con ese reloj el baile quedaría quieto en el cuadro 0. Es un reloj de dibujo: no toca el paso fijo (`ADR-09.1`) ni la traza (`CTR-18`) |
+| **Cuándo** | Mientras `mundo.terminado` sea `true`, los dos cuerpos se dibujan en `baila` | `baila` **no es una pose de `poseDe()`**: el mundo no baila, lo dibuja la escena. Reemplaza el `enPausa` forzado de `UX-32 §3`, que `UX-33` enmienda por referencia |
+| **Quién lo dibuja** | El motor, desde el atlas, en el canvas, como los otros cinco | Ver la segunda fila de las descartadas |
+| **Espejo, desfase entre los dos, qué se ve alrededor** | `UX-33` | El atlas trae un solo sentido, como el perfil (`UX-27 §7`). Si `UX-33` quiere que los dos no vayan al mismo tiempo, el desfase es un número de la isla, no del atlas, y no toca la paridad |
+
+**Descartadas:**
+
+| Descartada | Por qué, puntual |
+|---|---|
+| **Un largo distinto para cada baile** (que cada uno tenga los cuadros que pida su coreografía) | `BR-23` punto 2: *"misma cantidad de cuadros por estado"*. `D-47` lo repite para este estado con nombre |
+| **Animarlo con CSS sobre el PNG del atlas, en el DOM** | Sería un segundo camino de dibujo para el mismo sprite. Afuera del canvas no hay garantía de `E` entera (`ADR-10.4`). Y sería una animación CSS más que `movimiento.test.ts` tendría que conocer |
+| **Dejar que el baile salte** | Ver la fila "Dónde está la figura" |
+| **Usar `corre` en el lugar como baile** | Se lee como correr contra una pared. `D-47` pidió que bailen |
+| **`baila` como pose de `mundo.ts`** | El mundo tendría un estado que solo sirve para dibujar. `poseDe()` mira la física, y la victoria ya la dice `terminado` |
+
+**La versión:** el atlas pasa a **`skayboy.v2` y `poligirl.v2`, juntos** (`CTR-15.8`). En los
+dos `.txt`, `version: 2` y la línea `estado: baila  cuadros=N  porSegundo=V  repite=si`.
+**`contratoVersion` del JSON sigue en 1**: la forma no cambió, `animaciones` es un mapa con una
+clave más. Lo que cambia es la lista de estados que la escena exige (`ESTADOS_DE_PERSONAJE`), así
+que un atlas v1 deja de pasar `problemasDelAtlas()`. Por eso **en el mismo commit** van los PNG
+y JSON v2, la escena que pide `baila`, y `personajes[].atlas` de `src/data/skayboy.json`
+apuntando a `.v2` (`CTR-16.3`).
 
 ---
 
@@ -368,6 +428,12 @@ el nombre, repintar es publicar un archivo nuevo y no hay caché que engañe a n
   como cualquier archivo huérfano.
 - **Los dos personajes suben de versión juntos**, aunque uno no haya cambiado. Es la forma
   más barata de que la paridad no se desincronice por descuido.
+- *[Sumado el 2026-09-24.]* **Una fila nueva también sube versión**, aunque vaya al final y no
+  mueva ninguna: el PNG cambia de alto, y un `.v1.png` viejo en caché al lado de un JSON que
+  pide la fila 5 corta un cuadro que no existe. Es el caso de `baila` (`CTR-15.7`): v1 → v2.
+  **Lo mismo vale para la sala.** Los dos coleccionables de `CTR-16.4`, enmendado hoy, cambian
+  sus filas. Su versión es la siguiente a la que deje `T-290` (la puerta abierta de `UX-32`),
+  sea cual sea.
 
 ---
 

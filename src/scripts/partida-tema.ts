@@ -231,8 +231,9 @@ function buscables(): Tema[] {
  *
  * El nivel lo estampa `catalogo()` en build desde lo mas tocado en vivo (`D-45`,
  * `CTR-19.5`): los 8 temas del pozo que mas figuran en los setlists que carga la gente en
- * setlist.fm son `facil`, el resto de los que figuran `media`, y los que no figuran
- * `dificil`. Sin conteo, todo cae en `dificil` y esto degrada a un barajado declarado.
+ * setlist.fm son `facil`, y el resto se parte en tercios por el mismo conteo: el de abajo
+ * es `dificil`, los dos de arriba `media`, y un tema que no figura es `dificil` (`BR-30`,
+ * `FIND-71`). Sin conteo, todo cae en `dificil` y esto degrada a un barajado declarado.
  *
  * La vuelta lleva **un solo** Facil y el resto sorteado entre Media y Dificil
  * (`src/lib/tema/vuelta.ts`): sin ese cupo, con todos los discos las cuatro canciones

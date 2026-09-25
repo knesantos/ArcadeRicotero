@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { hexDeRgb, leerDeclaraciones, paletaDelArea, resolverToken, rgbDeHex } from './pixel/tokens.ts';
 
 /**
  * Impide que vuelva a pasar `FIND-15`.
@@ -849,4 +850,256 @@ test('esa red sabe encontrar: se prueba contra fuentes inventadas', () => {
   // El caso entero, contra una clase que ninguna hoja tiene.
   assert.deepEqual(modificadores(`el('div', 'pieza pieza--que-nadie-pinta');`), ['pieza--que-nadie-pinta']);
   assert.ok(!todoElCss().includes('.pieza--que-nadie-pinta'), 'el caso de prueba dejo de ser inventado');
+});
+
+/* ------------------------------------------------------------------
+   La pantalla completa de Skayboy y Poligirl (`ADR-10`, `UX-33 §1`, `T-301`)
+   ------------------------------------------------------------------ */
+
+/**
+ * Las reglas de una hoja, sin comentarios y con los `@media` abiertos: el cuerpo no puede tener
+ * una llave, asi que el encabezado de un `@media` nunca se toma por selector de lo que envuelve.
+ */
+function reglas(css: string): Array<{ selector: string; cuerpo: string }> {
+  const limpio = css.replace(/\/\*[\s\S]*?\*\//g, ' ');
+  return [...limpio.matchAll(/([^{};]+)\{([^{}]*)\}/g)].map((m) => ({
+    selector: m[1]!.trim().replace(/"/g, "'").replace(/\s+/g, ' '),
+    cuerpo: m[2]!.replace(/\s+/g, ' '),
+  }));
+}
+
+const MODO = "[data-pantalla='completa']";
+
+/**
+ * Lo que `ADR-10.1` le pide a la hoja en el modo, en castellano. Vacio es sano.
+ *
+ * Son reglas de comportamiento, no de estetica: que la pagina no se desplace ni rebote, y que
+ * ningun gesto que arranque adentro del fichin sea del navegador. Es la mitad del criterio 6 de
+ * `US-09` enmendado por `D-47` —"ningun gesto de juego mueve la pagina"— y la unica mitad que
+ * una maquina puede leer. La otra la mira el telefono.
+ */
+function problemasDelModo(css: string): string[] {
+  const todas = reglas(css);
+  const problemas: string[] = [];
+  const del = (pedazo: string) => todas.filter((r) => r.selector.includes(MODO) && r.selector.includes(pedazo));
+
+  const contenedor = del('.fichin').filter((r) => /\.fichin$/.test(r.selector));
+  const cuerpoContenedor = contenedor.map((r) => r.cuerpo).join(' ');
+  for (const [decl, porque] of [
+    [/touch-action:\s*none/, 'touch-action: none: sin esto un gesto de juego desplaza o hace zoom (US-09 criterio 6)'],
+    [/position:\s*fixed/, 'position: fixed: el fichin no queda clavado a la ventana'],
+    [/inset:\s*0/, 'inset: 0: el fichin no ocupa la ventana entera'],
+    [/(?<!-)user-select:\s*none/, 'user-select: none: el dedo que se corre selecciona texto'],
+    [/-webkit-touch-callout:\s*none/, '-webkit-touch-callout: none: el toque largo abre la lupa de Safari'],
+  ] as const) {
+    if (!decl.test(cuerpoContenedor)) problemas.push(`el contenedor del modo sin ${porque}`);
+  }
+
+  const raiz = todas.filter((r) => r.selector.split(',').some((s) => s.trim() === `html${MODO}`));
+  const cuerpo = todas.filter((r) => r.selector.split(',').some((s) => s.trim() === `${MODO} body`));
+  for (const [nombre, rs] of [
+    ['html', raiz],
+    ['body', cuerpo],
+  ] as const) {
+    const texto = rs.map((r) => r.cuerpo).join(' ');
+    if (!/overflow:\s*hidden/.test(texto)) problemas.push(`${nombre} sin overflow: hidden en el modo: la pagina se desplaza abajo del juego`);
+    if (!/overscroll-behavior:\s*none/.test(texto)) {
+      problemas.push(`${nombre} sin overscroll-behavior: none en el modo: tirar para abajo recarga en medio del nivel`);
+    }
+  }
+
+  // **El pie de homenaje no se va de la ventana** (`BR-26`, `UX-33 §1.7`). La revision de la
+  // primera entrega lo encontro afuera: con `1fr` a secas, la fila de la sala no bajaba de lo
+  // que median las teclas (340 con su aire), y a 812 x 354 o 568 x 320 empujaba el pie abajo
+  // del borde. Hacen falta las dos mitades: que la fila pueda bajar de su contenido, y que el
+  // mando entonces ceda adentro de ella —el salto, con piso en `--toque-min`— en vez de salirse.
+  // Esto es lo que se lee; lo medido en el navegador va en el reporte de `T-301`.
+  if (!/grid-template-rows:\s*minmax\(\s*0\s*,/.test(cuerpoContenedor)) {
+    problemas.push('la fila de la sala sin minmax(0, ...): crece por las teclas y empuja el pie de homenaje afuera de la ventana (BR-26)');
+  }
+  const mando = del('.mando')
+    .filter((r) => /\.mando$/.test(r.selector))
+    .map((r) => r.cuerpo)
+    .join(' ');
+  if (!/(?<![\w-])height:\s*min\([^;]*100%/.test(mando)) {
+    problemas.push('el mando del modo sin tope de alto en la sala: en una ventana baja las teclas se salen por arriba o tapan el pie');
+  }
+  if (!/grid-template-rows:\s*minmax\(\s*var\(--toque-min\)/.test(mando)) {
+    problemas.push('el salto del modo sin piso en --toque-min: al ceder alto no puede quedar mas chico que un dedo');
+  }
+
+  // Las cuatro propiedades del encuadre las lee solo el modo (`ADR-10.1`, `ADR-10.6`).
+  for (const r of todas) {
+    if (/var\(--encuadre-/.test(r.cuerpo) && !r.selector.split(',').every((s) => s.includes(MODO))) {
+      problemas.push(`«${r.selector}» lee el encuadre afuera del modo: el mueble de D-41 no cambia (ADR-10.1)`);
+    }
+  }
+  return problemas;
+}
+
+const SKAYBOY = leer('src/styles/skayboy.css');
+
+test('ADR-10.1: en el modo la pagina no se mueve y ningun gesto del fichin es del navegador', () => {
+  assert.deepEqual(problemasDelModo(SKAYBOY), []);
+});
+
+test('ADR-10.6: el modo lo lee solo skayboy.css', () => {
+  // Un segundo lugar que lee el atributo es una segunda verdad sobre que es el modo.
+  const otras = HOJAS.filter((h) => h !== 'src/styles/skayboy.css' && leer(h).includes('data-pantalla'));
+  assert.deepEqual(otras, []);
+});
+
+for (const [caso, roto, espera] of [
+  ['🔴 sin touch-action: none en el contenedor', SKAYBOY.replace(/(\.fichin \{[^}]*?)touch-action: none;/, '$1'), 'touch-action'],
+  ['🔴 sin el callout de Safari', SKAYBOY.replace('-webkit-touch-callout: none;', ''), 'touch-callout'],
+  ['🔴 sin overflow: hidden en html y body', SKAYBOY.replace(/overflow: hidden;\n  overscroll-behavior: none;/, 'overscroll-behavior: none;'), 'overflow: hidden'],
+  ['🔴 con la pagina que rebota', SKAYBOY.replace(/overflow: hidden;\n  overscroll-behavior: none;/, 'overflow: hidden;'), 'overscroll-behavior'],
+  ['🔴 con el encuadre leido en el mueble', SKAYBOY + '\n.juego-skayboy #juego { width: var(--encuadre-ancho); }', 'afuera del modo'],
+  [
+    '🔴 con la fila de la sala en 1fr a secas',
+    SKAYBOY.replace('grid-template-rows: minmax(0, 1fr) auto;', 'grid-template-rows: 1fr auto;'),
+    'pie de homenaje',
+  ],
+  ['🔴 con el mando sin tope de alto', SKAYBOY.replace(/(\.mando \{[^}]*?)height: min\([^;]*;/, '$1'), 'sin tope de alto'],
+  [
+    '🔴 con el salto sin piso',
+    SKAYBOY.replace('grid-template-rows: minmax(var(--toque-min), var(--salto-alto))', 'grid-template-rows: minmax(0, var(--salto-alto))'),
+    '--toque-min',
+  ],
+] as const) {
+  test(`ese control sabe encontrar: ${caso}`, () => {
+    assert.notEqual(roto, SKAYBOY, 'el caso no rompio nada: el reemplazo no encontro lo que buscaba');
+    const problemas = problemasDelModo(roto);
+    assert.ok(problemas.some((p) => p.includes(espera)), `tenia que caer por «${espera}» y dijo:\n${problemas.join('\n') || '(nada)'}`);
+  });
+}
+
+/**
+ * **Medio transparente, y se lee igual** (`UX-33 §1.4`). El relleno de las teclas y del sello
+ * es `--fondo` con el alfa bajado, mezclado con `color-mix` —tinta plana, nunca desenfoque—, y
+ * lo que va encima (la figura, la palabra) es `--papel`, opaco. Debajo puede haber cualquiera
+ * de las tintas del area, asi que se mide el **peor compuesto posible**: el relleno apoyado
+ * sobre la tinta mas clara que el area puede tener. Si la palabra del sello llega a 4,5:1 ahi,
+ * llega en cualquier nivel. Mismo mecanismo que el velo de tapa en `contraste.test.ts`.
+ */
+function luminancia(hex: string): number {
+  const [r, g, b] = rgbDeHex(hex).map((v) => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r! + 0.7152 * g! + 0.0722 * b!;
+}
+
+function contraste(a: string, b: string): number {
+  const [x, y] = [luminancia(a), luminancia(b)].sort((p, q) => q - p);
+  return (x! + 0.05) / (y! + 0.05);
+}
+
+/** El porcentaje de `--fondo` en un relleno, o `undefined` si el relleno no es esa mezcla. */
+function alfaDelRelleno(css: string, relleno: string): number | undefined {
+  const m = new RegExp(
+    String.raw`${relleno}:\s*color-mix\(\s*in srgb\s*,\s*var\(--fondo\)\s+([\d.]+)%\s*,\s*transparent\s*\)`,
+  ).exec(css);
+  return m === null ? undefined : Number(m[1]) / 100;
+}
+
+/** El peor contraste de `--papel` sobre ese relleno, y sobre que tinta del area. */
+function peorLectura(css: string, tokens: string, relleno: string): { razon: number; sobre: string } | string {
+  const alfa = alfaDelRelleno(css, relleno);
+  if (alfa === undefined) return 'el relleno no es color-mix(in srgb, var(--fondo) N%, transparent): tinta plana con alfa, y nada mas';
+  const { valores } = leerDeclaraciones(tokens);
+  const fondo = resolverToken(valores, '--fondo');
+  const papel = resolverToken(valores, '--papel');
+  if ('error' in fondo || 'error' in papel) return 'no se resuelven --fondo y --papel en tokens.css';
+  const { tintas } = paletaDelArea(tokens);
+  let peor: { razon: number; sobre: string } = { razon: Infinity, sobre: '' };
+  for (const [nombre, hex] of tintas) {
+    const f = rgbDeHex(fondo.hex);
+    const debajo = rgbDeHex(hex);
+    const mezcla = hexDeRgb(...([0, 1, 2].map((i) => Math.round(alfa * f[i]! + (1 - alfa) * debajo[i]!)) as [number, number, number]));
+    const razon = contraste(papel.hex, mezcla);
+    if (razon < peor.razon) peor = { razon, sobre: nombre };
+  }
+  return peor;
+}
+
+const TOKENS = leer('src/styles/tokens.css');
+
+/** Cada relleno, lo que lleva encima y cuanto pide: la palabra 4,5 y la figura 3 (WCAG 1.4.11). */
+const RELLENOS = [
+  ['--sello-relleno', 'la palabra del sello', 4.5],
+  ['--mando-relleno', 'la figura de las teclas', 3],
+] as const;
+
+test('UX-33 §1.4: el relleno medio transparente deja leer lo de encima sobre la tinta mas clara del area', () => {
+  for (const [relleno, que, pide] of RELLENOS) {
+    const peor = peorLectura(SKAYBOY, TOKENS, relleno);
+    assert.ok(typeof peor !== 'string', `${relleno}: ${peor as string}`);
+    assert.ok(peor.razon >= pide, `${que} sobre ${peor.sobre} da ${peor.razon.toFixed(2)}:1, y pide ${pide}`);
+  }
+});
+
+test('UX-33 §1.4: el borde y la figura no llevan alfa; los dos anillos son el par de siempre', () => {
+  const control = reglas(SKAYBOY).find(
+    (r) => r.selector.includes(MODO) && r.selector.includes('.tecla') && r.cuerpo.includes('--mando-relleno'),
+  );
+  assert.ok(control, 'no hay regla del modo que le ponga el relleno a las teclas');
+  assert.match(control.cuerpo, /border:\s*var\(--anillo\) solid var\(--papel\)/, 'el anillo de afuera no es --papel opaco');
+  assert.match(control.cuerpo, /box-shadow:\s*inset 0 0 0 var\(--anillo\) var\(--fondo\)/, 'el anillo de adentro no es --fondo opaco y sin difuminar');
+  const tinta = reglas(SKAYBOY).find((r) => r.selector.includes(MODO) && r.selector.includes('.tecla') && /(?<![\w-])color:/.test(r.cuerpo));
+  assert.match(tinta?.cuerpo ?? '', /(?<![\w-])color:\s*var\(--papel\)/, 'la figura no es --papel');
+});
+
+for (const [caso, css, relleno, pide, espera] of [
+  [
+    '🔴 con las teclas casi transparentes',
+    SKAYBOY.replace(/(--mando-relleno: color-mix\(in srgb, var\(--fondo\) )[\d.]+%/, '$130%'),
+    '--mando-relleno',
+    3,
+    ':1 sobre',
+  ],
+  [
+    '🔴 con el sello tan transparente como las teclas',
+    SKAYBOY.replace(/(--sello-relleno: color-mix\(in srgb, var\(--fondo\) )[\d.]+%/, '$156%'),
+    '--sello-relleno',
+    4.5,
+    ':1 sobre',
+  ],
+  [
+    '🔴 con un gris elegido a ojo en vez de --fondo',
+    SKAYBOY.replace(/(--sello-relleno: color-mix\(in srgb, )var\(--fondo\)/, '$1var(--texto-tenue)'),
+    '--sello-relleno',
+    4.5,
+    'tinta plana',
+  ],
+] as const) {
+  test(`ese control sabe encontrar: ${caso}`, () => {
+    assert.notEqual(css, SKAYBOY, 'el caso no rompio nada');
+    const peor = peorLectura(css, TOKENS, relleno);
+    const dijo = typeof peor === 'string' ? peor : peor.razon >= pide ? '(nada)' : `da ${peor.razon.toFixed(2)}:1 sobre ${peor.sobre}`;
+    assert.ok(dijo.includes(espera), `tenia que caer por «${espera}» y dijo: ${dijo}`);
+  });
+}
+
+/**
+ * **Ni vidrio ni desenfoque, en ninguna hoja** (`diseno-marca.md`, tabla anti-slop). `UX-33 §1.4`
+ * lo pide por nombre para los controles medio transparentes, que es justo donde mas tienta: un
+ * `backdrop-filter: blur()` hace legible cualquier cosa sobre cualquier fondo, y se ve como
+ * todas las interfaces que genera una IA.
+ */
+function vidrios(css: string): string[] {
+  const limpio = css.replace(/\/\*[\s\S]*?\*\//g, ' ');
+  return [...limpio.matchAll(/backdrop-filter\s*:|(?<![\w-])blur\s*\(/g)].map((m) => m[0]);
+}
+
+test('anti-slop: ni vidrio ni desenfoque en ninguna hoja', () => {
+  const malas = HOJAS.flatMap((h) => vidrios(leer(h)).map((v) => `${h}: ${v}`));
+  assert.deepEqual(malas, []);
+});
+
+test('ese control sabe encontrar: se prueba contra un vidrio inventado', () => {
+  assert.deepEqual(vidrios('.tecla { backdrop-filter: blur(6px); }'), ['backdrop-filter:', 'blur(']);
+  assert.deepEqual(vidrios('.tecla { filter: blur(2px); }'), ['blur(']);
+  // Nombrado en un comentario no es un vidrio.
+  assert.deepEqual(vidrios('/* sin blur(), sin backdrop-filter: */ .tecla { color: red; }'), []);
 });

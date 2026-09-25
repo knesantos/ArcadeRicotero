@@ -82,6 +82,15 @@
 > Media/Difícil de `US-02` que `Docs/SUGERENCIAS/ARQ-para-producto-lo-que-el-corte-en-
 > vivo-deja-abierto.md` §1 dejaba pedida. Marca la enmienda en `BR-18` (h), sin borrar. El
 > resto del documento no se tocó.
+>
+> **Revisión 2026-09-24 (`T-286`, ciclo 16, ráfaga 4, precisión de `D-46`).** El usuario
+> contestó, textual: *"Completá la letra también sale del conteo"* — `BR-30` había dejado a
+> `US-03` afuera con argumento propio, y el usuario lo revirtió sin pedir que se lo
+> convenza. Enmienda la fila de `US-03` en `BR-30` (marcada, sin borrar la razón anterior),
+> suma la sección "`BR-03`: el contexto sigue al nivel — no se desacopla" con la decisión
+> de que la tabla de `BR-03` no cambia y lo único que migra es de dónde sale el nivel
+> (tercios por tema, igual que `US-07`), y corrige de paso el traspaso a `arquitectura` que
+> `T-283` había dejado excluyendo a `CTR-04`. El resto del documento no se tocó.
 
 ## Por qué existe el piso de ítems
 
@@ -768,14 +777,67 @@ asociación con el título.
 - **Then** ve 2 versos completos antes y 2 después del hueco, más título y disco
   visibles (`BR-03`, nivel Fácil), y puede elegir o escribir qué completa el hueco.
 
-**Criterio 2 — caso borde (nivel difícil, mismo tema):**
-- **Given** un jugador llega a un ítem de nivel Difícil dentro de la misma partida.
+**Criterio 2 — caso borde (nivel Difícil, tema del tercio bajo):**
+- **Given** un jugador llega a un ítem de nivel Difícil dentro de la misma partida (el
+  tema de ese ítem sale del tercio bajo de popularidad en vivo, `BR-30`).
 - **When** se le muestra el ítem.
 - **Then** ve únicamente el verso con el hueco, sin versos adicionales, sin título ni
-  disco (`BR-03`, nivel Difícil) — nunca se introduce un tema completamente nuevo solo
-  en modo difícil; la dificultad escala mostrando menos letra del mismo universo de
-  temas de la partida, no cambiando de tema (pedido explícito del usuario en
-  `/kickoff`).
+  disco (`BR-03`, nivel Difícil). El tema es siempre uno real de los 105 de `RES-20`
+  (`CTR-04.5`) — nunca inventado ni ajeno a la discografía —, pero puede ser un tema que
+  no apareció antes en la misma partida: con el nivel derivado del tema (`BR-30`,
+  precisión de `D-46`), eso es lo esperado, no una falla. Lo único que escala entre
+  niveles es cuánta letra rodea el hueco (`BR-03`); nunca el universo del que sale el
+  tema.
+
+> **Enmendado 2026-09-24 (`BR-30`, precisión de `D-46`; contradicción detectada por
+> `arquitectura` en `CTR-04.14` 🔴 y traspasada en
+> `Docs/SUGERENCIAS/ARQ-para-producto-la-letra-con-el-conteo.md` punto 1 — se adopta la
+> opción **A** que propone esa nota).** El título de este criterio decía "mismo tema" y el
+> cuerpo decía **"nunca se introduce un tema completamente nuevo solo en modo difícil; la
+> dificultad escala mostrando menos letra del mismo universo de temas de la partida, no
+> cambiando de tema (pedido explícito del usuario en `/kickoff`)"**. Con el nivel por tema
+> que fija `BR-30` (tercios sobre el conteo citado), un tema del tercio bajo da **solo**
+> ítems Difícil: por construcción, todo tema que aparece en un ítem Difícil es un tema que
+> no pudo haber aparecido antes en la misma partida en Fácil o Media (salvo que dos huecos
+> Difíciles compartan tema). El criterio viejo se incumplía siempre, no a veces — no era un
+> caso borde que se pudiera cazar con una prueba puntual.
+>
+> **Qué del `/kickoff` se sostiene y qué no.** La frase de `Docs/BRIEF.md` — "la dificultad
+> escala mostrando menos letra, no cambiando de tema" — distinguía este juego de un diseño
+> donde "difícil" significara "te pregunto por una canción más rara". Leída así, lo que
+> promete es que **el eje de dificultad es cuánta letra se muestra**, no dos ejes separados
+> (`BR-30`, argumento 1), y eso se sostiene entero: en los tres niveles el hueco sigue
+> siendo un verso real de los 105 de `RES-20`, nunca inventado, y lo único que cambia entre
+> niveles es el contexto (`BR-03`). Lo que no se sostiene es la lectura más estricta que
+> este criterio le había agregado encima —que el tema de un ítem Difícil tuviera que haber
+> aparecido ya en la partida—: eso lo fijó `producto` al escribir la historia, no el
+> `/kickoff`, que habla de letra, no de continuidad de temas dentro de una partida. No es
+> una promesa incumplida del usuario: es un criterio que pedía más de lo que el pedido
+> original exigía.
+>
+> **Por qué no se ajusta el mecanismo en su lugar.** La salida alternativa —mezclar temas
+> de distintos tercios dentro de la misma partida para forzar que un Difícil solo entre si
+> su tema ya apareció— exigiría romper el acople de `BR-03` al nivel que `BR-30` acaba de
+> defender con cuatro argumentos, entre ellos que ese acople hace que "Fácil" signifique a
+> la vez tema muy tocado y máximo contexto (`BR-30`, argumento 3). Reabrir esa decisión sin
+> un motivo nuevo —el único motivo sería este mismo criterio, que es lo que se está
+> corrigiendo— no se justifica.
+>
+> **El mitigante ya está escrito, no hace falta uno nuevo:** `BR-01` punto 2, la
+> dificultad no baja dentro de la partida. Un tema "completamente nuevo" en modo Difícil
+> solo puede aparecer tarde, para quien ya demostró que sabe lo suficiente como para haber
+> pasado Fácil y Media (`BR-30`, argumento 4) — no es un muro de entrada (`D-09`, no
+> negociable), es el desafío que corresponde a ese tramo de la partida.
+>
+> `Docs/BRIEF.md`, "Listo de la v1", punto 3, trae la misma frase ("no cambiando de tema")
+> y queda con la misma lectura de arriba, pero **no la edito acá**: no es carpeta de
+> `producto` en el sentido de "archivo que este PRD sobrescribe" (mismo criterio que la
+> nota del piso de `US-02` en `PENDIENTE`, más abajo). Queda anotado en `PENDIENTE`.
+>
+> Redacción anterior del criterio, por trazabilidad: *"nunca se introduce un tema
+> completamente nuevo solo en modo difícil; la dificultad escala mostrando menos letra del
+> mismo universo de temas de la partida, no cambiando de tema (pedido explícito del
+> usuario en `/kickoff`)."*
 
 **Criterio 3 — caso borde (exposición de derechos):**
 - **Given** cualquier ítem de este juego, en cualquier nivel.
@@ -797,6 +859,10 @@ asociación con el título.
 
 **Piso de ítems: 15 letras completas**, transcriptas y segmentadas en versos.
 - Mínimo 4 de nivel Fácil.
+  > **Nota 2026-09-24 (`BR-30`, precisión de `D-46`).** De dónde sale la etiqueta de nivel
+  > de cada ítem cambió — ya no la pone `contenido` a mano, sale del conteo por tema
+  > (tercios, igual que `US-07`) — sin tocar este piso ni el mínimo de 4. Detalle en
+  > `BR-30`.
 - **Por qué 15 y no 40:** cada ítem exige transcribir la letra completa y segmentarla en
   versos, y es el contenido con mayor exposición directa a derechos de autor (letra
   completa, no un fragmento). Un piso similar al de audio, menor al del quiz, refleja
@@ -810,6 +876,13 @@ input, `contenido` para qué cuenta como "la palabra correcta").
 ---
 
 ## BR-03 — Niveles de dificultad de "completar la letra"
+
+> **Nota 2026-09-24 (`BR-30`, precisión de `D-46`, `T-286`).** Esta tabla no cambió ni
+> una celda. Lo que cambió es de dónde sale el nivel que la tabla consulta: ya no lo pone
+> `contenido` a mano por ítem, sale del conteo citado por **tema** — tercios, igual que
+> `US-07` (`CTR-19.15`). El argumento completo de por qué el contexto sigue atado al nivel
+> en vez de desacoplarse en un eje aparte está en `BR-30`, sección "`BR-03`: el contexto
+> sigue al nivel — no se desacopla".
 
 **Aplica a:** `US-03`. Fija lo que el brief dejó `PENDIENTE`: "cuánta letra se muestra
 en cada nivel de dificultad". Pedido explícito del usuario en `/kickoff`: la dificultad
@@ -1504,7 +1577,7 @@ tema o de la pregunta?"*).
 |---|---|---|---|
 | `US-01` Quiz | **Parcial, y no cuenta.** El ítem es la pregunta, no el tema; algunas preguntas (categoría `letras`, o `discos` citando un tema) mencionan una canción, la mayoría no. | Manual: `contenido` etiqueta cada pregunta Fácil/Media/Difícil al cargarla (`BR-01`, taxonomía; escalones 10/15/15 de `BR-19`). | **No cambia.** La dificultad de una pregunta mide qué tan oscuro es el dato que pide, no cuán tocada en vivo está la canción que nombra — ver "Por qué el quiz no entra", abajo. |
 | `US-02` Adivinar el tema | **Sí.** El ítem es el tema: la respuesta es reconocer la canción. | **Ya inferida, enmendado 2026-09-24.** 8 Fáciles = top del conteo citado de setlist.fm dentro del pozo con audio (`BR-18` h, `CTR-19.5`); Media/Difícil = tercios sobre los 87 restantes (antes: Media = figura y no es de los 8, Difícil = no figura — ver "Media y Difícil de `US-02`" más abajo). | **No cambia el mecanismo.** `D-46` confirma el principio que `D-45`/`BR-18` (h) ya le habían dado a este juego — es el juego de origen de la regla, no uno que la recibe ahora. |
-| `US-03` Completar la letra | **Sí en el contenido** (el hueco sale de un verso de un tema), **no en el eje de dificultad.** | Manual: `contenido` etiqueta cada hueco (`BR-01`); el nivel define cuánto contexto rodea el hueco (`BR-03`: 2+2 versos y título/disco visibles en Fácil, verso pelado en Difícil). | **No cambia.** Ver "Por qué `US-03` no entra", abajo. |
+| `US-03` Completar la letra | **Sí, enmendado 2026-09-24 (precisión de `D-46`, `T-286`).** Esta celda decía "no en el eje de dificultad"; el usuario lo revirtió, textual: *"Completá la letra también sale del conteo"*. | **Corregido 2026-09-24** (`Docs/SUGERENCIAS/ARQ-para-producto-la-letra-con-el-conteo.md` punto 2): no era manual. Automática por posición dentro de la estrofa — `scripts/generar-letra.mjs` ponía el nivel según cuántos versos tenía el hueco alrededor **dentro de su estrofa** (2+2 antes/después da `facil`, 1+1 da `media`, si no `dificil`); `contenido` elegía **qué verso promover** (`letra-confirmaciones.json`), y el nivel salía de rebote de esa elección, no de una etiqueta puesta a mano. *Decía: "Manual: `contenido` etiqueta cada hueco (`BR-01`); el nivel define cuánto contexto rodea el hueco (`BR-03`: 2+2 versos y título/disco visibles en Fácil, verso pelado en Difícil)."* | **Cambia la fuente del nivel, no la tabla de `BR-03`.** El nivel pasa de "posición del hueco en la estrofa" a tercios del conteo por **tema** — el mismo mecanismo que `US-07` (`CTR-19.15`), aplicado acá. `BR-03` sigue exactamente igual: la tabla sigue diciendo cuánto contexto va con cada nivel; lo único que cambia es qué decide el nivel. Ver "La precisión del 2026-09-24", abajo. |
 | `US-04` Adivinar la tapa | **No.** El ítem es una tapa o un disco, no una canción. | Manual (`BR-01`, taxonomía; mínimo 3 Fácil sobre 10). | No aplica: no hay canciones que medir. |
 | `US-06` Qué tipo de ricotero sos | **No.** El ítem es una pregunta de temperamento (`BR-17`). | **No usa dificultad.** `BR-17` ya fija que `BR-01` no aplica: ninguna pregunta pide saber de la banda. | No aplica: no hay dificultad que `D-46` pueda redirigir. |
 | `US-07` Sacalo por la letra | **Sí.** El ítem es el tema: la respuesta es reconocer la canción por sus versos. | **Ya inferida por `D-27`**, no manual — aunque `Docs/PRODUCTO/PRD-adivinar-por-la-letra.md` todavía la describe como "Plan B" sin activar (marcado, ver "Archivos"). Tercios por vistas de YouTube; degradada hoy a todo Difícil por falta de `YT_API_KEY`. | **Cambia la fuente, no el mecanismo.** Los tercios de `D-27` se calculan sobre el conteo citado de setlist.fm en vez de las vistas de YouTube — la "Salida B" de `BR-18` (h), confirmada. |
@@ -1526,6 +1599,12 @@ pregunta de trivia no le pide eso al jugador aunque una canción aparezca en el 
 excepción por el tema que la pregunta mencione.**
 
 ### Por qué `US-03` no entra, aunque su ítem salga de una canción
+
+> **Enmendado 2026-09-24 (`T-286`, precisión de `D-46`), sin borrar.** El usuario contestó
+> este apartado, textual: *"Completá la letra también sale del conteo"*. No pidió que se
+> le explique por qué no debería — lo decidió. Queda escrito abajo, tal cual se argumentó,
+> porque es la razón que había y hay que poder leerla; la decisión vigente y lo que
+> `arrastra` están en "La precisión del 2026-09-24", después de este apartado.
 
 Mismo tipo de caso, otra forma. El eje de dificultad de "Completar la letra" no es "qué
 tan conocida es la canción": es **cuánta letra queda visible alrededor del hueco**
@@ -1550,10 +1629,124 @@ decir, cuando la tarea del jugador es reconocerla o identificarla. No gobierna c
 canción es el material del que sale el ítem pero la dificultad mide otra cosa (un dato de
 trivia, cuánto contexto queda visible).
 
+> **Esta regla general queda escrita como estaba, y ya no es la que rige a `US-03`.** La
+> siguió el apartado de arriba hasta el 2026-09-24; el usuario decidió lo contrario para
+> este caso puntual, con la mano en el propio caso concreto en vez de en la regla general.
+> No la reescribo —puede seguir sirviendo para el "próximo caso parecido" que no sea
+> `US-03`— pero avisada: dejar de aplicarla acá fue una decisión del usuario, no un error
+> de esta regla.
+
+### La precisión del 2026-09-24: "Completá la letra" también, y qué pasa con `BR-03`
+
+**Cómo migra: tercios por tema, igual que `US-07`.** El nivel de un ítem de `US-03` deja
+de ser una etiqueta que `contenido` pone a mano en cada hueco y pasa a ser una propiedad
+del **tema** de ese hueco: se ordenan por el conteo citado los temas que tienen al menos
+un ítem en el banco de este juego, se parten en tercios (`D-27`, "sin escucha por ahora es
+difícil" para el tema sin línea), y todo hueco de un tema hereda el nivel de su tema. Es
+la misma regla que `CTR-19.15` ya calcula para `US-07` — no una tercera fórmula. Si
+`arquitectura` prefiere escribir una función nueva en vez de reusar la que ya reparte en
+tercios, es su decisión (`T-287`); lo que fijo acá es la regla, no el nombre de la
+función.
+
+**El pozo es el de este juego, no el catálogo entero** — mismo criterio que ya usa `US-07`
+("Dónde se calcula el pozo de `US-07`", arriba): los temas de los que salen los huecos ya
+cargados en `letra.json`, no los 105 de `RES-20`. Un tema sin ningún hueco cargado no
+compite por un tercio que no le corresponde.
+
+#### `BR-03`: el contexto sigue al nivel — no se desacopla
+
+Es la pregunta que dejó pedida la precisión de `D-46`: *"hoy la cantidad de versos de
+contexto alrededor del hueco sale del nivel del ítem (2, 1 o 0)... cuando el nivel lo pone
+el conteo del tema, ¿el contexto sigue al nivel, o el contexto se desacopla y se fija por
+otra regla?"* La tabla de `BR-03` —2 versos y título/disco en Fácil, 1 en Media, verso
+pelado en Difícil— **no cambia una celda.** Lo único que cambia es de dónde sale el nivel
+que esa tabla consulta.
+
+**Por qué no se desacopla, contra la tentación de hacerlo:**
+
+1. **Desacoplar inventa un eje que el brief nunca pidió; acoplado no inventa nada.**
+   `Docs/BRIEF.md` define la dificultad de este juego con estas palabras exactas: *"la
+   dificultad escala mostrando menos letra... fácil da contexto, difícil da un verso
+   pelado."* No es una implementación que `producto` eligió: es la definición del juego
+   confirmada en `/kickoff`, antes de que existiera este documento — ahí "dificultad" **es**
+   "cuánta letra se muestra", no dos cosas separadas. Si el contexto se desacopla, "nivel"
+   pasa a significar solamente "qué tan tocado en vivo está el tema" y deja de decir nada
+   sobre cuánta letra se ve — la promesa del `/kickoff` ("fácil da contexto, difícil da un
+   verso pelado") quedaría sin ningún nivel que la sostenga, y haría falta inventar un eje
+   nuevo con su propio nombre para sostenerla. Eso sí sería reescribir el juego, y nadie lo
+   pidió. Acoplado, sigue siendo exactamente la regla del `/kickoff`, con el nivel viniendo
+   de otro lado.
+2. **Desacoplar necesita una regla nueva que hoy no existe en ningún documento; acoplado
+   no necesita ninguna.** Si el contexto dejara de seguir al nivel, alguien tiene que
+   decidir de qué depende entonces — ¿lo vuelve a elegir `contenido` a mano, por ítem,
+   como hasta hoy? ¿depende de la posición del ítem dentro de la partida? Ninguna de las
+   dos está pedida ni fundamentada en ningún documento de este proyecto, y escribir una
+   bajo esta misma tarea sería inventar mecánica de juego con la excusa de migrar un dato.
+   Acoplado, `CTR-04.7` sigue exactamente igual, sin una línea nueva.
+3. **Contra `BR-01` (arranca por Fácil, cuota): acoplado sostiene el molinete abierto
+   mejor que desacoplado, no peor.** El primer ítem de cualquier partida tiene que ser
+   Fácil (`BR-01` punto 1). Con el acople, "Fácil" significa a la vez "tema muy tocado en
+   vivo" **y** "verso con el máximo de apoyo" (2 versos antes, 2 después, título y disco a
+   la vista): el que llega sin saber nada recibe, en su primer ítem, la combinación más
+   generosa que el juego puede dar. Desacoplado, nada garantizaría eso: `contenido` podría
+   elegir un hueco de un tema muy tocado y mostrarlo pelado, y el primer ítem de la
+   partida sería un muro real aunque cumpliera la letra de `BR-01`. El acople hace
+   estructuralmente imposible ese caso — no hay forma de que un ítem Fácil muestre menos
+   de 2+2 versos, porque el nivel *es* la cantidad de contexto.
+4. **A favor de la experiencia del que juega: la peor combinación queda reservada para el
+   final, no puede aparecer temprano.** Con el acople, el peor caso del juego —tema poco
+   tocado, verso pelado, sin título ni disco— solo puede aparecer tarde en la partida
+   (`BR-01` punto 2, la dificultad no baja), para quien ya demostró que sabe lo suficiente
+   como para haber pasado Fácil y Media. Desacoplado, un jugador podría toparse con "tema
+   conocido, sin ningún apoyo" más temprano, porque las dos variables ya no viajarían
+   pegadas al mismo escalón.
+
+**Lo que se pierde, dicho de frente y no escondido.** Hoy `contenido` puede mostrar con
+generosidad un hueco de un tema oscuro para compensar que casi nadie lo reconoce, o poner
+un hueco pelado de un tema conocidísimo para que el desafío sea de memoria y no de
+reconocimiento. Esa libertad editorial por ítem **se pierde**: el nivel ya no lo elige
+`contenido`, lo pone el conteo, y con él viaja la cantidad de contexto entera. Es el mismo
+costo que ya aceptó `US-07` cuando `D-27` le sacó la etiqueta manual (ver "Qué pasa con un
+ítem que tenía dificultad a mano y la pierde", abajo) — acá se acepta con el mismo
+argumento: lo pidió el usuario, dos veces, con el mismo texto.
+
+**Consecuencia que no es del contexto en sí, pero se dispara por acoplarlo: recalcular no
+es solo repintar una etiqueta.** Porque el contexto viaja pegado al nivel, un ítem que
+cambia de nivel al recalcularse el banco contra un conteo nuevo también tiene que cambiar
+cuántos versos guarda —agregarlos o sacarlos, no solo el campo `dificultad`—. Es distinto
+de `US-07`, donde recalcular solo mueve un tema de franja sin tocar qué revela cada paso
+de la escalera (`BR-20` queda intacta). Se anota acá porque es la consecuencia directa de
+esta decisión, y para que no sorprenda a quien construya `T-288`.
+
+**Lo que le pido a `arquitectura` y al hilo principal, sin fijarlo yo:** que `CTR-04` sume
+el campo que declara de dónde sale `dificultad` en este banco —mismo rol que ya le toca a
+`CTR-03` y `CTR-09`, ver "Qué no hace esta regla", más abajo— es de `arquitectura`
+(`T-287`). Cómo se recalcula el banco existente es del hilo principal (`T-288`), con el
+mismo criterio que ya fijó esta regla para `US-07`: ningún ítem pierde hoy una etiqueta
+que ya tenía escrita a mano — y, corregido el mismo día que esto: no había una etiqueta a
+mano que perder, el nivel salía de rebote de la posición del hueco en la estrofa (ver
+"Qué pasa con un ítem que tenía dificultad a mano y la pierde", más abajo).
+
+**Y el criterio 2 de `US-03` queda resuelto acá, no repetido.** Con el nivel por tema, un
+tema del tercio bajo da solo ítems Difícil — por construcción, el tema de un ítem Difícil
+nunca pudo haber aparecido antes en Fácil o Media dentro de la misma partida. Eso rompía,
+siempre y no a veces, el criterio 2 de `US-03` tal como estaba escrito (*"nunca se
+introduce un tema completamente nuevo solo en modo difícil"*). Lo detectó `arquitectura`
+en `CTR-04.14` (🔴) y lo traspasó en
+`Docs/SUGERENCIAS/ARQ-para-producto-la-letra-con-el-conteo.md` punto 1. La resolución —se
+adopta la opción **A** que esa nota propone: la precisión de `D-46` prevalece, el criterio
+2 se enmienda— está en `US-03`, criterio 2, con el argumento completo. No lo repito acá.
+
+**Si el piso de 4 Fáciles deja de alcanzarse con el pozo real, no es una falla de esta
+regla: es una señal para `contenido`.** El mínimo de `US-03` (4 sobre 15) sigue en pie. Si
+los tercios del pozo actual dejan menos de 4 ítems en el nivel Fácil, la salida no es
+tocar esta regla — es que `contenido` cargue más huecos de temas del tercio de arriba,
+igual que ya le pasa a `US-07` con su piso de 15 sobre un pozo que hoy reparte 30/30/28.
+
 ### La regla de reparto: los tercios de `D-27`, salvo el corte de 8 de `US-02`
 
-Dos juegos infieren dificultad de canciones, y usan **reglas distintas** — cada una
-vigente por motivo propio, no por descuido:
+Tres juegos infieren dificultad de canciones desde el 2026-09-24, y usan **dos reglas
+distintas** — cada una vigente por motivo propio, no por descuido:
 
 - **`US-02` conserva el corte de 8**, fijo y no proporcional al pozo (`BR-18` h,
   `CTR-19.5`). Es una regla más vieja que `D-46` y específica de este juego: nació de la
@@ -1566,13 +1759,16 @@ vigente por motivo propio, no por descuido:
   para este juego, antes incluso de que existiera `BR-18` (f). `D-46` no inventa un
   mecanismo nuevo acá: **reactiva el que ya tenía**, cambiándole la fuente de vistas de
   YouTube (que nunca llegaron) a conteo en vivo (que sí existe, `RES-74`).
+- **`US-03` usa la misma regla que `US-07`, sumada el 2026-09-24** por la precisión de
+  `D-46`: tercios sobre el pozo de temas de este juego, con el mismo criterio de empate y
+  de "sin conteo es difícil". No es una tercera fórmula: es el segundo juego que usa la
+  que ya tenía `US-07`.
 
-**Por qué no homologar las dos en una sola regla.** Forzar a `US-02` a tercios rompería
+**Por qué no homologar las tres en una sola regla.** Forzar a `US-02` a tercios rompería
 un número ya construido, testeado y citado en media docena de documentos sin ningún
-beneficio — el corte de 8 no le debe nada a `D-27`. Forzar a `US-07` al corte de 8
-ignoraría que ese juego **ya tenía su propia regla específica**, escrita por el usuario
-con su propio argumento (tercios, no un top fijo). Cada uno se queda con la regla que ya
-era suya.
+beneficio — el corte de 8 no le debe nada a `D-27`. Forzar a `US-07` y `US-03` al corte de
+8 ignoraría que esa es una regla específica de `US-02` (nació de su propia cuota), no una
+vara general. Cada uno se queda con la regla que le corresponde.
 
 **Dónde se calcula el pozo de `US-07`.** Igual que en `US-02`: los tercios se calculan
 sobre el pozo del juego —los temas con letra ya cargada en el banco (88 hoy, sobre un
@@ -1641,10 +1837,22 @@ dónde sale la etiqueta la próxima vez que se recalcule el banco (dependiente d
 esa transición porque `BR-20` (la escalera de versos) sigue intacta: cambia **cuál** tema
 entra en qué nivel, no **qué se ve** dentro de un nivel.
 
+**Desde el 2026-09-24, el mismo caso se repite en `US-03`** (precisión de `D-46`, "La
+precisión del 2026-09-24", arriba) — **con una premisa corregida.** No había una etiqueta
+puesta a mano que perder: el nivel de cada ítem salía automático de la posición del hueco
+dentro de su estrofa, y `contenido` lo decidía de rebote al elegir qué verso promover (ver
+la celda de `US-03` en la tabla de arriba, corregida el mismo día). Lo que cambia es de
+dónde sale ese nivel la próxima vez que se recalcule el banco (`T-288`): de la posición en
+la estrofa a los tercios del conteo por tema. **A diferencia de `US-07`, acá sí cambia qué
+se ve dentro de un nivel:** el contexto (`BR-03`) está atado al nivel, así que un ítem que
+cambia de nivel al recalcularse cambia también cuánto contexto guarda — no solo el campo
+`dificultad`. Es la consecuencia que ya quedó anotada arriba, repetida acá porque es este
+apartado el que existe justamente para que no sorprenda.
+
 ### Cómo sigue cumpliendo `BR-01`
 
-Para los dos juegos con dificultad inferida, los tres puntos de `BR-01` se sostienen
-igual que hoy:
+Para los juegos con dificultad inferida, los tres puntos de `BR-01` se sostienen igual
+que hoy:
 
 1. **Primer ítem Fácil.** Sigue garantizado: mientras haya al menos un Fácil en el pozo
    —lo mismo que ya asume `BR-18` (g) para `US-02`— el primero de la partida sale de ahí.
@@ -1662,23 +1870,35 @@ igual que hoy:
    `BR-18` (g): errar o pasar abre el escalón siguiente (`BR-20`), así que el orden de los
    ítems no es el único molinete abierto.
 
+   **Y `US-03`, sumado el 2026-09-24, sigue con su mínimo de 4 sobre 15** ("Piso de
+   ítems" de `US-03`). Acá no hay segunda rampa que lo salve si el pozo real no alcanza —
+   este juego no tiene escalera de intentos, es respuesta única como el quiz—, así que si
+   los tercios dejan menos de 4 Fáciles es `contenido` quien tiene que sumar huecos del
+   tercio de arriba, como ya quedó dicho en "La precisión del 2026-09-24".
+
 ### El rótulo, en registro 3
 
 Ya está escrito: `RNF-CTR-19-A` (`Docs/ARQ/ARQ-schema-recitales.md`) fija qué mide, de
 dónde sale y con qué fecha, para toda pantalla que muestre un número o un orden salido
 del conteo citado. **Esta regla no escribe uno nuevo**: extiende el mismo requisito a
-cualquier pantalla de `US-07` que muestre nivel, número o puesto salido de la misma
-fuente — es el mismo dato, `setlistfm.json`, así que es el mismo rótulo. Sigue sin decir
-"el más popular" ni "el más escuchado": dice **"lo más tocado en vivo"**, con la fuente y
-la fecha al lado si se muestra un número.
+cualquier pantalla de `US-07` —y, desde el 2026-09-24, de `US-03`— que muestre nivel,
+número o puesto salido de la misma fuente — es el mismo dato, `setlistfm.json`, así que
+es el mismo rótulo. Sigue sin decir "el más popular" ni "el más escuchado": dice **"lo
+más tocado en vivo"**, con la fuente y la fecha al lado si se muestra un número.
 
 ### Qué no hace esta regla
 
 No fijo el campo de schema que guarda de dónde sale la dificultad de cada banco (`CTR-03`,
-`CTR-09`, y `CTR-07` retirado de ese rol): es de `arquitectura` (`T-284`). `CTR-04`
-(`US-03`) no entra a esa lista, por lo dicho arriba. No fijo la fórmula exacta de
-`repartirEnVivo()` para `US-07` ni el archivo donde vive: también de `arquitectura`. No
-decido si `experiencia` muestra el nivel en pantalla de `US-07`: eso sigue sin pedirle
+`CTR-09`, y `CTR-07` retirado de ese rol): es de `arquitectura` (`T-284`).
+
+> **Enmendado 2026-09-24 (`T-286`).** Acá decía *"`CTR-04` (`US-03`) no entra a esa lista,
+> por lo dicho arriba"*. Ya no es cierto: `CTR-04` **entra** a esa lista, con el mismo rol
+> que `CTR-03`/`CTR-09` — el campo lo fija `arquitectura` (`T-287`), y de paso decide cómo
+> declara que el contexto de `BR-03` sigue derivado del mismo nivel, no de un campo aparte.
+
+No fijo la fórmula exacta de `repartirEnVivo()` para `US-02`, ni la de los tercios para
+`US-07` y `US-03`, ni el archivo donde viven: también de `arquitectura`. No decido si
+`experiencia` muestra el nivel en pantalla de `US-07` o de `US-03`: eso sigue sin pedirle
 nada a la isla hasta que lo decida, igual que ya vale para `US-02` (`CTR-19.9`).
 
 **Verificación:** `rg -n "^## BR-30" Docs/PRODUCTO/PRD-alcance-v1.md` devuelve esta línea.
@@ -1707,6 +1927,15 @@ Que la tabla no tenga celdas vacías y que las enmiendas de `BR-18` (h) y de
   edito acá porque `Docs/BRIEF.md` no es carpeta de `producto` en el sentido de "archivo
   que este PRD sobrescribe" — lo fija `/kickoff` — pero si alguien lo vuelve a tocar,
   el número correcto para `US-02` es 30. Dueño: quien próximamente actualice el brief.
+- **`Docs/BRIEF.md`, "Listo de la v1", punto 3, sigue diciendo "la dificultad escala
+  mostrando menos letra, no cambiando de tema" sin la lectura del 2026-09-24.** `US-03`
+  criterio 2 (enmendado esta misma ráfaga) ya deja escrito que esa frase describe el eje
+  de dificultad (cuánta letra se muestra), no que un tema del nivel Difícil tenga que
+  haber aparecido antes en la partida — con el nivel por tema de `BR-30`, eso último es
+  estructuralmente imposible. No edito `Docs/BRIEF.md`, mismo motivo que el bullet de
+  arriba. Si alguien lo vuelve a tocar, la nota de corrección va con el mismo formato que
+  ya usan las de `RES-05` y `BR-06` en ese archivo, citando `US-03` criterio 2. Dueño:
+  quien próximamente actualice el brief.
 - **Validación del tiempo real de partida** (8 preguntas / 5 letras / 6 tapas siguen
   siendo supuestos de pacing, no medidos; los 4 temas de `US-02` dejaron de serlo el
   2026-08-24: `D-24` los confirmó junto con la mecánica, no es una cuenta de `producto`
@@ -1760,3 +1989,17 @@ Que la tabla no tenga celdas vacías y que las enmiendas de `BR-18` (h) y de
   rol), la fórmula `repartirEnVivo()` para `US-07` con reparto en tercios (no el corte de
   8 de `CTR-19.5`), y el conteo completo de setlist.fm en `CTR-19` (dueño `investigador`,
   `T-282`, del que depende la fórmula para no llegar degradada). Dueño: `arquitectura`.
+
+  > **Enmendado 2026-09-24 (precisión de `D-46`, `T-286`).** El paréntesis de arriba decía
+  > "`CTR-04` queda afuera, `US-03` no migra". Ya no es cierto: el usuario decidió que
+  > `US-03` también sale del conteo (`BR-30`, "La precisión del 2026-09-24"). `CTR-04`
+  > entra a la lista de campos de schema que `arquitectura` tiene que sumar — mismo rol
+  > que `CTR-03`/`CTR-09` — y además tiene que decidir cómo declara que el contexto
+  > (`BR-03`) sigue derivado del mismo nivel que la dificultad, no de un campo aparte.
+  > Dueño: `arquitectura` (`T-287`).
+- **Recalcular `US-03` contra el conteo no es solo repintar una etiqueta.** Porque `BR-30`
+  decidió que el contexto (`BR-03`) sigue atado al nivel, un ítem que cambia de nivel al
+  recalcularse el banco también tiene que cambiar cuántos versos de contexto guarda —
+  agregarlos o sacarlos, no solo el campo `dificultad`—. Es distinto de `US-07`, donde
+  recalcular solo mueve un tema de franja sin tocar qué muestra cada paso de la escalera
+  (`BR-20` queda intacta). Dueño: hilo principal, al construir `T-288`.

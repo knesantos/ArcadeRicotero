@@ -20,6 +20,13 @@
  *    un test: lo mira `revisor` en la hoja de contacto (`UX-30 §7`).
  * 5. **Ninguna tinta de rampa llega al borde del tile** (`UX-27 §5.2`): el contorno es de clave,
  *    o el tile no sabría dónde termina contra el aire.
+ * 6. **La puerta abierta es la cerrada sin el tapón** (`UX-32 §2.2`, `T-290`): la misma silueta
+ *    —el marco no cambia un píxel—, y lo único que pasa es que la clave del vano se vuelve aire.
+ *    No suma ni un píxel de clave que la cerrada no tuviera: si sumara, sería otra puerta.
+ * 7. **Un tesoro por dueño** (`D-47` punto 4, `CTR-16.4`): `tesoroSkayboy` —la guitarra— y
+ *    `tesoroPoligirl` —el cigarrillo—, y el `tesoro` que servía para los dos ya no está. Los dos
+ *    con la única tinta de objetos, con aire alrededor, y **uno gordo y el otro flaco**: la guitarra
+ *    es una masa y el cigarrillo una línea, que es lo único que los separa en gris (`UX-33 §3`).
  *
  * La tinta diecisiete —un color que no está en `tokens.css`— no es de este archivo: la caza el
  * auditor de paleta sobre el PNG impreso (`T-268`).
@@ -32,8 +39,11 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import sharp from 'sharp';
 import { leerDibujo, type Dibujo } from '../pixel/fuente.ts';
+import { diferenciasConLoPublicado, rutaPublicada } from '../pixel/publicado.ts';
+import { paletaDelArea } from '../pixel/tokens.ts';
 
 const ARCHIVO = 'src/arte/pixel/sala.txt';
 const SCHEMA = 'src/data/_schema/skayboy.schema.json';
@@ -47,9 +57,12 @@ const TILES_DE_LA_SALA: Readonly<Record<string, readonly string[] | { noSeDibuja
   aire: { noSeDibuja: 'es el fondo del área, --px-luz liso (UX-27 §1.1)' },
   solido: ['solido'],
   molinete: ['molineteCielo', 'molineteInfierno', 'molineteDos'],
-  tesoro: ['tesoro'],
+  // Uno por dueño desde D-47 (CTR-16.4): la guitarra de Skay y el cigarrillo de Poli. Se elige
+  // por `para[0]`, como la puerta por `de`.
+  tesoro: ['tesoroSkayboy', 'tesoroPoligirl'],
   entrada: { noSeDibuja: 'es aire; lo que la muestra es el muñeco parado ahí (UX-29 §3)' },
-  puerta: ['puertaSkayboy', 'puertaPoligirl'],
+  // Las dos cerradas, y la abierta (`UX-32 §2`, `T-290`): una sola para las dos, ver abajo.
+  puerta: ['puertaSkayboy', 'puertaPoligirl', 'puertaAbierta'],
   palanca: ['palancaReposo', 'palancaActiva'],
   placa: ['placaLibre', 'placaPisada'],
   compuerta: ['compuertaCerrada', 'compuertaAbierta'],
@@ -179,7 +192,9 @@ test('el molinete de cielo no trae infierno, el de infierno no trae cielo, y el 
     de(dos, CIELO).length > 0 && de(dos, INFIERNO).length > 0,
     'el molinete que devuelve a los dos tiene que traer de las dos rampas: con una sola se lee "de uno"',
   );
-  assert.ok(tintasDe(d, 'tesoro').has('--px-tesoro'), 'el tesoro usa su tinta, la única de objeto (UX-27 §4)');
+  for (const t of dibujados('tesoro')) {
+    assert.ok(tintasDe(d, t).has('--px-tesoro'), `${t} usa la tinta de objeto, la única que hay (UX-27 §4, UX-33 §3.2)`);
+  }
 });
 
 /**
@@ -207,7 +222,7 @@ test('cada caracter de la leyenda del dato cae en un tile de la sala, o en un ti
   const d = leerSala();
   const hay = new Set(d.estados.map((e) => e.nombre));
   const dato = JSON.parse(readFileSync(DATO, 'utf-8')) as {
-    leyenda: Record<string, { tipo: string; elemento?: string; devuelve?: string[]; de?: string }>;
+    leyenda: Record<string, { tipo: string; elemento?: string; devuelve?: string[]; de?: string; para?: string[] }>;
   };
   const mayus = (s: string) => s[0]!.toUpperCase() + s.slice(1);
   for (const [car, e] of Object.entries(dato.leyenda)) {
@@ -224,9 +239,165 @@ test('cada caracter de la leyenda del dato cae en un tile de la sala, o en un ti
       tile = `molinete${mayus(elemento)}`;
     } else if (e.tipo === 'puerta') {
       tile = `puerta${mayus(e.de ?? '')}`;
+    } else if (e.tipo === 'tesoro') {
+      // CTR-16.4 enmendado por D-47: el tesoro es de uno, y el tile es el de su dueño.
+      assert.equal(e.para?.length, 1, `"${car}" es un tesoro para ${e.para?.join(' y ')}: el de los dos se retiró (D-47)`);
+      tile = `tesoro${mayus(e.para![0]!)}`;
     } else {
       tile = decision[0]!;
     }
     assert.ok(hay.has(tile), `"${car}" (${e.tipo}) no tiene su tile ${tile} en sala.txt`);
   }
+});
+
+/**
+ * `UX-32 §2.2`: *"la misma silueta con el dintel retirado"*, y tres cosas que se pueden contar
+ * sin nombrar una coordenada:
+ *
+ * - **no suma clave**: cada píxel de clave de la abierta es clave en las dos cerradas. Es la
+ *   misma puerta con algo sacado, no otra puerta;
+ * - **la silueta es la misma**: en cada renglón, la primera y la última clave caen donde caen en
+ *   las cerradas. El contorno de `UX-27 §5.2` no se toca;
+ * - **el vano deja pasar**: hay una columna de aire desde abajo del arco hasta el borde de abajo
+ *   del tile;
+ * - **y adentro del marco no queda nada**: la clave de la abierta es, píxel por píxel, el marco de
+ *   las cerradas —la clave que se toca con la del renglón de arriba sin pasar por aire, de lado o
+ *   de arriba abajo—. Una columna de aire sola no alcanza: una hoja entera con una raja de un
+ *   píxel la cumple y se lee cerrada (lo encontró la verificación de `T-290`). Sin esto, lo que se
+ *   sacó fue un pedazo de hoja, no la hoja.
+ *
+ * **Qué se leyó por "dintel"** (`UX-32 §2.2` habla de retirar *"la clave sólida arriba del vano"*
+ * con aire *"hasta el borde del tile"*): en estas cerradas el arco de arriba es contorno, no tapón
+ * —es lo que las hace puerta y no sólido, y `UX-27 §5.2` pide contorno de clave en las dos
+ * formas—; el tapón es la hoja, que baja hasta el piso. Se saca la hoja, el arco se queda, y el
+ * aire llega hasta el borde de **abajo** del tile. Queda anotado en el traspaso a `experiencia`.
+ *
+ * Y es **una** abierta, no dos: la insignia —el sombrero, la mata de pelo— vivía en la hoja, y sin
+ * hoja no hay insignia (el primer punto lo obliga: donde las cerradas difieren no hay clave en
+ * las dos). Dos tiles abiertos serían el mismo dibujo con dos nombres; con uno solo, la paridad
+ * (`BR-23`) no se puede romper ahí. Quién llegó a cuál lo dice el muñeco parado adelante (`UX-32 §3`).
+ */
+test('la puerta abierta es la cerrada sin la hoja: no suma clave, la silueta no cambia, el vano deja pasar y adentro del marco no queda nada (UX-32 §2.2)', () => {
+  const d = leerSala();
+  const grilla = (estado: string) => d.cuadros.find((c) => c.estado === estado)?.filas;
+  const abierta = grilla('puertaAbierta');
+  const cerradas = [grilla('puertaSkayboy'), grilla('puertaPoligirl')];
+  assert.ok(abierta, 'sala.txt no tiene puertaAbierta: ganar no se ve (UX-32)');
+  assert.ok(cerradas.every((g) => g !== undefined), 'faltan las cerradas');
+  const clave = [...d.leyenda].find(([, n]) => n === '--px-clave')?.[0];
+  assert.ok(clave, 'la sala no nombra la clave');
+  const bordes = (fila: string) => [fila.indexOf(clave), fila.lastIndexOf(clave)];
+
+  for (let y = 0; y < abierta.length; y++) {
+    for (let x = 0; x < 16; x++) {
+      if (abierta[y]![x] !== clave) continue;
+      for (const g of cerradas) {
+        assert.equal(g![y]![x], clave, `puertaAbierta [${x}, ${y}] es clave y una cerrada ahí no: suma, no saca`);
+      }
+    }
+    for (const g of cerradas) {
+      assert.deepEqual(bordes(abierta[y]!), bordes(g![y]!), `renglón ${y}: la silueta de la abierta no es la de la cerrada`);
+    }
+  }
+  // Abajo del arco: el primer renglón donde la clave ya no cruza el tile de lado a lado sin aire.
+  const bajoElArco = abierta.findIndex((f, y) => y > 0 && /^[^K]*K+[^K]+K+[^K]*$/.test(f.replaceAll(clave, 'K')));
+  const pasa = [...Array(16).keys()].some((x) => abierta.slice(bajoElArco).every((f) => f[x] !== clave));
+  assert.ok(pasa, 'puertaAbierta: ninguna columna de aire llega desde el arco hasta el piso — el vano sigue tapado');
+  assert.ok(cerradas.every((g) => g!.slice(bajoElArco).some((f) => /K{6}/.test(f.replaceAll(clave, 'K')))), 'las cerradas no tienen hoja');
+
+  // Adentro del marco, aire: la clave de la abierta es exactamente el marco de cada cerrada.
+  const [marcoS, marcoP] = cerradas.map((g) => marcoDe(g!, clave));
+  assert.deepEqual(marcoS, marcoP, 'las dos cerradas no tienen el mismo marco: no hay una abierta que sea de las dos');
+  const sobra = clavesDe(abierta, clave).filter((p) => !marcoS!.includes(p));
+  const falta = marcoS!.filter((p) => !clavesDe(abierta, clave).includes(p));
+  assert.deepEqual(sobra, [], `puertaAbierta deja clave adentro del marco (${sobra.join(' ')}): queda hoja, y se lee cerrada`);
+  assert.deepEqual(falta, [], `puertaAbierta le saca al marco ${falta.join(' ')}: el marco no cambia un píxel`);
+});
+
+/** Las claves de una grilla, como `"x,y"` en orden de lectura. */
+function clavesDe(g: readonly string[], clave: string): string[] {
+  const hay: string[] = [];
+  g.forEach((f, y) => [...f].forEach((c, x) => c === clave && hay.push(`${x},${y}`)));
+  return hay;
+}
+
+/**
+ * El marco de una puerta: la clave que se alcanza desde la del renglón de arriba sin pasar por
+ * aire, moviéndose de lado o de arriba abajo (no en diagonal: en diagonal la hoja toca el arco en
+ * una esquina y no es el mismo trazo). En orden de lectura, para comparar con `clavesDe`.
+ */
+function marcoDe(g: readonly string[], clave: string): string[] {
+  const visto = new Set<string>();
+  const pila: [number, number][] = [...g[0]!].flatMap((c, x) => (c === clave ? [[x, 0] as [number, number]] : []));
+  while (pila.length > 0) {
+    const [x, y] = pila.pop()!;
+    if (y < 0 || y >= g.length || x < 0 || x >= g[y]!.length || g[y]![x] !== clave || visto.has(`${x},${y}`)) continue;
+    visto.add(`${x},${y}`);
+    pila.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+  }
+  return clavesDe(g, clave).filter((p) => visto.has(p));
+}
+
+/**
+ * `D-47` punto 4 y `CTR-16.4`: *"reemplaza al tesoro que servía para los dos"*. El tile `tesoro`
+ * de la v2 no puede quedar en la v3: un tile que ningún caracter pide es un dibujo que alguien va
+ * a usar por error, y es justo el que dibujaba un objeto que era de los dos.
+ */
+test('el tesoro de los dos se retiró: la sala no tiene un tile tesoro suelto (D-47, CTR-16.4)', () => {
+  const d = leerSala();
+  const hay = d.estados.map((e) => e.nombre);
+  assert.ok(!hay.includes('tesoro'), 'sala.txt todavía trae el tile tesoro, el que servía para los dos');
+  assert.ok(hay.includes('tesoroSkayboy') && hay.includes('tesoroPoligirl'), 'faltan la guitarra o el cigarrillo');
+});
+
+/**
+ * `UX-33 §3.1` y `§3.3`: la figura en el centro, con aire alrededor —ninguno llena el tile de punta
+ * a punta, que es lo que los separa del terreno—, y **la guitarra gorda, el cigarrillo flaco**. Con
+ * una sola tinta para los dos, la silueta es la única prueba que existe, y se cuenta así: cuánto
+ * llena la tinta de objetos. El contorno no cuenta —a una línea el contorno la engorda: tiene tanto
+ * borde como cuerpo—, y el humo tampoco, que es de clave. La vara es el doble: una guitarra que no
+ * llena el doble que un cigarrillo es un palito, o un cigarrillo que llena la mitad de una guitarra
+ * es un habano.
+ */
+test('la guitarra es una masa y el cigarrillo una línea, los dos con aire alrededor (UX-33 §3)', () => {
+  const d = leerSala();
+  const luz = [...d.leyenda].find(([, n]) => n === '--px-luz')?.[0];
+  const objeto = [...d.leyenda].find(([, n]) => n === '--px-tesoro')?.[0];
+  assert.ok(luz && objeto, 'la sala no nombra la luz o la tinta de objetos');
+  const grilla = (estado: string) => d.cuadros.find((c) => c.estado === estado)?.filas;
+  const lleno = (g: readonly string[]) => g.join('').split('').filter((c) => c === objeto).length;
+  const guitarra = grilla('tesoroSkayboy');
+  const cigarrillo = grilla('tesoroPoligirl');
+  assert.ok(guitarra && cigarrillo, 'faltan la guitarra o el cigarrillo');
+  for (const [nombre, g] of [['tesoroSkayboy', guitarra], ['tesoroPoligirl', cigarrillo]] as const) {
+    const n = g.length;
+    const borde = [...g[0]!, ...g[n - 1]!, ...g.map((f) => f[0]!), ...g.map((f) => f[f.length - 1]!)];
+    assert.ok(borde.every((c) => c === luz), `${nombre}: la figura toca el borde del tile, y va con aire alrededor (UX-33 §3.1)`);
+  }
+  assert.notEqual(guitarra.join('\n'), cigarrillo.join('\n'), 'la guitarra y el cigarrillo son el mismo dibujo');
+  assert.ok(
+    lleno(guitarra) >= 2 * lleno(cigarrillo),
+    `la guitarra llena ${lleno(guitarra)} píxeles y el cigarrillo ${lleno(cigarrillo)}: en gris no se separan (UX-33 §3.3)`,
+  );
+});
+
+/**
+ * La isla carga `public/sprites/sala.v<N>.png` y su `.json`, no este `.txt` (`T-300`). Si lo
+ * publicado se separa de la fuente —el `.txt` tocado sin reimprimir, un tile borrado a mano del
+ * JSON—, los tests de arriba siguen en verde y el auditor de paleta también: el auditor mira las
+ * tintas, no el dibujo. Esto compara el JSON y cada píxel del PNG con lo que imprime `sala.txt`.
+ */
+test('lo publicado es lo que imprime sala.txt: el JSON es el suyo y cada píxel del PNG también (CTR-15.7, CTR-15.8)', async () => {
+  const d = leerSala();
+  const base = rutaPublicada(d);
+  assert.ok(existsSync(`${base}.json`) && existsSync(`${base}.png`), `sala.txt es la v${d.version} y ${base}.png / .json no están: reimprimí`);
+  const { data, info } = await sharp(readFileSync(`${base}.png`)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const { tintas } = paletaDelArea(readFileSync('src/styles/tokens.css', 'utf-8'));
+  const problemas = diferenciasConLoPublicado(d, tintas, {
+    json: JSON.parse(readFileSync(`${base}.json`, 'utf-8')),
+    ancho: info.width,
+    alto: info.height,
+    rgba: new Uint8Array(data),
+  });
+  assert.deepEqual(problemas, [], `lo publicado se separó de su fuente:\n  ${problemas.join('\n  ')}`);
 });
