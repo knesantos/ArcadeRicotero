@@ -13,114 +13,111 @@
     "decision": "D-25",
     "items": [
       {
-        "id": "CL-736",
+        "id": "CL-667",
         "verso": "Que iban al [grano]",
         "motivo": "Frase hecha ('ir al grano'), letras.com, contexto sin ninguna anotacion de guitarra alrededor."
       },
       {
-        "id": "CL-740",
+        "id": "CL-671",
         "verso": "Y el carozo del asunto es tu [temor]",
         "motivo": "Cierra un pareado con 'primor' (rima consonante en -or), contexto limpio de letras.com."
       },
       {
-        "id": "CL-1241",
+        "id": "CL-1158",
         "verso": "Dr. Saturno, dame un [turno] !",
         "motivo": "Estribillo que repite el titulo del tema, la linea mas citada de la cancion."
       },
       {
-        "id": "CL-1237",
+        "id": "CL-1154",
         "verso": "Estoy hasta la [pasta] !",
         "motivo": "Frase coloquial muy fijada ('estar hasta la pasta'); dificultad dificil, sin contexto que pueda traer ruido."
       },
       {
-        "id": "CL-358",
+        "id": "CL-307",
         "verso": "Un poco de amor [francés]",
         "motivo": "El hueco cae sobre la palabra del titulo, repetida como estribillo: minimo margen de error de transcripcion."
       },
       {
-        "id": "CL-368",
+        "id": "CL-317",
         "verso": "De esa miel no comen las [hormigas]",
         "motivo": "Imagen animal muy citada del tema, contexto limpio de cifraclub sin marcas de acorde."
       },
       {
-        "id": "CL-572",
-        "verso": "Tu esqueleto te trajo hasta [aquí]",
-        "motivo": "Verso muy citado del tema, ya lejos (en el orden del texto) de los rotulos 'Parte X de Y' de la fuente."
-      },
-      {
-        "id": "CL-571",
+        "id": "CL-510",
         "verso": "Cuando [anochezca]",
         "motivo": "Verbo comun conjugado, contexto limpio, fuera del tramo con rotulos de particion del tema."
       },
       {
-        "id": "CL-348",
+        "id": "CL-297",
         "verso": "Violencia es [mentir]",
         "motivo": "Verso corto y sentencioso, contexto limpio, lejos del tramo con la marca '(Repite Intro)' de la misma fuente."
       },
       {
-        "id": "CL-073",
-        "verso": "es un criminal [mambo] .",
-        "motivo": "Estribillo repetido igual varias veces seguidas en el propio tema: la repeticion confirma la transcripcion."
-      },
-      {
-        "id": "CL-105",
+        "id": "CL-083",
         "verso": "No mires, por [favor]",
         "motivo": "Frase muy comun ('por favor'), contexto limpio, tema muy conocido de Oktubre."
       },
       {
-        "id": "CL-103",
+        "id": "CL-081",
         "verso": "Y se [ofreció]",
         "motivo": "Verbo comun en preterito, contexto limpio, bajo riesgo de mal oido del transcriptor."
       },
       {
-        "id": "CL-039",
-        "verso": "[Superlógico] , sí, sí, sí.",
-        "motivo": "El hueco es la palabra del titulo, repetida identica como estribillo varias veces en el tema."
-      },
-      {
-        "id": "CL-044",
-        "verso": "[Superrígido] , sí.",
-        "motivo": "Estribillo espejo de 'Superlogico', repetido identico varias veces en el mismo tema."
-      },
-      {
-        "id": "CL-184",
+        "id": "CL-147",
         "verso": "Vencedores [vencidos] !",
         "motivo": "El hueco es la segunda mitad del titulo, cantada como estribillo del tema."
       },
       {
-        "id": "CL-185",
+        "id": "CL-148",
         "verso": "Te has fugado ! me hago [humo] !",
         "motivo": "Frase hecha ('hacerse humo'), contexto limpio, tema muy conocido de Un baion para el ojo idiota."
       },
       {
-        "id": "CL-395",
+        "id": "CL-343",
         "verso": "tu breto y tus ojos [grises] .",
         "motivo": "Imagen fisica concreta (ojos), contexto limpio de cifraclub sin marcas de continuacion."
       },
       {
-        "id": "CL-396",
+        "id": "CL-344",
         "verso": "yo no soy de [aconsejar]",
         "motivo": "Verbo comun en contexto limpio, sin encabezado de seccion ni marca de anotacion cerca."
       },
       {
-        "id": "CL-086",
-        "verso": "Rockeros bonitos, [educaditos]",
-        "motivo": "Dificultad dificil, sin contexto mostrado: no hay linea de anotacion que pueda colarse alrededor."
-      }
-    ],
-    "enEspera": [
-      {
-        "verso": "Con sus muecas rotas [cromadas]",
-        "motivo": "Contexto limpio pegado al primer verso del tema; palabra poco intercambiable, exige saberse la letra.",
-        "idAnterior": "CL-383",
-        "espera": "T-288 (2026-09-24): con CTR-04 v3 el tema quedo facil por el conteo en vivo y a este verso le faltan vecinos para los 2 de cada lado de BR-03, asi que no da item. No se borro: la eleccion es de contenido. Reemplazarlo por otro verso (del mismo tema o de otro) es de contenido: Docs/SUGERENCIAS/HILO-para-contenido-dos-anclas-sin-vecinos.md"
+        "id": "CL-407",
+        "verso": "Y el premio a [pique] se fue",
+        "motivo": "Frase hecha ('irse a pique'); ningun distractor forma una expresion fija con 'a ___ se fue'. Contexto limpio, tema nuevo en el banco (Salando las heridas)."
       },
       {
-        "verso": "Que los buenos [volvieron]",
-        "motivo": "Contexto limpio entre dos versos cantados, palabra comun en preterito.",
-        "idAnterior": "CL-096",
-        "espera": "T-288 (2026-09-24): con CTR-04 v3 el tema quedo facil por el conteo en vivo y a este verso le faltan vecinos para los 2 de cada lado de BR-03, asi que no da item. No se borro: la eleccion es de contenido. Reemplazarlo por otro verso (del mismo tema o de otro) es de contenido: Docs/SUGERENCIAS/HILO-para-contenido-dos-anclas-sin-vecinos.md"
+        "id": "CL-537",
+        "verso": "Llegan buenas nuevas de los [escondidos] ,",
+        "motivo": "Unico sustantivo plural entre las opciones (las otras tres no concuerdan en numero con 'de los ___'). Contexto limpio, tema nuevo en el banco (Buenas noticias)."
+      },
+      {
+        "id": "CL-619",
+        "verso": "tanta [infidelidad] .",
+        "motivo": "Unico sustantivo femenino singular entre las opciones, concuerda con 'tanta'. Contexto limpio, lejos de la marca de repeticion 'Mate...' del propio tema (El lobo caido)."
+      },
+      {
+        "id": "CL-646",
+        "verso": "Mi racha de novato nunca [cambiará] .",
+        "motivo": "Unico verbo conjugado entre las opciones. Contexto limpio, tema nuevo en el banco (Yo canibal); el hueco no coincide con la palabra del titulo (evita el problema de Superlogico/Superrigido)."
+      },
+      {
+        "id": "CL-657",
+        "verso": "él es el [peligro] ,",
+        "motivo": "Sustantivo concreto sin competencia fuerte entre las opciones. Contexto limpio, tema nuevo en el banco (Ladron de mi cerebro); el hueco no coincide con ninguna palabra del titulo."
+      },
+      {
+        "id": "CL-058",
+        "verso": "Muchachitas [fatales]",
+        "motivo": "Adjetivo que concuerda en genero y numero con 'Muchachitas', unico entre las opciones. Contexto limpio, reemplaza dentro del mismo tema al hueco de 'educaditos' que quedo en espera."
+      },
+      {
+        "id": "CL-601",
+        "verso": "Recuerdo como su mirada me [volteo]",
+        "motivo": "Unico verbo conjugado entre las opciones (las otras tres no lo son). Dificultad dificil, verso pelado sin marca de seccion cerca, tema nuevo en el banco (La hija del fletero)."
       }
-    ]
+    ],
+    "enEspera": []
   }
 }
