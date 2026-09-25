@@ -56,3 +56,17 @@ export function puntosDeVersos(n: number): number {
 export function puntajeMaximoVersos(temas: number): number {
   return temas * ESCALERA_VERSOS[0]!.puntos;
 }
+
+/**
+ * Cuántos versos nuevos te da pasar (o errar) en el paso `n`, escrito como en pantalla.
+ *
+ * Es lo que el botón de pasar promete —"Pasá (+2 versos)"—, igual que su hermano de audio
+ * promete segundos: pasar no es rendirse, es pedir más letra, y el que llega sin idea tiene
+ * que saber que ese botón le da algo antes de apretarlo. En el último paso no queda letra
+ * que pedir, y devuelve `null`: ahí pasar cierra el tema.
+ */
+export function extraDeVersos(n: number): string | null {
+  if (n >= ESCALERA_VERSOS.length) return null;
+  const agrega = pasoDeVersos(n + 1).versos - pasoDeVersos(n).versos;
+  return agrega === 1 ? '1 verso' : `${agrega} versos`;
+}

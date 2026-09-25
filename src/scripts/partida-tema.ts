@@ -31,14 +31,14 @@ import {
   puntos,
   puntajeMaximo,
   anchosDeTramos,
-  tramosConEtiqueta,
+  etiquetaDeRegla,
+  extraAlPasar,
   DURACION_FRAGMENTO_SEG,
 } from '../lib/tema/escalera.ts';
 import { Reproductor, urlDeTema } from '../lib/tema/audio.ts';
 import { PARTIDA, REVELACION, RESULTADO, TARJETA, TRAMOS, PANTALLA_0, SIN_SONIDO } from '../lib/tema/copy.ts';
 import { estampaDe } from '../lib/tapa/pasadas.ts';
 import { armarCasete } from '../lib/tema/casete.ts';
-import { PORTAL } from '../lib/sitio/copy.ts';
 import { esIOS, esMovil, navegadorIncrustado } from '../lib/sitio/aparato.ts';
 import { tramo } from '../lib/quiz/tramo.ts';
 import { armarLink } from '../lib/desafio.ts';
@@ -47,6 +47,16 @@ import { claseDisco } from '../lib/tema/paleta.ts';
 import { armarVuelta } from '../lib/tema/vuelta.ts';
 import { nombreArchivo } from '../lib/tarjeta/plan.ts';
 import { dibujarTarjeta } from './tarjeta.ts';
+import {
+  armarEstampa,
+  armarEstampita,
+  armarEscalerita,
+  acreditarTapas,
+  armarCasillas,
+  pintarCasillas,
+  vibrarAcierto,
+  modoTeclado,
+} from './sacar-temas.ts';
 
 /** Un tema como llega del build. Espeja `TemaDelJuego` de `catalogo.ts`. */
 interface Tema extends TemaBuscable {
@@ -88,6 +98,12 @@ let intentos: (Tema | null)[] = [];
 let puntaje = 0;
 /** Uno por tema de la ronda: el paso en que lo acertó, o 0 si no lo sacó. */
 let marcador: number[] = [];
+/**
+ * Uno por tema: qué hizo con cada intento que gastó antes de cerrarlo. Es lo que dibuja la
+ * escalerita del resultado —los seis escalones de cada tema, con lo que pasó en cada uno—,
+ * que `marcador` no alcanza a decir: un 3 no distingue entre dos errores y dos pases.
+ */
+let recorridos: Array<Array<'fallo' | 'paso'>> = [];
 /**
  * El reloj de la vuelta (`reloj.ts`). Corre callado: no hay número subiendo en pantalla
  * mientras se juega, y el dato aparece recién al revelar. Es lo que el usuario eligió el
@@ -228,6 +244,7 @@ function comenzar(): void {
   indice = 0;
   puntaje = 0;
   marcador = [];
+  recorridos = [];
   tiempos = [];
   armarPantalla();
   mostrar(zonaPartida);
@@ -268,14 +285,31 @@ async function precargar(): Promise<void> {
 // ---------------------------------------------------------------- la pantalla de juego
 
 let barra!: HTMLElement;
+/**
+ * La aguja de la regla. Mientras suena, marca por dónde va la cinta; quieta, se para en el
+ * tope del audio que tenés. Vive **adentro del tramo** donde está, a un porcentaje de su
+ * ancho: así la ubica el CSS y no una medida en píxeles que envejece cuando la pantalla
+ * cambia de ancho (girar el teléfono, abrir el teclado).
+ */
+let aguja!: HTMLElement;
 let etiquetaPaso!: HTMLElement;
+/** Lo que vale acertar en el paso en curso, al lado del audio que tenés. */
+let valeEl!: HTMLElement;
 let botonEscuchar!: HTMLButtonElement;
+/**
+ * El rótulo del botón de escuchar, aparte del botón. Con el teclado abierto el botón se
+ * achica a un cuadrado del ancho del pulgar y el rótulo se esconde a la vista —no al lector
+ * de pantalla—: el símbolo alcanza, y lo que se gana es la regla entera al lado.
+ */
+let textoEscuchar!: HTMLElement;
 let renglones!: HTMLElement;
 let buscadorInput!: HTMLInputElement;
 let lista!: HTMLElement;
 let botonPrincipal!: HTMLButtonElement;
 let cajaBuscador!: HTMLElement;
 let progreso!: HTMLElement;
+/** Una casilla por tema de la vuelta: cómo salió cada uno de los que ya pasaron, y cuál va. */
+let casillas!: HTMLElement;
 let restantesEl!: HTMLElement;
 let revelacion!: HTMLElement;
 let reproductorCaja!: HTMLElement;
@@ -288,95 +322,118 @@ let sala: HTMLElement | null = null;
  * (`UX-22`, `T-201`): quien jugo a ciegas no recibe diez segundos de sonido que no pidio.
  */
 let escuchoEsteTema = false;
-/**
- * Los discos que se imprimieron o vistieron el fondo en esta sesion (`UX-22` §2.5, `D-21`).
- *
- * **Acumula y no saca.** El pie tiene que nombrar cada tapa que estuvo en pantalla durante
- * la sesion, deduplicada, y no solo la del cuadro actual: era `FIND-46` de `REV-11`, y el
- * defecto estaba en recalcular la lista desde el `data-tapas` estatico en cada tema, con lo
- * cual el disco acreditado en el tema anterior se perdia apenas empezaba el siguiente.
- */
-const tapasDeLaSesion = new Set<string>();
-/** Si ya se sembro el conjunto con las tapas que la pagina traia escritas en build. */
-let tapasSembradas = false;
 
 
 /** Arma la pantalla de partida una sola vez por vuelta. Después solo se actualiza. */
 function armarPantalla(): void {
   zonaPartida.replaceChildren();
 
+  /*
+   * La cabecera dice en qué tema de la vuelta estás, y además **cómo te fue en los que ya
+   * pasaron**: una casilla por tema, llena si la sacaste, tachada si se te escapó. Es lo
+   * que en un fichín es la fila de vidas arriba de la pantalla, y cuesta un renglón que ya
+   * estaba. Va escondida del lector de pantalla: el texto de al lado dice lo mismo.
+   */
   const cab = el('div', 'cabecera');
+  const vuelta = el('div', 'vuelta');
   progreso = el('p', 'paso');
+  casillas = armarCasillas(ronda.length);
+  vuelta.append(progreso, casillas);
   restantesEl = el('p', 'restantes');
   restantesEl.setAttribute('aria-live', 'polite');
-  cab.append(progreso, restantesEl);
+  cab.append(vuelta, restantesEl);
   zonaPartida.append(cab);
 
-  // Los seis renglones de intento. Se dibujan siempre los seis, vacíos: la altura de la
-  // escalera tiene que verse antes de empezar a gastarla.
+  // Los seis renglones de intento. Se dibujan siempre los seis: la altura de la escalera
+  // tiene que verse antes de empezar a gastarla, y cada renglón dice con cuánto audio se
+  // juega ese intento.
   renglones = el('ol', 'intentos');
   zonaPartida.append(renglones);
 
-  // La barra: un tramo por paso, de ancho proporcional a lo que ese paso agrega.
   reproductorCaja = el('div', 'reproductor');
-  barra = el('div', 'barra');
-  const anchos = anchosDeTramos();
-  for (let i = 0; i < ESCALERA.length; i++) {
-    const tramoBarra = el('div', 'barra-tramo');
-    tramoBarra.style.flexGrow = String(anchos[i]);
-    tramoBarra.append(el('div', 'barra-relleno'));
-    barra.append(tramoBarra);
-  }
-  reproductorCaja.append(barra);
+
+  // Lo que tenés y lo que vale, en un renglón. El audio es el dato que el lector de
+  // pantalla anuncia cuando cambia; lo que vale es el incentivo, y va al costado.
+  const cabeza = el('div', 'reproductor-cabeza');
+  etiquetaPaso = el('p', 'barra-etiqueta');
+  etiquetaPaso.setAttribute('aria-live', 'polite');
+  valeEl = el('span', 'reproductor-vale');
+  cabeza.append(etiquetaPaso, valeEl);
+  reproductorCaja.append(cabeza);
 
   /*
-   * La regla graduada de abajo de la barra.
+   * La cinta y su regla (`UX-22`, `T-204`).
    *
-   * Antes la escalera solo se anunciaba de a un escalon por vez ("Tenes 0,1 s de
-   * audio"), asi que **la forma de la escalera no se veia**: para saber que despues de
-   * 0,1 vienen 0,5, 2, 4, 8 y 10 habia que gastarlos. Los seis renglones de intento se
-   * dibujan todos desde el arranque justamente por lo contrario — "la altura de la
-   * escalera tiene que verse antes de empezar a gastarla" — y a la barra, que ES la
-   * escalera, eso no se le habia aplicado.
+   * **La barra de seis cajitas grises con relleno naranja se fue**: era la barra de
+   * progreso por defecto de cualquier reproductor, y en este sitio eso es la estetica que
+   * `.claude/rules/diseno-marca.md` veta por nombre. En su lugar hay un objeto del mismo
+   * idioma que el resto: **una tira de papel impresa como una regla**, que sale del casete.
    *
-   * Cada numero va alineado al borde derecho de su tramo, porque marca **cuanto audio
-   * llevas acumulado si llegaste hasta ahi**. Los dos primeros no llevan numero: se
-   * llevan el 1% y el 4% de la barra (`tramosConEtiqueta`).
+   * - Cada tramo es un escalon de la escalera, separado del siguiente por un corte de
+   *   tinta, con sus medios segundos marcados abajo como las rayitas de una regla.
+   * - Lo que todavia no te dimos esta **tramado**: papel con rayado de imprenta, sin tinta.
+   * - Lo que tenes esta **entintado** con el naranja de Lobo suelto, que se apoya en el
+   *   papel con `multiply`, como tinta de verdad.
+   * - La aguja corre mientras suena y se para en el tope cuando no.
    *
-   * Es decoracion cero: es el eje de un grafico que ya estaba dibujado sin eje.
-   */
-  const escala = el('div', 'barra-escala');
-  escala.setAttribute('aria-hidden', 'true');
-  const conEtiqueta = tramosConEtiqueta();
-  for (let i = 0; i < ESCALERA.length; i++) {
-    const marca = el('span', 'barra-marca');
-    marca.style.flexGrow = String(anchos[i]);
-    if (conEtiqueta[i]) marca.append(el('span', 'barra-valor', ESCALERA[i]!.etiqueta));
-    escala.append(marca);
-  }
-  reproductorCaja.append(escala);
-
-  /*
-   * La cinta gira (`UX-22`, `T-204`). El casete dibujado, con los carretes que giran
-   * mientras suena el fragmento, va en el mismo renglon que "Tenes N s de audio": es la
-   * misma informacion —cuanto audio hay y si esta corriendo— dicha dos veces, una con
-   * palabras y otra con el objeto. Para quien no escucha nada es la unica prueba de que
-   * el sitio si esta sonando (`UX-03`). Con movimiento reducido el carrete no gira y la
-   * palabra de sello de al lado dice lo mismo (`CNT-14` §2.5).
+   * El casete de al lado gira mientras suena: para quien no escucha nada es la prueba de
+   * que el sitio si esta sonando (`UX-03`). Con movimiento reducido el carrete no gira y la
+   * palabra de sello dice lo mismo (`CNT-14` §2.5).
    */
   const fila = el('div', 'cinta-fila');
   fila.append(armarCasete());
-  const textos = el('div', 'cinta-textos');
-  etiquetaPaso = el('p', 'barra-etiqueta');
-  etiquetaPaso.setAttribute('aria-live', 'polite');
+  const pista = el('div', 'barra-pista');
+  barra = el('div', 'barra');
+  // La regla dibuja lo que el renglon de arriba ya dice con palabras.
+  barra.setAttribute('aria-hidden', 'true');
+  const anchos = anchosDeTramos();
+  let previo = 0;
+  for (let i = 0; i < ESCALERA.length; i++) {
+    const p = ESCALERA[i]!;
+    const tramoBarra = el('div', 'barra-tramo');
+    tramoBarra.style.flexGrow = String(anchos[i]);
+    // Las rayitas de la regla: una cada medio segundo. Los dos primeros tramos no llegan
+    // a tener dos, y ahi una rayita suelta seria un defecto de impresion, no una medida.
+    const medios = Math.round((p.segundos - previo) * 2);
+    if (medios >= 2) {
+      tramoBarra.dataset.marcas = String(medios);
+      tramoBarra.style.setProperty('--marcas', String(medios));
+    }
+    tramoBarra.append(el('div', 'barra-relleno'));
+    barra.append(tramoBarra);
+    previo = p.segundos;
+  }
+  aguja = el('span', 'barra-aguja');
+  pista.append(barra);
+
+  /*
+   * Los numeros de la regla: cuanto audio llevas acumulado si llegaste hasta ahi.
+   *
+   * Van los seis (`etiquetaDeRegla`): el CSS le da a cada tramo un ancho minimo que alcanza
+   * para su numero, asi que la forma entera de la escalera se ve antes de gastarla. El del
+   * paso en curso se estampa: es el unico numero de la regla que es un dato y no una promesa.
+   */
+  const escala = el('div', 'barra-escala');
+  escala.setAttribute('aria-hidden', 'true');
+  for (let i = 0; i < ESCALERA.length; i++) {
+    const marca = el('span', 'barra-marca');
+    marca.style.flexGrow = String(anchos[i]);
+    marca.append(el('span', 'barra-valor', etiquetaDeRegla(i)));
+    escala.append(marca);
+  }
+  pista.append(escala);
+
+  fila.append(pista);
+  // SONANDO se estampa sobre el pie del casete: mismo lugar siempre, sin robar renglon.
   palabraCinta = el('span', 'casete-estado', REVELACION.sonando);
   palabraCinta.hidden = true;
-  textos.append(etiquetaPaso, palabraCinta);
-  fila.append(textos);
+  fila.append(palabraCinta);
   reproductorCaja.append(fila);
 
-  botonEscuchar = el('button', 'escuchar', PARTIDA.escuchar);
+  botonEscuchar = el('button', 'escuchar');
   botonEscuchar.type = 'button';
+  textoEscuchar = el('span', 'escuchar-texto', PARTIDA.escuchar);
+  botonEscuchar.append(textoEscuchar);
   botonEscuchar.addEventListener('click', alternarSonido);
   reproductorCaja.append(botonEscuchar);
 
@@ -405,19 +462,32 @@ function armarPantalla(): void {
 function armarBuscador(): HTMLElement {
   const caja = el('div', 'buscador');
 
-  // La lista vive adentro de la fila del buscador y no del bloque entero: se abre para
-  // arriba, pegada a la caja de texto, que es lo único que el teclado del celular no
-  // tapa. Colgada del bloque quedaría a la altura del botón, ocho renglones más abajo.
-  const fila = el('div', 'buscador-fila');
+  /*
+   * La lista cuelga del bloque y no de la fila de la caja, y se abre para arriba.
+   *
+   * Sin teclado se ve igual que antes: `.buscador` es la caja posicionada, y su borde de
+   * arriba es el de la fila, asi que la lista queda pegada a la caja de texto. Lo que cambia
+   * es **con el teclado abierto**: ahi el bloque se desarma en la columna de la pantalla
+   * (`.partida--tecleando`), y la lista pasa a ser un renglon mas de esa columna, entre la
+   * regla y la caja, que se achica sola cuando no entra. Adentro de la fila no podia: una
+   * fila no le puede ceder alto a nadie.
+   */
   lista = el('ul', 'sugerencias');
   lista.hidden = true;
   lista.id = 'sugerencias';
-  fila.append(lista);
+  caja.append(lista);
+
+  const fila = el('div', 'buscador-fila');
   buscadorInput = el('input', 'buscador-caja');
   buscadorInput.type = 'text';
   buscadorInput.autocomplete = 'off';
   buscadorInput.autocapitalize = 'off';
   buscadorInput.spellcheck = false;
+  // Safari corrige solo aunque `spellcheck` este apagado: "Ji ji ji" no es un error.
+  buscadorInput.setAttribute('autocorrect', 'off');
+  // La tecla de Enter del teclado del telefono dice "Ir" y no "Intro": elige el primero de
+  // la lista, y con un tema elegido, arriesga (`alTeclear`).
+  buscadorInput.enterKeyHint = 'go';
   buscadorInput.placeholder = PARTIDA.buscar;
   buscadorInput.setAttribute('aria-label', PARTIDA.buscar);
   buscadorInput.setAttribute('role', 'combobox');
@@ -425,6 +495,7 @@ function armarBuscador(): HTMLElement {
   buscadorInput.setAttribute('aria-controls', 'sugerencias');
   buscadorInput.addEventListener('input', alTipear);
   buscadorInput.addEventListener('keydown', alTeclear);
+  teclado.vigilar(buscadorInput);
   fila.append(buscadorInput);
 
   const borrar = el('button', 'buscador-borrar', '✕︎');
@@ -454,12 +525,22 @@ function armarBuscador(): HTMLElement {
 
 function pintarTodo(): void {
   progreso.textContent = PARTIDA.progreso(indice + 1, ronda.length);
+  pintarVuelta();
   pintarRenglones();
   pintarBarra(0);
   pintarBotonPrincipal();
   revelacion.hidden = true;
   revelacion.replaceChildren();
   botonEscuchar.disabled = false;
+}
+
+/** Las casillas de la cabecera (`sacar-temas.ts`): las que ya pasaron dicen como salieron. */
+function pintarVuelta(): void {
+  pintarCasillas(
+    casillas,
+    marcador.map((p) => p > 0),
+    indice,
+  );
 }
 
 function pintarRenglones(): void {
@@ -470,6 +551,8 @@ function pintarRenglones(): void {
     const li = el('li', 'intento');
     if (!usado) {
       li.classList.add('intento--libre');
+      // El renglon que toca: el proximo intento se juega con el audio que dice su numero.
+      if (i === intentos.length) li.classList.add('intento--actual');
       li.append(el('span', 'intento-texto', ''));
     } else if (fallado === null) {
       li.classList.add('intento--pasado');
@@ -481,14 +564,25 @@ function pintarRenglones(): void {
       li.append(el('span', 'intento-marca', '✕︎'));
       li.append(el('span', 'intento-texto', PARTIDA.fallado(fallado!.titulo)));
     }
+    // El ultimo que gastaste es el unico que queda a la vista con el teclado abierto: es la
+    // respuesta a lo que acabas de hacer, y el resto ya lo leiste.
+    if (usado && i === intentos.length - 1) li.classList.add('intento--ultimo');
+    // Con cuanto audio se jugo (o se va a jugar) este intento. Es lo que ata cada renglon a
+    // la regla de abajo: errar no te saca nada, te da el renglon siguiente.
+    li.append(el('span', 'intento-paso', ESCALERA[i]!.etiqueta));
     renglones.append(li);
   }
 }
 
-/** Pinta la barra: los tramos ya ganados llenos, y el que suena llenándose. */
+/** Pinta la regla: los tramos ya ganados entintados, el que suena entintándose, y la aguja. */
 function pintarBarra(transcurrido: number): void {
   const tramos = [...barra.querySelectorAll<HTMLElement>('.barra-tramo')];
+  const tope = paso(pasoActual).segundos;
+  const t = Math.min(Math.max(transcurrido, 0), tope);
   let previo = 0;
+  // Donde va la aguja: el primer tramo que todavia no se termino de escuchar.
+  let dondeAguja = 0;
+  let fraccionAguja = 0;
   for (let i = 0; i < tramos.length; i++) {
     const p = ESCALERA[i]!;
     const relleno = tramos[i]!.firstElementChild as HTMLElement;
@@ -497,21 +591,47 @@ function pintarBarra(transcurrido: number): void {
     const largo = p.segundos - previo;
     const dentro = Math.min(Math.max(transcurrido - previo, 0), largo);
     relleno.style.width = `${largo > 0 ? (dentro / largo) * 100 : 0}%`;
+    if (abierto && t >= previo) {
+      dondeAguja = i;
+      fraccionAguja = largo > 0 ? Math.min((t - previo) / largo, 1) : 1;
+    }
     previo = p.segundos;
   }
+  // Recien arrancado, la aguja espera al principio de la cinta, no al final del tramo cero.
+  if (t === 0) {
+    dondeAguja = 0;
+    fraccionAguja = 0;
+  }
+  if (aguja.parentElement !== tramos[dondeAguja]) tramos[dondeAguja]!.append(aguja);
+  aguja.style.left = `${fraccionAguja * 100}%`;
+
   // La regla de abajo se tine con la barra: el numero del escalon que ya tenes deja de
-  // ser una promesa y pasa a ser un dato. Es la misma senal, en la misma columna.
+  // ser una promesa y pasa a ser un dato. Es la misma senal, en la misma columna. El del
+  // tope se estampa: es hasta donde llega lo que tenes.
   const marcas = barra.parentElement?.querySelectorAll<HTMLElement>('.barra-marca') ?? [];
   marcas.forEach((marca, i) => {
     marca.classList.toggle('barra-marca--abierta', ESCALERA[i]!.n <= pasoActual);
+    marca.classList.toggle('barra-marca--actual', ESCALERA[i]!.n === pasoActual);
   });
 
   const p = paso(pasoActual);
   etiquetaPaso.textContent = PARTIDA.pasoActual(p.etiqueta);
+  valeEl.textContent = PARTIDA.vale(p.puntos);
 }
 
 function pintarBotonPrincipal(): void {
-  botonPrincipal.textContent = elegido ? PARTIDA.arriesgar : PARTIDA.pasar;
+  /*
+   * Con un tema elegido, "Arriesgá". Sin nada elegido, **pasar dice cuánto audio compra**:
+   * "Pasá (+0,4 s)". Es el mismo boton que el juego de referencia escribe como "Skip
+   * (+1s)", y le saca al que llega sin idea la duda de si pasar es perder. En el ultimo
+   * intento ya no hay audio que comprar: el boton dice lo que va a pasar, que es ver cual era.
+   */
+  if (elegido) {
+    botonPrincipal.textContent = PARTIDA.arriesgar;
+  } else {
+    const extra = extraAlPasar(pasoActual);
+    botonPrincipal.textContent = extra ? PARTIDA.pasarSuma(extra) : PARTIDA.rendirse;
+  }
   botonPrincipal.classList.toggle('arriesgar--listo', elegido !== null);
   botonPrincipal.disabled = false;
 
@@ -521,6 +641,22 @@ function pintarBotonPrincipal(): void {
   restantesEl.textContent = restantes === 1 ? PARTIDA.ultimoIntento : PARTIDA.intentosRestantes(restantes);
   restantesEl.classList.toggle('restantes--ultimo', restantes === 1);
 }
+
+// ---------------------------------------------------------------- el teclado
+
+/*
+ * Con el teclado abierto, la partida se arma arriba del teclado (`sacar-temas.ts`, que
+ * explica el porque). Lo propio de este juego esta en `juego.css`: la columna lleva la
+ * regla compacta con su tecla, el ultimo intento, la lista, la caja y el boton.
+ *
+ * Al salir, la partida recupera su largo y la hoja puede haber quedado en cualquier lado:
+ * lo que estaba usando la persona tiene que seguir a la vista.
+ */
+const teclado = modoTeclado(zonaPartida, {
+  alSalir: () => {
+    if (!cajaBuscador.hidden) cajaBuscador.scrollIntoView({ block: 'nearest' });
+  },
+});
 
 // ---------------------------------------------------------------- el sonido
 
@@ -597,7 +733,7 @@ function sonar(segundos: number): void {
   if (!tema) return;
   sonando = true;
   escuchoEsteTema = true;
-  botonEscuchar.textContent = PARTIDA.parar;
+  textoEscuchar.textContent = PARTIDA.parar;
   botonEscuchar.classList.add('escuchar--sonando');
   reproductorCaja.classList.add('reproductor--sonando');
   palabraCinta.hidden = false;
@@ -609,7 +745,7 @@ function sonar(segundos: number): void {
 
 function frenar(): void {
   sonando = false;
-  botonEscuchar.textContent = PARTIDA.escuchar;
+  textoEscuchar.textContent = PARTIDA.escuchar;
   botonEscuchar.classList.remove('escuchar--sonando');
   reproductorCaja.classList.remove('reproductor--sonando');
   palabraCinta.hidden = true;
@@ -630,6 +766,9 @@ function alTipear(): void {
 
 function pintarLista(): void {
   lista.replaceChildren();
+  // La lista es la misma caja de una tecla a la otra: sin esto, si la anterior quedo
+  // desplazada, la nueva arranca a mitad de camino y la mejor coincidencia no se ve.
+  lista.scrollTop = 0;
   const consulta = buscadorInput.value.trim();
 
   if (!consulta) {
@@ -650,6 +789,13 @@ function pintarLista(): void {
     b.setAttribute('role', 'option');
     b.setAttribute('aria-selected', String(i === marcada));
     if (i === marcada) b.classList.add('sugerencia--marcada');
+    // Lo que ya arriesgaste en este tema sigue en la lista —sacarlo haria saltar los
+    // renglones mientras escribis— pero no se puede volver a elegir, y dice por que.
+    const probada = yaProbado(s.tema);
+    if (probada) {
+      b.classList.add('sugerencia--probada');
+      b.disabled = true;
+    }
 
     const titulo = el('span', 'sugerencia-titulo');
     // El tramo que coincide va resaltado, y se arma con nodos de texto: nunca innerHTML.
@@ -661,7 +807,9 @@ function pintarLista(): void {
       titulo.textContent = s.tema.titulo;
     }
     b.append(titulo);
-    b.append(el('span', 'sugerencia-disco', s.tema.discoTitulo));
+    b.append(
+      el('span', 'sugerencia-disco', probada ? `${s.tema.discoTitulo} · ${PARTIDA.yaProbado}` : s.tema.discoTitulo),
+    );
 
     b.addEventListener('click', () => elegirSugerencia(i));
     li.append(b);
@@ -684,15 +832,27 @@ function cerrarLista(): void {
   buscadorInput.setAttribute('aria-expanded', 'false');
 }
 
+/** Si este tema ya se arriesgo (y se erro) en el tema en curso. */
+function yaProbado(tema: TemaBuscable): boolean {
+  return intentos.some((t) => t !== null && t.slug === tema.slug);
+}
+
+/** La primera sugerencia que se puede elegir: lo que el Enter toma cuando no marcaste nada. */
+function primeraElegible(): number {
+  return sugerencias.findIndex((s) => !yaProbado(s.tema));
+}
+
 function elegirSugerencia(i: number): void {
   const s = sugerencias[i];
-  if (!s) return;
+  if (!s || yaProbado(s.tema)) return;
   elegido = s.tema as Tema;
   buscadorInput.value = s.tema.titulo;
   cerrarLista();
   pintarBotonPrincipal();
-  // El foco vuelve al botón: el pulgar ya está abajo y lo siguiente es arriesgar.
-  botonPrincipal.focus();
+  // Sin teclado en pantalla, el foco va al boton: el pulgar ya esta abajo y lo siguiente
+  // es arriesgar. Con el teclado abierto se queda en la caja —mover el foco lo cerraria y
+  // la pantalla saltaria— y el boton ya esta a la vista, justo arriba del teclado.
+  if (!teclado.activo) botonPrincipal.focus();
 }
 
 function alTeclear(ev: KeyboardEvent): void {
@@ -709,11 +869,19 @@ function alTeclear(ev: KeyboardEvent): void {
   }
   if (ev.key === 'Enter') {
     ev.preventDefault();
+    /*
+     * El Enter hace lo que haria el pulgar, en dos tiempos y sin adivinar de mas: con la
+     * lista abierta **elige** (la marcada, o si no la primera que se puede elegir, que es la
+     * que mejor coincide), y con un tema ya elegido **arriesga**. Nunca elige y arriesga
+     * de un saque: un intento es caro, y se gasta mirando lo que dice la caja.
+     *
+     * Antes solo elegia si habia una sugerencia sola. En el telefono eso dejaba la tecla
+     * "Ir" muerta casi siempre, y es la tecla que el pulgar tiene mas a mano.
+     */
     if (marcada >= 0) {
       elegirSugerencia(marcada);
-    } else if (sugerencias.length === 1) {
-      // Una sola sugerencia y apretás Enter: no hay ambigüedad que resolver.
-      elegirSugerencia(0);
+    } else if (sugerencias.length > 0 && primeraElegible() >= 0) {
+      elegirSugerencia(primeraElegible());
     } else if (elegido) {
       arriesgar();
     }
@@ -777,12 +945,18 @@ function cerrarTema(acerto: boolean): void {
   const ganados = acerto ? puntos(pasoActual) : 0;
   puntaje += ganados;
   marcador.push(acerto ? pasoActual : 0);
+  recorridos.push(intentos.map((t) => (t === null ? 'paso' : 'fallo')));
+  pintarVuelta();
 
   // El buscador se esconde entero, no se deshabilita: una caja de texto apagada abajo
   // del resultado es un control muerto ocupando la zona del pulgar.
   cajaBuscador.hidden = true;
   buscadorInput.disabled = true;
   cerrarLista();
+  // Y si el teclado estaba abierto, se cierra aca: el premio se mira con la pantalla
+  // entera. Se llama a mano porque una caja que desaparece con el foco adentro no siempre
+  // avisa que lo perdio.
+  teclado.salir();
 
   /*
    * Los renglones de intento se esconden, y es el mismo argumento del buscador aplicado a
@@ -841,6 +1015,8 @@ function cerrarTema(acerto: boolean): void {
   if (acerto) {
     ponerLaSala(tema);
     if (vaASonar) sonar(DURACION_FRAGMENTO_SEG);
+    // Y el telefono lo siente: un toque corto, solo en el acierto (`sacar-temas.ts`).
+    vibrarAcierto();
   }
 }
 
@@ -861,10 +1037,29 @@ function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
   revelacion.className = `revelacion feedback ${acerto ? 'ok' : 'no'}${disco ? ` ${disco}` : ''}`;
   revelacion.hidden = false;
 
-  revelacion.append(el('p', 'micro', acerto ? REVELACION.acerto : REVELACION.fallo));
+  /*
+   * El grito, estampado (`D-33`). Al acertar, "¡La sacaste!" es un sello de goma que cae
+   * sobre la hoja, y al lado otro con lo que sumaste. Son los unicos dos sellos del sitio
+   * que se mueven, y se mueven una vez: bajan y apoyan, sin rebote. Al errar la linea queda
+   * quieta y en su tinta: no hay nada que festejar, y el sitio no finge que si.
+   */
+  const cabeza = el('div', 'revelacion-cabeza');
+  cabeza.append(el('p', 'micro', acerto ? REVELACION.acerto : REVELACION.fallo));
+  if (acerto) {
+    const suma = el('span', 'revelacion-suma', REVELACION.suma(ganados));
+    // El numero ya lo lee entero el renglon de puntos de mas abajo.
+    suma.setAttribute('aria-hidden', 'true');
+    cabeza.append(suma);
+  }
+  revelacion.append(cabeza);
   // La estampa va ANTES del titulo: es el premio, y el titulo es su pie.
   const estampa = armarEstampa(tema, acerto);
-  if (estampa) revelacion.append(estampa);
+  if (estampa) {
+    revelacion.append(estampa);
+    // La tapa se ve tambien cuando se escapa —en una tinta sola—, y lo que se ve se
+    // acredita (`D-21`, condicion 1). Antes solo la acreditaba la sala, que es del acierto.
+    acreditarTapas([tema.discoTitulo]);
+  }
   revelacion.append(el('h2', 'revelacion-titulo', `${REVELACION.eraEl} ${tema.titulo}`));
   revelacion.append(el('p', 'revelacion-ficha', REVELACION.ficha(tema.discoTitulo, tema.anio, tema.pista)));
 
@@ -878,7 +1073,9 @@ function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
   const reloj = duracion(tiempos[tiempos.length - 1] ?? 0);
   if (acerto) {
     const audio = paso(marcador[marcador.length - 1]!).etiqueta;
-    revelacion.append(el('p', 'revelacion-puntos', REVELACION.puntos(ganados)));
+    // A la vista, lo que sumaste ya esta estampado arriba (`revelacion-suma`); este renglon
+    // queda para el lector de pantalla, que el sello no le dice nada.
+    revelacion.append(el('p', 'revelacion-puntos solo-lector', REVELACION.puntos(ganados)));
     revelacion.append(el('p', 'revelacion-costo', REVELACION.costo(audio, reloj)));
   } else {
     revelacion.append(el('p', 'revelacion-costo', REVELACION.tardaste(reloj)));
@@ -939,100 +1136,6 @@ function pintarRevelacion(tema: Tema, acerto: boolean, ganados: number): void {
 
 
 /**
- * La estampa: la tapa que sacaste, impresa por pasadas sobre papel (`UX-22`, `T-200`).
- *
- * Tres `<img>` con alfa —las separaciones de `scripts/generar-pasadas.mjs`, tenidas con
- * los colores medidos de esa tapa (`RES-37`)— y la foto que se fija encima. El orden es el
- * de una serigrafia (`RES-54`): clara, media, clave. Al fallar, la clave sola: te la
- * dejamos en una tinta. Todo el movimiento lo pone `juego.css` desde tokens; aca solo se
- * arma el objeto.
- *
- * Es un objeto: se da vuelta (`T-203`). La trasera real no se baja hasta que alguien la
- * pide con el dedo. Y lleva su sello de credito, que es la condicion 1 de `D-21`.
- *
- * Devuelve `null` si el disco no tiene estampa —no es uno de los diez—: la revelacion
- * queda como era, sin hueco.
- */
-function armarEstampa(tema: Tema, acerto: boolean): HTMLElement | null {
-  const e = estampaDe(tema.disco);
-  if (!e) return null;
-
-  // Sin modificador por fallo: `estampa--clave` se creaba aca y **ninguna hoja la
-  // pintaba** (lo encontro la red derivada de `estilos.test.ts`). Lo que de verdad
-  // distingue fallar de acertar son las capas de abajo: con acierto entran las tres
-  // tintas y la foto, sin acierto entra sola la clave. Darle tinta propia al fallo es
-  // una decision que empieza en el lienzo (`.claude/rules/diseno-marca.md`), no aca.
-  const figura = el('figure', 'estampa');
-
-  const papel = el('span', 'estampa-papel');
-  const capas: Array<[nombre: string, ruta: string]> = acerto
-    ? [['clara', e.pasadas[0]], ['media', e.pasadas[1]], ['clave', e.pasadas[2]]]
-    : [['clave', e.pasadas[2]]];
-  for (const [nombre, ruta] of capas) {
-    const tinta = el('img', `pasada pasada--${nombre}`);
-    tinta.src = ruta;
-    tinta.decoding = 'async';
-    // Las tintas son partes de una sola imagen: la que habla es la foto, o la clave sola.
-    tinta.alt = !acerto && nombre === 'clave' ? REVELACION.altTapaClave(tema.discoTitulo) : '';
-    papel.append(tinta);
-  }
-  if (acerto) {
-    const foto = el('img', 'estampa-foto');
-    foto.src = e.ficha;
-    foto.decoding = 'async';
-    foto.alt = REVELACION.altTapa(tema.discoTitulo);
-    papel.append(foto);
-  }
-
-  const frente = el('span', 'estampa-frente');
-  frente.append(papel);
-
-  // El dorso nace con el sello de la pista y SIN la imagen: la trasera no se baja hasta
-  // que alguien la pide con el dedo (`ADR-05.6`). Quien nunca da vuelta la tapa no baja
-  // un byte de las diez traseras.
-  const dorso = el('span', 'estampa-dorso');
-  dorso.append(el('span', 'sello-pista', REVELACION.pista(tema.pista)));
-
-  // Un boton con `aria-pressed` (`UX-22` §5): apretado es "mostrando el dorso". El nombre
-  // accesible y el rotulo a la vista dicen lo mismo, y los dos salen del copy.
-  const hoja = el('button', 'estampa-hoja');
-  hoja.type = 'button';
-  hoja.dataset.cara = 'frente';
-  hoja.setAttribute('aria-pressed', 'false');
-  hoja.setAttribute('aria-label', REVELACION.girar);
-  hoja.append(frente, dorso);
-  figura.append(hoja);
-  const girar = el('span', 'estampa-girar', REVELACION.girar);
-  girar.setAttribute('aria-hidden', 'true');
-  figura.append(girar);
-  hoja.addEventListener('click', () => darVuelta(hoja, dorso, girar, e.trasera, tema.discoTitulo));
-
-  // El pie nombra el disco en su letra. El credito NO va aca: lo lleva el pie de la
-  // pantalla, que se recalcula con cada disco que se imprime (`UX-22` §2.5, `D-21`).
-  const pie = el('figcaption', 'estampa-pie');
-  pie.append(el('span', `estampa-disco${e.letra ? ` estampa-disco--${e.letra}` : ''}`, e.nombreEstampado));
-  figura.append(pie);
-
-  return figura;
-}
-
-/** Da vuelta la estampa. La trasera se crea, y se baja, recien la primera vez que alguien la pide. */
-function darVuelta(hoja: HTMLButtonElement, dorso: HTMLElement, girar: HTMLElement, ruta: string, disco: string): void {
-  const alDorso = hoja.dataset.cara !== 'dorso';
-  if (alDorso && !dorso.querySelector('.estampa-trasera')) {
-    const trasera = el('img', 'estampa-trasera');
-    trasera.alt = REVELACION.altTrasera(disco);
-    trasera.decoding = 'async';
-    trasera.src = ruta;
-    dorso.prepend(trasera);
-  }
-  hoja.dataset.cara = alDorso ? 'dorso' : 'frente';
-  hoja.setAttribute('aria-pressed', String(alDorso));
-  hoja.setAttribute('aria-label', alDorso ? REVELACION.volverATapa : REVELACION.girar);
-  girar.textContent = alDorso ? REVELACION.volverATapa : REVELACION.girar;
-}
-
-/**
  * La sala se vuelve el disco (`UX-22`, `T-202`).
  *
  * Al acertar, el fondo velado de la pantalla pasa a ser la ficha de la tapa que sacaste.
@@ -1058,69 +1161,15 @@ function ponerLaSala(tema: Tema): void {
   // pone la regla de `juego.css`, donde `estilos.test.ts` lo puede ver (`ADR-05.7`).
   sala.style.setProperty('--tapa-de-la-sala', `url("${e.ficha}")`);
   sala.classList.add('sala-disco--puesta');
-  creditoDePantalla([tema.discoTitulo]);
+  acreditarTapas([tema.discoTitulo]);
 }
 
 function sacarLaSala(): void {
   if (!sala) return;
   sala.classList.remove('sala-disco--puesta');
   sala.style.removeProperty('--tapa-de-la-sala');
-  creditoDePantalla([]);
+  acreditarTapas([]);
 }
-
-/**
- * El credito del pie nombra las tapas que se ven en la pantalla (`D-21`, condicion 1).
- *
- * Arranca con las que la pagina trae escritas y le suma las que la isla pone en tiempo de
- * ejecucion: la sala que se vuelve el disco (`T-202`) y las estampas chicas del setlist
- * (`T-205`). Una sola vez por disco, aunque aparezca en los tres lugares.
- */
-function creditoDePantalla(discos: readonly string[]): void {
-  // Las paginas con `Base.astro` lo llaman `.credito-pantalla`; esta, que arma su pie a
-  // mano, `.credito-tapas`. Los dos llevan `data-tapas` con la lista con la que arrancan.
-  const credito = document.querySelector<HTMLElement>('.credito-tapas, .credito-pantalla');
-  if (!credito) return;
-  if (!tapasSembradas) {
-    try {
-      for (const t of JSON.parse(credito.dataset.tapas ?? '[]') as string[]) tapasDeLaSesion.add(t);
-    } catch {
-      // Un `data-tapas` roto no puede dejar la pantalla sin credito: se sigue con lo que venga.
-    }
-    tapasSembradas = true;
-  }
-  for (const d of discos) tapasDeLaSesion.add(d);
-  if (tapasDeLaSesion.size > 0) credito.textContent = PORTAL.creditoTapas([...tapasDeLaSesion]);
-}
-
-
-/**
- * La estampa chica del setlist (`UX-22` §10, `T-205`): la tirada como afiche.
- *
- * Cada tema de la vuelta lleva su tapa del tamano de un sello — a color si lo sacaste, en
- * la tinta de la clave si no, que es la misma diferencia que hace la revelacion. Son los
- * archivos que la revelacion ya bajo, a 32 px: cero archivos nuevos.
- *
- * **No se anima**, y es a proposito: un afiche se pega en la pared, no se imprime delante
- * tuyo. El grito es el acierto (`D-33`), y ya paso.
- *
- * **El simbolo ✔/✕ se queda.** Una tapa a color no le sirve a quien no distingue tintas, y
- * la fila no puede comunicar el resultado solo con color (`US-02`). La estampa va escondida
- * del lector de pantalla: el simbolo y el pie ya dicen todo lo que dice.
- */
-function armarEstampita(tema: Tema, acerto: boolean): HTMLElement | null {
-  const e = estampaDe(tema.disco);
-  if (!e) return null;
-  const caja = el('span', 'estampita');
-  caja.setAttribute('aria-hidden', 'true');
-  const img = el('img', acerto ? 'estampita-foto' : 'estampita-tinta');
-  img.src = acerto ? e.ficha : e.pasadas[2];
-  img.alt = '';
-  img.loading = 'lazy';
-  img.decoding = 'async';
-  caja.append(img);
-  return caja;
-}
-
 
 function avanzar(): void {
   /*
@@ -1200,7 +1249,11 @@ function pintarResultado(): void {
   const reloj = el('div', 'cifra');
   reloj.append(el('p', 'cifra-rotulo', RESULTADO.rotuloTiempo));
   reloj.append(el('p', 'cifra-numero', duracion(sumarTiempos(tiempos))));
-  reloj.append(el('p', 'cifra-pie', RESULTADO.puntos(puntaje, maximo)));
+  // Abajo del tiempo, las dos cuentas que se dicen en la previa: cuantos sacaste y cuanto
+  // sumaste. El punto medio las separa sin sumarlas, igual que en la revelacion.
+  reloj.append(
+    el('p', 'cifra-pie', `${RESULTADO.sacaste(aciertos, ronda.length)} · ${RESULTADO.puntos(puntaje, maximo)}`),
+  );
   zonaResultado.append(reloj);
 
   // La linea que canta del afiche (`CNT-14` §2.6): la vuelta se pega en la pared. La que
@@ -1213,11 +1266,12 @@ function pintarResultado(): void {
     const disco = claseDisco(tema.disco);
     const li = el('li', `resumen-fila resumen-fila--${p > 0 ? 'ok' : 'no'}${disco ? ` ${disco}` : ''}`);
     li.append(el('span', 'resumen-marca', p > 0 ? '✔︎' : '✕︎'));
-    const estampita = armarEstampita(tema, p > 0);
+    const estampita = armarEstampita(tema.disco, p > 0);
     if (estampita) li.append(estampita);
     const cuerpo = el('span', 'resumen-cuerpo');
     cuerpo.append(el('span', 'resumen-tema', tema.titulo));
     cuerpo.append(el('span', 'resumen-pie', pieDeTema(i)));
+    cuerpo.append(armarEscalerita(recorridos[i] ?? [], p > 0, INTENTOS));
     li.append(cuerpo);
     detalle.append(li);
   });
@@ -1227,9 +1281,9 @@ function pintarResultado(): void {
    * El pie nombra TODAS las tapas que se ven en esta pantalla (`D-21`, condicion 1,
    * `UX-22` §10): las que la pagina traia, la que quedo de sala, y ahora las cuatro
    * estampas chicas del setlist. Una sola vez por disco aunque aparezca en los tres
-   * lugares — de eso se encarga `creditoDePantalla`.
+   * lugares — de eso se encarga `acreditarTapas` (`sacar-temas.ts`).
    */
-  creditoDePantalla(ronda.map((t) => t.discoTitulo));
+  acreditarTapas(ronda.map((t) => t.discoTitulo));
 
 
   // `con-tilde` no es un apaño: es la deuda declarada en .claude/rules/diseno-marca.md.

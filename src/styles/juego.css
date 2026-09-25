@@ -693,44 +693,136 @@
   font-weight: 700;
 }
 
+/* La cabecera de los dos juegos de sacar temas va un punto mas chica que la del quiz: con
+   las casillas de la vuelta, a 360 px "Te quedan 6 intentos" bajaba a un segundo renglon y
+   se comia 35 px de las pantallas mas apretadas del sitio. */
+:is(.juego-tema, .juego-por-la-letra) .cabecera {
+  font-size: 0.74rem;
+  letter-spacing: 0.05em;
+}
+
+/* A 360 px, con las cinco casillas de "sacalo por la letra", la cabecera volvia a partirse
+   en dos renglones: se aprieta el tracking y la casilla, nunca la letra. */
+@media (max-width: 23.75rem) {
+  :is(.juego-tema, .juego-por-la-letra) .cabecera {
+    letter-spacing: 0.02em;
+  }
+
+  :is(.juego-tema, .juego-por-la-letra) .vuelta-casilla {
+    width: 0.65rem;
+    height: 0.65rem;
+  }
+}
+
+/* ---- La vuelta: "Tema 2 de 4" y una casilla por tema ----
+   La fila de vidas de un fichin, dicha en sellos. Las cuatro formas se distinguen sin
+   color (`UX-01`): punteada la que falta, gruesa la que va, llena la que sacaste, tachada
+   la que se te escapo. */
+
+.vuelta {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+}
+
+.vuelta-casillas {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vuelta-casilla {
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 2px dashed var(--borde);
+  border-radius: 2px;
+  rotate: -4deg;
+}
+
+.vuelta-casilla--actual {
+  border: var(--linea) solid var(--tinte-tecla, var(--cat-mitologia));
+}
+
+.vuelta-casilla--ok {
+  border: 2px solid var(--acento-3);
+  background: var(--acento-3);
+}
+
+/* La tachada: una raya de tinta de esquina a esquina, no un color de relleno. */
+.vuelta-casilla--no {
+  border: 2px solid var(--acento-4);
+  background: linear-gradient(
+    to top right,
+    transparent calc(50% - 1px),
+    var(--acento-4) calc(50% - 1px) calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
+}
+
 /* ---- Los seis renglones de intento ----
    Papel con renglones, que es idioma del sitio: cada intento es una linea que se
    escribe. Los seis se dibujan desde el arranque — la altura de la escalera tiene que
-   verse antes de empezar a gastarla. */
+   verse antes de empezar a gastarla.
+
+   **Y cada renglon lleva a la derecha el audio con el que se juega.** Es lo que ata los
+   renglones a la regla de abajo y cuenta la mecanica sin explicarla: errar no te saca
+   nada, te da el renglon siguiente, que trae mas cinta. */
 
 .intentos {
-  margin: 0 0 var(--espacio-3);
+  margin: 0 0 var(--espacio-2);
   padding: 0;
   list-style: none;
+  counter-reset: intento;
 }
 
 .intento {
   display: flex;
   align-items: center;
   gap: var(--espacio-1);
-  min-height: 2rem;
-  padding: 0.15rem 0.4rem;
+  min-height: 1.9rem;
+  padding: 0.1rem 0.25rem;
   border-bottom: 2px solid var(--borde);
   font-size: 0.95rem;
+  counter-increment: intento;
+}
+
+/* El renglon vacio lleva su numero donde el escrito lleva la marca: la columna de la
+   izquierda nunca queda hueca, y se lee como un formulario a completar. */
+.intento--libre::before {
+  content: counter(intento);
+  flex: none;
+  width: 1.25rem;
+  text-align: center;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  color: var(--texto-tenue);
+}
+
+.intento--actual::before {
+  color: var(--cat-mitologia);
 }
 
 /*
- * Un renglon todavia sin escribir es una RAYA, no una fila.
+ * Un renglon todavia sin escribir es una RAYA con su numero, no una fila.
  *
  * Vacio no es apagado: el renglon se ve, y por eso se sabe cuantos quedan. Pero medido a
- * 375x812 antes de tocar nada, los seis a alto completo se llevaban **192 px** — la
- * cuarta parte de la pantalla — para no decir absolutamente nada, y empujaban la
- * revelacion abajo del pliegue.
- *
- * Y ademas eran la tercera vez que se contaba lo mismo: la cabecera ya dice "te quedan 4
- * intentos" y la barra ya dibuja los seis escalones. Achicarlos no saca informacion de la
- * pantalla; saca una repeticion que costaba una cuarta parte del celular.
+ * 375x812, seis a alto completo se llevaban la cuarta parte de la pantalla para no decir
+ * nada. A este alto entra el numero del escalon y nada mas, que es lo unico que un
+ * renglon vacio tiene para decir.
  */
 .intento--libre {
-  min-height: 0;
-  height: 0.6rem;
+  min-height: 1.35rem;
   padding-block: 0;
   border-bottom-style: dashed;
+}
+
+/* El que toca: el borde se afirma en la tinta de la pantalla y su numero se enciende. Es
+   el audio con el que vas a arriesgar ahora. */
+.intento--actual {
+  border-bottom-style: solid;
+  border-bottom-color: var(--cat-mitologia);
 }
 
 /* Ningun estado se comunica solo con color: la marca es un simbolo (UX-01). */
@@ -751,112 +843,60 @@
 }
 
 .intento-texto {
+  flex: 1;
+  min-width: 0;
   overflow-wrap: anywhere;
 }
 
-/* ---- El reproductor: la barra de seis tramos y el boton grande ---- */
+/* El escalon del renglon. Tenue y chico: es la ficha del renglon, no el renglon. */
+.intento-paso {
+  flex: none;
+  margin-left: auto;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  color: var(--texto-tenue);
+}
+
+.intento--actual .intento-paso {
+  color: var(--cat-mitologia);
+}
+
+/* ==================================================================
+   El reproductor: la cinta, su regla y la tecla de escuchar
+   ==================================================================
+
+   **La barra de seis cajitas grises con relleno naranja se fue.** Era la barra de progreso
+   por defecto de cualquier reproductor de la web, con sus esquinas parejas y su borde
+   teñido de un segundo color: la estetica que `.claude/rules/diseno-marca.md` veta por
+   nombre, en el centro exacto del juego.
+
+   En su lugar hay un objeto del idioma del sitio: **una tira de papel impresa como una
+   regla, que sale del casete.** Tres estados, y los tres se distinguen por forma y no solo
+   por tinta (`UX-01`):
+
+   - lo que todavia no te dimos esta **tramado** — papel con rayado de imprenta, sin tinta;
+   - lo que te dimos y no escuchaste es **papel limpio**, listo para la tinta;
+   - lo que escuchaste esta **entintado** con el naranja de Lobo suelto, apoyado en el papel
+     con `multiply` como tinta de verdad — las rayitas de la regla se ven a traves.
+
+   Y una aguja que corre mientras suena y se para en el tope cuando no. */
 
 .reproductor {
   margin-bottom: var(--espacio-2);
 }
 
-.barra {
+/* Lo que tenes y lo que vale, en un renglon. */
+.reproductor-cabeza {
   display: flex;
-  gap: 2px;
-  width: 100%;
-  height: 1.75rem;
-}
-
-/*
- * Un tramo por paso. El ancho lo escribe el JavaScript con `flex-grow`, proporcional a
- * lo que ESE paso agrega sobre el anterior (`anchosDeTramos()`): el ultimo tramo se
- * come casi la mitad de la barra porque de 8 a 15 segundos hay siete segundos nuevos.
- *
- * `min-width` existe porque el primer tramo es el 0,67% de la barra — medio pixel en un
- * celular. Es un ajuste de dibujo, no de aritmetica: el audio dura lo que dice la
- * escalera, aunque el tramo se vea un poco mas ancho de lo que le tocaria.
- */
-.barra-tramo {
-  position: relative;
-  flex-basis: 0;
-  flex-shrink: 1;
-  min-width: 8px;
-  overflow: hidden;
-  background: var(--fondo);
-  border: 2px solid var(--borde);
-  border-radius: 0;
-}
-
-.barra-tramo:first-child {
-  border-top-left-radius: 3px;
-  border-bottom-left-radius: 3px;
-}
-
-.barra-tramo:last-child {
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-}
-
-/* Desbloqueado: el borde se tine. Cerrado sigue siendo visible — el jugador tiene que
-   ver cuanto audio le queda por delante. */
-.barra-tramo--abierto {
-  border-color: var(--cat-mitologia-apoyo);
-}
-
-.barra-relleno {
-  position: absolute;
-  inset: 0;
-  width: 0;
-  background: var(--cat-mitologia);
-}
-
-/* ---- La regla graduada de abajo de la barra ----
- *
- * La escalera se anunciaba de a un escalon por vez ("Tenes 0,1 s de audio"), asi que **su
- * forma no se veia**: para saber que despues de 0,1 vienen 0,5, 2, 4, 8 y 10 habia que
- * gastarlos. Los seis renglones de intento se dibujan todos desde el arranque justamente
- * por lo contrario — "la altura de la escalera tiene que verse antes de empezar a
- * gastarla" — y a la barra, que ES la escalera, eso no se le habia aplicado.
- *
- * Cada numero va pegado al borde derecho de su tramo porque marca **cuanto audio llevas
- * acumulado si llegaste hasta ahi**: es el eje de un grafico que ya estaba dibujado sin
- * eje. Los cortes entre tramos hacen de marcas de la regla; no hace falta dibujar
- * ninguna raya mas.
- *
- * Los dos primeros tramos no llevan numero: se llevan el 1% y el 4% de la barra, tres
- * pixeles y trece en un celular. Quien lo decide es `tramosConEtiqueta()`, que lo calcula
- * de los mismos anchos y esta testeado — no una consulta de contenedor en CSS. */
-
-.barra-escala {
-  display: flex;
-  gap: 2px;
-  margin-top: 5px;
-}
-
-.barra-marca {
-  display: flex;
-  justify-content: flex-end;
-  flex-basis: 0;
-  flex-shrink: 1;
-  min-width: 8px;
-}
-
-.barra-valor {
-  font-family: var(--fuente-rotulada);
-  font-size: 0.62rem;
-  letter-spacing: 0.02em;
-  color: var(--texto-tenue);
-  white-space: nowrap;
-}
-
-/* El numero del escalon que ya tenes deja de ser una promesa y pasa a ser un dato: la
-   misma senal que el borde de su tramo, en la misma columna. */
-.barra-marca--abierta .barra-valor {
-  color: var(--cat-mitologia);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-1);
+  margin-bottom: var(--espacio-1);
 }
 
 .barra-etiqueta {
-  margin: var(--espacio-2) 0 0;
+  margin: 0;
   font-family: var(--fuente-rotulada);
   font-size: 0.85rem;
   letter-spacing: 0.06em;
@@ -864,24 +904,217 @@
   color: var(--cat-mitologia);
 }
 
+/* Lo que vale acertar ahora: el precio pegado en la chapa, un sello chico y torcido. */
+.reproductor-vale {
+  flex: none;
+  padding: 0.05rem 0.45rem;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto);
+  rotate: 1.5deg;
+}
+
+/* La fila: el casete a la izquierda y la regla que sale de el. */
+.cinta-fila {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espacio-1);
+}
+
+.barra-pista {
+  flex: 1;
+  min-width: 0;
+}
+
+.barra {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 2.5rem;
+  background: var(--papel);
+  border: 2px solid var(--papel-borde);
+  border-radius: 2px;
+  /* Papel sobre papel: sombra dura en el apoyo de Lobo suelto, nunca una difusa. */
+  box-shadow: 3px 3px 0 var(--cat-mitologia-apoyo);
+  /* Pegada a mano: apenas torcida, como todo lo que se pega en este sitio. */
+  rotate: -0.6deg;
+  /* El `multiply` de la tinta se detiene en el papel y no se mezcla con la tapa velada de
+     atras (mismo motivo que `.estampa-papel`, `FIND-48`). */
+  isolation: isolate;
+}
+
 /*
- * El boton de escuchar. El pedido fue "facil y rapido": ancho completo, alto de sobra
- * para el pulgar y en el mismo lugar de la pantalla siempre. Lo rapido no lo da el
- * boton sino la precarga (ver `audio.ts`), pero lo facil se dibuja aca.
+ * Un tramo por paso. El ancho lo escribe el JavaScript con `flex-grow`, proporcional a
+ * lo que ESE paso agrega sobre el anterior (`anchosDeTramos()`).
+ *
+ * `min-width` existe porque el primer tramo es el 1% de la barra — tres pixeles en un
+ * celular — y ahora alcanza ademas para el numero que lleva abajo (`etiquetaDeRegla`). Es
+ * un ajuste de dibujo, no de aritmetica: el audio dura lo que dice la escalera, aunque el
+ * arranque de la regla se vea un poco mas ancho de lo que le tocaria.
+ */
+.barra-tramo {
+  --rayado: repeating-linear-gradient(-45deg, var(--papel-borde) 0 1px, transparent 1px 5px);
+  position: relative;
+  flex-basis: 0;
+  flex-shrink: 1;
+  min-width: 1.5rem;
+  background: var(--rayado);
+}
+
+/* El corte entre escalones: una linea de tinta, como las divisiones grandes de una regla. */
+.barra-tramo:not(:last-child) {
+  border-right: 2px solid var(--fondo);
+}
+
+/* Las rayitas de la regla, una cada medio segundo (`data-marcas` las cuenta la isla). */
+.barra-tramo[data-marcas] {
+  background:
+    linear-gradient(to right, var(--papel-tenue) 1.5px, transparent 1.5px) 0 100% / calc(100% / var(--marcas)) 34%
+      repeat-x,
+    var(--rayado);
+}
+
+/* Abierto: se va el tramado y queda el papel limpio, con sus rayitas. */
+.barra-tramo--abierto {
+  background: none;
+}
+
+.barra-tramo--abierto[data-marcas] {
+  background: linear-gradient(to right, var(--papel-tenue) 1.5px, transparent 1.5px) 0 100% /
+    calc(100% / var(--marcas)) 34% repeat-x;
+}
+
+/* La tinta: plana, y apoyada en el papel como tinta de verdad. */
+.barra-relleno {
+  position: absolute;
+  inset: 0;
+  width: 0;
+  background: var(--cat-mitologia);
+  mix-blend-mode: multiply;
+}
+
+/*
+ * La aguja. Vive adentro del tramo donde esta y la ubica un porcentaje de su ancho, asi que
+ * nunca se desacomoda cuando la pantalla cambia de ancho. Asoma arriba y abajo del papel
+ * como el fiel de un dial, con su cabeza en tiza para que se lea sobre el fondo oscuro.
+ */
+.barra-aguja {
+  position: absolute;
+  z-index: 2;
+  top: -7px;
+  bottom: -7px;
+  left: 0;
+  width: 3px;
+  translate: -50% 0;
+  background: var(--fondo);
+  /* El filo claro no es una sombra: es el borde de la aguja, para que no se pierda donde
+     sale del papel y pisa el negro. */
+  box-shadow: 0 0 0 1px var(--papel);
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+.barra-aguja::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 11px;
+  height: 8px;
+  translate: -50% 0;
+  background: var(--texto);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* ---- Los numeros de la regla ----
+ *
+ * Cada numero va centrado sobre el corte de su tramo, porque marca **cuanto audio llevas
+ * acumulado si llegaste hasta ahi**. El ultimo va al ras del final, con la unidad: es el
+ * que dice de que esta hecha la regla. Los anchos minimos son los mismos que los de los
+ * tramos, asi que los numeros caen sobre sus cortes a cualquier ancho. */
+
+.barra-escala {
+  display: flex;
+  margin-top: 7px;
+  padding-inline: 2px;
+}
+
+.barra-marca {
+  display: flex;
+  justify-content: flex-end;
+  flex-basis: 0;
+  flex-shrink: 1;
+  min-width: 1.5rem;
+}
+
+.barra-valor {
+  padding: 0 3px;
+  border-radius: 2px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--texto-tenue);
+  white-space: nowrap;
+}
+
+.barra-marca:not(:last-child) .barra-valor {
+  translate: 50% 0;
+}
+
+/* El numero del escalon que ya tenes deja de ser una promesa y pasa a ser un dato: la
+   misma senal que su tramo, en la misma columna. */
+.barra-marca--abierta .barra-valor {
+  color: var(--cat-mitologia);
+}
+
+/* Y el del tope se estampa: es hasta donde llega lo que tenes. Tinta del fondo sobre el
+   naranja de Lobo suelto, el mismo par del boton de escuchar. */
+.barra-marca--actual .barra-valor {
+  background: var(--cat-mitologia);
+  color: var(--fondo);
+}
+
+/*
+ * La tecla de escuchar. El pedido fue "facil y rapido": ancho completo, alto de sobra
+ * para el pulgar y en el mismo lugar de la pantalla siempre.
+ *
+ * **Es una tecla, no un rectangulo**: tiene canto —la sombra dura de abajo, en el apoyo
+ * de Lobo suelto— y al apretarla se hunde. Y mientras suena **queda hundida**, como la
+ * tecla de PLAY de una casetera, que se traba abajo mientras la cinta corre. El hundirse
+ * es respuesta al toque, asi que dura `--duracion-toque`: el corte de movimiento reducido
+ * no la apaga, porque es la confirmacion de que el dedo llego.
  */
 .escuchar {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  min-height: 3.25rem;
-  margin-top: var(--espacio-1);
+  min-height: 3.5rem;
+  margin: var(--espacio-2) 0 6px;
   padding: var(--espacio-1) var(--espacio-2);
   background: var(--cat-mitologia);
   color: var(--fondo);
   border: none;
   border-radius: var(--radio);
   font-family: var(--fuente-rotulada);
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   letter-spacing: 0.04em;
+  box-shadow: 0 5px 0 var(--cat-mitologia-apoyo);
+  transition:
+    translate var(--duracion-toque) var(--curva-cinta),
+    box-shadow var(--duracion-toque) var(--curva-cinta);
+  touch-action: manipulation;
+}
+
+.escuchar:active:not(:disabled) {
+  translate: 0 4px;
+  box-shadow: 0 1px 0 var(--cat-mitologia-apoyo);
 }
 
 /* Simbolo ademas de texto: se reconoce sin leer, que es lo que uno hace con un play.
@@ -897,19 +1130,23 @@
  * sistema puede decidir pintarla de otra cosa**. */
 .escuchar::before {
   content: '';
+  flex: none;
   display: inline-block;
   width: 0.7em;
   height: 0.7em;
   margin-right: 0.55em;
-  vertical-align: -0.01em;
   background: currentColor;
   clip-path: polygon(8% 0%, 100% 50%, 8% 100%);
 }
 
+/* Sonando: la tecla queda trabada abajo y se vacia — tinta sobre fondo, con el borde. */
 .escuchar--sonando {
   background: var(--fondo);
   color: var(--cat-mitologia);
-  box-shadow: inset 0 0 0 var(--linea) var(--cat-mitologia);
+  translate: 0 4px;
+  box-shadow:
+    inset 0 0 0 var(--linea) var(--cat-mitologia),
+    0 1px 0 var(--cat-mitologia-apoyo);
 }
 
 /* El cuadrado de parar, mismo tratamiento. Va apenas torcido: es el idioma de sello de
@@ -923,6 +1160,7 @@
 .escuchar:disabled {
   background: var(--borde);
   color: var(--texto-tenue);
+  box-shadow: none;
 }
 
 .aviso-sonido {
@@ -937,6 +1175,7 @@
    mitad de abajo de la pantalla. */
 
 .buscador {
+  position: relative;
   margin-top: var(--espacio-2);
 }
 
@@ -1093,6 +1332,20 @@
   color: var(--texto-tenue);
 }
 
+/* Lo que ya arriesgaste en este tema: sigue en la lista para que los renglones no salten,
+   pero tachado y apagado, y dice por que (`PARTIDA.yaProbado`). Dos senales, ninguna de
+   color solo: la raya y la palabra. */
+.sugerencia--probada {
+  color: var(--texto-tenue);
+  cursor: default;
+}
+
+.sugerencia--probada .sugerencia-titulo {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--acento-4);
+}
+
 /*
  * El boton principal de la partida, que cambia de nombre y de peso segun lo que hace.
  *
@@ -1128,6 +1381,287 @@
   cursor: default;
 }
 
+/* ---- Las teclas de los dos juegos de sacar temas ----
+ *
+ * Arriesgar/pasar y seguir tienen canto: una sombra dura abajo que se hunde al apretar,
+ * como la tecla de escuchar. Cada juego pone su tinta y su canto —Lobo suelto en el de
+ * audio, Momo Sampler en el de la letra (`D-19`, `UX-08`)— y la regla es una sola. Van
+ * acotadas a los dos juegos porque `.seguir` y `.arriesgar` no son de nadie mas. */
+
+.juego-tema {
+  --tinte-tecla: var(--cat-mitologia);
+  --canto-tecla: var(--cat-mitologia-apoyo);
+}
+
+:is(.juego-tema, .juego-por-la-letra) :is(.arriesgar, .seguir) {
+  margin-bottom: 5px;
+  box-shadow: 0 4px 0 var(--borde);
+  transition:
+    translate var(--duracion-toque) var(--curva-cinta),
+    box-shadow var(--duracion-toque) var(--curva-cinta),
+    background-color var(--duracion-toque) var(--curva-cinta);
+  touch-action: manipulation;
+}
+
+:is(.juego-tema, .juego-por-la-letra) :is(.arriesgar--listo, .seguir) {
+  box-shadow: 0 4px 0 var(--canto-tecla);
+}
+
+:is(.juego-tema, .juego-por-la-letra) :is(.arriesgar:active:not(:disabled), .seguir:active) {
+  translate: 0 3px;
+  box-shadow: 0 1px 0 var(--borde);
+}
+
+/* La caja de texto, un poco mas alta que el piso de toque: es donde el pulgar vuelve cada
+   vez, y con el teclado abierto es lo unico que se escribe. */
+:is(.juego-tema, .juego-por-la-letra) .buscador-caja {
+  min-height: 3.25rem;
+  font-size: 1.05rem;
+}
+
+:is(.juego-tema, .juego-por-la-letra) .buscador-borrar {
+  width: 3.25rem;
+}
+
+/* Solo para el lector de pantalla: existe para quien no ve y no ocupa lugar. Mismo
+   recorte que `.aviso-juego` de `skayboy.css`. */
+.solo-lector {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ==================================================================
+   Con el teclado abierto (`partida--tecleando`)
+   ==================================================================
+
+   La isla pone esta clase mientras la caja de texto tiene el foco en un aparato tactil, y
+   copia la ventana visual —lo que el teclado deja ver— en `--vv-arriba` y `--vv-alto`.
+
+   La partida pasa a ocupar exactamente eso, como una columna pegada abajo: arriba de todo
+   la cabecera, y contra el teclado la regla compacta con su tecla, el ultimo intento, la
+   lista, la caja y el boton. La lista es lo unico que cede alto; el resto no se achica.
+
+   El `#partida` no es capricho: la pantalla ya lleva `position: relative` desde dos reglas
+   de `sitio.css` que cargan despues y pesan mas (`.sobre-tapa` y la de `main:has(...)`), y
+   esta tiene que ganarles a las dos. */
+
+#partida.partida--tecleando {
+  position: fixed;
+  z-index: 20;
+  top: var(--vv-arriba, 0px);
+  left: 0;
+  right: 0;
+  height: var(--vv-alto, 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin-inline: auto;
+  padding: var(--espacio-1) var(--espacio-2);
+  background: var(--fondo);
+  overflow: hidden;
+  overscroll-behavior: contain;
+  /* Para preguntarle a la columna cuanto alto tiene (abajo): si el foco llego y el teclado
+     no se abrio —un teclado fisico, una tableta con funda— sobra alto y la cabecera vuelve. */
+  container-type: size;
+  /* Arrastrar el dedo sobre la columna no mueve la hoja de atras: si la hoja se moviera,
+     la ventana visual se correria y la columna tendria que perseguirla. Lo unico que se
+     desplaza es la lista (abajo). Los toques siguen llegando. */
+  touch-action: none;
+}
+
+.partida--tecleando > *,
+.partida--tecleando .buscador > * {
+  flex: none;
+}
+
+/* La cabecera se va: medido con 390 px visibles —lo que deja el teclado de un iPhone—
+   costaba un renglon entero de lista. Vuelve solo cuando tiene algo urgente que decir,
+   que es que te queda un intento. */
+.partida--tecleando .cabecera {
+  display: none;
+}
+
+.partida--tecleando .cabecera:has(.restantes--ultimo) {
+  display: flex;
+  margin-bottom: var(--espacio-1);
+}
+
+/* Con alto de sobra no hay teclado que tape nada: la cabecera vuelve, arriba de todo. */
+@container (min-height: 34rem) {
+  #partida.partida--tecleando .cabecera {
+    display: flex;
+    margin-bottom: auto;
+  }
+}
+
+/* De los renglones queda solo el ultimo que gastaste: es la respuesta a lo que acabas de
+   hacer. Los otros ya los leiste, y el numero de intentos esta en la cabecera. */
+.partida--tecleando .intentos {
+  margin: 0 0 var(--espacio-1);
+}
+
+.partida--tecleando .intento {
+  display: none;
+}
+
+.partida--tecleando .intento--ultimo {
+  display: flex;
+  border-bottom: none;
+}
+
+/* El reproductor en un renglon: la tecla, cuadrada, a la izquierda; lo que tenes y la
+   regla, a la derecha. Sin casete ni numeros: la regla sola alcanza para ver el tope. */
+.partida--tecleando .reproductor {
+  display: grid;
+  grid-template-columns: var(--toque-min) 1fr;
+  grid-template-areas:
+    'boton cabeza'
+    'boton cinta';
+  column-gap: var(--espacio-2);
+  row-gap: 6px;
+  align-items: center;
+  margin-bottom: var(--espacio-2);
+}
+
+.partida--tecleando .reproductor-cabeza {
+  grid-area: cabeza;
+  margin: 0;
+}
+
+.partida--tecleando .cinta-fila {
+  grid-area: cinta;
+}
+
+.partida--tecleando .barra {
+  height: 1.75rem;
+}
+
+.partida--tecleando .escuchar {
+  grid-area: boton;
+  width: var(--toque-min);
+  min-height: var(--toque-min);
+  margin: 0;
+  padding: 0;
+}
+
+.partida--tecleando .escuchar::before {
+  margin-right: 0;
+}
+
+/* El rotulo se va de la vista y se queda para el lector de pantalla: el simbolo alcanza. */
+.partida--tecleando .escuchar-texto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.partida--tecleando .casete-vivo,
+.partida--tecleando .casete-estado,
+.partida--tecleando .barra-escala,
+.partida--tecleando .sin-sonido,
+.partida--tecleando .buscador-ayuda {
+  display: none;
+}
+
+/* El bloque del buscador se desarma: sus piezas pasan a ser renglones de la columna. */
+.partida--tecleando .buscador:not([hidden]) {
+  display: contents;
+}
+
+/* Y la lista deja de flotar: es el renglon que cede alto, y se desplaza adentro. */
+.partida--tecleando .sugerencias:not([hidden]) {
+  position: static;
+  flex: 0 1 auto;
+  min-height: 0;
+  max-height: none;
+  margin-bottom: var(--espacio-1);
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  box-shadow: none;
+}
+
+.partida--tecleando .arriesgar {
+  margin-top: var(--espacio-1);
+}
+
+/* ---- La chapa de puntajes de la portada ----
+ *
+ * Lo que vale cada escalon, impreso en papel y pegado con cinta: la tabla de puntos que
+ * trae el mueble de un fichin. Reemplaza la mitad de la bajada que contaba la escalera en
+ * prosa. Tinta del fondo sobre papel, que es el par testeado; el rotulo de cada fila en la
+ * tinta apagada del papel, que tambien lo es. */
+
+.premios {
+  position: relative;
+  width: 100%;
+  margin: var(--espacio-3) 0 var(--espacio-2);
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: var(--papel);
+  color: var(--fondo);
+  border: 2px solid var(--papel-borde);
+  box-shadow: 4px 4px 0 var(--canto-tecla, var(--cat-mitologia-apoyo));
+  rotate: -0.8deg;
+  font-family: var(--fuente-rotulada);
+  text-align: center;
+}
+
+/* La cinta que la sostiene, cruzando el borde de arriba: la misma de los casetes. */
+.premios::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 42%;
+  width: 70px;
+  height: 22px;
+  background: color-mix(in srgb, var(--papel) 35%, transparent);
+  rotate: 3deg;
+  border-radius: 2px;
+}
+
+.premios th,
+.premios td {
+  padding: 0.4rem 0;
+}
+
+.premios th {
+  width: 3.4rem;
+  padding-inline: 0.45rem;
+  text-align: left;
+  font-weight: 400;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--papel-tenue);
+}
+
+.premios td {
+  font-size: 0.74rem;
+  white-space: nowrap;
+}
+
+.premios th,
+.premios td:not(:last-child) {
+  border-right: 1px dashed var(--papel-borde);
+}
+
+.premios tr + tr > * {
+  border-top: 2px solid var(--papel-borde);
+}
+
+/* Lo que vale va mas grande que el audio: es el incentivo, y se lee de lejos. */
+.premios tr + tr td {
+  font-size: 0.95rem;
+}
+
 /* ---- La revelacion ----
    Reusa `.feedback` (borde completo tenido por el estado, nunca una barra lateral) y le
    agrega lo propio de este juego: el titulo, la ficha del disco y las dos salidas. */
@@ -1154,6 +1688,61 @@
 
 .revelacion[hidden] {
   display: none;
+}
+
+/* ---- El grito, estampado (`D-33`) ----
+ *
+ * "¡La sacaste!" es un sello de goma que cae sobre la hoja, y al lado otro con lo que
+ * sumaste. Bajan y apoyan una vez, sin rebote y sin fundido —un sello no aparece: se
+ * apoya—, en el mismo compas que las pasadas de la estampa. Con movimiento reducido
+ * `--duracion-pasada` vale cero y los dos llegan ya apoyados. Son verdes porque el
+ * acierto no se disfraza de ningun disco. */
+
+.revelacion-cabeza {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-1);
+  min-height: 2.75rem;
+}
+
+.revelacion .micro {
+  margin: 0;
+}
+
+.revelacion.ok .micro {
+  /* Del ancho de lo que dice y no de la caja: un sello de renglon entero, torcido, se
+     salia de la pantalla por el costado (medido en "sacalo por la letra", que no tenia el
+     renglon de la cabecera que lo acota). */
+  width: fit-content;
+  padding: 0.1rem 0.6rem;
+  border: var(--linea) solid currentColor;
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-weight: 400;
+  font-size: 1.3rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  rotate: -3deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+.revelacion-suma {
+  flex: none;
+  font-family: var(--fuente-rotulada);
+  font-size: 2.1rem;
+  line-height: 1;
+  color: var(--acento-3);
+  rotate: 5deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) var(--escalon-pasada) both;
+}
+
+/* El sello en el aire, mas grande y mas torcido, hasta que apoya en su angulo de reposo. */
+@keyframes sello-golpe {
+  from {
+    scale: 1.45;
+    rotate: -12deg;
+  }
 }
 
 /*
@@ -1221,7 +1810,7 @@
   margin-top: var(--espacio-2);
   padding: var(--espacio-2);
   min-height: var(--toque-min);
-  background: var(--cat-mitologia);
+  background: var(--tinte-accion, var(--cat-mitologia));
   color: var(--fondo);
   border: none;
   border-radius: var(--radio);
@@ -1347,6 +1936,48 @@
   font-size: 0.78rem;
   line-height: 1.35;
   color: var(--texto-tenue);
+}
+
+/* ---- La escalerita de cada tema ----
+ * Los seis escalones del tema, con lo que paso en cada uno: la forma de la vuelta de un
+ * vistazo. Casillas de sello, distintas por forma (`UX-01`): vacia la que no se uso, con
+ * una raya la que pasaste, tachada la que erraste, llena la que la sacaste. */
+
+.escalerita {
+  display: flex;
+  gap: 3px;
+  margin-top: 6px;
+}
+
+.escalerita-paso {
+  width: 1rem;
+  height: 0.6rem;
+  border: 2px dashed var(--borde);
+  border-radius: 2px;
+}
+
+.escalerita-paso--pasado {
+  border: 2px solid var(--borde);
+  background: linear-gradient(
+    transparent calc(50% - 1px),
+    var(--texto-tenue) calc(50% - 1px) calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
+}
+
+.escalerita-paso--fallo {
+  border: 2px solid var(--acento-4);
+  background: linear-gradient(
+    to top right,
+    transparent calc(50% - 1px),
+    var(--acento-4) calc(50% - 1px) calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
+}
+
+.escalerita-paso--acierto {
+  border: 2px solid var(--acento-3);
+  background: var(--acento-3);
 }
 
 /* ---- La cifra grande del resultado ----
@@ -1696,6 +2327,9 @@
 .juego-por-la-letra {
   --tinte-accion: var(--disco-momo-sampler-tinta);
   --tinte-lista: var(--disco-momo-sampler-apoyo);
+  /* Las teclas con canto (arriba, con las del hermano): la plata de la tapa y su peltre. */
+  --tinte-tecla: var(--disco-momo-sampler-tinta);
+  --canto-tecla: var(--disco-momo-sampler-apoyo);
 }
 
 /* La cabecera no pone su propio margen aca: la columna flex ya reparte con `gap`, y los
@@ -1713,11 +2347,13 @@
  * contenido centrado se corria 7 px justo al empezar la partida. Un tablero de alto fijo
  * con algo colgando abajo no es un tablero de alto fijo.
  *
- * Se puede esconder sin perder nada porque el credito de tapas de `D-21` ya no vive aca:
- * esta pantalla no muestra ninguna tapa. Si algun dia entra la de Momo, el credito tiene
- * que mudarse adentro del tablero ANTES de que esta regla siga en pie.
+ * **Y vuelve apenas se revela el tema**, que es la condicion que este comentario dejaba
+ * escrita: "si algun dia entra una tapa, el credito tiene que mudarse ANTES de que esta
+ * regla siga en pie". Entro — la revelacion imprime la tapa del disco desde el pulido de
+ * arte (2026-09-25)—, y el credito de `D-21` vive en este pie. Con el tema revelado el
+ * tablero ya no es de alto fijo, asi que el pie no le roba nada a nadie.
  */
-body.juego-por-la-letra:has(#partida:not([hidden])) .pie-sitio {
+body.juego-por-la-letra:has(#partida:not([hidden]):not(.partida--revelada)) .pie-sitio {
   display: none;
 }
 
@@ -1754,8 +2390,18 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
  * margen negativo le come parte del `gap` de la columna, porque un rotulo separado de lo
  * que rotula deja de rotularlo.
  */
-.rotulo-versos {
+/* El renglon del rotulo y de lo que vale: pegado a la hoja, por el mismo motivo que el
+   rotulo solo — el margen negativo le come parte del `gap` de la columna. */
+.versos-cabeza {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-1);
   margin: 0 0 calc(var(--espacio-1) - var(--espacio-2));
+}
+
+.rotulo-versos {
+  margin: 0;
   font-family: var(--fuente-rotulada);
   font-size: 0.72rem;
   letter-spacing: 0.12em;
@@ -1783,9 +2429,17 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
  * elevado y la sombra dura desplazada ya son el recorte pegado; la inclinacion era la
  * parte prescindible.
  *
- * OJO CON EL CONTRASTE: sobre `--fondo-elevado` el par testeado es `--texto`, que es lo
- * que `.verso` hereda. **Ninguna tinta de disco como texto aca adentro** — no llegan a AA
- * sobre el elevado, y `contraste.test.ts` deja escrito por que.
+ * **Desde el pulido de arte (2026-09-25) la hoja es PAPEL**, no el gris elevado de `UX-08`
+ * §4. El lugar de este juego lo dice con todas las letras —"un papel arrugado te pesa en el
+ * bolsillo" (`CNT-13`)— y la hoja era la unica pieza del tablero que no lo era: una caja
+ * gris sobre negro, que es el "gris arriba de otro gris" que la tabla anti-slop veta. Ahora
+ * es el papel de las etiquetas de casete, con los renglones en el borde del papel y la
+ * sombra dura en el peltre de Momo. Queda propuesto a `experiencia` para que lo ratifique
+ * en `UX-08`.
+ *
+ * OJO CON EL CONTRASTE: sobre `--papel` el par testeado es `--fondo` ("tinta sobre papel de
+ * etiqueta", 14:1), y es lo que `.verso` hereda de aca. **Ninguna tinta de disco como texto
+ * aca adentro.**
  */
 .hoja-versos {
   /*
@@ -1808,10 +2462,12 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
   min-height: 0;
   overflow-y: auto;
   padding: var(--espacio-2);
-  background: var(--fondo-elevado);
-  border: var(--linea) solid var(--disco-momo-sampler-apoyo);
+  background: var(--papel);
+  color: var(--fondo);
+  border: 2px solid var(--papel-borde);
   border-radius: 3px;
-  box-shadow: 4px 4px 0 var(--borde);
+  box-shadow: 4px 4px 0 var(--disco-momo-sampler-apoyo);
+  overscroll-behavior: contain;
 }
 
 /*
@@ -1860,7 +2516,8 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
   line-height: 1.5;
   margin: 0;
   padding-block: var(--espacio-1);
-  border-bottom: 1px solid var(--borde);
+  /* El renglon del papel: el borde de la etiqueta, como las rayas de `.casete-etiqueta`. */
+  border-bottom: 1px solid var(--papel-borde);
   text-wrap: pretty;
 }
 
@@ -1884,12 +2541,12 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
  * Se tine el APOYO del disco y no la tinta: es una linea, no texto.
  */
 .verso--nuevo {
-  border-bottom-color: var(--disco-momo-sampler-apoyo);
+  border-bottom: 2px solid var(--disco-momo-sampler-apoyo);
 }
 
 /* El ultimo verso nuevo no pierde su marca por ser el ultimo de la hoja. */
 .verso--nuevo:last-child {
-  border-bottom: 1px solid var(--disco-momo-sampler-apoyo);
+  border-bottom: 2px solid var(--disco-momo-sampler-apoyo);
 }
 
 /* Los intentos gastados. Sello de goma, no pastilla capsula: esquina casi viva, borde
@@ -1936,6 +2593,46 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
 
 .chip--pasado {
   color: var(--texto-tenue);
+}
+
+/* El ultimo intento gastado: el unico chip que queda con el teclado abierto (abajo). Sin
+   pintura propia fuera de esa pantalla — es un gancho, no un estado que se vea distinto. */
+.chip--ultimo {
+  rotate: 0.6deg;
+}
+
+/* ---- "Sacalo por la letra" con el teclado abierto (`partida--tecleando`) ----
+ *
+ * La columna es la de `sacar-temas.ts`, con lo que este juego no puede perder: **los
+ * versos**. Con el teclado arriba la lista los tapaba enteros y se elegia sin poder releer.
+ * Ahora la hoja y la lista **se reparten el alto**: las dos ceden, cada una en proporcion a
+ * lo que mide, y la hoja no baja nunca de dos renglones. La isla la vuelve a bajar al verso
+ * nuevo cada vez que la columna cambia de alto.
+ *
+ * Pisa la columna de alto fijo de este juego (`#partida:not([hidden])`, 100svh): con el
+ * teclado, el alto es el de la ventana visual, y el aire entre franjas se achica a la mitad. */
+.juego-por-la-letra #partida.partida--tecleando:not([hidden]) {
+  height: var(--vv-alto, 100%);
+  gap: var(--espacio-1);
+}
+
+.juego-por-la-letra .partida--tecleando .versos-cabeza {
+  margin: 0;
+}
+
+.juego-por-la-letra .partida--tecleando .hoja-versos {
+  flex: 0 1 auto;
+  min-height: 4.5rem;
+  margin-bottom: 0;
+  padding-block: var(--espacio-1);
+}
+
+.juego-por-la-letra .partida--tecleando .chip {
+  display: none;
+}
+
+.juego-por-la-letra .partida--tecleando .chip--ultimo {
+  display: inline-flex;
 }
 
 .chip-texto {
@@ -2685,18 +3382,15 @@ body > main {
    senal diegetica e informacion: quien no escucha nada ve que el sitio si esta sonando
    (`UX-03`). Un bucle no se apaga bajando su duracion —quedaria girando rapidisimo—,
    asi que con movimiento reducido va `animation: none`, como la mosca, y la palabra de
-   sello de al lado (`CNT-14` §2.5) dice lo mismo que el carrete. */
-.cinta-fila {
-  display: flex;
-  align-items: center;
-  gap: var(--espacio-2);
-  margin: var(--espacio-1) 0 0;
-}
+   sello de al lado (`CNT-14` §2.5) dice lo mismo que el carrete.
 
+   El casete es la boca de la cinta: la regla de papel sale de el, en la misma fila
+   (`.cinta-fila`, arriba en el bloque del reproductor). */
 .casete-vivo {
   flex: none;
-  width: 4.75rem;
+  width: 3.6rem;
   height: auto;
+  margin-top: 1px;
   color: var(--cat-mitologia);
 }
 
@@ -2719,16 +3413,24 @@ body > main {
 
 /* La palabra de estado, SONANDO, pegada al casete (`UX-22` §6): esta SIEMPRE que la cinta
    corre, con el movimiento prendido o apagado, y no esta el resto del tiempo. Es su
-   presencia la senal, nunca un cambio de color del casete sin ella. */
+   presencia la senal, nunca un cambio de color del casete sin ella.
+
+   Va estampada sobre el pie del casete, como el sello que se le pone a una cinta que esta
+   en la bandeja: mismo lugar siempre, y no le roba un renglon a la pantalla. */
 .casete-estado {
+  position: absolute;
+  left: -2px;
+  top: 2.35rem;
   display: inline-block;
-  padding: 0.1rem 0.45rem;
+  padding: 0.05rem 0.35rem;
   border: 1px solid currentColor;
   border-radius: 3px;
-  color: var(--texto-tenue);
+  background: var(--fondo);
+  color: var(--cat-mitologia);
   font-family: var(--fuente-rotulada);
-  font-size: 0.65rem;
+  font-size: 0.56rem;
   letter-spacing: 0.1em;
+  rotate: -5deg;
 }
 
 .casete-estado[hidden] {

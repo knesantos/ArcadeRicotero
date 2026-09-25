@@ -29,6 +29,7 @@ import PieImprenta from '../../components/PieImprenta.astro';
 import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
 import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import { claseDisco } from '../../lib/tema/paleta.ts';
+import { ESCALERA } from '../../lib/tema/escalera.ts';
 import manifiesto from '../../data/adivinar-tema.json';
 import cancionero from '../../data/cancionero.json';
 import setlistfm from '../../data/setlistfm.json';
@@ -51,6 +52,18 @@ const fondo = fondoTapa(FONDO);
 const tapasUsadas = fondo ? discosDe([FONDO]) : [];
 
 const TITULO = 'Adiviná el tema — Arcade Ricotero';
+
+/**
+ * La bajada, cortada en el punto que el texto ya tiene: la primera oración es la que canta
+ * (`voz-ricotera.md` §5), y el resto —"si no, te damos más: medio segundo, dos, cuatro…"—
+ * lo dice ahora la tabla de premios, de un vistazo. Es el mismo corte que ya hace el portal
+ * con las bajadas de los casetes. El texto entero no se toca: sigue siendo la descripción
+ * de la página y lo sigue auditando `voz.test.ts`.
+ */
+const bajadaCorta = (() => {
+  const corte = PANTALLA_0.subtitulo.indexOf('. ');
+  return corte === -1 ? PANTALLA_0.subtitulo : PANTALLA_0.subtitulo.slice(0, corte + 1);
+})();
 ---
 
 <!doctype html>
@@ -62,7 +75,7 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
     <title>{TITULO}</title>
     <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} />
   </head>
-  <body class="con-grano">
+  <body class="con-grano juego-tema">
     <main id="app">
       {fondo && <div class="tapa-fondo tapa-fondo--lobo-tiras" aria-hidden="true" />}
 
@@ -73,7 +86,30 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
         <p class="marca" aria-label="Arcade Ricotero">ARCADE RICOTERO</p>
         <h1>{PANTALLA_0.titulo}</h1>
         <p class="donde-estas">{LUGARES.tema}</p>
-        <p class="tenue">{PANTALLA_0.subtitulo}</p>
+        <p class="tenue">{bajadaCorta}</p>
+
+        {/*
+            **La chapa de puntajes** (`US-02`): lo que vale cada escalón, impreso en papel y
+            pegado con cinta, como la tabla de puntos que trae el mueble de un fichín.
+
+            Reemplaza la mitad de la bajada que contaba la escalera en prosa. Es una tabla
+            de verdad —`th` de fila y de columna— porque es un dato de dos entradas, y así la
+            lee un lector de pantalla: "0,1 s, vale 100". Los números salen de `escalera.ts`,
+            que es la única fuente de la escalera: si mañana cambia, cambia acá sola.
+        */}
+        <table class="premios">
+          <caption class="solo-lector">{PANTALLA_0.premios.titulo}</caption>
+          <tbody>
+            <tr>
+              <th scope="row">{PANTALLA_0.premios.audio}</th>
+              {ESCALERA.map((p) => <td>{p.etiqueta}</td>)}
+            </tr>
+            <tr>
+              <th scope="row">{PANTALLA_0.premios.vale}</th>
+              {ESCALERA.map((p) => <td>{p.puntos}</td>)}
+            </tr>
+          </tbody>
+        </table>
 
         {
           hayAudio ? (
@@ -259,11 +295,17 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
       #cuantos {
         margin: 0;
         padding-top: var(--espacio-1);
+        font-family: var(--fuente-rotulada);
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
       }
+      /* La tecla de arrancar, con el mismo canto que las de la partida: una sombra dura
+         abajo, en el apoyo de Lobo suelto, que se hunde al apretar. */
       .primario {
         display: block;
         width: 100%;
-        margin-top: var(--espacio-1);
+        margin: var(--espacio-1) 0 5px;
         padding: var(--espacio-2);
         min-height: var(--toque-min);
         font-family: var(--fuente-rotulada);
@@ -271,14 +313,30 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
         color: var(--fondo);
         border: none;
         border-radius: var(--radio);
-        font-size: 1.25rem;
-        /* Sin `font-weight`: Archivo Black tiene un solo peso y el 700 la engordaba
-           sintética (`estilos.test.ts` lo mira). */
-        letter-spacing: 0.04em;
+        font-size: 1.35rem;
+        font-weight: 400;
+        letter-spacing: 0.05em;
+        box-shadow: 0 5px 0 var(--cat-mitologia-apoyo);
+        transition:
+          translate var(--duracion-toque) var(--curva-cinta),
+          box-shadow var(--duracion-toque) var(--curva-cinta);
+        touch-action: manipulation;
+      }
+      .primario:active:not(:disabled) {
+        translate: 0 4px;
+        box-shadow: 0 1px 0 var(--cat-mitologia-apoyo);
       }
       .primario:disabled {
         background: var(--borde);
         color: var(--texto-tenue);
+        box-shadow: none;
+      }
+      /* El aviso de sonido es registro 3: dice qué mirar y se calla. Va recortado con un
+         borde punteado, como una nota agregada a mano, y no pelea con la chapa de arriba. */
+      .aviso-sonido {
+        padding: var(--espacio-1) var(--espacio-2);
+        border: 2px dashed var(--borde);
+        border-radius: 3px;
       }
       /* El comando se muestra tal cual se escribe: es para copiarlo, no para leerlo. */
       .comando {

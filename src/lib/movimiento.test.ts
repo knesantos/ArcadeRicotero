@@ -181,6 +181,9 @@ const ANIMACIONES = [
   { nombre: 'fijado', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
   { nombre: 'sala', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },
   { nombre: 'carrete', apaga: 'regla', valor: '.casete-carrete', hoja: 'src/styles/juego.css' },
+  // El grito estampado de "adivina el tema": el sello del acierto y el de lo que sumaste.
+  // Corre en el compas de una pasada, asi que el mismo token lo apaga.
+  { nombre: 'sello-golpe', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

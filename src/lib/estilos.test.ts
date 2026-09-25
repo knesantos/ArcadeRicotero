@@ -310,12 +310,20 @@ const ESTADOS_TEMA = [
   '.intento--libre',
   '.intento--fallado',
   '.intento--pasado',
+  // El renglon que toca (su numero de escalon se enciende) y el ultimo que gastaste, que es
+  // el unico que queda a la vista con el teclado abierto.
+  '.intento--actual',
+  '.intento--ultimo',
   '.barra-tramo--abierto',
   // La regla graduada de abajo de la barra: el numero del escalon que ya tenes cambia de
   // tinta igual que su tramo. Sin regla que lo pinte, la regla queda toda del mismo gris
   // y deja de decir donde estas.
   '.barra-marca--abierta',
+  // Y el numero del tope se estampa: es hasta donde llega el audio que tenes.
+  '.barra-marca--actual',
   '.escuchar--sonando',
+  // Lo que ya arriesgaste sigue en la lista, tachado y sin poder elegirse.
+  '.sugerencia--probada',
   '.arriesgar--listo',
   '.sugerencia--marcada',
   '.sugerencia--vacia',
@@ -360,6 +368,10 @@ const JS_LETRA = leer('src/scripts/partida-por-la-letra.ts');
 const ESTADOS_LETRA = [
   '.chip--fallado',
   '.chip--pasado',
+  // El ultimo intento gastado: el unico chip que queda con el teclado abierto.
+  '.chip--ultimo',
+  // Lo que ya arriesgaste sigue en la lista, tachado y sin poder elegirse.
+  '.sugerencia--probada',
   '.verso--nuevo',
   '.arriesgar--listo',
   '.sugerencia--marcada',
@@ -641,6 +653,27 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
     fuente: leer('src/scripts/partida-skayboy.ts'),
     estados: ['.tecla--apretada'],
     hoja: 'src/styles/skayboy.css',
+  },
+
+  // Lo que comparten los dos juegos de sacar temas (`US-02` y `US-07`): la columna arriba
+  // del teclado, las casillas de la vuelta y la escalerita del resultado. Sus estados viven
+  // aca y no en cada isla porque los crea este modulo, no ellas.
+  'sacar-temas.ts': {
+    juego: 'US-02 y US-07, lo compartido',
+    fuente: leer('src/scripts/sacar-temas.ts'),
+    estados: [
+      // La pantalla con el teclado abierto: sin regla que la pinte, la columna no existe y
+      // el teclado vuelve a tapar la caja.
+      '.partida--tecleando',
+      // Las casillas de la vuelta: cuatro formas, ninguna de color solo.
+      '.vuelta-casilla--actual',
+      '.vuelta-casilla--ok',
+      '.vuelta-casilla--no',
+      // Los escalones de cada tema en el resultado.
+      '.escalerita-paso--fallo',
+      '.escalerita-paso--pasado',
+      '.escalerita-paso--acierto',
+    ],
   },
 
   'armar-cancionero.ts': { sinTablero: 'arma un HTML autocontenido que se descarga; sus estilos viajan adentro de ese archivo, no en las hojas del sitio' },

@@ -19,6 +19,19 @@ export const PANTALLA_0 = {
   subtitulo:
     'Con una décima te tiene que alcanzar. Si no, te damos más: medio segundo, dos, ' +
     'cuatro, ocho, diez. Cuanto antes la pegues, más vale.',
+  /**
+   * La tabla de lo que vale cada escalón, impresa en la portada.
+   *
+   * La bajada larga contaba la escalera en prosa —"medio segundo, dos, cuatro, ocho,
+   * diez"— y el que llega de un enlace tenía que leer cuatro renglones para entender la
+   * mecánica. La tabla lo dice de un vistazo, como la chapa de puntajes de un fichín: arriba
+   * el audio, abajo lo que vale. Registro 3: nombra y se calla.
+   */
+  premios: {
+    titulo: 'Cuánto vale cada paso',
+    audio: 'Audio',
+    vale: 'Vale',
+  },
   elegiPozo: '¿Con qué jugás?',
   todos: 'Todos los discos',
   /**
@@ -57,6 +70,21 @@ export const PARTIDA = {
   sinResultados: 'Ningún tema de los Redondos se llama así.',
   arriesgar: 'Arriesgá',
   pasar: 'Pasá',
+  /**
+   * El botón de pasar dice cuánto audio compra (`extraAlPasar`), como el juego de
+   * referencia. Pasar no es rendirse: es pedir más cinta, y el que llega sin idea tiene
+   * que saber que ese botón le da algo antes de apretarlo.
+   */
+  pasarSuma: (extra: string) => `Pasá (+${extra})`,
+  /** En el último intento no queda audio que comprar: pasar cierra el tema y lo muestra. */
+  rendirse: 'Mirá cuál era',
+  /** Lo que vale acertar en el paso en curso. Va al lado del audio que tenés. */
+  vale: (puntos: number) => `Vale ${puntos}`,
+  /**
+   * El rótulo de una sugerencia que ya arriesgaste en este tema. No se puede volver a
+   * elegir: gastar un intento en algo que ya sabés que no es no le sirve a nadie.
+   */
+  yaProbado: 'Ya lo probaste',
   pasado: 'Pasaste',
   /** El renglón de un intento fallado. El título es el que eligió el jugador. */
   fallado: (titulo: string) => titulo,
@@ -133,6 +161,12 @@ export const REVELACION = {
   ficha: (disco: string, anio: number, pista: number) => `${disco} (${anio}), pista ${pista}`,
   puntos: (n: number) => (n === 1 ? '1 punto' : `${n} puntos`),
   /**
+   * El segundo sello del acierto: lo que sumaste, grande. Va aparte de `puntos` porque
+   * este es un número que se estampa, no una frase que se lee — y el lector de pantalla
+   * lo recibe entero por `puntos`, en el renglón de la ficha.
+   */
+  suma: (n: number) => `+${n}`,
+  /**
    * Lo que costó el tema, en las dos monedas del juego: audio y reloj.
    *
    * El puntaje mide cuánto audio necesitaste; el reloj, cuánto tardaste en decidir. Son
@@ -167,6 +201,8 @@ export const RESULTADO = {
   rotuloTiempo: 'Tardaste',
   /** El detalle tema por tema, para volver a mirar qué se falló. */
   detalle: 'Los temas de esta vuelta',
+  /** Cuántos sacaste, dicho al lado del puntaje: el número que se cuenta en la previa. */
+  sacaste: (n: number, total: number) => `${n} de ${total} temas`,
   denuevo: 'Otra vuelta',
   volver: 'Volvé al arcade',
   compartir: 'Compartí',
