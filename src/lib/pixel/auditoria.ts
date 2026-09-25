@@ -18,13 +18,14 @@
  *    ella, nombra sus tintas por token (`CTR-15.4`) y todas existen en la hoja, el PNG no
  *    usa ninguna que su JSON no declare, y las animaciones caben en el PNG: ninguna fila ni
  *    ningún cuadro que el PNG no tenga, ninguna fila compartida, y un estado de más de un
- *    cuadro con su velocidad. Un personaje lleva además la caja de 10 × 20 y las cinco
- *    animaciones, ni una más. Un tile va opaco entero (`UX-27 §3`): ningún píxel con alfa 0
+ *    cuadro con su velocidad. Un personaje lleva además la caja de 10 × 20 y las seis
+ *    animaciones, ni una más (eran cinco hasta `D-47`: un `<pieza>.v1.png` de personaje, impreso
+ *    antes, pasa con aquellas cinco hasta que nada lo pida y se borre, `CTR-15.8`). Un tile va opaco entero (`UX-27 §3`): ningún píxel con alfa 0
  *    adentro de un cuadro declarado. Las celdas que no son de ningún cuadro —las que sobran
  *    a la derecha de un estado más corto— quedan vacías, y no se miran.
  */
 
-import { COLISION_PERSONAJE, ESTADOS_PERSONAJE, GRILLA, contar, losOtrosNoSeVerian, sinBom } from './fuente.ts';
+import { COLISION_PERSONAJE, ESTADOS_PERSONAJE, ESTADOS_PERSONAJE_V1, GRILLA, contar, losOtrosNoSeVerian, sinBom } from './fuente.ts';
 import { NOMBRE_DE_TINTA, hexDeRgb } from './tokens.ts';
 
 // Vive en `fuente.ts`, que es la base de la cadena; los scripts lo toman de acá.
@@ -178,9 +179,13 @@ export function auditarJson(
   const v: string[] = [];
   // El nombre del archivo es del PNG, no del JSON: se mira aunque el JSON falte.
   let piezaDelNombre: string | null = null;
+  let versionDelNombre: number | null = null;
   if (png.archivo !== undefined) {
     const m = png.archivo.match(NOMBRE_DE_SPRITE);
-    if (m) piezaDelNombre = m[1]!;
+    if (m) {
+      piezaDelNombre = m[1]!;
+      versionDelNombre = Number(m[2]);
+    }
     else v.push(`el archivo se llama ${png.archivo} y va <pieza>.v<N>.png, con N desde 1 (CTR-15.8: la versión va en el nombre)`);
   }
   if (texto === null) return [...v, 'no tiene su JSON al lado (CTR-15.7)'];
@@ -242,7 +247,16 @@ export function auditarJson(
     }
   }
 
-  const { violaciones, cuadros } = auditarAnimaciones(o.animaciones, grilla, png, esPersonaje);
+  // Los estados que un personaje tiene que traer: los de hoy. Un v1 puede traer además los cinco de
+  // antes de D-47, justos: se imprimió con esos y se queda hasta que nada lo pida (CTR-15.8). Sin
+  // nombre de archivo no hay versión que mirar, y manda el contrato de hoy.
+  const esElV1DeAntes =
+    versionDelNombre === 1 &&
+    typeof o.animaciones === 'object' &&
+    o.animaciones !== null &&
+    Object.keys(o.animaciones).sort().join() === [...ESTADOS_PERSONAJE_V1].sort().join();
+  const estados = !esPersonaje ? null : esElV1DeAntes ? ESTADOS_PERSONAJE_V1 : ESTADOS_PERSONAJE;
+  const { violaciones, cuadros } = auditarAnimaciones(o.animaciones, grilla, png, estados);
   v.push(...violaciones);
   if (esTile && grilla && png.rgba) v.push(...auditarHuecos(png.rgba, png.ancho, grilla, cuadros));
 
@@ -287,7 +301,8 @@ function auditarAnimaciones(
   animaciones: unknown,
   grilla: { ancho: number; alto: number } | null,
   png: { ancho: number; alto: number },
-  esPersonaje: boolean,
+  /** Los estados obligatorios de un personaje, o `null` si no es uno. */
+  estadosDePersonaje: readonly string[] | null,
 ): { violaciones: string[]; cuadros: CuadroDeclarado[] } {
   const declarados: CuadroDeclarado[] = [];
   if (!animaciones || typeof animaciones !== 'object' || Array.isArray(animaciones) || Object.keys(animaciones).length === 0) {
@@ -336,12 +351,12 @@ function auditarAnimaciones(
       for (let k = 0; k < Math.min(cuadros, columnas); k++) declarados.push({ animacion: nombre, fila, indice: k });
     }
   }
-  if (esPersonaje) {
+  if (estadosDePersonaje) {
     const nombres = Object.keys(animaciones);
-    const faltan = ESTADOS_PERSONAJE.filter((e) => !nombres.includes(e));
-    const sobran = nombres.filter((e) => !(ESTADOS_PERSONAJE as readonly string[]).includes(e));
+    const faltan = estadosDePersonaje.filter((e) => !nombres.includes(e));
+    const sobran = nombres.filter((e) => !estadosDePersonaje.includes(e));
     if (faltan.length) v.push(`a un personaje le faltan animaciones de CTR-15.7: ${faltan.join(', ')}`);
-    if (sobran.length) v.push(`CTR-15.7 no tiene estas animaciones, y no hay sexta: ${sobran.join(', ')}`);
+    if (sobran.length) v.push(`CTR-15.7 no tiene estas animaciones en esta versión del atlas: ${sobran.join(', ')}`);
   }
   return { violaciones: v, cuadros: declarados };
 }

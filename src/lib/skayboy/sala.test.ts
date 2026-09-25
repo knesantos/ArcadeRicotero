@@ -23,6 +23,10 @@
  * 6. **La puerta abierta es la cerrada sin el tapón** (`UX-32 §2.2`, `T-290`): la misma silueta
  *    —el marco no cambia un píxel—, y lo único que pasa es que la clave del vano se vuelve aire.
  *    No suma ni un píxel de clave que la cerrada no tuviera: si sumara, sería otra puerta.
+ * 7. **Un tesoro por dueño** (`D-47` punto 4, `CTR-16.4`): `tesoroSkayboy` —la guitarra— y
+ *    `tesoroPoligirl` —el cigarrillo—, y el `tesoro` que servía para los dos ya no está. Los dos
+ *    con la única tinta de objetos, con aire alrededor, y **uno gordo y el otro flaco**: la guitarra
+ *    es una masa y el cigarrillo una línea, que es lo único que los separa en gris (`UX-33 §3`).
  *
  * La tinta diecisiete —un color que no está en `tokens.css`— no es de este archivo: la caza el
  * auditor de paleta sobre el PNG impreso (`T-268`).
@@ -35,8 +39,11 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import sharp from 'sharp';
 import { leerDibujo, type Dibujo } from '../pixel/fuente.ts';
+import { diferenciasConLoPublicado, rutaPublicada } from '../pixel/publicado.ts';
+import { paletaDelArea } from '../pixel/tokens.ts';
 
 const ARCHIVO = 'src/arte/pixel/sala.txt';
 const SCHEMA = 'src/data/_schema/skayboy.schema.json';
@@ -50,7 +57,9 @@ const TILES_DE_LA_SALA: Readonly<Record<string, readonly string[] | { noSeDibuja
   aire: { noSeDibuja: 'es el fondo del área, --px-luz liso (UX-27 §1.1)' },
   solido: ['solido'],
   molinete: ['molineteCielo', 'molineteInfierno', 'molineteDos'],
-  tesoro: ['tesoro'],
+  // Uno por dueño desde D-47 (CTR-16.4): la guitarra de Skay y el cigarrillo de Poli. Se elige
+  // por `para[0]`, como la puerta por `de`.
+  tesoro: ['tesoroSkayboy', 'tesoroPoligirl'],
   entrada: { noSeDibuja: 'es aire; lo que la muestra es el muñeco parado ahí (UX-29 §3)' },
   // Las dos cerradas, y la abierta (`UX-32 §2`, `T-290`): una sola para las dos, ver abajo.
   puerta: ['puertaSkayboy', 'puertaPoligirl', 'puertaAbierta'],
@@ -183,7 +192,9 @@ test('el molinete de cielo no trae infierno, el de infierno no trae cielo, y el 
     de(dos, CIELO).length > 0 && de(dos, INFIERNO).length > 0,
     'el molinete que devuelve a los dos tiene que traer de las dos rampas: con una sola se lee "de uno"',
   );
-  assert.ok(tintasDe(d, 'tesoro').has('--px-tesoro'), 'el tesoro usa su tinta, la única de objeto (UX-27 §4)');
+  for (const t of dibujados('tesoro')) {
+    assert.ok(tintasDe(d, t).has('--px-tesoro'), `${t} usa la tinta de objeto, la única que hay (UX-27 §4, UX-33 §3.2)`);
+  }
 });
 
 /**
@@ -211,7 +222,7 @@ test('cada caracter de la leyenda del dato cae en un tile de la sala, o en un ti
   const d = leerSala();
   const hay = new Set(d.estados.map((e) => e.nombre));
   const dato = JSON.parse(readFileSync(DATO, 'utf-8')) as {
-    leyenda: Record<string, { tipo: string; elemento?: string; devuelve?: string[]; de?: string }>;
+    leyenda: Record<string, { tipo: string; elemento?: string; devuelve?: string[]; de?: string; para?: string[] }>;
   };
   const mayus = (s: string) => s[0]!.toUpperCase() + s.slice(1);
   for (const [car, e] of Object.entries(dato.leyenda)) {
@@ -228,6 +239,10 @@ test('cada caracter de la leyenda del dato cae en un tile de la sala, o en un ti
       tile = `molinete${mayus(elemento)}`;
     } else if (e.tipo === 'puerta') {
       tile = `puerta${mayus(e.de ?? '')}`;
+    } else if (e.tipo === 'tesoro') {
+      // CTR-16.4 enmendado por D-47: el tesoro es de uno, y el tile es el de su dueño.
+      assert.equal(e.para?.length, 1, `"${car}" es un tesoro para ${e.para?.join(' y ')}: el de los dos se retiró (D-47)`);
+      tile = `tesoro${mayus(e.para![0]!)}`;
     } else {
       tile = decision[0]!;
     }
@@ -322,3 +337,67 @@ function marcoDe(g: readonly string[], clave: string): string[] {
   }
   return clavesDe(g, clave).filter((p) => visto.has(p));
 }
+
+/**
+ * `D-47` punto 4 y `CTR-16.4`: *"reemplaza al tesoro que servía para los dos"*. El tile `tesoro`
+ * de la v2 no puede quedar en la v3: un tile que ningún caracter pide es un dibujo que alguien va
+ * a usar por error, y es justo el que dibujaba un objeto que era de los dos.
+ */
+test('el tesoro de los dos se retiró: la sala no tiene un tile tesoro suelto (D-47, CTR-16.4)', () => {
+  const d = leerSala();
+  const hay = d.estados.map((e) => e.nombre);
+  assert.ok(!hay.includes('tesoro'), 'sala.txt todavía trae el tile tesoro, el que servía para los dos');
+  assert.ok(hay.includes('tesoroSkayboy') && hay.includes('tesoroPoligirl'), 'faltan la guitarra o el cigarrillo');
+});
+
+/**
+ * `UX-33 §3.1` y `§3.3`: la figura en el centro, con aire alrededor —ninguno llena el tile de punta
+ * a punta, que es lo que los separa del terreno—, y **la guitarra gorda, el cigarrillo flaco**. Con
+ * una sola tinta para los dos, la silueta es la única prueba que existe, y se cuenta así: cuánto
+ * llena la tinta de objetos. El contorno no cuenta —a una línea el contorno la engorda: tiene tanto
+ * borde como cuerpo—, y el humo tampoco, que es de clave. La vara es el doble: una guitarra que no
+ * llena el doble que un cigarrillo es un palito, o un cigarrillo que llena la mitad de una guitarra
+ * es un habano.
+ */
+test('la guitarra es una masa y el cigarrillo una línea, los dos con aire alrededor (UX-33 §3)', () => {
+  const d = leerSala();
+  const luz = [...d.leyenda].find(([, n]) => n === '--px-luz')?.[0];
+  const objeto = [...d.leyenda].find(([, n]) => n === '--px-tesoro')?.[0];
+  assert.ok(luz && objeto, 'la sala no nombra la luz o la tinta de objetos');
+  const grilla = (estado: string) => d.cuadros.find((c) => c.estado === estado)?.filas;
+  const lleno = (g: readonly string[]) => g.join('').split('').filter((c) => c === objeto).length;
+  const guitarra = grilla('tesoroSkayboy');
+  const cigarrillo = grilla('tesoroPoligirl');
+  assert.ok(guitarra && cigarrillo, 'faltan la guitarra o el cigarrillo');
+  for (const [nombre, g] of [['tesoroSkayboy', guitarra], ['tesoroPoligirl', cigarrillo]] as const) {
+    const n = g.length;
+    const borde = [...g[0]!, ...g[n - 1]!, ...g.map((f) => f[0]!), ...g.map((f) => f[f.length - 1]!)];
+    assert.ok(borde.every((c) => c === luz), `${nombre}: la figura toca el borde del tile, y va con aire alrededor (UX-33 §3.1)`);
+  }
+  assert.notEqual(guitarra.join('\n'), cigarrillo.join('\n'), 'la guitarra y el cigarrillo son el mismo dibujo');
+  assert.ok(
+    lleno(guitarra) >= 2 * lleno(cigarrillo),
+    `la guitarra llena ${lleno(guitarra)} píxeles y el cigarrillo ${lleno(cigarrillo)}: en gris no se separan (UX-33 §3.3)`,
+  );
+});
+
+/**
+ * La isla carga `public/sprites/sala.v<N>.png` y su `.json`, no este `.txt` (`T-300`). Si lo
+ * publicado se separa de la fuente —el `.txt` tocado sin reimprimir, un tile borrado a mano del
+ * JSON—, los tests de arriba siguen en verde y el auditor de paleta también: el auditor mira las
+ * tintas, no el dibujo. Esto compara el JSON y cada píxel del PNG con lo que imprime `sala.txt`.
+ */
+test('lo publicado es lo que imprime sala.txt: el JSON es el suyo y cada píxel del PNG también (CTR-15.7, CTR-15.8)', async () => {
+  const d = leerSala();
+  const base = rutaPublicada(d);
+  assert.ok(existsSync(`${base}.json`) && existsSync(`${base}.png`), `sala.txt es la v${d.version} y ${base}.png / .json no están: reimprimí`);
+  const { data, info } = await sharp(readFileSync(`${base}.png`)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const { tintas } = paletaDelArea(readFileSync('src/styles/tokens.css', 'utf-8'));
+  const problemas = diferenciasConLoPublicado(d, tintas, {
+    json: JSON.parse(readFileSync(`${base}.json`, 'utf-8')),
+    ancho: info.width,
+    alto: info.height,
+    rgba: new Uint8Array(data),
+  });
+  assert.deepEqual(problemas, [], `lo publicado se separó de su fuente:\n  ${problemas.join('\n  ')}`);
+});

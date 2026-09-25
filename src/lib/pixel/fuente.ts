@@ -52,8 +52,8 @@
  * ```
  *
  * - **`tipo`** decide la grilla, y la grilla no se declara: sale de `CTR-15.3`. Un
- *   personaje lleva 24 renglones por cuadro y además los cinco estados de `CTR-15.7`
- *   (`quieto`, `corre`, `salta`, `cae`, `enPausa`), ni uno más ni uno menos. **Los tiles
+ *   personaje lleva 24 renglones por cuadro y además los seis estados de `CTR-15.7`
+ *   (`quieto`, `corre`, `salta`, `cae`, `enPausa`, `baila`), ni uno más ni uno menos. **Los tiles
  *   van opacos enteros** (`UX-27 §3`): un `.` en la grilla de un tile es error, porque el
  *   `.` es de los personajes. El auditor mira lo mismo en el PNG.
  * - **`tinta`**: un caracter visible cualquiera menos `.` (transparente), `#` (comentario)
@@ -93,8 +93,19 @@ export const GRILLA: Readonly<Record<TipoDeAtlas, { ancho: number; alto: number 
 /** `CTR-15.3`: igual para los dos personajes, porque es paridad mecánica y no estética. */
 export const COLISION_PERSONAJE = { ancho: 10, alto: 20 } as const;
 
-/** `CTR-15.7`: las cinco son obligatorias, y no hay sexta. */
-export const ESTADOS_PERSONAJE = ['quieto', 'corre', 'salta', 'cae', 'enPausa'] as const;
+/**
+ * `CTR-15.7`: las seis son obligatorias, y no hay séptima. Eran cinco hasta el 2026-09-24: `baila`
+ * entra por `D-47` punto 3, en la última fila para no mover las otras.
+ */
+export const ESTADOS_PERSONAJE = ['quieto', 'corre', 'salta', 'cae', 'enPausa', 'baila'] as const;
+
+/**
+ * Los cinco de antes de `D-47`: los de un atlas `v1`, impreso cuando `CTR-15.7` tenía cinco. No
+ * se imprimen más —el lector de dibujos exige los seis—, pero `CTR-15.8` deja el `.v1.png` en
+ * `public/sprites/` hasta que nada lo pida, y el auditor lo tiene que dejar pasar mientras tanto.
+ * Cuando se borren los `v1` de los personajes, esto se va con ellos.
+ */
+export const ESTADOS_PERSONAJE_V1 = ['quieto', 'corre', 'salta', 'cae', 'enPausa'] as const;
 
 export const TRANSPARENTE = '.';
 
@@ -359,7 +370,7 @@ export function leerDibujo(texto: string, archivo: string): Lectura {
     const faltan = ESTADOS_PERSONAJE.filter((e) => !nombres.includes(e) && !estadoFallido.has(e));
     const sobran = nombres.filter((e) => !(ESTADOS_PERSONAJE as readonly string[]).includes(e));
     if (faltan.length) errores.push(`${archivo}: a un personaje le faltan estados de CTR-15.7: ${faltan.join(', ')}`);
-    if (sobran.length) errores.push(`${archivo}: CTR-15.7 no tiene estos estados, y no hay sexta: ${sobran.join(', ')}`);
+    if (sobran.length) errores.push(`${archivo}: CTR-15.7 no tiene estos estados, y no hay séptima: ${sobran.join(', ')}`);
   }
 
   // Las grillas: tamaño exacto y caracteres de la leyenda. Un caracter fuera de la leyenda

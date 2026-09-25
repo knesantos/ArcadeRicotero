@@ -6,7 +6,8 @@
 # Las tintas (UX-27 §1.1 y §4): el aire es --px-luz y el sólido es --px-clave. Las tres del
 # cielo y las tres del infierno son solo de sus molinetes; el de los dos las mezcla. Palanca,
 # placa, compuerta, caja y las dos puertas van en clave y luz y se distinguen por forma
-# (CTR-16.10.8, UX-27 §4.1.2). Ninguna tinta de personaje entra acá.
+# (CTR-16.10.8, UX-27 §4.1.2). Ninguna tinta de personaje entra acá. --px-tesoro es la única de
+# los objetos, y la comparten la guitarra y el cigarrillo (UX-33 §3.2): los separa la forma.
 #
 # Los tres molinetes cierran la celda con clave a los costados y abajo (UX-27 §5.2): el ancla
 # del cielo queda a 1,024:1 del aire (§4) y, suelto contra el aire, sin ese marco no se sabía
@@ -33,8 +34,16 @@
 #             compuertaAbierta va SOLO en la celda de arriba del tramo (compuertas[].en): es la
 #             reja recogida contra su anclaje; las otras celdas del tramo abierto son aire (CTR-16.10.4).
 #   caja      se dibuja encima de lo que tape: arriba de una placa, la placa no se ve.
+#   tesoro    uno por dueño desde D-47 (CTR-16.4): tesoroSkayboy para 'para: skayboy', tesoroPoligirl
+#             para la otra. El de los dos se retiró, y con él el tile 'tesoro' de la v2: por eso la v3.
+#             La guitarra de Skay es una masa: cuerpo con boca, mástil en diagonal hacia la esquina de
+#             arriba, clavijero. El cigarrillo de Poli es una línea: apoyado en diagonal, con el filtro
+#             marcado por un anillo de clave, la punta encendida en luz y un hilo de humo. En gris se
+#             separan por eso, gorda contra flaca (UX-33 §3.3). Al juntarse, el tile pasa a aire en el
+#             mismo cuadro: no hay brillo ni tile de 'juntado' (UX-33 §3.4). Si llega un reclamo por el
+#             cigarrillo, se redibuja este tile y sube la versión; el dato no se toca (D-47, CTR-16.4).
 tipo: tile
-version: 2
+version: 3
 
 tinta: K --px-clave
 tinta: L --px-luz
@@ -50,7 +59,8 @@ estado: solido  cuadros=1
 estado: molineteCielo  cuadros=1
 estado: molineteInfierno  cuadros=1
 estado: molineteDos  cuadros=1
-estado: tesoro  cuadros=1
+estado: tesoroSkayboy  cuadros=1
+estado: tesoroPoligirl  cuadros=1
 estado: puertaSkayboy  cuadros=1
 estado: puertaPoligirl  cuadros=1
 estado: puertaAbierta  cuadros=1
@@ -134,21 +144,39 @@ KdwrrrsdddwrrrsK
 KwrrrsdddwrrrsdK
 KKKKKKKKKKKKKKKK
 
-cuadro: tesoro 0
+cuadro: tesoroSkayboy 0
 LLLLLLLLLLLLLLLL
-LLLLLLLLLLLLLLLL
-LLLLKKKKKKKKLLLL
-LLLKOOOOOOOOKLLL
-LLKOLLOOOOOOOKLL
-LLKOLOOOOOOOOKLL
-LLKOOOOOOOOOOKLL
-LLLKOOOOOOOOKLLL
-LLLKOOOOOOOOKLLL
-LLLLKOOOOOOKLLLL
-LLLLKOOOOOOKLLLL
+LLLLLLLLLLLLKKLL
+LLLLLLLLLLLKOOKL
+LLLLLLLLLLKOOKLL
+LLLLLLLKKKOKKLLL
+LLLLLLKOOOKLLLLL
 LLLLLKOOOOKLLLLL
-LLLLLLKOOKLLLLLL
-LLLLLLLKKLLLLLLL
+LLLKKKOOOOOKLLLL
+LLKOOOOOOOKLLLLL
+LKOOOOOOOKLLLLLL
+LKOOKKOOKLLLLLLL
+LKOOKKOOKLLLLLLL
+LKOOOOOOKLLLLLLL
+LLKOOOOKLLLLLLLL
+LLLKKKKLLLLLLLLL
+LLLLLLLLLLLLLLLL
+
+cuadro: tesoroPoligirl 0
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLLLLLLLLLLLKLLL
+LLLLLLLLLLLLLKLL
+LLLLLLLLLLLLKLLL
+LLLLLLLLLLLLLKLL
+LLLLLLLLLLKKKLLL
+LLLLLLKKKKOOLKLL
+LLLKKKOOOOOOLKLL
+LLKOOKOOOOKKKLLL
+LLKOOKKKKKLLLLLL
+LLLKKKLLLLLLLLLL
 LLLLLLLLLLLLLLLL
 LLLLLLLLLLLLLLLL
 

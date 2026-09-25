@@ -34,7 +34,7 @@
  * ## El dibujo sale de los atlas, y de nada más (`T-278`, `CTR-15`)
  *
  * Adentro del área no hay un solo rectángulo de tinta plana: todo lo que se ve es un cuadro de
- * `public/sprites/` —`skayboy.v1`, `poligirl.v1`, `sala.v2`—, cargado a tamaño nativo y
+ * `public/sprites/` —`skayboy.v2`, `poligirl.v2`, `sala.v3`—, cargado a tamaño nativo y
  * escalado por el motor con un entero y sin suavizado (`crisp`, `texFilter: 'nearest'`,
  * `ADR-08.3`). **Qué** se dibuja, en qué estado y dónde lo decide `escena.ts`, probado en Node
  * (`escena.test.ts`): el mapeo de `poseDe()` a los estados del atlas, el espejo según `mira`,
@@ -46,12 +46,20 @@
  * o si un atlas no está o no es el que la escena espera, el juego no arranca y queda el rótulo
  * impreso: un área a medio pintar sería inventar lo que falta. Lo vigila `motor.test.ts`.
  *
- * ## Ganar se ve, y se sigue con un toque (`UX-32`, `T-290`)
+ * ## Ganar se ve, se baila, y se sigue con un toque (`UX-32`, `UX-33 §2`, `T-290`, `T-302`)
  *
  * **Qué se ve lo decide `escena.ts`**, como todo el dibujo: con el mundo ganado, las dos puertas
- * son `puertaAbierta` en el mismo cuadro y los dos muñecos van de frente. La isla no hace nada
- * especial para eso — dibuja los trazos de siempre. Ni festejo, ni cartel, ni cámara: después de
- * ese cuadro no se mueve nada, porque el reloj del mundo se congela al ganar.
+ * son `puertaAbierta` en el mismo cuadro y **los dos muñecos bailan, cada uno el suyo, en su lugar**
+ * (`D-47` punto 3). Ni cartel, ni cámara, ni sonido nuevo (`UX-32 §4`). El reloj del mundo se
+ * congela al ganar, así que el cuadro del baile sale de otro: la `victoria` que la isla marca
+ * después de cada tic con el reloj del motor (`marcarVictoria()`), y que `relojDelTrazo()` lee al
+ * dibujar. Con movimiento reducido el baile queda en su cuadro 0 (`CTR-15.7`, `ADR-08.8`).
+ *
+ * **En el tic en que se gana, el avance se guarda** (`guardarPasado()`, `CTR-16.11`): no al tocar
+ * Seguí, así quien cierra el teléfono con la victoria en pantalla no pierde el nivel. Y aparece el
+ * contador de lo que juntó cada uno, uno junto a cada muñeco, en una capa de HTML encima del área
+ * (`#contador-victoria`, `UX-33 §2.5`): qué dice y dónde lo decide `mostrarContador()`, llamada
+ * después de cada `jugarTic(`, como `mostrarSeguir()`.
  *
  * **Seguir es tocar el área.** Encima del canvas hay un `<button>` del tamaño del recorte
  * (`#seguir-juego`, con el verbo del sitio de etiqueta), escondido mientras se juega. En el mismo
@@ -60,7 +68,11 @@
  * **ahí mismo**: sin recargar, sin bajar nada, con el mismo motor y los mismos atlas (`D-32`
  * límite 3). Las dos viven en `escena.ts` y se juegan en Node; la isla pone el pegamento y suelta
  * las teclas al cambiar de nivel: el que arranca tiene que estar quieto (`UX-28 §3`). En el último
- * nivel no aparece: a dónde lleva ahí es de `producto` (`UX-32 §5`, `BR-27`).
+ * nivel aparece igual y lleva al primero de la fila: la pieza compartible de `BR-27` (`BR-31`
+ * punto 1), que es a donde el papel manda ese toque, todavía no existe.
+ *
+ * **Al entrar se juega el primero de la fila que falta** (`CTR-16.11.2`): `nivelAJugar()` con el
+ * avance guardado, que `cargarAvance()` lee una vez, al arrancar.
  *
  * ## Se carga solo si hay un nivel que jugar
  *
@@ -71,7 +83,8 @@
  * a haber ahí y no promete nada (`ADR-08.2`). Es lo honesto.
  *
  * **En desarrollo** la página siembra todos los niveles, borradores incluidos, y la isla juega el
- * primero —o el que pida `?nivel=NIV-04` en la dirección—. Ese pedido no existe en el build.
+ * primero que falta —o el que pida `?nivel=NIV-04` en la dirección, que le gana al avance—. Ese
+ * pedido no existe en el build.
  *
  * ## Las teclas se mantienen apretadas, y eso el repo no lo tenía (`ADR-08.10`)
  *
@@ -81,11 +94,33 @@
  * todas — una tecla trabada es un personaje que camina solo, y el que espera tiene que
  * estar quieto (`UX-28 §3`).
  *
+ * ## La pantalla completa es un modo de la página (`ADR-10`, `UX-33 §1`, `T-301`)
+ *
+ * El pedido de `D-47` no fue la API del sistema: fue que *el scroll no rompa los controles*. Por
+ * eso el modo es **un atributo en `<html>`** —`data-pantalla="completa"`— que la hoja lee para
+ * fijar `.fichin` a la ventana, cortar todo gesto del navegador y agrandar el área, y que ponen
+ * y sacan solo `entrar()` y `salir()`. **Además**, en el mismo toque y sin ningún `await` antes,
+ * se le pide al sistema su pantalla completa **sobre `.fichin`, nunca sobre el canvas** —si la
+ * pidiera el canvas, desaparecerían las teclas, el botón de salir y el pie de homenaje—, y la
+ * orientación horizontal, solo donde las dos existen. En iPhone no existen: el modo es todo lo
+ * que hay, y alcanza (`D-47` consecuencia 2).
+ *
+ * Se sale por tres puertas que llegan a `salir()`: el mismo botón, `Escape`, y el sistema cuando
+ * termina su pantalla completa. **El motor no se entera**: no se reinicia el nivel ni se toca el
+ * reloj; cambia solo la caja CSS del canvas, que calcula `encuadre()` (`pantalla.ts`, probada en
+ * Node) cada vez que el contenedor cambia de tamaño. Lo vigila `motor.test.ts`: ni
+ * `setFullscreen` ni `isFullscreen` del motor, ni `stretch` ni `letterbox` en el init.
+ *
+ * Las funciones del modo viven en `modo-pantalla.ts`, que recibe el documento, la ventana y el
+ * contenedor en vez de leerlos, y así `modo-pantalla.test.ts` las juega en Node con utilería:
+ * que el pedido salga en el mismo toque, sobre `.fichin`, y que cada puerta saque de verdad.
+ *
  * ## `prefers-reduced-motion` (`ADR-08.8`, vara 1)
  *
  * El juego arranca **quieto por construcción**: los dos parados en su entrada, y nada se
- * mueve sin un dedo encima. No hay nada que apagar, y por eso esta isla no consulta la
- * preferencia: no tiene movimiento que la persona no haya pedido.
+ * mueve sin un dedo encima. **El único movimiento que nadie pidió con un dedo es el baile de la
+ * victoria** (`D-47`), y por eso la isla consulta la preferencia (`movimientoReducido()`) y, con
+ * movimiento reducido, lo deja fijo en su cuadro 0 (`CTR-15.7`). Lo demás no tiene nada que apagar.
  */
 
 import type { KAPLAYCtx, SpriteData } from 'kaplay';
@@ -96,19 +131,29 @@ import {
   PIEZAS,
   alTocarSeguir,
   atlasDe,
+  avisoDelSuceso,
+  crearVictoria,
   cuadroDelAtlas,
+  esElUltimo,
   grillaDelAtlas,
+  marcarVictoria,
+  mostrarContador,
   mostrarSeguir,
   nivelAJugar,
+  pidioMenosMovimiento,
   problemasDelAtlas,
   problemasDelCuadro,
+  relojDelTrazo,
   rutaDe,
   trazosDe,
+  type CapaDelContador,
   type Pieza,
+  type Victoria,
 } from '../lib/skayboy/escena.ts';
+import { cargarAvance, guardarPasado } from '../lib/skayboy/avance.ts';
 import { armarEfectos, soltarEfectos, sonar } from '../lib/skayboy/sonido.ts';
 import { alCambiarLaCinta, estadoDeLaCinta } from '../lib/sitio/cinta.ts';
-import { PANTALLA } from '../lib/skayboy/copy.ts';
+import { montarPantallaCompleta } from '../lib/skayboy/modo-pantalla.ts';
 
 /**
  * Qué columna maneja a quién. **Siempre la misma** (`D-43`): no hay botón de cambio y no
@@ -244,24 +289,53 @@ const seguir = document.querySelector<HTMLButtonElement>('#seguir-juego');
 /**
  * `deFrente` junta a los que volvieron a la entrada en este tic: el cuadro que sigue se dibujan
  * de frente (`UX-29 §3`, fila 1), y después la isla lo vacía.
+ *
+ * **Qué dice el lector de pantalla lo elige `avisoDelSuceso()`** (`escena.ts`, `CNT-18`, `CNT-22`):
+ * la vuelta nombra el lugar, el coleccionable nombra el objeto, y ganar nombra las dos puertas;
+ * nunca a la persona. Se escribe una vez por suceso, vaciando antes, para que el lector lo repita.
+ * `ultimo` es si el nivel que se juega es el último de la fila (`esElUltimo()`): ahí el de ganar
+ * dice también que era el último, porque el toque vuelve al primero.
  */
-function atender(sucesos: readonly Suceso[], deFrente: Set<IdPersonaje>): void {
+function atender(sucesos: readonly Suceso[], deFrente: Set<IdPersonaje>, ultimo: boolean): void {
   for (const s of sucesos) {
+    const texto = avisoDelSuceso(s, ultimo);
+    if (texto !== null && aviso !== null) {
+      aviso.textContent = '';
+      aviso.textContent = texto;
+    }
     // Callado también: la compuerta no suena (`CTR-16.10.7`, cuatro motivos) y el dibujo lee el
     // estado del mundo, no el suceso. Lo consume la cuenta de la paridad (`CTR-18.8`), no la isla.
     if (s.tipo === 'compuerta') continue;
     if (s.tipo === 'vuelta') {
       deFrente.add(s.quien);
-      // Callado: `vuelta` no suena (`UX-29 §5`, `CTR-17.6`). El aviso nombra el lugar y no
-      // a la persona, y se escribe una vez por vuelta para que el lector lo repita.
-      if (aviso !== null) {
-        aviso.textContent = '';
-        aviso.textContent = PANTALLA.avisoEntrada;
-      }
+      // Callado: `vuelta` no suena (`UX-29 §5`, `CTR-17.6`).
       continue;
     }
     sonar(s.tipo);
   }
+}
+
+/**
+ * La capa del contador de la victoria (`UX-33 §2.5`): nace escondida en el HTML, adentro del
+ * recorte, con una etiqueta por personaje. Qué dice cada una, dónde va y cuándo se ve lo decide
+ * `mostrarContador()`; acá solo se buscan los nodos. Sin la capa, `null`, y no se cuenta nada.
+ */
+function capaDelContador(): CapaDelContador | null {
+  const capa = document.querySelector<HTMLElement>('#contador-victoria');
+  const skayboy = capa?.querySelector<HTMLElement>('[data-de="skayboy"]');
+  const poligirl = capa?.querySelector<HTMLElement>('[data-de="poligirl"]');
+  if (capa === null || skayboy == null || poligirl == null) return null;
+  return { capa, etiquetas: { skayboy, poligirl } };
+}
+
+/**
+ * **Si la persona pidió menos movimiento** (`ADR-08.8` vara 1, `CTR-15.7`). Se lee en cada cuadro
+ * y no una vez: la preferencia se puede cambiar con el juego abierto. Sin `matchMedia`, no.
+ */
+const preferencia = typeof matchMedia === 'function' ? matchMedia('(prefers-reduced-motion: reduce)') : null;
+
+function movimientoReducido(): boolean {
+  return pidioMenosMovimiento(preferencia);
 }
 
 /* ==========================================================================
@@ -316,12 +390,19 @@ function cargarAtlas(k: KAPLAYCtx, pieza: Pieza, nombre: string, json: JsonDelAt
    El dibujo: cada trazo de la escena, un cuadro de un atlas (`T-278`)
    ========================================================================== */
 
-function dibujar(k: KAPLAYCtx, mundo: Mundo, atlas: Readonly<Record<Pieza, Atlas>>, deFrente: ReadonlySet<IdPersonaje>): void {
+function dibujar(
+  k: KAPLAYCtx,
+  mundo: Mundo,
+  atlas: Readonly<Record<Pieza, Atlas>>,
+  deFrente: ReadonlySet<IdPersonaje>,
+  victoria: Victoria,
+): void {
   for (const t of trazosDe(mundo, deFrente)) {
     const { json, sprite } = atlas[t.pieza];
     k.drawSprite({
       sprite,
-      frame: cuadroDelAtlas(json, t.estado, mundo.tiempo),
+      // El reloj de cada trazo: el de la partida, salvo el baile, que cuenta desde que se ganó.
+      frame: cuadroDelAtlas(json, t.estado, relojDelTrazo(t, mundo, victoria, movimientoReducido())),
       pos: k.vec2(t.x, t.y),
       flipX: t.espejo,
     });
@@ -351,7 +432,9 @@ async function arrancar(): Promise<void> {
   // único que se ve en el navegador es el nivel 1, que no tiene palancas, placas, compuertas ni
   // cajas. En el build `import.meta.env.DEV` es `false`, la rama se va, y se juega el primero.
   const pedido = import.meta.env.DEV ? new URLSearchParams(location.search).get('nivel') : null;
-  const nivel = nivelAJugar(banco.niveles, pedido);
+  // El primero de la fila que falta, con el avance guardado en el aparato (`CTR-16.11.2`); el
+  // pedido de desarrollo le gana. Se lee una sola vez, acá.
+  const nivel = nivelAJugar(banco.niveles, pedido, cargarAvance());
   // Sin un nivel sembrado queda el rótulo impreso, y el motor ni se baja.
   if (nivel === undefined) return;
 
@@ -406,6 +489,9 @@ async function arrancar(): Promise<void> {
   let mundo = crearMundo(banco, nivel);
   const reloj = crearReloj();
   const deFrente = new Set<IdPersonaje>();
+  // Cuándo se ganó, con el reloj del motor: el del baile (`CTR-15.7`). Una sola para toda la fila.
+  const victoria = crearVictoria();
+  const contador = capaDelContador();
 
   // Qué hace el toque y cuándo se ve el botón lo deciden `alTocarSeguir()` y `mostrarSeguir()`,
   // jugadas en Node; acá queda el pegamento con el DOM (`escena.test.ts` vigila que se llamen).
@@ -419,6 +505,7 @@ async function arrancar(): Promise<void> {
     // El que arranca tiene que estar quieto (`UX-28 §3`): ningún dedo pasa de un nivel al otro.
     soltarTodas();
     mostrarSeguir(seguir, mundo, banco.niveles);
+    mostrarContador(contador, mundo);
     if (conTeclado) document.querySelector<HTMLButtonElement>('button[data-mando][data-tecla]')?.focus();
   });
 
@@ -433,20 +520,53 @@ async function arrancar(): Promise<void> {
     // siempre de a un CUADRO_SEG. Es el mismo paso con que la máquina prueba cada nivel en el
     // build, así que lo que se juega acá es, bit a bit, lo que se probó. Todo eso vive en
     // jugarTic(), probado en Node: la isla solo le da el tiempo del motor.
-    atender(jugarTic(reloj, mundo, ambos, k.dt()), deFrente);
-    // En el mismo tic en que se gana, el toque para seguir ya es tocable (`D-32` límite 3).
+    atender(jugarTic(reloj, mundo, ambos, k.dt()), deFrente, esElUltimo(mundo, banco.niveles));
+    // En el tic en que se gana: el avance se guarda ahí, no al tocar Seguí (`CTR-16.11.1`), y el
+    // baile empieza a contar con el reloj del motor, porque el del mundo se congela.
+    if (marcarVictoria(victoria, mundo, k.time())) guardarPasado(mundo.nivel.id);
+    // En el mismo tic en que se gana, el toque para seguir ya es tocable (`D-32` límite 3), y el
+    // contador de lo que juntó cada uno ya se ve (`UX-33 §2.5`).
     mostrarSeguir(seguir, mundo, banco.niveles);
+    mostrarContador(contador, mundo);
   });
   k.onDraw(() => {
-    dibujar(k, mundo, atlas, deFrente);
+    dibujar(k, mundo, atlas, deFrente, victoria);
     // Un cuadro de frente y nada más (`UX-29 §3`): el dedo responde desde el cuadro cero.
     deFrente.clear();
   });
 
   // El rótulo se va cuando el motor ya dibuja, no antes: si el `import` falla, queda.
   document.querySelector('.rotulo-carga')?.setAttribute('hidden', '');
+  // Y en el mismo momento aparece la manera de jugar (`ADR-10.1`): sin motor no hay nada que
+  // agrandar, y un botón que no hace nada sería prometer lo que no hay (`ADR-08.2`).
+  botonPantalla?.removeAttribute('hidden');
+}
+
+/* ==========================================================================
+   La pantalla completa (`ADR-10`, `UX-33 §1`)
+
+   Todo el modo vive en `modo-pantalla.ts`, que no lee ningun global para poder jugarse en
+   Node con un DOM de utileria. Aca solo se le pasa lo de verdad.
+   ========================================================================== */
+
+/** El interruptor. Nace escondido en el HTML y aparece cuando el motor ya dibuja. */
+const botonPantalla = document.querySelector<HTMLButtonElement>('#pantalla-completa');
+
+function escucharPantallaCompleta(): void {
+  const fichin = document.querySelector<HTMLElement>('.fichin');
+  if (fichin === null || botonPantalla === null) return;
+  montarPantallaCompleta({
+    documento: document,
+    ventana: window,
+    orientacion: screen.orientation,
+    Observador: ResizeObserver,
+    fichin,
+    boton: botonPantalla,
+    soltarTodas,
+  });
 }
 
 escucharTeclas();
+escucharPantallaCompleta();
 engancharEfectos();
 void arrancar();

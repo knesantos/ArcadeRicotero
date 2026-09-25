@@ -18,6 +18,11 @@
  * sobre su pieza, que cada compuerta tenga nombre y quien la abra, que todo esté apoyado, y que
  * cada entrada tenga dónde pararse. Un nivel que rompe una no entra al banco, con el nivel, la
  * celda y lo que hay al lado escritos en el mensaje.
+ *
+ * Desde `D-47` (`T-303`), **`E10`**: cada nivel trae tantos tesoros de Skayboy —sus guitarras—
+ * como de Poligirl —sus cigarrillos—. Es contar caracteres de la grilla por lo que la leyenda dice
+ * de ellos, y eso tampoco lo hace un schema. Que la leyenda tenga uno de cada uno (`E9`) es del
+ * archivo entero y vive en `esquemas.test.ts`, al lado de los molinetes.
  */
 
 /** Los dos, y son dos (`CTR-16.3`). */
@@ -66,7 +71,11 @@ export interface Terreno {
    * sigue diciendo `devuelve`, y eso es de `experiencia` (`UX-30 §3`).
    */
   readonly elemento?: Elemento;
-  /** Solo en `tesoro`: quién lo puede juntar. */
+  /**
+   * Solo en `tesoro`: quién lo puede juntar. **Uno solo** desde `D-47` (`CTR-16.4`, versión 3):
+   * la guitarra es de Skayboy y el cigarrillo de Poligirl, y el schema no deja nombrar a los dos.
+   * Sigue siendo un arreglo porque así lo escribe el dato, no porque quepan dos.
+   */
   readonly para?: readonly IdPersonaje[];
   /** Solo en `entrada` y `puerta`: de quién es. */
   readonly de?: IdPersonaje;
@@ -226,6 +235,32 @@ export function celdasDeTipo(banco: Banco, nivel: Nivel, tipo: TipoDeTerreno): P
 }
 
 /**
+ * De quién es el tesoro de esa celda (`CTR-16.4` enmendado por `D-47`): la guitarra de Skayboy o el
+ * cigarrillo de Poligirl. `null` si la celda no es un tesoro, o si es uno que no nombra a nadie —el
+ * schema no lo deja pasar, pero esta función no confía en que alguien lo haya corrido—. Lo usan la
+ * cuenta de `E10`, la del mundo (`juntadosPorPersonaje()`) y el dibujo, que elige el tile por esto.
+ */
+export function duenoDelTesoro(terreno: Terreno | undefined): IdPersonaje | null {
+  if (terreno === undefined || terreno.tipo !== 'tesoro') return null;
+  return terreno.para?.[0] ?? null;
+}
+
+/**
+ * Cuántos tesoros de cada uno trae el nivel: **las guitarras de Skayboy y los cigarrillos de
+ * Poligirl** (`D-47` punto 4). Se cuentan celdas de la grilla por lo que la leyenda dice de ellas,
+ * que es lo que ningún schema sabe hacer. `E10` exige que las dos cuentas sean iguales; la victoria
+ * puede usarla para decir de cuántos (`UX-33 §2.5`), y nunca para comparar a uno con el otro.
+ */
+export function tesorosDelNivel(banco: Banco, nivel: Nivel): Record<IdPersonaje, number> {
+  const cuenta: Record<IdPersonaje, number> = { skayboy: 0, poligirl: 0 };
+  for (const { columna, fila } of celdasDeTipo(banco, nivel, 'tesoro')) {
+    const dueno = duenoDelTesoro(terrenoEn(banco, nivel, { columna, fila }));
+    if (dueno !== null) cuenta[dueno]++;
+  }
+  return cuenta;
+}
+
+/**
  * Un tramo de compuerta (`CTR-16.10.4`): una columna de celdas `compuerta` seguidas, con el
  * `id` de la entrada de `compuertas` que apunta a su celda de arriba. Si ninguna apunta ahí, el
  * id dice que no tiene (`E2` lo rechaza antes de que llegue al mundo).
@@ -282,7 +317,7 @@ function solidoOBorde(banco: Banco, nivel: Nivel, columna: number, fila: number)
 }
 
 /**
- * `E1` a `E6` y `E8` de `CTR-16.10.10` para un nivel. `E6` mira el banco entero y va aparte.
+ * `E1` a `E6`, `E8` y `E10` de `CTR-16.10.10` para un nivel. `E6` mira el banco entero y va aparte.
  * Cada mensaje trae el número de la regla al final, para que el que lee sepa a qué párrafo del
  * contrato ir.
  */
@@ -417,6 +452,18 @@ function problemasDeLaSala(banco: Banco, nivel: Nivel): string[] {
     }
   }
 
+  // E10 (CTR-16.4 enmendado por D-47, BR-31 punto 2): tantos tesoros de uno como del otro. La
+  // paridad de BR-23 vuelta número: son dos objetos que el mismo diseño coloca a propósito, así que
+  // la cuenta es exacta, sin la tolerancia de uno que BR-23 punto 1 le da a quién abre paso. Cero y
+  // cero cumple: BR-31 no fija un mínimo.
+  const tesoros = tesorosDelNivel(banco, nivel);
+  if (tesoros.skayboy !== tesoros.poligirl) {
+    problemas.push(
+      `${n}: trae ${tesoros.skayboy} tesoro(s) de skayboy y ${tesoros.poligirl} de poligirl, ` +
+        'y cada nivel trae la misma cantidad de los dos (BR-31 punto 2, E10)',
+    );
+  }
+
   return problemas;
 }
 
@@ -462,8 +509,8 @@ function problemasDelUltimoEscalon(banco: Banco): string[] {
  * caracter sin declarar no es un error de tipeo inofensivo: es un tile que el motor va a
  * pintar como aire, y una pared que desaparece el día que alguien la dibuje.
  *
- * Después, las de la sala (`E1` a `E6` y `E8`): miran celdas vecinas y cruzan la grilla con los
- * arreglos, que es justo lo que JSON Schema no sabe hacer. `E7` —cielo e infierno— vive en
+ * Después, las de la sala (`E1` a `E6`, `E8` y `E10`): miran celdas vecinas, cruzan la grilla con
+ * los arreglos o cuentan celdas por su dueño, que es justo lo que JSON Schema no sabe hacer. `E7` —cielo e infierno— vive en
  * `esquemas.test.ts`, adentro de la cuenta de los tres molinetes, porque es de la leyenda y no
  * de un nivel.
  */

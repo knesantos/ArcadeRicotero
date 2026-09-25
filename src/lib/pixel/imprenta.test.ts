@@ -6,8 +6,9 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import sharp from 'sharp';
 import { hexDeRgb, paletaDelArea, resolverToken, leerDeclaraciones, TOPE_DE_TINTAS } from './tokens.ts';
-import { ESTADOS_PERSONAJE, componerAtlas, estructura, jsonDelAtlas, leerDibujo } from './fuente.ts';
+import { ESTADOS_PERSONAJE, ESTADOS_PERSONAJE_V1, componerAtlas, estructura, jsonDelAtlas, leerDibujo } from './fuente.ts';
 import { CHUNKS_PERMITIDOS, auditarJson, leerCabecera, quitarChunks } from './auditoria.ts';
+import { diferenciasConLoPublicado, rutaPublicada } from './publicado.ts';
 
 /**
  * La cadena del pixel, probada en rojo (`T-268`, ciclo 16; `D-44`, `UX-27 §3` y `§5.3`,
@@ -157,10 +158,16 @@ function jsonDeFixture(cambios: Record<string, unknown> = {}): Record<string, un
   return j;
 }
 
-/** El JSON de un personaje de `CTR-15.7`: celda 16 × 24, caja 10 × 20 y las cinco filas. */
-function jsonDePersonaje(cambios: Record<string, unknown> = {}): Record<string, unknown> {
+/**
+ * El JSON de un personaje de `CTR-15.7`: celda 16 × 24, caja 10 × 20 y las seis filas (eran cinco
+ * hasta `D-47`; con `estados` se arma uno con otras, como el de un `v1`).
+ */
+function jsonDePersonaje(
+  cambios: Record<string, unknown> = {},
+  estados: readonly string[] = ESTADOS_PERSONAJE,
+): Record<string, unknown> {
   const animaciones = Object.fromEntries(
-    ESTADOS_PERSONAJE.map((e, fila) => [e, { fila, cuadros: 1, porSegundo: 0, repite: false }]),
+    estados.map((e, fila) => [e, { fila, cuadros: 1, porSegundo: 0, repite: false }]),
   );
   return jsonDeFixture({ pieza: 'skayboy', celda: { ancho: 16, alto: 24 }, colision: { ancho: 10, alto: 20 }, animaciones, ...cambios });
 }
@@ -206,7 +213,7 @@ test('un dibujo de tiles válido se lee, y el JSON sale con la forma de CTR-15.7
   });
 });
 
-test('un personaje lleva celda 16 × 24, la caja de 10 × 20 y los cinco estados', () => {
+test('un personaje lleva celda 16 × 24, la caja de 10 × 20 y los seis estados', () => {
   const { dibujo, errores } = leerDibujo(dibujoDePersonaje(), 'skayboy.txt');
   assert.deepEqual(errores, []);
   const j = jsonDelAtlas(dibujo!);
@@ -268,7 +275,7 @@ test('🔴 a un personaje no le puede faltar ni sobrar un estado de CTR-15.7', (
     .replace('cuadro: enPausa 0', 'cuadro: muere 0');
   const e = leerDibujo(sinPausa, 'skayboy.txt').errores.join('\n');
   assert.match(e, /le faltan estados de CTR-15\.7: enPausa/);
-  assert.match(e, /no hay sexta: muere/);
+  assert.match(e, /no hay séptima: muere/);
 });
 
 test('🔴 la leyenda no acepta un hex, ni el punto, ni un caracter repetido', () => {
@@ -296,6 +303,39 @@ test('componer: alfa binario, una fila por estado y lo que sobra transparente', 
   // El centro de infierno 0 es el rojo de la hoja.
   const q = (5 * 32 + 5) * 4;
   assert.equal(hexDeRgb(a.rgba[q]!, a.rgba[q + 1]!, a.rgba[q + 2]!), ROJO);
+});
+
+/**
+ * Lo publicado contra su fuente (`publicado.ts`, `T-300`): el auditor mira que las tintas sean de
+ * la hoja, no que el dibujo sea el del `.txt`. Esto es lo que lo mira, probado con datos armados.
+ */
+test('🔴 lo publicado contra su fuente: un píxel distinto, el JSON distinto y otro tamaño se nombran; el alfa 0 no mira el color', () => {
+  const { dibujo } = leerDibujo(dibujoDeTiles(), 'sala.txt');
+  const d = dibujo!;
+  const { tintas } = paletaDelArea(hojaDeFixture());
+  const a = componerAtlas(d, tintas);
+  const publicado = (cambios: { json?: unknown; rgba?: Uint8Array; ancho?: number } = {}) => ({
+    json: cambios.json ?? structuredClone(a.json),
+    ancho: cambios.ancho ?? a.ancho,
+    alto: a.alto,
+    rgba: cambios.rgba ?? a.rgba.slice(),
+  });
+  assert.equal(rutaPublicada(d), 'public/sprites/sala.v1');
+  assert.deepEqual(diferenciasConLoPublicado(d, tintas, publicado()), [], 'lo recién impreso está en regla');
+  // La celda (fila 0, columna 1) es transparente: el PNG puede guardar cualquier color debajo.
+  const debajo = a.rgba.slice();
+  const t = (5 * 32 + 20) * 4;
+  debajo.set([1, 2, 3], t);
+  assert.deepEqual(diferenciasConLoPublicado(d, tintas, publicado({ rgba: debajo })), [], 'el color bajo un alfa 0 no cuenta');
+  const pintado = a.rgba.slice();
+  const q = (5 * 32 + 5) * 4;
+  pintado[q] = 1;
+  const [pixel] = diferenciasConLoPublicado(d, tintas, publicado({ rgba: pintado }));
+  assert.match(pixel ?? '', /1 píxel distinto, en \(5, 5\)$/);
+  const json = structuredClone(a.json);
+  json.animaciones.cielo!.cuadros = 1;
+  assert.match(diferenciasConLoPublicado(d, tintas, publicado({ json }))[0] ?? '', /sala\.v1\.json no es el que imprime/);
+  assert.match(diferenciasConLoPublicado(d, tintas, publicado({ ancho: 16 }))[0] ?? '', /mide 16 × 32 y sala\.txt imprime 32 × 32/);
 });
 
 // ======================================================================== la hoja
@@ -368,7 +408,7 @@ test('ida y vuelta: lo que la imprenta imprime, el auditor lo da por bueno', asy
     // El PNG: RGBA de 8 bits, sin un chunk de metadatos, y del tamaño exacto de la grilla.
     const bytes = readFileSync(join(sprites, 'skayboy.v1.png'));
     const c = leerCabecera(bytes);
-    assert.deepEqual([c.ancho, c.alto, c.profundidad, c.tipoColor], [16, 120, 8, 6]);
+    assert.deepEqual([c.ancho, c.alto, c.profundidad, c.tipoColor], [16, 144, 8, 6]);
     assert.deepEqual([...new Set(c.chunks)].filter((t) => !(CHUNKS_PERMITIDOS as readonly string[]).includes(t)), []);
     // Los píxeles son los de la hoja, byte por byte.
     const { data } = await sharp(bytes).raw().toBuffer({ resolveWithObject: true });
@@ -610,23 +650,56 @@ test('🔴 2. una tinta mal declarada da un error por tinta, no uno por celda', 
 
 test('🔴 3. el auditor pide contratoVersion, animaciones y la caja del personaje (CTR-15.7)', () => {
   assert.deepEqual(auditarFixture(jsonDeFixture()), [], 'el fixture de tiles es sano');
-  assert.deepEqual(auditarFixture(jsonDePersonaje(), 16, 120), [], 'el fixture de personaje es sano');
+  assert.deepEqual(auditarFixture(jsonDePersonaje(), 16, 144), [], 'el fixture de personaje es sano');
 
   assert.match(auditarFixture(jsonDeFixture({ contratoVersion: undefined })).join('\n'), /contratoVersion/);
   assert.match(auditarFixture(jsonDeFixture({ contratoVersion: '1' })).join('\n'), /contratoVersion/);
   assert.match(auditarFixture(jsonDeFixture({ animaciones: undefined })).join('\n'), /no declara las animaciones/);
   assert.match(auditarFixture(jsonDeFixture({ animaciones: {} })).join('\n'), /no declara las animaciones/);
-  assert.match(auditarFixture(jsonDePersonaje({ colision: undefined }), 16, 120).join('\n'), /caja de colisión/);
+  assert.match(auditarFixture(jsonDePersonaje({ colision: undefined }), 16, 144).join('\n'), /caja de colisión/);
   assert.match(
-    auditarFixture(jsonDePersonaje({ colision: { ancho: 12, alto: 20 } }), 16, 120).join('\n'),
+    auditarFixture(jsonDePersonaje({ colision: { ancho: 12, alto: 20 } }), 16, 144).join('\n'),
     /10 × 20/,
     'la caja es la misma para los dos: es paridad mecánica (CTR-15.3)',
   );
   const sinPausa = jsonDePersonaje();
   delete (sinPausa.animaciones as Record<string, unknown>).enPausa;
-  assert.match(auditarFixture(sinPausa, 16, 120).join('\n'), /enPausa/);
+  assert.match(auditarFixture(sinPausa, 16, 144).join('\n'), /enPausa/);
+  const sinBaile = jsonDePersonaje();
+  delete (sinBaile.animaciones as Record<string, unknown>).baila;
+  assert.match(auditarFixture(sinBaile, 16, 120).join('\n'), /le faltan animaciones de CTR-15\.7: baila/, 'desde D-47 son seis');
   const campoSuelto = jsonDeFixture({ animaciones: { infierno: { fila: 0, cuadros: 1, repite: false } } });
   assert.match(auditarFixture(campoSuelto).join('\n'), /infierno.*porSegundo/);
+});
+
+/**
+ * `CTR-15.8`: *"la versión vieja no se borra en el mismo cambio"*. El `skayboy.v1.png` se imprimió
+ * con los cinco estados de antes de `D-47` y se queda en `public/sprites/` hasta que nada lo pida;
+ * el auditor lo deja pasar con esos cinco. Solo a un `v1`: desde la `v2`, un personaje sin `baila`
+ * es un atlas al que le falta el baile.
+ */
+test('🔴 3. un personaje v1 pasa con los cinco justos de antes de D-47; desde la v2, sin baila no pasa (CTR-15.8)', () => {
+  const v1 = jsonDePersonaje({}, ESTADOS_PERSONAJE_V1);
+  assert.deepEqual(auditarFixture(v1, 16, 120, { archivo: 'skayboy.v1.png' }), [], 'el v1 impreso antes de D-47 se queda');
+  assert.match(
+    auditarFixture(v1, 16, 120, { archivo: 'skayboy.v2.png' }).join('\n'),
+    /le faltan animaciones de CTR-15\.7: baila/,
+    'una v2 sin baila',
+  );
+  assert.match(auditarFixture(v1, 16, 120).join('\n'), /baila/, 'sin nombre de archivo manda el contrato de hoy');
+  assert.deepEqual(auditarFixture(jsonDePersonaje(), 16, 144, { archivo: 'skayboy.v2.png' }), [], 'la v2 con los seis');
+  assert.deepEqual(
+    auditarFixture(jsonDePersonaje(), 16, 144, { archivo: 'skayboy.v1.png' }),
+    [],
+    'un v1 impreso hoy trae los seis, y está bien: la excepción es para el de antes, no una regla del v1',
+  );
+  const sinPausaV1 = jsonDePersonaje({}, ESTADOS_PERSONAJE_V1);
+  delete (sinPausaV1.animaciones as Record<string, unknown>).enPausa;
+  assert.match(
+    auditarFixture(sinPausaV1, 16, 96, { archivo: 'skayboy.v1.png' }).join('\n'),
+    /le faltan animaciones de CTR-15\.7: enPausa, baila/,
+    'la excepción es la lista justa de antes: un v1 con cuatro no es el de antes',
+  );
 });
 
 test('🔴 3. el auditor rechaza un JSON que declara más filas o más cuadros que los del PNG', () => {
@@ -766,9 +839,9 @@ test('🔴 V1. el auditor: un hueco adentro de un cuadro de tile es violación; 
   });
   assert.deepEqual(auditarFixture(dos, 32, 32, { rgba: conSobra }), []);
   // Un personaje lleva transparentes, y no se miran.
-  const figura = rgbaDeInfierno(16, 120);
+  const figura = rgbaDeInfierno(16, 144);
   figura[3] = 0;
-  assert.deepEqual(auditarFixture(jsonDePersonaje(), 16, 120, { rgba: figura }), []);
+  assert.deepEqual(auditarFixture(jsonDePersonaje(), 16, 144, { rgba: figura }), []);
 });
 
 test('🔴 V2. un "#" en la columna 1 de una grilla es un caracter, no un comentario que se come la fila', () => {

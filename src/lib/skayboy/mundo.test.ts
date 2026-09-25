@@ -35,6 +35,7 @@ import {
   crearMundo,
   crearReloj,
   jugarTic,
+  juntadosPorPersonaje,
   paso,
   poseDe,
   puntoDeEntrada,
@@ -330,7 +331,7 @@ test('🔴 el que vuelve a la entrada no mueve al otro ni le saca lo que consigu
     '#.............#',
     '#.............#',
     '#.............#',
-    '#A..C1..o2...B#',
+    '#A..C1..-2...B#',
     '###############',
   ]);
   const mundo = crearMundo(banco, nivel);
@@ -382,6 +383,83 @@ test('el tesoro se junta una vez, y solo lo junta el que figura en `para`', () =
   assert.deepEqual(poli.filter((s) => s.tipo === 'tesoro'), [{ tipo: 'tesoro', quien: 'poligirl' }]);
   const otra = correr(mundo, mandos({ poligirl: { derecha: true } }), 1);
   assert.ok(!otra.some((s) => s.tipo === 'tesoro'), 'y no se junta dos veces');
+});
+
+/**
+ * ## Guitarras y cigarrillos (`D-47` punto 4, `CTR-16.4` versión 3, `BR-31` punto 2)
+ *
+ * Con la leyenda de verdad: se buscan por dueño y no por caracter, así que si mañana el cigarrillo
+ * cambia de letra (o de objeto, que es lo que `D-47` avisa que puede pasar) esto no se entera. En
+ * la sala de abajo el cigarrillo está en la 7 y la guitarra en la 8, entre las dos entradas: cada
+ * uno, para llegar al suyo, pasa por arriba del del otro.
+ */
+function tesoroDe(banco: Banco, id: IdPersonaje): string {
+  const par = Object.entries(banco.leyenda).find(([, t]) => t.tipo === 'tesoro' && t.para?.[0] === id);
+  assert.ok(par, `la leyenda no trae un tesoro de ${id} (E9)`);
+  return par[0];
+}
+const GUITARRA = tesoroDe(BANCO, 'skayboy');
+const CIGARRILLO = tesoroDe(BANCO, 'poligirl');
+const CRUZADOS = [
+  '###############',
+  '#.............#',
+  '#.............#',
+  '#.............#',
+  '#.............#',
+  '#.............#',
+  '#.............#',
+  `#A...1.${CIGARRILLO}${GUITARRA}.2..B#`,
+  '###############',
+];
+
+test('🔴 D-47: la guitarra la junta Skayboy y el cigarrillo Poligirl; el del otro no se junta', () => {
+  const { banco, nivel } = sala(CRUZADOS);
+  const mundo = crearMundo(banco, nivel);
+  assert.deepEqual(juntadosPorPersonaje(mundo), { skayboy: 0, poligirl: 0 });
+
+  // Poligirl va hasta la pared de la izquierda: pasa por la guitarra (8) y por su cigarrillo (7).
+  const ella = correr(mundo, mandos({ poligirl: { izquierda: true } }), 2);
+  assert.deepEqual(ella.filter((s) => s.tipo === 'tesoro'), [{ tipo: 'tesoro', quien: 'poligirl' }], 'juntó uno solo, el suyo');
+  assert.deepEqual([...mundo.juntados], ['7,7'], 'y es el cigarrillo: la guitarra sigue en su celda');
+  assert.deepEqual(juntadosPorPersonaje(mundo), { skayboy: 0, poligirl: 1 });
+
+  // Skayboy va hasta la pared de la derecha: pasa por el cigarrillo ya juntado y por su guitarra.
+  const el = correr(mundo, mandos({ skayboy: { derecha: true } }), 2);
+  assert.deepEqual(el.filter((s) => s.tipo === 'tesoro'), [{ tipo: 'tesoro', quien: 'skayboy' }], 'juntó la suya');
+  assert.deepEqual([...mundo.juntados].sort(), ['7,7', '8,7']);
+  assert.deepEqual(juntadosPorPersonaje(mundo), { skayboy: 1, poligirl: 1 });
+});
+
+test('🔴 D-47: el otro pasa por encima del tesoro ajeno como por aire, caminando y saltando', () => {
+  // La misma sala con aire donde están los tesoros: el cuerpo que no es el dueño tiene que hacer,
+  // cuadro por cuadro, exactamente lo mismo en las dos. Y con los tesoros también en la fila 6,
+  // que es por donde pasa la cabeza de un salto corto.
+  const conAire = CRUZADOS.map((r) => r.replaceAll(CIGARRILLO, '.').replaceAll(GUITARRA, '.'));
+  const enAlto = CRUZADOS.map((r, f) => (f === 6 ? `#......${CIGARRILLO}${GUITARRA}.....#` : r));
+  for (const [quien, hacia, dueno] of [
+    ['poligirl', 'izquierda', 'la guitarra'],
+    ['skayboy', 'derecha', 'el cigarrillo'],
+  ] as const) {
+    for (const grilla of [CRUZADOS, enAlto]) {
+      for (const saltar of [false, true]) {
+        const m = mandos({ [quien]: { [hacia]: true, saltar } });
+        const conTesoro = crearMundo(sala(grilla).banco, sala(grilla).nivel);
+        const vara = crearMundo(sala(conAire).banco, sala(conAire).nivel);
+        const sucesos: Suceso[] = [];
+        for (let i = 0; i < 90; i++) {
+          sucesos.push(...paso(conTesoro, m, CUADRO));
+          paso(vara, m, CUADRO);
+          const a = conTesoro.cuerpos[quien];
+          const b = vara.cuerpos[quien];
+          assert.deepEqual([a.x, a.y, a.enSuelo], [b.x, b.y, b.enSuelo], `${quien} ${saltar ? 'saltando' : 'caminando'}: en el cuadro ${i} ${dueno} lo frenó o lo movió`);
+        }
+        assert.ok(!sucesos.some((s) => s.tipo === 'vuelta'), `${quien}: ${dueno} no la devuelve a la entrada`);
+        // Control: pasó de verdad por la columna del tesoro del otro.
+        const x = conTesoro.cuerpos[quien].x;
+        assert.ok(quien === 'poligirl' ? x < 7 * TILE : x > 8 * TILE, `${quien}: control, cruzó las dos columnas`);
+      }
+    }
+  }
 });
 
 test('la pose: de frente sin dedo, de perfil con dedo (UX-28 §3)', () => {
@@ -491,13 +569,16 @@ test('a 120 Hz, un cuadro cada dos tics; y un dt que no es un número positivo n
  */
 
 /**
- * Los mandos del tic `n`: cada uno camina **hacia la puerta del otro**, juntando el tesoro del
- * camino, y Skayboy salta de a ratos. Que nadie gane es a propósito: una partida ganada deja de
- * avanzar el reloj, y la cuenta de cuadros tiene que poder leerse en `mundo.tiempo` hasta el final.
+ * Los mandos del tic `n`: **los dos caminan a la izquierda**, y Skayboy salta de a ratos. Él va a
+ * su puerta y junta en el camino su guitarra; ella va a la puerta de él y pasa por arriba de la
+ * guitarra sin juntarla (`D-47`: cada uno junta la suya). Que nadie gane es a propósito: una
+ * partida ganada deja de avanzar el reloj, y la cuenta de cuadros tiene que poder leerse en
+ * `mundo.tiempo` hasta el final. *(Hasta `T-303` cada uno iba a la puerta del otro juntando el
+ * tesoro de los dos; con un coleccionable para cada uno, ese camino ya no junta nada.)*
  */
 function mandosDelTic(n: number, porSegundo: number): Mandos {
   const salta = Math.floor((n / porSegundo) * 4) % 2 === 1;
-  return mandos({ skayboy: { derecha: true, saltar: salta }, poligirl: { izquierda: true } });
+  return mandos({ skayboy: { izquierda: true, saltar: salta }, poligirl: { izquierda: true } });
 }
 
 /** Juega esos tics con `jugarTic()` sobre `NIV-01`. */
@@ -1373,7 +1454,8 @@ const EN_UN_ESCALON = (fila7: string): string[] => [
  */
 const DONDE_NO_ENTRA: readonly [string, string[], string[]][] = [
   ['una palanca', EN_EL_PISO('#A1..n/...=2|B#'), EN_EL_PISO('#A1..n..../2|B#')],
-  ['un tesoro', EN_EL_PISO('#A1..no...=2|B#'), EN_EL_PISO('#A1..n..o.=2|B#')],
+  // El cigarrillo de la 9 está para que la sala cumpla E10 (uno de cada uno); la caja no llega ahí.
+  ['un tesoro', EN_EL_PISO('#A1..ng..-=2|B#'), EN_EL_PISO('#A1..n..g-=2|B#')],
   ['una entrada', EN_EL_PISO('#A1..n2...=.|B#'), EN_EL_PISO('#A1..n....=2|B#')],
   ['una puerta', EN_EL_PISO('#.1..nA...=2|B#'), EN_EL_PISO('#A1..n....=2|B#')],
   ['la celda de arriba de una entrada', EN_UN_ESCALON('#A1.##2......B#'), EN_UN_ESCALON('#A1.##.....2.B#')],

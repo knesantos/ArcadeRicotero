@@ -5,7 +5,8 @@
  * de `contenido` y se copian acá sin retocar: `CNT-17` (el pie de homenaje), `CNT-18` (las
  * teclas, el rótulo de carga, la línea de vertical y el aviso) y `CNT-19` (el nombre y la
  * bajada del casete). `CNT-21` no trajo cadena nueva: fijó cuándo se muestra la línea de
- * vertical. Si alguna hay que cambiarla, se cambia allá primero.
+ * vertical. `CNT-22` trajo las de la pantalla completa, la victoria y lo que junta cada uno. Si
+ * alguna hay que cambiarla, se cambia allá primero.
  *
  * **Y acá es donde se auditan de verdad.** Mientras vivían en un `.md` no las miraba
  * ninguna máquina; desde que están en este archivo, `voz.test.ts` les pasa sus siete
@@ -89,6 +90,30 @@ export const PANTALLA = {
    * se superpone al área y adentro del área no hay texto (`UX-27 §5.1`).
    */
   seguir: 'Seguí',
+  /**
+   * El par que le faltaba a `avisoEntrada` (`CNT-22 §2`): ganar, para el lector de pantalla.
+   * Nombra el hecho de juego —las dos puertas quedaron abiertas— y no a las personas: cualquier
+   * verbo sobre los dos juntos empieza a sonar a logro compartido (`BR-31`, `UX-33 §2.6`). No
+   * nombra el baile, que es decorativo y no cambia nada de lo que se puede tocar.
+   */
+  avisoVictoria: 'Las dos puertas, abiertas.',
+  /**
+   * La línea del final del sexto nivel (`CNT-22 §3`), que dice que ahí el toque no lleva a un
+   * séptimo sino a compartir. **Todavía no se muestra en ningún lado** (`T-302`): la pieza
+   * compartible de `BR-27` no existe, y decir "ahora se comparte" sin nada que compartir sería
+   * prometer lo que no hay (`ADR-08.2`). Queda acá, auditada por `voz.test.ts`, para el día que
+   * exista.
+   */
+  avisoUltimoNivel: 'Último nivel. Ahora se comparte.',
+  /**
+   * **Lo que sí se dice hoy al ganar el sexto**, para el lector de pantalla, después de
+   * `avisoVictoria`: la primera oración de `avisoUltimoNivel`, tal cual, sin la promesa. Mientras
+   * no exista la pieza de `BR-27`, el toque del sexto vuelve al primero de la fila (`escena.ts`), y
+   * quien no ve la pantalla tiene que saber por qué lo que sigue es el 1. Registro 3: el hecho y
+   * nada más. **No es texto nuevo de `contenido`**, es un recorte del suyo; el traspaso
+   * `HILO-para-producto-y-experiencia-la-victoria-y-la-fila.md` se lo pregunta igual.
+   */
+  avisoUltimo: 'Último nivel.',
 } as const;
 
 /**
@@ -101,3 +126,45 @@ export const PANTALLA = {
  */
 export const PIE_HOMENAJE =
   'Homenaje de fans, no oficial: ni Eduardo Beilinson ni Carmen Castro tuvieron nada que ver.';
+
+/**
+ * El interruptor de pantalla completa (`CNT-22 §1`, `UX-33 §1.2` y `§1.5`, `T-301`).
+ *
+ * **Mismo molde que `CINTA`** (`src/lib/sitio/copy.ts`): la estampa visible nombra el estado en
+ * que se está, en registro 3, y el `aria-label` nombra el verbo del toque, en voseo. Un solo
+ * botón, dado vuelta: en `ventana` se toca para `entrar`, en `completa` para `salir`.
+ *
+ * Las dos estampas van sin tilde a propósito (`CNT-22 §1`): entran en cualquier fuente del
+ * sitio sin esperar la deuda de acentos de `diseno-marca.md`. **Sin ícono**: las flechas en
+ * diagonal son el ícono de librería que esa misma regla veta.
+ *
+ * No hay una cadena para "esto no es pantalla completa de verdad" en iPhone (`CNT-22 §6`,
+ * `UX-33 §1.8`): el resultado es el mismo, y explicar el mecanismo no le sirve a nadie para jugar.
+ */
+export const PANTALLA_COMPLETA = {
+  ventana: 'PANTALLA NORMAL',
+  entrar: 'Entrá a pantalla completa',
+  completa: 'PANTALLA COMPLETA',
+  salir: 'Salí de pantalla completa',
+} as const;
+
+/**
+ * Lo que junta cada uno (`CNT-22 §4` y `§5`, `D-47` punto 4, `UX-33 §2.5`): Skayboy, guitarras;
+ * Poligirl, cigarrillos.
+ *
+ * **El contador** se arma con un número y la palabra que corresponda —`"1 guitarra"`,
+ * `"3 cigarrillos"`— y se muestra **solo en la victoria**, uno junto a cada personaje, en registro
+ * 3 y **sin comparación entre los dos**, nunca "3 contra 2" (`BR-27` punto 2). Lo compone
+ * `textoDelContador()` en `escena.ts`; acá quedan las palabras sueltas, como las dejó `contenido`.
+ *
+ * **Los avisos** son para el lector de pantalla, al levantar uno: nombran el objeto y se callan.
+ * Decir más —"conseguiste una guitarra"— narraría un logro (`BR-23`, `BR-31`).
+ */
+export const COLECCIONABLE = {
+  guitarra: 'guitarra',
+  guitarras: 'guitarras',
+  cigarrillo: 'cigarrillo',
+  cigarrillos: 'cigarrillos',
+  avisoGuitarra: 'Guitarra.',
+  avisoCigarrillo: 'Cigarrillo.',
+} as const;

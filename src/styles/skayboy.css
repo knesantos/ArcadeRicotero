@@ -229,6 +229,64 @@
   outline-offset: 0;
 }
 
+/* ---- Lo que junto cada uno, solo en la victoria (`UX-33 §2.5`, `T-302`) ----
+
+   Una capa encima del area, del mismo tamano que el canvas, que **no toma toques**: tocar el
+   area ganada sigue siendo tocar `#seguir-juego`. Por las dos puntas: `pointer-events: none`
+   aca, y en la pagina la capa va antes del boton, que se pinta encima (`escena.test.ts` mira
+   las dos). Adentro, una etiqueta por muneco.
+
+   **La caja de cada etiqueta la decide `ubicarEtiquetas()`, no el texto**: esquina, ancho y
+   alto en porcentajes del area (`--contador-x`, `-y`, `-ancho`, `-alto`), y la letra en `cqw`
+   de esta capa, que mide lo que el area. Asi la etiqueta ocupa la misma porcion del area a x1,
+   a x2 y en la pantalla completa, y lo que `escena.test.ts` prueba en Node —que las dos no se
+   cruzan ni tapan al otro muneco— es lo que se ve. Con la letra en `rem`, a x1 se pisaban en
+   tres de los seis niveles. A x1 la letra mide lo mismo que antes (0.56rem, 9 px de 240).
+
+   **Registro 3, y sello de goma** (`diseno-marca.md`): rectangulo de esquina casi viva, borde
+   fino, mayusculas rotuladas. Tinta del sitio sobre `--fondo`, el par que mide
+   `contraste.test.ts`. Sin sombra, sin alfa, sin rotacion: es un rotulo, no una estampa que
+   adorna, y se tiene que poder leer encima de un pixel art que se mueve. */
+.juego-skayboy .contador-victoria {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  pointer-events: none;
+  container-type: size;
+}
+
+.juego-skayboy .contador-victoria[hidden],
+.juego-skayboy .contador-etiqueta[hidden] {
+  display: none;
+}
+
+.juego-skayboy .contador-etiqueta {
+  position: absolute;
+  left: var(--contador-x, 0%);
+  top: var(--contador-y, 0%);
+  width: var(--contador-ancho, 40%);
+  height: var(--contador-alto, 11.111%);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  /* `safe`: si el texto no entra en la caja, se corta de un lado y se sigue leyendo el
+     número, en vez de perder las dos puntas (`FIND-79`). */
+  justify-content: safe center;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: var(--fuente-rotulada);
+  font-size: 3.75cqw;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--texto);
+  background: var(--fondo);
+  border: 1px solid var(--papel);
+  border-radius: 3px;
+}
+
 /* El rotulo estatico de `ADR-08.2`, que dice que ahi va a haber un juego y no promete
    nada. Registro 3: seco, en la rotulada, sin adorno. Tinta apagada sobre `--fondo`, que
    es par testeado. **Vive en el encabezado, afuera del area** (`UX-27 §5.1`: adentro no
@@ -698,5 +756,351 @@
 @media (min-width: 1220px) and (min-height: 660px) {
   .juego-skayboy .pantalla {
     --escala: 4;
+  }
+}
+
+/* ==========================================================================
+   El interruptor de pantalla completa, en el mueble (`UX-33 §1.2`, `CNT-22 §1`)
+
+   El mismo sello de goma que la cinta (`UX-21`): rectangulo de esquina casi viva, borde
+   fino, mayusculas rotuladas, apenas torcido. **Sin icono**: las flechas en diagonal que
+   cualquier interfaz usa para esto son el icono de libreria que `diseno-marca.md` veta por
+   nombre, y la palabra alcanza. Va en `--fuente-rotulada` y en tokens neutros, como la
+   cinta: es base, no disco.
+
+   **Superpuesto, nunca en la grilla** (`UX-33 §1.2`): el presupuesto de alto de `UX-28 §2.3`
+   no tiene un renglon para un tercer elemento, y no hace falta reabrirlo. Se ancla a la
+   esquina de arriba a la derecha del mueble y **nunca entra al area** (`UX-27 §1.2` punto
+   3): lo que cede es la esquina de chapa y bisel de ese rincon, que es decorativa, y el
+   margen de alrededor.
+
+   **Solo de costado** (`UX-33 §1.9`): en el apilado de `UX-28 §4` no hay scroll que rompa
+   nada, y el boton no aparece. La regla que lo prende esta con los escalones, mas abajo.
+   ========================================================================== */
+
+.juego-skayboy .gabinete {
+  position: relative;
+}
+
+/* **El blanco mide `--toque-min` y la estampa no** (`UX-33 §1.2`: el piso de 48 px vale
+   "exista o no exista aire visual alrededor"). El boton es una caja transparente de 48 de
+   alto cuyo borde de abajo cae sobre la chapa de arriba, sin tocar el bisel ni el area;
+   lo que se ve es su `::before`, de 26, **pegado sobre el canto del mueble** como la cinta
+   que pega cada casete al collage (`UX-22`): se come los 4 px de chapa de ese rincon y
+   asoma 22 por arriba. Asi el dedo tiene sus 48 y lo que se pinta no tapa ni el titulo que
+   queda arriba (medido a 812 x 354 y 812 x 375: entre el titulo y el mueble quedan unos
+   31 px), ni la ultima linea de la bajada en el x2 con alto de sobra (24 px de margen), ni
+   la tecla de saltar de al lado, que es lo que pasaba con la estampa entera de 48. */
+.juego-skayboy .pantalla-completa {
+  --sello-arriba: 22px;
+  --sello-abajo: 0px;
+  display: none;
+  position: absolute;
+  right: 0;
+  bottom: calc(100% - var(--chapa));
+  z-index: 42;
+  isolation: isolate;
+  min-width: var(--toque-min);
+  min-height: var(--toque-min);
+  margin: 0;
+  padding: 0 var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  letter-spacing: 0.09em;
+  color: var(--texto-tenue);
+  background: transparent;
+  border: 0;
+  transform: rotate(0.8deg);
+  transition: color var(--duracion-toque);
+  white-space: nowrap;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.juego-skayboy .pantalla-completa::before {
+  content: '';
+  position: absolute;
+  inset: var(--sello-arriba) 0 var(--sello-abajo);
+  z-index: -1;
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  border-radius: 3px;
+  transition: border-color var(--duracion-toque);
+}
+
+/* Cambio de tinta y de borde, nunca un levantar ni un inflar (`diseno-marca.md`). */
+.juego-skayboy .pantalla-completa:hover,
+.juego-skayboy .pantalla-completa:focus-visible {
+  color: var(--texto);
+}
+
+.juego-skayboy .pantalla-completa:hover::before,
+.juego-skayboy .pantalla-completa:focus-visible::before {
+  border-color: var(--papel-borde);
+}
+
+/* `[hidden]` escrito, por lo mismo que en `.seguir-juego`: el `display` de los escalones le
+   gana a la hoja del navegador, y el boton se podria tocar antes de que el motor dibuje. */
+.juego-skayboy .pantalla-completa[hidden] {
+  display: none;
+}
+
+/* ==========================================================================
+   La pantalla completa (`D-47` punto 1, `ADR-10`, `UX-33 §1`)
+
+   **Un modo de la pagina, no otra pagina.** La isla pone `data-pantalla="completa"` en
+   `<html>` y lo saca; esta hoja es la unica que lo lee, y todo lo del modo vive debajo de
+   ese atributo (`ADR-10.1`, `ADR-10.6`). Afuera del modo, el mueble de `D-41` sigue igual.
+
+   Adentro, cuatro cosas:
+
+   1. **La pagina no se mueve.** Ni desplaza, ni rebota, ni recarga al tirar para abajo. Y
+      ningun gesto que arranque en el fichin es del navegador: ni zoom con dos dedos, ni
+      doble toque, ni la lupa del toque largo (`UX-33 §1.6`, `US-09` criterio 6).
+   2. **El area crece a la escala entera mas grande que entra**, en px de dispositivo
+      (`ADR-10.4`). La cuenta la hace `encuadre()` en la isla y llega en cuatro
+      propiedades: `--encuadre-ancho`, `--encuadre-alto`, `--encuadre-izquierda` y
+      `--encuadre-arriba`. Lo que sobra son bandas de `--px-clave`: el bisel estirado, no un
+      color nuevo (`UX-33 §1.3`).
+   3. **Las mismas seis teclas, encima del area**, en la disposicion del horizontal: saltar
+      grande a cada lado y las flechas abajo (`UX-33 §1.4`). No hay un segundo juego de
+      botones.
+   4. **El pie de homenaje, pinchado abajo** y afuera del calculo del area (`UX-33 §1.7`,
+      `BR-26`). Se ve sin tocar nada.
+
+   Y la chapa decorativa de los costados y de arriba **no viaja**: ahi el borde de la
+   ventana ya hace ese trabajo (`UX-33 §1.3`). Tampoco el grano: el contenedor queda arriba
+   de su capa.
+   ========================================================================== */
+
+html[data-pantalla='completa'],
+[data-pantalla='completa'] body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+[data-pantalla='completa'] .juego-skayboy .fichin {
+  /* El relleno "medio transparente" de los controles (`UX-33 §1.4`): tinta plana de
+     `--fondo` con el alfa bajado. Nunca desenfoque ni vidrio (`diseno-marca.md`). Los dos
+     porcentajes los vigila `estilos.test.ts` contra el peor caso, que no es el aire sino
+     `--px-blanco-gulp`, la tinta mas clara del area: las teclas son figura y piden 3:1
+     (WCAG 1.4.11), y dan 3,4; el sello lleva palabra y pide 4,5, y da 4,85. Por eso el
+     sello es un poco menos transparente que las teclas, y no al reves. */
+  --mando-relleno: color-mix(in srgb, var(--fondo) 56%, transparent);
+  --sello-relleno: color-mix(in srgb, var(--fondo) 66%, transparent);
+  /* Los dos anillos de registro, opacos siempre: el claro afuera, el oscuro adentro. */
+  --anillo: 2px;
+
+  position: fixed;
+  inset: 0;
+  z-index: 42;
+  display: grid;
+  grid-template-areas:
+    'sala'
+    'pie';
+  grid-template-columns: 100%;
+  /* `minmax(0, ...)` y no `1fr` a secas: un `1fr` no baja del contenido mas alto de su fila, y
+     la columna de mando mide 340 con su aire. En una ventana de menos de 364 de alto (812 x 354,
+     568 x 320: un telefono de costado con la barra del navegador a la vista) la fila crecia por
+     las teclas y empujaba el pie de homenaje afuera de la pantalla (`BR-26`). Con el minimo en
+     cero la fila es la ventana menos el pie, siempre; lo que no entra lo resuelve el mando. */
+  grid-template-rows: minmax(0, 1fr) auto;
+  justify-items: stretch;
+  align-items: stretch;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  background: var(--px-clave);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* El mueble se desarma: sus piezas entran a la grilla del modo. El papel de la chapa, su
+   eco de tinta y su ancho declarado se quedan en el mueble. */
+[data-pantalla='completa'] .juego-skayboy .gabinete {
+  display: contents;
+}
+
+/* El area: la caja CSS del canvas es la unica que cambia. El buffer del motor queda como lo
+   armo el init, y el navegador lo lleva a esta caja con `pixelated` (`ADR-10.4`). Los
+   repuestos son la medida del mueble, para el instante antes del primer encuadre. */
+[data-pantalla='completa'] .juego-skayboy .recorte {
+  grid-area: sala;
+  justify-self: start;
+  align-self: start;
+  z-index: auto;
+  margin: calc(var(--encuadre-arriba, var(--bisel)) - var(--bisel)) 0 0
+    calc(var(--encuadre-izquierda, var(--bisel)) - var(--bisel));
+}
+
+[data-pantalla='completa'] .juego-skayboy #juego {
+  width: var(--encuadre-ancho, var(--area-ancho));
+  height: var(--encuadre-alto, var(--area-alto));
+}
+
+/* La linea del vertical es del mueble (`UX-28 §4.1`): en el modo no hay nada que prometer. */
+[data-pantalla='completa'] .juego-skayboy .chapa-linea {
+  display: none;
+}
+
+/* La chapa del pie, abajo de todo y a lo ancho: el mismo papel, la misma tinta apagada y el
+   mismo cuerpo que en el mueble, con el par que ya mide `contraste.test.ts`. */
+[data-pantalla='completa'] .juego-skayboy .chapa-pie {
+  grid-area: pie;
+  position: relative;
+  z-index: 1;
+  background: var(--papel);
+}
+
+/* ---- Las teclas, superpuestas (`UX-33 §1.4`) ----
+
+   Mismas medidas que en el mueble (`UX-28 §2.1`): no escalan con el area, son blanco de
+   dedo. Cada columna se pega a su borde y al piso de la sala, arriba del pie. */
+[data-pantalla='completa'] .juego-skayboy .mando {
+  grid-area: sala;
+  align-self: end;
+  position: relative;
+  z-index: 1;
+  width: var(--columna);
+  margin: var(--tecla-aire);
+  /* **Cuando la sala es mas baja que la columna, cede el salto, y nada mas.** La columna mide
+     324 y la sala de un telefono de costado con la barra a la vista puede tener 296 (568 x 320)
+     o 330 (812 x 354). Algo tiene que ceder, y no puede ser el pie (`BR-26`) ni que una tecla se
+     salga de la ventana. Cede el bloque de saltar, que es el unico que tiene de sobra: a 568 x 320
+     queda en 112 x 200, cuatro veces `--toque-min`. Las flechas no se tocan (52 x 64), ni el
+     aire entre las dos. Con alto de sobra —844 x 390 para arriba— la columna mide sus 324 de
+     siempre y esta regla no hace nada. `UX-33 §1.4` pide las medidas de `UX-28 §2.1` sin
+     cambios y no contempla este caso: es la salida mas chica, y esta en el traspaso a
+     `experiencia`. */
+  height: min(var(--mando-alto), calc(100% - 2 * var(--tecla-aire)));
+  grid-template-rows: minmax(var(--toque-min), var(--salto-alto)) var(--tecla-alto);
+}
+
+[data-pantalla='completa'] .juego-skayboy .mando--izquierda {
+  justify-self: start;
+}
+
+[data-pantalla='completa'] .juego-skayboy .mando--derecha {
+  justify-self: end;
+}
+
+/* **Medio transparentes, y se leen sobre el aire y sobre el solido** (`UX-33 §1.4`). El
+   relleno lleva alfa; el borde y la figura no, nunca. Dos anillos de registro opacos: uno
+   de `--papel` afuera y uno de `--fondo` adentro. Contra el aire trabaja el oscuro, contra
+   el solido el claro; con que uno contraste alcanza. Es el mismo par de siempre, y no un
+   gris elegido a ojo. El anillo de adentro es un `inset` sin difuminar: una linea, no una
+   sombra de elevacion. */
+[data-pantalla='completa'] .juego-skayboy .tecla,
+[data-pantalla='completa'] .juego-skayboy .pantalla-completa::before {
+  background: var(--mando-relleno);
+  border: var(--anillo) solid var(--papel);
+  box-shadow: inset 0 0 0 var(--anillo) var(--fondo);
+}
+
+[data-pantalla='completa'] .juego-skayboy .pantalla-completa::before {
+  background: var(--sello-relleno);
+}
+
+[data-pantalla='completa'] .juego-skayboy .tecla,
+[data-pantalla='completa'] .juego-skayboy .pantalla-completa {
+  color: var(--papel);
+}
+
+/* Apretada, el relleno se vuelve opaco y la figura queda en hueco: cambio de tinta, como en
+   el mueble, sin inflar nada. */
+[data-pantalla='completa'] .juego-skayboy .tecla:active,
+[data-pantalla='completa'] .juego-skayboy .tecla--apretada {
+  color: var(--fondo);
+  background: var(--papel);
+}
+
+/* ---- El boton para salir: el mismo sello, en la misma esquina (`UX-33 §1.5`) ----
+
+   Siempre a la vista en el modo, en cualquier orientacion: es la unica puerta que existe en
+   todos los telefonos (`ADR-10.3`). **Se apoya en la esquina de arriba a la derecha del
+   area**, encima de ella, como pide `UX-33 §1.5` —la misma esquina que en el mueble—, con
+   dos topes: no se sale de la ventana, y de costado **no pisa la columna de mando**. Ese
+   segundo tope no es prolijidad: a 844 x 390 la columna de 324 mas el sello de 48 no entran
+   uno arriba del otro en los 366 de la sala, y el sello tapaba el borde de arriba de la tecla
+   de saltar. Con el tope queda a la izquierda de la columna, sobre el area. */
+[data-pantalla='completa'] .juego-skayboy .pantalla-completa {
+  --sello-arriba: 0px;
+  --sello-abajo: 0px;
+  display: block;
+  grid-area: sala;
+  justify-self: end;
+  align-self: start;
+  position: relative;
+  inset: auto;
+  z-index: 1;
+  margin: 0;
+  margin-top: max(var(--tecla-aire), var(--encuadre-arriba, 0px));
+  margin-right: max(
+    calc(var(--columna) + 2 * var(--tecla-aire)),
+    calc(100% - var(--encuadre-izquierda, 0px) - var(--encuadre-ancho, 0px))
+  );
+}
+
+/* Parado, las teclas van abajo del area (`cajaDelArea()`): el tope de la columna no hace
+   falta, y el sello va justo en la esquina del area. */
+@media (orientation: portrait) {
+  [data-pantalla='completa'] .juego-skayboy .pantalla-completa {
+    margin-right: max(var(--tecla-aire), calc(100% - var(--encuadre-izquierda, 0px) - var(--encuadre-ancho, 0px)));
+  }
+}
+
+[data-pantalla='completa'] .juego-skayboy .pantalla-completa[hidden] {
+  display: none;
+}
+
+/* ---- Donde aparece el interruptor, y donde se apoya (`UX-33 §1.2` y `§1.9`) ----
+
+   **Aparece donde se ve el fichin de costado** —las tres franjas de los escalones de
+   arriba— **y ademas en cualquier ventana acostada.** Lo segundo no esta en `UX-33`: una
+   ventana acostada de menos de 330 de alto o de menos de 480 de ancho (568 x 320, un
+   telefono chico de costado) cae en el apilado, que ahi no entra en la pantalla y se
+   desplaza — es el defecto de `D-47` entero, en el telefono donde mas se nota. Parado, en
+   cambio, sigue sin aparecer. Declarado en el traspaso a `experiencia`.
+
+   **Donde se apoya depende de donde hay aire**, medido en el navegador con la estampa
+   contra el area, el titulo, la marca, la cinta y las seis teclas:
+
+   - arriba a la derecha del mueble (la regla de base, arriba): el x1 de costado, que deja
+     unos 31 px entre el titulo y el mueble, y el x2 con alto de sobra;
+   - **colgada abajo a la derecha** en el x2 apretado (401 a 500 de alto): ahi la cabecera
+     va acostada pegada al mueble y la estampa de arriba tapaba el titulo. Abajo quedan de 21
+     a 120 px; a 401 justos la estampa (26 px) asoma 20 y cuelga 6 bajo el borde, y un
+     toque de desplazar antes de jugar no es el defecto (el defecto es desplazar jugando);
+   - **al costado derecho, arriba**, en el apilado acostado: el mueble a x1 deja 150 px o mas
+     a cada lado, y arriba tiene el titulo encima. */
+@media (orientation: landscape),
+  (min-width: 720px) and (min-height: 400.02px),
+  (min-width: 480px) and (min-height: 330px) and (max-height: 400px),
+  (min-width: 480px) and (max-width: 719.98px) and (min-height: 400.02px) and (max-height: 599.98px) {
+  .juego-skayboy .pantalla-completa {
+    display: block;
+  }
+}
+
+@media (min-width: 720px) and (min-height: 400.02px) and (max-height: 500px) {
+  .juego-skayboy .pantalla-completa {
+    --sello-arriba: 0px;
+    --sello-abajo: 22px;
+    top: 100%;
+    bottom: auto;
+  }
+}
+
+@media (orientation: landscape) and (max-width: 479.98px),
+  (orientation: landscape) and (max-height: 329.98px),
+  (orientation: landscape) and (max-width: 719.98px) and (min-height: 600px) {
+  .juego-skayboy .pantalla-completa {
+    top: calc(-1 * var(--sello-arriba));
+    bottom: auto;
+    left: calc(100% + var(--tecla-aire));
+    right: auto;
   }
 }

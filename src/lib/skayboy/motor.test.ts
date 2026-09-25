@@ -450,10 +450,21 @@ function opcion(opciones: string, nombre: string): string | undefined {
 }
 
 /**
- * Las variables de la hoja que la isla lee y **no son tinta**: `--escala`, el entero de
- * `ADR-08.3` que reparte `UX-28 §2`. Una medida no pinta nada; cualquier otro `--` sí.
+ * Las variables de la hoja que la isla lee o escribe y **no son tinta**: `--escala`, el entero
+ * de `ADR-08.3` que reparte `UX-28 §2`; y desde `T-301` las del encuadre de la pantalla completa
+ * (`ADR-10.4`): el bisel y el aire de las teclas, que la isla lee para armar la caja del área, y
+ * las cuatro que escribe para que la hoja ubique el canvas. Una medida no pinta nada; cualquier
+ * otro `--` sí, y sigue cayendo (el caso de `--texto-tenue`, abajo).
  */
-const MEDIDAS = new Set(['--escala']);
+const MEDIDAS = new Set([
+  '--escala',
+  '--bisel',
+  '--tecla-aire',
+  '--encuadre-ancho',
+  '--encuadre-alto',
+  '--encuadre-izquierda',
+  '--encuadre-arriba',
+]);
 
 const PRIMITIVAS = /\b(draw(?:Rect|Circle|Ellipse|Polygon|Triangle|Lines?|Curve|Bezier|UVQuad))\b/g;
 const COMPONENTES = /(?:\.\s*|\[\s*['"`])(rect|circle|ellipse|polygon)\b/g;
@@ -791,5 +802,377 @@ for (const [caso, roto, espera] of [
       problemas.some((p) => p.includes(espera)),
       `tenía que caer por «${espera}» y dijo:\n${problemas.join('\n') || '(nada)'}`,
     );
+  });
+}
+
+/**
+ * ## La pantalla completa (`ADR-10.6`, `T-301`): el motor no se entera
+ *
+ * La decisión es que el modo le cambia al canvas **solo la caja CSS**, y que el buffer del motor
+ * queda como lo armó el init. Eso se sostiene mientras el motor no se meta, y hay cuatro maneras
+ * de que se meta, las cuatro leídas en `node_modules/kaplay/dist/kaplay.mjs` por `ADR-10`:
+ *
+ * 1. **`k.setFullscreen()`** pide la pantalla completa **sobre el canvas**: se ven los píxeles y
+ *    desaparecen las teclas, el botón de salir y el pie de homenaje. Y **`k.isFullscreen()`**
+ *    contesta sobre el canvas, así que con el contenedor en pantalla completa diría que no.
+ * 2. **`stretch` o `letterbox` en el init**: con cualquiera de los dos, el motor rehace el buffer
+ *    a la caja CSS en cada cambio de tamaño, con un tamaño que no es múltiplo de nada.
+ * 3. **`requestFullscreen` sobre el canvas** a mano: el mismo defecto que el punto 1 sin pasar
+ *    por el motor.
+ * 4. **Un `await` antes del `requestFullscreen`**: el navegador la da solo con el gesto de la
+ *    persona todavía vivo, y una espera en el medio lo gasta. Rechazada, el modo sigue, pero la
+ *    pantalla del sistema no llega nunca, y en Android es la que esconde la barra.
+ *
+ * Y tres presencias, porque la ausencia de código es el defecto: que el pedido exista, que el
+ * sistema tenga su puerta de salida (`fullscreenchange`) y `Escape` la suya, y que el encuadre
+ * se rehaga con un `ResizeObserver`.
+ */
+/**
+ * La declaración `function` más de adentro cuyo cuerpo (de su `{` a la `}` que lo cierra)
+ * contiene esa posición, con su `async` si lo tiene. `undefined` si está afuera de toda función.
+ */
+function funcionQueContiene(codigo: string, posicion: number): RegExpExecArray | undefined {
+  let adentro: RegExpExecArray | undefined;
+  for (const f of codigo.slice(0, posicion).matchAll(/(?<![\w$])(async\s+)?function\b[^{]*\{/g)) {
+    let hondura = 1;
+    let i = f.index + f[0].length;
+    while (i < codigo.length && hondura > 0) {
+      if (codigo[i] === '{') hondura++;
+      else if (codigo[i] === '}') hondura--;
+      i++;
+    }
+    if (i > posicion) adentro = f;
+  }
+  return adentro;
+}
+
+function problemasDePantallaCompleta(fuente: string): string[] {
+  const codigo = sinComentarios(fuente);
+  const problemas: string[] = [];
+
+  for (const prohibida of ['setFullscreen', 'isFullscreen']) {
+    if (new RegExp(`(?<![\\w$])${prohibida}(?![\\w$])`).test(codigo)) {
+      problemas.push(`nombra ${prohibida} del motor: contesta y pide sobre el canvas, no sobre el contenedor (ADR-10.4)`);
+    }
+  }
+  for (const { opciones } of llamadasAlMotor(codigo)) {
+    for (const opcion of ['stretch', 'letterbox']) {
+      if (new RegExp(`\\b${opcion}\\s*:`).test(opciones)) {
+        problemas.push(`kaplay( con ${opcion}: el motor rehace el buffer en cada cambio de caja (ADR-10.4)`);
+      }
+    }
+  }
+
+  const pedidos = [...codigo.matchAll(/(?<![\w$])(?:webkitR|r)equestFullscreen(?![\w$])/g)];
+  if (pedidos.length === 0) problemas.push('no hay ningún requestFullscreen: la pantalla del sistema no se pide nunca (ADR-10.2)');
+  for (const m of pedidos) {
+    // La sentencia entera donde aparece: de la `;` o la llave anterior a la `;` siguiente.
+    const desde = Math.max(codigo.lastIndexOf(';', m.index), codigo.lastIndexOf('{', m.index), codigo.lastIndexOf('}', m.index)) + 1;
+    const hasta = codigo.indexOf(';', m.index);
+    const sentencia = codigo.slice(desde, hasta === -1 ? undefined : hasta);
+    if (/(?<![\w$])canvas(?![\w$])|#juego/.test(sentencia)) {
+      problemas.push('pide la pantalla completa sobre el canvas: se pide sobre el contenedor, o las teclas desaparecen (ADR-10.2)');
+    }
+    // La función que la pide —la más de adentro cuyo cuerpo la contiene, no la última escrita
+    // antes: un `type` con `webkitRequestFullscreen` puede vivir debajo de cualquier función—:
+    // ni `async`, ni un `await` entre su comienzo y el pedido.
+    const funcion = funcionQueContiene(codigo, m.index);
+    if (funcion !== undefined) {
+      if (funcion[1] !== undefined) {
+        problemas.push('el pedido vive en una función async: el gesto de la persona no sobrevive a la espera (ADR-10.2)');
+      }
+      if (/(?<![\w$])await(?![\w$])/.test(codigo.slice(funcion.index, m.index))) {
+        problemas.push('hay un await antes del requestFullscreen: el gesto se gasta y el sistema la niega (ADR-10.2)');
+      }
+    }
+  }
+  if (/\.call\(\s*canvas\s*[,)]/.test(codigo)) {
+    problemas.push('llama algo con el canvas de this: si es el pedido, es sobre el canvas (ADR-10.2)');
+  }
+
+  if (!/['"`]fullscreenchange['"`]/.test(codigo)) {
+    problemas.push('no escucha fullscreenchange: si el sistema la termina, el modo se queda puesto (ADR-10.3)');
+  }
+  if (!/['"`]Escape['"`]/.test(codigo)) problemas.push('no escucha Escape: sin la API, el teclado no tiene salida (ADR-10.3)');
+  if (!/(?<![\w$])ResizeObserver(?![\w$])/.test(codigo)) {
+    problemas.push('no hay ResizeObserver: al girar o al esconderse la barra, el área queda con la escala vieja (ADR-10.1)');
+  }
+  return problemas;
+}
+
+/**
+ * El modo vive en un módulo aparte de la isla (`modo-pantalla.ts`) para poder jugarse en Node con
+ * utilería. Las prohibiciones de `ADR-10.6` son de la isla **entera**, así que se leen las dos
+ * piezas juntas: separar el archivo no puede ser una manera de sacar algo de la vista.
+ */
+const MODO = 'src/lib/skayboy/modo-pantalla.ts';
+
+test('la isla de verdad cumple ADR-10.6: el motor no se entera de la pantalla completa', () => {
+  assert.deepEqual(problemasDePantallaCompleta(readFileSync(ISLA, 'utf8') + '\n' + readFileSync(MODO, 'utf8')), []);
+});
+
+/**
+ * **Ni un `async` ni un `await` en el módulo del modo.** El auditor de arriba mira la función que
+ * contiene el pedido; la revisión mostró que una espera en el manejador del botón —una flecha
+ * `async`, que no es una `function`— lo esquivaba. Este módulo no tiene nada que esperar, así que
+ * la regla es más simple y más dura: ninguna espera, en ningún lado. La conducta la juega aparte
+ * `modo-pantalla.test.ts` (el pedido tiene que haber salido cuando vuelve el manejador); esto es
+ * la segunda red, la que se lee.
+ */
+function esperasEn(fuente: string): string[] {
+  return [...sinComentarios(fuente).matchAll(/(?<![\w$.'"`])(async|await)(?![\w$])/g)].map((m) => m[1]!);
+}
+
+test('ADR-10.2: el módulo del modo no espera nada, en ningún lado', () => {
+  assert.deepEqual(esperasEn(readFileSync(MODO, 'utf8')), []);
+});
+
+for (const [caso, roto] of [
+  ['🔴 una flecha async en el manejador', "boton.addEventListener('click', async () => { await Promise.resolve(); pedir(); });"],
+  ['🔴 una flecha async con la espera adentro', 'const pedir = async () => { entrar(); };'],
+  ['🔴 un await suelto antes del pedido', 'function pedir() { entrar(); }\nawait cargar();'],
+] as const) {
+  test(`esa regla sabe encontrar: ${caso}`, () => {
+    assert.notDeepEqual(esperasEn(roto), []);
+  });
+}
+
+test('control: nombrar la espera en un comentario o en un texto no es esperar', () => {
+  assert.deepEqual(esperasEn("// sin ningún await antes\nconst x = 'await';\nfunction f() {}"), []);
+});
+
+/** Un fuente sano de referencia para la pantalla completa. Cada caso lo rompe en un solo lugar. */
+const SANO_PANTALLA = `
+  const k = kaplay({ global: false, canvas, backgroundAudio: true, width: 240, height: 144, scale: escala, crisp: true });
+  void k.audioCtx.close();
+  function pedirPantallaCompleta() {
+    entrar();
+    const contenedor = fichin;
+    const pedir = contenedor.requestFullscreen ?? contenedor.webkitRequestFullscreen;
+    if (typeof pedir !== 'function') return;
+    Promise.resolve(pedir.call(contenedor)).catch(() => {});
+  }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') salir(); });
+  document.addEventListener('fullscreenchange', () => salir());
+  new ResizeObserver(() => encuadrar()).observe(fichin);
+`;
+
+test('control: el fuente de referencia de la pantalla completa está sano', () => {
+  assert.deepEqual(problemasDePantallaCompleta(SANO_PANTALLA), []);
+  // Nombrarla en un comentario no es llamarla.
+  assert.deepEqual(problemasDePantallaCompleta(SANO_PANTALLA + '\n// nunca k.setFullscreen(), que pide sobre el canvas'), []);
+  // Un tipo con el prefijo, escrito debajo de una función async, no vive adentro de ella: el
+  // primer auditor tomaba la última `function` escrita antes, y así cayó la isla de verdad.
+  const conTipo = 'async function arrancar() { await algo(); }\ntype ConPrefijo = { webkitRequestFullscreen?: () => void };\n';
+  assert.deepEqual(problemasDePantallaCompleta(conTipo + SANO_PANTALLA), []);
+});
+
+const PEDIDO = 'const pedir = contenedor.requestFullscreen ?? contenedor.webkitRequestFullscreen;';
+const OBSERVADOR = 'new ResizeObserver(() => encuadrar()).observe(fichin);';
+
+for (const [caso, roto, espera] of [
+  ['🔴 con k.setFullscreen()', SANO_PANTALLA + 'k.setFullscreen(true);', 'setFullscreen'],
+  ['🔴 preguntándole al motor con k.isFullscreen()', SANO_PANTALLA + 'if (k.isFullscreen()) salir();', 'isFullscreen'],
+  ['🔴 con stretch en el init', SANO_PANTALLA.replace('crisp: true', 'crisp: true, stretch: true'), 'stretch'],
+  ['🔴 con letterbox en el init', SANO_PANTALLA.replace('crisp: true', 'crisp: true, letterbox: true'), 'letterbox'],
+  ['🔴 pidiéndola sobre el canvas', SANO_PANTALLA.replace(PEDIDO, 'const pedir = canvas.requestFullscreen;'), 'sobre el canvas'],
+  [
+    '🔴 pidiéndola sobre el #juego',
+    SANO_PANTALLA.replace(PEDIDO, "document.querySelector('#juego').requestFullscreen();"),
+    'sobre el canvas',
+  ],
+  ['🔴 con el canvas de this', SANO_PANTALLA.replace('pedir.call(contenedor)', 'pedir.call(canvas)'), 'canvas de this'],
+  ['🔴 con un await antes del pedido', SANO_PANTALLA.replace('    entrar();', '    await cargarAlgo();'), 'await antes del requestFullscreen'],
+  [
+    '🔴 adentro de una función async',
+    SANO_PANTALLA.replace('function pedirPantallaCompleta', 'async function pedirPantallaCompleta'),
+    'async',
+  ],
+  ['🔴 sin ningún pedido', SANO_PANTALLA.replace(PEDIDO, 'const pedir = undefined;'), 'no hay ningún requestFullscreen'],
+  ['🔴 sin escuchar al sistema', SANO_PANTALLA.replace("'fullscreenchange'", "'resize'"), 'fullscreenchange'],
+  ['🔴 sin Escape', SANO_PANTALLA.replace("'Escape'", "'Esc'"), 'Escape'],
+  ['🔴 sin ResizeObserver', SANO_PANTALLA.replace(OBSERVADOR, "addEventListener('resize', encuadrar);"), 'ResizeObserver'],
+] as const) {
+  test(`el auditor de la pantalla completa sabe encontrar: ${caso}`, () => {
+    const problemas = problemasDePantallaCompleta(roto);
+    assert.ok(
+      problemas.some((p) => p.includes(espera)),
+      `tenía que caer por «${espera}» y dijo:\n${problemas.join('\n') || '(nada)'}`,
+    );
+  });
+}
+
+/* ==========================================================================
+   El montaje del modo (`FIND-78`, `REV-15` tercera pasada)
+
+   El auditor de arriba mira la sentencia del pedido, y esa sentencia vive en `modo-pantalla.ts`
+   y dice `contenedor`. **Qué es ese contenedor lo decide la isla**, en la consulta que le pasa a
+   `montarPantallaCompleta`: cambiar `'.fichin'` por `'canvas'` en esa línea dejaba todo en verde,
+   y el pedido salía sobre el canvas, que es lo que `ADR-10.2` prohíbe (las teclas desaparecen).
+   Y el montaje tiene que correr: una isla que no llama a la función que monta deja el botón a la
+   vista e inerte, y eso también pasaba en verde.
+   ========================================================================== */
+
+/** El código con el adentro de cada texto en blanco, del mismo largo: para contar llaves. */
+function sinTextos(codigo: string): string {
+  let salida = '';
+  let i = 0;
+  while (i < codigo.length) {
+    const c = codigo[i]!;
+    if (c === "'" || c === '"' || c === '`') {
+      let j = i + 1;
+      while (j < codigo.length && codigo[j] !== c && !(codigo[j] === '\n' && c !== '`')) j += codigo[j] === '\\' ? 2 : 1;
+      const fin = Math.min(j, codigo.length);
+      salida += c + ' '.repeat(Math.max(0, fin - i - 1)) + (j < codigo.length ? codigo[j] : '');
+      i = j + 1;
+    } else {
+      salida += c;
+      i++;
+    }
+  }
+  return salida;
+}
+
+/** Cuántas llaves abiertas hay antes de esa posición. Cero es el nivel del módulo. */
+function honduraEn(plano: string, posicion: number): number {
+  let hondura = 0;
+  for (let i = 0; i < posicion; i++) {
+    if (plano[i] === '{') hondura++;
+    else if (plano[i] === '}') hondura--;
+  }
+  return hondura;
+}
+
+/** Un nombre de la isla, escapado para meterlo en una expresión regular. */
+function comoPatron(nombre: string): string {
+  return nombre.replace(/\$/g, '\\$');
+}
+
+const CONSULTA_DEL_FICHIN = /^document\s*\.\s*querySelector\s*(?:<[^>]*>)?\s*\(\s*(['"`])\.fichin\1\s*\)\s*!?$/;
+
+function problemasDelMontaje(fuente: string): string[] {
+  const codigo = sinComentarios(fuente);
+  const plano = sinTextos(codigo);
+  const montajes = [...plano.matchAll(/(?<![\w$.])montarPantallaCompleta\s*\(/g)];
+  if (montajes.length !== 1) {
+    return [`montarPantallaCompleta( aparece ${montajes.length} veces: el modo se monta una sola vez (ADR-10.6)`];
+  }
+  const problemas: string[] = [];
+  const m = montajes[0]!;
+
+  // Los argumentos: de la `(` a su pareja.
+  let hondura = 1;
+  let i = m.index + m[0].length;
+  const desde = i;
+  while (i < plano.length && hondura > 0) {
+    if (plano[i] === '(') hondura++;
+    else if (plano[i] === ')') hondura--;
+    i++;
+  }
+  const argumentos = codigo.slice(desde, i - 1);
+  const argumentosPlanos = plano.slice(desde, i - 1);
+
+  // `fichin` (atajo) o `fichin: <expresión>`, hasta la coma o la llave del mismo nivel.
+  const clave = /(?<![\w$.])fichin(?![\w$])\s*(:)?/.exec(argumentosPlanos);
+  let expresion: string | undefined;
+  if (clave === null) {
+    problemas.push('montarPantallaCompleta( no recibe el fichin: no se sabe sobre qué se pide (ADR-10.2)');
+  } else if (clave[1] === undefined) {
+    expresion = 'fichin';
+  } else {
+    let j = clave.index + clave[0].length;
+    const inicio = j;
+    let nivel = 0;
+    while (j < argumentosPlanos.length && !(nivel === 0 && (argumentosPlanos[j] === ',' || argumentosPlanos[j] === '}'))) {
+      if ('([{<'.includes(argumentosPlanos[j]!)) nivel++;
+      else if (')]}>'.includes(argumentosPlanos[j]!)) nivel--;
+      j++;
+    }
+    expresion = argumentos.slice(inicio, j).trim();
+  }
+
+  if (expresion !== undefined) {
+    // Un nombre suelto se resuelve con su última declaración antes del montaje.
+    if (/^[\w$]+$/.test(expresion)) {
+      const declaracion = new RegExp(`(?<![\\w$.])(?:const|let|var)\\s+${comoPatron(expresion)}\\s*(?::[^=;]+)?=\\s*([^;]+);`, 'g');
+      const declaraciones = [...codigo.slice(0, m.index).matchAll(declaracion)];
+      expresion = declaraciones.length === 0 ? undefined : declaraciones[declaraciones.length - 1]![1]!.trim();
+    }
+    if (expresion === undefined || !CONSULTA_DEL_FICHIN.test(expresion)) {
+      problemas.push(
+        `el contenedor de la pantalla completa no sale de document.querySelector('.fichin') (sale de ${expresion ?? 'ningún lado'}): sobre el canvas, las teclas desaparecen (ADR-10.2)`,
+      );
+    }
+  }
+
+  // Que corra: o el montaje está al nivel del módulo, o la función que lo contiene se llama ahí.
+  if (honduraEn(plano, m.index) !== 0) {
+    const funcion = funcionQueContiene(codigo, m.index);
+    const nombre = funcion === undefined ? undefined : /function\s+([\w$]+)/.exec(funcion[0])?.[1];
+    const llamada =
+      nombre === undefined
+        ? undefined
+        : [...plano.matchAll(new RegExp(`(?<![\\w$.])${comoPatron(nombre)}\\s*\\(\\s*\\)`, 'g'))].find(
+            (l) => honduraEn(plano, l.index) === 0 && !/function\s+$/.test(plano.slice(0, l.index)),
+          );
+    if (llamada === undefined) {
+      problemas.push(`el montaje vive en ${nombre ?? 'una función sin nombre'} y nadie la llama al cargar la isla: el botón queda a la vista e inerte`);
+    }
+  }
+  return problemas;
+}
+
+test('la isla de verdad monta la pantalla completa sobre .fichin, y la monta al cargar (FIND-78)', () => {
+  assert.deepEqual(problemasDelMontaje(readFileSync(ISLA, 'utf8')), []);
+});
+
+const SANO_MONTAJE = `
+const botonPantalla = document.querySelector<HTMLButtonElement>('#pantalla-completa');
+function escucharPantallaCompleta(): void {
+  const fichin = document.querySelector<HTMLElement>('.fichin');
+  if (fichin === null || botonPantalla === null) return;
+  montarPantallaCompleta({ documento: document, ventana: window, fichin, boton: botonPantalla, soltarTodas });
+}
+escucharTeclas();
+escucharPantallaCompleta();
+void arrancar();
+`;
+const CONSULTA = "const fichin = document.querySelector<HTMLElement>('.fichin');";
+
+test('control: el fuente de referencia del montaje está sano, y sus variantes legítimas también', () => {
+  assert.deepEqual(problemasDelMontaje(SANO_MONTAJE), []);
+  // Con otro nombre y la clave explícita.
+  const renombrado = SANO_MONTAJE.replace(CONSULTA, "const caja = document.querySelector('.fichin');").replace('fichin, boton', 'fichin: caja, boton');
+  assert.deepEqual(problemasDelMontaje(renombrado), []);
+  // La consulta escrita adentro del objeto.
+  const enLinea = SANO_MONTAJE.replace('fichin, boton', "fichin: document.querySelector<HTMLElement>('.fichin')!, boton");
+  assert.deepEqual(problemasDelMontaje(enLinea), []);
+  // Nombrar el montaje en un comentario no es montar.
+  assert.deepEqual(problemasDelMontaje(SANO_MONTAJE + '\n// montarPantallaCompleta({ fichin: canvas })'), []);
+});
+
+for (const [caso, roto, espera] of [
+  ['🔴 el contenedor es el canvas', SANO_MONTAJE.replace("'.fichin'", "'canvas'"), "no sale de document.querySelector('.fichin')"],
+  ['🔴 el contenedor es el #juego', SANO_MONTAJE.replace("'.fichin'", "'#juego'"), "no sale de document.querySelector('.fichin')"],
+  ['🔴 el contenedor es el .recorte', SANO_MONTAJE.replace("'.fichin'", "'.recorte'"), "no sale de document.querySelector('.fichin')"],
+  [
+    '🔴 la consulta del canvas escrita adentro del objeto',
+    SANO_MONTAJE.replace('fichin, boton', "fichin: document.querySelector('canvas')!, boton"),
+    "no sale de document.querySelector('.fichin')",
+  ],
+  ['🔴 el fichin pisado por otra cosa', SANO_MONTAJE.replace('fichin, boton', 'fichin: canvas, boton'), "no sale de document.querySelector('.fichin')"],
+  ['🔴 sin el fichin', SANO_MONTAJE.replace('fichin, boton', 'boton'), 'no recibe el fichin'],
+  ['🔴 nadie llama al montaje', SANO_MONTAJE.replace('escucharPantallaCompleta();\n', ''), 'nadie la llama'],
+  [
+    '🔴 la llamada escondida adentro de otra función',
+    SANO_MONTAJE.replace('escucharPantallaCompleta();\n', 'function nunca() { escucharPantallaCompleta(); }\n'),
+    'nadie la llama',
+  ],
+  ['🔴 sin montaje', SANO_MONTAJE.replace('montarPantallaCompleta(', 'otraCosa('), '0 veces'],
+  ['🔴 montado dos veces', SANO_MONTAJE + "montarPantallaCompleta({ fichin: document.querySelector('.fichin') });", '2 veces'],
+] as const) {
+  test(`el auditor del montaje sabe encontrar: ${caso}`, () => {
+    const problemas = problemasDelMontaje(roto);
+    assert.ok(problemas.some((p) => p.includes(espera)), `tenía que caer por «${espera}» y dijo:\n${problemas.join('\n') || '(nada)'}`);
   });
 }

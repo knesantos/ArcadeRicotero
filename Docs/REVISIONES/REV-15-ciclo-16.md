@@ -142,3 +142,122 @@ cerrados en disco, no solo reportados como cerrados, y las nueve tareas (`T-286`
 cumplen su columna "verifica con" del plan. No hay hallazgo nuevo que abrir. Lo único que
 queda sin verificar por esta pasada es la captura en el navegador de `T-290`, por límite de
 herramientas de esta sesión — no por falla de lo entregado.
+## Tercera pasada — la ráfaga 5 (D-47)
+
+> Verificada el **2026-09-24** por `revisor`, en el disco y no en lo que los reportes de `T-300`
+> a `T-303` dicen haber hecho. Alcance: `D-47` punto por punto, `BR-31`, `UX-33`, `CTR-16.4`,
+> `CTR-16.11`, `CTR-15.7`, `CTR-15.8`, `ADR-10`, `CNT-22`, y `T-296`..`T-303` de
+> `ORQ-plan-ciclo-16.md` §2.6 contra su columna "verifica con". Numeración desde `FIND-78`
+> (`FIND-77` fue el último usado, `REV-15`).
+
+**Verificaciones corridas:**
+- `npm test`: **1329 de 1329**, 0 fallos (incluye 117/117 en los archivos propios de la ráfaga:
+  `niveles.test.ts`, `esquemas.test.ts`, `avance.test.ts`, `atlas.test.ts`, `sala.test.ts`,
+  `pantalla.test.ts`, `modo-pantalla.test.ts`).
+- `npm run check`: **0 errores, 0 avisos** (15 *hints* de Astro `is:inline`, preexistentes).
+- `npm run build`: **152 páginas**, sin error.
+- `node --experimental-strip-types scripts/auditar-paleta-pixel.mjs`: **"Auditados 7 PNG contra
+  15 tintas --px-\* en tokens.css: todo en regla."**
+- Validador del instanciador: **APTA, 0 errores, 2 avisos** (los dos esperados por `CLAUDE.md` §7).
+- Leídos con la herramienta de imágenes los PNG publicados (`skayboy.v2`, `poligirl.v2`,
+  `sala.v3`) vía su header PNG y su fuente `.txt`; el baile y los dos coleccionables se
+  verificaron leyendo la grilla ASCII, que es la fuente de verdad que imprime el PNG.
+
+### D-47, punto por punto
+
+1. **Pantalla completa con controles superpuestos, medio transparentes, disposición del
+   horizontal, sin scroll.** `ADR-10` está construido según su propio contrato: `pantalla.ts`
+   (`encuadre()`, `cajaDelArea()`) es puro y pasa sus 6+ casos; `modo-pantalla.ts` no tiene un
+   solo `async`/`await` (verificado: `esperasEn()` da `[]`); las tres puertas de salida existen;
+   `skayboy.css` usa `--mando-relleno`/`--sello-relleno` con `color-mix(..., transparent)` para
+   el relleno y `border: var(--anillo) solid var(--papel)` + `box-shadow: inset ... var(--fondo)`
+   para el doble anillo opaco — exactamente el mecanismo de `UX-33 §1.4`, sobre el par
+   `--papel`/`--fondo` que ya cubre `contraste.test.ts`. `.pantalla-completa` nace
+   `display: none` y solo pasa a `block` en los media queries de horizontal (`UX-33 §1.9`).
+   **Pero hay un hueco real, confirmado por mutación** (ver `FIND-78`).
+2. **Los seis niveles en fila, avance guardado.** `src/data/skayboy.json` trae `NIV-01`..`NIV-06`.
+   `avance.ts` implementa las siete funciones de `CTR-16.11.3`; `escena.ts` usa
+   `siguienteDeLaFila()` y `esElUltimo()`; la isla llama `cargarAvance()` al arrancar y
+   `guardarPasado()` en el cuadro en que `marcarVictoria()` es verdadero (no al tocar "seguí"),
+   tal cual pide `CTR-16.11.1`. Cubierto por `avance.test.ts`, en el `npm test` general.
+3. **Victoria bailada, cada uno el suyo, sin gestos de pareja.** Leídas las grillas ASCII de
+   `baila 0..3` en `skayboy.txt` y `poligirl.txt`: son dos coreografías completamente distintas
+   (molino de guitarrista vs. twist), ningún cuadro comparte pose, ninguno toca al otro, ninguno
+   se desplaza de la celda. Los dos JSON publicados (`skayboy.v2.json`, `poligirl.v2.json`)
+   declaran `baila: {fila:5, cuadros:4, porSegundo:8, repite:true}` idénticos entre sí — paridad
+   de cuadros cumplida (`BR-23` punto 2, `CTR-15.7`). `atlas.test.ts` lo prueba y pasa.
+4. **Guitarras para Skay, cigarrillos para Poli, misma cantidad por nivel.** Medido en
+   `src/data/skayboy.json`: `NIV-01` 1/1, `NIV-02` 1/1, `NIV-03` 2/2, `NIV-04` 2/2, `NIV-05` 2/2,
+   `NIV-06` 2/2 — total 10 y 10, paridad exacta en los seis. El schema está en
+   `contratoVersion: 3`, con `"g"` → `{"tipo":"tesoro","para":["skayboy"]}` y `"-"` →
+   `{"tipo":"tesoro","para":["poligirl"]}`, tal cual `CTR-16.4`. La sala dibuja una masa curva
+   para la guitarra y una línea fina en diagonal para el cigarrillo (`UX-33 §3.1`/`§3.3`),
+   verificado en `sala.txt`. `niveles.test.ts` trae los casos E9/E10 (incluido el `🔴 E10` al
+   revés que pidió una revisión anterior) y pasan.
+
+### Hallazgos
+
+| ID | Gravedad | Qué | Evidencia | Dueño |
+|---|---|---|---|---|
+| `FIND-78` | **MEDIA** | **ADR-10.2/ADR-10.6 ("nunca se pide la pantalla completa sobre el canvas") no está verificado contra la isla real, solo contra el texto de `modo-pantalla.ts`.** El `fichin` que `escucharPantallaCompleta()` le pasa a `montarPantallaCompleta()` sale de `document.querySelector<HTMLElement>('.fichin')` en `partida-skayboy.ts:556`, y esa línea no la mira ningún test. Mutación confirmada: cambié esa cadena a `'canvas'` (de modo que `requestFullscreen()` se termine pidiendo sobre el `<canvas>` real, el caso que `ADR-10.2` prohíbe con nombre — "las teclas, el botón de salir y el pie de homenaje dejan de verse") y corrí `motor.test.ts` + `modo-pantalla.test.ts` + `estilos.test.ts`: **169/169 en verde**, sin un solo rojo. Restauré el archivo original después (mismo md5 que antes de mutar). El auditor de texto (`problemasDePantallaCompleta()`) solo mira la sentencia que contiene `requestFullscreen`, que en el código real siempre dice `fichin`/`contenedor` — nunca la línea, separada, que decide qué elemento del DOM *es* `fichin`. Es el mismo hallazgo que el propio reporte de `T-301` deja pendiente (su MEDIA), y lo confirmo de forma independiente sobre el árbol actual, no sobre lo reportado. | `hilo principal`: agregar una regla en `motor.test.ts` (o un helper puro) que ate el selector real de `fichin` a `.fichin`, con sus casos rojo con `'canvas'`, `'#juego'` y `'.recorte'` — tal como el propio `T-301` ya lo dejó escrito como arreglo sugerido |
+| `FIND-79` | BAJA | `.contador-etiqueta` (`src/styles/skayboy.css:272`) sigue con `justify-content: center` y no `safe center` (o alineado a un costado). Por `UX-33 §2.5` el número junto a cada personaje tiene que ser legible dentro de la caja fija de `ETIQUETA_DEL_CONTADOR` (96×16 nativos). Confirmado en disco que la regla no cambió desde que `T-302` reportó esto como pendiente: con `font-size` por encima de ~10,3 px CSS (p. ej. `5cqw` en vez de `3.75cqw`, o el mínimo de fuente que algunos navegadores fuerzan), el texto centrado se recorta por las dos puntas en vez de quedar legible de un lado. No bloquea con la configuración por defecto del sitio. | `hilo principal`: `justify-content: safe center` (o alinear a un costado) y fijar el `font-size` exacto en el auditor de la hoja con la medida del navegador anotada, como ya lo dejó escrito `T-302` |
+
+### Lo que no encontré
+
+- **Ningún dato falso, ningún placeholder, ningún ID huérfano.** `D-44`..`D-47`, `BR-31`,
+  `CTR-16.4`, `CTR-16.11`, `CTR-15.7`, `CTR-15.8`, `ADR-10`, `CNT-22` están escritos y son
+  consistentes entre sí en los puntos que crucé.
+- **Ningún hallazgo nuevo de código** más allá de los dos de arriba: los cuatro reportes
+  (`T-300`..`T-303`) describen con precisión lo que arreglaron y lo que dejaron pendiente, y
+  mis propias mediciones (byte a byte en los PNG, conteo de caracteres en el dato, mutación del
+  selector, lectura de las grillas del baile) coinciden con lo que cada uno reportó.
+- **Ninguna mención de "los fans"/"los usuarios", ningún anglicismo, ningún botón en
+  infinitivo, ningún hex fuera de `tokens.css`, ninguna pastilla de 999px** en lo agregado por
+  esta ráfaga — cubierto por `voz.test.ts` y `estilos.test.ts`, en el `npm test` general.
+- **No verifiqué con el dedo en un teléfono real** (ni Android ni iPhone): esa prueba, que es la
+  que `ADR-10` marca como la que manda, sigue siendo del usuario (`D-47` consecuencia 3, y ya lo
+  dice `ADR-10` "cómo se verifica"). Tampoco abrí un navegador: todo lo de arriba es código,
+  tests y lectura de archivos.
+- **Los BAJA que cada tarea dejó pendientes por su cuenta** (el commit conjunto de `T-300`, el
+  redondeo del "rodeo de 80 cuadros" de `T-303`, la ampliación del regex de `T-302` punto 2) no
+  son hallazgos nuevos: los reportes los describen bien y no cambian ningún veredicto, así que
+  no les pongo `FIND` propio — quedan donde cada tarea los dejó.
+
+### Veredicto
+
+**La ráfaga 5 cumple `D-47` en el disco, con un hueco real de verificación (`FIND-78`, MEDIA)
+y un defecto visual de borde (`FIND-79`, BAJA), ninguno de los dos nuevo: los dos ya estaban
+autorreportados por las tareas que los dejaron, y esta pasada los confirma de forma
+independiente en vez de darlos por buenos.** Los cuatro criterios centrales de `D-47` —pantalla
+completa sin romper el scroll, seis niveles en fila con avance guardado, victoria donde cada
+uno baila lo suyo sin gesto de pareja, y guitarras/cigarrillos parejos por nivel— están
+construidos, probados y coinciden con lo medido en disco. Nada bloquea el cierre de la ráfaga;
+`FIND-78` sí merece una tarea antes de dar por cerrado `ADR-10.6` como "verificado por
+máquina", porque hoy no lo está para el caso que más importa (que la isla real pida la
+pantalla completa sobre el contenedor y no sobre el canvas).
+
+### Cierre de `FIND-78` y `FIND-79` (hilo principal, 2026-09-24)
+
+> Pegado por el hilo principal, que es el dueño de los dos. No es una pasada del `revisor`:
+> es lo que se hizo con lo que la pasada dejó abierto, con su evidencia.
+
+- **`FIND-78` — cerrado.** `src/lib/skayboy/motor.test.ts` suma `problemasDelMontaje()`, que lee
+  la isla real: el `fichin` que recibe `montarPantallaCompleta(` tiene que salir de
+  `document.querySelector('.fichin')` (atajo, clave con otro nombre o consulta en línea), el
+  montaje tiene que ser uno solo, y la función que lo contiene tiene que llamarse al nivel del
+  módulo. Diez rojos sobre un fuente de referencia (`'canvas'`, `'#juego'`, `'.recorte'`, la
+  consulta del canvas en línea, `fichin: canvas`, sin `fichin`, sin llamada, la llamada escondida
+  en otra función, sin montaje, dos montajes). **Y los rojos sobre la isla de verdad**, mutada en
+  el lugar y restaurada byte a byte: cambiar el selector de `partida-skayboy.ts:556` a `'canvas'`,
+  `'#juego'` o `'.recorte'`, o borrar `escucharPantallaCompleta();` de la línea 570, hace caer el
+  test en los cuatro casos.
+- **`FIND-79` — cerrado.** `.contador-etiqueta` pasa a `justify-content: safe center`: si el
+  texto no entra, se corta de un lado y el número, que va primero, se sigue leyendo.
+- **Visto en el navegador** (dev, 844×390): la pantalla completa sin scroll (la página mide lo que
+  la ventana), el área a ×2, las seis teclas y el pie de homenaje adentro; ganar `NIV-01` jugando
+  con las teclas muestra los dos bailando en su lugar, «1 guitarra» y «1 cigarrillo», el aviso
+  «Las dos puertas, abiertas.», guarda `{"pasados":["NIV-01"]}` en `arcade.skayboy.avance`, y el
+  toque lleva a `NIV-02` sin salir del modo; el botón y `Escape` sacan del modo. El panel del
+  navegador estaba oculto y no daba cuadros, así que el juego se corrió en un marco con los
+  cuadros a reloj: la lógica es la misma, el ritmo no se midió.
+- `npm test` **1341/1341**, `tsc` 0, `npm run check` 0/0.

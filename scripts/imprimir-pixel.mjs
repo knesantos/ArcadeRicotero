@@ -27,7 +27,8 @@
  *   estado: corre    cuadros=4  porSegundo=10  repite=si    # en este orden
  *   estado: salta    cuadros=1
  *   estado: cae      cuadros=1
- *   estado: enPausa  cuadros=1    # los cinco de CTR-15.7, ni uno más ni uno menos
+ *   estado: enPausa  cuadros=1
+ *   estado: baila    cuadros=4  porSegundo=8  repite=si    # los seis de CTR-15.7, ni uno más ni uno menos
  *
  *   cuadro: quieto 0          # y abajo, 24 renglones de 16 caracteres exactos
  *   ......KKKK......

@@ -109,6 +109,8 @@ for (const archivo of [
  * 3. **Un renglón corto** (`CTR-16.5`). Es la regla que más defectos caza y la más barata.
  * 4. **La leyenda de `CTR-16.10`**: el molinete de uno solo dice de qué elemento es, y ningún
  *    otro lo dice (`CTR-16.10.9`).
+ * 5. **Un tesoro para cada uno** (`CTR-16.4` enmendado por `D-47`): el que servía para los dos no
+ *    valida, y la leyenda trae exactamente uno de cada uno (`E9`, más abajo).
  *
  * Cada caso trae su control en verde al lado, y no es adorno: sin él, un test que solo mira
  * el rojo pasa igual con un schema que rechaza todo.
@@ -146,7 +148,7 @@ function erroresSkayboy(banco: BancoDePrueba): readonly string[] {
 
 /**
  * El nivel 1 con una placa y una compuerta de tres celdas dibujadas, para que un mecanismo tenga
- * dónde estar: la placa en la columna 3 y la compuerta en la 8, colgada de un ladrillo. Es la
+ * dónde estar: la placa en la columna 4 y la compuerta en la 8, colgada de un ladrillo. Es la
  * forma de `CTR-16.10.1`, y pasa las reglas de `niveles.ts`.
  */
 function conPlacaYCompuerta(banco: BancoDePrueba, abre: string[]): BancoDePrueba {
@@ -156,8 +158,10 @@ function conPlacaYCompuerta(banco: BancoDePrueba, abre: string[]): BancoDePrueba
   };
   cambia(4, 8, '#');
   for (const fila of [5, 6, 7]) cambia(fila, 8, '|');
-  cambia(7, 3, '=');
-  n.mecanismos.push({ id: 'MEC-01', en: [3, 7], abre });
+  // En la 4 y no en la 3, que es donde está la guitarra: pisarla deja el nivel con un cigarrillo y
+  // ninguna guitarra, y eso es E10 (D-47), no lo que estos casos prueban.
+  cambia(7, 4, '=');
+  n.mecanismos.push({ id: 'MEC-01', en: [4, 7], abre });
   n.compuertas.push({ id: 'COM-01', en: [8, 5] });
   return banco;
 }
@@ -464,6 +468,88 @@ test('CTR-16.10 (E7): dos molinetes de uno solo del mismo elemento no pasan', ()
   assert.ok(problemas.some((p) => p.includes('0 molinete(s) de uno solo de infierno')), 'y el infierno que falta también');
   // Control: la leyenda de verdad tiene uno de cada uno.
   assert.deepEqual(problemasDeMolinetes(leyendaSkayboy()), []);
+});
+
+/**
+ * ## Un tesoro para cada uno (`CTR-16.4` enmendado por `D-47`, `E9`)
+ *
+ * Skayboy junta guitarras y Poligirl cigarrillos, y el tesoro que servía para los dos se retiró.
+ * Las dos mitades de la regla viven en dos lugares, por la misma razón que los molinetes:
+ *
+ * - **que un tesoro nombre a uno solo** lo hace el schema (`maxItems: 1` en la rama de `tesoro`);
+ * - **que haya exactamente uno de cada uno en la leyenda** no lo puede hacer ningún schema, porque
+ *   la leyenda es un mapa y en un mapa no se cuenta por contenido. Se cuenta acá.
+ *
+ * Qué objeto es cada uno no lo dice el dato (lo dibuja la sala, `tesoroSkayboy` y
+ * `tesoroPoligirl`), así que esto busca por `para` y nunca por caracter.
+ */
+interface TesoroDePrueba {
+  tipo: string;
+  para?: string[];
+}
+
+function problemasDeTesoros(leyenda: Record<string, TesoroDePrueba>): readonly string[] {
+  const problemas: string[] = [];
+  for (const quien of ['skayboy', 'poligirl']) {
+    const suyos = Object.entries(leyenda)
+      .filter(([, t]) => t.tipo === 'tesoro' && (t.para ?? []).length === 1 && t.para?.[0] === quien)
+      .map(([c]) => c);
+    if (suyos.length === 1) continue;
+    problemas.push(
+      suyos.length === 0
+        ? `no hay ningún tesoro de ${quien} en la leyenda, y CTR-16.4 pide exactamente uno (E9)`
+        : `hay ${suyos.length} tesoros de ${quien} («${suyos.join('», «')}»), y CTR-16.4 pide exactamente uno (E9)`,
+    );
+  }
+  return problemas;
+}
+
+function leyendaConTesoros(): Record<string, TesoroDePrueba> {
+  return (JSON.parse(readFileSync('src/data/skayboy.json', 'utf-8')) as { leyenda: Record<string, TesoroDePrueba> }).leyenda;
+}
+
+/** El caracter del tesoro de ese personaje, buscado por dueño. */
+function tesoroDe(leyenda: Record<string, TesoroDePrueba>, quien: string): string {
+  const par = Object.entries(leyenda).find(([, t]) => t.tipo === 'tesoro' && t.para?.[0] === quien);
+  if (par === undefined) throw new Error(`No hay tesoro de «${quien}»`);
+  return par[0];
+}
+
+test('CTR-16.4 (E9): la leyenda trae un tesoro de skayboy y uno de poligirl, y ninguno de los dos', () => {
+  assert.deepEqual(problemasDeTesoros(leyendaConTesoros()), []);
+});
+
+test('CTR-16.4 (E9): sin el tesoro de poligirl no pasa, y el reclamo la nombra', () => {
+  const leyenda = leyendaConTesoros();
+  delete leyenda[tesoroDe(leyenda, 'poligirl')];
+  assert.deepEqual(problemasDeTesoros(leyenda), [
+    'no hay ningún tesoro de poligirl en la leyenda, y CTR-16.4 pide exactamente uno (E9)',
+  ]);
+});
+
+test('CTR-16.4 (E9): dos tesoros de skayboy no pasan, y el reclamo nombra los dos caracteres', () => {
+  const leyenda = leyendaConTesoros();
+  const guitarra = tesoroDe(leyenda, 'skayboy');
+  leyenda.h = { tipo: 'tesoro', para: ['skayboy'] };
+  const problemas = problemasDeTesoros(leyenda);
+  assert.equal(problemas.length, 1, problemas.join('\n'));
+  assert.ok(
+    problemas[0]!.startsWith('hay 2 tesoros de skayboy') && problemas[0]!.includes(`«${guitarra}»`) && problemas[0]!.includes('«h»'),
+    problemas[0],
+  );
+});
+
+test('CTR-16.4 (D-47): el tesoro para los dos no valida, en /leyenda/o/para', () => {
+  const banco = bancoSkayboy() as unknown as { leyenda: Record<string, TesoroDePrueba> };
+  banco.leyenda.o = { tipo: 'tesoro', para: ['skayboy', 'poligirl'] };
+  const errores = erroresSkayboy(banco as unknown as BancoDePrueba);
+  assert.ok(
+    errores.some((e) => e.startsWith('/leyenda/o/para') && e.includes('must NOT have more than 1 items')),
+    `El tesoro de los dos tenía que caerse en el schema:\n${errores.join('\n')}`,
+  );
+  // Control: con uno solo en `para`, la misma entrada valida.
+  banco.leyenda.o = { tipo: 'tesoro', para: ['poligirl'] };
+  assert.deepEqual(erroresSkayboy(banco as unknown as BancoDePrueba), []);
 });
 
 /**

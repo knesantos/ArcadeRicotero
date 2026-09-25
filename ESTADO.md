@@ -31,11 +31,29 @@
 > `CTR-16.11` (el avance, `arcade.skayboy.avance`), `CTR-15.7` (`baila`, 4 cuadros a 8/s),
 > `ADR-10` (`ARQ-pantalla-completa.md`) y `CNT-22`, verificados y alineados.
 >
-> **En curso: el código de la ráfaga 5** (`T-300` dibujos, `T-301` pantalla completa, `T-303`
-> guitarras y cigarrillos en paralelo; después `T-302` la victoria y la fila; `T-304` revisión).
-> Guion en el scratchpad de la sesión (`rafaga5-codigo.js`). Si se corta, se retoma con
-> `resumeFromRunId`. Al terminar: hoja del baile al usuario, commit probado en limpio, push a
-> la rama del PR.
+> **Código de la ráfaga 5 cerrado y revisado** (`T-300`..`T-304`, "Tercera pasada" de `REV-15`;
+> `FIND-78` y `FIND-79` cerrados por el hilo principal ahí mismo). `npm test` 1341/1341, check
+> 0/0, build 152, auditor 0 (7 PNG), validador `APTA`.
+>
+> - **Pantalla completa** (`ADR-10`, `UX-33 §1`): el sello de la esquina entra y sale; sin
+>   scroll ni zoom; la del sistema se pide sobre `.fichin` donde existe, y en iPhone el modo
+>   ocupa la ventana. `pantalla.ts` (encuadre entero) y `modo-pantalla.ts` (el modo, jugable en
+>   Node).
+> - **Victoria bailada** (`UX-33 §2`): `baila`, 4 cuadros a 8/s, coreografías distintas, sin
+>   moverse; el contador «1 guitarra» / «1 cigarrillo» solo ahí; el toque sigue. **Al ganar el
+>   sexto, el toque vuelve a `NIV-01`**: la pieza compartible de `BR-27` todavía no existe
+>   (traspaso a `producto` y `experiencia`).
+> - **La fila y el avance** (`CTR-16.11`): `arcade.skayboy.avance`, `avance.ts`.
+> - **Guitarras y cigarrillos** (`CTR-16.4` v3): 1/1, 1/1, 2/2, 2/2, 2/2, 2/2; solo el dueño
+>   junta el suyo; trazas regrabadas. Atlas `skayboy.v2`, `poligirl.v2`, `sala.v3`.
+> - **Hoja del baile para el usuario:** `hoja-baile.png` (scratchpad de la sesión). Espera su
+>   aprobación (`D-44`), igual que la hoja 14.
+>
+> **Abierto, sin trabar:** la puerta abierta queda detrás del muñeco (traspaso a
+> `experiencia`); si cada coleccionable tiene que probarse alcanzable en el build (traspaso a
+> `producto`/`arquitectura`); `E11` de `CTR-16.10.10` no está en `niveles.ts`; el sello muestra
+> el estado («PANTALLA NORMAL») con el molde de la cinta, y hay que ver en el teléfono si se
+> entiende que se toca para agrandar.
 
 > ## ✅ CICLO 16, RÁFAGA 3 CERRADA Y REVISADA: `REV-15` (2026-09-24)
 >
