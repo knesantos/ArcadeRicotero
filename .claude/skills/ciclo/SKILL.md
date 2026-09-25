@@ -17,8 +17,7 @@ del tamaño exacto de una ráfaga.
    una ráfaga típica del usuario, preguntalo antes de cortar tareas.
 3. Elegí qué entra, con este orden:
    1. Desbloquea a otro rol (ej. una ficha `RES-XX` que `arquitectura` está esperando).
-   2. Reduce el riesgo número uno de `Docs/DECISIONES.md` (derechos o Spotify, según
-      cuál esté más caliente).
+   2. Reduce el riesgo número uno vigente.
    3. Acerca la definición de "listo" de la v1: piso de ítems de algún juego.
    4. Todo lo demás.
 4. Cortá en tareas. Cada tarea `T-XX` lleva:
@@ -36,11 +35,11 @@ del tamaño exacto de una ráfaga.
 <criterios>
 - Cada tarea tiene **una** responsabilidad. Si la descripción lleva un "y", son dos.
 - Ninguna tarea depende de algo que no está en el ciclo o ya está hecho.
-- Si el ciclo entero depende de una decisión sin tomar (`ADR-01` de Spotify, la nota de
-  derechos), el ciclo es esa decisión, no lo que viene después.
+- Si el ciclo entero depende de una decisión sin tomar, el ciclo es esa decisión, no lo
+  que viene después.
 </criterios>
 
 <entregable>
-Tabla en el chat, máximo 20 filas: `T-XX | rol | qué | archivos | verifica con | [P]`.
+Tabla en el chat, una fila por tarea: `T-XX | rol | qué | archivos | verifica con | [P]`.
 Abajo: qué quedó afuera y por qué, y cuál es el riesgo del ciclo.
 </entregable>

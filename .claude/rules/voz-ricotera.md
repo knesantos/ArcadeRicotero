@@ -21,7 +21,7 @@ esté escrita antes que nada:
 
 Tres razones, y ninguna es de trámite:
 
-1. **Murió el 5 de junio de 2026** (`RES-04`). Hace once semanas. Un sitio de fans que le
+1. **Murió el 5 de junio de 2026** (`RES-04`). Un sitio de fans que le
    pone palabras en la boca a un muerto reciente no es un homenaje, es un truco de
    ventrílocuo — y se nota.
 2. **Rompería lo único que el sitio promete de verdad.** Acá `testimonio` significa *lo
