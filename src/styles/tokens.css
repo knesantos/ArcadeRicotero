@@ -302,6 +302,40 @@
      borde grueso, la cinta y la rotacion. Pendiente de reflejar en el lienzo. */
   --radio: 4px;
   --linea: 3px; /* linea gruesa, UX-04 */
+
+  /* ------------------------------------------------------------------
+     El pixel del fichín (hoja 14 del lienzo, aprobada por el usuario el 2026-09-24).
+     Es la paleta de ADENTRO del mueble de Skayboy y Poligirl, no la del sitio: pixel
+     adentro, imprenta afuera (`D-41`). La dibuja el hilo principal (`D-44`).
+
+     **Quince, ni una más** (`UX-27 §4`): dos fijas, seis de terreno, tres y tres de
+     personajes, un objeto. La puerta, la palanca, la placa, la compuerta y la caja no
+     tienen tinta propia: van en clave y luz, por forma (`UX-27 §4.1.2`, `CTR-16.10.8`).
+     El aire del área es la luz y el sólido es la clave (`UX-27 §1.1`).
+
+     Las fijas y las anclas son ALIAS, no hex nuevos: la clave es la tinta del sitio y
+     las anclas de cielo e infierno son los dos colores medidos de Gulp! (`UX-30`,
+     `RES-37`). `contraste.test.ts` mide las quince contra la clave (3:1, `UX-27 §5.3`),
+     y `scripts/auditar-paleta-pixel.mjs` rechaza cualquier PNG del área con una
+     tinta que no esté acá.
+     ------------------------------------------------------------------ */
+  --px-clave: var(--fondo);
+  --px-luz: var(--papel);
+  --px-cielo: var(--disco-gulp-apoyo);
+  --px-cielo-2: #f3f2de; /* la crema de Gulp! al 50 % sobre su blanco */
+  --px-blanco-gulp: #ffffff; /* el blanco medido de Gulp!: la luz máxima del área */
+  --px-infierno: var(--disco-gulp-tinta);
+  --px-infierno-2: #e0735c; /* el rojo de Gulp! al 80 % sobre su crema */
+  --px-infierno-3: #e28f74; /* al 60 % */
+  --px-skay-1: #e6cba0; /* la paja del Panamá beige (RES-64.3) */
+  /* Las dos pieles se movieron poco y en sentidos opuestos desde la hoja de referencia
+     (estaban a ΔE00 0,79): ninguna de las dos personas carga sola con el cambio. */
+  --px-skay-2: #c39c76;
+  --px-skay-3: #6f6d67; /* el saco */
+  --px-poli-1: #56678a; /* el pelo: negro azulado, un escalón arriba de la clave */
+  --px-poli-2: #feb471;
+  --px-poli-3: #dcc4f0; /* la camisa, con trama */
+  --px-tesoro: var(--acento-2);
 }
 
 * {

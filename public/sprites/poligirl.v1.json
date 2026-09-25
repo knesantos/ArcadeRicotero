@@ -1,0 +1,52 @@
+{
+  "contrato": "CTR-15",
+  "contratoVersion": 1,
+  "pieza": "poligirl",
+  "celda": {
+    "ancho": 16,
+    "alto": 24
+  },
+  "colision": {
+    "ancho": 10,
+    "alto": 20
+  },
+  "paleta": [
+    "--px-clave",
+    "--px-luz",
+    "--px-poli-1",
+    "--px-poli-2",
+    "--px-poli-3"
+  ],
+  "animaciones": {
+    "quieto": {
+      "fila": 0,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "corre": {
+      "fila": 1,
+      "cuadros": 4,
+      "porSegundo": 10,
+      "repite": true
+    },
+    "salta": {
+      "fila": 2,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "cae": {
+      "fila": 3,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    },
+    "enPausa": {
+      "fila": 4,
+      "cuadros": 1,
+      "porSegundo": 0,
+      "repite": false
+    }
+  }
+}

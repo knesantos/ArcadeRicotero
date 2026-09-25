@@ -44,7 +44,7 @@ import { tramo } from '../lib/quiz/tramo.ts';
 import { armarLink } from '../lib/desafio.ts';
 import { Cronometro, duracion, total as sumarTiempos } from '../lib/tema/reloj.ts';
 import { claseDisco } from '../lib/tema/paleta.ts';
-import { escalonar } from '../lib/escalonar.ts';
+import { armarVuelta } from '../lib/tema/vuelta.ts';
 import { nombreArchivo } from '../lib/tarjeta/plan.ts';
 import { dibujarTarjeta } from './tarjeta.ts';
 import {
@@ -73,9 +73,6 @@ interface Tema extends TemaBuscable {
    */
   readonly dificultad: string;
 }
-
-/** Cuántos temas tiene una vuelta. Cuatro entran en los dos o tres minutos del brief. */
-const LARGO_RONDA = 4;
 
 /** Cuántos temas se precargan por delante del que suena (`CTR-01.5`: el actual + 2). */
 const VENTANA_PRECARGA = 2;
@@ -232,13 +229,17 @@ function buscables(): Tema[] {
  * de entrada que `D-09` y `BR-01` existen para impedir. Y `PRD-alcance-v1.md` le pide a
  * este juego un minimo de 8 Faciles, que sin el campo eran 0.
  *
- * El nivel lo estampa `catalogo()` en build desde las escuchas (`D-27`, `CTR-03.11`).
- * **Mientras `popularidad.json` no tenga mediciones los 95 caen en `dificil`** y esto
- * degrada a un barajado — el mismo reparto que antes, pero declarado, y andando solo el
- * dia que corra `npm run ingerir-popularidad`.
+ * El nivel lo estampa `catalogo()` en build desde lo mas tocado en vivo (`D-45`,
+ * `CTR-19.5`): los 8 temas del pozo que mas figuran en los setlists que carga la gente en
+ * setlist.fm son `facil`, el resto de los que figuran `media`, y los que no figuran
+ * `dificil`. Sin conteo, todo cae en `dificil` y esto degrada a un barajado declarado.
+ *
+ * La vuelta lleva **un solo** Facil y el resto sorteado entre Media y Dificil
+ * (`src/lib/tema/vuelta.ts`): sin ese cupo, con todos los discos las cuatro canciones
+ * salian siempre de los mismos 8 (`CTR-19.14` punto 3).
  */
 function comenzar(): void {
-  ronda = escalonar(pozo(), LARGO_RONDA);
+  ronda = armarVuelta(pozo());
   indice = 0;
   puntaje = 0;
   marcador = [];

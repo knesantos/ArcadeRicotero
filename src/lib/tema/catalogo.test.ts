@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { catalogo, pozo, indexarFragmentos, CatalogoInvalido, type Manifiesto } from './catalogo.ts';
+import type { ConteoCitado } from '../en-vivo.ts';
 import { DURACION_FRAGMENTO_SEG } from './escalera.ts';
 import { FICHAS } from '../cancionero/banco.ts';
 
@@ -147,10 +148,15 @@ test('el manifiesto que está en el repo es válido', () => {
  * su ausencia dejaba `BR-01` incumplido en un juego de la v1, con el tablero en verde.
  */
 
-const medido = (slug: string, vistas: number) => ({
-  slug,
-  estado: 'medido',
-  medicion: { vistas },
+/** Un conteo citado inventado, con la forma de `setlistfm.json` (`CTR-19.3`). */
+const conteoDe = (
+  lineas: readonly { slug: string; veces: number }[],
+  completo = true,
+): ConteoCitado => ({
+  pagina: 'https://www.setlist.fm/stats/prueba.html',
+  consultado: '2026-09-22',
+  completo,
+  temas: lineas.map((l) => ({ titulo: l.slug, veces: l.veces, slug: l.slug })),
 });
 
 test('CTR-03.11: todo tema del catálogo trae dificultad, siempre', () => {
@@ -167,34 +173,44 @@ test('CTR-03.11 punto 1: nunca sale "sin-clasificar", que es de US-07 y acá no 
   assert.equal(cat.temas.filter((t) => (t.dificultad as string) === 'sin-clasificar').length, 0);
 });
 
-test('sin mediciones el reparto es plano y medidos lo dice, en vez de haber que deducirlo', () => {
+test('sin conteo el reparto es plano y faciles lo dice, en vez de haber que deducirlo', () => {
   const cat = catalogo(VACIO);
-  assert.equal(cat.medidos, 0);
+  assert.equal(cat.faciles, 0);
+  assert.equal(cat.conteoConsultado, null);
   assert.ok(cat.temas.every((t) => t.dificultad === 'dificil'), 'D-27: sin escucha, difícil');
 });
 
-test('D-27: con mediciones aparecen los tercios, sin tocar una línea de código', () => {
-  const base = catalogo(VACIO).temas;
-  const treinta = base.slice(0, 30);
+test('CTR-19.5: con conteo aparecen los 8 Fáciles, sin tocar una línea de código', () => {
+  const base = catalogo(VACIO).temas.slice(0, 30);
   const cat = catalogo(
-    VACIO,
+    conFragmentos(base.map((t) => t.slug)),
     [],
-    treinta.map((t, i) => medido(t.slug, 1_000_000 - i * 1000)),
+    conteoDe(base.slice(0, 20).map((t, i) => ({ slug: t.slug, veces: 200 - i }))),
   );
 
-  assert.equal(cat.medidos, 30);
+  assert.equal(cat.faciles, 8);
+  assert.equal(cat.conConteo, 20);
+  assert.equal(cat.corteDeterminado, true);
+  assert.equal(cat.conteoConsultado, '2026-09-22');
   const porNivel = { facil: 0, media: 0, dificil: 0 };
-  for (const t of treinta) porNivel[cat.temas.find((x) => x.slug === t.slug)!.dificultad]++;
-  assert.equal(porNivel.facil, 10);
-  assert.equal(porNivel.media, 10);
-  assert.equal(porNivel.dificil, 10);
+  for (const t of base) porNivel[cat.temas.find((x) => x.slug === t.slug)!.dificultad]++;
+  assert.deepEqual(porNivel, { facil: 8, media: 12, dificil: 10 });
 });
 
-test('el más escuchado es el más fácil: la medición no aproxima la dificultad, la mide', () => {
+test('el que más figura es Fácil, y el corte se hace sobre el pozo, no sobre los 105', () => {
   const base = catalogo(VACIO).temas;
-  const cat = catalogo(VACIO, [], [medido(base[0]!.slug, 9_000_000), medido(base[1]!.slug, 12), medido(base[2]!.slug, 500)]);
-  assert.equal(cat.temas.find((t) => t.slug === base[0]!.slug)!.dificultad, 'facil');
-  assert.equal(cat.temas.find((t) => t.slug === base[1]!.slug)!.dificultad, 'dificil');
+  // El que más figura no tiene fragmento: no puede ocupar un lugar de Fácil que no se
+  // sortea nunca (`CTR-07.8`, `CTR-19.5`).
+  const sinAudio = base[0]!;
+  const pozo = base.slice(1, 12);
+  const cat = catalogo(
+    conFragmentos(pozo.map((t) => t.slug)),
+    [],
+    conteoDe([{ slug: sinAudio.slug, veces: 999 }, ...pozo.map((t, i) => ({ slug: t.slug, veces: 100 - i }))]),
+  );
+  assert.equal(cat.temas.find((t) => t.slug === pozo[0]!.slug)!.dificultad, 'facil');
+  assert.equal(cat.temas.find((t) => t.slug === sinAudio.slug)!.dificultad, 'dificil');
+  assert.equal(cat.faciles, 8);
 });
 
 /**

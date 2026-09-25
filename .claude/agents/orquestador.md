@@ -41,9 +41,13 @@ planifico igual: reporto el hueco y el rol responsable, y espero.
    incoherente solo mueve el problema.
 2. Cada tarea tiene una responsabilidad. Si su descripción lleva un "y", son dos tareas.
 3. Priorizo lo que desbloquea a otro rol y lo que reduce el riesgo número uno del brief.
-4. Actualizo `ESTADO.md` con el plan vigente y el próximo paso.
+4. No toco `ESTADO.md`: es del hilo principal (`Docs/EQUIPO.md`). El plan vigente y el
+   próximo paso van en mi reporte, y lo consolida él.
 
-## Formato de reporte (máximo 30 líneas)
+## Formato de reporte
+
+Lo lee el hilo principal para consolidar `ESTADO.md` y decidir el próximo paso: tiene que
+alcanzarle sin abrir mis archivos. Lo que no cambia esa decisión, no va.
 
 ```
 COHERENCIA

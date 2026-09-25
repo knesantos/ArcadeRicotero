@@ -155,6 +155,26 @@ export const ALIAS: Readonly<Record<string, string>> = {
   // lacuerda.net parte el nombre en dos y abrevia: "Barba Azul vs." por "Barbazul versus".
   // Ninguna normalización lo salva —no comparten ni la palabra— así que va explícito.
   'Barba Azul vs. el amor letal': 'Barbazul versus el amor letal',
+  // setlist.fm (`RES-75`, `CTR-19.2`): abrevia "versus" como lacuerda, pero escribe
+  // "Barbazul" pegado, y `ALIAS` compara el título exacto: es otra fila.
+  'Barbazul vs. el amor letal': 'Barbazul versus el amor letal',
+  // setlist.fm (`RES-75`, `CTR-19.2`) escribe "fruli" donde el tracklist dice "frufi".
+  // Cambia una letra y ninguna normalización lo salva. Manda `RES-20`.
+  'Ñam fri fruli fali fru': 'Ñam fri frufi fali fru',
+  // MusicBrainz (`CTR-19` pieza 2, recital del 1995-12-09) escribe "amor" en el texto del
+  // setlist, pero lo enlaza a la obra b659d3a2-5c87-4a7f-82bc-ee32a68f6f28, que la misma
+  // fuente titula "Nuestro amo juega al esclavo". Errata del texto, no otro tema.
+  // **Sin ficha todavía:** el enlace a la obra lo consultó el hilo principal en `T-279`, no
+  // `investigador`. Falta que se fiche (la próxima `RES-` libre) y citarla acá.
+  'Nuestro amor juega al esclavo': 'Nuestro amo juega al esclavo',
+  // setlist.fm, conteo completo (`RES-90`, `CTR-19.16`), tres filas más:
+  // - le falta una "s" a "professionisti" (`RES-91`);
+  'Nuotatori profesionisti': 'Nuotatori professionisti',
+  // - trae el subtítulo pegado, con otra puntuación que la fila de arriba que ya lo resolvía;
+  'Es hora de levantarse querido ¿Dormiste bien?': '¡Es hora de levantarse querido!',
+  // - nombra solo la segunda mitad del tema compuesto: la contracara de 'Mariposa Pontiac'
+  //   (`RES-91`, "confirmado sistemático"). En el conteo es otra grafía y no suma (`CTR-19.2`).
+  'Rock del país': 'Mariposa Pontiac - Rock del país',
 };
 
 /** Índice por forma dura, para resolver un título de fuente contra los 105. */

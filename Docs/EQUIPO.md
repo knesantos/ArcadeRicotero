@@ -113,6 +113,23 @@ package.json, astro.config, etc.  -> hilo principal
 Si algún día el código crece hasta necesitar un rol propio, el tope de roles obliga a sacar
 otro — y la conversación se da en la tabla de "Cambios al roster", no de hecho.
 
+### Y el pixel del área de juego, también (`D-44`)
+
+**Desde el 2026-09-22, los sprites y los tiles del área de juego los dibuja el hilo
+principal, como código.** Lo decidió el usuario (`D-44`) cuando el ciclo 15 midió que la
+hoja que había traído no estaba sobre grilla y que ninguno de los siete roles produce arte.
+
+No es un rol nuevo y no toca el tope, por la misma razón por la que el hilo principal
+escribe el código: **un cuadro de pixel acá es una grilla de texto** donde cada caracter
+nombra una tinta `--px-*` de `tokens.css`, y un script la imprime a PNG. Sin correr ese
+script, sin el auditor de paleta y sin mirar el resultado no se puede dibujar — y los
+cuatro roles que escriben no corren nada (`D-12`).
+
+**Lo que no hace el hilo principal: aprobarse solo.** Nada entra al atlas sin una hoja de
+contacto que el usuario vio. `experiencia` sigue siendo dueña de la convención (`UX-27`) y
+de qué se dibuja; el hilo principal dibuja contra esa convención, igual que escribe código
+contra los contratos de `arquitectura`.
+
 ## Quién puede correr comandos
 
 **Solo `orquestador` y `revisor` tienen `Bash`.** Los cuatro roles que producen artefactos

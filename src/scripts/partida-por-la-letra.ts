@@ -28,7 +28,7 @@ import { botonCorreccion } from './correccion.ts';
 import { claseDisco } from '../lib/tema/paleta.ts';
 import { tramo } from '../lib/quiz/tramo.ts';
 import { armarLink, leerDesafio } from '../lib/desafio.ts';
-import { escalonar } from '../lib/escalonar.ts';
+import { armarRonda } from '../lib/por-la-letra/ronda.ts';
 import { nombreArchivo } from '../lib/tarjeta/plan.ts';
 import { dibujarTarjeta } from './tarjeta.ts';
 import {
@@ -59,9 +59,6 @@ interface ItemDelBanco {
   readonly dificultad: string;
   readonly fuente: { readonly sitio: string; readonly url: string };
 }
-
-/** Cuántos temas trae una vuelta. Sesión de dos o tres minutos: acá se lee, no se escucha. */
-const LARGO_RONDA = 5;
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const portada = $('portada');
@@ -193,13 +190,15 @@ $('jugar').addEventListener('click', comenzar);
  * La funcion vivia aca y en el ciclo 10 se mudo a `src/lib/escalonar.ts`, cuando `US-02`
  * necesito exactamente lo mismo (`T-163`). Misma logica, un solo lugar.
  *
- * **Mientras `popularidad.json` no tenga mediciones los 89 caen todos en `dificil`**
- * (`D-27`), y entonces escalonar degrada a un barajado — lo que habia antes, pero
- * **declarado** en vez de accidental, y andando solo el dia que la clave exista.
+ * **Desde `D-46` (`T-285`) el banco escalona de verdad**: la dificultad sale de lo mas tocado
+ * en vivo, en tercios (`CTR-19.15`), y ya no queda todo en `dificil`. Con eso aparecio la
+ * vidriera fija que `US-02` ya habia tenido: sin cupo, las cinco preguntas salian siempre de
+ * los Faciles. `armarRonda()` (`src/lib/por-la-letra/ronda.ts`) pone el cupo, y el largo de
+ * la ronda vive ahi para que un test lo corra contra el banco real.
  */
 
 function comenzar(): void {
-  ronda = escalonar(banco, LARGO_RONDA);
+  ronda = armarRonda(banco);
   indice = 0;
   puntaje = 0;
   hechos = [];

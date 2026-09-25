@@ -12,6 +12,13 @@
 > **Pedido del usuario:** *"dale, hacé lo mismo con sacalo por la letra"*, después del pulido
 > de "Adiviná el tema" de abajo.
 >
+> **Integrado a `main` el 2026-09-25**, a pedido del usuario (*"integralo"*), después de
+> traer `main` con el ciclo 16 adentro (PR #16 y #17). El único choque fue este archivo; el
+> código se mezcló solo —`main` cambió cómo se arma la vuelta (`armarVuelta`,
+> `armarRonda`) y el pulido cambió cómo se ve— y se verificó sobre la mezcla:
+> **`node --test 'src/**/*.test.ts'` 1085 en verde**, `npm run check` 0 errores, build 152,
+> y los recorridos de los dos juegos y del portal en el navegador sobre el build.
+>
 > **Verificación:** `node --test 'src/**/*.test.ts'` **676 en verde** (3 nuevos, de la
 > escalera de versos) · `npm run check` 0 errores · `npm run build` **152 páginas** · los
 > dos juegos recorridos enteros sobre el build a 390×664, 360×740 y 1280×860, sin
@@ -121,13 +128,256 @@
 > | `.arriesgar` y `.seguir` tienen canto solo en este juego (`.juego-tema`): "sacalo por la letra" comparte las clases y no se tocó | `experiencia` |
 > | `escalera.ts` perdió `tramosConEtiqueta` y `PISO_ETIQUETA_PCT` (los seis números entran por ancho mínimo); suma `etiquetaDeRegla`, `extraAlPasar` y `formatoSegundos`, con test | — |
 
+> ## ✅ CICLO 16, RÁFAGA 3 CERRADA Y REVISADA: `REV-15` (2026-09-24)
+>
+> **`npm test` 1081/1081 (eran 673 al abrir el ciclo) · `npm run check` 0/0 · build 152 ·
+> validador `APTA` · auditor de paleta 0.** Todo commiteado en `main` y cada commit de código
+> probado en un worktree limpio. El último de código es `3fe5dc6`. **No se hizo push.**
+>
+> ### Lo que ya es juego
+>
+> - **Seis niveles de Skayboy y Poligirl**, en `borrador`, cada uno con su traza grabada
+>   que `npm test` vuelve a jugar: escalones 2/2/2, tolerancia sobre la de su escalón,
+>   paridad contada. Los mecanismos (palanca, placa, compuerta, caja) andan en el mundo.
+> - **La isla dibuja con los sprites aprobados.** Para verlo: `npm run dev` y
+>   `/juegos/skayboy-y-poligirl/?nivel=NIV-04` (el parámetro solo existe en desarrollo).
+> - **"Adiviná el tema" tiene 8 Fáciles por conteo en vivo** y **"Sacalo por la letra"
+>   saca la dificultad del conteo en tercios** (`D-46`). `popularidad.ts` ya no existe.
+>
+> ### `REV-15`: un `ALTA` y seis `BAJA`
+>
+> **`FIND-71` (`ALTA`):** en "Adiviná el tema" `BR-30` ya decidió tercios para Media y
+> Difícil, pero el código sigue con 8/82/5 y `CTR-19.14` lo lista como abierto. `FIND-72` a
+> `FIND-77` son colas chicas: traspasos a `arquitectura`, un comentario falso, una
+> justificación de `NIV-03` y dos evasiones que el auditor de la isla no caza.
+>
+> ### El usuario, hoy
+>
+> - **"Completá la letra" también sale del conteo** (precisión de `D-46`). Es `T-286` a
+>   `T-288` (`ORQ-plan-ciclo-16.md §2.4`).
+>
+> ### Próximo paso: la ráfaga 4 (`ORQ-plan-ciclo-16.md §2.5`)
+>
+> `T-286`..`T-288` ("Completá la letra"), `T-289`/`T-290` (que ganar se vea: hoy la sala no
+> tiene puerta abierta), `T-291`/`T-292` (`FIND-71`), `T-293`/`T-294` (las colas de
+> `REV-15`) y `T-295` (la revisión). Rango ampliado a `T-295` en `Docs/IDS.md`.
+>
+> ### 🔴 Lo que es del usuario
+>
+> | Qué | Traba |
+> |---|---|
+> | **Jugar los seis niveles en un teléfono**, de a dos y solo | que pasen a `listo` y producción los sirva |
+> | Los temas enteros: `npm run generar-fragmentos -- "<carpeta>" --enteros` | que el juego suene (`D-39`) |
+> | Push a GitHub | nada: `main` local tiene todo |
+
+> ## 🕹 CICLO 16, RÁFAGA 2 CASI CERRADA, Y TRES COMMITS EN MAIN (2026-09-24)
+>
+> ### Lo que decidió el usuario hoy
+>
+> - **Aprobó la paleta del pixel (hoja 14 del lienzo) y los dibujos.** Ya están en
+>   `tokens.css` (15 `--px-*`) y en `public/sprites/` (tres atlas; el auditor los da en regla).
+>   La hoja del pixel es la **14, no la 13**: `tokens.css` ya llamaba hoja 13 a la imprenta.
+> - **`D-46`: la dificultad de todo juego con canciones sale del conteo de veces tocado en
+>   vivo.** Enmienda `D-27`. Abre `T-282`..`T-285` (`ORQ-plan-ciclo-16.md §2.4`).
+> - **"Commitea e integra a main"**. Hecho en tres tandas, cada una probada en un worktree
+>   limpio con `node_modules` enlazado (740 tests, `tsc` 0, build 152):
+>   `49d955d` los documentos · `b6559aa` el pixel (paleta, imprenta, auditor, muñecos, sala,
+>   atlas) · `6bebbfe` la pantalla. **No se hizo push.**
+>
+> ### Después, todo el código entró (2026-09-24, mañana)
+>
+> `0f4c99e` + `149ea16` los recitales y los 8 Fáciles de `US-02` (`T-279`; el segundo commit
+> suma dos archivos que el primero olvidó: **la prueba en worktree limpio lo cazó**, sin eso
+> `0f4c99e` no compila solo) · `fa928ea` el motor (`T-266`, `T-267`, `T-272`). Los tres
+> probados en limpio: **952/952, `tsc` 0, build 152.** **`BR-28` queda levantada**: un test
+> cuenta los 8 Fáciles.
+>
+> ### 🔴 El límite semanal de uso cortó la noche (2026-09-24, ~01:30 a 04:00)
+>
+> Fallaron tres agentes con *"You've hit your weekly limit"*: `T-272` (a un import del final:
+> `CUERPO_ALTO` en `solucionador.ts`, que completó el hilo principal), la coherencia de la
+> ráfaga 2 y `T-284`. Se volvieron a lanzar en la ráfaga 3. **Su verificación adversarial de
+> `T-272` corre ahí**: `fa928ea` está verde pero nadie que no lo armó lo miró todavía.
+>
+> ### `BR-30`, y una lectura que el usuario tiene que confirmar
+>
+> `producto` decidió que **"Sacalo por la letra" (`US-07`) pasa a dificultad por conteo en
+> vivo, en tercios**, y que **el quiz y "Completá la letra" (`US-03`) no pasan**: ahí la
+> dificultad mide otra cosa (lo oscuro del dato, el contexto del hueco). El usuario dijo
+> *"todo lo que sea con canciones"*. **Preguntarle si esa lectura le cierra.**
+>
+> ### 🔴 Se trabó dos veces, y cómo se ve
+>
+> 1. **2026-09-23, 16:03 → 19:05: corte general.** Los seis agentes activos quedaron quietos
+>    181-182 minutos y volvieron juntos. Máquina suspendida o red caída. Tres agentes se
+>    relanzaron desde cero solos.
+> 2. **`T-272` (los mecanismos): dos instancias colgadas** esperando una respuesta del modelo
+>    que no volvió (184 y 45 minutos), cortadas y relanzadas. La tercera avanza. Pausas de 4 a
+>    6 minutos con esfuerzo `max` son normales, no colgadas.
+>
+> **Cómo diagnosticarlo sin adivinar:** en
+> `~/.claude/projects/<proyecto>/<sesión>/subagents/workflows/<run>/` cada agente tiene su
+> `agent-*.jsonl` con timestamps (UTC). Un hueco igual en todos a la vez es un corte general;
+> un hueco en uno solo que termina en *"Request interrupted"* es una llamada colgada.
+>
+> ### Lo hecho en la ráfaga 2 (verificado)
+>
+> | Tarea | Qué quedó |
+> |---|---|
+> | `T-267` | Traza grabada en `src/data/skayboy-soluciones.json`, `soluciones.ts`, paso fijo `CUADRO_SEG` en la isla, CTR-16 v2 sin `verificaciones.solo` |
+> | `T-270` | `CNT-21`: los seis nombres; la línea de vertical se queda y solo aparece donde es verdad |
+> | `T-271` | **La pantalla entra y ya no está muda.** Medido en el navegador sobre producción: 812×375 y 375×812 sin teclas afuera, rótulo visible fuera del área |
+> | `T-273`, `T-274` | `CTR-19` (el conteo citado y el archivo de recitales) y `BR-18 (h)` |
+> | `T-275`, `T-276` | Los muñecos y la sala, dibujados como texto, aprobados, impresos |
+> | `T-281` | `INV-76`: **la única fuente abierta es MusicBrainz (CC0), con 2 recitales** con setlist (8 y 9-dic-1995) |
+>
+> ### Corriendo al escribir esto: la ráfaga 3 y el cierre, en un workflow
+>
+> Verificar `T-272` → `T-277` (los cinco niveles) y `T-278` (la isla dibuja con los atlas) en
+> paralelo; `T-284` (contratos de `D-46`) → `T-285` (la dificultad de `US-07` por conteo); la
+> coherencia de las ráfagas 2 y 3; y `T-280`, que devuelve el texto de `REV-15` para pegar.
+> `T-282` (`INV-89`, el conteo completo: 198 títulos) y `T-283` (`BR-30`) ya cerraron.
+>
+> **Si esto se corta:** el workflow es `wf_e717167e-b84`, y se retoma con
+> `resumeFromRunId`; lo terminado vuelve de caché.
+
+> ## 🤖 CICLO 16, RÁFAGA 1 CERRADA: LA MÁQUINA YA JUEGA SOLA (2026-09-23)
+>
+> **`npm test` 746 en verde (eran 673) · `tsc --noEmit` 0 errores · `npm run build` 152
+> páginas.** **Nada commiteado todavía**: son ~30 archivos, y el usuario no pidió commit.
+>
+> ### Cómo se trabajó
+>
+> Dos workflows: **34 agentes** para las nueve tareas —cada una verificada por alguien que no
+> la armó, corregida por su dueño y reverificada— más una pasada de coherencia cruzada; y
+> **18 agentes** para cerrar lo que esa pasada dejó. Lo que sigue está verificado contra el
+> disco. **La pasada de coherencia se equivocó una vez**: dio por coincidente la palanca de
+> `UX-31` con `CTR-16.10.2` y eran opuestas. La cazó la lectura del hilo principal, no la
+> máquina: ojo con eso en la ráfaga 2.
+>
+> ### Lo cerrado
+>
+> | Tarea | Qué quedó |
+> |---|---|
+> | `T-261` | `UX-28 §2.3`–`§2.6` y `§4.1`. **El rótulo de carga vive afuera del mueble**, la cabecera entra en la columna del mueble a ×1, el vertical baja las teclas arriba del borde, tabla de alturas para cinco tamaños. La `§2.2` doble quedó una sola. La línea de `CNT-18` "el doble" **solo es verdad** con ancho > 400 y alto ≥ 720 |
+> | `T-262` | **`BR-29`**: (a) solo el teléfono; (b)(c)(d)(f) la traza; (e) el motor. Tolerancia mínima **Fácil ≥ 10, Media ≥ 6, Difícil ≥ 4 cuadros**. **`verificaciones.solo` se retira**: queda solo `deDos` |
+> | `T-263` | **`ADR-09` + `CTR-18`** (`ARQ-solucion-grabada.md`). **Paso fijo de 1/60 en la isla** con acumulador. La traza vive en **`src/data/skayboy-soluciones.json`**, con schema propio, y no viaja al teléfono. Se graba una traza **ensanchada**, no la más corta (la más corta tiene tolerancia 0 hasta en `NIV-01`) |
+> | `T-264` | **`CTR-16.10`**: la palanca **por sentido** (derecha activa, izquierda en reposo, saltarla no la mueve), la placa, la compuerta como **tramo vertical de sólido a sólido**, la caja. `C` es cielo e `I` infierno, **ahora lo dice el dato**. Regla 3 de `CTR-16.5`: cada entrada tiene piso. `T-253` aceptado |
+> | `T-265` | **`UX-31`**: los seis niveles en boceto, escalones 1/1/2/2/3/3, **paridad programada 3 a 3**. Tres bocetos rediseñados cuando se vio que la palanca no es permanente |
+> | `T-266` | **El solucionador** (`src/lib/skayboy/solucionador.ts` + `scripts/resolver-niveles.mjs`). **`NIV-01`: 119 nodos en 25 ms**; de uno 1,79 s (la más corta 1,29 s), tolerancia **30**; de a dos 0,64 s. 25 tests, cada guarda vista en rojo por mutación |
+> | `T-268` (mitad) | **La imprenta y el auditor del pixel** (`scripts/imprimir-pixel.mjs`, `scripts/auditar-paleta-pixel.mjs`, `src/lib/pixel/`, 49 tests). El formato de los `.txt` se puede copiar del encabezado de `fuente.ts` y funciona |
+> | `T-269` | **`INV-73`** (`RES-73`..`RES-75`). **La condición de `D-45` se cumple**: top sin empate en el puesto 8 (Jijiji 101 · Ñam fri fruli fali fru 93 · Vamos las bandas 90 · …). Dos del top-8 son inéditos fuera de los 105; filtrando, los 8 salen bajando al puesto 10 |
+>
+> ### 🔑 Dos decisiones nuevas
+>
+> - **`D-45` enmendada (el usuario, 2026-09-23).** Los términos de setlist.fm dan licencia **para
+>   ver** y prohíben bots; su API prohíbe guardar lo que devuelve. Entonces: **los Fáciles salen
+>   del conteo citado** de su página de estadísticas, y **los setlists enteros se guardan solo de
+>   fuentes cuya licencia lo permite**. Las busca **`T-281`**, nueva, de `investigador`.
+> - **`experiencia` decidió la paleta del pixel** (`UX-27`, `UX-30`): **el aire es la luz y el
+>   sólido es la clave** (con el aire en la clave, el bisel se fundía a 1,00:1); **15 tintas, no
+>   16**: la puerta va por forma, como los mecanismos; la luz máxima es el blanco de *Gulp!*.
+>
+> ### 🎨 La hoja 13 del lienzo, esperando tu visto bueno
+>
+> **"13 · El pixel del fichín"** se publicó en el lienzo (versión 14). Son las **15 tintas** con
+> su contraste contra la clave, las baldosas de muestra, la prueba en gris y la maqueta del aire.
+> **Una elección es del hilo principal y conviene que la mires:** las pieles de Skay y Poli
+> estaban a ΔE00 0,79. Se movieron **las dos**, cada una a menos de 7 de lo que muestra la hoja y
+> en sentidos opuestos (Skay `#c39c76`, Poli `#feb471`), para que ninguna de las dos personas
+> cargue sola con el cambio. **Nada baja a `tokens.css` hasta que apruebes.**
+>
+> ### Lo que la ráfaga 2 tiene que saber, además de su fila
+>
+> - **`T-267`** también: `CUADRO_SEG` en `mundo.ts`, el acumulador de paso fijo en la isla,
+>   `skayboy-soluciones.json` con su schema, el flag `--regrabar`. Y la tolerancia de `NIV-01`:
+>   `CTR-18.9` dice 21 (cuenta a mano) y la herramienta mide 30 (`BAJA`, la cierra `T-267`).
+> - **`T-272`** toca más que su fila: la leyenda de `skayboy.json`, `esquemas.test.ts`,
+>   `niveles.test.ts:48`, y la regla 3 de entradas con piso. Traspaso:
+>   `Docs/SUGERENCIAS/ARQ-para-hilo-principal-lo-que-arrastra-ctr-16-10.md`.
+> - **Al bajar la paleta**: `src/lib/pixel/tokens.ts` tiene `TOPE_DE_TINTAS = 16` y ahora son 15.
+> - **Citas viejas de `UX-28 §2.2`** en `skayboy.css:486` y en este archivo: hablan del alto, que
+>   ahora es `§2.3` (`UX-para-hilo-principal-citas-de-UX-28-que-cambiaron-de-numero.md`).
+> - **`T-273` y `T-279` cambiaron** con la enmienda de `D-45`: dos piezas, el conteo citado y el
+>   archivo de recitales, y ningún script baja páginas de setlist.fm (`ORQ-plan-ciclo-16.md §2.3`).
+>
+> ### Próximo paso: la ráfaga 2
+>
+> `T-267`, `T-270`, `T-271`, `T-272`, `T-273`, `T-274`, `T-275`, `T-276` y `T-281`. Los dibujos
+> (`T-275`, `T-276`) pueden empezar con la paleta en borrador, pero **no entran al atlas** sin tu
+> visto bueno a la hoja 13.
+>
+> ### 🔴 Lo que espera al usuario
+>
+> | Qué | Traba |
+> |---|---|
+> | **Mirar y aprobar la hoja 13 del lienzo** (15 tintas, las dos pieles) | que la paleta baje a `tokens.css`, y con ella el arte |
+> | **Commitear** las ~30 piezas de la ráfaga 1 | nada las respalda hoy |
+> | La partida en el teléfono (ex `T-249`) | que los niveles pasen a `listo` |
+> | Los temas enteros: `npm run generar-fragmentos -- "<carpeta>" --enteros` | que el juego suene (`D-39`) |
+
+> ## 🤖 CICLO 16 PLANIFICADO: EL FICHÍN SE PRUEBA SOLO (2026-09-22)
+>
+> **Plan en `Docs/ORQ/ORQ-plan-ciclo-16.md`: veinte tareas, `T-261`..`T-280`, nada
+> construido todavía.** Arranca sobre `main` en `1478ae7` con el árbol limpio y `npm test` en
+> **673/673**.
+>
+> ### Las dos decisiones del usuario, ya escritas
+>
+> - **`D-44` — el pixel lo dibuja el hilo principal, como código.** Grillas de texto en las 16
+>   tintas `--px-*`, impresas a PNG por script y controladas por el auditor de paleta. La
+>   hoja del usuario pasa a ser referencia. **Nada entra al atlas sin una hoja de contacto que
+>   el usuario vio.** Justificado en `Docs/EQUIPO.md`, sin rol nuevo.
+> - **`D-45` — "Fácil" en `US-02` es lo más tocado en vivo**, según los setlists de
+>   setlist.fm, y **los setlists se guardan enteros** (pedido textual: *"Guardemos los setlist
+>   que encuentre también"*) en `src/data/recitales.json`. Condición: que `RES-73` muestre
+>   cobertura suficiente; si no, vuelve al usuario. **La puerta de `BR-28` al noveno juego se
+>   abre cuando un test cuente los 8 Fáciles (`T-279`), no cuando se escribió la decisión.**
+>
+> ### La idea del ciclo
+>
+> Skayboy y Poligirl tiene un nivel y el piso pide seis listos. **Una máquina que juega sola**
+> (`T-266`): busca sobre la simulación pura de `mundo.ts` el camino de una persona con un dedo
+> por vez, lo graba al lado del nivel, y `npm test` lo vuelve a jugar. Convierte cuatro de las
+> seis condiciones de `BR-25` en algo que corre el build; al teléfono le queda lo que solo un
+> pulgar sabe. Medido antes de cortar: **la simulación corre a ~217.000 cuadros por segundo**,
+> así que buscar es cosa de segundos y repetir la traza no le suma nada a `npm test`.
+>
+> **Hallazgo de la planificación, y es el riesgo número uno:** la isla corre a **paso
+> variable** (`partida-skayboy.ts:343`, `k.dt()`). Sin pasarla a paso fijo, la máquina
+> probaría otra física. Lo decide `T-263` (`ADR-09`) y lo aplica `T-267`.
+>
+> ### El ciclo 15 queda cerrado por absorción
+>
+> `T-255`..`T-260` quemados. `T-238`+`T-243` → **`T-268`** (la cadena del pixel), `T-246` →
+> **`T-275`**/**`T-276`** (los muñecos, la sala), `T-250`+`T-252` → **`T-280`** (el cierre).
+> `T-249` sigue siendo tuya: la partida en el teléfono.
+>
+> ### Próximo paso: la ráfaga 1
+>
+> Nueve tareas en paralelo: `T-261` (la pantalla deja de estar muda), `T-262` (`BR-29`),
+> `T-263` (`ADR-09`/`CTR-18`), `T-264` (`CTR-16.10`, los mecanismos), `T-265` (`UX-31`, la
+> gramática de los seis niveles), `T-269` (`RES-73`, los recitales), y en el hilo principal
+> `T-266` (el solucionador) y `T-268` (la cadena del pixel).
+>
+> ### 🔴 Lo que espera al usuario
+>
+> | Qué | Traba |
+> |---|---|
+> | **Aprobar la paleta de 16 en la hoja 03 del lienzo** | `T-268`, y con ella todo el arte |
+> | **Aprobar las dos hojas de contacto** | que el dibujo entre al juego (`D-44`) |
+> | **La partida en el teléfono** (ex `T-249`) | que los seis niveles pasen a `listo` y producción los sirva |
+> | **Los temas enteros**: `npm run generar-fragmentos -- "<carpeta>" --enteros` | que el juego suene (`D-39`) |
+> | Si `RES-73` dice que setlist.fm pide clave, sacarla (es gratis) | `T-279` |
+
 > ## 🕹 CICLO 15 CONSTRUIDO: EL MOTOR DECIDIDO Y TRECE TAREAS CERRADAS (2026-09-22)
 >
 > **`npm test` 673 en verde · `npm run check` 0 errores · `npm run build` 152 páginas ·
 > validador `APTA`.** Eran 578 tests al abrir la ráfaga: **entraron 78 pruebas nuevas.**
 >
-> **Commiteado en `1478ae7`** (corregido el 2026-09-24: acá decía que nada estaba
-> guardado, y el disco dice que sí).
+> ~~**Nada está commiteado.**~~ **Corregido el 2026-09-22 al abrir el ciclo 16: ya estaba
+> guardado.** El commit `1478ae7` ("Ciclo 15 construido") tiene las ~35 piezas y el árbol
+> quedó limpio. Manda el disco.
 >
 > ### 🔑 Las dos decisiones del usuario, tomadas
 >
@@ -3094,3 +3344,4 @@ versos en borrador.
 | 2026-08-27 | **`T-133`: `CTR-09`, el schema del banco de `US-07`** (`Docs/ARQ/ARQ-schema-adivinar-por-la-letra.md`). El banco es `src/data/por-la-letra.json`, un ítem **por tema**, con la ventana de **8 versos** que revela la escalera de `BR-20` y **ni un dato de la escalera**: los pasos se cortan con `slice(0, 1|2|4|8)`. Sin `id` posicional —la identidad es el slug, que sale de `RES-20` y no se corre—, sin `estado` y sin distractores. El schema **sí** se baja a `src/data/_schema/por-la-letra.schema.json` (al revés que `CTR-03.8`, con el motivo escrito) y entra a `esquemas.test.ts` con un token. **El enganche de `CNT-11`**: una función `ventanaValida()` que devuelve el motivo del descarte, más `filtro.version` en el envoltorio comparado contra `VERSION_FILTRO` — así un banco generado con la regla vieja no se puede hacer pasar por filtrado. La dificultad manual va a `src/data/por-la-letra-curaduria.json` (de `contenido`, keyed por slug) y un tema sin etiqueta **entra igual** como `sin-clasificar`, para no repetir el pozo de tres ciclos de `US-03`. **Hallazgo medido de paso: `sirveComoVerso("[A  G]")` devuelve `true`** — está en `letra.json` como contexto de `CL-265` y `CL-266`. En `US-03` era un renglón feo; en `US-07` sería el enunciado entero del paso 1. Tapado por schema en `CTR-09.4`; el arreglo de fondo, en `Docs/SUGERENCIAS/ARQ-para-hilo-principal-verso-de-acordes.md`. |
 | 2026-09-01 | **`/ciclo` planificó el ciclo 10** (`Docs/ORQ/ORQ-plan-ciclo-10.md`, `T-161`..`T-175`, dos tramos). Es un ciclo de **cierre**: no agrega un juego, un ítem ni una pantalla — mira lo construido contra lo escrito. **Lo que lo motiva salió de medir, no de recordar: los cinco pisos de la v1 están cumplidos y la v1 no está lista.** `src/scripts/partida-tema.ts:196-202` arma la vuelta de `US-02` con un Fisher-Yates sobre los 95 temas y corta cuatro; **la palabra `dificultad` no aparece una sola vez en el archivo** y `adivinar-tema.json` no tiene el campo en ninguno de sus 95 ítems. Es `FIND-29` —el defecto que `REV-08` encontró en `US-07`— **vivo en un juego de la v1**, donde pesa más porque `US-07` está fuera del "Listo" por `D-05`. Contra eso, `PRD-alcance-v1.md` le exige a `US-02` **mínimo 8 de nivel Fácil** por `BR-18` (f): hoy son 0 y `BR-01` no se cumple. **Segundo hallazgo del mismo tirón:** `adivinar-tema.json` es el **único banco de juego sin schema** — `esquemas.test.ts` valida siete archivos y ese no está, así que los 95 ítems del banco más grande de la v1 son los únicos que nadie valida a máquina. El frente A (`T-161`..`T-165`) cierra las dos cosas y **está construido para andar con cero mediciones**: degrada a barajado declarado como `US-07`, así que el ciclo no se cuelga de la clave de YouTube. Cierra `T-174` (`REV-09`), la revisión que declara la v1 o dice qué falta. |
 | 2026-09-01 | **Ciclo 10 hecho entero en una ráfaga: `T-161`..`T-175`, catorce de quince** (falta `T-165`, la clave de YouTube, que es del usuario). `npm test` **372/372** (eran 352), `check` limpio, build de 150 páginas. **El defecto que lo motivó:** `US-02` armaba la vuelta con un Fisher-Yates sobre los 95 temas y `dificultad` no aparecía una sola vez en el archivo — `FIND-29` vivo en un juego de la v1. **La salida resultó más chica y mejor ubicada que la que yo había planificado, y porque `arquitectura` ya la había escrito hace un ciclo:** *"sería un dato nuevo y no iría en el manifiesto — iría en el catálogo, al lado de `RES-20`"*. Así que `CTR-03` revisión 4 (`CTR-03.11`) pone la dificultad en `catalogo()`, derivada en build de las escuchas, **sin tocar el archivo de datos**; `CTR-03.8` —la decisión de no bajar el schema a archivo— se re-evaluó y **se ratificó**, porque el campo nuevo tampoco se carga a mano. **Mi plan decía que `adivinar-tema.json` era "el único banco sin contrato" y era falso:** tiene `CTR-03` y la falta del `.schema.json` es una decisión con tres motivos escritos. De paso, dos reglas que estaban duplicándose se unificaron: `repartirPorPopularidad` (`D-27`) pasó a `src/lib/popularidad.ts` y el escalonado de `BR-01` a `src/lib/escalonar.ts`, que ahora comparten `US-02` y `US-07` — `ronda.ts` no se tocó. **`REV-09` abrió en 🟡 y cerró en 🟢**, con cuatro hallazgos: `FIND-34` (los pisos de `US-02` y `US-03` llegaron el 27-ago y nadie prendió su guarda), `FIND-35` (tres criterios de aceptación de la v1 describían un producto que ya no existe: Spotify y el cerrojo de derechos que `D-22` y `D-14` retiraron), `FIND-36` y `FIND-37`. **Lo demás del ciclo:** el `h1` del quiz bajó de diez palabras a cinco —*"Entrá, sepas lo que sepas."*— y con eso `voz.test.ts` audita los seis `h1` de portada, hueco que llevaba un ciclo abierto; `QZ-025` (Bulacio) dejó de acertarse con civismo y pasó al ángulo que `CNT-04` ya fichaba, el tiempo que tardó la Justicia; el verso `",l mi viejo"` se arregló en `cancionero.json` **y un barrido independiente encontró de paso cuatro candidatos de `US-03` cuyo "verso" es prosa del transcriptor de cifraclub — ninguno llegó a `listo`**; `UX-13` adoptó los diez zooms de tapas que el hilo principal había elegido sin `experiencia`; `CTR-05.5` ratificó la regla de `encuadre` que se le había reemplazado sin ser su dueño; y tres explicaciones de tapa que hablaban del título dejaron de señalar algo que el zoom sacó de pantalla — `TP-001` además **llamaba "título" al nombre de la banda**, verificado abriendo la imagen. **La deuda de método, declarada y no tapada (`FIND-37`): las quince tareas y la revisión salieron de la misma mano**, incluidas decisiones de `producto`, `arquitectura` y `experiencia`. Es la tercera vez en tres ciclos que el proyecto tropieza con lo mismo. |
+| 2026-09-24 | **Auditoría de prompts (`/claude-api prompt-audit`): los agentes y las skills estaban en el 19 de agosto.** Los 7 agentes y las 11 skills no se habían tocado desde que entraron al repo, y le seguían diciendo a cada rol cosas que `D-05`, `D-14`, `D-19`, `D-21`, `D-22` y `ADR-01` ya habían dado vuelta: que la nota de derechos bloquea publicar, que Spotify es la vía al tema completo y `ADR-01` sigue abierta, que las tapas van solo en su juego, que los juegos 3 y 4 están por confirmarse. Además, cuatro agentes y cinco skills mandaban al rol a escribir `ESTADO.md`, que `Docs/EQUIPO.md` reserva al hilo principal. Y `revisor` y `coherencia` tenían un tope de líneas que le recorta la cobertura a un modelo que lo cumple al pie de la letra. **Aplicados 14 hallazgos** (9 de confianza alta, 5 media) en 20 archivos de `.claude/` y en `CLAUDE.md`, que además perdió los tres avisos que corregían su propio párrafo: ahora dice lo vigente y apunta a `PRD-alcance-v1.md` para los pisos. Informe completo, con lo que se marcó y no se tocó, en `Docs/SUGERENCIAS/HILO-auditoria-prompts-ia.md`. **Pendiente:** correr el validador de instancia (`D-11`), que no está en el contenedor donde se hizo esto, y mirar en la próxima delegación real que ningún rol toque `ESTADO.md` y que `revisor` traiga todos los hallazgos. |

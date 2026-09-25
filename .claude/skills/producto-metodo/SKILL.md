@@ -19,12 +19,12 @@ Leé antes de empezar:
 </contexto>
 
 <procedimiento>
-1. Ubicá la idea dentro de los cuatro juegos del brief (quiz, adivinar el tema, y los
-   dos que confirmás o cambiás vos: hoy "completar la letra" y "adivinar la tapa").
+1. Ubicá la idea: dentro de un juego que ya tiene historia en `Docs/PRODUCTO/`, o como
+   juego nuevo (mirá `PRD-backlog-ideas.md` antes de abrir uno).
 2. Escribí la historia en formato: *Como <tipo de jugador>, quiero <acción>, para
    <beneficio>.*
 3. Definí el criterio de aceptación en Given/When/Then. Al menos un caso feliz y un caso
-   borde (el jugador que no sabe nada, el que llega sin conexión al reveal de Spotify).
+   borde (el jugador que no sabe nada, el que se queda sin conexión en el reveal).
 4. Si la historia depende de una regla de negocio nueva (ej. cómo puntúa el reveal
    progresivo), escribila aparte como `BR-XX` y citala desde la historia.
 5. Si la historia es sobre un juego entero, fijá o confirmá su piso de ítems: cuántas
@@ -56,6 +56,6 @@ Y siempre: ningún placeholder sin resolver, ningún ID referenciado que no exis
 Un archivo `PRD-<tema>.md` en `Docs/PRODUCTO/` por historia o lote de historias
 relacionadas, con IDs `US-XX` / `BR-XX` nuevos y el piso de ítems si aplica.
 
-Al terminar, actualizá `ESTADO.md` y reportá en el chat, en máximo 10 líneas: qué
-archivos tocaste, qué IDs creaste, y qué rol necesita esto ahora.
+Al terminar, reportá en el chat qué archivos tocaste, qué IDs creaste y qué rol necesita
+esto ahora. `ESTADO.md` no lo tocás: es del hilo principal, que lo consolida con tu reporte.
 </entregable>

@@ -7,6 +7,16 @@
  * mundo una vez por cuadro, y dibuja lo que el mundo dejó.** Si algún día hay que cambiar
  * de motor (`ADR-08.6`), se reescribe este archivo y el juego no se entera.
  *
+ * ## Un cuadro es siempre un cuadro (`ADR-09.1`, `T-267`)
+ *
+ * El motor llama a la isla con el tiempo que pasó desde el tic anterior, y ese tiempo tiembla.
+ * La isla no se lo pasa al mundo: se lo da a `jugarTic()`, que lo junta en un `Reloj` y le pasa
+ * al mundo **cuadros enteros de `CUADRO_SEG`** —con tope de tres por tic, y lo que sobra del tope
+ * se tira—. Es el mismo `dt` con que se juega la traza grabada de cada nivel en el build: sin
+ * esto, la máquina probaría una física parecida a la del teléfono, no la misma. El tic entero
+ * vive en `mundo.ts` y lo juega `mundo.test.ts`; `motor.test.ts` vigila que la isla no toque el
+ * tiempo por su cuenta.
+ *
  * ## El motor, con sus cuatro apagados (`ADR-08.2`) — y los vigila `motor.test.ts`
  *
  * 1. `global: false`: ni un nombre del motor en `window`.
@@ -21,6 +31,27 @@
  * 4. **Cero texto en el canvas.** Todo lo que se lee vive en el DOM, con las fuentes del
  *    sitio. Y `debug: false`, porque el inspector del motor también es texto.
  *
+ * ## El dibujo sale de los atlas, y de nada más (`T-278`, `CTR-15`)
+ *
+ * Adentro del área no hay un solo rectángulo de tinta plana: todo lo que se ve es un cuadro de
+ * `public/sprites/` —`skayboy.v1`, `poligirl.v1`, `sala.v1`—, cargado a tamaño nativo y
+ * escalado por el motor con un entero y sin suavizado (`crisp`, `texFilter: 'nearest'`,
+ * `ADR-08.3`). **Qué** se dibuja, en qué estado y dónde lo decide `escena.ts`, probado en Node
+ * (`escena.test.ts`): el mapeo de `poseDe()` a los estados del atlas, el espejo según `mira`,
+ * el tile de cada celda según el estado de palancas, placas, compuertas y cajas. La isla
+ * recorre esos trazos y se los pasa al motor.
+ *
+ * **La única tinta que la isla lee de la hoja es el aire, `--px-luz`** (`UX-27 §1.1`): es el
+ * fondo del motor, y el sólido (`--px-clave`) ya viene dibujado en el tile. Si no se deja leer,
+ * o si un atlas no está o no es el que la escena espera, el juego no arranca y queda el rótulo
+ * impreso: un área a medio pintar sería inventar lo que falta. Lo vigila `motor.test.ts`.
+ *
+ * **Un hueco declarado: ganar no se ve.** La isla anterior llenaba el marco de la puerta al
+ * ganar; `sala.v1` no tiene una puerta abierta, y esta isla no inventa un tile ni lo tiñe. Con la
+ * cinta apagada, llegar los dos a la puerta hoy no cambia nada en el área. `UX-29 §8` dice que la
+ * puerta se abre y `CTR-16.4` que "una puerta no se abre: se llega"; el traspaso a `experiencia`
+ * está en `Docs/SUGERENCIAS/` (`T-278`).
+ *
  * ## Se carga solo si hay un nivel que jugar
  *
  * El motor entra con `import()` y no arriba de todo: si la página no sembró ningún nivel,
@@ -28,6 +59,9 @@
  * página siembra **solo los `listo`** (`nivelesListos()`): hasta que alguien juegue el nivel
  * 1 en un teléfono (`T-249`), lo que se ve publicado es el rótulo estático — que dice qué va
  * a haber ahí y no promete nada (`ADR-08.2`). Es lo honesto.
+ *
+ * **En desarrollo** la página siembra todos los niveles, borradores incluidos, y la isla juega el
+ * primero —o el que pida `?nivel=NIV-04` en la dirección—. Ese pedido no existe en el build.
  *
  * ## Las teclas se mantienen apretadas, y eso el repo no lo tenía (`ADR-08.10`)
  *
@@ -44,22 +78,22 @@
  * preferencia: no tiene movimiento que la persona no haya pedido.
  */
 
-import type { KAPLAYCtx } from 'kaplay';
-import {
-  CAJA_ALTO,
-  CAJA_ANCHO,
-  PERSONAJES,
-  QUIETO,
-  TILE,
-  crearMundo,
-  paso,
-  poseDe,
-  type Cuerpo,
-  type Mando,
-  type Mundo,
-  type Suceso,
-} from '../lib/skayboy/mundo.ts';
+import type { KAPLAYCtx, SpriteData } from 'kaplay';
+import { QUIETO, crearMundo, crearReloj, jugarTic, type Mando, type Mundo, type Suceso } from '../lib/skayboy/mundo.ts';
 import type { Banco, IdPersonaje } from '../lib/skayboy/niveles.ts';
+import type { JsonDelAtlas } from '../lib/pixel/fuente.ts';
+import {
+  PIEZAS,
+  atlasDe,
+  cuadroDelAtlas,
+  grillaDelAtlas,
+  nivelAJugar,
+  problemasDelAtlas,
+  problemasDelCuadro,
+  rutaDe,
+  trazosDe,
+  type Pieza,
+} from '../lib/skayboy/escena.ts';
 import { armarEfectos, soltarEfectos, sonar } from '../lib/skayboy/sonido.ts';
 import { alCambiarLaCinta, estadoDeLaCinta } from '../lib/sitio/cinta.ts';
 import { PANTALLA } from '../lib/skayboy/copy.ts';
@@ -77,28 +111,18 @@ const COLUMNA: Readonly<Record<'izquierda' | 'derecha', IdPersonaje>> = {
 type Tecla = 'izquierda' | 'derecha' | 'salto';
 
 /**
- * Los colores del área, **provisorios hasta `T-238`**. La paleta de verdad son dieciséis
- * `--px-*` que nacen en el lienzo y todavía no existen (`UX-27 §5`). Mientras tanto se
- * dibuja con tokens que ya están en `tokens.css` —ni un hex acá— y el día que lleguen los
- * `--px-*` se cambian estos nombres y nada más.
+ * **El aire del área** (`UX-27 §1.1`, decisión `β`): todo lo que no es sólido, terreno pintado ni
+ * sprite. Es el fondo del motor y la única tinta que esta isla lee de la hoja; el resto viene
+ * dibujado en los atlas. El hex vive en `tokens.css` (`--px-luz: var(--papel)`), ni uno acá.
  */
-const TINTAS = {
-  fondo: '--fondo',
-  solido: '--texto-tenue',
-  tesoro: '--acento-2',
-  skayboy: '--cat-mitologia-apoyo',
-  poligirl: '--disco-gulp-tinta',
-  ambos: '--texto',
-  ojo: '--fondo',
-} as const;
+const AIRE = '--px-luz';
 
-type Rgb = readonly [number, number, number];
-
-function leerTinta(nombre: string): Rgb {
+function leerTinta(nombre: string): [number, number, number] {
   const valor = getComputedStyle(document.documentElement).getPropertyValue(nombre).trim();
   const hex = /^#([0-9a-f]{6})$/i.exec(valor)?.[1];
-  if (hex === undefined) return [128, 128, 128];
-  return [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16)) as unknown as Rgb;
+  // Sin el aire no se arranca: un gris de repuesto sería una tinta diecisiete (`UX-27 §4`).
+  if (hex === undefined) throw new Error(`${nombre} no se deja leer como #rrggbb: «${valor}»`);
+  return [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
 }
 
 /* ==========================================================================
@@ -202,9 +226,17 @@ function engancharEfectos(): void {
 
 const aviso = document.querySelector<HTMLElement>('#aviso-juego');
 
-function atender(sucesos: readonly Suceso[]): void {
+/**
+ * `deFrente` junta a los que volvieron a la entrada en este tic: el cuadro que sigue se dibujan
+ * de frente (`UX-29 §3`, fila 1), y después la isla lo vacía.
+ */
+function atender(sucesos: readonly Suceso[], deFrente: Set<IdPersonaje>): void {
   for (const s of sucesos) {
+    // Callado también: la compuerta no suena (`CTR-16.10.7`, cuatro motivos) y el dibujo lee el
+    // estado del mundo, no el suceso. Lo consume la cuenta de la paridad (`CTR-18.8`), no la isla.
+    if (s.tipo === 'compuerta') continue;
     if (s.tipo === 'vuelta') {
+      deFrente.add(s.quien);
       // Callado: `vuelta` no suena (`UX-29 §5`, `CTR-17.6`). El aviso nombra el lugar y no
       // a la persona, y se escribe una vez por vuelta para que el lector lo repita.
       if (aviso !== null) {
@@ -218,60 +250,66 @@ function atender(sucesos: readonly Suceso[]): void {
 }
 
 /* ==========================================================================
-   El dibujo: rectángulos de tinta plana, hasta que lleguen los atlas (`T-246`)
+   Los atlas (`CTR-15.6`): un PNG y su JSON por pieza, a tamaño nativo
    ========================================================================== */
 
-function dibujar(k: KAPLAYCtx, mundo: Mundo, tintas: Readonly<Record<keyof typeof TINTAS, Rgb>>): void {
-  const color = (t: Rgb) => k.rgb(t[0], t[1], t[2]);
-  const { banco, nivel } = mundo;
-
-  nivel.grilla.forEach((renglon, fila) => {
-    [...renglon].forEach((caracter, columna) => {
-      const t = banco.leyenda[caracter];
-      if (t === undefined || t.tipo === 'aire' || t.tipo === 'entrada') return;
-      const pos = k.vec2(columna * TILE, fila * TILE);
-      if (t.tipo === 'solido' || t.tipo === 'caja') {
-        k.drawRect({ pos, width: TILE, height: TILE, color: color(tintas.solido) });
-      } else if (t.tipo === 'tesoro') {
-        if (mundo.juntados.has(`${columna},${fila}`)) return;
-        k.drawRect({ pos: pos.add(5, 5), width: 6, height: 6, color: color(tintas.tesoro) });
-      } else if (t.tipo === 'puerta' && t.de !== undefined) {
-        // La puerta es un marco del color de su dueño, y se llena cuando se abre.
-        k.drawRect({
-          pos: pos.add(1, -8),
-          width: TILE - 2,
-          height: TILE + 8,
-          fill: mundo.terminado,
-          color: color(tintas[t.de]),
-          outline: { width: 2, color: color(tintas[t.de]) },
-        });
-      } else if (t.tipo === 'molinete') {
-        // El terreno que devuelve a uno lleva el color **del otro**: es el suyo.
-        const quienes = t.devuelve ?? [];
-        const tinta = quienes.length > 1 ? tintas.ambos : quienes[0] === 'skayboy' ? tintas.poligirl : tintas.skayboy;
-        k.drawRect({ pos: pos.add(0, 10), width: TILE, height: 6, color: color(tinta) });
-      }
-    });
-  });
-
-  for (const id of PERSONAJES) dibujarCuerpo(k, mundo.cuerpos[id], color(tintas[id]), color(tintas.ojo));
+/** Un atlas cargado: su JSON (qué fila es qué estado) y los cuadros que el motor cortó del PNG. */
+interface Atlas {
+  readonly json: JsonDelAtlas;
+  readonly sprite: SpriteData;
 }
 
 /**
- * Un cuerpo es su caja de colisión pintada, más **la pose como forma** (`UX-28 §3`): de
- * frente, dos ojos centrados; de perfil, uno solo hacia donde mira. Ningún estado se dice
- * con color, y ninguna pose es de caída (`UX-29 §6`).
+ * Los tres JSON, antes de bajar el motor: si alguno no está o no es el que la escena espera,
+ * el motor ni se baja y queda el rótulo. Las rutas las arma `rutaDe()`, que no arma ninguna sin
+ * versión en el nombre (`CTR-15.8`).
  */
-function dibujarCuerpo(k: KAPLAYCtx, c: Cuerpo, cuerpo: ReturnType<KAPLAYCtx['rgb']>, ojo: ReturnType<KAPLAYCtx['rgb']>): void {
-  const x = Math.round(c.x);
-  const y = Math.round(c.y);
-  k.drawRect({ pos: k.vec2(x, y), width: CAJA_ANCHO, height: CAJA_ALTO, color: cuerpo });
-  if (poseDe(c) === 'frente') {
-    k.drawRect({ pos: k.vec2(x + 2, y + 4), width: 2, height: 2, color: ojo });
-    k.drawRect({ pos: k.vec2(x + CAJA_ANCHO - 4, y + 4), width: 2, height: 2, color: ojo });
-  } else {
-    const ojoX = c.mira > 0 ? x + CAJA_ANCHO - 3 : x + 1;
-    k.drawRect({ pos: k.vec2(ojoX, y + 4), width: 2, height: 2, color: ojo });
+async function leerLosJson(nombres: Readonly<Record<Pieza, string>>): Promise<Record<Pieza, JsonDelAtlas>> {
+  const pares = await Promise.all(
+    PIEZAS.map(async (pieza) => {
+      const ruta = rutaDe(nombres[pieza], 'json');
+      const respuesta = await fetch(ruta);
+      if (!respuesta.ok) throw new Error(`${ruta}: ${respuesta.status}`);
+      const json: unknown = await respuesta.json();
+      const problemas = problemasDelAtlas(pieza, json);
+      if (problemas.length > 0) throw new Error(problemas.join('\n'));
+      return [pieza, json as JsonDelAtlas] as const;
+    }),
+  );
+  return Object.fromEntries(pares) as Record<Pieza, JsonDelAtlas>;
+}
+
+/**
+ * El PNG de una pieza, cortado en la grilla de su JSON: una fila por estado, una columna por
+ * cuadro. **No se reescala**: cada cuadro tiene que medir la celda en nativos, y si el PNG vino
+ * agrandado no entra (`CTR-15.6`). La escala la pone el motor al dibujar, entera.
+ */
+function cargarAtlas(k: KAPLAYCtx, pieza: Pieza, nombre: string, json: JsonDelAtlas): Promise<Atlas> {
+  const { columnas, filas } = grillaDelAtlas(json);
+  const asset = k.loadSprite(null, rutaDe(nombre, 'png'), { sliceX: columnas, sliceY: filas });
+  return new Promise((resolver, rechazar) => {
+    asset.onLoad((sprite) => {
+      const problemas = problemasDelCuadro(pieza, json, sprite.width, sprite.height);
+      if (problemas.length > 0) rechazar(new Error(problemas.join('\n')));
+      else resolver({ json, sprite });
+    });
+    asset.onError(rechazar);
+  });
+}
+
+/* ==========================================================================
+   El dibujo: cada trazo de la escena, un cuadro de un atlas (`T-278`)
+   ========================================================================== */
+
+function dibujar(k: KAPLAYCtx, mundo: Mundo, atlas: Readonly<Record<Pieza, Atlas>>, deFrente: ReadonlySet<IdPersonaje>): void {
+  for (const t of trazosDe(mundo, deFrente)) {
+    const { json, sprite } = atlas[t.pieza];
+    k.drawSprite({
+      sprite,
+      frame: cuadroDelAtlas(json, t.estado, mundo.tiempo),
+      pos: k.vec2(t.x, t.y),
+      flipX: t.espejo,
+    });
   }
 }
 
@@ -294,9 +332,18 @@ async function arrancar(): Promise<void> {
   const datos = document.querySelector('#banco-skayboy')?.textContent;
   if (canvas === null || datos === undefined || datos === null) return;
   const banco = JSON.parse(datos) as Banco;
-  const nivel = banco.niveles[0];
+  // Solo en desarrollo, `?nivel=NIV-04` juega otro nivel sembrado (`nivelAJugar()`): sin esto, lo
+  // único que se ve en el navegador es el nivel 1, que no tiene palancas, placas, compuertas ni
+  // cajas. En el build `import.meta.env.DEV` es `false`, la rama se va, y se juega el primero.
+  const pedido = import.meta.env.DEV ? new URLSearchParams(location.search).get('nivel') : null;
+  const nivel = nivelAJugar(banco.niveles, pedido);
   // Sin un nivel sembrado queda el rótulo impreso, y el motor ni se baja.
   if (nivel === undefined) return;
+
+  // El aire y los tres JSON, antes que el motor: si falta cualquiera, el motor ni se baja.
+  const aire = leerTinta(AIRE);
+  const nombres = atlasDe(banco);
+  const jsons = await leerLosJson(nombres);
 
   const escala = escalaCss();
   const densidad = Math.max(escala, Math.round(escala * window.devicePixelRatio)) / escala;
@@ -308,7 +355,14 @@ async function arrancar(): Promise<void> {
     height: 144,
     scale: escala,
     pixelDensity: densidad,
+    // Sin suavizado, en las dos puntas: `crisp` es el `pixelated` del canvas, y `texFilter`
+    // el muestreo de los atlas. Es el valor por defecto del motor y se escribe igual: un
+    // `linear` que se cuele es barro (`CTR-15.2`), y así lo vigila `motor.test.ts`.
     crisp: true,
+    texFilter: 'nearest',
+    // Un píxel transparente entre pieza y pieza del atlas interno del motor: con densidad
+    // fraccionaria (`ADR-08.3`, el caso feo) el muestreo no le roba un borde al vecino.
+    spriteAtlasPadding: 1,
     debug: false,
     loadingScreen: false,
     burp: false,
@@ -319,7 +373,7 @@ async function arrancar(): Promise<void> {
     // resume a closed AudioContext"). Medido en el navegador el 2026-09-22; es la mitad del
     // apagado que `ADR-08.2.1` no sabía que faltaba.
     backgroundAudio: true,
-    background: [...leerTinta(TINTAS.fondo)],
+    background: aire,
   });
   void k.audioCtx.close();
 
@@ -330,19 +384,30 @@ async function arrancar(): Promise<void> {
   canvas.style.removeProperty('height');
   canvas.tabIndex = -1;
 
-  const tintas = Object.fromEntries(
-    Object.entries(TINTAS).map(([clave, token]) => [clave, leerTinta(token)]),
-  ) as Record<keyof typeof TINTAS, Rgb>;
+  const cargados = await Promise.all(PIEZAS.map((pieza) => cargarAtlas(k, pieza, nombres[pieza], jsons[pieza])));
+  const atlas = Object.fromEntries(PIEZAS.map((pieza, i) => [pieza, cargados[i]])) as Record<Pieza, Atlas>;
   const mundo = crearMundo(banco, nivel);
+  const reloj = crearReloj();
+  const deFrente = new Set<IdPersonaje>();
 
   k.onUpdate(() => {
+    // Las teclas se leen una vez por tic y valen para todos los cuadros de ese tic (ADR-09.1).
     const mandos = {
       [COLUMNA.izquierda]: mandoDe('izquierda'),
       [COLUMNA.derecha]: mandoDe('derecha'),
     } as Record<IdPersonaje, Mando>;
-    atender(paso(mundo, { skayboy: mandos.skayboy ?? QUIETO, poligirl: mandos.poligirl ?? QUIETO }, k.dt()));
+    const ambos = { skayboy: mandos.skayboy ?? QUIETO, poligirl: mandos.poligirl ?? QUIETO };
+    // Paso fijo: el tiempo del motor se reparte en cuadros enteros, con tope, y el mundo avanza
+    // siempre de a un CUADRO_SEG. Es el mismo paso con que la máquina prueba cada nivel en el
+    // build, así que lo que se juega acá es, bit a bit, lo que se probó. Todo eso vive en
+    // jugarTic(), probado en Node: la isla solo le da el tiempo del motor.
+    atender(jugarTic(reloj, mundo, ambos, k.dt()), deFrente);
   });
-  k.onDraw(() => dibujar(k, mundo, tintas));
+  k.onDraw(() => {
+    dibujar(k, mundo, atlas, deFrente);
+    // Un cuadro de frente y nada más (`UX-29 §3`): el dedo responde desde el cuadro cero.
+    deFrente.clear();
+  });
 
   // El rótulo se va cuando el motor ya dibuja, no antes: si el `import` falla, queda.
   document.querySelector('.rotulo-carga')?.setAttribute('hidden', '');

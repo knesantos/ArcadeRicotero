@@ -1,6 +1,6 @@
 {
  "$schema": "https://json-schema.org/draft/2020-12/schema",
- "$id": "https://ricotaarcade.local/schema/por-la-letra/1",
+ "$id": "https://ricotaarcade.local/schema/por-la-letra/2",
  "title": "CTR-09 — Banco de Sacalo por la letra (US-07)",
  "description": "Lo escribe scripts/generar-por-la-letra.mjs desde src/data/cancionero.json. Es la lista de lo que existe y validó, no de deseos: si un ítem está acá, pasó el filtro de CNT-11 y se puede jugar. No se edita a mano.",
  "type": "object",
@@ -13,6 +13,7 @@
   "actualizado",
   "sensibleA",
   "filtro",
+  "conteo",
   "items"
  ],
  "properties": {
@@ -20,7 +21,7 @@
    "const": "CTR-09"
   },
   "contratoVersion": {
-   "const": 1
+   "const": 2
   },
   "juego": {
    "const": "por-la-letra"
@@ -57,6 +58,25 @@
     "version": {
      "type": "integer",
      "minimum": 1
+    }
+   }
+  },
+  "conteo": {
+   "comment": "CTR-09.1 y CTR-09.7 (enmendados, D-46). Con que conteo citado se calculo la dificultad: la ficha y la fecha del bloque conteo de setlistfm.json. Un test los compara con ese archivo: si el conteo se refresco y el banco no, el banco quedo viejo. El numero de cada tema no se copia aca: vive en setlistfm.json.",
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "ficha",
+    "consultado"
+   ],
+   "properties": {
+    "ficha": {
+     "type": "string",
+     "pattern": "^RES-\\d{2,3}$"
+    },
+    "consultado": {
+     "type": "string",
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
     }
    }
   },
@@ -116,19 +136,35 @@
      "enum": [
       "facil",
       "media",
-      "dificil",
-      "sin-clasificar"
+      "dificil"
      ]
     },
     "dificultadSegun": {
-     "comment": "CTR-09.7. 'curaduria' = lo juzgó contenido a mano. 'youtube' = salió del ranking de CTR-07, que hoy no tiene un solo tema medido.",
+     "comment": "CTR-09.7 (enmendado, D-46). 'en-vivo' = salio de los tercios del conteo citado (CTR-19.15). 'sin-conteo' = el tema no tiene linea en el conteo y D-27 lo pone en dificil. Nadie lo escribe a mano.",
      "enum": [
-      "curaduria",
-      "youtube"
+      "en-vivo",
+      "sin-conteo"
      ]
     },
     "fuente": {
      "$ref": "#/$defs/fuente"
+    }
+   },
+   "if": {
+    "required": [
+     "dificultadSegun"
+    ],
+    "properties": {
+     "dificultadSegun": {
+      "const": "sin-conteo"
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "dificultad": {
+      "const": "dificil"
+     }
     }
    }
   },

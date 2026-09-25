@@ -53,6 +53,8 @@ mueble es todo lo demás.
 | 2 | **El bisel** | Una línea plana de `--fondo` — la clave, la tinta del sitio entero — entre la chapa y el área. Es el marco del tubo, y es **la línea que se ve** cuando alguien pregunta dónde termina un idioma y empieza el otro | 4 px CSS, los cuatro lados |
 | 3 | **El área** | Pixel art. Nada más | 480 × 288 px CSS (ver `§2`) |
 
+> **Enmendado el 2026-09-23, respuesta a `Docs/SUGERENCIAS/HILO-para-experiencia-lo-que-la-paleta-del-pixel-no-decide.md §2`: de qué tinta es el aire del área, y de cuál el sólido.** Ningún documento lo decía y hacía falta para que el bisel siguiera siendo la línea que se ve. **Decisión: `β` — el aire es `--px-luz`, el sólido es `--px-clave`.** El motivo que pesa es justo este punto 2: con `α` (aire = clave) el bisel (`--px-clave`) queda contra un aire del mismo color — contraste 1,00:1, se funde y `§1.1` pierde la línea de frontera que esta sección declara imprescindible. Con `β` el bisel queda a 14,94:1 contra el aire, la lectura que este documento pide. Las otras dos filas de la tabla del traspaso confirman la elección y no la contradicen: el sombrero de Skayboy pierde separación de tinta contra el aire (1,24:1) pero mantiene el contorno obligatorio de `§5.2`, que es el mecanismo con el que este documento ya resuelve todo lo que no se distingue por tinta; y `UX-31 §5`, escrito el mismo día con `CTR-16.10.8`, ya da por sentado que el sólido comparte familia con la compuerta cerrada (`--px-clave`, "la misma familia que un sólido") — es decir, ya estaba escrito para `β` sin que nadie lo hubiera declarado con nombre. Queda así: **`--px-clave` es el sólido del área — paredes, piso, y el sólido `#` de la grilla. `--px-luz` es el aire — todo lo que no es sólido, terreno pintado ni sprite.**
+
 **La chapa de abajo es más ancha porque ahí vive el pie de homenaje de `D-42`**, en registro
 3, que pasó de conveniente a obligatorio. No es un pie de página que se cae abajo de todo:
 es la placa atornillada al mueble, que es donde un fichín de verdad dice quién lo fabricó.
@@ -134,20 +136,29 @@ queda escrita para siempre es esta:
 
 ---
 
-## 4. La paleta acotada: 16 colores, y cuatro no se eligen
+## 4. La paleta acotada: 15 colores, y cuatro no se eligen
 
-`D-41` pide "paleta acotada" y no da el número. **El número es 16 para toda el área, no 16
-por escena**: no hay paleta por nivel ni por atlas, y el nivel 2 no declara otras dieciséis
+> **Enmendado el 2026-09-23: el número bajó de 16 a 15.** `D-41` pedía "paleta acotada" y
+> no daba el número; la primera versión de este documento fijó 16. `§4.1.2` le sacó su
+> tinta propia a la puerta (la franja de Objetos pasa de 2 a 1) y esa ranura se usa entera
+> para separar `--px-poli-2` de `--px-skay-2` (`§4.1.1`), no para agregar una tinta nueva:
+> el total real es **15**, y de acá para abajo cada mención suelta queda corregida a ese
+> número.
+
+`D-41` pide "paleta acotada" y no da el número. **El número es 15 para toda el área, no 15
+por escena**: no hay paleta por nivel ni por atlas, y el nivel 2 no declara otras quince
 (`CTR-15.4`, `FIND-68`). Se reparten así, y el reparto es la mitad de la decisión:
 
 | Franja | Cuántos | Qué son |
 |---|---|---|
-| Fijos | **2** | `--px-clave` (alias de `--fondo`, la tinta del sitio: es el contorno de todo) y `--px-luz` (alias de `--papel`, la luz máxima) |
+| Fijos | **2** | `--px-clave` (alias de `--fondo`, la tinta del sitio: es el contorno de todo, y desde la enmienda de `§1.1` es también el **sólido** del área) y `--px-luz` (alias de `--papel`; ya no es "la luz máxima" — ver la enmienda de abajo — y es el **aire** del área) |
 | Terreno | **6** | Tres por elemento: el ancla del disco más dos escalones **más claros**. Ver `§4.1` |
-| Personajes | **3 y 3** | La paridad de `D-38` convertida en número: ninguno de los dos tiene un color más que el otro |
-| Objetos | **2** | La puerta y el coleccionable |
+| Personajes | **3 y 3** | La paridad de `D-38` convertida en número: ninguno de los dos tiene un color más que el otro. Enmendado en `§4.1.1`: `--px-skay-2` y `--px-poli-2` dejan de ser casi duplicados |
+| Objetos | **1** | *(Enmendado el 2026-09-23, `§4.1.2`)* El coleccionable. La puerta deja de tener tinta propia |
 
-**Los 16 hex viven en `tokens.css`**, con prefijo `--px-`, y los dos fijos se declaran como
+> **Enmendado el 2026-09-23: `--px-luz` no puede seguir siendo "la luz máxima", respuesta a `HILO-para-experiencia-lo-que-la-paleta-del-pixel-no-decide.md §1`.** La crema de *Gulp!* (`#e6e4bd`, el ancla del cielo) está a 1,024:1 del papel (`#ede4ce`) — casi el mismo gris, 226 contra 228 — y entre las dos no entran los dos escalones más claros que `§4.1` exige. **Se toma la salida 1, la única medida:** la luz máxima real del área es el blanco medido de *Gulp!* (`--px-blanco-gulp`, `#ffffff`, `RES-37`), y ahí termina la rampa del cielo (ver `§4.1`). `--px-luz` (el papel, `#ede4ce`) se queda en la paleta —sigue siendo uno de los dos fijos, sigue siendo el **aire** del área (`§1.1`)— pero pasa a ser un **casi duplicado declarado** del ancla del cielo (1,024:1, ΔE00 6,7 contra `--disco-gulp-apoyo`), no la cima de ninguna rampa. Cielo e infierno se siguen distinguiendo en gris, 1,92:1, ΔL* 22,5 — eso no lo mueve esta enmienda.
+
+**Los 15 hex viven en `tokens.css`**, con prefijo `--px-`, y los dos fijos se declaran como
 alias (`--px-clave: var(--fondo)`) para no duplicar un hex. Eso mantiene en pie lo que dice
 `.claude/rules/diseno-marca.md` —un hex solo puede vivir en `tokens.css`— sin inventarle una
 excepción al pixel art. El PNG es la reproducción de esa lista, no su origen.
@@ -158,13 +169,47 @@ No hay un cuarto escalón oscuro. Cada rampa de terreno es: el ancla medida de l
 escalones más claros, y la clave como sombra. Tiene tres efectos, y el tercero es el que
 importa:
 
-1. Ahorra dos colores de los 16.
+1. Ahorra dos colores de los 15.
 2. Hace que el terreno y el contorno compartan tinta, que es cómo se ve una serigrafía de
    dos tintas y no un degradado de cuatro.
 3. **Ningún color del área queda cerca de la clave.** Eso es lo que hace auditable el `§5`.
 
 De dónde salen las dos anclas: `UX-30`. En una línea, para no obligar a abrir otro archivo:
 infierno = `--disco-gulp-tinta` (#df5744), cielo = `--disco-gulp-apoyo` (#e6e4bd).
+
+> **Enmendado el 2026-09-23: la rampa del cielo ya no sube hacia `--px-luz`.** Con la luz máxima
+> corregida (arriba), los dos escalones más claros del cielo son **crema al 50 % sobre el
+> blanco de *Gulp!*** (`#f3f2de`) y **el blanco de *Gulp!*** (`--px-blanco-gulp`, `#ffffff`).
+> La rampa completa del cielo: `--disco-gulp-apoyo` (#e6e4bd, ancla) → `#f3f2de` → `#ffffff`.
+> La rampa del infierno no cambia: su ancla (#df5744) está lejos del papel y nunca chocó con
+> la luz. Los 6 colores de terreno siguen siendo 6 — `--px-blanco-gulp` ocupa el lugar que
+> antes hubiera sido un segundo casi-duplicado de `--px-luz`, no una tinta nueva de más.
+
+### 4.1.1 Las pieles gemelas: se libera la ranura
+
+`--px-skay-2` y `--px-poli-2` estaban a ΔE00 0,79 — la hoja les daba la misma piel, y a ese
+nivel de parecido en un personaje de 14 px son el mismo color con otro nombre. **Se libera la
+ranura.** El cupo que se gana en `§4.1.2` (la puerta deja de pedir tinta propia) es lo que
+permite que `--px-poli-2` deje de derivarse del mismo cálculo que `--px-skay-2` y reciba un
+hex propio, medible, sin que el área pase de 15 colores. La paridad de conteo no se toca —
+sigue siendo 3 y 3 — lo que cambia es que las tres de cada uno dejan de tener un casi
+duplicado entre sí. El hex exacto es de quien produce la paleta (`§4`, "el PNG es la
+reproducción de esa lista, no su origen"); lo que fija acá es que la ranura **se usa**, no
+que se descarta.
+
+### 4.1.2 La puerta deja de tener tinta propia
+
+`--disco-lobo-suelto-apoyo` vestía un disco que el contenido de este juego no nombra
+(`UX-30 §2`, la regla de que un disco solo viste lo que el contenido hereda) y la propuesta
+de `T-268` la reemplazaba por un hex elegido sin disco (`#b9549b`). **Se descartan las dos.**
+La puerta se dibuja **por forma, con `--px-clave` y `--px-luz`** — el mismo tratamiento que
+`CTR-16.10.8` ya le fija a la palanca, la placa, la compuerta y la caja, y por el mismo
+motivo: es una pieza que la paridad de `BR-23` exige sin un `de` que la vuelva "de uno de los
+dos" (`CTR-16.4`: `"tipo": "puerta"` con `"de": "skayboy"` o `"de": "poligirl"` ya declara el
+dueño en el **dato**; pintarla además con una tinta propia sería el mismo dato dicho dos
+veces, uno de los cuales sobra). La cima abierta de la puerta contra el marco cerrado se lee
+por **forma**, no por color, igual que el resto del área (`§5.2`). Esto libera la ranura de
+`Objetos` (de 2 a 1: queda solo el coleccionable) y es lo que financia `§4.1.1`.
 
 ### 4.2 Lo que la paleta le prohíbe a los personajes
 
@@ -217,12 +262,12 @@ piso claro la figura casi desaparece… o las figuras llevan contorno, o los dos
 pueden ser los dos claros"*). **Llevan contorno**, y por eso los dos terrenos sí pueden
 convivir.
 
-### 5.3 La vara corrible: la clave contra los 16
+### 5.3 La vara corrible: la clave contra los 15
 
 Como no puedo testear cada píxel, testeo lo mismo que `D-21` testeó del velo: **el peor
 caso, acotado por construcción.**
 
-> **Ningún color de los 16 queda por debajo de 3:1 contra `--px-clave`.**
+> **Ningún color de los 15 queda por debajo de 3:1 contra `--px-clave`.**
 
 Por qué 3:1 y no 4,5:1: no es texto, es una línea de contorno de un píxel separando dos
 superficies. 3:1 es el umbral que WCAG usa para elementos gráficos y para texto grande, y es
@@ -232,8 +277,8 @@ que ningún color puede acercarse a la clave sin que el test lo cace primero.
 **Dos comandos, y los corre el hilo principal o `revisor`, no yo** (`D-12`):
 
 ```
-node --test src/lib/contraste.test.ts     # los 16 --px-* contra --px-clave, umbral 3:1
-node scripts/auditar-paleta-pixel.mjs     # ningún PNG del área trae un color fuera de los 16
+node --test src/lib/contraste.test.ts     # los 15 --px-* contra --px-clave, umbral 3:1
+node scripts/auditar-paleta-pixel.mjs     # ningún PNG del área trae un color fuera de los 15
 ```
 
 El segundo no existe todavía y es barato: leer los PNG de `public/sprites/`, juntar los
@@ -295,7 +340,7 @@ abajo.
    personajes.
 4. **Se redibuja la pose adentro de la celda, píxel por píxel.** Con el recorte del paso 1
    y la máscara del paso 2 al lado como referencia de silueta, postura e insignia —nunca
-   como fuente de píxeles—, se dibuja de nuevo, del tamaño final, con las 16 tintas de
+   como fuente de píxeles—, se dibuja de nuevo, del tamaño final, con las 15 tintas de
    `§4`. No hay un paso posterior de "buscar el color más cercano" porque nunca se parte de
    un color fuera de esa lista: se dibuja directamente con ellas. **Esto es dibujo, no un
    paso técnico, y tiene dueño** (`CTR-15.2`): cuesta lo que cuesta dibujar una figura de 14
@@ -318,7 +363,7 @@ abajo.
   sprite final sale de copiar un píxel de la hoja. Si el usuario reexporta la hoja sobre una
   grilla real, este circuito se cae solo y vuelve a haber un recorte mecánico (`CTR-15.1`).
 - **El detalle fino del dibujo original no entra.** La hoja tiene degradados y bordes
-  suavizados que una celda de 16 × 24 nativos con 16 tintas no puede sostener: lo que se
+  suavizados que una celda de 16 × 24 nativos con 15 tintas no puede sostener: lo que se
   traduce a este tamaño es la forma, no la textura. Donde la hoja pedía una estampa
   psicodélica en la camisa, `§4.2` ya resolvió que entra por dither, no por copiar el
   degradado.
@@ -437,7 +482,7 @@ contradice: la misma regla, dicha para pixel art.
 | Glow, resplandor, halo alrededor de una figura | Contorno de clave (`§5.2`) |
 | Sombra difusa debajo del personaje | Una sombra de un color plano de la paleta, o nada |
 | Escalado no entero, o `pixelated` ausente | `§2.1` |
-| Un decimoséptimo color | `§4`, y el script del `§5.3` lo caza |
+| Un decimosexto color | `§4`, y el script del `§5.3` lo caza |
 | Barra de vida, marcador, cartel de nivel, cualquier texto | `§5.1` |
 | Partículas, brillos, chispas de recompensa | El único grito del sitio es el acierto y ya tiene su forma (`UX-22 §1`) |
 | Un tile con borde redondeado | `--radio` es para lo tocable grande. Un píxel no tiene radio |
@@ -451,7 +496,7 @@ contradice: la misma regla, dicha para pixel art.
 Comandos que dejo escritos y **corre otro** (`D-12`):
 
 ```
-node --test src/lib/contraste.test.ts       # los 16 --px-* contra la clave, 3:1
+node --test src/lib/contraste.test.ts       # los 15 --px-* contra la clave, 3:1
 node scripts/auditar-paleta-pixel.mjs       # escanea public/sprites/: color fuera de paleta y alfa intermedio  (no existe todavía)
 node --test src/lib/estilos.test.ts         # que el área no se comunique solo con color
 npm test                                    # todo lo demás

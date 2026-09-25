@@ -25,9 +25,10 @@ Leé antes de empezar:
 3. Por cada desvío, clasificá la severidad: bloquea (rompe un criterio de aceptación o
    el schema), importante (afecta la experiencia pero no rompe nada), menor (gusto,
    diferible).
-4. Prestá atención especial a dos cosas que este proyecto no perdona: un dato
-   verificable sin ficha `RES-XX` ni marca de leyenda, y cualquier pieza que use audio,
-   tapas o letras sin que la nota de derechos la cubra.
+4. Prestá atención especial a lo único que este proyecto no relaja (`D-14`): una
+   respuesta correcta que no es correcta, y un rótulo que miente sobre lo que hay adentro
+   —una leyenda cargada como `hecho`—. El schema mira el formato de `fuentes`, no si la
+   ficha sostiene lo que el ítem afirma: eso lo mirás vos.
 5. Si no encontrás nada mal, decilo con esas palabras — no inventes un hallazgo menor
    para justificar la revisión.
 </procedimiento>
@@ -55,6 +56,6 @@ Y siempre: ningún placeholder sin resolver, ningún ID referenciado que no exis
 Como sos read-only, no escribís el archivo: devolvés cada hallazgo `FIND-XX` completo,
 listo para pegar en `Docs/REVISIONES/`, en tu mensaje de reporte.
 
-Al terminar, reportá en el chat, en máximo 10 líneas: los hallazgos con su severidad, y
-qué rol tiene que resolver cada uno.
+Al terminar, reportá en el chat todos los hallazgos con su severidad —el filtro por
+importancia lo hace quien lee—, los diferidos, y qué rol tiene que resolver cada uno.
 </entregable>

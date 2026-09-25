@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { paletaDelArea, TOPE_DE_TINTAS } from './pixel/tokens.ts';
 
 /**
  * Verifica que los tokens de `src/styles/tokens.css` cumplan WCAG AA.
@@ -296,4 +297,25 @@ test('el area de toque minima cumple lo que pide jugable con el pulgar', () => {
 
 test('la base es oscura, como fija UX-04', () => {
   assert.ok(luminancia(token('fondo')) < 0.1, 'el fondo no es una base oscura');
+});
+
+/**
+ * La paleta del pixel (hoja 14 del lienzo, aprobada el 2026-09-24). Adentro del área no
+ * hay texto (`UX-27 §5.1`): lo que tiene que distinguirse se distingue por contorno, y el
+ * contorno es la clave. Por eso la vara no es 4,5:1 sino **3:1 contra `--px-clave`**
+ * (`UX-27 §5.3`). Las tintas se resuelven con la misma función que usan la imprenta y el
+ * auditor, siguiendo los alias: repetir los hex acá sería probar una copia.
+ */
+test('UX-27 §5.3: las quince tintas del pixel llegan a 3:1 contra la clave', () => {
+  const { tintas, errores } = paletaDelArea(CSS);
+  assert.deepEqual(errores, [], 'la paleta del pixel no se resuelve sin errores');
+  assert.equal(tintas.size, TOPE_DE_TINTAS, `son ${tintas.size} tintas --px-* y UX-27 §4 fija ${TOPE_DE_TINTAS}`);
+  const clave = tintas.get('--px-clave');
+  assert.equal(clave, token('fondo').toLowerCase(), '--px-clave tiene que ser la tinta del sitio (alias de --fondo)');
+  const flojas = [...tintas]
+    .filter(([nombre]) => nombre !== '--px-clave')
+    .map(([nombre, hex]) => [nombre, contraste(hex, clave!)] as const)
+    .filter(([, r]) => r < 3)
+    .map(([nombre, r]) => `${nombre}: ${r.toFixed(2)}:1`);
+  assert.deepEqual(flojas, [], `tintas del pixel por debajo de 3:1 contra la clave:\n  ${flojas.join('\n  ')}`);
 });

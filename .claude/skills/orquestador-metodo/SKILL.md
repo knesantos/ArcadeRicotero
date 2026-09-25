@@ -56,6 +56,6 @@ Y siempre: ningún placeholder sin resolver, ningún ID referenciado que no exis
 Un archivo `ORQ-plan-ciclo-<n>.md` en `Docs/ORQ/` con la tabla de tareas y el reporte de
 coherencia del ciclo.
 
-Al terminar, actualizá `ESTADO.md` y reportá en el chat, en máximo 10 líneas: qué
-archivos tocaste, qué IDs creaste, y qué rol necesita esto ahora.
+Al terminar, reportá en el chat qué archivos tocaste, qué IDs creaste y qué rol necesita
+esto ahora. `ESTADO.md` no lo tocás: es del hilo principal, que lo consolida con tu reporte.
 </entregable>

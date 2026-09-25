@@ -6,29 +6,29 @@ argument-hint: [juego o pantalla a diseñar]
 
 <objetivo>
 Diseñar un recorrido que un fan complete en dos o tres minutos desde el celular, sin
-muro en la primera pantalla, y que se vea y se sienta como el universo visual de
-Rocambole sin ser una copia de sus tapas.
+muro en la primera pantalla, y que vista el disco de su sección (`D-19`).
 </objetivo>
 
 <contexto>
 Leé antes de empezar:
-- `Docs/BRIEF.md` — el momento de uso (celular, ratos sueltos) y la estética mixta.
+- `Docs/BRIEF.md` — el momento de uso (celular, ratos sueltos).
+- `.claude/rules/diseno-marca.md` — el sistema de marca: qué disco viste cada sección, la
+  base que no rota y lo que está vetado.
 - `Docs/PRODUCTO/` — qué historia `US-XX` resuelve la pantalla o el flujo.
 - `Docs/CONTENIDO/` — qué tipo de ítems tiene que mostrar cada pantalla.
 </contexto>
 
 <procedimiento>
 1. Trazá el recorrido completo en texto: pantalla de entrada, la partida, el momento de
-   revelar la respuesta (incluido el botón de escuchar el tema completo vía Spotify), el
+   revelar la respuesta (incluido el tema completo, que sirve el sitio en mp3 — `D-22`), el
    resultado, y el punto de compartir o volver a jugar.
 2. Por cada pantalla, anotá qué pasa si el jugador acierta, si falla, y si abandona a
    mitad de camino — los tres estados existen siempre en una sesión de dos minutos.
 3. Revisá la primera pantalla en particular: tiene que jugarse sin instrucciones largas
    y sin exigir conocimiento previo de la banda.
-4. Para el sistema visual, distinguí siempre interfaz de tapas reales: la interfaz usa
-   arte original en lenguaje rocambolesco (paleta psicodélica, línea gruesa, collage);
-   las tapas reales solo aparecen en el juego que las necesita, en baja resolución y con
-   crédito visible.
+4. Para el sistema visual, partí de `diseno-marca.md`: la sección viste la paleta real de
+   su disco (`D-19`), y las tapas reales pueden entrar a cualquier pantalla —detalle
+   recortado, fondo velado o ficha— con las cuatro condiciones de `D-21`.
 5. Si hace falta una pieza de arte nueva, escribí el brief (qué transmite, qué colores,
    qué referencia visual) para que el usuario decida cómo se produce — vos no la generás.
 </procedimiento>
@@ -36,7 +36,9 @@ Leé antes de empezar:
 <criterios_de_calidad>
 - Ningún flujo exige más de dos o tres minutos de atención continua.
 - Todo estado de error o abandono está contemplado, no solo el camino feliz.
-- Ninguna pantalla usa una tapa real fuera del juego que específicamente la necesita.
+- Toda tapa real va en baja resolución, con crédito a Rocambole y con el texto de encima
+  legible (AA); nunca como imagen de encabezado a sangre con velo y texto blanco al medio
+  (`D-21`).
 
 Transversales a todo el proyecto:
 - Cada afirmación tiene fundamento: un ID de otro rol, una fuente con fecha, o la marca
@@ -56,6 +58,6 @@ Y siempre: ningún placeholder sin resolver, ningún ID referenciado que no exis
 Un archivo `UX-<tema>.md` en `Docs/UX/` por flujo o pieza de sistema visual, con IDs
 `UX-XX` nuevos.
 
-Al terminar, actualizá `ESTADO.md` y reportá en el chat, en máximo 10 líneas: qué
-archivos tocaste, qué IDs creaste, y qué rol necesita esto ahora.
+Al terminar, reportá en el chat qué archivos tocaste, qué IDs creaste y qué rol necesita
+esto ahora. `ESTADO.md` no lo tocás: es del hilo principal, que lo consolida con tu reporte.
 </entregable>
