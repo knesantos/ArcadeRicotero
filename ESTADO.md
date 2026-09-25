@@ -5,7 +5,128 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-09-24
+**Última actualización:** 2026-09-25
+
+> ## 📝 EL MISMO PULIDO, EN "SACALO POR LA LETRA" (2026-09-25)
+>
+> **Pedido del usuario:** *"dale, hacé lo mismo con sacalo por la letra"*, después del pulido
+> de "Adiviná el tema" de abajo.
+>
+> **Integrado a `main` el 2026-09-25**, a pedido del usuario (*"integralo"*), después de
+> traer `main` con el ciclo 16 adentro (PR #16 y #17). El único choque fue este archivo; el
+> código se mezcló solo —`main` cambió cómo se arma la vuelta (`armarVuelta`,
+> `armarRonda`) y el pulido cambió cómo se ve— y se verificó sobre la mezcla:
+> **`node --test 'src/**/*.test.ts'` 1085 en verde**, `npm run check` 0 errores, build 152,
+> y los recorridos de los dos juegos y del portal en el navegador sobre el build.
+>
+> **Verificación:** `node --test 'src/**/*.test.ts'` **676 en verde** (3 nuevos, de la
+> escalera de versos) · `npm run check` 0 errores · `npm run build` **152 páginas** · los
+> dos juegos recorridos enteros sobre el build a 390×664, 360×740 y 1280×860, sin
+> desborde lateral.
+>
+> ### Lo común pasó a un módulo: `src/scripts/sacar-temas.ts`
+>
+> La tapa impresa por pasadas, su crédito (`D-21`), las casillas de la vuelta, la
+> escalerita, la vibración del acierto y **el modo teclado** vivían solo en la isla de
+> audio. Ahora los usan las dos. Está declarado en el censo de `estilos.test.ts` como
+> tablero propio, con sus estados (`partida--tecleando`, `vuelta-casilla--*`,
+> `escalerita-paso--*`), que salieron de `ESTADOS_TEMA`.
+>
+> ### Qué cambió en el juego
+>
+> - **Portada:** chapa de puntajes (1 · 2 · 4 · 8 versos → 100 · 80 · 60 · 40) y JUGÁ con
+>   canto en el peltre de Momo.
+> - **Partida:** casillas de la vuelta; "Tenés 4 versos · Vale 60"; **"Pasá (+2 versos)"**
+>   y "Mirá cuál era" en el último; lo ya arriesgado tachado en la lista; Enter elige el
+>   primero. **La hoja de versos es papel** (tinta del fondo sobre `--papel`, par testeado,
+>   renglones en el borde del papel): el lugar del juego ya decía "un papel arrugado te pesa
+>   en el bolsillo". **Diverge de `UX-08` §4** (que pedía el gris elevado): queda para que
+>   `experiencia` lo ratifique.
+> - **Con teclado:** acá lo que no se puede perder son los versos. La hoja y la lista **se
+>   reparten el alto** (la hoja nunca baja de dos renglones) y la hoja vuelve sola al verso
+>   nuevo. Si el foco llega sin teclado, la cabecera vuelve (consulta de contenedor).
+> - **Revelación:** sellos "¡Lo sacaste!" / "+60", vibración, y **la tapa del disco impresa
+>   por pasadas**, que este juego no tenía. Por eso el pie ya no se esconde con el tema
+>   revelado: el crédito de la tapa vive ahí (la regla del pie lo había dejado escrito).
+> - **Resultado:** "1 de 5 temas · 60 de 500 puntos", estampitas y escalerita de 4.
+>
+> ### 🔴 Un defecto que se había colado en el pulido anterior, cerrado
+>
+> El sello "¡La sacaste!" se pintaba sobre `.revelacion.ok .micro`, que **también existe en
+> este juego**: acá ocupaba el renglón entero y, torcido, desbordaba la pantalla por el
+> costado. Ahora el sello mide lo que dice (`width: fit-content`) y los dos juegos lo llevan
+> en el mismo renglón de cabeza. Medido: 390 de ancho en los dos.
+>
+> ### Lo que queda
+>
+> | Qué | Dueño |
+> |---|---|
+> | Probar los dos modos teclado en un iPhone y un Android de verdad | usuario |
+> | Ratificar la hoja de papel contra `UX-08` §4, y pasar la regla, los sellos y la escalerita al lienzo (hoja 08) | `experiencia` |
+
+> ## 🎛 PULIDO DE ARTE: EL PORTAL Y "ADIVINÁ EL TEMA" (2026-09-24)
+>
+> **Pedido del usuario, textual:** *"pulido intenso y mejora de arte del home y el juego de
+> adivinar el tema, debe quedar impecable en mobile [...] fácil de jugar, lindo de ver y
+> satisfactorio de ganar [...] tené en cuenta la UX como que para escribir necesitan
+> teclado. Mejoremos la barra de tiempo en el juego, se ve muy ai slop."*
+>
+> **Verificación:** `node --test 'src/**/*.test.ts'` **673 en verde** · `npm run check` 0
+> errores (los mismos 15 avisos menores de antes) · `npm run build` **152 páginas** ·
+> recorrido entero medido en el navegador sobre el build, a 390×664, 360×740 y 1280×860.
+> Ojo: `npm test` a secas corre 154, porque el `**` del script no lo expande el `sh` de
+> este contenedor; la cuenta de 673 es con el patrón entre comillas.
+>
+> ### La barra de tiempo dejó de ser una barra
+>
+> Las seis cajitas grises con relleno naranja y borde petróleo eran la barra de progreso
+> por defecto de cualquier reproductor. Ahora es **una tira de papel impresa como una
+> regla, que sale del casete**: cada escalón es un tramo separado por un corte de tinta,
+> con rayitas cada medio segundo; lo que todavía no te dimos está **tramado**, lo que te
+> dimos es papel limpio, y lo que escuchaste queda **entintado** en el naranja de Lobo
+> suelto con `multiply`. Una **aguja** corre mientras suena y se para en el tope. Los seis
+> números van abajo (antes faltaban 0,1 y 0,5) y el del tope se estampa. La tecla de
+> escuchar tiene canto, se hunde al tocarla y **queda trabada mientras suena**, como el
+> PLAY de una casetera.
+>
+> ### Con el teclado abierto, la pantalla es otra (`partida--tecleando`)
+>
+> En un teléfono el teclado tapaba justo lo que se usa: lista, caja y botón. Ahora, con el
+> foco en la caja y puntero táctil, la partida ocupa **exactamente la ventana visual**
+> (`visualViewport`) como columna pegada arriba del teclado: tecla + regla compacta, el
+> último intento, la lista (lo único que cede alto), la caja y el botón. **El teclado no se
+> cierra al tocar un botón de la partida** (`mousedown` prevenido): errar deja escribir de
+> nuevo en el acto mientras suena el escalón nuevo; acertar lo cierra. Enter ("Ir") elige
+> la primera sugerencia y, con un tema elegido, arriesga. Lo ya arriesgado queda tachado y
+> sin poder elegirse ("Ya lo probaste"). **Medido en emulación, no en un iPhone real.**
+>
+> ### Lo demás
+>
+> - **Portada del juego:** la chapa de puntajes en papel (audio / vale) reemplaza la mitad
+>   de la bajada que contaba la escalera en prosa.
+> - **Partida:** casillas de la vuelta en la cabecera (llena, tachada, la que va);
+>   renglones numerados con el audio de cada intento; "Vale 100"; **"Pasá (+0,4 s)"**
+>   dice cuánto audio compra, y en el último intento dice "Mirá cuál era".
+> - **El acierto:** "¡La sacaste!" y "+100" son sellos que caen y apoyan
+>   (`sello-golpe`, en el compás de `--duracion-pasada`, en `ANIMACIONES`), más un toque de
+>   vibración donde hay motor. Errar no se mueve ni vibra.
+> - **Resultado:** "3 de 4 temas · 260 de 400 puntos" y una **escalerita** por tema con lo
+>   que pasó en cada escalón (tachada, raya, llena), distinta por forma.
+> - **Portal:** el sello JUGÁ se leía a **1,95:1** (tinta del disco sobre papel): ahora es
+>   un sello lleno, `--fondo` sobre la tinta del disco, par ya testeado. Los casetes de
+>   "Sacalo por la letra" y "Adiviná la tapa" pegan el recorte real de su disco (medallón
+>   de Momo, bondi) en vez del casete dibujado; cada casete lleva su número de pista (A1…
+>   B2); tocar un casete da señal. **El crédito del pie ahora nombra los discos de los
+>   recortes** (antes el lobo y la mosca no se acreditaban): `discoDeRecorte` en `arte.ts`.
+>
+> ### Lo que queda, con dueño
+>
+> | Qué | Dueño |
+> |---|---|
+> | **Probar el modo teclado en un iPhone y un Android de verdad** (la emulación no abre teclado; se simuló achicando la ventana) | usuario |
+> | Reflejar la regla, los sellos del acierto y la escalerita en la hoja 08 del lienzo (no se tocó ningún hex ni token: todo sale de `tokens.css`) | `experiencia` |
+> | `.arriesgar` y `.seguir` tienen canto solo en este juego (`.juego-tema`): "sacalo por la letra" comparte las clases y no se tocó | `experiencia` |
+> | `escalera.ts` perdió `tramosConEtiqueta` y `PISO_ETIQUETA_PCT` (los seis números entran por ancho mínimo); suma `etiquetaDeRegla`, `extraAlPasar` y `formatoSegundos`, con test | — |
 
 > ## ✅ CICLO 16, RÁFAGA 3 CERRADA Y REVISADA: `REV-15` (2026-09-24)
 >

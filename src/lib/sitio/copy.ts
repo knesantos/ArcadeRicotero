@@ -215,7 +215,10 @@ export const JUEGOS: readonly Casete[] = [
     // identidad de sección. Vestirlo igual que su hermano de audio haría que dos juegos
     // casi gemelos se leyeran como el mismo con dos nombres.
     variante: 'momo',
-    arte: '/arte/casete.svg',
+    // El medallón de la tapa del disco que viste este juego (`UX-08`), recortado a mano. Era
+    // el casete dibujado, repetido en cuatro de los seis juegos: el portal se leía como una
+    // lista de íconos iguales en vez de un collage.
+    arte: '/arte/momo-medallon.png',
     href: '/juegos/adivinar-por-la-letra/',
     accion: 'JUGÁ',
   },
@@ -240,7 +243,9 @@ export const JUEGOS: readonly Casete[] = [
     // muestra la tapa entera, asi que ahora dice lo que hace.
     baja: 'Rocambole dibujó; vos ponés el disco. La tapa entera en pantalla y cuatro discos para elegir.',
     variante: 'discos',
-    arte: '/arte/casete.svg',
+    // El bondi interplanetario de *Último bondi a Finisterre*, que es el disco que viste la
+    // sección discos (`D-19`): un juego de tapas lleva un pedazo de tapa, no un casete.
+    arte: '/arte/bondi-interplanetario.png',
     href: '/juegos/adivinar-la-tapa/',
     accion: 'JUGÁ',
   },

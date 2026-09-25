@@ -120,31 +120,43 @@ export function anchosDeTramos(): readonly number[] {
 }
 
 /**
- * Qué porción de la barra necesita un tramo para que le quepa el número escrito debajo.
+ * El número que va debajo de cada tramo de la regla: cuánto audio llevás acumulado si
+ * llegaste hasta ahí.
  *
- * La barra se lee como una regla graduada: abajo de cada tramo va, alineado a su borde
- * derecho, **cuánto audio llevás acumulado si llegaste hasta ahí**. Eso convierte la
- * escalera de una idea abstracta —"te van dando más"— en algo que se ve antes de
- * gastarlo, que es lo mismo que ya hacen los seis renglones de intento.
+ * **Los seis llevan número**, y es un cambio respecto de la regla anterior, que dejaba sin
+ * numerar los dos primeros porque en un celular medían tres píxeles y trece. La barra dejó
+ * de ser proporcional al píxel en su arranque: el CSS le da a cada tramo un ancho mínimo
+ * que alcanza para su número (`.barra-tramo`, `min-width`), y el resto se reparte en
+ * proporción. Es un ajuste de dibujo y no de aritmética —el audio dura lo que dice la
+ * escalera—, y compra lo que más importa en la primera pantalla: ver que después de una
+ * décima viene medio segundo.
  *
- * Diez por ciento no es un número redondo elegido de arriba: un número como `0,5 s` mide
- * unos 34 px al cuerpo chico del rótulo, y la barra más angosta que dibuja el sitio es la
- * de un celular de 375 px, donde el tablero mide 343. El 10% de eso son 34 px justos.
- * Arriba de ese piso el número entra a cualquier ancho; abajo, se pisaría con el vecino.
+ * La unidad va una sola vez, en el último: seis veces "s" en 300 píxeles es ruido, y el
+ * último número es el que dice de qué está hecha la regla.
  */
-export const PISO_ETIQUETA_PCT = 10;
+export function etiquetaDeRegla(indice: number): string {
+  const p = ESCALERA[indice];
+  if (!p) return '';
+  const ultimo = indice === ESCALERA.length - 1;
+  return ultimo ? p.etiqueta : p.etiqueta.replace(/\s*s$/, '');
+}
 
 /**
- * Cuáles de los seis tramos llevan su número escrito.
+ * Cuánto audio nuevo te da pasar (o errar) en el paso `n`, escrito como en pantalla.
  *
- * Los dos primeros no: `0,1 s` y `0,5 s` se llevan el 1% y el 4% de la barra, que en un
- * celular son tres píxeles y trece. **Y que no lo lleven está bien**, porque el número
- * que importa mientras se juega ya está escrito grande en el rótulo del paso actual; la
- * regla de abajo es para ver la forma de la escalera, no para leerla renglón por renglón.
- *
- * Se decide acá y no con una consulta de contenedor en CSS a propósito: es aritmética de
- * la escalera, sale del mismo lugar que los anchos, y así queda testeada.
+ * Es lo que el botón de pasar promete ("Pasá (+0,4 s)"), la misma idea que el juego de
+ * referencia escribe al lado de su botón: pasar no es rendirse, es comprar audio. En el
+ * último paso no hay nada más que comprar, y devuelve `null` — ahí pasar cierra el tema.
  */
-export function tramosConEtiqueta(): readonly boolean[] {
-  return anchosDeTramos().map((ancho) => ancho >= PISO_ETIQUETA_PCT);
+export function extraAlPasar(n: number): string | null {
+  if (n >= ESCALERA.length) return null;
+  const agrega = paso(n + 1).segundos - paso(n).segundos;
+  return formatoSegundos(agrega);
+}
+
+/** Un número de segundos con coma decimal y sin ceros de más: 0,4 s · 1,5 s · 2 s. */
+export function formatoSegundos(segundos: number): string {
+  const redondo = Math.round(segundos * 10) / 10;
+  const texto = Number.isInteger(redondo) ? String(redondo) : redondo.toFixed(1).replace('.', ',');
+  return `${texto} s`;
 }

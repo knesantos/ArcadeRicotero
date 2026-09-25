@@ -220,6 +220,21 @@ export const TITULO_DE_DISCO: Record<string, string> = {
 };
 
 /**
+ * De qué disco sale un recorte del collage, si sale de uno (`D-21`, condición 1).
+ *
+ * El pie de cada pantalla ya acredita la figura que pisa su franja; lo que faltaba es que
+ * una pantalla que pega recortes **en el contenido** —los casetes del portal— pudiera
+ * nombrar sus discos con el mismo mapa, en vez de copiarlo. Se lee al revés de
+ * `FIGURA_DE_DISCO`: el archivo manda, y un recorte que no es de ningún disco (el casete
+ * dibujado, la figura encadenada sin ficha) devuelve `null` y no acredita nada.
+ */
+export function discoDeRecorte(ruta: string): string | null {
+  const archivo = ruta.split('/').pop();
+  const slug = Object.keys(FIGURA_DE_DISCO).find((s) => FIGURA_DE_DISCO[s] === archivo);
+  return slug ? (TITULO_DE_DISCO[slug] ?? null) : null;
+}
+
+/**
  * Las medidas reales de una pieza del collage, leidas del archivo en build.
  *
  * Existe para que un `<img>` pueda declarar `width` y `height` sin que nadie copie un

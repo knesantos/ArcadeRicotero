@@ -8,8 +8,9 @@ import {
   puntos,
   puntajeMaximo,
   anchosDeTramos,
-  tramosConEtiqueta,
-  PISO_ETIQUETA_PCT,
+  etiquetaDeRegla,
+  extraAlPasar,
+  formatoSegundos,
 } from './escalera.ts';
 
 /**
@@ -101,21 +102,30 @@ test('el puntaje máximo de una vuelta son todos los temas acertados en el paso 
   assert.equal(puntos(1), 100);
 });
 
-test('la regla de abajo de la barra numera los tramos que tienen lugar', () => {
-  // Los dos primeros se llevan el 1% y el 4% de la barra: en un celular, tres pixeles y
-  // trece. Numerarlos seria pisar un numero con el otro.
-  assert.deepEqual(tramosConEtiqueta(), [false, false, true, true, true, true]);
+test('la regla numera los seis tramos, y la unidad va solo en el ultimo', () => {
+  // Antes los dos primeros quedaban sin numero porque median tres pixeles y trece. Ahora el
+  // CSS les da un ancho minimo que alcanza para el numero, y la forma entera de la escalera
+  // se ve antes de gastarla.
+  assert.deepEqual(
+    ESCALERA.map((_, i) => etiquetaDeRegla(i)),
+    ['0,1', '0,5', '2', '4', '8', '10 s'],
+  );
+  assert.equal(etiquetaDeRegla(99), '', 'fuera de rango no inventa un numero');
 });
 
-test('ningun tramo numerado es mas angosto que el numero que lleva', () => {
-  const anchos = anchosDeTramos();
-  tramosConEtiqueta().forEach((lleva, i) => {
-    if (lleva) assert.ok(anchos[i]! >= PISO_ETIQUETA_PCT, `el tramo ${i + 1} no da el ancho`);
-  });
+test('pasar compra exactamente el audio que hay entre un escalon y el siguiente', () => {
+  assert.equal(extraAlPasar(1), '0,4 s');
+  assert.equal(extraAlPasar(2), '1,5 s');
+  assert.equal(extraAlPasar(3), '2 s');
+  assert.equal(extraAlPasar(4), '4 s');
+  assert.equal(extraAlPasar(5), '2 s');
+  // En el ultimo paso no hay mas audio que comprar: pasar cierra el tema.
+  assert.equal(extraAlPasar(6), null);
 });
 
-test('el ultimo tramo siempre lleva numero: es el final de la escalera', () => {
-  // Si el ultimo no estuviera numerado, la regla no diria cuanto audio hay en total.
-  const marcados = tramosConEtiqueta();
-  assert.equal(marcados[marcados.length - 1], true);
+test('los segundos se escriben con coma y sin ceros de mas', () => {
+  assert.equal(formatoSegundos(0.1), '0,1 s');
+  assert.equal(formatoSegundos(2), '2 s');
+  // La resta de dos decimales no deja basura de coma flotante en pantalla.
+  assert.equal(formatoSegundos(0.5 - 0.1), '0,4 s');
 });
