@@ -9,9 +9,11 @@
 
 > ## 📱 EL USUARIO JUGÓ EN SU TELÉFONO: `D-47` Y LA RÁFAGA 5 (2026-09-24, tarde)
 >
-> **PR abierto: https://github.com/knesantos/ArcadeRicotero/pull/17** (rama
-> `ciclo-16/el-fichin-se-prueba-solo`). La vista previa de Vercel siembra los borradores
-> (`nivelesASembrar`, `7417923`) y está detrás del login de Vercel.
+> **PR para probar: https://github.com/knesantos/ArcadeRicotero/pull/18** (rama
+> `ciclo-16/pantalla-completa-y-victoria`, ráfagas 4 y 5). El #17 ya está mergeado en `main`
+> (`e5a2692`), junto con el #16, la auditoría de prompts; `main` local los integró en `b56dfaa`.
+> La vista previa de Vercel siembra los borradores (`nivelesASembrar`) y está detrás del login
+> de Vercel.
 >
 > **Lo que dijo después de jugar el nivel 1:** los controles se sienten bien; **el scroll
 > horizontal rompe los controles**; quiere pantalla completa con los controles medio
