@@ -360,6 +360,17 @@ trabajo — es el insumo caro de este juego, del mismo modo que el fragmento lo 
 
 ### IDEA-11 — Mayor o menor: qué palabra se dice más
 
+> **Promovida a `US-10` por `D-48` (2026-09-25), `Docs/PRODUCTO/PRD-mas-o-menos.md`.** El
+> usuario amplió el pedido el mismo día en que se tomó esta idea para resolverla —
+> *"tomá un juego barato del estado que no esté hecho y resolvelo completamente"*, y
+> después: *"que sean preguntas con respuesta de número pero diferentes, no todo sobre las
+> letras, sino cuántos integrantes son, cuántos años tocaron [...] sé creativo"*—, así que
+> el juego que se construye **no es solo esta idea**: la mecánica de palabras que sigue
+> descripta abajo entera como referencia histórica pasó a ser una familia entre siete
+> (`las-palabras`) dentro de "Más o menos", que también pregunta sobre discos, duraciones,
+> setlists, y datos a mano de la banda. Esta ficha no se edita ni se borra (`BR-16`); el
+> diseño vigente vive en `PRD-mas-o-menos.md`.
+
 **Tal cual la dijo el usuario:** *"que arrancas con una palabra y cuantas veces se dice en
 toda la discografia y tenes que ir adivinando si la otra palabra que te muestran se dijo
 mas o menos veces y asi ir sumando"*.
@@ -859,7 +870,7 @@ con dos versiones que no se promedian. Se mide, no se cita.
 | `IDEA-08` | Letras y acordes | original (no es juego) | — | deroga `BR-03`/`BR-12`; acordes sin fuente |
 | `IDEA-09` | Test de 2 ejes | original | `UX-02` | ✅ **promovida a `US-06`** (`T-115`, ciclo 8) |
 | `IDEA-10` | Guitar Hero | clon vestido | el mp3 entero (`D-22`) | ~~bloqueo de audio~~ **levantado por `D-22`**; ahora falta la partitura |
-| `IDEA-11` | Mayor o menor con palabras del cancionero | original (género conocido, motor mínimo) | `cancionero.json` (104 temas), `UX-02` | el conteo es respuesta correcta — corpus limpiado por `T-103`, falta reconfirmar |
+| `IDEA-11` | Mayor o menor con palabras del cancionero | original (género conocido, motor mínimo) | `cancionero.json` (104 temas), `UX-02` | ✅ **promovida a `US-10`**, ampliada por el usuario a preguntas de número de toda la banda (`D-48`, `PRD-mas-o-menos.md`) |
 | `IDEA-13` | Supabase: correcciones, puntajes, jugadores | infraestructura (no es juego) | `CTR-10` (transporte detrás de interfaz) | correcciones no choca; puntajes remite a `D-15`; jugadores choca con `D-14`/Fuera de alcance — entra solo como id anónimo, nunca como cuenta |
 | `IDEA-14` | Skayboy y Poligirl: dos personajes, una puerta, cielo e infierno | clon vestido | el molde de página y el cascarón, `tokens.css`, `src/lib/tarjeta/`, las ocho licencias ya leídas (`RES-62`) y el ensayo de arte hecho (`public/arte/ensayo/`) | ✅ **promovida a `US-09`** (2026-09-16, ciclo 15 — `PRD-skayboy-y-poligirl.md`, piso de seis niveles 2/2/2). El choque del arte se resolvió por otro lado: `D-41` metió el pixel art adentro del área de juego y dejó la imprenta afuera, así que lo que falta no es una excepción al README sino **la convención del pixel**, que sigue sin escribirse |
 

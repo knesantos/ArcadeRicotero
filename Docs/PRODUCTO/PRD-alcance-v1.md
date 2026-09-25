@@ -91,6 +91,12 @@
 > de que la tabla de `BR-03` no cambia y lo único que migra es de dónde sale el nivel
 > (tercios por tema, igual que `US-07`), y corrige de paso el traspaso a `arquitectura` que
 > `T-283` había dejado excluyendo a `CTR-04`. El resto del documento no se tocó.
+>
+> **Revisión 2026-09-25 (`D-48`, "Más o menos" promovida de `IDEA-11`).** Consume además
+> `Docs/PRODUCTO/PRD-mas-o-menos.md`, donde vive `US-10`/`BR-32`/`BR-33` enteros — este
+> archivo no los aloja, solo los referencia. Suma la fila de `US-10` a la tabla de `BR-30`
+> y corrige "los ocho juegos" a "los nueve juegos" en su `Aplica a`. No toca ningún otro
+> punto: `US-10` no es uno de los cuatro juegos de `D-05` ni compite por su piso.
 
 ## Por qué existe el piso de ítems
 
@@ -1555,8 +1561,10 @@ efectivamente 8 títulos— lo corre `T-279` (`src/lib/escalonar.test.ts`).
 
 ## BR-30 — Qué juegos son "con canciones" y cómo cada uno usa la dificultad
 
-**Aplica a:** los ocho juegos del sitio — los cuatro de `D-05` (`US-01`..`US-04`) más
-`US-06`, `US-07`, `US-08` y `US-09`. Contesta el pedido de `Docs/ORQ/ORQ-plan-ciclo-16.md`
+**Aplica a:** los nueve juegos del sitio — los cuatro de `D-05` (`US-01`..`US-04`) más
+`US-06`, `US-07`, `US-08`, `US-09` y `US-10` (sumado 2026-09-25 por `producto` al escribir
+`Docs/PRODUCTO/PRD-mas-o-menos.md`, con la misma tabla que ya venía). Contesta el pedido de
+`Docs/ORQ/ORQ-plan-ciclo-16.md`
 §2.4 (`T-283`), sobre `D-46` — decisión del usuario, textual: *"La dificultad de todo lo
 que sea con canciones sale de ahí"*, que enmienda `D-27` y responde, más ancha de lo
 preguntado, la "Salida B" que `BR-18` (h) había dejado pedida al usuario.
@@ -1583,6 +1591,7 @@ tema o de la pregunta?"*).
 | `US-07` Sacalo por la letra | **Sí.** El ítem es el tema: la respuesta es reconocer la canción por sus versos. | **Ya inferida por `D-27`**, no manual — aunque `Docs/PRODUCTO/PRD-adivinar-por-la-letra.md` todavía la describe como "Plan B" sin activar (marcado, ver "Archivos"). Tercios por vistas de YouTube; degradada hoy a todo Difícil por falta de `YT_API_KEY`. | **Cambia la fuente, no el mecanismo.** Los tercios de `D-27` se calculan sobre el conteo citado de setlist.fm en vez de las vistas de YouTube — la "Salida B" de `BR-18` (h), confirmada. |
 | `US-08` Ponelos en fila | **Parcial.** De los 14 conjuntos, 10 son temas (aperturas, cierres, los diez tracklists); 4 son discos o tapas. | **No usa dificultad.** `US-08` lo dice explícito: `BR-01` no aplica porque no hay respuesta correcta (`BR-22`). | No aplica: no hay dificultad que `D-46` pueda redirigir. |
 | `US-09` Skayboy y Poligirl | **No.** El ítem es un nivel de plataformas. `D-39` hace sonar un tema entero de fondo, pero el tema no es el ítem ni decide nada. | Manual: el escalón de cada nivel lo fija quien lo diseña (`BR-25`, `BR-29`: niveles 1-2 Fácil, 3-4 Media, 5-6 Difícil, por cuánto mecanismo enseña, no por popularidad). | No aplica: no hay canciones que medir. |
+| `US-10` Más o menos | **Parcial.** Una de las siete familias (`las-palabras`) es de temas; las otras seis (`la-banda`, `la-gente`, `los-recitales`, `los-discos`, `lo-que-dura`, `en-vivo`) no lo son. | **No usa la etiqueta de `BR-01`.** Escalona por los cuatro escalones de racha de `BR-33` (`PRD-mas-o-menos.md`), no por ítem etiquetado a mano. | No aplica: no hay dificultad por ítem que `D-46` pueda redirigir — el escalón lo fija la racha, no un conteo por tema. |
 
 ### Por qué el quiz no entra, aunque una pregunta hable de un tema
 

@@ -2559,3 +2559,115 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
      entera y bloquea el scroll. Donde el sistema sí la da (Android, escritorio), se pide.
   3. Los niveles siguen en `borrador` hasta que alguien juegue de a dos (`BR-25` a). Lo que
      dijo el usuario cuenta como la primera mitad de esa prueba, no como la prueba entera.
+
+---
+
+## D-48 — "Más o menos": preguntas de número sobre la banda, de todo tipo, y se juega hasta el primer error
+
+- **Fecha:** 2026-09-25
+- **Estado:** aceptada. **Reescrita el mismo día**, antes de que nadie la consumiera: la
+  primera versión hacía de `IDEA-11` un juego de una sola cosa —en cuántos temas aparece
+  una palabra— y el usuario la amplió mientras se construía. Lo que decía esa versión sobre
+  las palabras sigue entero, como una de las familias (punto 4).
+- **Los pedidos del usuario, textuales:** *"tomá un juego barato del estado que no esté
+  hecho y resolvelo completamente"* (el hilo principal eligió `IDEA-11`: la otra barata del
+  backlog, `IDEA-09`, ya es `US-06`), y después: *"que sean preguntas con respuesta de
+  número pero diferentes, no todo sobre las letras, sino cuántos integrantes son, cuántos
+  años tocaron, o sea sé creativo e investigá el juego para ver cómo debe ser"*.
+- **Consume:** `IDEA-11` (`PRD-backlog-ideas.md`), `INV-93` (el género, `RES-93`..`RES-98`),
+  `INV-100` (los números de la banda, `RES-100`+), `RES-20` (discografía, años, duraciones,
+  y sus dos trampas), `RES-90` (el conteo de setlist.fm), `CTR-06`, `BR-15`, `BR-16`,
+  `D-09`, `D-13`, `D-14`, `D-17`, `D-19`, `ADR-02`, `CNT-04`, `CNT-06`,
+  `.claude/rules/voz-ricotera.md`, `.claude/rules/diseno-marca.md`.
+
+- **Lo que dijo la investigación del género (`INV-93`).** El *Higher Lower Game* encadena
+  pares y corta en el primer error (`RES-93`), pero **ningún derivado mezcla unidades dentro
+  de una comparación** (`RES-94.1`). Lo que sí acepta cualquier pregunta con respuesta
+  numérica es la mitad de encuesta de *Card Sharks* y *Play Your Cards Right*: **"¿el número
+  real es más o menos que este?"** (`RES-95`). Y la familia de los diarios numéricos revela
+  de golpe, sin el contador que sube (`RES-98`), que es lo único compatible con "solo se
+  mueve la mosca".
+
+- **Decisión.**
+  1. **`IDEA-11` pasa a `US-10`: "Más o menos".** Vive en `/juegos/mas-o-menos/` y su
+     desafío es `g=mas-o-menos` (`ADR-02`). El nombre es la mecánica dicha en rioplatense, y
+     de paso el "más o menos" de quien no se la sabe toda.
+  2. **Cada paso es una pregunta con respuesta de número y una referencia.** El jugador dice
+     si la respuesta real es **más o menos** que la referencia. La referencia es de dos
+     clases, y **siempre de la misma unidad que la respuesta** (`RES-94.1`):
+     - **un número** que pone el juego ("¿Cuántos años tocaron juntos? ¿Más o menos que
+       12?"), como la encuesta de *Card Sharks*;
+     - **otro dato de la misma familia, con su número a la vista** ("*Jijiji* dura 5:34.
+       ¿*Juguetes perdidos* dura más o menos?"), como el *Higher Lower Game*.
+
+     De un paso al siguiente **cambia la familia**: es lo que pidió el usuario.
+  3. **Para los años, los botones dicen "Antes" y "Después".** "¿Más o menos que 1990?" no
+     lo dice nadie. Todo lo demás dice **Más** y **Menos** (`D-17`: no son infinitivos).
+  4. **Las familias, y de dónde sale cada número.** Ningún número se escribe dos veces
+     (`D-13`): el que ya está en una ficha o en un dato del repo **se deriva en build**, y
+     solo los que no existen en otro lado se cargan en el dato del juego, cada uno con su
+     ficha.
+     - **La banda** (a mano, de `INV-100`): formación, años, integrantes, recitales, lo que
+       tenga respuesta de número y ficha.
+     - **Los discos** (de `RES-20`): el año de cada disco y cuántos temas tiene. ***Gulp!*
+       queda afuera de "cuántos temas"** (11 o 12, según cuente el track oculto) y **nunca
+       se pregunta cuántos discos son** (9 o 10): son las dos trampas que `RES-20` ya marcó.
+     - **Lo que dura un tema** (de `RES-20`): la versión de disco, en minutos y segundos.
+       Los once del vol. 2 de *Lobo suelto* sin duración no entran.
+     - **En vivo** (de `RES-90`): en cuántos setlists de setlist.fm figura un tema. **Se
+       rotula como lo que es**: setlists que carga la gente, no veces que se tocó.
+     - **Las palabras** (del cancionero): en cuántos temas aparece una palabra. Acá sigue
+       valiendo todo lo de la primera versión: **temas y no veces** (*criminal* suma 37
+       apariciones en un solo tema porque cifraclub escribió cada vuelta del estribillo:
+       "veces" mide al que transcribió), las formas escritas declaradas y mostradas al
+       revelar, y la lista de temas enlazada a cada letra para que el número se pueda
+       auditar (`src/lib/mas-o-menos/conteo.ts`).
+  5. **Cada familia pesa lo mismo** en el sorteo, no importa cuántos datos tenga: si no, los
+     94 temas con duración taparían a los datos de la banda, que son los que pidió el
+     usuario.
+  6. **El número tiene que ser un hecho, o un "según" con nombre.** Nunca una leyenda como
+     respuesta (`CLAUDE.md`, lo único estricto). Una estimación de prensa entra como "según
+     Clarín, N" y el rótulo lo dice. **Nada sobre muertes** (`CNT-04`, `CNT-06`): ni Bulacio,
+     ni Olavarría, ni la muerte del Indio.
+  7. **Se juega hasta el primer error**, y el puntaje es la racha (`RES-93.3`, `RES-93.4`). La
+     mejor racha queda en el aparato (`localStorage`). No hay reloj.
+  8. **Escalonado, sin muro (`BR-01`, `D-09`).** La referencia arranca lejos de la respuesta
+     y se acerca con la racha: al principio alcanza con el sentido común ("¿tocaron más o
+     menos que 3 años?"), después hay que saber. El que llegó sin idea juega igual.
+  9. **No hay empates.** La referencia nunca es igual a la respuesta. Una regla de empate que
+     hay que explicar es peor que un empate que no pasa (`RES-93.5`: ni el género se pone de
+     acuerdo).
+  10. **El revelado es de golpe**: el número real, ✔ o ✕ además del color, y de dónde salió,
+      en registro 3. Sin contador que sube (`RES-98`, `diseno-marca.md`).
+  11. **Compartir es texto y dirección** (`ADR-02`, forma `marcador`: `p` la racha, `t` la
+      cantidad de preguntas posibles). Sin tarjeta-imagen en esta versión.
+  12. **Casete propio en el lado A del portal.**
+
+- **Alternativas descartadas.**
+  1. **Solo palabras, en cadena** (la primera versión). Es un juego de una nota; el usuario
+     pidió variedad.
+  2. **Encadenar mezclando unidades** ("1986 contra 7 integrantes"). No lo hace ningún juego
+     del género (`RES-94.1`), y con razón: comparar un año con una cantidad no es una
+     pregunta.
+  3. **Una familia por partida** (los modos del *Higher Lower Game*). Resuelve la unidad
+     pero no la variedad, y las familias chicas (los diez discos) se agotan en tres pasos.
+  4. **Estimar con tolerancia** (*Wits & Wagers*, `RES-96`). Más de un toque por pregunta:
+     no entra en la sesión de dos minutos en el teléfono.
+  5. **Que `contenido` fije a mano la referencia de cada pregunta.** La fija el juego según
+     la racha, y así la misma pregunta sirve fácil al principio y difícil después sin
+     escribirla dos veces. Lo que sí declara el dato es la escala de su número (un año, una
+     cantidad, una duración), que es lo que le dice al juego cómo alejar la referencia.
+  6. **El contador que sube al revelar** (`RES-94.3`). Movimiento decorativo.
+
+- **Consecuencias y reparto.**
+  1. `producto` escribe `US-10` y `BR-32`/`BR-33` (qué número puede ser respuesta y cómo se
+     arma la partida) y marca `IDEA-11` promovida. `arquitectura` escribe `CTR-20` (el
+     schema de `src/data/mas-o-menos.json`, las derivaciones, la referencia y el sorteo).
+     `contenido` escribe `CNT-25` (los datos de la banda desde `INV-100`, las palabras, y
+     todo lo que se lee). `experiencia` escribe `UX-34`. El hilo principal construye.
+     `revisor` escribe `REV-16`.
+  2. **Un dato del repo que se corrige se corrige en el juego solo.** Si `RES-20` cambia una
+     duración o el cancionero una letra, el número cambia en el próximo build.
+  3. **El juego hereda los huecos de sus fuentes y los dice.** Una palabra cantada en
+     *San Telmo* no suma, porque de *San Telmo* el cancionero tiene solo la tablatura; el
+     rótulo nombra cuántos temas se contaron (hoy, 100 de 105).
