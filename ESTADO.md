@@ -7,6 +7,60 @@
 
 **Última actualización:** 2026-09-25
 
+> ## 🔢 "MÁS O MENOS": EL JUEGO NUEVO, `US-10` (2026-09-25, tarde)
+>
+> **Rama `ciclo-16/mas-o-menos`, sobre `ciclo-16/lo-barato-que-se-ve` en `4345b66`.** Pedido
+> del usuario: *"tomá un juego barato del estado que no esté hecho y resolvelo completamente"*.
+> Se tomó `IDEA-11`, la otra barata del backlog (`IDEA-09` ya era `US-06`). A mitad de camino
+> el usuario lo amplió: *"que sean preguntas con respuesta de número pero diferentes, no todo
+> sobre las letras, sino cuántos integrantes son, cuántos años tocaron… investigá el juego"*.
+>
+> **Qué es (`D-48`, reescrita ese mismo día):** una pregunta con respuesta de número y una
+> referencia de la misma unidad —un número que pone el juego, u otro dato con su número a la
+> vista—; el jugador dice **Más** o **Menos** (para años, **Antes** o **Después**). Hasta el
+> primer error; el puntaje es la racha. Siete familias que rotan como un mazo: la banda, la
+> gente, los recitales (35 datos a mano de `INV-100`), y los discos, lo que dura, en vivo y las
+> palabras (derivados en build de `RES-20`, `setlistfm.json` y el cancionero: ~230 más). Las
+> palabras se cuentan **en cuántos temas**, no cuántas veces: *criminal* suma 37 en un solo tema
+> porque cifraclub escribió cada vuelta del estribillo.
+>
+> **El papel, entero:** `INV-93` (el género: el *Higher Lower Game*, la encuesta de *Card
+> Sharks*, los diarios numéricos que revelan de golpe) · `INV-100` (111 números con fuente,
+> con nota del hilo principal sobre las filas que no sirven) · `US-10`, `BR-32`, `BR-33` y una
+> enmienda de `BR-18` (b) acotada a `US-10` (`PRD-mas-o-menos.md`) · `CTR-20` con schema e
+> invariantes `i1`..`i24` · `UX-34` (viste *Un baión para el ojo idiota*, el único disco
+> libre) · `CNT-25` · `IDEA-11` marcada promovida.
+>
+> **El código:** `src/lib/mas-o-menos/` (conteo, referencia por escalones de racha con bordes
+> que nunca regalan la respuesta, partida con bolsa de familias, pozo, copy),
+> `leerDuraciones`/`leerDiscos` en `letra/temas.ts`, la isla, la página, el casete del portal
+> y el renglón del lugar, y `npm run medir-mas-o-menos` para mirar el pozo a ojo.
+>
+> **`REV-16`, cerrada el mismo día:** seis hallazgos (`FIND-80`..`FIND-85`), los seis
+> cerrados. Los dos `ALTA` eran de veracidad: **MM-01** preguntaba "tocando por primera vez"
+> en 1976 y `RES-05` solo dice "origen" (el primer show es el Lozanazo, 1977), y **MM-23**
+> ("cuántos años se llevan el Indio y Skay") da 2 o 3 según el día del año; `contenido` los
+> reformuló. `revisor` recontó a mano las 20 palabras y los otros 33 datos: coinciden. Se
+> sumaron los 14 rojos del schema (con mutación vista) y, por la enmienda de `BR-18` (b), la
+> caja de referencia de un par de setlist.fm dice fuente y fecha **sin enlace**: la página de
+> estadísticas lista todos los conteos, y un enlace antes de responder regalaría la respuesta.
+>
+> **Verificado al cerrar:** `npm test` 1439/1439, `check` 0/0, build 153, validador `APTA`, y
+> jugado en la vista previa a 375 px (pares de en vivo con fuente y fecha, años con
+> Antes/Después, el desplegable de temas de una palabra, el resultado, el desafío de un
+> amigo, el casete en el portal).
+>
+> **Abierto, sin trabar:**
+> - La fila de *Un baión* en el mapa sección→disco de `UX-04` (el mismo pendiente que dejaron
+>   `UX-06` y `UX-23`).
+> - `RES-106`..`RES-139` libres, por si se quiere una segunda ronda de números (las tres
+>   bandas de después de la separación, `RES-47`).
+> - **Nada commiteado todavía**: el usuario no lo pidió.
+> - **Lo que el usuario puede revertir:** si prefiere "cuántas veces" en vez de "en cuántos
+>   temas" para las palabras, `D-48` dice qué cuesta.
+>
+> **Del usuario:** jugarlo en el teléfono, y el push y el PR.
+
 > ## 🧹 LO BARATO QUE SE VE: SIETE ARREGLOS EN LO PUBLICADO (2026-09-25)
 >
 > **Rama `ciclo-16/lo-barato-que-se-ve`, sobre `main` en `b1a5bb4`** (o sea, encima de las
