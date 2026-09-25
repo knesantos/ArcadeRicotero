@@ -55,7 +55,9 @@
 >   `UX-06` y `UX-23`).
 > - `RES-106`..`RES-139` libres, por si se quiere una segunda ronda de números (las tres
 >   bandas de después de la separación, `RES-47`).
-> - **Nada commiteado todavía**: el usuario no lo pidió.
+> - **Commiteado y en PR: https://github.com/knesantos/ArcadeRicotero/pull/20**, apilado sobre
+>   el #18 (sigue abierto) y con los tres commits de "lo barato que se ve", que no tenían PR
+>   propio. Probado en un worktree limpio: 1439/1439, check 0/0, build 153.
 > - **Lo que el usuario puede revertir:** si prefiere "cuántas veces" en vez de "en cuántos
 >   temas" para las palabras, `D-48` dice qué cuesta.
 >
