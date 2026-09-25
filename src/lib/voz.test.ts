@@ -13,6 +13,7 @@ import * as correccion from './correccion/copy.ts';
 import * as dosEjes from './dos-ejes/copy.ts';
 import * as ponelos from './ponelos/copy.ts';
 import * as skayboy from './skayboy/copy.ts';
+import * as masOMenos from './mas-o-menos/copy.ts';
 import { FILAS } from './ponelos/filas.ts';
 
 /**
@@ -70,6 +71,10 @@ const MODULOS: ReadonlyArray<readonly [string, Record<string, unknown>]> = [
   // que es la leccion de `dos-ejes`: un modulo que llega tarde al barrido pasa un tiempo
   // pareciendo auditado sin estarlo. Las cadenas salen de `CNT-17`..`CNT-19`.
   ['skayboy', skayboy],
+  // `US-10`, el del 2026-09-25. Entra con el juego, por la misma lección. Las cadenas son
+  // de `CNT-25`; las preguntas de los datos a mano viven en el JSON y las mira el recolector
+  // del banco, más abajo.
+  ['mas-o-menos', masOMenos],
 ];
 
 /*
@@ -289,6 +294,9 @@ test('voz 4.1: la linea grande no pasa de ocho palabras', () => {
     ['h1 sacalo por la letra', porLaLetra.PANTALLA_0.titulo],
     ['h1 dos ejes', dosEjes.PANTALLA_0.titulo],
     ['h1 ponelos en fila', ponelos.PANTALLA_0.titulo],
+    // `US-10`: lo pidió `CNT-25` y `REV-16` (`FIND-85`) vio que no había quedado.
+    ['h1 más o menos', masOMenos.PANTALLA_0.titulo],
+    ...Object.entries(masOMenos.TRAMOS).map(([k, v]) => [`más o menos tramo ${k}`, v] as [string, string]),
   ];
   const largos = grandes
     .filter(([, texto]) => texto.trim().split(/\s+/).length > 8)

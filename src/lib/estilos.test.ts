@@ -587,6 +587,13 @@ const ESTADOS_TAPA = [
  */
 const ESTADOS_EJES: string[] = [];
 
+/**
+ * `US-10`, "Más o menos". Reusa el acierto y el error del quiz sobre dos botones en vez de
+ * cuatro (`UX-34` §3.3), y el panel del revelado. No tiene rótulos de leyenda ni de
+ * testimonio: acá un número es hecho o "según", nunca leyenda (`D-48` punto 6).
+ */
+const ESTADOS_MAS_O_MENOS = ['.es-correcta', '.es-elegida', '.feedback.ok', '.feedback.no'];
+
 interface Tablero {
   /** De que juego es, para que el mensaje de error no obligue a abrir el archivo. */
   readonly juego: string;
@@ -622,6 +629,11 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'partida-dos-ejes.ts': { juego: 'US-06, el test de dos ejes', fuente: JS_EJES, estados: ESTADOS_EJES },
   'partida-por-la-letra.ts': { juego: 'US-07, sacalo por la letra', fuente: JS_LETRA, estados: ESTADOS_LETRA },
   'partida-ponelos.ts': { juego: 'US-08, ponelos en fila', fuente: JS_PONELOS, estados: ESTADOS_PONELOS },
+  'partida-mas-o-menos.ts': {
+    juego: 'US-10, más o menos',
+    fuente: leer('src/scripts/partida-mas-o-menos.ts'),
+    estados: ESTADOS_MAS_O_MENOS,
+  },
   // `US-09`: el area es un canvas y no tiene clases; lo unico que la isla pinta en el DOM es
   // la tecla que sigue apretada, que `:active` no alcanza a mostrar con cuatro dedos.
   'partida-skayboy.ts': {

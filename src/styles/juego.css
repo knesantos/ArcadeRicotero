@@ -2741,6 +2741,165 @@ body > main {
   }
 }
 
+/* =====================================================================
+   "Más o menos" (`US-10`, `UX-34` §7.2).
+
+   La pantalla viste *Un baión para el ojo idiota* (`UX-34` §1): el contenedor lleva
+   `.disco--un-baion-para-el-ojo-idiota`, que ya define `--tinta-disco` y `--apoyo-disco`,
+   y todo lo de acá tiñe con esas dos. Cero hex: el par "Un baion sobre fondo" ya está
+   medido en `contraste.test.ts`.
+   ===================================================================== */
+
+/* El botón principal de la pantalla (*Jugá*, *Seguí*) en la tinta del disco. Es tinta y
+   no apoyo: el apoyo es para bordes, y acá lleva texto encima (la misma cuenta que resolvió
+   `.juego-por-la-letra`). El par "Un baion sobre fondo" está medido en `contraste.test.ts`. */
+.juego-mas-o-menos {
+  --tinte-accion: var(--disco-un-baion-para-el-ojo-idiota-tinta);
+}
+
+/* La referencia: el número contra el que se decide. Recorte pegado —borde completo en la
+   tinta del disco y sombra dura en el apoyo—, el mismo idioma que `.verso-bloque`. Nunca
+   la barrita lateral ni la tarjeta elevada. */
+.masomenos-referencia {
+  margin: 0 0 var(--espacio-3);
+  padding: var(--espacio-2);
+  border: var(--linea) solid var(--tinta-disco, var(--borde));
+  /* Esquina de estampa y no `--radio`: la caja no se toca, y `--radio` es para lo tocable
+     grande (`diseno-marca.md`; lo notó `REV-16`). */
+  border-radius: 3px;
+  box-shadow: 4px 4px 0 var(--apoyo-disco, var(--borde));
+  transform: rotate(-0.6deg);
+}
+
+/* El nombre del dato de un par: «Jijiji». Registro 3, chico, en la legible. */
+.masomenos-sujeto {
+  margin: 0;
+  color: var(--texto-tenue);
+  font-size: 0.95rem;
+}
+
+/* El número grande de la referencia. Nunca en color de acierto o error: todavía no se
+   respondió nada. */
+.masomenos-valor {
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 2.2rem;
+  line-height: 1.1;
+  color: var(--texto);
+}
+
+/* Los dos botones, lado a lado: el layout del *Higher Lower Game* (`RES-93.1`). Son
+   `.opcion` de siempre, con la palabra corta centrada. */
+.masomenos-opciones {
+  display: flex;
+  gap: var(--espacio-1);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.masomenos-opciones > li {
+  display: grid;
+  flex: 1;
+}
+
+.masomenos-opciones .opcion {
+  min-height: calc(var(--toque-min) * 1.4);
+  text-align: center;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* El número real, al revelar: es el premio de la pantalla, a la escala de
+   `.revelacion-titulo`. Llega de golpe (`UX-34` §5): sin transición ni animación. */
+.masomenos-real {
+  margin: 0 0 var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  font-size: 1.6rem;
+  line-height: 1.15;
+}
+
+.feedback.ok .masomenos-real {
+  color: var(--acento-3);
+}
+
+.feedback.no .masomenos-real {
+  color: var(--acento-4);
+}
+
+/* La pregunta, repetida adentro del panel del resultado: es lo que te cortó. */
+.masomenos-pregunta {
+  margin: 0 0 var(--espacio-1);
+  font-size: 1.05rem;
+}
+
+.masomenos-formas {
+  margin: var(--espacio-1) 0 0;
+  color: var(--texto-tenue);
+}
+
+/* "En cuáles": el mismo sello punteado que el desplegable de discos de "Adiviná el tema"
+   (`.pozos-abrir`), con nombre propio porque aquel es de otro juego. */
+.masomenos-despliegue {
+  margin: var(--espacio-2) 0 0;
+}
+
+.masomenos-despliegue-abrir {
+  display: flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  padding: 0 var(--espacio-2);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  cursor: pointer;
+  border: var(--linea) dashed var(--borde);
+  border-radius: 3px;
+  transition: color var(--duracion-toque), border-color var(--duracion-toque);
+}
+
+.masomenos-despliegue-abrir::-webkit-details-marker {
+  display: none;
+}
+.masomenos-despliegue-abrir::marker {
+  content: '';
+}
+
+.masomenos-despliegue[open] > .masomenos-despliegue-abrir {
+  color: var(--texto);
+  border-style: solid;
+  border-color: var(--papel-borde);
+}
+
+.masomenos-despliegue-abrir:hover,
+.masomenos-despliegue-abrir:focus-visible {
+  color: var(--texto);
+  border-color: var(--papel-borde);
+}
+
+/* Los temas: sellos de goma enlazados a su letra, en filas según el ancho. */
+.masomenos-temas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+  list-style: none;
+  padding: 0;
+  margin: var(--espacio-2) 0 0;
+}
+
+.masomenos-temas .categoria {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  text-decoration: none;
+  color: var(--texto);
+  font-size: 0.9rem;
+}
+
 /* ==========================================================================
    Ponelos en fila (`US-08`) — el tablero de repartir
 

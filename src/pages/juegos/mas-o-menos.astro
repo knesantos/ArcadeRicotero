@@ -1,0 +1,104 @@
+---
+/**
+ * "Más o menos" (`US-10`, `D-48`). Preguntas con respuesta de número sobre la banda: una
+ * referencia de la misma unidad, y el jugador dice si la respuesta real es más o menos.
+ * Hasta el primer error.
+ *
+ * Viste *Un baión para el ojo idiota* (`UX-34` §1), el único de los diez discos que seguía
+ * libre. Sin tapas reales: solo la paleta medida (`RES-37`), así que no hay crédito de
+ * `D-21` que poner.
+ *
+ * Arquitectura de islas (`D-02`): HTML estático, y el único JavaScript es
+ * `partida-mas-o-menos.ts`. El pozo se arma en build (`pozo-del-sitio.ts`): los números de
+ * los discos, las duraciones, los setlists y las palabras se derivan de sus fichas, y al
+ * navegador llegan ya armados, sin notas internas ni borradores.
+ *
+ * **Molinetes abiertos (`D-14`):** no pide nada. La primera referencia está lejos de la
+ * respuesta a propósito: el que llegó sin saber nada acierta por sentido común.
+ */
+import '../../styles/tokens.css';
+import '../../styles/juego.css';
+import '../../styles/sitio.css';
+import { PANTALLA_0 } from '../../lib/mas-o-menos/copy.ts';
+import { pozoDelSitio } from '../../lib/mas-o-menos/pozo-del-sitio.ts';
+import Cabeza from '../../components/Cabeza.astro';
+import PieImprenta from '../../components/PieImprenta.astro';
+import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
+
+const { isla } = pozoDelSitio();
+
+const TITULO = 'Más o menos — Arcade Ricotero';
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={PANTALLA_0.subtitulo} />
+    <title>{TITULO}</title>
+    <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} />
+  </head>
+  <body class="con-grano">
+    <main id="app" class="juego-mas-o-menos disco--un-baion-para-el-ojo-idiota">
+      <section id="inicio" class="pantalla">
+        <header class="cabecera-sitio">
+          <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
+        </header>
+        <p class="marca" aria-label="Arcade Ricotero">ARCADE RICOTERO</p>
+        <h1>{PANTALLA_0.titulo}</h1>
+        <p class="donde-estas">{LUGARES.masOMenos}</p>
+        <p id="subtitulo" class="tenue">{PANTALLA_0.subtitulo}</p>
+        <p class="fuentes-del-juego">{PANTALLA_0.fuentes}</p>
+        <button id="jugar" class="primario" type="button">{PANTALLA_0.boton}</button>
+      </section>
+
+      <section id="partida" class="pantalla" hidden>
+        <div id="pregunta"></div>
+        {/* La región viva existe desde que carga la página: una región creada en el mismo
+            momento que su texto no la anuncia nadie (`UX-34` §6). */}
+        <div id="revelado" aria-live="polite"></div>
+      </section>
+
+      <section id="resultado" class="pantalla" hidden></section>
+    </main>
+
+    <PieImprenta disco="un-baion-para-el-ojo-idiota" />
+
+    <script type="application/json" id="pozo" set:html={JSON.stringify(isla)} />
+    <script>
+      import '../../scripts/partida-mas-o-menos.ts';
+    </script>
+
+    <script>
+      // El interruptor de la cinta (`UX-21`). Isla propia: no sabe nada del juego
+      // y el juego no sabe nada de ella.
+      import '../../scripts/cinta.ts';
+    </script>
+
+    <style>
+      /* El cascaron —ancho, centrado, alto minimo— vive en `juego.css` (`body > main`). */
+      /* Esta pantalla viste Un baion para el ojo idiota (`UX-34` §1). */
+      h1 {
+        font-family: var(--fuente-rotulada);
+        font-size: 1.5rem;
+        line-height: 1.2;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--disco-un-baion-para-el-ojo-idiota-tinta);
+        margin-top: 0;
+      }
+      .tenue {
+        color: var(--texto-tenue);
+      }
+      /* Registro 3: de donde salen los numeros. Seco y chico (`UX-34` §3.1). */
+      .fuentes-del-juego {
+        color: var(--texto-tenue);
+        font-size: 0.9rem;
+      }
+      .pantalla[hidden] {
+        display: none;
+      }
+    </style>
+  </body>
+</html>
