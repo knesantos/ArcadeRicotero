@@ -272,7 +272,8 @@ const TITULO = 'Adiviná el tema — Arcade Ricotero';
         border: none;
         border-radius: var(--radio);
         font-size: 1.25rem;
-        font-weight: 700;
+        /* Sin `font-weight`: Archivo Black tiene un solo peso y el 700 la engordaba
+           sintética (`estilos.test.ts` lo mira). */
         letter-spacing: 0.04em;
       }
       .primario:disabled {

@@ -1070,3 +1070,36 @@ test('ese control sabe encontrar: se prueba contra un vidrio inventado', () => {
   // Nombrado en un comentario no es un vidrio.
   assert.deepEqual(vidrios('/* sin blur(), sin backdrop-filter: */ .tecla { color: red; }'), []);
 });
+
+/**
+ * **Ninguna fuente de un solo peso se pide en negrita.** Archivo Black, Oktubre Calco y la
+ * firma fan vienen con un peso y nada más: un `font-weight: 700` sobre ellas no elige otra
+ * fuente, le pide al navegador que la engorde a mano, y le come el ojo a la letra. El
+ * `.primario` de `juego.css` ya lo decía en su comentario desde agosto; las copias locales de
+ * "Adiviná el tema" y "Adiviná la tapa" lo volvían a pedir hasta el ciclo 16. Mira las hojas y
+ * el `<style>` de cada página, regla por regla.
+ */
+function negritasFalsas(css: string): string[] {
+  return reglas(css)
+    .filter(
+      (r) =>
+        /font-family:\s*var\(--fuente-(rotulada|titular|marca-firma)\)/.test(r.cuerpo) &&
+        /font-weight:\s*(bold|bolder|[5-9]00)\b/.test(r.cuerpo),
+    )
+    .map((r) => r.selector);
+}
+
+test('ninguna fuente de un solo peso se pide en negrita', () => {
+  assert.deepEqual(negritasFalsas(todoElCss()), []);
+});
+
+test('ese control sabe encontrar: se prueba contra una negrita inventada', () => {
+  assert.deepEqual(
+    negritasFalsas('.primario { font-family: var(--fuente-rotulada); font-weight: 700; }'),
+    ['.primario'],
+  );
+  // La fuente del sistema sí tiene negrita de verdad: ahí el 700 está bien.
+  assert.deepEqual(negritasFalsas('.micro { font-family: var(--fuente); font-weight: 700; }'), []);
+  // Nombrada en un comentario no es una regla.
+  assert.deepEqual(negritasFalsas('/* .x { font-family: var(--fuente-rotulada); font-weight: 700; } */'), []);
+});

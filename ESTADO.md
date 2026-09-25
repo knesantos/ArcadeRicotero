@@ -5,7 +5,45 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-09-24
+**Última actualización:** 2026-09-25
+
+> ## 🧹 LO BARATO QUE SE VE: SIETE ARREGLOS EN LO PUBLICADO (2026-09-25)
+>
+> **Rama `ciclo-16/lo-barato-que-se-ve`, sobre `main` en `b1a5bb4`** (o sea, encima de las
+> ráfagas 4 y 5 del PR #18). Pedido del usuario: analizar el estado y resolver lo más barato
+> que más valor le agregue a la página. Se jugó el sitio publicado en un teléfono emulado y se
+> cruzó con una clasificación de los 121 traspasos (39 abiertos, 82 resueltos en disco). Todo
+> lo de abajo toca lo que la gente ya ve, nada de Skayboy.
+>
+> 1. **La portada decía "EN LA COCINA" de "Completá la letra"**, uno de los cuatro juegos de la
+>    v1, mientras su página ya se jugaba. Ahora el portal le pregunta al banco con el mismo
+>    `cargarBanco()` que la página (`src/lib/sitio/portal.ts`).
+> 2. **Los discos sin tildes.** La cabecera de la letra y el cancionero armado decían "ULTIMO
+>    BONDI A FINISTERRE" o "GULP" pelado. Hay un solo mapa de títulos, en `letra/discos.ts`.
+> 3. **Los distractores de la letra se delataban solos** (11 de 19 ítems): "GUITARRA", "tiem",
+>    mayúsculas mezcladas, tildes perdidas. Filtros y forma nuevos en `generar-letra.mjs`.
+> 4. **La respuesta a la vista en su contexto** (5 de 19): se descartan esos huecos. `contenido`
+>    eligió 7 reemplazos (`CNT-23`): **21 `listo`, 9 fáciles, 7 medias y 5 difíciles** (antes
+>    19, con 11 / 4 / 4). La semilla del sorteo pasó a ser la huella del verso, así un
+>    `--reanclar` ya no vuelve a sortear todo el banco.
+> 5. **Un verso roto que salía como pista**: "para ,l mi viejo" (*Maldición…*) era una `é` en
+>    cp850. Arreglado en el dato y como errata en `ingerir-cancionero.mjs`.
+> 6. **Créditos de tapa** (`CNT-24`): `TP-007`/`TP-008` firman "Rocambole, Semilla y
+>    Meroyuela" (cierra `FIND-21` de `REV-05`), y la ficha de disco de la Redondopedia ya no
+>    dice "Rocambole" fijo en los diez: *La mosca y la sopa* dice "autoría sin confirmar".
+> 7. **Negrita falsa** en los botones de "Adiviná el tema" y "Adiviná la tapa" (Archivo Black
+>    tiene un solo peso). `estilos.test.ts` la mira en todo el sitio.
+>
+> **Verificado:** `npm test` 1364/1364 (23 nuevos, cada uno con su rojo visto), `check` 0/0,
+> build 152, validador `APTA`, y la vista previa del build jugada a 375 px. Traspasos:
+> `HILO-para-contenido-y-arquitectura-los-distractores-se-delataban.md` (la tabla final de los
+> 21, y la diferencia entre `CTR-04.8` y lo que hace el script).
+>
+> **Lo que quedó recomendado y no se hizo, por no ser barato:** la puerta de "¿Qué tipo de
+> ricotero sos?" en la portada (terminado, sin enlace; pide `experiencia` por el largo del
+> portal de `UX-25` y el casete Luzbelito, y `contenido` por la copia); fichar lacuerda.net (21
+> temas afuera de la letra); limpiar las letras de *La bestia pop* y *Criminal mambo*, que
+> quedaron afuera del pozo.
 
 > ## 📱 EL USUARIO JUGÓ EN SU TELÉFONO: `D-47` Y LA RÁFAGA 5 (2026-09-24, tarde)
 >

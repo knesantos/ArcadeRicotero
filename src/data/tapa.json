@@ -312,7 +312,7 @@
         "edicion": "CD argentino, sello Del Cielito, 1993 (vol. 1 del doble)",
         "auditoria": "coincide con la original, sin marcador que lo pruebe",
         "credito": {
-          "autor": "Rocambole (Ricardo Cohen)",
+          "autor": "Rocambole, Semilla y Meroyuela",
           "origen": "coveralia"
         }
       },
@@ -344,7 +344,7 @@
         "tapa"
       ],
       "estado": "listo",
-      "notaInterna": "Ciclo 9, 2026-08-28, pedido del usuario: el juego funciona como los juegos de splash — no se muestra la tapa entera nunca, se muestra un zoom alto. El lado del recorte sale de la dificultad del item (facil 0.40 del master, media 0.26, dificil 0.22), asi que BR-01 escalona de verdad y no solo por que tapa toca. De paso muere el defecto anterior: si el titulo impreso no entra en el recorte, no hay nada que leer. Los centros estan en scripts/generar-tapas.mjs y le deben una entrada a UX-05."
+      "notaInterna": "Ciclo 9, 2026-08-28, pedido del usuario: el juego funciona como los juegos de splash — no se muestra la tapa entera nunca, se muestra un zoom alto. El lado del recorte sale de la dificultad del item (facil 0.40 del master, media 0.26, dificil 0.22), asi que BR-01 escalona de verdad y no solo por que tapa toca. De paso muere el defecto anterior: si el titulo impreso no entra en el recorte, no hay nada que leer. Los centros estan en scripts/generar-tapas.mjs y le deben una entrada a UX-05. Credito ampliado en CNT-24 (cierra FIND-21 de REV-05, del lado de contenido): el pie impreso que da RES-40 firma la tapa como conjunto -'Visiones: Rocambole, Semilla y Meroyuela'-, sin repartir que aporto cada uno. Por eso el credito va conjunto y no repartido: repartirlo afirmaria algo que la ficha no dice."
     },
     {
       "id": "TP-008",
@@ -359,7 +359,7 @@
         "edicion": "CD argentino, sello Del Cielito, 1993 (vol. 2 del doble)",
         "auditoria": "coincide con la original, sin marcador que lo pruebe",
         "credito": {
-          "autor": "Rocambole (Ricardo Cohen)",
+          "autor": "Rocambole, Semilla y Meroyuela",
           "origen": "coveralia"
         }
       },
@@ -391,7 +391,7 @@
         "tapa"
       ],
       "estado": "listo",
-      "notaInterna": "Ciclo 9, 2026-08-28, pedido del usuario: el juego funciona como los juegos de splash — no se muestra la tapa entera nunca, se muestra un zoom alto. El lado del recorte sale de la dificultad del item (facil 0.40 del master, media 0.26, dificil 0.22), asi que BR-01 escalona de verdad y no solo por que tapa toca. De paso muere el defecto anterior: si el titulo impreso no entra en el recorte, no hay nada que leer. Los centros estan en scripts/generar-tapas.mjs y le deben una entrada a UX-05."
+      "notaInterna": "Ciclo 9, 2026-08-28, pedido del usuario: el juego funciona como los juegos de splash — no se muestra la tapa entera nunca, se muestra un zoom alto. El lado del recorte sale de la dificultad del item (facil 0.40 del master, media 0.26, dificil 0.22), asi que BR-01 escalona de verdad y no solo por que tapa toca. De paso muere el defecto anterior: si el titulo impreso no entra en el recorte, no hay nada que leer. Los centros estan en scripts/generar-tapas.mjs y le deben una entrada a UX-05. Credito ampliado en CNT-24 (cierra FIND-21 de REV-05, del lado de contenido): el pie impreso que da RES-40 firma la tapa como conjunto -'Visiones: Rocambole, Semilla y Meroyuela'-, y RES-44 anota ademas que el frontal de este volumen es arte de Semilla Bucciarelli. Ninguna ficha reparte que aporto cada uno del trio, asi que el credito va conjunto: repartirlo afirmaria algo que las fichas no dicen."
     },
     {
       "id": "TP-009",

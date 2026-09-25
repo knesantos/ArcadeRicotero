@@ -10,6 +10,8 @@
  * revise con su vara, como hizo con CNT-05.
  */
 
+import type { Disco } from '../letra/discos.ts';
+
 export const PORTAL = {
   /** El logotipo, como se dibuja en pantalla. */
   titulo: 'ARCADE RICOTERO',
@@ -327,3 +329,25 @@ export const REDONDOPEDIA = {
   veaTambien: 'Seguí por acá',
   volverPortada: 'A LA REDONDOPEDIA',
 } as const;
+
+/**
+ * El pie de la tapa entera en la ficha de cada disco de la Redondopedia (`CNT-24`).
+ *
+ * Registro 3: dice de quién es la imagen y se calla. Hasta el ciclo 16 la página escribía
+ * "Tapa: Rocambole (Ricardo Cohen)" fijo en los diez, y en tres era falso o más angosto que la
+ * ficha: *Lobo suelto* y *Cordero atado* se firman conjuntos (`RES-40`, el mismo crédito que
+ * `TP-007`/`TP-008` de `tapa.json`), y la imagen de *La mosca y la sopa* no se le acredita a
+ * Rocambole mientras `RES-44` siga abierta (`scripts/generar-tapas.mjs`, sobre `FICHAS`).
+ */
+export const PIE_DE_TAPA: Readonly<Record<Disco, string>> = {
+  gulp: 'Tapa: Rocambole (Ricardo Cohen), en baja resolución.',
+  oktubre: 'Tapa: Rocambole (Ricardo Cohen), en baja resolución.',
+  'un-baion-para-el-ojo-idiota': 'Tapa: Rocambole (Ricardo Cohen), en baja resolución.',
+  'bang-bang-estas-liquidado': 'Tapa: Rocambole (Ricardo Cohen), en baja resolución.',
+  'la-mosca-y-la-sopa': 'Tapa: autoría sin confirmar, en baja resolución.',
+  'lobo-suelto': 'Tapa: Rocambole, Semilla y Meroyuela, en baja resolución.',
+  'cordero-atado': 'Tapa: Rocambole, Semilla y Meroyuela, en baja resolución.',
+  luzbelito: 'Tapa: Rocambole (Ricardo Cohen), en baja resolución.',
+  'ultimo-bondi-a-finisterre': 'Tapa: Rocambole (Ricardo Cohen), en baja resolución.',
+  'momo-sampler': 'Tapa: Rocambole (Ricardo Cohen), en baja resolución.',
+};
