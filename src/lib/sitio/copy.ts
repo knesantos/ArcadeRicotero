@@ -10,6 +10,8 @@
  * revise con su vara, como hizo con CNT-05.
  */
 
+import type { Disco } from '../letra/discos.ts';
+
 export const PORTAL = {
   /** El logotipo, como se dibuja en pantalla. */
   titulo: 'ARCADE RICOTERO',
@@ -115,6 +117,8 @@ export const LUGARES = {
      daria a esa el lugar de la imagen, y las cuatro tienen que pesar lo mismo (`BR-22`).
      Lo que nombra es el desorden previo, que es de donde sale el impulso de ordenar. */
   ponelos: 'Se te desordenó la pila de discos.',
+  /* `US-10` (`CNT-25` §3.1): el juego es decidir antes de dar vuelta algo. */
+  masOMenos: 'Tenés una ficha boca abajo en la mano.',
 } as const;
 
 /**
@@ -185,7 +189,12 @@ export interface Casete {
    *  habia tomado, y el unico de los tres cuya tinta no duplica una ya usada ni pisa un
    *  rotulo reservado. *Cordero atado* comparte hex con *Lobo suelto* (`RES-37` los midio
    *  juntos) y *Un baion* choca con el celeste de `--rotulo-testimonio`, que no rota. */
-  readonly variante: 'marca' | 'historia' | 'discos' | 'letras' | 'mitologia' | 'momo' | 'bang';
+  /** 'baion' la suma `US-10` (`UX-34` §1): era el único de los dos discos que quedaban sin
+   *  tomar cuya tinta no duplica una ya usada — *Cordero atado* es el mismo disco que *Lobo
+   *  suelto* (`RES-37` los midió juntos). El celeste de *Un baión* linda con
+   *  `--rotulo-testimonio`, pero esa sección nunca muestra esa insignia: ahí no hay leyenda
+   *  ni testimonio, solo hecho o "según" (`D-48` punto 6). */
+  readonly variante: 'marca' | 'historia' | 'discos' | 'letras' | 'mitologia' | 'momo' | 'bang' | 'baion';
   readonly arte: string;
   readonly href?: string;
   readonly accion?: string;
@@ -228,6 +237,11 @@ export const JUEGOS: readonly Casete[] = [
     variante: 'letras',
     arte: '/arte/mosca.svg',
     href: '/juegos/completar-la-letra/',
+    // La acción está, pero el portal la muestra solo si el banco tiene versos listos: lo
+    // decide `segunLaPartida()` (`portal.ts`) con el mismo `cargarBanco()` que la página.
+    // Hasta el ciclo 16 este casete no tenía acción y el portal decía "en la cocina" de un
+    // juego que ya se jugaba.
+    accion: 'JUGÁ',
   },
   {
     titulo: 'Ponelos en fila',
@@ -247,6 +261,17 @@ export const JUEGOS: readonly Casete[] = [
     // sección discos (`D-19`): un juego de tapas lleva un pedazo de tapa, no un casete.
     arte: '/arte/bondi-interplanetario.png',
     href: '/juegos/adivinar-la-tapa/',
+    accion: 'JUGÁ',
+  },
+  {
+    // `US-10` (`D-48`, `CNT-25`, `UX-34`). Viste *Un baión para el ojo idiota*.
+    titulo: 'Más o menos',
+    baja:
+      'Elegís más o menos, sin red. Preguntas de número sobre la banda: cuántos años, ' +
+      'cuántos temas, cuánto dura. Hasta que le erres una.',
+    variante: 'baion',
+    arte: '/arte/casete.svg',
+    href: '/juegos/mas-o-menos/',
     accion: 'JUGÁ',
   },
 ] as const;
@@ -327,3 +352,25 @@ export const REDONDOPEDIA = {
   veaTambien: 'Seguí por acá',
   volverPortada: 'A LA REDONDOPEDIA',
 } as const;
+
+/**
+ * El pie de la tapa entera en la ficha de cada disco de la Redondopedia (`CNT-24`).
+ *
+ * Registro 3: dice de quién es la imagen y se calla. Hasta el ciclo 16 la página escribía
+ * "Tapa: Rocambole (Ricardo Cohen)" fijo en los diez, y en tres era falso o más angosto que la
+ * ficha: *Lobo suelto* y *Cordero atado* se firman conjuntos (`RES-40`, el mismo crédito que
+ * `TP-007`/`TP-008` de `tapa.json`), y la imagen de *La mosca y la sopa* no se le acredita a
+ * Rocambole mientras `RES-44` siga abierta (`scripts/generar-tapas.mjs`, sobre `FICHAS`).
+ */
+export const PIE_DE_TAPA: Readonly<Record<Disco, string>> = {
+  gulp: 'Tapa: Rocambole (Ricardo Cohen), en baja resolución.',
+  oktubre: 'Tapa: Rocambole (Ricardo Cohen), en baja resolución.',
+  'un-baion-para-el-ojo-idiota': 'Tapa: Rocambole (Ricardo Cohen), en baja resolución.',
+  'bang-bang-estas-liquidado': 'Tapa: Rocambole (Ricardo Cohen), en baja resolución.',
+  'la-mosca-y-la-sopa': 'Tapa: autoría sin confirmar, en baja resolución.',
+  'lobo-suelto': 'Tapa: Rocambole, Semilla y Meroyuela, en baja resolución.',
+  'cordero-atado': 'Tapa: Rocambole, Semilla y Meroyuela, en baja resolución.',
+  luzbelito: 'Tapa: Rocambole (Ricardo Cohen), en baja resolución.',
+  'ultimo-bondi-a-finisterre': 'Tapa: Rocambole (Ricardo Cohen), en baja resolución.',
+  'momo-sampler': 'Tapa: Rocambole (Ricardo Cohen), en baja resolución.',
+};

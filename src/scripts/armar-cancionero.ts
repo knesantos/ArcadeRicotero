@@ -11,6 +11,7 @@
  */
 
 import { renglonDeAcordes, type Marca } from '../lib/cancionero/acordes.ts';
+import { tituloDelDisco } from '../lib/letra/discos.ts';
 
 interface LineaJson {
   t: 'letra' | 'tab' | 'anotacion' | 'instrumental';
@@ -150,7 +151,7 @@ function armarHtml(temas: TemaJson[]): string {
     .map(
       (t, i) =>
         `<li><a href="#t${i}">${escapar(t.titulo)}</a> <span class="disco">${escapar(
-          t.disco.replace(/-/g, ' '),
+          tituloDelDisco(t.disco),
         )}</span></li>`,
     )
     .join('\n');

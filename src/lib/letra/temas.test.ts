@@ -88,3 +88,63 @@ test('resolverTema deja pasar lo de la banda y frena lo que no', () => {
   assert.equal(resolverTema('Mejor No Hablar de Ciertas Cosas'), null);
   assert.equal(resolverTema(''), null);
 });
+
+/*
+ * Las duraciones y los años de `RES-20`, para "Más o menos" (`US-10`).
+ *
+ * Salen del mismo recorrido que los títulos, así que lo primero que se prueba es eso: que
+ * leer duraciones no cambió ni un tema de la lista de 105.
+ */
+test('leerDuraciones da los mismos 105 temas que leerTemas, en el mismo orden', async () => {
+  const { leerDuraciones } = await import('./temas.ts');
+  const conDuracion = leerDuraciones();
+  assert.deepEqual(
+    conDuracion.map(({ disco, pista, titulo }) => ({ disco, pista, titulo })),
+    TEMAS.map(({ disco, pista, titulo }) => ({ disco, pista, titulo })),
+  );
+});
+
+test('las duraciones salen del paréntesis de la ficha, en segundos', async () => {
+  const { leerDuraciones } = await import('./temas.ts');
+  const por = new Map(leerDuraciones().map((t) => [t.titulo, t.segundos]));
+  assert.equal(por.get('Jijiji'), 5 * 60 + 34);
+  assert.equal(por.get('Pierre, el vitricida'), 61);
+  assert.equal(por.get('Juguetes perdidos'), 7 * 60 + 10);
+  // El track oculto también está medido: 0:53.
+  assert.equal(por.get('Pianito - Jam'), 53);
+});
+
+test('un tema sin duración en la ficha da null, no cero', async () => {
+  const { leerDuraciones } = await import('./temas.ts');
+  const por = new Map(leerDuraciones().map((t) => [t.titulo, t.segundos]));
+  // Del vol. 2 de Lobo suelto `RES-20` dice que no consiguió duraciones: once sin medir, y
+  // la única que sí es Etiqueta negra (5:38).
+  assert.equal(por.get('Yo caníbal'), null);
+  assert.equal(por.get('Etiqueta negra'), 5 * 60 + 38);
+  const sinMedir = leerDuraciones().filter((t) => t.segundos === null);
+  assert.equal(sinMedir.length, 11);
+  assert.ok(sinMedir.every((t) => t.disco === 'cordero-atado'));
+});
+
+test('leerDiscos da el año de cada encabezado y cuenta los temas de la lista', async () => {
+  const { leerDiscos } = await import('./temas.ts');
+  const discos = leerDiscos();
+  assert.deepEqual(
+    discos.map((d) => d.disco),
+    [...DISCOS],
+  );
+  const anio = Object.fromEntries(discos.map((d) => [d.disco, d.anio]));
+  assert.deepEqual(anio, {
+    gulp: 1985,
+    oktubre: 1986,
+    'un-baion-para-el-ojo-idiota': 1988,
+    'bang-bang-estas-liquidado': 1989,
+    'la-mosca-y-la-sopa': 1991,
+    'lobo-suelto': 1993,
+    'cordero-atado': 1993,
+    luzbelito: 1996,
+    'ultimo-bondi-a-finisterre': 1998,
+    'momo-sampler': 2000,
+  });
+  assert.equal(discos.reduce((s, d) => s + d.temas, 0), 105);
+});

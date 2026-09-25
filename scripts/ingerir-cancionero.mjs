@@ -84,8 +84,22 @@ function clasificar(crudo, secciones) {
  * se toca**: la fuente alineó los acordes contando caracteres, y recortarla los corre.
  */
 function limpiar(texto) {
-  return String(texto ?? '').replace(/\r/g, '');
+  let limpio = String(texto ?? '').replace(/\r/g, '');
+  for (const [errata, arreglo] of ERRATAS) limpio = limpio.replace(errata, arreglo);
+  return limpio;
 }
+
+/**
+ * Erratas de codificación de la fuente: solo las que se pueden probar, no las de oído.
+ *
+ * *Maldición, va a ser un día hermoso* (lacuerda.net) trae "Pintan mal las cosas para ,l mi
+ * viejo". Es la `é` de una página en cp850 (el byte 0x82) leída como cp1252, donde 0x82 es
+ * "‚", una coma baja; el raspado la guardó como coma. Una coma pegada a una "l" suelta no
+ * existe en castellano, y "él" es la única palabra que da. Tiene el mismo largo, así que
+ * los acordes, alineados por columna, no se corren. Llegaba como pista a "Sacalo por la
+ * letra" y a la página del tema.
+ */
+const ERRATAS = [[/(^|\s),l(?=[\s,.;:!?]|$)/g, '$1él']];
 
 /**
  * Pasa una línea de la forma raspada a la del sitio.

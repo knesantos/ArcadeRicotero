@@ -599,6 +599,13 @@ const ESTADOS_TAPA = [
  */
 const ESTADOS_EJES: string[] = [];
 
+/**
+ * `US-10`, "Más o menos". Reusa el acierto y el error del quiz sobre dos botones en vez de
+ * cuatro (`UX-34` §3.3), y el panel del revelado. No tiene rótulos de leyenda ni de
+ * testimonio: acá un número es hecho o "según", nunca leyenda (`D-48` punto 6).
+ */
+const ESTADOS_MAS_O_MENOS = ['.es-correcta', '.es-elegida', '.feedback.ok', '.feedback.no'];
+
 interface Tablero {
   /** De que juego es, para que el mensaje de error no obligue a abrir el archivo. */
   readonly juego: string;
@@ -634,6 +641,11 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'partida-dos-ejes.ts': { juego: 'US-06, el test de dos ejes', fuente: JS_EJES, estados: ESTADOS_EJES },
   'partida-por-la-letra.ts': { juego: 'US-07, sacalo por la letra', fuente: JS_LETRA, estados: ESTADOS_LETRA },
   'partida-ponelos.ts': { juego: 'US-08, ponelos en fila', fuente: JS_PONELOS, estados: ESTADOS_PONELOS },
+  'partida-mas-o-menos.ts': {
+    juego: 'US-10, más o menos',
+    fuente: leer('src/scripts/partida-mas-o-menos.ts'),
+    estados: ESTADOS_MAS_O_MENOS,
+  },
   // `US-09`: el area es un canvas y no tiene clases; lo unico que la isla pinta en el DOM es
   // la tecla que sigue apretada, que `:active` no alcanza a mostrar con cuatro dedos.
   'partida-skayboy.ts': {
@@ -1102,4 +1114,37 @@ test('ese control sabe encontrar: se prueba contra un vidrio inventado', () => {
   assert.deepEqual(vidrios('.tecla { filter: blur(2px); }'), ['blur(']);
   // Nombrado en un comentario no es un vidrio.
   assert.deepEqual(vidrios('/* sin blur(), sin backdrop-filter: */ .tecla { color: red; }'), []);
+});
+
+/**
+ * **Ninguna fuente de un solo peso se pide en negrita.** Archivo Black, Oktubre Calco y la
+ * firma fan vienen con un peso y nada más: un `font-weight: 700` sobre ellas no elige otra
+ * fuente, le pide al navegador que la engorde a mano, y le come el ojo a la letra. El
+ * `.primario` de `juego.css` ya lo decía en su comentario desde agosto; las copias locales de
+ * "Adiviná el tema" y "Adiviná la tapa" lo volvían a pedir hasta el ciclo 16. Mira las hojas y
+ * el `<style>` de cada página, regla por regla.
+ */
+function negritasFalsas(css: string): string[] {
+  return reglas(css)
+    .filter(
+      (r) =>
+        /font-family:\s*var\(--fuente-(rotulada|titular|marca-firma)\)/.test(r.cuerpo) &&
+        /font-weight:\s*(bold|bolder|[5-9]00)\b/.test(r.cuerpo),
+    )
+    .map((r) => r.selector);
+}
+
+test('ninguna fuente de un solo peso se pide en negrita', () => {
+  assert.deepEqual(negritasFalsas(todoElCss()), []);
+});
+
+test('ese control sabe encontrar: se prueba contra una negrita inventada', () => {
+  assert.deepEqual(
+    negritasFalsas('.primario { font-family: var(--fuente-rotulada); font-weight: 700; }'),
+    ['.primario'],
+  );
+  // La fuente del sistema sí tiene negrita de verdad: ahí el 700 está bien.
+  assert.deepEqual(negritasFalsas('.micro { font-family: var(--fuente); font-weight: 700; }'), []);
+  // Nombrada en un comentario no es una regla.
+  assert.deepEqual(negritasFalsas('/* .x { font-family: var(--fuente-rotulada); font-weight: 700; } */'), []);
 });

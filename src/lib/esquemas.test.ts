@@ -66,6 +66,9 @@ for (const archivo of [
   'por-la-letra',
   'skayboy',
   'skayboy-soluciones',
+  // `US-10` (`CTR-20`), el 2026-09-25: el banco de "Más o menos", con los datos a mano de la
+  // banda y las palabras. Lo derivado no está en el archivo y el schema no lo deja entrar.
+  'mas-o-menos',
 ] as const) {
   test(`${archivo}.json valida contra su schema`, () => {
     const errores = erroresDe(archivo, archivo);
@@ -788,5 +791,88 @@ for (const [caso, romper, lugar] of [
       errores.some((e) => e.startsWith(`${lugar} `)),
       `El schema tenía que señalar ${lugar} y señaló otra cosa:\n${errores.join('\n') || '(nada)'}`,
     );
+  });
+}
+
+/* ==================================================================
+   `CTR-20` ("Más o menos", `US-10`): los ejemplos del contrato y sus rojos
+
+   `CTR-20.11` i1 pide que los cuatro ejemplos de `CTR-20.2` y `CTR-20.3` validen **copiados
+   sin tocar una coma**. La manera de no tocar una coma es no copiarlos: el test los lee del
+   documento. Si alguien cambia el ejemplo o el schema y dejan de coincidir, se entera acá.
+
+   i2 son los rojos: cada caso sale de un ejemplo válido tocado en **un solo campo**, y el
+   schema tiene que rechazarlo señalando ese lugar. Lo encontró `REV-16` (`FIND-83`): el
+   archivo del juego se validaba, pero ningún rojo probaba que las reglas corrieran.
+   ================================================================== */
+
+/** Los bloques `json` de `CTR-20.2` y `CTR-20.3`, tal como están en el documento. */
+function ejemplosDeCtr20(): { datos: Record<string, unknown>[]; palabras: Record<string, unknown>[] } {
+  const doc = readFileSync('Docs/ARQ/ARQ-schema-mas-o-menos.md', 'utf-8').replace(/\r\n/g, '\n');
+  const desde = doc.indexOf('### CTR-20.2');
+  const hasta = doc.indexOf('### CTR-20.4');
+  const bloques = [...doc.slice(desde, hasta).matchAll(/```json\n([\s\S]*?)\n```/g)].map(
+    (m) => JSON.parse(m[1]!) as Record<string, unknown>,
+  );
+  return {
+    datos: bloques.filter((b) => String(b.id).startsWith('MM-')),
+    palabras: bloques.filter((b) => String(b.id).startsWith('MP-')),
+  };
+}
+
+function bancoMasOMenos(datos: unknown[], palabras: unknown[] = []): unknown {
+  return { contrato: 'CTR-20', contratoVersion: 1, actualizado: '2026-09-25', datos, palabras };
+}
+
+test('CTR-20 i1: los cuatro ejemplos del contrato validan, leídos del documento', () => {
+  const { datos, palabras } = ejemplosDeCtr20();
+  assert.deepEqual(
+    [...datos, ...palabras].map((b) => b.id).sort(),
+    ['MM-997', 'MM-998', 'MP-998', 'MP-999'],
+    'el documento cambió de ejemplos: este test tiene que enterarse',
+  );
+  assert.deepEqual(erroresDeInstancia(bancoMasOMenos(datos, palabras), 'mas-o-menos'), []);
+});
+
+{
+  const { datos, palabras } = ejemplosDeCtr20();
+  const hecho = datos.find((d) => d.id === 'MM-998')!; // la-gente, medida compartida, hecho, año
+  const segun = datos.find((d) => d.id === 'MM-997')!; // los-recitales, medida propia, "según", entero
+  const palabra = palabras.find((p) => p.id === 'MP-999')!;
+
+  const sin = (o: Record<string, unknown>, campo: string): Record<string, unknown> => {
+    const { [campo]: _fuera, ...resto } = o;
+    return resto;
+  };
+
+  const rojos: ReadonlyArray<readonly [string, unknown, string]> = [
+    ['r1 una familia derivada, a mano', bancoMasOMenos([{ ...hecho, familia: 'los-discos' }]), '/datos/0/familia'],
+    ['r2 una medida reservada', bancoMasOMenos([{ ...hecho, medida: 'duracion' }]), '/datos/0/medida'],
+    ['r3 un "según" sin nombre', bancoMasOMenos([sin(segun, 'segun')]), '/datos/0'],
+    ['r4 un hecho con "según"', bancoMasOMenos([{ ...hecho, segun: 'Clarín' }]), '/datos/0'],
+    ['r5 un "según" en medida compartida', bancoMasOMenos([{ ...segun, medida: 'asistentes-recital', sujeto: 'el último' }]), '/datos/0'],
+    ['r6 medida compartida sin sujeto', bancoMasOMenos([sin(hecho, 'sujeto')]), '/datos/0'],
+    ['r7 medida propia con sujeto', bancoMasOMenos([{ ...hecho, medida: 'MM-998' }]), '/datos/0'],
+    ['r8 un año con unidad', bancoMasOMenos([{ ...hecho, unidad: ['año', 'años'] }]), '/datos/0'],
+    ['r9 una cantidad sin unidad', bancoMasOMenos([sin(segun, 'unidad')]), '/datos/0'],
+    ['r10 un número que se deriva, copiado', bancoMasOMenos([{ ...hecho, fuente: 'RES-20' }]), '/datos/0/fuente'],
+    ['r11 un año futuro', bancoMasOMenos([{ ...hecho, valor: 2027 }]), '/datos/0/valor'],
+    ['r12 una palabra con su número escrito', bancoMasOMenos([], [{ ...palabra, temas: 7 }]), '/palabras/0'],
+    ['r13 una forma con mayúscula', bancoMasOMenos([], [{ ...palabra, formas: ['Perro'] }]), '/palabras/0/formas/0'],
+    ['r14 la oración de referencia que se retiró', bancoMasOMenos([{ ...hecho, comoReferencia: 'Skay nació en {n}.' }]), '/datos/0'],
+  ];
+
+  for (const [nombre, banco, lugar] of rojos) {
+    test(`CTR-20 i2 🔴 ${nombre}: el schema lo rechaza en ${lugar}`, () => {
+      const errores = erroresDeInstancia(banco, 'mas-o-menos');
+      assert.ok(
+        errores.some((e) => e === lugar || e.startsWith(`${lugar} `) || e.startsWith(`${lugar}/`)),
+        `El schema tenía que señalar ${lugar} y señaló otra cosa:\n${errores.join('\n') || '(nada)'}`,
+      );
+    });
+  }
+
+  test('CTR-20 i2, el control: el mismo banco sin tocar valida', () => {
+    assert.deepEqual(erroresDeInstancia(bancoMasOMenos([hecho, segun], [palabra]), 'mas-o-menos'), []);
   });
 }

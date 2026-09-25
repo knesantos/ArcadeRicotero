@@ -93,12 +93,59 @@ function limpiar(bruto: string): string {
  * silenciosamente deja de cruzar contra nada.
  */
 export function leerTemas(ruta: string = FICHA): readonly TemaDelDisco[] {
+  return recorrerFicha(ruta).temas.map(({ disco, pista, titulo }) => ({ disco, pista, titulo }));
+}
+
+/** Un tema de `RES-20` con lo que dura, si la ficha lo da. */
+export interface TemaConDuracion extends TemaDelDisco {
+  /**
+   * La duración en segundos, o `null` cuando la ficha no la trae. **No es un cero**: del
+   * vol. 2 de *Lobo suelto* `RES-20` avisa que no consiguió duraciones, y un tema sin
+   * duración no dura nada: no está medido.
+   */
+  readonly segundos: number | null;
+}
+
+/** Un disco tal como lo encabeza `RES-20`: el año y cuántos temas lista. */
+export interface DiscoDeLaFicha {
+  readonly disco: Disco;
+  /** El año del encabezado. Es lo firme: la fecha de *Gulp!* tiene tres versiones y el año no. */
+  readonly anio: number;
+  /** Los temas que lista la ficha para el disco, contados, no leídos del encabezado. */
+  readonly temas: number;
+}
+
+/**
+ * Los 105 temas con su duración (`US-10`, "Más o menos").
+ *
+ * Sale del mismo recorrido que `leerTemas`, así no hay una segunda lectura de la ficha que
+ * pueda contar otra cosa. La duración es lo que `limpiar()` le saca al título.
+ */
+export function leerDuraciones(ruta: string = FICHA): readonly TemaConDuracion[] {
+  return recorrerFicha(ruta).temas;
+}
+
+/** Los diez discos con su año y su cantidad de temas, en el orden de `DISCOS`. */
+export function leerDiscos(ruta: string = FICHA): readonly DiscoDeLaFicha[] {
+  return recorrerFicha(ruta).discos;
+}
+
+function recorrerFicha(ruta: string): {
+  readonly temas: readonly TemaConDuracion[];
+  readonly discos: readonly DiscoDeLaFicha[];
+} {
   const lineas = readFileSync(ruta, 'utf-8').replace(/\r\n/g, '\n').split('\n');
-  const temas: TemaDelDisco[] = [];
+  const temas: TemaConDuracion[] = [];
+  const discos: DiscoDeLaFicha[] = [];
 
   for (const [disco, encabezado] of ENCABEZADOS) {
     const i = lineas.findIndex((l) => encabezado.test(l));
     if (i < 0) throw new Error(`no encontré el tracklist de ${disco} en ${ruta}`);
+
+    // "### Oktubre — 4-oct-1986, Wormo …": el año es el primer número de cuatro cifras
+    // después de la raya. Si la ficha cambia de forma, falla acá y no más adelante.
+    const anio = /—[^·]*?\b(19\d{2}|20\d{2})\b/.exec(lineas[i]!);
+    if (!anio) throw new Error(`no encontré el año de ${disco} en ${ruta}`);
 
     // El bloque va desde el encabezado hasta el próximo, unido en un solo texto: la
     // ficha corta los renglones a mitad de título.
@@ -108,15 +155,22 @@ export function leerTemas(ruta: string = FICHA): readonly TemaDelDisco[] {
 
     // Cada tema arranca con "N." y termina donde arranca el siguiente.
     const marcas = [...bloque.matchAll(/(?:^|[·|\s])(\d{1,2})\.\s/g)];
+    let delDisco = 0;
     for (let k = 0; k < marcas.length; k++) {
       const desde = marcas[k]!.index! + marcas[k]![0]!.length;
       const hasta = k + 1 < marcas.length ? marcas[k + 1]!.index! : bloque.length;
-      const titulo = limpiar(bloque.slice(desde, hasta).replace(/·\s*$/, ''));
-      if (titulo) temas.push({ disco, pista: Number(marcas[k]![1]), titulo });
+      const crudo = bloque.slice(desde, hasta).replace(/·\s*$/, '');
+      const titulo = limpiar(crudo);
+      if (!titulo) continue;
+      const duracion = /\((\d+):([0-5]\d)\)/.exec(crudo);
+      const segundos = duracion ? Number(duracion[1]) * 60 + Number(duracion[2]) : null;
+      temas.push({ disco, pista: Number(marcas[k]![1]), titulo, segundos });
+      delDisco++;
     }
+    discos.push({ disco, anio: Number(anio[1]), temas: delDisco });
   }
 
-  return temas;
+  return { temas, discos };
 }
 
 

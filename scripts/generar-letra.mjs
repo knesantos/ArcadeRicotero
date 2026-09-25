@@ -218,7 +218,8 @@ function normalizar(palabra) {
  *  · no lleva número ni signo raro adentro — la respuesta se escribe o se elige, y un
  *    token con paréntesis no se escribe igual dos veces.
  *  · no se repite en el mismo verso — si la palabra está a la vista dos renglones más
- *    arriba, no hay nada que adivinar.
+ *    arriba, no hay nada que adivinar. Acá se mira solo el verso del hueco; los versos de
+ *    contexto dependen del nivel y los mira `armarItems()` (`respuestaALaVista`).
  */
 function sirveDeRespuesta(palabra, versoEntero) {
   const limpia = pelar(palabra);
@@ -243,6 +244,77 @@ function elegirPalabra(verso) {
     if (sirveDeRespuesta(palabras[i], verso)) return i;
   }
   return -1;
+}
+
+/**
+ * ¿Esta palabra del cancionero sirve de distractor?
+ *
+ * Lo mismo que una respuesta, más tres cosas que una respuesta curada ya no trae pero el
+ * pozo sí, porque el cancionero es transcripción de fans, con rótulos de tablatura y
+ * sílabas cortadas adentro de la letra. Hasta el ciclo 16 las tres llegaban a la pantalla:
+ *
+ *  · **mayúscula sostenida**: "GUITARRA:" es el rótulo de un riff, no letra. Entre tres
+ *    palabras en minúscula se ve de lejos que no es la que va;
+ *  · **sílaba cortada**: "¡Cómo corre el tiem - po!" dejaba "tiem" como opción;
+ *  · **guion adentro**: "tiem-po" es la misma sílaba cortada, escrita junta.
+ *
+ * Una opción que se delata sola le regala el punto al que no se sabe el tema, que es el
+ * defecto contrario al que el juego promete (`D-14`). La respuesta no pasa por acá: sus
+ * filtros no cambian, y por eso los huecos y los ids tampoco.
+ */
+function sirveDeDistractor(crudas, k, texto) {
+  const cruda = crudas[k];
+  if (!sirveDeRespuesta(cruda, texto)) return false;
+  const limpia = pelar(cruda);
+  if (esMayusculaSostenida(limpia)) return false;
+  return !(limpia.includes('-') || /^-|-$/.test(cruda) || crudas[k - 1] === '-' || crudas[k + 1] === '-');
+}
+
+function esMayusculaSostenida(palabra) {
+  return palabra.length > 1 && palabra === palabra.toLocaleUpperCase('es') && palabra !== palabra.toLocaleLowerCase('es');
+}
+
+const conTilde = (palabra) => /[̀-ͯ]/.test(palabra.normalize('NFD'));
+
+/** Lo que cierra una frase: la palabra que sigue arranca en mayúscula por eso, no por ser un nombre. */
+const CIERRA_FRASE = /[.!?…:]["»)]*$/;
+
+/**
+ * Anota cómo aparece escrita una palabra en todo el cancionero, para mostrarla bien.
+ *
+ * Dos cosas, las dos medidas sobre los diez discos juntos y no sobre uno:
+ *
+ *  · **si alguna vez aparece en minúscula**. Una palabra que solo aparece con mayúscula en
+ *    la mitad de una frase es un nombre ("Kenzo", "Momo") y no se baja de caja; una que
+ *    solo aparece con mayúscula al arrancar el verso es una palabra común ("Bailar").
+ *  · **la escritura con tilde, si existe alguna**. La transcripción se come tildes
+ *    ("estan", "enfria", "alla"), y la misma palabra suele estar bien escrita en otro tema.
+ *    Donde no lo está en ningún lado, queda como vino: este script no inventa ortografía.
+ */
+function registrarForma(formas, limpia, alArrancar) {
+  const clave = normalizar(limpia);
+  const f = formas.get(clave) ?? { escrita: limpia, minuscula: false, mayusculaAdentro: false };
+  if (limpia === limpia.toLocaleLowerCase('es')) f.minuscula = true;
+  else if (!alArrancar) f.mayusculaAdentro = true;
+  if (conTilde(limpia) && !conTilde(f.escrita)) f.escrita = limpia;
+  formas.set(clave, f);
+}
+
+/**
+ * La forma en pantalla de un distractor: la misma caja que la respuesta.
+ *
+ * Si la respuesta va en minúscula, las cuatro opciones van en minúscula; si arranca con
+ * mayúscula (porque abre el verso), las cuatro arrancan con mayúscula. Hasta el ciclo 16 cada
+ * distractor salía con la caja que tenía en su verso, y "Muchachitas" o "Saludable" al lado
+ * de "educaditos" se descartaban por la forma, sin saber nada del tema. Un nombre propio no
+ * se baja de caja: al lado de una respuesta en minúscula no entra (devuelve `null`).
+ */
+function formaDelDistractor(clave, respuesta, formas) {
+  const f = formas.get(clave);
+  const respuestaEnMinuscula = respuesta === respuesta.toLocaleLowerCase('es');
+  if (f.mayusculaAdentro && !f.minuscula) return respuestaEnMinuscula ? null : f.escrita;
+  const baja = f.escrita.toLocaleLowerCase('es');
+  return respuestaEnMinuscula ? baja : baja[0].toLocaleUpperCase('es') + baja.slice(1);
 }
 
 /** Hash estable: los distractores tienen que salir iguales en cada corrida. */
@@ -333,7 +405,7 @@ function huecosDe(versos, descartes) {
 function armarItems(temas, pozo, tercios, vocabulario) {
   const sinConteo = new Set(tercios.sinConteo);
   const items = [];
-  const descartes = { sinVecinos: 0, contextoLargo: 0, sinDistractores: 0, repetidos: 0 };
+  const descartes = { sinVecinos: 0, contextoLargo: 0, respuestaALaVista: 0, sinDistractores: 0, repetidos: 0 };
   /** Versos que no dieron ítem por falta de vecinos, por renglón: para nombrarlos si un ancla los busca. */
   const sinVecinos = new Map();
   const repetidos = new Set();
@@ -366,17 +438,39 @@ function armarItems(temas, pozo, tercios, vocabulario) {
         continue;
       }
 
-      // Los distractores: del mismo disco, de largo parecido, y que no estén a la vista.
+      // La respuesta escrita en un verso de contexto no es una pregunta: se copia del renglón
+      // de arriba. `sirveDeRespuesta()` ya lo prometía ("si la palabra está a la vista dos
+      // renglones más arriba, no hay nada que adivinar") pero solo miraba el verso del hueco,
+      // y en un estribillo la palabra vuelve en el renglón vecino. Hasta el ciclo 16 cinco de
+      // los diecinueve `listo` la mostraban. Va antes de la huella: un verso repetido puede dar
+      // ítem en otra aparición donde sus vecinos no la traigan.
+      const enElContexto = new Set([...ctx.antes, ...ctx.despues].join(' ').split(/\s+/).map(normalizar));
+      if (enElContexto.has(normalizar(respuesta))) {
+        descartes.respuestaALaVista++;
+        continue;
+      }
+
+      // Los distractores: del mismo disco, de largo parecido, que no estén a la vista, y
+      // escritos con la caja de la respuesta y la tilde que el cancionero tenga en algún lado.
       const aLaVista = new Set([texto, ...ctx.antes, ...ctx.despues].join(' ').split(/\s+/).map(normalizar));
-      const candidatos = [...(vocabulario.get(tema.disco) ?? [])].filter(
+      const candidatos = [...(vocabulario.porDisco.get(tema.disco) ?? [])]
+        .map((clave) => formaDelDistractor(clave, respuesta, vocabulario.formas))
+        .filter(
         (p) =>
+          p !== null &&
           normalizar(p) !== normalizar(respuesta) &&
           !aLaVista.has(normalizar(p)) &&
           Math.abs(p.length - respuesta.length) <= 3 &&
           p.length <= 40,
       );
       const id = `CL-${String(items.length + 1).padStart(3, '0')}`;
-      const distractores = barajar(candidatos, id + respuesta).slice(0, 3);
+      // La semilla es la huella del verso, no el id. El id es posicional: cualquier cambio del
+      // filtro o de un nivel corre los ids, y con el id de semilla se volvían a sortear los
+      // distractores de todo el banco, incluidos los `listo` que `contenido` ya había mirado
+      // (pasó el 2026-09-25 con `--reanclar`). Con la huella, un ítem conserva sus opciones
+      // mientras su verso, su contexto y el vocabulario de su disco no cambien.
+      const huella = `${tema.slug}|${antes}|${respuesta}|${despues}`;
+      const distractores = barajar(candidatos, huella).slice(0, 3);
       if (distractores.length < 3) {
         descartes.sinDistractores++;
         continue;
@@ -384,7 +478,6 @@ function armarItems(temas, pozo, tercios, vocabulario) {
 
       // El mismo verso repetido en el estribillo es el mismo ítem. Tres preguntas
       // idénticas en el banco son una sola pregunta y dos rondas regaladas.
-      const huella = `${tema.slug}|${antes}|${respuesta}|${despues}`;
       if (repetidos.has(huella)) {
         descartes.repetidos++;
         continue;
@@ -396,7 +489,7 @@ function armarItems(temas, pozo, tercios, vocabulario) {
           { texto: respuesta, correcta: true },
           ...distractores.map((d) => ({ texto: d, correcta: false })),
         ],
-        id,
+        huella,
       );
 
       items.push({
@@ -491,15 +584,26 @@ function main() {
 
   // El vocabulario por disco, para que los distractores suenen del mismo mundo. Un
   // distractor sacado de otro disco se nota y se descarta solo: tiene que ser plausible.
-  const vocabulario = new Map();
+  // El pozo guarda la palabra normalizada, así "Bailar" y "bailar" son una sola; cómo se
+  // escribe en pantalla lo decide `formaDelDistractor()` con lo que anotó `registrarForma()`
+  // sobre los diez discos.
+  const vocabulario = { porDisco: new Map(), formas: new Map() };
   for (const { tema, versos } of temas) {
-    const pozo = vocabulario.get(tema.disco) ?? new Set();
+    const pozo = vocabulario.porDisco.get(tema.disco) ?? new Set();
     for (const texto of versos) {
-      for (const palabra of texto.split(/\s+/)) {
-        if (sirveDeRespuesta(palabra, texto)) pozo.add(pelar(palabra));
-      }
+      const crudas = texto.split(/\s+/).filter(Boolean);
+      crudas.forEach((cruda, k) => {
+        const limpia = pelar(cruda);
+        if (limpia.length < 4 || !/^[\p{L}\p{M}'-]+$/u.test(limpia) || esMayusculaSostenida(limpia)) return;
+        // Abrir el verso explica una mayúscula, salvo que la siguiente también la tenga:
+        // "Lionel Ritchie en el Bar Prince" es un nombre aunque arranque el renglón.
+        const arrancaFrase = k === 0 || CIERRA_FRASE.test(crudas[k - 1]);
+        const sigueOtroNombre = /^\p{Lu}\p{Ll}/u.test(pelar(crudas[k + 1] ?? ''));
+        registrarForma(vocabulario.formas, limpia, arrancaFrase && !sigueOtroNombre);
+        if (sirveDeDistractor(crudas, k, texto)) pozo.add(normalizar(limpia));
+      });
     }
-    vocabulario.set(tema.disco, pozo);
+    vocabulario.porDisco.set(tema.disco, pozo);
   }
 
   // ─── Pasos 3 a 6: el pozo, los tercios, y el punto fijo ───────────────────────────
@@ -704,7 +808,8 @@ function main() {
   console.log(
     `descartados:    ${descartesHueco.sinPalabra} sin palabra buena, ${descartesHueco.largos} largos, ` +
       `${descartesHueco.versoPelado} sin verso alrededor, ${descartes.sinVecinos} sin los vecinos de su nivel, ` +
-      `${descartes.contextoLargo} con contexto largo, ${descartes.sinDistractores} sin distractores, ` +
+      `${descartes.contextoLargo} con contexto largo, ${descartes.respuestaALaVista} con la respuesta a la vista, ` +
+      `${descartes.sinDistractores} sin distractores, ` +
       `${descartes.repetidos} repetidos`,
   );
   if (pendientes.length) {

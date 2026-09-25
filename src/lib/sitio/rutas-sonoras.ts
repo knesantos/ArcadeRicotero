@@ -107,7 +107,7 @@ export const RUTA_INSTRUMENTO = 'diagnostico-audio';
 export const RUTA_TEMA_FIJO = 'skayboy-y-poligirl';
 
 /**
- * Las catorce páginas de `src/pages/`, clasificadas una por una. **Es el candado B.**
+ * Las dieciséis páginas de `src/pages/`, clasificadas una por una. **Es el candado B.**
  *
  * No se usa en tiempo de ejecución: existe para que `rutas-sonoras.test.ts` la compare
  * contra el disco y rompa el build si alguien agrega una pantalla sin pasar por acá. La ruta
@@ -123,6 +123,9 @@ export const PAGINAS_DECLARADAS: Readonly<Record<string, ModoCinta>> = {
   'juegos/completar-la-letra.astro': 'cama',
   'juegos/dos-ejes.astro': 'cama',
   'juegos/ponelos-en-fila.astro': 'cama',
+  // `US-10`. Muda de temas como todos: una pregunta es cuánto dura un tema, y ese tema
+  // sonando la respondería.
+  'juegos/mas-o-menos.astro': 'cama',
   // `US-09`. El unico juego que no cae a `cama`: `D-39` lo hizo sonar entero, y es la
   // primera excepcion a `D-37`. Puede hacerlo porque su respuesta no es un tema.
   'juegos/skayboy-y-poligirl.astro': 'tema-fijo',

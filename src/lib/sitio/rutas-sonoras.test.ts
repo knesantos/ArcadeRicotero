@@ -24,15 +24,14 @@ import { PAGINAS_DECLARADAS, RUTAS_CON_ROCOLA, esPantallaMuda, modoEnRuta } from
 import { SLUGS_GRAVES } from './graves.ts';
 
 /**
- * Las **siete** pantallas donde se juega: las seis de `src/pages/juegos/` más `/quiz/`, que
- * no vive ahí y por eso va aparte.
+ * Las **ocho** pantallas donde se juega en `cama`: siete de `src/pages/juegos/` más `/quiz/`,
+ * que no vive ahí y por eso va aparte. *Skayboy y Poligirl* es la octava de `juegos/` y no
+ * está: suena en `tema-fijo` (`D-39`).
  *
- * Decía "ocho" en dos lugares y el array siempre tuvo siete. No faltaba un elemento: estaba
- * mal el comentario. Contado contra el disco por `INV-60` — `adivinar-el-tema`,
- * `adivinar-la-tapa`, `adivinar-por-la-letra`, `completar-la-letra`, `dos-ejes`,
- * `ponelos-en-fila`, más el quiz.
- *
- * El octavo juego entra por el censo de más abajo, no por esta lista.
+ * Hasta el ciclo 16 decía "ocho" y el array tenía siete: estaba mal el comentario (contado
+ * contra el disco por `INV-60`). El octavo es "Más o menos" (`US-10`, 2026-09-25), que llegó
+ * por el censo de más abajo, como tenía que llegar: el test lo frenó hasta que alguien
+ * decidió qué hace la cinta en esa pantalla.
  */
 const RUTAS_DE_JUEGO = [
   '/quiz/',
@@ -42,6 +41,7 @@ const RUTAS_DE_JUEGO = [
   '/juegos/completar-la-letra/',
   '/juegos/dos-ejes/',
   '/juegos/ponelos-en-fila/',
+  '/juegos/mas-o-menos/',
 ];
 
 test('🔴 caso 1: ninguna pantalla de juego pone temas, una por una y por nombre', () => {
@@ -189,6 +189,7 @@ test('🔴 el censo y el mapa dicen lo mismo: cada página declarada resuelve a 
     'juegos/completar-la-letra.astro': '/juegos/completar-la-letra/',
     'juegos/dos-ejes.astro': '/juegos/dos-ejes/',
     'juegos/ponelos-en-fila.astro': '/juegos/ponelos-en-fila/',
+    'juegos/mas-o-menos.astro': '/juegos/mas-o-menos/',
     'juegos/skayboy-y-poligirl.astro': '/juegos/skayboy-y-poligirl/',
     'letras-y-acordes/index.astro': '/letras-y-acordes/',
     'letras-y-acordes/[slug].astro': '/letras-y-acordes/un-tema/',

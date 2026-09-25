@@ -15,7 +15,8 @@
  * — la lista vive en `arte.ts`.
  */
 import Base from '../../layouts/Base.astro';
-import { REDONDOPEDIA } from '../../lib/sitio/copy.ts';
+import { REDONDOPEDIA, PIE_DE_TAPA } from '../../lib/sitio/copy.ts';
+import type { Disco } from '../../lib/letra/discos.ts';
 import {
   TIPO_A_CATEGORIA,
   segmentar,
@@ -150,7 +151,7 @@ const etiquetaRotulo = (seg: Segmento): string =>
             />
           </span>
           <figcaption class="credito-tapa sello-credito">
-            Tapa: Rocambole (Ricardo Cohen), en baja resolución.
+            {PIE_DE_TAPA[articulo.slug as Disco]}
           </figcaption>
         </figure>
 
