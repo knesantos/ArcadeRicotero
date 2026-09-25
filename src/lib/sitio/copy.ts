@@ -225,6 +225,11 @@ export const JUEGOS: readonly Casete[] = [
     variante: 'letras',
     arte: '/arte/mosca.svg',
     href: '/juegos/completar-la-letra/',
+    // La acción está, pero el portal la muestra solo si el banco tiene versos listos: lo
+    // decide `segunLaPartida()` (`portal.ts`) con el mismo `cargarBanco()` que la página.
+    // Hasta el ciclo 16 este casete no tenía acción y el portal decía "en la cocina" de un
+    // juego que ya se jugaba.
+    accion: 'JUGÁ',
   },
   {
     titulo: 'Ponelos en fila',

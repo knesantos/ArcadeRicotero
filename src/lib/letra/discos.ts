@@ -38,3 +38,36 @@ export const DISCOS = [
 ] as const;
 
 export type Disco = (typeof DISCOS)[number];
+
+/**
+ * Cómo se llama cada disco cuando se lo nombra en pantalla.
+ *
+ * Vive acá por la misma razón que la lista: el navegador lo necesita y no puede importar
+ * `temas.ts`. Hasta el ciclo 16 la cabecera de "Completá la letra" y el índice del
+ * cancionero armado lo sacaban del slug (`disco.replace(/-/g, ' ')`), y en pantalla salía
+ * "ULTIMO BONDI A FINISTERRE", "UN BAION PARA EL OJO IDIOTA" y "GULP" pelado: sin tildes y
+ * sin signos, justo lo que el que se sabe los discos nota primero. `TITULO_DE_DISCO` de
+ * `sitio/arte.ts` es este mismo mapa, no una copia.
+ */
+export const TITULO_DEL_DISCO: Readonly<Record<Disco, string>> = {
+  gulp: 'Gulp!',
+  oktubre: 'Oktubre',
+  'un-baion-para-el-ojo-idiota': 'Un baión para el ojo idiota',
+  'bang-bang-estas-liquidado': '¡Bang! ¡Bang!… Estás liquidado',
+  'la-mosca-y-la-sopa': 'La mosca y la sopa',
+  'lobo-suelto': 'Lobo suelto',
+  'cordero-atado': 'Cordero atado',
+  luzbelito: 'Luzbelito',
+  'ultimo-bondi-a-finisterre': 'Último bondi a Finisterre',
+  'momo-sampler': 'Momo Sampler',
+};
+
+/**
+ * El nombre en pantalla de un slug que llega de un JSON como texto suelto.
+ *
+ * Si el slug no es uno de los diez, devuelve el slug tal cual: un dato que no se reconoce
+ * se muestra como viene, no se disfraza de título.
+ */
+export function tituloDelDisco(slug: string): string {
+  return (TITULO_DEL_DISCO as Record<string, string>)[slug] ?? slug;
+}

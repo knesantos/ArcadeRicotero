@@ -12,6 +12,18 @@
 import Base from '../layouts/Base.astro';
 import { PORTAL, LUGARES, JUEGOS, CASETE_REDONDOPEDIA, CASETE_CANCIONERO, type Casete } from '../lib/sitio/copy.ts';
 import { conRecorteReal, detalleTapa, discosDe, medidas, recorte, DETALLE_POR_VARIANTE } from '../lib/sitio/arte.ts';
+import { segunLaPartida } from '../lib/sitio/portal.ts';
+import { cargarBanco, type BancoCrudo } from '../lib/letra/banco.ts';
+import crudoLetra from '../data/letra.json';
+
+/**
+ * Los juegos cuya partida depende de un banco que puede estar vacío. El portal pregunta lo
+ * mismo que la página del juego, con la misma función, así las dos pantallas no pueden
+ * contar cosas distintas (`portal.ts`). Los demás juegos siempre tienen partida.
+ */
+const HAY_PARTIDA: Record<string, boolean> = {
+  '/juegos/completar-la-letra/': cargarBanco(crudoLetra as unknown as BancoCrudo).length > 0,
+};
 
 // Los discos que se ven acá: el de cada casete mas la franja de Oktubre del fondo.
 // El pie los nombra (`D-21`, condicion 1).
@@ -74,7 +86,8 @@ function primeraOracion(texto: string): string {
 
 const conArte = lados.map((lado) => ({
   titulo: lado.titulo,
-  casetes: lado.casetes.map((c) => {
+  casetes: lado.casetes.map((copia) => {
+    const c = segunLaPartida(copia, HAY_PARTIDA[copia.href ?? ''] ?? true);
     const arte = conRecorteReal(c.arte);
     return { ...c, arte, medidaArte: medidas(arte), baja: primeraOracion(c.baja) };
   }),

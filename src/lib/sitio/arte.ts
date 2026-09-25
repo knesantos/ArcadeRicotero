@@ -13,6 +13,8 @@ import { join } from 'node:path';
 // nada, porque tambien la necesita una isla (la cama de cinta, `T-191`) y este archivo
 // arrastra `node:fs`. Ver el comentario de cabecera de `graves.ts`.
 import { SLUGS_GRAVES } from './graves.ts';
+// Los títulos de los discos, por el mismo motivo: los necesita la isla de la letra.
+import { TITULO_DEL_DISCO } from '../letra/discos.ts';
 
 /** URL publica del recorte si ya existe; si no, el repuesto (o nada). */
 export function recorte(archivo: string, repuesto: string | null = null): string | null {
@@ -205,19 +207,9 @@ export const DISCO_DE_CATEGORIA: Record<string, string> = {
   bang: 'bang-bang-estas-liquidado',
 };
 
-/** Como se llama cada disco cuando el credito de `D-21` lo nombra. */
-export const TITULO_DE_DISCO: Record<string, string> = {
-  gulp: 'Gulp!',
-  oktubre: 'Oktubre',
-  'un-baion-para-el-ojo-idiota': 'Un baión para el ojo idiota',
-  'bang-bang-estas-liquidado': '¡Bang! ¡Bang!… Estás liquidado',
-  'la-mosca-y-la-sopa': 'La mosca y la sopa',
-  'lobo-suelto': 'Lobo suelto',
-  'cordero-atado': 'Cordero atado',
-  luzbelito: 'Luzbelito',
-  'ultimo-bondi-a-finisterre': 'Último bondi a Finisterre',
-  'momo-sampler': 'Momo Sampler',
-};
+/** Como se llama cada disco cuando el credito de `D-21` lo nombra. Es el mapa de
+ *  `letra/discos.ts`, que es el que puede importar el navegador: uno solo, no dos. */
+export const TITULO_DE_DISCO: Record<string, string> = TITULO_DEL_DISCO;
 
 /**
  * Las medidas reales de una pieza del collage, leidas del archivo en build.

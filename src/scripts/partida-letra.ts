@@ -18,6 +18,7 @@ import { armarRonda, contarAciertos } from '../lib/quiz/ronda.ts';
 import { botonCorreccion } from './correccion.ts';
 import type { Item, Opcion } from '../lib/letra/banco.ts';
 import { PARTIDA, RESULTADO } from '../lib/letra/copy.ts';
+import { tituloDelDisco } from '../lib/letra/discos.ts';
 
 const LARGO_RONDA = 8;
 
@@ -94,7 +95,7 @@ function pintarPregunta(): void {
   // BR-03: en dificil no se nombra ni el tema ni el disco. La pista de mas es justamente
   // lo que separa un nivel del otro, asi que se respeta acá y no en el generador.
   if (item.dificultad !== 'dificil') {
-    const disco = item.tema.disco.replace(/-/g, ' ');
+    const disco = tituloDelDisco(item.tema.disco);
     cab.append(
       el(
         'p',
