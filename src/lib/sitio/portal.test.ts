@@ -8,9 +8,10 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
-import { JUEGOS, type Casete } from './copy.ts';
+import { CASETE_CANCIONERO, CASETE_REDONDOPEDIA, JUEGOS, type Casete } from './copy.ts';
+import { arteDeCasete, discoDeRecorte, materialDeCasete } from './arte.ts';
 import { segunLaPartida } from './portal.ts';
 import { cargarBanco, type BancoCrudo } from '../letra/banco.ts';
 
@@ -54,4 +55,51 @@ test('el portal le pregunta al banco de la letra con la misma función que la p�
   assert.match(portal, /'\/juegos\/completar-la-letra\/':\s*cargarBanco\(/);
   assert.match(portal, /segunLaPartida\(/);
   assert.match(pagina, /cargarBanco\(/);
+});
+
+/*
+ * `D-49`: cada casete del portal lleva una tapa entera, un detalle o un recorte de tapa, y
+ * ninguno repite pieza. Lo pidió el usuario el 2026-10-01: *"que todas las entradas de
+ * juegos del home tengan un detalle o un disco entero, no el svg del cassete, cada uno
+ * diferente"*. Hasta ese día tres juegos llevaban el mismo casete dibujado y dos casetes la
+ * misma mosca.
+ */
+const TODOS: readonly Casete[] = [...JUEGOS, CASETE_CANCIONERO, CASETE_REDONDOPEDIA];
+
+test('D-49: ningún casete lleva un dibujo genérico en vez de un pedazo de tapa', () => {
+  // Lo que se resuelve en pantalla, no lo que dice la copia: `arteDeCasete` cae al casete
+  // dibujado si falta el archivo, y eso también tiene que fallar acá.
+  const dibujados = TODOS.filter((c) => /\/arte\/(casete|perro)\.svg$/.test(arteDeCasete(c.arte))).map((c) => c.titulo);
+  assert.deepEqual(dibujados, []);
+});
+
+test('D-49: ninguna pieza se repite entre los casetes', () => {
+  const vistas = new Map<string, string>();
+  const repetidas: string[] = [];
+  for (const c of TODOS) {
+    const pieza = arteDeCasete(c.arte);
+    const antes = vistas.get(pieza);
+    if (antes) repetidas.push(`${c.titulo} repite la de ${antes}: ${pieza}`);
+    vistas.set(pieza, c.titulo);
+  }
+  assert.deepEqual(repetidas, []);
+});
+
+test('D-21: cada pieza de casete nombra su disco en el pie, y el archivo existe', () => {
+  const sinDisco = TODOS.filter((c) => discoDeRecorte(arteDeCasete(c.arte)) === null).map((c) => c.titulo);
+  assert.deepEqual(sinDisco, [], 'una tapa que se ve y no se acredita incumple D-21 condición 1');
+  for (const c of TODOS) {
+    const pieza = arteDeCasete(c.arte);
+    assert.ok(existsSync(`public${pieza}`), `${c.titulo}: no está ${pieza}`);
+  }
+});
+
+test('el material sale de la carpeta: tapa entera, detalle o recorte', () => {
+  assert.equal(materialDeCasete('/tapas/oktubre.jpg'), 'entera');
+  assert.equal(materialDeCasete('/tapas/detalle/gulp-zoom.jpg'), 'detalle');
+  assert.equal(materialDeCasete('/arte/lobo-recortado.png'), 'recorte');
+  assert.equal(discoDeRecorte('/tapas/oktubre.jpg'), 'Oktubre');
+  assert.equal(discoDeRecorte('/tapas/detalle/un-baion-para-el-ojo-idiota-zoom.jpg'), 'Un baión para el ojo idiota');
+  // El casete dibujado no es de ningún disco: no acredita nada.
+  assert.equal(discoDeRecorte('/arte/casete.svg'), null);
 });

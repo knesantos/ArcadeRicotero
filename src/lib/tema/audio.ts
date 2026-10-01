@@ -35,16 +35,15 @@
  */
 
 import { DURACION_FRAGMENTO_SEG } from './escalera.ts';
-import { contextoDeAudio, tomarLaSalida } from '../audio/contexto.ts';
+import { contextoDeAudio } from '../audio/contexto.ts';
 
 /*
  * Dónde vive el audio: bajó a `audio/rutas-de-audio.ts` en el ciclo 14, y se vuelve a
  * exportar desde acá para que nadie que ya lo importaba tenga que cambiar una línea.
  *
- * **El motivo del traslado no es orden, es un candado.** La rocola (`sitio/rocola.ts`) las
- * necesita, y para traerlas de acá tendría que importar este archivo — lo que cruza la
- * flecha que `ADR-04` puso a propósito entre los dos motores de audio. La hoja deja que los
- * dos miren la misma verdad sin mirarse entre ellos. El archivo nuevo lo explica entero.
+ * Bajó porque la rocola de la cinta también las necesitaba y no podía importar este
+ * archivo (`ADR-04`). La cinta se sacó del sitio el 2026-10-01; la hoja se queda porque
+ * no cuesta nada y es una sola verdad sobre dónde vive el audio.
  */
 export { CARPETA_FRAGMENTOS, CARPETA_TEMAS, urlDeFragmento, urlDeTema } from '../audio/rutas-de-audio.ts';
 // Y además se importa, porque este archivo las usa adentro: `export ... from` vuelve a
@@ -82,14 +81,6 @@ export class Reproductor {
   private cortar = 0;
   /** Si ya sono el buffer mudo que destraba el audio en los celulares. */
   private desbloqueado = false;
-  /**
-   * Como soltar la salida mientras suena un fragmento (`ADR-04.3`).
-   *
-   * El motor no sabe quien escucha esto y no lo tiene que saber: avisa que la salida esta
-   * ocupada y sigue con lo suyo. La cama de cinta es la que se calla; si manana hay otra
-   * cosa, se calla tambien sin que este archivo cambie.
-   */
-  private soltarSalida: (() => void) | null = null;
   /** El tema que se esta jugando: nunca lo desaloja el LRU. */
   private enJuego: string | null = null;
   /** El ultimo error que se trago un `catch`, para que el diagnostico lo pueda mostrar. */
@@ -112,11 +103,9 @@ export class Reproductor {
       /*
        * **El contexto ya no lo construye este motor: se lo pide prestado** (`ADR-04.2`).
        *
-       * Uno solo para todo el sitio. No es prolijidad: dos contextos no pueden callarse
-       * entre ellos, y la cama de cinta tiene que quedarse muda justo cuando este motor
-       * suena. Encima, este ciclo de vida —nace `suspended` en el celular, cae en
-       * `interrupted` cuando entra una llamada— costó dos defectos aprenderlo, y no se
-       * escribe dos veces.
+       * Uno solo para todo el sitio. No es prolijidad: este ciclo de vida —nace
+       * `suspended` en el celular, cae en `interrupted` cuando entra una llamada— costó
+       * dos defectos aprenderlo, y no se escribe dos veces.
        *
        * De acá para abajo no cambió una coma: el `resume()` con su `.catch` y el
        * `desbloquear()` son la parte que arregló el celular del usuario.
@@ -260,20 +249,6 @@ export class Reproductor {
     this.desbloquear();
 
     /*
-     * **El aviso de que la salida está ocupada** (`ADR-04.3`, oído 1).
-     *
-     * Va acá arriba, pegado al destrabe, y no más adentro: de esta línea para abajo el
-     * motor se bifurca en dos caminos y el de repuesto sale por un `<audio>` que nunca
-     * entra al documento, así que nadie que mire el grafo de Web Audio o los eventos de la
-     * página lo vería sonar. El aviso no pregunta por dónde sale el sonido: dice que el
-     * motor está sonando, que es lo único que hace falta saber.
-     *
-     * El tope copia el que este archivo ya tenía para el repuesto, `limite + 5`: un aviso
-     * que se filtra dejaría la atmósfera muda para siempre y sin síntoma. Se suelta solo.
-     */
-    this.soltarSalida = tomarLaSalida('fragmento', limite + 5);
-
-    /*
      * **El chequeo de estado, que faltaba, y era el defecto que reportó el usuario.**
      *
      * Si el contexto no está `running`, `fuente.start()` programa contra un reloj que no
@@ -291,15 +266,10 @@ export class Reproductor {
        * conteste. Sin esta marca, cuando la promesa resolvía **el fragmento arrancaba
        * igual**, después de que la persona lo frenó.
        *
-       * Ese defecto ya estaba antes del ciclo 11 y era solo molesto. Con el token de la
-       * salida (`ADR-04.3`) pasó a ser peor: `detener()` ya soltó la salida, así que ese
-       * sonido huérfano suena **con la salida declarada libre** y la cama de cinta vuelve a
-       * subir a los seis segundos, encima de un fragmento de quince. Es exactamente lo que
-       * el oído 1 existe para impedir, y sin ningún síntoma para el que escucha.
-       *
-       * Lo encontró una refutación adversarial del ciclo 11 corriendo la carrera, no un
-       * test. La ventana es angosta en escritorio y ancha volviendo de una llamada, que es
-       * justo cuando aparece `interrupted`.
+       * Un fragmento que suena después de que la persona tocó "Parar" es un botón que
+       * miente. Lo encontró una refutación adversarial del ciclo 11 corriendo la carrera, no
+       * un test. La ventana es angosta en escritorio y ancha volviendo de una llamada, que
+       * es justo cuando aparece `interrupted`.
        */
       const vuelta = ++this.vuelta;
       const sigueVigente = (): boolean => vuelta === this.vuelta;
@@ -434,11 +404,6 @@ export class Reproductor {
     this.cuadro = 0;
     this.cortar = 0;
     this.fuente = null;
-    // La salida se suelta acá porque acá pasan las dos únicas puertas por las que se deja
-    // de sonar —`terminar()` y `detener()`— y escribir la línea dos veces es escribir dos
-    // veces la posibilidad de olvidarse de una.
-    this.soltarSalida?.();
-    this.soltarSalida = null;
   }
 
   /** Frena lo que esté sonando. Es seguro llamarlo siempre, suene o no. */

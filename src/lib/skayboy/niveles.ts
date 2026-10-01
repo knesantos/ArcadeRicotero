@@ -139,7 +139,10 @@ export interface Banco {
   readonly tile: number;
   readonly ancho: number;
   readonly alto: number;
-  /** El tema que la cinta repite, o `null` mientras no esté elegido (`D-39`). */
+  /**
+   * El tema elegido para este juego, o `null` mientras no esté elegido (`D-39`). **Hoy no
+   * suena:** lo ponía la cinta, que se sacó del sitio el 2026-10-01, y ningún código lo lee.
+   */
   readonly temaFijo: string | null;
   readonly personajes: readonly Personaje[];
   readonly leyenda: Readonly<Record<string, Terreno>>;

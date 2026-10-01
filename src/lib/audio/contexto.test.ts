@@ -1,13 +1,14 @@
 /**
- * Verificación del contexto de audio compartido (`ADR-04.2` y `ADR-04.3`).
+ * Verificación del contexto de audio compartido (`ADR-04.2`).
  *
- * Lo que se prueba acá no es que suene: es **quién es dueño de la salida y cómo se la
- * pasan**. Son las dos cosas que, si están mal, no se notan escuchando:
+ * Lo que se prueba acá no es que suene: es **que haya uno solo y que se despierte bien**.
+ * Un segundo `AudioContext` no hace ruido: duplica un ciclo de vida —nace `suspended` en el
+ * celular, cae en `interrupted` con una llamada— que costó dos defectos aprender a manejar,
+ * y eso recién se descubre con el juego entero armado.
  *
- * - Un segundo `AudioContext` no hace ruido: hace que la cama de cinta no pueda callarse
- *   cuando suena un fragmento, y eso recién se descubre con el juego entero armado.
- * - Un pedido de la salida que se filtra deja la atmósfera muda **para siempre y sin
- *   síntoma**. Nadie reporta una cama que no vuelve; simplemente el sitio se apaga solo.
+ * Hasta el 2026-10-01 este archivo probaba además el token de la salida (`ADR-04.3`), que
+ * existía para que la cama de cinta se callara cuando sonaba un fragmento. La cinta se sacó
+ * del sitio, y el token con ella.
  *
  * Corre en Node con dobles de `AudioContext`, con los mismos modales que `audio.test.ts`:
  * se instalan globales, se arma el caso, y se restaura en un `finally` que además llama a
@@ -18,13 +19,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  alCambiarLaSalida,
   contextoDeAudio,
   contextoVivo,
   despertarSalida,
   reiniciarAudioParaPruebas,
-  salidaOcupada,
-  tomarLaSalida,
 } from './contexto.ts';
 
 type Estado = 'running' | 'suspended' | 'interrupted' | 'closed';
@@ -78,7 +76,7 @@ function contextoFalso(estado: Estado, resumeFunciona: boolean, registro: Regist
 interface Entorno {
   readonly estado: Estado;
   readonly resumeFunciona: boolean;
-  /** Un navegador sin Web Audio: el caso en que la cama ni se ofrece. */
+  /** Un navegador sin Web Audio: el caso en que el reveal cae al repuesto y Skayboy calla. */
   readonly conWebAudio: boolean;
 }
 
@@ -117,7 +115,7 @@ test('el contexto se construye una sola vez: dos pedidos devuelven el mismo obje
     const otro = contextoDeAudio();
     assert.ok(uno, 'con Web Audio tiene que haber contexto');
     assert.equal(uno, otro, 'el segundo que lo pide se cuelga del que hay');
-    assert.equal(e.registro.construidos, 1, 'un segundo contexto no puede callar al primero');
+    assert.equal(e.registro.construidos, 1, 'un segundo contexto duplica un ciclo de vida que ya costó dos defectos');
   } finally {
     e.restaurar();
   }
@@ -169,7 +167,7 @@ test('despertarSalida pide volver y hace sonar el buffer mudo, una sola vez', as
     const estado = await despertarSalida();
     assert.equal(e.registro.resumes, 1, 'un contexto parado tiene que pedir volver');
     assert.equal(e.registro.mudos, 1, 'el buffer mudo es lo que destraba iOS, no el resume solo');
-    assert.equal(estado, 'running', 'quien llama decide con esto si se declara bloqueada');
+    assert.equal(estado, 'running', 'quien llama decide con esto si sigue esperando un toque');
 
     await despertarSalida();
     assert.equal(e.registro.mudos, 1, 'el destrabe es una vez por contexto, no por toque');
@@ -179,10 +177,10 @@ test('despertarSalida pide volver y hace sonar el buffer mudo, una sola vez', as
 });
 
 test('si el navegador rechaza el resume, despertarSalida lo dice en vez de tirar', async () => {
-  // Es el caso 2 de `ADR-04.4`: la ventana incrustada que recorta el audio. Lo que la cama
-  // necesita es enterarse para declararse `bloqueada` y no guardar la preferencia; lo que
-  // no puede pasar es que una promesa rechazada llegue sin capturar a la consola de la
-  // gente por algo que acá ya está manejado.
+  // Es el caso 2 de `ADR-04.4`: la ventana incrustada que recorta el audio. Quien llama
+  // necesita enterarse para esperar el próximo toque; lo que no puede pasar es que una
+  // promesa rechazada llegue sin capturar a la consola de la gente por algo que acá ya
+  // está manejado.
   const e = conEntorno({ estado: 'suspended', resumeFunciona: false });
   try {
     const estado = await despertarSalida();
@@ -190,112 +188,5 @@ test('si el navegador rechaza el resume, despertarSalida lo dice en vez de tirar
     assert.equal(e.registro.resumes, 1, 'un intento y nada más: no se reintenta');
   } finally {
     e.restaurar();
-  }
-});
-
-test('dos tomas y dos sueltas dejan la salida libre; con una sola sigue ocupada', () => {
-  try {
-    assert.equal(salidaOcupada(), false, 'de arranque no suena nada');
-    const soltarUna = tomarLaSalida('fragmento', 30);
-    const soltarOtra = tomarLaSalida('tema entero', 30);
-    assert.equal(salidaOcupada(), true);
-
-    soltarUna();
-    assert.equal(salidaOcupada(), true, 'todavía queda uno sonando: la cama no puede volver');
-
-    soltarOtra();
-    assert.equal(salidaOcupada(), false, 'con la última suelta, la salida queda libre');
-  } finally {
-    reiniciarAudioParaPruebas();
-  }
-});
-
-test('soltar de más no deja deuda: el contador nunca queda negativo', () => {
-  try {
-    const soltar = tomarLaSalida('fragmento', 30);
-    soltar();
-    soltar();
-    soltar();
-    assert.equal(salidaOcupada(), false);
-
-    // La prueba de que no quedó deuda escondida: si soltar de más hubiera descontado de
-    // más, este pedido nuevo nacería ya cancelado y la cama pisaría el fragmento siguiente.
-    const otro = tomarLaSalida('fragmento', 30);
-    assert.equal(salidaOcupada(), true, 'un pedido nuevo ocupa la salida igual que siempre');
-    otro();
-    assert.equal(salidaOcupada(), false);
-  } finally {
-    reiniciarAudioParaPruebas();
-  }
-});
-
-test('soltar un pedido viejo no libera el que está sonando ahora', () => {
-  try {
-    const viejo = tomarLaSalida('fragmento', 30);
-    viejo();
-    const ahora = tomarLaSalida('fragmento', 30);
-    viejo(); // el que quedó en la mano de nadie, llamado tarde
-    assert.equal(salidaOcupada(), true, 'cada pedido suelta el suyo y ninguno más');
-    ahora();
-    assert.equal(salidaOcupada(), false);
-  } finally {
-    reiniciarAudioParaPruebas();
-  }
-});
-
-test('un pedido que nadie suelta se libera solo al vencer el tope', async () => {
-  // La red de seguridad de `ADR-04.3`, copiada del corte por temporizador que el camino de
-  // repuesto ya tenía. Sin esto, un `onended` que no llega deja la cama muda para siempre
-  // y sin nadie a quien reclamarle.
-  try {
-    tomarLaSalida('fragmento', 0.02);
-    assert.equal(salidaOcupada(), true);
-    await new Promise((res) => setTimeout(res, 60));
-    assert.equal(salidaOcupada(), false, 'un pedido que se filtra se suelta solo');
-  } finally {
-    reiniciarAudioParaPruebas();
-  }
-});
-
-test('el oyente se entera de los cambios, y darse de baja funciona', () => {
-  try {
-    const avisos: boolean[] = [];
-    const darDeBaja = alCambiarLaSalida((ocupada) => avisos.push(ocupada));
-
-    const soltarUna = tomarLaSalida('fragmento', 30);
-    const soltarOtra = tomarLaSalida('fragmento', 30);
-    // Solo los cambios de mano, no cada pedido: la cama baja una vez y vuelve una vez. Un
-    // aviso por toque la haría respirar alrededor de cada escalón, que se nota más que no
-    // tenerla.
-    assert.deepEqual(avisos, [true], 'el segundo pedido no es un cambio de estado');
-
-    soltarUna();
-    assert.deepEqual(avisos, [true], 'con uno vivo, la salida sigue ocupada');
-    soltarOtra();
-    assert.deepEqual(avisos, [true, false]);
-
-    darDeBaja();
-    const ultimo = tomarLaSalida('fragmento', 30);
-    ultimo();
-    assert.deepEqual(avisos, [true, false], 'dado de baja, no le llega nada más');
-  } finally {
-    reiniciarAudioParaPruebas();
-  }
-});
-
-test('un oyente que rompe no se lleva puesto al resto', () => {
-  // El motor de fragmentos no se puede caer porque la atmósfera tenga un defecto: la cama
-  // es lo último que se agregó y lo primero que se saca.
-  try {
-    const avisos: boolean[] = [];
-    alCambiarLaSalida(() => {
-      throw new Error('la cama tuvo un mal día');
-    });
-    alCambiarLaSalida((ocupada) => avisos.push(ocupada));
-    const soltar = tomarLaSalida('fragmento', 30);
-    soltar();
-    assert.deepEqual(avisos, [true, false]);
-  } finally {
-    reiniciarAudioParaPruebas();
   }
 });

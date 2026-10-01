@@ -44,9 +44,10 @@ import { dirname, join, normalize } from 'node:path';
  * isla de humo puesta: `npm test` no dijo una palabra del `import kaplay from 'kaplay'`.
  *
  * Así que el recorrido junta también las importaciones **desnudas** y las compara contra
- * `PAQUETES_DE_CLIENTE`, que es una lista blanca como el censo de `rutas-sonoras.ts`: lo que
- * no está declarado no pasa. **El paquete nuevo nace prohibido**, y el que quiera sumar uno
- * tiene que venir hasta esa línea y leer por qué existe.
+ * `PAQUETES_DE_CLIENTE`, que es una lista blanca como era el censo de `rutas-sonoras.ts`
+ * (se fue con la cinta, el 2026-10-01): lo que no está declarado no pasa. **El paquete
+ * nuevo nace prohibido**, y el que quiera sumar uno tiene que venir hasta esa línea y leer
+ * por qué existe.
  */
 
 const leer = (ruta: string): string => readFileSync(ruta, 'utf-8').replace(/\r\n/g, '\n');
@@ -88,9 +89,9 @@ function modulosDeNode(fuente: string): string[] {
 }
 
 /**
- * Los paquetes de npm que pueden llegar al navegador. **Es una lista blanca, como el censo
- * de `rutas-sonoras.ts`**: lo que no está acá no pasa, y el que quiera agregar uno tiene que
- * venir hasta esta línea y leer por qué existe (`ADR-08.7`).
+ * Los paquetes de npm que pueden llegar al navegador. **Es una lista blanca**: lo que no
+ * está acá no pasa, y el que quiera agregar uno tiene que venir hasta esta línea y leer
+ * por qué existe (`ADR-08.7`).
  *
  * Hoy tiene un solo miembro, y no es casualidad que sea el primero: `kaplay` es la primera
  * pieza de terceros que corre en el teléfono de la gente (`ADR-08`). Va pineada exacta en

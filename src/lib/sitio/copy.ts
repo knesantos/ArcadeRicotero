@@ -122,56 +122,6 @@ export const LUGARES = {
 } as const;
 
 /**
- * El interruptor de la cinta (`UX-21`, `ADR-04`).
- *
- * Ocho cadenas: cuatro estampas, una línea de contexto y tres nombres accesibles. Viven
- * acá y no adentro de `sitio/cinta.ts` por un motivo con antecedentes: `voz.test.ts` audita
- * los módulos de copy y no el código suelto, y ya atrapó dos veces texto que se había
- * escrito a mano fuera de un `copy.ts`. Esta pieza tenía ocho oportunidades de repetirlo.
- *
- * **Las cuatro estampas van en registro 3** — seco, sin puntos suspensivos, sin
- * infinitivo. No es un botón que invita a algo: es un **rótulo de estado**, como `LEYENDA`
- * o `TESTIMONIO`. Un aparato de cinta real tampoco dice "presioná para grabar": dice `REC`.
- *
- * **El nombre accesible sí lleva verbo, y por eso va en voseo** (`D-17`): la estampa
- * nombra el estado, el `aria-label` nombra lo que hace el toque.
- */
-export const CINTA = {
-  apagada: 'CINTA APAGADA',
-  sonando: 'CINTA SONANDO',
-  callada: 'CINTA CALLADA',
-  bloqueada: 'CINTA BLOQUEADA',
-  /** `BLOQUEADA` sola no explica por qué, y sin una palabra más se lee como que el sitio
-   *  se rompió. Nombra el hecho y se detiene: no culpa a nadie ni manda a probar otra cosa. */
-  porQueBloqueada: 'El navegador no la deja sonar acá',
-  prender: 'Prendé la cinta',
-  apagar: 'Apagá la cinta',
-
-  // Lo que suma la rocola (`UX-26`, ciclo 14). Los cuatro estados de arriba no cambian:
-  // describen el sonido, no el modo, y mezclar las dos capas obligaría a pintar ocho
-  // casillas en vez de cuatro más una etiqueta.
-
-  /**
-   * La línea que cuelga del interruptor cuando la rocola pone un tema.
-   *
-   * **Nunca nombra el disco**, y no es un olvido: hay diez discos contra noventa y cinco
-   * temas, así que nombrar el disco sopla una respuesta de "Adiviná la tapa" casi diez
-   * veces más fuerte de lo que el título solo sopla cualquier otra cosa (`UX-26` §1.3).
-   */
-  suena: (titulo: string, entero: boolean) => `${titulo} · ${entero ? 'completo' : 'recorte'}`,
-  /**
-   * Sube la cinta de cama a rocola sin apagar nada (`UX-26` §3.1).
-   *
-   * Existe por `ADR-07.8`: el rearme al cambiar de pantalla siempre arma en modo cama, así
-   * que quien navega con la cinta prendida llega a una pantalla que podría sonar y se
-   * encuentra con la cama. Sin esto, el único camino sería apagar y volver a prender.
-   */
-  ponerTema: 'PONÉ UN TEMA',
-  /** Pasa a la próxima pieza. Mueve bytes, así que pide un dedo (`UX-26` §3.1). */
-  otroTema: 'PONÉ OTRO TEMA',
-} as const;
-
-/**
  * Los cinco casetes del portal.
  *
  * **Habia un campo `viste`** que imprimia debajo de cada casete que disco lo vestia
@@ -195,6 +145,18 @@ export interface Casete {
    *  `--rotulo-testimonio`, pero esa sección nunca muestra esa insignia: ahí no hay leyenda
    *  ni testimonio, solo hecho o "según" (`D-48` punto 6). */
   readonly variante: 'marca' | 'historia' | 'discos' | 'letras' | 'mitologia' | 'momo' | 'bang' | 'baion';
+  /**
+   * Lo que va pegado en el casete: **una tapa entera, un detalle de tapa o un recorte de una
+   * figura de tapa, y nunca el casete dibujado** (`D-49`). Lo pidió el usuario el
+   * 2026-10-01: *"que todas las entradas de juegos del home tengan un detalle o un disco
+   * entero, no el svg del cassete, cada uno diferente"*. Hasta ese día tres juegos llevaban
+   * el mismo casete dibujado y dos casetes la misma mosca.
+   *
+   * Tres materiales, y el portal los reconoce por la carpeta: `/tapas/<disco>.jpg` es la
+   * tapa entera, `/tapas/detalle/` es un pedazo de la foto, y `/arte/` es un recorte con
+   * fondo transparente. Cada uno acredita su disco en el pie (`D-21`), y `portal.test.ts`
+   * falla si dos casetes repiten pieza o si alguno no tiene disco que acreditar.
+   */
   readonly arte: string;
   readonly href?: string;
   readonly accion?: string;
@@ -205,7 +167,9 @@ export const JUEGOS: readonly Casete[] = [
     titulo: 'Preguntas ricoteras',
     baja: 'Ocho preguntas y ninguna piadosa. Historia, discos, letras y mitología, en dos minutos.',
     variante: 'marca',
-    arte: '/arte/casete.svg',
+    // *Oktubre* entero: es el disco que viste la portada y la sección de marca (`D-19`), y el
+    // del mes en que se cambió (`D-49`).
+    arte: '/tapas/oktubre.jpg',
     href: '/quiz/',
     accion: 'JUGÁ',
   },
@@ -235,7 +199,9 @@ export const JUEGOS: readonly Casete[] = [
     titulo: 'Completá la letra',
     baja: 'Lo tenés en la punta de la lengua. Falta una palabra del verso y hay cuatro para elegir.',
     variante: 'letras',
-    arte: '/arte/mosca.svg',
+    // La olla de *La mosca y la sopa*. Era la mosca recortada, que en el portal ya vuela
+    // suelta por la pantalla: la misma pieza dos veces en la misma vista (`D-49`).
+    arte: '/tapas/detalle/mosca-olla.jpg',
     href: '/juegos/completar-la-letra/',
     // La acción está, pero el portal la muestra solo si el banco tiene versos listos: lo
     // decide `segunLaPartida()` (`portal.ts`) con el mismo `cargarBanco()` que la página.
@@ -247,7 +213,8 @@ export const JUEGOS: readonly Casete[] = [
     titulo: 'Ponelos en fila',
     baja: 'De la valla para atrás, los ponés vos. Los diez discos, las tapas, o los temas de un disco: el orden lo armás vos.',
     variante: 'bang',
-    arte: '/arte/casete.svg',
+    // *¡Bang! ¡Bang!… Estás liquidado* entero: un juego de poner discos en fila lleva un disco.
+    arte: '/tapas/bang-bang-estas-liquidado.jpg',
     href: '/juegos/ponelos-en-fila/',
     accion: 'ARMÁ',
   },
@@ -270,7 +237,8 @@ export const JUEGOS: readonly Casete[] = [
       'Elegís más o menos, sin red. Preguntas de número sobre la banda: cuántos años, ' +
       'cuántos temas, cuánto dura. Hasta que le erres una.',
     variante: 'baion',
-    arte: '/arte/casete.svg',
+    // El antifaz del muñeco de *Un baión*, el disco que viste este juego (`UX-34`).
+    arte: '/tapas/detalle/un-baion-para-el-ojo-idiota-zoom.jpg',
     href: '/juegos/mas-o-menos/',
     accion: 'JUGÁ',
   },
@@ -286,7 +254,9 @@ export const CASETE_CANCIONERO: Casete = {
   titulo: 'Letras y acordes',
   baja: 'Los diez discos, con los dedos puestos. Acordes arriba de cada verso, transporte, y armás tu cancionero.',
   variante: 'letras',
-  arte: '/arte/mosca.svg',
+  // *La mosca y la sopa* entero: el escenario con las luces prendidas, que es lo más cerca
+  // que tiene una tapa de un tema sonando. La mosca suelta ya vuela por el portal (`D-49`).
+  arte: '/tapas/la-mosca-y-la-sopa.jpg',
   href: '/letras-y-acordes/',
   accion: 'TOCÁ',
 } as const;
@@ -295,9 +265,51 @@ export const CASETE_REDONDOPEDIA: Casete = {
   titulo: 'La Redondopedia',
   baja: 'El hecho como hecho, la leyenda como leyenda. La historia entera, navegable, con la ficha de dónde salió cada dato.',
   variante: 'historia',
-  arte: '/arte/perro.svg',
+  // El "Patricio Rey" pintado a mano de *Gulp!*, el primer disco: la historia arranca ahí, y
+  // `historia` viste Gulp! (`D-19`). Era el perro dibujado, que no es de ninguna tapa.
+  arte: '/tapas/detalle/gulp-zoom.jpg',
   href: '/redondopedia/',
   accion: 'LEÉ',
+} as const;
+
+/** Los números chicos en letra: en una frase que se lee, "seis" y no "6". */
+const EN_LETRAS = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];
+const enLetras = (n: number): string => EN_LETRAS[n] ?? String(n);
+
+/**
+ * El afiche de octubre del portal (`D-49`).
+ *
+ * Lo pidió el usuario el 2026-10-01: *"entramos en OKTUBRE, el mes del disco, hagamos que
+ * la página refleje esto"*. Se muestra solo en octubre, y lo decide el teléfono de quien
+ * mira, no el día del build (`index.astro`).
+ *
+ * **Lo que cuenta es un hecho, y sale del JSON**: de los diez discos, seis salieron en
+ * octubre —*Oktubre* el 4 de 1986, *¡Bang! ¡Bang!* el 7 de 1989, *La mosca y la sopa* el 27
+ * de 1991, *Lobo suelto* y *Cordero atado* el 4 de 1993, *Luzbelito* el 7 de 1996—, todos
+ * rotulados `hecho` en la Redondopedia y sin discrepancia entre fuentes (`RES-02`, `RES-20`).
+ * La cuenta no está escrita acá: la hace `discosDeOktubre()` con las fichas, así que si una
+ * fecha se corrige, el afiche se corrige solo.
+ *
+ * Las dos líneas de `voz-ricotera.md` §5: nombra el sello (*OKTUBRE*, en la letra calcada de
+ * la tapa, que tiene las siete letras) con la estampa del cumpleaños; canta la línea del
+ * sobre. Tapada la que canta, el afiche sigue diciendo qué es y qué botón tocar.
+ */
+export const OKTUBRE = {
+  /** El sello grande. Va en `--fuente-titular`: O, K, T, U, B, R y E existen en el calco. */
+  sello: 'OKTUBRE',
+  /** La estampa del cumpleaños, según el día. Registro 3: dice qué pasa y se calla. */
+  cumpleAntes: (dia: number, anios: number) => `EL ${dia} CUMPLE ${anios}`,
+  cumpleHoy: (_dia: number, anios: number) => `HOY CUMPLE ${anios}`,
+  cumplio: (dia: number, anios: number) => `CUMPLIÓ ${anios} EL ${dia}`,
+  /** La que canta (registro 1): un objeto de la casa, un gesto, y nada que explicar. */
+  canta: 'Sacá el disco del sobre, soplale el polvo.',
+  /** La que cuenta (registro 2), con los números de las fichas. */
+  cuenta: (deOktubre: number, total: number) =>
+    `De los ${enLetras(total)} discos, ${enLetras(deOktubre)} salieron en octubre.`,
+  /** El nombre de la lista de fechas, para quien no ve la grilla. */
+  calendario: 'Los discos que salieron en octubre',
+  /** El botón: el juego de adivinar el tema, con el disco ya elegido. */
+  jugar: 'ADIVINÁ TEMAS DE OKTUBRE',
 } as const;
 
 /** Las tres pantallas "en la cocina". La promesa es honesta: BR-06 promete acceso

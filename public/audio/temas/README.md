@@ -35,8 +35,9 @@ producción. En silencio, que es la peor forma de fallar.
 - **La revelación de "adiviná el tema"** (`D-22`): al cerrar un tema, si el archivo está,
   aparece el reproductor para escucharlo entero. Si no está, no se promete nada — la
   pantalla simplemente no lo muestra.
-- **La rocola** (`ADR-07`, ciclo 14): lo que suena cuando alguien prende la cinta. Cuando
-  no hay temas enteros, cae a los recortes enteros.
+
+Hasta el 2026-10-01 los usaba también la rocola de la cinta (`ADR-07`), que se sacó del
+sitio.
 
 ## El peso
 

@@ -10,8 +10,8 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 // La lista de los tres articulos de tono grave vive en un modulo hoja que no importa
-// nada, porque tambien la necesita una isla (la cama de cinta, `T-191`) y este archivo
-// arrastra `node:fs`. Ver el comentario de cabecera de `graves.ts`.
+// nada: la necesitaba una isla (la cama de cinta, `T-191`, que se saco del sitio el
+// 2026-10-01) y este archivo arrastra `node:fs`. Ver el comentario de cabecera de `graves.ts`.
 import { SLUGS_GRAVES } from './graves.ts';
 // Los títulos de los discos, por el mismo motivo: los necesita la isla de la letra.
 import { TITULO_DEL_DISCO } from '../letra/discos.ts';
@@ -98,6 +98,9 @@ const DISCO_DE: Record<string, string> = {
      incumplida en silencio — `discosDe` lo descarta sin decir nada. */
   'momo-medallon': 'Momo Sampler',
   'bang-bang-estas-liquidado-zoom': '¡Bang! ¡Bang!… Estás liquidado',
+  /* `D-49`: los dos detalles que pasaron a vestir casetes del portal. */
+  'un-baion-para-el-ojo-idiota-zoom': 'Un baión para el ojo idiota',
+  'gulp-zoom': 'Gulp!',
 };
 
 /** Los discos que aparecen en una pantalla, sin repetir y en orden de aparicion. */
@@ -221,9 +224,39 @@ export const TITULO_DE_DISCO: Record<string, string> = TITULO_DEL_DISCO;
  * dibujado, la figura encadenada sin ficha) devuelve `null` y no acredita nada.
  */
 export function discoDeRecorte(ruta: string): string | null {
+  // `D-49`: los casetes también pegan tapas enteras y detalles de la foto, no solo recortes.
+  // Los tres materiales se reconocen por la carpeta, y cada uno tiene ya su mapa: el slug
+  // del disco para la tapa entera, `DISCO_DE` para el detalle.
+  const entera = /^\/tapas\/([\w-]+)\.jpg$/.exec(ruta);
+  if (entera) return TITULO_DE_DISCO[entera[1]!] ?? null;
+  const detalle = /^\/tapas\/detalle\/([\w-]+)\.jpg$/.exec(ruta);
+  if (detalle) return DISCO_DE[detalle[1]!] ?? null;
+
   const archivo = ruta.split('/').pop();
   const slug = Object.keys(FIGURA_DE_DISCO).find((s) => FIGURA_DE_DISCO[s] === archivo);
   return slug ? (TITULO_DE_DISCO[slug] ?? null) : null;
+}
+
+/** Qué material es la pieza de un casete: decide cómo se pega (`sitio.css`, `D-49`). */
+export type MaterialDeCasete = 'entera' | 'detalle' | 'recorte';
+
+export function materialDeCasete(ruta: string): MaterialDeCasete {
+  if (/^\/tapas\/detalle\//.test(ruta)) return 'detalle';
+  if (/^\/tapas\//.test(ruta)) return 'entera';
+  return 'recorte';
+}
+
+/**
+ * La pieza que el casete muestra de verdad.
+ *
+ * Un recorte pasa por `conRecorteReal`, como siempre. Una tapa o un detalle los genera
+ * `scripts/generar-tapas.mjs`: si el archivo no está, el casete cae al dibujo de repuesto en
+ * vez de pegar una imagen rota — el mismo criterio que el resto del collage. Que eso no pase
+ * en el portal publicado lo vigila `portal.test.ts`, que pide el archivo en disco.
+ */
+export function arteDeCasete(ruta: string): string {
+  if (materialDeCasete(ruta) === 'recorte') return conRecorteReal(ruta);
+  return existsSync(join(process.cwd(), 'public', ruta.replace(/^\//, ''))) ? ruta : '/arte/casete.svg';
 }
 
 /**

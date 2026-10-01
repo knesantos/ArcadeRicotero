@@ -90,7 +90,7 @@ export function montarPantallaCompleta(entorno: EntornoDelModo): ModoDePantalla 
   const enElModo = (): boolean => documento.documentElement.dataset.pantalla === 'completa';
   const enPantallaDelSistema = (): Element | null => d.fullscreenElement ?? d.webkitFullscreenElement ?? null;
 
-  /** La estampa nombra el estado y el `aria-label` el verbo del toque (`CNT-22 §1`, molde de `CINTA`). */
+  /** La estampa nombra el estado y el `aria-label` el verbo del toque (`CNT-22 §1`). */
   function pintarBoton(): void {
     const adentro = enElModo();
     boton.textContent = adentro ? PANTALLA_COMPLETA.completa : PANTALLA_COMPLETA.ventana;

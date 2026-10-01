@@ -130,7 +130,8 @@ export const PIE_HOMENAJE =
 /**
  * El interruptor de pantalla completa (`CNT-22 §1`, `UX-33 §1.2` y `§1.5`, `T-301`).
  *
- * **Mismo molde que `CINTA`** (`src/lib/sitio/copy.ts`): la estampa visible nombra el estado en
+ * **El molde que estrenó la estampa de la cinta** (`UX-21`, que se sacó del sitio el
+ * 2026-10-01): la estampa visible nombra el estado en
  * que se está, en registro 3, y el `aria-label` nombra el verbo del toque, en voseo. Un solo
  * botón, dado vuelta: en `ventana` se toca para `entrar`, en `completa` para `salir`.
  *

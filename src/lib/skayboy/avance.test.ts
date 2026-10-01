@@ -1,6 +1,6 @@
 /**
- * El avance guardado (`CTR-16.11`), jugado en Node con un `localStorage` de mentira, como hace
- * `cinta.test.ts`. La tabla de `CTR-16.11.3` entera, y cada caso con el rojo que tiene que verse:
+ * El avance guardado (`CTR-16.11`), jugado en Node con un `localStorage` de mentira, como
+ * hacía `cinta.test.ts` hasta que la cinta se sacó del sitio. La tabla de `CTR-16.11.3` entera, y cada caso con el rojo que tiene que verse:
  *
  * | Caso | Rojo que se vio a mano |
  * |---|---|

@@ -529,9 +529,10 @@ test('US-08: el tablero se rehace entero, y el foco no se cae con el', () => {
    miraba, que es la unica forma en que `FIND-15` se repite sin que se note.
 
    Agregar los tres pares que faltaban habria dejado el mismo agujero para el octavo juego.
-   Asi que la lista **se deriva del disco**, con el mecanismo del censo de paginas de
-   `sitio/rutas-sonoras.test.ts`: no clasifica nada sola —eso seria adivinar— pero **falla
-   con el nombre del archivo** cuando encuentra una isla que nadie declaro.
+   Asi que la lista **se deriva del disco**, con el mecanismo del censo de paginas que
+   tenia `sitio/rutas-sonoras.test.ts` (se fue con la cinta, el 2026-10-01): no clasifica
+   nada sola —eso seria adivinar— pero **falla con el nombre del archivo** cuando
+   encuentra una isla que nadie declaro.
 
    ## Los tres candados, y por que hacen falta los tres
 
@@ -678,10 +679,11 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
 
   'armar-cancionero.ts': { sinTablero: 'arma un HTML autocontenido que se descarga; sus estilos viajan adentro de ese archivo, no en las hojas del sitio' },
   'cancion.ts': { sinTablero: 'transportar y bajar solo en la ficha de un tema; no hay partida ni respuesta que senalar' },
-  'cinta.ts': { sinTablero: 'el interruptor de la cinta; su unica clase de estado vive en sitio.css y la cubre la red derivada' },
   'correccion.ts': { sinTablero: 'el boton de correccion compartido; abre un formulario, no pinta estado de partida' },
   'diagnostico-audio.ts': { sinTablero: 'pantalla de medicion; sus reglas viven en el <style> de su propia pagina y la cubre la red derivada' },
   'lamina.ts': { sinTablero: 'pincel de canvas (US-08); dibuja pixeles, no crea nodos con clase' },
+  'mosca.ts': { sinTablero: 'la mosca del portal (D-49); su unica clase, la de tomada a mano, vive en sitio.css y la cubre la red derivada' },
+  'oktubre.ts': { sinTablero: 'la estampa del cumpleanos en el afiche de octubre (D-49); cambia un texto, no crea clases' },
   'spotify.ts': { sinTablero: 'un <a> y nada mas, que es literalmente RQ-B2 de ADR-01' },
   'tarjeta.ts': { sinTablero: 'pincel de canvas (US-02 y US-07); dibuja pixeles, no crea nodos con clase' },
 };

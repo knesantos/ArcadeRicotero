@@ -87,10 +87,11 @@ const MODULOS: ReadonlyArray<readonly [string, Record<string, unknown>]> = [
  * copiado"` estuvo tres ciclos en produccion, corrido un nivel: antes se escapaba la cadena
  * suelta adentro de una isla, ahora se escapa el archivo entero.
  *
- * El mecanismo esta copiado del censo de paginas de `sitio/rutas-sonoras.test.ts`, y el
- * criterio es el mismo: **no declara nada solo —eso seria adivinar— pero tampoco deja pasar
- * de largo**. Quien sume un modulo tiene que abrir este archivo, importarlo y ponerlo en
- * `MODULOS`. Si no lo hace, el build se cae aca con el nombre del archivo.
+ * El mecanismo esta copiado del censo de paginas que tenia `sitio/rutas-sonoras.test.ts`
+ * (se fue con la cinta, el 2026-10-01), y el criterio es el mismo: **no declara nada solo
+ * —eso seria adivinar— pero tampoco deja pasar de largo**. Quien sume un modulo tiene que
+ * abrir este archivo, importarlo y ponerlo en `MODULOS`. Si no lo hace, el build se cae
+ * aca con el nombre del archivo.
  */
 
 /** Todos los `copy.ts` que hay en disco, nombrados igual que las claves de `MODULOS`. */
@@ -297,6 +298,10 @@ test('voz 4.1: la linea grande no pasa de ocho palabras', () => {
     // `US-10`: lo pidió `CNT-25` y `REV-16` (`FIND-85`) vio que no había quedado.
     ['h1 más o menos', masOMenos.PANTALLA_0.titulo],
     ...Object.entries(masOMenos.TRAMOS).map(([k, v]) => [`más o menos tramo ${k}`, v] as [string, string]),
+    // `D-49`: el afiche de octubre. El sello y la que canta son línea grande; el botón también.
+    ['oktubre.sello', sitio.OKTUBRE.sello],
+    ['oktubre.canta', sitio.OKTUBRE.canta],
+    ['oktubre.jugar', sitio.OKTUBRE.jugar],
   ];
   const largos = grandes
     .filter(([, texto]) => texto.trim().split(/\s+/).length > 8)

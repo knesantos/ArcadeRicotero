@@ -176,6 +176,24 @@ for (const boton of portada.querySelectorAll<HTMLButtonElement>('[data-disco]'))
 }
 
 /*
+ * Un disco ya elegido desde el enlace (`?disco=oktubre`), `D-49`: el afiche de octubre del
+ * portal manda acá con *Oktubre* puesto. Es el mismo toque que haría la persona —el botón
+ * del disco, con su `aria-pressed` y su cuenta—, y el desplegable se abre para que se vea
+ * cuál quedó elegido. Un slug que no existe, o un disco sin audio, no elige nada: queda
+ * "Todos los discos", que es lo de siempre.
+ */
+{
+  const pedido = new URLSearchParams(location.search).get('disco');
+  const boton = pedido
+    ? [...portada.querySelectorAll<HTMLButtonElement>('[data-disco]')].find((b) => b.dataset.disco === pedido)
+    : undefined;
+  if (boton && !boton.disabled) {
+    boton.click();
+    boton.closest('details')?.setAttribute('open', '');
+  }
+}
+
+/*
  * El aviso de la llave del iPhone, en la portada y **antes** de que haga falta el audio.
  *
  * Va en JavaScript y no en el HTML porque la pagina es estatica: en build no se sabe que
