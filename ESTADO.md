@@ -5,7 +5,56 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-09-25
+**Última actualización:** 2026-10-01
+
+> ## 🍂 OKTUBRE, LA MOSCA QUE SE ACERCA, Y SIN CINTA (2026-10-01)
+>
+> **Rama `ciclo-16/mas-o-menos`, sobre `0ebfa8f`** (la mezcla con `main` que trajo el #18 y el
+> #19). **Sin commitear** al cierre de la sesión: el usuario no lo pidió todavía. Dos pedidos
+> del usuario el mismo día, registrados en `D-49` y `D-50`:
+>
+> 1. *"Entramos en OKTUBRE, el mes del disco, hagamos que la página refleje esto. […] que la
+>    mosca en desktop vuele alrededor del mouse […] y en mobile que vuele como ahora pero si
+>    el usuario toca trate de ir a volar alrededor de donde toca. Que todas las entradas de
+>    juegos del home tengan un detalle o un disco entero, no el svg del cassete, cada uno
+>    diferente."* → `D-49`.
+> 2. *"Saquemos lo de la cinta en todos lados, en el juego de adivinar el tema a veces salta
+>    sola y hace un ruido blanco molesto."* → `D-50`.
+>
+> **Lo que hay:**
+> - **El afiche de octubre** en el portal: sello OKTUBRE, estampa "EL 4 CUMPLE 40" (cambia el
+>   4 y el 5, y cuenta los años con la fecha del teléfono), y un almanaque con **los seis de
+>   los diez discos que salieron en octubre** (*Oktubre*, *¡Bang! ¡Bang!*, *La mosca y la
+>   sopa*, *Lobo suelto*, *Cordero atado*, *Luzbelito*), sacados de las fichas rotuladas
+>   `hecho` por `lib/sitio/oktubre.ts`. Solo se ve en octubre, decidido en la cabeza del
+>   portal antes del primer cuadro. El botón abre "Adiviná el tema" con *Oktubre* elegido
+>   (`?disco=oktubre`, nuevo en `partida-tema.ts`).
+> - **Los nueve casetes** con una pieza de tapa distinta: tres tapas enteras, tres detalles,
+>   tres recortes; ninguno con el casete dibujado ni con el perro. `portal.test.ts` falla si
+>   vuelve un dibujo, si dos repiten, o si una pieza no acredita su disco (`D-21`).
+> - **La mosca**: física pura en `lib/sitio/mosca.ts` (10 tests, con rojo visto), isla en
+>   `scripts/mosca.ts`. Con mouse revolotea a 26–110 px del puntero; con el dedo, un toque
+>   (no un arrastre) la lleva ~4,5 s y vuelve al recorrido de CSS sin salto.
+> - **La cinta, afuera**: interruptor, cama, rocola, púa y rutas sonoras borrados con sus
+>   tests. El audio de los juegos no cambió. Skayboy suena con sus tres efectos, sin tema
+>   fijo y **sin forma de callarse** (decisión abierta para `experiencia`).
+>
+> **Verificado:** `npm test` 1373/1373 (eran 1442: se fueron los tests de la cinta y entraron
+> 21 nuevos), `check` 0/0, build 153, validador `APTA`. En la vista previa a 375 px: el
+> afiche, los nueve casetes, el crédito con los ocho discos, el botón que llega con *Oktubre*
+> elegido y 9 temas, ninguna `.cinta` en ninguna pantalla, Skayboy cargando en el build.
+> La mosca se midió con eventos sintéticos (el panel oculto no da cuadros de animación).
+>
+> **Abierto, sin trabar:**
+> - **El lienzo** (hojas 08 y 09) no muestra el afiche ni los tres materiales del casete. No
+>   entró ningún token nuevo, pero es estructura nueva y el circuito de `diseno-marca.md`
+>   pide que empiece en el diseño.
+> - `Docs/SUGERENCIAS/HILO-para-todos-se-saco-la-cinta.md`: cada rol marca sin vigencia lo
+>   suyo (`ADR-04`, `ADR-07`, `UX-21`, `UX-26`, `CNT-20`…), y `arquitectura` decide si se
+>   borra el campo `temaFijo` de `skayboy.json`.
+> - Si el dev server tira 504 en `kaplay.js` después de un build, se reinicia `astro dev`.
+>
+> **Del usuario:** el commit, y probar la mosca con un mouse de verdad y en el teléfono.
 
 > ## 🔢 "MÁS O MENOS": EL JUEGO NUEVO, `US-10` (2026-09-25, tarde)
 >

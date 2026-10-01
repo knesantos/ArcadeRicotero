@@ -50,7 +50,7 @@ ahí, y no tiene que pasar.
 
 | Archivo | Pieza | De dónde | Cómo recortar | Dónde se pega |
 |---|---|---|---|---|
-| `mosca.png` (hoy `mosca.svg`) | La mosca | *La mosca y la sopa* (fichado: RES-06, RES-22) | La mosca sola, en silueta cerrada: sin sopa, sin fondo | Vuela por el portal con vuelo errático (animación `vuelo-de-mosca`); también en la pantalla de completar la letra |
+| `mosca.png` (hoy `mosca.svg`) | La mosca | *La mosca y la sopa* (fichado: RES-06, RES-22) | La mosca sola, en silueta cerrada: sin sopa, sin fondo | Vuela por el portal con vuelo errático (animación `vuelo-de-mosca`), y desde `D-49` revolotea alrededor del mouse o del toque (`src/scripts/mosca.ts`). **Para que mire para donde vuela, el recorte tiene que tener la cabeza para arriba** |
 | `multitud-banderas.png` (hoy `banderas.svg`) | La multitud con banderas | *Oktubre* (fichado: RES-06) | Franja horizontal con gente y banderas: borde superior siguiendo siluetas, borde inferior rasgado. **Sin el esclavo encadenado.** Nunca la tapa entera | Fondo del portal y de la portada de la Redondopedia, anclada abajo, opacidad baja, fija |
 | `oktubre-cadena.png` | La figura encadenada | Arte de Rocambole. **De qué disco: sin ficha** — ver "Lo que NO va acá" | Ya vino calcada del usuario: estarcido blanco sobre transparente, 388×303 | Portada del portal, junto a la marca, y la tarjeta al compartir (`public/tarjeta.png`, la genera `npm run generar-marca-social`). **No se le atribuye álbum en ningún texto** |
 | `perro.png` (hoy `perro.svg`) | El perro | *Un baión* (fichado: RES-06, RES-22 — "en toda la mitología solariana hay un perro") | El perro solo, sin televisor ni muñeco. Borde grueso tipo serigrafía | Personaje de portada: asoma junto a la marca. **Nunca junto a televisor + muñeco en la misma pantalla** (recompondría la tapa) |
@@ -61,7 +61,7 @@ ahí, y no tiene que pasar.
 | `bondi-interplanetario.png` | El bondi interplanetario | *Último bondi* (fichado: RES-22 — la cúpula inspirada en la caja de Chivas Regal, testimonio del Indio) | La nave completa con su cúpula, sin el paisaje | Ficha de *Último bondi*, y el casete de "Adiviná la tapa" en el portal (la sección discos viste *Último bondi*, `D-19`); a futuro, cruza lento el fondo de la sección discos |
 | `cordero-rulo.png` ✅ **recorte real puesto** (llegó como `tapas/recortes/cordero-recortado.png`) | Rulo el Cordero | *Cordero atado* (fichado: RES-20) | La figura del cordero, mismo tratamiento de borde que el lobo (funcionan en par) | Ficha de *Cordero atado*. **Prohibido usar el par lobo/cordero como código de acierto/error** (regla de marca) |
 | `momo-medallon.png` ✅ **recorte real puesto** (llegó como `tapas/recortes/momo-recortado.png`) | El medallón de Momo | *Momo Sampler* (la tapa entera es ese medallón) | El medallón solo, sin el campo negro de alrededor | Ficha de *Momo Sampler* en la Redondopedia, y el casete de "Sacalo por la letra" en el portal (ese juego viste *Momo Sampler*, `UX-08`). **Ojo con el nombre:** hay también un `tapas/detalle/momo-medallon.jpg`, que es la foto recortada del máster y viste el casete del portal — misma pieza, dos materiales, como ya pasa con `gulp-pincelada` y con `mosca-olla` |
-| `casete.svg` | El cassette dibujado | Genérico (dibujo original, se queda así) | — | Casetes del portal y pantalla de adivinar la tapa |
+| `casete.svg` | El cassette dibujado | Genérico (dibujo original, se queda así) | — | Pantalla de adivinar la tapa, y repuesto de un casete del portal cuya tapa no esté generada. **Ya no viste ningún casete del portal** (`D-49`): cada uno lleva una tapa entera, un detalle o un recorte de tapa, y ninguno repite |
 
 ## Para producir cuando quieras sumar (todavía sin hueco en el código)
 
@@ -77,8 +77,10 @@ ahí, y no tiene que pasar.
 ## Lo que NO va acá
 
 - **Tapas enteras.** Van en `public/tapas/` (baja resolución, generadas con
-  `node scripts/generar-tapas.mjs`) y solo aparecen donde el contrato lo permite:
-  fichas de disco de la Redondopedia y, a futuro, el juego de adivinar la tapa.
+  `node scripts/generar-tapas.mjs`), no acá. Aparecen en las fichas de disco de la
+  Redondopedia, en "Adiviná la tapa" y, desde `D-49`, pegadas en tres casetes del portal
+  (*Oktubre*, *¡Bang! ¡Bang!* y *La mosca y la sopa*). `D-21` ya las había habilitado en
+  cualquier pantalla, con crédito y en baja.
 - ~~**El esclavo encadenado de Oktubre.**~~ **Cambió el 2026-08-24: la pieza entró.** El
   usuario trajo el calco (`oktubre-cadena.png`) y pidió ponerlo en la portada del portal.
   Lo que sigue prohibido no es la imagen: es **decir de qué disco sale**. `INV-02` reportó

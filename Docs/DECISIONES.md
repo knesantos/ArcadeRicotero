@@ -1861,7 +1861,8 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 ## D-37 — La cinta pasa a poner temas, y de sus cinco candados caen dos
 
 - **Fecha:** 2026-09-11
-- **Estado:** aceptada. Ciclo 14, decidida en `ADR-07` antes de escribir una línea y
+- **Estado:** **reemplazada por `D-50`** (2026-10-01: la cinta y la rocola se sacaron del
+  sitio). Era: aceptada. Ciclo 14, decidida en `ADR-07` antes de escribir una línea y
   construida en `T-217`/`T-218`.
 - **Consume:** `D-14` (molinetes abiertos, riesgo asumido), `D-22` (el sitio sirve los temas
   enteros en mp3), `D-23` (el audio en dos niveles), `D-26` (la escalera del reveal), `D-29`
@@ -2013,7 +2014,8 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 ## D-39 — El juego de plataformas suena entero, y es la primera excepción a `D-37`
 
 - **Fecha:** 2026-09-11
-- **Estado:** aceptada. Decidida por el usuario el mismo día que `D-37`, con la advertencia
+- **Estado:** **reemplazada en parte por `D-50`** (2026-10-01): el tema fijo sobre la cinta se
+  fue con la rocola; los efectos de sonido siguen. Era: aceptada. Decidida por el usuario el mismo día que `D-37`, con la advertencia
   sobre la mesa.
 - **Consume:** `D-37` punto 4, `D-22` (el sitio sirve los temas enteros en mp3), `D-14`,
   `ADR-07` y `CTR-14` (`ARQ-rocola.md`), `BR-15` consecuencia 3, `IDEA-14`, `D-38`.
@@ -2671,3 +2673,152 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   3. **El juego hereda los huecos de sus fuentes y los dice.** Una palabra cantada en
      *San Telmo* no suma, porque de *San Telmo* el cancionero tiene solo la tablatura; el
      rótulo nombra cuántos temas se contaron (hoy, 100 de 105).
+
+---
+
+## D-49 — Octubre en el portal, una pieza de tapa distinta en cada casete, y una mosca que se acerca
+
+- **Fecha:** 2026-10-01
+- **Estado:** aceptada — pedido directo del usuario.
+- **El pedido, textual:** *"Entramos en OKTUBRE, el mes del disco, hagamos que la página
+  refleje esto. Además que la mosca en desktop vuele alrededor del mouse como una mosca y en
+  mobile que vuele como ahora pero si el usuario toca trate de ir a volar alrededor de donde
+  toca. Que todas las entradas de juegos del home tengan un detalle o un disco entero, no el
+  svg del cassete, cada uno diferente."*
+- **Consume:** `D-14`, `D-17`, `D-19`, `D-21`, `UX-04`, `UX-20` §5, `UX-25`, `RES-02`,
+  `RES-20`, `.claude/rules/diseno-marca.md`, `.claude/rules/voz-ricotera.md`.
+
+- **Contexto: por qué octubre es "el mes del disco", y no solo por el nombre.** *Oktubre*
+  salió el **4 de octubre de 1986** (ficha de la Redondopedia, rotulada `hecho`, "sin
+  discrepancia entre fuentes"), así que este mes cumple 40. Y al revisar las diez fichas
+  apareció lo que hizo de esto un afiche y no un adorno: **seis de los diez discos salieron
+  en octubre** — *Oktubre* (4-oct-1986), *¡Bang! ¡Bang!* (7-oct-1989), *La mosca y la sopa*
+  (27-oct-1991), *Lobo suelto* y *Cordero atado* (los dos el 4-oct-1993) y *Luzbelito*
+  (7-oct-1996). Los seis están rotulados `hecho` en sus fichas. La primera cuenta del hilo
+  principal fue "cinco", mirando solo los artículos que tenían la fecha a mano; *Luzbelito*
+  apareció al cruzar contra `INV-20`. Por eso la cuenta del afiche **no está escrita a mano**.
+
+- **Decisión.**
+  1. **En octubre, el portal lleva un afiche de *Oktubre*** entre la marca y la casetera: el
+     sello OKTUBRE en la letra calcada de la tapa, la estampa del cumpleaños ("EL 4 CUMPLE
+     40" / "HOY CUMPLE 40" / "CUMPLIÓ 40 EL 4"), la línea que canta ("Sacá el disco del
+     sobre, soplale el polvo."), la cuenta ("De los diez discos, seis salieron en octubre.")
+     y un almanaque con las seis fechas, cada una en la tinta de su disco y llevando a su
+     ficha. El botón lleva a "Adiviná el tema" con *Oktubre* ya elegido
+     (`/juegos/adivinar-el-tema/?disco=oktubre`).
+  2. **Lo decide la fecha del teléfono, no el build.** Una línea en la cabeza del portal pone
+     `data-mes="oktubre"` antes del primer cuadro (como el umbral), y el afiche no ocupa
+     lugar sin ese atributo. La estampa la corrige una isla mínima (`scripts/oktubre.ts`) con
+     la fecha de quien mira, y cuenta los años con esa fecha: en 2027 dice 41 sin tocar nada.
+  3. **La cuenta sale de las fichas** (`lib/sitio/oktubre.ts`, `discosDeOktubre()`): solo
+     entra un dato de salida rotulado `hecho`. Si una fecha pasa a discutida, sale del afiche
+     sola. Es lo único estricto del proyecto aplicado a un adorno: el afiche no puede decir
+     "salió en octubre" de algo que no se sabe.
+  4. **Cada casete del portal lleva una tapa entera, un detalle de tapa o un recorte de una
+     figura de tapa, y ninguno repite.** Nunca el casete dibujado ni el perro. Quedan:
+     *Oktubre* entero (Preguntas), el lobo (Adiviná el tema), el medallón de Momo (Sacalo
+     por la letra), la olla de *La mosca y la sopa* (Completá la letra), *¡Bang! ¡Bang!*
+     entero (Ponelos en fila), el bondi (Adiviná la tapa), el antifaz de *Un baión* (Más o
+     menos), *La mosca y la sopa* entero (Letras y acordes) y el "Patricio Rey" de *Gulp!*
+     (La Redondopedia). Las dos del lado B también: el pedido dice "entradas de juegos", pero
+     "cada uno diferente" no se cumplía con la mosca repetida en dos casetes, y el perro
+     dibujado era el último dibujo sin tapa del portal.
+  5. **Los tres materiales se pegan distinto** (`sitio.css`): el recorte con su alfa, como
+     siempre; el detalle con borde grueso teñido, como el de la Redondopedia; la tapa entera
+     con filete de papel y sombra dura corrida. Los tres miden 58 px por afuera, para que las
+     nueve etiquetas arranquen en la misma columna.
+  6. **La mosca revolotea alrededor de quien la busca.** Con mouse, en cuanto se mueve, va a
+     volar alrededor del puntero y lo sigue; si el puntero sale de la ventana, vuelve. Con el
+     dedo vuela el recorrido de siempre, y un toque —no un arrastre— la manda a revolotear
+     alrededor del punto unos cuatro segundos y medio. "Volver" es volar hasta el primer
+     cuadro de `vuelo-de-mosca` —mismo lugar, misma cara— y recién ahí soltar: el CSS
+     retoma sin salto. La física es pura y está probada (`lib/sitio/mosca.ts`); la isla
+     (`scripts/mosca.ts`) solo traduce eventos. Con movimiento reducido no toma nunca la
+     mosca, y si la preferencia cambia con la página abierta, la suelta.
+
+- **Alternativas descartadas.**
+  - **Prender el afiche en el build.** El sitio no se reconstruye el 1.º de octubre ni el 1.º
+    de noviembre: con un build del 30 de septiembre el afiche no salía, y con uno del 31 de
+    octubre se quedaba todo noviembre.
+  - **Recomponer la tapa de *Oktubre* en el afiche** (el título rojo sobre la multitud de la
+    franja de fondo). Es armar la composición entera de una tapa con recortes, que
+    `public/arte/README.md` veta; y la tapa entera ya está, honesta, en el casete de las
+    preguntas.
+  - **Teñir todo el portal de rojo en octubre.** La base no rota nunca y cada casete viste su
+    disco (`D-19`): pintar los nueve del mismo color borraba justo lo que el punto 4 pide.
+  - **Que la mosca siga al puntero con un resorte.** Se lee como un cursor de plantilla. Una
+    mosca no persigue: pica hacia un punto cerca, frena, tiembla y vuelve a picar. El destino
+    nunca es el puntero, es un punto a entre 26 y 110 px que se sortea de nuevo cada fracción
+    de segundo.
+  - **Que en el teléfono la mosca siga el dedo mientras arrastra.** El arrastre es la persona
+    desplazando la página; ahí la mosca no tiene nada que ir a ver.
+
+- **Consecuencias.**
+  - En octubre la casetera arranca más abajo: medido a 375×812, el afiche suma unos 370 px y
+    el primer casete queda asomando en el pie de la primera pantalla. Es un mes por año.
+  - La mosca deja de ser "lo único vivo del sitio que no responde a nada": sigue siendo el
+    único movimiento decorativo (`diseno-marca.md`), pero ahora responde.
+  - **Queda pendiente reflejarlo en el lienzo** (hojas 08 componentes y 09 pantallas): no
+    entró ni un hex, ni una fuente, ni una medida de marca nuevos —todo sale de tokens que ya
+    existían—, pero el afiche y los tres materiales del casete son estructura nueva, y el
+    circuito de `diseno-marca.md` pide que la estructura empiece en el diseño.
+  - `public/arte/README.md` decía que las tapas enteras solo aparecen en las fichas y en
+    "Adiviná la tapa": se corrige. `D-21` ya las había habilitado en cualquier pantalla.
+
+---
+
+## D-50 — Se saca la cinta de todo el sitio: el interruptor, la cama de ruido y la rocola
+
+- **Fecha:** 2026-10-01
+- **Estado:** aceptada — pedido directo del usuario. **Reemplaza** a `D-37` y a la parte de
+  `D-39` que hacía sonar el tema fijo sobre la cinta; deja sin vigencia `ADR-04` (cama de cinta),
+  `ADR-07` (rocola), `UX-21` (el interruptor), `UX-26` (la rocola) y el tema fijo de Skayboy
+  de `ADR-08.9` / `CNT-20`. Esos documentos no se reescriben: son de sus roles, y queda el
+  pedido en `Docs/SUGERENCIAS/HILO-para-todos-se-saco-la-cinta.md`.
+- **El pedido, textual:** *"Saquemos lo de la cinta en todos lados, en el juego de adivinar
+  el tema a veces salta sola y hace un ruido blanco molesto."*
+
+- **Por qué "saltaba sola" — y no era un error de una línea, era el diseño.**
+  1. La preferencia quedaba guardada para siempre (`arcade.cinta` en `localStorage`). Quien
+     la había prendido una vez, en cualquier pantalla y quizás sin querer, la tenía prendida
+     en todas.
+  2. Ningún navegador deja sonar nada sin un gesto, así que cada pantalla armaba un escucha
+     de un solo uso que **prendía la cama con el primer toque, cualquiera**
+     (`rearmarCinta()`). En "Adiviná el tema" ese toque era "Empezá".
+  3. Cada fragmento callaba la cama, y **seis segundos después de que paraba, la cama volvía
+     a subir sola** (`ESPERA_PARA_VOLVER_SEG`), con una rampa de 1,2 s. En un juego hecho
+     de escuchar fragmentos, eso es ruido que entra y sale entre pregunta y pregunta.
+  4. Y no había cómo apagarla jugando: el interruptor vivía en la cabecera de `#portada`,
+     que la partida esconde. El desvío ya estaba anotado en el propio `cinta.ts` contra
+     `UX-21` §7.
+
+- **Decisión.** Se va todo lo que existía solo para la cinta: la isla `scripts/cinta.ts`, los
+  módulos `sitio/cinta.ts`, `rocola.ts`, `rutas-sonoras.ts` y `pua.ts` con sus tests, la
+  siembra de la rocola en `Base.astro`, el bloque `CINTA` de la copia, sus estilos, y la
+  señal de "algo está sonando" de `audio/contexto.ts`, que solo la escuchaba la cama.
+  **Se queda todo el audio de los juegos**: la escalera de fragmentos, el reveal y el tema
+  completo de "Adiviná el tema" (`D-22`) suenan igual que sonaban con la cinta apagada.
+
+- **Skayboy y Poligirl, que era el único juego cuyo sonido dependía de la cinta.** Con la
+  cinta apagada quedaba mudo del todo; ahora suenan sus tres efectos (salto, tesoro,
+  puerta), armados con el primer toque o tecla de la página. Lo que se pierde: el primer
+  salto, si es lo primero que se toca, sale callado; **el tema fijo** (*Ñam fri frufi fali
+  fru*, `D-39`) se fue con la rocola —igual nunca había sonado: `public/audio/temas/` está
+  vacía y caía a la cama—; y **Skayboy ya no tiene cómo callarse**. No se inventó un
+  control: si hace falta, es una decisión de `experiencia` y `arquitectura`, y
+  `soltarEfectos()` quedó en el módulo para ese día.
+
+- **Alternativas descartadas.**
+  - **Arreglar el arranque solo** (que el primer toque no la prenda, que no vuelva sola). Lo
+    que molestaba era el ruido, no el mecanismo; el pedido fue sacarla "en todos lados".
+  - **Dejar la rocola y sacar solo la cama.** La rocola se montaba sobre el mismo
+    interruptor, la misma preferencia guardada y el mismo rearme por gesto: era la misma
+    puerta para el mismo problema.
+
+- **Consecuencias.**
+  - Las pantallas ya no tienen ningún control de sonido en la cabecera; la portada pierde la
+    fila que existía solo para colgar la estampa.
+  - La clave `arcade.cinta` sigue en los navegadores de quien la usó, pero ya no la lee
+    nadie.
+  - `npm test` pasa de 1442 a 1373 casos: los de la cinta, la rocola, la púa y la señal de
+    sonido se borraron con lo que probaban, más los nuevos de `D-49`.

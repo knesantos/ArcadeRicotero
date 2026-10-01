@@ -12,10 +12,10 @@
  * imprenta del sitio —papel, borde grueso, tinta plana, el eco de segunda tinta— y lo que
  * va a pasar adentro del `<canvas>` es pixel. La frontera se ve, y es el bisel.
  *
- * Arquitectura de islas (`D-02`): HTML estático y dos islas que no se conocen — el
- * interruptor de la cinta y la partida (`T-247`, `src/scripts/partida-skayboy.ts`). Las
- * seis teclas son botones de verdad, con su `aria-label` y su zona de pulgar; la partida
- * las escucha por `data-mando` y `data-tecla`.
+ * Arquitectura de islas (`D-02`): HTML estático y una isla, la partida (`T-247`,
+ * `src/scripts/partida-skayboy.ts`). Hasta el 2026-10-01 había una segunda, el interruptor
+ * de la cinta, y se sacó del sitio entero. Las seis teclas son botones de verdad, con su
+ * `aria-label` y su zona de pulgar; la partida las escucha por `data-mando` y `data-tecla`.
  *
  * **Molinetes abiertos (`D-14`):** no pide nada. Ni cuenta, ni login, ni saber. Y desde
  * `D-43`, tampoco una segunda persona: cada columna de mando maneja siempre al mismo
@@ -158,8 +158,9 @@ const PISO = [
 
             {/*
               El interruptor de pantalla completa (`D-47` punto 1, `UX-33 §1.2`, `ADR-10`). Un sello
-              de goma con dos estados, el mismo molde que la cinta (`UX-21`): la estampa nombra en
-              qué estado se está y el `aria-label` el verbo del toque (`CNT-22 §1`). **Vive adentro
+              de goma con dos estados, el molde que estrenó la estampa de la cinta (`UX-21`, que ya
+              no está): la estampa nombra en qué estado se está y el `aria-label` el verbo del toque
+              (`CNT-22 §1`). **Vive adentro
               del mueble y no en la cabecera**, porque con la pantalla completa del sistema lo que
               no está adentro de `.fichin` no se ve (`ADR-10.5`): este mismo botón es el que saca.
 
@@ -245,11 +246,6 @@ const PISO = [
 
     <script type="application/json" id="banco-skayboy" set:html={JSON.stringify(SEMBRADO)} />
 
-    <script>
-      // El interruptor de la cinta (`UX-21`). Isla propia: no sabe nada del juego
-      // y el juego no sabe nada de ella.
-      import '../../scripts/cinta.ts';
-    </script>
     <script>
       // La isla del juego (`T-247`). Escucha las seis teclas, le pasa el mando al mundo
       // (`src/lib/skayboy/mundo.ts`) y dibuja. El motor se baja solo si hay nivel sembrado.

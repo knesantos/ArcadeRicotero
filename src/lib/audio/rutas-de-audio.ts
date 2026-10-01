@@ -6,19 +6,12 @@
  * Es el mismo movimiento —y el mismo motivo— que sacó la lista de los tres graves a
  * `sitio/graves.ts`.
  *
- * Estas dos carpetas las necesitan **dos motores que no se pueden importar entre sí**: el de
- * fragmentos (`tema/audio.ts`, que decodifica para el reveal de `US-02`) y la rocola
- * (`sitio/rocola.ts`, que transmite para la cinta). `ADR-04` dejó escrito por qué no se
- * cruzan: *"la dirección es única —`tema/audio.ts` → `audio/contexto.ts` ← `sitio/cinta.ts`—
- * y si algún día se cruzan, la convivencia pasa a depender de quién cargó primero, que es
- * otra forma de decir que deja de estar decidida"*. Hay un test que lo fija
- * (`cinta.test.ts`), y tenía razón: al construir `T-217` la rocola importó `tema/audio.ts`
- * por estas dos funciones y **cruzó la flecha**.
- *
- * Las dos salidas malas eran escribir `/audio/fragmentos` por segunda vez —la segunda verdad
- * sobre dónde vive el audio, que el día que una cambie deja a la otra vieja sin síntoma— o
- * aflojar el candado del ADR. Esta es la tercera: la constante baja a una hoja, y los dos
- * motores la miran desde arriba sin mirarse entre ellos.
+ * Bajó acá en el ciclo 14, cuando estas dos carpetas las necesitaban **dos motores que no se
+ * podían importar entre sí** (`ADR-04`): el de fragmentos (`tema/audio.ts`, que decodifica
+ * para el reveal de `US-02`) y la rocola de la cinta, que transmitía. La cinta se sacó del
+ * sitio el 2026-10-01 y hoy las lee un solo motor, pero la hoja se queda: escribir
+ * `/audio/fragmentos` en más de un lugar es la segunda verdad sobre dónde vive el audio, que
+ * el día que una cambie deja a la otra vieja sin síntoma.
  *
  * **No importa nada, y no puede.** Es lo que hace que la misma verdad sirva en build (los
  * scripts que generan los archivos) y en el navegador, sin arrastrar `node:*` (`D-29`).

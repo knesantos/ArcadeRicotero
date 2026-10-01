@@ -10,19 +10,20 @@
  *   afinación: el silencio ahí no es un valor bajo, es la decisión. Un efecto de fallo no se
  *   descubre escuchando porque el que lo agrega lo escucha y le gusta.
  * - Que **no haya un segundo `AudioContext`** (`ADR-07.10` punto 7). El segundo contexto no
- *   hace ruido: hace que la cinta no pueda callarse, y eso aparece recién con el juego
- *   entero armado.
+ *   hace ruido: duplica los estados de un contexto —`suspended` en el celular,
+ *   `interrupted` con una llamada— que costó dos defectos aprender a manejar, y eso aparece
+ *   recién con el juego entero armado.
  * - Que **cada voz se suelte sola**. Un plataformas dispara decenas de veces por minuto; un
  *   nodo que no se suelta no se oye, se acumula.
- * - Que **con la cinta apagada no suene nada** (`CTR-17.5`). Alguien que apagó el sitio en
- *   el colectivo no espera que el juego le haga ruido, y un efecto suelto no lo reporta
- *   nadie como defecto de este archivo.
+ * - Que **sin armar no suene nada**. Antes del primer toque no hay contexto, y un efecto
+ *   que sonara igual sería el juego construyendo uno fuera de un gesto. (Hasta el
+ *   2026-10-01 esto era además la compuerta de la cinta, `CTR-17.5`; la cinta se sacó del
+ *   sitio y la compuerta con ella.)
  * - Que **no entre un archivo ni un buffer** por la ventana (`CTR-17.4`): cero bytes de red
  *   y cero MB de RAM es el presupuesto entero.
  *
- * Los dobles son propios y chicos a propósito. El de `cinta.test.ts` arrastra documento,
- * almacén y temporizadores porque la cama los necesita; acá alcanza con un contexto que
- * sepa hacer dos nodos y decir la hora, y **el reloj se mueve a mano**, que es lo que deja
+ * Los dobles son propios y chicos a propósito: acá alcanza con un contexto que sepa hacer
+ * dos nodos y decir la hora, y **el reloj se mueve a mano**, que es lo que deja
  * probar la ventana de un cuadro sin esperar un cuadro.
  */
 
@@ -179,7 +180,7 @@ interface Entorno {
  *
  * El contexto se crea con `contextoDeAudio()` —el del sitio, el único— y no con un `new`
  * propio: es la forma de que esta prueba recorra el mismo camino que la página, donde el
- * contexto lo construye la cinta y este módulo se lo encuentra puesto.
+ * contexto lo construye la isla en el primer toque y este módulo se lo encuentra puesto.
  */
 function conEntorno(opciones: Partial<Entorno> = {}) {
   const conWebAudio = opciones.conWebAudio ?? true;
@@ -506,10 +507,10 @@ test('🔴 cero buffers: los tres son osciladores puros', () => {
 });
 
 // ---------------------------------------------------------------------------------------
-// La compuerta de `CTR-17.5`: un interruptor, no tres
+// Sin armar no suena: antes del primer toque, el juego calla
 // ---------------------------------------------------------------------------------------
 
-test('🔴 sin armar no suena nada: con la cinta apagada el juego se juega en silencio entero', () => {
+test('🔴 sin armar no suena nada: antes del primer toque el juego se juega en silencio', () => {
   const e = conEntorno({ armado: false });
   try {
     assert.equal(efectosArmados(), false);
@@ -543,7 +544,7 @@ test('🔴 `soltarEfectos()` desarma: lo que se dispare después no suena', () =
     assert.equal(vocesVivas(), 0, 'quedó una voz viva después de soltar');
     assert.ok(maestro.desconexiones > 0, 'el maestro quedó colgado del destino: es una fuga que no se ve');
     const antes = e.registro.nodos.length;
-    assert.equal(sonar('salto'), false, 'sonó con la cinta apagada, que es la única forma de romper CTR-17.5');
+    assert.equal(sonar('salto'), false, 'sonó después de soltar: el maestro quedó vivo');
     assert.equal(e.registro.nodos.length, antes);
   } finally {
     e.restaurar();
@@ -580,7 +581,7 @@ const CODIGO = FUENTE.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, 
 
 test('🔴 no construye ningún `AudioContext`: se lo pide prestado a `contexto.ts`', () => {
   // Las tres formas van partidas por el mismo motivo que las palabras de más abajo: el
-  // barrido que `ARQ-rocola.md` deja escrito al final busca estas mismas tres sobre
+  // barrido que `ARQ-rocola.md` dejó escrito al final busca estas mismas tres sobre
   // `src/lib` y `src/scripts`, y tiene que seguir nombrando `contexto.ts` y
   // `diagnostico-audio.ts` y nadie más. Una prueba que escriba la forma prohibida para
   // prohibirla se mete sola en esa lista, y la próxima persona que corra el barrido tiene

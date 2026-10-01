@@ -10,11 +10,32 @@
  * Molinetes abiertos (`D-14`): esta pantalla no pide nada — ni cuenta ni saber.
  */
 import Base from '../layouts/Base.astro';
-import { PORTAL, LUGARES, JUEGOS, CASETE_REDONDOPEDIA, CASETE_CANCIONERO, type Casete } from '../lib/sitio/copy.ts';
-import { conRecorteReal, detalleTapa, discoDeRecorte, discosDe, medidas, recorte, DETALLE_POR_VARIANTE } from '../lib/sitio/arte.ts';
+import { PORTAL, LUGARES, JUEGOS, CASETE_REDONDOPEDIA, CASETE_CANCIONERO, OKTUBRE, type Casete } from '../lib/sitio/copy.ts';
+import { arteDeCasete, conRecorteReal, discoDeRecorte, discosDe, materialDeCasete, medidas, recorte } from '../lib/sitio/arte.ts';
 import { segunLaPartida } from '../lib/sitio/portal.ts';
+import { cumpleDelDia, discosDeOktubre, type FichaCruda } from '../lib/sitio/oktubre.ts';
 import { cargarBanco, type BancoCrudo } from '../lib/letra/banco.ts';
 import crudoLetra from '../data/letra.json';
+import redondopedia from '../data/redondopedia.json';
+
+/**
+ * El afiche de octubre (`D-49`): los discos que salieron en octubre, sacados de las fichas.
+ *
+ * Se imprime siempre y se muestra solo en octubre: lo decide la cabeza de esta página con
+ * la fecha del teléfono, antes del primer cuadro (más abajo). Así el sitio no depende de
+ * que alguien lo reconstruya el 1.º de octubre ni el 1.º de noviembre.
+ *
+ * La estampa sale impresa con la fecha del build y la isla `oktubre.ts` la corrige con la de
+ * quien mira. Si *Oktubre* no estuviera entre los de octubre —una ficha corregida—, el
+ * afiche no se imprime: no hay cumpleaños que festejar en el mes equivocado.
+ */
+const { deOktubre, total: discosEnTotal } = discosDeOktubre(
+  (redondopedia as unknown as { articulos: FichaCruda[] }).articulos,
+);
+const salidaOktubre = deOktubre.find((d) => d.slug === 'oktubre');
+const estampaDelBuild = salidaOktubre ? cumpleDelDia(new Date(), salidaOktubre) : '';
+/** El título corto de cada fecha: en un casillero de cien píxeles no entra "¡Bang! ¡Bang!… Estás liquidado". */
+const CORTO: Record<string, string> = { 'bang-bang-estas-liquidado': '¡Bang! ¡Bang!' };
 
 /**
  * Los juegos cuya partida depende de un banco que puede estar vacío. El portal pregunta lo
@@ -94,10 +115,12 @@ const conArte = lados.map((lado, l) => ({
   titulo: lado.titulo,
   casetes: lado.casetes.map((copia, i) => {
     const c = segunLaPartida(copia, HAY_PARTIDA[copia.href ?? ''] ?? true);
-    const arte = conRecorteReal(c.arte);
+    // `D-49`: tapa entera, detalle o recorte — cada material se pega distinto (`sitio.css`).
+    const arte = arteDeCasete(c.arte);
     return {
       ...c,
       arte,
+      material: materialDeCasete(arte),
       medidaArte: medidas(arte),
       baja: primeraOracion(c.baja),
       pista: `${l === 0 ? 'A' : 'B'}${i + 1}`,
@@ -150,6 +173,16 @@ const tapasUsadas = [
     } catch (e) {
       /* sin almacenamiento no hay umbral, y no pasa nada */
     }
+
+    /**
+     * Octubre, el mes del disco (`D-49`). En octubre la portada lleva el afiche de *Oktubre*.
+     *
+     * Lo decide la fecha del teléfono y no la del build, y por el mismo motivo que el umbral
+     * va acá arriba: un afiche que aparece después de pintar empuja la casetera entera hacia
+     * abajo, y eso es un salto. Es la misma pregunta que `esOktubre()` de
+     * `lib/sitio/oktubre.ts`, escrita en línea porque este bloque no puede importar nada.
+     */
+    if (new Date().getMonth() === 9) document.documentElement.dataset.mes = 'oktubre';
   </script>
 
   <header class="portada-arcade">
@@ -166,6 +199,37 @@ const tapasUsadas = [
     <p class="donde-estas">{LUGARES.portal}</p>
     <p class="bajada-portal">{PORTAL.bajada}</p>
   </header>
+
+  {/* El afiche de octubre (`D-49`). Está siempre en el documento y se ve solo con
+      `data-mes="oktubre"`, que pone la cabeza de esta página antes del primer cuadro. El
+      sello va en la letra calcada de la tapa; las fechas, una por disco, cada una con la
+      tinta del suyo (`D-19`) y llevando a su ficha, que es donde está la fuente. */}
+  {
+    salidaOktubre && (
+      <section class="oktubre" aria-labelledby="oktubre-sello">
+        <div class="oktubre-cabeza">
+          <h2 class="oktubre-sello" id="oktubre-sello">{OKTUBRE.sello}</h2>
+          <span class="oktubre-cumple" data-cumple-dia={salidaOktubre.dia} data-cumple-anio={salidaOktubre.anio}>
+            {estampaDelBuild}
+          </span>
+        </div>
+        <p class="oktubre-canta">{OKTUBRE.canta}</p>
+        <p class="oktubre-cuenta">{OKTUBRE.cuenta(deOktubre.length, discosEnTotal)}</p>
+        <ul class="oktubre-calendario" aria-label={OKTUBRE.calendario}>
+          {deOktubre.map((d) => (
+            <li class:list={['oktubre-fecha', `oktubre-fecha--${d.slug}`]}>
+              <a href={`/redondopedia/${d.slug}/`}>
+                <span class="oktubre-dia">{d.dia}</span>
+                <span class="oktubre-disco">{CORTO[d.slug] ?? d.titulo}</span>
+                <span class="oktubre-anio">{d.anio}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a class="oktubre-jugar" href="/juegos/adivinar-el-tema/?disco=oktubre">{OKTUBRE.jugar}</a>
+      </section>
+    )
+  }
 
   {/* El rodillo separa la franja de marca de la casetera (`UX-22` §9): la veta que deja
       un rodillo entintado, no una linea. Es decoracion sin contenido, y por eso se
@@ -184,7 +248,7 @@ const tapasUsadas = [
                 href={c.href}
               >
                 <img
-                  class="casete-arte"
+                  class:list={['casete-arte', `casete-arte--${c.material}`]}
                   src={c.arte}
                   alt=""
                   aria-hidden="true"
@@ -231,4 +295,9 @@ const tapasUsadas = [
       </section>
     ))
   }
+
+  <script>
+    // La estampa del cumpleaños, con la fecha de quien mira. Sin afiche no hace nada.
+    import '../scripts/oktubre.ts';
+  </script>
 </Base>

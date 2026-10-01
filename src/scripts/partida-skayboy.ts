@@ -26,8 +26,9 @@
  *    antes de cualquier otra cosa (`ADR-08.2.1`, condición 1). Ninguna opción del init lo
  *    apaga; esta línea sí. **Y `backgroundAudio: true`**, que no enciende nada: impide que
  *    el motor le haga `suspend()`/`resume()` al contexto cerrado cada vez que la pestaña se
- *    esconde y vuelve. Todo lo que suena sale del contexto del sitio: el tema por la
- *    cinta (`ADR-08.9`) y los tres efectos por `sonido.ts` (`CTR-17`).
+ *    esconde y vuelve. Todo lo que suena sale del contexto del sitio: los tres efectos por
+ *    `sonido.ts` (`CTR-17`). El tema de `ADR-08.9` lo ponía la cinta, y se fue con ella el
+ *    2026-10-01.
  * 4. **Cero texto en el canvas.** Todo lo que se lee vive en el DOM, con las fuentes del
  *    sitio. Y `debug: false`, porque el inspector del motor también es texto.
  *
@@ -151,8 +152,8 @@ import {
   type Victoria,
 } from '../lib/skayboy/escena.ts';
 import { cargarAvance, guardarPasado } from '../lib/skayboy/avance.ts';
-import { armarEfectos, soltarEfectos, sonar } from '../lib/skayboy/sonido.ts';
-import { alCambiarLaCinta, estadoDeLaCinta } from '../lib/sitio/cinta.ts';
+import { armarEfectos, sonar } from '../lib/skayboy/sonido.ts';
+import { despertarSalida } from '../lib/audio/contexto.ts';
 import { montarPantallaCompleta } from '../lib/skayboy/modo-pantalla.ts';
 
 /**
@@ -266,15 +267,37 @@ function escucharTeclas(): void {
 }
 
 /* ==========================================================================
-   El sonido: se arma con la cinta y se suelta con ella (`CTR-17.5`)
+   El sonido: se arma con el primer toque de la partida (`CTR-17`)
    ========================================================================== */
 
+/**
+ * Los tres efectos suenan desde el primer toque, sin interruptor.
+ *
+ * Hasta el 2026-10-01 se armaban con la cinta y se soltaban con ella (`CTR-17.5`): con la
+ * cinta apagada este juego se jugaba en silencio entero. La cinta se sacó del sitio, y
+ * dejarlo como estaba con ella apagada era dejarlo mudo para siempre. Así que suena como
+ * sonaba con la cinta prendida —los efectos, sin la cama abajo— y **no hay un control propio
+ * para callarlo**: si hace falta, es una decisión que todavía no se tomó.
+ *
+ * El contexto se construye acá, **adentro del gesto**, con `despertarSalida()`: ningún
+ * navegador deja sonar nada que no haya pedido una persona, y `sonido.ts` solo mira el que
+ * hay. Se escucha `pointerup` y no `pointerdown` porque en el celular el gesto que habilita
+ * el audio es el que levanta el dedo; con el mouse, el `pointerup` llega todavía adentro
+ * del gesto del `pointerdown`. Se sigue escuchando hasta que la salida queda corriendo: un
+ * toque que el navegador no aceptó no cierra la puerta, la deja para el próximo.
+ */
 function engancharEfectos(): void {
-  if (estadoDeLaCinta() === 'sonando') armarEfectos();
-  alCambiarLaCinta((estado) => {
-    if (estado === 'sonando') armarEfectos();
-    else soltarEfectos();
-  });
+  const eventos = ['pointerup', 'keydown'] as const;
+  const despertar = (): void => {
+    void despertarSalida().then((estado) => {
+      // Corriendo, o sin Web Audio: un toque más no cambia nada, y se deja de escuchar.
+      if (estado === null || estado === 'running') {
+        for (const evento of eventos) document.removeEventListener(evento, despertar, true);
+      }
+    });
+    armarEfectos();
+  };
+  for (const evento of eventos) document.addEventListener(evento, despertar, true);
 }
 
 /* ==========================================================================

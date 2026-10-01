@@ -7,9 +7,9 @@
  *
  * ## Se sintetizan: cero archivos, cero bytes, cero `decodeAudioData`
  *
- * Es lo que el sitio ya hace dos veces —la cama de `ADR-04` y la púa de `ADR-07.7` son
- * ruido generado en memoria— y `CTR-17.4` lo presupuesta en **0 bytes de red y 0 MB de
- * RAM**: los tres que quedan son osciladores puros, sin un solo `AudioBuffer`. Un
+ * Es lo que el sitio hacía dos veces —la cama de `ADR-04` y la púa de `ADR-07.7` eran
+ * ruido generado en memoria, y se fueron con la cinta el 2026-10-01— y `CTR-17.4` lo
+ * presupuesta en **0 bytes de red y 0 MB de RAM**: los tres que quedan son osciladores puros, sin un solo `AudioBuffer`. Un
  * `salto.mp3` sería el primer archivo de audio del sitio que no es una grabación de la
  * banda, y habría que conseguirlo, licenciarlo y fichar de dónde salió por 200 ms de
  * sonido.
@@ -32,19 +32,17 @@
  * justo lo que `ADR-04.4` prohíbe. El motor de juego trae el suyo y está apagado
  * (`ADR-08.2` punto 3).
  *
- * ## La compuerta de `CTR-17.5`: un interruptor, no tres
+ * ## Quién lo arma
  *
- * Si la cinta está apagada, este juego se juega **en silencio entero**: ni tema ni efectos.
- * Acá eso se cumple por construcción y por contrato con la isla:
+ * La isla, desde adentro del primer toque de la partida: construye el contexto con
+ * `despertarSalida()` y llama a `armarEfectos()`. Sin contexto vivo no hay `volumenEfectos`,
+ * y sin `volumenEfectos` `sonar()` devuelve `false` sin crear un nodo — así que antes del
+ * primer toque, o en un navegador sin Web Audio, el juego se juega igual y en silencio.
  *
- * - **Por construcción:** sin contexto vivo no hay `volumenEfectos`, y sin `volumenEfectos`
- *   `sonar()` devuelve `false` sin crear un nodo. En esta pantalla el único que construye el
- *   contexto es la cinta, así que quien nunca la prendió nunca oye un salto.
- * - **Por contrato:** `armarEfectos()` se llama desde adentro del gesto que prende la cinta
- *   y `soltarEfectos()` cuando se apaga. Es la isla la que engancha las dos puntas a
- *   `alCambiarLaCinta`, y **este módulo no le pregunta a `cinta.ts`** a propósito: colgarse
- *   de la cinta lo sacaría de la fila de módulos hoja de `D-29` y ataría la prueba de un
- *   efecto de 90 ms al grafo entero de la atmósfera.
+ * Hasta el 2026-10-01 lo armaba la cinta (`CTR-17.5`): con la cinta apagada, este juego no
+ * sonaba. La cinta se sacó del sitio, y con ella la compuerta. **Este módulo nunca le
+ * preguntó nada a la cinta**, y por eso no cambió una línea de código: sigue siendo hoja
+ * (`D-29`) y sigue sin saber quién lo arma.
  *
  * ## Una voz por disparo, y se suelta sola
  *
@@ -230,9 +228,9 @@ const ultimoDisparo = new Map<Efecto, number>();
 /**
  * Arma el grafo. **Desde adentro de un gesto**, y una sola vez por página.
  *
- * Devuelve si quedó armado. `false` no es un error: es un navegador sin Web Audio, o la
- * cinta todavía apagada, y en los dos casos el juego se juega igual y en silencio — que es
- * lo que `CTR-17.5` decidió y lo que los molinetes abiertos exigen (`CTR-17.6`).
+ * Devuelve si quedó armado. `false` no es un error: es un navegador sin Web Audio, o un
+ * contexto que todavía nadie construyó, y en los dos casos el juego se juega igual y en
+ * silencio — que es lo que los molinetes abiertos exigen (`CTR-17.6`).
  */
 export function armarEfectos(): boolean {
   if (volumen) return true;
@@ -245,8 +243,8 @@ export function armarEfectos(): boolean {
     volumen = maestro;
     return true;
   } catch {
-    // Un navegador que no deja ni esto tampoco va a dejar la cinta. El que llamó se entera
-    // por lo que devolvemos, no con una excepción arriba del bucle del juego.
+    // Un navegador que no deja ni esto tampoco va a dejar sonar un efecto. El que llamó se
+    // entera por lo que devolvemos, no con una excepción arriba del bucle del juego.
     volumen = null;
     return false;
   }
@@ -268,7 +266,7 @@ function soltarVoz(voz: Voz): void {
  * Dispara un efecto. Devuelve si sonó.
  *
  * Los cuatro motivos por los que puede no sonar están todos en `CTR-17`, y ninguno es un
- * error que haya que reportar: no está armado (la cinta está apagada), el mismo efecto ya
+ * error que haya que reportar: no está armado (nadie tocó todavía), el mismo efecto ya
  * sonó en este cuadro, hay cuatro voces vivas, o **el nombre no es uno de los tres**. Ese
  * último es la guarda de `UX-29`: acá no hay un efecto que se pueda pedir para el fallo.
  */
@@ -336,10 +334,10 @@ export function efectosArmados(): boolean {
 /**
  * Desarma todo: las voces que quedaron sonando y el maestro.
  *
- * Lo llama la isla cuando se apaga la cinta y cuando la pantalla se va. **Un maestro
- * colgado del destino después de apagar es una fuga que no se ve**, y la próxima voz que
- * alguien dispare sonaría con la cinta apagada — que es la única forma de romper
- * `CTR-17.5`.
+ * Hasta el 2026-10-01 lo llamaba la isla cuando se apagaba la cinta; hoy no lo llama nadie,
+ * y queda como la otra punta de `armarEfectos()` para el día que el juego tenga cómo
+ * callarse. **Un maestro colgado del destino después de apagar es una fuga que no se ve**,
+ * y la próxima voz que alguien dispare sonaría con el juego callado.
  */
 export function soltarEfectos(): void {
   for (const voz of [...voces]) {

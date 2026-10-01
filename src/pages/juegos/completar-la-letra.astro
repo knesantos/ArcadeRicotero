@@ -89,12 +89,5 @@ const TITULO = 'Completá la letra — Arcade Ricotero';
     {/* El banco viaja ya filtrado: sin borradores, sin notas internas. */}
     <script id="banco" type="application/json" set:html={JSON.stringify(items)} />
     {hayJuego && <script src="../../scripts/partida-letra.ts"></script>}
-
-    <script>
-      // El interruptor de la cinta (`UX-21`). Isla propia: no sabe nada del juego
-      // y el juego no sabe nada de ella. Va sin la guarda de `hayJuego`: la cinta no
-      // depende de que haya banco cargado.
-      import '../../scripts/cinta.ts';
-    </script>
   </body>
 </html>

@@ -51,8 +51,9 @@
 
 /* El techo que se le saco a `main` se le devuelve a lo que es texto: el encabezado y la
    cabecera. Los dos, y no uno solo: con el techo nada mas en el encabezado, a 1280 x 800
-   la cabecera se estiraba a 1233 px —el volver pegado al borde izquierdo, la cinta al
-   derecho— y el titulo quedaba centrado en 544, sin alinear con nada. Asi los dos van en
+   la cabecera se estiraba a 1233 px —el volver pegado al borde izquierdo, la estampa de
+   la cinta (que se saco del sitio el 2026-10-01) al derecho— y el titulo quedaba centrado
+   en 544, sin alinear con nada. Asi los dos van en
    la misma medida, como en los otros juegos. Donde el alto no sobra (abajo) el techo se
    levanta otra vez, porque ahi cada renglon cuenta. */
 .juego-skayboy .cabecera-sitio,
@@ -666,7 +667,7 @@
    lugar de la pantalla con margen real. Ahi van la cabecera y el encabezado, apilados
    arriba del mueble:
 
-     48 (volver + cinta) + 8 (su aire) + <=32 (titulo y rotulo) + 180 (el mueble)
+     48 (volver) + 8 (su aire) + <=32 (titulo y rotulo) + 180 (el mueble)
        = <=268, en 324
 
    El fichin entero mide 324 **con la cabecera adentro**. En 354, que es 375 menos la
@@ -684,10 +685,12 @@
    la misma grilla que la cabecera. Las teclas ocupan las tres filas de su lado; la ultima
    fila es `1fr` y se lleva lo que sobra, con el mueble centrado adentro.
 
-   **La columna del medio no esta clavada en 256.** Es `auto`: si "← Volver al arcade"
-   mas la cinta no entran en un renglon a 256, la columna crece (el area sigue fija,
-   centrada adentro) antes que partir la cabecera. **Solo a 480 justos** —el piso de ancho
-   de esta franja, 112 + 256 + 112— la cabecera se parte en dos y la cuenta no cierra:
+   **La columna del medio no esta clavada en 256.** Es `auto`: si la cabecera no entra en
+   un renglon a 256, la columna crece (el area sigue fija, centrada adentro) antes que
+   partirla. Lo que sigue se midio con la estampa de la cinta al lado de "← Volver al
+   arcade"; desde el 2026-10-01 la cabecera es el volver solo, y el caso de 480 justos hay
+   que volver a medirlo. **Solo a 480 justos** —el piso de ancho de esta franja, 112 + 256
+   + 112— la cabecera se partia en dos y la cuenta no cerraba:
    medido a 480 x 360, 112 de cabecera (mas 8 de aire) + 36 de encabezado + 180 de mueble
    = 336, **12 mas que los 324 del mando**, y el encabezado pasa el techo de <=32 de
    `UX-28 §2.3`. Las teclas entran igual (cuelgan de arriba, `align-self: start`); lo que
@@ -762,11 +765,11 @@
 /* ==========================================================================
    El interruptor de pantalla completa, en el mueble (`UX-33 §1.2`, `CNT-22 §1`)
 
-   El mismo sello de goma que la cinta (`UX-21`): rectangulo de esquina casi viva, borde
-   fino, mayusculas rotuladas, apenas torcido. **Sin icono**: las flechas en diagonal que
-   cualquier interfaz usa para esto son el icono de libreria que `diseno-marca.md` veta por
-   nombre, y la palabra alcanza. Va en `--fuente-rotulada` y en tokens neutros, como la
-   cinta: es base, no disco.
+   El sello de goma que estreno la estampa de la cinta (`UX-21`, que se saco del sitio el
+   2026-10-01): rectangulo de esquina casi viva, borde fino, mayusculas rotuladas, apenas
+   torcido. **Sin icono**: las flechas en diagonal que cualquier interfaz usa para esto son
+   el icono de libreria que `diseno-marca.md` veta por nombre, y la palabra alcanza. Va en
+   `--fuente-rotulada` y en tokens neutros: es base, no disco.
 
    **Superpuesto, nunca en la grilla** (`UX-33 §1.2`): el presupuesto de alto de `UX-28 §2.3`
    no tiene un renglon para un tercer elemento, y no hace falta reabrirlo. Se ancla a la

@@ -422,9 +422,24 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   animation: vuelo-de-mosca var(--duracion-vuelo) var(--curva-cinta) infinite;
 }
 
+/* La mosca tomada a mano (`D-49`, `src/scripts/mosca.ts`): revolotea alrededor del mouse,
+   o de donde tocó el dedo. Mientras la lleva la isla, el recorrido de CSS se apaga y la
+   caja se ancla a la esquina, para que el traslado que escribe la isla sea el punto de la
+   ventana y nada más. Cuando la isla la suelta, ya la dejó en el primer cuadro del
+   recorrido —mismo lugar, misma cara— y el CSS arranca de nuevo desde 0 % sin salto.
+
+   No hay tiempo ni curva acá: el ritmo del vuelo a mano es física, no una transición. */
+.mosca-viva--a-mano {
+  top: 0;
+  left: 0;
+  animation: none;
+  will-change: transform;
+}
+
 /* El equivalente quieto de la mosca: queda parada donde arranca. No se acelera a
    0,01 ms —eso es un truco para que parezca apagada—, se apaga. Y no se pierde nada:
-   es la unica pieza del sitio que no lleva informacion encima. */
+   es la unica pieza del sitio que no lleva informacion encima. La isla tampoco la toma
+   bajo esta preferencia, y si cambia con la pagina abierta, la suelta. */
 @media (prefers-reduced-motion: reduce) {
   .mosca-viva {
     animation: none;
@@ -459,11 +474,11 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   justify-content: space-between;
   gap: var(--espacio-2);
   margin-bottom: var(--espacio-3);
-  /* El renglón envuelve desde el ciclo 11, cuando pasó a tener un tercer elemento.
-     Medido a 375 px: la cinta de regreso, la estampa de la cinta y la marca chica suman
-     369 px contra 343 disponibles. Sin `wrap`, lo que se partía en dos renglones era
-     **la salida de la pantalla** ("← AL / ARCADE"), que es lo último que puede ceder.
-     Con `wrap` y la estampa al final, la que baja sola es la estampa (`UX-21` §1). */
+  /* El renglón envuelve desde el ciclo 11, cuando tuvo un tercer elemento: la estampa de
+     la cinta, que se sacó del sitio el 2026-10-01. Hoy son dos —el regreso y la marca
+     chica— y entran a 375 px; el `wrap` queda para que, si algún día no entran, baje la
+     marca y no se parta en dos **la salida de la pantalla** ("← AL / ARCADE"), que es lo
+     último que puede ceder. */
   flex-wrap: wrap;
 }
 
@@ -482,156 +497,6 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   border-radius: 3px;
   transform: rotate(-1.6deg);
   box-shadow: 0 2px 0 color-mix(in srgb, var(--papel-borde) 60%, transparent);
-}
-
-/* ==========================================================================
-   El interruptor de la cinta (`UX-21`, `ADR-04`)
-
-   Es la misma estampa que ya usa el sitio para el sello de accion de un casete: rectangulo
-   de esquina casi viva, borde fino, mayusculas rotuladas, apenas torcido. **No es una
-   pastilla capsula, no es un icono de libreria y no es un altavoz tachado** — los tres
-   estan vetados por nombre en `.claude/rules/diseno-marca.md`, y los tres son lo que sale
-   por defecto cuando a alguien le piden un control de sonido.
-
-   VA EN TOKENS NEUTROS, nunca en un `--cat-*`. Vive en el renglon de la cabecera, al lado
-   de `.volver` y de `.marca-chica`, que tampoco visten disco: la mezcla `D-19` rota el
-   acento y la letra grande, no la base, y la cama es base (`UX-21` §2).
-
-   EL ESTADO NO SE COMUNICA SOLO CON COLOR, y son tres senales independientes: la palabra
-   cambia (APAGADA / SONANDO / CALLADA / BLOQUEADA), el simbolo cambia de **silueta** —
-   triangulo hueco, triangulo lleno, dos barras—, y el borde cambia de trazo. La cuarta no
-   es visual: `aria-pressed`, que escribe la isla.
-
-   Y NO SE MUEVE. Ni pulsa, ni titila, ni gira cuando la cinta suena. `UX-20` §6 nombra
-   "un elemento clickeable con su propia animacion" como el primer sintoma de que este
-   ciclo fallo, y un interruptor de sonido es donde mas tienta ponerla.
-   ========================================================================== */
-
-.cinta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4em;
-  min-height: var(--toque-min);
-  padding: 0 var(--espacio-1);
-  font-family: var(--fuente-rotulada);
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  color: var(--texto-tenue);
-  background: transparent;
-  border: 2px solid var(--borde);
-  border-radius: 3px;
-  transform: rotate(-1.1deg);
-  transition: border-color var(--duracion-toque), color var(--duracion-toque);
-  /* Dos palabras que no se parten nunca: una estampa partida en dos renglones deja de
-     leerse como una estampa. Si no entra en el renglón, baja entera. */
-  white-space: nowrap;
-  /* Pegada a la derecha, esté sola en su renglón o compartiéndolo. */
-  margin-left: auto;
-}
-
-/* Prendida: la estampa se aclara y el borde se afirma. Sigue sin disco y sin acento de
-   estado — el verde y el rojo son del acierto y del error, y nada mas (`UX-20` §3.2). */
-.cinta[data-estado='sonando'] {
-  color: var(--texto);
-  border-color: var(--papel-borde);
-}
-
-/* Callada por otro sonido: prendida, pero muda. Se dice con la palabra y con las dos
-   barras; el borde queda como cuando esta prendida, porque prendida esta. */
-.cinta[data-estado='callada'] {
-  color: var(--texto-tenue);
-  border-color: var(--papel-borde);
-}
-
-/* Bloqueada: el mismo borde punteado que ya usa `.casete-pronto` para decir "esto quedo a
-   mitad de camino". No es un error del sitio y no se pinta como tal. */
-.cinta[data-estado='bloqueada'] {
-  border-style: dashed;
-}
-
-.cinta-simbolo {
-  font-size: 0.9em;
-  line-height: 1;
-}
-
-/* La linea que explica el bloqueo. Registro 3: nombra el hecho y se calla. */
-.cinta-motivo {
-  flex-basis: 100%;
-  font-size: 0.72rem;
-  line-height: 1.4;
-  color: var(--texto-tenue);
-}
-
-/* ------------------------------------------------------------------ la rocola (`UX-26`)
-
-   El renglón que cuelga del interruptor cuando la rocola pone un tema: qué suena y el
-   control para cambiarlo. Va DEBAJO de la estampa y no adentro — el botón es registro 3,
-   nombra un estado y se calla, y el título de un tema no es un estado. Adentro convertiría
-   la estampa en un cartel que cambia de ancho cada diez segundos, arriba de todo.
-
-   Ocupa el renglón entero y se alinea a la derecha, abajo de la estampa, que es donde la
-   estampa ya vive (`margin-left: auto`). */
-/* `display: flex` pisa el `display: none` que trae el atributo `hidden`, así que el
-   renglón oculto seguía ocupando su lugar: medido a 375×812, le sumaba 60 px a la cabecera
-   de toda pantalla con la cinta apagada, que es el estado por defecto de la primera visita.
-   No se veía nada y el aire estaba igual. Por eso esta regla va primero y es explícita. */
-.cinta-pieza[hidden] {
-  display: none;
-}
-
-.cinta-pieza {
-  flex-basis: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: var(--espacio-1);
-  margin-top: calc(var(--espacio-1) / 2);
-}
-
-/* El título del tema va en la fuente legible y no en una letra de disco: es texto que
-   cambia solo cada diez segundos y que incluye nombres con tilde y con Ñ, que las fuentes
-   calcadas de las tapas no tienen (`diseno-marca.md`, deuda declarada). */
-.cinta-suena {
-  font-size: 0.76rem;
-  line-height: 1.3;
-  color: var(--texto-tenue);
-  text-align: right;
-}
-
-/* Sello de goma, como el resto de los controles chicos del sitio: rectángulo de esquina
-   casi viva, borde fino, mayúsculas rotuladas y apenas torcido. Nunca la pastilla cápsula
-   que `diseno-marca.md` veta por nombre. Se tuerce para el otro lado que la estampa para
-   que no parezcan la misma pieza repetida. */
-.cinta-accion {
-  min-height: var(--toque-min);
-  padding: 0 var(--espacio-1);
-  font-family: var(--fuente-rotulada);
-  font-size: 0.62rem;
-  letter-spacing: 0.09em;
-  color: var(--texto-tenue);
-  background: transparent;
-  border: 1px solid var(--borde);
-  border-radius: 3px;
-  transform: rotate(0.8deg);
-  transition: border-color var(--duracion-toque), color var(--duracion-toque);
-  white-space: nowrap;
-}
-
-/* Cambio de tinta y de borde, nunca un levantar ni un inflar: el único movimiento
-   decorativo de este sitio es la mosca. */
-.cinta-accion:hover,
-.cinta-accion:focus-visible {
-  color: var(--texto);
-  border-color: var(--papel-borde);
-}
-
-/* La portada no tiene cabecera —no hay a donde volver desde la puerta—, asi que la isla le
-   arma una fila propia para colgar la estampa. Va pegada a la derecha y sin margen abajo:
-   no es una barra de navegacion, es un control en la esquina. */
-.cabecera-sitio--solo-cinta {
-  justify-content: flex-end;
-  margin-bottom: 0;
 }
 
 .marca-chica {
@@ -694,6 +559,209 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
 /* La portada del portal: el recorte se pega arriba a la derecha de la marca. */
 .portada-arcade {
   position: relative;
+}
+
+/* ==========================================================================
+   El afiche de octubre (`D-49`)
+
+   Octubre es el mes del disco: *Oktubre* salió el 4 de octubre de 1986, y de los diez discos
+   seis salieron en octubre. En ese mes el portal lleva este afiche entre la marca y la
+   casetera; el resto del año no está.
+
+   **Lo decide la fecha del teléfono**, en la cabeza de `index.astro`, antes del primer
+   cuadro: sin el atributo el afiche no ocupa lugar, y con él la casetera ya arranca más
+   abajo desde el primer cuadro, sin saltar.
+
+   Es un afiche pegado, no una tarjeta: borde grueso en el rojo de *Oktubre* (`--marca-rojo`
+   es su tinta, `D-19`), cinta arriba, apenas torcido. El sello va en la letra calcada de la
+   tapa; lo que se lee de corrido, en la del sistema (`UX-01`).
+   ========================================================================== */
+
+.oktubre {
+  display: none;
+}
+
+:root[data-mes='oktubre'] .oktubre {
+  display: block;
+}
+
+.oktubre {
+  position: relative;
+  margin: var(--espacio-2) 4px var(--espacio-1);
+  padding: var(--espacio-2) var(--espacio-2) calc(var(--espacio-2) + 4px);
+  background: var(--fondo);
+  border: var(--linea) solid var(--marca-rojo);
+  border-radius: 3px;
+  transform: rotate(-0.6deg);
+}
+
+/* La cinta que lo sostiene, la misma de los casetes. */
+.oktubre::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  right: 18%;
+  width: 82px;
+  height: 26px;
+  background: color-mix(in srgb, var(--papel) 30%, transparent);
+  transform: rotate(4deg);
+  border-radius: 2px;
+}
+
+.oktubre-cabeza {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--espacio-1) var(--espacio-2);
+}
+
+.oktubre-sello {
+  margin: 0;
+  font-family: var(--fuente-titular);
+  font-size: clamp(2.5rem, 13vw, 3.4rem);
+  font-weight: normal;
+  line-height: 0.9;
+  color: var(--marca-rojo);
+}
+
+/* La estampa del cumpleaños: sello de goma hueco, en el mismo rojo. Va en la rotulada
+   porque trae números y tildes ("CUMPLIÓ"), que el calco no tiene. */
+.oktubre-cumple {
+  padding: 0.35em 0.6em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--marca-rojo);
+  border: 2px solid var(--marca-rojo);
+  border-radius: 3px;
+  transform: rotate(-5deg);
+  white-space: nowrap;
+}
+
+.oktubre-canta {
+  margin: var(--espacio-1) 0 2px;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  color: var(--texto);
+  text-wrap: balance;
+}
+
+.oktubre-cuenta {
+  margin: 0 0 var(--espacio-1);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--texto-tenue);
+}
+
+/* Las seis fechas: un taco de almanaque por disco, cada uno con el borde y el número en la
+   tinta de su disco (todas tienen su par AA sobre `--fondo` en `contraste.test.ts`). Tres
+   por renglón entran a 320 px. */
+.oktubre-calendario {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0 0 var(--espacio-2);
+  padding: 0;
+  list-style: none;
+}
+
+/* El día y el año en el mismo renglón, el disco abajo: medido a 375 px, con el año en un
+   renglón propio el afiche dejaba la casetera entera debajo del pliegue. */
+.oktubre-fecha a {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  align-items: baseline;
+  column-gap: 6px;
+  min-height: var(--toque-min);
+  height: 100%;
+  padding: 6px 8px;
+  color: var(--texto);
+  text-decoration: none;
+  background: var(--fondo);
+  border: 2px solid color-mix(in srgb, var(--tinta-fecha) 65%, var(--borde));
+  border-radius: 3px;
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
+}
+
+/* Cambio de borde, nunca un levantar: el único movimiento decorativo es la mosca. */
+.oktubre-fecha a:hover,
+.oktubre-fecha a:focus-visible {
+  border-color: var(--tinta-fecha);
+}
+
+.oktubre-fecha a:focus-visible {
+  outline: var(--linea) solid var(--acento-2);
+  outline-offset: 2px;
+}
+
+.oktubre-fecha:nth-child(odd) {
+  transform: rotate(-0.8deg);
+}
+
+.oktubre-fecha:nth-child(even) {
+  transform: rotate(0.7deg);
+}
+
+.oktubre-dia {
+  font-family: var(--fuente-rotulada);
+  font-size: 1.45rem;
+  line-height: 1;
+  color: var(--tinta-fecha);
+}
+
+.oktubre-disco {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin-top: 4px;
+  font-size: 0.74rem;
+  line-height: 1.2;
+}
+
+.oktubre-anio {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 0.7rem;
+  color: var(--texto-tenue);
+}
+
+/* La de *Oktubre* se distingue por el grosor del borde, además del color. */
+.oktubre-fecha--oktubre a {
+  border-width: var(--linea);
+}
+
+/* Por si mañana una ficha suma otro disco de octubre: borde neutro y número legible. Va
+   antes que las seis: mismo peso de selector, así que gana la que viene después. */
+.oktubre-fecha { --tinta-fecha: var(--texto); }
+.oktubre-fecha--oktubre { --tinta-fecha: var(--disco-oktubre-tinta); }
+.oktubre-fecha--bang-bang-estas-liquidado { --tinta-fecha: var(--disco-bang-bang-estas-liquidado-tinta); }
+.oktubre-fecha--la-mosca-y-la-sopa { --tinta-fecha: var(--disco-la-mosca-y-la-sopa-tinta); }
+.oktubre-fecha--lobo-suelto { --tinta-fecha: var(--disco-lobo-suelto-tinta); }
+.oktubre-fecha--cordero-atado { --tinta-fecha: var(--disco-cordero-atado-tinta); }
+.oktubre-fecha--luzbelito { --tinta-fecha: var(--disco-luzbelito-tinta); }
+
+/* El llamado: sello entintado, como el "JUGÁ" de los casetes. Letra de `--fondo` sobre el
+   rojo de Oktubre, que es el par que ya usa el casete de las preguntas. */
+.oktubre-jugar {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  padding: 0 1em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  color: var(--fondo);
+  text-decoration: none;
+  background: var(--marca-rojo);
+  border: 2px solid var(--marca-rojo);
+  border-radius: 3px;
+  transform: rotate(-1.2deg);
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--marca-rojo) 40%, var(--papel));
+}
+
+.oktubre-jugar:focus-visible {
+  outline: var(--linea) solid var(--acento-2);
+  outline-offset: 3px;
 }
 
 /* ---- Los lados del cassette ---- */
@@ -836,12 +904,36 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   border-color: var(--tinte);
 }
 
-/* El recorte de tapa que decora cada casete. */
+/* Lo que va pegado en cada casete (`D-49`): un recorte, un detalle de la foto de la tapa, o
+   la tapa entera. Los tres miden lo mismo por afuera —58 px con el borde adentro— para que
+   las etiquetas de los nueve casetes arranquen en la misma columna. */
 .casete-arte {
-  width: 54px;
-  height: 54px;
+  box-sizing: border-box;
+  width: 58px;
+  height: 58px;
   object-fit: contain;
   transform: rotate(-4deg);
+}
+
+/* El detalle: un pedazo de la foto, recortado y pegado. Es el mismo tratamiento que ya
+   tiene el detalle de tapa de la Redondopedia (`.detalle-articulo`): borde grueso teñido
+   por el disco del casete, esquina de estampa y una rotación leve (`D-21`, condición 3). */
+.casete-arte--detalle {
+  object-fit: cover;
+  border: var(--linea) solid color-mix(in srgb, var(--tinte) 60%, var(--borde));
+  border-radius: 3px;
+  transform: rotate(3deg);
+}
+
+/* La tapa entera: el disco pegado como un objeto, no como una miniatura. Filete de papel,
+   como el borde blanco que deja la imprenta en un sobre, y la sombra dura corrida del
+   recorte sobre recorte — tinta plana, sin difuminar (la tabla anti-slop). */
+.casete-arte--entera {
+  object-fit: cover;
+  border: 2px solid var(--papel);
+  border-radius: 2px;
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--tinte) 70%, var(--fondo));
+  transform: rotate(-3deg);
 }
 
 /* El detalle de la tapa real (D-21, UX-05), pegado junto al rotulo "Viste X".

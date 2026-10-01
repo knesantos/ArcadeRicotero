@@ -30,7 +30,7 @@
       "const": 9
     },
     "temaFijo": {
-      "comment": "D-39: el tema que la cinta repite. `null` es el estado seguro y suena a cama, como los otros ocho juegos. Lo elige `contenido` con `experiencia`, y hasta entonces queda en null.",
+      "comment": "D-39: el tema elegido para este juego. Lo ponía la cinta, que se sacó del sitio el 2026-10-01: hoy ningún código lo lee y el juego no suena tema, solo sus tres efectos (CTR-17). Lo elige `contenido` con `experiencia`; `null` es el estado seguro.",
       "type": ["string", "null"],
       "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
     },
