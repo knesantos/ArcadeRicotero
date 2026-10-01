@@ -1,5 +1,9 @@
 # CNT → hilo principal — `dos-ejes` es una sala sin puerta
 
+> **Resuelta el 2026-10-01** (`D-51`): fue un olvido de cableado, no una decisión. `dos-ejes`
+> tiene casete en el portal (A2, *Luzbelito*), renglón del lugar (`CNT-13` §8) y bajada
+> (`CNT-26`), y comparte su resultado como identidad.
+
 - **De:** `contenido`, al escribir `CNT-13-los-nombres-del-lugar.md` (`T-184`, ciclo 11).
 - **Para:** hilo principal (dueño de `src/pages/` y `src/lib/sitio/copy.ts`).
 

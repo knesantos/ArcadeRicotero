@@ -9,7 +9,11 @@
 > hay página del sitio, ni isla, ni copy, ni motor, ni física. Hay cuatro archivos para
 > mirar.
 >
-> Vive en `public/` y **no en `src/pages/`** a propósito: una ruta nueva de Astro entra al
+> **Se mudó de `public/arte/ensayo/` a `Docs/UX/ensayo-skayboy/` el 2026-10-01** (`D-51`): el
+> juego ya existe, y el ensayo se seguía publicando en el sitio sin que nadie lo enlazara. Lo
+> de abajo cuenta por qué había nacido en `public/`.
+>
+> Vivía en `public/` y **no en `src/pages/`** a propósito: una ruta nueva de Astro entra al
 > censo de `rutas-sonoras.ts`, y cuando esto se dibujó ese código del ciclo 14 todavía estaba
 > sin commitear. Un ensayo no toca trabajo ajeno en vuelo. (El ciclo 14 quedó guardado
 > después, en `dde6a59`.)

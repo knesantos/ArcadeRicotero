@@ -13,6 +13,11 @@ export const PANTALLA_0 = {
     'Lo tenés en la punta de la lengua. Falta una palabra del verso, y cuanto más ' +
     'difícil, menos letra ves alrededor.',
   boton: 'Empezá',
+  /** El que llega por el enlace de un amigo (`ADR-02`, forma `marcador`). */
+  desafio: (aciertos: number, total: number, nombre?: string) =>
+    nombre
+      ? `${nombre} dice que completó ${aciertos} de ${total} versos. ¿Te los sabés?`
+      : `Te desafiaron con ${aciertos} de ${total} versos. ¿Te los sabés?`,
 } as const;
 
 export const PARTIDA = {
@@ -41,6 +46,12 @@ export const RESULTADO = {
   denuevo: 'Otra vuelta',
   volver: 'Volvé al arcade',
   alCancionero: 'Mirá las letras enteras',
+  /** Compartir (`CNT-26`): texto y enlace, sin tarjeta, como "Más o menos". */
+  compartir: 'Compartí',
+  paraCompartir: (aciertos: number, total: number) =>
+    `Completé ${aciertos} de ${total} versos en el arcade ricotero. ¿Vos cuántos completás?`,
+  copiado: 'Se copió el enlace.',
+  aManoTitulo: 'Copiá esto y mandalo',
 } as const;
 
 /**

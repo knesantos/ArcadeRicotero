@@ -115,6 +115,16 @@ test('sin casilla configurada, el mail no existe — ni boton muerto ni mailto a
   }
 });
 
+test('D-51: la casilla no está escrita entera en el fuente — va partida y se arma al llamar', () => {
+  // El usuario la dio sabiendo el costo; lo que se cuida es no dejarla tirada como
+  // `usuario@dominio`, que es el patrón que busca un raspador de los baratos.
+  const codigo = readFileSync('src/lib/correccion/destino.ts', 'utf-8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/^\s*\/\/.*$/gm, '');
+  assert.ok(!/[\w.+-]+@[\w-]+\.[\w.]+/.test(codigo), 'destino.ts tiene una dirección de mail escrita entera');
+  if (CASILLA !== null) assert.match(CASILLA, /^[^@\s]+@[^@\s]+\.[^@\s]+$/, 'la casilla armada no es una dirección');
+});
+
 test('enviar siempre entrega algo, y el texto viaja aunque el transporte falle', async () => {
   const e = await enviar(armar(base));
   assert.notEqual(e.resultado, 'no-pudo', 'la cadena termina en un transporte que no puede fallar');

@@ -2,7 +2,7 @@
   "contrato": "CTR-16",
   "contratoVersion": 3,
   "juego": "skayboy",
-  "actualizado": "2026-09-24",
+  "actualizado": "2026-10-01",
   "tile": 16,
   "ancho": 15,
   "alto": 9,
@@ -33,7 +33,7 @@
       "id": "NIV-01",
       "nombre": "De a dos, despacito",
       "escalon": 1,
-      "estado": "borrador",
+      "estado": "listo",
       "grilla": [
         "###############",
         "#.............#",
@@ -47,13 +47,13 @@
       ],
       "mecanismos": [],
       "compuertas": [],
-      "verificaciones": { "deDos": false }
+      "verificaciones": { "deDos": true }
     },
     {
       "id": "NIV-02",
       "nombre": "Un piso con favoritos",
       "escalon": 1,
-      "estado": "borrador",
+      "estado": "listo",
       "grilla": [
         "###############",
         "#.............#",
@@ -67,13 +67,13 @@
       ],
       "mecanismos": [],
       "compuertas": [],
-      "verificaciones": { "deDos": false }
+      "verificaciones": { "deDos": true }
     },
     {
       "id": "NIV-03",
       "nombre": "Un favor que no se ve",
       "escalon": 2,
-      "estado": "borrador",
+      "estado": "listo",
       "grilla": [
         "###############",
         "#..........#..#",
@@ -91,13 +91,13 @@
       "compuertas": [
         { "id": "COM-01", "en": [11, 6] }
       ],
-      "verificaciones": { "deDos": false }
+      "verificaciones": { "deDos": true }
     },
     {
       "id": "NIV-04",
       "nombre": "Lo que pesa, se queda",
       "escalon": 2,
-      "estado": "borrador",
+      "estado": "listo",
       "grilla": [
         "###############",
         "#.#...........#",
@@ -115,13 +115,13 @@
       "compuertas": [
         { "id": "COM-01", "en": [2, 6] }
       ],
-      "verificaciones": { "deDos": false }
+      "verificaciones": { "deDos": true }
     },
     {
       "id": "NIV-05",
       "nombre": "El primer salto es a ciegas",
       "escalon": 3,
-      "estado": "borrador",
+      "estado": "listo",
       "grilla": [
         "###############",
         "#..#........#.#",
@@ -141,13 +141,13 @@
         { "id": "COM-01", "en": [3, 6] },
         { "id": "COM-02", "en": [12, 6] }
       ],
-      "verificaciones": { "deDos": false }
+      "verificaciones": { "deDos": true }
     },
     {
       "id": "NIV-06",
       "nombre": "El salto más largo de todos",
       "escalon": 3,
-      "estado": "borrador",
+      "estado": "listo",
       "grilla": [
         "###############",
         "#..#.......#..#",
@@ -167,7 +167,7 @@
         { "id": "COM-01", "en": [3, 4] },
         { "id": "COM-02", "en": [11, 6] }
       ],
-      "verificaciones": { "deDos": false }
+      "verificaciones": { "deDos": true }
     }
   ]
 }

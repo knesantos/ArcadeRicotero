@@ -1,21 +1,26 @@
 /**
  * Adónde va una corrección. `CTR-10` apartado 6.
  *
- * ## 🔴 Por qué esto es `null` y el botón funciona igual
+ * ## La casilla, y por qué está partida
  *
- * **El repo no tiene casilla de correo, y es una decisión del usuario, no un olvido.**
- * Poner un mail personal en un `mailto:` de un sitio público es entregárselo a los
- * raspadores de spam, y la dirección que se ponga acá tiene que ser **descartable**: si
- * algún día se llena de basura, se cambia esta línea y listo.
+ * Hasta el 2026-10-01 esto era `null`, por decisión del usuario: un mail personal en un
+ * `mailto:` de un sitio público se lo entrega a los raspadores de spam. Mientras fue `null`
+ * el transporte de mail no existía y el botón cerraba por portapapeles — o sea que la
+ * corrección se armaba, se copiaba, **y no llegaba a ningún lado**. Era la primera de las
+ * tres mitigaciones de `D-25`, y sin casilla era una pata en el aire.
  *
- * Mientras sea `null`, el transporte de mail **no existe** — ni botón muerto, ni `mailto:`
- * generado hacia ningún lado. El frente cierra igual por portapapeles, y en el peor caso
- * por el texto a la vista, que no puede fallar. **Nadie queda sin poder corregir por esto**
- * (`D-14`).
+ * Ese día el usuario la dio, sabiendo el costo (`D-51`). Va **partida en dos y armada al
+ * llamar**, no escrita entera: así no aparece como `usuario@dominio` en el JavaScript
+ * publicado, que es el patrón que busca un raspador de los baratos. No es un candado —el
+ * que lea el código la encuentra—, es no dejarla tirada en la vereda.
  *
- * Para prenderlo: poner la dirección acá. Es la única línea que hay que tocar.
+ * **Para cambiarla, o para apagar el mail:** estas dos líneas. Con `null` el transporte
+ * vuelve a no existir y el botón sigue funcionando por portapapeles (`D-14`: nadie queda
+ * sin poder corregir).
  */
-export const CASILLA: string | null = null;
+const PARTES: readonly [string, string] | null = ['santiagocanedo123', 'gmail.com'];
+
+export const CASILLA: string | null = PARTES ? PARTES.join('@') : null;
 
 /** El asunto del mail. La parte legible la fija `CNT-12`. */
 export function ASUNTO(juego: string): string {

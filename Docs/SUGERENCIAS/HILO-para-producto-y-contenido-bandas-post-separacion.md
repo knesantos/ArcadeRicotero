@@ -1,5 +1,9 @@
 # Del hilo principal para `producto` y `contenido` — las bandas ricoteras de después de la separación
 
+> **Resuelta el 2026-10-01** (`D-51`): `producto` decidió tres artículos `concepto` (`BR-34`,
+> `BR-35`), `contenido` los escribió (`CNT-28`) con los nombres corregidos de `RES-47`, y
+> `redondopedia.test.ts` cuida las siete aristas de entrada. La Redondopedia queda en 38/38.
+
 - **Fecha:** 2026-08-21
 - **Origen:** el usuario, textual: *"hay que agregar a la cultura que luego de la
   separacion nacieron 'bandas ricoteras': La kermesse redonda, 'INDIO y los

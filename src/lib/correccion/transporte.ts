@@ -40,8 +40,9 @@ export interface Transporte {
 const mail: Transporte = {
   via: 'mail',
   // Sin casilla configurada el transporte no existe: ni botón muerto, ni `mailto:`
-  // generado hacia ningún lado. `CTR-10.6`.
-  disponible: () => CASILLA !== null,
+  // generado hacia ningún lado. `CTR-10.6`. Y sin `location` —fuera de un navegador— no hay
+  // adónde mandar el `mailto:`, así que tampoco.
+  disponible: () => CASILLA !== null && typeof globalThis.location !== 'undefined',
   async entregar(c) {
     const asunto = ASUNTO(c.juego);
     // El largo base es todo lo que la URL lleva además del cuerpo.
@@ -50,7 +51,14 @@ const mail: Transporte = {
     if (!armado) {
       return { via: 'mail', resultado: 'no-pudo', texto: aTexto(c).texto, recortado: false };
     }
-    globalThis.location.href = `mailto:${CASILLA}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(armado.texto)}`;
+    // Si el navegador no deja abrir el `mailto:`, la cadena sigue: `no-pudo` le pasa la posta
+    // al portapapeles, y al final está el texto a la vista (`D-14`). Un error acá no puede
+    // dejar a nadie sin salida.
+    try {
+      globalThis.location.href = `mailto:${CASILLA}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(armado.texto)}`;
+    } catch {
+      return { via: 'mail', resultado: 'no-pudo', texto: armado.texto, recortado: armado.recortado };
+    }
     return { via: 'mail', resultado: 'abierto', texto: armado.texto, recortado: armado.recortado };
   },
 };

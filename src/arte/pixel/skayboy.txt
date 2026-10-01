@@ -1,6 +1,6 @@
 # Skayboy: el muñeco de Eduardo Beilinson, dibujado como grilla (T-275, ciclo 16; D-44).
 #
-# La hoja del usuario (public/arte/skayboy_poligirl.png) es referencia de pose, de insignia y de
+# La hoja del usuario (Docs/UX/pixel-master/skayboy_poligirl.png) es referencia de pose, de insignia y de
 # tono, no fuente de píxeles (D-44, UX-27 §6). De ahí salen la silueta, el sombrero, los
 # anteojos y el saco; los píxeles son de acá. Cara en caricatura declarada (D-42): anteojos
 # oscuros y nariz, sin exagerar nada.

@@ -1,6 +1,6 @@
 # Poligirl: el muñeco de Carmen Castro, dibujado como grilla (T-275, ciclo 16; D-44).
 #
-# La hoja del usuario (public/arte/skayboy_poligirl.png) es referencia de pose, de insignia y de
+# La hoja del usuario (Docs/UX/pixel-master/skayboy_poligirl.png) es referencia de pose, de insignia y de
 # tono, no fuente de píxeles (D-44, UX-27 §6). De ahí salen la silueta, la mata de pelo con el
 # flequillo recto y la camisa estampada; los píxeles son de acá. Cara en caricatura declarada
 # (D-42): ojo y nariz, sin exagerar nada.

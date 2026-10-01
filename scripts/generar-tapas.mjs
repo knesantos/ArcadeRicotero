@@ -80,32 +80,22 @@ const FICHAS = {
 // Nota de recorte para mosca-olla: la olla vive justo debajo de la lista de temas, asi
 // que el cucharon entero y el texto no entran los dos. Gana no tener texto: a 34 px en
 // el casete un cucharon cortado no se ve, una linea de tracklist si.
+// El 2026-10-01 salieron cinco derivados que ninguna pantalla mostraba (`D-51`):
+// `oktubre-bandera`, `bondi-circuito` y `momo-medallon` (detalles de categorías que ningún
+// artículo usa: `marca`, `discos` y `momo`), `gulp-montana` y el fondo `oktubre-ok`. Se
+// publicaban igual. Si alguna pantalla los vuelve a pedir, se recuperan del historial.
 const DERIVADOS = [
   // --- detalles (recorte pegado) ---
-  { nombre: 'oktubre-bandera', forma: 'detalle', master: 'oktubre-frontal.jpg', caja: [0.18, 0.42, 0.4, 0.65] },
   { nombre: 'lobo-tiras', forma: 'detalle', master: 'lobo-suelto-cordero-atado-cd1-frontal.jpg', caja: [0.05, 0.52, 0.55, 0.8] },
   { nombre: 'mosca-olla', forma: 'detalle', master: 'la-mosca-y-la-sopa-trasera.jpg', caja: [0.6, 0.43, 0.9, 0.84] },
-  { nombre: 'bondi-circuito', forma: 'detalle', master: 'ultimo-bondi-a-finisterre-frontal.jpg', caja: [0.0, 0.0, 0.32, 0.32] },
   { nombre: 'gulp-pincelada', forma: 'detalle', master: 'gulp-frontal.jpg', caja: [0.62, 0.62, 1.0, 1.0] },
-  // La pincelada de la trasera esta arriba a la derecha, no a la izquierda: la mitad
-  // izquierda de esa zona la ocupa el recuadro blanco con los datos de grabacion.
-  { nombre: 'gulp-montana', forma: 'detalle', master: 'gulp-trasera.jpg', caja: [0.6, 0.02, 0.97, 0.26] },
   // El sello manuscrito "Gulp." — el lettering que `D-19` pide para resultado y compartir.
   { nombre: 'gulp-logo', forma: 'detalle', master: 'gulp-trasera.jpg', caja: [0.54, 0.27, 0.72, 0.39] },
-  /* El medallon de Momo Sampler. `arte.ts` declara este hueco desde `US-07` y hasta el
-     2026-09-02 estuvo vacio: era **el unico casete del portal sin tapa**, y como
-     `.casete-pie` reparte con `space-between`, con un solo hijo el sello "JUGÁ" se iba
-     al borde izquierdo. O sea que un archivo que faltaba se veia como una tarjeta rota.
-     La caja sale de mirar el master (953x953): el medallon cae al centro, apenas corrido
-     a la derecha, sobre negro. Se recorta ajustado para que a 34 px en el casete se vea
-     la cara y no el campo negro de alrededor. */
-  { nombre: 'momo-medallon', forma: 'detalle', master: 'momo-sampler-frontal.jpg', caja: [0.38, 0.27, 0.81, 0.72] },
 
   // --- fondos (detras del contenido, siempre con velo) ---
   // Baja respecto de lo que dice UX-05 para que no asome el pie del wordmark, que el
   // propio catalogo pide dejar afuera.
   { nombre: 'oktubre-banderas', forma: 'fondo', master: 'oktubre-frontal.jpg', caja: [0.0, 0.45, 1.0, 0.73] },
-  { nombre: 'oktubre-ok', forma: 'fondo', master: 'oktubre-frontal.jpg', caja: [0.0, 0.12, 0.3, 0.45] },
   { nombre: 'gulp-pincelada', forma: 'fondo', master: 'gulp-frontal.jpg', caja: [0.55, 0.55, 1.0, 1.0] },
   { nombre: 'lobo-tiras', forma: 'fondo', master: 'lobo-suelto-cordero-atado-cd1-frontal.jpg', caja: [0.0, 0.45, 0.62, 0.85] },
   { nombre: 'mosca-olla', forma: 'fondo', master: 'la-mosca-y-la-sopa-trasera.jpg', caja: [0.58, 0.42, 0.92, 0.9] },

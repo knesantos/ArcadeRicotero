@@ -229,7 +229,39 @@ const etiquetaRotulo = (seg: Segmento): string =>
         </nav>
       )
     }
+
+    {/*
+      El botón de corrección (`BR-21`, `UX-09`), al pie del artículo y después del "vea
+      también": es lo último que se lee, como una nota. `PRD-correcciones.md` §4 puso a la
+      Redondopedia primera en la fila de los que faltaban, por valor —prosa larga, tres
+      rótulos por párrafo—, y llegó el 2026-10-01 junto con la casilla (`D-51`).
+
+      Se arma en el navegador porque el componente es una isla; acá solo queda el ancla con
+      lo que la corrección necesita saber del banco. `dice` es el título y no un párrafo: el
+      que corrige escribe qué está mal, y el slug alcanza para encontrarlo en el repo.
+    */}
+    <div id="correccion-articulo" data-slug={articulo.slug} data-titulo={articulo.titulo}></div>
   </article>
 
   <a class="accion-abajo" href="/redondopedia/">← {REDONDOPEDIA.volverPortada}</a>
+
+  <script>
+    import { botonCorreccion } from '../../scripts/correccion.ts';
+
+    const ancla = document.getElementById('correccion-articulo');
+    const slug = ancla?.dataset.slug;
+    const titulo = ancla?.dataset.titulo;
+    if (ancla && slug && titulo) {
+      ancla.replaceWith(
+        botonCorreccion(() => ({
+          juego: 'redondopedia',
+          itemId: slug,
+          ubicacion: 'el artículo',
+          dice: titulo,
+          // La Redondopedia todavía no tiene contrato formal: es el v0 de `redondopedia.ts`.
+          banco: { contrato: 'redondopedia', version: 0 },
+        })),
+      );
+    }
+  </script>
 </Base>

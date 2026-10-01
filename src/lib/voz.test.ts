@@ -281,8 +281,11 @@ test('voz 4.1: la linea grande no pasa de ocho palabras', () => {
     ...sitio.JUEGOS.map((c) => [`casete "${c.titulo}"`, c.titulo] as [string, string]),
     ['casete cancionero', sitio.CASETE_CANCIONERO.titulo],
     ['casete redondopedia', sitio.CASETE_REDONDOPEDIA.titulo],
+    // Los renglones del lugar (`CNT-13`) son la línea que canta de cada pantalla, y `CNT-13`
+    // los midió contra el techo de ocho a mano. Hasta el 2026-10-01 este test no los miraba:
+    // lo notó `contenido` al escribir el undécimo (`CNT-26`).
+    ...Object.entries(sitio.LUGARES).map(([k, v]) => [`lugar ${k}`, v] as [string, string]),
     ...Object.entries(quiz.TRAMOS).map(([k, v]) => [`quiz tramo ${k}`, v.titulo] as [string, string]),
-    ...Object.entries(sitio.COCINA).map(([k, v]) => [`cocina ${k}`, v.titulo] as [string, string]),
     // `T-167` del ciclo 10. Los seis `h1` de portada faltaban en esta lista, y no por
     // olvido: sumarlos rompia el build por **una sola linea** — el `h1` del quiz, que
     // tenia diez palabras. Cerrar el auditor dejando afuera al unico que fallaba habria

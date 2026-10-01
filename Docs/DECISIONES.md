@@ -2822,3 +2822,73 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     nadie.
   - `npm test` pasa de 1442 a 1373 casos: los de la cinta, la rocola, la púa y la señal de
     sonido se borraron con lo que probaban, más los nuevos de `D-49`.
+
+---
+
+## D-51 — Lo que estaba hecho y nadie podía encontrar entra al sitio: dos ejes, Skayboy, la casilla, y lo que se pudo sin el usuario
+
+- **Fecha:** 2026-10-01
+- **Estado:** aceptada. Pedido directo del usuario sobre un relevamiento de otro agente, textual:
+  *"Resolvé esto que relevó otro agente. Resolvé todo de la mejor forma y dejalo integrado en
+  el sitio."* Dos puntos los decidió él mismo esa tarde, a pregunta del hilo principal: **publicar
+  Skayboy y Poligirl ya**, sin la prueba en el teléfono, y **la casilla de corrección**, que
+  dio él.
+
+- **Lo que se integró, punto por punto del relevamiento.**
+  1. **"¿Qué tipo de ricotero sos?" tiene puerta.** Casete A2 del portal, vestido de
+     *Luzbelito* con la cabeza de la vela (`UX-06` §5), segundo porque es el molinete más
+     abierto del sitio; renglón del lugar y bajada de `CNT-26`. Era un olvido, no una decisión:
+     ninguna `D-` lo había dejado afuera.
+  2. **Skayboy y Poligirl se publica.** Los seis niveles pasan a `listo` con
+     `verificaciones.deDos: true`. Ese booleano, dice su schema, *"no prueba que se jugó,
+     prueba que alguien se hizo cargo de decir que sí"*: **se hizo cargo el usuario**, sabiendo
+     que nadie los jugó de a dos en un teléfono. La máquina sí los juega en cada build (la traza
+     de `CTR-18`). La victoria bailada (`D-47`) sale como está, sin la aprobación de la hoja del
+     baile que pedía `D-44`: publicar fue la aprobación. Casete A9, vestido de *Gulp!* (`UX-30`).
+  3. **La casilla de corrección.** Hasta hoy `CASILLA` era `null` por decisión del usuario
+     (un mail personal en un sitio público es para los raspadores), y el botón cerraba por
+     portapapeles: la corrección se armaba y **no llegaba a ningún lado**. Era la primera de
+     las tres mitigaciones de `D-25`. El usuario dio la dirección sabiendo el costo; va
+     **partida en el código** y se arma al llamar, así no queda escrita como `usuario@dominio`
+     en el JavaScript publicado (un test lo vigila). El botón llegó también a la Redondopedia,
+     que `PRD-correcciones.md` §4 ponía primera en la fila: al pie de cada artículo.
+  4. **"Completá la letra" sale de los 21 versos**, por la vía que `D-25` ya había abierto: la
+     selección curada de fuente única, ampliada por `contenido` (`CNT-27`) con el mismo criterio
+     de riesgo bajo, ahora que la mitigación 1 llega de verdad. **La vía de dos fuentes se
+     intentó primero y la red no dejó**: cifraclub y letras.com son del mismo dueño (`INV-23`),
+     y lacuerda.net —la independiente— está bloqueada por la política de red del entorno
+     (`INV-141`). Cuando se habilite `acordes.lacuerda.net`, los cuatro lotes de cotejo se
+     regeneran y los versos que coincidan suben de `fuente-unica` a `dos-fuentes` solos.
+  5. **El desafío de "Adiviná el tema" se lee**: el amigo ya no cae en la portada pelada.
+  6. **Compartir** en "Adiviná la tapa", "Completá la letra" y dos ejes (texto y enlace, sin
+     tarjeta, como "Más o menos"); dos ejes manda la identidad, nunca un número (`BR-17`).
+  7. **Spotify en el quiz**: siete preguntas con el ID de cinco temas verificados (`INV-140`).
+     Los dos ambiguos (*Mi perro dinamita*, *La bestia pop*) quedan sin botón hasta abrirlos.
+  8. **"Más o menos"**: entran 10 de los 18 números que `CNT-25` había dejado por volumen; los
+     otros 8 tenían un problema de veracidad que la primera pasada no vio (`CNT-25` §2).
+  9. **Las bandas de después de la separación**: tres artículos `concepto` (`BR-34`, `BR-35`,
+     `CNT-28`), sin tocar el schema.
+  10. **Las dos calcomanías que faltaban**: el muñeco del antifaz para *Un baión*, recortado
+     del máster como lo pedía el despiece, y para *La mosca y la sopa* **el rótulo de la tapa
+     con la mosca adentro**, no el gato momificado: el gato no está en ninguna de las cuatro
+     imágenes del disco que hay en el repo, y recortarlo era inventarlo.
+  11. **Peso muerto, ~4,9 MB menos publicados**: el video de *Último bondi* (era copia exacta
+     del máster de `Docs/UX/video-master/`), cinco derivados de tapa que ninguna pantalla
+     mostraba, la fuente *Redonditos Fan* que se declaraba y nadie usaba, y la copia de las
+     pantallas "en la cocina", que ya no existen. La hoja original de Skayboy, el lobo-lupus y
+     el ensayo de Skayboy **no se borraron**: salieron de `public/` a `Docs/UX/`, porque son
+     material de trabajo, no del sitio.
+
+- **Lo que no se pudo sin el usuario, y sigue siendo suyo.**
+  - **Los temas enteros en mp3** (`D-22`, `D-39`): salen de sus discos con
+    `npm run generar-fragmentos -- "<carpeta>" --enteros`. Lo mismo los 9 temas sin fragmento
+    (*Cordero atado* y "Pianito").
+  - **La escucha de la letra**, si quiere subir versos al régimen más fuerte, o habilitar
+    `acordes.lacuerda.net` en el acceso de red del entorno para el cotejo de dos fuentes.
+  - **Jugar Skayboy en el teléfono**: ya está publicado; si algo no se siente bien, se corrige.
+
+- **Consecuencias.**
+  - El portal pasa de siete a nueve casetes en el lado A. `UX-25` midió el largo del portal
+    con ocho; con once es más largo, y lo tiene que mirar `experiencia`.
+  - El campo `temaFijo` de `skayboy.json` sigue ahí sin uso (resto de la cinta, `D-50`); sacarlo
+    es un cambio de schema y es de `arquitectura`.

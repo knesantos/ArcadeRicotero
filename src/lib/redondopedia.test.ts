@@ -118,3 +118,50 @@ test('segmentar: los enlaces [[slug|texto]] se parten bien', () => {
     { clase: 'texto', texto: '.' },
   ]);
 });
+
+/*
+ * `BR-34` (2026-10-01): las tres bandas de después de la separación entran como tres
+ * `concepto`, con sus enlaces de entrada desde los artículos que las nombran. El criterio de
+ * aceptación era un script para correr a mano; queda acá para que lo cuide la máquina.
+ */
+const BANDAS = ['los-fundamentalistas', 'skay-y-los-fakires', 'los-decoradores'];
+
+test('BR-34: las tres bandas existen y son concepto, no un tipo nuevo', () => {
+  for (const slug of BANDAS) {
+    const a = articulos.find((x) => x.slug === slug);
+    assert.ok(a, `falta el artículo ${slug}`);
+    assert.equal(a.tipo, 'concepto', `${slug} tiene que ser concepto (BR-34 §1)`);
+  }
+  const deco = articulos.find((x) => x.slug === 'los-decoradores')!;
+  // El que la busca por el nombre con que la nombra la prensa la tiene que encontrar en la
+  // portada, que muestra 150 caracteres del resumen.
+  assert.match(deco.resumen.slice(0, 150), /Decoradores/);
+  assert.match(deco.resumen.slice(0, 150), /Kermesse/);
+});
+
+test('BR-34 §3: las siete aristas de entrada a las bandas', () => {
+  const aristas: Array<[string, string]> = [
+    ['la-separacion', 'los-fundamentalistas'],
+    ['la-separacion', 'skay-y-los-fakires'],
+    ['la-separacion', 'los-decoradores'],
+    ['indio-solari', 'los-fundamentalistas'],
+    ['skay-beilinson', 'skay-y-los-fakires'],
+    ['muerte-del-indio', 'los-fundamentalistas'],
+    ['semilla-bucciarelli', 'los-decoradores'],
+  ];
+  for (const [desde, hacia] of aristas) {
+    // En el cuerpo, no en el "vea también": la arista de `BR-34` es una oración que nombra
+    // la banda adentro del texto.
+    const a = articulos.find((x) => x.slug === desde)!;
+    const enElCuerpo = a.cuerpo.some((seg) =>
+      segmentar(seg.texto).some((p) => p.clase === 'enlace' && p.slug === hacia),
+    );
+    assert.ok(enElCuerpo, `${desde} no enlaza a ${hacia} en el cuerpo`);
+  }
+});
+
+test('BR-34 §5: los discos de las bandas no son artículos disco — el afiche sigue contando diez', () => {
+  // `discosDeOktubre()` cuenta como total todo artículo `disco`: un disco de los Fakires
+  // haría decir al afiche "de los once discos".
+  assert.equal(articulos.filter((a) => a.tipo === 'disco').length, 10);
+});
