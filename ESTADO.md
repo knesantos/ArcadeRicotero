@@ -37,8 +37,12 @@
 > - **Peso muerto, ~4,9 MB menos publicados**: video duplicado, cinco derivados de tapa sin
 >   pantalla, la fuente *Redonditos Fan*, la copia de "en la cocina". La hoja de Skayboy, el
 >   lobo-lupus y el ensayo se mudaron a `Docs/UX/` (no se borraron).
-> - **"Completá la letra"**: `contenido` está ampliando la selección curada de fuente única
->   bajo `D-25` (`CNT-27`), ahora que la corrección llega por mail. **En curso al primer commit.**
+> - **"Completá la letra" de 21 a 72 versos** (24/23/25, 39 temas): selección curada de fuente
+>   única ampliada bajo `D-25` (`CNT-27`), ahora que la corrección llega por mail. Salió
+>   `CL-601` (respuesta sin tilde). Seis temas pasan de 8 versos visibles (`CTR-04.4`,
+>   precaución). `contenido` dejó dos propuestas en
+>   `Docs/SUGERENCIAS/CNT-para-hilo-principal-anotaciones-y-erratas-que-pasan-el-filtro.md`
+>   (endurecer el filtro y vetar distractores con erratas), sin tratar.
 >
 > **Lo que la red no dejó:** el cotejo de dos fuentes de la letra. lacuerda.net (la única
 > independiente de cifraclub/letras.com, que son de Studio Sol) está bloqueada por la política

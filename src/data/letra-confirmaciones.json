@@ -113,9 +113,264 @@
         "motivo": "Adjetivo que concuerda en genero y numero con 'Muchachitas', unico entre las opciones. Contexto limpio, reemplaza dentro del mismo tema al hueco de 'educaditos' que quedo en espera."
       },
       {
-        "id": "CL-601",
-        "verso": "Recuerdo como su mirada me [volteo]",
-        "motivo": "Unico verbo conjugado entre las opciones (las otras tres no lo son). Dificultad dificil, verso pelado sin marca de seccion cerca, tema nuevo en el banco (La hija del fletero)."
+        "id": "CL-061",
+        "verso": "La más hermosa niña del [mundo]",
+        "motivo": "Palabra comun bien escrita al cierre del verso; contexto 2+2 limpio y ninguna opcion encaja. Con CL-058 el tema queda en 8 versos visibles (tope de CTR-04.4)."
+      },
+      {
+        "id": "CL-071",
+        "verso": "Saludable y [católica]",
+        "motivo": "Adjetivo concreto que concuerda con 'Saludable y' y no tiene rival entre las opciones; contexto 2+2 sin acordes ni marcas de estructura."
+      },
+      {
+        "id": "CL-082",
+        "verso": "Mejor que [nunca]",
+        "motivo": "Frase hecha ('mejor que nunca'); contexto 2+2 limpio. Cae entre CL-081 y CL-083: no suma versos visibles al tope de 8 del tema."
+      },
+      {
+        "id": "CL-145",
+        "verso": "la civilización la amaba justo a [tiempo] )",
+        "motivo": "Frase hecha ('justo a tiempo') que el tema repite en varios versos; contexto 2+2 limpio, sin la marca 'TEMA (E7):' de ese cancionero."
+      },
+      {
+        "id": "CL-150",
+        "verso": "Ensayo general para la farsa [actual]",
+        "motivo": "Estribillo que el tema repite (CL-161 es la misma linea con otra puntuacion); contexto 2+2 limpio. Con CL-147 y CL-148 el tema queda en 8 versos visibles."
+      },
+      {
+        "id": "CL-005",
+        "verso": "Quemás tu [vida] en este día,",
+        "motivo": "'Quemas tu vida' se repite en el tema como gancho; contexto 2+2 sin erratas. El error de grafia del tema ('Como te va en estos dias') esta en otra linea y no entra en el contexto."
+      },
+      {
+        "id": "CL-200",
+        "verso": "Y estoy a punto de tirar la [esponja]",
+        "motivo": "Frase hecha ('tirar la esponja'); contexto 2+2 limpio y con los acentos bien escritos en todo el tema."
+      },
+      {
+        "id": "CL-232",
+        "verso": "Sos un tipo pan comido, no es tu [culpa] , no.",
+        "motivo": "Frase hecha ('no es tu culpa'); contexto 2+2 sin anotaciones de guitarra ni de estructura."
+      },
+      {
+        "id": "CL-244",
+        "verso": "A veces gana, a veces [pierde]",
+        "motivo": "Frase hecha ('a veces gana, a veces pierde'); contexto 2+2 limpio. Con CL-246 el tema queda en 7 versos visibles."
+      },
+      {
+        "id": "CL-246",
+        "verso": "Un buen par de ojos de [vidrio] ,",
+        "motivo": "Imagen fisica concreta ('ojos de vidrio'); contexto 2+2 limpio. Pegado a CL-244: entre los dos, 7 versos visibles."
+      },
+      {
+        "id": "CL-295",
+        "verso": "Que se abre todos los [días]",
+        "motivo": "Frase hecha ('todos los dias'); contexto 2+2 limpio. Con CL-297 el tema queda en 7 versos visibles."
+      },
+      {
+        "id": "CL-474",
+        "verso": "el peligro del gato [matón] .",
+        "motivo": "Rima que obliga la palabra: 'raton' (en el verso anterior, a la vista) y 'maton'; contexto 2+2 limpio y acentuado."
+      },
+      {
+        "id": "CL-476",
+        "verso": "y compró matraca nueva, de [ocasión] .",
+        "motivo": "Frase hecha ('de ocasion'); contexto 2+2 limpio. Pegado a CL-474: entre los dos, 7 versos visibles."
+      },
+      {
+        "id": "CL-399",
+        "verso": "Ciertos reyes no viajan en [camellos]",
+        "motivo": "Imagen concreta que el sentido fija ('reyes' y 'camellos'); contexto 2+2 limpio. Las erratas del tema (CL-381, CL-385) estan lejos del contexto."
+      },
+      {
+        "id": "CL-997",
+        "verso": "Tuve temprano entre mis manos mi [boleto] y oí",
+        "motivo": "Palabra comun bien escrita; contexto 2+2 limpio y acentuado. La marca 'X2' del tema (CL-991) queda fuera del contexto."
+      },
+      {
+        "id": "CL-205",
+        "verso": "El futuro ya [llegó]",
+        "motivo": "Estribillo del tema ('el futuro ya llego'); contexto 1+1 limpio. La anotacion 'Parte 1 de 2 - 4x' queda fuera de este tramo (CL-202 se descarto por eso)."
+      },
+      {
+        "id": "CL-212",
+        "verso": "¿Qué podría ser [peor] ?",
+        "motivo": "Frase hecha ('que podria ser peor'); contexto 1+1 limpio."
+      },
+      {
+        "id": "CL-267",
+        "verso": "Mordí el [anzuelo] una vez más",
+        "motivo": "Frase hecha ('morder el anzuelo'); contexto 1+1 limpio, sin anotaciones."
+      },
+      {
+        "id": "CL-274",
+        "verso": "Metió, metió mi rock 'n' [roll]",
+        "motivo": "Frase fija ('rock and roll') al cierre del verso; contexto 1+1 limpio."
+      },
+      {
+        "id": "CL-365",
+        "verso": "Sobrio no te puedo ni [hablar] .",
+        "motivo": "Frase hecha ('ni hablar'); contexto 1+1 limpio, acentos bien escritos."
+      },
+      {
+        "id": "CL-373",
+        "verso": "Caída [libre] para dos.",
+        "motivo": "Frase hecha ('caida libre'); contexto 1+1 limpio. CL-371 se descarto: su contexto trae 'de que' sin tilde."
+      },
+      {
+        "id": "CL-546",
+        "verso": "para los fugitivos marcados a [fuego]",
+        "motivo": "Frase hecha ('marcados a fuego'); contexto 1+1 limpio. Con CL-537 el tema queda en 6 versos visibles."
+      },
+      {
+        "id": "CL-640",
+        "verso": "Se amasan las fortunas, se cargan los [bolsillos] .",
+        "motivo": "Frase concreta ('cargar los bolsillos'); contexto 1+1 limpio; no coincide con ninguna palabra del titulo."
+      },
+      {
+        "id": "CL-642",
+        "verso": "Me acaban el cerebro a [mordiscos]",
+        "motivo": "Imagen fisica ('a mordiscos'); contexto 1+1 limpio. Con CL-640 y CL-646 el tema queda en 8 versos visibles."
+      },
+      {
+        "id": "CL-858",
+        "verso": "Ni cuando robó el [fuego]",
+        "motivo": "Frase hecha ('robar el fuego'); contexto 1+1 limpio. El tema trae erratas en otras lineas ('fue', 'soniar'), fuera del contexto."
+      },
+      {
+        "id": "CL-865",
+        "verso": "nada más la [prohibición] .",
+        "motivo": "La palabra la fija el pasaje ('le prohibieron la manzana... nada mas la prohibicion'); contexto 1+1 limpio."
+      },
+      {
+        "id": "CL-906",
+        "verso": "ha visto tanto hermano [muerto] ,",
+        "motivo": "Palabra comun en una enumeracion ('hermano muerto, amigo enloquecido'); contexto 1+1 limpio. La anotacion 'Lick de blues' del tema esta a dos versos y no entra."
+      },
+      {
+        "id": "CL-908",
+        "verso": "que ya no puede [soportar]",
+        "motivo": "Verbo comun que cierra la enumeracion; contexto 1+1 limpio. Pegado a CL-906: entre los dos, 5 versos visibles."
+      },
+      {
+        "id": "CL-1009",
+        "verso": "Que oímos cantar y nunca [vemos]",
+        "motivo": "La palabra la fija el sentido ('pajaros que oimos cantar y nunca vemos'); contexto 1+1 limpio. La silaba cortada 'cora__zon' del tema no esta en este tramo."
+      },
+      {
+        "id": "CL-1011",
+        "verso": "La campana [sonó]",
+        "motivo": "Rima con el verso anterior (golpeo/sono); contexto 1+1 limpio, fuera del tramo con 'cora__zon'."
+      },
+      {
+        "id": "CL-022",
+        "verso": "Te voy a herir un [poquito] más.",
+        "motivo": "Diminutivo comun ('un poquito mas'); contexto 1+1 limpio. Las anotaciones POS-VERSO del tema (CL-018, CL-023) quedan fuera del tramo."
+      },
+      {
+        "id": "CL-676",
+        "verso": "A vivir, que son dos [días]",
+        "motivo": "Frase hecha ('a vivir, que son dos dias'); verso solo, tema con los acentos bien escritos."
+      },
+      {
+        "id": "CL-686",
+        "verso": "Tu negocio es muy difícil de [explicar]",
+        "motivo": "Par de opuestos ('dificil de explicar / facil de ensenar'): la palabra la fija el sentido. Tema limpio."
+      },
+      {
+        "id": "CL-705",
+        "verso": "Recuerdos que mienten un [poco]",
+        "motivo": "Coincide con el titulo del libro 'Recuerdos que mienten un poco' (RES-21), asi que la palabra no depende de una transcripcion dudosa. Tema limpio."
+      },
+      {
+        "id": "CL-699",
+        "verso": "Por primera vez tengo [miedo]",
+        "motivo": "Palabra comun ('por primera vez tengo miedo'); tema con los acentos bien escritos."
+      },
+      {
+        "id": "CL-698",
+        "verso": "Ella sí que bailaba en las [llamas]",
+        "motivo": "Imagen fisica ('bailaba en las llamas'); la palabra la fija el sentido. Tema limpio."
+      },
+      {
+        "id": "CL-880",
+        "verso": "Llevan el juego en la [sangre] y van.",
+        "motivo": "Frase hecha ('llevar el juego en la sangre'); tema con los acentos bien escritos."
+      },
+      {
+        "id": "CL-879",
+        "verso": "Sudar no les cambia la [racha] , no.",
+        "motivo": "Frase hecha ('cambiar la racha'); tema limpio."
+      },
+      {
+        "id": "CL-1190",
+        "verso": "No tiene nada que [perder]",
+        "motivo": "Frase hecha ('no tener nada que perder'); tema limpio, opciones sin erratas."
+      },
+      {
+        "id": "CL-1213",
+        "verso": "Milagro más, milagro [menos]",
+        "motivo": "Par de opuestos ('milagro mas, milagro menos'); tema limpio, opciones sin erratas."
+      },
+      {
+        "id": "CL-1214",
+        "verso": "Otra polilla en [busca] de la luz",
+        "motivo": "Frase hecha ('en busca de la luz'); tema limpio, opciones sin erratas."
+      },
+      {
+        "id": "CL-1048",
+        "verso": "Su princesita, ay, se transformó en [sapito]",
+        "motivo": "Cierra una imagen de cuento ('princesita... sapito'), diminutivo comun; tema con los acentos bien escritos."
+      },
+      {
+        "id": "CL-1054",
+        "verso": "Sabe que la vida es [corta] .",
+        "motivo": "Frase hecha ('la vida es corta'); tema limpio."
+      },
+      {
+        "id": "CL-1055",
+        "verso": "Abróchense los cinturones, mis [queridos] ,",
+        "motivo": "Frase hecha ('abrochense los cinturones, mis queridos'); tema limpio."
+      },
+      {
+        "id": "CL-484",
+        "verso": "risas que [duelen] !",
+        "motivo": "Estribillo que el tema repite (CL-509 es el mismo verso con una marca de vuelta); el verso va limpio. El tema trae marcas de vuelta y algunas tildes faltantes en otros versos."
+      },
+      {
+        "id": "CL-501",
+        "verso": "Mis penas como [piedras]",
+        "motivo": "Imagen concreta ('penas como piedras'); mismo aviso que CL-484 sobre las marcas del tema."
+      },
+      {
+        "id": "CL-569",
+        "verso": "Borra el rastro de tu dolor y ya no te [arrepentís] .",
+        "motivo": "Verbo voseado bien escrito ('ya no te arrepentis'); el tema trae anotaciones de guitarra en otras lineas."
+      },
+      {
+        "id": "CL-568",
+        "verso": "canciones tristes, dueñas del [corazón] .",
+        "motivo": "Palabra comun del cuerpo ('duenas del corazon'); mismo aviso que CL-569."
+      },
+      {
+        "id": "CL-1178",
+        "verso": "Dulce cadena, dulce [condena]",
+        "motivo": "Rima que obliga la palabra (cadena/condena). El tema trae erratas en otros versos ('mejoria', 'higado', 'Entan') y una opcion con 'ensueguida'; el verso va limpio."
+      },
+      {
+        "id": "CL-1119",
+        "verso": "La raya que separa vida y [muerte]",
+        "motivo": "Frase hecha ('vida y muerte'); el tema trae un tilde faltante en otro verso ('venia')."
+      },
+      {
+        "id": "CL-1275",
+        "verso": "Pero a veces, muy [pocas] veces",
+        "motivo": "Frase hecha ('a veces, muy pocas veces'); el tema trae una anotacion de acordes en otra linea."
+      },
+      {
+        "id": "CL-1283",
+        "verso": "Dicen que ya no hay [huevos] de oro",
+        "motivo": "Frase hecha ('huevos de oro'); el tema trae una anotacion de acordes en otra linea."
       }
     ],
     "enEspera": []

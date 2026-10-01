@@ -2852,9 +2852,13 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
      **partida en el código** y se arma al llamar, así no queda escrita como `usuario@dominio`
      en el JavaScript publicado (un test lo vigila). El botón llegó también a la Redondopedia,
      que `PRD-correcciones.md` §4 ponía primera en la fila: al pie de cada artículo.
-  4. **"Completá la letra" sale de los 21 versos**, por la vía que `D-25` ya había abierto: la
-     selección curada de fuente única, ampliada por `contenido` (`CNT-27`) con el mismo criterio
-     de riesgo bajo, ahora que la mitigación 1 llega de verdad. **La vía de dos fuentes se
+  4. **"Completá la letra" pasa de 21 a 72 versos** (24 fáciles, 23 medios, 25 difíciles, de
+     15 a 39 temas), por la vía que `D-25` ya había abierto: la selección curada de fuente
+     única, ampliada por `contenido` (`CNT-27`, +52) con el mismo criterio de riesgo bajo,
+     ahora que la mitigación 1 llega de verdad. El hilo principal sacó una de las viejas,
+     `CL-601` (`CNT-23`): su respuesta venía sin tilde ("volteo"), la misma errata por la que
+     esta tanda dejó afuera a otras. Seis temas pasan de ocho versos visibles (`CTR-04.4`, que
+     es precaución y no cerrojo); `CNT-27` §5 deja 19 versos más en reserva si se relaja. **La vía de dos fuentes se
      intentó primero y la red no dejó**: cifraclub y letras.com son del mismo dueño (`INV-23`),
      y lacuerda.net —la independiente— está bloqueada por la política de red del entorno
      (`INV-141`). Cuando se habilite `acordes.lacuerda.net`, los cuatro lotes de cotejo se
