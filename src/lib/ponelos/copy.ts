@@ -25,8 +25,9 @@
  * ## La regla que gobierna cada palabra de este archivo
  *
  * Ni un comparativo, ni un superlativo, ni un juicio. No hay "los mejores", no hay "tu
- * podio", no hay "acertaste". Las cuatro filas son **lugares**, y el texto tiene que
- * sonar a alguien contando dónde está parada la gente, no a alguien corrigiendo una prueba.
+ * podio", no hay "acertaste". Las cuatro filas son **cuánto te mueve el cuerpo** (`D-52`), y
+ * el texto tiene que sonar a alguien contando cómo se mueve la gente, no a alguien
+ * corrigiendo una prueba.
  */
 
 export const PANTALLA_0 = {

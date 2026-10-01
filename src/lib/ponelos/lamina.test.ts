@@ -151,7 +151,7 @@ test('el nombre del archivo viaja por todos lados', () => {
 
 test('las tapas de una banda nunca se salen del alto que les toco', () => {
   // El caso que importa es el peor: las diez tapas en una sola fila, que es lo que pasa
-  // cuando alguien manda todo un conjunto a "contra la valla".
+  // cuando alguien manda todo un conjunto al pogo.
   for (const caso of [[10, 1, 1, 1], [1, 10, 1, 1], [5, 5, 1, 1], [1, 1, 1, 10]]) {
     const bandas = planificarLamina(caso).filter((b) => b.clave.startsWith('banda-'));
     caso.forEach((cuantas, i) => {

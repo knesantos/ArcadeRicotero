@@ -231,7 +231,8 @@ export const JUEGOS: readonly Casete[] = [
   },
   {
     titulo: 'Ponelos en fila',
-    baja: 'De la valla para atrás, los ponés vos. Los diez discos, las tapas, o los temas de un disco: el orden lo armás vos.',
+    // La primera oración canta las filas (`D-52`): del pogo a quietito, sin decir cuál es mejor.
+    baja: 'Unos te tiran al pogo; otros, quietito. Los diez discos, las tapas, o los temas de un disco: el orden lo armás vos.',
     variante: 'bang',
     // *¡Bang! ¡Bang!… Estás liquidado* entero: un juego de poner discos en fila lleva un disco.
     arte: '/tapas/bang-bang-estas-liquidado.jpg',

@@ -32,6 +32,8 @@
 >   `CNT-28`), con siete enlaces de entrada que cuida `redondopedia.test.ts`.
 > - **Calcomanías**: el muñeco del antifaz (*Un baión*) y el rótulo con la mosca (*La mosca y la
 >   sopa*; el gato momificado no está en ninguna imagen del repo).
+> - **"Ponelos en fila" con filas nuevas** (`D-52`, elegidas por el usuario): EN EL POGO ·
+>   SALTANDO · CABECEANDO · QUIETITO. Mismos números de fila: los enlaces viejos abren igual.
 > - **El bondi del casete de "Adiviná la tapa"**, recortado al contorno: quedaba chiquito (pedido
 >   del usuario en la misma sesión).
 > - **Peso muerto, ~4,9 MB menos publicados**: video duplicado, cinco derivados de tapa sin

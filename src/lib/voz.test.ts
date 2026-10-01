@@ -193,8 +193,8 @@ function cadenasDelBanco(): string[] {
  * **Por que estan aca y no importados con el resto.** `filas.ts` es un modulo hoja que no
  * importa nada —esa es la condicion para que lo puedan leer la pagina, la isla y el
  * empaquetado del link—, asi que los nombres viven con los numeros de fila y con la clave
- * de cada una. Recorrer el modulo entero con `cadenas()` auditaria tambien `valla`,
- * `medio`, `atras` y `vereda`, que son identificadores del codigo y `D-17` los deja
+ * de cada una. Recorrer el modulo entero con `cadenas()` auditaria tambien `pogo`,
+ * `saltando`, `cabeceando` y `quietito`, que son identificadores del codigo y `D-17` los deja
  * explicitamente afuera. Mismo criterio, y mismo recolector aparte, que el banco de dos
  * ejes de mas arriba.
  *

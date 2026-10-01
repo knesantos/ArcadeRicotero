@@ -2896,3 +2896,26 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     con ocho; con once es más largo, y lo tiene que mirar `experiencia`.
   - El campo `temaFijo` de `skayboy.json` sigue ahí sin uso (resto de la cinta, `D-50`); sacarlo
     es un cambio de schema y es de `arquitectura`.
+
+---
+
+## D-52 — Las filas de "Ponelos en fila" pasan a ser el pogo
+
+- **Fecha:** 2026-10-01
+- **Estado:** aceptada — decisión directa del usuario. Pidió *"otras categorías más
+  ricoteras"*, descartó una primera tanda de tres (el casete, el cuerpo, la misa), guardó la
+  del cuerpo, vio dos en el tablero y eligió esta.
+- **Decisión:** las cuatro filas de `US-08` pasan de lugares de un recital (CONTRA LA VALLA ·
+  EN EL MEDIO · ATRÁS DE TODO · EN LA VEREDA) a **cuánto te mueve el cuerpo ese tema**:
+  **EN EL POGO · SALTANDO · CABECEANDO · QUIETITO**.
+- **Lo que no cambia, y es lo que importa:** `BR-22`. Las filas ordenan sin calificar: nadie
+  que escucha un tema quietito se equivocó. Siguen siendo registro 3 (rótulos secos) y
+  siguen siendo cuatro, con los mismos números de fila (`ADR-06`): **un enlace compartido con
+  las filas viejas abre igual**, y lo que estaba contra la valla aparece en el pogo.
+- **Descartadas:** el casete (en la casetera → prestado sin vuelta), la misa (adentro del
+  estadio → en casa con la radio), los redonditos (recién horneados → en la bandeja), el
+  canto (a garganta pelada → ni la letra). El cuerpo (en la piel → en el cajón) quedó como la
+  segunda.
+- **Consecuencias:** la bajada del casete del portal cambia su primera oración a *"Unos te
+  tiran al pogo; otros, quietito."*. `UX-23` y `PRD-ponelos-en-fila.md` siguen nombrando las
+  filas viejas: son de `experiencia` y `producto`, y describen la decisión de entonces.
