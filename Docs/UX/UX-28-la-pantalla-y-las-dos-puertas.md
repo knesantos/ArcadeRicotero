@@ -24,6 +24,17 @@
 > `CNT-18` en cada tamaño, y (5) deja una tabla de alturas comparable para que `T-271` la
 > mida en el navegador. El detalle vive en `§2.3` a `§2.6` y en `§4`.
 >
+> **Tercera enmienda, 2026-10-02 (`T-317`, ciclo 17), en `§5`.** El teléfono cerraba y el
+> escritorio no: los cortes de alto de ×3 y ×4 (520 y 660) salían del marco del mueble solo y
+> no contaban la cabecera, que arriba de 500 de alto se apilaba entera (366 px CSS medidos
+> arriba del mueble) y dejaba teclas fuera de la ventana a 1024 × 600 y a 1280 × 800. `D-54`
+> tomó una **tercera salida** que el traspaso de `T-271` no listaba —la cabecera se acuesta en
+> un renglón y la bajada va al costado del título, sin sacarla— y los cortes pasan a **620 y
+> 760**. La cuenta, los tamaños medidos y lo que sigue sin medir están en `§5`; la hoja de la
+> pantalla que lo contiene es `UX-35` `§5`. El traspaso
+> `HILO-para-experiencia-el-escritorio-tampoco-cuenta-la-cabecera.md` queda cerrado. Nada de
+> `§2.3` a `§2.6` (el teléfono) cambia.
+>
 > **Consume:** `D-40` entero (las dos puertas, y su consecuencia 3, que es literalmente este
 > documento), `D-41` (la frontera, el área con borde), `D-42` (el pie de homenaje
 > obligatorio, y sus tres precisiones), `D-32` límite 3 (0 ms hasta que la acción principal
@@ -640,6 +651,85 @@ viajan siempre juntas. Mientras tanto, la condición completa para mostrar la l�
 ---
 
 ## 5. El escritorio
+
+> **Enmendado el 2026-10-02 (`T-317`, ciclo 17, `D-54`, `UX-35` `§5`). Cierra
+> `HILO-para-experiencia-el-escritorio-tampoco-cuenta-la-cabecera.md` (`T-271`).** Los tres
+> puntos de abajo se conservan; esta enmienda dice qué quiere decir "mientras entre" y cambia
+> los cortes de alto.
+>
+> **El agujero.** La escala de abajo se cortaba en `min-height` 520 (×3) y 660 (×4), que salen
+> del marco del mueble solo: 468 para ×3 (432 de área más 8 de bisel y 28 de chapa del pie) y
+> 612 para ×4 (576 más 36). Ninguno contaba lo que va arriba del mueble, que medido sumaba:
+>
+> ```
+> 16 (relleno de main) + 48 (cabecera) + 24 (su margen) + 254 (marca + h1 + bajada + rótulo)
+> + 24 (margen del fichín) = 366
+> ```
+>
+> 366 + 468 = 834 contra un corte de 520; 366 + 612 = 978 contra uno de 660. Medido el
+> 2026-09-23: 1024 × 600 (×3) dejaba **6 teclas fuera** y 1280 × 800 (×4), **4**. Es el mismo
+> agujero que `§2.3` cerró para el teléfono, del otro lado de la escalera.
+>
+> **La salida: la tercera.** El traspaso proponía subir los cortes a ≈ 850 y ≈ 990 (deja a
+> casi todos los portátiles en ×2) o achicar el encabezado también en el escritorio (saca la
+> bajada justo donde más lugar hay, y `§2.3` quiere que arriba de 500 de alto se quede). Se
+> tomó otra: **la cabecera se acuesta en un renglón** —volver, marca, título y la bajada al
+> costado del título en vez de abajo—, con la misma forma del ×2 apretado pero con aire. No se
+> saca nada. La cabecera pasa de 326 (48 + 24 + 254, cuenta) a **~68 a 980 de ancho y ~48 a
+> 1220** (cuenta, sobre lo medido por el hilo principal el 2026-10-02: el mueble termina en 576
+> a 980 × 620 y en 700 a 1220 × 760, con 16 de sangría, 24 de aire y 468 o 612 de mueble). Y lo
+> que hay arriba del mueble, contando la sangría y el aire, de 366 a ~108 a 980 y ~88 a 1220.
+> (La primera versión de esta enmienda daba ~90 de cabecera, una cota alta tomada de un
+> comentario de `skayboy.css`; está corregida.)
+>
+> **Cuándo se acuesta** (`skayboy.css`): con 980 px de ancho o más y más de 500 de alto, o con
+> 720 px de ancho o más y entre 500 y 800 de alto. **No** de 720 a 979 de ancho con 800 de alto
+> o más (una tableta parada, 768 × 1024): ahí la escala no pasa de ×2, el alto sobra, y
+> acostada dejaba media pantalla de negro bajo el mueble. Las franjas de 500 de alto o menos
+> son las de `§2.3` y `§2.4`, sin cambios.
+>
+> **Los cortes nuevos.** La cuenta ahora incluye la cabecera y el aire, y el aire entre la
+> cabecera acostada y el mueble es de 24 px (era 16; subió por `REV-18` `FIND-99`, porque el
+> sello de pantalla completa asoma 22 px y tapaba la última palabra de la bajada a 1024 × 640 y
+> 720 × 600):
+>
+> | Escala | El marco pide | Dónde termina el mueble (medido, en el piso) | Corte viejo | **Corte nuevo** | Sobra bajo el mueble |
+> |---|---|---|---|---|---|
+> | ×3 | 960 × 468 | 576, a 980 × 620 | 520 de alto | **980 de ancho, 620 de alto** | 44 px |
+> | ×4 | 1200 × 612 | 700, a 1220 × 760 | 660 de alto | **1220 de ancho, 760 de alto** | 60 px |
+>
+> Contando los 16 px de sangría de abajo sobran 28 y 44. La versión anterior de esta tabla
+> daba 14 y 10 px de margen: salían de la cota alta de ~90 para la cabecera, y la medida real
+> es más holgada.
+>
+> **Lo medido** el 2026-10-02 con `teclasFuera` (el fragmento de medición de `T-271`), todas
+> en cero:
+>
+> | Ventana | Escala | Cabecera |
+> |---|---|---|
+> | 1024 × 640 | ×3 | acostada |
+> | 1280 × 720 | ×3 | acostada |
+> | 1366 × 768 | ×4 | acostada |
+> | 1440 × 900 | ×4 | acostada |
+> | 1920 × 1080 | ×4 | acostada |
+> | 812 × 600 | ×2 (antes dejaba las teclas fuera) | acostada |
+> | 768 × 1024 | ×2 | apilada de siempre |
+>
+> **Y una segunda pasada, también del 2026-10-02**, que cierra lo que la primera dejó sin
+> medir, todas con 0 teclas afuera:
+>
+> | Ventana | Escala | Lo medido |
+> |---|---|---|
+> | 980 × 620 (piso de ×3) | ×3 | el mueble termina en 576 |
+> | 1220 × 760 (piso de ×4) | ×4 | el mueble termina en 700 |
+> | 979 × 620 | ×2 | termina en 434 |
+> | 1219 × 760 | ×3 | termina en 576 |
+> | 1024 × 600 (fallaba: 6 teclas fuera) | ×2 | cae a ×2 por el corte |
+> | 1280 × 800 (fallaba: 4 teclas fuera) | ×4 | — |
+> | 1366 × 657 (un alto de ventana de portátil) | ×3 | — |
+>
+> **Lo que sigue sin medir** (`UX-35` `§7.7`): una ventana de portátil real, con sus propias
+> barras. Si en algún tamaño las teclas quedan fuera, el corte sube lo que falte.
 
 `UX-10` ya trata el escritorio como caso derivado y el usuario dejó el teclado explícitamente
 afuera del ciclo 9. Lo que fijo acá, corto, porque el traspaso lo marcó como "va a aparecer

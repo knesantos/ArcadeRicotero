@@ -291,6 +291,44 @@
   --espacio-3: 1.5rem;
   --espacio-4: 2.5rem;
 
+  /* ------------------------------------------------------------------
+     La mesa (`D-54`, `UX-35`). Cómo se apoya el sitio en una pantalla ancha. La hoja 15 del
+     lienzo está escrita y falta pegarla (`T-319`): esta vez las medidas llegaron acá primero.
+
+     En el teléfono la hoja va en la mano y ocupa todo. En la computadora la hoja queda
+     apoyada en una mesa, y al lado de la hoja está **la carátula del casete** que elegiste
+     en el portal: la misma pieza de tapa, el número de pista, y la lista de temas del lado.
+     No es el teléfono agrandado: hasta el ciclo 16 el sitio en 1440 px era una columna de
+     544 px en el medio de un monitor, y el tablero de las preguntas terminaba a la altura
+     de un tercio de la pantalla con dos tercios de negro abajo.
+
+     Cinco medidas de ancho (y un aire), y ninguna es de framework:
+
+     - `--ancho-hoja` es el tope de siempre, el que calibró `UX-10` (opciones de 268 × 59 px,
+       66 caracteres por renglón). Estaba escrito a mano en `juego.css` y `sitio.css`; pasa
+       a tener nombre sin cambiar de valor.
+     - `--ancho-tablero` es la hoja **cuando tiene una carátula al lado**. Cuatro rem más:
+       las dos columnas de opciones pasan de 268 a 300 px y el enunciado sigue en un largo
+       de renglón cómodo. No crece más porque el mouse viaja entre opción y opción.
+     - `--ancho-caratula` sale del casete del portal: la pieza de tapa a 1× de su archivo
+       (los detalles miden 480 px, las tapas 320) entra a la mitad sin estirarse.
+     - `--ancho-tablero-amplio` es el de "Ponelos en fila" en dos paños (más abajo).
+     - `--ancho-mesa` es el portal entero: tres casetes de ~384 px por fila, que es el ancho
+       en el que la etiqueta de papel deja de partir el título en tres renglones.
+     ------------------------------------------------------------------ */
+  --ancho-hoja: 34rem;
+  --ancho-tablero: 38rem;
+  /* El tablero que necesita dos paños: "Ponelos en fila" pone las filas y la bandeja lado a
+     lado desde 80 rem, y la bandeja pide su columna sin comerle el ancho a las fichas puestas
+     (`UX-35` §4.5). Es el único juego que lo usa; vive acá porque es una medida de marca
+     (`REV-18`, `FIND-106`). */
+  --ancho-tablero-amplio: 52rem;
+  --ancho-caratula: 19rem;
+  --ancho-mesa: 76rem;
+  /* El aire entre la carátula y la hoja: crece con la ventana, con techo, para que en un
+     monitor de 1920 la carátula no quede a medio metro del juego que nombra. */
+  --aire-mesa: clamp(2rem, 4vw, 4rem);
+
   /* Radio de papel cortado, no de burbuja: la esquina blanda y pareja en todo es
      el acabado tipico de interfaz generada (regla anti-slop en
      .claude/rules/diseno-marca.md). Era 14px; la identidad de las cajas la dan el

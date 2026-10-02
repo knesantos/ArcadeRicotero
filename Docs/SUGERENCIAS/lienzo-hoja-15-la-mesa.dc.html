@@ -1,0 +1,197 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&amp;display=swap">
+  <style>
+:root{
+  --fondo:#0D0A07; --elev:#181310; --borde:#392E24; --texto:#F4EFE2; --tenue:#B7AB99;
+  --acento:#F0761F; --oro:#F5C544; --verde:#7BE85C; --rojo:#FF4B4B;
+  --tiza:#EDE4CE; --celeste:#6FC7FF;
+  --display:'Archivo Black','Arial Black','Helvetica Neue',system-ui,sans-serif;
+  --texto-f:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--texto);font-family:var(--texto-f);line-height:1.5}
+.hoja{position:relative;min-height:100%;padding:40px 48px 44px;overflow:hidden;background:radial-gradient(130% 110% at 50% 30%, transparent 55%, rgba(0,0,0,.5) 100%)}
+.grano{position:absolute;inset:0;pointer-events:none;opacity:.17;mix-blend-mode:overlay}
+.cinta{display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+  border-bottom:2px solid var(--borde);padding-bottom:12px;margin-bottom:26px;position:relative}
+.cinta b{font-family:var(--display);font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--tenue);font-weight:400}
+.cinta span{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--tenue);opacity:.75}
+h2.tit{font-family:var(--display);font-weight:400;font-size:38px;line-height:1.02;margin:0 0 10px;
+  letter-spacing:-.01em;filter:url(#rugosa);text-wrap:balance;position:relative}
+p.bajada{margin:0 0 26px;color:var(--tenue);max-width:66ch;font-size:15px;text-wrap:pretty;position:relative}
+h3.sub{font-family:var(--display);font-weight:400;font-size:11.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--acento);margin:0 0 14px}
+hr.regla{border:0;border-top:1px solid var(--borde);margin:26px 0}
+.nota{font-size:12.5px;color:var(--tenue);line-height:1.6;text-wrap:pretty}
+.nota b{color:var(--texto);font-weight:600}
+.cuerpo{position:relative}
+
+.lema{border:2px solid var(--acento);border-radius:4px;padding:20px 24px;margin:0 0 26px;
+  font-family:var(--display);font-size:21px;line-height:1.25;color:var(--tiza);
+  transform:rotate(-.5deg);text-wrap:balance}
+.lema small{display:block;margin-top:10px;font-family:var(--texto-f);font-size:12.5px;
+  letter-spacing:0;color:var(--tenue);line-height:1.6;font-weight:400}
+
+.topes{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:8px}
+.tope{border:1px solid var(--borde);border-radius:4px;background:var(--elev);padding:16px 14px}
+.tope .n{font-family:var(--display);font-size:30px;line-height:1;color:var(--oro);margin-bottom:8px}
+.tope .q{font-size:12px;color:var(--texto);font-weight:600;margin-bottom:4px}
+.tope .p{font-size:11.5px;color:var(--tenue);line-height:1.45}
+
+table.tk{width:100%;border-collapse:collapse;font-size:12.5px}
+table.tk th{text-align:left;font-family:var(--display);font-weight:400;font-size:10px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--tenue);border-bottom:1px solid var(--borde);
+  padding:0 10px 8px 0}
+table.tk td{padding:9px 10px 9px 0;border-bottom:1px solid rgba(57,46,36,.55);vertical-align:top}
+table.tk code{font-family:ui-monospace,'Cascadia Code',monospace;color:var(--oro);font-size:12px;white-space:nowrap}
+table.tk .val{font-family:ui-monospace,'Cascadia Code',monospace;color:var(--tiza);white-space:nowrap}
+table.tk td.d{color:var(--tenue);line-height:1.5}
+
+.curva{display:grid;grid-template-columns:200px 1fr;gap:24px;align-items:center}
+.curva .dib{border:1px solid var(--borde);border-radius:4px;background:var(--elev);padding:10px}
+
+.comp{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.lado{border:1px solid var(--borde);border-radius:4px;background:var(--elev);padding:20px}
+.lado .et{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:12px}
+.no .et{color:var(--rojo)} .si .et{color:var(--verde)}
+.lado ul{margin:0;padding-left:16px}
+.lado li{font-size:12.5px;color:var(--tenue);line-height:1.55;margin-bottom:7px;text-wrap:pretty}
+.receta{background:#0E0B09;border:1px solid var(--borde);border-radius:4px;padding:18px 20px;
+  font-family:ui-monospace,'Cascadia Code',monospace;font-size:12px;line-height:1.65;
+  color:var(--tenue);overflow-x:auto}
+.receta b{color:var(--oro);font-weight:400}
+.receta i{color:#6E6255;font-style:normal}
+.quieto{border:2px dashed var(--celeste);border-radius:4px;padding:16px 18px;margin-top:18px}
+.quieto .et{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--celeste);
+  font-weight:700;margin-bottom:8px}
+
+/* Hoja 15: los esquemas de la mesa, dibujados con cajas y no con una captura. */
+.esq{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:6px}
+.marco{border:1px solid var(--borde);border-radius:4px;background:var(--elev);padding:14px}
+.marco .et{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--tenue);font-weight:700;margin-bottom:10px}
+.pantalla-esq{position:relative;background:var(--fondo);border:1px solid var(--borde);height:230px;padding:12px;overflow:hidden}
+.frente{display:grid;grid-template-columns:1fr 1.12fr;gap:10px;margin-bottom:10px}
+.mk{font-family:var(--display);color:#F8360D;font-size:17px;line-height:.95;letter-spacing:.01em}
+.afi{border:2px solid #F8360D;height:54px;transform:rotate(-.6deg);display:grid;place-items:center;font-family:var(--display);color:#F8360D;font-size:12px}
+.casetera3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px 8px}
+.cas{height:34px;border:2px solid var(--borde);display:grid;grid-template-columns:20px 1fr;gap:5px;padding:4px;align-items:center}
+.cas i{display:block;width:20px;height:20px;background:#3a2f28;transform:rotate(-4deg)}
+.cas b{display:block;height:20px;background:var(--tiza);transform:rotate(-.4deg)}
+.cas:nth-child(3n+1){transform:rotate(-.8deg)} .cas:nth-child(3n+2){transform:rotate(.55deg)} .cas:nth-child(3n){transform:rotate(-.35deg)}
+.mesa{display:grid;grid-template-columns:76px 1fr;gap:14px;height:100%}
+.car{display:flex;flex-direction:column;gap:6px}
+.car .mk{font-size:12px}
+.car .fr{border:2px solid #F28B16;padding:6px;display:grid;gap:5px;transform:rotate(-.6deg)}
+.car .fr i{display:block;height:42px;background:#3a2f28}
+.car .fr b{display:block;height:16px;background:var(--tiza)}
+.car .ls{display:grid;gap:3px;margin-top:4px}
+.car .ls span{display:block;height:5px;background:var(--borde)}
+.car .ls span.ac{outline:1.5px solid #F28B16;background:#5a4a3c}
+.hojita{display:flex;flex-direction:column;gap:7px}
+.hojita .tit{font-family:var(--display);color:#F28B16;font-size:15px;line-height:1}
+.hojita .ren{height:6px;background:var(--borde);width:80%}
+.hojita .chapa{height:26px;background:var(--tiza);margin-top:4px}
+.hojita .bot{height:22px;background:#F28B16;box-shadow:0 3px 0 #0B7792;margin-top:auto}
+.tel{width:96px;height:200px;margin:0 auto;border:2px solid var(--borde);border-radius:12px;padding:8px 7px;position:relative;background:var(--fondo)}
+.tel .vol{display:inline-block;width:34px;height:12px;background:var(--tiza);transform:rotate(-1.6deg)}
+.tel .chip{position:absolute;top:8px;right:7px;display:flex;gap:3px;align-items:center;font-family:var(--display);font-size:8px;color:var(--tenue)}
+.tel .chip i{display:block;width:14px;height:14px;background:#3a2f28;transform:rotate(-4deg)}
+.tel .mk{font-size:10px;margin:8px 0 4px}
+.tel .t{font-family:var(--display);color:#F28B16;font-size:10px;margin-bottom:6px}
+.tel .r{height:4px;background:var(--borde);margin-bottom:4px}
+.tel .b{height:14px;background:#F28B16;box-shadow:0 2px 0 #0B7792;margin-top:10px}
+  </style>
+</helmet>
+<div class="hoja">
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+<filter id="rugosa" x="-10%" y="-10%" width="120%" height="120%">
+<feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="4" seed="9" result="n"></feTurbulence>
+<feDisplacementMap in="SourceGraphic" in2="n" scale="3" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+</filter>
+<filter id="granoF"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3"></feTurbulence></filter>
+</svg>
+<svg class="grano" aria-hidden="true"><rect width="100%" height="100%" filter="url(#granoF)"></rect></svg>
+
+<div class="cinta"><b>Arcade Ricotero &middot; Sistema de marca &middot; Hoja 15</b><span>La mesa</span></div>
+
+<div class="cuerpo">
+<h2 class="tit">La hoja va en la mano; en la computadora, sobre la mesa</h2>
+<p class="bajada">Hasta el ciclo 16 el sitio en 1440&nbsp;px era el tel&eacute;fono en el medio de un monitor: el portal en 736&nbsp;px con el noveno casete solo, cada juego en 544&nbsp;px y, arrancada la partida, <b>nada en pantalla que dijera qu&eacute; juego era</b>. Esta hoja no agranda el tel&eacute;fono: lo apoya en una mesa, al lado de <b>la car&aacute;tula del casete</b> que se toc&oacute; en el portal. Lo decide <b>D&#8209;54</b>; la pantalla la escribe <b>UX&#8209;35</b>.</p>
+
+<div class="lema">El casete que tocaste en la puerta, ahora en la mano.
+<small>La misma pieza de tapa, el mismo n&uacute;mero de pista, el mismo disco. En el tel&eacute;fono es una calcoman&iacute;a en la esquina de la cabecera; en la computadora es la columna de la mesa, con la lista de temas del lado A y del lado B &mdash; que se va mientras se juega, porque son salidas (UX&#8209;01).</small></div>
+
+<h3 class="sub">Las cinco medidas &mdash; tokens.css</h3>
+<table class="tk">
+<tr><th style="width:200px">Token</th><th style="width:150px">Valor</th><th>Qu&eacute; gobierna, y de d&oacute;nde sale el n&uacute;mero</th></tr>
+<tr><td><code>--ancho-hoja</code></td><td class="val">34rem</td><td class="d">El tope de siempre, el que calibr&oacute; <b>UX&#8209;10</b>: opciones de 268&times;59&nbsp;px, 66 caracteres por rengl&oacute;n. Estaba escrito a mano en dos hojas; ahora tiene nombre.</td></tr>
+<tr><td><code>--ancho-tablero</code></td><td class="val">38rem</td><td class="d">La hoja <b>con una car&aacute;tula al lado</b>. Cuatro rem m&aacute;s: las opciones pasan a 300&nbsp;px. No crece m&aacute;s porque el mouse viaja entre opci&oacute;n y opci&oacute;n. &laquo;Ponelos en fila&raquo; pide 52 para la bandeja.</td></tr>
+<tr><td><code>--ancho-caratula</code></td><td class="val">19rem</td><td class="d">La pieza de tapa a 1&times; de su archivo (detalles de 480&nbsp;px, tapas de 320) entra a la mitad sin estirarse.</td></tr>
+<tr><td><code>--ancho-mesa</code></td><td class="val">76rem</td><td class="d">El portal entero: tres casetes de ~384&nbsp;px por rengl&oacute;n, el ancho en que la etiqueta deja de partir el t&iacute;tulo en tres. Los nueve del lado A son un tres por tres.</td></tr>
+<tr><td><code>--aire-mesa</code></td><td class="val">clamp(2rem, 4vw, 4rem)</td><td class="d">Entre la car&aacute;tula y la hoja. Crece con la ventana y tiene techo: en 1920 la car&aacute;tula no queda a medio metro del juego que nombra.</td></tr>
+</table>
+
+<hr class="regla">
+
+<h3 class="sub">Los dos esquemas &mdash; desde 64&nbsp;rem</h3>
+<div class="esq">
+<div class="marco"><div class="et">El portal: frente y lado A en tres por tres</div>
+<div class="pantalla-esq">
+<div class="frente"><div class="mk">ARCADE<br>RICOTERO</div><div class="afi">OKTUBRE</div></div>
+<div class="casetera3"><div class="cas"><i></i><b></b></div><div class="cas"><i></i><b></b></div><div class="cas"><i></i><b></b></div><div class="cas"><i></i><b></b></div><div class="cas"><i></i><b></b></div><div class="cas"><i></i><b></b></div><div class="cas"><i></i><b></b></div><div class="cas"><i></i><b></b></div><div class="cas"><i></i><b></b></div></div>
+</div>
+<p class="nota" style="margin-top:10px">Fuera de octubre la cabecera ocupa sola el rengl&oacute;n. Desde 80&nbsp;rem la pieza del casete pasa de 64 a 84&nbsp;px y la bajada se lee entera.</p></div>
+
+<div class="marco"><div class="et">Un juego: la car&aacute;tula y la hoja</div>
+<div class="pantalla-esq"><div class="mesa">
+<div class="car"><div class="mk">ARCADE<br>RICOTERO</div><div class="fr"><i></i><b></b></div><div class="ls"><span></span><span></span><span class="ac"></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+<div class="hojita"><div class="tit">ADIVIN&Aacute; EL TEMA</div><div class="ren"></div><div class="ren" style="width:60%"></div><div class="chapa"></div><div class="ren" style="width:40%"></div><div class="bot"></div></div>
+</div></div>
+<p class="nota" style="margin-top:10px">La car&aacute;tula queda pegada al desplazar. En partida se va la lista y queda la pieza con el nombre: es lo &uacute;nico que dice qu&eacute; juego es.</p></div>
+</div>
+
+<div class="curva" style="margin-top:22px">
+<div class="dib"><div class="tel"><span class="vol"></span><span class="chip"><i></i>A3</span><div class="mk">ARCADE<br>RICOTERO</div><div class="t">ADIVIN&Aacute; EL TEMA</div><div class="r"></div><div class="r" style="width:70%"></div><div class="b"></div></div></div>
+<div class="nota"><b>En el tel&eacute;fono cambian tres cosas, y ninguna es de lugar.</b> La calcoman&iacute;a de la car&aacute;tula (la pieza y &laquo;A3&raquo;) en el hueco que estaba vac&iacute;o a la derecha de &laquo;&larr; AL ARCADE&raquo;; un solo t&iacute;tulo para los ocho juegos &mdash; la rotulada en su peso, en la tinta del disco &mdash;; y un solo bot&oacute;n principal, en la tinta del disco con un canto de sombra dura en su apoyo que se hunde al apretar. Los anchos, el orden y los cortes del tel&eacute;fono no se tocan.</div>
+</div>
+
+<hr class="regla">
+
+<div class="comp">
+<div class="lado no"><div class="et">As&iacute; no &mdash; el tel&eacute;fono agrandado</div><ul>
+<li>El tablero estirado a 60&nbsp;rem y la letra de juego a 28&nbsp;px: interfaz de televisor.</li>
+<li>Los costados llenos de adorno para que &laquo;no quede vac&iacute;o&raquo;.</li>
+<li>Una barra de navegaci&oacute;n arriba, con las salidas a la vista en plena partida.</li>
+<li>La foto de tapa de un archivo de 591&nbsp;px estirada a 1440: se ve al 40&nbsp;%.</li>
+<li>Un r&oacute;tulo arriba del t&iacute;tulo (&laquo;LADO A &middot; PISTA 3&raquo;) en vez del n&uacute;mero escrito a mano en la etiqueta.</li>
+</ul></div>
+<div class="lado si"><div class="et">As&iacute; s&iacute; &mdash; la hoja sobre la mesa</div><ul>
+<li>La car&aacute;tula con la pieza a 1&times;, la etiqueta de papel y la lista de temas del casete.</li>
+<li>La foto de fondo detr&aacute;s de la hoja, con un margen de sangre, no detr&aacute;s de la mesa.</li>
+<li>&laquo;Ponelos en fila&raquo; en dos pa&ntilde;os: las filas y la bandeja lado a lado.</li>
+<li>Skayboy con la cabecera acostada en un rengl&oacute;n, para que el mueble &times;4 entre entero.</li>
+<li>El n&uacute;mero de pista abajo a la derecha, como en el casete del portal.</li>
+</ul></div>
+</div>
+
+<hr class="regla">
+<p class="nota"><b>Los cortes:</b> 46&nbsp;rem (dos columnas, el de UX&#8209;10, sigue igual), <b>64&nbsp;rem</b> (la mesa: car&aacute;tula, portal en tres), <b>80&nbsp;rem</b> (el casete crece; los dos pa&ntilde;os de &laquo;Ponelos en fila&raquo;), y el de capacidad, <code>(hover: hover) and (pointer: fine)</code>, para el cambio de borde con mouse. Ninguno toca un tel&eacute;fono parado.</p>
+</div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1120,"height":1520}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

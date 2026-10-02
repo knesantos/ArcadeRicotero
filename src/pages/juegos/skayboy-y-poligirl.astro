@@ -64,9 +64,17 @@ const TITULO = `${CASETE.titulo} — Arcade Ricotero`;
  * donde `voz.test.ts` los audita. Acá no se escribe ni una palabra que lea nadie.
  */
 const MANDOS = [
-  { lado: 'izquierda', nombre: TECLAS.mandoIzquierdo },
-  { lado: 'derecha', nombre: TECLAS.mandoDerecho },
+  { lado: 'izquierda', nombre: TECLAS.mandoIzquierdo, quien: TECLAS.quienIzquierda },
+  { lado: 'derecha', nombre: TECLAS.mandoDerecho, quien: TECLAS.quienDerecha },
 ] as const;
+
+/**
+ * La leyenda de teclas de cada columna, para la computadora (`D-55`): de quién es y con qué
+ * teclas se mueve. Las letras salen del mismo mapa que aprieta los botones (`teclado.ts`), así
+ * que la leyenda no puede nombrar una tecla que no hace nada.
+ */
+const tecla = (lado: 'izquierda' | 'derecha', cual: 'salto' | 'izquierda' | 'derecha'): string =>
+  teclaDelBoton(lado, cual)?.etiqueta ?? '';
 
 /** El piso de cada columna: las dos de dirección, donde cae el pulgar (`UX-28 §2.2`). */
 const PISO = [
@@ -244,6 +252,24 @@ const PISO = [
                     </button>
                   ))}
                 </div>
+                {/*
+                  En la computadora los botones no se ven y en su lugar va esto (`D-55`): el
+                  nombre de quien maneja la columna y sus tres teclas, armadas como en el
+                  teclado —la de saltar arriba, las de caminar abajo—, que se encienden
+                  cuando se aprietan. Las teclas dibujadas son para el ojo; el lector de
+                  pantalla oye la frase entera.
+                */}
+                <p class="mando-leyenda">
+                  <span class="mando-quien" aria-hidden="true">{mando.quien}</span>
+                  <span class="mando-teclas" aria-hidden="true">
+                    <kbd class="tecla-kbd tecla-kbd--salto">{tecla(mando.lado, 'salto')}</kbd>
+                    <kbd class="tecla-kbd tecla-kbd--izquierda">{tecla(mando.lado, 'izquierda')}</kbd>
+                    <kbd class="tecla-kbd tecla-kbd--derecha">{tecla(mando.lado, 'derecha')}</kbd>
+                  </span>
+                  <span class="mando-frase">
+                    {TECLAS.comoSeMueve(mando.quien, tecla(mando.lado, 'salto'), tecla(mando.lado, 'izquierda'), tecla(mando.lado, 'derecha'))}
+                  </span>
+                </p>
               </div>
             ))
           }

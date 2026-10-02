@@ -24,6 +24,8 @@ import '../../styles/juego.css';
 import '../../styles/sitio.css';
 import Cabeza from '../../components/Cabeza.astro';
 import PieImprenta from '../../components/PieImprenta.astro';
+import Caratula from '../../components/Caratula.astro';
+import { caratulaDe, tapasConCaratula } from '../../lib/sitio/caratula.ts';
 import { PANTALLA_0 } from '../../lib/por-la-letra/copy.ts';
 import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
 import { leerTemas, slugDeTitulo } from '../../lib/letra/temas.ts';
@@ -61,6 +63,9 @@ const catalogo = leerTemas().map((t) => ({
   anio: porDisco.get(t.disco)?.anio ?? 0,
 }));
 
+// El casete del portal, en la mano (`D-54`): la carátula y la tinta de la página.
+const caratula = caratulaDe('/juegos/adivinar-por-la-letra/');
+
 const TITULO = 'Sacalo por la letra — Arcade Ricotero';
 
 /**
@@ -86,7 +91,7 @@ const bajadaCorta = (() => {
     <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} />
   </head>
   <body class="con-grano juego-por-la-letra">
-    <main id="app">
+    <main id="app" class={`juego--${caratula.casete.variante}`}>
       <section id="portada" class="pantalla sobre-tapa">
         <header class="cabecera-sitio">
           <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
@@ -126,9 +131,10 @@ const bajadaCorta = (() => {
       <section id="partida" class="pantalla sobre-tapa" hidden></section>
       <section id="resultado" class="pantalla sobre-tapa" hidden></section>
 
+      <Caratula caratula={caratula} />
     </main>
 
-    <PieImprenta disco="momo-sampler" />
+    <PieImprenta disco="momo-sampler" tapas={tapasConCaratula([], caratula)} />
 
     <script type="application/json" id="banco" set:html={JSON.stringify(items)} />
     <script type="application/json" id="catalogo" set:html={JSON.stringify(catalogo)} />
@@ -166,17 +172,8 @@ const bajadaCorta = (() => {
         max-width: 7ch;
       }
 
-      h1 {
-        font-family: var(--fuente-rotulada);
-        font-size: 2.3rem;
-        line-height: 1.02;
-        text-transform: uppercase;
-        letter-spacing: 0.02em;
-        text-wrap: balance;
-        /* La plata de la tapa de Momo Sampler (`RES-37`), 13,29:1 sobre el fondo. */
-        color: var(--disco-momo-sampler-tinta);
-        margin: 0 0 var(--espacio-1);
-      }
+      /* El `h1` es uno solo para los ocho juegos desde el ciclo 17 (`juego.css`, `D-54`): la
+         rotulada, sin negrita falsa, en la tinta del disco que la página viste. */
 
       .tenue {
         color: var(--texto-tenue);

@@ -2943,3 +2943,154 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 - **Y la confirmación del usuario:** dijo que los seis niveles son jugables. Cierra las notas de
   excepción de `D-51` punto 2 en `PRD-skayboy-y-poligirl.md` y en `CTR-16.7`, en lo que dijo: que
   se juegan. No dijo si fue de a dos ni en qué aparato.
+
+---
+
+## D-54 — La mesa y la carátula: el sitio en una pantalla ancha deja de ser un teléfono en el medio
+
+- **Fecha:** 2026-10-02
+- **Estado:** aceptada — pedido directo del usuario.
+- **El pedido, textual:** *"Hacé un ciclo entero y complejo de mejora visual de desktop para
+  el home y todos los juegos. Debe quedar profesional y lindo en ambas formas desktop y
+  mobile."*
+- **Consume:** `D-09`, `D-14`, `D-17`, `D-19`, `D-21`, `D-49`, `UX-01`, `UX-04`, `UX-10`,
+  `UX-24`, `UX-25`, `UX-28` §5, `.claude/rules/diseno-marca.md`,
+  `.claude/rules/voz-ricotera.md`, y el traspaso
+  `HILO-para-experiencia-el-escritorio-tampoco-cuenta-la-cabecera.md`.
+
+- **Lo medido antes de tocar nada, a 1440 × 900.** El portal era una columna de 736 px: dos
+  casetes por renglón, el noveno solo y torcido, y 350 px de negro a cada costado. Cada juego
+  era una columna de 544 px; arrancada la partida **no quedaba nada en pantalla que dijera qué
+  juego era**, y el tablero de las preguntas terminaba a un tercio del alto con dos tercios de
+  negro abajo. Los ocho títulos de juego estaban escritos a mano en ocho páginas y habían
+  derivado a cuatro formas (la rotulada a 1,5 rem, a 2,3 rem, la del sistema en negrita, la del
+  sistema a 1,75 rem), los ocho con la negrita falsa que el navegador le pone a un `h1`. Tres
+  botones principales iban en el rojo de la marca por defecto, sin que nadie lo hubiera
+  elegido. Y Skayboy, a ×4, dejaba las teclas de abajo fuera de la ventana (el traspaso de
+  `T-271`, abierto desde el ciclo 16).
+
+- **Decisión.**
+  1. **En una pantalla ancha la hoja se apoya en una mesa, al lado de la carátula del casete.**
+     Desde 64 rem cada juego es una grilla de dos columnas: a la izquierda la carátula —la
+     marca, la misma pieza de tapa que el juego tiene en el portal, la etiqueta de papel con el
+     nombre y el número de pista, y la lista de temas del lado A y del lado B—; a la derecha la
+     hoja, en `--ancho-tablero` (38 rem). La carátula se queda pegada mientras se desplaza.
+  2. **La lista de temas no está mientras se juega.** Son salidas, y en plena partida no hay
+     salidas: es el criterio que ya aplica la portada de cada juego —la cinta de regreso vive
+     solo ahí, y la isla la esconde al arrancar (`quiz.astro`, sobre el flujo de `UX-01`, que
+     lo dice como "un tap por decisión")—. Con un tablero a la vista (`#partida`, `#pregunta` o `#tablero`) la
+     carátula muestra solo la pieza y el nombre. En la portada y en el resultado, la lista
+     está, y es la forma de pasar de un juego a otro sin volver a la puerta.
+  3. **En el teléfono la carátula es una calcomanía** en la esquina de la cabecera, en el hueco
+     que estaba vacío a la derecha de "← AL ARCADE": la pieza y el número de pista ("A3"). Se
+     va con la cabecera cuando arranca la partida.
+  4. **El portal se ensancha a `--ancho-mesa` (76 rem):** el frente en dos columnas (la marca y
+     el afiche de octubre), el lado A en tres por tres, el lado B centrado con el mismo ancho
+     de casete. Desde 80 rem el casete crece (la pieza a 84 px) y la bajada se lee entera; en
+     el teléfono sigue la primera oración sola (`UX-25` §2.4).
+  5. **Un solo título para los ocho juegos** (`.pantalla > h1`): la rotulada en su peso, la
+     tinta del disco que viste el juego. Las páginas no lo reescriben.
+  6. **Un solo botón principal:** la tinta del disco de cada juego y un canto de sombra dura en
+     su apoyo, que se hunde al apretar —lo que ya tenían dos juegos, ahora de todos—. El
+     "Compartí" del resultado sigue en *Gulp!* (`D-19`: resultado = Gulp!).
+  7. **Skayboy acuesta la cabecera en un renglón** cuando el alto no sobra (desde 980 de ancho,
+     o entre 500 y 800 de alto), con la bajada al costado del título en vez de abajo, y los
+     cortes de ×3 y ×4 la cuentan (620 y 760 de alto). Cierra el traspaso de `T-271` con una
+     tercera salida: no se saca la bajada.
+  8. **"Ponelos en fila" va en dos paños desde 80 rem** (las filas y la bandeja lado a lado,
+     la bandeja pegada), y **"Sacalo por la letra" suelta el buscador del pie de la ventana**
+     en la mesa: va pegado a la hoja de versos.
+
+- **Alternativas descartadas.**
+  - **Agrandar el teléfono** (columna más ancha, letra más grande). `UX-10` §2.3 y §3.1 ya
+    explicaron por qué no: el tablero calibrado a 34 rem no se juega mejor a 60, el mouse
+    viaja más, y la letra de 28 px se lee como interfaz de televisor.
+  - **Llenar los costados con decoración** (la tira de cinta de `UX-10` §4). Decora el vacío
+    en vez de usarlo, y no resuelve lo que más pesaba: que en partida no se sabía qué juego
+    era.
+  - **Una barra de navegación arriba, de sitio de noticias.** Es la plantilla de cualquier
+    sitio, y pone las salidas a la vista en plena partida.
+  - **La foto de tapa de cada juego a pantalla entera.** Los archivos miden 400 a 600 px de
+    ancho (`D-21`, baja resolución a propósito): a 1440 se ven al 40 %. Se queda detrás de la
+    hoja, con un margen de sangre, y la carátula trae la pieza del disco a 1×.
+  - **Carátula también para Skayboy.** El mueble del fichín es su propia carátula y a ×4 ocupa
+    la mesa entera. Es la única excepción, escrita en `caratula.test.ts`.
+  - **Esconder la bajada de Skayboy en el escritorio** (la salida 2 del traspaso). Se iba
+    justo donde más lugar hay; acostada al lado del título entra entera.
+
+- **Consecuencias.**
+  - Seis medidas de marca nuevas en `tokens.css` (`--ancho-hoja`, `--ancho-tablero`,
+    `--ancho-tablero-amplio`, `--ancho-caratula`, `--ancho-mesa`, `--aire-mesa`). `--ancho-hoja`
+    es el 34 rem de siempre, con nombre; `--ancho-tablero-amplio` (52 rem) es el de "Ponelos en
+    fila" en dos paños, y entró como token después de `REV-18` (`FIND-106`): estaba escrito en
+    `juego.css`.
+  - Cada página de juego (menos Skayboy) pide `caratulaDe()` de su ruta y viste
+    `.juego--<disco>`, que es el mismo mapa de `.casete--<disco>` del portal: el casete que se
+    toca en la puerta y el juego que abre no pueden vestir discos distintos. El pie acredita la
+    pieza de la carátula (`D-21`, condición 1), que se ve en el teléfono y en la computadora.
+  - Entran ocho pares a `contraste.test.ts`: los cinco botones en la tinta de su disco que no
+    tenían par con nombre, y el título en la tinta del disco sobre la tapa velada (texto
+    grande, 3:1) para los tres juegos que tienen foto de fondo.
+  - **Cambia el teléfono, y nada de lo que cambia es de lugar:** la calcomanía de la cabecera;
+    el título único (en "Completá la letra" pasa de la letra del sistema a la rotulada, en las
+    preguntas pasa a la rotulada en el texto claro, y en los ocho —Skayboy incluido— pierde la
+    negrita falsa); el eco de segunda tinta del título, que pasa del borde del papel al apoyo
+    del disco en seis juegos (lo midió `REV-18`, `FIND-109`); y el botón con canto en la tinta
+    de cada disco. El orden, los anchos y los cortes del teléfono no se tocaron: `REV-18`
+    comparó el portal a 375, 320, 414 y 600 contra el `HEAD` de antes y dio idéntico.
+  - **Dos ajustes a la regla de la lista, después de `REV-18`.** La elección de conjunto de
+    "Ponelos en fila" (`#eleccion`) también esconde la lista: ya se tocó "Empezá"
+    (`FIND-103`). Y en "Adiviná la tapa" la carátula esconde también la pieza en partida,
+    porque el ojo de buey es de *Último bondi*, la respuesta de `TP-006` (`FIND-100`; el mismo
+    motivo del `sinPasada` de su pie, `D-35` excepción 3). Queda la etiqueta con el nombre.
+  - **La carátula va última en el documento**, aunque se vea a la izquierda: primera, ponía
+    once enlaces entre el teclado y el "Jugá" (`UX-35` §6.2, `FIND-105`). Tiene tope de alto y
+    se desplaza por dentro si no entra en la ventana, y con puntero táctil sus renglones miden
+    48 px (`UX-35` §6.1, `FIND-102`, `FIND-104`).
+  - **Queda pendiente reflejarlo en el lienzo** (una hoja 15, "La mesa"): entraron medidas de
+    marca nuevas, y también nacieron fuera del lienzo decisiones de tinta —el botón y el título
+    en la tinta del disco, el canto en su apoyo (y el del "Compartí", que es el rojo de *Gulp!*
+    hundido al 45 % en el fondo), el eco del título en el apoyo—; el circuito de
+    `diseno-marca.md` pide que empiecen en el diseño. La hoja
+    está escrita (`Docs/SUGERENCIAS/lienzo-hoja-15-la-mesa.dc.html`, con las instrucciones en
+    `HILO-para-experiencia-la-mesa-y-la-caratula.md`); pegarla exige republicar el lienzo
+    entero, y eso lo decide el usuario.
+  - `experiencia` escribe la hoja de la pantalla (`UX-35`) y enmienda `UX-10`, `UX-28` §5 y
+    `UX-04`. `REV-18` la revisó con el código.
+
+---
+
+## D-55 — En la computadora, Skayboy y Poligirl no muestran sus botones: cada columna dice sus teclas
+
+- **Fecha:** 2026-10-02
+- **Estado:** aceptada — pedido directo del usuario, al cerrar el ciclo 17, textual: *"En
+  desktop que no muestre los botones de skauboy y poligirl. Luego integra todo"*.
+- **Consume:** `D-43`, `D-53`, `D-54`, `UX-10` §1, `UX-28` §2, `UX-33` §1.4.
+- **Decisión.** Con mouse —el corte de capacidad `(hover: hover) and (pointer: fine)`, el
+  mismo que desde `D-53` imprimía la letra de cada tecla— los seis botones del mando no se
+  ven. **La columna se queda** y en su lugar lleva una leyenda: el nombre de quien la maneja
+  (Skayboy a la izquierda, Poligirl a la derecha, `D-43`) y sus tres teclas armadas como en el
+  teclado, la de saltar arriba y las de caminar abajo, que se encienden mientras se aprietan.
+  En pantalla completa, con mouse, la columna se va entera. Sin mouse —teléfono, tableta,
+  pantalla táctil grande— nada cambia: los botones son la única forma de jugar.
+- **Cómo.** Los botones siguen en el documento, escondidos: la isla guarda en ellos qué tecla
+  está apretada y el motor lee eso (`mandoDe`), así que el teclado los aprieta igual. La
+  leyenda se enciende leyendo ese mismo estado con CSS (`.tecla--apretada`), sin tocar la isla.
+  Las letras salen de `teclado.ts`, el mapa que aprieta los botones, y la frase para el lector
+  de pantalla, de `TECLAS.comoSeMueve` en `lib/skayboy/copy.ts`.
+- **Alternativas descartadas.**
+  - **Sacar las columnas y agrandar el área.** Cambiaba los cortes de escala y el reparto de
+    `UX-28 §2` en todos los tamaños de escritorio, para ganar un escalón en pocas ventanas; y
+    se perdía el único lugar donde decir qué teclas mueven a quién.
+  - **Esconder por ancho.** Una pantalla táctil grande se quedaría sin forma de jugar
+    (`UX-10` §1: el ancho no dice que haya mouse).
+  - **Poner las teclas en la cabecera.** La cabecera acostada de `D-54` ya va justa, y las
+    teclas de cada personaje pierden su lado.
+- **Consecuencias.**
+  - `estilos.test.ts` falla si los botones se esconden afuera del corte de mouse, si con mouse
+    siguen a la vista, o si la leyenda no nace escondida (los dos rojos vistos).
+  - Medido con Chrome sin cabeza: a 1440×900 con mouse no hay botones, la leyenda está, la D
+    enciende su tecla y mueve a Skayboy, y al soltar se apaga; a 1280×800 táctil y a 812×375
+    en un teléfono los botones siguen, sin teclas afuera.
+  - `UX-28` §2 y `UX-35` §5 describen la columna con sus botones: queda para `experiencia`
+    sumar la leyenda.

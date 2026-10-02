@@ -347,6 +347,22 @@ export const OKTUBRE = {
   jugar: 'ADIVINÁ TEMAS DE OKTUBRE',
 } as const;
 
+/**
+ * La carátula de cada juego (`D-54`, `UX-35`). Todo registro 3: dice qué hay y se calla.
+ *
+ * El nombre del juego y la lista de temas no se escriben acá: salen de `JUEGOS`, igual que
+ * en el portal. Lo único propio de la carátula es cómo se nombra a sí misma para el lector de
+ * pantalla, y el renglón de la pista — que en la tapita de un casete grabado en casa se
+ * escribe así, con el lado primero.
+ */
+export const CARATULA = {
+  rotulo: (titulo: string) => `Carátula de ${titulo}`,
+  pista: (lado: string, numero: number) => `Lado ${lado} · pista ${numero}`,
+  /* "Los otros casetes" decía algo falso: la lista trae también el de la página, marcado
+     (`UX-35` §6.5). */
+  lista: 'Los casetes',
+} as const;
+
 export const REDONDOPEDIA = {
   titulo: 'LA REDONDOPEDIA',
   bajada:

@@ -7,6 +7,69 @@
 
 **Última actualización:** 2026-10-02
 
+> ## 🪑 LA MESA Y LA CARÁTULA: EL SITIO EN UNA PANTALLA ANCHA (2026-10-02) — `D-54`, ciclo 17
+>
+> **Rama `ciclo-17/escritorio`, sobre `main` en `039bebd`, integrada a `main`** a pedido del
+> usuario (*"Luego integra todo"*) con el **PR #24**. Pedido: *"Hacé un ciclo entero y complejo de mejora visual de
+> desktop para el home y todos los juegos. Debe quedar profesional y lindo en ambas formas
+> desktop y mobile."* Y al final: *"dale, aplicá todo y cerrá el ciclo"*. Plan en
+> `ORQ-plan-ciclo-17.md` (`T-311`..`T-319`); `T-311`..`T-318` cerradas, `T-319` es del usuario.
+>
+> **La idea:** en el teléfono la hoja va en la mano; en la computadora se apoya en una mesa, al
+> lado de **la carátula del casete** que se tocó en el portal — la misma pieza de tapa, el mismo
+> número de pista, el mismo disco, sacados del mismo dato (`JUEGOS`).
+>
+> **Lo que hay:**
+> - **La carátula** (`components/Caratula.astro`, `lib/sitio/caratula.ts`) en los ocho juegos
+>   menos Skayboy, como último hijo de `main`. Desde 64 rem es la columna izquierda, pegajosa y
+>   con tope de alto: marca, pieza, etiqueta de papel, y la lista de temas A y B (la navegación
+>   entre juegos), que **se va en partida** (y en la elección de "Ponelos"). En "Adiviná la
+>   tapa" la pieza también se va en partida: es una respuesta (`piezaSopla`). En el teléfono es
+>   una calcomanía en la esquina de la cabecera (pieza + "A3") que se va con la cabecera.
+> - **El portal en la mesa** (`--ancho-mesa`, 76 rem): frente en dos columnas (marca y afiche),
+>   lado A en tres por tres, lado B centrado; desde 80 rem la pieza a 84 px y la bajada entera.
+>   Desde 46 rem la casetera deja de pisarse y el noveno se centra.
+> - **Un título y un botón para los ocho juegos**: la rotulada en su peso (los ocho tenían
+>   negrita falsa) en la tinta del disco, con el eco en su apoyo; el botón en la tinta del disco
+>   con canto que se hunde. Tres juegos pasan del rojo de la marca a su disco (dos ejes, letra,
+>   tapa).
+> - **Skayboy entra entero**: la cabecera se acuesta en un renglón y los cortes de ×3/×4 la
+>   cuentan (620/760 de alto). Cierra el traspaso de `T-271`.
+> - **"Ponelos en fila" en dos paños** desde 80 rem; **"Sacalo por la letra"** con el buscador
+>   pegado a los versos en la mesa.
+> - Seis medidas nuevas en `tokens.css` (`--ancho-hoja`, `--ancho-tablero`,
+>   `--ancho-tablero-amplio`, `--ancho-caratula`, `--ancho-mesa`, `--aire-mesa`).
+> - **Skayboy sin botones en la computadora** (`D-55`, pedido al cerrar): con mouse las dos
+>   columnas llevan una leyenda —quién es y sus tres teclas, que se encienden al apretarlas—;
+>   sin mouse los botones siguen. Los botones quedan en el documento y el teclado los aprieta.
+> - Papeles: `D-54`, `D-55`, `UX-35` (y enmiendas de `UX-10`, `UX-28` §5, `UX-04`), `REV-18` cerrada,
+>   y la hoja 15 del lienzo escrita (`Docs/SUGERENCIAS/lienzo-hoja-15-la-mesa.dc.html`).
+>
+> **Verificado:** `npm test` 1405/1405 (18 nuevos en `caratula.test.ts`, `estilos.test.ts` y
+> `contraste.test.ts`, cada uno con su rojo visto), `check` 0/0, build 156, validador `APTA`.
+> Medido en Chrome sin cabeza por CDP a 1920, 1440, 1366 (768 y 657), 1280, 1100, 1024, 980, 812,
+> 768, 720, 375 y 320, en portada, partida y resultado: los ocho botones de arranque entran a
+> 1366×657, Skayboy sin teclas afuera en 21 tamaños (12 vueltos a medir después del último
+> ajuste), la carátula se desplaza por dentro donde no
+> entra, renglones táctiles de 51 px. `REV-18` (revisor, contexto fresco) comparó el teléfono
+> contra el `HEAD` de antes: el portal da idéntico.
+>
+> **`REV-18`: 12 hallazgos (`FIND-99`..`FIND-110`), cuatro MEDIA.** Los once del hilo principal
+> cerrados y vueltos a medir; `FIND-110` (el método de medición del checklist) lo cerró
+> `experiencia` en `UX-35` §7.
+>
+> **Abierto, sin trabar:**
+> - **El lienzo** (`T-319`): pegar la hoja 15 exige republicar el lienzo entero (2,5 MB, con el
+>   editor adentro). Lo decide el usuario.
+> - `experiencia`: sumar la leyenda de teclas de `D-55` a `UX-28` §2 y `UX-35` §5.
+> - `contenido` puede revisar la cadena "Los casetes" (`CARATULA.lista`), que escribió el hilo
+>   principal; `arquitectura` puede nombrar la cuarta portadora de `marca` en `ADR-03` §6.3.
+> - Las páginas de lectura (Redondopedia, cancionero) no se tocaron: el pedido nombró el portal
+>   y los juegos. Los atajos de teclado en los juegos de cuatro opciones quedan como idea.
+>
+> **Del usuario:** mirarlo en una computadora con mouse y en el teléfono, y si se republica el
+> lienzo con la hoja 15.
+
 > ## ⌨️ SKAYBOY CON EL TECLADO, Y EL USUARIO CONFIRMA LOS NIVELES (2026-10-02) — `D-53`
 >
 > **Rama `claude/busy-cannon-sfkwxd`, reiniciada sobre `main` en `2c398a9`** (el PR #22, que

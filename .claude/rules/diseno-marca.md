@@ -8,9 +8,12 @@ un color, una fuente o un componente** — hilo principal incluido.
 La fuente de verdad es el lienzo **"Sistema de marca Arcade Ricotero"**:
 https://claude.ai/code/artifact/59acd1de-80ab-4074-b1ba-b75da05cb134
 
-Once hojas: 01 marca · 02 voz · 03 paleta · 04 tipografía · 05 tapas (paletas reales
+Las hojas: 01 marca · 02 voz · 03 paleta · 04 tipografía · 05 tapas (paletas reales
 medidas + la mezcla `D-19`) · 06 iconografía · 07 línea y textura · 08 componentes ·
-09 pantallas · 10 tarjeta compartible · 11 entrega.
+09 pantallas · 10 tarjeta compartible · 11 entrega · 12 movimiento y aire · 14 el pixel
+del fichín. La 13 (la imprenta) la nombra `tokens.css` y nunca llegó al lienzo, y la 15
+(la mesa, `D-54`) está escrita en `Docs/SUGERENCIAS/lienzo-hoja-15-la-mesa.dc.html` y
+falta pegarla (`T-319`).
 
 Su espejo en el código es **`src/styles/tokens.css`**: el único archivo del repo donde
 puede vivir un hex, una familia tipográfica o una medida de marca.

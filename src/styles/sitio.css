@@ -387,11 +387,17 @@ html[data-umbral] .marca-grande {
    sigue sirviendo para las piezas sueltas, pero ya no es lo unico que sostiene el texto. */
 .cocina > *:not(.tapa-fondo),
 .portada-redondopedia > *:not(.tapa-fondo),
-main:has(> .tapa-fondo) > *:not(.tapa-fondo),
+main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 .sobre-tapa {
   position: relative;
   z-index: 1;
 }
+
+/* **La carátula (`D-54`) queda afuera de la regla de arriba, y es a propósito.** Ella sola
+   decide cómo se pega —absoluta en la esquina de la cabecera del teléfono, pegajosa en la
+   columna de la computadora (`juego.css`)—, y esta regla, con más peso de selector, la
+   habría vuelto un bloque más del flujo: medido en "Adiviná el tema", la calcomanía bajaba
+   el título 48 px. Lo que sí necesita es estar arriba del velo, y eso lo pone su `z-index`. */
 
 /* La mosca (La mosca y la sopa) vuela por la pantalla. Es lo unico vivo del sitio.
 
@@ -522,10 +528,11 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   max-width: 7ch;
   /* El tercero de los tres nombres (`ADR-03` §6.3). La firma es la misma de un lado y del
      otro, asi que el navegador la mueve de su lugar en la portada al suyo en la cabecera
-     en vez de dibujarla dos veces. Las tres formas de la marca —esta, la chica del
-     cascaron y la de la cabecera de cada juego (`juego.css`)— llevan el mismo nombre y
-     **nunca conviven en un mismo documento**: la portada no tiene cabecera de regreso, y
-     una pantalla con cabecera no tiene marca grande. */
+     en vez de dibujarla dos veces. Las cuatro formas de la marca —esta, la chica del
+     cascaron, la de la cabecera de cada juego y, desde `D-54`, la de la carátula en la mesa
+     (las dos en `juego.css`)— llevan el mismo nombre y **nunca se ven a la vez**: la portada
+     no tiene cabecera de regreso, una pantalla con cabecera no tiene marca grande, y en un
+     juego la de la hoja y la de la carátula se reparten por ancho. */
   view-transition-name: marca;
 }
 
@@ -909,8 +916,11 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
    las etiquetas de los nueve casetes arranquen en la misma columna. */
 .casete-arte {
   box-sizing: border-box;
-  width: 58px;
-  height: 58px;
+  /* El lado es una variable desde el ciclo 17: la misma pieza, con sus tres materiales, se
+     pega también en la carátula de cada juego (`D-54`) y en el casete del escritorio, cada uno
+     a su tamaño. 58 px sigue siendo el del teléfono. */
+  width: var(--lado-arte, 58px);
+  height: var(--lado-arte, 58px);
   object-fit: contain;
   transform: rotate(-4deg);
 }
@@ -1066,34 +1076,43 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   transform: rotate(0.9deg);
 }
 
-/* Variantes de disco (mezcla D-19). El acento rota; la base, nunca. */
-.casete--marca { --tinte: var(--marca-rojo); }
-.casete--historia { --tinte: var(--cat-historia); --tinta-registro: var(--cat-historia-apoyo); }
-.casete--discos { --tinte: var(--cat-discos); --tinta-registro: var(--cat-discos-apoyo); }
-.casete--letras { --tinte: var(--cat-letras); --tinta-registro: var(--cat-letras-apoyo); }
-.casete--mitologia { --tinte: var(--cat-mitologia); --tinta-registro: var(--cat-mitologia-apoyo); }
+/* Variantes de disco (mezcla D-19). El acento rota; la base, nunca.
+
+   **Cada variante sirve dos veces desde el ciclo 17** (`D-54`): `.casete--*` viste el casete
+   del portal y la carátula de cada juego, y `.juego--*` viste la página entera de ese juego
+   —el título, el eco del registro—. Es un solo mapa a propósito: el casete que se toca en la
+   puerta y el juego que abre no pueden vestir dos discos distintos. */
+.casete--marca, .juego--marca { --tinte: var(--marca-rojo); }
+.casete--historia, .juego--historia { --tinte: var(--cat-historia); --tinta-registro: var(--cat-historia-apoyo); }
+.casete--discos, .juego--discos { --tinte: var(--cat-discos); --tinta-registro: var(--cat-discos-apoyo); }
+.casete--letras, .juego--letras { --tinte: var(--cat-letras); --tinta-registro: var(--cat-letras-apoyo); }
+.casete--mitologia, .juego--mitologia { --tinte: var(--cat-mitologia); --tinta-registro: var(--cat-mitologia-apoyo); }
 /* Momo se tiñe con su apoyo —el peltre— para el borde, y el apoyo no lleva letra: el sello
    se llena con la plata de la tinta, que es el par que ya usa el boton de su juego. */
-.casete--momo {
+.casete--momo,
+.juego--momo {
   --tinte: var(--disco-momo-sampler-apoyo);
   --tinte-sello: var(--disco-momo-sampler-tinta);
 }
 /* `US-10` (`UX-34` §1): la tinta de *Un baión*, que pasa AA sobre `--fondo` ("Un baion sobre
    fondo" en `contraste.test.ts`), y el apoyo para el registro. Como ¡Bang! y no como Momo:
    la tinta ya es la que lleva letra, así que el sello no necesita un tinte aparte. */
-.casete--baion {
+.casete--baion,
+.juego--baion {
   --tinte: var(--disco-un-baion-para-el-ojo-idiota-tinta);
   --tinta-registro: var(--disco-un-baion-para-el-ojo-idiota-apoyo);
 }
 /* `US-08`. Va con la `-tinta` y no con el `-apoyo` como Momo: la ceniza de ¡Bang! ¡Bang!
    pasa AA sobre `--fondo` y ya tiene su par en `contraste.test.ts`. */
-.casete--bang {
+.casete--bang,
+.juego--bang {
   --tinte: var(--disco-bang-bang-estas-liquidado-tinta);
   --tinta-registro: var(--disco-bang-bang-estas-liquidado-apoyo);
 }
 /* `US-06` (2026-10-01): el cuero de *Luzbelito*, que pasa AA sobre `--fondo` ("Luzbelito
    sobre fondo" en `contraste.test.ts`) — la misma tinta del título de su página. */
-.casete--luzbelito {
+.casete--luzbelito,
+.juego--luzbelito {
   --tinte: var(--disco-luzbelito-tinta);
   --tinta-registro: var(--disco-luzbelito-apoyo);
 }
@@ -1950,6 +1969,202 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   .contenido-sitio:has(.casetera),
   .contenido-sitio:has(.indice-articulos) {
     max-width: 46rem;
+  }
+
+  /* **Los casetes dejan de pisarse cuando hay columnas** (`UX-35` §2.3).
+
+     El solapamiento de `-10 px` y el corrimiento alternado de 14 px son de la pila del
+     teléfono: una columna, cada casete encima del de arriba. En una grilla de dos el `li + li`
+     le subía 10 px también al casete de la columna derecha, y el corrimiento par/impar los
+     corría hacia el medio: medido a 1440 × 900 en el ciclo 16, las dos columnas arrancaban
+     con 8 px de diferencia y el A9 quedaba solo, torcido y corrido. Una pila desordenada se
+     ve a mano; una grilla desalineada se ve rota. La rotación se queda: es lo que la hace
+     collage. */
+  .casetera {
+    gap: var(--espacio-3) var(--espacio-3);
+  }
+
+  .casetera > li + li {
+    margin-top: 0;
+  }
+
+  /* Cada casete llena su celda: los de un mismo renglón miden lo mismo de alto. */
+  .casetera > li {
+    display: grid;
+  }
+
+  .casetera > li:nth-child(odd) .casete,
+  .casetera > li:nth-child(even) .casete {
+    margin: 0;
+  }
+}
+
+/* ==========================================================================
+   La mesa del portal (`D-54`, `UX-35` §2, ciclo 17)
+
+   A 1440 px el portal era una columna de 736 px: dos casetes por renglón, el noveno solo, y
+   dos franjas de 350 px de negro a los costados. El portal es la pantalla de **elegir**, la
+   única donde mostrar más a la vez es el trabajo mismo (`UX-10` §2.4), así que acá sí se
+   ensancha: hasta `--ancho-mesa`, con tres casetes por renglón — los nueve juegos del lado A
+   son un tres por tres, sin huérfano.
+
+   El frente (la marca y el afiche de octubre) va lado a lado, y el casete crece: la pieza de
+   tapa pasa de 58 a 84 px, y la bajada se lee entera, porque en una pantalla ancha sobra el
+   alto que en el teléfono obligó a cortarla en la primera oración (`UX-25` §2.4).
+   ========================================================================== */
+@media (min-width: 64rem) {
+  .contenido-sitio:has(.casetera) {
+    max-width: var(--ancho-mesa);
+    padding-inline: var(--espacio-3);
+  }
+
+  .portal-frente {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr);
+    column-gap: var(--aire-mesa);
+    align-items: center;
+    padding-top: var(--espacio-3);
+  }
+
+  /* Fuera de octubre no hay afiche y la cabecera queda sola: un renglón, no media mesa vacía. */
+  :root:not([data-mes='oktubre']) .portal-frente {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .marca-grande {
+    font-size: clamp(4.25rem, 5.6vw, 5.75rem);
+  }
+
+  .donde-estas {
+    font-size: 1.12rem;
+  }
+
+  .bajada-portal {
+    max-width: 46ch;
+    font-size: 1.06rem;
+    text-wrap: pretty;
+  }
+
+  /* La figura encadenada mira desde el borde de la cabecera, más grande: en el teléfono el
+     techo lo ponía el primer renglón de la bajada, y acá la bajada tiene su ancho. */
+  .recorte-portada {
+    width: clamp(150px, 12vw, 196px);
+  }
+
+  .oktubre {
+    margin: var(--espacio-2) 0;
+    padding: var(--espacio-3) var(--espacio-3) calc(var(--espacio-3) + 4px);
+  }
+
+  .oktubre-sello {
+    font-size: 4rem;
+  }
+
+  .oktubre-canta {
+    font-size: 1.12rem;
+  }
+
+  .oktubre-fecha a {
+    padding: 8px 10px;
+  }
+
+  .oktubre-dia {
+    font-size: 1.7rem;
+  }
+
+  .oktubre-disco {
+    font-size: 0.82rem;
+  }
+
+  .lado {
+    margin-top: var(--espacio-4);
+    margin-bottom: var(--espacio-3);
+  }
+
+  .casetera--a {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: calc(var(--espacio-3) + 6px) var(--espacio-3);
+  }
+
+  /* El lado B tiene dos casetes: van del mismo ancho que los del lado A, centrados. Dos
+     casetes estirados a media mesa serían otra pieza, y una celda vacía a la derecha, un
+     hueco. */
+  .casetera--b {
+    grid-template-columns: repeat(2, calc((100% - 2 * var(--espacio-3)) / 3));
+    justify-content: center;
+  }
+
+  /* Tres por renglón: la rotación se reparte por columna y no por par/impar, si no la del
+     medio de un renglón sale torcida igual que la de la punta del siguiente. */
+  .casetera > li:nth-child(3n + 1) .casete { transform: rotate(-0.8deg); }
+  .casetera > li:nth-child(3n + 2) .casete { transform: rotate(0.55deg); }
+  .casetera > li:nth-child(3n) .casete { transform: rotate(-0.35deg); }
+
+  .casete {
+    --lado-arte: 64px;
+    gap: 14px;
+    padding: 14px;
+  }
+
+  .casete-etiqueta {
+    padding: 10px var(--espacio-2);
+  }
+
+  .casete-titulo {
+    font-size: 1rem;
+  }
+
+  .casete-baja {
+    font-size: 0.84rem;
+    line-height: 1.38;
+    text-wrap: pretty;
+  }
+}
+
+/* Desde 80 rem (1280 px) el casete tiene su ancho de verdad: la pieza crece y la bajada se lee
+   entera. Entre 64 y 80 rem, con tres por renglón, la etiqueta mide ~170 px y la bajada
+   entera la estiraba a ocho renglones —medido a 1024—; ahí sigue la primera oración sola, como
+   en el teléfono. */
+@media (min-width: 80rem) {
+  .casete {
+    --lado-arte: 84px;
+    gap: 18px;
+    padding: 16px;
+  }
+
+  .casete-etiqueta {
+    padding: 12px var(--espacio-2);
+  }
+
+  .casete-titulo {
+    font-size: 1.04rem;
+  }
+
+  .casete-baja {
+    font-size: 0.86rem;
+    line-height: 1.4;
+  }
+}
+
+/* La segunda mitad de la bajada: impresa siempre, a la vista solo desde 80 rem. */
+.casete-baja-resto {
+  display: none;
+}
+
+@media (min-width: 80rem) {
+  .casete-baja-resto {
+    display: inline;
+  }
+}
+
+/* Dos por renglón (de 46 a 64 rem) deja al noveno juego solo, pegado a la izquierda: se
+   centra en su renglón con el ancho de los demás. Un casete corrido a un costado parece que
+   se cayó de la pila; centrado, es el último tema del lado. */
+@media (min-width: 46rem) and (max-width: 63.99rem) {
+  .casetera > li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc((100% - var(--espacio-3)) / 2);
   }
 }
 

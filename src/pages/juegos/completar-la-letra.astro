@@ -22,6 +22,8 @@ import { cargarBanco, type BancoCrudo } from '../../lib/letra/banco.ts';
 import { PANTALLA_0, SIN_BANCO } from '../../lib/letra/copy.ts';
 import Cabeza from '../../components/Cabeza.astro';
 import PieImprenta from '../../components/PieImprenta.astro';
+import Caratula from '../../components/Caratula.astro';
+import { caratulaDe, tapasConCaratula } from '../../lib/sitio/caratula.ts';
 import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
 import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/letra.json';
@@ -33,6 +35,9 @@ const fondo = fondoTapa(FONDO);
 // `D-21` condicion 1: la pantalla que muestra una tapa velada tiene que nombrar de que
 // disco es. Esta pagina la mostraba y no lo nombraba.
 const tapasUsadas = fondo ? discosDe([FONDO]) : [];
+
+// El casete del portal, en la mano (`D-54`): la carátula y la tinta de la página.
+const caratula = caratulaDe('/juegos/completar-la-letra/');
 
 const TITULO = 'Completá la letra — Arcade Ricotero';
 ---
@@ -47,7 +52,7 @@ const TITULO = 'Completá la letra — Arcade Ricotero';
     <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} />
   </head>
   <body class="con-grano">
-    <main id="app">
+    <main id="app" class={`juego--${caratula.casete.variante}`}>
       {fondo && <div class="tapa-fondo tapa-fondo--mosca-olla" aria-hidden="true" />}
 
       <section id="portada" class="pantalla sobre-tapa">
@@ -82,9 +87,10 @@ const TITULO = 'Completá la letra — Arcade Ricotero';
       <section id="partida" class="pantalla" hidden></section>
       <section id="resultado" class="pantalla" hidden></section>
 
+      <Caratula caratula={caratula} />
     </main>
 
-    <PieImprenta disco="la-mosca-y-la-sopa" tapas={tapasUsadas} />
+    <PieImprenta disco="la-mosca-y-la-sopa" tapas={tapasConCaratula(tapasUsadas, caratula)} />
 
     {/* El banco viaja ya filtrado: sin borradores, sin notas internas. */}
     <script id="banco" type="application/json" set:html={JSON.stringify(items)} />

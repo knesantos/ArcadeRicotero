@@ -281,6 +281,9 @@ test('UX-22 §8: el registro imperfecto vive solo en la letra grande, nunca en u
   const PERMITIDOS = new Set([
     '.marca-grande', // la marca del portal
     '.marca', // la marca de la cabecera de cada juego
+    // La misma marca, mudada a la carátula cuando hay mesa (`D-54`, `UX-35` §3). No es un
+    // lugar nuevo: es la de arriba, en la columna, y las dos nunca se ven a la vez.
+    '.caratula-marca',
     '.pantalla h1', // el h1 de cada juego
     '.casete-titulo', // el titulo de un casete
     '.articulo:not(.articulo--grave) h1', // el titulo de articulo, salvo los tres graves
@@ -958,6 +961,66 @@ test('ADR-10.1: en el modo la pagina no se mueve y ningun gesto del fichin es de
   assert.deepEqual(problemasDelModo(SKAYBOY), []);
 });
 
+/**
+ * **En la computadora no hay botones en pantalla, y en el teléfono sí** (`D-55`). Los botones
+ * del mando se esconden solo bajo `(hover: hover) and (pointer: fine)`: una regla que los
+ * escondiera afuera de ese corte dejaría a un teléfono sin forma de jugar. Y la leyenda que
+ * los reemplaza nace escondida, para que el teléfono no la muestre al lado de los botones.
+ */
+/** Parte la hoja en lo que está adentro de los bloques "hay mouse" y lo que queda afuera. */
+function partirPorMouse(css: string): { conMouse: string; sinMouse: string } {
+  const limpio = css.replace(/\/\*[\s\S]*?\*\//g, ' ');
+  let conMouse = '';
+  let sinMouse = '';
+  let desde = 0;
+  for (const m of limpio.matchAll(/@media \(hover: hover\) and \(pointer: fine\) \{/g)) {
+    let nivel = 1;
+    let i = m.index! + m[0].length;
+    const inicio = i;
+    while (nivel > 0 && i < limpio.length) {
+      if (limpio[i] === '{') nivel++;
+      else if (limpio[i] === '}') nivel--;
+      i++;
+    }
+    sinMouse += limpio.slice(desde, m.index);
+    conMouse += limpio.slice(inicio, i - 1) + '\n';
+    desde = i;
+  }
+  sinMouse += limpio.slice(desde);
+  return { conMouse, sinMouse };
+}
+
+function botonesSinMouse(css: string): string[] {
+  const { conMouse, sinMouse } = partirPorMouse(css);
+  const problemas: string[] = [];
+  const escondeBotones = (r: { selector: string; cuerpo: string }) =>
+    /\.mando > \.tecla|\.mando-piso/.test(r.selector) && /display:\s*none/.test(r.cuerpo);
+  if (!reglas(conMouse).some(escondeBotones)) problemas.push('con mouse los botones del mando siguen a la vista');
+  if (reglas(sinMouse).some(escondeBotones)) problemas.push('los botones se esconden también sin mouse');
+  const leyendaBase = reglas(sinMouse).find((r) => r.selector === '.juego-skayboy .mando-leyenda');
+  if (!leyendaBase || !/display:\s*none/.test(leyendaBase.cuerpo)) problemas.push('la leyenda de teclas no nace escondida en el teléfono');
+  return problemas;
+}
+
+test('D-55: con mouse no hay botones de Skayboy en pantalla; sin mouse, sí', () => {
+  assert.deepEqual(botonesSinMouse(SKAYBOY), []);
+  // Las letras de la leyenda salen del mismo mapa que aprieta los botones.
+  const pagina = leer('src/pages/juegos/skayboy-y-poligirl.astro');
+  assert.match(pagina, /teclaDelBoton\(lado, cual\)\?\.etiqueta/);
+  assert.match(pagina, /class="mando-leyenda"/);
+});
+
+test('ese control sabe encontrar: los botones escondidos para todos', () => {
+  const roto = SKAYBOY + '\n.juego-skayboy .mando > .tecla { display: none; }';
+  assert.ok(botonesSinMouse(roto).some((p) => p.includes('sin mouse')));
+});
+
+test('ese control sabe encontrar: los botones a la vista con mouse', () => {
+  const roto = SKAYBOY.replace(/\.juego-skayboy \.mando > \.tecla,\s*\.juego-skayboy \.mando-piso \{\s*display: none;/, '.juego-skayboy .mando-nada {');
+  assert.notEqual(roto, SKAYBOY, 'el reemplazo no encontró la regla');
+  assert.ok(botonesSinMouse(roto).some((p) => p.includes('siguen a la vista')));
+});
+
 test('ADR-10.6: el modo lo lee solo skayboy.css', () => {
   // Un segundo lugar que lee el atributo es una segunda verdad sobre que es el modo.
   const otras = HOJAS.filter((h) => h !== 'src/styles/skayboy.css' && leer(h).includes('data-pantalla'));
@@ -1139,6 +1202,27 @@ function negritasFalsas(css: string): string[] {
 
 test('ninguna fuente de un solo peso se pide en negrita', () => {
   assert.deepEqual(negritasFalsas(todoElCss()), []);
+});
+
+/**
+ * **La negrita falsa que nadie pedía** (`D-54`). El control de arriba mira lo que se pide
+ * por escrito; un `h1` la pide solo, porque el navegador lo pone en negrita por defecto. Los
+ * ocho títulos de juego iban en la rotulada sin decir nada del peso, y el navegador la
+ * engordaba a mano en los ocho. El título se declara en peso normal, una sola vez, y las
+ * páginas no lo reescriben.
+ */
+test('el título de los juegos pide la rotulada en su peso: no hereda la negrita del h1', () => {
+  const titulo = reglas(leer('src/styles/juego.css')).find((r) => r.selector === '.pantalla > h1');
+  assert.ok(titulo, 'no existe la regla única del título de los juegos (.pantalla > h1)');
+  assert.match(titulo!.cuerpo, /font-family:\s*var\(--fuente-rotulada\)/);
+  assert.match(titulo!.cuerpo, /font-weight:\s*(normal|400)\b/);
+  // Y ninguna página lo vuelve a escribir a mano: es como derivaron los ocho la primera vez.
+  const conH1Propio = readdirSync('src/pages/juegos')
+    .filter((f) => f.endsWith('.astro'))
+    .map((f) => `src/pages/juegos/${f}`)
+    .concat('src/pages/quiz.astro')
+    .filter((p) => [...leer(p).matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].some((b) => /(^|\s|\})h1\s*\{/.test(b[1]!.replace(/\/\*[\s\S]*?\*\//g, ''))));
+  assert.deepEqual(conH1Propio, []);
 });
 
 test('ese control sabe encontrar: se prueba contra una negrita inventada', () => {

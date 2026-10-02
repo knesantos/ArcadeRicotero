@@ -14,6 +14,7 @@ import { PORTAL, LUGARES, JUEGOS, CASETE_REDONDOPEDIA, CASETE_CANCIONERO, OKTUBR
 import { arteDeCasete, conRecorteReal, discoDeRecorte, discosDe, materialDeCasete, medidas, recorte } from '../lib/sitio/arte.ts';
 import { segunLaPartida } from '../lib/sitio/portal.ts';
 import { cumpleDelDia, discosDeOktubre, type FichaCruda } from '../lib/sitio/oktubre.ts';
+import { pistaDe, primeraOracion, restoDeLaBajada } from '../lib/sitio/caratula.ts';
 import { cargarBanco, type BancoCrudo } from '../lib/letra/banco.ts';
 import crudoLetra from '../data/letra.json';
 import redondopedia from '../data/redondopedia.json';
@@ -80,9 +81,9 @@ const medidaPortada = medidas(artePortada);
  * Se resuelve acá y no en el template porque `medidas()` lee el archivo en disco: es
  * trabajo de build, y de paso deja el marcado sin logica adentro.
  */
-const lados: Array<{ titulo: string; casetes: readonly Casete[] }> = [
-  { titulo: PORTAL.ladoA, casetes: JUEGOS },
-  { titulo: PORTAL.ladoB, casetes: [CASETE_CANCIONERO, CASETE_REDONDOPEDIA] },
+const lados: Array<{ titulo: string; lado: 'a' | 'b'; casetes: readonly Casete[] }> = [
+  { titulo: PORTAL.ladoA, lado: 'a', casetes: JUEGOS },
+  { titulo: PORTAL.ladoB, lado: 'b', casetes: [CASETE_CANCIONERO, CASETE_REDONDOPEDIA] },
 ];
 
 /**
@@ -99,11 +100,12 @@ const lados: Array<{ titulo: string; casetes: readonly Casete[] }> = [
  *
  * **El texto completo no se toca**: sigue entero en `copy.ts`, que es lo que audita
  * `voz.test.ts`. Lo que cambia es cuánto se imprime.
+ *
+ * **La función ya no vive acá**: `primeraOracion` está en `lib/sitio/caratula.ts` desde el
+ * ciclo 17, porque la carátula de cada juego (`D-54`) corta la bajada con la misma regla y una
+ * regla escrita dos veces se desincroniza. Allá también vive `restoDeLaBajada`, lo que el
+ * escritorio suma, y `pistaDe`, el número de la tapita.
  */
-function primeraOracion(texto: string): string {
-  const corte = texto.indexOf('. ');
-  return corte === -1 ? texto : texto.slice(0, corte + 1);
-}
 
 /*
  * Cada casete lleva su numero de pista, como la lista escrita a mano en la tapita de un
@@ -113,6 +115,7 @@ function primeraOracion(texto: string): string {
  */
 const conArte = lados.map((lado, l) => ({
   titulo: lado.titulo,
+  lado: lado.lado,
   casetes: lado.casetes.map((copia, i) => {
     const c = segunLaPartida(copia, HAY_PARTIDA[copia.href ?? ''] ?? true);
     // `D-49`: tapa entera, detalle o recorte — cada material se pega distinto (`sitio.css`).
@@ -127,7 +130,10 @@ const conArte = lados.map((lado, l) => ({
       // cuadrado pierde las puntas: se leía "ɡulh". Ese conserva su proporción (`sitio.css`).
       apaisada: medidaArte !== null && medidaArte.ancho / medidaArte.alto > 1.4,
       baja: primeraOracion(c.baja),
-      pista: `${l === 0 ? 'A' : 'B'}${i + 1}`,
+      // `UX-35` §2: en el escritorio sobra alto para la bajada entera. El resto se imprime
+      // siempre y se muestra desde 80 rem; en el teléfono sigue la primera oración sola.
+      resto: restoDeLaBajada(c.baja),
+      pista: pistaDe(l === 0 ? 'A' : 'B', i),
     };
   }),
 }));
@@ -189,6 +195,11 @@ const tapasUsadas = [
     if (new Date().getMonth() === 9) document.documentElement.dataset.mes = 'oktubre';
   </script>
 
+  {/* El frente del portal (`UX-35` §2): la cabecera y el afiche. En el teléfono van uno
+      debajo del otro, como siempre; desde 64 rem van lado a lado, y fuera de octubre la
+      cabecera ocupa sola el renglón. Es un envoltorio y nada más: no cambia el orden de
+      lectura ni lo que dice cada uno. */}
+  <div class="portal-frente">
   <header class="portada-arcade">
     <img
       class="recorte-portada"
@@ -234,6 +245,7 @@ const tapasUsadas = [
       </section>
     )
   }
+  </div>
 
   {/* El rodillo separa la franja de marca de la casetera (`UX-22` §9): la veta que deja
       un rodillo entintado, no una linea. Es decoracion sin contenido, y por eso se
@@ -244,7 +256,7 @@ const tapasUsadas = [
     conArte.map((lado) => (
       <section>
         <h2 class="lado">{lado.titulo}</h2>
-        <ul class="casetera">
+        <ul class:list={['casetera', `casetera--${lado.lado}`]}>
           {lado.casetes.map((c) => (
             <li>
               <a
@@ -282,7 +294,10 @@ const tapasUsadas = [
                 */}
                 <span class="casete-etiqueta">
                   <strong class="casete-titulo">{c.titulo}</strong>
-                  <span class="casete-baja">{c.baja}</span>
+                  <span class="casete-baja">
+                    {c.baja}
+                    {c.resto && <span class="casete-baja-resto"> {c.resto}</span>}
+                  </span>
                   <span class="casete-pie">
                     {c.accion ? (
                       <span class="casete-accion">{c.accion}</span>

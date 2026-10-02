@@ -13,6 +13,18 @@
 > **Afuera a propósito:** el recorrido por teclado (foco, orden de tabulación). El
 > usuario nombró cuatro frentes y dejó ese explícitamente fuera de este ciclo. Esta hoja
 > no lo toca, y ninguna regla de acá depende de él.
+>
+> **Enmendada el 2026-10-02 por `UX-35` (`T-317`, ciclo 17, `D-54`).** Lo de abajo se conserva
+> entero, con marcas en cuatro lugares. (1) **`§2.4` (el portal a 46 rem) queda superado desde
+> 64 rem**: el portal pasa a `--ancho-mesa` (76 rem) con el lado A en tres por tres; de 46 a 64
+> rem sigue valiendo lo que dice `§2.4`, con la casetera alineada y el noveno casete al centro
+> (`UX-35` `§2.3`). (2) **`§4` (la tira de cinta del margen) no se construyó**: el margen se
+> resolvió con la carátula del casete, una columna al lado de la hoja que además dice qué juego
+> es (`UX-35` `§3`). (3) **`§2.3` vale en su criterio y cambia una cifra**: el tablero sigue
+> sin crecer por llenar, pero desde 64 rem mide 38 rem y no 34, porque la carátula lo pidió
+> (`UX-35` `§4.4`). (4) El checklist del final tiene tres ítems cuya medida cambió, marcados
+> ahí. Todo lo demás —la sección 1 (los cortes de ancho y de puntero), `§2.1`, `§2.2`, `§3`
+> entera y el hover— sigue como está.
 
 **Resuelve:** cómo se comporta en una pantalla ancha cada pantalla que ya existe —
 `US-01` (quiz), `US-02` (adiviná el tema), `US-03` (completá la letra), `US-04` (adiviná
@@ -116,6 +128,15 @@ distinto deja huecos — el mismo problema que 2.1 descarta para el índice de d
 
 ### 2.3 Juego en partida: el tablero no cambia, y acá el vacío sí se defiende
 
+> **Enmendado el 2026-10-02 (`UX-35` `§4.4`).** El criterio de esta sección sigue entero: el
+> tablero no crece para llenar, porque el mouse viaja entre una opción y otra y la letra de
+> juego no es de televisor. Lo que cambia es **la cifra**: "34rem, sin excepción" vale hasta
+> 64 rem; desde ahí la hoja mide `--ancho-tablero` (38 rem, 608 px; las opciones pasan de 268
+> a 300 px) porque tiene una carátula al lado, y "Ponelos en fila" llega a 52 rem (832 px) **desde 80 rem**, con sus dos paños; entre 64 y 80 rem usa los 38 rem de los demás (`UX-35` `§4.5`, `FIND-106`). La letra,
+> el enunciado de 20,8 px y el piso de `--toque-min` no se tocan. El último párrafo de la
+> sección ("el margen que queda recibe la decoración de la sección 4") queda superado:
+> véase la marca en `§4`.
+
 Los seis juegos (`US-01`, `US-02`, `US-03`, `US-04`, `US-06`, `US-07`) se quedan en
 **34rem, sin excepción — el mismo ancho de siempre, en cualquier pantalla.** Es la
 respuesta "nada, queda centrado" que el pedido habilita, y el fundamento es doble:
@@ -146,6 +167,14 @@ El margen que queda (448px a cada lado a 1440px) recibe la decoración de la sec
 tintada con el color propio de cada juego — ver ahí el detalle.
 
 ### 2.4 Portal: la única pantalla que ensancha su propio contenedor
+
+> **Superado desde 64 rem por `UX-35` `§2` (2026-10-02).** Hasta 64 rem esta sección sigue
+> valiendo: dos columnas desde 46 rem, contenedor de 46 rem, y desde el ciclo 17 con la
+> casetera alineada y el noveno casete al centro (`UX-35` `§2.3`). Desde 64 rem el contenedor
+> sube a `--ancho-mesa` (76 rem), el lado A va en tres por tres, el lado B centrado, y desde
+> 80 rem el casete crece y la bajada se lee entera. La afirmación de abajo, "por encima de
+> 46rem el contenedor no sigue creciendo", ya no es cierta para el portal. El argumento de
+> fondo —elegir no es leer ni jugar— es el mismo, y es el que justifica el ensanche.
 
 El portal es la pantalla de **elegir un juego**, no de leer ni de jugar — el mismo
 criterio de 2.1 (tarjetas chicas y parejas → más columnas) aplica acá con más fuerza
@@ -207,6 +236,17 @@ pinta en otro estado.
 
 ## 4. La decoración del margen: por qué no queda vacío
 
+> **No se construyó, y el margen se resolvió con la carátula (`UX-35` `§3`, `D-54`,
+> 2026-10-02).** La tira de cinta se descartó: decoraba el vacío en vez de usarlo, y no
+> resolvía lo que más pesaba, que en partida no quedaba nada en pantalla que dijera qué juego
+> era. La carátula del casete ocupa ese lugar: una columna al lado de la hoja desde 64 rem, con
+> la misma pieza de tapa, el mismo número de pista y la lista de casetes. **Vale para las
+> páginas de juego.** El margen de la Redondopedia y del cancionero queda sin tira y sin
+> carátula: las páginas de lectura quedaron afuera del ciclo 17 (`ORQ-plan-ciclo-17.md` §3).
+> Lo que sigue se conserva como registro de la propuesta, no como especificación vigente; el
+> diagnóstico del primer párrafo (el vacío es lo que más pesa en la frase original del pedido)
+> sí se sostuvo.
+
 Ya quedó fundamentado que 2.1 y 2.3 **no** ensanchan su columna. Eso no significa que el
 margen se quede en blanco — es la parte del pedido que más peso tiene en la frase
 original ("se ve como una app de celular metida adentro de un monitor"), y dejar el
@@ -263,13 +303,20 @@ pero si algún día existiera uno así, seguiría sin mouse).
 
 ## Checklist de verificación (la corre quien implemente — `D-12`)
 
+> **Enmendado el 2026-10-02 (`UX-35` `§7`).** Tres ítems cambian de medida desde 64 rem y están
+> marcados abajo; el checklist vigente de la mesa es el de `UX-35`.
+
 - [ ] A 1024px, 1280px y 1440px: ningún tablero de juego (los seis) supera 544px de ancho.
+      *(Superado desde 64 rem: la hoja mide hasta 608px, y "Ponelos en fila" hasta 832px, pero solo desde 80 rem: entre 64 y 80 rem también 608px.
+      `UX-35` `§7.3` y `§7.5`.)*
 - [ ] `completar-la-letra` y `adivinar-por-la-letra` quedan bajo el mismo tope que los
       otros cuatro juegos — hoy no lo están.
 - [ ] El buscador y su lista de sugerencias (`US-02`, `US-07`) no superan el ancho del
       tablero en ningún viewport.
+      *(El criterio sigue; la medida del tablero es la de `UX-35` `§4.4`.)*
 - [ ] Desde 46rem: portal e índice de la Redondopedia muestran 2 columnas parejas, sin
       ítems cortados ni huecos.
+      *(Para el portal vale de 46 a 64 rem; desde 64 son tres columnas. `UX-35` `§7.1`.)*
 - [ ] Desde 46rem: la ficha de tema y la intro del cancionero miden 46rem/42rem, no 34rem.
 - [ ] `node --test src/lib/contraste.test.ts` sigue en verde sin agregar ningún par nuevo.
 - [ ] `node --test src/lib/estilos.test.ts` (o el que audite pastillas/barras laterales)

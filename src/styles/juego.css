@@ -322,11 +322,27 @@
   color: var(--fondo);
   border: none;
   border-radius: var(--radio);
+  /* La tecla (`D-54`): un canto de sombra dura abajo, en el apoyo del disco, que se hunde al
+     apretar. Lo tenían dos juegos ("Adiviná el tema" y "Sacalo por la letra"), cada uno
+     escrito a mano; ahora es del botón y cada juego le pone su apoyo (`.juego--*`). Es
+     sombra plana, sin difuminar —la única que `diseno-marca.md` admite—, y el hundirse es
+     respuesta al toque: dura `--duracion-toque`, que el movimiento reducido no apaga. */
+  box-shadow: 0 4px 0 var(--canto-accion, var(--borde));
+  transition:
+    translate var(--duracion-toque) var(--curva-cinta),
+    box-shadow var(--duracion-toque) var(--curva-cinta);
+  touch-action: manipulation;
+}
+
+.primario:active:not(:disabled) {
+  translate: 0 3px;
+  box-shadow: 0 1px 0 var(--canto-accion, var(--borde));
 }
 
 .primario:disabled {
   background: var(--borde);
   color: var(--texto-tenue);
+  box-shadow: none;
 }
 
 .secundario {
@@ -394,6 +410,10 @@
   letter-spacing: 0.04em;
   background: var(--cat-historia); /* el resultado viste Gulp! */
   color: var(--fondo);
+  /* El canto de la tecla (`D-54`) es de su misma tinta y no del disco del juego: el botón de
+     compartir viste Gulp! en los ocho, y un canto ajeno debajo lo volvía de otro disco. Es
+     el rojo de Gulp! hundido en el fondo, no un color nuevo. */
+  --canto-accion: color-mix(in srgb, var(--cat-historia) 45%, var(--fondo));
 }
 
 /*
@@ -2699,15 +2719,16 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
    ========================================================================== */
 body > main {
   position: relative;
-  max-width: 34rem;
+  max-width: var(--ancho-hoja);
   margin-inline: auto;
 }
 
 /* Escritorio (`UX-10`): el mismo tope para los seis tableros de juego.
    `completar-la-letra` y `adivinar-por-la-letra` no tenian ninguno —los otros cuatro
-   lo repiten a mano—, y esa asimetria la encontro `UX-10` leyendo el codigo. */
+   lo repiten a mano—, y esa asimetria la encontro `UX-10` leyendo el codigo.
+   Desde el ciclo 17 el tope tiene nombre (`--ancho-hoja`) y el mismo valor de siempre. */
 .pantalla {
-  max-width: 34rem;
+  max-width: var(--ancho-hoja);
   margin-inline: auto;
 }
 
@@ -2911,7 +2932,10 @@ body > main {
 
    Aca vive `marca`, que es la firma ARCADE RICOTERO de la cabecera de cada juego. Cruza
    de una pantalla a la otra sin volver a dibujarse: es lo que hace que el paso se lea
-   como moverse adentro del mismo sitio y no como cargar otro.
+   como moverse adentro del mismo sitio y no como cargar otro. **Desde `D-54` la lleva
+   tambien la marca de la carátula** (`.caratula-marca`), que es la misma firma mudada a la
+   columna de la mesa: desde 64 rem la de la hoja se esconde y la de la carátula aparece, y
+   nunca se ven las dos (lo midio `REV-18` en los ocho juegos, a 375 y a 1440).
 
    Las otras dos (`lugar` y `mosca`) viven en `sitio.css`, que es donde vive el cascaron.
 
@@ -2946,15 +2970,472 @@ body > main {
   margin: var(--espacio-3) 0 var(--espacio-2);
   max-width: 7ch;
   view-transition-name: marca;
-  /* El registro imperfecto (`UX-22` §8): la explicacion entera esta en `sitio.css`. */
+  /* El registro imperfecto (`UX-22` §8): la explicacion entera esta en `sitio.css`.
+     El eco de la marca es siempre el borde del papel, aunque la pantalla vista un disco
+     (`D-54`): la marca es de Oktubre en todas las pantallas, y el apoyo de cada disco es
+     para el titulo del juego, no para la firma del sitio. */
+  --tinta-registro: var(--borde);
   text-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
 }
 
-/* El h1 de cada juego. Un juego no viste ningun disco —la mezcla `D-19` reparte discos
-   por seccion de contenido, no por juego—, asi que el eco cae al borde del papel, que es
-   el mismo repuesto que usa la estampa cuando no hay `--apoyo-disco`. */
+/* El h1 de cada juego, con su eco de segunda tinta.
+
+   Hasta el ciclo 16 decia aca que un juego no viste ningun disco y que por eso el eco caia
+   al borde del papel. **Desde `D-54` cada juego viste el disco de su casete** (`.juego--*`,
+   el mismo mapa que `.casete--*` del portal), y el eco toma el apoyo de ese disco: el
+   petroleo de Lobo suelto detras de "Adiviná el tema", el ocre de ¡Bang! ¡Bang! detras de
+   "Ponelos en fila". Cambia tambien en el telefono (`REV-18`, `FIND-109`). Donde la pagina
+   no viste ninguno, el eco sigue cayendo al borde del papel, que es el valor de
+   `--tinta-registro` en `tokens.css`. */
 .pantalla h1 {
   text-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
+}
+
+/* ==========================================================================
+   La mesa y la carátula (`D-54`, `UX-35`, ciclo 17)
+
+   El pedido del usuario: *"mejora visual de desktop para el home y todos los juegos. Debe
+   quedar profesional y lindo en ambas formas"*. Medido antes de tocar nada, a 1440 × 900:
+   cada juego era una columna de 544 px en el medio del monitor, **sin nada que dijera qué
+   juego era una vez arrancada la partida**, y el tablero de las preguntas terminaba a la
+   altura de un tercio de la ventana. El teléfono metido en la computadora.
+
+   La respuesta no es agrandar el teléfono (`UX-10` §2.3 ya explicó por qué el tablero no
+   crece: el mouse viaja). Es **apoyar la hoja en una mesa, al lado de la carátula del casete
+   que la persona tocó en el portal**: la misma pieza de tapa, el mismo número de pista, y la
+   lista de temas del lado A — que en la computadora es, además, la forma de pasar de un juego
+   a otro sin volver a la puerta.
+
+   TRES COSAS QUE ESTO NO HACE:
+
+   1. **No cambia una sola isla.** Las islas vacían y rellenan sus secciones por `id`; la
+      carátula no tiene `id` y vive afuera de ellas. Lo que cambia entre jugar y no jugar lo
+      lee el CSS del `hidden` que las islas ya ponían.
+   2. **No agrega salidas a la partida.** La lista de temas son enlaces, y en plena partida no
+      hay salidas —la cinta de regreso vive solo en la portada de cada juego, sobre el flujo de
+      `UX-01`—: mientras hay un tablero a la vista, la lista no está.
+   3. **No agranda la letra de juego.** Enunciados, opciones y botones siguen en las escalas
+      que calibró `UX-10` §3.1. Lo único que crece es el título, que es de cartel.
+   ========================================================================== */
+
+/* ---- El título de cada juego: una sola forma en los ocho ----
+
+   Hasta el ciclo 16 cada página escribía su `h1` a mano, y los ocho habían derivado: cinco
+   en la rotulada a 1,5 rem, dos en la rotulada a 2,3 rem, uno en la letra del sistema en
+   negrita, y el de las preguntas en la del sistema a 1,75 rem. Puestos uno al lado del otro
+   en la lista de la carátula, ocho títulos de ocho familias distintas no son una serie: son
+   ocho sitios. Ahora es uno solo, y cada juego le pone la tinta de su disco (`D-19`).
+
+   **`font-weight: normal` no es un detalle.** Un `h1` sale en negrita por defecto, y la
+   rotulada tiene un peso solo: el navegador la engordaba a mano en los ocho títulos, que es
+   la negrita falsa que `estilos.test.ts` ya prohíbe en los botones desde el ciclo 16. */
+.pantalla > h1 {
+  font-family: var(--fuente-rotulada);
+  font-weight: normal;
+  font-size: clamp(1.65rem, 7vw, 2.15rem);
+  line-height: 1.04;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  /* La tinta del disco que viste el juego. `--tinte-sello` primero porque Momo se tiñe con su
+     apoyo para el borde, y el apoyo no lleva letra (el mismo criterio del casete). Todas
+     tienen su par AA sobre `--fondo` en `contraste.test.ts`, y las tres que se apoyan sobre
+     una tapa velada tienen además el de texto grande sobre el peor caso del velo. */
+  color: var(--tinta-titulo, var(--tinte-sello, var(--tinte, var(--texto))));
+  margin: 0 0 var(--espacio-1);
+}
+
+/* ---- La acción de cada juego: la tinta de su disco, con el canto de su apoyo ----
+
+   Cinco de los ocho botones principales ya iban en la tinta de su disco y tres iban en el
+   rojo de la marca, que es el repuesto de `.primario` y que nadie había elegido para ellos
+   ("¿Qué tipo de ricotero sos?", "Completá la letra", "Adiviná la tapa"). Puestos en serie,
+   tres juegos de discos distintos con el mismo botón rojo dicen que son el mismo juego. La
+   regla de marca lo dice al revés: **lo que rota por sección es el acento y la letra grande**.
+
+   Cada tinta tiene su par con `--fondo` encima en `contraste.test.ts`. El canto es apoyo:
+   borde y sombra, nunca letra. Las tres pantallas que ya declaraban su `--tinte-accion` lo
+   siguen haciendo, con el mismo valor. */
+.juego--marca { --tinte-accion: var(--marca-rojo); --canto-accion: var(--disco-oktubre-apoyo); }
+.juego--historia { --tinte-accion: var(--cat-historia); --canto-accion: var(--cat-historia-apoyo); }
+.juego--discos { --tinte-accion: var(--cat-discos); --canto-accion: var(--cat-discos-apoyo); }
+.juego--letras { --tinte-accion: var(--cat-letras); --canto-accion: var(--cat-letras-apoyo); }
+.juego--mitologia { --tinte-accion: var(--cat-mitologia); --canto-accion: var(--cat-mitologia-apoyo); }
+.juego--momo { --tinte-accion: var(--disco-momo-sampler-tinta); --canto-accion: var(--disco-momo-sampler-apoyo); }
+.juego--baion { --tinte-accion: var(--disco-un-baion-para-el-ojo-idiota-tinta); --canto-accion: var(--disco-un-baion-para-el-ojo-idiota-apoyo); }
+.juego--bang { --tinte-accion: var(--disco-bang-bang-estas-liquidado-tinta); --canto-accion: var(--disco-bang-bang-estas-liquidado-apoyo); }
+.juego--luzbelito { --tinte-accion: var(--disco-luzbelito-tinta); --canto-accion: var(--disco-luzbelito-apoyo); }
+
+/* ---- La carátula en el teléfono: una calcomanía en la esquina de la cabecera ----
+
+   El renglón de la cabecera tenía la cinta de "← AL ARCADE" a la izquierda y nada a la
+   derecha. Ahí va la pieza del casete y su número de pista, como una calcomanía pegada en
+   la tapa: chica, torcida, sin nada que tocar. Es lo que une el portal con el juego — el
+   casete que tocaste, ahora en la mano. */
+.caratula {
+  position: absolute;
+  top: var(--espacio-2);
+  right: var(--espacio-2);
+  z-index: 2;
+  margin: 0;
+  pointer-events: none;
+}
+
+.caratula-frente {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* La pieza reusa el `.casete-arte` del portal con sus tres materiales; acá cambia el lado. */
+.caratula-arte {
+  --lado-arte: 44px;
+}
+
+.caratula-etiqueta {
+  display: contents;
+}
+
+.caratula-pista {
+  margin: 0;
+}
+
+/* La pista larga ("Lado A · pista 3") es la que lee el lector de pantalla; en el teléfono no
+   entra a la vista, y la corta ("A3") es la que se ve — escrita a mano, como en la tapita. */
+.caratula-pista-larga {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.caratula-pista-corta {
+  display: inline-block;
+  font-family: var(--fuente-rotulada);
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  color: var(--texto-tenue);
+  transform: rotate(3deg);
+}
+
+.caratula-marca,
+.caratula-titulo,
+.caratula-lista {
+  display: none;
+}
+
+/* Arrancada la partida, la calcomanía se va con la cabecera: la primera sección de cada
+   juego es su portada, y cuando la isla la esconde ya no hay cabecera a la que pegarse. */
+main:has(> .pantalla:first-of-type[hidden]) > .caratula {
+  display: none;
+}
+
+/* ---- La carátula en la computadora: la columna de la mesa ----
+
+   El corte es 64 rem (1024 px) y no el de 46 rem de `UX-10`: a 46 rem no entran una carátula
+   de 19 rem y una hoja de 34 sin apretar las dos, y entre 46 y 64 rem el sitio sigue como el
+   teléfono acostado, que es lo que ya era. */
+@media (min-width: 64rem) {
+  body > main:has(> .caratula) {
+    display: grid;
+    grid-template-columns: var(--ancho-caratula) minmax(0, var(--ancho-tablero));
+    /* Dos filas y la segunda flexible: la carátula ocupa las dos, y la sección a la vista va
+       en la primera. Si la carátula es más alta que la sección, **lo que crece es la fila
+       flexible y no la de la sección** (así reparte el alto un elemento que cruza una pista
+       `fr`), y el tablero no se despega de arriba. */
+    grid-template-rows: auto 1fr;
+    column-gap: var(--aire-mesa);
+    align-items: start;
+    justify-content: center;
+    max-width: none;
+    /* `--espacio-3` arriba y no `--espacio-4`: medido a 1366 × 657 —un portátil de 768 con las
+       barras del navegador—, el "Empezá" de "Adiviná el tema" terminaba 19 px abajo del
+       borde (`UX-35` §6.4). La mesa no tiene arranque pegado como el teléfono. */
+    padding-block: var(--espacio-3);
+  }
+
+  body > main:has(> .caratula) > .pantalla {
+    grid-column: 2;
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+  }
+
+  /* La tapa de fondo de la pantalla se queda detrás de la hoja, no detrás de la mesa entera:
+     estirada a 1440 px, un archivo de 591 px se ve al 40 % de su resolución, y la carátula ya
+     trae la pieza del disco a 1×. Un absoluto en una grilla toma el área que se le asigna. */
+  body > main:has(> .caratula) > .tapa-fondo {
+    /* `2 / 3` y no `2` a secas: para un absoluto, el final `auto` es el borde del contenedor
+       y no la columna siguiente. Medido: con `2` la foto iba de la hoja al borde derecho de
+       la ventana. */
+    grid-column: 2 / 3;
+    grid-row: 1 / -1;
+    /* Y sangra un poco alrededor de la hoja, como el papel impreso sobre la foto: sin esto el
+       borde de la foto coincide con el borde del texto y el título se pega a la costura. */
+    inset: calc(-1 * var(--espacio-3)) calc(-1 * var(--espacio-3)) auto;
+  }
+
+  .caratula {
+    position: sticky;
+    top: var(--espacio-3);
+    grid-column: 1;
+    grid-row: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacio-2);
+    pointer-events: auto;
+    /* **Cabe en la ventana, o se desplaza por dentro** (`UX-35` §6.1). Con la lista abierta
+       mide ~700 px; en una ventana más baja, pegada arriba, su pie quedaba fuera de la vista
+       hasta llegar al final de la página. El tope es la ventana menos el aire de arriba y
+       de abajo, y lo que no entra se desplaza adentro sin arrastrar la página. */
+    max-height: calc(100svh - 2 * var(--espacio-3));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    /* El borde y la cinta del frente asoman unos píxeles por la rotación: sin este aire el
+       desplazamiento propio los recortaba. */
+    padding: 16px 6px 6px;
+    margin: -16px -6px 0;
+  }
+
+  /* En la computadora la carátula **se queda** cuando arranca la partida: es lo único que
+     dice qué juego es una vez que la portada se va. Mismo peso de selector que la regla del
+     teléfono que la esconde, y escrita después: gana esta. */
+  main:has(> .pantalla:first-of-type[hidden]) > .caratula {
+    display: flex;
+  }
+
+  /* La marca se muda de la hoja a la mesa, y con ella el nombre del tránsito: el paso desde
+     el portal lleva la marca grande hasta acá, a la cabecera de la columna. */
+  body > main:has(> .caratula) > .pantalla > .marca {
+    display: none;
+  }
+
+  .caratula-marca {
+    display: block;
+    margin: 0;
+    max-width: 7ch;
+    font-family: var(--fuente-titular);
+    font-size: 1.85rem;
+    line-height: 0.96;
+    color: var(--marca-rojo);
+    text-shadow: var(--registro) var(--registro) 0 var(--borde);
+    view-transition-name: marca;
+  }
+
+  /* El frente: la pieza de tapa sobre la tinta del sitio, recortada por borde grueso en el
+     tinte del disco y sostenida con cinta, como el casete y el afiche (`diseno-marca.md`). */
+  .caratula-frente {
+    position: relative;
+    display: grid;
+    gap: var(--espacio-2);
+    justify-items: center;
+    padding: var(--espacio-2) var(--espacio-2) var(--espacio-2);
+    background: var(--fondo);
+    border: var(--linea) solid color-mix(in srgb, var(--tinte) 55%, var(--borde));
+    border-radius: var(--radio);
+    transform: rotate(-0.6deg);
+  }
+
+  /* La cinta va a la derecha: a la izquierda cruzaba la marca, que termina justo arriba. */
+  .caratula-frente::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    right: 16%;
+    width: 82px;
+    height: 28px;
+    background: color-mix(in srgb, var(--papel) 30%, transparent);
+    transform: rotate(-3deg);
+    border-radius: 2px;
+  }
+
+  /* La pieza grande. El ancho de la columna sobra; lo que la acota es el alto: con la lista
+     abierta la carátula mide ~720 px, y lo que no entra en la ventana se desplaza adentro
+     (el tope de `.caratula`, `UX-35` §6.1, `REV-18` `FIND-104`). Un recorte va un poco más
+     grande porque no tiene marco: el aire lo pone su silueta. */
+  .caratula-arte {
+    --lado-arte: 8.5rem;
+  }
+
+  .caratula-arte.casete-arte--recorte {
+    --lado-arte: 9.5rem;
+  }
+
+  /* La etiqueta de papel del casete del portal, entera: tinta del fondo sobre papel rayado. */
+  .caratula-etiqueta {
+    display: block;
+    justify-self: stretch;
+    padding: var(--espacio-1) var(--espacio-2);
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 1.35em,
+        color-mix(in srgb, var(--papel-borde) 55%, transparent) 1.35em,
+        color-mix(in srgb, var(--papel-borde) 55%, transparent) calc(1.35em + 1px)
+      ),
+      var(--papel);
+    color: var(--fondo);
+    border-radius: 4px;
+    transform: rotate(0.5deg);
+  }
+
+  /* La pista, abajo a la derecha de la etiqueta: el mismo "A3" escrito a mano que tiene el
+     casete en el portal, en la tinta apagada del papel (el par testeado). */
+  .caratula-pista {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2px;
+  }
+
+  .caratula-pista-corta {
+    font-size: 1.05rem;
+    color: var(--papel-tenue);
+  }
+
+  .caratula-titulo {
+    display: block;
+    margin: 0.2em 0 0;
+    font-family: var(--fuente-rotulada);
+    font-size: 1.15rem;
+    line-height: 1.15;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  /* La lista de temas: el interior de la tapita, donde se escriben los temas a mano. */
+  .caratula-lista {
+    display: block;
+  }
+
+  .caratula-lado {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-1);
+    margin: var(--espacio-1) 0 6px;
+    font-family: var(--fuente-rotulada);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--texto-tenue);
+  }
+
+  .caratula-lado::after {
+    content: '';
+    flex: 1;
+    border-top: 2px dashed var(--borde);
+  }
+
+  .caratula-temas {
+    display: grid;
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Cada tema es un renglón tocable: con mouse no hace falta el pulgar de 48 px, pero el
+     renglón entero sigue siendo el blanco, no solo la palabra. */
+  .caratula-tema {
+    display: grid;
+    grid-template-columns: 2.1rem 1fr;
+    align-items: baseline;
+    padding: 3px 8px;
+    font-size: 0.88rem;
+    line-height: 1.3;
+    color: var(--texto-tenue);
+    text-decoration: none;
+    border: 2px solid transparent;
+    border-radius: 3px;
+    transition:
+      color var(--duracion-toque) var(--curva-cinta),
+      border-color var(--duracion-toque) var(--curva-cinta);
+  }
+
+  .caratula-numero {
+    font-family: var(--fuente-rotulada);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* El juego de esta página: borde en la tinta del disco **y** letra plena — dos canales,
+     porque uno solo sería color (`UX-01`). El lector de pantalla lo oye por `aria-current`. */
+  .caratula-tema--actual {
+    color: var(--texto);
+    border-color: color-mix(in srgb, var(--tinte) 70%, var(--borde));
+    transform: rotate(-0.6deg);
+  }
+
+  .caratula-tema--actual .caratula-numero {
+    color: var(--tinte-sello, var(--tinte));
+  }
+
+  /* Mientras hay un tablero a la vista, la lista no está: son salidas, y en plena partida no
+     las hay (`D-54` punto 2). Las cuatro
+     zonas de juego de los ocho tableros se llaman así —`#eleccion` es el paso de "Ponelos en
+     fila" después de tocar "Empezá" (`FIND-103`)—; la portada y el resultado no. */
+  main:has(> #partida:not([hidden]), > #pregunta:not([hidden]), > #tablero:not([hidden]), > #eleccion:not([hidden])) .caratula-lista {
+    display: none;
+  }
+
+  /* La pieza que es una respuesta del juego se va en partida (`FIND-100`, `Caratula.astro`):
+     queda la etiqueta con el nombre, que no sopla nada. */
+  main:has(> #partida:not([hidden])) > .caratula--la-pieza-sopla .caratula-arte {
+    display: none;
+  }
+
+  /* El título de cartel, en la hoja: con la carátula al lado puede gritar un poco más. */
+  body > main:has(> .caratula) > .pantalla > h1 {
+    font-size: 2.6rem;
+    margin-top: var(--espacio-1);
+  }
+
+  /* El arranque pegado al pie de la ventana es del pulgar (`UX-24` §2): en el teléfono la
+     lista de discos empuja el botón fuera de la vista. En la mesa todo entra, y pegado abajo
+     era una franja de tinta plana tapando la foto de fondo justo detrás del botón. */
+  body > main:has(> .caratula) .arranque {
+    position: static;
+    background: transparent;
+  }
+
+  /* "Sacalo por la letra" ancla el buscador al pie de la ventana con una columna de 100svh
+     (`UX-08`): en el teléfono es donde cae el pulgar. En la mesa eso abría un hueco de
+     ~400 px entre el primer verso y la caja de escribir, medido a 1440 × 900: el ojo leía el
+     verso arriba y tenía que bajar a buscar dónde contestar. Acá el buscador va pegado a la
+     hoja, y la hoja crece con los versos, que es lo que ya hacía en el teléfono. */
+  .juego-por-la-letra main:has(> .caratula) > #partida:not([hidden]) {
+    height: auto;
+    min-height: 0;
+  }
+
+  .juego-por-la-letra main:has(> .caratula) .hoja-versos {
+    margin-bottom: 0;
+  }
+}
+
+/* Con el dedo, la lista es una lista de blancos de pulgar (`D-09`): una tableta acostada mide
+   1024 y es táctil, y el renglón de 28 px del mouse no le sirve (`UX-35` §6.1). La lista
+   crece y la carátula la desplaza por dentro. */
+@media (min-width: 64rem) and (pointer: coarse) {
+  .caratula-tema {
+    min-height: var(--toque-min);
+    align-items: center;
+  }
+}
+
+@media (min-width: 64rem) and (hover: hover) and (pointer: fine) {
+  .caratula-tema:hover {
+    color: var(--texto);
+    border-color: var(--borde);
+  }
+
+  .caratula-tema--actual:hover {
+    border-color: var(--tinte);
+  }
 }
 
 /* ==========================================================================
@@ -3910,6 +4391,54 @@ body > main {
 
   .conjuntos {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---- La mesa (`D-54`, `UX-35` §4): el tablero en dos paños ----
+
+   En el teléfono el tablero es una columna y la bandeja tiene desplazamiento propio
+   (42 % del alto) para que las filas y la bandeja entren juntas. En una pantalla ancha eso
+   sigue siendo un viaje: el mouse baja a la bandeja, agarra, sube a la fila, baja otra vez.
+   Desde 80 rem las cuatro filas y la bandeja van **lado a lado**, la bandeja pegada arriba
+   mientras se desplaza la página, y el viaje pasa a ser de costado y corto.
+
+   El tablero de este juego es el único que pide más ancho que `--ancho-tablero`: la
+   bandeja necesita su columna sin comerle el ancho a las fichas puestas. No cambia la isla:
+   el orden del documento es el de siempre (cabecera, mano, filas, bandeja, lámina) y el
+   reparto lo pone la grilla. */
+@media (min-width: 80rem) {
+  /* Desde 80 rem y no desde 64 (`UX-35` §7.5): entre los dos cortes el tablero es una
+     columna, y 52 rem para una columna era ancho de más. */
+  .ponelos {
+    --ancho-tablero: var(--ancho-tablero-amplio);
+  }
+
+  .conjuntos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ponelos > .pantalla:has(> .filas) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 18rem);
+    column-gap: var(--espacio-3);
+    align-items: start;
+  }
+
+  .ponelos > .pantalla:has(> .filas) > .tablero-cabecera,
+  .ponelos > .pantalla:has(> .filas) > .mano,
+  .ponelos > .pantalla:has(> .filas) > .lamina {
+    grid-column: 1 / -1;
+  }
+
+  /* La bandeja se pega debajo de la mano, que ya está pegada arriba: las dos a la vista
+     mientras las filas crecen hacia abajo. */
+  .ponelos .bandeja {
+    position: sticky;
+    top: 3.5rem;
+  }
+
+  .ponelos .bandeja .fila-piezas {
+    max-height: calc(100svh - 11rem);
   }
 }
 
