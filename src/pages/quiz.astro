@@ -18,15 +18,20 @@ import '../styles/tokens.css';
 import '../styles/juego.css';
 import '../styles/sitio.css';
 import Cabeza from '../components/Cabeza.astro';
+import Caratula from '../components/Caratula.astro';
 import PieImprenta from '../components/PieImprenta.astro';
 import { cargarBanco, type BancoCrudo } from '../lib/quiz/banco.ts';
 import { PANTALLA_0 } from '../lib/quiz/copy.ts';
 import { PORTAL, LUGARES } from '../lib/sitio/copy.ts';
+import { caratulaDe, tapasConCaratula } from '../lib/sitio/caratula.ts';
 import crudo from '../data/quiz.json';
 
 // El banco se resuelve en build: el navegador recibe JSON ya filtrado, sin campos
 // internos y sin los items en borrador o retirados.
 const items = cargarBanco(crudo as unknown as BancoCrudo);
+
+// El casete A1 del portal, en la mano (`D-54`): la carátula y la tinta de la página.
+const caratula = caratulaDe('/quiz/');
 
 const TITULO = 'Preguntas ricoteras — Arcade Ricotero';
 ---
@@ -41,7 +46,7 @@ const TITULO = 'Preguntas ricoteras — Arcade Ricotero';
     <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} />
   </head>
   <body class="con-grano">
-    <main id="app">
+    <main id="app" class={`juego--${caratula.casete.variante}`}>
       <!-- Pantalla 0. El subtitulo lo reemplaza partida.ts si se llega por un desafio.
            La cinta de regreso vive solo aca: en plena partida no hay salidas que
            distraigan, y el resultado ya tiene sus propios botones. -->
@@ -58,9 +63,10 @@ const TITULO = 'Preguntas ricoteras — Arcade Ricotero';
 
       <section id="partida" class="pantalla" hidden></section>
       <section id="resultado" class="pantalla" hidden></section>
+      <Caratula caratula={caratula} />
     </main>
 
-    <PieImprenta disco="oktubre" />
+    <PieImprenta disco="oktubre" tapas={tapasConCaratula([], caratula)} />
 
     <script type="application/json" id="banco" set:html={JSON.stringify(items)} />
     <script>
@@ -84,11 +90,12 @@ const TITULO = 'Preguntas ricoteras — Arcade Ricotero';
         margin: var(--espacio-3) 0 var(--espacio-2);
         max-width: 7ch;
       }
-      h1 {
-        font-size: 1.75rem;
-        line-height: 1.2;
-        text-wrap: balance;
-        margin-top: 0;
+      /* El `h1` ya no se escribe acá: es uno solo para los ocho juegos (`juego.css`, `D-54`).
+         Lo único de esta pantalla es la tinta, y es la del texto y no la de la marca: el
+         titulo de las preguntas es una frase ("Entrá, sepas lo que sepas."), y en el rojo de
+         Oktubre, pegado debajo de la marca en el mismo rojo, se leía como un segundo logo. */
+      main {
+        --tinta-titulo: var(--texto);
       }
       .pantalla[hidden] {
         display: none;

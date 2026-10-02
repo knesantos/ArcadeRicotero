@@ -18,6 +18,8 @@ import { cargarBanco, type BancoCrudo } from '../../lib/tapa/banco.ts';
 import { PANTALLA_0 } from '../../lib/tapa/copy.ts';
 import Cabeza from '../../components/Cabeza.astro';
 import PieImprenta from '../../components/PieImprenta.astro';
+import Caratula from '../../components/Caratula.astro';
+import { caratulaDe, tapasConCaratula } from '../../lib/sitio/caratula.ts';
 import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
 import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/tapa.json';
@@ -28,6 +30,9 @@ const fondo = fondoTapa(FONDO);
 // `D-21` condicion 1: la pantalla que muestra una tapa velada tiene que nombrar de que
 // disco es. Esta pagina la mostraba y no lo nombraba.
 const tapasUsadas = fondo ? discosDe([FONDO]) : [];
+
+// El casete del portal, en la mano (`D-54`): la carátula y la tinta de la página.
+const caratula = caratulaDe('/juegos/adivinar-la-tapa/');
 
 const TITULO = 'Adiviná la tapa — Arcade Ricotero';
 ---
@@ -42,7 +47,7 @@ const TITULO = 'Adiviná la tapa — Arcade Ricotero';
     <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} />
   </head>
   <body class="con-grano">
-    <main id="app">
+    <main id="app" class={`juego--${caratula.casete.variante}`}>
       {fondo && <div class="tapa-fondo tapa-fondo--bondi-engranajes" aria-hidden="true" />}
 
       <section id="portada" class="pantalla sobre-tapa">
@@ -59,9 +64,10 @@ const TITULO = 'Adiviná la tapa — Arcade Ricotero';
       <section id="partida" class="pantalla sobre-tapa" hidden></section>
       <section id="resultado" class="pantalla sobre-tapa" hidden></section>
 
+      <Caratula caratula={caratula} piezaSopla />
     </main>
 
-    <PieImprenta disco="ultimo-bondi-a-finisterre" sinPasada tapas={tapasUsadas} />
+    <PieImprenta disco="ultimo-bondi-a-finisterre" sinPasada tapas={tapasConCaratula(tapasUsadas, caratula)} />
 
     <script type="application/json" id="banco" set:html={JSON.stringify(items)} />
     <script>
@@ -73,15 +79,8 @@ const TITULO = 'Adiviná la tapa — Arcade Ricotero';
          ventana— vive en `juego.css` (`body > main`) desde el 2026-09-02: estaba copiado
          a mano en cinco paginas y en dos de ellas se habia desincronizado. */
       /* Esta pantalla viste Ultimo bondi (D-19, seccion discos). */
-      h1 {
-        font-family: var(--fuente-rotulada);
-        font-size: 1.5rem;
-        line-height: 1.2;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: var(--cat-discos);
-        margin-top: 0;
-      }
+      /* El `h1` es uno solo para los ocho juegos desde el ciclo 17 (`juego.css`, `D-54`): la
+         rotulada, sin negrita falsa, en la tinta del disco que la página viste. */
       .tenue {
         color: var(--texto-tenue);
       }
@@ -95,7 +94,8 @@ const TITULO = 'Adiviná la tapa — Arcade Ricotero';
         padding: var(--espacio-2);
         min-height: var(--toque-min);
         font-family: var(--fuente-rotulada);
-        background: var(--marca-rojo);
+        /* El relleno ya no se escribe acá: es la tinta de Último bondi, que le pone
+           `.juego--discos` (`D-54`). Era el rojo de la marca. */
         color: var(--fondo);
         border: none;
         border-radius: var(--radio);

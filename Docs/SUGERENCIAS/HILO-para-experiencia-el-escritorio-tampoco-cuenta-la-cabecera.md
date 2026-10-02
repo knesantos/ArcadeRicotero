@@ -65,3 +65,13 @@ dejó `T-271` en su reporte, a 1024 × 600, 1280 × 800 y 1440 × 900.
 
 `experiencia`: enmendar `UX-28 §5` con una de las dos salidas (u otra) y la cuenta del alto
 de arriba del mueble. Después, el hilo principal ajusta los dos `@media` del escritorio.
+
+---
+
+> **Cerrado el 2026-10-02 por `experiencia` (`T-317`, ciclo 17).** Se tomó una tercera salida,
+> que este traspaso no listaba: la cabecera se acuesta en un renglón y la bajada va al costado
+> del título. La enmienda con la cuenta (366 arriba del mueble, cortes de 620 y 760 de alto,
+> siete tamaños con `teclasFuera` en cero) quedó en `UX-28` `§5` y en el encabezado de esa
+> hoja; la hoja de la pantalla es `UX-35` `§5`. Quedan por medir, en `UX-35` `§7.7`: 1024 × 600
+> y 1280 × 800 (los dos que fallaban), los pisos de los cortes (980 × 620 y 1220 × 760, con 14
+> y 10 px de margen) y la escala en una ventana de portátil real.

@@ -26,6 +26,8 @@ import { catalogo, type Manifiesto } from '../../lib/tema/catalogo.ts';
 import { PANTALLA_0, PARTIDA } from '../../lib/tema/copy.ts';
 import Cabeza from '../../components/Cabeza.astro';
 import PieImprenta from '../../components/PieImprenta.astro';
+import Caratula from '../../components/Caratula.astro';
+import { caratulaDe, tapasConCaratula } from '../../lib/sitio/caratula.ts';
 import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
 import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import { claseDisco } from '../../lib/tema/paleta.ts';
@@ -50,6 +52,9 @@ const hayAudio = cat.jugables > 0;
 const FONDO = 'lobo-tiras';
 const fondo = fondoTapa(FONDO);
 const tapasUsadas = fondo ? discosDe([FONDO]) : [];
+
+// El casete del portal, en la mano (`D-54`): la carátula y la tinta de la página.
+const caratula = caratulaDe('/juegos/adivinar-el-tema/');
 
 const TITULO = 'Adiviná el tema — Arcade Ricotero';
 
@@ -76,7 +81,7 @@ const bajadaCorta = (() => {
     <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} />
   </head>
   <body class="con-grano juego-tema">
-    <main id="app">
+    <main id="app" class={`juego--${caratula.casete.variante}`}>
       {fondo && <div class="tapa-fondo tapa-fondo--lobo-tiras" aria-hidden="true" />}
 
       <section id="portada" class="pantalla sobre-tapa">
@@ -178,9 +183,10 @@ const bajadaCorta = (() => {
       <section id="partida" class="pantalla sobre-tapa" hidden></section>
       <section id="resultado" class="pantalla sobre-tapa" hidden></section>
 
+      <Caratula caratula={caratula} />
     </main>
 
-    <PieImprenta disco="lobo-suelto" tapas={tapasUsadas} />
+    <PieImprenta disco="lobo-suelto" tapas={tapasConCaratula(tapasUsadas, caratula)} />
 
     <script type="application/json" id="catalogo" set:html={JSON.stringify(cat.temas)} />
     {
@@ -247,16 +253,8 @@ const bajadaCorta = (() => {
         margin: var(--espacio-1) 0 var(--espacio-1);
         max-width: 7ch;
       }
-      h1 {
-        font-family: var(--fuente-rotulada);
-        font-size: 2.3rem;
-        line-height: 1.02;
-        text-transform: uppercase;
-        letter-spacing: 0.02em;
-        text-wrap: balance;
-        color: var(--cat-mitologia);
-        margin: 0 0 var(--espacio-1);
-      }
+      /* El `h1` es uno solo para los ocho juegos desde el ciclo 17 (`juego.css`, `D-54`): la
+         rotulada, sin negrita falsa, en la tinta del disco que la página viste. */
       .tenue {
         color: var(--texto-tenue);
       }

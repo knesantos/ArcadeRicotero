@@ -91,6 +91,18 @@ const PARES: Array<[string, string, string]> = [
   // los diez discos que ninguna seccion habia tomado, y entra al test el mismo dia que
   // empieza a llevar texto — un color sin par testeado no existe (`diseno-marca.md`).
   ['boton primario de ponelos-en-fila', 'fondo', 'disco-bang-bang-estas-liquidado-tinta'],
+  // `D-54`: el boton principal de cada juego va en la tinta de su disco, como ya iban cinco
+  // de los ocho. Los otros tres usaban el rojo de la marca por defecto, sin haberlo elegido:
+  // "¿Qué tipo de ricotero sos?" (Luzbelito), "Completá la letra" (La mosca y la sopa) y
+  // "Adiviná la tapa" (Último bondi). Entran con el cambio, invertidos como los de arriba.
+  ['boton primario de dos-ejes', 'fondo', 'disco-luzbelito-tinta'],
+  ['boton primario de completar-la-letra', 'fondo', 'cat-letras'],
+  ['boton primario de adivinar-la-tapa', 'fondo', 'cat-discos'],
+  // Y los dos que ya iban en su tinta sin un par que nombrara el uso: "Adiviná el tema" (Lobo
+  // suelto) y "Más o menos" (Un baión). El número es el mismo que el de su tinta sobre el
+  // fondo —el contraste no tiene dirección—, pero la lista dice dónde se usa cada par.
+  ['boton primario de adivinar-el-tema', 'fondo', 'cat-mitologia'],
+  ['boton primario de mas-o-menos', 'fondo', 'disco-un-baion-para-el-ojo-idiota-tinta'],
 ];
 
 /**
@@ -168,6 +180,27 @@ test('D-21: sobre tapa velada de titular, el texto grande llega a 3:1 en el peor
   const sobre = peorCaso('velo-tapa-titular');
   const r = contraste(token('texto'), sobre);
   assert.ok(r >= 3, `texto grande sobre tapa velada de titular: ${r.toFixed(2)}:1 (peor caso ${sobre})`);
+});
+
+/**
+ * El título de cada juego va en la tinta de su disco (`D-54`), y en tres juegos se apoya
+ * sobre una tapa velada: "Adiviná el tema" (Lobo suelto), "Adiviná la tapa" (Último bondi) y
+ * "Completá la letra" (La mosca y la sopa). Es texto grande —la rotulada a 1,65 rem o más—,
+ * así que el piso es el de texto grande (3:1), medido sobre el peor caso del velo de cuerpo:
+ * el título no lleva velo propio, va sobre el mismo que el resto de la hoja.
+ *
+ * Dos de los tres ya iban así antes del ciclo 17 sin que ningún test lo midiera; el tercero
+ * (la letra) pasó del texto claro a la tinta de su disco con este cambio. Ahora los tres
+ * tienen su par.
+ */
+test('D-54: el título de un juego en la tinta de su disco llega a 3:1 sobre la tapa velada', () => {
+  const sobre = peorCaso('velo-tapa');
+  const fallas: string[] = [];
+  for (const tinta of ['cat-mitologia', 'cat-discos', 'cat-letras']) {
+    const r = contraste(token(tinta), sobre);
+    if (r < 3) fallas.push(`${tinta} sobre tapa velada (peor caso ${sobre}): ${r.toFixed(2)}:1`);
+  }
+  assert.deepEqual(fallas, [], `títulos por debajo de 3:1:\n  ${fallas.join('\n  ')}`);
 });
 
 test('D-21: el velo de titular NO habilita texto de cuerpo', () => {

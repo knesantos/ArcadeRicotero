@@ -33,6 +33,15 @@
 > confirma `UX-05` v2) y `src/lib/contraste.test.ts` (leído entero antes de escribir esta
 > versión, no solo citado de memoria).
 
+> **v5 — `T-317`, ciclo 17.** No cambia ninguna regla de esta hoja. Agrega al final la
+> sección **"Mapa sección→disco"**, que `D-19` dejó en manos de `experiencia` y que esta hoja
+> nunca tuvo escrita: cada hoja de un juego decidió su fila (`UX-06` §5, `UX-23` §4.1,
+> `UX-30` §2, `UX-34` §1) y tres dejaron anotado que el mapa maestro de acá no la incluía
+> todavía (`UX-06` §8, `UX-23` §11, `UX-34` §10). Queda completo y contra el código del
+> 2026-10-02, con la regla nueva de `D-54`: cada página de juego viste el disco de su casete
+> (`.juego--*` es el mismo mapa que `.casete--*`). Suma a lo que consumo: `D-54`, `UX-35`
+> `§4.1`, `src/lib/sitio/copy.ts` y las variantes de `src/styles/sitio.css`.
+
 **Resuelve:** `D-04` (arte original en lenguaje rocambolesco para la interfaz) y `D-21`
 (las tapas reales entran a cualquier pantalla, con piso de legibilidad y crédito
 propios).
@@ -484,3 +493,47 @@ reporte del hilo principal) más la lectura directa de `src/lib/contraste.test.t
   gate previo a publicar —`D-14` sacó el cerrojo de `D-07`—, pero sigue sin ser mía: el
   mapa de qué se usa y de dónde salió lo sostiene `contenido` (`CNT-01`), y el riesgo lo
   asume el usuario bajo `D-14` (si llega un reclamo, se baja).
+
+## Mapa sección→disco (`D-19`, completo el 2026-10-02 por `T-317`)
+
+`D-19` fijó el principio y la primera asignación (portada, historia, mitología, letras,
+discos, resultado) y dejó el mapa en manos de `experiencia`. Esta hoja no tenía la tabla y
+tenía que tenerla; queda acá, contra `copy.ts` (`variante` de cada casete) y `sitio.css` (las
+reglas `.casete--*` y `.juego--*`).
+
+| Lugar | Disco | Variante | De dónde sale la fila |
+|---|---|---|---|
+| Portada y marca; A1, Preguntas ricoteras | *Oktubre* | `marca` | `D-19` |
+| Historia: B2, La Redondopedia | *Gulp!* | `historia` | `D-19` |
+| A9, Skayboy y Poligirl | *Gulp!* | `historia` (en el portal) | Herencia del contenido: sus dos temas son de ese disco (`UX-30` §2) |
+| Mitología: A3, Adiviná el tema | *Lobo suelto* | `mitologia` | `D-19` |
+| Letras: A5, Completá la letra; B1, Letras y acordes | *La mosca y la sopa* | `letras` | `D-19` |
+| Discos: A7, Adiviná la tapa | *Último bondi a Finisterre* | `discos` | `D-19` |
+| A4, Sacalo por la letra | *Momo Sampler* | `momo` | `UX-08` |
+| A6, Ponelos en fila | *¡Bang! ¡Bang!… Estás liquidado* | `bang` | `UX-23` §4.1 |
+| A2, ¿Qué tipo de ricotero sos? | *Luzbelito* | `luzbelito` | `UX-06` §5 |
+| A8, Más o menos | *Un baión para el ojo idiota* | `baion` | `UX-34` §1 |
+| Resultado y "Compartí" | *Gulp!* + el logo | no rota (`.primario.firma`) | `D-19` |
+
+**Las reglas que lo ordenan:**
+
+1. **El casete y su juego visten el mismo disco** (`D-54`, ciclo 17). `.juego--*` y
+   `.casete--*` están escritos en la misma regla: lo que se toca en la puerta y lo que se abre
+   no pueden vestir dos discos distintos, y la página toma su `juego--<variante>` del mismo
+   dato del que sale el casete (`caratula.test.ts`). Qué viste en cada hoja el título y el
+   botón de cada uno, en `UX-35` `§4.1`.
+2. **Un disco puede vestir más de un lugar cuando el lugar lo hereda del contenido, no de un
+   reparto libre** (`UX-30` §2). El mapa no es un reparto de diez lugares; es una
+   consecuencia. Quedarse sin disco libre no es un problema; vestir un disco que el
+   contenido no nombra, sí.
+3. **La marca no rota.** Es de *Oktubre* en todas las pantallas: el apoyo de cada disco es para
+   el título del juego, no para la firma del sitio.
+4. ***Cordero atado* no es un disco libre**: es el volumen II de la edición doble de *Lobo
+   suelto* y comparte su tinta exacta (`RES-37` los midió juntos).
+5. **Skayboy no usa `.juego--*`**: su página no tiene carátula (`UX-35` `§5.1`) y el mueble
+   trae su propia tinta.
+
+**Una contradicción entre hojas, para que nadie la repita.** `UX-30` §2 dice que *Un baión
+para el ojo idiota* "tinta hoy la sección del cancionero y un pie"; el cancionero está en
+`letras` (*La mosca y la sopa*) y *Un baión* viste *Más o menos* desde `UX-34` §1, que es
+posterior. Manda el código y la fila de arriba.

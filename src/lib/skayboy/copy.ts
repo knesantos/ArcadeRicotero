@@ -52,6 +52,15 @@ export const TECLAS = {
   salto: 'Saltá',
   mandoIzquierdo: 'Mando izquierdo',
   mandoDerecho: 'Mando derecho',
+  /**
+   * En la computadora no hay botones en pantalla (`D-55`): cada columna dice de quién es y con
+   * qué teclas se mueve. Registro 3 —qué hay y nada más—. Las teclas no se escriben acá: salen
+   * del mapa de `teclado.ts`, que es el mismo que aprieta los botones (`D-53`).
+   */
+  quienIzquierda: 'Skayboy',
+  quienDerecha: 'Poligirl',
+  comoSeMueve: (quien: string, salto: string, izquierda: string, derecha: string) =>
+    `${quien} salta con ${salto} y camina con ${izquierda} y ${derecha}.`,
 } as const;
 
 /**

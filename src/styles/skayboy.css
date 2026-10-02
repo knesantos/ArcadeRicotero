@@ -73,6 +73,9 @@
 .juego-skayboy .pantalla h1 {
   --tinta-registro: var(--disco-gulp-apoyo);
   font-family: var(--fuente-rotulada);
+  /* Un peso solo: sin esto el `bold` del `h1` la engorda a mano (`D-54`, la misma negrita
+     falsa que se les sacó a los otros ocho títulos). */
+  font-weight: normal;
   color: var(--disco-gulp-tinta);
 }
 
@@ -506,6 +509,121 @@
 }
 
 /* ==========================================================================
+   En la computadora, sin botones en pantalla (`D-55`)
+
+   Pedido del usuario: *"En desktop que no muestre los botones de Skayboy y Poligirl"*. Con
+   mouse y teclado se juega con W A D y las flechas (`D-53`), y seis botones grandes al lado
+   del mueble eran controles que nadie iba a tocar con el puntero.
+
+   **La columna se queda, los botones se van.** En su lugar va la leyenda: de quién es la
+   columna y sus tres teclas, armadas como en el teclado (saltar arriba, caminar abajo). Así
+   no se mueve nada del reparto de `UX-28 §2` ni de los cortes de escala, y cada personaje
+   sigue de su lado (`D-43`).
+
+   **Los botones siguen en el documento**, escondidos: la isla guarda en ellos qué tecla está
+   apretada y el motor lee eso (`mandoDe`), así que el teclado los sigue apretando aunque no se
+   vean. Y la leyenda se enciende con ese mismo estado: la tecla dibujada se da vuelta cuando
+   su botón está `.tecla--apretada`, con el par de tinta que ya tiene la tecla.
+
+   **El corte es de capacidad, no de ancho** (`UX-10` §1): `(hover: hover) and (pointer: fine)`,
+   el mismo que ya imprimía la letra de cada tecla. Una pantalla táctil grande no lo dispara y
+   conserva los botones, que ahí son la única forma de jugar.
+   ========================================================================== */
+
+.juego-skayboy .mando-leyenda {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .juego-skayboy .mando > .tecla,
+  .juego-skayboy .mando-piso {
+    display: none;
+  }
+
+  /* La columna mide lo que la leyenda, y se centra al costado del mueble. */
+  .juego-skayboy .mando {
+    grid-template-rows: auto;
+    height: auto;
+    align-self: center;
+  }
+
+  .juego-skayboy .mando-leyenda {
+    display: grid;
+    justify-items: center;
+    gap: var(--espacio-1);
+    margin: 0;
+  }
+
+  .juego-skayboy .mando-quien {
+    font-family: var(--fuente-rotulada);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--disco-gulp-tinta);
+  }
+
+  /* Las tres teclas como en el teclado: la de saltar arriba, centrada; las de caminar abajo. */
+  .juego-skayboy .mando-teclas {
+    display: grid;
+    grid-template-columns: repeat(2, 2.4rem);
+    gap: 6px;
+  }
+
+  .juego-skayboy .tecla-kbd--salto {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+
+  /* La tecla dibujada: el mismo borde y la misma tinta que el botón que reemplaza. */
+  .juego-skayboy .tecla-kbd {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    font-family: var(--fuente-rotulada);
+    font-size: 0.95rem;
+    line-height: 1;
+    color: var(--disco-gulp-tinta);
+    background: var(--fondo);
+    border: 2px solid currentColor;
+    border-radius: 3px;
+    transition: background-color var(--duracion-toque), color var(--duracion-toque);
+  }
+
+  /* Las flechas en la letra del sistema, por lo mismo que en `.tecla-atajo`: la rotulada no
+     las trae. */
+  .juego-skayboy .mando--derecha .tecla-kbd {
+    font-family: var(--fuente);
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .juego-skayboy .mando:has(.tecla--salto.tecla--apretada) .tecla-kbd--salto,
+  .juego-skayboy .mando:has(.tecla--izquierda.tecla--apretada) .tecla-kbd--izquierda,
+  .juego-skayboy .mando:has(.tecla--derecha.tecla--apretada) .tecla-kbd--derecha {
+    background: var(--disco-gulp-tinta);
+    color: var(--fondo);
+  }
+
+  /* La frase es para el lector de pantalla: a la vista ya están el nombre y las teclas. */
+  .juego-skayboy .mando-frase {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* En pantalla completa, con mouse, la columna se va entera: el área ocupa la ventana y las
+     teclas del teclado no necesitan lugar. */
+  /* `html` adelante para ganarle a las reglas del modo, que vienen después en esta hoja. */
+  html[data-pantalla='completa'] .juego-skayboy .mando {
+    display: none;
+  }
+}
+
+/* ==========================================================================
    Los escalones de escala (`UX-27 §2`, `UX-28 §2`, `§2.3`, `§2.4` y `§5`)
 
    El area no crece con la pantalla: **tiene tamaño fijo por escala**. Lo que crece cuando
@@ -774,16 +892,98 @@
   }
 }
 
+/* ---- La cabecera acostada: de 720 de ancho y 500 de alto para arriba (`D-54`) ----
+
+   **Cierra el traspaso que dejó `T-271`** (`HILO-para-experiencia-el-escritorio-tampoco-
+   cuenta-la-cabecera.md`): arriba de 500 de alto la cabecera se apilaba entera arriba del
+   mueble —volver, marca, título, bajada y rótulo: 366 px CSS medidos— y los cortes de ×3 y
+   ×4 no la contaban. A 1440 × 900 el mueble ×4 terminaba en 978 y las teclas de abajo
+   quedaban fuera de la ventana.
+
+   De las dos salidas que proponía el traspaso se toma una tercera: **la cabecera se acuesta
+   en un renglón, con la bajada al costado del título en vez de abajo**. No se saca nada
+   —la bajada entra entera, que es lo que `§2.3` quería cuando el alto sobra—, y lo que hay
+   arriba del mueble pasa de 366 a ~90 px CSS. Es la misma forma del ×2 apretado, con aire.
+
+   Los cortes de abajo cuentan ese renglón: 16 de sangría + ~90 de cabecera + 16 de aire +
+   el mueble + 16 abajo. ×3 pide 468 de mueble (606 en total) y ×4 pide 612 (750).
+
+   **Dónde no va:** de 720 a 980 de ancho con 800 de alto o más —una tableta parada—. Ahí la
+   escala no pasa de ×2 y el alto sobra: la cabecera apilada de siempre entra con aire
+   (366 + 324), y acostada dejaba media pantalla de negro abajo del mueble, medido a
+   768 × 1024. Entre 500 y 800 de alto la apilada no entra (pide ~750) y se acuesta. */
+@media (min-width: 980px) and (min-height: 500.02px),
+  (min-width: 720px) and (min-height: 500.02px) and (max-height: 799.98px) {
+  .juego-skayboy #portada:not([hidden]) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: var(--espacio-3);
+    /* La cabecera mide lo mismo que el fichín, así el volver arranca donde arranca la
+       columna de mando izquierda y no pegado al borde de la ventana. */
+    max-width: calc(var(--area-ancho) + 2 * (var(--bisel) + var(--chapa)) + 2 * var(--columna-comoda));
+    margin-inline: auto;
+  }
+
+  .juego-skayboy .cabecera-sitio {
+    margin: 0;
+    max-width: none;
+  }
+
+  .juego-skayboy .encabezado-juego {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px var(--espacio-3);
+    max-width: none;
+    margin: 0;
+  }
+
+  .juego-skayboy .encabezado-juego > * {
+    margin: 0;
+  }
+
+  .juego-skayboy .marca {
+    font-size: 1.15rem;
+    max-width: none;
+  }
+
+  .juego-skayboy .pantalla h1 {
+    font-size: 1.6rem;
+    line-height: 1.1;
+  }
+
+  .juego-skayboy .encabezado-juego .tenue {
+    flex: 1 1 20rem;
+    font-size: 0.92rem;
+    line-height: 1.35;
+    text-wrap: pretty;
+  }
+
+  /* 24 px entre la cabecera y el mueble, y no 16: el sello de pantalla completa asoma 22 px
+     por arriba del canto del mueble, en la esquina derecha, que es donde la cabecera
+     acostada pone el final de la bajada. Con 16 le tapaba la última palabra ("…una por
+     vez.") a 1024 × 640 y a 720 × 600 (`REV-18`, `FIND-99`; `UX-33` §1.2: la cabecera no
+     pierde una letra). Los cortes de abajo siguen cerrando: el mueble ×3 termina en 576 a
+     980 × 620 y el ×4 en 700 a 1220 × 760. */
+  .juego-skayboy .fichin {
+    grid-column: 1 / -1;
+    margin-block: var(--espacio-3) 0;
+  }
+}
+
 /* El escritorio (`UX-28 §5`, `UX-10`): la escala sube por enteros mientras entre, y las
    columnas de mando no desaparecen porque haya un teclado — una pantalla tactil grande
-   existe. x3 pide 960 x 468 px CSS de marco; x4 pide 1200 x 612. */
-@media (min-width: 980px) and (min-height: 520px) {
+   existe. Con mouse los botones se van y la columna lleva la leyenda de teclas (`D-55`),
+   pero el lugar se queda. x3 pide 960 x 468 px CSS de marco; x4 pide 1200 x 612. Desde el ciclo 17 el corte
+   de alto **cuenta la cabecera acostada** (arriba): 620 y 760 en vez de 520 y 660. */
+@media (min-width: 980px) and (min-height: 620px) {
   .juego-skayboy .pantalla {
     --escala: 3;
   }
 }
 
-@media (min-width: 1220px) and (min-height: 660px) {
+@media (min-width: 1220px) and (min-height: 760px) {
   .juego-skayboy .pantalla {
     --escala: 4;
   }

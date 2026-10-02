@@ -42,6 +42,8 @@ import '../../styles/juego.css';
 import '../../styles/sitio.css';
 import Cabeza from '../../components/Cabeza.astro';
 import PieImprenta from '../../components/PieImprenta.astro';
+import Caratula from '../../components/Caratula.astro';
+import { caratulaDe, tapasConCaratula } from '../../lib/sitio/caratula.ts';
 import { PANTALLA_0 } from '../../lib/ponelos/copy.ts';
 import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
 import { TITULO_DE_DISCO } from '../../lib/sitio/arte.ts';
@@ -69,6 +71,9 @@ const catalogo = {
 /** Las diez tapas se pueden ver en esta pantalla, así que las diez se acreditan. */
 const tapasUsadas = DISCOS.map((d) => TITULO_DE_DISCO[d]).filter((t): t is string => Boolean(t));
 
+// El casete del portal, en la mano (`D-54`): la carátula y la tinta de la página.
+const caratula = caratulaDe('/juegos/ponelos-en-fila/');
+
 const TITULO = `${PANTALLA_0.titulo} — Arcade Ricotero`;
 ---
 
@@ -82,7 +87,7 @@ const TITULO = `${PANTALLA_0.titulo} — Arcade Ricotero`;
     <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} />
   </head>
   <body class="con-grano">
-    <main id="app" class="ponelos">
+    <main id="app" class:list={['ponelos', `juego--${caratula.casete.variante}`]}>
       <section id="inicio" class="pantalla">
         <header class="cabecera-sitio">
           <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
@@ -96,9 +101,10 @@ const TITULO = `${PANTALLA_0.titulo} — Arcade Ricotero`;
 
       <section id="eleccion" class="pantalla" hidden></section>
       <section id="tablero" class="pantalla" hidden></section>
+      <Caratula caratula={caratula} />
     </main>
 
-    <PieImprenta disco="bang-bang-estas-liquidado" tapas={tapasUsadas} />
+    <PieImprenta disco="bang-bang-estas-liquidado" tapas={tapasConCaratula(tapasUsadas, caratula)} />
 
     <script type="application/json" id="catalogo" set:html={JSON.stringify(catalogo)} />
     <script>
@@ -108,15 +114,8 @@ const TITULO = `${PANTALLA_0.titulo} — Arcade Ricotero`;
     <style>
       /* El cascarón —ancho, centrado, `position: relative`— vive en `juego.css`
          (`body > main`). Acá queda solo lo que es de esta pantalla. */
-      h1 {
-        font-family: var(--fuente-rotulada);
-        font-size: 1.5rem;
-        line-height: 1.2;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: var(--disco-bang-bang-estas-liquidado-tinta);
-        margin-top: 0;
-      }
+      /* El `h1` es uno solo para los ocho juegos desde el ciclo 17 (`juego.css`, `D-54`): la
+         rotulada, sin negrita falsa, en la tinta del disco que la página viste. */
       .tenue {
         color: var(--texto-tenue);
       }

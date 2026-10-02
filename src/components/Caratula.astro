@@ -1,0 +1,108 @@
+---
+/**
+ * La carátula del casete (`D-54`, `UX-35`): el juego dicho con la pieza que lo nombra en el
+ * portal.
+ *
+ * **Un solo elemento con dos formas, y ninguna es un agregado del escritorio.**
+ *
+ * - En el teléfono es una calcomanía en la esquina de la cabecera, en el lugar que estaba
+ *   vacío a la derecha de "← AL ARCADE": la pieza de tapa y el número de pista. Se va cuando
+ *   arranca la partida, igual que la cabecera (`UX-01`: en plena partida no hay nada que
+ *   distraiga).
+ * - En la computadora es la columna de la mesa: la marca, la pieza grande, la pista, el nombre
+ *   y la lista de temas del lado A y del lado B — el lomo y el interior de la tapita de un
+ *   casete. **La lista no está mientras se juega**: son salidas, y en plena partida no hay
+ *   salidas (`D-54`). Lo decide `juego.css` mirando qué sección está a la vista.
+ *
+ * Va como **último hijo de `main`** y no adentro de la portada, porque en la computadora tiene
+ * que seguir ahí cuando la isla esconde la portada. Las islas no la tocan: buscan sus zonas por
+ * `id` y esta pieza no tiene ninguno.
+ *
+ * **Último y no primero**, aunque se vea a la izquierda (`UX-35` §6.2): con el teclado, once
+ * enlaces de la lista se interponían entre quien llega y el "Jugá", y el lector de pantalla
+ * leía la lista de casetes antes que el juego. La grilla de `juego.css` la ubica por columna y
+ * fila explícitas, así que a la vista no cambia nada; en el teléfono va absoluta en la esquina.
+ *
+ * Sin JavaScript. Lo que cambia entre jugar y no jugar es CSS sobre el `hidden` que las islas
+ * ya ponen.
+ */
+import { CARATULA, PORTAL } from '../lib/sitio/copy.ts';
+import type { Caratula } from '../lib/sitio/caratula.ts';
+
+interface Props {
+  /** La carátula ya resuelta por la página con `caratulaDe()`: la página la necesita también
+      para el crédito del pie, y resolverla dos veces sería leer dos veces el mismo archivo. */
+  caratula: Caratula;
+  /**
+   * **La pieza es una respuesta del juego, y en partida no se muestra** (`REV-18`, `FIND-100`).
+   * En "Adiviná la tapa" la pieza es el ojo de buey de *Último bondi*, y *Último bondi* es la
+   * respuesta correcta de `TP-006` y distractor de otras dos: pegada al lado del tablero toda
+   * la partida le soplaba la respuesta a quien juega. Es el mismo motivo por el que esa
+   * pantalla ya iba con el pie `sinPasada` (`D-35`, excepción 3). En la portada y en el
+   * resultado la pieza está; en partida queda la etiqueta con el nombre.
+   */
+  piezaSopla?: boolean;
+}
+
+const { caratula: c, piezaSopla = false } = Astro.props;
+---
+
+<aside
+  class:list={['caratula', `casete--${c.casete.variante}`, { 'caratula--la-pieza-sopla': piezaSopla }]}
+  aria-label={CARATULA.rotulo(c.casete.titulo)}
+>
+  {/* La marca de la mesa. En el teléfono no se ve: ahí la marca vive en la hoja, como
+      siempre. Las dos llevan el nombre del tránsito (`marca`), y nunca se ven las dos a la
+      vez — un nombre repetido a la vista apaga el paso sin avisar (`ADR-03` §6.3). */}
+  <p class="caratula-marca" aria-hidden="true">ARCADE RICOTERO</p>
+  <div class="caratula-frente">
+    <img
+      class:list={['caratula-arte', 'casete-arte', `casete-arte--${c.material}`, { 'casete-arte--apaisada': c.apaisada }]}
+      src={c.arte}
+      alt=""
+      aria-hidden="true"
+      decoding="async"
+      width={c.medida?.ancho}
+      height={c.medida?.alto}
+    />
+    {/* La etiqueta de papel, la misma del casete del portal: tinta del fondo sobre papel
+        rayado, que es el par que `contraste.test.ts` ya mide. */}
+    <div class="caratula-etiqueta">
+      <p class="caratula-titulo">{c.casete.titulo}</p>
+      {/* El número va abajo y a la derecha, escrito a mano, como en la etiqueta del casete del
+          portal: no es un rótulo arriba del título, es la pista. La forma larga la lee el
+          lector de pantalla; la que se ve es la de la tapita. */}
+      <p class="caratula-pista">
+        <span class="caratula-pista-larga">{CARATULA.pista(c.lado, c.numero)}</span>
+        <span class="caratula-pista-corta" aria-hidden="true">{c.pista}</span>
+      </p>
+    </div>
+  </div>
+
+  <nav class="caratula-lista" aria-label={CARATULA.lista}>
+    {
+      [
+        { titulo: PORTAL.ladoA, pistas: c.ladoA },
+        { titulo: PORTAL.ladoB, pistas: c.ladoB },
+      ].map((lado) => (
+        <>
+          <p class="caratula-lado">{lado.titulo}</p>
+          <ol class="caratula-temas">
+            {lado.pistas.map((p) => (
+              <li>
+                <a
+                  class:list={['caratula-tema', { 'caratula-tema--actual': p.actual }]}
+                  href={p.href}
+                  aria-current={p.actual ? 'page' : undefined}
+                >
+                  <span class="caratula-numero" aria-hidden="true">{p.numero}</span>
+                  <span class="caratula-nombre">{p.titulo}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </>
+      ))
+    }
+  </nav>
+</aside>
