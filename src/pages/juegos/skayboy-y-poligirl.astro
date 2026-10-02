@@ -30,6 +30,7 @@ import PieImprenta from '../../components/PieImprenta.astro';
 import { PORTAL } from '../../lib/sitio/copy.ts';
 import { CASETE, PANTALLA, PANTALLA_COMPLETA, PIE_HOMENAJE, TECLAS } from '../../lib/skayboy/copy.ts';
 import { nivelesASembrar, problemasDelBanco, type Banco } from '../../lib/skayboy/niveles.ts';
+import { teclaDelBoton } from '../../lib/skayboy/teclado.ts';
 import datos from '../../data/skayboy.json';
 
 /**
@@ -209,6 +210,10 @@ const PISO = [
 
             Saltar arriba, en el bloque grande; izquierda y derecha abajo, en el piso donde
             cae el pulgar de la mano que agarra (`UX-28 §2.1` y `§2.2`).
+
+            Cada tecla dice además cuál del teclado la aprieta (`D-53`: W A D para Skayboy,
+            las flechas para Poligirl): `aria-keyshortcuts` para el lector de pantalla, y la
+            letra impresa solo donde hay mouse —en un teléfono no hay teclado que nombrar—.
           */}
           {
             MANDOS.map((mando) => (
@@ -219,8 +224,10 @@ const PISO = [
                   data-mando={mando.lado}
                   data-tecla="salto"
                   aria-label={TECLAS.salto}
+                  aria-keyshortcuts={teclaDelBoton(mando.lado, 'salto')?.atajo}
                 >
                   <span class="tecla-figura" aria-hidden="true" />
+                  <span class="tecla-atajo" aria-hidden="true">{teclaDelBoton(mando.lado, 'salto')?.etiqueta}</span>
                 </button>
                 <div class="mando-piso">
                   {PISO.map((t) => (
@@ -230,8 +237,10 @@ const PISO = [
                       data-mando={mando.lado}
                       data-tecla={t.tecla}
                       aria-label={t.nombre}
+                      aria-keyshortcuts={teclaDelBoton(mando.lado, t.tecla)?.atajo}
                     >
                       <span class="tecla-figura" aria-hidden="true" />
+                      <span class="tecla-atajo" aria-hidden="true">{teclaDelBoton(mando.lado, t.tecla)?.etiqueta}</span>
                     </button>
                   ))}
                 </div>

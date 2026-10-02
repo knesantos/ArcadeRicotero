@@ -565,6 +565,13 @@ jugándolo, no leyéndolo.
 > criterio:** la fila de arriba sigue mandando, entera, para todo nivel futuro. Se cierra
 > cuando alguien juega los seis de a dos en un teléfono; si algo no anda, se corrige el nivel.
 > Ese día la nota se cierra con la fecha, no se borra.
+>
+> **Cierre del 2026-10-02.** El usuario escribió, textual: *"Confirmo que los niveles son
+> jugables"*. Es lo que hay: confirmó que los seis se juegan. No dijo con cuántas personas ni
+> en qué aparato, y acá no se le agrega. **Frente a la letra de (a) no queda cerrada del
+> todo:** (a) pide dos personas moviéndose a la vez, y la cita no lo dice; `deDos: true`
+> sigue siendo que él se hizo cargo, no el registro de una partida de a dos. La nota de arriba
+> se queda donde está.
 
 **(b) Se pasa solo.** *(Enmendado por `D-43`: decía "alternando con el botón de cambio".)*
 Una sola persona lo termina **tocando una columna de mando y después la otra**, y el camino
@@ -805,6 +812,13 @@ usuario puede hacer, y `deDos` es el booleano que lo demuestra.
 > Se cierra cuando alguien los juega de a dos en un teléfono; si algo no anda, se corrige
 > (y si el arreglo toca la física, rige el punto 5.4). Ese día la nota se cierra con la
 > fecha, no se borra.
+>
+> **Cierre del 2026-10-02.** Misma cita del usuario, textual: *"Confirmo que los niveles son
+> jugables"*. Los seis se juegan; nada más se afirma. **Frente a la letra de este punto no
+> queda cerrada del todo:** pide dos personas a la vez en un aparato de verdad, y la cita no
+> dice cuántas personas ni qué aparato. Falta que conste eso para que `deDos: true` pase de
+> "se hizo cargo" a "se jugó de a dos". La regla de este punto sigue entera para todo nivel
+> futuro.
 
 > **Enmendado el 2026-09-22, misma ráfaga.** El párrafo de abajo describía `verificaciones.solo`
 > marcándose en `true` con un `npm test` en verde y a `revisor` mirando que la traza gane en
