@@ -1,0 +1,74 @@
+[
+  {
+    "foto": "01-portada.jpg",
+    "juego": "Presentación",
+    "texto": "Estás en la puerta, con las dos cintas.\n\nArcade Ricotero: nueve juegos sobre Patricio Rey y sus Redonditos de Ricota, para el celular y un rato suelto. Sin cuenta ni entrada, sepas lo que sepas. Los molinetes van abiertos.\n\nAbajo, uno por uno.\n\nhttps://arcade-ricotero.vercel.app",
+    "alt": "Portada del Arcade Ricotero: la marca, el afiche de octubre con los seis discos que salieron ese mes, y los primeros casetes de juegos."
+  },
+  {
+    "foto": "02-adivina-el-tema.jpg",
+    "juego": "Adiviná el tema",
+    "texto": "El juego estrella: Adiviná el tema.\n\nSuena una décima de segundo. ¿No sale? Te damos más: medio segundo, dos, cuatro, ocho, diez. Cuanto antes la pegues, más vale. Cuatro temas por vuelta, de los 95 que hay.\n\n¿Te da el oído?\n\nhttps://arcade-ricotero.vercel.app/juegos/adivinar-el-tema/",
+    "alt": "Partida de Adiviná el tema: van dos pasadas, la cinta marca 2 segundos de audio sonando y el tema vale 60 puntos."
+  },
+  {
+    "foto": "03-adivina-el-tema-la-sacaste.jpg",
+    "juego": "Adiviná el tema (segunda)",
+    "texto": "Cuando la sacás, aparece la tapa con el disco, el año y la pista, y de ahí saltás a la letra con los acordes.\n\nSe juega con los diez discos o con uno solo. Este mes el portal tiene afiche: Oktubre cumple cuarenta el 4, y podés jugar solo con sus temas.\n\nhttps://arcade-ricotero.vercel.app",
+    "alt": "Acierto en Adiviná el tema: sello de La sacaste, más 60, la tapa de Oktubre y la ficha del tema."
+  },
+  {
+    "foto": "04-preguntas-ricoteras.jpg",
+    "juego": "Preguntas ricoteras",
+    "texto": "Preguntas ricoteras. Ninguna piadosa.\n\nHistoria, discos, letras y mitología, de fácil a difícil, con tres vidas. Cada respuesta trae su explicación, y si el dato es leyenda, dice que es leyenda.\n\nhttps://arcade-ricotero.vercel.app/quiz/",
+    "alt": "Pregunta de Preguntas ricoteras sobre el álbum doble, respondida bien, con la explicación abajo."
+  },
+  {
+    "foto": "05-que-tipo-de-ricotero-sos.jpg",
+    "juego": "¿Qué tipo de ricotero sos?",
+    "texto": "¿Qué tipo de ricotero sos?\n\nNadie te toma examen. Diez preguntas sobre vos, sin puntaje y sin saber nada de la banda: te ubica entre la luz y la oscuridad, el orden y el caos.\n\nPara mandárselo al que nunca escuchó un disco.\n\nhttps://arcade-ricotero.vercel.app/juegos/dos-ejes/",
+    "alt": "Resultado de Qué tipo de ricotero sos: un rombo entre luz, oscuridad, orden y caos, con el punto del jugador."
+  },
+  {
+    "foto": "06-sacalo-por-la-letra.jpg",
+    "juego": "Sacalo por la letra",
+    "texto": "Sacalo por la letra.\n\nUn verso te tiene que alcanzar. Si no, van dos, cuatro, ocho. Escribís el título como te salga: sin tildes anda igual, y por la mitad también.\n\nhttps://arcade-ricotero.vercel.app/juegos/adivinar-por-la-letra/",
+    "alt": "Sacalo por la letra: dos versos a la vista, el buscador para escribir el tema y el botón para pasar."
+  },
+  {
+    "foto": "07-completa-la-letra.jpg",
+    "juego": "Completá la letra",
+    "texto": "Completá la letra.\n\nLo tenés en la punta de la lengua. Falta una palabra del verso y hay cuatro para elegir. Ocho versos por vuelta.\n\nhttps://arcade-ricotero.vercel.app/juegos/completar-la-letra/",
+    "alt": "Completá la letra: un verso con la palabra que faltaba marcada en verde y las cuatro opciones."
+  },
+  {
+    "foto": "08-ponelos-en-fila.jpg",
+    "juego": "Ponelos en fila",
+    "texto": "Ponelos en fila.\n\nUnos te tiran al pogo; otros, quietito. Los diez discos, las diez tapas o los temas de un disco: el orden lo armás vos, y después lo mandás para que te lo discutan.\n\nhttps://arcade-ricotero.vercel.app/juegos/ponelos-en-fila/",
+    "alt": "Ponelos en fila con las diez tapas: filas en el pogo, saltando, cabeceando y quietito, con algunas tapas ubicadas."
+  },
+  {
+    "foto": "09-adivina-la-tapa.jpg",
+    "juego": "Adiviná la tapa",
+    "texto": "Adiviná la tapa.\n\nRocambole dibujó; vos ponés el disco. Un pedazo de tapa en pantalla y cuatro discos para elegir. Seis tapas por vuelta.\n\nhttps://arcade-ricotero.vercel.app/juegos/adivinar-la-tapa/",
+    "alt": "Adiviná la tapa: un pedazo de la tapa de Oktubre y cuatro discos para elegir."
+  },
+  {
+    "foto": "10-mas-o-menos.jpg",
+    "juego": "Más o menos",
+    "texto": "Más o menos.\n\nPreguntas de número sobre la banda: cuántos años, cuántos temas, cuánto dura. Elegís más o menos, sin red, hasta que le erres una.\n\n¿Cuánto te dura la racha?\n\nhttps://arcade-ricotero.vercel.app/juegos/mas-o-menos/",
+    "alt": "Más o menos: pregunta de cuántos temas tiene un disco, respondida bien, con la fuente del dato."
+  },
+  {
+    "foto": "11-skayboy-y-poligirl.jpg",
+    "juego": "Skayboy y Poligirl",
+    "texto": "Skayboy y Poligirl.\n\nUn fichín para dos en el mismo teléfono, cada uno de su lado, o para vos solo. Cielo para uno, infierno para el otro, y las puertas se abren juntas. En la computadora, con W A D y las flechas.\n\nHomenaje de fans, no oficial.\n\nhttps://arcade-ricotero.vercel.app/juegos/skayboy-y-poligirl/",
+    "alt": "Skayboy y Poligirl: pantalla de fichín en pixeles con los dos personajes, sus puertas y las teclas de cada uno."
+  },
+  {
+    "foto": "12-lado-b-redondopedia.jpg",
+    "juego": "Lado B",
+    "texto": "Y el lado B, para leer.\n\nLa Redondopedia: la historia entera, el hecho como hecho y la leyenda como leyenda. Y Letras y acordes: los diez discos, con los acordes arriba de cada verso.\n\nhttps://arcade-ricotero.vercel.app/redondopedia/\nhttps://arcade-ricotero.vercel.app/letras-y-acordes/",
+    "alt": "Artículo de Oktubre en la Redondopedia: la tapa, la fecha de salida y el primer párrafo."
+  }
+]
