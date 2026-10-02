@@ -10,7 +10,7 @@
 > ## 🪑 LA MESA Y LA CARÁTULA: EL SITIO EN UNA PANTALLA ANCHA (2026-10-02) — `D-54`, ciclo 17
 >
 > **Rama `ciclo-17/escritorio`, sobre `main` en `039bebd`, integrada a `main`** a pedido del
-> usuario (*"Luego integra todo"*; el número del PR, abajo). Pedido: *"Hacé un ciclo entero y complejo de mejora visual de
+> usuario (*"Luego integra todo"*) con el **PR #24**. Pedido: *"Hacé un ciclo entero y complejo de mejora visual de
 > desktop para el home y todos los juegos. Debe quedar profesional y lindo en ambas formas
 > desktop y mobile."* Y al final: *"dale, aplicá todo y cerrá el ciclo"*. Plan en
 > `ORQ-plan-ciclo-17.md` (`T-311`..`T-319`); `T-311`..`T-318` cerradas, `T-319` es del usuario.
