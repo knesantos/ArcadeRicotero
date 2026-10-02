@@ -713,6 +713,12 @@ se mantiene apretado** — que el repo no tiene en ningún lado hoy. El primero 
 lo escribe bien: el estado se lee por `pointerdown`/`pointerup` con captura, nunca por
 repetición de eventos.
 
+*[2026-10-02, `D-53`:]* el teclado de la computadora entra por esta misma regla: cada tecla
+(`KeyboardEvent.code`, `src/lib/skayboy/teclado.ts`) aprieta el mismo botón del mando con un
+puntero propio, el `keydown` con `repeat` no cuenta, y como una tecla no tiene captura, la
+reemplaza soltar todo en el `blur` de la ventana y en `visibilitychange` (el `keyup` que no
+llega). Leído en `escucharTeclas()` de `src/scripts/partida-skayboy.ts`.
+
 ---
 
 ## ADR-08.11 — Qué queda prohibido, en una lista para revisar

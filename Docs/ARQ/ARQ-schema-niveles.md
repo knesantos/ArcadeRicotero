@@ -75,7 +75,8 @@
 > `rg -nF "<símbolo>" <archivo>`.
 > **2026-10-02 (`FIND-89` de `REV-17`):** nota fechada en `CTR-16.7`. Los seis `deDos: true`
 > los puso el hilo principal por `D-51` punto 2, sin partida en el teléfono. Schema y contrato
-> sin cambios. **Consume además:** `D-51`.
+> sin cambios. **Consume además:** `D-51`. Cerrada el mismo día con la confirmación del
+> usuario (`D-53`), que no dice de a dos ni en qué aparato.
 >
 > **Regla de escritura que nace de `FIND-55`: toda medida de píxel dice si es _nativa_ o
 > _CSS_. En este documento todo es nativo, porque un dato de nivel no sabe a qué escala se
@@ -690,6 +691,11 @@ puede probar:
 > false` a propósito (abajo). Por eso queda escrito acá, y ni el schema ni el contrato cambian.
 > **Mientras esta nota siga abierta, un `deDos: true` de este banco no significa que dos
 > personas lo jugaron.** Se cierra acá, con fecha, el día que lo jueguen.
+>
+> **Cerrada el 2026-10-02.** El usuario escribió, textual: *"Confirmo que los niveles son
+> jugables"* (`D-53`). Confirmó que los seis se juegan; no dijo si fue de a dos ni en qué
+> aparato. **No alcanza para la fila (a) de arriba:** un `deDos: true` de este banco sigue sin
+> decir que dos personas lo terminaron a la vez en un teléfono, y la salvedad de la celda se queda.
 
 **El schema exige: si `estado` es `listo`, `verificaciones.deDos` es `true`.** El mismo
 `if`/`then`, con un booleano menos. La pasada de uno **no es condición de schema, es condición

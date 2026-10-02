@@ -155,6 +155,7 @@ import { cargarAvance, guardarPasado } from '../lib/skayboy/avance.ts';
 import { armarEfectos, sonar } from '../lib/skayboy/sonido.ts';
 import { despertarSalida } from '../lib/audio/contexto.ts';
 import { montarPantallaCompleta } from '../lib/skayboy/modo-pantalla.ts';
+import { botonDelEvento } from '../lib/skayboy/teclado.ts';
 
 /**
  * Qué columna maneja a quién. **Siempre la misma** (`D-43`): no hay botón de cambio y no
@@ -225,6 +226,13 @@ function soltarTodas(): void {
 /** El teclado usa un puntero que ningún dedo puede tener. */
 const TECLADO = -1;
 
+/**
+ * Y el teclado de la página, otro (`D-53`): W A D para Skayboy y las flechas para Poligirl
+ * (`lib/skayboy/teclado.ts`). Distinto del de arriba para que soltar la tecla del botón
+ * enfocado no suelte también la `A` que alguien sigue sosteniendo.
+ */
+const TECLADO_DE_LA_PAGINA = -2;
+
 function escucharTeclas(): void {
   for (const boton of document.querySelectorAll<HTMLButtonElement>('button[data-mando][data-tecla]')) {
     apretadas.set(boton, new Set());
@@ -261,9 +269,38 @@ function escucharTeclas(): void {
     boton.addEventListener('blur', () => soltar(boton, TECLADO));
   }
 
+  /*
+   * El teclado de la computadora (`D-53`). Aprieta **el mismo botón** que el dedo —el de su
+   * columna y su dirección—, así que el juego no tiene un segundo camino: se ve la tecla
+   * hundida (`.tecla--apretada`) y el motor lee lo mismo de siempre (`mandoDe`). La
+   * repetición del sistema se ignora: la tecla se mantiene por estado, no por eventos
+   * (`ADR-08.10`). Y se cancela lo que el navegador haría con esas teclas —las flechas
+   * desplazan la página—, solo para las seis del mapa.
+   */
+  const botonDe = (mando: string, tecla: string): HTMLButtonElement | null =>
+    document.querySelector<HTMLButtonElement>(`button[data-mando="${mando}"][data-tecla="${tecla}"]`);
+  document.addEventListener('keydown', (e) => {
+    const t = botonDelEvento(e);
+    if (!t) return;
+    e.preventDefault();
+    if (e.repeat) return;
+    const boton = botonDe(t.mando, t.tecla);
+    if (boton) apretar(boton, TECLADO_DE_LA_PAGINA);
+  });
+  document.addEventListener('keyup', (e) => {
+    // Se suelta aunque ahora haya un Ctrl apretado: la tecla se apretó sin él.
+    const t = botonDelEvento({ code: e.code });
+    if (!t) return;
+    const boton = botonDe(t.mando, t.tecla);
+    if (boton) soltar(boton, TECLADO_DE_LA_PAGINA);
+  });
+
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) soltarTodas();
   });
+  // Si la ventana pierde el foco con una tecla apretada (un Alt+Tab), el `keyup` no llega
+  // nunca: sin esto, el personaje sigue caminando solo.
+  window.addEventListener('blur', soltarTodas);
 }
 
 /* ==========================================================================

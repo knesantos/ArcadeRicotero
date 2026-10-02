@@ -5,7 +5,30 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-01
+**Última actualización:** 2026-10-02
+
+> ## ⌨️ SKAYBOY CON EL TECLADO, Y EL USUARIO CONFIRMA LOS NIVELES (2026-10-02) — `D-53`
+>
+> **Rama `claude/busy-cannon-sfkwxd`, reiniciada sobre `main` en `2c398a9`** (el PR #22, que
+> integró todo lo de abajo, ya está mergeado). Pedido del usuario: *"que en desktop se pueda
+> jugar con awsd y las flechitas. Confirmo que los niveles son jugables"*.
+>
+> - **W A D para Skayboy, las flechas para Poligirl** (`D-43` decide quién es quién). Cada tecla
+>   aprieta el mismo botón del mando que el dedo; el mapa vive en `lib/skayboy/teclado.ts`, con
+>   sus tests. Con mouse, cada botón muestra su tecla; en el teléfono, no. Ctrl/Alt/Cmd no
+>   aprietan nada, las flechas no desplazan la página, y al perder el foco se suelta todo.
+> - **Los niveles, confirmados por el usuario**: se cierran las notas de excepción de `D-51`
+>   en el PRD y en `CTR-16.7` (sin afirmar que fue de a dos, que no lo dijo).
+>
+> **Verificado:** `npm test` 1387/1387 (6 nuevos en `teclado.test.ts`, dos con su rojo visto
+> antes de cablear), `check` 0/0, build 156, y en Chromium de escritorio: D hunde la tecla de
+> Skayboy y lo mueve, las flechas mueven a Poligirl, al soltar no queda nada apretado, Ctrl+D no
+> aprieta nada, las flechas no desplazan la página; a 812×375 táctil la letra no aparece.
+> `producto` y `arquitectura` cerraron sus notas de excepción con la cita del usuario, y las dos
+> dejan dicho que **`deDos` sigue sin probar que se jugó de a dos**: la confirmación dice
+> "jugables", no con cuántas personas. `ADR-08.10` suma la línea del teclado.
+>
+> **Del usuario:** nada nuevo; lo de abajo sigue.
 
 > ## 🚪 LO QUE NADIE PODÍA ENCONTRAR, ADENTRO DEL SITIO (2026-10-01, noche) — `D-51`
 >
@@ -66,7 +89,6 @@
 > **Del usuario, y solo del usuario:**
 > - Los **temas enteros en mp3** (`npm run generar-fragmentos -- "<carpeta>" --enteros`) y los
 >   9 temas sin fragmento (*Cordero atado* y "Pianito").
-> - **Jugar Skayboy en el teléfono** ahora que está publicado.
 > - Abrir en un navegador los dos IDs de Spotify ambiguos (*Mi perro dinamita*, *La bestia
 >   pop*, `INV-140`) si quiere su botón.
 > - Si quiere el cotejo de la letra: habilitar `acordes.lacuerda.net` en el acceso de red.

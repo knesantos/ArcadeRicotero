@@ -472,6 +472,33 @@
   grid-row: 1;
 }
 
+/* La tecla del teclado que aprieta cada botón (`D-53`), impresa abajo de la figura. **Solo
+   donde hay mouse**: en un teléfono no hay teclado que nombrar, y la letra sería ruido al lado
+   del pulgar. Toma `currentColor`, así que es el mismo par de tinta que la figura (Gulp! sobre
+   el fondo, y al revés con la tecla apretada): no entra ningún par nuevo. */
+.juego-skayboy .tecla-atajo {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .juego-skayboy .tecla-atajo {
+    display: block;
+    margin-top: 4px;
+    font-family: var(--fuente-rotulada);
+    font-size: 0.95rem;
+    line-height: 1;
+    letter-spacing: 0.06em;
+  }
+
+  /* Las flechas: la letra rotulada no las trae y el repuesto las dibuja finitas. La del
+     sistema sí, y en negrita pesan como las letras de la otra columna. */
+  .juego-skayboy .mando--derecha .tecla-atajo {
+    font-family: var(--fuente);
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+}
+
 .juego-skayboy .tecla--salto .tecla-figura {
   width: 44px;
   height: 34px;

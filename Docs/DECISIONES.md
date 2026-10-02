@@ -2919,3 +2919,27 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 - **Consecuencias:** la bajada del casete del portal cambia su primera oración a *"Unos te
   tiran al pogo; otros, quietito."*. `UX-23` y `PRD-ponelos-en-fila.md` siguen nombrando las
   filas viejas: son de `experiencia` y `producto`, y describen la decisión de entonces.
+
+---
+
+## D-53 — Skayboy y Poligirl se juega con el teclado de la computadora: W A D y las flechas
+
+- **Fecha:** 2026-10-02
+- **Estado:** aceptada — pedido directo del usuario, textual: *"Agregá a skayboy y poligirl que
+  en desktop se pueda jugar con awsd y las flechitas. Confirmo que los niveles son jugables"*.
+- **Decisión:** **W A D mueven a Skayboy y las flechas a Poligirl** (W y ↑ saltan). El reparto
+  no se eligió: sale de `D-43`, que le da la columna izquierda a Skayboy para siempre, así que
+  la mano izquierda del teclado es la suya. Cada tecla **aprieta el mismo botón del mando** que
+  el dedo (se ve hundido, y el motor lee lo de siempre): no hay un segundo camino de control.
+- **Cómo:** el mapa vive en `src/lib/skayboy/teclado.ts` (módulo hoja, probado en Node) y lo
+  leen la isla y la página. Se lee `KeyboardEvent.code` —la posición, no la letra—, así que en
+  un teclado francés Z Q D mueven a Skayboy sin configurar nada. Con Ctrl, Alt o la tecla de
+  sistema no se aprieta nada (`Ctrl+D`, `Alt+←` y `Cmd+W` siguen siendo del navegador); las
+  seis teclas del mapa no desplazan la página; S y la flecha para abajo no hacen nada (nadie se
+  agacha); si la ventana pierde el foco con una tecla apretada, se suelta todo.
+- **Lo que se ve:** cada botón del mando lleva impresa su tecla (W, A, D, ↑, ←, →) **solo donde
+  hay mouse** (`hover: hover` y `pointer: fine`): en un teléfono no hay teclado que nombrar. Y
+  cada botón la declara en `aria-keyshortcuts` para el lector de pantalla.
+- **Y la confirmación del usuario:** dijo que los seis niveles son jugables. Cierra las notas de
+  excepción de `D-51` punto 2 en `PRD-skayboy-y-poligirl.md` y en `CTR-16.7`, en lo que dijo: que
+  se juegan. No dijo si fue de a dos ni en qué aparato.
