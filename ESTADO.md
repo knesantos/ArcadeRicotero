@@ -7,6 +7,27 @@
 
 **Última actualización:** 2026-10-02
 
+> ## 📊 LA ANALÍTICA DE VERCEL (2026-10-02) — `D-56`
+>
+> Pedido del usuario: *"Activa el web analitics de vercel en el repo"*. Hecho en `main`, sin
+> commitear todavía.
+>
+> - `@vercel/analytics` 2.0.1, pineado exacto, entra por la isla `src/scripts/analitica.ts`,
+>   enganchada en `components/Cabeza.astro`: las 156 páginas la llevan, quiz incluido. Solo
+>   corre en el sitio publicado.
+> - No va con el `<Analytics />` del paquete: mete una etiqueta propia en el `<head>` y saca
+>   al cuerpo las etiquetas de la tarjeta compartida. Detalle en `D-56`.
+> - `islas.test.ts` lo suma a `PAQUETES_DE_CLIENTE`; `estilos.test.ts`, al censo de `ISLAS`.
+>
+> **Verificado:** `npm test` 1405/1405, `check` 0/0, build 156. En `astro preview` la isla
+> pega `/_vercel/insights/script.js` en el `<head>` del portal, del quiz, de Skayboy y de la
+> Redondopedia; las etiquetas `og:` siguen en la cabeza. El 404 de ese script en local es lo
+> esperado: lo sirve Vercel.
+>
+> **Del usuario:** tener activado Web Analytics en el proyecto de Vercel (la pantalla de "Get
+> Started" dice que sí), desplegar, y entrar al sitio publicado: los datos aparecen a los
+> pocos segundos, con el bloqueador apagado.
+
 > ## 🪑 LA MESA Y LA CARÁTULA: EL SITIO EN UNA PANTALLA ANCHA (2026-10-02) — `D-54`, ciclo 17
 >
 > **Rama `ciclo-17/escritorio`, sobre `main` en `039bebd`, integrada a `main`** a pedido del
