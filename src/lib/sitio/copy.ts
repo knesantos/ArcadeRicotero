@@ -11,6 +11,7 @@
  */
 
 import type { Disco } from '../letra/discos.ts';
+import { CASETE as CASETE_SKAYBOY } from '../skayboy/copy.ts';
 
 export const PORTAL = {
   /** El logotipo, como se dibuja en pantalla. */
@@ -96,13 +97,14 @@ export const PORTAL = {
  * menos, segunda persona, una imagen física y barata —moneda, aguja, papel, diente,
  * tinta, guitarra, archivo, puerta— y ninguno explica lo que acaba de decir.
  *
- * **La prueba que los ocho tienen que pasar, y `CNT-13` §5 la corrió uno por uno:** tapá
- * el renglón. Si el que llegó por un enlace todavía sabe qué es esto y qué botón tocar,
- * está bien escrito. Ninguno de los ocho es la única fuente de nada: si se borraran todos,
+ * **La prueba que los once tienen que pasar, y `CNT-13` §5 y §8 la corrieron uno por uno:**
+ * tapá el renglón. Si el que llegó por un enlace todavía sabe qué es esto y qué botón tocar,
+ * está bien escrito. Ninguno de los once es la única fuente de nada: si se borraran todos,
  * el sitio seguiría siendo jugable y entendible. Eso es lo que los deja ser atmósfera.
  *
- * **`dos-ejes` no tiene renglón, y es a propósito:** todavía no tiene puerta en el portal.
- * Un lugar sin nombre es mejor que un nombre de relleno (`CNT-13` §1).
+ * **`dos-ejes` no tuvo renglón hasta el 2026-10-01, y fue a propósito:** no tenía puerta en
+ * el portal, y un lugar sin nombre es mejor que un nombre de relleno (`CNT-13` §1). Ese día
+ * consiguió casete y `contenido` le escribió el undécimo (`CNT-26`, `CNT-13` §8).
  */
 export const LUGARES = {
   portal: 'Estás en la puerta, con las dos cintas.',
@@ -119,6 +121,9 @@ export const LUGARES = {
   ponelos: 'Se te desordenó la pila de discos.',
   /* `US-10` (`CNT-25` §3.1): el juego es decidir antes de dar vuelta algo. */
   masOMenos: 'Tenés una ficha boca abajo en la mano.',
+  /* `US-06` (`CNT-26`, `CNT-13` §8): viste *Luzbelito*, la cabeza con la vela. Una vela que
+     alumbra **media** cara: luz y oscuridad a la vez, sin decir cuál de las dos es la buena. */
+  dosEjes: 'Una vela te alumbra media cara.',
 } as const;
 
 /**
@@ -144,7 +149,9 @@ export interface Casete {
    *  suelto* (`RES-37` los midió juntos). El celeste de *Un baión* linda con
    *  `--rotulo-testimonio`, pero esa sección nunca muestra esa insignia: ahí no hay leyenda
    *  ni testimonio, solo hecho o "según" (`D-48` punto 6). */
-  readonly variante: 'marca' | 'historia' | 'discos' | 'letras' | 'mitologia' | 'momo' | 'bang' | 'baion';
+  /** 'luzbelito' la suma `US-06` el 2026-10-01, cuando el test de dos ejes consiguió puerta:
+   *  `UX-06` §5 ya lo vestía de *Luzbelito* (la dualidad luz-oscuridad), sin casete. */
+  readonly variante: 'marca' | 'historia' | 'discos' | 'letras' | 'mitologia' | 'momo' | 'bang' | 'baion' | 'luzbelito';
   /**
    * Lo que va pegado en el casete: **una tapa entera, un detalle de tapa o un recorte de una
    * figura de tapa, y nunca el casete dibujado** (`D-49`). Lo pidió el usuario el
@@ -172,6 +179,19 @@ export const JUEGOS: readonly Casete[] = [
     arte: '/tapas/oktubre.jpg',
     href: '/quiz/',
     accion: 'JUGÁ',
+  },
+  {
+    // `US-06`. Terminado y revisado desde el ciclo 8 y **sin un solo enlace** hasta el
+    // 2026-10-01: nadie lo había dejado afuera, fue un olvido (`D-51`). Va segundo porque es
+    // el molinete más abierto del sitio —no pide saber nada de la banda (`UX-06` §0)—, y el
+    // que llega sin idea tiene que encontrarlo antes que los juegos que sí piden.
+    titulo: '¿Qué tipo de ricotero sos?',
+    baja: 'Nadie te toma examen. Diez preguntas sobre vos, sin puntaje y sin saber nada de la banda.',
+    variante: 'luzbelito',
+    // La cabeza con la vela de *Luzbelito*, recortada a mano: luz y oscuridad en una pieza.
+    arte: '/arte/luzbelito-vela.png',
+    href: '/juegos/dos-ejes/',
+    accion: 'EMPEZÁ',
   },
   {
     titulo: 'Adiviná el tema',
@@ -211,7 +231,8 @@ export const JUEGOS: readonly Casete[] = [
   },
   {
     titulo: 'Ponelos en fila',
-    baja: 'De la valla para atrás, los ponés vos. Los diez discos, las tapas, o los temas de un disco: el orden lo armás vos.',
+    // La primera oración canta las filas (`D-52`): del pogo a quietito, sin decir cuál es mejor.
+    baja: 'Unos te tiran al pogo; otros, quietito. Los diez discos, las tapas, o los temas de un disco: el orden lo armás vos.',
     variante: 'bang',
     // *¡Bang! ¡Bang!… Estás liquidado* entero: un juego de poner discos en fila lleva un disco.
     arte: '/tapas/bang-bang-estas-liquidado.jpg',
@@ -240,6 +261,20 @@ export const JUEGOS: readonly Casete[] = [
     // El antifaz del muñeco de *Un baión*, el disco que viste este juego (`UX-34`).
     arte: '/tapas/detalle/un-baion-para-el-ojo-idiota-zoom.jpg',
     href: '/juegos/mas-o-menos/',
+    accion: 'JUGÁ',
+  },
+  {
+    // `US-09`. Publicado el 2026-10-01 por decisión del usuario (`D-51`). La copia es la de
+    // `CNT-19`, ya aprobada, y vive en `skayboy/copy.ts`: acá se reusa, no se reescribe.
+    titulo: CASETE_SKAYBOY.titulo,
+    baja: CASETE_SKAYBOY.baja,
+    // Viste *Gulp!* por herencia del contenido (`UX-30` §2): los dos temas que le dan su par
+    // elemental son de ese disco. La variante `historia` es esa tinta (`--cat-historia`).
+    variante: 'historia',
+    // El "Gulp." rojo del sobre: la otra pieza de *Gulp!* en el portal es el "Patricio Rey"
+    // verde de la Redondopedia, y `D-49` no deja repetir.
+    arte: '/tapas/detalle/gulp-logo.jpg',
+    href: '/juegos/skayboy-y-poligirl/',
     accion: 'JUGÁ',
   },
 ] as const;
@@ -311,34 +346,6 @@ export const OKTUBRE = {
   /** El botón: el juego de adivinar el tema, con el disco ya elegido. */
   jugar: 'ADIVINÁ TEMAS DE OKTUBRE',
 } as const;
-
-/** Las tres pantallas "en la cocina". La promesa es honesta: BR-06 promete acceso
- *  al tema, no reproduccion completa — aca no se promete nada que no este cerrado. */
-export interface EnLaCocina {
-  readonly titulo: string;
-  readonly variante: 'historia' | 'discos' | 'letras' | 'mitologia';
-  readonly arte: string;
-  readonly queVaASer: string;
-  readonly estado: string;
-}
-
-export const COCINA: Record<string, EnLaCocina> = {
-  // "Adiviná el tema" salio de la cocina: el juego se juega en
-  // `/juegos/adivinar-el-tema/` y ya no necesita pantalla de promesa.
-  'completar-la-letra': {
-    titulo: 'COMPLETÁ LA LETRA',
-    variante: 'letras',
-    arte: '/arte/mosca.svg',
-    queVaASer:
-      'Un verso con un hueco, cuatro maneras de cerrarlo. Una sola es la que canta el ' +
-      'disco — las otras tres son para dudar un rato.',
-    estado: 'Está en la cocina: los versos se están cargando disco por disco.',
-  },
-  // "Adiviná la tapa" salio de la cocina en el ciclo 4: el juego se juega en
-  // `/juegos/adivinar-la-tapa/` y ya no necesita pantalla de promesa.
-} as const;
-
-export const COCINA_VOLVER = 'VOLVÉ AL ARCADE';
 
 export const REDONDOPEDIA = {
   titulo: 'LA REDONDOPEDIA',

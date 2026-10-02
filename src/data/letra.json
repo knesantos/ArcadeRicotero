@@ -2,7 +2,7 @@
   "contrato": "CTR-04",
   "contratoVersion": 3,
   "juego": "completar-la-letra",
-  "actualizado": "2026-09-25",
+  "actualizado": "2026-10-01",
   "modoRespuesta": "opciones",
   "conteo": {
     "ficha": "RES-90",
@@ -326,8 +326,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: 'Quemas tu vida' se repite en el tema como gancho; contexto 2+2 sin erratas. El error de grafia del tema ('Como te va en estos dias') esta en otra linea y no entra en el contexto.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-006",
@@ -1404,8 +1408,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Diminutivo comun ('un poquito mas'); contexto 1+1 limpio. Las anotaciones POS-VERSO del tema (CL-018, CL-023) quedan fuera del tramo.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-023",
@@ -3852,8 +3860,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Palabra comun bien escrita al cierre del verso; contexto 2+2 limpio y ninguna opcion encaja. Con CL-058 el tema queda en 8 versos visibles (tope de CTR-04.4).",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-062",
@@ -4492,8 +4504,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Adjetivo concreto que concuerda con 'Saludable y' y no tiene rival entre las opciones; contexto 2+2 sin acordes ni marcas de estructura.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-072",
@@ -5200,8 +5216,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('mejor que nunca'); contexto 2+2 limpio. Cae entre CL-081 y CL-083: no suma versos visibles al tope de 8 del tema.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-083",
@@ -9194,8 +9214,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('justo a tiempo') que el tema repite en varios versos; contexto 2+2 limpio, sin la marca 'TEMA (E7):' de ese cancionero.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-146",
@@ -9522,8 +9546,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Estribillo que el tema repite (CL-161 es la misma linea con otra puntuacion); contexto 2+2 limpio. Con CL-147 y CL-148 el tema queda en 8 versos visibles.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-151",
@@ -12722,8 +12750,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('tirar la esponja'); contexto 2+2 limpio y con los acentos bien escritos en todo el tema.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-201",
@@ -13032,8 +13064,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Estribillo del tema ('el futuro ya llego'); contexto 1+1 limpio. La anotacion 'Parte 1 de 2 - 4x' queda fuera de este tramo (CL-202 se descarto por eso).",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-206",
@@ -13466,8 +13502,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('que podria ser peor'); contexto 1+1 limpio.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-213",
@@ -14742,8 +14782,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('no es tu culpa'); contexto 2+2 sin anotaciones de guitarra ni de estructura.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-233",
@@ -15510,8 +15554,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('a veces gana, a veces pierde'); contexto 2+2 limpio. Con CL-246 el tema queda en 7 versos visibles.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-245",
@@ -15638,8 +15686,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Imagen fisica concreta ('ojos de vidrio'); contexto 2+2 limpio. Pegado a CL-244: entre los dos, 7 versos visibles.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-247",
@@ -16974,8 +17026,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('morder el anzuelo'); contexto 1+1 limpio, sin anotaciones.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-268",
@@ -17408,8 +17464,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase fija ('rock and roll') al cierre del verso; contexto 1+1 limpio.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-275",
@@ -18720,8 +18780,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('todos los dias'); contexto 2+2 limpio. Con CL-297 el tema queda en 7 versos visibles.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-296",
@@ -23168,8 +23232,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('ni hablar'); contexto 1+1 limpio, acentos bien escritos.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-366",
@@ -23664,8 +23732,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('caida libre'); contexto 1+1 limpio. CL-371 se descarto: su contexto trae 'de que' sin tilde.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-374",
@@ -25316,8 +25388,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Imagen concreta que el sentido fija ('reyes' y 'camellos'); contexto 2+2 limpio. Las erratas del tema (CL-381, CL-385) estan lejos del contexto.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-400",
@@ -30026,8 +30102,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Rima que obliga la palabra: 'raton' (en el verso anterior, a la vista) y 'maton'; contexto 2+2 limpio y acentuado.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-475",
@@ -30154,8 +30234,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('de ocasion'); contexto 2+2 limpio. Pegado a CL-474: entre los dos, 7 versos visibles.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-477",
@@ -30630,8 +30714,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Estribillo que el tema repite (CL-509 es el mismo verso con una marca de vuelta); el verso va limpio. El tema trae marcas de vuelta y algunas tildes faltantes en otros versos.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-485",
@@ -31616,8 +31704,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Imagen concreta ('penas como piedras'); mismo aviso que CL-484 sobre las marcas del tema.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-502",
@@ -34428,8 +34520,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('marcados a fuego'); contexto 1+1 limpio. Con CL-537 el tema queda en 6 versos visibles.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-547",
@@ -35748,8 +35844,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Palabra comun del cuerpo ('duenas del corazon'); mismo aviso que CL-569.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-569",
@@ -35806,8 +35906,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Verbo voseado bien escrito ('ya no te arrepentis'); el tema trae anotaciones de guitarra en otras lineas.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-570",
@@ -37662,12 +37766,8 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "listo",
-      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Unico verbo conjugado entre las opciones (las otras tres no lo son). Dificultad dificil, verso pelado sin marca de seccion cerca, tema nuevo en el banco (La hija del fletero).",
-      "cotejo": {
-        "regimen": "fuente-unica",
-        "decision": "D-25"
-      }
+      "estado": "borrador",
+      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
     },
     {
       "id": "CL-602",
@@ -40024,8 +40124,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase concreta ('cargar los bolsillos'); contexto 1+1 limpio; no coincide con ninguna palabra del titulo.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-641",
@@ -40148,8 +40252,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Imagen fisica ('a mordiscos'); contexto 1+1 limpio. Con CL-640 y CL-646 el tema queda en 8 versos visibles.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-643",
@@ -42224,8 +42332,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde letras.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('a vivir, que son dos dias'); verso solo, tema con los acentos bien escritos.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-677",
@@ -42804,8 +42916,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde letras.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Par de opuestos ('dificil de explicar / facil de ensenar'): la palabra la fija el sentido. Tema limpio.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-687",
@@ -43500,8 +43616,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Imagen fisica ('bailaba en las llamas'); la palabra la fija el sentido. Tema limpio.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-699",
@@ -43558,8 +43678,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Palabra comun ('por primera vez tengo miedo'); tema con los acentos bien escritos.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-700",
@@ -43906,8 +44030,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Coincide con el titulo del libro 'Recuerdos que mienten un poco' (RES-21), asi que la palabra no depende de una transcripcion dudosa. Tema limpio.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-706",
@@ -53188,8 +53316,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('robar el fuego'); contexto 1+1 limpio. El tema trae erratas en otras lineas ('fue', 'soniar'), fuera del contexto.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-859",
@@ -53622,8 +53754,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: La palabra la fija el pasaje ('le prohibieron la manzana... nada mas la prohibicion'); contexto 1+1 limpio.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-866",
@@ -54462,8 +54598,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('cambiar la racha'); tema limpio.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-880",
@@ -54520,8 +54660,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('llevar el juego en la sangre'); tema con los acentos bien escritos.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-881",
@@ -56072,8 +56216,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Palabra comun en una enumeracion ('hermano muerto, amigo enloquecido'); contexto 1+1 limpio. La anotacion 'Lick de blues' del tema esta a dos versos y no entra.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-907",
@@ -56196,8 +56344,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Verbo comun que cierra la enumeracion; contexto 1+1 limpio. Pegado a CL-906: entre los dos, 5 versos visibles.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-909",
@@ -61526,8 +61678,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Palabra comun bien escrita; contexto 2+2 limpio y acentuado. La marca 'X2' del tema (CL-991) queda fuera del contexto.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-998",
@@ -62274,8 +62430,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: La palabra la fija el sentido ('pajaros que oimos cantar y nunca vemos'); contexto 1+1 limpio. La silaba cortada 'cora__zon' del tema no esta en este tramo.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-1010",
@@ -62398,8 +62558,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Rima con el verso anterior (golpeo/sono); contexto 1+1 limpio, fuera del tramo con 'cora__zon'.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-1012",
@@ -64656,8 +64820,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Cierra una imagen de cuento ('princesita... sapito'), diminutivo comun; tema con los acentos bien escritos.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-1049",
@@ -65004,8 +65172,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('la vida es corta'); tema limpio.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-1055",
@@ -65062,8 +65234,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('abrochense los cinturones, mis queridos'); tema limpio.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-1056",
@@ -68774,8 +68950,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('vida y muerte'); el tema trae un tilde faltante en otro verso ('venia').",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-1120",
@@ -72204,8 +72384,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde letras.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Rima que obliga la palabra (cadena/condena). El tema trae erratas en otros versos ('mejoria', 'higado', 'Entan') y una opcion con 'ensueguida'; el verso va limpio.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-1179",
@@ -72900,8 +73084,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('no tener nada que perder'); tema limpio, opciones sin erratas.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-1191",
@@ -74234,8 +74422,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Par de opuestos ('milagro mas, milagro menos'); tema limpio, opciones sin erratas.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-1214",
@@ -74292,8 +74484,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('en busca de la luz'); tema limpio, opciones sin erratas.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-1215",
@@ -77830,8 +78026,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('a veces, muy pocas veces'); el tema trae una anotacion de acordes en otra linea.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-1276",
@@ -78294,8 +78494,12 @@
       "sensibleA": [
         "letra"
       ],
-      "estado": "borrador",
-      "notaInterna": "Hueco elegido a máquina desde cifraclub.com. Confirmar de oído antes de jugarlo."
+      "estado": "listo",
+      "notaInterna": "Promovido por T-138 bajo D-25 (fuente unica). Motivo: Frase hecha ('huevos de oro'); el tema trae una anotacion de acordes en otra linea.",
+      "cotejo": {
+        "regimen": "fuente-unica",
+        "decision": "D-25"
+      }
     },
     {
       "id": "CL-1284",

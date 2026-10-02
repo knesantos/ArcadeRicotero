@@ -555,6 +555,17 @@ uno que falla cualquiera de las siete vale cero.
 **(a) Se pasa de a dos.** Dos personas moviéndose a la vez lo terminan. Verificado
 jugándolo, no leyéndolo.
 
+> **Excepción del 2026-10-02 (`D-51` punto 2, `FIND-89`): para los seis niveles publicados,
+> esta fila no se cumplió.** El 2026-10-01 el usuario decidió publicar Skayboy y Poligirl
+> sabiendo que nadie los había jugado de a dos en un teléfono. Los seis están `listo` con
+> `verificaciones.deDos: true` porque **él se hizo cargo de decir que sí**, no porque alguien
+> los haya jugado: ese `true` no prueba la fila (a). Lo que sí corre es la pasada de la
+> máquina —la traza de `CTR-18` gana en cada build—; lo que no ocurrió es la de dos personas a
+> la vez en un aparato de verdad. **Es la excepción de esta publicación, no un cambio de
+> criterio:** la fila de arriba sigue mandando, entera, para todo nivel futuro. Se cierra
+> cuando alguien juega los seis de a dos en un teléfono; si algo no anda, se corrige el nivel.
+> Ese día la nota se cierra con la fecha, no se borra.
+
 **(b) Se pasa solo.** *(Enmendado por `D-43`: decía "alternando con el botón de cambio".)*
 Una sola persona lo termina **tocando una columna de mando y después la otra**, y el camino
 de uno solo **está escrito al lado del nivel** — no "se puede", sino *así se hace*. Un nivel
@@ -784,6 +795,16 @@ cero"— y (a) no tiene sustituto de máquina, **ningún nivel cierra el piso si
 personas lo hayan jugado a la vez en un aparato de verdad.** Confirma lo que recomienda el
 plan del ciclo (`§4` punto 3): la partida en el teléfono queda en la lista de lo que solo el
 usuario puede hacer, y `deDos` es el booleano que lo demuestra.
+
+> **Excepción del 2026-10-02 (`D-51` punto 2, `FIND-89`): hoy esto no se cumple para los seis
+> niveles publicados.** Están `listo` sin que dos personas los hayan jugado a la vez en un
+> aparato: el 2026-10-01 el usuario decidió publicar así, y su `deDos: true` dice que **él se
+> hizo cargo**, no que se jugó. La pasada de la máquina —la traza de `CTR-18`— sí corre en cada
+> build; la de dos personas no ocurrió. **La regla de este punto no cambia** y rige entera
+> para todo nivel que venga después: la excepción es esta publicación, no un criterio nuevo.
+> Se cierra cuando alguien los juega de a dos en un teléfono; si algo no anda, se corrige
+> (y si el arreglo toca la física, rige el punto 5.4). Ese día la nota se cierra con la
+> fecha, no se borra.
 
 > **Enmendado el 2026-09-22, misma ráfaga.** El párrafo de abajo describía `verificaciones.solo`
 > marcándose en `true` con un `npm test` en verde y a `revisor` mirando que la traza gane en

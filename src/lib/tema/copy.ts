@@ -32,6 +32,15 @@ export const PANTALLA_0 = {
     audio: 'Audio',
     vale: 'Vale',
   },
+  /**
+   * Lo que lee el que llega por el enlace de un amigo, en lugar de la bajada (`ADR-02`,
+   * forma `marcador`). Mismo molde que el de "Sacalo por la letra": el puntaje es **lo que
+   * dice** el otro, no un hecho — cualquiera edita la URL.
+   */
+  desafio: (puntos: number, maximo: number, nombre?: string) =>
+    nombre
+      ? `${nombre} dice que sacó ${puntos} de ${maximo} puntos. ¿Te da el oído?`
+      : `Te desafiaron con ${puntos} de ${maximo} puntos. ¿Te da el oído?`,
   elegiPozo: '¿Con qué jugás?',
   todos: 'Todos los discos',
   /**

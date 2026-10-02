@@ -7,10 +7,83 @@
 
 **Última actualización:** 2026-10-01
 
+> ## 🚪 LO QUE NADIE PODÍA ENCONTRAR, ADENTRO DEL SITIO (2026-10-01, noche) — `D-51`
+>
+> **Rama `claude/busy-cannon-sfkwxd`, sobre `main` en `2678050`** (con el #21 de Oktubre ya
+> adentro). Pedido del usuario sobre un relevamiento de otro agente: *"Resolvé todo de la mejor
+> forma y dejalo integrado en el sitio."* Dos cosas las decidió él, a pregunta: **publicar
+> Skayboy ya** y **la casilla de corrección**, que dio él.
+>
+> **Lo que quedó integrado:**
+> - **"¿Qué tipo de ricotero sos?"** con casete A2 (*Luzbelito*, la cabeza con la vela),
+>   renglón del lugar (`Una vela te alumbra media cara.`), bajada de `CNT-26`, compartir como
+>   identidad y lectura del desafío al llegar.
+> - **Skayboy y Poligirl publicado**: seis niveles `listo` (`deDos: true` = el usuario se hizo
+>   cargo), casete A9 vistiendo *Gulp!* con el "Gulp." del sobre. Producción siembra los seis.
+> - **Casilla de corrección conectada** (partida en el código; un test vigila que no quede
+>   escrita entera) y **botón al pie de cada artículo de la Redondopedia**, con un selector
+>   "Qué parte" (el artículo, cada dato, cada párrafo) que manda texto, rótulo y ubicación
+>   como pide `CTR-10` §2.1. El transporte de mail es una fábrica con sus tres tests.
+> - **"Adiviná el tema" lee su desafío**; **tapa, letra y dos ejes comparten** (módulo nuevo
+>   `scripts/compartir.ts`, texto y enlace, sin tarjeta).
+> - **Spotify**: 7 preguntas del quiz con ID de 5 temas verificados (`INV-140`).
+> - **"Más o menos"**: 44 datos `listo`, 16/16/12 (+9: entraron 10 de los 18 pendientes y
+>   `REV-17` hizo retirar `MM-40`, cuyo objeto la cita no respalda; `CNT-25` §2).
+> - **Redondopedia 38/38**: las tres bandas de después como `concepto` (`BR-34`, `BR-35`,
+>   `CNT-28`), con siete enlaces de entrada que cuida `redondopedia.test.ts`.
+> - **Calcomanías**: el muñeco del antifaz (*Un baión*) y el rótulo con la mosca (*La mosca y la
+>   sopa*; el gato momificado no está en ninguna imagen del repo).
+> - **"Ponelos en fila" con filas nuevas** (`D-52`, elegidas por el usuario): EN EL POGO ·
+>   SALTANDO · CABECEANDO · QUIETITO. Mismos números de fila: los enlaces viejos abren igual.
+> - **El bondi del casete de "Adiviná la tapa"**, recortado al contorno: quedaba chiquito (pedido
+>   del usuario en la misma sesión).
+> - **Peso muerto, ~4,9 MB menos publicados**: video duplicado, cinco derivados de tapa sin
+>   pantalla, la fuente *Redonditos Fan*, la copia de "en la cocina". La hoja de Skayboy, el
+>   lobo-lupus y el ensayo se mudaron a `Docs/UX/` (no se borraron).
+> - **"Completá la letra" de 21 a 72 versos** (24/23/25, 39 temas): selección curada de fuente
+>   única ampliada bajo `D-25` (`CNT-27`), ahora que la corrección llega por mail. Salió
+>   `CL-601` (respuesta sin tilde). Seis temas pasan de 8 versos visibles (`CTR-04.4`,
+>   precaución). `contenido` dejó dos propuestas en
+>   `Docs/SUGERENCIAS/CNT-para-hilo-principal-anotaciones-y-erratas-que-pasan-el-filtro.md`
+>   (endurecer el filtro y vetar distractores con erratas), sin tratar.
+>
+> **Lo que la red no dejó:** el cotejo de dos fuentes de la letra. lacuerda.net (la única
+> independiente de cifraclub/letras.com, que son de Studio Sol) está bloqueada por la política
+> de red del entorno; `RES-142`..`RES-145` quedaron cancelados (`INV-141`). Los lotes se
+> regeneran desde `letra.json` cuando se habilite `acordes.lacuerda.net`.
+>
+> **`REV-17`, cerrada el 2026-10-02:** trece hallazgos (`FIND-86`..`FIND-98`), doce cerrados
+> (`Docs/REVISIONES/REV-17-lo-que-nadie-podia-encontrar.md`, con la tabla de cierre). Ninguno
+> le marcaba error al que sabe. Queda abierto `FIND-98` (el largo del portal, `experiencia`).
+>
+> **Verificado al cerrar:** `npm test` 1381/1381 (eran 1373; cada test nuevo con su rojo
+> visto), `check` 0/0, **build 156**, y en la vista previa a 375 px: los nueve casetes sin desborde,
+> los cinco desafíos al llegar (y uno de otro juego o con un cuadrante inventado no pinta nada),
+> dos ejes y tapa compartiendo, la corrección con "Mandá por mail" en la Redondopedia, las dos
+> calcomanías, Skayboy cargando sus seis niveles en el build de producción. `revisor` con
+> `REV-17` en curso.
+>
+> **Del usuario, y solo del usuario:**
+> - Los **temas enteros en mp3** (`npm run generar-fragmentos -- "<carpeta>" --enteros`) y los
+>   9 temas sin fragmento (*Cordero atado* y "Pianito").
+> - **Jugar Skayboy en el teléfono** ahora que está publicado.
+> - Abrir en un navegador los dos IDs de Spotify ambiguos (*Mi perro dinamita*, *La bestia
+>   pop*, `INV-140`) si quiere su botón.
+> - Si quiere el cotejo de la letra: habilitar `acordes.lacuerda.net` en el acceso de red.
+>
+> **Abierto, sin trabar:** el largo del portal con once casetes (`FIND-98`, `experiencia`,
+> `UX-25`); sacar `temaFijo` de `skayboy.json` (resto de la cinta: `arquitectura` ya dijo qué
+> toca, `contratoVersion: 4`); `CNT-29` (renglón del lugar de Skayboy y la comparación al
+> volver de dos ejes); Skayboy no comparte (la pieza de `BR-27` no está diseñada); `MM-40`
+> espera la nota de Infobae; las propuestas de `contenido` sobre el filtro de la letra
+> (`Docs/SUGERENCIAS/CNT-para-hilo-principal-anotaciones-y-erratas-que-pasan-el-filtro.md`).
+> Ojo de `arquitectura`: corregir un nivel publicado de Skayboy lo devuelve a `borrador`
+> (`CTR-16.7` pone `deDos: false` al tocar la grilla) y lo saca del sitio.
+
 > ## 🍂 OKTUBRE, LA MOSCA QUE SE ACERCA, Y SIN CINTA (2026-10-01)
 >
 > **Rama `ciclo-16/mas-o-menos`, sobre `0ebfa8f`** (la mezcla con `main` que trajo el #18 y el
-> #19). **Sin commitear** al cierre de la sesión: el usuario no lo pidió todavía. Dos pedidos
+> #19). **Integrado a `main` con el PR #21** (`2678050`). Dos pedidos
 > del usuario el mismo día, registrados en `D-49` y `D-50`:
 >
 > 1. *"Entramos en OKTUBRE, el mes del disco, hagamos que la página refleje esto. […] que la

@@ -10,9 +10,10 @@
 > máximo de 5 versos simultáneos del juego "completar la letra", que `BR-12` reutiliza) y
 > las fichas `RES-02`, `RES-03`, `RES-04`, `RES-05`, `RES-06`, `RES-07`, `RES-08`, `RES-09`,
 > `RES-20`, `RES-21`, `RES-22`, `RES-23`, `RES-31`, `RES-33`, `RES-36` como inventario de
-> insumo disponible para el primer lote (`D-20`, cláusula 4).
+> insumo disponible para el primer lote (`D-20`, cláusula 4). `BR-34` y `BR-35` consumen
+> además `RES-47`, `RES-04`, `CNT-06` y `.claude/rules/voz-ricotera.md` (los registros 2 y 3).
 >
-> Produce: `US-05`, `BR-07`..`BR-14`.
+> Produce: `US-05`, `BR-07`..`BR-14`, `BR-34`, `BR-35`.
 >
 > No fija el schema ni el formato de archivo (`arquitectura`), no diseña la pantalla de
 > lectura ni el mecanismo visual del rótulo (`experiencia`), no redacta un solo artículo ni
@@ -56,8 +57,8 @@ leer un rato interrumpa ni reemplace la partida de dos minutos.
 ### Criterio 2 — el piso, no el motor, define "lista"
 
 - **Given** la Redondopedia con su plantilla, su navegación y su rotulado funcionando.
-- **When** tiene menos de 35 artículos publicados repartidos según la tabla de piso de
-  abajo.
+- **When** tiene menos artículos publicados que el total de la tabla de piso de abajo (hoy
+  38, desde `BR-34`), o los tiene repartidos de otra manera.
 - **Then** no se considera lista — mismo criterio que ya rige los cuatro juegos de la v1:
   un sistema terminado con poco contenido adentro no cierra un ciclo.
 
@@ -132,19 +133,27 @@ invisible dentro de artículos de hecho, que es justo lo que `BR-08` prohíbe.
 
 ---
 
-## Piso de ítems — 36 artículos (35 originales + 1 por `BR-13`)
+## Piso de ítems — 38 artículos (35 originales + 3 por `BR-34`, que reemplaza el +1 de `BR-13`)
 
 | Tipo | Piso | Insumo ya fichado | Costo dominante |
 |---|---|---|---|
 | `disco` | 10 | Los 10 discos completos, `RES-02` + `RES-20` | Bajo — datos ya armados, falta prosa de enlace |
 | `persona` | 5 | Indio, Skay, Poli, Semilla, Rocambole — `RES-06`, `RES-09`, `RES-22` | Medio — biografía nueva en prosa |
 | `hito`/`caso` | 7 | Formación, debut en Obras (89), Huracán 93-94, separación, muerte del Indio, Bulacio, Olavarría — `RES-04`, `RES-05`, `RES-07` | Medio-alto — 2 de los 7 esperan `BR-10` |
-| `concepto` | 5 | Misa ricotera, aguante, autogestión, difusión sin TV — `RES-07`; **+1 agregado por `BR-13`:** las bandas ricoteras de la posseparación — `RES-47` | Bajo |
+| `concepto` | 7 | Misa ricotera, aguante, autogestión, difusión sin TV — `RES-07`; **+3 por `BR-34`, uno por banda:** `los-fundamentalistas`, `skay-y-los-fakires`, `los-decoradores` — `RES-47` | Bajo — fichas ya armadas; el único cuidado es el rotulado de `BR-35` |
 | `leyenda` | 3 | "Ji Ji Ji" desmentida, Patricio Rey como persona real — `RES-08`, `RES-22` | Bajo — ya vienen rotuladas |
 | `tema` | 6 | Los que ya tienen insumo rico fichado (mitología, autoría, contexto) — `RES-08`, `RES-20`, `RES-22` | Medio sin verso (`BR-14`): prosa de análisis sobre insumo ya fichado, sin esperar transcripción. Sube a Alto solo si se agregan versos citados, por el tope de `BR-12` y el cruce obligatorio de `D-13` |
-| **Total** | **36** | | |
+| **Total** | **38** | | |
 
-**Nota de `BR-13` (ciclo 5, `T-66`):** el piso subió de 35 a 36 al sumar un artículo
+**Nota de `BR-34` (2026-10-01):** el piso sube de 35 a **38**. Son los tres artículos de las
+bandas de después de la separación, uno por banda, todos `concepto` (fila de arriba). El
+36 de `BR-13` queda reemplazado: contaba un solo artículo para las tres. El número no es
+una sensación: es el pedido textual del usuario —*"estas bandas ... deben estar en la
+redondopedia"*, tres nombres— y una Redondopedia que lo deja afuera no está lista aunque el
+motor y los 35 anteriores estén cerrados. Mientras `contenido` no los cargue, el estado
+honesto es **35/38**, no "cerrado". La fila `tema` sigue 6/6 y no se toca.
+
+**Nota de `BR-13` (ciclo 5, `T-66`) — histórica, el 36 ya no rige:** el piso subió de 35 a 36 al sumar un artículo
 `concepto` nuevo sobre las bandas ricoteras de la posseparación, fichadas en `RES-47`. No
 reemplaza ninguno de los cuatro `concepto` originales ni compite con ellos — es contenido
 nuevo con insumo ya fichado, mismo criterio que fijó el 35 de partida. El detalle completo
@@ -227,7 +236,8 @@ mezclada adentro pasando por hecho verificado, que es exactamente lo que `D-14` 
 (a) la lista de huérfanos (0 entrantes), (b) la lista de callejones sin salida (menos de 2
 salientes, fuera de la excepción del punto 3), y (c) la lista de artículos no alcanzables
 desde la portada por búsqueda en anchura (BFS). El piso se considera "listo" cuando las
-tres listas están vacías sobre el conjunto completo de los 35 artículos — no se verifica
+tres listas están vacías sobre el conjunto completo del piso (38 desde `BR-34`; eran 35 al
+escribir esta regla) — no se verifica
 artículo por artículo al cargarse uno solo, porque con un piso incompleto es normal que
 algo todavía no tenga con qué enlazar.
 
@@ -303,6 +313,16 @@ los cuatro juegos con "adivinar la tapa cae primero".
    puñado de cada uno no hay ni "quién" ni "qué" para que el resto enlace, y son además los
    más baratos de producir porque `RES-02`/`RES-20`/`RES-06`/`RES-09` ya los dejan casi
    armados.
+
+**Dónde caen los tres artículos de banda (`BR-34`), que son `concepto` pero no se cortan
+como los otros cuatro.** El tramo 2 sigue valiendo para los `concepto` culturales (misa,
+aguante, autogestión, difusión sin tele): vienen de la lectura que `D-20` hizo del brief. Los
+tres de banda son **pedido textual del usuario** (2026-08-21) y caen **después** de esos
+cuatro. Si hay que achicar y solo caben dos, se va primero `los-decoradores` (la ficha más
+delgada: sin discos propios y con el año de formación sin cerrar, `RES-47`), y quedan
+`los-fundamentalistas` y `skay-y-los-fakires`. No es un juicio sobre cuál importa más a la
+cultura: es cuál pierde menos enlaces —`los-fundamentalistas` ya la nombran en texto plano
+`muerte-del-indio` e `indio-solari`— y cuál tiene menos que decir con lo fichado.
 
 ---
 
@@ -386,6 +406,14 @@ corre qué.
 ---
 
 ## BR-13 — Las bandas ricoteras de la posseparación: bajo qué tipo entran y qué pasa con el piso
+
+> **Enmendada por `BR-34` el 2026-10-01.** Siguen vigentes: la corrección de los tres
+> nombres (arriba), el descarte del tipo nuevo `banda`, y el punto 3 entero (la línea de
+> "esto no es de Patricio Rey"; `BR-34` §5 lo amplía a todos los juegos). **Ya no rigen el
+> punto 1 en lo que decide —un solo `concepto` para las tres y la actividad de Indio y Skay
+> como extensión de las biografías— ni el punto 2: el piso no es 36, es 38.** El texto de
+> abajo se deja como está, por trazabilidad; para qué ya no alcanza y por qué, ver `BR-34`
+> §1.
 
 **Aplica a:** el pedido directo del usuario registrado en
 `Docs/SUGERENCIAS/HILO-para-producto-y-contenido-bandas-post-separacion.md`, resuelto con
@@ -653,6 +681,299 @@ fichado.
 
 ---
 
+## BR-34 — Las bandas de después de la separación: tres artículos `concepto`, un tipo que ya existe, piso 38
+
+**Aplica a:** el pedido del usuario del 2026-08-21
+(`Docs/SUGERENCIAS/HILO-para-producto-y-contenido-bandas-post-separacion.md`), que volvió a
+pedir el 2026-10-01; `US-05` criterio 2; `BR-07` (fila `concepto`), `BR-09`, `BR-11`.
+**Enmienda `BR-13`.** Qué afirman los tres artículos y con qué rótulo es `BR-35`.
+
+**Por qué hay un `BR-34` si `BR-13` ya había decidido.** `BR-13` se escribió el 2026-08-22
+(`T-66`) y nadie lo tomó: `T-69`, la tarea que cargaba los artículos, no corrió;
+`ESTADO.md` y el plan del ciclo 16 siguen listando el pedido como esperando, y
+`src/data/redondopedia.json` no tiene ni un artículo de banda. Es lo que obligó al usuario a
+pedirlo de nuevo. Releída contra el repo de hoy, `BR-13` acierta en lo grande (no hay tipo
+nuevo; los juegos no tocan este material) y se queda corta en lo que `contenido` necesita
+para escribir: junta tres bandas con tres niveles de verificación en una sola ficha, reparte
+los datos que caducan entre dos biografías y un concepto, y no dice cómo encuentra la gente
+a "La Kermesse Redonda". Cambio eso y nada más.
+
+### 1. La decisión
+
+Tres artículos, los tres de tipo **`concepto`**, sin tocar código ni schema:
+
+| Slug | Título | Qué es (`RES-47`) |
+|---|---|---|
+| `los-fundamentalistas` | Indio Solari y los Fundamentalistas del Aire Acondicionado | Banda propia de uno de los dos fundadores; desde 2004, cinco discos |
+| `skay-y-los-fakires` | Skay y los Fakires | Banda propia del otro fundador; tres etapas de nombre desde 2002, ocho discos (uno compilado) |
+| `los-decoradores` | Los Decoradores (La Kermesse Redonda) | Proyecto de músicos de acompañamiento de los Redondos, sin figura central y sin discos propios hallados |
+
+No hay un cuarto artículo que las reúna: ese lugar es `la-separacion` (§3). Los slugs quedan
+fijados acá para que los criterios de abajo se puedan verificar; si `contenido` encuentra un
+choque real, se cambian en esta tabla y no en silencio.
+
+**Por qué tres y no uno (lo que decía `BR-13`).**
+1. **Es la unidad con la que la gente busca.** No hay buscador (`BR-09`, `D-02`/`D-15`): el
+   único índice es la portada, que lista el título entero y los primeros 150 caracteres del
+   resumen (`src/pages/redondopedia/index.astro`). Un artículo con tres bandas no puede
+   llevar tres nombres en el título; tres artículos sí.
+2. **Tres niveles de verificación no se mezclan en un párrafo.** `RES-47` deja a los
+   Fundamentalistas todo verificado, a los Fakires con la formación sin cerrar y a los
+   Decoradores con un año en disputa. En una sola pieza los rótulos de `BR-08` se cruzan
+   oración a oración, que es el riesgo 3 del brief. En tres, cada duda queda en su casa.
+3. **Los datos que caducan tienen un solo dueño.** Estado, formación vigente, próxima fecha:
+   con `BR-13` habrían vivido dentro de `indio-solari` y `skay-beilinson`, que son
+   biografías, y habría que corregirlas cada vez que la banda cambie.
+4. **El enlace tiene adónde ir.** Hoy "Los Fundamentalistas" es texto plano en
+   `muerte-del-indio` e `indio-solari`. Un enlace que lleva a la banda vale más que uno que
+   lleva a un resumen de tres.
+5. **Se corta en una ráfaga** (riesgo 1). Cada artículo cierra entero con su enlace
+   entrante (§3) y deja `npm test` en verde: la tarea se puede soltar después de cualquiera.
+
+El costo contra `BR-13`: dos artículos cortos más, con insumo ya fichado y sin investigación
+nueva. Es proporción (`D-14`).
+
+**Por qué `concepto` y no un tipo `banda` — pesado, no obedecido.** Medí el costo en el repo
+de hoy. No existe schema formal de la Redondopedia (`src/data/_schema/` no tiene uno; el
+contrato sigue siendo la "v0" de `src/lib/redondopedia.ts`), así que "tocar el schema" son
+cuatro lugares: `TipoArticulo`, `TIPO_A_CATEGORIA` y `ORDEN_PORTADA` en
+`src/lib/redondopedia.ts`, `REDONDOPEDIA.secciones` en `src/lib/sitio/copy.ts` y `TIPOS` en
+`redondopedia.test.ts`. Es menos de lo que parecía, no es cero, y falla en silencio: un tipo
+que falta en `ORDEN_PORTADA` no se lista en la portada (`porTipo` lo descarta) y el test de
+`BR-09` no se entera. Lo que compraría `banda` es un `h2` propio y otra etiqueta sobre el
+título; la plantilla, la ficha de `datos` y el rotulado por afirmación son los mismos para
+cualquier tipo. Y el `h2` de `concepto` ya se llama **"La cultura ricotera"**, que es casi la
+frase del usuario (*"son parte de la cultura redonda"*). Son tres, sin una cuarta a la vista.
+**No es claramente mejor, así que `concepto`:** se publica sin esperar a nadie.
+
+El defecto de esa elección, dicho: `BR-07` define `concepto` como "práctica o rasgo", y una
+banda es una cosa, no una práctica; y la plantilla imprime el tipo crudo sobre el título
+(`.articulo-tipo`), así que "concepto" va a aparecer encima de "Skay y los Fakires". Lo
+primero lo resuelve el mínimo propio de §4 (no se fuerza "cómo se practica"). Lo segundo es
+menor y no bloquea. **Se reabre a `banda` si** (i) aparece un cuarto artículo de la misma
+clase, o (ii) `experiencia` decide que la etiqueta cruda no se banca y prefiere un tipo antes
+que una etiqueta legible por slug en la plantilla.
+
+**Descartados.** Tipo `banda` (arriba). Un solo `concepto` del fenómeno (`BR-13` §1; razones
+1 a 5). Todo adentro de `persona` (Los Decoradores no tiene dueño, y duplica el dato que
+caduca). Tipo `persona` para las bandas: sus campos (rol, instrumento, biografía) no
+describen a un grupo. Un cuarto artículo "puerta": `RES-47` no ficha "bandas ricoteras"
+como categoría —es el nombre que usó el usuario—, y `la-separacion` ya hace ese trabajo sin
+pagar otro artículo.
+
+### 2. El nombre, para que quien busca por el nombre que circula igual la encuentre
+
+Los nombres se escriben como los fijó `RES-47`: *Indio Solari y los Fundamentalistas del Aire
+Acondicionado* (con "Solari"), *Skay y los Fakires*, *Los Decoradores*. "La Kermesse Redonda"
+es el caso difícil: es el nombre que circula y el que buena parte de la prensa todavía usa,
+pero **no es la razón social**. Es el formato de gira (feria y música) y el nombre con el que
+el grupo empezó a presentarse en 2018.
+
+- **El título lleva los dos:** *Los Decoradores (La Kermesse Redonda)*. La portada no recorta
+  los títulos, así que el buscador del navegador la encuentra por cualquiera de los dos.
+- **El resumen dice los dos en sus primeros 150 caracteres**, que es lo que la portada
+  muestra, y dice cuál es cuál sin corregir a nadie: el nombre de la banda y el nombre del
+  formato.
+- **`la-separacion` los nombra a los dos** en su segmento nuevo (§3), y `semilla-bucciarelli`
+  también.
+- Una ruta `/redondopedia/la-kermesse-redonda/` que redirija sería un lujo y es código: no la
+  pido. Si `arquitectura` la ve gratis, es bienvenida.
+
+En `skay-y-los-fakires` los nombres anteriores (*Skay y los Seguidores de la Diosa Kali*,
+2007–2012) van en el cuerpo y en `datos`, no en el título: el vigente desde 2012 es el que
+la gente busca.
+
+### 3. Cómo se enlazan
+
+Todo en `cuerpo` o en `veaTambien`: un `[[slug|texto]]` dentro del `valor` de un dato se
+imprime como texto crudo y no cuenta como enlace.
+
+| Desde | Hacia | Qué cambia en el artículo existente |
+|---|---|---|
+| `la-separacion` | los tres | **Un segmento nuevo, la puerta:** nombra las tres con su nombre verificado, una línea cada una, y dice la diferencia de clase (dos bandas de los fundadores, un proyecto de acompañantes). `hecho`, `RES-47` |
+| `indio-solari` | `los-fundamentalistas` | El texto plano "Los Fundamentalistas del Aire Acondicionado" del último segmento pasa a ser enlace. Como mucho una oración nueva: banda propia desde 2004 |
+| `skay-beilinson` | `skay-y-los-fakires` | Un segmento corto, dos oraciones como máximo, y el enlace |
+| `muerte-del-indio` | `los-fundamentalistas` | **Solo** se envuelve en enlace el nombre que ya está en el cuerpo. Ni una palabra más: es de tono grave (`SLUGS_GRAVES`) y no se reescribe por un enlace |
+| `semilla-bucciarelli` | `los-decoradores` | Una oración y el enlace. `hecho`, `RES-47` |
+
+Salientes de los nuevos, además del mínimo de `BR-09`: `los-fundamentalistas` →
+`indio-solari`, `la-separacion`, `muerte-del-indio`, `los-decoradores` (Aramberri toca en las
+dos); `skay-y-los-fakires` → `skay-beilinson`, `la-separacion`, `los-fundamentalistas`;
+`los-decoradores` → `semilla-bucciarelli`, `la-separacion`, `los-fundamentalistas`, `gulp` y
+`oktubre` (Tito Fargo tocó en los dos primeros discos, `RES-47`).
+
+**Cada dato vive en un solo artículo.** Discos, formaciones y estado, en el de la banda; la
+persona enlaza y no los repite. Corregir una fecha es corregir un lugar.
+
+**Cada artículo entra con su enlace entrante en la misma tanda.** Si entra uno solo,
+`npm test` tiene que seguir en verde (`BR-09`: cero huérfanos); el enlace de `la-separacion`
+o de la persona va junto, no después.
+
+### 4. El mínimo de cada artículo (reemplaza, para estos tres, la fila `concepto` de `BR-07`)
+
+Seis campos, ninguno en placeholder:
+
+1. **Título con el nombre verificado** (§2) y **resumen** que se entiende sin leer el resto
+   (criterio 1 de `US-05`).
+2. **Qué es**: la clase de banda y su vínculo con Patricio Rey, en una o dos oraciones del
+   cuerpo. "Banda propia de uno de los dos fundadores", o "proyecto de músicos de
+   acompañamiento". `hecho`, `RES-47`.
+3. **Quiénes**: los integrantes, con el rótulo que `BR-35` §1 fija para cada caso.
+4. **Discos**, como líneas de `datos` con su año (§5 explica por qué no son artículos). Para
+   `los-decoradores`, la frase "no se encontraron discos propios": `RES-47` dice "no
+   encontrado", no "confirmado que no existe".
+5. **Estado**, con fecha de consulta (`BR-35` §2).
+6. **Enlaces** de §3, con una oración que ate el artículo a `la-separacion`.
+
+Y dos específicos. `skay-y-los-fakires` cuenta las **tres etapas de nombre** con sus años y
+agrupa los discos por etapa. `los-decoradores` cuenta **los dos nombres** (§2) y el año de
+formación según `BR-35` §1.
+
+### 5. Lo que no entra, y por qué es regla
+
+- **Los discos de estas bandas no son artículos `disco`.** No es una preferencia:
+  `discosDeOktubre()` (`src/lib/sitio/oktubre.ts`) cuenta como total **todo** artículo de
+  tipo `disco`, y el afiche de octubre (`D-49`, hoy en el portal) dice *"De los diez discos,
+  seis salieron en octubre"*. Un disco de los Fundamentalistas cargado como `disco` lo
+  vuelve "de los 15" y le marca error al que se sabe cuántos hizo Patricio Rey. El piso
+  `disco = 10` son los de la banda madre.
+- **Ni tracklists, ni versos, ni artículos `tema`** de estas bandas. Los 105 temas de
+  `RES-20` son el universo de `tema`.
+- **Ningún ítem de ningún juego sale de este material.** Es la regla de `BR-13` §3, que decía
+  `US-01`..`US-04` porque eran los juegos que había; rige **para todos**, incluido `US-10`
+  ("Más o menos"). Hay un enganche vivo que lo vuelve urgente: `ESTADO.md` deja
+  `RES-106`..`RES-139` libres "por si se quiere una segunda ronda de números (las tres
+  bandas de después de la separación, `RES-47`)". **Esa ronda necesita una `BR-XX` nueva y
+  explícita antes de investigar nada**; no es un efecto colateral de que estos artículos
+  existan.
+- **Una leyenda inventada.** `RES-47` no trae ninguna; el artículo no la fabrica para
+  parecer completo (`BR-14`, punto 4).
+
+### 6. Criterio de aceptación
+
+- **Given** los tres artículos cargados, con sus enlaces entrantes.
+- **When** se corre `npm test` y el script de abajo.
+- **Then** `npm test` sale verde (grafo de `BR-09`: cero huérfanos y cero callejones; `hecho`
+  con ficha `RES-` de `BR-08`); el script imprime `ok` en las cinco filas de enlaces de §3
+  (siete aristas), `total 38`, `concepto 7`, `disco 10`, y para cada slug el tipo y el
+  título de §1; y los primeros 150 caracteres del resumen de `los-decoradores` contienen
+  "Decoradores" y "Kermesse".
+- **Y** el diff de `muerte-del-indio` es solo el envoltorio de enlace sobre el nombre que ya
+  estaba.
+
+```
+node --input-type=module -e "import {readFileSync as L} from 'node:fs'; const A=JSON.parse(L('src/data/redondopedia.json','utf8')).articulos; const P=Object.fromEntries(A.map(a=>[a.slug,a])); const cita=(d,h)=>JSON.stringify(P[d]?.cuerpo??[]).includes('[['+h+'|'); for (const [d,h] of [['la-separacion','los-fundamentalistas'],['la-separacion','skay-y-los-fakires'],['la-separacion','los-decoradores'],['indio-solari','los-fundamentalistas'],['skay-beilinson','skay-y-los-fakires'],['muerte-del-indio','los-fundamentalistas'],['semilla-bucciarelli','los-decoradores']]) console.log(cita(d,h)?'ok   ':'FALTA', d, '->', h); console.log('total', A.length, '| concepto', A.filter(a=>a.tipo==='concepto').length, '| disco', A.filter(a=>a.tipo==='disco').length); for (const s of ['los-fundamentalistas','skay-y-los-fakires','los-decoradores']) console.log(s, '|', P[s]?.tipo, '|', P[s]?.titulo, '|', (P[s]?.resumen??'').slice(0,150))"
+```
+
+**Verificación:** el script no lo corrí —`producto` no tiene `Bash` (`D-12`)—; lo corre
+`revisor`, `orquestador` o el hilo principal. Si el hilo principal prefiere que lo cuide la
+máquina, son tres `assert` en `redondopedia.test.ts` (los tres slugs existen y son
+`concepto`; las siete aristas; `disco` sigue en 10). Esa edición es suya, no mía.
+
+**Trazabilidad:** pedido del usuario del 2026-08-21 y del 2026-10-01; `RES-47`; `BR-07`,
+`BR-09`, `BR-11`; `BR-13` (enmendada); riesgos 1, 3 y 4 del brief; `D-14`, `D-20`, `D-49`.
+
+### Lo que queda para otros roles (no lo decido)
+
+- `experiencia`: si `los-fundamentalistas` entra a `SLUGS_GRAVES`
+  (`src/lib/sitio/graves.ts`), que apaga el recorte de tapa y la capitular. Mi lectura: no;
+  es una banda viva y solo un segmento es grave (`BR-35` §3). La pantalla es suya. Y la
+  etiqueta cruda "concepto" sobre el título (§1).
+- `arquitectura`: el contrato formal de la Redondopedia sigue debido. Si llega, el enum de
+  tipos debería quedar en un solo lugar y no en cuatro.
+
+---
+
+## BR-35 — Qué dicen los tres artículos de banda, con qué rótulo, y cómo se trata la muerte del Indio
+
+**Aplica a:** `los-fundamentalistas`, `skay-y-los-fakires` y `los-decoradores` (`BR-34`).
+Extiende `BR-08` a los casos que `RES-47` deja abiertos. La muerte del Indio dentro del
+artículo de los Fundamentalistas cae bajo `CNT-04` (tono sobrio), `CNT-06` (la vara para
+prosa) y el registro 3 de `.claude/rules/voz-ricotera.md` (§5 y §6).
+
+### 1. Qué rótulo lleva cada clase de dato
+
+| Dato | Rótulo y tratamiento |
+|---|---|
+| Nombres, años de formación y de cada etapa de nombre, discos con su año, los integrantes que `RES-47` marca **verificado** | `hecho`, `RES-47` |
+| Año de formación de `los-decoradores`: 2016 (Wikipedia, ellitoral) contra 2015 (ciudad.com.ar, "cumple 10 años") | Las **dos versiones en paralelo**, cada una con su fuente (criterio 5 de `US-05`). No se promedia ni se elige. Que "Kermesse Redonda" se adoptó en 2018 sí es `hecho` |
+| Integrantes de `skay-y-los-fakires`, la nómina de 2012 y la vigente: `RES-47` los marca **no verificados**, con dos notas que se contradicen y una que ya erró un año | **No entran como `hecho`.** El artículo dice lo único firme —que es la banda de Skay— y dice que la nómina no está cerrada en las fuentes. Si quiere nombrar a alguien, `leyenda` con el texto "una nota de prensa dice..., sin confirmar" (precedente: el segundo segmento de `muerte-del-indio`) |
+| "Los Fakires ya existía en 1997" (una sola nota, sin corroborar) | **No entra.** `RES-47` lo marca probable error; no circula entre fans, es el desliz de una fuente |
+| Las inferencias que `RES-47` rotula "mía": que la banda del Indio "sigue en actividad como homenaje" y que él "ya participaba solo virtualmente" | **No entran como `hecho`.** Son de `investigador` y no están fichadas |
+| La frase de la cobertura de 2026 sobre mantener viva "la llama" | **No se le atribuye a la banda.** `RES-47`: dato cultural, no verificado como cita suya |
+| Lo que se cuenta entre fans sobre estas bandas | `RES-47` no trae nada. El artículo no inventa una leyenda; si le parece que falta, lo dice (`BR-14`, punto 4) |
+
+### 2. Estado y vigencia
+
+- **El campo "Estado" es obligatorio y lleva fecha:** *"En actividad al 22 de agosto de 2026
+  (`RES-47`)"*, nunca "sigue en actividad" a secas. Es un dato que caduca y quien lee tiene
+  que ver hasta cuándo vale.
+- **Lo anunciado no ocurrió.** El show de los Fundamentalistas en Tucumán para el 10 de
+  octubre de 2026 es una fecha reportada; al 2026-10-01 es futura. Entra como "anunciado" o
+  no entra, y nadie lo escribe en pasado sin ficha nueva. Vale para cualquier fecha posterior
+  al 22 de agosto.
+- **"No se encontró anuncio de disolución" es lo que se sabe**, y así se dice. No se
+  convierte en "no se disolvió".
+- Si `contenido` quiere cerrar lo abierto (2015 o 2016, la nómina de Skay, lo posterior al 10
+  de octubre), pide ficha nueva a `investigador`. **Nada de eso bloquea la entrada:** se
+  publica con la duda declarada, que es la regla de `D-14`.
+
+### 3. La muerte del Indio dentro de `los-fundamentalistas`
+
+1. **Registro 3 en los segmentos que tocan la muerte y el homenaje:** seco, sin imagen, sin
+   chiste, sin jerga, sin suspensivos, sin guiño (`voz-ricotera` §5). El resto del artículo
+   —la formación, los discos, la historia de la banda— va en registro 2. Las dos voces
+   conviven en el mismo artículo y se nota dónde cambia una por otra.
+2. **La muerte se cuenta una sola vez en el sitio, y es en `muerte-del-indio`.** Este
+   artículo dice la fecha (5 de junio de 2026, `hecho`, `RES-04`), enlaza, y no repite las
+   circunstancias: ni la causa ni el lugar, que ese artículo ya rotuló como versiones de
+   prensa sin verificar.
+3. **Qué sí dice, como `hecho` con `RES-47`:** el show que la banda tenía programado para el 6
+   de junio de 2026 en Comodoro Rivadavia se hizo, se transmitió en vivo y se convirtió en
+   homenaje. La última aparición del Indio por video ya está en `muerte-del-indio`
+   (`RES-04`): se enlaza, no se copia.
+4. **La cita de la banda** (*"no va a ser el concierto que habíamos pensado..."*, nota de
+   MDZ) **no puede ir como `testimonio`**: `testimonio` es lo que contó alguien con nombre y
+   apellido (`D-14`; `voz-ricotera` §1) y la ficha no dice quién lo dijo. Si entra, entra
+   textual y como `hecho` de que la banda lo dijo, con su fuente. Que entre o no lo decide
+   `contenido`; con la fecha y el homenaje alcanza.
+5. **Lo que el artículo no hace:** ninguna frase en nombre del Indio ni de la banda fuera de
+   cita (el sitio no habla por ellos, `voz-ricotera` §1); no narra la emoción de nadie
+   —"lágrimas, abrazos y ovación" es el título de una nota, no un dato—; ningún lenguaje de
+   cierre (la vara de Olavarría en `CNT-06`: ni "despedida perfecta" ni "el telón"); no
+   especula con lo que la banda hace ahora ni la presenta como continuidad del Indio.
+6. **Olavarría no se cuenta acá.** Si hace falta nombrarlo, un enlace a `olavarria-2017` y
+   nada más.
+7. **Ni `skay-y-los-fakires` ni `los-decoradores` cuentan la muerte del Indio.** `RES-47` no
+   los cruza con `RES-04`.
+
+### 4. Criterio de aceptación
+
+- **Given** los tres artículos cargados.
+- **When** `revisor` los lee contra `RES-47`, `RES-04`, `BR-08` y esta regla.
+- **Then**:
+  - cada nombre aparece como en `BR-34` §1 y §2, y el resumen de `los-decoradores` dice cuál
+    es el de la banda y cuál el del formato;
+  - los dos años de `los-decoradores` están, cada uno con su fuente, y "1997" no aparece en
+    ninguno de los tres;
+  - ninguna lista de integrantes de `skay-y-los-fakires` va rotulada `hecho`, y el texto
+    dice que la nómina no está cerrada;
+  - cada artículo tiene "Estado" con fecha de consulta, y el 10 de octubre de 2026, si
+    aparece, está como anunciado;
+  - en `los-fundamentalistas`, los segmentos de la muerte y el homenaje cumplen los siete
+    puntos de §3; en particular, ninguno es `testimonio`, ninguno trae jerga, suspensivos ni
+    adjetivo de emoción, y ninguno repite causa ni lugar de la muerte.
+
+**Verificación:** `npm test` cubre la forma (`hecho` con ficha `RES-`, `testimonio` con
+`quien`). Lo demás es lectura de `revisor`, como `BR-10` y `BR-12`; no hay comando para el
+tono.
+
+**Trazabilidad:** `RES-47`, `RES-04`; `BR-08`, `BR-10`, `BR-14`; `CNT-04`, `CNT-06`;
+`voz-ricotera` §1, §5, §6; `D-14`; riesgo 3 del brief (el peligro no es usar lo dudoso, es
+no decir que lo es) y criterio no negociable 1.
+
+---
+
 ## Qué promesa de sesión hace la Redondopedia (y cuál no)
 
 **No promete cierre en 2-3 minutos.** Es explícitamente **otro modo de uso** que el de
@@ -707,13 +1028,16 @@ terminar, así que medirla contra el pacing de `US-01`..`US-04` no tiene sentido
   `D-19` (portada, historia, mitología, letras, discos ya tienen disco asignado en la
   hoja 05 del sistema de marca — la Redondopedia hereda ese mapa, no necesita uno nuevo).
 - **`contenido`** debe relacer `CNT-04` con la vara de `BR-10` antes de escribir los
-  artículos de Bulacio y Olavarría, y escribir el primer lote de 36 bajo `CNT-02` (tono) y
+  artículos de Bulacio y Olavarría, y escribir el primer lote de 38 bajo `CNT-02` (tono) y
   `D-13` (fuente y mitigaciones para las letras de `tema`, cuando haya). Para los 6 `tema`:
   `BR-14` fija que no hacen falta versos y qué campos son obligatorios en su lugar; `BR-12`
   sigue rigiendo el tope y el criterio de análisis para cuando sí se cite alguno. Para las
-  bandas post-separación (`BR-13`): el `concepto` nuevo con nombre correcto de `RES-47` y
-  la extensión de biografía en `indio-solari`/`skay-beilinson` — el orden en que se
-  escribe, como el resto del lote, es de `contenido`/`orquestador`.
+  bandas de después de la separación: tres artículos `concepto` con el nombre correcto de
+  `RES-47` y los cinco cambios de enlace en artículos existentes (`BR-34` §1 a §4), con el
+  rotulado y el tratamiento de la muerte del Indio de `BR-35`. El orden en que se escriben,
+  como el resto del lote, es de `contenido`/`orquestador`; recomiendo `los-fundamentalistas`
+  primero (es el que ya tiene dos enlaces esperándolo en texto plano) y entrar cada artículo
+  con su enlace entrante en la misma tanda.
 - **`investigador`** no tiene pendiente nuevo para el primer lote (`D-20` cláusula 4: sale
   de lo que ya existe). Si al escribir aparece un hueco de hecho puntual para una
   biografía o un hito, es ficha `RES-XX` nueva, a pedido de `contenido`.
@@ -726,9 +1050,15 @@ terminar, así que medirla contra el pacing de `US-01`..`US-04` no tiene sentido
   navegación móvil de lectura larga. Dueño: `experiencia`.
 - **La relectura de `CNT-04` para Bulacio y Olavarría en prosa** (`BR-10`), de la que
   depende si el piso de `hito` queda en 7 o baja a 6. Dueño: `contenido`.
-- **El orden real de qué se escribe primero de los 36.** Dueño: `contenido` /
+- **El orden real de qué se escribe primero de los 38.** Dueño: `contenido` /
   `orquestador`, con la recomendación de reutilizar insumo de `US-02`/`US-03` cuando
   exista.
+- **Los tres artículos de banda, los cinco cambios de enlace y las tres líneas de test
+  opcionales** (`BR-34`, `BR-35`). Dueños: `contenido` escribe; el hilo principal sube los
+  `assert` si los quiere. Es lo único que separa a la Redondopedia de 38/38 (hoy 35/38).
+- **Si `los-fundamentalistas` es de tono grave para la pantalla y qué hacer con la etiqueta
+  "concepto" sobre el título** (`BR-34`, "Lo que queda para otros roles"). Dueño:
+  `experiencia`. No bloquea.
 - **La secuencia entre este frente y lo que falta de la v1.** No la fijo acá a propósito
   — `D-20` cláusula 1 dice que no compite con el "Listo" de los cuatro juegos, y `/ciclo`
   corta el orden real.

@@ -47,8 +47,11 @@ const HUECOS = [
   },
   {
     archivo: 'bondi-interplanetario.png',
+    // Se regeneró el 2026-10-01 recortado al contorno: el máster trae ~16 % de aire
+    // transparente por lado, y en el casete de "Adiviná la tapa" el bondi quedaba en dos
+    // tercios del hueco, chiquito al lado de sus vecinos. Lo pidió el usuario.
     hueco: 84,
-    donde: 'sitio.css `.sticker-ficha` — clamp(56px, 18vw, 84px)',
+    donde: 'sitio.css `.sticker-ficha` — clamp(56px, 18vw, 84px); también `.casete-arte`, 58px',
   },
   /* Los tres recortes que trajo el usuario el 2026-09-02, ya con el nombre que el codigo
      busca. Llegaron a 320×320 RGBA y entre 118 y 155 KB — de cuatro a siete veces lo que
@@ -68,6 +71,18 @@ const HUECOS = [
     hueco: 84,
     donde: 'sitio.css `.sticker-ficha` — clamp(56px, 18vw, 84px)',
   },
+  /* Las dos calcomanías del 2026-10-01 (`D-51`), recortadas por el hilo principal desde los
+     masters y comprimidas a paleta como sus hermanas (`FIND-97` de `REV-17`). */
+  {
+    archivo: 'muneco-antifaz.png',
+    hueco: 84,
+    donde: 'sitio.css `.sticker-ficha` — clamp(56px, 18vw, 84px)',
+  },
+  {
+    archivo: 'mosca-rotulo.png',
+    hueco: 84,
+    donde: 'sitio.css `.sticker-ficha` — clamp(56px, 18vw, 84px)',
+  },
   {
     archivo: 'mosca.png',
     // La mosca del casete son 54 px, pero la misma pieza decora la pantalla "en la
@@ -78,10 +93,9 @@ const HUECOS = [
 ];
 
 /**
- * `lobo-lupus.png` no está en la tabla **a propósito**: hoy no lo referencia ninguna
- * línea de código. Está en el despiece de `public/arte/README.md` esperando que alguien
- * lo cablee, y hasta que se sepa en qué hueco va, no hay contra qué medirlo. Un archivo
- * que no se descarga no le cuesta nada a nadie: pesa en el repo, no en el teléfono.
+ * `lobo-lupus.png` no está en la tabla **a propósito**: no lo referencia ninguna línea de
+ * código, y el 2026-10-01 salió de `public/` a `Docs/UX/recortes-master/` (`D-51`): estaba
+ * publicado sin que ninguna pantalla lo pidiera. Si algún hueco lo pide, vuelve.
  */
 const DPR = 3;
 const soloVer = process.argv.includes('--ver');

@@ -19,7 +19,12 @@ import {
   type ItemServido,
   type Polo,
 } from '../lib/dos-ejes/partida.ts';
-import { PARTIDA, RESULTADO } from '../lib/dos-ejes/copy.ts';
+import { PANTALLA_0, PARTIDA, RESULTADO } from '../lib/dos-ejes/copy.ts';
+import { armarLink, leerDesafio } from '../lib/desafio.ts';
+import { botonCompartir } from './compartir.ts';
+
+/** El nombre con el que este juego firma sus desafíos (`ADR-02`). */
+const JUEGO = 'dos-ejes';
 
 const $ = <T extends HTMLElement>(sel: string): T => document.querySelector<T>(sel)!;
 
@@ -54,7 +59,10 @@ function el(tag: string, clase: string, texto?: string): HTMLElement {
 function plano(luzOscuridad: string, ordenCaos: string): SVGSVGElement {
   const ns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(ns, 'svg');
-  svg.setAttribute('viewBox', '0 0 240 240');
+  // 32 de aire a cada lado (`FIND-91`): "Orden" se ancla al final en x=30 y "Caos" al
+  // principio en x=210, y con la letra rotulada las dos palabras se salían del dibujo — la
+  // "O" quedaba medio comida. El rombo no se mueve: se agranda el papel, no el dibujo.
+  svg.setAttribute('viewBox', '-32 0 304 240');
   svg.setAttribute('class', 'ejes-plano');
   svg.setAttribute('role', 'img');
   svg.setAttribute('aria-label', RESULTADO.altPlano);
@@ -147,7 +155,17 @@ function pintarResultado(): void {
   zonaResultado.append(el('p', 'ejes-bajada', r.bajada));
 
   const acciones = el('div', 'ejes-acciones');
-  const denuevo = el('button', 'primario', RESULTADO.denuevo) as HTMLButtonElement;
+
+  // Compartir (2026-10-01): viaja **la identidad**, el id del cuadrante, y ningún número —
+  // la forma `identidad` de `ADR-02` no tiene de dónde sacar un puntaje, y este juego no lo
+  // produce (`BR-17`). Es el primario de la pantalla; "Probá de nuevo" pasa a secundario.
+  const { boton: compartir, salida } = botonCompartir(RESULTADO, () => ({
+    texto: RESULTADO.paraCompartir(r.nombre),
+    url: armarLink(location.origin + location.pathname, { forma: 'identidad', juego: JUEGO, identidad: r.id }),
+  }));
+  acciones.append(compartir, salida);
+
+  const denuevo = el('button', 'secundario', RESULTADO.denuevo) as HTMLButtonElement;
   denuevo.type = 'button';
   denuevo.addEventListener('click', empezar);
   acciones.append(denuevo);
@@ -169,6 +187,19 @@ function empezar(): void {
   zonaResultado.hidden = true;
   zonaPregunta.hidden = false;
   pintarPregunta();
+}
+
+/*
+ * Si alguien llegó por el enlace de un amigo, la bajada dice qué le salió. Solo la forma
+ * `identidad`, y solo si el id es uno de los cuatro cuadrantes del banco: un id inventado
+ * en la URL no pinta nada (`ADR-02`). El nombre que se muestra es **el del banco**, no el
+ * de la URL, así que por ahí no entra texto ajeno; el del amigo va por `textContent`.
+ */
+{
+  const desafio = leerDesafio(location.search, JUEGO);
+  const suyo = desafio?.forma === 'identidad' ? banco.cuadrantes.find((c) => c.id === desafio.identidad) : undefined;
+  const bajada = document.getElementById('subtitulo');
+  if (desafio && suyo && bajada) bajada.textContent = PANTALLA_0.desafio(suyo.nombre, desafio.nombre);
 }
 
 $('#empezar').addEventListener('click', empezar);

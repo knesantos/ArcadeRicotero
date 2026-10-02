@@ -34,6 +34,7 @@ import {
 } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/redondopedia.json';
 import cancionero from '../../data/cancionero.json';
+import { partesParaCorregir } from '../../lib/correccion/redondopedia.ts';
 import { cargar as cargarCancionero, slugDeLetra, type Cancionero } from '../../lib/cancionero/banco.ts';
 
 export function getStaticPaths() {
@@ -103,6 +104,8 @@ const discoDelPie = SIN_DETALLE_POR_TONO.has(articulo.slug)
     ? articulo.slug
     : DISCO_DE_CATEGORIA[categoria];
 
+/** Lo que el botón de corrección deja elegir: el artículo, cada dato y cada párrafo (`CTR-10` §2.1). */
+const partesCorregibles = partesParaCorregir(articulo);
 const etiquetaRotulo = (seg: Segmento): string =>
   seg.rotulo === 'leyenda' ? 'Leyenda' : `Lo contó ${seg.quien ?? 'alguien'}`;
 ---
@@ -229,7 +232,38 @@ const etiquetaRotulo = (seg: Segmento): string =>
         </nav>
       )
     }
+
+    {/*
+      El botón de corrección (`BR-21`, `UX-09`), al pie del artículo y después del "vea
+      también": es lo último que se lee, como una nota. `PRD-correcciones.md` §4 puso a la
+      Redondopedia primera en la fila de los que faltaban, por valor —prosa larga, tres
+      rótulos por párrafo—, y llegó el 2026-10-01 junto con la casilla (`D-51`).
+
+      Se arma en el navegador porque el componente es una isla; acá queda el ancla y, al lado,
+      las partes del artículo ya armadas en build (`partesParaCorregir`): el panel deja
+      elegir el párrafo o el dato, y la corrección lleva su texto, su rótulo y su ubicación,
+      como pide `CTR-10` §2.1 (`FIND-87` de `REV-17`).
+    */}
+    <div id="correccion-articulo"></div>
+    <script type="application/json" id="correccion-partes" set:html={JSON.stringify(partesCorregibles)} />
   </article>
 
   <a class="accion-abajo" href="/redondopedia/">← {REDONDOPEDIA.volverPortada}</a>
+
+  <script>
+    import { botonCorreccion } from '../../scripts/correccion.ts';
+
+    import type { ParteCorregible } from '../../lib/correccion/redondopedia.ts';
+
+    const ancla = document.getElementById('correccion-articulo');
+    let partes: ParteCorregible[] = [];
+    try {
+      partes = JSON.parse(document.getElementById('correccion-partes')?.textContent ?? '[]');
+    } catch {
+      partes = [];
+    }
+    // La primera parte es el artículo entero: es lo que se manda si nadie elige otra.
+    const primera = partes[0];
+    if (ancla && primera) ancla.replaceWith(botonCorreccion(() => primera.datos, partes));
+  </script>
 </Base>

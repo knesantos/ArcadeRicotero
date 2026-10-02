@@ -73,6 +73,9 @@
 > números son los del árbol de trabajo al corregir, con la ráfaga 4 todavía escribiendo en
 > `escena.ts`. **Si un número se corre, manda el símbolo** que va al lado, y se busca con
 > `rg -nF "<símbolo>" <archivo>`.
+> **2026-10-02 (`FIND-89` de `REV-17`):** nota fechada en `CTR-16.7`. Los seis `deDos: true`
+> los puso el hilo principal por `D-51` punto 2, sin partida en el teléfono. Schema y contrato
+> sin cambios. **Consume además:** `D-51`.
 >
 > **Regla de escritura que nace de `FIND-55`: toda medida de píxel dice si es _nativa_ o
 > _CSS_. En este documento todo es nativo, porque un dato de nivel no sabe a qué escala se
@@ -675,7 +678,18 @@ puede probar:
 | Pasada | Qué prueba (`BR-25`) | Dónde vive | Quién la da |
 |---|---|---|---|
 | **De uno** | (b), (c), (d) y (f): se pasa solo, nada pide dos dedos a la vez, el que espera queda quieto, la paridad | la traza `deUno` de `skayboy-soluciones.json` (`CTR-18`), repetida por `soluciones.test.ts` en cada build | la máquina, **para todo nivel del banco, esté en `borrador` o en `listo`** |
-| **De a dos** | (a): dos personas a la vez, en un teléfono, lo terminan | **`verificaciones.deDos`** | escrito a mano después de la partida en el teléfono (`ORQ-plan-ciclo-16.md §4` punto 3); lo escribe quien tenga con qué (`D-12`) |
+| **De a dos** | (a): dos personas a la vez, en un teléfono, lo terminan | **`verificaciones.deDos`** | escrito a mano después de la partida en el teléfono (`ORQ-plan-ciclo-16.md §4` punto 3); lo escribe quien tenga con qué (`D-12`). *Los seis del banco no: ver la nota del 2026-10-02, abajo* |
+
+> **Nota del 2026-10-02 (`FIND-89` de `REV-17`): los seis `deDos: true` del banco no salen de
+> una partida.** Para `NIV-01` … `NIV-06`, lo que dice la fila de arriba no pasó. Los puso en
+> `true` el hilo principal el 2026-10-01, cuando el usuario decidió publicar sin esa prueba
+> (`D-51` punto 2). Nadie los jugó de a dos en un teléfono. **Se hizo cargo el usuario**, y
+> eso es todo lo que prueba el booleano (lo dice el comentario del `allOf` de
+> `skayboy.schema.json`). La pasada de uno sí está: la traza de `CTR-18` los juega en cada
+> build. El JSON no tiene dónde anotarlo, porque `verificaciones` es `additionalProperties:
+> false` a propósito (abajo). Por eso queda escrito acá, y ni el schema ni el contrato cambian.
+> **Mientras esta nota siga abierta, un `deDos: true` de este banco no significa que dos
+> personas lo jugaron.** Se cierra acá, con fecha, el día que lo jueguen.
 
 **El schema exige: si `estado` es `listo`, `verificaciones.deDos` es `true`.** El mismo
 `if`/`then`, con un booleano menos. La pasada de uno **no es condición de schema, es condición

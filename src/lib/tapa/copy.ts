@@ -13,6 +13,14 @@ export const PANTALLA_0 = {
   subtitulo:
     'Rocambole dibujó; vos ponés el disco. Arranca fácil y se pone bravo.',
   boton: 'Empezá',
+  /**
+   * Lo que lee el que llega por el enlace de un amigo, en lugar de la bajada (`ADR-02`,
+   * forma `marcador`). El puntaje es lo que **dice** el otro: cualquiera edita la URL.
+   */
+  desafio: (aciertos: number, total: number, nombre?: string) =>
+    nombre
+      ? `${nombre} dice que adivinó ${aciertos} de ${total} tapas. Arranca fácil: a ver cuántas te salen.`
+      : `Te desafiaron con ${aciertos} de ${total} tapas. Arranca fácil: a ver cuántas te salen.`,
 } as const;
 
 export const PARTIDA = {
@@ -49,4 +57,10 @@ export const RESULTADO = {
   puntaje: (aciertos: number, total: number) => `${aciertos} de ${total}`,
   denuevo: 'Otra vuelta',
   volver: 'Volvé al arcade',
+  /** Compartir (`CNT-26`): texto y enlace, sin tarjeta, como "Más o menos". */
+  compartir: 'Compartí',
+  paraCompartir: (aciertos: number, total: number) =>
+    `Adiviné ${aciertos} de ${total} tapas en el arcade ricotero. ¿Vos cuántas adivinás?`,
+  copiado: 'Se copió el enlace.',
+  aManoTitulo: 'Copiá esto y mandalo',
 } as const;

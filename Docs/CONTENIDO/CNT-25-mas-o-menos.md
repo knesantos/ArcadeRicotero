@@ -1,6 +1,8 @@
 # CNT-25 — "Más o menos": las palabras y todo lo que se lee
 
-- **Fecha:** 2026-09-25 (cuarta vuelta, sobre la misma ráfaga)
+- **Fecha:** 2026-09-25 (cuarta vuelta, sobre la misma ráfaga). **Segunda tanda de datos:
+  2026-10-01, último apartado del documento: el banco pasa de 35 a 45 datos (`MM-01`..`MM-45`)
+  y de 14/12/9 a 16/17/12 por familia.**
 - **Rol dueño:** `contenido`
 - **Estado:** entrega completa — `datos[]` (35 números a mano de la banda, de `INV-100`,
   ajustados contra `CTR-20`), la familia `las-palabras` (20 palabras `listo`, sin cambios
@@ -590,8 +592,11 @@ que hubo que hacer cuando entraron `dos-ejes` y `ponelos` (`voz.test.ts`, coment
 
 Sobre `src/data/mas-o-menos.json` puntualmente (`BR-32`/`PRD-mas-o-menos.md`, "Cómo se
 prueba cada punto"), pido que se confirme: 35 datos en `estado: "listo"` repartidos
-14/12/9 en `la-banda`/`la-gente`/`los-recitales` (piso ≥ 20 total, ≥ 4 por familia); cada
-`firmeza` en `["hecho","segun"]` y el único `"segun"` (`MM-35`) con `segun` no vacío;
+14/12/9 en `la-banda`/`la-gente`/`los-recitales` (piso ≥ 20 total, ≥ 4 por familia; **desde el
+2026-10-01 son 45, repartidos 16/17/12; desde el 2026-10-02 son 44, 16/16/12, por `MM-40`
+retirado: ver el último renglón**); cada
+`firmeza` en `["hecho","segun"]` y el único `"segun"` (`MM-35`; **el 2026-10-01 sumó `MM-40`,
+retirado el 2026-10-02: vuelve a ser solo `MM-35`**) con `segun` no vacío;
 ningún `id`/`medida` de un dato a mano coincide con `anio-disco`, `temas-disco`,
 `duracion`, `en-vivo` ni `palabra` (las medidas que usan las familias derivadas); ninguna
 `pregunta`/`explicacion` contiene "Bulacio", "Olavarría" ni nada de edad-al-morir o
@@ -612,11 +617,128 @@ cantidad de heridos.
 - **El schema exacto de `PLANTILLAS`/`FUENTES`/`UNIDADES`** ya lo fijó `arquitectura` en
   `src/lib/mas-o-menos/datos.ts` (`interface Plantillas`), y esta vuelta confirma que el
   texto real calza con esa forma — no queda ninguna propuesta mía pendiente de ese lado.
-- **Candidatas de `INV-100` que quedaron afuera por volumen, no por problema** (tabla de
-  la sección 1'.2): `N-023`, `N-025`, `N-032`, `N-042`/`N-043`, `N-045`/`N-046`, `N-047`,
-  `N-075`, `N-077`–`N-079`, `N-081`, `N-083`, `N-104`–`N-107`, `N-111`. Si el pozo necesita
-  más volumen en una próxima vuelta, son las primeras candidatas — ya evaluadas, ninguna
-  descartada por firmeza ni por `BR-32`.
+- **Candidatas de `INV-100` que quedaron afuera por volumen** (tabla de la sección 1'.2):
+  **superado el 2026-10-01** — ver "§ 2026-10-01: la segunda tanda". Esa lista era optimista:
+  de las 18, entraron 10 (`MM-36`..`MM-45`) y ocho tenían un problema que la primera pasada
+  no vio (`N-023`, `N-045`, `N-046`, `N-047`, `N-083`, `N-106`, `N-107`, `N-111`). Queda
+  pendiente solo `N-032`, que sigue sin nombre de fuente.
 - **Nada de esta pieza necesita ficha `RES-XX` nueva**: los datos verificables que cito
   (`RES-05`, `RES-09`, `RES-20`, `RES-89`..`RES-92`, `RES-100`..`RES-102`) ya existen y los
   uso tal cual están.
+
+---
+
+## § 2026-10-01: la segunda tanda
+
+- **Pedido:** cargar las 18 filas de `INV-100` que §1'.2 había dejado afuera "solo por
+  volumen" (`N-023`, `N-025`, `N-047`, `N-075`, `N-077`..`N-079`, `N-081`, `N-083`,
+  `N-042`, `N-043`, `N-045`, `N-046`, `N-104`..`N-107`, `N-111`).
+- **Resultado:** **entran 10** (`MM-36`..`MM-45`) y **no entran 8**. Esto corrige lo que
+  escribí en §1'.2 y en §5 ("buenas y sin problema", "ninguna descartada por firmeza"): al
+  releer cada fila entera contra la nota de `INV-100`, `CTR-20`, `pozo.test.ts` y el resto
+  de las fichas del repo, ocho tienen un problema que la primera vez no miré. **Manda esta
+  tabla.**
+- **Toqué:** `src/data/mas-o-menos.json` (diez datos al final de `datos[]`, `actualizado` en
+  `2026-10-01`) y este documento. Ningún dato anterior cambió.
+- **Ficha nueva:** ninguna hace falta. Dos pedidos chicos y no bloqueantes, abajo.
+
+### 2.1 Los que entran
+
+| Fila | `MM` | Familia · medida | `fuente` | Por qué entra, y qué le cambié |
+|---|---|---|---|---|
+| `N-025` | `MM-36` | `la-banda` · propia | `RES-100` | Diploma al Mérito Konex, 1995: lo da la propia fundación y el año no tiene disputa. **No va en par con `MM-07`** (Konex de Platino, 2005): dos premios con el mismo nombre se contestarían por la jerarquía del premio, no por saber el año. La pregunta no dice "antes del Platino", que regalaría `MM-07`. |
+| `N-075` | `MM-37` | `la-banda` · propia | `RES-102` | Dos temas con tercer autor, los dos con Bucciarelli (`RES-20`, "Autoría"). `RES-20` no puede ser `fuente` (schema), así que cito la fila. La pregunta dice "sus discos de estudio" y nunca "cuántos discos" (guarda de `pozo.test.ts`, trampa 9/10). La `explicacion` nombra los dos temas. Ver "lo que queda flojo". |
+| `N-042` | `MM-38` | `la-gente` · `edad-gulp` | `RES-101` | **Reformulada.** "Tenía cuando salió *Gulp!*" depende del día de salida (tres versiones, sin resolver) y del día de nacimiento (la ficha trae solo el año): es exactamente `FIND-81`. Pregunto **"cuántos años cumplió en 1985, el año en que salió"**, que es 1985 menos el año de nacimiento: no depende de ningún día, y el año de *Gulp!* es firme. Da 36, el mismo número de la fila. La `explicacion` dice por qué se cuenta así. |
+| `N-043` | `MM-39` | `la-gente` · `edad-gulp` | `RES-101` | Ídem, Skay: 1985 − 1952 = 33. Medida compartida con `MM-38` (misma familia, escala, unidad; sujetos distintos). |
+| `N-081` | `MM-40` | `la-gente` · propia | `RES-102` | "Como cuarenta" es aproximado en la fuente, así que va como **`segun: "Rocambole"`** con el nombre en la pregunta (`CTR-20.2` b, `i6`) y el aviso de la cifra de memoria en la `explicacion`. Atribuyo a Rocambole y no a Infobae porque la cita de la ficha está en primera persona ("probé"); Infobae es dónde se recogió. La pregunta repite el objeto de la ficha ("versiones de letras", "diseño de la tapa"): la segunda parte evita que se lea como letras de canciones. |
+| `N-104` | `MM-41` | `la-gente` · propia | `RES-21` | 27 capítulos numerados más el prefacio (`RES-21`). Agregué "sin contar el prefacio" para que 27 no se discuta contra 28. Cito `RES-21`, que es lo que dice la columna de fuente de la fila, y no `RES-105`: es la ficha donde está el conteo. |
+| `N-105` | `MM-42` | `la-gente` · propia | `RES-105` | 863 páginas. Las páginas dependen de la edición, así que la pregunta nombra la de Sudamericana (`INV-02` repite "863 pp. (Sudamericana)"). |
+| `N-077` | `MM-43` | `los-recitales` · propia | `RES-102` | *En directo*, 1992 (Wikipedia, 14-dic-1992; `INV-44` da 1992 también). No está entre los diez de `RES-20`, así que ninguna familia derivada lo cubre. |
+| `N-078` | `MM-44` | `los-recitales` · propia | `RES-102` | 12 temas. `INV-44` los confirma contra el inlay del CD (incluye "El blues del noticiero"). No tiene track oculto conocido, a diferencia de *Gulp!*. |
+| `N-079` | `MM-45` | `los-recitales` · propia | `RES-102` | 52:38 va como **52** minutos, a menos de una unidad del real (`CTR-20.2` a): ninguna referencia entera puede caer entre el valor y el real. La `explicacion` da los 38 segundos. |
+
+### 2.2 Los que no entran
+
+| Fila | Por qué no |
+|---|---|
+| `N-023` (2 países) | La fila es `según fuente` (El Observador, sobre "sus visitas a Uruguay") y **no trae cita**: "dos países" parece una inferencia de quien fichó, no una frase de la nota. Cargarla como `segun` le atribuiría al diario algo que no se pudo ver que diga. Es además una negación universal ("solo Argentina y Uruguay", "en toda su historia") y de valor 2, que cae siempre del lado "menos". Lo único que el repo confirma es Montevideo 1989 y 2001. |
+| `N-045` (Sidotti, 26 en 1987) | Apila la edad sobre `N-037`, la fila más floja del legajo (un posteo y una efeméride, sin artículo propio), que `INV-100` marca `según fuente` sin un nombre que se pueda poner en la pregunta (`CTR-20.2`: un `segun` nombra a quien lo dijo). Si `N-037` está mal, quedarían mal dos datos. |
+| `N-046` (Dawi, 32 en 1988) | **Dos problemas, ninguno se arregla reformulando.** El 32 no es la resta de años (1988 − 1955 = 33): es edad al día, y depende de la fecha de salida de *Un baión* o del ingreso. Y el año de ingreso no cierra con el repo: la Redondopedia pone a Dawi en la formación estable "desde 1987", la fila dice 1988. Es `FIND-81` otra vez. |
+| `N-047` (Erks, 3 partes iguales) | `INV-60` bajó esa co-titularidad de "verificado" a **"reportado — fuente única"** (`RES-64.12`, y el "dato al costado" sobre `RES-09`) y dejó abierta la decisión de contrastarla con el INPI o aflojar el rótulo; la fila de `INV-100` sigue diciendo "hecho", que ya no es cierto. La fuente única, además, es una nota sobre la sucesión del Indio: la pregunta no tocaría la muerte, pero la ficha que acompaña la respuesta sí (`CNT-04`/`CNT-06`). Si se quiere igual, entra como `segun: "Infobae"` cuando alguien resuelva lo del INPI. Valor 3: en el primer escalón solo tiene lado "menos". |
+| `N-083` (mayor intervalo entre discos) | Es una función de los años de los discos, que `los-discos` ya deriva de `RES-20`: el criterio con el que en §1'.2 saqué `N-008` y `N-010`, y la misma clase de `N-063`..`N-071` en `CTR-20.4`. Si `RES-20` corrige un año, este 3 queda mintiendo. Y es una diferencia de años de calendario (1993 a 1996): el intervalo real puede ser menor a tres. |
+| `N-106`, `N-107` (ejemplares y edición) | "Unos 50.000" es aproximado en la fuente, y los dos son números que solo suben: Wikipedia no dice a qué momento corresponden. Un `segun: "Wikipedia"` los atribuiría bien, pero el número igual quedaría viejo; es la razón de `BR-18` (b) para `en-vivo`. |
+| `N-111` (discos de La Cofradía) | Una sola fuente editable para un conteo cuyo criterio —qué es un disco de estudio— es el que ya nos dio la trampa 9/10 de la banda. Y la guarda `/cu[aá]ntos discos/i` de `pozo.test.ts` tumbaría el build con la pregunta tal como está en la ficha. |
+
+### 2.3 Cómo queda la cuenta
+
+| Familia | Antes | Nuevas | Después |
+|---|---|---|---|
+| `la-banda` | 14 | 2 (`MM-36`, `MM-37`) | **16** |
+| `la-gente` | 12 | 5 (`MM-38`..`MM-42`) | **17** |
+| `los-recitales` | 9 | 3 (`MM-43`..`MM-45`) | **12** |
+| **Total** | 35 | 10 | **45** |
+
+Piso de `US-10`/`BR-32` (≥ 20 en total, ≥ 4 por familia) sobrado. `la-banda` era la más cargada
+de las tres y recibe solo dos. Tres decisiones sobre el reparto:
+
+- **Los tres de *En directo* van a `los-recitales`.** Es el disco en vivo, y es lo que hace
+  que la cuenta quede 16/17/12 y no 19/17/9. La etiqueta es neutra (`UX-34` §3.2), pero si
+  `experiencia` o `revisor` prefieren `la-banda`, es cambiar `familia` en `MM-43`..`MM-45` y
+  ningún test depende de eso.
+- **`N-081` y el libro del Indio van a `la-gente`**, que ya tiene a Willy Crook (`MM-26`):
+  son números de una persona y de lo que hizo.
+- **El reparto no cambia con qué frecuencia sale una familia**, porque la bolsa de
+  `CTR-20.7` pasa cada familia una vez por vuelta. Cambia cuánto dura cada una en una
+  partida larga. Con 12 contra 17 no hay una familia que se acabe mucho antes que otra.
+
+### 2.4 Lo que queda flojo, dicho y no escondido
+
+- **`MM-37` (valor 2) siempre da "menos".** La referencia no puede bajar de 2 ni empatar, así
+  que cae por encima en los cuatro escalones. `CTR-20.11` i20 lo prevé y no rompe nada, pero
+  regala un punto al que no sabe en las primeras rachas; recién en el escalón 10+ la
+  referencia es 3 y la pregunta es de verdad. Si `revisor` prefiere no tener valores ≤ 3, se
+  retira (`estado: "retirado"`, no se borra).
+- **`MM-38`/`MM-39` solo van de par a racha 10 o más**: 36 contra 33 es un cociente de 1,09 y
+  solo entra en la franja del último escalón. Igual que `MM-21`/`MM-22`.
+- **Las respuestas se filtran entre sí**, como ya pasaba: `MM-38` se deduce de `MM-15`
+  (nació en 1949) si ese salió antes en la partida. No es nuevo ni se arregla en el banco.
+
+### 2.5 Verificación (no puedo correrla, `D-12`)
+
+```bash
+node --test 'src/lib/mas-o-menos/*.test.ts' src/lib/esquemas.test.ts
+npm run medir-mas-o-menos
+```
+
+Lo que tiene que dar: `esquemas.test.ts` valida el archivo contra su schema (`i1`);
+`pozo.test.ts` cuenta 45 datos `listo` (piso B), ids y preguntas únicos (`i17`), una medida
+compartida con misma escala, unidad y sujetos distintos (`edad-gulp`), todas las `fuente`
+fichadas (`RES-21`, `RES-100`, `RES-101`, `RES-102`, `RES-105` existen), el `segun` de
+`MM-40` dentro de su pregunta (`i6`), nada de `muerte`/`herid`/`detenid`, y la referencia con
+lugar en los cuatro escalones para el 2, el 40 y el 863.
+
+**Lo que ningún test cubre, y tiene que mirar `revisor` contra la ficha:** `MM-36` (1995) contra
+la Fundación Konex; `MM-40` (qué eran las "versiones" y que lo dice Rocambole) contra la nota de
+Infobae; `MM-43`..`MM-45` (1992, 12 pistas, 52:38) contra la ficha de Wikipedia, que es una sola
+fuente más el inlay de `INV-44`; `MM-42` (863 pp.) contra la edición de Sudamericana.
+
+### 2.6 Pedidos, ninguno bloquea
+
+- **`investigador`:** releer la nota de Infobae "40 años de Gulp!" para `MM-40` (qué son las
+  "como cuarenta versiones" y quién lo dice), y dar una segunda fuente para año, pistas y
+  duración de *En directo*. Con eso `MM-40` y `MM-43`..`MM-45` pasan de una fuente a dos.
+- **`producto`/`investigador`:** la decisión sobre Erks S.A. que `INV-60` dejó abierta (INPI o
+  aflojar el rótulo) también decide si `N-047` puede entrar algún día.
+
+### 2.7 2026-10-02: `MM-40` retirado (`FIND-86`, `REV-17`)
+
+- **2026-10-02 — `MM-40` pasa a `estado: "retirado"` (queda en el archivo, no se borra).** La cita
+  de `INV-100` `N-081` es *"probé como cuarenta versiones"* y no trae objeto: "de letras" y
+  "antes de elegir el diseño de la tapa" son de la fila, no de la cita, y yo mismo había anotado
+  que la nota de Infobae no se pudo releer. No la reformulé porque cualquier objeto que le ponga
+  a "versiones" sería mío y no de Rocambole. Vuelve a `listo` cuando alguien tenga la nota a la
+  vista (pedido a `investigador` de §2.6, que sigue en pie y ahora destraba el dato) y la
+  pregunta calce con lo que dice que probó. Cuenta nueva: **44 datos `listo`, 16/16/12**
+  (piso `US-10`/`BR-32` ≥ 20 y ≥ 4 por familia, sobrado); el único `"segun"` listo es otra vez
+  `MM-35`. Los tests no nombran a `MM-40`: la prueba del `"segun"` (`i6`) filtra los retirados.
+  También cambió `actualizado` a `2026-10-02`.

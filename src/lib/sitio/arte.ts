@@ -49,31 +49,14 @@ export function fondoTapa(nombre: string): string | null {
  * La clave es la `variante` que ya usan los casetes y las pantallas en la cocina.
  */
 export const DETALLE_POR_VARIANTE: Record<string, string> = {
-  marca: 'oktubre-bandera',
   mitologia: 'lobo-tiras',
   letras: 'mosca-olla',
-  discos: 'bondi-circuito',
   historia: 'gulp-pincelada',
-  /* `US-07`. **El hueco se lleno el 2026-09-02** y el comentario que estaba aca —"el
-     recorte de Momo todavia no existe"— quedo viejo. Se genera con el resto, desde el
-     master, en `scripts/generar-tapas.mjs`. Vale anotar que se veia: `detalleTapa`
-     devolvia null, el casete de "Sacalo por la letra" era el unico de los siete sin
-     tapa, y como `.casete-pie` reparte con `space-between`, con un solo hijo el sello
-     "JUGÁ" se iba al borde izquierdo. Una tarjeta desalineada por un archivo que no
-     estaba. */
-  momo: 'momo-medallon',
-  /* `US-08`. El zoom de la tapa de ¡Bang! ¡Bang! ya lo producia `generar-tapas.mjs` con
-     los otros nueve (`UX-13`): es el unico de los diez recortes de detalle que ninguna
-     seccion estaba usando. Va con su fila en `DISCO_DE`, unas lineas mas abajo — sin ella,
-     la tapa se veria en el portal y **el credito de `D-21` la perderia en silencio**. */
-  bang: 'bang-bang-estas-liquidado-zoom',
-};
-
-/** Que fondo velado viste cada pantalla "en la cocina" (`UX-05`).
- *  "Adivinar la tapa" y "Adivinar el tema" ya no estan aca: salieron de la cocina y
- *  sus paginas piden el fondo directo. */
-export const FONDO_COCINA: Record<string, string> = {
-  'completar-la-letra': 'mosca-olla',
+  /* Hasta el 2026-10-01 había cuatro filas más —`marca`, `discos`, `momo` y `bang`— y
+     ninguna llegaba a una pantalla: este mapa lo lee solo `detalleArticulo()`, y los tipos
+     de la Redondopedia caen en `historia`, `letras` o `mitologia` (`TIPO_A_CATEGORIA`); el
+     de `discos` es el tipo `disco`, que lleva la tapa entera. Los tres archivos que solo
+     existían para esas filas se publicaban sin que nadie los viera y salieron (`D-51`). */
 };
 
 /**
@@ -83,20 +66,17 @@ export const FONDO_COCINA: Record<string, string> = {
  * pone en el pie (`UX-04`, mecanismo de credito).
  */
 const DISCO_DE: Record<string, string> = {
-  'oktubre-bandera': 'Oktubre',
   'oktubre-banderas': 'Oktubre',
-  'oktubre-ok': 'Oktubre',
   'lobo-tiras': 'Lobo suelto',
   'mosca-olla': 'La mosca y la sopa',
-  'bondi-circuito': 'Último bondi a Finisterre',
   'bondi-engranajes': 'Último bondi a Finisterre',
   'gulp-pincelada': 'Gulp!',
-  'gulp-montana': 'Gulp!',
   'gulp-logo': 'Gulp!',
   /* Va junto con el derivado, no despues: un derivado que llega a pantalla sin su fila
      aca es una tapa que se ve y no se acredita, o sea la condicion 1 de `D-21`
-     incumplida en silencio — `discosDe` lo descarta sin decir nada. */
-  'momo-medallon': 'Momo Sampler',
+     incumplida en silencio — `discosDe` lo descarta sin decir nada. (El detalle
+     `momo-medallon.jpg` salió el 2026-10-01: el casete de Momo pega el recorte de
+     `/arte/`, que acredita por `FIGURA_DE_DISCO`.) */
   'bang-bang-estas-liquidado-zoom': '¡Bang! ¡Bang!… Estás liquidado',
   /* `D-49`: los dos detalles que pasaron a vestir casetes del portal. */
   'un-baion-para-el-ojo-idiota-zoom': 'Un baión para el ojo idiota',
@@ -322,10 +302,18 @@ export function medidas(rutaPublica: string): { ancho: number; alto: number } | 
  * Faltan tres discos —Gulp!, Oktubre y ¡Bang! ¡Bang!— y no estan por descuido: no hay
  * pieza elegida. Para Oktubre, ademas, la unica calcada que hay es la figura encadenada,
  * y esa tiene prohibicion escrita de atribucion de album (`INV-02`, README).
+ *
+ * **Las dos que esperaban el recorte llegaron el 2026-10-01** (`D-51`), cortadas por el
+ * hilo principal desde los masters de `Docs/INVESTIGACION/TapasDiscos/` con el mismo borde
+ * de tijera que las otras: el muñeco del antifaz, tal como lo pedía el despiece, y para *La
+ * mosca y la sopa* **el rótulo de la tapa con la mosca adentro**, no el gato momificado. El
+ * gato no está en ninguna de las imágenes del disco que hay en el repo (frente, frente
+ * real, interior y contratapa): recortarlo era inventarlo. Si alguien trae la imagen,
+ * `gato-momificado.png` sigue en el despiece y se cambia acá.
  */
 export const STICKER_DISCO: Record<string, string> = {
   'un-baion-para-el-ojo-idiota': 'muneco-antifaz.png',
-  'la-mosca-y-la-sopa': 'gato-momificado.png',
+  'la-mosca-y-la-sopa': 'mosca-rotulo.png',
   luzbelito: 'luzbelito-vela.png',
   'ultimo-bondi-a-finisterre': 'bondi-interplanetario.png',
   'momo-sampler': 'momo-medallon.png',

@@ -21,6 +21,11 @@ export const CORRECCION = {
   titulo: 'Corregí este ítem',
   instruccion:
     'Contanos qué está mal, qué falta o qué rótulo no corresponde. No hace falta que sepas cuál de las tres es.',
+  /**
+   * El selector de partes de la Redondopedia (`CTR-10` §2.1, `FIND-87`): un artículo tiene
+   * muchos párrafos y datos, y la corrección tiene que decir de cuál habla. Registro 3.
+   */
+  etiquetaParte: 'Qué parte',
   /** C1, C2 — el campo. Es lo único que se le pide a la persona. */
   etiquetaCampo: 'Corrección',
   ejemplo: 'Por ejemplo: la fecha es otra, falta la fuente, esto es leyenda y no hecho.',

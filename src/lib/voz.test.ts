@@ -193,8 +193,8 @@ function cadenasDelBanco(): string[] {
  * **Por que estan aca y no importados con el resto.** `filas.ts` es un modulo hoja que no
  * importa nada —esa es la condicion para que lo puedan leer la pagina, la isla y el
  * empaquetado del link—, asi que los nombres viven con los numeros de fila y con la clave
- * de cada una. Recorrer el modulo entero con `cadenas()` auditaria tambien `valla`,
- * `medio`, `atras` y `vereda`, que son identificadores del codigo y `D-17` los deja
+ * de cada una. Recorrer el modulo entero con `cadenas()` auditaria tambien `pogo`,
+ * `saltando`, `cabeceando` y `quietito`, que son identificadores del codigo y `D-17` los deja
  * explicitamente afuera. Mismo criterio, y mismo recolector aparte, que el banco de dos
  * ejes de mas arriba.
  *
@@ -281,8 +281,11 @@ test('voz 4.1: la linea grande no pasa de ocho palabras', () => {
     ...sitio.JUEGOS.map((c) => [`casete "${c.titulo}"`, c.titulo] as [string, string]),
     ['casete cancionero', sitio.CASETE_CANCIONERO.titulo],
     ['casete redondopedia', sitio.CASETE_REDONDOPEDIA.titulo],
+    // Los renglones del lugar (`CNT-13`) son la línea que canta de cada pantalla, y `CNT-13`
+    // los midió contra el techo de ocho a mano. Hasta el 2026-10-01 este test no los miraba:
+    // lo notó `contenido` al escribir el undécimo (`CNT-26`).
+    ...Object.entries(sitio.LUGARES).map(([k, v]) => [`lugar ${k}`, v] as [string, string]),
     ...Object.entries(quiz.TRAMOS).map(([k, v]) => [`quiz tramo ${k}`, v.titulo] as [string, string]),
-    ...Object.entries(sitio.COCINA).map(([k, v]) => [`cocina ${k}`, v.titulo] as [string, string]),
     // `T-167` del ciclo 10. Los seis `h1` de portada faltaban en esta lista, y no por
     // olvido: sumarlos rompia el build por **una sola linea** — el `h1` del quiz, que
     // tenia diez palabras. Cerrar el auditor dejando afuera al unico que fallaba habria

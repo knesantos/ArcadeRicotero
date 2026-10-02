@@ -41,7 +41,7 @@ import { estampaDe } from '../lib/tapa/pasadas.ts';
 import { armarCasete } from '../lib/tema/casete.ts';
 import { esIOS, esMovil, navegadorIncrustado } from '../lib/sitio/aparato.ts';
 import { tramo } from '../lib/quiz/tramo.ts';
-import { armarLink } from '../lib/desafio.ts';
+import { armarLink, leerDesafio } from '../lib/desafio.ts';
 import { Cronometro, duracion, total as sumarTiempos } from '../lib/tema/reloj.ts';
 import { claseDisco } from '../lib/tema/paleta.ts';
 import { armarVuelta } from '../lib/tema/vuelta.ts';
@@ -190,6 +190,27 @@ for (const boton of portada.querySelectorAll<HTMLButtonElement>('[data-disco]'))
   if (boton && !boton.disabled) {
     boton.click();
     boton.closest('details')?.setAttribute('open', '');
+  }
+}
+
+/*
+ * Si alguien llegó por un desafío, la bajada de la portada lo dice.
+ *
+ * Este juego armaba el enlace desde el ciclo 13 (`compartirResultado`, más abajo) y **nunca
+ * leía el que recibía**: el amigo caía en la portada pelada y el "fijate vos" quedaba sin
+ * contra. Era el único de los cuatro juegos con desafío que lo dejaba a medias. Mismo
+ * mecanismo que "Sacalo por la letra": `leerDesafio` con el juego obligatorio (`FIND-28`),
+ * y el texto por `textContent`, jamás `innerHTML` — el nombre viene de la URL, que es la
+ * única superficie de entrada del sitio (`ADR-02`).
+ *
+ * `?disco=` (el afiche de octubre) y el desafío no se pisan: el enlace compartido sale de
+ * `location.pathname`, sin la query, así que un desafío nunca trae un disco elegido.
+ */
+{
+  const desafio = leerDesafio(location.search, 'tema');
+  const bajada = document.getElementById('subtitulo');
+  if (desafio && desafio.forma !== 'identidad' && bajada) {
+    bajada.textContent = PANTALLA_0.desafio(desafio.puntaje, desafio.total, desafio.nombre);
   }
 }
 

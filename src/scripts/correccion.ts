@@ -50,16 +50,30 @@ function el<K extends keyof HTMLElementTagNameMap>(
  * pasos), y `UX-09` lo fundamentó: allá un toque accidental termina la partida; acá abre
  * un panel que se cierra. Transplantar la fricción sería cobrar un costo que no existe.
  */
-export function botonCorreccion(datos: () => DatosDelItem): HTMLElement {
+export function botonCorreccion(
+  datos: () => DatosDelItem,
+  partes: readonly { readonly etiqueta: string; readonly datos: DatosDelItem }[] = [],
+): HTMLElement {
   const caja = el('p', 'correccion');
   const b = el('button', 'correccion-disparador', CORRECCION.disparador);
   b.type = 'button';
-  b.addEventListener('click', () => abrirPanel(caja, datos()));
+  b.addEventListener('click', () => abrirPanel(caja, datos(), partes));
   caja.append(b);
   return caja;
 }
 
-function abrirPanel(ancla: HTMLElement, datos: DatosDelItem): void {
+/**
+ * `partes`, si viene, es la lista de lo que se puede corregir adentro del ítem: los párrafos
+ * y los datos de un artículo de la Redondopedia (`CTR-10` §2.1, `FIND-87`). El panel la
+ * muestra como un selector antes del campo, y lo que se manda es la parte elegida —con su
+ * texto, su rótulo y su ubicación—, no el ítem entero. Sin `partes`, el panel es el de
+ * siempre: los juegos corrigen la pregunta que la persona acaba de ver.
+ */
+function abrirPanel(
+  ancla: HTMLElement,
+  datosDelItem: DatosDelItem,
+  partes: readonly { readonly etiqueta: string; readonly datos: DatosDelItem }[],
+): void {
   const previo = ancla.querySelector('.correccion-panel');
   if (previo) return;
 
@@ -71,6 +85,22 @@ function abrirPanel(ancla: HTMLElement, datos: DatosDelItem): void {
   titulo.id = 'correccion-titulo';
   panel.append(titulo);
   panel.append(el('p', 'tenue', CORRECCION.instruccion));
+
+  let elegida: () => DatosDelItem = () => datosDelItem;
+  if (partes.length > 0) {
+    const etiquetaParte = el('label', 'correccion-etiqueta', CORRECCION.etiquetaParte);
+    etiquetaParte.htmlFor = 'correccion-parte';
+    panel.append(etiquetaParte);
+    const selector = el('select', 'correccion-parte');
+    selector.id = 'correccion-parte';
+    partes.forEach((p, i) => {
+      const opcion = el('option', undefined, p.etiqueta);
+      opcion.value = String(i);
+      selector.append(opcion);
+    });
+    panel.append(selector);
+    elegida = () => partes[Number(selector.value)]?.datos ?? datosDelItem;
+  }
 
   const etiqueta = el('label', 'correccion-etiqueta', CORRECCION.etiquetaCampo);
   etiqueta.htmlFor = 'correccion-texto';
@@ -91,7 +121,7 @@ function abrirPanel(ancla: HTMLElement, datos: DatosDelItem): void {
     // El componente no nombra transportes: los pide y busca su etiqueta por clave.
     const b = el('button', 'secundario', SALIDA[via]);
     b.type = 'button';
-    b.addEventListener('click', () => void mandar(panel, datos, campo, via));
+    b.addEventListener('click', () => void mandar(panel, elegida(), campo, via));
     salidas.append(b);
   }
   panel.append(salidas);

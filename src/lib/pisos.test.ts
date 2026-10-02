@@ -75,10 +75,11 @@ test('US-01: el piso de 40 preguntas sigue cumplido, con su reparto', () => {
   }
 });
 
-/** `US-05`, piso 35. Cerrado en el ciclo 6. La guarda vieja pedia 20 y quedo corta. */
-test('US-05: el piso de 35 articulos de la Redondopedia sigue cumplido', () => {
+/** `US-05`, piso 38 desde `BR-34` (2026-10-01: las tres bandas de después de la separación).
+ *  Era 35, cerrado en el ciclo 6; la guarda vieja pedia 20 y quedo corta. */
+test('US-05: el piso de 38 articulos de la Redondopedia sigue cumplido', () => {
   const { articulos } = leer<{ articulos: readonly unknown[] }>('redondopedia');
-  assert.ok(articulos.length >= 35, `el piso de US-05 es 35 y hay ${articulos.length}`);
+  assert.ok(articulos.length >= 38, `el piso de US-05 es 38 (BR-34) y hay ${articulos.length}`);
 });
 
 /**

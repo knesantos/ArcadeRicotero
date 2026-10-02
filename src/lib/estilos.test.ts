@@ -679,6 +679,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
 
   'armar-cancionero.ts': { sinTablero: 'arma un HTML autocontenido que se descarga; sus estilos viajan adentro de ese archivo, no en las hojas del sitio' },
   'cancion.ts': { sinTablero: 'transportar y bajar solo en la ficha de un tema; no hay partida ni respuesta que senalar' },
+  'compartir.ts': { sinTablero: 'el boton de compartir de los juegos sin tarjeta (tapa, letra, dos ejes); sus tres clases son las de compartir de juego.css' },
   'correccion.ts': { sinTablero: 'el boton de correccion compartido; abre un formulario, no pinta estado de partida' },
   'diagnostico-audio.ts': { sinTablero: 'pantalla de medicion; sus reglas viven en el <style> de su propia pagina y la cubre la red derivada' },
   'lamina.ts': { sinTablero: 'pincel de canvas (US-08); dibuja pixeles, no crea nodos con clase' },

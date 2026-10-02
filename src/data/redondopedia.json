@@ -668,6 +668,12 @@
           "quien": null
         },
         {
+          "texto": "Desde 2004, después de la separación, tuvo banda propia: [[los-fundamentalistas|Indio Solari y los Fundamentalistas del Aire Acondicionado]].",
+          "rotulo": "hecho",
+          "fuente": "RES-47",
+          "quien": null
+        },
+        {
           "texto": "Su último recital en vivo fue el 11 de marzo de 2017, en el predio La Colmena de Olavarría. Después de esa noche no volvió a subirse a un escenario: nunca más se presentó en persona.",
           "rotulo": "hecho",
           "fuente": "RES-07",
@@ -686,7 +692,7 @@
           "quien": null
         },
         {
-          "texto": "El Indio murió el 5 de junio de 2026, a los 77 años. Padecía Parkinson, un diagnóstico que él mismo había hecho público años antes. Su última aparición fue por video, en un recital de Los Fundamentalistas del Aire Acondicionado, para decirle a su público que lo quería, que lo respetaba y que era de los mejores del planeta. La noticia fue confirmada por Página/12 y por La Nación como segunda fuente independiente; lo que circuló sobre las circunstancias exactas de su muerte no tiene verificación, y por eso no se repite acá. El resto de esa historia está en [[muerte-del-indio|la muerte del Indio]].",
+          "texto": "El Indio murió el 5 de junio de 2026, a los 77 años. Padecía Parkinson, un diagnóstico que él mismo había hecho público años antes. Su última aparición fue por video, en un recital de [[los-fundamentalistas|Los Fundamentalistas del Aire Acondicionado]], para decirle a su público que lo quería, que lo respetaba y que era de los mejores del planeta. La noticia fue confirmada por Página/12 y por La Nación como segunda fuente independiente; lo que circuló sobre las circunstancias exactas de su muerte no tiene verificación, y por eso no se repite acá. El resto de esa historia está en [[muerte-del-indio|la muerte del Indio]].",
           "rotulo": "hecho",
           "fuente": "RES-04",
           "quien": null
@@ -760,6 +766,12 @@
           "rotulo": "testimonio",
           "fuente": "RES-22",
           "quien": "Indio Solari, en «Recuerdos que mienten un poco»"
+        },
+        {
+          "texto": "Después de la separación tuvo banda propia: [[skay-y-los-fakires|Skay y los Fakires]], que arrancó en 2002 y lleva ese nombre desde 2012. Los discos y los nombres anteriores están en su artículo.",
+          "rotulo": "hecho",
+          "fuente": "RES-47",
+          "quien": null
         },
         {
           "texto": "Skay está vivo y activo: en mayo de 2026 fue visto junto a la Negra Poli en Las Grutas. Es además vicepresidente de Erks S.A., la sociedad constituida en 1992, donde los tres socios tienen partes iguales del nombre del grupo — un reparto en tercios que dice bastante de cómo funcionó siempre esa sociedad.",
@@ -882,6 +894,12 @@
           "rotulo": "testimonio",
           "fuente": "RES-22",
           "quien": "Indio Solari, en «Recuerdos que mienten un poco»"
+        },
+        {
+          "texto": "Integra [[los-decoradores|Los Decoradores]] (La Kermesse Redonda, para buena parte de la prensa), un proyecto de músicos que acompañaron a los Redondos.",
+          "rotulo": "hecho",
+          "fuente": "RES-47",
+          "quien": null
         }
       ],
       "veaTambien": [
@@ -1243,6 +1261,12 @@
           "rotulo": "testimonio",
           "fuente": "RES-22",
           "quien": "Indio Solari (en \"Recuerdos que mienten un poco\")"
+        },
+        {
+          "texto": "Después de 2001 la música siguió con otros nombres. Tres bandas, y no son la misma clase de cosa. Dos son de los fundadores: [[los-fundamentalistas|Indio Solari y los Fundamentalistas del Aire Acondicionado]] y [[skay-y-los-fakires|Skay y los Fakires]]. La tercera la armaron músicos que acompañaron a los Redondos: [[los-decoradores|Los Decoradores]], que buena parte de la prensa llama La Kermesse Redonda. Ninguna es Patricio Rey.",
+          "rotulo": "hecho",
+          "fuente": "RES-47",
+          "quien": null
         }
       ],
       "veaTambien": [
@@ -1303,7 +1327,7 @@
           "quien": null
         },
         {
-          "texto": "Su última aparición pública fue por video, durante un concierto de Los Fundamentalistas. Ahí le habló a su público por última vez: \"Los quiero mucho, los respeto mucho como público. Son de los mejores del planeta\".",
+          "texto": "Su última aparición pública fue por video, durante un concierto de [[los-fundamentalistas|Los Fundamentalistas]]. Ahí le habló a su público por última vez: \"Los quiero mucho, los respeto mucho como público. Son de los mejores del planeta\".",
           "rotulo": "hecho",
           "fuente": "RES-04",
           "quien": null
@@ -1624,6 +1648,320 @@
         "el-aguante",
         "debut-en-obras",
         "huracan-93-94"
+      ]
+    },
+    {
+      "slug": "los-fundamentalistas",
+      "tipo": "concepto",
+      "titulo": "Indio Solari y los Fundamentalistas del Aire Acondicionado",
+      "resumen": "Es la banda con la que el Indio Solari tocó después de la separación de Patricio Rey. Se formó en 2004 y editó cinco discos, el último en 2018. No es un homenaje de terceros: es banda propia de uno de los fundadores. Tampoco es Patricio Rey, y sus discos no están entre los diez de los Redondos.",
+      "datos": [
+        {
+          "etiqueta": "Qué es",
+          "valor": "Banda propia de Indio Solari, cantante y letrista de Patricio Rey desde su formación; no es un proyecto de terceros",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Se formó",
+          "valor": "2004, después de la separación de 2001",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Integrantes del origen",
+          "valor": "Julio Sáez y Baltasar Comotto (guitarras), Marcelo Torres (bajo), Hernán Aramberri (batería), Sergio Colombo (saxo), Miguel Ángel Tallarita (trompeta), Déborah Dixon (coros) y Pablo Sbaraglia (teclados)",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Formación de antes de 2026",
+          "valor": "Con cambios documentados en 2008 y 2015: Gaspar Benegas y Baltasar Comotto (guitarras y voz), Pablo Sbaraglia (teclados y voz), Fernando Nalé (bajo), Sergio Colombo (saxo), Déborah Dixon y Luciana Palacios (coros), entre otros. La nómina de hoy no está fichada",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Disco",
+          "valor": "El tesoro de los inocentes (2004)",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Disco",
+          "valor": "Porco Rex (2007)",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Disco",
+          "valor": "El perfume de la tempestad (2010)",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Disco",
+          "valor": "Pajaritos, bravos muchachitos (2013)",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Disco",
+          "valor": "El ruiseñor, el amor y la muerte (2018)",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Qué no es",
+          "valor": "Una banda de Patricio Rey: los 105 temas de los Redondos salen de sus diez discos, y estos cinco no están entre ellos",
+          "rotulo": "hecho",
+          "fuente": "RES-20, RES-47"
+        },
+        {
+          "etiqueta": "Estado",
+          "valor": "Al 22 de agosto de 2026: recital anunciado en Tucumán para el 10 de octubre de 2026; no se encontró anuncio de disolución ni de cambio de nombre",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Indio Solari y los Fundamentalistas del Aire Acondicionado es la banda con la que [[indio-solari|el Indio]] tocó después de los Redondos. No es un homenaje de terceros: es banda propia de uno de los fundadores, que había sido cantante y letrista de Patricio Rey desde su formación. Se formó en 2004, después de [[la-separacion|la separación]] de 2001.",
+          "rotulo": "hecho",
+          "fuente": "RES-47",
+          "quien": null
+        },
+        {
+          "texto": "Entre los integrantes del origen figuran Julio Sáez y Baltasar Comotto en guitarras, Marcelo Torres en bajo, Sergio Colombo en saxo, Miguel Ángel Tallarita en trompeta, Déborah Dixon en coros y Pablo Sbaraglia en teclados. En la batería estaba Hernán Aramberri, que también integra [[los-decoradores|Los Decoradores]]. La formación cambió, con cambios documentados en 2008 y en 2015, y la nómina de hoy no está fichada.",
+          "rotulo": "hecho",
+          "fuente": "RES-47",
+          "quien": null
+        },
+        {
+          "texto": "Editó cinco discos: El tesoro de los inocentes (2004), Porco Rex (2007), El perfume de la tempestad (2010), Pajaritos, bravos muchachitos (2013) y El ruiseñor, el amor y la muerte (2018). Ninguno es un disco de Patricio Rey: los 105 temas de la banda salen de sus diez discos, y estos no están entre ellos.",
+          "rotulo": "hecho",
+          "fuente": "RES-47, RES-20",
+          "quien": null
+        },
+        {
+          "texto": "El Indio Solari murió el 5 de junio de 2026. Lo que se sabe está en [[muerte-del-indio|la muerte del Indio]].",
+          "rotulo": "hecho",
+          "fuente": "RES-04",
+          "quien": null
+        },
+        {
+          "texto": "La banda tenía programado un recital para el 6 de junio de 2026 en Comodoro Rivadavia. Se hizo, se transmitió en vivo y se convirtió en un homenaje.",
+          "rotulo": "hecho",
+          "fuente": "RES-47",
+          "quien": null
+        },
+        {
+          "texto": "Estado al 22 de agosto de 2026. Había un recital anunciado en Tucumán para el 10 de octubre de 2026. Es una fecha anunciada: este artículo no confirma que se haya hecho. No se encontró anuncio de disolución ni de cambio de nombre.",
+          "rotulo": "hecho",
+          "fuente": "RES-47",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "indio-solari",
+        "la-separacion",
+        "muerte-del-indio",
+        "los-decoradores",
+        "skay-y-los-fakires"
+      ]
+    },
+    {
+      "slug": "skay-y-los-fakires",
+      "tipo": "concepto",
+      "titulo": "Skay y los Fakires",
+      "resumen": "Es la banda propia de Skay Beilinson, guitarrista y cofundador de Patricio Rey. Arranca en 2002 y tuvo tres etapas de nombre: sin nombre formal hasta 2007, Skay y los Seguidores de la Diosa Kali hasta 2012 y, desde entonces, Skay y los Fakires. Editó ocho discos, uno de ellos compilado. La nómina de músicos no está cerrada en las fuentes.",
+      "datos": [
+        {
+          "etiqueta": "Qué es",
+          "valor": "Banda propia de Skay Beilinson, guitarrista y cofundador de Patricio Rey; no es un proyecto de terceros",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Arranca",
+          "valor": "2002",
+          "rotulo": "hecho",
+          "fuente": "RES-47, RES-64.1"
+        },
+        {
+          "etiqueta": "Primera etapa, 2002–2007",
+          "valor": "Sin nombre de banda formal. Discos: A través del mar de los sargazos (2002) y Talismán (2004)",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Segunda etapa, 2007–2012",
+          "valor": "Skay y los Seguidores de la Diosa Kali. Discos: La marca de Caín (2007) y ¿Dónde vas? (2010)",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Tercera etapa, desde 2012",
+          "valor": "Skay y los Fakires. Discos: La luna hueca (2013), El engranaje de cristal (2016), En el corazón del laberinto (2019) y Espejismos (2023, compilado)",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Integrantes",
+          "valor": "Sin nómina verificada: las fuentes relevadas no coinciden entre sí",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Estado",
+          "valor": "En actividad al 22 de agosto de 2026: recital reciente reportado, «El fantasma del 5° piso», Estadio Obras, 2025. Gira 2026 con fechas entre el 24 de enero y el 7 de agosto, consultada el 11 de septiembre de 2026",
+          "rotulo": "hecho",
+          "fuente": "RES-47, RES-64.2"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Skay y los Fakires es la banda propia de [[skay-beilinson|Skay Beilinson]], guitarrista y cofundador de Patricio Rey. No es un grupo de terceros: la lidera él, y es quien canta, compone y toca la primera guitarra.",
+          "rotulo": "hecho",
+          "fuente": "RES-47, RES-64.1",
+          "quien": null
+        },
+        {
+          "texto": "Pero el nombre no fue siempre ese. De 2002 a 2007 Skay tocó sin nombre de banda formal. Entre 2007 y 2012 se llamó Skay y los Seguidores de la Diosa Kali. Recién en 2012 adoptó el nombre definitivo, Skay y los Fakires, y el primer disco con ese nombre salió en 2013. Es el mismo proyecto de Skay con tres nombres.",
+          "rotulo": "hecho",
+          "fuente": "RES-47",
+          "quien": null
+        },
+        {
+          "texto": "Los discos van por etapa. Sin nombre formal: A través del mar de los sargazos (2002) y Talismán (2004). Con los Seguidores de la Diosa Kali: La marca de Caín (2007) y ¿Dónde vas? (2010). Con el nombre actual: La luna hueca (2013), El engranaje de cristal (2016), En el corazón del laberinto (2019) y Espejismos (2023), un compilado. Son ocho, y ninguno es de Patricio Rey.",
+          "rotulo": "hecho",
+          "fuente": "RES-47, RES-20",
+          "quien": null
+        },
+        {
+          "texto": "De quiénes tocan con él no hay nómina cerrada. Una nota de prensa da, para el armado de 2012, a Oscar Reyna en guitarra, Claudio Quartero en bajo, Javier Lecumberry en teclados y «Topo» Espíndola en batería. Otra, más reciente, nombra a Joaquín Rosson en guitarra y a Leandro Sánchez en batería, sin decir desde cuándo. No coinciden y ninguna está confirmada: tomalas como pista, no como dato.",
+          "rotulo": "leyenda",
+          "fuente": "RES-47",
+          "quien": null
+        },
+        {
+          "texto": "Estado al 22 de agosto de 2026: en actividad. Un recital reciente reportado en esa consulta: «El fantasma del 5° piso», en el Estadio Obras, en 2025. Una consulta posterior, del 11 de septiembre de 2026, trae fechas de 2026 entre el 24 de enero y el 7 de agosto, en Córdoba, Temperley, Rosario, Bolívar, La Plata y Posadas.",
+          "rotulo": "hecho",
+          "fuente": "RES-47, RES-64.2",
+          "quien": null
+        },
+        {
+          "texto": "Después de [[la-separacion|la separación]], Skay y el Indio tuvieron cada uno su banda. La otra es [[los-fundamentalistas|Indio Solari y los Fundamentalistas del Aire Acondicionado]].",
+          "rotulo": "hecho",
+          "fuente": "RES-47",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "skay-beilinson",
+        "la-separacion",
+        "los-fundamentalistas",
+        "los-decoradores"
+      ]
+    },
+    {
+      "slug": "los-decoradores",
+      "tipo": "concepto",
+      "titulo": "Los Decoradores (La Kermesse Redonda)",
+      "resumen": "Los Decoradores es el nombre de la banda; La Kermesse Redonda, el de su formato de gira —una feria con música— y el que buena parte de la prensa usa para nombrarla. Son músicos que acompañaron a Patricio Rey y tocan su repertorio: Sergio Dawi, Semilla Bucciarelli, Tito Fargo y Hernán Aramberri. Se formaron en 2015 o en 2016, según la fuente, y no se encontraron discos propios.",
+      "datos": [
+        {
+          "etiqueta": "Nombre de la banda",
+          "valor": "Los Decoradores",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Nombre del formato de gira",
+          "valor": "La Kermesse Redonda (o La Kermesse): feria con artesanías y mercadería ricotera, y música. Con ese nombre empezó a presentarse el grupo en 2018",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Año de formación, versión 2016",
+          "valor": "2016, con la fusión de SemiDawi y The Comando Pickless, según Wikipedia y ellitoral.com",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Año de formación, versión 2015",
+          "valor": "2015, según ciudad.com.ar: su nota del 2 de junio de 2025 se titula «cumple 10 años»",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Integrantes",
+          "valor": "Sergio Dawi (saxo), Semilla Bucciarelli (bajo), Tito Fargo (guitarra) y Hernán Aramberri (batería)",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Relación con Patricio Rey",
+          "valor": "Músicos de acompañamiento de los Redondos; no es una banda de uno de los fundadores",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Discos propios",
+          "valor": "No se encontraron discos propios de estudio en las fuentes relevadas; eso no confirma que no existan",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        },
+        {
+          "etiqueta": "Estado",
+          "valor": "En actividad al 22 de agosto de 2026: una fecha en Club Paraguay reportada para el 16 de junio de 2026 y una gira reportada en agosto de 2026",
+          "rotulo": "hecho",
+          "fuente": "RES-47"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Hay dos nombres y conviene no mezclarlos. Los Decoradores es el de la banda. La Kermesse Redonda —o la Kermesse, a secas— es el de su formato de gira: una feria con artesanías y mercadería ricotera, y música en el medio. Con ese nombre empezó a presentarse el grupo en 2018, y buena parte de la prensa lo sigue usando. Por eso se la encuentra con cualquiera de los dos.",
+          "rotulo": "hecho",
+          "fuente": "RES-47",
+          "quien": null
+        },
+        {
+          "texto": "Es un proyecto de músicos que acompañaron a los Redondos, sin una figura central. Sergio Dawi toca el saxo y pasó catorce años en los Redondos. [[semilla-bucciarelli|Semilla Bucciarelli]] toca el bajo. Tito Fargo, en guitarra, tocó en los dos primeros discos, [[gulp|Gulp!]] y [[oktubre|Oktubre]]. Hernán Aramberri, en batería, tocó en vivo con los Redondos y después fue baterista estable de [[los-fundamentalistas|los Fundamentalistas]].",
+          "rotulo": "hecho",
+          "fuente": "RES-47",
+          "quien": null
+        },
+        {
+          "texto": "El año de formación no está cerrado. Wikipedia y ellitoral.com dan 2016, con la fusión de SemiDawi y The Comando Pickless. La nota de ciudad.com.ar del 2 de junio de 2025 se titula «cumple 10 años», lo que da 2015. Ninguna fuente fichada zanja la diferencia y acá no se elige una. Para cerrarla haría falta una nota fundacional o lo que cuenten Semilla Bucciarelli o Sergio Dawi.",
+          "rotulo": "hecho",
+          "fuente": "RES-47 (Wikipedia y ellitoral.com: 2016; ciudad.com.ar: 2015)",
+          "quien": null
+        },
+        {
+          "texto": "No se encontraron discos propios de estudio en las fuentes relevadas. Eso no confirma que no existan, y tampoco se buscó a fondo un registro en vivo. Lo que tocan es el repertorio de Patricio Rey: la música es de los Redondos; el grupo es otro.",
+          "rotulo": "hecho",
+          "fuente": "RES-47",
+          "quien": null
+        },
+        {
+          "texto": "Estado al 22 de agosto de 2026: en actividad. Hay una fecha en Club Paraguay reportada para el 16 de junio de 2026 y una gira reportada en agosto de 2026.",
+          "rotulo": "hecho",
+          "fuente": "RES-47",
+          "quien": null
+        },
+        {
+          "texto": "Es la única de las tres bandas de después de [[la-separacion|la separación]] sin uno de los fundadores al frente. Las otras dos son [[los-fundamentalistas|Indio Solari y los Fundamentalistas del Aire Acondicionado]] y [[skay-y-los-fakires|Skay y los Fakires]].",
+          "rotulo": "hecho",
+          "fuente": "RES-47",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "semilla-bucciarelli",
+        "la-separacion",
+        "los-fundamentalistas",
+        "gulp",
+        "oktubre"
       ]
     },
     {

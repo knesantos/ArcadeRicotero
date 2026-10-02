@@ -2,7 +2,7 @@
   "contrato": "CTR-02",
   "contratoVersion": 1,
   "juego": "quiz",
-  "actualizado": "2026-08-28",
+  "actualizado": "2026-10-01",
   "items": [
     {
       "id": "QZ-001",
@@ -385,6 +385,9 @@
       "esLeyenda": true,
       "rotuloLeyenda": "Leyenda urbana ricotera, nunca confirmada, sobre el origen de «Ji Ji Ji».",
       "sensibleA": [],
+      "spotify": {
+        "trackId": "1tW6LiJGXGlReuNP38wrKb"
+      },
       "estado": "listo",
       "notaInterna": "Ciclo 9, fuga: el enunciado decía «el balneario más clásico y masivo del verano argentino», que es la definición de Mar del Plata. Se saca la descripción; las cuatro opciones ya eran ciudades de la costa."
     },
@@ -529,6 +532,9 @@
       "esLeyenda": true,
       "rotuloLeyenda": "La leyenda circuló como hecho durante años; esta pregunta cuenta la desmentida real del propio Indio en 2007.",
       "sensibleA": [],
+      "spotify": {
+        "trackId": "1tW6LiJGXGlReuNP38wrKb"
+      },
       "estado": "listo",
       "notaInterna": "Ciclo 9, fuga: la opción correcta decía «una risa perversa» y el título del tema es una risa. Ese detalle pasa a la explicación."
     },
@@ -1208,6 +1214,9 @@
         "afirmacion": "Cuenta que el tercer y último videoclip de la banda estuvo inspirado en «Capitán Buscapina», con cameos de Luzbelito y del hombre que alza la cadena en Oktubre."
       },
       "sensibleA": [],
+      "spotify": {
+        "trackId": "2GvbPdseVUYzQHWlgxnxXm"
+      },
       "estado": "listo"
     },
     {
@@ -1312,6 +1321,9 @@
       "esLeyenda": true,
       "rotuloLeyenda": "Coautoría desmentida: Luca Prodan tocó «Criminal Mambo» de improviso en el boliche Cemento, en 1987, pero nunca fue coautor de la canción. Lo desmiente la propia fuente que recoge el episodio.",
       "sensibleA": [],
+      "spotify": {
+        "trackId": "44LkNJpEVO5PiX08RQaVCC"
+      },
       "estado": "listo"
     },
     {
@@ -1388,6 +1400,9 @@
       ],
       "esLeyenda": false,
       "sensibleA": [],
+      "spotify": {
+        "trackId": "0HQMAExgp4BiKGq6UM3u9X"
+      },
       "estado": "listo"
     },
     {
@@ -1422,6 +1437,9 @@
       ],
       "esLeyenda": false,
       "sensibleA": [],
+      "spotify": {
+        "trackId": "2ybNy7okIb11z8czxvxoEg"
+      },
       "estado": "listo"
     },
     {
@@ -1527,6 +1545,9 @@
       ],
       "esLeyenda": false,
       "sensibleA": [],
+      "spotify": {
+        "trackId": "1tW6LiJGXGlReuNP38wrKb"
+      },
       "estado": "listo",
       "notaInterna": "Nuevo en el ciclo 9, entra en el lugar de QZ-037. La categoría letras no tenía ni una pregunta facil —ocho de diez eran dificiles—, así que BR-01 nunca podía abrir una partida con letras. La explicación no dice el año a propósito: se lo estaría regalando a QZ-002."
     },

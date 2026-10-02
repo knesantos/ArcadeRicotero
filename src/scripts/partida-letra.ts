@@ -17,7 +17,9 @@
 import { armarRonda, contarAciertos } from '../lib/quiz/ronda.ts';
 import { botonCorreccion } from './correccion.ts';
 import type { Item, Opcion } from '../lib/letra/banco.ts';
-import { PARTIDA, RESULTADO } from '../lib/letra/copy.ts';
+import { PANTALLA_0, PARTIDA, RESULTADO } from '../lib/letra/copy.ts';
+import { armarLink, leerDesafio } from '../lib/desafio.ts';
+import { botonCompartir } from './compartir.ts';
 import { tituloDelDisco } from '../lib/letra/discos.ts';
 
 const LARGO_RONDA = 8;
@@ -60,6 +62,20 @@ function mostrar(seccion: HTMLElement): void {
   for (const s of [portada, zonaPartida, zonaResultado]) s.hidden = s !== seccion;
 }
 
+
+/*
+ * Si alguien llegó por un desafío, la bajada de la portada lo dice (`ADR-02`). El juego
+ * va obligatorio (`FIND-28`): sin él, un enlace de otro juego pintaría acá un puntaje que
+ * no es de este. `textContent` y jamás `innerHTML`: el nombre viene de la URL.
+ */
+const JUEGO = 'letra';
+{
+  const desafio = leerDesafio(location.search, JUEGO);
+  const bajada = document.getElementById('subtitulo');
+  if (desafio && desafio.forma !== 'identidad' && bajada) {
+    bajada.textContent = PANTALLA_0.desafio(desafio.puntaje, desafio.total, desafio.nombre);
+  }
+}
 $('jugar')?.addEventListener('click', comenzar);
 
 function comenzar(): void {
@@ -217,7 +233,17 @@ function pintarResultado(): void {
   zonaResultado.append(el('h2', undefined, RESULTADO.titulo));
   zonaResultado.append(el('p', 'puntaje', RESULTADO.puntaje(aciertos, ronda.length)));
 
-  const denuevo = el('button', 'primario', RESULTADO.denuevo);
+  // Compartir (2026-10-01): el resultado viaja como desafío, forma `marcador` (`ADR-02`).
+  // Es el primario de la pantalla, como en los otros juegos que comparten; "Otra vuelta"
+  // pasa a secundario para que no haya dos botones gritando lo mismo.
+  const total = ronda.length;
+  const { boton: compartir, salida } = botonCompartir(RESULTADO, () => ({
+    texto: RESULTADO.paraCompartir(aciertos, total),
+    url: armarLink(location.origin + location.pathname, { forma: 'marcador', juego: JUEGO, puntaje: aciertos, total }),
+  }));
+  zonaResultado.append(compartir, salida);
+
+  const denuevo = el('button', 'secundario', RESULTADO.denuevo);
   denuevo.type = 'button';
   denuevo.addEventListener('click', comenzar);
   zonaResultado.append(denuevo);

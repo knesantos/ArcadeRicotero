@@ -20,7 +20,7 @@ import '../../styles/sitio.css';
 import { PANTALLA_0 } from '../../lib/dos-ejes/copy.ts';
 import Cabeza from '../../components/Cabeza.astro';
 import PieImprenta from '../../components/PieImprenta.astro';
-import { PORTAL } from '../../lib/sitio/copy.ts';
+import { LUGARES, PORTAL } from '../../lib/sitio/copy.ts';
 import crudo from '../../data/dos-ejes.json';
 
 /**
@@ -68,7 +68,8 @@ const TITULO = '¿Qué tipo de ricotero sos? — Arcade Ricotero';
         </header>
         <p class="marca" aria-label="Arcade Ricotero">ARCADE RICOTERO</p>
         <h1>{PANTALLA_0.titulo}</h1>
-        <p class="tenue">{PANTALLA_0.subtitulo}</p>
+        <p class="donde-estas">{LUGARES.dosEjes}</p>
+        <p id="subtitulo" class="tenue">{PANTALLA_0.subtitulo}</p>
         <button id="empezar" class="primario" type="button">{PANTALLA_0.boton}</button>
       </section>
 

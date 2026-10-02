@@ -25,6 +25,13 @@ export const PANTALLA_0 = {
    * de tocar, que esto no es una ronda con puntaje.
    */
   boton: 'Empezá',
+  /**
+   * Lo que lee el que llega por el enlace de un amigo (`ADR-02`, forma `identidad`). Dice
+   * qué le salió al otro y **nada que suene a superarlo**: ningún cuadrante es mejor que
+   * otro (`BR-17`), así que la invitación es a ver qué te sale a vos, no a ganarle.
+   */
+  desafio: (cuadrante: string, nombre?: string) =>
+    `A ${nombre ?? 'alguien'} le salió «${cuadrante}». ¿Y a vos? Diez preguntas de cómo sos, no de cuánto sabés.`,
 } as const;
 
 export const PARTIDA = {
@@ -52,4 +59,8 @@ export const RESULTADO = {
   denuevo: 'Probá de nuevo',
   compartir: 'Compartí',
   volver: 'Volvé al arcade',
+  /** El texto que acompaña al enlace. La identidad, nunca un número (`BR-17`, `CNT-26`). */
+  paraCompartir: (cuadrante: string) => `Me salió «${cuadrante}» en el arcade ricotero. ¿Y a vos qué te sale?`,
+  copiado: 'Se copió el enlace.',
+  aManoTitulo: 'Copiá esto y mandalo',
 } as const;

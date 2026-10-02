@@ -229,3 +229,33 @@ tiene que seguir en verde con las ocho cadenas nuevas adentro del recorrido de `
 (la función `cadenas()` que ya barre `sitio.ts`, `quiz/copy.ts`, `tema/copy.ts`,
 `letra/copy.ts`, `tapa/copy.ts` y `por-la-letra/copy.ts` las va a encontrar solas apenas
 existan, sin que haya que tocar el propio test).
+
+## 8. Reapertura del 2026-10-01 — el renglón de `dos-ejes` (`CNT-26`)
+
+> Apartado agregado. Las secciones 1 a 7 quedan como estaban; donde algo de ellas deja de valer,
+> lo dice este apartado.
+
+El 2026-10-01 `dos-ejes` consiguió puerta: un casete en el lado A del portal. Se cae la razón del
+descarte de §1 (*"una sala sin puerta"*), se cumple la condición que dejé escrita en
+`Docs/SUGERENCIAS/CNT-para-hilo-principal-puerta-dos-ejes.md` (*"se reabre y se le agrega el
+renglón"*) y se escribe con el método de §2.
+
+| Lugar | Renglón | Palabras | Por qué éste y no otro |
+|---|---|---|---|
+| **¿Qué tipo de ricotero sos?** (`dos-ejes`) | *"Una vela te alumbra media cara."* | 6 | La vela es la del recorte de *Luzbelito* con que viste el casete (`UX-06` §5). Alumbra *media* cara, que es mitad y mitad: no le da signo bueno ni malo a la luz ni a la oscuridad antes de la primera pregunta (`BR-17`). No nombra ninguno de los cuatro cuadrantes ni los dos ejes. |
+
+Pasa los seis criterios de §2 y la prueba de §5 (tapado el renglón, el `h1`, el subtítulo y el
+botón alcanzan). El detalle, los descartes y la comparación con el provisional que ya estaba
+pegado en el código están en `CNT-26` §1.1.
+
+**Lo que este apartado corrige de lo anterior:**
+
+1. **§1 y §6, tercer punto** (*"`dos-ejes` queda afuera"*): deja de valer. Hoy hay renglón.
+2. **El número.** La sugerencia de septiembre lo llamó "el noveno" porque se escribió cuando había
+   ocho. Hoy hay diez renglones en `LUGARES`: a los ocho de esta pieza se sumaron `ponelos`
+   (`US-08`) y `masOMenos` (`CNT-25` §3.1). Éste es el **undécimo**.
+3. **§6, cuarto punto, y "Cómo se verifica"** decían que los renglones iban a *"caer solos"* bajo
+   `voz.test.ts`. Es cierto para anglicismos, fórmulas de folleto, cómo se nombra a la gente y
+   botón en infinitivo. **No lo es para el largo de ocho palabras:** esa regla corre sobre una
+   lista explícita (`grandes`) y `LUGARES` no está en ella. Ningún renglón de los once está medido
+   por una máquina; los medí a mano. Propuesta al hilo principal en `CNT-26` §6, punto 2.
