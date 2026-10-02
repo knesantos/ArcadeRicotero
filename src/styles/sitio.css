@@ -925,6 +925,14 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   transform: rotate(3deg);
 }
 
+/* Un detalle apaisado (más de 1,4 veces más ancho que alto) se pega entero: el marco abraza
+   la pieza en vez de recortarla al cuadrado, que le comía las puntas al "Gulp." del sobre del
+   casete de Skayboy. El ancho no cambia, así que la etiqueta arranca en la misma columna. */
+.casete-arte--apaisada {
+  height: auto;
+  object-fit: fill;
+}
+
 /* La tapa entera: el disco pegado como un objeto, no como una miniatura. Filete de papel,
    como el borde blanco que deja la imprenta en un sobre, y la sombra dura corrida del
    recorte sobre recorte — tinta plana, sin difuminar (la tabla anti-slop). */
@@ -2041,6 +2049,22 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo),
   resize: vertical;
 }
 
+.correccion-parte {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  font-family: var(--fuente);
+  color: var(--texto);
+  /* El fondo va explícito y no transparente: la lista que despliega el sistema hereda este
+     color, y sobre el blanco por defecto la tinta clara del sitio no se lee. */
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  border-radius: 3px;
+  padding: var(--espacio-1);
+  min-height: var(--toque-min);
+}
+
+.correccion-parte:focus-visible,
 .correccion-campo:focus-visible {
   border-color: var(--acento-2);
   outline: none;

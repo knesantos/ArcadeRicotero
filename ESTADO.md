@@ -21,13 +21,14 @@
 > - **Skayboy y Poligirl publicado**: seis niveles `listo` (`deDos: true` = el usuario se hizo
 >   cargo), casete A9 vistiendo *Gulp!* con el "Gulp." del sobre. Producción siembra los seis.
 > - **Casilla de corrección conectada** (partida en el código; un test vigila que no quede
->   escrita entera) y **botón al pie de cada artículo de la Redondopedia**. El transporte de
->   mail ya no tira error si no hay `location`: pasa la posta.
+>   escrita entera) y **botón al pie de cada artículo de la Redondopedia**, con un selector
+>   "Qué parte" (el artículo, cada dato, cada párrafo) que manda texto, rótulo y ubicación
+>   como pide `CTR-10` §2.1. El transporte de mail es una fábrica con sus tres tests.
 > - **"Adiviná el tema" lee su desafío**; **tapa, letra y dos ejes comparten** (módulo nuevo
 >   `scripts/compartir.ts`, texto y enlace, sin tarjeta).
 > - **Spotify**: 7 preguntas del quiz con ID de 5 temas verificados (`INV-140`).
-> - **"Más o menos"**: 45 datos (+10, `MM-36`..`MM-45`); 8 de los 18 pendientes no entraron por
->   veracidad (`CNT-25` §2).
+> - **"Más o menos"**: 44 datos `listo`, 16/16/12 (+9: entraron 10 de los 18 pendientes y
+>   `REV-17` hizo retirar `MM-40`, cuyo objeto la cita no respalda; `CNT-25` §2).
 > - **Redondopedia 38/38**: las tres bandas de después como `concepto` (`BR-34`, `BR-35`,
 >   `CNT-28`), con siete enlaces de entrada que cuida `redondopedia.test.ts`.
 > - **Calcomanías**: el muñeco del antifaz (*Un baión*) y el rótulo con la mosca (*La mosca y la
@@ -51,8 +52,12 @@
 > de red del entorno; `RES-142`..`RES-145` quedaron cancelados (`INV-141`). Los lotes se
 > regeneran desde `letra.json` cuando se habilite `acordes.lacuerda.net`.
 >
-> **Verificado al primer commit:** `npm test` 1377/1377 (eran 1373; cada test nuevo con su rojo
-> visto), `check` 0/0, build 153, y en la vista previa a 375 px: los nueve casetes sin desborde,
+> **`REV-17`, cerrada el 2026-10-02:** trece hallazgos (`FIND-86`..`FIND-98`), doce cerrados
+> (`Docs/REVISIONES/REV-17-lo-que-nadie-podia-encontrar.md`, con la tabla de cierre). Ninguno
+> le marcaba error al que sabe. Queda abierto `FIND-98` (el largo del portal, `experiencia`).
+>
+> **Verificado al cerrar:** `npm test` 1381/1381 (eran 1373; cada test nuevo con su rojo
+> visto), `check` 0/0, **build 156**, y en la vista previa a 375 px: los nueve casetes sin desborde,
 > los cinco desafíos al llegar (y uno de otro juego o con un cuadrante inventado no pinta nada),
 > dos ejes y tapa compartiendo, la corrección con "Mandá por mail" en la Redondopedia, las dos
 > calcomanías, Skayboy cargando sus seis niveles en el build de producción. `revisor` con
@@ -66,10 +71,14 @@
 >   pop*, `INV-140`) si quiere su botón.
 > - Si quiere el cotejo de la letra: habilitar `acordes.lacuerda.net` en el acceso de red.
 >
-> **Abierto, sin trabar:** el largo del portal con nueve casetes en el lado A (`experiencia`,
-> `UX-25`); el campo `temaFijo` de `skayboy.json`, resto de la cinta (`arquitectura`); la
-> comparación al volver de dos ejes (`UX-06` §6) no tiene copia; Skayboy no comparte (la pieza
-> de `BR-27` no está diseñada); la portada de Skayboy no tiene renglón del lugar.
+> **Abierto, sin trabar:** el largo del portal con once casetes (`FIND-98`, `experiencia`,
+> `UX-25`); sacar `temaFijo` de `skayboy.json` (resto de la cinta: `arquitectura` ya dijo qué
+> toca, `contratoVersion: 4`); `CNT-29` (renglón del lugar de Skayboy y la comparación al
+> volver de dos ejes); Skayboy no comparte (la pieza de `BR-27` no está diseñada); `MM-40`
+> espera la nota de Infobae; las propuestas de `contenido` sobre el filtro de la letra
+> (`Docs/SUGERENCIAS/CNT-para-hilo-principal-anotaciones-y-erratas-que-pasan-el-filtro.md`).
+> Ojo de `arquitectura`: corregir un nivel publicado de Skayboy lo devuelve a `borrador`
+> (`CTR-16.7` pone `deDos: false` al tocar la grilla) y lo saca del sitio.
 
 > ## 🍂 OKTUBRE, LA MOSCA QUE SE ACERCA, Y SIN CINTA (2026-10-01)
 >

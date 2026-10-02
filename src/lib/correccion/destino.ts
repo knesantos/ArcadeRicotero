@@ -9,8 +9,8 @@
  * corrección se armaba, se copiaba, **y no llegaba a ningún lado**. Era la primera de las
  * tres mitigaciones de `D-25`, y sin casilla era una pata en el aire.
  *
- * Ese día el usuario la dio, sabiendo el costo (`D-51`). Va **partida en dos y armada al
- * llamar**, no escrita entera: así no aparece como `usuario@dominio` en el JavaScript
+ * Ese día el usuario la dio, sabiendo el costo (`D-51`). Va **partida en dos y se arma al
+ * cargar el módulo**, no escrita entera: así no aparece como `usuario@dominio` en el JavaScript
  * publicado, que es el patrón que busca un raspador de los baratos. No es un candado —el
  * que lea el código la encuentra—, es no dejarla tirada en la vereda.
  *

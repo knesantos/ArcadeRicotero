@@ -97,9 +97,9 @@ export const PORTAL = {
  * menos, segunda persona, una imagen física y barata —moneda, aguja, papel, diente,
  * tinta, guitarra, archivo, puerta— y ninguno explica lo que acaba de decir.
  *
- * **La prueba que los ocho tienen que pasar, y `CNT-13` §5 la corrió uno por uno:** tapá
- * el renglón. Si el que llegó por un enlace todavía sabe qué es esto y qué botón tocar,
- * está bien escrito. Ninguno de los ocho es la única fuente de nada: si se borraran todos,
+ * **La prueba que los once tienen que pasar, y `CNT-13` §5 y §8 la corrieron uno por uno:**
+ * tapá el renglón. Si el que llegó por un enlace todavía sabe qué es esto y qué botón tocar,
+ * está bien escrito. Ninguno de los once es la única fuente de nada: si se borraran todos,
  * el sitio seguiría siendo jugable y entendible. Eso es lo que los deja ser atmósfera.
  *
  * **`dos-ejes` no tuvo renglón hasta el 2026-10-01, y fue a propósito:** no tenía puerta en

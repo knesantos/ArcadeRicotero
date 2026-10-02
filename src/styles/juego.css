@@ -2119,7 +2119,10 @@
 
 .ejes-plano {
   display: block;
-  width: min(100%, 17rem);
+  /* El tope de alto (`36vh`) es `FIND-90`: `UX-06` §4 quiere el nombre y los dos botones sin
+     scroll a 375×667, y desde que el resultado comparte, "Probá de nuevo" quedaba 28 px abajo
+     de la línea. En un teléfono alto el plano mide lo mismo que antes. */
+  width: min(100%, 17rem, 36vh);
   margin: 0 auto var(--espacio-3);
 }
 

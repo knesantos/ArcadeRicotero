@@ -1,7 +1,7 @@
 {
   "contrato": "CTR-20",
   "contratoVersion": 1,
-  "actualizado": "2026-10-01",
+  "actualizado": "2026-10-02",
   "datos": [
     { "id": "MM-01", "familia": "la-banda", "medida": "MM-01", "pregunta": "¿En qué año fue el origen de la banda en La Plata?", "valor": 1976, "escala": "anio", "firmeza": "hecho", "fuente": "RES-05", "estado": "listo" },
     { "id": "MM-02", "familia": "la-banda", "medida": "MM-02", "pregunta": "¿En qué año fue el Lozanazo, el show donde nació el nombre Patricio Rey y sus Redonditos de Ricota?", "valor": 1977, "escala": "anio", "firmeza": "hecho", "fuente": "RES-05", "estado": "listo" },
@@ -136,8 +136,8 @@
       "segun": "Rocambole",
       "fuente": "RES-102",
       "explicacion": "Lo dijo así: «como cuarenta». Es una cifra de memoria, no un conteo.",
-      "estado": "listo",
-      "notaInterna": "N-081 de INV-100: cita de Infobae ('40 años de Gulp!'), «probé como cuarenta versiones». Aproximado en la fuente, así que va como 'según' con el nombre en la pregunta (CTR-20.2 b). El objeto de 'versiones' (letras de la tapa) es el de la ficha: no se pudo releer la nota."
+      "estado": "retirado",
+      "notaInterna": "RETIRADO 2026-10-02 (FIND-86). La cita de N-081 (Infobae) es «probé como cuarenta versiones», sin objeto: 'de letras' y 'antes de elegir el diseño de la tapa' son de la fila, no de la cita, y no se pudo releer la nota. Vuelve a 'listo' solo con la nota a la vista y la pregunta calzada a lo que Rocambole dice que probó (CTR-20.2 b: su nombre en la pregunta, un solo objeto)."
     },
     {
       "id": "MM-41",

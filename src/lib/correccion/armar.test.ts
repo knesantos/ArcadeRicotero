@@ -20,7 +20,7 @@ import {
   DICE_MIN,
   type Correccion,
 } from './armar.ts';
-import { disponibles, enviar, ORDEN } from './transporte.ts';
+import { disponibles, enviar, ORDEN, transporteDeMail } from './transporte.ts';
 import { CASILLA } from './destino.ts';
 
 const base = {
@@ -110,9 +110,50 @@ test('D-14: siempre hay una salida, aunque no haya casilla ni portapapeles', () 
 });
 
 test('sin casilla configurada, el mail no existe — ni boton muerto ni mailto a la nada', () => {
-  if (CASILLA === null) {
-    assert.ok(!disponibles().includes('mail'), 'el transporte de mail no puede ofrecerse sin casilla');
+  // `FIND-88`: esto estaba envuelto en `if (CASILLA === null)` y con la casilla puesta no
+  // afirmaba nada. La fábrica deja probar la rama `null` aunque la casilla de verdad exista,
+  // y con un `location` presente, que es el caso en que el botón sí se ofrecería.
+  conLocation({ href: '' }, () => {
+    assert.equal(transporteDeMail(null).disponible(), false, 'sin casilla el mail no se ofrece');
+    assert.equal(transporteDeMail('a@b.c').disponible(), true);
+  });
+  if (CASILLA === null) assert.ok(!disponibles().includes('mail'));
+});
+
+/** Corre `f` con un `location` falso en `globalThis` y lo saca al terminar. */
+function conLocation<T>(falso: object, f: () => T): T {
+  const g = globalThis as { location?: unknown };
+  const antes = Object.getOwnPropertyDescriptor(g, 'location');
+  Object.defineProperty(g, 'location', { value: falso, configurable: true, writable: true });
+  try {
+    return f();
+  } finally {
+    if (antes) Object.defineProperty(g, 'location', antes);
+    else delete g.location;
   }
+}
+
+test('CTR-10.4: con casilla, el mail abre un mailto con el asunto y la corrección entera', async () => {
+  const falso = { href: '' };
+  const e = await conLocation(falso, () => transporteDeMail('casilla@ejemplo.ar').entregar(armar(base)));
+  assert.equal(e.resultado, 'abierto');
+  assert.match(falso.href, /^mailto:casilla@ejemplo\.ar\?subject=/);
+  const cuerpo = decodeURIComponent(falso.href.split('&body=')[1] ?? '');
+  assert.ok(cuerpo.includes('CL-014'), 'el cuerpo lleva el ítem');
+  assert.ok(cuerpo.includes(base.deberiaDecir), 'el cuerpo lleva lo que escribió la persona');
+});
+
+test('D-14: si el navegador no deja abrir el mailto, el mail dice no-pudo y la cadena sigue', async () => {
+  const quisquilloso = {
+    set href(_: string) {
+      throw new Error('el navegador no abre mailto');
+    },
+  };
+  const e = await conLocation(quisquilloso, () => transporteDeMail('casilla@ejemplo.ar').entregar(armar(base)));
+  assert.equal(e.resultado, 'no-pudo');
+  // Y `enviar` no se queda ahí: termina en una salida que no puede fallar.
+  const fin = await conLocation(quisquilloso, () => enviar(armar(base), 'mail'));
+  assert.notEqual(fin.resultado, 'no-pudo');
 });
 
 test('D-51: la casilla no está escrita entera en el fuente — va partida y se arma al llamar', () => {
@@ -155,4 +196,42 @@ test('la URL de la pagina no se copia nunca, y por un motivo medido', () => {
   assert.ok(!codigo.includes('location.href'), 'el codigo no puede leer la URL de la pagina');
   const { texto } = aTexto(armar(base));
   assert.ok(!texto.includes('http://localhost'), 'no puede filtrarse la URL de la pagina');
+});
+
+/*
+ * `CTR-10` §2.1, fila `redondopedia` (`FIND-87` de `REV-17`): con un artículo de verdad, cada
+ * parte arma una corrección válida con el texto que se ve, su rótulo y su ubicación.
+ */
+import { partesParaCorregir, textoPlano } from './redondopedia.ts';
+import type { Articulo } from '../redondopedia.ts';
+
+const ARTICULOS = (JSON.parse(readFileSync('src/data/redondopedia.json', 'utf-8')) as { articulos: Articulo[] }).articulos;
+
+test('CTR-10 §2.1: cada parte de cada artículo de la Redondopedia arma una corrección válida', () => {
+  for (const a of ARTICULOS) {
+    const partes = partesParaCorregir(a);
+    assert.equal(partes.length, 1 + a.datos.length + a.cuerpo.length, `${a.slug}: faltan partes`);
+    for (const p of partes) {
+      const c = armar({ ...p.datos, deberiaDecir: 'otra cosa' });
+      assert.equal(c.juego, 'redondopedia');
+      assert.equal(c.itemId, a.slug);
+      assert.deepEqual(c.banco, { contrato: 'sin-contrato', version: 0 }, 'CTR-10 §2.2: sin contrato');
+      assert.ok(!c.dice.includes('[['), `${a.slug}: el texto viaja con la marca de enlace`);
+      assert.ok(!p.etiqueta.includes('…'), 'una etiqueta del panel no lleva suspensivos (voz-ricotera §3.7)');
+    }
+  }
+});
+
+test('CTR-10 §2.1: un párrafo manda su texto, su rótulo y su número; un dato, su valor', () => {
+  const a = ARTICULOS.find((x) => x.cuerpo.some((s) => s.rotulo === 'leyenda'))!;
+  const i = a.cuerpo.findIndex((s) => s.rotulo === 'leyenda');
+  const parrafo = partesParaCorregir(a).find((p) => p.datos.ubicacion === `párrafo ${i + 1}`)!;
+  assert.equal(parrafo.datos.rotulo, 'leyenda', 'el rótulo es el tercer motivo de corrección (BR-21)');
+  assert.equal(parrafo.datos.dice, textoPlano(a.cuerpo[i]!.texto));
+  const conDatos = ARTICULOS.find((x) => x.datos.length > 0)!;
+  const dato = partesParaCorregir(conDatos).find((p) => p.etiqueta.startsWith('Dato: '))!;
+  assert.ok(dato.datos.dice.includes(textoPlano(conDatos.datos[0]!.valor)));
+  assert.equal(dato.datos.rotulo, conDatos.datos[0]!.rotulo);
+  const texto = aTexto(armar({ ...parrafo.datos, deberiaDecir: 'x' })).texto;
+  assert.match(texto, /Rótulo: leyenda/, 'el mensaje que llega dice con qué casilla está marcado hoy');
 });

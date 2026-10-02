@@ -2849,7 +2849,7 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
      (un mail personal en un sitio público es para los raspadores), y el botón cerraba por
      portapapeles: la corrección se armaba y **no llegaba a ningún lado**. Era la primera de
      las tres mitigaciones de `D-25`. El usuario dio la dirección sabiendo el costo; va
-     **partida en el código** y se arma al llamar, así no queda escrita como `usuario@dominio`
+     **partida en el código** y se arma al cargar el módulo, así no queda escrita como `usuario@dominio`
      en el JavaScript publicado (un test lo vigila). El botón llegó también a la Redondopedia,
      que `PRD-correcciones.md` §4 ponía primera en la fila: al pie de cada artículo.
   4. **"Completá la letra" pasa de 21 a 72 versos** (24 fáciles, 23 medios, 25 difíciles, de

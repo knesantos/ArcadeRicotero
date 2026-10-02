@@ -290,10 +290,12 @@ copy las recorre el test con comodines `1` y `'X'` y no se rompen con ninguno.
 5. **Skayboy tiene puerta y no tiene renglón de lugar.** Su página no usa `LUGARES` y no tiene
    `donde-estas`. Por el criterio de `CNT-13` §1 (*un lugar con puerta lleva su nombre*), le
    correspondería uno. No lo escribí: el encargo no lo pide y su pantalla es el mueble de dos
-   mandos, donde un renglón puede no tener lugar. Si lo querés, es `CNT-27`.
+   mandos, donde un renglón puede no tener lugar. Si lo querés, es `CNT-29` (todavía sin
+   escribir, pendiente mío; el puntero decía `CNT-27`, que ya es la ampliación de versos:
+   `FIND-95`, 2026-10-02).
 6. **La comparación al volver (`UX-06` §6) sigue sin copy.** Las islas leen el desafío para pintar la
    línea de entrada, pero el resultado de dos ejes no compara con el del amigo. No estaba en el
-   encargo. Si la querés, va en la misma `CNT-27`, con el mismo cuidado de la frase igual para
+   encargo. Si la querés, va en la misma `CNT-29`, con el mismo cuidado de la frase igual para
    los cuatro cuadrantes.
 
 ## 7. Cómo se verifica

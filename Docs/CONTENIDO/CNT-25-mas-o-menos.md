@@ -593,9 +593,10 @@ que hubo que hacer cuando entraron `dos-ejes` y `ponelos` (`voz.test.ts`, coment
 Sobre `src/data/mas-o-menos.json` puntualmente (`BR-32`/`PRD-mas-o-menos.md`, "Cómo se
 prueba cada punto"), pido que se confirme: 35 datos en `estado: "listo"` repartidos
 14/12/9 en `la-banda`/`la-gente`/`los-recitales` (piso ≥ 20 total, ≥ 4 por familia; **desde el
-2026-10-01 son 45, repartidos 16/17/12**); cada
-`firmeza` en `["hecho","segun"]` y el único `"segun"` (`MM-35`; **desde el 2026-10-01 también
-`MM-40`**) con `segun` no vacío;
+2026-10-01 son 45, repartidos 16/17/12; desde el 2026-10-02 son 44, 16/16/12, por `MM-40`
+retirado: ver el último renglón**); cada
+`firmeza` en `["hecho","segun"]` y el único `"segun"` (`MM-35`; **el 2026-10-01 sumó `MM-40`,
+retirado el 2026-10-02: vuelve a ser solo `MM-35`**) con `segun` no vacío;
 ningún `id`/`medida` de un dato a mano coincide con `anio-disco`, `temas-disco`,
 `duracion`, `en-vivo` ni `palabra` (las medidas que usan las familias derivadas); ninguna
 `pregunta`/`explicacion` contiene "Bulacio", "Olavarría" ni nada de edad-al-morir o
@@ -728,3 +729,16 @@ fuente más el inlay de `INV-44`; `MM-42` (863 pp.) contra la edición de Sudame
   duración de *En directo*. Con eso `MM-40` y `MM-43`..`MM-45` pasan de una fuente a dos.
 - **`producto`/`investigador`:** la decisión sobre Erks S.A. que `INV-60` dejó abierta (INPI o
   aflojar el rótulo) también decide si `N-047` puede entrar algún día.
+
+### 2.7 2026-10-02: `MM-40` retirado (`FIND-86`, `REV-17`)
+
+- **2026-10-02 — `MM-40` pasa a `estado: "retirado"` (queda en el archivo, no se borra).** La cita
+  de `INV-100` `N-081` es *"probé como cuarenta versiones"* y no trae objeto: "de letras" y
+  "antes de elegir el diseño de la tapa" son de la fila, no de la cita, y yo mismo había anotado
+  que la nota de Infobae no se pudo releer. No la reformulé porque cualquier objeto que le ponga
+  a "versiones" sería mío y no de Rocambole. Vuelve a `listo` cuando alguien tenga la nota a la
+  vista (pedido a `investigador` de §2.6, que sigue en pie y ahora destraba el dato) y la
+  pregunta calce con lo que dice que probó. Cuenta nueva: **44 datos `listo`, 16/16/12**
+  (piso `US-10`/`BR-32` ≥ 20 y ≥ 4 por familia, sobrado); el único `"segun"` listo es otra vez
+  `MM-35`. Los tests no nombran a `MM-40`: la prueba del `"segun"` (`i6`) filtra los retirados.
+  También cambió `actualizado` a `2026-10-02`.

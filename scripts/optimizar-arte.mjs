@@ -71,6 +71,18 @@ const HUECOS = [
     hueco: 84,
     donde: 'sitio.css `.sticker-ficha` — clamp(56px, 18vw, 84px)',
   },
+  /* Las dos calcomanías del 2026-10-01 (`D-51`), recortadas por el hilo principal desde los
+     masters y comprimidas a paleta como sus hermanas (`FIND-97` de `REV-17`). */
+  {
+    archivo: 'muneco-antifaz.png',
+    hueco: 84,
+    donde: 'sitio.css `.sticker-ficha` — clamp(56px, 18vw, 84px)',
+  },
+  {
+    archivo: 'mosca-rotulo.png',
+    hueco: 84,
+    donde: 'sitio.css `.sticker-ficha` — clamp(56px, 18vw, 84px)',
+  },
   {
     archivo: 'mosca.png',
     // La mosca del casete son 54 px, pero la misma pieza decora la pantalla "en la

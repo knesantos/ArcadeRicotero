@@ -34,6 +34,7 @@ import {
 } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/redondopedia.json';
 import cancionero from '../../data/cancionero.json';
+import { partesParaCorregir } from '../../lib/correccion/redondopedia.ts';
 import { cargar as cargarCancionero, slugDeLetra, type Cancionero } from '../../lib/cancionero/banco.ts';
 
 export function getStaticPaths() {
@@ -103,6 +104,8 @@ const discoDelPie = SIN_DETALLE_POR_TONO.has(articulo.slug)
     ? articulo.slug
     : DISCO_DE_CATEGORIA[categoria];
 
+/** Lo que el botón de corrección deja elegir: el artículo, cada dato y cada párrafo (`CTR-10` §2.1). */
+const partesCorregibles = partesParaCorregir(articulo);
 const etiquetaRotulo = (seg: Segmento): string =>
   seg.rotulo === 'leyenda' ? 'Leyenda' : `Lo contó ${seg.quien ?? 'alguien'}`;
 ---
@@ -236,11 +239,13 @@ const etiquetaRotulo = (seg: Segmento): string =>
       Redondopedia primera en la fila de los que faltaban, por valor —prosa larga, tres
       rótulos por párrafo—, y llegó el 2026-10-01 junto con la casilla (`D-51`).
 
-      Se arma en el navegador porque el componente es una isla; acá solo queda el ancla con
-      lo que la corrección necesita saber del banco. `dice` es el título y no un párrafo: el
-      que corrige escribe qué está mal, y el slug alcanza para encontrarlo en el repo.
+      Se arma en el navegador porque el componente es una isla; acá queda el ancla y, al lado,
+      las partes del artículo ya armadas en build (`partesParaCorregir`): el panel deja
+      elegir el párrafo o el dato, y la corrección lleva su texto, su rótulo y su ubicación,
+      como pide `CTR-10` §2.1 (`FIND-87` de `REV-17`).
     */}
-    <div id="correccion-articulo" data-slug={articulo.slug} data-titulo={articulo.titulo}></div>
+    <div id="correccion-articulo"></div>
+    <script type="application/json" id="correccion-partes" set:html={JSON.stringify(partesCorregibles)} />
   </article>
 
   <a class="accion-abajo" href="/redondopedia/">← {REDONDOPEDIA.volverPortada}</a>
@@ -248,20 +253,17 @@ const etiquetaRotulo = (seg: Segmento): string =>
   <script>
     import { botonCorreccion } from '../../scripts/correccion.ts';
 
+    import type { ParteCorregible } from '../../lib/correccion/redondopedia.ts';
+
     const ancla = document.getElementById('correccion-articulo');
-    const slug = ancla?.dataset.slug;
-    const titulo = ancla?.dataset.titulo;
-    if (ancla && slug && titulo) {
-      ancla.replaceWith(
-        botonCorreccion(() => ({
-          juego: 'redondopedia',
-          itemId: slug,
-          ubicacion: 'el artículo',
-          dice: titulo,
-          // La Redondopedia todavía no tiene contrato formal: es el v0 de `redondopedia.ts`.
-          banco: { contrato: 'redondopedia', version: 0 },
-        })),
-      );
+    let partes: ParteCorregible[] = [];
+    try {
+      partes = JSON.parse(document.getElementById('correccion-partes')?.textContent ?? '[]');
+    } catch {
+      partes = [];
     }
+    // La primera parte es el artículo entero: es lo que se manda si nadie elige otra.
+    const primera = partes[0];
+    if (ancla && primera) ancla.replaceWith(botonCorreccion(() => primera.datos, partes));
   </script>
 </Base>

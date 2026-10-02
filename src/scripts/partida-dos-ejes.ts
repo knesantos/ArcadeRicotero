@@ -59,7 +59,10 @@ function el(tag: string, clase: string, texto?: string): HTMLElement {
 function plano(luzOscuridad: string, ordenCaos: string): SVGSVGElement {
   const ns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(ns, 'svg');
-  svg.setAttribute('viewBox', '0 0 240 240');
+  // 32 de aire a cada lado (`FIND-91`): "Orden" se ancla al final en x=30 y "Caos" al
+  // principio en x=210, y con la letra rotulada las dos palabras se salían del dibujo — la
+  // "O" quedaba medio comida. El rombo no se mueve: se agranda el papel, no el dibujo.
+  svg.setAttribute('viewBox', '-32 0 304 240');
   svg.setAttribute('class', 'ejes-plano');
   svg.setAttribute('role', 'img');
   svg.setAttribute('aria-label', RESULTADO.altPlano);

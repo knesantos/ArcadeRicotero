@@ -117,11 +117,15 @@ const conArte = lados.map((lado, l) => ({
     const c = segunLaPartida(copia, HAY_PARTIDA[copia.href ?? ''] ?? true);
     // `D-49`: tapa entera, detalle o recorte — cada material se pega distinto (`sitio.css`).
     const arte = arteDeCasete(c.arte);
+    const medidaArte = medidas(arte);
     return {
       ...c,
       arte,
       material: materialDeCasete(arte),
-      medidaArte: medidas(arte),
+      medidaArte,
+      // Un detalle mucho más ancho que alto (el "Gulp." del sobre, 213×111) recortado al
+      // cuadrado pierde las puntas: se leía "ɡulh". Ese conserva su proporción (`sitio.css`).
+      apaisada: medidaArte !== null && medidaArte.ancho / medidaArte.alto > 1.4,
       baja: primeraOracion(c.baja),
       pista: `${l === 0 ? 'A' : 'B'}${i + 1}`,
     };
@@ -248,7 +252,7 @@ const tapasUsadas = [
                 href={c.href}
               >
                 <img
-                  class:list={['casete-arte', `casete-arte--${c.material}`]}
+                  class:list={['casete-arte', `casete-arte--${c.material}`, { 'casete-arte--apaisada': c.apaisada }]}
                   src={c.arte}
                   alt=""
                   aria-hidden="true"
