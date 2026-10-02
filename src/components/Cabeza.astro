@@ -73,3 +73,9 @@ const imagen = new URL('/tarjeta.png', Astro.site).href;
 <meta name="twitter:description" content={descripcion} />
 <meta name="twitter:image" content={imagen} />
 <meta name="twitter:image:alt" content={PORTAL.altTarjeta} />
+
+{/* La analítica de Vercel (`D-56`). Esta cabeza va en todas las pantallas, quiz incluido,
+    así que se engancha una sola vez y acá. */}
+<script>
+  import '../scripts/analitica.ts';
+</script>

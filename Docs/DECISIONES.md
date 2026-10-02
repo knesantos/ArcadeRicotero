@@ -3094,3 +3094,40 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     en un teléfono los botones siguen, sin teclas afuera.
   - `UX-28` §2 y `UX-35` §5 describen la columna con sus botones: queda para `experiencia`
     sumar la leyenda.
+
+## D-56 — Entra la analítica de Vercel: cuánta gente entra y a qué pantalla
+
+- **Fecha:** 2026-10-02
+- **Estado:** aceptada — pedido directo del usuario, textual: *"Activa el web analitics de
+  vercel en el repo"*, con la pantalla de "Get Started" del tablero de Vercel adjunta.
+- **Consume:** `D-02`, `D-10`, `D-14`, `D-15` (y `RES-15`), `ADR-08.7`.
+- **Reemplaza:** la frase *"La analítica sigue fuera de alcance"* de `D-10`, y la fila
+  correspondiente de `BRIEF.md`. El rol `analitica` sigue descartado (`EQUIPO.md`): esto es
+  un script, no un frente de trabajo.
+- **Decisión.** Vercel Web Analytics en todas las pantallas. El paquete `@vercel/analytics`
+  (pineado exacto, 2.0.1) entra por una isla propia, `src/scripts/analitica.ts`, que se
+  engancha en `Cabeza.astro`: esa cabeza la llevan todas las páginas, el quiz incluido, que
+  no pasa por `Base`. La isla solo corre en el sitio publicado (`import.meta.env.PROD`).
+- **Por qué esta y no otra.** Ya vive donde vive el sitio: el script sale del propio dominio
+  (`/_vercel/insights/script.js`), no deja cookies y no le pide nada a la gente, ni
+  consentimiento ni cuenta. **No cierra ningún molinete** (`D-14`). Tampoco abre un costo:
+  el proyecto está en Hobby, donde un cupo agotado se frena y no se factura (`RES-15`).
+- **Alternativas descartadas.**
+  - **El `<Analytics />` que trae el paquete**, que es lo que muestra el tablero. Pone una
+    etiqueta propia (`<vercel-analytics>`) adentro del `<head>`, el navegador cierra la
+    cabecera al encontrarla y todo lo que viene después —las etiquetas de la tarjeta
+    compartida, la ranura `cabeza` de `Base`— pasa al cuerpo. Y además llegaría al teléfono
+    sin pasar por `islas.test.ts`, que es el que lleva la cuenta de qué paquete de npm llega
+    (`ADR-08.7`).
+  - **El `<script>` pelado de Vercel, sin paquete.** Funciona igual, pero queda escrito a mano
+    y sin versión: el paquete se actualiza con `npm` y se ve en la lista blanca.
+- **Consecuencias.**
+  - `@vercel/analytics` es el segundo miembro de `PAQUETES_DE_CLIENTE` (`islas.test.ts`), y
+    `analitica.ts` entra al censo de `ISLAS` (`estilos.test.ts`) como isla sin tablero.
+  - Pesa 974 bytes comprimidos por página, en línea en el `<head>`; el script de Vercel se
+    baja aparte y con `defer`.
+  - En `astro preview` la consola avisa que no encuentra `/_vercel/insights/script.js`:
+    es lo esperado, ese archivo lo sirve Vercel en el sitio publicado, no el repo.
+  - Los números son del tablero de Vercel y de nadie más. **El sitio no los muestra**: sigue
+    en pie lo de `UX-01`, nada de "tantos ricoteros jugaron hoy".
+  - Si un bloqueador lo frena, no se pierde nada: ninguna pantalla depende de esto.

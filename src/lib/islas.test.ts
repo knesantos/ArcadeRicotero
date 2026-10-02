@@ -93,11 +93,16 @@ function modulosDeNode(fuente: string): string[] {
  * está acá no pasa, y el que quiera agregar uno tiene que venir hasta esta línea y leer
  * por qué existe (`ADR-08.7`).
  *
- * Hoy tiene un solo miembro, y no es casualidad que sea el primero: `kaplay` es la primera
- * pieza de terceros que corre en el teléfono de la gente (`ADR-08`). Va pineada exacta en
- * `package.json` por la misma razón por la que está sola acá.
+ * Hoy tiene dos miembros:
+ *
+ * - **`kaplay`**, la primera pieza de terceros que corre en el teléfono de la gente
+ *   (`ADR-08`).
+ * - **`@vercel/analytics`**, que entra en todas las pantallas por `scripts/analitica.ts`
+ *   (`D-56`). Lo único que hace es pegar el script de Vercel, que sale del propio dominio.
+ *
+ * Los dos van pineados exactos en `package.json`, por la misma razón por la que están acá.
  */
-const PAQUETES_DE_CLIENTE = ['kaplay'] as const;
+const PAQUETES_DE_CLIENTE = ['kaplay', '@vercel/analytics'] as const;
 
 /**
  * `Set<string>` y no el `Set` de literales que infiere el `as const`, que es la lección que
@@ -266,8 +271,9 @@ test('esa lista sabe encontrar: se prueba contra fuentes inventadas', () => {
   assert.deepEqual(paquetes(`import type { GameObj } from 'kaplay';`), []);
   assert.deepEqual(paquetes(`// ninguna isla importa 'phaser'\nconst x = 1;`), []);
   assert.deepEqual(paquetes(`/* el humo importaba 'kaplay' */\nconst x = 1;`), []);
-  // Y el filtro de la lista blanca, que es la otra mitad: `kaplay` pasa, el resto no.
+  // Y el filtro de la lista blanca, que es la otra mitad: los declarados pasan, el resto no.
   assert.ok(PERMITIDOS.has('kaplay'), 'el motor de ADR-08 dejo de estar declarado');
+  assert.ok(PERMITIDOS.has('@vercel/analytics'), 'la analitica de D-56 dejo de estar declarada');
   assert.ok(!PERMITIDOS.has('phaser'), 'la lista blanca dejo de ser blanca');
 });
 
@@ -278,7 +284,7 @@ test('ese recorrido encuentra un paquete que esta a dos saltos, no solo en la is
   // si el recorrido dejara de seguir importaciones, este caso lo delata.
   const camino = caminoHastaNode('src/lib/tema/catalogo.ts');
   assert.ok(camino && camino.length >= 3, 'el recorrido que este caso reusa dejo de funcionar');
-  // Y la lista blanca con un solo miembro no deja pasar a los otros dos finalistas de
+  // Y la lista blanca de dos miembros no deja pasar a los otros dos finalistas de
   // `RES-62`, que son los nombres que mas cerca estuvieron de terminar en un `package.json`.
   for (const descartado of ['littlejs', 'phaser']) {
     assert.ok(!PERMITIDOS.has(descartado), `${descartado} no es el motor de ADR-08`);

@@ -21,6 +21,7 @@
     "medir-mas-o-menos": "node --experimental-strip-types scripts/medir-mas-o-menos.mjs"
   },
   "dependencies": {
+    "@vercel/analytics": "2.0.1",
     "astro": "^5.14.1",
     "kaplay": "3001.0.19"
   },

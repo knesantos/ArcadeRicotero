@@ -680,6 +680,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
     ],
   },
 
+  'analitica.ts': { sinTablero: 'la analitica de Vercel (D-56); pega un script y no toca el DOM visible' },
   'armar-cancionero.ts': { sinTablero: 'arma un HTML autocontenido que se descarga; sus estilos viajan adentro de ese archivo, no en las hojas del sitio' },
   'cancion.ts': { sinTablero: 'transportar y bajar solo en la ficha de un tema; no hay partida ni respuesta que senalar' },
   'compartir.ts': { sinTablero: 'el boton de compartir de los juegos sin tarjeta (tapa, letra, dos ejes); sus tres clases son las de compartir de juego.css' },
