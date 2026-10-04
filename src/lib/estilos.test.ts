@@ -600,7 +600,18 @@ const ESTADOS_TAPA = [
  * elegido** cuando se vuelve a una hoja, y en la grilla de las cuatro maneras **la tuya** y
  * **la de quien te mandó el enlace**. Cada una cambia de forma además de tinta.
  */
-const ESTADOS_EJES = ['.ejes-opcion--elegida', '.ejes-opcion--antes', '.ejes-manera--tuya', '.ejes-manera--suya'];
+const ESTADOS_EJES = [
+  '.ejes-opcion--elegida',
+  '.ejes-opcion--antes',
+  '.ejes-manera--tuya',
+  '.ejes-manera--suya',
+  // El sello del momento que se apoya cuando cambia el momento (`UX-36` §4.5): sin regla, la
+  // noche pierde su único movimiento sin que nadie lo note.
+  '.ejes-momento--entra',
+  // La etiqueta del amigo que la isla pega en la tapa cuando llega un enlace viejo: sin regla,
+  // el punteado "del otro" no se ve.
+  '.ejes-tapa-etiqueta--amigo',
+];
 
 /**
  * `US-10`, "Más o menos". Reusa el acierto y el error del quiz sobre dos botones en vez de

@@ -39,20 +39,29 @@ export const PROHIBIDO: Readonly<Record<'ovalo' | 'titulo', Caja>> = {
 };
 
 /**
- * Las tres piezas, con su caja en el máster y el tamaño al que se achican (nunca se agrandan).
+ * Las cuatro piezas, con su caja en el máster y el tamaño al que se achican (nunca se
+ * agrandan). La tabla con su porqué está en `UX-36` §2.2.
  *
- * - **La franja**: el pie de la tapa entera, de lado a lado, por debajo del óvalo. Trae el
- *   lomo a la izquierda, el mármol en el medio y el esquinero de cuero abajo a la derecha. Es
- *   la tapa de la portada del juego y el libro sobre el que se apoya la última hoja.
- * - **El canto**: el lomo y el mármol de la izquierda, de arriba abajo, sin llegar al título.
- *   Es el borde del libro en la tarjeta vertical.
- * - **El esquinero**: el triángulo de cuero de arriba a la derecha. Se pega en la esquina de la
- *   hoja del resultado.
+ * - **El mármol**: el verde del pie de la tapa, entre el lomo y el esquinero de abajo. Es el
+ *   fondo de la tapa de la portada. Termina en `x = 665`, quince píxeles antes del vértice del
+ *   esquinero de abajo: una caja más ancha traería un triángulo de cuero sin mirar.
+ * - **El lomo**: la tira de cuero del borde izquierdo, de arriba abajo. Es el lomo de la tapa
+ *   de la portada, que se estira al alto de la etiqueta.
+ * - **El esquinero**: el triángulo de cuero de arriba a la derecha. Va en la esquina de la
+ *   tapa, de la última hoja, de la tarjeta y de la vista previa.
+ * - **La franja**: el pie de la tapa entera, de lado a lado, por debajo del óvalo. **Solo la
+ *   usa el taller**: es el libro que asoma bajo la hoja de la tarjeta y de la vista previa.
+ *   Ninguna página la carga.
+ *
+ * Tres capas y no la franja sola: a 343 px de ancho la franja mide 91 de alto, y estirarla con
+ * `cover` engorda el lomo hasta un cuarto del ancho. Con capas, el lomo, el mármol y el
+ * esquinero se acomodan a cualquier alto de etiqueta.
  */
 export const PIEZAS = {
-  franja: { caja: { x: 0, y: 700, ancho: 953, alto: 253 }, ancho: 760, alto: 202, archivo: 'libro-franja.jpg' },
-  canto: { caja: { x: 0, y: 0, ancho: 320, alto: 953 }, ancho: 160, alto: 476, archivo: 'libro-canto.jpg' },
+  marmol: { caja: { x: 125, y: 700, ancho: 540, alto: 253 }, ancho: 540, alto: 253, archivo: 'libro-marmol.jpg' },
+  lomo: { caja: { x: 0, y: 0, ancho: 100, alto: 953 }, ancho: 40, alto: 380, archivo: 'libro-lomo.jpg' },
   esquinero: { caja: { x: 730, y: 0, ancho: 223, alto: 256 }, ancho: 112, alto: 128, archivo: 'libro-esquinero.png' },
+  franja: { caja: { x: 0, y: 700, ancho: 953, alto: 253 }, ancho: 760, alto: 202, archivo: 'libro-franja.jpg' },
 } as const satisfies Record<string, { caja: Caja; ancho: number; alto: number; archivo: string }>;
 
 export type Pieza = keyof typeof PIEZAS;

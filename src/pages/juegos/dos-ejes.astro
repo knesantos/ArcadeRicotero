@@ -65,6 +65,10 @@ const SUBTITULO = PANTALLA_0.subtitulo(banco.momentos.length, banco.preguntasPor
       <section id="pregunta" class="pantalla" hidden></section>
       <section id="resultado" class="pantalla" hidden></section>
 
+      <!-- La única región viva de la noche (`UX-36` §8.2): existe antes de que su texto cambie,
+           y vive afuera de las secciones que la isla vacía y rellena. -->
+      <p id="ejes-anuncio" class="solo-lector" role="status" aria-live="polite" aria-atomic="true"></p>
+
       <Caratula caratula={caratula} />
     </main>
 

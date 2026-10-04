@@ -5,9 +5,10 @@
  *
  * Produce, y deja en el repo:
  *
- *   · `public/arte/dos-ejes/libro-franja.jpg`, `libro-canto.jpg`, `libro-esquinero.png`
- *     — las tres piezas del libro de *Luzbelito*, recortadas del frente sin el óvalo, sin la
- *     figura y sin el título (las cajas viven en `src/lib/dos-ejes/arte.ts`);
+ *   · `public/arte/dos-ejes/libro-marmol.jpg`, `libro-lomo.jpg`, `libro-esquinero.png` y
+ *     `libro-franja.jpg` — las cuatro piezas del libro de *Luzbelito*, recortadas del frente
+ *     sin el óvalo, sin la figura y sin el título (las cajas viven en
+ *     `src/lib/dos-ejes/arte.ts`);
  *   · `public/tarjetas/dos-ejes/cu-1.png` … `cu-4.png` — la tarjeta vertical que se comparte
  *     (1080 × 1350);
  *   · `public/tarjetas/dos-ejes/og-cu-1.png` … `og-cu-4.png` y `og-dos-ejes.png` — las vistas
@@ -25,22 +26,25 @@
  *
  * ## Las letras
  *
- * Las de marca salen de las fuentes del sitio, trazo por trazo, con `fontkitten`: Oktubre
- * Calco (`.woff`, que lee) y Archivo Black en `.ttf` (`scripts/fuentes/`, con su licencia
- * OFL: `fontkitten` no lee el `.woff2` que sirve el sitio). El texto largo va en la sans del
- * sistema por `librsvg`, que es lo mismo que hace `--fuente` en pantalla. Por eso el PNG puede
- * salir apenas distinto en otra máquina, y el manifiesto guarda la huella de la **entrada**,
- * no la de los píxeles.
+ Todas salen trazo por trazo, con `fontkitten`, y ninguna depende de qué fuentes tenga la
+ * máquina. Las de marca son las del sitio: Oktubre Calco (`.woff`, que lee) y Archivo Black en
+ * `.ttf` (`scripts/fuentes/`, con su licencia OFL: `fontkitten` no lee el `.woff2` que sirve
+ * el sitio). El texto largo va en DejaVu Sans, recortada al latín y con su licencia al lado:
+ * cumple el papel de `--fuente` en pantalla, y con sus métricas el taller **mide** cada
+ * renglón antes de ponerlo. Si una línea no entra en el papel, el taller falla en vez de
+ * dibujarla afuera (`UX-36` §6.5).
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import sharp from 'sharp';
 import { create } from 'fontkitten';
 import { MASTER, PIEZAS, PROHIBIDO, LADO_MASTER, TARJETA as LIENZO_TARJETA, VISTA_PREVIA, sePisan } from '../src/lib/dos-ejes/arte.ts';
-import { TARJETA, PANTALLA_0, lineaQueNombra, selloDePolos } from '../src/lib/dos-ejes/copy.ts';
+import { TARJETA, PANTALLA_0, RESULTADO, lineaQueNombra, selloDePolos } from '../src/lib/dos-ejes/copy.ts';
 import {
   MANIFIESTO,
   FUENTE_CALCO,
   FUENTE_ROTULADA,
+  FUENTE_SANS,
+  FUENTE_SANS_NEGRITA,
   VERSION_DEL_DIBUJO,
   coloresDelTaller,
   cuadrantesDelBanco,
@@ -55,7 +59,8 @@ mkdirSync(TARJETAS, { recursive: true });
 const C = coloresDelTaller();
 const CALCO = create(readFileSync(FUENTE_CALCO));
 const ROTULADA = create(readFileSync(FUENTE_ROTULADA));
-const SANS = 'DejaVu Sans, Liberation Sans, Arial, sans-serif';
+const SANS = create(readFileSync(FUENTE_SANS));
+const SANS_NEGRITA = create(readFileSync(FUENTE_SANS_NEGRITA));
 /** El dominio, de `astro.config.mjs` y de ningún otro lado. */
 const SITIO = /site:\s*'https?:\/\/([^'/]+)/.exec(readFileSync('astro.config.mjs', 'utf-8'))[1];
 
@@ -97,10 +102,10 @@ async function piezas() {
 const ancho = (f, t, s, tracking = 0) => {
   let w = 0;
   for (const g of f.glyphsForString(t)) w += (g.advanceWidth * s) / f.unitsPerEm + tracking;
-  return w;
+  return w - tracking;
 };
 
-/** Un renglón en la letra de marca, como trazos: no depende de qué fuentes tenga la máquina. */
+/** Un renglón como trazos: no depende de qué fuentes tenga la máquina. */
 function trazo(f, t, s, x, y, color, tracking = 0) {
   const k = s / f.unitsPerEm;
   let cx = 0;
@@ -112,45 +117,40 @@ function trazo(f, t, s, x, y, color, tracking = 0) {
   return `<path d="${d}" fill="${color}"/>`;
 }
 
-/** Parte un texto en renglones que entran en `max`, midiendo con la fuente de verdad. */
-function partir(f, t, s, max) {
+/**
+ * Parte un texto en renglones que entran en `max`, midiendo con la fuente de verdad. Una
+ * palabra sola más ancha que `max` no se puede partir: el taller falla (`UX-36` §6.5, guarda 1).
+ */
+function partir(f, t, s, max, tracking = 0) {
   const salida = [];
   let actual = '';
   for (const p of t.split(' ')) {
     const prueba = actual ? `${actual} ${p}` : p;
-    if (ancho(f, prueba, s) > max && actual) {
+    if (ancho(f, prueba, s, tracking) > max && actual) {
       salida.push(actual);
       actual = p;
     } else actual = prueba;
   }
   if (actual) salida.push(actual);
-  return salida;
-}
-
-/** El texto largo, en la sans del sistema: se parte por caracteres, que es lo que hay. */
-function partirPorLargo(t, max) {
-  const salida = [];
-  let actual = '';
-  for (const p of t.split(' ')) {
-    const prueba = actual ? `${actual} ${p}` : p;
-    if (prueba.length > max && actual) {
-      salida.push(actual);
-      actual = p;
-    } else actual = prueba;
+  for (const r of salida) {
+    if (ancho(f, r, s, tracking) > max) throw new Error(`«${r}» no entra en ${max} px a ${s} px: sale del papel`);
   }
-  if (actual) salida.push(actual);
   return salida;
 }
 
-const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const texto = (t, x, y, cuerpo, color, peso = 'normal') =>
-  `<text x="${x}" y="${y}" font-family="${SANS}" font-weight="${peso}" font-size="${cuerpo}" fill="${color}">${esc(t)}</text>`;
+/** Un renglón que tiene que entrar entero, o el taller falla. */
+function entero(f, t, s, max, tracking = 0) {
+  if (ancho(f, t, s, tracking) > max) throw new Error(`«${t}» no entra en ${max} px a ${s} px`);
+  return t;
+}
 
 /** El sello de goma: rectángulo de esquina casi viva, borde fino, mayúsculas, apenas torcido. */
 function sello(t, x, y, cuerpo, color, giro = -2) {
-  const w = ancho(ROTULADA, t.toUpperCase(), cuerpo, 3) + cuerpo * 1.4;
+  const tracking = 3;
+  const w = ancho(ROTULADA, t.toUpperCase(), cuerpo, tracking) + cuerpo * 1.4;
   const h = cuerpo * 2.1;
-  return `<g transform="rotate(${giro} ${x} ${y + h / 2})"><rect x="${x}" y="${y}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="none" stroke="${color}" stroke-width="${Math.max(3, cuerpo / 7).toFixed(1)}"/>${trazo(ROTULADA, t.toUpperCase(), cuerpo, x + cuerpo * 0.7, y + h * 0.7, color, 3)}</g>`;
+  const svg = `<g transform="rotate(${giro} ${x} ${y + h / 2})"><rect x="${x}" y="${y}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="none" stroke="${color}" stroke-width="${Math.max(3, cuerpo / 7).toFixed(1)}"/>${trazo(ROTULADA, t.toUpperCase(), cuerpo, x + cuerpo * 0.7, y + h * 0.7, color, tracking)}</g>`;
+  return { svg, ancho: w, alto: h };
 }
 
 /** El grano de serigrafía sobre el fondo: un cuadradito cada tanto, con semilla. */
@@ -165,9 +165,12 @@ function grano(w, h, semilla) {
   return s;
 }
 
-/** La cinta de papel engomado: un rectángulo translúcido, torcido. */
+/** Un hex de `tokens.css` como canales, para las capas que arma `sharp`. */
+const canales = (hex, alpha) => ({ r: parseInt(hex.slice(1, 3), 16), g: parseInt(hex.slice(3, 5), 16), b: parseInt(hex.slice(5, 7), 16), alpha });
+
+/** La cinta de papel engomado: el papel al 62 %, torcido. */
 async function cinta(w, h, giro) {
-  return sharp({ create: { width: w, height: h, channels: 4, background: { r: 237, g: 228, b: 206, alpha: 0.62 } } })
+  return sharp({ create: { width: w, height: h, channels: 4, background: canales(C['--papel'], 0.62) } })
     .rotate(giro, { background: { r: 0, g: 0, b: 0, alpha: 0 } })
     .png()
     .toBuffer();
@@ -186,53 +189,107 @@ async function libro(anchoFinal, giro) {
     ])
     .png()
     .toBuffer();
-  return sharp(conSombra).rotate(giro, { background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
+  const torcido = await sharp(conSombra).rotate(giro, { background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
+  const { height } = await sharp(torcido).metadata();
+  return { imagen: torcido, alto: height };
 }
 
 const svg = (w, h, cuerpo) => Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">${cuerpo}</svg>`);
 
+/** La hoja de papel: sombra dura, papel, borde de tinta. */
+const papel = (x, y, w, h, sombra) =>
+  `<rect x="${x + sombra}" y="${y + sombra}" width="${w}" height="${h}" fill="black" opacity=".55"/>` +
+  `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${C['--papel']}" stroke="${C['--fondo']}" stroke-width="6"/>`;
+
 // ------------------------------------------------------------------ la tarjeta vertical
 
-async function tarjeta(c) {
+/*
+ * Las medidas de `UX-36` §6.2. La hoja va de `x = 72` a `1008`; el texto, de `tx` a `tx + 824`,
+ * y el nombre deja libres los 150 px del esquinero.
+ */
+const T = {
+  M: 72,
+  hy: 230,
+  relleno: 56,
+  esquinero: 150,
+  altoMinimo: 740,
+  altoMaximo: 860,
+  libroAbajo: 1150,
+};
+
+/** La hoja de una manera, relativa a su borde de arriba. Devuelve el dibujo y el alto que necesita. */
+function hojaDeLaTarjeta(c, tx) {
+  const util = LIENZO_TARJETA.ancho - 2 * T.M - 2 * T.relleno;
+  let s = trazo(ROTULADA, TARJETA.meSalio.toUpperCase(), 34, tx, 88, C['--papel-tenue'], 4);
+  const nombre = partir(ROTULADA, c.nombre, 80, util - T.esquinero);
+  if (nombre.length > 3) throw new Error(`${c.id}: el nombre ocupa ${nombre.length} renglones en la tarjeta (tope 3)`);
+  nombre.forEach((r, i) => (s += trazo(ROTULADA, r, 80, tx, 176 + i * 88, C['--fondo'])));
+  let y = 176 + (nombre.length - 1) * 88;
+
+  const elSello = sello(selloDePolos(c.luzOscuridad, c.ordenCaos), tx, y + 40, 30, C['--fondo']);
+  if (elSello.ancho > util) throw new Error(`${c.id}: el sello sale del papel`);
+  s += elSello.svg;
+  y += 40 + elSello.alto;
+
+  const linea = partir(SANS_NEGRITA, lineaQueNombra(c.luzOscuridad, c.ordenCaos), 40, util);
+  if (linea.length > 2) throw new Error(`${c.id}: la línea que nombra ocupa ${linea.length} renglones (tope 2)`);
+  y += 54;
+  linea.forEach((r, i) => (s += trazo(SANS_NEGRITA, r, 40, tx, y + i * 48, C['--fondo'])));
+  y += (linea.length - 1) * 48;
+
+  const bajada = partir(SANS, c.bajada, 34, util);
+  if (bajada.length > 5) throw new Error(`${c.id}: la bajada ocupa ${bajada.length} renglones en la tarjeta (tope 5)`);
+  y += 58;
+  bajada.forEach((r, i) => (s += trazo(SANS, r, 34, tx, y + i * 48, C['--fondo'])));
+  y += (bajada.length - 1) * 48;
+
+  // El relleno de abajo cuenta desde el pie de la última letra, no desde su renglón.
+  return { dibujo: s, alto: Math.ceil(y + 10 + 48) };
+}
+
+/**
+ * **Las cuatro hojas miden lo mismo** (`US-06` c4a): el alto es el de la más larga, con piso y
+ * tope. Cuatro hojas de cuatro alturas dejarían una "más completa".
+ */
+function altoDeLasHojas(cuadrantes) {
+  const tx = T.M + T.relleno;
+  const alto = Math.max(T.altoMinimo, ...cuadrantes.map((c) => hojaDeLaTarjeta(c, tx).alto));
+  if (alto > T.altoMaximo) throw new Error(`la hoja más larga de la tarjeta mide ${alto} px (tope ${T.altoMaximo}): se achica el texto, no la hoja`);
+  return alto;
+}
+
+async function tarjeta(c, hh) {
   const { ancho: W, alto: H } = LIENZO_TARJETA;
-  const M = 72;
-  // La hoja: papel con borde de tinta, torcida apenas, apoyada sobre el libro.
+  const { M, hy } = T;
   const hx = M;
-  const hy = 230;
   const hw = W - 2 * M;
-  const hh = 740;
-  const tx = hx + 56;
-  const tw = hw - 56 - 56 - 150; // a la derecha queda el esquinero
+  const tx = hx + T.relleno;
 
   let s = `<rect width="${W}" height="${H}" fill="${C['--fondo']}"/>${grano(W, H, 11)}`;
-  s += trazo(CALCO, 'ARCADE RICOTERO', 62, M, M + 54, C['--marca-rojo']);
-  s += trazo(ROTULADA, PANTALLA_0.titulo.toUpperCase(), 30, M, M + 106, C['--texto-tenue'], 2);
+  s += trazo(CALCO, RESULTADO.marca.toUpperCase(), 62, M, 126, C['--marca-rojo']);
+  s += trazo(ROTULADA, entero(ROTULADA, PANTALLA_0.titulo.toUpperCase(), 30, W - 2 * M, 2), 30, M, 178, C['--texto-tenue'], 2);
 
-  let hoja = `<rect x="${hx + 14}" y="${hy + 14}" width="${hw}" height="${hh}" fill="#000" opacity=".55"/>`;
-  hoja += `<rect x="${hx}" y="${hy}" width="${hw}" height="${hh}" fill="${C['--papel']}" stroke="${C['--fondo']}" stroke-width="6"/>`;
-  hoja += trazo(ROTULADA, TARJETA.meSalio.toUpperCase(), 28, tx, hy + 96, C['--papel-tenue'], 4);
-  const renglones = partir(ROTULADA, c.nombre, 84, tw);
-  renglones.forEach((r, i) => (hoja += trazo(ROTULADA, r, 84, tx, hy + 196 + i * 92, C['--fondo'])));
-  const finNombre = hy + 196 + (renglones.length - 1) * 92;
-  hoja += sello(selloDePolos(c.luzOscuridad, c.ordenCaos), tx, finNombre + 46, 26, C['--fondo']);
-  const ly = finNombre + 46 + 56 + 86;
-  hoja += texto(lineaQueNombra(c.luzOscuridad, c.ordenCaos), tx, ly, 42, C['--fondo'], 'bold');
-  partirPorLargo(c.bajada, 38).forEach((r, i) => (hoja += texto(r, tx, ly + 72 + i * 54, 38, C['--fondo'])));
-  const capaHoja = `<g transform="rotate(-0.8 ${W / 2} ${hy + hh / 2})">${hoja}</g>`;
+  const { dibujo } = hojaDeLaTarjeta(c, tx);
+  const capaHoja = `<g transform="rotate(-0.8 ${W / 2} ${hy + hh / 2})">${papel(hx, hy, hw, hh, 14)}<g transform="translate(0 ${hy})">${dibujo}</g></g>`;
 
-  s += texto(TARJETA.credito, M, H - 116, 23, C['--texto-tenue']);
-  s += texto(SITIO, M, H - 84, 23, C['--texto-tenue']);
-  s += trazo(ROTULADA, TARJETA.pregunta.toUpperCase(), 36, M, H - 30, C['--texto'], 2);
+  // El crédito es letra chica a propósito (`UX-36` §6.2): 26 px si entra en un renglón, y si
+  // no baja de a uno hasta 22. Más chico ya no se lee ni en la tarjeta entera, y el taller falla.
+  const cuerpoCredito = [26, 25, 24, 23, 22].find((k) => ancho(SANS, TARJETA.credito, k) <= W - 2 * M);
+  if (!cuerpoCredito) throw new Error(`el crédito no entra en un renglón ni a 22 px: ${ancho(SANS, TARJETA.credito, 22).toFixed(0)} px de ${W - 2 * M}`);
+  s += trazo(SANS, TARJETA.credito, cuerpoCredito, M, 1190, C['--texto-tenue']);
+  s += trazo(SANS, SITIO, 26, M, 1224, C['--texto-tenue']);
+  s += trazo(ROTULADA, entero(ROTULADA, TARJETA.pregunta.toUpperCase(), 44, W - 2 * M, 2), 44, M, 1278, C['--texto'], 2);
 
   const base = await sharp(svg(W, H, s)).png().toBuffer();
-  const esquinero = await sharp(`${ARTE}/${PIEZAS.esquinero.archivo}`).resize(150, 171).png().toBuffer();
-  const elLibro = await libro(W - 2 * M + 30, 1.6);
+  const esquinero = await sharp(`${ARTE}/${PIEZAS.esquinero.archivo}`).resize(T.esquinero, 171).png().toBuffer();
+  const elLibro = await libro(hw + 30, 1.6);
+  if (T.libroAbajo - (hy + hh) < 60) throw new Error(`el libro asoma ${T.libroAbajo - (hy + hh)} px bajo la hoja (piso 60)`);
   return sharp(base)
     .composite([
-      // Abajo de todo, el libro cerrado; arriba, la última hoja apoyada sobre la tapa.
-      { input: elLibro, left: M - 20, top: hy + hh - 80 },
+      // Abajo de todo, el libro cerrado, con el borde de abajo fijo; arriba, la última hoja.
+      { input: elLibro.imagen, left: M - 20, top: T.libroAbajo - elLibro.alto },
       { input: svg(W, H, capaHoja), left: 0, top: 0 },
-      { input: esquinero, left: hx + hw - 150 - 3, top: hy + 3 },
+      { input: esquinero, left: hx + hw - T.esquinero - 3, top: hy + 3 },
       { input: await cinta(150, 42, -4), left: hx + hw / 2 - 75, top: hy - 22 },
     ])
     .png({ compressionLevel: 9, palette: true, quality: 92 })
@@ -241,41 +298,75 @@ async function tarjeta(c) {
 
 // ------------------------------------------------------------------ la vista previa
 
+/** Las medidas de `UX-36` §6.3: se ve a un tercio, y lo único que se lee es el nombre y la marca. */
+const V = { hx: 48, hy: 100, hh: 440, relleno: 52, esquinero: 118, seguro: 36 };
+
+/** El nombre de la vista previa: 76 px en dos renglones como mucho, o 66; si no, falla. */
+function nombreDeLaVista(nombre, util) {
+  for (const cuerpo of [76, 66]) {
+    const renglones = partir(ROTULADA, nombre, cuerpo, util);
+    if (renglones.length <= 2) return { renglones, cuerpo, interlinea: Math.round(cuerpo * 1.1) };
+  }
+  throw new Error(`«${nombre}» ocupa más de dos renglones en la vista previa, aun a 66 px`);
+}
+
+/**
+ * Los cuatro nombres de la portada, **en orden alfabético** (`UX-36` §6.4): el de los ids pone
+ * las dos de luz arriba, que es la jerarquía que `D-57` punto 7 sacó.
+ */
+const ordenDeLaPortada = (cuadrantes) => [...cuadrantes].map((c) => c.nombre).sort((a, b) => a.localeCompare(b, 'es'));
+
 async function vistaPrevia(c) {
   const { ancho: W, alto: H } = VISTA_PREVIA;
-  const hx = 48;
-  const hy = 34;
-  const hw = W - 96;
-  const hh = 470;
-  const tx = hx + 52;
+  const { hx, hy, hh } = V;
+  const hw = W - 2 * hx;
+  const tx = hx + V.relleno;
+  const util = hw - 2 * V.relleno;
+  const fondoHoja = hy + hh - V.seguro;
+
+  // La marca va en la franja oscura de arriba y no sobre el papel: el rojo sobre el papel da
+  // 3,0 : 1, y sobre `--fondo` es el par ya testeado (`UX-36` §6.3).
   let s = `<rect width="${W}" height="${H}" fill="${C['--fondo']}"/>${grano(W, H, 13)}`;
-  let hoja = `<rect x="${hx + 12}" y="${hy + 12}" width="${hw}" height="${hh}" fill="#000" opacity=".55"/>`;
-  hoja += `<rect x="${hx}" y="${hy}" width="${hw}" height="${hh}" fill="${C['--papel']}" stroke="${C['--fondo']}" stroke-width="6"/>`;
-  hoja += trazo(CALCO, 'ARCADE RICOTERO', 44, tx, hy + 84, C['--marca-rojo']);
+  s += trazo(CALCO, RESULTADO.marca.toUpperCase(), 48, tx, 70, C['--marca-rojo']);
+
+  let hoja = papel(hx, hy, hw, hh, 12);
+  let ultima;
   if (c) {
-    hoja += trazo(ROTULADA, TARJETA.meSalio.toUpperCase(), 24, tx, hy + 140, C['--papel-tenue'], 4);
-    const renglones = partir(ROTULADA, c.nombre, 74, hw - 104 - 140);
-    renglones.forEach((r, i) => (hoja += trazo(ROTULADA, r, 74, tx, hy + 226 + i * 82, C['--fondo'])));
-    const fin = hy + 226 + (renglones.length - 1) * 82;
-    hoja += sello(selloDePolos(c.luzOscuridad, c.ordenCaos), tx, fin + 34, 24, C['--fondo']);
-    hoja += texto(lineaQueNombra(c.luzOscuridad, c.ordenCaos), tx + 330, fin + 72, 34, C['--fondo'], 'bold');
+    hoja += trazo(ROTULADA, TARJETA.meSalio.toUpperCase(), 26, tx, hy + 62, C['--papel-tenue'], 4);
+    const { renglones, cuerpo, interlinea } = nombreDeLaVista(c.nombre, util - V.esquinero - 20);
+    renglones.forEach((r, i) => (hoja += trazo(ROTULADA, r, cuerpo, tx, hy + 150 + i * interlinea, C['--fondo'])));
+    const fin = hy + 150 + (renglones.length - 1) * interlinea;
+    const elSello = sello(selloDePolos(c.luzOscuridad, c.ordenCaos), tx, fin + 30, 26, C['--fondo']);
+    hoja += elSello.svg;
+    // La línea que nombra va **debajo** del sello: a su derecha, lo pisaba (`UX-36` §10, 17).
+    ultima = fin + 30 + elSello.alto + 48;
+    hoja += trazo(SANS_NEGRITA, entero(SANS_NEGRITA, lineaQueNombra(c.luzOscuridad, c.ordenCaos), 34, util), 34, tx, ultima, C['--fondo']);
   } else {
-    const renglones = partir(ROTULADA, PANTALLA_0.titulo, 78, hw - 104 - 140);
-    renglones.forEach((r, i) => (hoja += trazo(ROTULADA, r, 78, tx, hy + 200 + i * 88, C['--fondo'])));
-    const fin = hy + 200 + (renglones.length - 1) * 88;
-    // Las cuatro maneras, todas iguales: ninguna más grande ni primera.
-    const nombres = cuadrantesDelBanco().map((x) => x.nombre);
-    nombres.forEach((n, i) => (hoja += texto(n, tx + (i % 2) * 480, fin + 76 + Math.floor(i / 2) * 50, 32, C['--fondo'], 'bold')));
+    const titulo = partir(ROTULADA, PANTALLA_0.titulo, 78, util - V.esquinero - 20);
+    if (titulo.length > 2) throw new Error('el título de la portada ocupa más de dos renglones en la vista previa');
+    titulo.forEach((r, i) => (hoja += trazo(ROTULADA, r, 78, tx, hy + 120 + i * 86, C['--fondo'])));
+    const fin = hy + 120 + (titulo.length - 1) * 86;
+    // Las cuatro maneras, todas del mismo cuerpo y en orden alfabético: ninguna primera.
+    const nombres = ordenDeLaPortada(cuadrantesDelBanco());
+    const columna = 520;
+    nombres.forEach((n, i) => {
+      const x = tx + (i % 2) * columna;
+      ultima = fin + 72 + Math.floor(i / 2) * 48;
+      hoja += trazo(SANS_NEGRITA, entero(SANS_NEGRITA, n, 30, columna - 24), 30, x, ultima, C['--fondo']);
+    });
   }
+  if (ultima > fondoHoja) throw new Error(`la vista previa ${c?.id ?? 'de la portada'} se sale de la zona segura (${ultima} > ${fondoHoja})`);
   const capaHoja = `<g transform="rotate(-0.6 ${W / 2} ${hy + hh / 2})">${hoja}</g>`;
+
   const base = await sharp(svg(W, H, s)).png().toBuffer();
-  const elLibro = await libro(W - 40, 1.2);
-  const esquinero = await sharp(`${ARTE}/${PIEZAS.esquinero.archivo}`).resize(118, 135).png().toBuffer();
+  const elLibro = await libro(1160, 1.2);
+  const esquinero = await sharp(`${ARTE}/${PIEZAS.esquinero.archivo}`).resize(V.esquinero, 135).png().toBuffer();
   return sharp(base)
     .composite([
-      { input: elLibro, left: 10, top: hy + hh - 70 },
+      // El libro, detrás, con el borde de abajo en el borde del lienzo: asoma bajo la hoja.
+      { input: elLibro.imagen, left: 20, top: H - elLibro.alto + 14 },
       { input: svg(W, H, capaHoja), left: 0, top: 0 },
-      { input: esquinero, left: hx + hw - 118 - 3, top: hy + 3 },
+      { input: esquinero, left: hx + hw - V.esquinero - 3, top: hy + 3 },
     ])
     .png({ compressionLevel: 9, palette: true, quality: 92 })
     .toBuffer();
@@ -285,9 +376,11 @@ async function vistaPrevia(c) {
 
 await piezas();
 const salidas = Object.values(PIEZAS).map((p) => `${ARTE}/${p.archivo}`);
-for (const c of cuadrantesDelBanco()) {
+const cuadrantes = cuadrantesDelBanco();
+const altoDeHoja = altoDeLasHojas(cuadrantes);
+for (const c of cuadrantes) {
   const slug = c.id.toLowerCase();
-  writeFileSync(`${TARJETAS}/${slug}.png`, await tarjeta(c));
+  writeFileSync(`${TARJETAS}/${slug}.png`, await tarjeta(c, altoDeHoja));
   writeFileSync(`${TARJETAS}/og-${slug}.png`, await vistaPrevia(c));
   salidas.push(`${TARJETAS}/${slug}.png`, `${TARJETAS}/og-${slug}.png`);
 }
@@ -303,6 +396,12 @@ writeFileSync(
       version: VERSION_DEL_DIBUJO,
       huella: huellaDelTaller(),
       salidas,
+      // Lo que midió el taller, para que el test lo vigile sin volver a dibujar.
+      medidas: {
+        altoDeLaHojaDeLaTarjeta: altoDeHoja,
+        altoDeLaHojaDeLaVista: V.hh,
+        ordenDeLaPortada: ordenDeLaPortada(cuadrantes),
+      },
     },
     null,
     2,

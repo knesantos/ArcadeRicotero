@@ -30,7 +30,7 @@ test('el manifiesto está al día con lo que entra al taller', () => {
   );
 });
 
-test('están las cuatro tarjetas, las cinco vistas previas y las tres piezas, y nada más', () => {
+test('están las cuatro tarjetas, las cinco vistas previas y las cuatro piezas, y nada más', () => {
   const m = JSON.parse(readFileSync(MANIFIESTO, 'utf-8')) as { salidas: string[] };
   const esperadas = [
     ...Object.keys(PIEZAS).map((p) => PUBLICO(rutaDePieza(p as Pieza))),
@@ -80,4 +80,25 @@ test('la guarda de lo prohibido sabe ver: una caja encima del óvalo la marca', 
   // Un test que solo verifica ausencias no demuestra que sepa buscar.
   assert.ok(sePisan({ x: 400, y: 300, ancho: 10, alto: 10 }, PROHIBIDO.ovalo));
   assert.ok(!sePisan({ x: 0, y: 700, ancho: 953, alto: 253 }, PROHIBIDO.ovalo));
+});
+
+/** Lo que midió el taller al dibujar (`UX-36` §6.5). La huella de arriba garantiza que es de hoy. */
+function medidas(): { altoDeLaHojaDeLaTarjeta: number; altoDeLaHojaDeLaVista: number; ordenDeLaPortada: string[] } {
+  return (JSON.parse(readFileSync(MANIFIESTO, 'utf-8')) as { medidas: ReturnType<typeof medidas> }).medidas;
+}
+
+test('las cuatro hojas de la tarjeta miden lo mismo, entre 740 y 860 (US-06 c4a)', () => {
+  // El taller dibuja las cuatro con un solo alto, el de la más larga: cuatro hojas de cuatro
+  // alturas dejarían una "más completa". Lo que se vigila acá es que ese alto no pase el
+  // tope: por encima de 860 el libro deja de asomar y la pregunta de abajo se aprieta.
+  const { altoDeLaHojaDeLaTarjeta: alto, altoDeLaHojaDeLaVista: vista } = medidas();
+  assert.ok(alto >= 740 && alto <= 860, `la hoja de la tarjeta mide ${alto}`);
+  assert.equal(vista, 440);
+});
+
+test('la vista previa de la portada pone las cuatro maneras en orden alfabético, no en el de los ids', () => {
+  // El orden de los ids deja las dos de luz arriba: la jerarquía que `D-57` punto 7 sacó.
+  const nombres = cuadrantesDelBanco().map((c) => c.nombre);
+  const { ordenDeLaPortada } = medidas();
+  assert.deepEqual(ordenDeLaPortada, [...nombres].sort((a, b) => a.localeCompare(b, 'es')));
 });

@@ -8,9 +8,12 @@
  * prerenderizan las cuatro, cada una con su título ("Me salió «…»") y su tarjeta. Es lo que
  * hace que el enlace que alguien manda por WhatsApp diga qué le salió.
  *
- * **Qué son.** La misma noche que `dos-ejes.astro`, con el desafío puesto: la portada muestra
+ * **Qué son.** La misma noche que `dos-ejes.astro`, con el desafío puesto: la tapa lleva pegada
  * la manera del amigo —qué es, antes de jugar— y el botón arranca la partida. La ruta lleva
  * el id del cuadrante, nunca el nombre: si un nombre cambia, ningún enlace se rompe.
+ *
+ * **Sin el renglón del lugar** (`UX-36` §3.3): la etiqueta del amigo ya pone la escena, y el
+ * alto se necesita para que el botón quede a la vista.
  */
 import '../../../styles/tokens.css';
 import '../../../styles/juego.css';
@@ -22,9 +25,9 @@ import type { Cuadrante } from '../../../lib/dos-ejes/partida.ts';
 import Cabeza from '../../../components/Cabeza.astro';
 import PieImprenta from '../../../components/PieImprenta.astro';
 import Caratula from '../../../components/Caratula.astro';
-import Amigo from '../../../components/dos-ejes/Amigo.astro';
+import Tapa from '../../../components/dos-ejes/Tapa.astro';
 import { caratulaDe, tapasConCaratula } from '../../../lib/sitio/caratula.ts';
-import { LUGARES, PORTAL } from '../../../lib/sitio/copy.ts';
+import { PORTAL } from '../../../lib/sitio/copy.ts';
 import crudo from '../../../data/dos-ejes.json';
 
 export function getStaticPaths() {
@@ -61,14 +64,17 @@ const SUBTITULO = PANTALLA_0.subtitulo(banco.momentos.length, banco.preguntasPor
         </header>
         <p class="marca" aria-label="Arcade Ricotero">ARCADE RICOTERO</p>
         <h1>{PANTALLA_0.titulo}</h1>
-        <p class="donde-estas">{LUGARES.dosEjes}</p>
-        <Amigo cuadrante={c} />
+        <Tapa momentos={banco.momentos} amigo={c} />
         <p id="subtitulo" class="tenue">{SUBTITULO}</p>
         <button id="empezar" class="primario" type="button">{POSTAL.boton}</button>
       </section>
 
       <section id="pregunta" class="pantalla" hidden></section>
       <section id="resultado" class="pantalla" hidden></section>
+
+      <!-- La única región viva de la noche (`UX-36` §8.2): existe antes de que su texto cambie,
+           y vive afuera de las secciones que la isla vacía y rellena. -->
+      <p id="ejes-anuncio" class="solo-lector" role="status" aria-live="polite" aria-atomic="true"></p>
 
       <Caratula caratula={caratula} />
     </main>

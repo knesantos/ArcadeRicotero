@@ -21,6 +21,12 @@
  * El foco va al enunciado de cada hoja y al nombre del resultado (el mismo `enfocar()` del
  * quiz), las opciones van en `role=group` con el enunciado de nombre, y una región viva dice
  * el momento y el folio. Con teclado, 1 y 2 eligen y Retroceso vuelve a la anterior.
+ *
+ * Durante la pausa las opciones quedan con `aria-disabled` y no con `disabled` (`UX-36` §4.3):
+ * con `disabled` el botón tocado pierde el foco y el lector no llega a decir que quedó
+ * apretado. La región viva es **una sola y está en el HTML de la página** (`#ejes-anuncio`),
+ * afuera de lo que esta isla vacía: una región que nace junto con su texto no se anuncia de
+ * forma fiable.
  */
 
 import {
@@ -38,10 +44,10 @@ import {
   PARTIDA,
   RESULTADO,
   CONTRASTE,
+  POSTAL,
   EJES,
   POLOS,
   lineaQueNombra,
-  polosEnFrase,
   selloDePolos,
 } from '../lib/dos-ejes/copy.ts';
 import { rutaDeTarjeta, rutaDePieza, slugDe } from '../lib/dos-ejes/arte.ts';
@@ -59,6 +65,8 @@ const app = $('#app');
 const zonaInicio = $('#inicio');
 const zonaPregunta = $('#pregunta');
 const zonaResultado = $('#resultado');
+/** La región viva de la página: se escribe, nunca se crea (`UX-36` §8.2). */
+const anuncio = $('#ejes-anuncio');
 
 let ronda: ItemServido[] = [];
 let paso = 0;
@@ -69,6 +77,8 @@ const vistos = new Set<string>();
 let bloqueado = false;
 /** La tarjeta del resultado, bajada al pintarlo: así se comparte en el mismo toque. */
 let tarjeta: File | null = null;
+/** El momento de la hoja de antes: el sello entra solo cuando cambia (`UX-36` §4.5). */
+let momentoAnterior: string | undefined;
 
 /**
  * El cuadrante de quien mandó el enlace, si vino uno válido. La postal lo trae puesto en
@@ -123,7 +133,12 @@ function pintarPregunta(antes?: Polo): void {
   hoja.dataset['quedan'] = String(Math.min(4, Math.ceil(quedan / 2)));
 
   const cabeza = el('div', 'ejes-hoja-cabeza');
-  cabeza.append(el('p', 'ejes-momento', momento.nombre));
+  const sello = el('p', 'ejes-momento', momento.nombre);
+  // Cinco veces por noche, no diez: en la segunda hoja del mismo momento el sello ya está
+  // puesto, y re-estamparlo sería ruido.
+  if (item.momento !== momentoAnterior) sello.classList.add('ejes-momento--entra');
+  momentoAnterior = item.momento;
+  cabeza.append(sello);
   cabeza.append(el('p', 'ejes-folio', PARTIDA.folio(paso + 1, ronda.length)));
   hoja.append(cabeza);
   hoja.append(el('p', 'ejes-canta', momento.canta));
@@ -153,7 +168,8 @@ function pintarPregunta(antes?: Polo): void {
 
   const pie = el('div', 'ejes-pie-partida');
   if (paso > 0) {
-    const anterior = el('button', 'ejes-anterior', PARTIDA.anterior) as HTMLButtonElement;
+    // La cinta de regreso del sitio, en chico: no es una salida (`D-54`), vuelve una hoja.
+    const anterior = el('button', 'volver ejes-anterior', PARTIDA.anterior) as HTMLButtonElement;
     anterior.type = 'button';
     anterior.addEventListener('click', volverAnterior);
     pie.append(anterior);
@@ -161,10 +177,8 @@ function pintarPregunta(antes?: Polo): void {
   pie.append(el('p', 'ejes-teclas', PARTIDA.teclas));
   zonaPregunta.append(pie);
 
-  const anuncio = el('p', 'solo-lector', PARTIDA.anuncio(momento.nombre, paso + 1, ronda.length));
-  anuncio.setAttribute('role', 'status');
-  zonaPregunta.append(anuncio);
-
+  // El momento y el folio, una vez por hoja; el enunciado no, que ya lo lee el foco.
+  anuncio.textContent = PARTIDA.anuncio(momento.nombre, paso + 1, ronda.length);
   enfocar(enunciado);
 }
 
@@ -172,7 +186,8 @@ function elegir(boton: HTMLButtonElement, polo: Polo): void {
   if (bloqueado) return;
   bloqueado = true;
   for (const b of zonaPregunta.querySelectorAll<HTMLButtonElement>('.ejes-opcion')) {
-    b.disabled = true;
+    // Inertes, pero sin apagarse y sin perder el foco.
+    b.setAttribute('aria-disabled', 'true');
     b.classList.remove('ejes-opcion--antes');
     b.removeAttribute('aria-pressed');
   }
@@ -226,6 +241,17 @@ function grilla(id: string): HTMLElement {
   seccion.setAttribute('aria-labelledby', titulo.id);
   seccion.append(titulo, el('p', 'ejes-cuatro-canta', RESULTADO.lasCuatroCanta));
 
+  if (suyo) {
+    // El contraste de `CNT-29`: misma forma en los cuatro casos, sin ganar ni perder. Va
+    // **entre los botones y la grilla** (`UX-36` §5.4): habla de lo que la grilla muestra —la
+    // tuya y la punteada—, y entre la hoja y los botones empujaba "Empezá otra noche" bajo el
+    // pliegue. La hoja es de quien juega; lo que dice del otro es un segundo plano.
+    const mia = banco.cuadrantes.find((x) => x.id === id)!;
+    seccion.append(
+      el('p', 'ejes-contraste', CONTRASTE[relacion(banco, id, suyo.id)](suyo.nombre, POLOS[mia.luzOscuridad], POLOS[mia.ordenCaos])),
+    );
+  }
+
   const tabla = el('div', 'ejes-grilla');
   // Los rótulos de columna van arriba, una vez; los de renglón, encima de cada par. Son
   // `aria-hidden`: cada manera ya dice sus dos polos en palabras adentro de su bajada.
@@ -255,6 +281,8 @@ function pintarResultado(): void {
   zonaPregunta.replaceChildren();
   zonaResultado.hidden = false;
   zonaResultado.replaceChildren();
+  // Al resultado, la región calla: el foco en el nombre ya lo dice.
+  anuncio.textContent = '';
 
   // La tarjeta se pide ya: cuando toquen "Compartí", el archivo tiene que estar en la mano.
   tarjeta = null;
@@ -266,7 +294,10 @@ function pintarResultado(): void {
     .catch(() => undefined);
 
   const hoja = el('article', 'ejes-hoja ejes-hoja--final');
-  hoja.append(el('p', 'ejes-marca', RESULTADO.marca));
+  // La marca en dos renglones: el sitio en la calcada y el juego debajo (`UX-36` §5.1).
+  const marca = el('p', 'ejes-marca');
+  marca.append(el('span', 'ejes-marca-sitio', RESULTADO.marca), el('span', 'ejes-marca-juego', PANTALLA_0.titulo));
+  hoja.append(marca);
   const esquinero = document.createElement('img');
   esquinero.className = 'ejes-esquinero';
   esquinero.src = rutaDePieza('esquinero');
@@ -281,13 +312,6 @@ function pintarResultado(): void {
   hoja.append(el('p', 'ejes-nombra', lineaQueNombra(c.luzOscuridad, c.ordenCaos)));
   hoja.append(el('p', 'ejes-bajada', r.bajada));
   zonaResultado.append(hoja);
-
-  if (suyo) {
-    // El contraste de `CNT-29`: misma forma en los cuatro casos, sin ganar ni perder.
-    const lo = POLOS[c.luzOscuridad];
-    const oc = POLOS[c.ordenCaos];
-    zonaResultado.append(el('p', 'ejes-contraste', CONTRASTE[relacion(banco, r.id, suyo.id)](suyo.nombre, lo, oc)));
-  }
 
   const acciones = el('div', 'ejes-acciones');
   // Compartir: viaja **la identidad** —la postal de este cuadrante y su tarjeta— y ningún
@@ -327,10 +351,24 @@ function pintarResultado(): void {
    ------------------------------------------------------------------ */
 
 function empezar(): void {
-  ronda = sortearPartida(banco, Math.random, vistos);
+  try {
+    ronda = sortearPartida(banco, Math.random, vistos);
+  } catch {
+    // Una celda vacía: el banco que valida `banco.test.ts` no lo permite, pero si pasa, la
+    // portada lo dice en una línea seca y el botón sigue ahí (`UX-36` §4.8). Que "Empezá"
+    // no haga nada sería un molinete cerrado.
+    if (!document.getElementById('ejes-sin-noche')) {
+      const aviso = el('p', 'ejes-sin-noche', PANTALLA_0.sinNoche);
+      aviso.id = 'ejes-sin-noche';
+      aviso.setAttribute('role', 'alert');
+      $('#empezar').before(aviso);
+    }
+    return;
+  }
   for (const i of ronda) vistos.add(i.id);
   paso = 0;
   elegidos.length = 0;
+  momentoAnterior = undefined;
   zonaInicio.hidden = true;
   zonaResultado.hidden = true;
   zonaResultado.replaceChildren();
@@ -339,12 +377,16 @@ function empezar(): void {
   pintarPregunta();
 }
 
-/** 1 y 2 eligen, Retroceso vuelve. Sin modificadores, y solo con la hoja a la vista. */
+/**
+ * 1 y 2 eligen, Retroceso vuelve. Sin modificadores, y solo con la hoja a la vista. **Una
+ * tecla sostenida no contesta la siguiente**: sin el corte de `repeat`, mantener apretado el 1
+ * pasa los 600 ms de la pausa y responde la hoja que acaba de llegar.
+ */
 document.addEventListener('keydown', (e) => {
-  if (zonaPregunta.hidden || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (zonaPregunta.hidden || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
   if (e.key === '1' || e.key === '2') {
     const boton = zonaPregunta.querySelectorAll<HTMLButtonElement>('.ejes-opcion')[Number(e.key) - 1];
-    if (boton && !boton.disabled) {
+    if (boton && !bloqueado) {
       e.preventDefault();
       boton.click();
     }
@@ -354,15 +396,32 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+/**
+ * La etiqueta del amigo, la misma que la postal escribe en su HTML (`Tapa.astro`): rótulo,
+ * nombre, sello y línea que nombra, sin la bajada. Dos lugares arman la misma etiqueta porque
+ * uno es HTML de build y el otro DOM de isla; si cambia una, cambia la otra.
+ */
+function etiquetaDelAmigo(c: Cuadrante): HTMLElement {
+  const etiqueta = el('figcaption', 'ejes-tapa-etiqueta ejes-tapa-etiqueta--amigo');
+  etiqueta.append(
+    el('span', 'ejes-tapa-rotulo', POSTAL.rotulo),
+    el('span', 'ejes-amigo-nombre', c.nombre),
+    el('span', 'ejes-polos', selloDePolos(c.luzOscuridad, c.ordenCaos)),
+    el('span', 'ejes-amigo-nombra', lineaQueNombra(c.luzOscuridad, c.ordenCaos)),
+  );
+  return etiqueta;
+}
+
 /*
- * Si alguien llegó por un enlace viejo (sin postal), una línea propia, arriba del subtítulo,
- * dice qué le salió al otro y qué quiere decir. **No pisa el subtítulo**: ahí está lo que no se
- * pide —saber nada, haber ido—, y es lo que más necesita leer el que llega por un enlace
- * (`CNT-26` §2.3). La postal ya lo trae escrito en el HTML.
+ * Si alguien llegó por un enlace viejo (`?g=dos-ejes&r=CU-n`, sin postal), la tapa le pega la
+ * etiqueta del amigo en lugar del índice, como en la postal, y se va el renglón del lugar
+ * (`UX-36` §3.3). **No se redirige** a la postal: `ADR-02` punto 6 dice que los enlaces viejos
+ * se leen donde están. Y **no se pisa el subtítulo**: ahí está lo que no se pide —saber nada,
+ * haber ido—, que es lo que más necesita leer el que llega por el enlace de otro.
  */
 if (suyo && !app.dataset['desafio']) {
-  const bajada = document.getElementById('subtitulo');
-  bajada?.before(el('p', 'ejes-desafio', PANTALLA_0.desafio(suyo.nombre, polosEnFrase(suyo.luzOscuridad, suyo.ordenCaos))));
+  zonaInicio.querySelector('.ejes-tapa-etiqueta')?.replaceWith(etiquetaDelAmigo(suyo));
+  zonaInicio.querySelector<HTMLElement>('.donde-estas')?.setAttribute('hidden', '');
 }
 
 $('#empezar').addEventListener('click', empezar);

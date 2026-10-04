@@ -23,13 +23,17 @@ import { EJES, POLOS, RESULTADO, TARJETA, PANTALLA_0 } from './copy.ts';
 /**
  * La versión del dibujo. **Se sube a mano** cuando cambia la composición (un margen, un
  * cuerpo, dónde va el libro): eso no está en ningún dato, y sin este número el test no se
- * enteraría.
+ * enteraría. La 2 es la de `UX-36` §6: las cuatro hojas del mismo alto, la línea que nombra
+ * en dos renglones, la marca de la vista previa en la franja oscura y la sans medida.
  */
-export const VERSION_DEL_DIBUJO = 1;
+export const VERSION_DEL_DIBUJO = 2;
 
 export const MANIFIESTO = 'scripts/dos-ejes-manifiesto.json';
 export const FUENTE_CALCO = 'public/fuentes/oktubre-calco.woff';
 export const FUENTE_ROTULADA = 'scripts/fuentes/archivo-black.ttf';
+/** La sans del texto largo, recortada al latín (`scripts/fuentes/LICENCIA-DEJAVU.txt`). */
+export const FUENTE_SANS = 'scripts/fuentes/dejavu-sans.ttf';
+export const FUENTE_SANS_NEGRITA = 'scripts/fuentes/dejavu-sans-bold.ttf';
 
 /** Los tokens que el taller pinta. Salen de `tokens.css` y de ningún otro lado. */
 export const TOKENS_DEL_TALLER = [
@@ -94,7 +98,7 @@ export function huellaDelTaller(): string {
     piezas: PIEZAS,
     prohibido: PROHIBIDO,
     master: sha(readFileSync(MASTER)),
-    fuentes: [sha(readFileSync(FUENTE_CALCO)), sha(readFileSync(FUENTE_ROTULADA))],
+    fuentes: [FUENTE_CALCO, FUENTE_ROTULADA, FUENTE_SANS, FUENTE_SANS_NEGRITA].map((f) => sha(readFileSync(f))),
   };
   return sha(JSON.stringify(entrada));
 }

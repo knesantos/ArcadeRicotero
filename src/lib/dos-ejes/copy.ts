@@ -42,12 +42,15 @@ export const PANTALLA_0 = {
   /** Voseo (`D-17`). Le dice a quien llega que esto es una noche, no una ronda con puntaje. */
   boton: 'Empezá la noche',
   /**
-   * Lo que lee el que llega por un enlace viejo (`?g=dos-ejes&r=CU-n`, sin postal). Dice qué le
-   * salió al otro **y qué quiere decir**, y nada que suene a superarlo (`BR-17`, `CNT-29` §4).
-   * Va en una línea propia, arriba del subtítulo: pisarlo le sacaba la tranquilidad a la
-   * pantalla que más la necesita (`CNT-26` §2.3).
+   * Registro 3, seco: lo que dice la portada si el motor no puede armar la noche (una celda
+   * del banco vacía, que `banco.test.ts` no deja pasar). Sin esta línea, "Empezá" no haría
+   * nada, que es un molinete (`UX-36` §4.8). **Propuesta del hilo principal: la confirma
+   * `contenido`.**
+   *
+   * La línea del enlace viejo que vivía acá (`desafio`) se fue en el ciclo 18: el que llega
+   * por un `?g=dos-ejes&r=CU-n` ve la misma etiqueta del amigo que la postal (`UX-36` §3.3).
    */
-  desafio: (nombre: string, polos: string) => `A alguien le salió «${nombre}»: ${polos}. ¿Y a vos?`,
+  sinNoche: 'Esta noche no se pudo armar. Volvé a cargar la página.',
 } as const;
 
 /**
@@ -108,8 +111,13 @@ export const PARTIDA = {
 export const RESULTADO = {
   /** Registro 3. "Esta noche", y no "Diste con esto": otra noche puede dar otra manera (`BR-37`). */
   rotulo: 'Esta noche te salió',
-  /** La línea chica arriba de la hoja, para que la captura salga con nombre y apellido. */
-  marca: 'Arcade Ricotero · ¿Qué tipo de ricotero sos?',
+  /**
+   * La marca chica arriba de la hoja, para que la captura salga con nombre y apellido. Va en
+   * dos renglones (`UX-36` §5.1): esta, en la calcada de la tapa de *Oktubre* —que solo tiene
+   * mayúsculas y sin tilde—, y debajo el título del juego (`PANTALLA_0.titulo`). La misma
+   * cadena encabeza la tarjeta y la vista previa.
+   */
+  marca: 'Arcade Ricotero',
   compartir: 'Compartí',
   denuevo: 'Empezá otra noche',
   bajar: 'Bajá la tarjeta',
