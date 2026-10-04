@@ -13,7 +13,7 @@ Arcade Ricotero: nueve juegos sobre Patricio Rey y sus Redonditos de Ricota, par
 
 Abajo, uno por uno.
 
-https://arcade-ricotero.vercel.app
+https://fichinricotero.com.ar
 ```
 
 Descripción de la foto: Portada del Arcade Ricotero: la marca, el afiche de octubre con los seis discos que salieron ese mes, y los primeros casetes de juegos.
@@ -29,7 +29,7 @@ Suena una décima de segundo. ¿No sale? Te damos más: medio segundo, dos, cuat
 
 ¿Te da el oído?
 
-https://arcade-ricotero.vercel.app/juegos/adivinar-el-tema/
+https://fichinricotero.com.ar/juegos/adivinar-el-tema/
 ```
 
 Descripción de la foto: Partida de Adiviná el tema: van dos pasadas, la cinta marca 2 segundos de audio sonando y el tema vale 60 puntos.
@@ -43,7 +43,7 @@ Cuando la sacás, aparece la tapa con el disco, el año y la pista, y de ahí sa
 
 Se juega con los diez discos o con uno solo. Este mes el portal tiene afiche: Oktubre cumple cuarenta el 4, y podés jugar solo con sus temas.
 
-https://arcade-ricotero.vercel.app
+https://fichinricotero.com.ar
 ```
 
 Descripción de la foto: Acierto en Adiviná el tema: sello de La sacaste, más 60, la tapa de Oktubre y la ficha del tema.
@@ -57,7 +57,7 @@ Preguntas ricoteras. Ninguna piadosa.
 
 Historia, discos, letras y mitología, de fácil a difícil, con tres vidas. Cada respuesta trae su explicación, y si el dato es leyenda, dice que es leyenda.
 
-https://arcade-ricotero.vercel.app/quiz/
+https://fichinricotero.com.ar/quiz/
 ```
 
 Descripción de la foto: Pregunta de Preguntas ricoteras sobre el álbum doble, respondida bien, con la explicación abajo.
@@ -73,7 +73,7 @@ Nadie te toma examen. Diez preguntas sobre vos, sin puntaje y sin saber nada de 
 
 Para mandárselo al que nunca escuchó un disco.
 
-https://arcade-ricotero.vercel.app/juegos/dos-ejes/
+https://fichinricotero.com.ar/juegos/dos-ejes/
 ```
 
 Descripción de la foto: Resultado de Qué tipo de ricotero sos: un rombo entre luz, oscuridad, orden y caos, con el punto del jugador.
@@ -87,7 +87,7 @@ Sacalo por la letra.
 
 Un verso te tiene que alcanzar. Si no, van dos, cuatro, ocho. Escribís el título como te salga: sin tildes anda igual, y por la mitad también.
 
-https://arcade-ricotero.vercel.app/juegos/adivinar-por-la-letra/
+https://fichinricotero.com.ar/juegos/adivinar-por-la-letra/
 ```
 
 Descripción de la foto: Sacalo por la letra: dos versos a la vista, el buscador para escribir el tema y el botón para pasar.
@@ -101,7 +101,7 @@ Completá la letra.
 
 Lo tenés en la punta de la lengua. Falta una palabra del verso y hay cuatro para elegir. Ocho versos por vuelta.
 
-https://arcade-ricotero.vercel.app/juegos/completar-la-letra/
+https://fichinricotero.com.ar/juegos/completar-la-letra/
 ```
 
 Descripción de la foto: Completá la letra: un verso con la palabra que faltaba marcada en verde y las cuatro opciones.
@@ -115,7 +115,7 @@ Ponelos en fila.
 
 Unos te tiran al pogo; otros, quietito. Los diez discos, las diez tapas o los temas de un disco: el orden lo armás vos, y después lo mandás para que te lo discutan.
 
-https://arcade-ricotero.vercel.app/juegos/ponelos-en-fila/
+https://fichinricotero.com.ar/juegos/ponelos-en-fila/
 ```
 
 Descripción de la foto: Ponelos en fila con las diez tapas: filas en el pogo, saltando, cabeceando y quietito, con algunas tapas ubicadas.
@@ -129,7 +129,7 @@ Adiviná la tapa.
 
 Rocambole dibujó; vos ponés el disco. Un pedazo de tapa en pantalla y cuatro discos para elegir. Seis tapas por vuelta.
 
-https://arcade-ricotero.vercel.app/juegos/adivinar-la-tapa/
+https://fichinricotero.com.ar/juegos/adivinar-la-tapa/
 ```
 
 Descripción de la foto: Adiviná la tapa: un pedazo de la tapa de Oktubre y cuatro discos para elegir.
@@ -145,7 +145,7 @@ Preguntas de número sobre la banda: cuántos años, cuántos temas, cuánto dur
 
 ¿Cuánto te dura la racha?
 
-https://arcade-ricotero.vercel.app/juegos/mas-o-menos/
+https://fichinricotero.com.ar/juegos/mas-o-menos/
 ```
 
 Descripción de la foto: Más o menos: pregunta de cuántos temas tiene un disco, respondida bien, con la fuente del dato.
@@ -161,7 +161,7 @@ Un fichín para dos en el mismo teléfono, cada uno de su lado, o para vos solo.
 
 Homenaje de fans, no oficial.
 
-https://arcade-ricotero.vercel.app/juegos/skayboy-y-poligirl/
+https://fichinricotero.com.ar/juegos/skayboy-y-poligirl/
 ```
 
 Descripción de la foto: Skayboy y Poligirl: pantalla de fichín en pixeles con los dos personajes, sus puertas y las teclas de cada uno.
@@ -175,8 +175,8 @@ Y el lado B, para leer.
 
 La Redondopedia: la historia entera, el hecho como hecho y la leyenda como leyenda. Y Letras y acordes: los diez discos, con los acordes arriba de cada verso.
 
-https://arcade-ricotero.vercel.app/redondopedia/
-https://arcade-ricotero.vercel.app/letras-y-acordes/
+https://fichinricotero.com.ar/redondopedia/
+https://fichinricotero.com.ar/letras-y-acordes/
 ```
 
 Descripción de la foto: Artículo de Oktubre en la Redondopedia: la tapa, la fecha de salida y el primer párrafo.

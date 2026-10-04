@@ -3389,3 +3389,47 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   - En Windows y Mac el cambio casi no se nota (Arial Black y Archivo Black son primas); en
     Android es otro sitio. Las mediciones de ciclos anteriores en Linux se hicieron con la
     letra de repuesto, que es más angosta: si una pantalla quedó justa, puede haber cambiado.
+
+## D-59 — El dominio es fichinricotero.com.ar, comprado en NIC Argentina
+
+- **Fecha:** 2026-10-04
+- **Estado:** aceptada — la tomó el usuario. Pidió *"investigá dónde y cómo comprar lo más
+  barato posible el dominio arcadericotero.ar o fichinricotero.ar"*, después *"vamos a probar
+  con fichinricotero, si entra de una nos quedamos con ese"*, y al final *"ya compré y pagué,
+  metelo en Vercel"*.
+- **Consume:** `D-15` (salida estática en el tier gratuito de Vercel), `D-56`, `D-57` (la
+  tarjeta de "¿Qué tipo de ricotero sos?" lleva el dominio dibujado).
+- **Lo que se averiguó.** Los `.ar` los vende un solo registro, NIC Argentina, y los
+  revendedores cobran el mismo arancel más su margen: lo más barato es ir directo, por TAD con
+  Clave Fiscal nivel 2. Arancel vigente (Resolución 5/2024 de la Secretaría Legal y Técnica,
+  desde el 15/01/2024, sin cambios posteriores encontrados): `.ar` a secas $25.500 por año,
+  `.com.ar` $8.500 por año, igual el alta que la renovación. No se pudo leer la tabla en nic.ar
+  (la red del entorno lo bloquea): sale de la prensa que la cita.
+- **Lo que pasó con arcadericotero.com.ar.** El pedido no dio para pagar. NIC lo caratuló como
+  *"Alta de dominio de internet banquinado/zona especial"* y lo pasó a revisión manual de su
+  área de Registro y Validación. "Banquinado" es un término que NIC bloquea contra el phishing.
+  **Sospecha, no confirmada:** el término es *arca*, el nombre de la ex AFIP. Ese trámite quedó
+  abierto; si se aprueba y no se paga, NIC lo cancela solo y no cobra nada.
+- **Decisión.** El dominio público es **`fichinricotero.com.ar`**: entró sin revisión y se pagó
+  el mismo día. Lo tiene el usuario a su nombre en NIC. En Vercel va el dominio pelado como
+  principal y `www.fichinricotero.com.ar` redirigiendo a él; en NIC se delega a
+  `ns1.vercel-dns.com` y `ns2.vercel-dns.com` (NIC no guarda registros DNS, solo delega).
+- **Lo que esta decisión no decide: el nombre.** El sitio sigue llamándose Arcade Ricotero en
+  los títulos, en `og:title`, en las tarjetas y en el lienzo. Cambiarlo es otra decisión, del
+  usuario, y empieza por el lienzo (`diseno-marca.md`). Dato para cuando se discuta: el calco
+  de `--fuente-titular` solo tiene A B C D E I K O R T U, así que **FICHÍN no se puede escribir
+  en la letra de la tapa** (le faltan la F, la H, la N y la Í).
+- **Consecuencias.**
+  - `astro.config.mjs` pasa a `site: 'https://fichinricotero.com.ar'`. De ahí salen
+    `og:url`, `og:image` y el dominio que el taller dibuja en las cuatro tarjetas `cu-*.png`,
+    que se regeneraron con `npm run generar-dos-ejes` (las `og-*` salieron idénticas).
+  - Los enlaces del hilo de Twitter (`difusion/hilo-twitter/`, sin publicar) apuntan al
+    dominio nuevo.
+  - `arcade-ricotero.vercel.app` sigue respondiendo: ningún enlace viejo se rompe. Los ejemplos
+    con ese dominio en `Docs/ARQ/` son de `arquitectura` y quedan como historia; la base nueva
+    mide 29 caracteres contra 34, así que el presupuesto de largo de `ARQ-link-resultado-compartido`
+    sobra.
+  - **El orden importa:** este cambio entra a `main` recién cuando el dominio responda por
+    HTTPS. Antes, toda vista previa apuntaría a un dominio que todavía no resuelve.
+  - **Se renueva todos los años en NIC**, desde TAD; vencido hay 45 días de gracia. Si se deja
+    vencer, el sitio sigue vivo en `arcade-ricotero.vercel.app` y basta con volver `site` atrás.

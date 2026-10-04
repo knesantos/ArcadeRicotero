@@ -7,6 +7,28 @@
 
 **Última actualización:** 2026-10-04
 
+> ## 🌐 EL DOMINIO: FICHINRICOTERO.COM.AR (2026-10-04) — `D-59`
+>
+> **Rama `dominio/fichinricotero`, sobre `main` en `93f292a`, todavía sin integrar.** El usuario
+> compró y pagó `fichinricotero.com.ar` en NIC Argentina. `arcadericotero.com.ar` quedó trabado
+> en revisión manual de NIC ("banquinado"; la sospecha es *arca*) y se abandonó.
+>
+> **Lo que hay en la rama:** `site` de `astro.config.mjs` apunta al dominio nuevo, las cuatro
+> tarjetas `cu-*.png` de "¿Qué tipo de ricotero sos?" están regeneradas con el dominio dibujado, y
+> los enlaces del hilo de Twitter cambiaron. `npm test` (1466) y `npm run build` en verde; `og:url`
+> y `og:image` salen con `https://fichinricotero.com.ar`.
+>
+> **Lo que falta, en este orden — los dos primeros son del usuario, en sus paneles:**
+> 1. **Vercel** → proyecto `arcade-ricotero` → Settings → Domains → agregar
+>    `fichinricotero.com.ar` (principal) y `www.fichinricotero.com.ar` (que redirija).
+> 2. **NIC** → Mis dominios → `fichinricotero.com.ar` → Delegar → `ns1.vercel-dns.com` y
+>    `ns2.vercel-dns.com`. Puede tardar hasta 48 h en propagarse.
+> 3. Cuando `https://fichinricotero.com.ar` abra el sitio con el candado: integrar la rama a
+>    `main`. **No antes:** las vistas previas apuntarían a un dominio que no resuelve.
+> 4. **Abierto, del usuario:** si la marca pasa a llamarse con "fichín". El sitio sigue diciendo
+>    Arcade Ricotero en todos lados. El calco de la letra de la tapa no tiene F, H, N ni Í.
+> 5. Renovar en NIC antes del 2027-10-04 ($8.500 hoy; 45 días de gracia).
+
 > ## 🌙 "¿QUÉ TIPO DE RICOTERO SOS?" REHECHO: UNA NOCHE Y EL LIBRO DE *LUZBELITO* (2026-10-04) — `D-57`, ciclo 18
 >
 > **Rama `ciclo-18/que-ricotero-sos`, sobre `main` en `bc27cd4`, integrada a `main`** a pedido del
