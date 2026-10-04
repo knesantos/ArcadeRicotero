@@ -18,15 +18,17 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { MASTER, PIEZAS, PROHIBIDO } from './arte.ts';
-import { EJES, POLOS, RESULTADO, TARJETA, PANTALLA_0 } from './copy.ts';
+import { EJES, POLOS, RESULTADO, TARJETA, PANTALLA_0, lineaQueNombra, selloDePolos } from './copy.ts';
 
 /**
  * La versión del dibujo. **Se sube a mano** cuando cambia la composición (un margen, un
  * cuerpo, dónde va el libro): eso no está en ningún dato, y sin este número el test no se
  * enteraría. La 2 es la de `UX-36` §6: las cuatro hojas del mismo alto, la línea que nombra
- * en dos renglones, la marca de la vista previa en la franja oscura y la sans medida.
+ * en dos renglones, la marca de la vista previa en la franja oscura y la sans medida. La 3
+ * parte el nombre en renglones parejos ("Radio bajita, / misma hora" y no "Radio bajita,
+ * misma / hora"), lo que pidió `experiencia` al leer los PNG.
  */
-export const VERSION_DEL_DIBUJO = 2;
+export const VERSION_DEL_DIBUJO = 3;
 
 export const MANIFIESTO = 'scripts/dos-ejes-manifiesto.json';
 export const FUENTE_CALCO = 'public/fuentes/oktubre-calco.woff';
@@ -72,6 +74,36 @@ export function cuadrantesDelBanco(): CuadranteCrudo[] {
   return [...banco.cuadrantes].sort((a, b) => a.id.localeCompare(b.id));
 }
 
+/** El dominio que se pinta en la tarjeta, de `astro.config.mjs` y de ningún otro lado. */
+export function sitioDelTaller(config = readFileSync('astro.config.mjs', 'utf-8')): string {
+  const m = /site:\s*'https?:\/\/([^'/]+)/.exec(config);
+  if (!m) throw new Error('astro.config.mjs no declara `site`');
+  return m[1]!;
+}
+
+/**
+ * Todo lo que el taller dibuja, separado por la fuente que lo dibuja. Lo usan el taller (que se
+ * niega a dibujar si a una fuente le falta un carácter) y `tarjetas.test.ts` (que lo vigila sin
+ * correr el taller). Una fuente recortada sin una letra no falla: dibuja un hueco o una
+ * cajita, y nadie se entera hasta que la tarjeta circula (`CTR-08` v2, enmienda 1).
+ */
+export function textosDelTaller(): Record<'calco' | 'rotulada' | 'sans' | 'sansNegrita', string[]> {
+  const cuadrantes = cuadrantesDelBanco();
+  return {
+    calco: [RESULTADO.marca.toUpperCase()],
+    rotulada: [
+      PANTALLA_0.titulo,
+      PANTALLA_0.titulo.toUpperCase(),
+      TARJETA.meSalio.toUpperCase(),
+      TARJETA.pregunta.toUpperCase(),
+      ...cuadrantes.map((c) => c.nombre),
+      ...cuadrantes.map((c) => selloDePolos(c.luzOscuridad, c.ordenCaos).toUpperCase()),
+    ],
+    sans: [TARJETA.credito, sitioDelTaller(), ...cuadrantes.map((c) => c.bajada)],
+    sansNegrita: [...cuadrantes.map((c) => lineaQueNombra(c.luzOscuridad, c.ordenCaos)), ...cuadrantes.map((c) => c.nombre)],
+  };
+}
+
 const sha = (b: Buffer | string): string => createHash('sha256').update(b).digest('hex');
 
 /** La huella de todo lo que entra al taller. Cambia una coma y cambia la huella. */
@@ -85,6 +117,9 @@ export function huellaDelTaller(): string {
       nombre,
       bajada,
     })),
+    // Lo que se pinta tal cual, armado: así la huella ve también cómo se arman el sello y la
+    // línea que nombra (el " · ", la coma, el punto) y el dominio, que no están en ningún dato.
+    pintado: textosDelTaller(),
     textos: {
       titulo: PANTALLA_0.titulo,
       marca: RESULTADO.marca,

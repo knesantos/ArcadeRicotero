@@ -20,20 +20,25 @@
 import { token } from '../lib/sitio/tokens.ts';
 import { PORTAL } from '../lib/sitio/copy.ts';
 
-interface Props {
+interface Base {
   /** El titulo de la tarjeta. Suele ser el mismo `<title>` de la pantalla. */
   titulo: string;
   /** La bajada de la tarjeta. Suele ser la misma `<meta name="description">`. */
   descripcion: string;
-  /**
-   * Una imagen de vista previa propia, de 1200 × 630, en vez de la del sitio. La usan "¿Qué
-   * tipo de ricotero sos?" y sus cuatro postales (`D-57` punto 11): un resultado compartido
-   * se ve con su nombre, no con la tarjeta genérica.
-   */
-  imagen?: string;
-  /** Su texto alternativo, que es además donde viaja el crédito (`D-21`, condición 1). */
-  imagenAlt?: string;
 }
+
+/**
+ * Una imagen de vista previa propia, de 1200 × 630, en vez de la del sitio. La usan "¿Qué tipo
+ * de ricotero sos?" y sus cuatro postales (`D-57` punto 11): un resultado compartido se ve con
+ * su nombre, no con la tarjeta genérica.
+ *
+ * **Van las dos o ninguna** (`ADR-02` punto 9): el texto alternativo es donde viaja el crédito
+ * (`D-21`, condición 1), y una página que pasara solo la imagen le pondría a una tapa de
+ * *Luzbelito* el crédito de la tarjeta del sitio. Lo hace cumplir el tipo, en `npm run check`.
+ */
+type ConImagen = { imagen: string; imagenAlt: string } | { imagen?: undefined; imagenAlt?: undefined };
+
+type Props = Base & ConImagen;
 
 const { titulo, descripcion, imagen: propia, imagenAlt } = Astro.props;
 

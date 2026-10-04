@@ -49,6 +49,8 @@ import {
   coloresDelTaller,
   cuadrantesDelBanco,
   huellaDelTaller,
+  sitioDelTaller,
+  textosDelTaller,
 } from '../src/lib/dos-ejes/taller.ts';
 
 const ARTE = 'public/arte/dos-ejes';
@@ -62,7 +64,18 @@ const ROTULADA = create(readFileSync(FUENTE_ROTULADA));
 const SANS = create(readFileSync(FUENTE_SANS));
 const SANS_NEGRITA = create(readFileSync(FUENTE_SANS_NEGRITA));
 /** El dominio, de `astro.config.mjs` y de ningún otro lado. */
-const SITIO = /site:\s*'https?:\/\/([^'/]+)/.exec(readFileSync('astro.config.mjs', 'utf-8'))[1];
+const SITIO = sitioDelTaller();
+
+// Antes de dibujar: que cada fuente tenga cada carácter que le toca. Una fuente recortada sin una
+// letra no falla sola, dibuja un hueco (`CTR-08` v2, enmienda 1).
+{
+  const fuentes = { calco: CALCO, rotulada: ROTULADA, sans: SANS, sansNegrita: SANS_NEGRITA };
+  const faltan = [];
+  for (const [cual, textos] of Object.entries(textosDelTaller())) {
+    for (const t of textos) for (const ch of t) if (ch !== ' ' && !fuentes[cual].hasGlyphForCodePoint(ch.codePointAt(0))) faltan.push(`${cual}: «${ch}» en «${t}»`);
+  }
+  if (faltan.length) throw new Error(`a las fuentes del taller les faltan letras:\n  ${faltan.join('\n  ')}`);
+}
 
 // ------------------------------------------------------------------ azar con semilla
 
@@ -136,6 +149,30 @@ function partir(f, t, s, max, tracking = 0) {
     if (ancho(f, r, s, tracking) > max) throw new Error(`«${r}» no entra en ${max} px a ${s} px: sale del papel`);
   }
   return salida;
+}
+
+/**
+ * Como `partir`, pero con los renglones parejos: con la misma cantidad de renglones que el corte
+ * goloso, elige el corte en el que el renglón más largo es el más corto. Para los nombres, que
+ * son lo grande de la tarjeta: "Radio bajita, / misma hora" y no "Radio bajita, misma / hora".
+ */
+function partirParejo(f, t, s, max, tracking = 0) {
+  const palabras = t.split(' ');
+  const n = partir(f, t, s, max, tracking).length;
+  let mejor = null;
+  const probar = (desde, quedan, hechos) => {
+    if (quedan === 1) {
+      const renglones = [...hechos, palabras.slice(desde).join(' ')];
+      const peor = Math.max(...renglones.map((r) => ancho(f, r, s, tracking)));
+      if (peor <= max && (!mejor || peor < mejor.peor)) mejor = { renglones, peor };
+      return;
+    }
+    for (let hasta = desde + 1; hasta <= palabras.length - quedan + 1; hasta++) {
+      probar(hasta, quedan - 1, [...hechos, palabras.slice(desde, hasta).join(' ')]);
+    }
+  };
+  probar(0, n, []);
+  return mejor ? mejor.renglones : partir(f, t, s, max, tracking);
 }
 
 /** Un renglón que tiene que entrar entero, o el taller falla. */
@@ -221,7 +258,7 @@ const T = {
 function hojaDeLaTarjeta(c, tx) {
   const util = LIENZO_TARJETA.ancho - 2 * T.M - 2 * T.relleno;
   let s = trazo(ROTULADA, TARJETA.meSalio.toUpperCase(), 34, tx, 88, C['--papel-tenue'], 4);
-  const nombre = partir(ROTULADA, c.nombre, 80, util - T.esquinero);
+  const nombre = partirParejo(ROTULADA, c.nombre, 80, util - T.esquinero);
   if (nombre.length > 3) throw new Error(`${c.id}: el nombre ocupa ${nombre.length} renglones en la tarjeta (tope 3)`);
   nombre.forEach((r, i) => (s += trazo(ROTULADA, r, 80, tx, 176 + i * 88, C['--fondo'])));
   let y = 176 + (nombre.length - 1) * 88;
@@ -304,7 +341,7 @@ const V = { hx: 48, hy: 100, hh: 440, relleno: 52, esquinero: 118, seguro: 36 };
 /** El nombre de la vista previa: 76 px en dos renglones como mucho, o 66; si no, falla. */
 function nombreDeLaVista(nombre, util) {
   for (const cuerpo of [76, 66]) {
-    const renglones = partir(ROTULADA, nombre, cuerpo, util);
+    const renglones = partirParejo(ROTULADA, nombre, cuerpo, util);
     if (renglones.length <= 2) return { renglones, cuerpo, interlinea: Math.round(cuerpo * 1.1) };
   }
   throw new Error(`«${nombre}» ocupa más de dos renglones en la vista previa, aun a 66 px`);

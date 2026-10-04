@@ -9,7 +9,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { PIEZAS, PROHIBIDO, LADO_MASTER, TARJETA, VISTA_PREVIA, sePisan, rutaDeTarjeta, rutaDeVistaPrevia, VISTA_PREVIA_JUEGO, rutaDePieza, type Pieza } from './arte.ts';
-import { MANIFIESTO, huellaDelTaller, cuadrantesDelBanco } from './taller.ts';
+import { create } from 'fontkitten';
+import { MANIFIESTO, huellaDelTaller, cuadrantesDelBanco, textosDelTaller, FUENTE_CALCO, FUENTE_ROTULADA, FUENTE_SANS, FUENTE_SANS_NEGRITA } from './taller.ts';
 
 const PUBLICO = (ruta: string): string => `public${ruta}`;
 
@@ -102,3 +103,29 @@ test('la vista previa de la portada pone las cuatro maneras en orden alfabético
   const { ordenDeLaPortada } = medidas();
   assert.deepEqual(ordenDeLaPortada, [...nombres].sort((a, b) => a.localeCompare(b, 'es')));
 });
+
+/** Los caracteres de `textos` que la fuente no trae. Aparte, para probarlo contra un caso falso. */
+function letrasQueFaltan(archivo: string, textos: readonly string[]): string[] {
+  const fuente = create(readFileSync(archivo));
+  const faltan = new Set<string>();
+  for (const t of textos) for (const ch of t) if (ch !== ' ' && !fuente.hasGlyphForCodePoint(ch.codePointAt(0)!)) faltan.add(ch);
+  return [...faltan];
+}
+
+test('cada fuente del taller trae cada letra que dibuja (CTR-08 v2, enmienda 1)', () => {
+  // Una fuente recortada sin una letra no falla: dibuja un hueco o una cajita, y la tarjeta sale
+  // así a WhatsApp. La Oktubre Calco no tiene tildes ni Ñ; la DejaVu está recortada al latín.
+  const t = textosDelTaller();
+  const faltan = [
+    ...letrasQueFaltan(FUENTE_CALCO, t.calco).map((c) => `calco: ${c}`),
+    ...letrasQueFaltan(FUENTE_ROTULADA, t.rotulada).map((c) => `rotulada: ${c}`),
+    ...letrasQueFaltan(FUENTE_SANS, t.sans).map((c) => `sans: ${c}`),
+    ...letrasQueFaltan(FUENTE_SANS_NEGRITA, t.sansNegrita).map((c) => `sans negrita: ${c}`),
+  ];
+  assert.deepEqual(faltan, []);
+});
+
+test('la guarda de letras sabe ver: la Ñ no está en la calcada', () => {
+  assert.deepEqual(letrasQueFaltan(FUENTE_CALCO, ['AÑO']), ['Ñ']);
+});
+
