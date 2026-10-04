@@ -2227,6 +2227,14 @@ a.secundario {
 
 /* ---- La postal: la manera de quien mando el enlace, pegada en la misma tapa (`UX-36` §3.3) ---- */
 
+/* Con la etiqueta del amigo, la tapa afloja el relleno: con un nombre de dos renglones y la
+   linea que nombra en dos, el boton de la postal terminaba en 665 a 375 x 667, y `UX-36` §3.4
+   manda achicar el relleno antes que cualquier otra cosa. */
+.ejes-tapa:has(.ejes-tapa-etiqueta--amigo) {
+  padding-top: 20px;
+  padding-bottom: 16px;
+}
+
 /* El punteado es "del otro" en todo el juego: tambien en la grilla. */
 .ejes-tapa-etiqueta--amigo {
   border: 2px dashed var(--fondo);
@@ -2794,7 +2802,8 @@ a.secundario {
     padding: var(--espacio-3);
   }
 
-  .ejes-tapa {
+  .ejes-tapa,
+  .ejes-tapa:has(.ejes-tapa-etiqueta--amigo) {
     padding: 36px 12px 28px 0;
   }
 
