@@ -266,14 +266,18 @@ test('ninguna palabra es la firma de un polo', () => {
   // "Por", "me" y "mi" cuentan aunque sean cortas: son firmas de forma, como el "Ya sé… /
   // Tengo…" del banco viejo. La vuelta 1 tenía "por" en cinco opciones de orden y en ninguna de
   // caos ("punto por punto", "una por una"), y "me + verbo" en cuatro de caos y ninguna de orden.
-  const vacias = new Set(['que', 'con', 'los', 'las', 'una', 'uno', 'del', 'para', 'como', 'mas', 'sin', 'hay', 'esta', 'este', 'eso', 'esa', 'ese', 'mis', 'tus', 'sus', 'les', 'nos', 'ahi', 'aca', 'alla', 'muy', 'pero', 'cuando', 'donde']);
+  // "Que" y "cuando" tampoco son vacías: son la forma subordinada, que la vuelta 2 tenía en doce
+  // de quince opciones de caos. Y se compara por raíz (cinco letras de las palabras de seis o
+  // más), así "pensado" y "pensás" cuentan juntas.
+  const vacias = new Set(['con', 'los', 'las', 'una', 'uno', 'del', 'para', 'como', 'mas', 'sin', 'hay', 'esta', 'este', 'eso', 'esa', 'ese', 'mis', 'tus', 'sus', 'les', 'nos', 'ahi', 'aca', 'alla', 'muy', 'pero', 'donde']);
   const cortasQueCuentan = new Set(['me', 'mi']);
+  const raiz = (p: string): string => (p.length >= 6 ? p.slice(0, 5) : p);
   const firmas: string[] = [];
   for (const eje of ['luz-oscuridad', 'orden-caos']) {
     const cuenta = new Map<string, Map<string, number>>();
     for (const i of LISTOS.filter((x) => x.eje === eje)) {
       for (const o of i.opciones) {
-        const unicas = new Set(palabras(plano(o.texto)).map((p) => p.replace(/[^\p{L}]/gu, '')).filter((p) => (p.length > 2 || cortasQueCuentan.has(p)) && !vacias.has(p)));
+        const unicas = new Set(palabras(plano(o.texto)).map((p) => p.replace(/[^\p{L}]/gu, '')).filter((p) => (p.length > 2 || cortasQueCuentan.has(p)) && !vacias.has(p)).map(raiz));
         for (const p of unicas) {
           const porPolo = cuenta.get(p) ?? new Map<string, number>();
           porPolo.set(o.polo, (porPolo.get(o.polo) ?? 0) + 1);
@@ -338,6 +342,16 @@ test('ninguna opción apunta al nombre de una manera', () => {
   // Más los objetos de los nombres que el nombre no dice entero (`CNT-30` §2, la lista (O)).
   // Solo en opciones: en un enunciado, "hora" o "camino" son escena.
   for (const extra of ['rincon', 'hora', 'horas', 'horario', 'horarios', 'libro']) delNombre.add(extra);
+  // Y las palabras de las bajadas, que se leen en la grilla: "saco la cuenta" apuntaba a la
+  // bajada que decía "rehacer la cuenta" (vuelta 3). Pasan las que están en las cuatro por la
+  // forma común del costo ("Pero cuando alguien…") y las que no nombran nada.
+  const deLaForma = new Set(['pero', 'cuando', 'alguien', 'noche', 'vos', 'toca', 'esta', 'este', 'para', 'como', 'desde', 'donde', 'otro', 'otra', 'cada', 'algo']);
+  for (const c of BANCO.cuadrantes) {
+    for (const p of palabras(plano(c.bajada))) {
+      const w = p.replace(/[^\p{L}]/gu, '');
+      if (w.length > 3 && !deLaForma.has(w)) delNombre.add(w);
+    }
+  }
   const caidos: string[] = [];
   for (const i of LISTOS) {
     for (const o of i.opciones) for (const w of delNombre) if (aparece(o.texto, w)) caidos.push(`${i.id}: "${o.texto}" (${w})`);

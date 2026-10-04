@@ -131,9 +131,11 @@ export const RESULTADO = {
   /**
    * La línea que canta debajo: la paridad dicha con una imagen, sin sermón (`CNT-30`). Una
    * mesa le daba el único objeto de la grilla a «Mesa larga a las nueve», y la ponía a las
-   * cuatro "con la gente".
+   * cuatro "con la gente"; la puerta de un recital es donde se pide la entrada, y "esquinas"
+   * apuntaba a «Ronda en cualquier esquina». Las cuatro puntas de una hoja son iguales, y la
+   * hoja es la del libro.
    */
-  lasCuatroCanta: 'Cuatro puertas a la misma noche.',
+  lasCuatroCanta: 'Cuatro puntas de la misma hoja.',
   /** El sello de la tuya en la grilla. */
   tuya: 'Esta noche',
   /** El sello de la de quien te mandó el enlace. */

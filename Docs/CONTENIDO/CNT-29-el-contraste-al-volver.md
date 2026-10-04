@@ -6,8 +6,9 @@
   forma de la segunda oración (`Con la tuya comparte: …`, sin comillas y sin tres "con"
   seguidos) y el polo de oscuridad (`con lo propio`, `CNT-30` §6.1). `copy.ts` ya tiene la
   versión 2 (la pegó el hilo principal, `Docs/SUGERENCIAS/CNT-para-hilo-principal-vuelta-1-dos-ejes.md`).
-  La vuelta 2 de `CNT-30` no cambia ningún texto de este documento: no cita bajadas, nombres ni
-  opciones, solo los polos. Cierra lo que `CNT-26` §6
+  Las vueltas 2 y 3 de `CNT-30` no cambian ningún texto de este documento: no cita bajadas,
+  nombres ni opciones, solo los polos (la vuelta 3 reescribió las cuatro bajadas y los costos,
+  y el contraste sigue sin nombrarlas). Cierra lo que `CNT-26` §6
   puntos 5 y 6 dejó pendiente (el puntero decía `CNT-29`) y lo que `UX-06` §6 pedía sin copy.
 - **Consume:** `D-57` punto 11 (la postal y la línea neutra de contraste), `UX-06` §6, `BR-17`
   (ningún resultado mejor que otro), `ADR-02` (el desafío lo escribe quien manda el enlace, no es un

@@ -126,8 +126,9 @@ export const LUGARES = {
   // `CNT-30` §6.4: la vela salió de lo nuevo del juego (`D-57` punto 9), el micro con la vuelta
   // 1 de arreglos (un pasaje pago es el veto 3 de `BR-36`), y "nadie te pide nada en la
   // puerta" con la vuelta 2: era la cuarta vez que la pantalla decía "nada", y la puerta de un
-  // recital es donde se pide la entrada. Queda el molinete abierto dicho con el cuerpo.
-  dosEjes: 'Se entra con las manos vacías.',
+  // recital es donde se pide la entrada. "Con las manos vacías" se leía como llegar sin regalo
+  // (vuelta 3): queda la imagen de la previa, sin plata y sin puerta.
+  dosEjes: 'Entrá con la campera puesta.',
 } as const;
 
 /**
