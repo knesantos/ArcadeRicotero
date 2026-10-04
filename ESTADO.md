@@ -5,7 +5,89 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-02
+**Última actualización:** 2026-10-04
+
+> ## 🌙 "¿QUÉ TIPO DE RICOTERO SOS?" REHECHO: UNA NOCHE Y EL LIBRO DE *LUZBELITO* (2026-10-04) — `D-57`, ciclo 18
+>
+> **Rama `ciclo-18/que-ricotero-sos`, sobre `main` en `bc27cd4`, subida y sin integrar** (no se
+> abrió PR: nadie lo pidió). Pedido del usuario: *"Hacé un ciclo entero de mejora importante sobre
+> el juego de qué tipo de ricotero sos, mejora artística, de preguntas, de resultado y de otras
+> cosas que analices que se puedan mejorar"*. Plan en `ORQ-plan-ciclo-18.md` (`T-331`..`T-346`,
+> todas hechas). Decisión madre: `D-57`, con siete enmiendas escritas al construir.
+>
+> **La idea:** el test deja de ser veinte preguntas sueltas y pasa a ser **una noche de recital en
+> cinco momentos** (la previa, la ida, la vereda, *Cuando suena*, la vuelta), una pregunta de cada
+> eje por momento. El resultado no dice "sos": dice **"Esta noche te salió"** una de cuatro
+> maneras con nombre de cosa y sin persona —«Mesa larga a las nueve», «Ronda en cualquier
+> esquina», «Radio bajita, misma hora», «Mochila liviana, sin mapa»—, con los dos polos traducidos
+> (*con la gente* / *con lo propio*, *con plan* / *sobre la marcha*). Todo viste **el libro de
+> *Luzbelito***: la portada es la tapa cerrada, cada pregunta una hoja, el resultado la última.
+>
+> **Lo que hay:**
+> - **El banco** (`CNT-30`, `src/data/dos-ejes.json` v2): 30 escenas `EJ-029`..`EJ-058`, tres por
+>   celda momento × eje; las 28 viejas, retiradas. Pasó **cuatro vueltas de lectura adversarial**
+>   contra `BR-36` (la frontera entre escena y credencial) y la prueba de los cuatro lugares (*nunca
+>   fui*, *sin plata*, *silla de ruedas*, *volviendo de noche sin compañía*). La enmienda 7 de
+>   `D-57` cortó la oscilación de la luz: puede suponer a alguien, nunca un parentesco ni un
+>   desconocido, y teléfono en un tercio como mucho.
+> - **El motor** (`partida.ts`, `CTR-08` v2): la noche en orden, otra noche sin repetir escenas en la
+>   visita (`BR-37`), la grilla de dos por dos **relativa** (la tuya primero) y la relación con quien
+>   te mandó el enlace, atadas por test.
+> - **El toque**: se confirma y se bloquea (`aria-disabled`, `aria-pressed`), la siguiente hoja
+>   llega a los 600 ms de `--pausa-eleccion` (que el movimiento reducido no apaga), el foco va al
+>   enunciado y al nombre, una sola región viva en el HTML, teclas 1/2/Retroceso sin repetición, y
+>   "Volvé a la anterior" sin `pushState`.
+> - **El arte** (`UX-36`): la tapa en tres capas recortadas del frente (mármol, lomo, esquinero),
+>   **sin el óvalo, la figura ni la palabra LUZBELITO** (`RES-168`); la hoja lisa con el canto de
+>   las que faltan; el sello del momento que se apoya cuando cambia (el único movimiento); la
+>   última hoja con la marca en dos renglones.
+> - **Compartir**: una **tarjeta de 1080 × 1350 por manera** y una **postal por manera**
+>   (`/juegos/dos-ejes/cu-1/`..`cu-4/`, con su vista previa), fabricadas por un taller en Node
+>   (`npm run generar-dos-ejes`, versión 3) que mide cada renglón con las fuentes reales y falla si
+>   algo no entra. Cancelar la hoja de compartir ya no copia nada.
+> - **`D-58`, para todo el sitio**: la rotulada (`archivo-black.woff2`) era un recorte sin la A-Z y
+>   cada título caía a una letra de reemplazo. Ahora es la completa, con su guarda.
+> - **Guardas nuevas**: `banco.test.ts` (vetos, delatores, la firma de un polo por raíz, que ninguna
+>   opción diga la traducción de su polo ni apunte a un nombre o una bajada), los once rojos del
+>   schema (`esquemas.test.ts`), `isla.test.ts`, `tarjetas.test.ts` (huella, medidas, letras de cada
+>   fuente) y `fuentes.test.ts`.
+>
+> **Verificado:** `node --test 'src/**/*.test.ts'` **1466/1466** (`npm test` corre 325 de esos),
+> `check` 0/0, build **160** páginas. En el navegador, sobre el build: tres toques seguidos dan una
+> respuesta, tres noches dan 30 escenas distintas, compartir anda en cinco variantes de
+> `navigator` y sin red, y los botones entran a 375 × 667 (portada 590, postales 626 y 650,
+> resultado 538 y 611) y a 320 × 568 (portada 565).
+>
+> **`REV-19`** (`Docs/REVISIONES/REV-19-la-noche.md`): `FIND-111`..`FIND-118`, cuatro cerrados.
+> **La hizo el hilo principal, no `revisor`**: los subagentes se quedaron sin cupo hasta el 8 de
+> octubre, a mitad de la vuelta 4 del banco. Lo que el hilo escribió en carpetas ajenas está
+> marcado ("hilo principal") en cada `notaInterna`, en `CNT-30` §13, `CNT-01` (nota y §H) y
+> `CNT-29` §4.
+>
+> **Pendiente, por orden:**
+> 1. **Del usuario — `FIND-115`:** la carátula y el pie de este juego siguen mostrando el medallón
+>    con la vela (`luzbelito-vela.png`), que `RES-168` pide no usar como pieza. `D-57` punto 9 lo dejó
+>    fuera a propósito. Propuesta de `UX-36` §11.1: el casete A2 viste la tira del libro.
+> 2. **Cuando vuelva el cupo — `FIND-117`:** `contenido` relee los ítems marcados "hilo principal"
+>    (`EJ-041`, `047`, `052`, `053`, `054`, el crédito) y `revisor` relee `REV-19` con el encargo de
+>    `T-344`.
+> 3. **`FIND-118`:** `UX-36`, el estado de `ORQ-plan-ciclo-18.md` y `ADR-02` v2 enmienda 2 no dicen
+>    lo que el código ya hace. Escrito en
+>    `Docs/SUGERENCIAS/HILO-para-experiencia-orquestador-y-arquitectura-lo-que-dejo-REV-19.md`.
+> 4. **`FIND-116`:** el costo de `CU-4` (*averiguarlo en el celular*) pesa menos que el de `CU-1`.
+> 5. **La fecha de *Luzbelito*** (`RES-167`): 7 de octubre o 1 de agosto de 1996. La Redondopedia y
+>    el afiche de octubre dicen una sola; está en
+>    `Docs/SUGERENCIAS/HILO-para-investigador-y-contenido-la-fecha-de-luzbelito.md`. Por eso la
+>    tarjeta dice solo el año.
+> 6. **El posteo 5 del hilo de Twitter** (`difusion/hilo-twitter/`) describe el rombo y los nombres
+>    viejos: quedó desfasado y no se rehízo.
+> 7. **El lienzo** ("Sistema de marca Arcade Ricotero") no tiene el libro: la tapa en tres capas, la
+>    hoja con canto y la tarjeta nueva nacieron en `UX-36` y en el código. Falta su hoja.
+> 8. **En un teléfono real** (`UX-36` §12.6, y lo que `REV-19` deja sin máquina): una noche con
+>    cronómetro, compartir con archivo en iOS y Android, el sello a pleno sol, NVDA o JAWS con las
+>    teclas 1 y 2, y si alguna manera se lee más pobre.
+> 9. El verso de cierre de «Juguetes perdidos» (`CL-1000`) sigue en `borrador`: entra solo si el
+>    usuario lo confirma de oído y lo quiere (`D-57` punto 9).
 
 > ## 📊 LA ANALÍTICA DE VERCEL (2026-10-02) — `D-56`
 >
