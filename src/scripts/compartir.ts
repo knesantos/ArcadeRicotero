@@ -1,5 +1,5 @@
 /**
- * Compartir un resultado con su enlace de desafío, para los juegos que no tienen tarjeta.
+ * Compartir un resultado con su enlace de desafío, y con su tarjeta si el juego la tiene.
  *
  * ## Por qué existe
  *
@@ -20,6 +20,20 @@
  * juego es ni qué forma de desafío lleva, y así no puede inventarle un puntaje a un juego
  * que no lo tiene (`BR-17`).
  *
+ * ## La tarjeta, cuando hay (`D-57` punto 10)
+ *
+ * "¿Qué tipo de ricotero sos?" pasa un `archivo`: la tarjeta de su identidad, que la isla
+ * bajó al pintar el resultado. Si el teléfono acepta archivos, va primero con la imagen; si
+ * no, el escalón de siempre. El archivo tiene que llegar **ya bajado**: esperar una descarga
+ * entre el toque y `navigator.share` pierde el gesto en Safari.
+ *
+ * ## Cancelar es cancelar
+ *
+ * Hasta el ciclo 18, cerrar el menú del sistema sin elegir nada caía al respaldo: copiaba el
+ * enlace y avisaba "Se copió", que nadie había pedido. Ahora un `AbortError` —la persona
+ * canceló— termina ahí, y el botón queda desactivado mientras el menú está abierto: un
+ * segundo toque daba `InvalidStateError` y hacía lo mismo.
+ *
  * Nada se escribe con `innerHTML`, igual que en el resto de las islas.
  */
 
@@ -33,6 +47,8 @@ export interface TextosDeCompartir {
 export interface LoQueSeComparte {
   readonly texto: string;
   readonly url: string;
+  /** La imagen, si el juego tiene tarjeta y ya está bajada. */
+  readonly archivo?: File | null;
 }
 
 function el(tag: string, clase: string, texto?: string): HTMLElement {
@@ -57,17 +73,38 @@ export function botonCompartir(
   boton.type = 'button';
   const salida = el('div', 'compartir-salida');
   salida.setAttribute('aria-live', 'polite');
-  boton.addEventListener('click', () => void compartir(textos, armar(), salida));
+  boton.addEventListener('click', () => {
+    if (boton.disabled) return;
+    boton.disabled = true;
+    void compartir(textos, armar(), salida).finally(() => {
+      boton.disabled = false;
+    });
+  });
   return { boton, salida };
 }
 
+/** La persona cerró el menú, o ya había uno abierto: no hay nada que rescatar. */
+const cancelo = (e: unknown): boolean =>
+  e instanceof DOMException && (e.name === 'AbortError' || e.name === 'InvalidStateError');
+
 async function compartir(textos: TextosDeCompartir, que: LoQueSeComparte, salida: HTMLElement): Promise<void> {
+  const conArchivo = que.archivo && navigator.canShare?.({ files: [que.archivo] }) ? que.archivo : null;
+  if (conArchivo) {
+    try {
+      await navigator.share({ files: [conArchivo], text: que.texto, url: que.url });
+      return;
+    } catch (e) {
+      if (cancelo(e)) return;
+      // El navegador no quiso la imagen. Sigue el escalón de texto y enlace.
+    }
+  }
   if (navigator.share) {
     try {
       await navigator.share({ text: que.texto, url: que.url });
       return;
-    } catch {
-      // Canceló, o el navegador no quiso. Cae al respaldo.
+    } catch (e) {
+      if (cancelo(e)) return;
+      // El navegador no quiso. Cae al respaldo.
     }
   }
   salida.replaceChildren();

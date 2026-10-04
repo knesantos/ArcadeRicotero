@@ -123,7 +123,12 @@ export const LUGARES = {
   masOMenos: 'Tenés una ficha boca abajo en la mano.',
   /* `US-06` (`CNT-26`, `CNT-13` §8): viste *Luzbelito*, la cabeza con la vela. Una vela que
      alumbra **media** cara: luz y oscuridad a la vez, sin decir cuál de las dos es la buena. */
-  dosEjes: 'Una vela te alumbra media cara.',
+  // `CNT-30` §6.4: la vela salió de lo nuevo del juego (`D-57` punto 9), el micro con la vuelta
+  // 1 de arreglos (un pasaje pago es el veto 3 de `BR-36`), y "nadie te pide nada en la
+  // puerta" con la vuelta 2: era la cuarta vez que la pantalla decía "nada", y la puerta de un
+  // recital es donde se pide la entrada. "Con las manos vacías" se leía como llegar sin regalo
+  // (vuelta 3): queda la imagen de la previa, sin plata y sin puerta.
+  dosEjes: 'Entrá con la campera puesta.',
 } as const;
 
 /**
@@ -186,7 +191,7 @@ export const JUEGOS: readonly Casete[] = [
     // el molinete más abierto del sitio —no pide saber nada de la banda (`UX-06` §0)—, y el
     // que llega sin idea tiene que encontrarlo antes que los juegos que sí piden.
     titulo: '¿Qué tipo de ricotero sos?',
-    baja: 'Nadie te toma examen. Diez preguntas sobre vos, sin puntaje y sin saber nada de la banda.',
+    baja: 'Nadie te toma examen. Una noche de recital, sin puntaje y sin saber nada de la banda.',
     variante: 'luzbelito',
     // La cabeza con la vela de *Luzbelito*, recortada a mano: luz y oscuridad en una pieza.
     arte: '/arte/luzbelito-vela.png',

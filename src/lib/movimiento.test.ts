@@ -184,6 +184,9 @@ const ANIMACIONES = [
   // El grito estampado de "adivina el tema": el sello del acierto y el de lo que sumaste.
   // Corre en el compas de una pasada, asi que el mismo token lo apaga.
   { nombre: 'sello-golpe', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
+  // El sello del momento de "¿Qué tipo de ricotero sos?" (`UX-36` §4.5): se apoya en la hoja
+  // cuando cambia el momento, cinco veces por noche. Es el único movimiento de ese juego.
+  { nombre: 'momento-entra', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

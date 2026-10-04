@@ -184,6 +184,13 @@
      movimiento reducido NO apaga, y por eso esta separada de las de abajo. */
   --duracion-toque: 120ms;
 
+  /* INFORMACION tambien: la espera entre elegir y la hoja siguiente en "¿Qué tipo de
+     ricotero sos?" (`D-57` punto 12). No es movimiento —nada se mueve en esos 600 ms— sino lo
+     que deja ver que el toque prendio y **lo que tapa el doble toque**: con 200 ms un segundo
+     toque caia sobre la pregunta siguiente. Por eso no entra al corte de movimiento reducido:
+     a cero, el doble toque volveria. Lo lee la isla con `getComputedStyle`. */
+  --pausa-eleccion: 600ms;
+
   /* Atmosfera. Las tres se van a cero con `prefers-reduced-motion`. */
   --duracion-paso: 200ms; /* el cruce entre dos pantallas (ADR-03) */
   --duracion-umbral: 380ms; /* cada sub-paso del asentamiento de la portada */

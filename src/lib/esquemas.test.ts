@@ -876,3 +876,69 @@ test('CTR-20 i1: los cuatro ejemplos del contrato validan, leídos del documento
     assert.deepEqual(erroresDeInstancia(bancoMasOMenos([hecho, segun], [palabra]), 'mas-o-menos'), []);
   });
 }
+
+/**
+ * ## "¿Qué tipo de ricotero sos?" (`CTR-08` v2.9): los rojos que el schema nunca había visto
+ *
+ * El schema de este juego entró en el ciclo 8 sin un solo caso en rojo, y la v2 le sumó la
+ * noche en cinco momentos. Cada caso sale **del banco de verdad tocado en un solo campo** y
+ * tiene que caer en el lugar que dice la tabla de `CTR-08` v2.9; el control en verde va al
+ * final, con los dos ítems que pueden no tener momento (un `retirado` y un `borrador`).
+ */
+{
+  interface ItemDePrueba {
+    estado: string;
+    eje: string;
+    momento?: string;
+    opciones: Record<string, unknown>[];
+  }
+  interface BancoDosEjes {
+    contratoVersion: number;
+    preguntasPorEje: number;
+    momentos: Record<string, unknown>[];
+    cuadrantes: Record<string, unknown>[];
+    items: ItemDePrueba[];
+  }
+  const bancoDosEjes = (): BancoDosEjes => JSON.parse(readFileSync('src/data/dos-ejes.json', 'utf-8')) as BancoDosEjes;
+  const primerListo = (b: BancoDosEjes, eje?: string): number => b.items.findIndex((i) => i.estado === 'listo' && (!eje || i.eje === eje));
+  const tocado = (cambio: (b: BancoDosEjes) => string): [BancoDosEjes, string] => {
+    const b = bancoDosEjes();
+    return [b, cambio(b)];
+  };
+
+  const rojos: ReadonlyArray<readonly [string, () => [BancoDosEjes, string]]> = [
+    ['e1 un ítem listo sin momento', () => tocado((b) => { const n = primerListo(b); delete b.items[n]!.momento; return `/items/${n}`; })],
+    ['e2 un momento que la noche no tiene', () => tocado((b) => { const n = primerListo(b); b.items[n]!.momento = 'viaje'; return `/items/${n}/momento`; })],
+    ['e3 cuatro momentos', () => tocado((b) => { b.momentos.pop(); return '/momentos'; })],
+    ['e4 la ida antes que la previa', () => tocado((b) => { [b.momentos[0], b.momentos[1]] = [b.momentos[1]!, b.momentos[0]!]; return '/momentos/0/id'; })],
+    ['e5 un momento con una clave de más', () => tocado((b) => { b.momentos[2]!['icono'] = 'vela'; return '/momentos/2'; })],
+    ['e6 un nombre de cuadrante de 27 caracteres', () => tocado((b) => { b.cuadrantes[1]!['nombre'] = 'x'.repeat(27); return '/cuadrantes/1/nombre'; })],
+    ['e7 una bajada de 241 caracteres', () => tocado((b) => { b.cuadrantes[2]!['bajada'] = 'x'.repeat(241); return '/cuadrantes/2/bajada'; })],
+    ['e8 contratoVersion 1', () => tocado((b) => { b.contratoVersion = 1; return '/contratoVersion'; })],
+    ['e9 un ítem de luz-oscuridad con una opción caos', () => tocado((b) => { const n = primerListo(b, 'luz-oscuridad'); b.items[n]!.opciones[1]!['polo'] = 'caos'; return `/items/${n}/opciones`; })],
+    ['e10 una opción marcada correcta', () => tocado((b) => { const n = primerListo(b); b.items[n]!.opciones[0]!['correcta'] = true; return `/items/${n}/opciones/0`; })],
+    ['e11 preguntasPorEje par', () => tocado((b) => { b.preguntasPorEje = 6; return '/preguntasPorEje'; })],
+  ];
+
+  for (const [nombre, armar] of rojos) {
+    test(`CTR-08 v2.9 🔴 ${nombre}: el schema lo rechaza en su lugar`, () => {
+      const [banco, lugar] = armar();
+      const errores = erroresDeInstancia(banco, 'dos-ejes');
+      assert.ok(
+        errores.some((e) => e === lugar || e.startsWith(`${lugar} `) || e.startsWith(`${lugar}/`)),
+        `El schema tenía que señalar ${lugar} y señaló otra cosa:\n${errores.join('\n') || '(nada)'}`,
+      );
+    });
+  }
+
+  test('CTR-08 v2.9, el control: un retirado y un borrador sin momento validan', () => {
+    const b = bancoDosEjes();
+    const retirado = b.items.findIndex((i) => i.estado === 'retirado');
+    assert.ok(retirado >= 0, 'el banco ya no tiene retirados: este control tiene que enterarse');
+    delete b.items[retirado]!.momento;
+    const n = primerListo(b);
+    b.items[n]!.estado = 'borrador';
+    delete b.items[n]!.momento;
+    assert.deepEqual(erroresDeInstancia(b, 'dos-ejes'), []);
+  });
+}

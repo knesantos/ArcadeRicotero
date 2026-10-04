@@ -358,6 +358,15 @@
   font-weight: 700;
 }
 
+/* Un enlace con cara de boton secundario se tiene que ver como el boton (`T-343`): sin esto,
+   "Volve al arcade" de "Ponelos en fila" salia subrayado, a la izquierda y mas bajo que el
+   boton de arriba. `.compartir-bajar` ya lo hacia para la descarga; esto lo hace para todos. */
+a.secundario {
+  min-height: var(--toque-min);
+  text-align: center;
+  text-decoration: none;
+}
+
 .link {
   word-break: break-all;
   color: var(--texto-tenue);
@@ -2073,115 +2082,777 @@
 }
 
 /* ------------------------------------------------------------------
-   El test de dos ejes (US-06). Viste Luzbelito por la mezcla D-19.
+   "¿Qué tipo de ricotero sos?" (US-06, D-57, UX-36). Viste Luzbelito por
+   la mezcla D-19, y desde el ciclo 18 lo viste entero: el libro de tapas
+   de carton con lomo de cuero que fue ese disco (RES-168). La portada es
+   la tapa cerrada, cada pregunta una hoja, el resultado la ultima.
 
    Estas clases van aca y no en el <style> de `dos-ejes.astro` por el
    defecto que el ciclo 6 dejo documentado: el estilo de un `.astro`
-   tiene alcance y **no llega a lo que crea el JavaScript**. Toda esta
-   pantalla la pinta la isla, asi que ahi no la alcanzaria ninguna regla.
+   tiene alcance y **no llega a lo que crea el JavaScript**.
+
+   Ni un hex: el papel y su tinta son el par ya testeado (`--fondo` sobre
+   `--papel`), y la tinta del disco llega por `.disco--luzbelito`.
    ------------------------------------------------------------------ */
 
-.ejes-progreso {
-  color: var(--texto-tenue);
-  font-size: 0.85rem;
-  margin: var(--espacio-3) 0 var(--espacio-1);
+/* El papel rayado del sitio: renglones finos de corte duro sobre el papel. Es el mismo de
+   la etiqueta de la caratula; no es un degradado decorativo, son lineas. **Solo en las
+   etiquetas** (`UX-36` §2.3): en una etiqueta chica, con `line-height: 1.6` igual al paso
+   del rayado, el renglon queda bajo cada linea; en la hoja, con un enunciado de tres
+   renglones encima, las rayas cruzaban la letra. */
+.ejes-tapa-etiqueta {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 1.6em,
+      color-mix(in srgb, var(--papel-borde) 45%, transparent) 1.6em,
+      color-mix(in srgb, var(--papel-borde) 45%, transparent) calc(1.6em + 1px)
+    ),
+    var(--papel);
+  color: var(--fondo);
+}
+
+/* La hoja va lisa: el papel y su tinta, el par ya testeado. */
+.ejes-hoja {
+  background: var(--papel);
+  color: var(--fondo);
+}
+
+/* ---- La portada: la tapa del libro, cerrada (`UX-36` §3.2) ---- */
+
+/* Tres capas que se acomodan al alto de la etiqueta: el marmol de fondo, el lomo de cuero a
+   la izquierda y el esquinero arriba a la derecha. La caja no tiene alto propio: es la
+   etiqueta mas 28 px arriba y 24 abajo, asi sirve igual para el indice y para el desafio. */
+.ejes-tapa {
+  position: relative;
+  margin: var(--espacio-3) 0 var(--espacio-2);
+  padding: 28px 8px 24px 0;
+  border: var(--linea) solid var(--apoyo-disco);
+  box-shadow: 5px 5px 0 var(--borde);
+  transform: rotate(-0.8deg);
+}
+
+.ejes-tapa-marmol,
+.ejes-tapa-lomo,
+.ejes-tapa-esquinero {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.ejes-tapa-marmol {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 35% 50%;
+}
+
+/* El lomo real mide el 11,5 % del frente; aca va mas fino a proposito, como en la maqueta.
+   El ancho sale del alto. */
+.ejes-tapa-lomo {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: auto;
+  aspect-ratio: 1 / 6;
+  object-fit: cover;
+}
+
+.ejes-tapa-esquinero {
+  top: 0;
+  right: 0;
+  width: 4rem;
+  height: 4.6rem;
+}
+
+/* La etiqueta, pegada: asoma el lomo a la izquierda, el esquinero arriba a la derecha (le
+   pisa un poco la punta, y es collage) y marmol abajo. Con una etiqueta alta el lomo engorda
+   (el ancho sale del alto) y la etiqueta le pisa el borde: es papel pegado encima, y lo que
+   no se negocia es el ancho del renglon, medido el 2026-10-04 a 375 px: con 271 px utiles
+   el rotulo del amigo entra en uno y el nombre mas largo en dos. */
+.ejes-tapa-etiqueta {
+  position: relative;
+  display: block;
+  margin: 0 0 0 calc(1.4rem + 8px);
+  padding: var(--espacio-1) 14px;
+  border-radius: 3px;
+  box-shadow: 3px 3px 0 var(--borde);
+  transform: rotate(0.7deg);
+}
+
+/* La cinta que la sostiene. */
+.ejes-tapa-etiqueta::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 14%;
+  width: 72px;
+  height: 22px;
+  background: color-mix(in srgb, var(--papel) 30%, transparent);
+  transform: rotate(-4deg);
+  border-radius: 2px;
+}
+
+.ejes-tapa-rotulo {
+  display: block;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--papel-tenue);
+}
+
+/* El indice: los cinco sellos en el orden de la noche, sin numeros a la vista (la cantidad
+   ya la dice el subtitulo, y un indice numerado se lee como un conteo). */
+.ejes-indice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.45em;
+  margin: 0.15rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* El punto medio no se lee: texto alternativo vacio. */
+.ejes-indice li:not(:last-child)::after {
+  content: ' ·';
+  content: ' ·' / '';
+  color: var(--papel-tenue);
+}
+
+/* ---- La postal: la manera de quien mando el enlace, pegada en la misma tapa (`UX-36` §3.3) ---- */
+
+/* Con la etiqueta del amigo, la tapa afloja el relleno: con un nombre de dos renglones y la
+   linea que nombra en dos, el boton de la postal terminaba en 665 a 375 x 667, y `UX-36` §3.4
+   manda achicar el relleno antes que cualquier otra cosa. */
+.ejes-tapa:has(.ejes-tapa-etiqueta--amigo) {
+  padding-top: 20px;
+  padding-bottom: 16px;
+}
+
+/* El punteado es "del otro" en todo el juego: tambien en la grilla. */
+.ejes-tapa-etiqueta--amigo {
+  border: 2px dashed var(--fondo);
+  transform: rotate(-0.7deg);
+}
+
+.ejes-amigo-nombre {
+  display: block;
+  font-family: var(--fuente-rotulada);
+  /* 1,5 y no 1,6 rem: «Ronda en cualquier» mide 270 px a 1,6 y el renglon util, 271. */
+  font-size: 1.5rem;
+  line-height: 1.15;
+  margin: 0.2rem 0 var(--espacio-1);
+  text-wrap: balance;
+}
+
+.ejes-amigo-nombra {
+  display: block;
+  margin-top: var(--espacio-1);
+  font-weight: 700;
+}
+
+/* Lo que dice la portada si el motor no puede armar la noche: seco, registro 3 (`UX-36` §4.8). */
+.ejes-sin-noche {
+  margin: var(--espacio-2) 0 0;
+  color: var(--texto);
+}
+
+/* ---- La hoja de la pregunta ---- */
+
+/* La hoja va recta: es la pagina del libro, y lo torcido es lo que se pega encima. El canto
+   de las hojas que faltan son sombras duras escalonadas, papel y tinta alternados: objeto,
+   no numero, y se van afinando hasta la ultima hoja. El margen derecho deja ver el canto. */
+.ejes-hoja {
+  position: relative;
+  margin: var(--espacio-3) var(--espacio-1) var(--espacio-2) 0;
+  padding: var(--espacio-2) var(--espacio-2) var(--espacio-3);
+  border: 2px solid var(--fondo);
+  border-radius: 3px;
+  box-shadow: 3px 3px 0 var(--papel-borde), 5px 5px 0 var(--fondo), 7px 7px 0 var(--papel-borde), 9px 9px 0 var(--fondo),
+    11px 11px 0 var(--papel-borde), 13px 13px 0 var(--fondo), 15px 15px 0 var(--papel-borde), 17px 17px 0 var(--borde);
+}
+
+.ejes-hoja[data-quedan='3'] {
+  box-shadow: 3px 3px 0 var(--papel-borde), 5px 5px 0 var(--fondo), 7px 7px 0 var(--papel-borde), 9px 9px 0 var(--fondo),
+    11px 11px 0 var(--papel-borde), 13px 13px 0 var(--borde);
+}
+
+.ejes-hoja[data-quedan='2'] {
+  box-shadow: 3px 3px 0 var(--papel-borde), 5px 5px 0 var(--fondo), 7px 7px 0 var(--papel-borde), 9px 9px 0 var(--borde);
+}
+
+.ejes-hoja[data-quedan='1'] {
+  box-shadow: 3px 3px 0 var(--papel-borde), 5px 5px 0 var(--borde);
+}
+
+.ejes-hoja[data-quedan='0'] {
+  box-shadow: 4px 4px 0 var(--borde);
+}
+
+/* La cabecera, como el encabezado de una pagina de libro: el sello, el folio y una regla
+   fina debajo. */
+.ejes-hoja-cabeza {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--espacio-1);
+  padding-bottom: var(--espacio-1);
+  border-bottom: 1px solid var(--papel-borde);
+}
+
+/* El sello del momento: goma de esquina casi viva, apenas torcido. Seco: registro 3. */
+.ejes-momento {
+  margin: 0;
+  padding: 0.15rem 0.55rem;
+  border: 2px solid var(--fondo);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transform: rotate(-1.5deg);
+}
+
+/* El sello entra: el unico movimiento de la noche (`UX-36` §4.5). Solo cuando cambia el
+   momento, cinco veces por noche. Llega desde arriba y a la izquierda, torcido de mas, y se
+   asienta: `translate` y `rotate` se suman al `transform` del sello, asi que el reposo no se
+   toca. No toca la opacidad, no escala, no rebota. Con movimiento reducido,
+   `--duracion-paso` va a cero y el sello aparece ya apoyado. */
+.ejes-momento--entra {
+  animation: momento-entra var(--duracion-paso) var(--curva-cinta) both;
+}
+
+@keyframes momento-entra {
+  from {
+    translate: -4px -6px;
+    rotate: -5deg;
+  }
+}
+
+.ejes-folio {
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: var(--papel-tenue);
+}
+
+/* La linea que canta del momento: registro 1, la que pone el cuerpo en la escena. */
+.ejes-canta {
+  margin: var(--espacio-1) 0 var(--espacio-2);
+  font-style: italic;
+  color: var(--papel-tenue);
 }
 
 .ejes-enunciado {
   font-family: var(--fuente);
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   line-height: 1.3;
-  margin: 0 0 var(--espacio-4);
+  margin: 0 0 var(--espacio-3);
+  text-wrap: balance;
+}
+
+/* El foco del titulo, solo por teclado: punteado y en la tinta, para decir donde cayo sin
+   parecer un control. El aro de los botones no alcanza a un `h2` (`UX-36` §8.1). */
+.ejes-enunciado:focus-visible,
+.ejes-nombre:focus-visible {
+  outline: 2px dashed var(--fondo);
+  outline-offset: 4px;
 }
 
 .ejes-opciones {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: var(--espacio-2);
 }
 
-/* Las dos opciones tienen exactamente el mismo peso visual: en este juego
-   ninguna es la correcta, y una que se vea distinta seria la respuesta. */
+/* Las dos opciones tienen exactamente el mismo peso visual: en este juego ninguna es la
+   correcta, y una que se viera distinta seria la respuesta. Son etiquetas de papel con
+   borde de tinta, torcidas en espejo. */
 .ejes-opcion {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
   width: 100%;
-  min-height: var(--toque-min);
-  padding: var(--espacio-2);
+  min-height: calc(var(--toque-min) + var(--espacio-1));
+  padding: var(--espacio-1) var(--espacio-2);
   text-align: left;
+  font-family: var(--fuente);
   font-size: 1.05rem;
-  background: transparent;
-  color: var(--texto);
-  border: var(--linea) solid var(--borde);
-  border-radius: var(--radio);
+  background: var(--papel);
+  color: var(--fondo);
+  border: 2px solid var(--fondo);
+  border-radius: 3px;
+  box-shadow: 3px 3px 0 var(--fondo);
+  transform: rotate(-0.4deg);
+  touch-action: manipulation;
+  cursor: pointer;
+  transition:
+    translate var(--duracion-toque) var(--curva-cinta),
+    box-shadow var(--duracion-toque) var(--curva-cinta),
+    border-width var(--duracion-toque) var(--curva-cinta);
 }
 
-/* Sin verde, sin festejo, sin marca de acierto: no hay acierto. Lo unico
-   que confirma el toque es la tinta del borde, y no se mueve nada. */
-.ejes-opcion:active {
-  border-color: var(--disco-luzbelito-tinta);
-  color: var(--disco-luzbelito-tinta);
+.ejes-opcion:nth-child(2) {
+  transform: rotate(0.4deg);
+}
+
+/* El numero de su tecla: solo con mouse (`D-53`), como un sello chico al costado. */
+.ejes-opcion-tecla {
+  display: none;
+}
+
+/* Elegida: apretada contra el papel (se hunde, se apaga la sombra), borde de 4 px y la marca
+   de `aria-pressed`. Tres cambios de forma, ninguno de color, y nunca ✔: aca no hay acierto.
+   La otra no se apaga: apagarla la haria leer como la perdedora (`UX-06` §3).
+
+   La que se habia elegido, cuando se vuelve a una hoja, tiene **la misma forma**, sin
+   inercia: un toque en la otra la reemplaza, uno en la misma la confirma. */
+.ejes-opcion--elegida,
+.ejes-opcion--antes {
+  translate: 3px 3px;
+  box-shadow: 0 0 0 var(--fondo);
+  border-width: 4px;
+}
+
+/* Inertes durante la pausa, pero sin apagarse: `aria-disabled` y no `disabled`, asi el foco
+   se queda y no hay gris del navegador que sacar (gris se leeria como "esta no"). */
+.ejes-opcion[aria-disabled='true'] {
+  cursor: default;
+}
+
+.ejes-pie-partida {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-1);
+  margin-top: var(--espacio-3);
+}
+
+/* "Volve a la anterior": la cinta `.volver` del sitio, en chico (`UX-36` §4.6), debajo de la
+   hoja. No es una salida (`D-54`): vuelve una hoja. Lo demas lo pone `.volver`. */
+.ejes-anterior {
+  border: 0;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+/* La leyenda de las teclas: solo con mouse, como la de Skayboy (`D-55`). */
+.ejes-teclas {
+  display: none;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--texto-tenue);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ejes-teclas {
+    display: block;
+  }
+
+  .ejes-opcion-tecla {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    min-width: 1.6em;
+    height: 1.6em;
+    border: 2px solid var(--fondo);
+    border-radius: 3px;
+    font-family: var(--fuente-rotulada);
+    font-size: 0.8rem;
+  }
+
+  .ejes-opcion:hover:not([aria-disabled='true']) {
+    border-width: 3px;
+  }
+}
+
+/* ---- El resultado: la ultima hoja, apoyada sobre el libro ---- */
+
+.ejes-hoja--final {
+  margin-top: var(--espacio-2);
+  padding: var(--espacio-2) var(--espacio-2) var(--espacio-3);
+  box-shadow: 5px 5px 0 var(--borde);
+  transform: rotate(-0.5deg);
+}
+
+/* La marca, chica, arriba de la hoja: en el telefono la portada se fue, y sin esto la
+   captura de pantalla salia sin decir de donde era ni que test. En tinta y no en rojo: el
+   rojo de la marca sobre el papel da 3,0 : 1 y ese par no esta testeado (`UX-36` §5.1). El
+   margen derecho esquiva el esquinero. */
+.ejes-marca {
+  margin: 0 4.5rem var(--espacio-2) 0;
+}
+
+.ejes-marca-sitio {
+  display: block;
+  font-family: var(--fuente-titular);
+  font-size: 1.15rem;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--fondo);
+}
+
+.ejes-marca-juego {
+  display: block;
+  margin-top: 0.2rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--papel-tenue);
+}
+
+/* El esquinero de cuero del libro, pegado en la esquina de la hoja. */
+.ejes-esquinero {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4rem;
+  height: auto;
+  pointer-events: none;
 }
 
 .ejes-rotulo {
-  color: var(--texto-tenue);
-  font-size: 0.85rem;
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin: var(--espacio-3) 0 var(--espacio-1);
+  color: var(--papel-tenue);
 }
 
+/* El nombre es lo mas grande de la pantalla (`UX-06` §4), mas que el boton de compartir.
+   Quieto: sin eco ni registro corrido, que son del `h1`. */
 .ejes-nombre {
   font-family: var(--fuente-rotulada);
-  font-size: 1.9rem;
-  line-height: 1.15;
-  color: var(--disco-luzbelito-tinta);
-  margin: 0 0 var(--espacio-3);
+  font-weight: 400;
+  font-size: 2.1rem;
+  line-height: 1.08;
+  margin: 0.3rem 0 var(--espacio-1);
+  text-wrap: balance;
 }
 
-.ejes-plano {
-  display: block;
-  /* El tope de alto (`36vh`) es `FIND-90`: `UX-06` §4 quiere el nombre y los dos botones sin
-     scroll a 375×667, y desde que el resultado comparte, "Probá de nuevo" quedaba 28 px abajo
-     de la línea. En un teléfono alto el plano mide lo mismo que antes. */
-  width: min(100%, 17rem, 36vh);
-  margin: 0 auto var(--espacio-3);
-}
-
-/* Los cuatro cuadrantes con el mismo relleno: darle un tono distinto a cada
-   uno seria reintroducir por color la jerarquia que el rombo evita. */
-.ejes-rombo {
-  fill: var(--disco-luzbelito-apoyo);
-  stroke: var(--borde);
-  stroke-width: 3;
-}
-
-.ejes-diagonal {
-  stroke: var(--borde);
-  stroke-width: 2;
-}
-
-.ejes-punta {
-  fill: var(--texto-tenue);
+/* El sello de los dos polos. */
+.ejes-polos {
+  display: inline-block;
+  margin: 0 0 var(--espacio-1);
+  padding: 0.1rem 0.5rem;
+  border: 2px solid currentColor;
+  border-radius: 3px;
   font-family: var(--fuente-rotulada);
   font-size: 0.75rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transform: rotate(-1.5deg);
 }
 
-.ejes-punto {
-  fill: var(--disco-luzbelito-tinta);
-  stroke: var(--fondo);
-  stroke-width: 2;
+.ejes-nombra {
+  margin: 0 0 var(--espacio-1);
+  font-weight: 700;
 }
 
 .ejes-bajada {
-  font-size: 1.05rem;
+  margin: 0;
+  font-size: 1.02rem;
   line-height: 1.45;
 }
 
 .ejes-acciones {
   display: flex;
   flex-direction: column;
-  gap: var(--espacio-2);
+  gap: var(--espacio-1);
+  margin-top: var(--espacio-3);
+}
+
+/* La linea de contraste: registro 3, entre los botones y la grilla, pegada a lo que la grilla
+   muestra (`UX-36` §5.4). */
+.ejes-contraste {
+  margin: 0 0 var(--espacio-2);
+  font-size: 0.95rem;
+  color: var(--texto);
+}
+
+/* "Baja la tarjeta": la tercera accion, un boton punteado a todo el ancho y no un enlace
+   subrayado (`UX-36` §5.5). */
+.ejes-bajar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: var(--toque-min);
+  margin-top: var(--espacio-3);
+  padding: 0 var(--espacio-2);
+  border: 2px dashed var(--borde);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--texto-tenue);
+  touch-action: manipulation;
+}
+
+/* ---- Las cuatro maneras, en la grilla de dos por dos ---- */
+
+.ejes-cuatro {
   margin-top: var(--espacio-4);
+}
+
+.ejes-cuatro-titulo {
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-weight: 400;
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+}
+
+.ejes-cuatro-canta {
+  margin: 0.25rem 0 var(--espacio-2);
+  color: var(--texto-tenue);
+}
+
+.ejes-grilla-columnas,
+.ejes-grilla-lista {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espacio-1);
+}
+
+.ejes-grilla-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Los rotulos de los margenes son los polos: dicen que tienen en comun, no quien es quien.
+   12 px, el piso de todo lo que se lee (`UX-36` §8.4). */
+.ejes-grilla-polo,
+.ejes-grilla-renglon {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+.ejes-grilla-columnas {
+  margin-bottom: 0.25rem;
+}
+
+.ejes-grilla-renglon {
+  grid-column: 1 / -1;
+  margin-top: var(--espacio-1);
+  padding-bottom: 0.15rem;
+  border-bottom: 1px dashed var(--borde);
+}
+
+/* Las cuatro, el mismo borde y el mismo tamaño, sobre el fondo: ningun relleno propio. */
+.ejes-manera {
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  background: var(--fondo);
+}
+
+/* El `summary` es tocable entero, de 72 px, con lugar a la derecha para el signo. */
+.ejes-manera summary {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-height: calc(var(--toque-min) + var(--espacio-3));
+  padding: var(--espacio-1) 1.6rem var(--espacio-1) var(--espacio-1);
+  cursor: pointer;
+  list-style: none;
+  touch-action: manipulation;
+}
+
+.ejes-manera summary::-webkit-details-marker {
+  display: none;
+}
+
+/* El aro de siempre: el global `:where(a, button):focus-visible` no alcanza a un `summary`. */
+.ejes-manera summary:focus-visible {
+  outline: var(--linea) solid var(--acento-2);
+  outline-offset: 2px;
+}
+
+/* Que se abre: un signo, en la esquina, que cambia al abrir. Es funcion, no adorno, y el
+   lector de pantalla no lo lee: ya dice "contraido" o "expandido". */
+.ejes-manera summary::after {
+  /* Primero sin texto alternativo: un navegador que no entiende la barra descarta la
+     declaracion entera, y se quedaria sin signo. */
+  content: '+';
+  content: '+' / '';
+  position: absolute;
+  top: var(--espacio-1);
+  right: var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  color: var(--texto-tenue);
+}
+
+.ejes-manera details[open] summary::after {
+  content: '−';
+  content: '−' / '';
+}
+
+.ejes-manera-nombre {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+.ejes-manera-nombra,
+.ejes-manera-bajada {
+  margin: 0;
+  padding: 0 var(--espacio-1) var(--espacio-1);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.ejes-manera-nombra {
+  font-weight: 700;
+}
+
+.ejes-manera-sellos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+/* "QUIEN TE LO MANDO" no entra en un renglon en una celda de 116 px: se parte adentro de su
+   rectangulo, como un sello de dos renglones, y no con el borde cortado. */
+.ejes-manera-sello {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.05rem 0.35rem;
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  line-height: 1.15;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+/* La tuya: borde grueso en la tinta del disco y su sello. Dos canales, nunca solo color. */
+.ejes-manera--tuya {
+  border: var(--linea) solid var(--tinta-disco);
+}
+
+/* La de quien mando el enlace: borde punteado y su sello. */
+.ejes-manera--suya {
+  border-style: dashed;
+}
+
+.ejes-manera-sello--suya {
+  border-style: dashed;
+}
+
+/* ---- Por debajo de 22 rem: una columna, en el orden relativo (`UX-36` §5.3) ---- */
+
+@media (max-width: 21.99rem) {
+  /* La tapa se aprieta en el teléfono más angosto: a 320 × 568 era la única portada de los
+     ocho con el botón de arranque bajo el pliegue (terminaba en 633; los otros, entre 409 y
+     514). Menos relleno, el índice un punto más chico para que entre en dos renglones, y el
+     esquinero acorde (`REV-19`). */
+  .ejes-tapa,
+  .ejes-tapa:has(.ejes-tapa-etiqueta--amigo) {
+    margin: var(--espacio-2) 0 var(--espacio-1);
+    padding: 14px 6px 12px 0;
+  }
+
+  .ejes-tapa-etiqueta {
+    margin-left: calc(1.1rem + 6px);
+    padding: 6px 10px;
+  }
+
+  .ejes-tapa-esquinero {
+    width: 3.2rem;
+    height: 3.7rem;
+  }
+
+  .ejes-indice {
+    font-size: 0.9rem;
+  }
+
+  .ejes-amigo-nombre {
+    font-size: 1.35rem;
+  }
+
+  .ejes-grilla-lista {
+    grid-template-columns: 1fr;
+  }
+
+  .ejes-grilla-columnas {
+    display: none;
+  }
+}
+
+/* ---- Desde 46 rem: los rotulos de renglon pasan al margen izquierdo ---- */
+
+@media (min-width: 46rem) {
+  /* 7 rem y no los 5 de `UX-36` §5.3: "OSCURIDAD" en la rotulada a 0,75 rem mide ≈ 100 px y a
+     5 rem (80 px) se metía en la celda de al lado (medido a 1440, `REV-19`). */
+  .ejes-grilla-lista {
+    grid-template-columns: 7rem 1fr 1fr;
+  }
+
+  .ejes-grilla-columnas {
+    padding-left: calc(7rem + var(--espacio-1));
+  }
+
+  .ejes-grilla-renglon {
+    grid-column: 1;
+    align-self: center;
+    margin-top: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+}
+
+/* ---- La mesa (>= 64 rem): la hoja crece hacia los costados, no la letra ---- */
+
+@media (min-width: 64rem) {
+  /* Lado a lado: arriba y abajo ordenan, izquierda y derecha no tanto. Las dos filas miden
+     lo mismo porque la grilla estira. */
+  .ejes-opciones {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ejes-hoja {
+    padding: var(--espacio-3);
+  }
+
+  .ejes-tapa,
+  .ejes-tapa:has(.ejes-tapa-etiqueta--amigo) {
+    padding: 36px 12px 28px 0;
+  }
+
+  .ejes-amigo-nombre {
+    font-size: 1.6rem;
+  }
+
+  .ejes-tapa-esquinero {
+    width: 5rem;
+    height: 5.75rem;
+  }
+
+  .ejes-nombre {
+    font-size: 2.6rem;
+  }
+
+  .ejes-esquinero {
+    width: 5rem;
+  }
 }
 
 /* ==========================================================================

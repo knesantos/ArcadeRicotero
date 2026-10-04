@@ -1,0 +1,59 @@
+---
+/**
+ * La tapa del libro de *Luzbelito* en la portada del juego y en sus postales (`D-57` punto 8,
+ * `UX-36` §3.2 y §3.3).
+ *
+ * El disco salió como un libro de tapas de cartón con lomo de cuero (`RES-168`). Acá está
+ * cerrado, en **tres capas** que se acomodan al alto de la etiqueta: el mármol de fondo, el
+ * lomo de cuero a la izquierda y el esquinero arriba a la derecha. Sin el óvalo, sin la figura
+ * y sin el título: las cajas y la guarda viven en `arte.ts`.
+ *
+ * Encima va **una etiqueta de papel**, y es lo único que cambia entre la portada y la postal:
+ *
+ * - en la portada, el índice de la noche: el que llega sin idea lee qué hay adentro antes de
+ *   tocar nada;
+ * - en una postal, la manera de quien mandó el enlace —qué es, antes de jugar—, con borde
+ *   punteado, que en todo el juego quiere decir "del otro". **Sin la bajada**: con ella el
+ *   botón caía bajo el pliegue a 375 × 667. La bajada entera se lee al terminar, en la grilla.
+ *
+ * Todo escrito en el HTML: la vista previa ya lo prometió y no tiene que esperar a ninguna
+ * isla. Los enlaces viejos (`?g=dos-ejes&r=CU-n`) arman la misma etiqueta del amigo desde la
+ * isla (`partida-dos-ejes.ts`, `etiquetaDelAmigo`), con las mismas clases.
+ */
+import { PANTALLA_0, POSTAL, lineaQueNombra, selloDePolos } from '../../lib/dos-ejes/copy.ts';
+import { rutaDePieza, PIEZAS } from '../../lib/dos-ejes/arte.ts';
+import type { Cuadrante, Momento } from '../../lib/dos-ejes/partida.ts';
+
+interface Props {
+  momentos: readonly Momento[];
+  /** La manera de quien mandó el enlace, si la página es una postal. */
+  amigo?: Cuadrante;
+}
+const { momentos, amigo } = Astro.props;
+const { marmol, lomo, esquinero } = PIEZAS;
+---
+
+<figure class="ejes-tapa">
+  <img class="ejes-tapa-marmol" src={rutaDePieza('marmol')} alt="" width={marmol.ancho} height={marmol.alto} />
+  <img class="ejes-tapa-lomo" src={rutaDePieza('lomo')} alt="" width={lomo.ancho} height={lomo.alto} />
+  <img class="ejes-tapa-esquinero" src={rutaDePieza('esquinero')} alt="" width={esquinero.ancho} height={esquinero.alto} />
+  {
+    amigo ? (
+      <figcaption class="ejes-tapa-etiqueta ejes-tapa-etiqueta--amigo">
+        <span class="ejes-tapa-rotulo">{POSTAL.rotulo}</span>
+        <span class="ejes-amigo-nombre">{amigo.nombre}</span>
+        <span class="ejes-polos">{selloDePolos(amigo.luzOscuridad, amigo.ordenCaos)}</span>
+        <span class="ejes-amigo-nombra">{lineaQueNombra(amigo.luzOscuridad, amigo.ordenCaos)}</span>
+      </figcaption>
+    ) : (
+      <figcaption class="ejes-tapa-etiqueta">
+        <span class="ejes-tapa-rotulo">{PANTALLA_0.indiceRotulo}</span>
+        <ol class="ejes-indice">
+          {momentos.map((m) => (
+            <li>{m.nombre}</li>
+          ))}
+        </ol>
+      </figcaption>
+    )
+  }
+</figure>

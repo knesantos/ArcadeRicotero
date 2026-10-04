@@ -1,0 +1,30 @@
+{
+  "_comentario": "Lo escribe scripts/generar-dos-ejes.mjs. La huella es de lo que ENTRA (textos, colores, cajas, máster, fuentes, versión del dibujo); tarjetas.test.ts la recalcula y, si no coincide, pide volver a correr el taller.",
+  "version": 3,
+  "huella": "f581053c8bbd2996ecbbb0d1c2d9dfda1f0261d560cf629e1585c0afb2a327f7",
+  "salidas": [
+    "public/arte/dos-ejes/libro-marmol.jpg",
+    "public/arte/dos-ejes/libro-lomo.jpg",
+    "public/arte/dos-ejes/libro-esquinero.png",
+    "public/arte/dos-ejes/libro-franja.jpg",
+    "public/tarjetas/dos-ejes/cu-1.png",
+    "public/tarjetas/dos-ejes/og-cu-1.png",
+    "public/tarjetas/dos-ejes/cu-2.png",
+    "public/tarjetas/dos-ejes/og-cu-2.png",
+    "public/tarjetas/dos-ejes/cu-3.png",
+    "public/tarjetas/dos-ejes/og-cu-3.png",
+    "public/tarjetas/dos-ejes/cu-4.png",
+    "public/tarjetas/dos-ejes/og-cu-4.png",
+    "public/tarjetas/dos-ejes/og-dos-ejes.png"
+  ],
+  "medidas": {
+    "altoDeLaHojaDeLaTarjeta": 769,
+    "altoDeLaHojaDeLaVista": 440,
+    "ordenDeLaPortada": [
+      "Mesa larga a las nueve",
+      "Mochila liviana, sin mapa",
+      "Radio bajita, misma hora",
+      "Ronda en cualquier esquina"
+    ]
+  }
+}
