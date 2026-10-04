@@ -7,6 +7,45 @@
 
 **Última actualización:** 2026-10-04
 
+> ## 🕹 EL SITIO SE LLAMA FICHÍN RICOTERO (2026-10-04) — `D-60`
+>
+> Pedido del usuario, textual: *"Vamos a cambiar el nombre de la pagina por fichin ricotero.
+> Hace los cambios pertinentes. Esto se debe a que arcade ricotero no se podia comprar el
+> dominio. Dale que sale hoy la pagina al publico"*. Rama `nombre/fichin-ricotero`, sobre
+> `main` en `93f292a` (con el ciclo 18 adentro).
+>
+> **Lo que hay:**
+> - **El nombre** en todo lo que se ve: las cuatro formas de la marca (`FICHÍN RICOTERO`), los
+>   dos pinceles, las nueve tarjetas del taller de "¿Qué tipo de ricotero sos?" (regeneradas),
+>   pestañas, `og:site_name`, `aria-label`, ícono, textos para compartir ("en el fichín
+>   ricotero"), *Volvé al fichín* y la cinta *← AL FICHÍN*, las imágenes que bajan los dos
+>   pinceles (`fichin-ricotero-*.png`).
+> - **Oktubre Calco v0.4**: la F, la H, la N y la Í, derivadas de las letras calcadas con
+>   booleanas (`scripts/derivar-oktubre-calco.py`, reproducible byte a byte). La marca queda
+>   entera en la letra de la tapa. Métricas sin tocar; el acento se probó en
+>   Chromium/Windows, HTML y canvas.
+> - **`fuentes.test.ts`** (el de `D-58`) suma un lector de WOFF y tres casos: si la marca, un
+>   pincel, el taller o una página piden una letra que el calco no tiene, falla.
+> - **Lo que no cambió, a propósito:** la clave `arcade.` de `localStorage`, las clases, los
+>   `$id`, el repo, el proyecto de Vercel (`arcade-ricotero`) y **el dominio**: `site` sigue en
+>   `arcade-ricotero.vercel.app` porque `fichinricotero.com.ar` todavía no resuelve DNS. Eso
+>   lo cambia `D-59` (rama `dominio/fichinricotero`) cuando responda por HTTPS.
+>
+> **Abierto, sin trabar:**
+> - **Del usuario:** delegar `fichinricotero.com.ar` en NIC Argentina a los servidores de
+>   nombres de Vercel y sumar el dominio al proyecto `arcade-ricotero`. Hasta entonces el
+>   dominio no carga y `D-59` no puede entrar.
+> - **`D-59` está reservado dos veces** (la rama del dominio y el ciclo 19). Uno renumera.
+> - El trabajo de Skayboy del menú y el pulgar ya está renumerado sobre `origin/main`, en la
+>   rama local `skayboy/menu-y-mando-sobre-main` (`e50110b`: `D-61`, `UX-37`, `CNT-40`,
+>   `BR-40`, `T-401`…`T-410`), sin subir. Contra esta rama choca solo como texto: el final de
+>   `DECISIONES.md` e `IDS.md`, este bloque, y las líneas de la marca en
+>   `skayboy-y-poligirl.astro`.
+> - Los roles: `Docs/SUGERENCIAS/HILO-para-todos-el-sitio-se-llama-fichin-ricotero.md`.
+> - El hilo de difusión en `main` sigue diciendo Arcade Ricotero: el nombre nuevo está en el
+>   commit `be7b9e2` de `difusion/hilo-twitter`, sin PR (el #26 se integró antes). Sus
+>   capturas muestran la marca vieja: se sacan de nuevo con esto publicado.
+
 > ## 🌙 "¿QUÉ TIPO DE RICOTERO SOS?" REHECHO: UNA NOCHE Y EL LIBRO DE *LUZBELITO* (2026-10-04) — `D-57`, ciclo 18
 >
 > **Rama `ciclo-18/que-ricotero-sos`, sobre `main` en `bc27cd4`, integrada a `main`** a pedido del

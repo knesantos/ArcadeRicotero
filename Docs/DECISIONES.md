@@ -527,6 +527,7 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 
 - **Fecha:** 2026-08-20
 - **Estado:** aceptada — decisión directa del usuario, en la sesión del sistema de marca.
+  **El nombre lo reemplazó `D-60` (2026-10-04): el sitio se llama Fichín Ricotero.**
 - **Contexto:** el proyecto nació como "RicotaArcade", un nombre de carpeta más que de
   producto. Al armar el sistema de marca quedó a la vista que el nombre iba a estar en la
   portada, en el título del navegador y en la tarjeta compartible — y "RicotaArcade" mezcla
@@ -3389,3 +3390,76 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   - En Windows y Mac el cambio casi no se nota (Arial Black y Archivo Black son primas); en
     Android es otro sitio. Las mediciones de ciclos anteriores en Linux se hicieron con la
     letra de repuesto, que es más angosta: si una pantalla quedó justa, puede haber cambiado.
+
+## D-60 — El sitio se llama Fichín Ricotero: el dominio de Arcade Ricotero no se pudo comprar
+
+- **Fecha:** 2026-10-04
+- **Estado:** aceptada — pedido del usuario, textual: *"Vamos a cambiar el nombre de la pagina
+  por fichin ricotero. Hace los cambios pertinentes. Esto se debe a que arcade ricotero no se
+  podia comprar el dominio. Dale que sale hoy la pagina al publico"*. Entre tres maneras de
+  escribir la marca, el usuario eligió derivar las letras que faltaban para que quede entera en
+  la letra de la tapa. La tilde de *Fichín* la pone la ortografía, no una preferencia.
+- **Consume:** `D-59` de la rama `dominio/fichinricotero` (el dominio; sin integrar al escribir
+  esto), `RES-43` y `RES-39` (Oktubre Calco y el paso 5 del flujo foto→fuente), `D-58` (la
+  rotulada y `fuentes.test.ts`), `D-17` (la voz), `.claude/rules/diseno-marca.md`.
+- **El número.** `D-59` está tomado dos veces: la rama del dominio y la reserva del ciclo 19
+  (`IDS.md` de esa rama). Por eso esto es `D-60`, con su fila propia.
+- **Lo que cambia en lo que se ve.**
+  - **El nombre** es *Fichín Ricotero*, con tilde; en el logo, `FICHÍN RICOTERO`
+    (`PORTAL.titulo`). Lo llevan las cuatro formas de la marca (la grande del portal, la chica
+    del cascarón, la de la cabecera de cada juego y la de la carátula), los dos pinceles que
+    dibujan en el teléfono (`tarjeta.ts`, `lamina.ts`), las nueve tarjetas del taller de "¿Qué
+    tipo de ricotero sos?" (regeneradas con `npm run generar-dos-ejes`), la pestaña, el
+    `og:site_name`, los `aria-label` y el ícono.
+  - **En lo que la gente comparte**, como nombre común: *"en el fichín ricotero"*, donde decía
+    *"en el arcade ricotero"*. Fichín es la palabra de acá para la máquina de fichas; el nombre
+    nuevo, además de tener dominio, es la palabra castellana que `D-17` pide cuando existe.
+  - **Los botones que nombran el lugar:** *Volvé al fichín* y la cinta *← AL FICHÍN*.
+  - Las imágenes que bajan los dos pinceles se llaman `fichin-ricotero-*.png` (las tarjetas
+    de "¿Qué tipo de ricotero sos?" siguen saliendo con el nombre de su manera,
+    `cu-1-dos-ejes.png`, sin el del sitio); el asunto del correo de corrección dice
+    *"Corrección del fichín ricotero"*.
+- **Lo que no cambia, a propósito.**
+  - **Los nombres internos.** La clave `arcade.` de `localStorage` (`ADR-04.5`: cambiarla borra
+    el avance de Skayboy y el récord de "Más o menos" de quien ya jugó), las clases
+    (`.portada-arcade`), los `$id` de los schemas (`ricotaarcade.local`), los nombres de
+    variable (`volverAlArcade`), el repo y el proyecto de Vercel (`arcade-ricotero`, el que
+    nombra `BAJAR-EL-SITIO.md`). Nada de eso lo lee la gente.
+  - **El dominio.** `site` sigue en `arcade-ricotero.vercel.app`: el cambio es de `D-59`, que
+    espera a que `fichinricotero.com.ar` responda por HTTPS. Al escribir esto el dominio no
+    resuelve (8.8.8.8: dominio inexistente), y con `site` apuntando ahí cada enlace compartido
+    perdería su vista previa. Mientras tanto el sitio se llama Fichín Ricotero y vive en la
+    dirección de Vercel.
+  - **Los papeles viejos.** Los `D-`, `UX-`, `CNT-`, `ADR-` y `REV-` anteriores siguen diciendo
+    Arcade Ricotero donde lo decían: son la traza de lo que se decidió con ese nombre.
+- **Oktubre Calco v0.4.** FICHÍN pide cuatro letras que el calco no tenía (traía once, `RES-43`).
+  Se derivaron con el paso 5 de `RES-39`, sin dibujar: recortando y pegando con operaciones
+  booleanas pedazos de las letras calcadas, así heredan el borde comido de la tapa. **F** = la
+  E sin el brazo de abajo; **H** = dos palos de I y el brazo del medio de la E de travesaño;
+  **N** = dos palos de I y una diagonal del grosor del palo; **Í** = la I y un acento de la
+  misma tinta. Las métricas no se tocan: el acento sube a 856 sobre un `usWinAscent` de 800, y
+  se probó en Chromium sobre Windows, en HTML y en canvas, que se dibuja entero. Lo hace
+  `scripts/derivar-oktubre-calco.py` (fontTools + skia-pathops) desde la v0.3 de
+  `Docs/INVESTIGACION/Tipografia/`, con las fechas de `head` fijas: volver a correrlo da el
+  mismo archivo byte a byte, y la huella del taller de tarjetas no cambia. La F y la N dejan
+  a la derecha el mismo aire que las letras calcadas (33 a 34 unidades). La alternativa que
+  la regla de marca daba para las letras que faltan —la palabra en la rotulada— habría
+  dejado el logo con dos letras distintas.
+- **Consecuencias.**
+  - `src/lib/fuentes.test.ts` suma un lector de WOFF y tres casos: la marca entra en el calco;
+    los dos pinceles y el taller dibujan `PORTAL.titulo`; ninguna marca escrita en una página
+    pide una letra que el calco no tenga. Con el calco viejo fallan con `[F, H, Í, N]`.
+  - `diseno-marca.md`: el nombre, la tabla de fuentes (v0.4) y la deuda de las tildes, que se
+    achica a todo menos la Í.
+  - **Cuando `D-59` entre a `main`**, las tarjetas del taller y su manifiesto
+    (`scripts/dos-ejes-manifiesto.json`) chocan. Se resuelve volviendo a correr
+    `npm run generar-dos-ejes`, que dibuja la marca de acá y el dominio de allá. Los demás
+    choques son de texto: el final de `DECISIONES.md` e `IDS.md` y el bloque de arriba de
+    `ESTADO.md`.
+  - El hilo de difusión pasó al nombre nuevo en el commit `be7b9e2` de la rama
+    `difusion/hilo-twitter`, que todavía no tiene PR: el #26 se integró antes, sin ese
+    cambio, así que en `main` el hilo sigue diciendo Arcade Ricotero. Sus capturas muestran
+    la marca vieja y se vuelven a sacar cuando esto esté publicado.
+  - Lo que toca a cada rol (los nombres del lugar de `CNT-13`, la hoja de marca del lienzo, el
+    archivo `.otf` v0.4 junto al de `RES-43`) está en
+    `Docs/SUGERENCIAS/HILO-para-todos-el-sitio-se-llama-fichin-ricotero.md`.

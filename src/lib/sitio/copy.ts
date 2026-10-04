@@ -15,10 +15,10 @@ import { CASETE as CASETE_SKAYBOY } from '../skayboy/copy.ts';
 
 export const PORTAL = {
   /** El logotipo, como se dibuja en pantalla. */
-  titulo: 'ARCADE RICOTERO',
+  titulo: 'FICHÍN RICOTERO',
   /** El nombre, como se escribe cuando lo lee otro sistema: la pestaña, la tarjeta al
    *  compartir, el titulo de la pagina. La versacal es del logo, no del nombre. */
-  nombre: 'Arcade Ricotero',
+  nombre: 'Fichín Ricotero',
   bajada:
     'Entrá, que los molinetes van abiertos. ' +
     'Juegos y enciclopedia sobre Patricio Rey y sus Redonditos de Ricota: sin cuenta, ' +
@@ -27,7 +27,7 @@ export const PORTAL = {
   ladoB: 'Lado B · Para leer',
   enLaCocina: 'En la cocina',
   volver: 'VOLVÉ',
-  volverAlArcade: 'AL ARCADE',
+  volverAlArcade: 'AL FICHÍN',
   /**
    * El pie, en 42 caracteres (`CNT-16`, `T-220`).
    *

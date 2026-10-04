@@ -28,10 +28,12 @@
  * se puede pedir y esperar; si falla, se dibuja igual con lo que haya, porque una tarjeta
  * fea es mejor que ninguna.
  *
- * `ARCADE RICOTERO` va en Oktubre Calco y no es casualidad que se pueda: esa letra es un
- * calco de la tapa y solo tiene **A B C D E I K O R T U** (`RES-43`). Las once letras de
- * la marca están todas adentro. Cualquier otra palabra de la tarjeta iría rota, así que
- * el resto va en Archivo Black, que es la única completa.
+ * `FICHÍN RICOTERO` va en Oktubre Calco: esa letra es un calco de la tapa (`RES-43`) y de
+ * fábrica solo tenía **A B C D E I K O R T U**. La F, la H, la N y la Í se derivaron de
+ * esas mismas letras cuando el sitio cambió de nombre (`D-60`,
+ * `scripts/derivar-oktubre-calco.py`), y `fuentes.test.ts` falla si la marca pide una letra
+ * que la fuente no tiene. Cualquier otra palabra de la tarjeta iría rota, así que el resto
+ * va en Archivo Black, que es la única completa.
  */
 
 import {
@@ -57,7 +59,7 @@ import {
  * Del **juego**: el nombre, el color con que se escribe, y el número grande con su
  * rótulo. Entran por `DatosTarjeta` y este archivo no sabe cuál es cuál.
  */
-const MARCA = 'ARCADE RICOTERO';
+const MARCA = 'FICHÍN RICOTERO';
 
 /** El valor de un token, tal como lo resolvió el navegador para esta página. */
 function tinta(nombre: string, repuesto = '#ffffff'): string {

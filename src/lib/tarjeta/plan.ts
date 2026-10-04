@@ -296,5 +296,5 @@ export function partirEnLineas(
  * juegos distintos terminarían en la misma carpeta de descargas con el mismo nombre.
  */
 export function nombreArchivo(juego: string): string {
-  return `arcade-ricotero-${juego}.png`;
+  return `fichin-ricotero-${juego}.png`;
 }

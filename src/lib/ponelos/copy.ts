@@ -41,7 +41,7 @@ export const PANTALLA_0 = {
   subtitulo: 'Elegí qué repartir. Tocás una ficha, tocás una fila, y no hay orden correcto.',
   /** Registro 1: imperativo voseado, y dice lo primero que hay que hacer. */
   boton: 'Elegí qué repartir',
-  volver: 'AL ARCADE',
+  volver: 'AL FICHÍN',
 } as const;
 
 export const ELECCION = {
@@ -141,7 +141,7 @@ export const LAMINA = {
   vacia: 'Nadie',
   compartir: 'Compartí',
   denuevo: 'Armá otra',
-  volver: 'Volvé al arcade',
+  volver: 'Volvé al fichín',
   /** El respaldo de escritorio, cuando no hay menú del sistema. */
   copiado: 'La dirección quedó copiada.',
   aManoTitulo: 'La dirección, para copiarla a mano:',

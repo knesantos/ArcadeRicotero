@@ -56,11 +56,11 @@ export const RESULTADO = {
   titulo: 'Cómo te fue',
   puntaje: (aciertos: number, total: number) => `${aciertos} de ${total}`,
   denuevo: 'Otra vuelta',
-  volver: 'Volvé al arcade',
+  volver: 'Volvé al fichín',
   /** Compartir (`CNT-26`): texto y enlace, sin tarjeta, como "Más o menos". */
   compartir: 'Compartí',
   paraCompartir: (aciertos: number, total: number) =>
-    `Adiviné ${aciertos} de ${total} tapas en el arcade ricotero. ¿Vos cuántas adivinás?`,
+    `Adiviné ${aciertos} de ${total} tapas en el fichín ricotero. ¿Vos cuántas adivinás?`,
   copiado: 'Se copió el enlace.',
   aManoTitulo: 'Copiá esto y mandalo',
 } as const;

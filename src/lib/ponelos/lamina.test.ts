@@ -128,12 +128,12 @@ test('en una banda del piso entra al menos un renglón de fichas', () => {
 });
 
 test('el nombre del archivo viaja por todos lados', () => {
-  assert.equal(nombreArchivoLamina('Los diez discos'), 'arcade-ricotero-ponelos-en-fila-los-diez-discos.png');
+  assert.equal(nombreArchivoLamina('Los diez discos'), 'fichin-ricotero-ponelos-en-fila-los-diez-discos.png');
   assert.equal(
     nombreArchivoLamina('Los temas de ¡Bang! ¡Bang!… estás liquidado'),
-    'arcade-ricotero-ponelos-en-fila-los-temas-de-bang-bang-estas-liquidado.png',
+    'fichin-ricotero-ponelos-en-fila-los-temas-de-bang-bang-estas-liquidado.png',
   );
-  assert.match(nombreArchivoLamina(''), /^arcade-ricotero-ponelos-en-fila-lista\.png$/);
+  assert.match(nombreArchivoLamina(''), /^fichin-ricotero-ponelos-en-fila-lista\.png$/);
   for (const nombre of ['Los diez discos', 'Doce al azar', '']) {
     assert.doesNotMatch(nombreArchivoLamina(nombre), /[^a-z0-9.-]/, 'quedó un carácter que no viaja');
   }
