@@ -56,9 +56,10 @@ const alt = imagenAlt ?? PORTAL.altTarjeta;
 
   No suma peso: los dos archivos se bajaban igual en cada pantalla —`--fuente-titular`
   escribe la marca y `--fuente-rotulada` cada titulo y cada boton—, solo que mas tarde.
-  Suman 16,5 KB entre las dos. `crossorigin` es obligatorio aunque sean del propio sitio:
-  las fuentes viajan en modo anonimo, y sin el atributo el navegador baja el archivo dos
-  veces.
+  Suman 28,8 KB entre las dos desde `D-58`: hasta ahi la rotulada era un subconjunto de
+  14 KB **sin la A-Z** —el de *latin-ext* de Google— y cada titulo caia a la letra de
+  repuesto. `crossorigin` es obligatorio aunque sean del propio sitio: las fuentes viajan en
+  modo anonimo, y sin el atributo el navegador baja el archivo dos veces.
 */}
 <link rel="preload" href="/fuentes/oktubre-calco.woff" as="font" type="font/woff" crossorigin />
 <link rel="preload" href="/fuentes/archivo-black.woff2" as="font" type="font/woff2" crossorigin />

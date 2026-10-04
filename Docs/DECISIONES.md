@@ -3304,3 +3304,38 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     viejos: queda desfasado y se anota en `ESTADO.md`.
   - Los enlaces que ya circulan con "Estrella fija" van a abrir con el nombre nuevo del mismo
     cuadrante. Se acepta: viaja el id.
+
+## D-58 — La rotulada vuelve a ser Archivo Black: el archivo del sitio no traía la A-Z
+
+- **Fecha:** 2026-10-04
+- **Estado:** aceptada — la tomó el hilo principal dentro del pedido del ciclo 18 (*"y de
+  otras cosas que analices que se puedan mejorar"*). Es la corrección de un defecto, no un
+  cambio de diseño: el diseño ya pedía esta fuente.
+- **Consume:** `.claude/rules/diseno-marca.md` (tabla de fuentes: `--fuente-rotulada`,
+  Archivo Black, "completa, es el repuesto de todo"), `D-54`, `RES-30`..`RES-43`.
+- **Lo que pasaba.** `public/fuentes/archivo-black.woff2` (14 KB) era el subconjunto
+  *latin-ext* de Google Fonts: traía Ā, Ă, Ő y compañía, y **ni una letra de la A a la Z, ni
+  las tildes del castellano, ni las cifras**. El navegador la bajaba y la daba por cargada, y
+  cada título y cada botón del sitio caía letra por letra a la de repuesto: Arial Black en una
+  computadora con Windows o Mac, la sans del sistema en Android y en Linux. Nada fallaba, así
+  que nadie lo vio. El ciclo 18 lo encontró mirando por qué el nombre del resultado de "¿Qué
+  tipo de ricotero sos?" salía fino: dibujado con repuesto serif, solo "ĀĂ" salía en Archivo
+  Black.
+- **Decisión.** El archivo pasa a ser Archivo Black 1.006 (la misma fuente y la misma versión,
+  OFL) recortada a latín y latín extendido con `pyftsubset`: 26,6 KB. La regla `@font-face`,
+  el nombre del archivo y la precarga de `Cabeza.astro` no cambian.
+- **Lo medido antes y después** (Chromium, portal, quiz, los ocho juegos y la Redondopedia, a
+  375 × 667 y a 1366 × 657): ningún desborde horizontal en ninguna; todos los botones de
+  arranque siguen arriba del pliegue. Lo único que se mueve: el título de "Sacalo por la letra"
+  pasa a dos renglones en el teléfono y su botón baja de 471 a 497 px (el pliegue está en
+  667). A ojo, la diferencia es la que el diseño pedía: "JUGÁ", los sellos y los títulos
+  salen por fin en la letra de marca.
+- **Consecuencias.**
+  - `src/lib/fuentes.test.ts` abre el `.woff2` (Brotli de `node:zlib`, sin dependencias), lee
+    su `cmap` y falla si no cubre lo que el sitio escribe en rotulada. Con el archivo viejo
+    falla con la lista entera; con el nuevo pasa.
+  - El TTF completo de la misma fuente vive en `scripts/fuentes/` con su licencia: lo usa el
+    taller de tarjetas de `D-57`, y de ahí se vuelve a sacar el `.woff2` si hiciera falta.
+  - En Windows y Mac el cambio casi no se nota (Arial Black y Archivo Black son primas); en
+    Android es otro sitio. Las mediciones de ciclos anteriores en Linux se hicieron con la
+    letra de repuesto, que es más angosta: si una pantalla quedó justa, puede haber cambiado.
