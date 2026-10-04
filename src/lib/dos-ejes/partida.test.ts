@@ -239,6 +239,19 @@ test('la relación con el amigo es simétrica y cubre los cuatro casos', () => {
   assert.deepEqual([...vistas].sort(), ['luz-oscuridad', 'misma', 'opuesta', 'orden-caos']);
 });
 
+test('la grilla y la línea de contraste dicen lo mismo (CTR-08 v2.5)', () => {
+  // Se calculan por caminos distintos —una busca por polos, la otra los compara—. Si una
+  // cambia sola, la celda punteada y la línea de abajo se contradicen en la misma pantalla.
+  for (const c of BANCO.cuadrantes) {
+    const { celdas } = disposicion(BANCO, c.id);
+    assert.deepEqual(
+      celdas.map((x) => relacion(BANCO, c.id, x.id)),
+      ['misma', 'luz-oscuridad', 'orden-caos', 'opuesta'],
+      c.id,
+    );
+  }
+});
+
 test('un id que no está en el banco no pinta nada: tira', () => {
   assert.throws(() => disposicion(BANCO, 'CU-9'), PartidaImposible);
   assert.throws(() => relacion(BANCO, 'CU-1', 'nada'), PartidaImposible);
