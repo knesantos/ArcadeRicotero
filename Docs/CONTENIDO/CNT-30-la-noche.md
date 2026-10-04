@@ -15,7 +15,7 @@
 - **Produce:** `src/data/dos-ejes.json` versión 2 de `CTR-08` — 5 `momentos`, 4 `cuadrantes`
   con nombres de `D-57` y bajadas nuevas, 28 ítems viejos (`EJ-001`..`EJ-028`, todos `retirado`)
   y **30 ítems nuevos** (`EJ-029`..`EJ-058`, todos `listo`, tres por celda). IDs nuevos de
-  este documento: ninguno de `CNT-`; ítems `EJ-029`..`EJ-058`.
+  este documento: `EJ-029`..`EJ-058`.
 - **No hago acá:** el schema (`CTR-08` v2 es de `arquitectura`; el que hay en
   `src/data/_schema/dos-ejes.schema.json` sigue en la versión 1 y **va a rechazar este JSON**
   hasta que lo actualicen: `contratoVersion`, `momentos` y `momento` por ítem), el motor, la isla
@@ -72,8 +72,8 @@ máquina mira, y con **(O)** las que lee el oído de `REV-19`.
 - **Seguridad no es temperamento.** Ni "a dedo", ni "desconocidos", ni volver a pie, ni
   "caminando" **(T)**. Y una versión más fina que ninguna máquina ve: ninguna opción de `vuelta`
   puede ser peor para quien vuelve sin compañía. Por eso **la vuelta no tiene trayecto**: sus seis
-  ítems pasan en casa o días después. Eso cierra, por construcción, el lugar de "volviendo de
-  noche sin compañía".
+  ítems pasan en casa, en la cama, días después o sin lugar fijo (`EJ-057`, `EJ-058`), y en ninguno
+  se mueve nadie. Eso cierra, por construcción, el lugar de "volviendo de noche sin compañía".
 - Sin alcohol, drogas, policía, fuego ni bengalas **(T)**. Sin Bulacio, Olavarría, Cromañón ni la
   muerte del Indio **(T)**; ninguna escena de despedida ni velorio **(T)**.
 
@@ -207,4 +207,253 @@ oscuridad`) no ubican la obra en el plano: ninguno dice "esta canción es de luz
 tienen título y el acorde no tiene nombre. Es la decisión del usuario en `US-06` y la repite
 `D-57` punto 9.
 
-<!-- CONTINUA -->
+## 5. Las cuatro maneras
+
+Los ids y los polos no se mueven (`D-57` punto 5; lo ata `banco.test.ts`). Cambian nombre y
+bajada. Los nombres son los de `D-57`, sin persona gramatical: se dicen igual en "me", "te" y
+"le salió".
+
+| Id | Polos | Nombre | Bajada | La línea que nombra |
+|---|---|---|---|---|
+| `CU-1` | luz + orden | **Mesa larga a las nueve** | Hay una hora, un lugar y gente que te espera: la noche empieza sabiendo adónde va. Pero cuando cambia el rumbo, vos tardás en soltar lo acordado. | Con la gente, con plan. |
+| `CU-2` | luz + caos | **Ronda en cualquier esquina** | Te sumás a lo que aparece —una charla, un grupo, un mate en la vereda— y la noche toma forma. Pero cuando alguien pregunta adónde van, vos todavía no tenés respuesta. | Con la gente, sobre la marcha. |
+| `CU-3` | oscuridad + orden | **Radio bajita, misma hora** | Tenés tu rincón y tu hora, y desde ahí la noche se escucha entera. Pero cuando alguien te llama para sumarte, vos ya tenés el rincón ocupado. | Por cuenta propia, con plan. |
+| `CU-4` | oscuridad + caos | **Mochila liviana, sin mapa** | Vas con lo justo, sin rumbo fijo, y la noche te muestra cosas que nadie buscó. Pero cuando alguien pregunta por dónde anduviste, vos no tenés el recorrido. | Por cuenta propia, sobre la marcha. |
+
+**La forma, que es lo que pidió `D-57`.** Cada bajada es **un placer y un costo, y los cuatro
+costos tienen la misma forma**: "Pero cuando *[algo pasa]*, vos *[verbo en presente]* *[cosa]*."
+Vos de sujeto en los cuatro. Entre 11 y 13 palabras cada costo; entre 14 y 20 cada placer; entre
+27 y 31 el total (techo 36, y 220 caracteres que tenía el schema viejo: ninguna llega a 180).
+
+- **Ninguno de oscuridad se dice como exclusión.** `CU-3` y `CU-4` no dicen "se arma sin vos" ni
+  "quedás afuera": el costo de `CU-3` es que vos ya ocupaste el rincón cuando alguien te llama (algo
+  que *vos hacés*), y el de `CU-4` es que no tenés el recorrido cuando te lo piden (algo que *no
+  tenés*, igual que `CU-2` no tiene respuesta). Los dos costos de caos son hermanos de forma; el de
+  `CU-1` y el de `CU-3` también (los dos de orden: soltar y ocupar).
+- **Ninguna describe cómo aguantás algo malo.** Ése era el defecto de las bajadas de `CU-3` y
+  `CU-4` en `T-127` ("lo resolvés en silencio, antes de que alguien pregunte"; "te lo guardás y lo
+  masticás solo"): los de luz describían placeres y los de oscuridad un padecimiento. Acá los
+  cuatro placeres son placeres: una noche que sabe adónde va, una noche que toma forma, una noche
+  que se escucha entera, una noche que muestra cosas que nadie buscó.
+- **Sin género.** Ninguna usa *solo/sola*, ni participio que concuerde con quien juega. (`entera`
+  concuerda con la noche; `ocupado`, con el rincón.)
+- **Ancladas en la noche, entendibles sin haber ido.** Hora, lugar, grupo, vereda, rincón,
+  recorrido: palabras de cualquier salida. Ninguna dice "recital".
+
+**La prueba que pidió el encargo: tapá los nombres, ¿alguna está triste o es más linda?** La
+leí cuatro veces, de a una y en fila. Las más cálidas por oído son `CU-1` y `CU-2` (por *gente
+que te espera* y *un mate en la vereda*); `CU-3` y `CU-4` quedan más calladas pero no tristes: *se
+escucha entera* y *cosas que nadie buscó* son placeres con peso. Si `REV-19` oye una más pobre,
+la candidata es **`CU-4`**: *lo justo*, *sin rumbo fijo* y *nadie buscó* se pueden leer como
+carencia seguida. Está anotado a propósito: es el primer lugar por donde volvería a mirar.
+
+**El nombre y la línea que nombra, juntos.** El nombre es lo que se dice en voz alta; la línea
+es la traducción: *Mesa larga a las nueve* → "Con la gente, con plan". Se arma sola desde los
+polos (`lineaQueNombra`, §6). Dos de los nombres llevan palabras que ya son de un polo de
+`orden` (*a las nueve*, *misma hora*) y dos de `caos` (*en cualquier esquina*, *sin mapa*): se
+reconoce sin explicarlo.
+
+**Alternativas de `D-57` que quedan anotadas:** *Mate en cualquier esquina* (`CU-2`) y *Libro con
+señalador* (`CU-3`). Con cualquiera de las dos la bajada de arriba sigue valiendo: no nombra
+ningún objeto del nombre.
+
+## 6. Cadenas de pantalla
+
+Para pegar en `src/lib/dos-ejes/copy.ts` (y la del casete en `src/lib/sitio/copy.ts`). La columna
+"Frente a `copy.ts`" compara con lo que el hilo principal armó provisoriamente el 2026-10-04
+(**confirma** = igual; **cambia** = hay que tocarlo). Las funciones se escriben como
+`función(parámetros)` y el texto lleva los huecos `${...}`. `R1`, `R2`, `R3` son los registros de
+`voz-ricotera.md` §5. Todos los botones están en voseo imperativo (`D-17`): *Empezá, Compartí,
+Bajá, Volvé*. Ninguna lleva "¡Y listo!" ni "y listo", ni suspensivos en un botón o rótulo, ni
+signo de exclamación.
+
+### 6.1 Una decisión que cambia más de una fila: los polos no tienen persona
+
+`D-57` nombra los polos "Con la gente", "Por tu cuenta", "Con plan", "Sobre la marcha". Los
+cuatro nombres de cuadrante se escribieron sin persona **para que se digan igual en "me", "te" y
+"le salió"**. La línea que los traduce viaja por los mismos tres lugares: aparece en la
+tarjeta ("Me salió «X»: …"), en el desafío ("A alguien le salió «X»: …") y en el resultado
+("Esta noche te salió «X»"). **"Por tu cuenta" se rompe en dos de esos tres**: "A alguien le salió
+«Radio bajita, misma hora»: por tu cuenta, con plan" se lee como un reproche al que lee, y en la
+tarjeta de quien dice "me salió" es un sinsentido.
+
+Propongo **`por cuenta propia`**, que no tiene persona y por eso se dice en las tres. Pierde algo
+de calor (es un poco de trámite) y a cambio es igual de orgullosa que *con la gente*: no hay
+nadie en el mundo que diga "por cuenta propia" con pena. Es **una sola cadena** (`POLOS.oscuridad`)
+y se revierte en un minuto si el usuario prefiere el texto literal de `D-57`; lo anoto porque es la
+única parte de este documento donde me aparto de la decisión escrita. Los polos se guardan en
+minúscula y las dos formas de armar la línea se derivan:
+
+- `polosEnFrase(lo, oc)` → `con la gente, con plan` (sin mayúscula ni punto: va después de un
+  dos puntos o adentro de una oración).
+- `lineaQueNombra(lo, oc)` → `Con la gente, con plan.` (primera letra en mayúscula, con punto:
+  es la línea que va sola debajo del nombre en el resultado).
+
+### 6.2 La tabla
+
+| Clave | Texto | Frente a `copy.ts` | Registro y prueba |
+|---|---|---|---|
+| **PANTALLA_0** | | | |
+| `titulo` | `¿Qué tipo de ricotero sos?` | confirma | R1, 5 palabras, segunda persona. Es el `h1` de `D-51` y no se toca. |
+| `subtitulo(momentos, preguntas)` | `Una noche de recital en ${enLetras(momentos)} momentos y ${enLetras(preguntas)} preguntas de cómo sos. No hace falta saber nada ni haber ido.` | cambia (una coma por "y") | R3, dice el mecanismo y lo que no se pide. Es también la `og:description` de la portada. **Los números salen del dato:** `momentos` = `banco.momentos.length` (5) y `preguntas` = `banco.preguntasPorEje * 2` (10), con `enLetras()`. Sin "y listo". Tapado el título: queda esto y el botón, y el que llegó por un enlace sabe qué es y qué tocar. |
+| `indiceRotulo` | `Las hojas de la noche` | **cambia** | R3, el rótulo de la etiqueta de papel con los cinco sellos. "Adentro del libro" chocaba con el sello `Adentro`, uno de los cinco que lista: un rótulo que dice "adentro" encima de una lista que contiene "Adentro". "Hojas" es el cuerpo del libro (D-57) y no explica nada. |
+| `boton` | `Empezá la noche` | confirma | R3, voseo imperativo. Dice que esto no es una ronda con puntaje. |
+| `desafio(nombre, polos)` | `A alguien le salió «${nombre}»: ${polos}. ¿Y a vos?` con `polos` = `polosEnFrase(...)` | **cambia** (la línea llega en minúscula y sin punto, y el punto lo pone la frase) | O. 1 R3 (lo que dice el otro, `ADR-02`), o. 2 R1. Sin verbo de ganar ni superar. Ver los cuatro textos abajo. |
+| **POLOS** | | | |
+| `luz` | `con la gente` | **cambia** (minúscula; la mayúscula la pone `lineaQueNombra`) | R3, la traducción de la punta. |
+| `oscuridad` | `por cuenta propia` | **cambia** (era `Por tu cuenta`; ver 6.1) | R3, sin persona. |
+| `orden` | `con plan` | confirma | R3. |
+| `caos` | `sobre la marcha` | confirma | R3. |
+| `EJES` (`Luz`, `Oscuridad`, `Orden`, `Caos`) | los de hoy | confirma | R3, los rótulos que eligió el usuario (`BR-17`). Siguen en el sello de dos palabras. |
+| **PARTIDA** | | | |
+| `folio(n, total)` | `${n} de ${total}` | confirma | R3. Orientación, no medición. |
+| `anterior` | `Volvé a la anterior` | confirma | R3, voseo (`D-17`). |
+| `teclas` | `Teclas 1 y 2 para elegir. Retroceso vuelve.` | confirma | R3, solo con mouse. Sin suspensivos y sin infinitivo en la primera palabra. |
+| `anuncio(momento, n, total)` | `${momento}. Pregunta ${n} de ${total}.` | confirma | R3, para el lector de pantalla: el sello (`La previa`) y el folio. |
+| **RESULTADO** | | | |
+| `rotulo` | `Esta noche te salió` | confirma | R3. "Esta noche" y no "Diste con esto": otra noche puede dar otra manera (`BR-37`). |
+| `marca` | `Arcade Ricotero · ¿Qué tipo de ricotero sos?` | confirma | R3, la línea chica arriba de la hoja para que la captura salga con nombre y apellido. |
+| `compartir` | `Compartí` | confirma | R3, voseo. |
+| `denuevo` | `Empezá otra noche` | confirma | R3. Es lo opuesto a "Probá de nuevo", que sonaba a haber fallado. |
+| `bajar` | `Bajá la tarjeta` | confirma | R3, voseo. |
+| `volver` | `Volvé al arcade` | confirma | R3, voseo. |
+| `lasCuatro` | `Las cuatro maneras` | confirma | R3, 3 palabras. Nombra la grilla. |
+| `lasCuatroCanta` | `Cuatro puertas a la misma noche.` | **cambia** (era `Cuatro sillas alrededor de la misma mesa.`) | R1, 5 palabras, física (puertas) y sin sermón. La provisional tenía dos defectos: "mesa" es `Mesa larga a las nueve`, o sea le da el único objeto de la grilla a `CU-1`; y "alrededor de la misma mesa" pone a las cuatro **con la gente**, que es exactamente lo que las dos de oscuridad no son. Dice la paridad (cuatro entradas a un solo lugar) sin decir "ninguna vale más". Tapada: queda `Las cuatro maneras`, que nombra. |
+| `tuya` | `Esta noche` | confirma | R3, sello chico. |
+| `suya` | `Quien te lo mandó` | confirma | R3, sin género. |
+| `altGrilla` | `Las cuatro maneras, con la tuya primero.` | confirma | R3, para el lector de pantalla. |
+| `paraCompartir(nombre)` | `Me salió «${nombre}». ¿Qué tipo de ricotero sos vos?` | confirma | R1 en primera persona, fuera del sitio. Primera frase de 6 a 7 palabras (`Me salió «Mesa larga a las nueve».` es la más larga). Nombra el test (ya no hace falta decir "en el arcade ricotero": el enlace es la postal, que lo dice) y no lleva número (`BR-17`). Igual para las cuatro. |
+| `copiado` | `Se copió el enlace.` | confirma | R3. |
+| `aManoTitulo` | `Copiá esto y mandalo` | confirma | R3, voseo. |
+| **POSTAL** | | | |
+| `ogTitulo(nombre)` | `Me salió «${nombre}»` | confirma | R1, 4 a 7 palabras. Es el `og:title`. |
+| `ogDescripcion(linea)` | `${linea} ¿Qué tipo de ricotero sos vos? Una noche de recital, sin saber nada.` con `linea` = `lineaQueNombra(...)` (lleva punto) | confirma | R3 + R1. Dice qué es X antes de jugar y repite el molinete. |
+| `rotulo` | `A quien te lo mandó le salió` | confirma | R3, sin género. |
+| `boton` | `Empezá tu noche` | confirma | R3, voseo. |
+| **TARJETA** | | | |
+| `meSalio` | `Me salió` | confirma | R1, el arranque de la frase que la tarjeta completa con el nombre. |
+| `pregunta` | `¿Y a vos cuál te sale?` | confirma | R1, segunda persona, 6 palabras. |
+| `credito` | `Lomo, mármol y esquinero: tapa de Luzbelito (Rocambole, 1996), en baja.` | confirma | R3, dice qué se usa y de dónde. Sin día ni mes de salida: `RES-167` los pone en duda. El año 1996 no está en duda (1-ago o 7-oct, los dos son 1996). Sin óvalo ni figura. |
+| `alt(nombre, linea)`, `altJuego` | los de hoy | confirma | R3. Llevan el crédito (`D-21`). |
+| **CASETE** (`sitio/copy.ts`) | | | |
+| `JUEGOS[«¿Qué tipo de ricotero sos?»].baja` | `Nadie te toma examen. Una noche de recital, sin puntaje y sin saber nada de la banda.` | **cambia** (hoy: `Nadie te toma examen. Diez preguntas sobre vos, sin puntaje y sin saber nada de la banda.`) | La primera frase es la que el portal imprime (`primeraOracion`) y **no cambia**: 4 palabras, R1, y lleva toda la tranquilidad que el casete muestra (`CNT-26` §1.2 la admitió a conciencia). Cambia la segunda: "Diez preguntas sobre vos" pasa a "Una noche de recital", que dice lo que ahora es el juego y **saca el "Diez" escrito a mano** (el relevamiento lo marcó en tres textos). Si se quiere el número, derivarlo del banco con `enLetras()`, no escribirlo. `voz.test.ts` mide la primera frase: 4 ≤ 8. |
+| `JUEGOS[...].accion` | `EMPEZÁ` | confirma | R3. |
+| `LUGARES.dosEjes` (**opcional**, ver 6.4) | `Hay un lugar libre en el micro.` | cambia, solo si el renglón sigue en la página | R1, 7 palabras, física. Reemplaza `Una vela te alumbra media cara.` por `D-57` punto 9. |
+
+### 6.3 Los textos armados, para leerlos de corrido
+
+**La línea que llega** (`PANTALLA_0.desafio`), para las cuatro:
+
+- A alguien le salió «Mesa larga a las nueve»: con la gente, con plan. ¿Y a vos?
+- A alguien le salió «Ronda en cualquier esquina»: con la gente, sobre la marcha. ¿Y a vos?
+- A alguien le salió «Radio bajita, misma hora»: por cuenta propia, con plan. ¿Y a vos?
+- A alguien le salió «Mochila liviana, sin mapa»: por cuenta propia, sobre la marcha. ¿Y a vos?
+
+Si la isla todavía lee el nombre del amigo en el enlace viejo (`n`), la variante es `A ${amigo} le
+salió «…»` y el resto igual.
+
+**Un aviso que no me corresponde cerrar y que importa.** `CNT-26` §2.3 explicó por qué esta línea
+llevaba una tercera oración ("Diez preguntas de cómo sos, no de cuánto sabés"): la isla **pisaba**
+`#subtitulo` con el desafío y con eso le sacaba la tranquilidad a la pantalla que más la necesita,
+la de quien llega por el enlace de un amigo. La línea de arriba **no la lleva**, así que o la isla
+deja de pisar el subtítulo (el desafío va en una línea propia encima, que es lo que pide la tapa
+del libro), o esta línea vuelve a cerrar con **`No hace falta saber nada.`**. Cualquiera de las
+dos sirve; las dos no, porque sería el mismo aviso dicho dos veces en la misma pantalla.
+
+**La línea que nombra** (`RESULTADO`), debajo de "Esta noche te salió": el nombre grande y debajo
+`Con la gente, con plan.` (o la que corresponda). Tapada esa línea, el que llegó por un enlace sabe
+cuál es su manera pero no qué quiere decir: por eso existe.
+
+**El texto que viaja** (`paraCompartir`): `Me salió «Radio bajita, misma hora». ¿Qué tipo de
+ricotero sos vos?`
+
+### 6.4 `LUGARES.dosEjes` — una propuesta que dejo a la vista
+
+`CNT-26` §1.1 escribió **"Una vela te alumbra media cara."** para el renglón del lugar de esta
+página. `D-57` punto 9 saca las velas de lo nuevo: dos velas encendidas, cuatro meses después del
+5 de junio, se leen como un velorio aunque ningún texto lo diga, y aclara que la vela *de la
+carátula y del pie* no se toca. El renglón **no es ninguna de las dos**: es texto de la página del
+juego. No sé si el renglón sigue viviendo con la tapa del libro (eso lo decide `experiencia`,
+`UX-36`). Si sigue, propongo **"Hay un lugar libre en el micro."**: siete palabras, objeto y
+lugar, no explica, no empuja ningún polo ni nombra uno de los cuatro cuadrantes, no repite
+palabra del título ni del subtítulo, y es la imagen exacta del molinete abierto (*hay lugar, pasá*)
+sin decirlo. Si el renglón se va, no hace falta nada.
+
+## 7. Lo que descarté, y por qué
+
+- **`Por tu cuenta` como polo** (texto literal de `D-57`): se rompe en la tarjeta y en el desafío
+  (§6.1). Queda anotado como el texto de repuesto.
+- **Las `canta` del panel**, salvo `adentro`: *Zapatillas atadas*, *rodillas contra el asiento*,
+  *choripán*, *garganta rota* y *zapatillas embarradas* presuponen pies, piernas, plata (el puesto,
+  `RES-161`), haber gritado, o clima y calle. Cada una está en el §3.
+- **Cantar en público como escena.** `EJ-036` nació como "arranca un cántico en el micro: me sumo /
+  lo escucho". El caso límite que `D-57` nombra ("cantar con todo el micro"): la opción de `luz`
+  es cantar con la gente y la de `oscuridad` queda callada en un lugar donde todos cantan, o sea
+  que **los dos ejes dejaban de tener gente**. Salió.
+- **Estirar las piernas, bajar a ver, dar una vuelta con alguien.** Ninguna se contesta sentado.
+  Es la regla de la silla de ruedas, y la de volver de noche: `dar una vuelta` es caminar de noche.
+- **`Apago el celular`** como opción de `oscuridad` en la vuelta: es `EJ-009` con otras palabras
+  (*alivio, nadie me ubica*), la frase que `REV-07` marcó como la más compartible de las cuarenta.
+- **El costo con rótulo** ("El costo:", "Lo que cuesta:") en las bajadas: convierte un párrafo en
+  un formulario. "Pero cuando…, vos…" tiene la misma forma en las cuatro sin decirla.
+- **`primera mitad` / `segunda mitad`** para contar qué comparten dos maneras (`CNT-29`): obligaba
+  a contar mitades de una línea que el jugador casi no lee.
+- **`Adentro del libro`** como rótulo del índice: colisiona con el sello `Adentro`.
+- **`Cuatro sillas alrededor de la misma mesa`**: ver la fila `lasCuatroCanta`.
+- **Un verso, una vela o un tema por cuadrante.** Ya descartado por el usuario en `US-06` y por
+  `D-57` puntos 8 y 9. No hay ni una vela, ni un verso, ni el nombre de un tema en las 30
+  escenas ni en las cadenas.
+
+## 8. Cómo se verifica
+
+No tengo con qué correrlo (`D-12`); lo corre el hilo principal, `revisor` u `orquestador`:
+
+```
+node --test src/lib/dos-ejes/banco.test.ts
+node --test src/lib/dos-ejes/partida.test.ts
+node --test src/lib/voz.test.ts
+node --test src/lib/esquemas.test.ts
+```
+
+1. **`banco.test.ts`** es la guarda que se escribió antes que el banco. Medí a mano contra cada
+   veto y contra los presupuestos, y verifiqué con `rg` sobre el JSON (ninguna opción de los 30
+   pasa de 28 caracteres ni de 5 palabras; ninguno de los vetos aparece en un ítem `listo`; ningún
+   delator del eje aparece en una opción; ningún `a pie`, `caminando`, `camino` en la vuelta).
+   Lo único que no se puede medir a ojo es el cierre repetido, que sale bien por construcción:
+   ningún cierre aparece más de dos veces y `¿Qué hacés?` no aparece.
+2. **`partida.test.ts` va a necesitar cambios del hilo principal**: hoy exige "los dos ejes se
+   intercalan: nunca tres seguidas del mismo" y el sorteo es el viejo. Con momentos, el sorteo
+   cambia. No es de contenido.
+3. **`voz.test.ts`** recorre enunciados, opciones, nombres y bajadas del banco, y **no recorre
+   `momentos[].nombre` ni `momentos[].canta`**. Los mide `banco.test.ts` por largo y por
+   suspensivos, pero ninguna de las siete reglas de voz (anglicismos, folleto, infinitivo, "los
+   fans") pasa por ellos. Propongo sumar `momentos` a `cadenasDelBanco()`; es una línea. Es código
+   del hilo principal.
+4. **`esquemas.test.ts` va a fallar** hasta que `arquitectura` publique `CTR-08` v2: el schema
+   que está en `src/data/_schema/dos-ejes.schema.json` tiene `contratoVersion: { const: 1 }`,
+   `additionalProperties: false` en la raíz y en el ítem, y no conoce `momentos` ni `momento`.
+   Con eso el JSON de este ciclo **no valida todavía**, y no es un defecto del contenido.
+
+## 9. Para `REV-19` y para el hilo principal
+
+**Lo que le pido a `revisor`, en este orden:**
+
+1. Las 15 opciones de `luz`: ¿alguna le queda mal a quien llega sin compañía? (§2, último párrafo).
+2. `CU-4` contra las otras tres: ¿es la más pobre?
+3. Que `EJ-034`, `EJ-037`, `EJ-039` y `EJ-049` (los cuatro que marqué más justos) pasen la prueba
+   de los cuatro lugares **leídos por alguien que no los escribió**. Yo los dejé en ✔, pero el
+   que escribe siempre se ve las dos opciones con el mismo orgullo.
+4. La lectura de los 30 en voz alta: si una opción suena a excusa o a alarde frente a su gemela.
+
+**Lo que le dejo al hilo principal** (nada de esto lo toco, no es mi carpeta):
+
+- Pegar la tabla del §6.2 en `copy.ts` y `sitio/copy.ts`, con `POLOS` en minúscula y las dos
+  funciones `polosEnFrase` / `lineaQueNombra`.
+- La nota de `CNT-29` (`Docs/CONTENIDO/CNT-29-el-contraste-al-volver.md`) **cambia el
+  `CONTRASTE` provisional**: la forma es otra y dos de los cuatro casos reciben un parámetro más
+  (el polo compartido).
+- Los comentarios de `src/lib/sitio/copy.ts` (`LUGARES`) siguen diciendo "el noveno" y "los ocho":
+  ya lo anoté en `CNT-26` §6.
+- Un recordatorio de `ESTADO.md`: el posteo 5 del hilo de Twitter describe el rombo y los
+  nombres viejos (`D-57`, Consecuencias).
+

@@ -1,7 +1,7 @@
 {
   "_comentario": "Lo escribe scripts/generar-dos-ejes.mjs. La huella es de lo que ENTRA (textos, colores, cajas, máster, fuentes, versión del dibujo); tarjetas.test.ts la recalcula y, si no coincide, pide volver a correr el taller.",
   "version": 1,
-  "huella": "faba646df4faa7e5a678edbb89752e375a2c26511ab2ff335d9c40100dd0120d",
+  "huella": "1e08817e2eb4c7752d0a6c952fad72276cd01b63b824f0ad5e058b26ef48a31b",
   "salidas": [
     "public/arte/dos-ejes/libro-franja.jpg",
     "public/arte/dos-ejes/libro-canto.jpg",

@@ -32,28 +32,38 @@ export const PANTALLA_0 = {
    * molinete más abierto del sitio y conviene decirlo, no solo que sea cierto (`UX-06` §2).
    */
   subtitulo: (momentos: number, preguntas: number) =>
-    `Una noche de recital en ${enLetras(momentos)} momentos, ${enLetras(preguntas)} preguntas de cómo sos. No hace falta saber nada ni haber ido.`,
-  /** El rótulo de la etiqueta de papel pegada en la tapa del libro: el índice de la noche. */
-  indiceRotulo: 'Adentro del libro',
+    `Una noche de recital en ${enLetras(momentos)} momentos y ${enLetras(preguntas)} preguntas de cómo sos. No hace falta saber nada ni haber ido.`,
+  /**
+   * El rótulo de la etiqueta de papel pegada en la tapa del libro: el índice de la noche.
+   * "Adentro del libro" chocaba con el sello `Adentro`, que es uno de los cinco que lista
+   * (`CNT-30` §6.2).
+   */
+  indiceRotulo: 'Las hojas de la noche',
   /** Voseo (`D-17`). Le dice a quien llega que esto es una noche, no una ronda con puntaje. */
   boton: 'Empezá la noche',
   /**
-   * Lo que lee el que llega por el enlace de un amigo sin pasar por la postal (`ADR-02`,
-   * forma `identidad`). Dice qué le salió al otro **y qué quiere decir**, y nada que suene a
-   * superarlo (`BR-17`).
+   * Lo que lee el que llega por un enlace viejo (`?g=dos-ejes&r=CU-n`, sin postal). Dice qué le
+   * salió al otro **y qué quiere decir**, y nada que suene a superarlo (`BR-17`, `CNT-29` §4).
+   * Va en una línea propia, arriba del subtítulo: pisarlo le sacaba la tranquilidad a la
+   * pantalla que más la necesita (`CNT-26` §2.3).
    */
-  desafio: (nombre: string, linea: string) => `A alguien le salió «${nombre}»: ${linea} ¿Y a vos?`,
+  desafio: (nombre: string, polos: string) => `A alguien le salió «${nombre}»: ${polos}. ¿Y a vos?`,
 } as const;
 
 /**
- * Los cuatro polos en palabras de la gente (`CNT-30`). Son la línea que nombra del resultado:
- * hasta el ciclo 18 las puntas decían "Luz", "Oscuridad", "Orden" y "Caos" y nadie las
- * traducía, y "Oscuridad" se leía triste. El eje es del usuario y no se toca; lo que se
+ * Los cuatro polos en palabras de la gente (`CNT-30` §6.1). Son la línea que nombra del
+ * resultado: hasta el ciclo 18 las puntas decían "Luz", "Oscuridad", "Orden" y "Caos" y nadie
+ * las traducía, y "Oscuridad" se leía triste. El eje es del usuario y no se toca; lo que se
  * agrega es qué quiere decir.
+ *
+ * **Sin persona, como los nombres.** `D-57` decía "Por tu cuenta", y se rompía justo donde la
+ * línea viaja: en la tarjeta ("Me salió…: por tu cuenta") y en el desafío ("A alguien le
+ * salió…: por tu cuenta", que se lee como un reproche). "Por cuenta propia" se dice igual en
+ * los tres lugares. Se guardan en minúscula: la mayúscula la pone `lineaQueNombra`.
  */
 export const POLOS = {
-  luz: 'Con la gente',
-  oscuridad: 'Por tu cuenta',
+  luz: 'con la gente',
+  oscuridad: 'por cuenta propia',
   orden: 'con plan',
   caos: 'sobre la marcha',
 } as const;
@@ -69,9 +79,15 @@ export const EJES = {
 type LO = 'luz' | 'oscuridad';
 type OC = 'orden' | 'caos';
 
-/** La línea que nombra: "Con la gente, con plan." Seca, igual de forma para las cuatro. */
+/** Los dos polos en una frase, para adentro de otra oración: "con la gente, con plan". */
+export function polosEnFrase(lo: LO, oc: OC): string {
+  return `${POLOS[lo]}, ${POLOS[oc]}`;
+}
+
+/** La línea que nombra, sola debajo del nombre: "Con la gente, con plan." */
 export function lineaQueNombra(lo: LO, oc: OC): string {
-  return `${POLOS[lo]}, ${POLOS[oc]}.`;
+  const frase = polosEnFrase(lo, oc);
+  return `${frase.charAt(0).toUpperCase()}${frase.slice(1)}.`;
 }
 
 /** El sello de los dos polos: "LUZ · ORDEN". */
@@ -100,8 +116,12 @@ export const RESULTADO = {
   volver: 'Volvé al arcade',
   /** El título de la grilla de las cuatro maneras. */
   lasCuatro: 'Las cuatro maneras',
-  /** La línea que canta debajo: la paridad dicha con una imagen, sin sermón. */
-  lasCuatroCanta: 'Cuatro sillas alrededor de la misma mesa.',
+  /**
+   * La línea que canta debajo: la paridad dicha con una imagen, sin sermón (`CNT-30`). Una
+   * mesa le daba el único objeto de la grilla a «Mesa larga a las nueve», y la ponía a las
+   * cuatro "con la gente".
+   */
+  lasCuatroCanta: 'Cuatro puertas a la misma noche.',
   /** El sello de la tuya en la grilla. */
   tuya: 'Esta noche',
   /** El sello de la de quien te mandó el enlace. */
@@ -115,14 +135,18 @@ export const RESULTADO = {
 } as const;
 
 /**
- * El contraste al volver (`CNT-29`): misma forma en los cuatro casos, sin ganar ni perder, y
- * sin género ("quien te lo mandó").
+ * El contraste al volver (`CNT-29` §3): el mismo molde en los cuatro casos —la primera oración
+ * idéntica, la segunda con "comparte" o "no comparte"—, sin ganar ni perder y sin género
+ * ("quien te lo mandó"). `lo` y `oc` son los polos de **tu** manera, en frase (`POLOS`).
  */
 export const CONTRASTE = {
-  misma: (suyo: string) => `A quien te lo mandó también le salió «${suyo}».`,
-  'luz-oscuridad': (suyo: string) => `A quien te lo mandó le salió «${suyo}»: comparten la primera mitad.`,
-  'orden-caos': (suyo: string) => `A quien te lo mandó le salió «${suyo}»: comparten la segunda mitad.`,
-  opuesta: (suyo: string) => `A quien te lo mandó le salió «${suyo}»: la que queda enfrente.`,
+  misma: (suyo: string, lo: string, oc: string) =>
+    `A quien te lo mandó le salió «${suyo}». Con la tuya, comparte «${lo}» y «${oc}».`,
+  'luz-oscuridad': (suyo: string, lo: string) => `A quien te lo mandó le salió «${suyo}». Con la tuya, comparte «${lo}».`,
+  'orden-caos': (suyo: string, _lo: string, oc: string) =>
+    `A quien te lo mandó le salió «${suyo}». Con la tuya, comparte «${oc}».`,
+  opuesta: (suyo: string, lo: string, oc: string) =>
+    `A quien te lo mandó le salió «${suyo}». Con la tuya, no comparte «${lo}» ni «${oc}».`,
 } as const;
 
 /** La postal de cada manera, `/juegos/dos-ejes/cu-n/` (`ADR-02` enmendado). */

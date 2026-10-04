@@ -5,13 +5,16 @@
   soltó las tapas a toda la pantalla y el origen real de las imágenes es Coveralia, no el
   Cover Art Archive que esta nota seguía citando. **Revisión puntual 2026-08-24** en la
   sección A, tarea `T-101` del ciclo 7: el techo del fragmento pasa de 10,0 s a 15,0 s.
+  **Fila nueva 2026-10-04** (ciclo 18, `D-57`): secciones F y G, las piezas del libro de
+  *Luzbelito* y la fuente Archivo Black del taller de tarjetas.
 - **Estado:** mapa activo, sin vencimiento. No es un cerrojo y no lo fue nunca desde `D-14`.
 - **Consume:** `Docs/BRIEF.md` (sección "La postura: molinetes abiertos"), `D-14`, `D-06`,
   `D-04`, `D-13`, `D-08`, `D-21`, `D-23`, `D-24` (`Docs/DECISIONES.md`), `RES-03` (`INV-01`),
   `RES-06`, `RES-09` (`INV-02`), `RES-11`, `RES-12` (`INV-04`), `RES-13`, `RES-14` (`INV-05`),
   `RES-25`, `RES-26` (`INV-22`), `RES-44`, `RES-46` (`INV-44`),
   `Docs/UX/UX-05-tapas-en-pantalla.md`, y `ADR-01` (`Docs/ARQ/ARQ-spotify-integracion.md`,
-  cerrado en opción B por `T-31`).
+  cerrado en opción B por `T-31`). Sumado el 2026-10-04: `D-57`, `D-58`, `RES-167`, `RES-168`
+  (`INV-150`).
 
 ## Qué es esto ahora, y qué dejó de ser
 
@@ -150,6 +153,30 @@ no como semáforo.
 | **Qué dice la evidencia** | La Spotify Developer Policy, sección III cláusula 2, prohíbe textualmente crear "un juego, incluyendo quizzes de trivia" (`RES-26`). RicotaArcade son cuatro juegos. Un link pelado **probablemente no** cuenta como "usar o acceder a la Spotify Platform" — es discutible, según la propia ficha, y no hay pronunciamiento de Spotify en ninguna dirección sobre el caso del link simple. `ADR-01` cerró en esta opción **por decisión de riesgo de `D-14`, no porque apareciera evidencia nueva que la confirme**: es exactamente el mismo tipo de apuesta que las demás superficies de esta nota, no una excepción más segura. |
 | **Qué haríamos si llega un reclamo** | Se saca el botón. El fallback de `ADR-01` está diseñado justamente para esto: la revelación (respuesta correcta, explicación, puntaje) está completa sin Spotify, así que sacar el link no rompe ninguna partida — se pierde una comodidad, no una función. |
 
+### F. Piezas del libro de *Luzbelito*
+
+> **Fila nueva, 2026-10-04 (ciclo 18, `D-57` punto 8).** Es la única pieza de arte de "¿Qué tipo
+> de ricotero sos?" después de la rehechura. Es un caso de la sección B (tapa de Rocambole, en
+> baja, con crédito) con una diferencia que conviene dejar escrita: **no se usa la tapa, se usan
+> tres pedazos de materia** y se deja afuera lo que la hace reconocible y lo que tiene una
+> historia delicada.
+
+| | |
+|---|---|
+| **Qué se usa** | Tres recortes del **frente** del libro de *Luzbelito* (1996): el **mármol**, el **lomo de cuero** y el **esquinero**. **Sin el óvalo, sin la figura y sin la palabra LUZBELITO** (`D-57` punto 8). En baja resolución y con el crédito *«Lomo, mármol y esquinero: tapa de Luzbelito (Rocambole, 1996), en baja.»* en cada aparición, sin día ni mes de salida (`RES-167` pone la fecha en duda; el año no). Aparecen en **la portada** del juego (la tapa del libro con su etiqueta), **la partida** (el canto de las hojas), **el resultado** (la esquina de la última hoja), **las cuatro tarjetas** de 1080 × 1350, **las cuatro vistas previas** de 1200 × 630 y la de la portada del juego (`D-57` puntos 10 y 11). **Una sola pieza para las cuatro maneras**: ninguna se asigna a un cuadrante. |
+| **De dónde salió** | Del máster del frente que ya estaba en el repo, `Docs/INVESTIGACION/TapasDiscos/luzbelito-frontal.jpg`, que viene de Coveralia como los demás másters (sección B, `RES-46`). No hay material propio ni licencia de origen. Los recortes se hacen de ese archivo y no de uno nuevo. |
+| **Qué dice la evidencia** | Es el mismo riesgo de la sección B, sin agregados: Rocambole es artista vivo, su declaración sobre la reproductibilidad es favorable y no es una licencia (`RES-13`), la titularidad sigue sin verificar. Lo que sí agrega esta fila es **lo que se dejó afuera a propósito**: la figura de la tapa parte de una foto de un hombre esclavizado (c. 1800) que se había fugado y fue recapturado (`RES-168`, testimonio de Rocambole con tres fuentes), y la vela encendida de la escultura, con dos velas en la trasera, se leía como un velorio cuatro meses después del 5 de junio de 2026 (`D-57` punto 9). Un recorte de materia no reproduce ninguna de las dos cosas y no es una "tapa reconocible": es lo que `UX-20` §2 advertía contra estampar un resultado con una tapa entera. |
+| **Qué haríamos si llega un reclamo** | Se bajan los recortes y se reemplazan por una pieza dibujada nueva (papel, cartón, cinta) en la misma posición: el diseño de la portada, la partida y el resultado no depende de que la materia sea la de *Luzbelito*, sino de que haya una (`UX-36`). Las tarjetas y las vistas previas son archivos fijos generados por el taller (`D-57` punto 10): se regeneran con el mismo comando y se vuelven a subir, sin tocar el código del juego. Como con las demás tapas, el crédito a Rocambole viaja con cada aparición, así que decir qué se usó y dónde es inmediato. |
+
+### G. La fuente Archivo Black en TTF, solo para el taller de tarjetas
+
+| | |
+|---|---|
+| **Qué se usa** | Un archivo **TTF de Archivo Black**, `scripts/fuentes/archivo-black.ttf`, **solo para el taller de tarjetas** (`D-57` punto 10 y consecuencias): el script en Node que dibuja las cuatro tarjetas y las vistas previas. **No se sirve al navegador.** Lo que sirve el sitio es el `.woff2` recortado de la misma fuente (`D-58`), que ya estaba. Se necesita el `.ttf` porque `fontkitten` no lee el `.woff2`. |
+| **De dónde salió** | Es la misma fuente y la misma versión que ya usa el sitio (`D-58`: Archivo Black 1.006), declarada con licencia **OFL** (SIL Open Font License) por `D-57` y `D-58`. El `.ttf` entra al repo con su licencia al lado, como pide `D-57`. |
+| **Qué dice la evidencia** | Lo que está escrito es lo que dicen `D-57` y `D-58`: la fuente es OFL y la licencia viaja con el archivo. **No hay ficha `RES-` sobre el texto de la licencia** y esta nota no afirma más que eso. Lo que sí se puede decir de este uso es que el `.ttf` vive en `scripts/`, fuera de `public/`: no se publica ni se redistribuye suelto, solo lo lee el taller al dibujar. Es una fila para que el mapa esté completo, no una duda abierta. |
+| **Qué haríamos si llega un reclamo** | No debería llegar uno. Si llegara, el taller se vuelve a correr con otra fuente de la pila (`--fuente-rotulada` no es única) y se regeneran las tarjetas; el sitio no cambia. |
+
 ## Preguntas sin respuesta, y no las esperamos
 
 Estas preguntas se buscaron activamente, en más de una ronda de investigación, y las tres
@@ -192,6 +219,8 @@ como siempre.
 | Letras | Verso o estrofa puntual, reveal decreciente | Se saca esa cita puntual del banco |
 | Nombre y marca | Uso nominativo del nombre de la banda | Se refuerza el disclaimer; el nombre del proyecto se puede cambiar |
 | Deep link a Spotify | `open.spotify.com/track/<id>` tras revelar | Se saca el botón; la partida sigue completa sin él |
+| Libro de *Luzbelito* (F) | Mármol, lomo y esquinero recortados del frente, sin óvalo, figura ni título, en baja, con crédito: portada, partida, resultado, tarjetas y vistas previas de "¿Qué tipo de ricotero sos?" | Se bajan los recortes y se pone una pieza dibujada; las tarjetas se regeneran con el taller |
+| Archivo Black en TTF (G) | `scripts/fuentes/archivo-black.ttf` (OFL), solo para el taller de tarjetas; no se sirve al navegador | Se vuelve a correr el taller con otra fuente; el sitio no cambia |
 
-En los cinco casos la lógica es la misma: **la pieza puntual se da de baja, el sitio sigue.**
+En los siete casos la lógica es la misma: **la pieza puntual se da de baja, el sitio sigue.**
 Es la postura que fijó el usuario en `D-14`, con la evidencia de arriba ya sobre la mesa.

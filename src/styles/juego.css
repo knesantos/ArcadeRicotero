@@ -2464,6 +2464,12 @@
   line-height: 1.45;
 }
 
+/* La linea del enlace viejo, arriba del subtitulo: dice que le salio al otro. */
+.ejes-desafio {
+  margin: var(--espacio-2) 0 0;
+  font-weight: 700;
+}
+
 .ejes-contraste {
   margin: var(--espacio-2) 0 0;
   color: var(--texto-tenue);

@@ -41,6 +41,7 @@ import {
   EJES,
   POLOS,
   lineaQueNombra,
+  polosEnFrase,
   selloDePolos,
 } from '../lib/dos-ejes/copy.ts';
 import { rutaDeTarjeta, rutaDePieza, slugDe } from '../lib/dos-ejes/arte.ts';
@@ -283,7 +284,9 @@ function pintarResultado(): void {
 
   if (suyo) {
     // El contraste de `CNT-29`: misma forma en los cuatro casos, sin ganar ni perder.
-    zonaResultado.append(el('p', 'ejes-contraste', CONTRASTE[relacion(banco, r.id, suyo.id)](suyo.nombre)));
+    const lo = POLOS[c.luzOscuridad];
+    const oc = POLOS[c.ordenCaos];
+    zonaResultado.append(el('p', 'ejes-contraste', CONTRASTE[relacion(banco, r.id, suyo.id)](suyo.nombre, lo, oc)));
   }
 
   const acciones = el('div', 'ejes-acciones');
@@ -352,12 +355,14 @@ document.addEventListener('keydown', (e) => {
 });
 
 /*
- * Si alguien llegó por un enlace viejo (sin postal), la bajada dice qué le salió al otro y
- * qué quiere decir. La postal ya lo trae escrito en el HTML: no se pisa.
+ * Si alguien llegó por un enlace viejo (sin postal), una línea propia, arriba del subtítulo,
+ * dice qué le salió al otro y qué quiere decir. **No pisa el subtítulo**: ahí está lo que no se
+ * pide —saber nada, haber ido—, y es lo que más necesita leer el que llega por un enlace
+ * (`CNT-26` §2.3). La postal ya lo trae escrito en el HTML.
  */
 if (suyo && !app.dataset['desafio']) {
   const bajada = document.getElementById('subtitulo');
-  if (bajada) bajada.textContent = PANTALLA_0.desafio(suyo.nombre, lineaQueNombra(suyo.luzOscuridad, suyo.ordenCaos));
+  bajada?.before(el('p', 'ejes-desafio', PANTALLA_0.desafio(suyo.nombre, polosEnFrase(suyo.luzOscuridad, suyo.ordenCaos))));
 }
 
 $('#empezar').addEventListener('click', empezar);
