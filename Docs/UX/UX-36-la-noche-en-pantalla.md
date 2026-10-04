@@ -233,7 +233,7 @@ pantalla, se promueven.
 
 | Condición | Cómo se cumple acá |
 |---|---|
-| Baja resolución | Las piezas miden ≤ 540 px de lado largo (el mármol, 540; en la mesa se ve a ~1,13×, cuenta) |
+| Baja resolución | Las que carga la página miden ≤ 540 px de lado largo (el mármol, 540; en la mesa se ve a ~1,13×, cuenta); la franja del taller, 760, y en la tarjeta queda a ~1× del máster (0,8 al achicarla y 1,27 al ponerla) |
 | Crédito | El pie del sitio (`PieImprenta`), una línea: *Arte de tapa: Luzbelito — Rocambole (Ricardo Cohen)*, **una sola vez** aunque haya tapa, esquinero y carátula: es un disco. En la tarjeta, la línea de `TARJETA.credito`. En la vista previa, en el `alt` (`§6`) |
 | Borde propio del proyecto | Borde grueso de `--linea` en `--apoyo-disco`, sombra dura de 5 px, giro de −0,8°. Nunca un rectángulo liso |
 | Legibilidad con texto encima | **Ningún texto va sobre la foto.** Lo que se lee va sobre una etiqueta de papel, y ese par ya existe. Por eso no hay velo ni par nuevo en `contraste.test.ts` |
@@ -400,8 +400,9 @@ La carátula con la lista a la izquierda, como en los otros siete (`UX-35` §3).
   amigo con el nombre en un renglón, ≈ 134 px de etiqueta y la tapa de ≈ 198.
 - **Por medir:** el mármol se ve a ~1,13×. Si se ve blando, la tapa pasa a `max-width: 32rem`
   alineada a la derecha (0,95×).
-- Cuenta del botón a 1366 × 657: ≈ 548 (con la tapa de 134). La lista de la carátula se queda a la
-  izquierda con el casete marcado: ya lo resuelve `UX-35`.
+- Cuenta del botón a 1366 × 657: ≈ 500 (24 de relleno, la cinta de 48, el `h1` de dos renglones, el
+  renglón del lugar, la tapa de 134, el subtítulo en dos renglones y el botón). La lista de la
+  carátula se queda a la izquierda con el casete marcado: ya lo resuelve `UX-35`.
 
 ### 3.6 Qué se toca y adónde lleva
 
@@ -453,7 +454,7 @@ Una opción que se viera distinta sería "la respuesta" (`UX-06` §3). Cada una 
 
 **Lado a lado en la mesa (≥ 64 rem), arriba y abajo en el teléfono.** Arriba y abajo ordenan y
 "arriba" se lee como "primero"; izquierda y derecha, mucho menos. En el teléfono no hay lugar
-para dos columnas de 28 caracteres a 16,8 px (cuenta: 235 px de texto contra 133 de columna útil),
+para dos columnas de 28 caracteres a 16,8 px (cuenta: 235 px de texto contra ≈ 105 de columna útil),
 así que el orden sorteado es lo que impide el sesgo. En la mesa, cada columna mide ≈ 272 px y una
 opción de 28 caracteres puede pasar a dos renglones; **las dos filas miden lo mismo** porque la
 grilla estira.
@@ -474,8 +475,8 @@ grilla estira.
 **La pausa no es movimiento, es espera.** No se va a cero con movimiento reducido: es lo que tapa el
 doble toque (`D-57` punto 12). Por eso no es `--duracion-paso`.
 
-**Tres cambios de forma, ninguno de color:** el borde pasa de 2 a 4 px, la opción se hunde, la
-sombra se apaga. Y `aria-pressed`. **Nunca ✔**: ese símbolo es el del acierto y acá no hay acierto
+**Tres cambios de forma, ninguno de color:** el borde pasa de 2 a 4 px (`--linea` más 1: un escalón
+más grueso que la línea del sistema), la opción se hunde, la sombra se apaga. Y `aria-pressed`. **Nunca ✔**: ese símbolo es el del acierto y acá no hay acierto
 (`D-33`).
 
 **`aria-disabled` y no `disabled`.** Con `disabled`, el botón tocado pierde el foco y el lector de
@@ -492,10 +493,10 @@ un aspecto (así las dos cuentan en `ESTADOS_EJES`).
 **Una tecla sostenida no contesta la siguiente.** La isla ignora los `keydown` con `repeat`: sin eso,
 mantener apretado el 1 pasa los 600 ms y responde la hoja que acaba de llegar.
 
-**La primera hoja no pone nada tocable donde estaba "Empezá".** "Empezá la noche" y "Empezá otra
-noche" terminan entre y ≈ 515 y 660 (cuenta); las opciones de la hoja 1 están entre ≈ 220 y 350. La
+**La primera hoja no pone nada tocable donde estaba "Empezá".** "Empezá la noche" ocupa ≈ 514–576
+y "Empezá otra noche" ≈ 539–601 (cuenta); las opciones de la hoja 1 están entre ≈ 221 y 349. La
 cinta "Volvé a la anterior" no existe en la hoja 1. Es el mismo defecto que la pausa tapa en el
-resto de la partida, y acá se cierra por construcción.
+resto de la partida (un doble toque que cae sobre la hoja nueva), y acá se cierra por construcción.
 
 ### 4.4 El canto de las hojas que faltan
 
@@ -521,8 +522,8 @@ no puntaje.
   está puesto y no vuelve a entrar: re-estampar el mismo sello en cada hoja sería ruido.
 - **Cómo.** Una sola animación de `--duracion-paso` (200 ms) con `--curva-cinta`: el sello llega
   desde arriba y a la izquierda, torcido de más, y se asienta (`from { translate: -4px -6px; rotate:
-  -5deg }` hacia el reposo de −1,5°). **No toca la opacidad**, no escala, no rebota: es un sello que
-  se apoya.
+  -5deg }`; las propiedades individuales se suman al `transform: rotate(-1.5deg)` del sello, así que
+  el reposo no se toca). **No toca la opacidad**, no escala, no rebota: es un sello que se apoya.
 - **Con movimiento reducido**, `--duracion-paso` va a 0 ms y el sello aparece ya apoyado. No hace
   falta otra regla: es el corte por familia de token de `UX-20` §5. `movimiento.test.ts` lo cuenta como
   animación atada a token.
@@ -701,8 +702,8 @@ bajada, y **Compartí** termina ≈ 556: entra. **Por medir** las dos ventanas.
 **Una sola columna de 38 rem, sin dos paños.** Lo evalué y no conviene:
 
 - Una hoja a 38 rem tiene el nombre a 2,6 rem en dos renglones y los dos botones **entran** a
-  1366 × 657 (cuenta: Compartí termina en ≈ 436 y Empezá otra noche en ≈ 502), con el comienzo de la
-  grilla a la vista (≈ 560) como invitación a bajar.
+  1366 × 657 (cuenta: Compartí termina en ≈ 481 y Empezá otra noche en ≈ 551), con el título de la
+  grilla ya a la vista (empieza en ≈ 591) como invitación a bajar.
 - Los dos paños (hoja a la izquierda, grilla a la derecha, a `--ancho-tablero-amplio`) dejan la hoja en
   ≈ 433 px: el nombre pasa a tres renglones y la grilla a celdas de 183 px. Y sumaría una hoja de otro
   ancho al final de una partida que corrió a 38 rem.
@@ -781,10 +782,11 @@ recortes a 4 : 5 y las barras de las aplicaciones no tocan nada importante).
   cuatro** (tope **860**, piso 740). Es el requisito de `US-06` c4a ("las cuatro tarjetas pesan
   igual"): cuatro hojas de cuatro alturas dejarían una "más completa". El libro baja con ella, así
   asoma siempre la misma tira.
-- **Las cuentas de los peores casos** (cuerpos de arriba, sans a ≈ 0,56 em): el nombre de tres
-  renglones (`CU-2`, `CU-4`) y la línea de dos (`CU-3`, `CU-4`) y una bajada de cinco (`CU-2`, ≈ 167
-  caracteres a 43 por renglón) dan una hoja de **≈ 817 a 865 px**. El tope de 860 es el justo: si una
-  tarjeta lo pasa, **el taller falla** y se achica texto, no la hoja.
+- **La cuenta** (cuerpos de arriba, sans a ≈ 0,56 em): las combinaciones reales —`CU-2`, con el
+  nombre de tres renglones y una bajada de cinco (≈ 167 caracteres a 43 por renglón), y `CU-4`, con el
+  nombre de tres y la línea de dos— dan una hoja de **≈ 817 px**. El peor caso teórico, los tres máximos
+  juntos, da 865: cinco por encima del tope de 860. Ahí **el taller falla** y se achica el texto, no la
+  hoja.
 - **El libro asoma ≥ 60 px** bajo la hoja más alta (cuenta: hoja hasta y = 1090, libro hasta 1150).
 - **El crédito va en la tarjeta** porque es un archivo que se guarda y se reenvía: dice qué se usó y de
   dónde (`TARJETA.credito`). Sin día ni mes de *Luzbelito* (`RES-167`); el año 1996 no está en duda.
@@ -915,8 +917,9 @@ con el desafío puesto. La ruta lleva el id y nunca el nombre: si un nombre camb
 | **Enter**, **Espacio** | Lo de siempre sobre el control con foco | — |
 
 Sin modificadores (`Ctrl`, `Meta`, `Alt`). **Ignora `keydown` con `repeat`.** Retroceso hace
-`preventDefault`. Los dígitos no chocan con la navegación por encabezados del lector de pantalla, que
-intercepta la tecla en modo de lectura antes de que llegue a la página. **La leyenda solo con mouse**
+`preventDefault`. Los dígitos podrían chocar con la navegación por encabezados de un lector de
+pantalla en modo de lectura (el lector intercepta la tecla antes de que llegue a la página, así que
+en principio no pasa): **por medir** con NVDA y JAWS (`§12.6`). **La leyenda solo con mouse**
 (`(hover: hover) and (pointer: fine)`), y el sello de la tecla en cada opción también (`D-53`, `D-55`).
 
 ### 8.4 Lo demás
@@ -925,14 +928,14 @@ intercepta la tecla en modo de lectura antes de que llegue a la página. **La le
 |---|---|
 | **Ningún estado solo con color** | La elegida cambia de borde, de hundido y de sombra (más `aria-pressed`); la tuya y la del amigo, de borde (grueso, punteado) y de sello |
 | **Contraste** | Todos los pares son `--fondo` / `--papel`, `--papel-tenue` / `--papel`, `--texto` y `--texto-tenue` sobre `--fondo`, `--fondo` sobre el cuero y sobre *Gulp!*: ya están en `contraste.test.ts`. **Ningún par nuevo** |
-| **Borde de lo tocable** | Las opciones tienen borde de tinta sobre papel (≈ 15:1); el `summary` de la grilla lleva el "+"  en `--texto-tenue` (≈ 7:1) |
+| **Borde de lo tocable** | Las opciones tienen borde de tinta sobre papel (≈ 15:1); el `summary` de la grilla lleva el "+" en `--texto-tenue` (≈ 7:1) |
 | **Tamaño mínimo de letra** | **12 px** para todo lo que se lee (0,75 rem). Los 9,5 px del rombo y los 10 px de los sellos de la primera pasada se suben |
 | **Zona pulgar** | Opciones de 56 px, separadas por 16; la cinta de volver a 48, lejos de las opciones (≥ 50 px) |
 | **Doble toque** | `touch-action: manipulation` en las opciones y botones; la pausa y la inercia hacen el resto |
 | **Movimiento reducido** | Se va a cero el sello (`--duracion-paso`); la pausa y los 120 ms del toque **se quedan** (`UX-20` §5) |
 | **Zoom y texto grande** | Sin desplazamiento horizontal a 320 px y a 200 %; ningún texto en alto fijo; el nombre admite cuatro renglones sin romper la hoja |
 | **Imágenes** | La tapa, el esquinero y el lomo son decorativos (`alt=""`); la tarjeta tiene `alt` en la vista previa y es un archivo con nombre (`cu-3-dos-ejes.png`) |
-| **Lector de pantalla** | Los rótulos de la grilla (columnas y renglones) son `aria-hidden`: cada celda ya dice sus dos polos en palabras. Las lista de la grilla lleva su `aria-label` |
+| **Lector de pantalla** | Los rótulos de la grilla (columnas y renglones) son `aria-hidden`: cada celda ya dice sus dos polos en palabras. La lista de la grilla lleva su `aria-label` |
 | **Sin muro** | `§12.2` |
 
 ---
@@ -1049,7 +1052,7 @@ npm test
 - [ ] `document.querySelectorAll('.pantalla > h1').length` = 1 por pantalla, y **no** adentro de `figcaption`.
 - [ ] La tapa mide el alto de la etiqueta + 28 + 24 (`offsetHeight`, no `getBoundingClientRect`: está torcida).
 - [ ] El lomo y el esquinero se ven; el mármol asoma arriba y abajo de la etiqueta.
-- [ ] Hoja: termina ≈ 377; ninguna opción de la hoja 1 cae entre y = 515 y 660.
+- [ ] Hoja: termina ≈ 377; ninguna opción de la hoja 1 cae entre y = 514 y 601 (donde estaban "Empezá la noche" y "Empezá otra noche").
 - [ ] Las dos opciones: mismo `offsetHeight` en la mesa; mismo ancho; `min-height` ≥ 56.
 - [ ] Resultado: "Compartí" y "Empezá otra noche" terminan ≤ **601 + 20**; a 360 × 640, "Compartí" ≤ 640.
 - [ ] La grilla: cuatro celdas; la primera es la tuya; a 360 px dos columnas sin texto cortado; a 351 px, una.
@@ -1083,6 +1086,7 @@ npm test
 - [ ] La elegida conserva el foco y anuncia "apretado" (`aria-pressed`).
 - [ ] Teclado: 1, 2, Retroceso; orden de tabulación del `§8.1`; el aro visible en `summary` y en cada cinta.
 - [ ] Contorno punteado en el `h2` solo con `:focus-visible`.
+- [ ] Con NVDA o JAWS en modo de lectura, 1 y 2 no se quedan sin hacer lo suyo (encabezados) ni dejan de elegir con el foco en la hoja.
 - [ ] Texto ≥ 12 px en todo lo que se lee (`getComputedStyle(...).fontSize`).
 - [ ] El "+" del `summary` y el punto medio del índice no se leen como "más" ni "punto medio".
 

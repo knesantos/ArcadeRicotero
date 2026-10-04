@@ -770,6 +770,21 @@ Extiende `UX-20 §3` con lo que la imprenta agrega, sin tocar nada de lo que ya 
    resultado con la tapa de un disco sugeriría que hace falta reconocerlo para que el
    resultado "valga", que es justo lo que este juego no pide.
 
+   **ENMIENDA 2026-10-04 (ciclo 18, `D-57` punto 8, `UX-36` §2), en voz alta.** El juego **sí lleva
+   ahora un recorte real pegado**: el libro de *Luzbelito* (mármol, lomo y esquinero, sin el óvalo, la
+   figura ni el título). **Sigue sin imprenta y sin estampa**, que es lo que este punto prohíbe, y lo
+   dejo escrito para que nadie lea la enmienda como una excepción:
+   - Las piezas se **pegan**: quedan quietas desde el primer cuadro. Sin pasadas, sin registro corrido
+     (`§8`), sin "dala vuelta" (`§5`), sin rodillo ni ficha estampada (`§9`).
+   - **El resultado no se estampa.** No hay "tapa que se imprime" al terminar: no hay acierto, y la
+     estampa es del acierto (`D-33`). La última hoja aparece entera; el esquinero ya está en su esquina.
+   - **El resultado nunca se viste con la tapa entera**, que era lo que esta línea advertía: la
+     composición completa de *Luzbelito* no aparece, y menos como recorte que "valga" o "premie".
+   - Las cuatro maneras llevan **las mismas piezas** (ninguna es de un cuadrante), así que ningún
+     resultado se ve mejor vestido que otro.
+   - El único movimiento de la pantalla es el **sello del momento** (200 ms, `--duracion-paso`): no es
+     una pasada de imprenta, es un sello de goma que se apoya, sin opacidad.
+
 ---
 
 ## 13. El catálogo de nombres de token

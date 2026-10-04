@@ -8,6 +8,28 @@
 > `.claude/rules/voz-ricotera.md`. Tarea `T-122` del ciclo 8
 > (`Docs/ORQ/ORQ-plan-ciclo-8.md`).
 
+> **ENMIENDA 2026-10-04 (ciclo 18, `D-57`) — en voz alta: `UX-36` reemplaza `§2` a `§7` de esta
+> hoja, y `§0` y `§5` quedaron desactualizados.** El juego se rehizo como una noche de recital en
+> cinco momentos y el libro de *Luzbelito* como única pieza de arte. Esta hoja se conserva como
+> registro de por qué se decidió lo que se decidió en el ciclo 8; **ya no es la vara de la pantalla.**
+>
+> | Sección | Qué pasa |
+> |---|---|
+> | `§0` | **Desactualizada en una frase:** "ni imagen con derechos que acreditar (sin tapas reales)". Desde `D-57` el juego lleva recortes reales del libro, con crédito en el pie (`UX-36` §2.5). El resto, la tesis de que no hay nada que saber, sigue en pie |
+> | `§1` | Se mantiene; `UX-36` §1 la revalida (la pausa de 0,6 s y el caso lento) |
+> | `§2` Pantalla 0 | **Reemplazada** por `UX-36` §3 (la tapa del libro, la etiqueta con el índice y la del amigo) |
+> | `§3` la pregunta | **Reemplazada** por `UX-36` §4 (la hoja, el canto, el toque que se confirma y se bloquea; el "~700 ms" pasa a `--pausa-eleccion`, 600 ms) |
+> | `§4` el resultado y el rombo | **Reemplazada** por `UX-36` §5: el rombo se va y entra la grilla de dos por dos relativa |
+> | `§5` el disco | **Desactualizada** en "sin tapas reales, sin crédito, una sola capa": la elección de *Luzbelito* y su porqué siguen valiendo; lo demás no (`UX-36` §2) |
+> | `§6` la tarjeta | **Reemplazada** por `UX-36` §6 y §7 (tarjeta de 1080 × 1350 por manera, vista previa, postales) |
+> | `§7` presupuestos | **Reemplazada** por `UX-36` §9 |
+> | `§8` bloqueos y `§9` verificación | Resueltos por `CTR-08` v2 y reemplazados por `UX-36` §12 |
+>
+> **Lo que no cambia** y esta hoja sigue diciendo bien: ningún resultado es mejor que otro, no hay
+> opción de pasar, no hay acierto ni error, las dos opciones pesan igual, el resultado no lleva
+> números. Lo que cambió es *cómo se ve* y *qué se promete*: ahora el resultado es "esta noche"
+> (`BR-37`).
+
 **Resuelve:** `US-06` criterios 1 a 4 y la pregunta que `producto` dejó explícitamente
 para mí en su criterio 4: *"si `UX-02` sirve tal cual o necesita una variante para un
 resultado sin puntaje lo decide `experiencia`"*. También fija, porque `D-19` lo deja en mi
@@ -35,7 +57,9 @@ primer ítem siempre Fácil, escalonamiento `BR-01`): **acá `BR-01` no aplica**
 construya esta pantalla no busque una insignia de dificultad que no existe.
 
 También significa que no hay auriculares que pedir (es texto puro, sin audio) ni imagen
-con derechos que craditar (sin tapas reales, ver §5). El presupuesto de esta pantalla es
+con derechos que craditar (sin tapas reales, ver §5) **[desactualizado el 2026-10-04: desde `D-57`
+el juego sí lleva recortes reales del libro de *Luzbelito*, con crédito en el pie; ver `UX-36`
+§2]**. El presupuesto de esta pantalla es
 más chico que el de cualquiera de los otros cuatro juegos.
 
 ---
@@ -59,7 +83,7 @@ margen antes de tocar el techo de 3 min sin necesidad de bajar de 10 preguntas.
 
 ---
 
-## 2. Pantalla 0 — Entrada
+## 2. Pantalla 0 — Entrada  [REEMPLAZADA 2026-10-04 por `UX-36` §3]
 
 Mismo principio que `UX-01`: una sola pantalla, tres variantes de copy, mismo botón y
 mismo layout siempre.
@@ -94,7 +118,7 @@ pantalla de instrucciones — la pregunta 1 es su propio tutorial, igual que en 
 
 ---
 
-## 3. Pantallas 1..10 — Pregunta
+## 3. Pantallas 1..10 — Pregunta  [REEMPLAZADA 2026-10-04 por `UX-36` §4]
 
 **Qué se ve:**
 - Arriba, chico, en `--fuente-rotulada` y `--texto-tenue` (par ya testeado): un contador
@@ -169,7 +193,7 @@ una sesión de dos minutos.
 
 ---
 
-## 4. Pantalla final — Resultado (el corazón de esta tarea)
+## 4. Pantalla final — Resultado (el corazón de esta tarea)  [REEMPLAZADA 2026-10-04 por `UX-36` §5: el rombo se va]
 
 **Qué se ve, de arriba hacia abajo:**
 
@@ -237,7 +261,7 @@ que hay que tomar — quien construya valida el tamaño real contra un viewport 
 
 ---
 
-## 5. Qué disco viste esta sección — `US-06` viste **Luzbelito**
+## 5. Qué disco viste esta sección — `US-06` viste **Luzbelito**  [DESACTUALIZADA 2026-10-04 en "sin tapas reales"; la elección sigue: `UX-36` §2]
 
 `D-19` deja el mapa sección→disco en manos de `experiencia`. El mapa de hoy cubre portada
 (Oktubre), historia (Gulp!), mitología (Lobo suelto), letras (La mosca y la sopa), discos
@@ -295,7 +319,7 @@ collage si es a mano; textura equivalente en digital). El usuario decide cómo s
 
 ---
 
-## 6. La tarjeta compartible — `UX-02` necesita variante, y acá está
+## 6. La tarjeta compartible — `UX-02` necesita variante, y acá está  [REEMPLAZADA 2026-10-04 por `UX-36` §6 y §7]
 
 Contesto la pregunta que dejó abierta `US-06` criterio 4: **`UX-02` no sirve tal cual.**
 Está construida alrededor de un número corto ("7/8") que escala perfecto a cualquier
@@ -333,7 +357,7 @@ aparece como copy adicional (nunca de "ganar/perder", ver tabla arriba) → su p
 
 ---
 
-## 7. Presupuestos para `contenido` — cuánto banca cada pieza
+## 7. Presupuestos para `contenido` — cuánto banca cada pieza  [REEMPLAZADA 2026-10-04 por `UX-36` §9]
 
 | Pieza | Presupuesto | De dónde sale |
 |---|---|---|
@@ -348,7 +372,7 @@ aparece como copy adicional (nunca de "ganar/perder", ver tabla arriba) → su p
 
 ---
 
-## 8. Bloqueos que dejo anotados
+## 8. Bloqueos que dejo anotados  [RESUELTOS 2026-10-04 por `CTR-08` v2 y `UX-36`]
 
 - **El mapa sección→disco de `D-19`/`UX-04` no incluye todavía esta fila.** La decisión
   está tomada acá (§5: `US-06` = Luzbelito), pero `UX-04` es el archivo que aloja la tabla
@@ -367,7 +391,7 @@ aparece como copy adicional (nunca de "ganar/perder", ver tabla arriba) → su p
 
 ---
 
-## 9. Verificación
+## 9. Verificación  [REEMPLAZADA 2026-10-04 por `UX-36` §12]
 
 - **Ningún token nuevo, ningún par nuevo de contraste.** Reutilizo `--disco-luzbelito-tinta`
   y `--disco-luzbelito-apoyo` (ya en `tokens.css`), y el par `'Luzbelito sobre fondo'` ya

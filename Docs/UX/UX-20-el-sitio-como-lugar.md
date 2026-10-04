@@ -178,12 +178,38 @@ columnas de la derecha.
 | **Completá la letra** (`US-03`) | La mosca y la sopa — letras (`D-19`) | 2: grano + `tapa-fondo--mosca-olla` (ya en `completar-la-letra.astro:46`) | Ídem | Las cuatro opciones de palabra: mismo comportamiento que en cualquier otro juego, ✔/✕ incluidos |
 | **Adiviná la tapa** (`US-04`) | Último bondi — discos (`D-19`) | 2: grano + `tapa-fondo--bondi-engranajes` (ya en `adivinar-la-tapa.astro:41`) | **Ojo acá:** el recorte de zoom que hay que adivinar es una tapa real, igual que el fondo atmosférico — pero son dos imágenes con roles distintos y el velo **nunca** se posa sobre la pieza jugable, solo sobre el fondo detrás de ella. Confundir las dos sería tapar la respuesta con el mismo velo que la protege | El crédito de esquina (`UX-04`, condición de `D-21`) sigue siendo el sello fijo, no una firma que aparece y desaparece con la atmósfera |
 | **Sacalo por la letra** (`US-07`) | Momo Sampler — variante `momo` (`UX-08`) | 1 hoy (grano solo — no existe todavía `tapa-fondo--momo-sampler` en `sitio.css`) | Puede sumar su segunda capa cuando `T-186` genere el recorte de Momo Sampler; hasta entonces se queda en 1, nunca se le inventa una imagen de otro disco para "completar" | Igual que los de arriba |
-| **¿Qué tipo de ricotero sos?** (`US-06`, dos ejes) | Luzbelito — criterio propio, sin ficha (`dos-ejes.astro`, comentario de cabecera) | **1, y se queda ahí a propósito** | Nada: es el único de los cinco que decido **no** subir a 2 capas. `BR-17` dice que ningún resultado es mejor que otro y que es el juego con el molinete más abierto — vestirlo con una tapa real de fondo sugeriría que hace falta reconocer el disco para jugarlo, que es justo lo que este juego no pide | Ningún resultado del cuestionario se tiñe con más o menos intensidad que otro: los cuatro cuadrantes pesan igual |
+| **¿Qué tipo de ricotero sos?** (`US-06`, dos ejes) — **enmendada el 2026-10-04, ver debajo de la tabla** | Luzbelito — criterio propio, sin ficha (`dos-ejes.astro`, comentario de cabecera) | **1, y se queda ahí a propósito** | Nada: es el único de los cinco que decido **no** subir a 2 capas. `BR-17` dice que ningún resultado es mejor que otro y que es el juego con el molinete más abierto — vestirlo con una tapa real de fondo sugeriría que hace falta reconocer el disco para jugarlo, que es justo lo que este juego no pide | Ningún resultado del cuestionario se tiñe con más o menos intensidad que otro: los cuatro cuadrantes pesan igual |
 | **Redondopedia — portada e índice** | Gulp! — historia, en la cabecera (`D-19`) | 2 en la franja de cabecera (grano + `tapa-fondo--gulp-pincelada`, `sitio.css:94-97`), **1 en el índice que crece debajo** (ya documentado en el propio CSS, `sitio.css:112-115`: un fondo detrás de una lista sin techo es lo que `UX-04` evita) | El índice pasa a 2 columnas desde 46rem (`UX-10`), y eso es maquetado, no atmósfera — no cambia nada de esta tabla | — |
 | **Redondopedia — un artículo** | El de su categoría: historia / discos / letras / mitología (`D-19`, clases `.articulo--*`) | 1 (grano) + a veces un **detalle recortado** flotante (`.detalle-articulo`), que no cuenta como capa de fondo porque no es de borde a borde | Nada de movimiento nuevo — un artículo es lectura, se entra y se sale (`REDONDOPEDIA.bajada`) | — |
 | **Redondopedia — Bulacio, Olavarría, la muerte del Indio** | El tinte de clasificación se queda (es catalogación estática, no atmósfera) | **1, siempre — grano y nada más, nunca velo ni recorte real** | **Nada. Cero.** Ni entrada propia, ni parallax, ni una segunda capa aunque el resto de la Redondopedia la tenga. Es la aplicación visual de lo que `D-20` ya dijo de la voz: *"ahí no hay voz que valga"* — acá no hay atmósfera que valga | Todo: es el piso firme que sostiene el misterio de cualquier otro lado |
 | **Cancionero (letras y acordes)** | La mosca y la sopa — letras, mismo disco que "Completá la letra" (`D-19`) | Hasta 2: grano + `tapa-fondo--mosca-olla` reusado (mismo disco, mismo archivo — no hace falta uno nuevo). Con `--velo-tapa` (86 %), **nunca** `--velo-tapa-titular` (75 %): acá el fondo convive con texto de cuerpo largo (acordes + verso), no solo con un título | Ninguna: el acorde alineado sobre la sílaba (`UX-10`) no se toca por nada de esta hoja | — |
 | **Resultado y compartir** | Gulp! + el lettering del logo (`D-19`) | Hasta 2: grano + `tapa-fondo--gulp-pincelada` reusado (mismo archivo que la cabecera de la Redondopedia) | Vive hoy dentro de `quiz.astro`, fuera del alcance de código de este ciclo (`T-182`) — esta fila es la doctrina que rige **cuando** esa pantalla entre a la gramática del tránsito, no una instrucción para tocarla ahora | El puntaje, el tramo y cualquier rótulo `LEYENDA`/`TESTIMONIO` en la explicación final: nunca tintados por el disco de la sección (`§3`) |
+
+**ENMIENDA 2026-10-04 (ciclo 18, `D-57` punto 8, `UX-36` §2) — la fila de "¿Qué tipo de ricotero
+sos?", en voz alta.** La fila decía: *una sola capa, y se queda ahí a propósito: vestirlo con una
+tapa real de fondo sugeriría que hace falta reconocer el disco para jugarlo.* **Eso sigue en pie
+para lo que decía: el juego no tiene tapa de fondo, ni velada ni de ningún tipo, y sigue en una
+capa (el grano).** Lo que cambia es que **la pantalla ahora lleva un recorte real pegado**: la
+portada es la tapa del libro de *Luzbelito* (mármol, lomo y esquinero), la última hoja lleva el
+esquinero, y la tarjeta y la vista previa muestran la tira del libro bajo la hoja.
+
+Por qué no contradice la razón de la fila:
+
+- **No es una capa de fondo.** Es un detalle recortado en el flujo (`UX-04`, forma 1), con borde
+  grueso, sombra dura y rotación: no entra en el techo de dos capas de `§1.2`.
+- **No identifica el disco.** `D-57` punto 8: sin el óvalo, sin la figura y sin la palabra
+  LUZBELITO. Quien no conoce el disco ve un libro de cuero y mármol; quien lo conoce, además, lo
+  reconoce. **Reconocible, no exigido**: la misma regla de `BR-36`.
+- **Ninguna pieza es de un cuadrante.** Son las mismas para las cuatro maneras (`D-57` punto 8): ningún
+  resultado se viste mejor que otro.
+- **Ningún texto va sobre la foto.** Lo que se lee va sobre papel, así que no hay velo ni par nuevo.
+- **Sigue sin movimiento de cámara.** Las piezas no se desplazan, no hacen parallax y no entran con paso
+  propio. El único movimiento de la pantalla es el sello del momento, con `--duracion-paso` (`UX-36`
+  §4.5), que respeta `§1.1` (≤ 400 ms) y `§1.3` (la acción principal es tocable desde el cuadro cero).
+
+**`§3` (lo que nunca se mueve) sigue entero.** `§4` no suma tokens: la pausa de la elección
+(`--pausa-eleccion`, 600 ms) es **espera de información**, como `--duracion-toque`, y por eso tampoco
+la apaga el corte de movimiento reducido (`§5`).
 
 **Una regla que la tabla no repite en cada fila porque es de todas:** ninguna fila
 supera el techo de 2 capas del `§1.2`, y donde hay parallax, ninguna capa lo hace más
