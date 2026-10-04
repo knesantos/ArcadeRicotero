@@ -223,7 +223,13 @@ test('a la vuelta nadie vuelve a pie: de noche es seguridad, no temperamento', (
 test('ninguna opción delata su eje con la palabra del eje', () => {
   // `EJ-002` decía "Se te corta la luz"; `FIND-25` lo marcó. Y "lista", "horario", "reviso" y
   // "todo" eran la firma del polo orden en el banco viejo.
-  const delatores = ['luz', 'oscur*', 'orden*', 'caos', 'caotic*', 'plan', 'planes', 'planific*', 'lista', 'horario*', 'reviso', 'todo', 'todos', 'toda', 'todas'];
+  // El verificador del ciclo 18 (vuelta 1) sumó los que el banco nuevo repetía: once de quince
+  // opciones de orden decían "fijo", "pensado", "sigo" o "marcado", y cinco de caos "ver".
+  const delatores = [
+    'luz', 'oscur*', 'orden*', 'caos', 'caotic*', 'plan', 'planes', 'planific*', 'lista', 'horario*', 'reviso',
+    'todo', 'todos', 'toda', 'todas',
+    'fij*', 'pensad*', 'pense', 'sigo', 'seguir', 'sigamos', 'marcad*', 'vera', 'veamos', 'veremos',
+  ];
   const caidos: string[] = [];
   for (const i of LISTOS) {
     for (const v of ['luz', 'oscur*', 'orden*', 'caos']) if (aparece(i.enunciado, v)) caidos.push(`${i.id}: el enunciado nombra el eje (${v})`);
@@ -262,4 +268,19 @@ test('las dos opciones de un ítem no son la misma frase con otra punta', () => 
     const [a, b] = i.opciones.map((o) => plano(o.texto));
     assert.ok(a !== b && !a!.includes(b!) && !b!.includes(a!), `${i.id}: "${a}" y "${b}"`);
   }
+});
+
+test('ninguna opción apunta al nombre de una manera', () => {
+  // Desde la segunda noche, con la grilla ya leída, una opción que dice "hora" o "rincón" se
+  // reconoce como la de «Radio bajita, misma hora»: el jugador deja de elegir y empieza a apuntar.
+  const delNombre = new Set<string>();
+  for (const c of BANCO.cuadrantes) {
+    for (const p of palabras(plano(c.nombre))) if (p.replace(/[^\p{L}]/gu, '').length > 3) delNombre.add(p.replace(/[^\p{L}]/gu, ''));
+  }
+  for (const extra of ['rincon', 'hora']) delNombre.add(extra);
+  const caidos: string[] = [];
+  for (const i of LISTOS) {
+    for (const o of i.opciones) for (const w of delNombre) if (aparece(o.texto, w)) caidos.push(`${i.id}: "${o.texto}" (${w})`);
+  }
+  assert.deepEqual(caidos, []);
 });
