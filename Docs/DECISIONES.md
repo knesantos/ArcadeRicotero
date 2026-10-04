@@ -3337,6 +3337,23 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
      se quedó en la vereda (`RES-154`). Las seis escenas de ese momento ya se oyen igual desde
      afuera desde la vuelta 2 de `CNT-30`; faltaba el nombre. La propuesta es de `contenido`
      (`Docs/SUGERENCIAS/CNT-para-hilo-principal-vuelta-2-dos-ejes.md` §4) y se toma tal cual.
+  7. **Qué puede suponer una opción de luz**, para cortar una oscilación. Tres vueltas de
+     lectura adversarial empujaron la luz de un lado al otro: con alguien presente excluía a
+     quien fue sin compañía; sin nadie al lado pasó a mandar mensajes y excluyó a quien no
+     tiene saldo; con "mi hermana" o "mis viejos" excluyó a quien no los tiene; con
+     desconocidos cae en el veto 6 de `BR-36`. Ninguna luz es posible sin otro: **es la
+     definición del eje** (`BR-17`, el usuario lo eligió). Queda así:
+     - La luz **puede** suponer a alguien —en el enunciado, al lado o a distancia—. El cuarto
+       lugar de la prueba es *volviendo de noche sin compañía*: mira la seguridad de la
+       vuelta, no exige que toda luz se pueda elegir sin nadie.
+     - **No puede:** nombrar un parentesco (le cierra la opción a quien no lo tiene; se dice
+       *alguien tuyo*, *quien vino con vos*, *los de casa* solo si el enunciado ya los puso),
+       hablar con desconocidos (veto 6), ni ser la distracción del que no está mirando
+       (filmar, cuchichear durante el tema): eso la hace "menos de adentro".
+     - **Teléfono, como mucho en un tercio de las luces.** Es una forma de estar con otro, no
+       la forma.
+     - El balance lo mira `REV-19` sobre el banco entero, no ítem por ítem: si quien fue sin
+       compañía no tiene **ninguna** luz posible en un momento, eso sí es un defecto.
 
 ## D-58 — La rotulada vuelve a ser Archivo Black: el archivo del sitio no traía la A-Z
 
