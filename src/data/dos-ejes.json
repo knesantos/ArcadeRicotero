@@ -5,11 +5,11 @@
   "actualizado": "2026-10-04",
   "preguntasPorEje": 5,
   "momentos": [
-    { "id": "previa", "nombre": "La previa", "canta": "Campera puesta, llaves en el bolsillo." },
-    { "id": "ida", "nombre": "La ida", "canta": "Ruido de fondo, el camino que se estira." },
-    { "id": "vereda", "nombre": "La vereda", "canta": "Baldosa fría y un parlante lejano." },
-    { "id": "adentro", "nombre": "Cuando suena", "canta": "Golpe en el pecho, primer acorde." },
-    { "id": "vuelta", "nombre": "La vuelta", "canta": "Frío en las manos, llave en la puerta." }
+    { "id": "previa", "nombre": "La previa", "canta": "Botella cortada, guitarra afinando, olor a yerba." },
+    { "id": "ida", "nombre": "La ida", "canta": "Ventanilla empañada y la ruta que se estira." },
+    { "id": "vereda", "nombre": "La vereda", "canta": "Pies en el barro y un parlante lejano." },
+    { "id": "adentro", "nombre": "Cuando suena", "canta": "Golpe en el pecho y todos cantan." },
+    { "id": "vuelta", "nombre": "La vuelta", "canta": "Zapatillas embarradas, llave en la puerta." }
   ],
   "cuadrantes": [
     {
@@ -17,7 +17,7 @@
       "luzOscuridad": "luz",
       "ordenCaos": "orden",
       "nombre": "Mesa larga a las nueve",
-      "bajada": "Hay una hora, un lugar y gente que te espera: la noche empieza sabiendo adónde va. Pero cuando alguien cambia la hora, a vos te toca rearmar la mesa.",
+      "bajada": "Hay una hora, un lugar, un chori en la parrilla y gente que te espera: la noche ya sabe adónde va. Pero cuando alguien cambia la hora, a vos te toca rearmar la mesa.",
       "estado": "listo"
     },
     {
@@ -25,7 +25,7 @@
       "luzOscuridad": "luz",
       "ordenCaos": "caos",
       "nombre": "Ronda en cualquier esquina",
-      "bajada": "Te sumás a lo que aparece —una charla, un mate, otra canción— y la noche toma forma. Pero cuando alguien pregunta adónde siguen, a vos te toca elegir ahí mismo.",
+      "bajada": "Te sumás a lo que aparece —una guitarra, un mate, otra canción— y la noche toma forma. Pero cuando alguien pregunta adónde siguen, a vos te toca elegir ahí mismo.",
       "estado": "listo"
     },
     {
@@ -33,7 +33,7 @@
       "luzOscuridad": "oscuridad",
       "ordenCaos": "orden",
       "nombre": "Radio bajita, misma hora",
-      "bajada": "Te cosés la noche a medida, puntada por puntada, con el hilo de una canción. Pero cuando alguien adelanta la salida, a vos te toca mover lo que venía después.",
+      "bajada": "Te cosés la noche a medida, puntada por puntada, con un disco y el termo de siempre. Pero cuando alguien adelanta la salida, a vos te toca mover lo que venía después.",
       "estado": "listo"
     },
     {
@@ -41,7 +41,7 @@
       "luzOscuridad": "oscuridad",
       "ordenCaos": "caos",
       "nombre": "Mochila liviana, sin mapa",
-      "bajada": "Con las manos libres, un cambio te abre otro y cada uno te alegra. Pero cuando alguien quiere saber el rumbo, a vos te toca averiguarlo en el celular.",
+      "bajada": "Con las zapatillas que ya vieron barro, un cambio te abre otro y cada uno te alegra. Pero cuando alguien quiere saber el rumbo, a vos te toca averiguarlo en el celular.",
       "estado": "listo"
     }
   ],
@@ -387,390 +387,390 @@
       "us": ["US-06"],
       "eje": "luz-oscuridad",
       "momento": "previa",
-      "enunciado": "Alguien tuyo te manda un tema.",
+      "enunciado": "En la esquina, los tuyos pasan el fernet en una botella cortada.",
       "opciones": [
-        { "texto": "Le contesto con otro", "polo": "luz" },
-        { "texto": "Lo escucho bien fuerte", "polo": "oscuridad" }
+        { "texto": "Lo paso y sigo charlando", "polo": "luz" },
+        { "texto": "Subo mi música", "polo": "oscuridad" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Mientras te preparás, suena música…» / «La comparto con un amigo» / «Pongo los auriculares»): la luz suponía a alguien al lado y los auriculares eran taparse. Ahora la persona la pone el enunciado, a distancia, y las dos opciones le contestan al mismo tema: una devuelve otro, la otra lo sube. Vuelta 4 (antes: «Le paso uno mío»): «mío» es la palabra con la que el resultado traduce oscuridad («con lo propio») puesta del lado de luz. Ahora «Le contesto con otro», sin posesivo. Cuatro lugares: nunca fui (un tema que te mandan es de cualquier salida); sin plata (el tema ya está en el teléfono); silla de ruedas (no pide cuerpo); vuelta de noche sin compañía (es en casa, antes de salir). Mide luz = devolver el gesto con otro tema; oscuridad = quedarse con el tema, subido. Luz a distancia: supone teléfono (una de las cinco de ese tipo, el tope de un tercio de la enmienda 7 de D-57). El dilema «te mandan algo» queda solo acá: EJ-055 pasó a otra escena."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Alguien tuyo te manda un tema.» / «Le contesto con otro» / «Lo escucho bien fuerte» (cuatro vueltas habían sacado el parentesco, el «mío» del lado de luz y los auriculares). Ahora la previa es la esquina con el fernet en la botella cortada (RES-173, RES-178, leyenda; el mate y el vino que pasan de mano en mano, RES-172): lo sucio está en el enunciado como paisaje y no se elige. Es el ítem de «ir un rato antes a escabiar o no» de D-59 punto 2: las dos opciones son de la ronda y ninguna nombra lo que se toma. Pasarlo no obliga a tomar, y poner la música propia tampoco tiene que ver. «Los tuyos» pone al grupo en el enunciado, sin desconocidos (veto 6). Cinco lugares: nunca fui ✓ (una ronda con una botella se imagina desde cualquier fiesta); sin plata ✓ (no se compra nada: se pasa y se sube un volumen); silla de ruedas ✓ (las dos se hacen sentado); vuelta de noche sin compañía ✓ (es antes de salir, sin trayecto); no toma ni fuma ✓ (quien no toma pasa la botella o sube su música igual que quien toma; ninguna opción nombra consumo). Mide luz = la ronda sigue entre los tuyos; oscuridad = la música propia se sube. Ya no es luz con teléfono: quedan cuatro (031, 036, 042, 055), por debajo del tope de un tercio de la enmienda 7."
     },
     {
       "id": "EJ-030",
       "us": ["US-06"],
       "eje": "luz-oscuridad",
       "momento": "previa",
-      "enunciado": "Suena música mientras te preparás.",
+      "enunciado": "Uno de los tuyos afina una guitarra junto al fogón.",
       "opciones": [
-        { "texto": "La subo para compartirla", "polo": "luz" },
+        { "texto": "Me arrimo y canto", "polo": "luz" },
         { "texto": "Tamborileo en la rodilla", "polo": "oscuridad" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Todavía falta un rato largo para salir…» / «Mando un audio a alguien» / «Tarareo para adentro»): «para adentro» sonaba a reprimirse y «un rato largo» chocaba con «Estás por salir» de EJ-032 en la misma previa. Ahora es la escena del parlante, y la oscuridad es un hacer con el cuerpo y un objeto (el ritmo en la rodilla), sin tapar nada. Vuelta 4 (antes: «La comparto con mi vieja»): un parentesco le cierra la luz a quien no lo tiene (enmienda 7 de D-57); ahora «La subo para compartirla», sin nombrar a nadie: la luz supone a alguien, que es la definición del eje, y las otras dos de la celda son a distancia. Cuatro lugares: nunca fui (música mientras te preparás es de cualquier salida); sin plata (la música es la que ya suena); silla de ruedas (se hace sentado); vuelta de noche sin compañía (es en casa, antes de salir). Mide luz = la música se reparte; oscuridad = la música se toca encima de uno."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Suena música mientras te preparás.» / «La subo para compartirla» / «Tamborileo en la rodilla» (la vuelta 4 había sacado «La comparto con mi vieja»: un parentesco le cierra la luz a quien no lo tiene). Ahora entran la guitarra y el fogón de la previa (RES-172: guitarra criolla, fogones y mate; RES-161: la previa de días con carpas, leyenda). La luz es arrimarse y cantar con quien afina; la B no se toca (el ritmo en la rodilla, un hacer con el cuerpo, sentado). «Uno de los tuyos» evita al desconocido. «Canto» no pide saber la letra: se canta lo que se pueda o se tararea, y la A y la B se dicen con el mismo orgullo. Cinco lugares: nunca fui ✓ (afinar una guitarra junto a un fogón es una reunión cualquiera); sin plata ✓ (cantar y tamborilear no cuestan); silla de ruedas ✓ («me arrimo» es una manera de decir: se hace con la voz); vuelta de noche sin compañía ✓ (es antes de salir); no toma ni fuma ✓ (ni el fogón ni la guitarra son lo que se toma o se fuma). Mide luz = la música se hace con los tuyos; oscuridad = la música se hace con el cuerpo propio. Sin teléfono."
     },
     {
       "id": "EJ-031",
       "us": ["US-06"],
       "eje": "luz-oscuridad",
       "momento": "previa",
-      "enunciado": "Falta un rato para salir.",
+      "enunciado": "La plaza huele a birra tibia y a yerba. Faltan los que llegan tarde.",
       "opciones": [
         { "texto": "Le escribo a una amiga", "polo": "luz" },
         { "texto": "Tarareo un tema", "polo": "oscuridad" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Esperás la hora de salir. ¿Dónde te quedás?» / «En lo de mi familia» / «En mi cuarto»): las dos opciones pedían tener algo (una familia con casa, un cuarto propio) y para quien vive con la familia eran el mismo lugar. Ahora no es dónde sino qué hacés mientras esperás, en el mismo lugar para las dos. Cuatro lugares: nunca fui (esperar es de cualquier salida); sin plata (escribir y silbar no cuestan); silla de ruedas (se hace sin moverse); vuelta de noche sin compañía (es antes de salir, en casa). Mide luz = el rato se llena con alguien tuyo; oscuridad = el rato se llena con un sonido propio. Luz a distancia: supone teléfono. Vuelta 4 (antes: «Silbo un tema entre dientes» / «¿A qué lo dedicás?»): «entre dientes» es murmurar, contenerse (el «para adentro» que la vuelta 3 sacó), silbar es una capacidad que no todos tienen y la pregunta sonaba a formulario. Ahora «Tarareo un tema» y el enunciado afirma sin preguntar."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Falta un rato para salir.» / «Le escribo a una amiga» / «Tarareo un tema» (la vuelta 3 la había sacado de «¿Dónde te quedás?», que pedía tener casa o cuarto propio; la 4 sacó «Silbo»: contenerse, y una capacidad). Las opciones no se tocan. Ahora la plaza huele a birra tibia y a yerba (RES-173 y RES-178: birra y chori de la previa; RES-172: el mate, leyenda) y faltan los que llegan tarde: lo sucio es el aire de la escena y nadie lo elige. Cinco lugares: nunca fui ✓ (esperar a los que llegan tarde es de cualquier salida); sin plata ✓ (escribir y tararear no cuestan); silla de ruedas ✓ (se hacen sin moverse); vuelta de noche sin compañía ✓ (es antes de salir, sin trayecto); no toma ni fuma ✓ (la birra y la yerba son el olor de la plaza: las dos opciones las elige igual quien toma y quien no). Mide luz = el rato se llena con alguien tuyo; oscuridad = con un sonido propio. Luz con teléfono: es la luz posible de la previa para quien fue sin compañía (una de cuatro)."
     },
     {
       "id": "EJ-032",
       "us": ["US-06"],
       "eje": "orden-caos",
       "momento": "previa",
-      "enunciado": "Hay cosas para llevar al recital. ¿Cuándo las juntás?",
+      "enunciado": "Zapatillas viejas, campera y una bolsa para el recital. ¿Cuándo las juntás?",
       "opciones": [
         { "texto": "Las dejo juntas desde antes", "polo": "orden" },
         { "texto": "Las agarro al vuelo", "polo": "caos" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Estás por salir para un recital. ¿Qué llevás?» / «Lo tengo armado de antes» / «Lo agarro al salir»): la pregunta era «qué» y las dos contestaban «cuándo»; «Estás por salir» fijaba un después que chocaba con EJ-030; y «al salir» ponía la raíz sal- solo en caos. Ahora la pregunta es la que las opciones contestan, y «al vuelo» es el modismo de caos, sin subordinada. Cuatro lugares: nunca fui (qué llevar a una salida es de todos y no se nombra ninguna cosa); sin plata (nada se compra: es cuándo, no qué); silla de ruedas (no pide cuerpo); vuelta de noche sin compañía (es antes de salir). Mide orden = tener lo que se lleva junto de antes; caos = juntarlo en el momento."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Hay cosas para llevar al recital. ¿Cuándo las juntás?». Las opciones no se tocan (la vuelta 3 las alineó con la pregunta; «al vuelo» es el modismo de caos, sin subordinada ni sal-). Ahora las cosas son las de la noche ricotera —zapatillas viejas, campera, una bolsa— y las zapatillas viejas dicen barro sin nombrarlo (RES-177 y RES-185: el barro del acceso, leyenda). Cinco lugares: nunca fui ✓ (el enunciado trae las cosas; qué llevar a una salida se imagina); sin plata ✓ (nada se compra: es cuándo, no qué); silla de ruedas ✓ (no pide cuerpo); vuelta de noche sin compañía ✓ (es antes de salir); no toma ni fuma ✓ (ninguna cosa de la lista es lo que se toma o se fuma). Mide orden = tener lo que se lleva junto de antes; caos = juntarlo en el momento."
     },
     {
       "id": "EJ-033",
       "us": ["US-06"],
       "eje": "orden-caos",
       "momento": "previa",
-      "enunciado": "Alguien te pregunta cuándo salís.",
+      "enunciado": "Desde la carpa de al lado te gritan: ¿cuándo salís?",
       "opciones": [
         { "texto": "Le doy el dato justo", "polo": "orden" },
         { "texto": "Le digo: en un rato", "polo": "caos" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Le confirmo con tiempo» / «Le aviso cuando salgo»): «con tiempo» era una frase de virtud, y «cuando salgo» sumaba un «cuando» y un sal- a caos. Vuelta 4 (antes en caos: «Le digo: ya voy»): en la Argentina «ya voy» es la excusa clásica de quien todavía no salió, y confesaba un descuido que ningún polo paga. Ahora «Le digo: en un rato», una respuesta abierta y honesta. Las dos le contestan algo a quien pregunta: un dato preciso, o uno abierto. Ninguna lleva «cuando», sal- ni «ya». Cuatro lugares: nunca fui (es una pregunta de cualquier salida); sin plata (no cuesta); silla de ruedas (no pide cuerpo); vuelta de noche sin compañía (es la salida, no hay trayecto). Mide orden = dar el dato exacto; caos = dar la respuesta abierta. Las dos le contestan a otra persona. Es el único enunciado de orden-caos con «alguien»."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Alguien te pregunta cuándo salís.» / «Le doy el dato justo» / «Le digo: en un rato» (la vuelta 4 había sacado «ya voy», la excusa de quien todavía no salió). Las opciones no se tocan: las dos le contestan algo concreto a quien pregunta. Ahora la pregunta llega a los gritos desde la carpa de al lado (RES-172: carpas y acampe, leyenda): es un vecino de carpa y no un desconocido que se acerca a vos. Cinco lugares: nunca fui ✓ (una pregunta a los gritos es de cualquier salida; el enunciado dice qué es la carpa); sin plata ✓ (no cuesta); silla de ruedas ✓ (no pide cuerpo); vuelta de noche sin compañía ✓ (es la salida, sin trayecto); no toma ni fuma ✓ (nada de lo que se toma o se fuma entra en la pregunta ni en las respuestas). Mide orden = dar el dato exacto; caos = dar la respuesta abierta. Las dos le contestan a otra persona."
     },
     {
       "id": "EJ-034",
       "us": ["US-06"],
       "eje": "orden-caos",
       "momento": "previa",
-      "enunciado": "Te vestís para el recital.",
+      "enunciado": "Te vestís para el recital. La ropa va a terminar con barro.",
       "opciones": [
         { "texto": "Sé qué me pongo", "polo": "orden" },
         { "texto": "Me visto según el humor", "polo": "caos" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Te vestís para salir.» / «Elijo la ropa de antemano» / «Me visto según el humor»): «de antemano» era registro de oficina y la escena no tenía rastro de la noche. Ahora orden también tiene su modismo, «Sé qué me pongo», y el enunciado nombra el recital. Vuelta 4: se le sacó el «Ya» del arranque (era uno de tres «Ya» en orden y ninguno en caos). «Según el humor» queda como la ganancia de caos. Cuatro lugares: nunca fui (vestirse para una salida es de todos y no se nombra ninguna prenda); sin plata (es la ropa que ya hay); silla de ruedas (no pide cuerpo capaz de algo); vuelta de noche sin compañía (es en casa, antes de salir). Mide orden = la ropa ya está decidida; caos = se decide vistiéndose."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Te vestís para el recital.» / «Sé qué me pongo» / «Me visto según el humor» (la vuelta 3 sacó «de antemano»; la 4, el «Ya»). Las opciones no se tocan. Ahora el enunciado suma el barro como certeza de la noche (RES-177 y RES-185, leyenda) y no como conducta: no dice qué hace quien juega, la anticipación la pone la opción (regla de CNT-30 §2). Descarté «con lo que no te importe ensuciar»: era la conducta de orden afirmada en el enunciado. Cinco lugares: nunca fui ✓ (vestirse para una salida y la ropa que se ensucia lo imagina cualquiera; no se nombra ninguna prenda); sin plata ✓ (es la ropa que ya hay); silla de ruedas ✓ (no pide cuerpo capaz de algo); vuelta de noche sin compañía ✓ (es en casa, antes de salir); no toma ni fuma ✓. Mide orden = la ropa ya está decidida; caos = se decide vistiéndose."
     },
     {
       "id": "EJ-035",
       "us": ["US-06"],
       "eje": "luz-oscuridad",
       "momento": "ida",
-      "enunciado": "El camino se hace largo. ¿Cómo lo llevás?",
+      "enunciado": "En la combi suena un disco de los Redondos. El camino es largo.",
       "opciones": [
         { "texto": "Hablo con los míos", "polo": "luz" },
         { "texto": "Tarareo una que me gusta", "polo": "oscuridad" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Miro qué pasa afuera»): suponía la ventanilla de un vehículo y era el mirar afuera que la vuelta 1 había retirado. Ahora la oscuridad es un hacer con ganas y con música, sin «afuera». Es la luz de la celda que pide compañía presente («los míos»); la de EJ-036 es a distancia y la de EJ-037 se puede hacer de cerca o por teléfono (enmienda 7 de D-57: la luz puede suponer a alguien). Cuatro lugares: nunca fui (un camino largo lo hizo cualquiera); sin plata (no hay pasaje ni transporte nombrado); silla de ruedas (se hace sin parar ni caminar); vuelta de noche sin compañía (es la ida y la oscuridad no pide a nadie). Mide luz = el camino se llena de gente tuya; oscuridad = el camino se llena de una canción propia. Las dos improvisadas."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «El camino se hace largo. ¿Cómo lo llevás?» / «Hablo con los míos» / «Tarareo una que me gusta» (la B ya no es «Miro qué pasa afuera», la ventanilla que la vuelta 1 retiró). Las opciones no se tocan. Ahora la ida es la combi del barrio (RES-174: colectivos y combis del barrio; RES-160: micros y caravanas, leyenda sin cifras) con un disco de los Redondos de fondo: la banda como paisaje, D-59 punto 5. Suena y nadie canta, ni se nombra una persona, ni se pide reconocerlo. Cinco lugares: nunca fui ✓ (el enunciado dice qué suena; ninguna opción lo nombra); sin plata ✓ (la combi está en la escena y ninguna opción dice que pagaste, D-59 punto 4); silla de ruedas ✓ (se hacen sentado); vuelta de noche sin compañía ✓ (es la ida y ninguna opción es ir a ningún lado ni hablarle a un desconocido); no toma ni fuma ✓. Es la única luz de la celda con compañía presente (los míos); las de 036 y 037 son a distancia o en voz alta (enmienda 7). Mide luz = el camino se llena de gente tuya; oscuridad = de una canción propia."
     },
     {
       "id": "EJ-036",
       "us": ["US-06"],
       "eje": "luz-oscuridad",
       "momento": "ida",
-      "enunciado": "Sacás una foto camino al recital.",
+      "enunciado": "Un pasacalle gigante cuelga sobre la ruta. Sacás una foto.",
       "opciones": [
         { "texto": "La mando a quien quiero", "polo": "luz" },
         { "texto": "Le encuentro un detalle", "polo": "oscuridad" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Ves algo lindo al pasar y sacás una foto.» / «La mando enseguida» / «La miro un buen rato»): «enseguida» contra «un buen rato» le sumaba impulso contra paciencia, sabor de orden-caos, a un ítem de luz-oscuridad; y no tenía rastro de la noche. Ahora no hay adverbios y el enunciado nombra el recital. La oscuridad es una atención concreta (un detalle), no esconderse. Cuatro lugares: nunca fui (una foto camino a cualquier salida); sin plata (sacarla y mandarla no cuesta); silla de ruedas (se hace sin parar ni caminar); vuelta de noche sin compañía (es la ida y la luz es a distancia). Mide luz = lo lindo se manda a los tuyos; oscuridad = lo lindo se mira de cerca. Luz a distancia: supone teléfono. Vuelta 4 (antes: «La mando a mis viejos»): un parentesco le cierra la luz a quien no tiene madre o padre vivos, y en octubre de 2026 es la exclusión más cara (enmienda 7 de D-57). Ahora «a quien quiero», sin parentesco ni rol (no puede decirse «quien vino con vos»: el veto del alcohol lee «vino»)."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Sacás una foto camino al recital.» / «La mando a quien quiero» / «Le encuentro un detalle» (la vuelta 3 sacó los adverbios que le daban a un ítem de luz el sabor de orden-caos; la 4, «mis viejos»: un parentesco). Las opciones no se tocan. Ahora la foto es de un pasacalle sobre la ruta (RES-172: pasacalles y trapos de las caravanas, leyenda; sin texto en el pasacalle: nadie lo lee ni lo firma). Cinco lugares: nunca fui ✓ (un cartel sobre una ruta lo ve cualquiera); sin plata ✓ (sacarla y mandarla no cuesta); silla de ruedas ✓ (se hace sin parar ni caminar); vuelta de noche sin compañía ✓ (es la ida y la luz es a distancia); no toma ni fuma ✓. Mide luz = lo que se ve se manda a los tuyos; oscuridad = lo que se ve se mira de cerca. Luz con teléfono (una de cuatro)."
     },
     {
       "id": "EJ-037",
       "us": ["US-06"],
       "eje": "luz-oscuridad",
       "momento": "ida",
-      "enunciado": "Te acordás de un tema.",
+      "enunciado": "En la parada de ruta, un pancho frío. Se te viene un tema.",
       "opciones": [
         { "texto": "Se lo tarareo a alguien", "polo": "luz" },
         { "texto": "Lo busco y lo escucho", "polo": "oscuridad" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Te acordás de algo gracioso.» / «Lo cuento en voz alta» / «Me río con ganas»): sin rastro de la noche, y «lo cuento en voz alta» apuntaba a quien esté cerca. Vuelta 4 (antes: «Te acordás de quién te mostró un tema» / «Le escribo que me acordé»): abría el recuerdo de quien te pasó la música, que en el relato ricotero muchas veces es alguien que ya no está, y la luz daba por hecho que esa persona vive y se le puede escribir: una escena de ausencia a cuatro meses del 5 de junio (D-57 punto 9). Ahora el enunciado es un tema que se te viene, sin persona, y las dos opciones tratan ese tema: tararearlo para alguien, o ir a buscarlo y escucharlo. Cuatro lugares: nunca fui (a cualquiera se le viene un tema a la cabeza); sin plata (tararear y buscar un tema ya conocido no cuesta); silla de ruedas (no pide cuerpo); vuelta de noche sin compañía (es la ida y nadie se mueve). Mide luz = el tema se le canta a alguien; oscuridad = el tema se va a buscar y se escucha entero. Luz sin teléfono obligado: se puede tararear a quien está cerca o en una llamada."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Te acordás de un tema.» / «Se lo tarareo a alguien» / «Lo busco y lo escucho» (la vuelta 4 había sacado «Te acordás de quién te mostró un tema»: una escena de ausencia a cuatro meses del 5 de junio). Las opciones no se tocan. Ahora el tema se te viene en la parada de ruta, con un pancho frío en la mano (RES-174: la ruta de la caravana, leyenda; el pancho es vocabulario del puesto, sin ficha, RES-173): lo sucio es barato y concreto, sin glamour. Cinco lugares: nunca fui ✓ (a cualquiera se le viene un tema en una parada); sin plata ✓ (el pancho es del paisaje: ninguna opción compra ni paga); silla de ruedas ✓ (no pide cuerpo); vuelta de noche sin compañía ✓ (es la ida; tararear a alguien se hace de cerca o por llamada); no toma ni fuma ✓. Mide luz = el tema se le canta a alguien; oscuridad = el tema se va a buscar y se escucha entero."
     },
     {
       "id": "EJ-038",
       "us": ["US-06"],
       "eje": "orden-caos",
       "momento": "ida",
-      "enunciado": "Hay nubes en el cielo.",
+      "enunciado": "Los micros hacen fila y el cielo se pone gris.",
       "opciones": [
         { "texto": "Llevo algo por si llueve", "polo": "orden" },
         { "texto": "Si llueve, llueve", "polo": "caos" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 4 (antes: «Te pasaron un papel con indicaciones para llegar al recital.» / «Lo sigo paso a paso» / «Lo uso de pista»): para quien va en silla de ruedas el recorrido accesible, y para quien va o vuelve sin compañía, seguir las indicaciones paso a paso es una precaución y no un temperamento, y «Lo uso de pista» quedaba como el valiente; además «un papel con indicaciones» suena viejo en 2026. Se cambió la escena por una de la ida que no es el recorrido: el cielo se nubla, y las dos opciones tratan lo mismo, qué hacer ante la lluvia que puede venir. La vuelta 3 había sacado «caiga» y «Lo tomo como…»: ninguna lleva subjuntivo ni esa forma. Cuatro lugares: nunca fui (el cielo nublado se mira desde cualquier camino); sin plata (algo que ya se tiene por si llueve; nada se compra); silla de ruedas (se hace sin parar ni caminar); vuelta de noche sin compañía (es la ida, nadie se mueve ni habla con nadie). Mide orden = anticipar la lluvia con lo que se lleva; caos = resolverla cuando llegue, dicho con modismo. Cierra el círculo con EJ-042 (la llovizna de la vereda), que puede salir en la misma noche y no se contradice."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes (vuelta 4): «Hay nubes en el cielo.» / «Llevo algo por si llueve» / «Si llueve, llueve» (la 4 había sacado las indicaciones para llegar: una precaución, y no un temperamento, para quien va sin compañía o en silla). Las opciones no se tocan. Ahora los micros hacen fila sobre la ruta (RES-160 y RES-174: caravana de micros, leyenda sin cifras ni agencias) y el cielo se pone gris; no digo qué cae después: el barro es de noches puntuales y «siempre llueve» no se afirma (RES-187). Cinco lugares: nunca fui ✓ (una fila de micros y un cielo gris los imagina cualquiera); sin plata ✓ (los micros son paisaje, ninguna opción paga ni compra); silla de ruedas ✓ (se hace sin parar ni caminar); vuelta de noche sin compañía ✓ (es la ida: nadie se mueve ni habla con nadie); no toma ni fuma ✓. Mide orden = anticipar la lluvia con lo que se lleva; caos = resolverla cuando llegue, dicho con modismo. Cierra con EJ-042 (la llovizna de la vereda), que puede salir en la misma noche sin contradecirse."
     },
     {
       "id": "EJ-039",
       "us": ["US-06"],
       "eje": "orden-caos",
       "momento": "ida",
-      "enunciado": "Vas a escuchar música en el camino.",
+      "enunciado": "Te pasan el parlante y la ruta sigue.",
       "opciones": [
         { "texto": "Elijo la música con calma", "polo": "orden" },
         { "texto": "Pongo una sin mirar", "polo": "caos" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Elijo antes qué escuchar» / «Pongo lo primero que sale»): «lo primero que sale» repetía el «te sale» de la bajada de CU-4, y «antes qué escuchar» llevaba un interrogativo que dejaba a orden con la forma subordinada. Ahora las dos son verbo y objeto, sin eco de ninguna bajada. Vuelta 4 (antes: «Elijo la música antes» / «Pongo una al azar»): «azar» es casi un sinónimo de caos y delataba el polo, y «antes» era la palabra de la anticipación (estaba también en EJ-032 y no en ninguna de caos). Ahora «Elijo la música con calma» y «Pongo una sin mirar», con una imagen física en caos. Cuatro lugares: nunca fui (elegir qué escuchar en el camino es de cualquier camino y ninguna opción nombra un tema ni un disco); sin plata (la música es la que ya hay); silla de ruedas (se hace sin cuerpo); vuelta de noche sin compañía (es la ida y no pide andar por ningún lado). Mide orden = elegir la música con tiempo de elegir; caos = poner una sin fijarse cuál."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Vas a escuchar música en el camino.» / «Elijo la música con calma» / «Pongo una sin mirar» (la vuelta 4 había sacado «azar» y «antes», que delataban el polo). Las opciones no se tocan. Ahora el parlante pasa de mano en mano por el viaje (RES-174 y RES-160: la caravana, leyenda). Es la escena de la ida que más se parece a una combi de verdad: la música es de quien tiene el parlante. Ninguna opción nombra un tema ni una banda: elegir con calma o poner una sin mirar se hace igual sin saber de nada. «Te pasan» pone a los otros del vehículo y nadie le habla a nadie. Cinco lugares: nunca fui ✓ (un parlante que pasa lo entiende cualquiera); sin plata ✓ (el parlante ya está: no se compra música); silla de ruedas ✓ (se hace sentado, con el dedo); vuelta de noche sin compañía ✓ (es la ida); no toma ni fuma ✓. Mide orden = elegir con tiempo de elegir; caos = poner una sin fijarse cuál."
     },
     {
       "id": "EJ-040",
       "us": ["US-06"],
       "eje": "orden-caos",
       "momento": "ida",
-      "enunciado": "Falta para llegar al recital.",
+      "enunciado": "La caravana avanza de a poco. Falta para llegar.",
       "opciones": [
         { "texto": "Lo parto en tramos", "polo": "orden" },
         { "texto": "Me dejo llevar", "polo": "caos" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «…cuánto falta para llegar.» / «Saco la cuenta»): «la cuenta» era «rehacer la cuenta» de CU-3 y la escena no tenía rastro de la noche (ahora nombra el recital). Vuelta 4 (antes: «Te preguntás cuánto falta para el recital.» / «Voy midiendo cada tramo» / «Llego cuando llego»): el enunciado le ponía la conducta de orden a quien juega (preocuparse por el tiempo) y la opción de caos la contradecía, el mismo defecto que la vuelta 3 arregló en 050, 052 y 056; «cada tramo» sonaba ansioso y «Llego cuando llego» tenía un dejo de «llego tarde», que CNT-30 §2 veta. Ahora el enunciado es neutro (no dice qué hace nadie) y las dos opciones son un hacer: partir el camino en tramos, o dejarse llevar. Sin «Voy …ndo» ni «cuando». Cuatro lugares: nunca fui (que falte para llegar es de cualquier camino); sin plata (no hay entrada ni se habla de entrar); silla de ruedas (es mental); vuelta de noche sin compañía (no pide ir ni andar a ningún lado). Mide orden = armarse el camino por partes; caos = no armárselo."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Falta para llegar al recital.» / «Lo parto en tramos» / «Me dejo llevar» (la vuelta 4 sacó «Voy midiendo cada tramo» y «Llego cuando llego»: ansioso y con dejo de «llego tarde»). Las opciones no se tocan. Ahora la ida es la caravana que avanza de a poco (RES-174: convoy y caravana; RES-189: leyenda, sin cifras de micros). El enunciado no le pone conducta a nadie: la anticipación la pone la opción. Cinco lugares: nunca fui ✓ (que falte para llegar es de cualquier camino); sin plata ✓ (no hay entrada ni se habla de entrar); silla de ruedas ✓ (es mental); vuelta de noche sin compañía ✓ (no pide ir ni andar a ningún lado); no toma ni fuma ✓. Mide orden = armarse lo que falta por partes; caos = no armárselo."
     },
     {
       "id": "EJ-041",
       "us": ["US-06"],
       "eje": "luz-oscuridad",
       "momento": "vereda",
-      "enunciado": "Se oye la prueba de sonido.",
+      "enunciado": "Del puesto de chori sube humo y se oye la prueba de sonido.",
       "opciones": [
         { "texto": "Comento cómo me suena", "polo": "luz" },
         { "texto": "Le busco el ritmo", "polo": "oscuridad" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Desde adentro llega un sonido lejano. ¿Dónde te ubicás?» / «Cerca de quienes charlan» / «Donde mejor se oye»): la luz ponía a quien está afuera, de noche y sin compañía, cerca de desconocidos (la opción más segura, no un temperamento) y la oscuridad era la mejor escucha, del lado del devoto. Además «llega un sonido» chocaba con «no arranca» de EJ-045. Ahora es una prueba de sonido, que no es el recital y no choca con ninguna de las tres de orden-caos de la vereda; la luz es contarlo a distancia y la oscuridad, buscarle el ritmo. Cuatro lugares: nunca fui (una prueba de sonido se imagina sin haber ido); sin plata (no cuesta); silla de ruedas (no pide cuerpo); vuelta de noche sin compañía (no hay desconocidos ni hay que moverse). Mide luz = el sonido se cuenta; oscuridad = el sonido se sigue por dentro. Vuelta 4 (antes: «Cuento cómo suena a alguien»): en castellano «sonar a X» es parecerse a X, y se leía «cuento cómo suena parecido a alguien». Ahora «Le cuento cómo me suena»: el «le» alcanza, el «me» fija que es lo que a uno le suena, y se cuenta en voz alta o por mensaje (no obliga al teléfono). Cierre de la vuelta 4, hilo principal (el subagente de contenido se cortó por cupo antes de terminar; lo revisa contenido cuando vuelva): «Le cuento cómo me suena» dejaba el «le» sin nadie a quien referirse, porque el enunciado no pone a ninguna persona. «Comento cómo me suena» no necesita el «le»: comentar ya es con alguien, de al lado o por mensaje. Se probó «Se lo cuento a alguien» y hacía de «alguien» la firma de luz (tres opciones contra ninguna)."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Se oye la prueba de sonido.» / «Comento cómo me suena» / «Le busco el ritmo» (la vuelta 3 la sacó de «Cerca de quienes charlan»: desconocidos de noche; la 4 y el hilo principal fijaron «Comento», sin «le» sin referente). Las opciones no se tocan. Ahora la vereda huele a chori: el humo del puesto (RES-173 y RES-178: chori y puestos, leyenda; RES-161: los puestos de la previa). Es la prueba de sonido desde afuera, la parte de la noche que oye el que no entró (RES-154). Cinco lugares: nunca fui ✓ (humo de un puesto y una prueba de sonido las imagina cualquiera); sin plata ✓ (el puesto es paisaje; ninguna opción pide comprar ni dice que pagaste, D-59 punto 4); silla de ruedas ✓ (no pide cuerpo); vuelta de noche sin compañía ✓ (nadie se mueve ni habla con un desconocido; se comenta en voz alta o por mensaje); no toma ni fuma ✓ (el chori es olor, no elección). Mide luz = el sonido se cuenta; oscuridad = el sonido se sigue por dentro. Luz sin teléfono obligado."
     },
     {
       "id": "EJ-042",
       "us": ["US-06"],
       "eje": "luz-oscuridad",
       "momento": "vereda",
-      "enunciado": "Cae una llovizna fina.",
+      "enunciado": "Cae una llovizna fina y una pareja se tapa con una campera.",
       "opciones": [
         { "texto": "Aviso a un amigo: llueve", "polo": "luz" },
         { "texto": "Miro llover contra el farol", "polo": "oscuridad" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Comparto un alero con otros» / «Espero bajo un alero»): el mismo objeto con luz menos «con otros» (oscuridad como ausencia de gente), y «otros» en una vereda de noche son desconocidos. Ahora son dos haceres distintos ante la misma llovizna, sin objeto compartido y sin nadie al lado: avisarle a alguien tuyo, o mirar la lluvia contra el farol. Cuatro lugares: nunca fui (la llovizna le cae a cualquiera); sin plata (nada se compra: un aviso y una mirada); silla de ruedas (no pide moverse); vuelta de noche sin compañía (ninguna opción es ir a ningún lado ni hablarle a nadie de ahí). Mide luz = lo que pasa se le cuenta a alguien tuyo; oscuridad = lo que pasa se mira con atención. Luz a distancia: supone teléfono; es el único «un amigo» en masculino."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Cae una llovizna fina.» / «Aviso a un amigo: llueve» / «Miro llover contra el farol» (la vuelta 3 la sacó de «un alero con otros»: el mismo objeto con luz menos gente, y otros de noche son desconocidos). Las opciones no se tocan. Ahora la llovizna trae al amor de la noche: una pareja que se tapa con una sola campera (RES-191: parejas que se conocieron en una misa o que fueron juntas, leyenda sin nombres; lo que sirve es la forma). Es de terceros y en el enunciado: ninguna opción nombra pareja propia (enmienda 7, D-59 punto 1). Cinco lugares: nunca fui ✓ (una llovizna y una pareja la ve cualquiera); sin plata ✓ (un aviso y una mirada); silla de ruedas ✓ (no pide moverse); vuelta de noche sin compañía ✓ (ninguna opción es ir a ningún lado ni hablarle a la pareja); no toma ni fuma ✓. Mide luz = lo que pasa se le cuenta a alguien tuyo; oscuridad = lo que pasa se mira con atención. Luz con teléfono (una de cuatro, la de la vereda); es el único «un amigo» en masculino."
     },
     {
       "id": "EJ-043",
       "us": ["US-06"],
       "eje": "luz-oscuridad",
       "momento": "vereda",
-      "enunciado": "Hay afiches de recitales en la pared.",
+      "enunciado": "Los que no entraron atan trapos en la reja, uno por barrio.",
       "opciones": [
         { "texto": "Los comento con los míos", "polo": "luz" },
         { "texto": "Elijo mi favorito", "polo": "oscuridad" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Hay afiches pegados en la pared.» / «Los comento con mi familia» / «Leo cada afiche»): «mi familia» daba por hecho que fuiste con tu familia y «cada afiche» sonaba exhaustivo, sabor de orden. Ahora la luz son «los míos» (sin decir quiénes) y la oscuridad es quedarse con uno, sin «cada». Es la única luz de la celda con compañía presente. Cuatro lugares: nunca fui (un afiche en una pared es de cualquier salida y no lleva ningún nombre); sin plata (mirar y comentar no cuestan); silla de ruedas (se hace sin parar ni caminar); vuelta de noche sin compañía (es la llegada, sin trayecto). Mide luz = lo que se ve se comenta con los de uno; oscuridad = lo que se ve se elige para uno."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Hay afiches de recitales en la pared.» / «Los comento con los míos» / «Elijo mi favorito» (la vuelta 3 sacó «mi familia» y «cada afiche»). Las opciones no se tocan: «los» pasa de afiches a trapos. Ahora la reja tiene trapos, uno por barrio, atados por los que no entraron (RES-154: la gente sin entrada; RES-156: las banderas se llaman trapos; RES-193: trapos con nombre de barrio, leyenda y sin nombres reales). Es la gente sin entrada hecha escena, sin lástima: ocupa la reja. Cinco lugares: nunca fui ✓ (el enunciado dice qué es un trapo: una bandera en la reja); sin plata ✓ (es la escena de los que no pagaron y las dos opciones las elige cualquiera); silla de ruedas ✓ (se hacen sin parar ni caminar); vuelta de noche sin compañía ✓ (es la llegada, sin trayecto); no toma ni fuma ✓. Mide luz = lo que se ve se comenta con los de uno; oscuridad = lo que se ve se elige para uno. Única luz de la celda con compañía presente."
     },
     {
       "id": "EJ-044",
       "us": ["US-06"],
       "eje": "orden-caos",
       "momento": "vereda",
-      "enunciado": "Hace frío y tenés la campera. Después puede dar calor.",
+      "enunciado": "Frío que pela en la vereda. Tenés la campera y después puede dar calor.",
       "opciones": [
         { "texto": "Me abrigo en capas", "polo": "orden" },
         { "texto": "Me la saco al rato", "polo": "caos" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Hay mucho para mirar en la vereda.» / «Empiezo por lo más cercano» / «Miro donde caiga la vista»): medía atención en orden contra atención dispersa, el constructo que el eje dejó de medir, y «caiga» era subjuntivo en caos. Ahora es la escena de anticipar o resolver: qué hacés con la campera si después hace calor. Cuatro lugares: nunca fui (el frío de una vereda y el calor de una multitud los imagina cualquiera); sin plata (la campera ya está puesta); silla de ruedas (no pide cuerpo capaz de algo); vuelta de noche sin compañía (es la llegada y nadie se mueve). Vuelta 4 (antes: «Busco dónde guardarla» / «La llevo puesta, nomás»): en un recital donde se guarda la campera es el guardarropa, que se paga, y en una vereda no hay dónde; y «La llevo puesta» era la imagen que el sitio eligió de emblema (la que canta la previa dice «Campera puesta» y el renglón del casete «Entrá con la campera puesta.»): la voz del sitio respaldaba un polo. Ahora ninguna opción guarda nada ni dice «puesta»: orden se abriga en capas, y caos se la saca cuando llegue el calor. «Después puede dar calor» queda: es el clima de una vereda, no una multitud. Mide orden = ya se abrigó pensando en el calor; caos = resuelve el calor cuando llegue. Las dos solas."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Hace frío y tenés la campera. Después puede dar calor.» / «Me abrigo en capas» / «Me la saco al rato» (la vuelta 4 sacó «Busco dónde guardarla»: el guardarropa se paga, y «La llevo puesta» era la imagen de emblema del sitio). Las opciones no se tocan. Ahora el frío es el de la vereda de una noche fría (RES-184: frío, agua nieve y barro de Mendoza 2013, leyenda; RES-177: calor o frío según la noche, sin grados). Cinco lugares: nunca fui ✓ (el frío de una vereda y el calor de una multitud los imagina cualquiera); sin plata ✓ (la campera ya está puesta; ninguna opción guarda ni compra); silla de ruedas ✓ (no pide cuerpo capaz de algo); vuelta de noche sin compañía ✓ (es la llegada y nadie se mueve); no toma ni fuma ✓. Mide orden = ya se abrigó pensando en el calor; caos = resuelve el calor cuando llegue. Las dos solas."
     },
     {
       "id": "EJ-045",
       "us": ["US-06"],
       "eje": "orden-caos",
       "momento": "vereda",
-      "enunciado": "Todavía no empieza el recital.",
+      "enunciado": "El barro ya se tragó una zapatilla y las puertas siguen cerradas.",
       "opciones": [
         { "texto": "Saco el mazo de cartas", "polo": "orden" },
         { "texto": "Armo un barquito de papel", "polo": "caos" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «El sonido de adentro no arranca.» / «Saco lo que traje» / «Invento algo con las manos»): «no arranca» chocaba con el «llega un sonido» de EJ-041, y «Invento algo con las manos» no se entendía qué era. Ahora el enunciado dice que todavía no empieza (compatible con una prueba de sonido) y la opción de caos es un hacer concreto con un papel. Cuatro lugares: nunca fui (que algo no empiece es la espera de cualquier lugar); sin plata (un papel cualquiera y lo que ya se traía); silla de ruedas (se hace sin parar ni caminar); vuelta de noche sin compañía (es la llegada y las dos son para uno). Vuelta 4 (antes en orden: «Ya traía algo para esto»): era uno de tres «Ya» en orden y ninguno en caos, repetía el «algo para» de EJ-046 y no tenía imagen mientras caos tenía un barquito. Ahora «Saco el mazo de cartas»: un objeto concreto que se trajo (el verbo de «Saco lo que traje», que la vuelta 3 sacó por la opción de caos y no por esta), sin «Ya» y sin «algo para». Mide orden = el rato ya traía su cosa; caos = el rato inventa la suya con lo que hay. Las dos solas, sin consumo."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Todavía no empieza el recital.» / «Saco el mazo de cartas» / «Armo un barquito de papel» (la vuelta 3 sacó «Invento algo con las manos», que no se entendía; la 4, «Ya traía algo para esto»). Las opciones no se tocan, y el barquito de papel gana un charco. Ahora es la escena del barro que se traga una zapatilla (RES-185: el charco antes de la entrada, de Gualeguaychú 2014, y la zapatilla que se queda adentro; leyenda). Sale de esa crónica y no de las vedadas: sin «cementerio», sin terminal, sin lluvia de crónica (RES-188, veto 2 de BR-36). Las puertas siguen cerradas lo mismo para el que tiene entrada que para el que no. Cinco lugares: nunca fui ✓ (un charco y una puerta cerrada los imagina cualquiera); sin plata ✓ (un mazo y un papel cualquiera; las puertas cerradas no dicen quién pagó); silla de ruedas ✓ (se hacen sin parar ni caminar); vuelta de noche sin compañía ✓ (es la llegada y las dos son para uno); no toma ni fuma ✓ (cartas y papel las elige cualquiera). Mide orden = el rato ya traía su cosa; caos = el rato inventa la suya con lo que hay."
     },
     {
       "id": "EJ-046",
       "us": ["US-06"],
       "eje": "orden-caos",
       "momento": "vereda",
-      "enunciado": "Dicen que el recital empieza más tarde.",
+      "enunciado": "Corre la voz en la fila: la misa empieza más tarde.",
       "opciones": [
         { "texto": "Lo tenía previsto", "polo": "orden" },
         { "texto": "Lo tomo como viene", "polo": "caos" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Dicen que empieza más tarde.» / «Ajusto mis tiempos» / «Me acomodo a lo nuevo»): las dos se adaptan y eran casi sinónimos, y «ajusto» es registro de oficina. El enunciado nombra el recital. Cuatro lugares: nunca fui (que algo empiece más tarde le pasa a cualquiera); sin plata (ninguna opción gasta ni habla de entrada); silla de ruedas (no pide cuerpo); vuelta de noche sin compañía (es la llegada y nadie se mueve). Vuelta 4 (antes en orden: «Encuentro algo para hacer»): era improvisar sobre la marcha, que es lo que CNT-30 define como caos, y «Lo tomo como viene» era aceptar: el ítem medía actividad contra paciencia, no plan contra sobre la marcha. Además repetía «algo para» de EJ-045. Ahora orden anticipó la demora («Lo tenía previsto») y caos no («Lo tomo como viene»): el mismo dilema, dos modismos de igual calor. No dice «rehacer» ni «mover»: apuntaría a los costos de CU-1 y CU-3. Mide orden = la demora ya estaba en la cuenta; caos = la demora se toma cuando llega."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Dicen que el recital empieza más tarde.» / «Lo tenía previsto» / «Lo tomo como viene» (la vuelta 4 había sacado «Encuentro algo para hacer»: improvisar era caos, y el ítem medía actividad contra paciencia). Las opciones no se tocan. Ahora el dato corre por la fila (RES-176: la fila de cuadras de la vereda, leyenda) y el recital es «la misa», un ritual de la escena y no una credencial: el enunciado dice «fila» y «empieza», con eso alcanza quien nunca oyó la palabra (D-59 punto 5; en una opción «la misa» seguiría vedada). Cinco lugares: nunca fui ✓ (que algo empiece más tarde le pasa a cualquiera y la fila lo explica); sin plata ✓ (ninguna opción gasta ni habla de entrada); silla de ruedas ✓ (no pide cuerpo); vuelta de noche sin compañía ✓ (es la llegada y nadie se mueve); no toma ni fuma ✓. Mide orden = la demora ya estaba en la cuenta; caos = la demora se toma cuando llega."
     },
     {
       "id": "EJ-047",
       "us": ["US-06"],
       "eje": "luz-oscuridad",
       "momento": "adentro",
-      "enunciado": "Suena una canción lenta. Alguien tuyo la sabe.",
+      "enunciado": "Suena una canción lenta. Alguien tuyo la canta con los ojos cerrados.",
       "opciones": [
         { "texto": "Escucho cómo la canta", "polo": "luz" },
         { "texto": "Muevo la cabeza despacio", "polo": "oscuridad" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Busco una mano conocida» / «Sigo la melodía»): la luz pedía a alguien al lado y la mano en una lenta suena a pareja o a consuelo; «Sigo la melodía» era oído fino. Ahora la persona la pone el enunciado (alguien tuyo que sabe la canción, de cerca o de lejos), la luz canta con la música y la oscuridad es un gesto del cuerpo, no una escucha fina. Vuelta 4 (antes: «Le canto lo que sé» / «Doy unas palmas»): «lo que sé» premiaba saberse la letra, cantarle una lenta a alguien tuyo se leía como serenata, las palmas en una lenta suenan fuera de lugar y son un gesto colectivo (sabor a luz), y con el otro puesto por el enunciado la oscuridad quedaba como ignorarlo. Ahora la luz es «La canto a dúo» (con esa persona, sin pedir la letra: se canta lo que se pueda) y la oscuridad un gesto propio que va con una lenta y no le da la espalda a nadie: mover la cabeza despacio. Cuatro lugares: nunca fui (una canción lenta se escucha igual desde cualquier lado y no se nombra ningún tema); sin plata (cantar y mover la cabeza no cuestan); silla de ruedas (se hacen sentado); vuelta de noche sin compañía (no hay trayecto y nadie es un desconocido). Mide luz = la canción se canta con alguien tuyo; oscuridad = la canción se acompaña con el cuerpo. Es la única luz de la celda que pide al otro al lado; las de 048 y 049 se hacen solo, con el resto de la sala o de la vereda. Cierre de la vuelta 4, hilo principal (ver EJ-041): «La canto a dúo» pedía saberse la letra, que es la credencial de BR-36 aunque el enunciado diga que la sabe el otro. «Escucho cómo la canta» no pide saber nada: la canción te llega por la otra persona (luz) o por el propio cuerpo (oscuridad). Supone al otro al lado, que la enmienda 7 de D-57 permite; es la única de la celda que lo pide. Sin género: «la canta» no dice si es él o ella."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Suena una canción lenta. Alguien tuyo la sabe.» / «Escucho cómo la canta» / «Muevo la cabeza despacio» (la vuelta 4 sacó «Le canto lo que sé», que premiaba saberse la letra, y «Doy unas palmas»; el hilo principal fijó «Escucho cómo la canta», que no pide saber nada ni le pone género). Las opciones no se tocan. Ahora alguien tuyo canta con los ojos cerrados: la ternura de la noche, sin decir quién es (pareja, amigo o quien sea: «alguien tuyo», RES-190 y RES-191 en forma, leyenda, sin nombres). El que cierra los ojos es el otro: ninguna opción pide cerrarlos (RES-157). Cinco lugares: nunca fui ✓ (una canción lenta se escucha igual desde cualquier lado; ningún tema se nombra); sin plata ✓ (escuchar y mover la cabeza no cuestan); silla de ruedas ✓ (se hacen sentado); vuelta de noche sin compañía ✓ (no hay trayecto y nadie es un desconocido); no toma ni fuma ✓. Mide luz = la canción se oye con alguien tuyo; oscuridad = la canción se acompaña con el cuerpo. Es la única luz de la celda que pide al otro al lado; las de 048 y 049 se hacen con el resto de la sala."
     },
     {
       "id": "EJ-048",
       "us": ["US-06"],
       "eje": "luz-oscuridad",
       "momento": "adentro",
-      "enunciado": "Cambian un instrumento entre tema y tema.",
+      "enunciado": "Entre tema y tema, un porro gira de mano en mano.",
       "opciones": [
         { "texto": "Aplaudo con el resto", "polo": "luz" },
         { "texto": "Marco el compás", "polo": "oscuridad" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Cuchicheo con los míos» / «Escucho el último eco»): «último eco» se leía como homenaje a cuatro meses del 5 de junio y era oído fino, y «los míos» ya estaba en dos luces del banco. Vuelta 4 (antes: «Se hace una pausa antes del próximo acorde.» / «Cuchicheo con mi hermana» / «Respiro hondo»): hablar en la pausa del show es la distracción del que no mira (enmienda 7 de D-57), «mi hermana» es un parentesco y pedía una hermana, y una pausa con «respiro hondo» a cuatro meses de la muerte se leía como minuto de silencio o llanto contenido: el tono que la vuelta 3 sacó con «último eco». Ahora la pausa no es un silencio sino un cambio de instrumento (hay ruido, hay algo que mirar), la luz es lo que se hace con el resto cuando termina un tema (aplaudir: nada de hablar ni de nombrar a alguien; silbar quedó afuera porque es una capacidad) y la oscuridad es un gesto propio del cuerpo, marcar el compás. Cuatro lugares: nunca fui (entre un tema y otro se aplaude en cualquier lado y no se nombra ninguno); sin plata (aplaudir y marcar el compás no cuestan); silla de ruedas (se hacen sentado); vuelta de noche sin compañía (no hay trayecto). Mide luz = el aplauso se hace con el resto; oscuridad = el ritmo se marca para uno. Luz sin teléfono y sin nadie nombrado. Aplaudir es hacia el escenario, junto con otros que ya están: no es hablarle a nadie de al lado (veto 6)."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Cambian un instrumento entre tema y tema.» / «Aplaudo con el resto» / «Marco el compás» (la vuelta 4 había sacado «Cuchicheo con mi hermana» —la distracción del que no mira— y «Respiro hondo», que se leía como minuto de silencio). Las opciones no se tocan. Ahora entre un tema y otro el porro da la vuelta (RES-179: la marihuana es lo único del consumo que nombra la crónica de color, según el buscador; leyenda sin abrir). Es paisaje: ninguna opción lo toca, ni lo pasa, ni lo nombra. Aplaudir y marcar el compás las hace igual quien fuma y quien no (la guarda de consumo de banco.test.ts da trivialmente). Cinco lugares: nunca fui ✓ (entre un tema y otro se aplaude en cualquier lado); sin plata ✓ (aplaudir y marcar el compás no cuestan); silla de ruedas ✓ (se hacen sentado); vuelta de noche sin compañía ✓ (no hay trayecto); no toma ni fuma ✓ (es el ítem que más lo pone a prueba: el porro gira y las dos opciones miran a otro lado). Mide luz = el aplauso se hace con el resto; oscuridad = el ritmo se marca para uno. Luz sin teléfono y sin nadie nombrado; aplaudir es hacia el escenario, junto con otros que ya están: no es hablarle a nadie (veto 6)."
     },
     {
       "id": "EJ-049",
       "us": ["US-06"],
       "eje": "luz-oscuridad",
       "momento": "adentro",
-      "enunciado": "Entran todos los instrumentos de golpe. ¿Qué te sale?",
+      "enunciado": "Entre humo, merca y barro, entran los instrumentos de golpe. ¿Qué te sale?",
       "opciones": [
         { "texto": "Grito con el resto", "polo": "luz" },
         { "texto": "Me retumba en la panza", "polo": "oscuridad" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Sonrío a un amigo» / «Lo siento en la panza»): la luz pedía a alguien al lado, «un amigo» era masculino cuando el sitio eligió no ponerle género a nadie, y «Lo siento» se lee un momento como «perdón». La oscuridad es el cuerpo, con «Me retumba». «¿Qué te sale?» ya no repite nada de CU-4. Vuelta 4 (antes: «El volumen sube de golpe.» / «Grabo esto para un compa»): en un recital el que filma con el teléfono es el arquetipo del que no está ahí y el que lo siente en el cuerpo es «el de verdad»: la luz era la distracción del espectador (enmienda 7 de D-57), pedía una acción pensada a un enunciado que pide un reflejo, y «compa» trae el registro militante de voz-ricotera §3.6. Ahora la luz es un reflejo con el cuerpo y con la voz, un grito con el resto, y el enunciado no dice «volumen» (EJ-052 habla del volumen en el mismo momento): entran los instrumentos de golpe. Cuatro lugares: nunca fui (que algo entre de golpe se siente en una fiesta o junto a un parlante en la calle); sin plata (gritar y sentir no cuestan); silla de ruedas (se hacen sin moverse); vuelta de noche sin compañía (no hay trayecto ni desconocidos). Mide luz = lo que pasa se grita con el resto; oscuridad = lo que pasa se siente adentro. Luz sin teléfono, que se puede hacer sin nadie al lado: gritar con el resto no es hablarle a nadie."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Entran todos los instrumentos de golpe. ¿Qué te sale?» / «Grito con el resto» / «Me retumba en la panza» (la vuelta 4 había sacado «Grabo esto para un compa»: el que filma es la distracción del espectador, enmienda 7). Las opciones no se tocan. Ahora es el reviente: entre humo, merca y barro. Es la ÚNICA mención de la cocaína en todo el banco, y D-59 punto 3 es lo que la autoriza: paisaje, nunca elección. Va en una lista de tres cosas del aire, seca, sin adjetivo, sin glamour y sin sermón (no dice quién la usa ni qué pasa después). Rótulo: leyenda (RES-179 y RES-181: la cocaína no aparece en ninguna crónica de color; está en la policial y en lecturas de fans; sin escena fichable). No afirma nada de ningún recital real: es el aire de la escena del test. Ninguna opción la toca; las dos se hacen igual quien la ve de lejos y quien no. Cinco lugares: nunca fui ✓ (que algo entre de golpe se siente en una fiesta o junto a un parlante); sin plata ✓ (gritar y sentir no cuestan); silla de ruedas ✓ (se hacen sin moverse); vuelta de noche sin compañía ✓ (no hay trayecto ni desconocidos); no toma ni fuma ✓ (ninguna opción nombra consumo). Mide luz = lo que pasa se grita con el resto; oscuridad = lo que pasa se siente adentro. Luz sin teléfono: gritar con el resto no es hablarle a nadie."
     },
     {
       "id": "EJ-050",
       "us": ["US-06"],
       "eje": "orden-caos",
       "momento": "adentro",
-      "enunciado": "Te van a preguntar cómo estuvo el recital.",
+      "enunciado": "Mañana te preguntan cómo estuvo: el coro, el sudor, los abrazos.",
       "opciones": [
         { "texto": "Elijo qué voy a contar", "polo": "orden" },
         { "texto": "Lo cuento de una", "polo": "caos" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Ya pensás cómo contar esta noche.» / «Lo cuento como salga»): el enunciado afirmaba la conducta de orden y la opción de caos la contradecía, y «como salga» era subjuntivo con la raíz sal-. Ahora el enunciado no le pone conducta a nadie (solo dice que van a preguntar) y la anticipación la pone la opción. «De una» es el modismo de caos, sin subordinada. Cuatro lugares: nunca fui (contar cómo estuvo algo vale para cualquier salida); sin plata (contar no cuesta); silla de ruedas (es mental); vuelta de noche sin compañía (no hay trayecto). Vuelta 4 (antes en orden: «Voy armando el relato»): en la Argentina de 2026 «armar el relato» tiene carga política (fabricar una versión), y armar el cuento mientras suena es estar en otra cosa. Ahora «Elijo qué voy a contar»: anticipa el contar sin «relato» y sin gerundio (junto con 040, orden ya no arranca con «Voy» más gerundio). Mide orden = decidir qué contar antes de que pregunten; caos = contarlo al momento. Las dos solas, sin decir a quién."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Te van a preguntar cómo estuvo el recital.» / «Elijo qué voy a contar» / «Lo cuento de una» (la vuelta 4 sacó «Voy armando el relato»: armar el relato tiene carga política en 2026, y armarlo mientras suena es estar en otra cosa). Las opciones no se tocan: el enunciado no le pone conducta a nadie y la anticipación la pone la opción. Ahora lo que se cuenta es una lista de la noche, de lo más sucio a lo más tierno: el coro de todos, el sudor (RES-187: tierra y sudor de otra noche, leyenda), los abrazos. Cinco lugares: nunca fui ✓ (contar cómo estuvo algo vale para cualquier salida; el enunciado trae la lista); sin plata ✓ (contar no cuesta); silla de ruedas ✓ (es mental); vuelta de noche sin compañía ✓ (no hay trayecto); no toma ni fuma ✓. Mide orden = decidir qué contar antes de que pregunten; caos = contarlo al momento. Las dos solas, sin decir a quién."
     },
     {
       "id": "EJ-051",
       "us": ["US-06"],
       "eje": "orden-caos",
       "momento": "adentro",
-      "enunciado": "Una canción se te queda en la cabeza.",
+      "enunciado": "En los hombros de su viejo, una nena canta. La canción se te pega.",
       "opciones": [
         { "texto": "Me la grabo cantándola", "polo": "orden" },
         { "texto": "La dejo dar vueltas", "polo": "caos" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «La escucho en casa, entera» / «La tarareo hasta que pase»): la de orden suponía poder identificar la canción y tener con qué escucharla (pedía saber), y «hasta que pase» trataba la canción como un malestar. Ahora las dos son una ganancia y ninguna pide el título: orden la guarda cantándola, caos la deja dar vueltas. Cuatro lugares: nunca fui (una canción pegada es de cualquiera y no tiene título); sin plata (grabarse cantando y dejarla dar vueltas no cuestan); silla de ruedas (es mental); vuelta de noche sin compañía (no hay trayecto). Mide orden = darle a la canción un lugar propio antes de que se vaya; caos = dejarla ir como venga. Las dos solas."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Una canción se te queda en la cabeza.» / «Me la grabo cantándola» / «La dejo dar vueltas» (la vuelta 3 sacó «La escucho en casa, entera», que pedía el título, y «hasta que pase», que trataba la canción como un malestar). Las opciones no se tocan: las dos son una ganancia y ninguna pide saber cuál es. Ahora la escena es la transmisión de padre a hija (RES-190: padres e hijos que se pasan la música, leyenda sin apellido ni fecha; el 5 de junio no entra, BR-36 veto 2): una nena canta en los hombros de su viejo. «Su viejo» es un parentesco de terceros en el enunciado, no uno propio en una opción (D-59 punto 1, enmienda 7). Es la canción que se te pega, la de una nena: tierna y sin homenaje. Cinco lugares: nunca fui ✓ (una nena cantando en hombros se ve en una cancha, en un casamiento o en una fiesta); sin plata ✓ (grabarse y dejarla dar vueltas no cuestan); silla de ruedas ✓ (es mental); vuelta de noche sin compañía ✓ (no hay trayecto); no toma ni fuma ✓. Mide orden = darle a la canción un lugar propio antes de que se vaya; caos = dejarla ir como venga."
     },
     {
       "id": "EJ-052",
       "us": ["US-06"],
       "eje": "orden-caos",
       "momento": "adentro",
-      "enunciado": "El volumen cansa los oídos.",
+      "enunciado": "Adelante hay pogo y los parlantes cansan los oídos.",
       "opciones": [
         { "texto": "Traje algodón por las dudas", "polo": "orden" },
         { "texto": "Me tapo con los dedos", "polo": "caos" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Todavía falta, pero ya pensás en lo que sigue.» / «Defino el después» / «Dejo que llegue el después»): el enunciado afirmaba la conducta de orden, las dos opciones compartían «el después» (la misma frase con otra punta) y «Defino» era oficina. Vuelta 4 (antes: «Todavía falta para que termine. ¿Y ahora?» / «Ya sé cómo sigue» / «Lo dejo correr»): «Ya sé cómo sigue» se leía como saber la lista de temas, la credencial del que conoce el show (BR-17 la prohíbe y BR-36 la pide «más de adentro»), el enunciado sonaba a aburrimiento y ponía el final de la noche en primer plano a cuatro meses del 5 de junio. Se cambió la escena por algo de quien juega y no del show: qué hace con sus oídos. El enunciado afirma un hecho sin conducta (el volumen cansa) y las dos opciones no comparten ninguna palabra: orden se pone algodón (objeto físico, de la casa), caos lo deja así y dice que le gusta. No habla del final, de la memoria ni de un punto de encuentro; no usa «sigue» ni «Ya». No usa la idea de acordarse de la noche porque es el dilema de EJ-051 (guardar o dejar). Cuatro lugares: nunca fui (el volumen alto lo imagina cualquiera y no se nombra ningún tema); sin plata (el algodón no se compra para esto); silla de ruedas (es mental y se hace sentado); vuelta de noche sin compañía (no habla de volver ni de trayecto). Es el oído, no la seguridad de la persona: ninguna de las dos opciones es imprudente. Mide orden = prever el cansancio del oído; caos = resolverlo diciendo que así le gusta. Las dos solas. Cierre de la vuelta 4, hilo principal (ver EJ-041): «Así me gusta» no era resolver sobre la marcha sino una preferencia, y se leía como la del que es de adentro (aguanta el volumen); «Me pongo algodón» no decía que se hubiera previsto. Ahora las dos cuidan el oído: una lo previó (orden), la otra lo resuelve con lo que tiene (caos). Ninguna es imprudente y las dos se dicen con el mismo orgullo. El algodón es de la casa: no se compra."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «El volumen cansa los oídos.» / «Traje algodón por las dudas» / «Me tapo con los dedos» (la vuelta 4 había sacado «Ya sé cómo sigue»: la lista de temas, una credencial; el hilo principal fijó las dos opciones del oído, ninguna imprudente). Las opciones no se tocan. Ahora hay pogo adelante: suena y nadie elige meterse (RES-158: «el pogo más grande del mundo», hecho; D-59 punto 6: el pogo es paisaje, el cuerpo capaz no es una opción). Las dos opciones son del oído, no del pogo. Cinco lugares: nunca fui ✓ (el volumen alto lo imagina cualquiera; «pogo» lo explica el contexto y ninguna opción lo nombra); sin plata ✓ (el algodón es de la casa y los dedos son propios); silla de ruedas ✓ (es mental y se hace sentado); vuelta de noche sin compañía ✓ (no habla de volver); no toma ni fuma ✓. Mide orden = prever el cansancio del oído; caos = resolverlo con lo que se tiene. Las dos cuidan el oído y se dicen con el mismo orgullo."
     },
     {
       "id": "EJ-053",
       "us": ["US-06"],
       "eje": "luz-oscuridad",
       "momento": "vuelta",
-      "enunciado": "Ya en casa, todavía te dura la noche.",
+      "enunciado": "La campera huele a humo y todavía te dura la noche.",
       "opciones": [
         { "texto": "Se lo cuento a alguien", "polo": "luz" },
         { "texto": "Me quedo con la noche", "polo": "oscuridad" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Ya en casa, todavía tenés el ruido en el cuerpo.» / «Busco a los de casa» / «Me lavo la cara»): «Busco a los de casa» suponía que vivís con alguien, y «Me lavo la cara» era una rutina que se lee como despabilarse o bajar, no una elección dicha con orgullo. Vuelta 4 (antes: «Ya en casa, todavía tenés el zumbido.» / «Le cuento a mi prima» / «Me quedo con el zumbido»): «tenés el zumbido» da por hecho que quien juega estuvo adentro, cerca de los parlantes, lo mismo que la enmienda 6 de D-57 corrigió en el sello («Cuando suena» en vez de «Adentro», RES-154): el que se quedó en la vereda no tiene zumbido y «Me quedo con el zumbido» era un certificado de haber estado cerca; «mi prima» es un parentesco (enmienda 7). Ahora lo que tiene cualquiera que pasó la noche, adentro o afuera: que la noche todavía dura. La luz es contarle a quien se quiere (sin parentesco ni rol), y la oscuridad quedarse con la noche. Cuatro lugares: nunca fui (a cualquiera le dura una noche de música, de cerca o de lejos); sin plata (contar y quedarse no cuestan); silla de ruedas (nada pide caminar ni parar); vuelta de noche sin compañía (la escena empieza ya en casa, sin trayecto). Mide luz = lo vivido se cuenta; oscuridad = lo vivido se queda un rato con uno. Luz en voz alta o por mensaje: no obliga al teléfono ni a nadie en casa. REV-19 (FIND-114), hilo principal: «Le cuento a quien quiero» repetía la fórmula de EJ-036 («La mando a quien quiero»), las dos en luz: con dos noches, la frase se aprende como la de luz. «Se lo cuento a alguien» dice lo mismo sin la fórmula. contenido lo revisa cuando vuelva."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Ya en casa, todavía te dura la noche.» / «Se lo cuento a alguien» / «Me quedo con la noche» (la vuelta 4 había sacado «tenés el zumbido»: da por hecho que se estuvo cerca de los parlantes; el hilo principal fijó «Se lo cuento a alguien» para no repetir la fórmula de EJ-036). Las opciones no se tocan. Ahora la campera huele a humo: el humo es el del chori, el del porro, el de lo que sea, sin decir cuál (RES-176: la mugre y el olor de la noche, leyenda). Es lo que tiene cualquiera que pasó la noche, adentro o en la vereda. Cinco lugares: nunca fui ✓ (a cualquiera le dura una noche de música y una campera que huele a humo); sin plata ✓ (contar y quedarse no cuestan); silla de ruedas ✓ (nada pide caminar ni parar); vuelta de noche sin compañía ✓ (la escena empieza en casa, sin trayecto); no toma ni fuma ✓ (el humo se le pega al que no fuma también: es el aire, no una elección). Mide luz = lo vivido se cuenta; oscuridad = lo vivido se queda un rato con uno. Luz en voz alta o por mensaje: no obliga al teléfono ni a nadie en casa."
     },
     {
       "id": "EJ-054",
       "us": ["US-06"],
       "eje": "luz-oscuridad",
       "momento": "vuelta",
-      "enunciado": "Llegás y la casa está en silencio.",
+      "enunciado": "Llegás de madrugada con los pies helados. La casa está en silencio.",
       "opciones": [
         { "texto": "Aviso que llegué", "polo": "luz" },
         { "texto": "Preparo un té", "polo": "oscuridad" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «La casa está en silencio.» / «Pongo una charla de fondo» / «Dibujo en un papel»): «una charla de fondo» es estar solo con una grabación (no es con la gente y no es polo puro), y evocaba «Radio bajita, misma hora». Vuelta 4 (antes: «Se te quedó un tema en la boca.» / «Se lo canto a alguien» / «Lo canto en la ducha»): mismo verbo y mismo objeto con la persona de menos (el defecto que la vuelta 3 arregló en EJ-042), cantárselo a alguien en casa y de noche pide a alguien en casa, y el enunciado era casi el de EJ-051 (una canción pegada) con otro verbo: pueden salir en la misma noche. Se cambió la escena por la llegada, sin música: la casa en silencio, que no es la «charla de fondo» que la vuelta 3 sacó (no hay grabación ni sonido). Dos haceres distintos: dejarle una nota a alguien (no pide que esté en casa, ni teléfono, ni parentesco), o prepararse un té. Cuatro lugares: nunca fui (llegar a una casa en silencio es de cualquier noche); sin plata (una hoja y agua caliente; nada se compra); silla de ruedas (se hacen sin moverse mucho de un lugar); vuelta de noche sin compañía (es en casa y la luz no supone a nadie presente). Mide luz = lo que se tiene para decir se le deja a alguien; oscuridad = la llegada se hace un gesto propio, con un objeto de la casa. «Alguien» sin tuyo: la nota la lee quien sea de uno; el verbo lo dice. REV-19 (FIND-113), hilo principal: «Dejo una nota para alguien» en una casa en silencio, de noche, se podía leer como la nota de una despedida —«dejó una nota» es la fórmula de esa noticia—, y a cuatro meses del 5 de junio es lo que BR-36 veto 2 saca por lo que evoca (D-57 punto 9). «Aviso que llegué» es el gesto de cuidado de todas las noches («avisame cuando llegues»): luz sin parentesco, de cerca o por mensaje. contenido lo revisa cuando vuelva."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Llegás y la casa está en silencio.» / «Aviso que llegué» / «Preparo un té» (la vuelta 4 había sacado «Dejo una nota para alguien»: se lee como la fórmula de una despedida, BR-36 veto 2; «Aviso que llegué» es el gesto de todas las noches). Las opciones no se tocan. Ahora es la madrugada y los pies helados (RES-184: frío y agua nieve, leyenda; D-59: la madrugada de la vuelta). «Pegar la vuelta» no entra acá: el enunciado empieza ya en casa, sin trayecto. Cinco lugares: nunca fui ✓ (llegar a una casa en silencio es de cualquier noche); sin plata ✓ (un aviso y agua caliente); silla de ruedas ✓ (se hacen sin moverse mucho de un lugar); vuelta de noche sin compañía ✓ (es en casa y la luz no supone a nadie presente: se avisa por mensaje o en voz alta); no toma ni fuma ✓. Mide luz = lo que se tiene para decir se avisa a alguien; oscuridad = la llegada se hace un gesto propio, con un objeto de la casa."
     },
     {
       "id": "EJ-055",
       "us": ["US-06"],
       "eje": "luz-oscuridad",
       "momento": "vuelta",
-      "enunciado": "Es tarde y no te da sueño.",
+      "enunciado": "Tenés el cuerpo hecho pelota y no te da sueño.",
       "opciones": [
         { "texto": "Escribo en el grupo", "polo": "luz" },
         { "texto": "Dibujo en un papel", "polo": "oscuridad" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Desde la calle llegan voces.» / «Las escucho un rato» / «Hojeo una revista vieja»): oír voces de la calle desde adentro es oír pasivamente a desconocidos (no es polo puro de luz) y de noche inquieta, y la revista era el guiño al test de revista. Vuelta 4 (antes: «Te llega una foto por mensaje.» / «Le contesto con una mía» / «La miro de a poco»): «La miro de a poco» ante una foto que te mandaron es dejar en visto, así que la oscuridad quedaba como ignorar a quien te escribió; «una mía» dice «lo propio» del lado de luz (la palabra con la que el resultado traduce oscuridad); y era el mismo dilema que EJ-029 (te mandan algo, devolvés o consumís): queda solo en 029. Se cambió la escena por la madrugada en casa, sin música: es tarde y no te da el sueño, que le pasa a cualquiera que salió. La luz es escribir en el grupo (a distancia, sin nombrar a nadie, sin parentesco y sin llamar a nadie a esa hora), la oscuridad es dibujar en un papel (un hacer con un objeto de la casa, sin dejar a nadie colgado porque nadie escribió). Cuatro lugares: nunca fui (no te da sueño después de cualquier noche); sin plata (escribir y dibujar no cuestan); silla de ruedas (no pide cuerpo); vuelta de noche sin compañía (es en casa, sin trayecto, y nadie es un desconocido). Mide luz = lo que se tiene a la madrugada se comparte; oscuridad = se hace algo propio con ello. Luz a distancia: supone teléfono (la de la vuelta: es la que garantiza una luz posible a quien volvió sin compañía)."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Es tarde y no te da sueño.» / «Escribo en el grupo» / «Dibujo en un papel» (la vuelta 4 la sacó de «Te llega una foto por mensaje»: era el mismo dilema que EJ-029, y «La miro de a poco» dejaba en visto). Las opciones no se tocan. Ahora el cuerpo hecho pelota es el reviente por el lado de lo que queda en el cuerpo y no por el lado de lo que se toma: cansancio y madrugada (D-59 punto 1). No es una condición que alguien elija ni una capacidad que alguien no tenga. Cinco lugares: nunca fui ✓ (no te da sueño después de cualquier noche); sin plata ✓ (escribir y dibujar no cuestan); silla de ruedas ✓ (no pide cuerpo capaz de nada: el cuerpo hecho pelota lo tiene cualquiera); vuelta de noche sin compañía ✓ (es en casa, sin trayecto, y nadie es un desconocido); no toma ni fuma ✓ (el cansancio es de quien bailó, cantó o esperó; no habla de nada que se tome). Mide luz = lo que se tiene a la madrugada se comparte; oscuridad = se hace algo propio con ello. Luz a distancia: supone teléfono (la luz posible de la vuelta para quien volvió sin compañía; una de cuatro)."
     },
     {
       "id": "EJ-056",
       "us": ["US-06"],
       "eje": "orden-caos",
       "momento": "vuelta",
-      "enunciado": "Se acerca la hora de dormir.",
+      "enunciado": "Tenés la boca seca y se acerca la hora de dormir.",
       "opciones": [
         { "texto": "Dejo un vaso de agua", "polo": "orden" },
         { "texto": "Me levanto si hace falta", "polo": "caos" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Antes de dormir, pensás en mañana.» / «Dejo que el cuerpo avise»): el enunciado afirmaba la conducta de orden y «que el cuerpo avise» era subjuntivo. Vuelta 4 (antes: «Mañana es otro día. ¿Cómo arrancás?» / «Pongo la alarma» / «Duermo sin despertador»): no medía temperamento sino si mañana tenés que trabajar o estudiar (quien tiene un empleo a las 7 no elige, y «sin despertador» se lee como privilegio: circunstancia, la misma familia que «sin plata»), era la misma frase con otra punta (alarma sí o no, el defecto que se arregló en EJ-042) y «Mañana es otro día» es una frase hecha de consuelo, un tono flojo a cuatro meses del 5 de junio. Se cambió la escena por una decisión de la noche que no depende de ninguna obligación: antes de dormir, qué hacés con la sed. Sin alarma, sin «mañana» y sin despedida. Las dos son un hacer físico y barato con el mismo objeto, el agua: orden la deja lista, caos se levanta si hace falta. Cuatro lugares: nunca fui (dormirse es de cualquiera); sin plata (un vaso y agua de la canilla); silla de ruedas (se hace sentado, y «me levanto» es una manera de decir); vuelta de noche sin compañía (es en casa, sin trayecto). Mide orden = prever la necesidad; caos = resolverla cuando aparezca. Las dos solas."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Se acerca la hora de dormir.» / «Dejo un vaso de agua» / «Me levanto si hace falta» (la vuelta 4 la sacó de «Mañana es otro día»: dependía de si mañana tenés que trabajar). Las opciones no se tocan: las dos son un hacer físico y barato con el mismo objeto, el agua. Ahora la boca seca: el cuerpo después de una noche de gritar, de humo y de tierra, sin decir de qué (D-59 punto 1; RES-187: tierra y sudor). No nombra nada que se tome o se fume. Cinco lugares: nunca fui ✓ (la boca seca la tiene cualquiera que salió); sin plata ✓ (un vaso y agua de la canilla); silla de ruedas ✓ (se hace sentado, y «me levanto» es una manera de decir); vuelta de noche sin compañía ✓ (es en casa, sin trayecto); no toma ni fuma ✓ (la sed la tiene quien tomó y quien no; el agua es de los dos). Mide orden = prever la necesidad; caos = resolverla cuando aparezca. Las dos solas."
     },
     {
       "id": "EJ-057",
       "us": ["US-06"],
       "eje": "orden-caos",
       "momento": "vuelta",
-      "enunciado": "Te proponen juntarse a escuchar música otro día.",
+      "enunciado": "Te proponen otra noche de guitarra en la plaza.",
       "opciones": [
         { "texto": "Propongo un día", "polo": "orden" },
         { "texto": "Acepto, con el día abierto", "polo": "caos" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «Te proponen repetir una noche así.» / «Cerramos la fecha ahora»): repetir una noche así es otra salida que se paga, y quien no tiene plata no podía contestar ninguna en serio; además «Cerramos» es primera del plural y su gemela era singular. Ahora la propuesta es juntarse a escuchar música (no cuesta nada) y las dos opciones van en primera del singular. Cuatro lugares: nunca fui (juntarse a escuchar música se le propone a cualquiera); sin plata (ninguna nombra entrada, precio ni salida paga: solo cuándo); silla de ruedas (se acepta con la voz); vuelta de noche sin compañía (se habla de un día, no de un trayecto). Vuelta 4 (antes en caos: «Acepto, el día que pinte»): en rioplatense «el día que pinte» es la manera amable de decir que no, exactamente lo que CNT-30 §7 descartó con «Ya veremos cuándo», y dejaba a caos como el que esquiva y como un no a la persona, que cruzaba a oscuridad. Ahora caos dice que sí de verdad y deja el cuándo abierto sin la fórmula del no: «Acepto, con el día abierto» (sin «cuando», sin «que pinte» y sin subjuntivo). Mide orden = poner el día uno mismo; caos = aceptar y dejar el día abierto. Las dos le dicen que sí a la misma persona."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Te proponen juntarse a escuchar música otro día.» / «Propongo un día» / «Acepto, con el día abierto» (la vuelta 3 la sacó de «repetir una noche así», otra salida que se paga; la 4 sacó «el día que pinte», que en rioplatense es la manera amable de decir que no). Las opciones no se tocan: las dos le dicen que sí a la misma persona. Ahora lo que se propone es la guitarra en la plaza, la previa de nuevo (RES-172: guitarra criolla, mate y fogón; leyenda) y no otro recital: no cuesta nada, así que sigue sin hablarle de plata a nadie. Cierra el círculo con EJ-030. Cinco lugares: nunca fui ✓ (juntarse una noche a tocar y cantar en una plaza se le propone a cualquiera); sin plata ✓ (ninguna opción nombra entrada, precio ni salida paga: solo cuándo); silla de ruedas ✓ (se acepta con la voz); vuelta de noche sin compañía ✓ (se habla de un día, no de un trayecto; la propuesta llega a casa); no toma ni fuma ✓ (una guitarra y una plaza no son lo que se toma). Mide orden = poner el día uno mismo; caos = aceptar y dejar el día abierto."
     },
     {
       "id": "EJ-058",
       "us": ["US-06"],
       "eje": "orden-caos",
       "momento": "vuelta",
-      "enunciado": "Quedó el parlante prendido en casa.",
+      "enunciado": "Pegaste la vuelta: el parlante quedó prendido en casa.",
       "opciones": [
         { "texto": "Lo conecto al cargador", "polo": "orden" },
         { "texto": "Lo apago nomás", "polo": "caos" }
       ],
       "estado": "listo",
-      "notaInterna": "Nuevo (D-57, CNT-30). Vuelta 3 (antes: «El teléfono quedó sin batería.» / «Lo pongo a cargar ya» / «Lo cargo cuando haga falta»): sin decir que estás en casa, leído desde «volviendo de noche sin compañía» cargarlo cuando haga falta es una imprudencia (seguridad disfrazada de temperamento), y con el teléfono muerto ya hace falta cargarlo: caos confesaba un descuido. Ahora la escena está anclada en casa, tiene un objeto de la noche (el parlante) y las dos opciones son una ganancia. Vuelta 4 (antes: «Lo apago y lo guardo» / «Me duermo con música»): «Me duermo con música» es la imagen de «Radio bajita, misma hora» (CU-3, oscuridad + orden), o sea una opción de caos que apunta a un cuadrante del polo contrario, y dormirse con música es una costumbre, sabor a orden; «Lo apago y lo guardo» medía prolijidad (ordenar la casa) y no anticipar. Ahora, sin música de fondo ni dormir con sonido: orden anticipa el próximo uso (lo conecta al cargador) y caos lo apaga nomás, sin más ceremonia. Cuatro lugares: nunca fui (un parlante prendido es de cualquier casa); sin plata (el cargador ya está y apagar no cuesta); silla de ruedas (no pide cuerpo capaz de algo); vuelta de noche sin compañía (es en casa y no habla de ningún trayecto). Mide orden = dejar listo el próximo uso; caos = resolver lo que está con un gesto. Las dos solas."
+      "notaInterna": "Nuevo (D-57, CNT-30); vuelta 5 (D-59, CNT-31). Antes: «Quedó el parlante prendido en casa.» / «Lo conecto al cargador» / «Lo apago nomás» (la vuelta 3 la anclaba en casa para que caos no confesara una imprudencia; la 4 sacó «Me duermo con música», que apuntaba a una bajada). Las opciones no se tocan. Ahora el enunciado abre con «Pegaste la vuelta», la expresión de la gente de la noche (RES-174: pegar la vuelta a casa, leyenda), en pasado y con el parlante ya en casa: no hay trayecto, solo la llegada. Cinco lugares: nunca fui ✓ (un parlante prendido es de cualquier casa); sin plata ✓ (el cargador ya está y apagar no cuesta); silla de ruedas ✓ (no pide cuerpo capaz de algo); vuelta de noche sin compañía ✓ (es en casa; «pegaste la vuelta» ya pasó); no toma ni fuma ✓. Mide orden = dejar listo el próximo uso; caos = resolver lo que está con un gesto. Las dos solas. Se lee junto a EJ-054 (casa en silencio): un parlante prendido sin sonido, con la luz fija, no la contradice."
     }
   ]
 }
