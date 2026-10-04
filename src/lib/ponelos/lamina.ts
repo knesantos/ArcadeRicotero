@@ -243,5 +243,5 @@ export function nombreArchivoLamina(conjunto: string): string {
     .replace(/[^A-Za-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
     .toLowerCase();
-  return `arcade-ricotero-ponelos-en-fila-${limpio || 'lista'}.png`;
+  return `fichin-ricotero-ponelos-en-fila-${limpio || 'lista'}.png`;
 }

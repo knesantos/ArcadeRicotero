@@ -6,7 +6,8 @@
 ## 1. Qué es
 
 Un sitio de juegos sobre Patricio Rey y sus Redonditos de Ricota, con contenido
-investigado en serio, para jugar desde el celular en ratos sueltos.
+investigado en serio, para jugar desde el celular en ratos sueltos. Se llama **Fichín
+Ricotero** (`D-60`); el repo, el proyecto de Vercel y los nombres internos conservan *arcade*.
 
 **Para:** fans con conocimiento muy variable, desde el que escuchó "Ji Ji Ji" en una
 previa hasta el que sabe qué se tocó en Huracán en el 93. Dificultad escalonada, nunca un

@@ -6,7 +6,7 @@
  * **Un solo elemento con dos formas, y ninguna es un agregado del escritorio.**
  *
  * - En el teléfono es una calcomanía en la esquina de la cabecera, en el lugar que estaba
- *   vacío a la derecha de "← AL ARCADE": la pieza de tapa y el número de pista. Se va cuando
+ *   vacío a la derecha de "← AL FICHÍN": la pieza de tapa y el número de pista. Se va cuando
  *   arranca la partida, igual que la cabecera (`UX-01`: en plena partida no hay nada que
  *   distraiga).
  * - En la computadora es la columna de la mesa: la marca, la pieza grande, la pista, el nombre
@@ -54,7 +54,7 @@ const { caratula: c, piezaSopla = false } = Astro.props;
   {/* La marca de la mesa. En el teléfono no se ve: ahí la marca vive en la hoja, como
       siempre. Las dos llevan el nombre del tránsito (`marca`), y nunca se ven las dos a la
       vez — un nombre repetido a la vista apaga el paso sin avisar (`ADR-03` §6.3). */}
-  <p class="caratula-marca" aria-hidden="true">ARCADE RICOTERO</p>
+  <p class="caratula-marca" aria-hidden="true">FICHÍN RICOTERO</p>
   <div class="caratula-frente">
     <img
       class:list={['caratula-arte', 'casete-arte', `casete-arte--${c.material}`, { 'casete-arte--apaisada': c.apaisada }]}

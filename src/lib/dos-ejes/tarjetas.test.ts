@@ -106,7 +106,10 @@ test('la vista previa de la portada pone las cuatro maneras en orden alfabético
 
 /** Los caracteres de `textos` que la fuente no trae. Aparte, para probarlo contra un caso falso. */
 function letrasQueFaltan(archivo: string, textos: readonly string[]): string[] {
-  const fuente = create(readFileSync(archivo));
+  const abierta = create(readFileSync(archivo));
+  // `create` puede devolver una colección (TTC); las del taller son fuentes sueltas.
+  if (!('hasGlyphForCodePoint' in abierta)) throw new Error(`${archivo} es una colección, no una fuente`);
+  const fuente = abierta;
   const faltan = new Set<string>();
   for (const t of textos) for (const ch of t) if (ch !== ' ' && !fuente.hasGlyphForCodePoint(ch.codePointAt(0)!)) faltan.add(ch);
   return [...faltan];

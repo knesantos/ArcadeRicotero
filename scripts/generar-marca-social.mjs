@@ -264,7 +264,7 @@ function icono() {
  * mano por lo mismo que todo lo demas: los colores son los del token, no copias.
  */
 function favicon() {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="Arcade Ricotero">
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="Fichín Ricotero">
   <rect width="180" height="180" fill="${hex('--fondo')}"/>
   <rect x="14" y="38" width="152" height="104" fill="${hex('--marca-rojo')}"/>
   <rect x="28" y="50" width="124" height="38" fill="${hex('--papel')}"/>

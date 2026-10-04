@@ -162,12 +162,12 @@ export function comparacion(r: Resultado, d: DesafioDeQuery): string {
 /** D1 — texto del tuit, uno por desenlace (`CNT-10` S1, S2, S3). */
 export function textoParaCompartir(r: Resultado): string {
   if (r.desenlace === 'victoria') {
-    return `Agoté las ${r.total} preguntas del arcade ricotero sin perder una vida. ¿Vos cuántas aguantás?`;
+    return `Agoté las ${r.total} preguntas del fichín ricotero sin perder una vida. ¿Vos cuántas aguantás?`;
   }
   if (r.desenlace === 'derrota') {
-    return `Las tres vidas se me apagaron en la pregunta ${r.pregunta} del arcade ricotero. ¿Vos hasta dónde llegás?`;
+    return `Las tres vidas se me apagaron en la pregunta ${r.pregunta} del fichín ricotero. ¿Vos hasta dónde llegás?`;
   }
-  return `Llegué hasta la pregunta ${r.pregunta} del arcade ricotero, con ${r.vidasRestantes} vidas en pie. ¿Vos hasta dónde llegás?`;
+  return `Llegué hasta la pregunta ${r.pregunta} del fichín ricotero, con ${r.vidasRestantes} vidas en pie. ¿Vos hasta dónde llegás?`;
 }
 
 /** E1, E2, E3 — el encabezado de cada desenlace (`CNT-10`, registro 1). */

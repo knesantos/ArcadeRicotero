@@ -21,6 +21,12 @@ Desde la terminal, con la CLI ya autenticada:
 npx vercel remove arcade-ricotero --yes
 ```
 
+El proyecto de Vercel conserva el nombre de cuando el sitio se llamaba Arcade Ricotero
+(`D-60`): por eso el comando dice `arcade-ricotero`. Borrarlo baja todas las direcciones del
+proyecto a la vez: `arcade-ricotero.vercel.app` y, una vez conectado, el dominio propio
+**fichinricotero.com.ar**. El dominio sigue registrado en NIC Argentina y no muestra nada
+mientras no apunte a ningún proyecto; no hace falta darlo de baja para bajar el sitio.
+
 **Lo que NO hace falta hacer, y conviene decirlo para que nadie pierda tiempo:** no hay que
 tocar el repositorio de GitHub, ni borrar archivos, ni revertir commits. El sitio publicado
 y el código son dos cosas distintas: bajar el primero no toca el segundo. Si además querés

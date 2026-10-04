@@ -130,7 +130,7 @@ export const RESULTADO = {
   copiado: 'Se copió el enlace.',
   aManoTitulo: 'Copiá esto y mandalo',
   paraCompartir: (puntos: number, maximo: number) =>
-    `Saqué ${puntos} de ${maximo} sacando temas por la letra en el arcade ricotero. ¿Vos cuántos sacás?`,
+    `Saqué ${puntos} de ${maximo} sacando temas por la letra en el fichín ricotero. ¿Vos cuántos sacás?`,
 } as const;
 
 /**

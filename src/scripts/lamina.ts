@@ -48,7 +48,7 @@ import {
   type DatosLamina,
 } from '../lib/ponelos/lamina.ts';
 
-const MARCA = 'ARCADE RICOTERO';
+const MARCA = 'FICHÍN RICOTERO';
 const ROTULADA = '"Archivo Black", "Arial Black", sans-serif';
 const CALCO = '"Oktubre Calco", "Archivo Black", "Arial Black", sans-serif';
 
