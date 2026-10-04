@@ -3389,3 +3389,29 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   - En Windows y Mac el cambio casi no se nota (Arial Black y Archivo Black son primas); en
     Android es otro sitio. Las mediciones de ciclos anteriores en Linux se hicieron con la
     letra de repuesto, que es más angosta: si una pantalla quedó justa, puede haber cambiado.
+
+## D-59 — La noche del test es la ricotera entera: el barro, el chori, la birra, el porro y la merca, y también la familia, los amigos y el amor
+
+- **Fecha:** 2026-10-04
+- **Estado:** aceptada — **la tomó el usuario**, con estas palabras: *"Vamos a seguir
+  mejorándolo haciendo las preguntas más ricoteras. El recital ricotero es barro, sucio, drogas,
+  reviente, y también es familia, amigos, amor: es todo eso, pero lo primero no puede faltar
+  tampoco. Un choripán, un pancho, una birra, un porro, hasta cocaína debe ser parte del
+  recital. La previa, ir un rato antes a escabiar o no, eso es un recital ricotero. Anotá esto,
+  hacé una pequeña investigación de lo que te digo y que quede plasmado en el juego. Me gustó
+  mucho la idea de que el test sea una noche de recital."*
+- **Consume:** `D-57` (la noche en cinco momentos, que el usuario confirma), `BR-17`, `BR-36`,
+  `US-06`, `CNT-30`, `D-14` (la postura del proyecto), `CLAUDE.md` §6 (los molinetes).
+- **Qué cambia.** `D-57` punto 2 había sacado de la noche a la banda y a lo que se consume
+  ("un recital sin dueño", y los vetos 1 y 4 de `BR-36`): la noche era de cualquiera que sale a
+  ver música. El usuario la quiere **ricotera**: con la previa en la esquina, el humo del chori,
+  la birra que pasa, el porro que gira, el barro hasta el tobillo, el reviente, y con la familia,
+  los amigos y el amor en la misma noche. **Lo sucio no es un adorno opcional: "lo primero no
+  puede faltar".** La noche en cinco momentos queda como está.
+- **Lo que no cambia** (y por qué no choca con el pedido): el test sigue sin pedir **saber**
+  nada de la banda (`BR-17`, los molinetes), sigue sin una respuesta mejor que otra, y las
+  tragedias (Bulacio, Olavarría, Cromañón, la muerte del Indio) siguen fuera de la escena de un
+  test de dos botones (`BR-36` veto 2). Cómo se compatibiliza "lo sucio no puede faltar" con
+  "nadie queda afuera por no consumir" lo fija la síntesis de abajo, con la investigación
+  (`INV-172`) sobre la mesa.
+- **Síntesis:** *se escribe al cerrar la investigación de este mismo ciclo.*
