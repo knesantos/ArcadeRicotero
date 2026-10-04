@@ -177,40 +177,114 @@ test('los nombres no tienen persona: se dicen igual en me, te y le salió', () =
 });
 
 /* ------------------------------------------------------------------
-   Los vetos de `BR-36`. Cada lista dice por qué está.
+   Los vetos de `BR-36`, con la noche ricotera de `D-59`. Cada lista dice por qué está.
+
+   `D-59` (el usuario, 2026-10-04) metió en la noche lo que `D-57` había dejado afuera: la
+   previa en la esquina, la birra, el porro, la merca, el barro, el reviente, los rituales.
+   Por eso los vetos se parten en dos: **los de la noche entera**, que valen para todo lo que la
+   gente lee (enunciado, opciones, sello, línea que canta, bajadas), y **los de las opciones**,
+   que valen solo donde quien juega elige: ahí ninguna opción le pide plata, un cuerpo capaz,
+   saber de la banda ni consumir algo que la otra opción no trae.
    ------------------------------------------------------------------ */
 
-const VETOS: ReadonlyArray<readonly [string, readonly string[]]> = [
-  // La noche es de cualquiera que sale a ver música, no de la banda (`D-57` punto 2).
-  ['la banda por su nombre', ['banda', 'redondos', 'redonditos', 'ricota', 'patricio rey', 'indio', 'solari', 'skay', 'misa', 'pogo', 'aguante', 'ricoter*']],
-  // Registro 3 entero (`CNT-04`, `CNT-06`) y lo que lo evoca.
+const VETOS_DE_LA_NOCHE: ReadonlyArray<readonly [string, readonly string[]]> = [
+  // Registro 3 entero (`CNT-04`, `CNT-06`) y lo que lo evoca. `D-59` no lo toca: el barro sí,
+  // Olavarría no; el humo sí, las bengalas no.
   ['muertes y tragedias', ['bulacio', 'olavarria', 'cromanon', 'bengala*', 'fuego', 'murio', 'muerte', 'despedida', 'velorio']],
-  // Los molinetes (`CLAUDE.md` §6): nada que pida plata para entrar a la escena.
-  ['plata', ['plata', 'guita', 'entrada', 'entradas', 'compr*', 'pag*', 'puesto', 'remera*', 'precio']],
-  // Ni alcohol ni drogas ni la policía.
-  ['alcohol, drogas, policía', ['birra*', 'cerveza*', 'vino', 'fernet', 'escabio', 'porro', 'faso', 'policia', 'cana', 'yuta', 'borrach*']],
-  // Un cuerpo capaz de algo no es temperamento (`BR-36`): "te ubicás", no "te parás".
-  ['el cuerpo y la multitud', ['paras', 'parado', 'saltar', 'salto', 'salt*', 'corro', 'corres', 'hombro con hombro', 'apretad*', 'empuj*', 'avalancha', 'en el medio']],
+  // Las personas de la banda: el Indio murió el 5 de junio de 2026, y una escena con él en el
+  // escenario es un velorio aunque no lo diga (`D-57` punto 9). La banda y sus rituales sí
+  // entran a la escena desde `D-59`; las personas no.
+  ['las personas de la banda', ['indio', 'solari', 'skay', 'beilinson', 'poli', 'patricio rey']],
+  // Ni la policía, que no pidió nadie y parte a la gente por historia propia.
+  ['policía', ['policia', 'cana', 'yuta', 'gorra']],
   // Seguridad disfrazada de temperamento: hablar con desconocidos, a dedo, y la opción de luz
-  // que apunta a quien está cerca o mira (`BR-36` veto 6; la vuelta 1 de `CNT-30` encontró
-  // cuatro). La luz apunta a "los míos" o a alguien a distancia, nunca al de al lado.
+  // que apunta a quien está cerca o mira (`BR-36` veto 6).
   ['seguridad', ['a dedo', 'desconocid*', 'extrano', 'extrana', 'quien tenga', 'quien me mira', 'quien este', 'a quien me']],
-  // Un vehículo o un pasaje es un transporte pago: el veto 3 de `BR-36` por el sentido (la
-  // primera versión tenía tres micros de larga distancia en la ida).
-  ['vehículo y pasaje', ['micro', 'micros', 'pasaje*', 'colectivo*', 'tren', 'trenes']],
   // La épica de tribuna y la psicodelia de utilería (voz-ricotera §3.6 y §7).
-  ['épica y psicodelia', ['lucha', 'resistencia', 'delirio', 'caleidoscopio', 'viaje']],
+  ['épica y psicodelia', ['lucha', 'resistencia', 'delirio', 'caleidoscopio', 'viaje', 'aguante']],
 ];
 
-test('ningún enunciado ni opción cae en un veto de BR-36', () => {
+const VETOS_DE_LAS_OPCIONES: ReadonlyArray<readonly [string, readonly string[]]> = [
+  // Los molinetes (`CLAUDE.md` §6): el chori, la birra y el micro pueden estar en la escena;
+  // ninguna opción pide haber pagado.
+  ['plata', ['plata', 'guita', 'entrada', 'entradas', 'compr*', 'pag*', 'precio']],
+  ['vehículo y pasaje', ['micro', 'micros', 'pasaje*', 'colectivo*', 'bondi*', 'tren', 'trenes']],
+  // Un cuerpo capaz de algo no es temperamento (`BR-36` veto 5): el pogo puede sonar adelante,
+  // pero ninguna opción es meterse.
+  ['el cuerpo y la multitud', ['paras', 'parado', 'saltar', 'salto', 'salt*', 'corro', 'corres', 'hombro con hombro', 'apretad*', 'empuj*', 'avalancha', 'en el medio', 'pogo']],
+  // La banda como credencial: en la escena la misa y los trapos son paisaje; en una opción,
+  // "la misa" o "los Redondos" puntúan quién es más de adentro (`BR-36`, la regla en una línea).
+  ['la banda como credencial', ['banda', 'redondos', 'redonditos', 'ricota', 'misa', 'misas', 'ricoter*']],
+  // La merca está en la noche (`D-59`) como paisaje, nunca como lo que hace quien juega: es la
+  // línea editorial del hilo principal sobre el pedido del usuario, dicha en `D-59`.
+  ['la merca como elección', ['merca', 'cocaina', 'falopa', 'saque', 'pala', 'raya', 'rayas', 'tiro', 'tiros']],
+];
+
+/** Lo que se toma o se fuma (`D-59`). En una opción puede estar, pero nunca de un solo lado. */
+const CONSUMO = ['birra*', 'cerveza*', 'vino', 'vinito', 'tetra', 'fernet', 'escabi*', 'porro*', 'faso*', 'seca', 'pitada', 'chupi*', 'trago*', 'whisky', 'petaca'];
+
+test('ningún enunciado ni opción cae en un veto de la noche (BR-36, D-59)', () => {
   const caidos: string[] = [];
   for (const i of LISTOS) {
     for (const texto of [i.enunciado, ...i.opciones.map((o) => o.texto)]) {
-      for (const [porque, lista] of VETOS) {
+      for (const [porque, lista] of VETOS_DE_LA_NOCHE) {
         for (const v of lista) if (aparece(texto, v)) caidos.push(`${i.id}: "${texto}" (${porque}: ${v})`);
       }
     }
   }
+  assert.deepEqual(caidos, []);
+});
+
+test('los sellos, las líneas que cantan y las bajadas tampoco (los vetos de la noche valen para todo lo que se lee)', () => {
+  const textos = [
+    ...BANCO.momentos.flatMap((m) => [`${m.id}: ${m.nombre}`, `${m.id}: ${m.canta}`]),
+    ...BANCO.cuadrantes.map((c) => `${c.id}: ${c.bajada}`),
+  ];
+  const caidos: string[] = [];
+  for (const t of textos) for (const [porque, lista] of VETOS_DE_LA_NOCHE) for (const v of lista) if (aparece(t, v)) caidos.push(`"${t}" (${porque}: ${v})`);
+  assert.deepEqual(caidos, []);
+});
+
+test('ninguna opción cae en un veto de las opciones (BR-36, D-59)', () => {
+  const caidos: string[] = [];
+  for (const i of LISTOS) {
+    for (const o of i.opciones) {
+      for (const [porque, lista] of VETOS_DE_LAS_OPCIONES) {
+        for (const v of lista) if (aparece(o.texto, v)) caidos.push(`${i.id}: "${o.texto}" (${porque}: ${v})`);
+      }
+    }
+  }
+  assert.deepEqual(caidos, []);
+});
+
+/** Si una opción nombra lo que se toma o se fuma. Aparte, para probarla contra un caso falso. */
+const consume = (texto: string): boolean => CONSUMO.some((v) => aparece(texto, v));
+
+test('lo que se toma o se fuma nunca separa los polos (D-59)', () => {
+  // "Ir un rato antes a escabiar o no, eso es un recital ricotero" (el usuario): las dos cosas
+  // son de la noche. Si una opción toma y la otra no, el eje deja de medir cómo te movés y pasa
+  // a medir si tomás, y el que no toma —por salud, por los hijos, porque dejó— cae siempre del
+  // mismo lado. La birra y el porro van en la escena, o en las dos opciones, nunca en una sola.
+  const caidos: string[] = [];
+  for (const i of LISTOS) {
+    const [a, b] = i.opciones.map((o) => consume(o.texto));
+    if (a !== b) caidos.push(`${i.id}: "${i.opciones[0]!.texto}" / "${i.opciones[1]!.texto}"`);
+  }
+  assert.deepEqual(caidos, []);
+});
+
+test('la guarda del consumo sabe ver: una birra de un solo lado la marca', () => {
+  assert.ok(consume('Me tomo una birra en la esquina') !== consume('Llego justo para entrar'));
+  assert.ok(consume('Paso el faso y sigo la charla') === consume('Le doy una seca y miro'));
+});
+
+test('ninguna opción nombra un parentesco ni una pareja propia (D-57 enmienda 7, D-59)', () => {
+  // La familia y el amor están en la noche (`D-59`), en la escena: "un padre le enseña la
+  // canción a su hija". En una opción en primera persona le cierran la elección a quien no los
+  // tiene.
+  const propios = ['mi vieja', 'mi viejo', 'mis viejos', 'mi mama', 'mi papa', 'mi hermana', 'mi hermano', 'mis hermanos', 'mi prima', 'mi primo', 'mi tia', 'mi tio', 'mi hija', 'mi hijo', 'mis hijos', 'mi novia', 'mi novio', 'mi pareja', 'mi mujer', 'mi marido', 'mi abuel*'];
+  const caidos: string[] = [];
+  for (const i of LISTOS) for (const o of i.opciones) for (const v of propios) if (aparece(o.texto, v)) caidos.push(`${i.id}: "${o.texto}" (${v})`);
   assert.deepEqual(caidos, []);
 });
 
