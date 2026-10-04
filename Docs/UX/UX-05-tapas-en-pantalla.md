@@ -28,6 +28,13 @@
 > código/`arquitectura`, pero conviene que alguien lo mire antes de que se lea como un
 > descuido en vez de una decisión pendiente.
 
+> **v3 — ciclo 18, `D-57`, `UX-36`, 2026-10-04.** **Entra una fila nueva, la 8:
+> `/juegos/dos-ejes/` y sus cuatro postales**, con el libro de *Luzbelito* (mármol, lomo y
+> esquinero de `luzbelito-frontal.jpg`). Hasta hoy *Luzbelito* llegaba al sitio solo por su ficha
+> y por la paleta; desde hoy también por un recorte pegado. No cambia ninguna fila de las
+> anteriores, y la tabla de "Los diez discos" se corrige en la fila de *Luzbelito* (lo dice abajo).
+> El catálogo suma una fila cuando una pantalla nueva entra, como dice su propia "Trazabilidad".
+
 ## Cómo leer esta tabla
 
 - **Forma** es una de las tres de `UX-04`: **detalle recortado** (recorte tratado como
@@ -299,6 +306,38 @@ tapa por artículo).
 
 ---
 
+## 8. `/juegos/dos-ejes/` y `/juegos/dos-ejes/cu-1/` a `cu-4/` — el libro de *Luzbelito* (ciclo 18)
+
+Agregada el 2026-10-04 por `UX-36` §2. La página no usa `Base.astro` pero **sí lleva el pie del sitio**
+(`PieImprenta`), así que el crédito va en el **pie** y no en un sello de esquina (`UX-04`: el sello es
+para las islas que no tienen pie). La tapa es un **detalle recortado y pegado** (forma 1 de `UX-04`),
+**no un fondo velado**: no hay velo porque **ningún texto va sobre la foto**.
+
+| Pantalla | Disco | Archivo master | Qué detalle | Dónde cae | Forma | Por qué |
+|---|---|---|---|---|---|---|
+| `/juegos/dos-ejes/` y las cuatro postales — la portada (la tapa cerrada) | Luzbelito | `luzbelito-frontal.jpg` | **El mármol** (la tira de abajo entre el lomo y el esquinero, `125, 700, 540 × 253`), **el lomo** (el borde izquierdo, `0, 0, 100 × 953`) y **el esquinero** (el triángulo de cuero de arriba a la derecha, `730, 0, 223 × 256`). **Sin el óvalo, sin la figura y sin la palabra LUZBELITO** | Una tapa del ancho de la hoja, de ≈ 130 px de alto en el teléfono; encima, una etiqueta de papel con el índice de los cinco momentos (o la manera del amigo en una postal) | Detalle recortado, **pegado**: borde de `--linea` en `--apoyo-disco`, sombra dura de 5 px, giro de −0,8°. No es fondo | El libro es la pieza única del juego (`D-57` punto 8): ninguna pieza es de un cuadrante, así que las cuatro maneras se ven con el mismo libro. Las tres piezas se eligieron contra la caja prohibida de `arte.ts` (óvalo `370, 260, 285 × 430`; título `330, 100, 390 × 130`): el mármol empieza en `y = 700` y termina en `x = 665`, antes del vértice del esquinero de abajo |
+| `/juegos/dos-ejes/` — la última hoja (el resultado) | Luzbelito | `luzbelito-frontal.jpg` | **El esquinero** solo, de 4 rem (5 en la mesa) | La esquina de arriba a la derecha de la hoja, pegado | Detalle recortado, sin borde propio: es una esquina de la hoja | Un objeto del libro que "cierra" la última hoja. Sin texto encima: la marca chica y el rótulo van a su izquierda, con 4,5 rem de margen |
+| Las hojas de la pregunta | — | — | **Ninguna pieza de foto** | — | — | El canto de las hojas que faltan son sombras de CSS; la hoja es papel. Cero imagen en las diez hojas |
+| La tarjeta (1080 × 1350) y las vistas previas (1200 × 630) | Luzbelito | `luzbelito-frontal.jpg` | **La franja** (el pie del frente: lomo, mármol y esquinero de abajo, `0, 700, 953 × 253`, solo en el taller) **detrás de la hoja**, y **el esquinero** pegado a la hoja | La franja asoma ≥ 60 px bajo la hoja; el esquinero, en su esquina | Detalle recortado, fijado en el PNG por el taller | `D-57` punto 10. Las cuatro tarjetas llevan lo mismo. El crédito va **escrito en la tarjeta** (`TARJETA.credito`) y en el `alt` de la vista previa |
+
+**Lo que sigue prohibido, con motivo (`RES-168`):** el óvalo con la figura —parte de una foto de una
+persona esclavizada: se trata en registro 3 y no es pieza ni mascota—, la palabra LUZBELITO, y
+cualquier vela o verso en lo nuevo (`D-57` punto 9). La guarda es de `arte.ts` y del taller
+(`sePisan`); esta fila no la mueve.
+
+**Lo que NO cambia en esta ráfaga, y conviene dejarlo escrito:** la **carátula** y el **casete del
+portal** de A2 siguen con su pieza de siempre (`/arte/luzbelito-vela.png`: la cabeza con la vela, `JUEGOS`
+de `sitio/copy.ts`); `D-57` punto 9 los deja explícitamente afuera. Queda abierto en `UX-36` §11 que esa
+pieza es justo la que `RES-168` pide no usar como mascota, y que en la mesa conviven en la misma
+pantalla con el libro nuevo.
+
+**Crédito:** el pie de la página, una línea: *"Arte de tapa: Luzbelito — Rocambole (Ricardo
+Cohen)"*, **una sola vez** aunque haya tapa, esquinero y carátula (es un disco).
+`tapasConCaratula(['Luzbelito'], caratula)` lo arma. El mecanismo es el de `UX-04` para pantallas con
+pie.
+
+---
+
 ## Los diez discos, uno por uno: dónde aparece cada uno
 
 | Disco | Dónde aparece hoy (según este catálogo) |
@@ -311,14 +350,16 @@ tapa por artículo).
 | **Un baión para el ojo idiota** | Solo su propia ficha (con sticker dibujado `muneco-antifaz.png`, ya existente) |
 | **¡Bang! ¡Bang!... Estás liquidado** | Solo su propia ficha — **sin sticker dibujado tampoco** (ver más abajo) |
 | **Cordero atado** | Solo su propia ficha (con sticker dibujado `cordero-rulo.png`, ya existente) |
-| **Luzbelito** | Solo su propia ficha (con sticker dibujado `luzbelito-vela.png`, ya existente) |
+| **Luzbelito** | Su propia ficha (con sticker dibujado `luzbelito-vela.png`, ya existente) **y, desde el 2026-10-04, `/juegos/dos-ejes/` con sus cuatro postales, la tarjeta y la vista previa**: el libro, con el mármol, el lomo y el esquinero (`§8`) |
 | **Momo Sampler** | Solo su propia ficha (con sticker dibujado `banda-superheroes.png`, ya existente) |
 
 Los diez aparecen en al menos una pantalla, como exige la tarea. Los cinco que no entran en
 el mapa de `D-19` (Un baión, ¡Bang! ¡Bang!, Cordero atado, Luzbelito, Momo Sampler) llegan
 únicamente vía su ficha propia, porque ese es el único punto del sitio donde tienen una
 sección dedicada — no hay hoy una pantalla de "todos los discos" ni un cruce narrativo que
-los use como acento de fondo. Si esa pantalla apareciera (un futuro índice de discos, una
+los use como acento de fondo. **[Corregido el 2026-10-04: ya no es así para *Luzbelito*, que
+desde el ciclo 18 llega también por `/juegos/dos-ejes/` (`§8`). Y desde `D-54` cuatro de estos
+cinco visten un juego; el mapa vigente es el de `UX-04`.]** Si esa pantalla apareciera (un futuro índice de discos, una
 línea de tiempo), ahí es donde estos cinco ganarían su primera fila de detalle/fondo.
 
 **Caso aparte, `¡Bang! ¡Bang!... Estás liquidado`:** es el único de los diez sin ningún

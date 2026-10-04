@@ -775,7 +775,8 @@ Extiende `UX-20 §3` con lo que la imprenta agrega, sin tocar nada de lo que ya 
    figura ni el título). **Sigue sin imprenta y sin estampa**, que es lo que este punto prohíbe, y lo
    dejo escrito para que nadie lea la enmienda como una excepción:
    - Las piezas se **pegan**: quedan quietas desde el primer cuadro. Sin pasadas, sin registro corrido
-     (`§8`), sin "dala vuelta" (`§5`), sin rodillo ni ficha estampada (`§9`).
+     (`§8`), sin "dala vuelta" (`§5`), sin rodillo ni ficha estampada (`§9`). El rodillo del pie del
+     sitio es de todas las pantallas y no cambia.
    - **El resultado no se estampa.** No hay "tapa que se imprime" al terminar: no hay acierto, y la
      estampa es del acierto (`D-33`). La última hoja aparece entera; el esquinero ya está en su esquina.
    - **El resultado nunca se viste con la tapa entera**, que era lo que esta línea advertía: la
