@@ -1,24 +1,38 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ricotaarcade.local/schema/dos-ejes/1",
-  "title": "CTR-08 — Banco del test de dos ejes",
+  "$id": "https://ricotaarcade.local/schema/dos-ejes/2",
+  "title": "CTR-08 v2 — Banco del test de dos ejes (D-57: una noche en cinco momentos)",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "contrato", "contratoVersion", "juego", "actualizado",
-    "preguntasPorEje", "cuadrantes", "items"
+    "preguntasPorEje", "momentos", "cuadrantes", "items"
   ],
   "properties": {
     "contrato": { "const": "CTR-08" },
-    "contratoVersion": { "const": 1 },
+    "contratoVersion": { "const": 2 },
     "juego": { "const": "dos-ejes" },
     "actualizado": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
     "preguntasPorEje": {
-      "comment": "BR-17 regla 3: impar, para que el empate sea imposible.",
+      "comment": "BR-17 regla 3: impar, para que el empate sea imposible. Tiene que ser igual a momentos.length: eso lo vigila banco.test.ts, no este schema (CTR-08 v2.2).",
       "type": "integer",
       "minimum": 3,
       "maximum": 9,
       "not": { "multipleOf": 2 }
+    },
+    "momentos": {
+      "comment": "D-57 punto 1: la noche, en orden. Cinco, uno por pregunta de cada eje. prefixItems fija el orden y con eso tambien que ningun id se repita.",
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "prefixItems": [
+        { "$ref": "#/$defs/momento", "properties": { "id": { "const": "previa" } } },
+        { "$ref": "#/$defs/momento", "properties": { "id": { "const": "ida" } } },
+        { "$ref": "#/$defs/momento", "properties": { "id": { "const": "vereda" } } },
+        { "$ref": "#/$defs/momento", "properties": { "id": { "const": "adentro" } } },
+        { "$ref": "#/$defs/momento", "properties": { "id": { "const": "vuelta" } } }
+      ],
+      "items": false
     },
     "cuadrantes": {
       "type": "array",
@@ -33,6 +47,27 @@
     }
   },
   "$defs": {
+    "momento": {
+      "comment": "nombre es el sello (registro 3); canta es la linea de registro 1. El texto es de contenido (CNT-30).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "nombre", "canta"],
+      "properties": {
+        "id": { "enum": ["previa", "ida", "vereda", "adentro", "vuelta"] },
+        "nombre": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 24,
+          "not": { "pattern": "[Bb]ulacio|[Oo]lavarr|[Cc]roma[ñn]" }
+        },
+        "canta": {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 80,
+          "not": { "pattern": "[Bb]ulacio|[Oo]lavarr|[Cc]roma[ñn]" }
+        }
+      }
+    },
     "cuadrante": {
       "type": "object",
       "additionalProperties": false,
@@ -42,16 +77,16 @@
         "luzOscuridad": { "enum": ["luz", "oscuridad"] },
         "ordenCaos": { "enum": ["orden", "caos"] },
         "nombre": {
-          "comment": "Registro 1: 8 palabras como techo. Y sin comparativos (US-06, criterio 3).",
+          "comment": "Registro 1: 8 palabras como techo, y 26 caracteres porque tiene que leerse en la miniatura de la tarjeta (UX-06 §7). Sin comparativos (US-06, criterio 3).",
           "type": "string",
           "minLength": 3,
-          "maxLength": 48,
+          "maxLength": 26,
           "pattern": "^\\S+( \\S+){0,7}$",
           "not": {
             "pattern": "\\b([Mm][áa]s|[Mm]enos|[Mm]ejor|[Pp]eor|[Nn]ivel|[Rr]anking|[Tt]op|[Vv]erdadero|[Ss]uperior|[Ii]nferior)\\b"
           }
         },
-        "bajada": { "type": "string", "minLength": 10, "maxLength": 220 },
+        "bajada": { "type": "string", "minLength": 10, "maxLength": 240 },
         "estado": { "enum": ["borrador", "listo"] }
       }
     },
@@ -67,6 +102,7 @@
           "items": { "type": "string", "pattern": "^US-\\d{2}$" }
         },
         "eje": { "enum": ["luz-oscuridad", "orden-caos"] },
+        "momento": { "enum": ["previa", "ida", "vereda", "adentro", "vuelta"] },
         "enunciado": {
           "type": "string",
           "minLength": 10,
@@ -146,6 +182,14 @@
               }
             }
           }
+        },
+        {
+          "comment": "D-57 punto 4 y CTR-08 v2.3: todo item listo es de un momento de la noche. El borrador puede no tenerlo todavia; el retirado no lo necesita.",
+          "if": {
+            "required": ["estado"],
+            "properties": { "estado": { "const": "listo" } }
+          },
+          "then": { "required": ["momento"] }
         }
       ]
     },

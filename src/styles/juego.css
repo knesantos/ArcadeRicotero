@@ -2166,9 +2166,8 @@
   line-height: 1.6;
 }
 
-.ejes-indice li + li::before {
-  content: '·';
-  margin-right: 0.45em;
+.ejes-indice li:not(:last-child)::after {
+  content: ' ·';
   color: var(--papel-tenue);
 }
 
@@ -2558,6 +2557,25 @@
 
 .ejes-manera summary::-webkit-details-marker {
   display: none;
+}
+
+/* Que se abre: un signo, en la esquina, que cambia al abrir. Es funcion, no adorno. */
+.ejes-manera summary {
+  position: relative;
+  padding-right: 2rem;
+}
+
+.ejes-manera summary::after {
+  content: '+';
+  position: absolute;
+  top: var(--espacio-1);
+  right: var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  color: var(--texto-tenue);
+}
+
+.ejes-manera details[open] summary::after {
+  content: '−';
 }
 
 .ejes-manera-nombre {

@@ -5,12 +5,604 @@
 > (`Docs/ARQ/ARQ-schema-quiz.md`), `CTR-03`, `ADR-02`
 > (`Docs/ARQ/ARQ-link-resultado-compartido.md`), `Docs/ORQ/ORQ-plan-ciclo-8.md` (`T-120`),
 > `src/lib/esquemas.test.ts`, `.claude/rules/voz-ricotera.md`.
-> Produce: `CTR-08`.
-> Última actualización: 2026-08-24 (revisión 1, `T-120` del ciclo 8).
+> **Para la v2, además:** `D-57`, `D-21`, `BR-36`, `BR-37`, `UX-06` §7, `CNT-29`, `RES-168`,
+> `CTR-01.5`, `CTR-12`, `src/lib/dos-ejes/` (`partida.ts`, `arte.ts`, `taller.ts`, y sus tres
+> tests), `scripts/generar-dos-ejes.mjs`, `package-lock.json`.
+> Produce: `CTR-08` (v1 2026-08-24, **v2 2026-10-04**).
+> Última actualización: 2026-10-04 (`CTR-08` v2, ciclo 18, `D-57`).
+
+**Vigente: `CTR-08` v2.** La v1 queda abajo entera, sin borrar: el schema v2 es la v1 más lo
+que suma la noche, y las alternativas descartadas de la v1 siguen valiendo. Donde una sección
+de la v1 quedó reemplazada o ampliada, lo dice una marca al principio de la sección.
 
 ---
 
-## CTR-08 — Contrato de `src/data/dos-ejes.json`
+## CTR-08 v2 — Enmienda del 2026-10-04: la noche en cinco momentos
+
+- **Fecha:** 2026-10-04
+- **Estado:** **vigente.** El schema ya está bajado: `src/data/_schema/dos-ejes.schema.json`,
+  `$id` `https://ricotaarcade.local/schema/dos-ejes/2`. No espera ninguna ficha `RES-XX`
+  para decidir: el banco sigue sin afirmar nada sobre la banda (`CTR-08.5`, regla 5). Un solo
+  hecho externo queda sin verificar —qué peso aceptan los previsualizadores de enlaces— y
+  toca un techo del taller (v2.6), no una decisión.
+- **Pedido por:** `D-57` ("`CTR-08` v2 lo formaliza") y su lista de consecuencias para
+  `arquitectura`.
+- **Escrito sobre lo que ya hay.** Cuando se escribió esta versión, el hilo principal ya
+  tenía el motor (`partida.ts`), el taller y sus guardas a medio camino. **La v2 los toma
+  como están** donde cumplen `D-57`, y marca aparte lo poco que falta (v2.10). No tiene
+  sentido un contrato que obliga a reescribir un código que ya hace lo correcto.
+- **Para quién:** `contenido` (`CNT-30`), que está reescribiendo el banco con esta forma; el
+  hilo principal (motor, isla, postales, taller); `revisor` (`REV-19`).
+
+### v2.1 — Qué no cambia, qué cambia, y qué reemplaza de la v1
+
+**No cambia, y es lo que sostiene el juego:** un ítem mueve un solo eje (regla 1); dos
+opciones, una por polo puro (regla 2); `preguntasPorEje` entero, impar, entre 3 y 9 (regla
+3); ninguna opción correcta y ninguna clave fuera de las declaradas (regla 4); sin
+`hecho`/`leyenda`/`testimonio` (regla 5); cuatro cuadrantes, ids `CU-1`..`CU-4`; la lista
+negra de comparativos en el nombre; Bulacio, Olavarría y Cromañón fuera de todo texto;
+`Resultado` con tres strings y ningún número.
+
+| v1 | Qué pasa | Dónde |
+|---|---|---|
+| `CTR-08.1` archivo, ≤ 40 KB | sigue. 58 ítems (28 retirados con nota + 30) se estiman en ~25 KB | — |
+| `CTR-08.2` envoltorio | **ampliado**: suma `momentos`; `contratoVersion` pasa a 2 | v2.2 |
+| `CTR-08.3` ítem | **ampliado**: suma `momento`, obligatorio si el ítem está `listo` | v2.3 |
+| `CTR-08.4` cuadrantes | **ampliado**: nombre ≤ 26, bajada ≤ 240; el ejemplo viejo salió | v2.4 |
+| `CTR-08.5` las cinco reglas | sigue entera | — |
+| `CTR-08.6` sorteo y resolución | **reemplazado**: la noche, `vistos`, `disposicion`, `relacion` | v2.5 |
+| — | **nuevo**: el taller de tarjetas | v2.6 |
+| `CTR-08.7` bloque normativo | **reemplazado**: manda el archivo, sin copia pegada | v2.7 |
+| `CTR-08.8` lo que el schema no ve | **ampliado** | v2.8 |
+| `CTR-08.9` verificación | **reemplazado**; el comando (3) citaba dos archivos que nunca existieron | v2.9 |
+| `CTR-08.10` numeración | sigue. La v2 usa `EJ-998` de ejemplo | v2.3 |
+| Consecuencias: "cambiar `preguntasPorEje` es barato" | **ya no**: ver v2.2 | v2.2 |
+
+### v2.2 — El envoltorio y los cinco momentos
+
+```json
+{
+  "contrato": "CTR-08",
+  "contratoVersion": 2,
+  "juego": "dos-ejes",
+  "actualizado": "2026-10-04",
+  "preguntasPorEje": 5,
+  "momentos": [
+    { "id": "previa", "nombre": "La previa", "canta": "(la línea de CNT-30)" },
+    { "id": "ida", "nombre": "La ida", "canta": "(la línea de CNT-30)" },
+    { "id": "vereda", "nombre": "La vereda", "canta": "(la línea de CNT-30)" },
+    { "id": "adentro", "nombre": "Adentro", "canta": "(la línea de CNT-30)" },
+    { "id": "vuelta", "nombre": "La vuelta", "canta": "(la línea de CNT-30)" }
+  ],
+  "cuadrantes": [ ... ],
+  "items": [ ... ]
+}
+```
+
+Los `nombre` y `canta` de arriba son de relleno: el texto es de `contenido` (`CNT-30`). De
+este contrato son los ids, el orden y los largos.
+
+| Campo | Tipo | Qué es |
+|---|---|---|
+| `momentos` | arreglo de **exactamente 5**, **en este orden** | La noche (`D-57` punto 1). Cada objeto, `additionalProperties: false` |
+| `momentos[].id` | `previa` · `ida` · `vereda` · `adentro` · `vuelta` | Lo que referencia el ítem. No se muestra |
+| `momentos[].nombre` | string 2–24 | El sello del momento: registro 3, seco |
+| `momentos[].canta` | string 6–80 | La línea de registro 1. Las ocho palabras las mide `banco.test.ts`; los 80 caracteres son el techo de forma |
+
+Los dos textos tampoco admiten Bulacio, Olavarría ni Cromañón: es la regla de `CTR-08.5`
+llevada a los dos campos nuevos que se leen.
+
+**El orden lo hace cumplir el schema, no solo el test.** `prefixItems` fija `previa` en la
+posición 0, `ida` en la 1, y así hasta `vuelta`; `items: false` cierra la sexta. Eso da gratis
+dos cosas que un `enum` suelto no da: que ningún id se repita (dos `previa` no validan) y que
+la noche no se cuente al revés. `banco.test.ts` ya lo mira con un `deepEqual`; mirarlo también
+acá cuesta cinco líneas y le da a `contenido` el error en el lugar exacto (`/momentos/1/id`)
+en vez de dos arreglos comparados enteros.
+
+**La invariante que importa: `momentos.length === preguntasPorEje`.** El motor sirve un
+ítem de cada eje por momento, así que **la cantidad de preguntas por eje pasa a ser
+`momentos.length`**. Si las dos cifras se separan, la paridad de `BR-17` regla 3 depende de
+cuál de las dos mire cada uno.
+
+- **No la vigila el schema, y no por descuido:** JSON Schema no sabe comparar un valor con el
+  largo de un arreglo hermano. Se podría fingir con `const: 5` en los dos lados, pero eso
+  congela `preguntasPorEje` en el schema y la regla 3 ("impar entre 3 y 9") quedaría escrita
+  dos veces, una de ellas mintiendo.
+- **La vigila `banco.test.ts`** (`assert.equal(BANCO.momentos.length, BANCO.preguntasPorEje)`).
+- **Y el motor la vuelve a mirar en tiempo de ejecución** (v2.5, paso 1): si no coinciden,
+  tira `PartidaImposible`. Que un test pase y que el motor no sirva una noche par son dos
+  garantías distintas, y la segunda es la que ve la gente.
+
+**Lo que esto le cuesta a la v1:** `CTR-08.2` decía que cambiar `preguntasPorEje` era tocar un
+número. Ya no: una sexta pregunta por eje es un sexto momento de la noche, y eso es tocar
+`momentos`, `preguntasPorEje` y el `prefixItems` del schema a la vez —más el texto de
+`contenido` y la decisión de `producto`—. El test avisa si se olvida uno. Es el precio de que
+la partida sea una noche y no una lista, y `D-57` ya lo pagó al descartar "siete por eje".
+
+### v2.3 — El ítem: `momento`
+
+```json
+{
+  "id": "EJ-998",
+  "us": ["US-06"],
+  "eje": "orden-caos",
+  "momento": "previa",
+  "enunciado": "Falta una hora para salir. ¿Qué te ponés?",
+  "opciones": [
+    { "texto": "La ropa elegida desde ayer", "polo": "orden" },
+    { "texto": "Lo que agarre del ropero", "polo": "caos" }
+  ],
+  "estado": "listo"
+}
+```
+
+`EJ-998` es de la reserva de `CTR-08.10` y no se carga nunca. Está escrito para pasar las
+guardas de `banco.test.ts` —ocho palabras de enunciado, cinco por opción y menos de 28
+caracteres, sin plata, sin género, sin la palabra del eje— así que sirve de molde. **El
+ejemplo de la v1 (`EJ-999`, "Vas a un recital solo") ya no sirve de molde:** lleva género y
+una entrada comprada, y `BR-36` veta las dos cosas.
+
+| Campo | Tipo | Oblig. | Qué es |
+|---|---|---|---|
+| `momento` | `previa` · `ida` · `vereda` · `adentro` · `vuelta` | **sí, si `estado` es `listo`** | El momento de la noche de la escena. Un solo valor: el ítem vive en una sola celda |
+
+El resto del ítem es el de `CTR-08.3`, sin cambios. Lo obligatorio lo hace cumplir un tercer
+`if/then` en el `allOf` del ítem: si `estado` es `listo`, `momento` es `required`. **Los
+retirados no lo necesitan y los borradores pueden no tenerlo todavía.** El schema no les
+prohíbe tenerlo: prohibirlo obligaría a borrar el dato al retirar un ítem, y un retirado que
+conserva su momento se entiende mejor dentro de dos meses.
+
+**El piso: tres por celda.** Diez celdas —cinco momentos por dos ejes— con al menos tres
+ítems `listo` cada una, treinta en total (`D-57` punto 4). Es un piso de conjunto y por eso
+el schema no lo ve (v2.8): lo vigila `banco.test.ts`. **El motor exige uno por celda; los
+tres son de `contenido`.** Uno alcanza para servir una noche válida; tres son para que tres
+noches seguidas no repitan escena (`BR-37`), que es variedad y no validez. Por eso el motor no
+tira con dos: una noche con dos escenas en una celda sigue siendo una noche entera.
+
+### v2.4 — Los cuadrantes
+
+Misma forma que `CTR-08.4`. Cambian dos techos:
+
+| Campo | v1 | v2 | Por qué |
+|---|---|---|---|
+| `nombre` | 3–48, ≤ 8 palabras | **3–26**, ≤ 8 palabras | `UX-06` §7: el nombre tiene que leerse en la miniatura de la tarjeta. Los cuatro de `D-57` punto 5 miden 22, 26, 24 y 25 |
+| `bajada` | 10–220 | **10–240** | Aire para "un placer y un costo" (`D-57` punto 5). Las 36 palabras de `UX-06` §7 las mide `banco.test.ts`; los 240 caracteres son el techo de forma |
+
+```json
+{
+  "id": "CU-1",
+  "luzOscuridad": "luz",
+  "ordenCaos": "orden",
+  "nombre": "Mesa larga a las nueve",
+  "bajada": "(la bajada de CNT-30: un placer y un costo)",
+  "estado": "listo"
+}
+```
+
+El nombre es el que fijó `D-57`; la bajada es de relleno, porque la escribe `contenido`.
+
+**Los ids y sus polos no se mueven:** `CU-1` luz + orden, `CU-2` luz + caos, `CU-3`
+oscuridad + orden, `CU-4` oscuridad + caos. Es lo que viaja en los enlaces y en las postales
+(`ADR-02`, enmienda del 2026-10-04). El schema no lo puede atar porque ve cada cuadrante
+suelto; lo ata `banco.test.ts` ("cada CU-n conserva sus polos"). Que el nombre no tenga
+persona gramatical (`D-57` punto 5) también lo mira ese test. Que los cuatro se digan con el
+mismo orgullo no lo mira ninguna máquina: es `REV-19`.
+
+### v2.5 — El motor
+
+**`src/lib/dos-ejes/partida.ts`.** Funciones puras con el azar inyectado, por la razón de
+`CTR-08.6`. Lo que el archivo ya tiene es lo que este contrato fija:
+
+```ts
+interface Item     { /* v1 */ readonly momento?: string }          // el schema lo acota a los cinco
+interface Momento  { readonly id: string; readonly nombre: string; readonly canta: string }
+interface Banco    { /* v1 */ readonly momentos: readonly Momento[] }
+interface ItemServido { readonly id; readonly eje; readonly momento: string; readonly enunciado; readonly opciones }
+type Relacion = 'misma' | 'luz-oscuridad' | 'orden-caos' | 'opuesta';
+
+sortearPartida(banco, rnd = Math.random, vistos: ReadonlySet<string> = new Set()) -> ItemServido[]
+resolverCuadrante(banco, elegidos)  -> Resultado                    // sin cambios
+disposicion(banco, id)              -> { celdas: [Cuadrante ×4], renglones: [polo LO ×2], columnas: [polo OC ×2] }
+relacion(banco, mio, suyo)          -> Relacion
+```
+
+#### `sortearPartida`, en orden
+
+1. **Si `momentos.length !== preguntasPorEje`, tira `PartidaImposible`** con los dos números
+   en el mensaje (v2.2).
+2. Recorre `banco.momentos` **en el orden del dato**, que fija el schema. En cada momento,
+   **sortea cuál de los dos ejes va primero**, y para cada eje:
+   - la **celda** son los ítems `listo` de ese momento y ese eje;
+   - **si la celda está vacía, tira `PartidaImposible`** nombrándola. Una noche con un momento
+     cojo sirve cuatro de un eje y cinco del otro: es el empate entrando por la puerta de
+     atrás;
+   - de la celda se apartan los que **no** están en `vistos`; si queda alguno, se sortea entre
+     esos; **si no queda ninguno, se sortea entre todos los de la celda**: se agotó, vuelve a
+     empezar.
+3. Baraja las dos opciones de cada ítem (`CTR-08.3`, sin cambios).
+4. Devuelve `2 × momentos.length` ítems: los dos de la previa, los dos de la ida, y así.
+
+Lo que esto garantiza, y que `partida.test.ts` ya afirma: **exactamente `momentos.length` por
+eje**, que es impar; **ningún ítem repetido en la noche** (cada ítem vive en una sola celda);
+**nunca tres seguidas del mismo eje** (la racha más larga posible es dos: el último de un
+momento y el primero del siguiente); y **con `vistos` acumulado y tres por celda, tres noches
+seguidas sin repetir escena**. El orden por momento reemplaza el `ABAB` fijo de la v1, que
+dejaba adivinar el eje de las diez sabiendo el de la primera.
+
+**`vistos` es de la isla y vive en memoria** (`D-57` punto 6, `BR-37`): la isla junta los ids
+que sirvió en cada noche de la visita y se los pasa a la siguiente. El motor no guarda nada,
+no modifica el conjunto, y con el mismo `rnd` y los mismos `vistos` devuelve la misma noche.
+Si algún día se quiere recordar entre visitas, es una decisión de `producto` sobre `BR-37`, no
+un cambio de este parámetro.
+
+#### `resolverCuadrante`, sin cambios
+
+Firma, algoritmo y retorno de `CTR-08.6`: tres strings, ningún número.
+
+**Una observación que no cambia el contrato.** Si un eje empata, la función cae en silencio en
+`oscuridad` o en `caos` (el `>` del conteo). Una noche bien servida no puede empatar. El
+camino nuevo por el que podría es "Volvé a la anterior" (`D-57` punto 13): si la isla
+**agregara** la elección corregida en vez de **reemplazar** la anterior, un eje quedaría con
+seis. La isla de hoy hace lo correcto —`volverAnterior()` saca la última y `elegir()` pone la
+nueva—, pero nada lo vigila. Propongo, sin exigirlo en esta versión, que `resolverCuadrante`
+tire `PartidaImposible` ante un empate en vez de desempatar: es una línea, no rompe ningún test
+de hoy, y convierte un sesgo silencioso en un error que se ve. Es lo que `CTR-08.5` regla 3 ya
+decía: si aparece un desempate en el motor, es que algo se rompió antes.
+
+#### `disposicion` — la grilla de dos por dos relativa (`D-57` punto 7)
+
+`celdas` trae las cuatro maneras en el orden de la grilla, **siempre relativo a la tuya**:
+
+| Posición | Cuál | Dónde va |
+|---|---|---|
+| 0 | la tuya | arriba a la izquierda |
+| 1 | la que comparte tu polo de luz-oscuridad (y no el de orden-caos) | al lado: tu mismo renglón |
+| 2 | la que comparte tu polo de orden-caos (y no el de luz-oscuridad) | abajo: tu misma columna |
+| 3 | la opuesta | en diagonal |
+
+`renglones` y `columnas` son los polos de los márgenes —el primero siempre el tuyo—, no las
+maneras: dicen qué tienen en común, que es lo que la grilla cuenta. Con `CU-1` da `CU-1, CU-2,
+CU-3, CU-4`; con `CU-4`, `CU-4, CU-3, CU-2, CU-1`. **Cada manera encabeza su propia grilla y
+ninguna otra**, así que ninguna queda fija arriba para todos: lo que el rombo de la v1 no
+lograba.
+
+**Ningún número.** Las celdas son `Cuadrante` (strings) y los márgenes son polos (strings). No
+hay distancia, ni porcentaje, ni "qué tan opuesta". La regla de `CTR-08.6` —lo que no está en
+el tipo no se puede mostrar— se extiende a esta función.
+
+#### `relacion` — el contraste de `CNT-29`
+
+Dice **qué polo comparten** dos maneras: `misma`, `luz-oscuridad`, `orden-caos` u `opuesta`.
+La isla la usa al terminar una noche que arrancó con un desafío, para elegir la línea de
+`CNT-29`. Es **simétrica** —no hay dirección, así que no hay "le ganaste"— y **ningún valor
+ordena a otro**.
+
+**`disposicion` y `relacion` tienen que decir lo mismo, y hoy nada lo ata.** Se calculan por
+caminos distintos: una busca por polos, la otra los compara. Las dos están bien, pero si una
+cambia, la grilla y la línea de contraste se pueden contradecir en la misma pantalla. La
+guarda es una línea en `partida.test.ts`: para cada `id` y cada `k`,
+`relacion(banco, id, celdas[k].id)` vale `misma`, `luz-oscuridad`, `orden-caos` y `opuesta`
+en ese orden.
+
+**Las dos piden `banco`, no solo ids.** Los polos de cada cuadrante son dato de
+`src/data/dos-ejes.json`; una tabla `CU-1 → luz + orden` escrita en el código sería la segunda
+fuente de verdad que `.claude/rules/codigo-juegos.md` prohíbe. Con un id que no resuelve
+tiran `PartidaImposible`: la isla solo las llama con ids ya resueltos contra el banco, y un id
+suelto ahí es un defecto del llamador.
+
+#### Alternativas descartadas (v2.5)
+
+1. **Sortear cinco por eje del banco entero y después ponerles momento.** Es el sorteo de la v1
+   con una etiqueta: dos escenas de la vuelta en la misma noche y ninguna de la previa.
+2. **Un ítem con dos momentos posibles** (`"momento": ["ida", "vuelta"]`). Contaría para dos
+   pisos y podría salir dos veces en una noche. Un ítem, una celda.
+3. **Historial entre visitas en `localStorage`.** `D-57` punto 6 lo dejó en memoria; y con tres
+   por celda la cuarta noche repite igual. No compra nada que las tres primeras no den.
+4. **Rotación perfecta al agotarse una celda** (servir la escena que hace más que no sale).
+   Exige que `vistos` sea una lista ordenada que la isla mantenga, para una diferencia que
+   aparece en la quinta noche de una visita a un juego de dos minutos.
+5. **Que `disposicion` devuelva la relación de cada celda adentro.** Es más explícito, y lo
+   pensé primero. Lo descarto porque los márgenes ya nombran los polos compartidos, que es lo
+   que se pinta, y porque la guarda de arriba ata las dos funciones sin duplicar el dato.
+6. **Una `distancia` numérica (0, 1, 2) en vez de `relacion`.** Es un número, y el primer
+   componente que lo reciba lo va a mostrar: "están a dos de distancia". `US-06` criterio 3.
+
+### v2.6 — El taller de tarjetas
+
+`D-57` puntos 8, 10 y 11. Como hay cuatro identidades y ninguna lleva un dato de la persona,
+lo que se comparte se fabrica una vez, se guarda en el repo y queda fijo.
+
+| | |
+|---|---|
+| Script | **`scripts/generar-dos-ejes.mjs`**, corrido con **`npm run generar-dos-ejes`** (`node --experimental-strip-types`, para importar los `.ts` de `src/lib/dos-ejes/`) |
+| Dependencias | **`sharp` y `fontkitten` en `devDependencies`, con versión exacta** (`D-57`). Hoy están en el árbol solo de rebote: según `package-lock.json`, `sharp` 0.34.5 (Apache-2.0, instalado como `optional` de otro paquete) y `fontkitten` 1.0.3 (MIT). Un taller que depende de la instalación opcional de otro paquete deja de andar el día que ese paquete cambie de dependencias |
+| Fuentes | `public/fuentes/oktubre-calco.woff` y **`scripts/fuentes/archivo-black.ttf`** (OFL, con su licencia al lado; `D-57`). El `.ttf` existe porque `fontkitten` no lee el `.woff2` que sirve el sitio (encabezado del taller) |
+| Módulos | **`src/lib/dos-ejes/arte.ts`**: módulo hoja, sin imports. El máster, sus medidas, las cajas de recorte, lo prohibido y las rutas. Lo leen la isla, las páginas, el taller y el test. **`src/lib/dos-ejes/taller.ts`**: la huella. Usa `node:fs`, así que solo lo importan el taller y su test (`islas.test.ts` lo vigila) |
+| Corre | **A mano, nunca en el build.** Las salidas se versionan, como las pasadas de `CTR-12` |
+
+**Por qué a mano y no en el build:** `sharp` es un binario nativo, y meterlo en el build de
+Vercel hace que el sitio no se publique el día que no instale, por nueve imágenes que cambian
+una vez por ciclo. El riesgo que trae correrlo a mano —que el banco cambie y las tarjetas
+no— lo caza el test de abajo, que es para lo que existe.
+
+#### Las salidas
+
+| Archivo | Medida | Techo | Para qué |
+|---|---|---|---|
+| `public/tarjetas/dos-ejes/cu-N.png` (×4) | **1080 × 1350** | **≤ 160 KB** c/u | El archivo de `navigator.share({ files })`. La isla lo baja al pintar el resultado |
+| `public/tarjetas/dos-ejes/og-cu-N.png` (×4) | **1200 × 630** | **≤ 120 KB** c/u | `og:image` de cada postal |
+| `public/tarjetas/dos-ejes/og-dos-ejes.png` | **1200 × 630** | **≤ 120 KB** | `og:image` de `/juegos/dos-ejes/` |
+| `public/arte/dos-ejes/libro-*.{jpg,png}` (×3) | las de `PIEZAS`, achicadas y nunca agrandadas | **≤ 30 KB** c/u | La franja, el canto y el esquinero del libro (cuáles y dónde, `UX-36`) |
+
+`N` es el id del cuadrante en minúscula. **Ninguna ruta se escribe a mano:** salen de
+`arte.ts` (`slugDe`, `rutaDeTarjeta`, `rutaDeVistaPrevia`, `VISTA_PREVIA_JUEGO`,
+`rutaDePieza`). El formato es libre mientras se cumplan medida y techo: hoy las tarjetas y las
+vistas son PNG, y las piezas JPEG cuando no necesitan alfa. **WebP no**, para lo que sale del
+sitio: lo abre una aplicación ajena y que todas lo lean no está verificado.
+
+**De dónde salen los techos.** Los 160 KB de la tarjeta quedan por debajo de un fragmento de
+audio (180 KB, `CTR-01.5`), que es la vara que el sitio ya usa para "lo que un teléfono paga
+por una revelación"; y esta se baja sin que nadie la pida. Las piezas, 90 KB entre las tres,
+son del orden de la estampa de una revelación de "Adiviná la tapa" (≤ 82 KB, `CTR-12`): la
+portada del juego es la primera pantalla de una sesión de dos minutos. **Los 120 KB de la vista
+previa son un techo nuestro, no un límite verificado de ninguna plataforma.** Qué peso y qué
+formato aceptan los previsualizadores de WhatsApp, X y Telegram es un hecho externo que no
+tengo y que queda pedido como ficha. Si una vista previa no aparece, es lo primero que hay que
+mirar.
+
+#### Las reglas del taller
+
+1. **Lo que es de marca va en las letras reales, como trazo.** La marca y los títulos se
+   dibujan con `fontkitten` desde las fuentes del repo y entran al SVG como `<path>`: no
+   dependen de qué tenga instalado la máquina, y no cae la pila del sistema como voz de título
+   (`diseno-marca.md`).
+2. **El texto largo va en la sans del sistema**, por `librsvg`, que es lo mismo que hace
+   `--fuente` en pantalla. **Consecuencia, y es la que ordena todo lo demás:** el PNG puede
+   salir apenas distinto en otra máquina. Por eso el manifiesto guarda la huella de **lo que
+   entra**, no la de los píxeles.
+3. **Ningún hex en el script.** Los colores se leen por nombre de `src/styles/tokens.css`
+   (`TOKENS_DEL_TALLER`); si un token falta o no es un hex, el taller tira.
+4. **Piezas sueltas, nunca la tapa entera, y nunca el óvalo ni el título** (`D-57` punto 8,
+   `RES-168`). Las cajas de recorte y las dos zonas prohibidas —el óvalo con la figura y la
+   palabra LUZBELITO— están en `arte.ts`, medidas una vez sobre el máster. El taller tira si
+   una caja toca una zona prohibida o se sale del máster, y el test lo vuelve a mirar. Es la
+   parte de `RES-168` que una máquina puede ver; que una pieza no recomponga la tapa lo ve
+   `revisor`.
+5. **Ninguna pieza se asigna a un cuadrante** (`D-57` punto 8). Lo garantiza la forma: `PIEZAS`
+   no tiene una entrada por cuadrante, así que las cuatro tarjetas usan las mismas.
+6. **El crédito viaja con la imagen** (`D-21`, condición 1). La tarjeta sale del sitio como
+   archivo, sin pie y sin `alt`: **lleva el crédito pintado** (`TARJETA.credito`). La vista
+   previa lo lleva en `og:image:alt`, por la prop `imagenAlt` de `Cabeza.astro` (`ADR-02`,
+   enmienda).
+7. **La tijera corta igual cada vez:** el borde se dibuja con azar de semilla fija. Una pieza
+   que cambia de borde en cada corrida ensucia el repo sin que nada haya cambiado.
+
+**Recomendado, no exigido en esta versión:** que el taller tire si a una fuente le falta un
+glifo. Hoy Oktubre Calco solo escribe "ARCADE RICOTERO", que entra en sus once letras; el
+riesgo aparece el día que alguien le pase un texto con tilde y la fuente devuelva el glifo
+vacío sin quejarse. Es una línea en la función que traza.
+
+#### El manifiesto: `scripts/dos-ejes-manifiesto.json`
+
+Fuera de `public/` para que no se sirva, como el de `CTR-12`. Lo escribe el taller. Tres
+campos que importan:
+
+- **`huella`**: un sha256 de todo lo que entra al dibujo —los cuatro cuadrantes (id, polos,
+  nombre y bajada), los textos fijos de `copy.ts` que se pintan, los colores, las cajas, las
+  zonas prohibidas, el máster, las dos fuentes y `VERSION_DEL_DIBUJO`—, calculado por
+  `huellaDelTaller()` en `taller.ts`;
+- **`salidas`**: la lista de archivos que escribió;
+- **`version`**: la del dibujo.
+
+**`VERSION_DEL_DIBUJO` se sube a mano cuando cambia la composición** (un margen, un cuerpo,
+dónde va el libro). Eso no está en ningún dato, y es el único cambio que la huella no ve sola.
+Queda aceptado: es el mismo acuerdo de palabra que cualquier cambio de diseño, y lo ve el ojo
+de quien revisa la tarjeta.
+
+#### El test: `src/lib/dos-ejes/tarjetas.test.ts`
+
+**No corre el taller:** recalcula la huella de las entradas de hoy y la compara con la del
+manifiesto. Por eso no importa que `sharp` y `librsvg` no den los mismos píxeles en dos
+máquinas, y por eso el test corre donde `sharp` no instala. Hoy falla si:
+
+1. falta el manifiesto, o **la huella no coincide**: cambió un nombre, una bajada, un texto
+   fijo, un color, una caja, el máster o una fuente, y las tarjetas quedaron viejas. El mensaje
+   dice qué correr. **Es el defecto que todo esto existe para cazar:** `contenido` cambia un
+   nombre en el JSON, la postal lo dice nuevo en `og:title` y la imagen lo sigue mostrando
+   viejo;
+2. la lista de `salidas` no es exactamente la esperada (tres piezas, y tarjeta y vista por cada
+   cuadrante del banco, más la del juego), o falta un archivo;
+3. una tarjeta o una vista no mide lo que dice la tabla (leído de la cabecera del PNG, sin
+   dependencias);
+4. un archivo pasa su techo;
+5. una caja de recorte toca el óvalo o el título, se sale del máster, o se agranda; con su caso
+   en rojo, que prueba que la guarda sabe ver.
+
+**Dos agujeros que quedan, dichos para que sean decisión y no descuido:**
+
+- **Un archivo de salida editado a mano no se caza.** La huella es de la entrada. Cerrarlo
+  costaría guardar también un hash de cada salida y compararlo con el disco —que no depende de
+  la máquina, porque compara lo que está con lo que la misma corrida anotó—. Recomendado, no
+  exigido: hoy nadie tiene motivo para retocar un PNG generado.
+- **Un archivo de más en las dos carpetas tampoco**: el test mira la lista del manifiesto, no
+  el contenido de la carpeta. Un huérfano se serviría sin que nadie lo pida. Es un
+  `readdirSync` y una comparación. Recomendado.
+
+#### Qué ve la gente si una imagen no carga
+
+- **La tarjeta no bajó** (sin red, o tardó): el resultado no la espera nunca. "Compartí" manda
+  el enlace a la postal sin archivo —que trae su vista previa igual—, y si no hay
+  `navigator.share`, el camino de siempre de `src/scripts/compartir.ts`. Nada se rompe y nada
+  avisa con un error.
+- **Una pieza del libro no cargó:** la pantalla queda en papel y tinta con el texto entero.
+  Ninguna pieza lleva información que no esté también escrita.
+- **El previsualizador no levantó la vista:** el enlace llega con `og:title` y
+  `og:description`, que nombran la manera. Es lo que pasaba hasta hoy con todos los juegos.
+
+#### Alternativas descartadas (v2.6)
+
+1. **Generar las tarjetas en el build.** Ver arriba: el sitio dejaría de publicarse por un
+   binario nativo, para nueve archivos casi fijos.
+2. **Dibujarlas en canvas, en el teléfono.** `D-57` ya la descartó: pierde el gesto en Safari
+   y un previsualizador no le puede pedir una imagen a un canvas.
+3. **Hashear las salidas en vez de las entradas.** Con el texto largo en la sans del sistema,
+   el mismo taller corrido en dos máquinas daría dos hashes, y el test fallaría por la máquina
+   y no por el dato.
+4. **Todo el texto como trazo, también el largo.** Haría las salidas reproducibles y le
+   sacaría a la tarjeta la letra que el sitio usa para leer. `--fuente` es la pila del sistema
+   a propósito (`UX-01`).
+5. **Una pieza del libro por cuadrante.** `D-57` la descartó: siempre hay una más linda.
+
+### v2.7 — El bloque normativo
+
+**Manda `src/data/_schema/dos-ejes.schema.json`, y esta versión no lo pega.** La v1 lo pegó
+entero porque el archivo no existía (`CTR-08.7`). Hoy existe, `esquemas.test.ts` lo corre en
+cada build, y una copia acá sería una segunda fuente de verdad que se desincroniza la primera
+vez. Lo que la v2 le cambió a la v1, entero:
+
+- `$id` termina en `/2`; `contratoVersion` es `const: 2`; `required` suma `momentos`.
+- `momentos`: arreglo de 5 (`minItems` y `maxItems`), `prefixItems` con un `$ref` a
+  `#/$defs/momento` y un `const` de id por posición —`previa`, `ida`, `vereda`, `adentro`,
+  `vuelta`—, e `items: false`.
+- `$defs/momento`: `additionalProperties: false`; `required` `id`, `nombre`, `canta`; `id`
+  con el `enum` de los cinco; `nombre` 2–24 y `canta` 6–80, los dos con el `not` de Bulacio,
+  Olavarría y Cromañón.
+- `$defs/cuadrante`: `nombre.maxLength` 26 (era 48); `bajada.maxLength` 240 (era 220).
+- `$defs/item`: `momento` con el `enum` de los cinco, fuera de `required`; un tercer elemento
+  en `allOf`: si `estado` es `listo`, entonces `required: ["momento"]`.
+
+Vale la advertencia de `CTR-08.7`, ahora con una palabra más: `prefixItems`, como
+`minContains` y `maxContains`, es de draft 2020-12. Con un `$schema` anterior, ajv lo ignora y
+el orden de la noche deja de aplicarse **en silencio**. Un `$ref` con propiedades hermanas
+también es válido recién desde 2019-09.
+
+### v2.8 — Lo que el schema sigue sin poder ver
+
+Los siete de `CTR-08.8`, con el punto 2 al día —el piso es de 30 listos y tres por celda,
+no de 20 y diez por eje—, y tres más:
+
+8. **`momentos.length === preguntasPorEje`** (v2.2) → `banco.test.ts`, y el motor en tiempo de
+   ejecución.
+9. **Que el `momento` de un ítem esté entre los `momentos` del archivo** → `banco.test.ts`. Hoy
+   el `enum` lo cubre; deja de cubrirlo el día que los momentos dejen de ser cinco fijos.
+10. **Que un `CU-n` conserve sus polos entre una versión del banco y la siguiente** →
+    `banco.test.ts`.
+
+Y lo que no ve ninguna máquina, que es de `REV-19`: que una opción no sea "más de adentro" que
+la otra (`BR-36`), que las cuatro maneras se digan con el mismo orgullo, y que una escena no
+sea una cuestión de seguridad disfrazada de temperamento.
+
+### v2.9 — Verificación: qué correr, y quién
+
+`arquitectura` no ejecuta (`D-12`). Lo corre el hilo principal al integrar, o `revisor` en
+`REV-19`.
+
+```bash
+# (1) Forma: el banco contra el schema v2. Más los rojos de la tabla de abajo, cuando entren.
+node --test src/lib/esquemas.test.ts
+
+# (2) Conjunto: la noche en orden, momentos === preguntasPorEje, tres por celda, los vetos
+#     de BR-36, los techos de UX-06 §7 y los polos de cada CU-n.
+node --test src/lib/dos-ejes/banco.test.ts
+
+# (3) Motor: la noche por momentos, vistos, resolverCuadrante, disposicion y relacion.
+node --test src/lib/dos-ejes/partida.test.ts
+
+# (4) Taller: la huella al día, las salidas completas, medidas, techos y lo prohibido.
+node --test src/lib/dos-ejes/tarjetas.test.ts
+
+# (5) La enumeración de CTR-08.9 (2) sigue corriendo sin cambios sobre un banco v2: no mira
+#     los momentos, y "0 empates, 4 cuadrantes alcanzables" no depende de ellos. Sus avisos de
+#     piso (20 y 10) son de la v1; el piso que manda es el de (2).
+```
+
+**Mientras `src/data/dos-ejes.json` siga en v1, (1) y (2) dan rojo, y es lo esperado:** el
+schema v2 y `banco.test.ts` llegaron antes que el banco, a propósito (`D-57` punto 2: las
+guardas se escriben antes). Se ponen en verde cuando `contenido` entrega `CNT-30`.
+
+**Los rojos que le faltan a `esquemas.test.ts`.** El schema de este juego nunca se vio en
+rojo: la v1 entró sin un solo caso, y una guarda que nunca se vio en rojo no es una guarda
+(encabezado de ese archivo). Cada caso sale del banco de verdad tocado en **un solo campo**, y
+el schema lo tiene que rechazar **señalando ese lugar**; con el control en verde al lado. Los
+de la v1 van también, porque nunca se probaron.
+
+| # | Caso | Lugar que tiene que señalar |
+|---|---|---|
+| e1 | un ítem `listo` sin `momento` | `/items/N` |
+| e2 | un `momento` que la noche no tiene (`"viaje"`) | `/items/N/momento` |
+| e3 | cuatro momentos | `/momentos` |
+| e4 | la ida antes que la previa | `/momentos/0/id` |
+| e5 | un momento con una clave de más | `/momentos/N` |
+| e6 | un nombre de cuadrante de 27 caracteres | `/cuadrantes/N/nombre` |
+| e7 | una bajada de 241 caracteres | `/cuadrantes/N/bajada` |
+| e8 | `contratoVersion: 1` | `/contratoVersion` |
+| e9 | un ítem de luz-oscuridad con una opción `caos` (regla 1) | `/items/N/opciones` |
+| e10 | `correcta: true` en una opción (regla 4) | `/items/N/opciones/0` |
+| e11 | `preguntasPorEje: 6` (regla 3) | `/preguntasPorEje` |
+| verde | un ítem `retirado` sin `momento`, y uno en `borrador` sin `momento` | — |
+
+**Lo que le falta a `partida.test.ts`:** la guarda que ata `disposicion` con `relacion`
+(v2.5). Lo demás de v2.5 ya está.
+
+**Lo que le falta a `tarjetas.test.ts`:** nada exigido. Los dos agujeros de v2.6 quedan
+recomendados.
+
+| # | Chequeo | Quién |
+|---|---|---|
+| 1 | Un ítem mueve un solo eje; dos polos opuestos; ninguna clave de más | (1), y en rojo cuando entren e9–e10 |
+| 2 | `preguntasPorEje` impar | (1) |
+| 3 | La noche en orden, sin momentos repetidos | (1) y (2) |
+| 4 | Todo ítem listo tiene momento | (1) y (2) |
+| 5 | `momentos.length === preguntasPorEje` | (2) y el motor |
+| 6 | Tres por celda, treinta listos | (2) |
+| 7 | Un ítem de cada eje por momento, impar por eje, sin repetir, otra noche sin repetir | (3) |
+| 8 | El resultado, la grilla y la relación sin números | (3) y los tipos |
+| 9 | Empate imposible y cuatro cuadrantes alcanzables, por enumeración | (5) |
+| 10 | Las tarjetas dicen lo que dice el banco hoy | (4) |
+| 11 | Ningún recorte toca el óvalo ni el título | (4) y el taller |
+| 12 | Que una opción no sea "más de adentro"; que las cuatro maneras pesen igual | `REV-19` |
+
+### v2.10 — Consecuencias
+
+- **Fácil, y es lo que destraba `CNT-30`:** el schema ya está bajado, así que el banco valida
+  o no en el momento en que se escribe.
+- **Fácil:** que la segunda noche no repita la primera. Es un parámetro con valor por omisión;
+  la isla que no lo pasa sigue andando como antes.
+- **Difícil, a propósito:** que un ítem caiga en dos celdas, que la grilla traiga una
+  distancia, que la relación ordene. Las tres cosas serían cambiar el contrato.
+- **Difícil, y es nuevo:** cambiar la cantidad de preguntas (v2.2).
+- **Lo que le impone a `contenido` (`CNT-30`):** la forma de v2.2 a v2.4. Y una que no es de
+  forma: **cada vez que cambia un nombre, una bajada o un texto que la tarjeta pinta, hay que
+  correr el taller** (`contenido` no puede, `D-12`: lo deja dicho y lo corre el hilo). El test
+  lo recuerda.
+- **Lo que le impone a `experiencia` (`UX-36`):** `ItemServido` trae `momento`, y el sello y
+  la línea que canta se buscan en `banco.momentos`; la grilla recibe celdas y márgenes, nunca
+  un número.
+- **Lo que falta del hilo principal, para que esta versión quede entera:**
+  1. `sharp` y `fontkitten` a `devDependencies` con versión exacta, y el script
+     `generar-dos-ejes` en `package.json`. Hoy no están, y el comando que el taller dice en su
+     encabezado no existe;
+  2. los rojos e1–e11 en `esquemas.test.ts`;
+  3. la guarda `disposicion`/`relacion` en `partida.test.ts`;
+  4. las postales y la prop nueva de `Cabeza.astro` (`ADR-02`, enmienda del 2026-10-04).
+- **Pendiente sin bloquear:** la ficha sobre lo que aceptan los previsualizadores (peso y
+  formato de `og:image`). Si dice menos de 120 KB, baja el techo de la vista; nada más cambia.
+
+### Qué NO decide la v2
+
+- **El texto** de los momentos, los ítems, los nombres y las bajadas: `contenido` (`CNT-30`).
+- **Qué piezas, dónde y cómo se componen** la portada, la hoja y la tarjeta: `experiencia`
+  (`UX-36`).
+- **Si la visita recuerda entre visitas:** `producto` (`BR-37`).
+- **La línea de cada uno de los cuatro contrastes:** `contenido` (`CNT-29`).
+
+---
+
+## CTR-08 v1 — Contrato de `src/data/dos-ejes.json`
+
+> **[2026-10-04: reemplazada en parte por la v2, arriba.]** Sigue valiendo en todo lo que la
+> tabla de v2.1 marca como "sigue". Se conserva sin reescribir, salvo dos correcciones
+> anotadas en su lugar (`CTR-08.4` y `CTR-08.9`).
 
 - **Fecha:** 2026-08-24
 - **Estado:** **vigente, sin valores abiertos.** Todo lo que este contrato necesitaba de
@@ -59,6 +651,10 @@ decodificador ni un índice de 105 títulos.
 
 ### CTR-08.2 — Envoltorio
 
+> **[AMPLIADO por v2.2, 2026-10-04]:** suma `momentos`, y `contratoVersion` pasa a 2. El
+> último párrafo de esta sección ("el motor lee este número") sigue valiendo; lo que dejó de
+> valer es que cambiar `preguntasPorEje` sea tocar un solo número.
+
 ```json
 {
   "contrato": "CTR-08",
@@ -95,6 +691,10 @@ hardcodeados") se aplica también a esto.
 ---
 
 ### CTR-08.3 — El ítem
+
+> **[AMPLIADO por v2.3, 2026-10-04]:** suma `momento`, obligatorio si el ítem está `listo`. El
+> ejemplo de abajo ya no sirve de molde: "solo" le pone género a quien juega y "la entrada
+> sacada" pide plata, y `BR-36` veta las dos cosas. El molde vigente es `EJ-998`, en v2.3.
 
 El ID de ejemplo es `EJ-999`, reservado en `CTR-08.10` y que nunca se carga en el banco.
 
@@ -149,19 +749,13 @@ temperamento necesita más aire que un distractor.
 
 ### CTR-08.4 — Los cuatro cuadrantes
 
+> **[AMPLIADO por v2.4, 2026-10-04]:** `nombre` baja a 26 caracteres y `bajada` sube a 240.
+> **El ejemplo que estaba acá se sacó el mismo día:** proponía un nombre de cuadrante con
+> persona gramatical ("El que…"), que es justo lo que `D-57` punto 5 descarta, y desde un
+> contrato un ejemplo se lee como sugerencia. El ejemplo vigente está en v2.4.
+
 Viven en el mismo archivo que los ítems, porque son la otra mitad del banco: sin los
 cuatro nombres, el juego no tiene qué devolver.
-
-```json
-{
-  "id": "CU-1",
-  "luzOscuridad": "luz",
-  "ordenCaos": "orden",
-  "nombre": "El que llega temprano",
-  "bajada": "Sabés a qué hora abre y ya tenés el lugar elegido. No es cálculo: es que te gusta ver todo desde el principio.",
-  "estado": "listo"
-}
-```
 
 | Campo | Tipo | Oblig. | Qué es y por qué |
 |---|---|---|---|
@@ -326,6 +920,10 @@ Seis, y las seis se pueden retomar sabiendo lo que cuestan.
 
 ### CTR-08.6 — El sorteo y la resolución, que es lo que `US-06` me dejó a mí
 
+> **[REEMPLAZADO por v2.5, 2026-10-04]:** el sorteo recorre los cinco momentos y deja de
+> intercalar `ABAB`; suma `vistos` (en memoria, no en `localStorage`), `disposicion` y
+> `relacion`. `resolverCuadrante` y su retorno sin números quedan como están acá.
+
 Esto no es dato: es lo que el motor tiene que hacer, y el contrato lo fija porque de acá
 depende que el empate siga siendo imposible en tiempo de ejecución.
 
@@ -381,6 +979,11 @@ lo necesita. Si se quiere, es de `producto` y `experiencia`.
 ---
 
 ### CTR-08.7 — El bloque normativo, para pegar y correr
+
+> **[REEMPLAZADO por v2.7, 2026-10-04]:** el bloque de abajo es el schema v1, que ya no es el
+> vigente. Manda `src/data/_schema/dos-ejes.schema.json` (`$id` `…/dos-ejes/2`), y v2.7 lista
+> todo lo que le cambió a esto. La nota que sigue ("la copia todavía no existe") quedó vieja:
+> la bajó el hilo principal en el ciclo 8.
 
 Texto normativo. Si la copia en `src/data/_schema/dos-ejes.schema.json` se desincroniza de
 esto, **manda esto**, y la copia se regenera en la misma ráfaga.
@@ -575,6 +1178,9 @@ esto, **manda esto**, y la copia se regenera en la misma ráfaga.
 
 ### CTR-08.8 — Lo que el schema NO puede verificar
 
+> **[AMPLIADO por v2.8, 2026-10-04]:** tres más, y el piso del punto 2 pasa a 30 con tres por
+> celda.
+
 1. Que los `id` sean únicos dentro del archivo. `uniqueItems` compara objetos enteros.
 2. **El piso de 20 y las 10 por eje.** Un schema valida ítems sueltos, no propiedades del
    conjunto. Van a `CTR-08.9`.
@@ -593,6 +1199,11 @@ esto, **manda esto**, y la copia se regenera en la misma ráfaga.
 
 ### CTR-08.9 — Verificación: qué correr, y quién
 
+> **[REEMPLAZADO por v2.9, 2026-10-04]:** los comandos vigentes están allá. El (2) de acá
+> sigue corriendo sin cambios y v2.9 lo usa. El (3) se corrigió en su lugar: citaba
+> `sorteo.test.ts` y `resultado.test.ts`, que no existieron nunca; los tests del motor
+> siempre estuvieron en `partida.test.ts`.
+
 `arquitectura` no tiene con qué ejecutar (`D-12`) y no lo simula. **Lo corre el hilo
 principal** al cerrar `T-121` y `T-123`, o `revisor` en `T-124`.
 
@@ -606,8 +1217,9 @@ node --test src/lib/esquemas.test.ts
 #     y los cuatro cuadrantes alcanzables. No necesita que el motor exista todavia.
 node -e "import('node:fs').then(({readFileSync})=>{const j=JSON.parse(readFileSync('src/data/dos-ejes.json','utf8'));const n=j.preguntasPorEje,f=[],EJ=['luz-oscuridad','orden-caos'];const it=(j.items||[]).filter(x=>x.estado==='listo'),cu=(j.cuadrantes||[]).filter(c=>c.estado==='listo');const pe=e=>it.filter(x=>x.eje===e);if(!Number.isInteger(n)||n%2===0)f.push('preguntasPorEje no es impar: '+n);if(it.length<20)f.push('piso de US-06: '+it.length+'/20 listos');for(const e of EJ){const p=pe(e).length;if(p<10)f.push('eje '+e+': '+p+'/10');if(p<n)f.push('eje '+e+' no alcanza para servir una partida ('+p+'<'+n+')');}const ids=it.map(x=>x.id),du=[...new Set(ids.filter((x,i)=>ids.indexOf(x)!==i))];if(du.length)f.push('ids repetidos: '+du.join(', '));const PROH=['correcta','dificultad','peso','puntos','explicacion','fuentes','esLeyenda'];for(const x of j.items||[]){for(const k of PROH)if(k in x)f.push(x.id+': campo prohibido \`'+k+'\` (CTR-08.5 regla 4)');for(const o of x.opciones||[])for(const k of PROH)if(k in o)f.push(x.id+': opcion con campo prohibido \`'+k+'\`');const ps=(x.opciones||[]).map(o=>o.polo).sort().join('+');if(ps!=='luz+oscuridad'&&ps!=='caos+orden')f.push(x.id+': polos '+ps+' (CTR-08.5 reglas 1 y 2)');if((x.eje==='luz-oscuridad')!==(ps==='luz+oscuridad'))f.push(x.id+': el eje declarado no coincide con los polos');}const k=(a,b)=>a+'|'+b,tabla=new Map(cu.map(c=>[k(c.luzOscuridad,c.ordenCaos),c.id]));if(cu.length!==4)f.push('cuadrantes listos: '+cu.length+'/4');if(tabla.size!==4)f.push('las 4 combinaciones no estan cubiertas, hay '+tabla.size+': '+[...tabla.keys()].join(' '));const vis=new Set();let emp=0;for(let a=0;a<=n;a++)for(let b=0;b<=n;b++){if(a*2===n||b*2===n){emp++;continue;}const q=tabla.get(k(a*2>n?'luz':'oscuridad',b*2>n?'orden':'caos'));if(q)vis.add(q);else f.push('resultado sin cuadrante: '+a+'/'+b);}if(emp)f.push('EMPATE POSIBLE en '+emp+' resultados');const inal=cu.filter(c=>!vis.has(c.id)).map(c=>c.id);if(inal.length)f.push('cuadrantes inalcanzables: '+inal.join(', '));const ojo=(j.items||[]).filter(x=>/[Mm]uer|[Ff]alleci|[Ss]olari/.test(JSON.stringify(x)));console.log(f.length?'ROTO:\n- '+f.join('\n- '):'OK CTR-08.9 · '+it.length+' items ('+pe(EJ[0]).length+' + '+pe(EJ[1]).length+') · '+((n+1)*(n+1))+' resultados posibles, 0 empates, 4 cuadrantes alcanzables');if(ojo.length)console.log('PARA LEER CON LOS OJOS (registro 3, voz-ricotera §6): '+ojo.map(x=>x.id).join(', '));})"
 
-# (3) Cuando el motor exista (T-123): que haga lo que dice CTR-08.6.
-node --test src/lib/dos-ejes/sorteo.test.ts src/lib/dos-ejes/resultado.test.ts
+# (3) El motor: que haga lo que dice CTR-08.6.
+#     [Corregido el 2026-10-04: decía sorteo.test.ts y resultado.test.ts, que nunca existieron.]
+node --test src/lib/dos-ejes/partida.test.ts
 ```
 
 **Por qué el barrido de (2) es una demostración y no una muestra.** El resultado de un eje
@@ -640,7 +1252,7 @@ tres cosas juntas son "los cuatro cuadrantes son alcanzables y el empate es impo
 
 **El comando (3) todavía no se puede correr** porque `src/lib/dos-ejes/` no existe: lo crea
 `T-123`. Los dos primeros sí, apenas `T-121` deje el JSON y el hilo baje la copia del
-schema.
+schema. *(2026-10-04: los tres corren desde el ciclo 8.)*
 
 ---
 
@@ -684,7 +1296,8 @@ un patrón de dos dígitos sugeriría que puede haber un quinto.
   `BR-17` regla 2 prohíbe. La ventana para discutirlo es antes del primer lote.
 - **Cambiar `preguntasPorEje` es barato y está previsto.** Se toca un número del JSON, el
   motor lo lee, el comando (2) rehace la enumeración sobre el nuevo valor. Lo único que no
-  se puede es ponerlo par: el schema no valida.
+  se puede es ponerlo par: el schema no valida. **[Ya no, desde la v2 (2026-10-04): una
+  pregunta más por eje es un momento más de la noche. Ver v2.2.]**
 - **Lo que le impone a `experiencia` (`T-122`):** el resultado que recibe son tres campos
   —`id`, `nombre`, `bajada`— y **ningún número**. Si la pantalla que tiene en la cabeza
   necesita mostrar "4 a 1" o una barra, es un pedido de cambio de contrato, no un detalle

@@ -4,11 +4,170 @@
 > `UX-01`, `UX-02`, `BR-19` (partida por vidas), `BR-20` (escalera de `US-07`), `US-06`
 > (identidad sin puntaje), `CTR-08`,
 > `Docs/SUGERENCIAS/UX-para-arquitectura-formato-link-resultado.md`.
-> Produce: `ADR-02` (v1 2026-08-19, **v2 2026-08-25**).
-> Última actualización: 2026-08-25 (`T-132`, ciclo 9).
+> Produce: `ADR-02` (v1 2026-08-19, **v2 2026-08-25**, **enmienda 1 de la v2: 2026-10-04**).
+> Para la enmienda consume además: `D-57` (puntos 10, 11 y 13), `D-51` punto 6, `D-56`,
+> `CTR-08` v2 (`Docs/ARQ/ARQ-schema-dos-ejes.md`), `CNT-29`, `src/components/Cabeza.astro`,
+> `src/lib/dos-ejes/arte.ts`, `src/scripts/partida-dos-ejes.ts`.
+> Última actualización: 2026-10-04 (enmienda 1, ciclo 18).
 
-**Vigente: `ADR-02` v2.** La v1 queda abajo entera, sin editar, porque hay links en la
-calle armados con ella y porque su sección de alternativas descartadas sigue valiendo.
+**Vigente: `ADR-02` v2, con la enmienda 1.** La v1 queda abajo entera, sin editar, porque
+hay links en la calle armados con ella y porque su sección de alternativas descartadas
+sigue valiendo.
+
+---
+
+## ADR-02 v2, enmienda 1 — La identidad de `dos-ejes` también viaja por ruta
+
+- **Fecha:** 2026-10-04
+- **Estado:** **aceptada.** La decisión no depende de evidencia externa. Un techo que la
+  acompaña sí —el peso de la vista previa, `CTR-08` v2.6— y queda como ficha pedida, sin
+  frenar nada.
+- **Pedido por:** `D-57` puntos 10 y 11 ("`arquitectura`: enmienda `ADR-02` con la forma por
+  ruta").
+- **Por qué enmienda y no v3:** el formato de la query no cambia un carácter, ningún enlace
+  en la calle deja de leerse y las formas siguen siendo las mismas. Cambia que **una** forma,
+  en **un** juego, gana un segundo vehículo, y que una consecuencia de la v2 deja de valer
+  para ese juego (abajo, "lo que deja de valer").
+- **Implementa:** el hilo principal. La isla ya está escrita así
+  (`src/scripts/partida-dos-ejes.ts`); faltan las páginas y `Cabeza.astro`.
+
+### Contexto
+
+La v2 cerró con "la vista previa del tuit no muestra el resultado [...] y así se queda". Era
+verdad, y lo sigue siendo para la query: un `<meta>` se resuelve en el build y la query no
+llega hasta él. `D-57` punto 10 encontró la salida para este juego, y solo para este: **hay
+cuatro identidades, se conocen en el build y ninguna lleva un dato de la persona.** Cuatro
+resultados posibles se pueden dibujar y publicar de antemano. Un `marcador` que va hasta
+9999 sobre 9999, no.
+
+### Decisión
+
+1. **Las postales.** `/juegos/dos-ejes/cu-1/` … `/juegos/dos-ejes/cu-4/`: una página estática
+   por cuadrante, generada en el build desde `cuadrantes` de `src/data/dos-ejes.json`
+   (`getStaticPaths`). **El segmento es el id del cuadrante en minúscula** (`CU-3` → `cu-3`,
+   con `slugDe` de `src/lib/dos-ejes/arte.ts`) **y nunca el nombre.** Hay tantas postales
+   como cuadrantes, y el schema dice que son cuatro.
+2. **Lo que se comparte es la postal, sin query:**
+   `https://arcade-ricotero.vercel.app/juegos/dos-ejes/cu-3/`, 56 caracteres, holgado bajo
+   los ~100 de la regla 5.
+3. **Qué lleva la postal.** Su `og:title` ("Me salió «…»", copy de `contenido`), su
+   `og:description`, su `og:url` (la postal misma) y su `og:image` (la vista del cuadrante,
+   `rutaDeVistaPrevia(id)`, `CTR-08` v2.6). Adentro, la manera del otro —nombre y bajada—
+   antes de jugar, y un botón que **arranca la noche ahí mismo, con el desafío puesto**: la
+   postal monta la misma isla del juego con el mismo banco. No hay una pantalla de entrada
+   de por medio.
+4. **El desafío de una postal sale del build, nunca de la dirección.** La página lo deja
+   escrito en `data-desafio="CU-3"`, que viene de `getStaticPaths`, y la isla lo lee de ahí y
+   lo resuelve contra el banco. **En una postal, la isla no lee `location.pathname` ni
+   `location.search`.** Con eso la regla 4 se cumple sin hacer nada más: ningún carácter de
+   la URL llega al DOM, y la postal no agrega superficie de entrada. `src/lib/desafio.ts`
+   sigue siendo la única puerta por la que entra dato de afuera; la postal no pasa por ella
+   porque no trae dato de afuera.
+5. **Precedencia.** En una postal, la ruta es el desafío y **la query se ignora entera**:
+   `/juegos/dos-ejes/cu-1/?g=dos-ejes&r=CU-3` es la postal de `CU-1`. La página no puede
+   decir dos cosas.
+6. **Los enlaces viejos se siguen leyendo, sin redirigir.** `/juegos/dos-ejes/?g=dos-ejes&r=CU-n`
+   pasa por `leerDesafio` igual que hoy: invitación en la pantalla de entrada y contraste al
+   terminar. Abren con el nombre nuevo del mismo cuadrante (`D-57`: "viaja el id").
+7. **`n` no viaja en la postal.** Este juego nunca lo mandó, no puede llegar a la vista previa,
+   y sería el único texto libre de la página.
+8. **El contraste al terminar tiene cuatro casos, no dos.** "Entre dos `identidad` no se
+   compara: se contrasta" sigue entero. Cambia la granularidad: `relacion(banco, mio, suyo)`
+   (`CTR-08` v2.5) dice qué polo comparten —`misma`, `luz-oscuridad`, `orden-caos` u
+   `opuesta`—. Ninguno ordena a otro; la línea es de `CNT-29`. Vale igual para una noche que
+   arrancó en una postal y para una que arrancó con un enlace viejo.
+9. **`Cabeza.astro` gana dos props opcionales, `imagen` e `imagenAlt`, y van las dos o
+   ninguna:**
+
+   ```ts
+   type Props = { titulo: string; descripcion: string } & (
+     | { imagen?: undefined; imagenAlt?: undefined } // como hoy: /tarjeta.png y PORTAL.altTarjeta
+     | { imagen: string; imagenAlt: string }         // ruta del sitio, p. ej. rutaDeVistaPrevia('CU-1')
+   );
+   ```
+
+   - `imagen` es una ruta dentro del sitio y se hace absoluta con `Astro.site`, como hoy.
+     **Tiene que medir exactamente 1200 × 630:** `og:image:width` y `og:image:height` no
+     cambian, y una imagen de otra medida haría mentir a esas dos etiquetas. La medida la
+     vigila `tarjetas.test.ts`.
+   - `imagenAlt` va a `og:image:alt` y a `twitter:image:alt`, y **lleva el crédito del arte**
+     (`D-21`, condición 1), como `PORTAL.altTarjeta` lleva hoy el de Rocambole: en una vista
+     previa es el único lugar donde el crédito entra. El texto es de `contenido`.
+   - **Por qué las dos o ninguna, y no dos opcionales sueltas:** una `imagen` del libro de
+     *Luzbelito* con el `alt` por omisión diría que se ve la figura encadenada. Es un rótulo
+     que miente sobre lo que hay adentro, y la unión de tipos hace que `astro check` lo
+     rechace antes de que llegue a nadie.
+   - Las otras páginas no cambian ni una línea.
+10. **`/juegos/dos-ejes/` también estrena imagen:** la vista del juego (`VISTA_PREVIA_JUEGO`),
+    con su `imagenAlt`.
+
+### Lo que deja de valer
+
+La última consecuencia de la v2 —"la vista previa del tuit no muestra el resultado [...] la
+tarjeta que genera `npm run generar-marca-social` es una sola para todo el sitio y así se
+queda"— **deja de valer para `dos-ejes`** y sigue valiendo, palabra por palabra, para los
+demás juegos. Es la misma reversión que `D-57` punto 10 le hace a `D-51` punto 6, y por la
+misma razón.
+
+### Alternativas descartadas
+
+1. **La ruta con el nombre** (`/juegos/dos-ejes/mesa-larga-a-las-nueve/`). El nombre cambió en
+   este mismo ciclo ("Estrella fija" pasó a "Mesa larga a las nueve") y va a volver a cambiar;
+   el id es lo único estable, y un test lo ata a sus polos. Con el nombre en la ruta, cada
+   cambio de copy rompe las postales que ya circulan.
+2. **`/CU-1/` en mayúscula.** Todas las rutas del sitio van en minúscula; una sola forma
+   escrita. Qué hace el hosting con una mayúscula no está verificado y no hace falta: el sitio
+   nunca genera esa forma.
+3. **Una postal que redirige a la query** (`meta refresh` o JS hacia `?g=dos-ejes&r=CU-n`). La
+   persona ve cambiar la dirección debajo suyo, y qué hace cada previsualizador con una
+   redirección es un hecho que no tengo. Con la isla adentro de la postal no hay adónde
+   redirigir.
+4. **Un botón que navega a `/juegos/dos-ejes/?g=dos-ejes&r=CU-n&e=1` para arrancar directo.**
+   Suma un parámetro a este ADR solo para saltear una pantalla, y deja dos comportamientos
+   para la misma identidad según venga o no `e`.
+5. **El fragmento** (`#cu-1`). Tampoco llega al `<meta>`: es el problema de la query con otro
+   nombre.
+6. **Una postal sin isla**, solo la tarjeta y un enlace al juego. El que llega lee, toca, cae en
+   la pantalla de entrada y toca otra vez: dos pantallas antes de la primera pregunta, y el
+   desafío tiene que volver a viajar por la query.
+7. **Dibujar la vista previa al vuelo** (una función o un servicio de imágenes). Es backend,
+   y `D-02` y `D-15` lo dejaron afuera.
+
+### Consecuencias
+
+- **Fácil:** el enlace de este juego llega con cara. Es la primera vez en el sitio.
+- **Cuatro páginas más en el build**, con el mismo banco embebido y la misma isla. La isla es
+  el mismo módulo importado desde dos plantillas, no una copia.
+- **La analítica (`D-56`) cuenta las postales como rutas propias.** Es información —cuánta
+  gente llega por una postal—, no inflado: cada una es una visita real a una página real. Es
+  distinto del `pushState` que `D-57` punto 13 descartó, que inventaría visitas.
+- **Cambiar un nombre o una bajada obliga a correr el taller** (`CTR-08` v2.6). Si no, la
+  vista previa muestra el texto viejo; `tarjetas.test.ts` lo caza.
+- **`desafio.ts` y `desafio.test.ts` no se tocan.** Los enlaces viejos se leen por el mismo
+  camino de siempre.
+- **Lo que tiene que hacer el hilo principal:** `src/pages/juegos/dos-ejes/[cu].astro` con
+  `getStaticPaths` desde el banco y `data-desafio`; las dos props de `Cabeza.astro`, con la
+  unión de tipos; pasarle `imagen` e `imagenAlt` a las cinco páginas del juego.
+
+### Verificación
+
+```bash
+node --test src/lib/desafio.test.ts                  # sin cambios: los enlaces viejos se leen igual
+node --test src/lib/dos-ejes/tarjetas.test.ts        # las cinco vistas existen y miden 1200 × 630
+npm run check                                        # la unión de tipos de Cabeza.astro
+npm run build
+for n in 1 2 3 4; do grep -o 'og:image" content="[^"]*' dist/juegos/dos-ejes/cu-$n/index.html; done
+#  → …/tarjetas/dos-ejes/og-cu-N.png, una por postal
+grep -o 'og:image" content="[^"]*' dist/juegos/dos-ejes/index.html
+#  → …/tarjetas/dos-ejes/og-dos-ejes.png
+grep -o 'og:image" content="[^"]*' dist/quiz/index.html
+#  → …/tarjeta.png: los demás juegos no cambiaron
+grep -c 'data-desafio="CU-' dist/juegos/dos-ejes/cu-*/index.html
+#  → 1 en cada una de las cuatro
+```
+
+**Lo que la máquina no ve, y lo mira `revisor`:** que la postal se lea como la manera de otra
+persona y no como un resultado propio, y que el botón no suene a "superalo".
 
 ---
 
@@ -215,7 +374,9 @@ más.**
 **Entre dos `identidad` (`US-06`) no se compara: se contrasta.** No hay ganador porque no
 hay número, y `CTR-08.6` puso el tipo de retorno sin números justamente para que nadie
 pudiera fabricar uno más adelante. Los dos casos posibles son *les salió el mismo
-cuadrante* y *les salió distinto*, y los dos son un resultado legítimo del juego. Cualquier
+cuadrante* y *les salió distinto*, y los dos son un resultado legítimo del juego. *[Enmienda
+1, 2026-10-04: los casos pasan a cuatro —misma, comparten luz-oscuridad, comparten
+orden-caos, opuestas— y ninguno ordena a otro. Ver arriba, punto 8.]* Cualquier
 orden entre los cuatro cuadrantes sería inventar que hay uno mejor, que es exactamente lo
 que `US-06` se propuso no hacer.
 
@@ -312,7 +473,9 @@ son cuatro casos, uno por cada cosa que decidió este ADR:
   Todo esto aparece **al abrir el sitio**, nunca en el timeline. Vale también para el
   desenlace nuevo y para la identidad de `US-06`, que es la tentación fresca: la tarjeta
   que genera `npm run generar-marca-social` es una sola para todo el sitio y así se queda.
-  El link lleva el desafío; la imagen de `UX-02` lleva el número.
+  El link lleva el desafío; la imagen de `UX-02` lleva el número. *[Enmienda 1, 2026-10-04:
+  deja de valer para `dos-ejes`, que publica una postal por identidad con su propia vista
+  previa. Para los demás juegos sigue igual.]*
 
 ---
 
