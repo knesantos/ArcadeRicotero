@@ -113,10 +113,10 @@ como está después de la vuelta 4**, y cada número se contó sobre el JSON.
      vereda, la previa y la vuelta la única que se puede hacer solo es la del mensaje. En
      `Cuando suena` esa luz la da el resto de la sala (`048` *aplaudo con el resto*, `049` *grito
      con el resto*): sin teléfono y sin hablarle a nadie. Dos luces se dicen en voz alta o por
-     mensaje y no las cuento (`041` *le cuento cómo me suena*, `053` *le cuento a quien quiero*);
+     mensaje y no las cuento (`041` *comento cómo me suena*, `053` *se lo cuento a alguien*, `054` *aviso que llegué*);
      si `REV-19` las cuenta, son siete y el tope se pasa.
   4. **Una persona puesta por el enunciado** y las dos opciones le contestan: `EJ-029` (te manda
-     un tema) y `EJ-047` (alguien tuyo la sabe, *la canto a dúo*). Las únicas que piden al otro al
+     un tema) y `EJ-047` (alguien tuyo la sabe, *escucho cómo la canta*: cierre del hilo, §13). Las únicas que piden al otro al
      lado son `035` y `043` (*los míos*), `030` (*la subo para compartirla*) y `047`: una en la
      previa, la ida, la vereda y `Cuando suena`, y la vuelta ninguna. **La regla "una por celda"
      de la vuelta 3 se sacó**: la enmienda 7 la reemplaza por "que en cada momento haya una luz
@@ -155,9 +155,9 @@ como está después de la vuelta 4**, y cada número se contó sobre el JSON.
   enfrente. **(O)** Y lo que el test no ve, porque cuenta palabras exactas y no raíces (la vuelta 4
   las contó una por una, sobre las 60 opciones): **ninguna raíz se repite en más de dos opciones de
   un polo, salvo `me` en tres de oscuridad** (`035`, `049`, `053`), que pasa la guarda porque la
-  luz de enfrente la trae una vez (`me` en `EJ-041`, *cómo me suena*); `mi`/`míos` ya no pasa de
+  luz de enfrente la trae una vez (`me` en `EJ-041`, *comento cómo me suena*); `mi`/`míos` ya no pasa de
   dos en luz (`043` y `035`: *mi favorito* está en oscuridad). Raíces en dos: *quien-* y *quier-*
-  (`036`, `053`), *algui-* (`037`,
+  (`036`, y `053` hasta que `REV-19` le sacó la fórmula, §13), *algui-* (`037`,
   `054`), *cuent-* (`041`, `053`), *escrib-* (`031`, `055`), *resto* (`048`, `049`), *míos* (`035`,
   `043`) en luz; *tarar-* en las dos (luz `037`, oscuridad `031`, `035`); *escuch-* y *busc-* en
   oscuridad; *dej-* (`032`, `056` en orden; `040`, `051` en caos), *pong-* (`034`, `052` en orden),
@@ -210,9 +210,9 @@ sigue dando por hecho que quien juega *oye* la música, no que entró: el sello 
 suena* (`D-57` enmienda 6) y las seis escenas se sienten igual desde la vereda, pero siguen siendo
 las del momento en que ya suena. **Tres:** `EJ-048` y `EJ-049` (*con el resto*) son luces con la
 sala o con la vereda, no con alguien: se leen como luz sin que se hable con nadie, y si `REV-19`
-las lee como "a quien está cerca" cae el veto 6. **Cuatro:** `EJ-052` (*me pongo algodón* / *así
-me gusta*) trata el oído y no la seguridad de la persona; si se lee como precaución contra
-imprudencia, hay que cambiarla.
+las lee como "a quien está cerca" cae el veto 6. **Cuatro:** `EJ-052` trata el oído y no la
+seguridad de la persona; el hilo la cerró como *Traje algodón por las dudas* / *Me tapo con los
+dedos* (§13): las dos cuidan el oído, ninguna es imprudente.
 
 ## 3. Los cinco momentos
 
@@ -257,47 +257,47 @@ B = `caos`). En el archivo las opciones van siempre en ese orden; el motor las b
 
 ### La ida
 
-| Id | Eje | Enunciado | Opción A | Opción B | Vuelta 3: qué cambió y dónde mirar |
+| Id | Eje | Enunciado | Opción A | Opción B | Qué cambió (vueltas 3 y 4) y dónde mirar |
 |---|---|---|---|---|---|
 | `EJ-035` | L | El camino se hace largo. ¿Cómo lo llevás? | Hablo con los míos | Tarareo una que me gusta | La B era *Miro qué pasa afuera* (la ventanilla que la vuelta 1 retiró). Única luz de la celda con presencia. |
-| `EJ-036` | L | Sacás una foto camino al recital. | La mando a mis viejos | Le encuentro un detalle | Era *La mando enseguida* / *La miro un buen rato*: impulso contra paciencia, sabor de orden-caos. Sin adverbios. Luz con teléfono. |
-| `EJ-037` | L | Te acordás de quién te mostró un tema. | Le escribo que me acordé | Lo busco y lo escucho | Era *algo gracioso* / *Lo cuento en voz alta* (a quien esté cerca). La persona la pone el enunciado. Luz con teléfono. |
-| `EJ-038` | O | Te pasaron un papel con indicaciones para llegar al recital. | Lo sigo paso a paso | Lo uso de pista | La B era *Lo tomo como pista* (la misma forma que `EJ-046`). El enunciado ahora nombra el recital. Es el ítem más "del que nunca fue": las indicaciones existen porque no todos conocen el lugar. |
-| `EJ-039` | O | Vas a escuchar música en el camino. | Elijo la música antes | Pongo una al azar | Era *Elijo antes qué escuchar* / *Pongo lo primero que sale* (el *te sale* de CU-4). Las dos son verbo y objeto. |
-| `EJ-040` | O | Te preguntás cuánto falta para el recital. | Voy midiendo cada tramo | Llego cuando llego | Era *Saco la cuenta* (el *rehacer la cuenta* de CU-3). Único *cuando* de caos. Mirar: *cada tramo*, ¿es exhaustivo? |
+| `EJ-036` | L | Sacás una foto camino al recital. | La mando a quien quiero | Le encuentro un detalle | Era *La mando enseguida* / *La miro un buen rato*: impulso contra paciencia, sabor de orden-caos. Sin adverbios. Luz con teléfono. **Antes (v4):** A *La mando a mis viejos*; el porqué, en la `notaInterna`. |
+| `EJ-037` | L | Te acordás de un tema. | Se lo tarareo a alguien | Lo busco y lo escucho | Era *algo gracioso* / *Lo cuento en voz alta* (a quien esté cerca). La persona la pone el enunciado. Luz con teléfono. **Antes (v4):** enunciado *Te acordás de quién te mostró un tema.*, A *Le escribo que me acordé*; el porqué, en la `notaInterna`. |
+| `EJ-038` | O | Hay nubes en el cielo. | Llevo algo por si llueve | Si llueve, llueve | La B era *Lo tomo como pista* (la misma forma que `EJ-046`). El enunciado ahora nombra el recital. Es el ítem más "del que nunca fue": las indicaciones existen porque no todos conocen el lugar. **Antes (v4):** enunciado *Te pasaron un papel con indicaciones para llegar al recital.*, A *Lo sigo paso a paso*, B *Lo uso de pista*; el porqué, en la `notaInterna`. |
+| `EJ-039` | O | Vas a escuchar música en el camino. | Elijo la música con calma | Pongo una sin mirar | Era *Elijo antes qué escuchar* / *Pongo lo primero que sale* (el *te sale* de CU-4). Las dos son verbo y objeto. **Antes (v4):** A *Elijo la música antes*, B *Pongo una al azar*; el porqué, en la `notaInterna`. |
+| `EJ-040` | O | Falta para llegar al recital. | Lo parto en tramos | Me dejo llevar | Era *Saco la cuenta* (el *rehacer la cuenta* de CU-3). Único *cuando* de caos. Mirar: *cada tramo*, ¿es exhaustivo? **Antes (v4):** enunciado *Te preguntás cuánto falta para el recital.*, A *Voy midiendo cada tramo*, B *Llego cuando llego*; el porqué, en la `notaInterna`. |
 
 ### La vereda
 
-| Id | Eje | Enunciado | Opción A | Opción B | Vuelta 3: qué cambió y dónde mirar |
+| Id | Eje | Enunciado | Opción A | Opción B | Qué cambió (vueltas 3 y 4) y dónde mirar |
 |---|---|---|---|---|---|
-| `EJ-041` | L | Se oye la prueba de sonido. | Cuento cómo suena a alguien | Le busco el ritmo | Era *Cerca de quienes charlan* (desconocidos de noche) / *Donde mejor se oye* (el devoto). La prueba de sonido no choca con `EJ-045` ni `EJ-046`. Mirar: *busco el ritmo*, ¿es oído fino? Luz sin presencia. |
+| `EJ-041` | L | Se oye la prueba de sonido. | Comento cómo me suena | Le busco el ritmo | Era *Cerca de quienes charlan* (desconocidos de noche) / *Donde mejor se oye* (el devoto). La prueba de sonido no choca con `EJ-045` ni `EJ-046`. Mirar: *busco el ritmo*, ¿es oído fino? Luz sin presencia. **Antes (v4):** A *Cuento cómo suena a alguien*; el porqué, en la `notaInterna`. |
 | `EJ-042` | L | Cae una llovizna fina. | Aviso a un amigo: llueve | Miro llover contra el farol | Era *un alero con otros* / *bajo un alero*: el mismo objeto y oscuridad como luz menos gente. Dos haceres distintos. Único *un amigo* en masculino. |
 | `EJ-043` | L | Hay afiches de recitales en la pared. | Los comento con los míos | Elijo mi favorito | Era *con mi familia* / *Leo cada afiche*. Sin *cada*, sin familia. Única luz de la celda con presencia. |
-| `EJ-044` | O | Hace frío y tenés la campera. Después puede dar calor. | Busco dónde guardarla | La llevo puesta, nomás | Era *Empiezo por lo más cercano* / *donde caiga la vista*: atención, no plan. Ahora anticipar o resolver. |
-| `EJ-045` | O | Todavía no empieza el recital. | Ya traía algo para esto | Armo un barquito de papel | Era *El sonido de adentro no arranca* / *Invento algo con las manos* (no se entendía). Un hacer concreto. |
-| `EJ-046` | O | Dicen que el recital empieza más tarde. | Encuentro algo para hacer | Lo tomo como viene | Era *Ajusto mis tiempos* / *Me acomodo a lo nuevo* (casi sinónimos). Orden rehace el rato; caos lo suelta. |
+| `EJ-044` | O | Hace frío y tenés la campera. Después puede dar calor. | Me abrigo en capas | Me la saco al rato | Era *Empiezo por lo más cercano* / *donde caiga la vista*: atención, no plan. Ahora anticipar o resolver. **Antes (v4):** A *Busco dónde guardarla*, B *La llevo puesta, nomás*; el porqué, en la `notaInterna`. |
+| `EJ-045` | O | Todavía no empieza el recital. | Saco el mazo de cartas | Armo un barquito de papel | Era *El sonido de adentro no arranca* / *Invento algo con las manos* (no se entendía). Un hacer concreto. **Antes (v4):** A *Ya traía algo para esto*; el porqué, en la `notaInterna`. |
+| `EJ-046` | O | Dicen que el recital empieza más tarde. | Lo tenía previsto | Lo tomo como viene | Era *Ajusto mis tiempos* / *Me acomodo a lo nuevo* (casi sinónimos). Orden rehace el rato; caos lo suelta. **Antes (v4):** A *Encuentro algo para hacer*; el porqué, en la `notaInterna`. |
 
 ### Cuando suena (`adentro`)
 
-| Id | Eje | Enunciado | Opción A | Opción B | Vuelta 3: qué cambió y dónde mirar |
+| Id | Eje | Enunciado | Opción A | Opción B | Qué cambió (vueltas 3 y 4) y dónde mirar |
 |---|---|---|---|---|---|
-| `EJ-047` | L | Suena una canción lenta. Alguien tuyo la sabe. | Le canto lo que sé | Doy unas palmas | Era *Busco una mano conocida* (pareja o consuelo) / *Sigo la melodía* (oído fino). La luz está con la música; la oscuridad no es escucha fina. La más ambigua sobre si el otro está presente. |
-| `EJ-048` | L | Se hace una pausa antes del próximo acorde. | Cuchicheo con mi hermana | Respiro hondo | Era *Escucho el último eco* (homenaje a cuatro meses del 5 de junio). Única luz de la celda con presencia. |
-| `EJ-049` | L | El volumen sube de golpe. ¿Qué te sale? | Grabo esto para un compa | Me retumba en la panza | Era *Sonrío a un amigo* (al lado, masculino) / *Lo siento en la panza* (se lee como "perdón"). Luz con teléfono. |
-| `EJ-050` | O | Te van a preguntar cómo estuvo el recital. | Voy armando el relato | Lo cuento de una | El enunciado era *Ya pensás cómo contar esta noche* (afirmaba orden). *De una* es el modismo; sin *salga*. |
+| `EJ-047` | L | Suena una canción lenta. Alguien tuyo la sabe. | Escucho cómo la canta | Muevo la cabeza despacio | Era *Busco una mano conocida* (pareja o consuelo) / *Sigo la melodía* (oído fino). La luz está con la música; la oscuridad no es escucha fina. La más ambigua sobre si el otro está presente. **Antes (v4):** A *Le canto lo que sé*, B *Doy unas palmas*; el porqué, en la `notaInterna`. |
+| `EJ-048` | L | Cambian un instrumento entre tema y tema. | Aplaudo con el resto | Marco el compás | Era *Escucho el último eco* (homenaje a cuatro meses del 5 de junio). Única luz de la celda con presencia. **Antes (v4):** enunciado *Se hace una pausa antes del próximo acorde.*, A *Cuchicheo con mi hermana*, B *Respiro hondo*; el porqué, en la `notaInterna`. |
+| `EJ-049` | L | Entran todos los instrumentos de golpe. ¿Qué te sale? | Grito con el resto | Me retumba en la panza | Era *Sonrío a un amigo* (al lado, masculino) / *Lo siento en la panza* (se lee como "perdón"). Luz con teléfono. **Antes (v4):** enunciado *El volumen sube de golpe. ¿Qué te sale?*, A *Grabo esto para un compa*; el porqué, en la `notaInterna`. |
+| `EJ-050` | O | Te van a preguntar cómo estuvo el recital. | Elijo qué voy a contar | Lo cuento de una | El enunciado era *Ya pensás cómo contar esta noche* (afirmaba orden). *De una* es el modismo; sin *salga*. **Antes (v4):** A *Voy armando el relato*; el porqué, en la `notaInterna`. |
 | `EJ-051` | O | Una canción se te queda en la cabeza. | Me la grabo cantándola | La dejo dar vueltas | Era *La escucho en casa, entera* (pedía saber el título) / *La tarareo hasta que pase* (un malestar). Las dos son una ganancia. |
-| `EJ-052` | O | Todavía falta para que termine. ¿Y ahora? | Ya sé cómo sigue | Lo dejo correr | Era *ya pensás en lo que sigue* / *Defino el después* / *Dejo que llegue el después*. Sin palabra compartida. Mirar: ¿qué es *cómo sigue*? Es la noche; si se oye literario, cambia. |
+| `EJ-052` | O | El volumen cansa los oídos. | Traje algodón por las dudas | Me tapo con los dedos | Era *ya pensás en lo que sigue* / *Defino el después* / *Dejo que llegue el después*. Sin palabra compartida. Mirar: ¿qué es *cómo sigue*? Es la noche; si se oye literario, cambia. **Antes (v4):** enunciado *Todavía falta para que termine. ¿Y ahora?*, A *Ya sé cómo sigue*, B *Lo dejo correr*; el porqué, en la `notaInterna`. |
 
 ### La vuelta
 
-| Id | Eje | Enunciado | Opción A | Opción B | Vuelta 3: qué cambió y dónde mirar |
+| Id | Eje | Enunciado | Opción A | Opción B | Qué cambió (vueltas 3 y 4) y dónde mirar |
 |---|---|---|---|---|---|
-| `EJ-053` | L | Ya en casa, todavía tenés el zumbido. | Le cuento a mi prima | Me quedo con el zumbido | Era *Busco a los de casa* (suponía que vivís con alguien) / *Me lavo la cara* (rutina). Luz sin presencia obligada. |
-| `EJ-054` | L | Se te quedó un tema en la boca. | Se lo canto a alguien | Lo canto en la ducha | Era *La casa está en silencio* / *Pongo una charla de fondo* (estar solo con una grabación). Es la canción que se canta a la vuelta. |
-| `EJ-055` | L | Te llega una foto por mensaje. | Le contesto con una mía | La miro de a poco | Era *Desde la calle llegan voces* (oír desconocidos de noche). Quien la manda la pone el enunciado. Luz con teléfono. |
-| `EJ-056` | O | Mañana es otro día. ¿Cómo arrancás? | Pongo la alarma | Duermo sin despertador | El enunciado era *Antes de dormir, pensás en mañana* (afirmaba orden). El enunciado no dice qué hay mañana. |
-| `EJ-057` | O | Te proponen juntarse a escuchar música otro día. | Propongo un día | Acepto, el día que pinte | Era *Te proponen repetir una noche así* / *Cerramos la fecha ahora*: otra salida que se paga y un plural. Gratis y en singular. |
-| `EJ-058` | O | Quedó el parlante prendido en casa. | Lo apago y lo guardo | Me duermo con música | Era *El teléfono quedó sin batería* / *Lo cargo cuando haga falta* (una imprudencia leída desde la calle, y caos confesaba un descuido). Anclado en casa. |
+| `EJ-053` | L | Ya en casa, todavía te dura la noche. | Se lo cuento a alguien | Me quedo con la noche | Era *Busco a los de casa* (suponía que vivís con alguien) / *Me lavo la cara* (rutina). Luz sin presencia obligada. **Antes (v4):** enunciado *Ya en casa, todavía tenés el zumbido.*, A *Le cuento a mi prima*, B *Me quedo con el zumbido*; el porqué, en la `notaInterna`. |
+| `EJ-054` | L | Llegás y la casa está en silencio. | Aviso que llegué | Preparo un té | Era *La casa está en silencio* / *Pongo una charla de fondo* (estar solo con una grabación). Es la canción que se canta a la vuelta. **Antes (v4):** enunciado *Se te quedó un tema en la boca.*, A *Se lo canto a alguien*, B *Lo canto en la ducha*; el porqué, en la `notaInterna`. |
+| `EJ-055` | L | Es tarde y no te da sueño. | Escribo en el grupo | Dibujo en un papel | Era *Desde la calle llegan voces* (oír desconocidos de noche). Quien la manda la pone el enunciado. Luz con teléfono. **Antes (v4):** enunciado *Te llega una foto por mensaje.*, A *Le contesto con una mía*, B *La miro de a poco*; el porqué, en la `notaInterna`. |
+| `EJ-056` | O | Se acerca la hora de dormir. | Dejo un vaso de agua | Me levanto si hace falta | El enunciado era *Antes de dormir, pensás en mañana* (afirmaba orden). El enunciado no dice qué hay mañana. **Antes (v4):** enunciado *Mañana es otro día. ¿Cómo arrancás?*, A *Pongo la alarma*, B *Duermo sin despertador*; el porqué, en la `notaInterna`. |
+| `EJ-057` | O | Te proponen juntarse a escuchar música otro día. | Propongo un día | Acepto, con el día abierto | Era *Te proponen repetir una noche así* / *Cerramos la fecha ahora*: otra salida que se paga y un plural. Gratis y en singular. **Antes (v4):** B *Acepto, el día que pinte*; el porqué, en la `notaInterna`. |
+| `EJ-058` | O | Quedó el parlante prendido en casa. | Lo conecto al cargador | Lo apago nomás | Era *El teléfono quedó sin batería* / *Lo cargo cuando haga falta* (una imprudencia leída desde la calle, y caos confesaba un descuido). Anclado en casa. **Antes (v4):** A *Lo apago y lo guardo*, B *Me duermo con música*; el porqué, en la `notaInterna`. |
 
 ### Los cruces: los nueve pares de cada momento, en los dos órdenes
 
@@ -703,6 +703,10 @@ que tocó; `contenido` lo revisa cuando vuelva, y si algo no le cierra, manda su
 | `EJ-047` luz | *La canto a dúo* | *Escucho cómo la canta* | Cantar a dúo pide saberse la letra: la credencial de `BR-36`. Escuchar cómo la canta el otro no pide nada, y no le pone género |
 | `EJ-052` orden / caos | *Me pongo algodón* / *Así me gusta* | *Traje algodón por las dudas* / *Me tapo con los dedos* | *Así me gusta* era una preferencia (y la del que aguanta el volumen), no resolver sobre la marcha. Ahora las dos cuidan el oído: una lo previó, la otra se arregla con lo que tiene |
 | `TARJETA.credito` | *…(Rocambole, 1996), en baja.* | *Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole, 1996).* | *En baja* es jerga de imprenta (§6.2) |
+| `EJ-054` luz (`REV-19`, `FIND-113`) | *Dejo una nota para alguien* | *Aviso que llegué* | En una casa en silencio, de noche, *dejó una nota* es la fórmula de la noticia de una despedida: `BR-36` veto 2 por lo que evoca (`D-57` punto 9) |
+| `EJ-053` luz (`REV-19`, `FIND-114`) | *Le cuento a quien quiero* | *Se lo cuento a alguien* | Repetía la fórmula de `EJ-036` (*a quien quiero*), las dos en luz: con dos noches se aprende como la de luz |
+
+**Las tablas del §4** las puso al día el hilo principal desde el JSON (la vuelta 4 de `contenido` llegó a la previa y se cortó): cada fila que cambió lleva *Antes (v4)* con el texto de la vuelta 3, y el porqué está en la `notaInterna` del ítem.
 
 **Verificado:** `node --test src/lib/dos-ejes/banco.test.ts src/lib/voz.test.ts src/lib/esquemas.test.ts src/lib/pisos.test.ts src/lib/dos-ejes/partida.test.ts`
 da 121 de 121, y la suite entera queda en el `ESTADO.md` del cierre. Lo que ninguna máquina ve

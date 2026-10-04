@@ -2760,6 +2760,34 @@ a.secundario {
 /* ---- Por debajo de 22 rem: una columna, en el orden relativo (`UX-36` §5.3) ---- */
 
 @media (max-width: 21.99rem) {
+  /* La tapa se aprieta en el teléfono más angosto: a 320 × 568 era la única portada de los
+     ocho con el botón de arranque bajo el pliegue (terminaba en 633; los otros, entre 409 y
+     514). Menos relleno, el índice un punto más chico para que entre en dos renglones, y el
+     esquinero acorde (`REV-19`). */
+  .ejes-tapa,
+  .ejes-tapa:has(.ejes-tapa-etiqueta--amigo) {
+    margin: var(--espacio-2) 0 var(--espacio-1);
+    padding: 14px 6px 12px 0;
+  }
+
+  .ejes-tapa-etiqueta {
+    margin-left: calc(1.1rem + 6px);
+    padding: 6px 10px;
+  }
+
+  .ejes-tapa-esquinero {
+    width: 3.2rem;
+    height: 3.7rem;
+  }
+
+  .ejes-indice {
+    font-size: 0.9rem;
+  }
+
+  .ejes-amigo-nombre {
+    font-size: 1.35rem;
+  }
+
   .ejes-grilla-lista {
     grid-template-columns: 1fr;
   }
@@ -2772,12 +2800,14 @@ a.secundario {
 /* ---- Desde 46 rem: los rotulos de renglon pasan al margen izquierdo ---- */
 
 @media (min-width: 46rem) {
+  /* 7 rem y no los 5 de `UX-36` §5.3: "OSCURIDAD" en la rotulada a 0,75 rem mide ≈ 100 px y a
+     5 rem (80 px) se metía en la celda de al lado (medido a 1440, `REV-19`). */
   .ejes-grilla-lista {
-    grid-template-columns: 5rem 1fr 1fr;
+    grid-template-columns: 7rem 1fr 1fr;
   }
 
   .ejes-grilla-columnas {
-    padding-left: calc(5rem + var(--espacio-1));
+    padding-left: calc(7rem + var(--espacio-1));
   }
 
   .ejes-grilla-renglon {
