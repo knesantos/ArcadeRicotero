@@ -97,6 +97,17 @@
 > archivo no los aloja, solo los referencia. Suma la fila de `US-10` a la tabla de `BR-30`
 > y corrige "los ocho juegos" a "los nueve juegos" en su `Aplica a`. No toca ningún otro
 > punto: `US-10` no es uno de los cuatro juegos de `D-05` ni compite por su piso.
+>
+> **Revisión 2026-10-04 (`D-57`, ciclo 18, "¿Qué tipo de ricotero sos?" se rehace).**
+> Consume `D-57`, `INV-150` (`RES-150`..`RES-171`), la nota final de `CNT-09` —que llevaba
+> desde el ciclo 8 sin respuesta—, `REV-07`, `CTR-08` v2 (`Docs/ARQ/ARQ-schema-dos-ejes.md`) y
+> `src/lib/dos-ejes/banco.test.ts`, que se escribió antes que el banco. **Enmienda `US-06` con
+> fecha, sin borrar el texto viejo**: la partida pasa a ser una noche de cinco momentos, el
+> piso sube de 20 a 30 con tres por celda, y el criterio 4 suma la tarjeta de imagen y las
+> cuatro postales. Contesta de frente la pregunta de `CNT-09` sobre el rastro de la banda.
+> Suma `BR-36` (la frontera entre escena y credencial) y `BR-37` ("esta noche" y "otra noche"),
+> las dos a continuación de `BR-17`, y una nota bajo la tabla de pisos. `US-06` sigue
+> **fuera** de los cuatro juegos de `D-05`. El resto del documento no se tocó.
 
 ## Por qué existe el piso de ítems
 
@@ -1092,6 +1103,19 @@ significa más.
 a continuación, es historia nueva y queda fuera de esa cuenta a propósito — ver el primer
 párrafo de esa historia.
 
+> **Nota 2026-10-04 (`D-57`, ciclo 18).** `US-06` sigue sin entrar a la tabla de arriba: no es
+> uno de los cuatro de `D-05`, y meterlo cambiaría la cuenta del "Listo". Pero su piso
+> cambió, y quien busque pisos tiene que encontrarlo al lado de los otros:
+>
+> | Fuera del "Listo" | Piso | Forma del piso | Costo dominante |
+> |---|---|---|---|
+> | Qué tipo de ricotero sos (`US-06`) | **30 escenas** *(subido de 20 el 2026-10-04)* | **3 por celda**: 5 momentos de la noche × 2 ejes. Sin "mínimo Fácil": `BR-01` no aplica | Texto puro. Lo caro no es escribirlo: es la lectura de `REV-19` contra `BR-36` |
+>
+> **Manda la enmienda de `US-06`**, no esta fila: el porqué del número y la forma de contarlo
+> están allá. Lo vigilan `src/lib/dos-ejes/banco.test.ts` (celda por celda) y
+> `src/lib/pisos.test.ts`. Los pisos de `US-07`..`US-10` viven en sus propios documentos y no
+> los copio acá.
+
 ---
 
 ## US-06 — Test: qué tipo de ricotero sos (fuera del "Listo" de la v1)
@@ -1101,6 +1125,15 @@ párrafo de esa historia.
 > guardadas, era la candidata más fuerte: texto puro, sin audio ni imagen con derechos, y
 > devuelve una identidad en vez de un puntaje. Acá se fija lo que faltaba: los ejes (ya
 > decididos por el usuario), los criterios, el piso y qué devuelve.
+
+> **ENMENDADA el 2026-10-04 por `D-57` (ciclo 18).** El texto de abajo se conserva entero, para
+> que se vea de dónde se viene. **Vale todo lo que dice, salvo lo que una marca
+> "[Reemplazado …]" o "[Ampliado …]" declara cambiado.** Lo cambiado, de un vistazo: la
+> partida es una noche de cinco momentos; el piso pasa de 20 a 30 con tres por celda; el
+> criterio 4 suma la tarjeta de imagen y las cuatro postales; y se agregan los criterios 5 a 8.
+> **Los criterios 1, 2 y 3 no cambian, palabra por palabra**, y `BR-17` tampoco. La enmienda
+> entera, con la respuesta a la pregunta de `CNT-09`, está al final de esta historia, en
+> «Enmienda 2026-10-04».
 
 **Prioridad: no forma parte del "Listo" de la v1.** `D-05` confirmó **cuatro** juegos como
 el contrato de la v1 (`Docs/BRIEF.md`, "Listo de la v1"), y esa es una decisión del usuario
@@ -1170,6 +1203,19 @@ jugador, no con que cada *tema* tenga una posición fija.
   resultado sin puntaje lo decide `experiencia`; esta historia solo fija que el enganche
   existe y qué NO puede llevar (puntaje, ranking).
 
+> **[Ampliado 2026-10-04.]** Lo de arriba sigue vigente y no se retira: el nombre de la
+> identidad como elemento central, sin puntaje. La ampliación (la tarjeta de imagen por
+> identidad, las cuatro postales con vista previa propia y la línea de contraste al volver)
+> está en «Criterio 4, ampliado», en la enmienda del final de esta historia.
+
+> **[Reemplazado 2026-10-04 por «Piso vigente: 30 escenas» de la enmienda del final.]** Lo que
+> queda reemplazado del bloque que sigue: el número (20, que eran 10 por eje), el sorteo de
+> «5 de las 10 de cada eje» y la mitad del «Por qué 20 y no más» (la parte de «dos partidas
+> seguidas ya pueden no coincidir», que ahora es una garantía y no una posibilidad: `BR-37`).
+> **Sigue en pie**, sin cambios: que cada pregunta tenga exactamente 2 opciones, una por
+> extremo; que `BR-01` no aplique; que no haga falta ficha `RES-XX` (reforzado por `BR-36`); y
+> los cuatro cuadrantes con nombre propio y sin grados. Se deja el texto como estaba.
+
 **Piso de ítems: 20 preguntas** (10 por eje: 10 que mueven luz↔oscuridad, 10 que mueven
 orden↔caos), cada una con exactamente 2 opciones, una por extremo del eje que le toca.
 - Cada partida sirve un subconjunto elegido al azar: 5 de las 10 de cada eje (10 preguntas
@@ -1197,6 +1243,205 @@ orden↔caos), cada una con exactamente 2 opciones, una por extremo del eje que 
 cada una, y el nombre de los cuatro cuadrantes (dueño `contenido`); si `UX-02` se reutiliza
 tal cual o necesita una variante para un resultado sin puntaje (dueño `experiencia`); el
 mecanismo de sorteo de las 5 de 10 por eje (dueño `arquitectura`).
+
+> **[Reemplazado 2026-10-04, solo la última cláusula.]** El sorteo «de las 5 de 10 por eje»
+> ya no existe: lo reemplaza el sorteo por momentos de `CTR-08` v2.5 (`arquitectura`). Lo
+> demás de este párrafo sigue valiendo, y la variante de `UX-02` ya la contestó `UX-06` §6
+> (y la amplía `UX-36`).
+
+### Enmienda 2026-10-04 — la partida es una noche (`D-57`, ciclo 18)
+
+> Pedido del usuario, 2026-10-04, textual: *"Hacé un ciclo entero de mejora importante sobre
+> el juego de qué tipo de ricotero sos, mejora artística, de preguntas, de resultado y de
+> otras cosas que analices que se puedan mejorar."* `D-57` es la síntesis de siete lectores,
+> tres conceptos completos y tres jueces. **Acá va solo lo que es de `producto`**: qué es una
+> partida, cuánto contenido hace falta, qué se promete al compartir, y las dos reglas
+> (`BR-36`, `BR-37`) que impiden que la mejora rompa lo que `US-06` promete. Pantallas y
+> arte son de `experiencia` (`UX-36`); textos, de `contenido` (`CNT-30`); forma y motor, de
+> `arquitectura` (`CTR-08` v2).
+
+**Qué cambia y qué no**
+
+| Pieza | Antes (2026-08-24) | Desde 2026-10-04 | Marca |
+|---|---|---|---|
+| Qué es una partida | Diez preguntas sueltas, sorteadas «5 de las 10 de cada eje» | **Una noche de recital en cinco momentos** (la previa, la ida, la vereda, adentro, la vuelta): en cada uno, una escena de cada eje. Siguen siendo diez, cinco por eje | Reemplaza el sorteo |
+| Piso | 20 (10 por eje) | **30 listos, 3 por celda** (momento × eje) | Reemplaza |
+| Qué es el resultado | Una identidad que se «encuentra» («Diste con esto») | **De esta noche** (`BR-37`) | Nuevo |
+| Jugar otra vez | «Probá de nuevo»: repetía la mitad | **«Empezá otra noche»**: escenas que no salieron en la visita (`BR-37`) | Nuevo |
+| Compartir | El nombre de la identidad y un enlace | Suma **tarjeta de imagen por identidad** y **cuatro postales** con vista previa propia | Amplía el criterio 4 |
+| El rastro de la banda en las escenas | Ninguno: «sabor ricotero» = credencial | **Escena de recital sin dueño**, con la frontera de `BR-36` | Da vuelta el criterio con que se retiró `EJ-011` |
+| Criterios 1, 2 y 3 | — | **No cambian** | — |
+| `BR-17`, los dos ejes, los cuatro cuadrantes y sus ids | — | **No cambian.** Cambian nombres y bajadas (`D-57` punto 5, `CNT-30`) | — |
+
+**La noche, en términos de producto.** Cinco momentos, siempre en el mismo orden. En cada
+uno salen dos escenas, una que mueve cada eje; cuál de las dos va primero cambia de una
+noche a otra. Cada escena vive en un solo momento y en un solo eje, así que **ninguna se
+repite dentro de una noche**. Al final hay cinco respuestas por eje, impar (`BR-17` regla 3
+intacta): el empate sigue siendo imposible. Los momentos son tantos como las preguntas por
+eje (`CTR-08` v2.2), y ese número tiene que seguir siendo impar: un sexto momento daría seis
+por eje, que es par, y `BR-17` regla 3 lo impide. Alargar la noche es pasar de cinco a siete,
+nunca a seis. El nombre de cada momento y la línea que lo canta son de `contenido`.
+
+**Piso vigente: 30 escenas listas, tres por celda.** Una celda es un momento por un eje:
+cinco por dos, diez celdas. Lo motiva el riesgo 4 del brief —el banco corto: un juego hermoso
+con pocas escenas adentro— y el supuesto de la visita de dos o tres minutos.
+
+- **Qué cuenta.** Lo que está `listo`. Los retirados y los borradores no cuentan.
+- **El piso es por celda, no en total.** Treinta repartidas mal (seis en la previa, una en la
+  vuelta) dejan un momento cojo, y el motor se niega a servir una noche con una celda vacía.
+  Tres por celda **y** treinta en total: las dos cosas.
+- **Por qué tres.** Tres es lo que da tres noches seguidas sin repetir una escena (`BR-37`), y
+  tres noches es lo que cabe en la visita del brief: dos o tres minutos. *Supuesto de duración,
+  no medido, análogo al del criterio 1: una noche son diez toques de elegir entre dos frases
+  cortas más las diez pausas de 0,6 s de `D-57` punto 12 (seis segundos en total), así que cabe
+  en poco más de un minuto. `experiencia` lo valida y, si dura más, lo avisa por
+  `Docs/SUGERENCIAS/`.* Con dos por celda la tercera noche repetiría media noche; con cuatro,
+  la cuarta noche ya no cabe en la visita.
+- **Por qué no más.** Un piso es «no se cierra por debajo», no «no se puede agregar»: si
+  `contenido` escribe más, entra, y le sirve a quien vuelve otro día. Pero el piso no lo
+  exige: dentro de una visita, tres por celda ya garantizan que no se repita nada, y cada
+  escena nueva cuesta una lectura de `REV-19` desde cuatro lugares (`BR-36`).
+- **El retiro y la entrada son la misma entrega.** Los veinte listos de hoy se retiran con
+  nota, sin reciclar ids (`EJ-001`..`EJ-028` se quedan en el archivo; las nuevas son
+  `EJ-029`..`EJ-058`), y las treinta entran en la misma integración. No hay versión publicable
+  con veinte viejas más algunas nuevas: las viejas no tienen `momento`, y una noche sin su
+  estructura entera no se arma. Es el aviso de `REV-07` (retirar sin reemplazar deja el piso
+  incumplido en silencio) llevado a esta forma.
+- **Sigue sin necesitar** audio, imagen con derechos, distractores ni ficha `RES-XX`: es el
+  contenido más barato del sitio. Lo caro es leerlo (`BR-36`). `BR-01` sigue sin aplicar.
+- **Lo vigilan** `src/lib/dos-ejes/banco.test.ts` (celda por celda) y
+  `src/lib/pisos.test.ts` («US-06: el piso de 30 escenas»).
+
+**Criterios 1, 2 y 3: no cambian.** Quedan como están más arriba. La noche es la forma en que
+se ordenan las diez preguntas del criterio 1; no cambia cuántas son ni cómo se resuelve el
+resultado.
+
+**Criterio 4, ampliado.** El texto de arriba sigue en pie. Se suma:
+
+- **4a — la tarjeta de imagen.**
+  - **Given** un jugador terminó la noche.
+  - **When** toca compartir.
+  - **Then** se comparte la **tarjeta de imagen de su manera** junto con el enlace a la
+    postal de esa manera. La tarjeta es la misma para todos los que cayeron en esa manera:
+    ninguna lleva un dato de la persona. **No lleva ningún número**: ni puntaje, ni conteo por
+    eje, ni porcentaje, ni «cuánta gente tiene la tuya» (el sitio no muestra los números de
+    la analítica, `D-56`). Las cuatro tarjetas pesan igual: las mismas piezas de arte, el
+    nombre en el mismo tamaño, la misma estructura; ninguna se ve como un premio (extiende el
+    criterio 3 a la imagen). **Si el aparato no puede compartir archivos**, quedan a mano el
+    enlace y la forma de bajar la tarjeta: nadie se queda sin poder mandarla (`D-14`).
+- **4b — la postal.**
+  - **Given** alguien recibe el enlace de la postal de una manera, sin haber jugado nunca.
+  - **When** lo abre, o lo ve como vista previa en un chat o en una red.
+  - **Then** la vista previa dice **qué le salió al otro** —el título es «Me salió» y el nombre
+    de la manera— con la imagen de esa manera; al abrirla, ve **qué es esa manera antes de
+    jugar** y un botón que arranca su noche directo, con el desafío puesto. Hay **cuatro
+    postales, una por manera**. Los enlaces viejos (`?g=dos-ejes&r=CU-n`) siguen andando y
+    abren con el nombre vigente de la manera: **viaja el id, no el nombre**. Tampoco acá hay
+    números.
+- **4c — el contraste al volver.**
+  - **Given** alguien llegó por la postal o por un enlace de otro.
+  - **When** termina su noche.
+  - **Then** ve **una línea neutra** de contraste con la manera del otro (`CNT-29`): la
+    misma, que comparten un polo, o la opuesta. **Nunca ganar ni perder**, y la línea es
+    simétrica: dicha desde cualquiera de los dos, dice lo mismo.
+
+**Criterio 5 — la noche.**
+- **Given** un jugador arranca una partida.
+- **When** avanza hasta el final.
+- **Then** pasa por **cinco momentos, siempre en el mismo orden** (la previa, la ida, la
+  vereda, adentro, la vuelta); en cada uno responde **dos escenas, una de cada eje**; ninguna
+  escena se repite dentro de la noche; al terminar cada eje tiene cinco respuestas y el
+  resultado es uno de los cuatro cuadrantes (criterios 1 y 2, intactos).
+
+**Criterio 6 — otra noche** (`BR-37`).
+- **Given** un jugador terminó una noche y sigue en la misma visita.
+- **When** toca «Empezá otra noche».
+- **Then** arranca otra noche sin pasar por la portada ni pedirle nada, y **en cada momento y
+  cada eje sirve una escena que no salió en las noches anteriores de la visita**, mientras la
+  celda las tenga: con tres por celda, la segunda y la tercera noche no repiten ninguna. Si una
+  celda se agotó, toma de todas **sin avisar y sin error**. El resultado de la nueva noche
+  **reemplaza** al anterior: no hay «mejor de tres», ni historial, ni cuenta de noches.
+- **Borde.** Si la persona recarga la página, es otra visita: puede ver escenas que ya vio, y
+  no es un defecto.
+
+**Criterio 7 — la escena es de todos** (`BR-36`).
+- **Given** cualquier escena `lista` del banco.
+- **When** la lee alguien que nunca fue a un recital, alguien sin plata para una entrada,
+  alguien en silla de ruedas, o alguien que tiene que volver de noche sin compañía.
+- **Then** puede elegir cualquiera de las dos opciones **tal como están escritas**, y ninguna
+  de las dos le dice que es «menos de adentro» (las pruebas son las de `BR-36`: los cuatro
+  lugares y la del que no fue). Nada de la noche —ni la escena, ni el sello
+  del momento, ni la línea que canta, ni la bajada de una manera— nombra a la banda ni a sus
+  temas, ni a Bulacio, Olavarría, Cromañón o la muerte del Indio.
+
+**Criterio 8 — un toque, una respuesta.**
+- **Given** una escena en pantalla.
+- **When** el jugador toca una opción y vuelve a tocar —la misma, la otra, o el lugar donde
+  va a aparecer la siguiente— antes de que la siguiente llegue.
+- **Then** cuenta **un solo toque** por escena, la siguiente no se contesta sin que haya
+  llegado, y quien juega ve cuál tocó. Si usa «Volvé a la anterior», la respuesta nueva
+  **reemplaza** a la vieja: **ningún camino deja un eje con más o menos de cinco respuestas**,
+  porque con otro número el empate vuelve por la puerta de atrás (`BR-17` regla 3).
+- *Por qué es un criterio y no solo una decisión de pantalla:* hasta el ciclo 18 un doble toque
+  contestaba la pregunta siguiente sin leerla y corrompía, sin avisar, el único resultado que
+  da el juego (`D-57`, lo que estaba mal, punto 1). Qué hace la pantalla para impedirlo es de
+  `UX-36`; que el resultado no se corrompa es de acá.
+
+**La pregunta de `CNT-09`, contestada.** `CNT-09` cerró su entrega con una nota dirigida a
+`producto` («Nota para `producto`, no para mí — el banco no tiene ni un rastro de la banda»):
+con `EJ-011` retirado no quedaba una sola mención a la banda en las veinte escenas —plantas,
+súper, asado, playa, una plaza con mate—, y lo único ricotero del juego eran el título, la
+paleta de *Luzbelito* y los cuatro nombres. Preguntaba si estaba bien así o si el juego
+necesitaba, «en algún lugar que no sea el contenido de las preguntas», algo más que lo
+recuerde. **Llevaba desde el ciclo 8 sin respuesta.** Va, de frente:
+
+> **No estaba bien así. Y el contenido de las preguntas también era un lugar.**
+
+1. **La medición de `CNT-09` era correcta; lo que faltaba era el juicio.** Un test que se
+   llama «¿Qué tipo de ricotero sos?» y cuyas veinte escenas servirían idénticas en cualquier
+   sitio **no cumple lo que promete la puerta**. El que llega por un enlace de Twitter es un
+   desconocido sin contexto (brief, «Para quién»): lo único que sabe es el título, y lo que
+   juega no se lo confirma. `D-57` lo midió igual: ni una escena del banco era del mundo
+   ricotero. `CNT-09` lo había dejado a la vista y se lo dejó a `producto`; nadie lo tomó.
+2. **El criterio con el que se retiró `EJ-011` leía `BR-17` más ancho de lo que `BR-17` dice.**
+   `BR-17` prohíbe un eje que mida *conocimiento* («sabés mucho / sabés poco»). No dice nada
+   de dónde transcurre una escena. Se confundieron dos cosas: **ambientar** y **puntuar**. Lo
+   que cierra un molinete es que contestar bien sea mostrar que se es de adentro; que la
+   escena pase en un recital no lo cierra. **Queda dado vuelta por escrito, como pide `D-57`
+   punto 3:** el sabor ricotero ya no es, por sí solo, una credencial. `EJ-011` sigue retirado
+   (un id no se recicla, y los veintiocho del banco viejo salen); lo que cambia es el
+   criterio, no el ítem.
+3. **El rastro entra por dos lugares, y por uno no entra.**
+   - **Por la forma de la partida.** La noche —previa, ida, vereda, adentro, vuelta— es el
+     recital contado desde quien va, no desde la banda. Lo reconoce quien estuvo y lo imagina
+     quien no.
+   - **Por el marco.** El libro de *Luzbelito* como única pieza de arte, los sellos y la voz
+     (`UX-36`, `CNT-30`). Nada de eso está en el banco.
+   - **No entra por el nombre de la banda, de sus temas, de su gente ni de sus rituales.**
+     Ahí la escena se vuelve credencial. El recital es «un recital», **sin dueño** (`D-57`
+     punto 2): la noche es la de cualquiera que sale a ver música, contada en presente.
+4. **La regla que lo sostiene es una sola: reconocible, no exigido.** Quien fue reconoce la
+   noche; quien no fue juega la misma noche como una salida cualquiera. Esa asimetría es lo
+   que hace compatible «molinetes abiertos» con «un sitio sobre esta banda», que era la
+   tensión que `CNT-09` anotó sin poder resolver. Dónde pasa la frontera, ítem por ítem, lo
+   fija `BR-36`.
+5. **El trazo es fino a propósito.** Hoy lo ricotero de las escenas es *dónde* pasan, no *qué
+   hay que saber*. Si alguna vez parece poco, la salida es una escena más reconocible
+   **dentro** de `BR-36`, nunca un nombre propio: lo segundo es exactamente lo que `BR-36`
+   veta.
+
+**Lo que esto cuesta, dicho.** Cambié una regla barata de mirar («la palabra *banda* no
+aparece») por una cara de mirar («¿hay una opción de adentro?»), porque la barata dejaba afuera
+lo único que el juego promete. La máquina vigila lo que se puede contar y el resto lo lee
+`revisor` en `REV-19`: treinta escenas por cuatro lugares. Ese es el precio y se acepta.
+
+**Queda fuera de esta enmienda:** los enunciados, las opciones, los cinco sellos, las cuatro
+bajadas y el copy de las pantallas (dueño `contenido`, `CNT-30` y `CNT-29`); la portada, la
+hoja, la grilla de las cuatro maneras, la tarjeta y el arte (dueño `experiencia`, `UX-36`;
+y `D-57` puntos 7, 8, 9, 12 y 13); el schema, el motor, el taller de tarjetas y las
+postales como rutas (dueño `arquitectura`, `CTR-08` v2, `ADR-02`). Tampoco promuevo a
+criterio la accesibilidad de `D-57` punto 13 (foco, región viva, teclado): es de `UX-36`, y
+nada del brief la ata al criterio de aceptación de esta historia.
 
 ---
 
@@ -1229,6 +1474,397 @@ no hay una "cantidad correcta" de luz ni de orden. Un eje que sí la rompería e
 que mida conocimiento —"sabés mucho / sabés poco de la banda"— porque ahí el test deja de
 separar maneras de ser ricotero y pasa a clasificar quién lo es más, que es cerrar el
 molinete (`D-14`).
+
+> **Nota 2026-10-04.** `BR-17` no cambia: sus tres reglas siguen valiendo enteras. Lo que
+> sumó el ciclo 18 son dos reglas hermanas, `BR-36` y `BR-37`, a continuación. La primera
+> dice qué escenas del mundo del recital entran al banco sin cerrar un molinete (cómo se
+> lee `BR-17` ahora que el banco no es ajeno a la banda); la segunda, qué recuerda una
+> visita y cómo se presenta el resultado de una partida inestable por diseño.
+
+---
+
+## BR-36 — La frontera entre escena y credencial: cuándo una escena de recital entra al banco
+
+**Aplica a:** `US-06` (criterio 7), el banco de la noche (`CNT-30`) y su revisión (`REV-19`).
+**Consume:** `D-57` (puntos 2, 3 y 4), `BR-17`, la nota final de `CNT-09` y su `T-127` §2,
+`REV-07`, `INV-150` (`RES-150`..`RES-161`), `D-14`, `CTR-08.5` regla 5 y
+`src/lib/dos-ejes/banco.test.ts`. **Motiva (brief):** el criterio no negociable 3, «sin muro de
+entrada», y «La postura: molinetes abiertos». **Fecha:** 2026-10-04.
+
+**Qué resuelve.** `D-57` abrió el banco al mundo del recital, que hasta ahora estaba vedado
+entero. Abrirlo sin una frontera es volver al problema que `EJ-011` ya había mostrado: una
+escena de recital donde una de las dos opciones es «la del que sabe». Esta regla dice dónde
+pasa la frontera y, sobre todo, **quién la vigila**: la máquina, lo que se puede contar;
+`revisor`, lo que hay que leer.
+
+### La regla, en una línea
+
+> **Una escena entra al banco si cualquiera puede contestarla desde su propia vida y las dos
+> opciones se dicen con el mismo orgullo. No entra si contestarla bien es mostrar que se es
+> de adentro.**
+
+### Escena y credencial, lado a lado
+
+| | Escena | Credencial |
+|---|---|---|
+| Qué hace falta para contestar | Lo que el enunciado ya trae | Haber ido, saber cómo es, o conocer una palabra o un objeto del código |
+| Qué dice de quien elige una opción | Cómo se mueve en esa situación | Qué tan de adentro está |
+| Qué pasa con la opción que no elegiste | Es otra manera, igual de decible | Es la que te deja más afuera |
+| Dónde ocurre | En un recital sin nombre ni dueño | En el mundo de la banda, por su nombre |
+
+### Lo que esta regla da vuelta, y lo que deja en pie
+
+- **Da vuelta** el criterio con el que se retiró `EJ-011`: que el sabor ricotero, por sí solo,
+  funcionara como credencial de pertenencia. Por qué, y qué responde a la pregunta que
+  `CNT-09` dejó abierta, está en la enmienda de `US-06`.
+- **Deja en pie, entera**, `BR-17` (un ítem mueve un solo eje; dos polos puros; conteo impar
+  por eje), que ninguna pregunta pida saber de la banda, y todo lo que encontró `REV-07` (un
+  eje que mide una sola cosa, un polo que no paga nunca). `BR-36` no relaja nada de eso:
+  agrega una frontera en un territorio que antes estaba cerrado.
+- **Cambia dónde mira la regla.** Antes miraba si aparecía la banda; ahora mira si hay una
+  opción de adentro. Lo primero se contaba con una palabra. Lo segundo se lee.
+
+### Los vetos de `D-57` punto 2, con su motivo
+
+**Las palabras exactas viven en `VETOS`, dentro de `banco.test.ts`, y no se copian acá** (una
+lista copiada en este archivo ya quedó vieja una vez). Acá van los **motivos**. Si lista y
+motivo se contradicen, manda el motivo y se arregla la lista.
+
+1. **La banda por su nombre.** Su nombre, el de sus integrantes, sus temas y sus rituales de
+   tribuna (la misa, el pogo, el aguante). Un nombre propio es un código: quien lo conoce
+   está adentro. El recital es «un recital», sin dueño, contado en presente, de cualquiera que
+   sale a ver música (`D-57` punto 2). *El adjetivo «ricotero» queda vedado en enunciados y
+   opciones (donde calificaría a alguien: «el más ricotero»); en el sello, la línea que canta
+   y las bajadas puede aparecer, porque el título y la marca ya lo llevan, pero nunca para
+   puntuar.*
+2. **Muertes y tragedias.** Bulacio, Olavarría, Cromañón y la muerte del Indio son registro 3
+   entero (`CNT-04`, `CNT-06`) y nunca escena de un test de dos botones. Tampoco lo que las
+   evoca: el fuego, las bengalas, una despedida, un velorio. `D-57` punto 9 ya lo dijo de las
+   velas y del verso de cierre —a cuatro meses del 5 de junio, «esta noche» se lee como un
+   velorio aunque ningún texto lo diga—, y vale igual para una escena que se despide.
+3. **Plata.** Es el molinete literal: nada acá se le niega a nadie por no tener con qué entrar
+   (`CLAUDE.md`, §6). Ninguna escena dice que alguien pagó, compró o tiene entrada, y nadie
+   dice cómo entró. La gente sin entrada fue parte de los recitales de la banda (`RES-154`):
+   una escena de adentro que se da por «la normal» los deja afuera otra vez.
+4. **Alcohol, drogas y policía.** El veto lo puso el test; la razón de producto es la misma
+   del cuerpo y la seguridad de abajo: una opción que gira en torno a tomar, consumir o tratar
+   con la policía no mide cómo se mueve alguien en una noche, mide si toma, si puede, si le
+   toca. Parte a la gente por salud, por religión o por historia propia.
+5. **El cuerpo y la multitud.** Un cuerpo capaz de algo no es un temperamento: ninguna opción
+   exige pararse, saltar, correr, empujar ni aguantar apretado (`D-57` punto 3, el lugar de la
+   silla de ruedas). Se escribe «te ubicás», no «te parás».
+6. **Seguridad.** Hablar con desconocidos, ir a dedo: para quien tiene que cuidarse no es una
+   elección, y se lee como valiente o como miedoso (`D-57` punto 2).
+7. **Épica y psicodelia.** Ya es regla de voz (`voz-ricotera.md` §3.6 y §7), y acá pesa doble:
+   «la lucha», «la resistencia», «el viaje» son la voz de la tribuna y se leen como la del que
+   es de verdad. Es lo mismo que evitó `D-57` punto 1 al llamar «la ida» al segundo momento.
+
+**El alcance es más ancho que el del test.** `D-57` punto 2 dice que la **noche** —no solo los
+enunciados— es de cualquiera. Por eso los vetos 1 y 2 valen para **todo texto de la noche que
+la gente lee**: enunciado, opciones, sello del momento, línea que canta, nombre y bajada de las
+cuatro maneras. Los vetos 3 a 7 valen donde hay una elección que puede cerrarse: enunciado y
+opciones.
+
+### La prueba de los cuatro lugares (`D-57` punto 3)
+
+**Por ítem, no por banco.** Cada escena se lee cuatro veces, parado en cada lugar, sobre el
+texto **tal como está escrito** y no sobre lo que quiso decir quien lo escribió. Pasa si pasa
+las cuatro.
+
+- **Nunca fui.** *¿Puede contestarla, de verdad y sin adivinar, alguien que nunca estuvo en un
+  recital?* Falla cuando el enunciado da por sabido cómo es adentro, qué se hace, cómo se
+  llama algo o qué significa un objeto, o cuando una opción solo se entiende con el código. Se
+  arregla trayendo en el enunciado lo que hace falta: cómo es ir a ver música lo imagina
+  cualquiera, por una cancha, un casamiento o una fiesta. *Una ayuda de lectura, no una
+  exigencia: cambiá «recital» por otra salida. Si el dilema sobrevive, es escena; si la gracia
+  desaparece, mirá si la gracia era saber de recitales.*
+- **Sin plata.** *¿Puede elegir cualquiera de las dos alguien que no tiene un peso para gastar
+  esa noche?* Falla cuando una opción cuesta (una compra, un transporte pago, algo que se
+  lleva puesto) o cuando la escena da por hecho que se pagó. Se arregla con decisiones de
+  atención, de lugar, de ánimo o de a quién le hablás. El ejemplo del banco viejo es `EJ-005`,
+  la plata tirada, que `CNT-09` retiró por medir otra cosa y que habría caído acá también.
+- **Silla de ruedas.** *¿Puede elegir cualquiera de las dos alguien que no puede pararse,
+  saltar, correr, subir ni aguantar apretado?* La silla de ruedas es el lugar desde donde se
+  lee: vale igual para quien no aguanta de pie. Falla cuando una opción **exige** una
+  capacidad del cuerpo, o cuando la escena solo existe de pie y en el medio. **No prohíbe que
+  el cuerpo aparezca** (la imagen física y barata es de la voz del sitio, `voz-ricotera.md`
+  §4.3): prohíbe que una capacidad sea lo que decide. Se arregla con «te ubicás», no
+  «te parás».
+- **Volviendo de noche sin compañía.** *Para alguien que tiene que volver solo o sola de noche,
+  ¿cada opción es un gusto, o una de las dos es una precaución —o una imprudencia— presentada
+  como carácter?* Falla cuando una opción es caminar, irse solo, hablar con alguien que no se
+  conoce, tomar el camino oscuro: una persona elige por seguridad y la otra queda como valiente
+  o como miedosa, y para quien se cuida **no es una elección**. Es la falla de `EJ-010` en el
+  banco viejo («volver caminando solo de noche, mirar atrás»), que `CNT-09` reescribió porque
+  era «una condición real para buena parte de la gente». Se arregla hablando de cómo se ocupa
+  el tiempo —qué se mira, qué se escucha, a quién se le cuenta, si
+  se queda un rato antes de irse—, no de cómo ni con quién se cruza la calle. Es el lugar más
+  exigente de la noche, y por eso la vuelta tiene su propia guarda en el test.
+
+**Cómo se usa.**
+- **Con el veredicto escrito, por ítem y por lugar**: una tabla de treinta filas por cuatro
+  columnas. Un fallo lleva su motivo; un «pasa» es una casilla. Lo que no puede ser una casilla
+  es la prueba del que no fue (abajo): lleva, por ítem, cuál de las dos habría adivinado quien
+  lee, o «ninguna».
+- **Ítem por ítem es necesario y no alcanza** (`REV-06`, `REV-07`): `D-57` pide que `REV-19`
+  sea adversarial sobre el conjunto, y los patrones de más abajo son ese encargo.
+- **Un ítem que falla una vez se reescribe o se retira.** No lo compensan los otros veintinueve.
+- **Los cuatro son el piso de la prueba, no el techo.** Si `revisor` encuentra un quinto lugar
+  desde el que una escena se rompe, lo suma a esta regla por enmienda.
+
+### Ninguna opción es «más de adentro» que la otra
+
+- **Qué es «más de adentro».** La opción que elegiría quien quiere mostrar que es «de verdad».
+  Las marcas habituales son la del **mayor sacrificio** (esperar más, aguantar), la de la
+  **devoción** (llegar primero, quedarse hasta el último minuto), la de la **entrega total**
+  (en el medio, a los gritos) y la que usa **una palabra o un objeto del código**. En el banco
+  viejo la tuvo `EJ-001` («salir hecho pomada certifica que estuviste hasta el final»). Y tiene
+  un espejo que también cuenta: la opción «de vuelta de todo», que se lee como la del veterano.
+- **La prueba del que no fue.** `revisor` lee el par como lo leería alguien que nunca fue y se
+  pregunta cuál elegiría «el ricotero de verdad». Si lo adivina sin dudar, la credencial está
+  en el ítem. Se corre leyendo, no encuestando.
+- **El mismo orgullo.** Cada par se puede decir en voz alta, en una previa, sin sonar a excusa
+  ni a alarde (criterio heredado de `CNT-09`). Y **las dos opciones pagan algo**: ninguna es la
+  de la competencia contra la del descuido. Es el defecto 2 de `REV-07`: «un eje donde un polo
+  es siempre competencia y el otro a veces es descuido no separa maneras: ordena».
+- **Alcanza a las cuatro maneras y a sus bajadas.** `D-57` punto 5 pide que los cuatro costos
+  tengan la misma forma y que ninguno de oscuridad se diga como exclusión; la vara para leerlo
+  es esta misma prueba. `CU-1` fue «Guardián de la llama» en el banco viejo y `REV-07` lo
+  marcó por lo mismo: nombraba devoción, no temperamento.
+
+### La regla de la ficha
+
+Una escena no afirma nada sobre la banda ni sobre cómo es un recital de nadie, así que **no
+lleva `RES-XX`** (`CTR-08.5` regla 5, intacta). Si para ser verdadera una escena necesita una
+ficha, está afirmando algo —cómo se vive, qué se hace, qué pasó— y por eso mismo no es escena:
+no entra.
+
+`INV-150` trae situaciones con respaldo (`RES-156`..`RES-161`). Son **material para
+`contenido`, no cita**: el propio informe dice que funcionan solo si se leen como situaciones
+comunes (sección «Qué sirve para el juego», punto 2), y ninguna lleva su ficha en el ítem. Las
+que más fácil se vuelven credencial son las que el informe trae como ritual de la banda —el
+trapo con el nombre del pueblo, los brazos arriba al final, la carpa de la previa—: `revisor`
+las mira primero. Del mismo informe quedan **vedadas** como escena Bulacio, Olavarría 2017, la
+despedida de junio de 2026, la división entre el Indio y Skay (`RES-152`) y las bengalas.
+
+### Quién vigila qué
+
+| Qué | Quién | Cómo |
+|---|---|---|
+| Los siete vetos, sobre enunciado y opciones de cada ítem `listo` | `banco.test.ts`, «ningún enunciado ni opción cae en un veto de BR-36» | Automático. **Piso, no techo:** una palabra que no está en la lista no es una aprobación |
+| Bulacio, Olavarría y Cromañón en sello, línea que canta, enunciado y opción | `src/data/_schema/dos-ejes.schema.json`, vía `esquemas.test.ts` | Automático |
+| La vuelta sin «a pie», «caminando» ni «camino» | `banco.test.ts` | Automático |
+| Una opción no delata su eje; sin marcas de género; ningún cierre más de tres veces y «¿Qué hacés?» pelado, nunca; las dos opciones no son la misma frase | `banco.test.ts` | Automático (guardas de `BR-17` y `CNT-09`, en el mismo archivo) |
+| La noche en orden, todo ítem `listo` con momento, tres por celda y treinta en total, los veintiocho viejos retirados | `banco.test.ts` y `pisos.test.ts` | Automático |
+| Largos: enunciado ≤ 14 palabras, opción ≤ 5 y ≤ 28 caracteres, nombre ≤ 26, bajada ≤ 36; sello ≤ 3, línea que canta ≤ 8 y sin «…» | `banco.test.ts` | Automático |
+| Nombres de las maneras sin persona; cada `CU-n` con sus polos | `banco.test.ts` | Automático |
+| Voz: anglicismos, folleto, infinitivos, etc., sobre todo el texto visible del banco | `voz.test.ts` | Automático |
+| **Los cuatro lugares, ítem por ítem** | `revisor`, `REV-19` | **Lectura**, con veredicto por ítem y por lugar |
+| **Ninguna opción más de adentro; el mismo orgullo; las dos pagan** | `revisor`, `REV-19` | **Lectura** («la prueba del que no fue») |
+| **Los cuatro nombres y sus bajadas, con la misma vara** | `revisor`, `REV-19` | **Lectura** |
+| **Patrones del conjunto** (abajo) | `revisor`, `REV-19`, adversarial | **Lectura** con el encargo «rompé», no «verificá» (`REV-06`, `REV-07`) |
+| Que `VETOS` cubra el motivo | `revisor` propone la palabra, el hilo principal la agrega al test | Lectura |
+
+**Pasar los tests no es entrar al banco.** Un ítem entra cuando los tests pasan **y**
+`REV-19` lo leyó. El banco no se integra sin `REV-19` sobre el conjunto (`D-57`).
+
+**Patrones del conjunto, lo que `REV-19` busca y ningún ítem muestra solo:**
+- Una celda cuyas tres escenas son el mismo dilema con otro objeto.
+- Un polo que paga siempre y otro que a veces confiesa un descuido.
+- La opción «de adentro» cayendo siempre del mismo lado de un eje: si «luz» es siempre la de
+  más entrega, el eje mide devoción.
+- Una noche que cuenta una sola clase de gente (la que va con amigos, la que va en micro, la
+  que entró): treinta escenas «limpias» pueden sumar una sola persona.
+
+**Hueco conocido (2026-10-04).** Los vetos de `VETOS` solo recorren enunciado y opciones de
+los ítems `listo`. **Ninguna máquina** recorre el sello, la línea que canta ni las bajadas
+buscando el nombre de la banda (veto 1), y el schema mira Bulacio, Olavarría y Cromañón en
+sello, línea, enunciado y opción pero **no en las bajadas**. El alcance de arriba los incluye:
+hasta que el test los cubra, los lee `REV-19`. Quien lo cierra es el hilo principal (las
+guardas son suyas, `D-57`, consecuencias).
+
+### Qué pasa cuando un ítem no pasa
+
+- Se reescribe o se retira con nota; el id no se recicla (`Docs/IDS.md`).
+- Si una celda baja de tres, **la integración no cierra** (el test lo dice). No se compensa
+  con otra celda ni se baja el piso en silencio.
+- **El riesgo que veo.** La vuelta, por dos ejes, son seis escenas que no pueden usar caminar,
+  ir solo, plata ni el cuerpo: es la celda más angosta. Si después de `REV-19` alguna celda no
+  llega a tres, **no lo resuelvo yo**: lo escalo al usuario, por el hilo principal, con las
+  dos salidas que veo —aceptar dos en esa celda, con la tercera noche repitiendo una sola
+  escena de esa celda; o cambiar el momento, que reabre `D-57` punto 1— y `US-06` no cierra
+  hasta que elija.
+
+### Qué no hace esta regla
+
+- No escribe escenas ni da ejemplos del banco nuevo (`contenido`). Los únicos ejemplos que
+  cita son de ítems ya retirados.
+- No fija la lista de palabras: es del test.
+- No decide el sello ni la línea que canta de cada momento, ni el arte (`UX-36`).
+- No toca `BR-17`.
+- No ordena a nadie: nada acá mide quién es más ricotero. Es el criterio 3 de `US-06`
+  aplicado al ítem.
+
+**Verificación.** `producto` no ejecuta (`D-12`); lo corre el hilo principal o `revisor`:
+
+```bash
+node --test src/lib/dos-ejes/banco.test.ts src/lib/esquemas.test.ts src/lib/pisos.test.ts
+rg -n "^## BR-36" Docs/PRODUCTO/PRD-alcance-v1.md
+```
+
+`banco.test.ts` y `pisos.test.ts` dan rojo mientras `src/data/dos-ejes.json` siga en v1: las
+guardas se escribieron antes que el banco (`ARQ-schema-dos-ejes.md`, v2.9). Se ponen en verde
+cuando entra `CNT-30`. Lo que ninguna máquina corre —los cuatro lugares, «más de adentro»,
+el mismo orgullo— lo lee `REV-19`.
+
+---
+
+## BR-37 — «Esta noche» y «otra noche»: qué recuerda una visita, y qué no
+
+**Aplica a:** `US-06` (criterio 6 y el rótulo del resultado). **Consume:** `D-57` (punto 6 y
+las alternativas descartadas), `BR-17`, `US-06` criterio 3, `CTR-08` v2.5 (`vistos`), `D-56`,
+`UX-01`, `src/lib/dos-ejes/partida.ts` y `src/scripts/partida-dos-ejes.ts`. **Motiva
+(brief):** «El momento de uso» (sesiones de dos o tres minutos) y el supuesto confirmado de
+«puntajes y rachas en `localStorage`», que acá se acota. **Fecha:** 2026-10-04.
+
+**Qué resuelve.** Un test de cinco respuestas por eje es inestable, y `D-57` decidió no
+repararlo sino decirlo. Esta regla fija cómo se dice («esta noche»), qué pasa cuando alguien
+quiere otra («otra noche») y qué se descartó para estabilizarlo, con el porqué.
+
+### Regla 1 — El resultado es de esta noche
+
+- **Qué se promete.** Lo que salió es lo que salió **esta noche**; no dice qué es la persona.
+  **Ninguna superficie que muestre el resultado** —la pantalla, la tarjeta, la postal, el texto
+  que viaja con el enlace— dice «sos X», «eres», «naciste», «tu verdadero», ni un «siempre»
+  que defina a la persona. El verbo del sitio es *salir*: «te salió», «me salió», «le salió»,
+  en pasado y de una ocasión. Las bajadas cuentan lo que se hace y no lo que se es (la forma,
+  no el texto, que es de `contenido`: «llegás» y no «sos de los que llegan»). La pregunta del
+  título («¿Qué tipo de ricotero sos?») se queda: una pregunta no es una sentencia.
+- **Dónde lo dice la pantalla.** En el rótulo del resultado: `D-57` fija «ESTA NOCHE TE SALIÓ»
+  en lugar de «Diste con esto»; el texto final de todas las superficies es de `contenido`
+  (`CNT-30`). Las superficies sin lugar para un rótulo entero —la tarjeta, el título de la
+  postal— llevan «esta noche» en el verbo, no en una frase aparte.
+- **Por qué.**
+  1. **Es la verdad sobre el instrumento.** Con cinco respuestas por eje, un 3 a 2 se da
+     vuelta con una sola; el relevamiento que sostiene `D-57` midió que la segunda partida
+     repetía la mitad de las preguntas y que, con una inclinación de 60 a 40 en un eje, la
+     siguiente cae muy seguido en otro cuadrante. Quien juega dos veces y saca dos distintas
+     concluye —con razón— que el test no lo estaba leyendo (`REV-07`, defecto 3). La salida
+     honesta no es esconderlo detrás de «sos X»: es decirlo una vez, en el rótulo.
+  2. **Lo vuelve parte del juego y no un defecto.** Otra noche es otra salida, otra manera.
+     Eso no es una mala medición: es lo que el juego dice que es.
+  3. **Sin esencia no hay jerarquía.** El criterio 3 de `US-06` pide que ningún cuadrante sea
+     «el verdadero». Una esencia es lo que pide el «más». Una ocasión no.
+- **Qué no hace.** No promete que otra noche dé otra manera, ni que dé la misma. No pide
+  disculpas por la inestabilidad ni agrega letra chica de «los resultados pueden variar»: la
+  nombra el rótulo, una vez, en registro 3 seco.
+
+### Regla 2 — Otra noche sirve escenas que no salieron
+
+- **El botón.** «Empezá otra noche» (voseo, `D-17`), el mismo en las cuatro maneras. No
+  «Probá de nuevo» —suena a haber fallado, y acá no hay nada que fallar (criterio 3)— ni
+  «Repetí», porque lo que viene no es lo mismo.
+- **La promesa.** En la misma visita, en cada momento y cada eje, la noche nueva sirve una
+  escena **que no salió antes**. Con tres escenas por celda (el piso de `US-06`), **las
+  noches 1, 2 y 3 de una visita no repiten ninguna escena**. La cuarta puede repetir: las
+  celdas se agotaron y el motor toma de todas, **sin aviso y sin error** (`CTR-08` v2.5). Una
+  celda con más de tres tiene más noches frescas, celda por celda.
+- **Dentro de una noche no se repite nada:** cada ítem vive en una sola celda.
+- **Qué cuenta como «salió».** Una escena sale cuando se sirve la noche. «Empezá otra noche»
+  solo existe en el resultado, así que las diez ya se mostraron: no hay escenas «quemadas sin
+  verse» por abandonar a mitad. «Volvé a la anterior» muestra de nuevo la misma escena y no
+  consume otra.
+- **Qué no se cuenta en pantalla.** Nada dice «noche 2», «te quedan N escenas», «escena
+  nueva» ni «ya viste todas». Un contador de escenas gastadas vuelve el juego una colección que
+  se completa, y es un número que premia a quien jugó más: lo que el criterio 3 de `US-06` no
+  deja (y `D-56` y `UX-01` ya dicen que el sitio no muestra números de la gente). El folio
+  «3 de 10» sigue: es orientación dentro de la noche, no medición.
+- **El resultado de otra noche reemplaza al anterior.** Sin «mejor de tres», sin historial,
+  sin comparación entre noches. Quien quiera compararse con su noche anterior lo hace solo,
+  mirando las cuatro maneras, que están todas a la vista.
+
+### Regla 3 — Nada se acumula entre noches, y nada se guarda entre visitas
+
+- **La visita es la página abierta.** La isla recuerda qué escenas sirvió **en memoria**
+  (`vistos`). Se pierde al recargar o al entrar por otra ruta —de una postal al juego, por
+  ejemplo—. **Una recarga es otra visita** y puede traer escenas que ya salieron: no es un
+  defecto.
+- **Ni `localStorage`, ni cookie, ni nada que sobreviva a la pestaña.** Tres razones de
+  producto:
+  1. **No compra nada.** Con tres por celda la cuarta noche repite igual (`CTR-08` v2.5,
+     alternativa 3): persistir solo mueve la repetición a otro día.
+  2. **Acá no hay puntaje que guardar.** El brief confirmó, por omisión, «puntajes y rachas en
+     `localStorage`» para los juegos que tienen puntaje y racha; este no tiene ninguno, por el
+     criterio 3. Guardar los ids de las escenas vistas sería inventar un estado sin dueño: ¿qué
+     se le muestra a quien lo tiene?
+  3. **Un historial de escenas es la mitad de un historial de resultados.** El paso siguiente
+     es «tus noches anteriores», y de ahí un conteo: lo que el tipo `Resultado` no puede
+     cargar a propósito.
+- **Si algún día se quiere recordar entre visitas**, es una enmienda de esta regla, no un
+  cambio de parámetro del motor (`CTR-08` v2.5 lo deja dicho). Y tendría que contestar primero
+  qué ve la persona con esa memoria.
+
+### Descartado — acumular entre noches («Sumá otra tanda»)
+
+`D-57` descartó, entre otras, esta idea: «Sumá otra tanda» conservaba las respuestas y las
+sumaba (cinco por eje, luego nueve, luego trece) para que la identidad se afirmara con cada
+tanda. **No se descarta por el empate**: cinco, nueve y trece siguen siendo impares. Se
+descarta por esto:
+
+1. **Cambia qué es el resultado.** «Esta noche te salió» pasaría a ser «tu promedio»: ya no
+   cuenta lo que pasó, calcula lo que sos. Es lo que la regla 1 evita, y esconde la
+   inestabilidad detrás de una cifra más grande en vez de decirla.
+2. **Introduce grados.** Quien jugó una tanda tendría una manera «provisoria» y quien jugó tres
+   una «firme»: un grado de certeza por cantidad jugada. `US-06` prohíbe los grados dentro de un
+   cuadrante porque un grado se lee como más o menos ricotero. Acá el grado sería **cuánto
+   jugó**, que es peor: premia el tiempo libre, y este sitio es de quien tiene dos minutos.
+3. **Exige guardar números entre noches.** Acumular es contar respuestas por eje, y `Resultado`
+   no lleva números a propósito (`US-06` criterio 3, `CTR-08.6`). Habría que abrir un canal de
+   conteo en la isla: construir el contador que la regla no quiere.
+4. **Rompe la sesión y redefine «partida».** A la tercera tanda son 26 preguntas contra los dos
+   o tres minutos del brief («todo lo que exija más está mal cortado», `CLAUDE.md`), y el
+   conteo impar de `BR-17` regla 3 es «dentro de una partida»: la partida pasaría a ser la
+   suma de las tandas.
+
+También quedó afuera **«siete por eje»**: estabiliza más, a cambio de cuatro preguntas más, y
+rompe los cinco momentos (`D-57`). La inestabilidad se asume y se dice (regla 1).
+
+### Quién vigila qué
+
+- **El motor.** `src/lib/dos-ejes/partida.test.ts`: «otra noche no repite escenas mientras
+  haya frescas (`BR-37`)» (tres noches seguidas, con un banco sintético y con el real; la cuarta
+  no falla) y «ninguna noche repite un ítem». Automático.
+- **Lo que hace posible la promesa.** Tres por celda: `banco.test.ts` y `pisos.test.ts`.
+  Automático.
+- **Que la isla pasa `vistos` y no guarda nada.** Hoy **ningún test lo mira.**
+  `partida-dos-ejes.ts` declara `const vistos = new Set<string>()` y se lo pasa al motor en
+  `empezar()`; el único `localStorage` del archivo es el comentario que dice que no se usa.
+  **Hueco conocido:** si alguien reemplaza el `Set` por `localStorage`, nada falla. Propongo una
+  guarda de una línea —el archivo de la isla no contiene `localStorage`, `sessionStorage` ni
+  `document.cookie`—, del tipo de la que ya existe en `src/lib/correccion/armar.test.ts`. Es
+  del hilo principal.
+- **Que ninguna superficie dice «sos X».** Ningún test: `voz.test.ts` mira la voz
+  (anglicismos, folleto, infinitivos…), no la esencia. Lo lee `revisor` en `REV-19` sobre la
+  pantalla, la tarjeta, la postal, el texto para compartir y las bajadas. Hoy `copy.ts` ya dice
+  «Esta noche te salió», «Empezá otra noche», «Me salió» y «le salió».
+
+### Qué no hace esta regla
+
+No fija el copy (`contenido`), ni diseña el botón, la hoja o la grilla (`UX-36`), ni toca el
+motor (`arquitectura`). No cambia el título del juego: es la puerta de `D-51` y no es de esta
+regla. No decide ninguna analítica de noches jugadas: `D-56` cuenta entradas por pantalla y
+nada más.
+
+**Verificación.** `producto` no ejecuta (`D-12`); lo corre el hilo principal o `revisor`:
+
+```bash
+node --test src/lib/dos-ejes/partida.test.ts src/lib/dos-ejes/banco.test.ts
+rg -n "^## BR-37" Docs/PRODUCTO/PRD-alcance-v1.md
+rg -n "localStorage|sessionStorage|document\.cookie" src/scripts/partida-dos-ejes.ts
+```
+
+El último comando tiene que devolver **una sola línea**, la del comentario que dice que no se
+usa (hoy la 65). Si devuelve otra, la regla 3 se rompió.
 
 ---
 

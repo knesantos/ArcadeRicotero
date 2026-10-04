@@ -1,40 +1,47 @@
 {
   "contrato": "CTR-08",
-  "contratoVersion": 1,
+  "contratoVersion": 2,
   "juego": "dos-ejes",
-  "actualizado": "2026-08-24",
+  "actualizado": "2026-10-04",
   "preguntasPorEje": 5,
+  "momentos": [
+    { "id": "previa", "nombre": "La previa", "canta": "Campera sobre la silla, llaves en el bolsillo." },
+    { "id": "ida", "nombre": "La ida", "canta": "Ventanilla empañada, motor que no para." },
+    { "id": "vereda", "nombre": "La vereda", "canta": "Pasto pisado y un parlante lejano." },
+    { "id": "adentro", "nombre": "Adentro", "canta": "Bombo en el pecho, primer acorde." },
+    { "id": "vuelta", "nombre": "La vuelta", "canta": "El asiento tibio, el ruido que queda." }
+  ],
   "cuadrantes": [
     {
       "id": "CU-1",
       "luzOscuridad": "luz",
       "ordenCaos": "orden",
-      "nombre": "Estrella fija",
-      "bajada": "Te gusta que las cosas tengan su hora, y no te la guardás: lo que te entusiasma, lo contás.",
+      "nombre": "Mesa larga a las nueve",
+      "bajada": "Hay una hora, un lugar y gente que te espera: la noche empieza sabiendo adónde va. Pero cuando cambia el rumbo, vos tardás en soltar lo acordado.",
       "estado": "listo"
     },
     {
       "id": "CU-2",
       "luzOscuridad": "luz",
       "ordenCaos": "caos",
-      "nombre": "Cometa suelto",
-      "bajada": "No armás planes, pero si te cruzás con alguien te quedás horas, hablando de cualquier cosa.",
+      "nombre": "Ronda en cualquier esquina",
+      "bajada": "Te sumás a lo que aparece —una charla, un grupo, un mate en la vereda— y la noche toma forma. Pero cuando alguien pregunta adónde van, vos todavía no tenés respuesta.",
       "estado": "listo"
     },
     {
       "id": "CU-3",
       "luzOscuridad": "oscuridad",
       "ordenCaos": "orden",
-      "nombre": "Luna llena",
-      "bajada": "Tenés tu horario y lo cumplís solo. Lo que te pasa por dentro lo resolvés en silencio, antes de que alguien pregunte.",
+      "nombre": "Radio bajita, misma hora",
+      "bajada": "Tenés tu rincón y tu hora, y desde ahí la noche se escucha entera. Pero cuando alguien te llama para sumarte, vos ya tenés el rincón ocupado.",
       "estado": "listo"
     },
     {
       "id": "CU-4",
       "luzOscuridad": "oscuridad",
       "ordenCaos": "caos",
-      "nombre": "Eclipse repentino",
-      "bajada": "Cuando te agarra algo fuerte, te lo guardás y lo masticás solo, sin agenda y sin avisar.",
+      "nombre": "Mochila liviana, sin mapa",
+      "bajada": "Vas con lo justo, sin rumbo fijo, y la noche te muestra cosas que nadie buscó. Pero cuando alguien pregunta por dónde anduviste, vos no tenés el recorrido.",
       "estado": "listo"
     }
   ],
@@ -60,7 +67,8 @@
         { "texto": "Aviso a los vecinos", "polo": "luz" },
         { "texto": "Prendo velas y sigo leyendo", "polo": "oscuridad" }
       ],
-      "estado": "listo"
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-003",
@@ -83,7 +91,8 @@
         { "texto": "Busco compañía y me quedo", "polo": "luz" },
         { "texto": "Salgo a ver los rayos", "polo": "oscuridad" }
       ],
-      "estado": "listo"
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-005",
@@ -118,7 +127,8 @@
         { "texto": "Con torta y mesa larga", "polo": "luz" },
         { "texto": "En pijama, con algo rico", "polo": "oscuridad" }
       ],
-      "estado": "listo"
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-008",
@@ -129,7 +139,8 @@
         { "texto": "Llamo a alguien y salimos", "polo": "luz" },
         { "texto": "Cierro la puerta y respiro", "polo": "oscuridad" }
       ],
-      "estado": "listo"
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-009",
@@ -152,7 +163,8 @@
         { "texto": "Le escribo a alguien igual", "polo": "luz" },
         { "texto": "Anoto todo en un cuaderno", "polo": "oscuridad" }
       ],
-      "estado": "listo"
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-011",
@@ -175,7 +187,8 @@
         { "texto": "Con lista y horario fijo", "polo": "orden" },
         { "texto": "Aviso esa misma mañana", "polo": "caos" }
       ],
-      "estado": "listo"
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-013",
@@ -186,7 +199,8 @@
         { "texto": "Una semana antes, con lista", "polo": "orden" },
         { "texto": "La noche antes, nomás", "polo": "caos" }
       ],
-      "estado": "listo"
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-014",
@@ -197,7 +211,8 @@
         { "texto": "Leo el manual entero", "polo": "orden" },
         { "texto": "Pruebo hasta que encastre", "polo": "caos" }
       ],
-      "estado": "listo"
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-015",
@@ -208,7 +223,8 @@
         { "texto": "Sigo con lo que armé", "polo": "orden" },
         { "texto": "Me subo al cambio nuevo", "polo": "caos" }
       ],
-      "estado": "listo"
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-016",
@@ -231,7 +247,8 @@
         { "texto": "Sí, con gramos y todo", "polo": "orden" },
         { "texto": "Voy probando y le pongo", "polo": "caos" }
       ],
-      "estado": "listo"
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-018",
@@ -242,7 +259,8 @@
         { "texto": "Le pongo un horario fijo", "polo": "orden" },
         { "texto": "La riego según el momento", "polo": "caos" }
       ],
-      "estado": "listo"
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-019",
@@ -265,7 +283,8 @@
         { "texto": "Anoto todo antes de salir", "polo": "orden" },
         { "texto": "Compro todo sobre la marcha", "polo": "caos" }
       ],
-      "estado": "listo"
+      "estado": "retirado",
+      "notaInterna": "Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-021",
@@ -276,8 +295,8 @@
         { "texto": "Me sumo a armarla", "polo": "luz" },
         { "texto": "Preparo mi regalo aparte", "polo": "oscuridad" }
       ],
-      "estado": "listo",
-      "notaInterna": "Nuevo (T-126), reemplaza a EJ-006. Reescrito en T-127: la opción B contradecía el enunciado ('te enterás' / 'prefiero enterarme después') y ganaba por descarte, no por competir. Ahora la escena es antes del hecho, con dos acciones reales: sumarse al grupo o resolverlo por su cuenta."
+      "estado": "retirado",
+      "notaInterna": "Nuevo (T-126), reemplaza a EJ-006. Reescrito en T-127: la opción B contradecía el enunciado ('te enterás' / 'prefiero enterarme después') y ganaba por descarte, no por competir. Ahora la escena es antes del hecho, con dos acciones reales: sumarse al grupo o resolverlo por su cuenta. Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-022",
@@ -288,8 +307,8 @@
         { "texto": "Corro a buscar dónde cargar", "polo": "luz" },
         { "texto": "Aprovecho y camino tranquilo", "polo": "oscuridad" }
       ],
-      "estado": "listo",
-      "notaInterna": "Nuevo (T-126), reemplaza a EJ-009. Reescrito en T-127: la frase 'nadie me ubica' era la misma que hundió a EJ-009 — se retiró el id y se conservó el problema. Ahora la opción de oscuridad es un plan propio y disfrutable, no un alivio por la desconexión."
+      "estado": "retirado",
+      "notaInterna": "Nuevo (T-126), reemplaza a EJ-009. Reescrito en T-127: la frase 'nadie me ubica' era la misma que hundió a EJ-009 — se retiró el id y se conservó el problema. Ahora la opción de oscuridad es un plan propio y disfrutable, no un alivio por la desconexión. Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-023",
@@ -300,8 +319,8 @@
         { "texto": "Charlo con quien se sienta", "polo": "luz" },
         { "texto": "Me pongo música y canto", "polo": "oscuridad" }
       ],
-      "estado": "listo",
-      "notaInterna": "Nuevo (T-126), reemplaza a EJ-001. Ajustado en T-127: el enunciado decía 'con alguien al lado' pero la opción hablaba de 'quien se sienta' — tiempos de dos escenas distintas. Ahora el enunciado queda en el momento en que alguien se sienta, y la opción de oscuridad pasa de solo aislarse a una actividad propia."
+      "estado": "retirado",
+      "notaInterna": "Nuevo (T-126), reemplaza a EJ-001. Ajustado en T-127: el enunciado decía 'con alguien al lado' pero la opción hablaba de 'quien se sienta' — tiempos de dos escenas distintas. Ahora el enunciado queda en el momento en que alguien se sienta, y la opción de oscuridad pasa de solo aislarse a una actividad propia. Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-024",
@@ -312,8 +331,8 @@
         { "texto": "Reviso todo mil veces", "polo": "orden" },
         { "texto": "Salgo como estoy, ya fue", "polo": "caos" }
       ],
-      "estado": "listo",
-      "notaInterna": "Nuevo (T-126), reemplaza a EJ-016. Corregido en T-127: 'reviso todo y llego tarde' le colgaba a orden el fracaso emblemático de caos (llegar tarde), y ninguna opción se decía con orgullo. Ahora el costo de orden es propio — revisar de más — sin robarle a caos su firma."
+      "estado": "retirado",
+      "notaInterna": "Nuevo (T-126), reemplaza a EJ-016. Corregido en T-127: 'reviso todo y llego tarde' le colgaba a orden el fracaso emblemático de caos (llegar tarde), y ninguna opción se decía con orgullo. Ahora el costo de orden es propio — revisar de más — sin robarle a caos su firma. Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-025",
@@ -324,8 +343,8 @@
         { "texto": "Sigo el plan aunque llueva", "polo": "orden" },
         { "texto": "Corro cuando tengo ganas", "polo": "caos" }
       ],
-      "estado": "listo",
-      "notaInterna": "Nuevo (T-126), reemplaza a EJ-011. Corregido en T-127: 'cuando puedo' describía disponibilidad, no carácter — para quien trabaja doble turno era la descripción de su vida. Ahora dice 'cuando tengo ganas', y el costo de orden queda escrito en la opción misma ('aunque llueva'), no solo en este documento."
+      "estado": "retirado",
+      "notaInterna": "Nuevo (T-126), reemplaza a EJ-011. Corregido en T-127: 'cuando puedo' describía disponibilidad, no carácter — para quien trabaja doble turno era la descripción de su vida. Ahora dice 'cuando tengo ganas', y el costo de orden queda escrito en la opción misma ('aunque llueva'), no solo en este documento. Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-026",
@@ -336,8 +355,8 @@
         { "texto": "Me sumo a la ronda", "polo": "luz" },
         { "texto": "Me quedo con mi libro", "polo": "oscuridad" }
       ],
-      "estado": "listo",
-      "notaInterna": "Nuevo (T-127), reemplaza a EJ-003 (el perro). Compañía activa contra soledad elegida con una actividad propia, sin condición externa (miedo, alergia) de por medio."
+      "estado": "retirado",
+      "notaInterna": "Nuevo (T-127), reemplaza a EJ-003 (el perro). Compañía activa contra soledad elegida con una actividad propia, sin condición externa (miedo, alergia) de por medio. Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-027",
@@ -348,8 +367,8 @@
         { "texto": "Aviso a todos y vuelvo", "polo": "luz" },
         { "texto": "Vuelvo solo, a disfrutarla", "polo": "oscuridad" }
       ],
-      "estado": "listo",
-      "notaInterna": "Nuevo (T-127), reemplaza a EJ-005 (la plata tirada). Compañía contra soledad elegida frente al mismo hallazgo, sin generosidad ni tacañería de por medio."
+      "estado": "retirado",
+      "notaInterna": "Nuevo (T-127), reemplaza a EJ-005 (la plata tirada). Compañía contra soledad elegida frente al mismo hallazgo, sin generosidad ni tacañería de por medio. Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
     },
     {
       "id": "EJ-028",
@@ -360,8 +379,398 @@
         { "texto": "Reviso el mapa y elijo", "polo": "orden" },
         { "texto": "Doblo en la primera", "polo": "caos" }
       ],
+      "estado": "retirado",
+      "notaInterna": "Nuevo (T-127), reemplaza a EJ-019 (elegir peli). Decisión individual, no de grupo: saca el cruce con el eje luz-oscuridad que traía la escena social. Retirado (T-335, D-57): la partida pasa a ser una noche en cinco momentos y esta escena no es de la noche."
+    },
+    {
+      "id": "EJ-029",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "momento": "previa",
+      "enunciado": "Llegás primero al lugar donde se juntan.",
+      "opciones": [
+        { "texto": "Charlo con quien llegue", "polo": "luz" },
+        { "texto": "Elijo un rincón y miro", "polo": "oscuridad" }
+      ],
       "estado": "listo",
-      "notaInterna": "Nuevo (T-127), reemplaza a EJ-019 (elegir peli). Decisión individual, no de grupo: saca el cruce con el eje luz-oscuridad que traía la escena social."
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (llegar antes a un punto de encuentro es de cualquier salida); sin plata (nada cuesta); silla de ruedas (elegir con quién charlar o desde dónde mirar no pide mover el cuerpo); vuelta de noche sin compañía (es antes de salir). Mide luz = salir a la charla con quien aparece; oscuridad = elegir un rincón y mirar, una acción y no una ausencia. Las dos improvisadas."
+    },
+    {
+      "id": "EJ-030",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "momento": "previa",
+      "enunciado": "Todavía falta un rato largo para salir. ¿Cómo lo llenás?",
+      "opciones": [
+        { "texto": "Mando un mensaje al grupo", "polo": "luz" },
+        { "texto": "Me asomo a la ventana", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (esperar la hora de salir lo hizo cualquiera); sin plata (un mensaje y una ventana no cuestan); silla de ruedas (ninguna pide parar ni caminar); vuelta de noche sin compañía (es en casa, antes de salir). Mide luz = tender la mano hacia la gente; oscuridad = quedarse con lo propio mirando afuera. Las dos con la misma planificación: ninguna."
+    },
+    {
+      "id": "EJ-031",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "momento": "previa",
+      "enunciado": "Te invitan a juntarse antes de un recital.",
+      "opciones": [
+        { "texto": "Voy a la juntada", "polo": "luz" },
+        { "texto": "Voy directo al recital", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (la invitación es de cualquier salida y no pide saber nada del recital); sin plata (las dos opciones llegan al mismo lugar, sin consumo nombrado); silla de ruedas (no pide caminar ni parar); vuelta de noche sin compañía (es la ida, de día y con destino). Mide luz = ir hacia la gente antes; oscuridad = ir derecho a lo suyo. Las dos decididas."
+    },
+    {
+      "id": "EJ-032",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "momento": "previa",
+      "enunciado": "Falta resolver qué llevás a un recital.",
+      "opciones": [
+        { "texto": "Lo dejo decidido de antes", "polo": "orden" },
+        { "texto": "Lo decido en la puerta", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (qué llevar a una salida es de todos y no hay un 'lo correcto' que saber); sin plata (nada se compra: es decidir cuándo, no qué); silla de ruedas (no pide cuerpo); vuelta de noche sin compañía (es antes de salir). Mide orden = resolver con anticipación; caos = resolver al salir. Las dos igual de solas y sin costo de falla escrito."
+    },
+    {
+      "id": "EJ-033",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "momento": "previa",
+      "enunciado": "Alguien te pregunta cuándo vas a salir.",
+      "opciones": [
+        { "texto": "Doy una hora fija", "polo": "orden" },
+        { "texto": "Digo que ya se verá", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (es una pregunta de cualquier salida); sin plata (no cuesta); silla de ruedas (ninguna pide cuerpo); vuelta de noche sin compañía (es la salida, no la vuelta). Mide orden = comprometer una hora; caos = dejarla abierta. Las dos responden a alguien, así que las dos igual de acompañadas; ninguna dice 'llego tarde'."
+    },
+    {
+      "id": "EJ-034",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "momento": "previa",
+      "enunciado": "Ya con las llaves en la mano, alguien propone otro rumbo.",
+      "opciones": [
+        { "texto": "Prefiero seguir lo pensado", "polo": "orden" },
+        { "texto": "Me prendo al cambio", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (un cambio de rumbo a último momento es de cualquier salida); sin plata (ninguna opción gasta ni compra); silla de ruedas (se responde con la voz); vuelta de noche sin compañía (es antes de salir). Mide orden = sostener lo previsto aunque cueste fricción; caos = subirse al cambio. Las dos con otra persona presente."
+    },
+    {
+      "id": "EJ-035",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "momento": "ida",
+      "enunciado": "Quedan dos horas de ruta.",
+      "opciones": [
+        { "texto": "Hablo con quien tenga cerca", "polo": "luz" },
+        { "texto": "Apoyo la frente al vidrio", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (ir en un vehículo largo no pide haber ido a nada); sin plata (el pasaje ya está resuelto en la escena, ninguna opción gasta); silla de ruedas (se hace sentado, sin parar ni caminar); vuelta de noche sin compañía (es la ida). Mide luz = ir hacia la charla; oscuridad = quedarse con el paisaje, con un gesto físico propio. Las dos improvisadas."
+    },
+    {
+      "id": "EJ-036",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "momento": "ida",
+      "enunciado": "Arranca el micro. ¿Cómo te acomodás?",
+      "opciones": [
+        { "texto": "Me hago lugar entre voces", "polo": "luz" },
+        { "texto": "Me enrosco en la campera", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (acomodarse arriba de un micro lo hizo cualquiera); sin plata (la campera es el objeto más barato que hay y 'entre voces' no cuesta); silla de ruedas (se hace sentado, sin cuerpo capaz de algo); vuelta de noche sin compañía (es la ida). Mide luz = meterse en el ruido de la gente; oscuridad = armarse un nido propio. Dos acciones con el mismo verbo de fondo."
+    },
+    {
+      "id": "EJ-037",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "momento": "ida",
+      "enunciado": "El micro se detiene un rato largo en la ruta.",
+      "opciones": [
+        { "texto": "Armo charla con quien esté", "polo": "luz" },
+        { "texto": "Duermo un rato", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (una demora en la ruta es de cualquier viaje largo; es la escena del micro que se rompe, contada sin drama y sin decir por qué); sin plata (nada se paga); silla de ruedas (no se pide bajar ni caminar); vuelta de noche sin compañía (es la ida y nadie se baja). Mide luz = convertir la demora en charla; oscuridad = convertirla en descanso. Las dos improvisadas."
+    },
+    {
+      "id": "EJ-038",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "momento": "ida",
+      "enunciado": "Cortan la ruta y hay que elegir otra.",
+      "opciones": [
+        { "texto": "Propongo el desvío marcado", "polo": "orden" },
+        { "texto": "Propongo probar otra salida", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (un corte de ruta no es de la banda ni de ningún recital); sin plata (los dos desvíos cuestan lo mismo, nada); silla de ruedas (se propone con la voz y se viaja sentado); vuelta de noche sin compañía (es la ida, y las dos opciones se proponen a otros). Mide orden = el desvío señalizado; caos = probar una salida. Las dos igual de acompañadas."
+    },
+    {
+      "id": "EJ-039",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "momento": "ida",
+      "enunciado": "Alguien te pasa un papel con indicaciones para llegar.",
+      "opciones": [
+        { "texto": "Lo sigo punto por punto", "polo": "orden" },
+        { "texto": "Lo uso de referencia", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (las indicaciones existen porque no todos conocen el lugar: la escena presupone no haber ido); sin plata (un papel pasado de mano no cuesta); silla de ruedas (se lee y se sigue sin pedir cuerpo); vuelta de noche sin compañía (es la ida). Mide orden = seguir el papel entero; caos = tomarlo como pista. Las dos igual de acompañadas: alguien te lo dio y las dos lo usan."
+    },
+    {
+      "id": "EJ-040",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "momento": "ida",
+      "enunciado": "Falta poco para llegar y alguien pregunta por dónde se entra.",
+      "opciones": [
+        { "texto": "Digo que sigamos las señales", "polo": "orden" },
+        { "texto": "Digo que veamos al llegar", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (nadie sabe por dónde se entra a un lugar que no conoce, y las dos respuestas son igual de buenas para quien nunca fue); sin plata (ninguna opción menciona ni sugiere pagar para entrar); silla de ruedas (se responde con la voz); vuelta de noche sin compañía (es la llegada). Mide orden = apoyarse en lo marcado; caos = resolver al llegar. Las dos con otra persona."
+    },
+    {
+      "id": "EJ-041",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "momento": "vereda",
+      "enunciado": "Desde adentro llega un sonido lejano. ¿Dónde te ubicás?",
+      "opciones": [
+        { "texto": "Cerca de quienes charlan", "polo": "luz" },
+        { "texto": "En un borde, con aire", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (esperar afuera mientras suena algo lejano se imagina sin haber ido); sin plata (ubicarse no cuesta); silla de ruedas (se dice 'te ubicás', no 'te parás': elegir el sector es posición, no postura); vuelta de noche sin compañía (es la llegada). Mide luz = acercarse a la conversación; oscuridad = elegir el borde con aire. Las dos son un lugar elegido."
+    },
+    {
+      "id": "EJ-042",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "momento": "vereda",
+      "enunciado": "Cae una llovizna fina sobre la vereda.",
+      "opciones": [
+        { "texto": "Busco techo con otros", "polo": "luz" },
+        { "texto": "Me pongo la capucha", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (la llovizna le cae a cualquiera en una vereda); sin plata (un techo compartido y una capucha propia no se compran en la escena); silla de ruedas (no pide caminar; tapar la cabeza y buscar un techo se resuelven sentado); vuelta de noche sin compañía (es la llegada). Mide luz = resolver la lluvia con la gente; oscuridad = resolverla con lo propio. Las dos con respuesta activa."
+    },
+    {
+      "id": "EJ-043",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "momento": "vereda",
+      "enunciado": "Entre la gente, te cruzás con alguien conocido.",
+      "opciones": [
+        { "texto": "Saludo y charlamos un rato", "polo": "luz" },
+        { "texto": "Saludo y sigo mi rumbo", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (alguien conocido es un conocido de la vida, no de la banda); sin plata (saludar no cuesta); silla de ruedas (las dos se hacen sin parar ni caminar: 'rumbo' es la dirección propia, no un paso); vuelta de noche sin compañía (es la llegada y con gente alrededor). Mide luz = quedarse en la charla; oscuridad = seguir lo propio. Las dos empiezan saludando: ninguna es desaire."
+    },
+    {
+      "id": "EJ-044",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "momento": "vereda",
+      "enunciado": "Llegó el momento de ubicarte. ¿Cómo lo resolvés?",
+      "opciones": [
+        { "texto": "Voy al lugar que pensé", "polo": "orden" },
+        { "texto": "Me ubico donde me toque", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (pensar un lugar se puede sin haber estado: es una idea, no un dato); sin plata (nada se paga para ubicarse); silla de ruedas ('ubicarte', nunca 'pararte': las dos se resuelven con el lugar que haya); vuelta de noche sin compañía (es la llegada). Mide orden = el lugar pensado; caos = el que toque. Las dos igual de solas, sin mencionar al grupo."
+    },
+    {
+      "id": "EJ-045",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "momento": "vereda",
+      "enunciado": "Pasa un rato largo antes de que abran.",
+      "opciones": [
+        { "texto": "Hago lo que tenía pensado", "polo": "orden" },
+        { "texto": "Veo qué se me ocurre", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (esperar a que abran es la espera de cualquier lugar); sin plata (ninguna opción gasta: no dice qué se hace); silla de ruedas (no pide cuerpo ni caminar, el 'qué' queda abierto); vuelta de noche sin compañía (es la llegada). Mide orden = el rato ya tenía destino; caos = el rato lo inventa. Las dos igual de solas y sin consumo."
+    },
+    {
+      "id": "EJ-046",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "momento": "vereda",
+      "enunciado": "Hay dos puertas abiertas y ninguna tiene cartel.",
+      "opciones": [
+        { "texto": "Elijo la que ya miré", "polo": "orden" },
+        { "texto": "Voy por la primera", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (dos puertas sin cartel confunden igual a quien fue que a quien no; 'ya miré' es mirar desde afuera); sin plata (ninguna opción habla de entrar ni de cuánto); silla de ruedas (elegir una puerta es una decisión, no una postura; las dos se eligen igual); vuelta de noche sin compañía (es la llegada). Mide orden = elegir con lo ya visto; caos = la primera que aparece. Las dos igual de solas."
+    },
+    {
+      "id": "EJ-047",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "momento": "adentro",
+      "enunciado": "Suena una canción lenta. ¿Qué te sale?",
+      "opciones": [
+        { "texto": "Busco la mirada de alguien", "polo": "luz" },
+        { "texto": "Cierro los ojos", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (una canción lenta se escucha igual de bien desde cualquier lado, y la escena no nombra ni un tema ni a la banda); sin plata (mirar y cerrar los ojos son gratis); silla de ruedas (ninguna pide parar ni mover el cuerpo); vuelta de noche sin compañía (es adentro). Mide luz = buscar a otro para compartirla; oscuridad = entrar en ella por su cuenta. Las dos son un gesto de la cara, igual de íntimas."
+    },
+    {
+      "id": "EJ-048",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "momento": "adentro",
+      "enunciado": "Hay un silencio largo antes del próximo acorde.",
+      "opciones": [
+        { "texto": "Sonrío a quien me mira", "polo": "luz" },
+        { "texto": "Respiro hondo y escucho", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (un silencio antes del acorde se imagina sin haber ido); sin plata (sonreír y respirar no cuestan); silla de ruedas (ninguna pide cuerpo capaz de algo); vuelta de noche sin compañía (es adentro). Mide luz = el silencio se comparte con quien está cerca; oscuridad = el silencio se escucha por su cuenta. Las dos igual de improvisadas y de calladas."
+    },
+    {
+      "id": "EJ-049",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "momento": "adentro",
+      "enunciado": "Cambian los instrumentos y hay una pausa.",
+      "opciones": [
+        { "texto": "Comento lo que pasó", "polo": "luz" },
+        { "texto": "Miro cómo ajustan los cables", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (una pausa técnica es igual de visible para quien ve su primer recital); sin plata (ninguna cuesta); silla de ruedas (comentar y mirar son lo que se hace sin moverse); vuelta de noche sin compañía (es adentro). Mide luz = la pausa se llena con charla; oscuridad = la pausa se llena con la mirada puesta en lo suyo. Las dos improvisadas."
+    },
+    {
+      "id": "EJ-050",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "momento": "adentro",
+      "enunciado": "Ya pensás cómo le vas a contar esta noche a alguien.",
+      "opciones": [
+        { "texto": "Voy armando el relato", "polo": "orden" },
+        { "texto": "Se lo cuento como salga", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (pensar cómo contar algo vale para cualquier salida y no presupone saber de la banda); sin plata (contar no cuesta); silla de ruedas (es una decisión mental); vuelta de noche sin compañía (es adentro, no hay trayecto). Mide orden = preparar el relato; caos = contarlo al momento. Las dos igual de acompañadas: la persona a quien se le cuenta está en las dos."
+    },
+    {
+      "id": "EJ-051",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "momento": "adentro",
+      "enunciado": "Cambia el ritmo: la música se acelera de golpe. ¿Qué te sale?",
+      "opciones": [
+        { "texto": "Sigo mi compás", "polo": "orden" },
+        { "texto": "Me dejo llevar", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (un cambio de ritmo lo oye cualquiera); sin plata (nada cuesta); silla de ruedas ('compás' y 'llevar' son una actitud, no un movimiento: no piden saltar ni mover las piernas); vuelta de noche sin compañía (es adentro). Mide orden = sostener el propio ritmo; caos = acompañar el cambio. Las dos igual de solas, adentro de la misma música."
+    },
+    {
+      "id": "EJ-052",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "momento": "adentro",
+      "enunciado": "Alguien propone un lugar de encuentro por si se separan.",
+      "opciones": [
+        { "texto": "Lo fijo en la cabeza", "polo": "orden" },
+        { "texto": "Nos encontramos igual", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (cualquier grupo en cualquier lugar grande piensa en cómo no perderse); sin plata (ningún lugar de encuentro cuesta); silla de ruedas (no pide moverse, solo acordar); vuelta de noche sin compañía (es adentro y con grupo). Mide orden = dejar el punto fijado; caos = confiar en reencontrarse. Las dos igual de acompañadas: alguien lo propuso y las dos le contestan."
+    },
+    {
+      "id": "EJ-053",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "momento": "vuelta",
+      "enunciado": "Ya en casa, todavía tenés el ruido en el cuerpo.",
+      "opciones": [
+        { "texto": "Llamo a alguien", "polo": "luz" },
+        { "texto": "Me lavo la cara", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (el ruido en el cuerpo es una imagen de oído, no un conocimiento); sin plata (llamar y lavarse la cara no cuestan); silla de ruedas (nada pide caminar ni parar); vuelta de noche sin compañía (la escena empieza ya en casa, sin trayecto: es el único momento de la vuelta que no pasa por la calle). Mide luz = buscar una voz; oscuridad = hacerse un gesto propio. Las dos se hacen en casa."
+    },
+    {
+      "id": "EJ-054",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "momento": "vuelta",
+      "enunciado": "Pasan los días y esta noche sigue en tu cabeza.",
+      "opciones": [
+        { "texto": "La cuento cada tanto", "polo": "luz" },
+        { "texto": "La repaso para mí", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (cualquier noche memorable sigue en la cabeza); sin plata (recordar no cuesta); silla de ruedas (es mental); vuelta de noche sin compañía (pasaron días y no hay trayecto). Mide luz = el recuerdo se reparte; oscuridad = el recuerdo se repasa por su cuenta, con la misma ternura. Las dos igual de hechas sin plan."
+    },
+    {
+      "id": "EJ-055",
+      "us": ["US-06"],
+      "eje": "luz-oscuridad",
+      "momento": "vuelta",
+      "enunciado": "Es tarde y no te da el sueño.",
+      "opciones": [
+        { "texto": "Le escribo a alguien", "polo": "luz" },
+        { "texto": "Miro el techo y pienso", "polo": "oscuridad" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (el desvelo tras una noche larga es de cualquiera); sin plata (escribir y mirar el techo no cuestan); silla de ruedas (no pide cuerpo); vuelta de noche sin compañía (la escena es en la cama, ya en casa: no hay trayecto ni opción que lo pida). Mide luz = buscar una voz a esa hora; oscuridad = quedarse pensando, con una acción física (mirar). Las dos improvisadas."
+    },
+    {
+      "id": "EJ-056",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "momento": "vuelta",
+      "enunciado": "Antes de dormir, pensás en la semana que viene.",
+      "opciones": [
+        { "texto": "Dejo marcado lo importante", "polo": "orden" },
+        { "texto": "Mañana veo qué sale", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (la semana que viene es de cualquiera y la escena no nombra el recital); sin plata (marcar o dejar para mañana no cuestan); silla de ruedas (es mental); vuelta de noche sin compañía (la escena es en la cama y no hay trayecto). Mide orden = marcar lo que importa; caos = resolver cuando llegue. Las dos igual de solas."
+    },
+    {
+      "id": "EJ-057",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "momento": "vuelta",
+      "enunciado": "Alguien te propone ir a otro recital.",
+      "opciones": [
+        { "texto": "Acepto y fijamos la fecha", "polo": "orden" },
+        { "texto": "Acepto y ya veremos cuándo", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (aceptar no pide haber ido: a quien nunca fue, alguien lo invita a su primera vez; las dos opciones empiezan con 'acepto'); sin plata (ninguna nombra ni entrada ni precio, solo cuándo); silla de ruedas (se acepta con la voz); vuelta de noche sin compañía (se habla de una fecha, no de un trayecto). Mide orden = cerrar la fecha; caos = dejarla abierta. Las dos igual de acompañadas: las dos le dicen que sí a la misma persona."
+    },
+    {
+      "id": "EJ-058",
+      "us": ["US-06"],
+      "eje": "orden-caos",
+      "momento": "vuelta",
+      "enunciado": "Querés dejar escrito algo de esta noche.",
+      "opciones": [
+        { "texto": "Empiezo por el principio", "polo": "orden" },
+        { "texto": "Empiezo por lo que quedó", "polo": "caos" }
+      ],
+      "estado": "listo",
+      "notaInterna": "Nuevo (D-57, CNT-30). Cuatro lugares: nunca fui (escribir de una noche es de cualquiera); sin plata (papel y lápiz no entran en la escena: es el por dónde); silla de ruedas (no pide cuerpo); vuelta de noche sin compañía (no hay trayecto). Mide orden = el relato lineal; caos = el relato por lo que quedó en la memoria. Las dos igual de solas y las dos son una manera de escribir, no una falla."
     }
   ]
 }
