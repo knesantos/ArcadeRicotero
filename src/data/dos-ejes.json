@@ -8,7 +8,7 @@
     { "id": "previa", "nombre": "La previa", "canta": "Campera puesta, llaves en el bolsillo." },
     { "id": "ida", "nombre": "La ida", "canta": "Ruido de fondo, el camino que se estira." },
     { "id": "vereda", "nombre": "La vereda", "canta": "Baldosa fría y un parlante lejano." },
-    { "id": "adentro", "nombre": "Adentro", "canta": "Bombo en el pecho, primer acorde." },
+    { "id": "adentro", "nombre": "Cuando suena", "canta": "Bombo en el pecho, primer acorde." },
     { "id": "vuelta", "nombre": "La vuelta", "canta": "Zumbido en el oído, llave en la puerta." }
   ],
   "cuadrantes": [

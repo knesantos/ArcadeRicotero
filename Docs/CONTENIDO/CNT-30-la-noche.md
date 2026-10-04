@@ -620,8 +620,8 @@ npm run generar-dos-ejes && node --test src/lib/dos-ejes/tarjetas.test.ts
    defecto del contenido: `huellaDelTaller()` entra con las **bajadas** de los cuadrantes, y la
    vuelta 2 cambió las cuatro (`CU-1`..`CU-4`). El comando que dice el propio test es
    `npm run generar-dos-ejes`; lo corre el hilo principal. El taller mide cada bajada y falla
-   fuerte si ocupa más de cinco renglones: las nuevas miden entre 137 y 170 caracteres, como
-   las de antes, y deberían ocupar cuatro.
+   fuerte si ocupa más de cinco renglones: las nuevas miden entre 136 y 169 caracteres, como
+   las de antes (la más larga medía 167), y deberían ocupar cuatro.
 
 ## 9. Para `REV-19` y para el hilo principal
 

@@ -4,9 +4,10 @@
 - **Fecha:** 2026-10-04, ciclo 18.
 - **Estado:** entrega completa, **versión 2 (vuelta 1 de arreglos, 2026-10-04)**: cambia la
   forma de la segunda oración (`Con la tuya comparte: …`, sin comillas y sin tres "con"
-  seguidos) y el polo de oscuridad (`con lo propio`, `CNT-30` §6.1). `copy.ts` tiene todavía la
-  versión 1: el pedido al hilo principal está en
-  `Docs/SUGERENCIAS/CNT-para-hilo-principal-vuelta-1-dos-ejes.md`. Cierra lo que `CNT-26` §6
+  seguidos) y el polo de oscuridad (`con lo propio`, `CNT-30` §6.1). `copy.ts` ya tiene la
+  versión 2 (la pegó el hilo principal, `Docs/SUGERENCIAS/CNT-para-hilo-principal-vuelta-1-dos-ejes.md`).
+  La vuelta 2 de `CNT-30` no cambia ningún texto de este documento: no cita bajadas, nombres ni
+  opciones, solo los polos. Cierra lo que `CNT-26` §6
   puntos 5 y 6 dejó pendiente (el puntero decía `CNT-29`) y lo que `UX-06` §6 pedía sin copy.
 - **Consume:** `D-57` punto 11 (la postal y la línea neutra de contraste), `UX-06` §6, `BR-17`
   (ningún resultado mejor que otro), `ADR-02` (el desafío lo escribe quien manda el enlace, no es un

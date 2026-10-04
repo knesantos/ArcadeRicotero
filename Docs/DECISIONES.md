@@ -3331,6 +3331,12 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
      el HTML de la página (`UX-36` §4.3 y §8.2): con `disabled` el botón tocado perdía el foco
      y el lector no llegaba a decir "apretado", y una región que nace con su texto no se
      anuncia de forma fiable.
+  6. **El sello del cuarto momento dice "Cuando suena", no "Adentro"** (el `id` sigue siendo
+     `adentro`: lo ata el schema). El sello daba por hecho que quien juega entró, y `BR-36`
+     veto 3 dice que una escena de adentro tomada por la normal deja afuera otra vez al que
+     se quedó en la vereda (`RES-154`). Las seis escenas de ese momento ya se oyen igual desde
+     afuera desde la vuelta 2 de `CNT-30`; faltaba el nombre. La propuesta es de `contenido`
+     (`Docs/SUGERENCIAS/CNT-para-hilo-principal-vuelta-2-dos-ejes.md` §4) y se toma tal cual.
 
 ## D-58 — La rotulada vuelve a ser Archivo Black: el archivo del sitio no traía la A-Z
 

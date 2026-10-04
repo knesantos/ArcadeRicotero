@@ -263,13 +263,17 @@ test('ninguna palabra es la firma de un polo', () => {
   // una palabra que aparece en tres o más opciones de un polo y en ninguna del polo de enfrente
   // se aprende en la segunda noche, y el jugador deja de elegir y empieza a apuntar. Así se
   // escribieron "fijo" y "pensado" en orden: once veces en quince.
-  const vacias = new Set(['que', 'con', 'los', 'las', 'una', 'uno', 'del', 'por', 'para', 'como', 'mas', 'sin', 'hay', 'esta', 'este', 'eso', 'esa', 'ese', 'mis', 'tus', 'sus', 'les', 'nos', 'ahi', 'aca', 'alla', 'muy', 'pero', 'cuando', 'donde']);
+  // "Por", "me" y "mi" cuentan aunque sean cortas: son firmas de forma, como el "Ya sé… /
+  // Tengo…" del banco viejo. La vuelta 1 tenía "por" en cinco opciones de orden y en ninguna de
+  // caos ("punto por punto", "una por una"), y "me + verbo" en cuatro de caos y ninguna de orden.
+  const vacias = new Set(['que', 'con', 'los', 'las', 'una', 'uno', 'del', 'para', 'como', 'mas', 'sin', 'hay', 'esta', 'este', 'eso', 'esa', 'ese', 'mis', 'tus', 'sus', 'les', 'nos', 'ahi', 'aca', 'alla', 'muy', 'pero', 'cuando', 'donde']);
+  const cortasQueCuentan = new Set(['me', 'mi']);
   const firmas: string[] = [];
   for (const eje of ['luz-oscuridad', 'orden-caos']) {
     const cuenta = new Map<string, Map<string, number>>();
     for (const i of LISTOS.filter((x) => x.eje === eje)) {
       for (const o of i.opciones) {
-        const unicas = new Set(palabras(plano(o.texto)).map((p) => p.replace(/[^\p{L}]/gu, '')).filter((p) => p.length > 2 && !vacias.has(p)));
+        const unicas = new Set(palabras(plano(o.texto)).map((p) => p.replace(/[^\p{L}]/gu, '')).filter((p) => (p.length > 2 || cortasQueCuentan.has(p)) && !vacias.has(p)));
         for (const p of unicas) {
           const porPolo = cuenta.get(p) ?? new Map<string, number>();
           porPolo.set(o.polo, (porPolo.get(o.polo) ?? 0) + 1);

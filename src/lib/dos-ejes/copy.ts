@@ -35,7 +35,7 @@ export const PANTALLA_0 = {
     `Una noche de recital en ${enLetras(momentos)} momentos y ${enLetras(preguntas)} preguntas de cómo la pasás. No hace falta saber nada ni haber ido.`,
   /**
    * El rótulo de la etiqueta de papel pegada en la tapa del libro: el índice de la noche.
-   * "Adentro del libro" chocaba con el sello `Adentro`, que es uno de los cinco que lista
+   * "Adentro del libro" chocaba con el sello del cuarto momento (hoy `Cuando suena`), que lista
    * (`CNT-30` §6.2).
    */
   indiceRotulo: 'Las hojas de la noche',
