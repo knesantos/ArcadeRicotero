@@ -3131,3 +3131,175 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   - Los números son del tablero de Vercel y de nadie más. **El sitio no los muestra**: sigue
     en pie lo de `UX-01`, nada de "tantos ricoteros jugaron hoy".
   - Si un bloqueador lo frena, no se pierde nada: ninguna pantalla depende de esto.
+
+## D-57 — "¿Qué tipo de ricotero sos?" se rehace: una noche en cinco momentos, cuatro maneras que se dicen con orgullo, y el libro de *Luzbelito* como única pieza
+
+- **Fecha:** 2026-10-04
+- **Estado:** aceptada — pedido directo del usuario, textual: *"Hacé un ciclo entero de
+  mejora importante sobre el juego de qué tipo de ricotero sos, mejora artística, de
+  preguntas, de resultado y de otras cosas que analices que se puedan mejorar."*
+- **Consume:** `US-06`, `BR-17`, `CTR-08`, `ADR-02`, `UX-02`, `UX-06`, `UX-20` §2, `UX-22`
+  §12.6, `UX-35`, `CNT-09`, `CNT-26`, `REV-07`, `D-14`, `D-17`, `D-19`, `D-21`, `D-33`,
+  `D-50`, `D-51` punto 6, `D-52`, `D-54`, `D-56`, `RES-150`..`RES-171` (`INV-150`),
+  `.claude/rules/voz-ricotera.md`, `.claude/rules/diseno-marca.md`.
+- **Cómo se llegó.** Siete lectores relevaron el juego (contrato, contenido, visual, código,
+  deudas, investigación y un crítico de completitud); tres diseñadores propusieron tres
+  conceptos completos e independientes ("la noche del recital", "el libro de *Luzbelito*",
+  "la identidad que se comparte") y tres jueces los puntuaron por reglas, por oficio y por
+  factibilidad. Los tres jueces eligieron la tercera como base, con injertos de las otras dos.
+  Esta decisión es esa síntesis.
+
+- **Lo que estaba mal, medido el 2026-10-04 sobre `bc27cd4`.**
+  1. Un doble toque contestaba la pregunta siguiente sin leerla: el clic avanzaba en el mismo
+     tick y las opciones nuevas caían en el mismo lugar. Corrompía en silencio el único
+     resultado que da el juego.
+  2. El foco caía al `<body>` en cada pregunta y en el resultado; ninguna región viva.
+  3. **Ni una escena del banco era del mundo ricotero** (asado, planta, mueble, playa): un test
+     de revista con título ricotero. `CNT-09` le había dejado la pregunta a `producto` en el
+     ciclo 8 y nadie la contestó. Siete ítems medían otra cosa o cruzaban de eje; quedaban
+     marcas de género; once de veinte enunciados cerraban con "¿Qué hacés?".
+  4. Los cuatro resultados eran astros (Estrella fija, Cometa suelto, Luna llena, Eclipse
+     repentino): el horóscopo que la regla de voz veta, y **no halagaban parejo**: los de luz
+     describían placeres, los de oscuridad cómo aguantás algo malo.
+  5. El resultado no tenía arte; el rombo dejaba las dos caras de luz siempre arriba (la
+     jerarquía que decía evitar), con el punto a 2:1 de contraste y las etiquetas a 9,5 px.
+  6. Compartir era texto y enlace, con la vista previa genérica del sitio; el que llegaba leía
+     "A alguien le salió «X»" sin saber qué era X, y al terminar no se comparaba.
+  7. "Probá de nuevo" sonaba a haber fallado y repetía la mitad de las preguntas.
+
+- **Decisión.**
+  1. **La partida es una noche de recital en cinco momentos**: *la previa*, *el viaje*, *la
+     vereda*, *adentro* y *la vuelta*. En cada momento sale un ítem de cada eje, en orden al
+     azar dentro del momento: siguen siendo diez preguntas, cinco por eje, impar (`BR-17`
+     regla 3 intacta). Cada momento tiene su sello y una línea que canta.
+  2. **El recital es "un recital", sin dueño.** Nunca la banda, sus temas, el Indio, la misa,
+     el pogo ni el aguante. Los Redondos no tocan desde 2001 y el Indio murió el 5-jun-2026:
+     la noche es la de cualquiera que sale a ver música, contada en presente. Nada pide haber
+     ido nunca, saber algo, tener plata ni un cuerpo capaz de algo, y nada es una cuestión de
+     seguridad disfrazada de temperamento (volver de noche sin compañía, hablar con
+     desconocidos, la multitud apretada). Las reglas las fija `producto` en `BR-36` y las
+     vigila un test **escrito antes que el banco**.
+  3. **Esto da vuelta, por escrito, el criterio con el que se retiró `EJ-011`** ("el sabor
+     ricotero funciona como credencial de pertenencia"). `BR-17` prohíbe ejes que midan
+     conocimiento, no escenas del ritual: la escena es de todos, y lo que no puede pasar es que
+     una de las dos opciones sea "más de adentro" que la otra. Esa prueba es por ítem y la
+     corre `REV-19` desde cuatro lugares: *nunca fui*, *sin plata*, *con silla de ruedas* y
+     *volviendo de noche sin compañía*.
+  4. **Treinta ítems nuevos** (`EJ-029`..`EJ-058`), tres por celda (momento × eje). Se retiran
+     los veinte listos de hoy, con nota y sin reciclar ids. Con tres por celda, tres noches
+     seguidas no repiten ninguna escena.
+  5. **Cuatro maneras, con nombre de cosa y sin persona gramatical**, para que se digan igual
+     en "me salió", "te salió" y "le salió" (es una excepción declarada a voz-ricotera §4.2: la
+     segunda persona vive en "Esta noche te salió", no en el nombre):
+     - `CU-1`, luz + orden: **«Mesa larga a las nueve»**
+     - `CU-2`, luz + caos: **«Ronda en cualquier esquina»**
+     - `CU-3`, oscuridad + orden: **«Radio bajita, misma hora»**
+     - `CU-4`, oscuridad + caos: **«Mochila liviana, sin mapa»**
+
+     El sistema se arma solo: luz es algo de gente (mesa, ronda), oscuridad algo de uno
+     (radio, mochila); orden es una hora o un lugar puestos, caos lo abierto. Los ids y sus
+     polos **no se mueven**: un enlace viejo con `r=CU-3` sigue diciendo oscuridad + orden, y
+     un test lo ata. Las bajadas las escribe `contenido` (`CNT-30`): un placer y un costo,
+     **los cuatro costos con la misma forma**, y ninguno de oscuridad dicho como exclusión.
+     Alternativas que quedan anotadas por si el usuario prefiere otra, como en `D-52`:
+     «Mate en cualquier esquina» (`CU-2`) y «Libro con señalador» (`CU-3`).
+  6. **El resultado es "esta noche", no una esencia.** Rótulo "ESTA NOCHE TE SALIÓ" en vez de
+     "Diste con esto"; "Empezá otra noche" en vez de "Probá de nuevo", con escenas que no
+     salieron en la visita (en memoria, sin `localStorage`). Debajo, la línea seca que nombra
+     los dos polos ("Con la gente, con plan."), que traduce las puntas que hoy nadie traducía.
+  7. **El plano pasa a ser una grilla de dos por dos relativa**: tu manera primero, al lado la
+     que comparte tu polo de luz-oscuridad, abajo la que comparte tu polo de orden-caos, y en
+     diagonal la opuesta. Para cada persona "primero" es la suya, así que ninguna queda fija
+     por encima de otra. Sin punto, sin graduación: los cuatro nombres en papel, cada uno con
+     su bajada para leer. Es texto HTML, no un SVG escalado.
+  8. **Una sola pieza de arte para los cuatro: el libro de *Luzbelito*.** El disco salió como
+     un libro de tapas de cartón con lomo de cuero (`RES-168`): el mármol, el lomo y el
+     esquinero se recortan del frente, **sin el óvalo, sin la figura y sin la palabra
+     LUZBELITO**. Es la tapa de la portada del juego (con el índice de los cinco momentos en
+     una etiqueta de papel), el canto de las hojas en la partida y la esquina de la última
+     hoja en el resultado, la tarjeta y la vista previa. **Ninguna pieza se asigna a un
+     cuadrante**: los tres jueces coincidieron en que un pedazo por identidad deja siempre una
+     más linda.
+  9. **Sin velas en lo nuevo y sin el verso de «Juguetes perdidos».** Dos velas encendidas, el
+     verso de cierre de los shows del Indio y "esta noche", cuatro meses después del 5 de
+     junio, se leen como un velorio aunque ningún texto lo diga. El verso, además, está en
+     `borrador` en "Completá la letra" (`CL-1000`): nadie lo confirmó de oído. Si el usuario lo
+     confirma y lo quiere, entra después sin tocar nada más. La vela de la carátula y del pie
+     (`D-51`, `D-54`) no se toca: no es de este ciclo.
+  10. **Compartir con imagen, y una vista previa por identidad. Revierte `D-51` punto 6 para
+      este juego.** Como hay solo cuatro identidades y ninguna lleva un dato de la persona,
+      todo se fabrica una vez y queda fijo: un taller en Node (`sharp` y `fontkitten`, con las
+      letras reales del sitio) dibuja cuatro tarjetas de 1080 × 1350, cuatro vistas previas de
+      1200 × 630 y la del juego, con un manifiesto que un test vigila. La isla baja la tarjeta
+      al pintar el resultado, así `navigator.share({ files })` sale en el mismo toque.
+  11. **Cuatro postales**, `/juegos/dos-ejes/cu-1/` a `cu-4/`, cada una con su `og:image` y su
+      `og:title` ("Me salió «Mesa larga a las nueve»"). Muestran la manera del amigo —qué
+      es X, antes de jugar— y un botón que arranca la noche directo, con el desafío puesto.
+      El enlace que se comparte es la postal; los viejos `?g=dos-ejes&r=CU-n` siguen andando.
+      Al terminar, una línea neutra de contraste (`CNT-29`): misma manera, comparten un polo,
+      u opuestas. Nunca ganar ni perder.
+  12. **El toque se confirma y se bloquea.** Las dos opciones quedan inertes en el acto, la
+      elegida cambia de forma (borde grueso, apretada contra el papel, `aria-pressed`) y la
+      otra no se apaga. La siguiente llega a los `--pausa-eleccion` (600 ms, un token de
+      **espera** y no de movimiento: con movimiento reducido no se va a cero, porque es lo que
+      tapa el doble toque). No choca con "el avance lo manda el dedo" del quiz: aquello es no
+      cortar una explicación por reloj; acá el toque **es** el avance y no hay nada que leer.
+  13. **Accesibilidad y teclado.** El foco va al enunciado de cada pregunta y al nombre del
+      resultado; las opciones van en `role=group`; el avance se anuncia en una región viva.
+      "Volvé a la anterior" desde la segunda pregunta (sin `pushState`: inflaría las vistas de
+      `D-56`). Con teclado, 1 y 2 eligen y Retroceso vuelve.
+  14. **La portada, la partida y el resultado en el idioma del sitio**: la tapa del libro con
+      su etiqueta, la pregunta en una hoja de papel con el sello del momento y el canto de las
+      que faltan, las opciones como etiquetas de papel de igual peso (lado a lado en la mesa,
+      donde arriba y abajo ordenarían), el resultado como la última hoja con la marca arriba
+      —la captura sale con contexto— y la cinta "Volvé al arcade" en vez del enlace subrayado.
+      Ningún hex nuevo; nada se anima salvo el sello del momento con los tiempos de siempre.
+
+- **Alternativas descartadas.**
+  - **Una pieza de tapa por identidad** (las cuatro luces del libro, o cuatro pedazos en una
+    sola tinta): aun con la luminancia igualada por máquina, a 72 × 96 px siempre hubo una más
+    linda (la vela gruesa, el cielo) y una más pobre (la pared, las piedras). Y `UX-20` §2 ya
+    advertía que estampar un resultado con una tapa sugiere que hay que reconocerla.
+  - **Un tema o un verso por cuadrante**: ubica la obra en el plano, que el usuario descartó
+    en `US-06`.
+  - **"Sumá otra tanda" acumulando respuestas** (5 → 9 → 13 por eje): sostiene mejor la
+    identidad, pero redefine "partida" en `BR-17` y lleva la sesión a 26 preguntas, contra los
+    dos o tres minutos de `CLAUDE.md`.
+  - **Siete por eje**: mejora la estabilidad de 4 a 8 puntos a cambio de cuatro preguntas más,
+    y rompe los cinco momentos. La inestabilidad se asume en el texto ("esta noche").
+  - **Un sello "EL 7 CUMPLE 30"** por el aniversario de *Luzbelito*: `RES-167` pone esa fecha
+    en duda (`HILO-para-investigador-y-contenido-la-fecha-de-luzbelito.md`).
+  - **Tarjeta dibujada en canvas en el teléfono**: pierde el gesto en Safari (dibuja con
+    `await` antes de compartir) y no sirve como vista previa.
+
+- **El contrato de datos que comparten todos los roles** (`CTR-08` v2 lo formaliza):
+  - El banco suma `momentos`: cinco objetos `{ id, nombre, canta }` en el orden de la noche
+    (`previa`, `viaje`, `vereda`, `adentro`, `vuelta`). `nombre` es el sello (registro 3) y
+    `canta` la línea de registro 1.
+  - Cada ítem `listo` suma `momento` (uno de esos cinco ids). Los retirados no lo llevan.
+  - `momentos.length === preguntasPorEje` (hoy 5) y cada celda momento × eje tiene al menos
+    tres ítems listos: lo vigila el test.
+  - Los cuadrantes conservan forma e ids; cambian nombre y bajada. `Resultado` sigue siendo
+    tres strings sin números.
+  - La traducción de los polos ("Con la gente", "Por tu cuenta", "Con plan", "Sobre la
+    marcha") es copy, en `src/lib/dos-ejes/copy.ts`.
+
+- **Consecuencias.**
+  - **`producto`**: enmienda `US-06` con fecha (cinco momentos, piso de 30 con 3 por celda,
+    tarjeta y postales en el criterio 4) y escribe `BR-36` (la frontera entre escena y
+    credencial, con sus vetos) y `BR-37` ("esta noche", y "otra noche" sin repetir en la
+    visita).
+  - **`arquitectura`**: `CTR-08` v2 y su schema; enmienda `ADR-02` con la forma por ruta.
+  - **`experiencia`**: `UX-36`, y enmiendas en voz alta de `UX-06` (lo que reemplaza), `UX-20`
+    §2 y `UX-22` §12.6 (entra un recorte pegado; sigue sin imprenta ni estampa).
+  - **`contenido`**: `CNT-30` (los 30 ítems, los cinco momentos, los cuatro nombres y bajadas,
+    el copy de pantallas), `CNT-29` (el contraste al volver) y la fila nueva en `CNT-01`.
+  - **El hilo principal**: el motor, la isla, las postales, el taller de tarjetas, los estilos
+    y las guardas. `fontkitten` y `sharp` se declaran en `devDependencies`; entra
+    `scripts/fuentes/archivo-black.ttf` con su licencia OFL, solo para el taller.
+  - **`revisor`**: `REV-19`, adversarial sobre el conjunto y no ítem por ítem, antes de
+    integrar.
+  - El posteo 5 del hilo de Twitter (`difusion/hilo-twitter/`) describe el rombo y los nombres
+    viejos: queda desfasado y se anota en `ESTADO.md`.
+  - Los enlaces que ya circulan con "Estrella fija" van a abrir con el nombre nuevo del mismo
+    cuadrante. Se acepta: viaja el id.
