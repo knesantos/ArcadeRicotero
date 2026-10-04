@@ -123,9 +123,10 @@ export const LUGARES = {
   masOMenos: 'Tenés una ficha boca abajo en la mano.',
   /* `US-06` (`CNT-26`, `CNT-13` §8): viste *Luzbelito*, la cabeza con la vela. Una vela que
      alumbra **media** cara: luz y oscuridad a la vez, sin decir cuál de las dos es la buena. */
-  // `CNT-30` §6.4: la vela salió de lo nuevo del juego (`D-57` punto 9). Un lugar libre es el
-  // molinete abierto dicho con un objeto.
-  dosEjes: 'Hay un lugar libre en el micro.',
+  // `CNT-30` §6.4: la vela salió de lo nuevo del juego (`D-57` punto 9). El micro se fue con
+  // la vuelta 1 de arreglos (un pasaje pago es el veto 3 de `BR-36`): queda el molinete
+  // abierto, dicho en la puerta.
+  dosEjes: 'Nadie te pide nada en la puerta.',
 } as const;
 
 /**

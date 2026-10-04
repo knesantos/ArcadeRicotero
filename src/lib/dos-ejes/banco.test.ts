@@ -14,6 +14,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { POLOS } from './copy.ts';
 
 interface Opcion {
   readonly texto: string;
@@ -190,8 +191,13 @@ const VETOS: ReadonlyArray<readonly [string, readonly string[]]> = [
   ['alcohol, drogas, policía', ['birra*', 'cerveza*', 'vino', 'fernet', 'escabio', 'porro', 'faso', 'policia', 'cana', 'yuta', 'borrach*']],
   // Un cuerpo capaz de algo no es temperamento (`BR-36`): "te ubicás", no "te parás".
   ['el cuerpo y la multitud', ['paras', 'parado', 'saltar', 'salto', 'salt*', 'corro', 'corres', 'hombro con hombro', 'apretad*', 'empuj*', 'avalancha', 'en el medio']],
-  // Seguridad disfrazada de temperamento: hablar con desconocidos, a dedo.
-  ['seguridad', ['a dedo', 'desconocid*', 'extrano', 'extrana']],
+  // Seguridad disfrazada de temperamento: hablar con desconocidos, a dedo, y la opción de luz
+  // que apunta a quien está cerca o mira (`BR-36` veto 6; la vuelta 1 de `CNT-30` encontró
+  // cuatro). La luz apunta a "los míos" o a alguien a distancia, nunca al de al lado.
+  ['seguridad', ['a dedo', 'desconocid*', 'extrano', 'extrana', 'quien tenga', 'quien me mira', 'quien este', 'a quien me']],
+  // Un vehículo o un pasaje es un transporte pago: el veto 3 de `BR-36` por el sentido (la
+  // primera versión tenía tres micros de larga distancia en la ida).
+  ['vehículo y pasaje', ['micro', 'micros', 'pasaje*', 'colectivo*', 'tren', 'trenes']],
   // La épica de tribuna y la psicodelia de utilería (voz-ricotera §3.6 y §7).
   ['épica y psicodelia', ['lucha', 'resistencia', 'delirio', 'caleidoscopio', 'viaje']],
 ];
@@ -224,11 +230,14 @@ test('ninguna opción delata su eje con la palabra del eje', () => {
   // `EJ-002` decía "Se te corta la luz"; `FIND-25` lo marcó. Y "lista", "horario", "reviso" y
   // "todo" eran la firma del polo orden en el banco viejo.
   // El verificador del ciclo 18 (vuelta 1) sumó los que el banco nuevo repetía: once de quince
-  // opciones de orden decían "fijo", "pensado", "sigo" o "marcado", y cinco de caos "ver".
+  // opciones de orden decían "fijo", "pensado" o "marcado", y cinco de caos "ver". "Sigo" no
+  // entra a la lista: en el banco de la vuelta 1 aparece en orden, en caos y en oscuridad, y una
+  // palabra que está en tres polos no delata ninguno. Lo que sí vigila la repetición en un solo
+  // polo es el test de abajo, "ninguna palabra es la firma de un polo".
   const delatores = [
     'luz', 'oscur*', 'orden*', 'caos', 'caotic*', 'plan', 'planes', 'planific*', 'lista', 'horario*', 'reviso',
     'todo', 'todos', 'toda', 'todas',
-    'fij*', 'pensad*', 'pense', 'sigo', 'seguir', 'sigamos', 'marcad*', 'vera', 'veamos', 'veremos',
+    'fij*', 'pensad*', 'pense', 'marcad*', 'vera', 'veamos', 'veremos',
   ];
   const caidos: string[] = [];
   for (const i of LISTOS) {
@@ -236,6 +245,51 @@ test('ninguna opción delata su eje con la palabra del eje', () => {
     for (const o of i.opciones) for (const v of delatores) if (aparece(o.texto, v)) caidos.push(`${i.id}: "${o.texto}" (${v})`);
   }
   assert.deepEqual(caidos, []);
+});
+
+test('ninguna opción dice la palabra con la que el resultado traduce su polo', () => {
+  // El resultado y la grilla traducen los polos (`POLOS`: "con la gente", "con lo propio",
+  // "con plan", "sobre la marcha"). Desde la segunda noche, una opción que dice "mi gente" se
+  // lee como "la de luz": es el mismo delator que "luz", escrito con la palabra de la traducción.
+  const traduccion = new Set<string>();
+  for (const frase of Object.values(POLOS)) for (const p of palabras(plano(frase))) if (p.length > 3) traduccion.add(p);
+  const caidos: string[] = [];
+  for (const i of LISTOS) for (const o of i.opciones) for (const w of traduccion) if (aparece(o.texto, w)) caidos.push(`${i.id}: "${o.texto}" (${w})`);
+  assert.deepEqual(caidos, []);
+});
+
+test('ninguna palabra es la firma de un polo', () => {
+  // Una lista de delatores solo caza lo que alguien ya vio. Esto caza lo que nadie vio todavía:
+  // una palabra que aparece en tres o más opciones de un polo y en ninguna del polo de enfrente
+  // se aprende en la segunda noche, y el jugador deja de elegir y empieza a apuntar. Así se
+  // escribieron "fijo" y "pensado" en orden: once veces en quince.
+  const vacias = new Set(['que', 'con', 'los', 'las', 'una', 'uno', 'del', 'por', 'para', 'como', 'mas', 'sin', 'hay', 'esta', 'este', 'eso', 'esa', 'ese', 'mis', 'tus', 'sus', 'les', 'nos', 'ahi', 'aca', 'alla', 'muy', 'pero', 'cuando', 'donde']);
+  const firmas: string[] = [];
+  for (const eje of ['luz-oscuridad', 'orden-caos']) {
+    const cuenta = new Map<string, Map<string, number>>();
+    for (const i of LISTOS.filter((x) => x.eje === eje)) {
+      for (const o of i.opciones) {
+        const unicas = new Set(palabras(plano(o.texto)).map((p) => p.replace(/[^\p{L}]/gu, '')).filter((p) => p.length > 2 && !vacias.has(p)));
+        for (const p of unicas) {
+          const porPolo = cuenta.get(p) ?? new Map<string, number>();
+          porPolo.set(o.polo, (porPolo.get(o.polo) ?? 0) + 1);
+          cuenta.set(p, porPolo);
+        }
+      }
+    }
+    for (const [p, porPolo] of cuenta) {
+      const polos = [...porPolo];
+      if (polos.length === 1 && polos[0]![1] >= 3) firmas.push(`${eje}: "${p}" en ${polos[0]![1]} opciones de ${polos[0]![0]} y en ninguna de enfrente`);
+    }
+  }
+  assert.deepEqual(firmas, []);
+});
+
+test('la firma de un polo sabe ver: "fijo" tres veces en orden la marca', () => {
+  // El caso en rojo, para que el test de arriba no pase por no saber buscar.
+  const palabrasDe = (t: string) => palabras(plano(t)).map((p) => p.replace(/[^\p{L}]/gu, ''));
+  const orden = ['Voy a lo fijo', 'Lo fijo de antes', 'Hora fija, lugar fijo'].map(palabrasDe);
+  assert.ok(orden.filter((ps) => ps.some((p) => p.startsWith('fij'))).length >= 3);
 });
 
 test('ninguna opción en primera persona le pone género a quien juega', () => {
@@ -277,7 +331,9 @@ test('ninguna opción apunta al nombre de una manera', () => {
   for (const c of BANCO.cuadrantes) {
     for (const p of palabras(plano(c.nombre))) if (p.replace(/[^\p{L}]/gu, '').length > 3) delNombre.add(p.replace(/[^\p{L}]/gu, ''));
   }
-  for (const extra of ['rincon', 'hora']) delNombre.add(extra);
+  // Más los objetos de los nombres que el nombre no dice entero (`CNT-30` §2, la lista (O)).
+  // Solo en opciones: en un enunciado, "hora" o "camino" son escena.
+  for (const extra of ['rincon', 'hora', 'horas', 'horario', 'horarios', 'libro']) delNombre.add(extra);
   const caidos: string[] = [];
   for (const i of LISTOS) {
     for (const o of i.opciones) for (const w of delNombre) if (aparece(o.texto, w)) caidos.push(`${i.id}: "${o.texto}" (${w})`);

@@ -32,7 +32,7 @@ export const PANTALLA_0 = {
    * molinete más abierto del sitio y conviene decirlo, no solo que sea cierto (`UX-06` §2).
    */
   subtitulo: (momentos: number, preguntas: number) =>
-    `Una noche de recital en ${enLetras(momentos)} momentos y ${enLetras(preguntas)} preguntas de cómo sos. No hace falta saber nada ni haber ido.`,
+    `Una noche de recital en ${enLetras(momentos)} momentos y ${enLetras(preguntas)} preguntas de cómo la pasás. No hace falta saber nada ni haber ido.`,
   /**
    * El rótulo de la etiqueta de papel pegada en la tapa del libro: el índice de la noche.
    * "Adentro del libro" chocaba con el sello `Adentro`, que es uno de los cinco que lista
@@ -61,12 +61,16 @@ export const PANTALLA_0 = {
  *
  * **Sin persona, como los nombres.** `D-57` decía "Por tu cuenta", y se rompía justo donde la
  * línea viaja: en la tarjeta ("Me salió…: por tu cuenta") y en el desafío ("A alguien le
- * salió…: por tu cuenta", que se lee como un reproche). "Por cuenta propia" se dice igual en
- * los tres lugares. Se guardan en minúscula: la mayúscula la pone `lineaQueNombra`.
+ * salió…: por tu cuenta", que se lee como un reproche). La primera vuelta de `CNT-30` lo
+ * cambió por "por cuenta propia", y la lectura adversarial encontró ahí al cuentapropista:
+ * una palabra de trámite al lado de "con la gente", que es como el sitio nombra a quien
+ * juega. Queda **"con lo propio"**: misma forma que su par, sin persona y sin trámite
+ * (`CNT-30` §6.1, `D-57` enmendada). Se guardan en minúscula: la mayúscula la pone
+ * `lineaQueNombra`.
  */
 export const POLOS = {
   luz: 'con la gente',
-  oscuridad: 'por cuenta propia',
+  oscuridad: 'con lo propio',
   orden: 'con plan',
   caos: 'sobre la marcha',
 } as const;
@@ -143,18 +147,18 @@ export const RESULTADO = {
 } as const;
 
 /**
- * El contraste al volver (`CNT-29` §3): el mismo molde en los cuatro casos —la primera oración
- * idéntica, la segunda con "comparte" o "no comparte"—, sin ganar ni perder y sin género
- * ("quien te lo mandó"). `lo` y `oc` son los polos de **tu** manera, en frase (`POLOS`).
+ * El contraste al volver (`CNT-29` §3, versión 2): el mismo molde en los cuatro casos —la
+ * primera oración idéntica, la segunda con "comparte:" o "no comparte:"—, sin ganar ni perder
+ * y sin género ("quien te lo mandó"). `lo` y `oc` son los polos de **tu** manera, en frase
+ * (`POLOS`). Sin comillas en los polos: se leían como nombres, y la versión 1 juntaba tres
+ * "con" seguidos ("comparte «con la gente»").
  */
 export const CONTRASTE = {
-  misma: (suyo: string, lo: string, oc: string) =>
-    `A quien te lo mandó le salió «${suyo}». Con la tuya, comparte «${lo}» y «${oc}».`,
-  'luz-oscuridad': (suyo: string, lo: string) => `A quien te lo mandó le salió «${suyo}». Con la tuya, comparte «${lo}».`,
-  'orden-caos': (suyo: string, _lo: string, oc: string) =>
-    `A quien te lo mandó le salió «${suyo}». Con la tuya, comparte «${oc}».`,
+  misma: (suyo: string, lo: string, oc: string) => `A quien te lo mandó le salió «${suyo}». Con la tuya comparte: ${lo}, ${oc}.`,
+  'luz-oscuridad': (suyo: string, lo: string) => `A quien te lo mandó le salió «${suyo}». Con la tuya comparte: ${lo}.`,
+  'orden-caos': (suyo: string, _lo: string, oc: string) => `A quien te lo mandó le salió «${suyo}». Con la tuya comparte: ${oc}.`,
   opuesta: (suyo: string, lo: string, oc: string) =>
-    `A quien te lo mandó le salió «${suyo}». Con la tuya, no comparte «${lo}» ni «${oc}».`,
+    `A quien te lo mandó le salió «${suyo}». Con la tuya no comparte: ${lo} ni ${oc}.`,
 } as const;
 
 /** La postal de cada manera, `/juegos/dos-ejes/cu-n/` (`ADR-02` enmendado). */
