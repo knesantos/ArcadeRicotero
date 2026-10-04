@@ -4,15 +4,94 @@
 > `UX-01`, `UX-02`, `BR-19` (partida por vidas), `BR-20` (escalera de `US-07`), `US-06`
 > (identidad sin puntaje), `CTR-08`,
 > `Docs/SUGERENCIAS/UX-para-arquitectura-formato-link-resultado.md`.
-> Produce: `ADR-02` (v1 2026-08-19, **v2 2026-08-25**, **enmienda 1 de la v2: 2026-10-04**).
-> Para la enmienda consume además: `D-57` (puntos 10, 11 y 13), `D-51` punto 6, `D-56`,
+> Produce: `ADR-02` (v1 2026-08-19, **v2 2026-08-25**, **enmiendas 1 y 2 de la v2:
+> 2026-10-04**).
+> Para la enmienda 1 consume además: `D-57` (puntos 10, 11 y 13), `D-51` punto 6, `D-56`,
 > `CTR-08` v2 (`Docs/ARQ/ARQ-schema-dos-ejes.md`), `CNT-29`, `src/components/Cabeza.astro`,
 > `src/lib/dos-ejes/arte.ts`, `src/scripts/partida-dos-ejes.ts`.
-> Última actualización: 2026-10-04 (enmienda 1, ciclo 18).
+> Para la enmienda 2: `D-57` enmienda 3 del 2026-10-04, `UX-36` §3.3,
+> `Docs/SUGERENCIAS/HILO-para-arquitectura-y-contenido-el-taller-v2.md` punto 5,
+> `src/lib/dos-ejes/isla.test.ts`, `src/lib/dos-ejes/copy.ts`, `src/pages/juegos/dos-ejes.astro`,
+> `src/pages/juegos/dos-ejes/[cu].astro`.
+> Última actualización: 2026-10-04 (enmienda 2, ciclo 18).
 
-**Vigente: `ADR-02` v2, con la enmienda 1.** La v1 queda abajo entera, sin editar, porque
-hay links en la calle armados con ella y porque su sección de alternativas descartadas
+**Vigente: `ADR-02` v2, con las enmiendas 1 y 2.** La v1 queda abajo entera, sin editar,
+porque hay links en la calle armados con ella y porque su sección de alternativas descartadas
 sigue valiendo.
+
+---
+
+## ADR-02 v2, enmienda 2 — El enlace viejo se lee donde está; la guarda de `Cabeza.astro` falta
+
+- **Fecha:** 2026-10-04
+- **Estado:** **aceptada.** Escrita leyendo el código (`src/scripts/partida-dos-ejes.ts`,
+  `isla.test.ts`, `copy.ts`, `Cabeza.astro` y las dos páginas del juego), no corriéndolo
+  (`D-12`).
+- **Pedido por:** `Docs/SUGERENCIAS/HILO-para-arquitectura-y-contenido-el-taller-v2.md` punto 5,
+  sobre `D-57` enmienda 3.
+- **Por qué enmienda y no v3:** no cambia la query ni ninguna forma. El punto 6 de la enmienda 1
+  queda igual en lo que decide —no se redirige— y se precisa en lo que ve la persona. El punto 9
+  no cambia: se constata que no está hecho.
+
+### El punto 6, como quedó
+
+Un enlace viejo (`/juegos/dos-ejes/?g=dos-ejes&r=CU-n`) se lee donde está:
+
+- **Por el camino de siempre.** `leerDesafio(location.search, 'dos-ejes')`; si da una
+  `identidad`, la isla busca el id en el banco. Lo que se pinta sale del banco, nunca de la URL.
+- **La "invitación en la pantalla de entrada" es la etiqueta del amigo**, la misma que la postal
+  trae escrita en su HTML (`Tapa.astro`): el rótulo `POSTAL.rotulo`, el nombre, el sello y la
+  línea que nombra, sin la bajada. La isla la pega en la tapa en lugar del índice y esconde el
+  renglón del lugar. La línea `PANTALLA_0.desafio`, que era la invitación de antes, se retiró de
+  `copy.ts`.
+- **El subtítulo no se toca.** Ahí está lo que el juego no pide —saber nada, haber ido—, y quien
+  llega por el enlace de otro es quien más necesita leerlo.
+- **No se redirige.** `UX-36` §3.3 proponía `location.replace()` hacia la postal; `D-57`
+  enmienda 3 se quedó con el punto 6. Sumo la razón que lo hace definitivo y no solo prudente:
+  **una redirección al abrir no le arregla la vista previa a un enlace que ya se mandó.** El
+  previsualizador levantó la imagen cuando se compartió la dirección vieja, y no corre
+  JavaScript. Lo único que compraría `location.replace()` es cambiarle la dirección debajo a la
+  persona —lo que la alternativa 3 de la enmienda 1 ya descartó— y una visita de más en la
+  analítica (`D-56`).
+- **`n` no tiene dónde aparecer.** La etiqueta no lo usa, y este juego nunca lo mandó (punto 7):
+  un enlace fabricado a mano que lo traiga pinta lo mismo que sin él. La regla 3 tiene una
+  superficie menos en este juego.
+- **La precedencia del punto 5 se cumple por cortocircuito:** la isla toma `data-desafio` y lee
+  la query solo si falta (`??`). En una postal, `location.search` no se llega a leer.
+
+**Lo vigila `src/lib/dos-ejes/isla.test.ts`**, "el enlace viejo no pisa el subtítulo ni
+redirige": falla si la isla vuelve a tocar `#subtitulo`, si aparece `location.replace`,
+`location.assign` o una asignación a `location.href`, o si deja de pegar
+`etiquetaDelAmigo(suyo)`. El caso siguiente prohíbe `history.pushState` y `replaceState`.
+
+### El punto 9 no está hecho
+
+`Cabeza.astro` declara `imagen?` e `imagenAlt?` como **dos opcionales sueltas**, y si falta el
+`alt` cae en `PORTAL.altTarjeta`. Hoy no hay daño: las dos páginas que pasan `imagen`
+(`dos-ejes.astro` y `[cu].astro`) pasan también `imagenAlt`, con el crédito de *Luzbelito*. Pero
+la guarda que fijó el punto 9 no existe: una página nueva que pase solo `imagen` compila, se
+publica, y le pone a una imagen del libro de *Luzbelito* el texto alternativo de la tarjeta del
+sitio, con el crédito de otra tapa. Es el rótulo que miente sobre lo que hay adentro, y nada lo
+para.
+
+**Sigue exigido.** Lo exigido es el resultado —las dos o ninguna, y que falle antes de
+publicarse—, y el mecanismo admite dos:
+
+1. **La unión de tipos del punto 9** (preferida): falla en `npm run check`, antes del build.
+2. **Un `throw` en el frontmatter de `Cabeza.astro`** si llega una sin la otra: falla en
+   `npm run build`. Es más tarde y alcanza: el build es la puerta.
+
+**Descartado:** un test que lea las páginas buscando `imagen=` sin `imagenAlt=`. Mira a los
+llamadores y no al componente, y la primera página que pase las props con un spread lo esquiva.
+
+### Verificación
+
+```bash
+node --test src/lib/dos-ejes/isla.test.ts   # el enlace viejo: etiqueta del amigo, sin redirigir, sin pisar el subtítulo
+node --test src/lib/desafio.test.ts         # sin cambios
+npm run check                               # con la unión: una página con `imagen` sin `imagenAlt` no compila
+npm run build                               # con el throw: no se construye
+```
 
 ---
 
@@ -29,7 +108,8 @@ sigue valiendo.
   en **un** juego, gana un segundo vehículo, y que una consecuencia de la v2 deja de valer
   para ese juego (abajo, "lo que deja de valer").
 - **Implementa:** el hilo principal. La isla ya está escrita así
-  (`src/scripts/partida-dos-ejes.ts`); faltan las páginas y `Cabeza.astro`.
+  (`src/scripts/partida-dos-ejes.ts`); faltan las páginas y `Cabeza.astro`. *[2026-10-04: están,
+  salvo la unión de tipos del punto 9. Ver la enmienda 2.]*
 
 ### Contexto
 
@@ -68,7 +148,9 @@ resultados posibles se pueden dibujar y publicar de antemano. Un `marcador` que 
    decir dos cosas.
 6. **Los enlaces viejos se siguen leyendo, sin redirigir.** `/juegos/dos-ejes/?g=dos-ejes&r=CU-n`
    pasa por `leerDesafio` igual que hoy: invitación en la pantalla de entrada y contraste al
-   terminar. Abren con el nombre nuevo del mismo cuadrante (`D-57`: "viaja el id").
+   terminar. Abren con el nombre nuevo del mismo cuadrante (`D-57`: "viaja el id"). *[Enmienda
+   2: la invitación es la etiqueta del amigo pegada en la tapa, sin pisar el subtítulo, y no se
+   redirige a la postal.]*
 7. **`n` no viaja en la postal.** Este juego nunca lo mandó, no puede llegar a la vista previa,
    y sería el único texto libre de la página.
 8. **El contraste al terminar tiene cuatro casos, no dos.** "Entre dos `identidad` no se
@@ -77,7 +159,8 @@ resultados posibles se pueden dibujar y publicar de antemano. Un `marcador` que 
    `opuesta`—. Ninguno ordena a otro; la línea es de `CNT-29`. Vale igual para una noche que
    arrancó en una postal y para una que arrancó con un enlace viejo.
 9. **`Cabeza.astro` gana dos props opcionales, `imagen` e `imagenAlt`, y van las dos o
-   ninguna:**
+   ninguna:** *[Enmienda 2: las props están, pero sueltas y no como esta unión. Sigue exigido;
+   admite también un `throw` en el build.]*
 
    ```ts
    type Props = { titulo: string; descripcion: string } & (

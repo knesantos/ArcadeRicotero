@@ -8,12 +8,233 @@
 > **Para la v2, además:** `D-57`, `D-21`, `BR-36`, `BR-37`, `UX-06` §7, `CNT-29`, `RES-168`,
 > `CTR-01.5`, `CTR-12`, `src/lib/dos-ejes/` (`partida.ts`, `arte.ts`, `taller.ts`, y sus tres
 > tests), `scripts/generar-dos-ejes.mjs`, `package-lock.json`.
-> Produce: `CTR-08` (v1 2026-08-24, **v2 2026-10-04**).
-> Última actualización: 2026-10-04 (`CTR-08` v2, ciclo 18, `D-57`).
+> **Para la enmienda 1, además:** `D-57` enmiendas 2, 3 y 4 del 2026-10-04, `D-58`, `UX-36`
+> §6.5, `Docs/SUGERENCIAS/HILO-para-arquitectura-y-contenido-el-taller-v2.md`,
+> `src/lib/dos-ejes/isla.test.ts`, `src/lib/islas.test.ts`, `scripts/dos-ejes-manifiesto.json`,
+> `scripts/fuentes/`, `package.json`, `src/data/dos-ejes.json`.
+> Produce: `CTR-08` (v1 2026-08-24, **v2 2026-10-04**, **enmienda 1 de la v2: 2026-10-04**).
+> Última actualización: 2026-10-04 (enmienda 1 de `CTR-08` v2: el taller como quedó al
+> construir).
 
-**Vigente: `CTR-08` v2.** La v1 queda abajo entera, sin borrar: el schema v2 es la v1 más lo
-que suma la noche, y las alternativas descartadas de la v1 siguen valiendo. Donde una sección
-de la v1 quedó reemplazada o ampliada, lo dice una marca al principio de la sección.
+**Vigente: `CTR-08` v2, con la enmienda 1.** La v1 queda abajo entera, sin borrar: el schema
+v2 es la v1 más lo que suma la noche, y las alternativas descartadas de la v1 siguen valiendo.
+Donde una sección de la v1 quedó reemplazada o ampliada, lo dice una marca al principio de la
+sección. La enmienda 1 no toca el schema: corrige lo que la v2 decía del taller y de las
+guardas, con una marca en cada lugar que dejó de ser cierto.
+
+---
+
+## CTR-08 v2, enmienda 1 — El taller como quedó al construir
+
+- **Fecha:** 2026-10-04, la misma tarde de la v2. El hilo principal construyó el taller sobre
+  v2.6 y la construcción cambió cuatro cosas.
+- **Estado:** **vigente.** Escrita leyendo el código, no corriéndolo (`D-12`):
+  `src/lib/dos-ejes/arte.ts`, `taller.ts`, `tarjetas.test.ts`, `isla.test.ts`, `partida.test.ts`,
+  `src/lib/esquemas.test.ts`, `scripts/generar-dos-ejes.mjs`, `scripts/dos-ejes-manifiesto.json`
+  y `package.json`. Que los tests pasen lo dice quien los corre.
+- **Pedido por:** `Docs/SUGERENCIAS/HILO-para-arquitectura-y-contenido-el-taller-v2.md` ("Para
+  `arquitectura`"), sobre `D-57` enmiendas 2, 3 y 4.
+- **Por qué enmienda y no v3:** el schema y el dato no cambian un carácter (`contratoVersion`
+  sigue en 2). Cambia el taller, que es consecuencia del contrato, y una de sus reglas —la 2 de
+  v2.6— se da vuelta. Lo que dejó de ser cierto en v2.6, v2.9 y v2.10 lleva una marca en su
+  lugar que apunta acá.
+
+### E1.1 — Las piezas son cuatro
+
+| Pieza | Caja en el máster (x, y, ancho × alto) | Sale a | Formato | La pide |
+|---|---|---|---|---|
+| `marmol` | 125, 700, 540 × 253 | 540 × 253 | JPEG | la tapa de la portada (`Tapa.astro`) |
+| `lomo` | 0, 0, 100 × 953 | 40 × 380 | JPEG | la tapa de la portada |
+| `esquinero` | 730, 0, 223 × 256 | 112 × 128 | PNG con alfa | la tapa, y la isla en el resultado |
+| `franja` | 0, 700, 953 × 253 | 760 × 202 | JPEG | **solo el taller**: el libro que asoma bajo la hoja de la tarjeta y de la vista |
+
+- **`canto` se retiró** de `PIEZAS` y su archivo se borró (`D-57` enmienda 2: el canto de las
+  hojas lo pintan las sombras). En `public/arte/dos-ejes/` hay hoy cuatro archivos, los de la
+  tabla.
+- **Lo que paga el teléfono no cambió de número:** la portada pide tres piezas, ≤ 30 KB cada
+  una, ≤ 90 KB entre las tres. Son otras tres. La franja está en `public/` porque el taller la
+  escribe ahí y la vuelve a leer para componer; ninguna página la pide (`rutaDePieza` se llama
+  solo desde `Tapa.astro`, con las tres, y desde la isla, con el esquinero).
+- **La guarda de lo prohibido no cambió, y las cuatro cajas la pasan.** El mármol y la franja
+  arrancan en `y = 700`, diez píxeles debajo del pie del óvalo (`260 + 430 = 690`); el lomo
+  termina en `x = 100` y el esquinero empieza en `x = 730`, diez a la derecha del título
+  (`330 + 390 = 720`). La cuenta es mía; quien lo afirma es el test (E1.4, caso 5).
+
+### E1.2 — Las fuentes son cuatro, y la regla 2 de v2.6 se da vuelta
+
+| Archivo | Licencia | Qué pinta |
+|---|---|---|
+| `public/fuentes/oktubre-calco.woff` | calco propio (`RES-43`) | la marca, "ARCADE RICOTERO" |
+| `scripts/fuentes/archivo-black.ttf` | OFL (`OFL.txt` al lado) | el título del juego, "ME SALIÓ", los nombres, los sellos, la pregunta de abajo |
+| `scripts/fuentes/dejavu-sans.ttf` | Bitstream Vera, con los cambios de DejaVu en dominio público (`LICENCIA-DEJAVU.txt`) | la bajada, el crédito, el dominio |
+| `scripts/fuentes/dejavu-sans-bold.ttf` | ídem | la línea que nombra; los cuatro nombres de la vista del juego |
+
+Las dos DejaVu son solo del taller: viven en `scripts/fuentes/`, fuera de `public/`, y no llegan
+al navegador. Están recortadas al latín. La fila de `CNT-01` es de `contenido` y está pedida en
+la misma sugerencia.
+
+**La regla 2 de v2.6 ("el texto largo va en la sans del sistema, por `librsvg`") queda
+reemplazada.** Todo el texto de la tarjeta y de la vista sale como trazo, y el taller **mide**
+cada renglón con las métricas de su fuente antes de ponerlo (`partir`, `entero`); si uno no
+entra, tira en vez de dibujarlo afuera. `D-57` enmienda 4 cuenta por qué: con la fuente del
+sistema el taller no tenía con qué medir, y el crédito y la línea que nombra se salían del papel
+sin que nada fallara.
+
+**Y el argumento con que yo la sostenía estaba mal de tipo, no de grado.** Escribí que la sans
+del sistema en la tarjeta era "lo mismo que hace `--fuente` en pantalla" (`UX-01`). No lo era:
+`--fuente` es la letra del teléfono de **quien lee**; en un PNG, "la del sistema" es la de **la
+máquina que corrió el taller**, y quien recibe la tarjeta nunca la eligió. La alternativa
+descartada 4 de v2.6 ("todo el texto como trazo") queda **retomada**, y lo que yo le cobraba
+—sacarle a la tarjeta la letra con que el sitio se lee— no existía.
+
+Consecuencias:
+
+- **El PNG sale igual en cualquier máquina con el mismo `sharp`**, que está fijado en versión
+  exacta. Lo afirma `D-57` enmienda 4; no lo verifiqué corriendo en dos máquinas.
+- **La huella sigue siendo de la entrada.** La alternativa descartada 3 de v2.6 (hashear las
+  salidas) sigue descartada, por otra razón: la de la máquina se cayó; queda que la huella de
+  entrada dice **qué** cambió y corre sin `sharp`. El hash de las salidas pasa a ser un
+  complemento barato (E1.4, agujero a), no un reemplazo.
+- **Un riesgo nuevo, que ordena E1.5.** Las dos letras que más texto pintan son subconjuntos:
+  DejaVu recortada al latín, y Oktubre Calco con once letras. Un carácter que la fuente no trae
+  sale como glifo vacío o como la cajita `.notdef`, y nada falla. No es teórico: la bajada de
+  `CU-2` lleva rayas (`—`, U+2014), que no son latín básico, y las pinta DejaVu recortada. Si el
+  recorte las incluyó no lo sé —no tengo con qué leer el `cmap`—; la tarjeta existe, el test
+  pasa, y el test no lo mira.
+
+### E1.3 — El manifiesto suma `medidas`
+
+`scripts/dos-ejes-manifiesto.json` tiene hoy cinco claves: `_comentario`, `version` (2, la de
+`VERSION_DEL_DIBUJO`), `huella`, `salidas` (13 rutas) y **`medidas`**, que es nueva:
+
+| Campo | Hoy | Qué es | Lo vigila `tarjetas.test.ts` |
+|---|---|---|---|
+| `altoDeLaHojaDeLaTarjeta` | 769 | el alto común de las cuatro hojas: el de la más larga, con piso de 740 | entre 740 y 860 |
+| `altoDeLaHojaDeLaVista` | 440 | fijo en el taller | igual a 440 |
+| `ordenDeLaPortada` | los cuatro nombres | el orden en la vista de `/juegos/dos-ejes/` | igual al alfabético (`localeCompare`, `es`) |
+
+**Una corrección a la sugerencia del hilo:** estas dos guardas no son "los dos agujeros
+recomendados de v2.6". Son las guardas 3 y 4 de `UX-36` §6.5, que este contrato no tenía. Los
+dos agujeros de v2.6 —un archivo de salida editado a mano y un archivo de más en las carpetas—
+**siguen abiertos** (E1.4).
+
+Las `medidas` son salida, no entrada, así que no están en la huella. Lo que garantiza que sean de
+hoy es que la huella coincida: el manifiesto lo escribió una corrida sobre las entradas de hoy.
+Un número de `medidas` retocado a mano es el mismo agujero que un PNG retocado a mano.
+
+### E1.4 — Qué vigila cada cosa, hoy
+
+**`tarjetas.test.ts`, ocho casos:**
+
+1. existe el manifiesto y su huella es la de las entradas de hoy;
+2. `salidas` es exactamente las cuatro piezas, tarjeta y vista por cada cuadrante del banco, y
+   la vista del juego —13—, y los trece archivos existen;
+3. las tarjetas miden 1080 × 1350 y las vistas 1200 × 630, leído de la cabecera del PNG;
+4. techos: 160 KB la tarjeta, 120 KB la vista, 30 KB cada pieza;
+5. cada caja cae adentro del máster, no toca el óvalo ni el título y no se agranda;
+6. el rojo de la guarda de 5: una caja sobre el óvalo la marca, la de la franja no;
+7. `altoDeLaHojaDeLaTarjeta` entre 740 y 860, y `altoDeLaHojaDeLaVista` igual a 440;
+8. `ordenDeLaPortada` alfabético.
+
+**El taller, al dibujar** (tira y no escribe nada): un renglón que no entra en el ancho útil; un
+nombre de más de tres renglones en la tarjeta o de más de dos en la vista, aun a 66 px; una
+línea que nombra de más de dos renglones; una bajada de más de cinco; un sello que sale del
+papel; un crédito que no entra en un renglón ni a 22 px; una hoja de más de 860; un libro que
+asoma menos de 60 px bajo la hoja; una vista que se sale de la zona segura; una caja fuera del
+máster o sobre lo prohibido.
+
+**`src/lib/islas.test.ts`** sigue el grafo de importaciones desde `src/scripts/` y falla si llega
+a un `node:*`: ninguna isla puede llegar a `taller.ts`. No lo nombra; lo cubre la regla general.
+
+**Lo que no vigila nadie:**
+
+- **a. Un archivo de salida editado a mano** (v2.6). Sigue recomendado: guardar en el
+  manifiesto el sha256 de cada salida y compararlo con el disco. Con todo el texto como trazo,
+  esa comparación es además estable entre máquinas.
+- **b. Un archivo de más en las dos carpetas** (v2.6). Sigue recomendado, y ya tuvo su caso: al
+  retirar `canto` su archivo hubo que borrarlo a mano. Si quedaba, se servía para siempre y
+  ningún test se enteraba. Es un `readdirSync` de las dos carpetas contra `salidas`.
+- **c. Un glifo que falta** (E1.2). Pasa a exigido: E1.5.
+- **d. Dos cosas que se pintan y la huella no ve.**
+  - El armado de `selloDePolos` y `lineaQueNombra` (`copy.ts`): la huella tiene `EJES` y
+    `POLOS`, pero no el " · ", la coma ni el punto con que se juntan. Si cambia el separador,
+    las cuatro tarjetas quedan viejas y el test pasa.
+  - El dominio que se pinta debajo del crédito, que el taller lee de `astro.config.mjs`. Si el
+    sitio se muda, las tarjetas siguen diciendo la dirección vieja.
+
+  Es exactamente el defecto que la huella existe para cazar (v2.6, caso 1). Pasa a exigido:
+  E1.5.
+- **e.** Que las cuatro hojas midan lo mismo lo garantiza la construcción —el taller calcula un
+  alto y se lo pasa a las cuatro—; el test ve ese número. Alcanza.
+
+### E1.5 — Lo que falta del hilo principal
+
+Reemplaza la lista de v2.10, que quedó cumplida salvo un punto (E1.6).
+
+1. **La guarda de glifos, de recomendada a exigida.** Antes de trazar, cada carácter que no sea
+   espacio tiene glifo en la fuente que lo pinta; si no, el taller tira nombrando el carácter,
+   el texto y la fuente. `fontkitten` 1.0.3 trae `hasGlyphForCodePoint` (está en su `dist`).
+   **Y se ve en rojo en `tarjetas.test.ts`:** `fontkitten` no trae binarios —su única
+   dependencia es `tiny-inflate`—, así que el test puede abrir las cuatro fuentes sin `sharp`.
+   El caso en rojo sale gratis y está escrito: la `Ñ` en Oktubre Calco, que no la tiene
+   (`diseno-marca.md`, tabla de fuentes).
+2. **La huella cuenta lo que se pinta, no solo de dónde sale.** Tres cosas más en
+   `huellaDelTaller()`: por cuadrante, el sello y la línea que nombra ya armados; y el dominio.
+   La huella cambia una vez, así que el taller se corre una vez; los PNG no deberían cambiar.
+   **La forma, sugerida y no exigida:** una sola función en `taller.ts` que diga qué texto va con
+   qué letra (`[{ fuente, texto }]`). La huella la incluye entera y la guarda de glifos la
+   recorre: una tabla y no dos. Que el taller no pinte un texto que no esté en ella queda de
+   palabra, como `VERSION_DEL_DIBUJO`.
+3. **Recomendados, sin cambio:** los agujeros a y b de E1.4.
+
+### E1.6 — v2.9 y v2.10, al día
+
+- **Los rojos e1–e11 están**, en `src/lib/esquemas.test.ts`, en el bloque "¿Qué tipo de
+  ricotero sos?" (`CTR-08` v2.9), al final del archivo. Cada uno sale del banco de verdad tocado
+  en un solo campo y exige que el error caiga en el lugar de la tabla de v2.9 (la ruta exacta o
+  una que empiece por ella). **El control en verde está al lado:** un `retirado` y un `borrador`
+  sin `momento` validan sin errores, y el control falla si el banco se queda sin retirados, para
+  no pasar vacío.
+- **La guarda `disposicion` ↔ `relacion` está**, en `src/lib/dos-ejes/partida.test.ts`: "la
+  grilla y la línea de contraste dicen lo mismo (CTR-08 v2.5)".
+- **"Mientras el banco siga en v1, (1) y (2) dan rojo" dejó de aplicar:** `CNT-30` entregó el
+  banco en v2. Un rojo en los comandos de v2.9 es hoy un defecto.
+- **v2.10, "lo que falta del hilo principal":** (1) `sharp` 0.34.5 y `fontkitten` 1.0.3 están
+  en `devDependencies` con versión exacta, y `npm run generar-dos-ejes` existe; (2) y (3),
+  arriba; (4) las postales y las dos props de `Cabeza.astro` están, **pero no como la unión que
+  fijó `ADR-02`**: ver su enmienda 2.
+- **La observación de v2.5 sobre el empate** —que `resolverCuadrante` tire en vez de
+  desempatar— sigue sin aplicar, y sigue sin exigirse.
+
+### E1.7 — Verificación
+
+```bash
+node --test src/lib/dos-ejes/tarjetas.test.ts   # los ocho de E1.4; con E1.5, la guarda de glifos y su rojo
+node --test src/lib/esquemas.test.ts            # e1–e11 y el control en verde
+node --test src/lib/dos-ejes/partida.test.ts    # con la guarda disposicion ↔ relacion
+node --test src/lib/dos-ejes/isla.test.ts       # el enlace viejo (ADR-02, enmienda 2)
+node --test src/lib/islas.test.ts               # ninguna isla llega a taller.ts
+ls public/arte/dos-ejes/ public/tarjetas/dos-ejes/
+#  → 4 + 9 archivos, ni uno más (agujero b: a ojo, hasta que sea test)
+```
+
+### E1.8 — Alternativas descartadas
+
+1. **Volver a la sans del sistema y medir con una fuente parecida.** Mide una letra y dibuja
+   otra: el desborde vuelve por la diferencia.
+2. **Todo el texto en Archivo Black**, que ya estaba en el repo y está completa. Es la letra que
+   grita: una bajada en rotulada es lo que `diseno-marca.md` prohíbe ("el texto largo va siempre
+   en `--fuente`"), y en una imagen ese papel lo hace una sans legible, no la de marca.
+3. **Hashear las salidas en vez de las entradas, ahora que salen iguales.** Se pierde lo que da
+   la huella de entrada: decir que cambió el dato y correr sin `sharp`. Y una actualización de
+   `sharp` cambiaría todos los hashes sin que cambie nada que se lea. Complemento sí (agujero
+   a), reemplazo no.
+4. **La guarda de glifos solo en el taller.** El taller no tiene test propio, y una guarda que
+   nunca se vio en rojo no es una guarda (encabezado de `esquemas.test.ts`). `tarjetas.test.ts`
+   puede abrir las fuentes sin `sharp`, así que no hay motivo para no verla.
+5. **Dejar el archivo de `canto` servido "por si vuelve".** Fuera de `PIEZAS`, no lo lista el
+   manifiesto ni lo mira la guarda de lo prohibido: sería el único recorte del libro que nadie
+   vigila.
 
 ---
 
@@ -309,14 +530,19 @@ suelto ahí es un defecto del llamador.
 
 ### v2.6 — El taller de tarjetas
 
+> **[ENMENDADA por la enmienda 1, 2026-10-04]:** las piezas son cuatro y no tres (E1.1); las
+> fuentes son cuatro, y la regla 2 se da vuelta: todo el texto va como trazo y se mide (E1.2);
+> el manifiesto suma `medidas` (E1.3); lo que el test y el taller vigilan hoy, y lo que no, está
+> en E1.4. El resto de esta sección sigue.
+
 `D-57` puntos 8, 10 y 11. Como hay cuatro identidades y ninguna lleva un dato de la persona,
 lo que se comparte se fabrica una vez, se guarda en el repo y queda fijo.
 
 | | |
 |---|---|
 | Script | **`scripts/generar-dos-ejes.mjs`**, corrido con **`npm run generar-dos-ejes`** (`node --experimental-strip-types`, para importar los `.ts` de `src/lib/dos-ejes/`) |
-| Dependencias | **`sharp` y `fontkitten` en `devDependencies`, con versión exacta** (`D-57`). Hoy están en el árbol solo de rebote: según `package-lock.json`, `sharp` 0.34.5 (Apache-2.0, instalado como `optional` de otro paquete) y `fontkitten` 1.0.3 (MIT). Un taller que depende de la instalación opcional de otro paquete deja de andar el día que ese paquete cambie de dependencias |
-| Fuentes | `public/fuentes/oktubre-calco.woff` y **`scripts/fuentes/archivo-black.ttf`** (OFL, con su licencia al lado; `D-57`). El `.ttf` existe porque `fontkitten` no lee el `.woff2` que sirve el sitio (encabezado del taller) |
+| Dependencias | **`sharp` y `fontkitten` en `devDependencies`, con versión exacta** (`D-57`). Hoy están en el árbol solo de rebote: según `package-lock.json`, `sharp` 0.34.5 (Apache-2.0, instalado como `optional` de otro paquete) y `fontkitten` 1.0.3 (MIT). Un taller que depende de la instalación opcional de otro paquete deja de andar el día que ese paquete cambie de dependencias. *[2026-10-04: ya están en `devDependencies`, 0.34.5 y 1.0.3 exactas. E1.6.]* |
+| Fuentes | `public/fuentes/oktubre-calco.woff` y **`scripts/fuentes/archivo-black.ttf`** (OFL, con su licencia al lado; `D-57`). El `.ttf` existe porque `fontkitten` no lee el `.woff2` que sirve el sitio (encabezado del taller). *[Enmienda 1: son cuatro, con las dos DejaVu. E1.2.]* |
 | Módulos | **`src/lib/dos-ejes/arte.ts`**: módulo hoja, sin imports. El máster, sus medidas, las cajas de recorte, lo prohibido y las rutas. Lo leen la isla, las páginas, el taller y el test. **`src/lib/dos-ejes/taller.ts`**: la huella. Usa `node:fs`, así que solo lo importan el taller y su test (`islas.test.ts` lo vigila) |
 | Corre | **A mano, nunca en el build.** Las salidas se versionan, como las pasadas de `CTR-12` |
 
@@ -332,7 +558,7 @@ no— lo caza el test de abajo, que es para lo que existe.
 | `public/tarjetas/dos-ejes/cu-N.png` (×4) | **1080 × 1350** | **≤ 160 KB** c/u | El archivo de `navigator.share({ files })`. La isla lo baja al pintar el resultado |
 | `public/tarjetas/dos-ejes/og-cu-N.png` (×4) | **1200 × 630** | **≤ 120 KB** c/u | `og:image` de cada postal |
 | `public/tarjetas/dos-ejes/og-dos-ejes.png` | **1200 × 630** | **≤ 120 KB** | `og:image` de `/juegos/dos-ejes/` |
-| `public/arte/dos-ejes/libro-*.{jpg,png}` (×3) | las de `PIEZAS`, achicadas y nunca agrandadas | **≤ 30 KB** c/u | La franja, el canto y el esquinero del libro (cuáles y dónde, `UX-36`) |
+| `public/arte/dos-ejes/libro-*.{jpg,png}` (×3) | las de `PIEZAS`, achicadas y nunca agrandadas | **≤ 30 KB** c/u | La franja, el canto y el esquinero del libro (cuáles y dónde, `UX-36`). *[Enmienda 1: ×4 —mármol, lomo, esquinero y franja—; `canto` se retiró. E1.1.]* |
 
 `N` es el id del cuadrante en minúscula. **Ninguna ruta se escribe a mano:** salen de
 `arte.ts` (`slugDe`, `rutaDeTarjeta`, `rutaDeVistaPrevia`, `VISTA_PREVIA_JUEGO`,
@@ -344,7 +570,8 @@ sitio: lo abre una aplicación ajena y que todas lo lean no está verificado.
 audio (180 KB, `CTR-01.5`), que es la vara que el sitio ya usa para "lo que un teléfono paga
 por una revelación"; y esta se baja sin que nadie la pida. Las piezas, 90 KB entre las tres,
 son del orden de la estampa de una revelación de "Adiviná la tapa" (≤ 82 KB, `CTR-12`): la
-portada del juego es la primera pantalla de una sesión de dos minutos. **Los 120 KB de la vista
+portada del juego es la primera pantalla de una sesión de dos minutos. *[Enmienda 1: la portada
+sigue pidiendo tres, ≤ 90 KB; la cuarta, la franja, no la pide ninguna página. E1.1.]* **Los 120 KB de la vista
 previa son un techo nuestro, no un límite verificado de ninguna plataforma.** Qué peso y qué
 formato aceptan los previsualizadores de WhatsApp, X y Telegram es un hecho externo que no
 tengo y que queda pedido como ficha. Si una vista previa no aparece, es lo primero que hay que
@@ -359,7 +586,10 @@ mirar.
 2. **El texto largo va en la sans del sistema**, por `librsvg`, que es lo mismo que hace
    `--fuente` en pantalla. **Consecuencia, y es la que ordena todo lo demás:** el PNG puede
    salir apenas distinto en otra máquina. Por eso el manifiesto guarda la huella de **lo que
-   entra**, no la de los píxeles.
+   entra**, no la de los píxeles. **[REEMPLAZADA por la enmienda 1, E1.2:** todo el texto va
+   como trazo, en DejaVu el largo, y se mide antes de ponerlo. "Lo mismo que hace `--fuente`" era
+   falso: la del sistema era la de la máquina del taller, no la de quien lee. La huella sigue
+   siendo de la entrada, por otra razón.**]**
 3. **Ningún hex en el script.** Los colores se leen por nombre de `src/styles/tokens.css`
    (`TOKENS_DEL_TALLER`); si un token falta o no es un hex, el taller tira.
 4. **Piezas sueltas, nunca la tapa entera, y nunca el óvalo ni el título** (`D-57` punto 8,
@@ -380,17 +610,20 @@ mirar.
 **Recomendado, no exigido en esta versión:** que el taller tire si a una fuente le falta un
 glifo. Hoy Oktubre Calco solo escribe "ARCADE RICOTERO", que entra en sus once letras; el
 riesgo aparece el día que alguien le pase un texto con tilde y la fuente devuelva el glifo
-vacío sin quejarse. Es una línea en la función que traza.
+vacío sin quejarse. Es una línea en la función que traza. *[Enmienda 1: exigida, y con su rojo
+en `tarjetas.test.ts`. El riesgo dejó de ser Oktubre Calco: DejaVu recortada pinta las bajadas
+de `contenido`, rayas incluidas. E1.2 y E1.5.]*
 
 #### El manifiesto: `scripts/dos-ejes-manifiesto.json`
 
 Fuera de `public/` para que no se sirva, como el de `CTR-12`. Lo escribe el taller. Tres
-campos que importan:
+campos que importan *[enmienda 1: cuatro, con `medidas`. E1.3]*:
 
 - **`huella`**: un sha256 de todo lo que entra al dibujo —los cuatro cuadrantes (id, polos,
   nombre y bajada), los textos fijos de `copy.ts` que se pintan, los colores, las cajas, las
   zonas prohibidas, el máster, las dos fuentes y `VERSION_DEL_DIBUJO`—, calculado por
-  `huellaDelTaller()` en `taller.ts`;
+  `huellaDelTaller()` en `taller.ts`; *[enmienda 1: las fuentes son cuatro; y la huella no ve el
+  armado del sello ni de la línea que nombra, ni el dominio pintado. E1.4 d, E1.5.]*
 - **`salidas`**: la lista de archivos que escribió;
 - **`version`**: la del dibujo.
 
@@ -403,7 +636,8 @@ de quien revisa la tarjeta.
 
 **No corre el taller:** recalcula la huella de las entradas de hoy y la compara con la del
 manifiesto. Por eso no importa que `sharp` y `librsvg` no den los mismos píxeles en dos
-máquinas, y por eso el test corre donde `sharp` no instala. Hoy falla si:
+máquinas, y por eso el test corre donde `sharp` no instala. Hoy falla si *[enmienda 1: son
+ocho casos, más las guardas del taller al dibujar; la lista al día está en E1.4]*:
 
 1. falta el manifiesto, o **la huella no coincide**: cambió un nombre, una bajada, un texto
    fijo, un color, una caja, el máster o una fuente, y las tarjetas quedaron viejas. El mensaje
@@ -411,14 +645,16 @@ máquinas, y por eso el test corre donde `sharp` no instala. Hoy falla si:
    nombre en el JSON, la postal lo dice nuevo en `og:title` y la imagen lo sigue mostrando
    viejo;
 2. la lista de `salidas` no es exactamente la esperada (tres piezas, y tarjeta y vista por cada
-   cuadrante del banco, más la del juego), o falta un archivo;
+   cuadrante del banco, más la del juego), o falta un archivo; *[enmienda 1: cuatro piezas]*
 3. una tarjeta o una vista no mide lo que dice la tabla (leído de la cabecera del PNG, sin
    dependencias);
 4. un archivo pasa su techo;
 5. una caja de recorte toca el óvalo o el título, se sale del máster, o se agranda; con su caso
    en rojo, que prueba que la guarda sabe ver.
 
-**Dos agujeros que quedan, dichos para que sean decisión y no descuido:**
+**Dos agujeros que quedan, dichos para que sean decisión y no descuido:** *[2026-10-04: siguen
+abiertos. Las `medidas` del manifiesto no los cerraron: son otras guardas (E1.3). El segundo ya
+tuvo su caso con `canto` (E1.4 b).]*
 
 - **Un archivo de salida editado a mano no se caza.** La huella es de la entrada. Cerrarlo
   costaría guardar también un hash de cada salida y compararlo con el disco —que no depende de
@@ -447,10 +683,13 @@ máquinas, y por eso el test corre donde `sharp` no instala. Hoy falla si:
    y un previsualizador no le puede pedir una imagen a un canvas.
 3. **Hashear las salidas en vez de las entradas.** Con el texto largo en la sans del sistema,
    el mismo taller corrido en dos máquinas daría dos hashes, y el test fallaría por la máquina
-   y no por el dato.
+   y no por el dato. *[Enmienda 1: sigue descartada, pero esta razón se cayó con el texto como
+   trazo. La que queda está en E1.8, 3.]*
 4. **Todo el texto como trazo, también el largo.** Haría las salidas reproducibles y le
    sacaría a la tarjeta la letra que el sitio usa para leer. `--fuente` es la pila del sistema
-   a propósito (`UX-01`).
+   a propósito (`UX-01`). **[RETOMADA el 2026-10-04, `D-57` enmienda 4 y E1.2:** el costo no
+   existía —en un PNG la del sistema es la de la máquina del taller, no la de quien lee— y sin
+   métricas el taller no podía medir.**]**
 5. **Una pieza del libro por cuadrante.** `D-57` la descartó: siempre hay una más linda.
 
 ### v2.7 — El bloque normativo
@@ -494,6 +733,10 @@ sea una cuestión de seguridad disfrazada de temperamento.
 
 ### v2.9 — Verificación: qué correr, y quién
 
+> **[AL DÍA en la enmienda 1, 2026-10-04]:** los rojos e1–e11 y la guarda `disposicion` ↔
+> `relacion` ya están escritos, con dónde, en E1.6. Los comandos de abajo siguen; E1.7 suma
+> `isla.test.ts` e `islas.test.ts`.
+
 `arquitectura` no ejecuta (`D-12`). Lo corre el hilo principal al integrar, o `revisor` en
 `REV-19`.
 
@@ -518,9 +761,11 @@ node --test src/lib/dos-ejes/tarjetas.test.ts
 
 **Mientras `src/data/dos-ejes.json` siga en v1, (1) y (2) dan rojo, y es lo esperado:** el
 schema v2 y `banco.test.ts` llegaron antes que el banco, a propósito (`D-57` punto 2: las
-guardas se escriben antes). Se ponen en verde cuando `contenido` entrega `CNT-30`.
+guardas se escriben antes). Se ponen en verde cuando `contenido` entrega `CNT-30`. *[Dejó de
+aplicar: el banco está en v2. Un rojo en (1) o (2) es hoy un defecto. E1.6.]*
 
-**Los rojos que le faltan a `esquemas.test.ts`.** El schema de este juego nunca se vio en
+**Los rojos que le faltan a `esquemas.test.ts`.** *[2026-10-04: ya no faltan. Están los once
+y el control, al final de `src/lib/esquemas.test.ts`. E1.6.]* El schema de este juego nunca se vio en
 rojo: la v1 entró sin un solo caso, y una guarda que nunca se vio en rojo no es una guarda
 (encabezado de ese archivo). Cada caso sale del banco de verdad tocado en **un solo campo**, y
 el schema lo tiene que rechazar **señalando ese lugar**; con el control en verde al lado. Los
@@ -542,10 +787,11 @@ de la v1 van también, porque nunca se probaron.
 | verde | un ítem `retirado` sin `momento`, y uno en `borrador` sin `momento` | — |
 
 **Lo que le falta a `partida.test.ts`:** la guarda que ata `disposicion` con `relacion`
-(v2.5). Lo demás de v2.5 ya está.
+(v2.5). Lo demás de v2.5 ya está. *[2026-10-04: está. E1.6.]*
 
 **Lo que le falta a `tarjetas.test.ts`:** nada exigido. Los dos agujeros de v2.6 quedan
-recomendados.
+recomendados. *[Enmienda 1: dos cosas exigidas —la guarda de glifos con su rojo, y que la huella
+cuente el sello, la línea y el dominio—. Los dos agujeros siguen recomendados. E1.5.]*
 
 | # | Chequeo | Quién |
 |---|---|---|
@@ -578,7 +824,9 @@ recomendados.
 - **Lo que le impone a `experiencia` (`UX-36`):** `ItemServido` trae `momento`, y el sello y
   la línea que canta se buscan en `banco.momentos`; la grilla recibe celdas y márgenes, nunca
   un número.
-- **Lo que falta del hilo principal, para que esta versión quede entera:**
+- **Lo que falta del hilo principal, para que esta versión quede entera:** *[Enmienda 1:
+  cumplido salvo la unión de tipos de `Cabeza.astro` (`ADR-02`, enmienda 2). Lo que falta ahora
+  está en E1.5.]*
   1. `sharp` y `fontkitten` a `devDependencies` con versión exacta, y el script
      `generar-dos-ejes` en `package.json`. Hoy no están, y el comando que el taller dice en su
      encabezado no existe;
