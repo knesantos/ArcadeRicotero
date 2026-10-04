@@ -177,6 +177,25 @@ no como semáforo.
 | **Qué dice la evidencia** | Lo que está escrito es lo que dicen `D-57` y `D-58`: la fuente es OFL y la licencia viaja con el archivo. **No hay ficha `RES-` sobre el texto de la licencia** y esta nota no afirma más que eso. Lo que sí se puede decir de este uso es que el `.ttf` vive en `scripts/`, fuera de `public/`: no se publica ni se redistribuye suelto, solo lo lee el taller al dibujar. Es una fila para que el mapa esté completo, no una duda abierta. |
 | **Qué haríamos si llega un reclamo** | No debería llegar uno. Si llegara, el taller se vuelve a correr con otra fuente de la pila (`--fuente-rotulada` no es única) y se regeneran las tarjetas; el sitio no cambia. |
 
+> **Nota del 2026-10-04, al construir** (la escribe el hilo principal: el subagente de
+> `contenido` se quedó sin cupo antes de llegar a esta nota; `contenido` la revisa cuando
+> vuelva). En la sección F, **la partida no usa ningún recorte**: el canto de las hojas lo
+> pintan sombras de CSS y la pieza `canto` se retiró (`D-57`, enmienda 2). La portada usa el
+> mármol, el lomo y el esquinero; el resultado, el esquinero; la tarjeta y las vistas previas,
+> además, la franja del pie de la tapa (solo el taller). El crédito dejó de decir "en baja": es
+> *«Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole, 1996).»* La baja resolución
+> sigue siendo la condición de `D-21`; lo que cambió es que no se le habla a la gente en jerga
+> de imprenta.
+
+### H. La sans DejaVu, recortada, solo para el taller de tarjetas
+
+| | |
+|---|---|
+| **Qué se usa** | Dos archivos **TTF de DejaVu Sans** (normal y negrita), `scripts/fuentes/dejavu-sans.ttf` y `dejavu-sans-bold.ttf`, **recortados al latín** con `pyftsubset`, **solo para el taller de tarjetas** (`D-57`, enmienda 4): la sans de la tarjeta y de la vista previa se dibuja como trazos con estas métricas, así cada renglón se mide antes de ponerlo y el PNG sale igual en cualquier máquina. **No se sirve al navegador**: el texto largo del sitio sigue en la fuente del sistema (`--fuente`). |
+| **De dónde salió** | De la copia de `fonts-dejavu-core` 2.37 que trae el sistema donde corre el taller. Origen: https://dejavu-fonts.github.io/. La licencia va al lado, en `scripts/fuentes/LICENCIA-DEJAVU.txt`. |
+| **Qué dice la evidencia** | La licencia de Bitstream Vera permite reproducir, modificar y redistribuir la fuente con su aviso de copyright, siempre que una versión modificada no se llame "Bitstream" ni "Vera"; los cambios de DejaVu están en dominio público. El recorte es una modificación: el archivo se sigue llamando DejaVu y lleva la licencia entera. **No hay ficha `RES-`**: lo que se afirma acá es lo que dice el texto de la licencia que viaja con el archivo. |
+| **Qué haríamos si llega un reclamo** | No debería llegar uno. Si llegara, el taller se vuelve a correr con otra sans de licencia libre y se regeneran las tarjetas; el sitio no cambia. |
+
 ## Preguntas sin respuesta, y no las esperamos
 
 Estas preguntas se buscaron activamente, en más de una ronda de investigación, y las tres
@@ -221,6 +240,7 @@ como siempre.
 | Deep link a Spotify | `open.spotify.com/track/<id>` tras revelar | Se saca el botón; la partida sigue completa sin él |
 | Libro de *Luzbelito* (F) | Mármol, lomo y esquinero recortados del frente, sin óvalo, figura ni título, en baja, con crédito: portada, partida, resultado, tarjetas y vistas previas de "¿Qué tipo de ricotero sos?" | Se bajan los recortes y se pone una pieza dibujada; las tarjetas se regeneran con el taller |
 | Archivo Black en TTF (G) | `scripts/fuentes/archivo-black.ttf` (OFL), solo para el taller de tarjetas; no se sirve al navegador | Se vuelve a correr el taller con otra fuente; el sitio no cambia |
+| DejaVu Sans recortada (H) | `scripts/fuentes/dejavu-sans*.ttf` (licencia Bitstream Vera), solo para el taller de tarjetas; no se sirve al navegador | Se vuelve a correr el taller con otra sans; el sitio no cambia |
 
-En los siete casos la lógica es la misma: **la pieza puntual se da de baja, el sitio sigue.**
+En todos los casos la lógica es la misma: **la pieza puntual se da de baja, el sitio sigue.**
 Es la postura que fijó el usuario en `D-14`, con la evidencia de arriba ya sobre la mesa.

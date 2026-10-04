@@ -120,6 +120,13 @@ mismos tres datos (`suyo`, `lo`, `oc`) y un caso que decide qué usar.
 
 ## 4. La línea de llegada de la Pantalla 0
 
+> **[REEMPLAZADA el 2026-10-04, al construir.]** El enlace viejo (`?g=dos-ejes&r=CU-n`) ya no
+> muestra esta línea: la isla le pega a la tapa **la misma etiqueta del amigo que trae la postal**
+> (rótulo `POSTAL.rotulo`, nombre, sello de polos y línea que nombra), sin pisar el subtítulo y
+> sin redirigir (`D-57` enmienda 3, `ADR-02` v2 enmienda 2, `UX-36` §3.3). `PANTALLA_0.desafio` se
+> retiró de `copy.ts`. Lo de abajo queda como historia. *(Nota del hilo principal: el subagente de
+> `contenido` se quedó sin cupo antes de llegar a esta marca; `contenido` la revisa cuando vuelva.)*
+
 Es `PANTALLA_0.desafio(nombre, polos)`: lo que lee quien llega por un enlace **sin pasar por la
 postal** (los `?g=dos-ejes&r=CU-n` viejos siguen andando, `D-57` punto 11). Dos oraciones, la
 primera es R3 (lo que dice el otro) y la segunda R1 (le habla al que llega):

@@ -2,19 +2,19 @@
 
 - **Rol dueño:** `contenido`
 - **Fecha:** 2026-10-04, ciclo 18.
-- **Estado:** entrega completa, **con las vueltas 1, 2 y 3 de arreglos aplicadas el 2026-10-04**
-  (un verificador adversarial leyó el banco tres veces y encontró defectos de lectura que ninguna
-  guarda ve; §10, §11 y §12 lista los de cada vuelta con lo que se hizo). **La vuelta 3 es la que
-  más movió**: cambiaron los 30 ítems (alguno conserva una opción, ninguno el enunciado y el
-  par enteros), las cuatro bajadas y el renglón del lugar, y se rehízo este documento contra el
-  árbol: sello `Cuando suena`, `copy.ts` tal como está, y las guardas de `banco.test.ts` tal como
-  quedaron (traducción de los polos, firma de un polo contando `me`, `mi` y `por`, nombre de una
-  manera). Reemplaza el banco de `CNT-09` (los 20 ítems vigentes pasan a `retirado`, ninguno se
-  borra) y suma lo que `CNT-26` §1 y §2.3 dejó pendiente. **Las cadenas de pantalla del §6 son la
-  versión que vale**; el §6 dice fila por fila qué confirma y qué cambia frente a `copy.ts`. Lo
-  que queda para el hilo principal está en
-  `Docs/SUGERENCIAS/CNT-para-hilo-principal-vuelta-3-dos-ejes.md`.
-- **Consume:** `D-57` (entera, con sus enmiendas 1 a 6), `US-06`, `BR-17`, `BR-36` y `BR-37`
+- **Estado:** entrega completa, **con las vueltas 1, 2, 3 y 4 de arreglos aplicadas el 2026-10-04**
+  (un verificador adversarial leyó el banco cuatro veces y encontró defectos de lectura que ninguna
+  guarda ve; §10, §11, §12 y §13 listan los de cada vuelta con lo que se hizo). **La vuelta 3 es la
+  que más movió** (los 30 ítems, las cuatro bajadas y el renglón del lugar); **la vuelta 4 es la
+  última y cierra lo que quedaba**: la luz sin parentesco ni distracción del que no mira, con
+  teléfono en un tercio como máximo (`D-57`, enmienda 7); 25 de los 30 ítems, las bajadas de
+  `CU-3` y `CU-4` y dos líneas que cantan. **Las tablas de §2, §3, §4 y §5 describen el banco tal
+  como está después de la vuelta 4**; §10 a §12 son historia y no se reescriben. Reemplaza el banco
+  de `CNT-09` (los 20 ítems vigentes pasan a `retirado`, ninguno se borra) y suma lo que `CNT-26` §1
+  y §2.3 dejó pendiente. **Las cadenas de pantalla del §6 son la versión que vale**; el §6 dice fila
+  por fila qué confirma y qué cambia frente a `copy.ts`. Lo que queda para el hilo principal está
+  en `Docs/SUGERENCIAS/CNT-para-hilo-principal-vuelta-4-dos-ejes.md`.
+- **Consume:** `D-57` (entera, con sus enmiendas 1 a 7), `D-58`, `US-06`, `BR-17`, `BR-36` y `BR-37`
   (apliqué la lista de vetos que vigila `banco.test.ts`, que es su traducción a máquina),
   `CNT-09`, `CNT-02`, `CNT-26`, `REV-07`, `D-14`, `D-17`, `D-21`, `D-33`, `RES-150`..`RES-171`
   (`INV-150`), `.claude/rules/voz-ricotera.md`, `.claude/rules/contenido-json.md`,
@@ -27,8 +27,9 @@
   `src/data/_schema/dos-ejes.schema.json`), el motor, la isla ni el taller de tarjetas.
 - **Ninguna ficha `RES-XX` pendiente.** El banco no afirma nada de la banda, así que no tiene
   qué fichar (`CTR-08.5` regla 5). Ninguna escena lleva respaldo de `INV-150`.
-- **No lo corrí** (`D-12`). Cada texto de la vuelta 3 lo medí a mano contra las 19 pruebas de
-  `banco.test.ts`, las siete de `voz.test.ts` y el schema; el comando que lo corre está en el §8.
+- **No lo corrí** (`D-12`). Cada texto de la vuelta 4 lo medí a mano contra las 19 pruebas de
+  `banco.test.ts` (también la firma de un polo, por raíces, con una tabla de las 60 opciones), las
+  siete de `voz.test.ts` y el schema; el comando que lo corre está en el §8.
 
 ## 1. Por qué la noche
 
@@ -61,7 +62,7 @@ que pidió `D-57` y se quedan donde estaban (`Docs/IDS.md`: un id no se recicla)
 
 Las de `D-57` y `BR-36`, más las que ya vigila `banco.test.ts`. Marco con **(T)** las que una
 máquina mira, y con **(O)** las que lee el oído de `REV-19`. **Lo que sigue describe el banco tal
-como está después de la vuelta 3**, y cada número se contó sobre el JSON.
+como está después de la vuelta 4**, y cada número se contó sobre el JSON.
 
 **La noche.**
 
@@ -71,8 +72,10 @@ como está después de la vuelta 3**, y cada número se contó sobre el JSON.
 - Nada que pida haber ido, saber o tener algo. Plata: ni entrada, ni puesto, ni remera, ni
   comprar, ni pagar **(T)**, ni lo que la presupone sin decirla.
 - **Un cuerpo capaz de algo no es temperamento.** "Te ubicás", nunca "te parás". Nada de saltar,
-  multitud apretada, "en el medio", correr **(T)**. Los gestos del cuerpo que quedan (*doy unas
-  palmas*, *respiro hondo*, *tamborileo en la rodilla*) se hacen sentado.
+  multitud apretada, "en el medio", correr **(T)**. Los gestos del cuerpo que quedan (*muevo la
+  cabeza despacio*, *marco el compás*, *tamborileo en la rodilla*, *aplaudo*) se hacen sentado.
+  *Silbar* se sacó (es una capacidad que no todos tienen) y *respirar hondo* también (en una pausa,
+  a cuatro meses del 5 de junio, se leía como minuto de silencio).
 - **Seguridad no es temperamento.** Ni "a dedo", ni "desconocidos", ni volver a pie, ni
   "caminando" **(T)**. Y la versión fina que ninguna máquina ve: **la vuelta no tiene trayecto**
   (sus seis ítems pasan en casa) y **ninguna luz de ningún momento apunta a quien está cerca sin
@@ -86,62 +89,86 @@ como está después de la vuelta 3**, y cada número se contó sobre el JSON.
 
 - **`luz-oscuridad` = con la gente / con lo propio** (`POLOS`, `copy.ts`). La opción de
   `oscuridad` es siempre **un hacer con ganas, con un objeto o con el cuerpo** —subir el volumen,
-  silbar, tamborilear, tararear, buscarle un detalle a una foto, elegir un favorito, dar palmas,
-  respirar hondo, quedarse con el zumbido, cantar en la ducha, mirar una foto de a poco—, nunca la
-  ausencia de la de `luz`, nunca un refugio, nunca taparse (la vuelta 3 sacó *auriculares*,
-  *para adentro*, *afuera* y *el último eco*).
-  **Cómo se resuelve la compañía (vuelta 3).** La vuelta 2 dejaba ocho de quince luces pidiendo
-  que hubiera alguien tuyo al lado; para quien fue sin compañía, o no tiene a nadie cerca, eso
-  era "con lo propio" por falta de gente y no por cómo es (`D-57` punto 5). Ahora hay **tres
-  maneras de que la gente entre**, y solo una pide presencia:
-  1. **Una persona presente, como mucho una por celda** (la regla de la vuelta 3):
-     `EJ-030` *mi vieja* (previa), `EJ-035` *los míos* (ida), `EJ-043` *los míos* (vereda),
-     `EJ-048` *mi hermana* (adentro). La vuelta no tiene ninguna.
-  2. **Una persona que pone el enunciado**, de cerca o de lejos, y la opción decide qué hace:
-     `EJ-029` (te manda un tema), `EJ-037` (quién te mostró un tema), `EJ-047` (alguien tuyo
-     sabe la canción), `EJ-055` (te llega una foto).
-  3. **Alguien a distancia que nombra la opción**: *una amiga*, *mis viejos*, *un amigo*, *un
-     compa*, *mi prima*, *alguien* (`EJ-031`, `036`, `041`, `042`, `049`, `053`, `054`).
-  **El costo, dicho:** las de los grupos 2 y 3 suponen un teléfono con mensajes (siete lo piden:
-  `029`, `031`, `036`, `037`, `042`, `049`, `055`). Es el cambio de una exclusión por otra y elegí
-  la menor: quedarse sin nadie al lado le pasa a quien va solo todas las noches; quedarse sin
-  mensajes, a quien no tiene teléfono. `REV-19` pesa si es la correcta.
+  tamborilear, tararear, buscarle un detalle a una foto, elegir un favorito, mover la cabeza,
+  marcar el compás, que te retumbe en la panza, quedarte con la noche, prepararte un té, dibujar
+  en un papel—, nunca la ausencia de la de `luz`, nunca un refugio, nunca taparse (la vuelta 3
+  sacó *auriculares*, *para adentro*, *afuera* y *el último eco*; la 4, *silbar*, *respirar hondo*
+  y *palmas*).
+  **Qué puede suponer una luz (vuelta 4, `D-57` enmienda 7).** Tres vueltas empujaron la luz de un
+  lado al otro: con alguien presente excluía a quien fue sin compañía; sin nadie al lado pasó a
+  mandar mensajes y excluyó a quien no tiene saldo; con *mi hermana* o *mis viejos* excluyó a quien
+  no los tiene. Ninguna luz es posible sin otro: **es la definición del eje** (`BR-17`). Queda así,
+  y es lo que mide `REV-19` sobre el banco entero:
+  1. **Puede suponer a alguien**, en el enunciado, al lado o a distancia.
+  2. **No puede nombrar un parentesco** (cero en el banco: salieron *mi vieja*, *mis viejos*, *mi
+     hermana*, *mi prima*), ni hablar con desconocidos, ni ser la distracción del que no mira
+     (filmar, cuchichear durante el tema). Las personas que quedan son *una amiga* (`031`),
+     *un amigo* (`042`), *los míos* (`035`, `043`), *quien quiero* (`036`, `053`) y *alguien*
+     (`037`, `054`); la forma "alguien tuyo" vive en los enunciados (`029`, `047`). No se puede
+     decir *quien vino con vos* en una opción: el veto del alcohol lee *vino*.
+  3. **Teléfono, como mucho en un tercio** (cinco de quince): `029` (te manda un tema), `031` (le
+     escribo a una amiga), `036` (la mando a quien quiero), `042` (aviso a un amigo) y `055`
+     (escribo en el grupo). **Es el tope de la enmienda; la lectura pedía cuatro y no lo sigo**:
+     cada momento necesita una luz posible para quien volvió o fue sin compañía, y en la ida, la
+     vereda, la previa y la vuelta la única que se puede hacer solo es la del mensaje. En
+     `Cuando suena` esa luz la da el resto de la sala (`048` *aplaudo con el resto*, `049` *grito
+     con el resto*): sin teléfono y sin hablarle a nadie. Dos luces se dicen en voz alta o por
+     mensaje y no las cuento (`041` *le cuento cómo me suena*, `053` *le cuento a quien quiero*);
+     si `REV-19` las cuenta, son siete y el tope se pasa.
+  4. **Una persona puesta por el enunciado** y las dos opciones le contestan: `EJ-029` (te manda
+     un tema) y `EJ-047` (alguien tuyo la sabe, *la canto a dúo*). Las únicas que piden al otro al
+     lado son `035` y `043` (*los míos*), `030` (*la subo para compartirla*) y `047`: una en la
+     previa, la ida, la vereda y `Cuando suena`, y la vuelta ninguna. **La regla "una por celda"
+     de la vuelta 3 se sacó**: la enmienda 7 la reemplaza por "que en cada momento haya una luz
+     posible sin nadie al lado", y eso lo cumplen los cinco.
   **"Mi gente" no está en ninguna** (`gente` es la palabra con la que el resultado traduce la luz;
   la guarda de traducción la veta) y **"un amigo" en masculino aparece una sola vez** (`EJ-042`):
   el sitio eligió no ponerle género a nadie.
 - **`orden-caos` = con plan / sobre la marcha**, las dos opciones igual de acompañadas o igual de
   solas. De los 15, **dos se contestan a otra persona** (`EJ-033`, `057`) y trece son decisiones
   propias. **El eje mide una sola cosa**: *anticipar o resolver sobre la hora*, siempre dentro
-  de la noche (qué llevás, cuándo salís, qué te ponés, un papel con indicaciones, la música del
-  camino, cuánto falta, qué hacés con la campera, qué hacés mientras no empieza, cómo contar la
-  noche, una canción pegada, cómo sigue, la mañana, otro día, un parlante prendido).
+  de la noche (qué llevás, cuándo salís, qué te ponés, qué hacés si llueve, la música del camino,
+  el camino que falta, qué hacés con la campera, qué hacés mientras no empieza o empieza más
+  tarde, cómo contar la noche, una canción pegada, qué hacés con el oído, la sed antes de dormir,
+  otro día, un parlante prendido).
 - **Ningún polo paga solo, y ninguno confiesa un descuido.** Ni "llego tarde" ni "reviso todo mil
-  veces". `caos` tiene una ganancia dicha con el modismo de quien la tiene (*al vuelo*, *ya voy*,
-  *según el humor*, *de una*, *lo tomo como viene*, *llego cuando llego*, *el día que pinte*), y
-  `orden` también tiene su modismo y su imagen física (*las dejo juntas desde antes*, *ya sé qué
-  me pongo*, *paso a paso*, *pongo la alarma*), no el vocabulario de la eficiencia: la vuelta 3
-  sacó *definir*, *ajustar*, *confirmar*, *cerrar* y *de antemano*.
+  veces". `caos` tiene una ganancia dicha con el modismo de quien la tiene (*al vuelo*, *en un
+  rato*, *según el humor*, *si llueve, llueve*, *sin mirar*, *me dejo llevar*, *lo tomo como
+  viene*, *de una*, *así me gusta*, *nomás*), y `orden` también tiene su modismo y su imagen
+  física (*las dejo juntas desde antes*, *llevo algo por si llueve*, *lo parto en tramos*, *me
+  abrigo en capas*, *el mazo de cartas*, *me pongo algodón*, *un vaso de agua*, *el cargador*),
+  no el vocabulario de la eficiencia: la vuelta 3 sacó *definir*, *ajustar*, *confirmar*,
+  *cerrar* y *de antemano*. La vuelta 4 sacó los tres *Ya* de orden (`034`, `045`, `052`) y los
+  dos *Voy* + gerundio (`040`, `050`), que ninguna palabra-guarda contaba porque tienen dos o tres
+  letras, y tres modismos de caos que eran una excusa conocida (*ya voy*, *el día que pinte*)
+  o confesaban un descuido (*llego cuando llego*).
 - **La sintaxis tampoco delata el polo** (lo que la vuelta 3 midió y la 2 no): en la vuelta 2, 12
   de 15 opciones de caos llevaban subordinada (7 en subjuntivo) contra 1 de 15 en orden, y la raíz
-  *sal-* estaba en 4 de caos y 0 de orden. Ahora **caos lleva subordinada en 3** (`040` *cuando*,
-  `046` *como viene*, `057` *que pinte*, la única en subjuntivo) y **orden en 3** (`034` *qué me
-  pongo*, `044` *dónde guardarla*, `052` *cómo sigue*); ninguna opción lleva *sal-* ni *cuando*
-  fuera de `040`.
+  *sal-* estaba en 4 de caos y 0 de orden. Ahora **caos lleva subordinada en 3** (`038` *si
+  llueve*, `046` *como viene*, `056` *si hace falta*, **ninguna en subjuntivo**) y **orden en 3**
+  (`034` *qué me pongo*, `038` *por si llueve*, `050` *qué voy a contar*); ninguna opción lleva
+  *sal-* ni *cuando*.
 - **(T)** Ninguna opción nombra su eje ni lo delata (*luz, oscur\*, orden\*, caos, plan, lista,
   horario\*, reviso, todo/a/os/as, fij\*, pensad\*, marcad\*, vera, veamos, veremos*) ni dice
   *gente, propio, plan, sobre, marcha* (la guarda de traducción). **(T)** Ninguna palabra de tres
   letras o más —ni `me`, `mi`, `por`— está en tres opciones de un polo y en ninguna del de
-  enfrente. **(O)** Y lo que el test no ve, porque cuenta palabras exactas y no raíces: **ninguna
-  raíz se repite en más de dos opciones de un polo, salvo `mi` en tres de luz y `me` en tres de
-  oscuridad**, que pasan la guarda porque el polo de enfrente las trae una vez (`mi` en `EJ-043`,
-  `me` en `EJ-037`). Raíces en dos: *viej-* (`030`, `036`), *amig-* (`031`, `042`), *cuent-*
-  (`041`, `053`), *cant-* (`047`, `054`), *escrib-* (`031`, `037`), *escuch-*, *busc-* y *mir-* en
-  oscuridad, *dej-* y *duerm-* en caos, *pong-*, *ant-*, *voy*, *alg-* y *guard-* en orden.
+  enfrente. **(O)** Y lo que el test no ve, porque cuenta palabras exactas y no raíces (la vuelta 4
+  las contó una por una, sobre las 60 opciones): **ninguna raíz se repite en más de dos opciones de
+  un polo, salvo `me` en tres de oscuridad** (`035`, `049`, `053`), que pasa la guarda porque la
+  luz de enfrente la trae una vez (`me` en `EJ-041`, *cómo me suena*); `mi`/`míos` ya no pasa de
+  dos en luz (`043` y `035`: *mi favorito* está en oscuridad). Raíces en dos: *quien-* y *quier-*
+  (`036`, `053`), *algui-* (`037`,
+  `054`), *cuent-* (`041`, `053`), *escrib-* (`031`, `055`), *resto* (`048`, `049`), *míos* (`035`,
+  `043`) en luz; *tarar-* en las dos (luz `037`, oscuridad `031`, `035`); *escuch-* y *busc-* en
+  oscuridad; *dej-* (`032`, `056` en orden; `040`, `051` en caos), *pong-* (`034`, `052` en orden),
+  *elij-* (`039`, `050`), *que* (`034`, `050`) y *rato* (`033`, `044` en caos).
 - **(O)** **Ninguna opción repite una palabra de más de tres letras de una bajada de cuadrante**
   (la vuelta 2 tenía `cuenta`, `manos`, `charla` y `sale` repetidas, que desde la segunda noche
-  apuntaban a una manera): la comparé una por una. **Las dos excepciones son `alguien`
-  (`EJ-041`, `054`) y `cuando` (`EJ-040`)**, que están en las cuatro bajadas por la forma común
-  ("Pero cuando alguien…") y por eso no apuntan a ninguna. **(T)** Y ninguna dice una palabra de los
+  apuntaban a una manera): la comparé una por una, con las bajadas de `CU-3` y `CU-4` ya
+  reescritas (entraron *puntada*, *hilo*, *manos*, *libres*, *abre*, *alegra*; salieron *trae* y
+  *pesa*). **La única excepción es `alguien` (`EJ-037`, `054`)**, que está en las cuatro bajadas
+  por la forma común ("Pero cuando alguien…") y por eso no apunta a ninguna; `cuando` ya no está
+  en ninguna opción. **(T)** Y ninguna dice una palabra de los
   cuatro nombres (*mesa, larga, nueve, ronda, cualquier, esquina, radio, bajita, misma, hora,
   mochila, liviana, mapa*, más *rincón, horario, libro*).
 
@@ -152,32 +179,40 @@ como está después de la vuelta 3**, y cada número se contó sobre el JSON.
 - **(T)** Responde quien juega: segunda persona en el enunciado, primera en la opción, sin
   adjetivo con género. `alguien` queda en tres enunciados (`EJ-029`, `033`, `047`: *alguien tuyo*
   o *alguien te pregunta*); el resto usa la forma impersonal.
-- **(T)** **Seis preguntas, tres por eje, las seis distintas** (la vuelta 2 tenía siete y seis
-  eran de `luz-oscuridad`): `¿A qué lo dedicás?` (`031`), `¿Cómo lo llevás?` (`035`), `¿Qué te
-  sale?` (`049`) y `¿Cuándo las juntás?` (`032`), `¿Y ahora?` (`052`), `¿Cómo arrancás?` (`056`).
-  Los otros 24 afirman sin preguntar. **"¿Qué hacés?" no aparece.**
+- **(T)** **Tres preguntas, las tres distintas** (la vuelta 2 tenía siete y seis eran de
+  `luz-oscuridad`; la vuelta 4 sacó `¿A qué lo dedicás?`, `¿Y ahora?` y `¿Cómo arrancás?`): `¿Cómo
+  lo llevás?` (`035`), `¿Qué te sale?` (`049`) y `¿Cuándo las juntás?` (`032`). Los otros 27
+  afirman sin preguntar. **"¿Qué hacés?" no aparece.**
 - **Los enunciados no le ponen conducta a nadie** (la vuelta 3 sacó *ya pensás cómo contar*,
   *ya pensás en lo que sigue* y *pensás en mañana*: afirmaban la conducta de orden y la opción de
-  caos la contradecía). La anticipación la pone la opción, nunca el enunciado. *Pensás* no queda
-  en ningún enunciado.
-- **(O)** Imagen física y barata: campera, parlante, rodilla, farol, panza, ducha, papel,
-  barquito, alarma, despertador, foto, palmas. El intruso de `voz-ricotera` §4.5 no se busca en
+  caos la contradecía; la 4, *te preguntás cuánto falta*, que le ponía a quien juega la conducta de
+  orden). La anticipación la pone la opción, nunca el enunciado. *Pensás* y *te preguntás* no
+  quedan en ningún enunciado.
+- **(O)** Imagen física y barata: campera, capas, parlante, cargador, rodilla, farol, panza, té,
+  papel, barquito, mazo de cartas, algodón, vaso de agua, nube, tramos. El intruso de `voz-ricotera` §4.5 no se busca en
   las opciones: con cinco palabras no hay lugar para él.
 - **(O)** **Cada momento es independiente del orden**: dentro de un momento sale un ítem de cada
   eje en orden al azar, y los tres de uno pueden aparearse con los tres del otro. La vuelta 3
   revisó **los nueve pares de cada momento, en los dos órdenes** (§4, "Los cruces"). Ningún
   enunciado fija un antes ni un después, ni dice que el sonido ya llegó o que todavía no.
 - **(O)** **Cada celda tiene al menos dos escenas que solo pasan en una noche de música** (el
-  tema que te mandan, el parlante, la prueba de sonido, el volumen que sube, el zumbido, el tema
-  que se queda en la boca): la vuelta 3 las contó (§4, "El rastro de la noche"). Ninguna lleva
-  credencial: no nombran un tema, un disco ni una palabra del código.
+  tema que te mandan, el parlante, la prueba de sonido, los instrumentos que entran, el
+  recital que no empieza), **con una excepción que la vuelta 4 dejó y dice**: `vuelta × luz-oscuridad`
+  tiene una sola (`053`, *te dura la noche*); `054` y `055` (la casa en silencio, no te da sueño)
+  son de cualquier madrugada y se leen de la noche solo porque el momento se llama *la vuelta*.
+  La vuelta 3 las contó (§4, "El rastro de la noche"). Ninguna lleva credencial: no nombran un
+  tema, un disco ni una palabra del código.
 
-**Lo que no resolví con reglas y lo dejo a la vista de `REV-19`.** Tres cosas. **Una:** siete
-luces suponen teléfono (arriba): es el costo de sacar la compañía presente. **Dos:** `adentro`
+**Lo que no resolví con reglas y lo dejo a la vista de `REV-19`.** Cuatro cosas. **Una:** cinco
+luces suponen teléfono (arriba): es el tope de un tercio de la enmienda 7, no uno menos, y sale de
+que en cada momento hace falta una luz posible para quien va sin compañía. **Dos:** `adentro`
 sigue dando por hecho que quien juega *oye* la música, no que entró: el sello pasó a *Cuando
 suena* (`D-57` enmienda 6) y las seis escenas se sienten igual desde la vereda, pero siguen siendo
-las del momento en que ya suena. **Tres:** `EJ-047` (*alguien tuyo la sabe*) deja abierto si ese
-alguien está al lado o lejos, a propósito; es la luz más ambigua del banco.
+las del momento en que ya suena. **Tres:** `EJ-048` y `EJ-049` (*con el resto*) son luces con la
+sala o con la vereda, no con alguien: se leen como luz sin que se hable con nadie, y si `REV-19`
+las lee como "a quien está cerca" cae el veto 6. **Cuatro:** `EJ-052` (*me pongo algodón* / *así
+me gusta*) trata el oído y no la seguridad de la persona; si se lee como precaución contra
+imprudencia, hay que cambiarla.
 
 ## 3. Los cinco momentos
 
@@ -189,8 +224,8 @@ cuerpo y objetos, ni un polo empujado, sin suspensivos **(T)**.
 | `previa` | La previa | Campera puesta, llaves en el bolsillo. | 6 palabras. Una prenda y un manojo: objetos que cualquiera tiene. *Campera sobre la silla* se leía como la del que no está. |
 | `ida` | La ida | Ruido de fondo, el camino que se estira. | 8 palabras. Sin vehículo ni pasaje (la primera versión era un micro de larga distancia: `RES-160`); sin mate (empuja `luz`). |
 | `vereda` | La vereda | Baldosa fría y un parlante lejano. | La vereda es baldosa, no pasto (el pasto pisado evoca el predio abierto). Sin choripán: es el puesto, y el puesto es plata (`RES-161`). El parlante lejano es lo que llega de adentro. |
-| `adentro` | **Cuando suena** | Bombo en el pecho, primer acorde. | **El sello cambió en la vuelta 3** (era *Adentro*): `D-57` enmienda 6 lo tomó de la propuesta de la vuelta 2, porque *Adentro* daba por hecho que quien juega entró (`BR-36` veto 3, `RES-154`). El `id` sigue siendo `adentro` (lo ata el schema). La que canta no cambia: el bombo se siente con el cuerpo que sea y "primer acorde" no nombra ningún tema. |
-| `vuelta` | La vuelta | Zumbido en el oído, llave en la puerta. | En casa, sin trayecto, y cierra el círculo con las llaves de la previa. Sin "garganta rota" (presupone haber gritado) ni "asiento tibio" (la silla vacía). |
+| `adentro` | **Cuando suena** | Golpe en el pecho, primer acorde. | **El sello cambió en la vuelta 3** (era *Adentro*): `D-57` enmienda 6 lo tomó de la propuesta de la vuelta 2, porque *Adentro* daba por hecho que quien juega entró (`BR-36` veto 3, `RES-154`). El `id` sigue siendo `adentro` (lo ata el schema). **La que canta cambió en la vuelta 4** (era *Bombo en el pecho*): en el mundo ricotero *bombo* trae el bombo de la tribuna, un ritual que `BR-36` veto 1 deja afuera de lo que se lee en la noche. *Golpe en el pecho* es el mismo cuerpo sin tribuna, y "primer acorde" no nombra ningún tema. |
+| `vuelta` | La vuelta | Frío en las manos, llave en la puerta. | En casa, sin trayecto, y cierra el círculo con las llaves de la previa. **Cambió en la vuelta 4** (era *Zumbido en el oído*): el zumbido da por hecho que quien juega estuvo cerca de los parlantes, lo mismo que la enmienda 6 corrigió en el sello; el frío en las manos lo tiene cualquiera que pasó la noche, adentro o en la vereda. Sin "garganta rota" (presupone haber gritado) ni "asiento tibio" (la silla vacía). |
 
 **La prueba de que ninguna empuja un polo.** Tapé las cinco y las leí en fila: ninguna dice
 "con la gente" ni "con lo propio", ninguna dice hora ni improvisación. La `ida` es la más
@@ -201,8 +236,9 @@ neutra; la `vuelta` es la más cargada (oído y llave) y no inclina.
 Cada ítem lleva en `notaInterna`, en una línea, **la prueba de los cuatro lugares de `D-57`
 punto 3** (nunca fui · sin plata · silla de ruedas · volviendo de noche sin compañía), el
 constructo que mide y, desde la vuelta 3, qué había antes y por qué cambió. Los treinta dan ✔ en
-los cuatro. La última columna de las tablas dice **qué cambió en la vuelta 3 y dónde mirar
-primero**.
+los cuatro. La última columna de las tablas dice **qué cambió en las vueltas 3 y 4 y dónde mirar
+primero**: *Era* es lo de la vuelta 3 y *Antes (v4)* lo que la vuelta 4 reemplazó; los cinco
+ítems que la 4 no tocó (`032`, `035`, `042`, `043`, `051`) conservan solo la nota de la 3.
 
 `L` = `luz-oscuridad` (opción A = `luz`, opción B = `oscuridad`). `O` = `orden-caos` (A = `orden`,
 B = `caos`). En el archivo las opciones van siempre en ese orden; el motor las baraja
@@ -210,14 +246,14 @@ B = `caos`). En el archivo las opciones van siempre en ese orden; el motor las b
 
 ### La previa
 
-| Id | Eje | Enunciado | Opción A | Opción B | Vuelta 3: qué cambió y dónde mirar |
+| Id | Eje | Enunciado | Opción A | Opción B | Qué cambió (vueltas 3 y 4) y dónde mirar |
 |---|---|---|---|---|---|
-| `EJ-029` | L | Alguien tuyo te manda un tema. | Le paso uno mío | Lo escucho bien fuerte | Era *La comparto con un amigo* / *Pongo los auriculares*. La persona la pone el enunciado, a distancia; la oscuridad ya no es taparse. Luz con teléfono. |
-| `EJ-030` | L | Suena música mientras te preparás. | La comparto con mi vieja | Tamborileo en la rodilla | Era *Mando un audio a alguien* / *Tarareo para adentro*. Es la única luz de la celda con alguien presente. Mirar: ¿*mi vieja* es una luz que le queda corta a quien vive solo? Es la que se aceptó. |
-| `EJ-031` | L | Falta un rato para salir. ¿A qué lo dedicás? | Le escribo a una amiga | Silbo un tema entre dientes | Era *¿Dónde te quedás?* / *En lo de mi familia* / *En mi cuarto*: las dos pedían tener algo. Ahora es qué hacés, en el mismo lugar. Luz con teléfono. |
-| `EJ-032` | O | Hay cosas para llevar al recital. ¿Cuándo las juntás? | Las dejo juntas desde antes | Las agarro al vuelo | Era *¿Qué llevás?* con opciones que contestaban *cuándo*. *Al vuelo* es el modismo de caos y no lleva *sal-*. |
-| `EJ-033` | O | Alguien te pregunta cuándo salís. | Le doy el dato justo | Le digo: ya voy | Era *Le confirmo con tiempo* (virtud) / *Le aviso cuando salgo* (*cuando* y *sal-* solo en caos). Las dos le contestan algo concreto. Único `alguien` de orden-caos. |
-| `EJ-034` | O | Te vestís para el recital. | Ya sé qué me pongo | Me visto según el humor | Era *Elijo la ropa de antemano* (oficina). Orden ahora tiene su modismo y el enunciado nombra el recital. Mirar: *según el humor*, ¿suena a "me da igual"? |
+| `EJ-029` | L | Alguien tuyo te manda un tema. | Le contesto con otro | Lo escucho bien fuerte | Era *La comparto con un amigo* / *Pongo los auriculares*. La persona la pone el enunciado, a distancia; la oscuridad ya no es taparse. **Antes (v4):** *Le paso uno mío* (*mío* es lo que el resultado traduce de oscuridad). Luz con teléfono; es el único «te mandan algo» del banco. |
+| `EJ-030` | L | Suena música mientras te preparás. | La subo para compartirla | Tamborileo en la rodilla | Era *Mando un audio a alguien* / *Tarareo para adentro*. **Antes (v4):** *La comparto con mi vieja*: un parentesco (enmienda 7). Pide a alguien presente sin nombrarlo. |
+| `EJ-031` | L | Falta un rato para salir. | Le escribo a una amiga | Tarareo un tema | Era *¿Dónde te quedás?* / *En lo de mi familia* / *En mi cuarto*: las dos pedían tener algo. Ahora es qué hacés, en el mismo lugar. **Antes (v4):** *¿A qué lo dedicás?* (formulario de revista) y *Silbo un tema entre dientes* (contenerse, y silbar es una capacidad). Luz con teléfono. |
+| `EJ-032` | O | Hay cosas para llevar al recital. ¿Cuándo las juntás? | Las dejo juntas desde antes | Las agarro al vuelo | Era *¿Qué llevás?* con opciones que contestaban *cuándo*. *Al vuelo* es el modismo de caos y no lleva *sal-*. Es el único *antes* del banco en orden (el otro, de `039`, se fue en la v4). |
+| `EJ-033` | O | Alguien te pregunta cuándo salís. | Le doy el dato justo | Le digo: en un rato | Era *Le confirmo con tiempo* (virtud) / *Le aviso cuando salgo* (*cuando* y *sal-* solo en caos). **Antes (v4):** *Le digo: ya voy*, la excusa clásica de quien todavía no salió. Las dos le contestan algo concreto. Único `alguien` de orden-caos. |
+| `EJ-034` | O | Te vestís para el recital. | Sé qué me pongo | Me visto según el humor | Era *Elijo la ropa de antemano* (oficina). Orden tiene su modismo y el enunciado nombra el recital. **Antes (v4):** *Ya sé qué me pongo* (uno de tres *Ya* en orden, ninguno en caos). Mirar: *según el humor*, ¿suena a "me da igual"? |
 
 ### La ida
 
@@ -410,7 +446,7 @@ es *a solas*; no la cambié (mueve `POLOS`, `CNT-29` y las tarjetas).
 | `marca` | `Arcade Ricotero` | **confirma** (la versión anterior de este documento decía `Arcade Ricotero · ¿Qué tipo de ricotero sos?`) | R3. Va en dos renglones (`UX-36` §5.1): esta, en la calcada de la tapa de *Oktubre* (solo mayúsculas y sin tilde), y debajo el título del juego (`PANTALLA_0.titulo`). La misma cadena encabeza la tarjeta y la vista previa. |
 | `compartir` · `denuevo` · `bajar` · `volver` | `Compartí` · `Empezá otra noche` · `Bajá la tarjeta` · `Volvé al arcade` | confirma | R1 (botones), voseo. `Empezá otra noche` es lo opuesto de "Probá de nuevo", que sonaba a haber fallado. |
 | `lasCuatro` | `Las cuatro maneras` | confirma | R3, 3 palabras. Nombra la grilla. |
-| `lasCuatroCanta` | `Cuatro puntas de la misma hoja.` | **cambia** (hoy `Cuatro puertas a la misma noche.`) | R1, 6 palabras, física (las cuatro puntas de una hoja) y sin sermón. **Por qué cambia:** la lectura de la vuelta 3 notó que *puertas* contradice el argumento de este mismo documento (la puerta de un recital es donde se pide la entrada: `LUGARES` ya lo había sacado por eso), y *Cuatro sillas* ya estaba descartada. *Esquinas* (la sugerencia de la lectura) apuntaría a «Ronda en cualquier esquina» antes de que se conozca el nombre: es la guarda de §2. *Puntas* es la misma imagen del libro (*Las hojas de la noche*), no lleva persona ni entrada, y las cuatro puntas de una hoja son iguales. Tapada: queda `Las cuatro maneras`, que nombra. |
+| `lasCuatroCanta` | `Cuatro puntas de la misma hoja.` | **confirma** (pegada por el hilo después de la vuelta 3; antes `Cuatro puertas a la misma noche.`) | R1, 6 palabras, física (las cuatro puntas de una hoja) y sin sermón. **Por qué cambia:** la lectura de la vuelta 3 notó que *puertas* contradice el argumento de este mismo documento (la puerta de un recital es donde se pide la entrada: `LUGARES` ya lo había sacado por eso), y *Cuatro sillas* ya estaba descartada. *Esquinas* (la sugerencia de la lectura) apuntaría a «Ronda en cualquier esquina» antes de que se conozca el nombre: es la guarda de §2. *Puntas* es la misma imagen del libro (*Las hojas de la noche*), no lleva persona ni entrada, y las cuatro puntas de una hoja son iguales. Tapada: queda `Las cuatro maneras`, que nombra. |
 | `tuya` · `suya` | `Esta noche` · `Quien te lo mandó` | confirma | R3, sellos chicos, sin género. |
 | `altGrilla` | `Las cuatro maneras, con la tuya primero.` | confirma | R3, para el lector de pantalla. |
 | `paraCompartir(nombre)` | `Me salió «${nombre}». ¿Qué tipo de ricotero sos vos?` | confirma | R1 en primera persona, fuera del sitio. Primera frase de 6 a 7 palabras. Nombra el test y no lleva número (`BR-17`). |
@@ -421,12 +457,12 @@ es *a solas*; no la cambié (mueve `POLOS`, `CNT-29` y las tarjetas).
 | `rotulo` · `boton` | `A quien te lo mandó le salió` · `Empezá tu noche` | confirma | R3 sin género · R1 voseo. |
 | **TARJETA** | | | |
 | `meSalio` · `pregunta` | `Me salió` · `¿Y a vos cuál te sale?` | confirma | R1, el arranque que la tarjeta completa con el nombre · segunda persona, 6 palabras. |
-| `credito` | `Lomo, mármol y esquinero: tapa de Luzbelito (Rocambole, 1996), en baja.` | confirma | R3, dice qué se usa y de dónde. Sin día ni mes (`RES-167`). Sin óvalo ni figura. |
+| `credito` | `Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole, 1996).` | **cambia** (cierre de la vuelta 4, §13; antes `…tapa de Luzbelito (Rocambole, 1996), en baja.`) | R3, dice qué se usa y de dónde. Sin día ni mes (`RES-167`). Sin óvalo ni figura. *En baja* era jerga de imprenta: la baja resolución es la condición de `D-21`, no algo que se le diga a la gente. Los `alt` pierden el mismo *en baja*. |
 | `alt(nombre, linea)`, `altJuego` | los de hoy | confirma | R3. Llevan el crédito (`D-21`). |
 | **CASETE** (`sitio/copy.ts`) | | | |
 | `JUEGOS[«¿Qué tipo de ricotero sos?»].baja` | `Nadie te toma examen. Una noche de recital, sin puntaje y sin saber nada de la banda.` | confirma | La primera frase es la que el portal imprime y mide `voz.test.ts` (4 ≤ 8 palabras). Sin "Diez" escrito a mano. |
 | `JUEGOS[...].accion` | `EMPEZÁ` | confirma | R1 (botón). |
-| `LUGARES.dosEjes` | `Entrá con la campera puesta.` | **cambia** (hoy `Se entra con las manos vacías.`) | R1, 5 palabras, imperativo y física. **Por qué cambia:** *manos vacías* es en castellano llegar sin regalo o volver fracasado, no entrar sin pagar, y repite *manos* de la bajada de `CU-4` en la versión de la vuelta 2 (ya no está). *Entrá con la campera puesta* es la misma imagen de la previa (*Campera puesta, llaves en el bolsillo*), dice "como estás" sin hablar de plata ni de puerta, y no repite *nada/nadie* (el aviso explícito queda en el subtítulo). Si el renglón ya no vive en la página, no hace falta nada. |
+| `LUGARES.dosEjes` | `Entrá con la campera puesta.` | **confirma** (pegada por el hilo después de la vuelta 3; antes `Se entra con las manos vacías.`) | R1, 5 palabras, imperativo y física. **Por qué cambia:** *manos vacías* es en castellano llegar sin regalo o volver fracasado, no entrar sin pagar, y repite *manos* de la bajada de `CU-4` en la versión de la vuelta 2 (ya no está). *Entrá con la campera puesta* es la misma imagen de la previa (*Campera puesta, llaves en el bolsillo*), dice "como estás" sin hablar de plata ni de puerta, y no repite *nada/nadie* (el aviso explícito queda en el subtítulo). Si el renglón ya no vive en la página, no hace falta nada. |
 
 ### 6.3 Los textos armados, para leerlos de corrido
 
@@ -633,4 +669,43 @@ Cada ítem cambiado lleva su razón en la `notaInterna`, con "Vuelta 3" adelante
 | baja | `CU-3` (una posesión, *hora* ×3) y `CU-2` (*un grupo*, *adónde van*) | §5 |
 | baja | Cadenas: *Cuatro puertas*, *manos vacías* | *Cuatro puntas de la misma hoja.* y *Entrá con la campera puesta.* (§6.2); *sinNoche* confirmada |
 | baja | El documento quedó viejo frente al árbol (§6.2 y §6.3 con `desafio` vigente, la fila `marca`, el sello `Adentro`, el test que no contaba `por` ni `me`) | Puesto al día contra `copy.ts`, el JSON, las enmiendas de `D-57` y `banco.test.ts` (§2, §3, §6, §8, §9) |
+
+## 13. Vuelta 4 de arreglos (2026-10-04): la última, y quién la cerró
+
+**Quién la escribió.** La empezó `contenido` sobre la lista de la verificación final de la vuelta 3
+(30 problemas) y con la vara de la enmienda 7 de `D-57`, y se cortó antes de terminar: el cupo de
+subagentes se agotó hasta el 8 de octubre. Dejó cambiados 25 de los 30 ítems, las bajadas de
+`CU-3` y `CU-4`, las líneas que cantan de `adentro` y `vuelta`, y este documento hasta el §12.
+**El cierre lo escribió el hilo principal** y está marcado así en la `notaInterna` de cada ítem
+que tocó; `contenido` lo revisa cuando vuelva, y si algo no le cierra, manda su texto.
+
+**Lo que hizo `contenido`** (está en la `notaInterna` de cada ítem, con "Vuelta 4" adelante):
+
+- **La luz sin parentesco**: salieron *mi vieja*, *mis viejos*, *mi hermana* y *mi prima*. La luz
+  supone a alguien —es la definición del eje— y no le cierra la opción a quien no tiene a quién.
+- **Teléfono en un tercio de las luces** (cinco de quince), el tope de la enmienda 7.
+- **Sin la distracción del que no mira**: salieron *grabar para un compa* y *cuchichear* en la
+  pausa; quedaron *aplaudo con el resto* y *grito con el resto*, que se hacen sin hablarle a nadie.
+- **Sin el recuerdo de quien te pasó la música** (`EJ-037`), que a cuatro meses del 5 de junio era
+  una escena de ausencia.
+- **Sin credenciales ni contradicciones**: salió *Ya sé cómo sigue* (`EJ-052`, saber la lista de
+  temas) y los tres *Ya* de orden; `EJ-038` dejó las indicaciones (silla de ruedas, noche sin
+  compañía) por *Hay nubes en el cielo*; `EJ-044` dejó el guardarropa; `EJ-033` dejó el *ya voy*.
+- **Las líneas que cantan** sin *bombo* (el de la tribuna) ni *zumbido* (da por hecho que se estuvo
+  cerca de los parlantes): *Golpe en el pecho, primer acorde.* y *Frío en las manos, llave en la
+  puerta.*
+
+**Lo que cerró el hilo principal:**
+
+| Ítem | Era (vuelta 4 de `contenido`) | Queda | Por qué |
+|---|---|---|---|
+| `EJ-041` luz | *Le cuento cómo me suena* | *Comento cómo me suena* | El «le» no tenía a quién referirse: el enunciado no pone a nadie. *Se lo cuento a alguien* hacía de *alguien* la firma de luz (tres contra cero) y la guarda lo agarró |
+| `EJ-047` luz | *La canto a dúo* | *Escucho cómo la canta* | Cantar a dúo pide saberse la letra: la credencial de `BR-36`. Escuchar cómo la canta el otro no pide nada, y no le pone género |
+| `EJ-052` orden / caos | *Me pongo algodón* / *Así me gusta* | *Traje algodón por las dudas* / *Me tapo con los dedos* | *Así me gusta* era una preferencia (y la del que aguanta el volumen), no resolver sobre la marcha. Ahora las dos cuidan el oído: una lo previó, la otra se arregla con lo que tiene |
+| `TARJETA.credito` | *…(Rocambole, 1996), en baja.* | *Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole, 1996).* | *En baja* es jerga de imprenta (§6.2) |
+
+**Verificado:** `node --test src/lib/dos-ejes/banco.test.ts src/lib/voz.test.ts src/lib/esquemas.test.ts src/lib/pisos.test.ts src/lib/dos-ejes/partida.test.ts`
+da 121 de 121, y la suite entera queda en el `ESTADO.md` del cierre. Lo que ninguna máquina ve
+—si las cuatro maneras se dicen con el mismo orgullo, si la luz de un momento le queda posible a
+quien fue sin compañía— lo mira `REV-19`.
 

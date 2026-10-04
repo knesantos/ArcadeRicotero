@@ -175,11 +175,15 @@ export const POSTAL = {
 export const TARJETA = {
   meSalio: 'Me salió',
   pregunta: '¿Y a vos cuál te sale?',
-  /** Registro 3. Sin día ni mes: la fecha de salida de *Luzbelito* está en duda (`RES-167`). */
-  credito: 'Lomo, mármol y esquinero: tapa de Luzbelito (Rocambole, 1996), en baja.',
+  /**
+   * Registro 3. Sin día ni mes: la fecha de salida de *Luzbelito* está en duda (`RES-167`).
+   * Sin "en baja": es jerga de imprenta (baja resolución, `D-21`), y un rótulo dice qué hay
+   * adentro con palabras de todos (lectura final de la vuelta 4 de `CNT-30`).
+   */
+  credito: 'Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole, 1996).',
   /** El texto alternativo de la vista previa de una postal. Lleva el crédito (`D-21`). */
   alt: (nombre: string, linea: string) =>
-    `Tarjeta de Arcade Ricotero: me salió «${nombre}». ${linea} Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole), en baja.`,
+    `Tarjeta de Arcade Ricotero: me salió «${nombre}». ${linea} Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole).`,
   /** El de la vista previa de la portada del juego. */
-  altJuego: 'Tarjeta de Arcade Ricotero: ¿Qué tipo de ricotero sos?, con las cuatro maneras. Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole), en baja.',
+  altJuego: 'Tarjeta de Arcade Ricotero: ¿Qué tipo de ricotero sos?, con las cuatro maneras. Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole).',
 } as const;
