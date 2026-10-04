@@ -9,8 +9,9 @@
 
 > ## 🌙 "¿QUÉ TIPO DE RICOTERO SOS?" REHECHO: UNA NOCHE Y EL LIBRO DE *LUZBELITO* (2026-10-04) — `D-57`, ciclo 18
 >
-> **Rama `ciclo-18/que-ricotero-sos`, sobre `main` en `bc27cd4`, subida y sin integrar** (no se
-> abrió PR: nadie lo pidió). Pedido del usuario: *"Hacé un ciclo entero de mejora importante sobre
+> **Rama `ciclo-18/que-ricotero-sos`, sobre `main` en `bc27cd4`, integrada a `main`** a pedido del
+> usuario (*"integrá todo a main"*) con el **PR #27** (merge `c7ef2de`), con el deploy de vista
+> previa de Vercel en verde. Pedido del usuario: *"Hacé un ciclo entero de mejora importante sobre
 > el juego de qué tipo de ricotero sos, mejora artística, de preguntas, de resultado y de otras
 > cosas que analices que se puedan mejorar"*. Plan en `ORQ-plan-ciclo-18.md` (`T-331`..`T-346`,
 > todas hechas). Decisión madre: `D-57`, con siete enmiendas escritas al construir.
