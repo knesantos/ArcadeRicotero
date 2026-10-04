@@ -358,6 +358,15 @@
   font-weight: 700;
 }
 
+/* Un enlace con cara de boton secundario se tiene que ver como el boton (`T-343`): sin esto,
+   "Volve al arcade" de "Ponelos en fila" salia subrayado, a la izquierda y mas bajo que el
+   boton de arriba. `.compartir-bajar` ya lo hacia para la descarga; esto lo hace para todos. */
+a.secundario {
+  min-height: var(--toque-min);
+  text-align: center;
+  text-decoration: none;
+}
+
 .link {
   word-break: break-all;
   color: var(--texto-tenue);
