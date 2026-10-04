@@ -527,6 +527,7 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 
 - **Fecha:** 2026-08-20
 - **Estado:** aceptada — decisión directa del usuario, en la sesión del sistema de marca.
+  **El nombre lo reemplazó `D-60` (2026-10-04): el sitio se llama Fichín Ricotero.**
 - **Contexto:** el proyecto nació como "RicotaArcade", un nombre de carpeta más que de
   producto. Al armar el sistema de marca quedó a la vista que el nombre iba a estar en la
   portada, en el título del navegador y en la tarjeta compartible — y "RicotaArcade" mezcla
@@ -3414,8 +3415,10 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     *"en el arcade ricotero"*. Fichín es la palabra de acá para la máquina de fichas; el nombre
     nuevo, además de tener dominio, es la palabra castellana que `D-17` pide cuando existe.
   - **Los botones que nombran el lugar:** *Volvé al fichín* y la cinta *← AL FICHÍN*.
-  - Las imágenes que se bajan se llaman `fichin-ricotero-*.png`; el asunto del correo de
-    corrección dice *"Corrección del fichín ricotero"*.
+  - Las imágenes que bajan los dos pinceles se llaman `fichin-ricotero-*.png` (las tarjetas
+    de "¿Qué tipo de ricotero sos?" siguen saliendo con el nombre de su manera,
+    `cu-1-dos-ejes.png`, sin el del sitio); el asunto del correo de corrección dice
+    *"Corrección del fichín ricotero"*.
 - **Lo que no cambia, a propósito.**
   - **Los nombres internos.** La clave `arcade.` de `localStorage` (`ADR-04.5`: cambiarla borra
     el avance de Skayboy y el récord de "Más o menos" de quien ya jugó), las clases
@@ -3437,19 +3440,26 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   misma tinta. Las métricas no se tocan: el acento sube a 856 sobre un `usWinAscent` de 800, y
   se probó en Chromium sobre Windows, en HTML y en canvas, que se dibuja entero. Lo hace
   `scripts/derivar-oktubre-calco.py` (fontTools + skia-pathops) desde la v0.3 de
-  `Docs/INVESTIGACION/Tipografia/`. La alternativa que la regla de marca daba para las letras
-  que faltan —la palabra en la rotulada— habría dejado el logo con dos letras distintas.
+  `Docs/INVESTIGACION/Tipografia/`, con las fechas de `head` fijas: volver a correrlo da el
+  mismo archivo byte a byte, y la huella del taller de tarjetas no cambia. La F y la N dejan
+  a la derecha el mismo aire que las letras calcadas (33 a 34 unidades). La alternativa que
+  la regla de marca daba para las letras que faltan —la palabra en la rotulada— habría
+  dejado el logo con dos letras distintas.
 - **Consecuencias.**
   - `src/lib/fuentes.test.ts` suma un lector de WOFF y tres casos: la marca entra en el calco;
     los dos pinceles y el taller dibujan `PORTAL.titulo`; ninguna marca escrita en una página
     pide una letra que el calco no tenga. Con el calco viejo fallan con `[F, H, Í, N]`.
   - `diseno-marca.md`: el nombre, la tabla de fuentes (v0.4) y la deuda de las tildes, que se
     achica a todo menos la Í.
-  - **Cuando `D-59` entre a `main`**, las tarjetas del taller chocan como binario. Se resuelve
-    volviendo a correr `npm run generar-dos-ejes`, que dibuja la marca de acá y el dominio de
-    allá. Los demás choques son de texto, al final de `DECISIONES.md` e `IDS.md`.
-  - El hilo de difusión ya pasó al nombre nuevo en su rama (PR #26); sus capturas muestran la
-    marca vieja y se vuelven a sacar cuando esto esté publicado.
+  - **Cuando `D-59` entre a `main`**, las tarjetas del taller y su manifiesto
+    (`scripts/dos-ejes-manifiesto.json`) chocan. Se resuelve volviendo a correr
+    `npm run generar-dos-ejes`, que dibuja la marca de acá y el dominio de allá. Los demás
+    choques son de texto: el final de `DECISIONES.md` e `IDS.md` y el bloque de arriba de
+    `ESTADO.md`.
+  - El hilo de difusión pasó al nombre nuevo en el commit `be7b9e2` de la rama
+    `difusion/hilo-twitter`, que todavía no tiene PR: el #26 se integró antes, sin ese
+    cambio, así que en `main` el hilo sigue diciendo Arcade Ricotero. Sus capturas muestran
+    la marca vieja y se vuelven a sacar cuando esto esté publicado.
   - Lo que toca a cada rol (los nombres del lugar de `CNT-13`, la hoja de marca del lienzo, el
     archivo `.otf` v0.4 junto al de `RES-43`) está en
     `Docs/SUGERENCIAS/HILO-para-todos-el-sitio-se-llama-fichin-ricotero.md`.

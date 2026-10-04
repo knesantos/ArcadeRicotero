@@ -134,10 +134,12 @@ N = union(camino('I'), camino('I', dx=N_SEGUNDO), diagonal)
 ACENTO = poligono((60, 714), (180, 714), (252, 856), (140, 852))
 I_TILDE = union(camino('I'), ACENTO)
 
+# Los avances dejan a la derecha el mismo aire que las letras calcadas (33 a 35 unidades):
+# la F el de la E de la que sale, la N el de la I de la que salen sus palos.
 NUEVOS = {
-    'F': (F, 500),
+    'F': (F, metricas['E'][0]),
     'H': (H, metricas['U'][0]),
-    'N': (N, metricas['U'][0] - 44),
+    'N': (N, N_DERECHA + (metricas['I'][0] - PALO)),
     'Iacute': (I_TILDE, metricas['I'][0]),
 }
 
@@ -201,6 +203,11 @@ fb.setupOS2(
 )
 fb.setupPost()
 fb.font['head'].fontRevision = 0.4
+# Fechas fijas: si cambian, cambia el archivo, y con él la huella del taller de tarjetas
+# (`src/lib/dos-ejes/taller.ts`), que pediría regenerar todo por una fuente idéntica.
+FECHA = 3873999943  # 2026-10-04 23:05:43 UTC, en segundos desde 1904 (el reloj de `head`)
+fb.font['head'].created = fb.font['head'].modified = FECHA
+fb.font.recalcTimestamp = False
 
 fb.font.flavor = 'woff' if DESTINO.suffix == '.woff' else None
 fb.save(DESTINO)

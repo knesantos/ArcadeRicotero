@@ -170,15 +170,21 @@ test('ninguna marca escrita en una página pide una letra que el calco no tiene'
   };
   ['src/pages', 'src/components', 'src/layouts'].forEach(recorrer);
 
-  let vistas = 0;
+  const FORMAS = ['marca', 'marca-grande', 'marca-chica', 'caratula-marca'] as const;
+  const vistas = new Map<string, number>(FORMAS.map((f) => [f, 0]));
+  // La clase puede venir acompañada de otras; el texto se toma entero hasta el cierre de la
+  // etiqueta, así una marca armada con `{...}` o con otra etiqueta adentro no pasa sin mirarse.
+  const patron = /<(\w+)\s[^>]*class="(?:[^"]*\s)?(marca|marca-grande|marca-chica|caratula-marca)(?:\s[^"]*)?"[^>]*>([\s\S]*?)<\/\1>/g;
   for (const ruta of archivos) {
     const fuente = readFileSync(ruta, 'utf-8');
-    for (const m of fuente.matchAll(/class="(?:marca|marca-grande|marca-chica|caratula-marca)"[^>]*>([^<{]+)</g)) {
-      vistas++;
-      assert.deepEqual(faltanEnElCalco(m[1]!), [], `${ruta}: "${m[1]!.trim()}"`);
+    for (const m of fuente.matchAll(patron)) {
+      const [, , forma, texto] = m;
+      vistas.set(forma!, vistas.get(forma!)! + 1);
+      assert.ok(!/[{<]/.test(texto!), `${ruta}: la marca .${forma} no es texto fijo ("${texto!.trim()}"); este caso no la puede mirar`);
+      assert.deepEqual(faltanEnElCalco(texto!), [], `${ruta}: "${texto!.trim()}"`);
     }
   }
-  // Las cuatro formas de la marca existen en el árbol: si el patrón deja de verlas, el caso
-  // de arriba pasa sin mirar nada.
-  assert.ok(vistas >= 4, `solo se encontraron ${vistas} marcas escritas`);
+  // Las cuatro formas de la marca existen en el árbol: si el patrón deja de ver alguna, el
+  // caso de arriba pasa sin mirarla.
+  for (const forma of FORMAS) assert.ok(vistas.get(forma)! >= 1, `no se encontró ninguna marca .${forma} escrita`);
 });
