@@ -3414,4 +3414,58 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   test de dos botones (`BR-36` veto 2). Cómo se compatibiliza "lo sucio no puede faltar" con
   "nadie queda afuera por no consumir" lo fija la síntesis de abajo, con la investigación
   (`INV-172`) sobre la mesa.
-- **Síntesis:** *se escribe al cerrar la investigación de este mismo ciclo.*
+- **La investigación** (`INV-172`, `RES-172`..`RES-194`): cuatro investigadores y cuatro
+  verificadores. **Ninguna página se pudo abrir** (el proxy bloquea los diarios) y el memoir del
+  Indio no está en este entorno, así que casi todo quedó rotulado *leyenda*: se cuenta en la
+  prensa según el buscador. Para un test sin respuestas correctas alcanza —da escenas y palabras,
+  no datos—. Lo que trae: la previa de días en carpas, el fogón, la guitarra criolla, el mate y el
+  vino que pasan de mano en mano, el fernet con Coca en la botella de dos litros cortada, la birra
+  por litro, el chori y el asado, los puestos con remeras, el micro y la combi del barrio en fila
+  por la ruta, el barro del acceso que se traga una zapatilla, el frío con agua nieve o los 38
+  grados, los trapos y los pasacalles, el porro (lo único del consumo que nombra la crónica de
+  color), padres que pasan la música a los hijos y parejas que se conocieron en una misa. La
+  cocaína no aparece en ninguna crónica de color: está en la policial y en lecturas de fans.
+- **Síntesis — cómo queda la noche:**
+  1. **La escena es la ricotera entera.** Enunciado, sello, línea que canta y bajadas pueden
+     traer la previa en la esquina o la plaza, el escabio, la birra, el vino, el fernet, el
+     chori y el pancho, el humo, el porro que gira, el reviente, el barro, la mugre, el micro, la
+     carpa, el pogo adelante, los trapos, la misa, los Redondos, "ricotero", la gente sin
+     entrada, la madrugada; y la familia, los amigos y el amor **de la gente de la escena** (un
+     padre que le pasa la canción a su hija, una pareja que se conoció en una misa). **"Lo primero
+     no puede faltar"**: cada momento lleva su parte sucia, no solo la tierna.
+  2. **Quien juega elige cómo se mueve, no si consume.** Lo que se toma o se fuma puede estar en
+     una opción, pero nunca de un solo lado: si una toma y la otra no, el eje mide si tomás, y el
+     que no toma —por salud, por los hijos, porque dejó— cae siempre en el mismo polo. *"Ir a
+     escabiar o no"* se juega así: la previa está en la escena, y las dos opciones son de la
+     previa (sumarse a la ronda, que no obliga a tomar, o quedarse con lo propio). Se suma **un
+     quinto lugar** a la prueba de `D-57` punto 3: **el que no toma ni fuma** tiene que poder
+     contestar cada ítem de verdad. Lo vigila `banco.test.ts` (el consumo de un solo lado) y lo
+     lee `REV-20` (el quinto lugar).
+  3. **La merca está en la noche como paisaje, nunca como elección.** Es la línea editorial del
+     hilo principal sobre el pedido —*"hasta cocaína debe ser parte del recital"*—: el sitio no
+     tiene muro de edad ni de entrada (los molinetes), y una opción que se elige convierte el
+     consumo en una manera de ser. En la escena dice que está, sin glamour ni sermón, que es lo
+     que pidió el usuario. Si el usuario la quiere también como opción, se cambia esta línea y la
+     guarda, y nada más.
+  4. **Lo que se paga puede estar; lo que se elige no lo pide.** El chori, la birra, el micro y el
+     puesto están en la escena; ninguna opción dice que compraste, pagaste o tenés entrada.
+  5. **La banda y sus rituales entran a la escena; sus personas, no.** La misa, los Redondos, los
+     trapos y el pogo son paisaje. El Indio, Skay, Poli: no (el Indio murió el 5 de junio y una
+     escena con él en el escenario es un velorio aunque no lo diga). En una opción, "la misa" o
+     "los Redondos" puntúan quién es más de adentro, y siguen fuera. Ninguna pregunta pide saber
+     nada de la banda (`BR-17`).
+  6. **Siguen igual:** las tragedias fuera de la escena (Olavarría, con sus crónicas de barro;
+     Cromañón y las bengalas; Bulacio; la muerte del Indio y las plazas del 5 de junio), el cuerpo
+     capaz (el pogo suena, nadie elige meterse), la seguridad (sin dedo ni desconocidos), las
+     reglas de la luz de la enmienda 7 de `D-57` (sin parentesco ni pareja propia en una opción),
+     la noche en cinco momentos, tres por celda, los cuatro nombres de las maneras.
+- **Consecuencias.**
+  - **`producto`:** `BR-38`, la regla de la noche ricotera, que reemplaza los vetos 1, 3 y 4 de
+    `BR-36` por lo de arriba, con el quinto lugar; y una línea en `US-06`.
+  - **`contenido`:** `CNT-31`, el banco de la noche ricotera: las escenas, las líneas que cantan
+    y, si hace falta, las bajadas, con `INV-172` como material.
+  - **El hilo principal:** las guardas (ya escritas antes del banco: `banco.test.ts`), el copy y
+    el taller si cambian las bajadas.
+  - **`revisor`:** `REV-20`, con el quinto lugar y la pregunta de si la noche suena ricotera.
+  - El sitio no tiene muro de edad (`D-09`, los molinetes): desde `D-59` el test habla de birra,
+    porro y merca. Es decisión del usuario y queda dicha acá.
