@@ -591,17 +591,16 @@ const ESTADOS_TAPA = [
 ];
 
 /**
- * `US-06`, y **la lista vacia es la declaracion, no un olvido**.
+ * `US-06`, desde el ciclo 18 (`D-57`). Hasta ahí la lista estaba vacía y esa era la
+ * declaración: no había acierto ni error, y el toque no dejaba ninguna marca —que era,
+ * justamente, lo que dejaba pasar el doble toque—.
  *
- * El test de dos ejes no tiene acierto ni error —`BR-17`: los ejes no miden nivel, y
- * ningun resultado vale mas que otro— asi que no hay ningun estado que comunicar con tinta. Lo unico que cambia entre pantallas es
- * `hidden`, que lo apaga la hoja del navegador y no necesita regla de autor.
- *
- * Declararlo vacio no lo deja sin auditar: la **red derivada** de mas abajo lee la isla y
- * romperia el dia que alguien le agregue una clase modificadora sin regla. Eso es lo que
- * hace que un `[]` sea una declaracion honesta y no un agujero.
+ * Sigue sin haber acierto ni error (`BR-17`): ninguno de estos estados es verde ni rojo. Son
+ * la opción **elegida** (apretada contra el papel durante la pausa), la que **se había
+ * elegido** cuando se vuelve a una hoja, y en la grilla de las cuatro maneras **la tuya** y
+ * **la de quien te mandó el enlace**. Cada una cambia de forma además de tinta.
  */
-const ESTADOS_EJES: string[] = [];
+const ESTADOS_EJES = ['.ejes-opcion--elegida', '.ejes-opcion--antes', '.ejes-manera--tuya', '.ejes-manera--suya'];
 
 /**
  * `US-10`, "Más o menos". Reusa el acierto y el error del quiz sobre dos botones en vez de
@@ -683,7 +682,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'analitica.ts': { sinTablero: 'la analitica de Vercel (D-56); pega un script y no toca el DOM visible' },
   'armar-cancionero.ts': { sinTablero: 'arma un HTML autocontenido que se descarga; sus estilos viajan adentro de ese archivo, no en las hojas del sitio' },
   'cancion.ts': { sinTablero: 'transportar y bajar solo en la ficha de un tema; no hay partida ni respuesta que senalar' },
-  'compartir.ts': { sinTablero: 'el boton de compartir de los juegos sin tarjeta (tapa, letra, dos ejes); sus tres clases son las de compartir de juego.css' },
+  'compartir.ts': { sinTablero: 'el boton de compartir de tapa, letra y dos ejes (con la tarjeta fija de su identidad, D-57); sus tres clases son las de compartir de juego.css' },
   'correccion.ts': { sinTablero: 'el boton de correccion compartido; abre un formulario, no pinta estado de partida' },
   'diagnostico-audio.ts': { sinTablero: 'pantalla de medicion; sus reglas viven en el <style> de su propia pagina y la cubre la red derivada' },
   'lamina.ts': { sinTablero: 'pincel de canvas (US-08); dibuja pixeles, no crea nodos con clase' },

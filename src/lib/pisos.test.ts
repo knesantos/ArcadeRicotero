@@ -159,3 +159,24 @@ test('US-08: el piso de 14 conjuntos ordenables sigue cumplido', () => {
   const vacios = ofrecidos.filter((c) => c.cuantas === 0).map((c) => c.id);
   assert.deepEqual(vacios, []);
 });
+
+/**
+ * `US-06`, enmendada por `D-57`: la noche en cinco momentos pide **tres ítems listos por celda**
+ * (momento × eje), treinta en total. Tres por celda es lo que da tres noches seguidas sin
+ * repetir una escena (`BR-37`). El detalle por celda lo mira `dos-ejes/banco.test.ts`; acá va
+ * el piso, al lado de los otros, para que nadie lo busque en otro lado.
+ */
+test('US-06: el piso de 30 escenas de la noche sigue cumplido', () => {
+  const { items, momentos } = leer<{
+    items: readonly { estado: string; eje: string; momento?: string }[];
+    momentos: readonly { id: string }[];
+  }>('dos-ejes');
+  const listos = items.filter((i) => i.estado === 'listo');
+  assert.ok(listos.length >= 30, `el piso de US-06 es 30 y hay ${listos.length} listos`);
+  for (const m of momentos) {
+    for (const eje of ['luz-oscuridad', 'orden-caos']) {
+      const n = listos.filter((i) => i.momento === m.id && i.eje === eje).length;
+      assert.ok(n >= 3, `${m.id} × ${eje}: ${n} listos, el piso es 3`);
+    }
+  }
+});

@@ -175,6 +175,8 @@ function cadenasDelBanco(): string[] {
       readonly estado: string;
     }[];
     readonly cuadrantes: readonly { readonly nombre: string; readonly bajada: string }[];
+    /** Los cinco momentos de la noche (`D-57`): el sello y la línea que canta se leen igual. */
+    readonly momentos?: readonly { readonly nombre: string; readonly canta: string }[];
   }
   const banco = JSON.parse(readFileSync('src/data/dos-ejes.json', 'utf-8')) as Crudo;
   const salida: string[] = [];
@@ -184,6 +186,7 @@ function cadenasDelBanco(): string[] {
     salida.push(i.enunciado, ...i.opciones.map((o) => o.texto));
   }
   for (const c of banco.cuadrantes) salida.push(c.nombre, c.bajada);
+  for (const m of banco.momentos ?? []) salida.push(m.nombre, m.canta);
   return salida;
 }
 

@@ -3168,8 +3168,9 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   7. "Probá de nuevo" sonaba a haber fallado y repetía la mitad de las preguntas.
 
 - **Decisión.**
-  1. **La partida es una noche de recital en cinco momentos**: *la previa*, *el viaje*, *la
-     vereda*, *adentro* y *la vuelta*. En cada momento sale un ítem de cada eje, en orden al
+  1. **La partida es una noche de recital en cinco momentos**: *la previa*, *la ida*, *la
+     vereda*, *adentro* y *la vuelta* ("la ida" y no "el viaje": rima con la vuelta, y
+     "viaje" es psicodelia de utilería en voz-ricotera §7). En cada momento sale un ítem de cada eje, en orden al
      azar dentro del momento: siguen siendo diez preguntas, cinco por eje, impar (`BR-17`
      regla 3 intacta). Cada momento tiene su sello y una línea que canta.
   2. **El recital es "un recital", sin dueño.** Nunca la banda, sus temas, el Indio, la misa,
@@ -3274,7 +3275,7 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 
 - **El contrato de datos que comparten todos los roles** (`CTR-08` v2 lo formaliza):
   - El banco suma `momentos`: cinco objetos `{ id, nombre, canta }` en el orden de la noche
-    (`previa`, `viaje`, `vereda`, `adentro`, `vuelta`). `nombre` es el sello (registro 3) y
+    (`previa`, `ida`, `vereda`, `adentro`, `vuelta`). `nombre` es el sello (registro 3) y
     `canta` la línea de registro 1.
   - Cada ítem `listo` suma `momento` (uno de esos cinco ids). Los retirados no lo llevan.
   - `momentos.length === preguntasPorEje` (hoy 5) y cada celda momento × eje tiene al menos

@@ -1,0 +1,25 @@
+---
+/**
+ * La manera de quien mandó el enlace, en la portada de su postal (`D-57` punto 11).
+ *
+ * Es lo que el que llega no tenía: hasta el ciclo 18 leía "A alguien le salió «Luna llena»"
+ * sin saber qué quería decir. Acá ve el nombre, los dos polos en palabras y la bajada, pegado
+ * como una etiqueta de papel. **Escrito en el HTML**: la vista previa ya lo prometió y no
+ * tiene que esperar a ninguna isla.
+ */
+import { POSTAL, lineaQueNombra, selloDePolos } from '../../lib/dos-ejes/copy.ts';
+import type { Cuadrante } from '../../lib/dos-ejes/partida.ts';
+
+interface Props {
+  cuadrante: Cuadrante;
+}
+const { cuadrante: c } = Astro.props;
+---
+
+<aside class="ejes-amigo" aria-labelledby="ejes-amigo-nombre">
+  <p class="ejes-rotulo">{POSTAL.rotulo}</p>
+  <p class="ejes-amigo-nombre" id="ejes-amigo-nombre">{c.nombre}</p>
+  <p class="ejes-polos">{selloDePolos(c.luzOscuridad, c.ordenCaos)}</p>
+  <p class="ejes-nombra">{lineaQueNombra(c.luzOscuridad, c.ordenCaos)}</p>
+  <p class="ejes-bajada">{c.bajada}</p>
+</aside>

@@ -1,0 +1,92 @@
+---
+/**
+ * Las cuatro postales de "¿Qué tipo de ricotero sos?" (`D-57` punto 11, `ADR-02` enmendado):
+ * `/juegos/dos-ejes/cu-1/` … `cu-4/`.
+ *
+ * **Por qué existen.** Sin backend, la `og:image` de una página no puede cambiar según la
+ * dirección: un `?r=CU-3` no lo lee ningún previsualizador. Como hay solo cuatro maneras, se
+ * prerenderizan las cuatro, cada una con su título ("Me salió «…»") y su tarjeta. Es lo que
+ * hace que el enlace que alguien manda por WhatsApp diga qué le salió.
+ *
+ * **Qué son.** La misma noche que `dos-ejes.astro`, con el desafío puesto: la portada muestra
+ * la manera del amigo —qué es, antes de jugar— y el botón arranca la partida. La ruta lleva
+ * el id del cuadrante, nunca el nombre: si un nombre cambia, ningún enlace se rompe.
+ */
+import '../../../styles/tokens.css';
+import '../../../styles/juego.css';
+import '../../../styles/sitio.css';
+import { PANTALLA_0, POSTAL, TARJETA, lineaQueNombra } from '../../../lib/dos-ejes/copy.ts';
+import { servir } from '../../../lib/dos-ejes/servir.ts';
+import { rutaDeVistaPrevia, slugDe } from '../../../lib/dos-ejes/arte.ts';
+import type { Cuadrante } from '../../../lib/dos-ejes/partida.ts';
+import Cabeza from '../../../components/Cabeza.astro';
+import PieImprenta from '../../../components/PieImprenta.astro';
+import Caratula from '../../../components/Caratula.astro';
+import Amigo from '../../../components/dos-ejes/Amigo.astro';
+import { caratulaDe, tapasConCaratula } from '../../../lib/sitio/caratula.ts';
+import { LUGARES, PORTAL } from '../../../lib/sitio/copy.ts';
+import crudo from '../../../data/dos-ejes.json';
+
+export function getStaticPaths() {
+  return crudo.cuadrantes.map((c) => ({ params: { cu: slugDe(c.id) }, props: { id: c.id } }));
+}
+
+const { id } = Astro.props as { id: string };
+const banco = servir(crudo as unknown as Parameters<typeof servir>[0]);
+const c = banco.cuadrantes.find((x) => x.id === id) as Cuadrante;
+const linea = lineaQueNombra(c.luzOscuridad, c.ordenCaos);
+
+// La carátula es la del juego: la postal no es un casete aparte.
+const caratula = caratulaDe('/juegos/dos-ejes/');
+
+const TITULO = `${POSTAL.ogTitulo(c.nombre)} — ${PANTALLA_0.titulo}`;
+const DESCRIPCION = POSTAL.ogDescripcion(linea);
+const SUBTITULO = PANTALLA_0.subtitulo(banco.momentos.length, banco.preguntasPorEje * 2);
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={DESCRIPCION} />
+    <title>{TITULO}</title>
+    <Cabeza titulo={POSTAL.ogTitulo(c.nombre)} descripcion={DESCRIPCION} imagen={rutaDeVistaPrevia(c.id)} imagenAlt={TARJETA.alt(c.nombre, linea)} />
+  </head>
+  <body class="con-grano">
+    <main id="app" class={`juego--${caratula.casete.variante} disco--luzbelito`} data-desafio={c.id}>
+      <section id="inicio" class="pantalla">
+        <header class="cabecera-sitio">
+          <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
+        </header>
+        <p class="marca" aria-label="Arcade Ricotero">ARCADE RICOTERO</p>
+        <h1>{PANTALLA_0.titulo}</h1>
+        <p class="donde-estas">{LUGARES.dosEjes}</p>
+        <Amigo cuadrante={c} />
+        <p id="subtitulo" class="tenue">{SUBTITULO}</p>
+        <button id="empezar" class="primario" type="button">{POSTAL.boton}</button>
+      </section>
+
+      <section id="pregunta" class="pantalla" hidden></section>
+      <section id="resultado" class="pantalla" hidden></section>
+
+      <Caratula caratula={caratula} />
+    </main>
+
+    <PieImprenta disco="luzbelito" tapas={tapasConCaratula(['Luzbelito'], caratula)} />
+
+    <script type="application/json" id="banco" set:html={JSON.stringify(banco)} />
+    <script>
+      import '../../../scripts/partida-dos-ejes.ts';
+    </script>
+
+    <style>
+      .tenue {
+        color: var(--texto-tenue);
+      }
+      .pantalla[hidden] {
+        display: none;
+      }
+    </style>
+  </body>
+</html>

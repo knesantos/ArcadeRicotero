@@ -1,0 +1,29 @@
+---
+/**
+ * La tapa del libro de *Luzbelito* en la portada del juego (`D-57` punto 8, `UX-36`).
+ *
+ * El disco salió como un libro de tapas de cartón con lomo de cuero (`RES-168`). Acá está
+ * cerrado: la franja del pie de la tapa —lomo, mármol, esquinero—, sin el óvalo, sin la figura
+ * y sin el título. Encima, una etiqueta de papel con el índice de la noche: el que llega sin
+ * idea lee qué hay adentro antes de tocar nada.
+ */
+import { PANTALLA_0 } from '../../lib/dos-ejes/copy.ts';
+import { rutaDePieza, PIEZAS } from '../../lib/dos-ejes/arte.ts';
+import type { Momento } from '../../lib/dos-ejes/partida.ts';
+
+interface Props {
+  momentos: readonly Momento[];
+}
+const { momentos } = Astro.props;
+const franja = PIEZAS.franja;
+---
+
+<figure class="ejes-tapa">
+  <img class="ejes-tapa-foto" src={rutaDePieza('franja')} alt="" width={franja.ancho} height={franja.alto} />
+  <figcaption class="ejes-tapa-etiqueta">
+    <span class="ejes-tapa-rotulo">{PANTALLA_0.indiceRotulo}</span>
+    <ol class="ejes-indice">
+      {momentos.map((m) => <li>{m.nombre}</li>)}
+    </ol>
+  </figcaption>
+</figure>
