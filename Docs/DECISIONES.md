@@ -3305,6 +3305,33 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   - Los enlaces que ya circulan con "Estrella fija" van a abrir con el nombre nuevo del mismo
     cuadrante. Se acepta: viaja el id.
 
+- **Enmiendas del 2026-10-04, al construir** (las escribe el hilo principal; lo de arriba queda
+  como se decidió):
+  1. **El polo de oscuridad se traduce "con lo propio", no "Por tu cuenta".** El contrato de
+     datos decía "Por tu cuenta" y se rompía donde la línea viaja ("Me salió…: por tu cuenta"
+     se lee como un reproche). `CNT-30` pasó primero a "por cuenta propia", y la lectura
+     adversarial encontró al cuentapropista: una palabra de trámite al lado de "con la
+     gente", que es como el sitio nombra a quien juega. Queda "con lo propio", con la misma
+     forma que su par. Las cuatro van en minúscula en `POLOS` (`copy.ts`).
+  2. **La tapa de la portada son tres piezas, no la franja** (`UX-36` §2.2). A 343 px la franja
+     mide 91 de alto y estirarla engorda el lomo: el mármol, el lomo y el esquinero se
+     recortan aparte y se acomodan al alto de la etiqueta. La franja queda solo para el
+     taller (el libro bajo la hoja de la tarjeta), y el canto de las hojas lo pintan las
+     sombras, así que la pieza `canto` se retira. La guarda de lo prohibido no cambia.
+  3. **El enlace viejo no redirige a la postal** (`ADR-02` punto 6, contra la propuesta de
+     `UX-36` §3.3): la isla le pega a la tapa la misma etiqueta del amigo que la postal trae
+     escrita, y esconde el renglón del lugar. El subtítulo no se pisa nunca, y la línea
+     `PANTALLA_0.desafio` se retira.
+  4. **La sans de la tarjeta va en DejaVu, recortada y como trazos** (`scripts/fuentes/`, con
+     su licencia). La primera pasada la dejaba a la fuente del sistema, y así el taller no
+     podía medir: el crédito y la línea que nombra se salían del papel sin que nada fallara.
+     Ahora cada renglón se mide antes de dibujarlo, el taller falla si algo no entra, y el PNG
+     sale igual en cualquier máquina (`VERSION_DEL_DIBUJO` 2).
+  5. **El toque usa `aria-disabled` y no `disabled`**, y la región viva es una sola, escrita en
+     el HTML de la página (`UX-36` §4.3 y §8.2): con `disabled` el botón tocado perdía el foco
+     y el lector no llegaba a decir "apretado", y una región que nace con su texto no se
+     anuncia de forma fiable.
+
 ## D-58 — La rotulada vuelve a ser Archivo Black: el archivo del sitio no traía la A-Z
 
 - **Fecha:** 2026-10-04
