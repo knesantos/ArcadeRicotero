@@ -12,7 +12,9 @@
 > Pedido del usuario, textual: *"Vamos a cambiar el nombre de la pagina por fichin ricotero.
 > Hace los cambios pertinentes. Esto se debe a que arcade ricotero no se podia comprar el
 > dominio. Dale que sale hoy la pagina al publico"*. Rama `nombre/fichin-ricotero`, sobre
-> `main` en `93f292a` (con el ciclo 18 adentro).
+> `main` en `93f292a` (con el ciclo 18 adentro), **integrada a `main` con el PR #29
+> (`8913ce1`) y publicada**: verificado en `arcade-ricotero.vercel.app` el título, la marca y
+> la fuente v0.4.
 >
 > **Lo que hay:**
 > - **El nombre** en todo lo que se ve: las cuatro formas de la marca (`FICHÍN RICOTERO`), los
