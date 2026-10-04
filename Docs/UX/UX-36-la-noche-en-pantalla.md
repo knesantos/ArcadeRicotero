@@ -1,6 +1,8 @@
 # UX-36 — La noche en pantalla: el libro de *Luzbelito*, de la tapa a la última hoja
 
-> Rol dueño: `experiencia`. Ciclo 18, `D-57`. Primera versión 2026-10-04.
+> Rol dueño: `experiencia`. Ciclo 18, `D-57`. Primera versión 2026-10-04; segunda pasada el mismo
+> día, con lo construido a la vista: `§10.1` (lo aplicado) y los textos del cuerpo corregidos donde
+> lo construido los dejó viejos (marcados «2026-10-04, aplicado»).
 >
 > **Reemplaza `UX-06` §2 a §7** (la entrada, la pregunta, el resultado, el disco, la tarjeta y
 > los presupuestos). Lo que `UX-06` resolvía y sigue en pie —por qué este es el juego con menos
@@ -10,7 +12,8 @@
 > **Estado respecto del código.** El hilo principal armó una primera pasada con las propuestas
 > del panel (`juego.css`, bloque `.ejes-*`; `Tapa.astro`, `Amigo.astro`; `partida-dos-ejes.ts`;
 > `generar-dos-ejes.mjs`). Esta hoja es la vara: donde lo construido difiere, `§10` lo lista, fila
-> por fila, para que lo aplique. Yo no corrí nada (`D-12`).
+> por fila, para que lo aplique. **El hilo lo aplicó casi todo el mismo día: `§10.1` dice qué
+> quedó como pedí, qué se apartó y por qué.** Yo no corrí nada (`D-12`).
 >
 > **Consume:** `D-57` (entera), `D-58`, `US-06` con su enmienda de 2026-10-04 (criterios 1 a 8),
 > `BR-17`, `BR-36`, `BR-37`, `CTR-08` v2 (`Docs/ARQ/ARQ-schema-dos-ejes.md`), `CNT-30` (el §6 es
@@ -29,7 +32,9 @@
 > **Cómo leer los números.** Tres clases, como en `UX-35`: **leído** (sale de una captura, de una
 > maqueta o de un comentario del código, y lo cito), **cuenta** (lo derivé yo de tokens y reglas,
 > sin correr nada) y **por medir** (va al checklist de `§12`). Los píxeles de pantalla son a
-> 375 × 667 salvo que diga otra cosa.
+> 375 × 667 salvo que diga otra cosa. **Desde `§10.1` hay una cuarta marca, `(hilo)`:** lo midió o
+> lo corrió el hilo principal y me lo pasó; yo no lo corrí. Donde un número mío y uno del hilo
+> chocan, vale el del hilo y el mío queda al lado, como cuenta.
 
 ---
 
@@ -125,8 +130,8 @@ gente real.
 
 | Pantalla | Qué tiene que entrar | A 375 × 667 | Holgura |
 |---|---|---|---|
-| Portada | El botón "Empezá la noche" | Borde de abajo ≈ **576** | 91 px |
-| Postal (portada con desafío) | El botón "Empezá tu noche" | Borde de abajo ≈ **637** en el peor caso (nombre de dos renglones y línea de dos) | 30 px |
+| Portada | El botón "Empezá la noche" | Cuenta ≈ 576; **medido (hilo): 590** | 77 px |
+| Postal (portada con desafío) | El botón "Empezá tu noche" | Cuenta ≈ 637 en el peor caso; **medido (hilo): 626 y 650 según la postal** (665 con el relleno de la tapa de 28/24: `§3.4`) | 17 px en la más alta |
 | Hoja de la pregunta | La hoja entera y la cinta | La hoja termina ≈ **377** | 290 px |
 | Resultado | "Compartí" y "Empezá otra noche" | Terminan ≈ **531** y **601** en el peor caso (nombre de tres renglones, línea de dos, bajada de cuatro) | 66 px |
 
@@ -134,7 +139,10 @@ El desglose de cada cuenta está en su sección (`§3.4`, `§4.1`, `§5.6`). **D
 si la medición real contradice la cuenta:
 
 - En la portada y en la postal, **lo que se achica es la tapa** (su relleno de arriba y de abajo),
-  nunca el botón ni el subtítulo, que es donde está el molinete dicho en voz alta.
+  nunca el botón ni el subtítulo, que es donde está el molinete dicho en voz alta. *(2026-10-04,
+  aplicado: la tapa con amigo ya aflojó el relleno a 20/16 y el botón entra, `§3.4`. Si todavía hubiera
+  que ganar aire, el escalón que sigue es el margen de la tapa —24 px arriba y 16 abajo—, y recién
+  después nada más: el subtítulo y el botón no se tocan.)*
 - En el resultado, "Compartí" entra siempre (a 375 × 667 y a 360 × 640); "Empezá otra noche"
   entra a 375 × 667. Lo que se achica es el aire de la hoja, no la bajada.
 
@@ -312,22 +320,29 @@ La tapa es **un bloque de tres capas** que se acomoda al alto de la etiqueta:
 | Esquinero | `esquinero` | Arriba a la derecha, **4 × 4,6 rem** (64 × 74 px) en el teléfono; **5 × 5,75 rem** en la mesa |
 
 **La caja.** Borde de `--linea` en `--apoyo-disco`, sombra dura de 5 px en `--borde`, giro de
-−0,8°. **Su alto es el de la etiqueta más 28 px arriba y 24 abajo** (en la mesa, 36 y 28): no hay un
-alto fijo, así que sirve igual para el índice y para el desafío. A 375 px, con el índice, la tapa mide
-≈ 130 px (cuenta: 28 + 78 + 24).
+−0,8°. **Su alto es el de la etiqueta más 28 px arriba y 24 abajo** (en la mesa, 36 y 28; **en la
+postal y en el enlace viejo, 20 y 16** —2026-10-04, aplicado, `§3.4` y `§10.1`—): no hay un alto fijo,
+así que sirve igual para el índice y para el desafío. A 375 px, con el índice, la tapa mide
+≈ 130 px (cuenta: 28 + 78 + 24). La caja lleva **24 px de margen arriba y 16 abajo** (`.ejes-tapa`):
+arriba son 8 más de los 16 que conté en `§3.4`.
 
 **La etiqueta** (`figcaption`). Papel rayado a 1,6 em, giro de +0,7°, sombra dura de 3 px, con un
-trozo de cinta adhesiva arriba. Va **pegada** a la tapa, 8 px a la derecha del lomo y 12 px del borde
-derecho, a 28 px del borde de arriba: asoma el lomo a la izquierda, el esquinero arriba a la derecha
-(la etiqueta le pisa un poco la punta, y es collage) y mármol abajo.
+trozo de cinta adhesiva arriba. Va **pegada** a la tapa, a 28 px del borde de arriba: asoma el lomo a
+la izquierda, el esquinero arriba a la derecha (la etiqueta le pisa un poco la punta, y es collage) y
+mármol abajo. *(2026-10-04, aplicado, con cuatro medidas que yo no había fijado o que cambiaron:
+**margen izquierdo fijo de 1,4 rem + 8 px** —el lomo mide ≈ 22 px a 130 de alto, así que 8 px de
+aire—; **8 px del borde derecho en el teléfono** (12 en la mesa) y no 12; **relleno propio de 8 px
+arriba y abajo y 14 a los lados**. Por qué: `§10.1`, apartamiento 4. En la postal el lomo engorda con
+el alto y la etiqueta le pisa unos píxeles: es papel pegado encima.)*
 
 - **Rótulo** (`PANTALLA_0.indiceRotulo`): rotulada 0,75 rem, `--papel-tenue`.
 - **El índice:** una lista ordenada `ol` con los cinco sellos en el orden de la noche, en línea, a
   1 rem y `line-height: 1.6`. **Sin números a la vista**: la cantidad ya la dice el subtítulo, y un
   índice numerado se lee como un conteo. Entre un ítem y el siguiente, un punto medio **con texto
   alternativo vacío** (`content: '·' / ''`), así el lector de pantalla no lo lee como "punto medio".
-- **Con el índice, a 375 px** entra en dos renglones ("La previa · La ida · La vereda" / "Adentro · La
-  vuelta"); en la mesa, en uno.
+- **Con el índice, a 375 px** entra en dos renglones ("La previa · La ida · La vereda" / "Cuando suena
+  · La vuelta"; cuenta, sin medir: el corte cae antes de "Cuando suena"); en la mesa, en uno. *(El
+  cuarto sello dice "Cuando suena" desde `D-57` enmienda 6; el id sigue siendo `adentro`.)*
 - `figure` con `figcaption`: la imagen es decorativa (`alt=""`) y la figura se nombra por la etiqueta.
 
 **La pieza no es una respuesta ni una mascota:** es un objeto del juego —el libro— y por eso se ve
@@ -340,8 +355,11 @@ Es una etiqueta de papel rayado, **con borde punteado** (el punteado es "del otr
 también en la grilla) y giro de −0,7°. Lleva, de arriba abajo:
 
 1. el rótulo (`POSTAL.rotulo`, "A quien te lo mandó le salió"), rotulada 0,75 rem, `--papel-tenue`;
-2. el **nombre de la manera**, rotulada 1,6 rem, `line-height: 1.15`, dos renglones como mucho
-   (≤ 26 caracteres: a 261 px de ancho útil entra en dos);
+2. el **nombre de la manera**, rotulada **1,5 rem en el teléfono** (1,6 en la mesa), `line-height:
+   1.15`, dos renglones como mucho (≤ 26 caracteres: el renglón útil mide ≈ 271 px según el
+   comentario del CSS, **hilo**; yo había contado 261). *(2026-10-04, aplicado: 1,6 rem no entraba,
+   «Ronda en cualquier» mide 270 px contra 271, y con el borde punteado de 2 px el renglón de la
+   etiqueta del amigo queda en ≈ 267, cuenta mía. `§10.1`, apartamiento 2.)*
 3. el sello de los polos (`LUZ · ORDEN`);
 4. la línea que nombra, 1 rem en negrita ("Con la gente, con plan.").
 
@@ -357,12 +375,13 @@ tiene que poder empezar sin buscar nada. La bajada entera la lee al terminar, en
 - **En la postal, el renglón del lugar se va.** La etiqueta del amigo ya pone la escena, y el alto
   se necesita para el botón (`§3.4`). El título y el subtítulo siguen siendo la pareja que nombra y
   canta.
-- **El enlace viejo (`?g=dos-ejes&r=CU-n`) lleva a la postal.** Propuesta de flujo, para el hilo
-  principal y `arquitectura` (`ADR-02`): la isla, al ver un `r` válido en la dirección, hace
-  `location.replace()` a `/juegos/dos-ejes/cu-n/`. Es una sola pantalla con desafío y no dos
-  implementaciones, y `PANTALLA_0.desafio` deja de existir. Si se prefiere no redirigir, la isla
-  **inserta** la misma etiqueta en el lugar del índice y esconde el renglón del lugar; **no pisa el
-  subtítulo**. El id inválido (`r=CU-9`) se ignora: portada normal, sin error.
+- **El enlace viejo (`?g=dos-ejes&r=CU-n`) no redirige a la postal** *(2026-10-04, aplicado; esto
+  decía lo contrario)*. La primera versión de esta hoja proponía un `location.replace()` a
+  `/juegos/dos-ejes/cu-n/`; `ADR-02` punto 6 dice que los enlaces viejos se leen donde están, y lo
+  construido tomó la otra rama que dejé escrita: la isla **inserta** la misma etiqueta del amigo en el
+  lugar del índice y esconde el renglón del lugar; **no pisa el subtítulo**, y
+  `PANTALLA_0.desafio` ya no existe. El id inválido (`r=CU-9`) se ignora: portada normal, sin
+  error. Qué cuesta no redirigir, en `§10.1`, apartamiento 1.
 
 El botón dice **"Empezá tu noche"** en la postal y **"Empezá la noche"** en la portada normal
 (`POSTAL.boton`, `PANTALLA_0.boton`).
@@ -384,6 +403,14 @@ El botón dice **"Empezá tu noche"** en la postal y **"Empezá la noche"** en l
 etiqueta del amigo de ≈ 179 + 24, con el nombre de dos renglones y la línea que nombra de dos: el
 caso de `CU-3` y `CU-4`), el botón termina en ≈ **637**. Holgura de 30 px. Si la medición da más, se
 achica el relleno de la tapa (28 → 20, 24 → 16) antes que cualquier otra cosa.
+
+**Medido (hilo, 2026-10-04) y aplicado:** la cuenta quedó corta. Con 28/24 el botón de la postal
+terminaba en **665** (28 px más que mi 637); con **20/16** termina en **626 y 650** según la postal,
+así que la holgura de la más alta es de **17 px**. La portada termina en **590** (14 px más que mi
+576). Parte de la diferencia es el margen de la tapa (24 arriba y no 16); el resto no lo
+desglosé, y la sospecha, sin medir, es `D-58`: la rotulada de verdad es más ancha que la de repuesto
+con la que se midió el «antes». El plan B de este párrafo es justo el que se aplicó, y con él los
+tres números entran (`§12.1`).
 
 **Por medir:** que a 360 × 640 el botón quede a la vista. La cuenta dice que no en la postal; se
 acepta (`UX-01` pide "nada de scroll para encontrar el botón" como meta, y a 375 × 667 se cumple),
@@ -627,7 +654,7 @@ la tuya primero.") sobre dos renglones de rótulos y dos columnas de rótulos.
 | Parte | Medida |
 |---|---|
 | **Título** | `h3` "Las cuatro maneras", rotulada 1,1 rem, `--texto`; margen de arriba `--espacio-4` |
-| **La que canta** | "Cuatro puertas a la misma noche." (`CNT-30`), `--texto-tenue` |
+| **La que canta** | "Cuatro puntas de la misma hoja." (`CNT-30` §6.2, vuelta 3; era "Cuatro puertas a la misma noche.": la puerta de un recital es donde se pide la entrada), `--texto-tenue` |
 | **Rótulos de columna** (los polos de orden–caos, **tu polo primero**) | En el margen de arriba, sobre cada columna: "Orden · con plan", "Caos · sobre la marcha". Rotulada de **0,75 rem** (era 0,68), `--texto-tenue`, `aria-hidden` |
 | **Rótulos de renglón** (los polos de luz–oscuridad, tu polo primero) | **< 46 rem:** una regla punteada de `--borde` con el rótulo encima de cada par. **≥ 46 rem:** en el **margen izquierdo**, una columna de 5 rem, con la grilla `5rem 1fr 1fr`; el encabezado de columnas lleva el mismo margen izquierdo. `aria-hidden` |
 | **Las celdas** | Borde de 2 px en `--borde`, esquina de 3 px, **sobre `--fondo`**: no una "superficie elevada" |
@@ -770,7 +797,7 @@ recortes a 4 : 5 y las barras de las aplicaciones no tocan nada importante).
 | **El esquinero** de la hoja, **150 × 171** | — | — | — | esquina de arriba a la derecha, pegado | — |
 | **La cinta**, 150 × 42, −4° | — | — | — | arriba al centro | `--papel` al 62 % |
 | **El libro** (`franja`) | — | — | — | **detrás** de la hoja y torcido 1,6°, **con el borde de abajo fijo en y = 1150** | — |
-| **Crédito** | Sans | **26** | — | baseline 1190 | `--texto-tenue` |
+| **Crédito** | Sans | **26 si entra en un renglón; si no, baja de a uno hasta 22** (hoy **25**, hilo) | — | baseline 1190 | `--texto-tenue` |
 | **El enlace del sitio** | Sans | 26 | — | baseline 1224 | `--texto-tenue` |
 | **"¿Y A VOS CUÁL TE SALE?"** | Rotulada, `letter-spacing: 2` | **44** (era 36) | — | baseline **1278** (era 1320: fuera de la zona segura) | `--texto` |
 
@@ -784,10 +811,15 @@ recortes a 4 : 5 y las barras de las aplicaciones no tocan nada importante).
   asoma siempre la misma tira.
 - **La cuenta** (cuerpos de arriba, sans a ≈ 0,56 em): las combinaciones reales —`CU-2`, con el
   nombre de tres renglones y una bajada de cinco (≈ 167 caracteres a 43 por renglón), y `CU-4`, con el
-  nombre de tres y la línea de dos— dan una hoja de **≈ 817 px**. El peor caso teórico, los tres máximos
-  juntos, da 865: cinco por encima del tope de 860. Ahí **el taller falla** y se achica el texto, no la
-  hoja.
-- **El libro asoma ≥ 60 px** bajo la hoja más alta (cuenta: hoja hasta y = 1090, libro hasta 1150).
+  nombre de tres y la línea de dos— daban una hoja de **≈ 817 px**. El peor caso teórico, los tres
+  máximos juntos, da 865: cinco por encima del tope de 860. Ahí **el taller falla** y se achica el
+  texto, no la hoja. **2026-10-04, aplicado: el taller midió 769** (`altoDeLaHojaDeLaTarjeta` en el
+  manifiesto, hilo), y la diferencia es exacta: las bajadas de la vuelta 3 miden entre 124 y 160
+  caracteres y ocupan **cuatro renglones, no cinco** (817 − 48 = 769). El tope, el piso (740) y la falla
+  del taller no cambian.
+- **El libro asoma ≥ 60 px** bajo la hoja más alta (cuenta del tope: hoja hasta y = 1090, libro hasta
+  1150). Con 769 la hoja termina en y ≈ 999 y el libro asoma ≈ 150 (cuenta; ≈ 130 leído en
+  `cu-2.png`, por el giro): sobra, y la guarda de 60 sigue ahí.
 - **El crédito va en la tarjeta** porque es un archivo que se guarda y se reenvía: dice qué se usó y de
   dónde (`TARJETA.credito`). Sin día ni mes de *Luzbelito* (`RES-167`); el año 1996 no está en duda.
 
@@ -795,9 +827,10 @@ recortes a 4 : 5 y las barras de las aplicaciones no tocan nada importante).
 LUZBELITO, ninguna vela, ningún verso, ningún número.
 
 **A escala de teléfono** (la tarjeta a ≈ 360 px de ancho, un tercio): el nombre queda en ≈ 27 px, la
-línea que nombra en ≈ 13, la bajada en ≈ 11 y el crédito en ≈ 9: **el crédito es letra chica, a
-propósito**; todo lo que se tiene que leer en la miniatura es el nombre y "ME SALIÓ". Cuerpo mínimo
-de lo que no es crédito ni enlace: **30 px**.
+línea que nombra en ≈ 13, la bajada en ≈ 11 y el crédito en ≈ 8 (25 px, hilo; con el piso de 22 sería
+≈ 7): **el crédito es letra chica, a propósito**; todo lo que se tiene que leer en la miniatura es el
+nombre y "ME SALIÓ". Cuerpo mínimo de lo que no es crédito ni enlace: **30 px**. *(Por qué baja el
+crédito en vez de partirse en dos renglones: `§10.1`, apartamiento 8.)*
 
 ### 6.3 La vista previa de cada postal, 1200 × 630 (`og-cu-n.png`, ≤ 120 KB)
 
@@ -842,12 +875,15 @@ del mismo cuerpo, sin ninguno primero ni más grande**.
 
 1. Ninguna línea sale del papel: `ancho(línea) ≤ ancho útil` con las métricas de la fuente.
 2. El nombre: ≤ 3 renglones en la tarjeta; ≤ 2 en la vista previa (después de bajar a 66).
-3. La hoja de la tarjeta ≤ 860 y la de la vista ≤ 440; **las cuatro iguales**.
+3. La hoja de la tarjeta ≤ 860 y la de la vista ≤ 440; **las cuatro iguales** (hoy 769 y 440, del manifiesto, hilo).
 4. Los cuatro nombres de `og-dos-ejes` en orden alfabético.
 5. Ningún recorte toca el óvalo ni el título (ya está: `sePisan`).
 6. Los pesos: 160 KB (tarjeta), 120 KB (vistas), 30 KB (cada pieza).
 7. Todo texto sale de `copy.ts` y del banco; nada escrito a mano en el taller.
 8. **`VERSION_DEL_DIBUJO` sube a 2**: la composición cambió (cuerpos, márgenes, libro, marca).
+   *(Aplicado: el manifiesto dice `version: 2`.)*
+9. *(Sumada el 2026-10-04, la hizo el hilo y la anoto:)* **El crédito entra en un renglón entre 26 y
+   22 px; si no entra a 22, el taller falla** en vez de partirlo.
 
 ---
 
@@ -870,7 +906,9 @@ con el desafío puesto. La ruta lleva el id y nunca el nombre: si un nombre camb
   "A alguien le salió «Luna llena»".
 - **Un toque** arranca la noche, con el desafío puesto. No salta la hoja 1.
 - Las cuatro postales son **idénticas en estructura**; solo cambia lo que dice la etiqueta. Misma
-  tapa, mismo tamaño de nombre, mismo alto.
+  tapa, mismo tamaño de nombre. **El alto sigue al texto** *(2026-10-04: esto decía «mismo alto» y no
+  se cumple ni conviene; el hilo midió el botón en 626 y 650 a 375 × 667, y `§10.1`, apartamiento 10,
+  explica por qué no se igualan)*.
 - **Sin nombre de persona, sin foto, sin dato:** no hay backend.
 
 ---
@@ -947,8 +985,8 @@ en principio no pasa): **por medir** con NVDA y JAWS (`§12.6`). **La leyenda so
 | Título de la portada | ≤ 8 palabras | `voz-ricotera.md` §4.1 |
 | Renglón del lugar | ≤ 8 palabras, 1 renglón (≤ 40 caracteres) | `.donde-estas`: 40 ch |
 | Subtítulo | ≤ 2 frases, ≤ 24 palabras, ≤ 3 renglones a 375 px; **dice "no hace falta saber nada ni haber ido"** | `§1.2`, `UX-06` §0 |
-| Rótulo del índice | ≤ 5 palabras | rótulo de etiqueta de 0,75 rem |
-| **Sello de momento** | ≤ 3 palabras, **≤ 12 caracteres** | cabecera de la hoja: sello + folio ("10 de 10") caben en una línea |
+| Rótulo del índice | ≤ 5 palabras | rótulo de etiqueta de 0,75 rem. Hoy "Las hojas de la noche": 5, **al tope** |
+| **Sello de momento** | ≤ 3 palabras, **≤ 12 caracteres** | cabecera de la hoja: sello + folio ("10 de 10") caben en una línea. Hoy "Cuando suena": 12, **al tope**; un sello nuevo más largo no entra sin mirar la cabecera (cuenta: ≈ 150 px de sello + ≈ 70 de folio en ≈ 299 de hoja) |
 | **La línea que canta** del momento | ≤ 8 palabras, ≤ 2 renglones | `voz-ricotera.md` §4.1; sin suspensivos |
 | Enunciado | ≤ 14 palabras (≤ 80 caracteres: tres renglones a 375 px) | `UX-06` §7 |
 | Opción | ≤ 5 palabras, **≤ 28 caracteres** | un renglón en el teléfono (cuenta: 235 px de 267) |
@@ -967,6 +1005,9 @@ en principio no pasa): **por medir** con NVDA y JAWS (`§12.6`). **La leyenda so
 
 Lo que leí en el código del 2026-10-04 y difiere de lo que fija esta hoja. Va por orden de peso; lo
 aplica el hilo principal. **Nada de esto está medido ni corrido por mí.**
+
+> **Esta tabla queda como el pedido, sin tocar.** El hilo la aplicó casi entera el mismo día: qué
+> fila quedó como la pedí, cuáles se apartaron y por qué está en **`§10.1`**, más abajo.
 
 | # | Dónde | Hoy | Debe ser |
 |---|---|---|---|
@@ -998,6 +1039,149 @@ para la grilla (`--tuya`, `--suya`); el bloque `.ejes-*` en `juego.css` y no en 
 (el alcance de Astro no llega a lo que crea la isla); `disposicion()` y `relacion()` tal cual; la
 tarjeta que se baja al pintar el resultado.
 
+### 10.1 Lo aplicado (2026-10-04, ciclo 18, segunda pasada)
+
+**Con qué lo leí.** El código de hoy —`juego.css` (bloque `.ejes-*`), `Tapa.astro`,
+`partida-dos-ejes.ts`, `generar-dos-ejes.mjs`, `arte.ts` y `copy.ts` de `dos-ejes`, `LUGARES` de
+`sitio/copy.ts`, el manifiesto del taller—, las enmiendas del 2026-10-04 de `D-57` (puntos 1 a 7) y
+`D-58`, `HILO-para-arquitectura-y-contenido-el-taller-v2.md` y
+`CNT-para-hilo-principal-vuelta-3-dos-ejes.md`. Miré además cuatro PNG del taller (`cu-2`, `og-cu-3`,
+`og-cu-4`, `og-dos-ejes`): lo que digo de ellos es **leído**. **Yo no corrí nada** (`D-12`): todo lo
+marcado `(hilo)` lo midió el hilo y me lo pasó; el resto es lectura o cuenta mía.
+
+**En una línea:** de las 21 filas, **14 quedaron como las pedí**, 1 con una precisión, 3 con
+apartamientos, 2 cambiaron de texto por una vuelta de `contenido` y 1 no se toca a propósito. Los diez
+apartamientos están abajo, uno por uno, con su porqué.
+
+| # | Estado | Lo que hay hoy |
+|---|---|---|
+| 1 | **Se apartó en tres medidas** (3 y 4) | `PIEZAS` = `marmol`, `lomo`, `esquinero`, `franja`; `canto` fuera y su archivo borrado (`public/arte/dos-ejes/` tiene las cuatro). `Tapa.astro`: tres `<img alt="">` en `figure.ejes-tapa`; lomo con `aspect-ratio: 1 / 6`; esquinero 4 × 4,6 rem (5 × 5,75 en la mesa); mármol `cover` centrado al 35 %; el alto sale de la etiqueta más 28 y 24 |
+| 2 | Como pedí | La etiqueta del amigo vive en `Tapa.astro` (prop `amigo`), sobre la misma tapa, 2 px punteado, −0,7°. `Amigo.astro` ya no existe y `[cu].astro` no pinta el renglón del lugar |
+| 3 | **Rama B** (1) | La isla pega la etiqueta (`etiquetaDelAmigo`) y esconde `.donde-estas`; el subtítulo no se toca; `PANTALLA_0.desafio` retirado. No redirige |
+| 4 | Como pedí | `aria-disabled="true"` en las dos opciones, `aria-pressed` en la elegida, `e.repeat` cortado en el `keydown` |
+| 5 | Como pedí | `<p id="ejes-anuncio" role="status" aria-live="polite" aria-atomic="true">` en el HTML de las dos páginas, fuera de las secciones; la isla solo escribe su texto y lo vacía en el resultado |
+| 6 | Como pedí | `.ejes-opcion--elegida, .ejes-opcion--antes`: hundida, sombra en 0, borde de 4 px. La `--antes` no lleva `aria-disabled`: un toque la confirma o la cambia |
+| 7 | Como pedí | `.ejes-hoja` con `--papel` liso; el rayado solo en `.ejes-tapa-etiqueta`; margen derecho `--espacio-1`; regla de 1 px en `--papel-borde` bajo la cabecera |
+| 8 | Como pedí | `button.volver.ejes-anterior`: `.volver` aporta los 48 px, la rotulada de 0,8 rem, el papel al 88 % y los −1,6°; solo desde la hoja 2 |
+| 9 | Como pedí | `.ejes-momento--entra` con `--duracion-paso` y `--curva-cinta`, sin tocar la opacidad; la isla la pone solo si cambió el momento; está en `ESTADOS_EJES` |
+| 10 | Como pedí | `.ejes-marca`: la calcada a 1,15 rem en `--fondo`, el nombre del test a 0,75 rem, 4,5 rem de margen derecho |
+| 11 | **Como pedí, con una precisión** | La línea va después de los botones, **dentro de la sección de la grilla**, entre "Cuatro puntas de la misma hoja." y los rótulos de columna. En `§5.4` la llamé «pie de la grilla»: queda como entrada, no como pie. Lo acepto: sigue entre los botones y la grilla y no empuja ningún botón |
+| 12 | Como pedí | Rótulos y sello a 0,75 rem; sello `inline-block`, `max-width: 100%`, `text-wrap: balance`; `5rem 1fr 1fr` desde 46 rem; una columna bajo 22 rem. Un riesgo mío, abajo |
+| 13 | Como pedí | `summary:focus-visible` con el aro de `--acento-2`; `content: '+' / ''` y `'−' / ''`, con la declaración de respaldo antes |
+| 14 | Como pedí | `a.ejes-bajar`: 48 px, 2 px punteado en `--borde`, `--texto-tenue`, rotulada 0,8 rem |
+| 15 | Como pedí, y de más | `.ejes-enunciado:focus-visible` y también `.ejes-nombre:focus-visible` (el `h2` del resultado, que `§8.1` también nombra) |
+| 16 | **Se apartó en el crédito** (8 y 9) | Hoja de **769** en las cuatro (manifiesto, hilo); línea que nombra en ≤ 2 renglones; cuerpos 34 / 80 / 30 / 40 / 34; pregunta a 44 y y = 1278; libro con el borde de abajo en 1150. El crédito, a 25 px y no a 26 |
+| 17 | Como pedí | Marca en `--marca-rojo` sobre `--fondo`, fuera de la hoja; la línea que nombra debajo del sello (leído: no se pisan en `og-cu-3` ni en `og-cu-4`); `og-dos-ejes` en orden alfabético (manifiesto y leído) |
+| 18 | Como pedí | `VERSION_DEL_DIBUJO = 2`; el manifiesto dice `version: 2` |
+| 19 | **Cambió el texto** (de `contenido`; 5 y 7) | `indiceRotulo` = "Las hojas de la noche" (`CNT-30` §6.2); `POLOS` = «con la gente», «con lo propio», «con plan», «sobre la marcha» (`D-57` enmienda 1), en minúscula; `lasCuatroCanta` = "Cuatro puntas de la misma hoja." (vuelta 3) |
+| 20 | **Se apartó** (de `contenido`; 6) | `LUGARES.dosEjes` = "Entrá con la campera puesta." El renglón se queda en la portada normal y se va en la postal y en el enlace viejo, como pedí |
+| 21 | Sin tocar, a propósito | `D-57` punto 9. No lo busqué en el código; sigue en `§11.1` |
+
+#### Los apartamientos, uno por uno
+
+1. **El enlace viejo no redirige.** Pedí `location.replace()` a la postal y dejé escrita la
+   alternativa: insertar la etiqueta. Se tomó la alternativa, porque `ADR-02` punto 6 dice que los
+   enlaces viejos se leen donde están (`D-57` enmienda 3). Era aceptable con una condición, y se
+   cumple: no pisa el subtítulo. **Lo que cuesta:** la etiqueta del amigo se arma en dos lugares,
+   `Tapa.astro` (HTML de build) y `etiquetaDelAmigo()` (DOM de la isla), con las mismas cuatro clases.
+   El comentario de la isla lo avisa y ningún test lo ata; si una cambia y la otra no, la postal y el
+   enlace viejo se ven distintos y nadie lo nota. Va a «lo que queda», abajo.
+2. **La etiqueta del amigo, a 1,5 rem en el teléfono.** Pedí 1,6. El renglón útil mide ≈ 271 px (el
+   comentario del CSS, medido el 2026-10-04: hilo) y «Ronda en cualquier» ocupa 270 a 1,6 rem: sin
+   aire, y con el borde punteado de 2 px el renglón queda en ≈ 267 (cuenta mía). A 1,5 entra. La mesa
+   se queda en 1,6. Es letra de etiqueta y la jerarquía no cambia: nombre, línea que nombra, rótulo.
+3. **La tapa con amigo afloja el relleno a 20/16.** No se aparta de la hoja, que lo traía escrito
+   como plan B en `§3.4`, pero sí de `§3.2` (28/24). Medido (hilo): con 28/24 el botón de la postal
+   terminaba en **665** de 667, sin aire; con 20/16, en **626 y 650** según la postal. La regla es
+   `.ejes-tapa:has(.ejes-tapa-etiqueta--amigo)`, así que también la toma el enlace viejo cuando la isla
+   pega la etiqueta. En la mesa no se afloja (la tapa va a 36/28 en las dos). La portada normal queda
+   en 28/24 y su botón termina en **590** (hilo).
+4. **La etiqueta, a 8 px del borde derecho y con 14 px de relleno lateral.** Pedí 12 px del borde y no
+   fijé el relleno de la etiqueta. Hoy, en el teléfono: 8 px del borde derecho (**12 en la mesa**, que
+   usa `36px 12px 28px 0`), 14 px de relleno a los lados y 8 arriba y abajo. Por qué: el ancho del
+   renglón es lo único que no se negocia (apartamiento 2) y cada píxel del borde es un píxel de
+   renglón. Dos costos. **(a)** El margen izquierdo es fijo (1,4 rem + 8 px) y no sale del lomo: «8 px
+   a la derecha del lomo» vale solo con la tapa de la portada (lomo ≈ 22 px). **(b)** En la postal,
+   con la tapa más alta, el lomo engorda por el `aspect-ratio` y la etiqueta le pisa unos píxeles
+   (cuenta: de 5 a 8 px sobre un lomo de 36 a 38). Lo dice el comentario del CSS y lo acepto: es papel pegado
+   sobre cuero, el collage que el sistema pide. **Por medir**, a ojo, en una postal.
+5. **El sello del cuarto momento dice «Cuando suena», no «Adentro».** `D-57` enmienda 6; el `id`
+   sigue siendo `adentro`. `contenido` pidió que mirara cómo queda en la etiqueta del índice
+   (`CNT-para-hilo-principal-vuelta-2-dos-ejes.md` §4). Lo que veo, por cuenta y sin medir: el índice
+   sigue en dos renglones a 375 px, con el corte **antes** de «Cuando suena» («La previa · La ida · La
+   vereda» / «Cuando suena · La vuelta»; «Adentro» ya cortaba en el mismo lugar). En la hoja, el sello
+   (≈ 150 px) y el folio entran en la cabecera (≈ 299 px). Con 12 caracteres es **el tope de `§9`**:
+   no hay margen para un sello de momento más largo sin mirar la cabecera. Sigue siendo registro 3
+   (dice cuándo, sin imagen). El rótulo de la tapa cambió por el mismo choque («Adentro del libro»
+   pasó a «Las hojas de la noche», 5 palabras: también al tope).
+6. **`LUGARES.dosEjes` dice «Entrá con la campera puesta.»** Yo había pedido «Hay un lugar libre en el
+   micro.» (`CNT-30` §6.4, primera vuelta); el micro salió del banco y `contenido` pasó por otras dos
+   hasta esta (en la vuelta 3, *manos vacías* se leía como llegar sin regalo o volver fracasado). La
+   verifico contra lo que me toca: 5 palabras (≤ 8), 28 caracteres (≤ 40: un renglón en
+   `.donde-estas`), imperativo voseado, registro 1 con imagen física, sin suspensivos. Tapada, la
+   portada sigue diciendo qué es y qué tocar (regla de las dos líneas). La misma imagen abre la
+   primera hoja («Campera puesta, llaves en el bolsillo.»): es a propósito y lo dice `contenido`.
+7. **La línea que canta de la grilla dice «Cuatro puntas de la misma hoja.»** 6 palabras (≤ 8),
+   registro 1, física. Cambia por lo mismo que sacó «puertas» del renglón del lugar: la puerta de un
+   recital es donde se pide la entrada. Corregido en `§5.3`. Con los polos nuevos, las líneas que
+   nombran más largas miden 31 y 30 caracteres, dentro de los 36 de `§9`.
+8. **El crédito de la tarjeta baja de cuerpo hasta entrar en un renglón (25 px hoy, hilo).** Pedí 26.
+   `TARJETA.credito` mide 71 caracteres y en DejaVu no entra a 26 en los 936 px del margen; el taller
+   prueba 26, 25 … 22 y falla si a 22 no entra. **Por qué no dos renglones:** no hay alto. El crédito
+   va en el baseline 1190, el enlace en 1224 y la pregunta en 1278, que es el límite de la zona segura
+   (1350 − 72): un segundo renglón empuja el enlace sobre la pregunta o saca la pregunta de la zona
+   segura. **Costo:** a un tercio de escala el crédito queda en ≈ 8 px (≈ 7 con el piso de 22) y no se
+   lee en la miniatura; `§6.2` ya lo daba por letra chica a propósito, y en el archivo entero se lee
+   (leído en `cu-2.png`: la línea llega justo hasta el margen derecho). Si se quisiera volver a 26,
+   habría que acortar la cadena, que es de `contenido` (`CNT-30` §6.2 la confirmó); no lo pido.
+9. **La hoja de la tarjeta mide 769 en las cuatro, no ≈ 817.** Mi cuenta usaba bajadas de cinco
+   renglones. Las de la vuelta 3 miden entre 124 y 160 caracteres y ocupan cuatro: 817 − 48 = 769,
+   exacto. Está entre el piso (740) y el tope (860), y el libro asoma más (≈ 150, cuenta; ≈ 130
+   leído). Solo había que corregir mis números (`§6.2`).
+10. **Las cuatro postales no miden lo mismo.** `§7` decía «mismo alto» y no se cumple: el hilo midió
+    el botón en 626 y 650, porque la etiqueta sigue al texto y un nombre o una línea que nombra de dos
+    renglones suman uno. No las igualo: pediría un alto mínimo escrito a mano que se rompe cuando
+    cambia un nombre (los nombres cambian, los ids no: `D-57`), y nadie ve dos postales juntas. Lo que
+    tiene que ser igual es la estructura, el cuerpo del nombre y que el botón quede a la vista a
+    375 × 667 en las cuatro, y queda (hilo). `§7` y `§12.5` corregidos.
+
+#### Lo que el hilo sumó y no estaba en la hoja (lo acepto)
+
+- `.ejes-opcion:hover:not([aria-disabled='true'])` pasa el borde a 3 px con mouse: cambio de borde, que
+  `diseno-marca.md` permite (no levanta ni infla).
+- `.ejes-tapa-etiqueta--amigo` entra en `ESTADOS_EJES`, además de `.ejes-momento--entra`.
+- `.ejes-sin-noche` lleva `role="alert"`: `§4.8` pedía una línea seca y el rol corresponde a un fallo.
+- Guarda 9 del taller (el crédito entra o falla): `§6.5`.
+
+#### Quién midió qué
+
+| Medida a 375 × 667 | Mi cuenta | Hilo | Estado |
+|---|---|---|---|
+| Portada: borde de abajo de «Empezá la noche» | 576 | **590** | entra; 77 px |
+| Postal: borde de abajo de «Empezá tu noche» | 637 | **626 y 650** (665 con 28/24) | entra; 17 px en la más alta |
+| Hoja de la tarjeta | ≈ 817 | **769** (manifiesto) | entra en 740 a 860 |
+| Cuerpo del crédito | 26 | **25** | entra en un renglón |
+| La hoja de la pregunta termina en | ≈ 377 | — | por medir |
+| Resultado: «Compartí» y «Empezá otra noche» | 531 y 601 | — | por medir; la línea de contraste va después de los botones y no los mueve |
+| Postal a 375 × 640 y 360 × 640 | — | — | con 650 el botón de la más alta queda bajo el pliegue; ya aceptado en `§3.4` |
+| La mesa, 1366 × 657 | ≈ 500 el botón de la portada | — | por medir |
+| Piezas ≤ 30 KB y ≤ 90 KB las tres de la portada | — | — | no las medí |
+
+#### Lo que queda abierto (nuevo)
+
+1. **Los renglones del nombre en la tarjeta y en la vista previa no se balancean.** Leído: `og-cu-3`
+   queda «Radio bajita, misma / hora», `og-cu-4` «Mochila liviana, sin / mapa» (una palabra sola
+   abajo) y `cu-2` «Ronda en / cualquier / esquina». `partir()` es codicioso; en pantalla el nombre
+   va con `text-wrap: balance` y la tarjeta debería leerse igual. **Propuesta para el hilo:** que el
+   taller achique el ancho de línea mientras el número de renglones no suba. No cambia ningún tope,
+   obliga a subir `VERSION_DEL_DIBUJO` a 3 y a regenerar. No bloquea nada.
+2. **La etiqueta del amigo está duplicada** (apartamiento 1). **Propuesta para el hilo:** un test que
+   arme las dos y compare las clases de sus hijos.
+3. **«OSCURIDAD» en la columna de 5 rem** (desde 46 rem, `§5.3`): mi cuenta da ≈ 84 px de rótulo
+   (rotulada de 0,75 rem, `letter-spacing: 0.08em`) contra 80 de columna. El hueco de 8 px lo
+   absorbe, pero no queda aire. Es una medida que yo fijé sin contarla. **Por medir** entre 46 y
+   64 rem; si desborda, la columna pasa a 5,5 rem.
+
 ---
 
 ## 11. Lo que no me cierra, y lo que queda abierto
@@ -1022,7 +1206,10 @@ tarjeta que se baja al pintar el resultado.
 6. **El año de *Luzbelito*.** El crédito dice "1996" y no el día (`RES-167`). Si `investigador` cierra la
    fecha, solo cambia `TARJETA.credito` y se vuelve a correr el taller.
 7. **La fecha y el aniversario no entran** a ninguna pantalla (`D-57`, alternativas descartadas).
-8. **`ESTADOS_EJES`** suma `.ejes-momento--entra`; el censo de `estilos.test.ts` lo exige.
+8. **`ESTADOS_EJES`** suma `.ejes-momento--entra`; el censo de `estilos.test.ts` lo exige. *(Aplicado,
+   y el hilo sumó `.ejes-tapa-etiqueta--amigo`: `§10.1`.)*
+9. **Lo abierto después de aplicar** (2026-10-04): el balanceo de los renglones del nombre en el taller,
+   la etiqueta del amigo duplicada y el rótulo «OSCURIDAD» en 5 rem. Están en `§10.1`, al final.
 
 ---
 
@@ -1047,15 +1234,18 @@ npm test
 
 ### 12.1 Las pantallas, a 375 × 667
 
-- [ ] Portada: el borde de abajo de "Empezá la noche" ≤ **576 + 20** (`getBoundingClientRect().bottom`).
-- [ ] Postal: el de "Empezá tu noche" ≤ **637 + 20**; si no, se achica el relleno de la tapa.
+- [ ] Portada: el borde de abajo de "Empezá la noche" ≤ **667**, a la vista (`getBoundingClientRect().bottom`); el hilo midió **590** y no tiene que subir. *(Antes: 576 + 20, mi cuenta.)*
+- [ ] Postal y enlace viejo: el de "Empezá tu noche" ≤ **667**; el hilo midió **626 y 650** con el relleno de 20/16 (665 con 28/24). Si una frase nueva sube un renglón, el próximo escalón es el margen de la tapa (`§1.2`), nunca el subtítulo ni el botón.
 - [ ] `document.querySelectorAll('.pantalla > h1').length` = 1 por pantalla, y **no** adentro de `figcaption`.
-- [ ] La tapa mide el alto de la etiqueta + 28 + 24 (`offsetHeight`, no `getBoundingClientRect`: está torcida).
+- [ ] La tapa mide el alto de la etiqueta + 28 + 24 en la portada y + 20 + 16 con la etiqueta del amigo (`offsetHeight`, no `getBoundingClientRect`: está torcida), más los 6 px del borde.
+- [ ] El índice de la portada, a 375 px: dos renglones, con «Cuando suena» arriba del segundo y ningún ítem partido (`§10.1`, apartamiento 5).
+- [ ] La etiqueta del amigo: el nombre más largo («Ronda en cualquier esquina») en dos renglones a 375 px y el rótulo en uno, sin letra cortada (`§10.1`, apartamiento 2).
 - [ ] El lomo y el esquinero se ven; el mármol asoma arriba y abajo de la etiqueta.
 - [ ] Hoja: termina ≈ 377; ninguna opción de la hoja 1 cae entre y = 514 y 601 (donde estaban "Empezá la noche" y "Empezá otra noche").
 - [ ] Las dos opciones: mismo `offsetHeight` en la mesa; mismo ancho; `min-height` ≥ 56.
 - [ ] Resultado: "Compartí" y "Empezá otra noche" terminan ≤ **601 + 20**; a 360 × 640, "Compartí" ≤ 640.
 - [ ] La grilla: cuatro celdas; la primera es la tuya; a 360 px dos columnas sin texto cortado; a 351 px, una.
+- [ ] La grilla entre 46 y 64 rem: el rótulo «OSCURIDAD · con lo propio» no se sale de la columna de 5 rem ni toca la celda (`§10.1`, «lo que queda abierto», 3); si desborda, 5,5 rem.
 - [ ] Sin desplazamiento horizontal a 320, 360 y 375: `scrollWidth <= innerWidth`.
 
 ### 12.2 Primera pantalla sin muro
@@ -1094,10 +1284,10 @@ npm test
 
 - [ ] `libro-marmol.jpg`, `libro-lomo.jpg`, `libro-esquinero.png` ≤ 30 KB c/u; `libro-canto.jpg` ya no está en `PIEZAS` ni en `public/arte/dos-ejes/`.
 - [ ] Ningún recorte toca el óvalo ni el título (`sePisan` en `generar-dos-ejes.mjs`).
-- [ ] `cu-1.png` a `cu-4.png`: 1080 × 1350, ≤ 160 KB; **las cuatro hojas del mismo alto**; ninguna línea sale del papel; la última línea de la bajada entra con el nombre de tres renglones (`CU-2`, `CU-4`).
+- [ ] `cu-1.png` a `cu-4.png`: 1080 × 1350, ≤ 160 KB; **las cuatro hojas del mismo alto** (`altoDeLaHojaDeLaTarjeta` = 769 en el manifiesto, entre 740 y 860); el crédito en un renglón (≥ 22 px; hoy 25); ninguna línea sale del papel; la última línea de la bajada entra con el nombre de tres renglones (`CU-2`, `CU-4`).
 - [ ] `og-cu-1.png` a `og-cu-4.png`: 1200 × 630, ≤ 120 KB; la marca en la franja oscura; el sello y la línea que nombra **sin pisarse**, en las cuatro (mirar `CU-3` y `CU-4`, las de "OSCURIDAD").
 - [ ] `og-dos-ejes.png`: los cuatro nombres en orden alfabético.
-- [ ] Las cuatro postales: mismo alto de la portada, mismo cuerpo de nombre; `og:title` "Me salió «…»"; `og:image` con su `alt`.
+- [ ] Las cuatro postales: misma estructura y mismo cuerpo de nombre (el alto sigue al texto: `§7`, `§10.1` apartamiento 10), con el botón a la vista a 375 × 667 en las cuatro; `og:title` "Me salió «…»"; `og:image` con su `alt`.
 - [ ] El pie acredita *Luzbelito* **una sola vez** por pantalla.
 - [ ] Ninguna pantalla ni tarjeta muestra una vela, el óvalo, la figura, la palabra LUZBELITO ni el verso.
 
