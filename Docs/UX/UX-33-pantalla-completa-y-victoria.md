@@ -593,3 +593,13 @@ npm test
   de `§4` y del traspaso ampliado.
 - **A dónde lleva exactamente el toque en el sexto nivel** (qué pieza compartible, con qué
   contenido): de `producto` (`BR-27`), sin cambios desde `UX-28` §7 y `UX-32` §5.
+
+---
+
+> **Enmendado el 2026-10-04 por `UX-37` (`D-61`).** **`§1.2`**: la estampa del interruptor nombra
+> el verbo del toque en los dos estados (`PANTALLA COMPLETA` fuera del modo, `SALÍ` adentro), no el
+> estado. **`§1.9`**: el botón aparece también parado y en cualquier ventana, y el modo parado pone
+> el área arriba y las teclas abajo. **`§1.4`**: el relleno de los controles queda en 56 % las
+> teclas y 66 % los sellos, y en ventanas bajas cede el bloque de saltar. **`§1.5`**: el sello de
+> salir tiene un tope contra la columna de mando. **`§1.7`**: la reserva del pie cuesta un escalón y
+> se acepta. El texto viejo y el nuevo, en `UX-37` `§8.6` a `§8.8` y `§9`.

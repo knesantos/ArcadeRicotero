@@ -984,7 +984,7 @@ function partirPorMouse(css: string): { conMouse: string; sinMouse: string } {
   let conMouse = '';
   let sinMouse = '';
   let desde = 0;
-  for (const m of limpio.matchAll(/@media \(hover: hover\) and \(pointer: fine\) \{/g)) {
+  for (const m of limpio.matchAll(/@media \(hover: hover\) and \(pointer: fine\)(?: and \(not \(any-pointer: coarse\)\))? \{/g)) {
     let nivel = 1;
     let i = m.index! + m[0].length;
     const inicio = i;
@@ -1032,6 +1032,28 @@ test('ese control sabe encontrar: los botones a la vista con mouse', () => {
   assert.ok(botonesSinMouse(roto).some((p) => p.includes('siguen a la vista')));
 });
 
+/**
+ * **Las capas de `D-61` encima del area** (`UX-37` §2, la enmienda de `ADR-10.5`): el rotulo de
+ * entrada no toma toques —el primer dedo del nivel es del mando—, y el menu desplaza por dentro sin
+ * arrastrar la pagina (el defecto que motivo `D-47`).
+ */
+test('D-61: el rótulo de entrada no toma toques, y el menú desplaza por dentro', () => {
+  const rotulo = reglas(SKAYBOY).find((r) => r.selector === '.juego-skayboy .rotulo-nivel');
+  assert.ok(rotulo && /pointer-events:\s*none/.test(rotulo.cuerpo), 'el rotulo de entrada se come el primer toque del nivel');
+  const menu = reglas(SKAYBOY).find((r) => r.selector === '.juego-skayboy .menu-juego');
+  assert.ok(
+    menu && /overflow-y:\s*auto/.test(menu.cuerpo) && /overscroll-behavior:\s*contain/.test(menu.cuerpo),
+    'el menu no desplaza por dentro, o arrastra la pagina',
+  );
+});
+
+test('ese control sabe encontrar: el rótulo que toma toques', () => {
+  const roto = SKAYBOY.replace(/(\.juego-skayboy \.rotulo-nivel \{[^}]*?)pointer-events: none;/, '$1');
+  assert.notEqual(roto, SKAYBOY, 'el reemplazo no encontro la regla');
+  const rotulo = reglas(roto).find((r) => r.selector === '.juego-skayboy .rotulo-nivel');
+  assert.ok(rotulo && !/pointer-events:\s*none/.test(rotulo.cuerpo));
+});
+
 test('ADR-10.6: el modo lo lee solo skayboy.css', () => {
   // Un segundo lugar que lee el atributo es una segunda verdad sobre que es el modo.
   const otras = HOJAS.filter((h) => h !== 'src/styles/skayboy.css' && leer(h).includes('data-pantalla'));
@@ -1040,7 +1062,8 @@ test('ADR-10.6: el modo lo lee solo skayboy.css', () => {
 
 for (const [caso, roto, espera] of [
   ['🔴 sin touch-action: none en el contenedor', SKAYBOY.replace(/(\.fichin \{[^}]*?)touch-action: none;/, '$1'), 'touch-action'],
-  ['🔴 sin el callout de Safari', SKAYBOY.replace('-webkit-touch-callout: none;', ''), 'touch-callout'],
+  // La columna de mando tambien lo declara desde `D-61`: el que se saca es el del contenedor del modo.
+  ['🔴 sin el callout de Safari', SKAYBOY.replace(/(\[data-pantalla='completa'\] \.juego-skayboy \.fichin \{[^}]*?)-webkit-touch-callout: none;/, '$1'), 'touch-callout'],
   ['🔴 sin overflow: hidden en html y body', SKAYBOY.replace(/overflow: hidden;\n  overscroll-behavior: none;/, 'overscroll-behavior: none;'), 'overflow: hidden'],
   ['🔴 con la pagina que rebota', SKAYBOY.replace(/overflow: hidden;\n  overscroll-behavior: none;/, 'overflow: hidden;'), 'overscroll-behavior'],
   ['🔴 con el encuadre leido en el mueble', SKAYBOY + '\n.juego-skayboy #juego { width: var(--encuadre-ancho); }', 'afuera del modo'],

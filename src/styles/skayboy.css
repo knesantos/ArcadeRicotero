@@ -127,6 +127,10 @@
      blanco del salto es justo lo que esa seccion prohibe. */
   --mando-aire: 16px;
   --mando-alto: calc(var(--salto-alto) + var(--mando-aire) + var(--tecla-alto)); /* 324 */
+
+  /* Lo que asoman los sellos del mueble por arriba del canto (`D-61`): la estampa mide 26 y
+     se come los 4 de la chapa. */
+  --sello-asoma: 22px;
 }
 
 .juego-skayboy .fichin {
@@ -371,6 +375,15 @@
   row-gap: var(--mando-aire);
   width: 100%;
   height: var(--mando-alto);
+  /* **La columna entera es del dedo** (`D-61` punto 4): desde que la columna captura el
+     puntero y la tecla sale de la geometria (`dedos.ts`), las franjas entre teclas tambien
+     son mando. Un pulgar apoyado ahi no puede desplazar la pagina, hacer zoom con doble
+     toque ni abrir la lupa: cualquiera de las tres cancela el puntero y suelta la tecla. */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .juego-skayboy .mando--izquierda {
@@ -421,10 +434,13 @@
 /* Apretada, la tecla se da vuelta: la tinta pasa al relleno y la figura queda en hueco.
    Es cambio de tinta, no de tamaño — la tabla anti-slop veta el control que se infla o
    rebota al tocarlo. */
-.juego-skayboy .tecla:active,
 .juego-skayboy .tecla--apretada {
   background: var(--disco-gulp-tinta);
   color: var(--fondo);
+  /* Al apretar, sin transicion: el mando responde en el cuadro siguiente y la tecla tardaba
+     `--duracion-toque` en verse hundida, que en un plataformas se siente como que no tomo el
+     dedo (`D-61` punto 4). Al soltar vuelve con la transicion de la regla de base. */
+  transition: none;
 }
 
 /* `.tecla--apretada` la pone la isla (`T-247`), y existe porque `:active` no alcanza: en
@@ -534,7 +550,12 @@
   display: none;
 }
 
-@media (hover: hover) and (pointer: fine) {
+/* **Y ningun puntero grueso a mano** (`D-61` punto 4): una notebook o una Chromebook con
+   pantalla tactil dicen que su puntero principal es fino, y con el corte de `D-55` solo, el
+   que jugaba con el dedo se quedaba sin botones. `any-pointer: coarse` es el dedo, este o no
+   este el mouse. Un navegador que no lee el `not` anidado descarta el bloque y muestra los
+   botones: el repuesto seguro es poder jugar. */
+@media (hover: hover) and (pointer: fine) and (not (any-pointer: coarse)) {
   .juego-skayboy .mando > .tecla,
   .juego-skayboy .mando-piso {
     display: none;
@@ -990,7 +1011,7 @@
 }
 
 /* ==========================================================================
-   El interruptor de pantalla completa, en el mueble (`UX-33 §1.2`, `CNT-22 §1`)
+   Los dos sellos del mueble: el menu y la pantalla completa (`D-61`, `UX-33 §1.2`)
 
    El sello de goma que estreno la estampa de la cinta (`UX-21`, que se saco del sitio el
    2026-10-01): rectangulo de esquina casi viva, borde fino, mayusculas rotuladas, apenas
@@ -998,14 +1019,20 @@
    el icono de libreria que `diseno-marca.md` veta por nombre, y la palabra alcanza. Va en
    `--fuente-rotulada` y en tokens neutros: es base, no disco.
 
-   **Superpuesto, nunca en la grilla** (`UX-33 §1.2`): el presupuesto de alto de `UX-28 §2.3`
-   no tiene un renglon para un tercer elemento, y no hace falta reabrirlo. Se ancla a la
-   esquina de arriba a la derecha del mueble y **nunca entra al area** (`UX-27 §1.2` punto
+   **Son dos desde `D-61`**: a la izquierda el que abre el menu y deja la partida en pausa, a
+   la derecha el de pantalla completa, que ahora dice lo que hace el toque. Van juntos en una
+   regleta (`.sellos-mueble`) y la regleta es lo que se ubica: todo lo que se medio para el
+   sello solo —donde hay aire en cada escalon— vale para los dos.
+
+   **Superpuestos, nunca en la grilla** (`UX-33 §1.2`): el presupuesto de alto de `UX-28 §2.3`
+   no tiene un renglon para un tercer elemento, y no hace falta reabrirlo. Se anclan a la
+   esquina de arriba a la derecha del mueble y **nunca entran al area** (`UX-27 §1.2` punto
    3): lo que cede es la esquina de chapa y bisel de ese rincon, que es decorativa, y el
    margen de alrededor.
 
-   **Solo de costado** (`UX-33 §1.9`): en el apilado de `UX-28 §4` no hay scroll que rompa
-   nada, y el boton no aparece. La regla que lo prende esta con los escalones, mas abajo.
+   **En cualquier posicion** (`D-61` punto 5, que enmienda `UX-33 §1.9`): parado tambien.
+   Parado es como se entra desde un enlace, y el usuario no encontro la pantalla completa
+   porque ahi no estaba.
    ========================================================================== */
 
 .juego-skayboy .gabinete {
@@ -1013,30 +1040,41 @@
 }
 
 /* **El blanco mide `--toque-min` y la estampa no** (`UX-33 §1.2`: el piso de 48 px vale
-   "exista o no exista aire visual alrededor"). El boton es una caja transparente de 48 de
-   alto cuyo borde de abajo cae sobre la chapa de arriba, sin tocar el bisel ni el area;
-   lo que se ve es su `::before`, de 26, **pegado sobre el canto del mueble** como la cinta
-   que pega cada casete al collage (`UX-22`): se come los 4 px de chapa de ese rincon y
-   asoma 22 por arriba. Asi el dedo tiene sus 48 y lo que se pinta no tapa ni el titulo que
-   queda arriba (medido a 812 x 354 y 812 x 375: entre el titulo y el mueble quedan unos
-   31 px), ni la ultima linea de la bajada en el x2 con alto de sobra (24 px de margen), ni
-   la tecla de saltar de al lado, que es lo que pasaba con la estampa entera de 48. */
-.juego-skayboy .pantalla-completa {
-  --sello-arriba: 22px;
+   "exista o no exista aire visual alrededor"). Cada sello es una caja transparente de 48 de
+   alto cuyo borde de abajo cae sobre la chapa de arriba, sin tocar el bisel ni el area; lo
+   que se ve es su `::before`, de 26, **pegado sobre el canto del mueble** como la cinta que
+   pega cada casete al collage (`UX-22`): se come los 4 px de chapa de ese rincon y asoma 22
+   por arriba. Asi el dedo tiene sus 48 y lo que se pinta no tapa el titulo que queda arriba. */
+.juego-skayboy .sellos-mueble {
+  --sello-arriba: var(--sello-asoma);
   --sello-abajo: 0px;
-  display: none;
   position: absolute;
   right: 0;
   bottom: calc(100% - var(--chapa));
   z-index: 42;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--espacio-1);
+  margin: 0;
+}
+
+/* `[hidden]` escrito, por lo mismo que en `.seguir-juego`: el `display` de la regleta le gana
+   a la hoja del navegador, y los sellos se podrian tocar antes de que el motor dibuje. */
+.juego-skayboy .sellos-mueble[hidden] {
+  display: none;
+}
+
+.juego-skayboy .sello-mueble {
+  position: relative;
   isolation: isolate;
   min-width: var(--toque-min);
   min-height: var(--toque-min);
   margin: 0;
-  padding: 0 var(--espacio-1);
+  padding: var(--sello-arriba) var(--espacio-1) var(--sello-abajo);
   font-family: var(--fuente-rotulada);
   font-size: 0.62rem;
   letter-spacing: 0.09em;
+  line-height: 1;
   color: var(--texto-tenue);
   background: transparent;
   border: 0;
@@ -1048,7 +1086,12 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.juego-skayboy .pantalla-completa::before {
+/* El del menu, torcido al reves: dos sellos pegados a mano no quedan paralelos. */
+.juego-skayboy #abrir-menu {
+  transform: rotate(-1deg);
+}
+
+.juego-skayboy .sello-mueble::before {
   content: '';
   position: absolute;
   inset: var(--sello-arriba) 0 var(--sello-abajo);
@@ -1060,20 +1103,14 @@
 }
 
 /* Cambio de tinta y de borde, nunca un levantar ni un inflar (`diseno-marca.md`). */
-.juego-skayboy .pantalla-completa:hover,
-.juego-skayboy .pantalla-completa:focus-visible {
+.juego-skayboy .sello-mueble:hover,
+.juego-skayboy .sello-mueble:focus-visible {
   color: var(--texto);
 }
 
-.juego-skayboy .pantalla-completa:hover::before,
-.juego-skayboy .pantalla-completa:focus-visible::before {
+.juego-skayboy .sello-mueble:hover::before,
+.juego-skayboy .sello-mueble:focus-visible::before {
   border-color: var(--papel-borde);
-}
-
-/* `[hidden]` escrito, por lo mismo que en `.seguir-juego`: el `display` de los escalones le
-   gana a la hoja del navegador, y el boton se podria tocar antes de que el motor dibuje. */
-.juego-skayboy .pantalla-completa[hidden] {
-  display: none;
 }
 
 /* ==========================================================================
@@ -1224,48 +1261,53 @@ html[data-pantalla='completa'],
    gris elegido a ojo. El anillo de adentro es un `inset` sin difuminar: una linea, no una
    sombra de elevacion. */
 [data-pantalla='completa'] .juego-skayboy .tecla,
-[data-pantalla='completa'] .juego-skayboy .pantalla-completa::before {
+[data-pantalla='completa'] .juego-skayboy .sello-mueble::before {
   background: var(--mando-relleno);
   border: var(--anillo) solid var(--papel);
   box-shadow: inset 0 0 0 var(--anillo) var(--fondo);
 }
 
-[data-pantalla='completa'] .juego-skayboy .pantalla-completa::before {
+[data-pantalla='completa'] .juego-skayboy .sello-mueble::before {
   background: var(--sello-relleno);
 }
 
 [data-pantalla='completa'] .juego-skayboy .tecla,
-[data-pantalla='completa'] .juego-skayboy .pantalla-completa {
+[data-pantalla='completa'] .juego-skayboy .sello-mueble {
   color: var(--papel);
 }
 
 /* Apretada, el relleno se vuelve opaco y la figura queda en hueco: cambio de tinta, como en
    el mueble, sin inflar nada. */
-[data-pantalla='completa'] .juego-skayboy .tecla:active,
 [data-pantalla='completa'] .juego-skayboy .tecla--apretada {
   color: var(--fondo);
   background: var(--papel);
 }
 
-/* ---- El boton para salir: el mismo sello, en la misma esquina (`UX-33 §1.5`) ----
+/* ---- Los dos sellos, en la misma esquina (`UX-33 §1.5`, `D-61`) ----
 
-   Siempre a la vista en el modo, en cualquier orientacion: es la unica puerta que existe en
-   todos los telefonos (`ADR-10.3`). **Se apoya en la esquina de arriba a la derecha del
-   area**, encima de ella, como pide `UX-33 §1.5` —la misma esquina que en el mueble—, con
-   dos topes: no se sale de la ventana, y de costado **no pisa la columna de mando**. Ese
-   segundo tope no es prolijidad: a 844 x 390 la columna de 324 mas el sello de 48 no entran
-   uno arriba del otro en los 366 de la sala, y el sello tapaba el borde de arriba de la tecla
-   de saltar. Con el tope queda a la izquierda de la columna, sobre el area. */
-[data-pantalla='completa'] .juego-skayboy .pantalla-completa {
+   Siempre a la vista en el modo, en cualquier orientacion: el de pantalla completa es la
+   unica puerta que existe en todos los telefonos (`ADR-10.3`), y el del menu es la pausa.
+   **La regleta se apoya en la esquina de arriba a la derecha del area**, encima de ella,
+   como pide `UX-33 §1.5` —la misma esquina que en el mueble—, con dos topes: no se sale de la
+   ventana, y de costado **no pisa la columna de mando**. Ese segundo tope no es prolijidad: a
+   844 x 390 la columna de 324 mas el sello de 48 no entran uno arriba del otro en los 366 de
+   la sala, y el sello tapaba el borde de arriba de la tecla de saltar. Con el tope queda a la
+   izquierda de la columna, sobre el area. */
+[data-pantalla='completa'] .juego-skayboy .sellos-mueble {
   --sello-arriba: 0px;
   --sello-abajo: 0px;
-  display: block;
   grid-area: sala;
   justify-self: end;
   align-self: start;
   position: relative;
   inset: auto;
   z-index: 1;
+  /* En un renglon, siempre: la consulta del apilado acostado (568 x 320) la apila afuera del modo,
+     y adentro una regleta de 96 de alto quedaba debajo de la tarjeta, con SALI tapado. */
+  flex-direction: row;
+  align-items: flex-end;
+  gap: var(--espacio-1);
+  max-width: none;
   margin: 0;
   margin-top: max(var(--tecla-aire), var(--encuadre-arriba, 0px));
   margin-right: max(
@@ -1275,62 +1317,691 @@ html[data-pantalla='completa'],
 }
 
 /* Parado, las teclas van abajo del area (`cajaDelArea()`): el tope de la columna no hace
-   falta, y el sello va justo en la esquina del area. */
+   falta, y la regleta va justo en la esquina del area. */
 @media (orientation: portrait) {
-  [data-pantalla='completa'] .juego-skayboy .pantalla-completa {
+  [data-pantalla='completa'] .juego-skayboy .sellos-mueble {
     margin-right: max(var(--tecla-aire), calc(100% - var(--encuadre-izquierda, 0px) - var(--encuadre-ancho, 0px)));
   }
 }
 
-[data-pantalla='completa'] .juego-skayboy .pantalla-completa[hidden] {
+[data-pantalla='completa'] .juego-skayboy .sellos-mueble[hidden] {
   display: none;
 }
 
-/* ---- Donde aparece el interruptor, y donde se apoya (`UX-33 §1.2` y `§1.9`) ----
-
-   **Aparece donde se ve el fichin de costado** —las tres franjas de los escalones de
-   arriba— **y ademas en cualquier ventana acostada.** Lo segundo no esta en `UX-33`: una
-   ventana acostada de menos de 330 de alto o de menos de 480 de ancho (568 x 320, un
-   telefono chico de costado) cae en el apilado, que ahi no entra en la pantalla y se
-   desplaza — es el defecto de `D-47` entero, en el telefono donde mas se nota. Parado, en
-   cambio, sigue sin aparecer. Declarado en el traspaso a `experiencia`.
+/* ---- Donde se apoya la regleta afuera del modo (`UX-33 §1.2`) ----
 
    **Donde se apoya depende de donde hay aire**, medido en el navegador con la estampa
-   contra el area, el titulo, la marca, la cinta y las seis teclas:
+   contra el area, el titulo, la marca y las seis teclas:
 
    - arriba a la derecha del mueble (la regla de base, arriba): el x1 de costado, que deja
-     unos 31 px entre el titulo y el mueble, y el x2 con alto de sobra;
+     unos 31 px entre el titulo y el mueble, el x2 con alto de sobra, y desde `D-61` el
+     apilado parado;
    - **colgada abajo a la derecha** en el x2 apretado (401 a 500 de alto): ahi la cabecera
      va acostada pegada al mueble y la estampa de arriba tapaba el titulo. Abajo quedan de 21
      a 120 px; a 401 justos la estampa (26 px) asoma 20 y cuelga 6 bajo el borde, y un
      toque de desplazar antes de jugar no es el defecto (el defecto es desplazar jugando);
-   - **al costado derecho, arriba**, en el apilado acostado: el mueble a x1 deja 150 px o mas
-     a cada lado, y arriba tiene el titulo encima. */
-@media (orientation: landscape),
-  (min-width: 720px) and (min-height: 400.02px),
-  (min-width: 480px) and (min-height: 330px) and (max-height: 400px),
-  (min-width: 480px) and (max-width: 719.98px) and (min-height: 400.02px) and (max-height: 599.98px) {
-  .juego-skayboy .pantalla-completa {
-    display: block;
-  }
-}
-
+   - **al costado derecho, arriba, uno debajo del otro**, en el apilado acostado: el mueble a
+     x1 deja 150 px o mas a cada lado, y arriba tiene el titulo encima. */
 @media (min-width: 720px) and (min-height: 400.02px) and (max-height: 500px) {
-  .juego-skayboy .pantalla-completa {
+  .juego-skayboy .sellos-mueble {
     --sello-arriba: 0px;
     --sello-abajo: 22px;
     top: 100%;
     bottom: auto;
+    align-items: flex-start;
   }
 }
 
 @media (orientation: landscape) and (max-width: 479.98px),
   (orientation: landscape) and (max-height: 329.98px),
   (orientation: landscape) and (max-width: 719.98px) and (min-height: 600px) {
-  .juego-skayboy .pantalla-completa {
+  .juego-skayboy .sellos-mueble {
     top: calc(-1 * var(--sello-arriba));
     bottom: auto;
     left: calc(100% + var(--tecla-aire));
     right: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    /* Lo que queda a la derecha del mueble, y no mas: a 568 "PANTALLA COMPLETA" en un renglon se
+       salia 5 px de la ventana. El sello parte en dos renglones antes que eso. */
+    max-width: calc((100vw - var(--area-ancho)) / 2 - var(--bisel) - var(--chapa) - 2 * var(--tecla-aire) - 8px);
+  }
+
+  .juego-skayboy .sello-mueble {
+    white-space: normal;
+    text-align: left;
+  }
+}
+
+/* Con mouse a x1 de costado, la columna de mando mide lo que la leyenda y la fila del mueble se
+   queda sin aire: la regleta asomaba sobre la marca y el titulo. El mueble baja lo que asoma. */
+@media (hover: hover) and (pointer: fine) and (not (any-pointer: coarse)) and (min-width: 480px) and (min-height: 330px) and (max-height: 400px),
+  (hover: hover) and (pointer: fine) and (not (any-pointer: coarse)) and (min-width: 480px) and (max-width: 719.98px) and (min-height: 400.02px) and (max-height: 599.98px) {
+  .juego-skayboy .gabinete {
+    margin-top: calc(var(--sello-asoma) + 4px);
+  }
+}
+
+/* ==========================================================================
+   El rotulo de entrada de cada nivel (`D-61` punto 3)
+
+   Numero arriba, nombre abajo, arriba del area, un par de segundos al empezar cada nivel.
+   **No toma toques** (el primer dedo del nivel le llega al mando) y **no anima**: aparece y se
+   va, sin transicion, asi que el movimiento reducido no tiene nada que apagar. Lo esconde la
+   isla con un temporizador (`DURACION_DEL_ROTULO_MS`, `menu.ts`).
+
+   Es el mismo idioma que el contador de la victoria, y por lo mismo: **registro 3, sello de
+   goma** sobre `--fondo`, sin sombra, sin alfa, sin rotacion —se tiene que leer encima de un
+   pixel art—, y la letra en `cqw` de esta capa, que mide lo que el area: ocupa la misma
+   porcion a x1, a x2 y en la pantalla completa. Pares que ya mide `contraste.test.ts`: la
+   tinta de *Gulp!* y la del texto, sobre `--fondo`.
+   ========================================================================== */
+
+.juego-skayboy .rotulo-nivel {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding-top: 3%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1%;
+  pointer-events: none;
+  container-type: size;
+}
+
+.juego-skayboy .rotulo-nivel[hidden] {
+  display: none;
+}
+
+/* En el modo los sellos estan en la esquina de arriba del area: el rotulo baja lo que mide su
+   blanco, igual que la tarjeta (`UX-37` §5.2). */
+[data-pantalla='completa'] .juego-skayboy .rotulo-nivel {
+  padding-top: calc(var(--toque-min) + var(--tecla-aire));
+}
+
+.juego-skayboy .rotulo-nivel-numero,
+.juego-skayboy .rotulo-nivel-nombre {
+  display: block;
+  max-width: 92cqw;
+  padding: 0.8cqw 2.4cqw;
+  /* Si un nombre no entra, parte en dos renglones; nunca se corta con puntos (`voz-ricotera.md`
+     §3.7). Hoy los seis entran en uno. */
+  text-align: center;
+  text-wrap: balance;
+  line-height: 1.15;
+  background: var(--fondo);
+  border: 1px solid var(--papel);
+  border-radius: 3px;
+}
+
+.juego-skayboy .rotulo-nivel-numero {
+  font-family: var(--fuente-rotulada);
+  font-size: 4.4cqw;
+  letter-spacing: 0.08em;
+  color: var(--disco-gulp-tinta);
+}
+
+.juego-skayboy .rotulo-nivel-nombre {
+  font-family: var(--fuente);
+  font-size: 5cqw;
+  color: var(--texto);
+}
+
+/* ==========================================================================
+   La tarjeta de fin de nivel (`D-61` punto 3, `UX-37` §4)
+
+   Aparece en el mismo cuadro en que se gana (`D-32` limite 3), **en la banda de arriba del
+   area**: en los seis niveles las dos puertas estan en la fila de abajo, y el baile y el
+   contador de lo que junto cada uno (`UX-33 §2.5`) ocupan la mitad de abajo. Arriba no tapa
+   nada que se gane mirar, y vive adentro del recorte, asi que no toca el pie de homenaje
+   (`BR-26`) en ningun reparto. Va despues del boton de seguir en la pagina: se pinta encima, y
+   tocar "Repeti" no le llega al toque de seguir.
+
+   **Dos tamanos, segun el ancho del area** (`UX-37` §4.4), con una consulta de contenedor
+   sobre la tarjeta misma: a x1 (240 px) va compacta —el rotulo y los tres botones, sin el
+   renglon del que sigue, porque la completa no entra en los 86 px libres de arriba—; con aire,
+   completa. La base es la compacta: un navegador sin consultas de contenedor la muestra igual.
+
+   **Recorte pegado, no superficie elevada** (`diseno-marca.md`): tinta de `--fondo`, borde en
+   la tinta de *Gulp!* y el eco duro del apoyo del mismo disco, el mismo que lleva el mueble.
+   Opaca: el texto encima del area va sobre su propia tinta (`UX-37` §2.1). Los botones son los
+   del sitio: `.primario` en la tinta del disco (`.juego--historia`, par medido) y `.secundario`.
+   ========================================================================== */
+
+.juego-skayboy .fin-nivel {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  z-index: 2;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'rotulo'
+    'sigue'
+    'botones';
+  gap: 4px;
+  margin: 0;
+  padding: 4px;
+  background: var(--fondo);
+  border: 2px solid var(--disco-gulp-tinta);
+  border-radius: 3px;
+  box-shadow: var(--registro) var(--registro) 0 var(--disco-gulp-apoyo);
+  container-type: inline-size;
+  /* **El cuerpo no toma el toque** (`UX-37` §4.5): un toque sobre el rotulo o el aire cae en
+     `#seguir-juego`, que esta debajo, y sigue. Solo los tres botones lo toman. */
+  pointer-events: none;
+}
+
+.juego-skayboy .fin-nivel button {
+  pointer-events: auto;
+}
+
+.juego-skayboy .fin-nivel[hidden],
+.juego-skayboy .fin-nivel [hidden] {
+  display: none;
+}
+
+.juego-skayboy .fin-nivel-rotulo {
+  grid-area: rotulo;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  line-height: 1.25;
+  text-align: center;
+  color: var(--texto);
+}
+
+/* El que sigue: solo en la completa. */
+.juego-skayboy .fin-nivel-sigue {
+  display: none;
+  grid-area: sigue;
+  font-size: 0.85rem;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--texto-tenue);
+}
+
+.juego-skayboy .fin-nivel-botones {
+  grid-area: botones;
+  display: flex;
+  gap: 4px;
+}
+
+/* **Se parte la palabra, no el blanco** (`UX-37` §4.4): los tres se reparten el ancho y el texto
+   baja de renglon adentro de sus 48 de alto. Con "Volve al primero" en el sexto, a x1, no entraban
+   los tres en un renglon y el boton se encogia por debajo de su texto. */
+.juego-skayboy .fin-nivel .primario,
+.juego-skayboy .fin-nivel .secundario {
+  flex: 1 1 0;
+  width: auto;
+  min-width: var(--toque-min);
+  min-height: var(--toque-min);
+  margin: 0;
+  padding: 2px 4px;
+  font-size: 0.78rem;
+  line-height: 1.1;
+  white-space: normal;
+}
+
+.juego-skayboy .fin-nivel .primario {
+  flex-grow: 1.3;
+  font-size: 0.92rem;
+}
+
+/* Con aire —x2 para arriba, y la pantalla completa de costado—: el que sigue a la vista, y todo un
+   poco mas grande. */
+@container (min-width: 420px) {
+  .juego-skayboy .fin-nivel-rotulo {
+    font-size: 0.82rem;
+  }
+
+  .juego-skayboy .fin-nivel-sigue {
+    display: block;
+  }
+
+  .juego-skayboy .fin-nivel .primario,
+  .juego-skayboy .fin-nivel .secundario {
+    padding: 2px var(--espacio-1);
+    font-size: 0.9rem;
+  }
+
+  .juego-skayboy .fin-nivel .primario {
+    font-size: 1.05rem;
+  }
+}
+
+@media (min-width: 720px) and (min-height: 400.02px) {
+  .juego-skayboy .fin-nivel {
+    padding: var(--espacio-1) var(--espacio-2);
+    border-width: var(--linea);
+  }
+}
+
+/* En el modo los dos sellos estan en la esquina de arriba a la derecha del area (`UX-33 §1.5`):
+   la tarjeta baja lo que mide su blanco y un poco de aire, para no pisarlos. */
+[data-pantalla='completa'] .juego-skayboy .fin-nivel {
+  top: calc(var(--toque-min) + var(--tecla-aire));
+  left: var(--tecla-aire);
+  right: var(--tecla-aire);
+  padding: var(--espacio-1) var(--espacio-2);
+  border-width: var(--linea);
+}
+
+/* De costado, y con el area mas ancha que lo que dejan las columnas —un telefono de menos de 720—,
+   la tarjeta se corre afuera de los dos bloques de saltar (`UX-37` §4.4: dos blancos no se pisan).
+   El area esta centrada, asi que la cuenta es la misma de los dos lados. */
+@media (orientation: landscape) {
+  [data-pantalla='completa'] .juego-skayboy .fin-nivel {
+    left: max(var(--tecla-aire), calc(var(--columna) + 2 * var(--tecla-aire) - var(--encuadre-izquierda, 0px)));
+    right: max(var(--tecla-aire), calc(var(--columna) + 2 * var(--tecla-aire) - var(--encuadre-izquierda, 0px)));
+  }
+}
+
+/* ==========================================================================
+   El menu (`D-61` puntos 1 y 2, `UX-37` §3)
+
+   Abre al entrar y desde la partida (el sello del mueble). **Su lugar es la region del tubo y
+   los mandos** (`UX-37` §3.3): la mide la isla con `regionDelMenu()` (`menu.ts`, probada en
+   Node) y la escribe en `left`, `top`, `width` y `height`, porque el reparto cambia con cada
+   escalon y a x1 de costado el mueble ni siquiera es una caja (`.fichin` es `display:
+   contents`). Parado es la zona de las teclas, con el nivel dibujado arriba; de costado, el tubo
+   y las dos columnas; en el modo, la sala. **Nunca el pie de homenaje** (`BR-26`), ni la
+   cabecera con el volver, que siguen a la vista y a mano.
+
+   Si no entra, desplaza por dentro y no se achica nada (`UX-37` §3.3): ni una ficha ni un boton
+   baja de `--toque-min`. Adentro, la composicion la decide el ancho de la region, con una
+   consulta de contenedor: una columna, o dos cuando hay ancho.
+
+   **Recorte pegado, opaco**: la hoja es `--fondo` con el borde grueso en la tinta de *Gulp!* y el
+   eco duro del apoyo, como el mueble. Los seis niveles abiertos: cada ficha es un boton, con su
+   numero en la tinta del disco, su nombre (`CNT-21`) en la letra del sistema, y un sello si esta
+   pasada (la tinta del acierto, que no se disfraza de ningun disco) o si es la de ahora. Ningun
+   estado se dice solo con color: los sellos dicen la palabra.
+   ========================================================================== */
+
+.juego-skayboy .menu-juego {
+  position: absolute;
+  z-index: 50;
+  box-sizing: border-box;
+  margin: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  background: var(--fondo);
+  border: var(--linea) solid var(--disco-gulp-tinta);
+  border-radius: var(--radio);
+  /* Sin eco: la region termina justo donde empieza la chapa del pie, y la sombra le pintaba dos
+     pixeles encima (`BR-26`, `UX-37` §2.4). */
+  container-type: size;
+}
+
+.juego-skayboy .menu-juego[hidden],
+.juego-skayboy .menu-juego [hidden] {
+  display: none;
+}
+
+/* Mientras el menu esta abierto, los dos sellos del mueble no se ven (`UX-37` §3.4): el menu se
+   cierra con su boton grande, y la pantalla completa la tiene adentro. */
+.juego-skayboy .fichin:has(.menu-juego:not([hidden])) .sellos-mueble {
+  visibility: hidden;
+}
+
+.juego-skayboy .menu-hoja {
+  box-sizing: border-box;
+  min-height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'accion'
+    'lista';
+  align-content: start;
+  gap: var(--espacio-1);
+  padding: var(--espacio-1);
+}
+
+.juego-skayboy .menu-accion {
+  grid-area: accion;
+  display: grid;
+  gap: 6px;
+}
+
+.juego-skayboy .menu-accion .primario,
+.juego-skayboy .menu-accion .secundario {
+  margin: 0;
+}
+
+/* El boton grande: 56 de blanco (`UX-37` §2.2), lo que el que llega sin idea tiene que encontrar. */
+.juego-skayboy .menu-accion .primario {
+  min-height: calc(var(--toque-min) + var(--tecla-aire));
+  padding-block: var(--espacio-1);
+  font-size: 1.4rem;
+}
+
+.juego-skayboy .menu-cual {
+  margin: 0;
+  font-size: 0.82rem;
+  text-align: center;
+  color: var(--texto-tenue);
+}
+
+.juego-skayboy .menu-cual:empty {
+  display: none;
+}
+
+/* El renglon corto ("Nivel 2"), solo en la composicion baja (mas abajo). */
+.juego-skayboy .menu-cual-corto {
+  display: none;
+  margin: 0;
+  font-size: 0.82rem;
+  text-align: center;
+  color: var(--texto-tenue);
+}
+
+/* El de pantalla completa: con el verbo entero, porque aca hay lugar (`modo-pantalla.ts`). */
+.juego-skayboy .menu-pantalla {
+  padding-block: var(--espacio-1);
+  font-size: 0.92rem;
+  color: var(--texto);
+}
+
+.juego-skayboy .menu-accion .secundario {
+  padding-block: var(--espacio-1);
+  font-size: 0.92rem;
+}
+
+.juego-skayboy .menu-lista {
+  grid-area: lista;
+  display: grid;
+  align-content: start;
+  gap: 6px;
+}
+
+.juego-skayboy .menu-niveles {
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-weight: normal;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+.juego-skayboy .fichas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--tecla-aire);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.juego-skayboy .ficha-nivel {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-height: var(--toque-min);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    'numero nombre'
+    'numero sello';
+  align-items: center;
+  align-content: center;
+  column-gap: 6px;
+  row-gap: 2px;
+  margin: 0;
+  padding: 4px 6px;
+  font: inherit;
+  text-align: left;
+  color: var(--texto);
+  background: var(--fondo);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color var(--duracion-toque);
+}
+
+.juego-skayboy .ficha-nivel-numero {
+  grid-area: numero;
+  min-width: 1.2ch;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.5rem;
+  line-height: 1;
+  text-align: center;
+  color: var(--disco-gulp-tinta);
+}
+
+.juego-skayboy .ficha-nivel-nombre {
+  grid-area: nombre;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+.juego-skayboy .ficha-nivel-sello {
+  grid-area: sello;
+  justify-self: start;
+  padding: 0 4px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  color: var(--texto);
+  border: 1px solid var(--disco-gulp-apoyo);
+  border-radius: 3px;
+  transform: rotate(-2deg);
+}
+
+/* Sin sello, el nombre ocupa las dos filas: la ficha no deja un renglon vacio abajo. */
+.juego-skayboy .ficha-nivel:not(:has(.ficha-nivel-sello:not([hidden]))) .ficha-nivel-nombre {
+  grid-row: 1 / -1;
+}
+
+/* El nivel que juega el boton grande, y el de ahora: el borde en la tinta del disco. */
+.juego-skayboy .ficha-nivel[data-toca],
+.juego-skayboy .ficha-nivel[data-actual] {
+  border-color: var(--disco-gulp-tinta);
+}
+
+/* La de ahora, ademas, con el borde grueso: `PASADO` y `ACA ESTAS` son el mismo sello (`UX-37`
+   §2.4: no es un acierto, y el verde del acierto no se usa para otra cosa). */
+.juego-skayboy .ficha-nivel[data-actual] {
+  border-width: var(--linea);
+}
+
+.juego-skayboy .ficha-nivel:focus-visible {
+  outline: var(--linea) solid var(--texto);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .juego-skayboy .ficha-nivel:hover {
+    border-color: var(--texto-tenue);
+  }
+
+  .juego-skayboy .ficha-nivel[data-toca]:hover,
+  .juego-skayboy .ficha-nivel[data-actual]:hover {
+    border-color: var(--disco-gulp-tinta);
+  }
+}
+
+/* Las teclas, solo con mouse y con lugar: en la pantalla completa la leyenda de `D-55` no esta,
+   y el menu es el unico lugar que las dice. */
+.juego-skayboy .menu-teclas {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) and (not (any-pointer: coarse)) {
+  .juego-skayboy .menu-teclas {
+    display: grid;
+    gap: 2px;
+    margin: 4px 0 0;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    color: var(--texto-tenue);
+  }
+}
+
+/* **Ancha**: la accion a la izquierda y los niveles a la derecha, tres fichas por renglon. Es la
+   region de costado (x1: 480 x 152 con las columnas) y la de la pantalla completa acostada. */
+@container (min-width: 440px) {
+  .juego-skayboy .menu-hoja {
+    grid-template-columns: minmax(10rem, 0.8fr) minmax(0, 1.4fr);
+    grid-template-areas: 'accion lista';
+    column-gap: var(--espacio-2);
+    padding: var(--espacio-1) var(--espacio-2);
+  }
+
+  .juego-skayboy .fichas {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* **Baja** —x1 de costado: la region es el tubo y las columnas, 152 de alto—: las seis fichas en
+   un renglon, cada una su numero y su sello, sin el nombre a la vista. El nombre no se pierde: lo
+   dice el `aria-label` de la ficha, y el del nivel que juega el boton grande, el renglon de abajo
+   del boton. Asi la accion entra sin desplazar en la entrada (`UX-37` §3.3) y ninguna ficha baja
+   de `--toque-min`. */
+@container (max-height: 220px) {
+  .juego-skayboy .fichas {
+    grid-template-columns: repeat(6, minmax(var(--toque-min), 1fr));
+    gap: 6px;
+  }
+
+  .juego-skayboy .ficha-nivel {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'numero'
+      'sello';
+    justify-items: center;
+    padding: 4px 2px;
+  }
+
+  /* La ficha mide poco mas que `--toque-min` de ancho: el sello se achica para entrar, y "ACA
+     ESTAS", el mas largo, se parte en dos renglones antes que salirse. */
+  .juego-skayboy .ficha-nivel-sello {
+    justify-self: center;
+    max-width: 100%;
+    padding: 0 2px;
+    font-size: 0.5rem;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    text-align: center;
+    transform: none;
+  }
+
+  .juego-skayboy .ficha-nivel-nombre {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .juego-skayboy .menu-accion .primario {
+    font-size: 1.25rem;
+  }
+
+  .juego-skayboy .menu-pantalla {
+    font-size: 0.85rem;
+  }
+}
+
+/* Baja y ancha: la columna de la accion no tiene alto para tres botones apilados, y debajo de las
+   seis fichas sobra. El boton grande y su renglon a la izquierda; las fichas a la derecha; y
+   abajo, empezar de nuevo (si hay pausa) y pantalla completa, uno en cada columna. La accion se
+   desarma (`display: contents`) para que sus botones entren a esta grilla sin cambiar el orden
+   del documento. */
+@container (max-height: 220px) and (min-width: 440px) {
+  /* La columna de las fichas pide lo justo para las seis (`--toque-min` cada una y el aire); lo que
+     sobra se reparte, y la del boton grande no baja de 8 rem. */
+  .juego-skayboy .menu-hoja {
+    grid-template-columns: minmax(8rem, 1fr) minmax(calc(6 * var(--toque-min) + 30px), 1.6fr);
+    grid-template-areas:
+      'jugar lista'
+      'cual lista'
+      'repetir pantalla';
+    row-gap: 4px;
+    padding-block: 4px;
+  }
+
+  .juego-skayboy .menu-accion {
+    display: contents;
+  }
+
+  .juego-skayboy #menu-jugar {
+    grid-area: jugar;
+  }
+
+  /* Un renglon y nada mas (`UX-37` §3.3 le da 14): a 568 de ancho el nombre partia en tres y
+     empujaba afuera la pantalla completa. Se ve el corto, "Nivel 2", y el renglon entero queda
+     para el lector de pantalla. Nunca cortado con puntos: en un rotulo son ambiguedad
+     (`voz-ricotera.md` §3.7). */
+  .juego-skayboy #menu-cual {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .juego-skayboy #menu-cual-corto {
+    display: block;
+    grid-area: cual;
+  }
+
+  .juego-skayboy #menu-repetir {
+    grid-area: repetir;
+  }
+
+  .juego-skayboy #menu-pantalla {
+    grid-area: pantalla;
+  }
+}
+
+/* **Con alto de sobra** (x2 para arriba, la pantalla completa): todo un poco mas grande. */
+@container (min-width: 440px) and (min-height: 260px) {
+  .juego-skayboy .menu-hoja {
+    align-content: center;
+    padding: var(--espacio-2);
+    gap: var(--espacio-2);
+  }
+
+  .juego-skayboy .ficha-nivel {
+    min-height: 4rem;
+    padding: 6px var(--espacio-1);
+  }
+
+  .juego-skayboy .ficha-nivel-numero {
+    font-size: 1.8rem;
+  }
+
+  .juego-skayboy .ficha-nivel-nombre {
+    font-size: 0.88rem;
+  }
+
+  .juego-skayboy .menu-accion .primario {
+    font-size: 1.6rem;
+  }
+}
+
+/* ==========================================================================
+   Parado, lugar para los sellos (`D-61` punto 5)
+
+   En el apilado parado la regleta asoma 22 px arriba del canto del mueble, que es donde el
+   encabezado achicado pone la marca y el titulo: los tapaba (medido a 375 x 812). El fichin
+   baja lo que asoma la estampa y 4 de aire. Se mide con las teclas de direccion a la vista a
+   375 x 667, que es el caso que cuida el encabezado achicado.
+   ========================================================================== */
+@media (orientation: portrait) and (max-width: 719.98px) {
+  .juego-skayboy .fichin {
+    margin-top: calc(var(--sello-asoma) + 4px);
   }
 }
