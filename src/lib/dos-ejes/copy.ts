@@ -143,6 +143,30 @@ export const RESULTADO = {
   suya: 'Quien te lo mandó',
   /** El rótulo de la grilla para el lector de pantalla. */
   altGrilla: 'Las cuatro maneras, con la tuya primero.',
+  /**
+   * Lo que el plano de dos ejes le dice al lector de pantalla (`UX-38`, crítica 3): los dos
+   * ejes y dónde cae la tuya, que la grilla no dice en palabras. Registro 3, seco. Confirmada
+   * por `contenido` (`T-352`, `CNT-31` §13): un punto entre polo y polo, porque cada uno ya
+   * lleva dos comas, y "Tu manera" para que la frase no quede colgada cuando el lector salta
+   * de imagen en imagen.
+   */
+  altPlano: (p: {
+    readonly arriba: string;
+    readonly abajo: string;
+    readonly izquierda: string;
+    readonly derecha: string;
+    readonly tuya: { readonly nombre: string; readonly lugar: string };
+    readonly suya?: { readonly nombre: string; readonly lugar: string } | 'misma';
+  }) =>
+    `Dos ejes en cruz. Arriba, ${p.arriba}. Abajo, ${p.abajo}. A la izquierda, ${p.izquierda}. A la derecha, ${p.derecha}. ` +
+    `Tu manera, ${p.tuya.lugar}: ${p.tuya.nombre}.` +
+    (p.suya === 'misma'
+      ? ' La de quien te lo mandó es la misma.'
+      : p.suya
+        ? ` La de quien te lo mandó, ${p.suya.lugar}: ${p.suya.nombre}.`
+        : ''),
+  /** Los cuatro lugares del plano, en el orden de `planoFijo().celdas`. */
+  lugares: ['arriba a la izquierda', 'arriba a la derecha', 'abajo a la izquierda', 'abajo a la derecha'],
   /** El texto que viaja con el enlace: nombra el test, la identidad, ningún número (`BR-17`). */
   paraCompartir: (nombre: string) => `Me salió «${nombre}». ¿Qué tipo de ricotero sos vos?`,
   copiado: 'Se copió el enlace.',

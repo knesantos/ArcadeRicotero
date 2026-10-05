@@ -65,6 +65,79 @@
 > §2 y `UX-25` §4; el lienzo no tiene esto. Los costados del máster no son de Rocambole (están
 > anotados en `D-63` y en `public/arte/README.md`).
 
+> ## 🍺 LA NOCHE RICOTERA ENTERA, Y EL PLANO FIJO QUE VUELVE (2026-10-05) — `D-62`, ciclo 19
+>
+> Pedido del usuario, textual: *"el recital ricotero es barro, sucio, drogas reviente y también
+> es familia amigos amor, es todo eso, pero lo primero no puede faltar tampoco, un choripán, un
+> pancho una birra un porro hasta cocaína debe ser parte del recital, la previa ir un rato antes
+> a escabiar o no eso es un recital ricotero"*. Después, mirando el sitio publicado: *"nunca
+> cansa el volumen"*, *"quiero que esté el gráfico también, queda lindo ver que está en un plano
+> de dos ejes"*, y entre las dos versiones del plano: *"B, el fijo como el rombo viejo"*. Rama
+> `ciclo-18/que-ricotero-sos`, integrada a `main` el 2026-10-05 a pedido del usuario (*"pará y
+> subí e integrá todo lo que hayas hecho, después seguimos"*).
+>
+> **El número.** Se escribió como `D-59` y se renumeró a **`D-62`** al integrar: el `D-59` del
+> dominio llegó antes a `main`. Los commits de la rama dicen `D-59`; el repo, `D-62`.
+>
+> **Lo que hay:**
+> - **`D-62`**: la escena es la ricotera entera (barro, chori, birra, porro, merca como paisaje;
+>   familia, amigos y amor de terceros); la opción es de quien juega. Lo que se toma o se fuma
+>   nunca separa los polos, y se suma un **quinto lugar** a la prueba: *el que no toma ni fuma*.
+>   **Enmienda 1**: la música nunca molesta. **Enmienda 2**: vuelve el plano de dos ejes, arriba
+>   de la grilla que se queda. **Enmienda 3**: el plano es **fijo** (Luz arriba, Orden a la
+>   izquierda, para todos), elegido por el usuario con el costo a la vista.
+> - **`INV-172`** (`RES-172`..`RES-194`): la noche real, casi todo **leyenda** (sin páginas
+>   abiertas: la red bloqueó los diarios; el memoir no está en el disco).
+> - **`BR-38`** y `US-06` enmendada dos veces (`producto`): la tercera exceptúa al plano del
+>   criterio 3 y suma el **criterio 9**. **`CNT-31`** (`contenido`): los 30 enunciados, las
+>   cinco líneas que cantan, las cuatro bajadas; casete y lugar con barro y chori; §13 confirma el
+>   texto del lector (`T-352`). **`UX-38` v1.1** (`experiencia`): el plano construido, con la
+>   crítica respondida.
+> - **El plano** (`planoFijo()` en `partida.ts`, `plano()` en la isla, `.ejes-plano*`): recorte
+>   de papel, ejes en cruz, los cuatro polos, las cuatro maneras, la tuya con borde y sello, la
+>   del amigo punteada, `role="img"` con `RESULTADO.altPlano`. La grilla de abajo sigue relativa.
+>   Medido a 375, 360, 320, 1366 y 1440, con y sin amigo, las cuatro maneras: sin desborde, filas
+>   y columnas iguales, nada bajo 12 px; los botones no se movieron. No viaja en la tarjeta.
+> - **Guardas**: `banco.test.ts` (vetos de la noche con *la música que molesta*, vetos de las
+>   opciones, el consumo nunca de un solo lado, cada celda trae lo sucio), `partida.test.ts` (el
+>   plano fijo; el cuadrado latino de la grilla), `isla.test.ts`, `estilos.test.ts` (piso de 12 px
+>   en `.ejes-*`), `copy.test.ts` (el texto del lector en veinte casos).
+> - **`npm test` corre todo**: el glob iba sin comillas y corría 332 tests; ahora los **1531**.
+>   `check` sin errores, `build` de 160 páginas.
+>
+> **`REV-20` quedó a medio camino** (la paró el usuario para integrar). Corrieron las tres lentes
+> (banco y voz, pantalla y plano, papeles) y sus dos verificadores adversariales (reproducción y
+> criterio); **no** se escribió el documento ni corrió el crítico de completitud. Se retoma con
+> esto:
+> - **Confirmados por los dos verificadores** (todo bajo o medio, ninguno alto, ninguno en el
+>   plano construido):
+>   - `EJ-049`: «Grito con el resto» es la entrega total y, con la merca en la escena, «Canto
+>     para adentro» queda como la contención (`BR-36`, `BR-38`). → `contenido`.
+>   - Papeles que no dicen lo que hay: `UX-38` §5 y G10 citan el texto del lector viejo
+>     (`experiencia`); `BR-38` y `CNT-31` dicen que ninguna guarda cuenta lo sucio (`producto`,
+>     `contenido`); `PRD-alcance-v1` tiene un "no cambian" sin marcar y una cita rota a `UX-38`
+>     §2.1 (`producto`); `CTR-08` no nombra `planoFijo()` (`arquitectura`).
+>   - Ya resueltos al integrar: `ESTADO` viejo, el `D-59` doble y la enmienda 2 que decía que el
+>     plano estaba escondido al lector.
+> - **Sin consenso** (un verificador sí, el otro no; decide el hilo):
+>   - **Portada a 320 × 568**: "Empezá la noche" termina en 587 (19 px bajo el pliegue); lo
+>     cerraba `FIND-111` en 565 y lo reabrió el lugar nuevo, *"Traés barro seco en las
+>     zapatillas."*, que ocupa un renglón más. Es una regresión de este ciclo: **conviene
+>     arreglarla**.
+>   - Enunciados de cuatro renglones a 375 y de cuatro o cinco a 320 (el tope de `UX-36` es tres).
+>   - Banco, de oído: `EJ-040` («Me dejo llevar» con los Redondos sonando), `EJ-051` («su hija
+>     grande» en la misma noche que el porro), `EJ-054` («Aviso que llegué» como precaución),
+>     `CU-4` (averiguarlo en el celular, `FIND-116`), la firma de forma de la vuelta, `EJ-052`
+>     (misa, pogo y reviente juntos), las líneas que cantan sin segunda persona.
+>   - Papeles: `UX-36` §10.1 con el lugar viejo (es historia), `T-351`..`T-353` sin ficha en `ORQ`.
+> - Los resultados crudos están en el diario del flujo `wf_23900159-d4e` de la sesión; si no se
+>   llega a él, se vuelven a correr las tres lentes.
+>
+> **Lo que queda abierto además:** `T-351` (pegar el recorte del plano en el lienzo, hojas 08 y
+> 09); el plano en un teléfono real, con lector de pantalla real, con contraste forzado y con el
+> texto al 200 %. A 320 × 568 "Compartí" puede quedar bajo el pliegue en el peor caso: es de antes
+> del plano.
+
 > ## 🌐 EL DOMINIO: FICHINRICOTERO.COM.AR, ANDANDO (2026-10-05) — `D-59`
 >
 > **El sitio vive en `https://fichinricotero.com.ar`.** El usuario compró el dominio en NIC
@@ -203,6 +276,7 @@
 >   nombres de Vercel y sumar el dominio al proyecto `arcade-ricotero`. Hasta entonces el
 >   dominio no carga y `D-59` no puede entrar.
 > - **`D-59` está reservado dos veces** (la rama del dominio y el ciclo 19). Uno renumera.
+>   *[Resuelto 2026-10-05: el ciclo 19 pasó a `D-62` al integrar.]*
 > - El trabajo de Skayboy del menú y el pulgar ya está renumerado sobre `origin/main`, en la
 >   rama local `skayboy/menu-y-mando-sobre-main` (`e50110b`: `D-61`, `UX-37`, `CNT-40`,
 >   `BR-40`, `T-401`…`T-410`), sin subir. Contra esta rama choca solo como texto: el final de
