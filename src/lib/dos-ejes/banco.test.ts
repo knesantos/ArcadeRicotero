@@ -202,6 +202,9 @@ const VETOS_DE_LA_NOCHE: ReadonlyArray<readonly [string, readonly string[]]> = [
   ['seguridad', ['a dedo', 'desconocid*', 'extrano', 'extrana', 'quien tenga', 'quien me mira', 'quien este', 'a quien me']],
   // La épica de tribuna y la psicodelia de utilería (voz-ricotera §3.6 y §7).
   ['épica y psicodelia', ['lucha', 'resistencia', 'delirio', 'caleidoscopio', 'viaje', 'aguante']],
+  // "Nunca cansa el volumen" (el usuario, 2026-10-05, mirando "El volumen cansa los oídos"): en
+  // la noche ricotera la música no molesta, no aturde y no hay que taparla.
+  ['la música que molesta', ['algodon', 'tapon*', 'aturd*', 'cansa los oidos', 'me tapo los oidos', 'volumen cansa', 'demasiado fuerte']],
 ];
 
 const VETOS_DE_LAS_OPCIONES: ReadonlyArray<readonly [string, readonly string[]]> = [
