@@ -5,7 +5,65 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-04
+**Última actualización:** 2026-10-05
+
+> ## ✋ EN CURSO: LAS TAPAS SE SELLAN, Y LAS LETRAS DE DISCO EN MÁS LUGARES (2026-10-05)
+>
+> **Cortado a mitad por el usuario** (*"para y subi e integra todo lo que hayas hecho, despues
+> seguimos"*). Todavía **no se tocó una línea de CSS**: lo que hay son dos documentos para
+> retomar.
+>
+> 1. **El pedido de las tapas**, textual: *"Saquemosle la sombra a las letras de las tapas de los
+>    juegos, busquemos un efecto mas de impresion vieja sobre papel o sello, algo asi como tinta
+>    en papel viejo o eso. Ponete en rol de diseñador. Ademas que queden todas coherentes."* Un
+>    panel de tres diseñadores y tres jueces eligió **el sello de goma** (24,5 contra 20 de la
+>    imprenta de tipos y 18,5 de la fotocopia). La especificación completa —tres texturas nuevas
+>    en `tokens.css`, el papel viejo de la etiqueta, el sello de acción moteado, el golpe por
+>    disco, los tests y el texto de la decisión— está en
+>    `Docs/SUGERENCIAS/ESPEC-D-63-la-tapa-se-sella.md`. Propone `D-63`; verificar que siga libre.
+> 2. **Después el usuario amplió**, textual: *"Sisi saquemos la sombra de todos lados, no me
+>    gusta. Ademas hay que usar la tipografia de los discos en mas lados. Analicemos como
+>    integrarlas mejor."* O sea: el eco sale **también** de la marca, del h1 de artículo y de la
+>    estampa (la especificación de arriba todavía lo deja ahí: hay que ajustarla), y las letras de
+>    disco tienen que ir a más lugares. Terminaron los cuatro relevamientos (sombras, letras, lo que
+>    grita, papeles) y están en `Docs/SUGERENCIAS/ANALISIS-letras-de-disco-y-sin-sombra.md`.
+>    **Faltan** las propuestas de tipografía, los jueces y la síntesis.
+>
+> **El dato que manda el análisis de letras:** *Patricio Rey Fan* tiene A-Z y 0-9; *Lobo Suelto
+> Fan*, A-Z; *Oktubre Calco*, solo 14 letras. Ninguna tiene tildes, Ñ ni signos, y `D-17` no deja
+> escribir sin tilde. Integrarlas en más lugares pasa por derivar esos glifos (fontTools está
+> instalado) o por elegir dónde va cada una.
+>
+> **Próximo paso:** correr las propuestas de tipografía sobre el análisis, unificar con la
+> especificación del sello, y construir todo junto (si un título cambia de letra, cambia cómo se
+> gasta su tinta).
+
+> ## 👥 LA GENTE MIRA DESDE EL FINAL DEL PORTAL (2026-10-04) — `D-62`
+>
+> **Rama `diseno/fondo-multitud`, sobre `main` en `76ba9d3`, integrada a `main` con un PR** a
+> pedido del usuario (*"para y subi e integra todo lo que hayas hecho, despues seguimos"*).
+> Pedido, con la imagen adjunta:
+> *"Usemos esta imagen de fondo de la pagina, sin la parte de las letras de oktubre, un fondo
+> negro y sobre el final de la pagina las personas mirando."*
+>
+> - **El fondo del portal es negro liso.** Sale la franja fija de banderas (`oktubre-banderas`,
+>   velada al 86 %) y su dibujo de repuesto `banderas.svg`.
+> - **La gente de *Oktubre* es el piso del pie de imprenta del portal**, de borde a borde y abajo
+>   del crédito, a tinta plena: `public/arte/multitud-oktubre.png` (1280×368, 64 KB), en
+>   `--papel` y el rojo de la bandera sobre transparente. Lo produce
+>   `node scripts/generar-multitud.mjs` desde el máster
+>   `Docs/INVESTIGACION/TapasDiscos/oktubre-frontal-ancha.webp` (la imagen del usuario).
+> - En el teléfono, piso de 14 rem: se ve el centro de la tapa. La deriva de `UX-20` §1.4 pasó a
+>   la gente, corriendo al revés.
+>
+> **Verificado:** `npm test` 1515/1515 (3 nuevos en `multitud.test.ts`, con su rojo visto),
+> `check` 0/0, build 160. Mirado en el navegador a 1440×900 y a 375×812: la gente al final, sin
+> desborde de costado, el crédito nombra *Oktubre*; el quiz y "Adiviná el tema" siguen con su
+> pasada.
+>
+> **Abierto, sin trabar:** `experiencia` tiene que poner al día `UX-05` (fila de `/`), `UX-20`
+> §2 y `UX-25` §4; el lienzo no tiene esto. Los costados del máster no son de Rocambole (están
+> anotados en `D-62` y en `public/arte/README.md`).
 
 > ## 🕹 SKAYBOY Y POLIGIRL: EL MENÚ, EL PASO ENTRE NIVELES Y EL PULGAR (2026-10-04) — `D-61`
 >
