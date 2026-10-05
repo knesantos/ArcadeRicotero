@@ -149,23 +149,6 @@ html[data-umbral] .marca-grande {
   color: var(--texto-tenue);
 }
 
-/* ---- Recortes que viven en el fondo ---- */
-
-/* La gente con banderas (Oktubre) marcha detras de todo, apenas visible. */
-.banderas-fondo {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  max-height: 26vh;
-  object-fit: cover;
-  object-position: top;
-  opacity: 0.14;
-  pointer-events: none;
-  z-index: 0;
-  user-select: none;
-}
-
 /* ---- La tapa real de fondo (D-21) ----
    Debajo del velo puede haber cualquier foto: el peor caso —el velo sobre un pixel
    blanco puro— ya esta medido en contraste.test.ts, asi que ninguna tapa lo empeora.
@@ -249,77 +232,31 @@ html[data-umbral] .marca-grande {
   }
 }
 
-/* **Y la lleva una sola capa: la franja fija del portal.** No es una limitacion de
-   tiempo, es lo que salio de mirarlo en pantalla.
+/* **Y la lleva una sola capa: la gente del pie del portal** (`D-63`). No es una limitacion
+   de tiempo, es lo que salio de mirarlo en pantalla.
 
-   Las otras `.tapa-fondo` viven adentro de una caja acotada —la cabecera de la
-   Redondopedia, el `main` de cada juego—, y correr hacia arriba una imagen que llena su
-   caja **descubre el borde de abajo**: aparece una franja de fondo pelado donde antes
-   habia foto. Ademas, una capa que se corre adentro de una caja que no se desplaza no es
-   profundidad: es un elemento moviendose, que es exactamente lo que la doctrina prohibe
-   en su primera frase.
+   Las `.tapa-fondo` viven adentro de una caja acotada —la cabecera de la Redondopedia, el
+   `main` de cada juego—, y correr hacia arriba una imagen que llena su caja **descubre el
+   borde de abajo**: aparece una franja de fondo pelado donde antes habia foto. Ademas, una
+   capa que se corre adentro de una caja que no se desplaza no es profundidad: es un
+   elemento moviendose, que es exactamente lo que la doctrina prohibe en su primera frase.
 
-   La franja del portal si es el caso legitimo: esta **fija** al pie de la ventana, o sea
-   ya se queda quieta mientras el contenido sube, y lo que la deriva agrega es que se
-   corra un poco con el — el aire adelantandose apenas al piso. */
+   La multitud si es el caso legitimo, y por una cuenta que cierra sola: corre **al reves**
+   (`reverse`), asi que arranca subida y termina apoyada. El piso de la pagina solo se ve
+   con el desplazamiento al final, que es justo cuando la capa vuelve a cero — el borde de
+   abajo no se descubre nunca. Mientras se baja, la gente sube un poco mas lento que la
+   hoja: queda atras, que es lo que la deriva existe para decir.
+
+   Hasta el 2026-10-04 la llevaba la franja fija de banderas al pie de la ventana, que
+   `D-63` saco: el fondo del portal es negro liso. */
 @supports (animation-timeline: scroll()) {
-  .tapa-fondo--portal {
+  .multitud-pie {
     animation-name: deriva-de-capa;
     animation-timing-function: linear;
+    animation-direction: reverse;
     animation-duration: auto;
     animation-timeline: scroll(root block);
   }
-}
-
-/* Anclada abajo y fija, como la franja de multitud que ya vivia ahi dibujada.
-   NO va detras de la marca grande: esa se escribe en --marca-rojo, que sobre tapa
-   velada no llega a AA (3,38:1) — lo verifica contraste.test.ts. */
-.tapa-fondo--portal {
-  position: fixed;
-  /* La franja se extiende por debajo del borde de la ventana **exactamente lo que la
-     deriva la va a correr hacia arriba**. Sin eso, al desplazar aparecería una tira de
-     fondo pelado en el pie: la capa se corre y descubre por dónde termina.
-
-     Las cuentas cierran solas y sin números nuevos: `--deriva-capa-fondo` es un
-     porcentaje, y en un elemento fijo los porcentajes de `height` y de `bottom` se
-     resuelven contra la ventana. Con `8%`, la franja mide 38vh y arranca 8vh por debajo
-     del borde, así que **lo que se ve es la misma banda de 30vh de siempre**. Con
-     movimiento reducido el token vale `0%` y la geometría vuelve a ser la de antes,
-     letra por letra. */
-  inset: auto 0 calc(-1 * var(--deriva-capa-fondo)) 0;
-  height: calc(30vh + var(--deriva-capa-fondo));
-  background-position: bottom;
-  background-image: linear-gradient(var(--velo-tapa), var(--velo-tapa)),
-    url('/tapas/fondo/oktubre-banderas.jpg');
-
-  /* LA TINTA SE ACABA HACIA ARRIBA — y este es el corte que el usuario nombró primero.
-
-     Medido antes de tocar nada, a 375×812: la franja arrancaba en y=568 con una línea
-     geométrica de x=0 a x=375. El velo es un lavado plano —dos paradas idénticas— que
-     vale lo mismo en el centro que en el último píxel, así que la foto de la multitud
-     empezaba de golpe. Ninguna máscara, ninguna textura, ningún regreso al fondo.
-
-     Ahora se apaga en mota, con la misma receta de dos capas que usa `.pasada-pie` y por
-     los mismos motivos: sin `mask-composite` las capas se unen, que es exactamente lo que
-     hace falta, y un motor que no lo entienda no puede arruinarlo. Abajo NO se desgasta:
-     esa pasada sigue de largo por debajo del borde de la ventana, y la multitud tiene que
-     quedar apoyada en el piso de la pantalla. Una capa que se desvanece por los cuatro
-     lados es una viñeta, que es lo único en lo que esto se puede convertir si se usa mal.
-
-     La deriva no se toca: la máscara viaja con el elemento, así que la tinta no se corre
-     de su propio borde. Y el velo tampoco: enmascarar sólo puede BAJAR el peso de la foto
-     en el compuesto, así que el peor caso que mide `contraste.test.ts` sigue siendo el
-     peor caso y no entra ni un par nuevo. */
-  -webkit-mask-image: var(--textura-rodillo),
-    linear-gradient(to bottom, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
-  mask-image: var(--textura-rodillo),
-    linear-gradient(to bottom, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
-  -webkit-mask-size: 240px var(--desgaste), 100% 100%;
-  mask-size: 240px var(--desgaste), 100% 100%;
-  -webkit-mask-repeat: repeat-x, no-repeat;
-  mask-repeat: repeat-x, no-repeat;
-  -webkit-mask-position: top left, top left;
-  mask-position: top left, top left;
 }
 
 .tapa-fondo--lobo-tiras {
@@ -1526,6 +1463,38 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   z-index: 1;
   opacity: 0.85;
   rotate: -4deg;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* La gente mirando (`D-63`): el piso del pie del portal, de borde a borde.
+
+   **No es una foto y por eso no lleva velo**, por la misma razón que la pasada: el recorte
+   viene impreso en dos tintas de `tokens.css` (`--papel` y el rojo de la bandera) sobre
+   transparente, así que donde no hay gente se ve `--fondo` y nada más. Y no tiene letra
+   encima: el crédito va arriba, sobre el negro. `D-21` vela una tapa porque hay texto que
+   leer sobre ella; acá no hay. */
+.pie-imprenta:has(.multitud-pie) {
+  /* La gente se apoya en el borde de abajo de la página, sin la sangría de abajo. */
+  padding-bottom: 0;
+}
+
+.multitud-pie {
+  display: block;
+  position: relative;
+  z-index: 1;
+  /* La franja tiene sangría a los costados y la gente no: llega a los dos bordes. */
+  width: calc(100% + 2 * var(--espacio-2));
+  max-width: none;
+  margin: var(--espacio-2) calc(-1 * var(--espacio-2)) 0;
+  height: auto;
+  /* En el teléfono, la proporción del recorte (3,5 a 1) la dejaba en 107 px: una tira de
+     caras chicas. Con piso de alto y `cover` se ve el centro —la tapa de verdad, con las
+     caras grandes— y los costados se cortan contra el borde, como la figura. Probado a
+     375 px con 11 y con 14 rem: con 11 la cara grande del medio quedaba cortada al pie. */
+  min-height: 14rem;
+  object-fit: cover;
+  object-position: center bottom;
   pointer-events: none;
   user-select: none;
 }

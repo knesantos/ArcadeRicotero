@@ -5,13 +5,13 @@
  * Un cassette grabado en casa: lado A los juegos, lado B la lectura. Cada casete
  * viste la paleta real de su disco (mezcla `D-19`) y el collage de fondo trae los
  * recortes que pide `UX-04` con tecnicas fichadas de Rocambole (`RES-06`): la
- * mosca volando, la gente con banderas, y ahora la figura de la cadena.
+ * mosca volando, la figura de la cadena, y la gente de *Oktubre* mirando desde el pie.
  *
  * Molinetes abiertos (`D-14`): esta pantalla no pide nada — ni cuenta ni saber.
  */
 import Base from '../layouts/Base.astro';
 import { PORTAL, LUGARES, JUEGOS, CASETE_REDONDOPEDIA, CASETE_CANCIONERO, OKTUBRE, type Casete } from '../lib/sitio/copy.ts';
-import { arteDeCasete, conRecorteReal, discoDeRecorte, discosDe, materialDeCasete, medidas, recorte } from '../lib/sitio/arte.ts';
+import { arteDeCasete, conRecorteReal, discoDeRecorte, materialDeCasete, medidas, recorte } from '../lib/sitio/arte.ts';
 import { segunLaPartida } from '../lib/sitio/portal.ts';
 import { cumpleDelDia, discosDeOktubre, type FichaCruda } from '../lib/sitio/oktubre.ts';
 import { pistaDe, primeraOracion, restoDeLaBajada } from '../lib/sitio/caratula.ts';
@@ -47,15 +47,12 @@ const HAY_PARTIDA: Record<string, boolean> = {
   '/juegos/completar-la-letra/': cargarBanco(crudoLetra as unknown as BancoCrudo).length > 0,
 };
 
-// Los discos que se ven acá: el de cada casete mas la franja de Oktubre del fondo.
-// El pie los nombra (`D-21`, condicion 1).
 /*
- * Desde `UX-25` §2.2 los casetes ya no llevan la tapa chica, así que de tapas enteras **acá
- * queda un disco solo**: la franja de Oktubre del fondo. Acreditar ocho tapas que ya no se
- * ven sería el defecto contrario al de `D-21` condición 1. Lo que sí se suma, más abajo,
- * son los discos de los recortes que visten los casetes (`tapasUsadas`).
+ * Los discos que se ven acá los nombra el pie (`D-21`, condicion 1). Hasta el 2026-10-04
+ * esta pantalla sumaba a mano la franja de Oktubre del fondo; desde `D-63` el fondo es negro
+ * liso y la gente de *Oktubre* es el piso del pie de imprenta, que acredita lo suyo solo.
+ * Lo que sí se suma, más abajo, son los discos de lo que visten los casetes (`tapasUsadas`).
  */
-const tapasFondo = discosDe(['oktubre-banderas']);
 
 /**
  * El personaje de portada.
@@ -146,10 +143,9 @@ const conArte = lados.map((lado, l) => ({
  * (`discoDeRecorte`): el casete dibujado no es de ningun disco y no acredita nada.
  */
 const tapasUsadas = [
-  ...new Set([
-    ...tapasFondo,
-    ...conArte.flatMap((lado) => lado.casetes.map((c) => discoDeRecorte(c.arte))).filter((d): d is string => d !== null),
-  ]),
+  ...new Set(
+    conArte.flatMap((lado) => lado.casetes.map((c) => discoDeRecorte(c.arte))).filter((d): d is string => d !== null),
+  ),
 ];
 ---
 
