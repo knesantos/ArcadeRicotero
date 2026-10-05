@@ -260,7 +260,7 @@ h2{font-size:1.4rem;margin:0 0 .2rem;text-transform:uppercase;color:var(--tinta)
 </div>
 <div id="indice">
 <h1>Cancionero ricotero</h1>
-<p class="sub">${temas.length} temas · armado el ${hoy} en Arcade Ricotero</p>
+<p class="sub">${temas.length} temas · armado el ${hoy} en Fichín Ricotero</p>
 <ol>
 ${indice}
 </ol>

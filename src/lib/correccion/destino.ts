@@ -24,5 +24,5 @@ export const CASILLA: string | null = PARTES ? PARTES.join('@') : null;
 
 /** El asunto del mail. La parte legible la fija `CNT-12`. */
 export function ASUNTO(juego: string): string {
-  return `Corrección del arcade ricotero — ${juego}`;
+  return `Corrección del fichín ricotero — ${juego}`;
 }

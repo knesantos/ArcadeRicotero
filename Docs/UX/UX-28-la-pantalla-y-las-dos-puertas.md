@@ -808,3 +808,12 @@ Lo que se verifica a ojo y con un teléfono en la mano, en este orden:
    CSS con alto 812 fijo; alto 719 y 720 px CSS con ancho 420 fijo): la línea de `CNT-18`
    se esconde apenas cruza cualquiera de los dos hacia abajo, y solo se ve cuando los dos
    están por encima a la vez.
+
+---
+
+> **Enmendado el 2026-10-04 por `UX-37` (`D-61`).** Tocan este documento tres cosas, y el texto
+> viejo y el nuevo de cada una están en `UX-37` `§8.2` y `§8.3`: **`§1`**, *"nadie toca una pantalla
+> previa"*, deja de ser literal (hay un menú de entrada con un botón grande; lo que sigue sin
+> existir es elegir un modo); **`§2.2`**, *"en solitario … un pulgar por columna"*, era falso para
+> correr saltando y ahora se cumple porque la dirección viaja con el pulgar (`UX-37` `§6`); y
+> **`§2.1`**, *"no hay gesto"*, admite uno, opcional: subir de la flecha al bloque de saltar.

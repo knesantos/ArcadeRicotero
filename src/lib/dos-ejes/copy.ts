@@ -118,14 +118,15 @@ export const RESULTADO = {
   /**
    * La marca chica arriba de la hoja, para que la captura salga con nombre y apellido. Va en
    * dos renglones (`UX-36` §5.1): esta, en la calcada de la tapa de *Oktubre* —que solo tiene
-   * mayúsculas y sin tilde—, y debajo el título del juego (`PANTALLA_0.titulo`). La misma
-   * cadena encabeza la tarjeta y la vista previa.
+   * mayúsculas, y de tildes solo la Í que se le derivó para FICHÍN (`D-60`)—, y debajo el
+   * título del juego (`PANTALLA_0.titulo`). La misma cadena encabeza la tarjeta y la vista
+   * previa.
    */
-  marca: 'Arcade Ricotero',
+  marca: 'Fichín Ricotero',
   compartir: 'Compartí',
   denuevo: 'Empezá otra noche',
   bajar: 'Bajá la tarjeta',
-  volver: 'Volvé al arcade',
+  volver: 'Volvé al fichín',
   /** El título de la grilla de las cuatro maneras. */
   lasCuatro: 'Las cuatro maneras',
   /**
@@ -183,7 +184,7 @@ export const TARJETA = {
   credito: 'Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole, 1996).',
   /** El texto alternativo de la vista previa de una postal. Lleva el crédito (`D-21`). */
   alt: (nombre: string, linea: string) =>
-    `Tarjeta de Arcade Ricotero: me salió «${nombre}». ${linea} Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole).`,
+    `Tarjeta de Fichín Ricotero: me salió «${nombre}». ${linea} Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole).`,
   /** El de la vista previa de la portada del juego. */
-  altJuego: 'Tarjeta de Arcade Ricotero: ¿Qué tipo de ricotero sos?, con las cuatro maneras. Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole).',
+  altJuego: 'Tarjeta de Fichín Ricotero: ¿Qué tipo de ricotero sos?, con las cuatro maneras. Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole).',
 } as const;

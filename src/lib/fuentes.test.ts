@@ -10,11 +10,22 @@
  *
  * Este test abre el archivo, lee su tabla `cmap` y exige que cubra lo que el sitio escribe
  * con esa letra. Sin dependencias: WOFF2 es Brotli, y `node:zlib` lo trae.
+ *
+ * **Desde `D-60` mira también la marca.** El sitio pasó de Arcade Ricotero a Fichín Ricotero,
+ * y la marca va en Oktubre Calco, que es un calco de la tapa con once letras (`RES-43`):
+ * FICHÍN pedía la F, la H, la N y la Í, que no estaban, y el navegador las habría tapado una
+ * por una con la de repuesto. Se derivaron (`scripts/derivar-oktubre-calco.py`) y acá se
+ * comprueba que toda forma de la marca —la de las páginas, la de los dos pinceles y la de
+ * las tarjetas del taller— pida solo letras que el calco tiene. El calco es WOFF (zlib), no
+ * WOFF2: por eso hay dos lectores y una sola lectura del `cmap`.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { brotliDecompressSync } from 'node:zlib';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
+import { brotliDecompressSync, inflateSync } from 'node:zlib';
+import { PORTAL } from './sitio/copy.ts';
+import { RESULTADO } from './dos-ejes/copy.ts';
 
 /** Las etiquetas de tabla que WOFF2 nombra por número (la tabla "known tags" del formato). */
 const CONOCIDAS = [
@@ -62,7 +73,27 @@ export function puntosDeCodigo(woff2: Buffer): Set<number> {
     desde += t.largo;
   }
   assert.ok(cmap, 'la fuente no trae cmap');
+  return puntosDelCmap(cmap);
+}
 
+/** Los puntos de código que trae una fuente WOFF (la primera versión, comprimida con zlib). */
+export function puntosDeCodigoWoff(woff: Buffer): Set<number> {
+  assert.equal(woff.toString('ascii', 0, 4), 'wOFF', 'no es WOFF');
+  const numTables = woff.readUInt16BE(12);
+  for (let i = 0; i < numTables; i++) {
+    const e = 44 + i * 20;
+    if (woff.toString('ascii', e, e + 4) !== 'cmap') continue;
+    const desde = woff.readUInt32BE(e + 4);
+    const comprimido = woff.readUInt32BE(e + 8);
+    const original = woff.readUInt32BE(e + 12);
+    const datos = woff.subarray(desde, desde + comprimido);
+    return puntosDelCmap(comprimido < original ? inflateSync(datos) : datos);
+  }
+  throw new Error('la fuente no trae cmap');
+}
+
+/** Lee una tabla `cmap` ya descomprimida (subtablas de formato 4 y 12). */
+function puntosDelCmap(cmap: Buffer): Set<number> {
   const puntos = new Set<number>();
   const subtablas = cmap.readUInt16BE(2);
   for (let i = 0; i < subtablas; i++) {
@@ -105,4 +136,55 @@ test('la guarda sabe ver: el subconjunto viejo, sin la A-Z, no pasaría', () => 
   const puntos = puntosDeCodigo(readFileSync('public/fuentes/archivo-black.woff2'));
   assert.ok(puntos.has(0x41) && puntos.has(0x100));
   assert.ok(!puntos.has(0x4e00));
+});
+
+const CALCO = puntosDeCodigoWoff(readFileSync('public/fuentes/oktubre-calco.woff'));
+
+/** Las letras de `texto` que el calco no tiene (los espacios no cuentan). */
+const faltanEnElCalco = (texto: string): string[] =>
+  [...new Set([...texto.replace(/\s/g, '')].filter((c) => !CALCO.has(c.codePointAt(0)!)))];
+
+test('la marca del sitio entra entera en Oktubre Calco (D-60)', () => {
+  assert.ok(CALCO.has(0x4f) && !CALCO.has(0x53), 'el lector del calco no ve la O de la tapa, o ve una S que no tiene');
+  assert.deepEqual(faltanEnElCalco(PORTAL.titulo), [], `a "${PORTAL.titulo}" le faltan letras en el calco`);
+});
+
+test('los dos pinceles y el taller dibujan la misma marca que la pantalla', () => {
+  for (const ruta of ['src/scripts/tarjeta.ts', 'src/scripts/lamina.ts']) {
+    const marca = /const MARCA = '([^']+)'/.exec(readFileSync(ruta, 'utf-8'))?.[1];
+    assert.equal(marca, PORTAL.titulo, `${ruta}: la firma del pincel no es la del sitio`);
+  }
+  // `generar-dos-ejes.mjs` la escribe en mayúscula con el calco, en las tarjetas PNG.
+  assert.equal(RESULTADO.marca.toUpperCase(), PORTAL.titulo);
+  assert.deepEqual(faltanEnElCalco(RESULTADO.marca.toUpperCase()), []);
+});
+
+test('ninguna marca escrita en una página pide una letra que el calco no tiene', () => {
+  const archivos: string[] = [];
+  const recorrer = (dir: string): void => {
+    for (const n of readdirSync(dir)) {
+      const ruta = join(dir, n);
+      if (statSync(ruta).isDirectory()) recorrer(ruta);
+      else if (ruta.endsWith('.astro')) archivos.push(ruta);
+    }
+  };
+  ['src/pages', 'src/components', 'src/layouts'].forEach(recorrer);
+
+  const FORMAS = ['marca', 'marca-grande', 'marca-chica', 'caratula-marca'] as const;
+  const vistas = new Map<string, number>(FORMAS.map((f) => [f, 0]));
+  // La clase puede venir acompañada de otras; el texto se toma entero hasta el cierre de la
+  // etiqueta, así una marca armada con `{...}` o con otra etiqueta adentro no pasa sin mirarse.
+  const patron = /<(\w+)\s[^>]*class="(?:[^"]*\s)?(marca|marca-grande|marca-chica|caratula-marca)(?:\s[^"]*)?"[^>]*>([\s\S]*?)<\/\1>/g;
+  for (const ruta of archivos) {
+    const fuente = readFileSync(ruta, 'utf-8');
+    for (const m of fuente.matchAll(patron)) {
+      const [, , forma, texto] = m;
+      vistas.set(forma!, vistas.get(forma!)! + 1);
+      assert.ok(!/[{<]/.test(texto!), `${ruta}: la marca .${forma} no es texto fijo ("${texto!.trim()}"); este caso no la puede mirar`);
+      assert.deepEqual(faltanEnElCalco(texto!), [], `${ruta}: "${texto!.trim()}"`);
+    }
+  }
+  // Las cuatro formas de la marca existen en el árbol: si el patrón deja de ver alguna, el
+  // caso de arriba pasa sin mirarla.
+  for (const forma of FORMAS) assert.ok(vistas.get(forma)! >= 1, `no se encontró ninguna marca .${forma} escrita`);
 });

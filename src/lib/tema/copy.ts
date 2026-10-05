@@ -213,7 +213,7 @@ export const RESULTADO = {
   /** Cuántos sacaste, dicho al lado del puntaje: el número que se cuenta en la previa. */
   sacaste: (n: number, total: number) => `${n} de ${total} temas`,
   denuevo: 'Otra vuelta',
-  volver: 'Volvé al arcade',
+  volver: 'Volvé al fichín',
   compartir: 'Compartí',
   /** Mientras el canvas dibuja. Dura un parpadeo, pero un botón mudo se toca dos veces. */
   armando: 'Armando la tarjeta',
@@ -236,7 +236,7 @@ export const RESULTADO = {
  * el sitio puede vivir en más de un lado y una dirección escrita a mano envejece sola.
  *
  * **Y la firma del sitio tampoco**: desde que la tarjeta la comparten los dos juegos
- * (`D-30`), "ARCADE RICOTERO" vive en el pincel, que es lo que no cambia entre juegos. Lo
+ * (`D-30`), "FICHÍN RICOTERO" vive en el pincel, que es lo que no cambia entre juegos. Lo
  * que queda acá es solo lo que este juego dice distinto del otro.
  */
 export const TARJETA = {

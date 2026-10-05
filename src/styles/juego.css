@@ -3601,7 +3601,7 @@ body > main {
    el vocabulario se fija en el ADR y no en cada pantalla, y por eso hay exactamente tres
    nombres en todo el repo: `marca`, `lugar` y `mosca`.
 
-   Aca vive `marca`, que es la firma ARCADE RICOTERO de la cabecera de cada juego. Cruza
+   Aca vive `marca`, que es la firma FICHÍN RICOTERO de la cabecera de cada juego. Cruza
    de una pantalla a la otra sin volver a dibujarse: es lo que hace que el paso se lea
    como moverse adentro del mismo sitio y no como cargar otro. **Desde `D-54` la lleva
    tambien la marca de la carátula** (`.caratula-marca`), que es la misma firma mudada a la
@@ -3739,7 +3739,7 @@ body > main {
 
 /* ---- La carátula en el teléfono: una calcomanía en la esquina de la cabecera ----
 
-   El renglón de la cabecera tenía la cinta de "← AL ARCADE" a la izquierda y nada a la
+   El renglón de la cabecera tenía la cinta de "← AL FICHÍN" a la izquierda y nada a la
    derecha. Ahí va la pieza del casete y su número de pista, como una calcomanía pegada en
    la tapa: chica, torcida, sin nada que tocar. Es lo que une el portal con el juego — el
    casete que tocaste, ahora en la mano. */

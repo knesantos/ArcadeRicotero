@@ -1,11 +1,12 @@
-# El diseño manda: sistema de marca de Arcade Ricotero
+# El diseño manda: sistema de marca de Fichín Ricotero
 
 Esta regla la escribe el hilo principal y obliga a **todo el que toque una pantalla,
 un color, una fuente o un componente** — hilo principal incluido.
 
 ## Dónde vive el diseño
 
-La fuente de verdad es el lienzo **"Sistema de marca Arcade Ricotero"**:
+La fuente de verdad es el lienzo **"Sistema de marca Fichín Ricotero"** (se llamaba Arcade
+Ricotero hasta `D-60`, cuando el sitio cambió de nombre):
 https://claude.ai/code/artifact/59acd1de-80ab-4074-b1ba-b75da05cb134
 
 Las hojas: 01 marca · 02 voz · 03 paleta · 04 tipografía · 05 tapas (paletas reales
@@ -49,14 +50,16 @@ Viven en `public/fuentes/` y se declaran solo en `tokens.css`:
 
 | Variable | Fuente | Origen | Ojo |
 |---|---|---|---|
-| `--fuente-titular` | Oktubre Calco v0.3 | calco propio de la tapa (`RES-43`) | solo A B C D E I K O R T U — **sin acentos ni Ñ** |
+| `--fuente-titular` | Oktubre Calco v0.4 | calco propio de la tapa (`RES-43`); F, H, N e Í derivadas de sus letras (`D-60`) | solo A B C D E F H I K N O R T U y la Í — **sin otros acentos ni Ñ**; `fuentes.test.ts` falla si la marca pide otra |
 | `--fuente-marca-firma` | Patricio Rey Fan | digitalización fan, B. Zavala (`RES-42`) | sin acentos |
 | `--fuente-rotulada` | Archivo Black | autoalojada | completa, es el repuesto de todo |
 | `--fuente` | pila del sistema | — | todo el texto largo |
 
 **Deuda declarada**: las letras con tilde (JUGÁ, SEGUÍ, MITOLOGÍA) todavía no existen en
-las fuentes de disco — hasta derivarlas, esas palabras van en `--fuente-rotulada`. No
-"resolver" esto escribiendo sin tilde: `D-17` no negocia el voseo.
+las fuentes de disco, salvo la Í del calco, que se derivó para FICHÍN (`D-60`) — hasta
+derivarlas, esas palabras van en `--fuente-rotulada`. No "resolver" esto escribiendo sin
+tilde: `D-17` no negocia el voseo. Cómo se deriva una letra del calco sin dibujarla:
+`scripts/derivar-oktubre-calco.py`.
 
 ## Prohibido: la estética genérica de IA ("slop")
 

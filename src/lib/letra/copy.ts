@@ -44,12 +44,12 @@ export const RESULTADO = {
   titulo: 'Cómo te fue',
   puntaje: (aciertos: number, total: number) => `${aciertos} de ${total}`,
   denuevo: 'Otra vuelta',
-  volver: 'Volvé al arcade',
+  volver: 'Volvé al fichín',
   alCancionero: 'Mirá las letras enteras',
   /** Compartir (`CNT-26`): texto y enlace, sin tarjeta, como "Más o menos". */
   compartir: 'Compartí',
   paraCompartir: (aciertos: number, total: number) =>
-    `Completé ${aciertos} de ${total} versos en el arcade ricotero. ¿Vos cuántos completás?`,
+    `Completé ${aciertos} de ${total} versos en el fichín ricotero. ¿Vos cuántos completás?`,
   copiado: 'Se copió el enlace.',
   aManoTitulo: 'Copiá esto y mandalo',
 } as const;
