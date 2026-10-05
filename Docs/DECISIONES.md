@@ -3470,6 +3470,15 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   - **`revisor`:** `REV-20`, con el quinto lugar y la pregunta de si la noche suena ricotera.
   - El sitio no tiene muro de edad (`D-09`, los molinetes): desde `D-59` el test habla de birra,
     porro y merca. Es decisión del usuario y queda dicha acá.
+- **Enmienda 1 (2026-10-05) — la música nunca molesta.** El usuario, mirando en el sitio
+  publicado la hoja vieja de `EJ-052` ("El volumen cansa los oídos", con "Me tapo con los dedos"
+  y "Traje algodón por las dudas"), textual: *"Esta creo que es vieja pero no va, nunca cansa el
+  volumen."* En el recital ricotero el volumen no es un problema que alguien resuelve: es parte
+  de la noche. **Ninguna escena ni opción trata la música como algo que molesta**: ni oídos
+  cansados, ni algodón, ni tapones, ni "demasiado fuerte". La hoja ya había salido del banco en
+  la vuelta de `CNT-31`; lo que se suma es la guarda, para que no vuelva: `banco.test.ts`,
+  apartado *la música que molesta* de los vetos de la noche (escena, momentos, bajadas y
+  opciones).
 
 ## D-60 — El sitio se llama Fichín Ricotero: el dominio de Arcade Ricotero no se pudo comprar
 
