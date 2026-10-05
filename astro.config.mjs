@@ -10,8 +10,8 @@ export default defineConfig({
   // absoluta —un `og:image` relativo no lo levanta ningun previsualizador—, y `Astro.site`
   // es de donde salen. El nombre del proyecto es el que usa `BAJAR-EL-SITIO.md`
   // (`vercel remove arcade-ricotero`). **Si el sitio termina en otro dominio, se cambia
-  // aca y en ningun otro lado.**
-  site: 'https://arcade-ricotero.vercel.app',
+  // aca y en ningun otro lado.** Desde `D-59` es fichinricotero.com.ar, comprado en NIC.
+  site: 'https://fichinricotero.com.ar',
   output: 'static',
   build: { format: 'directory' },
   compressHTML: true,
