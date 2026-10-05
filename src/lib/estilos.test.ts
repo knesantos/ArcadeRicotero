@@ -611,6 +611,10 @@ const ESTADOS_EJES = [
   // La etiqueta del amigo que la isla pega en la tapa cuando llega un enlace viejo: sin regla,
   // el punteado "del otro" no se ve.
   '.ejes-tapa-etiqueta--amigo',
+  // El plano de dos ejes (`UX-38`): la tuya y la del amigo se marcan con borde. Sin regla, la
+  // marca desaparece del dibujo y nada falla.
+  '.ejes-plano-cuadrante--tuya',
+  '.ejes-plano-cuadrante--suya',
 ];
 
 /**
@@ -1268,4 +1272,31 @@ test('ese control sabe encontrar: se prueba contra una negrita inventada', () =>
   assert.deepEqual(negritasFalsas('.micro { font-family: var(--fuente); font-weight: 700; }'), []);
   // Nombrada en un comentario no es una regla.
   assert.deepEqual(negritasFalsas('/* .x { font-family: var(--fuente-rotulada); font-weight: 700; } */'), []);
+});
+
+/**
+ * **El piso de la letra en el test de dos ejes** (`UX-36` §8.4, `UX-38` §8, guarda G4). El plano
+ * metió cuatro cuerpos chicos (polos, sellos y nombres de 12 a 12,8 px) en un recorte angosto,
+ * y la palanca fácil cuando algo no entra es achicar la letra. Ninguna regla del bloque
+ * `.ejes-*` pide menos de 0,75 rem (12 px), ni en `rem` ni en `px`.
+ */
+function letrasChicasDeEjes(css: string): string[] {
+  return reglas(css)
+    .filter((r) => r.selector.split(',').some((s) => s.trim().startsWith('.ejes-')))
+    .filter((r) => {
+      const m = /font-size:\s*([\d.]+)(rem|px)\b/.exec(r.cuerpo);
+      if (!m) return false;
+      const px = m[2] === 'rem' ? Number(m[1]) * 16 : Number(m[1]);
+      return px < 12;
+    })
+    .map((r) => r.selector);
+}
+
+test('ninguna letra del test de dos ejes baja de 12 px', () => {
+  assert.deepEqual(letrasChicasDeEjes(leer('src/styles/juego.css')), []);
+});
+
+test('ese control sabe encontrar: se prueba contra una letra de 11 px', () => {
+  assert.deepEqual(letrasChicasDeEjes('.ejes-plano-nombre { font-size: 0.7rem; } .otra { font-size: 0.5rem; }'), ['.ejes-plano-nombre']);
+  assert.deepEqual(letrasChicasDeEjes('.ejes-plano-polo, .x { font-size: 11px; }'), ['.ejes-plano-polo, .x']);
 });

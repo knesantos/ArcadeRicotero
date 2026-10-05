@@ -85,3 +85,20 @@ test('compartir lleva la tarjeta ya bajada, y el enlace es la postal de la ident
   assert.match(ISLA, /archivo: tarjeta/);
   assert.match(ISLA, /\/juegos\/\$\{JUEGO\}\/\$\{slugDe\(r\.id\)\}\//, 'el enlace no es la postal');
 });
+
+test('el plano se esconde al lector y no tiene nada que se toque (UX-38 §5)', () => {
+  const desde = ISLA.indexOf('function plano(');
+  assert.ok(desde > 0, 'no está la función del plano');
+  const cuerpo = ISLA.slice(desde, ISLA.indexOf('\n}\n', desde));
+  assert.match(cuerpo, /setAttribute\('aria-hidden', 'true'\)/, 'el plano se lee: dice dos veces lo que ya dicen la hoja y la grilla');
+  for (const [que, re] of [
+    ['un enlace', /'a'/],
+    ['un botón', /'button'/],
+    ['un tabindex', /tabindex|tabIndex/],
+    ['un punto', /'circle'|ejes-punto/],
+  ] as const) {
+    assert.ok(!re.test(cuerpo), `el plano trae ${que}`);
+  }
+  // Una sola `disposicion()` para el plano y la grilla: así no pueden discrepar.
+  assert.equal(ISLA.match(/disposicion\(banco/g)?.length, 1, 'el plano y la grilla calculan la disposición por separado');
+});

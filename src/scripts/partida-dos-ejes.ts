@@ -228,13 +228,70 @@ function manera(c: Cuadrante, tuya: boolean, delAmigo: boolean): HTMLElement {
   return li;
 }
 
+type Disposicion = ReturnType<typeof disposicion>;
+
+/** Un extremo de un eje: el polo en la rotulada y, debajo, sus palabras. */
+function polo(p: Polo, lugar: 'arriba' | 'abajo' | 'izquierda' | 'derecha'): HTMLElement {
+  const caja = el('div', `ejes-plano-polo ejes-plano-polo--${lugar}`);
+  caja.append(el('span', 'ejes-plano-polo-eje', EJES[p]), el('span', 'ejes-plano-polo-dice', POLOS[p]));
+  return caja;
+}
+
+/**
+ * El plano de dos ejes (`UX-38`, a pedido del usuario: *"queda lindo ver que está en un plano
+ * de dos ejes"*). Un recorte de papel con los dos ejes en cruz, los cuatro extremos con su
+ * polo y las cuatro maneras, la tuya marcada.
+ *
+ * **Relativo, como la grilla:** sale de la misma `disposicion()` y no de una tabla propia, así
+ * que tu polo de luz-oscuridad va arriba, tu polo de orden-caos a la izquierda y tu manera
+ * arriba a la izquierda, para cada uno la suya. Entre los cuatro planos posibles cada manera
+ * pasa una vez por cada lugar (`partida.test.ts`): ninguna queda arriba para todos, que era lo
+ * que `D-57` punto 7 le sacó al rombo.
+ *
+ * **Sin punto:** la marca es el borde y el sello, como en la grilla. Un punto invita a medir a
+ * qué distancia queda del eje, y `resolverCuadrante` no devuelve ningún número (`BR-17`).
+ *
+ * **Escondido al lector de pantalla** (`aria-hidden`): todo lo que dice ya lo dicen la hoja
+ * (los dos polos de la tuya) y la grilla (las cuatro, cuál es la tuya y cuál la del amigo).
+ * No tiene nada que se toque.
+ */
+function plano(id: string, d: Disposicion): HTMLElement {
+  const { celdas, renglones, columnas } = d;
+  const recorte = el('div', 'ejes-plano');
+  recorte.setAttribute('aria-hidden', 'true');
+
+  const cruz = el('div', 'ejes-plano-cruz');
+  // Los dos ejes son elementos vacíos con borde, no con fondo: en el contraste forzado el
+  // navegador pisa los fondos y respeta los bordes (`UX-38` §4.4).
+  cruz.append(el('span', 'ejes-plano-eje ejes-plano-eje--vertical'), el('span', 'ejes-plano-eje ejes-plano-eje--horizontal'));
+  celdas.forEach((c, k) => {
+    const tuya = c.id === id;
+    const delAmigo = c.id === suyo?.id;
+    const cuadrante = el('div', `ejes-plano-cuadrante ejes-plano-cuadrante--${k < 2 ? 'arriba' : 'abajo'}`);
+    if (tuya) cuadrante.classList.add('ejes-plano-cuadrante--tuya');
+    if (delAmigo) cuadrante.classList.add('ejes-plano-cuadrante--suya');
+    if (tuya || delAmigo) {
+      const sellos = el('span', 'ejes-plano-sellos');
+      if (tuya) sellos.append(el('span', 'ejes-plano-sello', RESULTADO.tuya));
+      if (delAmigo) sellos.append(el('span', 'ejes-plano-sello ejes-plano-sello--suya', RESULTADO.suya));
+      cuadrante.append(sellos);
+    }
+    cuadrante.append(el('span', 'ejes-plano-nombre', c.nombre));
+    cruz.append(cuadrante);
+  });
+  cruz.append(polo(columnas[0], 'izquierda'), polo(columnas[1], 'derecha'));
+
+  recorte.append(polo(renglones[0], 'arriba'), cruz, polo(renglones[1], 'abajo'));
+  return recorte;
+}
+
 /**
  * Las cuatro maneras en la grilla de dos por dos (`D-57` punto 7): la tuya primero, al lado
  * la que comparte tu polo de luz-oscuridad, abajo la que comparte el de orden-caos. Los
  * rótulos de los márgenes son los polos, no las maneras: dicen qué tienen en común.
  */
-function grilla(id: string): HTMLElement {
-  const { celdas, renglones, columnas } = disposicion(banco, id);
+function grilla(id: string, d: Disposicion): HTMLElement {
+  const { celdas, renglones, columnas } = d;
   const seccion = el('section', 'ejes-cuatro');
   const titulo = el('h3', 'ejes-cuatro-titulo', RESULTADO.lasCuatro);
   titulo.id = 'ejes-cuatro-titulo';
@@ -251,6 +308,10 @@ function grilla(id: string): HTMLElement {
       el('p', 'ejes-contraste', CONTRASTE[relacion(banco, id, suyo.id)](suyo.nombre, POLOS[mia.luzOscuridad], POLOS[mia.ordenCaos])),
     );
   }
+
+  // El plano va antes que la grilla y después del contraste (`UX-38` §3.1): orienta primero,
+  // la grilla lee después.
+  seccion.append(plano(id, d));
 
   const tabla = el('div', 'ejes-grilla');
   // Los rótulos de columna van arriba, una vez; los de renglón, encima de cada par. Son
@@ -329,7 +390,9 @@ function pintarResultado(): void {
   acciones.append(denuevo);
   zonaResultado.append(acciones);
 
-  zonaResultado.append(grilla(r.id));
+  // Una sola `disposicion()` para el plano y la grilla: así las dos figuras no pueden
+  // discrepar (`UX-38` §4.2).
+  zonaResultado.append(grilla(r.id, disposicion(banco, r.id)));
 
   const bajar = el('a', 'ejes-bajar', RESULTADO.bajar) as HTMLAnchorElement;
   bajar.href = rutaDeTarjeta(r.id);
