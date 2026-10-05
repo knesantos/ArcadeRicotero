@@ -93,9 +93,9 @@ const DERIVADOS = [
   { nombre: 'gulp-logo', forma: 'detalle', master: 'gulp-trasera.jpg', caja: [0.54, 0.27, 0.72, 0.39] },
 
   // --- fondos (detras del contenido, siempre con velo) ---
-  // Baja respecto de lo que dice UX-05 para que no asome el pie del wordmark, que el
-  // propio catalogo pide dejar afuera.
-  { nombre: 'oktubre-banderas', forma: 'fondo', master: 'oktubre-frontal.jpg', caja: [0.0, 0.45, 1.0, 0.73] },
+  // El fondo `oktubre-banderas` del portal salió el 2026-10-04 (`D-62`): el portal pasó a
+  // fondo negro liso con la gente de *Oktubre* al pie, que es un recorte del collage y lo
+  // produce `generar-multitud.mjs`.
   { nombre: 'gulp-pincelada', forma: 'fondo', master: 'gulp-frontal.jpg', caja: [0.55, 0.55, 1.0, 1.0] },
   { nombre: 'lobo-tiras', forma: 'fondo', master: 'lobo-suelto-cordero-atado-cd1-frontal.jpg', caja: [0.0, 0.45, 0.62, 0.85] },
   { nombre: 'mosca-olla', forma: 'fondo', master: 'la-mosca-y-la-sopa-trasera.jpg', caja: [0.58, 0.42, 0.92, 0.9] },

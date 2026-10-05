@@ -12,12 +12,16 @@ import '../styles/tokens.css';
 import '../styles/sitio.css';
 import Cabeza from '../components/Cabeza.astro';
 import PieImprenta from '../components/PieImprenta.astro';
-import { conRecorteReal, fondoTapa, medidas } from '../lib/sitio/arte.ts';
+import { conRecorteReal, medidas } from '../lib/sitio/arte.ts';
 
 interface Props {
   titulo: string;
   descripcion: string;
-  /** Recortes de fondo del collage: se apagan en pantallas de lectura larga. */
+  /**
+   * La multitud de la tapa del disco del pie, mirando desde el final de la página (`D-62`).
+   * Hasta el 2026-10-04 era una franja fija y velada al pie de la ventana; ahora el fondo
+   * es negro liso y la gente es el piso del pie de imprenta. Hoy solo la tiene *Oktubre*.
+   */
   conBanderas?: boolean;
   conMosca?: boolean;
   /** Adonde vuelve la cinta de regreso. Sin esto no hay cabecera (portal). */
@@ -46,21 +50,9 @@ const {
   discoDelPie,
 } = Astro.props;
 
-/**
- * La franja de multitud con banderas de *Oktubre*. Si el recorte real de la tapa ya
- * esta generado (`D-21`, `scripts/generar-tapas.mjs`), manda la foto; si no, queda el
- * dibujo — el mismo criterio de reemplazo que usa el resto del collage.
- *
- * Va anclada abajo y NUNCA detras de la marca grande: esa se escribe en `--marca-rojo`,
- * que sobre tapa velada no llega a AA. Lo verifica `contraste.test.ts`.
- */
-const bandaOktubre = fondoTapa('oktubre-banderas');
-
-// Las dos piezas del collage que este cascaron pega por su cuenta, con sus medidas
-// leidas del archivo: un `<img>` sin medidas obliga al navegador a maquetar dos veces.
-const arteBanderas = conRecorteReal('/arte/banderas.svg');
+// La pieza del collage que este cascaron pega por su cuenta, con sus medidas leidas del
+// archivo: un `<img>` sin medidas obliga al navegador a maquetar dos veces.
 const arteMosca = conRecorteReal('/arte/mosca.svg');
-const medidaBanderas = medidas(arteBanderas);
 const medidaMosca = medidas(arteMosca);
 ---
 
@@ -75,20 +67,6 @@ const medidaMosca = medidas(arteMosca);
     <slot name="cabeza" />
   </head>
   <body class="con-grano">
-    {conBanderas && bandaOktubre && <div class="tapa-fondo tapa-fondo--portal" aria-hidden="true" />}
-    {
-      conBanderas && !bandaOktubre && (
-        <img
-          class="banderas-fondo"
-          src={arteBanderas}
-          alt=""
-          aria-hidden="true"
-          decoding="async"
-          width={medidaBanderas?.ancho}
-          height={medidaBanderas?.alto}
-        />
-      )
-    }
     {
       conMosca && (
         <img
@@ -130,6 +108,6 @@ const medidaMosca = medidas(arteMosca);
         de la ventana sin `100vw`, sin margenes negativos y sin `overflow-x`. Y por eso el
         credito de `D-21` deja de ser un renglon al pie de la nada y queda impreso sobre la
         tinta del disco que acredita. */}
-    <PieImprenta disco={discoDelPie} tapas={tapas} />
+    <PieImprenta disco={discoDelPie} tapas={tapas} multitud={conBanderas} />
   </body>
 </html>

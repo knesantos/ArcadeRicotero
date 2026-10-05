@@ -66,7 +66,8 @@ export const DETALLE_POR_VARIANTE: Record<string, string> = {
  * pone en el pie (`UX-04`, mecanismo de credito).
  */
 const DISCO_DE: Record<string, string> = {
-  'oktubre-banderas': 'Oktubre',
+  /* `oktubre-banderas` —la franja fija del portal— salió el 2026-10-04 (`D-62`): la
+     multitud de *Oktubre* pasó a ser el piso del pie, y la acredita el pie mismo. */
   'lobo-tiras': 'Lobo suelto',
   'mosca-olla': 'La mosca y la sopa',
   'bondi-engranajes': 'Último bondi a Finisterre',
@@ -115,7 +116,6 @@ export function detalleArticulo(tipo: string, slug: string, categoria: string): 
 /** Que recorte real reemplaza a cada dibujo de repuesto (ver public/arte/README.md). */
 const RECORTE_REAL: Record<string, string> = {
   '/arte/mosca.svg': 'mosca.png',
-  '/arte/banderas.svg': 'multitud-banderas.png',
   '/arte/perro.svg': 'perro.png',
   '/arte/lobo.svg': 'lobo-recortado.png',
 };
@@ -170,6 +170,22 @@ const FIGURA_DE_DISCO: Record<string, string> = {
 
 export function figuraDeDisco(slug: string): string | null {
   const archivo = FIGURA_DE_DISCO[slug];
+  return archivo ? recorte(archivo) : null;
+}
+
+/**
+ * La gente mirando: el piso del pie de imprenta, de borde a borde (`D-62`).
+ *
+ * Reemplaza a la pasada de ese disco —las dos son el mismo motivo, y la multitud ya trae
+ * sus banderas— y la acredita el pie, igual que a la figura. Hoy hay una sola, la de la
+ * tapa de *Oktubre*, y la pide solo el portal. La produce `scripts/generar-multitud.mjs`.
+ */
+const MULTITUD_DE_DISCO: Record<string, string> = {
+  oktubre: 'multitud-oktubre.png',
+};
+
+export function multitudDeDisco(slug: string): string | null {
+  const archivo = MULTITUD_DE_DISCO[slug];
   return archivo ? recorte(archivo) : null;
 }
 

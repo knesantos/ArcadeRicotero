@@ -3579,3 +3579,65 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     columnas al lado; en tres columnas (1024 px o más) es el primero del renglón de abajo, porque
     ahí "Adiviná el tema" cierra el primer renglón. Ponerlo literalmente al lado en los tres anchos
     pide mover también "Adiviná el tema" o sacar a "¿Qué tipo de ricotero sos?" del A2 (`D-51`).
+
+## D-62 — El fondo del portal es negro liso, y la gente de *Oktubre* mira desde el final de la página
+
+- **Fecha:** 2026-10-04
+- **Estado:** aceptada — pedido directo del usuario, con la imagen adjunta, textual: *"Usemos
+  esta imagen de fondo de la pagina, sin la parte de las letras de oktubre, un fondo negro y
+  sobre el final de la pagina las personas mirando."* La imagen es la tapa de *Oktubre* estirada
+  a 16:9 (1280×720), con el wordmark rojo arriba y la multitud de Rocambole abajo.
+- **Consume y enmienda:** `D-19` (portada = *Oktubre*, sin cambio de disco), `D-21`, `UX-04`,
+  `UX-05` (la fila de la franja inferior fija de `/`), `UX-20` §1.4 (quién lleva la deriva),
+  `UX-25` §4 (el nombre `lugar` del portal), `public/arte/README.md` (la fila de la multitud).
+- **Decisión.** El portal deja la franja fija de banderas que vivía al pie de la ventana —la
+  foto `oktubre-banderas` velada al 86 %, que casi no se veía— y queda en **negro liso** de
+  arriba abajo. **La gente va al final de la página**: es el piso del pie de imprenta, de borde
+  a borde, abajo del crédito, mirando para arriba. Va **a tinta plena**: el recorte trae solo
+  dos tintas de `tokens.css` —`--papel` para lo claro y `--disco-oktubre-tinta` para las
+  banderas— sobre transparente, así que donde no hay gente se ve `--fondo`.
+- **Cómo.**
+  - El máster es la imagen del usuario, guardada en
+    `Docs/INVESTIGACION/TapasDiscos/oktubre-frontal-ancha.webp`. `scripts/generar-multitud.mjs`
+    la corta abajo del wordmark (desde y=352: el rayo y las letras quedan afuera enteros), vuelve
+    transparente el negro —que no era el del sitio: gris neutro con nubes de aerógrafo— y
+    reimprime cada píxel en las dos tintas, leídas de `tokens.css`. Sale
+    `public/arte/multitud-oktubre.png`, 1280×368, 64 KB en paleta.
+  - `PieImprenta` toma `multitud` (lo pasa `Base` con `conBanderas`) y, si el disco tiene
+    multitud (`multitudDeDisco`, hoy solo `oktubre`), la pega después del crédito **en lugar
+    de la pasada**: son el mismo motivo y la multitud ya trae sus banderas. El crédito de `D-21`
+    lo suma el pie, como con la figura.
+  - En el teléfono el recorte (3,5 a 1) quedaba en 107 px de alto: lleva un piso de 14 rem con
+    `cover`, que muestra el centro —la tapa de verdad— y corta los costados.
+  - La deriva de `UX-20` §1.4 pasa de la franja fija a la gente, **corriendo al revés**: arranca
+    subida y termina apoyada, así que el borde de abajo no se descubre nunca (el piso solo se ve
+    con el desplazamiento al final, que es cuando la capa vuelve a cero).
+- **Alternativas descartadas.**
+  - **La misma franja fija con la imagen nueva.** Fija al pie de la ventana, el texto de los
+    casetes pasa por arriba de las caras, y entonces lleva velo (`D-21`): la gente vuelve a ser
+    un fantasma al 14 %, que es lo que el pedido vino a cambiar.
+  - **La imagen como fondo del `body`, anclada abajo.** Es lo más literal, pero el último casete
+    y el crédito quedaban encima de las caras más grandes, sin velo y sin contraste medido.
+  - **La foto entera en JPEG, con el negro pintado de `--fondo`.** Un JPEG no garantiza el mismo
+    negro en el borde y deja un rectángulo apenas distinto; además el negro del máster trae
+    nubes. Con alfa el borde es la silueta de la gente.
+  - **En todas las pantallas.** Cada juego viste su disco (`D-19`) y su pie lleva la pasada de
+    ese disco. La multitud es de *Oktubre*, que es la portada.
+- **Consecuencias.**
+  - Salen `public/tapas/fondo/oktubre-banderas.jpg` (y su fila en `generar-tapas.mjs`) y el
+    dibujo de repuesto `public/arte/banderas.svg`: no los mostraba ninguna pantalla (criterio de
+    `D-51`).
+  - **El portal ya no tiene `.tapa-fondo`**, o sea que no lleva el nombre de tránsito `lugar`
+    (`ADR-03` §6.3, `UX-25` §4): al pasar del portal a un juego, el fondo del juego entra con el
+    fundido por defecto en vez de transformarse desde la franja. No hay animación propia sobre
+    `lugar`, así que no se rompe nada.
+  - `multitud.test.ts` falla si falta el recorte, si pesa más de 90 KB, si la primera fila no es
+    transparente, si un píxel visible se aleja de las dos tintas o si la gente queda antes que el
+    crédito en el pie (rojo visto con el recorte sin procesar: negro opaco, 316 KB).
+  - **Los costados del máster no son de Rocambole**: la tapa cuadrada cae entre x≈257 y x≈987, lo
+    demás son caras agregadas por quien la estiró, sin fichar. El crédito dice "la tapa de
+    Oktubre" y en el teléfono solo se ve el centro; en la computadora se ve todo el ancho.
+  - Para `experiencia`: la fila de `/` en `UX-05`, la línea de la portada en `UX-20` §2 y el
+    tránsito en `UX-25` §4 describen la franja vieja. Y el lienzo (hojas 05 y 09) no tiene esto:
+    el circuito de `diseno-marca.md` pide cambiarlo allá primero, y acá entró al revés por pedido
+    directo, sin token nuevo.
