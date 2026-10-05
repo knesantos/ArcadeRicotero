@@ -5,6 +5,7 @@ import {
   sortearPartida,
   resolverCuadrante,
   disposicion,
+  planoFijo,
   relacion,
   PartidaImposible,
   type Banco,
@@ -224,6 +225,40 @@ test('la grilla pone la tuya primero, y ninguna manera queda arriba para todos',
     primeras.add(celdas[0].id);
   }
   assert.equal(primeras.size, 4, 'cada manera tiene que poder ser la primera');
+});
+
+test('el plano es fijo: Luz arriba, Orden a la izquierda, para todos (D-62 enmienda 3)', () => {
+  // Lo eligió el usuario mirando las dos versiones: "B, el fijo como el rombo viejo". Cada
+  // manera tiene su lugar por sus dos polos, y las cuatro están una vez.
+  const { celdas, renglones, columnas } = planoFijo(BANCO);
+  assert.deepEqual(renglones, ['luz', 'oscuridad']);
+  assert.deepEqual(columnas, ['orden', 'caos']);
+  assert.deepEqual(
+    celdas.map((c) => [c.luzOscuridad, c.ordenCaos]),
+    [
+      ['luz', 'orden'],
+      ['luz', 'caos'],
+      ['oscuridad', 'orden'],
+      ['oscuridad', 'caos'],
+    ],
+  );
+  assert.equal(new Set(celdas.map((c) => c.id)).size, 4);
+  // Y no depende de quién juega: no recibe el resultado, así que no puede girar con él.
+  assert.equal(planoFijo.length, 1);
+});
+
+test('la grilla relativa no le da a nada un lugar fijo (UX-38 §2.3)', () => {
+  // La grilla sigue `disposicion()`: la tuya primero. Entre las cuatro grillas posibles, cada
+  // manera pasa una vez por cada lugar (un cuadrado latino) y cada polo queda arriba, y a la
+  // izquierda, en dos de las cuatro. El mapa fijo es el plano; la lista es de cada uno.
+  const planos = BANCO.cuadrantes.map((c) => disposicion(BANCO, c.id));
+  for (let lugar = 0; lugar < 4; lugar++) {
+    assert.equal(new Set(planos.map((d) => d.celdas[lugar]!.id)).size, 4, `el lugar ${lugar} repite manera`);
+  }
+  const arriba = planos.map((d) => d.renglones[0]);
+  const izquierda = planos.map((d) => d.columnas[0]);
+  for (const p of ['luz', 'oscuridad'] as const) assert.equal(arriba.filter((x) => x === p).length, 2, `${p} arriba`);
+  for (const p of ['orden', 'caos'] as const) assert.equal(izquierda.filter((x) => x === p).length, 2, `${p} a la izquierda`);
 });
 
 test('la relación con el amigo es simétrica y cubre los cuatro casos', () => {
