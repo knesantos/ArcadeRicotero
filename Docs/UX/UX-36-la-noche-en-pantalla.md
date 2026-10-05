@@ -29,10 +29,14 @@
 > accesibilidad de `D-57` punto 13. **No resuelve:** los textos (`contenido`, `CNT-30`, `CNT-29`),
 > el schema y el motor (`arquitectura`), el CSS y la isla (hilo principal).
 >
-> **Enmienda 2026-10-05 (`UX-38`, pedido del usuario).** El plano de dos ejes **vuelve** al resultado, como
-> un recorte de papel relativo, sin punto, **arriba** de la grilla de `§5.3`, que se queda tal cual. Lo que
-> esta hoja decía del plano ("el rombo se va", "ningún punto en el plano") queda marcado en `§5.3`, `§5.6`,
-> `§5.8` y `§6.2`; todo lo demás sigue valiendo. **La tarjeta y la vista previa no cambian.**
+> **Enmienda 2026-10-05 (`UX-38` v1.1, pedido del usuario).** El plano de dos ejes **vuelve** al resultado,
+> como un recorte de papel **fijo** (Luz arriba y Orden a la izquierda, el mismo para todos: lo eligió el
+> usuario entre dos versiones, `D-59` enmienda 3), sin punto, **arriba** de la grilla de `§5.3`, que se queda
+> tal cual y **sigue relativa**: el plano es el mapa, la grilla es la lista. Lo que esta hoja decía del plano
+> ("el rombo se va", "ningún punto en el plano", "ninguna manera queda fija por encima de otra") queda
+> marcado en `§5.3`, `§5.6`, `§5.8` y `§6.2`; todo lo demás sigue valiendo. **La tarjeta y la vista previa no
+> cambian.** *(La primera pasada de esta enmienda decía "relativo" para el plano; el usuario eligió el fijo
+> y esta marca ya lo dice.)*
 >
 > **Cómo leer los números.** Tres clases, como en `UX-35`: **leído** (sale de una captura, de una
 > maqueta o de un comentario del código, y lo cito), **cuenta** (lo derivé yo de tokens y reglas,
@@ -648,9 +652,14 @@ hoja, la marca y el botón: eso es lo que el que ve la captura necesita.
 
 ### 5.3 La grilla de dos por dos, relativa (`US-06` c3)
 
-> **[Ampliado 2026-10-05 por `UX-38`]** Arriba de esta grilla, debajo de la línea que canta y de la de
-> contraste, va **el plano**: un recorte de papel con los dos ejes en cruz, los mismos cuatro nombres y la
-> misma orientación relativa (la tuya arriba a la izquierda). **La grilla no cambia ni se mueve.**
+> **[Ampliado 2026-10-05 por `UX-38` v1.1]** Arriba de esta grilla, debajo de la línea que canta y de la de
+> contraste, va **el plano**: un recorte de papel con los dos ejes en cruz y los mismos cuatro nombres,
+> **fijo** (Luz arriba, Orden a la izquierda para todos; `D-59` enmienda 3). *(La primera pasada lo hacía
+> relativo, con la tuya arriba a la izquierda; el usuario eligió el fijo.)* **La grilla no cambia ni se
+> mueve, y sigue relativa.** Ojo con lo que dice el párrafo de abajo: "ninguna manera queda fija por
+> encima de otra" vale para **la grilla**, no para el plano. En el plano «Mesa larga a las nueve» queda
+> siempre arriba a la izquierda y «Mochila liviana, sin mapa» abajo a la derecha, por decisión del usuario
+> (`UX-38` §2.1).
 
 **Qué dice.** Las cuatro maneras, en papel, **la tuya primero**: arriba a la izquierda. Al lado, la que
 comparte tu polo de luz–oscuridad; abajo, la que comparte tu polo de orden–caos; en diagonal, la
@@ -733,10 +742,13 @@ Es simétrica (`relacion(a, b) === relacion(b, a)`) y nunca gana ni pierde. El t
 Holgura de 66 px. **A 360 × 640** el mismo caso suma un renglón más al nombre (más angosto) y uno a la
 bajada, y **Compartí** termina ≈ 556: entra. **Por medir** las dos ventanas.
 
-> **[Ampliado 2026-10-05 por `UX-38`]** Estas cuentas **no cambian** con el plano: va después de los dos
-> botones, así que nada de lo que está arriba depende de él (`UX-38` §3.2). Baja lo que está **debajo**:
-> "Bajá la tarjeta" y "← Volvé al fichín", ≈ 326 px a 375. De paso, `UX-38` anota que a 320 × 568 el
-> "Compartí" del peor caso queda al borde (≈ 555 a 579, cuenta), que esta hoja no había calculado.
+> **[Ampliado 2026-10-05 por `UX-38` v1.1]** Estas cuentas **no cambian** con el plano: va después de los
+> dos botones, así que nada de lo que está arriba depende de él, y el hilo lo midió con y sin plano en cinco
+> ventanas: los botones no se movieron (`UX-38` §3.2). Baja lo que está **debajo**: la grilla entera, "Bajá
+> la tarjeta" y "← Volvé al fichín", lo que mide el recorte (327 a 378 px a 375; 331 a 436 a 320, medido por
+> el hilo) más su aire. *(La primera pasada decía "≈ 326 px", una cuenta.)* De paso, a 320 × 568 el "Compartí"
+> del peor caso queda al borde del pliegue: `REV-19` midió 562 y `ESTADO.md` anota hasta 646. Es de antes del
+> plano y no lo empeora.
 
 ### 5.7 En la mesa (≥ 64 rem): una columna
 
@@ -764,9 +776,9 @@ Ningún número, ningún puntaje, ningún "más", ningún grado dentro de la man
 plano, ninguna frase que defina a la persona ("sos X"), ninguna comparación con una noche anterior,
 ninguna animación. `Resultado` son tres strings y el tipo no deja pasar otra cosa (`CTR-08.6`).
 
-> **[Ampliado 2026-10-05 por `UX-38`]** "Ningún punto en el plano" **sigue cierto** —el plano de `UX-38` no
-> lleva punto: la tuya se marca con un recuadro y un sello, `UX-38` §1.3—, pero ya no es cierto que no
-> haya plano.
+> **[Ampliado 2026-10-05 por `UX-38` v1.1]** "Ningún punto en el plano" **sigue cierto** —el plano de
+> `UX-38` no lleva punto: la tuya se marca con un recuadro y un sello, `UX-38` §1.3—, pero ya no es cierto
+> que no haya plano, ni que no haya un lugar que sea el mismo para todos: el plano es fijo (`UX-38` §2.1).
 
 ---
 
@@ -843,7 +855,8 @@ recortes a 4 : 5 y las barras de las aplicaciones no tocan nada importante).
 
 **Lo que no muestra:** el plano, la grilla, ninguna pregunta ni opción, el óvalo, la figura, el título
 LUZBELITO, ninguna vela, ningún verso, ningún número. *(2026-10-05, `UX-38` §6: el plano vuelve a la
-pantalla y la tarjeta **sigue sin mostrarlo**; `VERSION_DEL_DIBUJO` no se toca.)*
+pantalla y la tarjeta **sigue sin mostrarlo**; `VERSION_DEL_DIBUJO` no se toca. Con el plano fijo, ya no es
+por ser relativo —esa razón se invirtió—, sino por falta de lugar y porque en la miniatura no se lee.)*
 
 **A escala de teléfono** (la tarjeta a ≈ 360 px de ancho, un tercio): el nombre queda en ≈ 27 px, la
 línea que nombra en ≈ 13, la bajada en ≈ 11 y el crédito en ≈ 8 (25 px, hilo; con el piso de 22 sería

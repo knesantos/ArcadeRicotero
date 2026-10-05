@@ -1,7 +1,7 @@
 # CNT-31 — La noche ricotera: el banco de "¿Qué tipo de ricotero sos?" con el barro, el chori, la birra, el porro y la familia
 
 - **Rol dueño:** `contenido`
-- **Fecha:** 2026-10-04, ciclo 18. **Vuelta 6 (arreglos del verificador adversarial): 2026-10-05**, §11. **Vuelta 7 (segunda lectura adversarial y el pedido del hilo principal de que quien camina la noche sea ricotero): 2026-10-05**, §12.
+- **Fecha:** 2026-10-04, ciclo 18. **Vuelta 6 (arreglos del verificador adversarial): 2026-10-05**, §11. **Vuelta 7 (segunda lectura adversarial y el pedido del hilo principal de que quien camina la noche sea ricotero): 2026-10-05**, §12. **`T-352` (el texto del lector en el plano de dos ejes): 2026-10-05**, §13.
 - **Estado:** entrega completa, con las vueltas 6 y 7 aplicadas. Reescribe `src/data/dos-ejes.json` (los 30 enunciados, las cinco líneas que cantan y las cuatro bajadas) sobre el banco de `CNT-30` vuelta 4. **Las tablas de `CNT-30` §3, §4 y §5 pasan a ser historia**: este documento describe el banco como queda. De `CNT-30` siguen vigentes las reglas de §2 que `D-59` no toca (el cuerpo capaz, la seguridad, los dos ejes, la sintaxis que no delata el polo) y el §6 (cadenas de pantalla), salvo lo que dice el §10 de acá.
 - **Consume:** `D-59` (entera, con su síntesis), `D-57` y sus siete enmiendas (sobre todo la 7: la luz), `BR-17`, `BR-36`, `BR-37` y `BR-38`, `CNT-30` (el banco y por qué cada escena es como es), `INV-172` (`RES-172`..`RES-194`), `INV-150` (`RES-154`, `RES-156`, `RES-158`, `RES-160`, `RES-161`), `D-14`, `D-17`, `.claude/rules/voz-ricotera.md`, `.claude/rules/contenido-json.md`, `src/lib/dos-ejes/banco.test.ts` (las 24 pruebas, línea por línea) y `src/lib/voz.test.ts`.
 - **Produce:** `src/data/dos-ejes.json` (schema v2 de `CTR-08`, sin claves nuevas): `EJ-029`..`EJ-058` reescritos con el mismo id (sin huecos, tres por celda, todos `listo` con `momento`), las cinco líneas que cantan, las cuatro bajadas, y `EJ-001`..`EJ-028` intactos y `retirado`. **IDs nuevos de este documento: ninguno** (los ítems se reescriben con su id, como permite `Docs/IDS.md` mientras no cambie lo que miden: cada uno sigue midiendo lo mismo en el mismo eje y el mismo momento).
@@ -404,3 +404,54 @@ Cuatro defectos que me encontré al contar a mano y que habría dejado pasar:
 2. **Mi primer grep de esta vuelta mezclaba el campo `polo`** (`luz`, `orden`, `caos`) con el texto de la opción y marcaba las 60 como delatoras. Lo rehice buscando solo dentro de `"texto": "…"`; conviene que quien repita la comprobación a mano lo sepa.
 3. **`por` pasó de ×1 en orden a 0** con `EJ-038` A (*Llevo bolsas para los pies*, y ya no *por si llueve*); la raíz `quedo` bajó a ×1. Las dos eran de las más cerca del tope.
 4. **`EJ-054` B no puede ser *Me saco las zapas embarradas***: repetiría *embarradas* en la misma hoja que *Zapatillas embarradas, llave en la puerta*.
+
+## 13. `T-352`: el texto que oye el lector de pantalla en el plano de dos ejes (2026-10-05, ciclo 19)
+
+**Qué se pidió.** El plano vuelve al resultado, fijo (`D-59` enmiendas 2 y 3, `UX-38`), y es una imagen con su texto (`role="img"`). La cadena la propuso el hilo en `src/lib/dos-ejes/copy.ts` (`RESULTADO.altPlano` y `RESULTADO.lugares`) y era mía confirmarla o cambiarla. **Confirmo la forma y los cuatro lugares; cambio dos cosas.** El banco y `src/data/dos-ejes.json` no se tocan.
+
+**El texto final**, tal como lo oye el lector (la tuya en `CU-2`, arriba a la derecha; la de quien mandó el enlace en `CU-4`):
+
+| Caso | Texto |
+|---|---|
+| Sin enlace | *Dos ejes en cruz. Arriba, Luz, con la gente. Abajo, Oscuridad, con lo propio. A la izquierda, Orden, con plan. A la derecha, Caos, sobre la marcha. Tu manera, arriba a la derecha: Ronda en cualquier esquina.* |
+| Con enlace, otra manera | *…Tu manera, arriba a la derecha: Ronda en cualquier esquina. La de quien te lo mandó, abajo a la derecha: Mochila liviana, sin mapa.* |
+| Con enlace, la misma | *…Tu manera, arriba a la derecha: Ronda en cualquier esquina. La de quien te lo mandó es la misma.* |
+
+Treinta y siete palabras sin enlace, cincuenta y una con la manera de otro lugar, cuarenta y seis con la misma. Los cuatro lugares (`arriba a la izquierda`, `arriba a la derecha`, `abajo a la izquierda`, `abajo a la derecha`) quedan como están. Los polos y los nombres siguen saliendo de `EJES`, `POLOS` y el banco: ninguna palabra del texto se repite a mano.
+
+### Lo que cambio, y por qué
+
+1. **Puntos, no punto y coma, entre los cuatro polos.** Cada polo ya trae dos comas adentro (*Arriba, Luz, con la gente*), y con punto y coma entre uno y otro la frase de los polos queda en veintitrés palabras de comas y semicolones. Mi lectura, que no pude oír en un lector (`D-12`): los sintetizadores de los teléfonos tratan el punto y coma como una coma larga, así que *con la gente; abajo* se oye parecido a *con la gente, abajo* y *abajo* parece colgado del polo de arriba. Con punto, cada polo es una oración de cinco a siete palabras con la caída de voz de un cierre, y el oído separa los cuatro sin ayuda. Si en un lector real los semicolones se oyen bien, el cambio sobra, pero no cuesta nada. Es la medida de frase de `voz-ricotera.md` §3.1 y no suma una palabra.
+2. **«La tuya» pasa a «Tu manera».** La cadena no tiene dónde apoyar *la tuya*: dice *dos ejes*, *polos* y *lugares*, y *manera* no aparece. En la página lo salva el título de la sección (*Las cuatro maneras*), pero el lector salta de imagen en imagen y la oye suelta. *Tu manera* se entiende sola, usa la palabra que el sitio ya usa (*Las cuatro maneras*) y le da antecedente a lo que sigue: *La de quien te lo mandó* y *es la misma* quedan pegadas a *manera*. Cuesta cero palabras. **El sentido no cambia** y no choca con `BR-37`: *tu manera* es el mismo posesivo que ya dicen *con la tuya primero* (`altGrilla`) y *Con la tuya comparte* (`CONTRASTE`), y ninguna de las formas que la regla veta (*sos X*, *tu verdadero*, *siempre*) está. La ocasión («esta noche») la dice el rótulo, una vez (`BR-37` regla 1), y el lector acaba de oírlo en la hoja.
+
+### Lo que descarté para el lugar de «La tuya»
+
+- **«Te salió, arriba a la derecha: …»** (el verbo de `BR-37`). Pegado al lugar se lee literal, como algo que te brotó en el cuerpo, y deja a la segunda sin un sustantivo al que apoyar *La de quien te lo mandó* (tendría que ser *A quien te lo mandó le salió, …*).
+- **«Esta noche, arriba a la derecha: …»** (el sello que ve quien mira). Sin el dibujo, *esta noche* suelto es un adverbio de tiempo y no dice qué hay en ese lugar.
+- **«Vos, arriba a la derecha: …»** y **«Estás arriba a la derecha: …»**. Son *sos X* con otra cara, que `BR-37` veta.
+- **«La que te salió»**. Se entiende sola y es la más fiel al verbo de `BR-37`; es la alternativa si `revisor` prefiere ese verbo, y también anda. La dejé porque suma dos palabras y no le da a *La de quien te lo mandó* un sustantivo en el que apoyarse.
+
+### Lo que confirmo, y por qué se queda
+
+- **«lugar: nombre.», con el nombre al final.** Dos de los cuatro nombres llevan una coma adentro (*Radio bajita, misma hora* y *Mochila liviana, sin mapa*). En el medio de una frase, con otra coma pegada, serían una lista de tres; al final, el punto los cierra.
+- **Las glosas de los polos (*con la gente*, *con lo propio*, *con plan*, *sobre la marcha*).** Sacarlas dejaría a *Oscuridad* sola, que es lo que `CNT-30` §6.1 arregló («Oscuridad se leía triste»), y el criterio 6 de `US-06` pide que quien usa lector «reciba lo que recibe quien ve»: quien ve las lee debajo de cada polo.
+- **Solo la tuya y la de quien mandó el enlace, no las cuatro.** El criterio 6 pide «los dos ejes, los cuatro polos y dónde cae la tuya (y la del otro) como lugar». Las otras dos ya las dice la grilla de abajo, con su polo, en el mismo recorrido de lectura. Nombrar las cuatro suma unas veinte palabras a una cadena que el lector dice de un tirón, sin poder saltear por oración, y las pone en un orden fijo (*Mesa larga a las nueve* siempre primera) que es justo la lectura de lista ordenada que el criterio dice que no se arme.
+- **«Dos ejes en cruz.»** Dice qué es, seco y sin imagen. *Plano* queda para el dibujo y el código.
+- **«quien te lo mandó»**: la misma fórmula que el sello visible, `POSTAL.rotulo` y `CONTRASTE`.
+
+### Contra qué lo medí
+
+| Condición | Resultado |
+|---|---|
+| `PRD-alcance-v1.md`, criterio 9 condición 6: nada que ordene (*mejor*, *peor*, *primera*, *última*, *más*) | Ninguna de las cinco, en ninguno de los tres casos. *Arriba* y *abajo* dicen un lugar, no una nota |
+| Condición 4: ni un dígito en el `aria-label` | Ninguno (*nueve*, de *Mesa larga a las nueve*, es palabra) |
+| Registro 3 (`voz-ricotera.md` §5) | Seco; sin imagen, sin suspensivos, sin exclamación, sin chiste |
+| `D-17` | Sin anglicismos; el voseo no aplica (no hay botón ni imperativo) |
+| `BR-37` | Sin *sos*, *eres*, *tu verdadero* ni *siempre* |
+| `D-14` | No afirma nada externo: describe un dibujo |
+
+**No lo corrí** (`D-12`): el texto está medido a mano contra las condiciones de arriba, no oído en un lector. Lo que sí falta es que una máquina lo mire, y hoy ninguna lo hace.
+
+### Un hueco que encontré, y es del hilo principal
+
+`voz.test.ts` **no audita `altPlano`**. Su recolector de funciones (`cadenasDeFunciones`) las llama con un número y con `'X'`, y `altPlano` recibe un objeto: con cualquiera de los dos comodines revienta en `p.tuya.lugar`, el `catch` se la traga y la función queda sin mirar. `lugares` sí se audita (es un arreglo de cadenas). La cadena más larga del resultado, y la única que solo oye quien usa lector, está fuera del barrido: es el mismo hueco que `dos-ejes` ya tuvo una vez (el comentario de `MODULOS` lo cuenta). Propongo la guarda en `Docs/SUGERENCIAS/CNT-para-hilo-principal-texto-del-plano.md`.

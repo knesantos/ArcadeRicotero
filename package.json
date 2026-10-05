@@ -9,7 +9,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check && tsc --noEmit",
-    "test": "node --test src/**/*.test.ts",
+    "test": "node --test 'src/**/*.test.ts'",
     "ingerir": "node --experimental-strip-types scripts/ingerir-cancionero.mjs",
     "generar-letra": "node --experimental-strip-types scripts/generar-letra.mjs",
     "hoja-de-escucha": "node --experimental-strip-types scripts/hoja-de-escucha.mjs",
