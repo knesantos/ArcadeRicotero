@@ -29,6 +29,11 @@
 > accesibilidad de `D-57` punto 13. **No resuelve:** los textos (`contenido`, `CNT-30`, `CNT-29`),
 > el schema y el motor (`arquitectura`), el CSS y la isla (hilo principal).
 >
+> **Enmienda 2026-10-05 (`UX-38`, pedido del usuario).** El plano de dos ejes **vuelve** al resultado, como
+> un recorte de papel relativo, sin punto, **arriba** de la grilla de `§5.3`, que se queda tal cual. Lo que
+> esta hoja decía del plano ("el rombo se va", "ningún punto en el plano") queda marcado en `§5.3`, `§5.6`,
+> `§5.8` y `§6.2`; todo lo demás sigue valiendo. **La tarjeta y la vista previa no cambian.**
+>
 > **Cómo leer los números.** Tres clases, como en `UX-35`: **leído** (sale de una captura, de una
 > maqueta o de un comentario del código, y lo cito), **cuenta** (lo derivé yo de tokens y reglas,
 > sin correr nada) y **por medir** (va al checklist de `§12`). Los píxeles de pantalla son a
@@ -643,6 +648,10 @@ hoja, la marca y el botón: eso es lo que el que ve la captura necesita.
 
 ### 5.3 La grilla de dos por dos, relativa (`US-06` c3)
 
+> **[Ampliado 2026-10-05 por `UX-38`]** Arriba de esta grilla, debajo de la línea que canta y de la de
+> contraste, va **el plano**: un recorte de papel con los dos ejes en cruz, los mismos cuatro nombres y la
+> misma orientación relativa (la tuya arriba a la izquierda). **La grilla no cambia ni se mueve.**
+
 **Qué dice.** Las cuatro maneras, en papel, **la tuya primero**: arriba a la izquierda. Al lado, la que
 comparte tu polo de luz–oscuridad; abajo, la que comparte tu polo de orden–caos; en diagonal, la
 opuesta. Para cada persona "primero" es la suya, así que **ninguna manera queda fija por encima de
@@ -724,6 +733,11 @@ Es simétrica (`relacion(a, b) === relacion(b, a)`) y nunca gana ni pierde. El t
 Holgura de 66 px. **A 360 × 640** el mismo caso suma un renglón más al nombre (más angosto) y uno a la
 bajada, y **Compartí** termina ≈ 556: entra. **Por medir** las dos ventanas.
 
+> **[Ampliado 2026-10-05 por `UX-38`]** Estas cuentas **no cambian** con el plano: va después de los dos
+> botones, así que nada de lo que está arriba depende de él (`UX-38` §3.2). Baja lo que está **debajo**:
+> "Bajá la tarjeta" y "← Volvé al fichín", ≈ 326 px a 375. De paso, `UX-38` anota que a 320 × 568 el
+> "Compartí" del peor caso queda al borde (≈ 555 a 579, cuenta), que esta hoja no había calculado.
+
 ### 5.7 En la mesa (≥ 64 rem): una columna
 
 **Una sola columna de 38 rem, sin dos paños.** Lo evalué y no conviene:
@@ -749,6 +763,10 @@ pieza de más peso.
 Ningún número, ningún puntaje, ningún "más", ningún grado dentro de la manera, ningún punto en el
 plano, ninguna frase que defina a la persona ("sos X"), ninguna comparación con una noche anterior,
 ninguna animación. `Resultado` son tres strings y el tipo no deja pasar otra cosa (`CTR-08.6`).
+
+> **[Ampliado 2026-10-05 por `UX-38`]** "Ningún punto en el plano" **sigue cierto** —el plano de `UX-38` no
+> lleva punto: la tuya se marca con un recuadro y un sello, `UX-38` §1.3—, pero ya no es cierto que no
+> haya plano.
 
 ---
 
