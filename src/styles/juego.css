@@ -2797,22 +2797,25 @@ a.secundario {
 .ejes-plano-cruz {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* `minmax(0, 1fr)` y no `1fr`: con el texto del sistema al 200 %, una palabra del sello
+     ensanchaba la columna de la tuya y el eje del medio dejaba de caer entre las dos. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-template-rows: 1fr auto 1fr;
   column-gap: 10px;
   margin: 8px 0;
 }
 
 /* Los ejes: elementos vacíos que solo llevan borde. Sin flecha ni rayitas: una marca regular
-   sobre un eje es una escala, y una flecha dice "más hacia acá" (`UX-38` §1.4). */
+   sobre un eje es una escala, y una flecha dice "más hacia acá" (`UX-38` §1.4). El vertical
+   cruza el aire de la cruz y llega a los polos de arriba y de abajo. */
 .ejes-plano-eje {
   position: absolute;
   pointer-events: none;
 }
 
 .ejes-plano-eje--vertical {
-  top: 0;
-  bottom: 0;
+  top: -8px;
+  bottom: -8px;
   left: calc(50% - 1px);
   border-right: 2px solid var(--papel-tenue);
 }
@@ -2832,8 +2835,9 @@ a.secundario {
   grid-row: 3;
 }
 
-/* Los cuatro con el mismo borde de 3 px, transparente en los que no se marcan: ninguno cambia
-   de tamaño al marcarse. */
+/* Los cuatro miden lo mismo: el lugar del borde se guarda con relleno (7 px sin marca, 3 de
+   borde y 4 de relleno en la tuya, 2 y 5 en la del amigo) y no con un borde transparente,
+   que el contraste forzado pinta y deja a las cuatro con el recuadro de la tuya. */
 .ejes-plano-cuadrante {
   position: relative;
   display: flex;
@@ -2843,8 +2847,7 @@ a.secundario {
   gap: 4px;
   min-height: 5rem;
   margin: 3px;
-  padding: 4px;
-  border: var(--linea) solid transparent;
+  padding: 7px;
   border-radius: 3px;
   text-align: center;
 }
@@ -2852,7 +2855,8 @@ a.secundario {
 /* La tuya: borde grueso y su sello. La marca va en la tinta y no en el cuero, que sobre el
    papel no llega a 3 : 1; lo que marca es la forma más el sello, nunca el color. */
 .ejes-plano-cuadrante--tuya {
-  border-color: var(--fondo);
+  padding: 4px;
+  border: var(--linea) solid var(--fondo);
 }
 
 /* La de quien mandó el enlace: punteado fino, con un píxel de relleno que completa los 3. */
@@ -2865,9 +2869,11 @@ a.secundario {
 .ejes-plano-cuadrante--tuya.ejes-plano-cuadrante--suya {
   padding: 4px;
   border-width: var(--linea);
+  border-style: dashed;
 }
 
 .ejes-plano-sellos {
+  overflow-wrap: anywhere;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -2908,22 +2914,22 @@ a.secundario {
   font-size: 0.8rem;
 }
 
-/* Los dos del medio van sobre el eje horizontal, con el papel de fondo para cortarlo. */
+/* Los dos del medio montan el eje horizontal, que corre entero: el polo arriba de la línea y
+   sus palabras abajo, como el rótulo de un eje. Cortar la línea con el rótulo dejaba un brazo
+   más largo que el otro ("Orden" contra "sobre la marcha") y la cruz parecía corrida. */
 .ejes-plano-polo--izquierda,
 .ejes-plano-polo--derecha {
-  position: relative;
   grid-row: 2;
   align-self: center;
+  gap: 8px;
   margin: 6px 0;
-  padding: 2px 0;
-  background: var(--papel);
+  overflow-wrap: anywhere;
 }
 
 .ejes-plano-polo--izquierda {
   grid-column: 1;
   justify-self: start;
   align-items: flex-start;
-  padding-right: 6px;
   text-align: left;
 }
 
@@ -2931,7 +2937,6 @@ a.secundario {
   grid-column: 2;
   justify-self: end;
   align-items: flex-end;
-  padding-left: 6px;
   text-align: right;
 }
 

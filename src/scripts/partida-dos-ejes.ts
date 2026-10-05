@@ -251,14 +251,27 @@ function polo(p: Polo, lugar: 'arriba' | 'abajo' | 'izquierda' | 'derecha'): HTM
  * **Sin punto:** la marca es el borde y el sello, como en la grilla. Un punto invita a medir a
  * qué distancia queda del eje, y `resolverCuadrante` no devuelve ningún número (`BR-17`).
  *
- * **Escondido al lector de pantalla** (`aria-hidden`): todo lo que dice ya lo dicen la hoja
- * (los dos polos de la tuya) y la grilla (las cuatro, cuál es la tuya y cuál la del amigo).
- * No tiene nada que se toque.
+ * **Para el lector de pantalla es una imagen con su texto** (`role="img"`), como era el rombo:
+ * la grilla dice las cuatro maneras, pero no que hay dos ejes ni dónde cae la tuya. Adentro no
+ * hay nada que se toque.
  */
 function plano(id: string, d: Disposicion): HTMLElement {
   const { celdas, renglones, columnas } = d;
   const recorte = el('div', 'ejes-plano');
-  recorte.setAttribute('aria-hidden', 'true');
+  const extremo = (p: Polo) => `${EJES[p]}, ${POLOS[p]}`;
+  const k = celdas.findIndex((c) => c.id === suyo?.id);
+  recorte.setAttribute('role', 'img');
+  recorte.setAttribute(
+    'aria-label',
+    RESULTADO.altPlano({
+      arriba: extremo(renglones[0]),
+      abajo: extremo(renglones[1]),
+      izquierda: extremo(columnas[0]),
+      derecha: extremo(columnas[1]),
+      tuya: celdas[0].nombre,
+      suya: k === 0 ? 'misma' : k > 0 ? { nombre: celdas[k]!.nombre, lugar: RESULTADO.lugares[k]! } : undefined,
+    }),
+  );
 
   const cruz = el('div', 'ejes-plano-cruz');
   // Los dos ejes son elementos vacíos con borde, no con fondo: en el contraste forzado el
@@ -310,8 +323,12 @@ function grilla(id: string, d: Disposicion): HTMLElement {
   }
 
   // El plano va antes que la grilla y después del contraste (`UX-38` §3.1): orienta primero,
-  // la grilla lee después.
-  seccion.append(plano(id, d));
+  // la grilla lee después. Es un dibujo de más: si no se puede armar, la grilla sigue sola.
+  try {
+    seccion.append(plano(id, d));
+  } catch {
+    /* sin plano, nada más cambia */
+  }
 
   const tabla = el('div', 'ejes-grilla');
   // Los rótulos de columna van arriba, una vez; los de renglón, encima de cada par. Son

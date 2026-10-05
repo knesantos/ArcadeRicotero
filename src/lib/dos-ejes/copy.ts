@@ -143,6 +143,28 @@ export const RESULTADO = {
   suya: 'Quien te lo mandó',
   /** El rótulo de la grilla para el lector de pantalla. */
   altGrilla: 'Las cuatro maneras, con la tuya primero.',
+  /**
+   * Lo que el plano de dos ejes le dice al lector de pantalla (`UX-38`, crítica 3): los dos
+   * ejes y dónde cae la tuya, que la grilla no dice en palabras. Registro 3, seco. La propuso
+   * el hilo principal; `contenido` la confirma o la cambia.
+   */
+  altPlano: (p: {
+    readonly arriba: string;
+    readonly abajo: string;
+    readonly izquierda: string;
+    readonly derecha: string;
+    readonly tuya: string;
+    readonly suya?: { readonly nombre: string; readonly lugar: string } | 'misma';
+  }) =>
+    `Dos ejes en cruz. Arriba, ${p.arriba}; abajo, ${p.abajo}; a la izquierda, ${p.izquierda}; a la derecha, ${p.derecha}. ` +
+    `La tuya, arriba a la izquierda: ${p.tuya}.` +
+    (p.suya === 'misma'
+      ? ' La de quien te lo mandó es la misma.'
+      : p.suya
+        ? ` La de quien te lo mandó, ${p.suya.lugar}: ${p.suya.nombre}.`
+        : ''),
+  /** Los otros tres lugares del plano, en el orden de `disposicion().celdas`. */
+  lugares: ['arriba a la izquierda', 'arriba a la derecha', 'abajo a la izquierda', 'abajo a la derecha'],
   /** El texto que viaja con el enlace: nombra el test, la identidad, ningún número (`BR-17`). */
   paraCompartir: (nombre: string) => `Me salió «${nombre}». ¿Qué tipo de ricotero sos vos?`,
   copiado: 'Se copió el enlace.',
