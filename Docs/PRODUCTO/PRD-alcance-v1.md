@@ -1494,6 +1494,107 @@ nada del brief la ata al criterio de aceptación de esta historia.
 > que dicen de la banda y sus rituales**; «reconocible, no exigido» sigue como estaba. Los
 > criterios 1 a 6 y 8, y `BR-17`, no cambian.
 
+### Enmienda 2026-10-05 (tercera) — el plano de dos ejes, fijo (`D-59` enmiendas 2 y 3, ciclo 19)
+
+> Pedido del usuario, 2026-10-05, textual: *"Me gustan las explicaciones pero quiero que esté el
+> gráfico también, queda lindo ver que está en un plano de dos ejes."* (`D-59` enmienda 2). Y,
+> mirando las dos versiones lado a lado —la relativa, con la tuya siempre arriba a la izquierda,
+> y la fija—: *"B, el fijo como el rombo viejo."* (`D-59` enmienda 3). **La decisión es del
+> usuario**: esta enmienda no la discute; la ata a lo que cuesta y a lo que no se relaja. La
+> pantalla y las medidas son de `experiencia` (`UX-38`); el texto del lector, de `contenido`
+> (`T-352`); el motor, de `arquitectura` (`planoFijo()` en `partida.ts`).
+
+**Qué se exceptúa, exacto.** El criterio 3 dice que *nada en la pantalla jerarquiza una manera
+sobre las otras tres*. Para **el plano de dos ejes del resultado**, y solo para él, eso deja de
+valer en **una cosa: el lugar**. Luz arriba y Orden a la izquierda, siempre; cada manera tiene su
+rincón, el mismo para todos, tenga quien mire el resultado que tenga:
+
+| | Orden (izquierda) | Caos (derecha) |
+|---|---|---|
+| **Luz** (arriba) | `CU-1` Mesa larga a las nueve | `CU-2` Ronda en cualquier esquina |
+| **Oscuridad** (abajo) | `CU-3` Radio bajita, misma hora | `CU-4` Mochila liviana, sin mapa |
+
+(Nombres de `D-57` punto 5. Los ids y sus polos no se mueven.)
+
+**Qué sigue bajo el criterio 3, sin excepción.** La hoja del resultado y el nombre; **la grilla de
+las cuatro maneras, que sigue relativa** (la tuya primero, `disposicion()`: entre las cuatro
+grillas posibles cada manera pasa una vez por cada lugar, y lo vigila `partida.test.ts`); la
+línea de contraste; la tarjeta de imagen, la postal y la vista previa. **El plano no viaja en
+ninguna de las tres** (`UX-38` §6; hoy ni `taller.ts` ni las páginas lo nombran). Si algún día
+se lo quiere en la tarjeta, es otra enmienda: la tarjeta la ve un desconocido, y el criterio 4a
+le exige que las cuatro pesen igual.
+
+**Lo que se acepta, con el costo dicho.**
+
+1. **Una de cada cuatro personas ve la suya en el rincón que se lee primero, y otra en el que se
+   lee último, para siempre.** No depende del azar ni de cuánto jugó: depende de la manera.
+   `D-57` punto 7 sacó el rombo exactamente por esto (*«dejaba las dos caras de luz siempre
+   arriba»*) y `UX-38` §2.1 había descartado esta misma disposición (*«la jerarquía del rombo
+   con otro dibujo»*). Vuelve porque el usuario la eligió viéndola.
+2. **El costo mayor no es el rincón: es que arriba es «luz».** Arriba ya es el lugar del acierto
+   en otros juegos del sitio (`PRD-ponelos-en-fila.md`, «El riesgo de que la fila de arriba se
+   lea como "acierto"»), y *luz* es la palabra que halaga. `CU-3` y `CU-4`, las dos de
+   oscuridad, quedan abajo para todos. `D-57` («lo que estaba mal», 4) midió que los resultados
+   viejos no halagaban parejo a luz y a oscuridad, y se arregló en el texto de las bajadas; el
+   plano lo reabre en el lugar. Se acepta.
+3. **Qué compra.** Lo que pidió el usuario, ver que está en un plano de dos ejes, y algo que la
+   grilla relativa no daba: dos amigos con resultados opuestos miran el mismo mapa, y el
+   punteado de quien mandó el enlace cae en el mismo rincón para los dos.
+4. **Se puede deshacer.** Volver a lo relativo no pide motor nuevo: `disposicion()` sigue
+   existiendo y ordena la grilla. Si la lectura con gente real (`UX-38` §10.5: «¿Se lee más
+   pobre alguna de las cuatro maneras en el plano?») dice que una manera se siente de última,
+   se reabre por ahí. Nada de esto toca los criterios.
+
+**Lo que no se relaja.** La excepción es del lugar, de nada más. De dónde sale cada prohibición,
+para que no se lea una de más ni una de menos:
+
+| En el plano (dibujo y texto del lector) no hay | Dónde está escrito |
+|---|---|
+| Ningún número: ni puntaje, ni conteo por eje, ni porcentaje, ni «cuánta gente tiene la tuya» | Criterio 3 (no se muestra el conteo), criterio 4a, `D-56`. `D-59` enmienda 3 lo cita bajo `BR-17` |
+| Ningún punto ni posición calculada: la marca es el borde y el sello | `BR-17` regla 2 (cada respuesta vale un polo puro: no hay un intermedio que dibujar, y un punto a mitad de camino mostraría un valor que el test no calcula); `UX-38` §1.3 |
+| Ninguna graduación: ni escala, ni marcas regulares sobre un eje, ni flechas, ni «un poco más» | «No hay grados dentro de un cuadrante» (piso de `US-06`); `UX-38` §1.4 |
+| Ninguna manera más grande, de otra letra o de otro peso: la tuya se marca con borde y sello | Criterio 3 (ningún cuadrante «más»), criterio 4a (las cuatro pesan igual) |
+| Ningún color por manera ni por rincón | Criterio 4a; `D-57` punto 8 (*«ninguna pieza se asigna a un cuadrante»*); `diseno-marca.md` |
+| Ninguna palabra que ordene los rincones: ni «mejor», «peor», «primera», «última», ni «más». «Arriba a la izquierda» es un lugar, no una nota | Criterio 3; `BR-37` regla 1 |
+| Ningún toque ni decisión más, y ninguna dependencia: el plano se mira; si no se puede armar, no se pinta y nada más cambia | Brief, criterios no negociables 2 y 3 (pulgar, sin muro); `UX-38` §0.1 |
+
+**Criterio 9 — el plano de dos ejes** (`D-59` enmiendas 2 y 3).
+- **Given** un jugador terminó la noche (con o sin enlace de otro) y está en el resultado.
+- **When** baja hasta «Las cuatro maneras».
+- **Then** ve, debajo de los dos botones y arriba de la grilla, un plano de dos ejes que cumple
+  **las siete condiciones** de abajo. Si falla una, el plano no se da por bueno.
+
+| # | Condición | Cómo se verifica |
+|---|---|---|
+| 1 | **El mismo mapa para todos.** Luz arriba y Orden a la izquierda: `CU-1` arriba a la izquierda, `CU-2` arriba a la derecha, `CU-3` abajo a la izquierda, `CU-4` abajo a la derecha, en las cuatro maneras y con o sin enlace. Sale del motor (`planoFijo()`), que no recibe el resultado, así que no puede girar con él | Automático: `partida.test.ts`, «el plano es fijo: Luz arriba, Orden a la izquierda, para todos»; `isla.test.ts`, «el plano es una imagen con su texto…» (sale de `planoFijo(banco)` y no escribe los polos a mano) |
+| 2 | **La tuya, donde cae, marcada solo con borde y sello** («Esta noche»). La de quien mandó el enlace, punteada y con su sello («Quien te lo mandó»); si es la misma, los dos | Parcial: `estilos.test.ts` exige las reglas `--tuya` y `--suya` (`ESTADOS_EJES`). El resto, por la medición del hilo (Playwright, 2026-10-05: 40 casos, la tuya en su rincón) |
+| 3 | **Los cuatro miden y pesan lo mismo**: mismo ancho y alto de cuadrante, misma letra, con o sin marca; filas y columnas iguales; sin desborde; nada bajo 12 px | Letra: `estilos.test.ts` (nada bajo 0,75 rem en `.ejes-`). Tamaños: medición del hilo (5 ventanas × 4 maneras × con y sin amigo). **Ningún test repite la igualdad de tamaños** |
+| 4 | **Sin número, sin punto, sin graduación.** Ni un dígito en el texto del plano ni en su `aria-label`; sin punto; ninguna marca regular ni flecha sobre los ejes | Parcial: `isla.test.ts` (sin punto). Los dígitos, en el navegador: `/\d/.test(p.textContent + p.getAttribute('aria-label'))` con `p = document.querySelector('.ejes-plano')` da `false`. Las marcas, por lectura de `revisor` |
+| 5 | **Ningún color por manera ni por rincón.** Ninguna regla de `.ejes-plano*` ata color, fondo o borde a un id de manera, a un `data-*` ni a un `nth-*`; solo `--tuya` y `--suya` | `rg -n -i "ejes-plano.*(cu-[1-4]\|data-\|nth-)" src/styles/juego.css` no devuelve nada (hoy no devuelve) |
+| 6 | **Nada que ordene en el texto del lector.** Dice los dos ejes, los cuatro polos y dónde cae la tuya (y la del otro) como lugar. Sin «mejor», «peor», «primera», «última», «más». Quien usa lector de pantalla recibe lo que recibe quien ve | Lectura de `contenido` (`T-352`) y de `revisor`. `voz.test.ts` mira la voz, no el orden |
+| 7 | **No viaja ni estorba.** No está en la tarjeta, la postal ni la vista previa; no suma un toque ni nada enfocable adentro; «Compartí» y «Empezá otra noche» quedan en el mismo lugar con y sin el plano; si falla al armarse, no se pinta y el resto no cambia | `rg -n -i "plano" src/lib/dos-ejes/taller.ts src/pages` no devuelve nada; `isla.test.ts` (sin `'a'`, `'button'` ni `tabindex`); los botones, por la medición del hilo (2026-10-05); el `try/catch` de `plano()`, por lectura |
+
+**Lo que cuesta verificarlo, dicho.** Las condiciones 3, 5 y 6 no tienen un test que las repita
+solas: la 3 vive en una medición hecha una vez, la 5 en un `rg`, la 6 en una lectura. Es el
+mismo trato de `BR-36` y `BR-38`: la máquina vigila lo que se puede contar y `revisor` lee el
+resto. Si el hilo quiere cerrar la 3, es un test de tamaños en el navegador; no lo pido.
+
+**Queda fuera de esta enmienda.** El copy del lector (`contenido`, `T-352`); el recorte, los
+ejes y las medidas (`experiencia`, `UX-38`, y el lienzo `T-351`); el motor (`arquitectura`). No
+toca `BR-17`, `BR-36`, `BR-37` ni `BR-38`, el piso (30, tres por celda), los cuatro nombres, el
+criterio 4 ni la tarjeta.
+
+**Verificación.** `producto` no ejecuta (`D-12`); lo corre el hilo principal o `revisor`:
+
+```bash
+node --test src/lib/dos-ejes/partida.test.ts src/lib/dos-ejes/isla.test.ts src/lib/estilos.test.ts
+rg -n -i "ejes-plano.*(cu-[1-4]|data-|nth-)" src/styles/juego.css
+rg -n -i "plano" src/lib/dos-ejes/taller.ts src/pages
+rg -n "^### Enmienda 2026-10-05 \(tercera\)" Docs/PRODUCTO/PRD-alcance-v1.md
+```
+
+Los dos `rg` del medio **no tienen que devolver nada**; el último, una línea.
+
 ---
 
 ## BR-17 — Los ejes de "qué tipo de ricotero sos" no miden nivel, y cada pregunta mueve uno solo
@@ -1531,6 +1632,12 @@ molinete (`D-14`).
 > dice qué escenas del mundo del recital entran al banco sin cerrar un molinete (cómo se
 > lee `BR-17` ahora que el banco no es ajeno a la banda); la segunda, qué recuerda una
 > visita y cómo se presenta el resultado de una partida inestable por diseño.
+
+> **Nota 2026-10-05.** `BR-17` tampoco cambia con el plano fijo (`D-59` enmiendas 2 y 3): ninguna
+> de sus tres reglas dice dónde se dibuja una manera. Lo que exceptúa la enmienda tercera de
+> `US-06` es el **lugar** de las maneras en el plano del resultado, no cómo se puntúa. La regla 2
+> es la que sostiene «sin punto» y «sin graduación»: cada respuesta vale un polo puro, así que
+> no hay posición intermedia que mostrar.
 
 ---
 
