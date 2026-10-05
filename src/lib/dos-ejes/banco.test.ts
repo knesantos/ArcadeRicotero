@@ -195,7 +195,9 @@ const VETOS_DE_LA_NOCHE: ReadonlyArray<readonly [string, readonly string[]]> = [
   // escenario es un velorio aunque no lo diga (`D-57` punto 9). La banda y sus rituales sí
   // entran a la escena desde `D-59`; las personas no.
   ['las personas de la banda', ['indio', 'solari', 'skay', 'beilinson', 'poli', 'patricio rey']],
-  // Ni la policía, que no pidió nadie y parte a la gente por historia propia.
+  // Ni la policía, que no pidió nadie y parte a la gente por historia propia. Ojo: `aparece`
+  // saca la tilde de la ñ, así que *caña* (la bebida) también cae acá. Si algún día hace falta,
+  // se afina la lista; hoy el banco no la usa.
   ['policía', ['policia', 'cana', 'yuta', 'gorra']],
   // Seguridad disfrazada de temperamento: hablar con desconocidos, a dedo, y la opción de luz
   // que apunta a quien está cerca o mira (`BR-36` veto 6).
@@ -203,8 +205,18 @@ const VETOS_DE_LA_NOCHE: ReadonlyArray<readonly [string, readonly string[]]> = [
   // La épica de tribuna y la psicodelia de utilería (voz-ricotera §3.6 y §7).
   ['épica y psicodelia', ['lucha', 'resistencia', 'delirio', 'caleidoscopio', 'viaje', 'aguante']],
   // "Nunca cansa el volumen" (el usuario, 2026-10-05, mirando "El volumen cansa los oídos"): en
-  // la noche ricotera la música no molesta, no aturde y no hay que taparla.
-  ['la música que molesta', ['algodon', 'tapon*', 'aturd*', 'cansa los oidos', 'me tapo los oidos', 'volumen cansa', 'demasiado fuerte']],
+  // la noche ricotera la música no molesta, no aturde y no hay que taparla (`D-59` enmienda 1).
+  // El volumen, el ruido y el estruendo solos no caen: a todo volumen es de la noche; lo que cae
+  // es la queja. "Tap*" suelto no entra: *me tapo con un amigo* es la llovizna (`EJ-042`).
+  [
+    'la música que molesta',
+    [
+      'algodon', 'tapon*', 'aturd*', 'ensordec*', 'zumbid*', 'molest*', 'demasiado fuerte',
+      'volumen cansa', 'cansa los oidos', 'oidos cansad*', 'duelen los oidos', 'me duele el oido',
+      'tapo los oidos', 'tapa los oidos', 'tapan los oidos', 'tapar los oidos', 'taparse los oidos', 'tapo con los dedos',
+      'baja el volumen', 'bajen el volumen', 'bajar el volumen',
+    ],
+  ],
 ];
 
 const VETOS_DE_LAS_OPCIONES: ReadonlyArray<readonly [string, readonly string[]]> = [
@@ -260,6 +272,49 @@ test('ninguna opción cae en un veto de las opciones (BR-36, D-59)', () => {
   assert.deepEqual(caidos, []);
 });
 
+/** Si un texto cae en un veto de la noche. Aparte, para probar la lista contra la hoja vieja. */
+const vetadoDeNoche = (texto: string, cual: string): boolean =>
+  VETOS_DE_LA_NOCHE.find(([porque]) => porque === cual)![1].some((v) => aparece(texto, v));
+
+test('la música que molesta sabe ver: la hoja vieja de EJ-052 cae entera', () => {
+  // Es la hoja que el usuario vio en el sitio publicado y marcó: "no va, nunca cansa el volumen".
+  for (const t of ['El volumen cansa los oídos.', 'Me tapo con los dedos', 'Traje algodón por las dudas']) {
+    assert.ok(vetadoDeNoche(t, 'la música que molesta'), t);
+  }
+  // Y lo que es de la noche no cae: el volumen alto, la llovizna, la campera.
+  for (const t of ['El cantito sube a todo volumen.', 'Me tapo con un amigo', 'Una pareja se tapa con una campera.']) {
+    assert.ok(!vetadoDeNoche(t, 'la música que molesta'), t);
+  }
+});
+
+/**
+ * Lo sucio de la noche (`BR-38`, `D-59` punto 1): el barro, la mugre, el humo, el reviente y lo
+ * que se toma o se fuma. *"Lo primero no puede faltar tampoco"* (el usuario): cada momento, en
+ * cada eje, lo trae en algún enunciado, así una noche sorteada no sale tierna de punta a punta.
+ * Es `CONSUMO` sin *seca* (*la boca seca* no es una pitada) y **sin la merca**: si la merca
+ * sirviera para cumplir el piso, pasaría de paisaje a protagonista. Solo enunciados: en las
+ * opciones lo sucio está vigilado por la guarda del consumo, no pedido.
+ */
+const SUCIO = [
+  'barro', 'embarrad*', 'mugre', 'humo', 'reviente',
+  ...CONSUMO.filter((v) => v !== 'seca'),
+];
+
+test('cada celda momento × eje trae lo sucio en algún enunciado (BR-38, D-59)', () => {
+  const sinSucio: string[] = [];
+  for (const m of BANCO.momentos) {
+    for (const eje of EJES) {
+      const celda = LISTOS.filter((i) => i.momento === m.id && i.eje === eje);
+      if (!celda.some((i) => SUCIO.some((v) => aparece(i.enunciado, v)))) sinSucio.push(`${m.id} × ${eje}`);
+    }
+  }
+  assert.deepEqual(sinSucio, []);
+});
+
+test('lo sucio no se cumple con la merca', () => {
+  for (const v of ['merca', 'cocaina', 'falopa', 'raya']) assert.ok(!SUCIO.some((s) => aparece(`Alguien pide ${v} en el baño.`, s)), v);
+});
+
 /** Si una opción nombra lo que se toma o se fuma. Aparte, para probarla contra un caso falso. */
 const consume = (texto: string): boolean => CONSUMO.some((v) => aparece(texto, v));
 
@@ -268,6 +323,8 @@ test('lo que se toma o se fuma nunca separa los polos (D-59)', () => {
   // son de la noche. Si una opción toma y la otra no, el eje deja de medir cómo te movés y pasa
   // a medir si tomás, y el que no toma —por salud, por los hijos, porque dejó— cae siempre del
   // mismo lado. La birra y el porro van en la escena, o en las dos opciones, nunca en una sola.
+  // Cuenta palabras, no pronombres: *lo paso y aplaudo* (`EJ-048`) pasa el porro con un "lo" y
+  // la guarda no lo ve. Eso lo lee `REV-20` (`CNT-31` §4).
   const caidos: string[] = [];
   for (const i of LISTOS) {
     const [a, b] = i.opciones.map((o) => consume(o.texto));
