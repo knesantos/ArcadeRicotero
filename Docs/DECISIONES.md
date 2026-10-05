@@ -3463,3 +3463,119 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   - Lo que toca a cada rol (los nombres del lugar de `CNT-13`, la hoja de marca del lienzo, el
     archivo `.otf` v0.4 junto al de `RES-43`) está en
     `Docs/SUGERENCIAS/HILO-para-todos-el-sitio-se-llama-fichin-ricotero.md`.
+
+---
+
+## D-61 — Skayboy y Poligirl: menú de entrada con los seis niveles abiertos, tarjeta al pasar de nivel, el pulgar que rueda y la pantalla completa en cualquier posición
+
+- **Fecha:** 2026-10-04
+- **Número:** se escribió como `D-56` (con `UX-36`, `CNT-30`, `BR-36` y `T-331`+) y se renumeró al
+  integrar: el ciclo 18 llegó antes a `main` con esos números, y `D-59` y `D-60` ya los tienen otras
+  ramas. Ver la fila de `IDS.md`.
+- **Estado:** aceptada — pedido directo del usuario, textual: *"Hacé una sesión entera agregándole
+  menú, paso entre niveles y corrigiendo la jugabilidad de las teclas en mobile de skayboy y
+  poligirl. Además ponele en el home al lado de Adiviná el tema. La idea es que tenga un botón para
+  ponerse en pantalla completa, y que en la misma pantalla completa estén los controles medio
+  transparentes para jugar dentro de la pantalla completa. Agregá el menú para jugar y ver qué
+  niveles hay y eso."*
+- **Consume y enmienda:** `D-32` límite 3 (en la lectura de `D-40` y `D-43`, ver la precisión al
+  final), `D-41` punto 4, `D-43`, `D-47` puntos 1 y 2, `D-55`, `US-09` criterios 3 y 9, `BR-31` §3,
+  `UX-27` §1.2 puntos 3 y 4, §5.1 y §9, `UX-28` §1, §2.1 y §2.2, `UX-32` §4 y §5, `UX-33` §1.2 y
+  §1.9, `CTR-16.11.2`, `ADR-10.1` y `ADR-10.5`, `CNT-22` §1.
+- **Contexto.** Se relevó el juego entero antes de tocarlo (cinco lectores en paralelo). Lo que
+  había: los seis niveles `listo`, el paso al siguiente con un toque invisible sobre el área, y la
+  pantalla completa con los mandos ya superpuestos y medio transparentes **de costado**. Lo que
+  explicaba el pedido:
+  1. **El botón de pantalla completa no existía con el teléfono parado** (`UX-33` §1.9), que es como
+     se entra desde un enlace; y donde sí aparecía decía `PANTALLA NORMAL`, que nombra el estado y
+     no lo que hace el toque.
+  2. **El pulgar no podía rodar entre teclas.** Cada botón capturaba su puntero: un pulgar que baja
+     en ← y se corre a → sigue caminando a la izquierda. Y correr saltando pedía dos dedos en la
+     misma columna, cuando los niveles 4 a 6 —medido en `skayboy-soluciones.json`— solo se ganan
+     con salto y dirección a la vez.
+  3. **No había menú, ni un nombre de nivel a la vista en ningún lado.** Los seis nombres de
+     `CNT-21` viajaban al navegador y nadie los mostraba; el paso entre niveles era un toque sobre
+     un área sin ninguna señal de que había que tocarla.
+- **Decisión.**
+  1. **Menú de entrada.** El juego abre con un menú: el botón grande juega el nivel que corresponde
+     (el primero sin pasar, como hasta hoy), y al lado o abajo están **los seis niveles, todos
+     abiertos**, cada uno con su número, su nombre y si está pasado. El mismo menú se abre jugando,
+     con un sello `MENÚ` en el mueble, y entonces la partida queda en pausa. Es HTML, vive adentro de
+     `.fichin` (así se ve en la pantalla completa del sistema, `ADR-10.5`) y nunca dibuja en el
+     canvas (`ADR-08.2` punto 4). **Ocupa la región del tubo y los mandos, nunca el pie de homenaje
+     ni la cabecera** (`UX-37` §3.3, `BR-26`): parado, la zona de las teclas, con el nivel dibujado
+     arriba; de costado, el tubo y las dos columnas; en el modo, la sala.
+  2. **Los seis abiertos.** El candado de orden que `producto` glosó en `US-09` criterio 9 y
+     `BR-31` §3 no estaba en el pedido del usuario de `D-47` ("los seis niveles, en fila") y es un
+     molinete: "saber lo suficiente" con forma de nivel (`D-14`). La fila sigue mandando **dónde se
+     retoma** —el primero sin pasar— y el avance se sigue guardando igual (`CTR-16.11`); lo que
+     cambia es que se puede elegir cualquiera.
+  3. **Pasar de nivel se ve.** En el mismo cuadro en que se gana aparece una tarjeta **en la banda
+     de arriba del área** (`UX-37` §4.3: las seis puertas están en la fila de abajo, y el baile y el
+     contador ocupan la mitad de abajo), que nombra el nivel pasado y ofrece tres cosas: seguir al
+     siguiente (nombrándolo, cuando hay lugar), repetir, o elegir otro. A ×1 va compacta. El toque
+     sobre el área sigue funcionando igual (`D-32` límite 3: tocable en el cuadro cero). Al empezar
+     cada nivel, un rótulo con su número y su nombre aparece un rato arriba del área y se va solo;
+     no toma toques.
+  4. **El pulgar rueda.** Cada columna sigue al dedo por geometría: el puntero lo captura la
+     columna, no el botón, y la tecla es la que queda más cerca del dedo, sin franjas muertas
+     entre teclas. **Y la dirección viaja con el pulgar al saltar**: si el pulgar sube de una
+     flecha al bloque de saltar sin levantarse, salta y sigue yendo para ese lado. Así correr
+     saltando se hace con un solo pulgar por columna, que es como `UX-28` §2.2 contaba que se iba a
+     jugar en solitario. La física, las trazas y el solucionador no cambian.
+  5. **La pantalla completa en cualquier posición.** El botón aparece también con el teléfono
+     parado y dice lo que hace. Al entrar, donde el sistema deja (Android), el teléfono gira solo
+     y los mandos quedan encima del área, medio transparentes, como ya estaba de costado. Donde no
+     deja (iPhone), parado el área va arriba y los mandos abajo, en la misma tinta. El menú también
+     tiene el botón.
+  6. **En la portada, al lado de "Adiviná el tema".** El casete pasa de A9 a A4.
+- **Alternativas descartadas.**
+  - **El menú solo desde adentro, sin abrir al entrar.** Es lo que pedían `D-32` límite 3 y
+    `US-09` criterio 3 ("empieza a jugar sin que ninguna pantalla le pregunte"). El usuario pidió
+    *"el menú para jugar"*, y el menú de entrada no pregunta nada: el botón grande es jugar, a cero
+    milisegundos, y es el mismo nivel que se jugaba antes. Un toque más, a cambio de ver qué hay.
+  - **Niveles bloqueados en orden.** Ver el punto 2.
+  - **Una tarjeta en el centro del área al ganar.** Taparía el baile y el contador de lo que juntó
+    cada uno (`UX-33` §2.5), que es justo lo que se gana mirar.
+  - **La tarjeta abajo**, que era la primera versión de esta decisión. `experiencia` mostró que en
+    los seis niveles las puertas están en la fila 8 de 9: abajo tapaba justo lo que se quería
+    dejar a la vista, y de costado pisaba el pie de homenaje.
+  - **Un menú que tapa la ventana entera**, con el pie copiado adentro. Fue lo primero que se
+    construyó y se midió en el navegador; se cambió por la región de `UX-37` §3.3 porque `BR-26`
+    pide el pie **sin tocar nada y en su lugar**, y porque la cabecera con el volver tiene que
+    seguir a mano. De paso, parado el nivel queda dibujado arriba mientras se elige.
+  - **Partir el bloque de salto en dos diagonales dibujadas.** Resolvía lo mismo que el arrastre
+    de dirección, pero cambiaba el dibujo de las teclas y sumaba dos blancos chicos donde hoy hay
+    uno grande. El arrastre no cambia nada de lo que se ve.
+  - **Que el salto conserve la dirección en el aire.** Cambia la física y obliga a regrabar las
+    seis trazas.
+  - **Girar el fichín 90° con CSS en el iPhone.** Es la única manera de forzar el horizontal donde
+    no hay bloqueo de orientación, y rompe la medida de todo el encuadre. Queda anotado.
+- **Consecuencias.**
+  - El menú, la tarjeta y el rótulo son texto encima del área: `UX-27` §5.1 ("adentro del área no
+    hay texto") sigue valiendo para el canvas y para la partida en curso, y deja de valer para esas
+    tres capas de HTML, igual que ya no valía para el contador de la victoria.
+  - Los textos nuevos los escribe `contenido` en `CNT-40` y pasan por `voz.test.ts`.
+  - `experiencia` documenta el menú, la tarjeta y el pulgar en `UX-37` y enmienda `UX-33` §1.9;
+    `producto` enmienda `US-09` y `BR-31` (`BR-40`); `arquitectura` enmienda `ADR-10.5` y
+    `CTR-16.11.2`. El traspaso es `Docs/SUGERENCIAS/HILO-para-todos-skayboy-menu-y-mando.md`.
+  - La lógica nueva vive en módulos puros probados en Node (`dedos.ts`, `menu.ts`), como el resto
+    del juego: la isla solo pega.
+- **Precisiones del mismo día**, después de que los cuatro roles escribieran su parte (`CNT-40`,
+  `UX-37`, `BR-40`, la enmienda de `ADR-10` y `CTR-16.11.2`):
+  - **`D-32` límite 3 no prohibía un menú.** Su texto es "0 ms hasta que la acción principal es
+    tocable", sobre animación; la lectura de "ninguna pantalla previa" es de `D-40`, `D-43` y
+    `UX-28` §1 (lo notaron `contenido` y `producto`). El menú de entrada cumple el límite al pie de
+    la letra —el botón grande es tocable en el primer cuadro— y lo que enmienda es esa lectura.
+  - **La estampa de pantalla completa dice el verbo**: `PANTALLA COMPLETA` afuera del modo y
+    `SALÍ` adentro (`CNT-40` §5). En el menú, donde hay lugar, el botón lleva la frase entera
+    ("Entrá a pantalla completa", "Salí de pantalla completa", que ya eran los `aria-label`): un
+    `SALÍ` solo al lado de `Jugá` se leía como salir del juego.
+  - **Un solo "Seguí" en la tabulación** (`UX-37` §4.5): `#seguir-juego` sigue siendo el toque
+    sobre el área y sale del orden de tab y del árbol de accesibilidad; el de la tarjeta lo aprieta.
+  - **"Hasta dónde llegó" se cuenta en cualquier orden** (`BR-40`): `pasadosDeLaFila()`, para la
+    pieza compartible de `BR-27` cuando exista. `hastaDonde()` queda para dónde se retoma.
+  - **En la portada, A4**: justo después de "Adiviná el tema". En el teléfono queda abajo y en dos
+    columnas al lado; en tres columnas (1024 px o más) es el primero del renglón de abajo, porque
+    ahí "Adiviná el tema" cierra el primer renglón. Ponerlo literalmente al lado en los tres anchos
+    pide mover también "Adiviná el tema" o sacar a "¿Qué tipo de ricotero sos?" del A2 (`D-51`).

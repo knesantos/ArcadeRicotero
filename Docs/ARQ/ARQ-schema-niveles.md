@@ -77,6 +77,15 @@
 > los puso el hilo principal por `D-51` punto 2, sin partida en el teléfono. Schema y contrato
 > sin cambios. **Consume además:** `D-51`. Cerrada el mismo día con la confirmación del
 > usuario (`D-53`), que no dice de a dos ni en qué aparato.
+> **2026-10-04 (`D-61` punto 2): se puede elegir cualquier nivel.** Enmiendas marcadas en
+> `CTR-16.11` (*"De dónde sale"*), `CTR-16.11.1` (fila *"Cuándo se lee"*) y `CTR-16.11.2` (el
+> candado de orden se va; dónde se retoma y cómo se escribe el avance, no). Schema, clave, valor
+> y `contratoVersion`, sin cambios. **Consume además:** `D-61`,
+> `Docs/SUGERENCIAS/HILO-para-todos-skayboy-menu-y-mando.md`, `ADR-10.5` enmendado el mismo día,
+> y en disco `src/lib/skayboy/avance.ts` (`siguienteDeLaFila`, `hastaDonde`, `cargarAvance`,
+> `guardarPasado`) y `src/lib/skayboy/escena.ts` (`nivelAJugar`, `siguienteAlGanar`). `BR-40`
+> (que enmienda `US-09` criterios 3 y 9 y `BR-31` §3) y `UX-37` se escriben en paralelo y no
+> estaban en disco; `menu.ts` tampoco existía todavía.
 >
 > **Regla de escritura que nace de `FIND-55`: toda medida de píxel dice si es _nativa_ o
 > _CSS_. En este documento todo es nativo, porque un dato de nivel no sabe a qué escala se
@@ -1577,6 +1586,8 @@ no se puede exigir en un test. Para lo que la regla protege alcanza la de uno
   (`localStorage`…), sin cuenta y sin sincronización"*, con el valor que ve la persona:
   **"hasta qué nivel llegó, un número entre 0 y 6, no un puntaje ni un tiempo"**. `D-47` punto 2.
   `ADR-04.5` para el espacio de nombres y para qué hacer cuando `localStorage` falla.
+  *Enmendado el 2026-10-04: "ganar el n habilita el n + 1" ya no rige. `D-61` punto 2 abre los
+  seis; la fila manda dónde se retoma, no qué se puede jugar (`CTR-16.11.2`).*
 
 ### CTR-16.11.1 — La clave y el valor
 
@@ -1591,7 +1602,7 @@ no se puede exigir en un test. Para lo que la regla protege alcanza la de uno
 | **Campos que no conoce** | Se conservan al escribir (se lee, se modifica y se escribe) y se ignoran al leer. Así una versión posterior puede sumar un campo sin clave nueva, y una pestaña con el código viejo no se lo borra |
 | **Si `localStorage` tira** (Safari en privado, cuota llena) | **Se traga y se sigue**, con el avance en memoria mientras dure la página (`ADR-04.5`). Perder el avance es una molestia; romper el juego por no poder guardar sería ridículo |
 | **Cuándo se escribe** | **En el cuadro en que el mundo marca `terminado`**, no cuando la persona toca "seguí". Así, quien cierra el teléfono con la victoria en pantalla no pierde el nivel. Se lee lo que hay guardado, se suma el `id` y se escribe: **dos pestañas abiertas se juntan por unión** y ninguna borra a la otra |
-| **Cuándo se lee** | Una vez, al arrancar la isla, para elegir el nivel |
+| **Cuándo se lee** | Una vez, al arrancar la isla, para elegir el nivel. *Enmendado el 2026-10-04 (`D-61`): también puede leerse al abrir el menú, siempre con `cargarAvance()` (`CTR-16.11.2`, punto 7)* |
 
 **Lo que ve la persona se calcula, no se guarda.** *"Hasta qué nivel llegó"* es cuántos niveles
 de la fila de hoy, **empezando por el primero y sin saltear**, están en `pasados`: un número de 0
@@ -1608,7 +1619,9 @@ persona se saltea uno sin enterarse o repite uno ya pasado.
   una sola cosa.
 - **Dónde se retoma:** en **el primer nivel de la fila que no está en `pasados`**. Si hay un
   hueco (se ganó `NIV-01` y `NIV-03`, pero no `NIV-02`), se retoma en el hueco: *"no hay forma
-  de saltear uno sin haber pasado el anterior"* (criterio 9 enmendado).
+  de saltear uno sin haber pasado el anterior"* (criterio 9 enmendado). *Enmendado el
+  2026-10-04: esa cita ya no dice qué se puede jugar —`D-61` abre los seis—; queda como la razón
+  de dónde se retoma. Ver la enmienda al final de esta sección.*
 - **Si están todos:** la función devuelve `null`, que quiere decir "no queda ninguno". **Qué se
   muestra y qué se juega entonces lo deciden `BR-31` punto 1 y `UX-33`, no este contrato.**
 - **El pedido de desarrollo** (`?nivel=`, que solo existe en desarrollo: lo resuelve
@@ -1618,6 +1631,73 @@ persona se saltea uno sin enterarse o repite uno ya pasado.
 - **Distintos orígenes no comparten nada**: `localhost`, cada vista previa de Vercel y
   producción tienen cada uno su `localStorage`. No hay nada que hacer al respecto, y está bien
   así.
+
+> **Enmendado el 2026-10-04 por `D-61` punto 2, en el lugar: se puede elegir cualquier nivel de
+> la fila.** El candado de orden que glosaban `US-09` criterio 9 y `BR-31` §3 se va (los enmienda
+> `BR-40`): `D-61` lo llama un molinete, *"saber lo suficiente"* con forma de nivel (`D-14`).
+> **El contrato del avance no se toca**: misma clave, mismo valor, mismo momento de escritura, y
+> ningún avance escrito antes de hoy cambia de sentido. Lo que cambia es qué lee cada quien:
+>
+> 1. **Qué se puede jugar: cualquier nivel de la fila**, o sea cualquiera que la página sembró
+>    (`CTR-16.8`): en producción, los `listo`; en desarrollo y en la vista previa, todos. El menú
+>    lista la fila y nada más. Un `id` de `pasados` que la fila de hoy no tiene no aparece
+>    (*"Ids que la fila de hoy no tiene"*, `CTR-16.11.1`), y un borrador no se puede elegir en
+>    producción porque no está.
+> 2. **Dónde se retoma, igual que antes:** el primero de la fila que no está en `pasados`
+>    (`siguienteDeLaFila()`), y con todos pasados, el primero (`nivelAJugar()`, ancla
+>    `export function nivelAJugar` en `escena.ts`). Es lo que juega el botón grande del menú
+>    (`D-61` punto 1: *"el primero sin pasar, como hasta hoy"*). La cita del criterio 9 de arriba
+>    pasa de candado a brújula: nadie tiene que ganar el 3 para jugar el 4, pero el botón grande
+>    nunca saltea un hueco.
+> 3. **El avance sigue siendo `pasados`, y se escribe igual:** en el cuadro en que el mundo marca
+>    `terminado` (`CTR-16.11.1`), que es el mismo en que aparece la tarjeta de fin de nivel
+>    (`ADR-10.5`, condición 3). **Ningún botón de la tarjeta ni del menú escribe ni borra nada**:
+>    ni seguir, ni repetir, ni elegir otro, ni empezar de nuevo un nivel en pausa. Ganar otra vez
+>    un nivel pasado no lo duplica (`conPasado()` no repite), y dejarlo por la mitad no lo saca.
+> 4. **Ganar fuera de orden pasa de caso de desarrollo a caso de todos los días.** El contrato ya
+>    lo cubría por el pedido de desarrollo (párrafo de arriba): un `NIV-04` ganado sin el 1 se
+>    guarda, y se retoma en el 1. No hace falta nada nuevo para que eso funcione en producción.
+> 5. **"Pasado", en el menú, es pertenencia, no `hastaDonde()`.** El sello de cada ficha dice si
+>    su `id` está en `pasados`. `hastaDonde()` cuenta desde el primero y sin saltear: con
+>    `pasados` = `["NIV-04"]` da 0, y un menú que sellara con eso mostraría sin sellar el nivel que
+>    la persona acaba de ganar. `hastaDonde()` sigue siendo lo que era —*"hasta qué nivel llegó"*,
+>    el número que se muestra (`US-09` criterio 9)— y no sella fichas.
+> 6. **Hay dos "siguiente", y está bien que no coincidan.** El de la tarjeta es **el que sigue en
+>    la fila al nivel que se acaba de ganar**, y después del último, el primero
+>    (`siguienteAlGanar()` en `escena.ts`; `D-61` punto 3, y el traspaso: *"en el sexto, seguir
+>    lleva al primero (como hoy)"*). El del botón grande es dónde se retoma (punto 2). Con
+>    `pasados` = `["NIV-01"]`, quien elige el 4 y lo gana ve en la tarjeta que sigue el 5, y en el
+>    menú el botón grande lo lleva al 2. Las dos cosas son verdad. Con la fila jugada en orden
+>    coinciden siempre, y por eso hasta hoy no hacía falta decirlo.
+> 7. **El menú lee el avance de `avance.ts`, nunca de `localStorage` por su cuenta**: lo que
+>    devolvió `cargarAvance()` o el último `guardarPasado()`. `cargarAvance()` une lo guardado con
+>    lo que la página ya tiene en memoria, así que llamarla otra vez al abrir el menú está
+>    permitido y no pierde nada: es la manera de ver lo que ganó otra pestaña. Por eso se enmienda
+>    la fila *"Cuándo se lee"* de `CTR-16.11.1`.
+> 8. **`menu.ts` es puro** (`D-61`, consecuencias): puede importar `avance.ts` y `niveles.ts`; no
+>    puede importar el motor, tocar el DOM, tocar `localStorage` ni usar `node:*`. Son los límites
+>    de `avance.ts` en `CTR-16.8`, sin sus dos funciones que tocan el aparato. Si el módulo nace
+>    con otro nombre, la regla va con él.
+>
+> **Las pruebas que suma, cada una con su rojo** (las escribe el hilo principal, en
+> `avance.test.ts`, `escena.test.ts` o la prueba de `menu.ts`):
+>
+> | Caso | Verde | Rojo que se tiene que ver |
+> |---|---|---|
+> | Ganar fuera de orden | Sin avance, se gana `NIV-04`: `pasados` es `["NIV-04"]`, la ficha del 4 sale pasada y el botón grande lleva a `NIV-01` | Sellar con `hastaDonde()`: el 4 sale sin sello |
+> | Los dos "siguiente" | Con `pasados` = `["NIV-01"]`, se gana `NIV-04`: la tarjeta nombra `NIV-05` y el botón grande lleva a `NIV-02` | Que la tarjeta use `siguienteDeLaFila()`: nombra `NIV-02` |
+> | Los botones no escriben | Con `pasados` = `["NIV-02"]`, se elige el 2, se pausa, se empieza de nuevo y se elige otro: lo guardado no cambió | Un `guardarPasado()` colgado de un botón |
+> | La fila manda qué se lista | Con la fila de producción (solo `listo`) y un `pasados` que trae un `id` que la fila no tiene, el menú tiene tantas fichas como la fila, y ese `id` no aparece | Listar el banco entero |
+>
+> **Descartadas en esta enmienda:**
+>
+> | Descartada | Por qué, puntual |
+> |---|---|
+> | **Dejar el candado en el contrato**: que la isla no deje empezar el *n* sin el *n − 1* en `pasados` | `D-61` punto 2 lo saca por molinete, y el contrato ya sabía guardar un nivel ganado fuera de orden |
+> | **Retomar en el último nivel elegido o jugado**, guardado en el avance | Suma un campo que dice qué se tocó y no qué se ganó (*"nada más"*, `CTR-16.11.1`), y el botón grande empezaría a llevar a un nivel ya pasado. `D-61`: la fila manda dónde se retoma |
+> | **Que el seguir de la tarjeta lleve al hueco** (`siguienteDeLaFila()`) | Quien eligió el 4 para jugar para adelante lo gana y lo mandan al 2: el candado vuelve con otra forma |
+> | **Sellar las fichas con `hastaDonde()`** | Esconde los niveles ganados fuera de orden (punto 5) |
+> | **Una clave o una versión nueva para el avance** | No cambió nada de lo que se guarda. Una clave nueva borraría el avance de todos (`CTR-16.11.5`) |
 
 ### CTR-16.11.3 — El módulo y las pruebas
 

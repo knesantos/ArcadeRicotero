@@ -524,3 +524,11 @@ documento de vara:
   área naciera como SVG, y con esta convención ninguna nace así.
 - **El motor.** De `arquitectura` (`RES-62` ya sirvió el orden). Lo único que le pido está
   en `Docs/SUGERENCIAS/UX-para-arquitectura-el-area-de-juego.md`.
+
+---
+
+> **Enmendado el 2026-10-04 por `UX-37` (`D-61`).** **`§5.1`**, y con ella **`§1.2`** puntos 3 y 4
+> y la fila *"cartel de nivel, cualquier texto"* de **`§9`**, siguen absolutas para lo que dibuja
+> el motor, y admiten tres capas de HTML sobre el área con fondo propio y opaco: el menú, la
+> tarjeta de fin de nivel y el rótulo de entrada. El texto viejo y el nuevo, en `UX-37` `§8.1`; las
+> cinco condiciones, en `UX-37` `§2.1`.

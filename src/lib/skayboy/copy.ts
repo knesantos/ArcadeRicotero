@@ -137,24 +137,27 @@ export const PIE_HOMENAJE =
   'Homenaje de fans, no oficial: ni Eduardo Beilinson ni Carmen Castro tuvieron nada que ver.';
 
 /**
- * El interruptor de pantalla completa (`CNT-22 §1`, `UX-33 §1.2` y `§1.5`, `T-301`).
+ * El interruptor de pantalla completa (`CNT-22 §1`, enmendado por `CNT-40 §5`; `UX-33 §1.2` y
+ * `§1.5`, enmendados por `UX-37` §8.6; `T-301`).
  *
- * **El molde que estrenó la estampa de la cinta** (`UX-21`, que se sacó del sitio el
- * 2026-10-01): la estampa visible nombra el estado en
- * que se está, en registro 3, y el `aria-label` nombra el verbo del toque, en voseo. Un solo
- * botón, dado vuelta: en `ventana` se toca para `entrar`, en `completa` para `salir`.
+ * **Desde `D-61` la estampa dice lo que hace el toque**, no el estado en que se está: decía
+ * `PANTALLA NORMAL` afuera del modo y el usuario no encontró el botón. Ahora afuera dice
+ * `PANTALLA COMPLETA` y adentro `SALÍ`, y cada una está contenida en su `aria-label` (el nombre
+ * accesible contiene el texto visible, WCAG 2.5.3, que el sello viejo no cumplía). Un solo botón,
+ * dado vuelta —más el del menú, que se pinta igual—. Las claves siguen nombrando el estado
+ * (`ventana`, `completa`) y los valores el toque: cruce raro de leer, y queda escrito (`CNT-40`).
  *
- * Las dos estampas van sin tilde a propósito (`CNT-22 §1`): entran en cualquier fuente del
- * sitio sin esperar la deuda de acentos de `diseno-marca.md`. **Sin ícono**: las flechas en
- * diagonal son el ícono de librería que esa misma regla veta.
+ * `SALÍ` lleva tilde: va en `--fuente-rotulada`, que la tiene (la deuda de acentos de
+ * `diseno-marca.md` es de las letras de disco). **Sin ícono**: las flechas en diagonal son el
+ * ícono de librería que esa misma regla veta.
  *
  * No hay una cadena para "esto no es pantalla completa de verdad" en iPhone (`CNT-22 §6`,
  * `UX-33 §1.8`): el resultado es el mismo, y explicar el mecanismo no le sirve a nadie para jugar.
  */
 export const PANTALLA_COMPLETA = {
-  ventana: 'PANTALLA NORMAL',
+  ventana: 'PANTALLA COMPLETA',
   entrar: 'Entrá a pantalla completa',
-  completa: 'PANTALLA COMPLETA',
+  completa: 'SALÍ',
   salir: 'Salí de pantalla completa',
 } as const;
 
@@ -177,4 +180,65 @@ export const COLECCIONABLE = {
   cigarrillos: 'cigarrillos',
   avisoGuitarra: 'Guitarra.',
   avisoCigarrillo: 'Cigarrillo.',
+} as const;
+
+/**
+ * El menú del juego (`D-61` punto 1). **Los textos son de `CNT-40` §1**, copiados sin retocar; si
+ * alguno cambia, cambia allá primero.
+ *
+ * El botón grande dice `jugar` al entrar y al abrirlo con el nivel ganado, y `seguirJugando` con
+ * una partida en pausa; debajo, un renglón seco dice qué nivel juega (`cualToca`). Las fichas
+ * llevan el número y el nombre de `CNT-21`, y un sello en registro 3 si están pasadas o si son la
+ * del nivel armado. El título de la lista es la única línea que dice en pantalla lo que decidieron
+ * `D-61` punto 2 y `BR-40`: **si un nivel vuelve a trabarse, esa línea miente y se cambia en el
+ * mismo commit**.
+ */
+export const MENU = {
+  sello: 'MENÚ',
+  abrir: 'Abrí el menú',
+  jugar: 'Jugá',
+  seguirJugando: 'Seguí jugando',
+  repetir: 'Empezá el nivel de nuevo',
+  cualToca: (numero: number, nombre: string) => (nombre === '' ? `Nivel ${numero}` : `Nivel ${numero}: ${nombre}`),
+  niveles: 'Los niveles, todos abiertos',
+  numero: (numero: number) => `Nivel ${numero}`,
+  pasado: 'PASADO',
+  estasAca: 'ACÁ ESTÁS',
+  /**
+   * El `aria-label` de cada ficha (`CNT-40` §1.1): `Nivel {n}, {nombre}. {estado}.`, donde el estado
+   * es lo que dicen los sellos de esa ficha —`Pasado`, `Acá estás` o `Pasado, acá estás`—, y sin
+   * estado, sin el segundo tramo. El lector dice lo mismo que el sello, no una paráfrasis.
+   */
+  etiqueta: (numero: number, nombre: string, pasado: boolean, actual: boolean) => {
+    const cabeza = nombre === '' ? `Nivel ${numero}.` : `Nivel ${numero}, ${nombre}.`;
+    const estado = [pasado ? 'pasado' : '', actual ? 'acá estás' : ''].filter((p) => p !== '').join(', ');
+    return estado === '' ? cabeza : `${cabeza} ${estado.charAt(0).toUpperCase()}${estado.slice(1)}.`;
+  },
+} as const;
+
+/**
+ * La tarjeta de fin de nivel (`D-61` punto 3, `CNT-40` §2): aparece en el mismo cuadro en que se
+ * gana, arriba del área (`UX-37` §4.3). **Nombra el hecho de juego y se calla** (`BR-31`): el nivel
+ * pasado, el que sigue y tres botones. Nada de "ganaron". `sigue` dice `Siguiente` y no `Sigue`:
+ * pegado al botón `Seguí` era el mismo verbo en dos personas a un dedo de distancia (`CNT-40`).
+ *
+ * En el sexto, el renglón del que sigue lo ocupa `ultimo` —el recorte de `avisoUltimoNivel` que ya
+ * se le dice al lector de pantalla— y el botón principal dice `volverAlPrimero`: es el parche de
+ * `BR-40` punto 7 mientras no exista la pieza compartible de `BR-27` (`T-302`). Ese día se borra.
+ */
+export const FIN_DE_NIVEL = {
+  rotulo: (numero: number, total: number) => `NIVEL ${numero} DE ${total} · PASADO`,
+  sigue: (nombre: string) => `Siguiente: ${nombre}`,
+  volverAlPrimero: 'Volvé al primero',
+  repetir: 'Repetí',
+  menu: 'Elegí otro',
+  ultimo: 'Último nivel.',
+} as const;
+
+/**
+ * El rótulo de entrada de cada nivel (`D-61` punto 3, `CNT-40` §3): número arriba, que nombra, y el
+ * nombre de `CNT-21` abajo, que canta. La regla de las dos líneas más limpia del juego.
+ */
+export const ENTRADA = {
+  rotulo: (numero: number, total: number) => `NIVEL ${numero} DE ${total}`,
 } as const;
