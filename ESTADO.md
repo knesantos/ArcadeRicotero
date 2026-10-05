@@ -65,6 +65,28 @@
 > §2 y `UX-25` §4; el lienzo no tiene esto. Los costados del máster no son de Rocambole (están
 > anotados en `D-62` y en `public/arte/README.md`).
 
+> ## 🌐 EL DOMINIO: FICHINRICOTERO.COM.AR, ANDANDO (2026-10-05) — `D-59`
+>
+> **El sitio vive en `https://fichinricotero.com.ar`.** El usuario compró el dominio en NIC
+> Argentina (`arcadericotero.com.ar` quedó trabado en revisión manual, "banquinado"; la sospecha
+> es *arca*), lo agregó en Vercel con `www` redirigiendo, y delegó en NIC a `ns1.vercel-dns.com` y
+> `ns2.vercel-dns.com`. Cuando el usuario confirmó que andaba, la rama
+> `dominio/fichinricotero` se fusionó con `main` (que ya traía `D-60` y `D-61`) y se integró.
+>
+> **Lo que cambió en el código:** `site` de `astro.config.mjs` apunta al dominio nuevo, así que
+> `og:url` y `og:image` salen de ahí; las tarjetas del taller de "¿Qué tipo de ricotero sos?" se
+> volvieron a dibujar con la marca de `D-60` y este dominio; los enlaces del hilo de Twitter en
+> `main` apuntan al dominio nuevo.
+>
+> **Lo que queda:**
+> 1. `arcade-ricotero.vercel.app` sigue respondiendo y no redirige: los enlaces viejos andan.
+>    Si se quiere una sola dirección, se configura en Vercel (Settings → Domains).
+> 2. El hilo con el nombre nuevo (rama `difusion/hilo-twitter`) **choca con esta integración** en
+>    `hilo.md` y `hilo.json`: acá cambiaron las direcciones, allá el nombre. Al integrarlo, quedan
+>    las dos cosas.
+> 3. **Renovar en NIC antes del 2027-10-04** ($8.500 hoy; 45 días de gracia). Si se deja vencer,
+>    el sitio sigue en `arcade-ricotero.vercel.app` volviendo `site` atrás.
+
 > ## 🕹 SKAYBOY Y POLIGIRL: EL MENÚ, EL PASO ENTRE NIVELES Y EL PULGAR (2026-10-04) — `D-61`
 >
 > Pedido del usuario, textual: *"Hacé una sesión entera agregándole menú, paso entre niveles y
