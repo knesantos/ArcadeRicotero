@@ -1,7 +1,7 @@
 /*
- * Tokens visuales. Implementa el sistema de marca de Arcade Ricotero.
+ * Tokens visuales. Implementa el sistema de marca de Fichín Ricotero.
  *
- * EL DISENO MANDA: la fuente de verdad es el lienzo "Sistema de marca Arcade Ricotero"
+ * EL DISENO MANDA: la fuente de verdad es el lienzo "Sistema de marca Fichín Ricotero"
  * (URL en ESTADO.md y en .claude/rules/diseno-marca.md). Para cambiar un color, una
  * fuente o un espaciado, primero se cambia alla y despues se refleja aca — nunca al
  * reves, y nunca un valor suelto en un componente. Este archivo es el UNICO lugar del

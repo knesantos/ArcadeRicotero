@@ -90,10 +90,10 @@ export const RESULTADO = {
   victoria: 'Se acabaron las preguntas. No le erraste a ninguna.',
   compartir: 'Compartí',
   deNuevo: 'Jugá de nuevo',
-  volver: 'Volvé al arcade',
+  volver: 'Volvé al fichín',
   /** `ADR-02`, forma `marcador`: `p` la racha, `t` la cantidad de preguntas del pozo. */
   paraCompartir: (racha: number) =>
-    `Llegué a una racha de ${racha} en Más o menos, en el arcade ricotero. ¿La superás?`,
+    `Llegué a una racha de ${racha} en Más o menos, en el fichín ricotero. ¿La superás?`,
   copiado: 'Se copió el enlace.',
   aManoTitulo: 'Copiá esto y mandalo',
 } as const;

@@ -527,6 +527,7 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 
 - **Fecha:** 2026-08-20
 - **Estado:** aceptada — decisión directa del usuario, en la sesión del sistema de marca.
+  **El nombre lo reemplazó `D-60` (2026-10-04): el sitio se llama Fichín Ricotero.**
 - **Contexto:** el proyecto nació como "RicotaArcade", un nombre de carpeta más que de
   producto. Al armar el sistema de marca quedó a la vista que el nombre iba a estar en la
   portada, en el título del navegador y en la tarjeta compartible — y "RicotaArcade" mezcla
@@ -3414,11 +3415,9 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   el mismo día. Lo tiene el usuario a su nombre en NIC. En Vercel va el dominio pelado como
   principal y `www.fichinricotero.com.ar` redirigiendo a él; en NIC se delega a
   `ns1.vercel-dns.com` y `ns2.vercel-dns.com` (NIC no guarda registros DNS, solo delega).
-- **Lo que esta decisión no decide: el nombre.** El sitio sigue llamándose Arcade Ricotero en
-  los títulos, en `og:title`, en las tarjetas y en el lienzo. Cambiarlo es otra decisión, del
-  usuario, y empieza por el lienzo (`diseno-marca.md`). Dato para cuando se discuta: el calco
-  de `--fuente-titular` solo tiene A B C D E I K O R T U, así que **FICHÍN no se puede escribir
-  en la letra de la tapa** (le faltan la F, la H, la N y la Í).
+- **Lo que esta decisión no decide: el nombre.** Lo decidió aparte `D-60`, en otra rama y el
+  mismo día: el sitio se llama Fichín Ricotero, y al calco de `--fuente-titular` se le
+  derivaron la F, la H, la N y la Í que no tenía.
 - **Consecuencias.**
   - `astro.config.mjs` pasa a `site: 'https://fichinricotero.com.ar'`. De ahí salen
     `og:url`, `og:image` y el dominio que el taller dibuja en las cuatro tarjetas `cu-*.png`,
@@ -3430,6 +3429,197 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     mide 29 caracteres contra 34, así que el presupuesto de largo de `ARQ-link-resultado-compartido`
     sobra.
   - **El orden importa:** este cambio entra a `main` recién cuando el dominio responda por
-    HTTPS. Antes, toda vista previa apuntaría a un dominio que todavía no resuelve.
+    HTTPS. Antes, toda vista previa apuntaría a un dominio que todavía no resuelve. Entró el
+    2026-10-05, con el dominio andando según el usuario; al fusionar, las tarjetas del taller se
+    volvieron a dibujar sobre las de `D-60`, con su marca y este dominio.
   - **Se renueva todos los años en NIC**, desde TAD; vencido hay 45 días de gracia. Si se deja
     vencer, el sitio sigue vivo en `arcade-ricotero.vercel.app` y basta con volver `site` atrás.
+
+## D-60 — El sitio se llama Fichín Ricotero: el dominio de Arcade Ricotero no se pudo comprar
+
+- **Fecha:** 2026-10-04
+- **Estado:** aceptada — pedido del usuario, textual: *"Vamos a cambiar el nombre de la pagina
+  por fichin ricotero. Hace los cambios pertinentes. Esto se debe a que arcade ricotero no se
+  podia comprar el dominio. Dale que sale hoy la pagina al publico"*. Entre tres maneras de
+  escribir la marca, el usuario eligió derivar las letras que faltaban para que quede entera en
+  la letra de la tapa. La tilde de *Fichín* la pone la ortografía, no una preferencia.
+- **Consume:** `D-59` de la rama `dominio/fichinricotero` (el dominio; sin integrar al escribir
+  esto), `RES-43` y `RES-39` (Oktubre Calco y el paso 5 del flujo foto→fuente), `D-58` (la
+  rotulada y `fuentes.test.ts`), `D-17` (la voz), `.claude/rules/diseno-marca.md`.
+- **El número.** `D-59` está tomado dos veces: la rama del dominio y la reserva del ciclo 19
+  (`IDS.md` de esa rama). Por eso esto es `D-60`, con su fila propia.
+- **Lo que cambia en lo que se ve.**
+  - **El nombre** es *Fichín Ricotero*, con tilde; en el logo, `FICHÍN RICOTERO`
+    (`PORTAL.titulo`). Lo llevan las cuatro formas de la marca (la grande del portal, la chica
+    del cascarón, la de la cabecera de cada juego y la de la carátula), los dos pinceles que
+    dibujan en el teléfono (`tarjeta.ts`, `lamina.ts`), las nueve tarjetas del taller de "¿Qué
+    tipo de ricotero sos?" (regeneradas con `npm run generar-dos-ejes`), la pestaña, el
+    `og:site_name`, los `aria-label` y el ícono.
+  - **En lo que la gente comparte**, como nombre común: *"en el fichín ricotero"*, donde decía
+    *"en el arcade ricotero"*. Fichín es la palabra de acá para la máquina de fichas; el nombre
+    nuevo, además de tener dominio, es la palabra castellana que `D-17` pide cuando existe.
+  - **Los botones que nombran el lugar:** *Volvé al fichín* y la cinta *← AL FICHÍN*.
+  - Las imágenes que bajan los dos pinceles se llaman `fichin-ricotero-*.png` (las tarjetas
+    de "¿Qué tipo de ricotero sos?" siguen saliendo con el nombre de su manera,
+    `cu-1-dos-ejes.png`, sin el del sitio); el asunto del correo de corrección dice
+    *"Corrección del fichín ricotero"*.
+- **Lo que no cambia, a propósito.**
+  - **Los nombres internos.** La clave `arcade.` de `localStorage` (`ADR-04.5`: cambiarla borra
+    el avance de Skayboy y el récord de "Más o menos" de quien ya jugó), las clases
+    (`.portada-arcade`), los `$id` de los schemas (`ricotaarcade.local`), los nombres de
+    variable (`volverAlArcade`), el repo y el proyecto de Vercel (`arcade-ricotero`, el que
+    nombra `BAJAR-EL-SITIO.md`). Nada de eso lo lee la gente.
+  - **El dominio.** `site` sigue en `arcade-ricotero.vercel.app`: el cambio es de `D-59`, que
+    espera a que `fichinricotero.com.ar` responda por HTTPS. Al escribir esto el dominio no
+    resuelve (8.8.8.8: dominio inexistente), y con `site` apuntando ahí cada enlace compartido
+    perdería su vista previa. Mientras tanto el sitio se llama Fichín Ricotero y vive en la
+    dirección de Vercel.
+  - **Los papeles viejos.** Los `D-`, `UX-`, `CNT-`, `ADR-` y `REV-` anteriores siguen diciendo
+    Arcade Ricotero donde lo decían: son la traza de lo que se decidió con ese nombre.
+- **Oktubre Calco v0.4.** FICHÍN pide cuatro letras que el calco no tenía (traía once, `RES-43`).
+  Se derivaron con el paso 5 de `RES-39`, sin dibujar: recortando y pegando con operaciones
+  booleanas pedazos de las letras calcadas, así heredan el borde comido de la tapa. **F** = la
+  E sin el brazo de abajo; **H** = dos palos de I y el brazo del medio de la E de travesaño;
+  **N** = dos palos de I y una diagonal del grosor del palo; **Í** = la I y un acento de la
+  misma tinta. Las métricas no se tocan: el acento sube a 856 sobre un `usWinAscent` de 800, y
+  se probó en Chromium sobre Windows, en HTML y en canvas, que se dibuja entero. Lo hace
+  `scripts/derivar-oktubre-calco.py` (fontTools + skia-pathops) desde la v0.3 de
+  `Docs/INVESTIGACION/Tipografia/`, con las fechas de `head` fijas: volver a correrlo da el
+  mismo archivo byte a byte, y la huella del taller de tarjetas no cambia. La F y la N dejan
+  a la derecha el mismo aire que las letras calcadas (33 a 34 unidades). La alternativa que
+  la regla de marca daba para las letras que faltan —la palabra en la rotulada— habría
+  dejado el logo con dos letras distintas.
+- **Consecuencias.**
+  - `src/lib/fuentes.test.ts` suma un lector de WOFF y tres casos: la marca entra en el calco;
+    los dos pinceles y el taller dibujan `PORTAL.titulo`; ninguna marca escrita en una página
+    pide una letra que el calco no tenga. Con el calco viejo fallan con `[F, H, Í, N]`.
+  - `diseno-marca.md`: el nombre, la tabla de fuentes (v0.4) y la deuda de las tildes, que se
+    achica a todo menos la Í.
+  - **Cuando `D-59` entre a `main`**, las tarjetas del taller y su manifiesto
+    (`scripts/dos-ejes-manifiesto.json`) chocan. Se resuelve volviendo a correr
+    `npm run generar-dos-ejes`, que dibuja la marca de acá y el dominio de allá. Los demás
+    choques son de texto: el final de `DECISIONES.md` e `IDS.md` y el bloque de arriba de
+    `ESTADO.md`.
+  - El hilo de difusión pasó al nombre nuevo en el commit `be7b9e2` de la rama
+    `difusion/hilo-twitter`, que todavía no tiene PR: el #26 se integró antes, sin ese
+    cambio, así que en `main` el hilo sigue diciendo Arcade Ricotero. Sus capturas muestran
+    la marca vieja y se vuelven a sacar cuando esto esté publicado.
+  - Lo que toca a cada rol (los nombres del lugar de `CNT-13`, la hoja de marca del lienzo, el
+    archivo `.otf` v0.4 junto al de `RES-43`) está en
+    `Docs/SUGERENCIAS/HILO-para-todos-el-sitio-se-llama-fichin-ricotero.md`.
+
+---
+
+## D-61 — Skayboy y Poligirl: menú de entrada con los seis niveles abiertos, tarjeta al pasar de nivel, el pulgar que rueda y la pantalla completa en cualquier posición
+
+- **Fecha:** 2026-10-04
+- **Número:** se escribió como `D-56` (con `UX-36`, `CNT-30`, `BR-36` y `T-331`+) y se renumeró al
+  integrar: el ciclo 18 llegó antes a `main` con esos números, y `D-59` y `D-60` ya los tienen otras
+  ramas. Ver la fila de `IDS.md`.
+- **Estado:** aceptada — pedido directo del usuario, textual: *"Hacé una sesión entera agregándole
+  menú, paso entre niveles y corrigiendo la jugabilidad de las teclas en mobile de skayboy y
+  poligirl. Además ponele en el home al lado de Adiviná el tema. La idea es que tenga un botón para
+  ponerse en pantalla completa, y que en la misma pantalla completa estén los controles medio
+  transparentes para jugar dentro de la pantalla completa. Agregá el menú para jugar y ver qué
+  niveles hay y eso."*
+- **Consume y enmienda:** `D-32` límite 3 (en la lectura de `D-40` y `D-43`, ver la precisión al
+  final), `D-41` punto 4, `D-43`, `D-47` puntos 1 y 2, `D-55`, `US-09` criterios 3 y 9, `BR-31` §3,
+  `UX-27` §1.2 puntos 3 y 4, §5.1 y §9, `UX-28` §1, §2.1 y §2.2, `UX-32` §4 y §5, `UX-33` §1.2 y
+  §1.9, `CTR-16.11.2`, `ADR-10.1` y `ADR-10.5`, `CNT-22` §1.
+- **Contexto.** Se relevó el juego entero antes de tocarlo (cinco lectores en paralelo). Lo que
+  había: los seis niveles `listo`, el paso al siguiente con un toque invisible sobre el área, y la
+  pantalla completa con los mandos ya superpuestos y medio transparentes **de costado**. Lo que
+  explicaba el pedido:
+  1. **El botón de pantalla completa no existía con el teléfono parado** (`UX-33` §1.9), que es como
+     se entra desde un enlace; y donde sí aparecía decía `PANTALLA NORMAL`, que nombra el estado y
+     no lo que hace el toque.
+  2. **El pulgar no podía rodar entre teclas.** Cada botón capturaba su puntero: un pulgar que baja
+     en ← y se corre a → sigue caminando a la izquierda. Y correr saltando pedía dos dedos en la
+     misma columna, cuando los niveles 4 a 6 —medido en `skayboy-soluciones.json`— solo se ganan
+     con salto y dirección a la vez.
+  3. **No había menú, ni un nombre de nivel a la vista en ningún lado.** Los seis nombres de
+     `CNT-21` viajaban al navegador y nadie los mostraba; el paso entre niveles era un toque sobre
+     un área sin ninguna señal de que había que tocarla.
+- **Decisión.**
+  1. **Menú de entrada.** El juego abre con un menú: el botón grande juega el nivel que corresponde
+     (el primero sin pasar, como hasta hoy), y al lado o abajo están **los seis niveles, todos
+     abiertos**, cada uno con su número, su nombre y si está pasado. El mismo menú se abre jugando,
+     con un sello `MENÚ` en el mueble, y entonces la partida queda en pausa. Es HTML, vive adentro de
+     `.fichin` (así se ve en la pantalla completa del sistema, `ADR-10.5`) y nunca dibuja en el
+     canvas (`ADR-08.2` punto 4). **Ocupa la región del tubo y los mandos, nunca el pie de homenaje
+     ni la cabecera** (`UX-37` §3.3, `BR-26`): parado, la zona de las teclas, con el nivel dibujado
+     arriba; de costado, el tubo y las dos columnas; en el modo, la sala.
+  2. **Los seis abiertos.** El candado de orden que `producto` glosó en `US-09` criterio 9 y
+     `BR-31` §3 no estaba en el pedido del usuario de `D-47` ("los seis niveles, en fila") y es un
+     molinete: "saber lo suficiente" con forma de nivel (`D-14`). La fila sigue mandando **dónde se
+     retoma** —el primero sin pasar— y el avance se sigue guardando igual (`CTR-16.11`); lo que
+     cambia es que se puede elegir cualquiera.
+  3. **Pasar de nivel se ve.** En el mismo cuadro en que se gana aparece una tarjeta **en la banda
+     de arriba del área** (`UX-37` §4.3: las seis puertas están en la fila de abajo, y el baile y el
+     contador ocupan la mitad de abajo), que nombra el nivel pasado y ofrece tres cosas: seguir al
+     siguiente (nombrándolo, cuando hay lugar), repetir, o elegir otro. A ×1 va compacta. El toque
+     sobre el área sigue funcionando igual (`D-32` límite 3: tocable en el cuadro cero). Al empezar
+     cada nivel, un rótulo con su número y su nombre aparece un rato arriba del área y se va solo;
+     no toma toques.
+  4. **El pulgar rueda.** Cada columna sigue al dedo por geometría: el puntero lo captura la
+     columna, no el botón, y la tecla es la que queda más cerca del dedo, sin franjas muertas
+     entre teclas. **Y la dirección viaja con el pulgar al saltar**: si el pulgar sube de una
+     flecha al bloque de saltar sin levantarse, salta y sigue yendo para ese lado. Así correr
+     saltando se hace con un solo pulgar por columna, que es como `UX-28` §2.2 contaba que se iba a
+     jugar en solitario. La física, las trazas y el solucionador no cambian.
+  5. **La pantalla completa en cualquier posición.** El botón aparece también con el teléfono
+     parado y dice lo que hace. Al entrar, donde el sistema deja (Android), el teléfono gira solo
+     y los mandos quedan encima del área, medio transparentes, como ya estaba de costado. Donde no
+     deja (iPhone), parado el área va arriba y los mandos abajo, en la misma tinta. El menú también
+     tiene el botón.
+  6. **En la portada, al lado de "Adiviná el tema".** El casete pasa de A9 a A4.
+- **Alternativas descartadas.**
+  - **El menú solo desde adentro, sin abrir al entrar.** Es lo que pedían `D-32` límite 3 y
+    `US-09` criterio 3 ("empieza a jugar sin que ninguna pantalla le pregunte"). El usuario pidió
+    *"el menú para jugar"*, y el menú de entrada no pregunta nada: el botón grande es jugar, a cero
+    milisegundos, y es el mismo nivel que se jugaba antes. Un toque más, a cambio de ver qué hay.
+  - **Niveles bloqueados en orden.** Ver el punto 2.
+  - **Una tarjeta en el centro del área al ganar.** Taparía el baile y el contador de lo que juntó
+    cada uno (`UX-33` §2.5), que es justo lo que se gana mirar.
+  - **La tarjeta abajo**, que era la primera versión de esta decisión. `experiencia` mostró que en
+    los seis niveles las puertas están en la fila 8 de 9: abajo tapaba justo lo que se quería
+    dejar a la vista, y de costado pisaba el pie de homenaje.
+  - **Un menú que tapa la ventana entera**, con el pie copiado adentro. Fue lo primero que se
+    construyó y se midió en el navegador; se cambió por la región de `UX-37` §3.3 porque `BR-26`
+    pide el pie **sin tocar nada y en su lugar**, y porque la cabecera con el volver tiene que
+    seguir a mano. De paso, parado el nivel queda dibujado arriba mientras se elige.
+  - **Partir el bloque de salto en dos diagonales dibujadas.** Resolvía lo mismo que el arrastre
+    de dirección, pero cambiaba el dibujo de las teclas y sumaba dos blancos chicos donde hoy hay
+    uno grande. El arrastre no cambia nada de lo que se ve.
+  - **Que el salto conserve la dirección en el aire.** Cambia la física y obliga a regrabar las
+    seis trazas.
+  - **Girar el fichín 90° con CSS en el iPhone.** Es la única manera de forzar el horizontal donde
+    no hay bloqueo de orientación, y rompe la medida de todo el encuadre. Queda anotado.
+- **Consecuencias.**
+  - El menú, la tarjeta y el rótulo son texto encima del área: `UX-27` §5.1 ("adentro del área no
+    hay texto") sigue valiendo para el canvas y para la partida en curso, y deja de valer para esas
+    tres capas de HTML, igual que ya no valía para el contador de la victoria.
+  - Los textos nuevos los escribe `contenido` en `CNT-40` y pasan por `voz.test.ts`.
+  - `experiencia` documenta el menú, la tarjeta y el pulgar en `UX-37` y enmienda `UX-33` §1.9;
+    `producto` enmienda `US-09` y `BR-31` (`BR-40`); `arquitectura` enmienda `ADR-10.5` y
+    `CTR-16.11.2`. El traspaso es `Docs/SUGERENCIAS/HILO-para-todos-skayboy-menu-y-mando.md`.
+  - La lógica nueva vive en módulos puros probados en Node (`dedos.ts`, `menu.ts`), como el resto
+    del juego: la isla solo pega.
+- **Precisiones del mismo día**, después de que los cuatro roles escribieran su parte (`CNT-40`,
+  `UX-37`, `BR-40`, la enmienda de `ADR-10` y `CTR-16.11.2`):
+  - **`D-32` límite 3 no prohibía un menú.** Su texto es "0 ms hasta que la acción principal es
+    tocable", sobre animación; la lectura de "ninguna pantalla previa" es de `D-40`, `D-43` y
+    `UX-28` §1 (lo notaron `contenido` y `producto`). El menú de entrada cumple el límite al pie de
+    la letra —el botón grande es tocable en el primer cuadro— y lo que enmienda es esa lectura.
+  - **La estampa de pantalla completa dice el verbo**: `PANTALLA COMPLETA` afuera del modo y
+    `SALÍ` adentro (`CNT-40` §5). En el menú, donde hay lugar, el botón lleva la frase entera
+    ("Entrá a pantalla completa", "Salí de pantalla completa", que ya eran los `aria-label`): un
+    `SALÍ` solo al lado de `Jugá` se leía como salir del juego.
+  - **Un solo "Seguí" en la tabulación** (`UX-37` §4.5): `#seguir-juego` sigue siendo el toque
+    sobre el área y sale del orden de tab y del árbol de accesibilidad; el de la tarjeta lo aprieta.
+  - **"Hasta dónde llegó" se cuenta en cualquier orden** (`BR-40`): `pasadosDeLaFila()`, para la
+    pieza compartible de `BR-27` cuando exista. `hastaDonde()` queda para dónde se retoma.
+  - **En la portada, A4**: justo después de "Adiviná el tema". En el teléfono queda abajo y en dos
+    columnas al lado; en tres columnas (1024 px o más) es el primero del renglón de abajo, porque
+    ahí "Adiviná el tema" cierra el primer renglón. Ponerlo literalmente al lado en los tres anchos
+    pide mover también "Adiviná el tema" o sacar a "¿Qué tipo de ricotero sos?" del A2 (`D-51`).

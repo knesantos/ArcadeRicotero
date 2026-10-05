@@ -15,10 +15,10 @@ import { CASETE as CASETE_SKAYBOY } from '../skayboy/copy.ts';
 
 export const PORTAL = {
   /** El logotipo, como se dibuja en pantalla. */
-  titulo: 'ARCADE RICOTERO',
+  titulo: 'FICHÍN RICOTERO',
   /** El nombre, como se escribe cuando lo lee otro sistema: la pestaña, la tarjeta al
    *  compartir, el titulo de la pagina. La versacal es del logo, no del nombre. */
-  nombre: 'Arcade Ricotero',
+  nombre: 'Fichín Ricotero',
   bajada:
     'Entrá, que los molinetes van abiertos. ' +
     'Juegos y enciclopedia sobre Patricio Rey y sus Redonditos de Ricota: sin cuenta, ' +
@@ -27,7 +27,7 @@ export const PORTAL = {
   ladoB: 'Lado B · Para leer',
   enLaCocina: 'En la cocina',
   volver: 'VOLVÉ',
-  volverAlArcade: 'AL ARCADE',
+  volverAlArcade: 'AL FICHÍN',
   /**
    * El pie, en 42 caracteres (`CNT-16`, `T-220`).
    *
@@ -207,6 +207,23 @@ export const JUEGOS: readonly Casete[] = [
     accion: 'JUGÁ',
   },
   {
+    // `US-09`. Publicado el 2026-10-01 por decisión del usuario (`D-51`). La copia es la de
+    // `CNT-19`, ya aprobada, y vive en `skayboy/copy.ts`: acá se reusa, no se reescribe.
+    // **Va cuarto, pegado a "Adiviná el tema"** (`D-61` punto 6, pedido del usuario: *"ponele en
+    // el home al lado de Adiviná el tema"*). Era el último, el A9. En el teléfono queda justo
+    // abajo; en dos columnas, en el mismo renglón; en tres, primero del renglón de abajo.
+    titulo: CASETE_SKAYBOY.titulo,
+    baja: CASETE_SKAYBOY.baja,
+    // Viste *Gulp!* por herencia del contenido (`UX-30` §2): los dos temas que le dan su par
+    // elemental son de ese disco. La variante `historia` es esa tinta (`--cat-historia`).
+    variante: 'historia',
+    // El "Gulp." rojo del sobre: la otra pieza de *Gulp!* en el portal es el "Patricio Rey"
+    // verde de la Redondopedia, y `D-49` no deja repetir.
+    arte: '/tapas/detalle/gulp-logo.jpg',
+    href: '/juegos/skayboy-y-poligirl/',
+    accion: 'JUGÁ',
+  },
+  {
     titulo: 'Sacalo por la letra',
     baja: 'Un verso te tiene que alcanzar. Si no, te damos más: dos, cuatro, ocho.',
     // `UX-08`: viste Momo Sampler, la única de las diez tapas que no estaba tomada como
@@ -266,20 +283,6 @@ export const JUEGOS: readonly Casete[] = [
     // El antifaz del muñeco de *Un baión*, el disco que viste este juego (`UX-34`).
     arte: '/tapas/detalle/un-baion-para-el-ojo-idiota-zoom.jpg',
     href: '/juegos/mas-o-menos/',
-    accion: 'JUGÁ',
-  },
-  {
-    // `US-09`. Publicado el 2026-10-01 por decisión del usuario (`D-51`). La copia es la de
-    // `CNT-19`, ya aprobada, y vive en `skayboy/copy.ts`: acá se reusa, no se reescribe.
-    titulo: CASETE_SKAYBOY.titulo,
-    baja: CASETE_SKAYBOY.baja,
-    // Viste *Gulp!* por herencia del contenido (`UX-30` §2): los dos temas que le dan su par
-    // elemental son de ese disco. La variante `historia` es esa tinta (`--cat-historia`).
-    variante: 'historia',
-    // El "Gulp." rojo del sobre: la otra pieza de *Gulp!* en el portal es el "Patricio Rey"
-    // verde de la Redondopedia, y `D-49` no deja repetir.
-    arte: '/tapas/detalle/gulp-logo.jpg',
-    href: '/juegos/skayboy-y-poligirl/',
     accion: 'JUGÁ',
   },
 ] as const;

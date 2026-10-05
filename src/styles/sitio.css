@@ -483,7 +483,7 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   /* El renglón envuelve desde el ciclo 11, cuando tuvo un tercer elemento: la estampa de
      la cinta, que se sacó del sitio el 2026-10-01. Hoy son dos —el regreso y la marca
      chica— y entran a 375 px; el `wrap` queda para que, si algún día no entran, baje la
-     marca y no se parta en dos **la salida de la pantalla** ("← AL / ARCADE"), que es lo
+     marca y no se parta en dos **la salida de la pantalla** ("← AL / FICHÍN"), que es lo
      último que puede ceder. */
   flex-wrap: wrap;
 }

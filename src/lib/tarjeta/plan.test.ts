@@ -75,7 +75,7 @@ test('el setlist llena la banda exacta, sin un pixel bailando', () => {
 test('el nombre del archivo lleva el juego adentro', () => {
   // Desde que la tarjeta es compartida, dos vueltas de dos juegos distintos caerian en la
   // misma carpeta de descargas con el mismo nombre.
-  assert.equal(nombreArchivo('adivina-el-tema'), 'arcade-ricotero-adivina-el-tema.png');
+  assert.equal(nombreArchivo('adivina-el-tema'), 'fichin-ricotero-adivina-el-tema.png');
   assert.notEqual(nombreArchivo('sacalo-por-la-letra'), nombreArchivo('adivina-el-tema'));
 });
 

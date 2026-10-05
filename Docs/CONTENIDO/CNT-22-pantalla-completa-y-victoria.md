@@ -40,9 +40,22 @@ es la pieza compartible. Inventar un verbo nuevo solo para el sexto nivel sería
 relleno que `voz-ricotera.md` prohíbe cuando no hace falta — la diferencia la marca la
 línea nueva de `§3`, no el botón.
 
+> **Enmendado el 2026-10-04 por `CNT-40 §3` (`D-61`, `BR-40` punto 7).** Mientras la pieza
+> compartible de `BR-27` no exista, el toque del sexto lleva al primero y no a compartir, y
+> `Seguí` prometería lo que no se cumple. Hasta que exista, la tarjeta del sexto dice `Último
+> nivel.` y su botón principal `Volvé al primero`. El día que la pieza exista, vuelve a valer
+> este párrafo tal cual.
+
 ---
 
 ## 1. El interruptor de pantalla completa — dos estados, mismo molde que `CINTA`
+
+> **Enmendado el 2026-10-04 por `CNT-40 §5` (`D-61`).** Los dos sellos de la tabla de abajo dejan
+> de valer: `ventana` pasa a **`PANTALLA COMPLETA`** y `completa` a **`SALÍ`**, porque el sello
+> tiene que nombrar lo que hace el toque y no el estado en que se está (el usuario no encontró
+> el control). Los dos `aria-label` no cambian. Tampoco vale ya lo que se dice abajo de que
+> ninguna estampa lleva tilde: `SALÍ` la lleva y va en `--fuente-rotulada`. El resto de este
+> apartado queda como estaba, para que se vea qué se decidió y por qué se cambió.
 
 **Destino:** un objeto nuevo en `src/lib/skayboy/copy.ts`, `PANTALLA_COMPLETA`, con la
 misma forma que `CINTA` en `src/lib/sitio/copy.ts`: la estampa visible en registro 3, el

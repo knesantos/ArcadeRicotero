@@ -5,29 +5,155 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-04
+**Última actualización:** 2026-10-05
 
-> ## 🌐 EL DOMINIO: FICHINRICOTERO.COM.AR (2026-10-04) — `D-59`
+> ## 🌐 EL DOMINIO: FICHINRICOTERO.COM.AR, ANDANDO (2026-10-05) — `D-59`
 >
-> **Rama `dominio/fichinricotero`, sobre `main` en `93f292a`, todavía sin integrar.** El usuario
-> compró y pagó `fichinricotero.com.ar` en NIC Argentina. `arcadericotero.com.ar` quedó trabado
-> en revisión manual de NIC ("banquinado"; la sospecha es *arca*) y se abandonó.
+> **El sitio vive en `https://fichinricotero.com.ar`.** El usuario compró el dominio en NIC
+> Argentina (`arcadericotero.com.ar` quedó trabado en revisión manual, "banquinado"; la sospecha
+> es *arca*), lo agregó en Vercel con `www` redirigiendo, y delegó en NIC a `ns1.vercel-dns.com` y
+> `ns2.vercel-dns.com`. Cuando el usuario confirmó que andaba, la rama
+> `dominio/fichinricotero` se fusionó con `main` (que ya traía `D-60` y `D-61`) y se integró.
 >
-> **Lo que hay en la rama:** `site` de `astro.config.mjs` apunta al dominio nuevo, las cuatro
-> tarjetas `cu-*.png` de "¿Qué tipo de ricotero sos?" están regeneradas con el dominio dibujado, y
-> los enlaces del hilo de Twitter cambiaron. `npm test` (1466) y `npm run build` en verde; `og:url`
-> y `og:image` salen con `https://fichinricotero.com.ar`.
+> **Lo que cambió en el código:** `site` de `astro.config.mjs` apunta al dominio nuevo, así que
+> `og:url` y `og:image` salen de ahí; las tarjetas del taller de "¿Qué tipo de ricotero sos?" se
+> volvieron a dibujar con la marca de `D-60` y este dominio; los enlaces del hilo de Twitter en
+> `main` apuntan al dominio nuevo.
 >
-> **Lo que falta, en este orden — los dos primeros son del usuario, en sus paneles:**
-> 1. **Vercel** → proyecto `arcade-ricotero` → Settings → Domains → agregar
->    `fichinricotero.com.ar` (principal) y `www.fichinricotero.com.ar` (que redirija).
-> 2. **NIC** → Mis dominios → `fichinricotero.com.ar` → Delegar → `ns1.vercel-dns.com` y
->    `ns2.vercel-dns.com`. Puede tardar hasta 48 h en propagarse.
-> 3. Cuando `https://fichinricotero.com.ar` abra el sitio con el candado: integrar la rama a
->    `main`. **No antes:** las vistas previas apuntarían a un dominio que no resuelve.
-> 4. **Abierto, del usuario:** si la marca pasa a llamarse con "fichín". El sitio sigue diciendo
->    Arcade Ricotero en todos lados. El calco de la letra de la tapa no tiene F, H, N ni Í.
-> 5. Renovar en NIC antes del 2027-10-04 ($8.500 hoy; 45 días de gracia).
+> **Lo que queda:**
+> 1. `arcade-ricotero.vercel.app` sigue respondiendo y no redirige: los enlaces viejos andan.
+>    Si se quiere una sola dirección, se configura en Vercel (Settings → Domains).
+> 2. El hilo con el nombre nuevo (rama `difusion/hilo-twitter`) **choca con esta integración** en
+>    `hilo.md` y `hilo.json`: acá cambiaron las direcciones, allá el nombre. Al integrarlo, quedan
+>    las dos cosas.
+> 3. **Renovar en NIC antes del 2027-10-04** ($8.500 hoy; 45 días de gracia). Si se deja vencer,
+>    el sitio sigue en `arcade-ricotero.vercel.app` volviendo `site` atrás.
+
+> ## 🕹 SKAYBOY Y POLIGIRL: EL MENÚ, EL PASO ENTRE NIVELES Y EL PULGAR (2026-10-04) — `D-61`
+>
+> Pedido del usuario, textual: *"Hacé una sesión entera agregándole menú, paso entre niveles y
+> corrigiendo la jugabilidad de las teclas en mobile de skayboy y poligirl. Además ponele en el
+> home al lado de Adiviná el tema. La idea es que tenga un botón para ponerse en pantalla completa,
+> y que en la misma pantalla completa estén los controles medio transparentes para jugar dentro de
+> la pantalla completa. Agregá el menú para jugar y ver qué niveles hay y eso."* Sin plan de
+> `orquestador`: `D-61` la escribió el hilo principal, y cada rol tomó su número (`IDS.md`).
+>
+> **Lo que hay:**
+> - **El menú** (`menu.ts`, `UX-37` §3): abre al entrar —el botón grande juega el nivel que
+>   corresponde, tocable en el primer cuadro— y desde la partida con el sello `MENÚ` del mueble,
+>   que la pone en pausa (el mundo no avanza). **Los seis niveles abiertos** (`D-61` punto 2,
+>   `BR-40`), cada uno con número, nombre de `CNT-21` y sello `PASADO` / `ACÁ ESTÁS`. Ocupa la
+>   región del tubo y los mandos, medida por `regionDelMenu()`: parado, la zona de las teclas con
+>   el nivel dibujado arriba; de costado, la franja del tubo; en el modo, la sala. **Nunca el pie
+>   de homenaje ni la cabecera.**
+> - **La tarjeta de fin de nivel**, en la banda de arriba del área (las puertas están abajo):
+>   `NIVEL 2 DE 6 · PASADO`, el que sigue (con lugar), y Repetí / Elegí otro / Seguí. A ×1 va
+>   compacta. El toque sobre el área sigue valiendo; `#seguir-juego` salió de la tabulación.
+> - **El rótulo de entrada**: `NIVEL 3 DE 6` y el nombre, 2,6 s, sin tomar toques.
+> - **El pulgar rueda** (`dedos.ts`): la columna captura el dedo y la tecla sale por geometría
+>   (sin franjas muertas); subir de una flecha a saltar sin levantar **salta y sigue para ese
+>   lado**. Toques más cortos que un tic no se pierden (`pulsadas`). La tecla se hunde sin
+>   transición. Las notebooks táctiles conservan los botones (`any-pointer: coarse`).
+> - **La pantalla completa en cualquier posición**: el sello aparece también parado y dice el
+>   verbo (`PANTALLA COMPLETA` / `SALÍ`, `CNT-40`); el menú tiene el mismo botón con la frase
+>   entera. De costado, las teclas medio transparentes encima, como ya estaba.
+> - **La portada**: el casete pasa de A9 a **A4**, después de "Adiviná el tema".
+> - Papeles: `D-61` (con sus precisiones del mismo día), `UX-37` (y pies en `UX-27`, `UX-28`,
+>   `UX-32`, `UX-33`), `CNT-40` (enmienda `CNT-22` §1), `BR-40` (enmienda `US-09` criterios 3 y 9 y
+>   `BR-31` §3), enmiendas de `ADR-10` y `CTR-16.11.2`; traspaso en
+>   `Docs/SUGERENCIAS/HILO-para-todos-skayboy-menu-y-mando.md`.
+>
+> **Verificado:** `npm test` 1448/1448 (43 nuevas: `dedos.test.ts`, `menu.test.ts`, y casos en
+> `modo-pantalla.test.ts` y `estilos.test.ts`), `check` 0/0, build 156. La isla pesa 15,4 KB
+> comprimida y con el motor suma 83,8 (techo de 90, `ADR-08.10`). Medido en el panel del
+> navegador del escritorio, con emulación: parado 375×667 y 375×812, acostado 740×360, 568×320 y
+> 812×375, escritorio con mouse, y la pantalla completa parada y acostada (740×360 y 568×320). El
+> nivel 1 se jugó y se ganó de punta a punta (avance guardado, baile, contador, tarjeta, Seguí, el
+> rótulo del 2, el menú en pausa). El pulgar se probó con eventos de puntero: rueda entre flechas,
+> lleva la dirección al saltar, suelta todo lejos de la columna. El pie de homenaje no se cruza
+> con ninguna capa en ningún reparto (medido, y lo prueba `menu.test.ts`).
+>
+> **Revisión adversarial** (cuatro lentes en paralelo: la máquina de estados de la isla, el dedo,
+> el CSS por tamaño, la lógica y los textos): 25 hallazgos distintos. La verificación cruzada se
+> cortó a mitad por el límite de la sesión; los que quedaron sin veredicto los verificó el hilo
+> contra el código y el navegador. **Corregidos:** la tarjeta del sexto se rompía a ×1 y en la
+> grilla ancha ("Volvé al primero"); en el modo a 568×320 la regleta se apilaba y la tarjeta tapaba
+> `SALÍ`; la tarjeta no escondía el rótulo, se comía el toque de seguir con su cuerpo, robaba el
+> foco (y un Enter repetido salteaba el nivel) y se montaba sobre los bloques de saltar en el modo;
+> el rótulo quedaba debajo de los sellos en el modo; `aria-modal` y un `inert` de más le escondían
+> al lector el volver y el pie; el foco volvía al canvas (kaplay lo enfocaba) o se caía al `body`;
+> `Escape` sostenido hacía titilar el menú; el `aria-pressed` contradecía el nombre nuevo; `PASADO`
+> iba en el verde del acierto; el eco del menú pintaba 2 px sobre el pie; dos recortes con "…" en
+> rótulos; el sello se salía 5 px de la ventana a 568; con mouse a ×1 de costado la regleta tapaba
+> el título; el menú parado tapaba la firma y los créditos del sitio; `:active` mostraba teclas que
+> el mando ya había soltado. **Descartados con razón:** que la ficha muestre el dígito y no
+> `MENU.numero` (ver abierto), y que `#seguir-juego` sin tabulación deje sin camino al teclado (lo
+> tiene: Tab a la tarjeta, o Enter con el foco suelto).
+>
+> **Abierto, sin trabar:**
+> - `T-401` (usuario): **el lienzo**. El menú, la tarjeta, el rótulo y los sellos no tienen hoja;
+>   el circuito de `diseno-marca.md` se invirtió otra vez, como con `T-319`. Ningún color nuevo:
+>   todo sale de tokens y pares que ya mide `contraste.test.ts`.
+> - `T-402` (`revisor`): **`REV-21` formal** contra `UX-37` §10, con contexto fresco. La revisión
+>   de esta sesión la hicieron agentes de propósito general, no el rol.
+> - `T-403` (`experiencia`): `UX-35` y `UX-04` todavía dicen A9 para Skayboy; y la leyenda de
+>   `D-55` sigue sin entrar a `UX-28` §2 y `UX-35` §5.
+> - `T-404` (`arquitectura`): las filas de `menu.ts` y `dedos.ts` en `CTR-16.8` y `ADR-08.10`, y
+>   reabrir `hastaDonde()` frente a `pasadosDeLaFila()` (`CTR-16.11.1` y `.3`).
+> - `T-405` (`contenido` y `experiencia`): la ficha muestra el dígito ("3") y `CNT-40` §1.1 pide
+>   `MENU.numero` ("Nivel 3"); en la fila de seis cuadrados no entra. Que lo decida `CNT-40`.
+> - Sigue sin existir la pieza compartible de `BR-27`: "Volvé al primero" en el sexto es el parche
+>   de `BR-40` punto 7.
+>   (Los números se renumeraron al integrar —era `D-56`, `UX-36`, `CNT-30`, `BR-36`, `T-331`+—
+>   porque el ciclo 18 llegó antes a `main` con esos; ver `IDS.md`.)
+> - **Sube como PR a `main`** desde la rama `skayboy/menu-y-mando-sobre-main`, encima del ciclo 18
+>   y de "Fichín Ricotero" (`D-60`), a pedido del usuario.
+>
+> **Del usuario:** jugarlo en un teléfono de verdad, con el pulgar (`T-249` sigue abierta, y ahora
+> mide también el arrastre de dirección y la pantalla completa parada en Android, que gira sola);
+> y decidir si "al lado de Adiviná el tema" tiene que ser literal también en tres columnas (ver
+> `D-61`, precisiones).
+
+> ## 🕹 EL SITIO SE LLAMA FICHÍN RICOTERO (2026-10-04) — `D-60`
+>
+> Pedido del usuario, textual: *"Vamos a cambiar el nombre de la pagina por fichin ricotero.
+> Hace los cambios pertinentes. Esto se debe a que arcade ricotero no se podia comprar el
+> dominio. Dale que sale hoy la pagina al publico"*. Rama `nombre/fichin-ricotero`, sobre
+> `main` en `93f292a` (con el ciclo 18 adentro), **integrada a `main` con el PR #29
+> (`8913ce1`) y publicada**: verificado en `arcade-ricotero.vercel.app` el título, la marca y
+> la fuente v0.4.
+>
+> **Lo que hay:**
+> - **El nombre** en todo lo que se ve: las cuatro formas de la marca (`FICHÍN RICOTERO`), los
+>   dos pinceles, las nueve tarjetas del taller de "¿Qué tipo de ricotero sos?" (regeneradas),
+>   pestañas, `og:site_name`, `aria-label`, ícono, textos para compartir ("en el fichín
+>   ricotero"), *Volvé al fichín* y la cinta *← AL FICHÍN*, las imágenes que bajan los dos
+>   pinceles (`fichin-ricotero-*.png`).
+> - **Oktubre Calco v0.4**: la F, la H, la N y la Í, derivadas de las letras calcadas con
+>   booleanas (`scripts/derivar-oktubre-calco.py`, reproducible byte a byte). La marca queda
+>   entera en la letra de la tapa. Métricas sin tocar; el acento se probó en
+>   Chromium/Windows, HTML y canvas.
+> - **`fuentes.test.ts`** (el de `D-58`) suma un lector de WOFF y tres casos: si la marca, un
+>   pincel, el taller o una página piden una letra que el calco no tiene, falla.
+> - **Lo que no cambió, a propósito:** la clave `arcade.` de `localStorage`, las clases, los
+>   `$id`, el repo, el proyecto de Vercel (`arcade-ricotero`) y **el dominio**: `site` sigue en
+>   `arcade-ricotero.vercel.app` porque `fichinricotero.com.ar` todavía no resuelve DNS. Eso
+>   lo cambia `D-59` (rama `dominio/fichinricotero`) cuando responda por HTTPS.
+>
+> **Abierto, sin trabar:**
+> - **Del usuario:** delegar `fichinricotero.com.ar` en NIC Argentina a los servidores de
+>   nombres de Vercel y sumar el dominio al proyecto `arcade-ricotero`. Hasta entonces el
+>   dominio no carga y `D-59` no puede entrar.
+> - **`D-59` está reservado dos veces** (la rama del dominio y el ciclo 19). Uno renumera.
+> - El trabajo de Skayboy del menú y el pulgar ya está renumerado sobre `origin/main`, en la
+>   rama local `skayboy/menu-y-mando-sobre-main` (`e50110b`: `D-61`, `UX-37`, `CNT-40`,
+>   `BR-40`, `T-401`…`T-410`), sin subir. Contra esta rama choca solo como texto: el final de
+>   `DECISIONES.md` e `IDS.md`, este bloque, y las líneas de la marca en
+>   `skayboy-y-poligirl.astro`.
+> - Los roles: `Docs/SUGERENCIAS/HILO-para-todos-el-sitio-se-llama-fichin-ricotero.md`.
+> - El hilo de difusión en `main` sigue diciendo Arcade Ricotero: el nombre nuevo está en el
+>   commit `be7b9e2` de `difusion/hilo-twitter`, sin PR (el #26 se integró antes). Sus
+>   capturas muestran la marca vieja: se sacan de nuevo con esto publicado.
 
 > ## 🌙 "¿QUÉ TIPO DE RICOTERO SOS?" REHECHO: UNA NOCHE Y EL LIBRO DE *LUZBELITO* (2026-10-04) — `D-57`, ciclo 18
 >

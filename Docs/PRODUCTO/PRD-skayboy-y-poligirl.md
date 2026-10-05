@@ -16,7 +16,9 @@
 > `D-42` (los muñecos tienen cara; el pie de homenaje pasa a obligatorio), **`D-43`** (no hay
 > botón de cambio: cada columna de mando maneja siempre al mismo personaje), **`D-47`**
 > (pantalla completa con controles superpuestos y medio transparentes, los seis niveles en
-> fila, victoria bailada sin gestos de pareja, y un coleccionable por personaje).
+> fila, victoria bailada sin gestos de pareja, y un coleccionable por personaje), **`D-61`**
+> (menú de entrada, los seis niveles abiertos, tarjeta al pasar de nivel; el traspaso es
+> `Docs/SUGERENCIAS/HILO-para-todos-skayboy-menu-y-mando.md`).
 > **`Docs/REVISIONES/REV-14-ciclo-15.md`: `FIND-59`**, que este archivo cierra.
 > `Docs/ARQ/ARQ-schema-niveles.md`: `CTR-16.4` y `CTR-16.5`, leídos del disco el 2026-09-16
 > después de que `arquitectura` los enmendara por `FIND-58`.
@@ -39,7 +41,8 @@
 > `.claude/rules/codigo-juegos.md`. `src/lib/tarjeta/plan.ts` (`MAX_FILAS = 6`, el campo
 > `hero`).
 >
-> **Produce:** `US-09`, `BR-23`, `BR-24`, `BR-25`, `BR-26`, `BR-27`, `BR-28`, `BR-29`, `BR-31`.
+> **Produce:** `US-09`, `BR-23`, `BR-24`, `BR-25`, `BR-26`, `BR-27`, `BR-28`, `BR-29`, `BR-31`,
+> `BR-40`.
 >
 > **Enmendado el mismo día (2026-09-16), y no se versiona a `-v2`.** Dos cosas cambiaron
 > después de escribirlo, ninguna nace de esta carpeta: **`FIND-59`** —el choque de la puerta
@@ -48,6 +51,12 @@
 > existe. No hay `-v2` porque nada de esto se construyó todavía y porque `T-231` apunta a
 > este archivo: versionarlo el día que nació sería mover la puerta de lugar. Cada enmienda
 > queda marcada donde pasó, como hizo `arquitectura` con `CTR-16.3` y `CTR-16.4`.
+>
+> **Enmendado el 2026-10-04 por `D-61`, también sin `-v2`.** El juego ya existe, así que el
+> motivo para no versionar no es el de arriba: `CTR-16.11` cita `US-09` criterio 9 *"con su enmienda del
+> 2026-09-24"* y `BR-31` punto 3 por su nombre, y un `-v2` dejaría esas citas apuntando a un
+> archivo que ya no manda. Lo enmendado es el criterio 3, el criterio 9 y `BR-31` punto 3; la
+> regla nueva es `BR-40`, al final de `BR-31`.
 >
 > **IDs reservados por el ciclo 15 y NO tomados por este archivo** (`Docs/IDS.md`, fila
 > del 2026-09-16): `ADR-08` y `CTR-15`+ (`arquitectura`), `UX-27`+ (`experiencia`),
@@ -156,6 +165,24 @@ esperar a nada, contado aparte de los cuatro que definen si la v1 está lista.**
 > contestarla —no hay dos modos, hay una pantalla y dos maneras de agarrarla— y `D-43` lo
 > fijó. El criterio queda igual de verificable y se cumple sin que nadie ofrezca nada.
 
+> **Enmendado el 2026-10-04 por `D-61`.** Decía *"empieza a jugar sin que ninguna pantalla le
+> pregunte"*. Con el menú de entrada hay ahora **una pantalla y un toque** entre el enlace y el
+> primer cuadro de juego: "empieza a jugar" deja de ser cero toques y pasa a ser **uno**. Lo que
+> el criterio protegía nunca fue el cero, fue que **nadie tenga que decidir nada para jugar** —ni
+> con cuántas personas, ni qué nivel, ni si sabe lo suficiente—, y eso queda entero. El toque se
+> acepta porque el usuario pidió *"el menú para jugar y ver qué niveles hay"* y porque el menú, a
+> diferencia de lo que el criterio vetaba, no pregunta. Se mide así (la regla es `BR-40` puntos 1
+> y 2, y el caso con su prueba está en su criterio de aceptación B):
+>
+> - **Given** alguien que abre la dirección del juego por primera vez, solo, desde un enlace,
+>   sin avance guardado.
+> - **When** el menú se ve.
+> - **Then** el botón grande está tocable **en el primer cuadro en que el menú se ve** (el 0 ms de
+>   `D-32` límite 3), arranca el **nivel 1** con **un solo toque**, y **ninguna línea del menú
+>   pregunta ni avisa** nada sobre con cuántas personas se juega ni sobre que el juego es de a
+>   dos. Ofrecer los niveles debajo no es preguntar: se juega sin tocarlos. El menú tampoco
+>   ofrece cambiar de manera de jugar (`D-43` sigue).
+
 ### Criterio 4 — caso borde: el primer nivel enseña la regla entera y no se puede perder
 
 > **Enmendado el 2026-09-16 por `FIND-59` (`REV-14`), y acá cede este documento.** Decía que
@@ -262,6 +289,24 @@ sobre el repo), nunca la vía principal.
 > pregunte por dónde empezar ni forma de saltear uno sin haber pasado el anterior antes. "El
 > avance se guarda" pasa a tener un valor concreto: **hasta qué nivel llegó**, un número
 > entre 0 y 6, no un puntaje ni un tiempo.
+
+> **Enmendado el 2026-10-04 por `D-61`, y acá cede este documento.** La enmienda de arriba glosó
+> *"ganar el nivel n habilita el n+1 … ni forma de saltear uno sin haber pasado el anterior"*, y
+> **esa frase no es de `D-47`**: su punto 2 dice *"los seis niveles, en fila. Al ganar se pasa al
+> siguiente, y el avance se guarda en el aparato"* (`Docs/DECISIONES.md:2536-2537`), que es un
+> orden de presentación y no un candado. El candado lo puse yo, y es **"saber lo suficiente" con
+> forma de nivel** (`D-14`). Queda así, y `BR-40` lo desarrolla:
+>
+> - La fila sigue en el orden de la tabla de escalones y **sigue mandando dónde se retoma**: el
+>   primer nivel que no está pasado (`CTR-16.11.2`, sin cambios).
+> - **No manda qué se puede jugar.** Todos los niveles que la página sembró están abiertos desde
+>   la primera vez, sin haber pasado ninguno.
+> - "El avance se guarda" sigue valiendo, y suma: ganar cualquier nivel, en el orden que sea, lo
+>   guarda. Y el "número entre 0 y 6" pasa a decir **cuántos niveles tiene pasados**, no hasta
+>   cuál llegó (`BR-40` punto 5): quien pasó solo el quinto tiene 1.
+> - **Given** un jugador que pasó el 1 y el 2 y cierra el teléfono. **When** vuelve otro día, desde
+>   el mismo aparato. **Then** el botón grande del menú juega el 3, las fichas del 1 y del 2 dicen
+>   que están pasadas, y las seis se pueden tocar.
 
 **Por qué esto es un criterio y no un detalle:** el brief promete sesiones de dos o tres
 minutos, y este es el primer juego del sitio donde **la partida entera no entra en una
@@ -947,6 +992,10 @@ rango, sin comparación contra otro jugador y sin promedio de nadie. Si el tiemp
 va chico y nunca como titular, y **nunca comparando los dos modos** — mismo criterio con el
 que `BR-18` apartado b sacó la cifra cruda del titular del ranking.
 
+> **Precisado el 2026-10-04 por `BR-40` punto 5.** *"El nivel alcanzado sobre los seis"* es
+> **cuántos niveles tiene pasados**, no la posición del más alto: con los niveles abiertos
+> (`D-61`), quien pasó solo el quinto trae 1 sobre 6, no 5.
+
 ### 3. Se comparte aunque no haya terminado
 
 Un jugador que dejó en el tercer nivel comparte igual, y la pieza lo dice sin reproche. No
@@ -1073,7 +1122,8 @@ lo tapa.
 ## BR-31 — Pantalla completa, victoria bailada y un coleccionable por personaje
 
 **Aplica a:** `US-09`. Enmienda `BR-23` (la prohibición de festejo) y los criterios 1, 6 y 9
-de `US-09` — marcados en su lugar, sin borrar nada de lo que decían.
+de `US-09` — marcados en su lugar, sin borrar nada de lo que decían. **Su punto 3 y el criterio 9
+los enmienda después `BR-40`** (`D-61`): los seis niveles quedan abiertos.
 
 **De dónde sale.** `D-47`, el 2026-09-24: el usuario jugó el nivel 1 en su teléfono, en la
 vista previa del PR #17, y volvió con lo que solo un pulgar real podía traer —"los controles
@@ -1144,6 +1194,21 @@ instrucción de construcción que la acompaña: **los cinco niveles que faltan s
 cuanto pasan `BR-25`**, con el mismo piso de seis que ya estaba fijado (2/2/2) y sin esperar
 a nada más de esta enmienda.
 
+> **Enmendado el 2026-10-04 por `D-61` y `BR-40`.** Se va una frase, cambia un número, entra una
+> regla y el resto queda:
+>
+> - **Se va** *"ganar el nivel n habilita el n+1"*: era mi lectura de "en fila", no un pedido
+>   (`D-47` punto 2, `Docs/DECISIONES.md:2536-2537`), y la enmienda de `US-09` criterio 9 ya
+>   cuenta por qué cede.
+> - **Cambia** lo que significa el avance guardado: de *"hasta qué nivel llegó"* a **cuántos
+>   niveles tiene pasados**, porque con la fila abierta los dos números dejan de coincidir
+>   (`BR-40` punto 5).
+> - **Entra** que la fila manda **dónde se retoma**, no **qué se puede jugar**: todo nivel
+>   publicado está abierto, con el avance escrito igual (`BR-40` puntos 3 y 4).
+> - **Se queda** que los seis se presentan en fila, en el orden de la tabla de escalones, y la
+>   instrucción de construcción de arriba: los cinco que faltan se publican en cuanto pasan
+>   `BR-25`.
+
 ### 4. La pantalla completa, como parte de "jugable con el pulgar"
 
 Ya queda fijado en la enmienda de `US-09` criterio 6, arriba. La regla en una frase: **el
@@ -1160,6 +1225,123 @@ Los cuadros exactos del baile, el diseño de los controles superpuestos, dónde 
 contador del coleccionable si existe, y el mecanismo por el que se pide o se simula la
 pantalla completa. Todo eso es de `experiencia` (`UX-33`, `T-297`) y de `arquitectura`
 (`T-298`). Acá se fija qué tiene que ser cierto para que se pueda verificar, no cómo se ve.
+
+---
+
+## BR-40 — El menú no pregunta y los niveles no tienen candado
+
+**Aplica a:** `US-09`. Enmienda `BR-31` punto 3 y los criterios 3 y 9 de `US-09` —marcados en su
+lugar, sin borrar lo que decían— y le toca un número a `BR-27` punto 2 (punto 5, abajo).
+
+**De dónde sale.** `D-61` (2026-10-04; el traspaso es
+`Docs/SUGERENCIAS/HILO-para-todos-skayboy-menu-y-mando.md`). El usuario pidió *"agregá el menú
+para jugar y ver qué niveles hay"*. Contra lo que yo había escrito hay dos choques, y los dos
+ceden de este lado. El criterio 3 prometía que ninguna pantalla se interpone entre el enlace y el
+juego. Y el criterio 9 con `BR-31` punto 3 dejaban cada nivel detrás del anterior, **cosa que
+nadie había pedido** (ver la enmienda del criterio 9): es "saber lo suficiente" con forma de nivel,
+que `D-14` y el criterio no negociable 3 del brief cierran con el mismo nombre que la cuenta o el
+Premium. El que ya jugó en otro aparato —el avance no se sincroniza, `CTR-16.11.1`— es quien más
+lo paga: tiene que volver a ganar cuatro niveles para ver el quinto.
+
+### La regla, en siete puntos
+
+1. **El menú no pregunta.** Al entrar se ve un botón grande que juega y, debajo, la lista de
+   niveles. Nada de eso le pide a la persona que decida: el botón grande arranca **el nivel que
+   corresponde** —el primero de la fila que no está pasado (`CTR-16.11.2`, sin cambios); el primero
+   de la fila si no hay avance, si no se pudo leer o si están todos pasados— y **un solo toque**
+   separa abrir la dirección de jugar. La lista es opcional: se juega sin tocarla.
+2. **El camino por omisión es la fila.** Sin avance, el botón grande juega el nivel 1 —el de las
+   dos puertas y ningún molinete (`US-09` criterio 4, `BR-01` punto 1)— **siempre**, aunque la lista
+   deje elegir el sexto. Abrir la fila no desescalona nada: quien no elige recorre los niveles en el
+   orden de siempre, y quien elige otro lo elige con la lista a la vista.
+3. **Todo nivel publicado está abierto.** La lista tiene una ficha tocable por cada nivel que la
+   página sembró (`CTR-16.8`: en producción los `listo`, en desarrollo y en cada vista previa
+   todos). Ninguna ficha está bloqueada, apagada ni a medias, y el sello de pasado no es condición
+   de nada. **Esto no publica ningún nivel que `BR-25` no haya dado por listo**: abre la fila, no la
+   agranda. Y el "de N" de los rótulos es el largo de la fila sembrada, no un seis escrito a mano:
+   con tres `listo` en producción, "nivel 2 de 6" mentiría.
+4. **El avance se escribe igual.** Ganar cualquier nivel, en el orden que sea, lo suma a lo
+   pasado en el cuadro en que se gana (`CTR-16.11.1`); rejugar uno pasado no cambia lo guardado. Lo
+   guardado sigue siendo qué niveles se ganaron: ni tiempo, ni puntaje, ni intentos (`US-09`
+   criterio 9). Y seguir al ganar lleva al que sigue **en la fila** al que se jugó, no al primero
+   sin pasar.
+5. **El número cuenta, no ordena.** "Hasta dónde llegó" —el número del criterio 9 y el grande de
+   la pieza de `BR-27` punto 2— es **cuántos niveles de la fila tiene pasados**. Con la fila
+   abierta, quien pasó solo el quinto llegó a **1**: no a 5, que diría que atravesó cuatro que no
+   jugó, ni a 0, que diría que no hizo nada. Los dos serían un dato falso en una pieza que se
+   comparte. Quien siempre siguió la fila ve lo mismo que antes. Hoy `CTR-16.11.1` calcula ese
+   número contando seguidos desde el primero (`hastaDonde`, `CTR-16.11.3`): cambiarlo es de
+   `arquitectura`, y hasta que lo cambie la pieza de `BR-27` no puede usarlo tal cual.
+6. **Abrir el menú jugando no cuesta nada.** El mundo queda quieto mientras el menú está abierto:
+   no corre el reloj, no se mueve nadie, no se pierde la posición, y seguir jugando deja todo
+   exactamente donde estaba. Elegir otro nivel o empezar el actual de nuevo abandona lo que había
+   **sin pedir confirmación**: lo único que se pierde es la posición dentro de un nivel cuyo fracaso
+   ya es gratis (`BR-24`), y un "¿estás seguro?" es una pantalla más entre el dedo y el juego
+   (`D-32` límite 3).
+7. **La tarjeta de fin de nivel no agrega pasos.** Aparece en el mismo cuadro en que el mundo marca
+   `terminado` y ofrece seguir, repetir o volver al menú. Seguir es **un toque**, como fijan el
+   criterio 1 y `BR-31` punto 1, y tocar el área sigue llevando al mismo lugar (`D-61` punto 3). En
+   el sexto no hay "siguiente en la fila", y `BR-31` punto 1 manda ese toque a la pieza compartible
+   de `BR-27`, **que todavía no existe** (lo dice el comentario de `src/scripts/partida-skayboy.ts`
+   sobre el último nivel). Hasta que exista, "Volvé al primero" en el sexto es **un parche
+   aceptado, no la regla**: el día que la pieza exista, la tarjeta del sexto la ofrece. Mientras
+   tanto `US-09` criterio 8 no está cumplido, y `ESTADO.md` tiene que decirlo.
+
+### Criterio de aceptación
+
+**A. Qué ofrece el menú, caso por caso.** Es lo que prueba la máquina: son filas de
+`src/lib/skayboy/menu.test.ts` (el archivo que `menu.ts` declara y que escribe el hilo principal;
+`D-12`: yo no lo corro), con la fila y el avance como dato.
+
+| # | Avance guardado | Fila sembrada | El botón grande juega | Fichas tocables | Fichas con sello de pasado | Cuántos tiene pasados |
+|---|---|---|---|---|---|---|
+| 1 | ninguno | 6 | `NIV-01` | 6 | ninguna | 0 |
+| 2 | `NIV-01`, `NIV-02` | 6 | `NIV-03` | 6 | 1 y 2 | 2 |
+| 3 | solo `NIV-05` | 6 | `NIV-01` | 6 | 5 | 1 |
+| 4 | `NIV-01` y `NIV-03` | 6 | `NIV-02` (el hueco) | 6 | 1 y 3 | 2 |
+| 5 | los seis | 6 | `NIV-01` | 6 | las seis | 6 |
+| 6 | ilegible, o `localStorage` que tira | 6 | `NIV-01` | 6 | ninguna | 0 |
+| 7 | ninguno | 3 (producción, tres `listo`) | `NIV-01` | 3 | ninguna | 0 |
+
+**Rojo que se tiene que ver:** una ficha con `disabled` o `aria-disabled` en cualquier fila, o el
+caso 3 dando 5 o 0 en la última columna, o el caso 7 con fichas de niveles que no están sembrados.
+
+**B. Lo que prueba el pulgar y no la máquina** (`BR-29`: la máquina no ve el cuadro cero ni la
+pausa real, porque la isla no corre en Node).
+
+- **Given** alguien que abre la dirección por primera vez, solo, desde un enlace, sin avance.
+  **When** el menú se ve. **Then** el botón grande está tocable **en el primer cuadro en que el
+  menú se ve** (el 0 ms de `D-32` límite 3), un toque arranca el nivel 1, y **ninguna línea del
+  menú pregunta ni avisa** nada sobre con cuántas personas se juega. Tapando la línea que canta,
+  quien llegó sin contexto sigue sabiendo qué tocar (`voz-ricotera.md`, la prueba de las dos
+  líneas).
+- **Given** un nivel empezado, con un personaje lejos de la entrada. **When** la persona abre el
+  menú, espera diez segundos y toca seguir jugando. **Then** cada personaje, cada objeto y el reloj
+  están como los dejó, y no se sumó nada a lo pasado (punto 6).
+- **Given** un nivel empezado. **When** toca la ficha de otro nivel. **Then** ese nivel arranca de
+  cero en el momento, sin confirmación, y lo pasado no cambió.
+- **Given** sin avance. **When** elige el nivel 5 desde el menú y lo gana. **Then** lo pasado es
+  solo `NIV-05`, la tarjeta nombra al 5 y seguir lleva al 6; y la próxima vez que entra, el botón
+  grande juega el 1, la ficha 5 dice que está pasada y "cuántos tiene pasados" es 1 (caso 3).
+- **Given** el sexto recién ganado. **When** aparece la tarjeta. **Then** está tocable en ese mismo
+  cuadro y dice que era el último. Si la pieza de `BR-27` existe, es lo que ofrece; si no, ofrece
+  volver al primero y el tablero lo marca como parche (punto 7).
+
+### Lo que esta regla no decide, y lo que deja afuera
+
+- **Los textos** —el verbo del botón grande, el sello de pasado, el rótulo "nivel 2 de 6", las
+  palabras con que la tarjeta dice que era el último— son de `contenido` (`CNT-40`), con `BR-24`
+  (nada de vidas, muerte, puntaje ni rango) y `BR-31` (nada que narre un logro compartido) como
+  límite. Que lo diga, en cambio, sí es de esta regla (criterio B, último caso).
+- **Cómo se ve y dónde va cada pieza,** incluido que la tarjeta quede abajo y no tape el baile ni
+  el contador de lo juntado, es de `experiencia` (`UX-37`, `UX-33` §2.5). El contrato del
+  menú adentro de `.fichin` es de `arquitectura` (`ADR-10.5`), igual que `CTR-16.11.2` y la
+  función que cuenta el número del punto 5.
+- **No entra** ningún desbloqueo por logro, ni estrellas por nivel, ni nada que premie jugar en
+  orden: sería un candado con otro nombre. **No entra** un enlace que abra un nivel puntual en
+  producción (`?nivel=` sigue siendo solo de desarrollo, `CTR-16.11.2`): es una idea con valor
+  —pasarle a un amigo "el 5"— y va al backlog, no a esta regla. Y sigue afuera todo lo que dejan
+  afuera el brief y `D-15`: cuentas, sincronización entre aparatos, ranking.
 
 ---
 
