@@ -116,6 +116,15 @@
 > suma **el quinto lugar** de la prueba, *el que no toma ni fuma*. **Enmienda `US-06` con fecha**
 > (una enmienda más, al final de la historia, y una marca en el criterio 7). El piso no cambia:
 > 30 escenas, tres por celda. El resto del documento no se tocó.
+>
+> **Revisión 2026-10-05 (`D-59` enmiendas 2 y 3, ciclo 19, el plano de dos ejes).** Consume
+> `D-59` enmiendas 2 y 3, `D-57` punto 7, `UX-38` y `src/lib/dos-ejes/partida.ts`
+> (`planoFijo()`). **Enmienda `US-06` con fecha, sin borrar**: el criterio 3 queda
+> **exceptuado para el plano de dos ejes del resultado**, por decisión del usuario, con el costo
+> dicho, y se suma el criterio 9 (qué tiene que ser cierto para darlo por bueno). La excepción
+> está marcada en el criterio 3, en la cabecera de la historia y en las dos frases que decían
+> «los criterios 1, 2 y 3 no cambian»; `BR-17` lleva una nota. `BR-36`, `BR-37` y `BR-38` no
+> dicen nada que la enmienda contradiga y no se tocaron. El resto del documento no se tocó.
 
 ## Por qué existe el piso de ítems
 
@@ -1142,7 +1151,11 @@ párrafo de esa historia.
 > **Los criterios 1, 2 y 3 no cambian, palabra por palabra**, y `BR-17` tampoco. La enmienda
 > entera, con la respuesta a la pregunta de `CNT-09`, está al final de esta historia, en
 > «Enmienda 2026-10-04». **El mismo día, una segunda enmienda por `D-59`** (la noche ricotera):
-> también al final, en «Enmienda 2026-10-04 (segunda)».
+> también al final, en «Enmienda 2026-10-04 (segunda)». **Una tercera, del 2026-10-05, exceptúa
+> al plano de dos ejes del criterio 3** (`D-59` enmiendas 2 y 3): al final, en «Enmienda
+> 2026-10-05 (tercera)». **[Matizado 2026-10-05.]** «Los criterios 1, 2 y 3 no cambian, palabra
+> por palabra» sigue siendo cierto del *texto* del criterio 3 y deja de serlo de su *alcance*:
+> tiene una excepción, una sola, el lugar de las maneras en el plano.
 
 **Prioridad: no forma parte del "Listo" de la v1.** `D-05` confirmó **cuatro** juegos como
 el contrato de la v1 (`Docs/BRIEF.md`, "Listo de la v1"), y esa es una decisión del usuario
@@ -1202,6 +1215,14 @@ jugador, no con que cada *tema* tenga una posición fija.
   de `BR-05` (bajo/medio/alto), no se muestra el conteo exacto de respuestas por eje, y
   ningún cuadrante se presenta como el "verdadero" o el "más" ricotero — es una identidad,
   no una nota.
+
+> **[Exceptuado 2026-10-05, solo para el plano de dos ejes del resultado (`D-59` enmienda 3).]**
+> El texto de arriba se conserva entero y rige para todo lo demás: la hoja, el nombre, la grilla
+> de las cuatro maneras, la línea de contraste, la tarjeta, la postal y la vista previa. Para el
+> plano, «nada en la pantalla lo jerarquiza» **deja de ser cierto en una sola cosa, el lugar**:
+> cada manera ocupa el mismo rincón para todos, por decisión del usuario. Qué sigue prohibido,
+> qué cuesta y cómo se da por bueno el plano: «Enmienda 2026-10-05 (tercera)» y criterio 9, al
+> final de la historia.
 
 **Criterio 4 — caso borde (se comparte, como pedía la idea):**
 - **Given** un jugador terminó el test.
@@ -1279,7 +1300,7 @@ mecanismo de sorteo de las 5 de 10 por eje (dueño `arquitectura`).
 | Jugar otra vez | «Probá de nuevo»: repetía la mitad | **«Empezá otra noche»**: escenas que no salieron en la visita (`BR-37`) | Nuevo |
 | Compartir | El nombre de la identidad y un enlace | Suma **tarjeta de imagen por identidad** y **cuatro postales** con vista previa propia | Amplía el criterio 4 |
 | El rastro de la banda en las escenas | Ninguno: «sabor ricotero» = credencial | **Escena de recital sin dueño**, con la frontera de `BR-36` | Da vuelta el criterio con que se retiró `EJ-011` |
-| Criterios 1, 2 y 3 | — | **No cambian** | — |
+| Criterios 1, 2 y 3 | — | **No cambian** *[Matizado 2026-10-05: el criterio 3 tiene una excepción, el plano de dos ejes]* | — |
 | `BR-17`, los dos ejes, los cuatro cuadrantes y sus ids | — | **No cambian.** Cambian nombres y bajadas (`D-57` punto 5, `CNT-30`) | — |
 
 **La noche, en términos de producto.** Cinco momentos, siempre en el mismo orden. En cada
@@ -1323,7 +1344,8 @@ con pocas escenas adentro— y el supuesto de la visita de dos o tres minutos.
 
 **Criterios 1, 2 y 3: no cambian.** Quedan como están más arriba. La noche es la forma en que
 se ordenan las diez preguntas del criterio 1; no cambia cuántas son ni cómo se resuelve el
-resultado.
+resultado. **[Matizado 2026-10-05: el criterio 3 tiene una excepción, el plano de dos ejes; ver
+«Enmienda 2026-10-05 (tercera)».]**
 
 **Criterio 4, ampliado.** El texto de arriba sigue en pie. Se suma:
 
