@@ -5,7 +5,60 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-04
+**Última actualización:** 2026-10-05
+
+> ## 🍺 LA NOCHE RICOTERA ENTERA, Y EL PLANO QUE VUELVE (2026-10-05) — `D-59`, ciclo 19
+>
+> Pedido del usuario, textual: *"el recital ricotero es barro, sucio, drogas reviente y también
+> es familia amigos amor, es todo eso, pero lo primero no puede faltar tampoco, un choripán, un
+> pancho una birra un porro hasta cocaína debe ser parte del recital, la previa ir un rato antes
+> a escabiar o no eso es un recital ricotero"*. Y después, mirando el sitio publicado: *"nunca
+> cansa el volumen"* y *"quiero que esté el gráfico también, queda lindo ver que está en un plano
+> de dos ejes"*. Rama `ciclo-18/que-ricotero-sos` (reabierta desde `main`; trae `D-60` y `D-61`).
+>
+> **Lo que hay:**
+> - **`D-59`**: la escena es la ricotera entera (barro, chori, birra, porro, merca como paisaje;
+>   familia, amigos y amor de terceros); la opción es de quien juega. Lo que se toma o se fuma
+>   nunca separa los polos, y se suma un **quinto lugar** a la prueba: *el que no toma ni fuma*.
+>   **Enmienda 1**: la música nunca molesta. **Enmienda 2**: el plano de dos ejes vuelve (enmienda
+>   `D-57` punto 7).
+> - **`INV-172`** (`RES-172`..`RES-194`): la noche real, casi todo **leyenda** — sin páginas
+>   abiertas (la red bloqueó los diarios) y sin el memoir en el disco. Está dicho en cada ficha.
+> - **`BR-38`** (`producto`): qué puede decir la escena y qué una opción; reemplaza los vetos 1,
+>   3 y 4 de `BR-36`. `US-06` enmendada.
+> - **`CNT-31`** (`contenido`): los 30 enunciados de la noche reescritos, las cinco líneas que
+>   cantan, las cuatro bajadas con un objeto cada una. Tres vueltas de verificación adversarial;
+>   la última, sin hallazgos altos. Casete y lugar con barro y chori (`sitio/copy.ts`); las cuatro
+>   tarjetas redibujadas (`VERSION_DEL_DIBUJO` sigue en 3).
+> - **Las guardas** (`banco.test.ts`): vetos de la noche (tragedias, personas de la banda,
+>   policía, seguridad, épica, **la música que molesta** con la hoja vieja de `EJ-052` como caso en
+>   rojo), vetos de las opciones (plata, pasaje, cuerpo, la banda como credencial, la merca como
+>   elección), **el consumo nunca de un solo lado**, ningún parentesco ni pareja propia en una
+>   opción, y **cada celda trae lo sucio** en algún enunciado (sin contar la merca).
+> - **El plano de dos ejes** (`UX-38`), arriba de la grilla que se queda: un recorte de papel con
+>   los ejes en cruz, los cuatro polos, las cuatro maneras, la tuya con borde y sello (la del amigo,
+>   punteada). **Relativo** (la tuya arriba a la izquierda, como la grilla), sin punto, `role="img"`
+>   con su texto (`RESULTADO.altPlano`). Guardas: cuadrado latino de lugares (`partida.test`),
+>   las dos marcas en `ESTADOS_EJES`, piso de 12 px en todo `.ejes-*` (`estilos.test`), sin
+>   enlace/botón/punto adentro (`isla.test`). Medido a 375, 360, 320, 1366 y 1440, con y sin
+>   amigo: sin desborde, filas y columnas iguales; los botones no se movieron.
+> - Suite: **1524 en verde**, `check` sin errores, `build` de 160 páginas.
+>
+> **Lo que queda abierto:**
+> - **`T-353` — la orientación del plano es del usuario.** Relativo (lo construido) o fijo, con
+>   Luz arriba y Orden a la izquierda para todos, como el rombo viejo. El fijo deja a «Mochila
+>   liviana, sin mapa» siempre abajo a la derecha (la jerarquía que `D-57` punto 7 sacó); el
+>   relativo hace que dos amigos opuestos vean el dibujo espejado. Se le mostró la comparación.
+>   Cambiarlo es la isla y la guarda del cuadrado latino.
+> - **`T-352`** — `contenido` confirma `altPlano` y `lugares`
+>   (`Docs/SUGERENCIAS/HILO-para-contenido-el-texto-del-plano.md`).
+> - **`T-351`** — pegar el recorte del plano en el lienzo (hojas 08 y 09), deuda como `T-319`:
+>   `diseno-marca.md` pide el lienzo primero y acá se construyó antes.
+> - **`REV-20`** — corriendo (banco y voz, pantalla y plano, papeles) con verificación
+>   adversarial; `FIND-119`+.
+> - **`UX-38` v1.1** — `experiencia` lo lleva al estado construido con la crítica.
+> - A 320 × 568 "Compartí" puede quedar bajo el pliegue en el peor caso (562 a 646): es de antes
+>   del plano y no lo empeora.
 
 > ## 🕹 SKAYBOY Y POLIGIRL: EL MENÚ, EL PASO ENTRE NIVELES Y EL PULGAR (2026-10-04) — `D-61`
 >
