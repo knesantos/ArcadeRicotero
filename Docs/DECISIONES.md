@@ -3213,7 +3213,9 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
      que comparte tu polo de luz-oscuridad, abajo la que comparte tu polo de orden-caos, y en
      diagonal la opuesta. Para cada persona "primero" es la suya, así que ninguna queda fija
      por encima de otra. Sin punto, sin graduación: los cuatro nombres en papel, cada uno con
-     su bajada para leer. Es texto HTML, no un SVG escalado.
+     su bajada para leer. Es texto HTML, no un SVG escalado. *(Desde `D-59` enmienda 2, del
+     2026-10-05, vuelve también un plano de dos ejes, relativo y sin punto, arriba de la
+     grilla, que se queda.)*
   8. **Una sola pieza de arte para los cuatro: el libro de *Luzbelito*.** El disco salió como
      un libro de tapas de cartón con lomo de cuero (`RES-168`): el mármol, el lomo y el
      esquinero se recortan del frente, **sin el óvalo, sin la figura y sin la palabra
@@ -3479,6 +3481,26 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   la vuelta de `CNT-31`; lo que se suma es la guarda, para que no vuelva: `banco.test.ts`,
   apartado *la música que molesta* de los vetos de la noche (escena, momentos, bajadas y
   opciones).
+- **Enmienda 2 (2026-10-05) — el plano de dos ejes vuelve, arriba de la grilla.** Enmienda
+  `D-57` punto 7. El usuario, en el mismo mensaje: *"Me gustan las explicaciones pero quiero
+  que esté el gráfico también, queda lindo ver que está en un plano de dos ejes."* La grilla
+  con sus explicaciones **se queda**; el plano **se suma** encima, en la sección de las cuatro
+  maneras, debajo de los botones (`UX-38`). Es un recorte de papel con los dos ejes en cruz,
+  los cuatro polos en palabras, las cuatro maneras y la tuya marcada con borde y sello (la del
+  amigo, punteada).
+  - **Relativo, como la grilla:** tu polo de luz-oscuridad arriba, tu polo de orden-caos a la
+    izquierda y tu manera arriba a la izquierda, para cada uno la suya. Lo que `D-57` punto 7
+    le sacó al rombo era que dejaba las mismas maneras arriba para todos; con el plano
+    relativo, entre los cuatro planos posibles cada manera pasa una vez por cada lugar
+    (`partida.test.ts` lo vigila). Lo que se pierde es que dos amigos con resultados opuestos
+    ven el dibujo espejado. **Si el usuario lo prefiere igual para todos** (luz siempre arriba),
+    es un cambio chico en la isla y en esa guarda, y vuelve la jerarquía que el punto 7 sacó:
+    es decisión suya.
+  - **Sigue sin punto ni graduación** (`BR-17`): la marca es el borde y el sello, nunca una
+    posición calculada. Es HTML, no SVG, y está escondido al lector de pantalla, que ya oye lo
+    mismo en la hoja y en la grilla.
+  - **No viaja en la tarjeta** (`UX-38` §6): no entra sin sacar la bajada y el libro, y en
+    la miniatura no se lee. `VERSION_DEL_DIBUJO` no sube por esto.
 
 ## D-60 — El sitio se llama Fichín Ricotero: el dominio de Arcade Ricotero no se pudo comprar
 
