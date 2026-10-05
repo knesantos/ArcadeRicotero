@@ -33,6 +33,7 @@ import {
   sortearPartida,
   resolverCuadrante,
   disposicion,
+  planoFijo,
   relacion,
   type Banco,
   type Cuadrante,
@@ -242,11 +243,9 @@ function polo(p: Polo, lugar: 'arriba' | 'abajo' | 'izquierda' | 'derecha'): HTM
  * de dos ejes"*). Un recorte de papel con los dos ejes en cruz, los cuatro extremos con su
  * polo y las cuatro maneras, la tuya marcada.
  *
- * **Relativo, como la grilla:** sale de la misma `disposicion()` y no de una tabla propia, así
- * que tu polo de luz-oscuridad va arriba, tu polo de orden-caos a la izquierda y tu manera
- * arriba a la izquierda, para cada uno la suya. Entre los cuatro planos posibles cada manera
- * pasa una vez por cada lugar (`partida.test.ts`): ninguna queda arriba para todos, que era lo
- * que `D-57` punto 7 le sacó al rombo.
+ * **Fijo, como el rombo viejo** (`D-59` enmienda 3, la eligió el usuario): Luz arriba, Orden a
+ * la izquierda, el mismo dibujo para todos. Sale de `planoFijo()`, no de una tabla propia; la
+ * grilla de abajo sigue relativa, con la tuya primero, porque es la lista para leer.
  *
  * **Sin punto:** la marca es el borde y el sello, como en la grilla. Un punto invita a medir a
  * qué distancia queda del eje, y `resolverCuadrante` no devuelve ningún número (`BR-17`).
@@ -255,11 +254,13 @@ function polo(p: Polo, lugar: 'arriba' | 'abajo' | 'izquierda' | 'derecha'): HTM
  * la grilla dice las cuatro maneras, pero no que hay dos ejes ni dónde cae la tuya. Adentro no
  * hay nada que se toque.
  */
-function plano(id: string, d: Disposicion): HTMLElement {
-  const { celdas, renglones, columnas } = d;
+function plano(id: string): HTMLElement {
+  const { celdas, renglones, columnas } = planoFijo(banco);
   const recorte = el('div', 'ejes-plano');
   const extremo = (p: Polo) => `${EJES[p]}, ${POLOS[p]}`;
-  const k = celdas.findIndex((c) => c.id === suyo?.id);
+  const lugarDe = (buscado: string | undefined) => celdas.findIndex((c) => c.id === buscado);
+  const k = lugarDe(id);
+  const j = lugarDe(suyo?.id);
   recorte.setAttribute('role', 'img');
   recorte.setAttribute(
     'aria-label',
@@ -268,8 +269,8 @@ function plano(id: string, d: Disposicion): HTMLElement {
       abajo: extremo(renglones[1]),
       izquierda: extremo(columnas[0]),
       derecha: extremo(columnas[1]),
-      tuya: celdas[0].nombre,
-      suya: k === 0 ? 'misma' : k > 0 ? { nombre: celdas[k]!.nombre, lugar: RESULTADO.lugares[k]! } : undefined,
+      tuya: { nombre: celdas[k]!.nombre, lugar: RESULTADO.lugares[k]! },
+      suya: j < 0 ? undefined : j === k ? 'misma' : { nombre: celdas[j]!.nombre, lugar: RESULTADO.lugares[j]! },
     }),
   );
 
@@ -277,10 +278,10 @@ function plano(id: string, d: Disposicion): HTMLElement {
   // Los dos ejes son elementos vacíos con borde, no con fondo: en el contraste forzado el
   // navegador pisa los fondos y respeta los bordes (`UX-38` §4.4).
   cruz.append(el('span', 'ejes-plano-eje ejes-plano-eje--vertical'), el('span', 'ejes-plano-eje ejes-plano-eje--horizontal'));
-  celdas.forEach((c, k) => {
+  celdas.forEach((c, n) => {
     const tuya = c.id === id;
     const delAmigo = c.id === suyo?.id;
-    const cuadrante = el('div', `ejes-plano-cuadrante ejes-plano-cuadrante--${k < 2 ? 'arriba' : 'abajo'}`);
+    const cuadrante = el('div', `ejes-plano-cuadrante ejes-plano-cuadrante--${n < 2 ? 'arriba' : 'abajo'}`);
     if (tuya) cuadrante.classList.add('ejes-plano-cuadrante--tuya');
     if (delAmigo) cuadrante.classList.add('ejes-plano-cuadrante--suya');
     if (tuya || delAmigo) {
@@ -325,7 +326,7 @@ function grilla(id: string, d: Disposicion): HTMLElement {
   // El plano va antes que la grilla y después del contraste (`UX-38` §3.1): orienta primero,
   // la grilla lee después. Es un dibujo de más: si no se puede armar, la grilla sigue sola.
   try {
-    seccion.append(plano(id, d));
+    seccion.append(plano(id));
   } catch {
     /* sin plano, nada más cambia */
   }
@@ -407,8 +408,6 @@ function pintarResultado(): void {
   acciones.append(denuevo);
   zonaResultado.append(acciones);
 
-  // Una sola `disposicion()` para el plano y la grilla: así las dos figuras no pueden
-  // discrepar (`UX-38` §4.2).
   zonaResultado.append(grilla(r.id, disposicion(banco, r.id)));
 
   const bajar = el('a', 'ejes-bajar', RESULTADO.bajar) as HTMLAnchorElement;

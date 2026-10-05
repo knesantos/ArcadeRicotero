@@ -3215,7 +3215,7 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
      por encima de otra. Sin punto, sin graduación: los cuatro nombres en papel, cada uno con
      su bajada para leer. Es texto HTML, no un SVG escalado. *(Desde `D-59` enmienda 2, del
      2026-10-05, vuelve también un plano de dos ejes, relativo y sin punto, arriba de la
-     grilla, que se queda.)*
+     grilla, que se queda; y desde la enmienda 3, fijo como el rombo, por decisión del usuario.)*
   8. **Una sola pieza de arte para los cuatro: el libro de *Luzbelito*.** El disco salió como
      un libro de tapas de cartón con lomo de cuero (`RES-168`): el mármol, el lomo y el
      esquinero se recortan del frente, **sin el óvalo, sin la figura y sin la palabra
@@ -3501,6 +3501,27 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     mismo en la hoja y en la grilla.
   - **No viaja en la tarjeta** (`UX-38` §6): no entra sin sacar la bajada y el libro, y en
     la miniatura no se lee. `VERSION_DEL_DIBUJO` no sube por esto.
+- **Enmienda 3 (2026-10-05) — el plano es fijo, como el rombo viejo.** Reemplaza el punto
+  *"Relativo, como la grilla"* de la enmienda 2. El hilo principal le mostró al usuario las dos
+  versiones lado a lado, para «Mesa larga a las nueve» y para «Mochila liviana, sin mapa»: la
+  relativa (la tuya siempre arriba a la izquierda, los ejes giran) y la fija (Luz arriba y Orden
+  a la izquierda para todos). El usuario, textual: *"B, el fijo como el rombo viejo"*.
+  - **Qué es:** `planoFijo()` en `src/lib/dos-ejes/partida.ts` (`PLANO_FIJO`: renglones luz y
+    oscuridad, columnas orden y caos). Cada manera tiene su rincón por sus dos polos, el mismo
+    para todos, y la tuya se marca donde cae. Dos amigos con resultados opuestos miran el mismo
+    mapa. Lo vigila `partida.test.ts`, y `isla.test.ts` que el plano salga del motor y no de una
+    tabla escrita en la isla.
+  - **Lo que se acepta, dicho:** «Mesa larga a las nueve» queda siempre arriba a la izquierda y
+    «Mochila liviana, sin mapa» siempre abajo a la derecha. Es la jerarquía de lugar que `D-57`
+    punto 7 le había sacado al rombo, y vuelve **por decisión del usuario**, con el costo a la
+    vista. Lo que sigue sin volver: el punto, la graduación, cualquier número (`BR-17`).
+  - **La grilla de abajo sigue relativa** (la tuya primero), porque es la lista para leer: el
+    plano es el mapa, la grilla es de cada uno. Si el usuario la quiere fija también, es otro
+    pedido.
+  - **Consecuencias:** `producto` enmienda el criterio 3 de `US-06` (el plano queda exceptuado
+    por decisión del usuario); `experiencia` lleva `UX-38` a la versión construida; `contenido`
+    confirma el texto del lector, que ahora dice el lugar de la tuya (`T-352`). `T-353` queda
+    cerrada con esta enmienda.
 
 ## D-60 — El sitio se llama Fichín Ricotero: el dominio de Arcade Ricotero no se pudo comprar
 

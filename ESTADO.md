@@ -37,19 +37,19 @@
 >   opción, y **cada celda trae lo sucio** en algún enunciado (sin contar la merca).
 > - **El plano de dos ejes** (`UX-38`), arriba de la grilla que se queda: un recorte de papel con
 >   los ejes en cruz, los cuatro polos, las cuatro maneras, la tuya con borde y sello (la del amigo,
->   punteada). **Relativo** (la tuya arriba a la izquierda, como la grilla), sin punto, `role="img"`
->   con su texto (`RESULTADO.altPlano`). Guardas: cuadrado latino de lugares (`partida.test`),
->   las dos marcas en `ESTADOS_EJES`, piso de 12 px en todo `.ejes-*` (`estilos.test`), sin
->   enlace/botón/punto adentro (`isla.test`). Medido a 375, 360, 320, 1366 y 1440, con y sin
->   amigo: sin desborde, filas y columnas iguales; los botones no se movieron.
-> - Suite: **1524 en verde**, `check` sin errores, `build` de 160 páginas.
+>   punteada). **Fijo, como el rombo viejo** (Luz arriba, Orden a la izquierda, para todos: lo
+>   eligió el usuario entre las dos versiones, `D-59` enmienda 3), sin punto, `role="img"` con su
+>   texto (`RESULTADO.altPlano`). Sale de `planoFijo()`; la grilla sigue relativa. Guardas: el
+>   plano fijo y el cuadrado latino de la grilla (`partida.test`), las dos marcas en
+>   `ESTADOS_EJES`, piso de 12 px en todo `.ejes-*` (`estilos.test`), sin enlace/botón/punto ni
+>   polos escritos a mano adentro (`isla.test`). Medido a 375, 360, 320, 1366 y 1440, con y sin
+>   amigo, las cuatro maneras: cada una en su rincón, sin desborde, filas y columnas iguales; los
+>   botones no se movieron.
+> - Suite: **1525 en verde**, `check` sin errores, `build` de 160 páginas.
 >
 > **Lo que queda abierto:**
-> - **`T-353` — la orientación del plano es del usuario.** Relativo (lo construido) o fijo, con
->   Luz arriba y Orden a la izquierda para todos, como el rombo viejo. El fijo deja a «Mochila
->   liviana, sin mapa» siempre abajo a la derecha (la jerarquía que `D-57` punto 7 sacó); el
->   relativo hace que dos amigos opuestos vean el dibujo espejado. Se le mostró la comparación.
->   Cambiarlo es la isla y la guarda del cuadrado latino.
+> - ~~`T-353` — la orientación del plano~~: **cerrada**, el usuario eligió el fijo (`D-59`
+>   enmienda 3).
 > - **`T-352`** — `contenido` confirma `altPlano` y `lugares`
 >   (`Docs/SUGERENCIAS/HILO-para-contenido-el-texto-del-plano.md`).
 > - **`T-351`** — pegar el recorte del plano en el lienzo (hojas 08 y 09), deuda como `T-319`:
