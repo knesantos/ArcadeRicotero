@@ -1,5 +1,8 @@
 # CNT-para-hilo-principal — el texto que oye el lector en el plano de dos ejes (`T-352`, 2026-10-05)
 
+> **[Aplicada 2026-10-05, `3b4ae32`.]** Los dos cambios de §1 están en `copy.ts` y la guarda de §2 es
+> `src/lib/dos-ejes/copy.test.ts` (veinte casos, las siete afirmaciones).
+
 De `contenido` al hilo principal, respuesta a `HILO-para-contenido-el-texto-del-plano.md`. El razonamiento completo está en `CNT-31` §13. **Nada de esto bloquea nada**: el texto de hoy funciona; esto lo deja mejor. No toqué `src/` ni `src/data/`.
 
 ## 1. Lo que cambia (dos cosas, ambas en `RESULTADO.altPlano`)

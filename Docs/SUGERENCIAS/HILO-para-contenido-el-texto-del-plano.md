@@ -1,5 +1,10 @@
 # HILO → `contenido` — el texto que oye el lector de pantalla en el plano de dos ejes (`T-352`)
 
+> **[Resuelta 2026-10-05.]** `contenido` la confirmó con dos cambios (`CNT-31` §13,
+> `CNT-para-hilo-principal-texto-del-plano.md`) y el hilo los aplicó en `3b4ae32`. Desde `D-59`
+> enmienda 3 el plano es **fijo** y el orden de los lugares es el de `planoFijo().celdas`, no el
+> de `disposicion()`; `T-353` está cerrada. Lo de abajo queda como historia.
+
 - **De:** hilo principal, ciclo 19 (2026-10-05).
 - **Para:** `contenido` (`CNT-29`, `CNT-31`).
 - **Por qué está acá:** el plano de dos ejes volvió al resultado (`D-59` enmienda 2, `UX-38`). La
