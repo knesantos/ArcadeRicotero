@@ -243,7 +243,7 @@ function polo(p: Polo, lugar: 'arriba' | 'abajo' | 'izquierda' | 'derecha'): HTM
  * de dos ejes"*). Un recorte de papel con los dos ejes en cruz, los cuatro extremos con su
  * polo y las cuatro maneras, la tuya marcada.
  *
- * **Fijo, como el rombo viejo** (`D-59` enmienda 3, la eligió el usuario): Luz arriba, Orden a
+ * **Fijo, como el rombo viejo** (`D-62` enmienda 3, la eligió el usuario): Luz arriba, Orden a
  * la izquierda, el mismo dibujo para todos. Sale de `planoFijo()`, no de una tabla propia; la
  * grilla de abajo sigue relativa, con la tuya primero, porque es la lista para leer.
  *

@@ -31,7 +31,7 @@ miran en esa frase. `RESULTADO.lugares` sí se audita (es un arreglo de cadenas)
 ## Aparte, de paso
 
 `Docs/SUGERENCIAS/HILO-para-contenido-el-texto-del-plano.md` quedó vieja: dice que el orden de los lugares es el
-de `disposicion().celdas` y que la orientación la decide el usuario (`T-353`). Desde `D-59` enmienda 3 el orden
+de `disposicion().celdas` y que la orientación la decide el usuario (`T-353`). Desde `D-62` enmienda 3 el orden
 es el de `planoFijo().celdas` (arriba a la izquierda, arriba a la derecha, abajo a la izquierda, abajo a la
 derecha: Luz + Orden, Luz + Caos, Oscuridad + Orden, Oscuridad + Caos) y `T-353` está cerrada. La cadena de
 ejemplo de esa ficha sigue valiendo para `CU-1`; para las otras tres cambia el lugar.

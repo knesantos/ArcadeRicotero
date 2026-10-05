@@ -10,18 +10,18 @@
 >
 > 1. *"Me gustan las explicaciones pero quiero que esté el gráfico también, queda lindo ver que
 >    está en un plano de dos ejes."* (mirando el resultado en su teléfono)
-> 2. *"B, el fijo como el rombo viejo."* (`D-59` enmienda 3, después de mirar las dos versiones lado
+> 2. *"B, el fijo como el rombo viejo."* (`D-62` enmienda 3, después de mirar las dos versiones lado
 >    a lado.) **Ojo con la letra:** la "B" es la de esa comparación. En la tabla de `§2.4` de esta
 >    hoja, el plano fijo con Luz arriba y Orden a la izquierda es la **opción A**; la B de esa tabla
 >    (luz–oscuridad en el horizontal) no se construyó.
 >
 > **Qué enmienda.** `UX-36` (lo que decía del plano: "el rombo se va", "ningún punto en el plano",
 > "la tarjeta no lo muestra"), `D-57` punto 7 (la grilla pasaba a ser **el** plano) y, por decisión del
-> usuario, el criterio 3 de `US-06` en lo que toca al plano (lo enmienda `producto`, `D-59` enmienda 3).
+> usuario, el criterio 3 de `US-06` en lo que toca al plano (lo enmienda `producto`, `D-62` enmienda 3).
 > La grilla de las cuatro maneras **no se toca**: el plano se suma arriba, no la reemplaza. Las marcas
 > de enmienda en `UX-36` están al día con esta versión (cabecera, `§5.3`, `§5.6`, `§5.8`, `§6.2`).
 >
-> **Consume:** `D-59` y sus tres enmiendas, `D-57` punto 7, `D-33`, `D-14`, `D-17`, `D-19`, `D-21`,
+> **Consume:** `D-62` y sus tres enmiendas, `D-57` punto 7, `D-33`, `D-14`, `D-17`, `D-19`, `D-21`,
 > `D-58`, `US-06` (criterios 3 y 4c), `BR-17`, `BR-37`, `BR-38`, `CTR-08` v2.5 (`disposicion`, `relacion`),
 > `UX-36` entera, `UX-06` §4 (el rombo viejo), `UX-35` §4.4, `REV-19` (las alturas medidas), la crítica
 > adversarial de la v1, `.claude/rules/diseno-marca.md`, `.claude/rules/voz-ricotera.md`, `tokens.css`,
@@ -44,7 +44,7 @@
 > | `§5` | `aria-hidden`; una fila de la tabla era falsa | `role="img"` con su texto; tabla corregida |
 > | `§6` | Razón 3: "es relativo" | Razón 3 invertida; la decisión de no ponerlo en la tarjeta se sostiene por las otras cuatro |
 > | `§8`, `§10` | Guardas y checklist a futuro | Con su estado real: lo hecho, lo medido por el hilo, lo que falta |
-> | `§9.2` | Cinco abiertos (el 5, el volumen) | El volumen sale (`D-59` enmienda 1); entran los costos de lo fijo |
+> | `§9.2` | Cinco abiertos (el 5, el volumen) | El volumen sale (`D-62` enmienda 1); entran los costos de lo fijo |
 > | `§11` | — | **Nuevo:** la crítica, punto por punto, y "Lo que se discutió" |
 >
 > **Lo que no pude hacer, dicho antes que nada.** Esta sesión tampoco tuvo shell (`D-12`): no corrí
@@ -69,7 +69,7 @@ jerarquía) y el punto podía leerse como una medida.
 **Lo que se hizo.** Vuelve un plano, **no el rombo**: un recorte de papel pegado con dos ejes en
 cruz, los cuatro cuadrantes con su nombre, los cuatro extremos con su polo en palabras y la tuya
 marcada. Va **debajo de los botones, arriba de la grilla**, **fijo** (Luz arriba y Orden a la
-izquierda, el mismo dibujo para todos: `D-59` enmienda 3), **sin punto**, escrito en HTML y leído por
+izquierda, el mismo dibujo para todos: `D-62` enmienda 3), **sin punto**, escrito en HTML y leído por
 el lector de pantalla como **una imagen con su texto** (`role="img"`). **No viaja** en la tarjeta ni
 en la vista previa. Las razones, una por una, en `§1` a `§6`.
 
@@ -209,7 +209,7 @@ animación. Los cuatro cuadrantes miden lo mismo y llevan la misma letra.
 
 ### 2.1 Lo que se eligió y lo que cuesta
 
-**Lo que se eligió.** Luz arriba y Orden a la izquierda, **el mismo dibujo para todos** (`D-59` enmienda
+**Lo que se eligió.** Luz arriba y Orden a la izquierda, **el mismo dibujo para todos** (`D-62` enmienda
 3). Está en `PLANO_FIJO` y `planoFijo()` de `partida.ts`; cada manera tiene su rincón por sus dos
 polos, el mismo para todos, y la tuya se marca donde cae:
 
@@ -248,7 +248,7 @@ polos, el mismo para todos, y la tuya se marca donde cae:
 **El plano es el mapa (el mismo para todos: dónde cayó cada uno); la grilla es la lista (la tuya
 primero: para leer).** Cada una hace un trabajo que la otra no podría: la lista no puede ser un mapa
 sin fijar a nadie, y el mapa no puede ser una lista sin dejar de ser mapa. La grilla sigue
-`disposicion()`, que no se tocó; el plano sigue `planoFijo()`. Lo dejó escrito `D-59` enmienda 3
+`disposicion()`, que no se tocó; el plano sigue `planoFijo()`. Lo dejó escrito `D-62` enmienda 3
 ("si el usuario la quiere fija también, es otro pedido").
 
 **El costo de que convivan:** en una misma pantalla hay dos reglas de lugar. «Mochila liviana» puede
@@ -309,7 +309,7 @@ leer cuatro bajadas ya no orienta nada"*. **Ese argumento era flojo**: las celda
 la grilla cerrada mide ≈ 230 px (cuenta del crítico), no cuatro bajadas. Lo que sostiene la posición
 es otra cosa: el plano es el mapa que la lista despliega, y cada celda que se abre (≈ 8 a 9 renglones,
 `§9.1`) aleja más el plano si va abajo. **La posición no se le preguntó al usuario**; la fijó la v1 y
-`D-59` enmienda 2 la recoge. Queda abierta en `§9.2`.
+`D-62` enmienda 2 la recoge. Queda abierta en `§9.2`.
 
 ### 3.2 Qué mueve
 
@@ -573,7 +573,7 @@ no es cierto que no haya plano. Y desde la enmienda 3 hay un lugar que no es de 
 | # | Qué | Dónde | Estado |
 |---|---|---|---|
 | G1 | **Cada manera ocupa cada lugar una sola vez entre las cuatro grillas**, y cada polo queda arriba (y a la izquierda) en dos de las cuatro | `partida.test.ts`, *"la grilla relativa no le da a nada un lugar fijo (UX-38 §2.3)"* | **Hecho**, y vale para la **grilla** (`§2.3`) |
-| G1b | **El plano es fijo:** `planoFijo()` devuelve luz/oscuridad arriba-abajo y orden/caos izquierda-derecha, las celdas en ese orden, las cuatro distintas, y no recibe el resultado (`planoFijo.length === 1`) | `partida.test.ts`, *"el plano es fijo: Luz arriba, Orden a la izquierda, para todos (D-59 enmienda 3)"* | **Hecho** (nuevo en v1.1) |
+| G1b | **El plano es fijo:** `planoFijo()` devuelve luz/oscuridad arriba-abajo y orden/caos izquierda-derecha, las celdas en ese orden, las cuatro distintas, y no recibe el resultado (`planoFijo.length === 1`) | `partida.test.ts`, *"el plano es fijo: Luz arriba, Orden a la izquierda, para todos (D-62 enmienda 3)"* | **Hecho** (nuevo en v1.1) |
 | G2 | **Una sola fuente** (reescrita: la v1 decía "ninguna tabla"). El plano sale de `planoFijo(banco)`, no escribe `'luz'`, `'oscuridad'`, `'orden'` ni `'caos'` a mano, y la grilla calcula `disposicion(banco` una sola vez. La única tabla de lugares es `PLANO_FIJO`, en el motor | `isla.test.ts`, *"el plano es una imagen con su texto…"* | **Hecho** |
 | G3 | `ESTADOS_EJES` suma `.ejes-plano-cuadrante--tuya` y `--suya` | `estilos.test.ts`, líneas 616–617 | **Hecho** |
 | G4 | **Ninguna regla `.ejes-*` pide menos de 0,75 rem** (en `rem` ni en `px`) | `estilos.test.ts`, *"ninguna letra del test de dos ejes baja de 12 px"* y su control | **Hecho** |
@@ -589,8 +589,8 @@ no es cierto que no haya plano. Y desde la enmienda 3 hay un lugar que no es de 
 | Dónde | Qué | Quién |
 |---|---|---|
 | `Docs/UX/UX-36` | Las marcas de enmienda, al día con el plano fijo (cabecera, `§5.3`, `§5.6`, `§5.8`, `§6.2`) | `experiencia` (hecho en v1.1) |
-| `Docs/DECISIONES.md`, `D-59` enmiendas 2 y 3 | Ya están | hilo principal (hecho) |
-| `US-06`, criterio 3 | El plano queda exceptuado por decisión del usuario (`D-59` enmienda 3) | `producto` |
+| `Docs/DECISIONES.md`, `D-62` enmiendas 2 y 3 | Ya están | hilo principal (hecho) |
+| `US-06`, criterio 3 | El plano queda exceptuado por decisión del usuario (`D-62` enmienda 3) | `producto` |
 | `T-352` | `contenido` confirma `altPlano` y `lugares`; y se cubre el agujero de `G10` | `contenido` + hilo |
 | `Docs/SUGERENCIAS/HILO-para-contenido-el-texto-del-plano.md` | Dice que el orden de los lugares es el de `disposicion().celdas` y que la orientación está abierta (`T-353`): ya no. Es `planoFijo().celdas` y `T-353` cerró | hilo principal |
 | **El lienzo "Sistema de marca"** (hojas 08 y 09) | **`T-351`.** `diseno-marca.md` pide cambiar el diseño **primero**; acá se construyó antes. Es deuda con nombre, como `T-319`. La ficha para pegar, abajo | hilo principal / usuario |
@@ -615,7 +615,7 @@ las cuatro maneras, **cada una en su rincón del mismo mapa**.
 | **Un solo dibujo que sea las dos cosas** (los cuadrantes del plano son las celdas que se abren) | Una celda abierta crece (la bajada son ≈ 8 a 9 renglones a 150 px, cuenta) y deforma el cruce; además el `summary` pide ≥ 72 px y el ancho de media celda lo ahoga |
 | **Un plano que se toca** (un cuadrante abre su celda de la grilla y baja a ella) | Es lo más tentador. Pide botones adentro de algo que ahora es una imagen para el lector (`§5`), una segunda forma de abrir lo mismo y el control de `details` desde afuera. **Primero se mide si la gente lo toca** (`§9.2`) |
 | **Un punto** | `§1.3` |
-| **El plano absoluto** | `[v1]` Descartado por `§2`. **`[v1.1]` Es el construido:** lo eligió el usuario (`D-59` enmienda 3). El costo, en `§2.1`; la razón de la v1, en `§2.4` |
+| **El plano absoluto** | `[v1]` Descartado por `§2`. **`[v1.1]` Es el construido:** lo eligió el usuario (`D-62` enmienda 3). El costo, en `§2.1`; la razón de la v1, en `§2.4` |
 | **El plano relativo** | `[v1]` Era mi recomendación. Se construyó, se mostró y no se eligió. Vive en la grilla (`§2.2`) |
 | **SVG** | La letra escalaría por debajo de 12 px (`§4.2`) |
 | **El recorte en tinta clara sobre `--fondo`** (sin papel) | Los pares ya existen, pero queda el mismo material que la grilla de abajo, y dos figuras iguales apiladas se leen como una lista larga. El papel lo vuelve un objeto y deja la marca en `--fondo` (14,94 : 1) |
@@ -740,7 +740,7 @@ Quince puntos, de alta a baja.
 | 8 | Baja | `§3.2` usaba cuentas donde `REV-19` ya había medido | Reemplazadas por `REV-19` (`§3.2`). Se cae el "asoma ≈ 27 px" |
 | 9 | Baja | La tabla de alturas omitía los márgenes | La cuenta se descarta; valen las medidas del hilo (`§4.3`) |
 | 11 | Baja | Los dos brazos del eje horizontal se ven de distinto largo | Ya no hay brazos: el eje corre entero y los polos lo montan (`§1.1`, `§4.2`). Distinto de la propuesta del crítico (rótulos del mismo ancho) |
-| 13 | Baja | `§9.2.5` (el volumen) estaba vieja | Sacada. Se resolvió en `D-59` enmienda 1 y la guarda *"la música que molesta"* de `banco.test.ts` |
+| 13 | Baja | `§9.2.5` (el volumen) estaba vieja | Sacada. Se resolvió en `D-62` enmienda 1 y la guarda *"la música que molesta"* de `banco.test.ts` |
 | 14 | Baja | "Las cuatro filas…"; sellos −1,5° contra rectos; el `try/catch` sin especificar | "Dos filas y dos columnas"; sellos rectos; `try/catch` solo alrededor de `plano(id)`, dentro de `grilla()` (`§0.1`, `§3.1`, `§4.1`) |
 | 15 | Baja | Faltaba el tramo de 22 a 64 rem | `max-width: min(26rem, …)` en todas las anchuras, sin regla propia en la mesa. La tableta es igual a la mesa por construcción; sin medir (`§4.3`) |
 
@@ -766,7 +766,7 @@ en `§9.2`, punto 4: se usa si un teléfono real dice que pesa.
 
 **Punto 6 (media), la mitad que falta — ofrecer las dos posiciones al usuario.** Se escribió el costo, pero la
 posición (arriba de la grilla) no se le preguntó: el usuario eligió la orientación, no el lugar. Se queda donde
-la fijó la v1 y `D-59` enmienda 2; se reabre con lo que diga el teléfono (`§9.2`, punto 4).
+la fijó la v1 y `D-62` enmienda 2; se reabre con lo que diga el teléfono (`§9.2`, punto 4).
 
 **Punto 10 (baja) — el nombre de la tuya queda más bajo que el de su vecina.** Con el contenido centrado en
 vertical, el sello empuja el nombre de la tuya hacia abajo (≈ 12 px, cuenta: la mitad del sello más el hueco)

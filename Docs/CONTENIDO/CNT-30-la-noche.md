@@ -14,7 +14,7 @@
   y §2.3 dejó pendiente. **Las cadenas de pantalla del §6 son la versión que vale**; el §6 dice fila
   por fila qué confirma y qué cambia frente a `copy.ts`. Lo que queda para el hilo principal está
   en `Docs/SUGERENCIAS/CNT-para-hilo-principal-vuelta-4-dos-ejes.md`.
-- **Actualización del 2026-10-04 (`D-59`):** **`CNT-31` reescribe los enunciados, las cinco líneas que
+- **Actualización del 2026-10-04 (`D-62`):** **`CNT-31` reescribe los enunciados, las cinco líneas que
   cantan y las cuatro bajadas** para que la noche sea la ricotera (barro, chori, birra, porro, familia),
   y deja 57 de las 60 opciones como están aquí. **Las tablas de §3, §4 y §5 de este documento son la
   historia de las cuatro vueltas, no el banco vigente**; las reglas de §2 siguen valiendo salvo las que

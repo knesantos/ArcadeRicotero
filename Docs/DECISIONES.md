@@ -3213,7 +3213,7 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
      que comparte tu polo de luz-oscuridad, abajo la que comparte tu polo de orden-caos, y en
      diagonal la opuesta. Para cada persona "primero" es la suya, así que ninguna queda fija
      por encima de otra. Sin punto, sin graduación: los cuatro nombres en papel, cada uno con
-     su bajada para leer. Es texto HTML, no un SVG escalado. *(Desde `D-59` enmienda 2, del
+     su bajada para leer. Es texto HTML, no un SVG escalado. *(Desde `D-62` enmienda 2, del
      2026-10-05, vuelve también un plano de dos ejes, relativo y sin punto, arriba de la
      grilla, que se queda; y desde la enmienda 3, fijo como el rombo, por decisión del usuario.)*
   8. **Una sola pieza de arte para los cuatro: el libro de *Luzbelito*.** El disco salió como
@@ -3393,135 +3393,49 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     Android es otro sitio. Las mediciones de ciclos anteriores en Linux se hicieron con la
     letra de repuesto, que es más angosta: si una pantalla quedó justa, puede haber cambiado.
 
-## D-59 — La noche del test es la ricotera entera: el barro, el chori, la birra, el porro y la merca, y también la familia, los amigos y el amor
+## D-59 — El dominio es fichinricotero.com.ar, comprado en NIC Argentina
 
 - **Fecha:** 2026-10-04
-- **Estado:** aceptada — **la tomó el usuario**, con estas palabras: *"Vamos a seguir
-  mejorándolo haciendo las preguntas más ricoteras. El recital ricotero es barro, sucio, drogas,
-  reviente, y también es familia, amigos, amor: es todo eso, pero lo primero no puede faltar
-  tampoco. Un choripán, un pancho, una birra, un porro, hasta cocaína debe ser parte del
-  recital. La previa, ir un rato antes a escabiar o no, eso es un recital ricotero. Anotá esto,
-  hacé una pequeña investigación de lo que te digo y que quede plasmado en el juego. Me gustó
-  mucho la idea de que el test sea una noche de recital."*
-- **Consume:** `D-57` (la noche en cinco momentos, que el usuario confirma), `BR-17`, `BR-36`,
-  `US-06`, `CNT-30`, `D-14` (la postura del proyecto), `CLAUDE.md` §6 (los molinetes).
-- **Qué cambia.** `D-57` punto 2 había sacado de la noche a la banda y a lo que se consume
-  ("un recital sin dueño", y los vetos 1 y 4 de `BR-36`): la noche era de cualquiera que sale a
-  ver música. El usuario la quiere **ricotera**: con la previa en la esquina, el humo del chori,
-  la birra que pasa, el porro que gira, el barro hasta el tobillo, el reviente, y con la familia,
-  los amigos y el amor en la misma noche. **Lo sucio no es un adorno opcional: "lo primero no
-  puede faltar".** La noche en cinco momentos queda como está.
-- **Lo que no cambia** (y por qué no choca con el pedido): el test sigue sin pedir **saber**
-  nada de la banda (`BR-17`, los molinetes), sigue sin una respuesta mejor que otra, y las
-  tragedias (Bulacio, Olavarría, Cromañón, la muerte del Indio) siguen fuera de la escena de un
-  test de dos botones (`BR-36` veto 2). Cómo se compatibiliza "lo sucio no puede faltar" con
-  "nadie queda afuera por no consumir" lo fija la síntesis de abajo, con la investigación
-  (`INV-172`) sobre la mesa.
-- **La investigación** (`INV-172`, `RES-172`..`RES-194`): cuatro investigadores y cuatro
-  verificadores. **Ninguna página se pudo abrir** (el proxy bloquea los diarios) y el memoir del
-  Indio no está en este entorno, así que casi todo quedó rotulado *leyenda*: se cuenta en la
-  prensa según el buscador. Para un test sin respuestas correctas alcanza —da escenas y palabras,
-  no datos—. Lo que trae: la previa de días en carpas, el fogón, la guitarra criolla, el mate y el
-  vino que pasan de mano en mano, el fernet con Coca en la botella de dos litros cortada, la birra
-  por litro, el chori y el asado, los puestos con remeras, el micro y la combi del barrio en fila
-  por la ruta, el barro del acceso que se traga una zapatilla, el frío con agua nieve o los 38
-  grados, los trapos y los pasacalles, el porro (lo único del consumo que nombra la crónica de
-  color), padres que pasan la música a los hijos y parejas que se conocieron en una misa. La
-  cocaína no aparece en ninguna crónica de color: está en la policial y en lecturas de fans.
-- **Síntesis — cómo queda la noche:**
-  1. **La escena es la ricotera entera.** Enunciado, sello, línea que canta y bajadas pueden
-     traer la previa en la esquina o la plaza, el escabio, la birra, el vino, el fernet, el
-     chori y el pancho, el humo, el porro que gira, el reviente, el barro, la mugre, el micro, la
-     carpa, el pogo adelante, los trapos, la misa, los Redondos, "ricotero", la gente sin
-     entrada, la madrugada; y la familia, los amigos y el amor **de la gente de la escena** (un
-     padre que le pasa la canción a su hija, una pareja que se conoció en una misa). **"Lo primero
-     no puede faltar"**: cada momento lleva su parte sucia, no solo la tierna.
-  2. **Quien juega elige cómo se mueve, no si consume.** Lo que se toma o se fuma puede estar en
-     una opción, pero nunca de un solo lado: si una toma y la otra no, el eje mide si tomás, y el
-     que no toma —por salud, por los hijos, porque dejó— cae siempre en el mismo polo. *"Ir a
-     escabiar o no"* se juega así: la previa está en la escena, y las dos opciones son de la
-     previa (sumarse a la ronda, que no obliga a tomar, o quedarse con lo propio). Se suma **un
-     quinto lugar** a la prueba de `D-57` punto 3: **el que no toma ni fuma** tiene que poder
-     contestar cada ítem de verdad. Lo vigila `banco.test.ts` (el consumo de un solo lado) y lo
-     lee `REV-20` (el quinto lugar).
-  3. **La merca está en la noche como paisaje, nunca como elección.** Es la línea editorial del
-     hilo principal sobre el pedido —*"hasta cocaína debe ser parte del recital"*—: el sitio no
-     tiene muro de edad ni de entrada (los molinetes), y una opción que se elige convierte el
-     consumo en una manera de ser. En la escena dice que está, sin glamour ni sermón, que es lo
-     que pidió el usuario. Si el usuario la quiere también como opción, se cambia esta línea y la
-     guarda, y nada más.
-  4. **Lo que se paga puede estar; lo que se elige no lo pide.** El chori, la birra, el micro y el
-     puesto están en la escena; ninguna opción dice que compraste, pagaste o tenés entrada.
-  5. **La banda y sus rituales entran a la escena; sus personas, no.** La misa, los Redondos, los
-     trapos y el pogo son paisaje. El Indio, Skay, Poli: no (el Indio murió el 5 de junio y una
-     escena con él en el escenario es un velorio aunque no lo diga). En una opción, "la misa" o
-     "los Redondos" puntúan quién es más de adentro, y siguen fuera. Ninguna pregunta pide saber
-     nada de la banda (`BR-17`).
-  6. **Siguen igual:** las tragedias fuera de la escena (Olavarría, con sus crónicas de barro;
-     Cromañón y las bengalas; Bulacio; la muerte del Indio y las plazas del 5 de junio), el cuerpo
-     capaz (el pogo suena, nadie elige meterse), la seguridad (sin dedo ni desconocidos), las
-     reglas de la luz de la enmienda 7 de `D-57` (sin parentesco ni pareja propia en una opción),
-     la noche en cinco momentos, tres por celda, los cuatro nombres de las maneras.
+- **Estado:** aceptada — la tomó el usuario. Pidió *"investigá dónde y cómo comprar lo más
+  barato posible el dominio arcadericotero.ar o fichinricotero.ar"*, después *"vamos a probar
+  con fichinricotero, si entra de una nos quedamos con ese"*, y al final *"ya compré y pagué,
+  metelo en Vercel"*.
+- **Consume:** `D-15` (salida estática en el tier gratuito de Vercel), `D-56`, `D-57` (la
+  tarjeta de "¿Qué tipo de ricotero sos?" lleva el dominio dibujado).
+- **Lo que se averiguó.** Los `.ar` los vende un solo registro, NIC Argentina, y los
+  revendedores cobran el mismo arancel más su margen: lo más barato es ir directo, por TAD con
+  Clave Fiscal nivel 2. Arancel vigente (Resolución 5/2024 de la Secretaría Legal y Técnica,
+  desde el 15/01/2024, sin cambios posteriores encontrados): `.ar` a secas $25.500 por año,
+  `.com.ar` $8.500 por año, igual el alta que la renovación. No se pudo leer la tabla en nic.ar
+  (la red del entorno lo bloquea): sale de la prensa que la cita.
+- **Lo que pasó con arcadericotero.com.ar.** El pedido no dio para pagar. NIC lo caratuló como
+  *"Alta de dominio de internet banquinado/zona especial"* y lo pasó a revisión manual de su
+  área de Registro y Validación. "Banquinado" es un término que NIC bloquea contra el phishing.
+  **Sospecha, no confirmada:** el término es *arca*, el nombre de la ex AFIP. Ese trámite quedó
+  abierto; si se aprueba y no se paga, NIC lo cancela solo y no cobra nada.
+- **Decisión.** El dominio público es **`fichinricotero.com.ar`**: entró sin revisión y se pagó
+  el mismo día. Lo tiene el usuario a su nombre en NIC. En Vercel va el dominio pelado como
+  principal y `www.fichinricotero.com.ar` redirigiendo a él; en NIC se delega a
+  `ns1.vercel-dns.com` y `ns2.vercel-dns.com` (NIC no guarda registros DNS, solo delega).
+- **Lo que esta decisión no decide: el nombre.** Lo decidió aparte `D-60`, en otra rama y el
+  mismo día: el sitio se llama Fichín Ricotero, y al calco de `--fuente-titular` se le
+  derivaron la F, la H, la N y la Í que no tenía.
 - **Consecuencias.**
-  - **`producto`:** `BR-38`, la regla de la noche ricotera, que reemplaza los vetos 1, 3 y 4 de
-    `BR-36` por lo de arriba, con el quinto lugar; y una línea en `US-06`.
-  - **`contenido`:** `CNT-31`, el banco de la noche ricotera: las escenas, las líneas que cantan
-    y, si hace falta, las bajadas, con `INV-172` como material.
-  - **El hilo principal:** las guardas (ya escritas antes del banco: `banco.test.ts`), el copy y
-    el taller si cambian las bajadas.
-  - **`revisor`:** `REV-20`, con el quinto lugar y la pregunta de si la noche suena ricotera.
-  - El sitio no tiene muro de edad (`D-09`, los molinetes): desde `D-59` el test habla de birra,
-    porro y merca. Es decisión del usuario y queda dicha acá.
-- **Enmienda 1 (2026-10-05) — la música nunca molesta.** El usuario, mirando en el sitio
-  publicado la hoja vieja de `EJ-052` ("El volumen cansa los oídos", con "Me tapo con los dedos"
-  y "Traje algodón por las dudas"), textual: *"Esta creo que es vieja pero no va, nunca cansa el
-  volumen."* En el recital ricotero el volumen no es un problema que alguien resuelve: es parte
-  de la noche. **Ninguna escena ni opción trata la música como algo que molesta**: ni oídos
-  cansados, ni algodón, ni tapones, ni "demasiado fuerte". La hoja ya había salido del banco en
-  la vuelta de `CNT-31`; lo que se suma es la guarda, para que no vuelva: `banco.test.ts`,
-  apartado *la música que molesta* de los vetos de la noche (escena, momentos, bajadas y
-  opciones).
-- **Enmienda 2 (2026-10-05) — el plano de dos ejes vuelve, arriba de la grilla.** Enmienda
-  `D-57` punto 7. El usuario, en el mismo mensaje: *"Me gustan las explicaciones pero quiero
-  que esté el gráfico también, queda lindo ver que está en un plano de dos ejes."* La grilla
-  con sus explicaciones **se queda**; el plano **se suma** encima, en la sección de las cuatro
-  maneras, debajo de los botones (`UX-38`). Es un recorte de papel con los dos ejes en cruz,
-  los cuatro polos en palabras, las cuatro maneras y la tuya marcada con borde y sello (la del
-  amigo, punteada).
-  - **Relativo, como la grilla:** tu polo de luz-oscuridad arriba, tu polo de orden-caos a la
-    izquierda y tu manera arriba a la izquierda, para cada uno la suya. Lo que `D-57` punto 7
-    le sacó al rombo era que dejaba las mismas maneras arriba para todos; con el plano
-    relativo, entre los cuatro planos posibles cada manera pasa una vez por cada lugar
-    (`partida.test.ts` lo vigila). Lo que se pierde es que dos amigos con resultados opuestos
-    ven el dibujo espejado. **Si el usuario lo prefiere igual para todos** (luz siempre arriba),
-    es un cambio chico en la isla y en esa guarda, y vuelve la jerarquía que el punto 7 sacó:
-    es decisión suya.
-  - **Sigue sin punto ni graduación** (`BR-17`): la marca es el borde y el sello, nunca una
-    posición calculada. Es HTML, no SVG, y está escondido al lector de pantalla, que ya oye lo
-    mismo en la hoja y en la grilla.
-  - **No viaja en la tarjeta** (`UX-38` §6): no entra sin sacar la bajada y el libro, y en
-    la miniatura no se lee. `VERSION_DEL_DIBUJO` no sube por esto.
-- **Enmienda 3 (2026-10-05) — el plano es fijo, como el rombo viejo.** Reemplaza el punto
-  *"Relativo, como la grilla"* de la enmienda 2. El hilo principal le mostró al usuario las dos
-  versiones lado a lado, para «Mesa larga a las nueve» y para «Mochila liviana, sin mapa»: la
-  relativa (la tuya siempre arriba a la izquierda, los ejes giran) y la fija (Luz arriba y Orden
-  a la izquierda para todos). El usuario, textual: *"B, el fijo como el rombo viejo"*.
-  - **Qué es:** `planoFijo()` en `src/lib/dos-ejes/partida.ts` (`PLANO_FIJO`: renglones luz y
-    oscuridad, columnas orden y caos). Cada manera tiene su rincón por sus dos polos, el mismo
-    para todos, y la tuya se marca donde cae. Dos amigos con resultados opuestos miran el mismo
-    mapa. Lo vigila `partida.test.ts`, y `isla.test.ts` que el plano salga del motor y no de una
-    tabla escrita en la isla.
-  - **Lo que se acepta, dicho:** «Mesa larga a las nueve» queda siempre arriba a la izquierda y
-    «Mochila liviana, sin mapa» siempre abajo a la derecha. Es la jerarquía de lugar que `D-57`
-    punto 7 le había sacado al rombo, y vuelve **por decisión del usuario**, con el costo a la
-    vista. Lo que sigue sin volver: el punto, la graduación, cualquier número (`BR-17`).
-  - **La grilla de abajo sigue relativa** (la tuya primero), porque es la lista para leer: el
-    plano es el mapa, la grilla es de cada uno. Si el usuario la quiere fija también, es otro
-    pedido.
-  - **Consecuencias:** `producto` enmienda el criterio 3 de `US-06` (el plano queda exceptuado
-    por decisión del usuario); `experiencia` lleva `UX-38` a la versión construida; `contenido`
-    confirma el texto del lector, que ahora dice el lugar de la tuya (`T-352`). `T-353` queda
-    cerrada con esta enmienda.
+  - `astro.config.mjs` pasa a `site: 'https://fichinricotero.com.ar'`. De ahí salen
+    `og:url`, `og:image` y el dominio que el taller dibuja en las cuatro tarjetas `cu-*.png`,
+    que se regeneraron con `npm run generar-dos-ejes` (las `og-*` salieron idénticas).
+  - Los enlaces del hilo de Twitter (`difusion/hilo-twitter/`, sin publicar) apuntan al
+    dominio nuevo.
+  - `arcade-ricotero.vercel.app` sigue respondiendo: ningún enlace viejo se rompe. Los ejemplos
+    con ese dominio en `Docs/ARQ/` son de `arquitectura` y quedan como historia; la base nueva
+    mide 29 caracteres contra 34, así que el presupuesto de largo de `ARQ-link-resultado-compartido`
+    sobra.
+  - **El orden importa:** este cambio entra a `main` recién cuando el dominio responda por
+    HTTPS. Antes, toda vista previa apuntaría a un dominio que todavía no resuelve. Entró el
+    2026-10-05, con el dominio andando según el usuario; al fusionar, las tarjetas del taller se
+    volvieron a dibujar sobre las de `D-60`, con su marca y este dominio.
+  - **Se renueva todos los años en NIC**, desde TAD; vencido hay 45 días de gracia. Si se deja
+    vencer, el sitio sigue vivo en `arcade-ricotero.vercel.app` y basta con volver `site` atrás.
 
 ## D-60 — El sitio se llama Fichín Ricotero: el dominio de Arcade Ricotero no se pudo comprar
 
@@ -3711,3 +3625,139 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     columnas al lado; en tres columnas (1024 px o más) es el primero del renglón de abajo, porque
     ahí "Adiviná el tema" cierra el primer renglón. Ponerlo literalmente al lado en los tres anchos
     pide mover también "Adiviná el tema" o sacar a "¿Qué tipo de ricotero sos?" del A2 (`D-51`).
+
+## D-62 — La noche del test es la ricotera entera: el barro, el chori, la birra, el porro y la merca, y también la familia, los amigos y el amor
+
+> **Se escribió como `D-59` y se renumeró al integrar** (2026-10-05): el `D-59` del dominio
+> (`dominio/fichinricotero`) llegó antes a `main`. Los commits de la rama `ciclo-18/que-ricotero-sos`
+> dicen `D-59`; donde el repo decía `D-59` por esta decisión, ahora dice `D-62`.
+
+- **Fecha:** 2026-10-04
+- **Estado:** aceptada — **la tomó el usuario**, con estas palabras: *"Vamos a seguir
+  mejorándolo haciendo las preguntas más ricoteras. El recital ricotero es barro, sucio, drogas,
+  reviente, y también es familia, amigos, amor: es todo eso, pero lo primero no puede faltar
+  tampoco. Un choripán, un pancho, una birra, un porro, hasta cocaína debe ser parte del
+  recital. La previa, ir un rato antes a escabiar o no, eso es un recital ricotero. Anotá esto,
+  hacé una pequeña investigación de lo que te digo y que quede plasmado en el juego. Me gustó
+  mucho la idea de que el test sea una noche de recital."*
+- **Consume:** `D-57` (la noche en cinco momentos, que el usuario confirma), `BR-17`, `BR-36`,
+  `US-06`, `CNT-30`, `D-14` (la postura del proyecto), `CLAUDE.md` §6 (los molinetes).
+- **Qué cambia.** `D-57` punto 2 había sacado de la noche a la banda y a lo que se consume
+  ("un recital sin dueño", y los vetos 1 y 4 de `BR-36`): la noche era de cualquiera que sale a
+  ver música. El usuario la quiere **ricotera**: con la previa en la esquina, el humo del chori,
+  la birra que pasa, el porro que gira, el barro hasta el tobillo, el reviente, y con la familia,
+  los amigos y el amor en la misma noche. **Lo sucio no es un adorno opcional: "lo primero no
+  puede faltar".** La noche en cinco momentos queda como está.
+- **Lo que no cambia** (y por qué no choca con el pedido): el test sigue sin pedir **saber**
+  nada de la banda (`BR-17`, los molinetes), sigue sin una respuesta mejor que otra, y las
+  tragedias (Bulacio, Olavarría, Cromañón, la muerte del Indio) siguen fuera de la escena de un
+  test de dos botones (`BR-36` veto 2). Cómo se compatibiliza "lo sucio no puede faltar" con
+  "nadie queda afuera por no consumir" lo fija la síntesis de abajo, con la investigación
+  (`INV-172`) sobre la mesa.
+- **La investigación** (`INV-172`, `RES-172`..`RES-194`): cuatro investigadores y cuatro
+  verificadores. **Ninguna página se pudo abrir** (el proxy bloquea los diarios) y el memoir del
+  Indio no está en este entorno, así que casi todo quedó rotulado *leyenda*: se cuenta en la
+  prensa según el buscador. Para un test sin respuestas correctas alcanza —da escenas y palabras,
+  no datos—. Lo que trae: la previa de días en carpas, el fogón, la guitarra criolla, el mate y el
+  vino que pasan de mano en mano, el fernet con Coca en la botella de dos litros cortada, la birra
+  por litro, el chori y el asado, los puestos con remeras, el micro y la combi del barrio en fila
+  por la ruta, el barro del acceso que se traga una zapatilla, el frío con agua nieve o los 38
+  grados, los trapos y los pasacalles, el porro (lo único del consumo que nombra la crónica de
+  color), padres que pasan la música a los hijos y parejas que se conocieron en una misa. La
+  cocaína no aparece en ninguna crónica de color: está en la policial y en lecturas de fans.
+- **Síntesis — cómo queda la noche:**
+  1. **La escena es la ricotera entera.** Enunciado, sello, línea que canta y bajadas pueden
+     traer la previa en la esquina o la plaza, el escabio, la birra, el vino, el fernet, el
+     chori y el pancho, el humo, el porro que gira, el reviente, el barro, la mugre, el micro, la
+     carpa, el pogo adelante, los trapos, la misa, los Redondos, "ricotero", la gente sin
+     entrada, la madrugada; y la familia, los amigos y el amor **de la gente de la escena** (un
+     padre que le pasa la canción a su hija, una pareja que se conoció en una misa). **"Lo primero
+     no puede faltar"**: cada momento lleva su parte sucia, no solo la tierna.
+  2. **Quien juega elige cómo se mueve, no si consume.** Lo que se toma o se fuma puede estar en
+     una opción, pero nunca de un solo lado: si una toma y la otra no, el eje mide si tomás, y el
+     que no toma —por salud, por los hijos, porque dejó— cae siempre en el mismo polo. *"Ir a
+     escabiar o no"* se juega así: la previa está en la escena, y las dos opciones son de la
+     previa (sumarse a la ronda, que no obliga a tomar, o quedarse con lo propio). Se suma **un
+     quinto lugar** a la prueba de `D-57` punto 3: **el que no toma ni fuma** tiene que poder
+     contestar cada ítem de verdad. Lo vigila `banco.test.ts` (el consumo de un solo lado) y lo
+     lee `REV-20` (el quinto lugar).
+  3. **La merca está en la noche como paisaje, nunca como elección.** Es la línea editorial del
+     hilo principal sobre el pedido —*"hasta cocaína debe ser parte del recital"*—: el sitio no
+     tiene muro de edad ni de entrada (los molinetes), y una opción que se elige convierte el
+     consumo en una manera de ser. En la escena dice que está, sin glamour ni sermón, que es lo
+     que pidió el usuario. Si el usuario la quiere también como opción, se cambia esta línea y la
+     guarda, y nada más.
+  4. **Lo que se paga puede estar; lo que se elige no lo pide.** El chori, la birra, el micro y el
+     puesto están en la escena; ninguna opción dice que compraste, pagaste o tenés entrada.
+  5. **La banda y sus rituales entran a la escena; sus personas, no.** La misa, los Redondos, los
+     trapos y el pogo son paisaje. El Indio, Skay, Poli: no (el Indio murió el 5 de junio y una
+     escena con él en el escenario es un velorio aunque no lo diga). En una opción, "la misa" o
+     "los Redondos" puntúan quién es más de adentro, y siguen fuera. Ninguna pregunta pide saber
+     nada de la banda (`BR-17`).
+  6. **Siguen igual:** las tragedias fuera de la escena (Olavarría, con sus crónicas de barro;
+     Cromañón y las bengalas; Bulacio; la muerte del Indio y las plazas del 5 de junio), el cuerpo
+     capaz (el pogo suena, nadie elige meterse), la seguridad (sin dedo ni desconocidos), las
+     reglas de la luz de la enmienda 7 de `D-57` (sin parentesco ni pareja propia en una opción),
+     la noche en cinco momentos, tres por celda, los cuatro nombres de las maneras.
+- **Consecuencias.**
+  - **`producto`:** `BR-38`, la regla de la noche ricotera, que reemplaza los vetos 1, 3 y 4 de
+    `BR-36` por lo de arriba, con el quinto lugar; y una línea en `US-06`.
+  - **`contenido`:** `CNT-31`, el banco de la noche ricotera: las escenas, las líneas que cantan
+    y, si hace falta, las bajadas, con `INV-172` como material.
+  - **El hilo principal:** las guardas (ya escritas antes del banco: `banco.test.ts`), el copy y
+    el taller si cambian las bajadas.
+  - **`revisor`:** `REV-20`, con el quinto lugar y la pregunta de si la noche suena ricotera.
+  - El sitio no tiene muro de edad (`D-09`, los molinetes): desde `D-62` el test habla de birra,
+    porro y merca. Es decisión del usuario y queda dicha acá.
+- **Enmienda 1 (2026-10-05) — la música nunca molesta.** El usuario, mirando en el sitio
+  publicado la hoja vieja de `EJ-052` ("El volumen cansa los oídos", con "Me tapo con los dedos"
+  y "Traje algodón por las dudas"), textual: *"Esta creo que es vieja pero no va, nunca cansa el
+  volumen."* En el recital ricotero el volumen no es un problema que alguien resuelve: es parte
+  de la noche. **Ninguna escena ni opción trata la música como algo que molesta**: ni oídos
+  cansados, ni algodón, ni tapones, ni "demasiado fuerte". La hoja ya había salido del banco en
+  la vuelta de `CNT-31`; lo que se suma es la guarda, para que no vuelva: `banco.test.ts`,
+  apartado *la música que molesta* de los vetos de la noche (escena, momentos, bajadas y
+  opciones).
+- **Enmienda 2 (2026-10-05) — el plano de dos ejes vuelve, arriba de la grilla.** Enmienda
+  `D-57` punto 7. El usuario, en el mismo mensaje: *"Me gustan las explicaciones pero quiero
+  que esté el gráfico también, queda lindo ver que está en un plano de dos ejes."* La grilla
+  con sus explicaciones **se queda**; el plano **se suma** encima, en la sección de las cuatro
+  maneras, debajo de los botones (`UX-38`). Es un recorte de papel con los dos ejes en cruz,
+  los cuatro polos en palabras, las cuatro maneras y la tuya marcada con borde y sello (la del
+  amigo, punteada).
+  - **Relativo, como la grilla:** tu polo de luz-oscuridad arriba, tu polo de orden-caos a la
+    izquierda y tu manera arriba a la izquierda, para cada uno la suya. Lo que `D-57` punto 7
+    le sacó al rombo era que dejaba las mismas maneras arriba para todos; con el plano
+    relativo, entre los cuatro planos posibles cada manera pasa una vez por cada lugar
+    (`partida.test.ts` lo vigila). Lo que se pierde es que dos amigos con resultados opuestos
+    ven el dibujo espejado. **Si el usuario lo prefiere igual para todos** (luz siempre arriba),
+    es un cambio chico en la isla y en esa guarda, y vuelve la jerarquía que el punto 7 sacó:
+    es decisión suya.
+  - **Sigue sin punto ni graduación** (`BR-17`): la marca es el borde y el sello, nunca una
+    posición calculada. Es HTML, no SVG. *(Se escribió "escondido al lector de pantalla"; la
+    crítica de `UX-38` mostró que la grilla no dice que hay dos ejes ni dónde cae la tuya, y el
+    plano quedó `role="img"` con su texto, `RESULTADO.altPlano`, confirmado por `contenido`
+    en `CNT-31` §13.)*
+  - **No viaja en la tarjeta** (`UX-38` §6): no entra sin sacar la bajada y el libro, y en
+    la miniatura no se lee. `VERSION_DEL_DIBUJO` no sube por esto.
+- **Enmienda 3 (2026-10-05) — el plano es fijo, como el rombo viejo.** Reemplaza el punto
+  *"Relativo, como la grilla"* de la enmienda 2. El hilo principal le mostró al usuario las dos
+  versiones lado a lado, para «Mesa larga a las nueve» y para «Mochila liviana, sin mapa»: la
+  relativa (la tuya siempre arriba a la izquierda, los ejes giran) y la fija (Luz arriba y Orden
+  a la izquierda para todos). El usuario, textual: *"B, el fijo como el rombo viejo"*.
+  - **Qué es:** `planoFijo()` en `src/lib/dos-ejes/partida.ts` (`PLANO_FIJO`: renglones luz y
+    oscuridad, columnas orden y caos). Cada manera tiene su rincón por sus dos polos, el mismo
+    para todos, y la tuya se marca donde cae. Dos amigos con resultados opuestos miran el mismo
+    mapa. Lo vigila `partida.test.ts`, y `isla.test.ts` que el plano salga del motor y no de una
+    tabla escrita en la isla.
+  - **Lo que se acepta, dicho:** «Mesa larga a las nueve» queda siempre arriba a la izquierda y
+    «Mochila liviana, sin mapa» siempre abajo a la derecha. Es la jerarquía de lugar que `D-57`
+    punto 7 le había sacado al rombo, y vuelve **por decisión del usuario**, con el costo a la
+    vista. Lo que sigue sin volver: el punto, la graduación, cualquier número (`BR-17`).
+  - **La grilla de abajo sigue relativa** (la tuya primero), porque es la lista para leer: el
+    plano es el mapa, la grilla es de cada uno. Si el usuario la quiere fija también, es otro
+    pedido.
+  - **Consecuencias:** `producto` enmienda el criterio 3 de `US-06` (el plano queda exceptuado
+    por decisión del usuario); `experiencia` lleva `UX-38` a la versión construida; `contenido`
+    confirma el texto del lector, que ahora dice el lugar de la tuya (`T-352`). `T-353` queda
+    cerrada con esta enmienda.

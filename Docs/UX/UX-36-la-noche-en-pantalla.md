@@ -31,7 +31,7 @@
 >
 > **Enmienda 2026-10-05 (`UX-38` v1.1, pedido del usuario).** El plano de dos ejes **vuelve** al resultado,
 > como un recorte de papel **fijo** (Luz arriba y Orden a la izquierda, el mismo para todos: lo eligió el
-> usuario entre dos versiones, `D-59` enmienda 3), sin punto, **arriba** de la grilla de `§5.3`, que se queda
+> usuario entre dos versiones, `D-62` enmienda 3), sin punto, **arriba** de la grilla de `§5.3`, que se queda
 > tal cual y **sigue relativa**: el plano es el mapa, la grilla es la lista. Lo que esta hoja decía del plano
 > ("el rombo se va", "ningún punto en el plano", "ninguna manera queda fija por encima de otra") queda
 > marcado en `§5.3`, `§5.6`, `§5.8` y `§6.2`; todo lo demás sigue valiendo. **La tarjeta y la vista previa no
@@ -654,7 +654,7 @@ hoja, la marca y el botón: eso es lo que el que ve la captura necesita.
 
 > **[Ampliado 2026-10-05 por `UX-38` v1.1]** Arriba de esta grilla, debajo de la línea que canta y de la de
 > contraste, va **el plano**: un recorte de papel con los dos ejes en cruz y los mismos cuatro nombres,
-> **fijo** (Luz arriba, Orden a la izquierda para todos; `D-59` enmienda 3). *(La primera pasada lo hacía
+> **fijo** (Luz arriba, Orden a la izquierda para todos; `D-62` enmienda 3). *(La primera pasada lo hacía
 > relativo, con la tuya arriba a la izquierda; el usuario eligió el fijo.)* **La grilla no cambia ni se
 > mueve, y sigue relativa.** Ojo con lo que dice el párrafo de abajo: "ninguna manera queda fija por
 > encima de otra" vale para **la grilla**, no para el plano. En el plano «Mesa larga a las nueve» queda

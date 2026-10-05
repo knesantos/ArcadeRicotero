@@ -1,4 +1,4 @@
-# CNT-para-hilo-principal — la noche ricotera (`CNT-31`, `D-59`), con las vueltas 6 y 7 (2026-10-05)
+# CNT-para-hilo-principal — la noche ricotera (`CNT-31`, `D-62`), con las vueltas 6 y 7 (2026-10-05)
 
 De `contenido` al hilo principal. **Nada de esto bloquea el banco**: `src/data/dos-ejes.json` ya está escrito. Lo único que no es opcional es regenerar las tarjetas.
 
@@ -6,7 +6,7 @@ De `contenido` al hilo principal. **Nada de esto bloquea el banco**: `src/data/d
 
 | Dónde | Hoy | Pasa a | Por qué |
 |---|---|---|---|
-| `npm run generar-dos-ejes` y después `node --test src/lib/dos-ejes/tarjetas.test.ts` | tarjetas y manifiesto con las bajadas de `CNT-30` | regenerarlas | Cambiaron las cuatro bajadas del banco con `D-59`, y **`CU-3` y `CU-4` cambiaron otra vez en la vuelta 6** (`CU-3`: *la vereda de siempre* en lugar de *el termo de siempre*; `CU-4`: *las botamangas* en lugar de *las zapatillas*) y **`CU-2` y `CU-3` en la vuelta 7** (`CU-2`: *un cantito* en lugar de *un mate*; `CU-3`: *el puesto de siempre* en lugar de *la vereda de siempre*). `huellaDelTaller()` entra con las bajadas, así que `tarjetas.test.ts` da rojo (9 de 10) hasta regenerar. No es un defecto del contenido |
+| `npm run generar-dos-ejes` y después `node --test src/lib/dos-ejes/tarjetas.test.ts` | tarjetas y manifiesto con las bajadas de `CNT-30` | regenerarlas | Cambiaron las cuatro bajadas del banco con `D-62`, y **`CU-3` y `CU-4` cambiaron otra vez en la vuelta 6** (`CU-3`: *la vereda de siempre* en lugar de *el termo de siempre*; `CU-4`: *las botamangas* en lugar de *las zapatillas*) y **`CU-2` y `CU-3` en la vuelta 7** (`CU-2`: *un cantito* en lugar de *un mate*; `CU-3`: *el puesto de siempre* en lugar de *la vereda de siempre*). `huellaDelTaller()` entra con las bajadas, así que `tarjetas.test.ts` da rojo (9 de 10) hasta regenerar. No es un defecto del contenido |
 | El taller (`taller.ts`), al medir | bajadas de 124 a 160 caracteres | bajadas de 162 a 168 (`CU-2` 165, `CU-3` 167, `CU-4` 168; recontadas a mano en la vuelta 7) | El taller falla fuerte si una ocupa más de cinco renglones. Las de antes llegaron a 169 y pasaron, así que debería dar. Si falla, la que se acorta es `CU-4` (sacarle *ya*: *que vieron barro*) o `CU-3` (sacarle *de siempre*), no el costo |
 
 ## 2. Cadenas de pantalla que propongo cambiar (opcional)
@@ -15,7 +15,7 @@ De `contenido` al hilo principal. **Nada de esto bloquea el banco**: `src/data/d
 |---|---|---|---|
 | `src/lib/sitio/copy.ts` · `LUGARES.dosEjes` | `Entrá con la campera puesta.` | `Traés barro seco en las zapatillas.` | La campera puesta era el eco de la línea que canta de la previa (*Campera puesta, llaves en el bolsillo.*), que cambió. Las zapatillas son el eco de la línea que canta de la vuelta (*Zapatillas embarradas, llave en la puerta.*, que la vuelta 6 no tocó): el portal y la última hoja comparten el objeto. 6 palabras (techo 8), 35 caracteres (techo 40 del renglón `.donde-estas`, según `UX-36`), voseo, imagen física, sin suspensivos. Si no se cambia, no se rompe nada: *campera* sigue en `EJ-032`, `EJ-044`, `EJ-053` y `EJ-042` |
 | `src/lib/sitio/copy.ts` · el comentario de `LUGARES` sobre `dosEjes` | «queda la imagen de la previa, sin plata y sin puerta» | «`CNT-31` §10: la imagen pasa a ser la de la vuelta (el barro seco), porque la línea que canta de la previa dejó de ser la campera» | Que el comentario no diga lo que el código ya no hace |
-| `src/lib/sitio/copy.ts` · `JUEGOS[«¿Qué tipo de ricotero sos?»].baja` | `Nadie te toma examen. Una noche de recital, sin puntaje y sin saber nada de la banda.` | `Nadie te toma examen. Una noche de recital con barro y chori, sin puntaje y sin saber nada de la banda.` | La noche es la ricotera (`D-59`). La primera frase (la que el portal imprime y mide `voz.test.ts`, regla 5) no cambia: 4 palabras. Sigue sin número escrito a mano |
+| `src/lib/sitio/copy.ts` · `JUEGOS[«¿Qué tipo de ricotero sos?»].baja` | `Nadie te toma examen. Una noche de recital, sin puntaje y sin saber nada de la banda.` | `Nadie te toma examen. Una noche de recital con barro y chori, sin puntaje y sin saber nada de la banda.` | La noche es la ricotera (`D-62`). La primera frase (la que el portal imprime y mide `voz.test.ts`, regla 5) no cambia: 4 palabras. Sigue sin número escrito a mano |
 | `src/lib/dos-ejes/copy.ts` · `PANTALLA_0.subtitulo` | `Una noche de recital en cinco momentos y diez preguntas de cómo la pasás. No hace falta saber nada ni haber ido.` | sin cambio | Sigue siendo cierto: el test no pide haber ido ni saber nada de la banda, aunque la escena nombre a los Redondos |
 
 ## 3. Guardas que propongo (opcional salvo la primera, que pidió el verificador)

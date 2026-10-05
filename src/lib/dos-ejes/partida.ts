@@ -204,7 +204,7 @@ export function disposicion(
 }
 
 /**
- * El plano de dos ejes del resultado, **fijo** (`D-59` enmienda 3, elegido por el usuario el
+ * El plano de dos ejes del resultado, **fijo** (`D-62` enmienda 3, elegido por el usuario el
  * 2026-10-05: *"B, el fijo como el rombo viejo"*): Luz arriba y Orden a la izquierda, el mismo
  * dibujo para todos. Así se ve dónde cayó cada uno, y dos amigos con resultados opuestos miran
  * el mismo mapa.

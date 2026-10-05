@@ -102,7 +102,7 @@ test('el plano es una imagen con su texto y no tiene nada que se toque (UX-38 §
   ] as const) {
     assert.ok(!re.test(cuerpo), `el plano trae ${que}`);
   }
-  // El plano sale de `planoFijo()` y no de una tabla escrita en la isla (`D-59` enmienda 3):
+  // El plano sale de `planoFijo()` y no de una tabla escrita en la isla (`D-62` enmienda 3):
   // una segunda fuente de los lugares podría contradecir al motor.
   assert.match(cuerpo, /planoFijo\(banco\)/, 'el plano no sale del motor');
   assert.ok(!/'luz'|'oscuridad'|'orden'|'caos'/.test(cuerpo), 'el plano escribe los polos a mano');

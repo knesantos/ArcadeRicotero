@@ -227,7 +227,7 @@ test('la grilla pone la tuya primero, y ninguna manera queda arriba para todos',
   assert.equal(primeras.size, 4, 'cada manera tiene que poder ser la primera');
 });
 
-test('el plano es fijo: Luz arriba, Orden a la izquierda, para todos (D-59 enmienda 3)', () => {
+test('el plano es fijo: Luz arriba, Orden a la izquierda, para todos (D-62 enmienda 3)', () => {
   // Lo eligió el usuario mirando las dos versiones: "B, el fijo como el rombo viejo". Cada
   // manera tiene su lugar por sus dos polos, y las cuatro están una vez.
   const { celdas, renglones, columnas } = planoFijo(BANCO);

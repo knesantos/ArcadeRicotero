@@ -7,58 +7,100 @@
 
 **Última actualización:** 2026-10-05
 
-> ## 🍺 LA NOCHE RICOTERA ENTERA, Y EL PLANO QUE VUELVE (2026-10-05) — `D-59`, ciclo 19
+> ## 🍺 LA NOCHE RICOTERA ENTERA, Y EL PLANO FIJO QUE VUELVE (2026-10-05) — `D-62`, ciclo 19
 >
 > Pedido del usuario, textual: *"el recital ricotero es barro, sucio, drogas reviente y también
 > es familia amigos amor, es todo eso, pero lo primero no puede faltar tampoco, un choripán, un
 > pancho una birra un porro hasta cocaína debe ser parte del recital, la previa ir un rato antes
-> a escabiar o no eso es un recital ricotero"*. Y después, mirando el sitio publicado: *"nunca
-> cansa el volumen"* y *"quiero que esté el gráfico también, queda lindo ver que está en un plano
-> de dos ejes"*. Rama `ciclo-18/que-ricotero-sos` (reabierta desde `main`; trae `D-60` y `D-61`).
+> a escabiar o no eso es un recital ricotero"*. Después, mirando el sitio publicado: *"nunca
+> cansa el volumen"*, *"quiero que esté el gráfico también, queda lindo ver que está en un plano
+> de dos ejes"*, y entre las dos versiones del plano: *"B, el fijo como el rombo viejo"*. Rama
+> `ciclo-18/que-ricotero-sos`, integrada a `main` el 2026-10-05 a pedido del usuario (*"pará y
+> subí e integrá todo lo que hayas hecho, después seguimos"*).
+>
+> **El número.** Se escribió como `D-59` y se renumeró a **`D-62`** al integrar: el `D-59` del
+> dominio llegó antes a `main`. Los commits de la rama dicen `D-59`; el repo, `D-62`.
 >
 > **Lo que hay:**
-> - **`D-59`**: la escena es la ricotera entera (barro, chori, birra, porro, merca como paisaje;
+> - **`D-62`**: la escena es la ricotera entera (barro, chori, birra, porro, merca como paisaje;
 >   familia, amigos y amor de terceros); la opción es de quien juega. Lo que se toma o se fuma
 >   nunca separa los polos, y se suma un **quinto lugar** a la prueba: *el que no toma ni fuma*.
->   **Enmienda 1**: la música nunca molesta. **Enmienda 2**: el plano de dos ejes vuelve (enmienda
->   `D-57` punto 7).
-> - **`INV-172`** (`RES-172`..`RES-194`): la noche real, casi todo **leyenda** — sin páginas
->   abiertas (la red bloqueó los diarios) y sin el memoir en el disco. Está dicho en cada ficha.
-> - **`BR-38`** (`producto`): qué puede decir la escena y qué una opción; reemplaza los vetos 1,
->   3 y 4 de `BR-36`. `US-06` enmendada.
-> - **`CNT-31`** (`contenido`): los 30 enunciados de la noche reescritos, las cinco líneas que
->   cantan, las cuatro bajadas con un objeto cada una. Tres vueltas de verificación adversarial;
->   la última, sin hallazgos altos. Casete y lugar con barro y chori (`sitio/copy.ts`); las cuatro
->   tarjetas redibujadas (`VERSION_DEL_DIBUJO` sigue en 3).
-> - **Las guardas** (`banco.test.ts`): vetos de la noche (tragedias, personas de la banda,
->   policía, seguridad, épica, **la música que molesta** con la hoja vieja de `EJ-052` como caso en
->   rojo), vetos de las opciones (plata, pasaje, cuerpo, la banda como credencial, la merca como
->   elección), **el consumo nunca de un solo lado**, ningún parentesco ni pareja propia en una
->   opción, y **cada celda trae lo sucio** en algún enunciado (sin contar la merca).
-> - **El plano de dos ejes** (`UX-38`), arriba de la grilla que se queda: un recorte de papel con
->   los ejes en cruz, los cuatro polos, las cuatro maneras, la tuya con borde y sello (la del amigo,
->   punteada). **Fijo, como el rombo viejo** (Luz arriba, Orden a la izquierda, para todos: lo
->   eligió el usuario entre las dos versiones, `D-59` enmienda 3), sin punto, `role="img"` con su
->   texto (`RESULTADO.altPlano`). Sale de `planoFijo()`; la grilla sigue relativa. Guardas: el
->   plano fijo y el cuadrado latino de la grilla (`partida.test`), las dos marcas en
->   `ESTADOS_EJES`, piso de 12 px en todo `.ejes-*` (`estilos.test`), sin enlace/botón/punto ni
->   polos escritos a mano adentro (`isla.test`). Medido a 375, 360, 320, 1366 y 1440, con y sin
->   amigo, las cuatro maneras: cada una en su rincón, sin desborde, filas y columnas iguales; los
->   botones no se movieron.
-> - Suite: **1525 en verde**, `check` sin errores, `build` de 160 páginas.
+>   **Enmienda 1**: la música nunca molesta. **Enmienda 2**: vuelve el plano de dos ejes, arriba
+>   de la grilla que se queda. **Enmienda 3**: el plano es **fijo** (Luz arriba, Orden a la
+>   izquierda, para todos), elegido por el usuario con el costo a la vista.
+> - **`INV-172`** (`RES-172`..`RES-194`): la noche real, casi todo **leyenda** (sin páginas
+>   abiertas: la red bloqueó los diarios; el memoir no está en el disco).
+> - **`BR-38`** y `US-06` enmendada dos veces (`producto`): la tercera exceptúa al plano del
+>   criterio 3 y suma el **criterio 9**. **`CNT-31`** (`contenido`): los 30 enunciados, las
+>   cinco líneas que cantan, las cuatro bajadas; casete y lugar con barro y chori; §13 confirma el
+>   texto del lector (`T-352`). **`UX-38` v1.1** (`experiencia`): el plano construido, con la
+>   crítica respondida.
+> - **El plano** (`planoFijo()` en `partida.ts`, `plano()` en la isla, `.ejes-plano*`): recorte
+>   de papel, ejes en cruz, los cuatro polos, las cuatro maneras, la tuya con borde y sello, la
+>   del amigo punteada, `role="img"` con `RESULTADO.altPlano`. La grilla de abajo sigue relativa.
+>   Medido a 375, 360, 320, 1366 y 1440, con y sin amigo, las cuatro maneras: sin desborde, filas
+>   y columnas iguales, nada bajo 12 px; los botones no se movieron. No viaja en la tarjeta.
+> - **Guardas**: `banco.test.ts` (vetos de la noche con *la música que molesta*, vetos de las
+>   opciones, el consumo nunca de un solo lado, cada celda trae lo sucio), `partida.test.ts` (el
+>   plano fijo; el cuadrado latino de la grilla), `isla.test.ts`, `estilos.test.ts` (piso de 12 px
+>   en `.ejes-*`), `copy.test.ts` (el texto del lector en veinte casos).
+> - **`npm test` corre todo**: el glob iba sin comillas y corría 332 tests; ahora los **1531**.
+>   `check` sin errores, `build` de 160 páginas.
 >
-> **Lo que queda abierto:**
-> - ~~`T-353` — la orientación del plano~~: **cerrada**, el usuario eligió el fijo (`D-59`
->   enmienda 3).
-> - **`T-352`** — `contenido` confirma `altPlano` y `lugares`
->   (`Docs/SUGERENCIAS/HILO-para-contenido-el-texto-del-plano.md`).
-> - **`T-351`** — pegar el recorte del plano en el lienzo (hojas 08 y 09), deuda como `T-319`:
->   `diseno-marca.md` pide el lienzo primero y acá se construyó antes.
-> - **`REV-20`** — corriendo (banco y voz, pantalla y plano, papeles) con verificación
->   adversarial; `FIND-119`+.
-> - **`UX-38` v1.1** — `experiencia` lo lleva al estado construido con la crítica.
-> - A 320 × 568 "Compartí" puede quedar bajo el pliegue en el peor caso (562 a 646): es de antes
->   del plano y no lo empeora.
+> **`REV-20` quedó a medio camino** (la paró el usuario para integrar). Corrieron las tres lentes
+> (banco y voz, pantalla y plano, papeles) y sus dos verificadores adversariales (reproducción y
+> criterio); **no** se escribió el documento ni corrió el crítico de completitud. Se retoma con
+> esto:
+> - **Confirmados por los dos verificadores** (todo bajo o medio, ninguno alto, ninguno en el
+>   plano construido):
+>   - `EJ-049`: «Grito con el resto» es la entrega total y, con la merca en la escena, «Canto
+>     para adentro» queda como la contención (`BR-36`, `BR-38`). → `contenido`.
+>   - Papeles que no dicen lo que hay: `UX-38` §5 y G10 citan el texto del lector viejo
+>     (`experiencia`); `BR-38` y `CNT-31` dicen que ninguna guarda cuenta lo sucio (`producto`,
+>     `contenido`); `PRD-alcance-v1` tiene un "no cambian" sin marcar y una cita rota a `UX-38`
+>     §2.1 (`producto`); `CTR-08` no nombra `planoFijo()` (`arquitectura`).
+>   - Ya resueltos al integrar: `ESTADO` viejo, el `D-59` doble y la enmienda 2 que decía que el
+>     plano estaba escondido al lector.
+> - **Sin consenso** (un verificador sí, el otro no; decide el hilo):
+>   - **Portada a 320 × 568**: "Empezá la noche" termina en 587 (19 px bajo el pliegue); lo
+>     cerraba `FIND-111` en 565 y lo reabrió el lugar nuevo, *"Traés barro seco en las
+>     zapatillas."*, que ocupa un renglón más. Es una regresión de este ciclo: **conviene
+>     arreglarla**.
+>   - Enunciados de cuatro renglones a 375 y de cuatro o cinco a 320 (el tope de `UX-36` es tres).
+>   - Banco, de oído: `EJ-040` («Me dejo llevar» con los Redondos sonando), `EJ-051` («su hija
+>     grande» en la misma noche que el porro), `EJ-054` («Aviso que llegué» como precaución),
+>     `CU-4` (averiguarlo en el celular, `FIND-116`), la firma de forma de la vuelta, `EJ-052`
+>     (misa, pogo y reviente juntos), las líneas que cantan sin segunda persona.
+>   - Papeles: `UX-36` §10.1 con el lugar viejo (es historia), `T-351`..`T-353` sin ficha en `ORQ`.
+> - Los resultados crudos están en el diario del flujo `wf_23900159-d4e` de la sesión; si no se
+>   llega a él, se vuelven a correr las tres lentes.
+>
+> **Lo que queda abierto además:** `T-351` (pegar el recorte del plano en el lienzo, hojas 08 y
+> 09); el plano en un teléfono real, con lector de pantalla real, con contraste forzado y con el
+> texto al 200 %. A 320 × 568 "Compartí" puede quedar bajo el pliegue en el peor caso: es de antes
+> del plano.
+
+> ## 🌐 EL DOMINIO: FICHINRICOTERO.COM.AR, ANDANDO (2026-10-05) — `D-59`
+>
+> **El sitio vive en `https://fichinricotero.com.ar`.** El usuario compró el dominio en NIC
+> Argentina (`arcadericotero.com.ar` quedó trabado en revisión manual, "banquinado"; la sospecha
+> es *arca*), lo agregó en Vercel con `www` redirigiendo, y delegó en NIC a `ns1.vercel-dns.com` y
+> `ns2.vercel-dns.com`. Cuando el usuario confirmó que andaba, la rama
+> `dominio/fichinricotero` se fusionó con `main` (que ya traía `D-60` y `D-61`) y se integró.
+>
+> **Lo que cambió en el código:** `site` de `astro.config.mjs` apunta al dominio nuevo, así que
+> `og:url` y `og:image` salen de ahí; las tarjetas del taller de "¿Qué tipo de ricotero sos?" se
+> volvieron a dibujar con la marca de `D-60` y este dominio; los enlaces del hilo de Twitter en
+> `main` apuntan al dominio nuevo.
+>
+> **Lo que queda:**
+> 1. `arcade-ricotero.vercel.app` sigue respondiendo y no redirige: los enlaces viejos andan.
+>    Si se quiere una sola dirección, se configura en Vercel (Settings → Domains).
+> 2. El hilo con el nombre nuevo (rama `difusion/hilo-twitter`) **choca con esta integración** en
+>    `hilo.md` y `hilo.json`: acá cambiaron las direcciones, allá el nombre. Al integrarlo, quedan
+>    las dos cosas.
+> 3. **Renovar en NIC antes del 2027-10-04** ($8.500 hoy; 45 días de gracia). Si se deja vencer,
+>    el sitio sigue en `arcade-ricotero.vercel.app` volviendo `site` atrás.
 
 > ## 🕹 SKAYBOY Y POLIGIRL: EL MENÚ, EL PASO ENTRE NIVELES Y EL PULGAR (2026-10-04) — `D-61`
 >
@@ -176,6 +218,7 @@
 >   nombres de Vercel y sumar el dominio al proyecto `arcade-ricotero`. Hasta entonces el
 >   dominio no carga y `D-59` no puede entrar.
 > - **`D-59` está reservado dos veces** (la rama del dominio y el ciclo 19). Uno renumera.
+>   *[Resuelto 2026-10-05: el ciclo 19 pasó a `D-62` al integrar.]*
 > - El trabajo de Skayboy del menú y el pulgar ya está renumerado sobre `origin/main`, en la
 >   rama local `skayboy/menu-y-mando-sobre-main` (`e50110b`: `D-61`, `UX-37`, `CNT-40`,
 >   `BR-40`, `T-401`…`T-410`), sin subir. Contra esta rama choca solo como texto: el final de
