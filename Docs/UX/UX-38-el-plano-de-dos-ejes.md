@@ -4,11 +4,11 @@
 > mirando el resultado en su teléfono (textual): *"Me gustan las explicaciones pero quiero que
 > esté el gráfico también, queda lindo ver que está en un plano de dos ejes."*
 >
-> **Qué enmienda.** `UX-36` §5.3 y §5.8 (lo que decían del plano: "no hay punto", "el rombo se va")
-> y `D-57` punto 7 (la grilla pasaba a ser **el** plano). La grilla de las cuatro maneras **no se
-> toca**: el plano se suma arriba, no la reemplaza. La enmienda a `D-57` la registra el hilo
-> principal en `Docs/DECISIONES.md`; yo dejo marcadas las cuatro frases de `UX-36` que quedan
-> cortas (`§8.2`).
+> **Qué enmienda.** `UX-36` (lo que decía del plano: "el rombo se va", "ningún punto en el plano", "la
+> tarjeta no lo muestra") y `D-57` punto 7 (la grilla pasaba a ser **el** plano). La grilla de las
+> cuatro maneras **no se toca**: el plano se suma arriba, no la reemplaza. La enmienda a `D-57` la
+> registra el hilo principal en `Docs/DECISIONES.md`; yo dejé las cinco marcas en `UX-36` (cabecera,
+> `§5.3`, `§5.6`, `§5.8` y `§6.2`: `§8.2`).
 >
 > **Consume:** `D-57` punto 7 y sus enmiendas, `D-33`, `D-14`, `D-17`, `D-19`, `D-21`, `D-58`,
 > `US-06` (criterios 3 y 4c), `BR-17`, `BR-37`, `CTR-08` v2.5 (`disposicion`, `relacion`),
@@ -167,17 +167,17 @@ animación. Los cuatro cuadrantes miden lo mismo y llevan la misma letra.
 
 | Opción | Cómo queda | Qué rompe | Veredicto |
 |---|---|---|---|
-| **A.** Cruz de siempre, igual para todos | Luz arriba y oscuridad abajo, orden a un lado y caos al otro (cualquier variante) | Una manera cae **arriba a la izquierda para los cuatro** y otra **abajo a la derecha**: la jerarquía del rombo con otro dibujo | No |
+| **A.** Cruz de siempre, igual para todos | Luz arriba y oscuridad abajo, orden a un lado y caos al otro (cualquier variante) | **La misma** manera cae arriba a la izquierda para las cuatro personas posibles y otra abajo a la derecha: la jerarquía del rombo con otro dibujo | No |
 | **B.** Igual para todos, **luz–oscuridad en el horizontal** | Luz a la izquierda, oscuridad a la derecha; orden arriba, caos abajo | La jerarquía **se muda de eje, no se va**: orden queda arriba y caos abajo, y «Mochila liviana, sin mapa» (oscuridad + caos) cae abajo a la derecha, **última en cualquier orden de lectura, para siempre**. A un cuarto de la gente el plano le dice "de última" | No |
 | **C.** El rombo, girado | Los polos en las puntas y las maneras en las caras | Es el que `D-57` punto 7 sacó. Girarlo 45° más deja una *manera* (no un polo) en la punta de arriba | No |
 | **D.** **Relativo: la tuya siempre en el mismo lugar** | Es la grilla, dibujada como plano | La tuya es la primera: una jerarquía, pero **personal**, que rota con la persona y que la grilla ya aceptó | **Sí** |
 | **E.** Relativo con la tuya en otro lugar (arriba a la derecha, o en el origen) | — | Arriba a la derecha es "lo mejor" de toda matriz de dos por dos, y el origen sugiere el cero: las dos se leen como una medida. Además rompe el orden de la grilla | No |
 
 **Por qué no hay una absoluta buena.** Un plano con ejes tiene un arriba, un abajo, una izquierda y
-una derecha, y cualquier asignación fija deja una manera en cada lugar para siempre. Que el ojo del
-que mira baje por la página y lea "primero" lo de arriba a la izquierda no se arregla girando el
-dibujo. El criterio 3 de `US-06` dice que *nada en la pantalla jerarquiza una manera sobre las otras
-tres*; una absoluta cumple eso para una persona de cada cuatro y se lo incumple a las otras tres.
+una derecha, y cualquier asignación fija deja una manera en cada lugar para siempre. Que el ojo lea
+primero arriba y a la izquierda no se arregla girando el dibujo. El criterio 3 de `US-06` dice que
+*nada en la pantalla jerarquiza una manera sobre las otras tres*; una absoluta cumple eso para una
+persona de cada cuatro y se lo incumple a las otras tres.
 
 **Lo que el usuario quiere sí se cumple.** Pidió *ver que está en un plano de dos ejes*: dos ejes, cuatro
 lugares y el tuyo marcado, y eso lo da el plano relativo entero. Lo que se pierde es **"el mismo
@@ -203,9 +203,8 @@ y la línea de contraste ya lo dice con palabras (`CNT-29`).
 - **Por qué arriba a la izquierda.** (1) **Es el mismo orden que la grilla de abajo**: el ojo salta de una
   figura a la otra con una sola regla ("la tuya primero"), y `disposicion()` ya lo devuelve así: cero
   código de motor nuevo. (2) Es donde empieza la lectura y **es el único rincón sin sentido de "mejor"**
-  (arriba a la derecha es el de las matrices de consultor, abajo a la izquierda es el origen). (3) Tu
-  polo en el extremo "bajo" del horizontal y "alto" del vertical: ninguno de los dos extremos queda
-  siempre con el mismo polo.
+  (arriba a la derecha es el de las matrices de consultor, abajo a la izquierda es el origen). Lo que
+  deja a cada polo sin extremo fijo no es el rincón, es ser relativo (`§2.3`).
 
 ### 2.3 La prueba de que ningún polo ni ninguna manera tiene lugar fijo
 
@@ -325,9 +324,10 @@ discrepar. (Hoy `grilla()` la llama adentro; hay que subirla a `pintarResultado(
 
 ### 4.3 Las medidas (cuenta; **por medir**)
 
-**Relleno** del recorte: 12 px por lado. Cada cuadrante: 3 px de margen, 4 px de relleno, `3 px solid
-transparent` de borde en **los cuatro** (así el marcado no cambia de tamaño al marcarse), `min-height: 5rem` (80 px).
-Cada fila crece al mayor de sus dos cuadrantes y las dos filas, al mayor de las dos.
+**Relleno** del recorte: 12 px por lado. Cada cuadrante: 3 px de margen, 4 px de relleno, 3 px de borde
+**en los cuatro** (transparente en los no marcados, y el del amigo, que es de 2 px, se completa con 1 px de
+relleno: así ninguno cambia de tamaño al marcarse), `min-height: 5rem` (80 px). Cada fila crece al mayor de
+sus dos cuadrantes y las dos filas, al mayor de las dos.
 
 **A 375 × 667**, el recorte (sin amigo):
 
@@ -356,9 +356,9 @@ La caja del cuadrante marcado, la que más alto sale: 6 de borde + 8 de relleno 
 | **320** | ≈ 104 | 3 (`CU-2` y `CU-4`); el sello «Esta noche» pasa a dos renglones | ≈ 110 | ≈ 362 | ≈ 388 / **≈ 442** |
 | **Mesa ≥ 64 rem** | ≈ 168 (recorte a 26 rem) | 2 | 80 | ≈ 302 | ≈ 328 / ≈ 376 |
 
-- **El sello del amigo ("QUIEN TE LO MANDÓ", ≈ 170 px según la medida de `REV-19`) se parte en dos
-  renglones adentro de su rectángulo**, como en la grilla (`UX-36` §5.3): `inline-block`, `max-width:
-  100%`, `text-wrap: balance`. Si la medición real da más de lo de arriba, las palancas son, en este
+- **El sello del amigo ("QUIEN TE LO MANDÓ", ≈ 170 px: cuenta con los 11 px por carácter que midió
+  `REV-19`; los ≈ 143 de `UX-36` §5.3 eran cuenta y quedan cortos) se parte en dos renglones adentro de su
+  rectángulo**, como en la grilla: `inline-block`, `max-width: 100%`, `text-wrap: balance`. Si la medición real da más de lo de arriba, las palancas son, en este
   orden: el `min-height` de las filas, el aire entre cuadrantes, el relleno del recorte. **Nunca la
   letra**: 12 px es el piso (`UX-36` §8.4).
 - **Las cuatro filas y las cuatro columnas miden lo mismo siempre**, aunque la tuya lleve sello y las
@@ -376,14 +376,14 @@ no se parece a un control, y el cursor no cambia. La carátula de la izquierda y
 **Debajo de 18 rem (288 px)**, que ningún teléfono real mide (lo alcanza solo el zoom del navegador), el
 plano se va (`display: none`): la grilla lo dice todo y el criterio de reflujo de WCAG pide 320.
 
-### 4.4 Tres trampas del CSS (y una cuarta que no es del CSS)
+### 4.4 Cuatro trampas del CSS
 
 1. **`border-left` rompe el build.** `estilos.test.ts` toma `border-left` y `border-inline-start` por
    barra lateral de acento fuera de `.parrafo--` (líneas 98–121). El eje vertical **no** se dibuja con el
    borde izquierdo de un cuadrante: es un elemento propio, con `border-right`.
 2. **El papel invierte la tinta.** La sección "Las cuatro maneras" es `--texto` sobre `--fondo`; adentro
    del recorte el par es `--fondo` sobre `--papel`. Si el recorte hereda el color de la sección, queda
-   crema sobre crema (1,5 : 1). Hay que **fijar `color: var(--fondo)` en el recorte** (como `.ejes-hoja`).
+   crema sobre crema (≈ 1,1 : 1, cuenta). Hay que **fijar `color: var(--fondo)` en el recorte** (como `.ejes-hoja`).
    Y **`--texto-tenue` no entra al papel** (1,78 : 1, `tokens.css`): lo tenue de acá es `--papel-tenue`.
 3. **Los ejes, con borde y no con fondo.** En modo de contraste forzado (Windows) el navegador pisa los
    fondos y respeta los bordes: una línea hecha con `background` desaparece, una hecha con `border`
@@ -442,9 +442,9 @@ regenerar nada. `UX-36` §6.2 ("Lo que no muestra: el plano") **sigue valiendo**
 
 1. **No hay lugar sin sacar algo que el usuario quiere.** El plano a un cuerpo legible en la tarjeta
    (30 px, el piso de `UX-36` §6.2) mide ≈ 550 a 600 px de alto (cuenta: cuadrantes de 400 × 160, tres
-   franjas de polos de dos renglones). La hoja mide hoy 769 y el tope es 860; con el plano se iría a
-   ≈ 1300 y la tarjeta entera mide 1350. Entraría solo **sacando la bajada** (que es la explicación que al
-   usuario le gusta) **y el libro** (la única pieza de arte).
+   franjas de polos de dos renglones). La hoja mide hoy 769 y el tope es 860; con el plano pasaría de
+   ≈ 1300, y arranca en y = 230 sobre una tarjeta de 1350. Entraría solo **sacando la bajada** (que es la
+   explicación que al usuario le gusta) **y el libro** (la única pieza de arte), y ni así.
 2. **En la miniatura no se lee.** Una tarjeta en un chat se ve a un tercio: los nombres de 30 px quedan
    en 10, y compiten con el nombre grande (80 px → ≈ 27). `UX-36` §6.2 dice que lo único que se tiene
    que leer en la miniatura es el nombre y "ME SALIÓ".
@@ -504,7 +504,7 @@ pero ya no es cierto que no haya plano.
 | Idea | Por qué no |
 |---|---|
 | **Reemplazar la grilla por el plano** | El usuario dijo "me gustan las explicaciones": las bajadas viven en la grilla |
-| **Un solo dibujo que sea las dos cosas** (los cuadrantes del plano son las celdas que se abren) | Una celda abierta crece (la bajada son 6 a 8 renglones a 150 px) y deforma el cruce; además el `summary` pide ≥ 72 px y el ancho de media celda lo ahoga |
+| **Un solo dibujo que sea las dos cosas** (los cuadrantes del plano son las celdas que se abren) | Una celda abierta crece (la bajada son ≈ 8 a 9 renglones a 150 px, cuenta) y deforma el cruce; además el `summary` pide ≥ 72 px y el ancho de media celda lo ahoga |
 | **Un plano que se toca** (un cuadrante abre su celda de la grilla y baja a ella) | Es lo más tentador. Pide botones adentro de algo que está escondido al lector de pantalla (`§5`), una segunda forma de abrir lo mismo y el control de `details` desde afuera. **Primero se mide si la gente lo toca** (`§9.2`) |
 | **Un punto** | `§1.3` |
 | **El plano absoluto** | `§2` |
@@ -520,9 +520,9 @@ pero ya no es cierto que no haya plano.
 ### 9.2 Abierto
 
 1. **La orientación es la decisión del usuario si no le cierra.** Es lo que `D-57` punto 7 y `US-06` c3
-   cerraron, y lo que menos se parece a lo que él recuerda del rombo (el mismo dibujo para todos). Si
-   después de verlo prefiere el absoluto, el costo es `§2.1`, opción B: una de las cuatro maneras
-   queda última para siempre, y eso reabre el criterio 3. Es una decisión suya y no mía.
+   cerraron, y lo que más se aparta del rombo (el mismo dibujo para todos). Si después de verlo prefiere
+   el absoluto, el costo es `§2.1`, opción B: una de las cuatro maneras queda última para siempre, y eso
+   reabre el criterio 3. Es una decisión suya y no mía.
 2. **¿Alguien toca un cuadrante esperando que abra?** Por medir con gente real. Si pasa, el plano
    tocable (`§9.1`) entra como `UX-38` v2.
 3. **La letra de 12 a 12,8 px sobre papel girado +0,5°** en un Android de baja densidad: por medir. Si

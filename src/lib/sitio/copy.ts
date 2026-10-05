@@ -128,7 +128,9 @@ export const LUGARES = {
   // puerta" con la vuelta 2: era la cuarta vez que la pantalla decía "nada", y la puerta de un
   // recital es donde se pide la entrada. "Con las manos vacías" se leía como llegar sin regalo
   // (vuelta 3): queda la imagen de la previa, sin plata y sin puerta.
-  dosEjes: 'Entrá con la campera puesta.',
+  // `CNT-31` §10 (`D-59`): la imagen pasa a ser la de la vuelta (el barro seco), porque la línea
+  // que canta de la previa dejó de ser la campera; el portal y la última hoja comparten objeto.
+  dosEjes: 'Traés barro seco en las zapatillas.',
 } as const;
 
 /**
@@ -191,7 +193,9 @@ export const JUEGOS: readonly Casete[] = [
     // el molinete más abierto del sitio —no pide saber nada de la banda (`UX-06` §0)—, y el
     // que llega sin idea tiene que encontrarlo antes que los juegos que sí piden.
     titulo: '¿Qué tipo de ricotero sos?',
-    baja: 'Nadie te toma examen. Una noche de recital, sin puntaje y sin saber nada de la banda.',
+    // `D-59` (`CNT-31`): la noche es la ricotera, y la bajada lo dice con el barro y el chori.
+    // La primera frase, la que canta y mide `voz.test.ts`, no cambia.
+    baja: 'Nadie te toma examen. Una noche de recital con barro y chori, sin puntaje y sin saber nada de la banda.',
     variante: 'luzbelito',
     // La cabeza con la vela de *Luzbelito*, recortada a mano: luz y oscuridad en una pieza.
     arte: '/arte/luzbelito-vela.png',

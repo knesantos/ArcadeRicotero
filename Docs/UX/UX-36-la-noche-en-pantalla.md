@@ -842,7 +842,8 @@ recortes a 4 : 5 y las barras de las aplicaciones no tocan nada importante).
   dónde (`TARJETA.credito`). Sin día ni mes de *Luzbelito* (`RES-167`); el año 1996 no está en duda.
 
 **Lo que no muestra:** el plano, la grilla, ninguna pregunta ni opción, el óvalo, la figura, el título
-LUZBELITO, ninguna vela, ningún verso, ningún número.
+LUZBELITO, ninguna vela, ningún verso, ningún número. *(2026-10-05, `UX-38` §6: el plano vuelve a la
+pantalla y la tarjeta **sigue sin mostrarlo**; `VERSION_DEL_DIBUJO` no se toca.)*
 
 **A escala de teléfono** (la tarjeta a ≈ 360 px de ancho, un tercio): el nombre queda en ≈ 27 px, la
 línea que nombra en ≈ 13, la bajada en ≈ 11 y el crédito en ≈ 8 (25 px, hilo; con el piso de 22 sería
