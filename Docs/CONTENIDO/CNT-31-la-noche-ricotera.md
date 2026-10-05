@@ -377,6 +377,25 @@ Cada una choca con una condición que el mismo pedido dice que sigue valiendo (*
 - **El cordón con lo propio.** Lo propio entró (*Me quedo en la mía*); el cordón no, porque es donde uno se sienta (silla de ruedas).
 - **La vereda.** Está en las cantas (*Pies en el barro y un parlante lejano*) y en cuatro enunciados; en una opción no hay verbo de ubicación que no sea un desplazamiento o un lugar propio de un cuerpo capaz.
 
+### Una regla más del usuario: «nunca cansa el volumen»
+
+> En la noche ricotera la música nunca molesta: ninguna escena ni opción trata el volumen, el ruido o los parlantes como algo que cansa, aturde o hay que tapar.
+
+Es de la misma familia que *"lo primero no puede faltar"* (`D-59`): si la noche es la ricotera de verdad, el reviente de la música es lo que se vino a buscar, no lo que se aguanta. **Cómo lo medí:** recorrí con `Grep` todo el texto que se lee (enunciados, opciones, sellos, líneas que cantan y bajadas) buscando *volumen, ruido, aturd\*, ensordec\*, cansa\*, oído\*, algodón, zumbid\*, tapar, molest\*, estruend\**.
+
+- **Lo único que quedaba era `EJ-040`: «los Redondos a todo volumen».** No era una queja (era alegría), pero la palabra sale del banco entero para que una guarda por palabra no tenga que distinguir. Pasa a *a todo lo que da*, y de paso el *lo* de *Lo parto en tramos* gana su antecedente (*Falta un buen tramo*, la sugerencia del verificador).
+- **Lo que ya estaba afuera y no vuelve:** el par del oído de `CNT-30` (*El volumen cansa los oídos* / *Traje algodón por las dudas* / *Me tapo con los dedos*), *los parlantes cansan los oídos* (vuelta 5 de `EJ-052`) y el *zumbido* de `EJ-053`. Las `notaInterna` los nombran solo como historia de lo que se sacó; ningún texto que se lea los trae.
+- **Lo que revisé y se queda:** *Cuando suena* y *Golpe en el pecho y todos cantan* (el golpe es del que canta, no del que sufre); *el reviente llega hasta la calle* (`EJ-052`: se oye desde afuera, no molesta); *Lo apago nomás* (`EJ-058`: es un parlante que quedó prendido en la mochila, no el ruido); *La casa está en silencio* (`EJ-054`); *Me tapo con un amigo* (`EJ-042`: es la campera y la llovizna); *Me retumba…* ya no está (`EJ-049` B es ahora *Canto para adentro*).
+- **Para la guarda** (la suma el hilo principal): la lista está en `CNT-para-hilo-principal-noche-ricotera.md`, medida contra este banco.
+
+### Segunda mano sobre tres decisiones de esta vuelta
+
+Quedaron tres cosas que la primera mano de la vuelta 7 resolvió con la letra del verificador y que, leídas otra vez, se resolvían mejor distinto. Están en el JSON y en las tablas de arriba:
+
+1. **`EJ-029` B: *Me quedo en la mía*, no *con la mía*.** Con *una botella cortada* a la vista, *la mía* es mi botella. Ver la fila de arriba.
+2. **`EJ-051`: *cantan a dúo*, no *cantan abrazados*.** Un padre y su hija adultos abrazados cantando es la foto de las plazas del 5 de junio. Y queda abierta la pregunta de `BR-38` (¿alcanza con que la hija sea adulta?), con su salida dicha en la fila 2.
+3. **`EJ-040`: sin *volumen*.** Regla de arriba.
+
 ### Lo que pasó en esta vuelta y que el verificador no vio
 
 Cuatro defectos que me encontré al contar a mano y que habría dejado pasar:
