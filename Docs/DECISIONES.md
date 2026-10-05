@@ -3624,9 +3624,11 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     ahí "Adiviná el tema" cierra el primer renglón. Ponerlo literalmente al lado en los tres anchos
     pide mover también "Adiviná el tema" o sacar a "¿Qué tipo de ricotero sos?" del A2 (`D-51`).
 
-## D-62 — El fondo del portal es negro liso, y la gente de *Oktubre* mira desde el final de la página
+## D-63 — El fondo del portal es negro liso, y la gente de *Oktubre* mira desde el final de la página
 
 - **Fecha:** 2026-10-04
+- **Número:** se escribió como `D-62` y se renumeró al integrar, el 2026-10-05: el `D-62` de la
+  noche ricotera llegó antes a `main`. Ver la fila de `IDS.md`.
 - **Estado:** aceptada — pedido directo del usuario, con la imagen adjunta, textual: *"Usemos
   esta imagen de fondo de la pagina, sin la parte de las letras de oktubre, un fondo negro y
   sobre el final de la pagina las personas mirando."* La imagen es la tapa de *Oktubre* estirada

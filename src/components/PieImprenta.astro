@@ -55,7 +55,7 @@ interface Props {
   /** Discos que la pantalla ya acredita por su cuenta; la franja les suma el suyo. */
   tapas?: readonly string[];
   /**
-   * Que la franja termine en la gente de la tapa del disco, mirando para arriba (`D-62`).
+   * Que la franja termine en la gente de la tapa del disco, mirando para arriba (`D-63`).
    * Ocupa el lugar de la pasada: son el mismo motivo, y la multitud ya trae sus banderas.
    * Si el disco no tiene multitud recortada, la franja sale como siempre.
    */
@@ -144,7 +144,7 @@ const acreditados = [...tapas, ...(delPie && !tapas.includes(delPie) ? [delPie] 
     </details>
   </div>
   {/*
-      La gente, al final de todo (`D-62`). Va DESPUÉS del crédito en el documento y en la
+      La gente, al final de todo (`D-63`). Va DESPUÉS del crédito en el documento y en la
       pantalla: el texto queda arriba, sobre el negro, y nunca arriba de una cara.
   */}
   {

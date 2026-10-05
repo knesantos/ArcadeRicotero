@@ -232,7 +232,7 @@ html[data-umbral] .marca-grande {
   }
 }
 
-/* **Y la lleva una sola capa: la gente del pie del portal** (`D-62`). No es una limitacion
+/* **Y la lleva una sola capa: la gente del pie del portal** (`D-63`). No es una limitacion
    de tiempo, es lo que salio de mirarlo en pantalla.
 
    Las `.tapa-fondo` viven adentro de una caja acotada —la cabecera de la Redondopedia, el
@@ -248,7 +248,7 @@ html[data-umbral] .marca-grande {
    hoja: queda atras, que es lo que la deriva existe para decir.
 
    Hasta el 2026-10-04 la llevaba la franja fija de banderas al pie de la ventana, que
-   `D-62` saco: el fondo del portal es negro liso. */
+   `D-63` saco: el fondo del portal es negro liso. */
 @supports (animation-timeline: scroll()) {
   .multitud-pie {
     animation-name: deriva-de-capa;
@@ -1467,7 +1467,7 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   user-select: none;
 }
 
-/* La gente mirando (`D-62`): el piso del pie del portal, de borde a borde.
+/* La gente mirando (`D-63`): el piso del pie del portal, de borde a borde.
 
    **No es una foto y por eso no lleva velo**, por la misma razón que la pasada: el recorte
    viene impreso en dos tintas de `tokens.css` (`--papel` y el rojo de la bandera) sobre

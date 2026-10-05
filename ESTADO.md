@@ -20,7 +20,7 @@
 >    imprenta de tipos y 18,5 de la fotocopia). La especificación completa —tres texturas nuevas
 >    en `tokens.css`, el papel viejo de la etiqueta, el sello de acción moteado, el golpe por
 >    disco, los tests y el texto de la decisión— está en
->    `Docs/SUGERENCIAS/ESPEC-D-63-la-tapa-se-sella.md`. Propone `D-63`; verificar que siga libre.
+>    `Docs/SUGERENCIAS/ESPEC-D-64-la-tapa-se-sella.md`. Propone `D-64`; verificar que siga libre.
 > 2. **Después el usuario amplió**, textual: *"Sisi saquemos la sombra de todos lados, no me
 >    gusta. Ademas hay que usar la tipografia de los discos en mas lados. Analicemos como
 >    integrarlas mejor."* O sea: el eco sale **también** de la marca, del h1 de artículo y de la
@@ -38,7 +38,7 @@
 > especificación del sello, y construir todo junto (si un título cambia de letra, cambia cómo se
 > gasta su tinta).
 
-> ## 👥 LA GENTE MIRA DESDE EL FINAL DEL PORTAL (2026-10-04) — `D-62`
+> ## 👥 LA GENTE MIRA DESDE EL FINAL DEL PORTAL (2026-10-04) — `D-63`
 >
 > **Rama `diseno/fondo-multitud`, sobre `main` en `76ba9d3`, integrada a `main` con un PR** a
 > pedido del usuario (*"para y subi e integra todo lo que hayas hecho, despues seguimos"*).
@@ -63,7 +63,7 @@
 >
 > **Abierto, sin trabar:** `experiencia` tiene que poner al día `UX-05` (fila de `/`), `UX-20`
 > §2 y `UX-25` §4; el lienzo no tiene esto. Los costados del máster no son de Rocambole (están
-> anotados en `D-62` y en `public/arte/README.md`).
+> anotados en `D-63` y en `public/arte/README.md`).
 
 > ## 🌐 EL DOMINIO: FICHINRICOTERO.COM.AR, ANDANDO (2026-10-05) — `D-59`
 >

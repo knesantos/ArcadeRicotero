@@ -33,14 +33,14 @@ Prototipo de referencia (no va al repo), en C:/Users/santi/AppData/Local/Temp/cl
 B. Cambios por archivo (base: C:/Users/santi/Proyectos/InstanciadorProyectos/RicotaArcade-fondo)
 
 Paso 0, antes de tocar nada:
-- `sitio.css` tiene D-62 sin commitear, de otra sesión. Siguiendo la memoria "guardar antes de mejorar" y "avisar antes de commitear", primero se guarda D-62 tal cual, en su propio commit, avisándole al usuario.
-- D-63 está libre: fetch del 2026-10-05, ninguna rama remota la tiene. La T- de la deuda del lienzo es T-411, también libre.
+- `sitio.css` tiene D-63 sin commitear, de otra sesión. Siguiendo la memoria "guardar antes de mejorar" y "avisar antes de commitear", primero se guarda D-63 tal cual, en su propio commit, avisándole al usuario.
+- D-64 está libre: fetch del 2026-10-05, ninguna rama remota la tiene. La T- de la deuda del lienzo es T-411, también libre.
 
 B.1 src/styles/tokens.css
 
 Insertar después de `--textura-rodillo` (línea ~157):
 
-  /* La almohadilla (`D-63`, hoja 07). Las tapas de los juegos —el título del casete, el de la
+  /* La almohadilla (`D-64`, hoja 07). Las tapas de los juegos —el título del casete, el de la
      carátula, el h1 de cada juego y el macizo del sello— salen de la misma almohadilla de goma
      medio seca: le falta tinta en puntos (la sal) y en zonas donde la mano aflojó (la presión),
      y los huecos se juntan justo ahí (k3 = −16). Alfa sola, como el grano: se usan como
@@ -62,14 +62,14 @@ Insertar después de `--textura-rodillo` (línea ~157):
      mismos k que --textura-tinta: es la misma almohadilla. */
   --textura-tinta-sal: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cfilter id='s' x='0' y='0' width='1' height='1'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' seed='11' stitchTiles='stitch' result='g'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.035 0.055' numOctaves='2' seed='7' stitchTiles='stitch' result='m'/%3E%3CfeComposite in='g' in2='m' operator='arithmetic' k2='-40' k3='-16' k4='37.8'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23s)'/%3E%3C/svg%3E");
 
-  /* El papel viejo de la etiqueta (`D-63`): manchas de humedad con borde de marea —escalones
+  /* El papel viejo de la etiqueta (`D-64`): manchas de humedad con borde de marea —escalones
      duros (discrete), nunca un fundido— y pecas. Se pinta con `--papel-borde`, sin hex nuevo.
      El último tableValues es el TECHO de toda la etiqueta: 0,18 deja la pista A1… en 4,55:1
      con el grano de pantalla encima. Más alto y `contraste.test.ts` falla.
      Medido: 87 % limpio, 13 % manchado, 1,3 % en el techo. */
   --textura-papel-viejo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'%3E%3Cfilter id='v' x='0' y='0' width='1' height='1'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.018' numOctaves='4' seed='7' stitchTiles='stitch' result='n'/%3E%3CfeColorMatrix in='n' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 -1.55'/%3E%3CfeComponentTransfer result='manchas'%3E%3CfeFuncA type='discrete' tableValues='0 0 0.4 0.7 1'/%3E%3C/feComponentTransfer%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.09' numOctaves='2' seed='11' stitchTiles='stitch' result='p'/%3E%3CfeColorMatrix in='p' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 14 -10.1' result='pecas'/%3E%3CfeComposite in='manchas' in2='pecas' operator='arithmetic' k2='1' k3='1'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 0.18'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23v)'/%3E%3C/svg%3E");
 
-Comentario de `--tinta-registro` (245-251): cambiar "Cada parte del sitio la pisa" por "La pisan la marca, los artículos de la Redondopedia, la ficha y el gabinete de Skayboy. Desde `D-63` los casetes y los juegos no: sus títulos se sellan con una tinta". `--registro` y `--registro-angulo` se quedan, porque `movimiento.test.ts:140-141`, la estampa y Skayboy los usan.
+Comentario de `--tinta-registro` (245-251): cambiar "Cada parte del sitio la pisa" por "La pisan la marca, los artículos de la Redondopedia, la ficha y el gabinete de Skayboy. Desde `D-64` los casetes y los juegos no: sus títulos se sellan con una tinta". `--registro` y `--registro-angulo` se quedan, porque `movimiento.test.ts:140-141`, la estampa y Skayboy los usan.
 
 No se agrega `--peso-sello` ni ningún hex. `--textura-grano` y `--textura-rodillo` no se tocan (ver F).
 
@@ -88,7 +88,7 @@ b) `.casete-titulo` (926-935) queda completo así:
     font-size: 0.95rem;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    /* La almohadilla (`D-63`). Tinta plena: lo que falta lo saca la máscara, nunca un gris.
+    /* La almohadilla (`D-64`). Tinta plena: lo que falta lo saca la máscara, nunca un gris.
        Con el interlineado heredado (1,4) la caja tiene aire de sobra para la tilde. */
     -webkit-mask-image: var(--textura-tinta);
     mask-image: var(--textura-tinta);
@@ -114,7 +114,7 @@ d) Lo que todavía no salió (998-1014):
 
 e) Bloque nuevo, inmediatamente después de d):
 
-  /* La almohadilla, segunda parte (`D-63`): el papel viejo de la etiqueta y el macizo del
+  /* La almohadilla, segunda parte (`D-64`): el papel viejo de la etiqueta y el macizo del
      sello. Las dos van en @supports A PROPÓSITO: sin máscara, el ::before del papel sería un
      rectángulo pleno de --papel-borde (la pista caería a 3,66:1), y el del sello taparía el
      relleno de repuesto. El filete y la letra del sello no se enmascaran nunca: el canto de la
@@ -171,7 +171,7 @@ f) Mapa de variantes (1016-1055):
 - Ajustar los comentarios de baion, bang y luzbelito, que dicen "y el apoyo para el registro".
 - Después del mapa:
 
-  /* El golpe: dónde apretó la mano (`D-63`). Se declara en la pieza y no en :root porque un
+  /* El golpe: dónde apretó la mano (`D-64`). Se declara en la pieza y no en :root porque un
      var() se resuelve donde se declara: en :root --semilla no existe todavía. El lado B es
      el mismo disco con otro golpe. Pasos de 61/37 px sobre 240 y de 83/131 sobre 320: los
      once golpes (1-9, 14, 16) caen en lugares distintos de la tesela. Determinista: una
@@ -181,11 +181,11 @@ f) Mapa de variantes (1016-1055):
 
 g) Registro (1607-1638):
 - El selector queda en `.marca-grande, .articulo:not(.articulo--grave) h1`.
-- Al comentario se le suma un párrafo: "Desde `D-63` la tapa de un juego (el título del casete, el de la carátula, el h1 de cada juego) no lleva eco: se imprime con una sola tinta, y una tinta sola no puede quedar fuera de registro. El registro queda donde hay dos tintas de verdad: la marca de Oktubre, el artículo y la estampa".
+- Al comentario se le suma un párrafo: "Desde `D-64` la tapa de un juego (el título del casete, el de la carátula, el h1 de cada juego) no lleva eco: se imprime con una sola tinta, y una tinta sola no puede quedar fuera de registro. El registro queda donde hay dos tintas de verdad: la marca de Oktubre, el artículo y la estampa".
 
 h) Apagado, después de e) y de f) para que gane por orden:
 
-  /* Alto contraste y colores forzados: tinta lisa y papel limpio (`D-63`). forced-colors apaga
+  /* Alto contraste y colores forzados: tinta lisa y papel limpio (`D-64`). forced-colors apaga
      text-shadow solo, pero NO mask-image: si nadie lo hace a mano, la máscara sigue. */
   @media (forced-colors: active), (prefers-contrast: more) {
     .casete-titulo {
@@ -209,9 +209,9 @@ a) La marca (3636-3650): no cambia nada de lo que se ve. Al comentario de 3644-3
 
 b) Las líneas 3651-3663 (comentario y regla del eco) se reemplazan por:
 
-  /* El h1 de cada juego, de la misma almohadilla que su casete (`D-63`).
+  /* El h1 de cada juego, de la misma almohadilla que su casete (`D-64`).
 
-     Hasta `D-63` llevaba el eco de segunda tinta en el apoyo de su disco (`D-54`, `REV-18`):
+     Hasta `D-64` llevaba el eco de segunda tinta en el apoyo de su disco (`D-54`, `REV-18`):
      siete colores de eco en nueve juegos, y en Skayboy un crema que se leía como un segundo
      título. Ahora lleva solo la sal: tinta de color sobre el negro, sin margen para aclararse
      (la presión dejaría "Completá la letra" en 3,39:1). La tesela va al doble que en el casete
@@ -284,7 +284,7 @@ f) Apagado, después del cierre de la media de 64 rem:
 
 B.4 src/styles/skayboy.css
 - En `.juego-skayboy .pantalla h1` (73-80), borrar `--tinta-registro: var(--disco-gulp-apoyo);`.
-- Reescribir el comentario de 65-72: el título viste Gulp! y la sal se la pone `.pantalla h1` en `juego.css` (`D-63`). Ya no lleva eco. Va en la rotulada por la deuda del calco.
+- Reescribir el comentario de 65-72: el título viste Gulp! y la sal se la pone `.pantalla h1` en `juego.css` (`D-64`). Ya no lleva eco. Va en la rotulada por la deuda del calco.
 - Sumar la regla nueva `.juego-skayboy { --semilla: 4; }`. Su `<main>` no tiene clase `juego--`, la clase está en el `body`, y `.pantalla` la hereda.
 - `.gabinete` (171-177) y `.fin-nivel` (1492) no se tocan: son `box-shadow` de objeto con su propia `--tinta-registro`.
 
@@ -303,33 +303,33 @@ C. Tests
 C.1 src/lib/estilos.test.ts
 
 1) Se enmienda "UX-22 §8: el registro imperfecto…" (269-303):
-- Sacar `'.pantalla h1'` y `'.casete-titulo'` de `PERMITIDOS`, con un comentario: "salieron por `D-63`: la tapa de un juego se sella, no se registra".
+- Sacar `'.pantalla h1'` y `'.casete-titulo'` de `PERMITIDOS`, con un comentario: "salieron por `D-64`: la tapa de un juego se sella, no se registra".
 - El test sigue en verde porque quedan `.marca-grande`, `.marca`, `.caratula-marca`, el h1 de artículo y `.estampa-disco`.
 - Rojo posible: alguien vuelve a poner `.casete-titulo` en la regla del eco.
 
 2) Helper nuevo, `bloques(css)`. Recorre las llaves con una pila de preludios y devuelve `{ selector, cuerpo, dentro: string[] }`, donde `dentro` son los `@media` y `@supports` que lo envuelven. Lleva su "ese control sabe encontrar": una hoja inventada con `@media` y un `@supports` anidado tiene que devolver los dos preludios.
 
-3) Test nuevo: "D-63: la tapa de un juego no lleva sombra".
+3) Test nuevo: "D-64: la tapa de un juego no lleva sombra".
 - Toda regla de HOJAS con algún ítem de selector que termine en `.casete-titulo`, `.caratula-titulo`, `.pantalla h1`, `.pantalla > h1` o `.casete-accion` no puede declarar `text-shadow` ni `box-shadow` distintos de `none`.
 - Rojo posible: alguien le devuelve el `box-shadow` de eco al sello, o le pone `text-shadow: 0 0 1px` al título (esa sombra no la ve el test del registro).
 
-4) Test nuevo: "D-63: la almohadilla tiene lista cerrada".
+4) Test nuevo: "D-64: la almohadilla tiene lista cerrada".
 - `var(--textura-tinta)` (regex con el paréntesis de cierre, para no confundirlo con `-sal`) solo puede aparecer en `.casete-titulo`, `.caratula-titulo` y `.casete-accion::before`.
 - `var(--textura-tinta-sal)` solo en `.pantalla h1`.
 - `var(--textura-papel-viejo)` solo en `.casete-etiqueta::before` y `.caratula-etiqueta::before`.
 - Además, cada selector permitido tiene al menos una regla con las dos formas: `-webkit-mask-image: var(…)` y `mask-image: var(…)`.
 - Rojo posible: la sal llega a `.casete-baja`, a `.casete-pista` o a un rótulo LEYENDA, o se pierde la forma `-webkit-` y el título queda liso en un Android viejo.
 
-5) Test nuevo: "D-63: cada máscara tiene su apagado en la misma hoja".
+5) Test nuevo: "D-64: cada máscara tiene su apagado en la misma hoja".
 - En cada hoja, cada selector de la lista del punto 4 tiene que aparecer dentro de un `@media` cuyo preludio nombre `forced-colors` y `prefers-contrast`, con `mask-image: none` o `content: none`.
 - Tiene que ser la misma hoja: entre hojas el orden de carga no está garantizado (ver 7).
 - Rojo posible: alguien borra el bloque de apagado de `juego.css` y en colores forzados la máscara sigue comiendo la letra.
 
-6) Test nuevo: "D-63: el papel viejo y el macizo del sello van dentro de @supports".
+6) Test nuevo: "D-64: el papel viejo y el macizo del sello van dentro de @supports".
 - Todo bloque con `var(--textura-papel-viejo)` o con selector `.casete-accion::before` tiene en `dentro` un `@supports`.
 - Rojo posible: el `::before` del papel queda afuera, y en un navegador sin máscara la etiqueta se pinta pareja de `--papel-borde` y la pista cae a 3,66:1.
 
-7) Test nuevo: "D-63: la carátula del teléfono no tiene papel encima".
+7) Test nuevo: "D-64: la carátula del teléfono no tiene papel encima".
 - En `juego.css`, todo bloque cuyo selector nombre `.caratula-etiqueta::before` o `::after` está dentro de `@media (min-width: 64rem)`, salvo que declare solo `content: none`.
 - En `sitio.css` no hay ningún selector `.caratula-…::before/::after`.
 - Rojo posible: el pseudo declarado fuera de la media pinta una mancha absoluta sobre la calcomanía, donde la pista corta va en `--texto-tenue` y queda en ~1,5:1. Además depende del orden entre hojas: las páginas importan juego y después sitio, Vite sirve sitio primero en el build, y en dev es al revés.
@@ -352,7 +352,7 @@ Para todas las texturas, `grano` y `rodillo` incluidas:
 - después de decodificar no queda ningún `#` fuera de `url(#…)`, ni `rgb(` ni `fill=`;
 - rasterizado con sharp a density 72, no sale vacío.
 
-Solo para las tres de D-63, chequeo estático:
+Solo para las tres de D-64, chequeo estático:
 - el `<filter>` tiene `x='0' y='0' width='1' height='1'`;
 - todo `feTurbulence` tiene `stitchTiles='stitch'`;
 - el `<svg>` tiene `viewBox`;
@@ -378,7 +378,7 @@ Rojo posible:
 
 C.3 src/lib/contraste.test.ts
 
-Test nuevo: "D-63: la tinta de sello y la mano, sobre el papel viejo y con el grano encima". Es el mismo patrón que `--peso-pasada`.
+Test nuevo: "D-64: la tinta de sello y la mano, sobre el papel viejo y con el grano encima". Es el mismo patrón que `--peso-pasada`.
 
 Helpers:
 - `textura(nombre)` decodifica el data-URI;
@@ -432,14 +432,14 @@ D. Papeles
 
 D.1 Docs/DECISIONES.md, al final
 
-## D-63 — Las tapas de los juegos se sellan: sale el eco, entra la tinta gastada sobre papel viejo
+## D-64 — Las tapas de los juegos se sellan: sale el eco, entra la tinta gastada sobre papel viejo
 
 - **Fecha:** 2026-10-05
 - **Estado:** aceptada — pedido directo del usuario, con la captura del Lado A, textual:
   *"Saquemosle la sombra a las letras de las tapas de los juegos, busquemos un efecto mas de
   impresion vieja sobre papel o sello, algo asi como tinta en papel viejo o eso. Ponete en rol de
   diseñador. Ademas que queden todas coherentes."* Lo hizo el hilo principal en la rama
-  `diseno/fondo-multitud`, después de guardar `D-62`.
+  `diseno/fondo-multitud`, después de guardar `D-63`.
 - **Consume y enmienda:** `D-33` consecuencia 1 (el registro deja el título de casete y el h1 de
   juego), `D-54` punto 5 y consecuencias (se retira "el eco del título en el apoyo" de `REV-18` /
   `FIND-109`; el título único de los ocho juegos sigue), `UX-22` §8 (propuesta a `experiencia`
@@ -502,13 +502,13 @@ D.1 Docs/DECISIONES.md, al final
     pueden dejar costura cada 140 y 240 px.
 
 Además:
-- IDS.md: una fila para D-63 y T-411.
+- IDS.md: una fila para D-64 y T-411.
 - ESTADO.md: al cerrar la ráfaga.
 
 D.2 Docs/SUGERENCIAS/HILO-para-experiencia-la-tapa-se-sella.md (UX-22 es de `experiencia`)
 
-- §8, primer párrafo: la lista pasa a ser "la marca, los títulos de artículo de la Redondopedia, la estampa", con la nota "desde D-63 el título de casete, el de la carátula y el h1 de cada juego se sellan con una tinta".
-- Tabla de "Dónde sí, dónde no": la fila "Título de casete…" y la fila "h1 de cada juego" pasan a la columna de no, con el motivo "una sola tinta, D-63".
+- §8, primer párrafo: la lista pasa a ser "la marca, los títulos de artículo de la Redondopedia, la estampa", con la nota "desde D-64 el título de casete, el de la carátula y el h1 de cada juego se sellan con una tinta".
+- Tabla de "Dónde sí, dónde no": la fila "Título de casete…" y la fila "h1 de cada juego" pasan a la columna de no, con el motivo "una sola tinta, D-64".
 - §8.1 nuevo, "La almohadilla":
   - Va en: título de casete, título de carátula, h1 de juego (solo la sal) y macizo del sello, con el filete y la letra intactos.
   - Nunca va en: cuerpo de texto, la pista ni "en la cocina" (son mano), rótulos de registro 3, acierto o error, ni los tres artículos graves.
@@ -575,5 +575,5 @@ F. Riesgos abiertos
    - en Windows a 1× la máscara pasa el texto a suavizado en grises;
    - no hay que agregar `will-change` ni animar el `transform` de `.casete` o `.caratula`, porque el texto enmascarado se ablanda.
 8. Costo estimado, no medido en un teléfono: tres teselas compartidas, unos 6 MB a DPR 3. Hay 33 cajas con máscara en el portal, todas estáticas, que se pintan una vez.
-9. D-62 sigue sin commitear en el mismo worktree y toca sitio.css. Se guarda primero, en un commit propio, avisándole al usuario antes.
+9. D-63 sigue sin commitear en el mismo worktree y toca sitio.css. Se guarda primero, en un commit propio, avisándole al usuario antes.
 10. Hallazgo para otra tarea: `--textura-grano` y `--textura-rodillo` no tienen la región de filtro. Es probable que la costura se vea en `.rodillo` y en `.pasada-pie`.

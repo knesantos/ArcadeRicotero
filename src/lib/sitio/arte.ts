@@ -66,7 +66,7 @@ export const DETALLE_POR_VARIANTE: Record<string, string> = {
  * pone en el pie (`UX-04`, mecanismo de credito).
  */
 const DISCO_DE: Record<string, string> = {
-  /* `oktubre-banderas` —la franja fija del portal— salió el 2026-10-04 (`D-62`): la
+  /* `oktubre-banderas` —la franja fija del portal— salió el 2026-10-04 (`D-63`): la
      multitud de *Oktubre* pasó a ser el piso del pie, y la acredita el pie mismo. */
   'lobo-tiras': 'Lobo suelto',
   'mosca-olla': 'La mosca y la sopa',
@@ -174,7 +174,7 @@ export function figuraDeDisco(slug: string): string | null {
 }
 
 /**
- * La gente mirando: el piso del pie de imprenta, de borde a borde (`D-62`).
+ * La gente mirando: el piso del pie de imprenta, de borde a borde (`D-63`).
  *
  * Reemplaza a la pasada de ese disco —las dos son el mismo motivo, y la multitud ya trae
  * sus banderas— y la acredita el pie, igual que a la figura. Hoy hay una sola, la de la

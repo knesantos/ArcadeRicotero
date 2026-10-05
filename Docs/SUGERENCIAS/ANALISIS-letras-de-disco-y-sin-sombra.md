@@ -8,7 +8,7 @@
 > **Estado:** terminaron los cuatro relevamientos de abajo. **No llegaron** las tres propuestas
 > de tipografía (D-19 llevado a la letra, una sola voz de disco con repuesto, letras recortadas
 > como collage), los jueces ni la síntesis: el usuario cortó antes. Se retoma desde acá.
-> Va junto con `ESPEC-D-63-la-tapa-se-sella.md`, que es la especificación del sello de goma
+> Va junto con `ESPEC-D-64-la-tapa-se-sella.md`, que es la especificación del sello de goma
 > (ya juzgada) y que hay que ajustar: ahora la sombra sale de **todos** lados, marca incluida.
 >
 > Cobertura medida con fontTools: *Patricio Rey Fan* tiene A-Z y 0-9; *Lobo Suelto Fan*, A-Z;
@@ -22,7 +22,7 @@
 ## Sombras: todas las que hay y qué test depende de cada una
 
 INFORME: INVENTARIO DE SOMBRAS Y ECOS (para "sacar la sombra de todos lados")
-Base: worktree C:/Users/santi/Proyectos/InstanciadorProyectos/RicotaArcade-fondo, rama diseno/fondo-multitud. Los números de línea de sitio.css son los del árbol de trabajo, que todavía tiene D-62 sin commitear.
+Base: worktree C:/Users/santi/Proyectos/InstanciadorProyectos/RicotaArcade-fondo, rama diseno/fondo-multitud. Los números de línea de sitio.css son los del árbol de trabajo, que todavía tiene D-63 sin commitear.
 
 Cómo lo verifiqué:
 - Lectura estática con un parser de llaves propio, que da selector y @media de cada declaración. Recorrió src/styles/*.css, todos los <style> de src/**/*.astro, las islas src/scripts/*.ts, src/lib (sin los tests), tarjeta.ts, lamina.ts y scripts/*.mjs.
@@ -89,14 +89,14 @@ Nada más pone sombra sobre letras:
 B1. sitio.css:983-984 (.casete-accion)
     Comentario: "La tinta del sello no llega pareja al borde: el eco de la segunda pasada, corrido."
     Declaración: box-shadow: 2px 2px 0 color-mix(in srgb, var(--tinte-sello, var(--tinte)) 40%, var(--papel));
-    Toca los 11 sellos del portal: JUGÁ, EMPEZÁ, ARMÁ, TOCÁ y LEÉ. ESPEC-D-63 ya lo saca.
+    Toca los 11 sellos del portal: JUGÁ, EMPEZÁ, ARMÁ, TOCÁ y LEÉ. ESPEC-D-64 ya lo saca.
 
 B2. sitio.css:703 (.oktubre-jugar)
     Declaración: box-shadow: 2px 2px 0 color-mix(in srgb, var(--marca-rojo) 40%, var(--papel));
     Toca el sello "ADIVINÁ TEMAS DE OKTUBRE" del afiche de octubre en el portal (index.astro:240).
     - Hoy está a la vista: data-mes="oktubre" está activo y la fecha es 2026-10-05.
     - Es la misma fórmula que B1, y su comentario (695-696) dice "como el JUGÁ de los casetes".
-    - **ESPEC-D-63 no lo nombra, y es un hueco.** Si sale el eco del sello del casete y este se queda, los dos sellos dejan de ser coherentes. Si se adopta la almohadilla, también tendría que llevarla.
+    - **ESPEC-D-64 no lo nombra, y es un hueco.** Si sale el eco del sello del casete y este se queda, los dos sellos dejan de ser coherentes. Si se adopta la almohadilla, también tendría que llevarla.
 
 ====================================================================
 3. TIPO C: sombra dura de un objeto o recorte, sin eco de letra
@@ -118,7 +118,7 @@ C-registro. Usan el mismo mecanismo del eco (--registro / --tinta-registro), as�
   Toca la tarjeta de fin de nivel (Repetí / Elegí otro / Seguí).
   Comentarios: 1467-1468 y 1620. El de 1637-1638 ("Sin eco: …") queda bien.
 
-C-tecla. El canto que se hunde al apretar. Es box-shadow desplazada en vertical, sobre el botón principal de cada juego. Es la sombra más visible del sitio después de los títulos. Recomiendo que salga y que el :active pase a un cambio de tinta: translate 0 2px más un relleno de color-mix(tinta, fondo). La tabla anti-slop ya admite "cambio de tinta o de borde", y el sello lleno sin canto queda en la misma familia que el sello del casete después de D-63. Hay que confirmarlo con el usuario, porque retira D-54 punto 6.
+C-tecla. El canto que se hunde al apretar. Es box-shadow desplazada en vertical, sobre el botón principal de cada juego. Es la sombra más visible del sitio después de los títulos. Recomiendo que salga y que el :active pase a un cambio de tinta: translate 0 2px más un relleno de color-mix(tinta, fondo). La tabla anti-slop ya admite "cambio de tinta o de borde", y el sello lleno sin canto queda en la misma familia que el sello del casete después de D-64. Hay que confirmarlo con el usuario, porque retira D-54 punto 6.
 - C4. juego.css:330, 339 y 345 (.primario)
   `box-shadow: 0 4px 0 var(--canto-accion, var(--borde));`
   `:active:not(:disabled) { box-shadow: 0 1px 0 …; }`
@@ -141,7 +141,7 @@ C-recorte. Papel sobre papel, sobre piezas de contenido. SALEN. Casi todas ya ti
   Toca la cinta "← AL FICHÍN", "← A LA REDONDOPEDIA" y "← Letras y acordes", en todas las páginas interiores. Es un botón con letra.
 - C10. sitio.css:890 (.casete-arte--entera)
   `box-shadow: 3px 3px 0 color-mix(in srgb, var(--tinte) 70%, var(--fondo));`
-  Toca la tapa entera pegada en A1 Oktubre, A7 ¡Bang! y B1 La mosca y la sopa en el portal, y en la carátula de quiz y de ponelos-en-fila, tanto en escritorio como en la calcomanía del teléfono. Es la de D-49. ESPEC-D-63 (B.6) la dejaba; con el pedido nuevo sale. Comentario: 882-884.
+  Toca la tapa entera pegada en A1 Oktubre, A7 ¡Bang! y B1 La mosca y la sopa en el portal, y en la carátula de quiz y de ponelos-en-fila, tanto en escritorio como en la calcomanía del teléfono. Es la de D-49. ESPEC-D-64 (B.6) la dejaba; con el pedido nuevo sale. Comentario: 882-884.
 - C11. sitio.css:1246 (.tapa-disco)
   `box-shadow: 0 3px 0 color-mix(in srgb, var(--papel-borde) 35%, transparent);`
   **Ya está muerta:** la única .tapa-disco del sitio vive dentro de .papel-ficha, y sitio.css:1281 (`.papel-ficha .tapa-disco { box-shadow: none; }`) la anula. El barrido lo confirma. Salen las dos.
@@ -180,7 +180,7 @@ C-recorte. Papel sobre papel, sobre piezas de contenido. SALEN. Casi todas ya ti
   Toca la hoja de versos de la partida de "Sacalo por la letra" (D-31).
 - C23. juego.css:4187 (.estampa-papel)
   `box-shadow: 4px 4px 0 var(--apoyo-disco, var(--borde));`
-  Toca el papel de la estampa en la revelación. ESPEC-D-63 lo dejaba; ahora sale.
+  Toca el papel de la estampa en la revelación. ESPEC-D-64 lo dejaba; ahora sale.
 - C24. juego.css:4499 (.masomenos-referencia)
   `box-shadow: 4px 4px 0 var(--apoyo-disco, var(--borde));`
   Toca la referencia de la partida de "Más o menos". Comentario: 4492-4494.
@@ -244,14 +244,14 @@ Escenario alternativo, si se conservaran las C (no es lo que pidió el usuario):
 T1. estilos.test.ts:269-303, "UX-22 §8: el registro imperfecto vive solo en la letra grande, nunca en un parrafo"
 - Se rompe. La línea 300 (`assert.ok(encontrados.length > 0, 'el registro imperfecto desaparecio de las hojas')`) falla en cuanto sale A1-A5.
 - Además solo mira HOJAS: no ve los <style> de las páginas.
-- Enmienda: invertirlo a "D-63: ninguna letra lleva sombra".
+- Enmienda: invertirlo a "D-64: ninguna letra lleva sombra".
   - Barrer todoElCss() (estilos.test.ts:793-811: hojas, tokens.css y todos los <style> de .astro, con los comentarios ya sacados).
   - Fallar ante cualquier `text-shadow` cuyo valor no sea `none`.
   - Sumar su "ese control sabe encontrar": `.x{text-shadow:2px 2px 0 var(--borde)}` tiene que caer; el mismo texto dentro de un comentario y `text-shadow: none` no.
   - Así quedan cubiertos solos los cuatro "nunca" de UX-22 §8, incluidos los artículos graves.
-- Con esto sobran C.1 1) de ESPEC-D-63 (sacar ítems de PERMITIDOS) y C.1 3) ("la tapa de un juego no lleva sombra"). La lista PERMITIDOS desaparece.
+- Con esto sobran C.1 1) de ESPEC-D-64 (sacar ítems de PERMITIDOS) y C.1 3) ("la tapa de un juego no lleva sombra"). La lista PERMITIDOS desaparece.
 
-T2. Test nuevo propuesto: "D-63: ninguna pieza lleva sombra desplazada"
+T2. Test nuevo propuesto: "D-64: ninguna pieza lleva sombra desplazada"
 - Sobre el mismo todoElCss(), cada capa de cada `box-shadow` tiene que tener los dos desplazamientos en 0 literal y blur 0. Solo pasan `none`, `0 0 0 <ancho> <color>` e `inset 0 0 0 <ancho> <color>`.
 - Un desplazamiento hecho con var() (var(--registro)) o un `0 4px 0` falla.
 - Permite D1-D4 sin lista de excepciones.
@@ -271,7 +271,7 @@ T4. movimiento.test.ts:126-146, "los tokens de movimiento que UX-20 §4 nombra e
 
 T5. contraste.test.ts
 - Ningún par depende de una sombra. tokens.css:248-250 ya dejaba el eco fuera a propósito. No se rompe nada ni hace falta enmendar.
-- Los pares nuevos de ESPEC-D-63 C.3 (tinta, mano y sellos sobre el papel viejo) no cambian por esto.
+- Los pares nuevos de ESPEC-D-64 C.3 (tinta, mano y sellos sobre el papel viejo) no cambian por esto.
 
 T6. tema/paleta.test.ts:35-55, "cada regla de disco toma su color del token de ESE disco"
 - Exige que `.disco--X` use `var(--disco-X-apoyo)`. Sigue verde.
@@ -286,10 +286,10 @@ T8. Listas de estados de estilos.test.ts (ESTADOS_TEMA 311-334 con .escuchar--so
 Ningún otro test toca sombras. En skayboy/escena.test.ts y motor.test.ts "sombra" es nombre de variable. voz, fuentes, islas, redondopedia y sitio/*.test no dependen de nada de esto.
 
 ====================================================================
-7. LO QUE HAY QUE CAMBIAR DE ESPEC-D-63 Y DE LOS PAPELES
+7. LO QUE HAY QUE CAMBIAR DE ESPEC-D-64 Y DE LOS PAPELES
 ====================================================================
 
-ESPEC-D-63 (Docs/SUGERENCIAS/ESPEC-D-63-la-tapa-se-sella.md) quedó corta frente al pedido nuevo:
+ESPEC-D-64 (Docs/SUGERENCIAS/ESPEC-D-64-la-tapa-se-sella.md) quedó corta frente al pedido nuevo:
 - B.1: --tinta-registro se borra, no se recomenta.
 - B.2 g): la regla de registro de sitio.css:1607-1644 se borra entera, no se achica a `.marca-grande, .articulo… h1`.
 - B.3 a): en .marca salen 3648-3649.
@@ -441,7 +441,7 @@ Para la S, la J y los números, el camino auténtico es calcar la minúscula de 
 - Servir en woff2. Medido sobre las fuentes actuales: Lobo 7,5 KB, Patricio 4,0 KB, calco 2,2 KB.
 - Script reproducible con fechas fijas, y una guarda de cobertura por fuente en `fuentes.test.ts`.
 
-**Cruce con la almohadilla de `D-63`** (la tinta gastada en máscara de la especificación ganadora)
+**Cruce con la almohadilla de `D-64`** (la tinta gastada en máscara de la especificación ganadora)
 - La máscara recorta en el borde de la caja. Cualquier tilde que suba por encima de la caja de línea se corta: hace falta el mismo colchón que la especificación le calculó a Archivo Black.
 - En Lobo, la sal (3,5 % de huecos de ~1 px) corta trazos de 1 a 2 px. No conviene enmascarar Lobo por debajo de unos 2,5 rem.
 
@@ -561,7 +561,7 @@ Scripts de medición en BASE: inspeccion.py, trazo.py, cobertura.py, specimen.py
 
 INFORME: lo que grita en Fichín Ricotero. Inventario de piezas, sombras y letras de disco
 
-Base de todas las rutas: C:/Users/santi/Proyectos/InstanciadorProyectos/RicotaArcade-fondo (rama diseno/fondo-multitud, con D-62 todavía sin commitear en el árbol). No se editó nada del repo. Las muestras y las cuentas quedaron en C:/Users/santi/AppData/Local/Temp/claude/C--Users-santi-Proyectos-InstanciadorProyectos-RicotaArcade/52dfba30-4949-4ce7-a4bb-dc9786518d2d/scratchpad/inv-fuentes/:
+Base de todas las rutas: C:/Users/santi/Proyectos/InstanciadorProyectos/RicotaArcade-fondo (rama diseno/fondo-multitud, con D-63 todavía sin commitear en el árbol). No se editó nada del repo. Las muestras y las cuentas quedaron en C:/Users/santi/AppData/Local/Temp/claude/C--Users-santi-Proyectos-InstanciadorProyectos-RicotaArcade/52dfba30-4949-4ce7-a4bb-dc9786518d2d/scratchpad/inv-fuentes/:
 - muestras.png: las cinco letras con textos reales.
 - tamanos.png: legibilidad sobre papel entre 13 y 34 px.
 - cobertura.py: los huecos de cada pieza en cada fuente, medidos sobre los textos reales del copy y de los JSON.
@@ -592,9 +592,9 @@ Base de todas las rutas: C:/Users/santi/Proyectos/InstanciadorProyectos/RicotaAr
 
 6. El test del eco exige que el eco exista. estilos.test.ts:300 dice `assert.ok(encontrados.length > 0, 'el registro imperfecto desaparecio de las hojas')`.
    - Sacar la sombra "de todos lados" lo pone en rojo por construcción. Hay que invertirlo ("ningún text-shadow en letra"), no ir borrando selectores de PERMITIDOS (estilos.test.ts:281-290).
-   - La ESPEC-D-63 contaba con que la marca, el artículo y la estampa conservaran el eco (punto C.1-1 y "lo que no se toca" en B.6). El pedido nuevo lo cambia; la espec ya lo había dejado anotado como riesgo F.5.
+   - La ESPEC-D-64 contaba con que la marca, el artículo y la estampa conservaran el eco (punto C.1-1 y "lo que no se toca" en B.6). El pedido nuevo lo cambia; la espec ya lo había dejado anotado como riesgo F.5.
 
-7. La ESPEC-D-63 no nombra el eco del sello del afiche de octubre. .oktubre-jugar (sitio.css:703) tiene el mismo box-shadow de "segunda pasada" que .casete-accion (sitio.css:984).
+7. La ESPEC-D-64 no nombra el eco del sello del afiche de octubre. .oktubre-jugar (sitio.css:703) tiene el mismo box-shadow de "segunda pasada" que .casete-accion (sitio.css:984).
 
 8. Hoy el encabezado del resultado tiene cuatro formas distintas:
    - Quiz y Más o menos: rótulo más h2.tramo.
@@ -636,8 +636,8 @@ Los pinceles no dibujan eco: tarjeta.ts, lamina.ts y el taller de postales (scri
 box-shadow en piezas que llevan letra que grita (hace falta decidir si "de todos lados" las incluye):
 
 - Eco de sello:
-  - .casete-accion, sitio.css:984 (D-63 ya lo saca);
-  - .oktubre-jugar, sitio.css:703 (D-63 no lo nombra);
+  - .casete-accion, sitio.css:984 (D-64 ya lo saca);
+  - .oktubre-jugar, sitio.css:703 (D-64 no lo nombra);
   - .fin-nivel de Skayboy, skayboy.css:1492: registro en el crema de Gulp!, la tarjeta de "NIVEL N DE 6 · PASADO".
 
 - Canto de tecla (sombra dura abajo, que se hunde al apretar):
@@ -1047,7 +1047,7 @@ C3 Título del tema
 | Lado A/B, secciones, Seguí por acá (P4, E2) | base | · Á Í | · Á Í | G J L M P S Y · Á Í | No. Nombra, es chica y tenue. |
 | Título de casete y de carátula (P5, J4; 11) | uno por casete | ¿ ? Á É (6/11) | ¿ ? Á É (6/11) | ¿ ? G L M P Q S V Y Á É (0/11) | Sí, con tildes derivadas, en PR. LS no: a 0,95rem es trazo de pelo. |
 | Sello de acción (P6: JUGÁ, EMPEZÁ…) | el del casete | Á É (0/5) | Á É (0/5) | G J L M P Z Á É | Sí, con tildes derivadas (PR), junto con P5. |
-| Pista A1… (P7) | mano | nada | 1-9 | 1-9 | No. Es lo escrito a mano (D-63) y registro 3. |
+| Pista A1… (P7) | mano | nada | 1-9 | 1-9 | No. Es lo escrito a mano (D-64) y registro 3. |
 | "En la cocina" (P8) | mano | nada | nada | L | No. Lápiz, registro 3. |
 | OKTUBRE, sello del afiche (P9) | Oktubre | nada | nada | nada | Ya está en calco. |
 | Estampa de cumpleaños (P9) | Oktubre | Ó | 0 4 Ó | 0 4 L M P Y Ó | No. Registro 3. |
@@ -1122,7 +1122,7 @@ b) Derivar una letra: la Í de Patricio Rey. Con eso D-19 se cumple en Compartí
 
 c) El paso grande: Patricio Rey Fan como la letra que grita del sitio, con la marca en calco arriba.
    - Alcanza a casete, carátula, los diez h1, el primario, el sello de acción, el encabezado y la cifra del resultado, y los títulos de tarjeta, lámina y postal.
-   - Es la única de las fan que se lee chica, tiene números, mide casi lo mismo de ancho que Archivo Black (762 contra 754, así que no se mueven los cortes de renglón) y tiene trazo grueso como para aguantar la máscara de D-63.
+   - Es la única de las fan que se lee chica, tiene números, mide casi lo mismo de ancho que Archivo Black (762 contra 754, así que no se mueven los cortes de renglón) y tiene trazo grueso como para aguantar la máscara de D-64.
    - Hay que derivar 14 glifos: Á É Í Ó Ú, ¿ ?, ¡ !, . , : · y +. El método es el de scripts/derivar-oktubre-calco.py: recortar y pegar trazos de la misma fuente con pathops.
    - El costo de fondo: es la letra del logo, no la de un disco. Los once quedan en la misma letra y lo que rota por disco sigue siendo la tinta. Si además se quiere que rote la letra, solo Lobo suelto tiene con qué, y no aguanta el tamaño de casete.
 
@@ -1133,9 +1133,9 @@ Lo que no puede pasar a letra de disco, por regla:
 - los catálogos abiertos: títulos de tema y de artículo.
 
 Cuidados técnicos si se hace:
-- Altura. Patricio Rey sube hasta 542 y baja a -96. Al sumarle tildes hay que subirle el ascent (hhea 666); si no, la tilde queda fuera de la caja y la máscara de D-63 la recorta. Es el mismo caso que D-63 resolvió con padding-block para Archivo Black.
+- Altura. Patricio Rey sube hasta 542 y baja a -96. Al sumarle tildes hay que subirle el ascent (hhea 666); si no, la tilde queda fuera de la caja y la máscara de D-64 la recorta. Es el mismo caso que D-64 resolvió con padding-block para Archivo Black.
 - Tamaño. A igual cuerpo se ve más chica. Se compensa con size-adjust en su @font-face de tokens.css, y después hay que volver a medir los cortes de renglón.
-- Máscara de D-63. Las texturas se midieron sobre Archivo Black; sobre Patricio Rey hay que volver a medir los huecos. Sobre Lobo Suelto Fan, nunca máscara: con trazo de pelo perdería trazos enteros.
+- Máscara de D-64. Las texturas se midieron sobre Archivo Black; sobre Patricio Rey hay que volver a medir los huecos. Sobre Lobo Suelto Fan, nunca máscara: con trazo de pelo perdería trazos enteros.
 - Precarga. Cabeza.astro:69-70 precarga solo el calco y Archivo Black. Si Patricio Rey pasa a los títulos, hay que sumar su preload (4,8 KB).
 - Test. Extender fuentes.test.ts, con el mismo patrón de D-58 y D-60, a patricio-rey.woff y lobo-suelto.woff: que toda pieza que el CSS ponga en letra de disco pida solo glifos que están en el cmap. El taller de postales ya falla solo cuando falta un glifo.
 - Al recortar de nuevo lobo-suelto.woff, traer la Ñ del zip.
@@ -1182,7 +1182,7 @@ a) .claude/rules/diseno-marca.md:77. En la tabla anti-slop, "Sombra difusa…" s
    Veredicto: hay que enmendarla. Si "todos lados" es solo la letra, se agrega "en la letra, nada". Si incluye los objetos, el reemplazo queda en "nada". La regla la escribe el hilo principal.
 
 b) Docs/DECISIONES.md:1584-1590, D-33 consecuencia 1. Fija "el registro imperfecto quedó como recurso permanente y estático en la letra grande de todo el sitio": un eco del texto corrido 2 px en el apoyo del disco. También dice que "Como es la única sombra que diseno-marca.md admite" lo encierra estilos.test.ts.
-   Veredicto: el pedido la contradice de frente y la enmienda entera. ESPEC-D-63 la enmendaba solo en parte (sacaba el título del casete y el h1).
+   Veredicto: el pedido la contradice de frente y la enmienda entera. ESPEC-D-64 la enmendaba solo en parte (sacaba el título del casete y el h1).
 
 c) Docs/UX/UX-22-la-imprenta-de-rocambole.md:608-642, §8 "El registro imperfecto en toda la página". Pone el eco en la marca (.marca, .marca-grande), los títulos de casete, el h1 de cada juego y el h1 de artículo, y lo prohíbe en el cuerpo, los rótulos, el acierto y el error y las tres pantallas graves.
    Veredicto: se retira el §8 entero. Su tabla de "dónde no" queda cumplida de sobra. Toca además:
@@ -1197,7 +1197,7 @@ d) Docs/DECISIONES.md:2992-2996, D-54 puntos 5 y 6, y consecuencias 3038-3039 y 
 e) Docs/DECISIONES.md:1423-1424 (D-31, la hoja de versos con "sombra dura desplazada"), 2727-2730 (D-49, la tapa entera del casete "con filete de papel y sombra dura corrida") y 3317-3321 (D-57 enmienda 2, "el canto de las hojas lo pintan las sombras"). Son sombras de objeto, no de letra. La de .ejes-hoja[data-quedan] cuenta cuántas hojas quedan, o sea que tiene función.
    Veredicto: solo se enmiendan si "todos lados" incluye objetos. Hay que preguntarlo.
 
-f) Docs/SUGERENCIAS/ESPEC-D-63-la-tapa-se-sella.md:
+f) Docs/SUGERENCIAS/ESPEC-D-64-la-tapa-se-sella.md:
    - B.6 (295-299) dejaba con eco la marca, el h1 de artículo, .estampa-disco y .papel-ficha.
    - F.5 (571) preguntaba si sacar el eco de la marca y avisaba que eso "contradice D-33".
    Veredicto: el usuario ya contestó: sale todo. La espec se cumple y hay que ampliarla:
@@ -1211,7 +1211,7 @@ h) El lienzo (lo extraje del artifact 59acd1de; las hojas viven en el script app
    - Ninguna hoja usa text-shadow.
    - La hoja 07 (Textura.dc.html) dice "Cada forma y cada título pasan por rugosa" (feTurbulence + feDisplacementMap, escala 2,4 en piezas chicas y 4,2 en títulos) y "Textura en la forma, nunca en el texto de lectura".
    - La hoja 11 dice "La textura la pone el filtro, no la letra".
-   Veredicto: sacar la sombra devuelve el código a lo que pedía el lienzo. ESPEC-D-63 descartó el filtro con desplazamiento porque Safari ablanda el texto y depende del DPR, y propone una máscara en su lugar. La hoja 07 hay que actualizarla igual (T-411).
+   Veredicto: sacar la sombra devuelve el código a lo que pedía el lienzo. ESPEC-D-64 descartó el filtro con desplazamiento porque Safari ablanda el texto y depende del DPR, y propone una máscara en su lugar. La hoja 07 hay que actualizarla igual (T-411).
    El borrador de la hoja 15 (Docs/SUGERENCIAS/lienzo-hoja-15-la-mesa.dc.html:164) describe el canto. Si el canto sale, hay que corregirlo antes de pegarlo (T-319).
 
 i) Docs/INVESTIGACION/INV-07-tipografia-lettering-tapas.md:76-77 (RES-33). El título de Gulp! llevaba "una sombra agregada para efecto de relieve", y RES-36 (139-141) agrega que "las letras tenían textura".
@@ -1364,7 +1364,7 @@ Consecuencia para hoy: Archivo Black es la única letra del sitio que escribe to
 
 8. QUÉ SE ENMIENDA, Y LO QUE HABRÍA QUE PEDIR
 Papeles:
-- D- nueva o D-63 ampliada. D-63 está libre en DECISIONES.md e IDS.md; antes de numerar, hacer fetch y mirar las ramas remotas (memoria). Tiene que enmendar D-33 consecuencia 1, D-54 punto 5/6 y sus consecuencias, y UX-35 §4.2 si cambia el título único.
+- D- nueva o D-64 ampliada. D-64 está libre en DECISIONES.md e IDS.md; antes de numerar, hacer fetch y mirar las ramas remotas (memoria). Tiene que enmendar D-33 consecuencia 1, D-54 punto 5/6 y sus consecuencias, y UX-35 §4.2 si cambia el título único.
 - diseno-marca.md: la línea 77, la tabla de fuentes y la deuda (cuando se deriven tildes).
 - Propuestas a experiencia en SUGERENCIAS: UX-22 §8, §9 y §13; UX-35 §4.2 y §4.3; UX-04 (tipografía y mapa).
 - CNT-01: entrada para las cuatro letras de disco.
@@ -1374,7 +1374,7 @@ Tests:
 - estilos.test.ts:269-303 se invierte: ningún text-shadow.
 - fuentes.test.ts: extender la guarda del cmap a cada lugar donde escriba una letra de disco, no solo la marca.
 - movimiento.test.ts:140-142, solo si algún token se va.
-- Los tests nuevos de ESPEC-D-63 (C.1 a C.3).
+- Los tests nuevos de ESPEC-D-64 (C.1 a C.3).
 
 Fichas RES- a pedirle a investigador (no frenan nada, por D-14):
 - Auditar las tres fuentes de Zavala contra las tapas (pendiente del tablero de RES-42). En particular: ¿Patricio Rey Fan es el lettering del "Patricio Rey" de la tapa de Gulp! (la pieza de B2, D-49) o el del logo coronado posterior? ¿De qué pieza sale "Redonditos de Ricota", que el lienzo pone en historia sin ficha?

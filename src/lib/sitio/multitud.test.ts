@@ -1,5 +1,5 @@
 /**
- * La gente mirando al pie del portal (`D-62`) es un recorte en dos tintas, no una foto.
+ * La gente mirando al pie del portal (`D-63`) es un recorte en dos tintas, no una foto.
  *
  * `scripts/generar-multitud.mjs` no corre en el build: el PNG vive en `public/` y se
  * regenera a mano. Este archivo mira lo que el recorte promete para poder ir sin velo y a

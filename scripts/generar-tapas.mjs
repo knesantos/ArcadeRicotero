@@ -93,7 +93,7 @@ const DERIVADOS = [
   { nombre: 'gulp-logo', forma: 'detalle', master: 'gulp-trasera.jpg', caja: [0.54, 0.27, 0.72, 0.39] },
 
   // --- fondos (detras del contenido, siempre con velo) ---
-  // El fondo `oktubre-banderas` del portal salió el 2026-10-04 (`D-62`): el portal pasó a
+  // El fondo `oktubre-banderas` del portal salió el 2026-10-04 (`D-63`): el portal pasó a
   // fondo negro liso con la gente de *Oktubre* al pie, que es un recorte del collage y lo
   // produce `generar-multitud.mjs`.
   { nombre: 'gulp-pincelada', forma: 'fondo', master: 'gulp-frontal.jpg', caja: [0.55, 0.55, 1.0, 1.0] },
