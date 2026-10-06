@@ -10,6 +10,8 @@
  * **Las audita `voz.test.ts`** junto con las cadenas del banco.
  */
 
+import { planoFijo, type Banco, type Polo } from './partida.ts';
+
 /** Los números que el sitio escribe en letras. Hasta diez alcanza: la noche tiene cinco momentos. */
 const LETRAS = ['cero', 'una', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];
 
@@ -212,3 +214,25 @@ export const TARJETA = {
   /** El de la vista previa de la portada del juego. */
   altJuego: 'Tarjeta de Fichín Ricotero: ¿Qué tipo de ricotero sos?, con las cuatro maneras. Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole).',
 } as const;
+
+/**
+ * Lo que oye el lector en el plano de dos ejes, armado en un solo lugar: lo usan la isla y
+ * `copy.test.ts` (`CTR-08`, E2.4 c). Antes se armaba dos veces y una de las dos podía cambiar
+ * sola. Los lugares salen de `planoFijo()`, nunca de una tabla aparte; `RESULTADO.lugares` va
+ * en el orden de sus celdas, y `copy.test.ts` lo ata.
+ */
+export function textoDelPlano(banco: Banco, id: string, suyoId?: string): string {
+  const { celdas, renglones, columnas } = planoFijo(banco);
+  const extremo = (p: Polo) => `${EJES[p]}, ${POLOS[p]}`;
+  const k = celdas.findIndex((c) => c.id === id);
+  if (k < 0) throw new Error(`el plano no tiene la manera ${id}`);
+  const j = suyoId === undefined ? -1 : celdas.findIndex((c) => c.id === suyoId);
+  return RESULTADO.altPlano({
+    arriba: extremo(renglones[0]),
+    abajo: extremo(renglones[1]),
+    izquierda: extremo(columnas[0]),
+    derecha: extremo(columnas[1]),
+    tuya: { nombre: celdas[k]!.nombre, lugar: RESULTADO.lugares[k]! },
+    suya: j < 0 ? undefined : j === k ? 'misma' : { nombre: celdas[j]!.nombre, lugar: RESULTADO.lugares[j]! },
+  });
+}

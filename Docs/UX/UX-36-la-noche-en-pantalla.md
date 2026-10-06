@@ -38,6 +38,33 @@
 > cambian.** *(La primera pasada de esta enmienda decía "relativo" para el plano; el usuario eligió el fijo
 > y esta marca ya lo dice.)*
 >
+> **Puesta al día 2026-10-06 (`REV-20`).** Cuatro anotaciones, ninguna cambia el diseño. `§3.4` cuenta en
+> pasado el **corte de 320 × 568** del botón de la portada: la regresión del renglón del lugar es **`FIND-130`**
+> de `REV-20` y quedó **resuelta el mismo día en `2d61d7d`** (la línea vigente es «Traés barro en las
+> zapatillas.» y `#empezar` volvió a 565 —*cifra de antes de `D-67`: la vigente es **562**, `FIND-131`, ver la
+> segunda puesta al día de abajo*—), con la medida a repetir cuando cambie el renglón del lugar *(o el título:
+> `FIND-131`)*
+> (`FIND-111` de `REV-19` es el cierre anterior; el corte es la parte de `§3.4` que pedía `FIND-118`). `§4.1`
+> anota lo que `REV-20` midió del **largo del enunciado** a 375 y a 320 —en `REV-20` es un «sin consenso» y
+> **no lleva ID**— y deja el tope como está. `§5.3` suma la **columna de 7 rem** de los rótulos de renglón
+> (`FIND-112` de `REV-19`). `§9` contesta el techo de caracteres del renglón del lugar a 320. `§12.1` y
+> `§12.6` lo repiten como checklist, con el **dueño** de todo lo que solo se ve en un teléfono real.
+> **Con esto `FIND-118` de `REV-19` queda cumplido en esta hoja** *(esta nota decía que la columna de 7 rem
+> seguía pendiente)*. *(**Numeración, corregida el 2026-10-06 sin borrar lo anterior:** esta nota llamaba
+> `FIND-120` a la portada y `FIND-119` al largo de los enunciados, que eran los números de los lentes de
+> `REV-20` antes de la numeración definitiva. En la definitiva, `FIND-119` es `EJ-049` y `FIND-120` es
+> `UX-38` describiendo lo anterior; la portada es `FIND-130` y los enunciados no tienen ID.)*
+>
+> **Segunda puesta al día 2026-10-06 (cierre de `REV-20`, HEAD `6cccc1a`).** Tres anotaciones, ninguna
+> cambia el diseño. **(1) `FIND-131`:** la portada a 320 × 568 termina en **562**, no en 565. `D-67` pasó el
+> `h1` de Archivo Black a *Redonditos de Ricota Fan* (de 55 a 62 px de alto, según `REV-20`), el botón subió a 570 y quedó 2 px bajo el
+> pliegue; `b86b2db` bajó el aire sobre el botón y lo dejó en 562 (561,5 en la re-corrida de `revisor`).
+> `§3.4` y `§12.1` traen la cifra vigente y la guarda **ahora nombra el título**, que era lo que había
+> cambiado y no figuraba. **(2) `FIND-132`:** las cifras del resultado de `§1.2`, `§5.6` y `§12.1` (531 y 601,
+> holgura de 66 px, «≤ 601 + 20») eran **cuentas** y quedaron cortas; ahora traen lo que `revisor` midió en
+> `6cccc1a`, por ventana y por manera. **(3)** Todo lo medido lo corrió `revisor` o el hilo; **yo no corrí
+> nada** (`D-12`). Las cifras viejas quedan escritas al lado, marcadas.
+>
 > **Cómo leer los números.** Tres clases, como en `UX-35`: **leído** (sale de una captura, de una
 > maqueta o de un comentario del código, y lo cito), **cuenta** (lo derivé yo de tokens y reglas,
 > sin correr nada) y **por medir** (va al checklist de `§12`). Los píxeles de pantalla son a
@@ -139,10 +166,10 @@ gente real.
 
 | Pantalla | Qué tiene que entrar | A 375 × 667 | Holgura |
 |---|---|---|---|
-| Portada | El botón "Empezá la noche" | Cuenta ≈ 576; **medido (hilo): 590** | 77 px |
+| Portada | El botón "Empezá la noche" | Cuenta ≈ 576; **medido (hilo): 590** *(2026-10-06, `FIND-131`: con `D-67`, **595** a 375 y 592,5 a 360, medido por `revisor` en `6cccc1a`)*. A 320 × 568, `§3.4` | 77 px *(72 px con 595)* |
 | Postal (portada con desafío) | El botón "Empezá tu noche" | Cuenta ≈ 637 en el peor caso; **medido (hilo): 626 y 650 según la postal** (665 con el relleno de la tapa de 28/24: `§3.4`) | 17 px en la más alta |
 | Hoja de la pregunta | La hoja entera y la cinta | La hoja termina ≈ **377** | 290 px |
-| Resultado | "Compartí" y "Empezá otra noche" | Terminan ≈ **531** y **601** en el peor caso (nombre de tres renglones, línea de dos, bajada de cuatro) | 66 px |
+| Resultado | "Compartí" y "Empezá otra noche" | Terminan ≈ **531** y **601** en el peor caso (nombre de tres renglones, línea de dos, bajada de cuatro) — **cuenta**. *(2026-10-06, `FIND-132`: **medido** por `revisor` en `6cccc1a`, el peor caso es `CU-2` y termina en **561** y **634**; las otras tres, en 524 y 597. La cuenta quedó corta 30 y 33 px. Detalle por ventana y por manera: `§5.6`.)* | 66 px *(**33 px** medidos en `CU-2`; 70 en las otras tres)* |
 
 El desglose de cada cuenta está en su sección (`§3.4`, `§4.1`, `§5.6`). **Dos reglas de prioridad**
 si la medición real contradice la cuenta:
@@ -151,9 +178,14 @@ si la medición real contradice la cuenta:
   nunca el botón ni el subtítulo, que es donde está el molinete dicho en voz alta. *(2026-10-04,
   aplicado: la tapa con amigo ya aflojó el relleno a 20/16 y el botón entra, `§3.4`. Si todavía hubiera
   que ganar aire, el escalón que sigue es el margen de la tapa —24 px arriba y 16 abajo—, y recién
-  después nada más: el subtítulo y el botón no se tocan.)*
+  después nada más: el subtítulo y el botón no se tocan.)* *(2026-10-06, `FIND-131`: a 320 × 568 el escalón
+  que se usó fue otro, **el aire entre la bajada y el botón** —ni el botón ni el subtítulo ni el título—,
+  porque el margen de la tapa no servía de palanca; ver `§3.4`.)*
 - En el resultado, "Compartí" entra siempre (a 375 × 667 y a 360 × 640); "Empezá otra noche"
-  entra a 375 × 667. Lo que se achica es el aire de la hoja, no la bajada.
+  entra a 375 × 667. Lo que se achica es el aire de la hoja, no la bajada. *(2026-10-06, `FIND-132`:
+  **medido, se cumple**: a 375, «Empezá otra noche» termina en 634 de 667 en el peor caso; a 360, «Compartí»
+  en 584 de 640 como mucho. **A 320 × 568 esta hoja nunca prometió nada para el resultado**, y «Compartí»
+  termina entre 568 y 652 según la manera: `§5.6`.)*
 
 ---
 
@@ -402,7 +434,7 @@ El botón dice **"Empezá tu noche"** en la postal y **"Empezá la noche"** en l
 | Relleno de `main` | 16 | 16 |
 | Cinta "← Al arcade" | 48 | 64 |
 | La marca (24 + dos renglones de 65 + 16) | 105 | 169 |
-| `h1` (dos renglones de 55 + 8) | 63 | 232 |
+| `h1` (dos renglones de 55 + 8) *(2026-10-06: con `D-67` el `h1` mide **62**, no 55; `FIND-131`)* | 63 | 232 |
 | El renglón del lugar (24 + 16) | 40 | 272 |
 | **La tapa con el índice** (130) y 16 de margen | 146 | 418 |
 | El subtítulo (tres renglones) | 72 | 490 |
@@ -425,6 +457,67 @@ tres números entran (`§12.1`).
 acepta (`UX-01` pide "nada de scroll para encontrar el botón" como meta, y a 375 × 667 se cumple),
 y el botón no se vuelve a pegar al pie: `UX-35` §4.6 ya decidió que las portadas llevan el arranque
 en el flujo.
+
+**A 320 × 568 (agregado el 2026-10-06; `FIND-118` de `REV-19` pedía este corte y no estaba; puesto al día
+el mismo día, con el arreglo de `FIND-130` de `REV-20` ya hecho; y otra vez al cierre de `REV-20`, con
+`FIND-131`: la cifra vigente es 562 y la guarda nombra el título).**
+
+- **Lo que cerró `FIND-111` (`REV-19`).** A 320 × 568 «Empezá la noche» terminaba en **633**, fuera de la
+  pantalla, y era la única de las ocho portadas con el arranque afuera. Bajo 22 rem la tapa se aprieta
+  (margen, relleno, etiqueta, esquinero y el índice a 0,9 rem, que entra en dos renglones) y el botón
+  terminó en **565** (a 375 × 667 no cambió: 590).
+- **Lo que pasó después, `FIND-130` de `REV-20`: 587.** `REV-20` midió el botón a 19 px bajo el pliegue
+  (empezaba en 533: estaba a la vista y se tocaba). La causa fue el renglón del lugar, `LUGARES.dosEjes`
+  (`src/lib/sitio/copy.ts`), que `a596435` había cambiado de «Entrá con la campera puesta.» (28
+  caracteres, un renglón de ≈ 25 px) a «Traés barro seco en las zapatillas.» (35 caracteres, dos renglones
+  de ≈ 47 px a 320). A 360 y a 375 no cambió (588 y 590). Con la frase vieja puesta en el DOM, el botón
+  volvía a 565. *(Esta hoja citaba el hallazgo como `FIND-120`, el número del lente; la numeración
+  definitiva lo dejó en `FIND-130`.)*
+- **Cómo se arregló (2026-10-06, `2d61d7d`, el hilo).** Acortó `LUGARES.dosEjes` a **«Traés barro en las
+  zapatillas.»** (30 caracteres, 5 palabras), que es **la línea vigente**. `#empezar` termina en **565** a
+  320 × 568, medido con DejaVu Sans, 3 px de margen: el mismo número del cierre de `FIND-111`. A 360 y a 375
+  no cambió. **El diseño de la tapa no se tocó**: el arreglo fue la línea, no el relleno. El hilo midió
+  también qué más entraba en un renglón a 320: «Tenés barro en las zapatillas.» (30) y «Barro seco en las
+  zapatillas.» (29). Lo que costó la línea vigente es *seco*, y `contenido` lo dejó dicho en
+  `CNT-para-hilo-principal-lugar-320.md` (la propuesta que el hilo aplicó). *(Ese 565 y esos 3 px son de
+  antes de `D-67`: la viñeta que sigue.)*
+- **Lo que pasó después, `FIND-131` de `REV-20`: `D-67`, 570 y 562.** El merge de `D-67` pasó el `h1` de
+  la portada de Archivo Black a *Redonditos de Ricota Fan* (`--fuente-disco`, que en este juego es
+  `--fuente-luzbelito`: leído en `sitio.css`) y el `h1` creció de **55 a 62 px** (según `REV-20`). El renglón del lugar seguía en un renglón, así que
+  acortarlo no lo arreglaba. Botón «Empezá la noche» (`#empezar.bottom`, `revisor`, DejaVu Sans): a 320 pasó
+  de 565 a **570** (569,5 en la re-corrida), **2 px bajo el pliegue**; a 360, de 588 a 592,5; a 375, de 590 a
+  **595**. Subió entre 4 y 5 px según la ventana. Con 3 px de margen, cualquier cosa de más de 3 px arriba
+  del botón lo rompía, y la guarda de abajo no miraba el título.
+  - **Cómo se arregló (`b86b2db`, el hilo).** Bajo 22 rem, el aire entre la bajada y el botón baja de 24 a
+    16 px, con una clase propia (`.ejes-empezar`) que solo usa este juego. **`#empezar` termina en 562** a
+    320 × 568 (561,5 en la re-corrida de `revisor` sobre `6cccc1a`): **6 px de margen**. A 360 y a 375 no
+    cambia (592,5 y 595).
+  - **Lo acepto, y dejo dicho por qué cumple `§1.2`.** Lo que se achicó es aire: no el botón, no el
+    subtítulo, no el título. El comentario del CSS dice que el margen de la tapa, que era el escalón que
+    seguía en `§1.2`, no sirve de palanca porque colapsa con el del renglón del lugar *(lo leí ahí; no lo
+    medí)*.
+  - **El título no es palanca.** La letra de `D-67` es un pedido directo del usuario. Si el título vuelve a
+    empujar el botón bajo el pliegue, se toca el aire, no la letra. *(El CSS cita esta hoja con ese «nunca la
+    letra» y hasta hoy no estaba escrito acá.)*
+- **Guarda de medida, vigente, a repetir cada vez que cambie el renglón del lugar (`LUGARES.dosEjes`), el
+  índice, el relleno de la tapa o el título** —**la letra del `h1`** (`--fuente-disco`, hoy *Redonditos de
+  Ricota Fan*) **y su alto** (hoy 62 px, y el número de renglones que ocupa a 320)—: `#empezar.getBoundingClientRect().bottom`
+  a 320 × 568 **≤ 568** (hoy: **562**), con `scrollWidth <= innerWidth`. Se mide **también a 360 × 640 y a
+  375 × 667** (hoy 592,5 y 595: el tope es el pliegue, 640 y 667), porque el título cambia en las tres
+  ventanas y el arreglo de `b86b2db` solo actúa bajo 22 rem. *(Hasta el 2026-10-06 la guarda decía «el renglón
+  del lugar, el índice o el relleno de la tapa»: el título quedó afuera y fue justo lo que cambió, `FIND-131`.)*
+  **El techo de caracteres del renglón a 320 es el que contesta `§9`** (30 con la pila de Linux): no es un
+  presupuesto nuevo para todos los juegos, es lo que entra en esta portada, la de la tapa de libro con índice.
+- **Si no alcanza, la palanca es la de `§1.2`:** el relleno y el margen de la tapa, nunca el subtítulo ni
+  el botón. *(2026-10-06, `FIND-131`: el escalón que sirvió fue el aire entre la bajada y el botón, 24 → 16 px
+  bajo 22 rem. Lo que siga, si hiciera falta, no está medido; sigue siendo nunca el subtítulo, el botón ni la
+  letra del título.)*
+- **Depende de la fuente.** Todas las medidas del proyecto son con DejaVu Sans, más ancha que Roboto o San
+  Francisco; los 565 y los 562 son con ella. Con la línea de 35 caracteres («Traés barro seco…») y métrica
+  Arial (Liberation Sans) el botón ya daba 565. La línea vigente es más angosta que esa, así que entra en un
+  renglón con las dos. **Con métrica Arial, después de `D-67` y de `b86b2db`, no se midió** (`REV-20`). El
+  título, en cambio, sale de una fuente que sirve el sitio (`D-67`) y no de la pila del sistema; lo que depende
+  de la pila es el resto de la portada. En un teléfono real de 320 no está medido (`§12.6`).
 
 ### 3.5 En la mesa (≥ 64 rem)
 
@@ -474,6 +567,38 @@ Los botones están en el tercio de arriba a la mitad de la pantalla, no en el de
 hacen los otros siete juegos (`otra-quiz-1.png`, `otra-masomenos-1.png`): la serie es consistente y
 no la rompo acá. Lo que sí hago es que el toque sea grande (56 px) y que **ninguna opción de la hoja 1
 caiga donde estaba "Empezá"** (`§4.3`).
+
+**El largo del enunciado, medido por `REV-20` (2026-10-06; en `REV-20` es un «sin consenso» y no lleva ID).**
+*(Esta hoja lo citaba como `FIND-119`, el número del lente de pantalla; en la numeración definitiva
+`FIND-119` es `EJ-049`. Lo que decide, por escrito, es lo de abajo.)* El tope operativo es el de `§9`
+(≤ 14 palabras, ≤ 80 caracteres: «tres renglones a 375») y `banco.test.ts` lo hace cumplir por palabras;
+**los 30 lo cumplen** (el más largo: 14 palabras y 74 caracteres). Lo que no estaba medido es cuántos
+renglones son esos 80 caracteres con una fuente real. `REV-20` midió los 30 con `Range.getClientRects` sobre
+el `h2` de la hoja, en cinco noches seguidas (ancho útil de 299 px a 375 y de 244 a 320):
+
+| Fuente | 375 × 667 | 360 × 640 | 320 × 568 |
+|---|---|---|---|
+| **DejaVu Sans** (la pila del sistema de este entorno; más ancha) | **cuatro renglones:** `EJ-044` y `EJ-047` | cuatro: `EJ-040`, `EJ-044`, `EJ-045`, `EJ-047` | **17 de 30 con cuatro o más:** 14 con cuatro y `EJ-044`, `EJ-047` y `EJ-054` con cinco |
+| **Liberation Sans** (métrica Arial; más cercana a Roboto y San Francisco) | ninguna pasa de tres | ninguna pasa de tres | tres con cuatro: `EJ-044`, `EJ-045`, `EJ-047` |
+
+A 1440 todas van en uno o dos renglones. **Ninguna hoja se sale del papel ni del ancho** (el pie termina en
+501 de 667 a 375 y en 556 de 568 a 320; «Volvé a la anterior», en 561 de 568 en el peor caso a 320): lo que
+se pasa es el número de renglones, no el espacio. Los textos, para no confundirlos: `EJ-044` «Frío que pela
+en la vereda…» (74 caracteres), `EJ-045` «Frente a la reja hay un charco de barro…» (70), `EJ-047` «Empieza
+una canción lenta…» (71). *(El informe de `REV-20` trae los textos de `EJ-044` y `EJ-047` cruzados; los IDs son
+los de arriba.)*
+
+**Lo que dice esta hoja, y lo que falta.** La cuenta de arriba y el presupuesto de `§9` son a 375. A 320 no
+hay un tope de renglones escrito: `§8.4` pide solo que no haya desplazamiento horizontal ni texto cortado,
+y que el nombre admita cuatro renglones. **Esta hoja no cambia el tope y no se toca ningún enunciado**
+hasta medirlo con la fuente real (`§12.6`, con su dueño). Lo que cuelga del resultado:
+
+- Si a **375** algún enunciado pasa de tres renglones en un teléfono real: `contenido` acorta `EJ-044`,
+  `EJ-045` y `EJ-047` (los tres que sobreviven con métrica Arial a 320) y `§9` pasa a decir el largo en
+  caracteres que sí entra.
+- Si pasa solo a **320**: lo decide `experiencia` con lo medido (aceptar cuatro renglones a 320 o pedir que se
+  acorten).
+- Si no pasa en ninguno: el tope de `§9` queda como está.
 
 ### 4.2 Las dos opciones: igual peso, por construcción
 
@@ -674,7 +799,7 @@ la tuya primero.") sobre dos renglones de rótulos y dos columnas de rótulos.
 | **Título** | `h3` "Las cuatro maneras", rotulada 1,1 rem, `--texto`; margen de arriba `--espacio-4` |
 | **La que canta** | "Cuatro puntas de la misma hoja." (`CNT-30` §6.2, vuelta 3; era "Cuatro puertas a la misma noche.": la puerta de un recital es donde se pide la entrada), `--texto-tenue` |
 | **Rótulos de columna** (los polos de orden–caos, **tu polo primero**) | En el margen de arriba, sobre cada columna: "Orden · con plan", "Caos · sobre la marcha". Rotulada de **0,75 rem** (era 0,68), `--texto-tenue`, `aria-hidden` |
-| **Rótulos de renglón** (los polos de luz–oscuridad, tu polo primero) | **< 46 rem:** una regla punteada de `--borde` con el rótulo encima de cada par. **≥ 46 rem:** en el **margen izquierdo**, una columna de 5 rem, con la grilla `5rem 1fr 1fr`; el encabezado de columnas lleva el mismo margen izquierdo. `aria-hidden` |
+| **Rótulos de renglón** (los polos de luz–oscuridad, tu polo primero) | **< 46 rem:** una regla punteada de `--borde` con el rótulo encima de cada par. **≥ 46 rem:** en el **margen izquierdo**, una columna de **7 rem**, con la grilla `7rem 1fr 1fr`; el encabezado de columnas lleva el mismo margen izquierdo (`calc(7rem + var(--espacio-1))`). `aria-hidden`. **[2026-10-06, `FIND-112` y `FIND-118` de `REV-19`] Esta fila decía 5 rem y `5rem 1fr 1fr`.** A 1440, «OSCURIDAD» en la rotulada de 0,75 rem mide ≈ 100 px, no los ≈ 84 de mi cuenta, y en 80 px (5 rem) se metía en la celda de al lado. El hilo lo pasó a 7 rem (112 px; medido a 736, 1024 y 1440, `scrollWidth` = `clientWidth` = 112) y lo dejó escrito en `juego.css` (comentario del bloque `@media (min-width: 46rem)`). El plan B de `§10.1` («lo que queda abierto», 3), 5,5 rem, son 88 px (cuenta) y tampoco habrían alcanzado para ≈ 100 |
 | **Las celdas** | Borde de 2 px en `--borde`, esquina de 3 px, **sobre `--fondo`**: no una "superficie elevada" |
 | **El nombre** | Rotulada 0,95 rem |
 | **Cada celda abre su bajada** con `<details>` | El `summary` mide **≥ 72 px** (`--toque-min` + 24) y es tocable entero. Al abrir, la celda muestra la línea que nombra (negrita) y la bajada (0,9 rem). El indicador "+" / "−" va arriba a la derecha, con texto alternativo vacío, y deja 1,6 rem de relleno a la derecha del nombre |
@@ -740,7 +865,37 @@ Es simétrica (`relacion(a, b) === relacion(b, a)`) y nunca gana ni pierde. El t
 | 8 y **Empezá otra noche** (62) | 70 | **601** |
 
 Holgura de 66 px. **A 360 × 640** el mismo caso suma un renglón más al nombre (más angosto) y uno a la
-bajada, y **Compartí** termina ≈ 556: entra. **Por medir** las dos ventanas.
+bajada, y **Compartí** termina ≈ 556: entra. **Por medir** las dos ventanas. *(2026-10-06: medido; la
+holgura real es de 33 px y «Compartí» a 360 termina en 584. Va abajo, `FIND-132`.)*
+
+**Medido (2026-10-06, `FIND-132` de `REV-20`).** Lo de arriba es **cuenta** y quedó corta. Esto lo midió
+`revisor` en `6cccc1a` (con `D-67`: el nombre ya va en la letra de *Luzbelito*), Chromium con DejaVu Sans,
+`getBoundingClientRect().bottom` de «Compartí» / «Empezá otra noche». **Yo no lo corrí.** Una cifra por
+ventana **y por manera**, porque cambia con las dos:
+
+| Ventana (pliegue) | `CU-1` | `CU-2` | `CU-3` | `CU-4` |
+|---|---|---|---|---|
+| 375 × 667 | 524 / 597 | **561 / 634** | 524 / 597 | 524 / 597 |
+| 360 × 640 | 524 / 597 | 584 / 657 | 548 / 621 | 548 / 621 |
+| 320 × 568 | 568 / 641 | 629 / 702 | 568 / 641 | 652 / 725 |
+
+- **A 375 el peor caso es `CU-2`:** «Compartí» en 561 (la cuenta decía 531) y «Empezá otra noche» en 634 (la
+  cuenta, 601). **Holgura de 33 px, no de 66.** Entra, así que el criterio de fondo de `§1.2` se cumple. Las
+  otras tres terminan en 524 y 597 (holgura de 70). Antes de `D-67` eran 538 / 611 y 574 / 647.
+  *(Cuenta mía sobre lo que midió `REV-20` antes de `D-67`: en `CU-2` la cuenta acierta el nombre —tres
+  renglones, ≈ 109 contra 111 medidos— y se queda corta sobre todo en la bajada: 94 en la cuenta, 121
+  medidos, iguales en las cuatro maneras.)*
+- **A 360 × 640** «Compartí» termina como mucho en 584 (la cuenta, ≈ 556): entra en 640. «Empezá otra noche»
+  llega a 657 en `CU-2` y queda bajo el pliegue; esta hoja nunca prometió que entrara a 360.
+- **A 320 × 568** «Compartí» termina entre 568 y 652: en `CU-1` y `CU-3` justo en el borde, en `CU-2` y `CU-4`
+  bajo el pliegue; «Empezá otra noche» siempre queda abajo (641 a 725). **Esta hoja no fija tope para el
+  resultado a 320** (la portada sí, `§3.4`) y no lo agrego acá: es el dato para quien decida si «Compartí»
+  tiene que entrar a 320.
+- **Con plano y sin plano da lo mismo:** `revisor` repitió el A/B en `6cccc1a` (375 y 320, cuatro
+  maneras): idénticos.
+- **Cuándo se vuelve a medir:** cada vez que cambie una letra o una bajada del resultado (el nombre, la línea
+  que nombra, la bajada). La cifra cambia con las dos, como se vio con `D-67`; por eso `§12.1` pone el tope en
+  el pliegue y no en una cuenta.
 
 > **[Ampliado 2026-10-05 por `UX-38` v1.1]** Estas cuentas **no cambian** con el plano: va después de los
 > dos botones, así que nada de lo que está arriba depende de él, y el hilo lo midió con y sin plano en cinco
@@ -748,7 +903,8 @@ bajada, y **Compartí** termina ≈ 556: entra. **Por medir** las dos ventanas.
 > la tarjeta" y "← Volvé al fichín", lo que mide el recorte (327 a 378 px a 375; 331 a 436 a 320, medido por
 > el hilo) más su aire. *(La primera pasada decía "≈ 326 px", una cuenta.)* De paso, a 320 × 568 el "Compartí"
 > del peor caso queda al borde del pliegue: `REV-19` midió 562 y `ESTADO.md` anota hasta 646. Es de antes del
-> plano y no lo empeora.
+> plano y no lo empeora. *(2026-10-06: `revisor` lo midió en `6cccc1a`, con y sin plano: 568 a 652 según la
+> manera, idéntico en los dos casos; tabla arriba.)*
 
 ### 5.7 En la mesa (≥ 64 rem): una columna
 
@@ -766,8 +922,9 @@ bajada, y **Compartí** termina ≈ 556: entra. **Por medir** las dos ventanas.
   con algo que mostrar". **Esta grilla es ese candidato.** Queda anotado en `§11`; no se hace sin pedido.
 
 Lo que sí cambia en la mesa: el nombre a **2,6 rem** (es el título de la pantalla: crece con el `h1`,
-no es letra de juego), la grilla a **5 rem de margen izquierdo y celdas de ≈ 256 px**, el esquinero a
-5 rem. La lista de la carátula **vuelve** en el resultado (`UX-35` §3.4) y "Compartí" sigue siendo la
+no es letra de juego), la grilla a **5 rem de margen izquierdo y celdas de ≈ 256 px** *(2026-10-06: el
+margen quedó en **7 rem** por `FIND-112`, `§5.3`; con 32 px menos entre las dos columnas, las celdas
+pierden ≈ 16 px cada una, cuenta sin medir)*, el esquinero a 5 rem. La lista de la carátula **vuelve** en el resultado (`UX-35` §3.4) y "Compartí" sigue siendo la
 pieza de más peso.
 
 ### 5.8 Lo que el resultado no tiene
@@ -1015,7 +1172,7 @@ en principio no pasa): **por medir** con NVDA y JAWS (`§12.6`). **La leyenda so
 | Pieza | Presupuesto | De dónde sale |
 |---|---|---|
 | Título de la portada | ≤ 8 palabras | `voz-ricotera.md` §4.1 |
-| Renglón del lugar | ≤ 8 palabras, 1 renglón (≤ 40 caracteres) | `.donde-estas`: 40 ch |
+| Renglón del lugar | ≤ 8 palabras, 1 renglón: **≤ 40 caracteres a 375 y a 360** (cuenta de `.donde-estas`, 40 ch; **medido: 35 entra**) y, **en la portada de este juego, a 320 con DejaVu Sans, ≤ 30** (medido: 30 entra, 35 parte en dos), con `#empezar.bottom ≤ 568` *(2026-10-06; antes decía solo «≤ 40 caracteres», que a 320 no valía)* | `.donde-estas`: 40 ch; a 320, `FIND-130` y `§3.4` |
 | Subtítulo | ≤ 2 frases, ≤ 24 palabras, ≤ 3 renglones a 375 px; **dice "no hace falta saber nada ni haber ido"** | `§1.2`, `UX-06` §0 |
 | Rótulo del índice | ≤ 5 palabras | rótulo de etiqueta de 0,75 rem. Hoy "Las hojas de la noche": 5, **al tope** |
 | **Sello de momento** | ≤ 3 palabras, **≤ 12 caracteres** | cabecera de la hoja: sello + folio ("10 de 10") caben en una línea. Hoy "Cuando suena": 12, **al tope**; un sello nuevo más largo no entra sin mirar la cabecera (cuenta: ≈ 150 px de sello + ≈ 70 de folio en ≈ 299 de hoja) |
@@ -1030,6 +1187,23 @@ en principio no pasa): **por medir** con NVDA y JAWS (`§12.6`). **La leyenda so
 | Línea de contraste | 1–3 renglones, R3, neutra y simétrica | `CNT-29`, `§5.4` |
 | Botones | voseo imperativo, ≤ 3 palabras | `D-17` |
 | Cadena nueva: "no se pudo armar la noche" | 1 renglón, R3, seca | `§4.8` |
+
+**Respuesta a `Docs/SUGERENCIAS/CNT-para-hilo-principal-lugar-320.md` §2 (`experiencia`, 2026-10-06).**
+`contenido` preguntó si esta fila pasa a decir «≤ 40 caracteres medidos a 360 y a 375 (con 35 entra); a 320
+con la pila de Linux, el techo medido es 30». **Sí, con dos cambios sobre su redacción**, y la fila de arriba
+ya los trae:
+
+1. **El 40 no está medido, el 35 sí.** Lo medido es que 35 caracteres entran en un renglón a 360 y a 375
+   (con esa línea el botón terminó en 588 y 590). El 40 es la cuenta de `.donde-estas` y queda marcado como
+   cuenta; no lo cuento como medida.
+2. **El 30 es el techo de esta portada a 320, no de todos los lugares.** Lo que manda es el botón:
+   `#empezar.bottom ≤ 568` a 320 × 568 (`§3.4`). En esta portada, la de la tapa de libro con índice, hay 30
+   caracteres de renglón antes de que el botón se vaya bajo el pliegue. Los otros lugares miden entre 33 y 41
+   (cuenta de `contenido`); `FIND-111` registró a esta como la única de las ocho portadas con el arranque
+   afuera a 320, y nadie midió a 320 el renglón de las otras por sí mismo. Si `contenido` escribe un lugar nuevo
+   para otro juego que pase de 30, no se rechaza por eso: se mide el botón de esa portada a 320.
+
+Con esto la §2 de esa sugerencia queda contestada. Marcarla es del hilo (no es mi carpeta).
 
 ---
 
@@ -1098,7 +1272,7 @@ apartamientos están abajo, uno por uno, con su porqué.
 | 9 | Como pedí | `.ejes-momento--entra` con `--duracion-paso` y `--curva-cinta`, sin tocar la opacidad; la isla la pone solo si cambió el momento; está en `ESTADOS_EJES` |
 | 10 | Como pedí | `.ejes-marca`: la calcada a 1,15 rem en `--fondo`, el nombre del test a 0,75 rem, 4,5 rem de margen derecho |
 | 11 | **Como pedí, con una precisión** | La línea va después de los botones, **dentro de la sección de la grilla**, entre "Cuatro puntas de la misma hoja." y los rótulos de columna. En `§5.4` la llamé «pie de la grilla»: queda como entrada, no como pie. Lo acepto: sigue entre los botones y la grilla y no empuja ningún botón |
-| 12 | Como pedí | Rótulos y sello a 0,75 rem; sello `inline-block`, `max-width: 100%`, `text-wrap: balance`; `5rem 1fr 1fr` desde 46 rem; una columna bajo 22 rem. Un riesgo mío, abajo |
+| 12 | Como pedí | Rótulos y sello a 0,75 rem; sello `inline-block`, `max-width: 100%`, `text-wrap: balance`; `5rem 1fr 1fr` desde 46 rem *(2026-10-06: hoy `7rem 1fr 1fr`, `FIND-112` de `REV-19`, `§5.3`)*; una columna bajo 22 rem. Un riesgo mío, abajo |
 | 13 | Como pedí | `summary:focus-visible` con el aro de `--acento-2`; `content: '+' / ''` y `'−' / ''`, con la declaración de respaldo antes |
 | 14 | Como pedí | `a.ejes-bajar`: 48 px, 2 px punteado en `--borde`, `--texto-tenue`, rotulada 0,8 rem |
 | 15 | Como pedí, y de más | `.ejes-enunciado:focus-visible` y también `.ejes-nombre:focus-visible` (el `h2` del resultado, que `§8.1` también nombra) |
@@ -1106,7 +1280,7 @@ apartamientos están abajo, uno por uno, con su porqué.
 | 17 | Como pedí | Marca en `--marca-rojo` sobre `--fondo`, fuera de la hoja; la línea que nombra debajo del sello (leído: no se pisan en `og-cu-3` ni en `og-cu-4`); `og-dos-ejes` en orden alfabético (manifiesto y leído) |
 | 18 | Como pedí | `VERSION_DEL_DIBUJO = 2`; el manifiesto dice `version: 2` |
 | 19 | **Cambió el texto** (de `contenido`; 5 y 7) | `indiceRotulo` = "Las hojas de la noche" (`CNT-30` §6.2); `POLOS` = «con la gente», «con lo propio», «con plan», «sobre la marcha» (`D-57` enmienda 1), en minúscula; `lasCuatroCanta` = "Cuatro puntas de la misma hoja." (vuelta 3) |
-| 20 | **Se apartó** (de `contenido`; 6) | `LUGARES.dosEjes` = "Entrá con la campera puesta." El renglón se queda en la portada normal y se va en la postal y en el enlace viejo, como pedí |
+| 20 | **Se apartó** (de `contenido`; 6) | `LUGARES.dosEjes` = "Entrá con la campera puesta." El renglón se queda en la portada normal y se va en la postal y en el enlace viejo, como pedí. *(Registro del 2026-10-04. Hoy el renglón dice «Traés barro en las zapatillas.»: `D-62` lo cambió y `2d61d7d` lo acortó a 30 caracteres por `FIND-130`, `§3.4`.)* |
 | 21 | Sin tocar, a propósito | `D-57` punto 9. No lo busqué en el código; sigue en `§11.1` |
 
 #### Los apartamientos, uno por uno
@@ -1153,6 +1327,10 @@ apartamientos están abajo, uno por uno, con su porqué.
    `.donde-estas`), imperativo voseado, registro 1 con imagen física, sin suspensivos. Tapada, la
    portada sigue diciendo qué es y qué tocar (regla de las dos líneas). La misma imagen abre la
    primera hoja («Campera puesta, llaves en el bolsillo.»): es a propósito y lo dice `contenido`.
+   *(Registro del 2026-10-04, sin tocar. Con `D-62` las dos cambiaron: el renglón del lugar es hoy «Traés
+   barro en las zapatillas.» —30 caracteres, `§3.4` y `§9`— y la línea que canta de la primera hoja es
+   «Botella cortada, guitarra afinando, olor a yerba.» Lo que no cambió es la regla: el portal y la última
+   hoja comparten objeto, las zapatillas, y la portada sigue diciendo qué es y qué tocar.)*
 7. **La línea que canta de la grilla dice «Cuatro puntas de la misma hoja.»** 6 palabras (≤ 8),
    registro 1, física. Cambia por lo mismo que sacó «puertas» del renglón del lugar: la puerta de un
    recital es donde se pide la entrada. Corregido en `§5.3`. Con los polos nuevos, las líneas que
@@ -1194,7 +1372,7 @@ apartamientos están abajo, uno por uno, con su porqué.
 | Hoja de la tarjeta | ≈ 817 | **769** (manifiesto) | entra en 740 a 860 |
 | Cuerpo del crédito | 26 | **25** | entra en un renglón |
 | La hoja de la pregunta termina en | ≈ 377 | — | por medir |
-| Resultado: «Compartí» y «Empezá otra noche» | 531 y 601 | — | por medir; la línea de contraste va después de los botones y no los mueve |
+| Resultado: «Compartí» y «Empezá otra noche» | 531 y 601 | — | por medir; la línea de contraste va después de los botones y no los mueve. *(2026-10-06, `FIND-132`: medido por `revisor` en `6cccc1a`: 524 y 597, y 561 y 634 en `CU-2`, el peor caso; `§5.6`)* |
 | Postal a 375 × 640 y 360 × 640 | — | — | con 650 el botón de la más alta queda bajo el pliegue; ya aceptado en `§3.4` |
 | La mesa, 1366 × 657 | ≈ 500 el botón de la portada | — | por medir |
 | Piezas ≤ 30 KB y ≤ 90 KB las tres de la portada | — | — | no las medí |
@@ -1212,7 +1390,9 @@ apartamientos están abajo, uno por uno, con su porqué.
 3. **«OSCURIDAD» en la columna de 5 rem** (desde 46 rem, `§5.3`): mi cuenta da ≈ 84 px de rótulo
    (rotulada de 0,75 rem, `letter-spacing: 0.08em`) contra 80 de columna. El hueco de 8 px lo
    absorbe, pero no queda aire. Es una medida que yo fijé sin contarla. **Por medir** entre 46 y
-   64 rem; si desborda, la columna pasa a 5,5 rem.
+   64 rem; si desborda, la columna pasa a 5,5 rem. **Cerrado el 2026-10-06 (`FIND-112` de `REV-19`):
+   desbordó.** La medida real de «OSCURIDAD» fue ≈ 100 px y no los ≈ 84 de mi cuenta; la columna pasó a
+   **7 rem** (112 px), no a 5,5. Medido a 736, 1024 y 1440. El texto de arriba queda como estaba.
 
 ---
 
@@ -1241,7 +1421,8 @@ apartamientos están abajo, uno por uno, con su porqué.
 8. **`ESTADOS_EJES`** suma `.ejes-momento--entra`; el censo de `estilos.test.ts` lo exige. *(Aplicado,
    y el hilo sumó `.ejes-tapa-etiqueta--amigo`: `§10.1`.)*
 9. **Lo abierto después de aplicar** (2026-10-04): el balanceo de los renglones del nombre en el taller,
-   la etiqueta del amigo duplicada y el rótulo «OSCURIDAD» en 5 rem. Están en `§10.1`, al final.
+   la etiqueta del amigo duplicada y el rótulo «OSCURIDAD» en 5 rem. Están en `§10.1`, al final. *(El
+   último se cerró el 2026-10-06: la columna es de 7 rem, `§5.3`.)*
 
 ---
 
@@ -1266,7 +1447,8 @@ npm test
 
 ### 12.1 Las pantallas, a 375 × 667
 
-- [ ] Portada: el borde de abajo de "Empezá la noche" ≤ **667**, a la vista (`getBoundingClientRect().bottom`); el hilo midió **590** y no tiene que subir. *(Antes: 576 + 20, mi cuenta.)*
+- [ ] Portada: el borde de abajo de "Empezá la noche" ≤ **667**, a la vista (`getBoundingClientRect().bottom`); el hilo midió **590** y no tiene que subir. *(Antes: 576 + 20, mi cuenta.)* *(2026-10-06, `FIND-131`: con `D-67` son **595** a 375 y 592,5 a 360, medidos por `revisor` en `6cccc1a`; subió, y el tope —el pliegue, 667— se cumple con 72 px. «No tiene que subir» ya no es la vara: la vara es el tope.)*
+- [ ] Portada a 320 × 568: el borde de abajo de «Empezá la noche» ≤ **568** (cierre de `REV-19`: 565; `REV-20` midió 587 con `LUGARES.dosEjes` = «Traés barro seco en las zapatillas.», `FIND-130`; **resuelta el 2026-10-06 en `2d61d7d`**: la línea vigente es «Traés barro en las zapatillas.», 30 caracteres, y el hilo midió **565** con DejaVu Sans; **después, `D-67` lo llevó a 570 y `b86b2db` lo dejó en 562** —561,5 en la re-corrida de `revisor` sobre `6cccc1a`—, con **6 px de margen**: **la cifra vigente es 562**, `FIND-131`). **Se repite cada vez que cambie el renglón del lugar, el índice, el relleno de la tapa o el título (la letra del `h1` o su alto)**, y se mide también a 360 × 640 y a 375 × 667 (`§3.4`; el techo de caracteres, en `§9`). *(Esta casilla decía `FIND-120` y «el hilo lo acorta»; hasta el 2026-10-06 la guarda no nombraba el título, y el título fue lo que cambió.)*
 - [ ] Postal y enlace viejo: el de "Empezá tu noche" ≤ **667**; el hilo midió **626 y 650** con el relleno de 20/16 (665 con 28/24). Si una frase nueva sube un renglón, el próximo escalón es el margen de la tapa (`§1.2`), nunca el subtítulo ni el botón.
 - [ ] `document.querySelectorAll('.pantalla > h1').length` = 1 por pantalla, y **no** adentro de `figcaption`.
 - [ ] La tapa mide el alto de la etiqueta + 28 + 24 en la portada y + 20 + 16 con la etiqueta del amigo (`offsetHeight`, no `getBoundingClientRect`: está torcida), más los 6 px del borde.
@@ -1275,9 +1457,9 @@ npm test
 - [ ] El lomo y el esquinero se ven; el mármol asoma arriba y abajo de la etiqueta.
 - [ ] Hoja: termina ≈ 377; ninguna opción de la hoja 1 cae entre y = 514 y 601 (donde estaban "Empezá la noche" y "Empezá otra noche").
 - [ ] Las dos opciones: mismo `offsetHeight` en la mesa; mismo ancho; `min-height` ≥ 56.
-- [ ] Resultado: "Compartí" y "Empezá otra noche" terminan ≤ **601 + 20**; a 360 × 640, "Compartí" ≤ 640.
+- [ ] Resultado a 375 × 667: "Compartí" y "Empezá otra noche" terminan ≤ **667**, el pliegue, que es lo que promete `§1.2`; a 360 × 640, "Compartí" ≤ **640**. **Medido por `revisor` en `6cccc1a` (con `D-67`):** 524 / 597 en `CU-1`, `CU-3` y `CU-4`, y **561 / 634 en `CU-2`**, el peor caso (holgura de 33 px); a 360, «Compartí» hasta 584. Por manera y por ventana, en `§5.6`. **Se repite cuando cambie una letra o una bajada del resultado.** A 320 × 568 no hay tope: `§5.6`. *(Esta casilla decía «≤ **601 + 20**», mi cuenta con 20 px de aire; `REV-20` midió 647 ya antes de `D-67`: la casilla no se cumplía, aunque el criterio de fondo —que entre en 667— sí: `FIND-132`.)*
 - [ ] La grilla: cuatro celdas; la primera es la tuya; a 360 px dos columnas sin texto cortado; a 351 px, una.
-- [ ] La grilla entre 46 y 64 rem: el rótulo «OSCURIDAD · con lo propio» no se sale de la columna de 5 rem ni toca la celda (`§10.1`, «lo que queda abierto», 3); si desborda, 5,5 rem.
+- [ ] La grilla entre 46 y 64 rem: el rótulo «OSCURIDAD · con lo propio» no se sale de la columna de **7 rem** (112 px) ni toca la celda: `scrollWidth` = `clientWidth` (112) a 736, 1024 y 1440 (`REV-19`, `FIND-112`; `§5.3`). *(Decía «5 rem… si desborda, 5,5 rem»: desbordó y fue 7.)*
 - [ ] Sin desplazamiento horizontal a 320, 360 y 375: `scrollWidth <= innerWidth`.
 
 ### 12.2 Primera pantalla sin muro
@@ -1329,3 +1511,10 @@ npm test
 - [ ] Compartí con archivo en iOS y en Android: ¿llega el enlace? (`§6.1`)
 - [ ] La grilla, la tapa y la hoja a la intemperie (brillo alto): ¿se lee el sello? ¿se distingue el canto?
 - [ ] ¿Alguna de las cuatro maneras se lee más pobre o más triste (`CNT-30` §9)? Es de `REV-19`, pero esta pantalla es donde se nota.
+- [ ] **Portada a 320 × 568 con la fuente real:** ¿«Empezá la noche» queda a la vista y entera? Con DejaVu y la línea vigente («Traés barro en las zapatillas.», 30 caracteres) el margen es de **6 px** (562 de 568, después de `D-67` y de `b86b2db`, `FIND-131`; con 565 eran 3 px antes de `D-67`); sin la línea vigente era negativo (587, `FIND-130`, `§3.4`), y con la letra de `D-67` y sin el arreglo de `b86b2db`, 570. Falta el teléfono: lo medido es Chromium con la pila de Linux, y con métrica Arial no se midió después de `D-67`.
+- [ ] **Enunciados con la fuente real:** ¿alguno pasa de tres renglones a 375 o de cuatro a 320? Mirar primero `EJ-044`, `EJ-045` y `EJ-047` (`§4.1`). Si alguno pasa, se decide como dice `§4.1`.
+
+**Dueño de esta lista y de la de `UX-38` `§10.5` y las filas de aparato real de `UX-38` `§10.4`: el usuario**,
+que es quien tiene el teléfono: uno de unos 375 px y, si hay uno, otro de 320; y VoiceOver o TalkBack para el
+texto del plano. `revisor` anota lo que se vea en la próxima `REV` y abre el hallazgo, con su dueño, si algo
+falla. Mientras no se mida, nada de esto bloquea: son medidas, no flujo.

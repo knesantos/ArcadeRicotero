@@ -96,7 +96,7 @@ test('el plano es una imagen con su texto y no tiene nada que se toque (UX-38 §
   // La grilla dice las cuatro maneras, no que hay dos ejes ni dónde cae la tuya: eso lo dice
   // el plano, y sin texto el lector se lo pierde (la crítica de `UX-38`, punto 3).
   assert.match(cuerpo, /setAttribute\('role', 'img'\)/, 'el plano no es una imagen para el lector');
-  assert.match(cuerpo, /RESULTADO\.altPlano\(/, 'el plano no dice qué muestra');
+  assert.match(cuerpo, /textoDelPlano\(banco, id, suyo\?\.id\)/, 'el plano no dice qué muestra, o lo arma a mano');
   for (const [que, re] of [
     ['un enlace', /'a'/],
     ['un botón', /'button'/],

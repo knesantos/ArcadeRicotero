@@ -115,7 +115,8 @@
 > cansa el volumen"*, *"quiero que esté el gráfico también, queda lindo ver que está en un plano
 > de dos ejes"*, y entre las dos versiones del plano: *"B, el fijo como el rombo viejo"*. Rama
 > `ciclo-18/que-ricotero-sos`, integrada a `main` el 2026-10-05 a pedido del usuario (*"pará y
-> subí e integrá todo lo que hayas hecho, después seguimos"*).
+> subí e integrá todo lo que hayas hecho, después seguimos"*), y otra vez el 2026-10-06 con el
+> PR #41, con todo lo de abajo (*"integrá todo"*).
 >
 > **El número.** Se escribió como `D-59` y se renumeró a **`D-62`** al integrar: el `D-59` del
 > dominio llegó antes a `main`. Los commits de la rama dicen `D-59`; el repo, `D-62`.
@@ -143,41 +144,43 @@
 >   opciones, el consumo nunca de un solo lado, cada celda trae lo sucio), `partida.test.ts` (el
 >   plano fijo; el cuadrado latino de la grilla), `isla.test.ts`, `estilos.test.ts` (piso de 12 px
 >   en `.ejes-*`), `copy.test.ts` (el texto del lector en veinte casos).
-> - **`npm test` corre todo**: el glob iba sin comillas y corría 332 tests; ahora los **1531**.
->   `check` sin errores, `build` de 160 páginas.
+> - **`npm test` corre todo**: el glob iba sin comillas y corría 332 tests. Hoy, con `main`
+>   adentro (`D-63` a `D-67`), **1575 en verde**; `check` sin errores, `build` de 160 páginas.
+> - **El plano está en el lienzo** del sistema de marca como **hoja 16** (`T-351`, versión 19 del
+>   lienzo), debajo de la 08 en la página Aplicación.
 >
-> **`REV-20` quedó a medio camino** (la paró el usuario para integrar). Corrieron las tres lentes
-> (banco y voz, pantalla y plano, papeles) y sus dos verificadores adversariales (reproducción y
-> criterio); **no** se escribió el documento ni corrió el crítico de completitud. Se retoma con
-> esto:
-> - **Confirmados por los dos verificadores** (todo bajo o medio, ninguno alto, ninguno en el
->   plano construido):
->   - `EJ-049`: «Grito con el resto» es la entrega total y, con la merca en la escena, «Canto
->     para adentro» queda como la contención (`BR-36`, `BR-38`). → `contenido`.
->   - Papeles que no dicen lo que hay: `UX-38` §5 y G10 citan el texto del lector viejo
->     (`experiencia`); `BR-38` y `CNT-31` dicen que ninguna guarda cuenta lo sucio (`producto`,
->     `contenido`); `PRD-alcance-v1` tiene un "no cambian" sin marcar y una cita rota a `UX-38`
->     §2.1 (`producto`); `CTR-08` no nombra `planoFijo()` (`arquitectura`).
->   - Ya resueltos al integrar: `ESTADO` viejo, el `D-59` doble y la enmienda 2 que decía que el
->     plano estaba escondido al lector.
-> - **Sin consenso** (un verificador sí, el otro no; decide el hilo):
->   - **Portada a 320 × 568**: "Empezá la noche" termina en 587 (19 px bajo el pliegue); lo
->     cerraba `FIND-111` en 565 y lo reabrió el lugar nuevo, *"Traés barro seco en las
->     zapatillas."*, que ocupa un renglón más. Es una regresión de este ciclo: **conviene
->     arreglarla**.
->   - Enunciados de cuatro renglones a 375 y de cuatro o cinco a 320 (el tope de `UX-36` es tres).
->   - Banco, de oído: `EJ-040` («Me dejo llevar» con los Redondos sonando), `EJ-051` («su hija
->     grande» en la misma noche que el porro), `EJ-054` («Aviso que llegué» como precaución),
->     `CU-4` (averiguarlo en el celular, `FIND-116`), la firma de forma de la vuelta, `EJ-052`
->     (misa, pogo y reviente juntos), las líneas que cantan sin segunda persona.
->   - Papeles: `UX-36` §10.1 con el lugar viejo (es historia), `T-351`..`T-353` sin ficha en `ORQ`.
-> - Los resultados crudos están en el diario del flujo `wf_23900159-d4e` de la sesión; si no se
->   llega a él, se vuelven a correr las tres lentes.
+> **`REV-20` está cerrada** (`Docs/REVISIONES/REV-20-la-noche-ricotera.md`, 2026-10-06; los votos
+> en `REV-20-votos.json`). Tres lentes con dos verificadores adversariales cada una, un crítico de
+> completitud y una ronda final. **Ningún hallazgo alto.** `FIND-119` … `FIND-133` (`FIND-128` y
+> `FIND-129` quemados): todo cerrado. `FIND-132` y `FIND-133`, cifras de `UX-36`/`UX-38`, se
+> cerraron en papeles después del cierre (abajo).
+> - `EJ-049` (`FIND-119`) quedó «Festejo con el resto» / «Canto para adentro», en dos vueltas.
+> - La portada a 320 × 568 se rompió dos veces y se arregló dos veces: el lugar nuevo del casete
+>   («Traés barro en las zapatillas.», `FIND-130`) y la letra del título de `D-67` (`FIND-131`:
+>   16 px de aire bajo 22 rem). Hoy «Empezá la noche» termina en 562.
+> - Guardas nuevas de la revisión: la música que molesta en más formas y en primera persona, los
+>   trapos fuera de las opciones, el consumo como verbo, la merca fuera de lo que define una
+>   manera o un momento, ningún número; `textoDelPlano()` en un solo lugar y el orden de los
+>   rincones atado.
+> - La excepción de las líneas que cantan (sin segunda persona) está en `voz-ricotera.md` §5.
 >
-> **Lo que queda abierto además:** `T-351` (pegar el recorte del plano en el lienzo, hojas 08 y
-> 09); el plano en un teléfono real, con lector de pantalla real, con contraste forzado y con el
-> texto al 200 %. A 320 × 568 "Compartí" puede quedar bajo el pliegue en el peor caso: es de antes
-> del plano.
+> **Después del cierre**, una última ronda de papeles (`1afb263`, `619b2b2`, `7e772a3`, `0c38b56`)
+> cerró en papeles `FIND-132` y `FIND-133` y lo que el cierre le dejaba a cada rol. Su verificador
+> dejó cinco detalles de redacción, todos bajos, que quedan anotados acá y no se abrió otra vuelta:
+> - `contenido` (`CNT-31`): todavía dice que `producto` no decidió `EJ-051` (decidió en `6b1beeb`:
+>   la escena es la hoja) y que el peso del costo de `CU-4` lo dice `producto` (ya dijo: cuenta la
+>   forma, decide `contenido`); y cita «ficha 15/16/17» donde `REV-20` dice «Sin consenso».
+> - `experiencia` (`UX-36` §5.6, `UX-38` §3.2): «Compartí» a 320 termina en 568,4 en las cuatro
+>   maneras (en `CU-1` y `CU-3` por 0,4 px), no «justo en el borde».
+> - `producto` (`BR-38`): el «Léase» del veto 1 deja afuera «el pogo» que la tabla trae, y la cita
+>   «`REV-20` 2(c)» para los chicos en las bajadas no lo respalda (es cierto, pero por otra lectura).
+>
+> **Lo que decide el usuario:** si «Compartí» tiene que entrar a 320 × 568 en el resultado (hoy
+> no, en ninguna manera, y es de antes de este ciclo); `EJ-040` («Me dejo llevar» con los Redondos
+> sonando) y el costo de `CU-4` («averiguarlo en el celular»), que `contenido` dejó como están;
+> y el teléfono real (lector de pantalla, la portada a 320, el brillo, Safari y Android), y si la
+> noche suena ricotera. La hoja 15 del lienzo (la mesa) sigue pendiente (`T-319`), y antes hay
+> que sacarle el canto.
 
 > ## 🌐 EL DOMINIO: FICHINRICOTERO.COM.AR, ANDANDO (2026-10-05) — `D-59`
 >

@@ -3759,7 +3759,9 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     pedido.
   - **Consecuencias:** `producto` enmienda el criterio 3 de `US-06` (el plano queda exceptuado
     por decisión del usuario); `experiencia` lleva `UX-38` a la versión construida; `contenido`
-    confirma el texto del lector, que ahora dice el lugar de la tuya (`T-352`). `T-353` queda
+    confirma el texto del lector, que ahora dice el lugar de la tuya (`T-352`); `arquitectura`
+    suma `planoFijo()` y `PLANO_FIJO` a `CTR-08` (lo pidió `REV-20`, que encontró el contrato
+    sin el motor nuevo: hecho el 2026-10-06). `T-353` queda
     cerrada con esta enmienda.
 
 ## D-63 — El fondo del portal es negro liso, y la gente de *Oktubre* mira desde el final de la página

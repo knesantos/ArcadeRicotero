@@ -16,7 +16,9 @@
   en `Docs/SUGERENCIAS/CNT-para-hilo-principal-vuelta-4-dos-ejes.md`.
 - **Actualización del 2026-10-04 (`D-62`):** **`CNT-31` reescribe los enunciados, las cinco líneas que
   cantan y las cuatro bajadas** para que la noche sea la ricotera (barro, chori, birra, porro, familia),
-  y deja 57 de las 60 opciones como están aquí. **Las tablas de §3, §4 y §5 de este documento son la
+  y deja 57 de las 60 opciones como están aquí. **[2026-10-06: eso valía el 2026-10-04; desde la
+  vuelta 7 de `CNT-31` son 42 de 60, y desde `REV-20` (`CNT-31` §14) son 41, porque la A de
+  `EJ-049` también cambió.]** **Las tablas de §3, §4 y §5 de este documento son la
   historia de las cuatro vueltas, no el banco vigente**; las reglas de §2 siguen valiendo salvo las que
   dicen "sin banda, sin misa, sin pogo", "sin alcohol, drogas ni policía" (queda solo la policía) y "sin
   plata ni micro ni puesto" en el enunciado (las opciones siguen sin plata).

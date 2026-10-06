@@ -128,9 +128,11 @@ export const LUGARES = {
   // puerta" con la vuelta 2: era la cuarta vez que la pantalla decía "nada", y la puerta de un
   // recital es donde se pide la entrada. "Con las manos vacías" se leía como llegar sin regalo
   // (vuelta 3): queda la imagen de la previa, sin plata y sin puerta.
-  // `CNT-31` §10 (`D-62`): la imagen pasa a ser la de la vuelta (el barro seco), porque la línea
-  // que canta de la previa dejó de ser la campera; el portal y la última hoja comparten objeto.
-  dosEjes: 'Traés barro seco en las zapatillas.',
+  // `CNT-31` §10 (`D-62`): la imagen pasa a ser la de la vuelta (el barro en las zapatillas),
+  // porque la línea que canta de la previa dejó de ser la campera; el portal y la última hoja
+  // comparten objeto. A 320 px el renglón no puede pasar de 30 caracteres: con «seco» (35)
+  // partía en dos y dejaba «Empezá la noche» bajo el pliegue (`REV-20`, `FIND-111` de `REV-19`).
+  dosEjes: 'Traés barro en las zapatillas.',
 } as const;
 
 /**

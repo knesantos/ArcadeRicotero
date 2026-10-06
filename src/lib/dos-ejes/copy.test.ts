@@ -11,8 +11,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { RESULTADO, EJES, POLOS } from './copy.ts';
-import { planoFijo, type Banco, type Polo } from './partida.ts';
+import { RESULTADO, EJES, POLOS, textoDelPlano } from './copy.ts';
+import { planoFijo, type Banco } from './partida.ts';
 
 const BANCO = JSON.parse(readFileSync('src/data/dos-ejes.json', 'utf-8')) as Banco;
 
@@ -22,18 +22,10 @@ const plano = (t: string): string =>
     .normalize('NFD')
     .replace(/\p{M}/gu, '');
 
-/** Lo que la isla le pasa a `altPlano` para la tuya en el lugar `k` y el enlace en `j`. */
+/** El texto de la tuya en el lugar `k` y el enlace en `j`, con la misma función que usa la isla. */
 function lo(k: number, j: number | null): { texto: string; tuya: string; suya: string | null } {
-  const { celdas, renglones, columnas } = planoFijo(BANCO);
-  const extremo = (p: Polo) => `${EJES[p]}, ${POLOS[p]}`;
-  const texto = RESULTADO.altPlano({
-    arriba: extremo(renglones[0]),
-    abajo: extremo(renglones[1]),
-    izquierda: extremo(columnas[0]),
-    derecha: extremo(columnas[1]),
-    tuya: { nombre: celdas[k]!.nombre, lugar: RESULTADO.lugares[k]! },
-    suya: j === null ? undefined : j === k ? 'misma' : { nombre: celdas[j]!.nombre, lugar: RESULTADO.lugares[j]! },
-  });
+  const { celdas } = planoFijo(BANCO);
+  const texto = textoDelPlano(BANCO, celdas[k]!.id, j === null ? undefined : celdas[j]!.id);
   return { texto, tuya: celdas[k]!.nombre, suya: j === null || j === k ? null : celdas[j]!.nombre };
 }
 
@@ -86,4 +78,19 @@ test('sin anglicismos ni folleto, y la gente no es "los fans" (D-17, voz-ricoter
     assert.ok(!glosario.test(plano(texto)), texto);
     assert.ok(!gente.test(plano(texto)), texto);
   }
+});
+
+test('cada lugar dice el rincón donde planoFijo pone la celda (CTR-08 E2.4 b)', () => {
+  // Si alguien cruza dos cadenas de `RESULTADO.lugares`, el lector dice un rincón equivocado y
+  // ningún otro test se pone en rojo: el texto sigue siendo seco, sin números y bien puntuado.
+  const { celdas, renglones, columnas } = planoFijo(BANCO);
+  celdas.forEach((c, k) => {
+    const vertical = c.luzOscuridad === renglones[0] ? 'arriba' : 'abajo';
+    const horizontal = c.ordenCaos === columnas[0] ? 'izquierda' : 'derecha';
+    assert.equal(RESULTADO.lugares[k], `${vertical} a la ${horizontal}`, c.id);
+  });
+});
+
+test('una manera que no está en el plano no se dice: falla fuerte', () => {
+  assert.throws(() => textoDelPlano(BANCO, 'CU-9'));
 });
