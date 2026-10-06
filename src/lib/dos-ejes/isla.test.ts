@@ -11,7 +11,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const ISLA = readFileSync('src/scripts/partida-dos-ejes.ts', 'utf-8');
+// Con los finales de línea de la copia de trabajo pasados a `\n`: en Windows git la deja en
+// CRLF, y los cortes de abajo buscan el cierre de una función por `'\n}\n'`. Sin esto, ahí
+// no lo encontraban y miraban el archivo entero.
+const ISLA = readFileSync('src/scripts/partida-dos-ejes.ts', 'utf-8').replace(/\r\n/g, '\n');
 const TOKENS = readFileSync('src/styles/tokens.css', 'utf-8');
 const PAGINAS = ['src/pages/juegos/dos-ejes.astro', 'src/pages/juegos/dos-ejes/[cu].astro'].map((p) => ({
   p,

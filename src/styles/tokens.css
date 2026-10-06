@@ -29,6 +29,11 @@
   font-display: swap;
 }
 @font-face {
+  font-family: 'Redonditos de Ricota Fan';
+  src: url('/fuentes/redonditos-de-ricota.woff') format('woff');
+  font-display: swap;
+}
+@font-face {
   font-family: 'Archivo Black';
   src: url('/fuentes/archivo-black.woff2') format('woff2');
   font-display: swap;
@@ -156,6 +161,37 @@
      No lleva credito: es un motivo generico de la tecnica, no un recorte de ninguna tapa. */
   --textura-rodillo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='14'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.06 0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.85 0.85 0.85 0 -0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
 
+  /* La almohadilla (`D-64`, hoja 07). Las tapas de los juegos —el título del casete, el de la
+     carátula, el h1 de cada juego y el macizo del sello— salen de la misma almohadilla de goma
+     medio seca: le falta tinta en puntos (la sal) y en zonas donde la mano aflojó (la presión),
+     y los huecos se juntan justo ahí (k3 = −16). Alfa sola, como el grano: se usan como
+     MÁSCARA y la tinta la pone el lugar.
+     - Sal: fractal 0,75 cortado casi binario (pendiente −40). La perilla es k4: 37,3 da 4,4 %
+       de huecos de ~1 px; cada +0,4 saca ~0,6 puntos. Empezó en 37,8 (3,5 %) y se bajó
+       mirándolo en el portal: a un brazo de distancia el desgaste no se notaba. Va igual en
+       las dos texturas de tinta: son la misma almohadilla.
+     - Presión: fractal 0,035 × 0,055, una zona cada letra y media. La tabla '0.8 1' es PISO: la
+       tinta puede faltar, nunca aguarse por debajo de 0,8. `contraste.test.ts` la lee de acá.
+     - La región 0/0/1/1 del filtro no es decorativa: sin ella stitchTiles cose contra el 120 %
+       por defecto y la tesela deja costura (Chromium: 91 saltos en el borde contra 49 adentro;
+       con la región, 29). El viewBox deja escalar la tesela sin cambiar el dibujo.
+     Medido el 2026-10-05 con librsvg: 4,4 % de huecos. `texturas.test.ts` lo vuelve a medir y
+     lo topea: entre 2 y 7 % de huecos, y ningún bloque de 12 px con más del 30 % comido. */
+  --textura-tinta: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cfilter id='t' x='0' y='0' width='1' height='1'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' seed='11' stitchTiles='stitch' result='g'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.035 0.055' numOctaves='2' seed='7' stitchTiles='stitch' result='m'/%3E%3CfeComposite in='g' in2='m' operator='arithmetic' k2='-40' k3='-16' k4='37.3' result='sal'/%3E%3CfeColorMatrix in='m' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -8 5.8'/%3E%3CfeComponentTransfer result='presion'%3E%3CfeFuncA type='table' tableValues='0.8 1'/%3E%3C/feComponentTransfer%3E%3CfeComposite in='sal' in2='presion' operator='in'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23t)'/%3E%3C/svg%3E");
+
+  /* La misma sal, sin la presión: para el h1 de cada juego, que es tinta de color sobre el
+     negro y no tiene margen para aclararse ("Completá la letra" da 4,67:1 pleno). Saca puntos
+     enteros y no le cambia el color a ninguno, así que ningún par AA se mueve. Mismos seeds y
+     mismos k que --textura-tinta: es la misma almohadilla. */
+  --textura-tinta-sal: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cfilter id='s' x='0' y='0' width='1' height='1'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' seed='11' stitchTiles='stitch' result='g'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.035 0.055' numOctaves='2' seed='7' stitchTiles='stitch' result='m'/%3E%3CfeComposite in='g' in2='m' operator='arithmetic' k2='-40' k3='-16' k4='37.3'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23s)'/%3E%3C/svg%3E");
+
+  /* El papel viejo de la etiqueta (`D-64`): manchas de humedad con borde de marea —escalones
+     duros (discrete), nunca un fundido— y pecas. Se pinta con `--papel-borde`, sin hex nuevo.
+     El último tableValues es el TECHO de toda la etiqueta: 0,18 deja la pista A1… en 4,55:1
+     con el grano de pantalla encima. Más alto y `contraste.test.ts` falla.
+     Medido: 87 % limpio, 13 % manchado, 1,3 % en el techo. */
+  --textura-papel-viejo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'%3E%3Cfilter id='v' x='0' y='0' width='1' height='1'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.018' numOctaves='4' seed='7' stitchTiles='stitch' result='n'/%3E%3CfeColorMatrix in='n' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 -1.55'/%3E%3CfeComponentTransfer result='manchas'%3E%3CfeFuncA type='discrete' tableValues='0 0 0.4 0.7 1'/%3E%3C/feComponentTransfer%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.09' numOctaves='2' seed='11' stitchTiles='stitch' result='p'/%3E%3CfeColorMatrix in='p' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 14 -10.1' result='pecas'/%3E%3CfeComposite in='manchas' in2='pecas' operator='arithmetic' k2='1' k3='1'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 0.18'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23v)'/%3E%3C/svg%3E");
+
   /* Tipografia (hoja 04). Titular: el calco real. Rotulada: grita corto.
 
      Texto: pila del sistema — el enunciado y las opciones van SIEMPRE aca. */
@@ -163,6 +199,16 @@
   --fuente-rotulada: 'Archivo Black', 'Arial Black', sans-serif;
   --fuente-marca-firma: 'Patricio Rey Fan', 'Archivo Black', sans-serif;
   --fuente: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Las dos letras de disco que escriben el título de su juego (`D-67`), con tildes y signos
+     derivados de su propio material (`scripts/derivar-lobo-suelto.py`,
+     `scripts/derivar-redonditos.py`). Mitología viste *Lobo suelto* y escribe en su letra,
+     la digitalización de Zavala del alfabeto de la tapa. *Luzbelito* no tiene letra fichada:
+     viste la de Zavala que se le parece, *Redonditos de Ricota*, porque así lo eligió el
+     usuario. Por eso esa no escribe el nombre del disco en la estampa, que pide la letra de
+     la tapa (`CNT-14` §2.7). */
+  --fuente-lobo-suelto: 'Lobo Suelto Fan', 'Archivo Black', sans-serif;
+  --fuente-luzbelito: 'Redonditos de Ricota Fan', 'Archivo Black', sans-serif;
 
   /* ------------------------------------------------------------------
      Movimiento y aire (hoja 12). La doctrina es de `UX-20`: **el movimiento es del
@@ -215,6 +261,12 @@
   /* Cuanto se corre una capa de fondo al desplazar, como maximo (`UX-20` §1.4). */
   --deriva-capa-fondo: 8%;
 
+  /* El acercamiento (`D-63` enmienda 1): bajar por el portal es caminar hacia la multitud.
+     Es un factor de 0 a 1 que multiplica todo el recorrido de los planos de gente —cuanto
+     crece el de lejos, cuanto sube el de mas cerca—. Con movimiento reducido vale 0 y los dos
+     planos quedan quietos, a la vista, en su lugar de llegada. */
+  --acercamiento: 1;
+
   /* ------------------------------------------------------------------
      La imprenta (hoja 13). La doctrina es de `UX-22`: **el acierto es el unico grito
      del sitio**, y por eso la estampa es lo unico que puede durar mas de un paso.
@@ -236,24 +288,15 @@
   /* Una vuelta entera del carrete mientras suena el fragmento. */
   --duracion-carrete: 1.6s;
 
-  /* El registro imperfecto: cuanto se corre la segunda tinta respecto de la primera.
-     NO es movimiento, es como queda la estampa en reposo, y por eso el corte de
-     movimiento reducido no lo toca. Dos pixeles y medio grado: una imprenta a mano. */
+  /* El registro imperfecto: cuanto se corren las pasadas de la estampa una respecto de la
+     otra (`UX-22` §2.3), como una imprenta a mano que no calzo el segundo color. NO es
+     movimiento, es como queda la estampa en reposo, y por eso el corte de movimiento
+     reducido no lo toca.
+     Hasta `D-64` tambien corria un eco detras de la letra grande de todo el sitio, en su
+     propia tinta (`--tinta-registro`). Salio con todas las sombras: el registro queda
+     donde hay pasadas de imagen de verdad, y en ninguna letra. */
   --registro: 2px;
   --registro-angulo: 0.4deg;
-
-  /* La tinta del eco: el segundo color que no calzo. Cada parte del sitio la pisa con el
-     apoyo de su disco (`UX-22` §8, mezcla `D-19`); donde nadie la pisa es el borde del
-     papel, que es lo mismo que ya hace la estampa con `--apoyo-disco`.
-     Es color de apoyo, no tinta de texto: va DETRAS de la letra real —que sigue siendo la
-     que pasa AA sobre su fondo de siempre— y por eso no entra a `contraste.test.ts`,
-     igual que el resto de los `-apoyo`. Nadie lee el eco para enterarse de nada. */
-  --tinta-registro: var(--borde);
-
-  /* Las fuentes fan que escriben el nombre de un disco con su propia letra, verificado
-     glifo por glifo (`RES-42`, `RES-43`, `CNT-14` §2.7). Solo tres nombres las usan;
-     los otros siete van en la rotulada, con su tilde real. */
-  --fuente-lobo-suelto: 'Lobo Suelto Fan', 'Archivo Black', sans-serif;
 
   /* ------------------------------------------------------------------
      El pie de imprenta (ciclo 13). Cómo termina una hoja impresa.
@@ -290,6 +333,17 @@
      255 en el rojo—, que es lo que hace falta para que se vea en un celular al sol y no
      sea relleno. Subirlo no se decide a ojo: lo dice el test. */
   --peso-pasada: 18%;
+
+  /* Cuanta tinta lleva la multitud que se ve de lejos al bajar por el portal (`D-63`
+     enmienda 1), por plano: el de lejos menos que el de mas cerca, porque lo lejano se
+     apaga. Igual que la pasada, NO ES UNA PREFERENCIA: todo el texto del portal pasa por
+     encima, y `contraste.test.ts` mezcla cada peso con su tinta y falla si `--texto-tenue`
+     baja de 4,5:1 o la marca —letra grande en `--marca-rojo`— baja de 3:1. El par más justo
+     hoy es la marca contra las banderas de cerca: 3,25:1. */
+  --peso-multitud-lejos: 12%;
+  --peso-bandera-lejos: 28%;
+  --peso-multitud-cerca: 16%;
+  --peso-bandera-cerca: 34%;
 
   /* Espaciado pensado para el pulgar (D-09) */
   --toque-min: 48px;
@@ -541,6 +595,7 @@ a[role='button'] {
     --escalon-umbral: 0ms;
     --hondura-transito: 1;
     --deriva-capa-fondo: 0%;
+    --acercamiento: 0;
     /* La imprenta (UX-22): la estampa aparece ya impresa y fijada; el giro es un cambio
        directo. `--registro` NO se toca: es reposo, no movimiento. El carrete no se
        apaga por token —quedaria girando rapidisimo— sino con `animation: none` en

@@ -322,27 +322,25 @@
   color: var(--fondo);
   border: none;
   border-radius: var(--radio);
-  /* La tecla (`D-54`): un canto de sombra dura abajo, en el apoyo del disco, que se hunde al
-     apretar. Lo tenían dos juegos ("Adiviná el tema" y "Sacalo por la letra"), cada uno
-     escrito a mano; ahora es del botón y cada juego le pone su apoyo (`.juego--*`). Es
-     sombra plana, sin difuminar —la única que `diseno-marca.md` admite—, y el hundirse es
-     respuesta al toque: dura `--duracion-toque`, que el movimiento reducido no apaga. */
-  box-shadow: 0 4px 0 var(--canto-accion, var(--borde));
+  /* La tecla (`D-54`) se hunde al apretar: baja 2 px y la tinta se aclara un poco. Ya no
+     lleva el canto de sombra dura de abajo (`D-64`, la sombra salió de todos lados). El
+     hundirse es respuesta al toque: dura `--duracion-toque`, que el movimiento reducido no
+     apaga. Aclara y no oscurece a propósito: la letra es `--fondo`, y aclarar el relleno solo
+     le puede subir el contraste —oscurecerlo armaba un par que nadie mide—. */
   transition:
     translate var(--duracion-toque) var(--curva-cinta),
-    box-shadow var(--duracion-toque) var(--curva-cinta);
+    filter var(--duracion-toque) var(--curva-cinta);
   touch-action: manipulation;
 }
 
 .primario:active:not(:disabled) {
-  translate: 0 3px;
-  box-shadow: 0 1px 0 var(--canto-accion, var(--borde));
+  translate: 0 2px;
+  filter: brightness(1.1);
 }
 
 .primario:disabled {
   background: var(--borde);
   color: var(--texto-tenue);
-  box-shadow: none;
 }
 
 .secundario {
@@ -419,29 +417,12 @@ a.secundario {
   letter-spacing: 0.04em;
   background: var(--cat-historia); /* el resultado viste Gulp! */
   color: var(--fondo);
-  /* El canto de la tecla (`D-54`) es de su misma tinta y no del disco del juego: el botón de
-     compartir viste Gulp! en los ocho, y un canto ajeno debajo lo volvía de otro disco. Es
-     el rojo de Gulp! hundido en el fondo, no un color nuevo. */
-  --canto-accion: color-mix(in srgb, var(--cat-historia) 45%, var(--fondo));
 }
 
-/*
- * La deuda de tildes de la regla de marca, hecha clase.
- *
- * La letra de la firma es una digitalizacion fan (`RES-42`) y **no tiene acentos**: un
- * boton que dice "Comparti" con tilde sale con esa letra hasta la I y despues salta a la
- * de repuesto a mitad de palabra. Se ve roto, y se veia roto de verdad — medido en la
- * pantalla de resultado de `US-02`, no supuesto.
- *
- * La regla ya decia que hacer: hasta derivar los acentos, esas palabras van en
- * `--fuente-rotulada`, que es completa. Lo que la regla PROHIBE es la otra salida —
- * escribir "COMPARTI" sin tilde para que entre en la fuente: `D-17` no negocia el voseo.
- * El dia que los acentos existan, esta clase se borra y no queda rastro.
- */
-.primario.firma.con-tilde {
-  font-family: var(--fuente-rotulada);
-  font-size: 1.15rem;
-}
+/* La deuda de tildes, pagada (`D-65`). Hasta el 2026-10-05 este botón llevaba `.con-tilde`,
+   que lo mandaba a la rotulada: la letra de la firma no tenía la Í de COMPARTÍ, y la palabra
+   saltaba de letra a mitad de camino. `scripts/derivar-patricio-rey.py` le dio las tildes y
+   los signos con material de la propia letra, y la clase salió del sitio. */
 
 /* ---- Adivinar la tapa (US-04) ----
    Acá la tapa NO es decoración de sección: es la pregunta. Por eso se muestra grande,
@@ -484,8 +465,6 @@ a.secundario {
   padding: var(--espacio-2);
   border: var(--linea) solid var(--cat-letras);
   border-radius: var(--radio);
-  /* Sombra dura desplazada, como recorte pegado. Nada de elevacion difusa. */
-  box-shadow: 4px 4px 0 var(--borde);
 }
 
 .verso-contexto {
@@ -533,7 +512,7 @@ a.secundario {
    de disco no llegan a AA sobre el elevado, y la regla anti-slop pedia lo mismo por
    otro motivo ("la pieza se recorta por borde grueso y cinta, y la tinta queda sobre
    --fondo, que es el par testeado"). Asi que las piezas de este juego se separan por
-   borde grueso y sombra dura desplazada, no por un gris arriba de otro gris.
+   borde grueso, sin sombra (`D-64`), no por un gris arriba de otro gris.
 
    Las clases las crea `src/scripts/partida-tema.ts` y las cubre `estilos.test.ts`. */
 
@@ -684,8 +663,9 @@ a.secundario {
    es la puerta de entrada, no un disco mas. */
 .pozo[aria-pressed='true'] {
   border-color: var(--tinta-disco, var(--cat-mitologia));
-  /* Sombra dura desplazada: papel sobre papel, no elevacion difusa. */
-  box-shadow: 3px 3px 0 var(--apoyo-disco, var(--cat-mitologia-apoyo));
+  /* Ningun estado se dice solo con color: el borde engorda hacia adentro, sin correr el
+     layout. La sombra desplazada que lo apoyaba salio con `D-64`. */
+  box-shadow: inset 0 0 0 var(--linea) var(--tinta-disco, var(--cat-mitologia));
 }
 
 .pozo[aria-pressed='true'] .pozo-titulo {
@@ -968,8 +948,6 @@ a.secundario {
   background: var(--papel);
   border: 2px solid var(--papel-borde);
   border-radius: 2px;
-  /* Papel sobre papel: sombra dura en el apoyo de Lobo suelto, nunca una difusa. */
-  box-shadow: 3px 3px 0 var(--cat-mitologia-apoyo);
   /* Pegada a mano: apenas torcida, como todo lo que se pega en este sitio. */
   rotate: -0.6deg;
   /* El `multiply` de la tinta se detiene en el papel y no se mezcla con la tapa velada de
@@ -1113,11 +1091,11 @@ a.secundario {
  * La tecla de escuchar. El pedido fue "facil y rapido": ancho completo, alto de sobra
  * para el pulgar y en el mismo lugar de la pantalla siempre.
  *
- * **Es una tecla, no un rectangulo**: tiene canto —la sombra dura de abajo, en el apoyo
- * de Lobo suelto— y al apretarla se hunde. Y mientras suena **queda hundida**, como la
- * tecla de PLAY de una casetera, que se traba abajo mientras la cinta corre. El hundirse
- * es respuesta al toque, asi que dura `--duracion-toque`: el corte de movimiento reducido
- * no la apaga, porque es la confirmacion de que el dedo llego.
+ * **Es una tecla, no un rectangulo**: al apretarla se hunde y se aclara la tinta. El canto
+ * de sombra dura que tenia salio con `D-64`. Y mientras suena **queda vacia** —tinta sobre
+ * fondo, con su contorno—, como la tecla de PLAY de una casetera, que se traba mientras la
+ * cinta corre. El hundirse es respuesta al toque, asi que dura `--duracion-toque`: el corte
+ * de movimiento reducido no la apaga, porque es la confirmacion de que el dedo llego.
  */
 .escuchar {
   display: flex;
@@ -1134,16 +1112,19 @@ a.secundario {
   font-family: var(--fuente-rotulada);
   font-size: 1.25rem;
   letter-spacing: 0.04em;
-  box-shadow: 0 5px 0 var(--cat-mitologia-apoyo);
   transition:
     translate var(--duracion-toque) var(--curva-cinta),
-    box-shadow var(--duracion-toque) var(--curva-cinta);
+    filter var(--duracion-toque) var(--curva-cinta);
   touch-action: manipulation;
 }
 
 .escuchar:active:not(:disabled) {
-  translate: 0 4px;
-  box-shadow: 0 1px 0 var(--cat-mitologia-apoyo);
+  translate: 0 2px;
+}
+
+/* Sonando ya es tinta sobre fondo: apagarle la tinta dejaria el naranja sobre el naranja. */
+.escuchar:not(.escuchar--sonando):active:not(:disabled) {
+  filter: brightness(1.1);
 }
 
 /* Simbolo ademas de texto: se reconoce sin leer, que es lo que uno hace con un play.
@@ -1168,14 +1149,11 @@ a.secundario {
   clip-path: polygon(8% 0%, 100% 50%, 8% 100%);
 }
 
-/* Sonando: la tecla queda trabada abajo y se vacia — tinta sobre fondo, con el borde. */
+/* Sonando: la tecla se vacia — tinta sobre fondo, con el borde. */
 .escuchar--sonando {
   background: var(--fondo);
   color: var(--cat-mitologia);
-  translate: 0 4px;
-  box-shadow:
-    inset 0 0 0 var(--linea) var(--cat-mitologia),
-    0 1px 0 var(--cat-mitologia-apoyo);
+  box-shadow: inset 0 0 0 var(--linea) var(--cat-mitologia);
 }
 
 /* El cuadrado de parar, mismo tratamiento. Va apenas torcido: es el idioma de sello de
@@ -1189,7 +1167,6 @@ a.secundario {
 .escuchar:disabled {
   background: var(--borde);
   color: var(--texto-tenue);
-  box-shadow: none;
 }
 
 .aviso-sonido {
@@ -1257,7 +1234,7 @@ a.secundario {
   color: var(--texto-tenue);
 }
 
-/* La lista: recorte pegado sobre el fondo, con borde grueso y sombra dura. */
+/* La lista: recorte pegado sobre el fondo, con borde grueso. */
 .sugerencias {
   position: absolute;
   left: 0;
@@ -1286,7 +1263,6 @@ a.secundario {
      sin declararlo, queda el de "adivina el tema", que es donde nacio. */
   border: var(--linea) solid var(--tinte-lista, var(--cat-mitologia-apoyo));
   border-radius: 3px;
-  box-shadow: 4px 4px 0 var(--borde);
 }
 
 .sugerencias[hidden] {
@@ -1412,33 +1388,31 @@ a.secundario {
 
 /* ---- Las teclas de los dos juegos de sacar temas ----
  *
- * Arriesgar/pasar y seguir tienen canto: una sombra dura abajo que se hunde al apretar,
- * como la tecla de escuchar. Cada juego pone su tinta y su canto —Lobo suelto en el de
- * audio, Momo Sampler en el de la letra (`D-19`, `UX-08`)— y la regla es una sola. Van
- * acotadas a los dos juegos porque `.seguir` y `.arriesgar` no son de nadie mas. */
+ * Arriesgar/pasar y seguir se hunden al apretar —bajan 2 px y la tinta se aclara un poco—,
+ * como la tecla de escuchar. Sin canto debajo: salio con `D-64`. Cada juego pone su tinta
+ * —Lobo suelto en el de audio, Momo Sampler en el de la letra (`D-19`, `UX-08`)— y la
+ * regla es una sola. Van acotadas a los dos juegos porque `.seguir` y `.arriesgar` no son
+ * de nadie mas. */
 
 .juego-tema {
   --tinte-tecla: var(--cat-mitologia);
-  --canto-tecla: var(--cat-mitologia-apoyo);
 }
 
 :is(.juego-tema, .juego-por-la-letra) :is(.arriesgar, .seguir) {
   margin-bottom: 5px;
-  box-shadow: 0 4px 0 var(--borde);
   transition:
     translate var(--duracion-toque) var(--curva-cinta),
-    box-shadow var(--duracion-toque) var(--curva-cinta),
-    background-color var(--duracion-toque) var(--curva-cinta);
+    filter var(--duracion-toque) var(--curva-cinta);
   touch-action: manipulation;
 }
 
-:is(.juego-tema, .juego-por-la-letra) :is(.arriesgar--listo, .seguir) {
-  box-shadow: 0 4px 0 var(--canto-tecla);
+:is(.juego-tema, .juego-por-la-letra) :is(.arriesgar:active:not(:disabled), .seguir:active) {
+  translate: 0 2px;
 }
 
-:is(.juego-tema, .juego-por-la-letra) :is(.arriesgar:active:not(:disabled), .seguir:active) {
-  translate: 0 3px;
-  box-shadow: 0 1px 0 var(--borde);
+/* La tinta se aclara solo donde el boton la tiene: "Pasa" es contorno sobre el fondo. */
+:is(.juego-tema, .juego-por-la-letra) :is(.arriesgar--listo:active:not(:disabled), .seguir:active) {
+  filter: brightness(1.1);
 }
 
 /* La caja de texto, un poco mas alta que el piso de toque: es donde el pulgar vuelve cada
@@ -1614,7 +1588,6 @@ a.secundario {
   margin-bottom: var(--espacio-1);
   overscroll-behavior: contain;
   touch-action: pan-y;
-  box-shadow: none;
 }
 
 .partida--tecleando .arriesgar {
@@ -1637,7 +1610,6 @@ a.secundario {
   background: var(--papel);
   color: var(--fondo);
   border: 2px solid var(--papel-borde);
-  box-shadow: 4px 4px 0 var(--canto-tecla, var(--cat-mitologia-apoyo));
   rotate: -0.8deg;
   font-family: var(--fuente-rotulada);
   text-align: center;
@@ -1702,17 +1674,16 @@ a.secundario {
  * la tinta real de su disco, y `contraste.test.ts` deja escrito que **esas tintas no
  * llegan a AA sobre `--fondo-elevado`** — el naranja de La mosca y la sopa da 4,32:1. El
  * de marca: la cabecera de este bloque ya pedia lo mismo por otro camino ("las piezas de
- * este juego se separan por borde grueso y sombra dura desplazada, no por un gris arriba
- * de otro gris"), y el gris sobre gris es un tic vetado por nombre.
+ * este juego se separan por borde grueso, no por un gris arriba de otro gris"), y el gris
+ * sobre gris es un tic vetado por nombre.
  *
  * La pieza se recorta con el borde grueso que `.feedback` ya le da —tenido de verde o de
- * rojo segun como salio— y una sombra dura en el apoyo del disco, que es papel sobre
- * papel. Es el mismo recurso del pozo elegido en la portada.
+ * rojo segun como salio— y nada mas: la sombra dura en el apoyo del disco que llevaba
+ * salio con `D-64`.
  */
 .revelacion {
   margin-top: var(--espacio-3);
   background: var(--fondo);
-  box-shadow: 4px 4px 0 var(--apoyo-disco, var(--borde));
 }
 
 .revelacion[hidden] {
@@ -2129,7 +2100,6 @@ a.secundario {
   margin: var(--espacio-3) 0 var(--espacio-2);
   padding: 28px 8px 24px 0;
   border: var(--linea) solid var(--apoyo-disco);
-  box-shadow: 5px 5px 0 var(--borde);
   transform: rotate(-0.8deg);
 }
 
@@ -2179,7 +2149,6 @@ a.secundario {
   margin: 0 0 0 calc(1.4rem + 8px);
   padding: var(--espacio-1) 14px;
   border-radius: 3px;
-  box-shadow: 3px 3px 0 var(--borde);
   transform: rotate(0.7deg);
 }
 
@@ -2241,9 +2210,12 @@ a.secundario {
   transform: rotate(-0.7deg);
 }
 
+/* El nombre de una manera va siempre en la letra que viste *Luzbelito* (`D-67`): en la tapa del
+   amigo, en el resultado y en la grilla de las cuatro. Es más angosta que la rotulada a igual
+   mayúscula, así que ningún corte de renglón medido acá empeora. */
 .ejes-amigo-nombre {
   display: block;
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-luzbelito);
   /* 1,5 y no 1,6 rem: «Ronda en cualquier» mide 270 px a 1,6 y el renglon util, 271. */
   font-size: 1.5rem;
   line-height: 1.15;
@@ -2266,33 +2238,15 @@ a.secundario {
 /* ---- La hoja de la pregunta ---- */
 
 /* La hoja va recta: es la pagina del libro, y lo torcido es lo que se pega encima. El canto
-   de las hojas que faltan son sombras duras escalonadas, papel y tinta alternados: objeto,
-   no numero, y se van afinando hasta la ultima hoja. El margen derecho deja ver el canto. */
+   de las hojas que faltan, que se dibujaba con sombras duras escalonadas, salio con `D-64`:
+   cuantas quedan lo dice el folio (`3 de 10`). */
 .ejes-hoja {
   position: relative;
-  margin: var(--espacio-3) var(--espacio-1) var(--espacio-2) 0;
+  /* Sin margen a la derecha: era el lugar del canto de las hojas, que salió con `D-64`. */
+  margin: var(--espacio-3) 0 var(--espacio-2);
   padding: var(--espacio-2) var(--espacio-2) var(--espacio-3);
   border: 2px solid var(--fondo);
   border-radius: 3px;
-  box-shadow: 3px 3px 0 var(--papel-borde), 5px 5px 0 var(--fondo), 7px 7px 0 var(--papel-borde), 9px 9px 0 var(--fondo),
-    11px 11px 0 var(--papel-borde), 13px 13px 0 var(--fondo), 15px 15px 0 var(--papel-borde), 17px 17px 0 var(--borde);
-}
-
-.ejes-hoja[data-quedan='3'] {
-  box-shadow: 3px 3px 0 var(--papel-borde), 5px 5px 0 var(--fondo), 7px 7px 0 var(--papel-borde), 9px 9px 0 var(--fondo),
-    11px 11px 0 var(--papel-borde), 13px 13px 0 var(--borde);
-}
-
-.ejes-hoja[data-quedan='2'] {
-  box-shadow: 3px 3px 0 var(--papel-borde), 5px 5px 0 var(--fondo), 7px 7px 0 var(--papel-borde), 9px 9px 0 var(--borde);
-}
-
-.ejes-hoja[data-quedan='1'] {
-  box-shadow: 3px 3px 0 var(--papel-borde), 5px 5px 0 var(--borde);
-}
-
-.ejes-hoja[data-quedan='0'] {
-  box-shadow: 4px 4px 0 var(--borde);
 }
 
 /* La cabecera, como el encabezado de una pagina de libro: el sello, el folio y una regla
@@ -2388,14 +2342,10 @@ a.secundario {
   color: var(--fondo);
   border: 2px solid var(--fondo);
   border-radius: 3px;
-  box-shadow: 3px 3px 0 var(--fondo);
   transform: rotate(-0.4deg);
   touch-action: manipulation;
   cursor: pointer;
-  transition:
-    translate var(--duracion-toque) var(--curva-cinta),
-    box-shadow var(--duracion-toque) var(--curva-cinta),
-    border-width var(--duracion-toque) var(--curva-cinta);
+  transition: border-width var(--duracion-toque) var(--curva-cinta);
 }
 
 .ejes-opcion:nth-child(2) {
@@ -2407,16 +2357,14 @@ a.secundario {
   display: none;
 }
 
-/* Elegida: apretada contra el papel (se hunde, se apaga la sombra), borde de 4 px y la marca
-   de `aria-pressed`. Tres cambios de forma, ninguno de color, y nunca ✔: aca no hay acierto.
+/* Elegida: borde de 4 px y la marca de `aria-pressed`. Un cambio de forma, ninguno de color,
+   y nunca ✔: aca no hay acierto. Ya no se hunde ni lleva sombra (`D-64`): el borde alcanza.
    La otra no se apaga: apagarla la haria leer como la perdedora (`UX-06` §3).
 
    La que se habia elegido, cuando se vuelve a una hoja, tiene **la misma forma**, sin
    inercia: un toque en la otra la reemplaza, uno en la misma la confirma. */
 .ejes-opcion--elegida,
 .ejes-opcion--antes {
-  translate: 3px 3px;
-  box-shadow: 0 0 0 var(--fondo);
   border-width: 4px;
 }
 
@@ -2478,7 +2426,6 @@ a.secundario {
 .ejes-hoja--final {
   margin-top: var(--espacio-2);
   padding: var(--espacio-2) var(--espacio-2) var(--espacio-3);
-  box-shadow: 5px 5px 0 var(--borde);
   transform: rotate(-0.5deg);
 }
 
@@ -2499,12 +2446,14 @@ a.secundario {
   color: var(--fondo);
 }
 
+/* El juego, en su letra (`D-67`), un escalón más grande que el rótulo que era: esta letra ya
+   separa sola las suyas y no pide el aire de la rotulada. */
 .ejes-marca-juego {
   display: block;
   margin-top: 0.2rem;
-  font-family: var(--fuente-rotulada);
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
+  font-family: var(--fuente-luzbelito);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--papel-tenue);
 }
@@ -2529,9 +2478,9 @@ a.secundario {
 }
 
 /* El nombre es lo mas grande de la pantalla (`UX-06` §4), mas que el boton de compartir.
-   Quieto: sin eco ni registro corrido, que son del `h1`. */
+   Quieto: sin sombra ni registro corrido (`D-64`). */
 .ejes-nombre {
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-luzbelito);
   font-weight: 400;
   font-size: 2.1rem;
   line-height: 1.08;
@@ -2608,7 +2557,7 @@ a.secundario {
 
 .ejes-cuatro-titulo {
   margin: 0;
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-luzbelito);
   font-weight: 400;
   font-size: 1.1rem;
   letter-spacing: 0.04em;
@@ -2704,7 +2653,7 @@ a.secundario {
 }
 
 .ejes-manera-nombre {
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-luzbelito);
   font-size: 0.95rem;
   line-height: 1.2;
 }
@@ -2774,7 +2723,6 @@ a.secundario {
   border-radius: 3px;
   background: var(--papel);
   color: var(--fondo);
-  box-shadow: 4px 4px 0 var(--borde);
   transform: rotate(0.5deg);
 }
 
@@ -2882,10 +2830,10 @@ a.secundario {
 }
 
 /* El nombre a 0,8 y no a los 0,95 de la grilla: el plano orienta y la grilla lee. Se parte,
-   nunca se corta. */
+   nunca se corta. En la letra de *Luzbelito*, como el nombre en todos lados (`D-67`). */
 .ejes-plano-nombre {
   max-width: 100%;
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-luzbelito);
   font-size: 0.8rem;
   line-height: 1.2;
   text-wrap: balance;
@@ -3212,9 +3160,8 @@ a.secundario {
 .juego-por-la-letra {
   --tinte-accion: var(--disco-momo-sampler-tinta);
   --tinte-lista: var(--disco-momo-sampler-apoyo);
-  /* Las teclas con canto (arriba, con las del hermano): la plata de la tapa y su peltre. */
+  /* La tinta de las teclas (arriba, con las del hermano): la plata de la tapa. */
   --tinte-tecla: var(--disco-momo-sampler-tinta);
-  --canto-tecla: var(--disco-momo-sampler-apoyo);
 }
 
 /* La cabecera no pone su propio margen aca: la columna flex ya reparte con `gap`, y los
@@ -3311,15 +3258,14 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
  * el contenedor de scroll (`overflow-y: auto`), no un recorte estatico como el
  * `.verso-bloque` de `US-03`. Un `transform` ahi crea bloque contenedor y contexto de
  * apilado, y complica el scroll y cualquier hijo posicionado. El borde tenido, el fondo
- * elevado y la sombra dura desplazada ya son el recorte pegado; la inclinacion era la
- * parte prescindible.
+ * elevado ya son el recorte pegado (la sombra dura desplazada salio con `D-64`); la
+ * inclinacion era la parte prescindible.
  *
  * **Desde el pulido de arte (2026-09-25) la hoja es PAPEL**, no el gris elevado de `UX-08`
  * §4. El lugar de este juego lo dice con todas las letras —"un papel arrugado te pesa en el
  * bolsillo" (`CNT-13`)— y la hoja era la unica pieza del tablero que no lo era: una caja
  * gris sobre negro, que es el "gris arriba de otro gris" que la tabla anti-slop veta. Ahora
- * es el papel de las etiquetas de casete, con los renglones en el borde del papel y la
- * sombra dura en el peltre de Momo. Queda propuesto a `experiencia` para que lo ratifique
+ * es el papel de las etiquetas de casete, con los renglones en el borde del papel. Queda propuesto a `experiencia` para que lo ratifique
  * en `UX-08`.
  *
  * OJO CON EL CONTRASTE: sobre `--papel` el par testeado es `--fondo` ("tinta sobre papel de
@@ -3351,7 +3297,6 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
   color: var(--fondo);
   border: 2px solid var(--papel-borde);
   border-radius: 3px;
-  box-shadow: 4px 4px 0 var(--disco-momo-sampler-apoyo);
   overscroll-behavior: contain;
 }
 
@@ -3832,25 +3777,7 @@ body > main {
   margin: var(--espacio-3) 0 var(--espacio-2);
   max-width: 7ch;
   view-transition-name: marca;
-  /* El registro imperfecto (`UX-22` §8): la explicacion entera esta en `sitio.css`.
-     El eco de la marca es siempre el borde del papel, aunque la pantalla vista un disco
-     (`D-54`): la marca es de Oktubre en todas las pantallas, y el apoyo de cada disco es
-     para el titulo del juego, no para la firma del sitio. */
-  --tinta-registro: var(--borde);
-  text-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
-}
-
-/* El h1 de cada juego, con su eco de segunda tinta.
-
-   Hasta el ciclo 16 decia aca que un juego no viste ningun disco y que por eso el eco caia
-   al borde del papel. **Desde `D-54` cada juego viste el disco de su casete** (`.juego--*`,
-   el mismo mapa que `.casete--*` del portal), y el eco toma el apoyo de ese disco: el
-   petroleo de Lobo suelto detras de "Adiviná el tema", el ocre de ¡Bang! ¡Bang! detras de
-   "Ponelos en fila". Cambia tambien en el telefono (`REV-18`, `FIND-109`). Donde la pagina
-   no viste ninguno, el eco sigue cayendo al borde del papel, que es el valor de
-   `--tinta-registro` en `tokens.css`. */
-.pantalla h1 {
-  text-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
+  /* Tinta plana, sin eco: la sombra de las letras salio de todos lados (`D-64`). */
 }
 
 /* ==========================================================================
@@ -3889,12 +3816,30 @@ body > main {
    ocho sitios. Ahora es uno solo, y cada juego le pone la tinta de su disco (`D-19`).
 
    **`font-weight: normal` no es un detalle.** Un `h1` sale en negrita por defecto, y la
-   rotulada tiene un peso solo: el navegador la engordaba a mano en los ocho títulos, que es
-   la negrita falsa que `estilos.test.ts` ya prohíbe en los botones desde el ciclo 16. */
+   letra tiene un peso solo: el navegador la engordaba a mano en los ocho títulos, que es
+   la negrita falsa que `estilos.test.ts` ya prohíbe en los botones desde el ciclo 16.
+
+   **Desde `D-65` va en la letra de la banda**, la digitalización de Patricio Rey (`RES-42`),
+   con las tildes y los signos derivados de su propio material. El usuario, textual: *"hay
+   que usar la tipografia de los discos en mas lados"*. Va acá y no en el título del casete
+   porque esta letra se lee desde unos 19 px, gira cada letra y cansa en frases largas: los
+   títulos de juego son de dos a cinco palabras y van de 29 px para arriba. A igual cuerpo
+   se ve más chica que la rotulada, por eso sube un escalón. La comparte la página de
+   diagnóstico de audio, que usa la misma regla.
+
+   **Desde `D-67`, dos juegos escriben en la letra de su disco**, que traen de su variante
+   (`--fuente-disco`, en `sitio.css`): "Adiviná el tema" en la de *Lobo suelto* y "¿Qué tipo de
+   ricotero sos?" en la que viste *Luzbelito*. Las dos se escalaron a la mayúscula del sistema al
+   derivarlas, así que el cuerpo es el mismo de los ocho. Los otros seis siguen en la de la
+   banda: sus discos no tienen letra.
+
+   **El colchón de abajo no es aire:** la máscara de abajo recorta en la caja, y la cola de ¡ y
+   de ¿ baja más que la caja de la línea (-258 contra -196 unidades). Lo pone el padding, y el
+   margen lo devuelve: el renglón no se mueve. */
 .pantalla > h1 {
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-disco, var(--fuente-marca-firma));
   font-weight: normal;
-  font-size: clamp(1.65rem, 7vw, 2.15rem);
+  font-size: clamp(1.8rem, 7.6vw, 2.35rem);
   line-height: 1.04;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -3904,10 +3849,26 @@ body > main {
      tienen su par AA sobre `--fondo` en `contraste.test.ts`, y las tres que se apoyan sobre
      una tapa velada tienen además el de texto grande sobre el peor caso del velo. */
   color: var(--tinta-titulo, var(--tinte-sello, var(--tinte, var(--texto))));
-  margin: 0 0 var(--espacio-1);
+  padding-bottom: 0.07em;
+  margin: 0 0 calc(var(--espacio-1) - 0.07em);
 }
 
-/* ---- La acción de cada juego: la tinta de su disco, con el canto de su apoyo ----
+/* El título de cada juego sale de la misma almohadilla que su casete (`D-64`), pero solo con
+   la sal: es tinta de color sobre el negro y no tiene margen para aclararse —la presión dejaba
+   "Completá la letra" en 3,39:1—. La sal saca puntos enteros y no le cambia el color a
+   ninguno, así que ningún par AA se mueve. La tesela va al doble que en el casete porque la
+   letra mide el doble, y el golpe es el del casete (`--golpe`, en `sitio.css`). La de *Lobo
+   suelto* no lleva sal (`--sal-del-titulo: none`): con trazo de pelo se lleva trazos enteros. */
+.pantalla h1 {
+  -webkit-mask-image: var(--sal-del-titulo, var(--textura-tinta-sal));
+  mask-image: var(--sal-del-titulo, var(--textura-tinta-sal));
+  -webkit-mask-size: 480px 480px;
+  mask-size: 480px 480px;
+  -webkit-mask-position: calc(var(--golpe, 0) * -122px) calc(var(--golpe, 0) * -74px);
+  mask-position: calc(var(--golpe, 0) * -122px) calc(var(--golpe, 0) * -74px);
+}
+
+/* ---- La acción de cada juego: la tinta de su disco ----
 
    Cinco de los ocho botones principales ya iban en la tinta de su disco y tres iban en el
    rojo de la marca, que es el repuesto de `.primario` y que nadie había elegido para ellos
@@ -3915,18 +3876,18 @@ body > main {
    tres juegos de discos distintos con el mismo botón rojo dicen que son el mismo juego. La
    regla de marca lo dice al revés: **lo que rota por sección es el acento y la letra grande**.
 
-   Cada tinta tiene su par con `--fondo` encima en `contraste.test.ts`. El canto es apoyo:
-   borde y sombra, nunca letra. Las tres pantallas que ya declaraban su `--tinte-accion` lo
-   siguen haciendo, con el mismo valor. */
-.juego--marca { --tinte-accion: var(--marca-rojo); --canto-accion: var(--disco-oktubre-apoyo); }
-.juego--historia { --tinte-accion: var(--cat-historia); --canto-accion: var(--cat-historia-apoyo); }
-.juego--discos { --tinte-accion: var(--cat-discos); --canto-accion: var(--cat-discos-apoyo); }
-.juego--letras { --tinte-accion: var(--cat-letras); --canto-accion: var(--cat-letras-apoyo); }
-.juego--mitologia { --tinte-accion: var(--cat-mitologia); --canto-accion: var(--cat-mitologia-apoyo); }
-.juego--momo { --tinte-accion: var(--disco-momo-sampler-tinta); --canto-accion: var(--disco-momo-sampler-apoyo); }
-.juego--baion { --tinte-accion: var(--disco-un-baion-para-el-ojo-idiota-tinta); --canto-accion: var(--disco-un-baion-para-el-ojo-idiota-apoyo); }
-.juego--bang { --tinte-accion: var(--disco-bang-bang-estas-liquidado-tinta); --canto-accion: var(--disco-bang-bang-estas-liquidado-apoyo); }
-.juego--luzbelito { --tinte-accion: var(--disco-luzbelito-tinta); --canto-accion: var(--disco-luzbelito-apoyo); }
+   Cada tinta tiene su par con `--fondo` encima en `contraste.test.ts`. El canto de apoyo que
+   llevaba cada botón (`D-54`) salió con `D-64`. Las tres pantallas que ya declaraban su
+   `--tinte-accion` lo siguen haciendo, con el mismo valor. */
+.juego--marca { --tinte-accion: var(--marca-rojo); }
+.juego--historia { --tinte-accion: var(--cat-historia); }
+.juego--discos { --tinte-accion: var(--cat-discos); }
+.juego--letras { --tinte-accion: var(--cat-letras); }
+.juego--mitologia { --tinte-accion: var(--cat-mitologia); }
+.juego--momo { --tinte-accion: var(--disco-momo-sampler-tinta); }
+.juego--baion { --tinte-accion: var(--disco-un-baion-para-el-ojo-idiota-tinta); }
+.juego--bang { --tinte-accion: var(--disco-bang-bang-estas-liquidado-tinta); }
+.juego--luzbelito { --tinte-accion: var(--disco-luzbelito-tinta); }
 
 /* ---- La carátula en el teléfono: una calcomanía en la esquina de la cabecera ----
 
@@ -4083,7 +4044,6 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
     font-size: 1.85rem;
     line-height: 0.96;
     color: var(--marca-rojo);
-    text-shadow: var(--registro) var(--registro) 0 var(--borde);
     view-transition-name: marca;
   }
 
@@ -4143,6 +4103,9 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
     color: var(--fondo);
     border-radius: 4px;
     transform: rotate(0.5deg);
+    /* Lleva el papel viejo en un `::before`, como la del portal (`D-64`). */
+    position: relative;
+    isolation: isolate;
   }
 
   /* La pista, abajo a la derecha de la etiqueta: el mismo "A3" escrito a mano que tiene el
@@ -4160,13 +4123,44 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 
   .caratula-titulo {
     display: block;
-    margin: 0.2em 0 0;
+    margin: 0.15em 0 -0.05em;
+    /* La máscara recorta en la caja: con 1,15 de interlínea la Á quedaba a 0,02 em del borde. */
+    padding-block: 0.05em;
     font-family: var(--fuente-rotulada);
     font-size: 1.15rem;
     line-height: 1.15;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     text-wrap: balance;
+    /* La misma tinta de sello gastada que el título del casete del portal (`D-64`), con el
+       mismo golpe: son la misma etiqueta. */
+    -webkit-mask-image: var(--textura-tinta);
+    mask-image: var(--textura-tinta);
+    -webkit-mask-size: 240px 240px;
+    mask-size: 240px 240px;
+    -webkit-mask-position: calc(var(--golpe, 0) * -61px) calc(var(--golpe, 0) * -37px);
+    mask-position: calc(var(--golpe, 0) * -61px) calc(var(--golpe, 0) * -37px);
+  }
+
+  /* El papel viejo de la etiqueta, como en el portal. Solo acá, dentro de la mesa: en el
+     teléfono la etiqueta es `display: contents` y un pseudo suyo pintaría una mancha suelta
+     sobre la calcomanía. */
+  @supports (mask-image: none) or (-webkit-mask-image: none) {
+    .caratula-etiqueta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-radius: inherit;
+      pointer-events: none;
+      background: var(--papel-borde);
+      -webkit-mask-image: var(--textura-papel-viejo);
+      mask-image: var(--textura-papel-viejo);
+      -webkit-mask-size: 320px 320px;
+      mask-size: 320px 320px;
+      -webkit-mask-position: calc(var(--golpe, 0) * -83px) calc(var(--golpe, 0) * -131px);
+      mask-position: calc(var(--golpe, 0) * -83px) calc(var(--golpe, 0) * -131px);
+    }
   }
 
   /* La lista de temas: el interior de la tapita, donde se escriben los temas a mano. */
@@ -4252,7 +4246,7 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 
   /* El título de cartel, en la hoja: con la carátula al lado puede gritar un poco más. */
   body > main:has(> .caratula) > .pantalla > h1 {
-    font-size: 2.6rem;
+    font-size: 2.85rem;
     margin-top: var(--espacio-1);
   }
 
@@ -4375,7 +4369,6 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   border: var(--linea) solid var(--borde);
   border-radius: 3px;
   rotate: -1.2deg;
-  box-shadow: 4px 4px 0 var(--apoyo-disco, var(--borde));
 }
 
 .pasada,
@@ -4492,9 +4485,8 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   margin-top: var(--espacio-2);
 }
 
-/* El nombre del disco, en la tinta de su disco y con la segunda tinta corrida: el
-   registro imperfecto de una imprenta a mano. `text-shadow` de desplazamiento plano,
-   que es la unica sombra que la regla de marca admite. */
+/* El nombre del disco, en la tinta de su disco y plano: la segunda tinta corrida que
+   llevaba salio con `D-64`. */
 .estampa-disco {
   font-family: var(--fuente-rotulada);
   font-size: 1rem;
@@ -4502,7 +4494,6 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   line-height: 1.1;
   text-align: center;
   color: var(--tinta-disco, var(--texto));
-  text-shadow: var(--registro) var(--registro) 0 var(--apoyo-disco, var(--borde));
 }
 
 /* Los tres nombres que tienen su propia letra calcada (`CNT-14` §2.7). */
@@ -4678,8 +4669,8 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 }
 
 /* La referencia: el número contra el que se decide. Recorte pegado —borde completo en la
-   tinta del disco y sombra dura en el apoyo—, el mismo idioma que `.verso-bloque`. Nunca
-   la barrita lateral ni la tarjeta elevada. */
+   tinta del disco—, el mismo idioma que `.verso-bloque`. Nunca la barrita lateral ni la
+   tarjeta elevada. */
 .masomenos-referencia {
   margin: 0 0 var(--espacio-3);
   padding: var(--espacio-2);
@@ -4687,7 +4678,6 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   /* Esquina de estampa y no `--radio`: la caja no se toca, y `--radio` es para lo tocable
      grande (`diseno-marca.md`; lo notó `REV-16`). */
   border-radius: 3px;
-  box-shadow: 4px 4px 0 var(--apoyo-disco, var(--borde));
   transform: rotate(-0.6deg);
 }
 
@@ -5315,5 +5305,19 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 
   .fila-destino:hover {
     border-bottom-color: var(--acento-2);
+  }
+}
+
+/* Alto contraste y colores forzados: tinta lisa y papel limpio (`D-64`). forced-colors apaga
+   text-shadow solo, pero NO mask-image: si nadie lo hace a mano, la máscara sigue. */
+@media (forced-colors: active), (prefers-contrast: more) {
+  .pantalla h1,
+  .caratula-titulo {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .caratula-etiqueta::before {
+    content: none;
   }
 }

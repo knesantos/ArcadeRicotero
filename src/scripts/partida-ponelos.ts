@@ -410,7 +410,7 @@ function pintarAcciones(): HTMLElement {
   const zona = el('section', 'lamina');
   if (terminado(reparto)) zona.append(el('h2', 'lamina-titulo', LAMINA.titulo));
 
-  const compartir = el('button', 'primario firma con-tilde', LAMINA.compartir) as HTMLButtonElement;
+  const compartir = el('button', 'primario firma', LAMINA.compartir) as HTMLButtonElement;
   compartir.type = 'button';
   compartir.addEventListener('click', () => void compartirLista(compartir));
   zona.append(compartir);

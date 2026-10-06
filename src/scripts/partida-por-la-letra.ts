@@ -893,7 +893,7 @@ function pintarResultado(): void {
   // Las estampitas son tapas, y lo que se ve se acredita (`D-21`, condicion 1).
   acreditarTapas(hechos.map((h) => h.discoTitulo));
 
-  const compartir = el('button', 'primario firma con-tilde', RESULTADO.compartir);
+  const compartir = el('button', 'primario firma', RESULTADO.compartir);
   compartir.type = 'button';
   compartir.addEventListener('click', () => void compartirResultado(compartir));
   zonaResultado.append(compartir);

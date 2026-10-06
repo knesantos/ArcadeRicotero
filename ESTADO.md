@@ -7,64 +7,77 @@
 
 **Última actualización:** 2026-10-06
 
-> ## ✋ EN CURSO: LAS TAPAS SE SELLAN, Y LAS LETRAS DE DISCO EN MÁS LUGARES (2026-10-05)
+> ## 🔤 LOBO SUELTO Y LA LETRA DE LUZBELITO ENTRAN AL SISTEMA (2026-10-06) — `D-67`
 >
-> **Cortado a mitad por el usuario** (*"para y subi e integra todo lo que hayas hecho, despues
-> seguimos"*). Todavía **no se tocó una línea de CSS**: lo que hay son dos documentos para
-> retomar.
+> **Rama `tipografia/lobo-y-luzbelito`, sobre `main` en `8bb84ab`**, en el worktree
+> `../RicotaArcade-fondo` (reusado). Pedido del usuario: *"vamos a seguir integrando las otras dos
+> que no estan en el sistema, la de lobo suelto y la otra que es medio luz belito"*.
 >
-> 1. **El pedido de las tapas**, textual: *"Saquemosle la sombra a las letras de las tapas de los
->    juegos, busquemos un efecto mas de impresion vieja sobre papel o sello, algo asi como tinta
->    en papel viejo o eso. Ponete en rol de diseñador. Ademas que queden todas coherentes."* Un
->    panel de tres diseñadores y tres jueces eligió **el sello de goma** (24,5 contra 20 de la
->    imprenta de tipos y 18,5 de la fotocopia). La especificación completa —tres texturas nuevas
->    en `tokens.css`, el papel viejo de la etiqueta, el sello de acción moteado, el golpe por
->    disco, los tests y el texto de la decisión— está en
->    `Docs/SUGERENCIAS/ESPEC-D-64-la-tapa-se-sella.md`. Propone `D-64`; verificar que siga libre.
-> 2. **Después el usuario amplió**, textual: *"Sisi saquemos la sombra de todos lados, no me
->    gusta. Ademas hay que usar la tipografia de los discos en mas lados. Analicemos como
->    integrarlas mejor."* O sea: el eco sale **también** de la marca, del h1 de artículo y de la
->    estampa (la especificación de arriba todavía lo deja ahí: hay que ajustarla), y las letras de
->    disco tienen que ir a más lugares. Terminaron los cuatro relevamientos (sombras, letras, lo que
->    grita, papeles) y están en `Docs/SUGERENCIAS/ANALISIS-letras-de-disco-y-sin-sombra.md`.
->    **Faltan** las propuestas de tipografía, los jueces y la síntesis.
->
-> **El dato que manda el análisis de letras:** *Patricio Rey Fan* tiene A-Z y 0-9; *Lobo Suelto
-> Fan*, A-Z; *Oktubre Calco*, solo 14 letras. Ninguna tiene tildes, Ñ ni signos, y `D-17` no deja
-> escribir sin tilde. Integrarlas en más lugares pasa por derivar esos glifos (fontTools está
-> instalado) o por elegir dónde va cada una.
->
-> **Próximo paso:** correr las propuestas de tipografía sobre el análisis, unificar con la
-> especificación del sello, y construir todo junto (si un título cambia de letra, cambia cómo se
-> gasta su tinta).
+> - **"La otra" es Redonditos de Ricota**, de Zavala (la del zip del mismo nombre). No es la letra de
+>   la tapa de *Luzbelito*: la viste porque se le parece. Por eso no escribe el nombre del disco en
+>   la estampa.
+> - **Las dos se derivaron con material propio** (`scripts/derivar-lobo-suelto.py`,
+>   `scripts/derivar-redonditos.py`): Lobo suma Á É Í Ó Ú . , ! ¡ y recupera la Ñ de Zavala;
+>   Redonditos, Á É Í Ó Ú Ñ . , ! ? ¡ ¿, escalada a la mayúscula del sistema. Las dos suben al
+>   renglón.
+> - **Dónde escriben:** Lobo, el título de "Adiviná el tema" (sin sal); Redonditos, el título de
+>   "¿Qué tipo de ricotero sos?", el nombre de cada manera, "Las cuatro maneras" y el membrete de la
+>   hoja. La letra viaja con la variante (`--fuente-disco` en `sitio.css`).
+> - **Pendiente:** las postales de dos ejes siguen con el nombre en la rotulada (hay que pasar el
+>   taller a la letra y regenerar los PNG; se esperó a que `ciclo-18/que-ricotero-sos` entre), la
+>   hoja 04 del lienzo y la fila de las letras de Zavala en `CNT-01` (sugerencia para `contenido`).
 
-> ## 🔕 LA LLAVE DE SILENCIO DEL IPHONE YA NO APAGA "ADIVINÁ EL TEMA" (2026-10-06) — `D-66`
+> ## 🔀 CLAUDE FUSIONA CUANDO SE LO PEDÍS (2026-10-06)
 >
-> Pedido del usuario, textual: *"Investiga la forma de que el boton de silencio de iphone no
-> silencie el juego adivina el tema. Analiza el resultado y desarrolla la solucion e integrala si
-> no rompe nada"*. Rama `audio/llave-de-silencio`, sobre `main` en `1357203`.
+> Pedido del usuario, textual: *"mergealo vos, vamos a dejar escrita la regla para que puedas
+> tambien"*. El PR #38 (la multitud que se acerca, `D-64`, `D-65`) lo fusionó Claude. Desde ahora
+> hay permiso en `.claude/settings.json` (`Bash(gh pr merge *)`) y una regla,
+> `.claude/rules/integrar.md`, que dice cuándo: **solo si el usuario lo pide en el chat**, con
+> `main` adentro de la rama, todo verde y los checks del PR en verde; siempre `--merge`, nunca
+> `--admin`, `--squash` ni borrar la rama.
+
+> ## 🖨 LA MULTITUD SE ACERCA, LA SOMBRA SALE DE TODOS LADOS, LAS TAPAS SE SELLAN (2026-10-05) — `D-63` enmienda 1, `D-64`, `D-65`
 >
-> - **La causa** (`INV-200`, `RES-200`): WebKit saca Web Audio con la categoría de los efectos,
->   que la llave apaga, y `<audio>` con la de la música, que no. Por eso el tema entero sonaba y
->   el fragmento no.
-> - **La salida:** en "Empezá", antes de despertar el motor, `navigator.audioSession.type =
->   'playback'` (Safari 16.4+, `RES-201`). Vive en `src/lib/audio/sesion.ts`. El aviso de la
->   llave sale solo en los iPhone sin la API; el diagnóstico hace lo mismo que el juego. Skayboy
->   no la pide, a propósito.
-> - **Lo que cuesta:** la música de otra aplicación se corta al arrancar el juego (igual que ya
->   pasaba con el tema entero). El repuesto para iPhone viejo (`<audio>` mudo en loop) se
->   descartó: puede romper en 16.3 y no se puede probar acá.
+> **Rama `diseno/la-multitud-se-acerca`, sobre `main` en `8989416`**, en el worktree
+> `../RicotaArcade-fondo` (reusado: la rama del fondo ya estaba integrada). Pedidos del usuario,
+> en orden: *"Saquemosle la sombra a las letras de las tapas de los juegos, busquemos un efecto mas
+> de impresion vieja sobre papel o sello [...] que queden todas coherentes"*; *"Sisi saquemos la
+> sombra de todos lados, no me gusta. Ademas hay que usar la tipografia de los discos en mas
+> lados"*; y *"Continua lo que falta, me gustaria que mientras vas bajando en la pagina en el fondo
+> se vean banderas rojas y gente [...] como si ir para abajo fuese acercase a la multitud"*.
 >
-> **Verificado:** `npm test` 1544/1544 (10 nuevos en `sesion.test.ts`, con su rojo visto
-> sacando la llamada y con un `vercel.json` que apaga el micrófono), `check` 0 errores, build
-> 160. En Chromium con user agent de iPhone y una `audioSession` simulada: el pedido sale antes
-> de construir el contexto, el aviso de la llave se calla, la partida arranca y "Escuchá" está.
-> Sin la API, todo como antes.
+> - **La multitud se acerca** (`D-63` enmienda 1): dos planos fijos detrás del portal, hechos con el
+>   frente original de *Oktubre* (banderas y gente, en espejo). Arriba se ve chica y lejos; al
+>   bajar crece y sube la fila más cercana; al final llegan las caras grandes del pie, y cada fila
+>   tapa a la de atrás. Sin JavaScript, atado al desplazamiento; quieto con movimiento reducido.
+> - **Sin sombra en ningún lado** (`D-64`): 41 sombras, sobre letras y sobre objetos. Los botones se
+>   hunden y se aclaran; los estados que se decían con sombra se dicen con borde.
+> - **Las tapas se sellan** (`D-64`): el título del casete y el de la carátula en tinta de sello
+>   gastada, la etiqueta en papel viejo, el sello de acción moteado, y el golpe de cada disco igual
+>   en el casete, la carátula y el título de su juego. Lo eligió un panel de tres diseñadores y tres
+>   jueces.
+> - **La letra de la banda** (`D-65`): Patricio Rey Fan escribe el título de cada juego (menos el de
+>   Skayboy, que va chico en su cabecera) y el botón de compartir, con Á É Í Ó Ú ¿ ? ¡ ! . , derivadas de la propia letra
+>   (`scripts/derivar-patricio-rey.py`). El título del casete sigue en la rotulada: a 15 px la letra
+>   de la banda no se lee.
+> - **`npm test` corre en Windows**: el patrón iba entre comillas simples y `cmd` no las saca, así
+>   que corría cero tests y daba verde. Ahora van dobles, que andan en los dos. Y el test de la isla
+>   de dos ejes ya no falla con los finales de línea de Windows.
 >
-> **Abierto, sin trabar:** **la prueba en un iPhone real** (llave en silencio, con y sin música
-> de otra app, iOS 17+). `/diagnostico-audio/` dice si la llave manda en ese aparato. Propuestas
-> para `arquitectura` (enmienda de `ADR-04`) y `experiencia` (`UX-24`, `UX-22`) en
-> `Docs/SUGERENCIAS/HILO-para-*`.
+> **Verificado:** `npm test` 1562/1562 en Windows, `check` 0/0, build 160. Tests nuevos con su rojo
+> visto: los planos de la multitud (techo y piso de tinta, máscaras, silueta), "ninguna sombra en
+> ningún lado", `texturas.test.ts`, la etiqueta sobre el papel viejo, y la cobertura de Patricio
+> Rey. Mirado en el navegador a 1440×900 y 375×812: el portal arriba, al medio y al final, los
+> casetes, la carátula y el título de los juegos.
+>
+> **Abierto, sin trabar:**
+> - `experiencia`: `UX-05`, `UX-20`, `UX-22` §8, §9 y §13 y `UX-25` describen lo que ya no está
+>   (nota en `Docs/SUGERENCIAS/HILO-para-experiencia-sin-sombra-y-letras.md`). El lienzo tampoco
+>   tiene nada de esto.
+> - El título en Patricio Rey en el teléfono se lee con esfuerzo si no se conoce la letra: si al
+>   usuario le molesta, la salida es dejarlo solo en la mesa.
+> - El efecto de la multitud en el teléfono es más tenue que en la computadora: los casetes tapan
+>   los planos, y la tinta tiene el techo del contraste.
 
 > ## 👥 LA GENTE MIRA DESDE EL FINAL DEL PORTAL (2026-10-04) — `D-63`
 >

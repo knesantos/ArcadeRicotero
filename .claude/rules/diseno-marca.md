@@ -53,15 +53,19 @@ Viven en `public/fuentes/` y se declaran solo en `tokens.css`:
 | Variable | Fuente | Origen | Ojo |
 |---|---|---|---|
 | `--fuente-titular` | Oktubre Calco v0.4 | calco propio de la tapa (`RES-43`); F, H, N e Í derivadas de sus letras (`D-60`) | solo A B C D E F H I K N O R T U y la Í — **sin otros acentos ni Ñ**; `fuentes.test.ts` falla si la marca pide otra |
-| `--fuente-marca-firma` | Patricio Rey Fan | digitalización fan, B. Zavala (`RES-42`) | sin acentos |
+| `--fuente-marca-firma` | Patricio Rey Fan | digitalización fan, B. Zavala (`RES-42`), con Á É Í Ó Ú ¿ ? ¡ ! . , derivadas de la propia letra (`D-65`, `scripts/derivar-patricio-rey.py`) | sin Ñ ni dos puntos. Escribe el título de cada juego y el botón de compartir; se lee desde ~19 px y en el sitio va de 29 px para arriba, nunca en frases largas |
+| `--fuente-lobo-suelto` | Lobo Suelto Fan | digitalización fan del alfabeto de la tapa, B. Zavala (`RES-42`), con Á É Í Ó Ú . , ! ¡ derivadas de su I y la Ñ de Zavala recuperada (`D-67`, `scripts/derivar-lobo-suelto.py`) | trazo de pelo: solo de ~28 px para arriba y **nunca con la sal**. Sin ? ¿ ni números, y la U se dibuja como W. Escribe el título de "Adiviná el tema" (mitología) y el nombre de su disco en la estampa |
+| `--fuente-luzbelito` | Redonditos de Ricota Fan | digitalización fan, B. Zavala (`RES-42`), escalada a la mayúscula del sistema y con Á É Í Ó Ú Ñ . , ! ? ¡ ¿ derivadas (`D-67`, `scripts/derivar-redonditos.py`) | **no es la letra de la tapa de *Luzbelito***: la viste porque se le parece, por elección del usuario, así que nunca escribe el nombre del disco en la estampa. Escribe lo que canta en "¿Qué tipo de ricotero sos?"; se lee desde ~13 px |
 | `--fuente-rotulada` | Archivo Black | autoalojada | completa, es el repuesto de todo |
 | `--fuente` | pila del sistema | — | todo el texto largo |
 
-**Deuda declarada**: las letras con tilde (JUGÁ, SEGUÍ, MITOLOGÍA) todavía no existen en
-las fuentes de disco, salvo la Í del calco, que se derivó para FICHÍN (`D-60`) — hasta
-derivarlas, esas palabras van en `--fuente-rotulada`. No "resolver" esto escribiendo sin
-tilde: `D-17` no negocia el voseo. Cómo se deriva una letra del calco sin dibujarla:
-`scripts/derivar-oktubre-calco.py`.
+**Deuda declarada, a medias**: desde `D-65` Patricio Rey Fan tiene las tildes y los signos, así que
+la letra de la banda ya escribe JUGÁ, COMPARTÍ y ADIVINÁ enteras, y desde `D-67` también Lobo suelto
+y Redonditos. El calco de *Oktubre* tiene la Í y nada más: ahí las palabras con otra tilde siguen
+yendo en `--fuente-rotulada`. Qué juego escribe su título en qué letra lo dice `--fuente-disco`, en
+el mapa de variantes de `sitio.css`, y `fuentes.test.ts` lo lee de ahí.
+No "resolver" esto escribiendo sin tilde: `D-17` no negocia el voseo. Y una letra nueva para una
+fuente de disco se deriva de la propia letra, como el calco y la firma; no se injerta de otra.
 
 ## Prohibido: la estética genérica de IA ("slop")
 
@@ -76,7 +80,7 @@ tics vetados, con su reemplazo:
 | **Barra de acento en el borde izquierdo de una tarjeta** (el caso que motivó la regla) | Borde completo teñido por el disco de la sección, título en la tinta, rotación leve |
 | Pastilla cápsula (`border-radius: 999px`) como chip por defecto | Sello de goma: rectángulo de esquina casi viva (3px), borde fino, mayúsculas rotuladas, apenas torcido |
 | Superficie "elevada" (card gris sobre fondo gris) como forma de separar | La pieza se recorta por borde grueso y cinta, como recorte pegado — y la tinta queda sobre `--fondo`, que es el par testeado |
-| Sombra difusa de elevación, glow, glassmorphism/blur | Sombra dura desplazada (offset plano, como papel sobre papel) o nada |
+| **Cualquier sombra**: difusa de elevación, glow, glassmorphism/blur, y desde `D-64` también la dura desplazada y el eco detrás de la letra | Nada. La pieza se recorta por borde grueso, cinta y giro; un estado se marca con borde o con tinta. El usuario, textual: *"saquemos la sombra de todos lados, no me gusta"*. `estilos.test.ts` falla si vuelve una sombra corrida (los anillos pegados `0 0 0`, que son contorno, se quedan) |
 | Degradados decorativos, texto en gradiente | Tinta plana de los tokens |
 | **Velo que se desvanece** (`linear-gradient(var(--velo-tapa), transparent)`) — pasa el test de `D-21` por subcadena y deja media foto desnuda debajo del texto | El velo es **plano**, dos paradas idénticas. Lo que se desvanece es el alfa de la capa entera, con máscara. `estilos.test.ts` lo mira desde el ciclo 13 |
 | **Máscara de gradiente liso como borde de una capa** — es el mismo aerógrafo con otro nombre | La máscara se cruza con la textura, como hace `.rodillo`: en la mitad exterior de la franja de desgaste la única alfa que existe es la de `--textura-rodillo`. Es la racleta levantando, no un fundido (`D-34`) |

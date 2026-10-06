@@ -15,8 +15,7 @@
  * MISMA REGLA QUE `juego.css` Y `sitio.css`: ni un hex aca adentro. Todo sale de
  * `var(--...)` de `tokens.css`, que es el unico archivo del repo donde vive un hex
  * (`.claude/rules/diseno-marca.md`). La mezcla de este juego la fija `UX-30`: el disco
- * es *Gulp!*, y de ahi salen la tinta del titulo, el eco de registro y el borde de las
- * seis teclas.
+ * es *Gulp!*, y de ahi salen la tinta del titulo y el borde de las seis teclas.
  *
  * TODA MEDIDA DICE SU UNIDAD (`FIND-55`, cerrado). Las de esta hoja son **px CSS** salvo
  * donde diga "nativos": el area mide 240 x 144 **nativos** y el mueble que la rodea
@@ -62,16 +61,20 @@
   margin-inline: auto;
 }
 
-/* El titulo viste *Gulp!* (`UX-30 §4`), con el eco de segunda tinta en el apoyo del mismo
-   disco. El `text-shadow` no se escribe aca: ya lo pone `.pantalla h1` en `juego.css`, que
-   es uno de los seis selectores de la lista cerrada de `UX-22 §8`. Lo que se cambia es la
-   tinta del eco, que es una variable.
+/* El titulo viste *Gulp!* (`UX-30 §4`): la tinta de su disco, plana y sin eco (`D-64`, la
+   sombra salio de todos lados).
 
-   Y va en `--fuente-rotulada` y no en el calco de Oktubre porque el calco solo tiene
-   A B C D E I K O R T U (`RES-43`): "Skayboy y Poligirl" no entra ni de casualidad. Es la
-   deuda declarada de `.claude/rules/diseno-marca.md`, no un descuido. */
+   Y va en la rotulada y no en la letra de la banda, aunque los otros ocho títulos ya la
+   llevan (`D-65`): este va acostado en la cabecera de un renglón, a unos 16 px, para dejarle
+   el lugar al juego, y Patricio Rey no se lee debajo de unos 19. Se probó y quedaba una fila de
+   cuñas. El calco de Oktubre tampoco: le faltan nueve de esas letras (`RES-43`). */
+.juego-skayboy {
+  /* El golpe del sello (`D-64`): viste *Gulp!*, como la historia, y es el A4 del portal. Va
+     acá porque ni su `main` ni su `body` llevan clase `juego--`: el disco lo pone esta. */
+  --semilla: 4;
+}
+
 .juego-skayboy .pantalla h1 {
-  --tinta-registro: var(--disco-gulp-apoyo);
   font-family: var(--fuente-rotulada);
   /* Un peso solo: sin esto el `bold` del `h1` la engorda a mano (`D-54`, la misma negrita
      falsa que se les sacó a los otros ocho títulos). */
@@ -161,20 +164,17 @@
    **El borde del papel no se dibuja con `border`.** Dibujarlo sumaria 3 px CSS por lado a
    una cuenta que `UX-28 §2` ya cerro en 720, y 726 no entran en el peor caso de muescas.
    El corte lo hace el propio papel contra la tinta del fondo, que es como se recorta todo
-   en este sitio, y el eco de segunda tinta lo hace la sombra — offset plano, duro, sin
-   difuminar, la unica que `diseno-marca.md` admite (`UX-22 §8`), y que no ocupa lugar.
+   en este sitio. Sin sombra (`D-64`): el eco de segunda tinta que llevaba salio con ella.
 
    **Y no se pega torcido.** Todo el resto del sitio lleva su rotacion leve; el mueble no,
    porque adentro tiene un tubo y un pixel art rotado deja de ser pixel art (`UX-27 §1.2`
-   punto 2). La imperfeccion vive en el corte y en el eco de tinta, no en el angulo. */
+   punto 2). La imperfeccion vive en el corte, no en el angulo. */
 .juego-skayboy .gabinete {
-  --tinta-registro: var(--disco-gulp-apoyo);
   grid-area: mueble;
   width: calc(var(--area-ancho) + 2 * var(--bisel) + 2 * var(--chapa));
   padding: var(--chapa) var(--chapa) 0;
   background: var(--papel);
   border-radius: 3px;
-  box-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
 }
 
 /* ---- El bisel y el area (`UX-27 §1.1`, capas 2 y 3) ----
@@ -1185,8 +1185,8 @@ html[data-pantalla='completa'],
   -webkit-touch-callout: none;
 }
 
-/* El mueble se desarma: sus piezas entran a la grilla del modo. El papel de la chapa, su
-   eco de tinta y su ancho declarado se quedan en el mueble. */
+/* El mueble se desarma: sus piezas entran a la grilla del modo. El papel de la chapa y su
+   ancho declarado se quedan en el mueble. */
 [data-pantalla='completa'] .juego-skayboy .gabinete {
   display: contents;
 }
@@ -1464,10 +1464,10 @@ html[data-pantalla='completa'],
    renglon del que sigue, porque la completa no entra en los 86 px libres de arriba—; con aire,
    completa. La base es la compacta: un navegador sin consultas de contenedor la muestra igual.
 
-   **Recorte pegado, no superficie elevada** (`diseno-marca.md`): tinta de `--fondo`, borde en
-   la tinta de *Gulp!* y el eco duro del apoyo del mismo disco, el mismo que lleva el mueble.
-   Opaca: el texto encima del area va sobre su propia tinta (`UX-37` §2.1). Los botones son los
-   del sitio: `.primario` en la tinta del disco (`.juego--historia`, par medido) y `.secundario`.
+   **Recorte pegado, no superficie elevada** (`diseno-marca.md`): tinta de `--fondo` y borde en
+   la tinta de *Gulp!*, sin sombra (`D-64`). Opaca: el texto encima del area va sobre su
+   propia tinta (`UX-37` §2.1). Los botones son los del sitio: `.primario` en la tinta del
+   disco (`.juego--historia`, par medido) y `.secundario`.
    ========================================================================== */
 
 .juego-skayboy .fin-nivel {
@@ -1489,7 +1489,6 @@ html[data-pantalla='completa'],
   background: var(--fondo);
   border: 2px solid var(--disco-gulp-tinta);
   border-radius: 3px;
-  box-shadow: var(--registro) var(--registro) 0 var(--disco-gulp-apoyo);
   container-type: inline-size;
   /* **El cuerpo no toma el toque** (`UX-37` §4.5): un toque sobre el rotulo o el aire cae en
      `#seguir-juego`, que esta debajo, y sigue. Solo los tres botones lo toman. */
@@ -1616,8 +1615,8 @@ html[data-pantalla='completa'],
    baja de `--toque-min`. Adentro, la composicion la decide el ancho de la region, con una
    consulta de contenedor: una columna, o dos cuando hay ancho.
 
-   **Recorte pegado, opaco**: la hoja es `--fondo` con el borde grueso en la tinta de *Gulp!* y el
-   eco duro del apoyo, como el mueble. Los seis niveles abiertos: cada ficha es un boton, con su
+   **Recorte pegado, opaco**: la hoja es `--fondo` con el borde grueso en la tinta de *Gulp!*,
+   sin sombra (`D-64`). Los seis niveles abiertos: cada ficha es un boton, con su
    numero en la tinta del disco, su nombre (`CNT-21`) en la letra del sistema, y un sello si esta
    pasada (la tinta del acierto, que no se disfraza de ningun disco) o si es la de ahora. Ningun
    estado se dice solo con color: los sellos dicen la palabra.
