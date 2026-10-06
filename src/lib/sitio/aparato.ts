@@ -14,6 +14,9 @@
  * **No hay ninguna API que diga si esa llave está puesta.** Ni una. Así que el aviso no
  * puede aparecer "cuando corresponde": lo único honesto es decírselo a quien tiene un
  * iPhone, que es donde la trampa existe, y no molestar al resto.
+ *
+ * Desde `D-66` sí hay una que la **salta**: `audio/sesion.ts` pide la sesión de la música y
+ * el aviso queda solo para los iPhone que no la tienen.
  */
 
 /** Un iPhone o un iPad, incluido el iPad que se hace pasar por Mac. */

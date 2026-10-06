@@ -117,3 +117,19 @@ test('🔴 sesion.ts no importa nada (`D-29`): una hoja no arrastra nada al nave
   const fuente = codigo(new URL('./sesion.ts', import.meta.url));
   assert.ok(!/^\s*import\s/m.test(fuente), 'sesion.ts tiene que seguir siendo una hoja');
 });
+
+test('🔴 ningún encabezado le apaga el micrófono al sitio: WebKit ignoraría el pedido sin avisar', () => {
+  // `RES-202` punto 3: si el documento no tiene permitido `microphone`, `setType` no hace
+  // nada y el getter devuelve `auto`. Un `Permissions-Policy: microphone=()` puesto "por
+  // seguridad" mataría la salida de `D-66` sin un solo error en la consola.
+  const raiz = new URL('../../../', import.meta.url);
+  for (const nombre of ['vercel.json', 'public/_headers']) {
+    let texto = '';
+    try {
+      texto = readFileSync(new URL(nombre, raiz), 'utf8');
+    } catch {
+      continue; // no existe: no hay encabezados propios, que es lo que hay hoy
+    }
+    assert.ok(!/microphone\s*=\s*\(\s*\)/i.test(texto), `${nombre} apaga el micrófono`);
+  }
+});

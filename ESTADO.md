@@ -5,7 +5,7 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-05
+**Última actualización:** 2026-10-06
 
 > ## ✋ EN CURSO: LAS TAPAS SE SELLAN, Y LAS LETRAS DE DISCO EN MÁS LUGARES (2026-10-05)
 >
@@ -37,6 +37,34 @@
 > **Próximo paso:** correr las propuestas de tipografía sobre el análisis, unificar con la
 > especificación del sello, y construir todo junto (si un título cambia de letra, cambia cómo se
 > gasta su tinta).
+
+> ## 🔕 LA LLAVE DE SILENCIO DEL IPHONE YA NO APAGA "ADIVINÁ EL TEMA" (2026-10-06) — `D-66`
+>
+> Pedido del usuario, textual: *"Investiga la forma de que el boton de silencio de iphone no
+> silencie el juego adivina el tema. Analiza el resultado y desarrolla la solucion e integrala si
+> no rompe nada"*. Rama `audio/llave-de-silencio`, sobre `main` en `1357203`.
+>
+> - **La causa** (`INV-200`, `RES-200`): WebKit saca Web Audio con la categoría de los efectos,
+>   que la llave apaga, y `<audio>` con la de la música, que no. Por eso el tema entero sonaba y
+>   el fragmento no.
+> - **La salida:** en "Empezá", antes de despertar el motor, `navigator.audioSession.type =
+>   'playback'` (Safari 16.4+, `RES-201`). Vive en `src/lib/audio/sesion.ts`. El aviso de la
+>   llave sale solo en los iPhone sin la API; el diagnóstico hace lo mismo que el juego. Skayboy
+>   no la pide, a propósito.
+> - **Lo que cuesta:** la música de otra aplicación se corta al arrancar el juego (igual que ya
+>   pasaba con el tema entero). El repuesto para iPhone viejo (`<audio>` mudo en loop) se
+>   descartó: puede romper en 16.3 y no se puede probar acá.
+>
+> **Verificado:** `npm test` 1544/1544 (10 nuevos en `sesion.test.ts`, con su rojo visto
+> sacando la llamada y con un `vercel.json` que apaga el micrófono), `check` 0 errores, build
+> 160. En Chromium con user agent de iPhone y una `audioSession` simulada: el pedido sale antes
+> de construir el contexto, el aviso de la llave se calla, la partida arranca y "Escuchá" está.
+> Sin la API, todo como antes.
+>
+> **Abierto, sin trabar:** **la prueba en un iPhone real** (llave en silencio, con y sin música
+> de otra app, iOS 17+). `/diagnostico-audio/` dice si la llave manda en ese aparato. Propuestas
+> para `arquitectura` (enmienda de `ADR-04`) y `experiencia` (`UX-24`, `UX-22`) en
+> `Docs/SUGERENCIAS/HILO-para-*`.
 
 > ## 👥 LA GENTE MIRA DESDE EL FINAL DEL PORTAL (2026-10-04) — `D-63`
 >

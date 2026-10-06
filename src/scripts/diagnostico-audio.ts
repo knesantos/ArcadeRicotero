@@ -149,8 +149,8 @@ async function correr(): Promise<void> {
     fila(
       'ok',
       'La llave de silencio',
-      'No apaga el juego.',
-      'Se le pidió al iPhone la sesión de la música: el juego suena aunque la llave esté en silencio.',
+      'Se pidió la sesión de la música, la que la llave no apaga.',
+      'Con la llave en silencio el juego debería sonar igual. Si no suena, probá con la llave sin silencio: así se separa la causa.',
     );
   } else if (quien.esIOS) {
     fila(
