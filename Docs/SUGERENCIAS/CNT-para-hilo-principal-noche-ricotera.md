@@ -62,6 +62,8 @@ El usuario lo dijo así: *"nunca cansa el volumen"*. En la noche ricotera la mú
 
 ## 5. La línea que canta de un momento y la regla de voz (2026-10-06, `REV-20`, `CNT-31` §14.3)
 
+> **[Aplicada 2026-10-06 por el hilo principal]:** la excepción está en `.claude/rules/voz-ricotera.md` §5, debajo de la tabla de los tres registros, con la redacción por la forma.
+
 `REV-20` dividió dos votos sobre si las cinco líneas que cantan de los momentos (y *Cuatro puntas de la misma hoja.*) tienen que ir en segunda persona. `contenido` dejó los textos como están y **declaró la excepción en `CNT-31` §14.3**: son líneas del momento y no de la hoja, y van sin segunda persona ni imperativo, sin hablarle a quien juega ni decirle qué hace. La regla de voz es del hilo principal; si quiere que la excepción viva ahí y no solo en el banco, es una línea.
 
 | Dónde | Hoy | Pasa a | Por qué |

@@ -6,7 +6,7 @@
 > líneas que cantan, y ningún dígito en lo que se lee. Las tres entradas anchas quedan como están,
 > con un comentario que dice que manda el motivo. El hueco 6 sigue sin guarda, como pide `producto`.
 
-> **Fecha:** 2026-10-06 (ronda final de `REV-20`). **Estado: abierta.** Nada bloquea el banco.
+> **Fecha:** 2026-10-06 (ronda final de `REV-20`). **Estado: aplicada** (`bc19f8d`, ver la marca de arriba). Nada bloquea el banco.
 > **Consume:** `BR-38` («Huecos conocidos» 2 a 7 y «Lo que `REV-20` leyó del banco»),
 > `src/lib/dos-ejes/banco.test.ts`. Las guardas son del hilo principal (`D-57`, consecuencias);
 > `producto` fija el criterio, no las palabras.

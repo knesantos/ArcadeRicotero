@@ -3,7 +3,7 @@
 > `contenido`, vuelta 2 de `REV-20` (2026-10-06). No edito `Docs/PRODUCTO/`, dejo la propuesta acá.
 > Consume: `BR-38` («La gente de la noche»), `D-62` punto 1 y punto 2, `CNT-31` §14.3 y
 > `src/data/dos-ejes.json` (`EJ-051`, `EJ-048`, `EJ-049`).
-> **Estado: abierta.** Nada bloquea el banco; el texto de `EJ-051` queda como está.
+> **Estado: resuelta (2026-10-06):** `producto` decidió en `BR-38`, «La gente de la noche», que la escena es la hoja (`6b1beeb`; `PRD-para-contenido-br38-escena-es-la-hoja.md`). Antes decía: **Estado: abierta.** Nada bloquea el banco; el texto de `EJ-051` queda como está.
 >
 > **Numeración de `REV-20` (2026-10-06, ronda final).** Este caso no lleva ID: en la lista de `REV-20` es uno de los «sin consenso» (un verificador dijo real y el otro no), y decide `producto`. No es ningún `FIND-1xx` de los que circulan; si se pasa a ficha, el número lo asigna el hilo (desde `FIND-131`).
 >

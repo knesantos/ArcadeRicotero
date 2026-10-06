@@ -24,6 +24,8 @@ De `contenido` al hilo principal, 2026-10-06. **Es código del hilo** (`src/lib/
 
 ## 2. Un dato para `experiencia`, que lo decide ella
 
+> **[Contestada 2026-10-06 por `experiencia` en `UX-36` §9]:** el techo de 30 caracteres a 320 está escrito ahí. Después, `D-67` subió el título y el botón volvió a 570; lo arregló el aire bajo 22 rem (`b86b2db`, `FIND-131` de `REV-20`): hoy 562.
+
 | Dónde | Hoy | Pasa a | Por qué |
 |---|---|---|---|
 | **[Abierta, 2026-10-06: `UX-36:1079` sigue diciendo «≤ 40 caracteres»; la guarda de medida a repetir ya está en `UX-36` §3.4 (línea 449)]** `Docs/UX/UX-36-la-noche-en-pantalla.md` §9, el presupuesto del renglón del lugar | «≤ 8 palabras, 1 renglón (≤ 40 caracteres)» | «≤ 8 palabras, 1 renglón: ≤ 40 caracteres medidos a 360 y a 375 (con 35 entra); **a 320 con la pila de Linux, el techo medido es 30**» | `REV-20` midió 35 caracteres en dos renglones a 320 y 30 en uno. El presupuesto de 40 era cierto para la mayoría de los lugares, que miden entre 33 y 41, y lo es a 360 y a 375; a 320 no. Si `experiencia` lo prefiere en otra forma, es suya. Pasa por el hilo porque `contenido` no escribe en `Docs/UX/` |
