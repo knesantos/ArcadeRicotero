@@ -506,6 +506,36 @@ hacen los otros siete juegos (`otra-quiz-1.png`, `otra-masomenos-1.png`): la ser
 no la rompo acá. Lo que sí hago es que el toque sea grande (56 px) y que **ninguna opción de la hoja 1
 caiga donde estaba "Empezá"** (`§4.3`).
 
+**El largo del enunciado, medido por `REV-20` (2026-10-06, `FIND-119`).** El tope operativo es el de `§9`
+(≤ 14 palabras, ≤ 80 caracteres: «tres renglones a 375») y `banco.test.ts` lo hace cumplir por palabras;
+**los 30 lo cumplen** (el más largo: 14 palabras y 74 caracteres). Lo que no estaba medido es cuántos
+renglones son esos 80 caracteres con una fuente real. `REV-20` midió los 30 con `Range.getClientRects` sobre
+el `h2` de la hoja, en cinco noches seguidas (ancho útil de 299 px a 375 y de 244 a 320):
+
+| Fuente | 375 × 667 | 360 × 640 | 320 × 568 |
+|---|---|---|---|
+| **DejaVu Sans** (la pila del sistema de este entorno; más ancha) | **cuatro renglones:** `EJ-044` y `EJ-047` | cuatro: `EJ-040`, `EJ-044`, `EJ-045`, `EJ-047` | **17 de 30 con cuatro o más:** 14 con cuatro y `EJ-044`, `EJ-047` y `EJ-054` con cinco |
+| **Liberation Sans** (métrica Arial; más cercana a Roboto y San Francisco) | ninguna pasa de tres | ninguna pasa de tres | tres con cuatro: `EJ-044`, `EJ-045`, `EJ-047` |
+
+A 1440 todas van en uno o dos renglones. **Ninguna hoja se sale del papel ni del ancho** (el pie termina en
+501 de 667 a 375 y en 556 de 568 a 320; «Volvé a la anterior», en 561 de 568 en el peor caso a 320): lo que
+se pasa es el número de renglones, no el espacio. Los textos, para no confundirlos: `EJ-044` «Frío que pela
+en la vereda…» (74 caracteres), `EJ-045` «Frente a la reja hay un charco de barro…» (70), `EJ-047` «Empieza
+una canción lenta…» (71). *(El informe de `REV-20` trae los textos de `EJ-044` y `EJ-047` cruzados; los IDs son
+los de arriba.)*
+
+**Lo que dice esta hoja, y lo que falta.** La cuenta de arriba y el presupuesto de `§9` son a 375. A 320 no
+hay un tope de renglones escrito: `§8.4` pide solo que no haya desplazamiento horizontal ni texto cortado,
+y que el nombre admita cuatro renglones. **Esta hoja no cambia el tope y no se toca ningún enunciado**
+hasta medirlo con la fuente real (`§12.6`, con su dueño). Lo que cuelga del resultado:
+
+- Si a **375** algún enunciado pasa de tres renglones en un teléfono real: `contenido` acorta `EJ-044`,
+  `EJ-045` y `EJ-047` (los tres que sobreviven con métrica Arial a 320) y `§9` pasa a decir el largo en
+  caracteres que sí entra.
+- Si pasa solo a **320**: lo decide `experiencia` con lo medido (aceptar cuatro renglones a 320 o pedir que se
+  acorten).
+- Si no pasa en ninguno: el tope de `§9` queda como está.
+
 ### 4.2 Las dos opciones: igual peso, por construcción
 
 Una opción que se viera distinta sería "la respuesta" (`UX-06` §3). Cada una de estas es medible:
@@ -1298,6 +1328,7 @@ npm test
 ### 12.1 Las pantallas, a 375 × 667
 
 - [ ] Portada: el borde de abajo de "Empezá la noche" ≤ **667**, a la vista (`getBoundingClientRect().bottom`); el hilo midió **590** y no tiene que subir. *(Antes: 576 + 20, mi cuenta.)*
+- [ ] Portada a 320 × 568: el borde de abajo de «Empezá la noche» ≤ **568** (cierre de `REV-19`: 565; `REV-20` midió 587 con `LUGARES.dosEjes` = «Traés barro seco en las zapatillas.» y el hilo lo acorta). **Se repite cada vez que cambie el renglón del lugar, el índice o el relleno de la tapa** (`§3.4`).
 - [ ] Postal y enlace viejo: el de "Empezá tu noche" ≤ **667**; el hilo midió **626 y 650** con el relleno de 20/16 (665 con 28/24). Si una frase nueva sube un renglón, el próximo escalón es el margen de la tapa (`§1.2`), nunca el subtítulo ni el botón.
 - [ ] `document.querySelectorAll('.pantalla > h1').length` = 1 por pantalla, y **no** adentro de `figcaption`.
 - [ ] La tapa mide el alto de la etiqueta + 28 + 24 en la portada y + 20 + 16 con la etiqueta del amigo (`offsetHeight`, no `getBoundingClientRect`: está torcida), más los 6 px del borde.
@@ -1360,3 +1391,10 @@ npm test
 - [ ] Compartí con archivo en iOS y en Android: ¿llega el enlace? (`§6.1`)
 - [ ] La grilla, la tapa y la hoja a la intemperie (brillo alto): ¿se lee el sello? ¿se distingue el canto?
 - [ ] ¿Alguna de las cuatro maneras se lee más pobre o más triste (`CNT-30` §9)? Es de `REV-19`, pero esta pantalla es donde se nota.
+- [ ] **Portada a 320 × 568 con la fuente real:** ¿«Empezá la noche» queda a la vista y entera? Con DejaVu el margen es de 3 px o negativo (`§3.4`).
+- [ ] **Enunciados con la fuente real:** ¿alguno pasa de tres renglones a 375 o de cuatro a 320? Mirar primero `EJ-044`, `EJ-045` y `EJ-047` (`§4.1`). Si alguno pasa, se decide como dice `§4.1`.
+
+**Dueño de esta lista y de la de `UX-38` `§10.5` y las filas de aparato real de `UX-38` `§10.4`: el usuario**,
+que es quien tiene el teléfono: uno de unos 375 px y, si hay uno, otro de 320; y VoiceOver o TalkBack para el
+texto del plano. `revisor` anota lo que se vea en la próxima `REV` y abre el hallazgo, con su dueño, si algo
+falla. Mientras no se mida, nada de esto bloquea: son medidas, no flujo.
