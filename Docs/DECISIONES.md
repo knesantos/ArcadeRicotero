@@ -4153,3 +4153,20 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     afuera para no pisar la rama `ciclo-18/que-ricotero-sos`, que trabaja sobre ese juego. Falta
     también la hoja 04 del lienzo, y que `contenido` sume Redonditos al mapa de `CNT-01`
     (propuesta en `Docs/SUGERENCIAS/HILO-para-contenido-redonditos-en-cnt01.md`).
+
+## D-68 — El orden de los juegos en el portal
+
+- **Fecha:** 2026-10-06
+- **Estado:** aceptada — pedido directo del usuario, textual: *"Vamos a hacer un ordenamiento
+  rapido de los juegos en el home, que queden en este orden: Adivina el tema, que tipo de
+  ricotero sos, sacalo por la letra, skayboy y poligirl, completa la letra, preguntas y desp
+  como esta"*.
+- **Enmienda:** `D-61` punto 6 (Skayboy y Poligirl al lado de "Adiviná el tema": queda cuarto,
+  después de "Sacalo por la letra"). `D-51` no cambia: "¿Qué tipo de ricotero sos?" sigue segundo.
+- **Decisión.** El lado A queda así: A1 Adiviná el tema · A2 ¿Qué tipo de ricotero sos? · A3
+  Sacalo por la letra · A4 Skayboy y Poligirl · A5 Completá la letra · A6 Preguntas ricoteras ·
+  A7 Ponelos en fila · A8 Adiviná la tapa · A9 Más o menos. El lado B no cambia.
+- **Consecuencias.** Solo cambia el orden del arreglo `JUEGOS` en `src/lib/sitio/copy.ts`. El
+  número de pista lo calcula `pistaDe()` con el índice, así que la carátula de cada juego (`D-54`)
+  sigue diciendo lo mismo que su casete en el portal sin tocarla. "Preguntas ricoteras" deja de
+  ser el A1 y pasa a ser el A6.
