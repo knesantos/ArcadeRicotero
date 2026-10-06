@@ -4080,3 +4080,74 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   - En el teléfono el título en Patricio Rey se lee con esfuerzo si no se conoce la letra. Lo
     sostienen el tamaño, la bajada que canta debajo y el casete del portal, que ya lo nombró en
     letra clara. Si el usuario lo ve difícil, la salida es dejarlo solo en la mesa (desde 64 rem).
+
+## D-67 — Lobo suelto y la letra que viste *Luzbelito* escriben el título de su juego, con tildes y signos derivados de ellas mismas
+
+- **Fecha:** 2026-10-06
+- **Estado:** aceptada — pedido directo del usuario, textual: *"mantene el analisis de tipografia,
+  vamos a seguir integrando las otras dos que no estan en el sistema, la de lobo suelto y la otra
+  que es medio luz belito"*, y después *"dale, seguí con lobo suelto y la de luzbelito"*.
+- **Consume y enmienda:** `D-19` (mitología viste *Lobo suelto*; *Luzbelito* no tenía letra),
+  `D-65` (la alternativa descartada "una letra por sección": ahora alcanza para los dos juegos cuyo
+  disco tiene letra, y el título único cambia de letra en dos de los ocho), `D-64` (la sal del
+  título, que Lobo no lleva), `RES-42`, la tabla de fuentes y la deuda de tildes de
+  `.claude/rules/diseno-marca.md` (enmendadas acá mismo). `CNT-14` §2.7 no cambia.
+- **Cuál es "la otra".** En `Docs/INVESTIGACION/Tipografia/` quedaban tres zips fuera del sistema.
+  Dos ya los había descartado `RES-42`: "INDIO" es *Masterplan* de Billy Argel, una grunge
+  genérica, y "Rock Argentina" son logos de bandas. La tercera es **"Redonditos de Ricota", de
+  Benjamín Zavala**: mano alzada, alturas desparejas y la i con su punto en medio de las
+  mayúsculas, como la palabra LUZBELITO de la tapa. **No es la letra de la tapa**: esa es un
+  trazo fino de pluma que nadie digitalizó, y `RES-42` dice que esta copia "el arte del muñeco",
+  sin verificar. Que vista *Luzbelito* es una elección de diseño del usuario y no un dato, y por
+  eso tiene dos bordes: se llama por lo que es (`Redonditos de Ricota Fan`, en
+  `--fuente-luzbelito`) y no escribe el nombre del disco en la estampa, que `CNT-14` §2.7 reserva
+  para la letra de la tapa.
+- **Decisión.**
+  - **Lobo Suelto Fan escribe el título de "Adiviná el tema"**, que viste mitología. Sin la sal de
+    `D-64`: es trazo de pelo, y la sal le comería trazos enteros.
+  - **Redonditos de Ricota Fan escribe lo que canta en "¿Qué tipo de ricotero sos?"**: el título,
+    el nombre de cada manera donde aparezca (el resultado, la tapa del amigo, la grilla de las
+    cuatro y el plano), "Las cuatro maneras" y el nombre del juego en el membrete de la hoja. Esta
+    sí lleva la sal, como los otros títulos.
+  - **La letra viaja con la variante**: `--fuente-disco` en el mapa de variantes de `sitio.css`,
+    al lado de la tinta y del golpe. El título la toma, y los demás siguen en la de la banda.
+  - **Lo que no cambia:** el casete del portal y la carátula, en Archivo Black (a 15 px ninguna
+    de las dos se lee); los sellos de goma de la noche (el momento, los polos), en la rotulada,
+    que es la letra de todo sello del sitio; los otros seis títulos, en Patricio Rey; y la
+    estampa, que sigue con sus tres nombres en su letra.
+- **Cómo.** `scripts/derivar-lobo-suelto.py` y `scripts/derivar-redonditos.py`, con el método del
+  calco y de la firma: lo que falta no se dibuja de cero, se recorta y se pega de la propia letra
+  con operaciones booleanas.
+  - **Lobo**: todo sale de la I, que es un palo de pelo con una bocha en cada punta. La tilde es
+    un pedazo del palo con la bocha en la punta; el punto, la bocha; la coma, la bocha con un
+    pedazo de palo; la admiración, la I sin travesaños. Salen Á É Í Ó Ú . , ! ¡, y vuelve la Ñ de
+    Zavala, que estaba en el TTF y se había perdido al recortar la `.woff`.
+  - **Redonditos**: casi todo sale de la i. El punto es su punto; la tilde, el dedo del pie
+    estirado y girado; la Í, la i sin el punto y con la tilde; la admiración, la i dada vuelta; la
+    pregunta, la cabeza del 2; la virgulilla de la Ñ, la S acostada. Salen Á É Í Ó Ú Ñ . , ! ? ¡ ¿.
+  - **El renglón y la medida.** Zavala apoyó las dos letras unas cien unidades por debajo de la
+    línea de base; suben (Lobo 112, Redonditos 91). Redonditos además venía grande (mayúscula de
+    787 contra 688) y se escala a la mayúscula del sistema, así el mismo cuerpo sirve para los ocho
+    títulos.
+  - Contornos TrueType, como el original: Lobo pesa 9,1 KB (antes 8,3) y Redonditos 10,0 KB, que
+    se bajan solo en la página que las usa.
+- **Alternativas descartadas.**
+  - **Lobo en el casete, en botones o en texto chico:** a 15 px es trazo de pelo, y su U se dibuja
+    como W (SWELTO). En el título de su juego no hay U.
+  - **Signos de pregunta y números para Lobo:** ningún texto en esta letra los pide, y la letra no
+    tiene una curva de la que sacarlos sin inventarla.
+  - **Redonditos en la estampa de *Luzbelito*:** no es la letra de la tapa (ver arriba).
+  - **Redonditos en los sellos del momento:** el sello de goma del sitio va en mayúsculas
+    rotuladas (`diseno-marca.md`), y esos son sellos.
+- **Consecuencias.**
+  - `fuentes.test.ts` abre las dos fuentes y exige lo derivado y que no vea lo que no hay; lee del
+    CSS qué variante pone qué letra y exige que el título de ese juego entre entero; y vigila los
+    nombres de las cuatro maneras, "Las cuatro maneras" y los dos nombres de la estampa en Lobo.
+    Con la Lobo de antes, dos de esos tests fallan. `estilos.test.ts` enmienda el test del título
+    único (`--fuente-disco` con la de la banda de repuesto), suma que solo Lobo se queda sin sal, y
+    el control de la negrita falsa mira también las dos letras nuevas.
+  - **Pendiente:** las postales de dos ejes (`R14`) todavía escriben el nombre en la rotulada: hay
+    que pasar el taller (`scripts/generar-dos-ejes.mjs`) a esta letra y regenerar los PNG. Se dejó
+    afuera para no pisar la rama `ciclo-18/que-ricotero-sos`, que trabaja sobre ese juego. Falta
+    también la hoja 04 del lienzo, y que `contenido` sume Redonditos al mapa de `CNT-01`
+    (propuesta en `Docs/SUGERENCIAS/HILO-para-contenido-redonditos-en-cnt01.md`).
