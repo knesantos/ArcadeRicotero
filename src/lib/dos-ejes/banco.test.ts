@@ -215,6 +215,9 @@ const VETOS_DE_LA_NOCHE: ReadonlyArray<readonly [string, readonly string[]]> = [
       'volumen cansa', 'cansa los oidos', 'oidos cansad*', 'duelen los oidos', 'me duele el oido',
       'tapo los oidos', 'tapa los oidos', 'tapan los oidos', 'tapar los oidos', 'taparse los oidos', 'tapo con los dedos',
       'baja el volumen', 'bajen el volumen', 'bajar el volumen',
+      // La primera persona, que es como se escribe una opción (lo vio el verificador de `REV-20`).
+      // «Le bajo un cambio» (tranquilizarse) es otra cosa y no cae: se veta la frase del volumen.
+      'bajo el volumen', 'bajamos el volumen',
     ],
   ],
 ];
@@ -278,11 +281,11 @@ const vetadoDeNoche = (texto: string, cual: string): boolean =>
 
 test('la música que molesta sabe ver: la hoja vieja de EJ-052 cae entera', () => {
   // Es la hoja que el usuario vio en el sitio publicado y marcó: "no va, nunca cansa el volumen".
-  for (const t of ['El volumen cansa los oídos.', 'Me tapo con los dedos', 'Traje algodón por las dudas']) {
+  for (const t of ['El volumen cansa los oídos.', 'Me tapo con los dedos', 'Traje algodón por las dudas', 'Le bajo el volumen', 'Bajo el volumen un poco']) {
     assert.ok(vetadoDeNoche(t, 'la música que molesta'), t);
   }
   // Y lo que es de la noche no cae: el volumen alto, la llovizna, la campera.
-  for (const t of ['El cantito sube a todo volumen.', 'Me tapo con un amigo', 'Una pareja se tapa con una campera.']) {
+  for (const t of ['El cantito sube a todo volumen.', 'Me tapo con un amigo', 'Una pareja se tapa con una campera.', 'Le bajo un cambio']) {
     assert.ok(!vetadoDeNoche(t, 'la música que molesta'), t);
   }
 });
