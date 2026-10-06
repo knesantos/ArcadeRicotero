@@ -59,7 +59,8 @@ nada de esto traba la publicación.
   `fichinricotero.com.ar` responda por HTTPS; al escribir esto no resuelve DNS. Cuando entre a
   `main` después de esta rama, las tarjetas del taller chocan como binario: se resuelve con
   `npm run generar-dos-ejes`. **Ojo:** `D-59` está reservado dos veces (esa rama y el ciclo
-  19); uno de los dos tiene que renumerar antes de integrar.
+  19); uno de los dos tiene que renumerar antes de integrar. *[Resuelto 2026-10-05: el dominio
+  entró primero como `D-59` y el ciclo 19 se renumeró a `D-62` al integrar (`49d9ea0`).]*
 - **El hilo de difusión.** El texto con el nombre nuevo y las capturas vueltas a sacar contra
   producción están en el PR #31 (rama `difusion/hilo-fichin`); el #26 se había integrado antes,
   sin ese cambio. Sus enlaces apuntan a `fichinricotero.com.ar`: no se postea hasta que el
