@@ -162,13 +162,23 @@
 >   rincones atado.
 > - La excepción de las líneas que cantan (sin segunda persona) está en `voz-ricotera.md` §5.
 >
-> **Lo que queda abierto, con dueño** (detalle en el cierre de `REV-20`): `experiencia`, las
-> cifras de `FIND-132`/`FIND-133` y la portada a 562 en `UX-36`; `contenido`, tres detalles de
-> `CNT-31` (13 palabras, §4.2, el comando de §14.8) y decidir `EJ-040` y el costo de `CU-4`;
-> `producto`, «Lo que `REV-20` leyó del banco» y los huecos que ya tienen prueba;
-> `arquitectura`, `CTR-08` E2.7. **El usuario**: el teléfono real (lector de pantalla, la portada
-> a 320, el brillo, Safari y Android) y si la noche suena ricotera. La hoja 15 del lienzo (la
-> mesa) sigue pendiente (`T-319`), y antes hay que sacarle el canto.
+> **Después del cierre**, una última ronda de papeles (`1afb263`, `619b2b2`, `7e772a3`, `0c38b56`)
+> cerró en papeles `FIND-132` y `FIND-133` y lo que el cierre le dejaba a cada rol. Su verificador
+> dejó cinco detalles de redacción, todos bajos, que quedan anotados acá y no se abrió otra vuelta:
+> - `contenido` (`CNT-31`): todavía dice que `producto` no decidió `EJ-051` (decidió en `6b1beeb`:
+>   la escena es la hoja) y que el peso del costo de `CU-4` lo dice `producto` (ya dijo: cuenta la
+>   forma, decide `contenido`); y cita «ficha 15/16/17» donde `REV-20` dice «Sin consenso».
+> - `experiencia` (`UX-36` §5.6, `UX-38` §3.2): «Compartí» a 320 termina en 568,4 en las cuatro
+>   maneras (en `CU-1` y `CU-3` por 0,4 px), no «justo en el borde».
+> - `producto` (`BR-38`): el «Léase» del veto 1 deja afuera «el pogo» que la tabla trae, y la cita
+>   «`REV-20` 2(c)» para los chicos en las bajadas no lo respalda (es cierto, pero por otra lectura).
+>
+> **Lo que decide el usuario:** si «Compartí» tiene que entrar a 320 × 568 en el resultado (hoy
+> no, en ninguna manera, y es de antes de este ciclo); `EJ-040` («Me dejo llevar» con los Redondos
+> sonando) y el costo de `CU-4` («averiguarlo en el celular»), que `contenido` dejó como están;
+> y el teléfono real (lector de pantalla, la portada a 320, el brillo, Safari y Android), y si la
+> noche suena ricotera. La hoja 15 del lienzo (la mesa) sigue pendiente (`T-319`), y antes hay
+> que sacarle el canto.
 
 > ## 🌐 EL DOMINIO: FICHINRICOTERO.COM.AR, ANDANDO (2026-10-05) — `D-59`
 >
