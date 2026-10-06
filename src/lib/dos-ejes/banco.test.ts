@@ -211,13 +211,15 @@ const VETOS_DE_LA_NOCHE: ReadonlyArray<readonly [string, readonly string[]]> = [
   [
     'la música que molesta',
     [
-      'algodon', 'tapon*', 'aturd*', 'ensordec*', 'zumbid*', 'molest*', 'demasiado fuerte',
-      'volumen cansa', 'cansa los oidos', 'oidos cansad*', 'duelen los oidos', 'me duele el oido',
+      'algodon', 'tapon*', 'aturd*', 'ensordec*', 'zumb*', 'pitido*', 'molest*', 'demasiado fuerte', 'demasiado alto', 'tan fuerte que',
+      'volumen cansa', 'cansa los oidos', 'cansan los oidos', 'cansa el oido', 'ruido cansa', 'cansa el ruido',
+      'oidos cansad*', 'duelen los oidos', 'me duele el oido', 'retumban los oidos',
       'tapo los oidos', 'tapa los oidos', 'tapan los oidos', 'tapar los oidos', 'taparse los oidos', 'tapo con los dedos',
+      'tapo las orejas', 'tapa las orejas', 'tapar las orejas',
       'baja el volumen', 'bajen el volumen', 'bajar el volumen',
       // La primera persona, que es como se escribe una opción (lo vio el verificador de `REV-20`).
       // «Le bajo un cambio» (tranquilizarse) es otra cosa y no cae: se veta la frase del volumen.
-      'bajo el volumen', 'bajamos el volumen',
+      'bajo el volumen', 'bajamos el volumen', 'bajale el volumen', 'bajen la musica', 'bajar la musica',
     ],
   ],
 ];
@@ -232,7 +234,8 @@ const VETOS_DE_LAS_OPCIONES: ReadonlyArray<readonly [string, readonly string[]]>
   ['el cuerpo y la multitud', ['paras', 'parado', 'saltar', 'salto', 'salt*', 'corro', 'corres', 'hombro con hombro', 'apretad*', 'empuj*', 'avalancha', 'en el medio', 'pogo']],
   // La banda como credencial: en la escena la misa y los trapos son paisaje; en una opción,
   // "la misa" o "los Redondos" puntúan quién es más de adentro (`BR-36`, la regla en una línea).
-  ['la banda como credencial', ['banda', 'redondos', 'redonditos', 'ricota', 'misa', 'misas', 'ricoter*']],
+  // Los trapos también: BR-38 los pone en la columna «Nunca» de las opciones (lo vio REV-20).
+  ['la banda como credencial', ['banda', 'redondos', 'redonditos', 'ricota', 'misa', 'misas', 'ricoter*', 'trapo*']],
   // La merca está en la noche (`D-62`) como paisaje, nunca como lo que hace quien juega: es la
   // línea editorial del hilo principal sobre el pedido del usuario, dicha en `D-62`.
   ['la merca como elección', ['merca', 'cocaina', 'falopa', 'saque', 'pala', 'raya', 'rayas', 'tiro', 'tiros']],
@@ -281,11 +284,11 @@ const vetadoDeNoche = (texto: string, cual: string): boolean =>
 
 test('la música que molesta sabe ver: la hoja vieja de EJ-052 cae entera', () => {
   // Es la hoja que el usuario vio en el sitio publicado y marcó: "no va, nunca cansa el volumen".
-  for (const t of ['El volumen cansa los oídos.', 'Me tapo con los dedos', 'Traje algodón por las dudas', 'Le bajo el volumen', 'Bajo el volumen un poco']) {
+  for (const t of ['El volumen cansa los oídos.', 'Me tapo con los dedos', 'Traje algodón por las dudas', 'Le bajo el volumen', 'Bajo el volumen un poco', 'Los parlantes cansan los oídos', 'Bajale el volumen', 'Me zumban los oídos']) {
     assert.ok(vetadoDeNoche(t, 'la música que molesta'), t);
   }
   // Y lo que es de la noche no cae: el volumen alto, la llovizna, la campera.
-  for (const t of ['El cantito sube a todo volumen.', 'Me tapo con un amigo', 'Una pareja se tapa con una campera.', 'Le bajo un cambio']) {
+  for (const t of ['El cantito sube a todo volumen.', 'Me tapo con un amigo', 'Una pareja se tapa con una campera.', 'Le bajo un cambio', 'Bajale un cambio', 'Radio bajita, misma hora']) {
     assert.ok(!vetadoDeNoche(t, 'la música que molesta'), t);
   }
 });
