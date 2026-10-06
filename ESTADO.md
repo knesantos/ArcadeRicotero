@@ -7,6 +7,15 @@
 
 **Última actualización:** 2026-10-06
 
+> ## 🔀 CLAUDE FUSIONA CUANDO SE LO PEDÍS (2026-10-06)
+>
+> Pedido del usuario, textual: *"mergealo vos, vamos a dejar escrita la regla para que puedas
+> tambien"*. El PR #38 (la multitud que se acerca, `D-64`, `D-65`) lo fusionó Claude. Desde ahora
+> hay permiso en `.claude/settings.json` (`Bash(gh pr merge *)`) y una regla,
+> `.claude/rules/integrar.md`, que dice cuándo: **solo si el usuario lo pide en el chat**, con
+> `main` adentro de la rama, todo verde y los checks del PR en verde; siempre `--merge`, nunca
+> `--admin`, `--squash` ni borrar la rama.
+
 > ## 🖨 LA MULTITUD SE ACERCA, LA SOMBRA SALE DE TODOS LADOS, LAS TAPAS SE SELLAN (2026-10-05) — `D-63` enmienda 1, `D-64`, `D-65`
 >
 > **Rama `diseno/la-multitud-se-acerca`, sobre `main` en `8989416`**, en el worktree
