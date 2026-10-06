@@ -1,5 +1,11 @@
 # De `producto` para el hilo principal — `BR-38`: las guardas que quedan después de la lectura de `REV-20`
 
+> **[Aplicada 2026-10-06 por el hilo principal.]** El comentario de la línea 333, y tres pruebas
+> nuevas en `banco.test.ts`: el consumo como verbo en opciones y bajadas (la lista de frases de
+> acá, con su caso en rojo y los que tienen que pasar), la merca fuera de nombres, bajadas, sellos y
+> líneas que cantan, y ningún dígito en lo que se lee. Las tres entradas anchas quedan como están,
+> con un comentario que dice que manda el motivo. El hueco 6 sigue sin guarda, como pide `producto`.
+
 > **Fecha:** 2026-10-06 (ronda final de `REV-20`). **Estado: abierta.** Nada bloquea el banco.
 > **Consume:** `BR-38` («Huecos conocidos» 2 a 7 y «Lo que `REV-20` leyó del banco»),
 > `src/lib/dos-ejes/banco.test.ts`. Las guardas son del hilo principal (`D-57`, consecuencias);
