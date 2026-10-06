@@ -7,6 +7,13 @@
 
 **Última actualización:** 2026-10-06
 
+> ## 🔢 EL PORTAL CAMBIA DE ORDEN (2026-10-06) — `D-68`
+>
+> Pedido del usuario. El lado A queda: Adiviná el tema, ¿Qué tipo de ricotero sos?, Sacalo por la
+> letra, Skayboy y Poligirl, Completá la letra, Preguntas ricoteras, y después Ponelos en fila,
+> Adiviná la tapa y Más o menos, como estaban. Solo se movió el arreglo `JUEGOS` de `copy.ts`: la
+> pista de cada carátula sale del mismo índice y acompaña sola.
+
 > ## 🔤 LOBO SUELTO Y LA LETRA DE LUZBELITO ENTRAN AL SISTEMA (2026-10-06) — `D-67`
 >
 > **Rama `tipografia/lobo-y-luzbelito`, sobre `main` en `8bb84ab`**, en el worktree

@@ -178,32 +178,12 @@ export interface Casete {
   readonly accion?: string;
 }
 
+/**
+ * El orden del lado A es el del portal y el de la pista (A1, A2…), y lo fijó el usuario el
+ * 2026-10-06 (`D-68`): Adiviná el tema, ¿Qué tipo de ricotero sos?, Sacalo por la letra,
+ * Skayboy y Poligirl, Completá la letra, Preguntas ricoteras, y después el resto como estaba.
+ */
 export const JUEGOS: readonly Casete[] = [
-  {
-    titulo: 'Preguntas ricoteras',
-    baja: 'Ocho preguntas y ninguna piadosa. Historia, discos, letras y mitología, en dos minutos.',
-    variante: 'marca',
-    // *Oktubre* entero: es el disco que viste la portada y la sección de marca (`D-19`), y el
-    // del mes en que se cambió (`D-49`).
-    arte: '/tapas/oktubre.jpg',
-    href: '/quiz/',
-    accion: 'JUGÁ',
-  },
-  {
-    // `US-06`. Terminado y revisado desde el ciclo 8 y **sin un solo enlace** hasta el
-    // 2026-10-01: nadie lo había dejado afuera, fue un olvido (`D-51`). Va segundo porque es
-    // el molinete más abierto del sitio —no pide saber nada de la banda (`UX-06` §0)—, y el
-    // que llega sin idea tiene que encontrarlo antes que los juegos que sí piden.
-    titulo: '¿Qué tipo de ricotero sos?',
-    // `D-62` (`CNT-31`): la noche es la ricotera, y la bajada lo dice con el barro y el chori.
-    // La primera frase, la que canta y mide `voz.test.ts`, no cambia.
-    baja: 'Nadie te toma examen. Una noche de recital con barro y chori, sin puntaje y sin saber nada de la banda.',
-    variante: 'luzbelito',
-    // La cabeza con la vela de *Luzbelito*, recortada a mano: luz y oscuridad en una pieza.
-    arte: '/arte/luzbelito-vela.png',
-    href: '/juegos/dos-ejes/',
-    accion: 'EMPEZÁ',
-  },
   {
     titulo: 'Adiviná el tema',
     baja: 'Con una décima te tiene que alcanzar. Si no, te damos más, hasta diez segundos: cuanto antes la pegues, más vale.',
@@ -213,21 +193,19 @@ export const JUEGOS: readonly Casete[] = [
     accion: 'JUGÁ',
   },
   {
-    // `US-09`. Publicado el 2026-10-01 por decisión del usuario (`D-51`). La copia es la de
-    // `CNT-19`, ya aprobada, y vive en `skayboy/copy.ts`: acá se reusa, no se reescribe.
-    // **Va cuarto, pegado a "Adiviná el tema"** (`D-61` punto 6, pedido del usuario: *"ponele en
-    // el home al lado de Adiviná el tema"*). Era el último, el A9. En el teléfono queda justo
-    // abajo; en dos columnas, en el mismo renglón; en tres, primero del renglón de abajo.
-    titulo: CASETE_SKAYBOY.titulo,
-    baja: CASETE_SKAYBOY.baja,
-    // Viste *Gulp!* por herencia del contenido (`UX-30` §2): los dos temas que le dan su par
-    // elemental son de ese disco. La variante `historia` es esa tinta (`--cat-historia`).
-    variante: 'historia',
-    // El "Gulp." rojo del sobre: la otra pieza de *Gulp!* en el portal es el "Patricio Rey"
-    // verde de la Redondopedia, y `D-49` no deja repetir.
-    arte: '/tapas/detalle/gulp-logo.jpg',
-    href: '/juegos/skayboy-y-poligirl/',
-    accion: 'JUGÁ',
+    // `US-06`. Terminado y revisado desde el ciclo 8 y **sin un solo enlace** hasta el
+    // 2026-10-01: nadie lo había dejado afuera, fue un olvido (`D-51`). Sigue segundo con
+    // `D-68`: es el molinete más abierto del sitio —no pide saber nada de la banda (`UX-06`
+    // §0)—, y el que llega sin idea tiene que encontrarlo antes que los juegos que sí piden.
+    titulo: '¿Qué tipo de ricotero sos?',
+    // `D-62` (`CNT-31`): la noche es la ricotera, y la bajada lo dice con el barro y el chori.
+    // La primera frase, la que canta y mide `voz.test.ts`, no cambia.
+    baja: 'Nadie te toma examen. Una noche de recital con barro y chori, sin puntaje y sin saber nada de la banda.',
+    variante: 'luzbelito',
+    // La cabeza con la vela de *Luzbelito*, recortada a mano: luz y oscuridad en una pieza.
+    arte: '/arte/luzbelito-vela.png',
+    href: '/juegos/dos-ejes/',
+    accion: 'EMPEZÁ',
   },
   {
     titulo: 'Sacalo por la letra',
@@ -244,6 +222,22 @@ export const JUEGOS: readonly Casete[] = [
     accion: 'JUGÁ',
   },
   {
+    // `US-09`. Publicado el 2026-10-01 por decisión del usuario (`D-51`). La copia es la de
+    // `CNT-19`, ya aprobada, y vive en `skayboy/copy.ts`: acá se reusa, no se reescribe.
+    // Era el A9; `D-61` punto 6 lo subió al lado de "Adiviná el tema", y `D-68` lo deja cuarto,
+    // después de "Sacalo por la letra".
+    titulo: CASETE_SKAYBOY.titulo,
+    baja: CASETE_SKAYBOY.baja,
+    // Viste *Gulp!* por herencia del contenido (`UX-30` §2): los dos temas que le dan su par
+    // elemental son de ese disco. La variante `historia` es esa tinta (`--cat-historia`).
+    variante: 'historia',
+    // El "Gulp." rojo del sobre: la otra pieza de *Gulp!* en el portal es el "Patricio Rey"
+    // verde de la Redondopedia, y `D-49` no deja repetir.
+    arte: '/tapas/detalle/gulp-logo.jpg',
+    href: '/juegos/skayboy-y-poligirl/',
+    accion: 'JUGÁ',
+  },
+  {
     titulo: 'Completá la letra',
     baja: 'Lo tenés en la punta de la lengua. Falta una palabra del verso y hay cuatro para elegir.',
     variante: 'letras',
@@ -255,6 +249,16 @@ export const JUEGOS: readonly Casete[] = [
     // decide `segunLaPartida()` (`portal.ts`) con el mismo `cargarBanco()` que la página.
     // Hasta el ciclo 16 este casete no tenía acción y el portal decía "en la cocina" de un
     // juego que ya se jugaba.
+    accion: 'JUGÁ',
+  },
+  {
+    titulo: 'Preguntas ricoteras',
+    baja: 'Ocho preguntas y ninguna piadosa. Historia, discos, letras y mitología, en dos minutos.',
+    variante: 'marca',
+    // *Oktubre* entero: es el disco que viste la portada y la sección de marca (`D-19`), y el
+    // del mes en que se cambió (`D-49`).
+    arte: '/tapas/oktubre.jpg',
+    href: '/quiz/',
     accion: 'JUGÁ',
   },
   {
