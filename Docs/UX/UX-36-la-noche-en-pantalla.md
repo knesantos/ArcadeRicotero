@@ -466,13 +466,13 @@ el mismo día, con el arreglo de `FIND-130` de `REV-20` ya hecho).**
   índice o el relleno de la tapa:** `#empezar.getBoundingClientRect().bottom` a 320 × 568 **≤ 568**
   (hoy: 565), con `scrollWidth <= innerWidth`. **El techo de caracteres del renglón a 320 es el que
   contesta `§9`** (30 con la pila de Linux): no es un presupuesto nuevo para todos los juegos, es lo que
-  entra en esta portada, la de la tapa más alta.
+  entra en esta portada, la de la tapa de libro con índice.
 - **Si no alcanza, la palanca es la de `§1.2`:** el relleno y el margen de la tapa, nunca el subtítulo ni
   el botón.
 - **Depende de la fuente.** Todas las medidas del proyecto son con DejaVu Sans, más ancha que Roboto o San
-  Francisco; los 565 son con ella. Con la línea vieja de 35 caracteres y métrica Arial (Liberation Sans)
-  el botón también daba 565. La línea vigente es más angosta que esa, así que entra en un renglón con las
-  dos. En un teléfono real de 320 no está medido (`§12.6`).
+  Francisco; los 565 son con ella. Con la línea de 35 caracteres («Traés barro seco…») y métrica Arial
+  (Liberation Sans) el botón ya daba 565. La línea vigente es más angosta que esa, así que entra en un
+  renglón con las dos. En un teléfono real de 320 no está medido (`§12.6`).
 
 ### 3.5 En la mesa (≥ 64 rem)
 

@@ -1,7 +1,8 @@
 # UX-38 — El plano de dos ejes vuelve al resultado: un recorte de papel, fijo, sobre la grilla
 
 > Rol dueño: `experiencia`. **v1.1 — 2026-10-05 — la versión construida; al día el 2026-10-06
-> tras `REV-20` (texto del lector, `T-352`, `G10`, lo medido).** Rama
+> tras `REV-20` (texto del lector, `T-352`, `G10`, lo medido) y puesta al día otra vez en su ronda final
+> (`T-351` cerrada, el texto del lector armado en `textoDelPlano()`, las fechas de las medidas).** Rama
 > `ciclo-18/que-ricotero-sos`. La v1 del mismo día especificaba el plano **relativo**; el usuario
 > eligió el **fijo** y el hilo principal lo construyó (commits `09585bf`, `2fc87b8`, `4296283`).
 > Esta versión describe lo que hay, contesta la crítica adversarial de la v1 (quince puntos, `§11`) y
@@ -27,14 +28,15 @@
 > `UX-36` entera, `UX-06` §4 (el rombo viejo), `UX-35` §4.4, `REV-19` (las alturas medidas), `REV-20`,
 > `CNT-31` §13 (el texto del lector), la crítica adversarial de la v1, `.claude/rules/diseno-marca.md`, `.claude/rules/voz-ricotera.md`, `tokens.css`,
 > `juego.css` (bloque `.ejes-plano*`), `partida-dos-ejes.ts` (`plano()`, `grilla()`), `partida.ts`
-> (`PLANO_FIJO`, `planoFijo()`, `disposicion()`), `copy.ts` (`RESULTADO.altPlano`, `.lugares`),
-> `estilos.test.ts`, `contraste.test.ts`, `partida.test.ts`, `isla.test.ts`, `copy.test.ts`.
+> (`PLANO_FIJO`, `planoFijo()`, `disposicion()`), `copy.ts` (`RESULTADO.altPlano`, `.lugares`,
+> `textoDelPlano()`), `estilos.test.ts`, `contraste.test.ts`, `partida.test.ts`, `isla.test.ts`,
+> `copy.test.ts`.
 >
 > **Resuelve:** la parte de pantalla de `US-06` c3 (el plano), c4c (la manera de quien te mandó el
 > enlace, punteada, también acá) y el criterio 9 (las siete condiciones del plano, de la enmienda
 > tercera de `producto`). **No resuelve:** el CSS ni la isla (hilo principal), el motor, ni el texto que
 > lee el lector de pantalla: lo propuso el hilo y lo confirmó `contenido` (`T-352`, **cerrada**,
-> `CNT-31` §13).
+> `CNT-31` §13); hoy lo arma `textoDelPlano()` (`copy.ts`, `798cd54`).
 >
 > **Qué cambió de la v1 a la v1.1**
 >
@@ -50,6 +52,29 @@
 > | `§9.2` | Cinco abiertos (el 5, el volumen) | El volumen sale (`D-62` enmienda 1); entran los costos de lo fijo |
 > | `§11` | — | **Nuevo:** la crítica, punto por punto, y "Lo que se discutió" |
 > | `§1.2`, `§5`, `§8`, `§9.2`, `§10` | *(2026-10-06, tras `REV-20`)* El texto del lector de la primera propuesta del hilo (punto y coma, «La tuya»), `T-352` abierta, `G10` sin guarda, casi nada tildado | El texto construido (puntos entre polo y polo, «Tu manera»), `T-352` cerrada, `G10` hecho (`copy.test.ts`), lo que `REV-20` midió tildado y lo que falta, con dueño |
+> | `§1.2`, `§4.2`, `§5`, `§8`, `§10` | *(2026-10-06, ronda final de `REV-20`)* `T-351` abierta (el plano por pegar en las hojas 08 y 09 del lienzo); el texto del lector armado a mano en la isla y en `copy.test.ts`; `copy.test.ts` con seis tests; medidas del hilo y de `REV-20` fechadas el 2026-10-06; «14 avisos» | `T-351` **cerrada** (hoja 16 del lienzo); `textoDelPlano()` arma el texto en un solo lugar y `copy.test.ts` tiene **ocho** tests; las medidas son del **2026-10-05**; **0 avisos y 14 hints** |
+>
+> **Ronda final de `REV-20` (2026-10-06): qué se arregló en esta hoja y qué dice de los hallazgos.**
+>
+> - **`FIND-120` de `REV-20`** es esta hoja: decía «la versión construida» y describía lo anterior (el texto
+>   del lector con punto y coma y «La tuya», `T-352` abierta, `G10` sin guarda, `§8.2` sin tildar). La puesta
+>   al día del mismo día (`650f9a9`) lo cerró; esta ronda sigue desde ahí. *(Numeración: el lente de
+>   pantalla lo había numerado `FIND-121`; en la definitiva es `FIND-120`. La hoja no citaba ningún `FIND`
+>   hasta esta nota.)* El criterio 9 de `US-06` ya está en «Consume».
+> - **`T-351` está cerrada** (`2a8d943`): el plano se pegó en el lienzo **como hoja 16**, debajo de la 08 en
+>   la página Aplicación; **no entró en la 08 y la 09** como pedía la ficha de `§8.2`, que queda abajo como
+>   se escribió, marcada.
+> - **El texto del lector se arma en `textoDelPlano()`** (`copy.ts`, `798cd54`), una sola función que usan
+>   la isla y `copy.test.ts`; `copy.test.ts` tiene **ocho tests** y uno ata el orden de `RESULTADO.lugares`
+>   con el de `planoFijo().celdas`. El límite que `REV-20` anotó como diferido («el test arma a mano los
+>   argumentos») ya no existe (`§8.1`, G10).
+> - **Las fechas.** Las medidas que esta hoja llama **(hilo)** y las que marca `(REV-20)` se tomaron el
+>   **2026-10-05**; `REV-20` se escribió entre el 05 y el 06. Donde esta hoja decía «`REV-20`, 2026-10-06»
+>   para una medida, está corregido; **las puestas al día del texto sí son del 06**.
+> - **`npm run check`: 0 errores, 0 avisos y 14 hints** (no «14 avisos»): los hints son de `aparato.ts`,
+>   `diagnostico-audio.ts` y los `is:inline` de las páginas; ninguno es del plano (`§10.0`).
+>
+> Los hashes de commit de esta nota me los pasó el hilo; yo no corrí `git`.
 >
 > **Lo que no pude hacer, dicho antes que nada.** Esta sesión tampoco tuvo shell (`D-12`): no corrí
 > nada, ni `git show`. Leí el **árbol de trabajo** (`partida-dos-ejes.ts`, `juego.css`, `partida.ts`,
@@ -159,14 +184,14 @@ están el sello "Esta noche" y, si vino un enlace, el punteado (`§2.1`, los cua
 | Sello de la tuya | Borde grueso y sólido, más el sello | `RESULTADO.tuya` ("Esta noche") |
 | Sello de la del amigo | Borde punteado, más el sello | `RESULTADO.suya` ("Quien te lo mandó") |
 | Los ejes | Dos líneas que se cruzan en el centro | Ninguna: son borde |
-| **Lo que oye el lector (nuevo)** | Los dos ejes, sus polos y dónde cae la tuya | `RESULTADO.altPlano(…)` y `RESULTADO.lugares` (`copy.ts`) |
+| **Lo que oye el lector (nuevo)** | Los dos ejes, sus polos y dónde cae la tuya | `textoDelPlano(banco, id, suyoId)` (`copy.ts`), que arma `RESULTADO.altPlano(…)` con `RESULTADO.lugares` y los polos de `planoFijo()` |
 
 Las cadenas de las cinco primeras filas son las mismas que la grilla ya usa, así que `voz.test.ts` y
 `banco.test.ts` ya las vigilan. **La última fila trae dos cadenas nuevas** (la v1 prometía que no habría ninguna; `§5` dice
 por qué hubo que romper la promesa): las propuso el hilo y **`contenido` las confirmó (`T-352`,
 cerrada; `CNT-31` §13)**, `altPlano` con dos cambios sobre la primera propuesta (`§5`) y `lugares` sin
 cambios. `voz.test.ts` no llega a `altPlano` (la llama con un comodín, recibe un objeto y el `catch` lo
-traga), pero **`copy.test.ts` la vigila** en veinte casos (`§8.1`, G10).
+traga), pero **`copy.test.ts` la vigila** en veinte casos, con ocho tests (`§8.1`, G10).
 
 El rótulo de cada polo va en **dos renglones** (el polo en rotulada y mayúsculas, sus palabras debajo)
 y no en uno con " · " como los márgenes de la grilla. La razón sigue siendo la franja del eje
@@ -392,8 +417,8 @@ HTML, no SVG: igual que la grilla (`D-57` punto 7: "texto HTML, no un SVG escala
 texto con la caja, y a 288 px de ancho los 12 px se vuelven 10; en HTML la letra es en `rem` y el nombre
 se parte solo con `text-wrap: balance`.
 
-1. `div.ejes-plano` con `role="img"` y `aria-label` = `RESULTADO.altPlano(…)`: el recorte (borde,
-   sombra, cinta, giro).
+1. `div.ejes-plano` con `role="img"` y `aria-label` = `textoDelPlano(banco, id, suyo?.id)` (que llama a
+   `RESULTADO.altPlano(…)`; `partida-dos-ejes.ts`): el recorte (borde, sombra, cinta, giro).
 2. Polo de arriba (`.ejes-plano-polo--arriba`): `.ejes-plano-polo-eje` (`EJES[…]`) y `.ejes-plano-polo-dice`
    (`POLOS[…]`).
 3. `div.ejes-plano-cruz`: una cuadrícula de **dos columnas `minmax(0, 1fr)`** con `column-gap: 10px` y
@@ -410,6 +435,9 @@ se parte solo con `text-wrap: balance`.
 
 **Una sola fuente de los lugares:** el plano sale de `planoFijo(banco)` y no escribe ningún polo a mano;
 la grilla sigue con su única `disposicion(banco, …)`. Las dos modificadoras entran a `ESTADOS_EJES`.
+**Y una sola fuente del texto del lector** *(2026-10-06, `798cd54`)*: `textoDelPlano()` (`copy.ts`) lo arma
+con los lugares de `planoFijo()`, y lo llaman la isla y `copy.test.ts`; antes se armaba dos veces, y una
+de las dos podía cambiar sola.
 
 ### 4.3 Las medidas
 
@@ -491,8 +519,9 @@ tinta. No hay cuero, ni rojo, ni acento: no se disfraza el acierto ni el error p
 
 ## 5. Accesibilidad (decisión 5): el plano es una imagen con su texto
 
-**`role="img"` en el recorte y un `aria-label` que sale de `RESULTADO.altPlano(…)`**, con los lugares de
-`RESULTADO.lugares`. Para `CU-1` con una postal de `CU-4`, el lector dice (texto de `copy.ts`, `CNT-31` §13):
+**`role="img"` en el recorte y un `aria-label` que arma `textoDelPlano()`** (`copy.ts`) con
+`RESULTADO.altPlano(…)` y los lugares de `RESULTADO.lugares`. Para `CU-1` con una postal de `CU-4`, el lector
+dice (texto de `copy.ts`, `CNT-31` §13):
 
 > Dos ejes en cruz. Arriba, Luz, con la gente. Abajo, Oscuridad, con lo propio. A la izquierda, Orden, con
 > plan. A la derecha, Caos, sobre la marcha. Tu manera, arriba a la izquierda: Mesa larga a las nueve. La de
@@ -514,8 +543,9 @@ propuesta del hilo, que esta hoja había transcrito:**
   en imagen, quedaba colgada. «Manera» es la palabra de «Las cuatro maneras» y le da apoyo a «La de quien
   te lo mandó» y a «es la misma». Cuesta cero palabras.
 
-Lo vigila `copy.test.ts` (`§8.1`, G10): veinte casos, sin dígitos, sin comparaciones, sin `;`, `!` ni
-suspensivos, con los dos ejes enteros y el nombre de la tuya. **Lo que ninguna máquina dijo** es cómo suena
+Lo vigila `copy.test.ts` (`§8.1`, G10): ocho tests sobre veinte casos, sin dígitos, sin comparaciones, sin
+`;`, `!` ni suspensivos, con los dos ejes enteros y el nombre de la tuya; y uno ata cada lugar de
+`RESULTADO.lugares` al rincón donde `planoFijo()` pone la celda. **Lo que ninguna máquina dijo** es cómo suena
 leída por un lector de pantalla real, y si los cuatro polos se oyen como cuatro frases (`§10.4`).
 
 `[v1]` La v1 decía lo contrario: *"`aria-hidden="true"`… no hay `role="img"` ni `aria-label`, y por eso no
@@ -600,11 +630,11 @@ no es cierto que no haya plano. Y desde la enmienda 3 hay un lugar que no es de 
 | G3 | `ESTADOS_EJES` suma `.ejes-plano-cuadrante--tuya` y `--suya` | `estilos.test.ts`, líneas 616–617 | **Hecho** |
 | G4 | **Ninguna regla `.ejes-*` pide menos de 0,75 rem** (en `rem` ni en `px`) | `estilos.test.ts`, *"ninguna letra del test de dos ejes baja de 12 px"* y su control | **Hecho** |
 | G5 | Ningún `border-left` ni `border-inline-start` en el plano, y ningún hex | `estilos.test.ts` | **Ya existía** |
-| G6 | El plano es `role="img"` con `RESULTADO.altPlano(` y no crea `a`, `button`, `tabindex` ni punto | `isla.test.ts` | **Hecho** (cambió: la v1 pedía `aria-hidden`) |
+| G6 | El plano es `role="img"` con `textoDelPlano(banco, id, suyo?.id)` y no crea `a`, `button`, `tabindex` ni punto | `isla.test.ts` | **Hecho** (cambió: la v1 pedía `aria-hidden`; y con `798cd54` el test mira `textoDelPlano(…)`, que llama a `RESULTADO.altPlano`, y no la llamada directa) |
 | G7 | **A/B de los botones:** el borde de abajo de "Compartí" y de "Empezá otra noche" es idéntico con y sin plano | Medición | **Hecho** (hilo, cinco ventanas), **a mano**: no es un test. Repetir si cambia algo encima del plano |
 | G8 | El taller no se enteró: `VERSION_DEL_DIBUJO` sigue en 3 y `altoDeLaHojaDeLaTarjeta` en 769 | `tarjetas.test.ts` | **Ya existe** |
 | G9 | Ningún par nuevo en `contraste.test.ts` | `contraste.test.ts` | **Ya existe** |
-| G10 | **Las cadenas del plano se auditan con los datos de verdad** | `copy.test.ts` (`src/lib/dos-ejes/`) | **Hecho** (`3b4ae32`; la v1.1 decía "No": lo corrige `REV-20`). `voz.test.ts` **sigue sin llegar a `altPlano`**: `cadenasDeFunciones()` la llama con un número y con "X", recibe un objeto, `p.tuya.lugar` lanza un `TypeError` y el `catch` lo traga (*"una función que no aguanta el comodín no se audita"*). Lo que cubre el hueco es `copy.test.ts`: seis tests sobre **veinte casos** (las cuatro maneras como la tuya, sin enlace, con la misma y con cada una de las otras tres): sin dígitos ni «mejor», «peor», «primera», «última» ni «más»; sin `;`, `!` ni suspensivos; los dos ejes enteros y el nombre de la tuya; la del enlace; sin anglicismos ni «los fans». `RESULTADO.lugares` sí lo audita `voz.test.ts` (es un arreglo de cadenas). **Límite conocido** (`REV-20`, diferido): `copy.test.ts` arma a mano los argumentos (`lo()`); si `plano()` cambia cómo los arma, el test no se entera. Lo firme sería extraer ese armado a una función exportada que usen la isla y el test: es código, del hilo. Origen del hueco: `Docs/SUGERENCIAS/UX-para-contenido-altplano-sin-auditoria.md` (resuelta) |
+| G10 | **Las cadenas del plano se auditan con los datos de verdad** | `copy.test.ts` (`src/lib/dos-ejes/`) | **Hecho** (`3b4ae32`, y `798cd54` lo completó; la v1.1 decía "No": lo corrige `REV-20`). `voz.test.ts` **sigue sin llegar a `altPlano`**: `cadenasDeFunciones()` la llama con un número y con "X", recibe un objeto, `p.tuya.lugar` lanza un `TypeError` y el `catch` lo traga (*"una función que no aguanta el comodín no se audita"*). Lo que cubre el hueco es `copy.test.ts`: **ocho tests** sobre **veinte casos** (las cuatro maneras como la tuya, sin enlace, con la misma y con cada una de las otras tres): sin dígitos ni «mejor», «peor», «primera», «última» ni «más»; sin `;`, `!` ni suspensivos; los dos ejes enteros y el nombre de la tuya; la del enlace; sin anglicismos ni «los fans»; **cada lugar de `RESULTADO.lugares` dice el rincón donde `planoFijo()` pone esa celda** (ata el orden: si alguien cruza dos cadenas, el lector diría un rincón equivocado y ningún otro test se pondría en rojo); y una manera que no está en el plano **falla fuerte**. `RESULTADO.lugares` también lo audita `voz.test.ts` (es un arreglo de cadenas). **Límite que `REV-20` anotó como diferido, cerrado en `798cd54`:** `copy.test.ts` armaba a mano los argumentos (`lo()`), y si `plano()` cambiaba cómo los arma, el test no se enteraba. Ahora el armado vive en `textoDelPlano(banco, id, suyoId)` (`copy.ts`), que llaman la isla y `lo()`; `isla.test.ts` mira que `plano()` la llame con `banco, id, suyo?.id` (G6) y no arme el texto a mano. Origen del hueco: `Docs/SUGERENCIAS/UX-para-contenido-altplano-sin-auditoria.md` (resuelta) |
 
 ### 8.2 Qué actualizar en otros documentos
 
@@ -615,10 +645,11 @@ no es cierto que no haya plano. Y desde la enmienda 3 hay un lugar que no es de 
 | `US-06`, criterio 3 | El plano queda exceptuado por decisión del usuario (`D-62` enmienda 3); el criterio 9 trae las siete condiciones | `producto` (**hecho**, enmienda «2026-10-05 (tercera)», `717515c`) |
 | `T-352` | `contenido` confirma `altPlano` y `lugares`; y se cubre el agujero de `G10` | **Cerrada.** `contenido` (`CNT-31` §13) + hilo (`copy.test.ts`). Queda abierto solo oírla en un lector real: `§10.4` |
 | `Docs/SUGERENCIAS/HILO-para-contenido-el-texto-del-plano.md` | Decía que el orden de los lugares es el de `disposicion().celdas` y que la orientación estaba abierta (`T-353`). Es `planoFijo().celdas` y `T-353` cerró | hilo principal (**resuelta**, así marcada en la propia sugerencia) |
-| **El lienzo "Sistema de marca"** (hojas 08 y 09) | **`T-351`.** `diseno-marca.md` pide cambiar el diseño **primero**; acá se construyó antes. Es deuda con nombre, como `T-319`. La ficha para pegar, abajo | hilo principal / usuario |
-| `ESTADO.md` | `UX-38` v1.1 hecho y al día el 2026-10-06; `T-352` cerrada. Abiertos: `T-351` (el lienzo) y lo de aparato real de `§10.4` y `§10.5`, con el dueño de `UX-36` `§12.6` | hilo principal |
+| **El lienzo "Sistema de marca"** (hojas 08 y 09, como pedía esta ficha) | **`T-351`.** `diseno-marca.md` pide cambiar el diseño **primero**; acá se construyó antes. Era deuda con nombre, como `T-319`. **Cerrada el 2026-10-06 (`2a8d943`): el plano se pegó en el lienzo como hoja 16, «el plano de dos ejes», debajo de la 08 en la página Aplicación; no entró en la 08 y la 09.** La ficha de abajo queda como se escribió. `diseno-marca.md` ya nombra la hoja 16 | hilo principal (**hecho**) |
+| `ESTADO.md` | `UX-38` v1.1 hecho y al día el 2026-10-06; `T-352` y `T-351` cerradas. Abierto solo lo de aparato real de `§10.4` y `§10.5`, con el dueño de `UX-36` `§12.6` *(esta fila decía «Abiertos: `T-351` (el lienzo) y…»)* | hilo principal |
 
-**Ficha para el lienzo (`T-351`).** *Hoja 08, componentes:* "recorte del plano" (`--papel`, tinta `--fondo`,
+**Ficha para el lienzo (`T-351`) — `[cerrada]`: se pegó como hoja 16 (`2a8d943`), no como las hojas 08 y 09 de abajo.**
+*Hoja 08, componentes:* "recorte del plano" (`--papel`, tinta `--fondo`,
 borde `--linea` en `--apoyo-disco`, sombra dura de 4 px, +0,5°, cinta de 72 × 22 a −4°) con los cuatro
 estados del cuadrante (sin marca, la tuya, la del amigo, la misma: todos con 7 px entre el borde de fuera y
 el contenido), el polo en dos renglones (rotulada 0,75 y palabras 0,8) y el eje de 2 px en `--papel-tenue`.
@@ -666,7 +697,7 @@ las cuatro maneras, **cada una en su rincón del mismo mapa**.
    lee, el recorte se pone a 0° (el cuerpo no se toca).
 6. **Lo que ninguna máquina vio:** un teléfono real, un lector de pantalla real, el texto del sistema real
    (el ajuste del navegador o del sistema) y el contraste forzado de Windows real. Las medidas son de
-   Playwright con Chromium: `REV-20` (2026-10-06) emuló el contraste forzado y midió la tableta y 300 px de
+   Playwright con Chromium: `REV-20` (medido el 2026-10-05) emuló el contraste forzado y midió la tableta y 300 px de
    ancho, y entraron; **todas sus medidas de texto son con DejaVu Sans**, la pila del sistema de Linux, más
    ancha que Roboto o San Francisco. Safari de iPhone y un Android de gama baja no están medidos, y la
    rotulada real y el texto del sistema cambian el ancho. Todo en `§10`; el dueño, en `UX-36` `§12.6`.
@@ -676,9 +707,10 @@ las cuatro maneras, **cada una en su rincón del mismo mapa**.
 ## 10. Checklist (lo corre quien implemente o `revisor`, `D-12`)
 
 `[x]` = ya lo midió o lo leyó alguien (se dice quién). `[ ]` = falta. Lo marcado `(REV-20)` lo midió la
-lente de pantalla de `REV-20` el 2026-10-06 con Chromium (Playwright) y DejaVu Sans, sobre el build
-servido: **no reemplaza a un aparato real**, y lo que depende del aparato queda `[ ]` con su dueño
-(`§10.5`).
+lente de pantalla de `REV-20` **el 2026-10-05** (esta hoja decía el 06; el 06 es la fecha en que `REV-20`
+se escribió y esta hoja se puso al día) con Chromium (Playwright) y DejaVu Sans, sobre el build
+servido, **igual que lo marcado `(hilo)`, que es del mismo día**: **no reemplaza a un aparato real**, y lo que
+depende del aparato queda `[ ]` con su dueño (`§10.5`).
 
 ### 10.0 Comandos
 
@@ -692,9 +724,11 @@ node --test src/lib/dos-ejes/copy.test.ts
 npm test
 ```
 
-`npm test` en verde; el número lo da la corrida (`REV-20`, 2026-10-06: **1531**, con los seis tests de
-`copy.test.ts` que el 1525 del hilo todavía no tenía; `npm run check` con 0 errores y 14 avisos que no son
-del plano; `npm run build` de 160 páginas). `[v1]` Esta lista traía una línea más, `rg -n "ejes-plano" … | rg "border-left|…|#[0-9a-f]{3,6}"`,
+`npm test` en verde; el número lo da la corrida (`REV-20`, medido el 2026-10-05: **1531**, con los seis tests
+de `copy.test.ts` que el 1525 del hilo todavía no tenía; `npm run check` con **0 errores, 0 avisos y 14
+hints**, que no son del plano —son de `aparato.ts`, `diagnostico-audio.ts` y los `is:inline` de las
+páginas—; `npm run build` de 160 páginas). **Desde `798cd54`, `copy.test.ts` tiene ocho tests** y el 1531
+deja de ser el número de la suite: el de hoy lo da la corrida del hilo, no esta hoja. `[v1]` Esta lista traía una línea más, `rg -n "ejes-plano" … | rg "border-left|…|#[0-9a-f]{3,6}"`,
 **que no servía**: `rg "ejes-plano"` devuelve las líneas con el selector, nunca las declaraciones, así que
 el segundo `rg` no encontraba nada pasara lo que pasara. La guarda de verdad es `estilos.test.ts` (G5), que
 mira el CSS regla por regla. La quito. (Leí a mano el bloque `.ejes-plano*`: ningún hex ni `border-left`.)
@@ -771,7 +805,7 @@ Quince puntos, de alta a baja.
 | 3 | Media | La tabla que justificaba esconder el plano tenía un dato falso | Era falso (`§5`). El plano pasó a `role="img"` con `RESULTADO.altPlano(…)`. Cadena nueva: `T-352` (cerrada, `§5`) |
 | 4 | Media | Geometría sin especificar; `1fr` ensancha la columna de la tuya al 200 % | `minmax(0, 1fr)`, `column-gap: 10px`, ejes absolutos al 50 %, el vertical llega a los polos, `overflow-wrap: anywhere` (`§4.2`, trampa 6). El hilo lo resolvió con ejes absolutos; el crítico proponía tres columnas con el eje en la del medio |
 | 6 | Media | Faltaba el costo de las explicaciones que bajan | Escrito en `§3.2`: baja la grilla entera. La otra mitad (preguntar la posición) no se aplicó: `§11.2` |
-| 7 | Media | El circuito de `diseno-marca.md` va al revés | Lo reconozco: deuda con nombre, `T-351`, como `T-319`. La ficha para pegar, en `§8.2` |
+| 7 | Media | El circuito de `diseno-marca.md` va al revés | Lo reconozco: deuda con nombre, `T-351`, como `T-319`. La ficha para pegar, en `§8.2`. **Pagada el 2026-10-06:** `T-351` cerrada (`2a8d943`), hoja 16 del lienzo |
 | 8 | Baja | `§3.2` usaba cuentas donde `REV-19` ya había medido | Reemplazadas por `REV-19` (`§3.2`). Se cae el "asoma ≈ 27 px" |
 | 9 | Baja | La tabla de alturas omitía los márgenes | La cuenta se descarta; valen las medidas del hilo (`§4.3`) |
 | 11 | Baja | Los dos brazos del eje horizontal se ven de distinto largo | Ya no hay brazos: el eje corre entero y los polos lo montan (`§1.1`, `§4.2`). Distinto de la propuesta del crítico (rótulos del mismo ancho) |
