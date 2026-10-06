@@ -1,31 +1,37 @@
-# Hilo del Arcade Ricotero
+# Hilo del Fichín Ricotero
 
-Doce posteos. El 1 va suelto; cada uno de los siguientes, como respuesta al anterior. La foto de cada uno está en esta carpeta con el mismo número.
+Doce posteos para el 4 de octubre de 2026, los 40 años de Oktubre. El 1 va suelto; cada uno de los siguientes, como respuesta al anterior. La foto de cada uno está en esta carpeta con el mismo número.
+
+Antes de publicar:
+
+- Los enlaces apuntan a https://fichinricotero.com.ar, que tiene que estar cargando. El 4 de octubre a la tarde todavía no resolvía.
+- Las fotos se sacaron con la marca vieja (ARCADE RICOTERO). Se vuelven a sacar cuando el nombre nuevo esté publicado.
+- El 1 y el 3 hablan del cumpleaños de Oktubre: son para el 4 de octubre.
 
 ## 1 · Presentación
 
 Foto: `01-portada.jpg`
 
 ```
-Estás en la puerta, con las dos cintas.
+Felices 40 años de Oktubre, hermanos ricoteros.
 
-Arcade Ricotero: nueve juegos sobre Patricio Rey y sus Redonditos de Ricota, para el celular y un rato suelto. Sin cuenta ni entrada, sepas lo que sepas. Los molinetes van abiertos.
+¿Qué mejor día para sacar el Fichín Ricotero? Una página de juegos y data redonda para festejarlo: gratis, sin cuenta, sepas mucho o nada.
 
-Abajo, uno por uno.
+Abajo, juego por juego.
 
 https://fichinricotero.com.ar
 ```
 
-Descripción de la foto: Portada del Arcade Ricotero: la marca, el afiche de octubre con los seis discos que salieron ese mes, y los primeros casetes de juegos.
+Descripción de la foto: Portada del sitio: la marca, el afiche de octubre con los seis discos que salieron ese mes, y los primeros casetes de juegos.
 
 ## 2 · Adiviná el tema
 
 Foto: `02-adivina-el-tema.jpg`
 
 ```
-El juego estrella: Adiviná el tema.
+Arrancamos por el juego estrella: Adiviná el tema.
 
-Suena una décima de segundo. ¿No sale? Te damos más: medio segundo, dos, cuatro, ocho, diez. Cuanto antes la pegues, más vale. Cuatro temas por vuelta, de los 95 que hay.
+Te suena una décima de segundo de un tema. Si no lo sacás, te damos más: medio segundo, dos, cuatro, ocho, diez. Cuanto antes la pegues, más puntos.
 
 ¿Te da el oído?
 
@@ -39,9 +45,9 @@ Descripción de la foto: Partida de Adiviná el tema: van dos pasadas, la cinta 
 Foto: `03-adivina-el-tema-la-sacaste.jpg`
 
 ```
-Cuando la sacás, aparece la tapa con el disco, el año y la pista, y de ahí saltás a la letra con los acordes.
+Cuando la pegás, te muestra la tapa, el año y la pista, y de ahí te vas a la letra con los acordes.
 
-Se juega con los diez discos o con uno solo. Este mes el portal tiene afiche: Oktubre cumple cuarenta el 4, y podés jugar solo con sus temas.
+Y por el cumple, en la portada hay afiche: podés jugar solo con los temas de Oktubre.
 
 https://fichinricotero.com.ar
 ```
@@ -53,9 +59,9 @@ Descripción de la foto: Acierto en Adiviná el tema: sello de La sacaste, más 
 Foto: `04-preguntas-ricoteras.jpg`
 
 ```
-Preguntas ricoteras. Ninguna piadosa.
+Para los que se saben hasta los créditos: Preguntas ricoteras.
 
-Historia, discos, letras y mitología, de fácil a difícil, con tres vidas. Cada respuesta trae su explicación, y si el dato es leyenda, dice que es leyenda.
+Historia, discos, letras y mitología, de fácil a difícil y con tres vidas. Cada respuesta trae su explicación, y si algo es leyenda, te avisa que es leyenda.
 
 https://fichinricotero.com.ar/quiz/
 ```
@@ -67,16 +73,14 @@ Descripción de la foto: Pregunta de Preguntas ricoteras sobre el álbum doble, 
 Foto: `05-que-tipo-de-ricotero-sos.jpg`
 
 ```
-¿Qué tipo de ricotero sos?
+¿Y si no sabés nada de la banda? Para vos está ¿Qué tipo de ricotero sos?
 
-Nadie te toma examen. Diez preguntas sobre vos, sin puntaje y sin saber nada de la banda: te ubica entre la luz y la oscuridad, el orden y el caos.
-
-Para mandárselo al que nunca escuchó un disco.
+Una noche de recital en diez preguntas, de la previa a la vuelta. Sin puntaje, sin examen y sin haber ido nunca. Mandáselo a ese amigo que todavía no escuchó un disco entero.
 
 https://fichinricotero.com.ar/juegos/dos-ejes/
 ```
 
-Descripción de la foto: Resultado de Qué tipo de ricotero sos: un rombo entre luz, oscuridad, orden y caos, con el punto del jugador.
+Descripción de la foto: Resultado de Qué tipo de ricotero sos: esta noche te salió Mochila liviana, sin mapa, con lo propio y sobre la marcha.
 
 ## 6 · Sacalo por la letra
 
@@ -85,7 +89,7 @@ Foto: `06-sacalo-por-la-letra.jpg`
 ```
 Sacalo por la letra.
 
-Un verso te tiene que alcanzar. Si no, van dos, cuatro, ocho. Escribís el título como te salga: sin tildes anda igual, y por la mitad también.
+Te mostramos un verso y tenés que decir de qué tema es. Si no sale, van dos versos, después cuatro, después ocho. Escribí el título como te salga: sin tildes anda igual.
 
 https://fichinricotero.com.ar/juegos/adivinar-por-la-letra/
 ```
@@ -99,7 +103,7 @@ Foto: `07-completa-la-letra.jpg`
 ```
 Completá la letra.
 
-Lo tenés en la punta de la lengua. Falta una palabra del verso y hay cuatro para elegir. Ocho versos por vuelta.
+Ese verso que gritaste mil veces en el pogo, con una palabra menos. Cuatro opciones para elegir y ocho versos por vuelta. A ver si te la acordás.
 
 https://fichinricotero.com.ar/juegos/completar-la-letra/
 ```
@@ -113,7 +117,7 @@ Foto: `08-ponelos-en-fila.jpg`
 ```
 Ponelos en fila.
 
-Unos te tiran al pogo; otros, quietito. Los diez discos, las diez tapas o los temas de un disco: el orden lo armás vos, y después lo mandás para que te lo discutan.
+Agarrás los diez discos, las diez tapas o los temas de un disco y decidís cuáles te tiran al pogo y cuáles escuchás quietito. Después lo compartís, y que arranque la discusión.
 
 https://fichinricotero.com.ar/juegos/ponelos-en-fila/
 ```
@@ -127,7 +131,7 @@ Foto: `09-adivina-la-tapa.jpg`
 ```
 Adiviná la tapa.
 
-Rocambole dibujó; vos ponés el disco. Un pedazo de tapa en pantalla y cuatro discos para elegir. Seis tapas por vuelta.
+Un pedazo de una tapa de Rocambole y cuatro discos para elegir, seis tapas por vuelta. Parece fácil hasta que te toca el pedazo equivocado.
 
 https://fichinricotero.com.ar/juegos/adivinar-la-tapa/
 ```
@@ -141,9 +145,7 @@ Foto: `10-mas-o-menos.jpg`
 ```
 Más o menos.
 
-Preguntas de número sobre la banda: cuántos años, cuántos temas, cuánto dura. Elegís más o menos, sin red, hasta que le erres una.
-
-¿Cuánto te dura la racha?
+¿Cuántos temas tiene tal disco? ¿Cuánto dura En directo? Te tiramos un número y vos decís si es más o menos. Seguís hasta que le erres una.
 
 https://fichinricotero.com.ar/juegos/mas-o-menos/
 ```
@@ -155,9 +157,9 @@ Descripción de la foto: Más o menos: pregunta de cuántos temas tiene un disco
 Foto: `11-skayboy-y-poligirl.jpg`
 
 ```
-Skayboy y Poligirl.
+Y un fichín de los de antes: Skayboy y Poligirl.
 
-Un fichín para dos en el mismo teléfono, cada uno de su lado, o para vos solo. Cielo para uno, infierno para el otro, y las puertas se abren juntas. En la computadora, con W A D y las flechas.
+Para jugar de a dos en el mismo celular, cada uno de su lado, o solo. Cielo para uno, infierno para el otro. En la compu va con W A D y las flechas.
 
 Homenaje de fans, no oficial.
 
@@ -171,9 +173,9 @@ Descripción de la foto: Skayboy y Poligirl: pantalla de fichín en pixeles con 
 Foto: `12-lado-b-redondopedia.jpg`
 
 ```
-Y el lado B, para leer.
+Y cuando te canses de jugar, el lado B.
 
-La Redondopedia: la historia entera, el hecho como hecho y la leyenda como leyenda. Y Letras y acordes: los diez discos, con los acordes arriba de cada verso.
+La Redondopedia, con la historia de la banda: lo que es dato como dato y lo que es leyenda como leyenda. Y Letras y acordes, con los diez discos para sacar con la guitarra.
 
 https://fichinricotero.com.ar/redondopedia/
 https://fichinricotero.com.ar/letras-y-acordes/
