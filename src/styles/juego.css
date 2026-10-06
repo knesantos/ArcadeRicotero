@@ -2210,9 +2210,12 @@ a.secundario {
   transform: rotate(-0.7deg);
 }
 
+/* El nombre de una manera va siempre en la letra que viste *Luzbelito* (`D-67`): en la tapa del
+   amigo, en el resultado y en la grilla de las cuatro. Es más angosta que la rotulada a igual
+   mayúscula, así que ningún corte de renglón medido acá empeora. */
 .ejes-amigo-nombre {
   display: block;
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-luzbelito);
   /* 1,5 y no 1,6 rem: «Ronda en cualquier» mide 270 px a 1,6 y el renglon util, 271. */
   font-size: 1.5rem;
   line-height: 1.15;
@@ -2443,12 +2446,14 @@ a.secundario {
   color: var(--fondo);
 }
 
+/* El juego, en su letra (`D-67`), un escalón más grande que el rótulo que era: esta letra ya
+   separa sola las suyas y no pide el aire de la rotulada. */
 .ejes-marca-juego {
   display: block;
   margin-top: 0.2rem;
-  font-family: var(--fuente-rotulada);
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
+  font-family: var(--fuente-luzbelito);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--papel-tenue);
 }
@@ -2475,7 +2480,7 @@ a.secundario {
 /* El nombre es lo mas grande de la pantalla (`UX-06` §4), mas que el boton de compartir.
    Quieto: sin sombra ni registro corrido (`D-64`). */
 .ejes-nombre {
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-luzbelito);
   font-weight: 400;
   font-size: 2.1rem;
   line-height: 1.08;
@@ -2552,7 +2557,7 @@ a.secundario {
 
 .ejes-cuatro-titulo {
   margin: 0;
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-luzbelito);
   font-weight: 400;
   font-size: 1.1rem;
   letter-spacing: 0.04em;
@@ -2648,7 +2653,7 @@ a.secundario {
 }
 
 .ejes-manera-nombre {
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-luzbelito);
   font-size: 0.95rem;
   line-height: 1.2;
 }
@@ -2825,10 +2830,10 @@ a.secundario {
 }
 
 /* El nombre a 0,8 y no a los 0,95 de la grilla: el plano orienta y la grilla lee. Se parte,
-   nunca se corta. */
+   nunca se corta. En la letra de *Luzbelito*, como el nombre en todos lados (`D-67`). */
 .ejes-plano-nombre {
   max-width: 100%;
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-luzbelito);
   font-size: 0.8rem;
   line-height: 1.2;
   text-wrap: balance;
@@ -3822,11 +3827,17 @@ body > main {
    se ve más chica que la rotulada, por eso sube un escalón. La comparte la página de
    diagnóstico de audio, que usa la misma regla.
 
+   **Desde `D-67`, dos juegos escriben en la letra de su disco**, que traen de su variante
+   (`--fuente-disco`, en `sitio.css`): "Adiviná el tema" en la de *Lobo suelto* y "¿Qué tipo de
+   ricotero sos?" en la que viste *Luzbelito*. Las dos se escalaron a la mayúscula del sistema al
+   derivarlas, así que el cuerpo es el mismo de los ocho. Los otros seis siguen en la de la
+   banda: sus discos no tienen letra.
+
    **El colchón de abajo no es aire:** la máscara de abajo recorta en la caja, y la cola de ¡ y
    de ¿ baja más que la caja de la línea (-258 contra -196 unidades). Lo pone el padding, y el
    margen lo devuelve: el renglón no se mueve. */
 .pantalla > h1 {
-  font-family: var(--fuente-marca-firma);
+  font-family: var(--fuente-disco, var(--fuente-marca-firma));
   font-weight: normal;
   font-size: clamp(1.8rem, 7.6vw, 2.35rem);
   line-height: 1.04;
@@ -3846,10 +3857,11 @@ body > main {
    la sal: es tinta de color sobre el negro y no tiene margen para aclararse —la presión dejaba
    "Completá la letra" en 3,39:1—. La sal saca puntos enteros y no le cambia el color a
    ninguno, así que ningún par AA se mueve. La tesela va al doble que en el casete porque la
-   letra mide el doble, y el golpe es el del casete (`--golpe`, en `sitio.css`). */
+   letra mide el doble, y el golpe es el del casete (`--golpe`, en `sitio.css`). La de *Lobo
+   suelto* no lleva sal (`--sal-del-titulo: none`): con trazo de pelo se lleva trazos enteros. */
 .pantalla h1 {
-  -webkit-mask-image: var(--textura-tinta-sal);
-  mask-image: var(--textura-tinta-sal);
+  -webkit-mask-image: var(--sal-del-titulo, var(--textura-tinta-sal));
+  mask-image: var(--sal-del-titulo, var(--textura-tinta-sal));
   -webkit-mask-size: 480px 480px;
   mask-size: 480px 480px;
   -webkit-mask-position: calc(var(--golpe, 0) * -122px) calc(var(--golpe, 0) * -74px);
