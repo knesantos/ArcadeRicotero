@@ -115,7 +115,8 @@
 > cansa el volumen"*, *"quiero que esté el gráfico también, queda lindo ver que está en un plano
 > de dos ejes"*, y entre las dos versiones del plano: *"B, el fijo como el rombo viejo"*. Rama
 > `ciclo-18/que-ricotero-sos`, integrada a `main` el 2026-10-05 a pedido del usuario (*"pará y
-> subí e integrá todo lo que hayas hecho, después seguimos"*).
+> subí e integrá todo lo que hayas hecho, después seguimos"*), y otra vez el 2026-10-06 con el
+> PR #41, con todo lo de abajo (*"integrá todo"*).
 >
 > **El número.** Se escribió como `D-59` y se renumeró a **`D-62`** al integrar: el `D-59` del
 > dominio llegó antes a `main`. Los commits de la rama dicen `D-59`; el repo, `D-62`.
@@ -151,7 +152,8 @@
 > **`REV-20` está cerrada** (`Docs/REVISIONES/REV-20-la-noche-ricotera.md`, 2026-10-06; los votos
 > en `REV-20-votos.json`). Tres lentes con dos verificadores adversariales cada una, un crítico de
 > completitud y una ronda final. **Ningún hallazgo alto.** `FIND-119` … `FIND-133` (`FIND-128` y
-> `FIND-129` quemados): todo cerrado salvo `FIND-132` y `FIND-133`, cifras de `UX-36`/`UX-38`.
+> `FIND-129` quemados): todo cerrado. `FIND-132` y `FIND-133`, cifras de `UX-36`/`UX-38`, se
+> cerraron en papeles después del cierre (abajo).
 > - `EJ-049` (`FIND-119`) quedó «Festejo con el resto» / «Canto para adentro», en dos vueltas.
 > - La portada a 320 × 568 se rompió dos veces y se arregló dos veces: el lugar nuevo del casete
 >   («Traés barro en las zapatillas.», `FIND-130`) y la letra del título de `D-67` (`FIND-131`:
