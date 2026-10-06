@@ -7,13 +7,13 @@ De `contenido` al hilo principal. **Nada de esto bloquea el banco**: `src/data/d
 > | Qué | Estado | Con qué |
 > |---|---|---|
 > | Regenerar las tarjetas | **Aplicada** | `a596435`; `tarjetas.test.ts` en verde y las cuatro tarjetas coinciden con el banco |
-> | `LUGARES.dosEjes` y su comentario | **Aplicada, reabierta y resuelta** | `a596435` la dejó en *Traés barro seco en las zapatillas.* (35 caracteres) y a 320×568 parte en dos renglones (`FIND-120` [2026-10-06: `FIND-130` en la numeración definitiva]): la propuesta nueva está en `CNT-para-hilo-principal-lugar-320.md` y el hilo la aplicó en `2d61d7d` (*Traés barro en las zapatillas.*; el botón vuelve a 565) |
+> | `LUGARES.dosEjes` y su comentario | **Aplicada, reabierta y resuelta** | `a596435` la dejó en *Traés barro seco en las zapatillas.* (35 caracteres) y a 320×568 parte en dos renglones (`FIND-120` [2026-10-06: `FIND-130` en la numeración definitiva]): la propuesta nueva está en `CNT-para-hilo-principal-lugar-320.md` y el hilo la aplicó en `2d61d7d` (*Traés barro en las zapatillas.*; el botón vuelve a 565 [2026-10-06, cierre de `REV-20`: hoy 562, `FIND-131`]) |
 > | La bajada del casete (`JUEGOS[…].baja`) | **Aplicada** | `src/lib/sitio/copy.ts:198` |
 > | Guarda del piso de lo sucio por celda (§3, fila 1) | **Aplicada** | `4dbc8b3`, `banco.test.ts` («cada celda momento × eje trae lo sucio en algún enunciado» y «lo sucio no se cumple con la merca») |
 > | Comentarios sobre los pronombres y sobre *caña* (§3, filas 2 y 4) | **Aplicados** | comentarios de `banco.test.ts` |
 > | Guarda «ninguna opción nombra consumo» (§3, fila 3) | **Abierta** | sigue sin escribirse; hoy es costumbre del banco |
 > | Guarda de la música que molesta (§3 bis) | **Aplicada, con otra lista** | `62cd0e1`: frases de queja (*demasiado fuerte*, *volumen cansa*, *tapo los oídos*…) y no las palabras sueltas de la propuesta; *tap\** no se suma, como se pedía. El comentario del test ya trae la frase del usuario |
-> | Regla de voz para las líneas que cantan (§5, nueva) | **Propuesta**, con la redacción corregida el 2026-10-06 (vuelta 2 y ronda final de `REV-20`: ahora por la forma de la línea y no por su dueño) | abajo |
+> | Regla de voz para las líneas que cantan (§5, nueva) | **Propuesta** [2026-10-06, cierre de `REV-20`: **aplicada por el hilo** en `.claude/rules/voz-ricotera.md` §5, con la redacción por la forma], con la redacción corregida el 2026-10-06 (vuelta 2 y ronda final de `REV-20`: ahora por la forma de la línea y no por su dueño) | abajo |
 >
 > **Numeración definitiva de `REV-20` (2026-10-06, ronda final).** Esta hoja citaba dos hallazgos: `FIND-125` («ninguna guarda» donde ya hay una), que **coincide**, y `FIND-120` (la portada a 320), que es **`FIND-130`**, resuelto en `2d61d7d`. El número `FIND-120` era el del lente pantalla. Las marcas están donde se citaba.
 
