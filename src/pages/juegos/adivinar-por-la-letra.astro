@@ -192,21 +192,20 @@ const bajadaCorta = (() => {
         margin-top: var(--espacio-3);
       }
 
-      /* La tecla de arrancar, con canto: la sombra dura del peltre de Momo abajo, que se
-         hunde al apretar. La misma tecla que las de la partida (`juego.css`). */
+      /* La tecla de arrancar, como las de la partida (`juego.css`): al apretar baja 2 px y la
+         tinta se aclara un poco. Sin canto debajo (`D-64`, la sombra salió de todos lados). */
       #jugar {
         margin: var(--espacio-1) 0 5px;
         font-size: 1.35rem;
-        box-shadow: 0 5px 0 var(--disco-momo-sampler-apoyo);
         transition:
           translate var(--duracion-toque) var(--curva-cinta),
-          box-shadow var(--duracion-toque) var(--curva-cinta);
+          filter var(--duracion-toque) var(--curva-cinta);
         touch-action: manipulation;
       }
 
       #jugar:active {
-        translate: 0 4px;
-        box-shadow: 0 1px 0 var(--disco-momo-sampler-apoyo);
+        translate: 0 2px;
+        filter: brightness(1.1);
       }
 
       .arranque .tenue {

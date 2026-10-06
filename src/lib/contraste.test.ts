@@ -322,6 +322,154 @@ test('el pie de imprenta: la pasada se ve de verdad, no es relleno', () => {
   );
 });
 
+/* ==================================================================
+   La multitud que se acerca (`D-63` enmienda 1): el techo y el piso de su tinta
+
+   Dos planos de gente fijos al pie de la ventana del portal, detras de todo, pintados como
+   la pasada: tinta de `tokens.css` mezclada con `--fondo` por `color-mix`, recortada con una
+   mascara. Son colores que no existen como token, asi que se calculan aca.
+
+   Y todo el texto del portal pasa por encima al subir. El techo lo ponen dos cosas: el texto
+   mas apagado (`--texto-tenue`, AA de 4,5:1) y la marca grande en `--marca-rojo`, que es letra
+   grande y pide 3:1 — y que en un telefono acostado puede quedar sobre el plano de lejos.
+   ================================================================== */
+
+/** Un peso de la multitud, leido del token: `16%` -> 0,16. */
+function pesoMultitud(nombre: string): number {
+  const m = CSS.match(new RegExp(`--${nombre}:\\s*([\\d.]+)%`));
+  assert.ok(m, `no se encontro el token --${nombre} en tokens.css`);
+  return Number(m![1]) / 100;
+}
+
+/** `color-mix(in srgb, tinta p%, fondo)`, la misma cuenta que `pisoDePasada`. */
+function mezclaConFondo(tinta: string, peso: number): string {
+  const fondo = token('fondo');
+  const canal = (i: number) =>
+    Math.round(peso * parseInt(tinta.slice(i, i + 2), 16) + (1 - peso) * parseInt(fondo.slice(i, i + 2), 16));
+  return `#${[1, 3, 5].map((i) => canal(i).toString(16).padStart(2, '0')).join('')}`;
+}
+
+/** Las cuatro tintas que pintan los dos planos: la gente y las banderas, lejos y cerca. */
+function tintasDeLaMultitud(): Array<[string, string]> {
+  return [
+    ['la gente de lejos', mezclaConFondo(token('papel'), pesoMultitud('peso-multitud-lejos'))],
+    ['las banderas de lejos', mezclaConFondo(token('disco-oktubre-tinta'), pesoMultitud('peso-bandera-lejos'))],
+    ['la gente de cerca', mezclaConFondo(token('papel'), pesoMultitud('peso-multitud-cerca'))],
+    ['las banderas de cerca', mezclaConFondo(token('disco-oktubre-tinta'), pesoMultitud('peso-bandera-cerca'))],
+  ];
+}
+
+test('la multitud que se acerca: el texto del portal sigue en AA por encima de cualquier plano', () => {
+  const fallas: string[] = [];
+  for (const [que, piso] of tintasDeLaMultitud()) {
+    for (const [tinta, minimo] of [['texto', 4.5], ['texto-tenue', 4.5], ['marca-rojo', 3]] as const) {
+      const r = contraste(token(tinta), piso);
+      if (r < minimo) fallas.push(`${tinta} sobre ${que} (${piso}): ${r.toFixed(2)}:1, pide ${minimo}`);
+    }
+  }
+  assert.deepEqual(
+    fallas,
+    [],
+    `un peso de la multitud dejo texto por debajo de AA:\n  ${fallas.join('\n  ')}\n` +
+      'Los --peso-multitud-* y --peso-bandera-* no se suben a ojo: este es el techo.',
+  );
+});
+
+test('la multitud que se acerca: se ve de verdad, y lo de cerca tiene mas tinta que lo de lejos', () => {
+  // El mismo piso que la pasada: doce niveles de 255 en el canal que mas se aparta del fondo.
+  const fondo = token('fondo');
+  const salto = (hex: string) =>
+    Math.max(...[1, 3, 5].map((i) => Math.abs(parseInt(hex.slice(i, i + 2), 16) - parseInt(fondo.slice(i, i + 2), 16))));
+  const flojas = tintasDeLaMultitud()
+    .filter(([, piso]) => salto(piso) < 12)
+    .map(([que, piso]) => `${que}: ${salto(piso)} niveles sobre el fondo (${piso})`);
+  assert.deepEqual(flojas, [], `planos que no se van a ver en un telefono:\n  ${flojas.join('\n  ')}`);
+
+  // Lo lejano se apaga: si el plano de lejos tuviera mas tinta que el de cerca, la profundidad
+  // se da vuelta y la multitud se lee como una pared.
+  assert.ok(pesoMultitud('peso-multitud-lejos') < pesoMultitud('peso-multitud-cerca'), 'la gente de lejos pesa más que la de cerca');
+  assert.ok(pesoMultitud('peso-bandera-lejos') < pesoMultitud('peso-bandera-cerca'), 'las banderas de lejos pesan más que las de cerca');
+});
+
+/* ==================================================================
+   La etiqueta sellada (`D-64`): la tinta gastada y la mano, sobre el papel viejo
+
+   La etiqueta del casete dejó de ser papel parejo: tiene manchas de humedad en
+   `--papel-borde`, hasta un techo, y el título y el sello salen de una almohadilla que deja
+   la tinta con huecos y la afloja hasta 0,8. Son colores que no existen como token —los
+   arma la máscara en el navegador—, así que se calculan acá, en el peor lugar: sobre la
+   mancha más oscura y con el grano de la pantalla encima (`.con-grano::after`).
+
+   Lo que pone el techo es la pista (A1, A2…), que va en `--papel-tenue` porque es lo escrito
+   a mano: con el grano encima queda apenas arriba de 4,5:1, y por eso el papel no puede
+   ensuciarse más.
+   ================================================================== */
+
+/** Lo que pide la máscara de `nombre` en su última tabla de alfa (`tableValues='a b'`). */
+function tablaDeTextura(nombre: string): number[] {
+  const crudo = new RegExp(`--${nombre}:\\s*url\\("data:image\\/svg\\+xml,([^"]+)"`).exec(CSS);
+  assert.ok(crudo, `no se encontro --${nombre} en tokens.css`);
+  const tablas = [...decodeURIComponent(crudo![1]!).matchAll(/feFuncA type='table' tableValues='([^']+)'/g)];
+  assert.ok(tablas.length > 0, `--${nombre} no tiene tabla de alfa`);
+  return tablas.at(-1)![1]!.split(/\s+/).map(Number);
+}
+
+/** `frente` apoyado en `fondo` con opacidad `alfa`, canal por canal en sRGB. */
+function mezclar(frente: string, fondo: string, alfa: number): string {
+  const canal = (i: number) =>
+    Math.round(alfa * parseInt(frente.slice(i, i + 2), 16) + (1 - alfa) * parseInt(fondo.slice(i, i + 2), 16));
+  return `#${[1, 3, 5].map((i) => canal(i).toString(16).padStart(2, '0')).join('')}`;
+}
+
+test('D-64: la tinta del sello y la mano se leen sobre el papel viejo, con el grano encima', () => {
+  const techo = Math.max(...tablaDeTextura('textura-papel-viejo'));
+  const presion = Math.min(...tablaDeTextura('textura-tinta'));
+  const grano = Number(/\.con-grano::after\s*\{[^}]*opacity:\s*([\d.]+)/.exec(readFileSync('src/styles/sitio.css', 'utf-8'))?.[1]);
+  assert.ok(grano > 0 && grano < 1, 'no se encontro la opacidad del grano en sitio.css');
+
+  const papelPeor = mezclar(token('papel-borde'), token('papel'), techo);
+  const conGrano = (c: string) => mezclar('#000000', c, grano);
+  const fallas: string[] = [];
+  const pares: Array<[string, string, string]> = [
+    ['el título gastado', conGrano(mezclar(token('fondo'), papelPeor, presion)), conGrano(papelPeor)],
+    ['la bajada', conGrano(token('fondo')), conGrano(papelPeor)],
+    ['la pista y "en la cocina"', conGrano(token('papel-tenue')), conGrano(papelPeor)],
+  ];
+  // Los sellos: la letra es `--fondo` entera, el macizo es la tinta del disco aflojada sobre
+  // el papel. Sin grano, que es la convención de los pares de sello que ya existen.
+  for (const sello of [
+    'marca-rojo', 'disco-luzbelito-tinta', 'cat-mitologia', 'cat-historia', 'disco-momo-sampler-tinta',
+    'cat-letras', 'disco-bang-bang-estas-liquidado-tinta', 'cat-discos', 'disco-un-baion-para-el-ojo-idiota-tinta',
+  ]) {
+    pares.push([`el sello en ${sello}`, token('fondo'), mezclar(token(sello), papelPeor, presion)]);
+  }
+  for (const [que, texto, fondo] of pares) {
+    const r = contraste(texto, fondo);
+    if (r < 4.5) fallas.push(`${que}: ${r.toFixed(2)}:1`);
+  }
+  assert.deepEqual(
+    fallas,
+    [],
+    `el papel viejo o la almohadilla dejaron texto por debajo de AA:\n  ${fallas.join('\n  ')}\n` +
+      'El techo del papel y el piso de la presión no se tocan a ojo: este es el límite.',
+  );
+});
+
+test('D-64: el sello que va sobre el negro no lleva la presión, solo la sal', () => {
+  // La presión afloja la tinta al 80 %: sobre papel la aclara, pero sobre el negro la oscurece.
+  // El sello del afiche de octubre quedaba con la letra `--fondo` en 3,52:1. Con solo la sal la
+  // tinta que queda es plena, y el par es el de la marca sobre el fondo, que ya se mide arriba.
+  const sitio = readFileSync('src/styles/sitio.css', 'utf-8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const conMascara = [...sitio.matchAll(/\.oktubre-jugar::before\s*\{([^}]*)\}/g)]
+    .map((m) => m[1]!)
+    .filter((cuerpo) => /mask-image/.test(cuerpo));
+  assert.ok(conMascara.length > 0, 'no se encontró la máscara del macizo del sello de octubre');
+  assert.match(conMascara.at(-1)!, /mask-image:\s*var\(--textura-tinta-sal\)/, 'el sello de octubre volvió a la presión');
+  // Y la razón sigue siendo cierta: con la presión, ese par no llega.
+  const conPresion = mezclar(token('marca-rojo'), token('fondo'), Math.min(...tablaDeTextura('textura-tinta')));
+  assert.ok(contraste(token('fondo'), conPresion) < 4.5, 'la presión ya no oscurece el sello sobre negro: esta guarda sobra');
+});
+
 test('el area de toque minima cumple lo que pide jugable con el pulgar', () => {
   const m = CSS.match(/--toque-min:\s*(\d+)px/);
   assert.ok(m, 'no hay token de area de toque');

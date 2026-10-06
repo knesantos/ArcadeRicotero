@@ -12,7 +12,7 @@ import '../styles/tokens.css';
 import '../styles/sitio.css';
 import Cabeza from '../components/Cabeza.astro';
 import PieImprenta from '../components/PieImprenta.astro';
-import { conRecorteReal, medidas } from '../lib/sitio/arte.ts';
+import { conRecorteReal, medidas, recorte } from '../lib/sitio/arte.ts';
 
 interface Props {
   titulo: string;
@@ -54,6 +54,12 @@ const {
 // archivo: un `<img>` sin medidas obliga al navegador a maquetar dos veces.
 const arteMosca = conRecorteReal('/arte/mosca.svg');
 const medidaMosca = medidas(arteMosca);
+
+// La multitud que se acerca al bajar (`D-63` enmienda 1): los dos planos van si están las
+// tres máscaras. Si falta una —el taller no corrió—, no va ninguno, y queda la fila del pie
+// sola, que es lo que había: el mismo criterio de reemplazo que el resto del collage.
+const hayPlanos =
+  conBanderas && ['clara', 'roja', 'silueta'].every((m) => recorte(`multitud-lejos-${m}.png`));
 ---
 
 <!doctype html>
@@ -67,6 +73,16 @@ const medidaMosca = medidas(arteMosca);
     <slot name="cabeza" />
   </head>
   <body class="con-grano">
+    {
+      /* Detrás de todo y antes que nada: el contenido va arriba por su `z-index` (sitio.css,
+         `.contenido-sitio`), y la fila del pie, que es hermana de la hoja, por orden. */
+      hayPlanos && (
+        <>
+          <div class="plano-gente plano-gente--lejos" aria-hidden="true"><span /></div>
+          <div class="plano-gente plano-gente--cerca" aria-hidden="true"><span /></div>
+        </>
+      )
+    }
     {
       conMosca && (
         <img

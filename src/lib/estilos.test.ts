@@ -266,40 +266,113 @@ test('CTR-12 caso 19 (candado 7 de ADR-05.9): la estampa se apoya en papel opaco
   assert.match(declaraciones, /isolation:\s*isolate/, '.estampa-papel perdio el aislamiento del multiply');
 });
 
-test('UX-22 §8: el registro imperfecto vive solo en la letra grande, nunca en un parrafo', () => {
+/*
+ * La sombra salió de todos lados (`D-64`).
+ *
+ * Pedido del usuario, textual: *"saquemos la sombra de todos lados, no me gusta"*. Hasta el
+ * 2026-10-05 este lugar tenía el test del registro imperfecto de `UX-22` §8 —el eco de segunda
+ * tinta detrás de la letra grande—, con una lista cerrada de dónde podía ir. Ahora no puede
+ * ir en ningún lado, y el test se da vuelta: en vez de cuidar dónde va la sombra, cuida que
+ * no vuelva.
+ *
+ * Mira TODO el CSS del sitio —las hojas, `tokens.css` y el `<style>` de cada página—, porque
+ * una sombra escrita a mano en una `.astro` era justo lo que la lista vieja no veía (había
+ * dos: el botón de arranque de "Adiviná el tema" y el de "Sacalo por la letra").
+ *
+ * Lo que sí queda permitido no es sombra: un anillo sin desplazamiento ni difuminado
+ * (`0 0 0 <ancho> <color>`, con o sin `inset`) dibuja un contorno pegado a la pieza. Lo usan
+ * el filo de la aguja de la barra, la tecla que suena y los anillos de Skayboy (`UX-33` §1.4).
+ */
 
-  /*
-   * El eco de segunda tinta es la unica sombra que `diseno-marca.md` admite, y por eso es
-   * la mas facil de convertir en tic: una sombra dura corrida queda "bien" en cualquier
-   * cosa. Esta lista es CERRADA. Sumar un selector es una decision de `UX-22` §8 —que
-   * dice donde si y donde no—, no un descuido de quien pasa por la hoja.
-   *
-   * Lo que el test protege de verdad son los cuatro "nunca" de esa tabla: cuerpo de
-   * texto, rotulos de registro 3, estados de acierto y error, y los tres articulos de
-   * tono grave. Ninguno puede aparecer aca sin que alguien lo escriba a proposito.
-   */
-  const PERMITIDOS = new Set([
-    '.marca-grande', // la marca del portal
-    '.marca', // la marca de la cabecera de cada juego
-    // La misma marca, mudada a la carátula cuando hay mesa (`D-54`, `UX-35` §3). No es un
-    // lugar nuevo: es la de arriba, en la columna, y las dos nunca se ven a la vez.
-    '.caratula-marca',
-    '.pantalla h1', // el h1 de cada juego
-    '.casete-titulo', // el titulo de un casete
-    '.articulo:not(.articulo--grave) h1', // el titulo de articulo, salvo los tres graves
-    '.estampa-disco', // el nombre del disco en la estampa (`UX-22` §2)
-  ]);
-  const encontrados: string[] = [];
-  for (const hoja of HOJAS) {
-    const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
-    for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
-      if (!/text-shadow[^;]*var\(\s*--registro\s*\)/.test(regla[2]!)) continue;
-      for (const sel of regla[1]!.split(',')) encontrados.push(sel.trim().replace(/\s+/g, ' '));
+/** Los valores de una propiedad en un CSS ya sin comentarios. */
+function valoresDe(css: string, propiedad: string): string[] {
+  // Con o sin prefijo de motor: `-webkit-box-shadow` es la misma sombra con otro nombre.
+  return [...css.matchAll(new RegExp(`(?:^|[;{\\s])(?:-webkit-|-moz-)?${propiedad}\\s*:\\s*([^;}]+)`, 'g'))].map((m) =>
+    m[1]!.trim(),
+  );
+}
+
+/** Parte un valor de CSS en sus capas, por las comas que no están adentro de un paréntesis. */
+function capas(valor: string): string[] {
+  const out: string[] = [];
+  let hondo = 0;
+  let actual = '';
+  for (const c of valor) {
+    if (c === '(') hondo++;
+    if (c === ')') hondo--;
+    if (c === ',' && hondo === 0) {
+      out.push(actual.trim());
+      actual = '';
+    } else actual += c;
+  }
+  out.push(actual.trim());
+  return out;
+}
+
+/** Las sombras corridas de un CSS: toda capa que no sea `none` ni un anillo pegado. */
+function sombrasCorridas(css: string): string[] {
+  const limpio = sinComentarios(css);
+  const malas: string[] = [];
+  for (const v of valoresDe(limpio, 'text-shadow')) if (v !== 'none') malas.push(`text-shadow: ${v}`);
+  for (const v of valoresDe(limpio, 'box-shadow')) {
+    for (const capa of capas(v)) {
+      if (capa === 'none') continue;
+      if (/^(inset\s+)?0(px)?\s+0(px)?\s+0(px)?\s+\S/.test(capa)) continue;
+      malas.push(`box-shadow: ${capa}`);
     }
   }
-  assert.ok(encontrados.length > 0, 'el registro imperfecto desaparecio de las hojas');
-  const intrusos = encontrados.filter((s) => !PERMITIDOS.has(s));
-  assert.deepEqual(intrusos, [], `UX-22 §8 no nombra estos lugares: ${intrusos.join(', ')}`);
+  // Y la que se escribe como filtro: `drop-shadow()` es una sombra corrida igual.
+  for (const v of valoresDe(limpio, 'filter')) if (/drop-shadow\(/.test(v)) malas.push(`filter: ${v}`);
+  return malas;
+}
+
+test('D-64: ninguna letra ni ninguna pieza lleva sombra', () => {
+  const malas = sombrasCorridas(todoElCss());
+  assert.deepEqual(
+    malas,
+    [],
+    `volvió una sombra (D-64 la sacó de todos lados):\n  ${malas.join('\n  ')}\n` +
+      'Lo que separa una pieza del fondo es el borde y el giro, no una sombra.',
+  );
+});
+
+test('D-64: ese control sabe encontrar', () => {
+  // Las tres formas en que una sombra puede volver, y las dos que no son sombra.
+  assert.deepEqual(sombrasCorridas('.x{text-shadow:2px 2px 0 var(--borde)}'), ['text-shadow: 2px 2px 0 var(--borde)']);
+  assert.deepEqual(sombrasCorridas('.x{box-shadow:0 4px 0 var(--borde)}'), ['box-shadow: 0 4px 0 var(--borde)']);
+  assert.deepEqual(sombrasCorridas('.x{box-shadow:var(--registro) var(--registro) 0 red}').length, 1);
+  assert.deepEqual(
+    sombrasCorridas('.x{box-shadow:inset 0 0 0 2px var(--fondo), 3px 3px 0 color-mix(in srgb, red 40%, blue)}'),
+    ['box-shadow: 3px 3px 0 color-mix(in srgb, red 40%, blue)'],
+  );
+  assert.deepEqual(sombrasCorridas('.x{box-shadow:inset 0 0 0 var(--anillo) var(--fondo)} .y{box-shadow:0 0 0 1px red}'), []);
+  assert.deepEqual(sombrasCorridas('.x{text-shadow:none; transition: box-shadow 1s}'), []);
+  assert.deepEqual(sombrasCorridas('/* text-shadow: 2px 2px 0 red */ .x{color:red}'), []);
+  // Las dos formas que la primera versión no veía (las encontró la revisión del 2026-10-05).
+  assert.deepEqual(sombrasCorridas('.x{-webkit-box-shadow:2px 2px 0 red}'), ['box-shadow: 2px 2px 0 red']);
+  assert.deepEqual(sombrasCorridas('.x{filter: drop-shadow(2px 2px 0 red)}'), ['filter: drop-shadow(2px 2px 0 red)']);
+  assert.deepEqual(sombrasCorridas('.x{filter: brightness(1.1)}'), []);
+});
+
+test('D-64: tampoco la dibuja una isla ni el canvas de la tarjeta', () => {
+  // Las hojas no son la única vía: una isla puede escribir `style.boxShadow`, y la tarjeta
+  // compartible y la lámina dibujan texto en un canvas, donde la sombra se pide por nombre.
+  const fuentes: string[] = [];
+  const recorrer = (dir: string): void => {
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      const ruta = join(dir, e.name);
+      if (e.isDirectory()) recorrer(ruta);
+      else if (/\.(ts|mjs)$/.test(e.name) && !e.name.endsWith('.test.ts')) fuentes.push(ruta);
+    }
+  };
+  recorrer('src/scripts');
+  recorrer('src/lib');
+  const malas = fuentes.filter((f) =>
+    /\b(textShadow|boxShadow|shadowColor|shadowBlur|shadowOffset[XY])\b|setProperty\(\s*['"`](box|text)-shadow/.test(
+      sinComentarios(leer(f)),
+    ),
+  );
+  assert.deepEqual(malas, [], `estos archivos pintan una sombra por código: ${malas.join(', ')}`);
 });
 
 /* ==================================================================
@@ -1249,10 +1322,11 @@ test('ninguna fuente de un solo peso se pide en negrita', () => {
  * engordaba a mano en los ocho. El título se declara en peso normal, una sola vez, y las
  * páginas no lo reescriben.
  */
-test('el título de los juegos pide la rotulada en su peso: no hereda la negrita del h1', () => {
+test('el título de los juegos pide la letra de la banda en su peso: no hereda la negrita del h1 (D-65)', () => {
   const titulo = reglas(leer('src/styles/juego.css')).find((r) => r.selector === '.pantalla > h1');
   assert.ok(titulo, 'no existe la regla única del título de los juegos (.pantalla > h1)');
-  assert.match(titulo!.cuerpo, /font-family:\s*var\(--fuente-rotulada\)/);
+  // Desde `D-65` va en Patricio Rey Fan, con las tildes derivadas; antes, en la rotulada.
+  assert.match(titulo!.cuerpo, /font-family:\s*var\(--fuente-marca-firma\)/);
   assert.match(titulo!.cuerpo, /font-weight:\s*(normal|400)\b/);
   // Y ninguna página lo vuelve a escribir a mano: es como derivaron los ocho la primera vez.
   const conH1Propio = readdirSync('src/pages/juegos')

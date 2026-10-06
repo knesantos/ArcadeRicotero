@@ -3826,6 +3826,42 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     el circuito de `diseno-marca.md` pide cambiarlo allá primero, y acá entró al revés por pedido
     directo, sin token nuevo.
 
+- **Enmienda 1 (2026-10-05): la multitud se acerca al bajar.** Pedido del usuario, textual:
+  *"me gustaria que mientras vas bajando en la pagina en el fondo se vean banderas rojas y
+  gente, como si la gente del final fuese el final de una multitud gigante, como si ir para
+  abajo fuese acercase a la multitud, me explico?"*
+  - **Qué se ve.** Arriba del portal, al pie de la ventana, una multitud chica y lejana: gente
+    y banderas rojas en el horizonte. Al bajar, ese plano crece y entra desde abajo uno más
+    cercano, más grande y con más tinta. Al final llega la fila del pie, con las caras grandes.
+    Cada fila tapa a la de atrás, como en una multitud de verdad.
+  - **Cómo.** Dos planos fijos detrás de todo (`.plano-gente--lejos`, `--cerca`), cada uno con
+    tres tintas enmascaradas en el orden de una serigrafía: la silueta de la gente en
+    `--fondo`, lo claro en `--papel` y las banderas en `--disco-oktubre-tinta`, mezcladas con
+    el fondo en `--peso-multitud-*` y `--peso-bandera-*`. Las máscaras salen del frente
+    **original** de la tapa (Rocambole entero, de las banderas para abajo), en espejo para que
+    el mosaico no tenga costura: `public/arte/multitud-lejos-{clara,roja,silueta}.png`, 82 KB
+    las tres, de `scripts/generar-multitud.mjs`. La fila del pie gana su silueta horneada en
+    `--fondo`: sin ella, la gente de atrás se veía por adentro de las caras de adelante.
+  - **El movimiento es del lugar** (`UX-20`): dos animaciones atadas al desplazamiento
+    (`acercarse-lejos`, `acercarse-cerca`), sin JavaScript. `--acercamiento` vale 0 con
+    movimiento reducido, y ahí los dos planos quedan quietos en su lugar de llegada; donde no
+    hay `animation-timeline`, también.
+  - **El peso tiene techo.** Todo el texto del portal pasa por encima de los planos al subir.
+    `contraste.test.ts` mezcla cada peso con su tinta y falla si `--texto-tenue` baja de 4,5:1
+    o la marca —letra grande en `--marca-rojo`— baja de 3:1 (rojo visto: con la gente de cerca
+    al 30 % la marca queda en 2,10:1). Hoy el par más justo es la marca contra las banderas de
+    cerca (3,25:1, con las banderas al 34 %); la gente de cerca va al 16 % (3,34:1). Y tiene piso: lo de lejos con menos tinta que
+    lo de cerca, y todo a doce niveles o más del fondo.
+  - **Alternativas descartadas.** La foto velada de antes, fija y con velo: deja a la gente al
+    14 %, que es lo que este pedido viene a cambiar. Un plano solo que crece: no da
+    profundidad, se lee como un zoom. Tres planos: el tercero no se distinguía del segundo en
+    un teléfono, y costaba otra capa fija.
+  - **Consecuencias.** En el teléfono el efecto es más tenue que en la computadora: los casetes
+    ocupan casi todo el ancho y tapan los planos. Es lo que permite el techo de contraste.
+    `multitud.test.ts` vigila las tres máscaras (que existan, que calcen, que el mosaico no
+    tenga costura, que la silueta llegue al piso) y la silueta de la fila del pie (rojo visto
+    con el recorte de antes, sin silueta).
+
 ## D-66 — La llave de silencio del iPhone no apaga "Adiviná el tema": el juego pide la sesión de la música
 
 - **Fecha:** 2026-10-06
@@ -3914,3 +3950,133 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   - Para `experiencia`: `UX-24` cuenta la altura que suma el aviso de la llave en la portada; en
     casi todos los iPhone ahora no sale. `UX-22` la nombra como causa de silencio.
     Propuesta en `Docs/SUGERENCIAS/HILO-para-experiencia-el-aviso-de-la-llave.md`.
+
+## D-64 — La sombra sale de todos lados, y las tapas de los juegos se sellan: tinta gastada sobre papel viejo
+
+- **Fecha:** 2026-10-05
+- **Estado:** aceptada — dos pedidos directos del usuario, en orden. Con la captura del Lado A:
+  *"Saquemosle la sombra a las letras de las tapas de los juegos, busquemos un efecto mas de
+  impresion vieja sobre papel o sello, algo asi como tinta en papel viejo o eso. Ponete en rol de
+  diseñador. Ademas que queden todas coherentes."* Y cuando se le preguntó por la marca y el título
+  de cada juego: *"Sisi saquemos la sombra de todos lados, no me gusta."*
+- **Consume y enmienda:** `D-33` consecuencia 1 (el registro deja de ser recurso permanente de la
+  letra), `D-49` (la sombra de recorte de la tapa pegada), `D-54` puntos 5 y 6 (el eco del título y
+  el canto de la tecla), `D-57` (el canto de las hojas que faltan), `D-31` (la sombra de la hoja de
+  versos), `UX-22` §8, §9 y §13, `UX-04`, la tabla anti-slop de `.claude/rules/diseno-marca.md`
+  (enmendada acá mismo) y la hoja 07 del lienzo.
+- **Lo que había.** El título de cada casete llevaba detrás un eco del mismo texto, corrido 2 px,
+  en el apoyo de su disco (el "registro imperfecto" de `UX-22` §8). En nueve casetes había siete
+  ecos distintos —marrón, petróleo, azul, ocre— y dos en crema sobre el crema de la etiqueta, que
+  no se veían. El mismo eco tenían la marca, el título de cada juego, el de los artículos y la
+  estampa. Y había 34 sombras duras más sobre objetos: la tapa pegada, los botones que se hundían
+  sobre un canto, las chapas, las hojas, el sello del casete.
+- **Decisión, en dos partes.**
+  1. **No hay sombra en ningún lado**, ni sobre una letra ni sobre una pieza. Lo que recorta una
+     pieza contra el fondo es el borde, la cinta y el giro; un estado se marca con borde o con
+     tinta. Quedan los anillos pegados (`0 0 0 <ancho>`), que son contorno y no sombra.
+  2. **Las tapas de los juegos se sellan**: el título del casete y el de la carátula salen de una
+     almohadilla de goma medio seca —les faltan puntos de tinta y zonas donde la mano aflojó, pero
+     la letra que queda es `--fondo` pleno, nunca un gris—; la etiqueta es papel viejo, con manchas
+     de humedad de borde duro y pecas en `--papel-borde`; el sello de acción sale moteado de la
+     misma almohadilla, con el filete y la letra enteros; y el título de cada juego, que es tinta
+     de color sobre el negro, lleva solo la sal. Lo único que cambia de un casete a otro es dónde
+     apretó la mano (`--semilla`, del mismo mapa de variantes), así que el casete del portal, la
+     carátula de su juego y el título de su página tienen el mismo golpe.
+- **Cómo lo decidimos.** Un panel de tres diseñadores con enfoques distintos (imprenta de tipos,
+  sello de goma, fotocopia de fanzine) y tres jueces con lentes distintas (marca, lectura,
+  técnica). Ganó el sello de goma, 24,5 contra 20 y 18,5. La especificación quedó en
+  `Docs/SUGERENCIAS/ESPEC-D-64-la-tapa-se-sella.md` y el inventario de las 41 sombras en
+  `Docs/SUGERENCIAS/ANALISIS-letras-de-disco-y-sin-sombra.md`.
+- **Cómo.**
+  - Tres texturas en `tokens.css`: `--textura-tinta` (sal y presión acopladas), `--textura-tinta-sal`
+    (solo la sal) y `--textura-papel-viejo`. Alfa sola, como máscara, con la región de filtro en
+    0/0/1/1 para que la tesela cosa. La sal se subió de 3,5 a 4,4 % de huecos mirándolo en el
+    portal: a un brazo de distancia no se notaba.
+  - Sale `--tinta-registro` con sus 20 declaraciones, `--canto-accion` y `--canto-tecla`.
+    `--registro` queda solo para el corrimiento de las pasadas de la estampa, que no es sombra.
+  - Los botones que se hundían sobre un canto ahora bajan 2 px y se aclaran (`brightness`):
+    aclarar el relleno solo le puede subir el contraste a la letra, que es `--fondo`.
+  - Los estados que se decían con sombra: el pozo elegido de "Adiviná el tema" engrosa el borde
+    hacia adentro (un anillo `inset`), la opción elegida de "¿Qué tipo de ricotero sos?" queda con
+    su borde de 4 px, y las hojas que faltan dejan de dibujarse (el folio ya dice "3 de 10").
+  - "En la cocina" y la pista pasan a `--papel-tenue`: lo escrito a mano es lápiz y no se gasta.
+    La opacidad del casete pendiente pasa a la pieza, porque sobre el papel viejo la pista bajaba.
+  - Alto contraste y colores forzados apagan la máscara y el papel: tinta lisa y papel limpio.
+- **Alternativas descartadas.**
+  - **El eco en una sola tinta para todos.** Coherente, pero sigue siendo una sombra.
+  - **La fotocopia de fanzine** (tóner con motas): las motas negras detrás de la bajada se leían
+    como tildes y puntos.
+  - **Letterpress con mancha amarilla:** pedía un hex nuevo, y la pista bajaba de AA.
+  - **Filtro SVG con desplazamiento**, que come el contorno de la letra: Safari ablanda el texto
+    y el resultado depende de la densidad de la pantalla.
+  - **Una fuente gastada:** todas las A se gastarían igual.
+- **Consecuencias.**
+  - `estilos.test.ts` se da vuelta: el test del registro, que cuidaba dónde iba la sombra, ahora
+    falla si vuelve una sombra corrida en cualquier hoja o en el `<style>` de cualquier página, o
+    si una isla o el canvas la pintan por código. Lleva su control de que sabe encontrar.
+  - `texturas.test.ts` (nuevo) dibuja cada textura con sharp: que no salga vacía —una máscara rota
+    borra el título entero—, que la tinta gaste entre 2 y 7 % y ningún bloque de 12 px pierda más
+    del 30 %, y que el papel no pase su techo (rojos vistos).
+  - `contraste.test.ts` suma la etiqueta sellada: el título gastado, la bajada, la pista y los
+    nueve sellos sobre la peor mancha del papel y con el grano encima. Con el papel al 30 % la
+    pista cae de AA (rojo visto); el techo de 0,18 es eso.
+  - El sello de Momo es plata, más clara que el papel, y casi no muestra el desgaste. Es lo que
+    hace una tinta clara sobre papel claro, y se acepta así.
+  - Quedan sin consumidor `--cat-historia-apoyo`, `--cat-discos-apoyo` y `--cat-letras-apoyo`.
+    No se borran: son paleta medida (`RES-37`).
+  - Quedan márgenes de 5 y 6 px debajo de algunos botones que eran el lugar del canto. Son aire.
+  - Para `experiencia`: `UX-22` §8, §9 y §13, `UX-04` y los comentarios de `UX-36`, `UX-37` y
+    `UX-35` §3 que describen el eco o el canto (nota en `Docs/SUGERENCIAS/HILO-para-experiencia-sin-sombra-y-letras.md`).
+    El lienzo (hojas 07 y 08) tampoco lo tiene.
+
+## D-65 — La letra de la banda escribe el título de cada juego, con tildes y signos derivados de ella misma
+
+- **Fecha:** 2026-10-05
+- **Estado:** aceptada — pedido directo del usuario, textual: *"Ademas hay que usar la tipografia de
+  los discos en mas lados. Analicemos como integrarlas mejor."*
+- **Consume y enmienda:** `D-17` (el voseo con tilde, que ahora entra en la letra), `D-19` (el
+  resultado viste el logo), `D-54` punto 5 (el título único de los ocho juegos cambia de letra),
+  `D-58`, `RES-42`, la tabla de fuentes y la deuda de tildes de `.claude/rules/diseno-marca.md`
+  (enmendadas acá mismo).
+- **Lo que había.** Tres letras de disco en `public/fuentes/`, y ninguna podía escribir una palabra
+  del sitio entera: el calco de *Oktubre* tiene 14 letras; *Lobo suelto*, la A-Z de trazo de pelo y
+  con la U dibujada como W; *Patricio Rey*, la A-Z y los números, sin una tilde ni un signo. Por
+  eso Patricio Rey no se dibujaba en ningún lado: el único botón que la pedía, el de compartir,
+  llevaba `.con-tilde`, que lo mandaba a la rotulada porque COMPARTÍ tiene tilde.
+- **Decisión.**
+  - **Patricio Rey pasa a escribir el título de cada juego**, y el botón de compartir vuelve a
+    ella. Son textos de dos a cinco palabras, de 29 px para arriba (la letra se lee desde unos 19).
+    Los comparte la página de diagnóstico de audio, que usa la misma regla. **Skayboy no**: su
+    título va acostado en una cabecera de un renglón, a unos 16 px, y ahí se probó y no se leía.
+  - **El título del casete del portal y el de la carátula siguen en Archivo Black**, sellados
+    (`D-64`): a 15-16 px, la letra de la banda es una fila de cuñas, y el que llega sin idea tiene
+    que poder leer qué es cada juego (los molinetes).
+  - **El encabezado del resultado sigue en la rotulada:** son frases de cinco a ocho palabras, y el
+    giro de cada letra de Patricio Rey cansa en frases largas.
+  - El calco sigue en la marca y en las piezas de *Oktubre*, y *Lobo suelto* donde ya estaba (la
+    estampa): las dos no alcanzan para más sin dibujar letras que no existen.
+- **Cómo.** `scripts/derivar-patricio-rey.py`, con el mismo método que el calco: lo que falta no se
+  dibuja de cero, se recorta y se pega de letras que ya están, con operaciones booleanas.
+  - La tilde es la I entera en miniatura, girada: conserva la ranura, así se lee de esta letra.
+  - El punto y la coma son cuñas casi cuadradas; la admiración, la I achicada sobre el punto; la
+    pregunta, la cabeza del 2 sobre el punto; ¡ y ¿, los de cierre dados vuelta.
+  - Salen Á É Í Ó Ú y ¿ ? ¡ ! . y la coma. Las minúsculas apuntan a las mayúsculas, como en el original. El
+    ascendente sube de 666 a 798 para que la tilde entre en la caja de la línea.
+  - El título de los juegos sube un escalón (de 2,15 a 2,35 rem; 2,85 rem en la mesa) porque a
+    igual cuerpo esta letra se ve más chica que la rotulada.
+- **Alternativas descartadas.**
+  - **Patricio Rey en el título del casete:** a 15 px no se lee, y subirlo a 20 px deja los títulos
+    en tres renglones en el teléfono.
+  - **Injertar las tildes de Archivo Black o de DejaVu:** no empatan el peso, y traen otra licencia.
+  - **Una letra por sección según `D-19`** (Lobo suelto en mitología, el calco en la portada): no
+    alcanzan las letras; habría que dibujar más de la mitad del abecedario.
+  - **Dibujar la Ñ y los dos puntos:** ningún texto que use esta letra los pide hoy.
+- **Consecuencias.**
+  - `fuentes.test.ts` abre la fuente y exige que tenga lo derivado, y que el título de cada juego y
+    los dos rótulos de compartir entren enteros: un título nuevo con una Ñ falla acá en vez de
+    partirse en pantalla (rojos vistos con la fuente de antes). `estilos.test.ts` enmienda el test
+    del título único: ahora pide `--fuente-marca-firma`.
+  - `.con-tilde` sale del sitio, del CSS y de las seis islas que lo ponían.
+  - En el teléfono el título en Patricio Rey se lee con esfuerzo si no se conoce la letra. Lo
+    sostienen el tamaño, la bajada que canta debajo y el casete del portal, que ya lo nombró en
+    letra clara. Si el usuario lo ve difícil, la salida es dejarlo solo en la mesa (desde 64 rem).

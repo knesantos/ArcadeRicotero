@@ -1334,11 +1334,9 @@ function pintarResultado(): void {
   acreditarTapas(ronda.map((t) => t.discoTitulo));
 
 
-  // `con-tilde` no es un apaño: es la deuda declarada en .claude/rules/diseno-marca.md.
-  // La letra de la firma (`RES-42`) no tiene acentos, y 'Compartí' lleva uno. La regla
-  // dice qué hacer y qué no: la palabra va en `--fuente-rotulada`, y **no** se le saca
-  // la tilde para que entre — `D-17` no negocia el voseo.
-  const compartir = el('button', 'primario firma con-tilde', RESULTADO.compartir);
+  // 'Compartí' va en la letra de la firma con su tilde: desde `D-65` la tiene, derivada de la
+  // propia letra. Antes llevaba `con-tilde`, que la mandaba a la rotulada.
+  const compartir = el('button', 'primario firma', RESULTADO.compartir);
   compartir.type = 'button';
   compartir.addEventListener('click', () => void compartirResultado(compartir));
   zonaResultado.append(compartir);

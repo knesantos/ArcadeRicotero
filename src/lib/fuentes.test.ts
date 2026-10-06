@@ -25,7 +25,14 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { brotliDecompressSync, inflateSync } from 'node:zlib';
 import { PORTAL } from './sitio/copy.ts';
-import { RESULTADO } from './dos-ejes/copy.ts';
+import { RESULTADO, PANTALLA_0 as DOS_EJES } from './dos-ejes/copy.ts';
+import { PANTALLA_0 as QUIZ, BOTON_COMPARTIR } from './quiz/copy.ts';
+import { PANTALLA_0 as TEMA } from './tema/copy.ts';
+import { PANTALLA_0 as TAPA } from './tapa/copy.ts';
+import { PANTALLA_0 as POR_LA_LETRA } from './por-la-letra/copy.ts';
+import { PANTALLA_0 as LETRA, SIN_BANCO } from './letra/copy.ts';
+import { PANTALLA_0 as MAS_O_MENOS } from './mas-o-menos/copy.ts';
+import { PANTALLA_0 as PONELOS } from './ponelos/copy.ts';
 
 /** Las etiquetas de tabla que WOFF2 nombra por número (la tabla "known tags" del formato). */
 const CONOCIDAS = [
@@ -187,4 +194,58 @@ test('ninguna marca escrita en una página pide una letra que el calco no tiene'
   // Las cuatro formas de la marca existen en el árbol: si el patrón deja de ver alguna, el
   // caso de arriba pasa sin mirarla.
   for (const forma of FORMAS) assert.ok(vistas.get(forma)! >= 1, `no se encontró ninguna marca .${forma} escrita`);
+});
+
+/* ==================================================================
+   La letra de la banda (`D-65`)
+
+   Desde el 2026-10-05 Patricio Rey Fan escribe el título de cada juego y el botón de
+   compartir. La digitalización (`RES-42`) traía A-Z y 0-9 y ni una tilde: COMPARTÍ y
+   ADIVINÁ caían al repuesto a mitad de palabra. `scripts/derivar-patricio-rey.py` le dio las
+   tildes y los signos con material de la propia letra, y acá se comprueba que todo lo que el
+   sitio escribe con ella esté adentro. Un título nuevo con una letra que no tiene —una Ñ, unos
+   dos puntos— hace fallar esto en vez de partirse en pantalla.
+   ================================================================== */
+
+const FIRMA = puntosDeCodigoWoff(readFileSync('public/fuentes/patricio-rey.woff'));
+
+/** Las letras de `texto` que la firma no tiene, en mayúscula como la escribe el CSS. */
+const faltanEnLaFirma = (texto: string): string[] =>
+  [...new Set([...texto.toUpperCase().replace(/\s/g, '')].filter((c) => !FIRMA.has(c.codePointAt(0)!)))];
+
+test('la firma tiene lo que se derivó: las cinco vocales con tilde y los signos de la imprenta', () => {
+  assert.deepEqual(faltanEnLaFirma('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ÁÉÍÓÚ ¿?¡!.,'), []);
+  // Y la guarda sabe ver: lo que no se derivó no está.
+  assert.ok(!FIRMA.has('Ñ'.codePointAt(0)!) && !FIRMA.has(':'.codePointAt(0)!), 'el lector de la firma ve letras que no tiene');
+});
+
+test('el título de cada juego y el botón de compartir entran enteros en la firma (D-65)', () => {
+  const TEXTOS = {
+    quiz: QUIZ.titulo,
+    tema: TEMA.titulo,
+    tapa: TAPA.titulo,
+    'por la letra': POR_LA_LETRA.titulo,
+    letra: LETRA.titulo,
+    'letra sin banco': SIN_BANCO.titulo,
+    'dos ejes': DOS_EJES.titulo,
+    'más o menos': MAS_O_MENOS.titulo,
+    ponelos: PONELOS.titulo,
+    'compartir del quiz': BOTON_COMPARTIR,
+    'compartir de dos ejes': RESULTADO.compartir,
+  };
+  const fallas = Object.entries(TEXTOS)
+    .map(([donde, texto]) => [donde, texto, faltanEnLaFirma(texto)] as const)
+    .filter(([, , faltan]) => faltan.length > 0)
+    .map(([donde, texto, faltan]) => `${donde}: "${texto}" pide ${faltan.join(' ')}`);
+  assert.deepEqual(fallas, [], `la firma no tiene estas letras:\n  ${fallas.join('\n  ')}`);
+});
+
+test('ninguna página escribe a mano un título de juego que la firma no tiene', () => {
+  // Los títulos escritos fijos en un `<h1>` de las páginas de juego, que no pasan por un copy.
+  const archivos = ['src/pages/diagnostico-audio.astro', ...readdirSync('src/pages/juegos').filter((n) => n.endsWith('.astro')).map((n) => `src/pages/juegos/${n}`)];
+  for (const ruta of archivos) {
+    for (const m of readFileSync(ruta, 'utf-8').matchAll(/<h1[^>]*>([^<{]+)<\/h1>/g)) {
+      assert.deepEqual(faltanEnLaFirma(m[1]!), [], `${ruta}: "${m[1]!.trim()}"`);
+    }
+  }
 });

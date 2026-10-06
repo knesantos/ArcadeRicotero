@@ -275,7 +275,7 @@ function pintarResultado(quienCorto: Paso | null): void {
     zonaResultado.append(panelDeRevelado(quienCorto, false));
   }
 
-  const compartir = el('button', 'primario firma con-tilde', RESULTADO.compartir);
+  const compartir = el('button', 'primario firma', RESULTADO.compartir);
   compartir.type = 'button';
   compartir.addEventListener('click', () => void compartirResultado(racha));
   zonaResultado.append(compartir);
