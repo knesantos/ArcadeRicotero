@@ -18,13 +18,18 @@
  * comprueba que toda forma de la marca —la de las páginas, la de los dos pinceles y la de
  * las tarjetas del taller— pida solo letras que el calco tiene. El calco es WOFF (zlib), no
  * WOFF2: por eso hay dos lectores y una sola lectura del `cmap`.
+ *
+ * **Desde `D-65` y `D-67` mira las letras de disco**: la de la banda, la de *Lobo suelto* y la
+ * que viste *Luzbelito*, cada una contra lo que el sitio escribe con ella.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { brotliDecompressSync, inflateSync } from 'node:zlib';
-import { PORTAL } from './sitio/copy.ts';
+import { PORTAL, JUEGOS } from './sitio/copy.ts';
+import { estampaDe } from './tapa/pasadas.ts';
+import { DISCOS } from './letra/discos.ts';
 import { RESULTADO, PANTALLA_0 as DOS_EJES } from './dos-ejes/copy.ts';
 import { PANTALLA_0 as QUIZ, BOTON_COMPARTIR } from './quiz/copy.ts';
 import { PANTALLA_0 as TEMA } from './tema/copy.ts';
@@ -248,4 +253,89 @@ test('ninguna página escribe a mano un título de juego que la firma no tiene',
       assert.deepEqual(faltanEnLaFirma(m[1]!), [], `${ruta}: "${m[1]!.trim()}"`);
     }
   }
+});
+
+/* ==================================================================
+   Las letras de disco (`D-67`)
+
+   Desde el 2026-10-06 dos juegos escriben el título en la letra de su disco: "Adiviná el tema"
+   en la de *Lobo suelto* y "¿Qué tipo de ricotero sos?" en la que viste *Luzbelito*
+   (Redonditos de Ricota, de Zavala), que además escribe el nombre de cada manera. Las dos se
+   derivaron con material propio (`scripts/derivar-lobo-suelto.py`,
+   `scripts/derivar-redonditos.py`), y ninguna tiene todo: Lobo no tiene números ni signos de
+   pregunta. El mapa de qué juego lleva qué letra se lee del CSS mismo, así una variante que
+   suma `--fuente-disco` queda vigilada sin tocar este archivo.
+   ================================================================== */
+
+const LOBO = puntosDeCodigoWoff(readFileSync('public/fuentes/lobo-suelto.woff'));
+const LUZBELITO = puntosDeCodigoWoff(readFileSync('public/fuentes/redonditos-de-ricota.woff'));
+
+/** Las letras de `texto` que `fuente` no tiene, en mayúscula como la escribe el CSS. */
+const faltanEn = (fuente: Set<number>, texto: string): string[] =>
+  [...new Set([...texto.toUpperCase().replace(/\s/g, '')].filter((c) => !fuente.has(c.codePointAt(0)!)))];
+
+/** El lector de cada letra de disco, por el nombre de su variable en `tokens.css`. */
+const LETRA_DE: Record<string, Set<number>> = {
+  '--fuente-lobo-suelto': LOBO,
+  '--fuente-luzbelito': LUZBELITO,
+};
+
+/** Qué variante de `sitio.css` le pone qué letra al título de su juego (`--fuente-disco`). */
+function letrasDeVariante(css: string): Map<string, string> {
+  const mapa = new Map<string, string>();
+  for (const [, selector, cuerpo] of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    const letra = /--fuente-disco:\s*var\((--fuente-[a-z-]+)\)/.exec(cuerpo!)?.[1];
+    if (!letra) continue;
+    for (const [, variante] of selector!.matchAll(/\.juego--([a-z-]+)/g)) mapa.set(variante!, letra);
+  }
+  return mapa;
+}
+
+test('Lobo suelto y Redonditos tienen lo que se derivó, y no lo que no (D-67)', () => {
+  assert.deepEqual(faltanEn(LOBO, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ ÁÉÍÓÚ Ñ ¡!.,'), []);
+  // La Ñ de Lobo no se derivó: es la de Zavala, que se había perdido al recortar la .woff.
+  assert.equal(faltanEn(LOBO, '¿?0123456789').length, 12, 'el lector de Lobo ve signos o números que no tiene');
+  assert.deepEqual(faltanEn(LUZBELITO, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ÁÉÍÓÚ Ñ ¿?¡!.,'), []);
+  assert.ok(!LUZBELITO.has(':'.codePointAt(0)!), 'el lector de Redonditos ve letras que no tiene');
+});
+
+test('el título de cada juego entra entero en la letra que le pone su disco (D-67)', () => {
+  const mapa = letrasDeVariante(readFileSync('src/styles/sitio.css', 'utf-8'));
+  assert.deepEqual([...mapa].sort(), [
+    ['luzbelito', '--fuente-luzbelito'],
+    ['mitologia', '--fuente-lobo-suelto'],
+  ]);
+  const fallas: string[] = [];
+  for (const [variante, letra] of mapa) {
+    const fuente = LETRA_DE[letra];
+    assert.ok(fuente, `${letra} viste un título y este test no tiene con qué leerla`);
+    const juegos = JUEGOS.filter((j) => j.variante === variante);
+    assert.ok(juegos.length > 0, `ningún juego viste la variante ${variante}`);
+    for (const j of juegos) {
+      const faltan = faltanEn(fuente, j.titulo);
+      if (faltan.length) fallas.push(`${variante}: "${j.titulo}" pide ${faltan.join(' ')}`);
+    }
+  }
+  assert.deepEqual(fallas, []);
+  // El casete y el título de la página dicen lo mismo: si se separan, lo de arriba no alcanza.
+  assert.deepEqual(faltanEn(LOBO, TEMA.titulo), []);
+  assert.deepEqual(faltanEn(LUZBELITO, DOS_EJES.titulo), []);
+});
+
+test('cada pieza de "¿Qué tipo de ricotero sos?" que va en la letra de Luzbelito entra entera (D-67)', () => {
+  const banco = JSON.parse(readFileSync('src/data/dos-ejes.json', 'utf-8')) as { cuadrantes: { nombre: string }[] };
+  const TEXTOS = [DOS_EJES.titulo, RESULTADO.lasCuatro, ...banco.cuadrantes.map((c) => c.nombre)];
+  assert.equal(TEXTOS.length, 6);
+  assert.deepEqual(TEXTOS.map((t) => [t, faltanEn(LUZBELITO, t)]).filter(([, f]) => f!.length > 0), []);
+});
+
+test('la estampa escribe en Lobo suelto solo lo que Lobo suelto tiene', () => {
+  const enLobo = DISCOS.map((d) => estampaDe(d)!).filter((e) => e.letra === 'lobo-suelto');
+  assert.equal(enLobo.length, 2);
+  for (const e of enLobo) assert.deepEqual(faltanEn(LOBO, e.nombreEstampado), [], e.nombreEstampado);
+});
+
+test('ese lector de variantes sabe encontrar: una letra declarada en un comentario no cuenta', () => {
+  const css = '/* .juego--bang { --fuente-disco: var(--fuente-lobo-suelto); } */ .juego--momo, .casete--momo { --tinte: x; --fuente-disco: var(--fuente-luzbelito); }';
+  assert.deepEqual([...letrasDeVariante(css)], [['momo', '--fuente-luzbelito']]);
 });

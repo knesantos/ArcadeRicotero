@@ -52,12 +52,16 @@ Viven en `public/fuentes/` y se declaran solo en `tokens.css`:
 |---|---|---|---|
 | `--fuente-titular` | Oktubre Calco v0.4 | calco propio de la tapa (`RES-43`); F, H, N e Í derivadas de sus letras (`D-60`) | solo A B C D E F H I K N O R T U y la Í — **sin otros acentos ni Ñ**; `fuentes.test.ts` falla si la marca pide otra |
 | `--fuente-marca-firma` | Patricio Rey Fan | digitalización fan, B. Zavala (`RES-42`), con Á É Í Ó Ú ¿ ? ¡ ! . , derivadas de la propia letra (`D-65`, `scripts/derivar-patricio-rey.py`) | sin Ñ ni dos puntos. Escribe el título de cada juego y el botón de compartir; se lee desde ~19 px y en el sitio va de 29 px para arriba, nunca en frases largas |
+| `--fuente-lobo-suelto` | Lobo Suelto Fan | digitalización fan del alfabeto de la tapa, B. Zavala (`RES-42`), con Á É Í Ó Ú . , ! ¡ derivadas de su I y la Ñ de Zavala recuperada (`D-67`, `scripts/derivar-lobo-suelto.py`) | trazo de pelo: solo de ~28 px para arriba y **nunca con la sal**. Sin ? ¿ ni números, y la U se dibuja como W. Escribe el título de "Adiviná el tema" (mitología) y el nombre de su disco en la estampa |
+| `--fuente-luzbelito` | Redonditos de Ricota Fan | digitalización fan, B. Zavala (`RES-42`), escalada a la mayúscula del sistema y con Á É Í Ó Ú Ñ . , ! ? ¡ ¿ derivadas (`D-67`, `scripts/derivar-redonditos.py`) | **no es la letra de la tapa de *Luzbelito***: la viste porque se le parece, por elección del usuario, así que nunca escribe el nombre del disco en la estampa. Escribe lo que canta en "¿Qué tipo de ricotero sos?"; se lee desde ~13 px |
 | `--fuente-rotulada` | Archivo Black | autoalojada | completa, es el repuesto de todo |
 | `--fuente` | pila del sistema | — | todo el texto largo |
 
 **Deuda declarada, a medias**: desde `D-65` Patricio Rey Fan tiene las tildes y los signos, así que
-la letra de la banda ya escribe JUGÁ, COMPARTÍ y ADIVINÁ enteras. El calco de *Oktubre* tiene la Í
-y nada más, y Lobo suelto ninguna: ahí las palabras con tilde siguen yendo en `--fuente-rotulada`.
+la letra de la banda ya escribe JUGÁ, COMPARTÍ y ADIVINÁ enteras, y desde `D-67` también Lobo suelto
+y Redonditos. El calco de *Oktubre* tiene la Í y nada más: ahí las palabras con otra tilde siguen
+yendo en `--fuente-rotulada`. Qué juego escribe su título en qué letra lo dice `--fuente-disco`, en
+el mapa de variantes de `sitio.css`, y `fuentes.test.ts` lo lee de ahí.
 No "resolver" esto escribiendo sin tilde: `D-17` no negocia el voseo. Y una letra nueva para una
 fuente de disco se deriva de la propia letra, como el calco y la firma; no se injerta de otra.
 

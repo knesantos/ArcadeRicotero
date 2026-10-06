@@ -7,6 +7,26 @@
 
 **Última actualización:** 2026-10-06
 
+> ## 🔤 LOBO SUELTO Y LA LETRA DE LUZBELITO ENTRAN AL SISTEMA (2026-10-06) — `D-67`
+>
+> **Rama `tipografia/lobo-y-luzbelito`, sobre `main` en `8bb84ab`**, en el worktree
+> `../RicotaArcade-fondo` (reusado). Pedido del usuario: *"vamos a seguir integrando las otras dos
+> que no estan en el sistema, la de lobo suelto y la otra que es medio luz belito"*.
+>
+> - **"La otra" es Redonditos de Ricota**, de Zavala (la del zip del mismo nombre). No es la letra de
+>   la tapa de *Luzbelito*: la viste porque se le parece. Por eso no escribe el nombre del disco en
+>   la estampa.
+> - **Las dos se derivaron con material propio** (`scripts/derivar-lobo-suelto.py`,
+>   `scripts/derivar-redonditos.py`): Lobo suma Á É Í Ó Ú . , ! ¡ y recupera la Ñ de Zavala;
+>   Redonditos, Á É Í Ó Ú Ñ . , ! ? ¡ ¿, escalada a la mayúscula del sistema. Las dos suben al
+>   renglón.
+> - **Dónde escriben:** Lobo, el título de "Adiviná el tema" (sin sal); Redonditos, el título de
+>   "¿Qué tipo de ricotero sos?", el nombre de cada manera, "Las cuatro maneras" y el membrete de la
+>   hoja. La letra viaja con la variante (`--fuente-disco` en `sitio.css`).
+> - **Pendiente:** las postales de dos ejes siguen con el nombre en la rotulada (hay que pasar el
+>   taller a la letra y regenerar los PNG; se esperó a que `ciclo-18/que-ricotero-sos` entre), la
+>   hoja 04 del lienzo y la fila de las letras de Zavala en `CNT-01` (sugerencia para `contenido`).
+
 > ## 🔀 CLAUDE FUSIONA CUANDO SE LO PEDÍS (2026-10-06)
 >
 > Pedido del usuario, textual: *"mergealo vos, vamos a dejar escrita la regla para que puedas

@@ -29,6 +29,11 @@
   font-display: swap;
 }
 @font-face {
+  font-family: 'Redonditos de Ricota Fan';
+  src: url('/fuentes/redonditos-de-ricota.woff') format('woff');
+  font-display: swap;
+}
+@font-face {
   font-family: 'Archivo Black';
   src: url('/fuentes/archivo-black.woff2') format('woff2');
   font-display: swap;
@@ -195,6 +200,16 @@
   --fuente-marca-firma: 'Patricio Rey Fan', 'Archivo Black', sans-serif;
   --fuente: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
+  /* Las dos letras de disco que escriben el título de su juego (`D-67`), con tildes y signos
+     derivados de su propio material (`scripts/derivar-lobo-suelto.py`,
+     `scripts/derivar-redonditos.py`). Mitología viste *Lobo suelto* y escribe en su letra,
+     la digitalización de Zavala del alfabeto de la tapa. *Luzbelito* no tiene letra fichada:
+     viste la de Zavala que se le parece, *Redonditos de Ricota*, porque así lo eligió el
+     usuario. Por eso esa no escribe el nombre del disco en la estampa, que pide la letra de
+     la tapa (`CNT-14` §2.7). */
+  --fuente-lobo-suelto: 'Lobo Suelto Fan', 'Archivo Black', sans-serif;
+  --fuente-luzbelito: 'Redonditos de Ricota Fan', 'Archivo Black', sans-serif;
+
   /* ------------------------------------------------------------------
      Movimiento y aire (hoja 12). La doctrina es de `UX-20`: **el movimiento es del
      lugar, no del elemento**. Nada se mueve para llamar la atencion sobre si mismo; lo
@@ -282,11 +297,6 @@
      donde hay pasadas de imagen de verdad, y en ninguna letra. */
   --registro: 2px;
   --registro-angulo: 0.4deg;
-
-  /* Las fuentes fan que escriben el nombre de un disco con su propia letra, verificado
-     glifo por glifo (`RES-42`, `RES-43`, `CNT-14` §2.7). Solo tres nombres las usan;
-     los otros siete van en la rotulada, con su tilde real. */
-  --fuente-lobo-suelto: 'Lobo Suelto Fan', 'Archivo Black', sans-serif;
 
   /* ------------------------------------------------------------------
      El pie de imprenta (ciclo 13). Cómo termina una hoja impresa.

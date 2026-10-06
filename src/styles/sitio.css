@@ -1238,12 +1238,22 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
    del portal y la carátula de cada juego, y `.juego--*` viste la página entera de ese juego.
    Es un solo mapa a propósito: el casete que se toca en la puerta y el juego que abre no
    pueden vestir dos discos distintos. (Hasta `D-64` cada variante traía también la tinta
-   del eco del título; salió con la sombra.) */
+   del eco del título; salió con la sombra.)
+
+   **Dos variantes traen además su letra** (`D-67`): `--fuente-disco` la toma el título del
+   juego, y solo él. El casete del portal y la carátula siguen en la rotulada, porque a 15 px
+   ninguna de las dos se lee. Lobo suelto no se sella (`--sal-del-titulo: none`): es trazo de
+   pelo, y la sal de `D-64` le comería trazos enteros. */
 .casete--marca, .juego--marca { --tinte: var(--marca-rojo); --semilla: 1; }
 .casete--historia, .juego--historia { --tinte: var(--cat-historia); --semilla: 4; }
 .casete--discos, .juego--discos { --tinte: var(--cat-discos); --semilla: 8; }
 .casete--letras, .juego--letras { --tinte: var(--cat-letras); --semilla: 6; }
-.casete--mitologia, .juego--mitologia { --tinte: var(--cat-mitologia); --semilla: 3; }
+.casete--mitologia, .juego--mitologia {
+  --tinte: var(--cat-mitologia);
+  --semilla: 3;
+  --fuente-disco: var(--fuente-lobo-suelto);
+  --sal-del-titulo: none;
+}
 /* Momo se tiñe con su apoyo —el peltre— para el borde, y el apoyo no lleva letra: el sello
    se llena con la plata de la tinta, que es el par que ya usa el boton de su juego. */
 .casete--momo,
@@ -1273,6 +1283,7 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 .juego--luzbelito {
   --tinte: var(--disco-luzbelito-tinta);
   --semilla: 2;
+  --fuente-disco: var(--fuente-luzbelito);
 }
 
 /* El golpe: dónde apretó la mano (`D-64`). Se declara en la pieza y no en :root porque un

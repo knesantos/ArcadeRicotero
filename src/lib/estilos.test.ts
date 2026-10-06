@@ -1305,7 +1305,7 @@ function negritasFalsas(css: string): string[] {
   return reglas(css)
     .filter(
       (r) =>
-        /font-family:\s*var\(--fuente-(rotulada|titular|marca-firma)\)/.test(r.cuerpo) &&
+        /font-family:\s*var\(--fuente-(rotulada|titular|marca-firma|lobo-suelto|luzbelito|disco)[),]/.test(r.cuerpo) &&
         /font-weight:\s*(bold|bolder|[5-9]00)\b/.test(r.cuerpo),
     )
     .map((r) => r.selector);
@@ -1325,8 +1325,9 @@ test('ninguna fuente de un solo peso se pide en negrita', () => {
 test('el título de los juegos pide la letra de la banda en su peso: no hereda la negrita del h1 (D-65)', () => {
   const titulo = reglas(leer('src/styles/juego.css')).find((r) => r.selector === '.pantalla > h1');
   assert.ok(titulo, 'no existe la regla única del título de los juegos (.pantalla > h1)');
-  // Desde `D-65` va en Patricio Rey Fan, con las tildes derivadas; antes, en la rotulada.
-  assert.match(titulo!.cuerpo, /font-family:\s*var\(--fuente-marca-firma\)/);
+  // Desde `D-65` va en Patricio Rey Fan, con las tildes derivadas; antes, en la rotulada. Desde
+  // `D-67`, los dos juegos cuyo disco tiene letra la traen de su variante (`--fuente-disco`).
+  assert.match(titulo!.cuerpo, /font-family:\s*var\(--fuente-disco,\s*var\(--fuente-marca-firma\)\)/);
   assert.match(titulo!.cuerpo, /font-weight:\s*(normal|400)\b/);
   // Y ninguna página lo vuelve a escribir a mano: es como derivaron los ocho la primera vez.
   const conH1Propio = readdirSync('src/pages/juegos')
@@ -1337,11 +1338,33 @@ test('el título de los juegos pide la letra de la banda en su peso: no hereda l
   assert.deepEqual(conH1Propio, []);
 });
 
+/**
+ * **La letra de pelo no se sella** (`D-67`). El título de cada juego lleva la sal de `D-64`,
+ * que saca puntos enteros de la tinta. Sobre la rotulada o la letra de la banda no se nota;
+ * sobre *Lobo suelto*, que es un trazo de pelo, se lleva trazos enteros. La variante que le pone
+ * esa letra al título le saca la sal, y ninguna otra.
+ */
+test('la variante que escribe el título en Lobo suelto le saca la sal, y ninguna otra (D-67)', () => {
+  const sello = reglas(leer('src/styles/juego.css')).find((r) => r.selector === '.pantalla h1');
+  assert.ok(sello, 'no existe la regla de la sal del título (.pantalla h1)');
+  assert.match(sello!.cuerpo, /(^|[;\s])mask-image:\s*var\(--sal-del-titulo,\s*var\(--textura-tinta-sal\)\)/);
+  const variantes = reglas(leer('src/styles/sitio.css')).filter((r) => /--fuente-disco\s*:/.test(r.cuerpo));
+  assert.equal(variantes.length, 2, 'el mapa de variantes tiene otra cantidad de letras de disco');
+  for (const v of variantes) {
+    const lobo = /--fuente-disco:\s*var\(--fuente-lobo-suelto\)/.test(v.cuerpo);
+    const sinSal = /--sal-del-titulo:\s*none/.test(v.cuerpo);
+    assert.equal(sinSal, lobo, `${v.selector}: ${lobo ? 'Lobo suelto sellado con sal' : 'sin sal y sin ser Lobo suelto'}`);
+  }
+});
+
 test('ese control sabe encontrar: se prueba contra una negrita inventada', () => {
   assert.deepEqual(
     negritasFalsas('.primario { font-family: var(--fuente-rotulada); font-weight: 700; }'),
     ['.primario'],
   );
+  // Las letras de disco tampoco tienen negrita, y la del título se pide por variable.
+  assert.deepEqual(negritasFalsas('.n { font-family: var(--fuente-luzbelito); font-weight: bold; }'), ['.n']);
+  assert.deepEqual(negritasFalsas('.t { font-family: var(--fuente-disco, var(--fuente-marca-firma)); font-weight: 700; }'), ['.t']);
   // La fuente del sistema sí tiene negrita de verdad: ahí el 700 está bien.
   assert.deepEqual(negritasFalsas('.micro { font-family: var(--fuente); font-weight: 700; }'), []);
   // Nombrada en un comentario no es una regla.
