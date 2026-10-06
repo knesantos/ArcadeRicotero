@@ -61,9 +61,12 @@
 > de construir el contexto, el aviso de la llave se calla, la partida arranca y "Escuchá" está.
 > Sin la API, todo como antes.
 >
-> **Abierto, sin trabar:** **la prueba en un iPhone real** (llave en silencio, con y sin música
-> de otra app, iOS 17+). `/diagnostico-audio/` dice si la llave manda en ese aparato. Propuestas
-> para `arquitectura` (enmienda de `ADR-04`) y `experiencia` (`UX-24`, `UX-22`) en
+> **Integrado a `main` con el PR #37 y probado por el usuario en su iPhone**, textual: *"Muy
+> bueno se escucha bien"*.
+>
+> **Abierto, sin trabar:** qué pasa con la música de otra app sonando (debería cortarse,
+> `RES-201`) y un iPhone con 16.3 o menos (el aviso de la llave tiene que seguir saliendo).
+> Propuestas para `arquitectura` (enmienda de `ADR-04`) y `experiencia` (`UX-24`, `UX-22`) en
 > `Docs/SUGERENCIAS/HILO-para-*`.
 
 > ## 👥 LA GENTE MIRA DESDE EL FINAL DEL PORTAL (2026-10-04) — `D-63`

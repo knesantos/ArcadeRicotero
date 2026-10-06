@@ -3831,9 +3831,9 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
 - **Fecha:** 2026-10-06
 - **Estado:** aceptada — pedido directo del usuario, textual: *"Investiga la forma de que el
   boton de silencio de iphone no silencie el juego adivina el tema. Analiza el resultado y
-  desarrolla la solucion e integrala si no rompe nada"*. **Falta la prueba en un iPhone real**
-  (ver Consecuencias): todo lo que sigue sale del código de WebKit y de la documentación, no de
-  un teléfono.
+  desarrolla la solucion e integrala si no rompe nada"*. **Probado por el usuario en su iPhone
+  el mismo día**, ya integrado, textual: *"Muy bueno se escucha bien"*. Lo que no dijo —la
+  versión de iOS, si tenía música de otra aplicación sonando— queda en Consecuencias.
 - **Consume:** `INV-200` (`RES-200`..`RES-206`), `ADR-04.2` (el contexto compartido), `US-02`
   criterio 2 (el aviso de sonido), `D-14`, `D-29` (las islas no arrastran nada).
 - **Contexto.** Con la llave lateral en silencio, el iPhone no tocaba un solo fragmento del
@@ -3904,11 +3904,11 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     pero nadie sabe si la aplicación anfitriona deja que la página mande sobre la sesión
     (`RES-202`, punto 5). Ahí el aviso de la llave se calla y sigue saliendo el de "abrilo
     aparte", que ya salía y es el que corresponde.
-  - **Abierto, sin trabar: la prueba en un iPhone real**, que no se puede hacer desde acá. Casos
-    mínimos para `revisor` o para el usuario: llave en silencio con y sin música de otra
-    aplicación sonando, en iOS 17 o más; y si aparece un equipo con 16.3 o menos, que el aviso de
-    la llave siga saliendo. El diagnóstico (`/diagnostico-audio/`) dice en su primera parte si la
-    llave manda en ese aparato.
+  - **La prueba en un iPhone real la hizo el usuario** después de integrar: *"Muy bueno se
+    escucha bien"* (2026-10-06). Quedan sin mirar, y no traban: qué pasa con la música de otra
+    aplicación sonando (`RES-201` dice que se corta), y un equipo con 16.3 o menos, donde el aviso
+    de la llave tiene que seguir saliendo. El diagnóstico (`/diagnostico-audio/`) dice en su
+    primera parte si la llave manda en ese aparato.
   - Para `arquitectura`: `ADR-04` no dice quién pide la sesión de sonido. La propuesta está en
     `Docs/SUGERENCIAS/HILO-para-arquitectura-la-sesion-de-la-musica.md`.
   - Para `experiencia`: `UX-24` cuenta la altura que suma el aviso de la llave en la portada; en
