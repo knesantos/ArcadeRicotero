@@ -117,12 +117,16 @@ export const PARTIDA = {
  * que el aviso no puede aparecer solo cuando corresponde. Lo único honesto es decírselo
  * a quien tiene un iPhone —que es donde la trampa existe— y dejarle a todos una puerta
  * para cuando igual no se escuche.
+ *
+ * **Desde `D-66` la llave casi nunca manda**: el juego le pide al iPhone la sesión de la
+ * música y la llave deja de apagarlo. `llaveIphone` queda para los que no tienen con qué
+ * pedirla (tope iOS 15, o 16.3 y menos); en los demás diría algo que ya no es cierto.
  */
 export const SIN_SONIDO = {
   /** El enlace que abre esto. Chico y siempre a mano, para cualquier aparato. */
   disparador: '¿No se escucha?',
   titulo: 'Si no se escucha',
-  /** Solo en iPhone y iPad. Es la causa más común, y la más invisible de todas. */
+  /** Solo en un iPhone o iPad donde la llave todavía manda (`D-66`). */
   llaveIphone:
     'En iPhone, la llave lateral de silencio apaga el sonido del navegador. Aunque el ' +
     'volumen esté alto, y sin avisar. Es lo primero que hay que mirar.',

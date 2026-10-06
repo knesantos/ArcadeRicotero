@@ -3825,3 +3825,92 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     tránsito en `UX-25` §4 describen la franja vieja. Y el lienzo (hojas 05 y 09) no tiene esto:
     el circuito de `diseno-marca.md` pide cambiarlo allá primero, y acá entró al revés por pedido
     directo, sin token nuevo.
+
+## D-66 — La llave de silencio del iPhone no apaga "Adiviná el tema": el juego pide la sesión de la música
+
+- **Fecha:** 2026-10-06
+- **Estado:** aceptada — pedido directo del usuario, textual: *"Investiga la forma de que el
+  boton de silencio de iphone no silencie el juego adivina el tema. Analiza el resultado y
+  desarrolla la solucion e integrala si no rompe nada"*. **Falta la prueba en un iPhone real**
+  (ver Consecuencias): todo lo que sigue sale del código de WebKit y de la documentación, no de
+  un teléfono.
+- **Consume:** `INV-200` (`RES-200`..`RES-206`), `ADR-04.2` (el contexto compartido), `US-02`
+  criterio 2 (el aviso de sonido), `D-14`, `D-29` (las islas no arrastran nada).
+- **Contexto.** Con la llave lateral en silencio, el iPhone no tocaba un solo fragmento del
+  reveal, con el volumen al máximo y sin avisar. Es la causa que se llevó una partida entera del
+  usuario, y hasta hoy la única respuesta era decírselo: el aviso de la portada, el panel
+  "¿No se escucha?" y una fila del diagnóstico. La causa está en el código de WebKit (`RES-200`):
+  Web Audio sale con la categoría de los efectos (`AmbientSound`), que la llave apaga, y `<audio>`
+  sale con la de la música (`MediaPlayback`), que no. Por eso el tema entero de la revelación se
+  oía y el fragmento no.
+- **Decisión.**
+  - **En el toque de "Empezá", antes de despertar el motor, el juego pone
+    `navigator.audioSession.type = 'playback'`** (la Audio Session API, en Safari desde la 16.4,
+    `RES-201`). Con eso la página entera, Web Audio incluido, sale por la categoría de la música,
+    y la llave deja de apagarla. Vive en `src/lib/audio/sesion.ts`, una hoja que no importa nada:
+    `sonarAunqueEsteEnSilencio()` pide, `laLlaveManda()` solo mira.
+  - **Con guarda y sin romper a nadie** (`RES-203`): donde la API no existe —Chrome en Android,
+    Firefox, un iPhone viejo— no se toca nada y el juego suena como antes. Si el navegador tira
+    al asignarla, se traga el error y queda como estaba.
+  - **El aviso de la llave solo sale donde la llave todavía manda**: un iPhone sin la API. En los
+    demás diría algo que ya no es cierto, y un rótulo que miente es lo que `D-14` no deja pasar.
+    Vale para el aviso de la portada y para el panel "¿No se escucha?".
+  - **El diagnóstico de audio hace lo mismo que el juego**, en el mismo orden, y dice si la llave
+    manda o no. Si no, mediría un motor que ya no es el del juego.
+  - **Solo "Adiviná el tema" (y el diagnóstico) la piden.** Skayboy no: sus efectos se siguen
+    mezclando con la música de la persona y se siguen callando con la llave, que es lo que se
+    espera de los ruiditos de un juego. Como el sitio no tiene enrutador del lado del cliente,
+    cada página es su propio documento y el pedido no se filtra de una a otra.
+- **Alternativas descartadas.**
+  - **Pedirla en `contextoDeAudio()`**, justo antes de construir el contexto, que es lo que
+    recomendó `investigador`. Es el lugar natural si la sesión fuera de todo el sitio, y por eso
+    mismo no: el contexto lo comparten el reveal y Skayboy (`ADR-04.2`), y con la sesión de la
+    música Skayboy cortaría la música de quien juega y sonaría con la llave puesta. Pedirla desde
+    la isla del juego, antes de `despertar()`, da el mismo orden sin tocar a nadie más, y deja
+    `despertar()` sin una coma cambiada, que es lo que pide `ADR-04.2`.
+  - **El repuesto para los iPhone sin la API: un `<audio>` mudo sonando en loop al mismo tiempo**
+    (`RES-204`, las librerías `unmute-ios-audio` y `unmute`). No entra, por tres razones:
+    1. **Puede romper justo lo que vendría a arreglar.** Hay un reporte de que en iOS 16.3 ese
+       truco dejaba Web Audio sonando un segundo y nada más (`RES-204`), y la cola sin API son
+       exactamente esos teléfonos: tope iOS 15, o 16.3 y menos. No hay cómo probarlo acá.
+    2. **Tiene efectos que se ven**: controles de reproducción en la pantalla bloqueada que no
+       hacen nada, y un `<audio>` sonando mientras dure la partida.
+    3. **Es poca gente, y ya tiene su aviso.** Ninguna cifra publicada la mide, pero todo lo que
+       StatCounter muestra para Argentina en julio de 2026 es 16.4 o más (`RES-205`). Para esos
+       teléfonos el aviso de la llave sigue saliendo, y sigue siendo verdad.
+  - **Sacar Web Audio por un `MediaStreamAudioDestinationNode` hacia un `<audio>`** (`RES-206`).
+    Sin fuente seria, sin una sola medición de latencia —que es lo que importa en un paso de 0,1
+    s— y con un reporte de que en iOS 11 no sonaba.
+  - **Tocar los fragmentos con `<audio>`, que ya ignora la llave.** Es el repuesto que ya existe
+    y por algo es repuesto: un `<audio>` no arranca y corta con la precisión de un paso de 0,1 s
+    (`src/lib/tema/audio.ts`).
+  - **`ambient`, `transient` o `play-and-record`.** Los dos primeros son la misma categoría de los
+    efectos que la llave apaga; el tercero pone el teléfono en modo de grabar (`RES-201`).
+- **Consecuencias.**
+  - **La música de la persona se corta cuando arranca el juego** (`RES-201`, punto 5): la
+    sesión de la música no se mezcla. En un juego de adivinar temas de oído es lo que
+    corresponde, y el tema entero de la revelación ya lo hacía. Nada suena sin que se pida: cada
+    fragmento sale de un toque en "Escuchá".
+  - **Quien puso la llave a propósito** —en un colectivo, en la oficina— va a oír el fragmento
+    que toque. Es lo que el usuario pidió, y el mismo comportamiento que ya tenía el tema entero.
+    Si alguna vez se quiere devolverle esa elección a la gente, es un interruptor nuevo y es de
+    `experiencia`.
+  - `src/lib/audio/sesion.test.ts` falla si la isla deja de pedir la sesión en "Empezá" o la pide
+    después de despertar (rojo visto sacando la llamada), si Skayboy la pide, si `sesion.ts`
+    importa algo, o si `vercel.json` o `public/_headers` le apagan el micrófono al sitio: con
+    `Permissions-Policy: microphone=()` WebKit ignora el pedido sin un error (`RES-202`, punto 3;
+    rojo visto con un `vercel.json` de prueba).
+  - **Las ventanas incrustadas quedan en duda** (WhatsApp, Instagram): la API existe adentro,
+    pero nadie sabe si la aplicación anfitriona deja que la página mande sobre la sesión
+    (`RES-202`, punto 5). Ahí el aviso de la llave se calla y sigue saliendo el de "abrilo
+    aparte", que ya salía y es el que corresponde.
+  - **Abierto, sin trabar: la prueba en un iPhone real**, que no se puede hacer desde acá. Casos
+    mínimos para `revisor` o para el usuario: llave en silencio con y sin música de otra
+    aplicación sonando, en iOS 17 o más; y si aparece un equipo con 16.3 o menos, que el aviso de
+    la llave siga saliendo. El diagnóstico (`/diagnostico-audio/`) dice en su primera parte si la
+    llave manda en ese aparato.
+  - Para `arquitectura`: `ADR-04` no dice quién pide la sesión de sonido. La propuesta está en
+    `Docs/SUGERENCIAS/HILO-para-arquitectura-la-sesion-de-la-musica.md`.
+  - Para `experiencia`: `UX-24` cuenta la altura que suma el aviso de la llave en la portada; en
+    casi todos los iPhone ahora no sale. `UX-22` la nombra como causa de silencio.
+    Propuesta en `Docs/SUGERENCIAS/HILO-para-experiencia-el-aviso-de-la-llave.md`.
