@@ -38,7 +38,7 @@
  */
 
 export interface TextosDeCompartir {
-  /** El rótulo del botón. Lleva tilde (`Compartí`), así que va con `con-tilde`. */
+  /** El rótulo del botón. Lleva tilde (`Compartí`), y la letra de la firma la tiene desde `D-65`. */
   readonly compartir: string;
   readonly copiado: string;
   readonly aManoTitulo: string;
@@ -69,7 +69,7 @@ export function botonCompartir(
   textos: TextosDeCompartir,
   armar: () => LoQueSeComparte,
 ): { readonly boton: HTMLButtonElement; readonly salida: HTMLElement } {
-  const boton = el('button', 'primario firma con-tilde', textos.compartir) as HTMLButtonElement;
+  const boton = el('button', 'primario firma', textos.compartir) as HTMLButtonElement;
   boton.type = 'button';
   const salida = el('div', 'compartir-salida');
   salida.setAttribute('aria-live', 'polite');

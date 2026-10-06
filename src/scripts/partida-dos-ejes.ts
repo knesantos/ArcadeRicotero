@@ -125,13 +125,10 @@ const momentoDe = (id: string) => banco.momentos.find((m) => m.id === id)!;
 function pintarPregunta(antes?: Polo): void {
   const item = ronda[paso]!;
   const momento = momentoDe(item.momento);
-  const quedan = ronda.length - paso - 1;
   bloqueado = false;
   zonaPregunta.replaceChildren();
 
-  // El canto de las hojas que faltan: cuatro escalones, del grueso al fino. No es un número.
   const hoja = el('article', 'ejes-hoja');
-  hoja.dataset['quedan'] = String(Math.min(4, Math.ceil(quedan / 2)));
 
   const cabeza = el('div', 'ejes-hoja-cabeza');
   const sello = el('p', 'ejes-momento', momento.nombre);

@@ -278,7 +278,7 @@ html[data-umbral] .marca-grande {
 
    NO ES UNA FOTO Y NO LLEVA VELO, por la misma razón que la pasada: son máscaras de alfa
    sola sobre tinta plana de `tokens.css`. Lo que la hace legible no es un velo sino el peso:
-   `--peso-multitud-*` y `--peso-bandera-*` tienen techo, y lo mide `multitud.test.ts` contra
+   `--peso-multitud-*` y `--peso-bandera-*` tienen techo, y lo mide `contraste.test.ts` contra
    todo el texto que pasa por encima.
 
    EL MOVIMIENTO ES DEL LUGAR (`UX-20`): lo único que se mueve es la cámara acercándose, atado
@@ -558,7 +558,6 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   background: color-mix(in srgb, var(--papel) 88%, transparent);
   border-radius: 3px;
   transform: rotate(-1.6deg);
-  box-shadow: 0 2px 0 color-mix(in srgb, var(--papel-borde) 60%, transparent);
 }
 
 .marca-chica {
@@ -819,7 +818,9 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   border: 2px solid var(--marca-rojo);
   border-radius: 3px;
   transform: rotate(-1.2deg);
-  box-shadow: 2px 2px 0 color-mix(in srgb, var(--marca-rojo) 40%, var(--papel));
+  /* Es el mismo sello que el JUGÁ de los casetes, y sale de la misma almohadilla (`D-64`). */
+  position: relative;
+  isolation: isolate;
 }
 
 .oktubre-jugar:focus-visible {
@@ -1000,13 +1001,12 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 }
 
 /* La tapa entera: el disco pegado como un objeto, no como una miniatura. Filete de papel,
-   como el borde blanco que deja la imprenta en un sobre, y la sombra dura corrida del
-   recorte sobre recorte — tinta plana, sin difuminar (la tabla anti-slop). */
+   como el borde blanco que deja la imprenta en un sobre, y torcida: se recorta por el
+   filete y por el giro, sin sombra (`D-64`, la sombra salió de todos lados). */
 .casete-arte--entera {
   object-fit: cover;
   border: 2px solid var(--papel);
   border-radius: 2px;
-  box-shadow: 3px 3px 0 color-mix(in srgb, var(--tinte) 70%, var(--fondo));
   transform: rotate(-3deg);
 }
 
@@ -1040,6 +1040,10 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   padding: var(--espacio-1) var(--espacio-2);
   border-radius: 4px;
   transform: rotate(-0.4deg);
+  /* El papel viejo va en un `::before` por debajo de la letra (`D-64`): sin estas dos, el
+     pseudo se iría detrás de toda la página. */
+  position: relative;
+  isolation: isolate;
 }
 
 .casete-titulo {
@@ -1051,6 +1055,18 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   font-size: 0.95rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  /* Es un <strong>: sin esto el navegador engorda Archivo Black, que tiene un peso solo (la
+     negrita falsa que `D-54` les sacó a los h1). */
+  font-weight: normal;
+  /* La almohadilla (`D-64`): la tinta del sello no llega pareja. Le faltan puntos y zonas
+     donde la mano aflojó, y lo que falta lo saca la máscara —nunca un gris: la letra que
+     queda es `--fondo` pleno—. Dónde apretó la mano depende del disco (`--golpe`). */
+  -webkit-mask-image: var(--textura-tinta);
+  mask-image: var(--textura-tinta);
+  -webkit-mask-size: 240px 240px;
+  mask-size: 240px 240px;
+  -webkit-mask-position: calc(var(--golpe, 0) * -61px) calc(var(--golpe, 0) * -37px);
+  mask-position: calc(var(--golpe, 0) * -61px) calc(var(--golpe, 0) * -37px);
 }
 
 .casete-baja {
@@ -1099,8 +1115,8 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   border-radius: 3px;
   padding: 0.3em 1em;
   transform: rotate(-1.4deg);
-  /* La tinta del sello no llega pareja al borde: el eco de la segunda pasada, corrido. */
-  box-shadow: 2px 2px 0 color-mix(in srgb, var(--tinte-sello, var(--tinte)) 40%, var(--papel));
+  position: relative;
+  isolation: isolate;
 }
 
 /* El numero de pista, escrito a mano en la etiqueta como en la tapita de un cassette
@@ -1115,8 +1131,10 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   transform: rotate(3deg);
 }
 
-/* Lo que todavia no salio: etiqueta escrita en lapiz, sin boton que engañe. */
-.casete--pronto {
+/* Lo que todavia no salio: etiqueta escrita en lapiz, sin boton que engañe.
+   La opacidad va en la pieza y no en el casete entero (`D-64`): sobre el papel viejo, la
+   pista en `--papel-tenue` con el casete apagado bajaba de AA. */
+.casete--pronto .casete-arte {
   opacity: 0.82;
 }
 
@@ -1124,53 +1142,154 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   font-family: var(--fuente-rotulada);
   font-size: 0.75rem;
   letter-spacing: 0.08em;
-  color: var(--texto-tenue);
-  border: 2px dashed var(--borde);
+  /* Escrito a mano, como la pista: lápiz sobre el papel. Era `--texto-tenue`, que es tinta
+     para el fondo negro y sobre el papel daba 1,72:1. */
+  color: var(--papel-tenue);
+  border: 2px dashed var(--papel-tenue);
   border-radius: 3px;
   padding: 0.35em 1em;
   text-transform: uppercase;
   transform: rotate(0.9deg);
 }
 
+/* La almohadilla, segunda parte (`D-64`): el papel viejo de la etiqueta y el macizo del
+   sello. Las dos van en @supports A PROPÓSITO: sin máscara, el ::before del papel sería un
+   rectángulo pleno de --papel-borde (la pista caería a 3,66:1), y el del sello taparía el
+   relleno de repuesto. El filete y la letra del sello no se enmascaran nunca: el canto de la
+   goma imprime entero, y es lo que sostiene la forma del botón contra el papel. */
+@supports (mask-image: none) or (-webkit-mask-image: none) {
+  .casete-etiqueta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    background: var(--papel-borde);
+    -webkit-mask-image: var(--textura-papel-viejo);
+    mask-image: var(--textura-papel-viejo);
+    -webkit-mask-size: 320px 320px;
+    mask-size: 320px 320px;
+    -webkit-mask-position: calc(var(--golpe, 0) * -83px) calc(var(--golpe, 0) * -131px);
+    mask-position: calc(var(--golpe, 0) * -83px) calc(var(--golpe, 0) * -131px);
+  }
+
+  .casete-accion,
+  .oktubre-jugar {
+    background: transparent;
+  }
+
+  .casete-accion::before,
+  .oktubre-jugar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    -webkit-mask-image: var(--textura-tinta);
+    mask-image: var(--textura-tinta);
+    -webkit-mask-size: 240px 240px;
+    mask-size: 240px 240px;
+    -webkit-mask-position: calc(var(--golpe, 0) * -97px - 120px) calc(var(--golpe, 0) * -53px - 70px);
+    mask-position: calc(var(--golpe, 0) * -97px - 120px) calc(var(--golpe, 0) * -53px - 70px);
+  }
+
+  .casete-accion::before {
+    background: var(--tinte-sello, var(--tinte));
+  }
+
+  /* El de octubre va sobre el negro del afiche y no sobre papel, así que lleva solo la sal y no
+     la presión: aflojada al 80 %, el rojo se oscurecía y la letra `--fondo` encima quedaba en
+     3,52:1. Con la sal la tinta que queda es plena, y el par es el de siempre (4,98:1). Lo
+     encontró `REV` el 2026-10-05; `contraste.test.ts` lo vigila. */
+  .oktubre-jugar::before {
+    background: var(--marca-rojo);
+    -webkit-mask-image: var(--textura-tinta-sal);
+    mask-image: var(--textura-tinta-sal);
+  }
+}
+
+/* Alto contraste y colores forzados: tinta lisa y papel limpio (`D-64`). forced-colors apaga
+   text-shadow solo, pero NO mask-image: si nadie lo hace a mano, la máscara sigue. */
+@media (forced-colors: active), (prefers-contrast: more) {
+  .casete-titulo {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .casete-etiqueta::before,
+  .casete-accion::before,
+  .oktubre-jugar::before {
+    content: none;
+  }
+
+  .casete-accion {
+    background: var(--tinte-sello, var(--tinte));
+  }
+
+  .oktubre-jugar {
+    background: var(--marca-rojo);
+  }
+}
+
 /* Variantes de disco (mezcla D-19). El acento rota; la base, nunca.
 
    **Cada variante sirve dos veces desde el ciclo 17** (`D-54`): `.casete--*` viste el casete
-   del portal y la carátula de cada juego, y `.juego--*` viste la página entera de ese juego
-   —el título, el eco del registro—. Es un solo mapa a propósito: el casete que se toca en la
-   puerta y el juego que abre no pueden vestir dos discos distintos. */
-.casete--marca, .juego--marca { --tinte: var(--marca-rojo); }
-.casete--historia, .juego--historia { --tinte: var(--cat-historia); --tinta-registro: var(--cat-historia-apoyo); }
-.casete--discos, .juego--discos { --tinte: var(--cat-discos); --tinta-registro: var(--cat-discos-apoyo); }
-.casete--letras, .juego--letras { --tinte: var(--cat-letras); --tinta-registro: var(--cat-letras-apoyo); }
-.casete--mitologia, .juego--mitologia { --tinte: var(--cat-mitologia); --tinta-registro: var(--cat-mitologia-apoyo); }
+   del portal y la carátula de cada juego, y `.juego--*` viste la página entera de ese juego.
+   Es un solo mapa a propósito: el casete que se toca en la puerta y el juego que abre no
+   pueden vestir dos discos distintos. (Hasta `D-64` cada variante traía también la tinta
+   del eco del título; salió con la sombra.) */
+.casete--marca, .juego--marca { --tinte: var(--marca-rojo); --semilla: 1; }
+.casete--historia, .juego--historia { --tinte: var(--cat-historia); --semilla: 4; }
+.casete--discos, .juego--discos { --tinte: var(--cat-discos); --semilla: 8; }
+.casete--letras, .juego--letras { --tinte: var(--cat-letras); --semilla: 6; }
+.casete--mitologia, .juego--mitologia { --tinte: var(--cat-mitologia); --semilla: 3; }
 /* Momo se tiñe con su apoyo —el peltre— para el borde, y el apoyo no lleva letra: el sello
    se llena con la plata de la tinta, que es el par que ya usa el boton de su juego. */
 .casete--momo,
 .juego--momo {
   --tinte: var(--disco-momo-sampler-apoyo);
   --tinte-sello: var(--disco-momo-sampler-tinta);
+  --semilla: 5;
 }
 /* `US-10` (`UX-34` §1): la tinta de *Un baión*, que pasa AA sobre `--fondo` ("Un baion sobre
-   fondo" en `contraste.test.ts`), y el apoyo para el registro. Como ¡Bang! y no como Momo:
+   fondo" en `contraste.test.ts`). Como ¡Bang! y no como Momo:
    la tinta ya es la que lleva letra, así que el sello no necesita un tinte aparte. */
 .casete--baion,
 .juego--baion {
   --tinte: var(--disco-un-baion-para-el-ojo-idiota-tinta);
-  --tinta-registro: var(--disco-un-baion-para-el-ojo-idiota-apoyo);
+  --semilla: 9;
 }
 /* `US-08`. Va con la `-tinta` y no con el `-apoyo` como Momo: la ceniza de ¡Bang! ¡Bang!
    pasa AA sobre `--fondo` y ya tiene su par en `contraste.test.ts`. */
 .casete--bang,
 .juego--bang {
   --tinte: var(--disco-bang-bang-estas-liquidado-tinta);
-  --tinta-registro: var(--disco-bang-bang-estas-liquidado-apoyo);
+  --semilla: 7;
 }
 /* `US-06` (2026-10-01): el cuero de *Luzbelito*, que pasa AA sobre `--fondo` ("Luzbelito
    sobre fondo" en `contraste.test.ts`) — la misma tinta del título de su página. */
 .casete--luzbelito,
 .juego--luzbelito {
   --tinte: var(--disco-luzbelito-tinta);
-  --tinta-registro: var(--disco-luzbelito-apoyo);
+  --semilla: 2;
+}
+
+/* El golpe: dónde apretó la mano (`D-64`). Se declara en la pieza y no en :root porque un
+   var() se resuelve donde se declara: en :root --semilla no existe todavía. El lado B es el
+   mismo disco con otro golpe. Pasos de 61/37 px sobre 240 y de 83/131 sobre 320: los once
+   golpes (1-9, 14, 16) caen en lugares distintos de la tesela. Determinista: una etiqueta
+   impresa no cambia al recargar. Y como sale del mismo mapa de variantes, el casete del
+   portal, la carátula de su juego y el título de su página tienen el mismo golpe. */
+.casetera--b .casete {
+  --semilla-lado: 10;
+}
+
+.casete,
+.caratula,
+.pantalla,
+.oktubre {
+  --golpe: calc(var(--semilla, 0) + var(--semilla-lado, 0));
 }
 
 /* ---- Pie del sitio ---- */
@@ -1280,10 +1399,10 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   letter-spacing: 0.04em;
 }
 
-.cocina--historia { --tinte: var(--cat-historia); --tinta-registro: var(--cat-historia-apoyo); }
-.cocina--discos { --tinte: var(--cat-discos); --tinta-registro: var(--cat-discos-apoyo); }
-.cocina--letras { --tinte: var(--cat-letras); --tinta-registro: var(--cat-letras-apoyo); }
-.cocina--mitologia { --tinte: var(--cat-mitologia); --tinta-registro: var(--cat-mitologia-apoyo); }
+.cocina--historia { --tinte: var(--cat-historia); }
+.cocina--discos { --tinte: var(--cat-discos); }
+.cocina--letras { --tinte: var(--cat-letras); }
+.cocina--mitologia { --tinte: var(--cat-mitologia); }
 
 .cocina-arte {
   width: clamp(90px, 30vw, 140px);
@@ -1362,7 +1481,6 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   border: var(--linea) solid var(--borde);
   border-radius: 4px;
   transform: rotate(-1.2deg);
-  box-shadow: 0 3px 0 color-mix(in srgb, var(--papel-borde) 35%, transparent);
 }
 
 .credito-tapa {
@@ -1374,7 +1492,7 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 /* ---- La ficha de disco, estampada y QUIETA (`UX-22` §9) ----
 
    Los diez articulos de disco ganan el idioma del ciclo alrededor de la imagen que ya
-   mostraban: papel, sello de credito, sombra de registro. Lo que NO ganan es la
+   mostraban: papel y sello de credito. Lo que NO ganan es la
    separacion en tres tintas. La estampa por pasadas tiene sentido donde hay una accion
    de imprimir para mirar —el reveal del tema, el zoom que se abre—; aca el disco ya
    esta impreso hace rato, asi que lo que se estampa es EL MARCO y no la fotografia, que
@@ -1389,15 +1507,12 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   border: var(--linea) solid var(--papel-borde);
   border-radius: 3px;
   rotate: -1.2deg;
-  /* La sombra de registro del `§8`, en el marco: offset plano, sin difuminar. */
-  box-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
 }
 
 /* Adentro del papel la ficha deja de ser un objeto suelto: el objeto es el papel. */
 .papel-ficha .tapa-disco {
   margin: 0;
   transform: none;
-  box-shadow: none;
 }
 
 /* El credito como sello de goma: la condicion 1 de `D-21` dicha en el idioma del ciclo.
@@ -1718,49 +1833,19 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   --tinte: var(--texto-tenue);
 }
 
-.articulo--historia, .tarjeta-articulo--historia { --tinte: var(--cat-historia); --tinta-registro: var(--cat-historia-apoyo); }
-.articulo--discos, .tarjeta-articulo--discos { --tinte: var(--cat-discos); --tinta-registro: var(--cat-discos-apoyo); }
-.articulo--letras, .tarjeta-articulo--letras { --tinte: var(--cat-letras); --tinta-registro: var(--cat-letras-apoyo); }
-.articulo--mitologia, .tarjeta-articulo--mitologia { --tinte: var(--cat-mitologia); --tinta-registro: var(--cat-mitologia-apoyo); }
+.articulo--historia, .tarjeta-articulo--historia { --tinte: var(--cat-historia); }
+.articulo--discos, .tarjeta-articulo--discos { --tinte: var(--cat-discos); }
+.articulo--letras, .tarjeta-articulo--letras { --tinte: var(--cat-letras); }
+.articulo--mitologia, .tarjeta-articulo--mitologia { --tinte: var(--cat-mitologia); }
 
-/* ==========================================================================
-   El registro imperfecto (`UX-22` §8, ciclo 12)
+/* La letra grande del sitio va sin sombra (`D-64`).
 
-   El mismo desvio que corre las tintas de la estampa —2 px, siempre en la misma
-   direccion— queda como recurso permanente detras de la letra grande de todo el sitio:
-   un eco del mismo texto, en el color de APOYO del disco de esa seccion, como una
-   imprenta barata que no calzo el segundo color.
-
-   TRES COSAS QUE NO SON:
-   1. No es movimiento. Es como queda la letra en reposo, llego asi desde el primer
-      cuadro y no hay nada que apagar con `prefers-reduced-motion`.
-   2. No es la tinta que se lee. Va DETRAS de la real, que sigue siendo la que pasa AA
-      sobre su fondo de siempre: cero pares nuevos en `contraste.test.ts` (`UX-22` §8).
-   3. No es la rotacion de las estampas de goma. Los `rotate(-1.6deg)` de `.casete-accion`
-      o `.categoria` tuercen un objeto entero y no se tocan. Esto es una sombra de
-      segunda tinta, y en texto se hace con `text-shadow` —la unica sombra que
-      `diseno-marca.md` admite, offset plano y duro—, igual que `.estampa-disco` en
-      `juego.css`. El medio grado del `§2.3` vive donde hay capas de imagen de verdad:
-      una sombra de texto no rota, y duplicar el texto en un `::before` para rotarlo lo
-      haria leer dos veces a un lector de pantalla.
-
-   DONDE NO VA, NUNCA: cuerpo de texto, rotulos de registro 3, estados de acierto y
-   error, y los tres articulos de tono grave —Bulacio, Olavarria, la muerte del Indio—,
-   que ni en su letra grande llevan adorno (`UX-20` §3.4). `estilos.test.ts` lo vigila
-   con una lista cerrada de selectores.
-   ========================================================================== */
-
-.marca-grande,
-.casete-titulo,
-.articulo:not(.articulo--grave) h1 {
-  text-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
-}
-
-/* El portal viste Oktubre (mezcla `D-19`), asi que su marca lleva atras el gris que el
-   propio Rocambole conto que le agrego a esa tapa. */
-.marca-grande {
-  --tinta-registro: var(--disco-oktubre-apoyo);
-}
+   Hasta el 2026-10-05 la marca, los títulos de casete y el h1 de cada artículo llevaban
+   detrás un eco del mismo texto, corrido 2 px, en el apoyo de su disco: el "registro
+   imperfecto" de `UX-22` §8. El usuario lo vio en el portal y lo dijo, textual: *"saquemos la
+   sombra de todos lados, no me gusta"*. En nueve casetes había siete ecos de colores
+   distintos, y dos en crema sobre el crema de la etiqueta que no se veían. Salió de todos
+   lados, letras y objetos, y `estilos.test.ts` falla si vuelve una sombra corrida. */
 
 .articulo-tipo {
   display: inline-block;
