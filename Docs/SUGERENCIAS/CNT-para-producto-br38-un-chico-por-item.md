@@ -4,6 +4,10 @@
 > Consume: `BR-38` («La gente de la noche»), `D-62` punto 1 y punto 2, `CNT-31` §14.3 y
 > `src/data/dos-ejes.json` (`EJ-051`, `EJ-048`, `EJ-049`).
 > **Estado: abierta.** Nada bloquea el banco; el texto de `EJ-051` queda como está.
+>
+> **Numeración de `REV-20` (2026-10-06, ronda final).** Este caso no lleva ID: en la lista de `REV-20` es uno de los «sin consenso» (un verificador dijo real y el otro no), y decide `producto`. No es ningún `FIND-1xx` de los que circulan; si se pasa a ficha, el número lo asigna el hilo (desde `FIND-131`).
+>
+> **Vocabulario, para que no se mezcle (ronda final).** Una *hoja* es un ítem: su enunciado y sus opciones, con el sello y la línea que canta de su momento. Un *momento* son las dos hojas que la noche saca de él, una de cada eje. «Por ítem» y «por hoja» son lo mismo; la alternativa es «por momento». `EJ-051` y el porro (`EJ-048`) o la merca (`EJ-049`) son hojas distintas del mismo momento.
 
 ## Qué pasa
 
@@ -34,7 +38,7 @@ lo que da.
 | Si `producto` lee | `EJ-051` | Costo |
 |---|---|---|
 | **Por hoja** | No cambia | Ninguno. Es lo que hay |
-| **Por momento, y lo que molesta es la edad** (*grande* puede ser la hija mayor, una nena) | *Un padre y su hija adulta cantan a dúo. La canción se te pega.* (14 palabras, 62 caracteres, conserva el *te*) | Una palabra de formulario en un enunciado: *adulta* no es de la voz del sitio. Pasa las guardas de `banco.test.ts` (solo mira el enunciado en largos y vetos de la noche) |
+| **Por momento, y lo que molesta es la edad** (*grande* puede ser la hija mayor, una nena) | *Un padre y su hija adulta cantan a dúo. La canción se te pega.* (14 palabras, 62 caracteres, conserva el *te* y el *a dúo*; el argumento completo de por qué *hija de treinta* no entra está en `CNT-31` §14.3) | Una palabra de formulario en un enunciado: *adulta* no es de la voz del sitio. Pasa las guardas de `banco.test.ts` (solo mira el enunciado en largos y vetos de la noche) |
 | **Por momento, y lo que molesta es que el padre y su hija compartan momento con la ronda** | La escena pasa a la vereda (el único momento sin nada que se tome ni se fume), con su nena en los hombros, y se escribe otra de orden-caos para *Cuando suena* | Cambia lo que mide un id en dos momentos: es la salida cara, la de la vuelta 7 de `CNT-31` §12 |
 
 ## Cómo se verifica
