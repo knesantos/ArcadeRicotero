@@ -18,11 +18,15 @@
 > **Para la ronda final de `REV-20`, además:** `src/lib/dos-ejes/copy.ts` (`textoDelPlano`),
 > `copy.test.ts`, `isla.test.ts`, `src/scripts/partida-dos-ejes.ts` (`plano()`) y
 > `src/styles/juego.css` (`.ejes-plano-*`), en `798cd54`; `D-62` enmienda 3, consecuencias.
+> **Para el cierre de `REV-20`, además:** su «## Cierre» y «Sin consenso» 19
+> (`Docs/REVISIONES/REV-20-la-noche-ricotera.md`), `copy.test.ts` (líneas 26-30 y 83-92) y
+> `partida.ts` (`disposicion`, 188-204; `planoFijo`, 226-238).
 > Produce: `CTR-08` (v1 2026-08-24, **v2 2026-10-04**, **enmienda 1 de la v2: 2026-10-04**,
 > **enmienda 2 de la v2: 2026-10-06**).
-> Última actualización: 2026-10-06, ronda final de `REV-20` (E2.4 b y c cumplidas en `798cd54`;
-> `FIND-128` pasa a `FIND-127`, el número definitivo). Antes, el mismo día: enmienda 2 de
-> `CTR-08` v2, el plano fijo, `planoFijo()` y `PLANO_FIJO`.
+> Última actualización: 2026-10-06, cierre de `REV-20` («Sin consenso» 19: E2.7 alternativa 1
+> decía que la guarda b no se tocaba; se tacha y se dice qué cambiaría). Antes, el mismo día:
+> ronda final de `REV-20` (E2.4 b y c cumplidas en `798cd54`; `FIND-128` pasa a `FIND-127`, el
+> número definitivo), y enmienda 2 de `CTR-08` v2, el plano fijo, `planoFijo()` y `PLANO_FIJO`.
 
 **Vigente: `CTR-08` v2, con las enmiendas 1 y 2.** La v1 queda abajo entera, sin borrar: el schema
 v2 es la v1 más lo que suma la noche, y las alternativas descartadas de la v1 siguen valiendo.
@@ -269,8 +273,23 @@ de `REV-20`, no este papel. Lo que tiene que estar en verde: los tres archivos d
    construyó, se mostró y no se borró: sigue viva en la grilla. Volver a ella costaría poco: la
    isla dibujaría el plano con `disposicion` y se retirarían las dos guardas de E2.4 que atan el
    plano a `planoFijo`. *[Ronda final de `REV-20`, 2026-10-06: y `textoDelPlano()` pediría
-   `disposicion(banco, id)` en vez de `planoFijo(banco)`. La guarda b no habría que tocarla, porque
-   saca el rincón de los polos de cada celda y vale para las dos funciones.]*
+   `disposicion(banco, id)` en vez de `planoFijo(banco)`. ~~La guarda b no habría que tocarla, porque
+   saca el rincón de los polos de cada celda y vale para las dos funciones.~~]*
+   *[Cierre de `REV-20`, 2026-10-06, «Sin consenso» 19: lo tachado era inexacto. **La guarda b sí
+   habría que tocarla: el llamado, no la comparación.** La comparación vale igual, porque
+   `disposicion` deja `celdas` en el mismo orden de lugar que `planoFijo` (la tuya, la de tu
+   renglón, la de tu columna, la opuesta) con `renglones[0]` y `columnas[0]` en tus polos, así
+   que para cualquier id el rincón que sale de los polos de `celdas[k]` sigue siendo
+   `RESULTADO.lugares[k]`. Pero el test (`copy.test.ts`, *"cada lugar dice el rincón donde
+   planoFijo pone la celda (CTR-08 E2.4 b)"*, línea 86) llama a `planoFijo(BANCO)` una sola vez,
+   sin id. Con el plano relativo, esa llamada vigila una figura que ya no dibuja nadie: si mañana
+   `disposicion` pone la tuya en otro rincón (`UX-38` §2.4, opción E), el lector dice un rincón
+   equivocado y la guarda sigue en verde. Habría que cambiarla para que recorra
+   `BANCO.cuadrantes` y, por cada id, compare contra `disposicion(BANCO, id)`: cuatro planos de
+   cuatro celdas en vez de uno, con el título del test cambiado junto con la llamada. Si además
+   se retirara `planoFijo`, `lo()` (línea 27) también la llama, pero solo para listar los cuatro
+   ids, y alcanza con sacarlos de `BANCO.cuadrantes`. Es una alternativa descartada: esto no pide
+   tocar nada hoy.]*
 2. **`planoFijo` como `disposicion(banco, <el de luz y orden>)`.** Con el banco de hoy da lo mismo
    y ahorra cinco líneas. La descarto porque ata el mapa fijo al comportamiento de la lista: si
    mañana `disposicion` pone la tuya en otro rincón (`UX-38` §2.4, opción E), el plano se mueve sin
