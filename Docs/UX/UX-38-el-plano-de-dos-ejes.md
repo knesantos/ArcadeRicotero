@@ -53,6 +53,7 @@
 > | `§11` | — | **Nuevo:** la crítica, punto por punto, y "Lo que se discutió" |
 > | `§1.2`, `§5`, `§8`, `§9.2`, `§10` | *(2026-10-06, tras `REV-20`)* El texto del lector de la primera propuesta del hilo (punto y coma, «La tuya»), `T-352` abierta, `G10` sin guarda, casi nada tildado | El texto construido (puntos entre polo y polo, «Tu manera»), `T-352` cerrada, `G10` hecho (`copy.test.ts`), lo que `REV-20` midió tildado y lo que falta, con dueño |
 > | `§1.2`, `§4.2`, `§5`, `§8`, `§10` | *(2026-10-06, ronda final de `REV-20`)* `T-351` abierta (el plano por pegar en las hojas 08 y 09 del lienzo); el texto del lector armado a mano en la isla y en `copy.test.ts`; `copy.test.ts` con seis tests; medidas del hilo y de `REV-20` fechadas el 2026-10-06; «14 avisos» | `T-351` **cerrada** (hoja 16 del lienzo); `textoDelPlano()` arma el texto en un solo lugar y `copy.test.ts` tiene **ocho** tests; las medidas son del **2026-10-05**; **0 avisos y 14 hints** |
+> | `§3.2`, `§4.1`, `§4.2`, `§4.3`, `§8.2`, `§10.0`, `§10.1` | *(2026-10-06, cierre de `REV-20`, `6cccc1a`)* «Compartí» 538 y «Empezá otra noche» 611 como cifra de hoy; «sombra dura de 4 px» y el nombre del cuadrante en la rotulada; la fila de 360 con «327 a 334»; «entre 288 y 320 px no hay medida»; «De 288 a 320» y «la grilla se ve bajo 18 rem» sin tildar | Las cifras de `6cccc1a`, por ventana y por manera (`FIND-132`); **sin sombra** (`D-64`) y el nombre en la letra de *Luzbelito* (`D-67`) (`REV-20`, «Sin consenso» 22); la fila de 360 completa (`FIND-133`); el tramo de 288 a 320 medido, y las dos casillas tildadas |
 >
 > **Ronda final de `REV-20` (2026-10-06): qué se arregló en esta hoja y qué dice de los hallazgos.**
 >
@@ -344,14 +345,18 @@ es otra cosa: el plano es el mapa que la lista despliega, y cada celda que se ab
 
 ### 3.2 Qué mueve
 
-**Lo medido en `REV-19`** (leído; `getBoundingClientRect().bottom` del botón), **sin plano**:
+**Lo medido en `REV-19`** (leído; `getBoundingClientRect().bottom` del botón), **sin plano**, **antes de
+`D-67`** y con una sola manera por ventana. *(2026-10-06, `FIND-132` de `REV-20`: la segunda columna es la
+cifra de `REV-19` y **ya no es la de hoy**; la de hoy es la de la tercera columna, medida por `revisor` en `6cccc1a`,
+una por ventana y por manera, porque cambia con las dos. Es la misma tabla de `UX-36` §5.6, que es la fuente:
+si cambia una, cambia la otra.)*
 
-| Ventana | "Compartí" termina | "Empezá otra noche" termina | Con el plano |
+| Ventana | `REV-19`: "Compartí" / "Empezá otra noche" (antes de `D-67`) | Hoy, `6cccc1a`: "Compartí" / "Empezá otra noche" | Con el plano |
 |---|---|---|---|
-| 375 × 667 | 538 | 611 | **igual** (hilo) |
-| 360 × 640 | 562 | 635 | **igual** (hilo) |
-| 320 × 568 | 562 | 635 | **igual** (hilo) |
-| 1366 × 657 (la mesa) | 506 | 579 | **igual** (hilo) |
+| 375 × 667 | 538 / 611 | 524 / 597 (`CU-1`, `CU-3`, `CU-4`) · **561 / 634** (`CU-2`, el peor) | **igual** (hilo; `revisor` en `6cccc1a`) |
+| 360 × 640 | 562 / 635 | 524 / 597 (`CU-1`) · 584 / 657 (`CU-2`) · 548 / 621 (`CU-3`, `CU-4`) | **igual** (hilo) |
+| 320 × 568 | 562 / 635 | 568 / 641 (`CU-1`, `CU-3`) · 629 / 702 (`CU-2`) · 652 / 725 (`CU-4`) | **igual** (hilo; `revisor` en `6cccc1a`) |
+| 1366 × 657 (la mesa) | 506 / 579 | no se volvió a medir | **igual** (hilo) |
 
 - **"Igual" ahora es una medida, y también sigue siendo una construcción:** el hilo midió los dos botones
   con y sin plano, en cinco ventanas (375, 360, 320, 1366 y 1440) y cuatro maneras, y **no se movieron**.
@@ -373,7 +378,9 @@ es otra cosa: el plano es el mapa que la lista despliega, y cada celda que se ab
 - **A 320 × 568, "Empezá otra noche" ya queda bajo el pliegue sin el plano** (635 contra 568, `REV-19`), y
   el "Compartí" del peor caso (nombre de tres renglones, línea de dos, bajada de cuatro) puede pasarlo:
   `ESTADO.md` anota 562 a 646. Es de antes del plano y no lo empeora. La palanca, si se quiere, es la que
-  `UX-36` §1.2 ya fijó: el aire de la hoja, nunca la bajada.
+  `UX-36` §1.2 ya fijó: el aire de la hoja, nunca la bajada. *(2026-10-06, `FIND-132`: medido en `6cccc1a`,
+  «Compartí» termina entre 568 y 652 a 320 según la manera y «Empezá otra noche» entre 641 y 725; con plano y
+  sin plano da lo mismo. `UX-36` no fija tope para el resultado a 320.)*
 
 ---
 
@@ -387,12 +394,12 @@ los ejes dibujados a tinta, un trozo de cinta arriba. Esto es lo construido (le�
 
 | Objeto | Papel y tinta | Borde | Sombra | Giro | Letra |
 |---|---|---|---|---|---|
-| **El recorte** | `--papel`, liso; tinta `--fondo` | `--linea` (3 px) en `--apoyo-disco` (el borde de la tapa, `D-21`), esquina 3 px | Dura de 4 px en `--borde` | **+0,5°** (la última hoja va a −0,5°: dos manos distintas) | — |
+| **El recorte** | `--papel`, liso; tinta `--fondo` | `--linea` (3 px) en `--apoyo-disco` (el borde de la tapa, `D-21`), esquina 3 px | **Ninguna** *(2026-10-06: tenía «dura de 4 px en `--borde`»; `D-64` sacó la sombra de todos lados y hoy `.ejes-plano` no lleva `box-shadow`, leído en `juego.css`. Lo recorta contra el fondo el borde, la cinta y el giro)* | **+0,5°** (la última hoja va a −0,5°: dos manos distintas) | — |
 | **La cinta** | `--papel` al 30 %, 72 × 22 | — | — | −4° | — |
 | **Los ejes** | Borde de 2 px en `--papel-tenue` (dos elementos vacíos) | (ese borde) | — | — | — |
 | **Polo, renglón del eje** | `--papel-tenue` | — | — | — | rotulada 0,75 rem, mayúsculas, `letter-spacing: 0.08em` |
 | **Polo, sus palabras** | `--papel-tenue` | — | — | — | `--fuente` 0,8 rem |
-| **Nombre del cuadrante** | `--fondo` | — | — | — | rotulada 0,8 rem, centrada, `text-wrap: balance` |
+| **Nombre del cuadrante** | `--fondo` | — | — | — | `--fuente-luzbelito` (*Redonditos de Ricota Fan*) 0,8 rem, centrada, `text-wrap: balance` *(2026-10-06: era la rotulada; `D-67` la pasó a la letra de *Luzbelito*, que es la que escribe el nombre en todos lados. Leído en `juego.css`)* |
 | **Sello** (tuya / del amigo) | `currentColor` = `--fondo` | 2 px, esquina 3 px; **punteado** el del amigo | — | **0°** | rotulada 0,75 rem, mayúsculas |
 | **Cuadrante sin marca** | — | **ninguno**; 7 px de relleno | — | — | — |
 | **La tuya** | sin relleno | `--linea` (3 px) **sólido** en `--fondo`, esquina 3 px; 4 px de relleno | — | — | — |
@@ -418,7 +425,7 @@ texto con la caja, y a 288 px de ancho los 12 px se vuelven 10; en HTML la letra
 se parte solo con `text-wrap: balance`.
 
 1. `div.ejes-plano` con `role="img"` y `aria-label` = `textoDelPlano(banco, id, suyo?.id)` (que llama a
-   `RESULTADO.altPlano(…)`; `partida-dos-ejes.ts`): el recorte (borde, sombra, cinta, giro).
+   `RESULTADO.altPlano(…)`; `partida-dos-ejes.ts`): el recorte (borde, cinta, giro; *hasta `D-64` también una sombra*).
 2. Polo de arriba (`.ejes-plano-polo--arriba`): `.ejes-plano-polo-eje` (`EJES[…]`) y `.ejes-plano-polo-dice`
    (`POLOS[…]`).
 3. `div.ejes-plano-cruz`: una cuadrícula de **dos columnas `minmax(0, 1fr)`** con `column-gap: 10px` y
@@ -451,8 +458,9 @@ polos de los costados con `gap: 8px` y `margin: 6px 0`; `max-width: min(26rem, c
 | Ventana | Alto del recorte | Ancho | `[v1]` Mi cuenta, sin amigo / con amigo / la misma |
 |---|---|---|---|
 | **375 × 667** | **327** sin amigo · **331** con amigo en otra celda · **378** con la misma | — | 302 / 328 / 376 |
-| **360 × 640** | 327 a 334 | — | 330 / 356 / 404 |
+| **360 × 640** | **327 a 334** sin amigo · **331 a 362** con amigo en otra celda · **378 a 408** con la misma *(2026-10-06, `FIND-133`: la fila decía solo «327 a 334», que es el caso sin enlace; con la misma llega a 408 en `CU-2`. Los dos verificadores y la re-corrida de `6cccc1a` coinciden. Sin efecto en pantalla: ni desborde ni nada cortado)* | — | 330 / 356 / 404 |
 | **320 × 568** | 331 a 362 · **436** con la misma | — | 362 / 388 / 442 |
+| **De 288 a 319** *(2026-10-06, `REV-20`, `6cccc1a`; antes sin medida)* | **331 a 362** sin marca · **hasta 389** con enlace en otra celda · **hasta 464** con la misma (a 288 y a 300; a 310 y a 319, **405 a 436**) | — | — |
 | **1366 y 1440** | 327 a 378 | **416** (26 rem) | 302 / 328 / 376 |
 | Tableta (de 26 rem a 64 rem) | Igual que la mesa **por construcción** (mismo tope, mismo ancho); sin medir | 416 | — (`§11`, punto 15) |
 
@@ -467,7 +475,8 @@ polos de los costados con `gap: 8px` y `margin: 6px 0`; `max-width: min(26rem, c
 - **En los 40 casos** (cinco ventanas × cuatro maneras × con y sin amigo), el hilo midió (hilo): Luz arriba y
   Orden a la izquierda; la tuya en su rincón; las dos filas iguales y las dos columnas iguales; sin
   desborde; nada bajo 12 px; nada enfocable adentro.
-- **El peso**: 327 a 378 px, y 436 en el caso más apretado (320, la misma). El rombo que el usuario recuerda
+- **El peso**: 327 a 378 px, y 436 en el caso más apretado (320, la misma). *(2026-10-06: a 360 llega a 408 con la
+  misma, y en el tramo de 288 a 300, a 464; `FIND-133`, `REV-20`.)* El rombo que el usuario recuerda
   medía ≈ 215 según el crítico (cifra que no verifiqué: no conozco el rombo por su código). Es un costo real
   y está en `§11.2`, punto 5.
 - **El sello "Quien te lo mandó"** se parte adentro de su rectángulo: `inline-block`, `max-width: 100%`,
@@ -483,7 +492,13 @@ polos de los costados con `gap: 8px` y `margin: 6px 0`; `max-width: min(26rem, c
   parece a un control, y el cursor no cambia.
 - **Debajo de 18 rem (288 px)**, que ningún teléfono real mide (lo alcanza solo el zoom del navegador), el
   plano se va (`display: none`): la grilla lo dice todo y el criterio de reflujo de WCAG pide 320. **Entre
-  288 y 320 px no hay medida.**
+  288 y 320 px no hay medida.** *(2026-10-06, `FIND-133`: **ahora sí**, la midió `REV-20` en Chromium, no en un
+  aparato. **Bajo 18 rem:** a 240, 280 y 287 px el plano es `display: none` y la grilla se ve, en una columna
+  de 208, 248 y 255 px, con las cuatro celdas dentro de la ventana, sin desborde y con la tuya primera; a 288 el
+  plano ya está (251 de ancho). **De 288 a 320:** medido en 288, 292, 300, 310, 319 y 320, cuatro maneras × sin
+  enlace, enlace opuesto y la misma: 0 desborde, 0 texto o sello cortado, polos sin solaparse, letra ≥ 12 px;
+  alturas en la tabla de arriba. A 288 el sello «QUIEN TE LO MANDÓ» se parte en tres renglones **adentro** de
+  su caja. Esta hoja decía «entre 288 y 320 px no hay medida»; era cierto cuando se escribió.)*
 
 ### 4.4 Seis trampas del CSS
 
@@ -650,7 +665,7 @@ no es cierto que no haya plano. Y desde la enmienda 3 hay un lugar que no es de 
 
 **Ficha para el lienzo (`T-351`) — `[cerrada]`: se pegó como hoja 16 (`2a8d943`), no como las hojas 08 y 09 de abajo.**
 *Hoja 08, componentes:* "recorte del plano" (`--papel`, tinta `--fondo`,
-borde `--linea` en `--apoyo-disco`, sombra dura de 4 px, +0,5°, cinta de 72 × 22 a −4°) con los cuatro
+borde `--linea` en `--apoyo-disco`, sombra dura de 4 px *(2026-10-06: **sin sombra** desde `D-64`, y el nombre del cuadrante en la letra de *Luzbelito* desde `D-67`; la ficha queda como se escribió)*, +0,5°, cinta de 72 × 22 a −4°) con los cuatro
 estados del cuadrante (sin marca, la tuya, la del amigo, la misma: todos con 7 px entre el borde de fuera y
 el contenido), el polo en dos renglones (rotulada 0,75 y palabras 0,8) y el eje de 2 px en `--papel-tenue`.
 *Hoja 09, pantallas:* el resultado con el plano entre la línea que canta (o la de contraste) y la grilla, y
@@ -728,7 +743,7 @@ npm test
 de `copy.test.ts` que el 1525 del hilo todavía no tenía; `npm run check` con **0 errores, 0 avisos y 14
 hints**, que no son del plano —son de `aparato.ts`, `diagnostico-audio.ts` y los `is:inline` de las
 páginas—; `npm run build` de 160 páginas). **Desde `798cd54`, `copy.test.ts` tiene ocho tests** y el 1531
-deja de ser el número de la suite: el de hoy lo da la corrida del hilo, no esta hoja. `[v1]` Esta lista traía una línea más, `rg -n "ejes-plano" … | rg "border-left|…|#[0-9a-f]{3,6}"`,
+deja de ser el número de la suite: el de hoy lo da la corrida del hilo, no esta hoja. *(Al cierre de `REV-20`, en `6cccc1a`, la suite da **1575**; es la cifra de esa corrida, no la corrí yo.)* `[v1]` Esta lista traía una línea más, `rg -n "ejes-plano" … | rg "border-left|…|#[0-9a-f]{3,6}"`,
 **que no servía**: `rg "ejes-plano"` devuelve las líneas con el selector, nunca las declaraciones, así que
 el segundo `rg` no encontraba nada pasara lo que pasara. La guarda de verdad es `estilos.test.ts` (G5), que
 mira el CSS regla por regla. La quito. (Leí a mano el bloque `.ejes-plano*`: ningún hex ni `border-left`.)
@@ -743,9 +758,9 @@ mira el CSS regla por regla. La quito. (Leí a mano el bloque `.ejes-plano*`: ni
 - [x] En la mesa, el recorte mide ≤ 26 rem: ancho 416 (hilo). Centrado: leído en el CSS (`margin: … auto`).
 - [x] «Ronda en cualquier esquina» a 375: **dos renglones**; a 320: **tres** (`REV-20`).
 - [x] El sello «Quien te lo mandó» se parte **adentro** de su rectángulo, sin borde cortado, a 320 (`REV-20`, captura).
-- [x] Debajo de 18 rem el plano no se ve: `display: none`, medido a 280 px (`REV-20`). Que la grilla se vea a ese ancho no se miró aparte.
+- [x] **Debajo de 18 rem el plano no se ve y la grilla sí:** `display: none` a 240, 280 y 287 px; la grilla en una columna (208, 248 y 255 px), las cuatro celdas a la vista y dentro de la ventana, sin desborde, con la tuya primera (`REV-20`, `6cccc1a`, Chromium). *(Tildada el 2026-10-06; antes decía «medido a 280 px» y «que la grilla se vea a ese ancho no se miró aparte».)*
 - [x] **Tableta** (768 × 1024 y 1024 × 768): 416 de ancho, sin desborde (`REV-20`).
-- [ ] **De 288 a 320 px:** `REV-20` midió 300 (260 de ancho, sin desborde); el resto del tramo, sin medir.
+- [x] **De 288 a 320 px:** `REV-20` midió 288, 292, 300, 310, 319 y 320 (cuatro maneras × sin enlace, opuesta y la misma): 0 desborde, 0 texto o sello cortado, polos sin solaparse, letra ≥ 12 px; recorte de 331 a 464 de alto (`§4.3`). *(Tildada el 2026-10-06; antes: «`REV-20` midió 300 (260 de ancho, sin desborde); el resto del tramo, sin medir». Es Chromium: **en un aparato no está medido**, `§9.2` punto 6.)*
 
 ### 10.2 El lugar de cada una
 
