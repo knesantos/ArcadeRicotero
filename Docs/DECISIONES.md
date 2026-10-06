@@ -3826,6 +3826,42 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
     el circuito de `diseno-marca.md` pide cambiarlo allá primero, y acá entró al revés por pedido
     directo, sin token nuevo.
 
+- **Enmienda 1 (2026-10-05): la multitud se acerca al bajar.** Pedido del usuario, textual:
+  *"me gustaria que mientras vas bajando en la pagina en el fondo se vean banderas rojas y
+  gente, como si la gente del final fuese el final de una multitud gigante, como si ir para
+  abajo fuese acercase a la multitud, me explico?"*
+  - **Qué se ve.** Arriba del portal, al pie de la ventana, una multitud chica y lejana: gente
+    y banderas rojas en el horizonte. Al bajar, ese plano crece y entra desde abajo uno más
+    cercano, más grande y con más tinta. Al final llega la fila del pie, con las caras grandes.
+    Cada fila tapa a la de atrás, como en una multitud de verdad.
+  - **Cómo.** Dos planos fijos detrás de todo (`.plano-gente--lejos`, `--cerca`), cada uno con
+    tres tintas enmascaradas en el orden de una serigrafía: la silueta de la gente en
+    `--fondo`, lo claro en `--papel` y las banderas en `--disco-oktubre-tinta`, mezcladas con
+    el fondo en `--peso-multitud-*` y `--peso-bandera-*`. Las máscaras salen del frente
+    **original** de la tapa (Rocambole entero, de las banderas para abajo), en espejo para que
+    el mosaico no tenga costura: `public/arte/multitud-lejos-{clara,roja,silueta}.png`, 82 KB
+    las tres, de `scripts/generar-multitud.mjs`. La fila del pie gana su silueta horneada en
+    `--fondo`: sin ella, la gente de atrás se veía por adentro de las caras de adelante.
+  - **El movimiento es del lugar** (`UX-20`): dos animaciones atadas al desplazamiento
+    (`acercarse-lejos`, `acercarse-cerca`), sin JavaScript. `--acercamiento` vale 0 con
+    movimiento reducido, y ahí los dos planos quedan quietos en su lugar de llegada; donde no
+    hay `animation-timeline`, también.
+  - **El peso tiene techo.** Todo el texto del portal pasa por encima de los planos al subir.
+    `contraste.test.ts` mezcla cada peso con su tinta y falla si `--texto-tenue` baja de 4,5:1
+    o la marca —letra grande en `--marca-rojo`— baja de 3:1 (rojo visto: con la gente de cerca
+    al 30 % la marca queda en 2,10:1). Hoy el techo lo pone la marca contra la gente de cerca
+    (16 %); las banderas van al 34 % y al 28 %. Y tiene piso: lo de lejos con menos tinta que
+    lo de cerca, y todo a doce niveles o más del fondo.
+  - **Alternativas descartadas.** La foto velada de antes, fija y con velo: deja a la gente al
+    14 %, que es lo que este pedido viene a cambiar. Un plano solo que crece: no da
+    profundidad, se lee como un zoom. Tres planos: el tercero no se distinguía del segundo en
+    un teléfono, y costaba otra capa fija.
+  - **Consecuencias.** En el teléfono el efecto es más tenue que en la computadora: los casetes
+    ocupan casi todo el ancho y tapan los planos. Es lo que permite el techo de contraste.
+    `multitud.test.ts` vigila las tres máscaras (que existan, que calcen, que el mosaico no
+    tenga costura, que la silueta llegue al piso) y la silueta de la fila del pie (rojo visto
+    con el recorte de antes, sin silueta).
+
 ## D-66 — La llave de silencio del iPhone no apaga "Adiviná el tema": el juego pide la sesión de la música
 
 - **Fecha:** 2026-10-06

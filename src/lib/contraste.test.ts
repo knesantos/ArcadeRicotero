@@ -322,6 +322,75 @@ test('el pie de imprenta: la pasada se ve de verdad, no es relleno', () => {
   );
 });
 
+/* ==================================================================
+   La multitud que se acerca (`D-63` enmienda 1): el techo y el piso de su tinta
+
+   Dos planos de gente fijos al pie de la ventana del portal, detras de todo, pintados como
+   la pasada: tinta de `tokens.css` mezclada con `--fondo` por `color-mix`, recortada con una
+   mascara. Son colores que no existen como token, asi que se calculan aca.
+
+   Y todo el texto del portal pasa por encima al subir. El techo lo ponen dos cosas: el texto
+   mas apagado (`--texto-tenue`, AA de 4,5:1) y la marca grande en `--marca-rojo`, que es letra
+   grande y pide 3:1 — y que en un telefono acostado puede quedar sobre el plano de lejos.
+   ================================================================== */
+
+/** Un peso de la multitud, leido del token: `16%` -> 0,16. */
+function pesoMultitud(nombre: string): number {
+  const m = CSS.match(new RegExp(`--${nombre}:\\s*([\\d.]+)%`));
+  assert.ok(m, `no se encontro el token --${nombre} en tokens.css`);
+  return Number(m![1]) / 100;
+}
+
+/** `color-mix(in srgb, tinta p%, fondo)`, la misma cuenta que `pisoDePasada`. */
+function mezclaConFondo(tinta: string, peso: number): string {
+  const fondo = token('fondo');
+  const canal = (i: number) =>
+    Math.round(peso * parseInt(tinta.slice(i, i + 2), 16) + (1 - peso) * parseInt(fondo.slice(i, i + 2), 16));
+  return `#${[1, 3, 5].map((i) => canal(i).toString(16).padStart(2, '0')).join('')}`;
+}
+
+/** Las cuatro tintas que pintan los dos planos: la gente y las banderas, lejos y cerca. */
+function tintasDeLaMultitud(): Array<[string, string]> {
+  return [
+    ['la gente de lejos', mezclaConFondo(token('papel'), pesoMultitud('peso-multitud-lejos'))],
+    ['las banderas de lejos', mezclaConFondo(token('disco-oktubre-tinta'), pesoMultitud('peso-bandera-lejos'))],
+    ['la gente de cerca', mezclaConFondo(token('papel'), pesoMultitud('peso-multitud-cerca'))],
+    ['las banderas de cerca', mezclaConFondo(token('disco-oktubre-tinta'), pesoMultitud('peso-bandera-cerca'))],
+  ];
+}
+
+test('la multitud que se acerca: el texto del portal sigue en AA por encima de cualquier plano', () => {
+  const fallas: string[] = [];
+  for (const [que, piso] of tintasDeLaMultitud()) {
+    for (const [tinta, minimo] of [['texto', 4.5], ['texto-tenue', 4.5], ['marca-rojo', 3]] as const) {
+      const r = contraste(token(tinta), piso);
+      if (r < minimo) fallas.push(`${tinta} sobre ${que} (${piso}): ${r.toFixed(2)}:1, pide ${minimo}`);
+    }
+  }
+  assert.deepEqual(
+    fallas,
+    [],
+    `un peso de la multitud dejo texto por debajo de AA:\n  ${fallas.join('\n  ')}\n` +
+      'Los --peso-multitud-* y --peso-bandera-* no se suben a ojo: este es el techo.',
+  );
+});
+
+test('la multitud que se acerca: se ve de verdad, y lo de cerca tiene mas tinta que lo de lejos', () => {
+  // El mismo piso que la pasada: doce niveles de 255 en el canal que mas se aparta del fondo.
+  const fondo = token('fondo');
+  const salto = (hex: string) =>
+    Math.max(...[1, 3, 5].map((i) => Math.abs(parseInt(hex.slice(i, i + 2), 16) - parseInt(fondo.slice(i, i + 2), 16))));
+  const flojas = tintasDeLaMultitud()
+    .filter(([, piso]) => salto(piso) < 12)
+    .map(([que, piso]) => `${que}: ${salto(piso)} niveles sobre el fondo (${piso})`);
+  assert.deepEqual(flojas, [], `planos que no se van a ver en un telefono:\n  ${flojas.join('\n  ')}`);
+
+  // Lo lejano se apaga: si el plano de lejos tuviera mas tinta que el de cerca, la profundidad
+  // se da vuelta y la multitud se lee como una pared.
+  assert.ok(pesoMultitud('peso-multitud-lejos') < pesoMultitud('peso-multitud-cerca'), 'la gente de lejos pesa más que la de cerca');
+  assert.ok(pesoMultitud('peso-bandera-lejos') < pesoMultitud('peso-bandera-cerca'), 'las banderas de lejos pesan más que las de cerca');
+});
+
 test('el area de toque minima cumple lo que pide jugable con el pulgar', () => {
   const m = CSS.match(/--toque-min:\s*(\d+)px/);
   assert.ok(m, 'no hay token de area de toque');

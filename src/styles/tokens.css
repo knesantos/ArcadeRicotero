@@ -215,6 +215,12 @@
   /* Cuanto se corre una capa de fondo al desplazar, como maximo (`UX-20` §1.4). */
   --deriva-capa-fondo: 8%;
 
+  /* El acercamiento (`D-63` enmienda 1): bajar por el portal es caminar hacia la multitud.
+     Es un factor de 0 a 1 que multiplica todo el recorrido de los planos de gente —cuanto
+     crece el de lejos, cuanto sube el de mas cerca—. Con movimiento reducido vale 0 y los dos
+     planos quedan quietos, a la vista, en su lugar de llegada. */
+  --acercamiento: 1;
+
   /* ------------------------------------------------------------------
      La imprenta (hoja 13). La doctrina es de `UX-22`: **el acierto es el unico grito
      del sitio**, y por eso la estampa es lo unico que puede durar mas de un paso.
@@ -290,6 +296,17 @@
      255 en el rojo—, que es lo que hace falta para que se vea en un celular al sol y no
      sea relleno. Subirlo no se decide a ojo: lo dice el test. */
   --peso-pasada: 18%;
+
+  /* Cuanta tinta lleva la multitud que se ve de lejos al bajar por el portal (`D-63`
+     enmienda 1), por plano: el de lejos menos que el de mas cerca, porque lo lejano se
+     apaga. Igual que la pasada, NO ES UNA PREFERENCIA: todo el texto del portal pasa por
+     encima, y `multitud.test.ts` mezcla cada peso con su tinta y falla si `--texto-tenue`
+     baja de 4,5:1 o la marca —letra grande en `--marca-rojo`— baja de 3:1. El techo hoy lo
+     pone la marca contra el papel del plano de cerca. */
+  --peso-multitud-lejos: 12%;
+  --peso-bandera-lejos: 28%;
+  --peso-multitud-cerca: 16%;
+  --peso-bandera-cerca: 34%;
 
   /* Espaciado pensado para el pulgar (D-09) */
   --toque-min: 48px;
@@ -541,6 +558,7 @@ a[role='button'] {
     --escalon-umbral: 0ms;
     --hondura-transito: 1;
     --deriva-capa-fondo: 0%;
+    --acercamiento: 0;
     /* La imprenta (UX-22): la estampa aparece ya impresa y fijada; el giro es un cambio
        directo. `--registro` NO se toca: es reposo, no movimiento. El carrete no se
        apaga por token —quedaria girando rapidisimo— sino con `animation: none` en

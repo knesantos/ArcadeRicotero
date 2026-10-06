@@ -259,6 +259,125 @@ html[data-umbral] .marca-grande {
   }
 }
 
+/* ---- La multitud que se acerca (`D-63` enmienda 1) ----
+
+   Pedido del usuario, textual: *"mientras vas bajando en la página en el fondo se vean
+   banderas rojas y gente, como si la gente del final fuese el final de una multitud gigante,
+   como si ir para abajo fuese acercarse a la multitud"*.
+
+   Dos planos fijos al pie de la ventana, detrás de todo, hechos con el frente original de
+   *Oktubre* (banderas y gente, en espejo para que el mosaico no tenga costura). Arriba de la
+   página se ve solo el de lejos: gente chica y banderas en el horizonte. Al bajar, ese plano
+   crece y entra desde abajo el de más cerca, más grande y con más tinta. Al final llega la
+   fila de adelante, que es la del pie (`.multitud-pie`), con las caras grandes.
+
+   CADA FILA TAPA A LA DE ATRÁS. Cada plano pinta tres capas en el orden de una serigrafía:
+   la silueta de la gente en `--fondo` (`::before`), lo claro (`span`) y las banderas
+   (`::after`). Sin la silueta, la gente de atrás se vería por adentro de las caras de
+   adelante. La fila del pie trae su silueta horneada (`generar-multitud.mjs`).
+
+   NO ES UNA FOTO Y NO LLEVA VELO, por la misma razón que la pasada: son máscaras de alfa
+   sola sobre tinta plana de `tokens.css`. Lo que la hace legible no es un velo sino el peso:
+   `--peso-multitud-*` y `--peso-bandera-*` tienen techo, y lo mide `multitud.test.ts` contra
+   todo el texto que pasa por encima.
+
+   EL MOVIMIENTO ES DEL LUGAR (`UX-20`): lo único que se mueve es la cámara acercándose, atado
+   al desplazamiento y sin JavaScript. Donde no hay `animation-timeline`, o con movimiento
+   reducido (`--acercamiento: 0`), los dos planos quedan quietos en su lugar de llegada. */
+.plano-gente {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  transform-origin: 50% 100%;
+}
+
+.plano-gente::before,
+.plano-gente > span,
+.plano-gente::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  -webkit-mask-size: auto 100%;
+  mask-size: auto 100%;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+  -webkit-mask-position: var(--corrimiento) 100%;
+  mask-position: var(--corrimiento) 100%;
+}
+
+.plano-gente::before {
+  background: var(--fondo);
+  -webkit-mask-image: url('/arte/multitud-lejos-silueta.png');
+  mask-image: url('/arte/multitud-lejos-silueta.png');
+}
+
+.plano-gente > span {
+  background: color-mix(in srgb, var(--papel) var(--peso-gente), var(--fondo));
+  -webkit-mask-image: url('/arte/multitud-lejos-clara.png');
+  mask-image: url('/arte/multitud-lejos-clara.png');
+}
+
+.plano-gente::after {
+  background: color-mix(in srgb, var(--disco-oktubre-tinta) var(--peso-banderas), var(--fondo));
+  -webkit-mask-image: url('/arte/multitud-lejos-roja.png');
+  mask-image: url('/arte/multitud-lejos-roja.png');
+}
+
+/* Cada plano corre el mosaico distinto, para que los ejes del espejo —donde las banderas
+   quedan de a pares— no caigan uno sobre el otro. */
+.plano-gente--lejos {
+  --peso-gente: var(--peso-multitud-lejos);
+  --peso-banderas: var(--peso-bandera-lejos);
+  --corrimiento: 50%;
+  height: clamp(9rem, 26vh, 15rem);
+}
+
+.plano-gente--cerca {
+  --peso-gente: var(--peso-multitud-cerca);
+  --peso-banderas: var(--peso-bandera-cerca);
+  --corrimiento: 18%;
+  height: clamp(12rem, 46vh, 28rem);
+}
+
+/* Lo de lejos crece mientras te acercás. */
+@keyframes acercarse-lejos {
+  to {
+    transform: scale(calc(1 + 0.45 * var(--acercamiento)));
+  }
+}
+
+/* Lo de más cerca está abajo del borde de la ventana hasta que caminaste un tercio, y después
+   sube y crece un poco. Termina un 12 % abajo del borde: la fila del pie, que llega en ese
+   momento, es la que se apoya en el piso. */
+@keyframes acercarse-cerca {
+  0%,
+  30% {
+    transform: translateY(calc(100% * var(--acercamiento)));
+  }
+  100% {
+    transform: translateY(calc(12% * var(--acercamiento))) scale(calc(1 + 0.12 * var(--acercamiento)));
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .plano-gente {
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-duration: auto;
+    animation-timeline: scroll(root block);
+  }
+
+  .plano-gente--lejos {
+    animation-name: acercarse-lejos;
+  }
+
+  .plano-gente--cerca {
+    animation-name: acercarse-cerca;
+  }
+}
+
 .tapa-fondo--lobo-tiras {
   background-image: linear-gradient(var(--velo-tapa), var(--velo-tapa)),
     url('/tapas/fondo/lobo-tiras.jpg');
