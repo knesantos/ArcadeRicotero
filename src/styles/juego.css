@@ -2906,6 +2906,14 @@ a.secundario {
     padding: 6px 10px;
   }
 
+  /* El aire entre la bajada y «Empezá la noche», de 24 a 16 px: `D-67` pasó el título a la letra
+     de la banda, 7 px más alto, y el botón había vuelto a 570 a 320 × 568 (`FIND-131` de
+     `REV-20`). El margen de la tapa no sirve de palanca: colapsa con el del renglón del lugar.
+     Se toca el aire, nunca la letra (`UX-36` §3.4). */
+  .ejes-empezar {
+    margin-top: var(--espacio-2);
+  }
+
   .ejes-tapa-esquinero {
     width: 3.2rem;
     height: 3.7rem;
