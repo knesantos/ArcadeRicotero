@@ -38,6 +38,13 @@
 > cambian.** *(La primera pasada de esta enmienda decía "relativo" para el plano; el usuario eligió el fijo
 > y esta marca ya lo dice.)*
 >
+> **Puesta al día 2026-10-06 (`REV-20`).** Tres anotaciones, ninguna cambia el diseño. `§3.4` suma el
+> **corte de 320 × 568** del botón de la portada y la medida a repetir cuando cambie el renglón del lugar
+> (`FIND-111` de `REV-19`, `FIND-120` de `REV-20`; es la parte de `§3.4` que pedía `FIND-118`). `§4.1`
+> anota lo que `REV-20` midió del **largo del enunciado** a 375 y a 320 (`FIND-119`) y deja el tope como
+> está. `§12.1` y `§12.6` lo repiten como checklist, con el **dueño** de todo lo que solo se ve en un
+> teléfono real. *(De `FIND-118` sigue pendiente, en esta hoja, la columna de 7 rem de `§5.3`.)*
+>
 > **Cómo leer los números.** Tres clases, como en `UX-35`: **leído** (sale de una captura, de una
 > maqueta o de un comentario del código, y lo cito), **cuenta** (lo derivé yo de tokens y reglas,
 > sin correr nada) y **por medir** (va al checklist de `§12`). Los píxeles de pantalla son a
@@ -139,7 +146,7 @@ gente real.
 
 | Pantalla | Qué tiene que entrar | A 375 × 667 | Holgura |
 |---|---|---|---|
-| Portada | El botón "Empezá la noche" | Cuenta ≈ 576; **medido (hilo): 590** | 77 px |
+| Portada | El botón "Empezá la noche" | Cuenta ≈ 576; **medido (hilo): 590**. A 320 × 568, `§3.4` | 77 px |
 | Postal (portada con desafío) | El botón "Empezá tu noche" | Cuenta ≈ 637 en el peor caso; **medido (hilo): 626 y 650 según la postal** (665 con el relleno de la tapa de 28/24: `§3.4`) | 17 px en la más alta |
 | Hoja de la pregunta | La hoja entera y la cinta | La hoja termina ≈ **377** | 290 px |
 | Resultado | "Compartí" y "Empezá otra noche" | Terminan ≈ **531** y **601** en el peor caso (nombre de tres renglones, línea de dos, bajada de cuatro) | 66 px |
@@ -425,6 +432,30 @@ tres números entran (`§12.1`).
 acepta (`UX-01` pide "nada de scroll para encontrar el botón" como meta, y a 375 × 667 se cumple),
 y el botón no se vuelve a pegar al pie: `UX-35` §4.6 ya decidió que las portadas llevan el arranque
 en el flujo.
+
+**A 320 × 568 (agregado el 2026-10-06; `FIND-118` de `REV-19` pedía este corte y no estaba).**
+
+- **Lo que cerró `FIND-111`.** A 320 × 568 «Empezá la noche» terminaba en **633**, fuera de la pantalla, y
+  era la única de las ocho portadas con el arranque afuera. Bajo 22 rem la tapa se aprieta (margen,
+  relleno, etiqueta, esquinero y el índice a 0,9 rem, que entra en dos renglones) y el botón terminó en
+  **565** (`REV-19`; a 375 × 667 no cambió: 590).
+- **Lo que midió `REV-20` (`FIND-120`): 587**, 19 px bajo el pliegue (el botón empieza en 533: está a la
+  vista y se toca). La causa es el renglón del lugar, `LUGARES.dosEjes` (`src/lib/sitio/copy.ts`), que
+  `a596435` cambió de «Entrá con la campera puesta.» (28 caracteres, un renglón de ≈ 25 px) a «Traés barro
+  seco en las zapatillas.» (35 caracteres, dos renglones de ≈ 47 px a 320). A 360 y a 375 no cambia (588 y
+  590). Con la frase vieja puesta en el DOM, el botón vuelve a 565.
+- **Qué hace el hilo.** Acorta `LUGARES.dosEjes` para que el botón vuelva a 565. El diseño de la tapa no
+  cambia.
+- **Guarda de medida, a repetir cada vez que cambie el renglón del lugar (`LUGARES.dosEjes`), el índice o
+  el relleno de la tapa:** `#empezar.getBoundingClientRect().bottom` a 320 × 568 **≤ 568** (cierre de
+  `REV-19`: 565), con `scrollWidth <= innerWidth`. El presupuesto de `§9` (≤ 40 caracteres, un renglón) es
+  el de 375: con DejaVu Sans, a 320, 28 caracteres entran en un renglón y 35 no (no se midió el punto
+  exacto entre los dos). No es un presupuesto nuevo; es la medida que manda a 320.
+- **Si no alcanza, la palanca es la de `§1.2`:** el relleno y el margen de la tapa, nunca el subtítulo ni
+  el botón.
+- **Depende de la fuente.** Todas las medidas del proyecto son con DejaVu Sans, más ancha que Roboto o San
+  Francisco. Con métrica Arial (Liberation Sans) la línea de 35 caracteres entra en un renglón y el botón
+  termina en 565, con **3 px de margen**. En un teléfono real de 320 no está medido (`§12.6`).
 
 ### 3.5 En la mesa (≥ 64 rem)
 
