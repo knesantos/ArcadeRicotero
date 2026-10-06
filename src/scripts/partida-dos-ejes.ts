@@ -50,6 +50,7 @@ import {
   POLOS,
   lineaQueNombra,
   selloDePolos,
+  textoDelPlano,
 } from '../lib/dos-ejes/copy.ts';
 import { rutaDeTarjeta, rutaDePieza, slugDe } from '../lib/dos-ejes/arte.ts';
 import { leerDesafio } from '../lib/desafio.ts';
@@ -257,22 +258,8 @@ function polo(p: Polo, lugar: 'arriba' | 'abajo' | 'izquierda' | 'derecha'): HTM
 function plano(id: string): HTMLElement {
   const { celdas, renglones, columnas } = planoFijo(banco);
   const recorte = el('div', 'ejes-plano');
-  const extremo = (p: Polo) => `${EJES[p]}, ${POLOS[p]}`;
-  const lugarDe = (buscado: string | undefined) => celdas.findIndex((c) => c.id === buscado);
-  const k = lugarDe(id);
-  const j = lugarDe(suyo?.id);
   recorte.setAttribute('role', 'img');
-  recorte.setAttribute(
-    'aria-label',
-    RESULTADO.altPlano({
-      arriba: extremo(renglones[0]),
-      abajo: extremo(renglones[1]),
-      izquierda: extremo(columnas[0]),
-      derecha: extremo(columnas[1]),
-      tuya: { nombre: celdas[k]!.nombre, lugar: RESULTADO.lugares[k]! },
-      suya: j < 0 ? undefined : j === k ? 'misma' : { nombre: celdas[j]!.nombre, lugar: RESULTADO.lugares[j]! },
-    }),
-  );
+  recorte.setAttribute('aria-label', textoDelPlano(banco, id, suyo?.id));
 
   const cruz = el('div', 'ejes-plano-cruz');
   // Los dos ejes son elementos vacíos con borde, no con fondo: en el contraste forzado el
