@@ -20,7 +20,15 @@
  * 2. **¿Falla Web Audio o falla todo?** Se prueban los dos caminos por separado — el
  *    `AudioContext` y la etiqueta `<audio>`— porque en iOS no se comportan igual, y saber
  *    cuál de los dos suena dice exactamente dónde está el problema.
+ *
+ * ## Y desde `D-66`, la llave
+ *
+ * Esta pantalla hace lo mismo que el juego: le pide al navegador la sesión de la música
+ * **antes** de crear el contexto. Si no, mediría un motor que ya no es el del juego, y en un
+ * iPhone con la llave puesta diría que Web Audio no suena cuando en la partida sí.
  */
+
+import { sonarAunqueEsteEnSilencio } from '../lib/audio/sesion.ts';
 
 const $ = (id: string) => document.getElementById(id) as HTMLElement;
 const salida = $('resultados');
@@ -135,12 +143,21 @@ async function correr(): Promise<void> {
     fila('ok', 'Navegador de verdad', 'No estás adentro de otra aplicación.');
   }
 
-  if (quien.esIOS) {
+  // Lo mismo que hace el juego en "Empezá", y en el mismo orden: antes de crear el contexto.
+  const sesionPedida = sonarAunqueEsteEnSilencio();
+  if (quien.esIOS && sesionPedida) {
+    fila(
+      'ok',
+      'La llave de silencio',
+      'No apaga el juego.',
+      'Se le pidió al iPhone la sesión de la música: el juego suena aunque la llave esté en silencio.',
+    );
+  } else if (quien.esIOS) {
     fila(
       'aviso',
       'Es un iPhone, y eso trae una trampa',
       'La llave lateral de silencio apaga el audio de Web Audio.',
-      'Aunque el volumen esté alto, si esa llave está en silencio el navegador no suena y no avisa. Es la causa más común de todas.',
+      'Este iPhone no deja pedir la sesión de la música. Aunque el volumen esté alto, si esa llave está en silencio el navegador no suena y no avisa. Es la causa más común de todas.',
     );
   }
 
@@ -217,8 +234,14 @@ async function correr(): Promise<void> {
     }
   }
 
-  fila('dato', 'Ahora probá el sonido', 'Los dos botones de abajo, con el volumen fuerte.',
-    'Si es un iPhone, fijate que la llave lateral de silencio no esté en silencio: apaga el audio del navegador.');
+  fila(
+    'dato',
+    'Ahora probá el sonido',
+    'Los dos botones de abajo, con el volumen fuerte.',
+    quien.esIOS && !sesionPedida
+      ? 'En este iPhone, fijate que la llave lateral de silencio no esté en silencio: apaga el audio del navegador.'
+      : undefined,
+  );
 }
 
 /** Suena tres segundos por Web Audio. El largo es el punto: 0,1 s no se percibe. */

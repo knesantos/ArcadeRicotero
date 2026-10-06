@@ -36,6 +36,7 @@ import {
   DURACION_FRAGMENTO_SEG,
 } from '../lib/tema/escalera.ts';
 import { Reproductor, urlDeTema } from '../lib/tema/audio.ts';
+import { sonarAunqueEsteEnSilencio, laLlaveManda } from '../lib/audio/sesion.ts';
 import { PARTIDA, REVELACION, RESULTADO, TARJETA, TRAMOS, PANTALLA_0, SIN_SONIDO } from '../lib/tema/copy.ts';
 import { estampaDe } from '../lib/tapa/pasadas.ts';
 import { armarCasete } from '../lib/tema/casete.ts';
@@ -224,11 +225,15 @@ for (const boton of portada.querySelectorAll<HTMLButtonElement>('[data-disco]'))
  * `US-02` criterio 2 ya pedia un aviso de sonido antes de arrancar, y ya estaba puesto
  * (`.aviso-sonido`). Lo que faltaba era **decir cual es la causa concreta**: "fijate el
  * volumen" no alcanza cuando el volumen esta alto y la llave es lo que manda.
+ *
+ * Desde `D-66` el aviso **solo sale donde la llave todavia manda**: un iPhone sin la Audio
+ * Session API. En los demas el juego pide la sesion de la musica en "Empezá" y la llave deja
+ * de apagarlo, asi que el aviso diria algo que ya no es cierto.
  */
 const avisoSonido = document.querySelector('.aviso-sonido');
 if (avisoSonido) {
   const donde = navegadorIncrustado();
-  if (esIOS()) {
+  if (esIOS() && laLlaveManda()) {
     const extra = el('strong', 'aviso-llave', SIN_SONIDO.llaveIphone);
     avisoSonido.append(document.createTextNode(' '), extra);
   }
@@ -239,6 +244,9 @@ if (avisoSonido) {
 }
 
 $('jugar').addEventListener('click', () => {
+  // `D-66`: la llave de silencio del iPhone no apaga el juego. Se pide **antes** de
+  // despertar, para que el primer fragmento ya salga por la sesión de la música.
+  sonarAunqueEsteEnSilencio();
   // Este clic es el gesto que los celulares exigen para dejar sonar audio. Despertar el
   // motor acá es lo que hace que el primer "Escuchar" no tenga que esperar nada.
   reproductor.despertar();
@@ -724,8 +732,9 @@ function abrirAyudaDeSonido(ancla: HTMLElement): void {
     lista.append(li);
   };
 
-  // Primero lo que no se puede detectar y mas caro sale: la llave del iPhone.
-  if (esIOS()) punto(SIN_SONIDO.llaveIphone, true);
+  // Primero lo que no se puede detectar y mas caro sale: la llave del iPhone, donde todavia
+  // manda (`D-66`).
+  if (esIOS() && laLlaveManda()) punto(SIN_SONIDO.llaveIphone, true);
   const donde = navegadorIncrustado();
   if (donde) punto(SIN_SONIDO.incrustado(donde), true);
   if (esMovil()) punto(SIN_SONIDO.volumen);
