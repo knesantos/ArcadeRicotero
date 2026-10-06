@@ -154,6 +154,18 @@
 > de las bajadas comparten forma, no peso; **(4)** el criterio 9 de `US-06` dice cómo se arma hoy
 > el texto del lector (`textoDelPlano()`) y qué ata `copy.test.ts`. El resto del documento no se
 > tocó.
+>
+> **Revisión 2026-10-06 (cierre de `REV-20`, ciclo 19, lo que le tocaba a `producto`).** Consume
+> el «Cierre» de `REV-20` («Qué queda abierto, con dueño») y sus «Sin consenso» 1, 2, 3, 14, 18 y
+> 20, más `src/lib/dos-ejes/banco.test.ts` (`783d430`, `bc19f8d`). **No cambia ninguna decisión
+> del usuario ni ningún criterio, y no abre nada.** Toca solo `BR-38`, con marca fechada y sin
+> borrar: **(1)** «Lo que `REV-20` leyó del banco» deja de adelantarse al hilo en `EJ-040`,
+> `EJ-054` y `EJ-051`, y la hija de `EJ-051` deja de ser «un chico» en el hueco 6; **(2)** «escena
+> es la hoja» queda escrita como decisión de `producto` y no como algo que sale de la definición
+> de «escena» (que incluye las bajadas, y las bajadas no están en ninguna hoja); **(3)** los
+> huecos 2, 3 y 5 dicen que ya tienen prueba, con lo que cada una ve y lo que no, y «Quién vigila
+> qué» suma sus filas; **(4)** el veto 1 dice sobre los trapos lo que la tabla ya decía. Las
+> marcas llevan **[2026-10-06, cierre de `REV-20`]**. El resto del documento no se tocó.
 
 ## Por qué existe el piso de ítems
 
@@ -2146,7 +2158,10 @@ lleva su marca **[2026-10-06]**. **Ronda final, 2026-10-06:** `REV-20` ya leyó 
 donde esta regla decía que lo lee `REV-20` ahora dice que lo lee `revisor` en cada `REV` que
 toque el banco; lo que `REV-20` leyó está en «Lo que `REV-20` leyó del banco», y tres lecturas de
 `producto` que `contenido` ya había resuelto de hecho están escritas donde corresponden. Esas
-marcas llevan **[2026-10-06, ronda final]**.
+marcas llevan **[2026-10-06, ronda final]**. **Cierre de `REV-20`, 2026-10-06:** `REV-20` cerró
+y dejó cuatro cosas para `producto`; las marcas llevan **[2026-10-06, cierre de `REV-20`]** y
+están en «Lo que `REV-20` leyó del banco», en el veto 1, en «La gente de la noche», en los huecos
+2, 3, 5 y 6 y en «Quién vigila qué».
 
 **Qué resuelve.** `D-62` le devolvió a la noche lo que `D-57` punto 2 y los vetos 1, 3 y 4 de
 `BR-36` le habían sacado: la previa en la esquina, la birra, el porro, el barro, el reviente, la
@@ -2189,6 +2204,15 @@ línea que canta y bajadas de las cuatro maneras. *Opción* es lo que toca.
   (`D-62` puntos 1 y 5). Nunca para puntuar: «la noche más ricotera» es una credencial.
 - *No entra a una opción:* banda, Redondos, misa, ricotero. En una opción puntúan quién es más de
   adentro, que es la regla de `BR-36` en una línea.
+  **[2026-10-06, cierre de `REV-20`** («Sin consenso» 14)**:** esta lista era más corta que la
+  tabla de arriba, que pone en «Nunca» también «los trapos» y «el pogo». **Manda la tabla.** Léase
+  «banda, Redondos, misa, **trapos**, ricotero». Las dos palabras ya están vedadas en las opciones:
+  `trapo*` en «la banda como credencial» (`783d430`) y `pogo` en «el cuerpo y la multitud» (veto 5:
+  el pogo suena, nadie elige meterse). Lo vedado es **el trapo-bandera**, el que en una opción
+  puntúa quién es de adentro. La guarda cae más ancho que el motivo y también caza «Le paso un
+  trapo» (limpiar), que el motivo no veda; el banco de hoy no usa ninguno. Si `contenido` necesita
+  esa frase, la pide por sugerencia y el hilo afina la entrada antes de reescribir la escena:
+  manda el motivo (hueco 7).**]**
 - *Sigue vedado en toda la noche:* **las personas** (el Indio, Skay, Poli): el Indio murió el 5 de
   junio y una escena con él en el escenario es un velorio aunque no lo diga (`D-62` punto 5). Y
   **los temas por su título**, por lectura de `producto` (`D-62` no los trae): un título es un
@@ -2269,7 +2293,9 @@ volumen cansa los oídos», con «Me tapo con los dedos» y «Traje algodón por
 - **Dónde no.** En ninguna opción (`VETOS_DE_LAS_OPCIONES`, «la merca como elección»). Tampoco en el
   nombre ni en la bajada de una manera, porque una manera con merca adentro es una manera de ser;
   ni en el sello ni en la línea que canta, porque un momento no se titula con una droga. Fuera de
-  las opciones **ninguna máquina lo cuenta** hoy (hueco 2).
+  las opciones **ninguna máquina lo cuenta** hoy (hueco 2). **[2026-10-06, cierre de `REV-20`:**
+  ya lo cuenta `banco.test.ts` desde `bc19f8d` en nombres, bajadas, sellos y líneas que cantan
+  (hueco 2, abajo). El enunciado sigue por lectura, porque ahí la merca puede estar.**]**
 - **No cuenta para lo sucio** del piso de más abajo: si la merca sirviera para cumplirlo, pasaría
   de paisaje a protagonista.
 - **Por qué.** `D-62` punto 3: el sitio no tiene muro de edad ni de entrada, y una opción que se
@@ -2294,7 +2320,10 @@ está escrito, y pasa si pasa los cinco.
      caso 1 con las palabras repartidas. *La guarda no lo ve:* cuenta que la palabra esté de los
      dos lados, no lo que cada lado hace con ella.
   3. **El verbo de las dos es consumir.** Parejas, sí, pero quien no consume no puede decir
-     ninguna con verdad. *La guarda no lo ve.*
+     ninguna con verdad. *La guarda no lo ve.* **[2026-10-06, cierre de `REV-20`:** lo ve en parte,
+     desde `bc19f8d`: una lista de frases en primera persona con su objeto, sobre las opciones y
+     las bajadas (hueco 3, abajo). Lo que toca el consumo sin la palabra («Lo paso») y el caso 2
+     siguen por lectura.**]**
   4. **Una opción es la confesión o la medalla del que no consume** («no tomo»). El sitio ni lo
      disculpa ni lo premia. `RES-182` sugería «no tomo, voy por el tema» como opción: no entra a
      una opción, porque separa los polos por el consumo (`D-62` punto 2). Puede vivir como **gente
@@ -2409,8 +2438,9 @@ no hay nada que rotular. Si para ser verdadera una escena necesita una ficha, es
   (`CNT-para-producto-br38-un-chico-por-item.md`).**]**
   - **[2026-10-06, ronda final.] «Escena» es la hoja, no el momento.** Un chico y lo que se toma o
     se fuma no comparten *hoja*: ni en su enunciado, ni en el sello ni en la línea que canta que
-    esa hoja lleva (la definición de «escena» de «Qué puede decir cada lugar»). Dos hojas del
-    mismo momento no comparten escena: salen una después de la otra, cada una en su pantalla. Por
+    esa hoja lleva (la definición de «escena» de «Qué puede decir cada lugar» **[2026-10-06,
+    cierre de `REV-20`:** esa definición no dice «hoja»; ver la decisión, más abajo**]**). Dos
+    hojas del mismo momento no comparten escena: salen una después de la otra, cada una en su pantalla. Por
     eso `EJ-051` («su hija grande») puede salir en la misma noche que el porro (`EJ-048`) o la
     merca (`EJ-049`), 2 de cada 9 noches, y no rompe la regla; con esta lectura la edad de la
     hija no decide nada y el enunciado de `EJ-051` no cambia (ni «adulta» ni «de treinta»).
@@ -2421,6 +2451,20 @@ no hay nada que rotular. Si para ser verdadera una escena necesita una ficha, es
     `EJ-051`: un costo en el motor o en el piso por una imagen que no existe en ninguna pantalla.
     Si el usuario la quiere por momento, se enmienda esta línea y se abren una propuesta a
     `arquitectura` y otra a `contenido`.
+    - **[2026-10-06, cierre de `REV-20`** («Sin consenso» 18, punto 3)**.] «Hoja» es una decisión
+      de `producto`, no algo que salga de la definición de «escena».** Esa definición (la de «Qué
+      puede decir cada lugar») es «todo lo que la gente lee de la noche menos lo que toca:
+      enunciado, sello del momento, línea que canta y **bajadas** de las cuatro maneras», y las
+      bajadas no están en ninguna hoja: salen en el resultado. De ahí no se deduce ni «hoja» ni
+      «momento». La unidad la elegí yo el 2026-10-06 (`6b1beeb`), por la razón de arriba (el
+      sorteo y una imagen que no existe en ninguna pantalla), y la puede cambiar el usuario.
+    - **Cómo queda cada pieza.** *En una hoja:* el enunciado, y el sello y la línea que canta del
+      momento de esa hoja; es la unidad de la regla del chico. *En una bajada:* se lee sola, en el
+      resultado, y no comparte hoja con nada; la regla vale para cada bajada por separado (ninguna
+      junta un chico con lo que se toma o se fuma) y hoy ninguna trae un chico ni consumo
+      (`REV-20`, 2(c)). *La definición de «escena» sigue valiendo, con las bajadas adentro, para
+      la tabla de «Qué puede decir cada lugar» y para los vetos de la noche:* lo que cambia es
+      solo con qué se compara el chico.
 - **Sin muro de edad ni aviso que se interponga** (`D-09`, y la última línea de `D-62`): no se le
   pide nada a quien juega para entrar. Un rótulo que `experiencia` quiera proponer no puede ser
   una condición para jugar.
@@ -2435,6 +2479,9 @@ no hay nada que rotular. Si para ser verdadera una escena necesita una ficha, es
 | Plata, vehículo y pasaje, cuerpo y multitud, la banda como credencial y la merca, en las opciones | `banco.test.ts`: «ninguna opción cae en un veto de las opciones (BR-36, D-62)», sobre `VETOS_DE_LAS_OPCIONES` | Automático. **Solo opciones** |
 | Lo que se toma o se fuma no está de un solo lado | `banco.test.ts`: «lo que se toma o se fuma nunca separa los polos (D-62)», sobre `CONSUMO`, y «la guarda del consumo sabe ver: una birra de un solo lado la marca» | Automático. **Cuenta la palabra, no lo que la opción hace con ella** (casos 2 y 3 del quinto lugar) |
 | Sin parentesco ni pareja propia en una opción | `banco.test.ts`: «ninguna opción nombra un parentesco ni una pareja propia (D-57 enmienda 7, D-62)» | Automático. Solo opciones |
+| **[2026-10-06, cierre de `REV-20`]** La merca fuera de la escena que define algo: nombres y bajadas de las maneras, sellos y líneas que cantan (hueco 2) | `banco.test.ts`: «la merca no sale de la escena: ni nombres, ni bajadas, ni sellos, ni líneas que cantan (BR-38, hueco 2)», con la lista «la merca como elección» | Automático, desde `bc19f8d`. **No recorre enunciados, a propósito**: ahí puede estar, como paisaje. Que esté sin glamour, sin sermón y sin cantidad sigue por lectura |
+| **[2026-10-06, cierre de `REV-20`]** El consumo como verbo en primera persona, en opciones y bajadas (hueco 3) | `banco.test.ts`: «ninguna opción ni bajada hace del consumo lo que hace quien juega (BR-38, hueco 3)» y «esa guarda sabe ver, y deja pasar el «tomar» que no es tomar» | Automático, desde `bc19f8d`. **Frases con su objeto, no verbos sueltos; piso, no techo.** Lo que toca el consumo sin la palabra («Lo paso») y el caso 2 del quinto lugar siguen por lectura |
+| **[2026-10-06, cierre de `REV-20`]** Ningún número en nada de lo que se lee (hueco 5) | `banco.test.ts`: «nada de lo que se lee trae un número (BR-38, hueco 5)» | Automático, desde `bc19f8d`. **Solo dígitos**: una cifra escrita con letras y los lugares con nombre (lista abierta) siguen por lectura |
 | La vuelta sin «a pie» ni «caminando» | `banco.test.ts`: «a la vuelta nadie vuelve a pie: de noche es seguridad, no temperamento» | Automático |
 | La noche en orden, ítems con momento, tres por celda y treinta en total, retirados y ids | `banco.test.ts`: «la noche tiene sus cinco momentos…», «cada ítem listo es de un momento de la noche», «cada celda momento × eje tiene al menos tres ítems listos», «los ids no se repiten y los retirados se quedan donde estaban»; y `pisos.test.ts` | Automático. No cambia |
 | Largos, nombres y polos | `banco.test.ts`: «el sello del momento es seco…», «enunciados y opciones entran en la hoja», «las cuatro maneras entran en la tarjeta», «cada CU-n conserva sus polos…», «los nombres no tienen persona…» | Automático. No cambia |
@@ -2470,7 +2517,14 @@ hallazgo y la regla sigue como estaba.
    enunciado de `EJ-049`, como paisaje: 0 en las 60 opciones, los 4 nombres, las 4 bajadas, los 5
    sellos y las 5 líneas que cantan (barrido por palabra). Sigue sin test: una prueba que recorra
    esos textos con la lista «la merca como elección» que ya existe costaría cero hoy (propuesta
-   al hilo).
+   al hilo). **[Cerrado 2026-10-06, cierre de `REV-20`, por `bc19f8d`.]** `banco.test.ts`: «la merca
+   no sale de la escena: ni nombres, ni bajadas, ni sellos, ni líneas que cantan (BR-38, hueco 2)».
+   Recorre los 4 nombres y las 4 bajadas de las maneras, y los 5 sellos y las 5 líneas que cantan,
+   con la lista «la merca como elección». **No recorre enunciados, a propósito** (la merca puede
+   estar ahí, como paisaje, `EJ-049`); las opciones ya las recorría «ninguna opción cae en un veto
+   de las opciones». Que esté sin glamour, sin sermón, sin cantidad y sin atribuirla a un tema o a
+   una persona de la banda sigue por lectura. «Sigue sin test» y «propuesta al hilo» eran ciertos
+   cuando se escribieron.
 3. **El consumo como verbo:** `CONSUMO` cuenta la palabra, no el verbo. El caso 3 del quinto lugar
    se cierra por palabras: una lista de verbos en primera persona de lo que se toma y se fuma,
    vedada en opciones y en bajadas (que hoy nadie recorre buscando consumo). El caso 2 solo se lee.
@@ -2486,6 +2540,18 @@ hallazgo y la regla sigue como estaba.
    sirve para otra cosa (tomar, pegar, clavar, mandar, prender) no entra sin su objeto, y
    `revisor` la prueba contra frases comunes («Tomo una foto», «Me tomo una pausa») antes de
    proponerla.
+   **[Cerrado 2026-10-06, cierre de `REV-20`, por `bc19f8d`.]** `banco.test.ts`: «ninguna opción ni
+   bajada hace del consumo lo que hace quien juega (BR-38, hueco 3)», con 18 entradas, todas frases
+   con su objeto (`me sirvo`, `brindo`, `fumo`, `tomo algo`, `chupo`, `emborrach*`, `le doy una
+   pitada`…), sobre las 60 opciones y las 4 bajadas; y «esa guarda sabe ver, y deja pasar el
+   «tomar» que no es tomar», que la prueba con cinco frases que tiene que cazar («Me sirvo otro»,
+   «Brindo con los míos»…) y seis que tiene que dejar pasar («Lo tomo como viene», «La noche toma
+   forma», «Tomo una foto», «Me tomo mi tiempo», «Lo paso y sigo charlando», «Miro subir el humo»).
+   Cumple el criterio de arriba: quedaron afuera `pego una`, `me clavo`, `me mando una`, `me prendo
+   uno` y `tomo` suelto.
+   **Es piso, no techo.** No recorre enunciados (ahí el consumo puede estar) ni sellos ni líneas que
+   cantan, y no ve lo que toca el consumo sin la palabra («Lo paso», «Miro subir el humo») ni el
+   caso 2: eso sigue por lectura de `revisor`. `me tomo una` y `tomamos una` siguen sin sumar.
 4. **«Ricotero» y la banda para puntuar, en un enunciado:** la lista de la banda como credencial
    solo mira opciones.
    **[Leído 2026-10-06 por `REV-20`: pasa, y se cierra como lectura.]** «Ricotero» no aparece en
@@ -2501,10 +2567,21 @@ hallazgo y la regla sigue como estaba.
    que se lee; el único nombre propio es «Redondos» (`EJ-040`). Las cifras y los años se pueden
    contar con una expresión regular sobre todo el texto visible (propuesta al hilo); los lugares
    con nombre son una lista abierta y quedan por lectura.
+   **[Cerrado en lo contable, 2026-10-06, cierre de `REV-20`, por `bc19f8d`.]** `banco.test.ts`:
+   «nada de lo que se lee trae un número (BR-38, hueco 5)», con `/\d/` sobre los enunciados, las
+   opciones, los nombres y bajadas de las maneras, los sellos y las líneas que cantan. Cubre
+   cifras y años escritos con dígitos. **No ve** una cifra escrita con letras ni un lugar con
+   nombre: esos siguen por lectura de `revisor`.
 6. **Un chico junto a lo que se toma o se fuma, y los temas por su título:** nada los mira.
    **[Leído 2026-10-06 por `REV-20`: pasa.]** Un solo chico, «su hija grande» (`EJ-051`), en una
-   hoja sin lo que se toma ni se fuma (ver «La gente de la noche»). Temas por su título: 0 de 104
-   aparecen enteros, salvo «pogo», que también es un tema de *Último bondi a Finisterre* y acá es
+   hoja sin lo que se toma ni se fuma (ver «La gente de la noche»). **[2026-10-06, cierre de
+   `REV-20`** («Sin consenso» 18, punto 2)**:** «un solo chico» era de más y contradecía a
+   `contenido`, que la trata como crecida («sin otra hija con quien contrastar, *grande* es
+   crecida», `CNT-31` §14.3), y a esta misma regla, que dice que la edad no decide. Léase: **un
+   solo ítem con una hija, «su hija grande», que puede leerse adulta o, como dijo un verificador,
+   la hija mayor, una nena.** Esta regla no lo zanja y no lo necesita: pasa igual, porque la hoja
+   no trae lo que se toma ni se fuma, y el texto de `EJ-051` no cambia.**]** Temas por su título:
+   0 de 104 aparecen enteros, salvo «pogo», que también es un tema de *Último bondi a Finisterre* y acá es
    el ritual, en minúscula y como paisaje (`EJ-052`); esta regla lo permite en la escena. Una
    guarda de títulos tendría que exceptuarlo; no la pido.
 7. **[Nuevo 2026-10-06.] La música que molesta, con palabras que la lista no nombra:** la guarda
@@ -2539,6 +2616,15 @@ nombres, bajadas, sellos y líneas (2), una lista de frases de consumo por objet
 (5). El 4 se cierra como lectura y el 6 no pide guarda. Desde acá los lee `revisor` en cada `REV`
 que toque el banco.**]**
 
+**[2026-10-06, cierre de `REV-20`:** lo de arriba («siguen sin prueba, como propuestas al hilo»)
+ya no es cierto. `bc19f8d` sumó la prueba del **2** (la merca en nombres, bajadas, sellos y
+líneas), del **3** (frases de consumo con su objeto, en opciones y bajadas) y del **5** (ningún
+dígito en lo que se lee), cada una con lo que ve y lo que no, escrito en el hueco. Estado
+vigente: **1, 2, 3 y 5, con prueba** (piso, no techo: lo que la máquina no ve sigue por lectura de
+`revisor`); **4, cerrado como lectura**, con `trapo*` en las opciones desde `783d430`; **6, sin
+guarda**, como pedí; **7, con la lista ampliada de `783d430`**, y tres entradas anchas declaradas
+en el comentario del test (`bc19f8d`). Ningún hueco bloquea el banco.**]**
+
 ### Lo que `REV-20` leyó del banco (2026-10-06, ronda final)
 
 Las cifras son las de la lectura de `REV-20` con las objeciones de sus verificadores ya aplicadas:
@@ -2549,6 +2635,25 @@ lugares vive en `REV-20`, no acá; lo de abajo es lo que toca a las reglas de es
 - **Los cinco lugares: 30 de 30.** Reservas escritas, ninguna rompe: `EJ-043` («trapo» es todo el
   enunciado; tapada la palabra queda «cada barrio ata su ___»), `EJ-049` (la B canta sin decir
   qué) y `EJ-052` (tres palabras del código en catorce).
+  **[2026-10-06, cierre de `REV-20`** («Sin consenso» 18, punto 1)**:** esta línea se escribió con
+  el borrador de `REV-20` abierto y dijo «30 de 30» como si estuviera todo dicho. La lectura ya
+  cerró y coincide: su resumen por lugar dice lo mismo, con las mismas tres reservas. Pero tres
+  ítems que pasan por esa tabla están en su «Sin consenso» (un verificador dijo real y el otro
+  no), y **`producto` no decide dos de los tres:**
+  - `EJ-040`, «Me dejo llevar» con «los Redondos a todo lo que da» («Sin consenso» 1). **Abierto:
+    lo decide el hilo con `contenido`.** La lectura lo deja pasar con duda (la B se inclina a
+    caos; es el 040 de la cuenta del patrón 3, más abajo). Esta regla no se pronuncia: «Redondos»
+    es legal en un enunciado (hueco 4) y lo que se discute es una lectura de devoción de
+    `BR-36`. El texto no cambia hasta que se decida.
+  - `EJ-054`, «Aviso que llegué» («Sin consenso» 3). **Sin cambio: queda como está en `CNT-31`.**
+    La lectura lo deja pasar en el cuarto lugar. Lo que dice esta regla es lo que ya dice
+    `BR-36` («Volviendo de noche sin compañía»): se arregla hablando de cómo se ocupa el tiempo,
+    con «a quién se le cuenta» entre los ejemplos. Si la A se oye como precaución es lectura de
+    oído, y `producto` no la zanja.
+  - `EJ-051`, «su hija grande» («Sin consenso» 2). **Este sí es de `producto` y está decidido
+    (`6b1beeb`): «escena» es la hoja y el ítem no cambia.** Ver «La gente de la noche».
+  El «30 de 30» sigue siendo la lectura de `REV-20`; para `EJ-040` y `EJ-054` queda con su «sin
+  consenso» al lado, y ninguna regla de acá cambia con cómo se resuelvan.**]**
 - **El quinto lugar: dónde aparece lo que se toma o se fuma.** Por palabra, en 7 enunciados
   (`EJ-029`, `031`, `035`, `039`, `048`, `049`, `053`) y en 0 de las 60 opciones. Sin la palabra,
   por referencia, en tres opciones (`EJ-029` A y `EJ-048` A, «Lo paso»; `EJ-048` B, «Miro subir
@@ -2629,11 +2734,14 @@ ve peor: cuenta una palabra y la decisión está en el verbo. Se acepta, como se
 node --test src/lib/dos-ejes/banco.test.ts src/lib/esquemas.test.ts src/lib/pisos.test.ts src/lib/voz.test.ts
 rg -n "^## BR-38" Docs/PRODUCTO/PRD-alcance-v1.md
 rg -n "^[134]\. \*\*\[REEMPLAZADO por BR-38" Docs/PRODUCTO/PRD-alcance-v1.md
+rg -n "«Hoja» es una decisión|«un solo chico» era de más|Manda la tabla|ya no es cierto" Docs/PRODUCTO/PRD-alcance-v1.md
 ```
 
-El último tiene que devolver **tres líneas**, los vetos 1, 3 y 4 de `BR-36`. Lo que ningún
-comando corre —los cinco lugares, «más de adentro», lo sucio por celda, la merca— lo lee `revisor`
-en cada `REV` que toque el banco **[2026-10-06, ronda final:** decía «lo lee `REV-20`»**]**.
+El tercero tiene que devolver **tres líneas**, los vetos 1, 3 y 4 de `BR-36`. **[2026-10-06,
+cierre de `REV-20`:** decía «el último»; el cuarto, que suma las marcas de este cierre, tiene que
+devolver **cinco líneas**: la decisión de la hoja, la hija del hueco 6, el veto 1, el estado de
+los huecos y el propio comando.**]** Lo que ningún comando corre —los cinco lugares, «más de
+adentro», lo sucio por celda, la merca— lo lee `revisor` en cada `REV` que toque el banco **[2026-10-06, ronda final:** decía «lo lee `REV-20`»**]**.
 
 ---
 
