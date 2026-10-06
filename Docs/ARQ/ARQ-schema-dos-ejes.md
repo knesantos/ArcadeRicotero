@@ -12,15 +12,257 @@
 > §6.5, `Docs/SUGERENCIAS/HILO-para-arquitectura-y-contenido-el-taller-v2.md`,
 > `src/lib/dos-ejes/isla.test.ts`, `src/lib/islas.test.ts`, `scripts/dos-ejes-manifiesto.json`,
 > `scripts/fuentes/`, `package.json`, `src/data/dos-ejes.json`.
-> Produce: `CTR-08` (v1 2026-08-24, **v2 2026-10-04**, **enmienda 1 de la v2: 2026-10-04**).
-> Última actualización: 2026-10-04 (enmienda 1 de `CTR-08` v2: el taller como quedó al
-> construir).
+> **Para la enmienda 2, además:** `D-62` enmiendas 2 y 3, `US-06` enmienda tercera y criterio 9
+> (`PRD-alcance-v1.md`), `UX-38` v1.1 (§2, §5, §8), `CNT-31` §13, `REV-20` (`FIND-128`),
+> `src/lib/dos-ejes/partida.ts`, `copy.ts`, `copy.test.ts`, `src/scripts/partida-dos-ejes.ts`.
+> Produce: `CTR-08` (v1 2026-08-24, **v2 2026-10-04**, **enmienda 1 de la v2: 2026-10-04**,
+> **enmienda 2 de la v2: 2026-10-06**).
+> Última actualización: 2026-10-06 (enmienda 2 de `CTR-08` v2: el plano fijo, `planoFijo()` y
+> `PLANO_FIJO`).
 
-**Vigente: `CTR-08` v2, con la enmienda 1.** La v1 queda abajo entera, sin borrar: el schema
+**Vigente: `CTR-08` v2, con las enmiendas 1 y 2.** La v1 queda abajo entera, sin borrar: el schema
 v2 es la v1 más lo que suma la noche, y las alternativas descartadas de la v1 siguen valiendo.
 Donde una sección de la v1 quedó reemplazada o ampliada, lo dice una marca al principio de la
-sección. La enmienda 1 no toca el schema: corrige lo que la v2 decía del taller y de las
-guardas, con una marca en cada lugar que dejó de ser cierto.
+sección. Ninguna de las dos enmiendas toca el schema: la 1 corrige lo que la v2 decía del taller
+y de las guardas; la 2 suma al motor la función del plano de dos ejes. Cada una deja una marca en
+cada lugar que dejó de ser cierto.
+
+---
+
+## CTR-08 v2, enmienda 2 — El plano fijo: `planoFijo()` y `PLANO_FIJO`
+
+- **Fecha:** 2026-10-06.
+- **Estado:** **vigente.** Escrita leyendo el código, no corriéndolo (`D-12`):
+  `src/lib/dos-ejes/partida.ts` (`PLANO_FIJO` y `planoFijo`, líneas 206-238),
+  `src/scripts/partida-dos-ejes.ts` (`plano()` y su llamada dentro de `grilla()`),
+  `src/lib/dos-ejes/copy.ts` (`RESULTADO.altPlano` y `RESULTADO.lugares`), `partida.test.ts`,
+  `isla.test.ts` y `copy.test.ts`. No espera ninguna ficha `RES-XX`: no hay hecho externo en
+  juego.
+- **Pedido por:** `REV-20`, `FIND-128`, confirmado por los dos verificadores. v2.5 dice "lo que
+  el archivo ya tiene es lo que este contrato fija", y su lista no traía `planoFijo()` ni
+  `PLANO_FIJO`, que entraron con `D-62` enmienda 3. La enmienda tercera de `US-06` le atribuye
+  el motor del plano a `arquitectura`.
+- **Por qué enmienda y no v3:** el schema y el dato no cambian ni un carácter (`contratoVersion`
+  sigue en 2), y nada de lo que el contrato fijaba deja de valer: `disposicion()` sigue igual y
+  sigue ordenando la grilla. Se suma una función. Lo que este papel decía y quedó a medias lleva
+  una marca en su lugar que apunta acá.
+- **La decisión no es mía.** La orientación la eligió el usuario mirando las dos versiones lado
+  a lado: *"B, el fijo como el rombo viejo"* (`D-62` enmienda 3). La "B" es la de esa
+  comparación. En la tabla de `UX-38` §2.4, la misma orientación es la opción **A**. Este
+  contrato fija la forma de la función y qué la vigila. Si el plano es fijo no lo decide.
+
+### E2.1 — La firma
+
+```ts
+export const PLANO_FIJO = {
+  renglones: ['luz', 'oscuridad'],   // arriba, abajo
+  columnas: ['orden', 'caos'],       // izquierda, derecha
+} as const satisfies { renglones: readonly [LO, LO]; columnas: readonly [OC, OC] };
+
+planoFijo(banco) -> {
+  celdas:    [Cuadrante ×4],               // arriba-izq, arriba-der, abajo-izq, abajo-der
+  renglones: typeof PLANO_FIJO.renglones,   // readonly ['luz', 'oscuridad']
+  columnas:  typeof PLANO_FIJO.columnas,    // readonly ['orden', 'caos']
+}
+```
+
+(`LO` y `OC` abrevian `Cuadrante['luzOscuridad']` y `Cuadrante['ordenCaos']`.)
+
+Tres cosas de la firma son contrato, no detalle:
+
+1. **Recibe `banco` y nada más.** No recibe el resultado, ni el id de la tuya, ni el del enlace:
+   no tiene con qué girar. Marcar la tuya y la del amigo le toca a la isla, que compara ids sobre
+   `celdas`.
+2. **Las celdas van en orden de lugar, por renglones:** arriba a la izquierda, arriba a la
+   derecha, abajo a la izquierda, abajo a la derecha. Es el mismo orden posicional que el de
+   `disposicion().celdas`: la tuya arriba a la izquierda, al lado la de tu renglón, abajo la de tu
+   columna y en diagonal la opuesta. Por eso `RESULTADO.lugares` (`copy.ts`) puede ser una lista
+   literal de cuatro lugares sin repetir la orientación: el índice `k` es siempre el mismo rincón,
+   diga lo que diga `PLANO_FIJO`.
+3. **`renglones` y `columnas` llevan el tipo literal**, no `Polo`. El tipo dice
+   `['luz', 'oscuridad']`, así que dar vuelta el plano obliga a cambiar `PLANO_FIJO`. Eso cambia
+   el tipo y pone en rojo el test. No hay manera de rotarlo con un argumento.
+
+`PLANO_FIJO` es la **única tabla de lugares** del sitio, y es de polos, no de maneras: dice qué
+polo va en cada borde, no qué `CU-n` va en cada rincón. Cada rincón se resuelve buscando en el
+banco el cuadrante que tiene esos dos polos, con `buscar`, la misma función que usa
+`disposicion`. Así se sostiene la regla de v2.5, según la cual las dos funciones piden `banco` y
+no solo ids. Una tabla `CU-1 → arriba a la izquierda` sería la segunda fuente de verdad de los
+polos que `.claude/rules/codigo-juegos.md` prohíbe.
+
+### E2.2 — Qué garantiza
+
+- **El mismo mapa para todos.** Luz arriba, Oscuridad abajo, Orden a la izquierda y Caos a la
+  derecha. Con el banco de hoy: `CU-1` arriba a la izquierda, `CU-2` arriba a la derecha, `CU-3`
+  abajo a la izquierda y `CU-4` abajo a la derecha (`UX-38` §2.1). Si un `CU-n` cambiara de polos
+  (lo frena `banco.test.ts`, v2.8 punto 10), cambiaría de rincón con ellos y no por una tabla.
+- **Las cuatro maneras, una vez cada una.**
+- **Ningún número.** Las celdas son `Cuadrante`, que son strings, y los márgenes son polos, también
+  strings. No hay coordenadas, ni distancia al eje, ni punto. La regla de `CTR-08.6` (lo que no
+  está en el tipo no se puede mostrar) se extiende a esta función igual que a `disposicion`.
+- **Falla ruidosa con un banco cojo.** Si falta el cuadrante de alguna combinación de polos,
+  `buscar` tira `PartidaImposible`, como en `disposicion`. **Qué ve la gente:** la isla llama a
+  `plano()` dentro de un `try/catch` y, si falla, sigue sin plano. La grilla, el contraste y los
+  botones no cambian. El plano es un dibujo de más: todo lo que muestra está también en la
+  grilla, salvo el lugar, y el lugar no justifica una pantalla rota. En la práctica, un banco sin
+  un cuadrante hace fallar antes a `disposicion`, que la isla llama antes que a `grilla()` y que
+  busca las mismas cuatro combinaciones. El `try/catch` cubre lo que depende de la isla: armar el
+  DOM y leer `lugares`.
+
+**Lo que se acepta, dicho:** «Mesa larga a las nueve» queda siempre arriba a la izquierda y
+«Mochila liviana, sin mapa» siempre abajo a la derecha. Es la jerarquía de lugar que `D-57` punto 7
+le sacó al rombo y que `disposicion()` existía para evitar. Vuelve por decisión del usuario
+(`D-62` enmienda 3), y `producto` exceptúa el plano del criterio 3 de `US-06`, solo en el lugar. No
+vuelven el punto, la graduación ni ningún número.
+
+### E2.3 — Por qué es otra función y no `disposicion()`
+
+**El plano es el mapa; la grilla, la lista** (`D-62` enmienda 3, `UX-38` §2.2). Hacen trabajos que
+se contradicen a propósito:
+
+| | `disposicion(banco, id)` | `planoFijo(banco)` |
+|---|---|---|
+| Qué dibuja | la grilla de dos por dos, con las explicaciones | el recorte con los ejes en cruz |
+| Orientación | **relativa**: la tuya arriba a la izquierda y tus polos en los primeros márgenes | **fija**: Luz arriba, Orden a la izquierda |
+| Recibe el resultado | sí, es lo que la ordena | no |
+| Qué afirma su test | cada manera pasa una vez por cada lugar (cuadrado latino, `UX-38` §2.3) | que no depende de quién juega |
+| Para qué sirve | leer: la tuya primero | ubicarse: dónde cayó cada uno, el mismo dibujo para dos amigos |
+
+La grilla sigue relativa y sigue bajo el criterio 3 de `US-06`. La frase de v2.5 "cada manera
+encabeza su propia grilla y ninguna otra" sigue siendo cierta **de la grilla**. Lo que dejó de ser
+cierto es que la pantalla del resultado no tenga ningún lugar fijo: ahora lo tiene el plano, que va
+arriba de la grilla.
+
+**Las dos devuelven la misma forma** (`celdas`, `renglones` y `columnas`, con las celdas en el mismo
+orden de lugar), y no por casualidad: la isla pinta las dos figuras leyendo el arreglo de la misma
+manera. Con el banco de hoy, `planoFijo(banco)` da lo mismo que `disposicion(banco, 'CU-1')`. Eso es
+una coincidencia del dato, no una definición (alternativa descartada 2).
+
+**No hace falta una guarda entre `planoFijo` y `relacion`**, y conviene decir por qué, ya que entre
+`disposicion` y `relacion` sí hizo falta (v2.5). Las posiciones de `disposicion` dependen del id que
+recibe y se calculan por un camino distinto del de `relacion`. Las de `planoFijo`, en cambio, el
+test las clava a polos concretos (`['luz', 'orden']`, `['luz', 'caos']`, …), y `relacion` compara
+polos. Compartir un polo con el amigo equivale, por construcción, a estar en la misma fila o en la
+misma columna del plano. Alcanza con el test que fija los polos de cada lugar.
+
+### E2.4 — Qué la vigila
+
+| Qué | Dónde | Cómo |
+|---|---|---|
+| Luz arriba y Orden a la izquierda; las celdas en orden de lugar y con sus polos; las cuatro distintas; que no reciba el resultado | `src/lib/dos-ejes/partida.test.ts`, *"el plano es fijo: Luz arriba, Orden a la izquierda, para todos (D-62 enmienda 3)"* | `deepEqual` de `renglones`, `columnas` y los polos de cada celda; `Set` de ids de tamaño 4; `planoFijo.length === 1` |
+| Que la grilla siga relativa, sin que el plano fijo se cuele en `disposicion` | `partida.test.ts`, *"la grilla relativa no le da a nada un lugar fijo (UX-38 §2.3)"* y *"la grilla pone la tuya primero…"* | cuadrado latino; cada polo arriba en dos de las cuatro |
+| Que el plano salga del motor y no escriba los polos a mano, y que la grilla calcule `disposicion` una sola vez | `src/lib/dos-ejes/isla.test.ts`, *"el plano es una imagen con su texto y no tiene nada que se toque (UX-38 §5)"* | en el cuerpo de `plano()`: `planoFijo(banco)` exacto y ninguna de `'luz'`, `'oscuridad'`, `'orden'` ni `'caos'`; además, `role="img"` y `RESULTADO.altPlano(`, sin `a`, `button`, `tabindex` ni punto |
+| El texto del lector: los dos ejes enteros, el nombre de la tuya y el de la del enlace, sin dígitos ni *mejor/peor/primera/última/más*, en registro 3 | `src/lib/dos-ejes/copy.test.ts`: seis tests sobre veinte casos armados con `planoFijo(BANCO)` | el texto lo fija `contenido` (`CNT-31` §13), no este contrato |
+| Los tipos | `npm run check` | `renglones` y `columnas` literales; las celdas son `Cuadrante`, sin números |
+
+**Lo que nadie vigila, o se vigila a medias.** Ninguno de estos puntos rompe hoy el contrato: el
+código hace lo que esta enmienda fija. Pero son los lugares por donde se rompería sin que nada se
+ponga en rojo:
+
+- **a. `planoFijo.length === 1` no ve un segundo parámetro con valor por omisión ni un
+  `...resto`:** `function f(banco, id = '')` también tiene `length` 1. Hoy lo tapa el otro lado,
+  porque `isla.test.ts` exige `planoFijo(banco)` con el paréntesis cerrado y la isla no le puede
+  pasar el resultado. Un llamador nuevo fuera de la isla quedaría sin guarda. **Recomendado, no
+  exigido:** en `partida.test.ts`, para cada `CU-n`, llamarla con el id de más y exigir el mismo
+  resultado que sin él: `(planoFijo as (...a: unknown[]) => unknown)(BANCO, id)` igual a
+  `planoFijo(BANCO)`. El molde va sobre la función y no sobre el argumento, para que `npm run
+  check` no frene el llamado de más. Son tres líneas, y la guarda no depende del tipo.
+- **b. `RESULTADO.lugares` puede mentir sin que nada falle.** Es una lista literal en el orden de
+  `planoFijo().celdas` (E2.1, punto 2). Si alguien cruza dos cadenas, el dibujo muestra «Ronda en
+  cualquier esquina» arriba a la derecha y el lector dice "abajo a la izquierda", y el único que se
+  entera es quien no ve. `copy.test.ts` arma el texto con `lugares[k]` pero no mira qué dice.
+  **Recomendado:** exigir que `lugares[k]` diga "arriba" si y solo si `k < 2`, e "izquierda" si y
+  solo si `k` es par. El texto es de `contenido`; la guarda, del hilo principal.
+- **c. El armado de los argumentos de `altPlano` está escrito dos veces:** en `plano()` de la isla y
+  en `lo()` de `copy.test.ts`, a mano (`REV-20`, lente pantalla, diferido 2). Si la isla cambia cómo
+  arma `arriba`, `tuya` o `suya`, el test sigue en verde sobre su copia. **Recomendado, no
+  exigido:** una función pura en `src/lib/dos-ejes/` que reciba lo que devuelve `planoFijo`, el id
+  de la tuya y el del enlace, y devuelva los argumentos o el texto; la usarían la isla y el test.
+  No va en `partida.ts`, porque el motor no conoce el copy y conviene que siga así.
+
+### E2.5 — Lo que este papel decía, al día
+
+Marcado en su lugar, sin borrar:
+
+- **v2.5, la lista del motor:** se suman `PLANO_FIJO` y `planoFijo`.
+- **v2.5, `disposicion`:** "ninguna queda fija arriba para todos" sigue siendo cierto de la grilla
+  y deja de serlo de la pantalla.
+- **v2.9, comando (3) y fila 8 de la tabla:** el plano entra en "sin números".
+- **v2.10, "Difícil, a propósito":** se suma que el plano reciba el resultado.
+- **E1.5, puntos 1 y 2: hechos.** Lo encontré leyendo el código para esta enmienda, y es el mismo
+  defecto que `FIND-128` en la dirección contraria: el papel pedía lo que el código ya tiene.
+  - La guarda de glifos está en el taller (`scripts/generar-dos-ejes.mjs`, con
+    `hasGlyphForCodePoint`) y en `tarjetas.test.ts` (*"cada fuente del taller trae cada letra que
+    dibuja"*), con su rojo (*"la guarda de letras sabe ver: la Ñ no está en la calcada"*).
+  - La huella cuenta lo que se pinta: `textosDelTaller()` (`taller.ts`) devuelve los textos por
+    fuente, con el sello, la línea que nombra y el dominio ya armados, y `huellaDelTaller()` la
+    incluye entera como `pintado`. Es la forma que E1.5 sugería: una tabla y no dos.
+  - Siguen abiertos los agujeros a y b de E1.4 (un archivo de salida editado a mano y un archivo de
+    más en las carpetas). `tarjetas.test.ts` no tiene ni `readdirSync` ni hash de salidas. Siguen
+    recomendados.
+- **E1.2, la tabla de fuentes:** decía que Oktubre Calco pinta "ARCADE RICOTERO". Desde `D-60`
+  pinta `RESULTADO.marca` en mayúsculas, "FICHÍN RICOTERO", con la Í derivada. La guarda de glifos
+  la cubre.
+
+### E2.6 — Verificación
+
+```bash
+node --test src/lib/dos-ejes/partida.test.ts   # "el plano es fijo…" y "la grilla relativa no le da a nada un lugar fijo"
+node --test src/lib/dos-ejes/isla.test.ts      # "el plano es una imagen con su texto…": planoFijo(banco), sin polos a mano
+node --test src/lib/dos-ejes/copy.test.ts      # el texto del lector en los veinte casos
+npm run check                                  # los tipos literales de renglones y columnas
+rg -n "planoFijo|PLANO_FIJO" src/              # llamadores: la isla, copy.test.ts y partida.test.ts; ninguna tabla de lugares fuera de partida.ts
+```
+
+`arquitectura` no ejecuta (`D-12`): lo corre el hilo principal o `revisor`. `REV-20` ya corrió la
+suite entera con este código y dio 1531 de 1531 en verde. Esta enmienda no cambia código, así que
+no hay nada nuevo que tenga que ponerse en verde.
+
+### E2.7 — Alternativas descartadas
+
+1. **La orientación relativa, con el plano igual que la grilla** (`UX-38` v1, opción D de §2.4;
+   `D-62` enmienda 2, en el punto "Relativo, como la grilla"). Es lo que `disposicion` ya hacía y
+   lo que este contrato defendía para la grilla en v2.5: la tuya arriba a la izquierda, cada manera
+   una vez por cada lugar y ninguna fija. **La descartó el usuario** después de verla al lado de la
+   fija. Lo que tenía en contra, y que la crítica de `UX-38` puso en el centro: con la tuya siempre
+   en el mismo rincón, el plano no mostraba dónde caíste (solo cambiaban los rótulos), y eso era
+   justo lo que se pidió. Además, dos amigos con resultados opuestos veían el dibujo espejado. Se
+   construyó, se mostró y no se borró: sigue viva en la grilla. Volver a ella costaría poco: la
+   isla dibujaría el plano con `disposicion` y se retirarían las dos guardas de E2.4 que atan el
+   plano a `planoFijo`.
+2. **`planoFijo` como `disposicion(banco, <el de luz y orden>)`.** Con el banco de hoy da lo mismo
+   y ahorra cinco líneas. La descarto porque ata el mapa fijo al comportamiento de la lista: si
+   mañana `disposicion` pone la tuya en otro rincón (`UX-38` §2.4, opción E), el plano se mueve sin
+   que nadie lo haya decidido. Además, "fijo" quedaría definido como "relativo a una manera
+   elegida", que es otra cosa.
+3. **Un parámetro en `disposicion`** (`disposicion(banco, id, { fija: true })`). Sería una función
+   con dos significados según un booleano, para dos figuras que la decisión del usuario separó a
+   propósito. Y el tipo de retorno no podría decir `['luz', 'oscuridad']`: sería `Polo`, y la
+   orientación quedaría librada a la palabra.
+4. **`planoFijo(banco, id)`, para que devuelva también cuál es la tuya.** Le ahorraría a la isla el
+   `findIndex`, pero abre la puerta por donde el plano gira con quien juega, que es justo lo que el
+   usuario cerró. Marcar la tuya le toca a la isla; el mapa no sabe quién lo mira.
+5. **Una tabla de lugares por `CU-n`** (`{ 'CU-1': 'arriba a la izquierda', … }`), en la isla o en
+   el copy. Sería una segunda fuente de los polos: si un `CU-n` cambiara de polos, el dibujo y el
+   banco dirían cosas distintas. `isla.test.ts` lo impide en la isla.
+6. **La orientación en el dato** (`"plano": { "arriba": "luz", … }` en `dos-ejes.json`). No es texto
+   ni contenido: es una decisión del usuario sobre una figura. En el JSON, una edición de `contenido`
+   la cambiaría con un salto de `contratoVersion`, y el tipo literal de E2.1 dejaría de existir.
+7. **Coordenadas** (`x` e `y` en −1 y 1, o un punto por manera). Son números, y el primer
+   componente que los reciba los va a pintar como un punto a cierta distancia del eje. Lo impiden
+   el criterio 9 de `US-06` y `BR-17`, por la misma razón que la alternativa 6 de v2.5.
+
+### E2.8 — Para quién
+
+- **El hilo principal:** nada exigido; quedan tres recomendaciones (E2.4 a, b y c). Hay además una
+  consecuencia de `D-62` enmienda 3 que no me toca: su lista de consecuencias reparte entre
+  `producto`, `experiencia` y `contenido` y no nombra a `arquitectura`, aunque `US-06` le atribuye
+  el motor. Con esta enmienda la parte del motor queda escrita. Si el hilo quiere que la decisión
+  lo diga, es una línea en `D-62`.
+- **`contenido`:** si se suma la guarda de E2.4 b, conviene que confirme el orden de las cuatro
+  cadenas de `lugares`.
+- **`revisor`:** esta enmienda cierra la parte de `FIND-128` que toca a `CTR-08`; la de `D-62` es
+  del hilo.
 
 ---
 
@@ -64,7 +306,7 @@ guardas, con una marca en cada lugar que dejó de ser cierto.
 
 | Archivo | Licencia | Qué pinta |
 |---|---|---|
-| `public/fuentes/oktubre-calco.woff` | calco propio (`RES-43`) | la marca, "ARCADE RICOTERO" |
+| `public/fuentes/oktubre-calco.woff` | calco propio (`RES-43`) | la marca, "ARCADE RICOTERO" *[enmienda 2: desde `D-60`, "FICHÍN RICOTERO" (`RESULTADO.marca`), con la Í derivada. E2.5]* |
 | `scripts/fuentes/archivo-black.ttf` | OFL (`OFL.txt` al lado) | el título del juego, "ME SALIÓ", los nombres, los sellos, la pregunta de abajo |
 | `scripts/fuentes/dejavu-sans.ttf` | Bitstream Vera, con los cambios de DejaVu en dominio público (`LICENCIA-DEJAVU.txt`) | la bajada, el crédito, el dominio |
 | `scripts/fuentes/dejavu-sans-bold.ttf` | ídem | la línea que nombra; los cuatro nombres de la vista del juego |
@@ -168,6 +410,10 @@ a un `node:*`: ninguna isla puede llegar a `taller.ts`. No lo nombra; lo cubre l
   alto y se lo pasa a las cuatro—; el test ve ese número. Alcanza.
 
 ### E1.5 — Lo que falta del hilo principal
+
+> **[AL DÍA en la enmienda 2, 2026-10-06]:** los puntos 1 y 2 están hechos —la guarda de glifos
+> en el taller y en `tarjetas.test.ts`, con el rojo de la Ñ; la huella con `textosDelTaller()`
+> como `pintado`—. El 3 sigue: los agujeros a y b de E1.4 están abiertos. E2.5.
 
 Reemplaza la lista de v2.10, que quedó cumplida salvo un punto (E1.6).
 
@@ -427,6 +673,9 @@ disposicion(banco, id)              -> { celdas: [Cuadrante ×4], renglones: [po
 relacion(banco, mio, suyo)          -> Relacion
 ```
 
+*[Enmienda 2, 2026-10-06: el archivo tiene además `PLANO_FIJO` y `planoFijo(banco)`, el plano de
+dos ejes fijo de `D-62` enmienda 3, que esta lista no traía. Firma, garantías y guardas, en E2.]*
+
 #### `sortearPartida`, en orden
 
 1. **Si `momentos.length !== preguntasPorEje`, tira `PartidaImposible`** con los dos números
@@ -485,7 +734,9 @@ decía: si aparece un desempate en el motor, es que algo se rompió antes.
 maneras: dicen qué tienen en común, que es lo que la grilla cuenta. Con `CU-1` da `CU-1, CU-2,
 CU-3, CU-4`; con `CU-4`, `CU-4, CU-3, CU-2, CU-1`. **Cada manera encabeza su propia grilla y
 ninguna otra**, así que ninguna queda fija arriba para todos: lo que el rombo de la v1 no
-lograba.
+lograba. *[Enmienda 2, 2026-10-06: sigue cierto de la grilla. De la pantalla del resultado ya
+no: arriba de la grilla va el plano fijo (`planoFijo`), que deja cada manera en el mismo rincón
+para todos, por decisión del usuario (`D-62` enmienda 3). E2.3.]*
 
 **Ningún número.** Las celdas son `Cuadrante` (strings) y los márgenes son polos (strings). No
 hay distancia, ni porcentaje, ni "qué tan opuesta". La regla de `CTR-08.6` —lo que no está en
@@ -749,6 +1000,7 @@ node --test src/lib/esquemas.test.ts
 node --test src/lib/dos-ejes/banco.test.ts
 
 # (3) Motor: la noche por momentos, vistos, resolverCuadrante, disposicion y relacion.
+#     [Enmienda 2: y planoFijo, "el plano es fijo…". E2.4 y E2.6.]
 node --test src/lib/dos-ejes/partida.test.ts
 
 # (4) Taller: la huella al día, las salidas completas, medidas, techos y lo prohibido.
@@ -802,7 +1054,7 @@ cuente el sello, la línea y el dominio—. Los dos agujeros siguen recomendados
 | 5 | `momentos.length === preguntasPorEje` | (2) y el motor |
 | 6 | Tres por celda, treinta listos | (2) |
 | 7 | Un ítem de cada eje por momento, impar por eje, sin repetir, otra noche sin repetir | (3) |
-| 8 | El resultado, la grilla y la relación sin números | (3) y los tipos |
+| 8 | El resultado, la grilla y la relación sin números *[enmienda 2: y el plano, E2.2]* | (3) y los tipos |
 | 9 | Empate imposible y cuatro cuadrantes alcanzables, por enumeración | (5) |
 | 10 | Las tarjetas dicen lo que dice el banco hoy | (4) |
 | 11 | Ningún recorte toca el óvalo ni el título | (4) y el taller |
@@ -815,7 +1067,9 @@ cuente el sello, la línea y el dominio—. Los dos agujeros siguen recomendados
 - **Fácil:** que la segunda noche no repita la primera. Es un parámetro con valor por omisión;
   la isla que no lo pasa sigue andando como antes.
 - **Difícil, a propósito:** que un ítem caiga en dos celdas, que la grilla traiga una
-  distancia, que la relación ordene. Las tres cosas serían cambiar el contrato.
+  distancia, que la relación ordene. Las tres cosas serían cambiar el contrato. *[Enmienda 2:
+  y una cuarta, que el plano reciba el resultado y gire con quien juega (E2.1, E2.7 alternativa
+  4).]*
 - **Difícil, y es nuevo:** cambiar la cantidad de preguntas (v2.2).
 - **Lo que le impone a `contenido` (`CNT-30`):** la forma de v2.2 a v2.4. Y una que no es de
   forma: **cada vez que cambia un nombre, una bajada o un texto que la tarjeta pinta, hay que
