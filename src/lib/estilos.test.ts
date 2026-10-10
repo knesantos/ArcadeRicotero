@@ -494,6 +494,11 @@ const ESTADOS_PONELOS = [
   '.bandeja--vacia',
   '.mano--cargada',
   '.lista--compartida',
+  // `D-69`: el mazo de a una y las filas propias.
+  '.pieza--recien',
+  '.carta--moviendo',
+  '.mazo--moviendo',
+  '.filas--editando',
 ];
 
 test('US-08: lo que tenes en la mano no se comunica solo con color', () => {

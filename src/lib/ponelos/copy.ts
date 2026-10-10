@@ -38,7 +38,7 @@ export const PANTALLA_0 = {
    * que alguien podría entender mal antes de tocar: el que llega esperando un puntaje
    * tiene que enterarse acá y no al final.
    */
-  subtitulo: 'Elegí qué repartir. Tocás una ficha, tocás una fila, y no hay orden correcto.',
+  subtitulo: 'Elegí qué repartir. Te toca una por vez, las filas las nombrás vos, y no hay orden correcto.',
   /** Registro 1: imperativo voseado, y dice lo primero que hay que hacer. */
   boton: 'Elegí qué repartir',
   volver: 'AL FICHÍN',
@@ -49,6 +49,18 @@ export const ELECCION = {
   titulo: 'Qué repartís',
   /** El renglón chico de cada conjunto. Se invoca con un número. */
   cuantas: (n: number) => `${n} fichas`,
+  /**
+   * La partida que quedó a medias (`D-69`). Con los ciento cinco temas, repartir de un saque
+   * no es la regla: se sigue otro día, y la elección lo ofrece arriba de todo.
+   */
+  retomar: {
+    /** Registro 3: el sello de la tarjeta. */
+    rotulo: 'TE QUEDÓ A MEDIAS',
+    /** Registro 1: imperativo voseado, y nombra qué se sigue. */
+    boton: (conjunto: string) => `Seguí con ${conjunto}`,
+    /** Registro 3: cuánto falta. Orientación, no medición (`BR-22`). */
+    dato: (faltan: number, total: number) => `Faltan ${faltan} de ${total}`,
+  },
 } as const;
 
 /**
@@ -79,6 +91,14 @@ export const CONJUNTOS = {
   cierran: {
     nombre: 'Los que cierran',
     bajada: 'El último de cada disco, donde se apaga la púa.',
+  },
+  /**
+   * Los 105 de un saque (`D-69`). El nombre es una descripción verificable, como el resto:
+   * dice qué hay adentro y no promete nada sobre la obra.
+   */
+  todos: {
+    nombre: 'Todos los temas',
+    bajada: 'Los ciento cinco, cada uno con su disco.',
   },
   azar: {
     nombre: 'Doce al azar',
@@ -130,6 +150,86 @@ export const PARTIDA = {
   compartir: 'Compartí',
   /** Mientras se dibuja la lámina. Un botón mudo se toca dos veces. */
   armando: 'Armando la lámina',
+
+  /* ---- El mazo (`D-69`): repartir de a una ---- */
+
+  /** El sello de la ficha que te toca. Registro 3. */
+  laQueSigue: 'LA QUE SIGUE',
+  /** El sello cuando tomaste una que ya estaba puesta, para cambiarla de fila. */
+  laEstasMoviendo: 'LA ESTÁS MOVIENDO',
+  /** El sello del mazo vacío. Informa, no felicita (`BR-22`). */
+  mazoVacio: 'SIN NADA EN EL MAZO',
+  /** Cuántas quedan. Orientación, como el "3 de 10" de los dos ejes. */
+  quedan: (n: number, total: number) => `Quedan ${n} de ${total}`,
+  /** El nombre accesible de cada botón de fila del mazo: dice qué pasa al tocarlo. */
+  mandarA: (fila: string, cuantas: number) =>
+    cuantas === 1 ? `Mandala a ${fila}, que tiene 1` : `Mandala a ${fila}, que tiene ${cuantas}`,
+  /**
+   * Escuchar un pedazo del tema: los recortes de diez segundos de "Adiviná el tema". Suenan
+   * solos al tocarte una ficha (pedido del usuario, `D-69`); el botón vuelve a pasarlo.
+   */
+  escuchala: 'Escuchala',
+  /** En una ficha de disco suena un tema de ese disco; el botón pasa otro. */
+  escuchaOtro: 'Escuchá otro',
+  /** El mismo botón mientras suena. */
+  parala: 'Pará',
+  /** El renglón que dice qué tema de un disco está sonando. Registro 3. */
+  suena: (tema: string) => `Suena ${tema}`,
+  /** El sonido de todo el tablero, prendido o apagado. Se acuerda en este navegador. */
+  apagaSonido: 'Apagá el sonido',
+  prendeSonido: 'Prendé el sonido',
+  /** Pasa la que sigue al fondo del mazo. */
+  salteala: 'Salteala',
+  /** Abre el mazo entero, para elegir cuál sigue. */
+  elegiOtra: 'Elegí otra',
+  /** Cierra el mazo abierto y vuelve a la que sigue. */
+  volveALaQueSigue: 'Volvé a la que sigue',
+  /** Mezcla el orden del mazo. No toca dónde está nada. */
+  mezcla: 'Mezclá el mazo',
+  /** Deshace la última jugada: una ficha ubicada, una fila sacada. */
+  deshace: 'Deshacé',
+  /** Con una ficha puesta en la mano: la manda de nuevo al mazo. */
+  devolvela: 'Devolvela al mazo',
+  /** Con una ficha puesta en la mano: la suelta sin moverla. */
+  dejala: 'Dejala donde estaba',
+  /** El filtro del mazo abierto que muestra todos los discos. */
+  filtroTodos: 'Todos',
+  /** El nombre accesible del filtro de un disco. */
+  filtroDe: (disco: string) => `Solo los de ${disco}`,
+  /** Cuando el filtro deja la lista vacía. */
+  filtroVacio: 'De ese disco no queda ninguna.',
+  /** Lo que dice la región viva al saltear, al mezclar y al deshacer. Seco. */
+  salteaste: (titulo: string) => `${titulo}, al fondo del mazo.`,
+  mezclaste: 'El mazo, mezclado.',
+  deshiciste: 'La última jugada, deshecha.',
+  /** El renglón chico de una ficha de tema en la carta: el disco y la pista. */
+  pieDeTema: (disco: string, pista: string) => `${disco} · pista ${pista}`,
+
+  /* ---- Las filas propias (`D-69`) ---- */
+
+  /** Abre y cierra la edición de las filas. */
+  cambiaFilas: 'Cambiá las filas',
+  listoFilas: 'Listo',
+  /** Registro 3: la instrucción de la edición. */
+  ayudaFilas: 'Tocá un nombre para cambiarlo. Van de dos a siete filas.',
+  sumaFila: 'Sumá una fila',
+  sacala: 'Sacala',
+  deSiempre: 'Volvé a las de siempre',
+  /** El nombre de una fila recién sumada, hasta que el jugador le ponga otro. */
+  filaNueva: (n: number) => `FILA ${n}`,
+  /** Los nombres accesibles de la edición. */
+  nombreAria: (n: number) => `Nombre de la fila ${n}`,
+  sacarAria: (fila: string) => `Sacá la fila ${fila}`,
+  /** Lo que dice la región viva en la edición. */
+  sumaste: (fila: string) => `${fila}, sumada al final.`,
+  sacasteFila: (fila: string, vuelven: number) =>
+    vuelven === 0
+      ? `${fila}, afuera.`
+      : vuelven === 1
+        ? `${fila}, afuera. Una ficha volvió al mazo.`
+        : `${fila}, afuera. ${vuelven} fichas volvieron al mazo.`,
+  renombraste: (fila: string) => `La fila ahora se llama ${fila}.`,
+  volvisteASiempre: 'Las filas de siempre, de vuelta.',
 } as const;
 
 export const LAMINA = {

@@ -10,6 +10,7 @@ import {
   semillaNueva,
   idDeDisco,
   LARGO_SORTEO,
+  ID_TODOS,
   type Catalogo,
 } from './conjuntos.ts';
 import { vacio, ubicar, porFila } from './tablero.ts';
@@ -60,13 +61,35 @@ test('US-08: ningún conjunto es tan chico que no valga repartirlo', () => {
   assert.deepEqual(chicos, []);
 });
 
-test('US-08: ningún conjunto es tan grande que rompa la sesión de dos o tres minutos', () => {
-  // Los 105 temas de un saque son un juego de veinte minutos. El sorteado existe
-  // justamente para que "ordenar temas de toda la discografía" entre en una ráfaga.
+/*
+ * Acá había un tope: "ningún conjunto pasa de dieciséis fichas", porque los 105 temas de un
+ * saque eran un juego de veinte minutos. **Lo sacó `D-69`, a pedido del usuario**: *"la
+ * gracia de los tierlist así es que sean muchísimas cosas las que estás poniendo en orden,
+ * así que más está bien"*. Lo que cuida la sesión corta ya no es achicar el conjunto sino
+ * repartir de a una (`mazo.ts`) y que la partida quede guardada para seguirla otro día.
+ * El techo que queda es el del link: 120 fichas (`MAX_ITEMS_REPARTO`).
+ */
+test('D-69: ningún conjunto pasa de lo que el link puede llevar', () => {
   const grandes = conjuntosOfrecidos(CAT)
-    .filter((c) => c.cuantas > 16)
+    .filter((c) => c.cuantas > 120)
     .map((c) => `${c.id} (${c.cuantas})`);
   assert.deepEqual(grandes, []);
+});
+
+test('D-69: "Todos los temas" son los 105, en el orden canónico, con el disco al lado', () => {
+  const todos = armarConjunto(CAT, ID_TODOS)!;
+  assert.ok(todos, 'no se armó "Todos los temas"');
+  assert.equal(todos.fichas.length, CAT.temas.length);
+  // El orden canónico: disco por disco en el orden de DISCOS, y dentro de cada uno por pista.
+  const esperado = DISCOS.flatMap((d) => armarConjunto(CAT, idDeDisco(d)!)!.fichas.map((f) => f.slug));
+  assert.deepEqual(todos.fichas.map((f) => f.slug), esperado);
+  // Cada ficha dice su disco: es lo que pidió el usuario para reconocerlas.
+  for (const f of todos.fichas) {
+    const disco = CAT.discos.find((d) => d.slug === f.disco)!;
+    assert.equal(f.pie, disco.titulo, `${f.slug} no dice su disco`);
+  }
+  // Y va primero en la elección.
+  assert.equal(conjuntosOfrecidos(CAT)[0]!.id, ID_TODOS);
 });
 
 /* ==================================================================

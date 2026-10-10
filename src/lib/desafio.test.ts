@@ -10,6 +10,11 @@ import {
   empaquetarReparto,
   desempaquetarReparto,
   MAX_CASILLA,
+  // `D-69`: las filas propias, que viajan en la versión 2.
+  limpiarNombreFila,
+  MAX_FILAS_REPARTO,
+  MIN_FILAS_REPARTO,
+  LARGO_MAX_NOMBRE_FILA,
 } from './desafio.ts';
 
 const BASE = 'https://ricotaarcade.example/';
@@ -359,4 +364,105 @@ test('ADR-06: el reparto y las tres formas de la query no se mezclan', () => {
   // Son dos canales distintos. Un desafío no puede colarse como reparto ni al revés.
   assert.equal(leerDesafio('?g=ponelos', 'ponelos'), null);
   assert.equal(leerReparto(`${BASE}?g=quiz&p=1&t=8`, 'quiz', fichasDe), null);
+});
+
+/* ==================================================================
+   `D-69` — las filas propias viajan en el link, en la versión 2
+   ================================================================== */
+
+const MIAS = ['La de la previa', 'Ni a palos', '¡Bis!'];
+
+test('D-69: con filas propias el link es de la versión 2 y las nombra en orden', () => {
+  const casillas = [1, 2, 3, 0, 1, 2, 3, 0, 1, 2];
+  const url = armarLink(BASE, { forma: 'reparto', juego: 'ponelos', conjunto: 'discos', casillas, filas: MIAS });
+  const fragmento = new URLSearchParams(new URL(url).hash.slice(1));
+  assert.match(fragmento.get('o') ?? '', /^2\.discos\./);
+  assert.deepEqual(fragmento.getAll('f'), MIAS);
+  // Y el juego se sigue quedando en la query, igual que en la versión 1.
+  assert.equal(new URL(url).searchParams.get('g'), 'ponelos');
+});
+
+test('D-69: ida y vuelta con filas propias, nombres y casillas idénticos', () => {
+  const casillas = [1, 2, 3, 0, 1, 2, 3, 0, 1, 2];
+  const url = armarLink(BASE, { forma: 'reparto', juego: 'ponelos', conjunto: 'tapas', casillas, filas: MIAS });
+  assert.deepEqual(leerReparto(url, 'ponelos', fichasDe), {
+    forma: 'reparto',
+    juego: 'ponelos',
+    conjunto: 'tapas',
+    casillas,
+    filas: MIAS,
+  });
+});
+
+test('D-69: sin filas propias el link sigue siendo el de siempre', () => {
+  // Los links viejos y los nuevos sin filas propias son el mismo link: nadie tiene que
+  // volver a compartir nada.
+  const url = armarLink(BASE, { forma: 'reparto', juego: 'ponelos', conjunto: 'discos', casillas: repartoDe(10) });
+  assert.match(new URL(url).hash, /^#o=1\.discos\.[A-Za-z0-9_-]+$/);
+  assert.equal(Object.keys(leerReparto(url, 'ponelos', fichasDe)!).includes('filas'), false);
+});
+
+test('D-69: con siete filas entra la séptima, y la versión 1 sigue sin aceptar la quinta', () => {
+  const siete = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+  const casillas = [7, 6, 5, 4, 3, 2, 1, 0, 7, 6];
+  const url = armarLink(BASE, { forma: 'reparto', juego: 'ponelos', conjunto: 'discos', casillas, filas: siete });
+  assert.deepEqual(leerReparto(url, 'ponelos', fichasDe)?.casillas, casillas);
+  assert.throws(() => armarLink(BASE, { forma: 'reparto', juego: 'ponelos', conjunto: 'discos', casillas }), RangeError);
+});
+
+test('D-69: no se genera un link con filas imposibles', () => {
+  const link = (filas: string[], casillas = repartoDe(10).map((c) => Math.min(c, filas.length))) =>
+    armarLink(BASE, { forma: 'reparto', juego: 'ponelos', conjunto: 'discos', casillas, filas });
+  assert.throws(() => link(['Sola']), RangeError, 'una fila sola no reparte nada');
+  assert.throws(() => link(['1', '2', '3', '4', '5', '6', '7', '8']), RangeError, 'ocho filas no entran en tres bits');
+  assert.throws(() => link(['Bien', '']), RangeError, 'un nombre vacío');
+  assert.throws(() => link(['Bien', '<b>mal</b>']), RangeError, 'un nombre sin limpiar se rechaza, no se limpia callado');
+  assert.throws(() => link(['A', 'B'], [3, 0, 0, 0, 0, 0, 0, 0, 0, 0]), RangeError, 'una casilla más allá de la última fila');
+});
+
+test('D-69: la lista blanca deja hablar a una fila y no deja armar una etiqueta', () => {
+  assert.equal(limpiarNombreFila('  ¡La   de la previa!  '), '¡La de la previa!');
+  assert.equal(limpiarNombreFila("D'Angelo, 11 y 12. ¿Sí?"), "D'Angelo, 11 y 12. ¿Sí?");
+  assert.equal(limpiarNombreFila('<img src=x onerror=alert(1)>'), 'img srcx onerroralert1');
+  assert.equal(limpiarNombreFila('"comillas" & <b>'), 'comillas b');
+  assert.equal(limpiarNombreFila('a'.repeat(40)).length, LARGO_MAX_NOMBRE_FILA);
+  // Una letra de fuera del plano básico en el borde no queda cortada al medio, y limpiar dos
+  // veces da lo mismo que una: si no, el link rechazaba el nombre y compartir no andaba.
+  const astral = 'a'.repeat(23) + '\u{1D400}b';
+  assert.equal(limpiarNombreFila(astral), 'a'.repeat(23) + '\u{1D400}');
+  assert.equal(limpiarNombreFila(limpiarNombreFila(astral)), limpiarNombreFila(astral));
+  // Los de control y los invisibles no son letras: un nombre hecho solo de eso queda vacío.
+  assert.equal(limpiarNombreFila('\u0000\u200b\n\t'), '');
+});
+
+test('D-69: un fragmento con filas raras no abre, y el juego abre vacío', () => {
+  const carga = empaquetarReparto([1, 2, 0, 0, 0, 0, 0, 0, 0, 0]);
+  const con = (resto: string) => `${BASE}?g=ponelos#o=2.discos.${carga}${resto}`;
+  const casos: Array<[string, string]> = [
+    [con(''), 'versión 2 sin ningún nombre'],
+    [con('&f=Sola'), 'una fila sola'],
+    [con('&f=A&f=B&f=C&f=D&f=E&f=F&f=G&f=H'), 'ocho filas'],
+    [con('&f=A&f=%3C%3E'), 'un nombre que la limpieza deja vacío'],
+    [`${BASE}?g=ponelos#o=2.discos.${empaquetarReparto([3, 0, 0, 0, 0, 0, 0, 0, 0, 0])}&f=A&f=B`, 'una casilla más allá de la última fila'],
+  ];
+  for (const [direccion, por] of casos) {
+    assert.equal(leerReparto(direccion, 'ponelos', fichasDe), null, `abrió ${por}`);
+  }
+});
+
+test('D-69: lo que entra por el fragmento sale limpio, aunque lo hayan escrito a mano', () => {
+  const carga = empaquetarReparto([1, 2, 0, 0, 0, 0, 0, 0, 0, 0]);
+  const leido = leerReparto(
+    `${BASE}?g=ponelos#o=2.discos.${carga}&f=%3Cscript%3EPogo&f=${'x'.repeat(60)}`,
+    'ponelos',
+    fichasDe,
+  );
+  assert.ok(leido);
+  assert.deepEqual(leido!.filas, ['scriptPogo', 'x'.repeat(LARGO_MAX_NOMBRE_FILA)]);
+});
+
+test('D-69: el techo de filas es el de los tres bits', () => {
+  // Cero es "sin ubicar"; del uno al siete, una fila cada uno.
+  assert.equal(MAX_FILAS_REPARTO, 2 ** 3 - 1);
+  assert.equal(MIN_FILAS_REPARTO, 2);
 });
