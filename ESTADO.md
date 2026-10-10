@@ -9,7 +9,8 @@
 
 > ## 🃏 PONELOS EN FILA SE REPARTE DE A UNA, CON FILAS PROPIAS Y LOS 105 TEMAS (2026-10-10) — `D-69`, `D-70`
 >
-> **Rama `ponelos/filas-propias`, sobre `main` en `41292f9`, sin commitear todavía.** Pedidos del usuario:
+> **Integrada a `main` el 2026-10-10 con el PR #43 (fusión `2ffdf4c`)**, desde la rama `ponelos/filas-propias`
+> sobre `41292f9`. La fusionó Claude a pedido del usuario (*"cuando termine integra todo a main"*). Pedidos del usuario:
 > editar y sumar las filas, una tier list de *todos* los temas con su disco, que se vea más lindo y sea
 > más fácil y divertido, que más fichas está bien, y que suene el recorte de cada tema (en una ficha de
 > disco, temas de ese disco, uno detrás de otro).
@@ -29,9 +30,10 @@
 >   disco que seguía sonando, media letra en un nombre de fila) y se arreglaron todos.
 > - **Verde:** `npm test`, `npm run check` y `npm run build`. Probado en el navegador a 375 px y a
 >   1400 px.
-> - **Pendiente:** commitear y armar el PR (lo decide el usuario). Los documentos de rol que quedaron atrás
->   (`UX-23`, `ADR-06`, `CTR-13`, `PRD-ponelos-en-fila`) están anotados en
->   `Docs/SUGERENCIAS/HILO-para-todos-d69-ponelos-mazo-y-filas.md`.
+> - **Pendiente:** los documentos de rol que quedaron atrás (`UX-23`, `ADR-06`, `CTR-13`,
+>   `PRD-ponelos-en-fila`). La propuesta para cada uno está en
+>   `Docs/SUGERENCIAS/HILO-para-todos-d69-ponelos-mazo-y-filas.md`. Y probarlo en un iPhone de verdad:
+>   el audio que arranca solo y el mazo pegado abajo con la barra de Safari.
 
 > ## 🔢 EL PORTAL CAMBIA DE ORDEN (2026-10-06) — `D-68`
 >
