@@ -182,6 +182,7 @@ export interface Casete {
  * El orden del lado A es el del portal y el de la pista (A1, A2…), y lo fijó el usuario el
  * 2026-10-06 (`D-68`): Adiviná el tema, ¿Qué tipo de ricotero sos?, Sacalo por la letra,
  * Skayboy y Poligirl, Completá la letra, Preguntas ricoteras, y después el resto como estaba.
+ * El 2026-10-10 (`D-70`) "Ponelos en fila" y "Preguntas ricoteras" cambiaron de lugar: A6 y A7.
  */
 export const JUEGOS: readonly Casete[] = [
   {
@@ -252,6 +253,18 @@ export const JUEGOS: readonly Casete[] = [
     accion: 'JUGÁ',
   },
   {
+    // `D-70`: sube al A6, en el lugar de "Preguntas ricoteras", a pedido del usuario.
+    titulo: 'Ponelos en fila',
+    // La primera oración canta las filas (`D-52`): del pogo a quietito, sin decir cuál es
+    // mejor. La segunda dice lo que hay desde `D-69`: los 105 temas y las filas propias.
+    baja: 'Unos te tiran al pogo; otros, quietito. Los ciento cinco temas, los discos o las tapas, en las filas que vos nombres.',
+    variante: 'bang',
+    // *¡Bang! ¡Bang!… Estás liquidado* entero: un juego de poner discos en fila lleva un disco.
+    arte: '/tapas/bang-bang-estas-liquidado.jpg',
+    href: '/juegos/ponelos-en-fila/',
+    accion: 'ARMÁ',
+  },
+  {
     titulo: 'Preguntas ricoteras',
     baja: 'Ocho preguntas y ninguna piadosa. Historia, discos, letras y mitología, en dos minutos.',
     variante: 'marca',
@@ -260,16 +273,6 @@ export const JUEGOS: readonly Casete[] = [
     arte: '/tapas/oktubre.jpg',
     href: '/quiz/',
     accion: 'JUGÁ',
-  },
-  {
-    titulo: 'Ponelos en fila',
-    // La primera oración canta las filas (`D-52`): del pogo a quietito, sin decir cuál es mejor.
-    baja: 'Unos te tiran al pogo; otros, quietito. Los diez discos, las tapas, o los temas de un disco: el orden lo armás vos.',
-    variante: 'bang',
-    // *¡Bang! ¡Bang!… Estás liquidado* entero: un juego de poner discos en fila lleva un disco.
-    arte: '/tapas/bang-bang-estas-liquidado.jpg',
-    href: '/juegos/ponelos-en-fila/',
-    accion: 'ARMÁ',
   },
   {
     titulo: 'Adiviná la tapa',

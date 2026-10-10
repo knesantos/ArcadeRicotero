@@ -4170,3 +4170,116 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   número de pista lo calcula `pistaDe()` con el índice, así que la carátula de cada juego (`D-54`)
   sigue diciendo lo mismo que su casete en el portal sin tocarla. "Preguntas ricoteras" deja de
   ser el A1 y pasa a ser el A6.
+
+## D-69 — "Ponelos en fila" se reparte de a una, las filas las nombra el que juega, y entran los 105 temas
+
+- **Fecha:** 2026-10-10
+- **Estado:** aceptada — pedidos directos del usuario, en una misma sesión y en este orden:
+  1. *"Hagamos una pulida de ui/ux sobre el juego ponelos en fila. Dejemos al usuario poder
+     editar las categorias por lo que el quiera y agregar. Agreguemos el tierlist de TODOS LOS
+     TEMAS con nombre y disco para identificarlos."*
+  2. *"Ademas que el juego se vea mas lindo y sea mas divertido y facil de jugar."*
+  3. *"Un poco la gracia de los tierlist asi es que sean muchisimas cosas las que estas poniendo
+     en orden asi que mas esta bien."*
+  4. *"Me gustaria que al seleccionar una cancion suene el recorte que tenemos para el juego
+     adivina el tema. Lo mismo con albumnes, que suenen temas de ese album."*
+  5. *"Que en el album si termina el recorte que suene otro del mismo album."*
+- **Enmienda:** `D-52` (las cuatro filas del cuerpo pasan a ser **las de siempre**, no las
+  únicas); `US-08` y su test de tamaño (el tope de dieciséis fichas por conjunto se va: el techo
+  es el del link, 120); `ADR-06` regla 1 ("ningún campo es texto": entra uno, con lista blanca);
+  `UX-23` §3 y §5 (el "tocás una ficha, tocás una fila" deja de ser el gesto principal);
+  `CTR-13` (un conjunto nuevo, `todos`, y el catálogo suma `conAudio`). `BR-22` **no cambia**: no
+  hay puntaje, ni orden correcto, ni fila con tinte propio, ni festejo.
+
+### Decisión
+
+1. **Se reparte de a una.** Abajo, en la zona del pulgar, queda pegada *la que sigue*: la ficha
+   grande, con su tapa, su disco y su pista. Debajo hay un botón por fila. Con un toque la ficha
+   queda ubicada y aparece la próxima. También están "Salteala" (al fondo del mazo), "Elegí otra"
+   (el mazo entero, con un filtro por disco), "Mezclá el mazo" y "Deshacé". Las filas siguen
+   siendo destino, y una ficha ya puesta se toca para cambiarla de fila ("La estás moviendo").
+   El orden del mazo vive en `src/lib/ponelos/mazo.ts`, no viaja en el link y se reconcilia
+   siempre contra el tablero. Antes eran dos toques y un salto de pantalla por ficha, porque la
+   bandeja y las filas no entraban juntas en un teléfono. Con ciento cinco eso no se jugaba.
+2. **Las filas las nombra el que juega.** "Cambiá las filas" abre los nombres para escribirlos,
+   "Sumá una fila" llega hasta siete, "Sacala" baja hasta dos (las fichas de la fila que se va
+   vuelven al mazo, no se borran), y "Volvé a las de siempre" trae las cuatro de `D-52`. El número
+   de una fila es su posición. Las filas propias se guardan en el navegador (`ponelos:filas`) y
+   valen para todos los conjuntos. **Siete no es un número de diseño**: son los tres bits del link
+   menos el cero de "sin ubicar".
+3. **El link lleva las filas propias.** Con las de siempre, el link es el mismo de la versión 1 y
+   los links viejos abren igual. Con filas propias es la versión 2:
+   `#o=2.<conjunto>.<carga>&f=<fila>&f=…`. Se eligió una versión nueva y no un campo opcional
+   porque un lector de la 1 habría abierto la lista con las fichas en su lugar y los carteles de
+   otro, sin avisar. Los nombres son **el único texto libre que entra por el fragmento**. Pasan
+   por `limpiarNombreFila` (lista blanca: letras, números, espacio y `- ' . , ! ? ¡ ¿`, hasta 24
+   caracteres) al escribirlos y al leerlos, y se pintan con `textContent`. Un nombre que la
+   limpieza deja vacío descarta el reparto entero.
+4. **"Todos los temas"** es un conjunto nuevo (`todos`): los 105, en el orden canónico, cada ficha
+   con el nombre de su disco al lado y vestida con la tinta del disco. Va primero en la elección,
+   con las diez tapas en tira. La partida se guarda en el navegador, **una por conjunto**
+   (`ponelos:partidas`, las ocho más recientes). Abrir de nuevo un conjunto que quedó a medias
+   sigue donde quedó, y la elección ofrece arriba de todo "Te quedó a medias · Seguí con…", la
+   más reciente. Las listas que llegaron por link no se guardan: son de otro, y pisarían la
+   propia del mismo conjunto. Con un solo lugar de guardado, mover una ficha en otro conjunto
+   borraba los 105, y lo encontró la revisión. Sacar el tope de dieciséis es
+   decisión del usuario (punto 3 de arriba). La sesión corta ya no se cuida achicando el conjunto:
+   se cuida repartiendo de a una y pudiendo seguir otro día.
+5. **Suena al tocarte una ficha.** Cada vez que te toca una ficha —la que sigue, una que tomaste
+   de una fila, una que elegiste del mazo— suena su recorte de diez segundos de "Adiviná el tema"
+   (95 de los 105 lo tienen). En una ficha de disco suena un tema de ese disco al azar, la carta
+   dice cuál ("Suena …"), y cuando termina arranca otro del mismo disco. Va con un `<audio>` (suena
+   aunque el iPhone tenga la llave de silencio, `D-66`), dentro del toque que trae la ficha. Se
+   apaga desde las herramientas ("Apagá el sonido") y esa preferencia se guarda. Lo único que
+   suena es la banda: no hay festejo (`BR-22` punto 5, `D-33`).
+6. **La lámina aguanta todo eso.** Van de dos a siete bandas, con los nombres propios en
+   mayúsculas. Si no entra, primero se achica la letra hasta su piso y después se estira el lienzo
+   (hasta 2700 px de alto) antes de cortar un tema. Los 105 en seis filas dan una lámina de
+   1080 × 1724.
+7. **Se ve como el resto del sitio.** Sellos de goma, borde grueso, rotación leve, tinta de cada
+   disco en las fichas y en la carta, sin sombras, sin pastillas y sin barra lateral. Las filas
+   siguen sin tinte propio. El único movimiento es el hundirse del botón al tocarlo.
+
+### Consecuencias
+
+- **Código:** `src/lib/desafio.ts` (versión 2 y `limpiarNombreFila`), `src/lib/ponelos/`
+  (`filas.ts`, `tablero.ts`, `mazo.ts` nuevo, `conjuntos.ts`, `lamina.ts`, `copy.ts`),
+  `src/scripts/partida-ponelos.ts` (reescrita), `src/scripts/lamina.ts`, `src/styles/juego.css`
+  (el bloque de "Ponelos en fila"), y la página, que ahora manda `conAudio` en el catálogo.
+- **Tests:** link v1 y v2 de ida y vuelta, nombres sucios, filas imposibles; filas propias del
+  tablero; el mazo; "Todos los temas"; la lámina de dos a siete bandas, estirada y con su techo.
+  `estilos.test.ts` suma los cuatro estados nuevos (`.pieza--recien`, `.carta--moviendo`,
+  `.mazo--moviendo`, `.filas--editando`).
+- **Quedan atrás, y lo dicen sus dueños, no este archivo:** `UX-23` (el gesto y la zona del
+  pulgar), `ADR-06` (la versión 2), `CTR-13` (el conjunto `todos` y `conAudio`), y en
+  `PRD-ponelos-en-fila.md` el tope de tamaño y el piso de conjuntos (quince desde ahora, con
+  `todos`). La propuesta para cada uno está en
+  `Docs/SUGERENCIAS/HILO-para-todos-d69-ponelos-mazo-y-filas.md`.
+- **Revisión independiente** (tres revisores y tres verificadores, el 2026-10-10). De trece
+  hallazgos se confirmaron siete, y se arreglaron todos antes de integrar:
+  - el mazo pegado tapaba el foco del teclado: ahora hay `scroll-padding-bottom` medido;
+  - el foco se caía al `<body>` al cambiar de pantalla y al deshacer con las filas abiertas;
+  - el botón de escuchar tenía un nombre accesible que no decía "Pará";
+  - había `aria-pressed` doble en botones que ya cambian de palabra;
+  - el disco seguía sonando con el mazo abierto;
+  - un nombre de fila con una letra de fuera del plano básico quedaba cortado al medio y dejaba
+    sin compartir.
+  Además, la partida guardada pasó a ser una por conjunto.
+- **Lo que no se hizo, a propósito:** reordenar filas arrastrando (se suman al final y se sacan),
+  y recortes para los diez temas que no tienen (esas fichas se juegan mudas, con el botón de
+  escuchar escondido).
+
+## D-70 — "Ponelos en fila" sube al A6 del portal, en el lugar de "Preguntas ricoteras"
+
+- **Fecha:** 2026-10-10
+- **Estado:** aceptada — pedido directo del usuario, textual: *"cambia el lugar de ponelos en fila
+  por el de preguntas ricoteras en el home"*.
+- **Enmienda:** `D-68` (el lado A). Quedan cambiados de lugar el A6 y el A7.
+- **Decisión.** El lado A queda así: A1 Adiviná el tema · A2 ¿Qué tipo de ricotero sos? · A3
+  Sacalo por la letra · A4 Skayboy y Poligirl · A5 Completá la letra · **A6 Ponelos en fila** ·
+  **A7 Preguntas ricoteras** · A8 Adiviná la tapa · A9 Más o menos. El lado B no cambia.
+- **Consecuencias.** Se cambia el orden del arreglo `JUEGOS` de `src/lib/sitio/copy.ts`, como en
+  `D-68`. La pista de cada carátula sale del índice y acompaña sola. La bajada del casete de
+  "Ponelos en fila" conserva la primera frase, que es la que canta y mide `voz.test.ts`, y la
+  segunda dice lo que hay desde `D-69`: *"Los ciento cinco temas, los discos o las tapas, en las
+  filas que vos nombres."*

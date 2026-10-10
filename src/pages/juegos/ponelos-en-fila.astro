@@ -2,9 +2,10 @@
 /**
  * "Ponelos en fila" (`US-08`). El séptimo juego, y el segundo que no puntúa.
  *
- * El jugador reparte un conjunto de cosas de la banda —los diez discos, las diez tapas,
- * los temas de un disco, doce sorteados— en cuatro filas que son **lugares de un recital**
- * y no notas de boletín, y se lleva la lista como lámina y como dirección. La regla que lo
+ * El jugador reparte un conjunto de cosas de la banda —los ciento cinco temas, los diez
+ * discos, las diez tapas, los temas de un disco, doce sorteados— en filas que dicen **cuánto
+ * te mueve el cuerpo** (`D-52`) o lo que él quiera (`D-69`), y se lleva la lista como
+ * lámina y como dirección. La regla que lo
  * gobierna es `BR-22`: el sitio no tiene un orden correcto, así que no hay puntaje, no hay
  * promedio de la gente y no hay comparación contra ninguna lista que el jugador no haya
  * cargado él mismo.
@@ -16,8 +17,9 @@
  *
  * ## Lo que esta página hace en build, y por qué no manda los conjuntos armados
  *
- * Manda **el catálogo**: los 105 temas de `RES-20` y las diez fichas de disco, ~10 KB. Los
- * conjuntos los arma la isla.
+ * Manda **el catálogo**: los 105 temas de `RES-20`, las diez fichas de disco y qué temas
+ * tienen recorte de audio (`D-69`: suenan al tocarte la ficha), ~11 KB. Los conjuntos los
+ * arma la isla.
  *
  * La razón es concreta y no de gusto: uno de los conjuntos es **doce temas sorteados con
  * una semilla que viaja adentro del id**, así que los conjuntos posibles no son catorce,
@@ -50,6 +52,8 @@ import { TITULO_DE_DISCO } from '../../lib/sitio/arte.ts';
 import { leerTemas, slugDeTitulo } from '../../lib/letra/temas.ts';
 import { FICHAS } from '../../lib/cancionero/banco.ts';
 import { DISCOS } from '../../lib/letra/discos.ts';
+import { indexarFragmentos, type Manifiesto } from '../../lib/tema/catalogo.ts';
+import manifiesto from '../../data/adivinar-tema.json';
 
 /**
  * El catálogo que viaja al navegador (`CTR-13`).
@@ -58,14 +62,24 @@ import { DISCOS } from '../../lib/letra/discos.ts';
  * conjunto. El slug se deriva del título con la misma función que nombra los mp3 de
  * "Adiviná el tema", así que las dos partes del sitio llaman igual al mismo tema.
  */
+const temas = leerTemas().map((t) => ({
+  slug: slugDeTitulo(t.titulo),
+  titulo: t.titulo,
+  disco: t.disco,
+  pista: t.pista,
+}));
+
+/**
+ * Qué temas tienen recorte (`D-69`). Sale del mismo manifiesto que "Adiviná el tema", con
+ * la misma verificación: un recorte que no es de ninguno de los 105 rompe el build acá
+ * también, nunca en la cara de nadie.
+ */
+const conAudio = [...indexarFragmentos(manifiesto as unknown as Manifiesto, new Set(temas.map((t) => t.slug))).keys()];
+
 const catalogo = {
-  temas: leerTemas().map((t) => ({
-    slug: slugDeTitulo(t.titulo),
-    titulo: t.titulo,
-    disco: t.disco,
-    pista: t.pista,
-  })),
+  temas,
   discos: FICHAS.map((f) => ({ slug: f.slug, titulo: f.titulo, anio: f.anio })),
+  conAudio,
 };
 
 /** Las diez tapas se pueden ver en esta pantalla, así que las diez se acreditan. */

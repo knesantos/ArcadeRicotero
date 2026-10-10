@@ -3,7 +3,9 @@
  *
  * Funciones puras sobre un dato flaco, y las dos cosas están relacionadas: **el tablero
  * es un arreglo de números paralelo a la lista de fichas**, un número por ficha, donde 0
- * es "sin ubicar" y 1..4 son las cuatro filas de `filas.ts`.
+ * es "sin ubicar" y 1..n son las filas, por posición. Las de siempre son cuatro; desde
+ * `D-69` el jugador arma las suyas, de dos a siete, y por eso casi todas las funciones de
+ * abajo reciben **cuántas filas hay** (por defecto, las cuatro de `filas.ts`).
  *
  * ## Por qué un arreglo de números y no un mapa de objetos
  *
@@ -38,7 +40,7 @@
  * cuál está mejor.
  */
 
-import { FILAS, SIN_UBICAR, filaPorId, type Fila } from './filas.ts';
+import { FILAS, SIN_UBICAR, MAX_FILAS, MIN_FILAS, filasDe, nombresDeSiempre, type FilaPropia } from './filas.ts';
 
 /** Una ficha del conjunto, tal como la ve el navegador (`CTR-13`). */
 export interface Ficha {
@@ -67,7 +69,7 @@ export interface Conjunto {
   readonly fichas: readonly Ficha[];
 }
 
-/** Un número por ficha, en el orden del conjunto. 0 = sin ubicar, 1..4 = fila. */
+/** Un número por ficha, en el orden del conjunto. 0 = sin ubicar, 1..n = fila. */
 export type Reparto = readonly number[];
 
 export class RepartoInvalido extends Error {}
@@ -88,11 +90,9 @@ export function vacio(cuantas: number): Reparto {
  * entero en vez de completarlo con ceros — completar sería inventarle al que compartió una
  * lista que no armó.
  */
-export function esValido(reparto: unknown, cuantas: number): reparto is Reparto {
+export function esValido(reparto: unknown, cuantas: number, filas: number = FILAS.length): reparto is Reparto {
   if (!Array.isArray(reparto) || reparto.length !== cuantas) return false;
-  return reparto.every(
-    (v) => Number.isInteger(v) && (v === SIN_UBICAR || filaPorId(v as number) !== null),
-  );
+  return reparto.every((v) => Number.isInteger(v) && v >= SIN_UBICAR && v <= filas);
 }
 
 /**
@@ -101,12 +101,12 @@ export function esValido(reparto: unknown, cuantas: number): reparto is Reparto 
  * `fila` en `SIN_UBICAR` la devuelve a la bandeja, que es lo que hace sacarla de una fila.
  * **Una ficha nunca se borra**: el conjunto es fijo, y lo único que cambia es dónde está.
  */
-export function ubicar(reparto: Reparto, indice: number, fila: number): Reparto {
+export function ubicar(reparto: Reparto, indice: number, fila: number, filas: number = FILAS.length): Reparto {
   if (!Number.isInteger(indice) || indice < 0 || indice >= reparto.length) {
     throw new RepartoInvalido(`no hay ficha en la posición ${indice}`);
   }
-  if (fila !== SIN_UBICAR && filaPorId(fila) === null) {
-    throw new RepartoInvalido(`${fila} no es ninguna de las cuatro filas`);
+  if (!Number.isInteger(fila) || fila < SIN_UBICAR || fila > filas) {
+    throw new RepartoInvalido(`${fila} no es ninguna de las ${filas} filas`);
   }
   const copia = [...reparto];
   copia[indice] = fila;
@@ -124,9 +124,9 @@ export function vaciar(reparto: Reparto): Reparto {
  * Orientación, no medición — ver el encabezado. Se devuelve indexado por el número de
  * fila para que la pantalla no tenga que contar de nuevo en cada repintado.
  */
-export function cuentas(reparto: Reparto): Readonly<Record<number, number>> {
+export function cuentas(reparto: Reparto, filas: number = FILAS.length): Readonly<Record<number, number>> {
   const cuenta: Record<number, number> = { [SIN_UBICAR]: 0 };
-  for (const f of FILAS) cuenta[f.id] = 0;
+  for (let f = 1; f <= filas; f++) cuenta[f] = 0;
   for (const v of reparto) cuenta[v] = (cuenta[v] ?? 0) + 1;
   return cuenta;
 }
@@ -143,19 +143,70 @@ export function terminado(reparto: Reparto): boolean {
 
 /** Una fila con las fichas que le tocaron, **en el orden del catálogo** (ver encabezado). */
 export interface FilaArmada {
-  readonly fila: Fila;
+  readonly fila: FilaPropia;
   readonly fichas: readonly Ficha[];
 }
 
-/** Las cuatro filas armadas, siempre las cuatro, aunque alguna esté vacía. */
-export function porFila(conjunto: Conjunto, reparto: Reparto): readonly FilaArmada[] {
-  if (!esValido(reparto, conjunto.fichas.length)) {
+/**
+ * Las filas armadas, siempre todas, aunque alguna esté vacía. `nombres` son las filas del
+ * tablero, en orden; sin decir nada, las cuatro de siempre.
+ */
+export function porFila(
+  conjunto: Conjunto,
+  reparto: Reparto,
+  nombres: readonly string[] = nombresDeSiempre(),
+): readonly FilaArmada[] {
+  if (!esValido(reparto, conjunto.fichas.length, nombres.length)) {
     throw new RepartoInvalido(`el reparto no corresponde al conjunto "${conjunto.id}"`);
   }
-  return FILAS.map((fila) => ({
+  return filasDe(nombres).map((fila) => ({
     fila,
     fichas: conjunto.fichas.filter((_, i) => reparto[i] === fila.id),
   }));
+}
+
+/* ==================================================================
+   Las filas propias (`D-69`): sumar, sacar y renombrar
+
+   Renombrar no toca el reparto —el número de una fila es su posición, no su nombre—, así
+   que no tiene función acá: es cambiar una cadena en la lista de nombres. Sumar tampoco:
+   la fila nueva va al final y nadie la ocupa todavía. **Sacar sí**, y es lo único delicado
+   de las filas propias: las fichas de la fila que se va vuelven a la bandeja, y las de las
+   filas de abajo suben un número, porque ahora están una posición más arriba.
+   ================================================================== */
+
+export class FilasInvalidas extends Error {}
+
+/** ¿Se puede sumar una fila más a un tablero de `filas`? */
+export function entraOtraFila(filas: number): boolean {
+  return filas < MAX_FILAS;
+}
+
+/** ¿Se puede sacar una fila de un tablero de `filas`? */
+export function sePuedeSacar(filas: number): boolean {
+  return filas > MIN_FILAS;
+}
+
+/**
+ * Saca la fila `id` de un tablero de `filas` filas, y devuelve el reparto renumerado.
+ *
+ * Las fichas que estaban ahí **vuelven a la bandeja, no se borran** —la misma regla que
+ * sacar una ficha de una fila—. Las de las filas de abajo bajan un número.
+ */
+export function sacarFila(reparto: Reparto, id: number, filas: number): Reparto {
+  if (!sePuedeSacar(filas)) throw new FilasInvalidas(`con ${filas} filas no se puede sacar ninguna`);
+  if (!Number.isInteger(id) || id < 1 || id > filas) {
+    throw new FilasInvalidas(`${id} no es ninguna de las ${filas} filas`);
+  }
+  return reparto.map((v) => (v === id ? SIN_UBICAR : v > id ? v - 1 : v));
+}
+
+/**
+ * Un reparto que llegó con más filas de las que hay ahora (un link de siete abierto con
+ * las cuatro de siempre, o al revés) se ajusta: lo que cae fuera vuelve a la bandeja.
+ */
+export function ajustarAFilas(reparto: Reparto, filas: number): Reparto {
+  return reparto.map((v) => (v > filas ? SIN_UBICAR : v));
 }
 
 /** Las que siguen en la bandeja, en el orden del catálogo. */

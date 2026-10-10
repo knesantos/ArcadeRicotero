@@ -4868,15 +4868,17 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 }
 
 /*
- * Cada conjunto es una tarjeta recortada, con la tinta de su disco cuando lo tiene.
+ * Cada conjunto es una tarjeta recortada, con la tinta de su disco cuando lo tiene, y desde
+ * `D-69` con su tapa al costado: el disco se reconoce antes de leerlo.
  *
- * Los cinco que cruzan discos —los diez discos, las tapas, los que abren, los que cierran,
- * y los doce sorteados— no llevan ninguna: teñirlos con un disco cualquiera sería decir que
- * ese conjunto es de ese disco, y no lo es.
+ * Los que cruzan discos —los diez discos, las tapas, los que abren, los que cierran, los
+ * sorteados y "Todos los temas"— no llevan ninguna tinta de disco: teñirlos con uno
+ * cualquiera sería decir que ese conjunto es de ese disco, y no lo es.
  */
 .conjunto {
-  display: grid;
-  gap: 0.2em;
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
   width: 100%;
   min-height: var(--toque-min);
   padding: var(--espacio-2);
@@ -4886,6 +4888,32 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   border: var(--linea) solid color-mix(in srgb, var(--tinta-disco, var(--tinte-juego)) 45%, var(--borde));
   border-radius: var(--radio);
   transition: border-color var(--duracion-toque) var(--curva-cinta);
+}
+
+/* Pegadas a mano: ninguna queda derecha, y ninguna se tuerce igual que la de al lado. */
+.conjuntos > li:nth-child(odd) > .conjunto {
+  transform: rotate(-0.4deg);
+}
+
+.conjuntos > li:nth-child(even) > .conjunto {
+  transform: rotate(0.3deg);
+}
+
+.conjunto-texto {
+  display: grid;
+  gap: 0.2em;
+  flex: 1;
+  min-width: 0;
+}
+
+.conjunto-tapa {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  transform: rotate(-2deg);
 }
 
 .conjunto-titulo {
@@ -4908,6 +4936,68 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--texto-tenue);
+}
+
+/*
+ * "Todos los temas" (`D-69`): el conjunto entero, y el que se pidió por nombre. Va primero,
+ * más grande, con la tinta del juego en el borde y las diez tapas en tira — las diez, una
+ * al lado de la otra, porque adentro están los diez discos.
+ */
+.conjunto--todos {
+  flex-wrap: wrap;
+  padding: var(--espacio-3) var(--espacio-2);
+  border-color: var(--tinte-juego);
+}
+
+.conjunto--todos .conjunto-titulo {
+  font-size: 1.45rem;
+}
+
+/* Diez columnas iguales y no una fila flexible: una imagen con su `width` puesto no se
+   achica en una fila flexible, y la tira se salía por el costado de la tarjeta. */
+.conjunto-tira {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 4px;
+  flex: 1 0 100%;
+  min-width: 0;
+}
+
+.conjunto-tira-tapa {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+}
+
+.conjunto-tira-tapa:nth-child(odd) {
+  transform: rotate(-3deg);
+}
+
+.conjunto-tira-tapa:nth-child(even) {
+  transform: rotate(2deg);
+}
+
+/* La partida a medias: arriba de todo, con el sello que lo dice en palabras. */
+.conjunto--retomar {
+  display: grid;
+  gap: 0.35em;
+  border-style: dashed;
+  border-color: var(--acento-2);
+}
+
+.conjunto-sello {
+  justify-self: start;
+  padding: 0.1em 0.6em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--acento-2);
+  border: 2px solid var(--acento-2);
+  border-radius: 3px;
+  transform: rotate(-1.5deg);
 }
 
 /* ---- Pantalla 2: el tablero ---- */
@@ -4948,26 +5038,64 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 }
 
 /*
- * La mano: la única línea que dice qué está pasando, y la única región viva del juego.
- *
- * Va pegada arriba mientras se juega. Con trece fichas y cuatro filas, la bandeja y el
- * destino no entran juntos en 375 px: si esta línea se fuera con el desplazamiento, el
- * jugador perdería de vista qué tiene en la mano justo cuando va a soltarlo.
+ * Las herramientas (`D-69`): cambiar las filas, el sonido, deshacer, mezclar. Sellos chicos
+ * de esquina viva, apenas torcidos; ninguno compite con los botones de fila de abajo.
+ */
+.tablero-herramientas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+  margin: var(--espacio-1) 0 var(--espacio-2);
+}
+
+.herramienta {
+  min-height: var(--toque-min);
+  padding: 0.3em 0.8em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
+  touch-action: manipulation;
+}
+
+.herramienta:nth-child(odd) {
+  transform: rotate(-0.8deg);
+}
+
+.herramienta:nth-child(even) {
+  transform: rotate(0.6deg);
+}
+
+/* Prendida: borde y letra de destaque, y el botón además cambia de palabra ("Listo"). */
+.herramienta--activa {
+  color: var(--acento-2);
+  border-color: var(--acento-2);
+}
+
+.herramienta:disabled {
+  color: var(--texto-tenue);
+  border-style: dashed;
+}
+
+/*
+ * La mano: la línea que dice qué acaba de pasar, y la única región viva del juego. Desde
+ * `D-69` vive adentro del mazo, en la zona del pulgar, que es donde el jugador está mirando.
  */
 .mano {
-  position: sticky;
-  top: 0;
-  z-index: 2;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--espacio-1);
-  min-height: 1.6em;
-  margin: 0 0 var(--espacio-2);
-  padding: 0.4em 0;
-  background: var(--fondo);
-  border-bottom: 2px solid var(--borde);
-  font-size: 0.85rem;
+  min-height: 1.3em;
+  margin: 0.25em 0 0.4em;
+  padding-bottom: 0.2em;
+  border-bottom: 2px solid transparent;
+  font-size: 0.82rem;
   color: var(--texto-tenue);
   transition: border-color var(--duracion-toque) var(--curva-cinta);
 }
@@ -4992,18 +5120,18 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   color: var(--texto);
 }
 
-/* ---- Las cuatro filas ---- */
+/* ---- Las filas ---- */
 
 .filas {
   display: grid;
   gap: var(--espacio-2);
-  margin-bottom: var(--espacio-3);
+  margin-bottom: var(--espacio-2);
 }
 
 /*
  * Una fila es un recorte pegado, no una superficie elevada: fondo igual al del sitio,
- * borde grueso, y apenas torcida. Ninguna de las cuatro cambia de tinte respecto de las
- * otras — el borde sale del disco del juego, que es el mismo para todas.
+ * borde grueso, y apenas torcida. Ninguna cambia de tinte respecto de las otras — el borde
+ * sale del disco del juego, que es el mismo para todas, sean las de siempre o las propias.
  */
 .fila {
   padding: var(--espacio-1);
@@ -5021,8 +5149,8 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 }
 
 /*
- * El destino: la banda entera, no un blanco chico. Es el botón que recibe la ficha que
- * tenés en la mano, y ocupa el ancho completo de la fila porque el pulgar apunta mal.
+ * El destino: la banda entera, no un blanco chico. Manda ahí a la ficha que te toca, y
+ * ocupa el ancho completo de la fila porque el pulgar apunta mal.
  */
 .fila-destino {
   display: flex;
@@ -5037,12 +5165,15 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   border: 0;
   border-bottom: 2px dashed var(--borde);
   border-radius: 0;
+  text-align: start;
   transition: border-color var(--duracion-toque) var(--curva-cinta);
 }
 
-/* El sello de goma con el nombre del lugar. Registro 3, apenas torcido, esquina de 3 px:
-   nunca la pastilla cápsula. */
+/* El sello de goma con el nombre de la fila. Registro 3, apenas torcido, esquina de 3 px:
+   nunca la pastilla cápsula. Un nombre propio largo se parte, no se corta. */
 .fila-sello {
+  max-width: 80%;
+  overflow-wrap: anywhere;
   font-family: var(--fuente-rotulada);
   font-size: 0.8rem;
   letter-spacing: 0.08em;
@@ -5056,14 +5187,15 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 }
 
 .fila-cuenta {
+  flex: none;
   font-family: var(--fuente-rotulada);
   font-size: 0.9rem;
   color: var(--texto-tenue);
   font-variant-numeric: tabular-nums;
 }
 
-/* Las cuatro se abren a la vez cuando hay algo en la mano. A la vez y no una: el jugador
-   elige entre las cuatro, y destacar una sería el sitio opinando. */
+/* Con una ficha puesta en la mano, todas las filas se abren a la vez. A la vez y no una:
+   el jugador elige entre todas, y destacar una sería el sitio opinando. */
 .fila--abierta .fila-destino {
   border-bottom-color: var(--acento-2);
 }
@@ -5088,13 +5220,79 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   display: none;
 }
 
+/* ---- Las filas propias (`D-69`): el nombre se escribe en el sello mismo ---- */
+
+.filas--editando > .fila {
+  border-style: dashed;
+}
+
+/* Mientras se editan las filas, el mazo se despega: pegado abajo tapaba "Sumá una fila". */
+.filas--editando ~ .mazo {
+  position: static;
+}
+
+.fila-edicion {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+}
+
+.fila-nombre {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--toque-min);
+  padding: 0.3em 0.6em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+}
+
+.fila-nombre:focus-visible {
+  border-color: var(--acento-2);
+}
+
+.fila-sacar {
+  flex: none;
+  min-height: var(--toque-min);
+  padding: 0.3em 0.8em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 2px dashed var(--borde);
+  border-radius: 3px;
+}
+
+.fila-sacar:disabled {
+  color: var(--texto-tenue);
+}
+
+.filas-edicion {
+  display: grid;
+  gap: var(--espacio-1);
+}
+
+.filas-edicion .secundario {
+  margin-top: 0;
+}
+
+.filas-ayuda {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--texto-tenue);
+}
+
 /* ---- La pieza, que es la ficha que se mueve ----
 
    **Se llama `pieza` y no `ficha` porque `.ficha` ya existe**: es la tarjeta lateral de un
-   articulo de la Redondopedia, en `sitio.css`, con papel rayado y cinta adhesiva. El
-   choque se descubrio con el tablero ya dibujado, viendo las fichas de los discos salir
-   vestidas de otra cosa. Dos componentes con el mismo nombre de clase es la verdad
-   duplicada de siempre, con el agravante de que no avisa. ---- */
+   articulo de la Redondopedia, en `sitio.css`, con papel rayado y cinta adhesiva. ---- */
 
 .pieza {
   display: flex;
@@ -5106,22 +5304,39 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   background: var(--fondo);
   color: var(--texto);
   border: 2px solid color-mix(in srgb, var(--tinta-disco, var(--borde)) 65%, var(--borde));
-  border-radius: var(--radio);
+  border-radius: 3px;
   transition: border-color var(--duracion-toque) var(--curva-cinta);
   /* Sin el retardo de 300 ms ni el zoom de doble toque. `manipulation` y no `none`: acá no
-     hay arrastre táctil que proteger, y `none` le sacaría el desplazamiento a la bandeja. */
+     hay arrastre táctil que proteger, y `none` le sacaría el desplazamiento al mazo. */
   touch-action: manipulation;
 }
 
+/* Puestas a mano: tres inclinaciones que se alternan, como fichas tiradas sobre la mesa. */
+.fila-piezas > li:nth-child(3n + 1) > .pieza {
+  transform: rotate(-0.7deg);
+}
+
+.fila-piezas > li:nth-child(3n + 2) > .pieza {
+  transform: rotate(0.5deg);
+}
+
 .pieza--puesta {
+  padding: 0.3em 0.6em;
   font-size: 0.9rem;
 }
 
-/* Lo que tenés en la mano: borde de destaque **y** el rótulo de abajo. Dos canales, porque
-   uno solo sería color (`UX-01`). */
+/* Lo que tenés en la mano: borde de destaque **y** el rótulo `EN LA MANO`. Dos canales,
+   porque uno solo sería color (`UX-01`). */
 .pieza--en-mano {
   border-color: var(--acento-2);
   border-width: var(--linea);
+}
+
+/* La que acaba de caer: borde grueso con la tinta entera de su disco, hasta la próxima
+   jugada. Es la que el ojo busca para confirmar que el toque anduvo; lo dice además la mano. */
+.pieza--recien {
+  border-width: var(--linea);
+  border-color: var(--tinta-disco, var(--texto));
 }
 
 .pieza-tapa {
@@ -5146,9 +5361,11 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   line-height: 1.2;
 }
 
+/* El disco de cada tema, en su tinta: es lo que deja reconocer de dónde es cada ficha en
+   una fila de ciento cinco. La tinta de cada disco pasa AA sobre `--fondo`. */
 .pieza-pie {
-  font-size: 0.7rem;
-  color: var(--texto-tenue);
+  font-size: 0.72rem;
+  color: var(--tinta-disco, var(--texto-tenue));
 }
 
 .pieza-mano {
@@ -5163,34 +5380,36 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   flex: none;
 }
 
-/* ---- La bandeja ---- */
+/* ---- El mazo (`D-69`): la que te toca, en la zona del pulgar ----
+
+   Pegado abajo mientras se reparte: la carta y un botón por fila quedan siempre bajo el
+   pulgar, y las filas se llenan arriba. Repartir es un toque por ficha y cero viajes de
+   la mano, que es lo que vuelve jugables los ciento cinco temas en un teléfono. Cuando no
+   queda ninguna, se despega y la lista entera queda a la vista con el botón de compartir. */
 
 .bandeja {
-  padding: var(--espacio-2);
+  padding: var(--espacio-1) var(--espacio-2) var(--espacio-2);
   background: var(--fondo);
-  border: 2px dashed var(--borde);
+  border: var(--linea) solid color-mix(in srgb, var(--tinte-juego) 55%, var(--borde));
   border-radius: var(--radio);
   overflow-anchor: none;
 }
 
-/*
- * La bandeja es **la unica zona con desplazamiento propio**, y es lo que hace jugable el
- * tablero en un telefono.
- *
- * Medido a 375 x 812 con los diez discos: las cuatro filas ocupan ~600 px y la bandeja
- * llena ~900 px mas. Sin tope, agarrar una tapa del fondo de la bandeja y llevarla a
- * "en el pogo" son novecientos pixeles de arrastre de hoja **por cada ficha**, diez
- * veces seguidas. Con la bandeja acotada, las cuatro filas y la bandeja entran juntas y el
- * pulgar no viaja.
- *
- * Es ademas lo que hace el formato en la web: la bandeja es el unico panel que se
- * desplaza solo. No se le pone tope a las filas, que crecen hacia abajo como corresponde.
- */
-.bandeja .fila-piezas {
-  max-height: 42vh;
-  overflow-y: auto;
-  /* Sin esto, el desplazamiento de la bandeja arrastra la hoja entera al llegar al final. */
-  overscroll-behavior: contain;
+/* El aire de abajo que el mazo le quita a la hoja lo pone la isla en `scroll-padding-bottom`
+   del documento, con la altura medida: así lo que toma el foco con el teclado nunca queda
+   escondido detrás del mazo (WCAG 2.4.11). */
+.mazo {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  margin-top: var(--espacio-2);
+  padding-bottom: calc(var(--espacio-2) + env(safe-area-inset-bottom, 0px));
+}
+
+/* Moviendo una que ya estaba puesta: el mazo lo dice con el sello y con el borde cortado. */
+.mazo--moviendo {
+  border-style: dashed;
+  border-color: var(--acento-2);
 }
 
 .bandeja-rotulo {
@@ -5204,20 +5423,25 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 
 .bandeja-sello {
   font-family: var(--fuente-rotulada);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--texto-tenue);
+  color: var(--texto);
   border: 2px solid var(--borde);
   border-radius: 3px;
   padding: 0.2em 0.7em;
   transform: rotate(0.9deg);
 }
 
-/* Vacía no desaparece: sigue ahí, dicha con palabras. Una zona que se esfuma deja al
-   jugador sin saber si terminó o si se rompió algo. */
+.bandeja-rotulo .fila-cuenta {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+/* Vacío no desaparece: sigue ahí, dicho con palabras, y se despega para que se vea la
+   lista entera. Una zona que se esfuma deja al jugador sin saber si terminó o si se rompió. */
 .bandeja--vacia {
-  border-style: solid;
+  position: static;
   border-color: color-mix(in srgb, var(--tinte-juego) 45%, var(--borde));
 }
 
@@ -5225,6 +5449,201 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   margin: var(--espacio-1) 0 0;
   font-size: 0.85rem;
   color: var(--texto-tenue);
+}
+
+/* La carta: la ficha que te toca, grande, con la tinta de su disco en el borde entero. */
+.carta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--fondo);
+  color: var(--texto);
+  border: var(--linea) solid var(--tinta-disco, var(--tinte-juego));
+  border-radius: var(--radio);
+  transform: rotate(-0.6deg);
+}
+
+.carta:not(:has(.carta-tapa)) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.carta--moviendo {
+  border-style: dashed;
+}
+
+.carta-tapa {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  transform: rotate(2deg);
+}
+
+.carta-cuerpo {
+  display: grid;
+  gap: 0.15em;
+  min-width: 0;
+}
+
+.carta-titulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 1.2rem;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.carta-pie {
+  font-size: 0.85rem;
+  color: var(--tinta-disco, var(--texto-tenue));
+}
+
+/* Qué tema de un disco está sonando. Vacío cuando no suena nada: el renglón no salta. */
+.carta-suena {
+  min-height: 1.2em;
+  font-size: 0.8rem;
+  color: var(--texto-tenue);
+}
+
+.carta .pieza-mano {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.carta-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+}
+
+.carta-accion {
+  flex: 1 1 0;
+  min-height: var(--toque-min);
+  padding: 0.3em 0.5em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
+  touch-action: manipulation;
+}
+
+/* Sonando: borde y letra de destaque, y el botón dice "Pará". */
+.carta-accion--sonando {
+  color: var(--acento-2);
+  border-color: var(--acento-2);
+}
+
+/* Un botón por fila, debajo de la carta. Todos con la misma tinta, la del juego: ninguno
+   es el bueno (`BR-22`). */
+.reparto {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.reparto-boton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4em;
+  min-height: var(--toque-min);
+  padding: 0.3em 0.7em;
+  text-align: start;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--fondo);
+  color: var(--texto);
+  border: var(--linea) solid color-mix(in srgb, var(--tinte-juego) 60%, var(--borde));
+  border-radius: var(--radio);
+  transition:
+    translate var(--duracion-toque) var(--curva-cinta),
+    border-color var(--duracion-toque) var(--curva-cinta);
+  touch-action: manipulation;
+}
+
+.reparto-boton:nth-child(odd) {
+  transform: rotate(-0.5deg);
+}
+
+.reparto-boton:nth-child(even) {
+  transform: rotate(0.4deg);
+}
+
+/* Una fila sola en el último renglón ocupa el ancho entero: un hueco al lado parece un
+   botón que falta. */
+.reparto-boton:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+/* La tecla se hunde al apretar, como el botón principal del sitio (`D-54`). */
+.reparto-boton:active {
+  translate: 0 2px;
+  border-color: var(--acento-2);
+}
+
+.reparto-nombre {
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+/* ---- El mazo abierto: elegir cuál sigue, con un filtro por disco ---- */
+
+.mazo-abierto {
+  display: grid;
+  gap: var(--espacio-1);
+}
+
+.mazo-abierto > .secundario {
+  margin-top: 0;
+}
+
+/* Los diez discos en una tira que se corre de costado sin correr la hoja. */
+.mazo-filtros {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px 2px 6px;
+  overscroll-behavior-x: contain;
+}
+
+.filtro {
+  flex: none;
+  min-height: var(--toque-min);
+  padding: 0.2em 0.6em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--fondo);
+  color: var(--tinta-disco, var(--texto));
+  border: 2px solid color-mix(in srgb, var(--tinta-disco, var(--borde)) 70%, var(--borde));
+  border-radius: 3px;
+}
+
+/* El elegido: borde grueso **y** subrayado. Dos canales, ninguno solo de color. */
+.filtro[aria-pressed='true'] {
+  border-width: var(--linea);
+  border-color: var(--tinta-disco, var(--acento-2));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.mazo-lista {
+  max-height: 38vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: 0;
+  padding: 2px;
 }
 
 /* ---- La lámina ---- */
@@ -5252,23 +5671,30 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   .conjuntos {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  /* "Todos los temas" y la partida a medias ocupan el ancho entero. */
+  .conjuntos-todos,
+  .conjuntos-retomar {
+    grid-column: 1 / -1;
+  }
+
+  .reparto {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  }
+
+  .reparto-boton:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
 }
 
 /* ---- La mesa (`D-54`, `UX-35` §4): el tablero en dos paños ----
 
-   En el teléfono el tablero es una columna y la bandeja tiene desplazamiento propio
-   (42 % del alto) para que las filas y la bandeja entren juntas. En una pantalla ancha eso
-   sigue siendo un viaje: el mouse baja a la bandeja, agarra, sube a la fila, baja otra vez.
-   Desde 80 rem las cuatro filas y la bandeja van **lado a lado**, la bandeja pegada arriba
-   mientras se desplaza la página, y el viaje pasa a ser de costado y corto.
-
-   El tablero de este juego es el único que pide más ancho que `--ancho-tablero`: la
-   bandeja necesita su columna sin comerle el ancho a las fichas puestas. No cambia la isla:
-   el orden del documento es el de siempre (cabecera, mano, filas, bandeja, lámina) y el
-   reparto lo pone la grilla. */
+   En el teléfono el mazo va pegado abajo. En una pantalla ancha eso sigue siendo un viaje:
+   el mouse baja al mazo, sube a mirar la fila, baja otra vez. Desde 80 rem las filas y el
+   mazo van **lado a lado**, el mazo pegado arriba mientras se desplaza la página, y el
+   viaje pasa a ser de costado y corto. No cambia la isla: el orden del documento es el de
+   siempre (cabecera, herramientas, filas, mazo, lámina) y el reparto lo pone la grilla. */
 @media (min-width: 80rem) {
-  /* Desde 80 rem y no desde 64 (`UX-35` §7.5): entre los dos cortes el tablero es una
-     columna, y 52 rem para una columna era ancho de más. */
   .ponelos {
     --ancho-tablero: var(--ancho-tablero-amplio);
   }
@@ -5279,26 +5705,33 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 
   .ponelos > .pantalla:has(> .filas) {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(15rem, 18rem);
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
     column-gap: var(--espacio-3);
     align-items: start;
   }
 
   .ponelos > .pantalla:has(> .filas) > .tablero-cabecera,
-  .ponelos > .pantalla:has(> .filas) > .mano,
+  .ponelos > .pantalla:has(> .filas) > .tablero-herramientas,
   .ponelos > .pantalla:has(> .filas) > .lamina {
     grid-column: 1 / -1;
   }
 
-  /* La bandeja se pega debajo de la mano, que ya está pegada arriba: las dos a la vista
-     mientras las filas crecen hacia abajo. */
-  .ponelos .bandeja {
-    position: sticky;
-    top: 3.5rem;
+  .ponelos > .pantalla:has(> .filas) > .filas {
+    grid-column: 1;
+    grid-row: 3;
   }
 
-  .ponelos .bandeja .fila-piezas {
-    max-height: calc(100svh - 11rem);
+  .ponelos .mazo {
+    grid-column: 2;
+    grid-row: 3;
+    position: sticky;
+    top: var(--espacio-2);
+    bottom: auto;
+    margin-top: 0;
+  }
+
+  .ponelos .mazo-lista {
+    max-height: calc(100svh - 22rem);
   }
 }
 
@@ -5307,7 +5740,11 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 
 @media (hover: hover) and (pointer: fine) {
   .conjunto:hover,
-  .pieza:hover {
+  .pieza:hover,
+  .reparto-boton:hover,
+  .carta-accion:hover,
+  .filtro:hover,
+  .herramienta:hover:not(:disabled) {
     border-color: var(--acento-2);
   }
 
