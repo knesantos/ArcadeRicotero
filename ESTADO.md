@@ -5,7 +5,33 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-06
+**Última actualización:** 2026-10-10
+
+> ## 🃏 PONELOS EN FILA SE REPARTE DE A UNA, CON FILAS PROPIAS Y LOS 105 TEMAS (2026-10-10) — `D-69`, `D-70`
+>
+> **Rama `ponelos/filas-propias`, sobre `main` en `41292f9`, sin commitear todavía.** Pedidos del usuario:
+> editar y sumar las filas, una tier list de *todos* los temas con su disco, que se vea más lindo y sea
+> más fácil y divertido, que más fichas está bien, y que suene el recorte de cada tema (en una ficha de
+> disco, temas de ese disco, uno detrás de otro).
+>
+> - **El mazo:** abajo va la que sigue (carta grande con tapa, disco y pista) y un botón por fila. Un toque
+>   y viene la próxima. Están Salteala, Elegí otra (con filtro por disco), Mezclá el mazo y Deshacé. Una
+>   ficha puesta se toca para moverla.
+> - **Filas propias:** de dos a siete. Se renombran en el lugar, se guardan en el navegador y viajan en el
+>   link (versión 2 del empaquetado, `#o=2…&f=…`, con lista blanca). Con las de siempre, el link es el
+>   de antes.
+> - **"Todos los temas"** (los 105) va primero. Se guarda una partida por conjunto: abrirlo de nuevo sigue donde
+>   quedó, y la elección ofrece "Te quedó a medias".
+> - **Suena** el recorte de 10 s al tocarte una ficha, y se apaga desde las herramientas. La lámina va de 2
+>   a 7 filas y se estira de alto antes que cortar un tema.
+> - **En el portal sube al A6** (`D-70`), en el lugar de "Preguntas ricoteras", que pasa al A7.
+> - **Revisión independiente:** de trece hallazgos se confirmaron siete (foco, nombres accesibles, el
+>   disco que seguía sonando, media letra en un nombre de fila) y se arreglaron todos.
+> - **Verde:** `npm test`, `npm run check` y `npm run build`. Probado en el navegador a 375 px y a
+>   1400 px.
+> - **Pendiente:** commitear y armar el PR (lo decide el usuario). Los documentos de rol que quedaron atrás
+>   (`UX-23`, `ADR-06`, `CTR-13`, `PRD-ponelos-en-fila`) están anotados en
+>   `Docs/SUGERENCIAS/HILO-para-todos-d69-ponelos-mazo-y-filas.md`.
 
 > ## 🔢 EL PORTAL CAMBIA DE ORDEN (2026-10-06) — `D-68`
 >
