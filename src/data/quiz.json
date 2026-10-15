@@ -2,929 +2,511 @@
   "contrato": "CTR-02",
   "contratoVersion": 1,
   "juego": "quiz",
-  "actualizado": "2026-10-01",
+  "actualizado": "2026-10-15",
   "items": [
     {
       "id": "QZ-001",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "discos",
       "dificultad": "media",
       "enunciado": "¿En qué año salió Gulp!, el primer disco de estudio de la banda?",
       "opciones": [
-        {
-          "texto": "1983",
-          "correcta": false
-        },
-        {
-          "texto": "1985",
-          "correcta": true
-        },
-        {
-          "texto": "1988",
-          "correcta": false
-        },
-        {
-          "texto": "1991",
-          "correcta": false
-        }
+        { "texto": "1983", "correcta": false },
+        { "texto": "1985", "correcta": true },
+        { "texto": "1988", "correcta": false },
+        { "texto": "1991", "correcta": false }
       ],
       "explicacion": "Gulp! salió en 1985. Es el debut en disco, aunque la banda ya venía tocando con ese nombre desde 1977.",
-      "fuentes": [
-        "RES-02"
-      ],
+      "fuentes": ["RES-02"],
       "esLeyenda": false,
       "sensibleA": [],
-      "estado": "listo",
-      "notaInterna": "Ciclo 9: la explicacion nombraba el sello Wormo, que es exactamente lo que pregunta QZ-003. QZ-001 es media y QZ-003 dificil, asi que BR-01 lo sirve primero y regalaba el otro. Se saca el sello."
+      "estado": "retirado",
+      "notaInterna": "Ciclo 9: la explicacion nombraba el sello Wormo, que es exactamente lo que pregunta QZ-003. Se saca el sello. — Retirado en el ciclo 20 (CNT-41): era una de cuatro preguntas de año de edicion (001, 002, 006, 007). El banco deja de preguntar años: es la pregunta de formulario por excelencia y no le regala nada al que sabe. El año queda dicho en la explicacion de QZ-043."
     },
     {
       "id": "QZ-002",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "discos",
       "dificultad": "facil",
       "enunciado": "¿Cómo se llama el disco que la banda editó en 1986, un año después de Gulp!?",
       "opciones": [
-        {
-          "texto": "Oktubre",
-          "correcta": true
-        },
-        {
-          "texto": "Un baión para el ojo idiota",
-          "correcta": false
-        },
-        {
-          "texto": "¡Bang! ¡Bang!... Estás liquidado",
-          "correcta": false
-        },
-        {
-          "texto": "La mosca y la sopa",
-          "correcta": false
-        }
+        { "texto": "Oktubre", "correcta": true },
+        { "texto": "Un baión para el ojo idiota", "correcta": false },
+        { "texto": "¡Bang! ¡Bang!... Estás liquidado", "correcta": false },
+        { "texto": "La mosca y la sopa", "correcta": false }
       ],
       "explicacion": "Oktubre salió el 4 de octubre de 1986, un año y medio después del debut.",
-      "fuentes": [
-        "RES-02"
-      ],
+      "fuentes": ["RES-02"],
       "esLeyenda": false,
       "sensibleA": [],
-      "estado": "listo",
-      "notaInterna": "Ciclo 9: la explicacion nombraba los sellos y eso achicaba QZ-003 (dificil, sale despues) de cuatro opciones a dos. Se sacan los sellos."
+      "estado": "retirado",
+      "notaInterna": "Ciclo 9: la explicacion nombraba los sellos. Se sacan. — Retirado en el ciclo 20 (CNT-41): pregunta de año, y su respuesta (Oktubre) es la misma que la de QZ-042, los dos faciles. El segundo que saliera en la partida era gratis."
     },
     {
       "id": "QZ-003",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "discos",
       "dificultad": "dificil",
       "enunciado": "¿Qué sello editó Gulp!, el debut de la banda en 1985?",
       "opciones": [
-        {
-          "texto": "Wormo",
-          "correcta": true
-        },
-        {
-          "texto": "Del Cielito",
-          "correcta": false
-        },
-        {
-          "texto": "Patricio Rey Discos",
-          "correcta": false
-        },
-        {
-          "texto": "Interdisc",
-          "correcta": false
-        }
+        { "texto": "Wormo", "correcta": true },
+        { "texto": "Del Cielito", "correcta": false },
+        { "texto": "Patricio Rey Discos", "correcta": false },
+        { "texto": "Interdisc", "correcta": false }
       ],
       "explicacion": "Gulp! salió en 1985 por Wormo, un sello chico. Del Cielito llegó después, y el sello propio recién en 1998.",
-      "fuentes": [
-        "RES-02"
-      ],
+      "fuentes": ["RES-02"],
       "esLeyenda": false,
       "sensibleA": [],
-      "estado": "listo",
-      "notaInterna": "Ciclo 9: «Sony Music» era distractor muerto — una multinacional no encaja con la autogestión de RES-07, así que se descartaba sin saber nada. Se reemplaza por Interdisc. Sube a dificil: el sello del debut no lo sabe un fan casual."
+      "estado": "retirado",
+      "notaInterna": "Ciclo 9: «Sony Music» era distractor muerto; entra Interdisc. — Retirado en el ciclo 20 (CNT-41): habia tres preguntas de sello (003, 005, 008). Queda solo QZ-005, la del sello propio, porque es la unica que cuenta algo de la banda (la autogestion) y no solo de la industria."
     },
     {
       "id": "QZ-004",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "discos",
       "dificultad": "facil",
-      "enunciado": "¿Cuál de estos discos se editó como álbum doble, con sus dos volúmenes el mismo día?",
+      "enunciado": "¿Cuál de estos discos salió doble, con dos volúmenes el mismo día?",
       "opciones": [
-        {
-          "texto": "Lobo suelto, cordero atado",
-          "correcta": true
-        },
-        {
-          "texto": "La mosca y la sopa",
-          "correcta": false
-        },
-        {
-          "texto": "Último bondi a Finisterre",
-          "correcta": false
-        },
-        {
-          "texto": "Un baión para el ojo idiota",
-          "correcta": false
-        }
+        { "texto": "Lobo suelto, cordero atado", "correcta": true },
+        { "texto": "La mosca y la sopa", "correcta": false },
+        { "texto": "Último bondi a Finisterre", "correcta": false },
+        { "texto": "Un baión para el ojo idiota", "correcta": false }
       ],
-      "explicacion": "Lobo suelto, cordero atado salió en 1993 como álbum doble: volumen 1 y volumen 2 el mismo día, cada uno con su propia tapa.",
-      "fuentes": [
-        "RES-02"
-      ],
+      "explicacion": "Lobo suelto, cordero atado, de 1993: un volumen para el lobo y otro para el cordero, cada uno con su tapa y su personaje. Salieron juntos, el mismo día.",
+      "fuentes": ["RES-02", "RES-20"],
       "esLeyenda": false,
       "sensibleA": [],
+      "disco": "lobo-suelto",
       "estado": "listo",
-      "notaInterna": "Ciclo 9, dificultad: baja de media a facil. Es el item mas facil de discos y por un motivo estructural — «Lobo suelto, cordero atado» es el unico titulo partido en dos de la lista, asi que la forma del titulo ya sugiere el disco doble. Etiquetarlo facil dice la verdad sobre lo que pide. Ademas hacia falta un tercer facil fuera de mitologia: BR-01 abre toda partida con un facil, y hasta este ciclo la mitad de esos faciles eran de mitologia, con lo cual casi toda partida arrancaba con una leyenda. Ademas se saca el sello de la explicacion: achicaba QZ-008."
+      "notaInterna": "Ciclo 20 (CNT-41): reescrito corto. Sigue facil: el titulo partido en dos ya sugiere el doble. La explicacion no nombra a los personajes (lo pregunta QZ-032)."
     },
     {
       "id": "QZ-005",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "discos",
       "dificultad": "dificil",
-      "enunciado": "¿Cuál fue el primer disco que la banda editó bajo su propio sello, Patricio Rey Discos?",
+      "enunciado": "Los dos últimos discos salieron por el sello propio de la banda. ¿Cómo se llamaba?",
       "opciones": [
-        {
-          "texto": "Último bondi a Finisterre",
-          "correcta": true
-        },
-        {
-          "texto": "Momo Sampler",
-          "correcta": false
-        },
-        {
-          "texto": "Luzbelito",
-          "correcta": false
-        },
-        {
-          "texto": "Lobo suelto, cordero atado",
-          "correcta": false
-        }
+        { "texto": "Patricio Rey Discos", "correcta": true },
+        { "texto": "Del Cielito", "correcta": false },
+        { "texto": "Wormo", "correcta": false },
+        { "texto": "Interdisc", "correcta": false }
       ],
-      "explicacion": "Último bondi a Finisterre, de 1998, fue el primero por Patricio Rey Discos, el sello propio. Luzbelito generaba dudas y se confirmó que salió por Del Cielito. Momo Sampler repitió el sello propio después.",
-      "fuentes": [
-        "RES-02",
-        "RES-20"
-      ],
+      "explicacion": "Patricio Rey Discos: Último bondi a Finisterre, en 1998, y Momo Sampler, en 2000. Hasta ahí la banda había editado con sellos chicos; desde ahí, se editó sola.",
+      "fuentes": ["RES-02", "RES-20"],
       "esLeyenda": false,
       "sensibleA": [],
+      "disco": "ultimo-bondi-a-finisterre",
       "estado": "listo",
-      "notaInterna": "Ciclo 9: se saca «(2000)» de la explicación, que regalaba entera la respuesta de QZ-006."
+      "notaInterna": "Ciclo 20 (CNT-41): unica pregunta de sello que queda. REV-22 (FIND-143): la primera reescritura tenia la misma respuesta y las mismas cuatro opciones que QZ-026 (media), que la regalaba. Ahora pregunta el nombre del sello; el disco pasa a ser el premio. Wormo, Del Cielito e Interdisc son sellos reales del rock de esos años (RES-02, ciclo 9)."
     },
     {
       "id": "QZ-006",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "discos",
       "dificultad": "media",
       "enunciado": "¿En qué año salió Momo Sampler, el disco que cierra la lista de estudio de la banda?",
       "opciones": [
-        {
-          "texto": "1998",
-          "correcta": false
-        },
-        {
-          "texto": "2000",
-          "correcta": true
-        },
-        {
-          "texto": "2001",
-          "correcta": false
-        },
-        {
-          "texto": "1996",
-          "correcta": false
-        }
+        { "texto": "1998", "correcta": false },
+        { "texto": "2000", "correcta": true },
+        { "texto": "2001", "correcta": false },
+        { "texto": "1996", "correcta": false }
       ],
       "explicacion": "Momo Sampler salió en el año 2000, editado por Patricio Rey Discos.",
-      "fuentes": [
-        "RES-02"
-      ],
+      "fuentes": ["RES-02"],
       "esLeyenda": false,
       "sensibleA": [],
-      "estado": "listo"
+      "estado": "retirado",
+      "notaInterna": "Retirado en el ciclo 20 (CNT-41): pregunta de año de edicion, ver QZ-001."
     },
     {
       "id": "QZ-007",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "discos",
       "dificultad": "facil",
       "enunciado": "¿Cuál de estos discos salió en 1988?",
       "opciones": [
-        {
-          "texto": "Un baión para el ojo idiota",
-          "correcta": true
-        },
-        {
-          "texto": "¡Bang! ¡Bang!... Estás liquidado",
-          "correcta": false
-        },
-        {
-          "texto": "La mosca y la sopa",
-          "correcta": false
-        },
-        {
-          "texto": "Luzbelito",
-          "correcta": false
-        }
+        { "texto": "Un baión para el ojo idiota", "correcta": true },
+        { "texto": "¡Bang! ¡Bang!... Estás liquidado", "correcta": false },
+        { "texto": "La mosca y la sopa", "correcta": false },
+        { "texto": "Luzbelito", "correcta": false }
       ],
       "explicacion": "Un baión para el ojo idiota salió en 1988, tres años después del debut.",
-      "fuentes": [
-        "RES-02"
-      ],
+      "fuentes": ["RES-02"],
       "esLeyenda": false,
       "sensibleA": [],
-      "estado": "listo",
-      "notaInterna": "Ciclo 9, dos fugas. Una: el enunciado decia «dos años después de Oktubre», y 1988 menos dos es 1986, que es la respuesta de QZ-002 — los dos son faciles, asi que podian salir en cualquier orden. Dos: la explicacion atribuia el disco al sello Wormo, que es la respuesta de QZ-003. Ojo con ese sello: RES-02 dice Wormo y RES-20 dice Del Cielito para este disco. La contradiccion queda abierta para investigador; mientras tanto el sello no se afirma en texto visible."
+      "estado": "retirado",
+      "notaInterna": "Ciclo 9: dos fugas arregladas (año derivable de QZ-002, sello de QZ-003). — Retirado en el ciclo 20 (CNT-41): pregunta de año, marcada facil sin serlo. El que fue a una previa no sabe en qué año salió cada disco."
     },
     {
       "id": "QZ-008",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "discos",
       "dificultad": "media",
       "enunciado": "¿Qué sello editó La mosca y la sopa, el disco de 1991?",
       "opciones": [
-        {
-          "texto": "Wormo",
-          "correcta": false
-        },
-        {
-          "texto": "Del Cielito",
-          "correcta": true
-        },
-        {
-          "texto": "Patricio Rey Discos",
-          "correcta": false
-        },
-        {
-          "texto": "Interdisc",
-          "correcta": false
-        }
+        { "texto": "Wormo", "correcta": false },
+        { "texto": "Del Cielito", "correcta": true },
+        { "texto": "Patricio Rey Discos", "correcta": false },
+        { "texto": "Interdisc", "correcta": false }
       ],
       "explicacion": "La mosca y la sopa salió por Del Cielito, el sello que acompañó a la banda desde Oktubre hasta Luzbelito.",
-      "fuentes": [
-        "RES-02"
-      ],
+      "fuentes": ["RES-02"],
       "esLeyenda": false,
       "sensibleA": [],
-      "estado": "listo",
-      "notaInterna": "Ciclo 9: la explicacion decia «salió en 1991» y eso, junto con el 1989 que da el enunciado de QZ-009, contesta QZ-009 sin saber la discografia. Los dos son media, asi que el orden no protege. Se saca el año."
+      "estado": "retirado",
+      "notaInterna": "Retirado en el ciclo 20 (CNT-41): tercera pregunta de sello, ver QZ-003."
     },
     {
       "id": "QZ-009",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "discos",
       "dificultad": "media",
       "enunciado": "En el orden de la discografía, ¿qué disco salió justo después de ¡Bang! ¡Bang!... Estás liquidado (1989)?",
       "opciones": [
-        {
-          "texto": "Un baión para el ojo idiota",
-          "correcta": false
-        },
-        {
-          "texto": "La mosca y la sopa",
-          "correcta": true
-        },
-        {
-          "texto": "Lobo suelto, cordero atado",
-          "correcta": false
-        },
-        {
-          "texto": "Luzbelito",
-          "correcta": false
-        }
+        { "texto": "Un baión para el ojo idiota", "correcta": false },
+        { "texto": "La mosca y la sopa", "correcta": true },
+        { "texto": "Lobo suelto, cordero atado", "correcta": false },
+        { "texto": "Luzbelito", "correcta": false }
       ],
       "explicacion": "Después de ¡Bang! ¡Bang!... Estás liquidado (1989) llegó La mosca y la sopa, en 1991.",
-      "fuentes": [
-        "RES-02"
-      ],
+      "fuentes": ["RES-02"],
       "esLeyenda": false,
       "sensibleA": [],
-      "estado": "listo"
+      "estado": "retirado",
+      "notaInterna": "Retirado en el ciclo 20 (CNT-41): pregunta de orden cronologico, pariente de las de año. Enunciado de formulario y una explicacion que repetia la pregunta sin regalar nada."
     },
     {
       "id": "QZ-010",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "discos",
       "dificultad": "dificil",
       "enunciado": "Contando cada volumen de Lobo suelto, cordero atado como un disco aparte, ¿cuántos discos de estudio editó la banda entre 1985 y 2000?",
       "opciones": [
-        {
-          "texto": "8",
-          "correcta": false
-        },
-        {
-          "texto": "9",
-          "correcta": false
-        },
-        {
-          "texto": "10",
-          "correcta": true
-        },
-        {
-          "texto": "11",
-          "correcta": false
-        }
+        { "texto": "8", "correcta": false },
+        { "texto": "9", "correcta": false },
+        { "texto": "10", "correcta": true },
+        { "texto": "11", "correcta": false }
       ],
       "explicacion": "Contando los dos volúmenes de Lobo suelto, cordero atado por separado, son diez discos de estudio entre Gulp! (1985) y Momo Sampler (2000).",
-      "fuentes": [
-        "RES-02"
-      ],
+      "fuentes": ["RES-02"],
       "esLeyenda": false,
       "sensibleA": [],
-      "estado": "listo"
+      "estado": "retirado",
+      "notaInterna": "Retirado en el ciclo 20 (CNT-41): RES-02 y RES-102 (N-050) marcan esta cuenta como trampa, 9 o 10 segun el criterio. El enunciado tenia que fijar el criterio en una subordinada larga para no romperse, y asi quedaba: la pregunta mas de formulario del banco."
     },
     {
       "id": "QZ-011",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "mitologia",
       "dificultad": "facil",
       "enunciado": "Circula una leyenda sobre el origen de «Ji Ji Ji»: unas chicas de vacaciones en la costa, verano del 85. ¿En qué ciudad la ubica el relato?",
       "opciones": [
-        {
-          "texto": "Mar del Plata",
-          "correcta": true
-        },
-        {
-          "texto": "Villa Gesell",
-          "correcta": false
-        },
-        {
-          "texto": "Pinamar",
-          "correcta": false
-        },
-        {
-          "texto": "Necochea",
-          "correcta": false
-        }
+        { "texto": "Mar del Plata", "correcta": true },
+        { "texto": "Villa Gesell", "correcta": false },
+        { "texto": "Pinamar", "correcta": false },
+        { "texto": "Necochea", "correcta": false }
       ],
       "explicacion": "Es leyenda, no hecho confirmado. El relato habla de chicas de vacaciones en Mar del Plata, en el verano del 85, y sigue con finales distintos según quién lo cuente.",
-      "fuentes": [
-        "RES-08"
-      ],
+      "fuentes": ["RES-08"],
       "esLeyenda": true,
       "rotuloLeyenda": "Leyenda urbana ricotera, nunca confirmada, sobre el origen de «Ji Ji Ji».",
       "sensibleA": [],
-      "spotify": {
-        "trackId": "1tW6LiJGXGlReuNP38wrKb"
-      },
-      "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga: el enunciado decía «el balneario más clásico y masivo del verano argentino», que es la definición de Mar del Plata. Se saca la descripción; las cuatro opciones ya eran ciudades de la costa."
+      "spotify": { "trackId": "1tW6LiJGXGlReuNP38wrKb" },
+      "estado": "retirado",
+      "notaInterna": "Retirado en el ciclo 20 (CNT-41): el diagnostico del hilo principal lo nombra. Abria partidas en facil con una leyenda oscura (en que ciudad ubica el relato) y le costaba una vida al que solo conoce el tema. La leyenda no se pierde: Mar del Plata queda en la explicacion de QZ-015, que cuenta la desmentida."
     },
     {
       "id": "QZ-012",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "mitologia",
-      "dificultad": "media",
-      "enunciado": "Una leyenda decía que el Indio vivía escondido en una mansión imposible de encontrar, en un barrio de calles torcidas. ¿En cuál, según esa versión?",
+      "dificultad": "dificil",
+      "enunciado": "Una leyenda ubicaba la casa del Indio en un barrio de calles curvas donde nadie la encontraba. ¿Cuál?",
       "opciones": [
-        {
-          "texto": "Parque Leloir",
-          "correcta": true
-        },
-        {
-          "texto": "City Bell",
-          "correcta": false
-        },
-        {
-          "texto": "Villa Elisa",
-          "correcta": false
-        },
-        {
-          "texto": "Castelar",
-          "correcta": false
-        }
+        { "texto": "Parque Leloir", "correcta": true },
+        { "texto": "City Bell", "correcta": false },
+        { "texto": "Villa Elisa", "correcta": false },
+        { "texto": "Villa Udaondo", "correcta": false }
       ],
-      "explicacion": "Es de las leyendas más repetidas sobre el Indio: una mansión perdida en el trazado laberíntico de Parque Leloir, en el oeste del Conurbano. Nunca hubo confirmación pública.",
-      "fuentes": [
-        "RES-08"
-      ],
+      "explicacion": "Parque Leloir, en el oeste del Conurbano. Venía con otras: que casi no salía, que se disfrazaba para salir y que lo cuidaba una jauría entrenada. Años de rumores y ni una prueba.",
+      "fuentes": ["RES-08"],
       "esLeyenda": true,
-      "rotuloLeyenda": "Leyenda urbana sobre el Indio, repetida durante años sin ninguna prueba que la confirme.",
+      "rotuloLeyenda": "Rumor sobre el Indio. Circuló durante años sin ninguna prueba.",
       "sensibleA": [],
       "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga: el enunciado decía «barrio del oeste del Conurbano» y las otras tres opciones eran zona norte (Nordelta, Tigre, San Isidro) — una sola pertenecía a la clase nombrada. Ahora las cuatro son barrios de calles arboladas y trazado curvo. Sube a media porque sin la pista geográfica ya no es facil."
+      "notaInterna": "Ciclo 20 (CNT-41): una de las dos leyendas de vida privada que se quedan (con QZ-014). Sube a dificil. Absorbe en la explicacion la jauria (QZ-013) y el disfraz (QZ-017), que se retiran. Castelar sale por Villa Udaondo, vecino de Leloir: la correcta era la unica opcion mas larga."
     },
     {
       "id": "QZ-013",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "mitologia",
       "dificultad": "media",
       "enunciado": "Otra leyenda del mismo combo decía que al Indio lo protegía algo, en esa casa que nadie sabía encontrar. ¿Qué era, según la versión?",
       "opciones": [
-        {
-          "texto": "Una jauría entrenada para atacar a un silbido",
-          "correcta": true
-        },
-        {
-          "texto": "Un ejército privado de guardaespaldas armados",
-          "correcta": false
-        },
-        {
-          "texto": "Un sistema de cámaras controlado desde afuera",
-          "correcta": false
-        },
-        {
-          "texto": "Un helicóptero de vigilancia dando vueltas",
-          "correcta": false
-        }
+        { "texto": "Una jauría entrenada para atacar a un silbido", "correcta": true },
+        { "texto": "Un ejército privado de guardaespaldas armados", "correcta": false },
+        { "texto": "Un sistema de cámaras controlado desde afuera", "correcta": false },
+        { "texto": "Un helicóptero de vigilancia dando vueltas", "correcta": false }
       ],
       "explicacion": "La versión decía que lo custodiaba una jauría entrenada para matar al intruso a un silbido del dueño. Circuló treinta años sin una sola prueba.",
-      "fuentes": [
-        "RES-08"
-      ],
+      "fuentes": ["RES-08"],
       "esLeyenda": true,
       "rotuloLeyenda": "Leyenda urbana sobre el Indio, parte del mismo combo de mitos sin confirmar.",
       "sensibleA": [],
-      "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga: el enunciado decía «sumaba un detalle canino» y la única opción con perros era la correcta. Se saca la palabra y se emparejan los largos. Segunda pasada: el enunciado decia «esa mansion» y «las pocas veces que salia», que son dos dependencias — la primera de QZ-012 y la segunda pisaba a QZ-017. Cada item tiene que pararse solo: la ronda los baraja y puede servir este sin el otro."
+      "estado": "retirado",
+      "notaInterna": "Retirado en el ciclo 20 (CNT-41): habia cinco leyendas sobre la vida privada del Indio (012, 013, 014, 016, 017). Quedan dos. La jauria pasa a la explicacion de QZ-012."
     },
     {
       "id": "QZ-014",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "mitologia",
       "dificultad": "media",
-      "enunciado": "Otra leyenda ricotera muy repetida vinculaba al Indio con una figura mediática, algo que ella misma salió a desmentir en público. ¿De quién se trataba?",
+      "enunciado": "Durante años circuló que el Indio estaba en pareja con una famosa. Ella lo desmintió en público. ¿Quién?",
       "opciones": [
-        {
-          "texto": "Karina Rabolini",
-          "correcta": true
-        },
-        {
-          "texto": "Susana Giménez",
-          "correcta": false
-        },
-        {
-          "texto": "Valeria Mazza",
-          "correcta": false
-        },
-        {
-          "texto": "Moria Casán",
-          "correcta": false
-        }
+        { "texto": "Karina Rabolini", "correcta": true },
+        { "texto": "Susana Giménez", "correcta": false },
+        { "texto": "Valeria Mazza", "correcta": false },
+        { "texto": "Graciela Alfano", "correcta": false }
       ],
-      "explicacion": "La leyenda nunca tuvo una sola prueba. La desmintió la propia Karina Rabolini: «la verdad es que me encantaría que fuera así, pero creo que no es para mí».",
-      "fuentes": [
-        "RES-08"
-      ],
+      "explicacion": "Karina Rabolini. Contestó con humor: «la verdad es que me encantaría que fuera así, pero creo que no es para mí». Prueba, nunca hubo una.",
+      "fuentes": ["RES-08"],
       "esLeyenda": true,
-      "rotuloLeyenda": "Vínculo nunca probado entre el Indio y Karina Rabolini, desmentido públicamente por ella.",
+      "rotuloLeyenda": "Rumor sobre el Indio, desmentido en público por la aludida.",
       "sensibleA": [],
       "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga menor: eran tres conductoras históricas contra una modelo, y la impar era la correcta. Mirtha Legrand sale y entra Valeria Mazza: quedan dos y dos."
+      "notaInterna": "Ciclo 20 (CNT-41): se queda como la segunda leyenda de vida privada, la que tiene desmentida con nombre. Moria Casan sale por Graciela Alfano: la correcta era la unica opcion mas larga."
     },
     {
       "id": "QZ-015",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "mitologia",
       "dificultad": "dificil",
-      "enunciado": "La leyenda de «Ji Ji Ji» circuló años como si fuera un hecho. En una entrevista de 2007, el Indio la desmintió. ¿Qué dijo que era el tema en realidad?",
+      "enunciado": "Se contó durante años que «Ji ji ji» narra un crimen real. El Indio lo desmintió. ¿De qué habla, según él?",
       "opciones": [
-        {
-          "texto": "Un tema sobre la paranoia y la psicopatía",
-          "correcta": true
-        },
-        {
-          "texto": "Un hecho real que le contó una prima suya",
-          "correcta": false
-        },
-        {
-          "texto": "Un homenaje a una película de terror ochentosa",
-          "correcta": false
-        },
-        {
-          "texto": "Una carta de amor bastante mal disimulada",
-          "correcta": false
-        }
+        { "texto": "Un tema sobre la paranoia y la psicopatía", "correcta": true },
+        { "texto": "Un hecho real que le contó una prima suya", "correcta": false },
+        { "texto": "Un homenaje a una película de terror ochentosa", "correcta": false },
+        { "texto": "Una carta de amor bastante mal disimulada", "correcta": false }
       ],
-      "explicacion": "En Rolling Stone, en 2007, dijo que el tema habla de paranoia y psicopatía, y que el título es una risa perversa. Aclaró que tiene más que ver con la paranoia de la droga que con la droga. La leyenda de las chicas queda desmentida por el autor.",
-      "fuentes": [
-        "RES-08"
-      ],
-      "esLeyenda": true,
-      "rotuloLeyenda": "La leyenda circuló como hecho durante años; esta pregunta cuenta la desmentida real del propio Indio en 2007.",
+      "explicacion": "En Rolling Stone, en 2007, dijo que habla de paranoia y psicopatía, y que el título es una risa perversa. Lo de las chicas de vacaciones en Mar del Plata, en el verano del 85, quedó desmentido por el autor.",
+      "fuentes": ["RES-08", "RES-22"],
+      "esLeyenda": false,
       "sensibleA": [],
-      "spotify": {
-        "trackId": "1tW6LiJGXGlReuNP38wrKb"
-      },
+      "spotify": { "trackId": "1tW6LiJGXGlReuNP38wrKb" },
+      "disco": "oktubre",
       "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga: la opción correcta decía «una risa perversa» y el título del tema es una risa. Ese detalle pasa a la explicación."
+      "notaInterna": "Ciclo 20 (CNT-41): cambia de casilla, de leyenda a hecho. Lo que se pregunta y se puntua es lo que dijo el Indio en Rolling Stone 2007, verificado en RES-08 y repetido en el memoir (RES-22). La leyenda es la premisa, no la respuesta; el insignia LEYENDA antes de responder le decia al jugador que se preguntaba «que se cuenta», y no es asi. Absorbe Mar del Plata de QZ-011."
     },
     {
       "id": "QZ-016",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "mitologia",
       "dificultad": "facil",
       "enunciado": "Una leyenda urbana decía que el Indio había sido profesor de educación física en una institución militar, durante la dictadura. ¿En cuál?",
       "opciones": [
-        {
-          "texto": "Colegio Militar",
-          "correcta": true
-        },
-        {
-          "texto": "Liceo Naval Militar",
-          "correcta": false
-        },
-        {
-          "texto": "Escuela de Aviación Militar",
-          "correcta": false
-        },
-        {
-          "texto": "Liceo Militar General San Martín",
-          "correcta": false
-        }
+        { "texto": "Colegio Militar", "correcta": true },
+        { "texto": "Liceo Naval Militar", "correcta": false },
+        { "texto": "Escuela de Aviación Militar", "correcta": false },
+        { "texto": "Liceo Militar General San Martín", "correcta": false }
       ],
       "explicacion": "Es una de las leyendas urbanas sobre el Indio que circularon décadas sin prueba ni desmentida: que fue profesor de educación física en el Colegio Militar durante la dictadura.",
-      "fuentes": [
-        "RES-08"
-      ],
+      "fuentes": ["RES-08"],
       "esLeyenda": true,
       "rotuloLeyenda": "Leyenda urbana sobre el Indio: que fue profesor de educación física en el Colegio Militar durante la dictadura. Circuló unos treinta años, sin ninguna prueba ni desmentida conocida.",
       "sensibleA": [],
-      "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga: el enunciado decía «una institución del Ejército» y solo el Colegio Militar lo es — el Liceo Naval es de la Armada y la Escuela de Aviación de la Fuerza Aérea. Se saca la fuerza del enunciado, y el Colegio Nacional Buenos Aires, que no era militar, se cambia por el Liceo Militar General San Martín."
+      "estado": "retirado",
+      "notaInterna": "Retirado en el ciclo 20 (CNT-41): el diagnostico del hilo principal lo nombra. Leyenda oscura de vida privada marcada facil; abria partidas con algo que no sabe nadie que no haya leido la nota de La Nacion. Ver QZ-013 para el criterio del bloque."
     },
     {
       "id": "QZ-017",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "mitologia",
       "dificultad": "facil",
       "enunciado": "Otra leyenda decía que el Indio casi nunca salía de su casa. ¿Qué se decía que hacía las pocas veces que salía?",
       "opciones": [
-        {
-          "texto": "Se disfrazaba para no ser reconocido",
-          "correcta": true
-        },
-        {
-          "texto": "Salía siempre de noche, sin excepción",
-          "correcta": false
-        },
-        {
-          "texto": "Viajaba siempre con custodia armada",
-          "correcta": false
-        },
-        {
-          "texto": "Usaba dobles en apariciones públicas",
-          "correcta": false
-        }
+        { "texto": "Se disfrazaba para no ser reconocido", "correcta": true },
+        { "texto": "Salía siempre de noche, sin excepción", "correcta": false },
+        { "texto": "Viajaba siempre con custodia armada", "correcta": false },
+        { "texto": "Usaba dobles en apariciones públicas", "correcta": false }
       ],
       "explicacion": "Es parte del mismo combo de leyendas urbanas: que casi no salía de su casa y que, cuando lo hacía, se disfrazaba para evitar el contacto. Sin prueba ni desmentida conocida.",
-      "fuentes": [
-        "RES-08"
-      ],
+      "fuentes": ["RES-08"],
       "esLeyenda": true,
       "rotuloLeyenda": "Leyenda urbana sobre el Indio, parte del mismo combo de mitos que la mansión y la jauría: que casi no salía de su casa y se disfrazaba al hacerlo. Sin prueba ni desmentida conocida.",
       "sensibleA": [],
-      "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga: el enunciado decía «cambiaba algo de su aspecto para pasar desapercibido», que es la definición de disfrazarse."
+      "estado": "retirado",
+      "notaInterna": "Retirado en el ciclo 20 (CNT-41): bloque de vida privada, ver QZ-013. El disfraz pasa a la explicacion de QZ-012."
     },
     {
       "id": "QZ-018",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "mitologia",
       "dificultad": "dificil",
       "enunciado": "El personaje que le da nombre a la banda es un invento. Pero Rocambole salió a decir que Patricio Rey existía de verdad y vivía en una provincia. ¿Cuál?",
       "opciones": [
-        {
-          "texto": "Salta",
-          "correcta": true
-        },
-        {
-          "texto": "Jujuy",
-          "correcta": false
-        },
-        {
-          "texto": "Tucumán",
-          "correcta": false
-        },
-        {
-          "texto": "Santiago del Estero",
-          "correcta": false
-        }
+        { "texto": "Salta", "correcta": true },
+        { "texto": "Jujuy", "correcta": false },
+        { "texto": "Tucumán", "correcta": false },
+        { "texto": "Santiago del Estero", "correcta": false }
       ],
       "explicacion": "Es leyenda con fuente identificable: el Indio cuenta en sus memorias que Rocambole aseguró que Patricio Rey existía y vivía en Salta. El origen sería un campo que Skay y Poli fueron a administrar allá.",
-      "fuentes": [
-        "RES-22"
-      ],
+      "fuentes": ["RES-22"],
       "esLeyenda": true,
       "rotuloLeyenda": "Leyenda con fuente identificable: Rocambole aseguró que Patricio Rey existía y vivía en Salta. No hay más prueba que su palabra.",
       "sensibleA": [],
-      "estado": "listo",
-      "notaInterna": "Ciclo 9, dos arreglos. Fuga: el enunciado decía «una provincia del norte» y solo Salta lo era — ahora las cuatro son del norte. Dificultad: estaba en facil y el dato sale del memoir, así que solo lo sabe quien lo leyó; pasa a dificil para que BR-01 nunca abra una partida con esto. Además se saca de la explicación y del rótulo la cita «qué sé yo… ¡puede ser!», que regalaba QZ-020."
+      "estado": "retirado",
+      "notaInterna": "Retirado en el ciclo 20 (CNT-41): el relato de Rocambole sobre un Patricio Rey real ocupaba tres items (018, 019, 020) y ahora suma un facil (QZ-053). Queda uno solo, QZ-020, que es el que tiene la mejor respuesta (la duda del Indio). Salta pasa a su explicacion."
     },
     {
       "id": "QZ-019",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "mitologia",
       "dificultad": "media",
       "enunciado": "Rocambole dijo que Patricio Rey era en realidad un artesano que habían conocido en el interior. ¿Cómo se llamaba, según esa versión?",
       "opciones": [
-        {
-          "texto": "Francisco \"Pancho\" Silva",
-          "correcta": true
-        },
-        {
-          "texto": "Alberto \"Beto\" Ramírez",
-          "correcta": false
-        },
-        {
-          "texto": "Eduardo \"Lalo\" Suárez",
-          "correcta": false
-        },
-        {
-          "texto": "Roberto \"Bocha\" Fernández",
-          "correcta": false
-        }
+        { "texto": "Francisco \"Pancho\" Silva", "correcta": true },
+        { "texto": "Alberto \"Beto\" Ramírez", "correcta": false },
+        { "texto": "Eduardo \"Lalo\" Suárez", "correcta": false },
+        { "texto": "Roberto \"Bocha\" Fernández", "correcta": false }
       ],
       "explicacion": "Según cuenta el Indio en sus memorias, el Patricio Rey de Rocambole habría sido Francisco «Pancho» Silva, un artesano que Skay y Poli conocieron cuando se fueron a administrar un campo.",
-      "fuentes": [
-        "RES-22"
-      ],
+      "fuentes": ["RES-22"],
       "esLeyenda": true,
       "rotuloLeyenda": "Leyenda con fuente identificable (Rocambole), recogida en las memorias del Indio de 2019. No hay prueba independiente.",
       "sensibleA": [],
-      "estado": "listo",
-      "notaInterna": "Ciclo 9: el enunciado y la explicacion nombraban Salta, que es la respuesta de QZ-018. QZ-019 es media y QZ-018 dificil, asi que salia primero y lo regalaba. Ahora dice «el interior». Ademas se recorto el rotulo para que no adelante la actitud del Indio, que es lo que pregunta QZ-020."
+      "estado": "retirado",
+      "notaInterna": "Retirado en el ciclo 20 (CNT-41): ver QZ-018. Ademas era un nombre propio para adivinar contra tres nombres inventados: no se razona, se tira."
     },
     {
       "id": "QZ-020",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "mitologia",
       "dificultad": "dificil",
-      "enunciado": "Rocambole salió a decir que Patricio Rey existía de verdad. En sus memorias, al Indio le preguntaron por eso. ¿Qué hizo con esa versión?",
+      "enunciado": "Rocambole aseguró que Patricio Rey existió de verdad. En sus memorias, ¿qué le contestó el Indio a eso?",
       "opciones": [
-        {
-          "texto": "La dejó abierta: «qué sé yo… ¡puede ser!»",
-          "correcta": true
-        },
-        {
-          "texto": "Dijo que no se acordaba y siguió con otra cosa",
-          "correcta": false
-        },
-        {
-          "texto": "La desmintió: dijo que Rocambole se lo inventó",
-          "correcta": false
-        },
-        {
-          "texto": "La confirmó y contó cómo conoció a ese hombre",
-          "correcta": false
-        }
+        { "texto": "La dejó abierta: «qué sé yo… ¡puede ser!»", "correcta": true },
+        { "texto": "Dijo que no se acordaba y siguió con otra cosa", "correcta": false },
+        { "texto": "La desmintió: dijo que Rocambole se lo inventó", "correcta": false },
+        { "texto": "La confirmó y contó cómo conoció a ese hombre", "correcta": false }
       ],
-      "explicacion": "Contestó «¿en serio dijo eso Rocambole? Qué sé yo… ¡puede ser!», y lo resolvió por el lado poético: que Patricio Rey debería poder encarnar en cualquiera. Ni confirma ni desmiente.",
-      "fuentes": [
-        "RES-22"
-      ],
+      "explicacion": "«¿En serio dijo eso Rocambole? Qué sé yo… ¡puede ser!». Según esa versión, era un artesano de Salta que Skay y Poli conocieron administrando un campo. El Indio prefiere que Patricio Rey pueda encarnar en cualquiera.",
+      "fuentes": ["RES-22"],
       "esLeyenda": true,
-      "rotuloLeyenda": "Leyenda con fuente identificable (Rocambole) sobre el origen de Patricio Rey. En sus memorias de 2019, el Indio no la confirmó ni la desmintió al ser consultado por Marcelo Figueras.",
+      "rotuloLeyenda": "Lo dijo Rocambole, sin más prueba que su palabra. El Indio no lo confirmó ni lo desmintió.",
       "sensibleA": [],
       "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga: «no la confirmó ni la desmintió» era la única opción tibia entre tres tajantes, y el que no sabe elige la tibia. Ahora hay dos tibias y dos tajantes. Segunda pasada: el enunciado hablaba de «la version de Rocambole» sin decir cual era, asi que no se sostenia solo. Ahora la cuenta en la primera frase."
+      "notaInterna": "Ciclo 20 (CNT-41): reescrito corto. Se queda como el unico item del relato del Patricio Rey real; absorbe Salta (QZ-018) y el artesano (QZ-019). Sigue en leyenda y no en testimonio porque no tengo la ubicacion del pasaje en el libro para llenar testimonio.ubicacion, y no se inventa."
     },
     {
       "id": "QZ-021",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "historia",
       "dificultad": "media",
-      "enunciado": "Un mito repetido dice que la banda tocó en Huracán en 1989. En realidad tocó ahí dos veces, y una fue en 1993. ¿Cuándo fue la otra?",
+      "enunciado": "La banda llenó dos veces la cancha de Huracán. Una fue en noviembre de 1993. ¿Y la otra?",
       "opciones": [
-        {
-          "texto": "1994",
-          "correcta": true
-        },
-        {
-          "texto": "1992",
-          "correcta": false
-        },
-        {
-          "texto": "1995",
-          "correcta": false
-        },
-        {
-          "texto": "1997",
-          "correcta": false
-        }
+        { "texto": "1994", "correcta": true },
+        { "texto": "1992", "correcta": false },
+        { "texto": "1995", "correcta": false },
+        { "texto": "1997", "correcta": false }
       ],
-      "explicacion": "Huracán fue el 19 y 20 de noviembre de 1993, y el 16 y 17 de diciembre de 1994. Lo de 1989 fue el debut en Obras, el 2 de diciembre.",
-      "fuentes": [
-        "RES-05"
-      ],
+      "explicacion": "Diciembre de 1994, dos noches, con unas 80.000 personas cada una, según se cuenta. Y no: en el 89 no hubo Huracán. Ese año fue el debut en Obras.",
+      "fuentes": ["RES-05"],
       "esLeyenda": false,
       "sensibleA": [],
       "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga: el enunciado decía «en años consecutivos», y con 1993 dado eso dejaba solo 1992 y 1994 — 50% sin saber nada. Se saca la pista y se cambian los años. Sube a media: acertar la fecha de Huracán no es de entrada. Segunda pasada: la explicacion cerraba nombrando el brief de este repositorio, que el jugador no tiene por que conocer. Fuera."
+      "notaInterna": "Ciclo 20 (CNT-41): reescrito corto, sin el «mito repetido» como premisa. La confusion con Obras 89 pasa a ser el premio de la explicacion."
     },
     {
       "id": "QZ-022",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "historia",
-      "dificultad": "facil",
-      "enunciado": "Además del Indio en voz y Skay en guitarra, hubo una tercera persona pilar de la banda desde el origen. ¿Quién era?",
+      "dificultad": "media",
+      "enunciado": "Desde el principio, la banda tuvo tres pilares: el Indio, Skay y una tercera persona. ¿Quién?",
       "opciones": [
-        {
-          "texto": "Carmen \"La Negra Poli\" Castro",
-          "correcta": true
-        },
-        {
-          "texto": "Semilla Bucciarelli",
-          "correcta": false
-        },
-        {
-          "texto": "Walter Sidotti",
-          "correcta": false
-        },
-        {
-          "texto": "Sergio Dawi",
-          "correcta": false
-        }
+        { "texto": "La Negra Poli", "correcta": true },
+        { "texto": "Semilla Bucciarelli", "correcta": false },
+        { "texto": "Walter Sidotti", "correcta": false },
+        { "texto": "Sergio Dawi", "correcta": false }
       ],
-      "explicacion": "Los tres pilares desde el origen fueron el Indio, Skay y Carmen «La Negra Poli» Castro, asesorados por Rocambole. Bucciarelli, Sidotti y Dawi entraron después: la formación recién se estabilizó en 1987.",
-      "fuentes": [
-        "RES-05"
-      ],
+      "explicacion": "Carmen Castro, la Negra Poli, con Rocambole de asesor. Los músicos llegaron después: la formación de cinco recién se asentó en 1987 y ya no cambió hasta el final.",
+      "fuentes": ["RES-05"],
       "esLeyenda": false,
       "sensibleA": [],
       "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga: el enunciado decía «una mujer» y era el único nombre de mujer entre las cuatro opciones."
+      "notaInterna": "Ciclo 20 (CNT-41): baja de facil a media; Poli no la ubica cualquiera que fue a una previa. La correcta se acorta a «La Negra Poli»: con nombre y apellido era la unica opcion mas larga. La explicacion no dice el nombre completo del bajista, que es la respuesta de QZ-031."
     },
     {
       "id": "QZ-023",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "historia",
-      "dificultad": "media",
-      "enunciado": "En 1992, el Indio, Skay y Poli constituyeron la sociedad que todavía hoy controla el catálogo y la marca de la banda. ¿Cómo se llama?",
+      "dificultad": "dificil",
+      "enunciado": "En 1992, el Indio, Skay y Poli armaron la sociedad dueña del catálogo y la marca. ¿Cómo se llama?",
       "opciones": [
-        {
-          "texto": "Erks",
-          "correcta": true
-        },
-        {
-          "texto": "Wormo",
-          "correcta": false
-        },
-        {
-          "texto": "Del Cielito",
-          "correcta": false
-        },
-        {
-          "texto": "Patricio Rey Discos",
-          "correcta": false
-        }
+        { "texto": "Erks", "correcta": true },
+        { "texto": "Wormo", "correcta": false },
+        { "texto": "Del Cielito", "correcta": false },
+        { "texto": "Patricio Rey Discos", "correcta": false }
       ],
-      "explicacion": "Erks S.A. se constituyó en 1992: el Indio de presidente, Skay de vicepresidente, Poli de directora, un tercio del nombre cada uno. Los otros tres de la lista son sellos, no sociedades.",
-      "fuentes": [
-        "RES-09"
-      ],
+      "explicacion": "Erks S.A.: el Indio de presidente, Skay de vicepresidente, Poli de directora, y el nombre de la banda en tres partes iguales. Las otras opciones son sellos que editaron sus discos.",
+      "fuentes": ["RES-09"],
       "esLeyenda": false,
       "sensibleA": [],
       "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga: la opción decía «Erks S.A.» y el enunciado pedía una sociedad — era la única con forma de sociedad entre tres sellos. Se saca el «S.A.» de la opción y queda en la explicación."
+      "notaInterna": "Ciclo 20 (CNT-41): sube de media a dificil. El nombre de la sociedad es de la vieja guardia, no del que tiene los discos."
     },
     {
       "id": "QZ-024",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "historia",
       "dificultad": "media",
       "enunciado": "¿Dónde dio el Indio Solari su último recital, antes de no volver a presentarse en persona arriba de un escenario?",
       "opciones": [
-        {
-          "texto": "Olavarría",
-          "correcta": true
-        },
-        {
-          "texto": "Córdoba",
-          "correcta": false
-        },
-        {
-          "texto": "Tandil",
-          "correcta": false
-        },
-        {
-          "texto": "Mar del Plata",
-          "correcta": false
-        }
+        { "texto": "Olavarría", "correcta": true },
+        { "texto": "Córdoba", "correcta": false },
+        { "texto": "Tandil", "correcta": false },
+        { "texto": "Mar del Plata", "correcta": false }
       ],
       "explicacion": "Fue el 11 de marzo de 2017, en el predio La Colmena, en Olavarría. Esa noche hubo hechos graves que no se tratan acá: no son dato de trivia. El Indio no volvió a presentarse en persona. Los otros tres lugares son recitales de la banda, no suyos.",
-      "fuentes": [
-        "RES-07"
-      ],
+      "fuentes": ["RES-07"],
       "esLeyenda": false,
       "sensibleA": [],
-      "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga: las opciones traían el año («Olavarría, 2017», «Vélez, 2009», «River, 2015», «Huracán, 1994») y bastaba elegir el más reciente para acertar sin saber nada. Se sacan los años y entran tres lugares reales de la cronología de la banda —Córdoba 2001, Tandil 1997, Mar del Plata 1999—, que son trampa para el que confunde el último de la banda con el último del Indio. La explicación sigue en registro sobrio por CNT-04."
+      "estado": "retirado",
+      "notaInterna": "Retirado en el ciclo 20 (CNT-41). Dos motivos. Uno, se superpone con QZ-054 (el ultimo recital de la banda, Cordoba 2001): dos preguntas de «ultimo recital» seguidas confunden, y la de la banda es la que cuenta algo. Dos, a cuatro meses de la muerte del Indio (RES-04), una pregunta cuya respuesta es la noche que CNT-04 manda a no explotar suma peso y no suma juego. CNT-04 la permitia; no la exigia."
     },
     {
       "id": "QZ-025",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "historia",
       "dificultad": "dificil",
-      "enunciado": "El operativo policial de 1991 cerca de Obras derivó en una causa en la Argentina. ¿Cuánto tardó en llegar el primer juicio oral?",
+      "enunciado": "Tras el operativo policial de 1991 cerca de Obras, ¿cuánto tardó la causa en llegar al primer juicio oral?",
       "opciones": [
-        {
-          "texto": "Dos años",
-          "correcta": false
-        },
-        {
-          "texto": "Ocho años",
-          "correcta": false
-        },
-        {
-          "texto": "Veinte años",
-          "correcta": true
-        },
-        {
-          "texto": "Treinta años",
-          "correcta": false
-        }
+        { "texto": "Dos años", "correcta": false },
+        { "texto": "Ocho años", "correcta": false },
+        { "texto": "Veinte años", "correcta": true },
+        { "texto": "Treinta años", "correcta": false }
       ],
-      "explicacion": "El operativo fue el 19 de abril de 1991, antes de un recital en Obras. Entre los más de 80 detenidos estaba Walter Bulacio, de 17 años, que murió días después. El primer juicio oral en la Argentina llegó recién en 2011, veinte años más tarde; antes el caso había pasado por la Corte Interamericana de Derechos Humanos.",
-      "fuentes": [
-        "RES-07"
-      ],
+      "explicacion": "El operativo fue el 19 de abril de 1991, antes de un recital en Obras. Entre los más de 80 detenidos estaba Walter Bulacio, de 17 años, que murió días después. El primer juicio oral fue en 2011. Antes, el caso llegó a la Corte Interamericana de Derechos Humanos.",
+      "fuentes": ["RES-07"],
       "esLeyenda": false,
       "sensibleA": [],
       "estado": "listo",
-      "notaInterna": "Ciclo 10, T-169. La version anterior preguntaba QUE tribunal internacional, con cuatro cortes como opciones — y la Corte Interamericana es la unica de las cuatro que aplica a un caso argentino, asi que se acertaba con civismo y sin saber nada de la banda. Es la forma de fuga «la pregunta nombra una clase y solo una opcion pertenece» de la auditoria del ciclo 9. La salida la habilita CNT-04, que ficha DOS hechos institucionales y no uno: el tribunal y que el primer juicio oral tardo veinte anios (1991 -> 2011). Se pasa al segundo. El tribunal no se pierde: quedo en la explicacion. Los distractores se eligieron para que veinte NO sea el extremo — treinta es mayor y es plausible—, o se acertaba tirando al numero mas grande, que es el atajo que la misma auditoria llama «elegir el anio mas nuevo». Sigue cumpliendo CNT-04: se puntua un dato institucional, el nombre del pibe aparece una sola vez y en la explicacion."
+      "notaInterna": "Ciclo 20 (CNT-41): registro 3 entero, como pide CNT-04. Se acorta el enunciado y la explicacion queda seca: hechos, fechas, sin adjetivos. Ningun otro texto del banco dice «veinte años», para no regalarla."
     },
     {
       "id": "QZ-026",
-      "us": [
-        "US-01"
-      ],
-      "categoria": "historia",
+      "us": ["US-01"],
+      "categoria": "discos",
       "dificultad": "media",
-      "enunciado": "El Indio contó que la banda apareció por primera vez en una tapa, caracterizados como superhéroes. ¿En qué disco fue?",
+      "enunciado": "Según el Indio, la banda aparece por primera vez en una tapa vestida de superhéroes. ¿En qué disco?",
       "opciones": [
-        {
-          "texto": "Último bondi a Finisterre",
-          "correcta": true
-        },
-        {
-          "texto": "Momo Sampler",
-          "correcta": false
-        },
-        {
-          "texto": "Luzbelito",
-          "correcta": false
-        },
-        {
-          "texto": "Lobo suelto, cordero atado",
-          "correcta": false
-        }
+        { "texto": "Último bondi a Finisterre", "correcta": true },
+        { "texto": "Momo Sampler", "correcta": false },
+        { "texto": "Luzbelito", "correcta": false },
+        { "texto": "Lobo suelto, cordero atado", "correcta": false }
       ],
-      "explicacion": "El Indio cuenta que en la tapa de Último bondi a Finisterre, de 1998, aparece por primera vez la imagen de la banda, caracterizada como superhéroes. Antes, en las tapas no estaban ellos.",
-      "fuentes": [
-        "RES-21",
-        "RES-22",
-        "RES-02"
-      ],
+      "explicacion": "En Último bondi a Finisterre, de 1998. Hasta ahí, en las tapas de Rocambole la banda no aparecía. Con la misma estética filmaron el último videoclip, el del Capitán Buscapina.",
+      "fuentes": ["RES-21", "RES-22", "RES-02"],
       "esLeyenda": false,
       "testimonio": {
         "quien": "Indio Solari",
@@ -932,41 +514,25 @@
         "ubicacion": "comentario de «Último bondi a Finisterre»",
         "afirmacion": "Cuenta que en la tapa de Último bondi a Finisterre apareció por primera vez la imagen de la banda, caracterizada como superhéroes."
       },
-      "sensibleA": [],
+      "sensibleA": ["tapa"],
+      "disco": "ultimo-bondi-a-finisterre",
       "estado": "listo",
-      "notaInterna": "Ciclo 9, dos arreglos. Fuga: el enunciado decía «el anteúltimo disco de su discografía de estudio», y eso se resuelve por cronología sin saber nada de la tapa. Dificultad: sale del memoir, así que no puede ser facil; pasa a media."
+      "notaInterna": "Ciclo 20 (CNT-41): pasa de historia a discos (es una pregunta de tapa). Absorbe el videoclip de QZ-033, que se retira. Ver la nota de QZ-005 sobre la respuesta compartida."
     },
     {
       "id": "QZ-027",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "historia",
       "dificultad": "media",
       "enunciado": "En sus memorias, el Indio recogió el relato de Rocambole sobre la tapa de Un baión para el ojo idiota. Además del televisor, ¿qué sumó para representar la idiotez?",
       "opciones": [
-        {
-          "texto": "Un muñeco de Marilú, con chupete, antifaz y collares",
-          "correcta": true
-        },
-        {
-          "texto": "Una máscara de payaso comprada para la ocasión",
-          "correcta": false
-        },
-        {
-          "texto": "Un espejo roto pegado sobre la pantalla",
-          "correcta": false
-        },
-        {
-          "texto": "Una peluca rubia colgada del marco",
-          "correcta": false
-        }
+        { "texto": "Un muñeco de Marilú, con chupete, antifaz y collares", "correcta": true },
+        { "texto": "Una máscara de payaso comprada para la ocasión", "correcta": false },
+        { "texto": "Un espejo roto pegado sobre la pantalla", "correcta": false },
+        { "texto": "Una peluca rubia colgada del marco", "correcta": false }
       ],
       "explicacion": "Rocambole contó que, después de dibujar el televisor, sintió que faltaba un elemento para representar la idiotez, y ahí apareció un muñeco de juguete que era de Marilú, su hija, vestido con varios accesorios de bebé: un chupete, un antifaz y collares. Más tarde sumó también al perro, una figura que para Rocambole vuelve una y otra vez en la iconografía de la banda.",
-      "fuentes": [
-        "RES-21",
-        "RES-22"
-      ],
+      "fuentes": ["RES-21", "RES-22"],
       "esLeyenda": false,
       "testimonio": {
         "quien": "Rocambole",
@@ -976,39 +542,22 @@
       },
       "sensibleA": [],
       "estado": "retirado",
-      "notaInterna": "Retirado en el ciclo 9. Dos motivos. Uno, la categoría: historia tenía cinco de diez ítems que salían del memoir y tres eran anécdotas de tapa de Rocambole — historia quedaba siendo «la categoría del libro», y el banco no tenía ni una pregunta sobre de dónde salió la banda. Dos, la fuga: la correcta era la opción más larga y la más específica. Lo reemplaza QZ-041. El dato de Marilú no se pierde: es material de Redondopedia y puede volver como ítem de la categoría discos."
+      "notaInterna": "Retirado en el ciclo 9. Dos motivos: historia era «la categoria del libro», y la correcta era la opcion mas larga. Lo reemplaza QZ-041. — Ciclo 20: el dato de Marilu volvio, como premio en la explicacion de QZ-046."
     },
     {
       "id": "QZ-028",
-      "us": [
-        "US-01"
-      ],
-      "categoria": "historia",
+      "us": ["US-01"],
+      "categoria": "discos",
       "dificultad": "media",
-      "enunciado": "En sus memorias, el Indio contó el relato de Rocambole sobre el gato de la tapa de La mosca y la sopa. ¿Qué noticia de la época sumó?",
+      "enunciado": "Rocambole contó de dónde salió el gato de la tapa de La mosca y la sopa. ¿Qué noticia daba vueltas?",
       "opciones": [
-        {
-          "texto": "Jubilados que comían gatos cerca de Plaza Lavalle",
-          "correcta": true
-        },
-        {
-          "texto": "Una plaga de gatos callejeros en el Bajo porteño",
-          "correcta": false
-        },
-        {
-          "texto": "Un gato que sobrevivió a un incendio en Constitución",
-          "correcta": false
-        },
-        {
-          "texto": "Una ola de envenenamiento de gatos en Palermo",
-          "correcta": false
-        }
+        { "texto": "Jubilados que comían gatos cerca de Plaza Lavalle", "correcta": true },
+        { "texto": "Una plaga de gatos callejeros en el Bajo porteño", "correcta": false },
+        { "texto": "Un gato que sobrevivió a un incendio en Constitución", "correcta": false },
+        { "texto": "Una ola de envenenamiento de gatos en Palermo", "correcta": false }
       ],
-      "explicacion": "Rocambole guardaba los restos disecados de un gato que había encontrado en un techo. A eso le sumó cerdos y peces, por la revista Cerdos y Peces de Enrique Symns, donde escribía el Indio, y la noticia de los jubilados de Plaza Lavalle. Tres cosas en una tapa.",
-      "fuentes": [
-        "RES-21",
-        "RES-22"
-      ],
+      "explicacion": "Rocambole tenía guardado un gato momificado que había encontrado en un techo. Le sumó cerdos y peces, por la revista de Enrique Symns donde escribía el Indio. La noticia de los jubilados terminó de armar la tapa.",
+      "fuentes": ["RES-21", "RES-22"],
       "esLeyenda": false,
       "testimonio": {
         "quien": "Rocambole",
@@ -1016,42 +565,25 @@
         "ubicacion": "comentario de «La mosca y la sopa»",
         "afirmacion": "Explica que Rocambole guardaba los restos disecados de un gato hallado en un techo, y que sumó a la tapa una noticia de la época sobre gente mayor que comía gatos cerca de Plaza Lavalle."
       },
-      "sensibleA": [],
+      "sensibleA": ["tapa"],
+      "disco": "la-mosca-y-la-sopa",
       "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga: el enunciado hablaba del gato de la tapa y era la única opción que nombraba gatos. Ahora las cuatro los nombran."
+      "notaInterna": "Ciclo 20 (CNT-41): pasa de historia a discos (pregunta de tapa) y se acorta. Sigue media: es testimonio del memoir, nunca facil."
     },
     {
       "id": "QZ-029",
-      "us": [
-        "US-01"
-      ],
-      "categoria": "historia",
+      "us": ["US-01"],
+      "categoria": "discos",
       "dificultad": "dificil",
-      "enunciado": "El sobre interno de Oktubre trae impresa la letra de un tema que no está en el disco. ¿Qué contó el Indio en sus memorias sobre esa canción?",
+      "enunciado": "El sobre interno de Oktubre trae la letra de un tema que no está en el disco. ¿Qué contó el Indio?",
       "opciones": [
-        {
-          "texto": "La sacaron a último momento, con el sobre ya impreso",
-          "correcta": true
-        },
-        {
-          "texto": "Nunca llegaron a grabarla: quedó solo en el sobre",
-          "correcta": false
-        },
-        {
-          "texto": "La reservaron para el disco siguiente y no la usaron",
-          "correcta": false
-        },
-        {
-          "texto": "La grabaron y la descartaron en la mezcla final",
-          "correcta": false
-        }
+        { "texto": "La sacaron a último momento, con el sobre ya impreso", "correcta": true },
+        { "texto": "Nunca llegaron a grabarla: quedó solo en el sobre", "correcta": false },
+        { "texto": "La reservaron para el disco siguiente y no la usaron", "correcta": false },
+        { "texto": "La grabaron y la descartaron en la mezcla final", "correcta": false }
       ],
-      "explicacion": "Es la versión del propio Indio: «De estos polvos futuros lodos…» se cayó del disco a último momento, con el sobre ya impreso. Es de las pocas cosas que cualquiera comprueba con el disco en la mano.",
-      "fuentes": [
-        "RES-21",
-        "RES-22",
-        "RES-20"
-      ],
+      "explicacion": "El tema es «De estos polvos futuros lodos…», y se cayó del disco cuando el sobre ya estaba impreso. Es de lo poco que cualquiera puede comprobar con el disco en la mano.",
+      "fuentes": ["RES-21", "RES-22", "RES-48"],
       "esLeyenda": false,
       "testimonio": {
         "quien": "Indio Solari",
@@ -1060,40 +592,24 @@
         "afirmacion": "Cuenta que la canción «De estos polvos futuros lodos…» se sacó de Oktubre a último momento, cuando el sobre interno ya estaba impreso con su letra."
       },
       "sensibleA": [],
+      "disco": "oktubre",
       "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga: los tres distractores contradecían la premisa del enunciado — si la letra está impresa y el tema no está en el disco, no puede ser un track oculto ni la letra de otro tema. Se eliminaba por lógica sin saber el dato. Los cuatro nuevos son compatibles con la premisa."
+      "notaInterna": "Ciclo 20 (CNT-41): pasa de historia a discos. RES-48 (corroboracion externa) reemplaza a RES-20 en fuentes, porque es la ficha que sostiene que el tema existe y no esta en el disco."
     },
     {
       "id": "QZ-030",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "historia",
       "dificultad": "dificil",
       "enunciado": "En sus memorias, el Indio recordó en qué se inspiró Rocambole para la nave de la tapa de Último bondi a Finisterre. ¿Qué objeto tenían a mano?",
       "opciones": [
-        {
-          "texto": "Una caja de whisky, por su repujado plateado",
-          "correcta": true
-        },
-        {
-          "texto": "Una lata de conservas que había en el estudio",
-          "correcta": false
-        },
-        {
-          "texto": "El capot cromado de un auto antiguo del barrio",
-          "correcta": false
-        },
-        {
-          "texto": "La carcasa de una radio a válvulas de los años 50",
-          "correcta": false
-        }
+        { "texto": "Una caja de whisky, por su repujado plateado", "correcta": true },
+        { "texto": "Una lata de conservas que había en el estudio", "correcta": false },
+        { "texto": "El capot cromado de un auto antiguo del barrio", "correcta": false },
+        { "texto": "La carcasa de una radio a válvulas de los años 50", "correcta": false }
       ],
       "explicacion": "El Indio había pensado un bondi tipo Mad Max, con tornillos por fuera para aguantar el camino a Finisterre. Rocambole propuso una nave interplanetaria, con una cupulita traslúcida de ventana, inspirada en el repujado plateado de una caja de whisky Chivas Regal.",
-      "fuentes": [
-        "RES-21",
-        "RES-22"
-      ],
+      "fuentes": ["RES-21", "RES-22"],
       "esLeyenda": false,
       "testimonio": {
         "quien": "Indio Solari",
@@ -1102,110 +618,63 @@
         "afirmacion": "Recuerda que Rocambole propuso una nave interplanetaria en lugar del bondi tuneado que él había imaginado, inspirada en el repujado plateado de una caja de whisky Chivas Regal."
       },
       "sensibleA": [],
-      "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga menor: la correcta era la más larga y la única con marca propia («Chivas Regal»), que es la pista clásica de test. La marca pasa a la explicación y se emparejan los largos."
+      "estado": "retirado",
+      "notaInterna": "Retirado en el ciclo 20 (CNT-41): era el cuarto item de Ultimo bondi a Finisterre (005, 026, 030, 033), y el detalle de la caja de whisky solo lo saca el que leyo el libro. Ademas su texto nombraba Ultimo bondi, que es la respuesta de QZ-005, y vivia de un perdon en fugas.test.ts. Material de Redondopedia."
     },
     {
       "id": "QZ-031",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "letras",
       "dificultad": "dificil",
-      "enunciado": "Casi toda la obra de la banda lleva la firma Solari-Beilinson. En «Mi perro dinamita», de La mosca y la sopa, se suma un tercer nombre. ¿Cuál?",
+      "enunciado": "Casi todo lo firman Solari y Beilinson. «Mi perro dinamita» suma un tercer nombre. ¿Cuál?",
       "opciones": [
-        {
-          "texto": "Semilla Bucciarelli",
-          "correcta": true
-        },
-        {
-          "texto": "Walter Sidotti",
-          "correcta": false
-        },
-        {
-          "texto": "Sergio Dawi",
-          "correcta": false
-        },
-        {
-          "texto": "Willy Crook",
-          "correcta": false
-        }
+        { "texto": "Semilla Bucciarelli", "correcta": true },
+        { "texto": "Walter Sidotti", "correcta": false },
+        { "texto": "Sergio Dawi", "correcta": false },
+        { "texto": "Willy Crook", "correcta": false }
       ],
-      "explicacion": "Solari y Beilinson firman casi toda la discografía. Las dos únicas excepciones son «Mi perro dinamita» y «Ella debe estar tan linda», las dos con Semilla Bucciarelli de tercer autor.",
-      "fuentes": [
-        "RES-20"
-      ],
+      "explicacion": "Semilla Bucciarelli, el bajista. Pasa dos veces en todo el catálogo: acá y en «Ella debe estar tan linda», de 1988.",
+      "fuentes": ["RES-20"],
       "esLeyenda": false,
       "sensibleA": [],
+      "disco": "la-mosca-y-la-sopa",
       "estado": "listo",
-      "notaInterna": "Ciclo 9, fuga menor: «Carmen Poli Castro» era distractor muerto — no es música, y QZ-022 ya la presenta como pilar y no como instrumentista. Entra Willy Crook, que sí pasó por el saxo de la banda."
+      "notaInterna": "Ciclo 20 (CNT-41): reescrito corto. Queda como el unico item del banco donde la correcta es la unica opcion mas larga: no hay un cuarto musico de la banda con nombre mas largo que no sea trampa."
     },
     {
       "id": "QZ-032",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "letras",
       "dificultad": "dificil",
-      "enunciado": "Lobo suelto, cordero atado tiene dos personajes que le dan nombre a sus volúmenes, cada uno con su propia tapa: Lupus el Lobo y otro. ¿Cómo se llama el segundo?",
+      "enunciado": "El doble de 1993 tiene dos personajes, cada uno con su tapa: Lupus el Lobo y otro. ¿Cuál?",
       "opciones": [
-        {
-          "texto": "Rulo el Cordero",
-          "correcta": true
-        },
-        {
-          "texto": "Nerón el Cordero",
-          "correcta": false
-        },
-        {
-          "texto": "Toby el Cordero",
-          "correcta": false
-        },
-        {
-          "texto": "Manso el Cordero",
-          "correcta": false
-        }
+        { "texto": "Rulo el Cordero", "correcta": true },
+        { "texto": "Nerón el Cordero", "correcta": false },
+        { "texto": "Toby el Cordero", "correcta": false },
+        { "texto": "Manso el Cordero", "correcta": false }
       ],
-      "explicacion": "Lupus el Lobo y Rulo el Cordero son los dos personajes de Lobo suelto, cordero atado, editado en 1993 en dos volúmenes el mismo día, cada uno con su propia tapa.",
-      "fuentes": [
-        "RES-20"
-      ],
+      "explicacion": "Rulo el Cordero. Lobo suelto y Cordero atado salieron el mismo día, con tapas opuestas, y se presentaron en Huracán en noviembre de 1993, con Las Blacanblus de invitadas.",
+      "fuentes": ["RES-20"],
       "esLeyenda": false,
       "sensibleA": [],
-      "estado": "listo"
+      "disco": "cordero-atado",
+      "estado": "listo",
+      "notaInterna": "Ciclo 20 (CNT-41): reescrito. Se queda en letras como la pregunta de personaje. La explicacion no nombra el año del segundo Huracan (respuesta de QZ-021)."
     },
     {
       "id": "QZ-033",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "letras",
       "dificultad": "media",
       "enunciado": "El Indio contó en sus memorias que el último videoclip de la banda estuvo inspirado en un personaje de Último bondi a Finisterre. ¿Cuál?",
       "opciones": [
-        {
-          "texto": "Capitán Buscapina",
-          "correcta": true
-        },
-        {
-          "texto": "Drogocop",
-          "correcta": false
-        },
-        {
-          "texto": "Alien Duce",
-          "correcta": false
-        },
-        {
-          "texto": "Gualicho",
-          "correcta": false
-        }
+        { "texto": "Capitán Buscapina", "correcta": true },
+        { "texto": "Drogocop", "correcta": false },
+        { "texto": "Alien Duce", "correcta": false },
+        { "texto": "Gualicho", "correcta": false }
       ],
       "explicacion": "El tercer y último videoclip de la banda estuvo inspirado en «Capitán Buscapina», con cameos de Luzbelito y del hombre que alza la cadena en Oktubre, según contó el Indio.",
-      "fuentes": [
-        "RES-21",
-        "RES-22",
-        "RES-20"
-      ],
+      "fuentes": ["RES-21", "RES-22", "RES-20"],
       "esLeyenda": false,
       "testimonio": {
         "quien": "Indio Solari",
@@ -1214,149 +683,85 @@
         "afirmacion": "Cuenta que el tercer y último videoclip de la banda estuvo inspirado en «Capitán Buscapina», con cameos de Luzbelito y del hombre que alza la cadena en Oktubre."
       },
       "sensibleA": [],
-      "spotify": {
-        "trackId": "2GvbPdseVUYzQHWlgxnxXm"
-      },
-      "estado": "listo"
+      "spotify": { "trackId": "2GvbPdseVUYzQHWlgxnxXm" },
+      "estado": "retirado",
+      "notaInterna": "Retirado en el ciclo 20 (CNT-41): memoir, y otro item de Ultimo bondi (ver QZ-030). Nombraba la respuesta de QZ-005 en el enunciado. El videoclip queda en la explicacion de QZ-026."
     },
     {
       "id": "QZ-034",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "letras",
       "dificultad": "dificil",
       "enunciado": "Un baión para el ojo idiota tiene dos títulos que arrancan con «Todo»: uno es «Todo preso es político». ¿Cuál es el otro?",
       "opciones": [
-        {
-          "texto": "Todo un palo",
-          "correcta": true
-        },
-        {
-          "texto": "Todo por vos",
-          "correcta": false
-        },
-        {
-          "texto": "Todos contra todos",
-          "correcta": false
-        },
-        {
-          "texto": "Todo o nada",
-          "correcta": false
-        }
+        { "texto": "Todo un palo", "correcta": true },
+        { "texto": "Todo por vos", "correcta": false },
+        { "texto": "Todos contra todos", "correcta": false },
+        { "texto": "Todo o nada", "correcta": false }
       ],
       "explicacion": "«Todo un palo» cierra el disco de 1988 y es su tema más largo (7:25). El otro título que arranca igual es «Todo preso es político», track 4.",
-      "fuentes": [
-        "RES-20"
-      ],
+      "fuentes": ["RES-20"],
       "esLeyenda": false,
       "sensibleA": [],
       "estado": "retirado",
-      "notaInterna": "Retirado en el ciclo 9. Dos motivos. Uno, la respuesta era «Todo un palo», igual que QZ-038: dos ítems del mismo banco con la misma respuesta, y el segundo que salga en la ronda es gratis. Dos, los tres distractores eran títulos inventados de sonido genérico («Todo por vos», «Todo o nada»), así que alcanzaba con reconocer cuál sonaba a Redondos. Lo reemplaza QZ-043."
+      "notaInterna": "Retirado en el ciclo 9. Misma respuesta que QZ-038 y distractores inventados de sonido generico. Lo reemplaza QZ-043."
     },
     {
       "id": "QZ-035",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "letras",
       "dificultad": "dificil",
-      "enunciado": "El material interno de Gulp! trae una nota apócrifa de un organismo real, prohibiendo un tema cuya letra casi no dice nada. ¿Cuál es el organismo?",
+      "enunciado": "Gulp! trae una nota falsa, firmada por un organismo real, que prohíbe un tema. ¿Qué organismo?",
       "opciones": [
-        {
-          "texto": "El COMFER",
-          "correcta": true
-        },
-        {
-          "texto": "La SADAIC",
-          "correcta": false
-        },
-        {
-          "texto": "El INPI",
-          "correcta": false
-        },
-        {
-          "texto": "La AFSCA",
-          "correcta": false
-        }
+        { "texto": "El COMFER", "correcta": true },
+        { "texto": "La SADAIC", "correcta": false },
+        { "texto": "El INPI", "correcta": false },
+        { "texto": "La AFSCA", "correcta": false }
       ],
-      "explicacion": "El COMFER —el Comité Federal de Radiodifusión— no era un organismo exclusivo de la dictadura: siguió en pie hasta 2009, en democracia. Gulp! salió en 1985, también en democracia, y trae una nota apócrifa fechada como si fuera de la dictadura, prohibiendo «Criminal Mambo». Nunca hubo una censura real sobre ese tema: es una broma ácida sobre un tema cuya letra casi no dice nada.",
-      "fuentes": [
-        "RES-48"
-      ],
+      "explicacion": "El COMFER, el que controlaba la radio y la tele. La nota está fechada como si fuera de la dictadura y prohíbe «Criminal Mambo», un tema que casi no dice nada. Censura real nunca hubo: es una broma.",
+      "fuentes": ["RES-48"],
       "esLeyenda": false,
       "sensibleA": [],
-      "estado": "listo"
+      "disco": "gulp",
+      "estado": "listo",
+      "notaInterna": "Ciclo 20 (CNT-41): explicacion de 400 a ~200 caracteres. No nombra a quien toco el tema en Cemento (respuesta de QZ-036)."
     },
     {
       "id": "QZ-036",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "letras",
       "dificultad": "dificil",
-      "enunciado": "«Criminal Mambo» salió en Gulp!, 1985. Igual, circula la versión de que este músico lo coescribió, después de tocarlo de improviso en un boliche porteño en 1987. ¿Quién?",
+      "enunciado": "Circula que un músico coescribió «Criminal Mambo» después de tocarlo en Cemento, en 1987. ¿Quién?",
       "opciones": [
-        {
-          "texto": "Luca Prodan",
-          "correcta": true
-        },
-        {
-          "texto": "Charly García",
-          "correcta": false
-        },
-        {
-          "texto": "Andrés Calamaro",
-          "correcta": false
-        },
-        {
-          "texto": "Fito Páez",
-          "correcta": false
-        }
+        { "texto": "Luca Prodan", "correcta": true },
+        { "texto": "Charly García", "correcta": false },
+        { "texto": "Andrés Calamaro", "correcta": false },
+        { "texto": "Fito Páez", "correcta": false }
       ],
-      "explicacion": "Luca Prodan tocó «Criminal Mambo» de improviso en el boliche Cemento, en 1987 — dos años después de que el tema saliera en Gulp!. Desde ahí corrió la versión de que lo había coescrito, pero la propia fuente que cuenta el episodio marca esa coautoría como falsa: Prodan nunca figuró como autor de la canción.",
-      "fuentes": [
-        "RES-48"
-      ],
+      "explicacion": "Luca Prodan, que subió a tocarlo de improviso. De ahí salió el rumor, pero el tema ya estaba en Gulp! desde 1985 y nunca llevó su firma.",
+      "fuentes": ["RES-48", "RES-05"],
       "esLeyenda": true,
-      "rotuloLeyenda": "Coautoría desmentida: Luca Prodan tocó «Criminal Mambo» de improviso en el boliche Cemento, en 1987, pero nunca fue coautor de la canción. Lo desmiente la propia fuente que recoge el episodio.",
+      "rotuloLeyenda": "Coautoría desmentida: Prodan tocó el tema en vivo, pero nunca figuró como autor.",
       "sensibleA": [],
-      "spotify": {
-        "trackId": "44LkNJpEVO5PiX08RQaVCC"
-      },
-      "estado": "listo"
+      "spotify": { "trackId": "44LkNJpEVO5PiX08RQaVCC" },
+      "disco": "gulp",
+      "estado": "listo",
+      "notaInterna": "Ciclo 20 (CNT-41): reescrito corto. RES-05 entra en fuentes por la fecha de Cemento (23-may-1987)."
     },
     {
       "id": "QZ-037",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "letras",
       "dificultad": "dificil",
       "enunciado": "El Indio contó que el sobre interno de Oktubre imprime unos versos de «Ji ji ji» que el disco no llega a cantar. ¿Dónde iban esos versos?",
       "opciones": [
-        {
-          "texto": "Sobre la melodía instrumental que cierra el tema",
-          "correcta": true
-        },
-        {
-          "texto": "En una segunda estrofa que se cortó entera",
-          "correcta": false
-        },
-        {
-          "texto": "En un interludio que se grabó y se borró después",
-          "correcta": false
-        },
-        {
-          "texto": "Solo en la versión en vivo, nunca en estudio",
-          "correcta": false
-        }
+        { "texto": "Sobre la melodía instrumental que cierra el tema", "correcta": true },
+        { "texto": "En una segunda estrofa que se cortó entera", "correcta": false },
+        { "texto": "En un interludio que se grabó y se borró después", "correcta": false },
+        { "texto": "Solo en la versión en vivo, nunca en estudio", "correcta": false }
       ],
       "explicacion": "Según contó el Indio en sus memorias, esos versos iban cantados sobre la melodía instrumental final de «Ji ji ji», y en el disco quedaron sin voz.",
-      "fuentes": [
-        "RES-21",
-        "RES-22"
-      ],
+      "fuentes": ["RES-21", "RES-22"],
       "esLeyenda": false,
       "testimonio": {
         "quien": "Indio Solari",
@@ -1366,226 +771,578 @@
       },
       "sensibleA": [],
       "estado": "retirado",
-      "notaInterna": "Retirado en el ciclo 9. Es el gemelo débil de QZ-029: los dos preguntan por el sobre interno de Oktubre y los dos salen del mismo comentario del memoir. QZ-029 se queda porque RES-48 lo subió de testimonio único a hecho corroborado por varias fuentes, y porque se comprueba con el disco en la mano. Lo reemplaza QZ-042."
+      "notaInterna": "Retirado en el ciclo 9. Gemelo debil de QZ-029. Lo reemplaza QZ-042."
     },
     {
       "id": "QZ-038",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "letras",
       "dificultad": "dificil",
       "enunciado": "En un recital solista en Quilmes, en 2023, Skay le dedicó un saludo al Indio mientras tocaba un tema de Un baión para el ojo idiota. ¿Cuál?",
       "opciones": [
-        {
-          "texto": "Todo un palo",
-          "correcta": true
-        },
-        {
-          "texto": "Vencedores vencidos",
-          "correcta": false
-        },
-        {
-          "texto": "Noticias de ayer",
-          "correcta": false
-        },
-        {
-          "texto": "Vamos las bandas",
-          "correcta": false
-        }
+        { "texto": "Todo un palo", "correcta": true },
+        { "texto": "Vencedores vencidos", "correcta": false },
+        { "texto": "Noticias de ayer", "correcta": false },
+        { "texto": "Vamos las bandas", "correcta": false }
       ],
       "explicacion": "Fue durante «Todo un palo». El gesto se viralizó porque Skay y el Indio llevaban más de dos décadas separados, sin reconciliación pública.",
-      "fuentes": [
-        "RES-48"
-      ],
+      "fuentes": ["RES-48"],
       "esLeyenda": false,
       "sensibleA": [],
-      "spotify": {
-        "trackId": "0HQMAExgp4BiKGq6UM3u9X"
-      },
-      "estado": "listo"
+      "spotify": { "trackId": "0HQMAExgp4BiKGq6UM3u9X" },
+      "estado": "retirado",
+      "notaInterna": "Retirado en el ciclo 20 (CNT-41). Dos motivos. Uno, su respuesta («Todo un palo») pasa a ser la del verso facil QZ-047, que la nombra en la explicacion: el facil le regalaba este. Dos, gira sobre la relacion entre el Indio y Skay, que RES-152 marca como tema sensible desde el 5-jun-2026. El trackId pasa a QZ-047."
     },
     {
       "id": "QZ-039",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "letras",
-      "dificultad": "dificil",
-      "enunciado": "El disco Luzbelito (1996) no abre con un tema que se llame solo «Luzbelito». ¿Cuál es el título completo de la primera pista?",
+      "dificultad": "media",
+      "enunciado": "Luzbelito abre con un tema que lleva el nombre del disco y algo más. Completá: «Luzbelito y…»",
       "opciones": [
-        {
-          "texto": "Luzbelito y las sirenas",
-          "correcta": true
-        },
-        {
-          "texto": "Luzbelito, la vela encendida",
-          "correcta": false
-        },
-        {
-          "texto": "Luzbelito y el diablo manso",
-          "correcta": false
-        },
-        {
-          "texto": "Luzbelito, cara de ángel",
-          "correcta": false
-        }
+        { "texto": "las sirenas", "correcta": true },
+        { "texto": "los ángeles", "correcta": false },
+        { "texto": "el diablo manso", "correcta": false },
+        { "texto": "la cruz del sur", "correcta": false }
       ],
-      "explicacion": "Luzbelito abre con «Luzbelito y las sirenas», la primera de once pistas. El nombre del disco y el del tema se confunden seguido, pero no son iguales.",
-      "fuentes": [
-        "RES-20"
-      ],
+      "explicacion": "«Luzbelito y las sirenas», la primera de once pistas. Luzbel es el nombre viejo de Lucifer, que en latín quiere decir el que trae la luz.",
+      "fuentes": ["RES-20", "RES-171"],
       "esLeyenda": false,
       "sensibleA": [],
-      "spotify": {
-        "trackId": "2ybNy7okIb11z8czxvxoEg"
-      },
-      "estado": "listo"
+      "spotify": { "trackId": "2ybNy7okIb11z8czxvxoEg" },
+      "disco": "luzbelito",
+      "estado": "listo",
+      "notaInterna": "Ciclo 20 (CNT-41): pasa a la forma «completá el titulo» y baja de dificil a media: el que tiene el disco lo sabe. La etimologia (RES-171) es el premio."
     },
     {
       "id": "QZ-040",
-      "us": [
-        "US-01"
-      ],
-      "categoria": "letras",
-      "dificultad": "media",
-      "enunciado": "Entre los títulos de Gulp!, hay uno que figura como pista oculta. ¿Cuál es?",
+      "us": ["US-01"],
+      "categoria": "discos",
+      "dificultad": "dificil",
+      "enunciado": "Gulp! tiene un tema escondido, después del último. ¿Cuál?",
       "opciones": [
-        {
-          "texto": "Pianito - Jam",
-          "correcta": true
-        },
-        {
-          "texto": "Criminal Mambo",
-          "correcta": false
-        },
-        {
-          "texto": "Ñam fri frufi fali fru",
-          "correcta": false
-        },
-        {
-          "texto": "Superlógico",
-          "correcta": false
-        }
+        { "texto": "Pianito - Jam", "correcta": true },
+        { "texto": "Criminal Mambo", "correcta": false },
+        { "texto": "Ñam fri frufi fali fru", "correcta": false },
+        { "texto": "Superlógico", "correcta": false }
       ],
-      "explicacion": "«Pianito - Jam» es el track oculto de Gulp!: dura menos de un minuto, y hasta hoy se discute si cuenta como tema aparte de los once restantes.",
-      "fuentes": [
-        "RES-20"
-      ],
+      "explicacion": "«Pianito - Jam», 53 segundos al final del disco. Por eso hay quien dice que Gulp! tiene once temas y quien dice doce, y los dos tienen razón.",
+      "fuentes": ["RES-20"],
       "esLeyenda": false,
       "sensibleA": [],
+      "disco": "gulp",
       "estado": "listo",
-      "notaInterna": "Ciclo 9: la explicacion decia «Gulp! (1985)» y ese año es la respuesta de QZ-001, del mismo nivel media, asi que podian salir en cualquier orden. Se saca el año."
+      "notaInterna": "Ciclo 20 (CNT-41): pasa de letras a discos y de media a dificil. La discrepancia 11/12 de RES-20 se vuelve el premio en vez de ser una trampa."
     },
     {
       "id": "QZ-041",
-      "us": [
-        "US-01"
-      ],
+      "us": ["US-01"],
       "categoria": "historia",
       "dificultad": "facil",
-      "enunciado": "¿En qué ciudad se armó la banda, a mediados de los setenta, alrededor del circuito de La Cofradía de la Flor Solar?",
+      "enunciado": "¿En qué ciudad nació la banda, a mediados de los setenta?",
       "opciones": [
-        {
-          "texto": "La Plata",
-          "correcta": true
-        },
-        {
-          "texto": "Buenos Aires",
-          "correcta": false
-        },
-        {
-          "texto": "Rosario",
-          "correcta": false
-        },
-        {
-          "texto": "Córdoba",
-          "correcta": false
-        }
+        { "texto": "La Plata", "correcta": true },
+        { "texto": "Buenos Aires", "correcta": false },
+        { "texto": "Rosario", "correcta": false },
+        { "texto": "Córdoba", "correcta": false }
       ],
-      "explicacion": "La banda nació en La Plata en 1976, descendiente directa de La Cofradía de la Flor Solar. Recién en 1982 se mudaron a Buenos Aires.",
-      "fuentes": [
-        "RES-05"
-      ],
+      "explicacion": "En La Plata, en 1976, con raíz en La Cofradía de la Flor Solar, la comunidad donde ya andaban Skay y Rocambole. A Buenos Aires se mudaron recién en 1982.",
+      "fuentes": ["RES-05", "RES-06"],
       "esLeyenda": false,
       "sensibleA": [],
       "estado": "listo",
-      "notaInterna": "Nuevo en el ciclo 9, entra en el lugar de QZ-027. Tapa dos huecos: el banco no preguntaba de dónde salió la banda, y la categoría historia tenía una sola pregunta facil que no dependiera del memoir."
+      "notaInterna": "Ciclo 20 (CNT-41): enunciado corto, sin la Cofradia como pista (pasa a la explicacion). El texto no dice Cordoba: es la respuesta de QZ-054."
     },
     {
       "id": "QZ-042",
-      "us": [
-        "US-01"
-      ],
-      "categoria": "letras",
+      "us": ["US-01"],
+      "categoria": "discos",
       "dificultad": "facil",
-      "enunciado": "«Ji ji ji» es el tema más coreado de la banda. ¿En qué disco salió?",
+      "enunciado": "«Ji ji ji» cierra la noche en los recitales del Indio. ¿En qué disco salió?",
       "opciones": [
-        {
-          "texto": "Oktubre",
-          "correcta": true
-        },
-        {
-          "texto": "Gulp!",
-          "correcta": false
-        },
-        {
-          "texto": "La mosca y la sopa",
-          "correcta": false
-        },
-        {
-          "texto": "Luzbelito",
-          "correcta": false
-        }
+        { "texto": "Oktubre", "correcta": true },
+        { "texto": "Gulp!", "correcta": false },
+        { "texto": "La mosca y la sopa", "correcta": false },
+        { "texto": "Luzbelito", "correcta": false }
       ],
-      "explicacion": "«Ji ji ji» es la pista 7 de Oktubre, firmada por Solari y Beilinson. Es el tema que más se canta en vivo, y también el que más leyenda arrastra encima.",
-      "fuentes": [
-        "RES-08",
-        "RES-20"
-      ],
+      "explicacion": "Oktubre, de 1986: es la pista 7. En las listas de recitales que la gente fue cargando, es el tema que más aparece: 101 listas.",
+      "fuentes": ["RES-20", "RES-157", "RES-90"],
       "esLeyenda": false,
       "sensibleA": [],
-      "spotify": {
-        "trackId": "1tW6LiJGXGlReuNP38wrKb"
-      },
+      "spotify": { "trackId": "1tW6LiJGXGlReuNP38wrKb" },
+      "disco": "oktubre",
       "estado": "listo",
-      "notaInterna": "Nuevo en el ciclo 9, entra en el lugar de QZ-037. La categoría letras no tenía ni una pregunta facil —ocho de diez eran dificiles—, así que BR-01 nunca podía abrir una partida con letras. La explicación no dice el año a propósito: se lo estaría regalando a QZ-002."
+      "notaInterna": "Ciclo 20 (CNT-41): pasa de letras a discos (pregunta en que disco salio). El enunciado se apoya en RES-157 y no dice «el mas tocado»: RES-104 aclara que el numero de la base de listas es de listas cargadas, no de veces tocado, y asi lo dice la explicacion. No nombra Gulp! (respuesta de QZ-043)."
     },
     {
       "id": "QZ-043",
-      "us": [
-        "US-01"
-      ],
-      "categoria": "letras",
+      "us": ["US-01"],
+      "categoria": "discos",
       "dificultad": "facil",
-      "enunciado": "«La bestia pop» es uno de los temas más conocidos del catálogo. ¿En qué disco salió?",
+      "enunciado": "«La bestia pop» es de los temas más conocidos de la banda. ¿En qué disco salió?",
       "opciones": [
-        {
-          "texto": "Gulp!",
-          "correcta": true
-        },
-        {
-          "texto": "Oktubre",
-          "correcta": false
-        },
-        {
-          "texto": "Un baión para el ojo idiota",
-          "correcta": false
-        },
-        {
-          "texto": "La mosca y la sopa",
-          "correcta": false
-        }
+        { "texto": "Gulp!", "correcta": true },
+        { "texto": "Oktubre", "correcta": false },
+        { "texto": "Un baión para el ojo idiota", "correcta": false },
+        { "texto": "La mosca y la sopa", "correcta": false }
       ],
-      "explicacion": "«La bestia pop» es la pista 2 de Gulp!, el disco debut. De su grabación se cuentan varias versiones distintas, y ninguna terminó de imponerse.",
-      "fuentes": [
-        "RES-20",
-        "RES-48"
+      "explicacion": "Gulp!, el debut de 1985: pista 2. Su estribillo, «a brillar, mi amor», le puso título a un libro entero de mitología ricotera, el de Jorge Boimvaser.",
+      "fuentes": ["RES-20", "RES-08"],
+      "esLeyenda": false,
+      "sensibleA": ["letra"],
+      "disco": "gulp",
+      "estado": "listo",
+      "notaInterna": "Ciclo 20 (CNT-41): pasa de letras a discos. El premio es el libro de Boimvaser (RES-08); por eso sensibleA lleva letra, aunque sea un verso de cuatro palabras. No nombra Oktubre (respuesta de QZ-042)."
+    },
+    {
+      "id": "QZ-044",
+      "us": ["US-01"],
+      "categoria": "historia",
+      "dificultad": "facil",
+      "enunciado": "Skay Beilinson está en la banda desde el primer día. ¿Qué toca?",
+      "opciones": [
+        { "texto": "La guitarra", "correcta": true },
+        { "texto": "El bajo", "correcta": false },
+        { "texto": "El saxofón", "correcta": false },
+        { "texto": "Los teclados", "correcta": false }
       ],
+      "explicacion": "La guitarra, y además firma: casi todo el catálogo dice Solari–Beilinson. Antes de la banda, Skay ya andaba en La Cofradía de la Flor Solar, desde fines de los sesenta.",
+      "fuentes": ["RES-05", "RES-20", "RES-06"],
       "esLeyenda": false,
       "sensibleA": [],
       "estado": "listo",
-      "notaInterna": "Nuevo en el ciclo 9, entra en el lugar de QZ-034. Segundo facil de letras. La explicación no dice el año a propósito: se lo estaría regalando a QZ-001."
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Facil de verdad: el que fue a una previa sabe quien es Skay. Reemplaza en el pozo facil a QZ-022 (Poli), que baja a media."
+    },
+    {
+      "id": "QZ-045",
+      "us": ["US-01"],
+      "categoria": "historia",
+      "dificultad": "facil",
+      "enunciado": "En el debut de 1977, alguien vestido de sultán repartió buñuelos a la gente. ¿De qué eran?",
+      "opciones": [
+        { "texto": "Nuez y ricota", "correcta": true },
+        { "texto": "Dulce de leche", "correcta": false },
+        { "texto": "Batata y queso", "correcta": false },
+        { "texto": "Crema pastelera", "correcta": false }
+      ],
+      "explicacion": "Buñuelos redondos de nuez y ricota: de ahí sale el nombre entero, esa misma noche. El sultán era Edgardo Gaudini, al que le decían el Docente.",
+      "fuentes": ["RES-05"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Facil porque se deduce del nombre de la banda, y el premio es la ecónoma Patricia Rey. La correcta dice «nuez y ricota» y no «ricota» porque asi lo da RES-05. No nombra el teatro: es la respuesta de QZ-065."
+    },
+    {
+      "id": "QZ-046",
+      "us": ["US-01"],
+      "categoria": "discos",
+      "dificultad": "facil",
+      "enunciado": "En la tapa de Un baión para el ojo idiota, ¿qué hace de «ojo idiota»?",
+      "opciones": [
+        { "texto": "Un televisor", "correcta": true },
+        { "texto": "Una radio", "correcta": false },
+        { "texto": "Un proyector", "correcta": false },
+        { "texto": "Una cámara de fotos", "correcta": false }
+      ],
+      "explicacion": "Un televisor: Rocambole contó que fue lo primero que dibujó. Después sumó un muñeco de su hija Marilú, con chupete y antifaz, y un perro, porque en lo que escribe el Indio siempre hay un perro.",
+      "fuentes": ["RES-06", "RES-22"],
+      "esLeyenda": false,
+      "sensibleA": ["tapa"],
+      "disco": "un-baion-para-el-ojo-idiota",
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Facil porque se ve en la tapa y se deduce del titulo. Es hecho y no testimonio: lo que se puntua (el televisor) se comprueba mirando el disco. Lo del memoir (Marilu, el perro) es solo el premio de la explicacion; vuelve el dato de QZ-027."
+    },
+    {
+      "id": "QZ-047",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "facil",
+      "enunciado": "«El futuro llegó hace rato». ¿De qué tema es?",
+      "opciones": [
+        { "texto": "Todo un palo", "correcta": true },
+        { "texto": "Nueva Roma", "correcta": false },
+        { "texto": "Toxi-Taxi", "correcta": false },
+        { "texto": "Héroe del whisky", "correcta": false }
+      ],
+      "explicacion": "Es «Todo un palo», el que cierra Un baión para el ojo idiota, de 1988. Dura 7:25: de lo más largo que grabó la banda.",
+      "fuentes": ["RES-20"],
+      "esLeyenda": false,
+      "sensibleA": ["letra"],
+      "spotify": { "trackId": "0HQMAExgp4BiKGq6UM3u9X" },
+      "disco": "un-baion-para-el-ojo-idiota",
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Verso de una linea, tomado de src/data/cancionero.json (todo-un-palo). TrackId de RES-140, el que tenia QZ-038. «De lo mas largo» y no «el mas largo»: RES-102 no tiene duraciones del vol. 2 de Lobo suelto."
+    },
+    {
+      "id": "QZ-048",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "facil",
+      "enunciado": "«Banderas en tu corazón, yo quiero verlas». ¿De qué tema es?",
+      "opciones": [
+        { "texto": "Juguetes perdidos", "correcta": true },
+        { "texto": "Ella baila con todos", "correcta": false },
+        { "texto": "Rock yugular", "correcta": false },
+        { "texto": "Blues de la libertad", "correcta": false }
+      ],
+      "explicacion": "Es «Juguetes perdidos», el que cierra Luzbelito. En los recitales del Indio iba al final, y en ese verso la gente cierra los ojos y levanta los brazos.",
+      "fuentes": ["RES-20", "RES-157"],
+      "esLeyenda": false,
+      "sensibleA": ["letra"],
+      "disco": "luzbelito",
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Verso de src/data/cancionero.json (juguetes-perdidos), dos lineas del cancionero unidas con coma; el ritual lo sostiene RES-157. Sin spotify: no hay trackId fichado para este tema."
+    },
+    {
+      "id": "QZ-049",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "facil",
+      "enunciado": "Completá el título de este tema de 1988: «Vencedores…»",
+      "opciones": [
+        { "texto": "vencidos", "correcta": true },
+        { "texto": "perdidos", "correcta": false },
+        { "texto": "dormidos", "correcta": false },
+        { "texto": "de nadie", "correcta": false }
+      ],
+      "explicacion": "«Vencedores vencidos», pista 5 de Un baión para el ojo idiota. Un título hecho de dos palabras que se pelean entre sí, en un disco de ocho temas.",
+      "fuentes": ["RES-20"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "disco": "un-baion-para-el-ojo-idiota",
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Forma «completá el titulo». Las cuatro opciones miden lo mismo (8). La explicacion no nombra los otros temas del disco: dos son respuestas (QZ-047, QZ-058)."
+    },
+    {
+      "id": "QZ-050",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "facil",
+      "enunciado": "Completá el título de este tema de La mosca y la sopa: «Mi perro…»",
+      "opciones": [
+        { "texto": "dinamita", "correcta": true },
+        { "texto": "callejero", "correcta": false },
+        { "texto": "rabioso", "correcta": false },
+        { "texto": "salvaje", "correcta": false }
+      ],
+      "explicacion": "«Mi perro dinamita». El Indio no lo quería ni editar: le parecía un rock más. Terminó siendo el tema de 1991, el año de la consagración masiva.",
+      "fuentes": ["RES-20", "RES-48"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "disco": "la-mosca-y-la-sopa",
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). El premio sale de RES-48, que lo tiene con dos fuentes del mismo autor (memoir y el documental Tsunami). No nombra al tercer autor: es la respuesta de QZ-031."
+    },
+    {
+      "id": "QZ-051",
+      "us": ["US-01"],
+      "categoria": "mitologia",
+      "dificultad": "facil",
+      "enunciado": "¿Cómo le dice la gente a un recital de los Redondos?",
+      "opciones": [
+        { "texto": "La misa", "correcta": true },
+        { "texto": "La peña", "correcta": false },
+        { "texto": "La fiesta", "correcta": false },
+        { "texto": "La procesión", "correcta": false }
+      ],
+      "explicacion": "La misa ricotera: el recital como una ceremonia en la que cada uno pone algo de sí. Los cantos y los silbidos son parte del rito, y el que importa es el que está abajo, no el de arriba.",
+      "fuentes": ["RES-07"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). La explicacion no dice «pogo» (respuesta de QZ-052, del mismo nivel)."
+    },
+    {
+      "id": "QZ-052",
+      "us": ["US-01"],
+      "categoria": "mitologia",
+      "dificultad": "facil",
+      "enunciado": "En Tandil, en 2016, el Indio gritó que ahí se hacía el más grande del mundo. ¿El más grande qué?",
+      "opciones": [
+        { "texto": "El pogo", "correcta": true },
+        { "texto": "El coro", "correcta": false },
+        { "texto": "El asado", "correcta": false },
+        { "texto": "El fogón", "correcta": false }
+      ],
+      "explicacion": "El pogo, y era una respuesta a Mick Jagger. Nadie lo midió: no hay certificación del récord, y tampoco hizo falta. «Pogo» es además un tema de la banda, de 1998.",
+      "fuentes": ["RES-158", "RES-20"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Hecho: RES-158 tiene el grito con fecha y la falta de certificacion. La explicacion dice el año del disco del tema «Pogo» y no su nombre, que es la respuesta de QZ-005 y QZ-026."
+    },
+    {
+      "id": "QZ-053",
+      "us": ["US-01"],
+      "categoria": "mitologia",
+      "dificultad": "facil",
+      "enunciado": "La banda se llama Patricio Rey y sus Redonditos de Ricota. ¿Quién es Patricio Rey?",
+      "opciones": [
+        { "texto": "Un personaje que inventaron", "correcta": true },
+        { "texto": "El primer cantante de la banda", "correcta": false },
+        { "texto": "El dueño del primer sello", "correcta": false },
+        { "texto": "Un tío de Skay que los bancaba", "correcta": false }
+      ],
+      "explicacion": "Un personaje inventado a propósito: una especie de padrino que no fuera ninguno de ellos. Los músicos se pensaban como envases vacíos por los que pasaba la energía. Rocambole, una vez, dijo otra cosa…",
+      "fuentes": ["RES-22", "RES-05"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). La invencion del personaje es hecho firme (RES-22: «eso esta firme»); lo de una persona real detras es leyenda y vive en QZ-020, que esta explicacion anuncia sin contestar. Ninguna de las opciones falsas puede ser cierta bajo la leyenda de Rocambole (un artesano de Salta)."
+    },
+    {
+      "id": "QZ-054",
+      "us": ["US-01"],
+      "categoria": "historia",
+      "dificultad": "media",
+      "enunciado": "El último recital de los Redondos fue en agosto de 2001. ¿En qué ciudad?",
+      "opciones": [
+        { "texto": "Córdoba", "correcta": true },
+        { "texto": "Rosario", "correcta": false },
+        { "texto": "Mendoza", "correcta": false },
+        { "texto": "Mar del Plata", "correcta": false }
+      ],
+      "explicacion": "En Córdoba, en el Chateau Carreras, el 4 de agosto, ante 40.000 o 50.000 personas según quién lo cuente. Nadie lo anunció como despedida: la separación se hizo oficial tres meses después.",
+      "fuentes": ["RES-05", "RES-100"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Ocupa el lugar de QZ-024. El enunciado fija «agosto de 2001» a proposito: RES-05 avisa que Montevideo (abril de 2001) figura como «ultimos recitales» en una fuente, y por eso Montevideo no esta entre las opciones. La cifra va como rango porque RES-100 (N-020) la da «segun fuente»."
+    },
+    {
+      "id": "QZ-055",
+      "us": ["US-01"],
+      "categoria": "historia",
+      "dificultad": "media",
+      "enunciado": "¿Cuál de estas cosas no tuvo nunca la banda?",
+      "opciones": [
+        { "texto": "Un contrato con una multinacional", "correcta": true },
+        { "texto": "Un recital en el estadio de River", "correcta": false },
+        { "texto": "Discos con sello propio", "correcta": false },
+        { "texto": "Un recital en la cancha de Huracán", "correcta": false }
+      ],
+      "explicacion": "Ni multinacional ni avisos de los recitales. Según Rocambole, Clarín publicó una sola vez una crítica de lo musical; lo demás fue crónica de desmanes.",
+      "fuentes": ["RES-07", "RES-05", "RES-02"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Forma «¿cual no?». Las tres falsas son hechos de RES-05 (River 2000, Montevideo 1989) y RES-02 (Patricio Rey Discos). REV-22 (FIND-149): las opciones son botones y no pueden arrancar en infinitivo (D-17); pasan a sustantivos. La correcta empata en largo con la de River (33). FIND-142: la explicacion ya no dice «ni television» (hubo conferencia televisada y videoclips)."
+    },
+    {
+      "id": "QZ-056",
+      "us": ["US-01"],
+      "categoria": "discos",
+      "dificultad": "media",
+      "enunciado": "La tapa de Luzbelito es una escultura de Rocambole. ¿Qué tiene encima de la cabeza?",
+      "opciones": [
+        { "texto": "Una vela encendida", "correcta": true },
+        { "texto": "Una corona de espinas", "correcta": false },
+        { "texto": "Un pájaro negro", "correcta": false },
+        { "texto": "Un par de cuernos", "correcta": false }
+      ],
+      "explicacion": "Una vela encendida: el nombre juega con luz y vela, y la cera se derritió sobre la figura. A la escultura la robaron en 1996, en una muestra en La Plata, y apareció recién en 2007.",
+      "fuentes": ["RES-168", "RES-169", "RES-06"],
+      "esLeyenda": false,
+      "sensibleA": ["tapa"],
+      "disco": "luzbelito",
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Hecho: la vela se ve en la tapa; la cera derretida es testimonio de Rocambole con tres fuentes (RES-168). El robo es RES-169. No se dice nada de la figura de la que parte la escultura (RES-168, registro 3): no es dato de trivia."
+    },
+    {
+      "id": "QZ-057",
+      "us": ["US-01"],
+      "categoria": "discos",
+      "dificultad": "media",
+      "enunciado": "¿Cuál de estos discos no es de los Redondos?",
+      "opciones": [
+        { "texto": "Porco Rex", "correcta": true },
+        { "texto": "Oktubre", "correcta": false },
+        { "texto": "Luzbelito", "correcta": false },
+        { "texto": "Momo Sampler", "correcta": false }
+      ],
+      "explicacion": "Porco Rex es de 2007, del Indio con los Fundamentalistas del Aire Acondicionado, su banda después de la separación. Rex suena a Rey.",
+      "fuentes": ["RES-47", "RES-02"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Forma «¿cual no?». Sin campo disco: la respuesta no es un disco de la banda y el enum no lo tiene."
+    },
+    {
+      "id": "QZ-058",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "media",
+      "enunciado": "«¿Y cuánto vale dormir tan custodiado?» ¿De qué tema es?",
+      "opciones": [
+        { "texto": "Vamos las bandas", "correcta": true },
+        { "texto": "Nueva Roma", "correcta": false },
+        { "texto": "Rock para los dientes", "correcta": false },
+        { "texto": "Preso en mi ciudad", "correcta": false }
+      ],
+      "explicacion": "Es «Vamos las bandas», de Un baión para el ojo idiota. En las listas de recitales que la gente fue cargando es el tercero que más aparece, detrás de «Ji ji ji» y «Ñam fri frufi fali fru».",
+      "fuentes": ["RES-20", "RES-90"],
+      "esLeyenda": false,
+      "sensibleA": ["letra"],
+      "disco": "un-baion-para-el-ojo-idiota",
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Verso de src/data/cancionero.json (vamos-las-bandas); el cancionero lo trae sin tildes ni signo de apertura y aca se escribe con ortografia completa, mismas palabras. Se eligio este verso y no «¿Y cuánto vale ser la banda nueva?» porque ese dice «banda» y apunta al titulo."
+    },
+    {
+      "id": "QZ-059",
+      "us": ["US-01"],
+      "categoria": "letras",
+      "dificultad": "media",
+      "enunciado": "«Me matan, Limón!» cuenta los últimos minutos de un hombre famoso. ¿De quién?",
+      "opciones": [
+        { "texto": "Pablo Escobar", "correcta": true },
+        { "texto": "Ernesto Guevara", "correcta": false },
+        { "texto": "Carlos Gardel", "correcta": false },
+        { "texto": "John Lennon", "correcta": false }
+      ],
+      "explicacion": "De Pablo Escobar. Es la pista 8 de Luzbelito, un disco que gira alrededor de un hijo ficticio del Diablo y de lo ambiguas que son las creencias.",
+      "fuentes": ["RES-170", "RES-20"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "disco": "luzbelito",
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). RES-170 da lo de Escobar como hecho con cuatro fuentes. No se agrega quien era «Limon»: no esta fichado."
+    },
+    {
+      "id": "QZ-060",
+      "us": ["US-01"],
+      "categoria": "mitologia",
+      "dificultad": "media",
+      "enunciado": "En los recitales, ¿cómo le dice la gente a las banderas?",
+      "opciones": [
+        { "texto": "Trapos", "correcta": true },
+        { "texto": "Lienzos", "correcta": false },
+        { "texto": "Telones", "correcta": false },
+        { "texto": "Paños", "correcta": false }
+      ],
+      "explicacion": "Trapos. Funcionan como la marca del grupo que los cuelga. Entre 2008 y 2009 hubo quien juntó 45 historias de trapos en recitales del Indio, para estudiarlos.",
+      "fuentes": ["RES-156"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). La etnografia de 2009 (Aliano y otros) es el premio."
+    },
+    {
+      "id": "QZ-061",
+      "us": ["US-01"],
+      "categoria": "mitologia",
+      "dificultad": "media",
+      "enunciado": "Circula que la banda se fundó un 28 de diciembre. ¿Qué día es ese en el calendario?",
+      "opciones": [
+        { "texto": "Día de los Inocentes", "correcta": true },
+        { "texto": "Día de la Tradición", "correcta": false },
+        { "texto": "Día del Amigo", "correcta": false },
+        { "texto": "Día de la Independencia", "correcta": false }
+      ],
+      "explicacion": "El de las bromas. El 28 de diciembre de 1976 se repite como fecha de fundación, y hay medios que la publican como efeméride. Justo por el día, conviene desconfiar. Lo firme es el año y la ciudad.",
+      "fuentes": ["RES-05"],
+      "esLeyenda": true,
+      "rotuloLeyenda": "Fecha que circula como fundación. Nunca se confirmó ni se desmintió.",
+      "sensibleA": [],
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Leyenda porque la premisa (la fecha de fundacion) lo es, segun RES-05. Lo que se puntua es un dato de calendario, que no depende de ninguna fuente: el 28 de diciembre es el Dia de los Santos Inocentes."
+    },
+    {
+      "id": "QZ-062",
+      "us": ["US-01"],
+      "categoria": "mitologia",
+      "dificultad": "media",
+      "enunciado": "Se cuenta que, en los recitales, los de adentro hacían algo por los que no tenían entrada. ¿Qué?",
+      "opciones": [
+        { "texto": "Abrían los molinetes", "correcta": true },
+        { "texto": "Les tiraban entradas", "correcta": false },
+        { "texto": "Cantaban más fuerte", "correcta": false },
+        { "texto": "Juntaban la plata", "correcta": false }
+      ],
+      "explicacion": "Abrían los molinetes. No hay crónica que lo cuente así: pasa de boca en boca. Lo más parecido que quedó escrito lo cuenta alguien que estuvo en un primer recital en el interior: se cortaron noventa y pico de entradas y después se abrieron las puertas.",
+      "fuentes": ["RES-155", "RES-154"],
+      "esLeyenda": true,
+      "rotuloLeyenda": "Relato oral, sin crónica que lo confirme. Se dice en la previa.",
+      "sensibleA": [],
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Es el principio del sitio (D-14), rotulado como lo que es: RES-155 no encontro fuente. La explicacion no nombra Cordoba (respuesta de QZ-054) ni Paladium (QZ-063), aunque RES-154 los trae."
+    },
+    {
+      "id": "QZ-063",
+      "us": ["US-01"],
+      "categoria": "mitologia",
+      "dificultad": "dificil",
+      "enunciado": "Circula que el pogo ricotero nació en octubre de 1986, la primera vez que sonó «Ji ji ji» en vivo. ¿Dónde?",
+      "opciones": [
+        { "texto": "Paladium", "correcta": true },
+        { "texto": "Cemento", "correcta": false },
+        { "texto": "Stud Free Pub", "correcta": false },
+        { "texto": "Obras", "correcta": false }
+      ],
+      "explicacion": "En Paladium, presentando Oktubre: unas 1.200 personas adentro y mucha más gente afuera, empujando. Que el pogo nació esa noche lo cuenta una sola nota. Nadie puede fechar un pogo…",
+      "fuentes": ["RES-159", "RES-154"],
+      "esLeyenda": true,
+      "rotuloLeyenda": "La cuenta una sola fuente, y no hay forma de fechar un pogo.",
+      "sensibleA": [],
+      "disco": "oktubre",
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). El lugar y la fecha de Paladium son hecho (RES-154); que el pogo naciera ahi es leyenda de una fuente (RES-159). El rotulo dice eso."
+    },
+    {
+      "id": "QZ-064",
+      "us": ["US-01"],
+      "categoria": "historia",
+      "dificultad": "dificil",
+      "enunciado": "En Tandil, en octubre de 1997, la banda hizo algo por única vez en su historia. ¿Qué?",
+      "opciones": [
+        { "texto": "Una conferencia de prensa televisada", "correcta": true },
+        { "texto": "Un recital gratis en la plaza central", "correcta": false },
+        { "texto": "Un recital acústico con orquesta", "correcta": false },
+        { "texto": "Una firma de discos en la calle", "correcta": false }
+      ],
+      "explicacion": "Una conferencia de prensa televisada, la única de toda su historia, el 4 de octubre, junto a un recital ante 21.000 personas. Una banda que llenaba estadios, hablándole a la cámara en una ciudad de provincia.",
+      "fuentes": ["RES-05"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "retirado",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Retirado en el mismo ciclo por REV-22 (FIND-141): el memoir (RES-21) ubica la unica conferencia de prensa televisada en Olavarria 1997, tras la prohibicion del recital; Tandil sale solo de RES-05, e INV-172 (RES-176) lo deja sin resolver. Una respuesta que depende de que fuente mires es una pregunta rota. No se reformula como testimonio porque no tengo la ubicacion del pasaje en el libro y testimonio.ubicacion no se inventa. Lo reemplaza QZ-066."
+    },
+    {
+      "id": "QZ-065",
+      "us": ["US-01"],
+      "categoria": "historia",
+      "dificultad": "dificil",
+      "enunciado": "La primera presentación oficial fue en un teatro de La Plata, en noviembre de 1977. ¿Cómo se la recuerda?",
+      "opciones": [
+        { "texto": "El Lozanazo", "correcta": true },
+        { "texto": "El Argentinazo", "correcta": false },
+        { "texto": "El Coliseazo", "correcta": false },
+        { "texto": "El Rochazo", "correcta": false }
+      ],
+      "explicacion": "El Lozanazo, por el Teatro Lozano, el 26 de noviembre de 1977. Esa noche nació el nombre: Edgardo «el Docente» Gaudini, vestido de sultán, repartió buñuelos entre la gente.",
+      "fuentes": ["RES-05"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 (CNT-41). Las tres falsas son «-azo» sobre lugares reales de La Plata (Teatro Argentino, Coliseo Podesta, Pasaje Dardo Rocha), para que no se acierte por la forma."
+    },
+    {
+      "id": "QZ-066",
+      "us": ["US-01"],
+      "categoria": "historia",
+      "dificultad": "dificil",
+      "enunciado": "¿En qué ciudad dio la banda su primer recital fuera de la Argentina, en 1989?",
+      "opciones": [
+        { "texto": "Montevideo", "correcta": true },
+        { "texto": "Santiago de Chile", "correcta": false },
+        { "texto": "Asunción", "correcta": false },
+        { "texto": "Porto Alegre", "correcta": false }
+      ],
+      "explicacion": "Montevideo, el 22 de julio de 1989. Ese mismo año, en diciembre, llegó el debut en Obras. Y a Montevideo volvieron en abril de 2001: fueron sus últimos recitales fuera del país.",
+      "fuentes": ["RES-05"],
+      "esLeyenda": false,
+      "sensibleA": [],
+      "estado": "listo",
+      "notaInterna": "Nuevo en el ciclo 20 por REV-22: reemplaza a QZ-064 en historia dificil. RES-05 lo da verificado. La explicacion dice «ultimos recitales fuera del pais» y no «ultimos recitales», que es la reconciliacion que pide RES-05 con Cordoba 2001 (QZ-054, que no se nombra)."
     }
   ]
 }
