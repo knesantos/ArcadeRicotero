@@ -15,10 +15,19 @@
  * schema vive en otro archivo y puede desincronizarse.
  */
 
+import type { Disco } from '../letra/discos.ts';
+
 export type Categoria = 'historia' | 'discos' | 'letras' | 'mitologia';
 export type Dificultad = 'facil' | 'media' | 'dificil';
 export type Estado = 'borrador' | 'listo' | 'retirado';
 export type Superficie = 'letra' | 'tapa' | 'audio';
+
+/**
+ * El disco al que la pregunta remite (`D-71`): la respuesta muestra su tapa al revelarse.
+ * Es la lista única de `letra/discos.ts`, que no importa nada y por eso viaja al cliente.
+ * Opcional — una pregunta sobre Bulacio no tiene disco.
+ */
+export type { Disco };
 
 /** Lo que alguien conto en primera persona. `CTR-02.4`. */
 export interface Testimonio {
@@ -48,6 +57,7 @@ export interface ItemCrudo {
   readonly rotuloLeyenda?: string;
   readonly testimonio?: Testimonio;
   readonly sensibleA: readonly Superficie[];
+  readonly disco?: Disco;
   readonly spotify?: { readonly trackId: string };
   readonly estado: Estado;
   /** Nota de trabajo de `contenido`. Interna: no viaja al cliente. */
@@ -101,6 +111,7 @@ export interface Item {
   readonly clase: ClaseDeFuente;
   readonly rotuloLeyenda?: string;
   readonly testimonio?: TestimonioVisible;
+  readonly disco?: Disco;
   readonly spotify?: { readonly trackId: string };
 }
 
@@ -138,6 +149,7 @@ export function aPayload(item: ItemCrudo): Item {
     ...(clase === 'testimonio' && item.testimonio
       ? { testimonio: { quien: item.testimonio.quien, obra: item.testimonio.obra } }
       : {}),
+    ...(item.disco ? { disco: item.disco } : {}),
     ...(item.spotify ? { spotify: item.spotify } : {}),
   };
 }
