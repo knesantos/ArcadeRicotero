@@ -21,8 +21,8 @@
 >   tapa del disco**; `SEGUÍ` pegado abajo; el resultado con el `Nº` grande y **la planilla** pregunta
 >   por pregunta, que también viaja al compartir (◆ ✕). La lógica de `BR-19` no se tocó; lo nuevo que
 >   lee la partida vive en `src/lib/quiz/recorrido.ts`, con tests.
-> - **El banco** (`CNT-41`): 44 preguntas, 14 fácil / 15 media / 15 difícil, 11 por categoría. 18
->   retiradas, 22 reescritas, 22 nuevas (`QZ-044`..`QZ-065`), tres con verso. Los fáciles los saca el
+> - **El banco** (`CNT-41`): 44 preguntas, 14 fácil / 15 media / 15 difícil, 11 por categoría. 19
+>   retiradas, 22 reescritas, 23 nuevas (`QZ-044`..`QZ-066`), tres con verso. Los fáciles los saca el
 >   que fue a una previa. 23 ítems traen `disco` (campo nuevo de `CTR-02`, y `fuentes` acepta `RES-`
 >   de tres dígitos).
 > - **Revisión independiente** (`REV-22`, `FIND-141`..`FIND-152`): una alta (`QZ-064` ponía en Tandil
