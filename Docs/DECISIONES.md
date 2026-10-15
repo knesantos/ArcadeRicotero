@@ -4283,3 +4283,54 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   "Ponelos en fila" conserva la primera frase, que es la que canta y mide `voz.test.ts`, y la
   segunda dice lo que hay desde `D-69`: *"Los ciento cinco temas, los discos o las tapas, en las
   filas que vos nombres."*
+
+## D-71 — Preguntas ricoteras se rehace entero: que se sienta como un fichín y que las preguntas se lean bien
+
+- **Fecha:** 2026-10-15
+- **Estado:** aceptada — pedido directo del usuario, textual: *"Hace un ciclo entero mejorando la
+  ui/ux del juego de preguntas ricoteras. Que la mejora sea total de como se siente, hoy esta muy
+  duro y feo. Mejoremos el banco de preguntas, como estan escritas las preguntas todo."* Es el
+  ciclo 20 (el 19 fue la noche ricotera, `D-62`). Sin plan de `orquestador`: la escribe el hilo
+  principal, `contenido` toma `CNT-41` y las tareas abiertas van de `T-412` en adelante.
+- **Enmienda:** `UX-01` v2 y `UX-07` en lo que se ve (la lógica de `BR-19` no cambia), `CTR-02`
+  (un campo opcional nuevo, `disco`, y `fuentes` acepta `RES-` de tres dígitos), `CNT-05` y
+  `CNT-10` en el copy que `CNT-41` reemplaza.
+- **El diagnóstico, jugado a 375 px.** Lo "duro" eran dos cosas. La primera, la dificultad: los
+  fáciles no eran fáciles (la partida abría con leyendas oscuras marcadas `facil`) y el que
+  escuchó «Ji Ji Ji» en una previa perdía dos vidas en las primeras cinco. La segunda, la
+  pantalla: cuatro cajas grises de formulario, una cabecera de 13 px, el `SEGUÍ` abajo del
+  pliegue y "Cerrá la partida" entre las opciones y la respuesta, justo donde baja el pulgar.
+  Lo "feo": nada de la pantalla hablaba el idioma del sitio.
+- **Decisión, la pantalla** (`src/scripts/partida.ts`, `juego.css`):
+  - **El tablero**: tres fichas de vida grandes, el `Nº` de la pregunta y un riel con un paso
+    por pregunta, partido en los escalones. "Cerrá la partida" sube ahí, arriba a la derecha:
+    es lo más lejos del pulgar que hay (`BR-19` apartado 7 queda mejor cumplido que antes).
+  - **La pregunta es un recorte** con cinta, torcido apenas y con el borde en la tinta de su
+    categoría (`D-19`). Los sellos de categoría, nivel y rótulo van arriba. El aviso de
+    escalón es una franja estampada adentro de la ficha, con su línea que canta.
+  - **Las opciones llevan letra** (A–D), van en una columna en el teléfono y se eligen también
+    con el teclado (1–4 o A–D). La elegida que no iba queda tachada; las otras dos se apagan.
+  - **La respuesta** reusa la pieza de "Adiviná el tema": el acierto cae como sello de goma, la
+    racha (3, 5 y 10 seguidas) cae como segundo sello, la respuesta correcta va escrita grande,
+    y **la tapa del disco** del que se hablaba se fija al lado cuando el ítem tiene `disco`.
+  - **`SEGUÍ` va pegado abajo**, en la zona del pulgar y siempre a la vista.
+  - **El resultado** estampa el desenlace, pone grande el `Nº` al que llegaste y trae **la
+    planilla**: pregunta por pregunta, por escalón, con ✔ ✕ y ·. La planilla viaja también en
+    el texto de compartir, con ◆ y ✕ (símbolos de texto, no emoji).
+  - **La portada** suma la línea que nombra cómo se juega, con las tres fichas a la vista.
+  - Todo con lo que el sistema ya tenía: `sello-golpe`, `momento-entra` y `fijado`, ni un hex,
+    ni una sombra, ni una pastilla, y solo pares de color que ya están en `contraste.test.ts`.
+- **Decisión, el banco** (`src/data/quiz.json`, `CNT-41`): cada ítem que se queda se reescribe
+  (enunciado corto y directo, explicación en registro 2 que regala un dato más en vez de
+  repetir la pregunta), la dificultad se recalibra para que el fácil lo saque el que fue a una
+  previa, se retiran los flojos y repetidos y entran nuevos con más variedad de forma y de
+  tema. El detalle está en `CNT-41`.
+- **Lo que no cambia.** Tres vidas, el escalón es el pozo, agotar el banco es la victoria, la
+  retirada en dos pasos, sin temporizador, la insignia de rótulo antes de responder y el sello
+  completo después (`BR-19`, `UX-01` v2, `UX-07`). La lógica (`vidas.ts`, `ronda.ts`) no se
+  tocó; lo nuevo que hacía falta saber de la partida (historial, racha, escalones) vive en
+  `src/lib/quiz/recorrido.ts`, con sus tests.
+- **Consecuencias.** `experiencia` tiene que poner `UX-01` y `UX-07` al día y el lienzo no tiene
+  esta pantalla (`T-412`, nota en `Docs/SUGERENCIAS/HILO-para-experiencia-y-arquitectura-d71-el-quiz.md`).
+  `arquitectura` tiene que asentar el campo `disco` y el patrón de `fuentes` en `CTR-02`
+  (`T-413`, misma nota).
