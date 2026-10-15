@@ -9,7 +9,8 @@
 
 > ## ❓ PREGUNTAS RICOTERAS SE REHACE ENTERO: SE SIENTE COMO UN FICHÍN (2026-10-15) — `D-71`, ciclo 20
 >
-> **Rama `ciclo-20/preguntas-ricoteras`, sobre `main` en `243495d`, sin integrar.** Pedido del usuario:
+> **Integrada a `main` el 2026-10-15 con el PR #45 (fusión `e6c3139`)**, desde la rama `ciclo-20/preguntas-ricoteras`
+> sobre `243495d`. La fusionó Claude a pedido del usuario (*"Integrá el PR #45 a main"*). Pedido del usuario:
 > *"Hace un ciclo entero mejorando la ui/ux del juego de preguntas ricoteras. Que la mejora sea total de
 > como se siente, hoy esta muy duro y feo. Mejoremos el banco de preguntas, como estan escritas las
 > preguntas todo."* (El ciclo 19 fue la noche ricotera, `D-62`.)
