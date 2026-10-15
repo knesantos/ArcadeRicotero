@@ -191,6 +191,30 @@ function cadenasDelBanco(): string[] {
 }
 
 /**
+ * El banco del quiz: enunciados, opciones, explicaciones y rótulos de leyenda (`FIND-149`).
+ *
+ * Es el texto visible más largo del sitio —44 preguntas, 176 opciones— y hasta `REV-22`
+ * ninguna de las reglas de la sección 8 lo miraba: `banco.test`, `fugas.test` y `ronda.test`
+ * lo leen por estructura, no por voz. Así pasaron dos «show» en el ciclo 20. Mismo criterio
+ * que el banco de dos ejes: solo lo `listo`, y nada de identificadores (`QZ-…`, `facil`).
+ */
+function cadenasDelQuiz(): string[] {
+  interface Crudo {
+    readonly items: readonly {
+      readonly enunciado: string;
+      readonly opciones: readonly { readonly texto: string }[];
+      readonly explicacion: string;
+      readonly rotuloLeyenda?: string;
+      readonly estado: string;
+    }[];
+  }
+  const banco = JSON.parse(readFileSync('src/data/quiz.json', 'utf-8')) as Crudo;
+  return banco.items
+    .filter((i) => i.estado === 'listo')
+    .flatMap((i) => [i.enunciado, ...i.opciones.map((o) => o.texto), i.explicacion, ...(i.rotuloLeyenda ? [i.rotuloLeyenda] : [])]);
+}
+
+/**
  * Los cuatro nombres de fila de `US-08`, que no viven en un `copy.ts` sino en `filas.ts`.
  *
  * **Por que estan aca y no importados con el resto.** `filas.ts` es un modulo hoja que no
@@ -215,6 +239,7 @@ function cadenasDeLasFilas(): string[] {
 const VISIBLE: ReadonlyArray<readonly [string, string]> = [
   ...MODULOS.flatMap(([donde, modulo]) => cadenas(modulo).map((texto) => [donde, texto] as const)),
   ...cadenasDelBanco().map((texto) => ['dos-ejes', texto] as const),
+  ...cadenasDelQuiz().map((texto) => ['quiz.json', texto] as const),
   ...cadenasDeLasFilas().map((texto) => ['ponelos/filas', texto] as const),
 ];
 
@@ -237,9 +262,12 @@ function infracciones(patron: RegExp): string[] {
  * Los limites de palabra estan puestos a proposito: `\blist\b` no toca "lista" ni
  * "listo", y `\btop\b` no toca "tope". La regla es contra el anglicismo, no contra el
  * castellano que se le parece.
+ *
+ * `show` entró en el ciclo 20 por lo mismo (`FIND-148`): dos se colaron en el banco del quiz
+ * el día que el banco todavía no pasaba por acá. La palabra corriente es «recital».
  */
 test('D-17: no entra un anglicismo en lo que se lee', () => {
-  const glosario = /\b(feedback|reveal|display|quiz|link|score|player|gaming|ranking|challenge|share|tips?|loading|hint|combo|streak|highscore|tier|list|top)\b/;
+  const glosario = /\b(feedback|reveal|display|quiz|link|score|player|gaming|ranking|challenge|share|tips?|loading|hint|combo|streak|highscore|tier|list|top|show)\b/;
   assert.deepEqual(infracciones(glosario), []);
 });
 
@@ -367,7 +395,7 @@ function cadenasDeFunciones(): Array<readonly [string, string]> {
 }
 
 test('las funciones del copy tampoco pueden traer un anglicismo ni una formula de folleto', () => {
-  const glosario = /\b(feedback|reveal|display|quiz|link|score|player|gaming|ranking|challenge|share|tips?|loading|hint|combo|streak|highscore|tier|list|top)\b/;
+  const glosario = /\b(feedback|reveal|display|quiz|link|score|player|gaming|ranking|challenge|share|tips?|loading|hint|combo|streak|highscore|tier|list|top|show)\b/;
   const folleto =
     /(descubri todo|sumergite|la experiencia (definitiva|unica)|y listo!|a jugar!|increible|imperdible|la mejor forma de)/;
   const gente = /\b(los fans|las? usuarios?|los? usuarios?|nuestra comunidad)\b/;

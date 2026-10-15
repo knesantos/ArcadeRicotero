@@ -5,7 +5,36 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-10
+**Última actualización:** 2026-10-15
+
+> ## ❓ PREGUNTAS RICOTERAS SE REHACE ENTERO: SE SIENTE COMO UN FICHÍN (2026-10-15) — `D-71`, ciclo 20
+>
+> **Rama `ciclo-20/preguntas-ricoteras`, sobre `main` en `243495d`, sin integrar.** Pedido del usuario:
+> *"Hace un ciclo entero mejorando la ui/ux del juego de preguntas ricoteras. Que la mejora sea total de
+> como se siente, hoy esta muy duro y feo. Mejoremos el banco de preguntas, como estan escritas las
+> preguntas todo."* (El ciclo 19 fue la noche ricotera, `D-62`.)
+>
+> - **La pantalla** (`partida.ts`, bloque `D-71` de `juego.css`): tablero con las tres fichas, el `Nº` y
+>   un riel por escalón; "Cerrá la partida" arriba a la derecha; la pregunta como recorte con cinta en
+>   la tinta de su categoría; opciones con letra (y teclas 1–4 / A–D con el foco en la partida); la
+>   respuesta con el grito estampado, la racha (3, 5, 10 al hilo), la correcta escrita grande y **la
+>   tapa del disco**; `SEGUÍ` pegado abajo; el resultado con el `Nº` grande y **la planilla** pregunta
+>   por pregunta, que también viaja al compartir (◆ ✕). La lógica de `BR-19` no se tocó; lo nuevo que
+>   lee la partida vive en `src/lib/quiz/recorrido.ts`, con tests.
+> - **El banco** (`CNT-41`): 44 preguntas, 14 fácil / 15 media / 15 difícil, 11 por categoría. 19
+>   retiradas, 22 reescritas, 23 nuevas (`QZ-044`..`QZ-066`), tres con verso. Los fáciles los saca el
+>   que fue a una previa. 23 ítems traen `disco` (campo nuevo de `CTR-02`, y `fuentes` acepta `RES-`
+>   de tres dígitos).
+> - **Revisión independiente** (`REV-22`, `FIND-141`..`FIND-152`): una alta (`QZ-064` ponía en Tandil
+>   la conferencia de prensa que el memoir ubica en Olavarría, 1997), dos medias y nueve bajas. Se
+>   arreglaron todas. `voz.test.ts` ahora audita el banco del quiz y conoce «show».
+> - **Verde:** `npm test`, `npm run check` y `npm run build`. Jugado en el navegador a 375 px y a
+>   1024 px.
+> - **Abierto, sin trabar:** `T-412` (`experiencia`: `UX-01`/`UX-07` y la hoja 09 del lienzo) y
+>   `T-413` (`arquitectura`: asentar `disco` y el patrón de `fuentes` en `CTR-02`), nota en
+>   `Docs/SUGERENCIAS/HILO-para-experiencia-y-arquitectura-d71-el-quiz.md`. `investigador`: RES-05 y
+>   N-016 (Olavarría o Tandil), matizar RES-07, la advertencia de Patricia Rey, y los pedidos de
+>   `CNT-41` §6. Probarlo en un teléfono de verdad (la barra del `SEGUÍ` con la de Safari).
 
 > ## 🃏 PONELOS EN FILA SE REPARTE DE A UNA, CON FILAS PROPIAS Y LOS 105 TEMAS (2026-10-10) — `D-69`, `D-70`
 >

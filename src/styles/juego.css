@@ -3037,20 +3037,7 @@ a.secundario {
   opacity: 0.75;
 }
 
-/* El aviso de escalon: una sola vez por salto, sin pantalla intermedia ni toque extra.
-   Borde, no relleno — es un rotulo de registro 3, no un festejo. */
-.escalon {
-  margin: 0 0 var(--espacio-2);
-  padding: calc(var(--espacio-1) * 0.75) var(--espacio-2);
-  border: 2px solid var(--acento-2);
-  border-radius: 3px;
-  color: var(--acento-2);
-  font-family: var(--fuente-rotulada);
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  display: inline-block;
-}
+/* El aviso de escalon vive con el resto del quiz de `D-71`, al final de esta hoja. */
 
 /* La retirada voluntaria. Lejos de la zona pulgar y en texto chico: si quedara a mano
    de las opciones, la gente cerraria la partida sin querer. */
@@ -3121,6 +3108,479 @@ a.secundario {
 .rotulo-desenlace + .tramo + .puntaje,
 .puntaje {
   font-size: 1.6rem;
+}
+
+/* ==========================================================================
+   Preguntas ricoteras, que se sienta como un fichín (`D-71`, ciclo 20).
+
+   El usuario lo jugó y lo dijo entero: *"hoy está muy duro y feo"*. Medido a 375 px: cuatro
+   cajas grises de formulario, una cabecera de 13 px, el `SEGUÍ` abajo del pliegue y "Cerrá la
+   partida" entre las opciones y la respuesta. Lo que sigue lo resuelve en el idioma del sitio
+   —recorte con cinta, sello de goma, tinta plana, borde grueso, rotación a mano— y con lo que
+   el sistema ya tenía: el sello que cae (`sello-golpe`), el que se apoya (`momento-entra`) y
+   la foto que se fija (`fijado`). Ni un hex, ni una sombra, ni una pastilla. Todos los pares
+   de color que se usan acá ya están en `contraste.test.ts`.
+   ========================================================================== */
+
+/* ---- El tablero: las fichas, el número y el riel ---- */
+
+.tablero {
+  display: grid;
+  gap: 0.6rem;
+  margin-bottom: var(--espacio-2);
+}
+
+.tablero-fila {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+/* Las vidas pasan de una línea de 13 px a tres fichas que se ven desde lejos. */
+.tablero .vidas {
+  font-size: 1.45rem;
+  gap: 0.15em;
+}
+
+.tablero .vidas-rotulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  align-self: center;
+}
+
+.tablero-numero {
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.45rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--texto);
+}
+
+/* "Cerrá la partida" sube al tablero: arriba a la derecha es lo más lejos del pulgar que hay
+   en un teléfono (`BR-19` apartado 7). Sigue chico y sin relleno. */
+.tablero .retirada {
+  margin: 0 0 0 auto;
+}
+
+.tablero .retirada-disparador {
+  font-size: 0.8rem;
+  padding-inline: 0.25rem;
+}
+
+.retirada--confirma {
+  margin: 0 0 var(--espacio-2);
+  text-align: left;
+}
+
+/* El riel: un paso por pregunta, los escalones separados. El acierto es un paso lleno y
+   alto, el error uno hueco y alto, el que se juega uno amarillo y más alto, lo que falta uno
+   bajo y apagado: la forma dice el estado además de la tinta. */
+.riel {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 12px;
+}
+
+.riel-tramo {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  min-width: 0;
+}
+
+.riel-paso {
+  flex: 1 1 0;
+  min-width: 2px;
+  height: 5px;
+  background: var(--borde);
+  border-radius: 1px;
+}
+
+.riel-paso--ok {
+  height: 10px;
+  background: var(--acento-3);
+}
+
+.riel-paso--no {
+  height: 10px;
+  background: none;
+  border: 1.5px solid var(--acento-4);
+}
+
+.riel-paso--ahora {
+  height: 12px;
+  background: var(--acento-2);
+}
+
+/* ---- La pregunta: un recorte pegado con cinta ---- */
+
+.ficha-pregunta {
+  position: relative;
+  margin: var(--espacio-3) 3px 0;
+  padding: var(--espacio-3) var(--espacio-2) var(--espacio-2);
+  background: var(--fondo);
+  border: var(--linea) solid var(--tinta-ficha, var(--borde));
+  border-radius: 3px;
+  transform: rotate(-0.5deg);
+  /* Se apoya en la hoja: llega torcida de más y se asienta. Con movimiento reducido,
+     `--duracion-paso` vale cero y aparece ya apoyada. */
+  animation: momento-entra var(--duracion-paso) var(--curva-cinta) both;
+}
+
+/* La cinta que la sostiene, la misma del afiche de octubre y de los casetes. */
+.ficha-pregunta::before {
+  content: '';
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  width: 84px;
+  height: 24px;
+  margin-left: -42px;
+  background: color-mix(in srgb, var(--papel) 30%, transparent);
+  border-radius: 2px;
+  transform: rotate(-3deg);
+}
+
+/* La mezcla (`D-19`): el borde lo tiñe el disco de la categoría, como la estampa de cada
+   sección. Acierto y error nunca se disfrazan de disco: esos van en la respuesta. */
+.ficha-pregunta--historia {
+  --tinta-ficha: var(--cat-historia);
+}
+
+.ficha-pregunta--discos {
+  --tinta-ficha: var(--cat-discos);
+}
+
+.ficha-pregunta--letras {
+  --tinta-ficha: var(--cat-letras);
+}
+
+.ficha-pregunta--mitologia {
+  --tinta-ficha: var(--cat-mitologia);
+}
+
+.ficha-sellos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-1);
+  margin-bottom: var(--espacio-2);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ficha-sellos .categoria {
+  font-family: var(--fuente-rotulada);
+  border-width: 2px;
+  transform: rotate(-2deg);
+}
+
+.ficha-pregunta .enunciado {
+  margin: 0;
+  font-size: clamp(1.3rem, 5.4vw, 1.6rem);
+  font-weight: 700;
+  line-height: 1.25;
+  text-wrap: pretty;
+}
+
+/* El aviso de escalón: una franja estampada adentro de la ficha. El rótulo seco y, al lado,
+   la línea que canta. Cae como sello una sola vez por salto (`UX-07`: sin pantalla aparte). */
+.escalon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  margin: 0 0 var(--espacio-2);
+  padding: 0.45rem 0.75rem;
+  border: 2px solid var(--acento-2);
+  border-radius: 3px;
+  rotate: -1deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+.escalon-rotulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: var(--acento-2);
+}
+
+.escalon-canta {
+  font-size: 0.95rem;
+  color: var(--texto);
+}
+
+/* ---- Las opciones, con letra ---- */
+
+/* Una columna siempre en el teléfono: la mitad de las opciones del banco no entran en media
+   pantalla sin partirse en tres renglones. Dos columnas recién en pantalla grande. */
+.opciones--letradas {
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+  margin-top: var(--espacio-3);
+}
+
+@media (min-width: 40rem) {
+  .opciones--letradas {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.opciones--letradas .opcion {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.5rem;
+  padding: 0.55rem 0.9rem 0.55rem 0.6rem;
+  background: var(--fondo);
+  font-size: 1.05rem;
+  line-height: 1.3;
+  touch-action: manipulation;
+}
+
+/* La tecla se hunde al apretarla, como `.primario`: es la respuesta al dedo, no un adorno. */
+.opciones--letradas .opcion:active:not(:disabled) {
+  translate: 0 2px;
+}
+
+/* La letra es un sello de goma chico, hueco y apenas torcido. Va en la tinta de su opción:
+   cuando la opción cambia de estado, la letra cambia con ella. */
+.opcion-letra {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.95rem;
+  line-height: 1;
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  transform: rotate(-3deg);
+}
+
+.opcion:nth-child(even) .opcion-letra {
+  transform: rotate(2deg);
+}
+
+/* La elegida que no iba queda tachada, como se tacha en una planilla. El ✕ sigue estando. */
+.opcion.es-elegida .opcion-texto {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+/* Las otras dos se apagan pero se leen: deshabilitada no es borrada. */
+.opcion.es-otra {
+  color: var(--texto-tenue);
+}
+
+/* ---- La respuesta ---- */
+
+#partida .revelacion {
+  position: relative;
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-2);
+  border-radius: 3px;
+  transform: rotate(0.4deg);
+  /* Que el desplazamiento la deje entera arriba de la barra del `SEGUÍ`. */
+  scroll-margin-bottom: 7rem;
+}
+
+#partida .revelacion.no .micro {
+  font-family: var(--fuente-rotulada);
+  font-weight: 400;
+  font-size: 1.15rem;
+}
+
+/* La racha: un segundo sello, amarillo, que cae un compás después del grito. */
+.racha {
+  flex: none;
+  margin: 0;
+  padding: 0.2em 0.6em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--acento-2);
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  rotate: 4deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) var(--escalon-pasada) both;
+}
+
+.respuesta-cuerpo {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--espacio-2);
+  align-items: start;
+  margin-top: var(--espacio-2);
+}
+
+.respuesta-cuerpo:not(:has(.respuesta-tapa)) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* La tapa del disco del que se hablaba: se fija de arriba abajo, como la hoja que sale de
+   la prensa (`fijado`), apenas torcida. */
+.respuesta-tapa {
+  display: block;
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  rotate: -2deg;
+  animation: fijado var(--duracion-pasada) var(--curva-cinta) var(--escalon-pasada) both;
+}
+
+/* La respuesta, escrita grande: en el error es lo que hay que llevarse. */
+.respuesta-dato {
+  margin: 0 0 0.4rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.2rem;
+  line-height: 1.15;
+  color: var(--texto);
+  overflow-wrap: anywhere;
+}
+
+/* La explicación es el premio de haber respondido: se lee en la tinta del texto y no en la
+   tenue, que era la de una nota al pie. */
+#partida .revelacion .explicacion {
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+/* `SEGUÍ` pegado abajo, en la zona del pulgar y siempre a la vista. */
+.seguir-barra {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  margin-top: var(--espacio-2);
+  padding: var(--espacio-1) 0 calc(var(--espacio-2) + env(safe-area-inset-bottom, 0px));
+  background: var(--fondo);
+}
+
+.seguir-barra .primario {
+  margin-top: 0;
+}
+
+/* ---- El resultado ---- */
+
+#resultado .rotulo-desenlace {
+  display: inline-block;
+  margin-top: var(--espacio-2);
+  padding: 0.25em 0.7em;
+  font-size: 0.9rem;
+  color: var(--texto);
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  rotate: -4deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+/* La ficha a la que llegaste, grande, en el amarillo de las fichas de vida: es la misma
+   moneda. En rojo se peleaba con el encabezado de la derrota, que ya es rojo. */
+.resultado-numero {
+  margin: var(--espacio-2) 0 0;
+  font-family: var(--fuente-rotulada);
+  font-size: clamp(4rem, 22vw, 6rem);
+  line-height: 0.9;
+  color: var(--acento-2);
+}
+
+#resultado .resultado-numero + .puntaje {
+  margin-top: var(--espacio-1);
+  font-size: 1.1rem;
+}
+
+/* La planilla: lo que el riel fue diciendo, puesto entero. Símbolo en cada casilla. */
+.planilla {
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-2);
+  border: 2px dashed var(--borde);
+  border-radius: 3px;
+}
+
+.planilla-rotulo {
+  margin: 0 0 var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+.planilla-grilla {
+  display: grid;
+  gap: var(--espacio-1);
+}
+
+.planilla-tramo {
+  display: grid;
+  gap: 0.3rem;
+}
+
+/* El nivel va arriba de sus casillas y no al costado: así entran quince por renglón a
+   375 px y cada escalón se lee como una tira entera. */
+.planilla-nivel {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--texto-tenue);
+}
+
+.planilla-casillas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.planilla-casilla {
+  display: grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  font-size: 0.7rem;
+  line-height: 1;
+  color: var(--texto-tenue);
+  border: 1.5px solid var(--borde);
+  border-radius: 2px;
+}
+
+.planilla-casilla--ok {
+  color: var(--acento-3);
+  border-color: var(--acento-3);
+}
+
+.planilla-casilla--no {
+  color: var(--acento-4);
+  border-color: var(--acento-4);
+}
+
+.planilla-casilla--resto {
+  border-style: dashed;
+}
+
+/* ---- La portada: cómo se juega, con las tres fichas a la vista ---- */
+
+.como-se-juega {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  margin: var(--espacio-3) 0 0;
+  font-size: 1rem;
+  color: var(--texto);
+}
+
+.como-se-juega-fichas {
+  font-size: 1.45rem;
+  letter-spacing: 0.15em;
+  color: var(--acento-2);
 }
 
 /* La fuente del verso en el panel de respuesta (`T-145`, `D-25`). Registro 3: letra

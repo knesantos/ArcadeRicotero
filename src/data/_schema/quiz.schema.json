@@ -51,7 +51,7 @@
         "explicacion": { "type": "string", "minLength": 10, "maxLength": 400 },
         "fuentes": {
           "type": "array",
-          "items": { "type": "string", "pattern": "^RES-\\d{2}$" }
+          "items": { "type": "string", "pattern": "^RES-\\d{2,3}$" }
         },
         "esLeyenda": { "type": "boolean" },
         "rotuloLeyenda": { "type": "string", "minLength": 10, "maxLength": 200 },
@@ -60,6 +60,13 @@
           "type": "array",
           "uniqueItems": true,
           "items": { "enum": ["letra", "tapa", "audio"] }
+        },
+        "disco": {
+          "enum": [
+            "gulp", "oktubre", "un-baion-para-el-ojo-idiota", "bang-bang-estas-liquidado",
+            "la-mosca-y-la-sopa", "lobo-suelto", "cordero-atado", "luzbelito",
+            "ultimo-bondi-a-finisterre", "momo-sampler"
+          ]
         },
         "spotify": {
           "type": "object",
