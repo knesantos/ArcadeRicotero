@@ -17,8 +17,12 @@ import type { DesafioDeQuery } from '../desafio.ts';
 /** A1, A2, A3, A4 — Pantalla 0. */
 export const PANTALLA_0 = {
   titulo: 'Entrá, sepas lo que sepas.',
-  subtitulo: 'Preguntas de historia, discos, letras y mitología ricotera.',
+  /** `CNT-41` A2', primera mitad: qué es. Es lo que reemplaza un desafío. */
+  subtitulo: 'Preguntas sobre los Redondos.',
   botón: 'JUGÁ',
+  /** `CNT-41` A2', segunda mitad: cómo se juega, al lado de las tres fichas (`D-71`). Va
+   *  aparte del subtítulo para que siga a la vista cuando un desafío lo reemplaza. */
+  comoSeJuega: 'Tenés tres vidas: arranca fácil y se pone bravo.',
 } as const;
 
 /**
@@ -39,26 +43,26 @@ export function subtituloDesafio(d: DesafioDeQuery): string {
   return `${quien} llegó a la pregunta ${d.puntaje} de ${d.total}. ¿Te la bancás?`;
 }
 
-/** B1 — cuatro variantes que rotan.
- *
- * Corrida anti-slop 2026-08-21: la cuarta variante decia "¡Con la gorra bien
- * puesta!" — jerga de utileria, y encima en la tribuna "la gorra" es la policia,
- * el bando equivocado para premiar al que sabe. Cambio hecho aca (el producto es
- * lo visible); queda propuesto a `contenido` actualizar `CNT-05` para que los
- * identificadores sigan trazando. */
+/** B1' — seis variantes que rotan (`CNT-41` §5, reemplaza a `CNT-05` B1). El único grito
+ *  del sitio. Salió «¡Sabés, che!»: la regla de voz 3.4 veta el *che* de disfraz. */
 export const ACIERTOS = [
-  '¡Ahí la tenés!',
-  '¡Sabés, che!',
-  '¡Esa la clavaste!',
-  '¡De una la sacaste!',
+  '¡Adentro!',
+  '¡La clavaste!',
+  '¡Como en el disco!',
+  '¡De memoria!',
+  '¡Esa te la sabías!',
+  '¡Justo en el hueso!',
 ] as const;
 
-/** B2 — cuatro variantes. Ninguna dice "mal" ni "perdiste": el texto acompaña, no marca. */
+/** B2' — seis variantes, en voz baja (`CNT-41` §5). Ninguna dice "mal" ni "perdiste": el
+ *  que pierde la vida ya lo ve en el marcador. */
 export const ERRORES = [
-  'Casi. Va la que sigue.',
-  'No iba. Ya la vas a acertar.',
-  'Ni todo el mundo se la sabe.',
-  'Esa queda para la próxima.',
+  'No era esa.',
+  'Esa se te escapó.',
+  'Pasó de largo.',
+  'Te falta escuchar disco.',
+  'La próxima la sacás.',
+  'Quedó para la vuelta.',
 ] as const;
 
 /** B3, B4 — las etiquetas de rotulo. B4 es plantilla: el testigo no siempre es el Indio. */
@@ -253,4 +257,57 @@ export function variante(opciones: readonly string[], anterior: string | null, a
   const posibles = opciones.filter((o) => o !== anterior);
   const pozo = posibles.length > 0 ? posibles : opciones;
   return pozo[Math.floor(azar() * pozo.length)]!;
+}
+
+/* ==========================================================================
+   `D-71` — el tablero, la racha, el escalón que canta y la planilla del resultado.
+   ========================================================================== */
+
+/** El número grande del tablero. `Nº` y no "Pregunta": el número es la ficha del fichín. */
+export function numeroDePregunta(n: number): string {
+  return `Nº ${n}`;
+}
+
+/** Lo mismo, para quien no ve la pantalla: el `Nº` solo no dice de cuántas. */
+export function numeroDePreguntaLeido(n: number, total: number): string {
+  return `Pregunta ${n} de ${total}`;
+}
+
+/** K1–K3 (`CNT-41` §5) — la racha: se estampa al llegar justo a estos aciertos seguidos. */
+export const RACHAS: Readonly<Record<number, string>> = {
+  3: 'TRES AL HILO',
+  5: 'CINCO AL HILO',
+  10: 'DIEZ AL HILO',
+};
+
+/** L1, L2 (`CNT-41` §5) — la línea que canta al abrir un escalón, debajo del rótulo seco de
+ *  `avisoEscalon`. Dicen quién pregunta, no qué tan difícil es: eso ya lo dice el rótulo. */
+export const ESCALON_CANTA: Readonly<Record<string, string>> = {
+  media: 'Ahora pregunta el que tiene los discos.',
+  dificil: 'Ahora pregunta la vieja guardia.',
+};
+
+/** La planilla del resultado: pregunta por pregunta, con símbolo y no solo color. */
+export const PLANILLA = {
+  rotulo: 'Pregunta por pregunta',
+  acertada: 'acertada',
+  errada: 'errada',
+  sinJugar: 'sin jugar',
+} as const;
+
+/** El texto alternativo de la tapa que acompaña la respuesta. */
+export function altTapa(titulo: string): string {
+  return `Tapa de ${titulo}`;
+}
+
+/**
+ * La planilla en el texto que se comparte: `◆` por acierto, `✕` por error, un espacio entre
+ * escalones. Es lo que hace que el resultado se pueda mirar en un grupo sin abrir el link.
+ * Los dos son símbolos de texto y no emoji (U+25C6 y U+2715), los mismos de las vidas.
+ */
+export function planillaParaCompartir(escalones: readonly (readonly boolean[])[]): string {
+  return escalones
+    .filter((e) => e.length > 0)
+    .map((e) => e.map((acierto) => (acierto ? '◆' : '✕')).join(''))
+    .join(' ');
 }

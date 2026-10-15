@@ -58,6 +58,12 @@ const TITULO = 'Preguntas ricoteras — Fichín Ricotero';
         <h1>{PANTALLA_0.titulo}</h1>
         <p class="donde-estas">{LUGARES.quiz}</p>
         <p id="subtitulo" class="tenue">{PANTALLA_0.subtitulo}</p>
+        <!-- La linea que nombra (`D-71`, regla de las dos lineas): cuantas vidas y como sube.
+             Las fichas son las mismas del tablero de la partida, para que se reconozcan. -->
+        <p class="como-se-juega">
+          <span class="como-se-juega-fichas" aria-hidden="true">◆◆◆</span>
+          <span>{PANTALLA_0.comoSeJuega}</span>
+        </p>
         <button id="jugar" class="primario" type="button">{PANTALLA_0.botón}</button>
       </section>
 
