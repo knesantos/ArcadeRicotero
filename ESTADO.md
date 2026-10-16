@@ -9,7 +9,8 @@
 
 > ## 🎤 LOS RECITALES EN PANTALLA Y "ARMÁ TU RECITAL" (2026-10-15) — `D-72`, ciclo 21
 >
-> **Rama `ciclo-21/recitales`, sobre `main` en `afbe3ff`. Sin integrar.** Pedido del usuario: *"Hace la idea
+> **Integrada a `main` el 2026-10-16 con el PR #47 (fusión `d5f5837`)**, desde la rama `ciclo-21/recitales`
+> sobre `afbe3ff`. La fusionó Claude a pedido del usuario (*"Integrá el PR #47 a main"*). Pedido del usuario: *"Hace la idea
 > 15, hace al mismo tiempo el juego de CREAR tu propio recital. Esta muy bueno aprovechar los recortes de
 > temas para cuando aparece en pantalla mostrarlo."*
 >
