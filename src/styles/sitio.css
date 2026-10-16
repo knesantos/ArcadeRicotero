@@ -3450,3 +3450,8 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 .ojos-oro { fill: var(--acento-2); }
 .ojos-papel { fill: var(--papel); }
 .bestiario-svg .bestia--ojos .toque { fill: transparent; }
+
+/* Cuarta vuelta (D-73): los párpados de los recortes, del color de la piel de arriba de cada ojo. */
+.bt-lobo-parpado { fill: var(--bestia-lobo-parpado); }
+.bt-lobo-parpado-oscuro { fill: var(--bestia-lobo-parpado-oscuro); }
+.bt-cordero-parpado { fill: var(--bestia-cordero-parpado); }

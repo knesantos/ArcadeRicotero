@@ -1,14 +1,16 @@
 /**
- * El recinto del monte y la pastura (`D-73`), de noche y a aerógrafo.
+ * El recinto del monte y la pastura (`D-73`), de noche.
  *
- * El fondo y el frente son dos imágenes que imprime `scripts/imprimir-bestiario.mjs` desde
- * `arte.ts`: las tiras dentadas de la contratapa de *Lobo suelto* con el canto encendido, y
- * la pastura naranja de *Cordero atado* que brilla en el claro. Entre las dos van los que se
- * mueven: la soga, los títeres, y los ojos de los demás bichos del monte, que de noche no se
- * ven enteros: miran desde lo oscuro.
+ * Capas, de atrás para adelante:
  *
- * La geometría (dónde está el palo, cuánto mide la soga) vive en `rig.ts`, que es lo único
- * que se lleva la isla.
+ * 1. `monte-lejos`: la noche y las tiras de la contratapa de *Lobo suelto* (inventado, en su
+ *    estética, `arte.ts`).
+ * 2. **El lobo**, el busto de la tapa: acecha subiendo desde atrás del borde de la capa que sigue.
+ * 3. `monte-cerca`: el piso del monte y la pastura naranja de *Cordero atado*, con el palo.
+ * 4. Los ojos de los demás del monte, la soga, y **el cordero**, la criatura de la tapa.
+ * 5. `monte-frente`: las tiras de adelante.
+ *
+ * La geometría vive en `rig.ts`, que es lo único que se lleva la isla.
  */
 
 import { imagen, lobo, cordero } from './titeres.ts';
@@ -21,15 +23,15 @@ export { ESCENA, PALO };
  * lo oscuro, y de qué color brillan (los lobos y lo que acecha, oro; lo demás, papel).
  */
 export const VECINOS_DEL_MONTE: Readonly<Record<string, readonly [number, number, 'oro' | 'papel']>> = {
-  'el-joven-lobo': [770, 262, 'oro'],
-  'las-antiguas-lobas': [118, 292, 'oro'],
-  'el-animal-que-no-late': [300, 246, 'papel'],
-  'el-rey-de-esta-jungla': [566, 232, 'papel'],
-  'tu-animal': [836, 352, 'oro'],
+  'el-joven-lobo': [790, 252, 'oro'],
+  'las-antiguas-lobas': [104, 282, 'oro'],
+  'el-animal-que-no-late': [300, 232, 'papel'],
+  'el-rey-de-esta-jungla': [566, 222, 'papel'],
+  'tu-animal': [846, 352, 'oro'],
   'el-lobo-caido': [92, 486, 'oro'],
   'la-liebre-muerta': [818, 540, 'papel'],
   'el-borrego': [214, 470, 'papel'],
-  'aquella-solitaria-vaca-cubana': [700, 344, 'papel'],
+  'aquella-solitaria-vaca-cubana': [722, 350, 'papel'],
   'el-rebano': [640, 560, 'papel'],
   'el-ovejero': [168, 396, 'oro'],
 };
@@ -46,22 +48,18 @@ function ojos(id: string, nombre: string, x: number, y: number, tinta: 'oro' | '
   );
 }
 
-/**
- * La escena entera: el fondo impreso, la soga, los ojos, los dos títeres —que la isla ordena
- * por profundidad— y el frente impreso, que tapa al lobo cuando pasa por abajo.
- */
+/** La escena entera, por capas. La isla mueve al lobo, al cordero y la soga. */
 export function escenaMonte(nombres: ReadonlyMap<string, string>): string {
   const vecinos = Object.entries(VECINOS_DEL_MONTE)
     .map(([id, [x, y, tinta]]) => ojos(id, nombres.get(id) ?? id, x, y, tinta))
     .join('');
   return (
-    imagen('monte-fondo') +
+    imagen('monte-lejos') +
+    `<g class="acecho"><g class="titere titere--lobo" data-id="el-lobo-suelto" role="button" tabindex="0" aria-label="${nombres.get('el-lobo-suelto')}">${lobo()}</g></g>` +
+    imagen('monte-cerca') +
     `<g class="ojos-del-monte">${vecinos}</g>` +
     `<path id="soga" class="bt-trazo-soga" stroke-width="2.8" d="M${PALO.x} ${PALO.y - 46} L${PALO.x + 40} ${PALO.y}"/>` +
-    `<g class="actores">` +
-    `<g class="titere titere--cordero" data-id="el-cordero-atado" role="button" tabindex="0" aria-label="${nombres.get('el-cordero-atado')}">${cordero()}</g>` +
-    `<g class="titere titere--lobo" data-id="el-lobo-suelto" role="button" tabindex="0" aria-label="${nombres.get('el-lobo-suelto')}">${lobo()}</g>` +
-    `</g>` +
+    `<g class="actores"><g class="titere titere--cordero" data-id="el-cordero-atado" role="button" tabindex="0" aria-label="${nombres.get('el-cordero-atado')}">${cordero()}</g></g>` +
     `<g class="escena-frente" pointer-events="none">${imagen('monte-frente')}</g>`
   );
 }

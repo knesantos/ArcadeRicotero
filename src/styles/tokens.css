@@ -139,6 +139,15 @@
   --bestia-lobo-gris: #a9a59c; /* las almohadillas del hocico, gris azulado */
   --bestia-lobo-boca: #5a2a24; /* el adentro de la boca, cuando aulla */
   --bestia-ojo-blanco: #d8cbcb; /* el blanco de los ojos humanos de las dos tapas */
+  /* Cuarta vuelta (D-73): los títeres son los recortes de las tapas. Estos son los colores con
+     que se tapa un ojo al parpadear (la piel de arriba de cada ojo) y los azules del lomo que
+     completa al cordero donde la tapa lo corta, medidos en los frentes de 953 px. */
+  --bestia-lobo-parpado: #6c6760;
+  --bestia-lobo-parpado-oscuro: #37363e;
+  --bestia-cordero-parpado: #322a2d;
+  --bestia-cordero-azul-hondo: #23292f;
+  --bestia-cordero-azul: #27394d;
+  --bestia-cordero-escama: #325179;
   --bestia-cordero-lana: #293d54;
   --bestia-cordero-lana-clara: #4a6890;
   --bestia-cordero-lana-oscura: #1c2a3a;

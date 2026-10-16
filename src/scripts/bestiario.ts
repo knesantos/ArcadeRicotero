@@ -3,10 +3,10 @@
  *
  * Arriba, el plano redondo, cuyos rótulos son enlaces que bajan a cada recinto. Abajo, los
  * recintos uno detrás del otro, y en cada uno los bichos **viven**: respiran, se balancean,
- * pegan un saltito. En el del monte y la pastura viven los dos títeres de Rocambole: el lobo
- * suelto ronda la pastura por afuera, siempre del lado del cordero, y el cordero atado pasta
- * hasta que el lobo se acerca y huye al otro lado, hasta donde le da la soga. El cordero se
- * puede arrastrar con el dedo, pero no más allá de la soga.
+ * pegan un saltito. En el del monte y la pastura viven los dos títeres de Rocambole, recortados
+ * de las tapas: el lobo suelto acecha asomándose desde lo oscuro detrás de la pastura, del lado
+ * del cordero, y el cordero atado pasta hasta que el lobo asoma cerca y huye hasta donde le da
+ * la soga. El cordero se puede arrastrar con el dedo, pero no más allá de la soga.
  *
  * Tocar un bicho lo hace reaccionar y le hace decir su verso en un bocadillo; desde ahí se
  * abre su ficha, que es la misma del índice de abajo (una sola versión de cada una).
@@ -16,7 +16,8 @@
  */
 
 import { BESTIARIO } from '../lib/bestiario/copy.ts';
-import { ACHATE, NUDO_CORDERO, PALO, PIVOTES, RONDA_LOBO, SOGA, profundidad } from '../lib/bestiario/rig.ts';
+import { ACECHO, ACHATE, ESCALA_CORDERO, ESCALA_LOBO, PALO, SOGA, profundidad } from '../lib/bestiario/rig.ts';
+import { ARMADO } from '../lib/bestiario/recortes.ts';
 import { crearRocola } from './rocola.ts';
 
 interface BestiaIsla {
@@ -296,16 +297,14 @@ function recintoDeRuta(escena: HTMLElement, svg: SVGSVGElement): Recinto {
 }
 
 /* ------------------------------------------------------------------
-   Los títeres: el lobo suelto y el cordero atado
+   Los títeres: el lobo suelto y el cordero atado, recortados de las tapas
    ------------------------------------------------------------------ */
 
 type Parte = SVGGraphicsElement;
 
 function partes(titere: SVGGElement): Map<string, Parte> {
   const m = new Map<string, Parte>();
-  for (const el of titere.querySelectorAll<Parte>('[data-parte]')) {
-    if (el.dataset.parte !== 'eslabon') m.set(el.dataset.parte!, el);
-  }
+  for (const el of titere.querySelectorAll<Parte>('[data-parte]')) m.set(el.dataset.parte!, el);
   return m;
 }
 
@@ -319,37 +318,35 @@ function parpado(el: Parte | undefined, k: number): void {
   el.setAttribute('transform', `translate(${px} ${py}) scale(1 ${k.toFixed(2)}) translate(${-px} ${-py})`);
 }
 
-const envolver = (a: number): number => Math.atan2(Math.sin(a), Math.cos(a));
 const hacia = (actual: number, meta: number, paso: number): number =>
   Math.abs(meta - actual) <= paso ? meta : actual + Math.sign(meta - actual) * paso;
+const suave = (t: number): number => (t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t));
 
-/** Del piso de la pastura (u, v) a la pantalla de la escena, y la escala por profundidad. */
+/** Del piso de la pastura (u, v) a la pantalla de la escena. */
 const enPantalla = (u: number, v: number): { x: number; y: number } => ({ x: PALO.x + u, y: PALO.y + v * ACHATE });
 
 function recintoDelMonte(escena: HTMLElement, svg: SVGSVGElement): Recinto {
   const deMapa = recintoDeMapa(escena, svg);
-  const actores = svg.querySelector<SVGGElement>('.actores')!;
   const gLobo = svg.querySelector<SVGGElement>('.titere--lobo')!;
   const gCordero = svg.querySelector<SVGGElement>('.titere--cordero')!;
   const soga = svg.querySelector<SVGPathElement>('#soga')!;
   const pl = partes(gLobo);
   const pc = partes(gCordero);
-  const eslabones = [...gLobo.querySelectorAll<SVGGElement>('[data-parte="eslabon"]')].map((el) => ({
-    el,
-    i: Number(el.dataset.i),
-    x: Number(el.dataset.x),
-    y: Number(el.dataset.y),
-    ang: Number(el.dataset.ang),
-  }));
+  const AL = ARMADO.lobo;
+  const AC = ARMADO.cordero;
 
-  const lobo = { th: 2.7, x: 0, y: 0, mira: -1, paso: 0, patas: 0, aullaHasta: -1, parpadeo: 2, s: 0.5 };
-  const oveja = { u: 30, v: 12, mu: 30, mv: 12, mira: 1, paso: 0, patas: 0, cambio: 1, modo: 'pasta' as string, balaHasta: -1, parpadeo: 3.4, s: 0.5 };
+  /**
+   * El lobo acecha: está hundido detrás del borde del piso, se corre sin que se vea, sube
+   * despacio, mira al cordero un rato y se vuelve a hundir. `alzado` va de 0 (no se ve) a 1.
+   */
+  const lobo = { x: 300, alzado: 0, modo: 'hundido' as 'hundido' | 'sube' | 'mira' | 'baja', desde: 0, hasta: 1.5, parpadeo: 2 };
+  const oveja = { u: 24, v: 18, mu: 24, mv: 18, mira: 1, paso: 0, patas: 0, cambio: 1, modo: 'pasta' as string, balaHasta: -1, parpadeo: 3.4, s: 1 };
   let arrastre: { id: number; x0: number; y0: number; movido: boolean } | null = null;
-  let adelante: 'lobo' | 'cordero' | null = null;
+
+  const pantallaOveja = (): { x: number; y: number } => enPantalla(oveja.u, oveja.v);
 
   function aPiso(ev: PointerEvent): { u: number; v: number } {
-    const m = svg.getScreenCTM()!.inverse();
-    const p = new DOMPoint(ev.clientX, ev.clientY).matrixTransform(m);
+    const p = new DOMPoint(ev.clientX, ev.clientY).matrixTransform(svg.getScreenCTM()!.inverse());
     return { u: p.x - PALO.x, v: (p.y - PALO.y) / ACHATE };
   }
 
@@ -367,11 +364,13 @@ function recintoDelMonte(escena: HTMLElement, svg: SVGSVGElement): Recinto {
     if (!arrastre || arrastre.id !== ev.pointerId) return;
     if (!arrastre.movido && Math.hypot(ev.clientX - arrastre.x0, ev.clientY - arrastre.y0) < 6) return;
     arrastre.movido = true;
-    const p = atar(aPiso(ev).u, aPiso(ev).v);
+    const piso = aPiso(ev);
+    const p = atar(piso.u, piso.v);
+    if (Math.abs(p.u - oveja.u) > 0.3) oveja.mira = Math.sign(p.u - oveja.u);
     oveja.u = p.u;
     oveja.v = p.v;
     oveja.modo = 'arrastrado';
-    if (quieto()) pintar(reloj, 0);
+    if (quieto()) pintar(reloj);
     ev.preventDefault();
   });
   const soltar = (ev: PointerEvent): void => {
@@ -387,38 +386,67 @@ function recintoDelMonte(escena: HTMLElement, svg: SVGSVGElement): Recinto {
   gCordero.addEventListener('pointerup', soltar);
   gCordero.addEventListener('pointercancel', soltar);
 
+  /** Dónde está la punta de arriba de cada títere, para el bocadillo. */
+  function arribaDe(id: string): { x: number; y: number } {
+    if (id === 'el-lobo-suelto') {
+      return { x: lobo.x, y: ACECHO.piso + (1 - lobo.alzado) * ACECHO.hundido - (AL.piso[1] - 40) * ESCALA_LOBO };
+    }
+    const o = pantallaOveja();
+    return { x: o.x, y: o.y - (AC.piso[1] + 40) * ESCALA_CORDERO * oveja.s };
+  }
+
   function tocar(id: string): void {
     reaccionar(id, reloj);
-    const pos = id === 'el-lobo-suelto' ? { x: lobo.x + 60 * lobo.mira * lobo.s, y: lobo.y - 214 * lobo.s } : { x: enPantalla(oveja.u, oveja.v).x + 60 * oveja.mira * oveja.s, y: enPantalla(oveja.u, oveja.v).y - 176 * oveja.s };
-    hablar(id, escena, svg, pos.x, pos.y);
+    const p = arribaDe(id);
+    hablar(id, escena, svg, p.x, p.y);
   }
 
   function reaccionar(id: string, t: number): void {
-    if (id === 'el-lobo-suelto') lobo.aullaHasta = t + 1.8;
-    else if (id === 'el-cordero-atado') oveja.balaHasta = t + 1.2;
+    if (id === 'el-lobo-suelto') {
+      // Tocado, asoma ya, y se queda mirando más tiempo.
+      if (lobo.modo !== 'mira') {
+        lobo.modo = 'sube';
+        lobo.desde = t - lobo.alzado * 1.4;
+      }
+      lobo.hasta = t + 7;
+    } else if (id === 'el-cordero-atado') oveja.balaHasta = t + 1.2;
     else deMapa.reaccionar(id, t);
-    if (quieto()) pintar(t, 0);
+    if (quieto()) pintar(t);
   }
 
-  function moverLobo(t: number, dt: number): void {
-    const pantallaOveja = enPantalla(oveja.u, oveja.v);
-    const thMeta = Math.atan2((pantallaOveja.y - PALO.y) / RONDA_LOBO.ry, (pantallaOveja.x - PALO.x) / RONDA_LOBO.rx);
-    const delta = envolver(thMeta - lobo.th);
-    const aulla = t < lobo.aullaHasta;
-    const camina = !aulla && Math.abs(delta) > 0.24;
-    if (camina) {
-      const antesX = PALO.x + RONDA_LOBO.rx * Math.cos(lobo.th);
-      lobo.th = envolver(lobo.th + Math.sign(delta) * 0.34 * dt);
-      const despuesX = PALO.x + RONDA_LOBO.rx * Math.cos(lobo.th);
-      if (Math.abs(despuesX - antesX) > 0.01) lobo.mira = Math.sign(despuesX - antesX);
-      lobo.paso += dt * 7.5;
-    } else {
-      lobo.mira = Math.sign(pantallaOveja.x - lobo.x) || lobo.mira;
+  function moverLobo(t: number): void {
+    const objetivo = Math.min(ACECHO.hasta, Math.max(ACECHO.desde, pantallaOveja().x + (Math.random() - 0.5) * 220));
+    switch (lobo.modo) {
+      case 'hundido':
+        lobo.alzado = 0;
+        if (t > lobo.hasta) {
+          lobo.x = objetivo;
+          lobo.modo = 'sube';
+          lobo.desde = t;
+        }
+        break;
+      case 'sube':
+        lobo.alzado = suave((t - lobo.desde) / 1.6);
+        if (lobo.alzado >= 1) {
+          lobo.modo = 'mira';
+          lobo.hasta = Math.max(lobo.hasta, t + 4 + Math.random() * 3);
+        }
+        break;
+      case 'mira':
+        lobo.alzado = 1;
+        if (t > lobo.hasta) {
+          lobo.modo = 'baja';
+          lobo.desde = t;
+        }
+        break;
+      case 'baja':
+        lobo.alzado = 1 - suave((t - lobo.desde) / 1.4);
+        if (lobo.alzado <= 0) {
+          lobo.modo = 'hundido';
+          lobo.hasta = t + 1.5 + Math.random() * 2.5;
+        }
+        break;
     }
-    lobo.patas = hacia(lobo.patas, camina ? 1 : 0, dt * 4);
-    lobo.x = PALO.x + RONDA_LOBO.rx * Math.cos(lobo.th);
-    lobo.y = PALO.y + RONDA_LOBO.ry * Math.sin(lobo.th);
-    lobo.s = profundidad(lobo.y);
   }
 
   function moverOveja(t: number, dt: number): void {
@@ -427,17 +455,15 @@ function recintoDelMonte(escena: HTMLElement, svg: SVGSVGElement): Recinto {
       oveja.patas = 1;
       return;
     }
-    const lu = lobo.x - PALO.x;
-    const lv = (lobo.y - PALO.y) / ACHATE;
-    const cerca = Math.hypot(lu - oveja.u, lv - oveja.v) < 170;
-    if (cerca && oveja.modo !== 'huye') {
-      // Huye al otro lado del palo, hasta donde le dé la soga, y un poco más: la soga la frena.
-      const r = Math.hypot(lu, lv) || 1;
-      oveja.mu = (-lu / r) * (SOGA + 30);
-      oveja.mv = (-lv / r) * (SOGA + 30);
+    // Si el lobo asoma cerca, huye para adelante y al otro lado, hasta donde le dé la soga.
+    const asoma = lobo.alzado > 0.6 && Math.abs(lobo.x - pantallaOveja().x) < 200;
+    if (asoma && oveja.modo !== 'huye') {
+      const lu = lobo.x - PALO.x;
+      oveja.mu = -Math.sign(lu || 1) * (SOGA * 0.5);
+      oveja.mv = SOGA + 30;
       oveja.modo = 'huye';
-      oveja.cambio = t + 2.6;
-    } else if (t > oveja.cambio) {
+      oveja.cambio = t + 3;
+    } else if (t > oveja.cambio && oveja.modo !== 'huye') {
       const a = Math.random() * Math.PI * 2;
       const d = Math.random() * (SOGA * 0.8);
       const quedarse = Math.random() < 0.45;
@@ -446,7 +472,7 @@ function recintoDelMonte(escena: HTMLElement, svg: SVGSVGElement): Recinto {
       oveja.modo = quedarse ? 'pasta' : 'camina';
       oveja.cambio = t + 3 + Math.random() * 3;
     }
-    const velocidad = oveja.modo === 'huye' ? 58 : 20;
+    const velocidad = oveja.modo === 'huye' ? 44 : 16;
     const du = oveja.mu - oveja.u;
     const dv = oveja.mv - oveja.v;
     const falta = Math.hypot(du, dv);
@@ -458,99 +484,58 @@ function recintoDelMonte(escena: HTMLElement, svg: SVGSVGElement): Recinto {
       if (Math.abs(p.u - oveja.u) > 0.05) oveja.mira = Math.sign(p.u - oveja.u);
       oveja.u = p.u;
       oveja.v = p.v;
-    } else if (oveja.modo === 'camina') {
-      oveja.modo = 'pasta';
-    }
+    } else if (oveja.modo === 'camina') oveja.modo = 'pasta';
     if (oveja.modo === 'huye' && !anda && t > oveja.cambio) oveja.modo = 'mira';
-    if (oveja.modo === 'mira') oveja.mira = Math.sign(lobo.x - enPantalla(oveja.u, oveja.v).x) || oveja.mira;
-    if (anda) oveja.paso += dt * (oveja.modo === 'huye' ? 13 : 8);
+    if (anda) oveja.paso += dt * (oveja.modo === 'huye' ? 11 : 7);
     oveja.patas = hacia(oveja.patas, anda ? 1 : 0, dt * 5);
   }
 
-  function pupilas(p: Map<string, Parte>, dx: number, dy: number, mira: number, cuanto: number): void {
-    const r = Math.hypot(dx, dy) || 1;
-    const x = ((dx / r) * cuanto * mira).toFixed(2);
-    const y = ((dy / r) * cuanto * 0.6).toFixed(2);
-    p.get('pupila-1')?.setAttribute('transform', `translate(${x} ${y})`);
-    p.get('pupila-2')?.setAttribute('transform', `translate(${x} ${y})`);
-  }
-
-  function pintar(t: number, dt: number): void {
-    // El lobo.
-    const P = PIVOTES.lobo;
-    const aulla = t < lobo.aullaHasta;
-    const a = Math.sin(lobo.paso) * 24 * lobo.patas;
-    const acecha = 1 - lobo.patas;
-    gLobo.setAttribute('transform', `translate(${lobo.x.toFixed(1)} ${lobo.y.toFixed(1)}) scale(${(lobo.mira * lobo.s).toFixed(3)} ${lobo.s.toFixed(3)})`);
-    girar(pl.get('pata-tras'), a, P['pata-tras']);
-    girar(pl.get('pata-del-lejos'), a, P['pata-del-lejos']);
-    girar(pl.get('pata-del'), -a, P['pata-del']);
-    girar(pl.get('pata-tras-lejos'), -a, P['pata-tras-lejos']);
-    const bote = (-Math.abs(Math.sin(lobo.paso)) * 2.5 * lobo.patas + acecha * 5 * (aulla ? 0 : 1)).toFixed(2);
-    pl.get('torso')?.setAttribute('transform', `translate(0 ${bote})`);
-    girar(pl.get('cola'), Math.sin(t * 2.2) * 7 + Math.sin(lobo.paso) * 8 * lobo.patas - acecha * 10, P.cola);
-    const cabeza = aulla ? -32 : acecha * 9 + Math.sin(t * 0.9) * 2;
-    girar(pl.get('cabeza'), cabeza, P.cabeza, `translate(0 ${bote}) `);
-    parpado(pl.get('boca'), aulla ? 1 + Math.sin(t * 9) * 0.12 : 0);
-    const pantallaOveja = enPantalla(oveja.u, oveja.v);
-    pupilas(pl, pantallaOveja.x - lobo.x, pantallaOveja.y - lobo.y, lobo.mira, 2.6);
-    if (t > lobo.parpadeo + 0.14) lobo.parpadeo = t + 2.5 + Math.random() * 4;
-    const ciega = t > lobo.parpadeo && t < lobo.parpadeo + 0.14 ? 1 : 0;
+  function pintar(t: number): void {
+    // El lobo: el busto sube desde atrás del piso; la cabeza se ladea hacia el cordero.
+    const o = pantallaOveja();
+    const y = ACECHO.piso + (1 - lobo.alzado) * ACECHO.hundido;
+    gLobo.setAttribute('transform', `translate(${lobo.x.toFixed(1)} ${y.toFixed(1)}) scale(${ESCALA_LOBO}) translate(${-AL.piso[0]} ${-AL.piso[1]})`);
+    const respira = Math.sin(t * 1.7) * 0.012;
+    pl.get('pecho')?.setAttribute('transform', `translate(${AL.piso[0]} ${AL.piso[1]}) scale(1 ${(1 + respira).toFixed(4)}) translate(${-AL.piso[0]} ${-AL.piso[1]})`);
+    const ladeo = Math.max(-7, Math.min(7, (o.x - lobo.x) / 30)) + Math.sin(t * 0.7) * 1.2;
+    girar(pl.get('cabeza'), ladeo, AL.cabeza, `translate(0 ${(-respira * 300).toFixed(2)}) `);
+    if (t > lobo.parpadeo + 0.15) lobo.parpadeo = t + 2.5 + Math.random() * 4;
+    const ciega = t > lobo.parpadeo && t < lobo.parpadeo + 0.15 ? 1 : 0;
     parpado(pl.get('parpado-1'), ciega);
     parpado(pl.get('parpado-2'), ciega);
-    // La cadena: se sacude al caminar, más cuanto más lejos del cogote; la que arrastra, en el piso.
-    for (const e of eslabones) {
-      const peso = Math.min(1, e.i / 5);
-      const sacudon = Math.sin(lobo.paso * 0.5 - e.i * 0.8) * 7 * lobo.patas + Math.sin(t * 1.4 - e.i * 0.5) * 1.5;
-      const enElPiso = e.y > -10;
-      const dx = enElPiso ? -lobo.patas * Math.abs(Math.sin(lobo.paso * 0.5 - e.i * 0.4)) * 4 : sacudon * peso * 0.6;
-      e.el.setAttribute('transform', `translate(${(e.x + dx).toFixed(1)} ${e.y}) rotate(${(e.ang + (enElPiso ? 0 : sacudon * peso)).toFixed(1)})`);
-    }
 
-    // El cordero.
-    const C = PIVOTES.cordero;
-    const o = enPantalla(oveja.u, oveja.v);
-    oveja.s = profundidad(o.y) * 0.95;
+    // El cordero: las dos patas de la tapa, que se turnan al andar.
+    oveja.s = profundidad(o.y);
+    const s = ESCALA_CORDERO * oveja.s;
     const bala = t < oveja.balaHasta;
-    const salta = bala ? -Math.sin(((oveja.balaHasta - t) / 1.2) * Math.PI) * 14 : 0;
-    gCordero.setAttribute('transform', `translate(${o.x.toFixed(1)} ${(o.y + salta * oveja.s).toFixed(1)}) scale(${(oveja.mira * oveja.s).toFixed(3)} ${oveja.s.toFixed(3)})`);
-    const b = Math.sin(oveja.paso) * 22 * oveja.patas;
-    girar(pc.get('pata-tras'), b, C['pata-tras']);
-    girar(pc.get('pata-del-lejos'), b, C['pata-del-lejos']);
-    girar(pc.get('pata-del'), -b, C['pata-del']);
-    girar(pc.get('pata-tras-lejos'), -b, C['pata-tras-lejos']);
-    const respira = Math.sin(t * 2.4) * 0.025;
-    pc.get('torso')?.setAttribute('transform', `translate(0 ${(-Math.abs(Math.sin(oveja.paso)) * 2 * oveja.patas).toFixed(2)}) translate(0 -60) scale(1 ${(1 + respira).toFixed(3)}) translate(0 60)`);
-    girar(pc.get('cola'), Math.sin(t * (oveja.modo === 'huye' ? 14 : 3)) * 12, C.cola);
-    const pasta = oveja.modo === 'pasta' && !bala;
-    girar(pc.get('cabeza'), bala ? -18 : pasta ? 30 : oveja.modo === 'huye' ? -6 : Math.sin(t * 0.8) * 3, C.cabeza);
-    pc.get('hocico')?.setAttribute(
+    const salto = bala ? -Math.sin(((oveja.balaHasta - t) / 1.2) * Math.PI) * 12 : 0;
+    const bote = -Math.abs(Math.sin(oveja.paso)) * 2.4 * oveja.patas;
+    gCordero.setAttribute(
       'transform',
-      pasta || bala ? `translate(64 -114) scale(1 ${(1 + Math.abs(Math.sin(t * (bala ? 20 : 11))) * (bala ? 0.3 : 0.1)).toFixed(3)}) translate(-64 114)` : '',
+      `translate(${o.x.toFixed(1)} ${(o.y + salto + bote).toFixed(1)}) scale(${(oveja.mira * s).toFixed(4)} ${s.toFixed(4)}) translate(${-AC.piso[0]} ${-AC.piso[1]})`,
     );
-    pupilas(pc, lobo.x - o.x, lobo.y - o.y, oveja.mira, 2.2);
-    if (t > oveja.parpadeo + 0.16) oveja.parpadeo = t + 2 + Math.random() * 4;
-    const cierra = t > oveja.parpadeo && t < oveja.parpadeo + 0.16 ? 1 : 0;
+    const b = Math.sin(oveja.paso) * 9 * oveja.patas;
+    girar(pc.get('pata-tras'), b, AC['pata-tras']);
+    girar(pc.get('pata-del'), -b, AC['pata-del']);
+    const respiraC = Math.sin(t * 2.2) * 0.012;
+    pc.get('cuerpo')?.setAttribute('transform', `translate(${AC.piso[0]} 700) scale(1 ${(1 + respiraC).toFixed(4)}) translate(${-AC.piso[0]} -700)`);
+    const pasta = oveja.modo === 'pasta' && !bala;
+    girar(pc.get('cabeza'), bala ? -8 : pasta ? 6 + Math.sin(t * 3) * 1.5 : Math.sin(t * 0.8) * 2.5, AC.cabeza);
+    if (t > oveja.parpadeo + 0.17) oveja.parpadeo = t + 2 + Math.random() * 4;
+    const cierra = t > oveja.parpadeo && t < oveja.parpadeo + 0.17 ? 1 : 0;
     parpado(pc.get('parpado-1'), cierra);
     parpado(pc.get('parpado-2'), cierra);
 
-    // La soga: del palo al nudo del collar. Tensa cuando el cordero está en la punta.
-    const nx = o.x + NUDO_CORDERO[0] * oveja.mira * oveja.s;
-    const ny = o.y + salta * oveja.s + NUDO_CORDERO[1] * oveja.s;
+    // La soga: del palo al cogote. Tensa cuando el cordero está en la punta.
+    const [nx0, ny0] = AC.nudo;
+    const nx = o.x + (nx0 - AC.piso[0]) * oveja.mira * s;
+    const ny = o.y + salto + bote + (ny0 - AC.piso[1]) * s;
     const ax = PALO.x;
-    const ay = PALO.y - 40;
+    const ay = PALO.y - 46;
     const tension = Math.min(1, Math.hypot(oveja.u, oveja.v) / (SOGA - 4));
-    const comba = (1 - tension) * 26 + 2;
+    const comba = (1 - tension) * 24 + 2;
     soga.setAttribute('d', `M${ax} ${ay} Q${((ax + nx) / 2).toFixed(1)} ${((ay + ny) / 2 + comba).toFixed(1)} ${nx.toFixed(1)} ${ny.toFixed(1)}`);
     soga.classList.toggle('soga--tensa', tension > 0.97);
-
-    // Quién va adelante: el que está más abajo en la pantalla.
-    const primero = lobo.y > o.y ? 'lobo' : 'cordero';
-    if (primero !== adelante) {
-      adelante = primero;
-      actores.append(primero === 'lobo' ? gLobo : gCordero);
-    }
-    void dt;
   }
 
   gLobo.addEventListener('click', () => tocar('el-lobo-suelto'));
@@ -563,17 +548,22 @@ function recintoDelMonte(escena: HTMLElement, svg: SVGSVGElement): Recinto {
     });
   }
 
-  moverLobo(0, 0);
-  pintar(0, 0);
+  // Con movimiento reducido el lobo queda asomado y quieto, y el cordero en su lugar.
+  if (quieto()) {
+    lobo.alzado = 1;
+    lobo.modo = 'mira';
+    lobo.x = 560;
+  }
+  pintar(0);
 
   return {
     escena,
     svg,
     mover: (t, dt) => {
       deMapa.mover(t, dt);
-      moverLobo(t, dt);
+      moverLobo(t);
       moverOveja(t, dt);
-      pintar(t, dt);
+      pintar(t);
     },
     reaccionar,
   };
