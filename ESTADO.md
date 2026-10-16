@@ -7,6 +7,40 @@
 
 **Última actualización:** 2026-10-15
 
+> ## 🎤 LOS RECITALES EN PANTALLA Y "ARMÁ TU RECITAL" (2026-10-15) — `D-72`, ciclo 21
+>
+> **Rama `ciclo-21/recitales`, sobre `main` en `afbe3ff`. Sin integrar.** Pedido del usuario: *"Hace la idea
+> 15, hace al mismo tiempo el juego de CREAR tu propio recital. Esta muy bueno aprovechar los recortes de
+> temas para cuando aparece en pantalla mostrarlo."*
+>
+> - **"En vivo"** (`/redondopedia/en-vivo/`, `IDEA-15`): **27 listas enteras**, por año y plegadas: las dos de
+>   MusicBrainz (Concordia, diciembre de 1995) y 25 de Discogs (casetes piratas de 1987 a 2000, `INV-425`),
+>   estas con el sello "SIN REVISAR" que pidió el usuario. Cada una con su rótulo de fuente y licencia y los
+>   bises que marca la fuente; lo que más aparece en las 256 listas de setlist.fm, con su rótulo; y el
+>   índice de 40 noches con el enlace a cada lista. Cada tema con recorte suena al tocarlo, y cada lista
+>   entera suena de corrido, diez segundos por tema. Puerta aparte arriba de la portada de la Redondopedia.
+> - **"Armá tu recital"** (`/juegos/arma-tu-recital/`, A10, viste *Oktubre*, `IDEA-16`): **una expresión de
+>   deseo, hoy** (enmienda de `D-72`). Elegís un estadio o un teatro de todo el país
+>   (`lugares-recital.json`), un descampado en la localidad que escribas, o escribís el lugar; armás la
+>   lista con los 105 —con buscador y la tira de tapas, en orden, con hasta cuatro bises— y cada tema
+>   suena al sumarlo, con el "SUENA" siempre a la vista en el pie. Al cerrar, la noche suena entera marcando el renglón. Dice
+>   cuánto dura con las duraciones de los discos. Sin puntaje (`BR-22`). Se comparte como dirección y como
+>   hoja (la lámina de "Ponelos en fila", con la tinta de *Oktubre* y un tema por renglón), y se baja.
+> - **Lo que tocó de lo existente:** la quinta forma de link en `desafio.ts` (fuera de la unión), dos campos
+>   opcionales en la lámina, el permiso de t8 para que solo "En vivo" lea las listas enteras (`CTR-19.8`), y
+>   las tildes del texto de `cambios` de `recitales.json`, que ahora se lee.
+> - **Revisión independiente** (`REV-23`, `FIND-153`..`FIND-168`): ninguna alta; cuatro medias (foco al cambiar
+>   de pantalla y al sumar, la lista que seguía sonando, la lista guardada que se borraba) y doce bajas, entre
+>   ellas rótulos de "En vivo" que afirmaban más de lo que dicen los datos. Se arreglaron todas.
+> - **Verde:** `npm test` (1628), `npm run check` y `npm run build`. Jugado en el navegador a 375 px y en
+>   escritorio: armar, mover a los bises, cerrar, escuchar la noche, abrir el link en limpio, la hoja.
+> - **Abierto, sin trabar:** de Discogs, confirmar el volcado CC0 y los "datos restringidos", y las fechas en
+>   disputa; el Fandom no entra hasta confirmar su licencia (`INV-425`, "Sin resolver"). `T-427`, que `investigador` confirme los nombres de los 34 estadios y teatros
+>   y `contenido` lea la lista; `T-421`..`T-425`, los documentos de cada rol, con la propuesta en
+>   `Docs/SUGERENCIAS/HILO-para-todos-d72-los-recitales.md`; `T-426`, probarlo en un iPhone (la noche
+>   sonando de corrido y el pie con la barra de Safari). Lo que más le sumaría a "En vivo": más listas
+>   enteras con licencia abierta (`T-425`, `investigador`).
+
 > ## ❓ PREGUNTAS RICOTERAS SE REHACE ENTERO: SE SIENTE COMO UN FICHÍN (2026-10-15) — `D-71`, ciclo 20
 >
 > **Integrada a `main` el 2026-10-15 con el PR #45 (fusión `e6c3139`)**, desde la rama `ciclo-20/preguntas-ricoteras`
@@ -3989,10 +4023,19 @@ los 105 temas de `RES-20` y con el choque que tiene contra lo ya decidido.
 | `IDEA-11` | Mayor o menor: qué palabra se dice más en el cancionero | original (género conocido, motor mínimo) |
 | `IDEA-13` | Supabase: correcciones, puntajes, jugadores | infraestructura, no es juego |
 | `IDEA-14` | Skayboy y Poligirl: dos personajes, una puerta, cielo e infierno | clon vestido — **relevada a fondo el 2026-09-11**, ver el bloque del principio de este archivo |
+| `IDEA-15` | Los recitales en pantalla | original — **hecha el 2026-10-15** ("En vivo", `D-72`) |
+| `IDEA-16` | Armá tu propio recital, con los recortes | original — **hecha el 2026-10-15** (`D-72`) |
 
 Dos reglas nuevas salieron de ahí: **`BR-15`** (los clones se adoptan vestidos, no se
 escriben — instrucción transversal del usuario) y **`BR-16`** (una idea no entra a un ciclo
 sin promoverse antes a `US-XX`). Prefijo `IDEA-` registrado en `Docs/IDS.md`.
+
+> **Al día el 2026-10-15 (`D-72`).** Lo que de esta tabla ya está en el sitio: `IDEA-08` (Letras y
+> acordes), `IDEA-09` (`US-06`, ¿Qué tipo de ricotero sos?), `IDEA-11` (`US-10`, Más o menos), `IDEA-14`
+> (`US-09`, Skayboy y Poligirl), `IDEA-15` (los recitales en pantalla, "En vivo") e `IDEA-16` ("Armá tu
+> recital"). Las dos ideas sin ID de más arriba también: la voz del Indio es `.claude/rules/voz-ricotera.md`
+> y las tres bandas de después de la separación tienen su artículo en la Redondopedia. Siguen sin empezar
+> `IDEA-01` a `IDEA-07`, `IDEA-10` e `IDEA-13`.
 
 **Nada de esto es alcance de la v1 y nada de esto está empezado.** Tres preguntas quedaron
 abiertas al usuario, listadas al final del PRD: qué es "el gordo Pier" (no figura en los
