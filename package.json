@@ -19,7 +19,8 @@
     "ingerir-fragmentos": "node --experimental-strip-types scripts/ingerir-fragmentos.mjs",
     "generar-por-la-letra": "node --experimental-strip-types scripts/generar-por-la-letra.mjs",
     "medir-mas-o-menos": "node --experimental-strip-types scripts/medir-mas-o-menos.mjs",
-    "generar-dos-ejes": "node --experimental-strip-types scripts/generar-dos-ejes.mjs"
+    "generar-dos-ejes": "node --experimental-strip-types scripts/generar-dos-ejes.mjs",
+    "imprimir-bestiario": "node --experimental-strip-types scripts/imprimir-bestiario.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "2.0.1",

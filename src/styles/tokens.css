@@ -122,6 +122,36 @@
   --disco-momo-sampler-tinta: #cedae2; /* plata */
   --disco-momo-sampler-apoyo: #656f70; /* peltre */
 
+  /* ------------------------------------------------------------------
+     El bestiario redondo (D-73): el lobo y el cordero de Rocambole, y sus entornos
+     ------------------------------------------------------------------
+     Muestreados de las tapas del disco doble de 1993 (los recortes de public/arte/ y los
+     frentes de Docs/INVESTIGACION/TapasDiscos/), con la mediana de cada mancha: el lobo
+     en el crudo, el ocre y el sepia del aerografo de *Lobo suelto*; el cordero en el azul
+     pizarra de su lana, la mascara marron y los ojos verdes de *Cordero atado*, sobre el
+     naranja de esa tapa. La lana clara se levanto un escalon para que la escama se lea en
+     un telefono. Ninguno escribe texto: no entran al test AA. Faltan en el lienzo (T-435). */
+  --bestia-lobo-claro: #e4e2d4;
+  --bestia-lobo-crema: #c3b68d;
+  --bestia-lobo-ocre: #9d8550;
+  --bestia-lobo-sombra: #674e2c;
+  --bestia-lobo-oscuro: #2b2118;
+  --bestia-lobo-gris: #a9a59c; /* las almohadillas del hocico, gris azulado */
+  --bestia-lobo-boca: #5a2a24; /* el adentro de la boca, cuando aulla */
+  --bestia-ojo-blanco: #d8cbcb; /* el blanco de los ojos humanos de las dos tapas */
+  --bestia-cordero-lana: #293d54;
+  --bestia-cordero-lana-clara: #4a6890;
+  --bestia-cordero-lana-oscura: #1c2a3a;
+  --bestia-cordero-mascara: #342b2b;
+  --bestia-cordero-mascara-clara: #6b5446;
+  --bestia-cordero-ojo: #5d8f74;
+  --bestia-cordero-pezunia: #d58e62;
+  --entorno-pastura: #d37c4a;
+  --entorno-pastura-honda: #bd6141;
+  --entorno-monte-claro: #d9c6be;
+  --entorno-monte-medio: #a8968b;
+  --entorno-monte-hondo: #524c47;
+
   /* Collage de cassette (UX-04: el collage es tecnica fichada de Rocambole, RES-06).
      Papel de etiqueta: sobre el escribe la tinta del fondo (--fondo), par testeado.
      El borde del papel no se usa como texto — como los -apoyo, no entra al test AA. */
