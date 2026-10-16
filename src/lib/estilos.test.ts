@@ -794,7 +794,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'bestiario.ts': {
     juego: 'D-73, el bestiario redondo',
     fuente: leer('src/scripts/bestiario.ts'),
-    estados: ['.bestia--elegida', '.bestia--anotada', '.bestiario-item--anotada', '.bestiario-escuchar--sonando', '.soga--tensa'],
+    estados: ['.bestia--elegida', '.bestia--anotada', '.bestiario-item--anotada', '.bestiario-escuchar--sonando', '.soga--tensa', '.bocadillo--abajo'],
     hoja: 'src/styles/sitio.css',
   },
 

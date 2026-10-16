@@ -22,6 +22,9 @@ export const BESTIARIO = {
   libreta: (anotados: number, total: number): string => `Anotaste ${anotados} de ${total}.`,
   libretaVacia: (total: number): string => `Son ${total}. Cada uno que abrís queda anotado en este teléfono.`,
   aca: 'Acá viven',
+  /** Abajo de una escena más ancha que la pantalla; se va cuando la gente la corre. */
+  deslizar: 'Deslizá de costado para ver el resto.',
+  volverAlPlano: 'Volvé al plano',
   cerrar: 'Cerrá la ficha',
   anotada: 'Anotado',
   clases: {
@@ -44,7 +47,7 @@ export const BESTIARIO = {
   ficha: 'Ficha',
   indice: {
     titulo: 'Todos, región por región',
-    bajada: 'La misma lista, para leer de corrido. Cada ficha se abre al tocarla.',
+    bajada: 'La misma lista, en el orden del recorrido. Cada ficha se abre al tocarla.',
   },
   /** La puerta en la portada de la Redondopedia. */
   enLaPortada: {

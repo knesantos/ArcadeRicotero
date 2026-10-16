@@ -136,28 +136,45 @@ function escuchar(boton: HTMLButtonElement): void {
 let hablando: string | null = null;
 let callarEn = 0;
 
-/** El bicho dice su verso: el bocadillo aparece arriba de él, adentro de su escena. */
+/**
+ * El bicho dice su verso: el bocadillo aparece arriba de él, adentro de su escena. Las escenas
+ * de noche se corren de costado, así que todo se mide contra lo que se ve, no contra la escena
+ * entera: si el bicho quedó afuera (se llegó con el teclado), la escena lo trae primero.
+ */
 function hablar(id: string, escena: HTMLElement, svg: SVGSVGElement, x: number, y: number): void {
   const b = bestias.get(id);
-  const m = svg.getScreenCTM();
-  if (!b || !m) return;
+  if (!b || !svg.getScreenCTM()) return;
   if (hablando === id && !bocadillo.hidden) {
     abrir(id);
     return;
   }
-  const p = new DOMPoint(x, y).matrixTransform(m);
-  const caja = escena.getBoundingClientRect();
+  let p = new DOMPoint(x, y).matrixTransform(svg.getScreenCTM()!);
+  let caja = escena.getBoundingClientRect();
+  if (p.x < caja.left + 40 || p.x > caja.right - 40) {
+    escena.scrollLeft += p.x - (caja.left + caja.width / 2);
+    p = new DOMPoint(x, y).matrixTransform(svg.getScreenCTM()!);
+    caja = escena.getBoundingClientRect();
+  }
   escena.append(bocadillo);
   bocadilloVerso.textContent = `«${b.dice}»`;
   bocadilloFicha.dataset.ir = id;
   bocadillo.hidden = false;
   const ancho = bocadillo.offsetWidth;
-  const izquierda = Math.min(Math.max(p.x - caja.left - ancho / 2, 6), caja.width - ancho - 6);
-  const arriba = Math.max(p.y - caja.top - bocadillo.offsetHeight - 14, 6);
+  const alto = bocadillo.offsetHeight;
+  // En coordenadas del contenido de la escena: lo corrido de costado se suma, el borde se resta.
+  const px = p.x - caja.left - escena.clientLeft + escena.scrollLeft;
+  const py = p.y - caja.top - escena.clientTop;
+  const desde = escena.scrollLeft + 6;
+  const hasta = escena.scrollLeft + escena.clientWidth - ancho - 6;
+  const izquierda = Math.min(Math.max(px - ancho / 2, desde), Math.max(hasta, desde));
+  // Si arriba no entra, va abajo del bicho, con la punta para arriba.
+  const abajo = py - alto - 14 < 6;
+  bocadillo.classList.toggle('bocadillo--abajo', abajo);
   bocadillo.style.left = `${izquierda}px`;
-  bocadillo.style.top = `${arriba}px`;
+  bocadillo.style.top = `${abajo ? Math.min(py + 52, escena.clientHeight - alto - 6) : py - alto - 14}px`;
+  bocadillo.style.setProperty('--punta', `${Math.min(Math.max(px - izquierda, 16), ancho - 16)}px`);
   hablando = id;
-  callarEn = performance.now() + 5000;
+  callarEn = performance.now() + 8000;
   for (const g of document.querySelectorAll('.bestia--elegida')) g.classList.remove('bestia--elegida');
   escena.querySelector(`.bestia[data-id="${id}"]`)?.classList.add('bestia--elegida');
 }
@@ -766,8 +783,24 @@ for (const escena of document.querySelectorAll<HTMLElement>('.recinto-escena')) 
     'la-ruta': recintoDeRuta,
   };
   const r = (controlador[id ?? ''] ?? recintoDeMapa)(escena, svg);
-  // Las escenas de noche son más anchas que un teléfono: arrancan centradas.
-  if (escena.scrollWidth > escena.clientWidth) escena.scrollLeft = (escena.scrollWidth - escena.clientWidth) / 2;
+  // Las escenas de noche son más anchas que un teléfono: arrancan mirando a su protagonista, y
+  // un rótulo avisa que se corren de costado hasta que la gente lo hace.
+  if (escena.scrollWidth > escena.clientWidth) {
+    const foco = Number(escena.dataset.foco ?? NaN);
+    const escala = svg.clientWidth / svg.viewBox.baseVal.width;
+    escena.scrollLeft = Number.isFinite(foco) ? foco * escala - escena.clientWidth / 2 : (escena.scrollWidth - escena.clientWidth) / 2;
+    const pista = escena.nextElementSibling;
+    if (pista instanceof HTMLElement && pista.classList.contains('recinto-deslizar')) {
+      pista.hidden = false;
+      const desde = escena.scrollLeft;
+      const mirar = (): void => {
+        if (Math.abs(escena.scrollLeft - desde) < 24) return;
+        pista.hidden = true;
+        escena.removeEventListener('scroll', mirar);
+      };
+      escena.addEventListener('scroll', mirar, { passive: true });
+    }
+  }
   recintos.set(escena, r);
   observador.observe(escena);
   if (quieto()) r.mover(0, 0);

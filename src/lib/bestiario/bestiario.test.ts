@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { dibujar, dibujarGrupo } from './figuras.ts';
 import { adentro, camara, contorno, dibujarRecinto, dibujarRuta, dibujarSuelo, punto, simbolos, type Bestiario } from './mapa.ts';
 import { existsSync } from 'node:fs';
-import { lobo, cordero } from './titeres.ts';
+import { lobo, cordero, retrato } from './titeres.ts';
 import { escenaMonte, VECINOS_DEL_MONTE } from './escena-monte.ts';
 import { escenaBaldio, escenaInfierno, escenaTemplo, VECINOS_DEL_BALDIO, VECINOS_DEL_INFIERNO, VECINOS_DEL_TEMPLO } from './escenas.ts';
 import { ACECHO, PASTURA, ESCENA, PALO } from './rig.ts';
@@ -242,4 +242,16 @@ test('cada recinto de noche tiene a todos los suyos: el protagonista de tapa y l
     const imagenes = [...escena.matchAll(/href="\/bestiario\/([a-z0-9-]+-real-[a-z0-9-]+)\.webp"/g)];
     assert.ok(imagenes.length > 0, `${region}: el protagonista no es un recorte de la tapa`);
   }
+});
+
+test('los cinco de tapa tienen retrato de ficha, encuadrado en sus piezas; los demás siguen con su figura', () => {
+  for (const id of ['el-lobo-suelto', 'el-cordero-atado', 'ese-perro-que-sigue-alli', 'luzbelito', 'momo']) {
+    assert.ok(datos.bestias.some((b) => b.id === id), `${id} no está en el bestiario`);
+    const r = retrato(id);
+    assert.ok(r, `${id} no tiene retrato`);
+    const [, , ancho, alto] = r.caja.split(' ').map(Number);
+    assert.ok(ancho! > 50 && alto! > 50 && !/NaN/.test(r.caja), `${id}: caja rota (${r.caja})`);
+    assert.ok(r.svg.includes('-real-'), `${id}: el retrato no es la tapa`);
+  }
+  assert.equal(retrato('la-mosca'), null);
 });

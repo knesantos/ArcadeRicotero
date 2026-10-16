@@ -7,6 +7,14 @@
 
 **Última actualización:** 2026-10-16
 
+> ## 🔧 LA PULIDA DEL BESTIARIO (2026-10-16) — quinta enmienda de `D-73`, ciclo 22
+>
+> **En la rama `ciclo-22/bestiario`, sin integrar.** Recorrido entero a 375 y 1280 px. El bocadillo ya no se va
+> de la pantalla en las escenas anchas; cada escena de noche arranca mirando a su protagonista y avisa que se
+> desliza; en la compu entran enteras; las fichas de los cinco de tapa muestran su recorte; el índice sigue el
+> orden del recorrido y cada recinto tiene "Volvé al plano". **Verde:** `npm test` (1647), `npm run check`,
+> `npm run build`. Pendiente igual que antes: `T-437`/`T-439` (teléfono real, carga diferida de imágenes).
+
 > ## 🕯️ TRES MÁS DE TAPA: EL PERRO, LUZBELITO Y MOMO (2026-10-16) — cuarta enmienda de `D-73`, ciclo 22
 >
 > **En la rama `ciclo-22/bestiario`, sin integrar.** Pedido del usuario: *"Elegí otras 3 bestias y continuá

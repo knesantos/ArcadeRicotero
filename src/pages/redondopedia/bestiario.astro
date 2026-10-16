@@ -38,7 +38,9 @@ import {
   type Bestia,
 } from '../../lib/bestiario/mapa.ts';
 import { ESCENA, escenaMonte } from '../../lib/bestiario/escena-monte.ts';
-import { escenaBaldio, escenaInfierno, escenaTemplo } from '../../lib/bestiario/escenas.ts';
+import { escenaBaldio, escenaInfierno, escenaTemplo, LUZBELITO, MOMO } from '../../lib/bestiario/escenas.ts';
+import { retrato } from '../../lib/bestiario/titeres.ts';
+import { PALO } from '../../lib/bestiario/rig.ts';
 import { tituloDelDisco } from '../../lib/letra/discos.ts';
 import { indexarFragmentos, type Manifiesto } from '../../lib/tema/catalogo.ts';
 import { leerTemas, slugDeTitulo } from '../../lib/letra/temas.ts';
@@ -87,16 +89,18 @@ const recintos = RECORRIDO.map((id) => {
       canta: monte.canta,
       tinta: tintaDe(monte.disco),
       caja: `0 0 ${ESCENA.ancho} ${ESCENA.alto}`,
+      foco: PALO.x,
       svg: escenaMonte(nombres),
       bestias: bestias.filter((b) => b.region === 'el-monte' || b.region === 'la-pastura'),
     };
   }
   const region = regionDe.get(id)!;
   // Los recintos con protagonista de tapa (D-73): de noche, con su escena por capas.
-  const deNoche: Record<string, (n: ReadonlyMap<string, string>) => string> = {
-    'los-techos': escenaBaldio,
-    'el-infierno': escenaInfierno,
-    'el-templo': escenaTemplo,
+  // `foco`: dónde arranca mirando la escena cuando no entra entera (el perro entra por el borde).
+  const deNoche: Record<string, { escena: (n: ReadonlyMap<string, string>) => string; foco: number }> = {
+    'los-techos': { escena: escenaBaldio, foco: 260 },
+    'el-infierno': { escena: escenaInfierno, foco: LUZBELITO.x },
+    'el-templo': { escena: escenaTemplo, foco: MOMO.argolla.x },
   };
   if (deNoche[id]) {
     return {
@@ -105,7 +109,8 @@ const recintos = RECORRIDO.map((id) => {
       canta: region.canta,
       tinta: tintaDe(region.disco),
       caja: `0 0 ${ESCENA.ancho} ${ESCENA.alto}`,
-      svg: deNoche[id]!(nombres),
+      foco: deNoche[id]!.foco,
+      svg: deNoche[id]!.escena(nombres),
       bestias: bestias.filter((b) => b.region === id),
     };
   }
@@ -132,8 +137,8 @@ const recintos = RECORRIDO.map((id) => {
   };
 });
 
-/** Las regiones en el orden del índice: del centro para afuera, y la ruta al final. */
-const ordenIndice = [...regiones];
+/** Las regiones en el orden del índice: el del recorrido, así la lista y el paseo no se contradicen. */
+const ordenIndice = RECORRIDO.flatMap((id) => (id === 'monte-pastura' ? ['el-monte', 'la-pastura'] : [id])).map((id) => regionDe.get(id)!);
 
 /** Lo que la isla necesita y no puede leer del HTML: el total y lo que dice cada bicho. */
 const paraLaIsla = {
@@ -170,7 +175,7 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
 
   {/* El plano del recorrido: el mundo redondo entero. Es la imagen; la navegación va por los
       rótulos, que son enlaces y bajan hasta su recinto. */}
-  <section class="bestiario" aria-label={BESTIARIO.plano}>
+  <section class="bestiario" id="plano" aria-label={BESTIARIO.plano}>
     <div class="bestiario-marco" id="marco" data-vista="lejos">
       <svg id="mapa" class="bestiario-svg" viewBox={`0 0 ${LADO} ${LADO}`} aria-hidden="true">
         <defs set:html={simbolos(bestias)} />
@@ -225,9 +230,14 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
             <h2 class="recinto-nombre" id={`cartel-${rc.id}`}>{rc.nombre}</h2>
             <p class="bestiario-canta">{rc.canta}</p>
           </header>
-          <div class:list={['recinto-escena', `recinto-escena--${rc.id}`, { 'recinto-escena--noche': rc.caja === `0 0 ${ESCENA.ancho} ${ESCENA.alto}` }]} data-recinto={rc.id}>
+          <div
+            class:list={['recinto-escena', `recinto-escena--${rc.id}`, { 'recinto-escena--noche': 'foco' in rc }]}
+            data-recinto={rc.id}
+            data-foco={'foco' in rc ? rc.foco : undefined}
+          >
             <svg class="bestiario-svg recinto-svg" viewBox={rc.caja} set:html={rc.svg} />
           </div>
+          {'foco' in rc && <p class="recinto-deslizar" hidden>{BESTIARIO.deslizar}</p>}
           <p class="bestiario-sub">{BESTIARIO.aca}</p>
           <ul class="bestiario-chips">
             {rc.bestias.map((b) => (
@@ -236,6 +246,7 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
               </li>
             ))}
           </ul>
+          <a class="recinto-volver" href="#plano">{BESTIARIO.volverAlPlano}</a>
         </section>
       ))
     }
@@ -269,18 +280,26 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
                 <li id={`b-${b.id}`} class="bestiario-item" data-id={b.id}>
                   <details class="bestiario-ficha" data-bestia={b.id}>
                     <summary>
-                      <svg class="bestiario-mini" viewBox="-10 -15 120 115" aria-hidden="true" style={`--tr: ${tintaDe(r.disco)}`}>
-                        <use href={`#fig-${b.id}`} />
-                      </svg>
+                      {retrato(b.id) ? (
+                        <svg class="bestiario-mini bestiario-mini--tapa" viewBox={retrato(b.id)!.caja} aria-hidden="true" set:html={retrato(b.id)!.svg} />
+                      ) : (
+                        <svg class="bestiario-mini" viewBox="-10 -15 120 115" aria-hidden="true" style={`--tr: ${tintaDe(r.disco)}`}>
+                          <use href={`#fig-${b.id}`} />
+                        </svg>
+                      )}
                       <span class="bestiario-nombre">{b.nombre}</span>
                       <span class="bestiario-anotada-sello">{BESTIARIO.anotada}</span>
                     </summary>
                     <div class="bestiario-cuerpo" style={`--tr: ${tintaDe(r.disco)}`}>
                       <p class="bestiario-sello">{BESTIARIO.clases[b.clase]}</p>
                       <h4 class="bestiario-ficha-titulo" data-titulo>{b.nombre}</h4>
-                      <svg class="bestiario-figura" viewBox="-10 -15 120 115" aria-hidden="true">
-                        <use href={`#fig-${b.id}`} />
-                      </svg>
+                      {retrato(b.id) ? (
+                        <svg class="bestiario-figura bestiario-figura--tapa" viewBox={retrato(b.id)!.caja} aria-hidden="true" set:html={retrato(b.id)!.svg} />
+                      ) : (
+                        <svg class="bestiario-figura" viewBox="-10 -15 120 115" aria-hidden="true">
+                          <use href={`#fig-${b.id}`} />
+                        </svg>
+                      )}
 
                       {b.tema ? (
                         <>

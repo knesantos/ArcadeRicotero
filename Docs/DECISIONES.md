@@ -4757,3 +4757,19 @@ no inventarlos.
   ya la pide); si no, inventada en la estética de *La mosca y la sopa*.
 - `T-443`: los ocho recintos que quedan con figuras del mapa: el árbol, Cybersiberia, los astilleros,
   el bajo, la prisión, la mesa, el galpón y la ruta.
+
+### Enmienda del 2026-10-16 (5): la pulida de UI/UX
+
+Pedido del usuario: *"Hacele una pulida entera de UI/UX al bestiario"*. Se recorrió entero a 375 px y
+a 1280 px, y se corrigió lo que se vio:
+
+- **El bocadillo se iba de la pantalla** en las escenas de noche: se medía contra la escena entera y
+  no contra lo que se ve después de correrla. Ahora se mide contra lo visible, la punta sigue al bicho
+  aunque el bocadillo se corra, va abajo cuando arriba no entra, y dura ocho segundos en vez de cinco.
+- **El perro arrancaba fuera de cuadro** en el teléfono: cada escena de noche arranca mirando a su
+  protagonista (`data-foco`), y un rótulo seco avisa que se desliza de costado hasta que la gente lo hace.
+- **En la compu las escenas de noche salen del renglón** (hasta 60rem) y entran enteras, sin correrse.
+- **Los cinco de tapa se retratan con su recorte** en la ficha y en el índice, no con la figura del
+  plano: el que tocó al perro en la escena ve al perro en la ficha.
+- **El índice va en el orden del recorrido**, y cada recinto termina con "Volvé al plano".
+- **Los rótulos del plano llegan a 44 px de toque**, y la barra de las escenas anchas va en la tinta.

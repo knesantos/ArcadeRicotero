@@ -61,3 +61,38 @@ export function cordero(): string {
     `</g>`
   );
 }
+
+/**
+ * El retrato de ficha de los que tienen tapa (`D-73`, pulida): las mismas piezas del títere,
+ * quietas y encuadradas en la caja que las junta. Así la ficha muestra al bicho que se tocó en
+ * la escena, y no la figura del plano. `null` para los demás, que siguen con su figura.
+ */
+const PIEZAS_DEL_RETRATO: Readonly<Record<string, { piezas: readonly string[]; cuerpo: () => string }>> = {
+  'el-lobo-suelto': { piezas: ['lobo-real-pecho', 'lobo-real-cabeza'], cuerpo: lobo },
+  'el-cordero-atado': {
+    piezas: ['cordero-real-pata-tras', 'cordero-real-pata-del', 'cordero-real-cuerpo', 'cordero-real-cabeza'],
+    cuerpo: () =>
+      ['cordero-real-pata-tras', 'cordero-real-pata-del', 'cordero-lomo', 'cordero-real-cuerpo', 'cordero-real-cabeza'].map(imagen).join(''),
+  },
+  'ese-perro-que-sigue-alli': {
+    piezas: ['perro-real-boca', 'perro-real-mandibula', 'perro-real-cabeza'],
+    cuerpo: () => ['perro-real-boca', 'perro-real-mandibula', 'perro-real-cabeza'].map(imagen).join(''),
+  },
+  luzbelito: {
+    piezas: ['luzbelito-real-busto', 'luzbelito-real-llama'],
+    cuerpo: () => imagen('luzbelito-real-busto') + imagen('luzbelito-real-llama'),
+  },
+  momo: { piezas: ['momo-real-medallon'], cuerpo: () => imagen('momo-real-medallon') },
+};
+
+export function retrato(id: string): { caja: string; svg: string } | null {
+  const r = PIEZAS_DEL_RETRATO[id];
+  if (!r) return null;
+  const cs = r.piezas.map((n) => cajas.get(n)!);
+  const x0 = Math.min(...cs.map((c) => c[0]));
+  const y0 = Math.min(...cs.map((c) => c[1]));
+  const x1 = Math.max(...cs.map((c) => c[0] + c[2]));
+  const y1 = Math.max(...cs.map((c) => c[1] + c[3]));
+  const aire = Math.max(x1 - x0, y1 - y0) * 0.04;
+  return { caja: `${f(x0 - aire)} ${f(y0 - aire)} ${f(x1 - x0 + aire * 2)} ${f(y1 - y0 + aire * 2)}`, svg: r.cuerpo() };
+}
