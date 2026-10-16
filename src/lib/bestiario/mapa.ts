@@ -454,3 +454,51 @@ export function dibujarSuelo(datos: Bestiario): string {
   s += `</g>`;
   return conPrefijo(s);
 }
+
+/* ------------------------------------------------------------------
+   Los recintos del recorrido (D-73, segunda vuelta)
+   ------------------------------------------------------------------ */
+
+/** Una bestia como pieza tocable: el aro de toque, la figura y la marca de anotada. */
+export function piezaDeBestia(b: Bestia, tinta: string, x?: number, y?: number): string {
+  const p = x === undefined || y === undefined ? punto(b.pos) : { x, y };
+  const t = b.tam * AUMENTO;
+  return (
+    `<g class="bestia" data-id="${b.id}" data-region="${b.region}" data-x="${f(p.x)}" data-y="${f(p.y)}" role="button" tabindex="0" style="--tr: ${tinta}">` +
+    `<circle class="toque" cx="${f(p.x)}" cy="${f(p.y)}" r="${f(Math.max(b.tam * 0.62, 20))}"/>` +
+    `<g class="cuerpo"><use href="#fig-${b.id}" x="${f(p.x - t * 0.6)}" y="${f(p.y - t * 0.65)}" width="${f(t * 1.2)}" height="${f(t * 1.15)}"/></g>` +
+    `<g class="marca-anotada" transform="translate(${f(p.x + b.tam * 0.45)} ${f(p.y - b.tam * 0.55)})"><circle r="7" class="b-pp b-borde"/><path d="M-3.5 0 l2.5 3 l4.5 -6" class="b-tz" stroke-width="2.2"/></g>` +
+    `</g>`
+  );
+}
+
+/**
+ * Un recinto con el arte del mapa: su región sola, con el paisaje y sus bestias, en la caja
+ * de su cámara. Lo de afuera es el sendero.
+ */
+export function dibujarRecinto(region: Region, datos: Bestiario): { caja: Caja; svg: string } {
+  const caja = camara(region, datos.bestias);
+  const tinta = tintaDe(region.disco);
+  const deAca = datos.bestias.filter((b) => b.region === region.id);
+  let s = `<rect x="${f(caja.x)}" y="${f(caja.y)}" width="${f(caja.lado)}" height="${f(caja.lado)}" class="pp sendero"/>`;
+  s += `<g class="region" style="--tr: ${tinta}"><path d="${contorno(region.forma)}" class="pp"/>`;
+  s += `<path d="${contorno(region.forma)}" class="region-suelo"/>`;
+  s += paisaje(region, datos.regiones, deAca);
+  s += `<path d="${contorno(region.forma)}" class="region-borde region-borde--cerco"/></g>`;
+  return { caja, svg: conPrefijo(s) + deAca.map((b) => piezaDeBestia(b, tinta)).join('') };
+}
+
+/** La ruta como carretera recta: los fierros pasan de un lado al otro. */
+export const RUTA = { ancho: 400, alto: 220 } as const;
+
+export function dibujarRuta(datos: Bestiario): string {
+  const deAca = datos.bestias.filter((b) => b.region === 'la-ruta');
+  let s = `<rect width="${RUTA.ancho}" height="${RUTA.alto}" class="pp"/>`;
+  s += `<rect y="70" width="${RUTA.ancho}" height="110" class="ruta-asfalto"/>`;
+  s += `<path d="M0 125 L${RUTA.ancho} 125" class="tz-pp" stroke-width="3" stroke-dasharray="18 14"/>`;
+  s += `<path d="M0 70 L${RUTA.ancho} 70 M0 180 L${RUTA.ancho} 180" class="tz" stroke-width="3"/>`;
+  for (let x = 20; x < RUTA.ancho; x += 70) s += `<rect x="${x}" y="186" width="6" height="16" class="tn"/>`;
+  const paso = RUTA.ancho / deAca.length;
+  const piezas = deAca.map((b, i) => piezaDeBestia(b, 'var(--papel-tenue)', paso * i + paso / 2, i % 2 ? 150 : 108)).join('');
+  return conPrefijo(s) + piezas;
+}

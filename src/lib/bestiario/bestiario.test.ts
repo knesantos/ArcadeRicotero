@@ -2,7 +2,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dibujar, dibujarGrupo } from './figuras.ts';
-import { adentro, camara, contorno, dibujarSuelo, punto, simbolos, type Bestiario } from './mapa.ts';
+import { adentro, camara, contorno, dibujarRecinto, dibujarRuta, dibujarSuelo, punto, simbolos, type Bestiario } from './mapa.ts';
+import { existsSync } from 'node:fs';
+import { lobo, cordero } from './titeres.ts';
+import { escenaMonte, VECINOS_DEL_MONTE } from './escena-monte.ts';
+import { PIVOTES, PASTURA, RONDA_LOBO, ESCENA, PALO } from './rig.ts';
+import { PIEZAS } from './arte.ts';
 
 /**
  * El bestiario redondo (`D-73`), probado contra lo único que no puede fallar.
@@ -136,7 +141,63 @@ test('cada figura se dibuja, y el mapa entero sale sin un número roto', () => {
 });
 
 test('ni un hex en el bestiario: los colores son clases que pinta sitio.css', () => {
-  const fuentes = ['src/lib/bestiario/figuras.ts', 'src/lib/bestiario/mapa.ts', 'src/scripts/bestiario.ts', 'src/data/bestiario.json'];
+  const fuentes = ['src/lib/bestiario/figuras.ts', 'src/lib/bestiario/mapa.ts', 'src/lib/bestiario/titeres.ts', 'src/lib/bestiario/escena-monte.ts', 'src/scripts/bestiario.ts', 'src/data/bestiario.json'];
   const malos = fuentes.filter((f) => /#[0-9a-fA-F]{3,8}\b(?![-\w])/.test(readFileSync(f, 'utf-8').replace(/href="#fig-|#fig-|`#\$\{|'#b-|#b-|#region-/g, '')));
   assert.deepEqual(malos, []);
+});
+
+/*
+ * La segunda vuelta: el zoológico, con el lobo y el cordero de Rocambole como títeres.
+ */
+
+test('cada pieza que la isla mueve existe en su títere, y cada títere tiene sus párpados y pupilas', () => {
+  for (const [nombre, marcado] of [['lobo', lobo()], ['cordero', cordero()]] as const) {
+    for (const parte of Object.keys(PIVOTES[nombre])) {
+      assert.ok(marcado.includes(`data-parte="${parte}"`), `al ${nombre} le falta la pieza ${parte}`);
+    }
+    for (const parte of ['torso', 'pupila-1', 'pupila-2', 'parpado-1', 'parpado-2']) {
+      assert.ok(marcado.includes(`data-parte="${parte}"`), `al ${nombre} le falta ${parte}`);
+    }
+    // Un párpado sin pivote baja desde la esquina del dibujo, no desde el ojo.
+    for (const m of marcado.matchAll(/data-parte="parpado-\d"[^>]*>/g)) assert.match(m[0], /data-pivote="-?[\d.]+ -?[\d.]+"/);
+  }
+});
+
+test('la escena del monte sale entera, y nadie del monte ni de la pastura queda afuera de su recinto', () => {
+  const escena = escenaMonte(new Map(datos.bestias.map((b) => [b.id, b.nombre])));
+  assert.ok(!/NaN|undefined|Infinity/.test(escena), 'hay un número roto en la escena del monte');
+  const titeres = ['el-lobo-suelto', 'el-cordero-atado'];
+  const delRecinto = datos.bestias.filter((b) => b.region === 'el-monte' || b.region === 'la-pastura').map((b) => b.id);
+  const puestos = [...titeres, ...Object.keys(VECINOS_DEL_MONTE)];
+  assert.deepEqual([...delRecinto].sort(), [...puestos].sort());
+  for (const [id, [x, y]] of Object.entries(VECINOS_DEL_MONTE)) {
+    assert.ok(x >= 0 && x <= ESCENA.ancho && y >= 0 && y <= ESCENA.alto, `${id} quedó afuera de la escena`);
+  }
+});
+
+test('el lobo ronda por afuera de la soga y adentro de la escena', () => {
+  // Por afuera del círculo pelado (no se come al cordero) y sin salirse del cuadro (D-73).
+  assert.ok(RONDA_LOBO.rx > 80 && RONDA_LOBO.ry * 1 > 80 * 0.6);
+  assert.ok(PALO.x - RONDA_LOBO.rx > 20 && PALO.x + RONDA_LOBO.rx < ESCENA.ancho - 20, 'el lobo se sale por los costados');
+  // Ronda afuera de la pastura, entre las tiras del monte: acecha desde lo oscuro.
+  assert.ok(RONDA_LOBO.rx > PASTURA.rx && RONDA_LOBO.ry > PASTURA.ry, 'el lobo se metió en la pastura');
+});
+
+test('cada recinto genérico y la ruta salen sin números rotos', () => {
+  for (const r of datos.regiones) {
+    if (r.forma.tipo === 'anillo' || r.id === 'el-monte' || r.id === 'la-pastura') continue;
+    const { svg } = dibujarRecinto(r, datos);
+    assert.ok(!/NaN|undefined|Infinity/.test(svg), `el recinto ${r.id} tiene un número roto`);
+  }
+  assert.ok(!/NaN|undefined|Infinity/.test(dibujarRuta(datos)));
+});
+
+test('cada pieza del aerógrafo está impresa en public/bestiario', () => {
+  // Las imprime `node --experimental-strip-types scripts/imprimir-bestiario.mjs`. Una pieza
+  // que la página pide y no está impresa es un agujero en el monte.
+  const faltan = PIEZAS.filter((p) => !existsSync(`public/bestiario/${p.nombre}.webp`)).map((p) => p.nombre);
+  assert.deepEqual(faltan, []);
+  const piden = [...(lobo() + cordero() + escenaMonte(new Map())).matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]);
+  assert.ok(piden.length > 10);
+  assert.deepEqual(piden.filter((n) => !PIEZAS.some((p) => p.nombre === n)), []);
 });

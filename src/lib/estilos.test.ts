@@ -788,13 +788,13 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
     hoja: 'src/styles/sitio.css',
   },
 
-  // `D-73`: el bestiario redondo, en la Redondopedia (`sitio.css`). Sus estados: la región a
-  // la que se acercó el mapa, la bestia elegida y las ya anotadas (las dos con forma: un aro
-  // punteado y un sello con tilde), la fila del índice anotada y el botón que suena.
+  // `D-73`: el bestiario redondo, en la Redondopedia (`sitio.css`). Sus estados: la bestia que
+  // está hablando y las ya anotadas (las dos con forma: un aro punteado y un sello con tilde),
+  // la fila del índice anotada, el botón que suena y la soga del cordero cuando está tensa.
   'bestiario.ts': {
     juego: 'D-73, el bestiario redondo',
     fuente: leer('src/scripts/bestiario.ts'),
-    estados: ['.region--elegida', '.bestia--elegida', '.bestia--anotada', '.bestiario-item--anotada', '.bestiario-escuchar--sonando'],
+    estados: ['.bestia--elegida', '.bestia--anotada', '.bestiario-item--anotada', '.bestiario-escuchar--sonando', '.soga--tensa'],
     hoja: 'src/styles/sitio.css',
   },
 

@@ -2984,8 +2984,6 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   pointer-events: none;
 }
 
-.bestiario-marco[data-vista='cerca'] .bestiario-rotulos { display: none; }
-
 .rotulo-region {
   position: absolute;
   padding: 0.15em 0.4em;
@@ -2999,6 +2997,7 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   background: var(--papel);
   border: 2px solid var(--fondo);
   border-radius: 3px;
+  text-decoration: none;
   pointer-events: auto;
   cursor: pointer;
   transform: translate(-50%, -50%) rotate(-2deg);
@@ -3019,28 +3018,9 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   outline: 2px solid var(--fondo);
 }
 
-/* La barra de la región: dónde estás, quién vive acá y qué hay al lado. */
-.bestiario-barra {
-  margin-top: var(--espacio-2);
-  padding: var(--espacio-2);
-  border: var(--linea) solid var(--cat-mitologia);
-  border-radius: 3px;
-}
+.bestiario-hoja[hidden],
+.bocadillo[hidden] { display: none; }
 
-.bestiario-barra[hidden],
-.bestiario-hoja[hidden] { display: none; }
-
-.bestiario-aqui { margin: 0; }
-
-.bestiario-aqui strong {
-  display: block;
-  font-family: var(--fuente-rotulada);
-  font-size: 1.3rem;
-  line-height: 1.15;
-  text-transform: uppercase;
-}
-
-.bestiario-aqui-etiqueta,
 .bestiario-sub {
   display: block;
   font-family: var(--fuente-rotulada);
@@ -3050,8 +3030,6 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   color: var(--texto-tenue);
   margin: var(--espacio-2) 0 0.3rem;
 }
-
-.bestiario-aqui-etiqueta { margin-top: 0; }
 
 .bestiario-canta {
   margin: 0.2rem 0 var(--espacio-2);
@@ -3069,7 +3047,6 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 }
 
 .bestiario-chip,
-.bestiario-volver,
 .bestiario-acciones a,
 .bestiario-acciones button {
   display: inline-flex;
@@ -3088,21 +3065,10 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 
 .bestiario-chip:hover,
 .bestiario-chip:focus-visible,
-.bestiario-volver:hover,
-.bestiario-volver:focus-visible,
 .bestiario-acciones a:hover,
 .bestiario-acciones button:hover {
   border-color: var(--acento-2);
 }
-
-.bestiario-volver {
-  font-family: var(--fuente-rotulada);
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  border-color: var(--papel);
-}
-
-.bestiario-chips--vecinas .bestiario-chip { border-style: dashed; }
 
 /* La hoja de la ficha: sube desde abajo en el teléfono, y se para a un costado en la compu. */
 .bestiario-hoja {
@@ -3286,3 +3252,201 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   display: block;
   margin-top: var(--espacio-2);
 }
+
+/* Las tintas de los títeres (D-73, segunda vuelta): el lobo y el cordero de Rocambole y sus
+   entornos. Sin ancestro, como las `b-`: viven en la escena y en sus tramas (`titeres.ts`). */
+.bt-lobo-claro { fill: var(--bestia-lobo-claro); }
+.bt-lobo-crema { fill: var(--bestia-lobo-crema); }
+.bt-lobo-ocre { fill: var(--bestia-lobo-ocre); }
+.bt-lobo-sombra { fill: var(--bestia-lobo-sombra); }
+.bt-lobo-oscuro { fill: var(--bestia-lobo-oscuro); }
+.bt-cordero-lana { fill: var(--bestia-cordero-lana); }
+.bt-cordero-lana-clara { fill: var(--bestia-cordero-lana-clara); }
+.bt-cordero-lana-oscura { fill: var(--bestia-cordero-lana-oscura); }
+.bt-cordero-mascara { fill: var(--bestia-cordero-mascara); }
+.bt-cordero-mascara-clara { fill: var(--bestia-cordero-mascara-clara); }
+.bt-cordero-ojo { fill: var(--bestia-cordero-ojo); }
+.bt-cordero-pezunia { fill: var(--bestia-cordero-pezunia); }
+.bt-pastura { fill: var(--entorno-pastura); }
+.bt-pastura-honda { fill: var(--entorno-pastura-honda); }
+.bt-monte-claro { fill: var(--entorno-monte-claro); }
+.bt-monte-medio { fill: var(--entorno-monte-medio); }
+.bt-monte-hondo { fill: var(--entorno-monte-hondo); }
+.bt-papel { fill: var(--papel); }
+.bt-tinta { fill: var(--fondo); }
+.bt-soga { fill: var(--disco-luzbelito-tinta); }
+.bt-sombra-piso { fill: var(--fondo); fill-opacity: 0.22; }
+.bt-borde-oscuro { stroke: var(--bestia-lobo-oscuro); stroke-width: 1.4; }
+.bt-borde-sepia { stroke: var(--bestia-lobo-sombra); stroke-width: 1.6; stroke-linejoin: round; }
+.bt-borde-azul { stroke: var(--bestia-cordero-lana-oscura); stroke-width: 1.1; stroke-linejoin: round; }
+.bt-borde-grueso-azul { stroke: var(--bestia-cordero-lana-oscura); stroke-width: 3; stroke-linejoin: round; }
+.bt-trazo-sepia,
+.bt-trazo-ocre,
+.bt-trazo-oscuro,
+.bt-trazo-azul,
+.bt-trazo-azul-clara,
+.bt-trazo-pezunia,
+.bt-trazo-soga,
+.bt-trazo-monte,
+.bt-trazo-papel {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bt-trazo-sepia { stroke: var(--bestia-lobo-sombra); }
+.bt-trazo-ocre { stroke: var(--bestia-lobo-ocre); }
+.bt-trazo-oscuro { stroke: var(--bestia-lobo-oscuro); }
+.bt-trazo-azul { stroke: var(--bestia-cordero-lana); }
+.bt-trazo-azul-clara { stroke: var(--bestia-cordero-lana-clara); }
+.bt-trazo-pezunia { stroke: var(--bestia-cordero-pezunia); }
+.bt-trazo-soga { stroke: var(--disco-luzbelito-tinta); }
+.bt-trazo-monte { stroke: var(--entorno-monte-hondo); }
+.bt-trazo-papel { stroke: var(--papel); }
+.bt-borde-monte { stroke: var(--entorno-monte-hondo); stroke-width: 1.4; stroke-linejoin: round; }
+
+/* El recorrido (D-73, segunda vuelta): un recinto detrás del otro, como un zoológico. */
+.bestiario-pie-plano {
+  margin: var(--espacio-2) 0 0;
+  color: var(--texto-tenue);
+  line-height: 1.5;
+}
+
+.recorrido {
+  max-width: var(--ancho-tablero-amplio);
+  margin: 0 auto;
+}
+
+.recinto {
+  margin: var(--espacio-4) 0;
+  scroll-margin-top: var(--espacio-2);
+}
+
+/* El cartel del recinto: un sello de goma pegado arriba de la escena, como en un zoológico. */
+.recinto-cartel {
+  display: inline-block;
+  max-width: 100%;
+  margin: 0 0 calc(var(--espacio-1) * -1) var(--espacio-1);
+  padding: 0.5rem 0.8rem 0.3rem;
+  position: relative;
+  z-index: 1;
+  color: var(--fondo);
+  background: var(--papel);
+  border: var(--linea) solid var(--tr);
+  border-radius: 3px;
+  transform: rotate(-1.2deg);
+}
+
+.recinto:nth-child(even) .recinto-cartel { transform: rotate(1deg); }
+
+.recinto-cartel .bestiario-canta { color: var(--fondo); margin: 0.1rem 0 0.2rem; }
+
+.recinto-numero {
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  color: var(--papel-tenue);
+}
+
+.recinto-nombre {
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.15rem;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.recinto-escena {
+  position: relative;
+  border: var(--linea) solid var(--papel);
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--papel);
+}
+
+.recinto-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.recinto-escena--la-ruta .recinto-svg { aspect-ratio: 400 / 220; }
+
+.bestiario-svg .sendero { fill: var(--papel); }
+.bestiario-svg .region-borde--cerco { stroke-width: 4; stroke-dasharray: 2 6; }
+.bestiario-svg .ruta-asfalto { fill: var(--papel-tenue); }
+
+/* Los títeres se tocan; el cordero, además, se arrastra: el dedo no tiene que mover la página. */
+.titere { cursor: pointer; outline: none; }
+.titere--lobo { touch-action: manipulation; }
+.titere--cordero { cursor: grab; touch-action: none; }
+.titere:focus-visible { outline: 2px dashed var(--acento-2); }
+.soga--tensa { stroke-width: 3.2; }
+
+/* El bocadillo: lo que dice el bicho que tocaste. Papel, borde grueso, una punta abajo. */
+.bocadillo {
+  position: absolute;
+  z-index: 2;
+  max-width: min(17rem, 80%);
+  padding: 0.5rem 0.7rem 0.6rem;
+  color: var(--fondo);
+  background: var(--papel);
+  border: var(--linea) solid var(--fondo);
+  border-radius: 3px;
+}
+
+.bocadillo::after {
+  content: '';
+  position: absolute;
+  left: calc(50% - 8px);
+  bottom: -11px;
+  border: 8px solid transparent;
+  border-top-color: var(--fondo);
+  border-bottom: 0;
+}
+
+.bocadillo-verso {
+  margin: 0 0 0.4rem;
+  font-style: italic;
+  line-height: 1.35;
+}
+
+.bocadillo-ficha {
+  min-height: var(--toque-min);
+  padding: 0.2rem 0.7rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--fondo);
+  background: transparent;
+  border: 2px solid var(--fondo);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.bocadillo-ficha:hover,
+.bocadillo-ficha:focus-visible { border-style: dashed; }
+
+/* La tercera vuelta (D-73): el monte de noche. La escena es más ancha que un teléfono y se
+   recorre de costado; en el teléfono va de borde a borde, sin el margen de la hoja. */
+.recinto-escena--monte-pastura {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  background: var(--fondo);
+  border-color: var(--bestia-lobo-sombra);
+}
+
+.recinto-escena--monte-pastura .recinto-svg { min-width: 54rem; }
+
+@media (max-width: 52rem) {
+  .recinto-escena--monte-pastura {
+    margin-inline: calc(50% - 50vw);
+    border-inline: 0;
+    border-radius: 0;
+  }
+}
+
+.ojos-oro { fill: var(--acento-2); }
+.ojos-papel { fill: var(--papel); }
+.bestiario-svg .bestia--ojos .toque { fill: transparent; }

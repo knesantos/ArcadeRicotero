@@ -25,16 +25,19 @@ import { BESTIARIO } from '../../lib/bestiario/copy.ts';
 import { REDONDOPEDIA } from '../../lib/sitio/copy.ts';
 import {
   LADO,
-  camara,
   cajaDeFigura,
+  dibujarRecinto,
+  dibujarRuta,
   dibujarSuelo,
   lugarDelRotulo,
   punto,
   simbolos,
   tintaDe,
+  RUTA,
   type Bestiario,
   type Bestia,
 } from '../../lib/bestiario/mapa.ts';
+import { ESCENA, escenaMonte } from '../../lib/bestiario/escena-monte.ts';
 import { tituloDelDisco } from '../../lib/letra/discos.ts';
 import { indexarFragmentos, type Manifiesto } from '../../lib/tema/catalogo.ts';
 import { leerTemas, slugDeTitulo } from '../../lib/letra/temas.ts';
@@ -61,20 +64,66 @@ const saleEn = (slug: string): string => {
 const etiquetaRotulo = (c: NonNullable<Bestia['cuenta']>[number]): string =>
   c.rotulo === 'leyenda' ? 'Leyenda' : `Lo contó ${c.quien ?? 'alguien'}`;
 
+/**
+ * El recorrido: el orden en que se camina el zoológico. Arranca por el monte y la pastura,
+ * que son un solo recinto (la pastura es un claro del monte), y da la vuelta al mundo
+ * redondo hasta el galpón del medio. La ruta, que lo rodea todo, es la salida.
+ */
+const RECORRIDO = [
+  'monte-pastura', 'la-mesa', 'los-techos', 'la-prision', 'el-infierno', 'el-bajo',
+  'los-astilleros', 'el-templo', 'cybersiberia', 'el-arbol', 'el-galpon', 'la-ruta',
+] as const;
+const recintoDe = (region: string): string => (region === 'el-monte' || region === 'la-pastura' ? 'monte-pastura' : region);
+
+const recintos = RECORRIDO.map((id) => {
+  if (id === 'monte-pastura') {
+    const monte = regionDe.get('el-monte')!;
+    return {
+      id,
+      nombre: BESTIARIO.recintoMonte,
+      canta: monte.canta,
+      tinta: tintaDe(monte.disco),
+      caja: `0 0 ${ESCENA.ancho} ${ESCENA.alto}`,
+      svg: escenaMonte(new Map(bestias.map((b) => [b.id, b.nombre]))),
+      bestias: bestias.filter((b) => b.region === 'el-monte' || b.region === 'la-pastura'),
+    };
+  }
+  const region = regionDe.get(id)!;
+  if (id === 'la-ruta') {
+    return {
+      id,
+      nombre: region.nombre,
+      canta: region.canta,
+      tinta: tintaDe(region.disco),
+      caja: `0 0 ${RUTA.ancho} ${RUTA.alto}`,
+      svg: dibujarRuta(datos),
+      bestias: bestias.filter((b) => b.region === id),
+    };
+  }
+  const { caja, svg } = dibujarRecinto(region, datos);
+  return {
+    id,
+    nombre: region.nombre,
+    canta: region.canta,
+    tinta: tintaDe(region.disco),
+    caja: `${caja.x.toFixed(1)} ${caja.y.toFixed(1)} ${caja.lado.toFixed(1)} ${caja.lado.toFixed(1)}`,
+    svg,
+    bestias: bestias.filter((b) => b.region === id),
+  };
+});
+
 /** Las regiones en el orden del índice: del centro para afuera, y la ruta al final. */
 const ordenIndice = [...regiones];
 
-/** Lo que la isla necesita y no puede leer del HTML: cámaras, vecinas, posiciones. */
+/** Lo que la isla necesita y no puede leer del HTML: el total y lo que dice cada bicho. */
 const paraLaIsla = {
   total: bestias.length,
-  regiones: regiones.map((r) => ({
-    id: r.id,
-    nombre: r.nombre,
-    canta: r.canta,
-    vecinas: r.vecinas,
-    camara: camara(r, bestias),
+  bestias: bestias.map((b) => ({
+    id: b.id,
+    nombre: b.nombre,
+    recinto: recintoDe(b.region),
+    dice: b.verso ? b.verso[0] : BESTIARIO.sinTema,
   })),
-  bestias: bestias.map((b) => ({ id: b.id, nombre: b.nombre, region: b.region, ...punto(b.pos) })),
 };
 
 const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín Ricotero`;
@@ -93,33 +142,20 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
     <p class="bestiario-libreta" id="libreta" aria-live="polite">{BESTIARIO.libretaVacia(bestias.length)}</p>
   </div>
 
-  <section class="bestiario" aria-label={BESTIARIO.mapa}>
+  {/* El plano del recorrido: el mundo redondo entero. Es la imagen; la navegación va por los
+      rótulos, que son enlaces y bajan hasta su recinto. */}
+  <section class="bestiario" aria-label={BESTIARIO.plano}>
     <div class="bestiario-marco" id="marco" data-vista="lejos">
-      <svg
-        id="mapa"
-        class="bestiario-svg"
-        viewBox={`0 0 ${LADO} ${LADO}`}
-        role="group"
-        aria-label={BESTIARIO.mapa}
-      >
+      <svg id="mapa" class="bestiario-svg" viewBox={`0 0 ${LADO} ${LADO}`} aria-hidden="true">
         <defs set:html={simbolos(bestias)} />
-        <g class="suelo" aria-hidden="true" set:html={dibujarSuelo(datos)} />
+        <g class="suelo" set:html={dibujarSuelo(datos)} />
         <g class="bestias">
           {
             bestias.map((b) => {
               const caja = cajaDeFigura(b);
               const p = punto(b.pos);
               return (
-                <g
-                  class="bestia"
-                  data-id={b.id}
-                  data-region={b.region}
-                  role="button"
-                  tabindex="-1"
-                  aria-label={b.nombre}
-                  style={`--tr: ${tintaDe(regionDe.get(b.region)!.disco)}`}
-                >
-                  <circle class="toque" cx={p.x} cy={p.y} r={Math.max(b.tam * 0.62, 20)} />
+                <g class="bestia-plano" data-id={b.id} style={`--tr: ${tintaDe(regionDe.get(b.region)!.disco)}`}>
                   <use href={`#fig-${b.id}`} x={caja.x} y={caja.y} width={caja.ancho} height={caja.alto} />
                   <g class="marca-anotada" transform={`translate(${p.x + b.tam * 0.45} ${p.y - b.tam * 0.55})`}>
                     <circle r="7" class="b-pp b-borde" />
@@ -132,41 +168,58 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
         </g>
       </svg>
 
-      {/* Los rótulos del mapa entero son botones de verdad: se llega con el teclado y los lee
-          el lector de pantalla. El SVG es la imagen; la navegación va por acá. */}
       <nav class="bestiario-rotulos" aria-label={BESTIARIO.regiones}>
         {
           regiones.map((r) => {
             const l = lugarDelRotulo(r);
             return (
-              <button
-                type="button"
+              <a
                 class={`rotulo-region rotulo-region--${r.id}`}
-                data-region={r.id}
+                href={`#recinto-${recintoDe(r.id)}`}
                 style={`left: ${l.x}%; top: ${l.y}%; --tr: ${tintaDe(r.disco)}`}
                 aria-label={r.nombre}
               >
                 {r.corto}
-              </button>
+              </a>
             );
           })
         }
       </nav>
     </div>
-
-    <div class="bestiario-barra" id="barra" hidden>
-      <p class="bestiario-aqui">
-        <span class="bestiario-aqui-etiqueta">{BESTIARIO.estasEn}</span>
-        <strong id="aqui"></strong>
-      </p>
-      <p class="bestiario-canta" id="aqui-canta"></p>
-      <button type="button" class="bestiario-volver" id="volver-al-mapa">← {BESTIARIO.volverAlMapa}</button>
-      <p class="bestiario-sub">{BESTIARIO.aca}</p>
-      <ul class="bestiario-chips" id="aca"></ul>
-      <p class="bestiario-sub">{BESTIARIO.alLado}</p>
-      <ul class="bestiario-chips bestiario-chips--vecinas" id="al-lado"></ul>
-    </div>
+    <p class="bestiario-pie-plano">{BESTIARIO.alPlano}</p>
   </section>
+
+  {/* El recorrido: un recinto detrás del otro, como un zoológico. */}
+  <div class="recorrido">
+    {
+      recintos.map((rc, n) => (
+        <section class="recinto" id={`recinto-${rc.id}`} aria-labelledby={`cartel-${rc.id}`} style={`--tr: ${rc.tinta}`}>
+          <header class="recinto-cartel">
+            <p class="recinto-numero">{BESTIARIO.recinto(n + 1)}</p>
+            <h2 class="recinto-nombre" id={`cartel-${rc.id}`}>{rc.nombre}</h2>
+            <p class="bestiario-canta">{rc.canta}</p>
+          </header>
+          <div class={`recinto-escena recinto-escena--${rc.id}`} data-recinto={rc.id}>
+            <svg class="bestiario-svg recinto-svg" viewBox={rc.caja} set:html={rc.svg} />
+          </div>
+          <p class="bestiario-sub">{BESTIARIO.aca}</p>
+          <ul class="bestiario-chips">
+            {rc.bestias.map((b) => (
+              <li>
+                <button type="button" class="bestiario-chip" data-ir={b.id}>{b.nombre}</button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+
+  {/* El bocadillo: lo que dice un bicho cuando se lo toca. La isla lo lleva a su escena. */}
+  <div class="bocadillo" id="bocadillo" hidden role="status">
+    <p class="bocadillo-verso" id="bocadillo-verso"></p>
+    <button type="button" class="bocadillo-ficha" id="bocadillo-ficha">{BESTIARIO.abrirFicha}</button>
+  </div>
 
   <div class="bestiario-hoja" id="hoja" hidden role="dialog" aria-modal="false" aria-labelledby="hoja-titulo">
     <button type="button" class="bestiario-cerrar" id="cerrar" aria-label={BESTIARIO.cerrar}>✕</button>
