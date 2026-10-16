@@ -3429,7 +3429,7 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 
 /* La tercera vuelta (D-73): el monte de noche. La escena es más ancha que un teléfono y se
    recorre de costado; en el teléfono va de borde a borde, sin el margen de la hoja. */
-.recinto-escena--monte-pastura {
+.recinto-escena--noche {
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scrollbar-width: thin;
@@ -3437,10 +3437,10 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   border-color: var(--bestia-lobo-sombra);
 }
 
-.recinto-escena--monte-pastura .recinto-svg { min-width: 54rem; }
+.recinto-escena--noche .recinto-svg { min-width: 54rem; }
 
 @media (max-width: 52rem) {
-  .recinto-escena--monte-pastura {
+  .recinto-escena--noche {
     margin-inline: calc(50% - 50vw);
     border-inline: 0;
     border-radius: 0;
@@ -3455,3 +3455,12 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 .bt-lobo-parpado { fill: var(--bestia-lobo-parpado); }
 .bt-lobo-parpado-oscuro { fill: var(--bestia-lobo-parpado-oscuro); }
 .bt-cordero-parpado { fill: var(--bestia-cordero-parpado); }
+
+/* Quinta vuelta (D-73): los ojos rojos del infierno, el cordón del medallón, y el fuego de *Gulp!*,
+   que se suma a lo oscuro como luz. */
+.ojos-rojo { fill: var(--marca-rojo); }
+.bt-trazo-cordon { fill: none; stroke: var(--disco-momo-sampler-apoyo); stroke-linecap: round; }
+.infierno-fuego { mix-blend-mode: screen; }
+.titere--perro,
+.titere--luzbelito,
+.titere--momo { cursor: pointer; }

@@ -215,9 +215,257 @@ function frenteMonte(): string {
   );
 }
 
+/* ------------------------------------------------------------------
+   El baldío de los techos, en el violeta rayado de *Un baión*
+   ------------------------------------------------------------------
+   El fondo de la tapa de *Un baión* es crayón: rayones cortos, azules, violetas y lila, que se
+   aprietan alrededor de la luz. El baldío es eso de noche, con los techos de chapa recortados
+   contra un farol, la medianera y los yuyos.
+*/
+
+const B = {
+  noche: 'var(--entorno-baion-noche)',
+  violeta: 'var(--entorno-baion-violeta)',
+  lila: 'var(--entorno-baion-lila)',
+  luz: 'var(--entorno-baion-luz)',
+  azul: 'var(--entorno-baion-azul)',
+  rosa: 'var(--entorno-baion-rosa)',
+  negro: 'var(--fondo)',
+};
+
+/** Rayones de crayón: cortos, en tandas que apuntan para un mismo lado, como los de la tapa. */
+function rayones(x0: number, y0: number, x1: number, y1: number, cuantos: number, colores: readonly string[], semilla: number, haciaX?: number, haciaY?: number): string {
+  const rnd = azar(semilla);
+  let s = '';
+  for (let i = 0; i < cuantos; i++) {
+    const x = x0 + rnd() * (x1 - x0);
+    const y = y0 + rnd() * (y1 - y0);
+    let ang = (rnd() - 0.5) * 1.2 + 0.9;
+    if (haciaX !== undefined && haciaY !== undefined) ang = Math.atan2(y - haciaY, x - haciaX) + (rnd() - 0.5) * 0.5;
+    const largo = 8 + rnd() * 26;
+    const color = colores[Math.floor(rnd() * colores.length)]!;
+    s += trazo(`M${x.toFixed(1)} ${y.toFixed(1)} l${(Math.cos(ang) * largo).toFixed(1)} ${(Math.sin(ang) * largo).toFixed(1)}`, color, 2.2 + rnd() * 2.6, 0.5 + rnd() * 0.45);
+  }
+  return s;
+}
+
+function baldioLejos(): string {
+  const { ancho, alto } = ESCENA_ARTE;
+  const farol = { x: 650, y: 130 };
+  // Los techos: chapa a dos aguas y en diente de sierra, con antenas de tele.
+  const rnd = azar(61);
+  let techos = '';
+  let x = -30;
+  while (x < ancho + 30) {
+    const w = 90 + rnd() * 110;
+    const alto0 = 170 + rnd() * 70;
+    if (rnd() < 0.5) techos += forma(`M${x} 330 L${x} ${alto0} L${x + w / 2} ${alto0 - 40 - rnd() * 30} L${x + w} ${alto0} L${x + w} 330 Z`, B.negro);
+    else {
+      let d = `M${x} 330 L${x} ${alto0}`;
+      for (let k = 0; k < 4; k++) d += ` L${x + (w / 4) * (k + 0.8)} ${alto0 - 26} L${x + (w / 4) * (k + 1)} ${alto0}`;
+      techos += forma(`${d} L${x + w} 330 Z`, B.negro);
+    }
+    if (rnd() < 0.5) techos += trazo(`M${x + w * 0.6} ${alto0 - 20} l0 -46 M${x + w * 0.6 - 14} ${alto0 - 58} l28 0 M${x + w * 0.6 - 9} ${alto0 - 48} l18 0`, B.negro, 2.2);
+    if (rnd() < 0.4) techos += forma(`M${x + w * 0.2} ${alto0 - 8} l0 -34 l16 0 l0 30 Z`, B.negro);
+    x += w * (0.85 + rnd() * 0.2);
+  }
+  return (
+    `<g filter="url(#rociado)">` +
+    `<rect x="-10" y="-10" width="${ancho + 20}" height="${alto + 20}" fill="${B.noche}"/>` +
+    // El cielo rayado, y la luz del farol que aprieta los rayones alrededor.
+    rayones(-20, -20, ancho + 20, 300, 900, [B.violeta, B.azul, B.violeta, B.noche, B.lila], 5) +
+    nube(farol.x, farol.y, 120, 90, B.lila, 'xl', 0.5) +
+    rayones(farol.x - 170, farol.y - 120, farol.x + 170, farol.y + 140, 260, [B.luz, B.lila, B.luz], 9, farol.x, farol.y) +
+    nube(farol.x, farol.y, 22, 18, B.luz, 'm') +
+    techos +
+    // Los cantos de las chapas, tocados por la luz.
+    rayones(-20, 180, ancho + 20, 260, 120, [B.lila, B.violeta], 13) +
+    // La medianera, con los ladrillos rayados.
+    forma(`M-10 300 L${ancho + 10} 300 L${ancho + 10} 392 L-10 392 Z`, B.violeta) +
+    rayones(-10, 300, ancho + 10, 392, 260, [B.noche, B.rosa, B.lila], 17) +
+    nube(farol.x, 360, 200, 40, B.lila, 'l', 0.35) +
+    // El piso del baldío, oscuro, con la luz del farol que cae.
+    forma(`M-10 386 L${ancho + 10} 386 L${ancho + 10} ${alto + 10} L-10 ${alto + 10} Z`, B.noche) +
+    nube(farol.x - 20, 520, 220, 70, B.violeta, 'xl', 0.9) +
+    nube(farol.x - 20, 520, 120, 36, B.lila, 'l', 0.35) +
+    rayones(-10, 392, ancho + 10, alto, 700, [B.violeta, B.azul, B.noche, B.noche, B.lila], 21) +
+    // Una goma tirada y unos yuyos.
+    `<ellipse cx="340" cy="548" rx="34" ry="12" fill="none" stroke="${B.negro}" stroke-width="9"/>` +
+    rayones(320, 470, 480, 520, 60, [B.azul, B.lila], 23, 400, 540) +
+    `</g>`
+  );
+}
+
+function baldioFrente(): string {
+  const { ancho, alto } = ESCENA_ARTE;
+  const rnd = azar(29);
+  let yuyos = '';
+  for (let x = -10; x < ancho + 10; x += 14 + rnd() * 18) {
+    const h = 30 + rnd() * 60;
+    yuyos += trazo(`M${x.toFixed(1)} ${alto + 4} q${(rnd() * 10 - 5).toFixed(1)} ${(-h * 0.6).toFixed(1)} ${(rnd() * 18 - 9).toFixed(1)} ${(-h).toFixed(1)}`, rnd() < 0.7 ? B.negro : B.violeta, 2.5 + rnd() * 2.5);
+  }
+  // Sin grano: en una franja soplada no se ve, y no se deja comprimir.
+  return `<g>${soplo(`M-10 ${alto - 30} L${ancho + 10} ${alto - 30} L${ancho + 10} ${alto + 10} L-10 ${alto + 10} Z`, B.negro, 'm', 0.8)}${yuyos}</g>`;
+}
+
+/* ------------------------------------------------------------------
+   El infierno encantador, en las brasas de *Gulp!*
+   ------------------------------------------------------------------ */
+
+const F = {
+  negro: 'var(--fondo)',
+  brasa: 'var(--entorno-infierno-brasa)',
+  rojo: 'var(--disco-gulp-tinta)',
+  vivo: 'var(--marca-rojo)',
+  fuego: 'var(--entorno-infierno-fuego)',
+  oro: 'var(--acento-2)',
+  sombra: 'var(--bestia-lobo-oscuro)',
+  piedra: 'var(--bestia-lobo-sombra)',
+};
+
+/** Una lengua de fuego soplada: rojo afuera, naranja adentro, oro en el corazón. */
+function lengua(x: number, base: number, alto: number, ancho: number, rnd: () => number): string {
+  const torcida = (rnd() - 0.5) * ancho;
+  const d = `M${x - ancho / 2} ${base} Q${x - ancho * 0.6} ${base - alto * 0.5} ${x + torcida} ${base - alto} Q${x + ancho * 0.6} ${base - alto * 0.45} ${x + ancho / 2} ${base} Z`;
+  const d2 = `M${x - ancho / 4} ${base} Q${x - ancho * 0.3} ${base - alto * 0.4} ${x + torcida * 0.7} ${base - alto * 0.7} Q${x + ancho * 0.3} ${base - alto * 0.35} ${x + ancho / 4} ${base} Z`;
+  return soplo(d, F.vivo, 's', 0.9) + soplo(d2, F.fuego, 's', 0.9) + nube(x, base - alto * 0.15, ancho * 0.18, alto * 0.18, F.oro, 's', 0.8);
+}
+
+/**
+ * Lo de atrás del infierno: la noche roja y el humo. El fuego no se dibuja acá: es la pincelada
+ * de la tapa de *Gulp!* teñida (`recortes.ts`, `infierno-pincelada`), que la escena pone encima.
+ */
+function infiernoLejos(): string {
+  const { ancho, alto } = ESCENA_ARTE;
+  return (
+    `<g filter="url(#rociado)">` +
+    `<rect x="-10" y="-10" width="${ancho + 20}" height="${alto + 20}" fill="${F.negro}"/>` +
+    nube(ancho / 2, 250, 520, 170, F.brasa, 'xl', 0.9) +
+    [120, 330, 560, 780].map((x, i) => nube(x, 110, 50 + i * 6, 170, F.negro, 'xl', 0.85)).join('') +
+    `</g>`
+  );
+}
+
+/** Lo cercano del infierno: el piso negro, la puerta del salón y la piedra de Luzbelito. */
+function infiernoCerca(): string {
+  const { ancho, alto } = ESCENA_ARTE;
+  return (
+    `<g filter="url(#rociado)">` +
+    soplo(`M-20 336 C300 322, 600 322, ${ancho + 20} 336 L${ancho + 20} ${alto + 20} L-20 ${alto + 20} Z`, F.negro, 's') +
+    nube(ancho / 2, 350, 520, 22, F.brasa, 'l', 0.8) +
+    nube(ancho / 2, 520, 300, 90, F.brasa, 'xl', 0.35) +
+    // La puerta del salón, encendida por dentro.
+    forma('M140 352 L140 262 Q180 214 220 262 L220 352 Z', F.negro) +
+    soplo('M152 352 L152 270 Q180 234 208 270 L208 352 Z', F.brasa, 'xs', 0.95) +
+    nube(180, 316, 18, 34, F.fuego, 'm', 0.5) +
+    // La piedra de Luzbelito: oscura, con el canto rojo del fuego.
+    enmascarado('m-piedra', 'M360 470 Q380 404 452 398 Q530 396 548 470 Z',
+      forma('M360 470 Q380 404 452 398 Q530 396 548 470 Z', F.piedra) + nube(430, 408, 70, 12, F.rojo, 'm', 0.6) + nube(500, 460, 70, 30, F.negro, 'm', 0.85)) +
+    `</g>`
+  );
+}
+
+function infiernoFrente(): string {
+  const { ancho, alto } = ESCENA_ARTE;
+  // Piedras negras de adelante, con el canto encendido.
+  const rnd = azar(83);
+  let piedras = '';
+  for (let x = -40; x < ancho + 40; x += 90 + rnd() * 90) {
+    const w = 80 + rnd() * 90;
+    const h = 30 + rnd() * 50;
+    const d = `M${x} ${alto + 10} Q${x + w * 0.2} ${alto - h} ${x + w / 2} ${alto - h - 6} Q${x + w * 0.8} ${alto - h} ${x + w} ${alto + 10} Z`;
+    piedras += enmascarado(`m-piedra-frente-${Math.round(x)}`, d, forma(d, F.negro) + nube(x + w * 0.4, alto - h, w * 0.3, 6, F.rojo, 's', 0.6));
+  }
+  return `<g filter="url(#rociado)">${piedras}</g>`;
+}
+
+/** El resplandor de la vela de Luzbelito: se imprime aparte, y la isla lo hace titilar. */
+function luzDeVela(): string {
+  return `<g>${nube(0, 0, 60, 70, F.oro, 'xl', 0.55)}${nube(0, 0, 24, 30, F.fuego, 'l', 0.5)}</g>`;
+}
+
+/* ------------------------------------------------------------------
+   El templo de Momo, en el negro y la plata de *Momo Sampler*
+   ------------------------------------------------------------------ */
+
+const P = {
+  negro: 'var(--fondo)',
+  plata: 'var(--disco-momo-sampler-tinta)',
+  peltre: 'var(--disco-momo-sampler-apoyo)',
+  foco: 'var(--entorno-templo-foco)',
+  oro: 'var(--acento-2)',
+};
+
+/** Un espiral como los del lomo de la tapa de *Momo Sampler*. */
+function espiralPlata(cx: number, cy: number, r: number): string {
+  let d = '';
+  for (let k = 0; k <= 50; k++) {
+    const a = (k / 50) * Math.PI * 4.2;
+    const rr = (r * k) / 50;
+    d += `${k ? 'L' : 'M'}${(cx + Math.cos(a) * rr).toFixed(1)} ${(cy + Math.sin(a) * rr).toFixed(1)} `;
+  }
+  return trazo(d, P.peltre, 3.2) + trazo(d, P.plata, 1.2, 0.8);
+}
+
+/** La guirnalda: un cable que cuelga de punta a punta, y los focos sobre el cable. */
+export const FOCOS_TEMPLO: ReadonlyArray<readonly [number, number]> = (() => {
+  const salida: Array<[number, number]> = [];
+  for (const [x0, x1, y0, comba] of [[-20, 460, 70, 70], [440, 920, 70, 70], [100, 800, 150, 90]] as const) {
+    for (let k = 1; k < 9; k++) {
+      const t = k / 9;
+      salida.push([x0 + (x1 - x0) * t, y0 + 4 * comba * t * (1 - t)]);
+    }
+  }
+  return salida;
+})();
+
+function temploLejos(): string {
+  const { ancho, alto } = ESCENA_ARTE;
+  let cables = '';
+  for (const [x0, x1, y0, comba] of [[-20, 460, 70, 70], [440, 920, 70, 70], [100, 800, 150, 90]] as const) {
+    cables += trazo(`M${x0} ${y0} Q${(x0 + x1) / 2} ${y0 + 2 * comba} ${x1} ${y0}`, P.peltre, 1.6, 0.8);
+  }
+  const columna = (x: number): string =>
+    enmascarado(`m-columna-${x}`, `M${x} -10 L${x + 70} -10 L${x + 70} ${alto + 10} L${x} ${alto + 10} Z`,
+      forma(`M${x} -10 L${x + 70} -10 L${x + 70} ${alto + 10} L${x} ${alto + 10} Z`, P.negro) +
+      nube(x + 20, alto / 2, 14, alto, P.peltre, 'm', 0.5) +
+      [90, 200, 310, 420, 530].map((y) => espiralPlata(x + 35, y, 24)).join(''));
+  return (
+    `<g filter="url(#rociado)">` +
+    `<rect x="-10" y="-10" width="${ancho + 20}" height="${alto + 20}" fill="${P.negro}"/>` +
+    // El galpón de luz: la luz cálida de los focos contra el techo, y el piso que la devuelve.
+    nube(ancho / 2, 120, 420, 120, P.foco, 'xl', 0.16) +
+    nube(ancho / 2, 600, 380, 70, P.peltre, 'xl', 0.45) +
+    nube(ancho / 2, 610, 160, 26, P.plata, 'l', 0.3) +
+    columna(30) + columna(ancho - 100) +
+    cables +
+    FOCOS_TEMPLO.map(([x, y]) => trazo(`M${x.toFixed(1)} ${(y - 2).toFixed(1)} l0 8`, P.peltre, 2) + nube(x, y + 12, 26, 26, P.foco, 'l', 0.45) + nube(x, y + 12, 5, 6, P.foco, 'xs', 0.95) + nube(x, y + 11, 2, 2.5, 'var(--papel)', 'xs')).join('') +
+    `</g>`
+  );
+}
+
+function temploFrente(): string {
+  const { ancho, alto } = ESCENA_ARTE;
+  return `<g>${soplo(`M-10 ${alto - 40} C300 ${alto - 56}, 600 ${alto - 56}, ${ancho + 10} ${alto - 40} L${ancho + 10} ${alto + 10} L-10 ${alto + 10} Z`, P.negro, 'm', 0.9)}</g>`;
+}
+
+/** El brillo que le pasa por encima al medallón: una franja soplada, que la isla corre. */
+function brilloMedallon(): string {
+  return nube(0, 0, 26, 220, P.plata, 'l', 0.55, 20) + nube(0, 0, 8, 200, 'var(--papel)', 'm', 0.5, 20);
+}
+
 export const PIEZAS: readonly Pieza[] = [
   { nombre: 'monte-lejos', caja: [0, 0, ESCENA_ARTE.ancho, ESCENA_ARTE.alto], dibujo: monteLejos(), opaca: true, densidad: 2 },
   { nombre: 'monte-cerca', caja: [0, 240, ESCENA_ARTE.ancho, ESCENA_ARTE.alto - 240], dibujo: monteCerca(), densidad: 2 },
   { nombre: 'monte-frente', caja: [0, 0, ESCENA_ARTE.ancho, ESCENA_ARTE.alto], dibujo: frenteMonte(), densidad: 2 },
   { nombre: 'cordero-lomo', caja: [-180, -220, 610, 540], dibujo: lomoCordero(), densidad: 0.55 },
+  { nombre: 'baldio-lejos', caja: [0, 0, ESCENA_ARTE.ancho, ESCENA_ARTE.alto], dibujo: baldioLejos(), opaca: true, densidad: 2 },
+  { nombre: 'baldio-frente', caja: [0, 520, ESCENA_ARTE.ancho, ESCENA_ARTE.alto - 520], dibujo: baldioFrente(), densidad: 2 },
+  { nombre: 'infierno-lejos', caja: [0, 0, ESCENA_ARTE.ancho, ESCENA_ARTE.alto], dibujo: infiernoLejos(), opaca: true, densidad: 2 },
+  { nombre: 'infierno-cerca', caja: [0, 300, ESCENA_ARTE.ancho, ESCENA_ARTE.alto - 300], dibujo: infiernoCerca(), densidad: 2 },
+  { nombre: 'infierno-frente', caja: [0, 520, ESCENA_ARTE.ancho, ESCENA_ARTE.alto - 520], dibujo: infiernoFrente(), densidad: 2 },
+  { nombre: 'luzbelito-luz', caja: [-150, -170, 300, 340], dibujo: luzDeVela(), densidad: 1 },
+  { nombre: 'templo-lejos', caja: [0, 0, ESCENA_ARTE.ancho, ESCENA_ARTE.alto], dibujo: temploLejos(), opaca: true, densidad: 2 },
+  { nombre: 'templo-frente', caja: [0, 560, ESCENA_ARTE.ancho, ESCENA_ARTE.alto - 560], dibujo: temploFrente(), densidad: 2 },
+  { nombre: 'momo-brillo', caja: [-120, -260, 240, 520], dibujo: brilloMedallon(), densidad: 1 },
 ];

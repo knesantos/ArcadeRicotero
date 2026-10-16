@@ -148,6 +148,18 @@
   --bestia-cordero-azul-hondo: #23292f;
   --bestia-cordero-azul: #27394d;
   --bestia-cordero-escama: #325179;
+  /* Los entornos de la quinta vuelta (D-73): el baldío en el violeta rayado de *Un baión*
+     (medido en el fondo de crayón de la tapa), el infierno en las brasas de *Gulp!*, y el
+     templo en el negro y la plata de *Momo Sampler*, con los focos de un galpón de luz. */
+  --entorno-baion-noche: #1c1726;
+  --entorno-baion-violeta: #36364d;
+  --entorno-baion-lila: #7979a8;
+  --entorno-baion-luz: #d2bbe8;
+  --entorno-baion-azul: #2f43a0;
+  --entorno-baion-rosa: #844c51;
+  --entorno-infierno-brasa: #6e1a10;
+  --entorno-infierno-fuego: #f08a24;
+  --entorno-templo-foco: #f2c46b;
   --bestia-cordero-lana: #293d54;
   --bestia-cordero-lana-clara: #4a6890;
   --bestia-cordero-lana-oscura: #1c2a3a;

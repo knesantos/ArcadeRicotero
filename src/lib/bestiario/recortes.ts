@@ -25,7 +25,7 @@ export type Punto = readonly [number, number];
 
 export interface Recorte {
   nombre: string;
-  fuente: 'lobo' | 'cordero';
+  fuente: Fuente;
   poligono: readonly Punto[];
   /** Cuánto se sopla el borde, en píxeles de la tapa. */
   plumado: number;
@@ -33,13 +33,32 @@ export interface Recorte {
   conSilueta?: boolean;
   /** Si el canto de la tapa (arriba, izquierda) se funde en vez de cortar seco. */
   fundirBordes?: boolean;
+  /**
+   * Si el fondo de la tapa es oscuro y la figura clara (Luzbelito en su óvalo, el medallón de
+   * Momo): lo que está por debajo de `desde` de luminosidad se vuelve transparente, y entre
+   * `desde` y `hasta` se funde.
+   */
+  fondoOscuro?: { desde: number; hasta: number };
+  /** Cuánto se achica al guardarlo, si no es el `REDUCCION` de siempre: las figuras chicas, enteras. */
+  reduccion?: number;
+  /**
+   * Para usar una tapa como textura: el negro queda negro y lo claro se tiñe con dos tokens, de
+   * `medio` a `claro`. `sinVerde` borra las letras verdes de la tapa de *Gulp!* antes de teñir.
+   */
+  tenido?: { medio: string; claro: string; sinVerde?: boolean };
 }
 
 /** De qué archivo sale cada uno. */
 export const FUENTES = {
   lobo: 'Docs/INVESTIGACION/TapasDiscos/lobo-suelto-cordero-atado-cd1-frontal.jpg',
   cordero: 'Docs/INVESTIGACION/TapasDiscos/lobo-suelto-cordero-atado-cd2-frontal.jpg',
+  perro: 'Docs/INVESTIGACION/TapasDiscos/un-baion-para-el-ojo-idiota-frontal.jpg',
+  luzbelito: 'Docs/INVESTIGACION/TapasDiscos/luzbelito-frontal.jpg',
+  momo: 'Docs/INVESTIGACION/TapasDiscos/momo-sampler-frontal.jpg',
+  gulp: 'Docs/INVESTIGACION/TapasDiscos/gulp-frontal.jpg',
 } as const;
+
+export type Fuente = keyof typeof FUENTES;
 
 /** El lado de los frentes, en píxeles. */
 export const LADO_TAPA = 953;
@@ -79,6 +98,43 @@ const CUERPO_CORDERO: readonly Punto[] = [
   [545, 555], [552, 650], [500, 680], [300, 690], [250, 700], [0, 700],
 ];
 
+/*
+ * El perro de *Un baión* (`RES-06`, `RES-22`): la cabeza roja de crayón, con la boca abierta y
+ * los dientes, entrando por el borde izquierdo de la tapa. Es "ese perro que sigue allí" de
+ * *Todo un palo*, que es de ese disco. Tres piezas: la cabeza de arriba, la mandíbula (que se
+ * abre para ladrar) y el fondo de la boca, que queda quieto detrás. La tapa lo corta en el
+ * borde izquierdo, y así entra en el baldío: por el borde.
+ */
+const CABEZA_PERRO: readonly Punto[] = [
+  [0, 488], [60, 500], [140, 520], [205, 532], [250, 545], [252, 575], [220, 598], [180, 612], [140, 630], [100, 646], [40, 662], [0, 668],
+];
+const MANDIBULA_PERRO: readonly Punto[] = [
+  [0, 650], [60, 640], [110, 630], [160, 614], [205, 600], [244, 598], [252, 640], [236, 676], [196, 712], [140, 760], [80, 806], [0, 826],
+];
+const BOCA_PERRO: readonly Punto[] = [
+  [60, 610], [130, 585], [200, 570], [248, 572], [248, 630], [190, 640], [120, 652], [60, 660],
+];
+
+/*
+ * Luzbelito (`RES-06`): la cabeza esculpida con la vela encendida en la coronilla, del óvalo de
+ * su tapa. El fondo del óvalo es negro, así que se separa por luminosidad. La llama va aparte
+ * para que titile.
+ */
+const BUSTO_LUZBELITO: readonly Punto[] = [
+  [428, 382], [470, 368], [494, 372], [495, 352], [515, 352], [516, 372], [556, 384], [580, 420], [574, 498], [586, 520],
+  [594, 590], [545, 600], [470, 600], [434, 596], [430, 540], [440, 520], [424, 480], [424, 420],
+];
+const LLAMA_LUZBELITO: readonly Punto[] = [[494, 312], [516, 312], [516, 360], [494, 360]];
+
+/** El medallón de Momo, de la tapa de *Momo Sampler*: un círculo de plata con la cara del rey del carnaval. */
+const MEDALLON_MOMO: readonly Punto[] = [[725, 500], [724, 522], [719, 544], [712, 565], [702, 585], [690, 603], [675, 620], [658, 635], [640, 647], [620, 657], [599, 664], [577, 669], [555, 670], [533, 669], [511, 664], [490, 657], [470, 647], [452, 635], [435, 620], [420, 603], [408, 585], [398, 565], [391, 544], [386, 522], [385, 500], [386, 478], [391, 456], [398, 435], [408, 415], [420, 397], [435, 380], [452, 365], [470, 353], [490, 343], [511, 336], [533, 331], [555, 330], [577, 331], [599, 336], [620, 343], [640, 353], [658, 365], [675, 380], [690, 397], [702, 415], [712, 435], [719, 456], [724, 478]];
+
+/*
+ * El fuego del infierno: el pincel seco de la tapa de *Gulp!*, sin las letras, teñido de brasa y
+ * fuego. Las llamas del infierno son pinceladas de Rocambole, no un dibujo nuevo.
+ */
+const TAPA_ENTERA: readonly Punto[] = [[0, 0], [953, 0], [953, 953], [0, 953]];
+
 export const RECORTES: readonly Recorte[] = [
   { nombre: 'lobo-real-cabeza', fuente: 'lobo', poligono: CABEZA_LOBO, plumado: 9 },
   { nombre: 'lobo-real-pecho', fuente: 'lobo', poligono: PECHO_LOBO, plumado: 9 },
@@ -86,6 +142,20 @@ export const RECORTES: readonly Recorte[] = [
   { nombre: 'cordero-real-cuerpo', fuente: 'cordero', poligono: CUERPO_CORDERO, plumado: 3, conSilueta: true, fundirBordes: true },
   { nombre: 'cordero-real-pata-tras', fuente: 'cordero', poligono: PATA_TRAS_CORDERO, plumado: 2, conSilueta: true },
   { nombre: 'cordero-real-pata-del', fuente: 'cordero', poligono: PATA_DEL_CORDERO, plumado: 2, conSilueta: true },
+  { nombre: 'perro-real-boca', reduccion: 1, fuente: 'perro', poligono: BOCA_PERRO, plumado: 4, fundirBordes: true },
+  { nombre: 'perro-real-mandibula', reduccion: 1, fuente: 'perro', poligono: MANDIBULA_PERRO, plumado: 4, fundirBordes: true },
+  { nombre: 'perro-real-cabeza', reduccion: 1, fuente: 'perro', poligono: CABEZA_PERRO, plumado: 4, fundirBordes: true },
+  { nombre: 'luzbelito-real-busto', reduccion: 1, fuente: 'luzbelito', poligono: BUSTO_LUZBELITO, plumado: 3, fondoOscuro: { desde: 34, hasta: 70 } },
+  { nombre: 'luzbelito-real-llama', reduccion: 1, fuente: 'luzbelito', poligono: LLAMA_LUZBELITO, plumado: 3, fondoOscuro: { desde: 40, hasta: 90 } },
+  {
+    nombre: 'infierno-pincelada',
+    fuente: 'gulp',
+    poligono: TAPA_ENTERA,
+    plumado: 0,
+    reduccion: 0.7,
+    tenido: { medio: '--entorno-infierno-brasa', claro: '--entorno-infierno-fuego', sinVerde: true },
+  },
+  { nombre: 'momo-real-medallon', reduccion: 1, fuente: 'momo', poligono: MEDALLON_MOMO, plumado: 2, fondoOscuro: { desde: 14, hasta: 40 } },
 ];
 
 /** La caja de un recorte en píxeles de la tapa: la del polígono, con aire para el plumado. */
@@ -125,5 +195,23 @@ export const ARMADO = {
     ],
     /** Dónde se ata la soga: el cogote, entre la máscara y las escamas. */
     nudo: [520, 520],
+  },
+  perro: {
+    /** El canto de la tapa: por ahí entra en el baldío. */
+    borde: [0, 650],
+    /** La bisagra de la mandíbula, adentro, contra el borde. */
+    mandibula: [20, 650],
+    cabeza: [20, 600],
+  },
+  luzbelito: {
+    piso: [510, 600],
+    cuello: [500, 540],
+    llama: [505, 350],
+  },
+  momo: {
+    /** De dónde cuelga: la argolla de arriba del medallón. */
+    argolla: [555, 334],
+    centro: [555, 500],
+    radio: 168,
   },
 } as const;

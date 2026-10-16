@@ -38,6 +38,7 @@ import {
   type Bestia,
 } from '../../lib/bestiario/mapa.ts';
 import { ESCENA, escenaMonte } from '../../lib/bestiario/escena-monte.ts';
+import { escenaBaldio, escenaInfierno, escenaTemplo } from '../../lib/bestiario/escenas.ts';
 import { tituloDelDisco } from '../../lib/letra/discos.ts';
 import { indexarFragmentos, type Manifiesto } from '../../lib/tema/catalogo.ts';
 import { leerTemas, slugDeTitulo } from '../../lib/letra/temas.ts';
@@ -75,6 +76,8 @@ const RECORRIDO = [
 ] as const;
 const recintoDe = (region: string): string => (region === 'el-monte' || region === 'la-pastura' ? 'monte-pastura' : region);
 
+const nombres = new Map(bestias.map((b) => [b.id, b.nombre]));
+
 const recintos = RECORRIDO.map((id) => {
   if (id === 'monte-pastura') {
     const monte = regionDe.get('el-monte')!;
@@ -84,11 +87,28 @@ const recintos = RECORRIDO.map((id) => {
       canta: monte.canta,
       tinta: tintaDe(monte.disco),
       caja: `0 0 ${ESCENA.ancho} ${ESCENA.alto}`,
-      svg: escenaMonte(new Map(bestias.map((b) => [b.id, b.nombre]))),
+      svg: escenaMonte(nombres),
       bestias: bestias.filter((b) => b.region === 'el-monte' || b.region === 'la-pastura'),
     };
   }
   const region = regionDe.get(id)!;
+  // Los recintos con protagonista de tapa (D-73): de noche, con su escena por capas.
+  const deNoche: Record<string, (n: ReadonlyMap<string, string>) => string> = {
+    'los-techos': escenaBaldio,
+    'el-infierno': escenaInfierno,
+    'el-templo': escenaTemplo,
+  };
+  if (deNoche[id]) {
+    return {
+      id,
+      nombre: region.nombre,
+      canta: region.canta,
+      tinta: tintaDe(region.disco),
+      caja: `0 0 ${ESCENA.ancho} ${ESCENA.alto}`,
+      svg: deNoche[id]!(nombres),
+      bestias: bestias.filter((b) => b.region === id),
+    };
+  }
   if (id === 'la-ruta') {
     return {
       id,
@@ -122,7 +142,13 @@ const paraLaIsla = {
     id: b.id,
     nombre: b.nombre,
     recinto: recintoDe(b.region),
-    dice: b.verso ? b.verso[0] : BESTIARIO.sinTema,
+    // Lo que dice en el bocadillo: las dos primeras líneas del verso si entran cortas, para que
+    // "¿Cómo no sentirme así" venga con "Si ese perro sigue allí?".
+    dice: b.verso
+      ? b.verso.length > 1 && (b.verso[0]! + b.verso[1]!).length <= 70
+        ? `${b.verso[0]} / ${b.verso[1]}`
+        : b.verso[0]
+      : BESTIARIO.sinTema,
   })),
 };
 
@@ -199,7 +225,7 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
             <h2 class="recinto-nombre" id={`cartel-${rc.id}`}>{rc.nombre}</h2>
             <p class="bestiario-canta">{rc.canta}</p>
           </header>
-          <div class={`recinto-escena recinto-escena--${rc.id}`} data-recinto={rc.id}>
+          <div class:list={['recinto-escena', `recinto-escena--${rc.id}`, { 'recinto-escena--noche': rc.caja === `0 0 ${ESCENA.ancho} ${ESCENA.alto}` }]} data-recinto={rc.id}>
             <svg class="bestiario-svg recinto-svg" viewBox={rc.caja} set:html={rc.svg} />
           </div>
           <p class="bestiario-sub">{BESTIARIO.aca}</p>

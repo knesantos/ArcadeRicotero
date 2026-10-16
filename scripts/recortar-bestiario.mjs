@@ -12,7 +12,7 @@
  * corregirlos a ojo.
  */
 
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import sharp from 'sharp';
@@ -21,6 +21,15 @@ const raiz = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const { RECORTES, FUENTES, LADO_TAPA, REDUCCION, cajaDeRecorte } = await import(
   pathToFileURL(resolve(raiz, 'src/lib/bestiario/recortes.ts')).href
 );
+
+const { leerDeclaraciones, resolverToken } = await import(pathToFileURL(resolve(raiz, 'src/lib/pixel/tokens.ts')).href);
+const { valores } = leerDeclaraciones(readFileSync(resolve(raiz, 'src/styles/tokens.css'), 'utf-8'));
+/** El color de un token, como tres números. */
+function rgbDe(token) {
+  const r = resolverToken(valores, token);
+  if ('error' in r) throw new Error(r.error);
+  return [1, 3, 5].map((i) => parseInt(r.hex.slice(i, i + 2), 16));
+}
 
 const L = LADO_TAPA;
 const salida = resolve(raiz, 'public/bestiario');
@@ -53,11 +62,32 @@ for (const r of RECORTES) {
       `<defs><filter id="p" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="${r.plumado}"/></filter></defs>` +
       `<rect width="${L}" height="${L}" fill="#000"/><polygon points="${puntos(r.poligono)}" fill="#fff" filter="url(#p)"/></svg>`,
   );
-  const rgb = fuentes[r.fuente];
+  let rgb = fuentes[r.fuente];
+  if (r.tenido) {
+    // La tapa como textura: lo negro queda en el negro del sitio, lo claro se tiñe.
+    const negro = rgbDe('--fondo');
+    const medio = rgbDe(r.tenido.medio);
+    const claro = rgbDe(r.tenido.claro);
+    const teñida = Buffer.alloc(L * L * 3);
+    for (let i = 0; i < L * L; i++) {
+      const [R, G, Bz] = [rgb[i * 3], rgb[i * 3 + 1], rgb[i * 3 + 2]];
+      let t = (0.299 * R + 0.587 * G + 0.114 * Bz) / 255;
+      if (r.tenido.sinVerde && G > R + 30 && G > Bz + 30) t = 0;
+      const [a, b, k] = t < 0.5 ? [negro, medio, t / 0.5] : [medio, claro, (t - 0.5) / 0.5];
+      for (let c = 0; c < 3; c++) teñida[i * 3 + c] = Math.round(a[c] + (b[c] - a[c]) * k);
+    }
+    rgb = teñida;
+  }
   const rgba = Buffer.alloc(L * L * 4);
   for (let i = 0; i < L * L; i++) {
     let a = mascara[i] / 255;
     if (r.conSilueta) a *= silueta[i] / 255;
+    if (r.fondoOscuro) {
+      // Fondo negro, figura clara: lo oscuro se va, y el borde se funde.
+      const lum = 0.299 * rgb[i * 3] + 0.587 * rgb[i * 3 + 1] + 0.114 * rgb[i * 3 + 2];
+      const { desde, hasta } = r.fondoOscuro;
+      a *= Math.max(0, Math.min(1, (lum - desde) / (hasta - desde)));
+    }
     if (r.fundirBordes) {
       // El canto de la tapa: la figura sigue más allá, así que se funde en 70 píxeles.
       const x = i % L;
@@ -72,11 +102,12 @@ for (const r of RECORTES) {
   const [x, y, ancho, alto] = cajaDeRecorte(r);
   const buffer = await sharp(rgba, { raw: { width: L, height: L, channels: 4 } })
     .extract({ left: x, top: y, width: ancho, height: alto })
-    .resize(Math.round(ancho * REDUCCION), Math.round(alto * REDUCCION))
+    .resize(Math.round(ancho * (r.reduccion ?? REDUCCION)), Math.round(alto * (r.reduccion ?? REDUCCION)))
     .webp({ quality: 86, alphaQuality: 90, effort: 5 })
     .toBuffer();
   writeFileSync(resolve(salida, `${r.nombre}.webp`), buffer);
-  console.log(`${r.nombre}.webp  ${Math.round(ancho * REDUCCION)}×${Math.round(alto * REDUCCION)}  ${Math.round(buffer.length / 1024)} kB`);
+  const k = r.reduccion ?? REDUCCION;
+  console.log(`${r.nombre}.webp  ${Math.round(ancho * k)}×${Math.round(alto * k)}  ${Math.round(buffer.length / 1024)} kB`);
 }
 
 const i = process.argv.indexOf('--prueba');

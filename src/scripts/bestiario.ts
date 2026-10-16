@@ -18,6 +18,7 @@
 import { BESTIARIO } from '../lib/bestiario/copy.ts';
 import { ACECHO, ACHATE, ESCALA_CORDERO, ESCALA_LOBO, PALO, SOGA, profundidad } from '../lib/bestiario/rig.ts';
 import { ARMADO } from '../lib/bestiario/recortes.ts';
+import { LUZBELITO as LUZ, MOMO as MOMO_ESC } from '../lib/bestiario/escenas.ts';
 import { crearRocola } from './rocola.ts';
 
 interface BestiaIsla {
@@ -570,6 +571,174 @@ function recintoDelMonte(escena: HTMLElement, svg: SVGSVGElement): Recinto {
 }
 
 /* ------------------------------------------------------------------
+   Los protagonistas de tapa de los otros recintos: el perro, Luzbelito y Momo
+   ------------------------------------------------------------------ */
+
+/** El perro de *Un baión*, en el borde del baldío: sigue ahí, y de a ratos ladra. */
+function recintoDelPerro(escena: HTMLElement, svg: SVGSVGElement): Recinto {
+  const deMapa = recintoDeMapa(escena, svg);
+  const g = svg.querySelector<SVGGElement>('.titere--perro')!;
+  const p = partes(g);
+  const base = g.getAttribute('transform') ?? '';
+  const AP = ARMADO.perro;
+  let ladraDesde = -10;
+  let ladridos = 0;
+  let proximo = 2.5;
+
+  function pintar(t: number): void {
+    if (t > proximo) {
+      ladraDesde = t;
+      ladridos = 2 + Math.floor(Math.random() * 2);
+      proximo = t + 4 + Math.random() * 4;
+    }
+    // Cada ladrido es una abierta y cerrada de la mandíbula, de un cuarto de segundo.
+    const s = (t - ladraDesde) / 0.26;
+    const abre = s >= 0 && s < ladridos ? Math.sin((s % 1) * Math.PI) : 0;
+    girar(p.get('mandibula'), abre * 16, AP.mandibula);
+    girar(p.get('cabeza'), -abre * 3 + Math.sin(t * 1.1) * 0.8, AP.cabeza);
+    // Respira y se asoma un poco más o un poco menos, sin dejar el borde.
+    const asoma = Math.sin(t * 0.45) * 8 + abre * 4;
+    g.setAttribute('transform', `translate(${asoma.toFixed(1)} ${(Math.sin(t * 1.9) * 1.5).toFixed(1)}) ${base}`);
+  }
+
+  const tocar = (): void => {
+    ladraDesde = reloj;
+    ladridos = 3;
+    if (quieto()) pintar(reloj);
+    hablar('ese-perro-que-sigue-alli', escena, svg, 150, 300);
+  };
+  g.addEventListener('click', tocar);
+  g.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter' || ev.key === ' ') {
+      ev.preventDefault();
+      tocar();
+    }
+  });
+  pintar(0);
+  return {
+    escena,
+    svg,
+    mover: (t, dt) => {
+      deMapa.mover(t, dt);
+      pintar(t);
+    },
+    reaccionar: (id, t) => {
+      if (id === 'ese-perro-que-sigue-alli') {
+        ladraDesde = t;
+        ladridos = 3;
+      } else deMapa.reaccionar(id, t);
+    },
+  };
+}
+
+/** Luzbelito en su piedra: la llama titila, el resplandor la sigue, y el busto se mece apenas. */
+function recintoDeLuzbelito(escena: HTMLElement, svg: SVGSVGElement): Recinto {
+  const deMapa = recintoDeMapa(escena, svg);
+  const g = svg.querySelector<SVGGElement>('.titere--luzbelito')!;
+  const p = partes(g);
+  const luz = svg.querySelector<SVGGElement>('.luz-de-vela')!;
+  const lx = Number(luz.dataset.x);
+  const ly = Number(luz.dataset.y);
+  const AL = ARMADO.luzbelito;
+  let avivaHasta = -1;
+
+  function pintar(t: number): void {
+    const aviva = t < avivaHasta ? 1 : 0;
+    // La llama: un temblor que no se repite, hecho de dos senos que no se encuentran.
+    const temblor = Math.sin(t * 13) * 0.5 + Math.sin(t * 7.3) * 0.5;
+    const alto = 1 + temblor * 0.12 + aviva * 0.6;
+    const ladeo = Math.sin(t * 5.1) * 5;
+    const [fx, fy] = [AL.llama[0], AL.llama[1] + 8];
+    p.get('llama')?.setAttribute('transform', `translate(${fx} ${fy}) rotate(${ladeo.toFixed(1)}) scale(${(1 + aviva * 0.3).toFixed(2)} ${alto.toFixed(3)}) translate(${-fx} ${-fy})`);
+    const brillo = 0.75 + temblor * 0.15 + aviva * 0.25;
+    luz.setAttribute('transform', `translate(${lx} ${ly}) scale(${(0.9 + temblor * 0.08 + aviva * 0.35).toFixed(3)})`);
+    luz.setAttribute('opacity', brillo.toFixed(2));
+    girar(p.get('busto'), Math.sin(t * 0.6) * 1.4, AL.cuello);
+  }
+
+  const tocar = (): void => {
+    avivaHasta = reloj + 0.9;
+    if (quieto()) pintar(reloj);
+    hablar('luzbelito', escena, svg, LUZ.x, LUZ.y - 250 * LUZ.escala);
+  };
+  g.addEventListener('click', tocar);
+  g.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter' || ev.key === ' ') {
+      ev.preventDefault();
+      tocar();
+    }
+  });
+  pintar(0);
+  return {
+    escena,
+    svg,
+    mover: (t, dt) => {
+      deMapa.mover(t, dt);
+      pintar(t);
+    },
+    reaccionar: (id, t) => {
+      if (id === 'luzbelito') avivaHasta = t + 0.9;
+      else deMapa.reaccionar(id, t);
+    },
+  };
+}
+
+/** El medallón de Momo cuelga de su cordón: se mece, le pasa un brillo, y tocado, gira. */
+function recintoDeMomo(escena: HTMLElement, svg: SVGSVGElement): Recinto {
+  const deMapa = recintoDeMapa(escena, svg);
+  const g = svg.querySelector<SVGGElement>('.titere--momo')!;
+  const p = partes(g);
+  const AM = ARMADO.momo;
+  let giraDesde = -10;
+  let empujon = 0;
+
+  function pintar(t: number): void {
+    // El péndulo, con el empujón del toque que se va apagando.
+    const gira = (t - giraDesde) / 1.3;
+    const amplitud = 4 + empujon * Math.exp(-(t - giraDesde) * 0.8);
+    const angulo = Math.sin(t * 1.5) * amplitud;
+    p.get('pendulo')?.setAttribute('transform', `rotate(${angulo.toFixed(2)} ${MOMO_ESC.cuelga.x} ${MOMO_ESC.cuelga.y})`);
+    // El giro: el medallón se da vuelta como una moneda, una vez.
+    const ancho = gira >= 0 && gira < 1 ? Math.cos(gira * Math.PI * 2) : 1;
+    const [cx, cy] = AM.centro;
+    p.get('medallon')?.setAttribute('transform', `translate(${cx} ${cy}) scale(${ancho.toFixed(3)} 1) translate(${-cx} ${-cy})`);
+    // El brillo: cruza el medallón cada tanto, de izquierda a derecha.
+    const pasada = (t % 4.5) / 1.2;
+    const dx = pasada < 1 ? -420 + pasada * 840 : 600;
+    p.get('brillo')?.setAttribute('transform', `translate(${(cx + dx).toFixed(1)} ${cy}) scale(1.6)`);
+  }
+
+  const tocar = (): void => {
+    giraDesde = reloj;
+    empujon = 10;
+    if (quieto()) pintar(reloj);
+    hablar('momo', escena, svg, MOMO_ESC.argolla.x, MOMO_ESC.argolla.y - 20);
+  };
+  g.addEventListener('click', tocar);
+  g.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter' || ev.key === ' ') {
+      ev.preventDefault();
+      tocar();
+    }
+  });
+  pintar(0);
+  return {
+    escena,
+    svg,
+    mover: (t, dt) => {
+      deMapa.mover(t, dt);
+      pintar(t);
+    },
+    reaccionar: (id, t) => {
+      if (id === 'momo') {
+        giraDesde = t;
+        empujon = 10;
+      } else deMapa.reaccionar(id, t);
+    },
+  };
+}
+
+/* ------------------------------------------------------------------
    El armado
    ------------------------------------------------------------------ */
 
@@ -589,8 +758,15 @@ const observador = new IntersectionObserver(
 for (const escena of document.querySelectorAll<HTMLElement>('.recinto-escena')) {
   const svg = escena.querySelector<SVGSVGElement>('svg')!;
   const id = escena.dataset.recinto;
-  const r = id === 'monte-pastura' ? recintoDelMonte(escena, svg) : id === 'la-ruta' ? recintoDeRuta(escena, svg) : recintoDeMapa(escena, svg);
-  // La escena del monte es más ancha que un teléfono: arranca con la pastura en el medio.
+  const controlador: Record<string, (e: HTMLElement, s: SVGSVGElement) => Recinto> = {
+    'monte-pastura': recintoDelMonte,
+    'los-techos': recintoDelPerro,
+    'el-infierno': recintoDeLuzbelito,
+    'el-templo': recintoDeMomo,
+    'la-ruta': recintoDeRuta,
+  };
+  const r = (controlador[id ?? ''] ?? recintoDeMapa)(escena, svg);
+  // Las escenas de noche son más anchas que un teléfono: arrancan centradas.
   if (escena.scrollWidth > escena.clientWidth) escena.scrollLeft = (escena.scrollWidth - escena.clientWidth) / 2;
   recintos.set(escena, r);
   observador.observe(escena);

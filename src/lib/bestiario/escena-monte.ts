@@ -14,6 +14,7 @@
  */
 
 import { imagen, lobo, cordero } from './titeres.ts';
+import { ojos, type Tinta } from './escenas.ts';
 import { ESCENA, PALO } from './rig.ts';
 
 export { ESCENA, PALO };
@@ -22,7 +23,7 @@ export { ESCENA, PALO };
  * Los demás del monte y la pastura: de noche se les ven los ojos. Dónde mira cada uno desde
  * lo oscuro, y de qué color brillan (los lobos y lo que acecha, oro; lo demás, papel).
  */
-export const VECINOS_DEL_MONTE: Readonly<Record<string, readonly [number, number, 'oro' | 'papel']>> = {
+export const VECINOS_DEL_MONTE: Readonly<Record<string, readonly [number, number, Tinta]>> = {
   'el-joven-lobo': [790, 252, 'oro'],
   'las-antiguas-lobas': [104, 282, 'oro'],
   'el-animal-que-no-late': [300, 232, 'papel'],
@@ -35,18 +36,6 @@ export const VECINOS_DEL_MONTE: Readonly<Record<string, readonly [number, number
   'el-rebano': [640, 560, 'papel'],
   'el-ovejero': [168, 396, 'oro'],
 };
-
-/** Un par de ojos que miran desde lo oscuro: tocables, y parpadean. */
-function ojos(id: string, nombre: string, x: number, y: number, tinta: 'oro' | 'papel'): string {
-  const clase = tinta === 'oro' ? 'ojos-oro' : 'ojos-papel';
-  return (
-    `<g class="bestia bestia--ojos" data-id="${id}" data-x="${x}" data-y="${y}" role="button" tabindex="0" aria-label="${nombre}">` +
-    `<circle class="toque" cx="${x}" cy="${y}" r="26"/>` +
-    `<g class="cuerpo"><ellipse cx="${x - 6}" cy="${y}" rx="3.2" ry="2.4" class="${clase}"/><ellipse cx="${x + 6}" cy="${y}" rx="3.2" ry="2.4" class="${clase}"/></g>` +
-    `<g class="marca-anotada" transform="translate(${x + 14} ${y - 12})"><circle r="6" class="b-pp b-borde"/><path d="M-3 0 l2 2.5 l4 -5" class="b-tz" stroke-width="2"/></g>` +
-    `</g>`
-  );
-}
 
 /** La escena entera, por capas. La isla mueve al lobo, al cordero y la soga. */
 export function escenaMonte(nombres: ReadonlyMap<string, string>): string {

@@ -6,6 +6,7 @@ import { adentro, camara, contorno, dibujarRecinto, dibujarRuta, dibujarSuelo, p
 import { existsSync } from 'node:fs';
 import { lobo, cordero } from './titeres.ts';
 import { escenaMonte, VECINOS_DEL_MONTE } from './escena-monte.ts';
+import { escenaBaldio, escenaInfierno, escenaTemplo, VECINOS_DEL_BALDIO, VECINOS_DEL_INFIERNO, VECINOS_DEL_TEMPLO } from './escenas.ts';
 import { ACECHO, PASTURA, ESCENA, PALO } from './rig.ts';
 import { ARMADO, RECORTES, cajaDeRecorte, LADO_TAPA } from './recortes.ts';
 import { PIEZAS } from './arte.ts';
@@ -170,7 +171,7 @@ test('cada recorte cae adentro de la tapa, y cada pivote adentro de su pieza', (
   for (const r of RECORTES) {
     for (const [x, y] of r.poligono) assert.ok(x >= 0 && x <= LADO_TAPA && y >= 0 && y <= LADO_TAPA, `${r.nombre}: un punto se sale de la tapa`);
     const [x, y, ancho, alto] = cajaDeRecorte(r);
-    assert.ok(ancho > 50 && alto > 50 && x + ancho <= LADO_TAPA && y + alto <= LADO_TAPA, `${r.nombre}: caja rara`);
+    assert.ok(ancho > 10 && alto > 10 && x + ancho <= LADO_TAPA && y + alto <= LADO_TAPA, `${r.nombre}: caja rara`);
   }
   const dentro = (nombre: string, [px, py]: readonly [number, number]): boolean => {
     const [x, y, ancho, alto] = cajaDeRecorte(RECORTES.find((r) => r.nombre === nombre)!);
@@ -223,4 +224,22 @@ test('cada pieza del aerógrafo y cada recorte están en public/bestiario', () =
   const piden = [...(lobo() + cordero() + escenaMonte(new Map())).matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]);
   assert.ok(piden.length > 10);
   assert.deepEqual(piden.filter((n) => !nombres.includes(n!)), []);
+});
+
+test('cada recinto de noche tiene a todos los suyos: el protagonista de tapa y los demás como ojos', () => {
+  const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
+  for (const [region, protagonista, vecinos, escena] of [
+    ['los-techos', 'ese-perro-que-sigue-alli', VECINOS_DEL_BALDIO, escenaBaldio(nombres)],
+    ['el-infierno', 'luzbelito', VECINOS_DEL_INFIERNO, escenaInfierno(nombres)],
+    ['el-templo', 'momo', VECINOS_DEL_TEMPLO, escenaTemplo(nombres)],
+  ] as const) {
+    const delRecinto = datos.bestias.filter((b) => b.region === region).map((b) => b.id).sort();
+    assert.deepEqual(delRecinto, [protagonista, ...Object.keys(vecinos)].sort(), `en ${region} falta o sobra alguien`);
+    assert.ok(escena.includes(`data-id="${protagonista}"`), `${region} no tiene a su protagonista`);
+    assert.ok(!/NaN|undefined|Infinity/.test(escena), `${region} tiene un número roto`);
+    for (const [id, [x, y]] of Object.entries(vecinos)) assert.ok(x >= 0 && x <= ESCENA.ancho && y >= 0 && y <= ESCENA.alto, `${id} se sale`);
+    // El protagonista es de la tapa: sus imágenes son recortes.
+    const imagenes = [...escena.matchAll(/href="\/bestiario\/([a-z0-9-]+-real-[a-z0-9-]+)\.webp"/g)];
+    assert.ok(imagenes.length > 0, `${region}: el protagonista no es un recorte de la tapa`);
+  }
 });
