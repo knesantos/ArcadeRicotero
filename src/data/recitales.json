@@ -2,13 +2,13 @@
   "contrato": "CTR-19",
   "pieza": "recitales",
   "contratoVersion": 1,
-  "actualizado": "2026-09-24",
+  "actualizado": "2026-10-16",
   "licencia": {
     "id": "cc0-1.0",
     "url": "https://creativecommons.org/publicdomain/zero/1.0/"
   },
-  "cambios": "Los titulos se cruzaron contra los 105 temas de los diez discos y se les agrego el slug del catalogo; los que no cruzan quedan marcados fuera de catalogo, con su clase. Las secciones de bis y los comentarios de la fuente pasan a la nota de cada tema. Fecha, lugar, ciudad y orden de los temas, como los da cada fuente.",
-  "nota": "Semilla: MusicBrainz tiene dos recitales de la banda con setlist cargado (RES-76). Crece con cada fuente abierta que se fiche.",
+  "cambios": "Los títulos se cruzaron contra los 105 temas de los diez discos y se les agregó su clave en el catálogo; los que no cruzan quedan fuera de catálogo, con su clase. Bises y comentarios de la fuente van a la nota de cada tema; un renglón con dos temas se parte. Fecha, lugar y orden, como los da cada fuente; la ciudad que el sitio completó lo dice la nota.",
+  "nota": "MusicBrainz tiene dos recitales de la banda con setlist (RES-76) y Discogs, las listas de casetes piratas que cargó la gente, sin revisar (INV-425). Crece con cada fuente abierta que se fiche.",
   "fuentes": [
     {
       "id": "musicbrainz",
@@ -22,16 +22,1971 @@
         "consultada": "2026-09-23"
       },
       "ficha": "RES-78"
+    },
+    {
+      "id": "discogs",
+      "nombre": "Discogs",
+      "sitio": "https://www.discogs.com/",
+      "licencia": {
+        "familia": "cc0",
+        "version": "1.0",
+        "textual": "This data is made available under the CC0 No Rights Reserved license.",
+        "url": "https://data.discogs.com/",
+        "consultada": "2026-10-15"
+      },
+      "atribucion": "Listas transcriptas por usuarios de Discogs de casetes y CDs piratas; el número de cada grabación va en su enlace.",
+      "revision": "sin-revisar",
+      "ficha": "RES-207"
     }
   ],
   "recitales": [
+    {
+      "fecha": "1987-05-23",
+      "lugar": "Cemento",
+      "ciudad": "Buenos Aires",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/37970997",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Divina TV Führer",
+          "slug": "divina-tv-fuhrer"
+        },
+        {
+          "titulo": "Vencedores Vencidos",
+          "slug": "vencedores-vencidos"
+        },
+        {
+          "titulo": "Roto Y Mal Parado",
+          "slug": "roto-y-mal-parado"
+        },
+        {
+          "titulo": "La Parabellum Del Buen Psicópata",
+          "slug": "la-parabellum-del-buen-psicopata"
+        },
+        {
+          "titulo": "La Vaca Cubana",
+          "slug": "aquella-solitaria-vaca-cubana"
+        },
+        {
+          "titulo": "Noticias De Ayer",
+          "slug": "noticias-de-ayer"
+        },
+        {
+          "titulo": "Cua Cua Amén",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Un Tal Brigitte Bardot",
+          "fuera": "inedito",
+          "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+        },
+        {
+          "titulo": "Ella Debe Estar Tan Linda",
+          "slug": "ella-debe-estar-tan-linda"
+        },
+        {
+          "titulo": "El Hombre Eléctrico",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Ñam Fri Frufi Fali Fru",
+          "slug": "nam-fri-frufi-fali-fru"
+        },
+        {
+          "titulo": "Criminal Mambo",
+          "slug": "criminal-mambo"
+        },
+        {
+          "titulo": "Masacre En El Puticlub",
+          "slug": "masacre-en-el-puticlub"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "Todo Preso Es Político",
+          "slug": "todo-preso-es-politico"
+        }
+      ],
+      "nota": "La ciudad la completó el sitio: la fuente no la da."
+    },
+    {
+      "fecha": "1988-08-03",
+      "lugar": "Teatro Podestá",
+      "ciudad": "La Plata",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/38095839",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Nene",
+          "fuera": "inedito",
+          "nota": "Así figura en la fuente; sería «Nene nena», demo de RCA de 1982 (RES-75, RES-232)."
+        },
+        {
+          "titulo": "Masacre En El Puticlub",
+          "slug": "masacre-en-el-puticlub"
+        },
+        {
+          "titulo": "Vencedores Vencidos",
+          "slug": "vencedores-vencidos"
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Roto Y Mal Parado",
+          "slug": "roto-y-mal-parado"
+        },
+        {
+          "titulo": "Yo No Me Caí Del Cielo",
+          "slug": "yo-no-me-cai-del-cielo"
+        },
+        {
+          "titulo": "Aquella Solitaria Vaca Cubana",
+          "slug": "aquella-solitaria-vaca-cubana"
+        },
+        {
+          "titulo": "Rock Para Los Dientes",
+          "slug": "rock-para-los-dientes"
+        },
+        {
+          "titulo": "La Parabellum Del Buen Psicópata",
+          "slug": "la-parabellum-del-buen-psicopata"
+        },
+        {
+          "titulo": "Noticias De Ayer",
+          "slug": "noticias-de-ayer"
+        },
+        {
+          "titulo": "Todo Preso Es Político",
+          "slug": "todo-preso-es-politico"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "Jijiji",
+          "slug": "jijiji"
+        },
+        {
+          "titulo": "Ñam Fri Fruli Fali Fru",
+          "slug": "nam-fri-frufi-fali-fru"
+        }
+      ]
+    },
+    {
+      "fecha": "1988-09",
+      "lugar": "Cemento",
+      "ciudad": "Buenos Aires",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/37996125",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Todo Es Efímero",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Ella Debe Estar Tan Linda",
+          "slug": "ella-debe-estar-tan-linda"
+        },
+        {
+          "titulo": "Masacre En El Puticlub",
+          "slug": "masacre-en-el-puticlub"
+        },
+        {
+          "titulo": "Nene Nena",
+          "fuera": "inedito",
+          "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+        },
+        {
+          "titulo": "Vencedores Vencidos",
+          "slug": "vencedores-vencidos"
+        },
+        {
+          "titulo": "Roto Y Mal Parado",
+          "slug": "roto-y-mal-parado"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "El Sniffer",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Maldición Va A Ser Un Día Hermoso",
+          "slug": "maldicion-va-a-ser-un-dia-hermoso"
+        },
+        {
+          "titulo": "Blues Del Noticiero",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Noticias De Ayer",
+          "slug": "noticias-de-ayer"
+        },
+        {
+          "titulo": "La Bestia Pop",
+          "slug": "la-bestia-pop"
+        }
+      ],
+      "nota": "La fuente solo da el mes. La ciudad la completó el sitio: la fuente no la da."
+    },
+    {
+      "fecha": "1988-12-08",
+      "lugar": "Garage",
+      "ciudad": "La Plata",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/21031747",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "ÑAm Fri Fuli Fali Fru",
+          "slug": "nam-fri-frufi-fali-fru"
+        },
+        {
+          "titulo": "Nene Nena",
+          "fuera": "inedito",
+          "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+        },
+        {
+          "titulo": "Vaca Cubana",
+          "slug": "aquella-solitaria-vaca-cubana"
+        },
+        {
+          "titulo": "Divina Tv Fürher",
+          "slug": "divina-tv-fuhrer"
+        },
+        {
+          "titulo": "Musica Para Pastillas",
+          "slug": "musica-para-pastillas"
+        },
+        {
+          "titulo": "Parabellum (Beat)",
+          "slug": "la-parabellum-del-buen-psicopata"
+        },
+        {
+          "titulo": "Ella Debe Estar Tan Linda",
+          "slug": "ella-debe-estar-tan-linda"
+        },
+        {
+          "titulo": "Ji Ji Ji",
+          "slug": "jijiji"
+        },
+        {
+          "titulo": "Maldicion, Va A Aser Un Dia Hermoso / Blues Del Noticiero",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Ropa Sucia",
+          "slug": "ropa-sucia"
+        },
+        {
+          "titulo": "El Sniffer",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Que Mal Celo",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Vencedores Vencidos",
+          "slug": "vencedores-vencidos"
+        },
+        {
+          "titulo": "Puticlub",
+          "slug": "masacre-en-el-puticlub"
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Todo Preso Es Politico",
+          "slug": "todo-preso-es-politico"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "Todo un palo",
+          "slug": "todo-un-palo"
+        },
+        {
+          "titulo": "Yo no me caí del cielo",
+          "slug": "yo-no-me-cai-del-cielo"
+        }
+      ]
+    },
+    {
+      "fecha": "1989-07-07",
+      "lugar": "Skylab",
+      "ciudad": "Argentina",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/17164714",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Himno Nacional Argentino",
+          "fuera": "cover",
+          "nota": "El himno nacional, no un tema de la banda (RES-219)."
+        },
+        {
+          "titulo": "Ya Nadie Va A Escuchar Tu Remera",
+          "slug": "ya-nadie-va-a-escuchar-tu-remera"
+        },
+        {
+          "titulo": "El Regreso de Mao",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Música Para Pastillas",
+          "slug": "musica-para-pastillas"
+        },
+        {
+          "titulo": "Un Pacman En El Savoy",
+          "slug": "un-pacman-en-el-savoy"
+        },
+        {
+          "titulo": "La Parabellum Del Buen Psicópata",
+          "slug": "la-parabellum-del-buen-psicopata"
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "Masacre En El Puticlub",
+          "slug": "masacre-en-el-puticlub"
+        },
+        {
+          "titulo": "Vencedores Vencidos",
+          "slug": "vencedores-vencidos"
+        },
+        {
+          "titulo": "Patricio Super Show",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Maldición Va A Ser Un Día Hermoso / Blues Del Noticiero",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Nuestro Amo Juega Al Esclavo",
+          "slug": "nuestro-amo-juega-al-esclavo"
+        },
+        {
+          "titulo": "Rock Para Los Dientes",
+          "slug": "rock-para-los-dientes"
+        },
+        {
+          "titulo": "Ropa Sucia",
+          "slug": "ropa-sucia"
+        },
+        {
+          "titulo": "Héroe Del Whisky",
+          "slug": "heroe-del-whisky"
+        },
+        {
+          "titulo": "Barbazul Vs El Amor Letal",
+          "slug": "barbazul-versus-el-amor-letal"
+        },
+        {
+          "titulo": "Semen-up",
+          "slug": "semen-up"
+        },
+        {
+          "titulo": "Todo Preso Es Político",
+          "slug": "todo-preso-es-politico"
+        },
+        {
+          "titulo": "Unos Pocos Peligros Sensatos",
+          "slug": "unos-pocos-peligros-sensatos"
+        },
+        {
+          "titulo": "Aquella Solitaria Vaca Cubana",
+          "slug": "aquella-solitaria-vaca-cubana"
+        },
+        {
+          "titulo": "Nene Nena",
+          "fuera": "inedito",
+          "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+        },
+        {
+          "titulo": "Jijiji",
+          "slug": "jijiji"
+        },
+        {
+          "titulo": "Ñam Fri Frufi Fali Fru",
+          "slug": "nam-fri-frufi-fali-fru"
+        }
+      ],
+      "nota": "La fuente no da la ciudad: va el país. Aclara que «Rock para los dientes» figura como «El sniffer» en el casete."
+    },
+    {
+      "fecha": "1989-07-28",
+      "lugar": "Pinar de Rocha",
+      "ciudad": "Ramos Mejía",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/37996197",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Nene Nena",
+          "fuera": "inedito",
+          "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+        },
+        {
+          "titulo": "Roto Y Mal Parado",
+          "slug": "roto-y-mal-parado"
+        },
+        {
+          "titulo": "Aquella Solitaria Vaca Cubana",
+          "slug": "aquella-solitaria-vaca-cubana"
+        },
+        {
+          "titulo": "Música Para Pastillas",
+          "slug": "musica-para-pastillas"
+        },
+        {
+          "titulo": "Ella Debe Estar Tan Linda",
+          "slug": "ella-debe-estar-tan-linda"
+        },
+        {
+          "titulo": "Jijiji",
+          "slug": "jijiji"
+        },
+        {
+          "titulo": "Barbazul Versus El Amor Letal",
+          "slug": "barbazul-versus-el-amor-letal"
+        },
+        {
+          "titulo": "Yo No Me Caí Del Cielo",
+          "slug": "yo-no-me-cai-del-cielo"
+        },
+        {
+          "titulo": "Blues Del Noticiero",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Masacre En El Puticlub",
+          "slug": "masacre-en-el-puticlub"
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Criminal Mambo",
+          "slug": "criminal-mambo"
+        },
+        {
+          "titulo": "Ya Nadie Va A Escuchar Tu Remera",
+          "slug": "ya-nadie-va-a-escuchar-tu-remera"
+        }
+      ],
+      "nota": "La ciudad la completó el sitio: la fuente no la da."
+    },
+    {
+      "fecha": "1990-05-12",
+      "lugar": "Teatro Atenas",
+      "ciudad": "La Plata",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/30862161",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Divina TV Führer",
+          "slug": "divina-tv-fuhrer"
+        },
+        {
+          "titulo": "Vamos las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "Roto y Mal Parado",
+          "slug": "roto-y-mal-parado"
+        },
+        {
+          "titulo": "Mi Perro Dinamita",
+          "slug": "mi-perro-dinamita"
+        },
+        {
+          "titulo": "Susanita - Indio Enojado - Susanita",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Fusilados por la Curz Roja",
+          "slug": "fusilados-por-la-cruz-roja"
+        },
+        {
+          "titulo": "Héroe del Whisky",
+          "slug": "heroe-del-whisky"
+        },
+        {
+          "titulo": "Nuestro Amo Juega al Esclavo",
+          "slug": "nuestro-amo-juega-al-esclavo"
+        },
+        {
+          "titulo": "El Ferry",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Madición va a ser un Día Hermoso - Blues del Noticiero",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Nueva Roma",
+          "slug": "nueva-roma"
+        },
+        {
+          "titulo": "Ropa Sucia",
+          "slug": "ropa-sucia"
+        },
+        {
+          "titulo": "Rock para los Dientes",
+          "slug": "rock-para-los-dientes"
+        },
+        {
+          "titulo": "Música para Pastillas",
+          "slug": "musica-para-pastillas"
+        },
+        {
+          "titulo": "Mariposa Pontiac - Rock and Roll del País - El Gordo Tramposo - Un tal B.B",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        }
+      ],
+      "nota": "Otra fuente da el 11 de mayo (RES-214)."
+    },
+    {
+      "fecha": "1990-08-24",
+      "lugar": "Obras",
+      "ciudad": "Buenos Aires",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/38004375",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Mi Perro Dinamita",
+          "slug": "mi-perro-dinamita"
+        },
+        {
+          "titulo": "El Infierno Está Encantador Esta Noche",
+          "slug": "el-infierno-esta-encantador-esta-noche"
+        },
+        {
+          "titulo": "Maldición Va A Ser Un Día Hermoso",
+          "slug": "maldicion-va-a-ser-un-dia-hermoso"
+        },
+        {
+          "titulo": "Ropa Sucia",
+          "slug": "ropa-sucia"
+        },
+        {
+          "titulo": "Masacre En El Puticlub",
+          "slug": "masacre-en-el-puticlub"
+        },
+        {
+          "titulo": "Nueva Roma",
+          "slug": "nueva-roma"
+        },
+        {
+          "titulo": "La Parabellum Del Buen Psicópata",
+          "slug": "la-parabellum-del-buen-psicopata"
+        },
+        {
+          "titulo": "Ñam Fri Fruli Fali Fru",
+          "slug": "nam-fri-frufi-fali-fru"
+        },
+        {
+          "titulo": "Un Pacman En El Savoy",
+          "slug": "un-pacman-en-el-savoy"
+        },
+        {
+          "titulo": "Semen Up",
+          "slug": "semen-up"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "La Bestia Pop",
+          "slug": "la-bestia-pop"
+        },
+        {
+          "titulo": "Nuestro Amo Juega Al Esclavo",
+          "slug": "nuestro-amo-juega-al-esclavo"
+        },
+        {
+          "titulo": "Fusilados Por La Cruz Roja",
+          "slug": "fusilados-por-la-cruz-roja"
+        },
+        {
+          "titulo": "Camila",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "TV Führer",
+          "slug": "divina-tv-fuhrer"
+        },
+        {
+          "titulo": "Héroe Del Whisky",
+          "slug": "heroe-del-whisky"
+        },
+        {
+          "titulo": "El Sniffer",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        }
+      ],
+      "nota": "La ciudad la completó el sitio: la fuente no la da."
+    },
+    {
+      "fecha": "1990-12-21",
+      "lugar": "Obras",
+      "ciudad": "Buenos Aires",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/38004522",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Unos Pocos Peligros Sensatos",
+          "slug": "unos-pocos-peligros-sensatos"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "Fusilados Por La Cruz Roja",
+          "slug": "fusilados-por-la-cruz-roja"
+        },
+        {
+          "titulo": "Un Pacman En El Savoy",
+          "slug": "un-pacman-en-el-savoy"
+        },
+        {
+          "titulo": "Un Poco De Amor Francés",
+          "slug": "un-poco-de-amor-frances"
+        },
+        {
+          "titulo": "Nene Nena",
+          "fuera": "inedito",
+          "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+        },
+        {
+          "titulo": "Nuestro Amo Juega Al Esclavo",
+          "slug": "nuestro-amo-juega-al-esclavo"
+        },
+        {
+          "titulo": "Maldición Va A Ser Un Día Hermoso",
+          "slug": "maldicion-va-a-ser-un-dia-hermoso"
+        },
+        {
+          "titulo": "Blues Del Noticiero",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Mariposa Pontiac (Rock Del País)",
+          "slug": "mariposa-pontiac-rock-del-pais"
+        },
+        {
+          "titulo": "Mi Perro Dinamita",
+          "slug": "mi-perro-dinamita"
+        },
+        {
+          "titulo": "Criminal Mambo",
+          "slug": "criminal-mambo"
+        },
+        {
+          "titulo": "Toxi Taxi",
+          "slug": "toxi-taxi"
+        },
+        {
+          "titulo": "Camila",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Esa Estrella Era Mi Lujo",
+          "slug": "esa-estrella-era-mi-lujo"
+        },
+        {
+          "titulo": "De Estos Polvos Futuros Lodos",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Masacre En El Puticlub",
+          "slug": "masacre-en-el-puticlub"
+        },
+        {
+          "titulo": "Patricio Super Show",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Nueva Roma",
+          "slug": "nueva-roma"
+        },
+        {
+          "titulo": "TV Führer",
+          "slug": "divina-tv-fuhrer"
+        },
+        {
+          "titulo": "Ropa Sucia",
+          "slug": "ropa-sucia"
+        }
+      ],
+      "nota": "La ciudad la completó el sitio: la fuente no la da."
+    },
+    {
+      "fecha": "1991-04-19",
+      "lugar": "Obras",
+      "ciudad": "Buenos Aires",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/38013195",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Nuestro Amo Juega Al Esclavo",
+          "slug": "nuestro-amo-juega-al-esclavo"
+        },
+        {
+          "titulo": "Divina TV Führer",
+          "slug": "divina-tv-fuhrer"
+        },
+        {
+          "titulo": "Semen Up",
+          "slug": "semen-up"
+        },
+        {
+          "titulo": "Nene Nena",
+          "fuera": "inedito",
+          "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+        },
+        {
+          "titulo": "Barbazul Versus El Amor Letal",
+          "slug": "barbazul-versus-el-amor-letal"
+        },
+        {
+          "titulo": "Mi Genio Amor",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Ya Nadie Va A Escuchar Tu Remera",
+          "slug": "ya-nadie-va-a-escuchar-tu-remera"
+        },
+        {
+          "titulo": "Roxana Porchelana",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Aquella Solitaria Vaca Cubana",
+          "slug": "aquella-solitaria-vaca-cubana"
+        },
+        {
+          "titulo": "Es Un Sentimiento",
+          "fuera": "sin-identificar",
+          "nota": "Sin obra enlazada en la fuente. Podria ser un cantico de la gente; nadie lo clasifico con ficha."
+        },
+        {
+          "titulo": "Ropa Sucia",
+          "slug": "ropa-sucia"
+        },
+        {
+          "titulo": "Mi Perro Dinamita",
+          "slug": "mi-perro-dinamita"
+        },
+        {
+          "titulo": "El Blues De La Libertad",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Motor Psico",
+          "slug": "motor-psico"
+        },
+        {
+          "titulo": "Héroe Del Whisky",
+          "slug": "heroe-del-whisky"
+        },
+        {
+          "titulo": "Noticias De Ayer",
+          "slug": "noticias-de-ayer"
+        },
+        {
+          "titulo": "Pura Suerte",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Un Tal Brigitte Bardot",
+          "fuera": "inedito",
+          "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+        },
+        {
+          "titulo": "Todo Preso Es Político",
+          "slug": "todo-preso-es-politico"
+        },
+        {
+          "titulo": "Todo Un Palo",
+          "slug": "todo-un-palo"
+        },
+        {
+          "titulo": "Vencedores Vencidos",
+          "slug": "vencedores-vencidos"
+        },
+        {
+          "titulo": "Masacre En El Puticlub",
+          "slug": "masacre-en-el-puticlub"
+        },
+        {
+          "titulo": "Jijiji",
+          "slug": "jijiji"
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Un Pacman En El Savoy",
+          "slug": "un-pacman-en-el-savoy"
+        }
+      ],
+      "nota": "En la fuente son dos casetes, parte 1 y parte 2. La ciudad la completó el sitio: la fuente no la da."
+    },
+    {
+      "fecha": "1991-08-10",
+      "lugar": "Teatro San Martín",
+      "ciudad": "Mar del Plata",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/38021565",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Semen Up",
+          "slug": "semen-up"
+        },
+        {
+          "titulo": "Unos Pocos Peligros Sensatos",
+          "slug": "unos-pocos-peligros-sensatos"
+        },
+        {
+          "titulo": "Un Pacman En El Savoy",
+          "slug": "un-pacman-en-el-savoy"
+        },
+        {
+          "titulo": "Aquella Solitaria Vaca Cubana",
+          "slug": "aquella-solitaria-vaca-cubana"
+        },
+        {
+          "titulo": "Mi Perro Dinamita",
+          "slug": "mi-perro-dinamita"
+        },
+        {
+          "titulo": "Toxi-Taxi",
+          "slug": "toxi-taxi"
+        },
+        {
+          "titulo": "Todo Un Palo",
+          "slug": "todo-un-palo"
+        },
+        {
+          "titulo": "Maldición Va A Ser Un Día Hermoso",
+          "slug": "maldicion-va-a-ser-un-dia-hermoso"
+        },
+        {
+          "titulo": "Fusilado Por La Cruz Roja",
+          "slug": "fusilados-por-la-cruz-roja"
+        },
+        {
+          "titulo": "Rock Para Los Dientes",
+          "slug": "rock-para-los-dientes"
+        },
+        {
+          "titulo": "Blues De La Libertad",
+          "slug": "blues-de-la-libertad"
+        },
+        {
+          "titulo": "Criminal Mambo",
+          "slug": "criminal-mambo"
+        },
+        {
+          "titulo": "Héroe Del Whisky",
+          "slug": "heroe-del-whisky"
+        },
+        {
+          "titulo": "Ella Debe Estar Tan Linda",
+          "slug": "ella-debe-estar-tan-linda"
+        },
+        {
+          "titulo": "Motor Psico",
+          "slug": "motor-psico"
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Vencedores Vencidos",
+          "slug": "vencedores-vencidos"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "Ñam Fri Fruli Gali Fru",
+          "slug": "nam-fri-frufi-fali-fru"
+        }
+      ]
+    },
+    {
+      "fecha": "1991-12-28",
+      "lugar": "Obras",
+      "ciudad": "Buenos Aires",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/38030388",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Mi Perro Dinamita",
+          "slug": "mi-perro-dinamita"
+        },
+        {
+          "titulo": "Barbazul Versus El Amor Letal",
+          "slug": "barbazul-versus-el-amor-letal"
+        },
+        {
+          "titulo": "Un Poco De Amor Francés",
+          "slug": "un-poco-de-amor-frances"
+        },
+        {
+          "titulo": "Fusilados Por La Cruz Roja",
+          "slug": "fusilados-por-la-cruz-roja"
+        },
+        {
+          "titulo": "Toxi-Taxi",
+          "slug": "toxi-taxi"
+        },
+        {
+          "titulo": "Salando Las Heridas",
+          "slug": "salando-las-heridas"
+        },
+        {
+          "titulo": "Héroe Del Whisky",
+          "slug": "heroe-del-whisky"
+        },
+        {
+          "titulo": "Tarea Fina",
+          "slug": "tarea-fina"
+        },
+        {
+          "titulo": "Vencedores Vencidos",
+          "slug": "vencedores-vencidos"
+        },
+        {
+          "titulo": "Semen-Up",
+          "slug": "semen-up"
+        },
+        {
+          "titulo": "La Parabellum Del Buen Psicópata",
+          "slug": "la-parabellum-del-buen-psicopata"
+        },
+        {
+          "titulo": "Nueva Roma",
+          "slug": "nueva-roma"
+        },
+        {
+          "titulo": "El Blues De La Libertad",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Queso Ruso",
+          "slug": "queso-ruso"
+        },
+        {
+          "titulo": "Blues De La Artillería",
+          "slug": "blues-de-la-artilleria"
+        },
+        {
+          "titulo": "Divina TV Führer",
+          "slug": "divina-tv-fuhrer"
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Aquella Solitaria Vaca Cubana",
+          "slug": "aquella-solitaria-vaca-cubana"
+        },
+        {
+          "titulo": "Todo Un Palo",
+          "slug": "todo-un-palo"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        }
+      ],
+      "nota": "La ciudad la completó el sitio: la fuente no la da."
+    },
+    {
+      "fecha": "1992-05-01",
+      "lugar": "Lanús",
+      "ciudad": "Lanús",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/38046690",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "El Pibe De Los Astilleros",
+          "slug": "el-pibe-de-los-astilleros"
+        },
+        {
+          "titulo": "Un Pacman En El Savoy",
+          "slug": "un-pacman-en-el-savoy"
+        },
+        {
+          "titulo": "Un Poco De Amor Francés",
+          "slug": "un-poco-de-amor-frances"
+        },
+        {
+          "titulo": "Fusilados Por La Cruz Roja",
+          "slug": "fusilados-por-la-cruz-roja"
+        },
+        {
+          "titulo": "La Parabellum Del Buen Psicópata",
+          "slug": "la-parabellum-del-buen-psicopata"
+        },
+        {
+          "titulo": "Mi Perro Dinamita",
+          "slug": "mi-perro-dinamita"
+        },
+        {
+          "titulo": "Todo Un Palo",
+          "slug": "todo-un-palo"
+        },
+        {
+          "titulo": "Música Para Pastillas",
+          "slug": "musica-para-pastillas"
+        },
+        {
+          "titulo": "Queso Ruso",
+          "slug": "queso-ruso"
+        },
+        {
+          "titulo": "Semen-Up",
+          "slug": "semen-up"
+        },
+        {
+          "titulo": "Toxi-Taxi",
+          "slug": "toxi-taxi"
+        },
+        {
+          "titulo": "Tarea Fina",
+          "slug": "tarea-fina"
+        },
+        {
+          "titulo": "El Blues De La Artillería",
+          "slug": "blues-de-la-artilleria"
+        },
+        {
+          "titulo": "Nueva Roma",
+          "slug": "nueva-roma"
+        },
+        {
+          "titulo": "Salando Las Heridas",
+          "slug": "salando-las-heridas"
+        },
+        {
+          "titulo": "Ella Debe Estar Tan Linda",
+          "slug": "ella-debe-estar-tan-linda"
+        },
+        {
+          "titulo": "Masacre En El Puticlub",
+          "slug": "masacre-en-el-puticlub"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "Barbazul Versus El Amor Letal",
+          "slug": "barbazul-versus-el-amor-letal"
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Maldición Va A Ser Un Día Hermoso",
+          "slug": "maldicion-va-a-ser-un-dia-hermoso"
+        }
+      ],
+      "nota": "La fuente solo nombra la ciudad. Otra fuente da el 3 de mayo, en el Microestadio Antonio Rotili (RES-222)."
+    },
+    {
+      "fecha": "1992-10-02",
+      "lugar": "Centro Municipal de Exposiciones",
+      "ciudad": "Buenos Aires",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/38046786",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Fuegos De Octubre",
+          "slug": "fuegos-de-octubre"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "Un Poco De Amor Francés",
+          "slug": "un-poco-de-amor-frances"
+        },
+        {
+          "titulo": "El Pibe De Los Astilleros",
+          "slug": "el-pibe-de-los-astilleros"
+        },
+        {
+          "titulo": "Salando Las Heridas",
+          "slug": "salando-las-heridas"
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Maldición Va A Ser Un Día Hermoso",
+          "slug": "maldicion-va-a-ser-un-dia-hermoso"
+        },
+        {
+          "titulo": "Blues Del Noticiero",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Motor Psico",
+          "slug": "motor-psico"
+        },
+        {
+          "titulo": "Todo Preso Es Político",
+          "slug": "todo-preso-es-politico"
+        },
+        {
+          "titulo": "Camila",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Queso Ruso",
+          "slug": "queso-ruso"
+        },
+        {
+          "titulo": "Nueva Roma",
+          "slug": "nueva-roma"
+        },
+        {
+          "titulo": "La Bestia Pop",
+          "slug": "la-bestia-pop"
+        },
+        {
+          "titulo": "Ñam Fri Fruli Fali Fru",
+          "slug": "nam-fri-frufi-fali-fru"
+        },
+        {
+          "titulo": "El Arte Del Buen Comer",
+          "slug": "el-arte-del-buen-comer"
+        },
+        {
+          "titulo": "Toxi-Taxi",
+          "slug": "toxi-taxi"
+        },
+        {
+          "titulo": "TV Führer",
+          "slug": "divina-tv-fuhrer"
+        },
+        {
+          "titulo": "Todo Es Efímero",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Mi Perro Dinamita",
+          "slug": "mi-perro-dinamita"
+        },
+        {
+          "titulo": "Un Sentimiento",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Barbazul Versus El Amor Letal",
+          "slug": "barbazul-versus-el-amor-letal"
+        },
+        {
+          "titulo": "Un Tal Brigitte Bardot",
+          "fuera": "inedito",
+          "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+        },
+        {
+          "titulo": "Un Pacman En El Savoy",
+          "slug": "un-pacman-en-el-savoy"
+        },
+        {
+          "titulo": "Jijiji",
+          "slug": "jijiji"
+        },
+        {
+          "titulo": "Nene Nena",
+          "fuera": "inedito",
+          "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+        }
+      ],
+      "nota": "La ciudad la completó el sitio: la fuente no la da."
+    },
+    {
+      "fecha": "1993-11-19",
+      "lugar": "Club A. Huracán",
+      "ciudad": "Buenos Aires",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/38052621",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Camila",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Mi Perro Dinamita",
+          "slug": "mi-perro-dinamita"
+        },
+        {
+          "titulo": "El Pibe De Los Astilleros",
+          "slug": "el-pibe-de-los-astilleros"
+        },
+        {
+          "titulo": "Buenas Noticias",
+          "slug": "buenas-noticias"
+        },
+        {
+          "titulo": "Sorpresa De Shangai",
+          "slug": "sorpresa-de-shangai"
+        },
+        {
+          "titulo": "Shopping Disco-Zen",
+          "slug": "shopping-disco-zen"
+        },
+        {
+          "titulo": "La Bestia Pop",
+          "slug": "la-bestia-pop"
+        },
+        {
+          "titulo": "Un Ángel Para Tu Soledad",
+          "slug": "un-angel-para-tu-soledad"
+        },
+        {
+          "titulo": "Susanita",
+          "slug": "susanita"
+        },
+        {
+          "titulo": "Espejismo",
+          "slug": "espejismo"
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Nuestro Amo Juega Al Esclavo",
+          "slug": "nuestro-amo-juega-al-esclavo"
+        },
+        {
+          "titulo": "La Hija Del Fletero",
+          "slug": "la-hija-del-fletero"
+        },
+        {
+          "titulo": "Héroe Del Whisky",
+          "slug": "heroe-del-whisky"
+        },
+        {
+          "titulo": "Salando Las Heridas",
+          "slug": "salando-las-heridas"
+        },
+        {
+          "titulo": "Gran Lady",
+          "slug": "gran-lady"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "El Lobo Caído",
+          "slug": "el-lobo-caido"
+        },
+        {
+          "titulo": "Un Poco De Amor Francés",
+          "slug": "un-poco-de-amor-frances"
+        },
+        {
+          "titulo": "Un Tal Brigitte Bardot",
+          "fuera": "inedito",
+          "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+        },
+        {
+          "titulo": "Jijiji",
+          "slug": "jijiji"
+        }
+      ],
+      "nota": "La numeración de la fuente salta de A9 a A11: puede faltar un tema. La ciudad la completó el sitio: la fuente no la da."
+    },
+    {
+      "fecha": "1993-11-20",
+      "lugar": "Club A. Huracán",
+      "ciudad": "Buenos Aires",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/38054871",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "El Arte Del Buen Comer",
+          "slug": "el-arte-del-buen-comer"
+        },
+        {
+          "titulo": "Botija Rapado",
+          "slug": "botija-rapado"
+        },
+        {
+          "titulo": "¡Es Hora De Levantarse Querido! (¿Dormiste Bien?)",
+          "slug": "es-hora-de-levantarse-querido"
+        },
+        {
+          "titulo": "Barbazul Versus El Amor Letal",
+          "slug": "barbazul-versus-el-amor-letal"
+        },
+        {
+          "titulo": "Etiqueta Negra",
+          "slug": "etiqueta-negra"
+        },
+        {
+          "titulo": "Ladrón De Mi Cerebro",
+          "slug": "ladron-de-mi-cerebro"
+        },
+        {
+          "titulo": "Todo Un Palo",
+          "slug": "todo-un-palo"
+        },
+        {
+          "titulo": "Lavi-Rap",
+          "slug": "lavi-rap"
+        },
+        {
+          "titulo": "Un Pacman En El Savoy",
+          "slug": "un-pacman-en-el-savoy"
+        },
+        {
+          "titulo": "Perdiendo El Tiempo",
+          "slug": "perdiendo-el-tiempo"
+        },
+        {
+          "titulo": "Ñam Fri Fruli Fali Fru",
+          "slug": "nam-fri-frufi-fali-fru"
+        },
+        {
+          "titulo": "Queso Ruso",
+          "slug": "queso-ruso"
+        },
+        {
+          "titulo": "Caña Seca Y Un Membrillo",
+          "slug": "cana-seca-y-un-membrillo"
+        },
+        {
+          "titulo": "Yo Caníbal",
+          "slug": "yo-canibal"
+        },
+        {
+          "titulo": "Unas Pocos Peligros Sensatos",
+          "slug": "unos-pocos-peligros-sensatos"
+        },
+        {
+          "titulo": "El Pibe De Los Astilleros",
+          "slug": "el-pibe-de-los-astilleros"
+        },
+        {
+          "titulo": "El Sniffer",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Jijiji",
+          "slug": "jijiji"
+        }
+      ],
+      "nota": "La ciudad la completó el sitio: la fuente no la da."
+    },
+    {
+      "fecha": "1993-12-10",
+      "lugar": "Sociedad Rural",
+      "ciudad": "Rosario",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/21128329",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Camila",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "Pituca",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Botija Rapado",
+          "slug": "botija-rapado"
+        },
+        {
+          "titulo": "Angel De La Soledad",
+          "slug": "un-angel-para-tu-soledad"
+        },
+        {
+          "titulo": "Salando Las Heridas",
+          "slug": "salando-las-heridas"
+        },
+        {
+          "titulo": "Lobo Caido",
+          "slug": "el-lobo-caido"
+        },
+        {
+          "titulo": "Ñam Fri Frufi Fali Fru",
+          "slug": "nam-fri-frufi-fali-fru"
+        },
+        {
+          "titulo": "Ladron De Mi Cerebro",
+          "slug": "ladron-de-mi-cerebro"
+        },
+        {
+          "titulo": "Queso Ruso",
+          "slug": "queso-ruso"
+        },
+        {
+          "titulo": "Caña Seca Y Un Membrillo",
+          "slug": "cana-seca-y-un-membrillo"
+        },
+        {
+          "titulo": "La Bestia Pop",
+          "slug": "la-bestia-pop"
+        },
+        {
+          "titulo": "Yo Canibal",
+          "slug": "yo-canibal"
+        },
+        {
+          "titulo": "Etiqueta Negra",
+          "slug": "etiqueta-negra"
+        },
+        {
+          "titulo": "Perdiendo El Tiempo",
+          "slug": "perdiendo-el-tiempo"
+        },
+        {
+          "titulo": "Susanita",
+          "slug": "susanita"
+        },
+        {
+          "titulo": "Nueva Roma",
+          "slug": "nueva-roma"
+        },
+        {
+          "titulo": "Buenas Noticias",
+          "slug": "buenas-noticias"
+        },
+        {
+          "titulo": "Gran Lady",
+          "slug": "gran-lady"
+        },
+        {
+          "titulo": "Ji Ji Ji",
+          "slug": "jijiji"
+        },
+        {
+          "titulo": "Perro Dinamita",
+          "slug": "mi-perro-dinamita",
+          "pegadoAlAnterior": true
+        }
+      ]
+    },
+    {
+      "fecha": "1994-05-14",
+      "lugar": "C.A. Huracán",
+      "ciudad": "Buenos Aires",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/38054952",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Rock Para El Negro Atila",
+          "slug": "rock-para-el-negro-atila"
+        },
+        {
+          "titulo": "Ñam Fri Fruli Fali Fru",
+          "slug": "nam-fri-frufi-fali-fru"
+        },
+        {
+          "titulo": "Un Ángel Para Tu Soledad",
+          "slug": "un-angel-para-tu-soledad"
+        },
+        {
+          "titulo": "Superlógico",
+          "slug": "superlogico"
+        },
+        {
+          "titulo": "Buenas Noticias",
+          "slug": "buenas-noticias"
+        },
+        {
+          "titulo": "Esa Estrella Era Mi Lujo",
+          "slug": "esa-estrella-era-mi-lujo"
+        },
+        {
+          "titulo": "Gran Lady",
+          "slug": "gran-lady"
+        },
+        {
+          "titulo": "Caña Seca Y Un Membrillo",
+          "slug": "cana-seca-y-un-membrillo"
+        },
+        {
+          "titulo": "El Lobo Caído",
+          "slug": "el-lobo-caido"
+        },
+        {
+          "titulo": "Ladrón De Mi Cerebro",
+          "slug": "ladron-de-mi-cerebro"
+        },
+        {
+          "titulo": "Fusilados Por La Cruz Roja",
+          "slug": "fusilados-por-la-cruz-roja"
+        },
+        {
+          "titulo": "Lavi-Rap",
+          "slug": "lavi-rap"
+        },
+        {
+          "titulo": "Yo Caníbal",
+          "slug": "yo-canibal"
+        },
+        {
+          "titulo": "Etiqueta Negra",
+          "slug": "etiqueta-negra"
+        },
+        {
+          "titulo": "Botija Rapado",
+          "slug": "botija-rapado"
+        },
+        {
+          "titulo": "Mariposa Pontiac - Rock Del País",
+          "slug": "mariposa-pontiac-rock-del-pais"
+        },
+        {
+          "titulo": "Queso Ruso",
+          "slug": "queso-ruso"
+        },
+        {
+          "titulo": "El Arte Del Buen Comer",
+          "slug": "el-arte-del-buen-comer"
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Susanita",
+          "slug": "susanita"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        }
+      ],
+      "nota": "La ciudad la completó el sitio: la fuente no la da."
+    },
+    {
+      "fecha": "1994-08-13",
+      "lugar": "Dance Hall Go!",
+      "ciudad": "Mar del Plata",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/21032017",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Un Angel Para Tu Soledad",
+          "slug": "un-angel-para-tu-soledad"
+        },
+        {
+          "titulo": "Mi Perro Dinamita",
+          "slug": "mi-perro-dinamita"
+        },
+        {
+          "titulo": "El Arte Del Buen Comer",
+          "slug": "el-arte-del-buen-comer"
+        },
+        {
+          "titulo": "Buenas Noticias",
+          "slug": "buenas-noticias"
+        },
+        {
+          "titulo": "Nueva Roma",
+          "slug": "nueva-roma"
+        },
+        {
+          "titulo": "Roxana Porchelana",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "De Estos Polvos, Futuros Lodos",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Botija Rapado",
+          "slug": "botija-rapado"
+        },
+        {
+          "titulo": "Queso Ruso",
+          "slug": "queso-ruso"
+        },
+        {
+          "titulo": "Lavi Rap",
+          "slug": "lavi-rap"
+        },
+        {
+          "titulo": "Fusilados Por la Cruz Roja",
+          "slug": "fusilados-por-la-cruz-roja"
+        },
+        {
+          "titulo": "Cuá Cuá Amén",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Canción Para Naufragios",
+          "slug": "cancion-para-naufragios"
+        },
+        {
+          "titulo": "Rock de Las Abejas",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Caña Seca y Un Membrillo",
+          "slug": "cana-seca-y-un-membrillo"
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "El Lobo Caído",
+          "slug": "el-lobo-caido"
+        },
+        {
+          "titulo": "Susanita",
+          "slug": "susanita"
+        },
+        {
+          "titulo": "Ñam fi frufi fali fru",
+          "slug": "nam-fri-frufi-fali-fru"
+        },
+        {
+          "titulo": "Ji Ji Ji",
+          "slug": "jijiji"
+        }
+      ],
+      "nota": "Hay otra transcripción de esta noche, con temas distintos (RES-225)."
+    },
+    {
+      "fecha": "1994-08-13",
+      "orden": 2,
+      "lugar": "Mar del Plata",
+      "ciudad": "Mar del Plata",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/38063124",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Un Ángel Para Tu Soledad",
+          "slug": "un-angel-para-tu-soledad"
+        },
+        {
+          "titulo": "Mi Perro Dinamita",
+          "slug": "mi-perro-dinamita"
+        },
+        {
+          "titulo": "El Arte Del Buen Comer",
+          "slug": "el-arte-del-buen-comer"
+        },
+        {
+          "titulo": "Buenas Noticias",
+          "slug": "buenas-noticias"
+        },
+        {
+          "titulo": "Nueva Roma",
+          "slug": "nueva-roma"
+        },
+        {
+          "titulo": "Roxana Porchelana",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "De Estos Polvos, Futuros Lodos",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Botija Rapado",
+          "slug": "botija-rapado"
+        },
+        {
+          "titulo": "Queso Ruso",
+          "slug": "queso-ruso"
+        },
+        {
+          "titulo": "Lavi-Rap",
+          "slug": "lavi-rap"
+        },
+        {
+          "titulo": "Fusilados Por La Cruz Roja",
+          "slug": "fusilados-por-la-cruz-roja"
+        },
+        {
+          "titulo": "Cuá Cuá Amén",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Camila",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Ladrón De Mi Cerebro",
+          "slug": "ladron-de-mi-cerebro"
+        },
+        {
+          "titulo": "Canción Para Naufragios",
+          "slug": "cancion-para-naufragios"
+        },
+        {
+          "titulo": "Rock De Las Abejas",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Caña Seca Y Un Membrillo",
+          "slug": "cana-seca-y-un-membrillo"
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "El Lobo Caído",
+          "slug": "el-lobo-caido"
+        },
+        {
+          "titulo": "Jijiji",
+          "slug": "jijiji"
+        }
+      ],
+      "nota": "La fuente solo nombra la ciudad. Hay otra transcripción de esta noche, con temas distintos (RES-225)."
+    },
+    {
+      "fecha": "1995-10-13",
+      "lugar": "Go! Disco",
+      "ciudad": "Mar del Plata",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/38067258",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Un Ángel Para Tu Soledad",
+          "slug": "un-angel-para-tu-soledad"
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Un Pacman En El Savoy",
+          "slug": "un-pacman-en-el-savoy"
+        },
+        {
+          "titulo": "El Arte Del Buen Comer",
+          "slug": "el-arte-del-buen-comer"
+        },
+        {
+          "titulo": "Nueva Roma",
+          "slug": "nueva-roma"
+        },
+        {
+          "titulo": "Etiqueta Negra",
+          "slug": "etiqueta-negra"
+        },
+        {
+          "titulo": "Aquella Solitaria Vaca Cubana",
+          "slug": "aquella-solitaria-vaca-cubana"
+        },
+        {
+          "titulo": "El Lobo Caído",
+          "slug": "el-lobo-caido"
+        },
+        {
+          "titulo": "El Pibe De Los Astilleros",
+          "slug": "el-pibe-de-los-astilleros"
+        },
+        {
+          "titulo": "Héroe Del Whisky",
+          "slug": "heroe-del-whisky"
+        },
+        {
+          "titulo": "Fusilados Por La Cruz Roja",
+          "slug": "fusilados-por-la-cruz-roja"
+        },
+        {
+          "titulo": "Un Poco De Amor Francés",
+          "slug": "un-poco-de-amor-frances"
+        },
+        {
+          "titulo": "Buenas Noticias",
+          "slug": "buenas-noticias"
+        },
+        {
+          "titulo": "La Parabellum Del Buen Psicópata",
+          "slug": "la-parabellum-del-buen-psicopata"
+        },
+        {
+          "titulo": "Barbazul Versus El Amor Letal",
+          "slug": "barbazul-versus-el-amor-letal"
+        },
+        {
+          "titulo": "Ñam Fri Fruli Fali Fru",
+          "slug": "nam-fri-frufi-fali-fru"
+        },
+        {
+          "titulo": "Jijiji",
+          "slug": "jijiji"
+        },
+        {
+          "titulo": "Susanita",
+          "slug": "susanita"
+        },
+        {
+          "titulo": "Rock Para El Negro Atila",
+          "slug": "rock-para-el-negro-atila"
+        },
+        {
+          "titulo": "Mi Perro Dinamita",
+          "slug": "mi-perro-dinamita"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "Fusilado Por La Cruz Roja",
+          "slug": "fusilados-por-la-cruz-roja"
+        }
+      ],
+      "nota": "En la fuente son dos casetes. «Fusilados por la Cruz Roja» figura dos veces: error de carga o tema repetido."
+    },
     {
       "fecha": "1995-12-08",
       "lugar": "Costa Chaval",
       "ciudad": "Concordia",
       "fuente": "musicbrainz",
       "url": "https://musicbrainz.org/event/168415b3-7053-4b2b-9c0c-57cf13cf9f7f",
-      "consultado": "2026-09-24",
+      "consultado": "2026-10-16",
       "completitud": "sin-declarar",
       "temas": [
         {
@@ -126,7 +2081,7 @@
       "ciudad": "Concordia",
       "fuente": "musicbrainz",
       "url": "https://musicbrainz.org/event/aff403c7-63d4-4122-a71b-8ae87e7cd729",
-      "consultado": "2026-09-24",
+      "consultado": "2026-10-16",
       "completitud": "sin-declarar",
       "temas": [
         {
@@ -237,6 +2192,365 @@
           "nota": "En la fuente, seccion «Encore 3»."
         }
       ]
+    },
+    {
+      "fecha": "1997-06-14",
+      "lugar": "Anfiteatro Municipal Centenario",
+      "ciudad": "Villa María",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/21142174",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Nuestro Amo Juega Al Esclavo",
+          "slug": "nuestro-amo-juega-al-esclavo"
+        },
+        {
+          "titulo": "El Pibe De Los Astilleros",
+          "slug": "el-pibe-de-los-astilleros"
+        },
+        {
+          "titulo": "La Dicha No Es Una Cosa Alegre",
+          "slug": "la-dicha-no-es-una-cosa-alegre"
+        },
+        {
+          "titulo": "Cruz Diablo",
+          "slug": "cruz-diablo"
+        },
+        {
+          "titulo": "Rock Yugular",
+          "slug": "rock-yugular"
+        },
+        {
+          "titulo": "Shopping Disco Zen",
+          "slug": "shopping-disco-zen"
+        },
+        {
+          "titulo": "Queso Ruso",
+          "slug": "queso-ruso"
+        },
+        {
+          "titulo": "Blues De La Libertad",
+          "slug": "blues-de-la-libertad"
+        },
+        {
+          "titulo": "Mariposa Pontiac / Rock Del País",
+          "slug": "mariposa-pontiac-rock-del-pais"
+        },
+        {
+          "titulo": "Nene Nena",
+          "fuera": "inedito",
+          "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+        },
+        {
+          "titulo": "Ella Baila Con Todos",
+          "slug": "ella-baila-con-todos"
+        },
+        {
+          "titulo": "Fanfarria Del Cabrío",
+          "slug": "fanfarria-del-cabrio"
+        }
+      ],
+      "nota": "Doce temas: la ficha la cree parcial."
+    },
+    {
+      "fecha": "1997-10",
+      "lugar": "Tandil",
+      "ciudad": "Tandil",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/38095899",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "El Pibe De Los Astilleros",
+          "slug": "el-pibe-de-los-astilleros"
+        },
+        {
+          "titulo": "La Dicha No Es Una Cosa Alegre",
+          "slug": "la-dicha-no-es-una-cosa-alegre"
+        },
+        {
+          "titulo": "Cruz Diablo!",
+          "slug": "cruz-diablo"
+        },
+        {
+          "titulo": "Shopping Disco-Zen",
+          "slug": "shopping-disco-zen"
+        },
+        {
+          "titulo": "Rock Yugular",
+          "slug": "rock-yugular"
+        },
+        {
+          "titulo": "Queso Ruso",
+          "slug": "queso-ruso"
+        },
+        {
+          "titulo": "Esa Estrella Era Mi Lujo",
+          "slug": "esa-estrella-era-mi-lujo"
+        },
+        {
+          "titulo": "Mariposa Pontiac - Rock Del País",
+          "slug": "mariposa-pontiac-rock-del-pais"
+        },
+        {
+          "titulo": "Un Ángel Para Tu Soledad",
+          "slug": "un-angel-para-tu-soledad"
+        },
+        {
+          "titulo": "Ñam Fri Fruli Fali Fru",
+          "slug": "nam-fri-frufi-fali-fru"
+        },
+        {
+          "titulo": "Intro",
+          "fuera": "intro",
+          "nota": "Así figura en la fuente, sin más (RES-230)."
+        },
+        {
+          "titulo": "Fanfarria Del Cabrío",
+          "slug": "fanfarria-del-cabrio"
+        },
+        {
+          "titulo": "Luzbelito Y Las Sirenas",
+          "slug": "luzbelito-y-las-sirenas"
+        },
+        {
+          "titulo": "Juguetes Perdidos",
+          "slug": "juguetes-perdidos"
+        },
+        {
+          "titulo": "Nueva Roma",
+          "slug": "nueva-roma"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "Jijiji",
+          "slug": "jijiji"
+        }
+      ],
+      "nota": "La fuente solo da el mes y la ciudad."
+    },
+    {
+      "fecha": "1997-12-13",
+      "lugar": "Estadio Colón",
+      "ciudad": "Santa Fe",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/21097780",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "El Pibe De Los Astilleros",
+          "slug": "el-pibe-de-los-astilleros"
+        },
+        {
+          "titulo": "Angel Para Tu Soledad",
+          "slug": "un-angel-para-tu-soledad"
+        },
+        {
+          "titulo": "Nuotatori Professionisti",
+          "slug": "nuotatori-professionisti"
+        },
+        {
+          "titulo": "La Dicha No Es Una Cosa Alegre",
+          "slug": "la-dicha-no-es-una-cosa-alegre"
+        },
+        {
+          "titulo": "Nene Nena",
+          "fuera": "inedito",
+          "nota": "Demo de RCA de 1982, nunca entro a los diez discos (RES-75)."
+        },
+        {
+          "titulo": "Ella Baila Con Todos",
+          "slug": "ella-baila-con-todos"
+        },
+        {
+          "titulo": "Rock Para Los Dientes",
+          "slug": "rock-para-los-dientes"
+        },
+        {
+          "titulo": "Todo Un Palo",
+          "slug": "todo-un-palo"
+        },
+        {
+          "titulo": "Vencedores Vencidos",
+          "slug": "vencedores-vencidos"
+        },
+        {
+          "titulo": "Motorpsico",
+          "slug": "motor-psico"
+        },
+        {
+          "titulo": "Cruz Diablo!",
+          "slug": "cruz-diablo"
+        },
+        {
+          "titulo": "Parabellum Del Buen Psicopata",
+          "slug": "la-parabellum-del-buen-psicopata"
+        },
+        {
+          "titulo": "Nuestro Amo Juega Al Esclavo",
+          "slug": "nuestro-amo-juega-al-esclavo"
+        },
+        {
+          "titulo": "Esa Estrella Era MI Lujo",
+          "slug": "esa-estrella-era-mi-lujo"
+        },
+        {
+          "titulo": "Nadie Es Perfecto",
+          "slug": "nadie-es-perfecto"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "El Lobo Caido",
+          "slug": "el-lobo-caido"
+        },
+        {
+          "titulo": "Un Poco De Amor Francés",
+          "slug": "un-poco-de-amor-frances"
+        },
+        {
+          "titulo": "Juguetes Perdidos",
+          "slug": "juguetes-perdidos"
+        },
+        {
+          "titulo": "MI Perro Dinamita",
+          "slug": "mi-perro-dinamita"
+        },
+        {
+          "titulo": "Mariposa Pontiac / Rock Del Pais",
+          "slug": "mariposa-pontiac-rock-del-pais"
+        },
+        {
+          "titulo": "Ji Ji Ji",
+          "slug": "jijiji"
+        }
+      ]
+    },
+    {
+      "fecha": "2000-04-16",
+      "lugar": "Estadio River Plate",
+      "ciudad": "Buenos Aires",
+      "fuente": "discogs",
+      "url": "https://www.discogs.com/release/18962038",
+      "consultado": "2026-10-16",
+      "completitud": "sin-declarar",
+      "temas": [
+        {
+          "titulo": "Intro . Un Ángel Para Tu Soledad",
+          "fuera": "sin-identificar",
+          "nota": "No cruza con los 105 de RES-20 y nadie lo clasifico con ficha todavia."
+        },
+        {
+          "titulo": "Queso Ruso",
+          "slug": "queso-ruso"
+        },
+        {
+          "titulo": "Alien Duce",
+          "slug": "alien-duce"
+        },
+        {
+          "titulo": "Pogo",
+          "slug": "pogo"
+        },
+        {
+          "titulo": "Drogocop",
+          "slug": "drogocop"
+        },
+        {
+          "titulo": "Las Increíbles Andanzas Del Capitán Buscapina En Cybersiberia",
+          "slug": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia"
+        },
+        {
+          "titulo": "Motorpsico",
+          "slug": "motor-psico"
+        },
+        {
+          "titulo": "Buenas Noticias",
+          "slug": "buenas-noticias"
+        },
+        {
+          "titulo": "El Pibe De Los Astilleros",
+          "slug": "el-pibe-de-los-astilleros"
+        },
+        {
+          "titulo": "Ladrón De Mi Cerebro",
+          "slug": "ladron-de-mi-cerebro"
+        },
+        {
+          "titulo": "Mi Perro Dinamita",
+          "slug": "mi-perro-dinamita"
+        },
+        {
+          "titulo": "Ñam Fri Fru Fri",
+          "slug": "nam-fri-frufi-fali-fru"
+        },
+        {
+          "titulo": "Caña Seca Y Un Membrillo",
+          "slug": "cana-seca-y-un-membrillo"
+        },
+        {
+          "titulo": "La Hija Del Fletro",
+          "slug": "la-hija-del-fletero"
+        },
+        {
+          "titulo": "El Árbol Del Gran Bonete",
+          "slug": "el-arbol-del-gran-bonete"
+        },
+        {
+          "titulo": "Estás Frito Angelito",
+          "slug": "estas-frito-angelito"
+        },
+        {
+          "titulo": "Nuestro Amo Juega Al Esclavo",
+          "slug": "nuestro-amo-juega-al-esclavo"
+        },
+        {
+          "titulo": "Juguetes Perdidos",
+          "slug": "juguetes-perdidos"
+        },
+        {
+          "titulo": "Blues De La Artillería",
+          "slug": "blues-de-la-artilleria"
+        },
+        {
+          "titulo": "Vamos Las Bandas",
+          "slug": "vamos-las-bandas"
+        },
+        {
+          "titulo": "Esto Es To To Todo Amigos",
+          "slug": "esto-es-to-to-todo-amigos"
+        },
+        {
+          "titulo": "Scaramanzia",
+          "slug": "scaramanzia"
+        },
+        {
+          "titulo": "Nueva Roma",
+          "slug": "nueva-roma"
+        },
+        {
+          "titulo": "Preso En Mi Ciudad",
+          "slug": "preso-en-mi-ciudad"
+        },
+        {
+          "titulo": "Ya Nadie Va A Escuchar Tu Remera",
+          "slug": "ya-nadie-va-a-escuchar-tu-remera"
+        },
+        {
+          "titulo": "Ji Ji Ji",
+          "slug": "jijiji"
+        }
+      ],
+      "nota": "Las notas de la fuente dicen domingo 16 de abril; otra fuente da el 15. Son dos CDs, parte 1 y parte 2. La ciudad la completó el sitio: la fuente no la da."
     }
   ]
 }
