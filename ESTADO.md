@@ -9,7 +9,7 @@
 
 > ## 🔧 LA PULIDA DEL BESTIARIO (2026-10-16) — quinta enmienda de `D-73`, ciclo 22
 >
-> **En la rama `ciclo-22/bestiario`, sin integrar.** Recorrido entero a 375 y 1280 px. El bocadillo ya no se va
+> **En `main` desde el PR #49 (`fca4682`).** Recorrido entero a 375 y 1280 px. El bocadillo ya no se va
 > de la pantalla en las escenas anchas; cada escena de noche arranca mirando a su protagonista y avisa que se
 > desliza; en la compu entran enteras; las fichas de los cinco de tapa muestran su recorte; el índice sigue el
 > orden del recorrido y cada recinto tiene "Volvé al plano". **Verde:** `npm test` (1647), `npm run check`,
@@ -17,7 +17,7 @@
 
 > ## 🕯️ TRES MÁS DE TAPA: EL PERRO, LUZBELITO Y MOMO (2026-10-16) — cuarta enmienda de `D-73`, ciclo 22
 >
-> **En la rama `ciclo-22/bestiario`, sin integrar.** Pedido del usuario: *"Elegí otras 3 bestias y continuá
+> **En `main` desde el PR #49 (`fca4682`).** Pedido del usuario: *"Elegí otras 3 bestias y continuá
 > haciéndolas"*.
 >
 > - **El perro de *Un baión*** ("ese perro que sigue allí") entra por el borde del baldío, rayado a crayón, y ladra.
@@ -31,7 +31,7 @@
 
 > ## 🐺 EL LOBO Y EL CORDERO SON LAS TAPAS (2026-10-16) — tercera enmienda de `D-73`, ciclo 22
 >
-> **En la rama `ciclo-22/bestiario`, sin integrar.** Pedido del usuario: *"Animados se refiere a que se muevan, no
+> **En `main` desde el PR #49 (`fca4682`).** Pedido del usuario: *"Animados se refiere a que se muevan, no
 > estilo cartoon. Deben ser lo más fiel posible al diseño real"*.
 >
 > - **Recortados de los frentes del disco doble** (`recortes.ts`, `scripts/recortar-bestiario.mjs`), no redibujados:
@@ -45,7 +45,7 @@
 
 > ## 🌑 EL MONTE DE NOCHE, A AERÓGRAFO (2026-10-16) — segunda enmienda de `D-73`, ciclo 22
 >
-> **En la rama `ciclo-22/bestiario`, sin integrar.** Pedido del usuario: *"Que sea el arte más oscuro, no
+> **En `main` desde el PR #49 (`fca4682`).** Pedido del usuario: *"Que sea el arte más oscuro, no
 > tan infantil [...] que se note más que se basa en arte de Rocambole [...] Más espacio."*
 >
 > - **Técnica nueva**: aerógrafo en SVG (`aerografo.ts`, `arte.ts`) impreso una vez con `sharp` a
@@ -59,7 +59,7 @@
 
 > ## 🐑 EL BESTIARIO SE VUELVE ZOOLÓGICO (2026-10-16) — enmienda de `D-73`, ciclo 22
 >
-> **En la rama `ciclo-22/bestiario`, sin integrar.** Pedido del usuario: *"personajes con diseños lindos,
+> **En `main` desde el PR #49 (`fca4682`).** Pedido del usuario: *"personajes con diseños lindos,
 > al estilo rocambole, animados y viviendo en su entorno [...] algo asi como un zoologico"*.
 >
 > - **El recorrido**: el mapa redondo es el plano de la entrada; abajo, doce recintos en scroll, cada uno con
@@ -77,7 +77,7 @@
 
 > ## 🐺 EL BESTIARIO REDONDO (2026-10-16) — `D-73`, ciclo 22
 >
-> **En la rama `ciclo-22/bestiario`, sobre `main` en `fdaea84`, sin integrar.** Se trabajó en un worktree
+> **En `main` desde el PR #49 (`fca4682`); la rama `ciclo-22/bestiario` salió de `fdaea84`.** Se trabajó en un worktree
 > (`.claude/worktrees/bestiario`) para no mezclarse con la vuelta de `INV-300`, que sigue sin commitear en la
 > carpeta principal. Pedido del usuario: *"Analiza diseña y construi el bestiario redondo. Arma una lista de
 > TODOS los personajes que son parte de la mitologia de los redondos [...] que se puede recorrer desde arriba
