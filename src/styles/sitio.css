@@ -2860,3 +2860,429 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 .en-vivo-armala {
   margin-bottom: var(--espacio-4);
 }
+
+/* ==================================================================
+   El bestiario redondo (D-73)
+   ==================================================================
+
+   Un mapa redondo pegado sobre la tinta como un recorte (borde grueso y apenas torcido), las
+   figuras en tinta plana sobre papel, y el acento de cada región en `--tr`, que la página
+   pone con el disco que la viste (`D-19`). Las clases cortas (`tn`, `pp`, `ac`...) son las
+   de `lib/bestiario/figuras.ts` y `mapa.ts`; viven acá adentro de `.bestiario-svg` para que
+   no se crucen con nada del resto del sitio. Las fichas usan las mismas figuras con `<use>`,
+   y el `<use>` toma estas reglas del símbolo original. */
+
+.bestiario-titulo {
+  font-family: var(--fuente-lobo-suelto);
+  font-size: clamp(2.2rem, 10vw, 3.6rem);
+  letter-spacing: 0.02em;
+}
+
+.bestiario-libreta {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  margin: var(--espacio-1) 0 0;
+}
+
+.bestiario {
+  max-width: var(--ancho-tablero-amplio);
+  margin: var(--espacio-2) auto var(--espacio-3);
+}
+
+.bestiario-marco {
+  position: relative;
+  aspect-ratio: 1;
+  width: 100%;
+  border: var(--linea) solid var(--papel);
+  border-radius: 3px;
+  background: var(--fondo);
+  overflow: hidden;
+  transform: rotate(-0.5deg);
+}
+
+.bestiario-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: manipulation;
+}
+
+/* Las tintas de las figuras y del paisaje. Sin ancestro: ver `tinta` en `figuras.ts`. */
+.b-tn { fill: var(--fondo); }
+.b-osc { fill: var(--borde); }
+.b-pp { fill: var(--papel); }
+.b-ac { fill: var(--tr, var(--cat-mitologia)); }
+.b-ac2 { fill: var(--tr, var(--cat-mitologia)); fill-opacity: 0.55; }
+.b-oro { fill: var(--acento-2); }
+.b-az { fill: var(--disco-un-baion-para-el-ojo-idiota-apoyo); }
+.b-ag { fill: var(--disco-un-baion-para-el-ojo-idiota-tinta); fill-opacity: 0.6; }
+.b-barro { fill: var(--disco-luzbelito-apoyo); }
+.b-borde { stroke: var(--fondo); stroke-width: 2.5; }
+.b-borde-grueso { stroke: var(--fondo); stroke-width: 5; stroke-linejoin: round; }
+.b-lana { fill: var(--papel); stroke: var(--fondo); stroke-width: 2; }
+.b-tz,
+.b-tz-pp,
+.b-tz-oro,
+.b-pun {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.b-tz { stroke: var(--fondo); }
+.b-tz-pp { stroke: var(--papel); }
+.b-tz-oro { stroke: var(--acento-2); stroke-width: 2.5; }
+.b-pun { stroke: var(--fondo); stroke-width: 2; stroke-dasharray: 3 3; }
+
+/* El suelo y las regiones. */
+.bestiario-svg .suelo { fill: var(--papel); }
+.bestiario-svg .region-suelo { fill: var(--tr); fill-opacity: 0.32; }
+.bestiario-svg .region-borde {
+  fill: none;
+  stroke: var(--fondo);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 1 7;
+}
+.bestiario-svg .agua { fill: var(--disco-un-baion-para-el-ojo-idiota-tinta); fill-opacity: 0.5; }
+.bestiario-svg .techo { fill: var(--tr); fill-opacity: 0.45; }
+.bestiario-svg .pasto { fill: var(--papel); stroke: var(--fondo); stroke-width: 3; }
+.bestiario-svg .pelado { fill: var(--disco-luzbelito-tinta); fill-opacity: 0.45; }
+.bestiario-svg .copa { stroke: var(--fondo); stroke-width: 3; }
+.bestiario-svg .mantel { fill-opacity: 0.7; }
+.bestiario-svg .ruta { fill: none; stroke: var(--papel-tenue); }
+.bestiario-svg .region { cursor: pointer; }
+
+/* Lo que solo se ve de cerca: el pasto, las banderitas, los yuyos. */
+.bestiario-svg .detalle { display: none; }
+.bestiario-marco[data-vista='cerca'] .bestiario-svg .detalle { display: inline; }
+
+/* De cerca, las demás regiones se apagan un poco y la elegida se marca con su borde entero. */
+.bestiario-marco[data-vista='cerca'] .region .region-suelo { fill-opacity: 0.18; }
+.bestiario-marco[data-vista='cerca'] .region--elegida .region-suelo { fill-opacity: 0.32; }
+.bestiario-svg .region--elegida .region-borde { stroke-width: 5; stroke-dasharray: none; }
+
+/* Las bestias: de lejos son textura, de cerca se tocan. */
+.bestiario-marco[data-vista='lejos'] .bestiario-svg .bestias { pointer-events: none; }
+.bestiario-svg .bestia { cursor: pointer; outline: none; }
+.bestiario-svg .toque { fill: transparent; }
+.bestiario-svg .bestia:focus-visible .toque,
+.bestiario-svg .bestia--elegida .toque {
+  stroke: var(--acento-2);
+  stroke-width: 3;
+  stroke-dasharray: 6 4;
+}
+.bestiario-svg .marca-anotada { display: none; }
+.bestiario-svg .bestia--anotada .marca-anotada { display: inline; }
+
+/* Los rótulos del mapa entero: sellos de goma pegados encima, que son los botones. */
+.bestiario-rotulos {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.bestiario-marco[data-vista='cerca'] .bestiario-rotulos { display: none; }
+
+.rotulo-region {
+  position: absolute;
+  padding: 0.15em 0.4em;
+  white-space: nowrap;
+  font-family: var(--fuente-rotulada);
+  font-size: clamp(0.58rem, 2.3vw, 0.9rem);
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--fondo);
+  background: var(--papel);
+  border: 2px solid var(--fondo);
+  border-radius: 3px;
+  pointer-events: auto;
+  cursor: pointer;
+  transform: translate(-50%, -50%) rotate(-2deg);
+}
+
+.rotulo-region:nth-child(even) { transform: translate(-50%, -50%) rotate(2deg); }
+
+/* El sello es chico, el toque no: la zona de pulgar se agranda por afuera. */
+.rotulo-region::after {
+  content: '';
+  position: absolute;
+  inset: -10px -4px;
+}
+
+.rotulo-region:hover,
+.rotulo-region:focus-visible {
+  border-color: var(--tr);
+  outline: 2px solid var(--fondo);
+}
+
+/* La barra de la región: dónde estás, quién vive acá y qué hay al lado. */
+.bestiario-barra {
+  margin-top: var(--espacio-2);
+  padding: var(--espacio-2);
+  border: var(--linea) solid var(--cat-mitologia);
+  border-radius: 3px;
+}
+
+.bestiario-barra[hidden],
+.bestiario-hoja[hidden] { display: none; }
+
+.bestiario-aqui { margin: 0; }
+
+.bestiario-aqui strong {
+  display: block;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.3rem;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.bestiario-aqui-etiqueta,
+.bestiario-sub {
+  display: block;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  margin: var(--espacio-2) 0 0.3rem;
+}
+
+.bestiario-aqui-etiqueta { margin-top: 0; }
+
+.bestiario-canta {
+  margin: 0.2rem 0 var(--espacio-2);
+  font-style: italic;
+  color: var(--texto);
+}
+
+.bestiario-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bestiario-chip,
+.bestiario-volver,
+.bestiario-acciones a,
+.bestiario-acciones button {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  padding: 0.3rem 0.75rem;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--texto);
+  text-decoration: none;
+  background: transparent;
+  border: 2px solid var(--papel-tenue);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.bestiario-chip:hover,
+.bestiario-chip:focus-visible,
+.bestiario-volver:hover,
+.bestiario-volver:focus-visible,
+.bestiario-acciones a:hover,
+.bestiario-acciones button:hover {
+  border-color: var(--acento-2);
+}
+
+.bestiario-volver {
+  font-family: var(--fuente-rotulada);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  border-color: var(--papel);
+}
+
+.bestiario-chips--vecinas .bestiario-chip { border-style: dashed; }
+
+/* La hoja de la ficha: sube desde abajo en el teléfono, y se para a un costado en la compu. */
+.bestiario-hoja {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  max-height: 74vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--espacio-2) var(--espacio-2) var(--espacio-4);
+  background: var(--fondo);
+  border-top: var(--linea) solid var(--papel);
+}
+
+@media (min-width: 52rem) {
+  .bestiario-hoja {
+    left: auto;
+    right: var(--espacio-2);
+    bottom: var(--espacio-2);
+    width: min(30rem, 42vw);
+    max-height: 82vh;
+    border: var(--linea) solid var(--papel);
+    border-radius: 3px;
+  }
+}
+
+.bestiario-cerrar {
+  position: sticky;
+  top: 0;
+  float: right;
+  width: var(--toque-min);
+  height: var(--toque-min);
+  font-size: 1.2rem;
+  color: var(--texto);
+  background: var(--fondo);
+  border: 2px solid var(--papel);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.bestiario-hoja .solo-indice { display: none; }
+
+/* La ficha, igual en la hoja y en el índice. */
+.bestiario-sello {
+  display: inline-block;
+  margin: 0;
+  padding: 0.1rem 0.45rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--texto);
+  border: 2px solid var(--tr, var(--cat-mitologia));
+  border-radius: 3px;
+  transform: rotate(-2deg);
+}
+
+.bestiario-ficha-titulo {
+  margin: 0.5rem 0 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.45rem;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.bestiario-figura {
+  display: block;
+  width: 10rem;
+  height: auto;
+  margin: var(--espacio-2) 0;
+  background: var(--papel);
+  border: var(--linea) solid var(--tr, var(--cat-mitologia));
+  border-radius: 3px;
+  transform: rotate(1.2deg);
+}
+
+.bestiario-sale,
+.bestiario-tambien,
+.bestiario-estampa {
+  margin: 0 0 var(--espacio-1);
+  line-height: 1.6;
+}
+
+.bestiario-sale .bestiario-sub,
+.bestiario-tambien .bestiario-sub {
+  display: inline;
+  margin: 0 0.3rem 0 0;
+}
+
+.bestiario-verso {
+  margin: var(--espacio-1) 0 var(--espacio-2);
+  padding: 0.5rem 0.75rem;
+  font-style: italic;
+  line-height: 1.5;
+  border: 2px dashed var(--tr, var(--cat-mitologia));
+  border-radius: 3px;
+}
+
+.bestiario-verso span { display: block; }
+
+.bestiario-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: var(--espacio-2) 0;
+}
+
+.bestiario-escuchar--sonando { border-style: dashed; border-color: var(--acento-2); }
+
+/* El índice. */
+.bestiario-indice {
+  max-width: var(--ancho-tablero);
+  margin: 0 auto;
+}
+
+.bestiario-region { margin: 0 0 var(--espacio-3); }
+
+.bestiario-region-titulo {
+  display: inline-block;
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  border-bottom: var(--linea) solid var(--tr);
+}
+
+.bestiario-lista {
+  display: grid;
+  gap: 0.4rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bestiario-ficha summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: var(--toque-min);
+  padding: 0.25rem 0.5rem;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.bestiario-ficha summary::-webkit-details-marker { display: none; }
+
+.bestiario-ficha[open] summary { border-color: var(--tr); }
+
+.bestiario-mini {
+  flex: none;
+  width: 2.8rem;
+  height: 2.8rem;
+  background: var(--papel);
+  border-radius: 3px;
+}
+
+.bestiario-nombre { line-height: 1.25; }
+
+.bestiario-anotada-sello {
+  display: none;
+  margin-left: auto;
+  padding: 0 0.35rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  border: 1.5px solid var(--texto-tenue);
+  border-radius: 3px;
+  transform: rotate(-3deg);
+}
+
+.bestiario-item--anotada .bestiario-anotada-sello { display: inline-block; }
+
+.bestiario-cuerpo { padding: var(--espacio-2) 0.25rem var(--espacio-3); }
+
+.bestiario-puerta {
+  display: block;
+  margin-top: var(--espacio-2);
+}
