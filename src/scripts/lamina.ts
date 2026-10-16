@@ -165,6 +165,22 @@ function pedidoDeTexto(ctx: CanvasRenderingContext2D, texto: string, cuerpo: num
 }
 
 /**
+ * Los renglones de una banda con una ficha por renglón (`renglonPorFicha`, `D-72`): cada
+ * ficha se parte sola, y si no entran todos, lo que sobra se junta en el último —el mismo
+ * criterio de `partirEnLineas`: chico y entero antes que cortado—.
+ */
+function renglonesPorFicha(
+  ctx: CanvasRenderingContext2D,
+  fichas: readonly string[],
+  cuerpo: number,
+  maximo: number = Number.MAX_SAFE_INTEGER,
+): string[] {
+  const lineas = fichas.flatMap((f) => partirEnLineas(f, ANCHO_UTIL, (t) => medir(ctx, t, cuerpo, ROTULADA), Number.MAX_SAFE_INTEGER));
+  if (lineas.length <= maximo) return [...lineas];
+  return [...lineas.slice(0, maximo - 1), lineas.slice(maximo - 1).join(SEPARADOR)];
+}
+
+/**
  * Baja una tapa, o `null` si no llegó.
  *
  * `null` y no una excepción: una tapa que no cargó no puede dejar a nadie sin lámina. Se
@@ -204,8 +220,9 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
     tenue: tinta('--texto-tenue'),
     borde: tinta('--borde'),
     marca: tinta('--marca-rojo'),
-    // El juego viste ¡Bang! ¡Bang!… Estás liquidado (mezcla `D-19`).
-    juego: tinta('--disco-bang-bang-estas-liquidado-tinta', tinta('--texto')),
+    // "Ponelos en fila" viste ¡Bang! ¡Bang!… Estás liquidado (mezcla `D-19`); otro juego que
+    // imprima la misma hoja pide la suya (`D-72`).
+    juego: tinta(datos.tintaJuego ?? '--disco-bang-bang-estas-liquidado-tinta', tinta('--texto')),
   };
 
   // Las tapas se bajan antes de planificar: una banda de tapas pide alto en función de
@@ -225,7 +242,11 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
   const textos = datos.bandas.map((b) => b.fichas.join(SEPARADOR));
   const pedidos = (cuerpo: number): number[] =>
     datos.bandas.map((_, i) =>
-      tapas[i]!.length > 0 ? pedidoDeTapas(tapas[i]!.length, ANCHO_UTIL) : pedidoDeTexto(ctx, textos[i]!, cuerpo),
+      tapas[i]!.length > 0
+        ? pedidoDeTapas(tapas[i]!.length, ANCHO_UTIL)
+        : datos.renglonPorFicha
+          ? renglonesPorFicha(ctx, datos.bandas[i]!.fichas, cuerpo).length * cuerpo * INTERLINEA
+          : pedidoDeTexto(ctx, textos[i]!, cuerpo),
     );
   const cuerpoFichas = elegirCuerpo(pedidos);
   const plan = planificarLamina(pedidos(cuerpoFichas));
@@ -290,9 +311,9 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
     } else {
       let cuerpo: number = cuerpoFichas;
       const caben = renglonesQueEntran(contenido, cuerpo);
-      const lineas = [
-        ...partirEnLineas(textos[i]!, ANCHO_UTIL, (s) => medir(ctx, s, cuerpo, ROTULADA), caben),
-      ];
+      const lineas = datos.renglonPorFicha
+        ? renglonesPorFicha(ctx, datos.bandas[i]!.fichas, cuerpo, caben)
+        : [...partirEnLineas(textos[i]!, ANCHO_UTIL, (s) => medir(ctx, s, cuerpo, ROTULADA), caben)];
       const masAncha = Math.max(...lineas.map((l) => medir(ctx, l, cuerpo, ROTULADA)));
       cuerpo = cuerpoQueEntra(masAncha, ANCHO_UTIL, cuerpo, CUERPOS_LAMINA.ficha.piso);
       lineas.forEach((linea, n) => {

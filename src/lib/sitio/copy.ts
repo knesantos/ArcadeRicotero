@@ -133,6 +133,9 @@ export const LUGARES = {
   // comparten objeto. A 320 px el renglón no puede pasar de 30 caracteres: con «seco» (35)
   // partía en dos y dejaba «Empezá la noche» bajo el pliegue (`REV-20`, `FIND-111` de `REV-19`).
   dosEjes: 'Traés barro en las zapatillas.',
+  /* `D-72`: "Armá tu recital". La hoja de la lista va pegada con cinta al piso del escenario,
+     al lado del pie del micrófono: la imagen es el papel en blanco y la cinta en la mano. */
+  recital: 'Tenés cinta y una lista en blanco.',
 } as const;
 
 /**
@@ -297,6 +300,22 @@ export const JUEGOS: readonly Casete[] = [
     arte: '/tapas/detalle/un-baion-para-el-ojo-idiota-zoom.jpg',
     href: '/juegos/mas-o-menos/',
     accion: 'JUGÁ',
+  },
+  {
+    // `D-72`, el del 2026-10-15: "Armá tu recital". Entra al final del lado A, el A10, como
+    // entraron los juegos nuevos hasta que el usuario los movió (`D-68`, `D-70`).
+    titulo: 'Armá tu recital',
+    // La primera oración canta y no pasa de ocho; la segunda dice lo que hay.
+    // Enmienda de `D-72` (2026-10-15): es una expresión de deseo, en un estadio, un teatro, un
+    // descampado o donde digas.
+    baja: 'Esta noche la lista la escribís vos. El recital que te gustaría: dónde, los temas en orden y los bises, y suena un pedazo de cada uno.',
+    // Viste *Oktubre*, como la portada (`D-19`): la tapa es la gente, y un recital es la gente.
+    variante: 'marca',
+    // La multitud con las banderas, de cerca. *Oktubre* entero ya es el casete de "Preguntas
+    // ricoteras", y `D-49` no deja repetir pieza: este es el detalle, otro pedazo.
+    arte: '/tapas/detalle/oktubre-zoom.jpg',
+    href: '/juegos/arma-tu-recital/',
+    accion: 'ARMÁ',
   },
 ] as const;
 
