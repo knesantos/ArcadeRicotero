@@ -133,6 +133,18 @@ export interface DatosLamina {
   readonly credito: string;
   /** Dónde se juega. Es la única forma de volver que tiene una imagen suelta. */
   readonly sitio: string;
+  /**
+   * La tinta del nombre del juego, como variable de `tokens.css`. Sin ella es la de *¡Bang!
+   * ¡Bang!*, que es la que viste "Ponelos en fila". La pidió "Armá tu recital" (`D-72`), que
+   * imprime la misma hoja con la tinta de *Oktubre*.
+   */
+  readonly tintaJuego?: string;
+  /**
+   * Una ficha por renglón, en vez de todas seguidas con un punto medio. Lo pidió la lista de
+   * "Armá tu recital" (`D-72`): una lista de temas se lee de arriba abajo, como la hoja pegada
+   * en el escenario, y no como un párrafo.
+   */
+  readonly renglonPorFicha?: boolean;
 }
 
 export class LaminaImposible extends Error {}

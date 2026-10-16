@@ -229,6 +229,33 @@ export const ALIAS: Readonly<Record<string, string>> = {
   // - nombra solo la segunda mitad del tema compuesto: la contracara de 'Mariposa Pontiac'
   //   (`RES-91`, "confirmado sistemático"). En el conteo es otra grafía y no suma (`CTR-19.2`).
   'Rock del país': 'Mariposa Pontiac - Rock del país',
+  // Discogs (`D-72`, `INV-425`, `RES-210`..`RES-232`): transcripciones de casetes piratas que
+  // cargó la gente. Cada fila es una errata, una abreviatura o un apodo del tema, y ninguna
+  // normalización la salva. Lo que no es de los 105 (inéditos, cánticos) no se toca acá.
+  'Ñam Fri Fruli Fali Fru': 'Ñam fri frufi fali fru',
+  'Ñam Fri Fruli Gali Fru': 'Ñam fri frufi fali fru',
+  'Ñam fi frufi fali fru': 'Ñam fri frufi fali fru',
+  'Ñam Fri Fru Fri': 'Ñam fri frufi fali fru',
+  'Fusilado Por La Cruz Roja': 'Fusilados por la Cruz Roja',
+  'Unas Pocos Peligros Sensatos': 'Unos pocos peligros sensatos',
+  'TV Führer': 'Divina TV Führer',
+  'Angel De La Soledad': 'Un ángel para tu soledad',
+  'Angel Para Tu Soledad': 'Un ángel para tu soledad',
+  'Lobo Caido': 'El lobo caído',
+  'Parabellum Del Buen Psicopata': 'La parabellum del buen psicópata',
+  'La Hija Del Fletro': 'La hija del fletero',
+  '¡Es Hora De Levantarse Querido! (¿Dormiste Bien?)': '¡Es hora de levantarse querido!',
+  'El Blues De La Artillería': 'Blues de la artillería',
+  'Barbazul Vs El Amor Letal': 'Barbazul versus el amor letal',
+  'Divina Tv Fürher': 'Divina TV Führer',
+  'Fusilados por la Curz Roja': 'Fusilados por la Cruz Roja',
+  'La Vaca Cubana': 'Aquella solitaria vaca cubana',
+  'Vaca Cubana': 'Aquella solitaria vaca cubana',
+  'Parabellum (Beat)': 'La parabellum del buen psicópata',
+  Puticlub: 'Masacre en el puticlub',
+  'ÑAm Fri Fuli Fali Fru': 'Ñam fri frufi fali fru',
+  // Mitad de un renglón con dos temas ("Ji Ji Ji / Perro Dinamita"): con esta fila se parte.
+  'Perro Dinamita': 'Mi perro dinamita',
 };
 
 /** Índice por forma dura, para resolver un título de fuente contra los 105. */

@@ -6226,3 +6226,700 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
     content: none;
   }
 }
+
+/* ==================================================================
+   Armá tu recital (`D-72`)
+   ==================================================================
+
+   La lista es una hoja de papel pegada con cinta al piso del escenario, escrita con fibra:
+   tinta (`--fondo`) sobre papel (`--papel`), que es el par testeado del collage. La base no
+   rota; lo que rota es la tinta de *Oktubre* en el acento (`.juego--marca`). Sin sombras
+   (`D-64`), sin pastillas: los sellos van a 3 px y el borde de cada tema lo tiñe su disco.
+*/
+
+.recital .recital-titulo {
+  margin: var(--espacio-3) 0 var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  font-weight: 400;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.recital-fuente,
+.recital-como-suena,
+.recital-estado,
+.recital-retomar-cuenta {
+  margin: 0 0 var(--espacio-2);
+  font-size: 0.9rem;
+  color: var(--texto-tenue);
+}
+
+.recital-como-suena {
+  margin-top: var(--espacio-3);
+}
+
+.recital-retomar-cuenta {
+  margin-top: var(--espacio-1);
+  text-align: center;
+}
+
+/* ---- El lugar: cuatro pestañas y las entradas de papel ---- */
+
+/* Las pestañas son sellos de goma: rectángulo de esquina casi viva, borde fino. La elegida se
+   llena de tinta: el estado es relleno y borde, no solo color. */
+.recital-pestanas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 var(--espacio-2);
+}
+
+.recital-pestana {
+  min-height: var(--toque-min);
+  padding: 0 12px;
+  background: transparent;
+  color: var(--texto);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  touch-action: manipulation;
+}
+
+.recital-pestana[aria-pressed="true"] {
+  background: var(--texto);
+  color: var(--fondo);
+  border-color: var(--texto);
+}
+
+.recital-lugares {
+  display: grid;
+  gap: var(--espacio-1);
+  margin: 0 0 var(--espacio-3);
+  padding: 0;
+  list-style: none;
+}
+
+/* La entrada: papel con tinta (el par del collage), el cuerpo con el nombre y el talón con la
+   ciudad, separados por la línea de puntos por donde se corta. Torcida a mano, un poco cada una. */
+.recital-entrada {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: 0;
+  background: var(--papel);
+  color: var(--fondo);
+  border: 2px solid var(--papel);
+  border-radius: 3px;
+  font: inherit;
+  text-align: left;
+  touch-action: manipulation;
+}
+
+.recital-lugares li:nth-child(odd) .recital-entrada {
+  rotate: -0.5deg;
+}
+
+.recital-lugares li:nth-child(even) .recital-entrada {
+  rotate: 0.4deg;
+}
+
+.recital-entrada-cuerpo {
+  flex: 1;
+  align-self: center;
+  padding: 10px 12px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.95rem;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.recital-entrada-talon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 34%;
+  margin: 4px;
+  padding: 6px;
+  /* El talón es su propio recuadro de puntos, la parte que se corta y queda en la mano. Entero y
+     no solo el lado: un borde de un solo costado es la barra lateral que veta `diseno-marca.md`. */
+  border: 2px dashed var(--papel-borde);
+  border-radius: 2px;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--papel-tenue);
+}
+
+.recital-entrada:hover,
+.recital-entrada:focus-visible {
+  border-color: var(--tinte-accion);
+}
+
+/* El lugar elegido: borde doble y grueso en la tinta del disco, no solo otro color (`FIND-167`). */
+.recital-entrada[aria-current="true"] {
+  border: 5px double var(--tinte-accion);
+}
+
+/* El lugar escrito a mano: el descampado y el que no está. */
+.recital-escribir {
+  margin: 0 0 var(--espacio-3);
+}
+
+.recital-escribir-bajada {
+  margin: 0 0 var(--espacio-2);
+  color: var(--texto);
+}
+
+.recital-escribir-campo {
+  display: grid;
+  gap: 4px;
+  margin-bottom: var(--espacio-2);
+  font-size: 0.9rem;
+  color: var(--texto-tenue);
+}
+
+.recital-escribir-aviso {
+  min-height: 1.3em;
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--texto);
+}
+
+.recital-escribir-aviso:empty {
+  min-height: 0;
+}
+
+/* ---- La cabecera del armado: el lugar como sello ---- */
+
+.recital-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-1);
+  margin-top: var(--espacio-2);
+}
+
+.recital-sello,
+.recital-ajena {
+  margin: 0;
+  padding: 2px 8px;
+  border: 2px solid var(--tinte-accion);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--texto);
+  rotate: -1.5deg;
+}
+
+.recital-ajena {
+  display: inline-block;
+  margin: var(--espacio-2) 0 0;
+}
+
+.recital-cambiar {
+  min-height: var(--toque-min);
+  padding: 0 var(--espacio-1);
+  background: transparent;
+  color: var(--texto-tenue);
+  border: 0;
+  font: inherit;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---- La hoja ---- */
+
+.recital-hoja {
+  position: relative;
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-2) var(--espacio-2);
+  background: var(--papel);
+  color: var(--fondo);
+  border-radius: 3px;
+  rotate: -0.6deg;
+}
+
+/* La cinta que la pega al piso: un rectángulo plano del borde del papel, torcido. */
+.recital-hoja::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 88px;
+  height: 22px;
+  translate: -50% 0;
+  rotate: 4deg;
+  background: var(--papel-borde);
+}
+
+.recital-hoja--noche {
+  rotate: 0.5deg;
+}
+
+.recital-rotulo {
+  margin: 0 0 var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  color: var(--papel-tenue);
+}
+
+.recital-rotulo--bis {
+  margin-top: var(--espacio-2);
+  padding-top: var(--espacio-1);
+  border-top: 2px dashed var(--papel-borde);
+}
+
+.recital-vacia,
+.recital-cuenta,
+.recital-dura,
+.recital-noche-lugar {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--papel-tenue);
+}
+
+.recital-cuenta {
+  margin-top: var(--espacio-2);
+  text-align: right;
+}
+
+.recital-dura {
+  margin-top: var(--espacio-2);
+}
+
+.recital-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recital-renglon {
+  border-bottom: 1px solid var(--papel-borde);
+}
+
+.recital-renglon-boton {
+  display: grid;
+  grid-template-columns: 2.4ch 1fr;
+  column-gap: var(--espacio-1);
+  align-items: center;
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: 6px 0;
+  background: transparent;
+  color: var(--fondo);
+  border: 0;
+  font: inherit;
+  text-align: left;
+  touch-action: manipulation;
+}
+
+.recital-numero {
+  grid-row: span 2;
+  font-family: var(--fuente-rotulada);
+  color: var(--papel-tenue);
+}
+
+.recital-tema {
+  font-family: var(--fuente-rotulada);
+  font-size: 1rem;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.recital-disco {
+  font-size: 0.8rem;
+  color: var(--papel-tenue);
+}
+
+/* El tema marcado se recorta con un contorno de tinta: un estado es borde, no color. */
+.recital-renglon--marcado {
+  outline: 2px solid var(--fondo);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Lo que suena se subraya grueso, y la región viva lo dice: nunca solo con color. */
+.recital-renglon--sonando .recital-tema {
+  text-decoration: underline 3px;
+  text-underline-offset: 4px;
+}
+
+.recital-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 0 var(--espacio-1);
+}
+
+.recital-accion {
+  min-width: var(--toque-min);
+  min-height: var(--toque-min);
+  padding: 0 12px;
+  background: var(--fondo);
+  color: var(--papel);
+  border: 2px solid var(--fondo);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  touch-action: manipulation;
+}
+
+.recital-accion--sacar {
+  background: transparent;
+  color: var(--fondo);
+}
+
+/* La noche: la lista cerrada, con su número de fibra adelante. */
+.recital-noche-titulo {
+  margin: 0;
+  font-family: var(--fuente-marca-firma);
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--fondo);
+}
+
+.recital-noche-lugar {
+  margin: 4px 0 var(--espacio-2);
+  font-family: var(--fuente-rotulada);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.recital-lista--noche {
+  padding-left: 2.4em;
+  list-style: decimal;
+}
+
+.recital-lista--noche li::marker {
+  font-family: var(--fuente-rotulada);
+  color: var(--papel-tenue);
+}
+
+.recital-lista--noche .recital-renglon {
+  padding: 6px 0;
+}
+
+.recital-lista--noche .recital-tema,
+.recital-lista--noche .recital-disco {
+  display: block;
+}
+
+.recital-sin-recorte,
+.recital-ya {
+  display: inline-block;
+  padding: 1px 5px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  rotate: -2deg;
+  white-space: nowrap;
+}
+
+/* ---- El cajón de los temas ---- */
+
+.recital-cajon {
+  margin-top: var(--espacio-4);
+}
+
+.recital-cajon-cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-1);
+}
+
+.recital-cajon-cabeza .recital-titulo {
+  margin-right: auto;
+}
+
+.recital-chico {
+  min-height: var(--toque-min);
+  padding: 0 12px;
+  background: transparent;
+  color: var(--texto);
+  border: var(--linea) solid var(--borde);
+  border-radius: 3px;
+  font: inherit;
+  font-weight: 700;
+  touch-action: manipulation;
+}
+
+.recital-chico[aria-pressed="true"] {
+  border-style: dashed;
+}
+
+.recital-buscador {
+  width: 100%;
+  margin-top: var(--espacio-2);
+  box-sizing: border-box;
+}
+
+/* Los discos como una tira de tapas que se corre de costado: diez tapas en el ancho de un
+   pulgar, en vez de once botones de texto que se comían media pantalla. La elegida se recorta
+   con borde grueso de tinta y se baja un poco, como una tapa sacada de la pila. */
+.recital-discos {
+  display: flex;
+  gap: 8px;
+  margin: var(--espacio-2) calc(-1 * var(--espacio-2)) 0;
+  padding: 4px var(--espacio-2) 8px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.recital-disco-boton {
+  flex: none;
+  width: 60px;
+  height: 60px;
+  padding: 2px;
+  background: transparent;
+  color: var(--texto);
+  border: 2px solid var(--tinta-disco, var(--borde));
+  border-radius: 3px;
+  scroll-snap-align: start;
+  touch-action: manipulation;
+}
+
+.recital-disco-boton img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.recital-disco-boton--todos {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.recital-disco-boton[aria-pressed="true"] {
+  border: 4px solid var(--texto);
+  translate: 0 4px;
+}
+
+.recital-disco-elegido {
+  margin: 4px 0 var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+.recital-temas {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* La cabecera de cada disco en el cajón: la tapa una sola vez, el título y el año. */
+.recital-temas-disco {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+  margin-top: var(--espacio-2);
+  padding-bottom: 4px;
+  border-bottom: 2px solid var(--tinta-disco, var(--borde));
+}
+
+.recital-temas-disco img {
+  width: 36px;
+  height: 36px;
+  border-radius: 2px;
+}
+
+.recital-temas-disco strong {
+  flex: 1;
+  font-family: var(--fuente-rotulada);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.recital-temas-disco span {
+  font-size: 0.85rem;
+  color: var(--texto-tenue);
+}
+
+.recital-temas-nada {
+  padding: var(--espacio-2) 0;
+  color: var(--texto-tenue);
+}
+
+.recital-tema-cajon {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: 6px 8px;
+  background: transparent;
+  color: var(--texto);
+  border: 1px solid var(--borde);
+  border-radius: 3px;
+  font: inherit;
+  text-align: left;
+  touch-action: manipulation;
+}
+
+.recital-tema-cajon:hover:not(:disabled),
+.recital-tema-cajon:focus-visible {
+  border-color: var(--tinta-disco, var(--texto));
+}
+
+.recital-tema-cajon:disabled {
+  color: var(--texto-tenue);
+  border-style: dashed;
+}
+
+.recital-pista {
+  flex: none;
+  min-width: 2ch;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  text-align: right;
+  color: var(--texto-tenue);
+}
+
+.recital-tema-texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.recital-tema-texto strong {
+  font-weight: 700;
+}
+
+.recital-tema-texto span {
+  font-size: 0.8rem;
+  color: var(--texto-tenue);
+}
+
+/* ---- El pie pegado abajo: cuánto falta y salir a tocar ---- */
+
+.recital-pie {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-1) 0 calc(var(--espacio-1) + env(safe-area-inset-bottom, 0px));
+  background: var(--fondo);
+  border-top: var(--linea) solid var(--borde);
+}
+
+.recital-pie .primario {
+  margin-top: 4px;
+}
+
+.recital-faltan {
+  min-height: 1.3em;
+  margin: 0;
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--texto-tenue);
+}
+
+/* ---- Lo que suena ahora, pegado en el pie ---- */
+
+/* El tema que suena se ve aunque la hoja quede fuera de la pantalla: el sello SUENA, el título
+   y un "Pará" a mano. Es texto y sello, no un color que titila. */
+.recital-suena {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+  margin-bottom: 4px;
+}
+
+.recital-suena-titulo {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recital-suena-parar {
+  min-width: var(--toque-min);
+  min-height: var(--toque-min);
+  padding: 0 12px;
+  background: transparent;
+  color: var(--texto);
+  border: 2px solid var(--texto);
+  border-radius: 3px;
+  font-weight: 700;
+  touch-action: manipulation;
+}
+
+/* El sello SUENA: goma estampada, torcida, en la tinta del disco que viste el juego. Cae con el
+   mismo golpe que el acierto de "Adiviná el tema" (`sello-golpe`); con movimiento reducido la
+   duración es cero y aparece ya apoyado. */
+.recital-suena-sello {
+  display: inline-block;
+  flex: none;
+  padding: 1px 6px;
+  border: 2px solid var(--tinte-accion);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  rotate: -4deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+.recital-suena .recital-suena-sello {
+  color: var(--texto);
+}
+
+/* En la hoja de la noche, el sello va sobre el papel: tinta sobre papel. */
+.recital-hoja .recital-suena-sello {
+  margin-top: 4px;
+  color: var(--fondo);
+  border-color: var(--fondo);
+}
+
+/* El tema recién sumado entra a la hoja como un papelito que se pega: el mismo gesto que el
+   momento de la noche ricotera (`momento-entra`), con su token de duración. */
+.recital-renglon--entra {
+  animation: momento-entra var(--duracion-paso) var(--curva-cinta) both;
+}
+
+/* La noche: escuchar va arriba de la hoja. */
+.recital-noche-controles {
+  margin-top: var(--espacio-2);
+}
+
+.recital-noche-controles .primario {
+  margin-top: 0;
+}
+
+.recital-noche-controles .recital-estado {
+  min-height: 1.3em;
+  margin: var(--espacio-1) 0 0;
+}
+
+.recital-noche-controles .recital-como-suena {
+  margin: 4px 0 0;
+}

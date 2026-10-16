@@ -82,6 +82,8 @@ const DISCO_DE: Record<string, string> = {
   /* `D-49`: los dos detalles que pasaron a vestir casetes del portal. */
   'un-baion-para-el-ojo-idiota-zoom': 'Un baión para el ojo idiota',
   'gulp-zoom': 'Gulp!',
+  /* `D-72`: la multitud de cerca viste el casete de "Armá tu recital". */
+  'oktubre-zoom': 'Oktubre',
 };
 
 /** Los discos que aparecen en una pantalla, sin repetir y en orden de aparicion. */

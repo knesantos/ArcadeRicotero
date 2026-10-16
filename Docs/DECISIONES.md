@@ -4334,3 +4334,165 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   esta pantalla (`T-412`, nota en `Docs/SUGERENCIAS/HILO-para-experiencia-y-arquitectura-d71-el-quiz.md`).
   `arquitectura` tiene que asentar el campo `disco` y el patrón de `fuentes` en `CTR-02`
   (`T-413`, misma nota).
+
+## D-72 — Los recitales en pantalla ("En vivo") y el juego de armar tu propio recital
+
+- **Fecha:** 2026-10-15
+- **Estado:** aceptada — pedido directo del usuario, textual: *"Hace la idea 15, hace al mismo
+  tiempo el juego de CREAR tu propio recital. Esta muy bueno aprovechar los recortes de temas
+  para cuando aparece en pantalla mostrarlo."* Sin plan de `orquestador`: la escribe el hilo
+  principal en la rama `ciclo-21/recitales`, sobre `main` en `afbe3ff`. Las tareas que quedan
+  abiertas van de `T-421` en adelante.
+- **Promueve** `IDEA-15` (los recitales en pantalla, reservada en `ORQ-plan-ciclo-16.md` §5 y
+  nunca escrita) y abre y promueve en el mismo acto `IDEA-16` ("Armá tu recital"). `BR-16` pide
+  pasar por un `US-XX` antes de entrar a un ciclo: acá el que decidió el alcance es el usuario,
+  como en `D-51` y `D-69`, y `producto` escribe las dos historias después (`US-11`, `US-12`,
+  reservadas en `Docs/IDS.md`).
+- **Enmienda** `CTR-19.8` regla 4 (una página lee la pieza 2) y suma una quinta forma de link a
+  `ADR-02` (en `desafio.ts`, fuera de la unión `Desafio`). Las dos, con propuesta escrita para
+  `arquitectura` en `Docs/SUGERENCIAS/HILO-para-todos-d72-los-recitales.md`.
+
+### Lo que hay en el repo, y lo que no
+
+Antes de decidir se midió qué datos de recitales tiene el sitio (`CTR-19`):
+
+- **Listas enteras que el sitio puede copiar: dos.** Concordia, 8 y 9 de diciembre de 1995, de
+  MusicBrainz, bajo CC0 (`RES-76`..`RES-78`). Es todo lo que encontró la búsqueda de fuentes
+  abiertas del ciclo 16.
+- **El conteo citado de setlist.fm**: cuántas veces figura cada tema en 256 listas que cargó la
+  gente (`RES-90`), y **un índice de 40 noches** con fecha, lugar y enlace. Las listas de
+  setlist.fm se pueden mirar y no copiar (`RES-73.1`): no están en el repo y no van a estar.
+
+Con eso la idea 15 no puede ser "todos los recitales con su lista": sería inventar lo que el
+sitio no tiene. Es **lo que hay, rotulado como lo que es**.
+
+### Decisión 1: la página "En vivo" de la Redondopedia (`/redondopedia/en-vivo/`)
+
+- **Tres bloques, cada uno con el régimen de su dato.** Las dos listas enteras, con lo que pide
+  `RNF-CTR-19-B` en el mismo bloque (fuente con enlace al recital, licencia de la fuente, qué le
+  hizo el sitio, bajo qué licencia la ofrece, y que la fuente no dice si está completa). Lo que
+  más aparece en las listas de setlist.fm, con `RNF-CTR-19-A` al lado (qué mide, de dónde sale,
+  cuándo se consultó; "figura", nunca "se tocó"; quince a la vista y los otros plegados). Y el
+  índice de las 40 noches por año, con el enlace a cada lista en setlist.fm.
+- **Los bises salen de la fuente.** MusicBrainz marca «Encore», «Encore 2»… en la nota de cada
+  tema; la página los muestra como "Bis", "Segundo bis", "Tercer bis", sin interpretar nada.
+- **Cada tema con recorte suena al tocarlo**, y cada lista entera suena de punta a punta, diez
+  segundos por tema, marcando el renglón que suena. Es el pedido del usuario: el tema que
+  aparece en pantalla, se escucha.
+- **No es un artículo.** No tiene casilla de hecho, leyenda ni testimonio: cada dato lleva el
+  rótulo de su fuente. Por eso no entra al índice por tipo (`BR-07`): va como puerta aparte
+  arriba de la portada de la Redondopedia.
+- **La frontera de licencias.** `CTR-19.8` regla 4 decía que ningún módulo lee la pieza 2, para
+  que el "compartir igual" de una fuente BY-SA no alcanzara a nada más. La única fuente es CC0 y
+  la salida es CC0: no hay nada que compartir igual. Igual el borde queda angosto: **una sola
+  página la lee**, y `en-vivo.test.ts` (t8) la nombra en una lista de una línea. Si entra una
+  fuente BY-SA, esa lista se vuelve a mirar.
+
+### Decisión 2: "Armá tu recital" (`/juegos/arma-tu-recital/`, el A10 del portal)
+
+- **El juego.** Elegís un lugar donde tocó la banda, armás la lista con los temas de los diez
+  discos —en orden, con bises— y la escuchás. Sin puntaje y sin lista correcta, como "Ponelos en
+  fila" (`BR-22`): no se compara con ninguna lista de verdad. Las de verdad están en "En vivo",
+  para mirarlas, y el resultado lleva el enlace.
+- **Los lugares** ~~son de verdad y salen del índice de setlist.fm~~ — ver la enmienda de abajo:
+  el juego es una expresión de deseo y los lugares son para soñar.
+- **Lo que suena.** Un tema suena al sumarlo a la lista; se vuelve a escuchar desde sus acciones;
+  y al cerrar la lista suena **la noche entera**, diez segundos por tema, con los bises al final,
+  marcando el renglón que suena. Se silencia y la elección queda en el navegador. Con un
+  `<audio>`, como "Ponelos en fila" (`D-69`), así suena aunque el iPhone tenga la llave de
+  silencio puesta (`D-66`).
+- **La lista y los bises.** Dos tiras: hasta 24 temas en la lista y 4 de bis, con 5 como mínimo
+  para cerrar. El borde se cruza moviendo (bajar el último de la lista lo vuelve el primer bis),
+  y hay un botón directo "Al bis" / "A la lista". La lógica es pura y tiene tests
+  (`src/lib/recital/armado.ts`).
+- **Cuánto dura**, sumando lo que dura cada tema en su disco (`RES-20`). Los que no tienen
+  duración medida (*Cordero atado*) se dicen y no se cuentan como cero.
+- **Se comparte** como dirección (la quinta forma de link: lugar, lista y bises en el fragmento,
+  dos caracteres por tema) y como **hoja**: la misma lámina de "Ponelos en fila", con la tinta de
+  *Oktubre* y un tema por renglón. Y se baja como imagen, para el que no tiene menú de compartir.
+- **Viste *Oktubre***, como la portada (`D-19`): la tapa es la gente. El casete pega la multitud
+  de cerca (`oktubre-zoom`), que ningún otro casete usaba (`D-49`).
+- **La lista a medio armar** se guarda en el navegador y la puerta ofrece seguirla.
+
+### Lo que no cambia
+
+Ningún juego existente cambia de lógica. La lámina de "Ponelos en fila" suma dos campos
+opcionales (`tintaJuego` y `renglonPorFicha`) y sin ellos dibuja lo mismo que antes. El orden
+del portal no se toca: el nuevo entra al final del lado A, como entraron los anteriores.
+
+### Consecuencias
+
+- **`producto`**: escribir `US-11` ("En vivo") y `US-12` ("Armá tu recital") con criterios y,
+  para `US-12`, decidir si 5/24/4 son los números o solo los del primer corte. Marcar `IDEA-15`
+  e `IDEA-16` como promovidas en `PRD-backlog-ideas.md` (`T-421`).
+- **`arquitectura`**: asentar en `CTR-19.8` la enmienda de la regla 4 y en `ADR-02` la quinta
+  forma de link (`T-422`).
+- **`experiencia`**: el flujo y la hoja de papel en un `UX-` y en el lienzo (`T-423`).
+- **`contenido`**: leer la copia de `src/lib/recital/copy.ts` y el renglón de lugar nuevo de
+  `LUGARES` contra `CNT-13` (`T-424`).
+- **`investigador`**: buscar más listas enteras con licencia abierta. Cada una que entre suma una
+  noche a "En vivo" sin tocar código (`T-425`).
+- **Revisión independiente:** `REV-23` (`FIND-153`..`FIND-168`), sin altas; todo arreglado en la
+  misma rama.
+
+### Enmienda del 2026-10-15: "Armá tu recital" es una expresión de deseo
+
+Pedido del usuario, textual: *"La idea de arma tu recital es que sea ficticio y actual, una
+expresion de deseo. Que se puedan poner estadios de toda argentina, los teatros mas conocidos de
+varias ciudades y que en un descampado en una localidad sea una opcion, ademas que pueda ser texto
+libre osea que no sea una seleccion si no aparece."*
+
+- **Los lugares ya no salen de recitales de verdad.** Salen de `src/data/lugares-recital.json`
+  (con su schema, en `esquemas.test.ts`): veinte estadios y catorce teatros de todo el país. El
+  archivo y la pantalla dicen que es una expresión de deseo: **no afirman que la banda haya tocado
+  ahí**. El juego ya no lee nada de setlist.fm.
+- **Cuatro pestañas**: Estadios, Teatros, **Un descampado** (se escribe la localidad: queda "Un
+  descampado en Tandil") y **Otro lugar** (se escribe el lugar y, si se quiere, la ciudad). Cada
+  estadio y cada teatro es una entrada de papel, con la ciudad en el talón.
+- **El link lleva lo escrito a mano** (`l` y `c` en el fragmento), limpio por lista blanca al
+  entrar y al salir (`limpiarLugar`, `desafio.ts`), como los nombres de fila de `D-69`. Con
+  tests en `src/lib/recital/link.test.ts`.
+- **De paso, una pulida del armado** pedida el mismo día: el cajón tiene buscador, los discos son
+  una tira de tapas en vez de once botones, los temas van agrupados bajo su disco con la duración,
+  el tema que suena se ve siempre en el pie (sello "SUENA", título y "Pará"), el tema sumado entra
+  a la hoja con el gesto de `momento-entra`, y en la noche "Escuchá la lista" va arriba de la hoja
+  con el sello "SUENA" estampado en el renglón. En "En vivo", saltos a los tres bloques arriba y
+  botones de escuchar más livianos.
+- **Lo que se cayó con esto:** `FIND-161` (los lugares como muestra de setlist.fm) ya no aplica, y
+  `lugaresDe` salió de `listas.ts`. La verdad de los nombres de estadios y teatros queda pedida a
+  `investigador` y la lista a `contenido` (`T-427`).
+- **Probarlo en un teléfono de verdad**: la lista sonando de corrido en un iPhone, y el pie
+  pegado abajo con la barra de Safari (`T-426`).
+
+### Enmienda del 2026-10-15 (2): las listas de Discogs entran, rotuladas "sin revisar"
+
+`T-425` la buscó una sesión aparte con `investigador` (`INV-425`, `RES-207`..`RES-239`): Discogs
+publica sus datos bajo CC0 en volcados mensuales y tiene 29 grabaciones piratas de recitales con la
+lista entera, transcriptas por sus usuarios y sin votar. El Fandom de la banda tiene páginas por
+recital, pero su licencia sería CC BY-SA y no se pudo confirmar. Pedido del usuario, textual:
+*"Cargá las listas de Discogs con el rótulo de cargadas por la gente y sin revisar. Fandom no,
+hasta confirmar la licencia."*
+
+- **Entran 25 noches de Discogs** (1987 a 2000: Cemento, Obras, Huracán 93 y 94, River 2000, Mar
+  del Plata, La Plata, Rosario, Santa Fe, Tandil…), con las dos de MusicBrainz suman 27. Quedan
+  afuera, por lo que dice la ficha: Concordia del 9/12/1995 (es una parte de la de MusicBrainz),
+  Letoile (sin año), un release que no es de la banda y uno de un solo tema.
+- **El rótulo.** La fuente lleva `revision: "sin-revisar"` (campo nuevo y optativo del schema de
+  la pieza 2). "En vivo" pone el sello "SIN REVISAR" en el resumen de cada lista y, en el rótulo,
+  *"La cargó la gente y nadie la revisó. Puede faltar algún tema, y la fecha o algún título pueden
+  estar mal."* Cada lista suma el aviso que trae la ficha (fechas en disputa, numeración que salta,
+  dos versiones de la misma noche) y, si la ciudad la completó el sitio, lo dice.
+- **El script** (`scripts/ingerir-recitales.mjs`) aprende Discogs con las mismas reglas que
+  MusicBrainz: User-Agent con contacto, pausa entre pedidos, todo validado antes de escribir. Lugar,
+  ciudad y fecha no vienen en campos: salen de la ficha, en la tabla `GRABACIONES`. Un renglón con
+  dos temas se parte solo si las dos partes cruzan con los 105.
+- **Los alias.** Las erratas de quien transcribió el casete ("Lobo Caido", "La Hija Del Fletro",
+  "TV Führer", "Vaca Cubana") entran a `ALIAS` de `temas.ts`, en un bloque con su comentario: son
+  juicios sobre la obra, y ahí se discuten. De 531 renglones cruzan 466; lo demás son inéditos,
+  cánticos y renglones con varios temas, y se muestran como los da la fuente.
+- **"En vivo" se reordena**: con 27 noches, las listas van por año y plegadas; cada resumen dice la
+  noche, cuántos temas y el sello.
+- **Lo que queda abierto** (`INV-425`, "Sin resolver"): confirmar que esos releases están en el
+  volcado CC0 y qué son los "datos restringidos" de los términos de la API de Discogs; la licencia
+  del Fandom; y las fechas en disputa (River 15 o 16 de abril de 2000, Lanús 1 o 3 de mayo de 1992,
+  Atenas 11 o 12 de mayo de 1990). Con `D-14` nada de eso frena: si llega un reclamo, se baja.

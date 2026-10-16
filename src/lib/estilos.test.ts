@@ -772,6 +772,22 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
     ],
   },
 
+  // `D-72`: "Armá tu recital". Los dos estados de la hoja: el tema marcado (sus acciones a la
+  // vista) y el que suena. Ninguno es solo color: contorno y subrayado.
+  'partida-recital.ts': {
+    juego: 'D-72, armá tu recital',
+    fuente: leer('src/scripts/partida-recital.ts'),
+    estados: ['.recital-renglon--marcado', '.recital-renglon--sonando', '.recital-renglon--entra'],
+  },
+  // `D-72`: la página "En vivo" de la Redondopedia, que vive en `sitio.css` como el resto de la
+  // Redondopedia. Su único estado es el tema que suena.
+  'en-vivo.ts': {
+    juego: 'D-72, en vivo',
+    fuente: leer('src/scripts/en-vivo.ts'),
+    estados: ['.en-vivo-tema--sonando'],
+    hoja: 'src/styles/sitio.css',
+  },
+
   'analitica.ts': { sinTablero: 'la analitica de Vercel (D-56); pega un script y no toca el DOM visible' },
   'armar-cancionero.ts': { sinTablero: 'arma un HTML autocontenido que se descarga; sus estilos viajan adentro de ese archivo, no en las hojas del sitio' },
   'cancion.ts': { sinTablero: 'transportar y bajar solo en la ficha de un tema; no hay partida ni respuesta que senalar' },
@@ -781,6 +797,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'lamina.ts': { sinTablero: 'pincel de canvas (US-08); dibuja pixeles, no crea nodos con clase' },
   'mosca.ts': { sinTablero: 'la mosca del portal (D-49); su unica clase, la de tomada a mano, vive en sitio.css y la cubre la red derivada' },
   'oktubre.ts': { sinTablero: 'la estampa del cumpleanos en el afiche de octubre (D-49); cambia un texto, no crea clases' },
+  'rocola.ts': { sinTablero: 'la rocola de los recitales (D-72); un <audio> que suena en fila, no crea nodos' },
   'spotify.ts': { sinTablero: 'un <a> y nada mas, que es literalmente RQ-B2 de ADR-01' },
   'tarjeta.ts': { sinTablero: 'pincel de canvas (US-02 y US-07); dibuja pixeles, no crea nodos con clase' },
 };

@@ -55,6 +55,10 @@
         "sitio": { "$ref": "#/$defs/urlAbierta" },
         "licencia": { "$ref": "#/$defs/licenciaDeFuente" },
         "atribucion": { "type": "string", "minLength": 10, "maxLength": 300 },
+        "revision": {
+          "enum": ["sin-revisar"],
+          "comment": "D-72: las listas de esta fuente las cargó la gente y nadie las revisó (Discogs, 'Needs Vote'). La página lo dice en el rótulo de cada lista. Sin el campo, no se afirma nada."
+        },
         "ficha": { "$ref": "#/$defs/ficha" }
       }
     },

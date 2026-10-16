@@ -11,6 +11,7 @@
  */
 import Base from '../../layouts/Base.astro';
 import { PORTAL, LUGARES, REDONDOPEDIA } from '../../lib/sitio/copy.ts';
+import { EN_VIVO } from '../../lib/recital/copy.ts';
 import { porTipo, TIPO_A_CATEGORIA, type Articulo } from '../../lib/redondopedia.ts';
 import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/redondopedia.json';
@@ -60,6 +61,14 @@ const recortar = (texto: string): string =>
       >❝ {REDONDOPEDIA.palabraTestimonio}</b
     >{REDONDOPEDIA.explicacionCierre}
     </p>
+
+    {/* `D-72`: los recitales en pantalla (`IDEA-15`). No es un artículo —no tiene casilla de
+        hecho, leyenda ni testimonio: cada lista lleva el rótulo de su fuente—, así que no
+        entra al índice por tipo: va acá arriba, como una puerta aparte. */}
+    <a class="tarjeta-articulo tarjeta-articulo--historia en-vivo-puerta" href="/redondopedia/en-vivo/">
+      <strong>{EN_VIVO.enLaPortada.titulo}</strong>
+      <span>{EN_VIVO.enLaPortada.resumen}</span>
+    </a>
   </div>
 
   {/* El rodillo separa una categoria de la siguiente (`UX-22` §9). Se filtran los grupos

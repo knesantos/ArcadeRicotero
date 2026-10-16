@@ -1,0 +1,120 @@
+---
+/**
+ * "Armá tu recital" (`D-72`). El décimo juego, y el tercero que no puntúa.
+ *
+ * Es una **expresión de deseo** (enmienda de `D-72`, pedido del usuario): el recital que te
+ * gustaría, hoy. El jugador elige dónde —un estadio o un teatro de cualquier lugar del país,
+ * un descampado en la localidad que escriba, o el lugar que escriba—, arma la lista con los
+ * temas de los diez discos —en orden, con bises— y la escucha: suena un recorte de cada tema
+ * apenas lo suma, y al cerrar la lista suena entera, de diez segundos en diez segundos. Se la
+ * lleva como hoja y como dirección.
+ *
+ * Como "Ponelos en fila" (`BR-22`), **no hay lista correcta**: ni puntaje ni comparación con
+ * ninguna lista de verdad. Las de verdad están en la otra página, "En vivo", para mirarlas.
+ *
+ * Viste *Oktubre*, como la portada (`D-19`): la tapa es la gente.
+ *
+ * ## Lo que esta página hace en build
+ *
+ * Manda el catálogo —los 105 temas con su duración, los diez discos, qué temas tienen
+ * recorte— y **los lugares** de `lugares-recital.json`. No lee nada de recitales de verdad:
+ * ni el índice de setlist.fm ni las listas enteras, que son de "En vivo".
+ *
+ * `leerDuraciones()` y `FICHAS` importan `node:fs` y corren solo acá, en el frontmatter. La
+ * isla importa `lib/recital/*` y `lib/desafio.ts`, que no llegan a Node (`islas.test.ts`).
+ */
+import '../../styles/tokens.css';
+import '../../styles/juego.css';
+import '../../styles/sitio.css';
+import Cabeza from '../../components/Cabeza.astro';
+import PieImprenta from '../../components/PieImprenta.astro';
+import Caratula from '../../components/Caratula.astro';
+import { caratulaDe, tapasConCaratula } from '../../lib/sitio/caratula.ts';
+import { PANTALLA_0 } from '../../lib/recital/copy.ts';
+import { PORTAL, LUGARES } from '../../lib/sitio/copy.ts';
+import { leerDuraciones, slugDeTitulo } from '../../lib/letra/temas.ts';
+import { FICHAS } from '../../lib/cancionero/banco.ts';
+import { indexarFragmentos, type Manifiesto } from '../../lib/tema/catalogo.ts';
+import manifiesto from '../../data/adivinar-tema.json';
+import lugaresRecital from '../../data/lugares-recital.json';
+
+/**
+ * El catálogo de los 105, **en el orden de `RES-20`**. Ese orden es el que viaja en el link
+ * (`desafio.ts`, la quinta forma): un tema se nombra por su lugar en esta lista.
+ */
+const temas = leerDuraciones().map((t) => ({
+  slug: slugDeTitulo(t.titulo),
+  titulo: t.titulo,
+  disco: t.disco,
+  pista: t.pista,
+  segundos: t.segundos,
+}));
+
+/** Qué temas tienen recorte. Mismo manifiesto y misma verificación que "Adiviná el tema". */
+const conAudio = [...indexarFragmentos(manifiesto as unknown as Manifiesto, new Set(temas.map((t) => t.slug))).keys()];
+
+/**
+ * Los lugares para soñar (`lugares-recital.json`): estadios y teatros de todo el país. No
+ * dicen que la banda haya tocado ahí; el juego es una expresión de deseo (enmienda de `D-72`).
+ * El descampado y el lugar escrito a mano no están acá: los arma la isla con lo que se escribe.
+ */
+const lugares = lugaresRecital.lugares;
+
+const catalogo = {
+  temas,
+  discos: FICHAS.map((f) => ({ slug: f.slug, titulo: f.titulo, anio: f.anio })),
+  conAudio,
+  lugares,
+};
+
+const caratula = caratulaDe('/juegos/arma-tu-recital/');
+
+const TITULO = `${PANTALLA_0.titulo} — Fichín Ricotero`;
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={PANTALLA_0.subtitulo} />
+    <title>{TITULO}</title>
+    <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} />
+  </head>
+  <body class="con-grano">
+    <main id="app" class:list={['recital', `juego--${caratula.casete.variante}`]}>
+      <section id="inicio" class="pantalla">
+        <header class="cabecera-sitio">
+          <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
+        </header>
+        <p class="marca" aria-label="Fichín Ricotero">FICHÍN RICOTERO</p>
+        <h1>{PANTALLA_0.titulo}</h1>
+        <p class="donde-estas">{LUGARES.recital}</p>
+        <p class="tenue">{PANTALLA_0.subtitulo}</p>
+        <button id="empezar" class="primario" type="button">{PANTALLA_0.boton}</button>
+        <div id="retomar"></div>
+      </section>
+
+      <section id="eleccion" class="pantalla" hidden></section>
+      <section id="tablero" class="pantalla" hidden></section>
+      <section id="resultado" class="pantalla" hidden></section>
+      <Caratula caratula={caratula} />
+    </main>
+
+    <PieImprenta disco="oktubre" tapas={tapasConCaratula([], caratula)} />
+
+    <script type="application/json" id="catalogo" set:html={JSON.stringify(catalogo)} />
+    <script>
+      import '../../scripts/partida-recital.ts';
+    </script>
+
+    <style>
+      .tenue {
+        color: var(--texto-tenue);
+      }
+      .pantalla[hidden] {
+        display: none;
+      }
+    </style>
+  </body>
+</html>

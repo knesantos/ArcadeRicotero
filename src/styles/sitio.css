@@ -2549,3 +2549,314 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   text-align: left;
   margin-top: var(--espacio-3);
 }
+
+/* ==================================================================
+   En vivo: los recitales en pantalla (`IDEA-15`, `D-72`)
+   ==================================================================
+
+   Las listas enteras son hojas de papel (tinta sobre papel, el par testeado); lo citado de
+   setlist.fm va sobre el fondo, en la tinta del sitio. Sin sombras (`D-64`) y sin pastillas.
+*/
+
+.en-vivo-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.en-vivo-puerta {
+  display: block;
+  margin-top: var(--espacio-3);
+}
+
+.en-vivo-bloque {
+  margin: var(--espacio-3) 0;
+}
+
+.en-vivo-entera {
+  margin-top: var(--espacio-2);
+  padding: var(--espacio-2);
+  background: var(--papel);
+  color: var(--fondo);
+  border-radius: 3px;
+  rotate: -0.4deg;
+}
+
+.en-vivo-entera + .en-vivo-entera {
+  rotate: 0.5deg;
+}
+
+.en-vivo-entera a {
+  color: var(--fondo);
+}
+
+/* Cada lista es una hoja plegada: el resumen dice la noche, cuántos temas y si nadie la revisó,
+   y se abre al tocarla. Con veintisiete noches, abiertas todas la página no se recorre. */
+.en-vivo-encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px var(--espacio-1);
+  min-height: var(--toque-min);
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.en-vivo-entera[open] .en-vivo-encabezado {
+  margin-bottom: var(--espacio-1);
+}
+
+.en-vivo-cuantos {
+  font-family: var(--fuente);
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--papel-tenue);
+}
+
+/* El sello de goma de lo que nadie revisó: borde, mayúsculas, apenas torcido. Tinta sobre papel. */
+.en-vivo-sello {
+  padding: 1px 6px;
+  border: 2px solid var(--fondo);
+  border-radius: 3px;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  rotate: -3deg;
+}
+
+.en-vivo-escuchar {
+  min-height: var(--toque-min);
+  padding: 0 14px;
+  background: var(--fondo);
+  color: var(--papel);
+  border: 0;
+  border-radius: var(--radio);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  touch-action: manipulation;
+}
+
+/* El número va con un contador y no con el marcador de la lista: el renglón es flex, y un
+   flex deja de ser ítem de lista. El renglón del bis no lo incrementa: no es un tema. La lista
+   plegada arranca donde termina la de arriba, con `counter-reset` en línea. */
+.en-vivo-lista {
+  margin: var(--espacio-2) 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: tema;
+}
+
+.en-vivo-tema {
+  counter-increment: tema;
+}
+
+.en-vivo-tema::before {
+  content: counter(tema) ".";
+  min-width: 2.4ch;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  color: var(--texto-tenue);
+}
+
+.en-vivo-entera .en-vivo-tema::before {
+  color: var(--papel-tenue);
+}
+
+/* Lo que más aparece no lleva número: el puesto no se muestra (`CTR-19.3`). */
+.en-vivo-lista--conteo .en-vivo-tema::before {
+  content: none;
+}
+
+.en-vivo-como-suena {
+  margin: var(--espacio-1) 0 0;
+  font-size: 0.85rem;
+  color: var(--papel-tenue);
+}
+
+.en-vivo-tema {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px var(--espacio-1);
+  min-height: var(--toque-min);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--borde);
+}
+
+.en-vivo-entera .en-vivo-tema {
+  border-bottom-color: var(--papel-borde);
+}
+
+.en-vivo-titulo {
+  flex: 1 1 12ch;
+  font-weight: 700;
+}
+
+.en-vivo-veces,
+.en-vivo-fuera,
+.en-vivo-sin,
+.en-vivo-rotulo-conteo {
+  font-size: 0.85rem;
+  color: var(--texto-tenue);
+}
+
+.en-vivo-entera :is(.en-vivo-fuera, .en-vivo-sin) {
+  color: var(--papel-tenue);
+}
+
+.en-vivo-play {
+  min-width: var(--toque-min);
+  min-height: var(--toque-min);
+  padding: 0 10px;
+  background: transparent;
+  color: inherit;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  touch-action: manipulation;
+}
+
+/* El que suena se llena de tinta: el estado es relleno y texto ("Pará"), no solo color. Sobre
+   el papel, tinta con letra de papel; sobre el fondo, la tinta del sitio con letra de fondo. */
+.en-vivo-entera .en-vivo-play[aria-pressed="true"] {
+  color: var(--papel);
+  background: var(--fondo);
+  border-color: var(--fondo);
+}
+
+.en-vivo-lista--conteo .en-vivo-play[aria-pressed="true"] {
+  color: var(--fondo);
+  background: var(--texto);
+  border-color: var(--texto);
+}
+
+/* Los saltos de arriba: sellos de goma, uno por bloque. */
+.en-vivo-saltos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--espacio-2);
+}
+
+.en-vivo-saltos a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  padding: 0 10px;
+  border: 1px solid var(--borde);
+  border-radius: 3px;
+  color: var(--texto);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.en-vivo-saltos a:last-child {
+  border-color: var(--marca-rojo);
+}
+
+/* Lo que suena se subraya grueso, y el botón dice "Pará": nunca solo con color. */
+.en-vivo-tema--sonando .en-vivo-titulo {
+  text-decoration: underline 3px;
+  text-underline-offset: 4px;
+}
+
+.en-vivo-bis {
+  display: block;
+  margin: var(--espacio-2) 0 4px;
+  padding-top: 6px;
+  border-top: 2px dashed var(--papel-borde);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--papel-tenue);
+  list-style: none;
+}
+
+.en-vivo-rotulo {
+  margin: var(--espacio-2) 0 0;
+  font-size: 0.85rem;
+  color: var(--papel-tenue);
+}
+
+.en-vivo-rotulo dt {
+  display: inline;
+  font-weight: 700;
+}
+
+.en-vivo-rotulo dd {
+  display: inline;
+  margin: 0 0 0 0.3em;
+}
+
+.en-vivo-rotulo dd::after {
+  content: "";
+  display: block;
+}
+
+.en-vivo-rotulo-suelto {
+  margin-top: var(--espacio-1);
+}
+
+.en-vivo-rotulo-conteo {
+  margin: 0 0 var(--espacio-2);
+}
+
+.en-vivo-rotulo-conteo a,
+.en-vivo-noches a {
+  color: var(--texto);
+}
+
+.en-vivo-resto summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.en-vivo-anio-titulo {
+  margin: var(--espacio-2) 0 4px;
+  font-family: var(--fuente-rotulada);
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--texto);
+}
+
+.en-vivo-noches {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.en-vivo-noches li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px var(--espacio-1);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--borde);
+}
+
+.en-vivo-noches a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-min);
+}
+
+.en-vivo-armala {
+  margin-bottom: var(--espacio-4);
+}

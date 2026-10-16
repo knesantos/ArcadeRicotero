@@ -23,14 +23,19 @@ import {
   type Fuente,
   type LicenciaDeFuente,
 } from './recitales.ts';
-import { resolverTema } from './letra/temas.ts';
+import { resolverTema, indiceDuro } from './letra/temas.ts';
 import { slugDeTitulo } from './texto.ts';
 
 const ARCHIVO = JSON.parse(readFileSync('src/data/recitales.json', 'utf-8')) as ArchivoDeRecitales;
 const HOY = new Date().toISOString().slice(0, 10);
 
+/**
+ * El índice de los 105 se arma una vez: `resolverTema` sin índice relee la ficha en cada
+ * llamada, y desde `D-72` la pieza 2 trae más de quinientos temas.
+ */
+const INDICE = indiceDuro();
 const resolver = (titulo: string): string | null => {
-  const r = resolverTema(titulo);
+  const r = resolverTema(titulo, INDICE);
   return r ? slugDeTitulo(r.titulo) : null;
 };
 
@@ -287,13 +292,17 @@ test('el script respeta las reglas de MusicBrainz: ≤ 1 pedido por segundo y Us
 
 test('las reglas del script en rojo: pausa corta, sin User-Agent, fetch suelto', () => {
   assert.match(problemasDelScript(SCRIPT.replace(/const PAUSA_MS = \d+;/, 'const PAUSA_MS = 100;')).join('\n'), /PAUSA_MS es 100/);
+  // Desde `D-72` el script pide a dos fuentes (MusicBrainz y Discogs): las cuentas salen del
+  // texto del script, no de un número escrito acá.
+  const pedidos = SCRIPT.match(/\bfetch\(/g)?.length ?? 0;
+  assert.ok(pedidos >= 2, `el script tiene ${pedidos} fetch: ¿cambió de forma?`);
   assert.match(
     problemasDelScript(SCRIPT.replace("'User-Agent': USER_AGENT, ", '')).join('\n'),
-    /solo 0 llevan el User-Agent/,
+    new RegExp(`hay ${pedidos} fetch y solo ${pedidos - 1} llevan el User-Agent`),
   );
   assert.match(
     problemasDelScript(SCRIPT.replace(/const USER_AGENT = `[^`]*`/, 'const USER_AGENT = `ArcadeRicotero/1.0`')).join('\n'),
     /no nombra un contacto/,
   );
-  assert.match(problemasDelScript(SCRIPT + '\nawait fetch(otra);\n').join('\n'), /hay 2 fetch y solo 1/);
+  assert.match(problemasDelScript(SCRIPT + '\nawait fetch(otra);\n').join('\n'), new RegExp(`hay ${pedidos + 1} fetch y solo ${pedidos}`));
 });
