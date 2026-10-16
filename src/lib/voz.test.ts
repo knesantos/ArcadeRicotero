@@ -14,6 +14,7 @@ import * as dosEjes from './dos-ejes/copy.ts';
 import * as ponelos from './ponelos/copy.ts';
 import * as skayboy from './skayboy/copy.ts';
 import * as masOMenos from './mas-o-menos/copy.ts';
+import * as recital from './recital/copy.ts';
 import { FILAS } from './ponelos/filas.ts';
 
 /**
@@ -75,6 +76,9 @@ const MODULOS: ReadonlyArray<readonly [string, Record<string, unknown>]> = [
   // de `CNT-25`; las preguntas de los datos a mano viven en el JSON y las mira el recolector
   // del banco, más abajo.
   ['mas-o-menos', masOMenos],
+  // `D-72`, el del 2026-10-15: "Armá tu recital" y la página "En vivo". Entra con el primer
+  // archivo, por la misma lección.
+  ['recital', recital],
 ];
 
 /*
@@ -331,6 +335,10 @@ test('voz 4.1: la linea grande no pasa de ocho palabras', () => {
     ['h1 ponelos en fila', ponelos.PANTALLA_0.titulo],
     // `US-10`: lo pidió `CNT-25` y `REV-16` (`FIND-85`) vio que no había quedado.
     ['h1 más o menos', masOMenos.PANTALLA_0.titulo],
+    // `D-72`: el juego, el encabezado de la lista armada y el título de "En vivo".
+    ['h1 armá tu recital', recital.PANTALLA_0.titulo],
+    ['noche.titulo', recital.NOCHE.titulo],
+    ['h1 en vivo', recital.EN_VIVO.titulo],
     ...Object.entries(masOMenos.TRAMOS).map(([k, v]) => [`más o menos tramo ${k}`, v] as [string, string]),
     // `D-49`: el afiche de octubre. El sello y la que canta son línea grande; el botón también.
     ['oktubre.sello', sitio.OKTUBRE.sello],

@@ -559,3 +559,182 @@ export function leerReparto(
     ? { forma: 'reparto', juego, conjunto, casillas, filas }
     : { forma: 'reparto', juego, conjunto, casillas };
 }
+
+/* ==================================================================
+   La quinta forma: la lista de un recital armado (`D-72`, "Armá tu recital")
+
+   Forma: `https://<sitio>/juegos/arma-tu-recital/?g=recital#r=1.<lugar>.<lista>.<bises>&l=…&c=…`
+     g        juego        en la query, igual que las otras cuatro
+     r        recital      en el fragmento: versión, lugar, lista y bises
+     lugar    el slug de un lugar del catálogo (`lugares-recital.json`), o `descampado`, u `otro`
+     lista    los temas en orden, dos caracteres por tema: su lugar en los 105, en base 36
+     bises    lo mismo para los bises, y puede venir vacío
+     l        solo con `otro`: el nombre del lugar, escrito a mano
+     c        la ciudad o localidad escrita a mano: obligatoria con `descampado`, opcional con `otro`
+
+   `l` y `c` son **el único texto libre de esta forma**, y entran como los nombres de fila de
+   `D-69`: lista blanca al salir y al entrar (`limpiarLugar`), y se escriben con `textContent`.
+
+   **No entra a la unión `Desafio`, y es a propósito.** Esa unión la recorren `armarLink` y
+   `leerDesafio`, y una forma nueva ahí adentro obliga a tocar las otras cuatro para decir
+   "esto no es mío". Esta forma tiene su par de funciones y no comparte rama con nadie.
+
+   Viaja en el fragmento por la razón que `ADR-06` ya dejó escrita para el reparto: una
+   lista de veinte temas es de quien la armó, y lo que va después del `#` no llega al
+   servidor. Sin nombre, como el reparto: una lista no es un logro de nadie.
+
+   **Es texto de afuera** y entra por la misma regla de este archivo: lista blanca, techos
+   chicos, y ante cualquier cosa rara se descarta la lista entera. Media lista ajena es una
+   lista inventada.
+   ================================================================== */
+
+/**
+ * La versión del empaquetado del recital. La lista dice **qué lugar ocupa cada tema en el
+ * catálogo**, no su nombre: si el orden de los 105 cambiara, un link viejo abriría con otros
+ * temas y nadie lo notaría. Subir este número convierte ese defecto en un link que no abre.
+ */
+export const VERSION_RECITAL = 1;
+
+/**
+ * La huella del orden de los 105 con el que se escribió `VERSION_RECITAL` (los slugs en el
+ * orden de `RES-20`, sha-256, 16 caracteres). `src/lib/recital/link.test.ts` la recalcula: si el
+ * orden cambia, el build se cae y obliga a subir la versión y escribir la huella nueva, en vez
+ * de dejar links viejos que abren con otros temas sin avisar (`REV-23`, `FIND-168`).
+ */
+export const HUELLA_RECITAL = '8736429fcb7201f9';
+
+/** El techo de la lista sin contar los bises. Un recital entero de la banda rondaba los veinte. */
+export const MAX_TEMAS_RECITAL = 24;
+
+/** El techo de los bises. */
+export const MAX_BISES_RECITAL = 4;
+
+/** El slug de un lugar: el mismo alfabeto que `slugDeTitulo`, con un techo. */
+const LUGAR_RECITAL = /^[a-z0-9][a-z0-9-]{0,59}$/;
+
+/** Los dos lugares que no están en el catálogo: los arma el jugador escribiendo. */
+export const LUGAR_DESCAMPADO = 'descampado';
+export const LUGAR_OTRO = 'otro';
+
+/** El techo de un nombre de lugar o de ciudad escrito a mano. */
+export const LARGO_MAX_LUGAR = 40;
+
+/**
+ * Deja un lugar o una ciudad escritos a mano en algo seguro de mostrar como texto: letras,
+ * números, espacios y la puntuación de una dirección. Lista blanca, como `limpiarNombreFila`.
+ */
+export function limpiarLugar(crudo: string): string {
+  return Array.from(crudo)
+    .filter((c) => /[\p{L}\p{N}\p{M} \-'.,]/u.test(c))
+    .join('')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, LARGO_MAX_LUGAR)
+    .trim();
+}
+
+/** Lo que dice un link de recital, ya leído. Índices en el catálogo, sin repetir. */
+export interface RecitalDelLink {
+  readonly lugar: string;
+  /** Solo con `otro`: el nombre escrito a mano, ya limpio. */
+  readonly nombre?: string;
+  /** Con `descampado` (obligatoria) y con `otro` (si vino): la ciudad o localidad, ya limpia. */
+  readonly ciudad?: string;
+  readonly lista: readonly number[];
+  readonly bises: readonly number[];
+}
+
+/** Dos caracteres por tema: 36 × 36 = 1296 lugares, y el catálogo tiene 105. */
+function indiceEnBase36(i: number): string {
+  if (!Number.isInteger(i) || i < 0 || i >= 36 * 36) throw new RangeError(`índice fuera de rango: ${i}`);
+  return i.toString(36).padStart(2, '0');
+}
+
+function leerIndices(carga: string, techo: number): number[] | null {
+  if (carga.length % 2 !== 0) return null;
+  const salida: number[] = [];
+  for (let k = 0; k < carga.length; k += 2) {
+    const n = Number.parseInt(carga.slice(k, k + 2), 36);
+    if (!Number.isInteger(n) || n < 0 || n >= techo) return null;
+    salida.push(n);
+  }
+  return salida;
+}
+
+/**
+ * Arma el link de un recital. Tira `RangeError` ante lo imposible —un tema repetido, una
+ * lista vacía o más larga que el techo—, por la regla de arriba: un link inválido no se
+ * genera.
+ */
+export function armarLinkRecital(base: string, juego: string, r: RecitalDelLink): string {
+  if (!LUGAR_RECITAL.test(r.lugar)) throw new RangeError(`lugar inválido: ${r.lugar}`);
+  if (r.lista.length === 0 || r.lista.length > MAX_TEMAS_RECITAL) throw new RangeError('la lista no tiene un largo posible');
+  if (r.bises.length > MAX_BISES_RECITAL) throw new RangeError('demasiados bises');
+  const todos = [...r.lista, ...r.bises];
+  if (new Set(todos).size !== todos.length) throw new RangeError('un tema no puede sonar dos veces');
+  const nombre = limpiarLugar(r.nombre ?? '');
+  const ciudad = limpiarLugar(r.ciudad ?? '');
+  if (r.lugar === LUGAR_OTRO && !nombre) throw new RangeError('un lugar escrito a mano necesita nombre');
+  if (r.lugar === LUGAR_DESCAMPADO && !ciudad) throw new RangeError('un descampado necesita su localidad');
+  const url = new URL(base);
+  url.search = '';
+  url.searchParams.set('g', juego);
+  const valor = [VERSION_RECITAL, r.lugar, r.lista.map(indiceEnBase36).join(''), r.bises.map(indiceEnBase36).join('')].join('.');
+  const frag = new URLSearchParams({ r: valor });
+  if (r.lugar === LUGAR_OTRO) frag.set('l', nombre);
+  if ((r.lugar === LUGAR_OTRO || r.lugar === LUGAR_DESCAMPADO) && ciudad) frag.set('c', ciudad);
+  url.hash = frag.toString();
+  return url.toString();
+}
+
+/**
+ * Lee un link de recital. `null` quiere decir "entraste normal": un link roto nunca deja a
+ * nadie afuera (`D-14`), el juego abre de cero.
+ *
+ * `cuantosTemas` es el largo del catálogo, y `lugarExiste` dice si el lugar está entre los
+ * que el juego ofrece: un lugar inventado en la barra no se pinta.
+ */
+export function leerRecital(
+  direccion: string,
+  juegoPropio: string,
+  cuantosTemas: number,
+  lugarExiste: (slug: string) => boolean,
+): RecitalDelLink | null {
+  let url: URL;
+  try {
+    url = new URL(direccion);
+  } catch {
+    return null;
+  }
+  if (url.searchParams.get('g') !== juegoPropio) return null;
+  const crudo = url.hash.startsWith('#') ? url.hash.slice(1) : url.hash;
+  if (!crudo) return null;
+  let frag: URLSearchParams;
+  try {
+    frag = new URLSearchParams(crudo);
+  } catch {
+    return null;
+  }
+  const valor = frag.get('r');
+  if (!valor || valor.length > 200) return null;
+  const partes = valor.split('.');
+  if (partes.length !== 4) return null;
+  const [version, lugar, cargaLista, cargaBises] = partes as [string, string, string, string];
+  if (version !== String(VERSION_RECITAL)) return null;
+  if (!LUGAR_RECITAL.test(lugar)) return null;
+  const nombre = limpiarLugar(frag.get('l') ?? '');
+  const ciudad = limpiarLugar(frag.get('c') ?? '');
+  if (lugar === LUGAR_OTRO && !nombre) return null;
+  if (lugar === LUGAR_DESCAMPADO && !ciudad) return null;
+  if (lugar !== LUGAR_OTRO && lugar !== LUGAR_DESCAMPADO && !lugarExiste(lugar)) return null;
+  if (!/^[0-9a-z]*$/.test(cargaLista + cargaBises)) return null;
+  const lista = leerIndices(cargaLista, cuantosTemas);
+  const bises = leerIndices(cargaBises, cuantosTemas);
+  if (!lista || !bises) return null;
+  if (lista.length === 0 || lista.length > MAX_TEMAS_RECITAL || bises.length > MAX_BISES_RECITAL) return null;
+  const todos = [...lista, ...bises];
+  if (new Set(todos).size !== todos.length) return null;
+  if (lugar === LUGAR_OTRO) return ciudad ? { lugar, nombre, ciudad, lista, bises } : { lugar, nombre, lista, bises };
+  if (lugar === LUGAR_DESCAMPADO) return { lugar, ciudad, lista, bises };
+  return { lugar, lista, bises };
+}
