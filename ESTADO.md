@@ -7,6 +7,38 @@
 
 **Última actualización:** 2026-10-16
 
+> ## 🌑 EL MONTE DE NOCHE, A AERÓGRAFO (2026-10-16) — segunda enmienda de `D-73`, ciclo 22
+>
+> **En la rama `ciclo-22/bestiario`, sin integrar.** Pedido del usuario: *"Que sea el arte más oscuro, no
+> tan infantil [...] que se note más que se basa en arte de Rocambole [...] Más espacio."*
+>
+> - **Técnica nueva**: aerógrafo en SVG (`aerografo.ts`, `arte.ts`) impreso una vez con `sharp` a
+>   `public/bestiario/*.webp` (`npm run imprimir-bestiario`, 20 piezas, 272 kB). Sin contornos. El navegador solo
+>   mueve las piezas.
+> - **El recinto del monte**: de noche, 900 × 640, se recorre de costado en el teléfono. Lobo y cordero
+>   redibujados a aerógrafo desde las tapas; los demás bichos son ojos que miran desde lo oscuro.
+> - **Verde:** `npm test` (1644), `npm run check`, `npm run build`. Visto a 375 px con un reloj de reemplazo
+>   (el panel estaba oculto). Falta en un teléfono de verdad (`T-437`, `T-439`).
+> - **Abierto:** `T-438`, los demás recintos con el mismo método; `T-435`, las tintas al lienzo.
+
+> ## 🐑 EL BESTIARIO SE VUELVE ZOOLÓGICO (2026-10-16) — enmienda de `D-73`, ciclo 22
+>
+> **En la rama `ciclo-22/bestiario`, sin integrar.** Pedido del usuario: *"personajes con diseños lindos,
+> al estilo rocambole, animados y viviendo en su entorno [...] algo asi como un zoologico"*.
+>
+> - **El recorrido**: el mapa redondo es el plano de la entrada; abajo, doce recintos en scroll, cada uno con
+>   su cartel. Tocar un bicho lo hace reaccionar y decir su verso en un bocadillo; desde ahí, la ficha.
+> - **Recinto 1, terminado**: el monte de tiras dentadas en sepia (contratapa de *Lobo suelto*) y la pastura
+>   naranja de *Cordero atado*. El lobo y el cordero son títeres por piezas, fieles a las tapas
+>   (`titeres.ts`): el lobo ronda la pastura del lado del cordero, el cordero pasta y huye hasta que la soga
+>   lo frena, y se lo puede arrastrar sin que salga del círculo.
+> - **Los otros once recintos**, con las figuras de la primera vuelta, que respiran y saltan, hasta que les
+>   llegue su arte (`T-436`).
+> - **Verde:** `npm test` (1643), `npm run check`, `npm run build`. Visto a 375 px. La animación se comprobó
+>   con un reloj de reemplazo, porque el panel del navegador estaba oculto: el lobo rodea y el cordero huye
+>   con la soga tensa. Falta verla en un teléfono (`T-437`).
+> - **Abierto:** `T-435` (las tintas nuevas al lienzo), `T-436` (el arte de los demás recintos), `T-437`.
+
 > ## 🐺 EL BESTIARIO REDONDO (2026-10-16) — `D-73`, ciclo 22
 >
 > **En la rama `ciclo-22/bestiario`, sobre `main` en `fdaea84`, sin integrar.** Se trabajó en un worktree

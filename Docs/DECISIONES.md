@@ -4587,3 +4587,105 @@ parecen:
 - `T-433`: que `experiencia` diga si el mapa entero necesita un modo para arrastrar con el dedo
   (hoy se recorre de región en región, con los botones de "Al lado").
 - `T-434`: probarlo en un iPhone (la hoja de la ficha con la barra de Safari).
+
+### Enmienda del 2026-10-16: el zoológico, con el lobo y el cordero de Rocambole vivos
+
+Pedido del usuario, sobre el esqueleto de arriba, textual: *"Lo que quiero como objetivo final es
+personajes con diseños lindos, al estilo rocambole, animados y viviendo en su entorno, que sea algo
+scrolleable y explorable. Que sea interactivo. Algo asi como un zoologico ponele. Me gustan las
+zonas. Los diseños del cordero y el lobo que ya existen deben ser una adaptacion fiel del diseño de
+rocambole a una figura animada que vive en su entorno. Los entornos tambien con arte estilo
+rocambole."*
+
+- **El recorrido.** El mapa redondo queda como **plano de la entrada**: sus rótulos son enlaces que
+  bajan a cada recinto. Abajo, los recintos uno detrás del otro, como un zoológico, cada uno con su
+  cartel de sello. El monte y la pastura son un solo recinto, el primero (la pastura es un claro del
+  monte). La ruta es la salida: una carretera recta por donde pasan los fierros.
+- **El lobo y el cordero son títeres de Rocambole** (`lib/bestiario/titeres.ts`), armados por piezas
+  que se mueven: patas, cola, cabeza, párpados, pupilas, boca. El lobo sale de la tapa de *Lobo
+  suelto*: la cara de frente partida en claro y oscuro, el ojo grande con ojera, el hocico de dos
+  almohadillas con los colmillos, el cuerpo a rayas como el pecho, y la cadena de papel recortado,
+  que acá está rota y arrastra. El cordero sale de *Cordero atado*: azul pizarra con la lana en
+  escamas, la máscara marrón con ojos verdes de párpado pesado, el hocico negro, los cuernos curvos
+  y las pezuñas con uñas. Las tintas se muestrearon de las tapas y viven en `tokens.css`
+  (`--bestia-*`, `--entorno-*`).
+- **El aerógrafo de Rocambole se traduce como lo traduce todo el sitio** (`RES-06`): pasadas de
+  tinta plana y una trama de puntos donde él soplaba sombra. Ni un degradé.
+- **El entorno sale de las mismas tapas** (`lib/bestiario/escena-monte.ts`): el monte son las tiras
+  dentadas en sepia de la contratapa de *Lobo suelto*, en tres planos; la pastura es el naranja de
+  *Cordero atado* con los trazos de crayón y los espirales azules de la contratapa del disco 2.
+- **Viven**: el lobo ronda la pastura por afuera, siempre del lado del cordero, y cuando lo alcanza
+  se agazapa y lo mira; el cordero pasta masticando, deambula hasta donde le da la soga, y cuando el
+  lobo se acerca huye al otro lado del palo hasta que la soga lo frena tensa. Se ordenan por
+  profundidad: el lobo pasa por atrás de la pastura, entre las tiras, o por adelante. **El cordero
+  se arrastra con el dedo, y no sale del círculo de la soga.**
+- **Tocar un bicho** lo hace reaccionar (el lobo aúlla, el cordero bala y salta, los demás pegan un
+  salto) y le hace decir su verso en un bocadillo; desde ahí se abre su ficha.
+- **Los otros recintos** quedan con las figuras de la primera vuelta, que respiran, se balancean y
+  saltan, mientras les llega su arte. En el del monte, los demás bichos viven con esas figuras en el
+  fondo del monte y en la orilla de la pastura.
+
+#### Excepción a la regla del movimiento
+
+`diseno-marca.md` dice que el único movimiento decorativo del sitio es la mosca. **Los bichos del
+bestiario se mueven, y no es decoración: es el contenido.** Un zoológico de bichos quietos es una
+lámina. La excepción queda escrita en la regla y acotada: solo adentro de las escenas del bestiario,
+solo lo que se ve (`IntersectionObserver`), con la animación en la isla y no en CSS, y con
+movimiento reducido no se mueve nada.
+
+#### Abierto, sin trabar
+
+- `T-435`: que las tintas `--bestia-*` y `--entorno-*` pasen al lienzo (hoja nueva del bestiario):
+  esta vez se cargaron primero en `tokens.css`, al revés del circuito de `diseno-marca.md`.
+- `T-436`: el arte de los demás recintos, uno por ráfaga, con el mismo método: el títere sale de la
+  tapa de su disco cuando la tapa tiene al bicho (la mosca, el perro de *Un baión*, Luzbelito, el
+  bondi), y si no, se dibuja en el idioma de ese disco.
+- `T-437`: probar en un teléfono de verdad el arrastre del cordero y los cuadros por segundo con los
+  doce recintos.
+
+### Enmienda del 2026-10-16 (2): el monte de noche, a aerógrafo
+
+Pedido del usuario, textual: *"Que sea el arte más oscuro, no tan infantil. Tratá de que se note más
+que se basa en arte de Rocambole. Que tenga toda su estética. Más espacio."*
+
+Lo que hacía infantil a la segunda vuelta era la técnica: contorno negro, tinta plana sin volumen,
+ojos de caricatura y las figuritas del mapa de relleno. Lo de Rocambole en las tapas del disco
+doble es **aerógrafo**: volúmenes soplados, borde duro donde él ponía una máscara de papel y borde
+blando adentro, grano, sombras hondas, ojos humanos en los animales, fondos oscuros.
+
+- **El aerógrafo se imprime una vez, no se pinta en el teléfono.** `lib/bestiario/aerografo.ts`
+  arma manchas sopladas, máscaras de borde duro y grano en SVG; `lib/bestiario/arte.ts` dibuja con
+  eso las piezas del recinto; `scripts/imprimir-bestiario.mjs` (`npm run imprimir-bestiario`) las
+  resuelve contra `tokens.css` y las imprime con `sharp` a `public/bestiario/*.webp` (20 piezas,
+  272 kB). El navegador solo mueve imágenes: el desenfoque y el grano, que en cada cuadro serían
+  carísimos, ya vienen hechos. Si se cambia `arte.ts`, se vuelve a correr la imprenta;
+  `bestiario.test.ts` falla si una pieza que pide la página no está impresa.
+- **Sin contornos.** Ningún títere ni pieza del entorno lleva borde negro: la forma la da la
+  máscara y el volumen el soplo.
+- **El lobo**: la cara de la tapa, con la mitad derecha hundida en sombra, cuencas hondas, el ceño
+  que baja, el ojo grande ojeroso y el chico perdido en lo oscuro, iris humanos, colmillos
+  amarillos. La cabeza va más chica que en la tapa (allá es un busto) y baja, en postura de acecho.
+- **El cordero**: la lana en escamas como tejas, cada una con su luz; la máscara marrón con el ceño
+  pesado; ojos humanos verdes; la trompa oscura con sus fosas, no una boca.
+- **La escena es de noche y más grande** (900 × 640, `rig.ts`): las tiras de la contratapa de
+  *Lobo suelto* oscuras con el canto encendido, y la pastura naranja que brilla en el claro y se
+  apaga en la orilla. En el teléfono va de borde a borde y se recorre de costado; arranca con la
+  pastura en el medio. El lobo ronda afuera de la pastura, entre las tiras, y el frente lo tapa
+  cuando pasa por abajo.
+- **Los demás del monte y la pastura ya no son figuritas: son ojos en lo oscuro**, que parpadean y
+  se tocan igual. Oro los que acechan, papel los otros.
+- **La isla no se lleva el dibujo**: la geometría que necesita vive en `rig.ts`, sin importar
+  `arte.ts`.
+
+#### Excepción a la regla de los degradados
+
+`diseno-marca.md` veta los degradados decorativos. **El aerógrafo de las ilustraciones del
+bestiario no es decoración: es la técnica de las tapas que el bestiario adapta.** La excepción queda
+acotada en la regla: solo adentro de las piezas impresas del bestiario, y siempre con grano; la
+interfaz alrededor (carteles, fichas, botones, bocadillo) sigue en tinta plana.
+
+#### Abierto, sin trabar
+
+- `T-438`: el mismo método para los demás recintos, uno por ráfaga (`T-436` queda adentro de esta).
+- `T-439`: medir en un teléfono de gama baja la escena del monte (cuadros por segundo, memoria de
+  las imágenes) antes de sumar más recintos a aerógrafo.
