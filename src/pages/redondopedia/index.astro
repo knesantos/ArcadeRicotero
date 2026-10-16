@@ -12,6 +12,7 @@
 import Base from '../../layouts/Base.astro';
 import { PORTAL, LUGARES, REDONDOPEDIA } from '../../lib/sitio/copy.ts';
 import { EN_VIVO } from '../../lib/recital/copy.ts';
+import { BESTIARIO } from '../../lib/bestiario/copy.ts';
 import { porTipo, TIPO_A_CATEGORIA, type Articulo } from '../../lib/redondopedia.ts';
 import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import crudo from '../../data/redondopedia.json';
@@ -68,6 +69,13 @@ const recortar = (texto: string): string =>
     <a class="tarjeta-articulo tarjeta-articulo--historia en-vivo-puerta" href="/redondopedia/en-vivo/">
       <strong>{EN_VIVO.enLaPortada.titulo}</strong>
       <span>{EN_VIVO.enLaPortada.resumen}</span>
+    </a>
+
+    {/* `D-73`: el bestiario redondo. Tampoco es un artículo: es un mapa con fichas, y cada
+        ficha lleva su rótulo adentro. Va con la mitología, que viste *Lobo suelto*. */}
+    <a class="tarjeta-articulo tarjeta-articulo--mitologia bestiario-puerta" href="/redondopedia/bestiario/">
+      <strong>{BESTIARIO.enLaPortada.titulo}</strong>
+      <span>{BESTIARIO.enLaPortada.resumen}</span>
     </a>
   </div>
 

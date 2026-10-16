@@ -4496,3 +4496,280 @@ hasta confirmar la licencia."*
   volcado CC0 y qué son los "datos restringidos" de los términos de la API de Discogs; la licencia
   del Fandom; y las fechas en disputa (River 15 o 16 de abril de 2000, Lanús 1 o 3 de mayo de 1992,
   Atenas 11 o 12 de mayo de 1990). Con `D-14` nada de eso frena: si llega un reclamo, se baja.
+
+## D-73 — El bestiario redondo: los bichos y la gente de las letras, en un mapa que se recorre
+
+- **Fecha:** 2026-10-16
+- **Estado:** aceptada — pedido directo del usuario, textual: *"Analiza diseña y construi el
+  bestiario redondo. Arma una lista de TODOS los personajes que son parte de la mitologia de los
+  redondos. Mi idea es que cada "bestia" este en un entorno relacionado con ella y cerca de otras
+  bestias parecidas. Por ejemplo el cordero que este en una pastura atado a un palo y que no se
+  pueda alejar, cerca de el que este el lobo suelto, acechando al cordero, en un entorno que rodee
+  la pastura pero sea diferente [...] el gordo pier que tenga una botella y este en un lugar
+  inundado con un vidrio roto [...] un lugar que se puede recorrer desde arriba y entrar a ver el
+  entorno mas en detalle cosas asi. Se creativo."* Sin plan de `orquestador`: la escribe el hilo
+  principal en la rama `ciclo-22/bestiario`, sobre `main` en `fdaea84`. Las tareas abiertas van de
+  `T-431` en adelante.
+- **Dónde vive:** `/redondopedia/bestiario/`, con una puerta en la portada de la Redondopedia al
+  lado de la de "En vivo". No es un juego: no puntúa, no hay acierto ni error (`BR-22`, como
+  "Ponelos en fila" y "Armá tu recital").
+
+### Decisión 1: la lista sale de las letras, y el verso se coteja a máquina
+
+"Todos los personajes" se tomó al pie de la letra: se leyeron las 104 letras de `cancionero.json`
+y se sacó **todo bicho y todo personaje con nombre o con figura** — 120 entradas. A cada uno lo
+respalda **el verso exacto de su tema**, y `bestiario.test.ts` coteja cada verso contra el
+cancionero, palabra por palabra (sin tildes ni signos, porque la transcripción de lacuerda.net no
+siempre los trae). Es la regla que `CLAUDE.md` deja estricta: un dato mal puesto le marca error al
+que se sabe el tema, y en el bestiario el dato es el verso.
+
+- **Tres del mito no salen de ninguna letra:** Patricio Rey, los buñuelos de ricota y la bestia
+  pop (que sí es un tema, pero cuya bestia nadie identificó). Van con lo que se cuenta, rotulado
+  (`RES-22`, `RES-05`, `RES-341`, `RES-342`).
+- **Lo que el sitio agrega es la estampa, y lo dice.** Cada ficha tiene "La estampa": el dibujo
+  del sitio y lo que pone de más. Cuando el dibujo toma algo al pie de la letra (la rana rubia es
+  una rana, el que mordió el anzuelo es un pescado, el Morta relincha), la estampa lo avisa. La
+  botella del gordo Pierre es del dibujo, no de la letra, y también lo dice.
+- **El gordo Pierre tiene historia, con tres versiones** (`RES-340`): la noche de lluvia en La
+  Esquina del Sol con la sala inundada y el vidrio de la puerta roto (testimonio del Indio, en el
+  memoir y en Rolling Stone), la de 1985 donde el Indio cuenta que Pierre niega haber roto nada
+  (testimonio), y la del dueño del bar (leyenda). Las tres van, cada una con su rótulo.
+- **La gente real fuera de las letras no se dibuja como bestia.** El Mufercho, Symns, el Soldado
+  o la Negra Poli son personas con nombre y apellido: tienen su lugar en la Redondopedia, no en un
+  bestiario. Patricio Rey sí, porque es un personaje inventado.
+
+### Decisión 2: el mundo es redondo, y cada uno vive al lado de los que se le parecen
+
+Un mapa circular visto desde arriba, como un disco o un buñuelo: el galpón de Patricio Rey en el
+medio, once regiones alrededor y **la ruta del último bondi dando la vuelta por el borde, que es
+el surco**. Cada región viste el disco de lo que vive ahí (`D-19`) y está pegada a las que se le
+parecen:
+
+- **La pastura es un claro adentro del monte del lobo.** El cordero está atado al palo en el
+  medio, con un círculo pelado del largo de la soga; el lobo suelto acecha en el borde, justo
+  afuera (un test lo mide). Al lado, la mesa servida del caníbal ("un cordero de mi estilo").
+- **El bajo inundado** (el gordo Pierre, el amorcito que mordió el vidrio, el ahogado y su fiel
+  fantasma, los nenes de oro nadando) toca **el infierno** por el barro de la anguila y por las
+  sirenas, que le cantan a Luzbelito desde el agua. Al otro lado, los astilleros.
+- **Los techos y el baldío**: los gatos arriba, los perros abajo. Al lado, la prisión de
+  Barbazul, con la jaula vacía de la fiera más fiera.
+- **El árbol del gran bonete** con los pájaros y los ángeles; **Cybersiberia**, la tele en la
+  nieve (el Capitán Buscapina, el Alien Duce, el pac-man); **el templo de Momo** con la murga.
+
+### Decisión 3: tres capas, y la de abajo alcanza sola (molinetes abiertos)
+
+1. **El índice**: abajo de todo, cada bestia con su ficha entera en HTML, región por región. Se
+   lee sin JavaScript y lo encuentra un buscador.
+2. **El mapa**: un SVG armado en build (`lib/bestiario/mapa.ts`). Las figuras salen de una
+   imprenta de piezas (`lib/bestiario/figuras.ts`): un cuadrúpedo con otras orejas, otro hocico y
+   otra pose es un lobo, un perro o un cordero; la gente es una cabeza, la ropa y lo que lleva
+   encima. Así las 120 tienen el mismo trazo de serigrafía, en las tintas de los tokens.
+3. **La isla** (`scripts/bestiario.ts`): de lejos se toca una región y la cámara baja; de cerca se
+   viaja a la de al lado sin volver a subir; una bestia abre su ficha (copiada del índice, una
+   sola versión), suena diez segundos del tema con la rocola de `D-72`, y queda **anotada en el
+   teléfono** ("Anotaste X de 120"), que es una comodidad: sin dónde guardar, anda igual.
+
+### Consecuencias
+
+- **Una cosa aprendida en el navegador, que queda escrita en `figuras.ts`:** las copias de un
+  `<use>` no toman un selector con ancestro (`.bestiario-svg .tn`). Con esa forma, todas las
+  figuras salían negras. Las tintas del bestiario llevan el prefijo `b-` y se pintan sin ancestro.
+- `voz.test.ts` audita lo que el sitio escribe en el JSON (nombres y líneas de las regiones,
+  estampas, lo que se cuenta), pero **no** los nombres de las bestias ni los versos: son citas.
+- Los datos (`src/data/bestiario.json`) los cargó el hilo principal; la carpeta es de
+  `contenido`, que puede revisar las estampas con `voz-ricotera.md` (`T-431`).
+
+### Abierto, sin trabar
+
+- `T-431`: que `contenido` lea las 120 estampas y lo que se cuenta, con el oído de `CNT-02`.
+- `T-432`: que `investigador` lea el memoir con `pdftotext` y confirme de primera mano la noche
+  de La Esquina del Sol (`RES-340`), que hoy está citada de segunda.
+- `T-433`: que `experiencia` diga si el mapa entero necesita un modo para arrastrar con el dedo
+  (hoy se recorre de región en región, con los botones de "Al lado").
+- `T-434`: probarlo en un iPhone (la hoja de la ficha con la barra de Safari).
+
+### Enmienda del 2026-10-16: el zoológico, con el lobo y el cordero de Rocambole vivos
+
+Pedido del usuario, sobre el esqueleto de arriba, textual: *"Lo que quiero como objetivo final es
+personajes con diseños lindos, al estilo rocambole, animados y viviendo en su entorno, que sea algo
+scrolleable y explorable. Que sea interactivo. Algo asi como un zoologico ponele. Me gustan las
+zonas. Los diseños del cordero y el lobo que ya existen deben ser una adaptacion fiel del diseño de
+rocambole a una figura animada que vive en su entorno. Los entornos tambien con arte estilo
+rocambole."*
+
+- **El recorrido.** El mapa redondo queda como **plano de la entrada**: sus rótulos son enlaces que
+  bajan a cada recinto. Abajo, los recintos uno detrás del otro, como un zoológico, cada uno con su
+  cartel de sello. El monte y la pastura son un solo recinto, el primero (la pastura es un claro del
+  monte). La ruta es la salida: una carretera recta por donde pasan los fierros.
+- **El lobo y el cordero son títeres de Rocambole** (`lib/bestiario/titeres.ts`), armados por piezas
+  que se mueven: patas, cola, cabeza, párpados, pupilas, boca. El lobo sale de la tapa de *Lobo
+  suelto*: la cara de frente partida en claro y oscuro, el ojo grande con ojera, el hocico de dos
+  almohadillas con los colmillos, el cuerpo a rayas como el pecho, y la cadena de papel recortado,
+  que acá está rota y arrastra. El cordero sale de *Cordero atado*: azul pizarra con la lana en
+  escamas, la máscara marrón con ojos verdes de párpado pesado, el hocico negro, los cuernos curvos
+  y las pezuñas con uñas. Las tintas se muestrearon de las tapas y viven en `tokens.css`
+  (`--bestia-*`, `--entorno-*`).
+- **El aerógrafo de Rocambole se traduce como lo traduce todo el sitio** (`RES-06`): pasadas de
+  tinta plana y una trama de puntos donde él soplaba sombra. Ni un degradé.
+- **El entorno sale de las mismas tapas** (`lib/bestiario/escena-monte.ts`): el monte son las tiras
+  dentadas en sepia de la contratapa de *Lobo suelto*, en tres planos; la pastura es el naranja de
+  *Cordero atado* con los trazos de crayón y los espirales azules de la contratapa del disco 2.
+- **Viven**: el lobo ronda la pastura por afuera, siempre del lado del cordero, y cuando lo alcanza
+  se agazapa y lo mira; el cordero pasta masticando, deambula hasta donde le da la soga, y cuando el
+  lobo se acerca huye al otro lado del palo hasta que la soga lo frena tensa. Se ordenan por
+  profundidad: el lobo pasa por atrás de la pastura, entre las tiras, o por adelante. **El cordero
+  se arrastra con el dedo, y no sale del círculo de la soga.**
+- **Tocar un bicho** lo hace reaccionar (el lobo aúlla, el cordero bala y salta, los demás pegan un
+  salto) y le hace decir su verso en un bocadillo; desde ahí se abre su ficha.
+- **Los otros recintos** quedan con las figuras de la primera vuelta, que respiran, se balancean y
+  saltan, mientras les llega su arte. En el del monte, los demás bichos viven con esas figuras en el
+  fondo del monte y en la orilla de la pastura.
+
+#### Excepción a la regla del movimiento
+
+`diseno-marca.md` dice que el único movimiento decorativo del sitio es la mosca. **Los bichos del
+bestiario se mueven, y no es decoración: es el contenido.** Un zoológico de bichos quietos es una
+lámina. La excepción queda escrita en la regla y acotada: solo adentro de las escenas del bestiario,
+solo lo que se ve (`IntersectionObserver`), con la animación en la isla y no en CSS, y con
+movimiento reducido no se mueve nada.
+
+#### Abierto, sin trabar
+
+- `T-435`: que las tintas `--bestia-*` y `--entorno-*` pasen al lienzo (hoja nueva del bestiario):
+  esta vez se cargaron primero en `tokens.css`, al revés del circuito de `diseno-marca.md`.
+- `T-436`: el arte de los demás recintos, uno por ráfaga, con el mismo método: el títere sale de la
+  tapa de su disco cuando la tapa tiene al bicho (la mosca, el perro de *Un baión*, Luzbelito, el
+  bondi), y si no, se dibuja en el idioma de ese disco.
+- `T-437`: probar en un teléfono de verdad el arrastre del cordero y los cuadros por segundo con los
+  doce recintos.
+
+### Enmienda del 2026-10-16 (2): el monte de noche, a aerógrafo
+
+Pedido del usuario, textual: *"Que sea el arte más oscuro, no tan infantil. Tratá de que se note más
+que se basa en arte de Rocambole. Que tenga toda su estética. Más espacio."*
+
+Lo que hacía infantil a la segunda vuelta era la técnica: contorno negro, tinta plana sin volumen,
+ojos de caricatura y las figuritas del mapa de relleno. Lo de Rocambole en las tapas del disco
+doble es **aerógrafo**: volúmenes soplados, borde duro donde él ponía una máscara de papel y borde
+blando adentro, grano, sombras hondas, ojos humanos en los animales, fondos oscuros.
+
+- **El aerógrafo se imprime una vez, no se pinta en el teléfono.** `lib/bestiario/aerografo.ts`
+  arma manchas sopladas, máscaras de borde duro y grano en SVG; `lib/bestiario/arte.ts` dibuja con
+  eso las piezas del recinto; `scripts/imprimir-bestiario.mjs` (`npm run imprimir-bestiario`) las
+  resuelve contra `tokens.css` y las imprime con `sharp` a `public/bestiario/*.webp` (20 piezas,
+  272 kB). El navegador solo mueve imágenes: el desenfoque y el grano, que en cada cuadro serían
+  carísimos, ya vienen hechos. Si se cambia `arte.ts`, se vuelve a correr la imprenta;
+  `bestiario.test.ts` falla si una pieza que pide la página no está impresa.
+- **Sin contornos.** Ningún títere ni pieza del entorno lleva borde negro: la forma la da la
+  máscara y el volumen el soplo.
+- **El lobo**: la cara de la tapa, con la mitad derecha hundida en sombra, cuencas hondas, el ceño
+  que baja, el ojo grande ojeroso y el chico perdido en lo oscuro, iris humanos, colmillos
+  amarillos. La cabeza va más chica que en la tapa (allá es un busto) y baja, en postura de acecho.
+- **El cordero**: la lana en escamas como tejas, cada una con su luz; la máscara marrón con el ceño
+  pesado; ojos humanos verdes; la trompa oscura con sus fosas, no una boca.
+- **La escena es de noche y más grande** (900 × 640, `rig.ts`): las tiras de la contratapa de
+  *Lobo suelto* oscuras con el canto encendido, y la pastura naranja que brilla en el claro y se
+  apaga en la orilla. En el teléfono va de borde a borde y se recorre de costado; arranca con la
+  pastura en el medio. El lobo ronda afuera de la pastura, entre las tiras, y el frente lo tapa
+  cuando pasa por abajo.
+- **Los demás del monte y la pastura ya no son figuritas: son ojos en lo oscuro**, que parpadean y
+  se tocan igual. Oro los que acechan, papel los otros.
+- **La isla no se lleva el dibujo**: la geometría que necesita vive en `rig.ts`, sin importar
+  `arte.ts`.
+
+#### Excepción a la regla de los degradados
+
+`diseno-marca.md` veta los degradados decorativos. **El aerógrafo de las ilustraciones del
+bestiario no es decoración: es la técnica de las tapas que el bestiario adapta.** La excepción queda
+acotada en la regla: solo adentro de las piezas impresas del bestiario, y siempre con grano; la
+interfaz alrededor (carteles, fichas, botones, bocadillo) sigue en tinta plana.
+
+#### Abierto, sin trabar
+
+- `T-438`: el mismo método para los demás recintos, uno por ráfaga (`T-436` queda adentro de esta).
+- `T-439`: medir en un teléfono de gama baja la escena del monte (cuadros por segundo, memoria de
+  las imágenes) antes de sumar más recintos a aerógrafo.
+
+### Enmienda del 2026-10-16 (3): el lobo y el cordero son las tapas, recortadas
+
+Pedido del usuario, textual: *"Animados se refiere a que se muevan, no estilo cartoon. Deben ser lo
+más fiel posible al diseño real y los inventados lo más fiel a la estética posible."*
+
+- **El lobo y el cordero ya no se redibujan.** Son el arte de Rocambole de los frentes del disco
+  doble (`Docs/INVESTIGACION/TapasDiscos/`, 953 px), recortado en piezas como un títere de papel
+  (`lib/bestiario/recortes.ts`, `scripts/recortar-bestiario.mjs`). Lo que se mueve son esas piezas.
+  Se fueron el lobo y el cordero dibujados a aerógrafo de la vuelta anterior.
+- **El lobo es un busto, como en la tapa, y no se le inventan patas.** Acecha como acecha en la
+  tapa: asoma desde lo oscuro detrás de la pastura, del lado del cordero, sube despacio, ladea la
+  cabeza hacia él, respira y parpadea, y se vuelve a hundir. Para eso el fondo se partió en dos
+  capas (`monte-lejos` y `monte-cerca`) y el lobo vive entre las dos.
+- **El cordero es la criatura entera de la tapa**: la máscara dada vuelta con los ojos verdes y los
+  cuernos, el cuerpo de escamas y las dos patas con sus pies de uñas, en cuatro piezas. La silueta
+  sale del recorte que ya estaba en el repo (`public/arte/cordero-rulo.png`, el frente entero
+  achicado), llevada a 953 px. Camina con esas dos patas, que se turnan; pasta, huye cuando el lobo
+  asoma cerca, y sigue atado: la soga va al cogote y no lo deja salir del círculo.
+- **Lo único inventado del cordero** es el lomo que lo completa donde la tapa lo corta (arriba y a
+  la izquierda), a aerógrafo, en los azules medidos de la tapa y del lado de la sombra, por debajo
+  del recorte. **Los párpados** son elipses del color de la piel de arriba de cada ojo, medido en la
+  tapa (`--bestia-*-parpado`), que bajan al parpadear.
+- **El entorno sigue siendo inventado en la estética de las tapas** (`arte.ts`): las tiras de la
+  contratapa de *Lobo suelto* y la pastura de *Cordero atado*. Los demás bichos del recinto siguen
+  siendo ojos en lo oscuro.
+- Los recortes pesan 150 kB y el monte, 330 kB. Son imágenes de las tapas, como el resto del
+  collage del sitio (`D-14`: si llega un reclamo, se baja).
+
+#### Abierto, sin trabar
+
+- `T-440`: los demás recintos con el mismo criterio: si el bicho está en una tapa (la mosca, el
+  perro de *Un baión*, Luzbelito, el bondi, el medallón de Momo), se recorta de ahí y se articula;
+  si no, se inventa en la estética de su disco.
+- `T-441`: con el lobo y el cordero ya recortados, sumar los eslabones de la cadena del lobo como
+  piezas sueltas, para que se balanceen.
+
+### Enmienda del 2026-10-16 (4): tres más de tapa — el perro, Luzbelito y Momo
+
+Pedido del usuario: *"Elegí otras 3 bestias y continuá haciéndolas"*. Se eligieron con el criterio de
+la tercera enmienda: bichos del bestiario que **tienen diseño real en una tapa**, para recortarlos y
+no inventarlos.
+
+- **"Ese perro que sigue allí"** (*Todo un palo*, de *Un baión*): el perro rojo de crayón de la tapa
+  de *Un baión* (`RES-06`, `RES-22`), cortado en cabeza, mandíbula y fondo de boca. La tapa lo corta
+  en el borde izquierdo, y así entra al baldío: por el borde. Sigue ahí, se asoma un poco más o
+  menos, y de a ratos ladra abriendo la mandíbula. El baldío está en el violeta rayado a crayón de
+  esa tapa, con los techos de chapa contra un farol.
+- **Luzbelito**: la cabeza esculpida con la vela en la coronilla, de su tapa (`RES-06`), separada del
+  fondo negro del óvalo por luminosidad. Está en su piedra en el infierno; la llama titila y el
+  resplandor de la vela la sigue. **El fuego del infierno es la pincelada seca de la tapa de
+  *Gulp!***, sin las letras y teñida de brasa: las llamas son pinceladas de Rocambole, no un dibujo.
+- **Momo**: el medallón de *Momo Sampler*, que es la cara del rey del carnaval. Cuelga de un cordón
+  en su templo, en el negro y la plata de esa tapa, bajo una guirnalda de focos; se mece, le pasa
+  un brillo, y tocado gira como una moneda.
+- **Los demás bichos de esos tres recintos** son ojos en lo oscuro, como en el monte: los gatos en
+  los techos, los diablos con ojos rojos.
+- El bocadillo dice las dos primeras líneas del verso cuando entran cortas: *"¿Cómo no sentirme así
+  / Si ese perro sigue allí?"*.
+- **Quedaron afuera, a propósito**: la mosca (en la tapa es chiquita y está pegada a las letras del
+  rótulo, y recortada saldría sucia) y el bondi de *Último bondi* (la tapa es la banda, gente real).
+
+#### Abierto, sin trabar
+
+- `T-442`: la mosca, si aparece una imagen grande de la mosca de la tapa (la nota de `public/arte/`
+  ya la pide); si no, inventada en la estética de *La mosca y la sopa*.
+- `T-443`: los ocho recintos que quedan con figuras del mapa: el árbol, Cybersiberia, los astilleros,
+  el bajo, la prisión, la mesa, el galpón y la ruta.
+
+### Enmienda del 2026-10-16 (5): la pulida de UI/UX
+
+Pedido del usuario: *"Hacele una pulida entera de UI/UX al bestiario"*. Se recorrió entero a 375 px y
+a 1280 px, y se corrigió lo que se vio:
+
+- **El bocadillo se iba de la pantalla** en las escenas de noche: se medía contra la escena entera y
+  no contra lo que se ve después de correrla. Ahora se mide contra lo visible, la punta sigue al bicho
+  aunque el bocadillo se corra, va abajo cuando arriba no entra, y dura ocho segundos en vez de cinco.
+- **El perro arrancaba fuera de cuadro** en el teléfono: cada escena de noche arranca mirando a su
+  protagonista (`data-foco`), y un rótulo seco avisa que se desliza de costado hasta que la gente lo hace.
+- **En la compu las escenas de noche salen del renglón** (hasta 60rem) y entran enteras, sin correrse.
+- **Los cinco de tapa se retratan con su recorte** en la ficha y en el índice, no con la figura del
+  plano: el que tocó al perro en la escena ve al perro en la ficha.
+- **El índice va en el orden del recorrido**, y cada recinto termina con "Volvé al plano".
+- **Los rótulos del plano llegan a 44 px de toque**, y la barra de las escenas anchas va en la tinta.
