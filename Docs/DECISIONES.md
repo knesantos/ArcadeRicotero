@@ -4689,3 +4689,39 @@ interfaz alrededor (carteles, fichas, botones, bocadillo) sigue en tinta plana.
 - `T-438`: el mismo método para los demás recintos, uno por ráfaga (`T-436` queda adentro de esta).
 - `T-439`: medir en un teléfono de gama baja la escena del monte (cuadros por segundo, memoria de
   las imágenes) antes de sumar más recintos a aerógrafo.
+
+### Enmienda del 2026-10-16 (3): el lobo y el cordero son las tapas, recortadas
+
+Pedido del usuario, textual: *"Animados se refiere a que se muevan, no estilo cartoon. Deben ser lo
+más fiel posible al diseño real y los inventados lo más fiel a la estética posible."*
+
+- **El lobo y el cordero ya no se redibujan.** Son el arte de Rocambole de los frentes del disco
+  doble (`Docs/INVESTIGACION/TapasDiscos/`, 953 px), recortado en piezas como un títere de papel
+  (`lib/bestiario/recortes.ts`, `scripts/recortar-bestiario.mjs`). Lo que se mueve son esas piezas.
+  Se fueron el lobo y el cordero dibujados a aerógrafo de la vuelta anterior.
+- **El lobo es un busto, como en la tapa, y no se le inventan patas.** Acecha como acecha en la
+  tapa: asoma desde lo oscuro detrás de la pastura, del lado del cordero, sube despacio, ladea la
+  cabeza hacia él, respira y parpadea, y se vuelve a hundir. Para eso el fondo se partió en dos
+  capas (`monte-lejos` y `monte-cerca`) y el lobo vive entre las dos.
+- **El cordero es la criatura entera de la tapa**: la máscara dada vuelta con los ojos verdes y los
+  cuernos, el cuerpo de escamas y las dos patas con sus pies de uñas, en cuatro piezas. La silueta
+  sale del recorte que ya estaba en el repo (`public/arte/cordero-rulo.png`, el frente entero
+  achicado), llevada a 953 px. Camina con esas dos patas, que se turnan; pasta, huye cuando el lobo
+  asoma cerca, y sigue atado: la soga va al cogote y no lo deja salir del círculo.
+- **Lo único inventado del cordero** es el lomo que lo completa donde la tapa lo corta (arriba y a
+  la izquierda), a aerógrafo, en los azules medidos de la tapa y del lado de la sombra, por debajo
+  del recorte. **Los párpados** son elipses del color de la piel de arriba de cada ojo, medido en la
+  tapa (`--bestia-*-parpado`), que bajan al parpadear.
+- **El entorno sigue siendo inventado en la estética de las tapas** (`arte.ts`): las tiras de la
+  contratapa de *Lobo suelto* y la pastura de *Cordero atado*. Los demás bichos del recinto siguen
+  siendo ojos en lo oscuro.
+- Los recortes pesan 150 kB y el monte, 330 kB. Son imágenes de las tapas, como el resto del
+  collage del sitio (`D-14`: si llega un reclamo, se baja).
+
+#### Abierto, sin trabar
+
+- `T-440`: los demás recintos con el mismo criterio: si el bicho está en una tapa (la mosca, el
+  perro de *Un baión*, Luzbelito, el bondi, el medallón de Momo), se recorta de ahí y se articula;
+  si no, se inventa en la estética de su disco.
+- `T-441`: con el lobo y el cordero ya recortados, sumar los eslabones de la cadena del lobo como
+  piezas sueltas, para que se balanceen.

@@ -7,6 +7,20 @@
 
 **Última actualización:** 2026-10-16
 
+> ## 🐺 EL LOBO Y EL CORDERO SON LAS TAPAS (2026-10-16) — tercera enmienda de `D-73`, ciclo 22
+>
+> **En la rama `ciclo-22/bestiario`, sin integrar.** Pedido del usuario: *"Animados se refiere a que se muevan, no
+> estilo cartoon. Deben ser lo más fiel posible al diseño real"*.
+>
+> - **Recortados de los frentes del disco doble** (`recortes.ts`, `scripts/recortar-bestiario.mjs`), no redibujados:
+>   el lobo es el busto de la tapa y acecha asomándose desde lo oscuro detrás de la pastura; el cordero es la
+>   criatura entera de su tapa y camina con sus dos patas, atado al palo.
+> - **Inventado, en la estética**: el monte, la pastura, el lomo que completa al cordero donde la tapa lo corta, los
+>   párpados y los ojos de los demás bichos.
+> - **Verde:** `npm test` (1645), `npm run check`, `npm run build`. Visto a 375 px con un reloj de reemplazo (el panel
+>   estaba oculto). Falta en un teléfono de verdad (`T-437`, `T-439`).
+> - **Abierto:** `T-440` (los demás recintos con este criterio), `T-441` (la cadena del lobo suelta).
+
 > ## 🌑 EL MONTE DE NOCHE, A AERÓGRAFO (2026-10-16) — segunda enmienda de `D-73`, ciclo 22
 >
 > **En la rama `ciclo-22/bestiario`, sin integrar.** Pedido del usuario: *"Que sea el arte más oscuro, no
