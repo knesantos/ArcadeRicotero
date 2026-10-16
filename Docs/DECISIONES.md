@@ -4496,3 +4496,94 @@ hasta confirmar la licencia."*
   volcado CC0 y qué son los "datos restringidos" de los términos de la API de Discogs; la licencia
   del Fandom; y las fechas en disputa (River 15 o 16 de abril de 2000, Lanús 1 o 3 de mayo de 1992,
   Atenas 11 o 12 de mayo de 1990). Con `D-14` nada de eso frena: si llega un reclamo, se baja.
+
+## D-73 — El bestiario redondo: los bichos y la gente de las letras, en un mapa que se recorre
+
+- **Fecha:** 2026-10-16
+- **Estado:** aceptada — pedido directo del usuario, textual: *"Analiza diseña y construi el
+  bestiario redondo. Arma una lista de TODOS los personajes que son parte de la mitologia de los
+  redondos. Mi idea es que cada "bestia" este en un entorno relacionado con ella y cerca de otras
+  bestias parecidas. Por ejemplo el cordero que este en una pastura atado a un palo y que no se
+  pueda alejar, cerca de el que este el lobo suelto, acechando al cordero, en un entorno que rodee
+  la pastura pero sea diferente [...] el gordo pier que tenga una botella y este en un lugar
+  inundado con un vidrio roto [...] un lugar que se puede recorrer desde arriba y entrar a ver el
+  entorno mas en detalle cosas asi. Se creativo."* Sin plan de `orquestador`: la escribe el hilo
+  principal en la rama `ciclo-22/bestiario`, sobre `main` en `fdaea84`. Las tareas abiertas van de
+  `T-431` en adelante.
+- **Dónde vive:** `/redondopedia/bestiario/`, con una puerta en la portada de la Redondopedia al
+  lado de la de "En vivo". No es un juego: no puntúa, no hay acierto ni error (`BR-22`, como
+  "Ponelos en fila" y "Armá tu recital").
+
+### Decisión 1: la lista sale de las letras, y el verso se coteja a máquina
+
+"Todos los personajes" se tomó al pie de la letra: se leyeron las 104 letras de `cancionero.json`
+y se sacó **todo bicho y todo personaje con nombre o con figura** — 120 entradas. A cada uno lo
+respalda **el verso exacto de su tema**, y `bestiario.test.ts` coteja cada verso contra el
+cancionero, palabra por palabra (sin tildes ni signos, porque la transcripción de lacuerda.net no
+siempre los trae). Es la regla que `CLAUDE.md` deja estricta: un dato mal puesto le marca error al
+que se sabe el tema, y en el bestiario el dato es el verso.
+
+- **Tres del mito no salen de ninguna letra:** Patricio Rey, los buñuelos de ricota y la bestia
+  pop (que sí es un tema, pero cuya bestia nadie identificó). Van con lo que se cuenta, rotulado
+  (`RES-22`, `RES-05`, `RES-341`, `RES-342`).
+- **Lo que el sitio agrega es la estampa, y lo dice.** Cada ficha tiene "La estampa": el dibujo
+  del sitio y lo que pone de más. Cuando el dibujo toma algo al pie de la letra (la rana rubia es
+  una rana, el que mordió el anzuelo es un pescado, el Morta relincha), la estampa lo avisa. La
+  botella del gordo Pierre es del dibujo, no de la letra, y también lo dice.
+- **El gordo Pierre tiene historia, con tres versiones** (`RES-340`): la noche de lluvia en La
+  Esquina del Sol con la sala inundada y el vidrio de la puerta roto (testimonio del Indio, en el
+  memoir y en Rolling Stone), la de 1985 donde el Indio cuenta que Pierre niega haber roto nada
+  (testimonio), y la del dueño del bar (leyenda). Las tres van, cada una con su rótulo.
+- **La gente real fuera de las letras no se dibuja como bestia.** El Mufercho, Symns, el Soldado
+  o la Negra Poli son personas con nombre y apellido: tienen su lugar en la Redondopedia, no en un
+  bestiario. Patricio Rey sí, porque es un personaje inventado.
+
+### Decisión 2: el mundo es redondo, y cada uno vive al lado de los que se le parecen
+
+Un mapa circular visto desde arriba, como un disco o un buñuelo: el galpón de Patricio Rey en el
+medio, once regiones alrededor y **la ruta del último bondi dando la vuelta por el borde, que es
+el surco**. Cada región viste el disco de lo que vive ahí (`D-19`) y está pegada a las que se le
+parecen:
+
+- **La pastura es un claro adentro del monte del lobo.** El cordero está atado al palo en el
+  medio, con un círculo pelado del largo de la soga; el lobo suelto acecha en el borde, justo
+  afuera (un test lo mide). Al lado, la mesa servida del caníbal ("un cordero de mi estilo").
+- **El bajo inundado** (el gordo Pierre, el amorcito que mordió el vidrio, el ahogado y su fiel
+  fantasma, los nenes de oro nadando) toca **el infierno** por el barro de la anguila y por las
+  sirenas, que le cantan a Luzbelito desde el agua. Al otro lado, los astilleros.
+- **Los techos y el baldío**: los gatos arriba, los perros abajo. Al lado, la prisión de
+  Barbazul, con la jaula vacía de la fiera más fiera.
+- **El árbol del gran bonete** con los pájaros y los ángeles; **Cybersiberia**, la tele en la
+  nieve (el Capitán Buscapina, el Alien Duce, el pac-man); **el templo de Momo** con la murga.
+
+### Decisión 3: tres capas, y la de abajo alcanza sola (molinetes abiertos)
+
+1. **El índice**: abajo de todo, cada bestia con su ficha entera en HTML, región por región. Se
+   lee sin JavaScript y lo encuentra un buscador.
+2. **El mapa**: un SVG armado en build (`lib/bestiario/mapa.ts`). Las figuras salen de una
+   imprenta de piezas (`lib/bestiario/figuras.ts`): un cuadrúpedo con otras orejas, otro hocico y
+   otra pose es un lobo, un perro o un cordero; la gente es una cabeza, la ropa y lo que lleva
+   encima. Así las 120 tienen el mismo trazo de serigrafía, en las tintas de los tokens.
+3. **La isla** (`scripts/bestiario.ts`): de lejos se toca una región y la cámara baja; de cerca se
+   viaja a la de al lado sin volver a subir; una bestia abre su ficha (copiada del índice, una
+   sola versión), suena diez segundos del tema con la rocola de `D-72`, y queda **anotada en el
+   teléfono** ("Anotaste X de 120"), que es una comodidad: sin dónde guardar, anda igual.
+
+### Consecuencias
+
+- **Una cosa aprendida en el navegador, que queda escrita en `figuras.ts`:** las copias de un
+  `<use>` no toman un selector con ancestro (`.bestiario-svg .tn`). Con esa forma, todas las
+  figuras salían negras. Las tintas del bestiario llevan el prefijo `b-` y se pintan sin ancestro.
+- `voz.test.ts` audita lo que el sitio escribe en el JSON (nombres y líneas de las regiones,
+  estampas, lo que se cuenta), pero **no** los nombres de las bestias ni los versos: son citas.
+- Los datos (`src/data/bestiario.json`) los cargó el hilo principal; la carpeta es de
+  `contenido`, que puede revisar las estampas con `voz-ricotera.md` (`T-431`).
+
+### Abierto, sin trabar
+
+- `T-431`: que `contenido` lea las 120 estampas y lo que se cuenta, con el oído de `CNT-02`.
+- `T-432`: que `investigador` lea el memoir con `pdftotext` y confirme de primera mano la noche
+  de La Esquina del Sol (`RES-340`), que hoy está citada de segunda.
+- `T-433`: que `experiencia` diga si el mapa entero necesita un modo para arrastrar con el dedo
+  (hoy se recorre de región en región, con los botones de "Al lado").
+- `T-434`: probarlo en un iPhone (la hoja de la ficha con la barra de Safari).

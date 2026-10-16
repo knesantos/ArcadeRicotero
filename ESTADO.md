@@ -5,7 +5,35 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-15
+**Última actualización:** 2026-10-16
+
+> ## 🐺 EL BESTIARIO REDONDO (2026-10-16) — `D-73`, ciclo 22
+>
+> **En la rama `ciclo-22/bestiario`, sobre `main` en `fdaea84`, sin integrar.** Se trabajó en un worktree
+> (`.claude/worktrees/bestiario`) para no mezclarse con la vuelta de `INV-300`, que sigue sin commitear en la
+> carpeta principal. Pedido del usuario: *"Analiza diseña y construi el bestiario redondo. Arma una lista de
+> TODOS los personajes que son parte de la mitologia de los redondos [...] que se puede recorrer desde arriba
+> y entrar a ver el entorno mas en detalle"*.
+>
+> - **La página** (`/redondopedia/bestiario/`, puerta en la portada de la Redondopedia): **120 bichos y
+>   personajes** sacados de las 104 letras, más Patricio Rey y los buñuelos, que son del mito. Cada uno con el
+>   verso exacto de su tema, cotejado a máquina contra `cancionero.json` (`bestiario.test.ts`), su estampa y,
+>   cuando hay, lo que se cuenta rotulado.
+> - **El mundo redondo**: un mapa circular visto desde arriba, con el galpón de Patricio Rey en el medio, once
+>   regiones alrededor y la ruta del último bondi por el borde. La pastura es un claro adentro del monte: el
+>   cordero atado al palo y el lobo suelto acechando en el borde. El bajo inundado del gordo Pierre (botella,
+>   puerta con el vidrio roto) toca el infierno por las sirenas y el barro. Se toca una región y la cámara baja;
+>   de cerca se viaja a la de al lado; cada bestia abre su ficha, suena diez segundos del tema y queda anotada en
+>   el teléfono.
+> - **El gordo Pierre tiene historia** (`RES-340`, `INV-340`): la noche de lluvia en La Esquina del Sol con la
+>   sala inundada y el vidrio de una puerta roto (testimonio del Indio), la versión donde Pierre lo niega
+>   (testimonio) y la del dueño del bar (leyenda).
+> - **Verde:** `npm test` (1639), `npm run check` y `npm run build`. Visto en el navegador a 375 px y en
+>   escritorio: entrar por un rótulo, viajar por "Al lado", abrir una ficha desde el mapa y desde la barra,
+>   escuchar, cerrar con Escape, volver al mapa, y la libreta.
+> - **Abierto, sin trabar** (`D-73`): `T-431` que `contenido` lea las estampas; `T-432` que `investigador`
+>   confirme de primera mano la noche de La Esquina del Sol en el memoir; `T-433` que `experiencia` diga si hace
+>   falta arrastrar el mapa con el dedo; `T-434` probarlo en un iPhone.
 
 > ## 🎤 LOS RECITALES EN PANTALLA Y "ARMÁ TU RECITAL" (2026-10-15) — `D-72`, ciclo 21
 >
