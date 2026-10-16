@@ -4725,3 +4725,35 @@ más fiel posible al diseño real y los inventados lo más fiel a la estética p
   si no, se inventa en la estética de su disco.
 - `T-441`: con el lobo y el cordero ya recortados, sumar los eslabones de la cadena del lobo como
   piezas sueltas, para que se balanceen.
+
+### Enmienda del 2026-10-16 (4): tres más de tapa — el perro, Luzbelito y Momo
+
+Pedido del usuario: *"Elegí otras 3 bestias y continuá haciéndolas"*. Se eligieron con el criterio de
+la tercera enmienda: bichos del bestiario que **tienen diseño real en una tapa**, para recortarlos y
+no inventarlos.
+
+- **"Ese perro que sigue allí"** (*Todo un palo*, de *Un baión*): el perro rojo de crayón de la tapa
+  de *Un baión* (`RES-06`, `RES-22`), cortado en cabeza, mandíbula y fondo de boca. La tapa lo corta
+  en el borde izquierdo, y así entra al baldío: por el borde. Sigue ahí, se asoma un poco más o
+  menos, y de a ratos ladra abriendo la mandíbula. El baldío está en el violeta rayado a crayón de
+  esa tapa, con los techos de chapa contra un farol.
+- **Luzbelito**: la cabeza esculpida con la vela en la coronilla, de su tapa (`RES-06`), separada del
+  fondo negro del óvalo por luminosidad. Está en su piedra en el infierno; la llama titila y el
+  resplandor de la vela la sigue. **El fuego del infierno es la pincelada seca de la tapa de
+  *Gulp!***, sin las letras y teñida de brasa: las llamas son pinceladas de Rocambole, no un dibujo.
+- **Momo**: el medallón de *Momo Sampler*, que es la cara del rey del carnaval. Cuelga de un cordón
+  en su templo, en el negro y la plata de esa tapa, bajo una guirnalda de focos; se mece, le pasa
+  un brillo, y tocado gira como una moneda.
+- **Los demás bichos de esos tres recintos** son ojos en lo oscuro, como en el monte: los gatos en
+  los techos, los diablos con ojos rojos.
+- El bocadillo dice las dos primeras líneas del verso cuando entran cortas: *"¿Cómo no sentirme así
+  / Si ese perro sigue allí?"*.
+- **Quedaron afuera, a propósito**: la mosca (en la tapa es chiquita y está pegada a las letras del
+  rótulo, y recortada saldría sucia) y el bondi de *Último bondi* (la tapa es la banda, gente real).
+
+#### Abierto, sin trabar
+
+- `T-442`: la mosca, si aparece una imagen grande de la mosca de la tapa (la nota de `public/arte/`
+  ya la pide); si no, inventada en la estética de *La mosca y la sopa*.
+- `T-443`: los ocho recintos que quedan con figuras del mapa: el árbol, Cybersiberia, los astilleros,
+  el bajo, la prisión, la mesa, el galpón y la ruta.

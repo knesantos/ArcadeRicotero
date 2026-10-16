@@ -7,6 +7,20 @@
 
 **Última actualización:** 2026-10-16
 
+> ## 🕯️ TRES MÁS DE TAPA: EL PERRO, LUZBELITO Y MOMO (2026-10-16) — cuarta enmienda de `D-73`, ciclo 22
+>
+> **En la rama `ciclo-22/bestiario`, sin integrar.** Pedido del usuario: *"Elegí otras 3 bestias y continuá
+> haciéndolas"*.
+>
+> - **El perro de *Un baión*** ("ese perro que sigue allí") entra por el borde del baldío, rayado a crayón, y ladra.
+> - **Luzbelito**, la cabeza con la vela de su tapa, en su piedra del infierno; el fuego es la pincelada de *Gulp!*
+>   teñida de brasa. La llama titila.
+> - **El medallón de Momo** cuelga en su templo, negro y plata, bajo una guirnalda de focos; se mece y gira al tocarlo.
+> - Los demás de esos recintos, ojos en lo oscuro. Van cuatro recintos de noche de doce.
+> - **Verde:** `npm test` (1646), `npm run check`, `npm run build`. Visto a 375 px con el reloj de reemplazo (panel
+>   oculto); los tres responden al toque.
+> - **Abierto:** `T-442` (la mosca), `T-443` (los ocho recintos que quedan).
+
 > ## 🐺 EL LOBO Y EL CORDERO SON LAS TAPAS (2026-10-16) — tercera enmienda de `D-73`, ciclo 22
 >
 > **En la rama `ciclo-22/bestiario`, sin integrar.** Pedido del usuario: *"Animados se refiere a que se muevan, no
