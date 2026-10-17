@@ -15,8 +15,8 @@
 > El proyecto viejo del Pro está borrado.
 >
 > - **Murió `arcade-ricotero.vercel.app`** (404). La dirección de Vercel nueva es `arcade-ricotero-ochre.vercel.app`.
-> - **Riesgo abierto:** repo privado con commits firmados por Claude. Si un despliegue sale *Blocked*, se hace
->   público el repo (autorizado por el usuario, historia revisada). Detalle en `D-74`.
+> - **El repo es público desde el 2026-10-17.** Con el repo privado, Vercel Hobby frenó la vista previa del PR #51
+>   aunque el commit lo firmaba `knesantos`. En repos públicos no hace ese chequeo. Detalle en `D-74`.
 > - **Pendiente del usuario:** borrar el TXT `_vercel`, confirmar Analytics *Enabled* en Hobby y probar un
 >   despliegue del otro proyecto del Pro.
 

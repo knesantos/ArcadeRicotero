@@ -4812,7 +4812,7 @@ con el TXT.
 - La historia de la analítica (`D-56`). En Hobby hay 50.000 eventos por mes y un mes de historia
   (https://vercel.com/docs/analytics/limits-and-pricing, consultado 2026-10-17).
 
-### El riesgo que queda abierto: los commits que no firma el usuario
+### El riesgo de los commits, y por qué el repo es público
 
 El repo es privado y parte de los commits los firma `Claude <noreply@anthropic.com>`. La documentación
 oficial de Vercel se contradice sobre si eso frena un despliegue en Hobby:
@@ -4828,6 +4828,13 @@ Producción despliega el commit de fusión de cada PR, que firma `knesantos`, y 
 usuario el mismo día (*"Si hacer el repo publico facilita todo se puede hacer y corta"*). La historia
 ya se revisó para eso: nunca se commiteó un PDF ni un `.env`, y no hay cadenas con forma de clave.
 Quedarían a la vista los mp3 de `public/audio/`.
+
+**Pasó el mismo día, y el repo ya es público.** La vista previa del PR #51 (`8217561`) salió *Blocked*
+con *"Git author knesantos must have access to the project on Vercel to create deployments"*, y eso que
+el commit lo firma `knesantos`, no Claude. El despliegue de `76cf504` había salido porque lo disparó la
+importación, no un push: con el repo privado, el próximo push a `main` tampoco se habría publicado. El
+usuario eligió hacerlo público (*"Sí, hacé público el repo"*), y el hilo principal lo cambió el
+2026-10-17 con `gh repo edit --visibility public`.
 
 ### Pendiente del usuario
 
