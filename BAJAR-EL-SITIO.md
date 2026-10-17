@@ -8,14 +8,15 @@
 
 ## 1. Bajarlo ya
 
-**La vía más rápida, y no requiere nada instalado:** entrar al panel de Vercel, abrir el
-proyecto, y en *Settings → General* usar **Delete Project**. El sitio deja de responder al
-instante.
+**La vía más rápida, y no requiere nada instalado:** entrar al panel de Vercel **con la cuenta
+Hobby** (equipo `knesantos`, no la cuenta Pro: el sitio se mudó en `D-74`), abrir el proyecto, y en
+*Settings → General* usar **Delete Project**. El sitio deja de responder al instante.
 
-Si preferís no borrarlo y solo sacarlo de circulación, en *Settings → Deployment Protection*
-podés dejarlo detrás de una contraseña. Sigue existiendo pero no lo ve nadie.
+Ojo: en Hobby no hay protección con contraseña (es de los planes pagos). Si preferís no borrar el
+proyecto, en *Settings → Domains* sacá `fichinricotero.com.ar` y `www`: el dominio deja de mostrar
+el sitio, aunque `arcade-ricotero-ochre.vercel.app` siga respondiendo.
 
-Desde la terminal, con la CLI ya autenticada:
+Desde la terminal, con la CLI autenticada en la cuenta Hobby:
 
 ```bash
 npx vercel remove arcade-ricotero --yes
@@ -23,8 +24,9 @@ npx vercel remove arcade-ricotero --yes
 
 El proyecto de Vercel conserva el nombre de cuando el sitio se llamaba Arcade Ricotero
 (`D-60`): por eso el comando dice `arcade-ricotero`. Borrarlo baja todas las direcciones del
-proyecto a la vez: `arcade-ricotero.vercel.app` y, una vez conectado, el dominio propio
-**fichinricotero.com.ar**. El dominio sigue registrado en NIC Argentina y no muestra nada
+proyecto a la vez: `arcade-ricotero-ochre.vercel.app` y el dominio propio
+**fichinricotero.com.ar**. (La vieja `arcade-ricotero.vercel.app` ya no existe desde `D-74`.)
+El dominio sigue registrado en NIC Argentina y no muestra nada
 mientras no apunte a ningún proyecto; no hace falta darlo de baja para bajar el sitio.
 
 **Lo que NO hace falta hacer, y conviene decirlo para que nadie pierda tiempo:** no hay que
