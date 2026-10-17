@@ -522,6 +522,7 @@ durante la entrevista de instanciación— y decisiones de estructura del propio
   de visitas serian ~10 GB contra los 100 GB de Hobby. **Accion pendiente del usuario:**
   verificar en Settings -> General que el proyecto viva en el scope personal y no en el
   equipo Pro, y moverlo con Transfer Project si hace falta.
+  **Cerrada por `D-74` (2026-10-17):** el proyecto se mudó a una cuenta Hobby.
 
 ## D-16 — El producto se llama Arcade Ricotero
 
@@ -4773,3 +4774,71 @@ a 1280 px, y se corrigió lo que se vio:
   plano: el que tocó al perro en la escena ve al perro en la ficha.
 - **El índice va en el orden del recorrido**, y cada recinto termina con "Volvé al plano".
 - **Los rótulos del plano llegan a 44 px de toque**, y la barra de las escenas anchas va en la tinta.
+
+## D-74 — El sitio se muda a una cuenta Hobby de Vercel
+
+- **Fecha:** 2026-10-17
+- **Estado:** cerrada — pedido directo del usuario, textual: *"Estoy pensando mudar el proyecto de
+  vercel a una cuenta free para poder usar mi cuenta pro en otro proyecto de mayor importancia."*
+  La mudanza la hizo el usuario en el panel, guiado por el hilo principal; esta decisión la escribe
+  el hilo principal en la rama `vercel/hobby`, sobre `main` en `76cf504`.
+- **Cierra** la acción pendiente que `RES-15` le dejó al usuario en `D-15`: el proyecto ya no vive en
+  un equipo Pro. En Hobby no hay cargo posible; al agotar un cupo el recurso se frena.
+
+### Dónde quedó
+
+- **Cuenta:** una cuenta de Vercel aparte, con otro mail, cuyo equipo Hobby se llama `knesantos` y
+  tiene conectado el GitHub `knesantos`. El proyecto conserva el nombre `arcade-ricotero` (`D-60`).
+- **Direcciones:** `fichinricotero.com.ar` (redirige con 308 a `www`), `www.fichinricotero.com.ar` y
+  `arcade-ricotero-ochre.vercel.app`. **`arcade-ricotero.vercel.app` murió** con el proyecto viejo:
+  da 404 desde el 2026-10-17.
+- **DNS:** en NIC no cambió nada, siguen `ns1.vercel-dns.com` y `ns2.vercel-dns.com`. El dominio pasó
+  de cuenta con el *Verify & Claim* de Vercel: un TXT en `_vercel.fichinricotero.com.ar`, cargado en
+  la zona que todavía servía la cuenta Pro.
+- **Verificado desde afuera el 2026-10-17:** `www` responde 200, la raíz 308, un mp3 de
+  `public/audio/` 200 con `audio/mpeg`, y `/_vercel/insights/script.js` 200.
+
+### Por qué así y no con *Transfer Project*
+
+La transferencia de Vercel no corta el servicio y mueve el dominio sola, pero pide ser miembro del
+equipo de destino (https://vercel.com/docs/projects/transferring-projects, consultado 2026-10-17). El
+login Pro no tenía equipo Hobby (su espacio personal era el que estaba en Pro), y a un Hobby no se le
+suman miembros. Así que el proyecto se importó de nuevo en la otra cuenta y el dominio se reclamó
+con el TXT.
+
+### Lo que se perdió
+
+- `arcade-ricotero.vercel.app`, y con él cualquier enlace viejo a esa dirección.
+- La historia de la analítica (`D-56`). En Hobby hay 50.000 eventos por mes y un mes de historia
+  (https://vercel.com/docs/analytics/limits-and-pricing, consultado 2026-10-17).
+
+### El riesgo de los commits, y por qué el repo es público
+
+El repo es privado y parte de los commits los firma `Claude <noreply@anthropic.com>`. La documentación
+oficial de Vercel se contradice sobre si eso frena un despliegue en Hobby:
+
+- https://vercel.com/docs/git#using-hobby-teams dice que el chequeo del autor solo aplica a
+  repos de *GitHub organizations*, no a cuentas personales como `knesantos`.
+- https://vercel.com/docs/deployments/troubleshoot-project-collaboration dice, sin esa excepción, que en
+  Hobby el autor del commit tiene que ser el dueño del equipo. Y también: *"Collaboration is free for
+  public repositories."*
+
+Producción despliega el commit de fusión de cada PR, que firma `knesantos`, y el primero salió bien
+(`76cf504`). **Si algún despliegue aparece como *Blocked*, el repo se hace público**: lo autorizó el
+usuario el mismo día (*"Si hacer el repo publico facilita todo se puede hacer y corta"*). La historia
+ya se revisó para eso: nunca se commiteó un PDF ni un `.env`, y no hay cadenas con forma de clave.
+Quedarían a la vista los mp3 de `public/audio/`.
+
+**Pasó el mismo día, y el repo ya es público.** La vista previa del PR #51 (`8217561`) salió *Blocked*
+con *"Git author knesantos must have access to the project on Vercel to create deployments"*, y eso que
+el commit lo firma `knesantos`, no Claude. El despliegue de `76cf504` había salido porque lo disparó la
+importación, no un push: con el repo privado, el próximo push a `main` tampoco se habría publicado. El
+usuario eligió hacerlo público (*"Sí, hacé público el repo"*), y el hilo principal lo cambió el
+2026-10-17 con `gh repo edit --visibility public`.
+
+### Pendiente del usuario
+
+- Borrar el TXT `_vercel` de la zona del dominio, ahora en la cuenta Hobby.
+- Confirmar que Web Analytics figure *Enabled* en el proyecto nuevo.
+- Hacer un despliegue de prueba del otro proyecto de la cuenta Pro. Vercel ata cada GitHub a una sola
+  cuenta, y conectar `knesantos` a la cuenta Hobby pudo haberlo desconectado de la Pro.

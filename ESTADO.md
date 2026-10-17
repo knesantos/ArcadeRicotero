@@ -5,7 +5,20 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-16
+**Última actualización:** 2026-10-17
+
+> ## 🏠 EL SITIO SE MUDÓ A UNA CUENTA HOBBY DE VERCEL (2026-10-17) — `D-74`
+>
+> Pedido del usuario: liberar la cuenta Pro para otro proyecto. **Hecho y verificado en vivo:** el proyecto
+> `arcade-ricotero` vive ahora en otra cuenta de Vercel, equipo Hobby `knesantos`, y despliega `main` desde
+> GitHub. `fichinricotero.com.ar` pasó con *Verify & Claim*; NIC sigue delegando a `ns1/ns2.vercel-dns.com`.
+> El proyecto viejo del Pro está borrado.
+>
+> - **Murió `arcade-ricotero.vercel.app`** (404). La dirección de Vercel nueva es `arcade-ricotero-ochre.vercel.app`.
+> - **El repo es público desde el 2026-10-17.** Con el repo privado, Vercel Hobby frenó la vista previa del PR #51
+>   aunque el commit lo firmaba `knesantos`. En repos públicos no hace ese chequeo. Detalle en `D-74`.
+> - **Pendiente del usuario:** borrar el TXT `_vercel`, confirmar Analytics *Enabled* en Hobby y probar un
+>   despliegue del otro proyecto del Pro.
 
 > ## 🔧 LA PULIDA DEL BESTIARIO (2026-10-16) — quinta enmienda de `D-73`, ciclo 22
 >
