@@ -18,8 +18,8 @@ import { ATILA, ATILA_ARMADO } from '../../lib/bestiario/rig.ts';
 import { girar, hacia, parpado, partes, suave } from './articular.ts';
 
 export interface EscenarioAtila {
-  /** El bicho tocado dice su verso: el punto va en coordenadas del recinto. */
-  hablar(id: string, x: number, y: number): void;
+  /** El bicho tocado dice su verso: el punto va en coordenadas del recinto; `abajo` lo cuelga debajo. */
+  hablar(id: string, x: number, y: number, abajo?: boolean): void;
   quieto(): boolean;
   reloj(): number;
 }
@@ -290,8 +290,9 @@ export function armarAtila(raiz: ParentNode, esc: EscenarioAtila): Atila {
       abreDesde = t - ABRE;
       pintar(t, 0);
     }
-    // El bocadillo va arriba del funyi, del lado del farol: que se le vea lo que muestra.
-    esc.hablar(ID, x + 34, piso - 236);
+    // El bocadillo cuelga de los zapatos, sobre la pared: arriba no entra, y en el medio taparía
+    // lo que muestra.
+    esc.hablar(ID, x, piso + 4, true);
   };
   g.addEventListener('click', tocar);
   g.addEventListener('keydown', (ev) => {

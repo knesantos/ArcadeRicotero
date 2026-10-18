@@ -7,6 +7,19 @@
 
 **Última actualización:** 2026-10-18
 
+> ## 🧥 EL NEGRO ATILA (2026-10-18) — duodécima enmienda de `D-73`
+>
+> **Sin integrar**: rama `bestiario/negro-atila` (worktree `.claude/worktrees/bestiario-atila`), con `main` adentro
+> en `46d36d1`. Pedido del usuario: *"Hace a El negro Atila para el bestiario redondo, diseñalo como rocambole [...] chisotos y acido"*.
+>
+> - **A aerógrafo, como la tapa de *Lobo suelto***: la cara partida en luz y sombra, el ojo ojeroso, la
+>   bufanda acanalada como el pecho del lobo. Camina por la medianera del baldío, hundido en el gabán,
+>   mascando el frío (vaho). Cuando pasa la sirena de ocasión se tira del otro lado y lo delata el vaho.
+> - **Tocado, abre el gabán**: relojes, cucharitas, el eslabón de la cadena del lobo, la dentadura del caníbal
+>   desdentado y la sirena de la cana. Tres testimonios del memoir (`RES-21`, p. 321).
+> - **Verificado**: tests, una simulación de la conducta y el panel a 375 px, que estaba oculto: **la animación no
+>   se vio correr** (`T-480`).
+
 > ## 🎨 LOS SEIS ENTORNOS, CADA UNO EN SU TAPA (2026-10-18) — décima enmienda de `D-73`
 >
 > **Sin integrar: espera en el PR #57** (rama `bestiario/fondos-rocambole`, worktree `.claude/worktrees/bestiario-fondos`). Pedido del

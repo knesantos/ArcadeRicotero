@@ -397,7 +397,7 @@ function recintoDelMonte(escena: HTMLElement, svg: SVGSVGElement): Recinto {
  */
 function recintoDelPerro(escena: HTMLElement, svg: SVGSVGElement): Recinto {
   const deMapa = recintoDeMapa(escena, svg);
-  const atila = armarAtila(svg, { hablar: (id, x, y) => hablar(id, escena, svg, x, y), quieto, reloj: () => reloj });
+  const atila = armarAtila(svg, { hablar: (id, x, y, abajo) => hablar(id, escena, svg, x, y, abajo), quieto, reloj: () => reloj });
   const g = svg.querySelector<SVGGElement>('.titere--perro')!;
   const p = partes(g);
   const base = g.getAttribute('transform') ?? '';
