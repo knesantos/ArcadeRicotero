@@ -34,17 +34,16 @@ import {
   LADO,
   cajaDeFigura,
   dibujarRecinto,
-  dibujarRuta,
   dibujarSuelo,
   lugarDelRotulo,
   punto,
   simbolos,
   tintaDe,
-  RUTA,
   type Bestiario,
 } from '../../lib/bestiario/mapa.ts';
 import { ESCENA, escenaMonte } from '../../lib/bestiario/escena-monte.ts';
-import { DRACULA, escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, LUZBELITO, MOMO, PIERRE } from '../../lib/bestiario/escenas.ts';
+import { BARBAZUL, escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, LUZBELITO, MOMO, PIERRE } from '../../lib/bestiario/escenas.ts';
+import { ENTORNOS_DE_NOCHE } from '../../lib/bestiario/escenas-entornos.ts';
 import { enEspera, SIN_ISLA } from '../../lib/bestiario/carga.ts';
 import { PALO } from '../../lib/bestiario/rig.ts';
 import { CON_CAMINO, recintoDe } from '../../lib/bestiario/camino.ts';
@@ -88,14 +87,18 @@ const recintos = RECORRIDO.map((id) => {
   const region = regionDe.get(id)!;
   // Los recintos de noche (D-73): los de protagonista de tapa, el bajo, con el gordo Pierre
   // pintado en la estética de *Gulp!*, y la prisión, con la drácula tallada como *Oktubre*. Cada
-  // uno con su escena por capas.
+  // uno con su escena por capas. La décima vuelta suma los seis entornos que seguían con las
+  // figuras del plano, cada uno en la tapa de su disco.
   // `foco`: dónde arranca mirando la escena cuando no entra entera (el perro entra por el borde).
   const deNoche: Record<string, { escena: (n: ReadonlyMap<string, string>) => string; foco: number }> = {
-    'los-techos': { escena: escenaBaldio, foco: 260 },
+    // En el baldío, entre los dientes del perro y el Atila en la medianera: entran los dos.
+    'los-techos': { escena: escenaBaldio, foco: 470 },
     'el-infierno': { escena: escenaInfierno, foco: LUZBELITO.x },
     'el-templo': { escena: escenaTemplo, foco: MOMO.argolla.x },
     'el-bajo': { escena: escenaBajo, foco: PIERRE.x - 60 },
-    'la-prision': { escena: escenaPrision, foco: DRACULA.x + 60 },
+    // La prisión arranca con Barbazul entero, que te recibe en la entrada, y la drácula enfrente.
+    'la-prision': { escena: escenaPrision, foco: BARBAZUL.x + 110 },
+    ...ENTORNOS_DE_NOCHE,
   };
   if (deNoche[id]) {
     return {
@@ -106,17 +109,6 @@ const recintos = RECORRIDO.map((id) => {
       caja: `0 0 ${ESCENA.ancho} ${ESCENA.alto}`,
       foco: deNoche[id]!.foco,
       svg: deNoche[id]!.escena(nombres),
-      bestias: bestias.filter((b) => b.region === id),
-    };
-  }
-  if (id === 'la-ruta') {
-    return {
-      id,
-      nombre: region.nombre,
-      canta: region.canta,
-      tinta: tintaDe(region.disco),
-      caja: `0 0 ${RUTA.ancho} ${RUTA.alto}`,
-      svg: dibujarRuta(datos),
       bestias: bestias.filter((b) => b.region === id),
     };
   }

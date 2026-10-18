@@ -53,8 +53,8 @@ export interface Tramo {
   /**
    * El claro de la pastura, si está en este tramo: cuánto se corre la escena del recinto
    * (`rig.ts`, con el palo en `PALO`) para caer en el piso del camino. Adentro del claro valen
-   * las mismas coordenadas que en el recinto del monte, y la isla mueve al lobo y al cordero
-   * con la misma lógica.
+   * las mismas coordenadas que en el recinto del monte, y la isla mueve al lobo, al cordero y a
+   * la vaca cubana con la misma lógica.
    */
   claro?: { dx: number; ojos: Readonly<Record<string, Ojos>> };
   /** Los que no viven en la región pero andan por el tramo (el lobo en la pastura). */
@@ -93,7 +93,6 @@ export const CAMINOS: Readonly<Record<string, Tramo>> = {
       ojos: {
         'el-ovejero': [168, 396, 'oro'],
         'el-borrego': [214, 470, 'papel'],
-        'aquella-solitaria-vaca-cubana': [722, 350, 'papel'],
         'el-rebano': [640, 560, 'papel'],
       },
     },
@@ -103,6 +102,12 @@ export const CAMINOS: Readonly<Record<string, Tramo>> = {
 
 /** Las regiones que ya tienen su camino. */
 export const CON_CAMINO: readonly string[] = Object.keys(CAMINOS);
+
+/**
+ * Por dónde se entra al bestiario (`D-76`): caminando, por el primer tramo. El plano y los
+ * recintos quedan en `/redondopedia/bestiario/`, a un toque desde el camino.
+ */
+export const ENTRADA = `/redondopedia/bestiario/${CON_CAMINO[0]}/`;
 
 /** El recinto de una región en el plano viejo: el monte y la pastura son uno solo. */
 export const recintoDe = (region: string): string =>

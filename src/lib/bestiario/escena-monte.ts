@@ -7,7 +7,8 @@
  *    estética, `arte.ts`).
  * 2. **El lobo**, el busto de la tapa: acecha subiendo desde atrás del borde de la capa que sigue.
  * 3. `monte-cerca`: el piso del monte y la pastura naranja de *Cordero atado*, con el palo.
- * 4. Los ojos de los demás del monte, la soga, y **el cordero**, la criatura de la tapa.
+ * 4. Los ojos de los demás del monte, la soga, **el cordero**, la criatura de la tapa, y en la
+ *    punta de la pastura **la vaca cubana**, con su satélite (`escena-vaca.ts`).
  * 5. `monte-frente`: las tiras de adelante.
  *
  * La geometría vive en `rig.ts`, que es lo único que se lleva la isla.
@@ -16,6 +17,7 @@
 import { imagen, lobo, cordero } from './titeres.ts';
 import { ojos, type Tinta } from './escenas.ts';
 import { ESCENA, PALO } from './rig.ts';
+import { vacaEnElClaro } from './escena-vaca.ts';
 
 export { ESCENA, PALO };
 
@@ -32,7 +34,6 @@ export const VECINOS_DEL_MONTE: Readonly<Record<string, readonly [number, number
   'el-lobo-caido': [92, 486, 'oro'],
   'la-liebre-muerta': [818, 540, 'papel'],
   'el-borrego': [214, 470, 'papel'],
-  'aquella-solitaria-vaca-cubana': [722, 350, 'papel'],
   'el-rebano': [640, 560, 'papel'],
   'el-ovejero': [168, 396, 'oro'],
 };
@@ -49,6 +50,7 @@ export function escenaMonte(nombres: ReadonlyMap<string, string>): string {
     `<g class="ojos-del-monte">${vecinos}</g>` +
     `<path id="soga" class="bt-trazo-soga" stroke-width="2.8" d="M${PALO.x} ${PALO.y - 46} L${PALO.x + 40} ${PALO.y}"/>` +
     `<g class="actores"><g class="titere titere--cordero" data-id="el-cordero-atado" role="button" tabindex="0" aria-label="${nombres.get('el-cordero-atado')}">${cordero()}</g></g>` +
+    vacaEnElClaro(nombres.get('aquella-solitaria-vaca-cubana') ?? '') +
     `<g class="escena-frente" pointer-events="none">${imagen('monte-frente')}</g>`
   );
 }

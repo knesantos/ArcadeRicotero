@@ -32,7 +32,8 @@ test('cada bicho de la región anda por su camino, una vez y adentro de la escen
       ...Object.keys(tramo.claro?.ojos ?? {}),
       // El lobo asoma en su monte, y en el claro acecha al cordero.
       ...(tramo.lobo || tramo.claro ? ['el-lobo-suelto'] : []),
-      ...(tramo.claro ? ['el-cordero-atado'] : []),
+      // En el claro también vive la vaca cubana, con su satélite (`escena-vaca.ts`).
+      ...(tramo.claro ? ['el-cordero-atado', 'aquella-solitaria-vaca-cubana'] : []),
     ];
     const deLaRegion = datos.bestias.filter((b) => b.region === id).map((b) => b.id);
     const deVisita = tramo.deVisita ?? [];

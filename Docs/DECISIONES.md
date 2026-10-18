@@ -5049,14 +5049,245 @@ de la octava vuelta. Se escribió como octava enmienda y pasó a novena al integ
   bestiario: el camino ya dibuja de entrada al lobo y al cordero que retrata, así que ahí diferirlos no
   ahorraba nada y le hubiera pedido a su isla armarlos.
 
-### Enmienda del 2026-10-18 (11): Limón, el limón verde que corre por las chapas del baldío
+### Enmienda del 2026-10-18 (10): los seis entornos, cada uno en la tapa de su disco
+
+Pedido del usuario, textual: *"Armá un fondo bien rocambole para cada uno de los entornos del bestiario
+redondo [...] un entorno adecuado para cada parte del mapa. Si ya tiene un entorno hecho bien buscá cómo
+mejorarlo."* Y a mitad de camino: *"ahora el bestiario es una especie de aventura scrolleable. Que tus
+fondos lo tengan en cuenta."* La escribe el hilo principal en la rama `bestiario/fondos-rocambole`, sobre
+`main` en `159b1bc`, en paralelo con la drácula (`ciclo-24/bestiario`, que hizo la prisión) y el camino
+con cruces (`bestiario/camino-con-cruces`). Por eso la prisión no está acá. Es la décima porque el camino entró
+a `main` como la (7) (PR #54), y la drácula y la carga de a una como la (8) y la (9) (PR #56).
+
+- **Cierra `T-443`**: los seis recintos que seguían con las figuras del plano pasan a ser de noche,
+  pintados a aerógrafo en tres capas (`lib/bestiario/arte-entornos.ts`). Cada uno viste la tapa de su
+  disco (`D-19`), con los colores medidos con k-medias sobre las tapas reales de
+  `Docs/INVESTIGACION/TapasDiscos/` (los `--entorno-*` nuevos de `tokens.css`):
+  - **El galpón** es la noche de *En directo*: la luz roja que revienta arriba a la derecha, la gente
+    impresa en trama de puntos, de espaldas, con una bengala, y en el tablado la silla vacía bajo el
+    seguidor, la fuente de buñuelos y la bestia pop, encorvada y con lentejuelas. De fondo cuelga un disco.
+  - **El árbol del gran bonete** es *Luzbelito*: la llanura roja con huevos de plata bajo el cielo violeta
+    del interior del disco, y el árbol hecho del mármol verde del frente. Del marco de cobre de la tapa,
+    colgado vacío de una rama, se ve otra noche, con luna.
+  - **Cybersiberia** es *Último bondi*: el cielo es la chapa remachada de la tapa, con las pistas de
+    circuito en relieve, y la tele es el ojo de buey, prendida en la nieve, con el Alien Duce adentro. La
+    fila de agujeros de la tapa son los puntos que se come el pac-man. **Nieva** (una animación en bucle,
+    `nevar`, que se apaga con movimiento reducido como la mosca).
+  - **Los astilleros** son la contratapa del disco 2 de *Cordero atado*: tiza azul y espirales sobre lo
+    oscuro, los containers en el naranja del frente, y la luz de un farol de sodio.
+  - **La mesa** es *La mosca y la sopa*: un collage de papel rasgado sobre el rojo de la tapa. La foto del
+    escenario del frente tiene su seguidor, que se escapa de la foto y cae en la olla de la contratapa. Por
+    la ventana se ve la pastura. **La mosca queda pintada acá** (`T-442`, en su estética).
+  - **La ruta** es el surco del disco: el asfalto es vinilo, y en el horizonte se recorta el mundo redondo
+    entero, cada región con su luz. Los cuatro fierros pasan pintados —el último bondi de chapa remachada
+    con ojos de buey por ventanillas, la Mariposa Pontiac con alas, el camión del héroe del whisky y el
+    toxi-taxi con su sombra atrás— y lo que espera en la banquina se queda quieto.
+- **Los bichos siguen el régimen de los recintos de noche**: los que miran desde lo oscuro son ojos, y los
+  que no tienen ojos —una cosa, como la silla, la tele o el balde de almejas, o uno que se ve de
+  espaldas— se tocan donde están pintados (`cosa()` en `escenas-entornos.ts`). Cada uno tiene su silueta
+  pintada debajo de los ojos, para que no floten.
+- **Para el camino** (la aventura que se camina de costado): cada capa es una función de `(ancho, alto)`
+  que siembra todo el ancho de una vez, lo lejano es ambiente y los hitos van en el piso, y la geometría
+  vive en `rig-entornos.ts`, que son números. `luzQueAsoma(región, x, y)` pinta la luz de cada entorno
+  para anunciarlo desde el vecino. El recinto imprime las capas a 900; las largas las suma el camino
+  cuando arme cada tramo. Un test las arma a 1850, 2400 y 3036 sin imprimirlas.
+- **Mejora de dos que ya estaban**: el infierno encantador tenía la mitad de abajo vacía y ahora es un
+  salón de baile, con piso de damero en perspectiva que devuelve el fuego de *Gulp!*; el templo de Momo
+  tiene serpentinas colgando de la guirnalda y papel picado en el piso, en la plata y el oro de *Momo
+  Sampler*.
+- **La ruta de papel del plano** (`dibujarRuta` en `mapa.ts`) se borró: ya no la usaba nadie.
+- Las 23 piezas nuevas pesan 2,5 MB: lo lejano a 2 por unidad y lo transparente a 1,5, que con alfa pesa
+  el doble y en un teléfono no se distingue.
+
+#### Abierto, sin trabar
+
+- Sin tareas nuevas. `T-435` suma las tintas nuevas al lienzo; `T-437` y `T-439` (los cuadros por segundo en
+  un teléfono de verdad) ahora incluyen la nieve.
+
+### Enmienda del 2026-10-18 (11): Barbazul, tallado, con la barba de otra plancha
+
+Pedido del usuario, textual, el de la sexta y la octava enmienda: *"hace otro ciclo sobre el bestiario
+redondo. Agrega otro personaje y pulilo a fondo, se creativo que qeude como uno de rocambole."* La
+escribe el hilo principal en la rama `ciclo-25/bestiario`, sacada de `ciclo-24/bestiario` (PR #56) en
+`82c4453`, como la vuelta anterior se sacó de la suya, y con `origin/main` adentro en `46d36d1`. **El
+número:** en `main` la (7) es el camino con cruces, la (8) y la (9) son la drácula y la carga de a una,
+y la (10), los seis entornos (PR #57); esta es la (11). Si otra rama llega antes con la (11), se
+renumera esta al integrar (`integrar.md`).
+
+- **Por qué él.** Era `T-444`: el dueño de la prisión seguía siendo un par de ojos en su puerta, y la
+  octava enmienda dejó dicho que lo decidiera la vuelta que lo hiciera. Vive en la prisión, que no
+  tocaba ninguna de las otras sesiones abiertas del bestiario (los entornos son de otros seis recintos).
+- **Tallado, como su casa.** Su tema es de *Gulp!*, pero la prisión viste *Oktubre* (`D-19`) y él es
+  el dueño: está tallado en la misma madera (`grabado.ts`, `arte-barbazul.ts`). La vara es **el barbudo
+  de la contratapa de *Oktubre***: el pelo largo partido al medio, las cuencas hondas, las arrugas de
+  la frente cortadas a gubia, las hebras largas. La luz le viene del foco del pasillo, a su derecha, y
+  la mitad de la izquierda queda en lo negro. La cabeza se dibuja a su medida y se agranda un cuarto
+  (`agranda`), porque a la medida del cuerpo se perdía.
+- **La barba es otra plancha.** En la prisión no hay más color que el rojo de las banderas. La barba
+  de Barbazul se imprime aparte, entintada de azul (`--bestia-barbazul-azul`, inventado: en *Oktubre*
+  no hay azul, lo pide el nombre) y **corrida de registro**: lo tallado de la barba sale azul, y del
+  lado donde se corrió la plancha asoma un filo azul afuera del negro. Es el error de imprenta de las
+  letras de *Gulp!* (`corrido`, en `pincel.ts`), hecho con gubia. La primera prueba corría la plancha
+  para arriba y le dibujaba una raya azul sobre el bigote; quedó corrida a la derecha.
+- **Es un títere de ocho piezas**: la levita cruzada con los zapatos de punta, la cabeza, la barba
+  (que cuelga de la cara), cada brazo en dos tramos y el manojo de llaves, que cuelga del puño. Las
+  pupilas y los párpados no están impresos: son de la página, porque la isla los mueve.
+- **Te recibe.** Barbazul está adelante a la izquierda, en la entrada del pasillo, delante de la
+  drácula y detrás de la columna: es lo primero que se ve, y en el teléfono la escena arranca con él
+  entero. Respira; mira a la drácula cuando taconea, y de a ratos te mira a vos; se alisa la barba con
+  la mano (un brazo de dos tramos que alcanza la barba de verdad, sin que el codo salte de una solución
+  a otra), o sacude el manojo. **La barba y el manojo cuelgan**: llegan tarde a cada movimiento y se
+  mecen, con un resorte.
+- **Tocado, hace la reverencia del anfitrión** (*"Esta vez, por fin, la prisión / te va a gustar"*):
+  cabecea, se lleva la mano al pecho y con la otra te abre el paso, manojo en mano, mirándote por
+  debajo de las cejas. **Al fondo, su puerta se entreabre sola**: del cuarto sale el rojo de las
+  banderas y la luz corre por el piso en diagonal hasta sus pies, como una alfombra. Lo que hay adentro
+  no se dibuja. La puerta se cierra antes de que él se enderece; y si la drácula está quieta, se da
+  vuelta a mirarlo. La primera prueba derramaba la luz derecho para adelante, y la drácula, que camina
+  por ahí, la tapaba casi siempre.
+- **La llave chiquita del manojo tiene la mancha**: es la del cuento de Perrault, no la de la letra, y
+  la estampa lo dice. Las llaves ya no cuelgan del clavo de la pared, al lado de la puerta: el clavo
+  quedó vacío.
+- **Se acomodó la prisión**: la drácula camina desde `x` 296 (antes 196), para no taparle la cara; la
+  jaulita del pajarito y los ojos del reo y del esclavo se corrieron para no quedar detrás de él.
+- Las diez piezas nuevas pesan 224 kB y esperan en el `<noscript>` de la prisión como las demás. La
+  isla pasa de 27,3 a 31,3 kB.
+- **Lo que vigila `bestiario.test.ts`**: que Barbazul tenga cada parte que mueve la isla, con su imagen
+  y cada pivote adentro de su pieza; que la mano alcance la barba y el pecho; que el azul sea solo de la
+  barba, corrido, con su token; que el manojo tenga una sola mancha roja; que entre entero en la escena
+  sin meterse en la jaula y que la drácula no le tape la cara; que la puerta arranque cerrada y su luz
+  llegue a sus pies; y que la isla no se lleve `arte-barbazul.ts`.
+
+#### Abierto, sin trabar
+
+- **`T-444` queda hecha.** Sin tareas nuevas. Siguen `T-431` (que `contenido` lea la estampa de
+  Barbazul), `T-435` (`--bestia-barbazul-azul` al lienzo, cargado primero en `tokens.css` como las
+  demás del bestiario) y `T-437`/`T-439`: la animación se vio con movimiento reducido simulado, porque
+  con el panel del navegador oculto el navegador casi no avanza cuadros.
+
+### Enmienda del 2026-10-18 (12): el negro Atila, a aerógrafo, en la medianera del baldío
+
+Pedido del usuario, textual: *"Hace a El negro Atila para el bestiario redondo, diseñalo como rocambole,
+integra todo, que tenga sentido y detalles bien redondos, se creativo, chisotos y acido"*. La escribe el hilo
+principal en la rama `bestiario/negro-atila`, sobre `main` en `45777d4`, con `main` adentro en `46d36d1` (los
+seis entornos, PR #57). Es la duodécima porque la (11) la tiene reservada Barbazul (`bestiario-25`); si
+alguna entra antes con este número, se renumera al integrar, como dice `integrar.md`.
+
+- **Por qué el Atila.** Es uno de los 27 que el usuario puso primero a diseño (`HILO-para-bestiario-prioridad-de-figuras`),
+  y su fondo, el baldío, ya estaba. No está en ninguna tapa: se inventa en la de su disco (`T-440`), que es
+  *Lobo suelto* (1993; el tema es la pista 2).
+- **La técnica es la de esa tapa: aerógrafo en sepia** (`lib/bestiario/arte-atila.ts`, con las tintas
+  `--bestia-lobo-*` que ya existían: no suma tokens). La cara va partida en una mitad de luz y otra hundida
+  en sombra, como la del lobo; el ojo de la luz es grande, ojeroso y de iris humano, y el de la sombra,
+  chico y amarillo. La bufanda va acanalada como el pecho del lobo, y el cuello levantado del gabán abre en
+  punta, como sus orejas. El canto que da al farol lleva la luz lila del baldío: es un recorte de *Lobo
+  suelto* pegado en la noche de *Un baión*.
+- **Lo que sale de la letra**: el gabán donde se hunde (la cabeza baja detrás del cuello), el frío
+  masticado (masca, y le sale vaho), el metálico brillo del bolsillo (se escapa cada tanto), el olfato del
+  ratón (del gato matón no pasa: lo huele y se vuelve) y el ladrón al que nunca atrapan.
+- **Lo que agrega el dibujo, y la estampa lo dice**: cada tanto barre los techos la sirena de la cana, una
+  luz roja de ocasión que falla. Él se tira del otro lado de la medianera (lo que baja del canto del muro no
+  se ve: `atila-pared`), y lo delata el vaho, que va afuera del recorte y sube igual. Después asoman el funyi
+  y los ojos, miran para los dos lados, y vuelve. **Tocado, abre el gabán como un vendedor de vereda**, con
+  las dos hojas que giran en la costura como la capa de la drácula. En el forro tiene relojes, cucharitas,
+  una llave, un eslabón de la cadena del lobo (por algo anda suelto), la dentadura del caníbal desdentado
+  (por eso enseña a masticar sin dientes) y la sirena de la cana, que se prende (por eso compró matraca
+  nueva, de ocasión). Y guiña. La ficha lo retrata así, abierto.
+- **En los techos de la derecha, un tanque de agua** en el crayón del baldío. El gato que llamás con
+  silbidos mira desde ahí.
+- **Lo que se cuenta: tres testimonios del memoir** (`RES-21`, p. 321, cotejados con `pdftotext`): que el
+  tema es una declaración de amor a los perejiles que iban a ver a la banda y que Atila es una invención;
+  que hay gente que se calza el saco del personaje para tener más levante, como pasó con el Negro Cañón; y
+  que la batería electrónica sonó rudimentaria y todavía le duele.
+- **La isla no se lleva el dibujo**: la geometría vive en `rig.ts` (`ATILA`, `ATILA_ARMADO`) y la conducta en
+  `scripts/bestiario/atila.ts`, aparte, como la pastura; la isla del bestiario solo lo arma en el recinto del
+  perro. Lo compartido se tocó lo mínimo, porque otras sesiones están haciendo personajes al mismo tiempo.
+- **El baldío arranca mirando entre el perro y el Atila** (`foco` 470): en el teléfono entran los dos.
+- Las 17 piezas nuevas pesan 117 kB (119.572 bytes).
+
+#### Cómo se verificó
+
+`bestiario.test.ts` suma tres pruebas: el títere entero con sus bisagras, que escondido no se le ve ni el
+funyi y asomado sí los ojos, y que lo que se llevó es de bestias que existen. La conducta se corrió en Node
+contra un DOM de juguete, un minuto: mientras pasa la luz estuvo escondido el 100 % de los cuadros, caminó
+entre 471 y 693, y al tocarlo abrió el forro y lo volvió a cerrar. En el navegador del panel, a 375 px: la
+escena arranca con él a la vista, el bocadillo dice el verso colgado sobre la pared y la ficha lo muestra
+con el gabán abierto. **El panel estuvo oculto**, así que la animación no se vio correr: eso queda para `T-480`.
+
+#### Abierto, sin trabar
+
+- `T-480`: ver al Atila animado con el panel visible o en un teléfono: el paso por la medianera, la sirena
+  que barre, el vaho que lo delata y el gabán que se abre.
+- Siguen `T-431` (que `contenido` lea la estampa y los testimonios nuevos) y `T-437`/`T-439` (los cuadros por
+  segundo: el baldío suma una luz con `mix-blend-mode`).
+
+### Enmienda del 2026-10-18 (13): la vaca cubana, a plumín, con la tele hecha satélite
+
+Pedido del usuario, textual: *"Hace otro ciclo sobre el bestiario redondo. Agrega otro personaje y
+pulilo a fondo, se creativo que qeude como uno de rocambole."* Y, con Limón tomado por otra sesión:
+*"hace la vaca cubana"*. La escribe el hilo principal en la rama `ciclo-26/bestiario`, sobre `main` en
+`c1355e0`, y junta `main` en `46d36d1` (#56 y #57 adentro). Se escribió como **duodécima**, porque la (11)
+es de Barbazul, que todavía no entró, y **se renumeró a decimotercera** al juntar `main` en `352ef3a`: el negro
+Atila (#60) llegó antes con la (12). Si llega antes otra, se renumera otra vez (`integrar.md`).
+
+- **Por qué la vaca.** Era de la lista que el usuario pasó a diseño detallado
+  (`Docs/SUGERENCIAS/HILO-para-bestiario-prioridad-de-figuras.md`) y su fondo ya estaba: la pastura.
+  No está en ninguna tapa, así que se inventa en la estética de su disco (`T-440`). **El disco es
+  *Un baión para el ojo idiota* (1988)**, pista 3, no *Cordero atado*: vive en la pastura del cordero
+  pero viste otro disco, como Pierre viste *Gulp!* en la sala de *Un baión*.
+- **La historia la cuenta el Indio** (`RES-360`): en el memoir dice que el tema viene de una cinta
+  grabada en Valeria con un balde de plástico, y que *"a la pobre vaca le cayó encima un pedazo de
+  satélite… ¡y la mató!"*. Pasó: el 30 de noviembre de 1960 un Thor-Ablestar se destruyó en vuelo y
+  los restos cayeron en Cuba; un memo del Departamento de Estado de 1961 exceptúa de las víctimas,
+  *según se informó*, a una vaca cubana. El funeral, el nombre Rufina y la indemnización circulan sin
+  papel, y van como leyenda.
+- **La técnica es la del frente de *Un baión*: plumín sobre aguada** (`lib/bestiario/plumin.ts`). La
+  tele de la tapa está lavada en naranja, rojo y amarillo y raspada con rayas de tinta paralelas;
+  la luz que larga es lila con garabatos en zigzag. Eso es la vaca: un contorno nervioso que se
+  repasa y se pasa de largo en las esquinas, el raspado en tres pasadas que se aprietan hacia la
+  panza (todas combadas para el mismo lado, que es lo que la redondea), las manchas llenas del
+  garabato del fondo de la tapa. Las tintas se midieron en la tapa (`--bestia-vaca-*`): el cuero es
+  la luz de la tele, las manchas el violeta del fondo, el rojo del perro en lo hondo, la ubre y el
+  hocico en el rosa del muñeco. La luz le viene de dos lados: fría del cielo en el lomo, y el
+  naranja de la pastura que le sube por la panza. Se le notan la cadera y las costillas.
+- **Lleva cencerro**, colgado de una correa al pie del pescuezo, porque desde `D-76` es lo que suena
+  cuando la tocan en el camino (`sonido.ts`). Se sumó al juntar `main` con el #59.
+- **El ojo es humano**, como los que Rocambole les pone a los animales: párpado pesado, iris ocre,
+  y vivo (el blanco y la pupila se dibujan en la página), para que siga al satélite.
+- **El cielo es el chiste, y es del dibujo**: por arriba cruza la tele de la tapa hecha satélite,
+  con las patas largas de la tele como las antenas de un Sputnik y la pantalla titilando. Lo que
+  cae prendido fuego es **la llama de la contratapa de *Un baión***, recortada de la tapa de verdad
+  por color (`tapa:` en la imprenta), como la etiqueta de Pierre. La estampa dice qué es del
+  dibujo y que en el dibujo el pedazo cae al lado: en lo que contó el Indio, no.
+- **Vive** (`scripts/bestiario/vaca.ts`, armada desde `pastura.ts`, así está en el recinto del monte
+  y en el camino con cruces): rumia de costado, y cada tanto se le ve subir el bolo por el
+  pescuezo y tragar; cuando no pasa nada por arriba baja la cabeza y pasta; cuando pasa el satélite
+  lo sigue con la cabeza hasta donde le da el cogote, y después con el ojo; espanta moscas con la
+  cola y sacude la oreja. **Tocada**, mira para arriba justo a tiempo: al satélite se le suelta el
+  pedazo, que cae dejando una estela de garabato y pega en el pasto al lado de sus patas. Ella pega
+  un respingo, mira el pozo humeando y vuelve a rumiar. El cordero bala y el lobo se esconde.
+- **Sin JavaScript y con movimiento reducido** se ve la vaca mirando el satélite y nada más: el pozo,
+  el pedazo y el golpe arrancan con opacidad cero (un test lo mira). Con movimiento reducido,
+  tocarla solo le hace decir su verso.
+- Los tests miden lo que importa del lugar: las patas de adelante en el pasto y las de atrás en la
+  punta, el pedazo adentro de la pastura, lejos de la soga del cordero y al lado de la vaca, y el
+  satélite cruzando por el cielo. La vaca dejó de ser ojos en lo oscuro y es títere en las dos
+  páginas. Las 14 piezas pesan 228 kB.
+
+#### Abierto, sin trabar
+
+- `T-431` (que `contenido` lea la estampa y lo que se cuenta), `T-435` (las tintas `--bestia-vaca-*`
+  al lienzo: se cargaron primero en `tokens.css`, como las demás del bestiario) y `T-437`/`T-439`
+  (los cuadros por segundo en un teléfono de verdad).
+### Enmienda del 2026-10-18 (14): Limón, el limón verde que corre por las chapas del baldío
 
 Pedido del usuario, que eligió 27 bestias para dibujar con más detalle
 (`Docs/SUGERENCIAS/HILO-para-bestiario-prioridad-de-figuras.md`) y largó con esta: *"que limón sea un limón
 colombiano que corre por las chapas, es una leyenda interesante que parece ser real"*. La escribe el hilo
 principal en la rama `bestiario/limon`, sacada de `ciclo-24/bestiario` en `82c4453`, con `origin/main`
-adentro en `b6e9957`. **Se escribió como (10) y se renumeró antes de abrir el PR**: la décima es la de los
-seis entornos de `bestiario/fondos-rocambole` (PR #57), que entra antes a `main`.
+adentro en `250fb04`. **Se escribió como (10), pasó a la (11) y quedó en la (14) al juntar `main`**: antes
+llegaron la décima (los seis entornos, PR #57), la undécima (Barbazul, PR #61), la duodécima (el negro Atila,
+PR #60) y la decimotercera (la vaca cubana, PR #62).
 
 - **Por qué un limón.** La letra dice *"Me matan, Limón / Por los techos viene el bloque"*
   (*"Me matan, Limón!"*, *Luzbelito*, 1996). La figura del plano lo dibujaba como una persona con remera.
@@ -5092,6 +5323,11 @@ seis entornos de `bestiario/fondos-rocambole` (PR #57), que entra antes a `main`
   boca y bajó el hombro. Un ojo se salía de la cáscara y la cara se corrió al centro. Las gotas de sudor caían
   adentro de la fruta como manchas y se fueron para atrás. La boca era una sonrisa y pasó a un hueco de susto.
   Flotaba a media zancada (eso lo arregla la cadera que baja), y al lado del perro quedaba chico: va a 1,2.
+- **Con el negro Atila en el mismo baldío** (duodécima). El Atila camina por el canto de la medianera y se tira
+  del otro lado cuando pasa la sirena de la cana. La chapa de Limón bajó a ese mismo canto (`CHAPA.piso` es
+  `ATILA.piso`): los dos pisan la misma línea. La chapa va delante del Atila, así su borde le tapa los pies y
+  esconde el corte cuando se tira del muro, y Limón corre delante de los dos. Las luces son dos y quedan las
+  dos: la sirena es de la cana que busca al Atila, y las linternas son del bloque que persigue a Limón.
 - **Pesos.** Las nueve piezas nuevas suman 93 kB, y la que más pesa es la chapa. La isla pasa de 27,3 a 30,1 kB.
 - **Lo que vigila `bestiario.test.ts`**: que Limón tenga cada parte que mueve la isla, con su imagen, y los
   ojos, la boca, las caderas, los hombros y el cabito adentro de la fruta; que parado pise la chapa; que corra
@@ -5101,9 +5337,9 @@ seis entornos de `bestiario/fondos-rocambole` (PR #57), que entra antes a `main`
 
 #### Abierto, sin trabar
 
-- Siguen las otras 26 de la lista del usuario, en el orden que él decida. Las que tienen el fondo listo son
-  la vaca cubana, el negro Atila, el diablo que mea, el rato molhado, Barbazul (`T-444`) y el esclavo; las demás
-  esperan a `bestiario/fondos-rocambole`.
+- Siguen las de la lista del usuario que no tienen títere todavía. Con la vaca, el Atila y Barbazul ya en
+  `main`, las que tienen el fondo de noche más trabajado son el diablo que mea, el rato molhado y el esclavo;
+  las de los seis entornos de la décima ya tienen escena.
 - `T-435` suma las cuatro tintas de Limón al lienzo; `T-431`, que `contenido` lea su estampa y su cuenta.
 
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
@@ -5281,3 +5517,76 @@ que no entran en la letra y un artículo grave.
 - `T-453`: probarlo en un iPhone. La deriva con `view()` y la máscara de los costados son lo más nuevo.
 
 La propuesta para los tres roles está en `Docs/SUGERENCIAS/HILO-para-experiencia-y-contenido-d75-la-redondopedia-de-noche.md`.
+
+## D-76 — Al bestiario se entra caminando, el camino es la pantalla entera, y suena
+
+- **Fecha:** 2026-10-18
+- **Estado:** activa. Pedido directo del usuario, textual: *"El entorno caminable debe ser lo
+  principal del bestiario, es decir arrancar ahi y que para salir debas tocar algo, no puedas salirte
+  scrolleando sin querer, al final de las escenas que no siga para abajo. Ademas que en cada personaje
+  suene la parte del tema que habla de el si tiene, ahora no tenemos eso, hagamos que se escuchen
+  recortes como lejos de el album donde esta inspirado o que mas personajes tenga ese entorno."* Y
+  a mitad de camino: *"y que se escuchen otras cosas, pasos, sonidos de los personajes, ruidos del
+  entorno, que sea todo bien inmersivo"*. La escribe el hilo principal en la rama
+  `bestiario/entorno-primero`, sobre `main` en `46d36d1` (con el PR #57 adentro).
+- **Es una decisión aparte y no una enmienda de `D-73`** porque cambia la puerta y suma un sentido
+  (el oído). Además, las enmiendas de `D-73` las estaban esperando cuatro ramas a la vez. Antes de
+  tomar el número se miraron `origin/main`, las ramas remotas y los worktrees: nadie usa `D-76`.
+- **Enmienda** la frase de `D-73` que decía que al bestiario se entra por el plano. **No toca** los
+  recintos, el plano, las fichas ni la regla de `enEspera`.
+
+### Lo que cambia
+
+1. **La puerta.** El casete B3 de la home y la tarjeta de la Redondopedia llevan a `ENTRADA`
+   (`lib/bestiario/camino.ts`), que es el primer tramo: el monte. El plano con los recintos sigue en
+   `/redondopedia/bestiario/` y se llega desde el camino con "Al plano".
+2. **La pantalla entera.** Con la isla andando, `html.camino-pantalla`:
+   - el camino es la página: la cabecera y el tablero (el cartel, la instrucción, la libreta y los
+     botones) flotan encima de la escena;
+   - no hay pie ni lista abajo, así que el documento termina en el cruce;
+   - `overscroll-behavior` saca el rebote y el "tirá para recargar";
+   - se sale tocando "Al plano" o un cartel del cruce;
+   - la lista de fichas se abre con "Mirá la lista" y se cierra con la cruz o con Escape;
+   - en el cruce, el tablero se achica al nombre de la región.
+
+   **Sin JavaScript o con movimiento reducido no cambia nada**: todo queda en el flujo, la lista
+   abajo y el pie al final (molinetes abiertos).
+3. **El recital de lejos** (`scripts/bestiario/lejos.ts`). Suenan los recortes del disco de la región
+   si tiene al menos tres. Si no, los del disco del que salen más bichos del camino (`fondoDe`, en
+   `lib/bestiario/sonido.ts`). El monte suena a *Lobo suelto* y la pastura a *Cordero atado*. El
+   recorte pasa por un pasabajos, un pasaaltos y un eco corto, todo bajito; a medida que se camina el
+   filtro se abre un poco. Cuando suenan los diez segundos de una ficha, el recital se aparta. Un
+   renglón dice qué disco suena: es registro 3, y dice la verdad sobre lo que se oye.
+4. **Los ruidos del camino** (`scripts/bestiario/entorno.ts`), sintetizados, sin un solo archivo:
+   - pasos atados a lo caminado (hojas o pasto), con tope de velocidad;
+   - viento, grillos, la lechuza del monte y el cencerro de la pastura, que suena también al tocar a
+     la vaca.
+
+   Las recetas por región son números en `RECETAS`, y el test mira que no pidan un sonido que no se
+   sabe hacer.
+5. **Nada suena sin un toque** (como en `D-66`). Un botón prende el recital y los ruidos juntos, y
+   pide la sesión de la música (`sonarAunqueEsteEnSilencio`). Si quedó prendido, la próxima región lo
+   recuerda, pero espera el primer toque.
+
+### Lo que queda afuera, y por qué
+
+- **La parte del tema que nombra a cada personaje** (`T-481`). Los recortes del sitio son los
+  primeros 15 segundos de cada tema, los temas enteros no están en el repo y no hay minuto de cada
+  verso. Hacer sonar el arranque del tema con el verso escrito en el bocadillo sería un rótulo que
+  miente. Queda pedido en `Docs/SUGERENCIAS/HILO-sonidos-del-bestiario.md`.
+- **Las voces y los animales.** La risa del gordo Pierre la graba el usuario; los perros, los gatos,
+  los balidos y los cristales salen de Freesound CC0. El reparto completo, región por región, está en
+  la misma sugerencia (`T-482`).
+- **Las otras diez regiones** suenan cuando tengan su camino: la receta es un renglón por región.
+
+### Verificado
+
+`npm test` (1691), `npm run check` (0 errores) y `npm run build`. En el navegador del panel, a
+375×812:
+
+- el monte arranca con la escena entera y el documento termina en el cruce;
+- la lista abre y cierra;
+- el botón de sonido baja los recortes de *Lobo suelto*, y la pastura anuncia *Cordero atado*.
+
+**Falta:** oírlo en un teléfono de verdad (`T-483`): el filtro, el volumen relativo, los pasos al
+scrollear rápido y la llave de silencio del iPhone.

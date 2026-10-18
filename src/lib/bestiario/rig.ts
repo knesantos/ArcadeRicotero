@@ -70,9 +70,9 @@ export const LIMON_ARMADO = {
 
 /**
  * Por dónde corre: la chapa que remata la medianera del baldío (`baldio-chapa`). `piso` es el filo
- * de arriba, donde pisa; corre de `desde` a `hasta`, sin meterse arriba del perro.
+ * de arriba, donde pisa, y es el mismo canto por donde camina el negro Atila (`ATILA.piso`); corre de `desde` a `hasta`, sin meterse arriba del perro.
  */
-export const CHAPA = { arriba: 284, piso: 290, abajo: 306 } as const;
+export const CHAPA = { arriba: 288, piso: 300, abajo: 314 } as const;
 export const LIMON = { desde: 250, hasta: 820, escala: 1.2, velocidad: 200 } as const;
 
 /**
@@ -135,6 +135,63 @@ export const BAJO = {
   agujero: { x: 196, y: 176 },
 } as const;
 export const PIERRE = { x: 486, agua: 476, escala: 0.9 } as const;
+
+/* ------------------------------------------------------------------
+   La vaca cubana, en la punta de la pastura (`D-73`)
+   ------------------------------------------------------------------ */
+
+/**
+ * Dónde gira cada pieza de la vaca, en coordenadas de títere: el (0, 0) es el piso debajo del
+ * medio de la panza, arriba es negativo, y mira para la izquierda. La cabeza se dibuja derecha
+ * en su propio marco, con el (0, 0) en el cogote, y se para en `cuello` girada `mira` grados:
+ * así mira el cielo. Lo dibuja `arte-vaca.ts` y lo mueve la isla.
+ */
+export const VACA_ARMADO = {
+  /** El cogote, en el títere: de acá cuelga la cabeza. */
+  cuello: [-202, -304],
+  /** La cabeza se dibuja en su marco y se agranda al pararla en el cogote. */
+  cabeza: 1.2,
+  /** Cuánto levanta la cabeza para mirar el cielo, y cuánto la baja para pastar o mirar el pozo. */
+  mira: 36,
+  pasta: -34,
+  /** En el marco de la cabeza: la bisagra de la mandíbula, la oreja y el ojo. */
+  bisagra: [-50, 16],
+  oreja: [-12, -18],
+  ojo: { centro: [-58, -14], radio: [15, 9.5], giro: -8 },
+  /** Cuánto se corre la pupila adentro del ojo. */
+  pupila: 4.5,
+  /** La cola cuelga de acá, y la borla de la punta. */
+  cola: [170, -256],
+  borla: [190, -136],
+  /** Por dónde sube el bolo cuando rumia: del pecho al cogote, por abajo del pescuezo. */
+  bolo: [
+    [-168, -164],
+    [-196, -212],
+    [-214, -252],
+    [-226, -284],
+  ],
+} as const;
+
+/** Dónde está la vaca: en la punta de la pastura, con las patas de atrás en el pasto del borde. */
+export const VACA = { x: 652, y: 470, escala: 0.5 } as const;
+
+/**
+ * El cielo de la vaca. Por arriba cruza la tele de la tapa de *Un baión* hecha satélite, de
+ * derecha a izquierda; cuando a la vaca la tocan, se le cae un pedazo prendido fuego, que cae
+ * en `impacto`, en el pasto, al lado de las patas de adelante. Todo en coordenadas del recinto.
+ */
+export const CIELO_VACA = {
+  satelite: { desde: [1010, 66], hasta: [-110, 122], dura: 34, pausa: 16, escala: 0.4 },
+  /** Si cuando la tocan el satélite no se ve, el pedazo viene de acá, de arriba, fuera de cuadro. */
+  arriba: [760, -40],
+  impacto: [566, 522],
+  /** Lo que tarda en caer el pedazo, y de qué tamaño va. */
+  cae: 1.7,
+  pedazo: 0.5,
+  /** El pozo y el humo: de qué tamaño, y cuánto tardan en irse. */
+  pozo: 0.55,
+  humea: 7,
+} as const;
 
 /* ------------------------------------------------------------------
    La prisión de Barbazul y la drácula con tacones (`D-73`, octava vuelta)
@@ -216,4 +273,105 @@ export const deLaTapa = ([x, y]: readonly [number, number]): [number, number] =>
  * La drácula: dónde arranca (y dónde queda quieta con movimiento reducido), el piso por donde
  * camina, de dónde a dónde, y de qué tamaño va.
  */
-export const DRACULA = { x: 330, piso: 624, desde: 196, hasta: 590, escala: 0.8 } as const;
+export const DRACULA = { x: 380, piso: 624, desde: 296, hasta: 590, escala: 0.8 } as const;
+
+/* ------------------------------------------------------------------
+   Barbazul, el dueño de la prisión (`D-73`, undécima vuelta)
+   ------------------------------------------------------------------ */
+
+/**
+ * Dónde gira cada pieza de Barbazul, en coordenadas de títere: el (0, 0) es el piso entre los
+ * dos zapatos, y arriba es negativo. Lo dibuja `arte-barbazul.ts` y lo mueve la isla.
+ */
+export const BARBAZUL_ARMADO = {
+  /** El medio de la cara, entre los ojos y el bigote: de acá se mide todo lo de la cabeza. */
+  cara: [0, -540],
+  /** La cabeza y la barba se dibujan a su medida y se agrandan desde la cara: en la tapa la cabeza pesa. */
+  agranda: 1.25,
+  /** El cogote: de acá cabecea. */
+  cuello: [0, -468],
+  /** De dónde cuelga la barba, debajo de la nariz: se mece con retraso, como un péndulo. */
+  barba: [0, -510],
+  /**
+   * Los ojos: el centro de cada uno y el tamaño del blanco. Las pupilas no están impresas: las
+   * dibuja la página y las mueve la isla, porque miran a la drácula cuando pasa.
+   */
+  ojos: [
+    { centro: [-23.8, -555], radio: [12, 5.5] },
+    { centro: [23.8, -555], radio: [12, 5.5] },
+  ],
+  /** Hasta dónde se corre una pupila adentro del blanco. */
+  mira: [6.4, 2.2],
+  /** Los hombros, los codos y el medio de cada mano, con el brazo colgando. */
+  hombros: [
+    [-90, -436],
+    [90, -436],
+  ],
+  codos: [
+    [-104, -318],
+    [104, -318],
+  ],
+  manos: [
+    [-100, -186],
+    [100, -186],
+  ],
+  /** De dónde cuelga el manojo, en el puño de la mano de la derecha. */
+  llavero: [101, -176],
+  /** Adónde lleva la mano de la izquierda: a la barba para alisarla, y al pecho en la reverencia. */
+  alisa: { desde: [-16, -452], hasta: [-10, -356] },
+  pecho: [-34, -392],
+} as const;
+
+/** Barbazul recibe en la entrada, adelante a la izquierda, entre la columna y el pasillo. */
+export const BARBAZUL = { x: 122, piso: 634, escala: 0.8 } as const;
+
+/**
+ * La puerta de Barbazul, al fondo a la izquierda de la ventana: el hueco con su arco y la bisagra
+ * del lado de la pared. Adentro está el cuarto; cuando él hace la reverencia, se entreabre.
+ */
+export const PUERTA_DE_BARBAZUL = { x0: 262, x1: 300, arriba: 262, arco: 246, piso: 400 } as const;
+
+/* ------------------------------------------------------------------
+   El negro Atila, en la medianera del baldío (`D-73`, duodécima vuelta)
+   ------------------------------------------------------------------ */
+
+/**
+ * Dónde gira cada pieza del Atila, en coordenadas de títere: el (0, 0) es el piso entre los
+ * zapatos, y arriba es negativo. Lo dibuja `arte-atila.ts` y lo mueve la isla.
+ */
+export const ATILA_ARMADO = {
+  /** El cogote: de acá se hunde la cabeza adentro del cuello del gabán, y se ladea. */
+  cuello: [0, -330],
+  /** De dónde se mueve cada pierna, escondido debajo del gabán. */
+  caderas: [
+    [-18, -176],
+    [18, -176],
+  ],
+  /** Las bisagras del gabán, en la costura de cada costado: cada hoja se abre contra la suya. */
+  bisagras: [
+    [-82, -210],
+    [82, -210],
+  ],
+  /**
+   * Los ojos de la tapa del lobo: el grande de la luz y el chico de la sombra. El iris se corre
+   * adentro del blanco hasta `mira` (lo que mira de reojo), y el párpado lo tapa al parpadear.
+   */
+  ojos: [
+    { centro: [-14, -414], radio: [10, 8.6], mira: [4.2, 2.6] },
+    { centro: [15, -413], radio: [7.5, 6.5], mira: [3, 2] },
+  ],
+  /** Por dónde sale el vaho: la boca, debajo de la bufanda. */
+  boca: [8, -374],
+  /** La lucecita de la sirena del forro, y el brillo del bolsillo. */
+  sirena: [-146, -256],
+  brillo: [56, -170],
+} as const;
+
+/**
+ * El Atila camina por arriba de la medianera del baldío (`piso`, el canto del muro), de `desde` a
+ * `hasta`, lejos del perro y antes del tanque. Cuando pasa la sirena se tira del otro lado: baja
+ * hasta `escondido` (no se ve nada) y después asoma hasta `asoma` (el funyi y los ojos). Del gato
+ * matón, a la izquierda, no pasa: lo huele desde `olfatea`. La luz de la sirena barre los techos a
+ * la altura `sirena`, de afuera a afuera.
+ */
+export const ATILA = { x: 610, piso: 300, escala: 0.5, desde: 470, hasta: 716, olfatea: 520, escondido: 270, asoma: 196, sirena: 236 } as const;

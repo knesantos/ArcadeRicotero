@@ -3846,11 +3846,21 @@ body:has(> .lugar) .marca-chica {
   height: auto;
 }
 
-.recinto-escena--la-ruta .recinto-svg { aspect-ratio: 400 / 220; }
-
 .bestiario-svg .sendero { fill: var(--papel); }
 .bestiario-svg .region-borde--cerco { stroke-width: 4; stroke-dasharray: 2 6; }
-.bestiario-svg .ruta-asfalto { fill: var(--papel-tenue); }
+
+/* Décima vuelta (D-73): los seis entornos de noche. En Cybersiberia nieva: dos copias de la misma
+   capa de copos, una arriba de la otra, que bajan y se repiten. Con movimiento reducido, no nieva. */
+.cyber-nevada-copos { animation: nevar var(--duracion-nevada) linear infinite; }
+
+@keyframes nevar {
+  from { transform: translateY(0); }
+  to { transform: translateY(640px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cyber-nevada-copos { animation: none; }
+}
 
 /* Los títeres se tocan; el cordero, además, se arrastra: el dedo no tiene que mover la página. */
 .titere { cursor: pointer; outline: none; }
@@ -4021,6 +4031,8 @@ body:has(> .lugar) .marca-chica {
 .titere--momo,
 .titere--pierre,
 .titere--dracula,
+.titere--barbazul,
+.titere--atila,
 .titere--limon { cursor: pointer; }
 
 /* Sexta vuelta (D-73): el bajo inundado y el gordo Pierre. Los párpados son del papel de *Gulp!*
@@ -4042,6 +4054,17 @@ body:has(> .lugar) .marca-chica {
 .bajo-reflejo { opacity: 0.45; }
 .ojos-reflejo { opacity: 0.28; }
 
+/* La vaca cubana (D-73): el ojo vivo, el párpado de papel, la pantalla de la tele que titila y la
+   estela del pedazo que cae, en las tintas de *Un baión*. */
+.titere--vaca { cursor: pointer; }
+.bt-vaca-blanco { fill: var(--bestia-ojo-blanco); }
+.bt-vaca-iris { fill: var(--bestia-vaca-ocre); stroke: var(--bestia-vaca-rojo-hondo); stroke-width: 1.6; }
+.bt-vaca-brillo { fill: var(--bestia-vaca-luz); }
+.bt-vaca-parpado { fill: var(--bestia-vaca-mancha); }
+.bt-vaca-pestana { fill: none; stroke: var(--fondo); stroke-width: 2.4; stroke-linecap: round; }
+.vaca-pantalla { fill: var(--bestia-vaca-luz); }
+.vaca-estela { fill: none; stroke: var(--bestia-vaca-lila); stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+
 /* Octava vuelta (D-73): la prisión de Barbazul y la drácula con tacones, tallados como la gente
    de *Oktubre*. El párpado es de tinta, con el filo del párpado cerrado en el blanco de la tapa; la
    sombra que la drácula tira en el piso es plancha negra; el golpe de cada taco, dos cortes blancos
@@ -4052,7 +4075,23 @@ body:has(> .lugar) .marca-chica {
 .dracula-taco { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 2; stroke-linecap: round; }
 .bestiario-svg .bestia--jaula .toque { fill: transparent; }
 
-/* Décima vuelta (D-73): Limón por las chapas del baldío. Las pupilas son tinta que la isla corre
+/* Undécima vuelta (D-73): Barbazul. Las pupilas son de la página, en la tinta de la plancha y con
+   un brillo de papel, porque la isla las hace mirar; el párpado es de tinta, como el de la drácula. */
+.bt-barbazul-pupila { fill: var(--fondo); }
+.bt-barbazul-brillo { fill: var(--bestia-dracula-papel); }
+.bt-barbazul-parpado { fill: var(--fondo); }
+.bt-barbazul-pestana { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 1.2; stroke-linecap: round; }
+.barbazul-sombra { fill: var(--fondo); }
+
+/* Duodécima vuelta (D-73): el negro Atila en la medianera, a aerógrafo como la tapa de *Lobo
+   suelto*. Los párpados son de su piel: el de la luz ocre, el de la sombra hundido; van a media asta
+   todo el tiempo, que es como mira el que mira de reojo. La luz de la sirena se suma a la noche. */
+.bt-atila-parpado { fill: var(--bestia-lobo-ocre); }
+.bt-atila-parpado-oscuro { fill: var(--bestia-lobo-oscuro); }
+.bt-atila-pestana { fill: none; stroke: var(--fondo); stroke-width: 1.6; stroke-linecap: round; }
+.atila-sirena { mix-blend-mode: screen; }
+
+/* Decimocuarta vuelta (D-73): Limón por las chapas del baldío. Las pupilas son tinta que la isla corre
    (mira para atrás mientras corre); los párpados, del verde de la cáscara. Las linternas del bloque
    son luz: se suman a lo oscuro, como el fuego del infierno, y no se llevan los toques. */
 .bt-limon-pupila { fill: var(--fondo); }

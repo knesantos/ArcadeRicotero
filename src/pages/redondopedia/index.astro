@@ -16,6 +16,7 @@
  */
 import Base from '../../layouts/Base.astro';
 import TarjetaArticulo from '../../components/TarjetaArticulo.astro';
+import { ENTRADA as ENTRADA_BESTIARIO } from '../../lib/bestiario/camino.ts';
 import { PORTAL, LUGARES, REDONDOPEDIA } from '../../lib/sitio/copy.ts';
 import { EN_VIVO } from '../../lib/recital/copy.ts';
 import { BESTIARIO } from '../../lib/bestiario/copy.ts';
@@ -134,7 +135,8 @@ const ancla = (tipo: TipoArticulo): string => `parte-${tipo}`;
       <strong class="tarjeta-titulo">{EN_VIVO.enLaPortada.titulo}</strong>
       <span class="tarjeta-gancho">{EN_VIVO.enLaPortada.resumen}</span>
     </a>
-    <a class="tarjeta-articulo tarjeta-articulo--mitologia bestiario-puerta" href="/redondopedia/bestiario/">
+    {/* Al bestiario se entra caminando, por el monte (`D-73`). */}
+    <a class="tarjeta-articulo tarjeta-articulo--mitologia bestiario-puerta" href={ENTRADA_BESTIARIO}>
       <strong class="tarjeta-titulo">{BESTIARIO.enLaPortada.titulo}</strong>
       <span class="tarjeta-gancho">{BESTIARIO.enLaPortada.resumen}</span>
     </a>

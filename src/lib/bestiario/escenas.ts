@@ -8,12 +8,12 @@
  * desde lo oscuro. El fuego del infierno es la pincelada de la tapa de *Gulp!*, teñida.
  */
 
-import { dracula, imagen, limon, pierre } from './titeres.ts';
+import { atila, barbazul, dracula, imagen, limon, pierre } from './titeres.ts';
 import { ARMADO } from './recortes.ts';
-import { BAJO, BANDERAS, CHAPA, DRACULA, ESCENA, LIMON, LINTERNAS, LUZBELITO, MOMO, PERRO, PIERRE, PRISION, deLaTapa, llamaEnEscena } from './rig.ts';
+import { ATILA, BAJO, BANDERAS, BARBAZUL, CHAPA, DRACULA, ESCENA, LIMON, LINTERNAS, LUZBELITO, MOMO, PERRO, PIERRE, PRISION, PUERTA_DE_BARBAZUL, deLaTapa, llamaEnEscena } from './rig.ts';
 import { agujero } from './arte-bajo.ts';
 
-export { DRACULA, LIMON, LUZBELITO, MOMO, PERRO, PIERRE };
+export { ATILA, BARBAZUL, DRACULA, LIMON, LUZBELITO, MOMO, PERRO, PIERRE };
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 
@@ -47,8 +47,15 @@ const titere = (clase: string, id: string, nombre: string, cuerpo: string, trans
 const parte = (nombre: string, cuerpo: string): string => `<g data-parte="${nombre}">${cuerpo}</g>`;
 
 /* ------------------------------------------------------------------
-   El baldío: ese perro que sigue allí, y Limón por los techos
-   ------------------------------------------------------------------ */
+   El baldío: ese perro que sigue allí, el negro Atila por la medianera y Limón por la chapa
+   ------------------------------------------------------------------
+   El Atila (duodécima vuelta) no es de tapa: está pintado a aerógrafo en la estética de *Lobo
+   suelto* (`arte-atila.ts`). Camina por el canto de la medianera, y cuando pasa la sirena se tira
+   del otro lado: lo que baja del canto no se ve (`atila-pared`). El vaho va afuera del recorte, así
+   que sube igual desde atrás del muro y lo delata. La luz de la sirena barre todo, de punta a punta.
+   Limón (decimocuarta vuelta) corre por la chapa que remata ese mismo canto, delante del Atila, con
+   las linternas del bloque atrás (`arte-baldio.ts`).
+*/
 
 export const VECINOS_DEL_BALDIO: Readonly<Record<string, readonly [number, number, Tinta]>> = {
   'el-gato-maton': [300, 206, 'oro'],
@@ -56,7 +63,6 @@ export const VECINOS_DEL_BALDIO: Readonly<Record<string, readonly [number, numbe
   'el-gato-de-susanita': [476, 192, 'oro'],
   'susanita': [520, 238, 'papel'],
   'el-gato-que-llamas-con-silbidos': [762, 214, 'oro'],
-  'el-negro-atila': [610, 168, 'papel'],
   'el-que-no-se-cayo-del-cielo': [862, 252, 'papel'],
   'mi-perro-dinamita': [626, 478, 'oro'],
   'los-perros-sin-folleto': [790, 560, 'oro'],
@@ -84,7 +90,14 @@ export function escenaBaldio(nombres: ReadonlyMap<string, string>): string {
   const quieto = Math.round((LIMON.desde + LIMON.hasta) / 2);
   return (
     imagen('baldio-lejos') +
+    imagen('atila-tanque') +
     losOjos(VECINOS_DEL_BALDIO, nombres) +
+    `<clipPath id="atila-pared"><rect x="-10" y="-10" width="${ESCENA.ancho + 20}" height="${ATILA.piso + 10}"/></clipPath>` +
+    `<g clip-path="url(#atila-pared)"><g class="titere titere--atila" data-id="el-negro-atila" role="button" tabindex="0" aria-label="${nombres.get('el-negro-atila') ?? ''}">` +
+    `<g id="atila-entero" transform="translate(${ATILA.x} ${ATILA.piso}) scale(${ATILA.escala})">${atila()}</g></g></g>` +
+    `<g class="atila-vahos" aria-hidden="true" pointer-events="none">${[0, 1, 2].map((n) => `<g data-vaho="${n}" opacity="0">${imagen('atila-vaho')}</g>`).join('')}</g>` +
+    // La chapa que remata la medianera va delante del Atila (le tapa los pies cuando se tira del otro
+    // lado), y Limón corre por ella con las linternas del bloque atrás.
     imagen('baldio-chapa') +
     linterna('der') +
     linterna('izq') +
@@ -96,6 +109,8 @@ export function escenaBaldio(nombres: ReadonlyMap<string, string>): string {
       parte('boca', imagen('perro-real-boca')) + parte('mandibula', imagen('perro-real-mandibula')) + parte('cabeza', imagen('perro-real-cabeza')),
       `translate(${PERRO.x} ${PERRO.y}) scale(${PERRO.escala}) translate(${-bx} ${-by})`,
     ) +
+    // La sirena de la cana: arranca afuera de la escena, a la izquierda, y la isla la pasa.
+    `<g class="atila-sirena" aria-hidden="true" pointer-events="none" opacity="0" transform="translate(-320 ${ATILA.sirena})">${imagen('atila-sirena')}</g>` +
     `<g pointer-events="none">${imagen('baldio-frente')}</g>`
   );
 }
@@ -255,17 +270,21 @@ export function escenaBajo(nombres: ReadonlyMap<string, string>): string {
    banderas de la tapa, que flamean afuera, la reja, los ojos de los demás, la jaula vacía de la
    fiera (solo el lugar donde se toca), la sombra y la drácula, y lo de adelante: la columna, la
    jaula y su puerta abierta, que se mece.
+
+   Desde la undécima vuelta, Barbazul recibe en la entrada, adelante a la izquierda, delante de la
+   drácula y detrás de la columna; y al fondo, su puerta (`prision-hoja`) tapa el cuarto rojo
+   (`prision-cuarto`), que se entreabre cuando él hace la reverencia.
 */
 
 export const VECINOS_DE_LA_PRISION: Readonly<Record<string, readonly [number, number, Tinta]>> = {
-  barbazul: [281, 330, 'oro'],
-  'el-reo-semental': [80, 430, 'papel'],
-  'el-esclavo-sensible-y-chillon': [196, 388, 'papel'],
+  // Barbazul ya no es un par de ojos en su puerta: es el títere de la entrada.
+  'el-reo-semental': [206, 318, 'papel'],
+  'el-esclavo-sensible-y-chillon': [214, 410, 'papel'],
   'los-reos-de-la-sociedad': [712, 382, 'papel'],
   'los-titanes-del-orden-viril': [622, 322, 'rojo'],
   'el-chivato': [236, 396, 'oro'],
   'el-pichon': [558, 324, 'papel'],
-  'el-pajarito-del-lavi-rap': [150, 162, 'oro'],
+  'el-pajarito-del-lavi-rap': [222, 162, 'oro'],
 };
 
 /** La fiera más fiera no está: se toca la jaula vacía, adelante a la derecha. */
@@ -280,11 +299,15 @@ export function escenaPrision(nombres: ReadonlyMap<string, string>): string {
   }).join('');
   const { x, piso, escala } = DRACULA;
   const fiera = nombres.get(JAULA_VACIA.id) ?? '';
+  const B = BARBAZUL;
   return (
     imagen('prision-lejos') +
     `<clipPath id="prision-calle"><path d="${hueco}"/></clipPath>` +
     `<g class="prision-banderas" clip-path="url(#prision-calle)" pointer-events="none">${banderas}</g>` +
     `<g pointer-events="none">${imagen('prision-reja')}</g>` +
+    // El cuarto de Barbazul, que arranca a oscuras, y la hoja de su puerta, cerrada.
+    `<g pointer-events="none"><g data-parte="cuarto" opacity="0">${imagen('prision-cuarto')}</g>` +
+    `<g data-parte="hoja" data-bisagra="${PUERTA_DE_BARBAZUL.x0}">${imagen('prision-hoja')}</g></g>` +
     losOjos(VECINOS_DE_LA_PRISION, nombres) +
     // La jaula de la fiera se toca, pero no tiene ojos: la fiera no está.
     `<g class="bestia bestia--jaula" data-id="${JAULA_VACIA.id}" data-x="${JAULA_VACIA.x}" data-y="${JAULA_VACIA.y}" role="button" tabindex="0" aria-label="${fiera}">` +
@@ -296,6 +319,9 @@ export function escenaPrision(nombres: ReadonlyMap<string, string>): string {
     `<path class="dracula-taco" data-parte="taco" d="M-14 -4 l-9 -6 M14 -4 l9 -6" opacity="0" pointer-events="none"/>` +
     `<g class="titere titere--dracula" data-id="la-dracula-con-tacones" role="button" tabindex="0" aria-label="${nombres.get('la-dracula-con-tacones') ?? ''}">` +
     `<g id="dracula-entera" transform="translate(${x} ${piso}) scale(${escala})">${dracula()}</g></g>` +
+    `<ellipse class="barbazul-sombra" cx="${B.x}" cy="${B.piso + 2}" rx="${f(120 * B.escala)}" ry="6" pointer-events="none"/>` +
+    `<g class="titere titere--barbazul" data-id="barbazul" role="button" tabindex="0" aria-label="${nombres.get('barbazul') ?? ''}">` +
+    `<g id="barbazul-entero" transform="translate(${B.x} ${B.piso}) scale(${B.escala})">${barbazul()}</g></g>` +
     `<g pointer-events="none">${imagen('prision-columna')}${imagen('prision-jaula')}` +
     `<g data-parte="puerta-jaula" data-bisagra="${J.puerta.x}">${imagen('prision-puerta')}</g></g>`
   );
