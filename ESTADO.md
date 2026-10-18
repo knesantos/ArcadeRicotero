@@ -9,7 +9,7 @@
 
 > ## 🎨 LOS SEIS ENTORNOS, CADA UNO EN SU TAPA (2026-10-18) — décima enmienda de `D-73`
 >
-> **Sin commitear todavía, en la rama `bestiario/fondos-rocambole`** (worktree `.claude/worktrees/bestiario-fondos`). Pedido del
+> **Sin integrar: espera en el PR #57** (rama `bestiario/fondos-rocambole`, worktree `.claude/worktrees/bestiario-fondos`). Pedido del
 > usuario: *"Armá un fondo bien rocambole para cada uno de los entornos del bestiario redondo"*, con el camino
 > scrolleable en mente.
 >
