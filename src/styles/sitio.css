@@ -2265,17 +2265,13 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
     margin-bottom: var(--espacio-3);
   }
 
-  .casetera--a {
+  /* Desde que el bestiario es el B3 (2026-10-17) los dos lados son tres por renglón, con el
+     mismo ancho de casete. Hasta ese día el lado B tenía dos, centrados con el ancho de los
+     del lado A. */
+  .casetera--a,
+  .casetera--b {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: calc(var(--espacio-3) + 6px) var(--espacio-3);
-  }
-
-  /* El lado B tiene dos casetes: van del mismo ancho que los del lado A, centrados. Dos
-     casetes estirados a media mesa serían otra pieza, y una celda vacía a la derecha, un
-     hueco. */
-  .casetera--b {
-    grid-template-columns: repeat(2, calc((100% - 2 * var(--espacio-3)) / 3));
-    justify-content: center;
   }
 
   /* Tres por renglón: la rotación se reparte por columna y no por par/impar, si no la del
