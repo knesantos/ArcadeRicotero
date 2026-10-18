@@ -144,7 +144,8 @@ export function escenaRuta(nombres: Nombres): string {
 
 /** Los seis recintos, con la escena y dónde arranca mirando cuando no entra entera. */
 export const ENTORNOS_DE_NOCHE: Readonly<Record<string, { escena: (n: Nombres) => string; foco: number }>> = {
-  'el-galpon': { escena: escenaGalpon, foco: 450 },
+  // Entre la bestia pop y la silla vacía: con 450, en el teléfono la bestia quedaba cortada.
+  'el-galpon': { escena: escenaGalpon, foco: 360 },
   'el-arbol': { escena: escenaArbol, foco: 450 },
   cybersiberia: { escena: escenaCybersiberia, foco: 450 },
   'los-astilleros': { escena: escenaAstilleros, foco: 300 },

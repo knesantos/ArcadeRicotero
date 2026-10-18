@@ -40,6 +40,17 @@
         "4331"
       ],
       "port": 4331
+    },
+    {
+      "name": "bestiario-diez",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "astro",
+        "dev",
+        "--port",
+        "4361"
+      ],
+      "port": 4361
     }
   ]
 }
