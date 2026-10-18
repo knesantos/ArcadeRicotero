@@ -788,6 +788,29 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
     hoja: 'src/styles/sitio.css',
   },
 
+  // `D-73`: el bestiario redondo, en la Redondopedia (`sitio.css`). Sus estados: la bestia que
+  // está hablando y las ya anotadas (las dos con forma: un aro punteado y un sello con tilde),
+  // la fila del índice anotada, el botón que suena y la soga del cordero cuando está tensa.
+  // La pastura (el lobo y el cordero) vive aparte desde la séptima vuelta, porque la comparte con
+  // el camino con cruces: la soga tensa la crea ese módulo, y cuenta como de la isla.
+  'bestiario.ts': {
+    juego: 'D-73, el bestiario redondo',
+    fuente: leer('src/scripts/bestiario.ts') + leer('src/scripts/bestiario/pastura.ts'),
+    estados: ['.bestia--elegida', '.bestia--anotada', '.bestiario-item--anotada', '.bestiario-escuchar--sonando', '.soga--tensa', '.bocadillo--abajo'],
+    hoja: 'src/styles/sitio.css',
+  },
+
+  // `D-73`, séptima vuelta: el camino con cruces. Sus estados propios viven en `camino.css`: la
+  // escena andando (pegada a la pantalla), los ojos que se encienden al llegar y el cruce a la
+  // vista. Los que comparte con el bestiario (la bestia que habla, las anotadas, el botón que
+  // suena, la soga) son los de arriba y los pinta `sitio.css`.
+  'camino.ts': {
+    juego: 'D-73, el camino con cruces',
+    fuente: leer('src/scripts/camino.ts'),
+    estados: ['.camino--andando', '.aparece--a-la-vista', '.cruce--a-la-vista'],
+    hoja: 'src/styles/camino.css',
+  },
+
   'analitica.ts': { sinTablero: 'la analitica de Vercel (D-56); pega un script y no toca el DOM visible' },
   'armar-cancionero.ts': { sinTablero: 'arma un HTML autocontenido que se descarga; sus estilos viajan adentro de ese archivo, no en las hojas del sitio' },
   'cancion.ts': { sinTablero: 'transportar y bajar solo en la ficha de un tema; no hay partida ni respuesta que senalar' },
@@ -797,6 +820,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'lamina.ts': { sinTablero: 'pincel de canvas (US-08); dibuja pixeles, no crea nodos con clase' },
   'mosca.ts': { sinTablero: 'la mosca del portal (D-49); su unica clase, la de tomada a mano, vive en sitio.css y la cubre la red derivada' },
   'oktubre.ts': { sinTablero: 'la estampa del cumpleanos en el afiche de octubre (D-49); cambia un texto, no crea clases' },
+  'oreja.ts': { sinTablero: 'la leyenda del dia en la portada de la Redondopedia (D-75); mueve un hidden, no crea nodos ni clases' },
   'rocola.ts': { sinTablero: 'la rocola de los recitales (D-72); un <audio> que suena en fila, no crea nodos' },
   'spotify.ts': { sinTablero: 'un <a> y nada mas, que es literalmente RQ-B2 de ADR-01' },
   'tarjeta.ts': { sinTablero: 'pincel de canvas (US-02 y US-07); dibuja pixeles, no crea nodos con clase' },

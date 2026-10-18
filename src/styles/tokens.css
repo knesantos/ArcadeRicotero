@@ -122,6 +122,148 @@
   --disco-momo-sampler-tinta: #cedae2; /* plata */
   --disco-momo-sampler-apoyo: #656f70; /* peltre */
 
+  /* ------------------------------------------------------------------
+     El bestiario redondo (D-73): el lobo y el cordero de Rocambole, y sus entornos
+     ------------------------------------------------------------------
+     Muestreados de las tapas del disco doble de 1993 (los recortes de public/arte/ y los
+     frentes de Docs/INVESTIGACION/TapasDiscos/), con la mediana de cada mancha: el lobo
+     en el crudo, el ocre y el sepia del aerografo de *Lobo suelto*; el cordero en el azul
+     pizarra de su lana, la mascara marron y los ojos verdes de *Cordero atado*, sobre el
+     naranja de esa tapa. La lana clara se levanto un escalon para que la escama se lea en
+     un telefono. Ninguno escribe texto: no entran al test AA. Faltan en el lienzo (T-435). */
+  --bestia-lobo-claro: #e4e2d4;
+  --bestia-lobo-crema: #c3b68d;
+  --bestia-lobo-ocre: #9d8550;
+  --bestia-lobo-sombra: #674e2c;
+  --bestia-lobo-oscuro: #2b2118;
+  --bestia-lobo-gris: #a9a59c; /* las almohadillas del hocico, gris azulado */
+  --bestia-lobo-boca: #5a2a24; /* el adentro de la boca, cuando aulla */
+  --bestia-ojo-blanco: #d8cbcb; /* el blanco de los ojos humanos de las dos tapas */
+  /* Cuarta vuelta (D-73): los títeres son los recortes de las tapas. Estos son los colores con
+     que se tapa un ojo al parpadear (la piel de arriba de cada ojo) y los azules del lomo que
+     completa al cordero donde la tapa lo corta, medidos en los frentes de 953 px. */
+  --bestia-lobo-parpado: #6c6760;
+  --bestia-lobo-parpado-oscuro: #37363e;
+  --bestia-cordero-parpado: #322a2d;
+  --bestia-cordero-azul-hondo: #23292f;
+  --bestia-cordero-azul: #27394d;
+  --bestia-cordero-escama: #325179;
+  /* Los entornos de la quinta vuelta (D-73): el baldío en el violeta rayado de *Un baión*
+     (medido en el fondo de crayón de la tapa), el infierno en las brasas de *Gulp!*, y el
+     templo en el negro y la plata de *Momo Sampler*, con los focos de un galpón de luz. */
+  --entorno-baion-noche: #1c1726;
+  --entorno-baion-violeta: #36364d;
+  --entorno-baion-lila: #7979a8;
+  --entorno-baion-luz: #d2bbe8;
+  --entorno-baion-azul: #2f43a0;
+  --entorno-baion-rosa: #844c51;
+  --entorno-infierno-brasa: #6e1a10;
+  --entorno-infierno-fuego: #f08a24;
+  --entorno-templo-foco: #f2c46b;
+  --bestia-cordero-lana: #293d54;
+  --bestia-cordero-lana-clara: #4a6890;
+  --bestia-cordero-lana-oscura: #1c2a3a;
+  --bestia-cordero-mascara: #342b2b;
+  --bestia-cordero-mascara-clara: #6b5446;
+  --bestia-cordero-ojo: #5d8f74;
+  --bestia-cordero-pezunia: #d58e62;
+  --entorno-pastura: #d37c4a;
+  --entorno-pastura-honda: #bd6141;
+  --entorno-monte-claro: #d9c6be;
+  --entorno-monte-medio: #a8968b;
+  --entorno-monte-hondo: #524c47;
+  /* Decima vuelta (D-73): los seis entornos que seguian con las figuras del plano, cada uno en la
+     tapa de su disco. Medidos con k-medias sobre las tapas de Docs/INVESTIGACION/TapasDiscos/: el
+     galpon en el rojo tramado de *En directo*; el arbol en el marmol verde del frente de *Luzbelito*
+     y la llanura roja bajo el cielo violeta de su interior; Cybersiberia en el acero remachado de
+     *Ultimo bondi*, con el vidrio del ojo de buey y la lente de su interior; los astilleros en la
+     tiza azul de la contratapa del disco 2 de *Cordero atado*; la mesa en el rojo y el seguidor de
+     *La mosca y la sopa* y el sepia del collage de su contratapa. Ninguno escribe texto: no entran
+     al test AA. Faltan en el lienzo (T-435). */
+  --entorno-galpon-noche: #381f2f;
+  --entorno-galpon-rojo: #cb3539;
+  --entorno-galpon-brasa: #7f2e34;
+  --entorno-galpon-luz: #c7bbb9;
+  --entorno-arbol-marmol: #2b4840;
+  --entorno-arbol-marmol-hondo: #223530;
+  --entorno-arbol-marmol-claro: #466156;
+  --entorno-arbol-veta: #f1dcba;
+  --entorno-arbol-cobre: #d58e61;
+  --entorno-arbol-cobre-hondo: #76513c;
+  --entorno-arbol-tierra: #611a29;
+  --entorno-arbol-tierra-honda: #2a1223;
+  --entorno-arbol-tierra-viva: #922f34;
+  --entorno-arbol-cielo: #411634;
+  --entorno-arbol-violeta: #5a395c;
+  --entorno-arbol-nube: #c3a9a9;
+  --entorno-cyber-acero-hondo: #1f2222;
+  --entorno-cyber-acero: #393f40;
+  --entorno-cyber-acero-claro: #5c6261;
+  --entorno-cyber-nieve: #e4e3e0;
+  --entorno-cyber-vidrio: #d9c398;
+  --entorno-cyber-lente: #98cbd7;
+  --entorno-cyber-oxido: #5d514a;
+  --entorno-astillero-noche: #293843;
+  --entorno-astillero-tiza: #4d7fbb;
+  --entorno-astillero-azul: #497395;
+  --entorno-astillero-tiza-clara: #bbccd7;
+  --entorno-mesa-rojo: #c82f1f;
+  --entorno-mesa-luz: #c5451d;
+  --entorno-mesa-haz: #d1d6e9;
+  --entorno-mesa-papel: #e0d4c5;
+  --entorno-mesa-sepia: #875f3f;
+  --entorno-mesa-sepia-clara: #dcbe9b;
+  --entorno-mesa-sepia-honda: #563f2a;
+  /* Sexta vuelta (D-73): el gordo Pierre y el bajo inundado. Pierre es de *Gulp!* y se pinta en
+     su estetica: el negro del pincel seco es `--fondo` (la tapa mide #131514), el papel es la
+     crema de *Gulp!* (`--disco-gulp-apoyo`), el rojo de las letras corridas es
+     `--disco-gulp-tinta`; el amarillo que asoma debajo del rojo y el verde de la letra del frente
+     se miden aca. El bajo viste *Un baion*: el azul de crayon de la contratapa y la llama que se
+     prende en su esquina. Ninguno escribe texto: no entran al test AA. Faltan en el lienzo (T-435). */
+  --bestia-pierre-amarillo: #fcf977; /* el amarillo corrido debajo del rojo, adentro de Gulp! */
+  --bestia-pierre-verde: #9bcd61; /* la letra verde del frente de Gulp!: la botella */
+  --entorno-bajo-agua: #2f285a; /* el azul de crayon de la contratapa de Un baion */
+  --entorno-bajo-celeste: #4772b3; /* los rayones claros de esa contratapa */
+  --entorno-bajo-llama: #f7793c; /* la llama de la contratapa, naranja */
+  --entorno-bajo-llama-clara: #fbe755; /* y su corazon amarillo */
+  /* La vaca cubana (D-73): es de *Un baion* y se dibuja como el frente de ese disco, a plumin
+     sobre aguada. Las tintas se miden en la tapa (muestras de 5 px): la luz que larga la tele, el
+     naranja y el ocre de la tele, el rojo del perro, el rosa del muneco y el celeste del antifaz.
+     El negro del plumin es `--fondo`. Ninguno escribe texto: no entran al test AA. Faltan en el
+     lienzo (T-435). */
+  --bestia-vaca-luz: #f4d2f8; /* el centro de la luz de la tele */
+  --bestia-vaca-lila: #cdafda; /* la luz donde ya la cruzan los rayones */
+  --bestia-vaca-lila-honda: #837ca1; /* el borde de la luz, contra lo oscuro */
+  --bestia-vaca-mancha: #33243b; /* el violeta del fondo del frente: las manchas */
+  --bestia-vaca-naranja: #db5f33; /* la cara de arriba de la tele */
+  --bestia-vaca-ocre: #ba8a60; /* el amarillo apagado del costado de la tele */
+  --bestia-vaca-rojo: #b34f4d; /* el crayon del perro */
+  --bestia-vaca-rojo-hondo: #552326; /* la sombra del perro */
+  --bestia-vaca-rosa: #efafd3; /* el muneco, donde le da la luz: la ubre y el hocico */
+  --bestia-vaca-rosa-honda: #d082aa; /* el muneco en la sombra */
+  --bestia-vaca-celeste: #b9b5e8; /* el antifaz del muneco: la pantalla de la tele */
+  /* Octava vuelta (D-73): la drácula con tacones y la prision de Barbazul, tallados como la
+     gente de la tapa de *Oktubre* (`grabado.ts`). La plancha es `--fondo` (la tapa mide #111211),
+     el rojo de las banderas es `--disco-oktubre-tinta`, y el gris que Rocambole conto que agrego
+     es `--disco-oktubre-apoyo`: con el se tallan los planos de atras, para que la drácula se
+     despegue de la pared. Aca se mide el blanco de la gente tallada, en las caras del frente.
+     Ninguno escribe texto: no entran al test AA. Faltan en el lienzo (T-435). */
+  --bestia-dracula-papel: #e8eadd; /* el blanco de las caras talladas del frente de Oktubre */
+  /* Undecima vuelta (D-73): Barbazul, tallado como el barbudo de la contratapa de *Oktubre*. La
+     barba sale de una segunda plancha, entintada de azul y corrida de registro: es el unico azul
+     de la prision. No se midio de ninguna tapa, porque en *Oktubre* no hay azul: lo pide el
+     nombre. No escribe texto: no entra al test AA. Falta en el lienzo (T-435). */
+  --bestia-barbazul-azul: #3f68d2; /* la segunda plancha: el azul de la barba */
+  /* Decimocuarta vuelta (D-73): Limon, el limon verde que corre por las chapas del baldio, a crayon
+     como el perro de *Un baion*. Los verdes son los de un limon de Colombia (el verde, no el
+     amarillo), llevados a la noche del baldio: el hondo se apaga contra el violeta, y el brillo
+     tira al amarillo del farol. Ninguno escribe texto: no entran al test AA. Faltan en el lienzo
+     (T-435). */
+  --bestia-limon-hondo: #2c5131; /* la cascara del lado de la sombra */
+  --bestia-limon-verde: #4b8a39; /* el verde del limon */
+  --bestia-limon-claro: #8dbb48; /* donde le pega el farol */
+  --bestia-limon-brillo: #d9e46c; /* el brillo, que tira al amarillo del farol */
+
   /* Collage de cassette (UX-04: el collage es tecnica fichada de Rocambole, RES-06).
      Papel de etiqueta: sobre el escribe la tinta del fondo (--fondo), par testeado.
      El borde del papel no se usa como texto — como los -apoyo, no entra al test AA. */
@@ -160,6 +302,10 @@
      `currentColor`, asi que toma la tinta del lugar donde vive y no trae una suya.
      No lleva credito: es un motivo generico de la tecnica, no un recorte de ninguna tapa. */
   --textura-rodillo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='14'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.06 0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.85 0.85 0.85 0 -0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
+  /* El mismo rodillo puesto de canto (`D-75`): las vetas corren a lo alto, para gastar el
+     costado de una capa como el de arriba gasta su borde de abajo. Es la misma receta con los
+     dos ejes cambiados, no un motivo nuevo. */
+  --textura-rodillo-canto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='240'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9 0.06' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.85 0.85 0.85 0 -0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
 
   /* La almohadilla (`D-64`, hoja 07). Las tapas de los juegos —el título del casete, el de la
      carátula, el h1 de cada juego y el macizo del sello— salen de la misma almohadilla de goma
@@ -247,6 +393,7 @@
      `Docs/SUGERENCIAS/HILO-para-experiencia-desvios-del-ciclo-11.md`. */
   --escalon-umbral: 70ms;
   --duracion-vuelo: 17s; /* el ciclo de la mosca, lo unico vivo del sitio */
+  --duracion-nevada: 16s; /* lo que tarda un copo en cruzar Cybersiberia, en el bestiario (D-73) */
 
   /* Una sola curva para todo, para que se note que es la misma camara en todos lados.
      Arranca rapido —la cinta engancha— y afloja largo —el carrete recoge—. SIN REBOTE:
@@ -351,6 +498,20 @@
   --espacio-2: 1rem;
   --espacio-3: 1.5rem;
   --espacio-4: 2.5rem;
+
+  /* El lugar de la Redondopedia (`D-75`): la tapa velada que sube detrás del título.
+
+     - `--alto-lugar` es cuánto baja la capa: lo bastante para que la tapa llene el primer
+       vistazo y se pierda en la tinta mientras arranca la bajada, nunca detrás del cuerpo
+       rotulado. Con techo de ventana en `sitio.css`, para que en una pantalla baja no tape todo.
+     - `--aire-lugar` es cuánta tapa se ve arriba del título antes de que empiece a escribirse
+       algo: el escalón que se baja al entrar. Crece con el alto de la ventana, con techo. */
+  --alto-lugar: 30rem;
+  --aire-lugar: clamp(2.5rem, 12svh, 6.5rem);
+  /* Y cuánto se abre a lo ancho en la computadora: la tapa a menos del doble de su archivo
+     (los fondos miden entre 400 y 590 px), con los costados gastados. En el teléfono ocupa
+     el ancho entero de la ventana, que es menos que esto. */
+  --ancho-lugar: 52rem;
 
   /* ------------------------------------------------------------------
      La mesa (`D-54`, `UX-35`). Cómo se apoya el sitio en una pantalla ancha. La hoja 15 del

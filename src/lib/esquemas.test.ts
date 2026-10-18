@@ -71,6 +71,8 @@ for (const archivo of [
   'mas-o-menos',
   // `D-72`, el 2026-10-15: los lugares para soñar de "Armá tu recital".
   'lugares-recital',
+  // `D-73`, el 2026-10-16: el bestiario redondo, sus regiones y sus bestias.
+  'bestiario',
 ] as const) {
   test(`${archivo}.json valida contra su schema`, () => {
     const errores = erroresDe(archivo, archivo);

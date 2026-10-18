@@ -1,0 +1,291 @@
+---
+/**
+ * El camino con cruces (`D-73`, séptima vuelta): una región del bestiario que se camina.
+ *
+ * Pedido del usuario: *"una página por región, scroll que camina de costado y flechas en el
+ * cruce. Arrancá por el monte y la pastura como prueba."* Cada región que ya tiene su tramo en
+ * `lib/bestiario/camino.ts` es una página. Se baja con el dedo y la escena se camina de costado,
+ * en capas que se corren a distinta velocidad; los bichos aparecen a medida que se llega a
+ * ellos, y al final hay un cruce con un cartel por cada región vecina (`vecinas` en el JSON),
+ * con la flecha para el lado donde queda en el plano redondo.
+ *
+ * ## Tres capas, como el bestiario, y la de abajo alcanza sola
+ *
+ * 1. **Sin JavaScript**, la escena es una tira que se corre de costado con el dedo, el cruce
+ *    está al final de la tira y las fichas abajo: se lee y se recorre igual (molinetes abiertos).
+ * 2. **Con movimiento reducido**, lo mismo: nada se mueve solo y las capas van juntas.
+ * 3. **La isla** (`scripts/camino.ts`) pega la escena a la pantalla y la camina con el scroll.
+ *
+ * Al pasar de una región a otra, la página cambia con el tránsito entre documentos de todo el
+ * sitio (`ADR-03`), sin una línea de JavaScript.
+ *
+ * ## La pantalla entera (`D-76`)
+ *
+ * Pedido del usuario: *"el entorno caminable debe ser lo principal del bestiario, arrancar ahí y
+ * que para salir debas tocar algo, no puedas salirte scrolleando sin querer"*. Con la isla
+ * andando, el camino es la página entera: el cartel y los botones flotan arriba, la lista de
+ * fichas se abre con un toque, y abajo del cruce no hay nada más. Se sale por "Al plano" o por un
+ * cartel del cruce. Sin JavaScript, todo sigue en el flujo de siempre (molinetes abiertos).
+ *
+ * Y suena de lejos un disco (`lib/bestiario/sonido.ts`), si la persona lo prende.
+ */
+import Base from '../../../layouts/Base.astro';
+import FichaBestia from '../../../components/bestiario/FichaBestia.astro';
+import { BESTIARIO, CAMINO } from '../../../lib/bestiario/copy.ts';
+import { lugarDelRotulo, simbolos, tintaDe, type Bestiario, type Bestia } from '../../../lib/bestiario/mapa.ts';
+import { ALTO, CAMINOS, CON_CAMINO, VELOCIDAD, hrefDeRegion, type Ojos } from '../../../lib/bestiario/camino.ts';
+import { PIEZAS_CAMINO } from '../../../lib/bestiario/arte-camino.ts';
+import { rutaDePieza } from '../../../lib/bestiario/aerografo.ts';
+import { ojos } from '../../../lib/bestiario/escenas.ts';
+import { cordero, lobo } from '../../../lib/bestiario/titeres.ts';
+import { vacaEnElClaro } from '../../../lib/bestiario/escena-vaca.ts';
+import { ACECHO, ACHATE, ESCALA_CORDERO, ESCALA_LOBO, PALO, profundidad } from '../../../lib/bestiario/rig.ts';
+import { ARMADO } from '../../../lib/bestiario/recortes.ts';
+import { conAudio, loQueDice } from '../../../lib/bestiario/fichas.ts';
+import { fondoDe } from '../../../lib/bestiario/sonido.ts';
+import { tituloDelDisco } from '../../../lib/letra/discos.ts';
+import { urlDeFragmento } from '../../../lib/audio/rutas-de-audio.ts';
+import crudo from '../../../data/bestiario.json';
+import cancionero from '../../../data/cancionero.json';
+import '../../../styles/camino.css';
+
+export function getStaticPaths() {
+  return CON_CAMINO.map((region) => ({ params: { region } }));
+}
+
+const { region: id } = Astro.params as { region: string };
+const tramo = CAMINOS[id]!;
+const datos = crudo as unknown as Bestiario;
+const regionDe = new Map(datos.regiones.map((r) => [r.id, r]));
+const region = regionDe.get(id)!;
+const tinta = tintaDe(region.disco);
+const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
+const bestiaDe = new Map(datos.bestias.map((b) => [b.id, b]));
+
+/** Los que andan por el camino: los de la región, y los de visita (el lobo en la pastura). */
+const deLaRegion = datos.bestias.filter((b) => b.region === id);
+const deVisita = (tramo.deVisita ?? []).map((v) => bestiaDe.get(v)!);
+const lista: Bestia[] = [...deLaRegion, ...deVisita];
+const dePaso = new Set(tramo.deVisita ?? []);
+const enEstaPagina = new Set(lista.map((b) => b.id));
+
+/** Las piezas impresas, con su caja: de ahí sale el tamaño de cada capa. */
+const pieza = (nombre: string) => PIEZAS_CAMINO.find((p) => p.nombre === nombre)!;
+const lejos = pieza(tramo.piezas.lejos);
+const piso = pieza(tramo.piezas.piso);
+const frente = pieza(tramo.piezas.frente);
+
+/** Unos ojos en lo oscuro, envueltos para que la isla los haga aparecer al llegar. */
+const ojosQueAparecen = (lugares: Readonly<Record<string, Ojos>>, dx = 0): string =>
+  Object.entries(lugares)
+    .map(([b, [x, y, t]]) => `<g class="aparece" data-x="${x + dx}">${ojos(b, nombres.get(b) ?? b, x, y, t)}</g>`)
+    .join('');
+
+/**
+ * La pose quieta de los títeres, puesta desde el HTML: es la que se ve sin JavaScript (el lobo
+ * asomado, el cordero al lado del palo). Con la isla andando, la isla la pisa en el primer cuadro.
+ */
+const AL = ARMADO.lobo;
+const AC = ARMADO.cordero;
+const poseDelLobo = (x: number): string =>
+  `translate(${x} ${ACECHO.piso}) scale(${ESCALA_LOBO}) translate(${-AL.piso[0]} ${-AL.piso[1]})`;
+const poseDelCordero = (): string => {
+  const x = PALO.x + 24;
+  const y = PALO.y + 18 * ACHATE;
+  const e = (ESCALA_CORDERO * profundidad(y)).toFixed(4);
+  return `translate(${x} ${y.toFixed(1)}) scale(${e}) translate(${-AC.piso[0]} ${-AC.piso[1]})`;
+};
+const titereLobo = (x: number): string =>
+  `<g class="titere titere--lobo" data-id="el-lobo-suelto" role="button" tabindex="0" aria-label="${nombres.get('el-lobo-suelto')}" transform="${poseDelLobo(x)}">${lobo()}</g>`;
+const imagenDePieza = (p: (typeof PIEZAS_CAMINO)[number]): string => {
+  const [x, y, ancho, alto] = p.caja;
+  return `<image href="${rutaDePieza(p.nombre)}" x="${x}" y="${y}" width="${ancho}" height="${alto}" preserveAspectRatio="none"/>`;
+};
+
+/**
+ * El piso, que es la capa de los bichos. De atrás para adelante: el lobo hundido (asoma desde
+ * atrás del borde del piso), el piso, y los que están parados en él. En la pastura, el claro va
+ * corrido `dx` y adentro valen las coordenadas del recinto: la isla mueve al lobo y al cordero
+ * con la misma lógica que en el bestiario.
+ */
+const claro = tramo.claro;
+const pisoSvg = claro
+  ? `<g class="acecho" transform="translate(${claro.dx} 0)">${titereLobo(560)}</g>` +
+    imagenDePieza(piso) +
+    `<g class="claro" transform="translate(${claro.dx} 0)">` +
+    ojosQueAparecen(claro.ojos, claro.dx) +
+    `<path id="soga" class="bt-trazo-soga" stroke-width="2.8" d="M${PALO.x} ${PALO.y - 46} L${PALO.x + 40} ${PALO.y}"/>` +
+    `<g class="actores"><g class="titere titere--cordero" data-id="el-cordero-atado" role="button" tabindex="0" aria-label="${nombres.get('el-cordero-atado')}" transform="${poseDelCordero()}">${cordero()}</g></g>` +
+    vacaEnElClaro(nombres.get('aquella-solitaria-vaca-cubana') ?? '') +
+    `</g>`
+  : `<g class="acecho">${tramo.lobo ? titereLobo(tramo.lobo.x) : ''}</g>` + imagenDePieza(piso) + ojosQueAparecen(tramo.ojos);
+
+/**
+ * El cruce: un cartel por cada región vecina, con la flecha para el lado donde queda en el plano
+ * redondo. Las que todavía no se caminan llevan a su recinto, y el cartel lo dice.
+ */
+const aqui = lugarDelRotulo(region);
+const carteles = region.vecinas.map((v) => {
+  const r = regionDe.get(v)!;
+  const alla = lugarDelRotulo(r);
+  return {
+    id: v,
+    href: hrefDeRegion(v),
+    nombre: r.corto,
+    canta: r.canta,
+    tinta: tintaDe(r.disco),
+    rumbo: Math.round((Math.atan2(alla.y - aqui.y, alla.x - aqui.x) * 180) / Math.PI),
+    seCamina: CON_CAMINO.includes(v),
+  };
+});
+
+/** Lo que suena de lejos (`D-76`): el disco de la región, o el de más bichos del camino. */
+const fondo = fondoDe(
+  region.disco,
+  lista.flatMap((b) => (b.tema ? [b.tema] : [])),
+  cancionero.temas,
+  conAudio,
+);
+
+/** Lo que la isla necesita y no puede leer del HTML. */
+const paraLaIsla = {
+  region: id,
+  lejos: fondo ? fondo.temas.map(urlDeFragmento) : [],
+  ancho: tramo.ancho,
+  total: datos.bestias.length,
+  lobo: tramo.lobo?.x ?? null,
+  claro: claro?.dx ?? null,
+  bestias: lista.map((b) => ({ id: b.id, nombre: b.nombre, dice: loQueDice(b, BESTIARIO.sinTema) })),
+};
+
+const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín Ricotero`;
+---
+
+<Base
+  titulo={titulo}
+  descripcion={`${region.nombre}: ${region.canta}`}
+  volverA={{ href: '/redondopedia/bestiario/', texto: CAMINO.volver }}
+  discoDelPie="lobo-suelto"
+>
+  <section class="camino" id="camino" aria-label={CAMINO.escena} style={`--ancho: ${tramo.ancho}; --alto: ${ALTO}; --tr: ${tinta}`}>
+    {/* El tablero: arriba de la escena, en el flujo; con la isla andando, flota encima (`D-76`). */}
+    <div class="camino-tablero">
+      <header class="recinto-cartel camino-cartel">
+        <p class="recinto-numero">{CAMINO.sello}</p>
+        <h1 class="recinto-nombre">{region.nombre}</h1>
+        <p class="bestiario-canta">{region.canta}</p>
+      </header>
+      <p class="camino-bajada">{CAMINO.bajada}</p>
+      <p class="bestiario-libreta" id="libreta" aria-live="polite">{BESTIARIO.libretaVacia(datos.bestias.length)}</p>
+      {/* Los botones solo sirven con la isla: sin ella, la lista está abajo y nada suena. */}
+      <div class="camino-botones">
+        <button type="button" class="camino-boton" id="abrir-lista" aria-controls="aca-lista" aria-expanded="false" hidden>
+          {CAMINO.lista}
+        </button>
+        {
+          fondo && (
+            <button type="button" class="camino-boton" id="lejos" aria-pressed="false" hidden>
+              {CAMINO.lejos.prender}
+            </button>
+          )
+        }
+      </div>
+      {fondo && <p class="camino-suena" id="suena" hidden>{CAMINO.lejos.suena(tituloDelDisco(fondo.disco))}</p>}
+    </div>
+    <a class="camino-saltar" href="#cruce">{CAMINO.saltar}</a>
+    <div class="camino-escenario" id="escenario">
+      <div class="camino-tira" id="tira">
+        <img
+          class="capa capa--lejos"
+          data-f={VELOCIDAD.lejos}
+          src={rutaDePieza(lejos.nombre)}
+          width={lejos.caja[2]}
+          height={lejos.caja[3]}
+          alt=""
+          fetchpriority="high"
+        />
+        <svg
+          class="capa capa--piso bestiario-svg"
+          data-f={VELOCIDAD.piso}
+          viewBox={`0 0 ${tramo.ancho} ${ALTO}`}
+          style={`aspect-ratio: ${tramo.ancho} / ${ALTO}`}
+          set:html={pisoSvg}
+        />
+        <img
+          class="capa capa--frente"
+          data-f={VELOCIDAD.frente}
+          src={rutaDePieza(frente.nombre)}
+          width={frente.caja[2]}
+          height={frente.caja[3]}
+          alt=""
+          decoding="async"
+        />
+
+        <nav class="cruce" id="cruce" aria-labelledby="cruce-titulo">
+          <p class="cruce-titulo" id="cruce-titulo">{CAMINO.cruce.titulo}</p>
+          <ul class="cruce-carteles">
+            {
+              carteles.map((c, n) => (
+                <li>
+                  <a
+                    class:list={['cartel-cruce', { 'cartel-cruce--plano': !c.seCamina }]}
+                    href={c.href}
+                    data-region={c.id}
+                    style={`--tr: ${c.tinta}; --rumbo: ${c.rumbo}deg; --giro: ${n % 2 ? 1.4 : -1.6}deg`}
+                  >
+                    <svg class="cartel-flecha" viewBox="-14 -10 28 20" aria-hidden="true">
+                      <path d="M-11 0 L8 0 M1 -7 L9 0 L1 7" />
+                    </svg>
+                    <span class="cartel-nombre">{c.nombre}</span>
+                    <span class="cartel-canta">{c.canta}</span>
+                    {!c.seCamina && <span class="cartel-plano">{CAMINO.cruce.enElPlano}</span>}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </div>
+    <p class="recinto-deslizar camino-deslizar">{CAMINO.deslizar}</p>
+  </section>
+
+  <div class="bocadillo" id="bocadillo" hidden role="status">
+    <p class="bocadillo-verso" id="bocadillo-verso"></p>
+    <button type="button" class="bocadillo-ficha" id="bocadillo-ficha">{BESTIARIO.abrirFicha}</button>
+  </div>
+
+  <div class="bestiario-hoja" id="hoja" hidden role="dialog" aria-modal="false" aria-labelledby="hoja-titulo">
+    <button type="button" class="bestiario-cerrar" id="cerrar" aria-label={BESTIARIO.cerrar}>✕</button>
+    <div id="hoja-cuerpo"></div>
+  </div>
+
+  {/* Las figuras del plano, para las fichas de los que no tienen recorte de tapa. */}
+  <svg class="bestiario-svg camino-simbolos" aria-hidden="true" focusable="false">
+    <defs set:html={simbolos(lista)} />
+  </svg>
+
+  <section class="bestiario-indice camino-fichas" id="aca-lista" aria-labelledby="aca" style={`--tr: ${tinta}`}>
+    <button type="button" class="bestiario-cerrar camino-cerrar-lista" id="cerrar-lista" aria-label={CAMINO.cerrarLista} hidden>✕</button>
+    <h2 class="lado" id="aca">{CAMINO.aca}</h2>
+    <ul class="bestiario-lista">
+      {
+        lista.map((b) => (
+          <FichaBestia
+            bestia={b}
+            tinta={tintaDe(regionDe.get(b.region)!.disco)}
+            nombres={nombres}
+            hrefCerca={(c) => (enEstaPagina.has(c) ? `#b-${c}` : `/redondopedia/bestiario/#b-${c}`)}
+            dePaso={dePaso.has(b.id)}
+          />
+        ))
+      }
+    </ul>
+    <a class="recinto-volver" href="/redondopedia/bestiario/#plano">{BESTIARIO.volverAlPlano}</a>
+  </section>
+
+  <script type="application/json" id="datos-camino" set:html={JSON.stringify(paraLaIsla)} />
+  <script>
+    import '../../../scripts/camino.ts';
+  </script>
+</Base>

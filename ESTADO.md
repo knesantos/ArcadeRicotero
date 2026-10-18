@@ -5,7 +5,342 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-15
+**Última actualización:** 2026-10-18
+
+> ## 🍋 LIMÓN, POR LAS CHAPAS DEL BALDÍO (2026-10-18) — decimocuarta enmienda de `D-73`
+>
+> **En `main` desde el PR #63** (rama `bestiario/limon`, worktree `.claude/worktrees/bestiario-limon`), con `main`
+> juntado en `250fb04` (hasta el #62, la vaca). El usuario eligió 27 bestias para dibujar con más detalle
+> (`Docs/SUGERENCIAS/HILO-para-bestiario-prioridad-de-figuras.md`) y empezó por Limón: *"un limón colombiano que corre
+> por las chapas"*.
+>
+> - **Limón es un limón verde a crayón**, como el perro de *Un baión*: rayones que dan la vuelta a la fruta, teñidos
+>   por la luz del farol. Es un títere de siete piezas con zapatillas, y corre mirando para atrás.
+> - **Por los techos viene el bloque**: dos linternas barren los techos y lo persiguen de punta a punta de la chapa
+>   que remata la medianera. Allá jadea; tocado, salta.
+> - **Comparte el baldío con el negro Atila** (#60): la chapa está en el mismo canto por donde él camina, delante
+>   de él, y Limón corre delante de los dos. La sirena es del Atila; las linternas, de Limón.
+> - **La ficha cuenta lo de Escobar con su rótulo**: testimonio del Indio en el memoir (`RES-21`) y hecho que el
+>   Limón existió (`RES-170`). El tema es de *Luzbelito* (1996), no de *Lobo suelto*.
+> - Se escribió como (10), pasó a la (11) y quedó en la (14) al juntar `main`.
+
+> ## 🐄 LA VACA CUBANA, A PLUMÍN, CON LA TELE HECHA SATÉLITE (2026-10-18) — decimotercera enmienda de `D-73`
+>
+> **En `main` desde el PR #62 (rama `ciclo-26/bestiario`), fusión `250fb04`**; worktree `.claude/worktrees/bestiario-26`, sobre `main`
+> en `c1355e0` y con `main` juntado en `e07fe38` (hasta el #61, Barbazul). Pedido del usuario: *"Hace otro ciclo
+> sobre el bestiario redondo. Agrega otro personaje y pulilo a fondo, se creativo que qeude como uno de
+> rocambole"*, y *"hace la vaca cubana"*.
+>
+> - **La vaca** (`arte-vaca.ts`, técnica nueva en `plumin.ts`): plumín sobre aguada como el frente de *Un
+>   baión*, su disco, con las tintas medidas en la tapa (`--bestia-vaca-*`). Ojo humano vivo que sigue al
+>   satélite. Vive en la punta de la pastura, en el recinto del monte y en el camino (`escena-vaca.ts`).
+> - **El cielo**: la tele de la tapa hecha satélite cruza por arriba; tocada la vaca, se le cae un pedazo
+>   prendido fuego (la llama de la contratapa, recortada de la tapa) al lado. Rumia con el bolo que sube
+>   por el pescuezo, pasta, espanta moscas; al golpe, el cordero bala y el lobo se esconde
+>   (`scripts/bestiario/vaca.ts`, desde `pastura.ts`).
+> - **La historia** (`RES-360`, `INV-360`): el Indio cuenta en el memoir que a la vaca le cayó un pedazo de
+>   satélite; un memo del Departamento de Estado de 1961 confirma, *según se informó*, una vaca cubana muerta
+>   por los restos del Thor-Ablestar del 30-nov-1960. Va en la ficha con los tres rótulos.
+> - **Verde:** `npm test` (1691), `npm run check` y `npm run build`, en la rama con `main` adentro.
+> - **Sin ver en el navegador**: la sesión quedó aislada en el worktree y no pudo sumar su servidor al
+>   `launch.json` de la carpeta principal. Antes del PR hay que mirarla a 375 px: la rumia, el satélite, la
+>   caída y el camino de la pastura.
+> - **Abierto:** `T-431`, `T-435`, `T-437`/`T-439` (ver la enmienda).
+> ## 🗝️ BARBAZUL, TALLADO, CON LA BARBA DE OTRA PLANCHA (2026-10-18) — enmienda (11) de `D-73`, ciclo 25
+>
+> **En main desde el PR #61** (rama `ciclo-25/bestiario`), fusión `e07fe38`. Sacada
+> de `ciclo-24/bestiario` (PR #56) en `82c4453`. Pedido del usuario, el de las dos vueltas anteriores: *"Agrega otro personaje y pulilo a
+> fondo, se creativo que qeude como uno de rocambole"*.
+>
+> - **Barbazul recibe en la entrada de la prisión** (`T-444`): tallado como el barbudo de la contratapa
+>   de *Oktubre* (`arte-barbazul.ts`), y **la barba es otra plancha, azul y corrida de registro**. Mira a
+>   la drácula cuando pasa, se alisa la barba, sacude el manojo. Tocado, hace la reverencia del anfitrión
+>   y al fondo se le entreabre el cuarto: la luz roja corre por el piso hasta sus pies. La llave chiquita
+>   del manojo tiene la mancha del cuento.
+> - **Verde:** `npm test` (1698), `npm run check`, `npm run build`, en la rama fusionada. Visto a 375 y 1280 px; la reverencia,
+>   con movimiento reducido simulado (con el panel oculto el navegador casi no avanza cuadros).
+> - **Para integrar** (`integrar.md`): si `main` se movió, juntarlo de nuevo. La (11) va después de la (10) de los
+>   entornos (#57), que ya está en `main`; si otra rama llega antes con la (11), se renumera esta.
+> - **Abierto:** `T-431`, `T-435` (el azul nuevo al lienzo), `T-437`/`T-439`.
+
+> ## 🧥 EL NEGRO ATILA (2026-10-18) — duodécima enmienda de `D-73`
+>
+> **En main desde el PR #60** (rama `bestiario/negro-atila`, worktree `.claude/worktrees/bestiario-atila`), que entró con `main` adentro
+> en `168a1bd` (los seis entornos, PR #57, y el camino como puerta, PR #59). Pedido del usuario: *"Hace a El negro Atila para el bestiario redondo, diseñalo como rocambole [...] chisotos y acido"*.
+>
+> - **A aerógrafo, como la tapa de *Lobo suelto***: la cara partida en luz y sombra, el ojo ojeroso, la
+>   bufanda acanalada como el pecho del lobo. Camina por la medianera del baldío, hundido en el gabán,
+>   mascando el frío (vaho). Cuando pasa la sirena de ocasión se tira del otro lado y lo delata el vaho.
+> - **Tocado, abre el gabán**: relojes, cucharitas, el eslabón de la cadena del lobo, la dentadura del caníbal
+>   desdentado y la sirena de la cana. Tres testimonios del memoir (`RES-21`, p. 321).
+> - **Verificado**: tests, una simulación de la conducta y el panel a 375 px, que estaba oculto: **la animación no
+>   se vio correr** (`T-480`).
+
+> ## 👣 AL BESTIARIO SE ENTRA CAMINANDO, Y SUENA (2026-10-18) — `D-76`
+>
+> **En main desde el PR #59** (rama `bestiario/entorno-primero`), fusión `168a1bd`.
+> Pedido del usuario: *"El entorno caminable debe ser lo principal del bestiario [...] que para salir debas tocar
+> algo"* y *"que se escuchen otras cosas, pasos, sonidos de los personajes, ruidos del entorno"*.
+>
+> - **La puerta es el monte.** La home y la Redondopedia llevan al camino. El plano queda a un toque ("Al plano").
+> - **Pantalla entera.** Andando, el camino es la página: no hay nada abajo del cruce, no rebota, y se sale tocando.
+>   La lista de fichas se abre con "Mirá la lista". Sin JavaScript, todo igual que antes.
+> - **Suena, si lo prendés.** Recortes del disco del entorno, de lejos y filtrados: *Lobo suelto* en el monte,
+>   *Cordero atado* en la pastura. Más pasos atados al scroll, viento, grillos, una lechuza y el cencerro, todo
+>   sintetizado, sin archivos.
+> - **Qué se graba, qué se baja y qué se sintetiza**, región por región: `Docs/SUGERENCIAS/HILO-sonidos-del-bestiario.md`.
+>   La risa del gordo Pierre la grabás vos; los animales y los cristales, de Freesound CC0.
+> - **Abierto:**
+>   - `T-481`: el verso de cada personaje. Faltan el minuto de cada verso y los temas enteros en disco.
+>   - `T-482`: los sonidos grabados y los bajados.
+>   - `T-483`: probarlo en un teléfono de verdad.
+> - **Verde:** `npm test` (1691), `npm run check`, `npm run build`. Visto en el panel a 375×812.
+
+> ## 🎨 LOS SEIS ENTORNOS, CADA UNO EN SU TAPA (2026-10-18) — décima enmienda de `D-73`
+>
+> **En `main` desde el PR #57 (rama `bestiario/fondos-rocambole`), fusión `46d36d1`.** Pedido del
+> usuario: *"Armá un fondo bien rocambole para cada uno de los entornos del bestiario redondo"*, con el camino
+> scrolleable en mente.
+>
+> - **Cierra `T-443`**: el galpón (*En directo*), el árbol del gran bonete (*Luzbelito*), Cybersiberia (*Último
+>   bondi*, con nieve), los astilleros (*Cordero atado*, disco 2), la mesa (*La mosca y la sopa*, con la mosca
+>   pintada: `T-442`) y la ruta (el surco del disco, con los cuatro fierros que pasan) son recintos de noche a
+>   aerógrafo, con los colores medidos en las tapas. La prisión la hizo la rama de la drácula.
+> - **Mejorados**: el infierno tiene piso de damero de salón de baile; el templo, serpentinas y papel picado.
+> - **Listos para el camino**: cada capa es `(ancho, alto)`, los hitos en el piso, la geometría en
+>   `rig-entornos.ts`, y `luzQueAsoma` para anunciar cada región desde la vecina.
+> - **Verde:** `npm test` (1687), `npm run check`, `npm run build`. Visto en el navegador del panel a 375 y 800 px, y con la
+>   carga de a una.
+> - **Entró después** del camino (PR #54, enmienda 7), la drácula y la carga de a una (PR #56, enmiendas 8 y 9)
+>   y la Redondopedia de noche (PR #55, `D-75`). Las escenas nuevas pasan por `enEspera` como las demás: se arman
+>   cuando el recinto se acerca.
+
+> ## 🌑 LA REDONDOPEDIA DE NOCHE (2026-10-17) — `D-75`
+>
+> **En `main` desde el PR #55 (rama `diseno/redondopedia-inmersiva`), fusión `b6e9957`.** Pedido
+> del usuario: *"Hace una pulida extrema
+> de ui/ux a la redondopedia, debe sentirse inmersiva, misteriosa y mistica. Al mismo tiempo debe ser
+> facil de leer y que leyendo algo te de ganas de seguir con otra cosa"*.
+>
+> - **El lugar:** cada artículo trae su tapa velada subiendo desde arriba de la ventana, detrás del
+>   título, y se pierde en la tinta antes del cuerpo. Un disco trae la suya; los demás, la de su
+>   categoría; los tres graves, nada. Pasar de un artículo a otro corre la cámara de una tapa a la otra
+>   (el nombre `lugar` de `ADR-03`, sin sumar uno). La portada usa la misma capa con *Gulp!*.
+> - **El título en la letra de la banda** (Redonditos de Ricota Fan), si entra entero, en la tinta de
+>   su disco y con sal. *Luzbelito* y Los Decoradores van en la rotulada, *Oktubre* en `--texto` sobre
+>   su tapa, y los graves como siempre.
+> - **Los hilos del pie:** "Seguí por acá" con tarjetas que traen el gancho, si hay leyenda, quién da
+>   testimonio y los minutos; "Pará la oreja", una leyenda de otro artículo con su rótulo (solo las que
+>   *se cuentan*, nunca de un grave); y "También anda por", los artículos que lo nombran.
+> - **La portada:** una leyenda por noche, la clave de rótulos en tres renglones, los saltos a cada
+>   parte, los diez discos con su tapa y su año, y lo leído apagado.
+> - **La lectura:** el cuerpo a 17 px. Nada se mueve adentro del cuerpo, y los rótulos no se tocaron.
+> - **Verde:** `npm test` (1668), `npm run check` y `npm run build`. Mirado a 375 px y a 1366 px.
+> - **En el lienzo** (`T-450`, hecha): hoja 17, "La Redondopedia de noche", versión 20, en la
+>   página Aplicación, debajo de la 11.
+> - **`UX-39` escrita** (`T-451`, hecha por `experiencia`), con la enmienda de `UX-20` §2. De sus
+>   huecos se cerraron A1, A2, A7 y la excepción de `:visited` (en `diseno-marca.md`).
+> - **Abierto, sin trabar:** `T-452`, los ganchos, la ronda de la oreja, los "los fans" de la prosa
+>   y los ganchos alrededor de los graves (`contenido`, `UX-39` A6); `T-453`, probarlo en un iPhone con
+>   los criterios M1 a M7 de `UX-39` §10; que En vivo tome el lugar (`UX-39` A4). La propuesta está en
+>   `Docs/SUGERENCIAS/HILO-para-experiencia-y-contenido-d75-la-redondopedia-de-noche.md`.
+
+> ## 🦇 LA DRÁCULA CON TACONES, TALLADA COMO OKTUBRE, Y LA CARGA DE A UNA (2026-10-18) — octava y novena enmiendas de `D-73`, ciclo 24
+>
+> **En `main` desde el PR #56 (rama `ciclo-24/bestiario`).** Pedido del
+> usuario, el mismo de Pierre: *"Agrega otro personaje y pulilo a fondo, se creativo que quede como uno de
+> rocambole"*; eligió *"Otro más, encima del #52"*.
+>
+> - **La prisión de Barbazul es el sexto recinto de noche**: un pasillo de celdas **tallado como la gente de la
+>   tapa de *Oktubre*** (`grabado.ts`: la plancha negra, la luz sacada a gubia, motas de prensa). Por la ventana
+>   enrejada se ve **la gente de la tapa de verdad**, y sus cinco banderas, recortadas de ahí, flamean afuera.
+> - **La drácula con tacones** (*"Preso en mi ciudad"*), tallada en la misma técnica y recortada en trece piezas.
+>   Taconea por el pasillo; tocada, **abre la capa como dos puertas de papel** y el forro es el rojo de las
+>   banderas. La jaula vacía de la fiera se toca: la puerta chirría.
+> - **Verde:** `npm test` (1668, ya con el camino), `npm run check`, `npm run build`. Visto a 375 y 1024 px; la capa abierta, con
+>   movimiento reducido simulado (con el panel oculto el navegador frena los cuadros).
+> - **Y la carga de a una (`T-445`, novena enmienda de `D-73`)**: cada escena de noche y cada retrato del índice
+>   esperan en un `<noscript>` (`carga.ts`) y la isla los arma a una pantalla y media. Al abrir, la página bajaba
+>   59 piezas y 1673 kB; ahora, arriba de todo, solo el monte: 10 piezas, 466 kB. Sin JavaScript se ve todo igual.
+> - **Abierto:** `T-444` (Barbazul), `T-431`, `T-435`, `T-437`/`T-439` (la mitad que pide un teléfono), `T-443`
+>   (seis recintos; la sesión de `bestiario/fondos-rocambole` está con los fondos de esos seis: sus escenas tienen
+>   que pasar por `enEspera`).
+> - **Al integrar, con el camino ya en `main` (PR #54)**: las dos enmiendas se escribieron como séptima y octava y pasaron
+>   a octava y novena. La ficha vive en `FichaBestia.astro`, que comparte el camino: sus retratos esperan solo si la página
+>   lo pide (`espera`), y lo pide la del bestiario. `recintoDeLaDracula` toma los ayudantes de `scripts/bestiario/articular.ts`.
+>   `bestiario/fondos-rocambole` tenía su enmienda como (9): ahora le toca la (10).
+
+> ## 🌲 EL CAMINO CON CRUCES: EL BESTIARIO SE CAMINA (2026-10-18) — `D-73`, enmienda 7
+>
+> **Integrada a `main` con el PR #54**, desde la rama `bestiario/camino-con-cruces` sobre `159b1bc`. La fusionó Claude a
+> pedido del usuario (*"integra a main"*). Se escribió como novena enmienda de `D-73` y se renumeró a séptima al integrar,
+> porque llegó antes que la drácula y la carga de a una (`ciclo-24/bestiario`), que pasan a octava y novena.
+> Pedido del usuario: que los entornos estén conectados y sea una aventura scrolleable donde aparecen
+> los personajes y se elige con flechas adónde ir. Se investigaron cinco formas y eligió, textual: *"Dale con
+> el camino con cruces: una página por región, scroll que camina de costado y flechas en el cruce. Arrancá por el monte
+> y la pastura como prueba."*
+>
+> - **`/redondopedia/bestiario/el-monte/` y `/la-pastura/`**: bajar camina la escena de costado (lejos 0,45, piso 1,
+>   frente 1,3; un píxel de bajar es un píxel de caminar). Los ojos se encienden al llegar, el lobo asoma cuando lo
+>   tenés cerca y te sigue con la cabeza, y en la pastura el lobo y el cordero viven como en su recinto. Al final, el
+>   cruce: un cartel por región vecina con la flecha según el plano redondo; las que todavía no se caminan llevan a
+>   su recinto ("EN EL PLANO"). El recinto del monte suma la puerta "Entrá caminando".
+> - **Lo que tocó de lo existente:** la lógica del lobo y el cordero pasó a `scripts/bestiario/pastura.ts` (la usan
+>   las dos islas), la ficha a `components/bestiario/FichaBestia.astro`, `arte.ts` separa `claroDeLaPastura()`, y la
+>   imprenta imprime también `PIEZAS_CAMINO` (cuatro piezas, 567 kB).
+> - **Molinetes:** sin JavaScript o con movimiento reducido, la escena es una tira que se corre con el dedo, con todo a
+>   la vista y los títeres en pose quieta.
+> - **Verde:** `npm test` (1662), `npm run check` y `npm run build`. Probado en el navegador a 390 px y a 1280 px:
+>   caminar, el lobo que asoma, tocar al cordero, abrir la ficha, la libreta, ir y volver por el cruce, la vista sin
+>   JavaScript y la de movimiento reducido.
+> - **Coordinado con la sesión de los fondos** (`bestiario/fondos-rocambole`): arma el arte de seis entornos con
+>   funciones `(ancho, alto = 640)` según la especificación del camino, para que cada tramo nuevo las use (`T-470`).
+> - **Abierto, sin trabar:** `T-470` (los otros tramos), `T-471` (teléfono de verdad), `T-472` (`experiencia`),
+>   `T-473` (el recinto del monte sin JavaScript dibuja los títeres enormes, defecto previo) y `T-474` (lienzo).
+> - **`ciclo-24/bestiario` (la drácula y la carga de a una) choca al integrar**: las dos ramas tocan `bestiario.astro` y
+>   `scripts/bestiario.ts`, y como esta entró primero, acomoda aquella: la ficha de `FichaBestia.astro` tiene que dibujar los
+>   retratos con `enEspera(...)` de `carga.ts`, y el test que cuenta tres `enEspera(` en `bestiario.astro` se ajusta;
+>   `recintoDeLaDracula` importa `partes`, `girar`, `parpado`, `hacia` y `suave` de `scripts/bestiario/articular.ts`.
+
+> ## 📼 EL BESTIARIO ENTRA A LA HOME (2026-10-17) — casete B3 del lado B
+>
+> **En `main` desde el PR #53 (rama `portal/bestiario-en-la-home`).** Pedido del usuario: *"Sumá el bestiario a la home, en
+> el lado B, con la voz y el diseño del resto de los casetes"*. Hasta hoy se llegaba solo desde la portada de la
+> Redondopedia.
+>
+> - **El casete**: «Bestiario redondo», B3, después de la Redondopedia. Canta *"El lobo afuera, el cordero atado al
+>   palo."*, viste *Lobo suelto* (`mitologia`) con el cordero recortado de *Cordero atado* (la pieza que no usaba
+>   nadie, `D-49`), y el sello dice «RECORRÉ».
+> - **Un solo lado B**: `LADO_B` en `sitio/copy.ts` lo leen el portal, la carátula de cada juego (que ahora lista el
+>   B3) y los tests. En la compu los dos lados van de a tres por renglón.
+> - **Verde:** `npm test` (1653), `npm run check`, `npm run build`. Visto a 375, 900 y 1440 px.
+
+> ## 🍾 EL GORDO PIERRE, A PINCEL SECO (2026-10-17) — sexta enmienda de `D-73`, ciclo 23
+>
+> **En `main` desde el PR #52 (rama `ciclo-23/bestiario`).** Pedido del usuario: *"Agrega otro personaje y pulilo a
+> fondo, se creativo que quede como uno de rocambole"*.
+>
+> - **El bajo inundado es el quinto recinto de noche**: la Esquina del Sol con el agua adentro (`RES-340`), en
+>   el crayón de *Un baión* —la pared y el agua son la contratapa misma—. El agua entra por el vidrio roto de la
+>   puerta, afuera llueve, y en el escenario quedaron el bafle, el micrófono y el bombo con un sol pintado.
+> - **El gordo Pierre**, inventado en la estética de *Gulp!*, su disco: pincel seco y fotocopia (`pincel.ts`),
+>   en claroscuro, recortado en papel como un títere de seis piezas. La etiqueta de la botella es el «gulp.» de
+>   la contratapa, lo único de él que sale de una tapa. Flota, se empina la botella, y tocado se ríe hasta que
+>   tose; se refleja en el agua y le hace ondas.
+> - **Pulida**: la isla ya no se lleva el aerógrafo al teléfono (33,6 → 22,1 kB, y un test lo vigila).
+> - **Verde:** `npm test`, `npm run check`, `npm run build`. Visto a 375 y 1280 px en el navegador del panel.
+>   Falta en un teléfono de verdad (`T-437`, `T-439`): con el panel oculto no se pudieron medir los cuadros.
+> - **Abierto:** `T-443` (siete recintos con figuras del plano), `T-442` (la mosca), `T-435` (las tintas nuevas
+>   al lienzo), `T-431` (que `contenido` lea la estampa de Pierre).
+
+> ## 🏠 EL SITIO SE MUDÓ A UNA CUENTA HOBBY DE VERCEL (2026-10-17) — `D-74`
+>
+> Pedido del usuario: liberar la cuenta Pro para otro proyecto. **Hecho y verificado en vivo:** el proyecto
+> `arcade-ricotero` vive ahora en otra cuenta de Vercel, equipo Hobby `knesantos`, y despliega `main` desde
+> GitHub. `fichinricotero.com.ar` pasó con *Verify & Claim*; NIC sigue delegando a `ns1/ns2.vercel-dns.com`.
+> El proyecto viejo del Pro está borrado.
+>
+> - **Murió `arcade-ricotero.vercel.app`** (404). La dirección de Vercel nueva es `arcade-ricotero-ochre.vercel.app`.
+> - **El repo es público desde el 2026-10-17.** Con el repo privado, Vercel Hobby frenó la vista previa del PR #51
+>   aunque el commit lo firmaba `knesantos`. En repos públicos no hace ese chequeo. Detalle en `D-74`.
+> - **Pendiente del usuario:** borrar el TXT `_vercel`, confirmar Analytics *Enabled* en Hobby y probar un
+>   despliegue del otro proyecto del Pro.
+
+> ## 🔧 LA PULIDA DEL BESTIARIO (2026-10-16) — quinta enmienda de `D-73`, ciclo 22
+>
+> **En `main` desde el PR #49 (`fca4682`).** Recorrido entero a 375 y 1280 px. El bocadillo ya no se va
+> de la pantalla en las escenas anchas; cada escena de noche arranca mirando a su protagonista y avisa que se
+> desliza; en la compu entran enteras; las fichas de los cinco de tapa muestran su recorte; el índice sigue el
+> orden del recorrido y cada recinto tiene "Volvé al plano". **Verde:** `npm test` (1647), `npm run check`,
+> `npm run build`. Pendiente igual que antes: `T-437`/`T-439` (teléfono real, carga diferida de imágenes).
+
+> ## 🕯️ TRES MÁS DE TAPA: EL PERRO, LUZBELITO Y MOMO (2026-10-16) — cuarta enmienda de `D-73`, ciclo 22
+>
+> **En `main` desde el PR #49 (`fca4682`).** Pedido del usuario: *"Elegí otras 3 bestias y continuá
+> haciéndolas"*.
+>
+> - **El perro de *Un baión*** ("ese perro que sigue allí") entra por el borde del baldío, rayado a crayón, y ladra.
+> - **Luzbelito**, la cabeza con la vela de su tapa, en su piedra del infierno; el fuego es la pincelada de *Gulp!*
+>   teñida de brasa. La llama titila.
+> - **El medallón de Momo** cuelga en su templo, negro y plata, bajo una guirnalda de focos; se mece y gira al tocarlo.
+> - Los demás de esos recintos, ojos en lo oscuro. Van cuatro recintos de noche de doce.
+> - **Verde:** `npm test` (1646), `npm run check`, `npm run build`. Visto a 375 px con el reloj de reemplazo (panel
+>   oculto); los tres responden al toque.
+> - **Abierto:** `T-442` (la mosca), `T-443` (los ocho recintos que quedan).
+
+> ## 🐺 EL LOBO Y EL CORDERO SON LAS TAPAS (2026-10-16) — tercera enmienda de `D-73`, ciclo 22
+>
+> **En `main` desde el PR #49 (`fca4682`).** Pedido del usuario: *"Animados se refiere a que se muevan, no
+> estilo cartoon. Deben ser lo más fiel posible al diseño real"*.
+>
+> - **Recortados de los frentes del disco doble** (`recortes.ts`, `scripts/recortar-bestiario.mjs`), no redibujados:
+>   el lobo es el busto de la tapa y acecha asomándose desde lo oscuro detrás de la pastura; el cordero es la
+>   criatura entera de su tapa y camina con sus dos patas, atado al palo.
+> - **Inventado, en la estética**: el monte, la pastura, el lomo que completa al cordero donde la tapa lo corta, los
+>   párpados y los ojos de los demás bichos.
+> - **Verde:** `npm test` (1645), `npm run check`, `npm run build`. Visto a 375 px con un reloj de reemplazo (el panel
+>   estaba oculto). Falta en un teléfono de verdad (`T-437`, `T-439`).
+> - **Abierto:** `T-440` (los demás recintos con este criterio), `T-441` (la cadena del lobo suelta).
+
+> ## 🌑 EL MONTE DE NOCHE, A AERÓGRAFO (2026-10-16) — segunda enmienda de `D-73`, ciclo 22
+>
+> **En `main` desde el PR #49 (`fca4682`).** Pedido del usuario: *"Que sea el arte más oscuro, no
+> tan infantil [...] que se note más que se basa en arte de Rocambole [...] Más espacio."*
+>
+> - **Técnica nueva**: aerógrafo en SVG (`aerografo.ts`, `arte.ts`) impreso una vez con `sharp` a
+>   `public/bestiario/*.webp` (`npm run imprimir-bestiario`, 20 piezas, 272 kB). Sin contornos. El navegador solo
+>   mueve las piezas.
+> - **El recinto del monte**: de noche, 900 × 640, se recorre de costado en el teléfono. Lobo y cordero
+>   redibujados a aerógrafo desde las tapas; los demás bichos son ojos que miran desde lo oscuro.
+> - **Verde:** `npm test` (1644), `npm run check`, `npm run build`. Visto a 375 px con un reloj de reemplazo
+>   (el panel estaba oculto). Falta en un teléfono de verdad (`T-437`, `T-439`).
+> - **Abierto:** `T-438`, los demás recintos con el mismo método; `T-435`, las tintas al lienzo.
+
+> ## 🐑 EL BESTIARIO SE VUELVE ZOOLÓGICO (2026-10-16) — enmienda de `D-73`, ciclo 22
+>
+> **En `main` desde el PR #49 (`fca4682`).** Pedido del usuario: *"personajes con diseños lindos,
+> al estilo rocambole, animados y viviendo en su entorno [...] algo asi como un zoologico"*.
+>
+> - **El recorrido**: el mapa redondo es el plano de la entrada; abajo, doce recintos en scroll, cada uno con
+>   su cartel. Tocar un bicho lo hace reaccionar y decir su verso en un bocadillo; desde ahí, la ficha.
+> - **Recinto 1, terminado**: el monte de tiras dentadas en sepia (contratapa de *Lobo suelto*) y la pastura
+>   naranja de *Cordero atado*. El lobo y el cordero son títeres por piezas, fieles a las tapas
+>   (`titeres.ts`): el lobo ronda la pastura del lado del cordero, el cordero pasta y huye hasta que la soga
+>   lo frena, y se lo puede arrastrar sin que salga del círculo.
+> - **Los otros once recintos**, con las figuras de la primera vuelta, que respiran y saltan, hasta que les
+>   llegue su arte (`T-436`).
+> - **Verde:** `npm test` (1643), `npm run check`, `npm run build`. Visto a 375 px. La animación se comprobó
+>   con un reloj de reemplazo, porque el panel del navegador estaba oculto: el lobo rodea y el cordero huye
+>   con la soga tensa. Falta verla en un teléfono (`T-437`).
+> - **Abierto:** `T-435` (las tintas nuevas al lienzo), `T-436` (el arte de los demás recintos), `T-437`.
+
+> ## 🐺 EL BESTIARIO REDONDO (2026-10-16) — `D-73`, ciclo 22
+>
+> **En `main` desde el PR #49 (`fca4682`); la rama `ciclo-22/bestiario` salió de `fdaea84`.** Se trabajó en un worktree
+> (`.claude/worktrees/bestiario`) para no mezclarse con la vuelta de `INV-300`, que sigue sin commitear en la
+> carpeta principal. Pedido del usuario: *"Analiza diseña y construi el bestiario redondo. Arma una lista de
+> TODOS los personajes que son parte de la mitologia de los redondos [...] que se puede recorrer desde arriba
+> y entrar a ver el entorno mas en detalle"*.
+>
+> - **La página** (`/redondopedia/bestiario/`, puerta en la portada de la Redondopedia): **120 bichos y
+>   personajes** sacados de las 104 letras, más Patricio Rey y los buñuelos, que son del mito. Cada uno con el
+>   verso exacto de su tema, cotejado a máquina contra `cancionero.json` (`bestiario.test.ts`), su estampa y,
+>   cuando hay, lo que se cuenta rotulado.
+> - **El mundo redondo**: un mapa circular visto desde arriba, con el galpón de Patricio Rey en el medio, once
+>   regiones alrededor y la ruta del último bondi por el borde. La pastura es un claro adentro del monte: el
+>   cordero atado al palo y el lobo suelto acechando en el borde. El bajo inundado del gordo Pierre (botella,
+>   puerta con el vidrio roto) toca el infierno por las sirenas y el barro. Se toca una región y la cámara baja;
+>   de cerca se viaja a la de al lado; cada bestia abre su ficha, suena diez segundos del tema y queda anotada en
+>   el teléfono.
+> - **El gordo Pierre tiene historia** (`RES-340`, `INV-340`): la noche de lluvia en La Esquina del Sol con la
+>   sala inundada y el vidrio de una puerta roto (testimonio del Indio), la versión donde Pierre lo niega
+>   (testimonio) y la del dueño del bar (leyenda).
+> - **Verde:** `npm test` (1639), `npm run check` y `npm run build`. Visto en el navegador a 375 px y en
+>   escritorio: entrar por un rótulo, viajar por "Al lado", abrir una ficha desde el mapa y desde la barra,
+>   escuchar, cerrar con Escape, volver al mapa, y la libreta.
+> - **Abierto, sin trabar** (`D-73`): `T-431` que `contenido` lea las estampas; `T-432` que `investigador`
+>   confirme de primera mano la noche de La Esquina del Sol en el memoir; `T-433` que `experiencia` diga si hace
+>   falta arrastrar el mapa con el dedo; `T-434` probarlo en un iPhone.
 
 > ## 📚 UNA VUELTA ENTERA DE INVESTIGACIÓN PARA LA REDONDOPEDIA (2026-10-15) — `INV-300`
 >

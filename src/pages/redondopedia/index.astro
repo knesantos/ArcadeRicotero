@@ -6,25 +6,58 @@
  * publicados siguiendo enlaces — el indice lista cada uno, y el test del grafo
  * (`redondopedia.test.ts`) verifica que ademas el tejido interno no deje huerfanos.
  *
- * La explicacion del rotulado va arriba porque es la promesa central de `D-14`:
- * el lector sabe desde la puerta que casilla es cada cosa.
+ * **Desde `D-75` es una puerta y no un listado.** Arriba, el lugar: la tapa de *Gulp!*
+ * velada subiendo detras del titulo, como en cada articulo, asi que entrar a uno corre la
+ * camara de una tapa a la otra (`ADR-03`, el nombre `lugar`). Despues, lo que hace entrar:
+ * "Para la oreja", una leyenda del archivo que cambia cada dia. Despues, la clave de los
+ * rotulos —la promesa de `D-14`, que el lector tiene que tener antes de creerle a nada—, las
+ * dos puertas aparte (En vivo y el bestiario), los saltos a cada parte, y el indice: los
+ * discos con su tapa, y el resto con su gancho y lo que hay adentro.
  */
 import Base from '../../layouts/Base.astro';
+import TarjetaArticulo from '../../components/TarjetaArticulo.astro';
+import { ENTRADA as ENTRADA_BESTIARIO } from '../../lib/bestiario/camino.ts';
 import { PORTAL, LUGARES, REDONDOPEDIA } from '../../lib/sitio/copy.ts';
 import { EN_VIVO } from '../../lib/recital/copy.ts';
-import { porTipo, TIPO_A_CATEGORIA, type Articulo } from '../../lib/redondopedia.ts';
-import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
+import { BESTIARIO } from '../../lib/bestiario/copy.ts';
+import { porTipo, rumores, anioDe, type Articulo, type TipoArticulo } from '../../lib/redondopedia.ts';
+import { fondoTapa, discosDe, tapa, SIN_DETALLE_POR_TONO } from '../../lib/sitio/arte.ts';
+import { tituloEnLaBanda } from '../../lib/sitio/letras.ts';
 import crudo from '../../data/redondopedia.json';
 
 /** La cabecera viste Gulp! (`D-19`, catalogo `UX-05`), con velo (`D-21`). */
 const fondoCabecera = fondoTapa('gulp-pincelada');
-const tapasUsadas = fondoCabecera ? discosDe(['gulp-pincelada']) : [];
 
 const articulos = (crudo as unknown as { articulos: Articulo[] }).articulos;
-const grupos = porTipo(articulos);
+const grupos = [...porTipo(articulos).entries()].filter(([, lista]) => lista.length > 0);
 
-const recortar = (texto: string): string =>
-  texto.length > 150 ? `${texto.slice(0, 147).trimEnd()}…` : texto;
+/** Los discos se muestran con su tapa: un disco tiene cara (`D-04`, baja resolucion). */
+const discos = (grupos.find(([tipo]) => tipo === 'disco')?.[1] ?? []).map((a) => ({
+  articulo: a,
+  tapa: tapa(a.slug),
+  anio: anioDe(a),
+}));
+
+/**
+ * Que tapas se ven en esta pantalla (`D-21`, condicion 1): la de *Gulp!* de fondo y las
+ * diez del indice de discos, que el pie nombra una por una.
+ */
+const tapasUsadas = [
+  ...new Set([
+    ...(fondoCabecera ? discosDe(['gulp-pincelada']) : []),
+    ...discos.filter((d) => d.tapa).map((d) => d.articulo.titulo),
+  ]),
+];
+
+/**
+ * Las leyendas del archivo, para la oreja de la portada. Todas viajan en el HTML y la isla
+ * deja a la vista la del dia; sin JavaScript queda la primera, que tambien es una leyenda
+ * entera y bien rotulada. Los graves no prestan ninguna (`UX-20` §3.4).
+ */
+const lasLeyendas = rumores(articulos, new Set(SIN_DETALLE_POR_TONO));
+
+/** El ancla de cada parte del indice, para los saltos de arriba. */
+const ancla = (tipo: TipoArticulo): string => `parte-${tipo}`;
 ---
 
 {/*
@@ -36,10 +69,8 @@ const recortar = (texto: string): string =>
   silencio justo en la ruta que más se cruza con el portal. Verificado en el navegador el
   2026-09-02: `querySelectorAll('.tapa-fondo')` devolvía dos.
 
-  De paso arregla el crédito: el pie decía "arte de la tapa de Gulp!" mientras la multitud
-  de *Oktubre* estaba ahí abajo, a la vista. La franja de Oktubre es identidad del portal;
-  acá la sección viste Gulp!, que es lo que `D-19` le da. Y el pie de imprenta le pone el
-  piso que la franja le daba.
+  Desde `D-75` la capa la pinta `Base.astro` por la prop `lugar`, igual que en cada
+  artículo, y esta página no pinta ninguna otra.
 */}
 <Base
   titulo="La Redondopedia — Fichín Ricotero"
@@ -47,57 +78,121 @@ const recortar = (texto: string): string =>
   volverA={{ href: '/', texto: PORTAL.volverAlArcade }}
   tapas={tapasUsadas}
   discoDelPie="gulp"
+  lugar={fondoCabecera}
 >
-  <div class="portada-redondopedia">
-    {fondoCabecera && <div class="tapa-fondo tapa-fondo--gulp-pincelada" aria-hidden="true" />}
-    <h1 class="titulo-seccion">{REDONDOPEDIA.titulo}</h1>
+  <header class="umbral-redondopedia">
+    <h1 class="titulo-seccion en-la-banda">{REDONDOPEDIA.titulo}</h1>
     <p class="donde-estas">{LUGARES.redondopedia}</p>
     <p class="bajada-portal">{REDONDOPEDIA.bajada}</p>
+  </header>
 
-    <p class="leyenda-rotulos">
-    {REDONDOPEDIA.explicacionRotulos}<b class="es-leyenda"
-      >◆ {REDONDOPEDIA.palabraLeyenda}</b
-    >{REDONDOPEDIA.explicacionMedio}<b class="es-testimonio"
-      >❝ {REDONDOPEDIA.palabraTestimonio}</b
-    >{REDONDOPEDIA.explicacionCierre}
-    </p>
+  {
+    lasLeyendas.length > 0 && (
+      <section class="oreja oreja--portada" aria-labelledby="oreja-portada">
+        <h2 class="lado" id="oreja-portada">{REDONDOPEDIA.oreja}</h2>
+        <ul class="oreja-ronda" data-oreja>
+          {lasLeyendas.map((r, i) => (
+            <li hidden={i > 0}>
+              <p class="parrafo parrafo--leyenda oreja-rumor">
+                <span class="marca-rotulo">Leyenda</span>
+                {r.arranque}
+              </p>
+              <a class="oreja-seguir" href={`/redondopedia/${r.slug}/`}>
+                {REDONDOPEDIA.seguiEn}{' '}
+                <span class:list={['oreja-donde', { 'en-la-banda': tituloEnLaBanda(r.slug, r.titulo) }]}>{r.titulo}</span> →
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
 
-    {/* `D-72`: los recitales en pantalla (`IDEA-15`). No es un artículo —no tiene casilla de
-        hecho, leyenda ni testimonio: cada lista lleva el rótulo de su fuente—, así que no
-        entra al índice por tipo: va acá arriba, como una puerta aparte. */}
+  {/* La clave de los rótulos (`D-14`, `BR-08`): registro 3, tres renglones. */}
+  <div class="clave-rotulos">
+    <p class="clave-entrada">{REDONDOPEDIA.clave.entrada}</p>
+    <dl>
+      <div>
+        <dt class="es-hecho">{REDONDOPEDIA.clave.palabraHecho}</dt>
+        <dd>{REDONDOPEDIA.clave.hecho}</dd>
+      </div>
+      <div>
+        <dt class="es-leyenda">◆ {REDONDOPEDIA.clave.palabraLeyenda}</dt>
+        <dd>{REDONDOPEDIA.clave.leyenda}</dd>
+      </div>
+      <div>
+        <dt class="es-testimonio">❝ {REDONDOPEDIA.clave.palabraTestimonio}</dt>
+        <dd>{REDONDOPEDIA.clave.testimonio}</dd>
+      </div>
+    </dl>
+  </div>
+
+  {/* Las dos puertas que no son artículos (`D-72`, `D-73`): no tienen casilla de hecho,
+      leyenda ni testimonio —cada lista y cada ficha lleva su rótulo adentro—, así que no
+      entran al índice por tipo. Van juntas, antes del índice. */}
+  <div class="puertas-aparte">
     <a class="tarjeta-articulo tarjeta-articulo--historia en-vivo-puerta" href="/redondopedia/en-vivo/">
-      <strong>{EN_VIVO.enLaPortada.titulo}</strong>
-      <span>{EN_VIVO.enLaPortada.resumen}</span>
+      <strong class="tarjeta-titulo">{EN_VIVO.enLaPortada.titulo}</strong>
+      <span class="tarjeta-gancho">{EN_VIVO.enLaPortada.resumen}</span>
+    </a>
+    {/* Al bestiario se entra caminando, por el monte (`D-73`). */}
+    <a class="tarjeta-articulo tarjeta-articulo--mitologia bestiario-puerta" href={ENTRADA_BESTIARIO}>
+      <strong class="tarjeta-titulo">{BESTIARIO.enLaPortada.titulo}</strong>
+      <span class="tarjeta-gancho">{BESTIARIO.enLaPortada.resumen}</span>
     </a>
   </div>
+
+  {/* Los saltos: con cuarenta artículos el índice mide siete pantallas, y el que vino a
+      buscar un disco no tiene por qué pasar por la historia entera. */}
+  <nav class="partes" aria-label={REDONDOPEDIA.partes}>
+    <ul>
+      {grupos.map(([tipo, lista]) => (
+        <li>
+          <a href={`#${ancla(tipo)}`}>
+            {REDONDOPEDIA.secciones[tipo]} <span class="partes-cuantos">{lista.length}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
 
   {/* El rodillo separa una categoria de la siguiente (`UX-22` §9). Se filtran los grupos
       vacios ANTES de numerar para que el primero que se ve nunca arranque con separador. */}
   {
-    [...grupos.entries()].filter(([, lista]) => lista.length > 0).map(
-      ([tipo, lista], i) => (
-        <>
-          {i > 0 && <hr class="rodillo" aria-hidden="true" />}
-          <section>
-
-            <h2 class="lado">{REDONDOPEDIA.secciones[tipo]}</h2>
-            <ul class="indice-articulos">
-              {lista.map((a) => (
+    grupos.map(([tipo, lista], i) => (
+      <>
+        {i > 0 && <hr class="rodillo" aria-hidden="true" />}
+        <section class="parte" id={ancla(tipo)}>
+          <h2 class="lado">{REDONDOPEDIA.secciones[tipo]}</h2>
+          {tipo === 'disco' ? (
+            <ul class="indice-discos">
+              {discos.map(({ articulo: a, tapa: t, anio }) => (
                 <li>
-                  <a
-                    class={`tarjeta-articulo tarjeta-articulo--${TIPO_A_CATEGORIA[a.tipo]}`}
-                    href={`/redondopedia/${a.slug}/`}
-                  >
-                    <strong>{a.titulo}</strong>
-                    <span>{recortar(a.resumen)}</span>
+                  <a class={`disco-del-indice de-disco--${a.slug}`} href={`/redondopedia/${a.slug}/`}>
+                    {t && <img src={t} alt="" width="320" height="320" loading="lazy" decoding="async" />}
+                    <strong class:list={['disco-del-indice-titulo', { 'en-la-banda': tituloEnLaBanda(a.slug, a.titulo) }]}>
+                      {a.titulo}
+                    </strong>
+                    {anio && <span class="disco-del-indice-anio">{anio}</span>}
                   </a>
                 </li>
               ))}
             </ul>
-          </section>
-        </>
-      ),
-    )
+          ) : (
+            <ul class="indice-articulos">
+              {lista.map((a) => (
+                <li>
+                  <TarjetaArticulo articulo={a} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </>
+    ))
   }
 
+  <script>
+    import '../../scripts/oreja.ts';
+  </script>
 </Base>

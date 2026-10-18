@@ -11,7 +11,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
-import { CASETE_CANCIONERO, CASETE_REDONDOPEDIA, JUEGOS } from './copy.ts';
+import { JUEGOS, LADO_B } from './copy.ts';
 import { arteDeCasete, discoDeRecorte } from './arte.ts';
 import { caratulaDe, pistaDe, primeraOracion, restoDeLaBajada, tapasConCaratula } from './caratula.ts';
 
@@ -59,7 +59,7 @@ test('el número de pista de la carátula es el que el portal imprime en el case
   });
 });
 
-test('la lista de temas tiene los nueve del lado A y los dos del lado B, y marca uno solo', () => {
+test('la lista de temas tiene los del lado A y los tres del lado B, y marca uno solo', () => {
   for (const c of JUEGOS) {
     const { ladoA, ladoB } = caratulaDe(c.href!);
     assert.deepEqual(
@@ -68,7 +68,7 @@ test('la lista de temas tiene los nueve del lado A y los dos del lado B, y marca
     );
     assert.deepEqual(
       ladoB.map((p) => p.titulo),
-      [CASETE_CANCIONERO.titulo, CASETE_REDONDOPEDIA.titulo],
+      ['Letras y acordes', 'La Redondopedia', 'Bestiario redondo'],
     );
     const actuales = [...ladoA, ...ladoB].filter((p) => p.actual);
     assert.deepEqual(
@@ -78,7 +78,7 @@ test('la lista de temas tiene los nueve del lado A y los dos del lado B, y marca
     );
     assert.deepEqual(
       ladoB.map((p) => p.numero),
-      ['B1', 'B2'],
+      ['B1', 'B2', 'B3'],
     );
   }
 });
@@ -88,7 +88,7 @@ test('un juego que no está en el portal no tiene carátula: el build lo dice', 
 });
 
 test('la bajada cortada en dos se vuelve a armar entera: el escritorio no inventa texto', () => {
-  for (const c of [...JUEGOS, CASETE_CANCIONERO, CASETE_REDONDOPEDIA]) {
+  for (const c of [...JUEGOS, ...LADO_B]) {
     const primera = primeraOracion(c.baja);
     const resto = restoDeLaBajada(c.baja);
     assert.equal(resto ? `${primera} ${resto}` : primera, c.baja, c.titulo);

@@ -11,7 +11,7 @@
  * Se resuelve en build (lee el archivo de la pieza para medirla, como el portal) y llega al
  * componente ya armada: `Caratula.astro` no decide nada.
  */
-import { JUEGOS, CASETE_CANCIONERO, CASETE_REDONDOPEDIA, type Casete } from './copy.ts';
+import { JUEGOS, LADO_B, type Casete } from './copy.ts';
 import { arteDeCasete, discoDeRecorte, materialDeCasete, medidas, type MaterialDeCasete } from './arte.ts';
 
 /**
@@ -107,7 +107,7 @@ export function caratulaDe(href: string): Caratula {
     apaisada: medida !== null && medida.ancho / medida.alto > 1.4,
     disco: discoDeRecorte(arte),
     ladoA: renglones('A', JUEGOS, href),
-    ladoB: renglones('B', [CASETE_CANCIONERO, CASETE_REDONDOPEDIA], href),
+    ladoB: renglones('B', LADO_B, href),
   };
 }
 
