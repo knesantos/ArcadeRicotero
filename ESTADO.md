@@ -9,7 +9,7 @@
 
 > ## 📼 EL BESTIARIO ENTRA A LA HOME (2026-10-17) — casete B3 del lado B
 >
-> **En la rama `portal/bestiario-en-la-home`, PR #53 abierto, sin integrar.** Pedido del usuario: *"Sumá el bestiario a la home, en
+> **En `main` desde el PR #53 (rama `portal/bestiario-en-la-home`).** Pedido del usuario: *"Sumá el bestiario a la home, en
 > el lado B, con la voz y el diseño del resto de los casetes"*. Hasta hoy se llegaba solo desde la portada de la
 > Redondopedia.
 >
