@@ -808,7 +808,7 @@
       "dibujo": { "f": "persona", "con": ["botella", "panza"], "ropa": "saco", "pose": "sentado" },
       "tema": "pierre-el-vitricida",
       "verso": ["Como se ríe el gordo Pierre", "y rompió el vidrio el gordo Pierre", "y como tose el gordo Pierre"],
-      "estampa": "Sentado arriba de una mesa que flota, con una botella en la mano, al lado de una puerta con el vidrio roto. Se ríe y tose. La botella es del dibujo, no de la letra.",
+      "estampa": "Pintado a pincel seco, como la tapa de Gulp!, su disco, y recortado en papel como un títere. Metido hasta la panza en la sala inundada, con la botella en alto, se ríe hasta que tose. La botella y la cara son del dibujo: no salen de la letra ni de una foto. La etiqueta sí es de verdad, el «gulp.» de la contratapa.",
       "cuenta": [
         { "rotulo": "testimonio", "texto": "Una noche de lluvia en La Esquina del Sol, en Palermo, la sala se inundó y la banda tocó igual. Pierre dijo que estaban locos y se fue, y al cerrar a lo bestia rompió el vidrio de una puerta.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» y en Rolling Stone (2005)", "fuente": "RES-340" },
         { "rotulo": "testimonio", "texto": "En 1985 el mismo Indio contó que Pierre asegura que él no rompió ningún vidrio, y lo describió como un productor que estuvo desde los comienzos del rock.", "quien": "Indio Solari, en Canta Rock (1985)", "fuente": "RES-340" },

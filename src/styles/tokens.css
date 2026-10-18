@@ -172,6 +172,18 @@
   --entorno-monte-claro: #d9c6be;
   --entorno-monte-medio: #a8968b;
   --entorno-monte-hondo: #524c47;
+  /* Sexta vuelta (D-73): el gordo Pierre y el bajo inundado. Pierre es de *Gulp!* y se pinta en
+     su estetica: el negro del pincel seco es `--fondo` (la tapa mide #131514), el papel es la
+     crema de *Gulp!* (`--disco-gulp-apoyo`), el rojo de las letras corridas es
+     `--disco-gulp-tinta`; el amarillo que asoma debajo del rojo y el verde de la letra del frente
+     se miden aca. El bajo viste *Un baion*: el azul de crayon de la contratapa y la llama que se
+     prende en su esquina. Ninguno escribe texto: no entran al test AA. Faltan en el lienzo (T-435). */
+  --bestia-pierre-amarillo: #fcf977; /* el amarillo corrido debajo del rojo, adentro de Gulp! */
+  --bestia-pierre-verde: #9bcd61; /* la letra verde del frente de Gulp!: la botella */
+  --entorno-bajo-agua: #2f285a; /* el azul de crayon de la contratapa de Un baion */
+  --entorno-bajo-celeste: #4772b3; /* los rayones claros de esa contratapa */
+  --entorno-bajo-llama: #f7793c; /* la llama de la contratapa, naranja */
+  --entorno-bajo-llama-clara: #fbe755; /* y su corazon amarillo */
 
   /* Collage de cassette (UX-04: el collage es tecnica fichada de Rocambole, RES-06).
      Papel de etiqueta: sobre el escribe la tinta del fondo (--fondo), par testeado.

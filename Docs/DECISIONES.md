@@ -4775,6 +4775,71 @@ a 1280 px, y se corrigió lo que se vio:
 - **El índice va en el orden del recorrido**, y cada recinto termina con "Volvé al plano".
 - **Los rótulos del plano llegan a 44 px de toque**, y la barra de las escenas anchas va en la tinta.
 
+### Enmienda del 2026-10-17 (6): el gordo Pierre, a pincel seco, en la Esquina del Sol inundada
+
+Pedido del usuario, textual: *"hace otro ciclo sobre el bestiario redondo. Agrega otro personaje y
+pulilo a fondo, se creativo que qeude como uno de rocambole."* La escribe el hilo principal en la rama
+`ciclo-23/bestiario`, sobre `main` en `348ff26`.
+
+- **Por qué Pierre.** Es el que el usuario pidió en el pedido que armó el bestiario (*"el gordo pier
+  que tenga una botella y este en un lugar inundado con un vidrio roto"*), y el bajo era uno de los
+  ocho recintos que seguían con las figuras del plano (`T-443`). No está en ninguna tapa, así que se
+  inventa en la estética de su disco (`T-440`), que es *Gulp!* (1985).
+- **La técnica es la de la tapa de *Gulp!*: pincel seco y fotocopia** (`lib/bestiario/pincel.ts`).
+  Una pincelada son cerdas que siguen el recorrido del pincel, pegadas en mechones que se cargan y se
+  secan juntos —eso deja las rayas largas de papel de la tapa, y no un picado parejo—, y la imprenta
+  le pasa una fotocopia (`#xerox` en `aerografo.ts`) que corre el borde con ruido y lo deja duro.
+  **Lo oscuro no es un contorno, es claroscuro**: en cada forma redonda (el cráneo, los cachetes, la
+  nariz, la papada, la panza) la sombra es la medialuna del lado contrario a la luz, pintada con
+  pasadas que le dan la vuelta a la forma (`volumen`). La luz entra por el vidrio roto. La primera
+  prueba, a contorno, salió de dibujito; la que quedó es la segunda.
+- **Pierre es un títere de papel**: pintado, recortado a tijera en seis piezas (cuerpo, cabeza, boca,
+  mandíbula, brazo y antebrazo con la botella) y articulado. El canto del papel se dibuja solo donde
+  se ve: donde una pieza tapa a otra no queda una costura cruzándole la cara. Los colores son los de
+  *Gulp!*: el negro, la crema del papel, el rojo de las letras corrido sobre el amarillo (la nariz de
+  vino, los cachetes, la corbata) y el verde de la letra del frente, que es la botella.
+- **Lo único de Pierre que sale de una tapa es la etiqueta de la botella**: el «gulp.» pegado en la
+  contratapa del disco. La imprenta aprendió a meter una tapa de verdad adentro de lo que imprime
+  (`href="tapa:<archivo>"` en `scripts/imprimir-bestiario.mjs`), y con eso se recorta.
+- **El bajo es la noche de la Esquina del Sol** (`RES-340`), con la ropa de *Un baión* (`D-19`): la
+  pared es el crayón azul de la contratapa de ese disco, la tapa misma llevada a lo oscuro, y el agua
+  es el mismo crayón, el pedazo sin letras, aplastado y espejado. La puerta deja ver la calle con el
+  farol por un agujero despatarrado; por ahí entra el agua, que cae por la puerta, y afuera llueve. En
+  el escenario, el bafle, el pie del micrófono con el cable que se va al agua y el bombo con un sol
+  pintado: la banda tocó igual. Adelante flotan un bote dado vuelta, una silla y una botella vacía.
+- **Pierre está metido hasta la panza**: el agua de adelante es la misma imagen del agua, cortada
+  donde lo toca, así le tapa la panza de abajo sin costura. **Y se refleja**: una copia viva
+  (`<use>`) dada vuelta y cortada en tiras, que hace todo lo que hace él.
+- **Vive**: flota con el agua y respira; cada tanto se empina la botella (el brazo se dobla en el codo
+  y el pico le llega a la boca: un test lo mide) o se ríe de algo que se acordó. **Tocado, se ríe a
+  carcajadas hasta que tose**, que es lo que dice la letra. Cuando se sacude, la panza le hace ondas en
+  el agua. En el teléfono el bocadillo le cuelga de la papada, para no taparle la cara.
+- **Los demás del bajo son ojos en lo oscuro**, como en los otros recintos de noche; los que están en
+  el agua llevan su reflejo. El amorcito que mordió el vidrio mira desde la ventana de al lado, rota
+  también.
+- **La estampa de Pierre dice qué es del dibujo**: la botella y la cara no salen de la letra ni de una
+  foto (Pierre es una persona; el dibujo no la retrata). La etiqueta sí es de verdad.
+- Las diez piezas nuevas pesan 268 kB.
+
+#### La pulida que vino con la vuelta: la isla ya no se lleva el dibujo
+
+Desde la quinta vuelta la isla importaba `escenas.ts` para leer dónde iban Luzbelito y Momo, y
+`escenas.ts` arrastra `titeres.ts` y `arte.ts`: el teléfono corría el aerógrafo entero de los cinco
+recintos al abrir la página para no usar nada (la isla pesaba 33,6 kB). La geometría de los recintos
+de noche se pasó a `rig.ts`, que son números; con Pierre adentro la isla pesa 22,1 kB.
+`bestiario.test.ts` sigue los imports de la isla de punta a punta y falla si vuelve a alcanzar un
+módulo que dibuja.
+
+#### Abierto, sin trabar
+
+- Sin tareas nuevas. Siguen `T-431` (que `contenido` lea la estampa nueva de Pierre), `T-435` (las
+  tintas nuevas, `--bestia-pierre-*` y `--entorno-bajo-*`, al lienzo: se cargaron primero en
+  `tokens.css`, como las demás del bestiario), `T-437` y `T-439` (los cuadros por segundo en un
+  teléfono de verdad: el reflejo con máscara es la capa más cara del bestiario, y con el panel del
+  navegador oculto no se pudo medir) y `T-443`, que baja a siete recintos.
+- Para el próximo inventado de *Gulp!* (Barbazul, el que no se cayó del cielo) la técnica ya está:
+  `pincel.ts`.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17

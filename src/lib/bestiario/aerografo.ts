@@ -40,7 +40,17 @@ export function filtros(): string {
     `<feTurbulence type="fractalNoise" baseFrequency="0.95" numOctaves="2" seed="3" result="ruido"/>` +
     `<feColorMatrix in="ruido" type="matrix" values="0 0 0 0 0.7  0 0 0 0 0.7  0 0 0 0 0.7  1.4 0 0 0 -0.62" result="puntos"/>` +
     `<feComposite in="puntos" in2="SourceGraphic" operator="in" result="puntos-adentro"/>` +
-    `<feBlend in="SourceGraphic" in2="puntos-adentro" mode="multiply"/></filter>`
+    `<feBlend in="SourceGraphic" in2="puntos-adentro" mode="multiply"/></filter>` +
+    // La fotocopia de *Gulp!* (`pincel.ts`): el borde de la tinta se corre con un ruido ancho
+    // y queda duro, sin medios tonos.
+    `<filter id="xerox" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">` +
+    `<feTurbulence type="fractalNoise" baseFrequency="0.07" numOctaves="2" seed="5" result="onda"/>` +
+    `<feDisplacementMap in="SourceGraphic" in2="onda" scale="4.5" xChannelSelector="R" yChannelSelector="G" result="corrido"/>` +
+    `<feComponentTransfer in="corrido"><feFuncA type="discrete" tableValues="0 0 1 1 1"/></feComponentTransfer></filter>` +
+    // La fotocopia fina, para las líneas corridas de color: corre el borde y nada más.
+    `<filter id="xerox-fino" x="-6%" y="-6%" width="112%" height="112%" color-interpolation-filters="sRGB">` +
+    `<feTurbulence type="fractalNoise" baseFrequency="0.11" numOctaves="2" seed="13" result="onda"/>` +
+    `<feDisplacementMap in="SourceGraphic" in2="onda" scale="2.6" xChannelSelector="R" yChannelSelector="G"/></filter>`
   );
 }
 

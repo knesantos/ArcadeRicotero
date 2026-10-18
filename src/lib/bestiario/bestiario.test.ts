@@ -4,12 +4,16 @@ import { readFileSync } from 'node:fs';
 import { dibujar, dibujarGrupo } from './figuras.ts';
 import { adentro, camara, contorno, dibujarRecinto, dibujarRuta, dibujarSuelo, punto, simbolos, type Bestiario } from './mapa.ts';
 import { existsSync } from 'node:fs';
-import { lobo, cordero, retrato } from './titeres.ts';
+import { lobo, cordero, pierre, retrato } from './titeres.ts';
 import { escenaMonte, VECINOS_DEL_MONTE } from './escena-monte.ts';
-import { escenaBaldio, escenaInfierno, escenaTemplo, VECINOS_DEL_BALDIO, VECINOS_DEL_INFIERNO, VECINOS_DEL_TEMPLO } from './escenas.ts';
-import { ACECHO, PASTURA, ESCENA, PALO } from './rig.ts';
+import {
+  CHORRO, escenaBajo, escenaBaldio, escenaInfierno, escenaTemplo, VECINOS_DEL_BAJO, VECINOS_DEL_BALDIO, VECINOS_DEL_INFIERNO, VECINOS_DEL_TEMPLO,
+} from './escenas.ts';
+import { ACECHO, BAJO, PASTURA, ESCENA, PALO, PIERRE, PIERRE_ARMADO } from './rig.ts';
 import { ARMADO, RECORTES, cajaDeRecorte, LADO_TAPA } from './recortes.ts';
 import { PIEZAS } from './arte.ts';
+import { ETIQUETA, PIEZAS_BAJO, PIEZAS_PIERRE, PUERTA, agujero } from './arte-bajo.ts';
+import { pincelada } from './pincel.ts';
 
 /**
  * El bestiario redondo (`D-73`), probado contra lo único que no puede fallar.
@@ -143,7 +147,11 @@ test('cada figura se dibuja, y el mapa entero sale sin un número roto', () => {
 });
 
 test('ni un hex en el bestiario: los colores son clases que pinta sitio.css', () => {
-  const fuentes = ['src/lib/bestiario/figuras.ts', 'src/lib/bestiario/mapa.ts', 'src/lib/bestiario/titeres.ts', 'src/lib/bestiario/escena-monte.ts', 'src/scripts/bestiario.ts', 'src/data/bestiario.json'];
+  const fuentes = [
+    'src/lib/bestiario/figuras.ts', 'src/lib/bestiario/mapa.ts', 'src/lib/bestiario/titeres.ts', 'src/lib/bestiario/escena-monte.ts',
+    'src/lib/bestiario/escenas.ts', 'src/lib/bestiario/rig.ts', 'src/lib/bestiario/arte-bajo.ts', 'src/lib/bestiario/pincel.ts',
+    'src/scripts/bestiario.ts', 'src/data/bestiario.json',
+  ];
   const malos = fuentes.filter((f) => /#[0-9a-fA-F]{3,8}\b(?![-\w])/.test(readFileSync(f, 'utf-8').replace(/href="#fig-|#fig-|`#\$\{|'#b-|#b-|#region-/g, '')));
   assert.deepEqual(malos, []);
 });
@@ -221,7 +229,7 @@ test('cada pieza del aerógrafo y cada recorte están en public/bestiario', () =
   const nombres = [...PIEZAS.map((p) => p.nombre), ...RECORTES.map((r) => r.nombre)];
   const faltan = nombres.filter((n) => !existsSync(`public/bestiario/${n}.webp`));
   assert.deepEqual(faltan, []);
-  const piden = [...(lobo() + cordero() + escenaMonte(new Map())).matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]);
+  const piden = [...(lobo() + cordero() + escenaMonte(new Map()) + escenaBajo(new Map())).matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]);
   assert.ok(piden.length > 10);
   assert.deepEqual(piden.filter((n) => !nombres.includes(n!)), []);
 });
@@ -245,6 +253,9 @@ test('cada recinto de noche tiene a todos los suyos: el protagonista de tapa y l
 });
 
 test('los cinco de tapa tienen retrato de ficha, encuadrado en sus piezas; los demás siguen con su figura', () => {
+  // Pierre no es de tapa pero tiene títere: su ficha también lo muestra como en la escena.
+  const dePierre = retrato('el-gordo-pierre');
+  assert.ok(dePierre && dePierre.svg.includes('pierre-cabeza') && !/NaN/.test(dePierre.caja));
   for (const id of ['el-lobo-suelto', 'el-cordero-atado', 'ese-perro-que-sigue-alli', 'luzbelito', 'momo']) {
     assert.ok(datos.bestias.some((b) => b.id === id), `${id} no está en el bestiario`);
     const r = retrato(id);
@@ -254,4 +265,116 @@ test('los cinco de tapa tienen retrato de ficha, encuadrado en sus piezas; los d
     assert.ok(r.svg.includes('-real-'), `${id}: el retrato no es la tapa`);
   }
   assert.equal(retrato('la-mosca'), null);
+});
+
+/*
+ * La sexta vuelta: el bajo inundado y el gordo Pierre, pintado a pincel seco en la estética de
+ * *Gulp!* (`arte-bajo.ts`, `pincel.ts`).
+ */
+
+/** Todo lo que un archivo importa, de punta a punta, siguiendo los caminos relativos. */
+function importados(desde: string): string[] {
+  const vistos = new Set<string>();
+  const pendientes = [desde];
+  while (pendientes.length) {
+    const archivo = pendientes.pop()!;
+    if (vistos.has(archivo)) continue;
+    vistos.add(archivo);
+    const carpeta = archivo.slice(0, archivo.lastIndexOf('/'));
+    for (const m of readFileSync(archivo, 'utf-8').matchAll(/(?:^|\n)\s*(?:import|export)[^'"]*?from\s+'(\.[^']+)'/g)) {
+      const ruta: string[] = [];
+      for (const p of `${carpeta}/${m[1]}`.split('/')) {
+        if (p === '..') ruta.pop();
+        else if (p !== '.') ruta.push(p);
+      }
+      pendientes.push(ruta.join('/'));
+    }
+  }
+  return [...vistos].map((r) => r.slice(r.lastIndexOf('/') + 1));
+}
+
+test('la isla se lleva números: no importa nada que dibuje', () => {
+  // Si la isla importa un módulo que dibuja, el teléfono corre el aerógrafo entero al abrir la
+  // página para no usarlo. Pasó en la quinta vuelta: `escenas.ts` arrastraba `arte.ts`.
+  const dibujan = ['arte.ts', 'arte-bajo.ts', 'aerografo.ts', 'pincel.ts', 'escenas.ts', 'escena-monte.ts', 'titeres.ts', 'figuras.ts', 'mapa.ts'];
+  const llevados = importados('src/scripts/bestiario.ts');
+  assert.ok(llevados.includes('rig.ts'), 'la isla dejó de leer rig.ts: el censo no está mirando bien');
+  assert.deepEqual(llevados.filter((n) => dibujan.includes(n)), [], `la isla se lleva al teléfono: ${llevados.join(', ')}`);
+  // Y el censo sabe encontrar: desde las escenas, que sí dibujan, llega al aerógrafo.
+  assert.ok(importados('src/lib/bestiario/escenas.ts').includes('aerografo.ts'));
+});
+
+test('el gordo Pierre es un títere entero: cada pieza que mueve la isla, con su imagen y su pivote', () => {
+  const marcado = pierre();
+  for (const parte of ['cuerpo', 'cabeza', 'mandibula', 'brazo', 'antebrazo', 'parpado-1', 'parpado-2']) {
+    assert.ok(marcado.includes(`data-parte="${parte}"`), `a Pierre le falta ${parte}`);
+  }
+  const imagenes = [...marcado.matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]!);
+  assert.deepEqual([...imagenes].sort(), PIEZAS_PIERRE.map((p) => p.nombre).sort(), 'Pierre usa piezas que no se imprimen, o le sobra una');
+  const caja = (nombre: string): readonly [number, number, number, number] => PIEZAS_PIERRE.find((p) => p.nombre === nombre)!.caja;
+  const adentro = (nombre: string, [x, y]: readonly [number, number]): boolean => {
+    const [x0, y0, ancho, alto] = caja(nombre);
+    return x >= x0 && x <= x0 + ancho && y >= y0 && y <= y0 + alto;
+  };
+  assert.ok(adentro('pierre-cuerpo', PIERRE_ARMADO.cuello) && adentro('pierre-mandibula', PIERRE_ARMADO.cuello), 'la cabeza gira en el aire');
+  assert.ok(adentro('pierre-brazo', PIERRE_ARMADO.hombro) && adentro('pierre-cuerpo', PIERRE_ARMADO.hombro), 'el hombro no está en el hombro');
+  assert.ok(adentro('pierre-brazo', PIERRE_ARMADO.codo) && adentro('pierre-antebrazo', PIERRE_ARMADO.codo), 'el codo no une las dos mitades del brazo');
+  assert.ok(adentro('pierre-antebrazo', PIERRE_ARMADO.pico), 'el pico de la botella no está en la botella');
+  for (const o of PIERRE_ARMADO.ojos) assert.ok(adentro('pierre-cabeza', o.centro) && adentro('pierre-cabeza', o.parpado), 'un ojo se salió de la cara');
+  for (const m of marcado.matchAll(/data-parte="parpado-\d"[^>]*>/g)) assert.match(m[0], /data-pivote="-?[\d.]+ -?[\d.]+"/);
+});
+
+test('cuando se empina la botella, el pico le llega a la boca', () => {
+  // El trago no es decoración: si el brazo gira y la botella queda en la oreja, se ve mal hecho.
+  const girar = ([x, y]: readonly [number, number], [cx, cy]: readonly [number, number], grados: number): [number, number] => {
+    const a = (grados * Math.PI) / 180;
+    return [cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a), cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a)];
+  };
+  const { hombro, codo, pico, boca, trago } = PIERRE_ARMADO;
+  // El antebrazo gira en el codo y, encima, el brazo entero en el hombro.
+  const tope = girar(girar(pico, codo, trago.antebrazo), hombro, trago.brazo);
+  const lejos = Math.hypot(tope[0] - boca[0], tope[1] - boca[1]);
+  assert.ok(lejos < 30, `el pico queda a ${Math.round(lejos)} de la boca`);
+});
+
+test('el bajo tiene a todos los suyos, y Pierre está en el agua, entre la pared y el que mira', () => {
+  const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
+  const escena = escenaBajo(nombres);
+  const delRecinto = datos.bestias.filter((b) => b.region === 'el-bajo').map((b) => b.id).sort();
+  assert.deepEqual(delRecinto, ['el-gordo-pierre', ...Object.keys(VECINOS_DEL_BAJO)].sort());
+  assert.ok(!/NaN|undefined|Infinity/.test(escena), 'el bajo tiene un número roto');
+  assert.equal(escena.match(/id="pierre-entero"/g)?.length, 1, 'el reflejo copia a Pierre por su id, que tiene que ser uno solo');
+  assert.ok(escena.includes('href="#pierre-entero"'), 'Pierre no tiene reflejo');
+  for (const [id, [x, y]] of Object.entries(VECINOS_DEL_BAJO)) assert.ok(x >= 0 && x <= ESCENA.ancho && y >= 0 && y <= ESCENA.alto, `${id} se sale`);
+  assert.ok(PIERRE.agua > BAJO.fondo && PIERRE.agua < ESCENA.alto - 60, 'Pierre no está metido en el agua');
+  assert.ok(escena.includes(`<rect x="-10" y="${PIERRE.agua}"`), 'el agua de adelante no lo corta donde lo toca');
+  // El agujero está en el vidrio de la puerta, y el agua que entra cae hasta el agua.
+  for (const [x, y] of agujero()) {
+    const [vx0, vy0, vx1, vy1] = PUERTA.vidrio;
+    assert.ok(x > vx0 && x < vx1 && y > vy0 && y < vy1, 'el vidrio está roto afuera del vidrio');
+  }
+  for (const [dx0, dy0] of CHORRO) assert.ok(Math.hypot(dx0, dy0) < 60, 'un hilo de agua no sale del agujero');
+});
+
+test('lo único de Pierre que sale de una tapa es la etiqueta, y la tapa existe', () => {
+  const tapas = PIEZAS_PIERRE.flatMap((p) => [...p.dibujo.matchAll(/href="tapa:([a-z0-9-]+)"/g)].map((m) => `${p.nombre} ← ${m[1]}`));
+  assert.deepEqual(tapas, ['pierre-antebrazo ← gulp-trasera']);
+  for (const p of PIEZAS) for (const m of p.dibujo.matchAll(/href="tapa:([a-z0-9-]+)"/g)) {
+    assert.ok(existsSync(`Docs/INVESTIGACION/TapasDiscos/${m[1]}.jpg`), `${p.nombre} pide una tapa que no está: ${m[1]}`);
+  }
+  // La etiqueta es el papelito del «gulp.» de la contratapa: un cuadrilátero adentro de ella.
+  for (const [x, y] of ETIQUETA) assert.ok(x > 0 && x < 953 && y > 0 && y < 750);
+});
+
+test('el pincel seco sale igual en cada impresión, y no rompe ningún número', () => {
+  const una = pincelada([[0, 0], [40, -10], [80, 10], [120, 0]], { ancho: 20, seco: 0.4 }, 7);
+  assert.equal(una, pincelada([[0, 0], [40, -10], [80, 10], [120, 0]], { ancho: 20, seco: 0.4 }, 7));
+  assert.notEqual(una, pincelada([[0, 0], [40, -10], [80, 10], [120, 0]], { ancho: 20, seco: 0.4 }, 8));
+  assert.ok(una.length > 200 && !/NaN|undefined|Infinity/.test(una));
+  // Seco a fondo deja más papel: menos tinta que la misma pasada cargada.
+  const cargada = pincelada([[0, 0], [40, -10], [80, 10], [120, 0]], { ancho: 20, seco: 0 }, 7);
+  const seca = pincelada([[0, 0], [40, -10], [80, 10], [120, 0]], { ancho: 20, seco: 1 }, 7);
+  const tinta = (s: string): number => [...s.matchAll(/[ML]/g)].length;
+  assert.ok(tinta(seca) < tinta(cargada), 'el pincel seco no se seca');
+  for (const p of PIEZAS_BAJO) assert.ok(!/NaN|undefined|Infinity/.test(p.dibujo), `${p.nombre} tiene un número roto`);
 });

@@ -11,6 +11,7 @@
 import { PIEZAS } from './arte.ts';
 import { rutaDePieza } from './aerografo.ts';
 import { ARMADO, RECORTES, cajaDeRecorte } from './recortes.ts';
+import { PIERRE_ARMADO } from './rig.ts';
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 const cajas = new Map<string, readonly [number, number, number, number]>([
@@ -63,6 +64,28 @@ export function cordero(): string {
 }
 
 /**
+ * El gordo Pierre (`D-73`, sexta vuelta): no es de tapa, está pintado a pincel seco en la
+ * estética de *Gulp!* (`arte-bajo.ts`) y recortado en seis piezas. La cabeza lleva adentro la
+ * boca (quieta, atrás) y la mandíbula, que se abre cuando se ríe y cuando tose; el brazo de la
+ * botella se dobla en el codo para el trago. Los párpados son de papel, con la raya del ojo
+ * cerrado abajo: cuando se ríe bajan hasta la mitad, que es como se achinan.
+ */
+export function pierre(): string {
+  const parpadoDePapel = (n: number, { parpado: [cx, cy], radio: [rx, ry] }: (typeof PIERRE_ARMADO.ojos)[number]): string =>
+    `<g data-parte="parpado-${n}" data-pivote="${cx} ${cy - ry}" transform="scale(1 0)">` +
+    `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" class="bt-pierre-parpado"/>` +
+    `<path d="M${cx - rx} ${cy + 1} Q${cx} ${cy + ry * 0.9} ${cx + rx} ${cy + 1}" class="bt-pierre-pestana"/></g>`;
+  const [o1, o2] = PIERRE_ARMADO.ojos;
+  return (
+    `<g data-titere="pierre">` +
+    parte('cuerpo', imagen('pierre-cuerpo')) +
+    parte('cabeza', imagen('pierre-boca') + parte('mandibula', imagen('pierre-mandibula')) + imagen('pierre-cabeza') + parpadoDePapel(1, o1) + parpadoDePapel(2, o2)) +
+    parte('brazo', imagen('pierre-brazo') + parte('antebrazo', imagen('pierre-antebrazo'))) +
+    `</g>`
+  );
+}
+
+/**
  * El retrato de ficha de los que tienen tapa (`D-73`, pulida): las mismas piezas del títere,
  * quietas y encuadradas en la caja que las junta. Así la ficha muestra al bicho que se tocó en
  * la escena, y no la figura del plano. `null` para los demás, que siguen con su figura.
@@ -83,6 +106,11 @@ const PIEZAS_DEL_RETRATO: Readonly<Record<string, { piezas: readonly string[]; c
     cuerpo: () => imagen('luzbelito-real-busto') + imagen('luzbelito-real-llama'),
   },
   momo: { piezas: ['momo-real-medallon'], cuerpo: () => imagen('momo-real-medallon') },
+  // Pierre no es de tapa, pero tiene títere: la ficha lo muestra igual que la escena, sin el agua.
+  'el-gordo-pierre': {
+    piezas: ['pierre-cuerpo', 'pierre-cabeza', 'pierre-mandibula', 'pierre-brazo', 'pierre-antebrazo'],
+    cuerpo: () => ['pierre-cuerpo', 'pierre-boca', 'pierre-mandibula', 'pierre-cabeza', 'pierre-brazo', 'pierre-antebrazo'].map(imagen).join(''),
+  },
 };
 
 export function retrato(id: string): { caja: string; svg: string } | null {

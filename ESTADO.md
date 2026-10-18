@@ -7,6 +7,24 @@
 
 **Última actualización:** 2026-10-17
 
+> ## 🍾 EL GORDO PIERRE, A PINCEL SECO (2026-10-17) — sexta enmienda de `D-73`, ciclo 23
+>
+> **En `main` desde el PR #52 (rama `ciclo-23/bestiario`).** Pedido del usuario: *"Agrega otro personaje y pulilo a
+> fondo, se creativo que quede como uno de rocambole"*.
+>
+> - **El bajo inundado es el quinto recinto de noche**: la Esquina del Sol con el agua adentro (`RES-340`), en
+>   el crayón de *Un baión* —la pared y el agua son la contratapa misma—. El agua entra por el vidrio roto de la
+>   puerta, afuera llueve, y en el escenario quedaron el bafle, el micrófono y el bombo con un sol pintado.
+> - **El gordo Pierre**, inventado en la estética de *Gulp!*, su disco: pincel seco y fotocopia (`pincel.ts`),
+>   en claroscuro, recortado en papel como un títere de seis piezas. La etiqueta de la botella es el «gulp.» de
+>   la contratapa, lo único de él que sale de una tapa. Flota, se empina la botella, y tocado se ríe hasta que
+>   tose; se refleja en el agua y le hace ondas.
+> - **Pulida**: la isla ya no se lleva el aerógrafo al teléfono (33,6 → 22,1 kB, y un test lo vigila).
+> - **Verde:** `npm test`, `npm run check`, `npm run build`. Visto a 375 y 1280 px en el navegador del panel.
+>   Falta en un teléfono de verdad (`T-437`, `T-439`): con el panel oculto no se pudieron medir los cuadros.
+> - **Abierto:** `T-443` (siete recintos con figuras del plano), `T-442` (la mosca), `T-435` (las tintas nuevas
+>   al lienzo), `T-431` (que `contenido` lea la estampa de Pierre).
+
 > ## 🏠 EL SITIO SE MUDÓ A UNA CUENTA HOBBY DE VERCEL (2026-10-17) — `D-74`
 >
 > Pedido del usuario: liberar la cuenta Pro para otro proyecto. **Hecho y verificado en vivo:** el proyecto

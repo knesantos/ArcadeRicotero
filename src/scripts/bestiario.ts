@@ -16,9 +16,13 @@
  */
 
 import { BESTIARIO } from '../lib/bestiario/copy.ts';
-import { ACECHO, ACHATE, ESCALA_CORDERO, ESCALA_LOBO, PALO, SOGA, profundidad } from '../lib/bestiario/rig.ts';
+// La isla solo se lleva números: la geometría vive en `rig.ts` y `recortes.ts`, nunca en los
+// módulos que dibujan (`arte*.ts`, `escenas.ts`, `titeres.ts`), que correrían el aerógrafo entero
+// en el teléfono al abrir la página. `bestiario.test.ts` lo vigila.
+import {
+  ACECHO, ACHATE, BAJO, ESCALA_CORDERO, ESCALA_LOBO, LUZBELITO as LUZ, MOMO as MOMO_ESC, PALO, PIERRE, PIERRE_ARMADO, SOGA, profundidad,
+} from '../lib/bestiario/rig.ts';
 import { ARMADO } from '../lib/bestiario/recortes.ts';
-import { LUZBELITO as LUZ, MOMO as MOMO_ESC } from '../lib/bestiario/escenas.ts';
 import { crearRocola } from './rocola.ts';
 
 interface BestiaIsla {
@@ -140,8 +144,10 @@ let callarEn = 0;
  * El bicho dice su verso: el bocadillo aparece arriba de él, adentro de su escena. Las escenas
  * de noche se corren de costado, así que todo se mide contra lo que se ve, no contra la escena
  * entera: si el bicho quedó afuera (se llegó con el teclado), la escena lo trae primero.
+ * `abajo` lo cuelga debajo del punto aunque arriba entre: el gordo Pierre llena la pantalla del
+ * teléfono, y arriba le taparía la cara mientras se ríe.
  */
-function hablar(id: string, escena: HTMLElement, svg: SVGSVGElement, x: number, y: number): void {
+function hablar(id: string, escena: HTMLElement, svg: SVGSVGElement, x: number, y: number, preferirAbajo = false): void {
   const b = bestias.get(id);
   if (!b || !svg.getScreenCTM()) return;
   if (hablando === id && !bocadillo.hidden) {
@@ -168,7 +174,7 @@ function hablar(id: string, escena: HTMLElement, svg: SVGSVGElement, x: number, 
   const hasta = escena.scrollLeft + escena.clientWidth - ancho - 6;
   const izquierda = Math.min(Math.max(px - ancho / 2, desde), Math.max(hasta, desde));
   // Si arriba no entra, va abajo del bicho, con la punta para arriba.
-  const abajo = py - alto - 14 < 6;
+  const abajo = preferirAbajo || py - alto - 14 < 6;
   bocadillo.classList.toggle('bocadillo--abajo', abajo);
   bocadillo.style.left = `${izquierda}px`;
   bocadillo.style.top = `${abajo ? Math.min(py + 52, escena.clientHeight - alto - 6) : py - alto - 14}px`;
@@ -755,6 +761,235 @@ function recintoDeMomo(escena: HTMLElement, svg: SVGSVGElement): Recinto {
   };
 }
 
+
+/* ------------------------------------------------------------------
+   El gordo Pierre, en la sala inundada (sexta vuelta)
+   ------------------------------------------------------------------ */
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+/**
+ * Pierre flota con el agua y respira; cada tanto se empina la botella o se ríe solo. Tocado, se
+ * ríe a carcajadas hasta que tose, que es lo que dice la letra: *"Cómo se ríe el gordo Pierre /
+ * [...] y cómo tose el gordo Pierre"*. Cuando se sacude, la panza le hace ondas en el agua.
+ * Mientras tanto el agua entra por el vidrio roto sin parar, y afuera llueve.
+ */
+function recintoDePierre(escena: HTMLElement, svg: SVGSVGElement): Recinto {
+  const deMapa = recintoDeMapa(escena, svg);
+  const g = svg.querySelector<SVGGElement>('.titere--pierre')!;
+  const entero = svg.querySelector<SVGGElement>('#pierre-entero')!;
+  const p = partes(g);
+  const reflejo = svg.querySelector<SVGGElement>('[data-parte="reflejo"]');
+  const lluvia = svg.querySelector<SVGGElement>('[data-parte="lluvia"]');
+  const chorros = [...svg.querySelectorAll<SVGPathElement>('.bajo-chorro')];
+  const capas = new Map([...svg.querySelectorAll<SVGGElement>('.bajo-ondas-vivas')].map((c) => [c.dataset.onda ?? '', c]));
+  const AP = PIERRE_ARMADO;
+  const { x: px, agua, escala } = PIERRE;
+
+  type Modo = 'quieto' | 'trago' | 'risa' | 'tos';
+  let modo: Modo = 'quieto';
+  let desde = 0;
+  let dura = 0;
+  let tosDespues = false;
+  let proximo = 5;
+  let parpadeo = 2.2;
+  let proximaOnda = 0;
+  let proximaGota = 0;
+
+  function empezar(m: Modo, t: number, segundos: number): void {
+    modo = m;
+    desde = t;
+    dura = segundos;
+  }
+
+  /**
+   * Las ondas en el agua: anillos que se abren y se apagan, y se reciclan. Las de Pierre van
+   * partidas en dos capas: la mitad de atrás pasa por detrás de él y la de adelante, por delante.
+   */
+  interface Onda { anillos: SVGEllipseElement[]; x: number; y: number; desde: number; vida: number; r0: number; r1: number }
+  const pozos: Record<'pierre' | 'puerta', Onda[]> = { pierre: [], puerta: [] };
+  function onda(cual: 'pierre' | 'puerta', x: number, y: number, t: number, r0: number, r1: number, vida: number): void {
+    const pozo = pozos[cual];
+    let o = pozo.find((w) => t - w.desde > w.vida);
+    if (!o) {
+      if (pozo.length >= 7) return;
+      const anillos = (cual === 'pierre' ? ['pierre-atras', 'pierre'] : ['puerta']).map((n) => {
+        const e = document.createElementNS(SVG_NS, 'ellipse');
+        e.setAttribute('class', 'bajo-onda');
+        capas.get(n)?.append(e);
+        return e;
+      });
+      o = { anillos, x, y, desde: t, vida, r0, r1 };
+      pozo.push(o);
+    }
+    Object.assign(o, { x, y, desde: t, vida, r0, r1 });
+  }
+
+  function pintarOndas(t: number): void {
+    for (const o of [...pozos.pierre, ...pozos.puerta]) {
+      const k = (t - o.desde) / o.vida;
+      const rx = o.r0 + (o.r1 - o.r0) * suave(k);
+      for (const e of o.anillos) {
+        if (k < 0 || k > 1) {
+          e.setAttribute('opacity', '0');
+          continue;
+        }
+        e.setAttribute('cx', o.x.toFixed(1));
+        e.setAttribute('cy', o.y.toFixed(1));
+        e.setAttribute('rx', rx.toFixed(1));
+        e.setAttribute('ry', (rx * 0.13).toFixed(1));
+        e.setAttribute('opacity', ((1 - k) * 0.75).toFixed(2));
+      }
+    }
+  }
+
+  function pintar(t: number): void {
+    // Lo que cambia según qué hace: la boca, la cabeza, el brazo, los ojos y el temblor.
+    let boca = 0;
+    let cabezaDy = 0;
+    let cabezaGiro = Math.sin(t * 0.7) * 1.4;
+    let cabezaSy = 1;
+    let brazo = Math.sin(t * 0.5) * 2;
+    let antebrazo = Math.sin(t * 0.8 + 1) * 1.5;
+    let achina = 0;
+    let sacude = 0;
+    let encoge = 0;
+    const k = dura ? (t - desde) / dura : 1;
+    if (modo !== 'quieto' && k >= 1) {
+      if (modo === 'risa' && tosDespues) {
+        tosDespues = false;
+        empezar('tos', t, 1.35);
+      } else {
+        modo = 'quieto';
+        proximo = t + 6 + Math.random() * 6;
+      }
+    } else if (modo === 'trago') {
+      // Levanta la botella, se la empina con la cabeza para atrás, traga dos veces y la baja.
+      const sube = k < 0.3 ? suave(k / 0.3) : k < 0.72 ? 1 : 1 - suave((k - 0.72) / 0.28);
+      const traga = k > 0.34 && k < 0.7 ? Math.max(0, Math.sin((k - 0.34) * Math.PI * 2 * 2.8)) : 0;
+      brazo = AP.trago.brazo * sube;
+      antebrazo = AP.trago.antebrazo * sube;
+      cabezaDy = -7 * sube + traga * 2;
+      cabezaGiro = -5 * sube;
+      cabezaSy = 1 - 0.03 * sube;
+      boca = 7 * sube;
+      achina = 0.7 * sube;
+    } else if (modo === 'risa') {
+      // La carcajada: la boca se abre y se cierra a cuatro por segundo, la cabeza se va para
+      // atrás, la panza tiembla al doble, y los ojos se achinan.
+      const entra = Math.min(1, (t - desde) / 0.18, (desde + dura - t) / 0.25);
+      const fase = (t - desde) * Math.PI * 2 * 4.4;
+      boca = (5 + (0.5 + 0.5 * Math.sin(fase)) * 14) * entra;
+      cabezaDy = -5 * entra + Math.sin(fase) * 1.5 * entra;
+      cabezaGiro = (-3 + Math.sin(fase * 0.5) * 3) * entra;
+      brazo = (-8 + Math.sin(fase) * 4) * entra;
+      antebrazo = Math.sin(fase + 1) * 5 * entra;
+      achina = 0.62 * entra;
+      sacude = Math.sin(fase * 2) * 2 * entra;
+      if (t > proximaOnda && !quieto()) {
+        onda('pierre', px, agua + 2, t, 140 * escala, 270 * escala, 1.4);
+        proximaOnda = t + 0.24;
+      }
+    } else if (modo === 'tos') {
+      // Tres golpes de tos: se encoge, cierra los ojos, abre la boca y la cabeza se le va abajo.
+      const u = ((t - desde) / (dura / 3)) % 1;
+      const golpe = u < 0.28 ? suave(u / 0.28) : 1 - suave((u - 0.28) / 0.72);
+      boca = 13 * golpe;
+      cabezaDy = 9 * golpe;
+      cabezaSy = 1 - 0.05 * golpe;
+      cabezaGiro = 3 * golpe;
+      brazo = 6 * golpe;
+      antebrazo = -10 * golpe;
+      achina = Math.max(0.6, golpe);
+      encoge = golpe;
+      if (u < 0.1 && t > proximaOnda && !quieto()) {
+        onda('pierre', px, agua + 2, t, 150 * escala, 240 * escala, 1.1);
+        proximaOnda = t + 0.3;
+      }
+    } else if (t > proximo && !quieto()) {
+      // Solo: se empina la botella, o se ríe de algo que se acordó.
+      if (Math.random() < 0.6) empezar('trago', t, 3.4);
+      else empezar('risa', t, 1.3);
+    }
+
+    // Flota: sube y baja con el agua, y se mece apenas. El temblor de la risa va encima.
+    const bob = Math.sin(t * 0.9) * 2.4 + sacude + encoge * 3;
+    const mece = Math.sin(t * 0.6) * 0.7;
+    entero.setAttribute('transform', `translate(${px} ${(agua + bob).toFixed(2)}) rotate(${mece.toFixed(2)}) scale(${escala})`);
+    // Respira: la panza crece y se achica desde el agua; la cabeza y el brazo la siguen.
+    const sy = 1 + Math.sin(t * 1.6) * 0.008 + sacude * 0.006 - encoge * 0.02;
+    p.get('cuerpo')?.setAttribute('transform', `scale(1 ${sy.toFixed(4)})`);
+    const [cx, cy] = AP.cuello;
+    const alza = cy * (sy - 1);
+    p.get('cabeza')?.setAttribute(
+      'transform',
+      `translate(0 ${(alza + cabezaDy).toFixed(2)}) rotate(${cabezaGiro.toFixed(2)} ${cx} ${cy}) translate(${cx} ${cy}) scale(1 ${cabezaSy.toFixed(3)}) translate(${-cx} ${-cy})`,
+    );
+    p.get('mandibula')?.setAttribute('transform', `translate(0 ${boca.toFixed(2)})`);
+    girar(p.get('brazo'), brazo, AP.hombro, `translate(0 ${(AP.hombro[1] * (sy - 1)).toFixed(2)}) `);
+    girar(p.get('antebrazo'), antebrazo, AP.codo);
+    if (t > parpadeo + 0.16) parpadeo = t + 2.4 + Math.random() * 3.6;
+    const ciego = t > parpadeo && t < parpadeo + 0.16 ? 1 : 0;
+    parpado(p.get('parpado-1'), Math.max(ciego, achina));
+    parpado(p.get('parpado-2'), Math.max(ciego, achina));
+
+    // El reflejo se corre un poco de costado, como se corre en el agua que se mueve.
+    reflejo?.setAttribute('transform', `translate(${(Math.sin(t * 1.3) * 2.2).toFixed(2)} 0)`);
+    // La lluvia de afuera baja en diagonal, y el agua del agujero cae por la puerta.
+    const cae = (t * 210) % 70;
+    lluvia?.setAttribute('transform', `translate(${(-cae * 0.36).toFixed(1)} ${cae.toFixed(1)})`);
+    chorros.forEach((c, i) => c.setAttribute('stroke-dashoffset', (-((t * (88 + i * 9)) % 17)).toFixed(1)));
+    if (t > proximaGota && !quieto()) {
+      onda('puerta', BAJO.agujero.x + 10 + (Math.random() - 0.5) * 24, BAJO.fondo + 3, t, 3, 26, 0.9);
+      proximaGota = t + 0.35 + Math.random() * 0.3;
+    }
+    if (modo === 'quieto' && t > proximaOnda && !quieto()) {
+      onda('pierre', px, agua + 2, t, 150 * escala, 230 * escala, 2.4);
+      proximaOnda = t + 2 + Math.random() * 1.5;
+    }
+    pintarOndas(t);
+  }
+
+  function reirse(t: number): void {
+    // Se ríe hasta que tose. Si ya se estaba riendo, sigue un rato más.
+    if (modo === 'risa') dura = Math.max(dura, t - desde + 1.6);
+    else empezar('risa', t, 2.4);
+    tosDespues = true;
+  }
+
+  const tocar = (): void => {
+    reirse(reloj);
+    if (quieto()) {
+      // Sin movimiento, queda la carcajada quieta: la boca abierta y los ojos achinados.
+      p.get('mandibula')?.setAttribute('transform', 'translate(0 14)');
+      parpado(p.get('parpado-1'), 0.62);
+      parpado(p.get('parpado-2'), 0.62);
+    }
+    // Le cuelga de la papada, sobre la panza: que se le vea la cara mientras se ríe.
+    hablar('el-gordo-pierre', escena, svg, px, agua - 150 * escala, true);
+  };
+  g.addEventListener('click', tocar);
+  g.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter' || ev.key === ' ') {
+      ev.preventDefault();
+      tocar();
+    }
+  });
+  pintar(0);
+  return {
+    escena,
+    svg,
+    mover: (t, dt) => {
+      deMapa.mover(t, dt);
+      pintar(t);
+    },
+    reaccionar: (id, t) => {
+      if (id === 'el-gordo-pierre') reirse(t);
+      else deMapa.reaccionar(id, t);
+    },
+  };
+}
+
 /* ------------------------------------------------------------------
    El armado
    ------------------------------------------------------------------ */
@@ -780,6 +1015,7 @@ for (const escena of document.querySelectorAll<HTMLElement>('.recinto-escena')) 
     'los-techos': recintoDelPerro,
     'el-infierno': recintoDeLuzbelito,
     'el-templo': recintoDeMomo,
+    'el-bajo': recintoDePierre,
     'la-ruta': recintoDeRuta,
   };
   const r = (controlador[id ?? ''] ?? recintoDeMapa)(escena, svg);
