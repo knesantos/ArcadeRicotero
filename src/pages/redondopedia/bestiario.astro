@@ -39,6 +39,7 @@ import {
 import { ESCENA, escenaMonte } from '../../lib/bestiario/escena-monte.ts';
 import { escenaBajo, escenaBaldio, escenaInfierno, escenaTemplo, LUZBELITO, MOMO, PIERRE } from '../../lib/bestiario/escenas.ts';
 import { PALO } from '../../lib/bestiario/rig.ts';
+import { CON_CAMINO, recintoDe } from '../../lib/bestiario/camino.ts';
 import FichaBestia from '../../components/bestiario/FichaBestia.astro';
 import { loQueDice } from '../../lib/bestiario/fichas.ts';
 import crudo from '../../data/bestiario.json';
@@ -56,9 +57,11 @@ const RECORRIDO = [
   'monte-pastura', 'la-mesa', 'los-techos', 'la-prision', 'el-infierno', 'el-bajo',
   'los-astilleros', 'el-templo', 'cybersiberia', 'el-arbol', 'el-galpon', 'la-ruta',
 ] as const;
-const recintoDe = (region: string): string => (region === 'el-monte' || region === 'la-pastura' ? 'monte-pastura' : region);
 
 const nombres = new Map(bestias.map((b) => [b.id, b.nombre]));
+
+/** La primera región de un recinto que ya se camina (`D-73`, séptima vuelta): su puerta. */
+const caminoDe = (recinto: string): string | undefined => CON_CAMINO.find((r) => recintoDe(r) === recinto);
 
 const recintos = RECORRIDO.map((id) => {
   if (id === 'monte-pastura') {
@@ -206,6 +209,9 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
             <h2 class="recinto-nombre" id={`cartel-${rc.id}`}>{rc.nombre}</h2>
             <p class="bestiario-canta">{rc.canta}</p>
           </header>
+          {caminoDe(rc.id) && (
+            <a class="recinto-camino" href={`/redondopedia/bestiario/${caminoDe(rc.id)}/#camino`}>{BESTIARIO.entrarCaminando}</a>
+          )}
           <div
             class:list={['recinto-escena', `recinto-escena--${rc.id}`, { 'recinto-escena--noche': 'foco' in rc }]}
             data-recinto={rc.id}

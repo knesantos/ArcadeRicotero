@@ -800,6 +800,17 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
     hoja: 'src/styles/sitio.css',
   },
 
+  // `D-73`, séptima vuelta: el camino con cruces. Sus estados propios viven en `camino.css`: la
+  // escena andando (pegada a la pantalla), los ojos que se encienden al llegar y el cruce a la
+  // vista. Los que comparte con el bestiario (la bestia que habla, las anotadas, el botón que
+  // suena, la soga) son los de arriba y los pinta `sitio.css`.
+  'camino.ts': {
+    juego: 'D-73, el camino con cruces',
+    fuente: leer('src/scripts/camino.ts'),
+    estados: ['.camino--andando', '.aparece--a-la-vista', '.cruce--a-la-vista'],
+    hoja: 'src/styles/camino.css',
+  },
+
   'analitica.ts': { sinTablero: 'la analitica de Vercel (D-56); pega un script y no toca el DOM visible' },
   'armar-cancionero.ts': { sinTablero: 'arma un HTML autocontenido que se descarga; sus estilos viajan adentro de ese archivo, no en las hojas del sitio' },
   'cancion.ts': { sinTablero: 'transportar y bajar solo en la ficha de un tema; no hay partida ni respuesta que senalar' },
