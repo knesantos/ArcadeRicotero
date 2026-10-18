@@ -11,7 +11,7 @@
 import { PIEZAS } from './arte.ts';
 import { rutaDePieza } from './aerografo.ts';
 import { ARMADO, RECORTES, cajaDeRecorte } from './recortes.ts';
-import { PIERRE_ARMADO } from './rig.ts';
+import { PIERRE_ARMADO, VACA_ARMADO } from './rig.ts';
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 const cajas = new Map<string, readonly [number, number, number, number]>([
@@ -86,11 +86,58 @@ export function pierre(): string {
 }
 
 /**
+ * La vaca cubana (`D-73`): no es de tapa, está dibujada a plumín sobre aguada en la estética de
+ * *Un baión* (`arte-vaca.ts`) y recortada en piezas. La cabeza cuelga del cogote, mirando el cielo,
+ * con la boca y la mandíbula atrás (rumia de costado) y la oreja adelante. **El ojo está vivo**: el
+ * blanco y la pupila se dibujan acá, para que la pupila siga al satélite, y encima va el párpado
+ * pesado impreso, y el de papel que baja al parpadear. `corte` es el id del recorte del ojo: la
+ * ficha lo dibuja otra vez y no puede repetir el de la escena.
+ */
+export function vaca(corte = 'vaca-ojo-corte'): string {
+  const A = VACA_ARMADO;
+  const [cx, cy] = A.cuello;
+  const {
+    centro: [ex, ey],
+    radio: [rx, ry],
+    giro,
+  } = A.ojo;
+  const ojo =
+    `<g transform="translate(${ex} ${ey}) rotate(${giro})">` +
+    `<clipPath id="${corte}"><ellipse rx="${rx}" ry="${ry}"/></clipPath>` +
+    `<ellipse rx="${rx}" ry="${ry}" class="bt-vaca-blanco"/>` +
+    `<g clip-path="url(#${corte})"><g data-parte="pupila" transform="translate(-2.6 -3.4)">` +
+    `<circle r="7.2" class="bt-vaca-iris"/><circle r="3.4" class="bt-tinta"/><circle cx="-2" cy="-2.4" r="1.6" class="bt-vaca-brillo"/></g></g></g>`;
+  const parpadoDePapel =
+    `<g data-parte="parpado" data-pivote="${ex} ${ey - ry}" transform="scale(1 0)"><g transform="translate(${ex} ${ey}) rotate(${giro})">` +
+    `<ellipse rx="${rx + 0.6}" ry="${ry + 0.6}" class="bt-vaca-parpado"/>` +
+    `<path d="M${-rx} 1 Q0 ${ry * 0.95} ${rx} 1" class="bt-vaca-pestana"/></g></g>`;
+  return (
+    `<g data-titere="vaca">` +
+    `<ellipse cx="20" cy="2" rx="190" ry="14" class="bt-sombra-piso"/>` +
+    parte(
+      'cuerpo',
+      imagen('vaca-cuerpo') +
+        `<g data-parte="bolo" opacity="0">${imagen('vaca-bolo')}</g>` +
+        parte('cola', imagen('vaca-cola') + parte('borla', imagen('vaca-borla'))),
+    ) +
+    `<g data-parte="cabeza" transform="rotate(${A.mira} ${cx} ${cy})"><g transform="translate(${cx} ${cy}) scale(${A.cabeza})">` +
+    imagen('vaca-boca') +
+    parte('mandibula', imagen('vaca-mandibula')) +
+    imagen('vaca-cabeza') +
+    ojo +
+    imagen('vaca-ojo') +
+    parpadoDePapel +
+    parte('oreja', imagen('vaca-oreja')) +
+    `</g></g></g>`
+  );
+}
+
+/**
  * El retrato de ficha de los que tienen tapa (`D-73`, pulida): las mismas piezas del títere,
  * quietas y encuadradas en la caja que las junta. Así la ficha muestra al bicho que se tocó en
  * la escena, y no la figura del plano. `null` para los demás, que siguen con su figura.
  */
-const PIEZAS_DEL_RETRATO: Readonly<Record<string, { piezas: readonly string[]; cuerpo: () => string }>> = {
+const PIEZAS_DEL_RETRATO: Readonly<Record<string, { piezas: readonly string[]; caja?: readonly [number, number, number, number]; cuerpo: () => string }>> = {
   'el-lobo-suelto': { piezas: ['lobo-real-pecho', 'lobo-real-cabeza'], cuerpo: lobo },
   'el-cordero-atado': {
     piezas: ['cordero-real-pata-tras', 'cordero-real-pata-del', 'cordero-real-cuerpo', 'cordero-real-cabeza'],
@@ -111,12 +158,19 @@ const PIEZAS_DEL_RETRATO: Readonly<Record<string, { piezas: readonly string[]; c
     piezas: ['pierre-cuerpo', 'pierre-cabeza', 'pierre-mandibula', 'pierre-brazo', 'pierre-antebrazo'],
     cuerpo: () => ['pierre-cuerpo', 'pierre-boca', 'pierre-mandibula', 'pierre-cabeza', 'pierre-brazo', 'pierre-antebrazo'].map(imagen).join(''),
   },
+  // La vaca tampoco es de tapa. Su cabeza va en otro marco (girada en el cogote), así que la
+  // caja no sale de las piezas: se da a mano, con la cabeza levantada mirando el cielo.
+  'aquella-solitaria-vaca-cubana': {
+    piezas: ['vaca-cuerpo'],
+    caja: [-350, -415, 555, 430],
+    cuerpo: () => vaca('vaca-ojo-retrato'),
+  },
 };
 
 export function retrato(id: string): { caja: string; svg: string } | null {
   const r = PIEZAS_DEL_RETRATO[id];
   if (!r) return null;
-  const cs = r.piezas.map((n) => cajas.get(n)!);
+  const cs = r.caja ? [r.caja] : r.piezas.map((n) => cajas.get(n)!);
   const x0 = Math.min(...cs.map((c) => c[0]));
   const y0 = Math.min(...cs.map((c) => c[1]));
   const x1 = Math.max(...cs.map((c) => c[0] + c[2]));

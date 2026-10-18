@@ -53,8 +53,8 @@ export interface Tramo {
   /**
    * El claro de la pastura, si está en este tramo: cuánto se corre la escena del recinto
    * (`rig.ts`, con el palo en `PALO`) para caer en el piso del camino. Adentro del claro valen
-   * las mismas coordenadas que en el recinto del monte, y la isla mueve al lobo y al cordero
-   * con la misma lógica.
+   * las mismas coordenadas que en el recinto del monte, y la isla mueve al lobo, al cordero y a
+   * la vaca cubana con la misma lógica.
    */
   claro?: { dx: number; ojos: Readonly<Record<string, Ojos>> };
   /** Los que no viven en la región pero andan por el tramo (el lobo en la pastura). */
@@ -93,7 +93,6 @@ export const CAMINOS: Readonly<Record<string, Tramo>> = {
       ojos: {
         'el-ovejero': [168, 396, 'oro'],
         'el-borrego': [214, 470, 'papel'],
-        'aquella-solitaria-vaca-cubana': [722, 350, 'papel'],
         'el-rebano': [640, 560, 'papel'],
       },
     },

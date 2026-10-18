@@ -3559,3 +3559,14 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 .bajo-onda { fill: none; stroke: var(--entorno-baion-luz); stroke-width: 1.6; }
 .bajo-reflejo { opacity: 0.45; }
 .ojos-reflejo { opacity: 0.28; }
+
+/* La vaca cubana (D-73): el ojo vivo, el párpado de papel, la pantalla de la tele que titila y la
+   estela del pedazo que cae, en las tintas de *Un baión*. */
+.titere--vaca { cursor: pointer; }
+.bt-vaca-blanco { fill: var(--bestia-ojo-blanco); }
+.bt-vaca-iris { fill: var(--bestia-vaca-ocre); stroke: var(--bestia-vaca-rojo-hondo); stroke-width: 1.6; }
+.bt-vaca-brillo { fill: var(--bestia-vaca-luz); }
+.bt-vaca-parpado { fill: var(--bestia-vaca-mancha); }
+.bt-vaca-pestana { fill: none; stroke: var(--fondo); stroke-width: 2.4; stroke-linecap: round; }
+.vaca-pantalla { fill: var(--bestia-vaca-luz); }
+.vaca-estela { fill: none; stroke: var(--bestia-vaca-lila); stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }

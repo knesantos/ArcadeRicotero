@@ -28,6 +28,7 @@ import { PIEZAS_CAMINO } from '../../../lib/bestiario/arte-camino.ts';
 import { rutaDePieza } from '../../../lib/bestiario/aerografo.ts';
 import { ojos } from '../../../lib/bestiario/escenas.ts';
 import { cordero, lobo } from '../../../lib/bestiario/titeres.ts';
+import { vacaEnElClaro } from '../../../lib/bestiario/escena-vaca.ts';
 import { ACECHO, ACHATE, ESCALA_CORDERO, ESCALA_LOBO, PALO, profundidad } from '../../../lib/bestiario/rig.ts';
 import { ARMADO } from '../../../lib/bestiario/recortes.ts';
 import { loQueDice } from '../../../lib/bestiario/fichas.ts';
@@ -101,6 +102,7 @@ const pisoSvg = claro
     ojosQueAparecen(claro.ojos, claro.dx) +
     `<path id="soga" class="bt-trazo-soga" stroke-width="2.8" d="M${PALO.x} ${PALO.y - 46} L${PALO.x + 40} ${PALO.y}"/>` +
     `<g class="actores"><g class="titere titere--cordero" data-id="el-cordero-atado" role="button" tabindex="0" aria-label="${nombres.get('el-cordero-atado')}" transform="${poseDelCordero()}">${cordero()}</g></g>` +
+    vacaEnElClaro(nombres.get('aquella-solitaria-vaca-cubana') ?? '') +
     `</g>`
   : `<g class="acecho">${tramo.lobo ? titereLobo(tramo.lobo.x) : ''}</g>` + imagenDePieza(piso) + ojosQueAparecen(tramo.ojos);
 

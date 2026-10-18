@@ -89,3 +89,60 @@ export const BAJO = {
   agujero: { x: 196, y: 176 },
 } as const;
 export const PIERRE = { x: 486, agua: 476, escala: 0.9 } as const;
+
+/* ------------------------------------------------------------------
+   La vaca cubana, en la punta de la pastura (`D-73`)
+   ------------------------------------------------------------------ */
+
+/**
+ * Dónde gira cada pieza de la vaca, en coordenadas de títere: el (0, 0) es el piso debajo del
+ * medio de la panza, arriba es negativo, y mira para la izquierda. La cabeza se dibuja derecha
+ * en su propio marco, con el (0, 0) en el cogote, y se para en `cuello` girada `mira` grados:
+ * así mira el cielo. Lo dibuja `arte-vaca.ts` y lo mueve la isla.
+ */
+export const VACA_ARMADO = {
+  /** El cogote, en el títere: de acá cuelga la cabeza. */
+  cuello: [-202, -304],
+  /** La cabeza se dibuja en su marco y se agranda al pararla en el cogote. */
+  cabeza: 1.2,
+  /** Cuánto levanta la cabeza para mirar el cielo, y cuánto la baja para pastar o mirar el pozo. */
+  mira: 36,
+  pasta: -34,
+  /** En el marco de la cabeza: la bisagra de la mandíbula, la oreja y el ojo. */
+  bisagra: [-50, 16],
+  oreja: [-12, -18],
+  ojo: { centro: [-58, -14], radio: [15, 9.5], giro: -8 },
+  /** Cuánto se corre la pupila adentro del ojo. */
+  pupila: 4.5,
+  /** La cola cuelga de acá, y la borla de la punta. */
+  cola: [170, -256],
+  borla: [190, -136],
+  /** Por dónde sube el bolo cuando rumia: del pecho al cogote, por abajo del pescuezo. */
+  bolo: [
+    [-168, -164],
+    [-196, -212],
+    [-214, -252],
+    [-226, -284],
+  ],
+} as const;
+
+/** Dónde está la vaca: en la punta de la pastura, con las patas de atrás en el pasto del borde. */
+export const VACA = { x: 652, y: 470, escala: 0.5 } as const;
+
+/**
+ * El cielo de la vaca. Por arriba cruza la tele de la tapa de *Un baión* hecha satélite, de
+ * derecha a izquierda; cuando a la vaca la tocan, se le cae un pedazo prendido fuego, que cae
+ * en `impacto`, en el pasto, al lado de las patas de adelante. Todo en coordenadas del recinto.
+ */
+export const CIELO_VACA = {
+  satelite: { desde: [1010, 66], hasta: [-110, 122], dura: 34, pausa: 16, escala: 0.4 },
+  /** Si cuando la tocan el satélite no se ve, el pedazo viene de acá, de arriba, fuera de cuadro. */
+  arriba: [760, -40],
+  impacto: [566, 522],
+  /** Lo que tarda en caer el pedazo, y de qué tamaño va. */
+  cae: 1.7,
+  pedazo: 0.5,
+  /** El pozo y el humo: de qué tamaño, y cuánto tardan en irse. */
+  pozo: 0.55,
+  humea: 7,
+} as const;
