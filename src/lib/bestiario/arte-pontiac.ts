@@ -285,7 +285,7 @@ function antena(): string {
     const [x2, y2] = en(t + 0.01);
     const l = Math.hypot(x2 - x, y2 - y);
     const [tx, ty] = [(x2 - x) / l, (y2 - y) / l];
-    const w = 4.4 * Math.sin(Math.PI * Math.min(1, t * 1.12)) ** 0.8;
+    const w = 3.6 * Math.sin(Math.PI * Math.min(1, t * 1.12)) ** 0.8;
     // Las barbas, peinadas para adelante, de los dos lados del eje.
     const [ax, ay] = [x - ty * w + tx * w * 0.6, y + tx * w + ty * w * 0.6];
     const [bx, by] = [x + ty * w + tx * w * 0.6, y - tx * w + ty * w * 0.6];
@@ -579,5 +579,5 @@ export const PONTIAC: Personaje | null = {
   // Vive adentro de su fierro, que la lleva el tránsito: no dibuja nada en las capas del recinto.
   capas: {},
   fierro: () => titere(QUIETA),
-  retrato: { caja: [-172, -208, 304, 224], cuerpo: () => titere(DESPEGADA) },
+  retrato: { caja: [-178, -210, 332, 226], cuerpo: () => titere(DESPEGADA) },
 };

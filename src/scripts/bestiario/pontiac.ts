@@ -120,7 +120,7 @@ export const armarPontiac: Armar = (marcos, esc) => {
   let proximoPliegue = rango(V.pliega.cada);
   // El parpadeo, y el párpado de ahora.
   let parpadeo = rango(V.parpadeo.cada);
-  let parpadoBase = V.parpadoQuieto;
+  let parpadoBase: number = V.parpadoQuieto;
   // Un rato mira la luna.
   let lunaHasta = -1;
   let proximaLuna = 6 + rnd() * 8;

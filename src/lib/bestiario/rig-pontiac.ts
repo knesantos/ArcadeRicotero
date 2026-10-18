@@ -94,7 +94,7 @@ export const PONTIAC_VIDA = {
   cabeceo: -5,
   /** Los aletazos: cuántos por segundo y cuánto abren. */
   aletazos: 1.7,
-  abreAletazo: 66,
+  abreAletazo: 52,
 } as const;
 
 /**
@@ -172,9 +172,10 @@ const rad = (v: number): number => (v * Math.PI) / 180;
  * cámara un poco desde arriba, la de este lado se achica más rápido. Nunca llega a darse vuelta.
  */
 export function alturaDeAla(abre: number, cerca: boolean): number {
-  const e = ELEVACION;
+  // La del otro lado se achica más despacio, pero se achica: con la cuenta justa casi no bajaría en
+  // los aletazos, y de lejos parecería que aletea con una sola. Esa va con la mitad de la elevación.
+  const e = cerca ? ELEVACION : ELEVACION / 2;
   const a = Math.min(abre, 80);
-  // La del otro lado crece un poco al abrirse, hasta que se acuesta; no más que lo que mide.
   return Math.min(1, Math.max(0.06, Math.cos(rad(cerca ? a + e : a - e)) / Math.cos(rad(e))));
 }
 
