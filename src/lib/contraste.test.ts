@@ -203,6 +203,57 @@ test('D-54: el título de un juego en la tinta de su disco llega a 3:1 sobre la 
   assert.deepEqual(fallas, [], `títulos por debajo de 3:1:\n  ${fallas.join('\n  ')}`);
 });
 
+/**
+ * El lugar de la Redondopedia (`D-75`): la tapa velada sube detrás del título de cada
+ * artículo y de la portada. Arriba de ella van tres cosas, y cada una con su piso:
+ *
+ * - **El título**, en la tinta de su categoría o de su disco: texto grande, 3:1. Todas menos
+ *   la de *Oktubre*, que es el rojo de marca y va en `--texto` (la regla de abajo).
+ * - **Lo que hay adentro**, el renglón chico de abajo del título: 4,5:1, en la tinta tenue y
+ *   en las dos de rótulo.
+ * - **El sello del tipo** va sobre su propia chapa de `--fondo`, así que no entra acá: es el
+ *   par de su tinta sobre el fondo, que ya está medido.
+ */
+const TINTAS_DE_TITULO_SOBRE_LUGAR = [
+  'cat-historia',
+  'cat-letras',
+  'cat-mitologia',
+  'disco-gulp-tinta',
+  'disco-un-baion-para-el-ojo-idiota-tinta',
+  'disco-bang-bang-estas-liquidado-tinta',
+  'disco-la-mosca-y-la-sopa-tinta',
+  'disco-lobo-suelto-tinta',
+  'disco-cordero-atado-tinta',
+  'disco-luzbelito-tinta',
+  'disco-ultimo-bondi-a-finisterre-tinta',
+  'disco-momo-sampler-tinta',
+] as const;
+
+test('D-75: el título de la Redondopedia en la tinta de su disco llega a 3:1 sobre su lugar', () => {
+  const sobre = peorCaso('velo-tapa');
+  const fallas = TINTAS_DE_TITULO_SOBRE_LUGAR.map((t) => [t, contraste(token(t), sobre)] as const)
+    .filter(([, r]) => r < 3)
+    .map(([t, r]) => `${t} sobre el lugar (peor caso ${sobre}): ${r.toFixed(2)}:1`);
+  assert.deepEqual(fallas, [], `títulos por debajo de 3:1:\n  ${fallas.join('\n  ')}`);
+});
+
+test('D-75: lo que hay adentro, abajo del título, llega a 4,5:1 sobre el lugar', () => {
+  const sobre = peorCaso('velo-tapa');
+  const fallas = ['texto-tenue', 'rotulo-leyenda', 'rotulo-testimonio']
+    .map((t) => [t, contraste(token(t), sobre)] as const)
+    .filter(([, r]) => r < 4.5)
+    .map(([t, r]) => `${t} sobre el lugar: ${r.toFixed(2)}:1`);
+  assert.deepEqual(fallas, []);
+});
+
+test('D-75: Oktubre no escribe su título en el rojo de marca sobre su propia tapa', () => {
+  // La tinta de Oktubre es el rojo de marca (el mismo hex), y la regla de abajo lo saca de
+  // encima de una tapa velada. La hoja lo tiene que pasar a `--texto` en el artículo.
+  assert.equal(token('disco-oktubre-tinta'), token('marca-rojo'));
+  const sitio = readFileSync('src/styles/sitio.css', 'utf-8').replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.match(sitio, /\.articulo--con-lugar\.de-disco--oktubre h1\s*\{[^}]*color:\s*var\(--texto\)/);
+});
+
 test('D-21: el velo de titular NO habilita texto de cuerpo', () => {
   // No es una curiosidad: es la razon por la que existen dos velos y no uno. Si algun
   // dia el velo de titular pasara 4,5:1 con la tinta tenue, la distincion se volveria

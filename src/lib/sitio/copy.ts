@@ -408,14 +408,23 @@ export const REDONDOPEDIA = {
   bajada:
     'La enciclopedia ricotera. Se entra y se sale cuando quieras: acá no hay partida ' +
     'que cerrar ni resultado que compartir.',
-  explicacionRotulos:
-    'Todo lo que leas viene rotulado en el punto exacto donde aparece: lo verificado ' +
-    'se cuenta como hecho y cita su ficha; lo que circula entre fans va marcado como ',
-  palabraLeyenda: 'leyenda',
-  explicacionMedio: ' — y vale igual, porque esta historia se transmitió así —; lo que contó ' +
-    'alguien con nombre y apellido va como ',
-  palabraTestimonio: 'testimonio',
-  explicacionCierre: '.',
+  /**
+   * La clave de los rótulos (`D-14`, `BR-08`), en la portada. Registro 3: dice qué hay en
+   * cada casilla y se calla. Hasta `D-75` era un párrafo de cinco renglones adentro de una
+   * caja punteada; ahora es una tabla de tres, porque es lo que el que llega busca de un
+   * vistazo antes de creerle a nada. Y dejó de decir "entre fans" (`voz-ricotera.md` §3.8).
+   */
+  clave: {
+    entrada: 'Cada párrafo dice qué es, en el renglón donde aparece.',
+    palabraHecho: 'hecho',
+    hecho: 'lo verificado, con su ficha al lado',
+    palabraLeyenda: 'leyenda',
+    leyenda: 'lo que se cuenta de boca en boca: así se transmitió esta historia, y vale igual',
+    palabraTestimonio: 'testimonio',
+    testimonio: 'lo que contó alguien con nombre y apellido',
+  },
+  /** El nombre accesible de la fila que salta a cada parte del índice. */
+  partes: 'Las partes del archivo',
   secciones: {
     hito: 'La historia',
     persona: 'La banda y los suyos',
@@ -425,6 +434,29 @@ export const REDONDOPEDIA = {
     leyenda: 'Las leyendas',
   } as const,
   veaTambien: 'Seguí por acá',
+  /**
+   * Los hilos del pie de cada artículo (`D-75`). "Pará la oreja" trae el arranque de una
+   * leyenda que vive en otro artículo, con su rótulo; "También anda por" son los artículos
+   * que nombran a este. Registro 1 los dos: imperativo con el cuerpo adentro, y un andar.
+   */
+  oreja: 'Pará la oreja',
+  seguiEn: 'Seguí en',
+  tambienAnda: 'También anda por',
+  /**
+   * Lo que hay adentro de un artículo, al pie del título y en cada tarjeta. Registro 3: el
+   * rótulo dice qué hay y se calla. Son funciones por el plural, no por adorno.
+   */
+  marcas: {
+    hechos: (n: number): string => (n === 1 ? '1 hecho' : `${n} hechos`),
+    leyendas: (n: number): string => (n === 1 ? '1 leyenda' : `${n} leyendas`),
+    testimonios: (n: number): string => (n === 1 ? '1 testimonio' : `${n} testimonios`),
+    minutos: (n: number): string => `se lee en ${n} min`,
+    /** Quién da testimonio adentro: "lo contó Rocambole", "lo contaron el Indio y Rosso". */
+    voces: (nombres: readonly string[]): string =>
+      nombres.length === 1
+        ? `lo contó ${nombres[0]}`
+        : `lo contaron ${nombres.slice(0, -1).join(', ')} y ${nombres[nombres.length - 1]}`,
+  },
   volverPortada: 'A LA REDONDOPEDIA',
 } as const;
 
