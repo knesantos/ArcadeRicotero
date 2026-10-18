@@ -29,7 +29,7 @@
 
 > ## 🎨 LOS SEIS ENTORNOS, CADA UNO EN SU TAPA (2026-10-18) — décima enmienda de `D-73`
 >
-> **Sin integrar: espera en el PR #57** (rama `bestiario/fondos-rocambole`, worktree `.claude/worktrees/bestiario-fondos`). Pedido del
+> **En `main` desde el PR #57 (rama `bestiario/fondos-rocambole`), fusión `46d36d1`.** Pedido del
 > usuario: *"Armá un fondo bien rocambole para cada uno de los entornos del bestiario redondo"*, con el camino
 > scrolleable en mente.
 >
@@ -40,15 +40,15 @@
 > - **Mejorados**: el infierno tiene piso de damero de salón de baile; el templo, serpentinas y papel picado.
 > - **Listos para el camino**: cada capa es `(ancho, alto)`, los hitos en el piso, la geometría en
 >   `rig-entornos.ts`, y `luzQueAsoma` para anunciar cada región desde la vecina.
-> - **Verde:** `npm test` (1657), `npm run check`, `npm run build`. Visto en el navegador del panel a 375 y 800 px.
-> - **`main` ya está adentro**, con el camino (PR #54, enmienda 7), la drácula y la carga de a una (PR #56,
->   enmiendas 8 y 9) y la Redondopedia de noche (PR #55, `D-75`). Las escenas nuevas pasan por `enEspera` como las demás: se arman cuando el recinto se acerca.
+> - **Verde:** `npm test` (1687), `npm run check`, `npm run build`. Visto en el navegador del panel a 375 y 800 px, y con la
+>   carga de a una.
+> - **Entró después** del camino (PR #54, enmienda 7), la drácula y la carga de a una (PR #56, enmiendas 8 y 9)
+>   y la Redondopedia de noche (PR #55, `D-75`). Las escenas nuevas pasan por `enEspera` como las demás: se arman
+>   cuando el recinto se acerca.
 
 > ## 🌑 LA REDONDOPEDIA DE NOCHE (2026-10-17) — `D-75`
 >
-> **Espera en el PR #55**, sin fusionar, rama `diseno/redondopedia-inmersiva` (worktree
-> `.claude/worktrees/redondopedia-inmersiva`), con `main` adentro en `45777d4` (el bestiario en la
-> home, PR #53; el camino con cruces, PR #54; y la drácula y la carga de a una, PR #56). Seis commits chicos y las fusiones de `main`. Pedido
+> **En `main` desde el PR #55 (rama `diseno/redondopedia-inmersiva`), fusión `b6e9957`.** Pedido
 > del usuario: *"Hace una pulida extrema
 > de ui/ux a la redondopedia, debe sentirse inmersiva, misteriosa y mistica. Al mismo tiempo debe ser
 > facil de leer y que leyendo algo te de ganas de seguir con otra cosa"*.
