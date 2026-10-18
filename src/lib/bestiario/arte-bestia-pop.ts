@@ -29,7 +29,6 @@ const ID = 'la-bestia-pop';
 
 const T = {
   papel: 'var(--disco-gulp-apoyo)',
-  canto: 'var(--papel-borde)',
   negro: 'var(--fondo)',
   rojo: 'var(--disco-gulp-tinta)',
   amarillo: 'var(--bestia-pierre-amarillo)',
