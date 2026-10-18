@@ -47,9 +47,9 @@ function enCubica(pts: ReadonlyArray<readonly [number, number]>, s: number): { x
 }
 
 export function armarVaca(raiz: ParentNode, esc: Escenario, alGolpe: (t: number) => void): Vaca | null {
-  const g = raiz.querySelector<SVGGElement>('.titere--vaca') as SVGGElement | null;
-  if (!g) return null;
-  const vacaG: SVGGElement = g;
+  const encontrada = raiz.querySelector<SVGGElement>('.titere--vaca');
+  if (!encontrada) return null;
+  const g: SVGGElement = encontrada;
   const p = partes(g);
   const satelite = raiz.querySelector<SVGGElement>('.vaca-satelite')!;
   const pantalla = raiz.querySelector<SVGPathElement>('.vaca-pantalla')!;
