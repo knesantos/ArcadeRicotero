@@ -7,6 +7,38 @@
 
 **Última actualización:** 2026-10-18
 
+> ## 🌑 LA REDONDOPEDIA DE NOCHE (2026-10-17) — `D-75`
+>
+> **Espera en el PR #55**, sin fusionar, rama `diseno/redondopedia-inmersiva` (worktree
+> `.claude/worktrees/redondopedia-inmersiva`), con `main` adentro en `45777d4` (el bestiario en la
+> home, PR #53; el camino con cruces, PR #54; y la drácula y la carga de a una, PR #56). Seis commits chicos y las fusiones de `main`. Pedido
+> del usuario: *"Hace una pulida extrema
+> de ui/ux a la redondopedia, debe sentirse inmersiva, misteriosa y mistica. Al mismo tiempo debe ser
+> facil de leer y que leyendo algo te de ganas de seguir con otra cosa"*.
+>
+> - **El lugar:** cada artículo trae su tapa velada subiendo desde arriba de la ventana, detrás del
+>   título, y se pierde en la tinta antes del cuerpo. Un disco trae la suya; los demás, la de su
+>   categoría; los tres graves, nada. Pasar de un artículo a otro corre la cámara de una tapa a la otra
+>   (el nombre `lugar` de `ADR-03`, sin sumar uno). La portada usa la misma capa con *Gulp!*.
+> - **El título en la letra de la banda** (Redonditos de Ricota Fan), si entra entero, en la tinta de
+>   su disco y con sal. *Luzbelito* y Los Decoradores van en la rotulada, *Oktubre* en `--texto` sobre
+>   su tapa, y los graves como siempre.
+> - **Los hilos del pie:** "Seguí por acá" con tarjetas que traen el gancho, si hay leyenda, quién da
+>   testimonio y los minutos; "Pará la oreja", una leyenda de otro artículo con su rótulo (solo las que
+>   *se cuentan*, nunca de un grave); y "También anda por", los artículos que lo nombran.
+> - **La portada:** una leyenda por noche, la clave de rótulos en tres renglones, los saltos a cada
+>   parte, los diez discos con su tapa y su año, y lo leído apagado.
+> - **La lectura:** el cuerpo a 17 px. Nada se mueve adentro del cuerpo, y los rótulos no se tocaron.
+> - **Verde:** `npm test` (1668), `npm run check` y `npm run build`. Mirado a 375 px y a 1366 px.
+> - **En el lienzo** (`T-450`, hecha): hoja 17, "La Redondopedia de noche", versión 20, en la
+>   página Aplicación, debajo de la 11.
+> - **`UX-39` escrita** (`T-451`, hecha por `experiencia`), con la enmienda de `UX-20` §2. De sus
+>   huecos se cerraron A1, A2, A7 y la excepción de `:visited` (en `diseno-marca.md`).
+> - **Abierto, sin trabar:** `T-452`, los ganchos, la ronda de la oreja, los "los fans" de la prosa
+>   y los ganchos alrededor de los graves (`contenido`, `UX-39` A6); `T-453`, probarlo en un iPhone con
+>   los criterios M1 a M7 de `UX-39` §10; que En vivo tome el lugar (`UX-39` A4). La propuesta está en
+>   `Docs/SUGERENCIAS/HILO-para-experiencia-y-contenido-d75-la-redondopedia-de-noche.md`.
+
 > ## 🦇 LA DRÁCULA CON TACONES, TALLADA COMO OKTUBRE, Y LA CARGA DE A UNA (2026-10-18) — octava y novena enmiendas de `D-73`, ciclo 24
 >
 > **En `main` desde el PR #56 (rama `ciclo-24/bestiario`).** Pedido del

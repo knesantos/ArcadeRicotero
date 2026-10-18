@@ -38,6 +38,16 @@ interface Props {
    * pantallas de tono grave y en las herramientas.
    */
   discoDelPie?: string;
+  /**
+   * La tapa velada que viste el arriba de la hoja (`D-75`): la Redondopedia la usa como el
+   * aire del lugar —detrás de la cabecera y del título, acabándose antes del cuerpo—. Es la
+   * misma `.tapa-fondo` de siempre, con su velo y su nombre de tránsito (`lugar`, `ADR-03`),
+   * así que pasar de un artículo a otro corre la cámara de una tapa a la otra.
+   *
+   * La página que la pasa **no pinta otra `.tapa-fondo`**: dos con el mismo nombre de
+   * tránsito lo cancelan entero, y en silencio (ver la portada de la Redondopedia).
+   */
+  lugar?: string | null;
 }
 
 const {
@@ -48,6 +58,7 @@ const {
   volverA,
   tapas = [],
   discoDelPie,
+  lugar,
 } = Astro.props;
 
 // La pieza del collage que este cascaron pega por su cuenta, con sus medidas leidas del
@@ -104,6 +115,19 @@ const hayPlanos =
         <script>
           import '../scripts/mosca.ts';
         </script>
+      )
+    }
+    {
+      /* El lugar (`D-75`): hermano de la hoja y no hijo, como la gente del portal, para que
+         mida la ventana y no la columna, y suba detrás de la cabecera hasta arriba de todo.
+         El regreso queda pegado encima, como un recorte sobre la tapa. La caja de afuera
+         gasta los costados en la computadora; la de adentro es la tapa con su velo y su
+         racleta. La imagen entra por `--tapa-*` y el velo lo pone la regla de la hoja
+         (`ADR-05.7`), donde `estilos.test.ts` lo ve. */
+      lugar && (
+        <div class="lugar" aria-hidden="true">
+          <div class="tapa-fondo tapa-fondo--lugar" style={`--tapa-lugar: url('${lugar}')`} />
+        </div>
       )
     }
     <div class="contenido-sitio">
