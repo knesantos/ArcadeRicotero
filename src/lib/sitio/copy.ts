@@ -12,6 +12,7 @@
 
 import type { Disco } from '../letra/discos.ts';
 import { CASETE as CASETE_SKAYBOY } from '../skayboy/copy.ts';
+import { ENTRADA as ENTRADA_BESTIARIO } from '../bestiario/camino.ts';
 
 export const PORTAL = {
   /** El logotipo, como se dibuja en pantalla. */
@@ -364,7 +365,8 @@ export const CASETE_BESTIARIO: Casete = {
   baja: 'El lobo afuera, el cordero atado al palo. Los bichos y la gente de las letras, cada uno en su recinto: tocás uno y te dice su verso.',
   variante: 'mitologia',
   arte: '/arte/cordero-rulo.png',
-  href: '/redondopedia/bestiario/',
+  // Se entra caminando, por el monte (`D-76`).
+  href: ENTRADA_BESTIARIO,
   accion: 'RECORRÉ',
 } as const;
 

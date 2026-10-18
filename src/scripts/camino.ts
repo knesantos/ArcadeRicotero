@@ -13,9 +13,17 @@
  *
  * Con movimiento reducido no camina nada: la escena queda como tira que se corre de costado
  * con el dedo, todo a la vista, y los bichos se tocan igual. Sin JavaScript, lo mismo.
+ *
+ * ## La pantalla entera y el sonido (`D-76`)
+ *
+ * Andando, el camino es la página (`html.camino-pantalla`): no hay nada abajo del cruce, la
+ * lista de fichas se abre con un botón y se sale tocando "Al plano" o un cartel del cruce. Y un
+ * botón prende el sonido: el recital de lejos (`bestiario/lejos.ts`) y los ruidos del camino,
+ * con los pasos atados a lo caminado (`bestiario/entorno.ts`). Queda recordado para la próxima
+ * región, pero nada suena hasta el primer toque.
  */
 
-import { BESTIARIO } from '../lib/bestiario/copy.ts';
+import { BESTIARIO, CAMINO } from '../lib/bestiario/copy.ts';
 // Solo números, como la isla del bestiario: nada que dibuje (`camino.test.ts` lo vigila).
 import { ACECHO, ESCALA_LOBO } from '../lib/bestiario/rig.ts';
 import { ARMADO } from '../lib/bestiario/recortes.ts';
@@ -23,6 +31,10 @@ import { ALTO, camara } from '../lib/bestiario/camino.ts';
 import { crearRocola } from './rocola.ts';
 import { girar, hacia, parpado, partes, suave } from './bestiario/articular.ts';
 import { armarPastura, type Pastura } from './bestiario/pastura.ts';
+import { crearLejos } from './bestiario/lejos.ts';
+import { crearEntorno } from './bestiario/entorno.ts';
+import { RECETAS } from '../lib/bestiario/sonido.ts';
+import { contextoVivo } from '../lib/audio/contexto.ts';
 
 interface Datos {
   region: string;
@@ -30,6 +42,8 @@ interface Datos {
   total: number;
   lobo: number | null;
   claro: number | null;
+  /** Los recortes del disco que suena de lejos; vacío, el camino no ofrece sonido. */
+  lejos: readonly string[];
   bestias: readonly { id: string; nombre: string; dice: string }[];
 }
 
@@ -105,6 +119,8 @@ function abrir(id: string): void {
   if (!original) return;
   callar();
   rocola.parar();
+  // Abierta desde la lista: la lista se cierra y la ficha vuelve a su botón.
+  cerrarLista();
   volverA = document.activeElement;
   const copia = original.cloneNode(true) as HTMLElement;
   copia.querySelector('[data-titulo]')?.setAttribute('id', 'hoja-titulo');
@@ -133,7 +149,11 @@ function escuchar(boton: HTMLButtonElement): void {
     soltar();
     return;
   }
-  rocola.tocar(slug, soltar);
+  rocola.tocar(slug, () => {
+    soltar();
+    lejos.apartar(false);
+  });
+  lejos.apartar(true);
   boton.classList.add('bestiario-escuchar--sonando');
   boton.textContent = BESTIARIO.sonando;
 }
@@ -170,6 +190,7 @@ function hablar(id: string, sx: number, sy: number): void {
   bocadillo.style.top = `${abajo ? Math.min(py + 40, escenario.clientHeight - alto - 6) : py - alto - 14}px`;
   bocadillo.style.setProperty('--punta', `${Math.min(Math.max(px - izquierda, 16), ancho - 16)}px`);
   hablando = id;
+  entorno?.tocar(id);
   callarEn = performance.now() + 8000;
   camAlHablar = cam;
   for (const g of piso.querySelectorAll('.bestia--elegida')) g.classList.remove('bestia--elegida');
@@ -203,6 +224,9 @@ let andando = false;
 function medir(): void {
   andando = !quieto();
   camino.classList.toggle('camino--andando', andando);
+  document.documentElement.classList.toggle('camino-pantalla', andando);
+  abrirLista.hidden = !andando;
+  if (!andando) cerrarLista();
   if (!andando) {
     camino.style.removeProperty('--recorrido');
     for (const c of capas) c.el.style.removeProperty('transform');
@@ -239,6 +263,10 @@ function encuadrar(): void {
     a.el.classList.toggle('aparece--a-la-vista', x > -20 && x < vistaPx * 0.92);
   }
   cruce.classList.toggle('cruce--a-la-vista', p > 0.9);
+  camino.classList.toggle('camino--caminando', p > 0.015);
+  camino.classList.toggle('camino--al-final', p > 0.9);
+  lejos.acercar(p);
+  entorno?.caminar(cam / escala);
   if (hablando && Math.abs(cam - camAlHablar) > 60) callar();
 }
 
@@ -260,6 +288,104 @@ function alCruce(enfocar: boolean): void {
   else escenario.scrollLeft = escenario.scrollWidth;
   encuadrar();
   if (enfocar) cruce.querySelector<HTMLElement>('.cartel-cruce')?.focus({ preventScroll: true });
+}
+
+/* ------------------------------------------------------------------
+   La lista de fichas, abierta encima del camino (`D-76`)
+   ------------------------------------------------------------------ */
+
+const abrirLista = document.getElementById('abrir-lista') as HTMLButtonElement;
+const lista = document.getElementById('aca-lista')!;
+const cerrarListaBoton = document.getElementById('cerrar-lista') as HTMLButtonElement;
+
+function cerrarLista(): void {
+  if (!lista.classList.contains('camino-fichas--abierta')) return;
+  lista.classList.remove('camino-fichas--abierta');
+  cerrarListaBoton.hidden = true;
+  abrirLista.setAttribute('aria-expanded', 'false');
+  abrirLista.focus({ preventScroll: true });
+}
+
+abrirLista.addEventListener('click', () => {
+  callar();
+  lista.classList.add('camino-fichas--abierta');
+  lista.scrollTop = 0;
+  cerrarListaBoton.hidden = false;
+  abrirLista.setAttribute('aria-expanded', 'true');
+  cerrarListaBoton.focus({ preventScroll: true });
+});
+cerrarListaBoton.addEventListener('click', cerrarLista);
+
+/* ------------------------------------------------------------------
+   El sonido: el recital de lejos y los ruidos del camino (`D-76`)
+   ------------------------------------------------------------------ */
+
+const CLAVE_SONIDO = 'fichin-bestiario-sonido';
+const lejos = crearLejos(datos.lejos);
+const receta = RECETAS[datos.region];
+const entorno = receta ? crearEntorno(receta) : null;
+const botonSonido = document.getElementById('lejos') as HTMLButtonElement | null;
+const suena = document.getElementById('suena');
+
+function recordarSonido(si: boolean): void {
+  try {
+    if (si) localStorage.setItem(CLAVE_SONIDO, '1');
+    else localStorage.removeItem(CLAVE_SONIDO);
+  } catch {
+    // Sin dónde guardar, la próxima región arranca callada.
+  }
+}
+
+function pintarSonido(si: boolean): void {
+  if (!botonSonido) return;
+  botonSonido.setAttribute('aria-pressed', String(si));
+  botonSonido.textContent = si ? CAMINO.lejos.apagar : CAMINO.lejos.prender;
+  if (suena) suena.hidden = !si;
+}
+
+async function prenderSonido(): Promise<boolean> {
+  const ok = await lejos.prender();
+  const ctx = contextoVivo();
+  if (!ok || !ctx) return false;
+  entorno?.prender(ctx);
+  entorno?.caminar(cam / escala);
+  pintarSonido(true);
+  return true;
+}
+
+function apagarSonido(): void {
+  lejos.apagar();
+  entorno?.apagar();
+  pintarSonido(false);
+}
+
+if (botonSonido && datos.lejos.length) {
+  botonSonido.hidden = false;
+  botonSonido.addEventListener('click', () => {
+    if (lejos.prendido) {
+      apagarSonido();
+      recordarSonido(false);
+    } else {
+      void prenderSonido().then((ok) => recordarSonido(ok));
+    }
+  });
+  // Lo dejó prendido en la región de antes: suena con el primer toque de esta.
+  let recordado = false;
+  try {
+    recordado = localStorage.getItem(CLAVE_SONIDO) === '1';
+  } catch {
+    recordado = false;
+  }
+  if (recordado) {
+    const alPrimerToque = (ev: Event): void => {
+      if ((ev.target as Element | null)?.closest?.('#lejos')) return;
+      document.removeEventListener('pointerup', alPrimerToque, true);
+      document.removeEventListener('keydown', alPrimerToque, true);
+      if (!lejos.prendido) void prenderSonido();
+    };
+    document.addEventListener('pointerup', alPrimerToque, true);
+    document.addEventListener('keydown', alPrimerToque, true);
+  }
 }
 
 /* ------------------------------------------------------------------
@@ -449,6 +575,11 @@ escenario.addEventListener('focusin', (ev) => {
   } else if (el.closest('.bestia, .titere')) traer(el);
 });
 
+// Quieto, la tira se corre de costado con el dedo: los pasos salen de ahí.
+escenario.addEventListener('scroll', () => {
+  if (!andando) entorno?.caminar(escenario.scrollLeft / (escenario.clientHeight / ALTO));
+}, { passive: true });
+
 camino.querySelector('.camino-saltar')!.addEventListener('click', (ev) => {
   ev.preventDefault();
   alCruce(true);
@@ -460,6 +591,7 @@ cerrar.addEventListener('click', cerrarHoja);
 document.addEventListener('keydown', (ev) => {
   if (ev.key !== 'Escape') return;
   if (!hoja.hidden) cerrarHoja();
+  else if (lista.classList.contains('camino-fichas--abierta')) cerrarLista();
   else callar();
 });
 
