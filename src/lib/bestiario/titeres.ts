@@ -11,7 +11,7 @@
 import { PIEZAS } from './arte.ts';
 import { rutaDePieza } from './aerografo.ts';
 import { ARMADO, RECORTES, cajaDeRecorte } from './recortes.ts';
-import { DRACULA_ARMADO, PIERRE_ARMADO } from './rig.ts';
+import { BARBAZUL_ARMADO, DRACULA_ARMADO, PIERRE_ARMADO } from './rig.ts';
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 const cajas = new Map<string, readonly [number, number, number, number]>([
@@ -122,6 +122,32 @@ export function dracula(): string {
 }
 
 /**
+ * Barbazul (`D-73`, décima vuelta): tallado como el barbudo de la contratapa de *Oktubre*
+ * (`arte-barbazul.ts`), con la barba de otra plancha. La barba cuelga de la cabeza y se mece con
+ * retraso; las pupilas no están impresas: son de la página, para que la isla las haga mirar a la
+ * drácula cuando pasa. Cada brazo se dobla en el codo, y el manojo cuelga del puño de la derecha.
+ */
+export function barbazul(): string {
+  const ojo = (n: 1 | 2): string => {
+    const { centro: [cx, cy], radio: [rx, ry] } = BARBAZUL_ARMADO.ojos[n - 1];
+    return (
+      `<g data-parte="pupila-${n}"><circle cx="${cx}" cy="${cy}" r="${f(ry * 0.86)}" class="bt-barbazul-pupila"/><circle cx="${f(cx + 1.4)}" cy="${f(cy - 1.4)}" r="1.1" class="bt-barbazul-brillo"/></g>` +
+      `<g data-parte="parpado-${n}" data-pivote="${cx} ${f(cy - ry * 1.5)}" transform="scale(1 0)">` +
+      `<ellipse cx="${cx}" cy="${f(cy - ry * 0.2)}" rx="${f(rx * 1.15)}" ry="${f(ry * 1.45)}" class="bt-barbazul-parpado"/>` +
+      `<path d="M${f(cx - rx)} ${f(cy + ry * 0.4)} Q${cx} ${f(cy + ry * 1.4)} ${f(cx + rx)} ${f(cy + ry * 0.4)}" class="bt-barbazul-pestana"/></g>`
+    );
+  };
+  return (
+    `<g data-titere="barbazul">` +
+    parte('cuerpo', imagen('barbazul-levita')) +
+    parte('cabeza', imagen('barbazul-cabeza') + ojo(1) + ojo(2) + parte('barba', imagen('barbazul-barba'))) +
+    parte('brazo-1', imagen('barbazul-brazo-1') + parte('antebrazo-1', imagen('barbazul-antebrazo-1'))) +
+    parte('brazo-2', imagen('barbazul-brazo-2') + parte('antebrazo-2', imagen('barbazul-antebrazo-2') + parte('llaves', imagen('barbazul-llaves')))) +
+    `</g>`
+  );
+}
+
+/**
  * El retrato de ficha de los que tienen tapa (`D-73`, pulida): las mismas piezas del títere,
  * quietas y encuadradas en la caja que las junta. Así la ficha muestra al bicho que se tocó en
  * la escena, y no la figura del plano. `null` para los demás, que siguen con su figura.
@@ -154,6 +180,16 @@ const PIEZAS_DEL_RETRATO: Readonly<Record<string, { piezas: readonly string[]; c
       ['dracula-capa-atras', 'dracula-pierna-1', 'dracula-pierna-2', 'dracula-cuerpo', 'dracula-boca', 'dracula-mandibula', 'dracula-cabeza', 'dracula-forro-1', 'dracula-forro-2', 'dracula-pelo']
         .map(imagen)
         .join(''),
+  },
+  // Barbazul tampoco es de tapa: la ficha lo muestra de cuerpo entero, con el manojo en la mano.
+  barbazul: {
+    piezas: ['barbazul-levita', 'barbazul-cabeza', 'barbazul-antebrazo-1', 'barbazul-antebrazo-2', 'barbazul-llaves'],
+    cuerpo: () =>
+      ['barbazul-levita', 'barbazul-cabeza', 'barbazul-barba', 'barbazul-brazo-1', 'barbazul-antebrazo-1', 'barbazul-brazo-2', 'barbazul-antebrazo-2', 'barbazul-llaves']
+        .map(imagen)
+        .join('') +
+      // Sin las pupilas de la página, los ojos quedarían en blanco: van fijas, mirando a quien lee.
+      BARBAZUL_ARMADO.ojos.map(({ centro: [cx, cy], radio: [, ry] }) => `<circle cx="${cx}" cy="${cy}" r="${f(ry * 0.86)}" class="bt-barbazul-pupila"/>`).join(''),
   },
 };
 
