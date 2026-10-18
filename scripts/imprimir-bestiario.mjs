@@ -77,7 +77,7 @@ for (const p of [...PIEZAS, ...PIEZAS_CAMINO]) {
     ),
   );
   const imagen = sharp(Buffer.from(svg), { density: 72 });
-  const buffer = await imagen.webp({ quality: p.opaca ? 82 : 86, alphaQuality: 90, effort: 5 }).toBuffer();
+  const buffer = await imagen.webp({ quality: p.calidad ?? (p.opaca ? 82 : 86), alphaQuality: 90, effort: 5 }).toBuffer();
   writeFileSync(resolve(salida, `${p.nombre}.webp`), buffer);
   impresas.push({ nombre: p.nombre, svg, ancho: Math.round(ancho * densidad), alto: Math.round(alto * densidad), kb: Math.round(buffer.length / 1024) });
   console.log(`${p.nombre}.webp  ${Math.round(ancho * densidad)}×${Math.round(alto * densidad)}  ${Math.round(buffer.length / 1024)} kB`);

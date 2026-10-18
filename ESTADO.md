@@ -7,6 +7,80 @@
 
 **Última actualización:** 2026-10-18
 
+> ## 🎨 LOS SEIS ENTORNOS, CADA UNO EN SU TAPA (2026-10-18) — décima enmienda de `D-73`
+>
+> **Sin integrar: espera en el PR #57** (rama `bestiario/fondos-rocambole`, worktree `.claude/worktrees/bestiario-fondos`). Pedido del
+> usuario: *"Armá un fondo bien rocambole para cada uno de los entornos del bestiario redondo"*, con el camino
+> scrolleable en mente.
+>
+> - **Cierra `T-443`**: el galpón (*En directo*), el árbol del gran bonete (*Luzbelito*), Cybersiberia (*Último
+>   bondi*, con nieve), los astilleros (*Cordero atado*, disco 2), la mesa (*La mosca y la sopa*, con la mosca
+>   pintada: `T-442`) y la ruta (el surco del disco, con los cuatro fierros que pasan) son recintos de noche a
+>   aerógrafo, con los colores medidos en las tapas. La prisión la hizo la rama de la drácula.
+> - **Mejorados**: el infierno tiene piso de damero de salón de baile; el templo, serpentinas y papel picado.
+> - **Listos para el camino**: cada capa es `(ancho, alto)`, los hitos en el piso, la geometría en
+>   `rig-entornos.ts`, y `luzQueAsoma` para anunciar cada región desde la vecina.
+> - **Verde:** `npm test` (1657), `npm run check`, `npm run build`. Visto en el navegador del panel a 375 y 800 px.
+> - **`main` ya está adentro**, con el camino (PR #54, enmienda 7), la drácula y la carga de a una (PR #56,
+>   enmiendas 8 y 9) y la Redondopedia de noche (PR #55, `D-75`). Las escenas nuevas pasan por `enEspera` como las demás: se arman cuando el recinto se acerca.
+
+> ## 🌑 LA REDONDOPEDIA DE NOCHE (2026-10-17) — `D-75`
+>
+> **Espera en el PR #55**, sin fusionar, rama `diseno/redondopedia-inmersiva` (worktree
+> `.claude/worktrees/redondopedia-inmersiva`), con `main` adentro en `45777d4` (el bestiario en la
+> home, PR #53; el camino con cruces, PR #54; y la drácula y la carga de a una, PR #56). Seis commits chicos y las fusiones de `main`. Pedido
+> del usuario: *"Hace una pulida extrema
+> de ui/ux a la redondopedia, debe sentirse inmersiva, misteriosa y mistica. Al mismo tiempo debe ser
+> facil de leer y que leyendo algo te de ganas de seguir con otra cosa"*.
+>
+> - **El lugar:** cada artículo trae su tapa velada subiendo desde arriba de la ventana, detrás del
+>   título, y se pierde en la tinta antes del cuerpo. Un disco trae la suya; los demás, la de su
+>   categoría; los tres graves, nada. Pasar de un artículo a otro corre la cámara de una tapa a la otra
+>   (el nombre `lugar` de `ADR-03`, sin sumar uno). La portada usa la misma capa con *Gulp!*.
+> - **El título en la letra de la banda** (Redonditos de Ricota Fan), si entra entero, en la tinta de
+>   su disco y con sal. *Luzbelito* y Los Decoradores van en la rotulada, *Oktubre* en `--texto` sobre
+>   su tapa, y los graves como siempre.
+> - **Los hilos del pie:** "Seguí por acá" con tarjetas que traen el gancho, si hay leyenda, quién da
+>   testimonio y los minutos; "Pará la oreja", una leyenda de otro artículo con su rótulo (solo las que
+>   *se cuentan*, nunca de un grave); y "También anda por", los artículos que lo nombran.
+> - **La portada:** una leyenda por noche, la clave de rótulos en tres renglones, los saltos a cada
+>   parte, los diez discos con su tapa y su año, y lo leído apagado.
+> - **La lectura:** el cuerpo a 17 px. Nada se mueve adentro del cuerpo, y los rótulos no se tocaron.
+> - **Verde:** `npm test` (1668), `npm run check` y `npm run build`. Mirado a 375 px y a 1366 px.
+> - **En el lienzo** (`T-450`, hecha): hoja 17, "La Redondopedia de noche", versión 20, en la
+>   página Aplicación, debajo de la 11.
+> - **`UX-39` escrita** (`T-451`, hecha por `experiencia`), con la enmienda de `UX-20` §2. De sus
+>   huecos se cerraron A1, A2, A7 y la excepción de `:visited` (en `diseno-marca.md`).
+> - **Abierto, sin trabar:** `T-452`, los ganchos, la ronda de la oreja, los "los fans" de la prosa
+>   y los ganchos alrededor de los graves (`contenido`, `UX-39` A6); `T-453`, probarlo en un iPhone con
+>   los criterios M1 a M7 de `UX-39` §10; que En vivo tome el lugar (`UX-39` A4). La propuesta está en
+>   `Docs/SUGERENCIAS/HILO-para-experiencia-y-contenido-d75-la-redondopedia-de-noche.md`.
+
+> ## 🦇 LA DRÁCULA CON TACONES, TALLADA COMO OKTUBRE, Y LA CARGA DE A UNA (2026-10-18) — octava y novena enmiendas de `D-73`, ciclo 24
+>
+> **En `main` desde el PR #56 (rama `ciclo-24/bestiario`).** Pedido del
+> usuario, el mismo de Pierre: *"Agrega otro personaje y pulilo a fondo, se creativo que quede como uno de
+> rocambole"*; eligió *"Otro más, encima del #52"*.
+>
+> - **La prisión de Barbazul es el sexto recinto de noche**: un pasillo de celdas **tallado como la gente de la
+>   tapa de *Oktubre*** (`grabado.ts`: la plancha negra, la luz sacada a gubia, motas de prensa). Por la ventana
+>   enrejada se ve **la gente de la tapa de verdad**, y sus cinco banderas, recortadas de ahí, flamean afuera.
+> - **La drácula con tacones** (*"Preso en mi ciudad"*), tallada en la misma técnica y recortada en trece piezas.
+>   Taconea por el pasillo; tocada, **abre la capa como dos puertas de papel** y el forro es el rojo de las
+>   banderas. La jaula vacía de la fiera se toca: la puerta chirría.
+> - **Verde:** `npm test` (1668, ya con el camino), `npm run check`, `npm run build`. Visto a 375 y 1024 px; la capa abierta, con
+>   movimiento reducido simulado (con el panel oculto el navegador frena los cuadros).
+> - **Y la carga de a una (`T-445`, novena enmienda de `D-73`)**: cada escena de noche y cada retrato del índice
+>   esperan en un `<noscript>` (`carga.ts`) y la isla los arma a una pantalla y media. Al abrir, la página bajaba
+>   59 piezas y 1673 kB; ahora, arriba de todo, solo el monte: 10 piezas, 466 kB. Sin JavaScript se ve todo igual.
+> - **Abierto:** `T-444` (Barbazul), `T-431`, `T-435`, `T-437`/`T-439` (la mitad que pide un teléfono), `T-443`
+>   (seis recintos; la sesión de `bestiario/fondos-rocambole` está con los fondos de esos seis: sus escenas tienen
+>   que pasar por `enEspera`).
+> - **Al integrar, con el camino ya en `main` (PR #54)**: las dos enmiendas se escribieron como séptima y octava y pasaron
+>   a octava y novena. La ficha vive en `FichaBestia.astro`, que comparte el camino: sus retratos esperan solo si la página
+>   lo pide (`espera`), y lo pide la del bestiario. `recintoDeLaDracula` toma los ayudantes de `scripts/bestiario/articular.ts`.
+>   `bestiario/fondos-rocambole` tenía su enmienda como (9): ahora le toca la (10).
+
 > ## 🌲 EL CAMINO CON CRUCES: EL BESTIARIO SE CAMINA (2026-10-18) — `D-73`, enmienda 7
 >
 > **Integrada a `main` con el PR #54**, desde la rama `bestiario/camino-con-cruces` sobre `159b1bc`. La fusionó Claude a
