@@ -279,3 +279,154 @@
   border-radius: 3px;
   transform: rotate(2deg);
 }
+
+/* ==================================================================
+   La pantalla entera (D-76)
+   ==================================================================
+
+   Pedido del usuario: arrancar en el camino, y que para salir haya que tocar algo. Con la isla
+   andando (`html.camino-pantalla`, lo pone `scripts/camino.ts`), la escena es la página: la
+   cabecera y el tablero flotan encima, la lista de fichas se abre con un botón, el pie no está,
+   y abajo del cruce se termina el documento. `overscroll-behavior` saca el rebote y el
+   "tirá para recargar": llegar al final no te lleva a ningún lado.
+
+   Sin isla o con movimiento reducido no se aplica nada de esto: todo queda en el flujo. */
+
+.camino-tablero { position: relative; }
+
+.camino-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+  margin-top: var(--espacio-1);
+}
+
+.camino-botones:not(:has(> :not([hidden]))) { display: none; }
+
+/* Sello de goma, como los carteles del cruce: papel, borde de la tinta de la región. */
+.camino-boton {
+  min-height: var(--toque-min);
+  padding: 0 0.85rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fondo);
+  background: var(--papel);
+  border: var(--linea) solid var(--tr);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.camino-boton:nth-child(2) { transform: rotate(1.2deg); }
+.camino-boton:first-child { transform: rotate(-0.8deg); }
+
+.camino-boton[aria-pressed='true'] {
+  color: var(--papel);
+  background: var(--fondo);
+  border-color: var(--papel);
+}
+
+.camino-boton:focus-visible {
+  outline: 2px solid var(--papel);
+  outline-offset: 3px;
+}
+
+.camino-suena {
+  margin: var(--espacio-1) 0 0;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--texto-tenue);
+}
+
+html.camino-pantalla,
+html.camino-pantalla body { overscroll-behavior-y: none; }
+
+html.camino-pantalla body { background: var(--fondo); }
+
+.camino-pantalla .pie-imprenta,
+.camino-pantalla .camino-fichas:not(.camino-fichas--abierta) { display: none; }
+
+/* La salida, arriba a la izquierda: lo único que saca del camino, además del cruce. */
+.camino-pantalla .cabecera-sitio {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  margin: 0;
+  padding: var(--espacio-1) var(--espacio-2);
+}
+
+.camino-pantalla .cabecera-sitio .marca-chica { display: none; }
+
+.camino-pantalla .camino { margin-top: 0; }
+
+.camino-pantalla .camino-tablero {
+  position: fixed;
+  top: calc(var(--toque-min) + var(--espacio-1) * 2);
+  left: var(--espacio-2);
+  z-index: 20;
+  display: grid;
+  justify-items: start;
+  max-width: min(21rem, calc(100% - var(--espacio-2) * 2));
+  pointer-events: none;
+}
+
+.camino-pantalla .camino-tablero > * { pointer-events: auto; }
+
+.camino-pantalla .camino-cartel { margin: 0; }
+
+/* Lo que se lee sobre la escena va sobre su tinta: la noche de abajo cambia y el par
+   texto/fondo es el que está testeado. */
+.camino-pantalla .camino-bajada,
+.camino-pantalla .camino-tablero .bestiario-libreta,
+.camino-pantalla .camino-suena {
+  justify-self: start;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.25rem 0.5rem;
+  background: var(--fondo);
+  border-radius: 3px;
+}
+
+.camino-pantalla .camino-bajada { margin-top: var(--espacio-1); font-size: 0.85rem; }
+
+/* Una vez que se arrancó a caminar, la instrucción y la libreta se van: queda el cartel. */
+.camino-pantalla .camino-bajada,
+.camino-pantalla .camino-tablero .bestiario-libreta {
+  transition: opacity var(--duracion-umbral) var(--curva-cinta);
+}
+
+.camino--caminando .camino-bajada,
+.camino--caminando .camino-tablero .bestiario-libreta {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* En el cruce, el tablero se achica al cartel y los botones: los carteles del cruce mandan. */
+.camino--al-final .camino-cartel .bestiario-canta,
+.camino--al-final .camino-suena { display: none; }
+
+/* La lista, abierta: una hoja entera encima del camino, con su cruz. */
+.camino-pantalla .camino-fichas--abierta {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  margin: 0;
+  padding: calc(var(--toque-min) + var(--espacio-2)) var(--espacio-2) var(--espacio-4);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--fondo);
+}
+
+.camino-fichas--abierta .bestiario-lista { max-width: var(--ancho-hoja); margin-inline: auto; }
+
+.camino-fichas .camino-cerrar-lista {
+  position: fixed;
+  top: var(--espacio-1);
+  right: var(--espacio-2);
+  z-index: 36;
+}
+
+/* La ficha abre encima de la lista. */
+.camino-pantalla .bestiario-hoja { z-index: 40; }

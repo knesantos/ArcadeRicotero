@@ -18,6 +18,16 @@
  *
  * Al pasar de una región a otra, la página cambia con el tránsito entre documentos de todo el
  * sitio (`ADR-03`), sin una línea de JavaScript.
+ *
+ * ## La pantalla entera (`D-76`)
+ *
+ * Pedido del usuario: *"el entorno caminable debe ser lo principal del bestiario, arrancar ahí y
+ * que para salir debas tocar algo, no puedas salirte scrolleando sin querer"*. Con la isla
+ * andando, el camino es la página entera: el cartel y los botones flotan arriba, la lista de
+ * fichas se abre con un toque, y abajo del cruce no hay nada más. Se sale por "Al plano" o por un
+ * cartel del cruce. Sin JavaScript, todo sigue en el flujo de siempre (molinetes abiertos).
+ *
+ * Y suena de lejos un disco (`lib/bestiario/sonido.ts`), si la persona lo prende.
  */
 import Base from '../../../layouts/Base.astro';
 import FichaBestia from '../../../components/bestiario/FichaBestia.astro';
@@ -30,8 +40,12 @@ import { ojos } from '../../../lib/bestiario/escenas.ts';
 import { cordero, lobo } from '../../../lib/bestiario/titeres.ts';
 import { ACECHO, ACHATE, ESCALA_CORDERO, ESCALA_LOBO, PALO, profundidad } from '../../../lib/bestiario/rig.ts';
 import { ARMADO } from '../../../lib/bestiario/recortes.ts';
-import { loQueDice } from '../../../lib/bestiario/fichas.ts';
+import { conAudio, loQueDice } from '../../../lib/bestiario/fichas.ts';
+import { fondoDe } from '../../../lib/bestiario/sonido.ts';
+import { tituloDelDisco } from '../../../lib/letra/discos.ts';
+import { urlDeFragmento } from '../../../lib/audio/rutas-de-audio.ts';
 import crudo from '../../../data/bestiario.json';
+import cancionero from '../../../data/cancionero.json';
 import '../../../styles/camino.css';
 
 export function getStaticPaths() {
@@ -123,9 +137,18 @@ const carteles = region.vecinas.map((v) => {
   };
 });
 
+/** Lo que suena de lejos (`D-76`): el disco de la región, o el de más bichos del camino. */
+const fondo = fondoDe(
+  region.disco,
+  lista.flatMap((b) => (b.tema ? [b.tema] : [])),
+  cancionero.temas,
+  conAudio,
+);
+
 /** Lo que la isla necesita y no puede leer del HTML. */
 const paraLaIsla = {
   region: id,
+  lejos: fondo ? fondo.temas.map(urlDeFragmento) : [],
   ancho: tramo.ancho,
   total: datos.bestias.length,
   lobo: tramo.lobo?.x ?? null,
@@ -142,15 +165,31 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
   volverA={{ href: '/redondopedia/bestiario/', texto: CAMINO.volver }}
   discoDelPie="lobo-suelto"
 >
-  <header class="recinto-cartel camino-cartel" style={`--tr: ${tinta}`}>
-    <p class="recinto-numero">{CAMINO.sello}</p>
-    <h1 class="recinto-nombre">{region.nombre}</h1>
-    <p class="bestiario-canta">{region.canta}</p>
-  </header>
-  <p class="camino-bajada">{CAMINO.bajada}</p>
-  <p class="bestiario-libreta" id="libreta" aria-live="polite">{BESTIARIO.libretaVacia(datos.bestias.length)}</p>
-
   <section class="camino" id="camino" aria-label={CAMINO.escena} style={`--ancho: ${tramo.ancho}; --alto: ${ALTO}; --tr: ${tinta}`}>
+    {/* El tablero: arriba de la escena, en el flujo; con la isla andando, flota encima (`D-76`). */}
+    <div class="camino-tablero">
+      <header class="recinto-cartel camino-cartel">
+        <p class="recinto-numero">{CAMINO.sello}</p>
+        <h1 class="recinto-nombre">{region.nombre}</h1>
+        <p class="bestiario-canta">{region.canta}</p>
+      </header>
+      <p class="camino-bajada">{CAMINO.bajada}</p>
+      <p class="bestiario-libreta" id="libreta" aria-live="polite">{BESTIARIO.libretaVacia(datos.bestias.length)}</p>
+      {/* Los botones solo sirven con la isla: sin ella, la lista está abajo y nada suena. */}
+      <div class="camino-botones">
+        <button type="button" class="camino-boton" id="abrir-lista" aria-controls="aca-lista" aria-expanded="false" hidden>
+          {CAMINO.lista}
+        </button>
+        {
+          fondo && (
+            <button type="button" class="camino-boton" id="lejos" aria-pressed="false" hidden>
+              {CAMINO.lejos.prender}
+            </button>
+          )
+        }
+      </div>
+      {fondo && <p class="camino-suena" id="suena" hidden>{CAMINO.lejos.suena(tituloDelDisco(fondo.disco))}</p>}
+    </div>
     <a class="camino-saltar" href="#cruce">{CAMINO.saltar}</a>
     <div class="camino-escenario" id="escenario">
       <div class="camino-tira" id="tira">
@@ -224,7 +263,8 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
     <defs set:html={simbolos(lista)} />
   </svg>
 
-  <section class="bestiario-indice camino-fichas" aria-labelledby="aca" style={`--tr: ${tinta}`}>
+  <section class="bestiario-indice camino-fichas" id="aca-lista" aria-labelledby="aca" style={`--tr: ${tinta}`}>
+    <button type="button" class="bestiario-cerrar camino-cerrar-lista" id="cerrar-lista" aria-label={CAMINO.cerrarLista} hidden>✕</button>
     <h2 class="lado" id="aca">{CAMINO.aca}</h2>
     <ul class="bestiario-lista">
       {

@@ -10,6 +10,7 @@
  * el lector sabe desde la puerta que casilla es cada cosa.
  */
 import Base from '../../layouts/Base.astro';
+import { ENTRADA as ENTRADA_BESTIARIO } from '../../lib/bestiario/camino.ts';
 import { PORTAL, LUGARES, REDONDOPEDIA } from '../../lib/sitio/copy.ts';
 import { EN_VIVO } from '../../lib/recital/copy.ts';
 import { BESTIARIO } from '../../lib/bestiario/copy.ts';
@@ -73,7 +74,7 @@ const recortar = (texto: string): string =>
 
     {/* `D-73`: el bestiario redondo. Tampoco es un artículo: es un mapa con fichas, y cada
         ficha lleva su rótulo adentro. Va con la mitología, que viste *Lobo suelto*. */}
-    <a class="tarjeta-articulo tarjeta-articulo--mitologia bestiario-puerta" href="/redondopedia/bestiario/">
+    <a class="tarjeta-articulo tarjeta-articulo--mitologia bestiario-puerta" href={ENTRADA_BESTIARIO}>
       <strong>{BESTIARIO.enLaPortada.titulo}</strong>
       <span>{BESTIARIO.enLaPortada.resumen}</span>
     </a>
