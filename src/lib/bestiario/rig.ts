@@ -170,4 +170,60 @@ export const deLaTapa = ([x, y]: readonly [number, number]): [number, number] =>
  * La drácula: dónde arranca (y dónde queda quieta con movimiento reducido), el piso por donde
  * camina, de dónde a dónde, y de qué tamaño va.
  */
-export const DRACULA = { x: 330, piso: 624, desde: 196, hasta: 590, escala: 0.8 } as const;
+export const DRACULA = { x: 380, piso: 624, desde: 296, hasta: 590, escala: 0.8 } as const;
+
+/* ------------------------------------------------------------------
+   Barbazul, el dueño de la prisión (`D-73`, décima vuelta)
+   ------------------------------------------------------------------ */
+
+/**
+ * Dónde gira cada pieza de Barbazul, en coordenadas de títere: el (0, 0) es el piso entre los
+ * dos zapatos, y arriba es negativo. Lo dibuja `arte-barbazul.ts` y lo mueve la isla.
+ */
+export const BARBAZUL_ARMADO = {
+  /** El medio de la cara, entre los ojos y el bigote: de acá se mide todo lo de la cabeza. */
+  cara: [0, -540],
+  /** La cabeza y la barba se dibujan a su medida y se agrandan desde la cara: en la tapa la cabeza pesa. */
+  agranda: 1.25,
+  /** El cogote: de acá cabecea. */
+  cuello: [0, -468],
+  /** De dónde cuelga la barba, debajo de la nariz: se mece con retraso, como un péndulo. */
+  barba: [0, -510],
+  /**
+   * Los ojos: el centro de cada uno y el tamaño del blanco. Las pupilas no están impresas: las
+   * dibuja la página y las mueve la isla, porque miran a la drácula cuando pasa.
+   */
+  ojos: [
+    { centro: [-23.8, -555], radio: [12, 5.5] },
+    { centro: [23.8, -555], radio: [12, 5.5] },
+  ],
+  /** Hasta dónde se corre una pupila adentro del blanco. */
+  mira: [6.4, 2.2],
+  /** Los hombros, los codos y el medio de cada mano, con el brazo colgando. */
+  hombros: [
+    [-90, -436],
+    [90, -436],
+  ],
+  codos: [
+    [-104, -318],
+    [104, -318],
+  ],
+  manos: [
+    [-100, -186],
+    [100, -186],
+  ],
+  /** De dónde cuelga el manojo, en el puño de la mano de la derecha. */
+  llavero: [101, -176],
+  /** Adónde lleva la mano de la izquierda: a la barba para alisarla, y al pecho en la reverencia. */
+  alisa: { desde: [-16, -452], hasta: [-10, -356] },
+  pecho: [-34, -392],
+} as const;
+
+/** Barbazul recibe en la entrada, adelante a la izquierda, entre la columna y el pasillo. */
+export const BARBAZUL = { x: 122, piso: 634, escala: 0.8 } as const;
+
+/**
+ * La puerta de Barbazul, al fondo a la izquierda de la ventana: el hueco con su arco y la bisagra
+ * del lado de la pared. Adentro está el cuarto; cuando él hace la reverencia, se entreabre.
+ */
+export const PUERTA_DE_BARBAZUL = { x0: 262, x1: 300, arriba: 262, arco: 246, piso: 400 } as const;

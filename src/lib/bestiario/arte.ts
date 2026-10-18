@@ -11,6 +11,7 @@
 import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
 import { PIEZAS_BAJO } from './arte-bajo.ts';
 import { PIEZAS_PRISION } from './arte-prision.ts';
+import { PIEZAS_BARBAZUL, PIEZAS_PUERTA } from './arte-barbazul.ts';
 
 
 
@@ -474,4 +475,7 @@ export const PIEZAS: readonly Pieza[] = [
   ...PIEZAS_BAJO,
   // La séptima vuelta: la prisión de Barbazul y la drácula con tacones, tallados (`arte-prision.ts`).
   ...PIEZAS_PRISION,
+  // La décima vuelta: Barbazul, tallado como el barbudo de la contratapa, y la puerta de su cuarto (`arte-barbazul.ts`).
+  ...PIEZAS_PUERTA,
+  ...PIEZAS_BARBAZUL,
 ];

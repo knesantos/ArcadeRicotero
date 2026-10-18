@@ -32,9 +32,9 @@ const T = {
 const LUZ: readonly [number, number, number] = [-0.5, -0.62, 0.72];
 
 const suave = (t: number): number => (t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t));
-const poli = (pts: readonly P[]): string => `M${pts.map(([x, y]) => `${Math.round(x * 10) / 10} ${Math.round(y * 10) / 10}`).join(' L')} Z`;
+export const poli = (pts: readonly P[]): string => `M${pts.map(([x, y]) => `${Math.round(x * 10) / 10} ${Math.round(y * 10) / 10}`).join(' L')} Z`;
 /** Un camino cerrado que pasa suave por los puntos (Catmull-Rom a cúbicas). */
-function curva(pts: readonly P[], cerrada = true): string {
+export function curva(pts: readonly P[], cerrada = true): string {
   const n = pts.length;
   const p = (i: number): P => pts[cerrada ? (i + n) % n : Math.max(0, Math.min(n - 1, i))]!;
   const r = (v: number): number => Math.round(v * 10) / 10;
@@ -47,7 +47,7 @@ function curva(pts: readonly P[], cerrada = true): string {
 }
 
 /** La caja de una lista de puntos, con aire. */
-function cajaDe(pts: readonly P[], aire = 6): readonly [number, number, number, number] {
+export function cajaDe(pts: readonly P[], aire = 6): readonly [number, number, number, number] {
   const xs = pts.map((p) => p[0]);
   const ys = pts.map((p) => p[1]);
   const x0 = Math.min(...xs) - aire;
@@ -615,24 +615,12 @@ function jaulita(cx: number, arriba: number, alto: number, ancho: number, semill
   return `<path d="${d}" fill="${T.papel}" filter="url(#gubia)"/>`;
 }
 
-/** Un manojo de llaves colgado de un clavo: el de Barbazul. */
-function llaves(cx: number, cy: number, semilla: number): string {
-  const rnd = azar(semilla);
-  let d = trazo([[cx - 2, cy - 4], [cx, cy - 6], [cx + 2, cy - 4]], 2, semilla, () => 1);
-  // La argolla.
-  const aro: P[] = [];
-  for (let k = 0; k <= 20; k++) aro.push([cx + Math.cos((k / 20) * Math.PI * 2) * 7, cy + 6 + Math.sin((k / 20) * Math.PI * 2) * 7]);
-  d += trazo(aro, 1.8, semilla + 1, () => 1);
-  for (let i = 0; i < 4; i++) {
-    const a = ((70 + i * 16 + (rnd() - 0.5) * 8) * Math.PI) / 180;
-    const [x0, y0] = [cx + Math.cos(a) * 7, cy + 6 + Math.sin(a) * 7];
-    const largo = 18 + rnd() * 8;
-    const [x1, y1] = [x0 + Math.cos(a) * largo, y0 + Math.sin(a) * largo];
-    d += trazo([[x0, y0], [x1, y1]], 2.4, semilla + 2 + i, () => 1);
-    // Los dientes de la llave.
-    d += trazo([[x1 - Math.sin(a) * 4, y1 + Math.cos(a) * 4], [x1, y1]], 2, semilla + 10 + i, () => 1);
-    d += trazo([[x0 + Math.cos(a) * 1, y0 + Math.sin(a) * 1], [x0 + Math.cos(a) * 1.1, y0 + Math.sin(a) * 1.1]], 6, semilla + 20 + i, () => 1);
-  }
+/**
+ * El clavo de la pared, al lado de la puerta de Barbazul, donde colgaba el manojo. Está vacío: las
+ * llaves las tiene él (`arte-barbazul.ts`), que te recibe en la entrada.
+ */
+function clavo(cx: number, cy: number, semilla: number): string {
+  const d = trazo([[cx - 2.4, cy - 3], [cx, cy - 5], [cx + 2.4, cy - 3]], 2.2, semilla, () => 1) + trazo([[cx, cy - 4], [cx + 0.4, cy + 1], [cx + 3, cy + 3]], 1.8, semilla + 1, () => 1);
   return `<path d="${d}" fill="${T.papel}" filter="url(#gubia)"/>`;
 }
 
@@ -713,10 +701,11 @@ function prisionLejos(): string {
     celda(-1, 0.64, 0.88, 0.66, T.gris, 340) +
     celda(1, 0.64, 0.88, 0.66, T.gris, 350) +
     celda(1, 0.3, 0.56, 0.64, T.gris, 360) +
-    // La puerta de Barbazul, a la izquierda de la ventana, con el manojo colgado; la de la guardia, a la derecha.
+    // La puerta de Barbazul, a la izquierda de la ventana, con el clavo vacío; la de la guardia, a la derecha.
+    // La hoja de la puerta de Barbazul y su cuarto van aparte (`arte-barbazul.ts`): se entreabre.
     `<path d="M262 ${F.piso} L262 262 Q281 246 300 262 L300 ${F.piso} Z" fill="${T.negro}"/>` +
     `<path d="${trazo([[258, F.piso], [258, 260], [281, 240], [304, 260], [304, F.piso]], 3, 370, () => 1)}" fill="${T.gris}" filter="url(#gubia)"/>` +
-    llaves(316, 270, 371) +
+    clavo(316, 270, 371) +
     `<path d="M604 ${F.piso} L604 262 L640 262 L640 ${F.piso} Z" fill="${T.negro}"/>` +
     `<path d="${trazo([[600, F.piso], [600, 258], [644, 258], [644, F.piso]], 3, 372, () => 1)}" fill="${T.gris}" filter="url(#gubia)"/>` +
     `<path d="${[612, 622, 632].map((x, i) => trazo([[x, 276], [x, 300]], 1.8, 373 + i, () => 1)).join('') + trazo([[608, 276], [636, 276]], 1.8, 377, () => 1) + trazo([[608, 300], [636, 300]], 1.8, 378, () => 1)}" fill="${T.gris}" filter="url(#gubia)"/>` +
@@ -725,7 +714,7 @@ function prisionLejos(): string {
     `<clipPath id="pr-sin-calle"><path d="M0 0 H${ANCHO} V${ALTO} H0 Z ${hueco()}" clip-rule="evenodd"/></clipPath>` +
     `<g clip-path="url(#pr-sin-calle)" filter="url(#gubia)"><path d="${tallar(rayosDelFoco, luzDelFoco, { ancho: 1.6, umbral: [0.12, 0.9], punta: 14, semilla: 321 })}" fill="${T.papel}"/></g>` +
     `<path d="${trazo([[foco[0], 0], [foco[0], foco[1] - 10]], 1.6, 322, () => 1) + curva([[foco[0] - 4.5, foco[1] - 4], [foco[0], foco[1] - 10], [foco[0] + 4.5, foco[1] - 4], [foco[0] + 3.6, foco[1] + 3], [foco[0], foco[1] + 6], [foco[0] - 3.6, foco[1] + 3]])}" fill="${T.papel}" filter="url(#gubia)"/>` +
-    jaulita(150, 124, 56, 44, 380)
+    jaulita(222, 124, 56, 44, 380)
   );
 }
 
