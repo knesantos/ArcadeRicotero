@@ -4840,6 +4840,87 @@ módulo que dibuja.
 - Para el próximo inventado de *Gulp!* (Barbazul, el que no se cayó del cielo) la técnica ya está:
   `pincel.ts`.
 
+### Enmienda del 2026-10-18 (7): la drácula con tacones, tallada, en la prisión de Barbazul
+
+Pedido del usuario, textual, el mismo de la sexta vuelta: *"hace otro ciclo sobre el bestiario
+redondo. Agrega otro personaje y pulilo a fondo, se creativo que qeude como uno de rocambole."* Le
+llegó a dos sesiones; al ver que la otra ya había hecho a Pierre, el usuario eligió *"Otro más,
+encima del #52"*. La escribe el hilo principal en la rama `ciclo-24/bestiario`, sacada de
+`ciclo-23/bestiario` en `b30b481`.
+
+- **Por qué ella.** La prisión de Barbazul viste *Oktubre* (`D-19`), y de los diez que viven ahí la
+  única que sale de un tema de ese disco es la drácula con tacones (*"Preso en mi ciudad"*). Así el
+  personaje y su recinto comparten la técnica de la tapa, que en el bestiario todavía no estaba. No
+  está en ninguna tapa: se inventa en esa estética (`T-440`).
+- **La técnica es la de la gente de *Oktubre*: grabado** (`lib/bestiario/grabado.ts`). La plancha
+  es negra y la luz se le saca a gubia: cada corte es una línea con ancho, que engorda donde pega la
+  luz hasta juntarse con la de al lado (queda un plano blanco) y se afina hasta cortarse donde la
+  forma se da vuelta (queda el negro). Los cortes no son paralelos de regla: dan la vuelta a la
+  forma (`envolventes`), bajan por el cachete (`siguiendo`) o salen de un punto (`rayos`). La luz
+  se aprieta (`apretada`): en la tapa casi no hay medio tono, y la raya queda para el paso de lo
+  blanco a lo negro. La imprenta le pasa la gubia al filo de cada corte (`#gubia`) y deja motas de
+  papel en el negro, como la tinta de una prensa a mano (`#motas`). La primera prueba de la cara
+  salió rayada como una cebra, por exceso de medio tono; la que quedó es la cuarta.
+- **Los colores son los de la tapa.** La plancha es `--fondo`; el blanco de la gente se midió en las
+  caras del frente (`--bestia-dracula-papel`); lo de atrás del recinto se talla con el gris que
+  Rocambole contó que agregó (`--disco-oktubre-apoyo`), y así la drácula, tallada en blanco, se
+  despega de la pared sin un contorno. **El único color es el rojo de las banderas**, y ella lo lleva
+  adentro: la boca, el cuello alto de la capa por dentro y el forro.
+- **Es un títere de papel de trece piezas**: la espalda de la capa con el cuello alto, las dos
+  piernas con medias y tacos aguja, el vestido con el escote, la cabeza (con la boca y la mandíbula
+  adentro, como Pierre), las dos mitades negras de la capa, los dos forros, la mano de uñas largas
+  que cierra la capa sobre el pecho y los dos mechones que caen encima. **La capa se abre como dos
+  puertas de papel**: cada mitad negra se achica contra su hombro hasta quedar de canto, y del otro
+  lado se despliega el forro, que es un ala de murciélago roja con el brazo levantado y la mano que
+  tira del borde. Abierta, la capa es una bandera.
+- **La prisión es un pasillo de celdas tallado**, visto de frente: hiladas de ladrillo, rejas de
+  celda (en blanco las de adelante, en gris las del fondo), el charco de luz de la ventana en el piso
+  con la sombra de cada barrote, un foco pelado, la jaulita del pajarito del Lavi-rap colgada del
+  techo, la puerta de Barbazul con su manojo de llaves y la garita de la guardia. Adelante, la jaula
+  de la fiera más fiera, abierta y vacía, con la cadena rota y un hueso.
+- **Lo que sale de una tapa de verdad es la calle**: por la ventana enrejada del fondo se ve la
+  gente de la tapa de *Oktubre*, y sus cinco banderas flamean afuera. Es *"Preso en mi ciudad"*
+  dibujado sin dibujar nada: el preso mira la ciudad por la reja. La imprenta mete la tapa entera y
+  la parte con dos filtros nuevos: a la calle le saca el rojo (`#sin-rojo`), y cada bandera es lo
+  rojo de la tapa recortado por su polígono (`#solo-rojo`), así flamean sin quedar dobles. Son
+  imágenes de la tapa, como el resto del collage del sitio (`D-14`: si llega un reclamo, se baja).
+- **Vive.** Taconea por el pasillo: camina un tramo, se para, y cada taco que apoya suena con dos
+  cortes blancos en el piso. Quieta, a veces se acomoda la capa (asoma el rojo) y a veces mira para
+  la ventana. Mira siempre con los ojos a media asta (`entornados`). **Tocada, abre la capa**, echa
+  la cabeza para atrás, abre la boca con los colmillos y entorna los ojos, y afuera las banderas
+  flamean más fuerte. **La jaula vacía se toca aunque no tenga a nadie** (la estampa ya decía que a
+  la fiera la estás buscando vos): la puerta chirría y va y viene. Los demás del recinto son ojos en
+  lo oscuro, como en los otros recintos de noche: Barbazul en su puerta, la guardia en la garita, el
+  pichón en el alféizar, el pajarito en su jaula.
+- **La estampa de la drácula dice qué es del dibujo**: la capa y la cara no salen de la letra; la
+  gente y las banderas de la ventana sí son de verdad. La ficha la retrata con la capa abierta.
+- **Pulida de la vuelta.** La escala la decidió el navegador: a 0,94 era más alta que las puertas de
+  las celdas y quedó en 0,8. La cara se apretó a planos (los ojos redondos le daban cara de asustada;
+  ahora el párpado pesa y las cejas bajan en V). El foco se corrió a la derecha porque le quedaba de
+  aureola. El fondo pasó de 215 kB a 118 kB: los planos de atrás van sin motas, que lejos no se ven
+  y pesan mucho, y se imprime un poco más comprimido (`calidad` en `Pieza`, nuevo). Las 23 piezas
+  nuevas pesan 385 kB.
+- **Lo que vigila `bestiario.test.ts`**: que la drácula tenga cada parte que mueve la isla, con su
+  imagen y su bisagra en el hombro; que el forro arranque plegado (sin la isla, la capa está
+  cerrada); que la prisión tenga a sus diez y que la jaula de la fiera no tenga ojos; que la
+  drácula camine por el piso del pasillo sin meterse en la jaula; que la calle y las banderas sean
+  la tapa de *Oktubre*, con cada asta adentro de la ventana; que la talla salga igual en cada
+  impresión y no corte nada donde no hay luz; y que la isla no se lleve `grabado.ts` ni
+  `arte-prision.ts` al teléfono (pesa 26,1 kB, 4 más que con Pierre).
+
+#### Abierto, sin trabar
+
+- `T-444`: Barbazul, el dueño de la prisión, que hoy es un par de ojos en su puerta. Su tema es de
+  *Gulp!*: puede ir a pincel seco (`pincel.ts`) como Pierre, o tallado como su recinto
+  (`grabado.ts`); que lo decida la vuelta que lo haga.
+- `T-445`: el bestiario baja cerca de 1,8 MB de imágenes de una al abrir la página, y con cada
+  recinto nuevo crece. Diferir la carga de las escenas de noche hasta que el recinto se acerca, sin
+  romper la página sin JavaScript. Es la mitad de `T-439` que se puede hacer sin un teléfono.
+- Siguen `T-431` (que `contenido` lea la estampa nueva), `T-435` (`--bestia-dracula-papel` al
+  lienzo), `T-437`/`T-439` (cuadros por segundo en un teléfono de verdad: con el panel del navegador
+  oculto el navegador frena los cuadros, y la animación se vio con movimiento reducido simulado) y
+  `T-443`, que baja a seis recintos.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17

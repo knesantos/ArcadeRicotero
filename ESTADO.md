@@ -5,7 +5,26 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-17
+**Última actualización:** 2026-10-18
+
+> ## 🦇 LA DRÁCULA CON TACONES, TALLADA COMO OKTUBRE (2026-10-18) — séptima enmienda de `D-73`, ciclo 24
+>
+> **En la rama `ciclo-24/bestiario` (worktree `.claude/worktrees/bestiario-24`), sin commitear.** Pedido del
+> usuario, el mismo de Pierre: *"Agrega otro personaje y pulilo a fondo, se creativo que quede como uno de
+> rocambole"*; eligió *"Otro más, encima del #52"*.
+>
+> - **La prisión de Barbazul es el sexto recinto de noche**: un pasillo de celdas **tallado como la gente de la
+>   tapa de *Oktubre*** (`grabado.ts`: la plancha negra, la luz sacada a gubia, motas de prensa). Por la ventana
+>   enrejada se ve **la gente de la tapa de verdad**, y sus cinco banderas, recortadas de ahí, flamean afuera.
+> - **La drácula con tacones** (*"Preso en mi ciudad"*), tallada en la misma técnica y recortada en trece piezas.
+>   Taconea por el pasillo; tocada, **abre la capa como dos puertas de papel** y el forro es el rojo de las
+>   banderas. La jaula vacía de la fiera se toca: la puerta chirría.
+> - **Verde:** `npm test` (1657), `npm run check`, `npm run build`. Visto a 375 y 1024 px; la capa abierta, con
+>   movimiento reducido simulado (con el panel oculto el navegador frena los cuadros).
+> - **Abierto:** `T-444` (Barbazul), `T-445` (diferir la carga de imágenes: el bestiario baja ~1,8 MB),
+>   `T-431`, `T-435`, `T-437`/`T-439`, `T-443` (seis recintos; la sesión de `bestiario/fondos-rocambole` está con
+>   los fondos de esos seis).
+> - **Para integrar:** juntar `origin/main` antes (entraron el #52 y el #53).
 
 > ## 🍾 EL GORDO PIERRE, A PINCEL SECO (2026-10-17) — sexta enmienda de `D-73`, ciclo 23
 >
