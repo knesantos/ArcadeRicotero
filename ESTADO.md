@@ -342,6 +342,33 @@
 >   confirme de primera mano la noche de La Esquina del Sol en el memoir; `T-433` que `experiencia` diga si hace
 >   falta arrastrar el mapa con el dedo; `T-434` probarlo en un iPhone.
 
+> ## 📚 UNA VUELTA ENTERA DE INVESTIGACIÓN PARA LA REDONDOPEDIA (2026-10-15) — `INV-300`
+>
+> **En `main` desde el PR #64 (rama `investigacion/inv-300-wiki`).** Quedó sin commitear en la carpeta principal hasta el 2026-10-18, cuando se guardó tal cual. Pedido del usuario:
+> *"Hace una vuelta entera de buscar mas informacion en la wiki para la web y juegos"* (la wiki es la
+> Redondopedia).
+>
+> - **La wiki de fans se lee entera** (`RES-300`): el 402 de `RES-86` era de la herramienta, no del sitio.
+>   Por la API salen 329 artículos, con 99 recitales con lista (1978–2001), 63 temas, 14 inéditos y 11
+>   personas. Cotejado contra Wikipedia y el memoir: lo que se confirma va como hecho o testimonio, y el
+>   resto como leyenda, porque la wiki se contradice sola (`RES-301`).
+> - **Lo que más le falta a la Redondopedia:** Sidotti y Dawi (ninguno de los dos tiene artículo), los
+>   inéditos, *En directo*, los monologuistas, Racing 98, River 2000, Olavarría 97 con Tandil, y la
+>   última noche en Córdoba. La lista va en `Docs/SUGERENCIAS/HILO-para-contenido-y-arquitectura-inv300-la-wiki.md`.
+> - **Cierra dudas abiertas:** `RES-308` (Olavarría *y* Tandil: la conferencia de prensa fue por la
+>   prohibición de Olavarría, y el recital terminó en Tandil), y `RES-235`/`RES-236` de `INV-425`.
+> - **Primer lote escrito (2026-10-16, `CNT-42`):** `walter-sidotti`, `sergio-dawi` y
+>   `temas-fuera-de-los-discos` (los inéditos), y la corrección de `semilla-bucciarelli`: tocó el bajo
+>   desde 1982 y no desde 1987 (`RES-337`). La Redondopedia queda en 41 artículos. La frase "la favorita
+>   de muchos" sobre *Mi genio amor* es de Marcelo Figueras, el entrevistador del memoir, no del Indio:
+>   corregida en el artículo, en `INV-300` y en `CNT-42`. Verde: `npm test` (1628) y los tests de la
+>   Redondopedia y de la voz después del último cambio. Visto a 375 px.
+> - **Abierto, sin trabar:** que `contenido` siga con Crook, Fargo, Ábalos, Jolivet, los monologuistas
+>   y los hitos (*En directo* como disco número 11 choca con el test que fija diez discos: es una
+>   decisión de `producto`); que `arquitectura` decida si las 99
+>   listas CC-BY-SA entran a `recitales.json` (pasaría entero a BY-SA, `CTR-19.8`). Los scripts que
+>   regeneran todo están en `Docs/INVESTIGACION/INV-300/`.
+
 > ## 🎤 LOS RECITALES EN PANTALLA Y "ARMÁ TU RECITAL" (2026-10-15) — `D-72`, ciclo 21
 >
 > **Integrada a `main` el 2026-10-16 con el PR #47 (fusión `d5f5837`)**, desde la rama `ciclo-21/recitales`
