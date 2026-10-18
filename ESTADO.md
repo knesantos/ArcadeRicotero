@@ -7,6 +7,25 @@
 
 **Última actualización:** 2026-10-18
 
+> ## 🗝️ BARBAZUL, TALLADO, CON LA BARBA DE OTRA PLANCHA (2026-10-18) — enmienda (11) de `D-73`, ciclo 25
+>
+> **En la rama `ciclo-25/bestiario`, sin commitear, sin PR.** Sacada de `ciclo-24/bestiario` (PR #56) en
+> `82c4453`. Pedido del usuario, el de las dos vueltas anteriores: *"Agrega otro personaje y pulilo a
+> fondo, se creativo que qeude como uno de rocambole"*.
+>
+> - **Barbazul recibe en la entrada de la prisión** (`T-444`): tallado como el barbudo de la contratapa
+>   de *Oktubre* (`arte-barbazul.ts`), y **la barba es otra plancha, azul y corrida de registro**. Mira a
+>   la drácula cuando pasa, se alisa la barba, sacude el manojo. Tocado, hace la reverencia del anfitrión
+>   y al fondo se le entreabre el cuarto: la luz roja corre por el piso hasta sus pies. La llave chiquita
+>   del manojo tiene la mancha del cuento.
+> - **Verde:** `npm test` (1663), `npm run check`, `npm run build`. Visto a 375 y 1280 px; la reverencia,
+>   con movimiento reducido simulado (con el panel oculto el navegador casi no avanza cuadros).
+> - **Para integrar:** primero el #56, que esta rama trae adentro. El número (11) supone que antes entran
+>   la (9) del camino (#54) y la (10) de los entornos (#57); si no, se renumera (`integrar.md`). Choca con
+>   #57 en `arte.ts`, `tokens.css`, `sitio.css`, `bestiario.astro` y `scripts/bestiario.ts`: todo suma, no
+>   se pisa.
+> - **Abierto:** `T-431`, `T-435` (el azul nuevo al lienzo), `T-437`/`T-439`.
+
 > ## 🦇 LA DRÁCULA CON TACONES, TALLADA COMO OKTUBRE, Y LA CARGA DE A UNA (2026-10-18) — séptima y octava enmiendas de `D-73`, ciclo 24
 >
 > **En la rama `ciclo-24/bestiario`, PR #56 abierto, sin integrar (con `origin/main` adentro en `159b1bc`).** Pedido del

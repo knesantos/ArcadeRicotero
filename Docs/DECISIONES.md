@@ -4967,6 +4967,66 @@ de la séptima vuelta, sin commitear todavía.
 - Cuando entren los recintos nuevos de `bestiario/fondos-rocambole`, sus escenas tienen que pasar por
   `enEspera` como las demás: si llegan con `set:html={rc.svg}`, la prueba de la página falla.
 
+### Enmienda del 2026-10-18 (11): Barbazul, tallado, con la barba de otra plancha
+
+Pedido del usuario, textual, el de la sexta y la séptima vuelta: *"hace otro ciclo sobre el bestiario
+redondo. Agrega otro personaje y pulilo a fondo, se creativo que qeude como uno de rocambole."* La
+escribe el hilo principal en la rama `ciclo-25/bestiario`, sacada de `ciclo-24/bestiario` (PR #56) en
+`82c4453`, como la vuelta anterior se sacó de la suya. **El número:** la (9) es del camino con cruces
+(PR #54) y la (10), de los seis entornos (PR #57, `bestiario/fondos-rocambole`); esta toma la (11). Si
+llega a `main` antes que alguna de esas, se renumera al integrar (`integrar.md`).
+
+- **Por qué él.** Era `T-444`: el dueño de la prisión seguía siendo un par de ojos en su puerta, y la
+  vuelta anterior dejó dicho que lo decidiera la que lo hiciera. Vive en la prisión, que no toca
+  ninguna de las otras sesiones abiertas del bestiario (los entornos nuevos son de otros seis recintos).
+- **Tallado, como su casa.** Su tema es de *Gulp!*, pero la prisión viste *Oktubre* (`D-19`) y él es
+  el dueño: está tallado en la misma madera (`grabado.ts`, `arte-barbazul.ts`). La vara es **el barbudo
+  de la contratapa de *Oktubre***: el pelo largo partido al medio, las cuencas hondas, las arrugas de
+  la frente cortadas a gubia, las hebras largas. La luz le viene del foco del pasillo, a su derecha, y
+  la mitad de la izquierda queda en lo negro. La cabeza se dibuja a su medida y se agranda un cuarto
+  (`agranda`), porque a la medida del cuerpo se perdía.
+- **La barba es otra plancha.** En la prisión no hay más color que el rojo de las banderas. La barba
+  de Barbazul se imprime aparte, entintada de azul (`--bestia-barbazul-azul`, inventado: en *Oktubre*
+  no hay azul, lo pide el nombre) y **corrida de registro**: lo tallado de la barba sale azul, y del
+  lado donde se corrió la plancha asoma un filo azul afuera del negro. Es el error de imprenta de las
+  letras de *Gulp!* (`corrido`, en `pincel.ts`), hecho con gubia. La primera prueba corría la plancha
+  para arriba y le dibujaba una raya azul sobre el bigote; quedó corrida a la derecha.
+- **Es un títere de ocho piezas**: la levita cruzada con los zapatos de punta, la cabeza, la barba
+  (que cuelga de la cara), cada brazo en dos tramos y el manojo de llaves, que cuelga del puño. Las
+  pupilas y los párpados no están impresos: son de la página, porque la isla los mueve.
+- **Te recibe.** Barbazul está adelante a la izquierda, en la entrada del pasillo, delante de la
+  drácula y detrás de la columna: es lo primero que se ve, y en el teléfono la escena arranca con él
+  entero. Respira; mira a la drácula cuando taconea, y de a ratos te mira a vos; se alisa la barba con
+  la mano (un brazo de dos tramos que alcanza la barba de verdad, sin que el codo salte de una solución
+  a otra), o sacude el manojo. **La barba y el manojo cuelgan**: llegan tarde a cada movimiento y se
+  mecen, con un resorte.
+- **Tocado, hace la reverencia del anfitrión** (*"Esta vez, por fin, la prisión / te va a gustar"*):
+  cabecea, se lleva la mano al pecho y con la otra te abre el paso, manojo en mano, mirándote por
+  debajo de las cejas. **Al fondo, su puerta se entreabre sola**: del cuarto sale el rojo de las
+  banderas y la luz corre por el piso en diagonal hasta sus pies, como una alfombra. Lo que hay adentro
+  no se dibuja. La puerta se cierra antes de que él se enderece; y si la drácula está quieta, se da
+  vuelta a mirarlo. La primera prueba derramaba la luz derecho para adelante, y la drácula, que camina
+  por ahí, la tapaba casi siempre.
+- **La llave chiquita del manojo tiene la mancha**: es la del cuento de Perrault, no la de la letra, y
+  la estampa lo dice. Las llaves ya no cuelgan del clavo de la pared, al lado de la puerta: el clavo
+  quedó vacío.
+- **Se acomodó la prisión**: la drácula camina desde `x` 296 (antes 196), para no taparle la cara; la
+  jaulita del pajarito y los ojos del reo y del esclavo se corrieron para no quedar detrás de él.
+- Las diez piezas nuevas pesan 224 kB y esperan en el `<noscript>` de la prisión como las demás. La
+  isla pasa de 27,3 a 31,3 kB.
+- **Lo que vigila `bestiario.test.ts`**: que Barbazul tenga cada parte que mueve la isla, con su imagen
+  y cada pivote adentro de su pieza; que la mano alcance la barba y el pecho; que el azul sea solo de la
+  barba, corrido, con su token; que el manojo tenga una sola mancha roja; que entre entero en la escena
+  sin meterse en la jaula y que la drácula no le tape la cara; que la puerta arranque cerrada y su luz
+  llegue a sus pies; y que la isla no se lleve `arte-barbazul.ts`.
+
+#### Abierto, sin trabar
+
+- **`T-444` queda hecha.** Sin tareas nuevas. Siguen `T-431` (que `contenido` lea la estampa de
+  Barbazul), `T-435` (`--bestia-barbazul-azul` al lienzo, cargado primero en `tokens.css` como las
+  demás del bestiario) y `T-437`/`T-439`: la animación se vio con movimiento reducido simulado, porque
+  con el panel del navegador oculto el navegador casi no avanza cuadros.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17
