@@ -4840,6 +4840,83 @@ módulo que dibuja.
 - Para el próximo inventado de *Gulp!* (Barbazul, el que no se cayó del cielo) la técnica ya está:
   `pincel.ts`.
 
+### Enmienda del 2026-10-18 (7): el camino con cruces, empezando por el monte y la pastura
+
+Pedido del usuario, en dos tiempos. Primero, textual: *"Me gustaria que los diferentes entornos esten
+conectados y sea todo mas inmersivo en el bestiario. Quiero que sea una aventura scrolleable, que
+vayan apareciendo los personajes y puedas elegir con flechas a donde ir y scrolleando avanzas o asi.
+Investiga como hacer esto o diferentes formas de lograr mi deseo."* Se investigaron cinco caminos (la
+bajada continua, el cuarto por cuarto con flechas, el mundo entero con cámara libre, un juego de
+plataformas con `kaplay` y el camino que camina de costado) y se le mostró una maqueta. Eligió,
+textual: *"Dale con el camino con cruces: una página por región, scroll que camina de costado y
+flechas en el cruce. Arrancá por el monte y la pastura como prueba."* La escribe el hilo principal en
+la rama `bestiario/camino-con-cruces`, sobre `main` en `159b1bc`. **Se escribió como novena**
+porque la drácula y la carga de a una, de `ciclo-24/bestiario`, ya se habían escrito como séptima y
+octava; **se renumeró a séptima al integrar**, porque esta llegó antes a `main` (PR #54). Las de
+`ciclo-24/bestiario` pasan a octava y novena cuando entren, como dice `integrar.md`.
+
+- **Una página por región** (`/redondopedia/bestiario/el-monte/`, `/la-pastura/`;
+  `pages/redondopedia/bestiario/[region].astro`). Cada región que tiene su tramo en
+  `lib/bestiario/camino.ts` es una página. El plano redondo y los recintos siguen donde estaban; el
+  recinto del monte suma una puerta, "Entrá caminando".
+- **Bajar es caminar.** La escena queda pegada a la pantalla mientras su sección pasa, y la isla
+  (`scripts/camino.ts`) corre cada capa a su velocidad: lo lejano a 0,45, el piso con los bichos a la
+  par del dedo, lo de adelante a 1,3. La sección mide de alto lo que hay que caminar: **un píxel de
+  bajar es un píxel de caminar**. No se secuestra el scroll: la página baja como baja siempre, con su
+  inercia y su barra, y la isla solo lee dónde está.
+- **Los bichos aparecen al llegar.** Los ojos de lo oscuro se encienden cuando entran a la vista. El
+  lobo suelto, en su monte, asoma desde atrás del borde del piso cuando lo tenés cerca, te sigue con la
+  cabeza mientras pasás y se hunde cuando te alejás. En la pastura viven el lobo y el cordero como en
+  su recinto: la lógica pasó a `scripts/bestiario/pastura.ts`, que comparten las dos islas, y el claro
+  va corrido adentro del piso largo con las mismas coordenadas de `rig.ts`.
+- **El cruce, al final de cada camino**: un cartel de papel por región vecina (`vecinas` en el JSON),
+  con el borde en la tinta de su disco y **la flecha para el lado donde queda en el plano redondo**.
+  Las que todavía no se caminan llevan a su recinto, con el borde cortado y el sello "EN EL PLANO".
+  Antes de llegar, el cruce se anuncia: al final del monte se ve la luz naranja de la pastura entre los
+  árboles, y al salir del claro, la vela de la mesa servida. Al pasar de una región a otra, la página
+  cambia con el tránsito de todo el sitio (`ADR-03`); no se agregó una adhesión ni un nombre de tránsito.
+- **El arte es el mismo monte, largo** (`lib/bestiario/arte-camino.ts`): las tiras de *Lobo suelto* y
+  la pastura de *Cordero atado*, a lo largo de 2400 unidades. Lo lejano y lo de adelante los comparten
+  los dos tramos, porque la pastura es un claro del monte: el que pasa de uno al otro sigue viendo los
+  mismos árboles, y la segunda página carga del caché. Para apoyar el claro sin arrastrar el piso del
+  recinto, `arte.ts` separa `claroDeLaPastura()` de `monteCerca()` (el recinto se imprime igual). Las
+  cuatro piezas pesan 567 kB y cada página carga tres.
+- **Una sola ficha**: la del índice pasó a `components/bestiario/FichaBestia.astro`, y la usan el
+  bestiario y cada camino. Abajo de la escena va la lista de los que andan por ahí; el lobo, en la
+  pastura, con el sello "DE PASO". La libreta es la misma: lo que anotás en un lado cuenta en el otro.
+
+#### La capa de abajo alcanza sola (molinetes abiertos)
+
+Sin JavaScript y con movimiento reducido, la escena es una tira que se corre de costado con el dedo,
+como los recintos de noche: las capas van juntas, los ojos y el cruce están a la vista, y el lobo y el
+cordero quedan en una pose quieta que trae el HTML. Por eso lo lejano mide lo mismo que el piso,
+aunque su velocidad pida menos: si no, al final quedaba la noche vacía. Para el teclado, un salto
+directo al cruce, y lo que recibe el foco adentro de la escena se trae a la vista.
+
+#### El movimiento
+
+Lo que se mueve con el dedo no es animación: es la escena siguiendo al scroll, y con movimiento
+reducido no pasa. Lo que aparece solo (los ojos, el cruce) aparece con opacidad sobre
+`--duracion-umbral`, que el corte lleva a cero. Sigue valiendo la excepción de la segunda vuelta: los
+bichos se mueven adentro de las escenas, solo lo que se ve.
+
+#### Abierto, sin trabar
+
+- `T-470`: los tramos de las otras regiones, uno por ráfaga. La sesión de los fondos
+  (`bestiario/fondos-rocambole`) arma el arte de seis entornos con funciones que reciben
+  `(ancho, alto = 640)`, la geometría en `rig-entornos.ts` y una `luzQueAsoma(region, x, y)` para el
+  final de los pisos vecinos, siguiendo la especificación de esta enmienda. Cada tramo nuevo suma sus
+  tres piezas en `arte-camino.ts` y su entrada en `CAMINOS`.
+- `T-471`: probarlo en un teléfono de verdad, gama baja e iPhone: los cuadros por segundo con tres capas
+  de ~3000 px y `will-change`, y la escena pegada con `100svh` y la barra de Safari.
+- `T-472`: que `experiencia` escriba el flujo del camino (`UX-`) y decida si los rótulos del plano
+  tienen que llevar al camino en vez de al recinto cuando la región ya se camina.
+- `T-473`: el recinto del monte de la página del bestiario, sin JavaScript, dibuja al lobo y al cordero
+  sin pose (enormes, en la esquina): el mismo defecto que el camino resolvió con la pose quieta en el
+  HTML. Se arregla igual en `escena-monte.ts`.
+- `T-474`: el cartel del cruce y la puerta "Entrá caminando" al lienzo (hoja 08, componentes). No
+  trajeron tintas nuevas: todo sale de `tokens.css`.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17
