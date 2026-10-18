@@ -2,18 +2,25 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dibujar, dibujarGrupo } from './figuras.ts';
-import { adentro, camara, contorno, dibujarRecinto, dibujarRuta, dibujarSuelo, punto, simbolos, type Bestiario } from './mapa.ts';
+import { adentro, camara, contorno, dibujarRecinto, dibujarSuelo, punto, simbolos, type Bestiario } from './mapa.ts';
 import { existsSync } from 'node:fs';
-import { lobo, cordero, pierre, retrato } from './titeres.ts';
+import { lobo, cordero, dracula, pierre, retrato } from './titeres.ts';
 import { escenaMonte, VECINOS_DEL_MONTE } from './escena-monte.ts';
 import {
-  CHORRO, escenaBajo, escenaBaldio, escenaInfierno, escenaTemplo, VECINOS_DEL_BAJO, VECINOS_DEL_BALDIO, VECINOS_DEL_INFIERNO, VECINOS_DEL_TEMPLO,
+  CHORRO, JAULA_VACIA, escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, VECINOS_DE_LA_PRISION, VECINOS_DEL_BAJO, VECINOS_DEL_BALDIO,
+  VECINOS_DEL_INFIERNO, VECINOS_DEL_TEMPLO,
 } from './escenas.ts';
-import { ACECHO, BAJO, PASTURA, ESCENA, PALO, PIERRE, PIERRE_ARMADO } from './rig.ts';
+import { ACECHO, BAJO, BANDERAS, DRACULA, DRACULA_ARMADO, PASTURA, ESCENA, PALO, PIERRE, PIERRE_ARMADO, PRISION, deLaTapa } from './rig.ts';
 import { ARMADO, RECORTES, cajaDeRecorte, LADO_TAPA } from './recortes.ts';
 import { PIEZAS } from './arte.ts';
 import { ETIQUETA, PIEZAS_BAJO, PIEZAS_PIERRE, PUERTA, agujero } from './arte-bajo.ts';
 import { pincelada } from './pincel.ts';
+import { PIEZAS_DRACULA, PIEZAS_PRISION } from './arte-prision.ts';
+import { envolventes, tallar, tono } from './grabado.ts';
+import { ESPERA, GUARDADO, SIN_ISLA, enEspera, pidePiezas } from './carga.ts';
+import { ENTORNOS, PIEZAS_ENTORNOS, luzQueAsoma } from './arte-entornos.ts';
+import { ENTORNOS_DE_NOCHE, QUIENES } from './escenas-entornos.ts';
+import { ALTO as ALTO_ENTORNO, ANCHO as ANCHO_ENTORNO, FIERROS, RUTA } from './rig-entornos.ts';
 
 /**
  * El bestiario redondo (`D-73`), probado contra lo único que no puede fallar.
@@ -150,6 +157,8 @@ test('ni un hex en el bestiario: los colores son clases que pinta sitio.css', ()
   const fuentes = [
     'src/lib/bestiario/figuras.ts', 'src/lib/bestiario/mapa.ts', 'src/lib/bestiario/titeres.ts', 'src/lib/bestiario/escena-monte.ts',
     'src/lib/bestiario/escenas.ts', 'src/lib/bestiario/rig.ts', 'src/lib/bestiario/arte-bajo.ts', 'src/lib/bestiario/pincel.ts',
+    'src/lib/bestiario/arte-prision.ts', 'src/lib/bestiario/grabado.ts', 'src/lib/bestiario/aerografo.ts',
+    'src/lib/bestiario/arte-entornos.ts', 'src/lib/bestiario/escenas-entornos.ts', 'src/lib/bestiario/rig-entornos.ts',
     'src/scripts/bestiario.ts', 'src/data/bestiario.json',
   ];
   const malos = fuentes.filter((f) => /#[0-9a-fA-F]{3,8}\b(?![-\w])/.test(readFileSync(f, 'utf-8').replace(/href="#fig-|#fig-|`#\$\{|'#b-|#b-|#region-/g, '')));
@@ -213,13 +222,12 @@ test('el lobo acecha detrás de la pastura, adentro de la escena, y cuando se hu
   assert.ok(orejas > 300, `hundido, el lobo asoma las orejas en y = ${orejas}`);
 });
 
-test('cada recinto genérico y la ruta salen sin números rotos', () => {
+test('cada recinto genérico sale sin números rotos', () => {
   for (const r of datos.regiones) {
     if (r.forma.tipo === 'anillo' || r.id === 'el-monte' || r.id === 'la-pastura') continue;
     const { svg } = dibujarRecinto(r, datos);
     assert.ok(!/NaN|undefined|Infinity/.test(svg), `el recinto ${r.id} tiene un número roto`);
   }
-  assert.ok(!/NaN|undefined|Infinity/.test(dibujarRuta(datos)));
 });
 
 test('cada pieza del aerógrafo y cada recorte están en public/bestiario', () => {
@@ -229,7 +237,7 @@ test('cada pieza del aerógrafo y cada recorte están en public/bestiario', () =
   const nombres = [...PIEZAS.map((p) => p.nombre), ...RECORTES.map((r) => r.nombre)];
   const faltan = nombres.filter((n) => !existsSync(`public/bestiario/${n}.webp`));
   assert.deepEqual(faltan, []);
-  const piden = [...(lobo() + cordero() + escenaMonte(new Map()) + escenaBajo(new Map())).matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]);
+  const piden = [...(lobo() + cordero() + escenaMonte(new Map()) + escenaBajo(new Map()) + escenaPrision(new Map())).matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]);
   assert.ok(piden.length > 10);
   assert.deepEqual(piden.filter((n) => !nombres.includes(n!)), []);
 });
@@ -253,9 +261,11 @@ test('cada recinto de noche tiene a todos los suyos: el protagonista de tapa y l
 });
 
 test('los cinco de tapa tienen retrato de ficha, encuadrado en sus piezas; los demás siguen con su figura', () => {
-  // Pierre no es de tapa pero tiene títere: su ficha también lo muestra como en la escena.
+  // Pierre y la drácula no son de tapa pero tienen títere: su ficha también los muestra como en la escena.
   const dePierre = retrato('el-gordo-pierre');
   assert.ok(dePierre && dePierre.svg.includes('pierre-cabeza') && !/NaN/.test(dePierre.caja));
+  const deLaDracula = retrato('la-dracula-con-tacones');
+  assert.ok(deLaDracula && deLaDracula.svg.includes('dracula-forro-1') && !/NaN/.test(deLaDracula.caja), 'la drácula no tiene retrato con la capa abierta');
   for (const id of ['el-lobo-suelto', 'el-cordero-atado', 'ese-perro-que-sigue-alli', 'luzbelito', 'momo']) {
     assert.ok(datos.bestias.some((b) => b.id === id), `${id} no está en el bestiario`);
     const r = retrato(id);
@@ -296,7 +306,7 @@ function importados(desde: string): string[] {
 test('la isla se lleva números: no importa nada que dibuje', () => {
   // Si la isla importa un módulo que dibuja, el teléfono corre el aerógrafo entero al abrir la
   // página para no usarlo. Pasó en la quinta vuelta: `escenas.ts` arrastraba `arte.ts`.
-  const dibujan = ['arte.ts', 'arte-bajo.ts', 'aerografo.ts', 'pincel.ts', 'escenas.ts', 'escena-monte.ts', 'titeres.ts', 'figuras.ts', 'mapa.ts'];
+  const dibujan = ['arte.ts', 'arte-bajo.ts', 'arte-entornos.ts', 'arte-prision.ts', 'aerografo.ts', 'pincel.ts', 'grabado.ts', 'escenas.ts', 'escenas-entornos.ts', 'escena-monte.ts', 'titeres.ts', 'figuras.ts', 'mapa.ts'];
   const llevados = importados('src/scripts/bestiario.ts');
   assert.ok(llevados.includes('rig.ts'), 'la isla dejó de leer rig.ts: el censo no está mirando bien');
   assert.deepEqual(llevados.filter((n) => dibujan.includes(n)), [], `la isla se lleva al teléfono: ${llevados.join(', ')}`);
@@ -377,4 +387,183 @@ test('el pincel seco sale igual en cada impresión, y no rompe ningún número',
   const tinta = (s: string): number => [...s.matchAll(/[ML]/g)].length;
   assert.ok(tinta(seca) < tinta(cargada), 'el pincel seco no se seca');
   for (const p of PIEZAS_BAJO) assert.ok(!/NaN|undefined|Infinity/.test(p.dibujo), `${p.nombre} tiene un número roto`);
+});
+
+/*
+ * La octava vuelta: la prisión de Barbazul y la drácula con tacones, tallados como la gente de
+ * la tapa de *Oktubre* (`arte-prision.ts`, `grabado.ts`).
+ */
+
+test('la drácula es un títere entero: cada pieza que mueve la isla, con su imagen y su bisagra', () => {
+  const marcado = dracula();
+  const partes = ['capa-atras', 'pierna-1', 'pierna-2', 'cuerpo', 'cabeza', 'mandibula', 'parpado-1', 'parpado-2', 'forro-1', 'forro-2', 'capa-1', 'capa-2', 'mano', 'pelo'];
+  for (const parte of partes) assert.ok(marcado.includes(`data-parte="${parte}"`), `a la drácula le falta ${parte}`);
+  const imagenes = [...marcado.matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]!);
+  assert.deepEqual([...imagenes].sort(), PIEZAS_DRACULA.map((p) => p.nombre).sort(), 'la drácula usa piezas que no se imprimen, o le sobra una');
+  const caja = (nombre: string): readonly [number, number, number, number] => PIEZAS_DRACULA.find((p) => p.nombre === nombre)!.caja;
+  const adentro = (nombre: string, [x, y]: readonly [number, number]): boolean => {
+    const [x0, y0, ancho, alto] = caja(nombre);
+    return x >= x0 && x <= x0 + ancho && y >= y0 && y <= y0 + alto;
+  };
+  for (const o of DRACULA_ARMADO.ojos) assert.ok(adentro('dracula-cabeza', o.centro), 'un ojo se salió de la cara');
+  assert.ok(adentro('dracula-cuerpo', DRACULA_ARMADO.cuello) && adentro('dracula-cabeza', DRACULA_ARMADO.cuello), 'la cabeza gira en el aire');
+  assert.ok(adentro('dracula-pierna-1', DRACULA_ARMADO.caderas[0]) && adentro('dracula-pierna-2', DRACULA_ARMADO.caderas[1]), 'una pierna no cuelga de su cadera');
+  assert.ok(adentro('dracula-mano', DRACULA_ARMADO.mano), 'la mano no está donde cierra la capa');
+  // Cada mitad de la capa y su forro giran en el mismo hombro: la bisagra toca a los dos.
+  for (const [n, [hx, hy]] of DRACULA_ARMADO.hombros.entries()) {
+    assert.ok(adentro(`dracula-capa-${n + 1}`, [hx, hy + 8]), `la capa ${n + 1} no llega a su hombro`);
+    assert.ok(adentro(`dracula-forro-${n + 1}`, [hx, hy]), `el forro ${n + 1} no sale de su hombro`);
+  }
+  // Y el forro arranca plegado: sin la isla, la capa está cerrada.
+  for (const m of marcado.matchAll(/data-parte="forro-\d"[^>]*>/g)) assert.match(m[0], /scale\(0\.001 1\)/);
+  for (const m of marcado.matchAll(/data-parte="(capa|forro)-\d"[^>]*>/g)) assert.match(m[0], /data-bisagra="-?\d+"/);
+});
+
+test('la prisión tiene a todos los suyos: la drácula camina por el pasillo, y la fiera más fiera no tiene ojos', () => {
+  const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
+  const escena = escenaPrision(nombres);
+  const delRecinto = datos.bestias.filter((b) => b.region === 'la-prision').map((b) => b.id).sort();
+  assert.deepEqual(delRecinto, ['la-dracula-con-tacones', JAULA_VACIA.id, ...Object.keys(VECINOS_DE_LA_PRISION)].sort(), 'en la prisión falta o sobra alguien');
+  assert.ok(!/NaN|undefined|Infinity/.test(escena), 'la prisión tiene un número roto');
+  for (const [id, [x, y]] of Object.entries(VECINOS_DE_LA_PRISION)) assert.ok(x >= 0 && x <= ESCENA.ancho && y >= 0 && y <= ESCENA.alto, `${id} se sale`);
+  assert.ok(escena.includes(`data-id="${JAULA_VACIA.id}"`), 'la jaula vacía no se puede tocar');
+  // La jaula se toca pero no mira: adentro de su grupo no hay ni un ojo.
+  const jaula = escena.slice(escena.indexOf(`data-id="${JAULA_VACIA.id}"`), escena.indexOf('</g>', escena.indexOf(`data-id="${JAULA_VACIA.id}"`)));
+  assert.ok(!jaula.includes('ojos-'), 'la fiera más fiera no aparece en la estampa: la jaula no tiene ojos');
+  // La drácula camina por el piso del pasillo y no se sale de la escena ni con las alas abiertas a medias.
+  const { x0, x1 } = PRISION.fondo;
+  assert.ok(DRACULA.piso > PRISION.fondo.piso && DRACULA.piso < ESCENA.alto, 'la drácula no pisa el piso del pasillo');
+  assert.ok(DRACULA.desde >= DRACULA_ARMADO.punta[0] * DRACULA.escala * 0.6 && DRACULA.hasta <= ESCENA.ancho - DRACULA_ARMADO.punta[0] * DRACULA.escala * 0.6);
+  assert.ok(DRACULA.x >= DRACULA.desde && DRACULA.x <= DRACULA.hasta && x0 < x1);
+  // Y no se mete en la jaula de adelante.
+  assert.ok(DRACULA.hasta + 130 * DRACULA.escala < PRISION.jaula.x0, 'la drácula camina adentro de la jaula');
+});
+
+test('la calle de la ventana es la tapa de Oktubre, y las banderas que flamean son las suyas', () => {
+  const tapas = PIEZAS_PRISION.flatMap((p) => [...p.dibujo.matchAll(/href="tapa:([a-z0-9-]+)"/g)].map((m) => `${p.nombre} ← ${m[1]}`));
+  assert.ok(tapas.includes('prision-lejos ← oktubre-frontal'), 'la calle no es la tapa');
+  for (let i = 1; i <= BANDERAS.length; i++) {
+    const pieza = PIEZAS_PRISION.find((p) => p.nombre === `prision-bandera-${i}`)!;
+    assert.ok(pieza.dibujo.includes('tapa:oktubre-frontal') && pieza.dibujo.includes('url(#solo-rojo)'), `la bandera ${i} no es lo rojo de la tapa`);
+  }
+  // A la calle se le sacan las banderas, para que no queden dobles cuando flamean.
+  assert.ok(PIEZAS_PRISION.find((p) => p.nombre === 'prision-lejos')!.dibujo.includes('url(#sin-rojo)'));
+  // Cada asta cae adentro de la ventana, o se vería flamear contra la pared.
+  const { x0, x1, clave, abajo } = PRISION.ventana;
+  for (const b of BANDERAS) {
+    const [x, y] = deLaTapa(b.asta);
+    assert.ok(x > x0 - 20 && x < x1 + 20 && y > clave - 20 && y < abajo + 20, `un asta cae afuera de la ventana: ${x}, ${y}`);
+    for (const [px, py] of b.poligono) assert.ok(px >= 0 && px <= 953 && py >= 0 && py <= 953, 'una bandera se recorta afuera de la tapa');
+  }
+});
+
+test('la talla de Oktubre sale igual en cada impresión, corta donde hay luz y no rompe ningún número', () => {
+  const lineas = envolventes([0, 0], [40, 50], { paso: 3, semilla: 5 });
+  const luz = tono(0, [{ c: [0, 0], r: [40, 50], peso: 1 }]);
+  const una = tallar(lineas, luz, { ancho: 3, semilla: 7 });
+  assert.equal(una, tallar(lineas, luz, { ancho: 3, semilla: 7 }));
+  assert.ok(una.length > 200 && !/NaN|undefined|Infinity/.test(una));
+  // Sin luz, la gubia no corta nada: la plancha queda negra.
+  assert.equal(tallar(lineas, () => 0, { ancho: 3, semilla: 7 }), '');
+  // Más luz, cortes más anchos: más papel.
+  const area = (d: string): number => [...d.matchAll(/[ML]/g)].length;
+  assert.ok(area(tallar(lineas, () => 1, { ancho: 3, semilla: 7 })) >= area(tallar(lineas, () => 0.5, { ancho: 3, semilla: 7 })));
+  for (const p of PIEZAS_PRISION) assert.ok(!/NaN|undefined|Infinity/.test(p.dibujo), `${p.nombre} tiene un número roto`);
+});
+
+/*
+ * La novena vuelta (`T-445`): la carga de a una. Las escenas y los retratos esperan en un
+ * `<noscript>` y la isla los arma cuando se acercan (`carga.ts`).
+ */
+
+test('lo que espera no baja nada hasta que la isla lo arma, y sin JavaScript se ve entero', () => {
+  const escena = escenaPrision(new Map());
+  const marcado = enEspera('class="bestiario-svg recinto-svg" viewBox="0 0 900 640"', escena);
+  const [vacio, resto] = marcado.split(`<noscript ${GUARDADO}>`);
+  // El que guarda el lugar mide lo mismo (la misma clase y la misma caja) y no pide ni una pieza.
+  assert.equal(vacio, `<svg class="bestiario-svg recinto-svg" viewBox="0 0 900 640" ${ESPERA}></svg>`);
+  assert.ok(!pidePiezas(vacio!), 'el vacío pide piezas: se bajarían de entrada');
+  // El de verdad está entero adentro del <noscript>, tal cual se dibujaba antes.
+  assert.equal(resto, `<svg class="bestiario-svg recinto-svg" viewBox="0 0 900 640">${escena}</svg></noscript>`);
+  // Lo que no pide piezas no espera: un recinto de figuritas sale tal cual.
+  assert.equal(enEspera('viewBox="0 0 10 10"', '<circle r="3"/>'), '<svg viewBox="0 0 10 10"><circle r="3"/></svg>');
+  // Y sin JavaScript se esconden los vacíos, con una regla que solo existe sin JavaScript.
+  assert.match(SIN_ISLA, /^<noscript><style>\[data-espera\]\{display:none\}<\/style><\/noscript>$/);
+});
+
+test('la página no dibuja de entrada ni una escena ni un retrato que pidan piezas', () => {
+  // Si alguien vuelve a poner `set:html={rc.svg}` o un retrato a mano, la página vuelve a bajar
+  // todas las piezas de una. Medido antes de esta vuelta: 59 imágenes, 1673 kB.
+  // La ficha vive en su componente (`FichaBestia.astro`), que comparte con el camino: ahí los
+  // retratos esperan cuando la página lo pide (`espera`), y la del bestiario lo pide.
+  const pagina = readFileSync('src/pages/redondopedia/bestiario.astro', 'utf-8');
+  const ficha = readFileSync('src/components/bestiario/FichaBestia.astro', 'utf-8');
+  for (const [nombre, fuente] of [['la página', pagina], ['la ficha', ficha]] as const) {
+    assert.ok(!/set:html=\{(rc|r)\.svg\}/.test(fuente), `${nombre} dibuja de entrada una escena o un retrato`);
+    assert.ok(!/set:html=\{retrato\([^)]*\)!?\.svg\}/.test(fuente), `${nombre} dibuja de entrada un retrato`);
+  }
+  assert.equal(pagina.match(/enEspera\(/g)?.length, 1, 'las escenas esperan');
+  assert.ok(/espera \? enEspera\(atributos, r!\.svg\)/.test(ficha), 'los retratos de la ficha no saben esperar');
+  // La etiqueta lleva funciones flecha adentro (`=>`): se mira la línea entera, no hasta el primer `>`.
+  assert.match(pagina, /<FichaBestia\b[^\n]*\sespera\s*\/>/, 'el índice del bestiario no pide que los retratos esperen');
+  assert.ok(pagina.includes('set:html={SIN_ISLA}'), 'sin JavaScript se verían dos veces');
+  // La isla arma lo que espera: en el recinto que se acerca y en la ficha que se copia a la hoja.
+  const isla = readFileSync('src/scripts/bestiario.ts', 'utf-8');
+  assert.ok(/function montar\(escena: HTMLElement\): void \{\s*materializar\(escena\);/.test(isla), 'un recinto se monta sin armar su escena');
+  assert.ok(isla.includes('materializar(copia);'), 'la hoja copiaría un retrato sin armar');
+});
+
+/*
+ * La décima vuelta: los seis entornos que seguían con las figuras del plano, cada uno en la tapa
+ * de su disco (`arte-entornos.ts`, `escenas-entornos.ts`, `rig-entornos.ts`).
+ */
+
+test('cada entorno de noche tiene a todos los suyos, y nadie se sale de la escena', () => {
+  const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
+  for (const [region, { escena }] of Object.entries(ENTORNOS_DE_NOCHE)) {
+    const delRecinto = datos.bestias.filter((b) => b.region === region).map((b) => b.id).sort();
+    assert.deepEqual([...QUIENES[region]!].sort(), delRecinto, `en ${region} falta o sobra alguien`);
+    const marcado = escena(nombres);
+    assert.ok(!/NaN|undefined|Infinity/.test(marcado), `${region} tiene un número roto`);
+    for (const id of delRecinto) assert.ok(marcado.includes(`data-id="${id}"`), `${region}: ${id} no se puede tocar`);
+    for (const m of marcado.matchAll(/data-x="(-?[\d.]+)" data-y="(-?[\d.]+)"/g)) {
+      const [x, y] = [Number(m[1]), Number(m[2])];
+      assert.ok(x >= 0 && x <= ANCHO_ENTORNO && y >= 0 && y <= ALTO_ENTORNO, `${region}: alguien quedó afuera, en (${x}, ${y})`);
+    }
+  }
+});
+
+test('cada pieza que piden los seis entornos está impresa en public/bestiario', () => {
+  const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
+  const impresas = PIEZAS_ENTORNOS.map((p) => p.nombre);
+  for (const { escena } of Object.values(ENTORNOS_DE_NOCHE)) {
+    const piden = [...escena(nombres).matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]!);
+    assert.ok(piden.length >= 3);
+    assert.deepEqual(piden.filter((n) => !impresas.includes(n) || !existsSync(`public/bestiario/${n}.webp`)), []);
+  }
+});
+
+test('los entornos se pueden pintar más anchos, para el camino, sin un número roto', () => {
+  // El camino (`camino.ts`) pide las mismas capas a lo ancho de un tramo: lo lejano a 1850, el
+  // piso a 2400 y lo de adelante a 3036 (`anchoDeCapa`). Acá no se imprimen; se arman.
+  for (const [region, capas] of Object.entries(ENTORNOS)) {
+    for (const [capa, pintar] of Object.entries(capas)) {
+      const ancho = capa === 'lejos' ? 1850 : capa === 'frente' ? 3036 : 2400;
+      const dibujo = (pintar as (ancho?: number) => string)(ancho);
+      assert.ok(dibujo.length > 500 && !/NaN|undefined|Infinity/.test(dibujo), `${region}, ${capa} a ${ancho}: número roto`);
+    }
+    assert.ok(luzQueAsoma(region, 100, 300).includes('<ellipse'), `${region} no tiene luz que asome`);
+  }
+  assert.equal(luzQueAsoma('una-region-que-no-existe', 0, 0), '');
+});
+
+test('los fierros de la ruta pasan por su carril, con las ruedas adentro de su imagen', () => {
+  for (const [id, { pieza, carril, caja, x }] of Object.entries(FIERROS)) {
+    assert.ok(datos.bestias.some((b) => b.id === id && b.region === 'la-ruta'), `${id} no es de la ruta`);
+    const [cx, cy, w, h] = caja;
+    assert.ok(cx < 0 && cx + w > 0 && cy < 0 && cy + h > 0, `${id}: el (0, 0) de las ruedas no cae en su imagen`);
+    assert.ok(RUTA.carriles[carril]! > RUTA.asfalto.arriba && RUTA.carriles[carril]! < RUTA.asfalto.abajo, `${id}: el carril no está en el asfalto`);
+    assert.ok(x >= 0 && x <= ANCHO_ENTORNO);
+    assert.ok(existsSync(`public/bestiario/${pieza}.webp`), `${pieza} no está impresa`);
+  }
 });

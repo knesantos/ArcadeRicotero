@@ -18,6 +18,13 @@
  *    otra, abre la ficha de una bestia copiándola del índice, hace sonar diez segundos del
  *    tema y anota en el teléfono las que ya abriste.
  *
+ * ## Lo que pesa llega cuando se acerca (`T-445`)
+ *
+ * Cada escena de noche y cada retrato de un títere esperan en un `<noscript>`, con un SVG vacío
+ * que les guarda el lugar (`lib/bestiario/carga.ts`). Sin JavaScript se dibujan como siempre; con
+ * JavaScript la isla los arma recién a una pantalla y media. Así la página no baja las 59 piezas
+ * (1673 kB) de una: arriba de todo baja solo el monte.
+ *
  * La sección viste *Lobo suelto* (mitología, `D-19`) y el título va en su letra.
  */
 import Base from '../../layouts/Base.astro';
@@ -27,17 +34,17 @@ import {
   LADO,
   cajaDeFigura,
   dibujarRecinto,
-  dibujarRuta,
   dibujarSuelo,
   lugarDelRotulo,
   punto,
   simbolos,
   tintaDe,
-  RUTA,
   type Bestiario,
 } from '../../lib/bestiario/mapa.ts';
 import { ESCENA, escenaMonte } from '../../lib/bestiario/escena-monte.ts';
-import { escenaBajo, escenaBaldio, escenaInfierno, escenaTemplo, LUZBELITO, MOMO, PIERRE } from '../../lib/bestiario/escenas.ts';
+import { DRACULA, escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, LUZBELITO, MOMO, PIERRE } from '../../lib/bestiario/escenas.ts';
+import { ENTORNOS_DE_NOCHE } from '../../lib/bestiario/escenas-entornos.ts';
+import { enEspera, SIN_ISLA } from '../../lib/bestiario/carga.ts';
 import { PALO } from '../../lib/bestiario/rig.ts';
 import { CON_CAMINO, recintoDe } from '../../lib/bestiario/camino.ts';
 import FichaBestia from '../../components/bestiario/FichaBestia.astro';
@@ -78,14 +85,18 @@ const recintos = RECORRIDO.map((id) => {
     };
   }
   const region = regionDe.get(id)!;
-  // Los recintos de noche (D-73): los de protagonista de tapa, y el bajo, con el gordo Pierre
-  // pintado en la estética de *Gulp!*. Cada uno con su escena por capas.
+  // Los recintos de noche (D-73): los de protagonista de tapa, el bajo, con el gordo Pierre
+  // pintado en la estética de *Gulp!*, y la prisión, con la drácula tallada como *Oktubre*. Cada
+  // uno con su escena por capas. La décima vuelta suma los seis entornos que seguían con las
+  // figuras del plano, cada uno en la tapa de su disco.
   // `foco`: dónde arranca mirando la escena cuando no entra entera (el perro entra por el borde).
   const deNoche: Record<string, { escena: (n: ReadonlyMap<string, string>) => string; foco: number }> = {
     'los-techos': { escena: escenaBaldio, foco: 260 },
     'el-infierno': { escena: escenaInfierno, foco: LUZBELITO.x },
     'el-templo': { escena: escenaTemplo, foco: MOMO.argolla.x },
     'el-bajo': { escena: escenaBajo, foco: PIERRE.x - 60 },
+    'la-prision': { escena: escenaPrision, foco: DRACULA.x + 60 },
+    ...ENTORNOS_DE_NOCHE,
   };
   if (deNoche[id]) {
     return {
@@ -96,17 +107,6 @@ const recintos = RECORRIDO.map((id) => {
       caja: `0 0 ${ESCENA.ancho} ${ESCENA.alto}`,
       foco: deNoche[id]!.foco,
       svg: deNoche[id]!.escena(nombres),
-      bestias: bestias.filter((b) => b.region === id),
-    };
-  }
-  if (id === 'la-ruta') {
-    return {
-      id,
-      nombre: region.nombre,
-      canta: region.canta,
-      tinta: tintaDe(region.disco),
-      caja: `0 0 ${RUTA.ancho} ${RUTA.alto}`,
-      svg: dibujarRuta(datos),
       bestias: bestias.filter((b) => b.region === id),
     };
   }
@@ -145,6 +145,9 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
   volverA={{ href: '/redondopedia/', texto: REDONDOPEDIA.volverPortada }}
   discoDelPie="lobo-suelto"
 >
+  {/* Sin JavaScript, el <noscript> de cada escena y de cada retrato ya dibuja el de verdad: el que guarda el lugar se esconde. */}
+  <Fragment set:html={SIN_ISLA} />
+
   <div class="portada-redondopedia bestiario-portada">
     <h1 class="titulo-seccion bestiario-titulo">{BESTIARIO.titulo}</h1>
     <p class="donde-estas">{BESTIARIO.dondeEstas}</p>
@@ -217,7 +220,8 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
             data-recinto={rc.id}
             data-foco={'foco' in rc ? rc.foco : undefined}
           >
-            <svg class="bestiario-svg recinto-svg" viewBox={rc.caja} set:html={rc.svg} />
+            {/* La escena espera en su <noscript> hasta que el recinto se acerca (T-445, carga.ts). */}
+            <Fragment set:html={enEspera(`class="bestiario-svg recinto-svg" viewBox="${rc.caja}"`, rc.svg)} />
           </div>
           {'foco' in rc && <p class="recinto-deslizar" hidden>{BESTIARIO.deslizar}</p>}
           <p class="bestiario-sub">{BESTIARIO.aca}</p>
@@ -259,7 +263,7 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
             {bestias
               .filter((b) => b.region === r.id)
               .map((b) => (
-                <FichaBestia bestia={b} tinta={tintaDe(r.disco)} nombres={nombres} hrefCerca={(id) => `#b-${id}`} conMapa />
+                <FichaBestia bestia={b} tinta={tintaDe(r.disco)} nombres={nombres} hrefCerca={(id) => `#b-${id}`} conMapa espera />
               ))}
           </ul>
         </section>

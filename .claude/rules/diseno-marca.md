@@ -13,7 +13,8 @@ Las hojas: 01 marca · 02 voz · 03 paleta · 04 tipografía · 05 tapas (paleta
 medidas + la mezcla `D-19`) · 06 iconografía · 07 línea y textura · 08 componentes ·
 09 pantallas · 10 tarjeta compartible · 11 entrega · 12 movimiento y aire · 14 el pixel
 del fichín · 16 el plano de dos ejes (`D-62`, pegada el 2026-10-06 por `T-351`, debajo de la
-08 en la página Aplicación). La 13 (la imprenta) la nombra `tokens.css` y nunca llegó al
+08 en la página Aplicación) · 17 la Redondopedia de noche (`D-75`, pegada el 2026-10-17 por
+`T-450`, versión 20 del lienzo, debajo de la 11 en la página Aplicación). La 13 (la imprenta) la nombra `tokens.css` y nunca llegó al
 lienzo, y la 15 (la mesa, `D-54`) está escrita en
 `Docs/SUGERENCIAS/lienzo-hoja-15-la-mesa.dc.html` y falta pegarla (`T-319`; antes hay que
 sacarle el canto, que se retiró en el ciclo 18).
@@ -44,6 +45,10 @@ Nunca al revés: un color suelto en un componente es un defecto, aunque se vea b
   opciones, explicaciones (`UX-01`). Las letras de disco gritan títulos cortos.
 - **Acierto (`--acento-3`), error (`--acento-4`) y los rótulos de leyenda/testimonio no
   se disfrazan de ningún disco.** Y ningún estado se comunica solo con color.
+  **Única excepción declarada:** lo ya leído en la Redondopedia (`:visited`, `D-75`, `UX-39`
+  §5.8) apaga el título de la tarjeta a `--texto-tenue`, y nada más. No es acierto, error ni
+  rótulo: es memoria, ninguna decisión depende de ella, y `:visited` no deja otro canal sin que el
+  sitio guarde qué leyó cada quien. No se copia a otra pantalla sin repensarlo.
 - **Voz (`D-17`)**: sin anglicismos en todo lo que se lee, voseo en cada botón.
 
 ## Las fuentes reales

@@ -1,0 +1,63 @@
+---
+/**
+ * La tarjeta de un artículo de la Redondopedia (`D-75`): la que lista la portada y la que
+ * invita a seguir al pie de cada artículo. Una sola, para que el gancho y lo que hay adentro
+ * se lean igual en los dos lados.
+ *
+ * Tres renglones, y cada uno hace un trabajo distinto:
+ *
+ * 1. **El título**, en la letra de la banda si entra entera (`sitio/letras.ts`): nombra.
+ * 2. **El gancho**, el arranque del resumen cortado en palabra. No es una frase nueva: es lo
+ *    que el artículo ya dice de sí mismo, y si `contenido` lo reescribe, cambia solo.
+ * 3. **Lo que hay adentro**, en registro 3: si hay leyenda, quién da testimonio y cuánto se
+ *    tarda en leerlo. Es la promesa honesta: el que va a encontrar una leyenda lo sabe antes de
+ *    tocar, y el que busca la voz de alguien con nombre ve cuál.
+ *
+ * El artículo de un disco lleva su tapa chica al costado (`D-04`, baja resolución): un disco
+ * tiene cara, y es la forma más rápida de reconocerlo. La acredita la página que la muestra.
+ */
+import {
+  TIPO_A_CATEGORIA,
+  contenidoDe,
+  ganchoDe,
+  vocesDe,
+  type Articulo,
+} from '../lib/redondopedia.ts';
+import { REDONDOPEDIA } from '../lib/sitio/copy.ts';
+import { tituloEnLaBanda } from '../lib/sitio/letras.ts';
+import { SLUGS_GRAVES } from '../lib/sitio/graves.ts';
+import { tapa } from '../lib/sitio/arte.ts';
+
+interface Props {
+  articulo: Articulo;
+  /** Hasta cuántos caracteres llega el gancho. */
+  tope?: number;
+}
+
+const { articulo, tope = 130 } = Astro.props;
+const adentro = contenidoDe(articulo);
+const voces = vocesDe(articulo);
+const portada = articulo.tipo === 'disco' ? tapa(articulo.slug) : null;
+// Los graves no llevan la letra de la banda en ningún lado: ni en su `h1` ni en su tarjeta
+// (`UX-39` §11 A1). Su nombre va en la rotulada, como siempre.
+const enLaBanda = !SLUGS_GRAVES.includes(articulo.slug) && tituloEnLaBanda(articulo.slug, articulo.titulo);
+const categoria = TIPO_A_CATEGORIA[articulo.tipo];
+---
+
+<a
+  class:list={[
+    'tarjeta-articulo',
+    `tarjeta-articulo--${categoria}`,
+    { [`de-disco--${articulo.slug}`]: articulo.tipo === 'disco', 'tarjeta-articulo--con-tapa': portada },
+  ]}
+  href={`/redondopedia/${articulo.slug}/`}
+>
+  {portada && <img class="tarjeta-tapa" src={portada} alt="" width="320" height="320" loading="lazy" decoding="async" />}
+  <strong class:list={['tarjeta-titulo', { 'en-la-banda': enLaBanda }]}>{articulo.titulo}</strong>
+  <span class="tarjeta-gancho">{ganchoDe(articulo, tope)}</span>
+  <span class="tarjeta-adentro">
+    {adentro.leyendas > 0 && <span class="es-leyenda">◆ {REDONDOPEDIA.marcas.leyendas(adentro.leyendas)}</span>}
+    {voces.length > 0 && <span class="es-testimonio">❝ {REDONDOPEDIA.marcas.voces(voces)}</span>}
+    <span>{REDONDOPEDIA.marcas.minutos(adentro.minutos)}</span>
+  </span>
+</a>

@@ -108,3 +108,202 @@ export function porTipo(articulos: readonly Articulo[]): Map<TipoArticulo, Artic
   for (const a of articulos) grupos.get(a.tipo)?.push(a);
   return grupos;
 }
+
+/* ==================================================================
+   Los hilos (`D-75`): lo que hace que, leyendo algo, den ganas de seguir
+
+   Todo sale de lo que el artículo ya tiene escrito. Nada de acá inventa una frase: el gancho
+   es el arranque del resumen, el rumor es el arranque de un párrafo rotulado leyenda (y viaja
+   con su rótulo), y los entrantes son los enlaces que otros artículos ya hacen. Si mañana
+   `contenido` reescribe un resumen, el gancho cambia solo.
+   ================================================================== */
+
+/** El texto de un segmento sin la marca de los enlaces: lo que el lector ve. */
+export function textoPlano(texto: string): string {
+  return segmentar(texto)
+    .map((p) => p.texto)
+    .join('');
+}
+
+/**
+ * Corta un texto en la última palabra entera antes de `tope` caracteres y le pone "…" si
+ * cortó. Es prosa que cuenta (registro 2): el suspensivo dice que sigue, y ahí la regla de
+ * la voz lo deja (`voz-ricotera.md` §3.7).
+ */
+export function recortarEnPalabra(texto: string, tope: number): string {
+  if (texto.length <= tope) return texto;
+  const corte = texto.lastIndexOf(' ', tope - 1);
+  const cabeza = texto.slice(0, corte > tope / 2 ? corte : tope - 1);
+  return `${cabeza.replace(/[\s,;:—–-]+$/, '')}…`;
+}
+
+/** Lo que hay adentro de un artículo, contado por casilla, y cuánto se tarda en leerlo. */
+export interface Contenido {
+  readonly hechos: number;
+  readonly leyendas: number;
+  readonly testimonios: number;
+  readonly minutos: number;
+}
+
+/**
+ * Las palabras por minuto con las que se cuenta la lectura. Doscientas es lectura en
+ * pantalla chica, sin apuro y en castellano: un poco por debajo del promedio de papel, que
+ * es lo que corresponde a un teléfono en la mano.
+ */
+const PALABRAS_POR_MINUTO = 200;
+
+export function contenidoDe(articulo: Articulo): Contenido {
+  const cuenta = { hecho: 0, leyenda: 0, testimonio: 0 };
+  for (const s of articulo.cuerpo) cuenta[s.rotulo] += 1;
+  const texto = [articulo.resumen, ...articulo.cuerpo.map((s) => textoPlano(s.texto))].join(' ');
+  const palabras = texto.split(/\s+/).filter(Boolean).length;
+  return {
+    hechos: cuenta.hecho,
+    leyendas: cuenta.leyenda,
+    testimonios: cuenta.testimonio,
+    minutos: Math.max(1, Math.round(palabras / PALABRAS_POR_MINUTO)),
+  };
+}
+
+/**
+ * Quiénes dan testimonio adentro de un artículo, por su nombre y sin la cita del libro:
+ * "Indio Solari, en Recuerdos que mienten un poco" queda "Indio Solari". Es lo que la
+ * tarjeta promete —hay alguien con nombre contándolo ahí adentro— y el rótulo de cada
+ * párrafo sigue diciendo el resto.
+ */
+export function vocesDe(articulo: Articulo): string[] {
+  const voces: string[] = [];
+  for (const s of articulo.cuerpo) {
+    if (s.rotulo !== 'testimonio' || !s.quien) continue;
+    const nombre = s.quien.split(/[,(]/)[0]!.trim();
+    if (nombre && !voces.includes(nombre)) voces.push(nombre);
+  }
+  return voces;
+}
+
+/**
+ * El año de un disco, leído de su ficha: el primer año de cuatro cifras de un dato que diga
+ * año, salida o fecha. No se escribe a mano en ningún lado: si la ficha cambia, cambia acá.
+ */
+export function anioDe(articulo: Articulo): string | null {
+  for (const d of articulo.datos) {
+    if (!/año|salida|fecha/i.test(d.etiqueta)) continue;
+    const m = /\b(19|20)\d\d\b/.exec(d.valor);
+    if (m) return m[0];
+  }
+  return null;
+}
+
+/** El arranque del resumen, para la tarjeta que invita a abrir el artículo. */
+export function ganchoDe(articulo: Articulo, tope = 130): string {
+  return recortarEnPalabra(articulo.resumen, tope);
+}
+
+/**
+ * Quién apunta a cada artículo: los enlaces entrantes, en el orden del archivo.
+ *
+ * Es la otra mitad del grafo de `BR-09`. El "vea también" dice adónde manda un artículo;
+ * esto dice desde dónde lo nombran, que es lo que hace que un nombre se sienta parte de algo
+ * más grande y no una ficha suelta.
+ */
+export function entrantesPor(articulos: readonly Articulo[]): Map<string, string[]> {
+  const entrantes = new Map<string, string[]>(articulos.map((a) => [a.slug, []]));
+  for (const a of articulos) {
+    for (const destino of enlacesSalientes(a)) entrantes.get(destino)?.push(a.slug);
+  }
+  return entrantes;
+}
+
+/** Un rumor: el arranque de un párrafo rotulado leyenda, con el artículo donde vive. */
+export interface Rumor {
+  readonly slug: string;
+  readonly titulo: string;
+  readonly arranque: string;
+}
+
+/** Hasta dónde llega el arranque de un rumor, y desde dónde ya vale cortar en un punto. */
+const RUMOR_TOPE = 230;
+const RUMOR_PISO = 80;
+
+/**
+ * El arranque de un párrafo: hasta el último punto que caiga entre el piso y el tope, y si
+ * no hay ninguno, cortado en palabra con su suspensivo. Cortado en un punto no lleva "…":
+ * el enlace de abajo ya dice que sigue.
+ */
+export function arranqueDe(texto: string): string {
+  const plano = textoPlano(texto).trim();
+  if (plano.length <= RUMOR_TOPE) return plano;
+  let corte = -1;
+  for (const m of plano.matchAll(/[.?!](?=\s)/g)) {
+    if (m.index! + 1 > RUMOR_TOPE) break;
+    if (m.index! + 1 >= RUMOR_PISO) corte = m.index! + 1;
+  }
+  return corte > 0 ? plano.slice(0, corte) : recortarEnPalabra(plano, RUMOR_TOPE);
+}
+
+/**
+ * Las palabras con las que la Redondopedia dice que algo corre de boca en boca: circula,
+ * corre, cuentan, se dice, una versión, un rumor, una historia, se repite.
+ *
+ * No toda leyenda es un rumor. La casilla `leyenda` también rotula el dato que no tiene
+ * fuente —quiénes tocaban con Skay en 2012, por ejemplo—, y eso es honesto en su artículo
+ * pero no es algo que se le cuente a nadie al oído. La oreja trae solo lo que se cuenta.
+ */
+const SE_CUENTA = /\b(circul\w*|corr(e|en|ió|ieron|ía|ían)|cuenta[n]?|se dice|dicen|versi[oó]n\w*|rumor\w*|historias?|repet\w*|repit\w*)\b/i;
+
+/** Si el arranque de un párrafo cuenta algo que corre de boca en boca. */
+export function seCuenta(arranque: string): boolean {
+  return SE_CUENTA.test(arranque);
+}
+
+/**
+ * Las leyendas que circulan por la Redondopedia, una por párrafo rotulado que se cuenta.
+ *
+ * **Los artículos graves no prestan ninguna** (`UX-20` §3.4, `voz-ricotera.md` §6): la
+ * muerte del Indio tiene un párrafo de versiones que circularon, y sacarlo de ahí para
+ * ponerlo de anzuelo al pie de otro artículo es exactamente la voz que esas tres pantallas
+ * no admiten.
+ */
+export function rumores(articulos: readonly Articulo[], graves: ReadonlySet<string>): Rumor[] {
+  const lista: Rumor[] = [];
+  for (const a of articulos) {
+    if (graves.has(a.slug)) continue;
+    for (const s of a.cuerpo) {
+      if (s.rotulo !== 'leyenda') continue;
+      const arranque = arranqueDe(s.texto);
+      if (seCuenta(arranque)) lista.push({ slug: a.slug, titulo: a.titulo, arranque });
+    }
+  }
+  return lista;
+}
+
+/**
+ * Cuál de `cantidad` cosas toca hoy, con la fecha del teléfono de quien mira. Cambia a la
+ * medianoche de ahí y no a la del servidor, y es la misma todo el día: la oreja de la
+ * portada dice una leyenda por noche, no una distinta cada vez que se recarga.
+ */
+export function indiceDelDia(fecha: Date, cantidad: number): number {
+  if (cantidad <= 0) return 0;
+  const dias = Math.floor(Date.UTC(fecha.getFullYear(), fecha.getMonth(), fecha.getDate()) / 86_400_000);
+  return ((dias % cantidad) + cantidad) % cantidad;
+}
+
+/** Un número estable para un texto: el mismo slug cae siempre en el mismo lugar de la ronda. */
+function semilla(texto: string): number {
+  let h = 0;
+  for (const c of texto) h = (h * 31 + c.codePointAt(0)!) >>> 0;
+  return h;
+}
+
+/**
+ * El rumor que se le cuenta al que termina de leer `slug`: uno que vive en otro artículo, y
+ * mejor si es uno al que este no manda ya —el que abre una puerta nueva—. Es determinista:
+ * la misma página dice siempre lo mismo, como un libro, y no algo distinto en cada visita.
+ */
+export function rumorPara(slug: string, lista: readonly Rumor[], yaEnlazados: ReadonlySet<string>): Rumor | null {
+  const ajenos = lista.filter((r) => r.slug !== slug);
+  if (ajenos.length === 0) return null;
+  const desde = semilla(slug) % ajenos.length;
+  const ronda = [...ajenos.slice(desde), ...ajenos.slice(0, desde)];
+  return ronda.find((r) => !yaEnlazados.has(r.slug)) ?? ronda[0]!;
+}
