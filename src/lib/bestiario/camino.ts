@@ -103,6 +103,12 @@ export const CAMINOS: Readonly<Record<string, Tramo>> = {
 /** Las regiones que ya tienen su camino. */
 export const CON_CAMINO: readonly string[] = Object.keys(CAMINOS);
 
+/**
+ * Por dónde se entra al bestiario (`D-76`): caminando, por el primer tramo. El plano y los
+ * recintos quedan en `/redondopedia/bestiario/`, a un toque desde el camino.
+ */
+export const ENTRADA = `/redondopedia/bestiario/${CON_CAMINO[0]}/`;
+
 /** El recinto de una región en el plano viejo: el monte y la pastura son uno solo. */
 export const recintoDe = (region: string): string =>
   region === 'el-monte' || region === 'la-pastura' ? 'monte-pastura' : region;

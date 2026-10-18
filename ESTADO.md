@@ -10,7 +10,7 @@
 > ## 🐄 LA VACA CUBANA, A PLUMÍN, CON LA TELE HECHA SATÉLITE (2026-10-18) — duodécima enmienda de `D-73`
 >
 > **Sin integrar**, en la rama `ciclo-26/bestiario` (worktree `.claude/worktrees/bestiario-26`), sobre `main`
-> en `c1355e0` y con `main` juntado en `46d36d1` (#56 y #57 adentro). Pedido del usuario: *"Hace otro ciclo
+> en `c1355e0` y con `main` juntado en `168a1bd` (#56, #57 y #59 adentro). Pedido del usuario: *"Hace otro ciclo
 > sobre el bestiario redondo. Agrega otro personaje y pulilo a fondo, se creativo que qeude como uno de
 > rocambole"*, y *"hace la vaca cubana"*.
 >
@@ -29,10 +29,29 @@
 >   `launch.json` de la carpeta principal. Antes del PR hay que mirarla a 375 px: la rumia, el satélite, la
 >   caída y el camino de la pastura.
 > - **Abierto:** `T-431`, `T-435`, `T-437`/`T-439` (ver la enmienda).
+> ## 👣 AL BESTIARIO SE ENTRA CAMINANDO, Y SUENA (2026-10-18) — `D-76`
+>
+> **En main desde el PR #59** (rama `bestiario/entorno-primero`), fusión `168a1bd`.
+> Pedido del usuario: *"El entorno caminable debe ser lo principal del bestiario [...] que para salir debas tocar
+> algo"* y *"que se escuchen otras cosas, pasos, sonidos de los personajes, ruidos del entorno"*.
+>
+> - **La puerta es el monte.** La home y la Redondopedia llevan al camino. El plano queda a un toque ("Al plano").
+> - **Pantalla entera.** Andando, el camino es la página: no hay nada abajo del cruce, no rebota, y se sale tocando.
+>   La lista de fichas se abre con "Mirá la lista". Sin JavaScript, todo igual que antes.
+> - **Suena, si lo prendés.** Recortes del disco del entorno, de lejos y filtrados: *Lobo suelto* en el monte,
+>   *Cordero atado* en la pastura. Más pasos atados al scroll, viento, grillos, una lechuza y el cencerro, todo
+>   sintetizado, sin archivos.
+> - **Qué se graba, qué se baja y qué se sintetiza**, región por región: `Docs/SUGERENCIAS/HILO-sonidos-del-bestiario.md`.
+>   La risa del gordo Pierre la grabás vos; los animales y los cristales, de Freesound CC0.
+> - **Abierto:**
+>   - `T-481`: el verso de cada personaje. Faltan el minuto de cada verso y los temas enteros en disco.
+>   - `T-482`: los sonidos grabados y los bajados.
+>   - `T-483`: probarlo en un teléfono de verdad.
+> - **Verde:** `npm test` (1691), `npm run check`, `npm run build`. Visto en el panel a 375×812.
 
 > ## 🎨 LOS SEIS ENTORNOS, CADA UNO EN SU TAPA (2026-10-18) — décima enmienda de `D-73`
 >
-> **Sin integrar: espera en el PR #57** (rama `bestiario/fondos-rocambole`, worktree `.claude/worktrees/bestiario-fondos`). Pedido del
+> **En `main` desde el PR #57 (rama `bestiario/fondos-rocambole`), fusión `46d36d1`.** Pedido del
 > usuario: *"Armá un fondo bien rocambole para cada uno de los entornos del bestiario redondo"*, con el camino
 > scrolleable en mente.
 >
@@ -43,15 +62,15 @@
 > - **Mejorados**: el infierno tiene piso de damero de salón de baile; el templo, serpentinas y papel picado.
 > - **Listos para el camino**: cada capa es `(ancho, alto)`, los hitos en el piso, la geometría en
 >   `rig-entornos.ts`, y `luzQueAsoma` para anunciar cada región desde la vecina.
-> - **Verde:** `npm test` (1657), `npm run check`, `npm run build`. Visto en el navegador del panel a 375 y 800 px.
-> - **`main` ya está adentro**, con el camino (PR #54, enmienda 7), la drácula y la carga de a una (PR #56,
->   enmiendas 8 y 9) y la Redondopedia de noche (PR #55, `D-75`). Las escenas nuevas pasan por `enEspera` como las demás: se arman cuando el recinto se acerca.
+> - **Verde:** `npm test` (1687), `npm run check`, `npm run build`. Visto en el navegador del panel a 375 y 800 px, y con la
+>   carga de a una.
+> - **Entró después** del camino (PR #54, enmienda 7), la drácula y la carga de a una (PR #56, enmiendas 8 y 9)
+>   y la Redondopedia de noche (PR #55, `D-75`). Las escenas nuevas pasan por `enEspera` como las demás: se arman
+>   cuando el recinto se acerca.
 
 > ## 🌑 LA REDONDOPEDIA DE NOCHE (2026-10-17) — `D-75`
 >
-> **Espera en el PR #55**, sin fusionar, rama `diseno/redondopedia-inmersiva` (worktree
-> `.claude/worktrees/redondopedia-inmersiva`), con `main` adentro en `45777d4` (el bestiario en la
-> home, PR #53; el camino con cruces, PR #54; y la drácula y la carga de a una, PR #56). Seis commits chicos y las fusiones de `main`. Pedido
+> **En `main` desde el PR #55 (rama `diseno/redondopedia-inmersiva`), fusión `b6e9957`.** Pedido
 > del usuario: *"Hace una pulida extrema
 > de ui/ux a la redondopedia, debe sentirse inmersiva, misteriosa y mistica. Al mismo tiempo debe ser
 > facil de leer y que leyendo algo te de ganas de seguir con otra cosa"*.

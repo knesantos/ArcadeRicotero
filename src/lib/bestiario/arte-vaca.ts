@@ -305,7 +305,25 @@ function cuerpoDibujo(): string {
     pataDeLejos('vl-del', PATA_LEJOS_DEL, 82) +
     forma(d, T.lila) +
     enmascarado('vc-cuero', d, cuero) +
-    contorno(CUERPO, pesoDelCuerpo, CONTORNO, 78)
+    contorno(CUERPO, pesoDelCuerpo, CONTORNO, 78) +
+    cencerro()
+  );
+}
+
+/**
+ * El cencerro, colgado de una correa al pie del pescuezo: es lo que suena cuando la tocan en el
+ * camino (`sonido.ts`, `D-76`). Chapa ocre como el costado de la tele, raspada, con el badajo.
+ */
+function cencerro(): string {
+  const chapa = 'M-217 -228 L-201 -230 L-195 -203 L-221 -201 Z';
+  return (
+    plumin([[-154, -306], [-170, -282], [-190, -252], [-208, -230]], { ancho: 4.4, tinta: T.rojoHondo, nervio: 0.6, punta: 0.8 }, 79) +
+    plumin([[-154, -306], [-170, -282], [-190, -252], [-208, -230]], { ancho: 1, tinta: T.ocre, nervio: 0.4 }, 80) +
+    forma(chapa, T.ocre) +
+    enmascarado('vc-cencerro', chapa, nube(-214, -222, 6, 12, T.amarillo, 'xs', 0.6) + nube(-198, -208, 5, 10, T.rojoHondo, 'xs', 0.7)) +
+    rayado('vc-cencerro-r', chapa, [-222, -232, 28, 32], { angulo: 80, paso: 2.6, ancho: 0.8, corta: 0.3 }, 83) +
+    `<circle cx="-208" cy="-199" r="2.6" fill="${T.tinta}"/>` +
+    `<path d="${chapa}" fill="none" stroke="${T.tinta}" stroke-width="2" stroke-linejoin="round"/>`
   );
 }
 

@@ -52,7 +52,7 @@ export const BESTIARIO = {
   /** La puerta en la portada de la Redondopedia. */
   enLaPortada: {
     titulo: 'Bestiario redondo',
-    resumen: 'Los bichos y la gente de las letras, cada uno en su rincón de un mapa que se recorre desde arriba.',
+    resumen: 'Los bichos y la gente de las letras, cada uno en su rincón de un mundo redondo que se camina.',
   },
   volverPortada: 'A LA REDONDOPEDIA',
   /** La puerta de un recinto que ya tiene su camino (`D-73`, séptima vuelta). */
@@ -65,7 +65,8 @@ export const BESTIARIO = {
  * cruce; registro 3, seco, en la instrucción y en los sellos.
  */
 export const CAMINO = {
-  volver: 'AL BESTIARIO',
+  /** La salida del camino (`D-76`): al plano redondo, con los recintos que todavía no se caminan. */
+  volver: 'AL PLANO',
   sello: 'CAMINO DEL BESTIARIO',
   /** La instrucción, abajo del nombre: la línea que nombra lo que hay que hacer. */
   bajada: 'Bajá para caminar. Al final hay un cruce y elegís para dónde seguir.',
@@ -81,4 +82,13 @@ export const CAMINO = {
   },
   dePaso: 'DE PASO',
   aca: 'Los que andan por acá',
+  /** Con la pantalla entera (`D-76`), la lista de fichas se abre con un toque. */
+  lista: 'Mirá la lista',
+  cerrarLista: 'Cerrá la lista',
+  /** El recital de lejos (`D-76`). Registro 3: dice qué suena, y que es de lejos. */
+  lejos: {
+    prender: '▶ Escuchá de lejos',
+    apagar: '■ Pará',
+    suena: (disco: string): string => `De lejos suena ${disco}.`,
+  },
 } as const;
