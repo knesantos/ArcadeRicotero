@@ -4967,6 +4967,63 @@ de la séptima vuelta, sin commitear todavía.
 - Cuando entren los recintos nuevos de `bestiario/fondos-rocambole`, sus escenas tienen que pasar por
   `enEspera` como las demás: si llegan con `set:html={rc.svg}`, la prueba de la página falla.
 
+### Enmienda del 2026-10-18 (10): Limón, el limón verde que corre por las chapas del baldío
+
+Pedido del usuario, que eligió 27 bestias para dibujar con más detalle
+(`Docs/SUGERENCIAS/HILO-para-bestiario-prioridad-de-figuras.md`) y largó con esta: *"que limón sea un limón
+colombiano que corre por las chapas, es una leyenda interesante que parece ser real"*. La escribe el hilo
+principal en la rama `bestiario/limon`, sacada de `ciclo-24/bestiario` en `82c4453`. **El número es
+provisorio**: la (9) la tomaron dos ramas (`bestiario/camino-con-cruces` y `bestiario/fondos-rocambole`);
+al integrar se renumera por orden de llegada.
+
+- **Por qué un limón.** La letra dice *"Me matan, Limón / Por los techos viene el bloque"*
+  (*"Me matan, Limón!"*, *Luzbelito*, 1996). La figura del plano lo dibujaba como una persona con remera.
+  El usuario lo quiso fruta: un limón de los verdes, que es el que en Colombia se llama así.
+- **Lo que se cuenta, con su rótulo.** El usuario dijo que la historia *parece ser real*, y para un rótulo eso
+  no alcanza. Se buscó: el propio Indio cuenta en *Recuerdos que mienten un poco* que el tema narra en primera
+  persona el final de Pablo Escobar, con el Bloque de Búsqueda persiguiéndolo a él y a su ladero por los tejados
+  (`RES-21`). Va como **testimonio**, porque es su versión y el libro lo avisa. Que el Limón existió (Álvaro de
+  Jesús Agudelo, chofer y custodio de Escobar, muerto con él el 2-dic-1993) va como **hecho** (`RES-170`). La
+  frase del hijo de Escobar que trae La Gaceta es de segunda mano y no entra. Ojo: el tema **no es de *Lobo
+  suelto*** (1993), como se dijo al pasar en el chat; es de *Luzbelito*, casi tres años después de la muerte.
+  De paso: `RES-170` pone como hecho que el tema cuenta los últimos minutos de Escobar, y según `D-14` eso es
+  testimonio del Indio. Lo tiene que revisar `contenido`.
+- **La técnica es la del recinto: crayón** (`arte-baldio.ts`). Limón no está en ninguna tapa. Vive en el
+  baldío, que viste el crayón violeta de *Un baión*, como el perro de esa tapa. Está pintado con una mancha de
+  base y unos 1500 rayones cortos que le dan la vuelta a la fruta. **El color de cada rayón lo decide la luz del
+  farol del baldío**, arriba a la derecha: de ese lado el verde se va al amarillo, y del otro al violeta de la
+  noche. El borde no es una línea: es donde los rayones se aprietan y se oscurecen. La cáscara tiene sus poros.
+- **Es un títere de siete piezas**: la fruta con la cara, la boca, la hoja, las dos piernas y los dos brazos
+  (los de atrás, más apagados). Tiene zapatillas gastadas, blancas de papel con una franja rosa. Las pupilas y
+  los párpados no se imprimen: son tinta que la isla mueve, para que corra **mirando para atrás**.
+- **La chapa y el bloque.** La medianera del baldío tiene ahora un remate de chapa acanalada (`baldio-chapa`),
+  con tres chapas levantadas, y por ahí corre. **Las linternas del bloque** son dos haces de luz soplada, uno
+  de cada lado, afuera de la escena, que barren los techos y lo buscan (`baldio-linterna`, sumado como luz).
+- **Vive.** Una linterna asoma de un lado. Limón la ve, sale corriendo para la otra punta y la luz lo sigue.
+  Allá se para a jadear, doblado, mirando para atrás; la luz se apaga, y al rato el bloque asoma del otro lado.
+  Cuando abre las piernas la cadera baja, así las zapatillas no se despegan de la chapa. **Tocado, pega un
+  salto** con las piernas recogidas y los brazos arriba, y el bocadillo dice el verso. Sin la isla, queda parado
+  en el medio de la chapa con la linterna de la derecha prendida.
+- **La estampa dice qué es del dibujo**: que sea un limón verde de Colombia no sale de la letra. La ficha lo
+  muestra con su títere, y el plano tiene un limón que corre en vez de la persona.
+- **Pulida de la vuelta**, vista en un primer plano quieto y en el teléfono. El brazo de adelante le cruzaba la
+  boca y bajó el hombro. Un ojo se salía de la cáscara y la cara se corrió al centro. Las gotas de sudor caían
+  adentro de la fruta como manchas y se fueron para atrás. La boca era una sonrisa y pasó a un hueco de susto.
+  Flotaba a media zancada (eso lo arregla la cadera que baja), y al lado del perro quedaba chico: va a 1,2.
+- **Pesos.** Las nueve piezas nuevas suman 93 kB, y la que más pesa es la chapa. La isla pasa de 27,3 a 30,1 kB.
+- **Lo que vigila `bestiario.test.ts`**: que Limón tenga cada parte que mueve la isla, con su imagen, y los
+  ojos, la boca, las caderas, los hombros y el cabito adentro de la fruta; que parado pise la chapa; que corra
+  adentro de la escena sin meterse arriba del perro; las capas del baldío en orden; que las linternas salgan de
+  afuera y barran los techos; que el baldío tenga al perro, a Limón y a los demás como ojos; y que la ficha
+  rotule lo del Indio como testimonio y no como hecho.
+
+#### Abierto, sin trabar
+
+- Siguen las otras 26 de la lista del usuario, en el orden que él decida. Las que tienen el fondo listo son
+  la vaca cubana, el negro Atila, el diablo que mea, el rato molhado, Barbazul (`T-444`) y el esclavo; las demás
+  esperan a `bestiario/fondos-rocambole`.
+- `T-435` suma las cuatro tintas de Limón al lienzo; `T-431`, que `contenido` lea su estampa y su cuenta.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17

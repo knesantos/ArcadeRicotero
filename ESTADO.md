@@ -7,6 +7,23 @@
 
 **Última actualización:** 2026-10-18
 
+> ## 🍋 LIMÓN, POR LAS CHAPAS DEL BALDÍO (2026-10-18) — enmienda (10) de `D-73`, número provisorio
+>
+> **En la rama `bestiario/limon`, sacada de `ciclo-24/bestiario` (PR #56), sin PR ni integrar.** El usuario eligió 27
+> bestias para dibujar con más detalle (`Docs/SUGERENCIAS/HILO-para-bestiario-prioridad-de-figuras.md`) y empezó por
+> Limón: *"un limón colombiano que corre por las chapas"*.
+>
+> - **Limón es un limón verde a crayón**, como el perro de *Un baión*: rayones que dan la vuelta a la fruta, teñidos
+>   por la luz del farol. Es un títere de siete piezas con zapatillas, y corre mirando para atrás.
+> - **Por los techos viene el bloque**: dos linternas barren los techos y lo persiguen de punta a punta de una
+>   chapa nueva, sobre la medianera. Allá jadea; tocado, salta.
+> - **La ficha cuenta lo de Escobar con su rótulo**: testimonio del Indio en el memoir (`RES-21`) y hecho que el
+>   Limón existió (`RES-170`). El tema es de *Luzbelito* (1996), no de *Lobo suelto*.
+> - **Verde:** `npm test` (1662), `npm run check`, `npm run build`. Visto a 375 px: la carrera, el salto, el
+>   bocadillo y la ficha.
+> - **Para integrar:** va encima del #56, así que entra después de él. La (10) se renumera según lo que llegue antes
+>   a `main` (la (9) la tomaron `camino-con-cruces` y `fondos-rocambole`).
+
 > ## 🦇 LA DRÁCULA CON TACONES, TALLADA COMO OKTUBRE, Y LA CARGA DE A UNA (2026-10-18) — séptima y octava enmiendas de `D-73`, ciclo 24
 >
 > **En la rama `ciclo-24/bestiario`, PR #56 abierto, sin integrar (con `origin/main` adentro en `159b1bc`).** Pedido del
