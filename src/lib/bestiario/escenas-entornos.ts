@@ -1,5 +1,5 @@
 /**
- * Las escenas de los seis entornos de la octava vuelta (`D-73`): el galpón, el árbol del gran
+ * Las escenas de los seis entornos de la décima vuelta (`D-73`): el galpón, el árbol del gran
  * bonete, Cybersiberia, los astilleros, la mesa servida y la ruta del último bondi.
  *
  * Mismo régimen que los recintos de noche (`escenas.ts`): el entorno es inventado en la estética de

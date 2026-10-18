@@ -172,7 +172,7 @@
   --entorno-monte-claro: #d9c6be;
   --entorno-monte-medio: #a8968b;
   --entorno-monte-hondo: #524c47;
-  /* Octava vuelta (D-73): los seis entornos que seguian con las figuras del plano, cada uno en la
+  /* Decima vuelta (D-73): los seis entornos que seguian con las figuras del plano, cada uno en la
      tapa de su disco. Medidos con k-medias sobre las tapas de Docs/INVESTIGACION/TapasDiscos/: el
      galpon en el rojo tramado de *En directo*; el arbol en el marmol verde del frente de *Luzbelito*
      y la llanura roja bajo el cielo violeta de su interior; Cybersiberia en el acero remachado de
@@ -226,6 +226,13 @@
   --entorno-bajo-celeste: #4772b3; /* los rayones claros de esa contratapa */
   --entorno-bajo-llama: #f7793c; /* la llama de la contratapa, naranja */
   --entorno-bajo-llama-clara: #fbe755; /* y su corazon amarillo */
+  /* Octava vuelta (D-73): la drácula con tacones y la prision de Barbazul, tallados como la
+     gente de la tapa de *Oktubre* (`grabado.ts`). La plancha es `--fondo` (la tapa mide #111211),
+     el rojo de las banderas es `--disco-oktubre-tinta`, y el gris que Rocambole conto que agrego
+     es `--disco-oktubre-apoyo`: con el se tallan los planos de atras, para que la drácula se
+     despegue de la pared. Aca se mide el blanco de la gente tallada, en las caras del frente.
+     Ninguno escribe texto: no entran al test AA. Faltan en el lienzo (T-435). */
+  --bestia-dracula-papel: #e8eadd; /* el blanco de las caras talladas del frente de Oktubre */
 
   /* Collage de cassette (UX-04: el collage es tecnica fichada de Rocambole, RES-06).
      Papel de etiqueta: sobre el escribe la tinta del fondo (--fondo), par testeado.

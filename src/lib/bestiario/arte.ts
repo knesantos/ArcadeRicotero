@@ -10,6 +10,7 @@
 
 import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
 import { PIEZAS_BAJO } from './arte-bajo.ts';
+import { PIEZAS_PRISION } from './arte-prision.ts';
 import { PIEZAS_ENTORNOS } from './arte-entornos.ts';
 
 
@@ -360,7 +361,7 @@ function infiernoLejos(): string {
 }
 
 /**
- * El damero del salón (octava vuelta): "esta noche está encantador", así que el infierno es un salón
+ * El damero del salón (décima vuelta): "esta noche está encantador", así que el infierno es un salón
  * de baile, con el piso de baldosas negras y de brasa en perspectiva, como los pisos de los cuadros
  * surrealistas, y el fuego de *Gulp!* que se refleja en lo encerado.
  */
@@ -463,7 +464,7 @@ export const FOCOS_TEMPLO: ReadonlyArray<readonly [number, number]> = (() => {
 })();
 
 /**
- * El carnaval de Momo (octava vuelta): serpentinas que cuelgan de la guirnalda, enruladas, y papel
+ * El carnaval de Momo (décima vuelta): serpentinas que cuelgan de la guirnalda, enruladas, y papel
  * picado en el piso donde cae la luz. Todo en la plata, el peltre y el oro de los focos: el templo
  * sigue vistiendo *Momo Sampler*.
  */
@@ -544,6 +545,8 @@ export const PIEZAS: readonly Pieza[] = [
   { nombre: 'momo-brillo', caja: [-120, -260, 240, 520], dibujo: brilloMedallon(), densidad: 1 },
   // La sexta vuelta: el bajo inundado y el gordo Pierre, pintado a pincel seco (`arte-bajo.ts`).
   ...PIEZAS_BAJO,
-  // La octava vuelta: los seis entornos que seguían con las figuras del plano (`arte-entornos.ts`).
+  // La octava vuelta: la prisión de Barbazul y la drácula con tacones, tallados (`arte-prision.ts`).
+  ...PIEZAS_PRISION,
+  // La décima vuelta: los seis entornos que seguían con las figuras del plano (`arte-entornos.ts`).
   ...PIEZAS_ENTORNOS,
 ];

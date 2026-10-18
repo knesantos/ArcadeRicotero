@@ -4917,6 +4917,138 @@ bichos se mueven adentro de las escenas, solo lo que se ve.
 - `T-474`: el cartel del cruce y la puerta "Entrá caminando" al lienzo (hoja 08, componentes). No
   trajeron tintas nuevas: todo sale de `tokens.css`.
 
+### Enmienda del 2026-10-18 (8): la drácula con tacones, tallada, en la prisión de Barbazul
+
+Pedido del usuario, textual, el mismo de la sexta vuelta: *"hace otro ciclo sobre el bestiario
+redondo. Agrega otro personaje y pulilo a fondo, se creativo que qeude como uno de rocambole."* Le
+llegó a dos sesiones; al ver que la otra ya había hecho a Pierre, el usuario eligió *"Otro más,
+encima del #52"*. La escribe el hilo principal en la rama `ciclo-24/bestiario`, sacada de
+`ciclo-23/bestiario` en `b30b481`. Se escribió como séptima enmienda y pasó a octava al integrar:
+el camino con cruces (PR #54) llegó antes a `main` con la séptima (`integrar.md`).
+
+- **Por qué ella.** La prisión de Barbazul viste *Oktubre* (`D-19`), y de los diez que viven ahí la
+  única que sale de un tema de ese disco es la drácula con tacones (*"Preso en mi ciudad"*). Así el
+  personaje y su recinto comparten la técnica de la tapa, que en el bestiario todavía no estaba. No
+  está en ninguna tapa: se inventa en esa estética (`T-440`).
+- **La técnica es la de la gente de *Oktubre*: grabado** (`lib/bestiario/grabado.ts`). La plancha
+  es negra y la luz se le saca a gubia: cada corte es una línea con ancho, que engorda donde pega la
+  luz hasta juntarse con la de al lado (queda un plano blanco) y se afina hasta cortarse donde la
+  forma se da vuelta (queda el negro). Los cortes no son paralelos de regla: dan la vuelta a la
+  forma (`envolventes`), bajan por el cachete (`siguiendo`) o salen de un punto (`rayos`). La luz
+  se aprieta (`apretada`): en la tapa casi no hay medio tono, y la raya queda para el paso de lo
+  blanco a lo negro. La imprenta le pasa la gubia al filo de cada corte (`#gubia`) y deja motas de
+  papel en el negro, como la tinta de una prensa a mano (`#motas`). La primera prueba de la cara
+  salió rayada como una cebra, por exceso de medio tono; la que quedó es la cuarta.
+- **Los colores son los de la tapa.** La plancha es `--fondo`; el blanco de la gente se midió en las
+  caras del frente (`--bestia-dracula-papel`); lo de atrás del recinto se talla con el gris que
+  Rocambole contó que agregó (`--disco-oktubre-apoyo`), y así la drácula, tallada en blanco, se
+  despega de la pared sin un contorno. **El único color es el rojo de las banderas**, y ella lo lleva
+  adentro: la boca, el cuello alto de la capa por dentro y el forro.
+- **Es un títere de papel de trece piezas**: la espalda de la capa con el cuello alto, las dos
+  piernas con medias y tacos aguja, el vestido con el escote, la cabeza (con la boca y la mandíbula
+  adentro, como Pierre), las dos mitades negras de la capa, los dos forros, la mano de uñas largas
+  que cierra la capa sobre el pecho y los dos mechones que caen encima. **La capa se abre como dos
+  puertas de papel**: cada mitad negra se achica contra su hombro hasta quedar de canto, y del otro
+  lado se despliega el forro, que es un ala de murciélago roja con el brazo levantado y la mano que
+  tira del borde. Abierta, la capa es una bandera.
+- **La prisión es un pasillo de celdas tallado**, visto de frente: hiladas de ladrillo, rejas de
+  celda (en blanco las de adelante, en gris las del fondo), el charco de luz de la ventana en el piso
+  con la sombra de cada barrote, un foco pelado, la jaulita del pajarito del Lavi-rap colgada del
+  techo, la puerta de Barbazul con su manojo de llaves y la garita de la guardia. Adelante, la jaula
+  de la fiera más fiera, abierta y vacía, con la cadena rota y un hueso.
+- **Lo que sale de una tapa de verdad es la calle**: por la ventana enrejada del fondo se ve la
+  gente de la tapa de *Oktubre*, y sus cinco banderas flamean afuera. Es *"Preso en mi ciudad"*
+  dibujado sin dibujar nada: el preso mira la ciudad por la reja. La imprenta mete la tapa entera y
+  la parte con dos filtros nuevos: a la calle le saca el rojo (`#sin-rojo`), y cada bandera es lo
+  rojo de la tapa recortado por su polígono (`#solo-rojo`), así flamean sin quedar dobles. Son
+  imágenes de la tapa, como el resto del collage del sitio (`D-14`: si llega un reclamo, se baja).
+- **Vive.** Taconea por el pasillo: camina un tramo, se para, y cada taco que apoya suena con dos
+  cortes blancos en el piso. Quieta, a veces se acomoda la capa (asoma el rojo) y a veces mira para
+  la ventana. Mira siempre con los ojos a media asta (`entornados`). **Tocada, abre la capa**, echa
+  la cabeza para atrás, abre la boca con los colmillos y entorna los ojos, y afuera las banderas
+  flamean más fuerte. **La jaula vacía se toca aunque no tenga a nadie** (la estampa ya decía que a
+  la fiera la estás buscando vos): la puerta chirría y va y viene. Los demás del recinto son ojos en
+  lo oscuro, como en los otros recintos de noche: Barbazul en su puerta, la guardia en la garita, el
+  pichón en el alféizar, el pajarito en su jaula.
+- **La estampa de la drácula dice qué es del dibujo**: la capa y la cara no salen de la letra; la
+  gente y las banderas de la ventana sí son de verdad. La ficha la retrata con la capa abierta.
+- **Pulida de la vuelta.** La escala la decidió el navegador: a 0,94 era más alta que las puertas de
+  las celdas y quedó en 0,8. La cara se apretó a planos (los ojos redondos le daban cara de asustada;
+  ahora el párpado pesa y las cejas bajan en V). El foco se corrió a la derecha porque le quedaba de
+  aureola. El fondo pasó de 215 kB a 118 kB: los planos de atrás van sin motas, que lejos no se ven
+  y pesan mucho, y se imprime un poco más comprimido (`calidad` en `Pieza`, nuevo). Las 23 piezas
+  nuevas pesan 385 kB.
+- **Lo que vigila `bestiario.test.ts`**: que la drácula tenga cada parte que mueve la isla, con su
+  imagen y su bisagra en el hombro; que el forro arranque plegado (sin la isla, la capa está
+  cerrada); que la prisión tenga a sus diez y que la jaula de la fiera no tenga ojos; que la
+  drácula camine por el piso del pasillo sin meterse en la jaula; que la calle y las banderas sean
+  la tapa de *Oktubre*, con cada asta adentro de la ventana; que la talla salga igual en cada
+  impresión y no corte nada donde no hay luz; y que la isla no se lleve `grabado.ts` ni
+  `arte-prision.ts` al teléfono (pesa 26,1 kB, 4 más que con Pierre).
+
+#### Abierto, sin trabar
+
+- `T-444`: Barbazul, el dueño de la prisión, que hoy es un par de ojos en su puerta. Su tema es de
+  *Gulp!*: puede ir a pincel seco (`pincel.ts`) como Pierre, o tallado como su recinto
+  (`grabado.ts`); que lo decida la vuelta que lo haga.
+- `T-445`: el bestiario baja cerca de 1,8 MB de imágenes de una al abrir la página, y con cada
+  recinto nuevo crece. Diferir la carga de las escenas de noche hasta que el recinto se acerca, sin
+  romper la página sin JavaScript. Es la mitad de `T-439` que se puede hacer sin un teléfono.
+- Siguen `T-431` (que `contenido` lea la estampa nueva), `T-435` (`--bestia-dracula-papel` al
+  lienzo), `T-437`/`T-439` (cuadros por segundo en un teléfono de verdad: con el panel del navegador
+  oculto el navegador frena los cuadros, y la animación se vio con movimiento reducido simulado) y
+  `T-443`, que baja a seis recintos.
+
+### Enmienda del 2026-10-18 (9): lo que pesa llega cuando se acerca (`T-445`)
+
+Pedido del usuario: que la tarea `T-445`, propuesta al cerrar la vuelta de la drácula, se hiciera en
+la misma sesión (*"Do this task here"*). La escribe el hilo principal en `ciclo-24/bestiario`, encima
+de la octava vuelta. Se escribió como octava enmienda y pasó a novena al integrar, por la misma razón.
+
+- **Lo que pasaba.** Cada recinto de noche y cada retrato de un títere son un SVG con `<image>` que
+  apuntan a las piezas impresas, y el navegador las baja apenas carga la página. Medido en el HTML
+  construido el 2026-10-18: **59 imágenes, 1673 kB**, antes de que la gente vea el plano. El índice
+  no ayudaba: sus retratos (`retrato()`) usan las mismas piezas que las escenas, así que diferir
+  solo las escenas no alcanzaba.
+- **Lo que se hizo: cada escena y cada retrato esperan en un `<noscript>`** (`lib/bestiario/carga.ts`,
+  `enEspera`). Adentro va el SVG entero; afuera, un SVG vacío con la misma clase y la misma caja que
+  le guarda el lugar (`data-espera`). Con JavaScript, lo de adentro de un `<noscript>` es texto: no se
+  dibuja ni baja nada. La isla lo pasa a SVG (`materializar`) cuando el recinto o la ficha quedan a una
+  pantalla y media (`IntersectionObserver` de `150%`), y lo pone en el lugar del vacío, que ya medía lo
+  mismo: la página no salta. El armado de cada recinto (su controlador, el foco, las anotadas) pasó a
+  `montar()`, que corre en ese momento. Una ficha que se abre en la hoja antes de que su lugar en el
+  índice se haya armado se arma en la copia.
+- **Sin JavaScript se ve todo, igual que antes, y no hay nada repetido**: el `<noscript>` se dibuja
+  como siempre y una regla que solo existe sin JavaScript (`SIN_ISLA`) esconde los vacíos. Se
+  descartó poner la ruta en un atributo y que la isla la pase a `href`: sin JavaScript las escenas
+  quedaban negras. También se descartó tener cada escena dos veces, una diferida y otra en un `<noscript>`:
+  pesaba en el HTML de todos y repetía los `id` de los recortes.
+- **Lo que no espera**: los recintos que no piden piezas (los de figuritas del plano) salen tal cual,
+  y el plano redondo de arriba es vector.
+- **Medido después.** En el HTML construido, la página no pide ninguna pieza de entrada, y las 59
+  esperan en 20 `<noscript>` (6 escenas y los 14 retratos del índice). En el navegador del panel, a
+  375 px y arriba de todo, baja solo el monte con el lobo y el cordero: **10 piezas, 466 kB, un 72 %
+  menos**. Al bajar hasta la prisión se arman ella y sus dos vecinas (el baldío y el infierno); en el
+  índice, los retratos que quedan cerca. La isla pesa 27,3 kB (1,2 más).
+- **Una cosa aprendida en el navegador, que vale para probar**: con el panel del navegador oculto, el
+  navegador no pinta, y un `IntersectionObserver` no avisa nada (tampoco uno nuevo hecho a mano). Una
+  captura de pantalla fuerza el pintado, y ahí se arma lo que estaba cerca.
+- **Lo que vigila `bestiario.test.ts`**: que el vacío no pida ni una pieza y mida lo mismo que el de
+  verdad; que el de verdad esté entero en el `<noscript>`; que lo que no pide piezas no espere; y que la
+  página no vuelva a dibujar de entrada una escena o un retrato, y que la isla arme lo que espera al
+  montar un recinto y al copiar una ficha a la hoja.
+
+#### Abierto, sin trabar
+
+- **`T-445` queda hecha.** De `T-439` queda la mitad que necesita un teléfono: los cuadros por
+  segundo y la memoria con varios recintos armados a la vez.
+- Cuando entren los recintos nuevos de `bestiario/fondos-rocambole`, sus escenas tienen que pasar por
+  `enEspera` como las demás: si llegan con `set:html={rc.svg}`, la prueba de la página falla.
+- **Al integrar, con el camino ya en `main`**: la ficha se mudó a `FichaBestia.astro`, que comparte la
+  página del camino. Los retratos esperan solo cuando la página lo pide (`espera`), y lo pide la del
+  bestiario: el camino ya dibuja de entrada al lobo y al cordero que retrata, así que ahí diferirlos no
+  ahorraba nada y le hubiera pedido a su isla armarlos.
+
 ### Enmienda del 2026-10-18 (10): los seis entornos, cada uno en la tapa de su disco
 
 Pedido del usuario, textual: *"Armá un fondo bien rocambole para cada uno de los entornos del bestiario
@@ -4925,8 +5057,7 @@ mejorarlo."* Y a mitad de camino: *"ahora el bestiario es una especie de aventur
 fondos lo tengan en cuenta."* La escribe el hilo principal en la rama `bestiario/fondos-rocambole`, sobre
 `main` en `159b1bc`, en paralelo con la drácula (`ciclo-24/bestiario`, que hizo la prisión) y el camino
 con cruces (`bestiario/camino-con-cruces`). Por eso la prisión no está acá. Es la décima porque el camino entró
-a `main` como la (7) (PR #54) y la drácula trae la (8) y la (9) (PR #56, sin integrar): si el orden de
-llegada cambia, se renumera al integrar (`integrar.md`).
+a `main` como la (7) (PR #54), y la drácula y la carga de a una como la (8) y la (9) (PR #56).
 
 - **Cierra `T-443`**: los seis recintos que seguían con las figuras del plano pasan a ser de noche,
   pintados a aerógrafo en tres capas (`lib/bestiario/arte-entornos.ts`). Cada uno viste la tapa de su

@@ -1,5 +1,5 @@
 /**
- * Los seis entornos de la octava vuelta (`D-73`), a aerógrafo: el galpón de Patricio Rey, el
+ * Los seis entornos de la décima vuelta (`D-73`), a aerógrafo: el galpón de Patricio Rey, el
  * árbol del gran bonete, Cybersiberia, los astilleros, la mesa servida y la ruta del último bondi.
  *
  * Pedido del usuario: *"Armá un fondo bien rocambole para cada uno de los entornos del bestiario

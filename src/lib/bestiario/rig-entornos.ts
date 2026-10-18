@@ -1,5 +1,5 @@
 /**
- * La geometría de los seis entornos de la octava vuelta (`D-73`): el galpón, el árbol del gran
+ * La geometría de los seis entornos de la décima vuelta (`D-73`): el galpón, el árbol del gran
  * bonete, Cybersiberia, los astilleros, la mesa servida y la ruta del último bondi.
  *
  * Son números, como `rig.ts`: los lee el aerógrafo (`arte-entornos.ts`) para pintar cada entorno
