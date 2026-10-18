@@ -267,6 +267,11 @@
      tiene su bloque: sus tintas van entre su apertura y su cierre, y en ningun otro lado. Ninguna
      escribe texto: no entran al test AA. Faltan en el lienzo (T-435). */
   /* ⟨la bestia pop⟩ */
+  /* La bestia pop: el cuerpo es *Gulp!* (el negro, la crema, el rojo corrido sobre el amarillo, que ya
+     estan), y la cara es la gente de *En directo*, impresa en su trama roja. Se miden en el frente de
+     *En directo* (953 px, mediana y percentil 90 de cada zona). */
+  --bestia-pop-piel: #eb5443; /* la cara de la gente donde le pega el reflector (zona 890,430 de 30 px, mediana) */
+  --bestia-pop-reflector: #f0beca; /* el centro del reflector, que revienta rosado (zona 938,355, percentil 90) */
   /* ⟨/la bestia pop⟩ */
 
   /* ⟨el monito que trepa⟩ */

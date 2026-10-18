@@ -4104,6 +4104,9 @@ body:has(> .lugar) .marca-chica {
 .titere--bestia-pop, .titere--monito, .titere--buscapina, .titere--pibe, .titere--canibal,
 .titere--pontiac, .titere--diablo, .titere--rato, .titere--morta, .titere--esclavo { cursor: pointer; }
 /* ⟨la bestia pop⟩ */
+/* Los destellos de las lentejuelas: estrellas en el rosado del reflector de *En directo*, que la isla
+   hace saltar. No se toca un destello: el toque es del títere entero. */
+.bt-bestia-pop-chispa { fill: var(--bestia-pop-reflector); pointer-events: none; }
 /* ⟨/la bestia pop⟩ */
 
 /* ⟨el monito que trepa⟩ */
