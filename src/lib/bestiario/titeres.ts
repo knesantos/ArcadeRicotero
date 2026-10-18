@@ -11,7 +11,7 @@
 import { PIEZAS } from './arte.ts';
 import { rutaDePieza } from './aerografo.ts';
 import { ARMADO, RECORTES, cajaDeRecorte } from './recortes.ts';
-import { PIERRE_ARMADO } from './rig.ts';
+import { DRACULA_ARMADO, PIERRE_ARMADO } from './rig.ts';
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 const cajas = new Map<string, readonly [number, number, number, number]>([
@@ -86,6 +86,42 @@ export function pierre(): string {
 }
 
 /**
+ * La drácula con tacones (`D-73`, séptima vuelta): no es de tapa, está tallada en la estética de
+ * *Oktubre* (`arte-prision.ts`) y recortada en piezas. La capa se abre como dos puertas de papel:
+ * cada mitad negra (`capa-1`, `capa-2`) se achica contra su hombro, y del otro lado se despliega
+ * el forro rojo (`forro-1`, `forro-2`), que arranca plegado. Los mechones de adelante (`pelo`) van
+ * encima de la capa y siguen a la cabeza. Los párpados son de tinta, con el filo del párpado
+ * cerrado tallado abajo.
+ */
+export function dracula(): string {
+  const parpadoDeTinta = (n: number, { centro: [cx, cy], radio: [rx, ry] }: (typeof DRACULA_ARMADO.ojos)[number]): string =>
+    `<g data-parte="parpado-${n}" data-pivote="${cx} ${cy - ry * 1.6}" transform="scale(1 0)">` +
+    `<ellipse cx="${cx}" cy="${cy - ry * 0.2}" rx="${rx * 1.12}" ry="${ry * 1.5}" class="bt-dracula-parpado"/>` +
+    `<path d="M${f(cx - rx)} ${f(cy + ry * 0.4)} Q${cx} ${f(cy + ry * 1.5)} ${f(cx + rx)} ${f(cy + ry * 0.4)}" class="bt-dracula-pestana"/></g>`;
+  const [o1, o2] = DRACULA_ARMADO.ojos;
+  // El forro arranca plegado contra su bisagra: sin la isla, la capa está cerrada.
+  const plegado = (n: 1 | 2): string => {
+    const [hx] = DRACULA_ARMADO.hombros[n - 1];
+    return `<g data-parte="forro-${n}" data-bisagra="${hx}" transform="translate(${hx} 0) scale(0.001 1) translate(${-hx} 0)">${imagen(`dracula-forro-${n}`)}</g>`;
+  };
+  return (
+    `<g data-titere="dracula">` +
+    parte('capa-atras', imagen('dracula-capa-atras')) +
+    parte('pierna-1', imagen('dracula-pierna-1')) +
+    parte('pierna-2', imagen('dracula-pierna-2')) +
+    parte('cuerpo', imagen('dracula-cuerpo')) +
+    parte('cabeza', imagen('dracula-boca') + parte('mandibula', imagen('dracula-mandibula')) + imagen('dracula-cabeza') + parpadoDeTinta(1, o1) + parpadoDeTinta(2, o2)) +
+    plegado(1) +
+    plegado(2) +
+    `<g data-parte="capa-1" data-bisagra="${DRACULA_ARMADO.hombros[0][0]}">${imagen('dracula-capa-1')}</g>` +
+    `<g data-parte="capa-2" data-bisagra="${DRACULA_ARMADO.hombros[1][0]}">${imagen('dracula-capa-2')}</g>` +
+    parte('mano', imagen('dracula-mano')) +
+    parte('pelo', imagen('dracula-pelo')) +
+    `</g>`
+  );
+}
+
+/**
  * El retrato de ficha de los que tienen tapa (`D-73`, pulida): las mismas piezas del títere,
  * quietas y encuadradas en la caja que las junta. Así la ficha muestra al bicho que se tocó en
  * la escena, y no la figura del plano. `null` para los demás, que siguen con su figura.
@@ -110,6 +146,14 @@ const PIEZAS_DEL_RETRATO: Readonly<Record<string, { piezas: readonly string[]; c
   'el-gordo-pierre': {
     piezas: ['pierre-cuerpo', 'pierre-cabeza', 'pierre-mandibula', 'pierre-brazo', 'pierre-antebrazo'],
     cuerpo: () => ['pierre-cuerpo', 'pierre-boca', 'pierre-mandibula', 'pierre-cabeza', 'pierre-brazo', 'pierre-antebrazo'].map(imagen).join(''),
+  },
+  // La drácula tampoco es de tapa: la ficha la muestra con la capa abierta, que es cuando se la ve entera.
+  'la-dracula-con-tacones': {
+    piezas: ['dracula-capa-atras', 'dracula-forro-1', 'dracula-forro-2', 'dracula-pierna-1', 'dracula-pierna-2'],
+    cuerpo: () =>
+      ['dracula-capa-atras', 'dracula-pierna-1', 'dracula-pierna-2', 'dracula-cuerpo', 'dracula-boca', 'dracula-mandibula', 'dracula-cabeza', 'dracula-forro-1', 'dracula-forro-2', 'dracula-pelo']
+        .map(imagen)
+        .join(''),
   },
 };
 

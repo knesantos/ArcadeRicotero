@@ -8,12 +8,12 @@
  * desde lo oscuro. El fuego del infierno es la pincelada de la tapa de *Gulp!*, teñida.
  */
 
-import { imagen, pierre } from './titeres.ts';
+import { dracula, imagen, pierre } from './titeres.ts';
 import { ARMADO } from './recortes.ts';
-import { BAJO, ESCENA, LUZBELITO, MOMO, PERRO, PIERRE, llamaEnEscena } from './rig.ts';
+import { BAJO, BANDERAS, DRACULA, ESCENA, LUZBELITO, MOMO, PERRO, PIERRE, PRISION, deLaTapa, llamaEnEscena } from './rig.ts';
 import { agujero } from './arte-bajo.ts';
 
-export { LUZBELITO, MOMO, PERRO, PIERRE };
+export { DRACULA, LUZBELITO, MOMO, PERRO, PIERRE };
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 
@@ -225,5 +225,59 @@ export function escenaBajo(nombres: ReadonlyMap<string, string>): string {
     `<g class="bajo-ondas-vivas" pointer-events="none" clip-path="url(#bajo-adelante)" data-onda="pierre"></g>` +
     losOjos(VECINOS_DEL_BAJO, nombres, (y) => y > BAJO.fondo) +
     `<g pointer-events="none">${imagen('bajo-frente')}</g>`
+  );
+}
+
+/* ------------------------------------------------------------------
+   La prisión de Barbazul: la drácula con tacones (séptima vuelta)
+   ------------------------------------------------------------------
+   La drácula no es de tapa: está tallada en la estética de *Oktubre* (`arte-prision.ts`). Capas,
+   de atrás para adelante: el pasillo con la calle de la tapa en la ventana (`prision-lejos`), las
+   banderas de la tapa, que flamean afuera, la reja, los ojos de los demás, la jaula vacía de la
+   fiera (solo el lugar donde se toca), la sombra y la drácula, y lo de adelante: la columna, la
+   jaula y su puerta abierta, que se mece.
+*/
+
+export const VECINOS_DE_LA_PRISION: Readonly<Record<string, readonly [number, number, Tinta]>> = {
+  barbazul: [281, 330, 'oro'],
+  'el-reo-semental': [80, 430, 'papel'],
+  'el-esclavo-sensible-y-chillon': [196, 388, 'papel'],
+  'los-reos-de-la-sociedad': [712, 382, 'papel'],
+  'los-titanes-del-orden-viril': [622, 322, 'rojo'],
+  'el-chivato': [236, 396, 'oro'],
+  'el-pichon': [558, 324, 'papel'],
+  'el-pajarito-del-lavi-rap': [150, 162, 'oro'],
+};
+
+/** La fiera más fiera no está: se toca la jaula vacía, adelante a la derecha. */
+export const JAULA_VACIA = { id: 'la-fiera-mas-fiera', x: 796, y: 486, r: 70 } as const;
+
+export function escenaPrision(nombres: ReadonlyMap<string, string>): string {
+  const { ventana: V, jaula: J } = PRISION;
+  const hueco = `M${V.x0} ${V.abajo} L${V.x0} ${V.hombro} Q${V.x0} ${V.clave} ${(V.x0 + V.x1) / 2} ${V.clave} Q${V.x1} ${V.clave} ${V.x1} ${V.hombro} L${V.x1} ${V.abajo} Z`;
+  const banderas = BANDERAS.map((b, i) => {
+    const [ax, ay] = deLaTapa(b.asta);
+    return `<g data-bandera="${i}" data-asta="${f(ax)} ${f(ay)}">${imagen(`prision-bandera-${i + 1}`)}</g>`;
+  }).join('');
+  const { x, piso, escala } = DRACULA;
+  const fiera = nombres.get(JAULA_VACIA.id) ?? '';
+  return (
+    imagen('prision-lejos') +
+    `<clipPath id="prision-calle"><path d="${hueco}"/></clipPath>` +
+    `<g class="prision-banderas" clip-path="url(#prision-calle)" pointer-events="none">${banderas}</g>` +
+    `<g pointer-events="none">${imagen('prision-reja')}</g>` +
+    losOjos(VECINOS_DE_LA_PRISION, nombres) +
+    // La jaula de la fiera se toca, pero no tiene ojos: la fiera no está.
+    `<g class="bestia bestia--jaula" data-id="${JAULA_VACIA.id}" data-x="${JAULA_VACIA.x}" data-y="${JAULA_VACIA.y}" role="button" tabindex="0" aria-label="${fiera}">` +
+    `<circle class="toque" cx="${JAULA_VACIA.x}" cy="${JAULA_VACIA.y}" r="${JAULA_VACIA.r}"/><g class="cuerpo"></g>` +
+    `<g class="marca-anotada" transform="translate(${J.x1 - 20} ${J.arriba + 40})"><circle r="6" class="b-pp b-borde"/><path d="M-3 0 l2 2.5 l4 -5" class="b-tz" stroke-width="2"/></g>` +
+    `</g>` +
+    // La sombra en el piso y los dos cortes del taco, que la isla mueve con ella.
+    `<ellipse class="dracula-sombra" data-parte="sombra" cx="${x}" cy="${piso + 3}" rx="${f(64 * escala)}" ry="7" pointer-events="none"/>` +
+    `<path class="dracula-taco" data-parte="taco" d="M-14 -4 l-9 -6 M14 -4 l9 -6" opacity="0" pointer-events="none"/>` +
+    `<g class="titere titere--dracula" data-id="la-dracula-con-tacones" role="button" tabindex="0" aria-label="${nombres.get('la-dracula-con-tacones') ?? ''}">` +
+    `<g id="dracula-entera" transform="translate(${x} ${piso}) scale(${escala})">${dracula()}</g></g>` +
+    `<g pointer-events="none">${imagen('prision-columna')}${imagen('prision-jaula')}` +
+    `<g data-parte="puerta-jaula" data-bisagra="${J.puerta.x}">${imagen('prision-puerta')}</g></g>`
   );
 }

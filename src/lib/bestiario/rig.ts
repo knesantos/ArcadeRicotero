@@ -89,3 +89,85 @@ export const BAJO = {
   agujero: { x: 196, y: 176 },
 } as const;
 export const PIERRE = { x: 486, agua: 476, escala: 0.9 } as const;
+
+/* ------------------------------------------------------------------
+   La prisión de Barbazul y la drácula con tacones (`D-73`, séptima vuelta)
+   ------------------------------------------------------------------ */
+
+/**
+ * Dónde gira cada pieza de la drácula, en coordenadas de títere: el (0, 0) es el piso entre los
+ * dos tacos, y arriba es negativo. Lo dibuja `arte-prision.ts` y lo mueve la isla.
+ */
+export const DRACULA_ARMADO = {
+  /** El medio de la cara, entre los ojos y la boca: de acá se mide todo lo de la cabeza. */
+  cara: [0, -502],
+  /** El cogote: de acá se ladea la cabeza. */
+  cuello: [0, -446],
+  /**
+   * Los ojos: el centro de cada uno y el tamaño de la almendra, que tapa el párpado al parpadear.
+   * El párpado nunca sube del todo (`entornados`): mira con los ojos a media asta.
+   */
+  entornados: 0.3,
+  ojos: [
+    { centro: [-17, -508], radio: [9.4, 3.5] },
+    { centro: [17, -508], radio: [9.4, 3.5] },
+  ],
+  /**
+   * Las bisagras de la capa, en cada hombro: cada mitad negra se da vuelta contra la suya como una
+   * puerta de papel, y del otro lado aparece el forro rojo.
+   */
+  hombros: [
+    [-80, -412],
+    [80, -412],
+  ],
+  /** De dónde se mueve cada pierna al caminar, escondido debajo del vestido. */
+  caderas: [
+    [-17, -250],
+    [17, -250],
+  ],
+  /** La mano que agarra el borde de la capa abierta, en la punta del ala de la derecha (la otra, espejada). */
+  punta: [300, -478],
+  /** La mano que cierra la capa sobre el pecho. */
+  mano: [-6, -384],
+} as const;
+
+/**
+ * La prisión de Barbazul: un pasillo de celdas visto de frente, con el punto de fuga en el medio.
+ * Al fondo, la ventana enrejada, y detrás la calle de *Oktubre*: la tapa misma, con su gente.
+ */
+export const PRISION = {
+  /** El punto de fuga del pasillo. */
+  fuga: [450, 250],
+  /** La pared del fondo: de dónde a dónde, el techo y el piso. */
+  fondo: { x0: 250, x1: 650, techo: 70, piso: 400 },
+  /** La ventana: el hueco, con el arco arriba. */
+  ventana: { x0: 322, x1: 578, hombro: 158, clave: 116, abajo: 334 },
+  /**
+   * Dónde cae la tapa de *Oktubre* detrás de la ventana: el (0, 0) de la tapa y cuánto se achica.
+   * Lo de abajo de la tapa (la gente y las banderas) queda en el hueco.
+   */
+  tapa: { x: 306.3, y: 4.1, escala: 0.342 },
+  /** La jaula vacía de la fiera más fiera, adelante a la derecha, y la bisagra de su puerta. */
+  jaula: { x0: 712, x1: 880, arriba: 318, piso: 628, puerta: { x: 726, arriba: 404, abajo: 616, ancho: 70 } },
+} as const;
+
+/**
+ * Las banderas de la tapa, que flamean afuera de la ventana: el polígono que las recorta de la
+ * tapa (en píxeles de la tapa, 953 × 953) y el punto del asta de donde flamean.
+ */
+export const BANDERAS: ReadonlyArray<{ poligono: ReadonlyArray<readonly [number, number]>; asta: readonly [number, number] }> = [
+  { poligono: [[58, 438], [190, 438], [190, 662], [58, 662]], asta: [72, 452] },
+  { poligono: [[282, 422], [338, 422], [338, 672], [282, 672]], asta: [300, 664] },
+  { poligono: [[390, 432], [602, 432], [602, 502], [470, 574], [390, 600]], asta: [584, 450] },
+  { poligono: [[408, 672], [470, 576], [602, 504], [652, 504], [656, 556], [560, 580], [528, 592], [470, 672]], asta: [426, 656] },
+  { poligono: [[528, 594], [560, 582], [656, 558], [700, 498], [762, 498], [762, 672], [528, 672]], asta: [652, 630] },
+];
+
+/** De píxeles de la tapa a la escena. */
+export const deLaTapa = ([x, y]: readonly [number, number]): [number, number] => [PRISION.tapa.x + x * PRISION.tapa.escala, PRISION.tapa.y + y * PRISION.tapa.escala];
+
+/**
+ * La drácula: dónde arranca (y dónde queda quieta con movimiento reducido), el piso por donde
+ * camina, de dónde a dónde, y de qué tamaño va.
+ */
+export const DRACULA = { x: 330, piso: 624, desde: 196, hasta: 590, escala: 0.8 } as const;

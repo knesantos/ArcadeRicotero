@@ -10,6 +10,7 @@
 
 import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
 import { PIEZAS_BAJO } from './arte-bajo.ts';
+import { PIEZAS_PRISION } from './arte-prision.ts';
 
 
 
@@ -471,4 +472,6 @@ export const PIEZAS: readonly Pieza[] = [
   { nombre: 'momo-brillo', caja: [-120, -260, 240, 520], dibujo: brilloMedallon(), densidad: 1 },
   // La sexta vuelta: el bajo inundado y el gordo Pierre, pintado a pincel seco (`arte-bajo.ts`).
   ...PIEZAS_BAJO,
+  // La séptima vuelta: la prisión de Barbazul y la drácula con tacones, tallados (`arte-prision.ts`).
+  ...PIEZAS_PRISION,
 ];
