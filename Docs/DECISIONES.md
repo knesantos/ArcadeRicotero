@@ -4921,6 +4921,52 @@ encima del #52"*. La escribe el hilo principal en la rama `ciclo-24/bestiario`, 
   oculto el navegador frena los cuadros, y la animación se vio con movimiento reducido simulado) y
   `T-443`, que baja a seis recintos.
 
+### Enmienda del 2026-10-18 (8): lo que pesa llega cuando se acerca (`T-445`)
+
+Pedido del usuario: que la tarea `T-445`, propuesta al cerrar la séptima vuelta, se hiciera en la
+misma sesión (*"Do this task here"*). La escribe el hilo principal en `ciclo-24/bestiario`, encima
+de la séptima vuelta, sin commitear todavía.
+
+- **Lo que pasaba.** Cada recinto de noche y cada retrato de un títere son un SVG con `<image>` que
+  apuntan a las piezas impresas, y el navegador las baja apenas carga la página. Medido en el HTML
+  construido el 2026-10-18: **59 imágenes, 1673 kB**, antes de que la gente vea el plano. El índice
+  no ayudaba: sus retratos (`retrato()`) usan las mismas piezas que las escenas, así que diferir
+  solo las escenas no alcanzaba.
+- **Lo que se hizo: cada escena y cada retrato esperan en un `<noscript>`** (`lib/bestiario/carga.ts`,
+  `enEspera`). Adentro va el SVG entero; afuera, un SVG vacío con la misma clase y la misma caja que
+  le guarda el lugar (`data-espera`). Con JavaScript, lo de adentro de un `<noscript>` es texto: no se
+  dibuja ni baja nada. La isla lo pasa a SVG (`materializar`) cuando el recinto o la ficha quedan a una
+  pantalla y media (`IntersectionObserver` de `150%`), y lo pone en el lugar del vacío, que ya medía lo
+  mismo: la página no salta. El armado de cada recinto (su controlador, el foco, las anotadas) pasó a
+  `montar()`, que corre en ese momento. Una ficha que se abre en la hoja antes de que su lugar en el
+  índice se haya armado se arma en la copia.
+- **Sin JavaScript se ve todo, igual que antes, y no hay nada repetido**: el `<noscript>` se dibuja
+  como siempre y una regla que solo existe sin JavaScript (`SIN_ISLA`) esconde los vacíos. Se
+  descartó poner la ruta en un atributo y que la isla la pase a `href`: sin JavaScript las escenas
+  quedaban negras. También se descartó tener cada escena dos veces, una diferida y otra en un `<noscript>`:
+  pesaba en el HTML de todos y repetía los `id` de los recortes.
+- **Lo que no espera**: los recintos que no piden piezas (los de figuritas del plano) salen tal cual,
+  y el plano redondo de arriba es vector.
+- **Medido después.** En el HTML construido, la página no pide ninguna pieza de entrada, y las 59
+  esperan en 20 `<noscript>` (6 escenas y los 14 retratos del índice). En el navegador del panel, a
+  375 px y arriba de todo, baja solo el monte con el lobo y el cordero: **10 piezas, 466 kB, un 72 %
+  menos**. Al bajar hasta la prisión se arman ella y sus dos vecinas (el baldío y el infierno); en el
+  índice, los retratos que quedan cerca. La isla pesa 27,3 kB (1,2 más).
+- **Una cosa aprendida en el navegador, que vale para probar**: con el panel del navegador oculto, el
+  navegador no pinta, y un `IntersectionObserver` no avisa nada (tampoco uno nuevo hecho a mano). Una
+  captura de pantalla fuerza el pintado, y ahí se arma lo que estaba cerca.
+- **Lo que vigila `bestiario.test.ts`**: que el vacío no pida ni una pieza y mida lo mismo que el de
+  verdad; que el de verdad esté entero en el `<noscript>`; que lo que no pide piezas no espere; y que la
+  página no vuelva a dibujar de entrada una escena o un retrato, y que la isla arme lo que espera al
+  montar un recinto y al copiar una ficha a la hoja.
+
+#### Abierto, sin trabar
+
+- **`T-445` queda hecha.** De `T-439` queda la mitad que necesita un teléfono: los cuadros por
+  segundo y la memoria con varios recintos armados a la vez.
+- Cuando entren los recintos nuevos de `bestiario/fondos-rocambole`, sus escenas tienen que pasar por
+  `enEspera` como las demás: si llegan con `set:html={rc.svg}`, la prueba de la página falla.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17
