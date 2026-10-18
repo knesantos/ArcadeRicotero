@@ -30,6 +30,7 @@ import { ESPERA, GUARDADO } from '../lib/bestiario/carga.ts';
 import { crearRocola } from './rocola.ts';
 import { girar, hacia, parpado, partes, suave } from './bestiario/articular.ts';
 import { armarPastura } from './bestiario/pastura.ts';
+import { armarAtila } from './bestiario/atila.ts';
 
 interface BestiaIsla {
   id: string;
@@ -378,9 +379,13 @@ function recintoDelMonte(escena: HTMLElement, svg: SVGSVGElement): Recinto {
    Los protagonistas de tapa de los otros recintos: el perro, Luzbelito y Momo
    ------------------------------------------------------------------ */
 
-/** El perro de *Un baión*, en el borde del baldío: sigue ahí, y de a ratos ladra. */
+/**
+ * El perro de *Un baión*, en el borde del baldío: sigue ahí, y de a ratos ladra. Arriba, por la
+ * medianera, anda el negro Atila (`bestiario/atila.ts`).
+ */
 function recintoDelPerro(escena: HTMLElement, svg: SVGSVGElement): Recinto {
   const deMapa = recintoDeMapa(escena, svg);
+  const atila = armarAtila(svg, { hablar: (id, x, y) => hablar(id, escena, svg, x, y), quieto, reloj: () => reloj });
   const g = svg.querySelector<SVGGElement>('.titere--perro')!;
   const p = partes(g);
   const base = g.getAttribute('transform') ?? '';
@@ -425,12 +430,13 @@ function recintoDelPerro(escena: HTMLElement, svg: SVGSVGElement): Recinto {
     mover: (t, dt) => {
       deMapa.mover(t, dt);
       pintar(t);
+      atila.mover(t, dt);
     },
     reaccionar: (id, t) => {
       if (id === 'ese-perro-que-sigue-alli') {
         ladraDesde = t;
         ladridos = 3;
-      } else deMapa.reaccionar(id, t);
+      } else if (!atila.reaccionar(id, t)) deMapa.reaccionar(id, t);
     },
   };
 }

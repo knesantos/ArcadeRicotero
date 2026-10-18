@@ -4,18 +4,19 @@ import { readFileSync } from 'node:fs';
 import { dibujar, dibujarGrupo } from './figuras.ts';
 import { adentro, camara, contorno, dibujarRecinto, dibujarRuta, dibujarSuelo, punto, simbolos, type Bestiario } from './mapa.ts';
 import { existsSync } from 'node:fs';
-import { lobo, cordero, dracula, pierre, retrato } from './titeres.ts';
+import { atila, lobo, cordero, dracula, pierre, retrato } from './titeres.ts';
 import { escenaMonte, VECINOS_DEL_MONTE } from './escena-monte.ts';
 import {
   CHORRO, JAULA_VACIA, escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, VECINOS_DE_LA_PRISION, VECINOS_DEL_BAJO, VECINOS_DEL_BALDIO,
   VECINOS_DEL_INFIERNO, VECINOS_DEL_TEMPLO,
 } from './escenas.ts';
-import { ACECHO, BAJO, BANDERAS, DRACULA, DRACULA_ARMADO, PASTURA, ESCENA, PALO, PIERRE, PIERRE_ARMADO, PRISION, deLaTapa } from './rig.ts';
+import { ACECHO, ATILA, ATILA_ARMADO, BAJO, BANDERAS, DRACULA, DRACULA_ARMADO, PASTURA, ESCENA, PALO, PIERRE, PIERRE_ARMADO, PRISION, deLaTapa } from './rig.ts';
 import { ARMADO, RECORTES, cajaDeRecorte, LADO_TAPA } from './recortes.ts';
 import { PIEZAS } from './arte.ts';
 import { ETIQUETA, PIEZAS_BAJO, PIEZAS_PIERRE, PUERTA, agujero } from './arte-bajo.ts';
 import { pincelada } from './pincel.ts';
 import { PIEZAS_DRACULA, PIEZAS_PRISION } from './arte-prision.ts';
+import { CORRE, PIEZAS_ATILA } from './arte-atila.ts';
 import { envolventes, tallar, tono } from './grabado.ts';
 import { ESPERA, GUARDADO, SIN_ISLA, enEspera, pidePiezas } from './carga.ts';
 
@@ -247,7 +248,9 @@ test('cada recinto de noche tiene a todos los suyos: el protagonista de tapa y l
     ['el-templo', 'momo', VECINOS_DEL_TEMPLO, escenaTemplo(nombres)],
   ] as const) {
     const delRecinto = datos.bestias.filter((b) => b.region === region).map((b) => b.id).sort();
-    assert.deepEqual(delRecinto, [protagonista, ...Object.keys(vecinos)].sort(), `en ${region} falta o sobra alguien`);
+    // En el baldío, además del perro de la tapa, anda el negro Atila por la medianera (undécima vuelta).
+    const otros = region === 'los-techos' ? ['el-negro-atila'] : [];
+    assert.deepEqual(delRecinto, [protagonista, ...otros, ...Object.keys(vecinos)].sort(), `en ${region} falta o sobra alguien`);
     assert.ok(escena.includes(`data-id="${protagonista}"`), `${region} no tiene a su protagonista`);
     assert.ok(!/NaN|undefined|Infinity/.test(escena), `${region} tiene un número roto`);
     for (const [id, [x, y]] of Object.entries(vecinos)) assert.ok(x >= 0 && x <= ESCENA.ancho && y >= 0 && y <= ESCENA.alto, `${id} se sale`);
@@ -303,7 +306,7 @@ function importados(desde: string): string[] {
 test('la isla se lleva números: no importa nada que dibuje', () => {
   // Si la isla importa un módulo que dibuja, el teléfono corre el aerógrafo entero al abrir la
   // página para no usarlo. Pasó en la quinta vuelta: `escenas.ts` arrastraba `arte.ts`.
-  const dibujan = ['arte.ts', 'arte-bajo.ts', 'arte-prision.ts', 'aerografo.ts', 'pincel.ts', 'grabado.ts', 'escenas.ts', 'escena-monte.ts', 'titeres.ts', 'figuras.ts', 'mapa.ts'];
+  const dibujan = ['arte.ts', 'arte-bajo.ts', 'arte-prision.ts', 'arte-atila.ts', 'aerografo.ts', 'pincel.ts', 'grabado.ts', 'escenas.ts', 'escena-monte.ts', 'titeres.ts', 'figuras.ts', 'mapa.ts'];
   const llevados = importados('src/scripts/bestiario.ts');
   assert.ok(llevados.includes('rig.ts'), 'la isla dejó de leer rig.ts: el censo no está mirando bien');
   assert.deepEqual(llevados.filter((n) => dibujan.includes(n)), [], `la isla se lleva al teléfono: ${llevados.join(', ')}`);
@@ -508,4 +511,72 @@ test('la página no dibuja de entrada ni una escena ni un retrato que pidan piez
   const isla = readFileSync('src/scripts/bestiario.ts', 'utf-8');
   assert.ok(/function montar\(escena: HTMLElement\): void \{\s*materializar\(escena\);/.test(isla), 'un recinto se monta sin armar su escena');
   assert.ok(isla.includes('materializar(copia);'), 'la hoja copiaría un retrato sin armar');
+});
+
+/*
+ * La undécima vuelta: el negro Atila en la medianera del baldío, a aerógrafo en la estética de
+ * *Lobo suelto* (`arte-atila.ts`).
+ */
+
+/** Las piezas del Atila que van en la escena y no en el títere. */
+const DE_LA_ESCENA = ['atila-tanque', 'atila-vaho', 'atila-sirena'];
+
+test('el Atila es un títere entero: cada pieza que mueve la isla, con su imagen y su bisagra', () => {
+  const marcado = atila();
+  const partes = ['pierna-1', 'pierna-2', 'cuerpo', 'cabeza', 'iris-1', 'iris-2', 'parpado-1', 'parpado-2', 'forro-1', 'forro-2', 'hoja-1', 'hoja-2', 'cuello', 'manos', 'sirena-luz', 'brillo'];
+  for (const parte of partes) assert.ok(marcado.includes(`data-parte="${parte}"`), `al Atila le falta ${parte}`);
+  const imagenes = [...marcado.matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]!);
+  const delTitere = PIEZAS_ATILA.map((p) => p.nombre).filter((n) => !DE_LA_ESCENA.includes(n));
+  assert.deepEqual([...new Set(imagenes)].sort(), [...delTitere].sort(), 'el Atila usa piezas que no se imprimen, o le sobra una');
+  const caja = (nombre: string): readonly [number, number, number, number] => PIEZAS_ATILA.find((p) => p.nombre === nombre)!.caja;
+  const adentro = (nombre: string, [x, y]: readonly [number, number]): boolean => {
+    const [x0, y0, ancho, alto] = caja(nombre);
+    return x >= x0 && x <= x0 + ancho && y >= y0 && y <= y0 + alto;
+  };
+  for (const o of ATILA_ARMADO.ojos) assert.ok(adentro('atila-cabeza', o.centro), 'un ojo se salió de la cara');
+  assert.ok(adentro('atila-cuerpo', ATILA_ARMADO.cuello) && adentro('atila-cuello', ATILA_ARMADO.cuello), 'la cabeza se hunde en el aire');
+  assert.ok(adentro('atila-pierna-1', ATILA_ARMADO.caderas[0]) && adentro('atila-pierna-2', ATILA_ARMADO.caderas[1]), 'una pierna no cuelga de su cadera');
+  // Cada hoja del gabán y su forro giran en la misma costura: la bisagra toca a los dos.
+  for (const [n, b] of ATILA_ARMADO.bisagras.entries()) {
+    assert.ok(adentro(`atila-hoja-${n + 1}`, b) && adentro(`atila-forro-${n + 1}`, b), `la hoja ${n + 1} no gira en su costura`);
+  }
+  assert.ok(adentro('atila-forro-1', ATILA_ARMADO.sirena), 'la sirena no está en el forro');
+  assert.ok(adentro('atila-hoja-2', ATILA_ARMADO.brillo), 'el brillo no sale del bolsillo');
+  assert.ok(CORRE >= 0 && CORRE < 30);
+  // Y arranca cerrado: sin la isla, el forro está plegado contra la costura.
+  for (const m of marcado.matchAll(/data-parte="forro-\d"[^>]*>/g)) assert.match(m[0], /scale\(0\.001 1\)/);
+  for (const m of marcado.matchAll(/data-parte="(hoja|forro)-\d"[^>]*>/g)) assert.match(m[0], /data-bisagra="-?\d+"/);
+  for (const m of marcado.matchAll(/data-parte="parpado-\d"[^>]*>/g)) assert.match(m[0], /data-pivote="-?[\d.]+ -?[\d.]+"/);
+  for (const p of PIEZAS_ATILA) assert.ok(!/NaN|undefined|Infinity/.test(p.dibujo), `${p.nombre} tiene un número roto`);
+});
+
+test('el Atila camina por la medianera: escondido no se ve, asomado se le ven los ojos, y el vaho lo delata', () => {
+  const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
+  const escena = escenaBaldio(nombres);
+  assert.ok(escena.includes('data-id="el-negro-atila"') && escena.includes('id="atila-entero"'));
+  assert.equal(escena.match(/data-vaho="/g)?.length, 3, 'el vaho no tiene sus tres bocanadas');
+  assert.ok(escena.includes('class="atila-sirena"') && escena.includes('atila-tanque'));
+  // Lo que baja del canto del muro no se ve: el recorte termina justo en el piso donde camina.
+  const corte = escena.match(/<clipPath id="atila-pared"><rect x="(-?[\d.]+)" y="(-?[\d.]+)" width="[\d.]+" height="([\d.]+)"/);
+  assert.ok(corte, 'el Atila no tiene muro detrás del cual tirarse');
+  assert.equal(Number(corte![2]) + Number(corte![3]), ATILA.piso);
+  // El vaho va afuera del recorte, así sube aunque él esté escondido.
+  assert.ok(escena.indexOf('class="atila-vahos"') > escena.indexOf('</g></g></g>', escena.indexOf('atila-pared')));
+  const { escala, piso, escondido, asoma } = ATILA;
+  const copa = Math.min(...PIEZAS_ATILA.filter((p) => p.nombre === 'atila-cabeza').map((p) => p.caja[1]));
+  assert.ok(piso + escondido + copa * escala > piso, 'escondido le asoma el funyi');
+  const [ojo] = ATILA_ARMADO.ojos;
+  assert.ok(piso + asoma + ojo.centro[1] * escala < piso - 4, 'asomado no se le ven los ojos');
+  // Del gato matón no pasa: lo huele antes de llegar a la punta del muro.
+  assert.ok(ATILA.olfatea > ATILA.desde && ATILA.olfatea < ATILA.hasta);
+});
+
+test('lo que el Atila se llevó es de bestias que existen, y la estampa dice que es del dibujo', () => {
+  const b = datos.bestias.find((x) => x.id === 'el-negro-atila')!;
+  for (const id of ['el-lobo-suelto', 'el-canibal-desdentado']) assert.ok(datos.bestias.some((x) => x.id === id), `${id} no está en el bestiario`);
+  assert.match(b.estampa, /cadena del lobo/);
+  assert.match(b.estampa, /caníbal desdentado/);
+  assert.match(b.estampa, /del dibujo/);
+  const r = retrato('el-negro-atila');
+  assert.ok(r && r.svg.includes('atila-forro-1') && r.svg.includes('atila-forro-2') && !/NaN/.test(r.caja), 'el Atila no tiene retrato con el gabán abierto');
 });

@@ -11,6 +11,7 @@
 import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
 import { PIEZAS_BAJO } from './arte-bajo.ts';
 import { PIEZAS_PRISION } from './arte-prision.ts';
+import { PIEZAS_ATILA } from './arte-atila.ts';
 
 
 
@@ -485,4 +486,6 @@ export const PIEZAS: readonly Pieza[] = [
   ...PIEZAS_BAJO,
   // La octava vuelta: la prisión de Barbazul y la drácula con tacones, tallados (`arte-prision.ts`).
   ...PIEZAS_PRISION,
+  // La undécima vuelta: el negro Atila en la medianera del baldío, a aerógrafo (`arte-atila.ts`).
+  ...PIEZAS_ATILA,
 ];
