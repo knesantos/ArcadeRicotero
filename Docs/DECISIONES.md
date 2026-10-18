@@ -5049,6 +5049,61 @@ de la octava vuelta. Se escribió como octava enmienda y pasó a novena al integ
   bestiario: el camino ya dibuja de entrada al lobo y al cordero que retrata, así que ahí diferirlos no
   ahorraba nada y le hubiera pedido a su isla armarlos.
 
+### Enmienda del 2026-10-18 (10): los seis entornos, cada uno en la tapa de su disco
+
+Pedido del usuario, textual: *"Armá un fondo bien rocambole para cada uno de los entornos del bestiario
+redondo [...] un entorno adecuado para cada parte del mapa. Si ya tiene un entorno hecho bien buscá cómo
+mejorarlo."* Y a mitad de camino: *"ahora el bestiario es una especie de aventura scrolleable. Que tus
+fondos lo tengan en cuenta."* La escribe el hilo principal en la rama `bestiario/fondos-rocambole`, sobre
+`main` en `159b1bc`, en paralelo con la drácula (`ciclo-24/bestiario`, que hizo la prisión) y el camino
+con cruces (`bestiario/camino-con-cruces`). Por eso la prisión no está acá. Es la décima porque el camino entró
+a `main` como la (7) (PR #54), y la drácula y la carga de a una como la (8) y la (9) (PR #56).
+
+- **Cierra `T-443`**: los seis recintos que seguían con las figuras del plano pasan a ser de noche,
+  pintados a aerógrafo en tres capas (`lib/bestiario/arte-entornos.ts`). Cada uno viste la tapa de su
+  disco (`D-19`), con los colores medidos con k-medias sobre las tapas reales de
+  `Docs/INVESTIGACION/TapasDiscos/` (los `--entorno-*` nuevos de `tokens.css`):
+  - **El galpón** es la noche de *En directo*: la luz roja que revienta arriba a la derecha, la gente
+    impresa en trama de puntos, de espaldas, con una bengala, y en el tablado la silla vacía bajo el
+    seguidor, la fuente de buñuelos y la bestia pop, encorvada y con lentejuelas. De fondo cuelga un disco.
+  - **El árbol del gran bonete** es *Luzbelito*: la llanura roja con huevos de plata bajo el cielo violeta
+    del interior del disco, y el árbol hecho del mármol verde del frente. Del marco de cobre de la tapa,
+    colgado vacío de una rama, se ve otra noche, con luna.
+  - **Cybersiberia** es *Último bondi*: el cielo es la chapa remachada de la tapa, con las pistas de
+    circuito en relieve, y la tele es el ojo de buey, prendida en la nieve, con el Alien Duce adentro. La
+    fila de agujeros de la tapa son los puntos que se come el pac-man. **Nieva** (una animación en bucle,
+    `nevar`, que se apaga con movimiento reducido como la mosca).
+  - **Los astilleros** son la contratapa del disco 2 de *Cordero atado*: tiza azul y espirales sobre lo
+    oscuro, los containers en el naranja del frente, y la luz de un farol de sodio.
+  - **La mesa** es *La mosca y la sopa*: un collage de papel rasgado sobre el rojo de la tapa. La foto del
+    escenario del frente tiene su seguidor, que se escapa de la foto y cae en la olla de la contratapa. Por
+    la ventana se ve la pastura. **La mosca queda pintada acá** (`T-442`, en su estética).
+  - **La ruta** es el surco del disco: el asfalto es vinilo, y en el horizonte se recorta el mundo redondo
+    entero, cada región con su luz. Los cuatro fierros pasan pintados —el último bondi de chapa remachada
+    con ojos de buey por ventanillas, la Mariposa Pontiac con alas, el camión del héroe del whisky y el
+    toxi-taxi con su sombra atrás— y lo que espera en la banquina se queda quieto.
+- **Los bichos siguen el régimen de los recintos de noche**: los que miran desde lo oscuro son ojos, y los
+  que no tienen ojos —una cosa, como la silla, la tele o el balde de almejas, o uno que se ve de
+  espaldas— se tocan donde están pintados (`cosa()` en `escenas-entornos.ts`). Cada uno tiene su silueta
+  pintada debajo de los ojos, para que no floten.
+- **Para el camino** (la aventura que se camina de costado): cada capa es una función de `(ancho, alto)`
+  que siembra todo el ancho de una vez, lo lejano es ambiente y los hitos van en el piso, y la geometría
+  vive en `rig-entornos.ts`, que son números. `luzQueAsoma(región, x, y)` pinta la luz de cada entorno
+  para anunciarlo desde el vecino. El recinto imprime las capas a 900; las largas las suma el camino
+  cuando arme cada tramo. Un test las arma a 1850, 2400 y 3036 sin imprimirlas.
+- **Mejora de dos que ya estaban**: el infierno encantador tenía la mitad de abajo vacía y ahora es un
+  salón de baile, con piso de damero en perspectiva que devuelve el fuego de *Gulp!*; el templo de Momo
+  tiene serpentinas colgando de la guirnalda y papel picado en el piso, en la plata y el oro de *Momo
+  Sampler*.
+- **La ruta de papel del plano** (`dibujarRuta` en `mapa.ts`) se borró: ya no la usaba nadie.
+- Las 23 piezas nuevas pesan 2,5 MB: lo lejano a 2 por unidad y lo transparente a 1,5, que con alfa pesa
+  el doble y en un teléfono no se distingue.
+
+#### Abierto, sin trabar
+
+- Sin tareas nuevas. `T-435` suma las tintas nuevas al lienzo; `T-437` y `T-439` (los cuadros por segundo en
+  un teléfono de verdad) ahora incluyen la nieve.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17
@@ -5116,3 +5171,111 @@ usuario eligió hacerlo público (*"Sí, hacé público el repo"*), y el hilo pr
 - Confirmar que Web Analytics figure *Enabled* en el proyecto nuevo.
 - Hacer un despliegue de prueba del otro proyecto de la cuenta Pro. Vercel ata cada GitHub a una sola
   cuenta, y conectar `knesantos` a la cuenta Hobby pudo haberlo desconectado de la Pro.
+
+## D-75 — La Redondopedia de noche: un lugar en el borde de la hoja, hilos al pie, y la lectura quieta
+
+- **Fecha:** 2026-10-17
+- **Estado:** activa. Pedido directo del usuario, textual: *"Hace una pulida extrema de ui/ux a la
+  redondopedia, debe sentirse inmersiva, misteriosa y mistica. Al mismo tiempo debe ser facil de leer
+  y que leyendo algo te de ganas de seguir con otra cosa, no de forma forzada sino que cause interes
+  real."* La escribe el hilo principal en la rama `diseno/redondopedia-inmersiva`, sobre `main` en
+  `83f6172`. Antes de tomar el número se miraron `origin/main` y las ramas remotas: la última es `D-74`.
+  `D-75`, `UX-39` y `T-450`+ se acordaron con las dos sesiones del bestiario que corrían a la vez (el
+  ciclo 24 del bestiario usa `T-444`..`T-449`).
+- **Enmienda** la fila "Redondopedia — un artículo" de `UX-20` §2 (*"Nada de movimiento nuevo"*) y la
+  frase de `T-187` que decía que la inmersión de un artículo era *"tipográfica y nada más"*. **No toca**
+  `UX-20` §3: rótulos, símbolos y las tres pantallas graves siguen igual que antes.
+
+### El principio: el misterio en el borde, la lectura en el medio
+
+El pedido trae dos cosas que tiran para lados distintos, y `T-187` ya había explicado por qué: un
+artículo con clima propio puede ser más difícil de leer y **borrar la frontera entre el hecho y la
+leyenda**. La salida fue no tocar el medio. Todo lo nuevo vive en el borde de la hoja (arriba la tapa
+y el título, abajo los hilos), y el cuerpo rotulado sigue sobre tinta lisa, quieto, con los rótulos
+fríos. Lo único que cambió en el medio es que la letra creció a 17 px.
+
+### Lo que se hizo
+
+1. **El lugar.** Cada artículo trae una tapa velada que sube desde arriba de la ventana, detrás del
+   regreso y del título, y se pierde en la tinta antes del cuerpo (`.lugar` en `Base.astro`, prop
+   `lugar`). Un disco se viste con su propia tapa, en el detalle de cerca (`<disco>-zoom.jpg`); los demás
+   con el fondo de su categoría, el mismo que ya viste esa parte del sitio (`LUGAR_POR_CATEGORIA`, antes
+   `DETALLE_POR_VARIANTE`); **los tres graves no llevan nada** (`UX-20` §3.4). Es una `.tapa-fondo` como
+   cualquier otra: velo plano (`--velo-tapa`), racleta abajo (con `--desgaste` de 7rem, más lenta) y el
+   nombre de tránsito `lugar`, así que **pasar de un artículo a otro corre la cámara de una tapa a la
+   otra** sin un nombre nuevo (`ADR-03` sigue con tres). En la computadora se abre hasta 52rem
+   (`--ancho-lugar`) con los costados gastados por la misma racleta puesta de canto
+   (`--textura-rodillo-canto`). Lleva la deriva de `UX-20` §1.4 atada a su salida de la ventana
+   (`view()`, tramo `exit`, la misma `deriva-de-capa` de la multitud, al revés), y con movimiento
+   reducido se queda quieta. Reemplaza al recorte chico que flotaba junto al título.
+   La portada de la Redondopedia usa el mismo lugar con *Gulp!*; dejó de ser un recuadro.
+2. **El título en la letra de la banda.** Redonditos de Ricota Fan (`--fuente-luzbelito`), **si entra
+   entero** (`sitio/letras.ts`, vigilado por `fuentes.test.ts` contra el `cmap`), en la tinta de su
+   categoría o de su disco, con la sal de la almohadilla como el de cada juego. Hoy entran todos menos
+   dos, y los dos van en la rotulada con la misma tinta y la misma sal: *Luzbelito*, porque la letra se
+   le parece y no es la suya (`diseno-marca.md`), y Los Decoradores, por los paréntesis. Los graves van
+   en la rotulada y en `--texto`, como siempre. *Oktubre* sobre su tapa va en `--texto`: su tinta es el
+   rojo de marca, que `D-21` saca de encima de una tapa velada.
+3. **Lo que hay adentro**, abajo del título y en registro 3: el sello del tipo (con chapa de `--fondo`),
+   cuántos hechos, cuántas leyendas (◆), cuántos testimonios (❝) y cuánto se tarda en leerlo. Es la
+   promesa de `D-14` en un renglón: el que va a encontrar una leyenda lo sabe antes de leerla.
+4. **Los hilos del pie**, en orden de cercanía:
+   - **"Seguí por acá"**: el "vea también" deja de ser un renglón de títulos pelados y pasa a tarjetas
+     (`TarjetaArticulo.astro`, la misma de la portada) con el gancho —el arranque del resumen, cortado
+     en palabra— y lo que hay adentro: si hay leyenda, **quién da testimonio** ("lo contó Rocambole") y
+     los minutos. Un disco lleva su tapa chica.
+   - **"Pará la oreja"**: el arranque de una leyenda que vive **en otro artículo**, mejor si es uno al
+     que este no manda ya, con su rótulo entero y "Seguí en …". Determinista por artículo, como un libro.
+     Entran solo las leyendas que **se cuentan** (circula, corre, cuentan, versión, rumor, se repite):
+     la nómina de los Fakires es leyenda en su artículo porque no está confirmada, pero no es algo que
+     se le cuente a nadie al oído. **Los graves no la llevan y no la prestan.**
+   - **"También anda por"**: los artículos que nombran a este (los entrantes del grafo de `BR-09`) que
+     no están ni en el "vea también" ni en la oreja. Al Indio lo nombran 32 artículos, y 27 quedan en
+     esa línea. Cada enlace mide 48 px de alto tocable.
+5. **La portada**, en este orden: el lugar con el título en la letra de la banda y en el rojo de *Gulp!*;
+   **"Pará la oreja", una leyenda por noche** según la fecha del teléfono de quien mira
+   (`scripts/oreja.ts`, que mueve un `hidden`; sin JavaScript queda la primera); la clave de los rótulos
+   en tres renglones, en vez del párrafo de cinco; las dos puertas aparte; **los saltos a cada parte**,
+   con cuántos artículos tiene; y el índice: **los diez discos con su tapa y su año**, y el resto con
+   la tarjeta nueva. Lo ya leído se apaga (`:visited`).
+6. **La lectura**: el cuerpo a 17 px (de 75 caracteres por renglón a entre 60 y 70), la bajada a 18, y
+   más aire alrededor de cada párrafo rotulado.
+
+### Lo que no se hizo, a propósito
+
+- **Nada se mueve adentro del cuerpo.** Ni entrada, ni aparición al bajar, ni nada en los rótulos.
+- **Ninguna frase nueva sobre la banda.** El gancho, el rumor y las voces salen de lo que el artículo ya
+  dice; si `contenido` reescribe un resumen, cambian solos. La única copia nueva es de navegación y de
+  rótulo (`REDONDOPEDIA` en `copy.ts`), y la clave dejó de decir "entre fans" (`voz-ricotera.md` §3.8).
+- **Sin sombra, sin degradé decorativo, sin vidrio** (`D-64`, anti-slop): la tapa entra por velo plano y
+  máscara cruzada con textura, como todas.
+
+### Verificado
+
+`npm test` (1668), `npm run check` (0 errores) y `npm run build` (163 páginas). Pares nuevos en
+`contraste.test.ts` (los títulos sobre el lugar a 3:1, lo de adentro a 4,5:1, *Oktubre* en `--texto`),
+en `fuentes.test.ts` (la letra de la banda), en `redondopedia.test.ts` (ganchos, voces, años, entrantes,
+la oreja y su ronda diaria) y la isla nueva en el censo de `estilos.test.ts`. Mirado en el navegador a
+375 px y a 1366 px: portada, un disco, una leyenda, un tema, la persona más nombrada, los dos títulos
+que no entran en la letra y un artículo grave.
+
+### Pendiente
+
+- ~~`T-450`~~ **hecha el 2026-10-17**: la Redondopedia está en el lienzo como **hoja 17, "La
+  Redondopedia de noche"** (versión 20, página Aplicación, debajo de la 11). Trae tres teléfonos a
+  escala (un disco, una leyenda y un grave), el pie con los tres hilos, las medidas y un así no / así
+  sí. La letra de la banda, las dos texturas y las tapas van embebidas, sacadas de `tokens.css` y de
+  `public/` en el momento de pegarla. Las medidas llegaron a `tokens.css` primero, como con la mesa
+  (`T-319`).
+- ~~`T-451`~~ **hecha el 2026-10-17**: `experiencia` escribió `UX-39` y enmendó las dos filas de la
+  Redondopedia en `UX-20` §2 (la de los graves y §3 no cambian). De sus huecos (§11), el hilo
+  principal cerró el mismo día A1 (las tarjetas de los graves van en la rotulada), A2 (el toque de
+  "También anda por"), A7 (12 px para la clave y los saltos) y la excepción de `:visited`, escrita en
+  `diseno-marca.md`. Quedan A4 (En vivo podría tomar el lugar), A6 (los ganchos alrededor de los
+  graves, de `contenido`) y los criterios M1 a M7 de su §10.
+- `T-452`: que `contenido` lea los ganchos y la ronda de la oreja, y los "cuentan los fans" y "los fans
+  se pasaron" que quedan en la prosa del Indio y de la leyenda de *Ji Ji Ji* (`voz-ricotera.md` §3.8:
+  la gente). Ahora la oreja los muestra fuera de su artículo.
+- `T-453`: probarlo en un iPhone. La deriva con `view()` y la máscara de los costados son lo más nuevo.
+
+La propuesta para los tres roles está en `Docs/SUGERENCIAS/HILO-para-experiencia-y-contenido-d75-la-redondopedia-de-noche.md`.

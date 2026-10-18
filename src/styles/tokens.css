@@ -172,6 +172,48 @@
   --entorno-monte-claro: #d9c6be;
   --entorno-monte-medio: #a8968b;
   --entorno-monte-hondo: #524c47;
+  /* Decima vuelta (D-73): los seis entornos que seguian con las figuras del plano, cada uno en la
+     tapa de su disco. Medidos con k-medias sobre las tapas de Docs/INVESTIGACION/TapasDiscos/: el
+     galpon en el rojo tramado de *En directo*; el arbol en el marmol verde del frente de *Luzbelito*
+     y la llanura roja bajo el cielo violeta de su interior; Cybersiberia en el acero remachado de
+     *Ultimo bondi*, con el vidrio del ojo de buey y la lente de su interior; los astilleros en la
+     tiza azul de la contratapa del disco 2 de *Cordero atado*; la mesa en el rojo y el seguidor de
+     *La mosca y la sopa* y el sepia del collage de su contratapa. Ninguno escribe texto: no entran
+     al test AA. Faltan en el lienzo (T-435). */
+  --entorno-galpon-noche: #381f2f;
+  --entorno-galpon-rojo: #cb3539;
+  --entorno-galpon-brasa: #7f2e34;
+  --entorno-galpon-luz: #c7bbb9;
+  --entorno-arbol-marmol: #2b4840;
+  --entorno-arbol-marmol-hondo: #223530;
+  --entorno-arbol-marmol-claro: #466156;
+  --entorno-arbol-veta: #f1dcba;
+  --entorno-arbol-cobre: #d58e61;
+  --entorno-arbol-cobre-hondo: #76513c;
+  --entorno-arbol-tierra: #611a29;
+  --entorno-arbol-tierra-honda: #2a1223;
+  --entorno-arbol-tierra-viva: #922f34;
+  --entorno-arbol-cielo: #411634;
+  --entorno-arbol-violeta: #5a395c;
+  --entorno-arbol-nube: #c3a9a9;
+  --entorno-cyber-acero-hondo: #1f2222;
+  --entorno-cyber-acero: #393f40;
+  --entorno-cyber-acero-claro: #5c6261;
+  --entorno-cyber-nieve: #e4e3e0;
+  --entorno-cyber-vidrio: #d9c398;
+  --entorno-cyber-lente: #98cbd7;
+  --entorno-cyber-oxido: #5d514a;
+  --entorno-astillero-noche: #293843;
+  --entorno-astillero-tiza: #4d7fbb;
+  --entorno-astillero-azul: #497395;
+  --entorno-astillero-tiza-clara: #bbccd7;
+  --entorno-mesa-rojo: #c82f1f;
+  --entorno-mesa-luz: #c5451d;
+  --entorno-mesa-haz: #d1d6e9;
+  --entorno-mesa-papel: #e0d4c5;
+  --entorno-mesa-sepia: #875f3f;
+  --entorno-mesa-sepia-clara: #dcbe9b;
+  --entorno-mesa-sepia-honda: #563f2a;
   /* Sexta vuelta (D-73): el gordo Pierre y el bajo inundado. Pierre es de *Gulp!* y se pinta en
      su estetica: el negro del pincel seco es `--fondo` (la tapa mide #131514), el papel es la
      crema de *Gulp!* (`--disco-gulp-apoyo`), el rojo de las letras corridas es
@@ -230,6 +272,10 @@
      `currentColor`, asi que toma la tinta del lugar donde vive y no trae una suya.
      No lleva credito: es un motivo generico de la tecnica, no un recorte de ninguna tapa. */
   --textura-rodillo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='14'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.06 0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.85 0.85 0.85 0 -0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
+  /* El mismo rodillo puesto de canto (`D-75`): las vetas corren a lo alto, para gastar el
+     costado de una capa como el de arriba gasta su borde de abajo. Es la misma receta con los
+     dos ejes cambiados, no un motivo nuevo. */
+  --textura-rodillo-canto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='240'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9 0.06' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.85 0.85 0.85 0 -0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
 
   /* La almohadilla (`D-64`, hoja 07). Las tapas de los juegos —el título del casete, el de la
      carátula, el h1 de cada juego y el macizo del sello— salen de la misma almohadilla de goma
@@ -317,6 +363,7 @@
      `Docs/SUGERENCIAS/HILO-para-experiencia-desvios-del-ciclo-11.md`. */
   --escalon-umbral: 70ms;
   --duracion-vuelo: 17s; /* el ciclo de la mosca, lo unico vivo del sitio */
+  --duracion-nevada: 16s; /* lo que tarda un copo en cruzar Cybersiberia, en el bestiario (D-73) */
 
   /* Una sola curva para todo, para que se note que es la misma camara en todos lados.
      Arranca rapido —la cinta engancha— y afloja largo —el carrete recoge—. SIN REBOTE:
@@ -421,6 +468,20 @@
   --espacio-2: 1rem;
   --espacio-3: 1.5rem;
   --espacio-4: 2.5rem;
+
+  /* El lugar de la Redondopedia (`D-75`): la tapa velada que sube detrás del título.
+
+     - `--alto-lugar` es cuánto baja la capa: lo bastante para que la tapa llene el primer
+       vistazo y se pierda en la tinta mientras arranca la bajada, nunca detrás del cuerpo
+       rotulado. Con techo de ventana en `sitio.css`, para que en una pantalla baja no tape todo.
+     - `--aire-lugar` es cuánta tapa se ve arriba del título antes de que empiece a escribirse
+       algo: el escalón que se baja al entrar. Crece con el alto de la ventana, con techo. */
+  --alto-lugar: 30rem;
+  --aire-lugar: clamp(2.5rem, 12svh, 6.5rem);
+  /* Y cuánto se abre a lo ancho en la computadora: la tapa a menos del doble de su archivo
+     (los fondos miden entre 400 y 590 px), con los costados gastados. En el teléfono ocupa
+     el ancho entero de la ventana, que es menos que esto. */
+  --ancho-lugar: 52rem;
 
   /* ------------------------------------------------------------------
      La mesa (`D-54`, `UX-35`). Cómo se apoya el sitio en una pantalla ancha. La hoja 15 del

@@ -259,6 +259,28 @@ html[data-umbral] .marca-grande {
   }
 }
 
+/* **Y desde `D-75`, una segunda: el lugar de la Redondopedia.** Es el otro caso legítimo, y
+   por la misma cuenta dada vuelta. La capa no vive en una caja quieta: está anclada arriba
+   de la hoja, que se desplaza entera, así que correrla es profundidad y no un elemento
+   moviéndose. Corre al revés y atada a su propia salida de la ventana (`view()`, tramo
+   `exit`): arranca subida un 8 % y termina en su lugar justo cuando ya salió de la vista.
+   Mientras se baja, la tapa se queda un poco atrás del título. El borde de arriba sale de la
+   ventana antes que nada, y el de abajo es la racleta: ninguno de los dos se descubre.
+
+   Los graves no la tienen porque no tienen capa (`UX-20` §3.4), y con movimiento reducido
+   `--deriva-capa-fondo` vale cero y la tapa se queda quieta. */
+@supports (animation-timeline: view()) {
+  .tapa-fondo--lugar {
+    animation-name: deriva-de-capa;
+    animation-timing-function: linear;
+    animation-direction: reverse;
+    animation-fill-mode: both;
+    animation-duration: auto;
+    animation-timeline: view();
+    animation-range: exit;
+  }
+}
+
 /* ---- La multitud que se acerca (`D-63` enmienda 1) ----
 
    Pedido del usuario, textual: *"mientras vas bajando en la página en el fondo se vean
@@ -398,17 +420,83 @@ html[data-umbral] .marca-grande {
     url('/tapas/fondo/gulp-pincelada.jpg');
 }
 
-/* El detalle de tapa que acompaña al titulo de un articulo que no es de disco
-   (UX-05, 7b/7c). Chico y pegado arriba a la derecha: no compite con el titulo ni se
-   mete detras del cuerpo rotulado. Se omite en los tres articulos de tono grave —
-   la lista vive en arte.ts, no acá. */
-.detalle-articulo {
-  float: right;
-  width: clamp(64px, 22vw, 96px);
-  margin: 0 0 var(--espacio-1) var(--espacio-2);
-  border: var(--linea) solid color-mix(in srgb, var(--tinte) 55%, var(--borde));
-  border-radius: 3px;
-  transform: rotate(-2deg);
+/* ---- El lugar de la Redondopedia (`D-75`) ----
+
+   La tapa velada que sube desde arriba de la ventana, detrás del regreso y del título, y se
+   acaba antes del cuerpo. Reemplaza al recorte chico que flotaba junto al título (`UX-05`
+   7b/7c): aquel decoraba el renglón, esto pone el lugar. El misterio vive en el borde de la
+   hoja, y la prosa rotulada se lee sobre tinta lisa.
+
+   Es una `.tapa-fondo` como cualquier otra —el velo plano, la racleta abajo, el nombre de
+   tránsito `lugar`—, con tres diferencias:
+
+   - **Mide lo que mide el arriba de la hoja y no la caja entera** (`--alto-lugar`): la hoja
+     de un artículo mide cuatro ventanas, y una tapa estirada a ese alto es una mancha.
+   - **La racleta levanta más despacio** (`--desgaste` local): la tapa se pierde en la tinta
+     a lo largo de casi un renglón de pantalla, en vez de cortarse. Es la misma receta de
+     textura cruzada con alfa, así que no es un fundido (`D-34`).
+   - **La imagen entra por `--tapa-lugar`**, que la pone `Base.astro` en línea (`ADR-05.7`):
+     cada artículo trae la suya. El velo va acá, en el mismo bloque, donde el test lo ve. */
+.lugar {
+  --desgaste: 7rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  width: min(100%, var(--ancho-lugar));
+  height: min(var(--alto-lugar), 100svh);
+  margin-inline: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.tapa-fondo--lugar {
+  background-image: linear-gradient(var(--velo-tapa), var(--velo-tapa)), var(--tapa-lugar);
+  background-position: center 35%;
+}
+
+/* En la computadora la tapa no llega a los bordes de la ventana —estirada a 1366 px sería una
+   tira ampliada tres veces, la mancha que el comentario de `.tapa-fondo` ya midió—, así que
+   tiene costados. Y un costado recto en el medio de la pantalla es una caja. Se gastan con la
+   misma racleta de abajo puesta de canto: textura cruzada con alfa, no un fundido (`D-34`).
+   Va en la caja de afuera para que las dos máscaras se multipliquen sin componerse. */
+@media (min-width: 46rem) {
+  .lugar {
+    -webkit-mask-image: var(--textura-rodillo-canto), var(--textura-rodillo-canto),
+      linear-gradient(to right, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste),
+        currentColor calc(100% - var(--desgaste)), transparent calc(100% - var(--desgaste) * 0.55), transparent 100%);
+    mask-image: var(--textura-rodillo-canto), var(--textura-rodillo-canto),
+      linear-gradient(to right, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste),
+        currentColor calc(100% - var(--desgaste)), transparent calc(100% - var(--desgaste) * 0.55), transparent 100%);
+    -webkit-mask-size: var(--desgaste) 240px, var(--desgaste) 240px, 100% 100%;
+    mask-size: var(--desgaste) 240px, var(--desgaste) 240px, 100% 100%;
+    -webkit-mask-repeat: repeat-y, repeat-y, no-repeat;
+    mask-repeat: repeat-y, repeat-y, no-repeat;
+    -webkit-mask-position: left top, right top, left top;
+    mask-position: left top, right top, left top;
+  }
+}
+
+/* El arriba de la portada: sin caja. Hasta `D-75` era un recuadro con borde que encerraba la
+   tapa; ahora la tapa es el lugar, y el título se apoya en ella como en cada artículo. */
+.umbral-redondopedia {
+  padding-top: var(--aire-lugar);
+  margin-bottom: var(--espacio-3);
+}
+
+/* El nombre del lugar, en la letra de la banda y en el rojo del título manuscrito de *Gulp!*,
+   que es el disco que viste esta portada (`D-19`). Con la sal, como el título de cada juego. */
+.umbral-redondopedia .titulo-seccion {
+  font-size: clamp(2.5rem, 12.5vw, 3.6rem);
+  line-height: 1;
+  color: var(--cat-historia);
+  padding-bottom: 0.07em;
+  margin-bottom: var(--espacio-2);
+  -webkit-mask-image: var(--textura-tinta-sal);
+  mask-image: var(--textura-tinta-sal);
+  -webkit-mask-size: 480px 480px;
+  mask-size: 480px 480px;
 }
 
 /* La cabecera de la Redondopedia viste Gulp! (D-19). El fondo llega hasta acá y no
@@ -982,9 +1070,10 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   transform: rotate(-4deg);
 }
 
-/* El detalle: un pedazo de la foto, recortado y pegado. Es el mismo tratamiento que ya
-   tiene el detalle de tapa de la Redondopedia (`.detalle-articulo`): borde grueso teñido
-   por el disco del casete, esquina de estampa y una rotación leve (`D-21`, condición 3). */
+/* El detalle: un pedazo de la foto, recortado y pegado. Es el mismo tratamiento que tenía el
+   detalle de tapa de la Redondopedia hasta `D-75` (y que hoy tiene la tapa chica de sus
+   tarjetas de disco): borde grueso teñido por el disco del casete, esquina de estampa y una
+   rotación leve (`D-21`, condición 3). */
 .casete-arte--detalle {
   object-fit: cover;
   border: var(--linea) solid color-mix(in srgb, var(--tinte) 60%, var(--borde));
@@ -1790,9 +1879,36 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   margin: 0 0 var(--espacio-1);
 }
 
+/* ---- La letra de la banda en la Redondopedia (`D-75`) ----
+
+   El título de la portada, el de cada artículo y el de cada tarjeta van en Redonditos de
+   Ricota Fan **si entran enteros** (`sitio/letras.ts` decide, `fuentes.test.ts` lo vigila):
+   la Redondopedia era la única parte del sitio que escribía su letra grande en la rotulada,
+   y es la parte que más habla de la banda. La letra se dibujó en mayúscula, así que va en
+   mayúscula siempre; y es de un solo peso, así que nunca en negrita. */
+.en-la-banda,
+.articulo h1.en-la-banda,
+.tarjeta-titulo.en-la-banda,
+.disco-del-indice-titulo.en-la-banda {
+  font-family: var(--fuente-luzbelito);
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+/* La marca chica se apoya en tinta cuando la cabecera queda sobre el lugar (`D-75`): es rojo
+   de marca en letra chica, y ese rojo no llega a AA sobre el peor caso del velo (`D-21`). Una
+   chapa de `--fondo` detrás la deja en el par de siempre, y queda como un recorte pegado
+   sobre la tapa, igual que la cinta del regreso del otro lado. */
+body:has(> .lugar) .marca-chica {
+  background: var(--fondo);
+  padding: 0.25em 0.5em;
+  border-radius: 3px;
+}
+
 .indice-articulos {
   display: grid;
-  gap: var(--espacio-1);
+  gap: var(--espacio-2);
   list-style: none;
   padding: 0;
   margin: 0 0 var(--espacio-3);
@@ -1801,7 +1917,11 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 /* La tarjeta de articulo es un recorte mas del collage: borde grueso tenido por
    su disco, titulo en la tinta del disco, rotacion leve alternada. Nada de barra
    de acento en el borde izquierdo — ese remarcado es el tic de interfaz generica
-   que la regla de marca veta por nombre. */
+   que la regla de marca veta por nombre.
+
+   Desde `D-75` dice tres cosas y no dos (`TarjetaArticulo.astro`): el título, el gancho y lo
+   que hay adentro. Cada renglón tiene su clase: hasta acá se pintaba "todo `span`", y el
+   renglón de adentro trae `span` propios que no son un gancho. */
 .tarjeta-articulo {
   --tinte: var(--texto-tenue);
   display: block;
@@ -1814,28 +1934,249 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   min-height: var(--toque-min);
 }
 
-.indice-articulos > li:nth-child(odd) .tarjeta-articulo {
+.indice-articulos > li:nth-child(odd) .tarjeta-articulo,
+.vea-tambien > li:nth-child(odd) .tarjeta-articulo {
   transform: rotate(-0.4deg);
 }
 
-.indice-articulos > li:nth-child(even) .tarjeta-articulo {
+.indice-articulos > li:nth-child(even) .tarjeta-articulo,
+.vea-tambien > li:nth-child(even) .tarjeta-articulo {
   transform: rotate(0.35deg);
 }
 
-.tarjeta-articulo strong {
+.tarjeta-titulo {
   display: block;
   font-family: var(--fuente-rotulada);
   font-size: 1rem;
+  line-height: 1.15;
   letter-spacing: 0.03em;
   color: var(--tinte);
 }
 
-.tarjeta-articulo span {
+/* La letra de la banda se ve más chica que la rotulada a igual cuerpo: sube un escalón. */
+.tarjeta-titulo.en-la-banda {
+  font-size: 1.3rem;
+  line-height: 1.05;
+}
+
+/* Lo que ya leíste se apaga, y nada más (`:visited` solo deja cambiar el color). Es un
+   mapa de lo que falta, no un estado del juego: no hay acierto ni error que comunicar. */
+.tarjeta-articulo:visited .tarjeta-titulo,
+.disco-del-indice:visited .disco-del-indice-titulo {
+  color: var(--texto-tenue);
+}
+
+.tarjeta-gancho {
+  display: block;
+  margin-top: 0.35em;
+  color: var(--texto-tenue);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+/* Lo que hay adentro: registro 3, chico, y cada casilla con su símbolo y su tinta de rótulo
+   (`--rotulo-*`, que no rotan con la mezcla). El punto que separa lo pone la hoja. */
+.tarjeta-adentro,
+.adentro-lista {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.45em;
+  row-gap: 0.1em;
+}
+
+.tarjeta-adentro {
+  margin-top: 0.55em;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--texto-tenue);
+}
+
+.tarjeta-adentro > * + *::before,
+.adentro-lista > * + *::before {
+  content: '·';
+  margin-right: 0.45em;
+  color: var(--texto-tenue);
+}
+
+.es-hecho { color: var(--texto); }
+.es-leyenda { color: var(--rotulo-leyenda); }
+.es-testimonio { color: var(--rotulo-testimonio); }
+
+/* La tarjeta de un disco lleva su tapa chica al costado: un disco tiene cara. Es el mismo
+   recorte pegado del casete del portal —borde grueso teñido, esquina de estampa, apenas
+   torcido—, a un tamaño que se reconoce sin comerse el renglón. */
+.tarjeta-articulo--con-tapa {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr);
+  column-gap: var(--espacio-2);
+  align-items: start;
+}
+
+.tarjeta-articulo--con-tapa > :not(.tarjeta-tapa) {
+  grid-column: 2;
+}
+
+.tarjeta-tapa {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  width: 4rem;
+  height: auto;
+  aspect-ratio: 1;
+  border: var(--linea) solid color-mix(in srgb, var(--tinte) 60%, var(--borde));
+  border-radius: 3px;
+  transform: rotate(-2.5deg);
+}
+
+/* ---- La portada: la oreja, la clave, las puertas, los saltos y los discos (`D-75`) ---- */
+
+/* La clave de los rótulos: tres renglones, cada casilla en su tinta y con su símbolo. */
+.clave-rotulos {
+  margin: var(--espacio-3) 0;
+  padding: var(--espacio-2);
+  border: 2px dashed var(--borde);
+  border-radius: var(--radio);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--texto-tenue);
+}
+
+.clave-entrada {
+  margin: 0 0 var(--espacio-1);
+  color: var(--texto);
+}
+
+.clave-rotulos dl {
+  display: grid;
+  gap: 0.55em;
+  margin: 0;
+}
+
+.clave-rotulos dl > div {
+  display: grid;
+  grid-template-columns: 7.2rem minmax(0, 1fr);
+  column-gap: var(--espacio-2);
+  align-items: baseline;
+}
+
+.clave-rotulos dt {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.clave-rotulos dd {
+  margin: 0;
+}
+
+/* Las dos puertas que no son artículos van juntas, antes del índice. */
+.puertas-aparte {
+  display: grid;
+  gap: var(--espacio-2);
+  margin: var(--espacio-3) 0;
+}
+
+.puertas-aparte > .tarjeta-articulo {
+  margin: 0;
+}
+
+.puertas-aparte > :nth-child(odd) { transform: rotate(-0.5deg); }
+.puertas-aparte > :nth-child(even) { transform: rotate(0.4deg); }
+
+/* Los saltos a cada parte del índice: sellos de goma, no pastillas (`diseno-marca.md`). */
+.partes ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-1);
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--espacio-2);
+}
+
+.partes a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em;
+  min-height: var(--toque-min);
+  padding: 0.3em 0.75em;
+  line-height: 1.2;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--texto);
+}
+
+.partes li:nth-child(odd) a { transform: rotate(-0.6deg); }
+.partes li:nth-child(even) a { transform: rotate(0.5deg); }
+
+.partes-cuantos {
+  color: var(--texto-tenue);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Saltar a una parte deja el título a la vista, con aire, y no pegado al borde. */
+.parte {
+  scroll-margin-top: var(--espacio-3);
+}
+
+/* Los discos del índice: la tapa entera, el nombre y el año. Diez tapas en dos columnas en
+   el teléfono —cinco filas, menos de lo que medían diez tarjetas de texto— y cinco en la
+   computadora. Es el único lugar del índice con imagen: es la parte que se reconoce de vista. */
+.indice-discos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-3) var(--espacio-2);
+  list-style: none;
+  padding: 0;
+  margin: var(--espacio-2) 0 var(--espacio-3);
+}
+
+.disco-del-indice {
+  --tinte: var(--cat-discos);
+  display: block;
+  text-decoration: none;
+  color: var(--texto);
+}
+
+.disco-del-indice img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border: var(--linea) solid color-mix(in srgb, var(--tinte) 55%, var(--borde));
+  border-radius: 3px;
+}
+
+.indice-discos > li:nth-child(odd) .disco-del-indice { transform: rotate(-1deg); }
+.indice-discos > li:nth-child(even) .disco-del-indice { transform: rotate(0.8deg); }
+
+.disco-del-indice-titulo {
+  display: block;
+  margin-top: 0.55em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.95rem;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--tinte);
+}
+
+.disco-del-indice-titulo.en-la-banda {
+  font-size: 1.15rem;
+  line-height: 1.02;
+}
+
+.disco-del-indice-anio {
   display: block;
   margin-top: 0.2em;
+  font-size: 0.8rem;
   color: var(--texto-tenue);
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ---- Redondopedia: el articulo ---- */
@@ -1849,6 +2190,23 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 .articulo--letras, .tarjeta-articulo--letras { --tinte: var(--cat-letras); }
 .articulo--mitologia, .tarjeta-articulo--mitologia { --tinte: var(--cat-mitologia); }
 
+/* El artículo de un disco, su tarjeta y su lugar en el índice se tiñen con la tinta de **ese**
+   disco y no con la plata de la categoría (`D-75`): la ficha de *Oktubre* tiene la tapa de
+   *Oktubre* detrás del título, y el título en el rojo de su bandera. Son las diez tintas de
+   `RES-37` que ya viste el cancionero, todas AA sobre `--fondo`, y en `contraste.test.ts`
+   también como letra grande sobre la tapa velada. Van después de las de categoría para que
+   ganen. */
+.de-disco--gulp { --tinte: var(--disco-gulp-tinta); }
+.de-disco--oktubre { --tinte: var(--disco-oktubre-tinta); }
+.de-disco--un-baion-para-el-ojo-idiota { --tinte: var(--disco-un-baion-para-el-ojo-idiota-tinta); }
+.de-disco--bang-bang-estas-liquidado { --tinte: var(--disco-bang-bang-estas-liquidado-tinta); }
+.de-disco--la-mosca-y-la-sopa { --tinte: var(--disco-la-mosca-y-la-sopa-tinta); }
+.de-disco--lobo-suelto { --tinte: var(--disco-lobo-suelto-tinta); }
+.de-disco--cordero-atado { --tinte: var(--disco-cordero-atado-tinta); }
+.de-disco--luzbelito { --tinte: var(--disco-luzbelito-tinta); }
+.de-disco--ultimo-bondi-a-finisterre { --tinte: var(--disco-ultimo-bondi-a-finisterre-tinta); }
+.de-disco--momo-sampler { --tinte: var(--disco-momo-sampler-tinta); }
+
 /* La letra grande del sitio va sin sombra (`D-64`).
 
    Hasta el 2026-10-05 la marca, los títulos de casete y el h1 de cada artículo llevaban
@@ -1858,6 +2216,21 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
    distintos, y dos en crema sobre el crema de la etiqueta que no se veían. Salió de todos
    lados, letras y objetos, y `estilos.test.ts` falla si vuelve una sombra corrida. */
 
+/* La cabeza del artículo (`D-75`): el título y, abajo, lo que hay adentro. Arriba del título
+   queda tapa a la vista (`--aire-lugar`): entrar es bajar un escalón, y la tapa se ve antes de
+   que se escriba nada. En los graves no hay tapa, y el aire se va con ella. */
+.articulo-cabeza {
+  margin: 0 0 var(--espacio-3);
+}
+
+.articulo--con-lugar .articulo-cabeza {
+  padding-top: var(--aire-lugar);
+}
+
+/* El tipo es un sello de goma al principio del renglón de adentro, y no una etiqueta arriba
+   del título: arriba competía con él por ser lo primero que se lee. Lleva fondo de tinta
+   porque se apoya sobre la tapa velada, y la tinta de su disco no llega a AA como texto chico
+   sobre el peor caso del velo; sobre `--fondo`, sí. */
 .articulo-tipo {
   display: inline-block;
   font-family: var(--fuente-rotulada);
@@ -1865,25 +2238,67 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--tinte);
+  background: var(--fondo);
   border: 2px solid var(--tinte);
   border-radius: 3px;
   padding: 0.2em 0.8em;
-  margin-bottom: var(--espacio-1);
   transform: rotate(-1.2deg);
+}
+
+.articulo-adentro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-1) var(--espacio-2);
+  margin: var(--espacio-2) 0 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--texto-tenue);
 }
 
 .articulo h1 {
   font-family: var(--fuente-rotulada);
   font-size: 1.7rem;
   line-height: 1.1;
-  margin: 0 0 var(--espacio-2);
+  margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.02em;
+  text-wrap: balance;
+}
+
+/* El título en la tinta de su disco y con la sal de la almohadilla, como el de cada juego
+   (`D-65`, `D-64`): la sal saca puntos enteros y no le cambia el color a ninguno, así que el
+   par de contraste no se mueve. Va en la letra de la banda si entra entera (`.en-la-banda`), y
+   si no —*Luzbelito*, los paréntesis de Los Decoradores— en la rotulada, un escalón más chica
+   porque es más ancha, pero con la misma tinta y la misma sal.
+
+   Los graves no llevan nada de esto: van en la rotulada y en la tinta de siempre, sin voz. */
+.articulo:not(.articulo--grave) h1 {
+  font-size: clamp(1.9rem, 8.6vw, 2.6rem);
+  line-height: 1.04;
+  color: var(--tinte);
+  padding-bottom: 0.07em;
+  -webkit-mask-image: var(--textura-tinta-sal);
+  mask-image: var(--textura-tinta-sal);
+  -webkit-mask-size: 480px 480px;
+  mask-size: 480px 480px;
+}
+
+.articulo:not(.articulo--grave) h1.en-la-banda {
+  font-size: clamp(2.3rem, 10.8vw, 3.3rem);
+  line-height: 1.02;
+}
+
+/* La tinta de *Oktubre* es el rojo de la marca, y ese rojo no va como texto sobre tapa velada
+   (`D-21`, `contraste.test.ts`): sobre la multitud de su propia tapa, el título va en la tinta
+   del papel. En el índice y en las tarjetas, que van sobre `--fondo`, sigue en su rojo. */
+.articulo--con-lugar.de-disco--oktubre h1 {
+  color: var(--texto);
 }
 
 .articulo-resumen {
-  font-size: 1.05rem;
-  line-height: 1.55;
+  font-size: 1.12rem;
+  line-height: 1.6;
   color: var(--texto);
   margin: 0 0 var(--espacio-3);
 }
@@ -1908,7 +2323,13 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
    primera letra la elige el artículo, no nosotros. Archivo Black las tiene todas.
 
    **No la lleva `.parrafo`, solo la bajada.** El cuerpo rotulado es donde vive `BR-08`, y
-   ahí no entra ningún adorno que compita con el rótulo. */
+   ahí no entra ningún adorno que compita con el rótulo.
+
+   **`D-75` corrió la frontera, no la borró.** El usuario pidió la Redondopedia "inmersiva,
+   misteriosa y mística" y a la vez fácil de leer. Lo que se sumó vive en el borde de la hoja
+   —la tapa velada que sube detrás del título, el título en la letra de la banda, los hilos
+   del pie—, y el cuerpo sigue igual que como lo dejó `T-187`: tinta lisa, quieto, rótulos
+   fríos. La frontera entre el hecho y la leyenda no se toca, y por eso se pudo. */
 .articulo:not(.articulo--grave) .articulo-resumen::first-letter {
   float: left;
   font-family: var(--fuente-rotulada);
@@ -1994,9 +2415,19 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 
 /* ---- El rotulado en prosa (BR-08): la marca vive en el punto exacto ---- */
 
+/* El cuerpo sube a 17 px (`D-75`): con 16 y la columna de 34rem, el renglón pasaba de 75
+   caracteres, y en un teléfono el ojo se cansaba antes de llegar al rótulo del final. Con
+   17 queda entre 60 y 70, que es la medida de un libro. Los rotulados se separan un poco más:
+   cada uno es una casilla distinta, y el aire es parte de la marca. */
 .parrafo {
   margin: 0 0 var(--espacio-2);
-  line-height: 1.65;
+  font-size: 1.0625rem;
+  line-height: 1.68;
+}
+
+.parrafo--leyenda,
+.parrafo--testimonio {
+  margin-block: var(--espacio-3);
 }
 
 /* Leyenda: el parrafo entero se corre y lleva el rombo de siempre. */
@@ -2048,52 +2479,85 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 
 /* Enlaces internos: subrayado grueso, el color no alcanza solo. */
 .parrafo a,
-.vea-tambien a {
+.oreja-seguir,
+.anda-por a {
   color: var(--acento-2);
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
 
+/* ---- Los hilos del pie (`D-75`) ----
+
+   Lo que hay al terminar de leer. Hasta acá era un renglón de títulos pelados en sellos, y un
+   título pelado no da ningún motivo para tocarlo. Ahora son tres hilos, en orden de cercanía:
+   lo que el artículo recomienda (con su gancho), una leyenda de otro lado, y desde dónde
+   nombran a este. */
+.hilos {
+  margin-top: var(--espacio-4);
+}
+
+.hilo + .hilo {
+  margin-top: var(--espacio-4);
+}
+
 .vea-tambien {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--espacio-1);
+  display: grid;
+  gap: var(--espacio-2);
   list-style: none;
   padding: 0;
-  margin: var(--espacio-3) 0;
+  margin: var(--espacio-2) 0 0;
 }
 
-.vea-tambien a {
+/* Pará la oreja: el arranque de una leyenda de otro artículo, con su rótulo entero. Es un
+   párrafo rotulado como cualquier otro (`.parrafo--leyenda`): la sangría de cita es la única
+   barra lateral que la marca admite, y acá es exactamente eso, una cita. */
+.oreja .oreja-rumor {
+  margin: var(--espacio-2) 0 var(--espacio-1);
+}
+
+.oreja-ronda {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.oreja-seguir {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.4em;
+  min-height: var(--toque-min);
+  padding-block: 12px;
+  margin-inline-start: calc(var(--espacio-2) + 3px);
+  font-size: 0.95rem;
+}
+
+.oreja-donde.en-la-banda {
+  font-size: 1.15rem;
+}
+
+/* También anda por: los artículos que nombran a este, corridos como una línea de texto. Sin
+   punto entre uno y otro: el subrayado ya los separa, y el punto dejaba renglones colgando.
+
+   Cada enlace mide la zona del pulgar de alto (`UX-39` §11 A2). Un enlace en línea toca solo
+   donde está su texto —unos 20 px—, aunque el renglón mida 40: el relleno vertical es lo que le
+   da los 48 sin volverlo un botón. */
+.anda-por {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1.1em;
+  list-style: none;
+  padding: 0;
+  margin: var(--espacio-1) 0 0;
+  line-height: 1.5;
+}
+
+.anda-por a {
   display: inline-block;
   min-height: var(--toque-min);
-  line-height: calc(var(--toque-min) - 4px);
-  padding: 0 var(--espacio-2);
-  border: 2px solid var(--borde);
-  border-radius: 3px;
-  text-decoration-thickness: 1px;
+  padding-block: calc((var(--toque-min) - 1.5em) / 2);
 }
-
-.vea-tambien li:nth-child(odd) a {
-  transform: rotate(-0.8deg);
-}
-
-.vea-tambien li:nth-child(even) a {
-  transform: rotate(0.6deg);
-}
-
-/* La explicacion del rotulado en la portada de la Redondopedia. */
-.leyenda-rotulos {
-  border: 2px dashed var(--borde);
-  border-radius: var(--radio);
-  padding: var(--espacio-2);
-  font-size: 0.9rem;
-  color: var(--texto-tenue);
-  margin: 0 0 var(--espacio-3);
-}
-
-.leyenda-rotulos b.es-leyenda { color: var(--rotulo-leyenda); }
-.leyenda-rotulos b.es-testimonio { color: var(--rotulo-testimonio); }
 
 /* El credito puntual de la pantalla (D-21, condicion 1): que tapas se ven aca.
    Va arriba del pie general, en su propia linea, porque nombra cosas distintas en
@@ -2139,8 +2603,19 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 @media (min-width: 46rem) {
   /* El portal y el indice: "elegir que leer" no es "leer", asi que ensanchan. */
   .casetera,
-  .indice-articulos {
+  .indice-articulos,
+  .puertas-aparte {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Los diez discos en dos filas de cinco: la discografía entera de un vistazo (`D-75`). Y los
+     seis saltos en dos filas de tres. */
+  .indice-discos {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .partes ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   /* El cancionero ensancha por funcion: el acorde alineado sobre la silaba necesita
@@ -2361,8 +2836,13 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
    `diseno-marca.md` prohibe el "hover que levanta o infla", y aca aplica letra por letra. */
 @media (hover: hover) and (pointer: fine) {
   .casete:hover,
-  .tarjeta-articulo:hover {
+  .tarjeta-articulo:hover,
+  .disco-del-indice:hover img {
     border-color: var(--tinte, var(--acento-2));
+  }
+
+  .partes a:hover {
+    border-color: var(--acento-2);
   }
 
   .pozo:hover:not(:disabled) {
@@ -3366,11 +3846,21 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   height: auto;
 }
 
-.recinto-escena--la-ruta .recinto-svg { aspect-ratio: 400 / 220; }
-
 .bestiario-svg .sendero { fill: var(--papel); }
 .bestiario-svg .region-borde--cerco { stroke-width: 4; stroke-dasharray: 2 6; }
-.bestiario-svg .ruta-asfalto { fill: var(--papel-tenue); }
+
+/* Décima vuelta (D-73): los seis entornos de noche. En Cybersiberia nieva: dos copias de la misma
+   capa de copos, una arriba de la otra, que bajan y se repiten. Con movimiento reducido, no nieva. */
+.cyber-nevada-copos { animation: nevar var(--duracion-nevada) linear infinite; }
+
+@keyframes nevar {
+  from { transform: translateY(0); }
+  to { transform: translateY(640px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cyber-nevada-copos { animation: none; }
+}
 
 /* Los títeres se tocan; el cordero, además, se arrastra: el dedo no tiene que mover la página. */
 .titere { cursor: pointer; outline: none; }

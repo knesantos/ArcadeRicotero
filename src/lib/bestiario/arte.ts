@@ -11,6 +11,7 @@
 import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
 import { PIEZAS_BAJO } from './arte-bajo.ts';
 import { PIEZAS_PRISION } from './arte-prision.ts';
+import { PIEZAS_ENTORNOS } from './arte-entornos.ts';
 import { PIEZAS_ATILA } from './arte-atila.ts';
 
 
@@ -360,19 +361,49 @@ function infiernoLejos(): string {
   );
 }
 
-/** Lo cercano del infierno: el piso negro, la puerta del salón y la piedra de Luzbelito. */
+/**
+ * El damero del salón (décima vuelta): "esta noche está encantador", así que el infierno es un salón
+ * de baile, con el piso de baldosas negras y de brasa en perspectiva, como los pisos de los cuadros
+ * surrealistas, y el fuego de *Gulp!* que se refleja en lo encerado.
+ */
+function damero(ancho: number, alto: number, desde: number, fuga: { x: number; y: number }): string {
+  const filas: number[] = [];
+  for (let j = 0; j <= 9; j++) filas.push(desde + (alto + 30 - desde) * Math.pow(j / 9, 1.7));
+  const enY = (xb: number, y: number): number => fuga.x + (xb - fuga.x) * ((y - fuga.y) / (alto + 30 - fuga.y));
+  let baldosas = '';
+  for (let c = -12, i = 0; c < 12; c++, i++) {
+    const [b0, b1] = [ancho / 2 + c * 92, ancho / 2 + (c + 1) * 92];
+    for (let j = 0; j < filas.length - 1; j++) {
+      if ((c + j) % 2 === 0) continue;
+      const [y0, y1] = [filas[j]!, filas[j + 1]!];
+      baldosas += `M${enY(b0, y0).toFixed(1)} ${y0.toFixed(1)} L${enY(b1, y0).toFixed(1)} ${y0.toFixed(1)} L${enY(b1, y1).toFixed(1)} ${y1.toFixed(1)} L${enY(b0, y1).toFixed(1)} ${y1.toFixed(1)} Z `;
+    }
+  }
+  const piso = `M-20 ${desde} L${ancho + 20} ${desde} L${ancho + 20} ${alto + 20} L-20 ${alto + 20} Z`;
+  return enmascarado('m-damero', piso,
+    forma(piso, F.negro) +
+    forma(baldosas, F.brasa, 0.85) +
+    // Lo encerado devuelve el fuego: manchas largas y verticales, más fuertes cerca de la pared.
+    [140, 330, 560, 780].map((x, i) => nube(x, desde + 40, 36 + i * 4, 90, F.fuego, 'xl', 0.22)).join('') +
+    nube(ancho / 2, desde + 6, ancho * 0.6, 20, F.rojo, 'l', 0.45) +
+    nube(ancho / 2, alto, ancho * 0.7, 120, F.negro, 'xl', 0.7));
+}
+
+/** Lo cercano del infierno: el piso de damero del salón, la puerta y la piedra de Luzbelito. */
 function infiernoCerca(): string {
   const { ancho, alto } = ESCENA_ARTE;
   return (
     `<g filter="url(#rociado)">` +
     soplo(`M-20 336 C300 322, 600 322, ${ancho + 20} 336 L${ancho + 20} ${alto + 20} L-20 ${alto + 20} Z`, F.negro, 's') +
+    damero(ancho, alto, 340, { x: ancho / 2, y: 236 }) +
     nube(ancho / 2, 350, 520, 22, F.brasa, 'l', 0.8) +
-    nube(ancho / 2, 520, 300, 90, F.brasa, 'xl', 0.35) +
     // La puerta del salón, encendida por dentro.
     forma('M140 352 L140 262 Q180 214 220 262 L220 352 Z', F.negro) +
     soplo('M152 352 L152 270 Q180 234 208 270 L208 352 Z', F.brasa, 'xs', 0.95) +
     nube(180, 316, 18, 34, F.fuego, 'm', 0.5) +
+    nube(180, 380, 20, 40, F.fuego, 'l', 0.3) +
     // La piedra de Luzbelito: oscura, con el canto rojo del fuego.
+    nube(456, 474, 120, 10, F.negro, 's', 0.8) +
     enmascarado('m-piedra', 'M360 470 Q380 404 452 398 Q530 396 548 470 Z',
       forma('M360 470 Q380 404 452 398 Q530 396 548 470 Z', F.piedra) + nube(430, 408, 70, 12, F.rojo, 'm', 0.6) + nube(500, 460, 70, 30, F.negro, 'm', 0.85)) +
     `</g>`
@@ -433,6 +464,36 @@ export const FOCOS_TEMPLO: ReadonlyArray<readonly [number, number]> = (() => {
   return salida;
 })();
 
+/**
+ * El carnaval de Momo (décima vuelta): serpentinas que cuelgan de la guirnalda, enruladas, y papel
+ * picado en el piso donde cae la luz. Todo en la plata, el peltre y el oro de los focos: el templo
+ * sigue vistiendo *Momo Sampler*.
+ */
+function carnaval(ancho: number, alto: number): string {
+  const rnd = azar(613);
+  const colores = [P.plata, P.foco, P.peltre, 'var(--papel)'];
+  let serpentinas = '';
+  FOCOS_TEMPLO.forEach(([x, y], i) => {
+    if (i % 2) return;
+    const largo = 50 + rnd() * 90;
+    const vueltas = 3 + rnd() * 3;
+    let d = `M${x.toFixed(1)} ${(y + 4).toFixed(1)}`;
+    for (let k = 1; k <= 40; k++) {
+      const t = k / 40;
+      d += ` L${(x + Math.sin(t * vueltas * Math.PI * 2) * (4 + t * 8)).toFixed(1)} ${(y + 4 + t * largo).toFixed(1)}`;
+    }
+    serpentinas += trazo(d, colores[i % colores.length]!, 1.8, 0.75);
+  });
+  let picado = '';
+  for (let i = 0; i < 160; i++) {
+    const x = ancho / 2 + (rnd() - 0.5) * ancho * (0.4 + rnd() * 0.6);
+    const y = alto - 90 + rnd() * 90;
+    const w = 3 + rnd() * 4;
+    picado += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${(w * 0.6).toFixed(1)}" fill="${colores[i % colores.length]}" opacity="${(0.35 + rnd() * 0.5).toFixed(2)}" transform="rotate(${Math.round(rnd() * 180)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`;
+  }
+  return serpentinas + picado;
+}
+
 function temploLejos(): string {
   const { ancho, alto } = ESCENA_ARTE;
   let cables = '';
@@ -454,6 +515,7 @@ function temploLejos(): string {
     columna(30) + columna(ancho - 100) +
     cables +
     FOCOS_TEMPLO.map(([x, y]) => trazo(`M${x.toFixed(1)} ${(y - 2).toFixed(1)} l0 8`, P.peltre, 2) + nube(x, y + 12, 26, 26, P.foco, 'l', 0.45) + nube(x, y + 12, 5, 6, P.foco, 'xs', 0.95) + nube(x, y + 11, 2, 2.5, 'var(--papel)', 'xs')).join('') +
+    carnaval(ancho, alto) +
     `</g>`
   );
 }
@@ -486,6 +548,8 @@ export const PIEZAS: readonly Pieza[] = [
   ...PIEZAS_BAJO,
   // La octava vuelta: la prisión de Barbazul y la drácula con tacones, tallados (`arte-prision.ts`).
   ...PIEZAS_PRISION,
+  // La décima vuelta: los seis entornos que seguían con las figuras del plano (`arte-entornos.ts`).
+  ...PIEZAS_ENTORNOS,
   // La undécima vuelta: el negro Atila en la medianera del baldío, a aerógrafo (`arte-atila.ts`).
   ...PIEZAS_ATILA,
 ];
