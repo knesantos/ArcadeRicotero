@@ -1179,7 +1179,12 @@
       "dibujo": { "f": "persona", "ropa": "gaban", "pose": "corre" },
       "tema": "rock-para-el-negro-atila",
       "verso": ["Quiero verte huir como un ladrón,", "al que nunca pueden atrapar.", "Quiero verte hundido en tu gabán,"],
-      "estampa": "Salta de un techo a otro, hundido en el gabán. Nunca lo agarran.",
+      "estampa": "Aerógrafo, como la tapa de Lobo suelto. Masca el frío en la medianera y, si pasa la sirena, se tira del otro lado: lo delata el vaho. Tocalo y abre el gabán: relojes, un eslabón de la cadena del lobo, la dentadura del caníbal desdentado y la sirena de la cana, que por eso compró matraca de ocasión. Eso es del dibujo.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "Es una declaración de amor a los perejiles que iban a ver a la banda: una generación que, entre los poderosos y los pícaros, se quedó con los pícaros. Como personaje, Atila es una invención.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 321)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "Hay gente que se apropia de estos personajes y se calza el saco de esa aventura casi marginal, convencida de que así va a tener más levante. Pasó lo mismo con el Negro Cañón.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 321)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "La batería electrónica que él mismo reclamó con tanta insistencia sonó rudimentaria: se nota que es una máquina. Y todavía le duele.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 321)", "fuente": "RES-21" }
+      ],
       "cerca": ["el-gato-maton", "limon"]
     },
     {

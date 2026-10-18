@@ -12,6 +12,7 @@ import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.
 import { PIEZAS_BAJO } from './arte-bajo.ts';
 import { PIEZAS_PRISION } from './arte-prision.ts';
 import { PIEZAS_ENTORNOS } from './arte-entornos.ts';
+import { PIEZAS_ATILA } from './arte-atila.ts';
 
 
 
@@ -549,4 +550,6 @@ export const PIEZAS: readonly Pieza[] = [
   ...PIEZAS_PRISION,
   // La décima vuelta: los seis entornos que seguían con las figuras del plano (`arte-entornos.ts`).
   ...PIEZAS_ENTORNOS,
+  // La undécima vuelta: el negro Atila en la medianera del baldío, a aerógrafo (`arte-atila.ts`).
+  ...PIEZAS_ATILA,
 ];
