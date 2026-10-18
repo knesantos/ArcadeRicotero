@@ -320,7 +320,7 @@ export const JUEGOS: readonly Casete[] = [
 ] as const;
 
 /**
- * El casete del cancionero. Va en el lado B con la Redondopedia: no es una partida, es
+ * El casete del cancionero. Va en el lado B con la Redondopedia y el bestiario: no es una partida, es
  * lectura — se entra, se busca un tema y se sale, sin nada que cerrar.
  *
  * Viste La mosca y la sopa por la mezcla `D-19`, que le da ese disco a `letras`.
@@ -346,6 +346,33 @@ export const CASETE_REDONDOPEDIA: Casete = {
   href: '/redondopedia/',
   accion: 'LEÉ',
 } as const;
+
+/**
+ * El casete del bestiario redondo (`D-73`). Lo pidió el usuario el 2026-10-17, textual:
+ * *"Sumá el bestiario a la home, en el lado B, con la voz y el diseño del resto de los
+ * casetes"*. Hasta ese día se llegaba solo desde la portada de la Redondopedia. Va en el lado B,
+ * como el cancionero y la Redondopedia, porque no es una partida: se recorre y se lee, sin nada
+ * que cerrar. Es el B3, después de la Redondopedia, que es de donde sale.
+ *
+ * Viste *Lobo suelto*, como su página (`mitologia`, `D-19`). La pieza es el cordero de *Cordero
+ * atado*, recortado: del lado A el lobo de "Adiviná el tema" anda suelto, y acá está el cordero,
+ * que es el primer recinto del bestiario. `D-49` no deja repetir pieza, y esta no la usaba nadie.
+ */
+export const CASETE_BESTIARIO: Casete = {
+  titulo: 'Bestiario redondo',
+  // La primera oración canta y no pasa de ocho; la segunda dice lo que hay.
+  baja: 'El lobo afuera, el cordero atado al palo. Los bichos y la gente de las letras, cada uno en su recinto: tocás uno y te dice su verso.',
+  variante: 'mitologia',
+  arte: '/arte/cordero-rulo.png',
+  href: '/redondopedia/bestiario/',
+  accion: 'RECORRÉ',
+} as const;
+
+/**
+ * El lado B entero, en el orden de las pistas (B1, B2, B3). Lo leen el portal, la carátula de
+ * cada juego y los tests, así el lado B no se escribe en tres lugares.
+ */
+export const LADO_B: readonly Casete[] = [CASETE_CANCIONERO, CASETE_REDONDOPEDIA, CASETE_BESTIARIO];
 
 /** Los números chicos en letra: en una frase que se lee, "seis" y no "6". */
 const EN_LETRAS = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];

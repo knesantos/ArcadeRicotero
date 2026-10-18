@@ -7,6 +7,19 @@
 
 **Última actualización:** 2026-10-17
 
+> ## 📼 EL BESTIARIO ENTRA A LA HOME (2026-10-17) — casete B3 del lado B
+>
+> **En `main` desde el PR #53 (rama `portal/bestiario-en-la-home`).** Pedido del usuario: *"Sumá el bestiario a la home, en
+> el lado B, con la voz y el diseño del resto de los casetes"*. Hasta hoy se llegaba solo desde la portada de la
+> Redondopedia.
+>
+> - **El casete**: «Bestiario redondo», B3, después de la Redondopedia. Canta *"El lobo afuera, el cordero atado al
+>   palo."*, viste *Lobo suelto* (`mitologia`) con el cordero recortado de *Cordero atado* (la pieza que no usaba
+>   nadie, `D-49`), y el sello dice «RECORRÉ».
+> - **Un solo lado B**: `LADO_B` en `sitio/copy.ts` lo leen el portal, la carátula de cada juego (que ahora lista el
+>   B3) y los tests. En la compu los dos lados van de a tres por renglón.
+> - **Verde:** `npm test` (1653), `npm run check`, `npm run build`. Visto a 375, 900 y 1440 px.
+
 > ## 🍾 EL GORDO PIERRE, A PINCEL SECO (2026-10-17) — sexta enmienda de `D-73`, ciclo 23
 >
 > **En `main` desde el PR #52 (rama `ciclo-23/bestiario`).** Pedido del usuario: *"Agrega otro personaje y pulilo a

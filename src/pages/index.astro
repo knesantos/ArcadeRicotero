@@ -10,7 +10,7 @@
  * Molinetes abiertos (`D-14`): esta pantalla no pide nada — ni cuenta ni saber.
  */
 import Base from '../layouts/Base.astro';
-import { PORTAL, LUGARES, JUEGOS, CASETE_REDONDOPEDIA, CASETE_CANCIONERO, OKTUBRE, type Casete } from '../lib/sitio/copy.ts';
+import { PORTAL, LUGARES, JUEGOS, LADO_B, OKTUBRE, type Casete } from '../lib/sitio/copy.ts';
 import { arteDeCasete, conRecorteReal, discoDeRecorte, materialDeCasete, medidas, recorte } from '../lib/sitio/arte.ts';
 import { segunLaPartida } from '../lib/sitio/portal.ts';
 import { cumpleDelDia, discosDeOktubre, type FichaCruda } from '../lib/sitio/oktubre.ts';
@@ -80,7 +80,7 @@ const medidaPortada = medidas(artePortada);
  */
 const lados: Array<{ titulo: string; lado: 'a' | 'b'; casetes: readonly Casete[] }> = [
   { titulo: PORTAL.ladoA, lado: 'a', casetes: JUEGOS },
-  { titulo: PORTAL.ladoB, lado: 'b', casetes: [CASETE_CANCIONERO, CASETE_REDONDOPEDIA] },
+  { titulo: PORTAL.ladoB, lado: 'b', casetes: LADO_B },
 ];
 
 /**
@@ -106,7 +106,7 @@ const lados: Array<{ titulo: string; lado: 'a' | 'b'; casetes: readonly Casete[]
 
 /*
  * Cada casete lleva su numero de pista, como la lista escrita a mano en la tapita de un
- * cassette grabado en casa: A1, A2… del lado A, B1, B2 del lado B. Es la metafora que el
+ * cassette grabado en casa: A1, A2… del lado A, B1, B2, B3 del lado B. Es la metafora que el
  * portal ya tenia —"Lado A · Para jugar"— llevada hasta la etiqueta, y es decoracion: el
  * lector de pantalla no la necesita para saber que hay en cada casete.
  */
