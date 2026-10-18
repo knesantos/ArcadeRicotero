@@ -221,7 +221,11 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "redondas", "hocico": "corto", "cola": "enrulada", "pose": "trepa" },
       "tema": "juguetes-perdidos",
       "verso": ["Cuanto más alto trepa el monito", "El culo más se le ve"],
-      "estampa": "A media altura del tronco, subiendo. Desde abajo se le ve lo que el verso dice que se le ve.",
+      "estampa": "A media altura del tronco, abrazado, con la cola enrulada colgando encima del culo. Lo de la letra pasa cuando trepa: cuanto más alto, más se le ve. Lo demás es del dibujo: arriba te mira por arriba del hombro y pela los dientes como el busto de la vela de Luzbelito, que es el barro en que está modelado.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "En la película de un recital suyo, donde los gestos se ven de cerca, dice que al cantar «Cuanto más alto trepa el monito» queda claro que el monito es él.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 547)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "Le parece un tema medio sermonero: el que habla es el cantante, separado de la gente que está ahí abajo, y no se dibuja bajo la mejor luz. Es un tipo que se cuestiona a sí mismo en voz alta.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 370)", "fuente": "RES-21" }
+      ],
       "tambien": [{ "tema": "un-pacman-en-el-savoy", "verso": ["pero el mono es de él."] }],
       "cerca": ["el-bicho-del-gran-bonete", "el-pac-man"]
     },

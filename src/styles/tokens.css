@@ -270,6 +270,16 @@
   /* ⟨/la bestia pop⟩ */
 
   /* ⟨el monito que trepa⟩ */
+  /* Modelado en el barro del busto de la vela, adentro del marco de cobre del interior de
+     *Luzbelito* (luzbelito-interior-frontal.jpg, 953 px; mediana de cada zona, `sharp`). */
+  --bestia-monito-luz: #f1cfaa; /* el pecho del busto, donde le pega la vela */
+  --bestia-monito-barro: #e0b38c; /* el pomulo prendido */
+  --bestia-monito-ocre: #a96359; /* la frente, en la media luz */
+  --bestia-monito-rojo: #952d2c; /* el hombro en la luz roja del marco */
+  --bestia-monito-rosa: #e99384; /* lo mas claro de ese hombro: el culo pelado */
+  --bestia-monito-hondo: #5d1a2c; /* la sombra del cuello */
+  --bestia-monito-cuenca: #451c2e; /* la cuenca del ojo */
+  --bestia-monito-diente: #f6e8e5; /* los dientes pelados */
   /* ⟨/el monito que trepa⟩ */
 
   /* ⟨el Capitan Buscapina⟩ */
