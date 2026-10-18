@@ -50,7 +50,30 @@ export function filtros(): string {
     // La fotocopia fina, para las líneas corridas de color: corre el borde y nada más.
     `<filter id="xerox-fino" x="-6%" y="-6%" width="112%" height="112%" color-interpolation-filters="sRGB">` +
     `<feTurbulence type="fractalNoise" baseFrequency="0.11" numOctaves="2" seed="13" result="onda"/>` +
-    `<feDisplacementMap in="SourceGraphic" in2="onda" scale="2.6" xChannelSelector="R" yChannelSelector="G"/></filter>`
+    `<feDisplacementMap in="SourceGraphic" in2="onda" scale="2.6" xChannelSelector="R" yChannelSelector="G"/></filter>` +
+    // La gubia de *Oktubre* (`grabado.ts`): el filo de cada corte en la madera, que no es una
+    // curva de compás. Ruido fino y corto, y el borde vuelve a quedar duro.
+    `<filter id="gubia" x="-3%" y="-3%" width="106%" height="106%" color-interpolation-filters="sRGB">` +
+    `<feTurbulence type="fractalNoise" baseFrequency="0.42" numOctaves="2" seed="17" result="astilla"/>` +
+    `<feDisplacementMap in="SourceGraphic" in2="astilla" scale="1.7" xChannelSelector="R" yChannelSelector="G" result="corrido"/>` +
+    `<feComponentTransfer in="corrido"><feFuncA type="discrete" tableValues="0 1 1"/></feComponentTransfer></filter>` +
+    // Las motas de la prensa: donde la tinta no agarró y asoma el papel. Se aplica a un
+    // rectángulo, que no importa: lo que sale son las motas, del color del papel de la tapa.
+    `<filter id="motas" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">` +
+    `<feTurbulence type="fractalNoise" baseFrequency="0.95" numOctaves="2" seed="29" result="ruido"/>` +
+    `<feColorMatrix in="ruido" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  26 0 0 0 -20.4" result="sueltas"/>` +
+    `<feFlood flood-color="var(--bestia-dracula-papel)"/><feComposite in2="sueltas" operator="in"/></filter>` +
+    // Las banderas de la tapa de *Oktubre*: lo rojo de la tapa, pasado a la tinta plana del rojo.
+    // Y su contrario: la calle de la tapa sin las banderas, que flamean aparte.
+    `<filter id="solo-rojo" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">` +
+    `<feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  2.2 -1.1 -1.1 0 -0.35"/>` +
+    `<feComponentTransfer result="rojo"><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer>` +
+    `<feFlood flood-color="var(--disco-oktubre-tinta)"/><feComposite in2="rojo" operator="in"/></filter>` +
+    `<filter id="sin-rojo" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">` +
+    `<feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  2.2 -1.1 -1.1 0 -0.2"/>` +
+    `<feMorphology operator="dilate" radius="1.5"/>` +
+    `<feComponentTransfer result="rojo"><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer>` +
+    `<feFlood flood-color="var(--fondo)"/><feComposite in2="rojo" operator="in"/></filter>`
   );
 }
 
@@ -88,6 +111,11 @@ export interface Pieza {
   opaca?: boolean;
   /** Cuántos píxeles de imagen por unidad. Las piezas chicas se imprimen más finas. */
   densidad?: number;
+  /**
+   * La calidad del webp, si no es la de siempre. Un grabado es puro borde duro y pesa más que un
+   * aerógrafo: el fondo de la prisión se imprime un poco más comprimido, que el corte lo aguanta.
+   */
+  calidad?: number;
 }
 
 /** La ruta pública de la imagen de una pieza. */

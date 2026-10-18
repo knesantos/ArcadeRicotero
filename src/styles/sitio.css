@@ -4019,7 +4019,8 @@ body:has(> .lugar) .marca-chica {
 .titere--perro,
 .titere--luzbelito,
 .titere--momo,
-.titere--pierre { cursor: pointer; }
+.titere--pierre,
+.titere--dracula { cursor: pointer; }
 
 /* Sexta vuelta (D-73): el bajo inundado y el gordo Pierre. Los párpados son del papel de *Gulp!*
    con la raya del ojo cerrado; el agua que entra por el vidrio roto, la lluvia de la calle y las
@@ -4039,3 +4040,13 @@ body:has(> .lugar) .marca-chica {
 .bajo-onda { fill: none; stroke: var(--entorno-baion-luz); stroke-width: 1.6; }
 .bajo-reflejo { opacity: 0.45; }
 .ojos-reflejo { opacity: 0.28; }
+
+/* Octava vuelta (D-73): la prisión de Barbazul y la drácula con tacones, tallados como la gente
+   de *Oktubre*. El párpado es de tinta, con el filo del párpado cerrado en el blanco de la tapa; la
+   sombra que la drácula tira en el piso es plancha negra; el golpe de cada taco, dos cortes blancos
+   que la isla prende y apaga. */
+.bt-dracula-parpado { fill: var(--fondo); }
+.bt-dracula-pestana { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 1.3; stroke-linecap: round; }
+.dracula-sombra { fill: var(--fondo); }
+.dracula-taco { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 2; stroke-linecap: round; }
+.bestiario-svg .bestia--jaula .toque { fill: transparent; }

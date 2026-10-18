@@ -1,7 +1,7 @@
 {
   "pieza": "bestiario",
   "decision": "D-73",
-  "actualizado": "2026-10-16",
+  "actualizado": "2026-10-18",
   "nota": "El bestiario redondo: los bichos y la gente que viven en las letras de los diez discos, más los tres del mito que no salen de ninguna letra. Cada uno vive en una región del mundo redondo, al lado de los que se le parecen. El verso de cada ficha se coteja a máquina contra cancionero.json (bestiario.test.ts); lo que se cuenta aparte lleva su rótulo. La estampa es el dibujo del sitio y dice lo que agrega a la letra.",
   "regiones": [
     {
@@ -1058,7 +1058,7 @@
       "dibujo": { "f": "persona", "con": ["tacones", "colmillos"], "ropa": "capa" },
       "tema": "preso-en-mi-ciudad",
       "verso": ["Una vez le hice el amor a una drácula con tacones:"],
-      "estampa": "Taconea por el pasillo de las celdas, de capa negra.",
+      "estampa": "Tallada como la gente de la tapa de Oktubre, su disco, y recortada en papel. Taconea por el pasillo de las celdas; tocada, abre la capa, y adentro es el rojo de las banderas. La capa y la cara son del dibujo, no de la letra. La gente y las banderas de la ventana sí son de verdad: salen de la tapa.",
       "cerca": ["el-esclavo-sensible-y-chillon"]
     },
     {

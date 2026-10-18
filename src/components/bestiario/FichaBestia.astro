@@ -8,10 +8,14 @@
  *   en la misma página; en un camino, a la página donde vive.
  * - `conMapa`: el botón "Buscala en el mapa", que solo tiene sentido en la página del plano.
  * - `dePaso`: un sello para el que no vive en la región pero anda por el camino.
+ * - `espera`: los retratos esperan en un `<noscript>` hasta que la ficha se acerca (`T-445`,
+ *   `carga.ts`). Lo pide la página del bestiario, cuya isla los arma; el camino ya dibuja de entrada
+ *   a los títeres que retrata, así que ahí no ahorraría nada.
  */
 import { BESTIARIO, CAMINO } from '../../lib/bestiario/copy.ts';
 import { conAudio, etiquetaRotulo, saleEn } from '../../lib/bestiario/fichas.ts';
 import { retrato } from '../../lib/bestiario/titeres.ts';
+import { enEspera } from '../../lib/bestiario/carga.ts';
 import type { Bestia } from '../../lib/bestiario/mapa.ts';
 
 interface Props {
@@ -21,17 +25,23 @@ interface Props {
   hrefCerca: (id: string) => string;
   conMapa?: boolean;
   dePaso?: boolean;
+  espera?: boolean;
 }
 
-const { bestia: b, tinta, nombres, hrefCerca, conMapa = false, dePaso = false } = Astro.props;
+const { bestia: b, tinta, nombres, hrefCerca, conMapa = false, dePaso = false, espera = false } = Astro.props;
 const r = retrato(b.id);
+/** Un retrato: de entrada, o esperando en su `<noscript>`. */
+const conRetrato = (clase: string): string => {
+  const atributos = `class="${clase}" viewBox="${r!.caja}" aria-hidden="true"`;
+  return espera ? enEspera(atributos, r!.svg) : `<svg ${atributos}>${r!.svg}</svg>`;
+};
 ---
 
 <li id={`b-${b.id}`} class="bestiario-item" data-id={b.id}>
   <details class="bestiario-ficha" data-bestia={b.id}>
     <summary>
       {r ? (
-        <svg class="bestiario-mini bestiario-mini--tapa" viewBox={r.caja} aria-hidden="true" set:html={r.svg} />
+        <Fragment set:html={conRetrato('bestiario-mini bestiario-mini--tapa')} />
       ) : (
         <svg class="bestiario-mini" viewBox="-10 -15 120 115" aria-hidden="true" style={`--tr: ${tinta}`}>
           <use href={`#fig-${b.id}`} />
@@ -45,7 +55,7 @@ const r = retrato(b.id);
       <p class="bestiario-sello">{BESTIARIO.clases[b.clase]}</p>
       <h4 class="bestiario-ficha-titulo" data-titulo>{b.nombre}</h4>
       {r ? (
-        <svg class="bestiario-figura bestiario-figura--tapa" viewBox={r.caja} aria-hidden="true" set:html={r.svg} />
+        <Fragment set:html={conRetrato('bestiario-figura bestiario-figura--tapa')} />
       ) : (
         <svg class="bestiario-figura" viewBox="-10 -15 120 115" aria-hidden="true">
           <use href={`#fig-${b.id}`} />
