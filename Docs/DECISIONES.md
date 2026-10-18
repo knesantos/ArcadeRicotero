@@ -5221,6 +5221,65 @@ con el gabán abierto. **El panel estuvo oculto**, así que la animación no se 
 - Siguen `T-431` (que `contenido` lea la estampa y los testimonios nuevos) y `T-437`/`T-439` (los cuadros por
   segundo: el baldío suma una luz con `mix-blend-mode`).
 
+### Enmienda del 2026-10-18 (13): la vaca cubana, a plumín, con la tele hecha satélite
+
+Pedido del usuario, textual: *"Hace otro ciclo sobre el bestiario redondo. Agrega otro personaje y
+pulilo a fondo, se creativo que qeude como uno de rocambole."* Y, con Limón tomado por otra sesión:
+*"hace la vaca cubana"*. La escribe el hilo principal en la rama `ciclo-26/bestiario`, sobre `main` en
+`c1355e0`, y junta `main` en `46d36d1` (#56 y #57 adentro). Se escribió como **duodécima**, porque la (11)
+es de Barbazul, que todavía no entró, y **se renumeró a decimotercera** al juntar `main` en `352ef3a`: el negro
+Atila (#60) llegó antes con la (12). Si llega antes otra, se renumera otra vez (`integrar.md`).
+
+- **Por qué la vaca.** Era de la lista que el usuario pasó a diseño detallado
+  (`Docs/SUGERENCIAS/HILO-para-bestiario-prioridad-de-figuras.md`) y su fondo ya estaba: la pastura.
+  No está en ninguna tapa, así que se inventa en la estética de su disco (`T-440`). **El disco es
+  *Un baión para el ojo idiota* (1988)**, pista 3, no *Cordero atado*: vive en la pastura del cordero
+  pero viste otro disco, como Pierre viste *Gulp!* en la sala de *Un baión*.
+- **La historia la cuenta el Indio** (`RES-360`): en el memoir dice que el tema viene de una cinta
+  grabada en Valeria con un balde de plástico, y que *"a la pobre vaca le cayó encima un pedazo de
+  satélite… ¡y la mató!"*. Pasó: el 30 de noviembre de 1960 un Thor-Ablestar se destruyó en vuelo y
+  los restos cayeron en Cuba; un memo del Departamento de Estado de 1961 exceptúa de las víctimas,
+  *según se informó*, a una vaca cubana. El funeral, el nombre Rufina y la indemnización circulan sin
+  papel, y van como leyenda.
+- **La técnica es la del frente de *Un baión*: plumín sobre aguada** (`lib/bestiario/plumin.ts`). La
+  tele de la tapa está lavada en naranja, rojo y amarillo y raspada con rayas de tinta paralelas;
+  la luz que larga es lila con garabatos en zigzag. Eso es la vaca: un contorno nervioso que se
+  repasa y se pasa de largo en las esquinas, el raspado en tres pasadas que se aprietan hacia la
+  panza (todas combadas para el mismo lado, que es lo que la redondea), las manchas llenas del
+  garabato del fondo de la tapa. Las tintas se midieron en la tapa (`--bestia-vaca-*`): el cuero es
+  la luz de la tele, las manchas el violeta del fondo, el rojo del perro en lo hondo, la ubre y el
+  hocico en el rosa del muñeco. La luz le viene de dos lados: fría del cielo en el lomo, y el
+  naranja de la pastura que le sube por la panza. Se le notan la cadera y las costillas.
+- **Lleva cencerro**, colgado de una correa al pie del pescuezo, porque desde `D-76` es lo que suena
+  cuando la tocan en el camino (`sonido.ts`). Se sumó al juntar `main` con el #59.
+- **El ojo es humano**, como los que Rocambole les pone a los animales: párpado pesado, iris ocre,
+  y vivo (el blanco y la pupila se dibujan en la página), para que siga al satélite.
+- **El cielo es el chiste, y es del dibujo**: por arriba cruza la tele de la tapa hecha satélite,
+  con las patas largas de la tele como las antenas de un Sputnik y la pantalla titilando. Lo que
+  cae prendido fuego es **la llama de la contratapa de *Un baión***, recortada de la tapa de verdad
+  por color (`tapa:` en la imprenta), como la etiqueta de Pierre. La estampa dice qué es del
+  dibujo y que en el dibujo el pedazo cae al lado: en lo que contó el Indio, no.
+- **Vive** (`scripts/bestiario/vaca.ts`, armada desde `pastura.ts`, así está en el recinto del monte
+  y en el camino con cruces): rumia de costado, y cada tanto se le ve subir el bolo por el
+  pescuezo y tragar; cuando no pasa nada por arriba baja la cabeza y pasta; cuando pasa el satélite
+  lo sigue con la cabeza hasta donde le da el cogote, y después con el ojo; espanta moscas con la
+  cola y sacude la oreja. **Tocada**, mira para arriba justo a tiempo: al satélite se le suelta el
+  pedazo, que cae dejando una estela de garabato y pega en el pasto al lado de sus patas. Ella pega
+  un respingo, mira el pozo humeando y vuelve a rumiar. El cordero bala y el lobo se esconde.
+- **Sin JavaScript y con movimiento reducido** se ve la vaca mirando el satélite y nada más: el pozo,
+  el pedazo y el golpe arrancan con opacidad cero (un test lo mira). Con movimiento reducido,
+  tocarla solo le hace decir su verso.
+- Los tests miden lo que importa del lugar: las patas de adelante en el pasto y las de atrás en la
+  punta, el pedazo adentro de la pastura, lejos de la soga del cordero y al lado de la vaca, y el
+  satélite cruzando por el cielo. La vaca dejó de ser ojos en lo oscuro y es títere en las dos
+  páginas. Las 14 piezas pesan 228 kB.
+
+#### Abierto, sin trabar
+
+- `T-431` (que `contenido` lea la estampa y lo que se cuenta), `T-435` (las tintas `--bestia-vaca-*`
+  al lienzo: se cargaron primero en `tokens.css`, como las demás del bestiario) y `T-437`/`T-439`
+  (los cuadros por segundo en un teléfono de verdad).
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17

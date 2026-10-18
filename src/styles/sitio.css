@@ -4053,6 +4053,17 @@ body:has(> .lugar) .marca-chica {
 .bajo-reflejo { opacity: 0.45; }
 .ojos-reflejo { opacity: 0.28; }
 
+/* La vaca cubana (D-73): el ojo vivo, el párpado de papel, la pantalla de la tele que titila y la
+   estela del pedazo que cae, en las tintas de *Un baión*. */
+.titere--vaca { cursor: pointer; }
+.bt-vaca-blanco { fill: var(--bestia-ojo-blanco); }
+.bt-vaca-iris { fill: var(--bestia-vaca-ocre); stroke: var(--bestia-vaca-rojo-hondo); stroke-width: 1.6; }
+.bt-vaca-brillo { fill: var(--bestia-vaca-luz); }
+.bt-vaca-parpado { fill: var(--bestia-vaca-mancha); }
+.bt-vaca-pestana { fill: none; stroke: var(--fondo); stroke-width: 2.4; stroke-linecap: round; }
+.vaca-pantalla { fill: var(--bestia-vaca-luz); }
+.vaca-estela { fill: none; stroke: var(--bestia-vaca-lila); stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+
 /* Octava vuelta (D-73): la prisión de Barbazul y la drácula con tacones, tallados como la gente
    de *Oktubre*. El párpado es de tinta, con el filo del párpado cerrado en el blanco de la tapa; la
    sombra que la drácula tira en el piso es plancha negra; el golpe de cada taco, dos cortes blancos

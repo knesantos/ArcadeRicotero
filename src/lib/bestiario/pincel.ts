@@ -31,7 +31,7 @@ export function azar(semilla: number): () => number {
 }
 
 /** Un ruido de una dimensión, suave: valores al azar cada `paso`, unidos con curva. */
-function ruido1(rnd: () => number, largo: number, paso: number): (s: number) => number {
+export function ruido1(rnd: () => number, largo: number, paso: number): (s: number) => number {
   const n = Math.ceil(largo / paso) + 2;
   const v = Array.from({ length: n }, () => rnd());
   return (s: number): number => {
@@ -44,7 +44,7 @@ function ruido1(rnd: () => number, largo: number, paso: number): (s: number) => 
 }
 
 /** Un recorrido: una cúbica (cuatro puntos) o una polilínea, muestreado cada `paso`. */
-function muestrear(puntos: readonly P[], paso: number): P[] {
+export function muestrear(puntos: readonly P[], paso: number): P[] {
   const crudo: P[] = [];
   if (puntos.length === 4) {
     const [a, b, c, d] = puntos as [P, P, P, P];

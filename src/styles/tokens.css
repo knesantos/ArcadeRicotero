@@ -226,6 +226,22 @@
   --entorno-bajo-celeste: #4772b3; /* los rayones claros de esa contratapa */
   --entorno-bajo-llama: #f7793c; /* la llama de la contratapa, naranja */
   --entorno-bajo-llama-clara: #fbe755; /* y su corazon amarillo */
+  /* La vaca cubana (D-73): es de *Un baion* y se dibuja como el frente de ese disco, a plumin
+     sobre aguada. Las tintas se miden en la tapa (muestras de 5 px): la luz que larga la tele, el
+     naranja y el ocre de la tele, el rojo del perro, el rosa del muneco y el celeste del antifaz.
+     El negro del plumin es `--fondo`. Ninguno escribe texto: no entran al test AA. Faltan en el
+     lienzo (T-435). */
+  --bestia-vaca-luz: #f4d2f8; /* el centro de la luz de la tele */
+  --bestia-vaca-lila: #cdafda; /* la luz donde ya la cruzan los rayones */
+  --bestia-vaca-lila-honda: #837ca1; /* el borde de la luz, contra lo oscuro */
+  --bestia-vaca-mancha: #33243b; /* el violeta del fondo del frente: las manchas */
+  --bestia-vaca-naranja: #db5f33; /* la cara de arriba de la tele */
+  --bestia-vaca-ocre: #ba8a60; /* el amarillo apagado del costado de la tele */
+  --bestia-vaca-rojo: #b34f4d; /* el crayon del perro */
+  --bestia-vaca-rojo-hondo: #552326; /* la sombra del perro */
+  --bestia-vaca-rosa: #efafd3; /* el muneco, donde le da la luz: la ubre y el hocico */
+  --bestia-vaca-rosa-honda: #d082aa; /* el muneco en la sombra */
+  --bestia-vaca-celeste: #b9b5e8; /* el antifaz del muneco: la pantalla de la tele */
   /* Octava vuelta (D-73): la drácula con tacones y la prision de Barbazul, tallados como la
      gente de la tapa de *Oktubre* (`grabado.ts`). La plancha es `--fondo` (la tapa mide #111211),
      el rojo de las banderas es `--disco-oktubre-tinta`, y el gris que Rocambole conto que agrego
