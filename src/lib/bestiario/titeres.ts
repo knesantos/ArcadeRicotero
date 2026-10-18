@@ -86,7 +86,7 @@ export function pierre(): string {
 }
 
 /**
- * La drácula con tacones (`D-73`, séptima vuelta): no es de tapa, está tallada en la estética de
+ * La drácula con tacones (`D-73`, octava vuelta): no es de tapa, está tallada en la estética de
  * *Oktubre* (`arte-prision.ts`) y recortada en piezas. La capa se abre como dos puertas de papel:
  * cada mitad negra (`capa-1`, `capa-2`) se achica contra su hombro, y del otro lado se despliega
  * el forro rojo (`forro-1`, `forro-2`), que arranca plegado. Los mechones de adelante (`pelo`) van
@@ -122,7 +122,7 @@ export function dracula(): string {
 }
 
 /**
- * Barbazul (`D-73`, décima vuelta): tallado como el barbudo de la contratapa de *Oktubre*
+ * Barbazul (`D-73`, undécima vuelta): tallado como el barbudo de la contratapa de *Oktubre*
  * (`arte-barbazul.ts`), con la barba de otra plancha. La barba cuelga de la cabeza y se mece con
  * retraso; las pupilas no están impresas: son de la página, para que la isla las haga mirar a la
  * drácula cuando pasa. Cada brazo se dobla en el codo, y el manojo cuelga del puño de la derecha.

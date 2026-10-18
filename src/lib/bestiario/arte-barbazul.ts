@@ -1,5 +1,5 @@
 /**
- * Barbazul, el dueño de la prisión (`D-73`, décima vuelta).
+ * Barbazul, el dueño de la prisión (`D-73`, undécima vuelta).
  *
  * Pedido del usuario, textual, el de las dos vueltas anteriores: *"Agrega otro personaje y pulilo
  * a fondo, se creativo que qeude como uno de rocambole."* Barbazul sale de *"Barbazul versus el

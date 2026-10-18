@@ -91,7 +91,7 @@ export const BAJO = {
 export const PIERRE = { x: 486, agua: 476, escala: 0.9 } as const;
 
 /* ------------------------------------------------------------------
-   La prisión de Barbazul y la drácula con tacones (`D-73`, séptima vuelta)
+   La prisión de Barbazul y la drácula con tacones (`D-73`, octava vuelta)
    ------------------------------------------------------------------ */
 
 /**
@@ -173,7 +173,7 @@ export const deLaTapa = ([x, y]: readonly [number, number]): [number, number] =>
 export const DRACULA = { x: 380, piso: 624, desde: 296, hasta: 590, escala: 0.8 } as const;
 
 /* ------------------------------------------------------------------
-   Barbazul, el dueño de la prisión (`D-73`, décima vuelta)
+   Barbazul, el dueño de la prisión (`D-73`, undécima vuelta)
    ------------------------------------------------------------------ */
 
 /**

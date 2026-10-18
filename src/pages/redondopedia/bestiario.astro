@@ -34,46 +34,26 @@ import {
   LADO,
   cajaDeFigura,
   dibujarRecinto,
-  dibujarRuta,
   dibujarSuelo,
   lugarDelRotulo,
   punto,
   simbolos,
   tintaDe,
-  RUTA,
   type Bestiario,
-  type Bestia,
 } from '../../lib/bestiario/mapa.ts';
 import { ESCENA, escenaMonte } from '../../lib/bestiario/escena-monte.ts';
 import { BARBAZUL, escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, LUZBELITO, MOMO, PIERRE } from '../../lib/bestiario/escenas.ts';
-import { retrato } from '../../lib/bestiario/titeres.ts';
+import { ENTORNOS_DE_NOCHE } from '../../lib/bestiario/escenas-entornos.ts';
 import { enEspera, SIN_ISLA } from '../../lib/bestiario/carga.ts';
 import { PALO } from '../../lib/bestiario/rig.ts';
-import { tituloDelDisco } from '../../lib/letra/discos.ts';
-import { indexarFragmentos, type Manifiesto } from '../../lib/tema/catalogo.ts';
-import { leerTemas, slugDeTitulo } from '../../lib/letra/temas.ts';
-import manifiesto from '../../data/adivinar-tema.json';
-import cancionero from '../../data/cancionero.json';
+import { CON_CAMINO, recintoDe } from '../../lib/bestiario/camino.ts';
+import FichaBestia from '../../components/bestiario/FichaBestia.astro';
+import { loQueDice } from '../../lib/bestiario/fichas.ts';
 import crudo from '../../data/bestiario.json';
 
 const datos = crudo as unknown as Bestiario;
 const { regiones, bestias } = datos;
 const regionDe = new Map(regiones.map((r) => [r.id, r]));
-const bestiaDe = new Map(bestias.map((b) => [b.id, b]));
-
-/** Los temas del cancionero, por slug: título, disco y año para el "Sale en". */
-const temas = new Map(cancionero.temas.map((t) => [t.slug, { titulo: t.titulo, disco: t.disco, anio: t.anio }]));
-/** Qué temas tienen recorte: los 105 de `RES-20`, como en "En vivo". El slug es el mismo del cancionero. */
-const slugs105 = new Set(leerTemas().map((t) => slugDeTitulo(t.titulo)));
-const conAudio = new Set(indexarFragmentos(manifiesto as unknown as Manifiesto, slugs105).keys());
-
-const saleEn = (slug: string): string => {
-  const t = temas.get(slug)!;
-  return `«${t.titulo}» (${tituloDelDisco(t.disco)}, ${t.anio})`;
-};
-
-const etiquetaRotulo = (c: NonNullable<Bestia['cuenta']>[number]): string =>
-  c.rotulo === 'leyenda' ? 'Leyenda' : `Lo contó ${c.quien ?? 'alguien'}`;
 
 /**
  * El recorrido: el orden en que se camina el zoológico. Arranca por el monte y la pastura,
@@ -84,9 +64,11 @@ const RECORRIDO = [
   'monte-pastura', 'la-mesa', 'los-techos', 'la-prision', 'el-infierno', 'el-bajo',
   'los-astilleros', 'el-templo', 'cybersiberia', 'el-arbol', 'el-galpon', 'la-ruta',
 ] as const;
-const recintoDe = (region: string): string => (region === 'el-monte' || region === 'la-pastura' ? 'monte-pastura' : region);
 
 const nombres = new Map(bestias.map((b) => [b.id, b.nombre]));
+
+/** La primera región de un recinto que ya se camina (`D-73`, séptima vuelta): su puerta. */
+const caminoDe = (recinto: string): string | undefined => CON_CAMINO.find((r) => recintoDe(r) === recinto);
 
 const recintos = RECORRIDO.map((id) => {
   if (id === 'monte-pastura') {
@@ -105,7 +87,8 @@ const recintos = RECORRIDO.map((id) => {
   const region = regionDe.get(id)!;
   // Los recintos de noche (D-73): los de protagonista de tapa, el bajo, con el gordo Pierre
   // pintado en la estética de *Gulp!*, y la prisión, con la drácula tallada como *Oktubre*. Cada
-  // uno con su escena por capas.
+  // uno con su escena por capas. La décima vuelta suma los seis entornos que seguían con las
+  // figuras del plano, cada uno en la tapa de su disco.
   // `foco`: dónde arranca mirando la escena cuando no entra entera (el perro entra por el borde).
   const deNoche: Record<string, { escena: (n: ReadonlyMap<string, string>) => string; foco: number }> = {
     'los-techos': { escena: escenaBaldio, foco: 260 },
@@ -114,6 +97,7 @@ const recintos = RECORRIDO.map((id) => {
     'el-bajo': { escena: escenaBajo, foco: PIERRE.x - 60 },
     // La prisión arranca con Barbazul entero, que te recibe en la entrada, y la drácula enfrente.
     'la-prision': { escena: escenaPrision, foco: BARBAZUL.x + 110 },
+    ...ENTORNOS_DE_NOCHE,
   };
   if (deNoche[id]) {
     return {
@@ -124,17 +108,6 @@ const recintos = RECORRIDO.map((id) => {
       caja: `0 0 ${ESCENA.ancho} ${ESCENA.alto}`,
       foco: deNoche[id]!.foco,
       svg: deNoche[id]!.escena(nombres),
-      bestias: bestias.filter((b) => b.region === id),
-    };
-  }
-  if (id === 'la-ruta') {
-    return {
-      id,
-      nombre: region.nombre,
-      canta: region.canta,
-      tinta: tintaDe(region.disco),
-      caja: `0 0 ${RUTA.ancho} ${RUTA.alto}`,
-      svg: dibujarRuta(datos),
       bestias: bestias.filter((b) => b.region === id),
     };
   }
@@ -160,13 +133,7 @@ const paraLaIsla = {
     id: b.id,
     nombre: b.nombre,
     recinto: recintoDe(b.region),
-    // Lo que dice en el bocadillo: las dos primeras líneas del verso si entran cortas, para que
-    // "¿Cómo no sentirme así" venga con "Si ese perro sigue allí?".
-    dice: b.verso
-      ? b.verso.length > 1 && (b.verso[0]! + b.verso[1]!).length <= 70
-        ? `${b.verso[0]} / ${b.verso[1]}`
-        : b.verso[0]
-      : BESTIARIO.sinTema,
+    dice: loQueDice(b, BESTIARIO.sinTema),
   })),
 };
 
@@ -246,6 +213,9 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
             <h2 class="recinto-nombre" id={`cartel-${rc.id}`}>{rc.nombre}</h2>
             <p class="bestiario-canta">{rc.canta}</p>
           </header>
+          {caminoDe(rc.id) && (
+            <a class="recinto-camino" href={`/redondopedia/bestiario/${caminoDe(rc.id)}/#camino`}>{BESTIARIO.entrarCaminando}</a>
+          )}
           <div
             class:list={['recinto-escena', `recinto-escena--${rc.id}`, { 'recinto-escena--noche': 'foco' in rc }]}
             data-recinto={rc.id}
@@ -294,90 +264,7 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
             {bestias
               .filter((b) => b.region === r.id)
               .map((b) => (
-                <li id={`b-${b.id}`} class="bestiario-item" data-id={b.id}>
-                  <details class="bestiario-ficha" data-bestia={b.id}>
-                    <summary>
-                      {retrato(b.id) ? (
-                        <Fragment set:html={enEspera(`class="bestiario-mini bestiario-mini--tapa" viewBox="${retrato(b.id)!.caja}" aria-hidden="true"`, retrato(b.id)!.svg)} />
-                      ) : (
-                        <svg class="bestiario-mini" viewBox="-10 -15 120 115" aria-hidden="true" style={`--tr: ${tintaDe(r.disco)}`}>
-                          <use href={`#fig-${b.id}`} />
-                        </svg>
-                      )}
-                      <span class="bestiario-nombre">{b.nombre}</span>
-                      <span class="bestiario-anotada-sello">{BESTIARIO.anotada}</span>
-                    </summary>
-                    <div class="bestiario-cuerpo" style={`--tr: ${tintaDe(r.disco)}`}>
-                      <p class="bestiario-sello">{BESTIARIO.clases[b.clase]}</p>
-                      <h4 class="bestiario-ficha-titulo" data-titulo>{b.nombre}</h4>
-                      {retrato(b.id) ? (
-                        <Fragment set:html={enEspera(`class="bestiario-figura bestiario-figura--tapa" viewBox="${retrato(b.id)!.caja}" aria-hidden="true"`, retrato(b.id)!.svg)} />
-                      ) : (
-                        <svg class="bestiario-figura" viewBox="-10 -15 120 115" aria-hidden="true">
-                          <use href={`#fig-${b.id}`} />
-                        </svg>
-                      )}
-
-                      {b.tema ? (
-                        <>
-                          <p class="bestiario-sale">
-                            <span class="bestiario-sub">{BESTIARIO.saleEn}</span> {saleEn(b.tema)}
-                          </p>
-                          <blockquote class="bestiario-verso">
-                            {b.verso!.map((v) => <span>{v}</span>)}
-                          </blockquote>
-                        </>
-                      ) : (
-                        <p class="bestiario-sale">{BESTIARIO.sinTema}</p>
-                      )}
-                      {(b.tambien ?? []).map((t) => (
-                        <p class="bestiario-tambien">
-                          <span class="bestiario-sub">{BESTIARIO.tambienEn}</span> {saleEn(t.tema)}: «{t.verso.join(' / ')}»
-                        </p>
-                      ))}
-
-                      <p class="bestiario-sub">{BESTIARIO.laEstampa}</p>
-                      <p class="bestiario-estampa">{b.estampa}</p>
-
-                      {b.cuenta && b.cuenta.length > 0 && (
-                        <>
-                          <p class="bestiario-sub">{BESTIARIO.seCuenta}</p>
-                          {b.cuenta.map((c) => (
-                            <p class={`parrafo parrafo--${c.rotulo}`}>
-                              {c.rotulo !== 'hecho' && <span class="marca-rotulo">{etiquetaRotulo(c)}</span>}
-                              {c.texto}
-                              {c.fuente && <span class="fuente-chip"> — {c.rotulo === 'hecho' ? 'hecho · ' : ''}{c.fuente}</span>}
-                            </p>
-                          ))}
-                        </>
-                      )}
-
-                      <div class="bestiario-acciones">
-                        {b.tema && conAudio.has(b.tema) && (
-                          <button type="button" class="bestiario-escuchar" data-escuchar={b.tema}>
-                            {BESTIARIO.escuchar}
-                          </button>
-                        )}
-                        {b.tema && <a href={`/letras-y-acordes/${b.tema}/`}>{BESTIARIO.leerLetra}</a>}
-                        {b.articulo && <a href={`/redondopedia/${b.articulo}/`}>{BESTIARIO.leerArticulo}</a>}
-                        <button type="button" class="bestiario-ver solo-indice" data-ver={b.id}>
-                          {BESTIARIO.verEnElMapa}
-                        </button>
-                      </div>
-
-                      <p class="bestiario-sub">{BESTIARIO.andaCerca}</p>
-                      <ul class="bestiario-chips">
-                        {b.cerca.map((id) => (
-                          <li>
-                            <a class="bestiario-chip" href={`#b-${id}`} data-ir={id}>
-                              {bestiaDe.get(id)!.nombre}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </details>
-                </li>
+                <FichaBestia bestia={b} tinta={tintaDe(r.disco)} nombres={nombres} hrefCerca={(id) => `#b-${id}`} conMapa espera />
               ))}
           </ul>
         </section>

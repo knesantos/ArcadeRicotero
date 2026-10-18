@@ -1,5 +1,5 @@
 /**
- * La talla de *Oktubre* (`D-73`, séptima vuelta): con lo que se graba la drácula con tacones y la
+ * La talla de *Oktubre* (`D-73`, octava vuelta): con lo que se graba la drácula con tacones y la
  * prisión de Barbazul.
  *
  * La tapa de *Oktubre* (1986) es la gente y las banderas, y la gente está **tallada**: la plancha

@@ -487,18 +487,3 @@ export function dibujarRecinto(region: Region, datos: Bestiario): { caja: Caja; 
   s += `<path d="${contorno(region.forma)}" class="region-borde region-borde--cerco"/></g>`;
   return { caja, svg: conPrefijo(s) + deAca.map((b) => piezaDeBestia(b, tinta)).join('') };
 }
-
-/** La ruta como carretera recta: los fierros pasan de un lado al otro. */
-export const RUTA = { ancho: 400, alto: 220 } as const;
-
-export function dibujarRuta(datos: Bestiario): string {
-  const deAca = datos.bestias.filter((b) => b.region === 'la-ruta');
-  let s = `<rect width="${RUTA.ancho}" height="${RUTA.alto}" class="pp"/>`;
-  s += `<rect y="70" width="${RUTA.ancho}" height="110" class="ruta-asfalto"/>`;
-  s += `<path d="M0 125 L${RUTA.ancho} 125" class="tz-pp" stroke-width="3" stroke-dasharray="18 14"/>`;
-  s += `<path d="M0 70 L${RUTA.ancho} 70 M0 180 L${RUTA.ancho} 180" class="tz" stroke-width="3"/>`;
-  for (let x = 20; x < RUTA.ancho; x += 70) s += `<rect x="${x}" y="186" width="6" height="16" class="tn"/>`;
-  const paso = RUTA.ancho / deAca.length;
-  const piezas = deAca.map((b, i) => piezaDeBestia(b, 'var(--papel-tenue)', paso * i + paso / 2, i % 2 ? 150 : 108)).join('');
-  return conPrefijo(s) + piezas;
-}

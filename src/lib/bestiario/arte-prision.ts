@@ -1,5 +1,5 @@
 /**
- * La prisión de Barbazul y la drácula con tacones (`D-73`, séptima vuelta).
+ * La prisión de Barbazul y la drácula con tacones (`D-73`, octava vuelta).
  *
  * Pedido del usuario, textual: *"Agrega otro personaje y pulilo a fondo, se creativo que quede
  * como uno de rocambole."* La drácula sale de *"Preso en mi ciudad"*, que es de *Oktubre* (1986),

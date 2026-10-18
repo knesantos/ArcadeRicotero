@@ -38,6 +38,7 @@ import { PANTALLA_0 as POR_LA_LETRA } from './por-la-letra/copy.ts';
 import { PANTALLA_0 as LETRA, SIN_BANCO } from './letra/copy.ts';
 import { PANTALLA_0 as MAS_O_MENOS } from './mas-o-menos/copy.ts';
 import { PANTALLA_0 as PONELOS } from './ponelos/copy.ts';
+import { LO_QUE_DIBUJA_LA_BANDA, tituloEnLaBanda } from './sitio/letras.ts';
 
 /** Las etiquetas de tabla que WOFF2 nombra por número (la tabla "known tags" del formato). */
 const CONOCIDAS = [
@@ -333,6 +334,31 @@ test('la estampa escribe en Lobo suelto solo lo que Lobo suelto tiene', () => {
   const enLobo = DISCOS.map((d) => estampaDe(d)!).filter((e) => e.letra === 'lobo-suelto');
   assert.equal(enLobo.length, 2);
   for (const e of enLobo) assert.deepEqual(faltanEn(LOBO, e.nombreEstampado), [], e.nombreEstampado);
+});
+
+/* ==================================================================
+   Los títulos de la Redondopedia (`D-75`)
+
+   Desde `D-75` el título de cada artículo va en Redonditos de Ricota Fan, **si entra entero**.
+   La decisión la toma `sitio/letras.ts` contra una lista de lo que la letra dibuja; acá se
+   comprueba que esa lista no prometa nada que el archivo no tenga.
+   ================================================================== */
+
+test('lo que la Redondopedia cree que dibuja la banda, la banda lo dibuja (D-75)', () => {
+  assert.deepEqual(faltanEn(LUZBELITO, LO_QUE_DIBUJA_LA_BANDA), []);
+});
+
+test('ningún título de la Redondopedia que va en la banda pide una letra que no tiene (D-75)', () => {
+  const { articulos } = JSON.parse(readFileSync('src/data/redondopedia.json', 'utf-8')) as {
+    articulos: { slug: string; titulo: string }[];
+  };
+  const enLaBanda = articulos.filter((a) => tituloEnLaBanda(a.slug, a.titulo));
+  // Casi todos entran: si un día entran pocos, la letra dejó de vestir la Redondopedia.
+  assert.ok(enLaBanda.length >= articulos.length - 3, `solo ${enLaBanda.length} títulos en la banda`);
+  assert.deepEqual(enLaBanda.map((a) => [a.titulo, faltanEn(LUZBELITO, a.titulo)]).filter(([, f]) => f!.length), []);
+  // Y la guarda sabe ver: los paréntesis no están, y Luzbelito no se escribe con su parecida.
+  assert.equal(tituloEnLaBanda('x', 'Los Decoradores (La Kermesse Redonda)'), false);
+  assert.equal(tituloEnLaBanda('luzbelito', 'Luzbelito'), false);
 });
 
 test('ese lector de variantes sabe encontrar: una letra declarada en un comentario no cuenta', () => {
