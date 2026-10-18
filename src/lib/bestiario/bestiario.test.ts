@@ -4,13 +4,13 @@ import { readFileSync } from 'node:fs';
 import { dibujar, dibujarGrupo } from './figuras.ts';
 import { adentro, camara, contorno, dibujarRecinto, dibujarSuelo, punto, simbolos, type Bestiario } from './mapa.ts';
 import { existsSync } from 'node:fs';
-import { atila, barbazul, lobo, cordero, dracula, pierre, retrato } from './titeres.ts';
+import { atila, barbazul, lobo, cordero, dracula, limon, pierre, retrato } from './titeres.ts';
 import { escenaMonte, VECINOS_DEL_MONTE } from './escena-monte.ts';
 import {
   CHORRO, JAULA_VACIA, escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, VECINOS_DE_LA_PRISION, VECINOS_DEL_BAJO, VECINOS_DEL_BALDIO,
   VECINOS_DEL_INFIERNO, VECINOS_DEL_TEMPLO,
 } from './escenas.ts';
-import { ACECHO, ACHATE, ATILA, ATILA_ARMADO, BAJO, BANDERAS, BARBAZUL, BARBAZUL_ARMADO, CIELO_VACA, DRACULA, DRACULA_ARMADO, PASTURA, ESCENA, PALO, PIERRE, PIERRE_ARMADO, PRISION, PUERTA_DE_BARBAZUL, SOGA, VACA, VACA_ARMADO, deLaTapa } from './rig.ts';
+import { ACECHO, ACHATE, ATILA, ATILA_ARMADO, BAJO, BANDERAS, BARBAZUL, BARBAZUL_ARMADO, CHAPA, CIELO_VACA, DRACULA, DRACULA_ARMADO, PASTURA, ESCENA, LIMON, LIMON_ARMADO, LINTERNAS, PALO, PERRO, PIERRE, PIERRE_ARMADO, PRISION, PUERTA_DE_BARBAZUL, SOGA, VACA, VACA_ARMADO, deLaTapa } from './rig.ts';
 import { ARMADO, RECORTES, cajaDeRecorte, LADO_TAPA } from './recortes.ts';
 import { PIEZAS } from './arte.ts';
 import { ETIQUETA, PIEZAS_BAJO, PIEZAS_PIERRE, PUERTA, agujero } from './arte-bajo.ts';
@@ -18,6 +18,7 @@ import { pincelada } from './pincel.ts';
 import { PIEZAS_DRACULA, PIEZAS_PRISION, cajaDe } from './arte-prision.ts';
 import { PIEZAS_BARBAZUL, PIEZAS_PUERTA } from './arte-barbazul.ts';
 import { CORRE, PIEZAS_ATILA } from './arte-atila.ts';
+import { PIEZAS_BALDIO, PIEZAS_LIMON } from './arte-baldio.ts';
 import { envolventes, tallar, tono } from './grabado.ts';
 import { ESPERA, GUARDADO, SIN_ISLA, enEspera, pidePiezas } from './carga.ts';
 import { ENTORNOS, PIEZAS_ENTORNOS, luzQueAsoma } from './arte-entornos.ts';
@@ -239,22 +240,23 @@ test('cada pieza del aerógrafo y cada recorte están en public/bestiario', () =
   const nombres = [...PIEZAS.map((p) => p.nombre), ...RECORTES.map((r) => r.nombre)];
   const faltan = nombres.filter((n) => !existsSync(`public/bestiario/${n}.webp`));
   assert.deepEqual(faltan, []);
-  const piden = [...(lobo() + cordero() + escenaMonte(new Map()) + escenaBajo(new Map()) + escenaPrision(new Map())).matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]);
+  const piden = [...(lobo() + cordero() + escenaMonte(new Map()) + escenaBajo(new Map()) + escenaPrision(new Map()) + escenaBaldio(new Map())).matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]);
   assert.ok(piden.length > 10);
   assert.deepEqual(piden.filter((n) => !nombres.includes(n!)), []);
 });
 
 test('cada recinto de noche tiene a todos los suyos: el protagonista de tapa y los demás como ojos', () => {
   const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
-  for (const [region, protagonista, vecinos, escena] of [
-    ['los-techos', 'ese-perro-que-sigue-alli', VECINOS_DEL_BALDIO, escenaBaldio(nombres)],
-    ['el-infierno', 'luzbelito', VECINOS_DEL_INFIERNO, escenaInfierno(nombres)],
-    ['el-templo', 'momo', VECINOS_DEL_TEMPLO, escenaTemplo(nombres)],
+  // En el baldío, además del perro de la tapa, andan dos títeres: el negro Atila por la medianera
+  // (duodécima vuelta) y Limón por la chapa (decimocuarta).
+  for (const [region, protagonista, vecinos, escena, otros] of [
+    ['los-techos', 'ese-perro-que-sigue-alli', VECINOS_DEL_BALDIO, escenaBaldio(nombres), ['el-negro-atila', 'limon']],
+    ['el-infierno', 'luzbelito', VECINOS_DEL_INFIERNO, escenaInfierno(nombres), []],
+    ['el-templo', 'momo', VECINOS_DEL_TEMPLO, escenaTemplo(nombres), []],
   ] as const) {
     const delRecinto = datos.bestias.filter((b) => b.region === region).map((b) => b.id).sort();
-    // En el baldío, además del perro de la tapa, anda el negro Atila por la medianera (undécima vuelta).
-    const otros = region === 'los-techos' ? ['el-negro-atila'] : [];
     assert.deepEqual(delRecinto, [protagonista, ...otros, ...Object.keys(vecinos)].sort(), `en ${region} falta o sobra alguien`);
+    for (const id of otros) assert.ok(escena.includes(`data-id="${id}"`), `${region} no tiene a ${id}`);
     assert.ok(escena.includes(`data-id="${protagonista}"`), `${region} no tiene a su protagonista`);
     assert.ok(!/NaN|undefined|Infinity/.test(escena), `${region} tiene un número roto`);
     for (const [id, [x, y]] of Object.entries(vecinos)) assert.ok(x >= 0 && x <= ESCENA.ancho && y >= 0 && y <= ESCENA.alto, `${id} se sale`);
@@ -768,4 +770,62 @@ test('lo que el Atila se llevó es de bestias que existen, y la estampa dice que
   assert.match(b.estampa, /del dibujo/);
   const r = retrato('el-negro-atila');
   assert.ok(r && r.svg.includes('atila-forro-1') && r.svg.includes('atila-forro-2') && !/NaN/.test(r.caja), 'el Atila no tiene retrato con el gabán abierto');
+});
+
+/*
+ * La decimocuarta vuelta: Limón, un limón verde que corre por las chapas del baldío, pintado a crayón como
+ * el perro de *Un baión* (`arte-baldio.ts`).
+ */
+
+test('Limón es un títere entero: cada pieza que mueve la isla, con su imagen', () => {
+  const marcado = limon();
+  const partes = ['fruta', 'hoja', 'boca', 'pierna-1', 'pierna-2', 'brazo-1', 'brazo-2', 'pupila-1', 'pupila-2', 'parpado-1', 'parpado-2'];
+  for (const parte of partes) assert.ok(marcado.includes(`data-parte="${parte}"`), `a Limón le falta ${parte}`);
+  const imagenes = new Set([...marcado.matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]!));
+  assert.deepEqual([...imagenes].sort(), PIEZAS_LIMON.map((p) => p.nombre).sort(), 'Limón usa piezas que no se imprimen, o le sobra una');
+  for (const m of marcado.matchAll(/data-parte="(?:parpado-\d|boca)"[^>]*>/g)) assert.match(m[0], /data-pivote="-?[\d.]+ -?[\d.]+"/);
+  // Sin la isla, los párpados están abiertos.
+  for (const m of marcado.matchAll(/data-parte="parpado-\d"[^>]*>/g)) assert.match(m[0], /scale\(1 0\)/);
+  // Los ojos, la boca, las caderas, los hombros y el cabito están en la fruta, no en el aire.
+  const { centro: [cx, cy], radio: [rx, ry] } = LIMON_ARMADO.fruta;
+  const enLaFruta = ([x, y]: readonly [number, number], holgura = 1): boolean => ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= holgura;
+  for (const o of LIMON_ARMADO.ojos) assert.ok(enLaFruta(o.centro, 0.8), 'un ojo se salió de la cara');
+  assert.ok(enLaFruta(LIMON_ARMADO.boca, 0.9), 'la boca está afuera del limón');
+  for (const c of [...LIMON_ARMADO.caderas, ...LIMON_ARMADO.hombros]) assert.ok(enLaFruta(c, 1.15), 'una pierna o un brazo cuelga del aire');
+  assert.ok(enLaFruta(LIMON_ARMADO.cabito, 1.4), 'la hoja no está arriba del limón');
+  // Parado, las zapatillas pisan la chapa: la cadera más el largo de la pierna llegan al piso.
+  for (const [, y] of LIMON_ARMADO.caderas) assert.ok(Math.abs(y + LIMON_ARMADO.pierna) <= 1, 'Limón flota o se hunde en la chapa');
+  for (const p of PIEZAS_BALDIO) assert.ok(!/NaN|undefined|Infinity/.test(p.dibujo), `${p.nombre} tiene un número roto`);
+});
+
+test('Limón corre por la chapa del baldío, adentro de la escena, sin meterse arriba del perro', () => {
+  const escena = escenaBaldio(new Map(datos.bestias.map((b) => [b.id, b.nombre])));
+  assert.ok(!/NaN|undefined|Infinity/.test(escena), 'el baldío tiene un número roto');
+  assert.ok(CHAPA.arriba < CHAPA.piso && CHAPA.piso < CHAPA.abajo, 'la chapa está dada vuelta');
+  const ancho = (LIMON_ARMADO.fruta.radio[0] + 12) * LIMON.escala;
+  assert.ok(LIMON.desde - ancho > 0 && LIMON.hasta + ancho < ESCENA.ancho, 'Limón se sale de la escena al correr');
+  // El perro asoma por el borde izquierdo con la cabeza, que llega hasta x ~ 290; Limón no corre sobre ella.
+  assert.ok(LIMON.desde >= PERRO.x + 240, 'Limón corre encima del perro');
+  // La chapa va delante de la medianera y Limón delante de la chapa; las linternas, entre los dos.
+  const orden = ['baldio-chapa.webp', 'data-lado="der"', 'data-lado="izq"', 'titere--limon', 'titere--perro', 'baldio-frente.webp'].map((t) => escena.indexOf(t));
+  assert.ok(orden.every((i) => i > 0), 'al baldío le falta una capa');
+  assert.deepEqual([...orden].sort((a, b) => a - b), orden, 'las capas del baldío están en otro orden');
+  // Las linternas salen de afuera de la escena y barren para adentro.
+  for (const lado of ['der', 'izq'] as const) {
+    const L = LINTERNAS[lado];
+    assert.ok(L.x < 0 || L.x > ESCENA.ancho, `la linterna ${lado} sale de adentro de la escena`);
+    for (const a of L.barre) {
+      const r = (a * Math.PI) / 180;
+      const [x, y] = [L.x + Math.cos(r) * LINTERNAS.largo * 0.6, L.y + Math.sin(r) * LINTERNAS.largo * 0.6];
+      assert.ok(x > 0 && x < ESCENA.ancho && y > 0 && y < ESCENA.alto, `la linterna ${lado} barre afuera de los techos`);
+    }
+  }
+});
+
+test('la ficha de Limón cuenta lo de Escobar con su rótulo, y su retrato es el títere', () => {
+  const b = datos.bestias.find((x) => x.id === 'limon') as { cuenta?: Array<{ rotulo: string; fuente?: string }>; dibujo: { f: string } };
+  assert.ok(b.cuenta?.some((c) => c.rotulo === 'testimonio' && c.fuente === 'RES-21'), 'lo que contó el Indio no está rotulado como testimonio');
+  assert.ok(!b.cuenta?.some((c) => c.rotulo === 'hecho' && /narra|cuenta el final/i.test(JSON.stringify(c))), 'lo que dice el tema no es un hecho: es lo que contó el Indio');
+  const r = retrato('limon');
+  assert.ok(r && r.svg.includes('limon-fruta') && !/NaN/.test(r.caja), 'Limón no tiene retrato');
 });

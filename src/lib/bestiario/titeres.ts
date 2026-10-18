@@ -11,7 +11,7 @@
 import { PIEZAS } from './arte.ts';
 import { rutaDePieza } from './aerografo.ts';
 import { ARMADO, RECORTES, cajaDeRecorte } from './recortes.ts';
-import { ATILA_ARMADO, BARBAZUL_ARMADO, DRACULA_ARMADO, PIERRE_ARMADO, VACA_ARMADO } from './rig.ts';
+import { ATILA_ARMADO, BARBAZUL_ARMADO, DRACULA_ARMADO, LIMON_ARMADO, PIERRE_ARMADO, VACA_ARMADO } from './rig.ts';
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 const cajas = new Map<string, readonly [number, number, number, number]>([
@@ -169,6 +169,41 @@ export function dracula(): string {
 }
 
 /**
+ * Limón (`D-73`, decimocuarta vuelta): no es de tapa, está pintado a crayón en la estética del baldío
+ * (`arte-baldio.ts`) y recortado en piezas. Cada pierna y cada brazo cuelga de su cadera o su
+ * hombro: la pieza está dibujada desde ahí, así que la isla la gira sobre el (0, 0) de su grupo.
+ * La hoja gira en el cabito y la boca jadea, achicándose de arriba para abajo. Las pupilas no se
+ * imprimen: son dos puntos de tinta que la isla corre, para que mire para atrás mientras corre.
+ */
+export function limon(): string {
+  const A = LIMON_ARMADO;
+  const colgado = (nombre: string, pieza: string, [x, y]: readonly [number, number]): string =>
+    `<g transform="translate(${x} ${y})"><g data-parte="${nombre}">${imagen(pieza)}</g></g>`;
+  const [boX, boY] = A.boca;
+  const ojos = A.ojos
+    .map(
+      ({ centro: [cx, cy], radio: [rx, ry] }, i) =>
+        `<circle data-parte="pupila-${i + 1}" cx="${cx + 2}" cy="${cy + 1}" r="${(rx * 0.42).toFixed(1)}" class="bt-limon-pupila"/>` +
+        `<ellipse data-parte="parpado-${i + 1}" data-pivote="${cx} ${cy - ry}" cx="${cx}" cy="${cy}" rx="${rx + 1}" ry="${ry + 1}" class="bt-limon-parpado" transform="scale(1 0)"/>`,
+    )
+    .join('');
+  return (
+    `<g data-titere="limon">` +
+    colgado('brazo-2', 'limon-brazo-atras', A.hombros[0]) +
+    colgado('pierna-2', 'limon-pierna-atras', A.caderas[0]) +
+    `<g data-parte="fruta">` +
+    `<g data-parte="hoja">${imagen('limon-hoja')}</g>` +
+    imagen('limon-fruta') +
+    `<g data-parte="boca" data-pivote="${boX} ${boY - 5}">${imagen('limon-boca')}</g>` +
+    ojos +
+    `</g>` +
+    colgado('pierna-1', 'limon-pierna', A.caderas[1]) +
+    colgado('brazo-1', 'limon-brazo', A.hombros[1]) +
+    `</g>`
+  );
+}
+
+/**
  * Barbazul (`D-73`, undécima vuelta): tallado como el barbudo de la contratapa de *Oktubre*
  * (`arte-barbazul.ts`), con la barba de otra plancha. La barba cuelga de la cabeza y se mece con
  * retraso; las pupilas no están impresas: son de la página, para que la isla las haga mirar a la
@@ -300,6 +335,9 @@ const PIEZAS_DEL_RETRATO: Readonly<Record<string, { piezas: readonly string[]; c
       );
     },
   },
+  // Limón tampoco es de tapa. Sus piernas y brazos están dibujados desde la cadera y el hombro, así
+  // que la caja no sale de las piezas: es la del títere entero, de la hoja a las zapatillas.
+  limon: { piezas: ['limon-fruta'], cuerpo: limon, caja: [-62, -114, 114, 118] },
 };
 
 export function retrato(id: string): { caja: string; svg: string } | null {

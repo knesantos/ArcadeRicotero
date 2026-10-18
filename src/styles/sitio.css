@@ -4032,7 +4032,8 @@ body:has(> .lugar) .marca-chica {
 .titere--pierre,
 .titere--dracula,
 .titere--barbazul,
-.titere--atila { cursor: pointer; }
+.titere--atila,
+.titere--limon { cursor: pointer; }
 
 /* Sexta vuelta (D-73): el bajo inundado y el gordo Pierre. Los párpados son del papel de *Gulp!*
    con la raya del ojo cerrado; el agua que entra por el vidrio roto, la lluvia de la calle y las
@@ -4089,3 +4090,10 @@ body:has(> .lugar) .marca-chica {
 .bt-atila-parpado-oscuro { fill: var(--bestia-lobo-oscuro); }
 .bt-atila-pestana { fill: none; stroke: var(--fondo); stroke-width: 1.6; stroke-linecap: round; }
 .atila-sirena { mix-blend-mode: screen; }
+
+/* Decimocuarta vuelta (D-73): Limón por las chapas del baldío. Las pupilas son tinta que la isla corre
+   (mira para atrás mientras corre); los párpados, del verde de la cáscara. Las linternas del bloque
+   son luz: se suman a lo oscuro, como el fuego del infierno, y no se llevan los toques. */
+.bt-limon-pupila { fill: var(--fondo); }
+.bt-limon-parpado { fill: var(--bestia-limon-verde); }
+.baldio-linterna { mix-blend-mode: screen; pointer-events: none; }

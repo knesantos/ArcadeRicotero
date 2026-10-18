@@ -510,6 +510,11 @@ function cosa(que: string): string {
     case 'vaso-con-moscon':
       return E(50, 56, 9, 6) + E(44, 50, 6, 4, 'pp borde', -20) + E(56, 50, 6, 4, 'pp borde', 20) + C(58, 55, 4) +
         T('M24 92 L30 22 L70 22 L76 92 Z', 2.6, 'tz') + T('M34 30 L32 80', 2, 'tz-pp') + R(20, 90, 60, 3) + T('M80 40 l8 -4 M82 52 l10 0', 1.8);
+    case 'limon':
+      // Un limón verde que corre: la fruta con el pezón adelante, la hoja, los ojos para atrás.
+      return P('M22 46 Q22 22 48 20 Q70 18 80 36 L90 40 L80 46 Q76 70 50 72 Q24 72 22 46 Z', 'ac') + P('M44 22 Q36 6 22 8 Q30 20 44 22 Z') +
+        C(56, 38, 6, 'pp') + C(70, 38, 5, 'pp') + C(53, 38, 2.6) + C(67, 38, 2.4) + P('M60 52 Q66 50 70 54 Q66 60 60 56 Z') +
+        T('M42 70 L32 84 L40 92 M56 70 L66 84 L60 94', 3) + T('M26 48 L12 40 M78 54 L90 64', 2.6);
     case 'sombra':
       return P('M14 92 Q10 50 30 40 Q46 26 66 36 Q90 46 86 92 Z', 'tn osc') + C(40, 56, 4, 'oro') + C(60, 56, 4, 'oro');
     default:

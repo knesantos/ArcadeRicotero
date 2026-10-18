@@ -39,6 +39,52 @@ export const profundidad = (y: number): number => 0.82 + 0.32 * ((y - (PALO.y - 
 /** Dónde entra el perro: por el borde izquierdo, como en la tapa. */
 export const PERRO = { x: 0, y: 470, escala: 1.15 } as const;
 
+/* ------------------------------------------------------------------
+   Limón, por los techos del baldío (`D-73`, décima vuelta)
+   ------------------------------------------------------------------ */
+
+/**
+ * Dónde gira cada pieza de Limón, en coordenadas de títere: el (0, 0) es la chapa entre los dos
+ * pies, arriba es negativo, y mira para la derecha (la isla lo da vuelta cuando corre para el otro
+ * lado). Lo dibuja `arte-baldio.ts` y lo mueve la isla.
+ */
+export const LIMON_ARMADO = {
+  /** El limón: el centro de la fruta y sus dos radios. La punta, la del pezón, va adelante. */
+  fruta: { centro: [0, -66], radio: [36, 31] },
+  /** De acá cuelgan las piernas y los brazos. */
+  caderas: [[-9, -40], [9, -40]],
+  hombros: [[-30, -56], [18, -42]],
+  /** El largo de una pierna, de la cadera a la suela, y de un brazo, del hombro a la mano. */
+  pierna: 40,
+  brazo: 28,
+  /** El cabito con la hoja, arriba: la hoja gira acá. */
+  cabito: [-6, -96],
+  /** La boca abierta, que jadea: se achica y se agranda de arriba para abajo. */
+  boca: [14, -52],
+  /** Los ojos: el blanco, que se imprime, y la pupila, que la isla corre para mirar para atrás. */
+  ojos: [
+    { centro: [1, -75], radio: [8, 9.5] },
+    { centro: [18, -74], radio: [7, 8.5] },
+  ],
+} as const;
+
+/**
+ * Por dónde corre: la chapa que remata la medianera del baldío (`baldio-chapa`). `piso` es el filo
+ * de arriba, donde pisa, y es el mismo canto por donde camina el negro Atila (`ATILA.piso`); corre de `desde` a `hasta`, sin meterse arriba del perro.
+ */
+export const CHAPA = { arriba: 288, piso: 300, abajo: 314 } as const;
+export const LIMON = { desde: 250, hasta: 820, escala: 1.2, velocidad: 200 } as const;
+
+/**
+ * Las linternas del bloque: salen de afuera de la escena, arriba, una de cada lado, y barren los
+ * techos entre dos ángulos (en grados, como `rotate()`: 0 es para la derecha, y crece hacia abajo).
+ */
+export const LINTERNAS = {
+  largo: 620,
+  der: { x: 960, y: 70, barre: [146, 172] },
+  izq: { x: -60, y: 70, barre: [8, 34] },
+} as const;
+
 /** Dónde está la piedra de Luzbelito, y de qué tamaño va el busto. */
 export const LUZBELITO = { x: 452, y: 418, escala: 0.95 } as const;
 

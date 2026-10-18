@@ -23,7 +23,7 @@ import { BESTIARIO } from '../lib/bestiario/copy.ts';
 // módulos que dibujan (`arte*.ts`, `escenas.ts`, `titeres.ts`), que correrían el aerógrafo entero
 // en el teléfono al abrir la página. `bestiario.test.ts` lo vigila.
 import {
-  BAJO, BARBAZUL, BARBAZUL_ARMADO, DRACULA, DRACULA_ARMADO, LUZBELITO as LUZ, MOMO as MOMO_ESC, PIERRE, PIERRE_ARMADO, PRISION,
+  BAJO, BARBAZUL, BARBAZUL_ARMADO, CHAPA, DRACULA, DRACULA_ARMADO, LIMON, LIMON_ARMADO, LINTERNAS, LUZBELITO as LUZ, MOMO as MOMO_ESC, PIERRE, PIERRE_ARMADO, PRISION,
 } from '../lib/bestiario/rig.ts';
 import { ARMADO } from '../lib/bestiario/recortes.ts';
 import { ESPERA, GUARDADO } from '../lib/bestiario/carga.ts';
@@ -449,6 +449,135 @@ function recintoDelPerro(escena: HTMLElement, svg: SVGSVGElement): Recinto {
         ladraDesde = t;
         ladridos = 3;
       } else if (!atila.reaccionar(id, t)) deMapa.reaccionar(id, t);
+    },
+  };
+}
+
+/**
+ * El baldío entero (`D-73`, décima vuelta): el perro en su borde, y Limón por las chapas. Por los
+ * techos viene el bloque: una linterna asoma de un lado y barre los techos, Limón la ve y sale
+ * corriendo para la otra punta, con la luz atrás. Allá se para a jadear y mira para atrás; la luz
+ * se apaga, y al rato el bloque asoma del otro lado. Tocado, pega un salto.
+ */
+function recintoDelBaldio(escena: HTMLElement, svg: SVGSVGElement): Recinto {
+  const perro = recintoDelPerro(escena, svg);
+  const g = svg.querySelector<SVGGElement>('.titere--limon')!;
+  const p = partes(g);
+  const A = LIMON_ARMADO;
+  const luz = {
+    der: svg.querySelector<SVGGElement>('.baldio-linterna[data-lado="der"]')!,
+    izq: svg.querySelector<SVGGElement>('.baldio-linterna[data-lado="izq"]')!,
+  };
+  const brillo = { der: 0.85, izq: 0 };
+  const angulo = { der: (LINTERNAS.der.barre[0] + LINTERNAS.der.barre[1]) / 2, izq: (LINTERNAS.izq.barre[0] + LINTERNAS.izq.barre[1]) / 2 };
+
+  let x = (LIMON.desde + LIMON.hasta) / 2;
+  /** De qué lado viene el bloque. Limón corre para el otro. */
+  let bloque: 'der' | 'izq' = 'der';
+  let estado: 've' | 'corre' | 'jadea' = 've';
+  let desde = 0;
+  let fase = 0;
+  let saltoDesde = -10;
+  let parpadeo = 2.5;
+
+  const meta = (): number => (bloque === 'der' ? LIMON.desde : LIMON.hasta);
+
+  function pintar(t: number, dt: number): void {
+    const enEstado = t - desde;
+    if (estado === 've' && enEstado > 1.5) [estado, desde] = ['corre', t];
+    if (estado === 'corre') {
+      const dir = Math.sign(meta() - x);
+      x = hacia(x, meta(), LIMON.velocidad * dt);
+      fase += (dt * LIMON.velocidad) / 26;
+      if (x === meta() || dir === 0) [estado, desde] = ['jadea', t];
+    }
+    if (estado === 'jadea' && enEstado > 3.4) {
+      bloque = bloque === 'der' ? 'izq' : 'der';
+      [estado, desde] = ['ve', t];
+    }
+
+    // Para dónde mira: en 've' para la luz que viene; corriendo y jadeando, para donde va.
+    const deLaLuz = bloque === 'der' ? 1 : -1;
+    const frente = estado === 've' ? deLaLuz : -deLaLuz;
+    const corre = estado === 'corre';
+    const jadea = estado === 'jadea';
+
+    // El salto: dos tercios de segundo de parábola, con las piernas recogidas.
+    const s = (t - saltoDesde) / 0.66;
+    const vuela = s >= 0 && s <= 1;
+    const alto = vuela ? -4 * 70 * s * (1 - s) : 0;
+    const paso = Math.sin(fase);
+    const zancada = corre ? paso * 40 : jadea ? 9 : 0;
+    // Con las piernas abiertas la cadera baja, así las zapatillas no se despegan de la chapa; y en
+    // el medio del paso, con una pierna derecha, pega el saltito de la carrera.
+    const pisa = A.pierna * (1 - Math.cos((zancada * Math.PI) / 180));
+    const bote = corre ? pisa - Math.abs(Math.cos(fase)) * 5 : jadea ? pisa + Math.sin(t * 9) * 1.4 : Math.sin(t * 2.2) * 1;
+
+    girar(p.get('pierna-1'), vuela ? -48 : jadea ? -zancada : zancada, [0, 0]);
+    girar(p.get('pierna-2'), vuela ? 34 : jadea ? zancada : -zancada, [0, 0]);
+    girar(p.get('brazo-1'), vuela ? -150 : corre ? -paso * 50 : jadea ? 18 : Math.sin(t * 2.2) * 4, [0, 0]);
+    girar(p.get('brazo-2'), vuela ? 150 : corre ? paso * 50 : jadea ? -14 : -Math.sin(t * 2.2) * 4, [0, 0]);
+    // Corriendo se inclina para adelante; jadeando se dobla un poco, con la cabeza gacha.
+    const [, fy] = A.fruta.centro;
+    girar(p.get('fruta'), corre ? 10 : jadea ? 6 + Math.sin(t * 9) * 1.5 : vuela ? -6 : Math.sin(t * 1.3) * 2, [0, fy + A.fruta.radio[1]]);
+    girar(p.get('hoja'), corre ? -16 + Math.sin(fase * 2) * 14 : Math.sin(t * 2.6) * 6, A.cabito);
+
+    // La boca: jadea abriéndose y cerrándose; corriendo, abierta; parado, a medias.
+    const [bx, by] = (p.get('boca')?.dataset.pivote ?? '0 0').split(' ').map(Number) as [number, number];
+    const abre = jadea ? 0.45 + Math.abs(Math.sin(t * 9)) * 0.55 : corre ? 0.85 + Math.sin(fase * 2) * 0.15 : 0.5;
+    p.get('boca')?.setAttribute('transform', `translate(${bx} ${by}) scale(1 ${abre.toFixed(2)}) translate(${-bx} ${-by})`);
+
+    // Los ojos: corriendo y jadeando mira para atrás, a la luz que lo sigue.
+    const mira = estado === 've' ? 2 : -3.2;
+    for (const i of [1, 2]) p.get(`pupila-${i}`)?.setAttribute('transform', `translate(${mira} ${jadea ? 1 : 0})`);
+    if (t > parpadeo) parpadeo = t + 2.5 + Math.random() * 3;
+    const cierra = parpadeo - t > 0 && parpadeo - t < 0.14 ? 1 : 0;
+    parpado(p.get('parpado-1'), cierra);
+    parpado(p.get('parpado-2'), cierra);
+
+    g.setAttribute('transform', `translate(${x.toFixed(1)} ${(CHAPA.piso + bote + alto).toFixed(1)}) scale(${frente * LIMON.escala} ${LIMON.escala})`);
+
+    // Las linternas: la del bloque se prende y lo busca; la otra se apaga.
+    for (const lado of ['der', 'izq'] as const) {
+      const L = LINTERNAS[lado];
+      const prendida = lado === bloque && estado !== 'jadea';
+      brillo[lado] = hacia(brillo[lado], prendida ? 0.85 : 0, dt * (prendida ? 1.4 : 0.7));
+      const busca = (Math.atan2(CHAPA.piso - 50 - L.y, x - L.x) * 180) / Math.PI;
+      const meta = Math.min(L.barre[1], Math.max(L.barre[0], busca + Math.sin(t * 1.7 + (lado === 'der' ? 0 : 2)) * 4));
+      angulo[lado] = hacia(angulo[lado], meta, dt * 40);
+      luz[lado].setAttribute('transform', `translate(${L.x} ${L.y}) rotate(${angulo[lado].toFixed(2)})`);
+      luz[lado].setAttribute('opacity', brillo[lado].toFixed(2));
+    }
+  }
+
+  const saltar = (t: number): void => {
+    saltoDesde = t;
+    // Si estaba viendo venir la luz, el susto lo larga a correr.
+    if (estado === 've') [estado, desde] = ['corre', t];
+  };
+  const tocar = (): void => {
+    saltar(reloj);
+    if (quieto()) pintar(reloj, 0);
+    hablar('limon', escena, svg, x, CHAPA.piso - 124);
+  };
+  g.addEventListener('click', tocar);
+  g.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter' || ev.key === ' ') {
+      ev.preventDefault();
+      tocar();
+    }
+  });
+  pintar(0, 0);
+  return {
+    escena,
+    svg,
+    mover: (t, dt) => {
+      perro.mover(t, dt);
+      pintar(t, dt);
+    },
+    reaccionar: (id, t) => {
+      if (id === 'limon') saltar(t);
+      else perro.reaccionar(id, t);
     },
   };
 }
@@ -1264,7 +1393,7 @@ function montar(escena: HTMLElement): void {
   const id = escena.dataset.recinto;
   const controlador: Record<string, (e: HTMLElement, s: SVGSVGElement) => Recinto> = {
     'monte-pastura': recintoDelMonte,
-    'los-techos': recintoDelPerro,
+    'los-techos': recintoDelBaldio,
     'el-infierno': recintoDeLuzbelito,
     'el-templo': recintoDeMomo,
     'el-bajo': recintoDePierre,

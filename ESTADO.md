@@ -7,9 +7,26 @@
 
 **Última actualización:** 2026-10-18
 
+> ## 🍋 LIMÓN, POR LAS CHAPAS DEL BALDÍO (2026-10-18) — decimocuarta enmienda de `D-73`
+>
+> **En `main` desde el PR #63** (rama `bestiario/limon`, worktree `.claude/worktrees/bestiario-limon`), con `main`
+> juntado en `250fb04` (hasta el #62, la vaca). El usuario eligió 27 bestias para dibujar con más detalle
+> (`Docs/SUGERENCIAS/HILO-para-bestiario-prioridad-de-figuras.md`) y empezó por Limón: *"un limón colombiano que corre
+> por las chapas"*.
+>
+> - **Limón es un limón verde a crayón**, como el perro de *Un baión*: rayones que dan la vuelta a la fruta, teñidos
+>   por la luz del farol. Es un títere de siete piezas con zapatillas, y corre mirando para atrás.
+> - **Por los techos viene el bloque**: dos linternas barren los techos y lo persiguen de punta a punta de la chapa
+>   que remata la medianera. Allá jadea; tocado, salta.
+> - **Comparte el baldío con el negro Atila** (#60): la chapa está en el mismo canto por donde él camina, delante
+>   de él, y Limón corre delante de los dos. La sirena es del Atila; las linternas, de Limón.
+> - **La ficha cuenta lo de Escobar con su rótulo**: testimonio del Indio en el memoir (`RES-21`) y hecho que el
+>   Limón existió (`RES-170`). El tema es de *Luzbelito* (1996), no de *Lobo suelto*.
+> - Se escribió como (10), pasó a la (11) y quedó en la (14) al juntar `main`.
+
 > ## 🐄 LA VACA CUBANA, A PLUMÍN, CON LA TELE HECHA SATÉLITE (2026-10-18) — decimotercera enmienda de `D-73`
 >
-> **Sin integrar: espera en el PR #62**, en la rama `ciclo-26/bestiario` (worktree `.claude/worktrees/bestiario-26`), sobre `main`
+> **En `main` desde el PR #62 (rama `ciclo-26/bestiario`), fusión `250fb04`**; worktree `.claude/worktrees/bestiario-26`, sobre `main`
 > en `c1355e0` y con `main` juntado en `e07fe38` (hasta el #61, Barbazul). Pedido del usuario: *"Hace otro ciclo
 > sobre el bestiario redondo. Agrega otro personaje y pulilo a fondo, se creativo que qeude como uno de
 > rocambole"*, y *"hace la vaca cubana"*.

@@ -254,6 +254,15 @@
      de la prision. No se midio de ninguna tapa, porque en *Oktubre* no hay azul: lo pide el
      nombre. No escribe texto: no entra al test AA. Falta en el lienzo (T-435). */
   --bestia-barbazul-azul: #3f68d2; /* la segunda plancha: el azul de la barba */
+  /* Decimocuarta vuelta (D-73): Limon, el limon verde que corre por las chapas del baldio, a crayon
+     como el perro de *Un baion*. Los verdes son los de un limon de Colombia (el verde, no el
+     amarillo), llevados a la noche del baldio: el hondo se apaga contra el violeta, y el brillo
+     tira al amarillo del farol. Ninguno escribe texto: no entran al test AA. Faltan en el lienzo
+     (T-435). */
+  --bestia-limon-hondo: #2c5131; /* la cascara del lado de la sombra */
+  --bestia-limon-verde: #4b8a39; /* el verde del limon */
+  --bestia-limon-claro: #8dbb48; /* donde le pega el farol */
+  --bestia-limon-brillo: #d9e46c; /* el brillo, que tira al amarillo del farol */
 
   /* Collage de cassette (UX-04: el collage es tecnica fichada de Rocambole, RES-06).
      Papel de etiqueta: sobre el escribe la tinta del fondo (--fondo), par testeado.
