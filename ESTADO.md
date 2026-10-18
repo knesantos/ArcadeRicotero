@@ -7,11 +7,13 @@
 
 **Última actualización:** 2026-10-18
 
-> ## 🌲 EL CAMINO CON CRUCES: EL BESTIARIO SE CAMINA (2026-10-18) — `D-73`, enmienda 9
+> ## 🌲 EL CAMINO CON CRUCES: EL BESTIARIO SE CAMINA (2026-10-18) — `D-73`, enmienda 7
 >
-> **Espera en el PR #54, sin integrar**, desde la rama `bestiario/camino-con-cruces` (worktree
-> `.claude/worktrees/bestiario-camino`, sobre `main` en `159b1bc`). Pedido del usuario: que los entornos estén conectados y sea una aventura scrolleable donde
-> aparecen los personajes y se elige con flechas adónde ir. Se investigaron cinco formas y eligió, textual: *"Dale con
+> **Integrada a `main` con el PR #54**, desde la rama `bestiario/camino-con-cruces` sobre `159b1bc`. La fusionó Claude a
+> pedido del usuario (*"integra a main"*). Se escribió como novena enmienda de `D-73` y se renumeró a séptima al integrar,
+> porque llegó antes que la drácula y la carga de a una (`ciclo-24/bestiario`), que pasan a octava y novena.
+> Pedido del usuario: que los entornos estén conectados y sea una aventura scrolleable donde aparecen
+> los personajes y se elige con flechas adónde ir. Se investigaron cinco formas y eligió, textual: *"Dale con
 > el camino con cruces: una página por región, scroll que camina de costado y flechas en el cruce. Arrancá por el monte
 > y la pastura como prueba."*
 >
@@ -32,8 +34,8 @@
 >   funciones `(ancho, alto = 640)` según la especificación del camino, para que cada tramo nuevo las use (`T-470`).
 > - **Abierto, sin trabar:** `T-470` (los otros tramos), `T-471` (teléfono de verdad), `T-472` (`experiencia`),
 >   `T-473` (el recinto del monte sin JavaScript dibuja los títeres enormes, defecto previo) y `T-474` (lienzo).
-> - **Choca al integrar con `ciclo-24/bestiario`** (la drácula y la carga de a una): las dos tocan `bestiario.astro` y
->   `scripts/bestiario.ts`. El que integre segundo acomoda: la ficha de `FichaBestia.astro` tiene que dibujar los
+> - **`ciclo-24/bestiario` (la drácula y la carga de a una) choca al integrar**: las dos ramas tocan `bestiario.astro` y
+>   `scripts/bestiario.ts`, y como esta entró primero, acomoda aquella: la ficha de `FichaBestia.astro` tiene que dibujar los
 >   retratos con `enEspera(...)` de `carga.ts`, y el test que cuenta tres `enEspera(` en `bestiario.astro` se ajusta;
 >   `recintoDeLaDracula` importa `partes`, `girar`, `parpado`, `hacia` y `suave` de `scripts/bestiario/articular.ts`.
 

@@ -4840,7 +4840,7 @@ módulo que dibuja.
 - Para el próximo inventado de *Gulp!* (Barbazul, el que no se cayó del cielo) la técnica ya está:
   `pincel.ts`.
 
-### Enmienda del 2026-10-18 (9): el camino con cruces, empezando por el monte y la pastura
+### Enmienda del 2026-10-18 (7): el camino con cruces, empezando por el monte y la pastura
 
 Pedido del usuario, en dos tiempos. Primero, textual: *"Me gustaria que los diferentes entornos esten
 conectados y sea todo mas inmersivo en el bestiario. Quiero que sea una aventura scrolleable, que
@@ -4850,9 +4850,10 @@ bajada continua, el cuarto por cuarto con flechas, el mundo entero con cámara l
 plataformas con `kaplay` y el camino que camina de costado) y se le mostró una maqueta. Eligió,
 textual: *"Dale con el camino con cruces: una página por región, scroll que camina de costado y
 flechas en el cruce. Arrancá por el monte y la pastura como prueba."* La escribe el hilo principal en
-la rama `bestiario/camino-con-cruces`, sobre `main` en `159b1bc`. **Va como novena** porque la
-séptima (la drácula) y la octava (la carga de a una) son de `ciclo-24/bestiario`, que abrió su PR el
-mismo día; si esta llega antes a `main`, se renumera al integrar, como dice `integrar.md`.
+la rama `bestiario/camino-con-cruces`, sobre `main` en `159b1bc`. **Se escribió como novena**
+porque la drácula y la carga de a una, de `ciclo-24/bestiario`, ya se habían escrito como séptima y
+octava; **se renumeró a séptima al integrar**, porque esta llegó antes a `main` (PR #54). Las de
+`ciclo-24/bestiario` pasan a octava y novena cuando entren, como dice `integrar.md`.
 
 - **Una página por región** (`/redondopedia/bestiario/el-monte/`, `/la-pastura/`;
   `pages/redondopedia/bestiario/[region].astro`). Cada región que tiene su tramo en
