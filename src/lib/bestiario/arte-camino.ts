@@ -14,9 +14,11 @@
  * `scripts/imprimir-bestiario.mjs` imprime estas piezas junto con las de `arte.ts`.
  */
 
-import { nube, soplo, trazo, type Pieza } from './aerografo.ts';
+import { forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
 import { M, azar, claroDeLaPastura, filaDeTiras } from './arte.ts';
-import { ALTO, CAMINOS, VELOCIDAD, anchoDeCapa } from './camino.ts';
+import { ENTORNOS, PIEZAS_ENTORNOS } from './arte-entornos.ts';
+import { ALTO, CAMINOS, CRUCE, SOLAPE, VELOCIDAD, anchoDeCapa, type Tramo } from './camino.ts';
+import { tintaDe } from './mapa.ts';
 import { PALO } from './rig.ts';
 
 const ANCHO = CAMINOS['el-monte']!.ancho;
@@ -138,9 +140,130 @@ function frente(): string {
 /** El palo de la pastura queda donde dice el recinto: `camino.test.ts` lo mide contra esto. */
 export const PALO_EN_EL_CAMINO = { x: PALO.x + CAMINOS['la-pastura']!.claro!.dx, y: PALO.y } as const;
 
+/* ------------------------------------------------------------------
+   Los seis entornos de la décima vuelta, a lo largo (`D-77`)
+   ------------------------------------------------------------------
+   Los pinta la misma mano que pinta su recinto (`arte-entornos.ts`): cada función recibe el ancho,
+   corre las cosas fijas con `k` y siembra lo suelto a lo ancho. Lo lejano y el piso van a lo largo
+   de la escena, con el mismo `k`, así el disco sigue colgado arriba de la silla; lo de adelante va
+   más largo, porque pasa más rápido, y llega hasta el final del cruce. Cada capa conserva la caja
+   de arriba que tiene en el recinto.
+*/
+
+/** De qué pieza del recinto sale cada tramo largo, y la función que lo pinta. */
+const DE_ENTORNO = Object.values(CAMINOS).filter((t) => t.forma === 'entorno');
+
+/** La altura donde empieza una capa en su recinto (`PIEZAS_ENTORNOS`). */
+const arribaDe = (nombre: string): number => PIEZAS_ENTORNOS.find((p) => p.nombre === nombre)!.caja[1];
+
+function piezasDeEntorno(tramo: Tramo): Pieza[] {
+  const capas = ENTORNOS[tramo.region as keyof typeof ENTORNOS];
+  const pieza = tramo.piezas.piso!.replace(/^camino-|-piso$/g, '');
+  const frente = anchoDeCapa(tramo.velocidad.frente, tramo.ancho);
+  const yPiso = arribaDe(`${pieza}-piso`);
+  const yFrente = arribaDe(`${pieza}-frente`);
+  return [
+    { nombre: tramo.piezas.lejos!, caja: [0, 0, tramo.escena, ALTO], dibujo: capas.lejos(tramo.escena, ALTO), opaca: true, densidad: 1.25 },
+    { nombre: tramo.piezas.piso!, caja: [0, yPiso, tramo.escena, ALTO - yPiso], dibujo: capas.piso(tramo.escena, ALTO), densidad: 1.25 },
+    { nombre: tramo.piezas.frente!, caja: [0, yFrente, frente, ALTO - yFrente], dibujo: capas.frente(frente, ALTO), densidad: 1.25 },
+  ];
+}
+
 export const PIEZAS_CAMINO: readonly Pieza[] = [
   { nombre: 'camino-monte-lejos', caja: [0, 0, LEJOS, ALTO], dibujo: lejos(), opaca: true, densidad: 1.25 },
   { nombre: 'camino-monte-piso', caja: [0, PISO, ANCHO, ALTO - PISO], dibujo: pisoMonte(), densidad: 1.5 },
   { nombre: 'camino-pastura-piso', caja: [0, PISO, ANCHO, ALTO - PISO], dibujo: pisoPastura(), densidad: 1.5 },
   { nombre: 'camino-monte-frente', caja: [0, 0, FRENTE, ALTO], dibujo: frente(), densidad: 1.25 },
+  ...DE_ENTORNO.flatMap(piezasDeEntorno),
 ];
+
+/* ------------------------------------------------------------------
+   El cruce del final (`D-77`)
+   ------------------------------------------------------------------
+   Los entornos y los recintos terminan en la noche de afuera. Entra soplada sobre el final de la
+   escena, como la noche que se come el borde de la vista en el monte, y es un descampado oscuro: la
+   picada que venía se abre en tantas como vecinas tiene la región, y cada una se va hacia la luz de
+   su disco, que asoma en el horizonte. Ahí, sin ningún bicho abajo, se paran los carteles.
+*/
+
+/** La caja del cruce, en coordenadas del piso: arranca `SOLAPE` antes del final de la escena. */
+export const cajaDelCruce = (t: Tramo): readonly [number, number, number, number] => [t.escena - SOLAPE, 0, SOLAPE + CRUCE, ALTO];
+
+/** Donde el descampado se junta con el cielo, y donde nace la picada. */
+const HORIZONTE = 404;
+const PICADA = 590;
+
+/**
+ * La pieza del cruce de un tramo. `luces`: la tinta del disco de cada vecina, en el orden de los
+ * carteles; cada una asoma en el horizonte, al final de su picada.
+ */
+export function piezaDelCruce(t: Tramo, luces: readonly string[]): Pieza {
+  const [x0, , ancho] = cajaDelCruce(t);
+  const rnd = azar([...t.region].reduce((s, c) => (s * 31 + c.charCodeAt(0)) >>> 0, 7));
+  // Desde acá, la noche es negra del todo.
+  const borde = t.escena + 56;
+  const fin = x0 + ancho;
+  const rect = (a: number, b: number): string => `M${a} -40 L${b} -40 L${b} ${ALTO + 40} L${a} ${ALTO + 40} Z`;
+  const n = Math.max(1, luces.length);
+  const paso = (fin - borde - 80) / n;
+  const destinos = luces.map((_, i) => ({ x: borde + 40 + paso * (i + 0.5), y: HORIZONTE - 8 + rnd() * 16 }));
+
+  // Las luces de las vecinas, detrás del horizonte: un resplandor ancho y un centro chico.
+  let luz = '';
+  luces.forEach((color, i) => {
+    const { x, y } = destinos[i]!;
+    luz += nube(x, y - 26, 74, 52, color, 'xl', 0.5) + nube(x, y - 12, 26, 13, color, 'm', 0.75);
+  });
+
+  // La picada: entra desde la escena y se abre, una lengua por vecina que se angosta hacia su luz.
+  const nace = { x: borde - 40, y: PICADA };
+  let picadas = '';
+  for (const { x, y } of destinos) {
+    const medio = { x: (nace.x + x) / 2 + (rnd() - 0.5) * 40, y: (nace.y + y) / 2 + 30 };
+    picadas += soplo(
+      `M${nace.x} ${nace.y - 26} Q${medio.x} ${medio.y - 12} ${x - 3} ${y} L${x + 3} ${y} Q${medio.x + 16} ${medio.y + 14} ${nace.x + 30} ${nace.y + 30} Z`,
+      M.sombra,
+      'm',
+      0.5,
+    );
+  }
+
+  // Unos pastos de crayón, para que el descampado no sea un hueco.
+  let pastos = '';
+  for (let i = 0; i < 70; i++) {
+    const x = borde + rnd() * (fin - borde);
+    const y = HORIZONTE + 30 + rnd() * (ALTO - HORIZONTE - 40);
+    pastos += trazo(`M${x.toFixed(1)} ${y.toFixed(1)} l${(-2 + rnd() * 4).toFixed(1)} ${(-(5 + rnd() * 9)).toFixed(1)}`, rnd() < 0.6 ? M.hondo : M.sombra, 1.2, 0.6);
+  }
+
+  return {
+    nombre: t.piezas.cruce!,
+    caja: cajaDelCruce(t),
+    dibujo:
+      `<g filter="url(#rociado)">` +
+      // La noche que se come el borde: dos soplos que se van cerrando, y después negro de verdad.
+      soplo(rect(t.escena - 8, fin + 60), M.negro, 'xl') +
+      soplo(rect(t.escena + 24, fin + 60), M.negro, 'l') +
+      forma(rect(borde, fin + 10), M.negro) +
+      // El descampado: apenas más claro que el cielo, con la línea del horizonte soplada.
+      soplo(`M${borde - 30} ${HORIZONTE} L${fin + 40} ${HORIZONTE} L${fin + 40} ${ALTO + 40} L${borde - 30} ${ALTO + 40} Z`, M.oscuro, 'l', 0.35) +
+      luz +
+      picadas +
+      pastos +
+      // Abajo, lo más cerca, se apaga, como en el monte.
+      soplo(`M${borde - 60} ${ALTO - 50} L${fin + 40} ${ALTO - 50} L${fin + 40} ${ALTO + 40} L${borde - 60} ${ALTO + 40} Z`, M.negro, 'l', 0.7) +
+      `</g>`,
+    densidad: 1.25,
+  };
+}
+
+/**
+ * Las piezas de todos los cruces. Necesitan saber quién es vecino de quién y de qué disco es cada
+ * uno: se lo pasa quien lee `bestiario.json` (la imprenta y el test), y `tintaDe` pone la tinta.
+ */
+export function piezasDeLosCruces(regiones: readonly { id: string; disco: string; vecinas: readonly string[] }[]): Pieza[] {
+  const discoDe = new Map(regiones.map((r) => [r.id, r.disco]));
+  return Object.values(CAMINOS)
+    .filter((t) => t.piezas.cruce)
+    .map((t) => piezaDelCruce(t, regiones.find((r) => r.id === t.region)!.vecinas.map((v) => tintaDe(discoDe.get(v)!))));
+}

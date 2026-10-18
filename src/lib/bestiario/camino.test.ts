@@ -1,107 +1,162 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
-import { ALTO, CAMINOS, CON_CAMINO, VELOCIDAD, VISTA_MAX, VISTA_MIN, anchoDeCapa, camara, hrefDeRegion, recintoDe } from './camino.ts';
-import { PALO_EN_EL_CAMINO, PIEZAS_CAMINO } from './arte-camino.ts';
+import {
+  ALTO, CAMINOS, CON_CAMINO, CRUCE, ENTRADA, RECINTO, VISTA_MAX, VISTA_MIN, anchoDeCapa, camara, conParalaje, corrimiento, hrefDeRegion,
+} from './camino.ts';
+import { PALO_EN_EL_CAMINO, PIEZAS_CAMINO, cajaDelCruce, piezasDeLosCruces } from './arte-camino.ts';
+import { pisoDelCamino } from './escenas-camino.ts';
 import { ACECHO, PALO, PASTURA } from './rig.ts';
 import { rutaDePieza } from './aerografo.ts';
 import type { Bestiario } from './mapa.ts';
 
 /**
- * El camino con cruces (`D-73`, séptima vuelta): cada región que ya se camina es una página, y
- * al final hay un cruce con un cartel por región vecina. Lo que se mide acá es lo que, si se
- * rompe, se ve mal o deja a alguien afuera sin que ningún otro test lo note.
+ * El camino con cruces (`D-73`, séptima vuelta; `D-77`): cada región es una página que se camina
+ * de costado, y al final hay un cruce con un cartel por región vecina. Lo que se mide acá es lo que,
+ * si se rompe, se ve mal o deja a alguien afuera sin que ningún otro test lo note.
  */
 
 const datos = JSON.parse(readFileSync('src/data/bestiario.json', 'utf-8')) as Bestiario;
 const regionDe = new Map(datos.regiones.map((r) => [r.id, r]));
-const pieza = (nombre: string) => PIEZAS_CAMINO.find((p) => p.nombre === nombre);
+const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
+const CRUCES = piezasDeLosCruces(datos.regiones);
+const pieza = (nombre: string | null) => [...PIEZAS_CAMINO, ...CRUCES].find((p) => p.nombre === nombre);
 
-test('cada tramo es de una región que existe, y el monte y la pastura ya se caminan', () => {
-  assert.deepEqual([...CON_CAMINO].sort(), ['el-monte', 'la-pastura']);
+test('las trece regiones se caminan, y se entra por el monte', () => {
+  assert.deepEqual([...CON_CAMINO].sort(), datos.regiones.map((r) => r.id).sort());
   for (const [id, tramo] of Object.entries(CAMINOS)) {
     assert.equal(tramo.region, id);
     assert.ok(regionDe.has(id), `${id} no es una región de bestiario.json`);
   }
+  assert.equal(ENTRADA, '/redondopedia/bestiario/el-monte/');
 });
 
-test('cada bicho de la región anda por su camino, una vez y adentro de la escena', () => {
+test('los entornos están conectados: desde la entrada se llega a todos, y de todos se vuelve', () => {
+  const alcanza = (desde: string, vecinas: (id: string) => readonly string[]): Set<string> => {
+    const vistas = new Set([desde]);
+    const pendientes = [desde];
+    while (pendientes.length) for (const v of vecinas(pendientes.pop()!)) if (!vistas.has(v)) vistas.add(v), pendientes.push(v);
+    return vistas;
+  };
+  const ida = alcanza('el-monte', (id) => regionDe.get(id)!.vecinas);
+  const vuelta = alcanza('el-monte', (id) => datos.regiones.filter((r) => r.vecinas.includes(id)).map((r) => r.id));
+  for (const id of CON_CAMINO) {
+    assert.ok(ida.has(id), `desde el monte no se llega caminando a ${id}`);
+    assert.ok(vuelta.has(id), `desde ${id} no se vuelve caminando al monte`);
+  }
+});
+
+test('cada bicho de la región anda por su camino, una vez, y ninguno queda en la noche del cruce', () => {
   for (const [id, tramo] of Object.entries(CAMINOS)) {
-    const enElCamino: string[] = [
-      ...Object.keys(tramo.ojos),
-      ...Object.keys(tramo.claro?.ojos ?? {}),
-      // El lobo asoma en su monte, y en el claro acecha al cordero.
-      ...(tramo.lobo || tramo.claro ? ['el-lobo-suelto'] : []),
-      // En el claro también vive la vaca cubana, con su satélite (`escena-vaca.ts`).
-      ...(tramo.claro ? ['el-cordero-atado', 'aquella-solitaria-vaca-cubana'] : []),
-    ];
+    const piso = pisoDelCamino(tramo, nombres);
+    assert.ok(!/NaN|undefined|Infinity/.test(piso), `${id}: el piso tiene un número roto`);
+    // Los que se tocan: los bichos y los títeres (y en la ruta, las piezas de los fierros adentro).
+    const tocables = [...piso.matchAll(/class="(?:bestia|titere)\b[^"]*"[^>]*?\sdata-id="([^"]+)"/g)].map((m) => m[1]!);
     const deLaRegion = datos.bestias.filter((b) => b.region === id).map((b) => b.id);
-    const deVisita = tramo.deVisita ?? [];
-    assert.equal(new Set(enElCamino).size, enElCamino.length, `${id}: un bicho aparece dos veces`);
-    assert.deepEqual(
-      enElCamino.filter((b) => !deVisita.includes(b)).sort(),
-      [...deLaRegion].sort(),
-      `${id}: la escena y el JSON no tienen los mismos bichos`,
-    );
-    for (const v of deVisita) assert.ok(enElCamino.includes(v), `${id}: ${v} es de visita pero no está en la escena`);
-    for (const [b, [x, y]] of Object.entries(tramo.ojos)) {
-      assert.ok(x > 40 && x < tramo.ancho - 40 && y > 200 && y < ALTO - 40, `${id}: ${b} quedó afuera (${x}, ${y})`);
+    const esperados = [...deLaRegion, ...(tramo.deVisita ?? [])].sort();
+    assert.deepEqual([...new Set(tocables)].sort(), esperados, `${id}: la escena y el JSON no tienen los mismos bichos`);
+    assert.equal(new Set(tocables).size, tocables.length, `${id}: un bicho aparece dos veces`);
+    // Nadie vive debajo de los carteles: los bichos están en la escena, antes del cruce.
+    for (const m of piso.matchAll(/data-id="([^"]+)" data-x="(-?[\d.]+)" data-y="(-?[\d.]+)"/g)) {
+      const [x, y] = [Number(m[2]), Number(m[3])];
+      assert.ok(x > 20 && x < tramo.escena - 20 && y > 0 && y < ALTO, `${id}: ${m[1]} quedó afuera de la escena (${x}, ${y})`);
     }
   }
 });
 
-test('el lobo del monte asoma lejos de los bordes, así se llega a él caminando', () => {
+test('los tramos largos: los ojos lejos de los bordes, el lobo y el claro donde se llega caminando', () => {
+  for (const tramo of Object.values(CAMINOS).filter((t) => t.forma === 'largo')) {
+    for (const [b, [x, y]] of Object.entries(tramo.ojos)) {
+      assert.ok(x > 40 && x < tramo.ancho - 40 && y > 200 && y < ALTO - 40, `${tramo.region}: ${b} quedó afuera (${x}, ${y})`);
+    }
+  }
   const { lobo, ancho } = CAMINOS['el-monte']!;
   assert.ok(lobo && lobo.x > VISTA_MAX / 2 && lobo.x < ancho - VISTA_MAX / 2);
-});
-
-test('el claro de la pastura cae entero adentro del piso, y el palo donde dice el arte', () => {
-  const { claro, ancho } = CAMINOS['la-pastura']!;
-  assert.ok(claro);
+  const pastura = CAMINOS['la-pastura']!;
+  const claro = pastura.claro!;
   // La pastura y el lobo acechando de los dos lados, con lugar para entrar y salir caminando.
   assert.ok(claro.dx + PALO.x - PASTURA.rx > VISTA_MIN, 'el claro arranca pegado a la entrada');
-  assert.ok(claro.dx + PALO.x + PASTURA.rx < ancho - VISTA_MIN, 'el claro se come el cruce');
-  assert.ok(claro.dx + ACECHO.desde > 0 && claro.dx + ACECHO.hasta < ancho);
+  assert.ok(claro.dx + PALO.x + PASTURA.rx < pastura.ancho - VISTA_MIN, 'el claro se come el cruce');
+  assert.ok(claro.dx + ACECHO.desde > 0 && claro.dx + ACECHO.hasta < pastura.ancho);
   assert.deepEqual(PALO_EN_EL_CAMINO, { x: PALO.x + claro.dx, y: PALO.y });
 });
 
-test('las capas alcanzan en cualquier pantalla, también quietas', () => {
-  for (const tramo of Object.values(CAMINOS)) {
+test('las tres formas: largo, entorno a lo largo y recinto entero con su cruce', () => {
+  for (const t of Object.values(CAMINOS)) {
+    if (t.forma === 'largo') {
+      assert.equal(t.escena, t.ancho, `${t.region}: un tramo largo lleva el cruce encima del final`);
+      assert.equal(t.piezas.cruce, null);
+    } else {
+      assert.equal(t.ancho - t.escena, CRUCE, `${t.region}: el cruce mide lo que mide`);
+      assert.ok(t.piezas.cruce, `${t.region}: le falta su cruce`);
+      assert.deepEqual(cajaDelCruce(t).slice(2), [cajaDelCruce(t)[2], ALTO]);
+      assert.equal(cajaDelCruce(t)[0] + cajaDelCruce(t)[2], t.ancho, `${t.region}: el cruce no llega al final`);
+    }
+    if (t.forma === 'recinto') {
+      assert.equal(t.escena, RECINTO);
+      assert.ok(!conParalaje(t), `${t.region}: un recinto es una sola capa`);
+    }
+    if (t.forma === 'entorno') assert.ok(t.foco > 0 && t.foco < t.escena, `${t.region}: el foco cae afuera de la escena`);
+  }
+});
+
+test('las capas alcanzan en cualquier pantalla, caminando y quietas', () => {
+  for (const tramo of Object.values(CAMINOS).filter(conParalaje)) {
     const lejos = pieza(tramo.piezas.lejos)!;
     const piso = pieza(tramo.piezas.piso)!;
     const frente = pieza(tramo.piezas.frente)!;
     assert.ok(lejos && piso && frente, `${tramo.region}: falta una pieza en PIEZAS_CAMINO`);
-    // Quieto, las capas van juntas: ninguna puede terminar antes que el piso.
-    assert.ok(lejos.caja[2] >= tramo.ancho, `${tramo.region}: lo lejano es más corto que el piso`);
-    assert.ok(frente.caja[2] >= tramo.ancho, `${tramo.region}: lo de adelante es más corto que el piso`);
-    assert.equal(piso.caja[2], tramo.ancho);
-    // Andando, cada una cubre lo que su velocidad recorre con la vista más exigente.
-    assert.ok(lejos.caja[2] >= anchoDeCapa(VELOCIDAD.lejos, tramo.ancho));
-    assert.ok(frente.caja[2] >= anchoDeCapa(VELOCIDAD.frente, tramo.ancho));
+    // Quieto, las capas van juntas: lo lejano llega hasta el final de la escena (el cruce tapa lo
+    // demás), y lo de adelante hasta el final de todo.
+    assert.ok(lejos.caja[2] >= tramo.escena, `${tramo.region}: lo lejano es más corto que la escena`);
+    assert.ok(frente.caja[2] >= tramo.ancho, `${tramo.region}: lo de adelante es más corto que el tramo`);
+    assert.equal(piso.caja[2], tramo.escena);
+    assert.ok(frente.caja[2] >= anchoDeCapa(tramo.velocidad.frente, tramo.ancho));
     for (const p of [lejos, piso, frente]) assert.equal(p.caja[1] + p.caja[3], ALTO, `${p.nombre} no llega al piso de la escena`);
+    // Caminando, cada capa cubre lo que se ve, con la vista más angosta y la más ancha, de punta a
+    // punta. Lo lejano solo tiene que cubrir lo que se ve de la escena: lo que sigue es el cruce.
     for (const v of [VISTA_MIN, 375, 900, VISTA_MAX]) {
-      const recorre = tramo.ancho - v;
-      assert.ok(VELOCIDAD.lejos * recorre + v <= lejos.caja[2] + 0.5, `${tramo.region}: lo lejano se queda corto con una vista de ${v}`);
-      assert.ok(VELOCIDAD.frente * recorre + v <= frente.caja[2] + 0.5, `${tramo.region}: lo de adelante se queda corto con una vista de ${v}`);
+      const recorre = Math.max(0, tramo.ancho - v);
+      for (let cam = 0; cam <= recorre; cam += recorre / 40 || 1) {
+        const l = corrimiento(tramo.velocidad.lejos, cam, tramo.foco, v);
+        const deEscena = Math.min(v, tramo.escena - cam);
+        assert.ok(l >= -0.5, `${tramo.region}: lo lejano asoma su borde de la izquierda (vista ${v})`);
+        if (deEscena > 0) assert.ok(l + deEscena <= lejos.caja[2] + 0.5, `${tramo.region}: lo lejano se queda corto con una vista de ${v}`);
+        const fr = corrimiento(tramo.velocidad.frente, cam, tramo.foco, v);
+        assert.ok(fr >= 0 && fr + v <= frente.caja[2] + 0.5, `${tramo.region}: lo de adelante se queda corto con una vista de ${v}`);
+      }
     }
   }
 });
 
-test('cada pieza del camino está impresa', () => {
-  for (const p of PIEZAS_CAMINO) {
-    assert.ok(existsSync(`public${rutaDePieza(p.nombre)}`), `falta imprimir ${p.nombre}: npm run imprimir-bestiario -- --solo camino-`);
+test('lo lejano cae detrás del piso cuando el foco pasa por el medio', () => {
+  for (const t of Object.values(CAMINOS).filter((x) => x.forma === 'entorno')) {
+    for (const v of [375, 900]) {
+      const cam = t.foco - v / 2;
+      if (cam < 0) continue;
+      assert.ok(Math.abs(corrimiento(t.velocidad.lejos, cam, t.foco, v) - cam) < 0.01, `${t.region}: el fondo no coincide con el piso en el foco`);
+    }
   }
+  // Lo que va a la par del piso, o más rápido, no se acomoda.
+  assert.equal(corrimiento(1, 300, 1200, 375), 300);
+  assert.equal(corrimiento(1.3, 300, 1200, 375), 390);
 });
 
-test('el cruce: un cartel por vecina, al camino si lo tiene y si no a su recinto', () => {
+test('cada pieza del camino está impresa', () => {
+  for (const p of [...PIEZAS_CAMINO, ...CRUCES]) {
+    assert.ok(existsSync(`public${rutaDePieza(p.nombre)}`), `falta imprimir ${p.nombre}: npm run imprimir-bestiario -- --solo camino-`);
+  }
+  // Un cruce por cada tramo que no es largo, y uno solo.
+  assert.equal(CRUCES.length, Object.values(CAMINOS).filter((t) => t.forma !== 'largo').length);
+});
+
+test('el cruce: un cartel por vecina, y cada uno lleva a su camino', () => {
   for (const id of CON_CAMINO) {
     const region = regionDe.get(id)!;
     assert.ok(region.vecinas.length >= 2, `${id}: un cruce de una sola salida no es un cruce`);
     for (const v of region.vecinas) {
       assert.ok(regionDe.has(v), `${id}: la vecina ${v} no existe`);
-      const href = hrefDeRegion(v);
-      if (CON_CAMINO.includes(v)) assert.equal(href, `/redondopedia/bestiario/${v}/#camino`);
-      else assert.equal(href, `/redondopedia/bestiario/#recinto-${recintoDe(v)}`);
+      assert.equal(hrefDeRegion(v), `/redondopedia/bestiario/${v}/#camino`);
     }
   }
   // El monte y la pastura se tienen la una a la otra: se va y se vuelve caminando.
@@ -109,7 +164,7 @@ test('el cruce: un cartel por vecina, al camino si lo tiene y si no a su recinto
   assert.ok(regionDe.get('la-pastura')!.vecinas.includes('el-monte'));
 });
 
-test('la cámara: un píxel de bajar es un píxel de caminar, y no se pasa de los bordes', () => {
+test('la cámara: un píxel de deslizar es un píxel de caminar, y no se pasa de los bordes', () => {
   assert.equal(camara(0, 3000, 375), 0);
   assert.equal(camara(1, 3000, 375), 2625);
   assert.equal(camara(0.5, 3000, 375), 1312.5);
@@ -142,12 +197,12 @@ function importados(desde: string): string[] {
 
 test('las dos islas se llevan números: ni el camino ni el bestiario importan algo que dibuje', () => {
   const dibujan = [
-    'arte.ts', 'arte-bajo.ts', 'arte-camino.ts', 'aerografo.ts', 'pincel.ts', 'escenas.ts', 'escena-monte.ts',
-    'titeres.ts', 'figuras.ts', 'mapa.ts', 'fichas.ts',
+    'arte.ts', 'arte-bajo.ts', 'arte-camino.ts', 'arte-entornos.ts', 'aerografo.ts', 'pincel.ts', 'escenas.ts', 'escena-monte.ts',
+    'escenas-entornos.ts', 'escenas-camino.ts', 'titeres.ts', 'figuras.ts', 'mapa.ts', 'fichas.ts',
   ];
   for (const isla of ['src/scripts/camino.ts', 'src/scripts/bestiario.ts']) {
     const llevados = importados(isla);
-    assert.ok(llevados.includes('rig.ts') && llevados.includes('pastura.ts'), `${isla}: el censo no está mirando bien`);
+    assert.ok(llevados.includes('rig.ts') && llevados.includes('pastura.ts') && llevados.includes('recintos.ts'), `${isla}: el censo no está mirando bien`);
     assert.deepEqual(llevados.filter((n) => dibujan.includes(n)), [], `${isla} se lleva al teléfono: ${llevados.join(', ')}`);
   }
   // Y el guardián sabe encontrar: la página sí dibuja.

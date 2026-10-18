@@ -46,7 +46,7 @@ import { BARBAZUL, escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, esce
 import { ENTORNOS_DE_NOCHE } from '../../lib/bestiario/escenas-entornos.ts';
 import { enEspera, SIN_ISLA } from '../../lib/bestiario/carga.ts';
 import { PALO } from '../../lib/bestiario/rig.ts';
-import { CON_CAMINO, recintoDe } from '../../lib/bestiario/camino.ts';
+import { CON_CAMINO, hrefDeRegion, recintoDe } from '../../lib/bestiario/camino.ts';
 import FichaBestia from '../../components/bestiario/FichaBestia.astro';
 import { loQueDice } from '../../lib/bestiario/fichas.ts';
 import crudo from '../../data/bestiario.json';
@@ -158,7 +158,7 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
   </div>
 
   {/* El plano del recorrido: el mundo redondo entero. Es la imagen; la navegación va por los
-      rótulos, que son enlaces y bajan hasta su recinto. */}
+      rótulos, que son enlaces y llevan a caminar su región a pantalla completa (`D-77`). */}
   <section class="bestiario" id="plano" aria-label={BESTIARIO.plano}>
     <div class="bestiario-marco" id="marco" data-vista="lejos">
       <svg id="mapa" class="bestiario-svg" viewBox={`0 0 ${LADO} ${LADO}`} aria-hidden="true">
@@ -190,7 +190,7 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
             return (
               <a
                 class={`rotulo-region rotulo-region--${r.id}`}
-                href={`#recinto-${recintoDe(r.id)}`}
+                href={hrefDeRegion(r.id)}
                 style={`left: ${l.x}%; top: ${l.y}%; --tr: ${tintaDe(r.disco)}`}
                 aria-label={r.nombre}
               >
