@@ -9,7 +9,7 @@
 
 > ## 🧥 EL NEGRO ATILA (2026-10-18) — duodécima enmienda de `D-73`
 >
-> **Sin integrar**: rama `bestiario/negro-atila` (worktree `.claude/worktrees/bestiario-atila`), con `main` adentro
+> **Sin integrar: espera en el PR #60** (rama `bestiario/negro-atila`, worktree `.claude/worktrees/bestiario-atila`), con `main` adentro
 > en `168a1bd` (los seis entornos, PR #57, y el camino como puerta, PR #59). Pedido del usuario: *"Hace a El negro Atila para el bestiario redondo, diseñalo como rocambole [...] chisotos y acido"*.
 >
 > - **A aerógrafo, como la tapa de *Lobo suelto***: la cara partida en luz y sombra, el ojo ojeroso, la
