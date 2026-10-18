@@ -7,6 +7,29 @@
 
 **Última actualización:** 2026-10-18
 
+> ## 🐄 LA VACA CUBANA, A PLUMÍN, CON LA TELE HECHA SATÉLITE (2026-10-18) — duodécima enmienda de `D-73`
+>
+> **Sin integrar**, en la rama `ciclo-26/bestiario` (worktree `.claude/worktrees/bestiario-26`), sobre `main`
+> en `c1355e0` y con `main` juntado en `46d36d1` (#56 y #57 adentro). Pedido del usuario: *"Hace otro ciclo
+> sobre el bestiario redondo. Agrega otro personaje y pulilo a fondo, se creativo que qeude como uno de
+> rocambole"*, y *"hace la vaca cubana"*.
+>
+> - **La vaca** (`arte-vaca.ts`, técnica nueva en `plumin.ts`): plumín sobre aguada como el frente de *Un
+>   baión*, su disco, con las tintas medidas en la tapa (`--bestia-vaca-*`). Ojo humano vivo que sigue al
+>   satélite. Vive en la punta de la pastura, en el recinto del monte y en el camino (`escena-vaca.ts`).
+> - **El cielo**: la tele de la tapa hecha satélite cruza por arriba; tocada la vaca, se le cae un pedazo
+>   prendido fuego (la llama de la contratapa, recortada de la tapa) al lado. Rumia con el bolo que sube
+>   por el pescuezo, pasta, espanta moscas; al golpe, el cordero bala y el lobo se esconde
+>   (`scripts/bestiario/vaca.ts`, desde `pastura.ts`).
+> - **La historia** (`RES-360`, `INV-360`): el Indio cuenta en el memoir que a la vaca le cayó un pedazo de
+>   satélite; un memo del Departamento de Estado de 1961 confirma, *según se informó*, una vaca cubana muerta
+>   por los restos del Thor-Ablestar del 30-nov-1960. Va en la ficha con los tres rótulos.
+> - **Verde:** `npm test` (1691), `npm run check` y `npm run build`, en la rama con `main` adentro.
+> - **Sin ver en el navegador**: la sesión quedó aislada en el worktree y no pudo sumar su servidor al
+>   `launch.json` de la carpeta principal. Antes del PR hay que mirarla a 375 px: la rumia, el satélite, la
+>   caída y el camino de la pastura.
+> - **Abierto:** `T-431`, `T-435`, `T-437`/`T-439` (ver la enmienda).
+
 > ## 🎨 LOS SEIS ENTORNOS, CADA UNO EN SU TAPA (2026-10-18) — décima enmienda de `D-73`
 >
 > **Sin integrar: espera en el PR #57** (rama `bestiario/fondos-rocambole`, worktree `.claude/worktrees/bestiario-fondos`). Pedido del

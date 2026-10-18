@@ -1467,7 +1467,12 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "cuernos", "hocico": "corto", "cola": "fina", "manchas": true, "pose": "mira-arriba" },
       "tema": "aquella-solitaria-vaca-cubana",
       "verso": ["Miraba el cielo justo a tiempo,", "Rumiaba el silbido del viento,"],
-      "estampa": "En la punta de la pastura, mirando para arriba. Rumia y no se mete con nadie.",
+      "estampa": "Dibujada a plumín sobre aguada, como el frente de Un baión, su disco, y recortada en papel. Sola en la punta de la pastura, rumia y mira el cielo. Por arriba cruza la tele de la tapa, con las patas largas hechas antenas: el satélite es del dibujo. Tocala y se le cae un pedazo prendido fuego, que es la llama de la contratapa. En el dibujo cae al lado. En lo que contó el Indio, no.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "El Indio contó que el tema viene de una cinta de cuando estaba en Valeria, grabada con dos grabadores y un balde de plástico. Y que habla de una vaca a la que le cayó encima un pedazo de satélite, y la mató: lo que hacen los poderosos allá lejos termina cayendo en el asado.", "quien": "Indio Solari, en «Recuerdos que mienten un poco»", "fuente": "RES-360" },
+        { "rotulo": "hecho", "texto": "El 30 de noviembre de 1960 falló un cohete estadounidense que llevaba dos satélites; lo destruyeron en el aire y los restos cayeron en Cuba. Un memo del Departamento de Estado de 1961 dice que no hubo víctimas, salvo, según se informó, una vaca cubana.", "fuente": "RES-360" },
+        { "rotulo": "leyenda", "texto": "Que se llamaba Rufina, que le hicieron un funeral de Estado, que Cuba cobró una indemnización: se cuenta, pero nadie mostró el papel.", "fuente": "RES-360" }
+      ],
       "cerca": ["el-cordero-atado"]
     },
     {
