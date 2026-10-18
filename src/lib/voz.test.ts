@@ -339,8 +339,7 @@ test('voz 4.1: la linea grande no pasa de ocho palabras', () => {
     ['redondopedia.oreja', sitio.REDONDOPEDIA.oreja],
     ['redondopedia.tambienAnda', sitio.REDONDOPEDIA.tambienAnda],
     ...sitio.JUEGOS.map((c) => [`casete "${c.titulo}"`, c.titulo] as [string, string]),
-    ['casete cancionero', sitio.CASETE_CANCIONERO.titulo],
-    ['casete redondopedia', sitio.CASETE_REDONDOPEDIA.titulo],
+    ...sitio.LADO_B.map((c) => [`casete "${c.titulo}"`, c.titulo] as [string, string]),
     // Los renglones del lugar (`CNT-13`) son la línea que canta de cada pantalla, y `CNT-13`
     // los midió contra el techo de ocho a mano. Hasta el 2026-10-01 este test no los miraba:
     // lo notó `contenido` al escribir el undécimo (`CNT-26`).
@@ -388,8 +387,7 @@ test('voz 5: la bajada de un casete arranca cantando, y el verso no pasa de ocho
   const bajadas: Array<[string, string]> = [
     ['portal', sitio.PORTAL.bajada],
     ...sitio.JUEGOS.map((c) => [`casete "${c.titulo}"`, c.baja] as [string, string]),
-    ['casete cancionero', sitio.CASETE_CANCIONERO.baja],
-    ['casete redondopedia', sitio.CASETE_REDONDOPEDIA.baja],
+    ...sitio.LADO_B.map((c) => [`casete "${c.titulo}"`, c.baja] as [string, string]),
   ];
   const largos = bajadas
     .filter(([, texto]) => (texto.split(/(?<=\.)\s+/)[0] ?? '').trim().split(/\s+/).length > 8)
