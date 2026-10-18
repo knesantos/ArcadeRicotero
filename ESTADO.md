@@ -9,7 +9,7 @@
 
 > ## 🗝️ BARBAZUL, TALLADO, CON LA BARBA DE OTRA PLANCHA (2026-10-18) — enmienda (11) de `D-73`, ciclo 25
 >
-> **Sin integrar: espera en el PR #61** (rama `ciclo-25/bestiario`, con `origin/main` adentro en `352ef3a`). Sacada
+> **En `main` desde el PR #61** (rama `ciclo-25/bestiario`, con `origin/main` adentro en `352ef3a`). Sacada
 > de `ciclo-24/bestiario` (PR #56) en `82c4453`. Pedido del usuario, el de las dos vueltas anteriores: *"Agrega otro personaje y pulilo a
 > fondo, se creativo que qeude como uno de rocambole"*.
 >
