@@ -18,6 +18,13 @@
  *    otra, abre la ficha de una bestia copiándola del índice, hace sonar diez segundos del
  *    tema y anota en el teléfono las que ya abriste.
  *
+ * ## Lo que pesa llega cuando se acerca (`T-445`)
+ *
+ * Cada escena de noche y cada retrato de un títere esperan en un `<noscript>`, con un SVG vacío
+ * que les guarda el lugar (`lib/bestiario/carga.ts`). Sin JavaScript se dibujan como siempre; con
+ * JavaScript la isla los arma recién a una pantalla y media. Así la página no baja las 59 piezas
+ * (1673 kB) de una: arriba de todo baja solo el monte.
+ *
  * La sección viste *Lobo suelto* (mitología, `D-19`) y el título va en su letra.
  */
 import Base from '../../layouts/Base.astro';
@@ -40,6 +47,7 @@ import {
 import { ESCENA, escenaMonte } from '../../lib/bestiario/escena-monte.ts';
 import { DRACULA, escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, LUZBELITO, MOMO, PIERRE } from '../../lib/bestiario/escenas.ts';
 import { retrato } from '../../lib/bestiario/titeres.ts';
+import { enEspera, SIN_ISLA } from '../../lib/bestiario/carga.ts';
 import { PALO } from '../../lib/bestiario/rig.ts';
 import { tituloDelDisco } from '../../lib/letra/discos.ts';
 import { indexarFragmentos, type Manifiesto } from '../../lib/tema/catalogo.ts';
@@ -170,6 +178,9 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
   volverA={{ href: '/redondopedia/', texto: REDONDOPEDIA.volverPortada }}
   discoDelPie="lobo-suelto"
 >
+  {/* Sin JavaScript, el <noscript> de cada escena y de cada retrato ya dibuja el de verdad: el que guarda el lugar se esconde. */}
+  <Fragment set:html={SIN_ISLA} />
+
   <div class="portada-redondopedia bestiario-portada">
     <h1 class="titulo-seccion bestiario-titulo">{BESTIARIO.titulo}</h1>
     <p class="donde-estas">{BESTIARIO.dondeEstas}</p>
@@ -239,7 +250,8 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
             data-recinto={rc.id}
             data-foco={'foco' in rc ? rc.foco : undefined}
           >
-            <svg class="bestiario-svg recinto-svg" viewBox={rc.caja} set:html={rc.svg} />
+            {/* La escena espera en su <noscript> hasta que el recinto se acerca (T-445, carga.ts). */}
+            <Fragment set:html={enEspera(`class="bestiario-svg recinto-svg" viewBox="${rc.caja}"`, rc.svg)} />
           </div>
           {'foco' in rc && <p class="recinto-deslizar" hidden>{BESTIARIO.deslizar}</p>}
           <p class="bestiario-sub">{BESTIARIO.aca}</p>
@@ -285,7 +297,7 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
                   <details class="bestiario-ficha" data-bestia={b.id}>
                     <summary>
                       {retrato(b.id) ? (
-                        <svg class="bestiario-mini bestiario-mini--tapa" viewBox={retrato(b.id)!.caja} aria-hidden="true" set:html={retrato(b.id)!.svg} />
+                        <Fragment set:html={enEspera(`class="bestiario-mini bestiario-mini--tapa" viewBox="${retrato(b.id)!.caja}" aria-hidden="true"`, retrato(b.id)!.svg)} />
                       ) : (
                         <svg class="bestiario-mini" viewBox="-10 -15 120 115" aria-hidden="true" style={`--tr: ${tintaDe(r.disco)}`}>
                           <use href={`#fig-${b.id}`} />
@@ -298,7 +310,7 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
                       <p class="bestiario-sello">{BESTIARIO.clases[b.clase]}</p>
                       <h4 class="bestiario-ficha-titulo" data-titulo>{b.nombre}</h4>
                       {retrato(b.id) ? (
-                        <svg class="bestiario-figura bestiario-figura--tapa" viewBox={retrato(b.id)!.caja} aria-hidden="true" set:html={retrato(b.id)!.svg} />
+                        <Fragment set:html={enEspera(`class="bestiario-figura bestiario-figura--tapa" viewBox="${retrato(b.id)!.caja}" aria-hidden="true"`, retrato(b.id)!.svg)} />
                       ) : (
                         <svg class="bestiario-figura" viewBox="-10 -15 120 115" aria-hidden="true">
                           <use href={`#fig-${b.id}`} />

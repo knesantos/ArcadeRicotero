@@ -17,6 +17,7 @@ import { ETIQUETA, PIEZAS_BAJO, PIEZAS_PIERRE, PUERTA, agujero } from './arte-ba
 import { pincelada } from './pincel.ts';
 import { PIEZAS_DRACULA, PIEZAS_PRISION } from './arte-prision.ts';
 import { envolventes, tallar, tono } from './grabado.ts';
+import { ESPERA, GUARDADO, SIN_ISLA, enEspera, pidePiezas } from './carga.ts';
 
 /**
  * El bestiario redondo (`D-73`), probado contra lo único que no puede fallar.
@@ -465,4 +466,38 @@ test('la talla de Oktubre sale igual en cada impresión, corta donde hay luz y n
   const area = (d: string): number => [...d.matchAll(/[ML]/g)].length;
   assert.ok(area(tallar(lineas, () => 1, { ancho: 3, semilla: 7 })) >= area(tallar(lineas, () => 0.5, { ancho: 3, semilla: 7 })));
   for (const p of PIEZAS_PRISION) assert.ok(!/NaN|undefined|Infinity/.test(p.dibujo), `${p.nombre} tiene un número roto`);
+});
+
+/*
+ * La octava vuelta (`T-445`): la carga de a una. Las escenas y los retratos esperan en un
+ * `<noscript>` y la isla los arma cuando se acercan (`carga.ts`).
+ */
+
+test('lo que espera no baja nada hasta que la isla lo arma, y sin JavaScript se ve entero', () => {
+  const escena = escenaPrision(new Map());
+  const marcado = enEspera('class="bestiario-svg recinto-svg" viewBox="0 0 900 640"', escena);
+  const [vacio, resto] = marcado.split(`<noscript ${GUARDADO}>`);
+  // El que guarda el lugar mide lo mismo (la misma clase y la misma caja) y no pide ni una pieza.
+  assert.equal(vacio, `<svg class="bestiario-svg recinto-svg" viewBox="0 0 900 640" ${ESPERA}></svg>`);
+  assert.ok(!pidePiezas(vacio!), 'el vacío pide piezas: se bajarían de entrada');
+  // El de verdad está entero adentro del <noscript>, tal cual se dibujaba antes.
+  assert.equal(resto, `<svg class="bestiario-svg recinto-svg" viewBox="0 0 900 640">${escena}</svg></noscript>`);
+  // Lo que no pide piezas no espera: un recinto de figuritas sale tal cual.
+  assert.equal(enEspera('viewBox="0 0 10 10"', '<circle r="3"/>'), '<svg viewBox="0 0 10 10"><circle r="3"/></svg>');
+  // Y sin JavaScript se esconden los vacíos, con una regla que solo existe sin JavaScript.
+  assert.match(SIN_ISLA, /^<noscript><style>\[data-espera\]\{display:none\}<\/style><\/noscript>$/);
+});
+
+test('la página no dibuja de entrada ni una escena ni un retrato que pidan piezas', () => {
+  // Si alguien vuelve a poner `set:html={rc.svg}` o un retrato a mano, la página vuelve a bajar
+  // todas las piezas de una. Medido antes de esta vuelta: 59 imágenes, 1673 kB.
+  const pagina = readFileSync('src/pages/redondopedia/bestiario.astro', 'utf-8');
+  assert.ok(!/set:html=\{rc\.svg\}/.test(pagina), 'una escena se dibuja de entrada');
+  assert.ok(!/set:html=\{retrato\([^)]*\)!?\.svg\}/.test(pagina), 'un retrato se dibuja de entrada');
+  assert.equal(pagina.match(/enEspera\(/g)?.length, 3, 'las escenas y los dos retratos de cada ficha esperan');
+  assert.ok(pagina.includes('set:html={SIN_ISLA}'), 'sin JavaScript se verían dos veces');
+  // La isla arma lo que espera: en el recinto que se acerca y en la ficha que se copia a la hoja.
+  const isla = readFileSync('src/scripts/bestiario.ts', 'utf-8');
+  assert.ok(/function montar\(escena: HTMLElement\): void \{\s*materializar\(escena\);/.test(isla), 'un recinto se monta sin armar su escena');
+  assert.ok(isla.includes('materializar(copia);'), 'la hoja copiaría un retrato sin armar');
 });

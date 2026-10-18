@@ -13,6 +13,9 @@
  *
  * Solo se anima lo que se ve (`IntersectionObserver`), y con movimiento reducido no se mueve
  * nada: los bichos quedan quietos en su lugar y se tocan igual.
+ *
+ * Y solo se baja lo que se acerca (`T-445`, `carga.ts`): cada escena de noche y cada retrato del
+ * índice llegan guardados en un `<noscript>`, y se arman recién a una pantalla y media de distancia.
  */
 
 import { BESTIARIO } from '../lib/bestiario/copy.ts';
@@ -24,6 +27,7 @@ import {
   SOGA, profundidad,
 } from '../lib/bestiario/rig.ts';
 import { ARMADO } from '../lib/bestiario/recortes.ts';
+import { ESPERA, GUARDADO } from '../lib/bestiario/carga.ts';
 import { crearRocola } from './rocola.ts';
 
 interface BestiaIsla {
@@ -73,6 +77,23 @@ function pintarLibreta(): void {
   libreta.textContent = anotadas.size ? BESTIARIO.libreta(anotadas.size, datos.total) : BESTIARIO.libretaVacia(datos.total);
 }
 
+/**
+ * Lo que esperaba se arma (`carga.ts`): el SVG guardado como texto en su `<noscript>` pasa a SVG y
+ * ocupa el lugar del vacío, que ya medía lo mismo. Recién ahí el navegador baja sus piezas.
+ */
+function materializar(raiz: ParentNode): void {
+  for (const guardado of raiz.querySelectorAll<HTMLElement>(`noscript[${GUARDADO}]`)) {
+    const molde = document.createElement('template');
+    molde.innerHTML = guardado.textContent ?? '';
+    const svg = molde.content.querySelector('svg');
+    if (!svg) continue;
+    const lugar = guardado.previousElementSibling;
+    if (lugar instanceof SVGSVGElement && lugar.hasAttribute(ESPERA)) lugar.replaceWith(svg);
+    else guardado.before(svg);
+    guardado.remove();
+  }
+}
+
 function pintarAnotada(id: string): void {
   for (const g of document.querySelectorAll(`.bestia[data-id="${id}"], .bestia-plano[data-id="${id}"]`)) {
     g.classList.add('bestia--anotada');
@@ -105,6 +126,8 @@ function abrir(id: string): void {
   rocola.parar();
   volverA = document.activeElement;
   const copia = original.cloneNode(true) as HTMLElement;
+  // Si la ficha del índice todavía no se armó, la copia trae el retrato guardado: se arma acá.
+  materializar(copia);
   copia.querySelector('[data-titulo]')?.setAttribute('id', 'hoja-titulo');
   hojaCuerpo.replaceChildren(copia);
   hoja.hidden = false;
@@ -1224,7 +1247,12 @@ const observador = new IntersectionObserver(
   { rootMargin: '80px 0px' },
 );
 
-for (const escena of document.querySelectorAll<HTMLElement>('.recinto-escena')) {
+/**
+ * Un recinto se arma cuando se acerca: su escena pasa del `<noscript>` a SVG, se le pone su
+ * controlador y se le pintan las bestias que ya estaban anotadas.
+ */
+function montar(escena: HTMLElement): void {
+  materializar(escena);
   const svg = escena.querySelector<SVGSVGElement>('svg')!;
   const id = escena.dataset.recinto;
   const controlador: Record<string, (e: HTMLElement, s: SVGSVGElement) => Recinto> = {
@@ -1276,7 +1304,27 @@ for (const escena of document.querySelectorAll<HTMLElement>('.recinto-escena')) 
       hablar(g.dataset.id!, escena, svg, Number(g.dataset.ahora ?? g.dataset.x), Number(g.dataset.y) - 26);
     }
   });
+  for (const id of anotadas) for (const g of escena.querySelectorAll(`.bestia[data-id="${id}"]`)) g.classList.add('bestia--anotada');
 }
+
+/**
+ * La cercanía: a una pantalla y media se arma lo que viene. Los recintos, con su controlador; las
+ * fichas del índice que tienen retrato, con sus piezas.
+ */
+const cerca = new IntersectionObserver(
+  (entradas) => {
+    for (const e of entradas) {
+      if (!e.isIntersecting) continue;
+      cerca.unobserve(e.target);
+      const el = e.target as HTMLElement;
+      if (el.classList.contains('recinto-escena')) montar(el);
+      else materializar(el);
+    }
+  },
+  { rootMargin: '150% 0px' },
+);
+for (const escena of document.querySelectorAll<HTMLElement>('.recinto-escena')) cerca.observe(escena);
+for (const item of document.querySelectorAll<HTMLElement>('.bestiario-item')) if (item.querySelector(`noscript[${GUARDADO}]`)) cerca.observe(item);
 
 document.addEventListener('visibilitychange', arrancar);
 
