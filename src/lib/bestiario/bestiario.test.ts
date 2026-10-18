@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dibujar, dibujarGrupo } from './figuras.ts';
-import { adentro, camara, contorno, dibujarRecinto, dibujarRuta, dibujarSuelo, punto, simbolos, type Bestiario } from './mapa.ts';
+import { adentro, camara, contorno, dibujarRecinto, dibujarSuelo, punto, simbolos, type Bestiario } from './mapa.ts';
 import { existsSync } from 'node:fs';
 import { lobo, cordero, dracula, pierre, retrato } from './titeres.ts';
 import { escenaMonte, VECINOS_DEL_MONTE } from './escena-monte.ts';
@@ -18,6 +18,9 @@ import { pincelada } from './pincel.ts';
 import { PIEZAS_DRACULA, PIEZAS_PRISION } from './arte-prision.ts';
 import { envolventes, tallar, tono } from './grabado.ts';
 import { ESPERA, GUARDADO, SIN_ISLA, enEspera, pidePiezas } from './carga.ts';
+import { ENTORNOS, PIEZAS_ENTORNOS, luzQueAsoma } from './arte-entornos.ts';
+import { ENTORNOS_DE_NOCHE, QUIENES } from './escenas-entornos.ts';
+import { ALTO as ALTO_ENTORNO, ANCHO as ANCHO_ENTORNO, FIERROS, RUTA } from './rig-entornos.ts';
 
 /**
  * El bestiario redondo (`D-73`), probado contra lo único que no puede fallar.
@@ -155,6 +158,7 @@ test('ni un hex en el bestiario: los colores son clases que pinta sitio.css', ()
     'src/lib/bestiario/figuras.ts', 'src/lib/bestiario/mapa.ts', 'src/lib/bestiario/titeres.ts', 'src/lib/bestiario/escena-monte.ts',
     'src/lib/bestiario/escenas.ts', 'src/lib/bestiario/rig.ts', 'src/lib/bestiario/arte-bajo.ts', 'src/lib/bestiario/pincel.ts',
     'src/lib/bestiario/arte-prision.ts', 'src/lib/bestiario/grabado.ts', 'src/lib/bestiario/aerografo.ts',
+    'src/lib/bestiario/arte-entornos.ts', 'src/lib/bestiario/escenas-entornos.ts', 'src/lib/bestiario/rig-entornos.ts',
     'src/scripts/bestiario.ts', 'src/data/bestiario.json',
   ];
   const malos = fuentes.filter((f) => /#[0-9a-fA-F]{3,8}\b(?![-\w])/.test(readFileSync(f, 'utf-8').replace(/href="#fig-|#fig-|`#\$\{|'#b-|#b-|#region-/g, '')));
@@ -218,13 +222,12 @@ test('el lobo acecha detrás de la pastura, adentro de la escena, y cuando se hu
   assert.ok(orejas > 300, `hundido, el lobo asoma las orejas en y = ${orejas}`);
 });
 
-test('cada recinto genérico y la ruta salen sin números rotos', () => {
+test('cada recinto genérico sale sin números rotos', () => {
   for (const r of datos.regiones) {
     if (r.forma.tipo === 'anillo' || r.id === 'el-monte' || r.id === 'la-pastura') continue;
     const { svg } = dibujarRecinto(r, datos);
     assert.ok(!/NaN|undefined|Infinity/.test(svg), `el recinto ${r.id} tiene un número roto`);
   }
-  assert.ok(!/NaN|undefined|Infinity/.test(dibujarRuta(datos)));
 });
 
 test('cada pieza del aerógrafo y cada recorte están en public/bestiario', () => {
@@ -303,7 +306,7 @@ function importados(desde: string): string[] {
 test('la isla se lleva números: no importa nada que dibuje', () => {
   // Si la isla importa un módulo que dibuja, el teléfono corre el aerógrafo entero al abrir la
   // página para no usarlo. Pasó en la quinta vuelta: `escenas.ts` arrastraba `arte.ts`.
-  const dibujan = ['arte.ts', 'arte-bajo.ts', 'arte-prision.ts', 'aerografo.ts', 'pincel.ts', 'grabado.ts', 'escenas.ts', 'escena-monte.ts', 'titeres.ts', 'figuras.ts', 'mapa.ts'];
+  const dibujan = ['arte.ts', 'arte-bajo.ts', 'arte-entornos.ts', 'arte-prision.ts', 'aerografo.ts', 'pincel.ts', 'grabado.ts', 'escenas.ts', 'escenas-entornos.ts', 'escena-monte.ts', 'titeres.ts', 'figuras.ts', 'mapa.ts'];
   const llevados = importados('src/scripts/bestiario.ts');
   assert.ok(llevados.includes('rig.ts'), 'la isla dejó de leer rig.ts: el censo no está mirando bien');
   assert.deepEqual(llevados.filter((n) => dibujan.includes(n)), [], `la isla se lleva al teléfono: ${llevados.join(', ')}`);
@@ -508,4 +511,59 @@ test('la página no dibuja de entrada ni una escena ni un retrato que pidan piez
   const isla = readFileSync('src/scripts/bestiario.ts', 'utf-8');
   assert.ok(/function montar\(escena: HTMLElement\): void \{\s*materializar\(escena\);/.test(isla), 'un recinto se monta sin armar su escena');
   assert.ok(isla.includes('materializar(copia);'), 'la hoja copiaría un retrato sin armar');
+});
+
+/*
+ * La décima vuelta: los seis entornos que seguían con las figuras del plano, cada uno en la tapa
+ * de su disco (`arte-entornos.ts`, `escenas-entornos.ts`, `rig-entornos.ts`).
+ */
+
+test('cada entorno de noche tiene a todos los suyos, y nadie se sale de la escena', () => {
+  const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
+  for (const [region, { escena }] of Object.entries(ENTORNOS_DE_NOCHE)) {
+    const delRecinto = datos.bestias.filter((b) => b.region === region).map((b) => b.id).sort();
+    assert.deepEqual([...QUIENES[region]!].sort(), delRecinto, `en ${region} falta o sobra alguien`);
+    const marcado = escena(nombres);
+    assert.ok(!/NaN|undefined|Infinity/.test(marcado), `${region} tiene un número roto`);
+    for (const id of delRecinto) assert.ok(marcado.includes(`data-id="${id}"`), `${region}: ${id} no se puede tocar`);
+    for (const m of marcado.matchAll(/data-x="(-?[\d.]+)" data-y="(-?[\d.]+)"/g)) {
+      const [x, y] = [Number(m[1]), Number(m[2])];
+      assert.ok(x >= 0 && x <= ANCHO_ENTORNO && y >= 0 && y <= ALTO_ENTORNO, `${region}: alguien quedó afuera, en (${x}, ${y})`);
+    }
+  }
+});
+
+test('cada pieza que piden los seis entornos está impresa en public/bestiario', () => {
+  const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
+  const impresas = PIEZAS_ENTORNOS.map((p) => p.nombre);
+  for (const { escena } of Object.values(ENTORNOS_DE_NOCHE)) {
+    const piden = [...escena(nombres).matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]!);
+    assert.ok(piden.length >= 3);
+    assert.deepEqual(piden.filter((n) => !impresas.includes(n) || !existsSync(`public/bestiario/${n}.webp`)), []);
+  }
+});
+
+test('los entornos se pueden pintar más anchos, para el camino, sin un número roto', () => {
+  // El camino (`camino.ts`) pide las mismas capas a lo ancho de un tramo: lo lejano a 1850, el
+  // piso a 2400 y lo de adelante a 3036 (`anchoDeCapa`). Acá no se imprimen; se arman.
+  for (const [region, capas] of Object.entries(ENTORNOS)) {
+    for (const [capa, pintar] of Object.entries(capas)) {
+      const ancho = capa === 'lejos' ? 1850 : capa === 'frente' ? 3036 : 2400;
+      const dibujo = (pintar as (ancho?: number) => string)(ancho);
+      assert.ok(dibujo.length > 500 && !/NaN|undefined|Infinity/.test(dibujo), `${region}, ${capa} a ${ancho}: número roto`);
+    }
+    assert.ok(luzQueAsoma(region, 100, 300).includes('<ellipse'), `${region} no tiene luz que asome`);
+  }
+  assert.equal(luzQueAsoma('una-region-que-no-existe', 0, 0), '');
+});
+
+test('los fierros de la ruta pasan por su carril, con las ruedas adentro de su imagen', () => {
+  for (const [id, { pieza, carril, caja, x }] of Object.entries(FIERROS)) {
+    assert.ok(datos.bestias.some((b) => b.id === id && b.region === 'la-ruta'), `${id} no es de la ruta`);
+    const [cx, cy, w, h] = caja;
+    assert.ok(cx < 0 && cx + w > 0 && cy < 0 && cy + h > 0, `${id}: el (0, 0) de las ruedas no cae en su imagen`);
+    assert.ok(RUTA.carriles[carril]! > RUTA.asfalto.arriba && RUTA.carriles[carril]! < RUTA.asfalto.abajo, `${id}: el carril no está en el asfalto`);
+    assert.ok(x >= 0 && x <= ANCHO_ENTORNO);
+    assert.ok(existsSync(`public/bestiario/${pieza}.webp`), `${pieza} no está impresa`);
+  }
 });

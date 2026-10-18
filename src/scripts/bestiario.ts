@@ -324,7 +324,14 @@ function recintoDeMapa(escena: HTMLElement, svg: SVGSVGElement): Recinto {
   };
 }
 
-/** La ruta: los fierros pasan, cada uno a su velocidad, y vuelven a entrar por el otro lado. */
+/**
+ * La ruta (`D-73`, décima vuelta): los fierros pasan, cada uno a la velocidad de su carril, salen
+ * por la derecha y vuelven a entrar por la izquierda; traquetean un poco y, tocados, pegan un salto.
+ * Lo que espera en la banquina (`data-quieto`) no se mueve con el tránsito: vive como en cualquier
+ * recinto. Todos dan la misma vuelta, así los del mismo carril nunca se pasan por encima.
+ */
+const VUELTA_DE_LA_RUTA = 480;
+
 function recintoDeRuta(escena: HTMLElement, svg: SVGSVGElement): Recinto {
   const lista = piezas(escena);
   const ancho = svg.viewBox.baseVal.width;
@@ -332,10 +339,15 @@ function recintoDeRuta(escena: HTMLElement, svg: SVGSVGElement): Recinto {
     escena,
     svg,
     mover: (t) =>
-      lista.forEach((p, i) => {
-        const velocidad = 14 + (i % 3) * 7;
-        const x = ((p.x + t * velocidad + 60) % (ancho + 120)) - 60;
-        vivir(p, t, `translate(${(x - p.x).toFixed(1)} 0) `);
+      lista.forEach((p) => {
+        if (p.g.dataset.quieto !== undefined) {
+          vivir(p, t);
+          return;
+        }
+        const velocidad = Number(p.g.dataset.velocidad);
+        const x = ((p.x + t * velocidad + VUELTA_DE_LA_RUTA) % (ancho + VUELTA_DE_LA_RUTA * 2)) - VUELTA_DE_LA_RUTA;
+        const traqueteo = Math.sin(t * 11 + p.semilla) * 0.7 + salto(p, t) * 0.6;
+        p.cuerpo.setAttribute('transform', `translate(${(x - p.x).toFixed(1)} ${traqueteo.toFixed(2)})`);
         p.g.dataset.ahora = x.toFixed(1);
       }),
     reaccionar: (id, t) => {

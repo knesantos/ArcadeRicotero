@@ -7,6 +7,23 @@
 
 **Última actualización:** 2026-10-18
 
+> ## 🎨 LOS SEIS ENTORNOS, CADA UNO EN SU TAPA (2026-10-18) — décima enmienda de `D-73`
+>
+> **Sin integrar: espera en el PR #57** (rama `bestiario/fondos-rocambole`, worktree `.claude/worktrees/bestiario-fondos`). Pedido del
+> usuario: *"Armá un fondo bien rocambole para cada uno de los entornos del bestiario redondo"*, con el camino
+> scrolleable en mente.
+>
+> - **Cierra `T-443`**: el galpón (*En directo*), el árbol del gran bonete (*Luzbelito*), Cybersiberia (*Último
+>   bondi*, con nieve), los astilleros (*Cordero atado*, disco 2), la mesa (*La mosca y la sopa*, con la mosca
+>   pintada: `T-442`) y la ruta (el surco del disco, con los cuatro fierros que pasan) son recintos de noche a
+>   aerógrafo, con los colores medidos en las tapas. La prisión la hizo la rama de la drácula.
+> - **Mejorados**: el infierno tiene piso de damero de salón de baile; el templo, serpentinas y papel picado.
+> - **Listos para el camino**: cada capa es `(ancho, alto)`, los hitos en el piso, la geometría en
+>   `rig-entornos.ts`, y `luzQueAsoma` para anunciar cada región desde la vecina.
+> - **Verde:** `npm test` (1657), `npm run check`, `npm run build`. Visto en el navegador del panel a 375 y 800 px.
+> - **`main` ya está adentro**, con el camino (PR #54, enmienda 7), la drácula y la carga de a una (PR #56,
+>   enmiendas 8 y 9) y la Redondopedia de noche (PR #55, `D-75`). Las escenas nuevas pasan por `enEspera` como las demás: se arman cuando el recinto se acerca.
+
 > ## 🌑 LA REDONDOPEDIA DE NOCHE (2026-10-17) — `D-75`
 >
 > **Espera en el PR #55**, sin fusionar, rama `diseno/redondopedia-inmersiva` (worktree
