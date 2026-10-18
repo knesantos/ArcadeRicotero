@@ -9,7 +9,7 @@
 
 > ## 🐄 LA VACA CUBANA, A PLUMÍN, CON LA TELE HECHA SATÉLITE (2026-10-18) — decimotercera enmienda de `D-73`
 >
-> **Sin integrar**, en la rama `ciclo-26/bestiario` (worktree `.claude/worktrees/bestiario-26`), sobre `main`
+> **Sin integrar: espera en el PR #62**, en la rama `ciclo-26/bestiario` (worktree `.claude/worktrees/bestiario-26`), sobre `main`
 > en `c1355e0` y con `main` juntado en `e07fe38` (hasta el #61, Barbazul). Pedido del usuario: *"Hace otro ciclo
 > sobre el bestiario redondo. Agrega otro personaje y pulilo a fondo, se creativo que qeude como uno de
 > rocambole"*, y *"hace la vaca cubana"*.
