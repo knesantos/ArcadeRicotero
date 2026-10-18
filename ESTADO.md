@@ -7,6 +7,26 @@
 
 **Última actualización:** 2026-10-18
 
+> ## 👣 AL BESTIARIO SE ENTRA CAMINANDO, Y SUENA (2026-10-18) — `D-76`
+>
+> **Sin integrar: espera su PR** (rama `bestiario/entorno-primero`, worktree `.claude/worktrees/bestiario-entorno`).
+> Pedido del usuario: *"El entorno caminable debe ser lo principal del bestiario [...] que para salir debas tocar
+> algo"* y *"que se escuchen otras cosas, pasos, sonidos de los personajes, ruidos del entorno"*.
+>
+> - **La puerta es el monte.** La home y la Redondopedia llevan al camino. El plano queda a un toque ("Al plano").
+> - **Pantalla entera.** Andando, el camino es la página: no hay nada abajo del cruce, no rebota, y se sale tocando.
+>   La lista de fichas se abre con "Mirá la lista". Sin JavaScript, todo igual que antes.
+> - **Suena, si lo prendés.** Recortes del disco del entorno, de lejos y filtrados: *Lobo suelto* en el monte,
+>   *Cordero atado* en la pastura. Más pasos atados al scroll, viento, grillos, una lechuza y el cencerro, todo
+>   sintetizado, sin archivos.
+> - **Qué se graba, qué se baja y qué se sintetiza**, región por región: `Docs/SUGERENCIAS/HILO-sonidos-del-bestiario.md`.
+>   La risa del gordo Pierre la grabás vos; los animales y los cristales, de Freesound CC0.
+> - **Abierto:**
+>   - `T-481`: el verso de cada personaje. Faltan el minuto de cada verso y los temas enteros en disco.
+>   - `T-482`: los sonidos grabados y los bajados.
+>   - `T-483`: probarlo en un teléfono de verdad.
+> - **Verde:** `npm test` (1691), `npm run check`, `npm run build`. Visto en el panel a 375×812.
+
 > ## 🎨 LOS SEIS ENTORNOS, CADA UNO EN SU TAPA (2026-10-18) — décima enmienda de `D-73`
 >
 > **En `main` desde el PR #57 (rama `bestiario/fondos-rocambole`), fusión `46d36d1`.** Pedido del

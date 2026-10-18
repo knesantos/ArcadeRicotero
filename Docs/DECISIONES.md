@@ -5279,3 +5279,76 @@ que no entran en la letra y un artículo grave.
 - `T-453`: probarlo en un iPhone. La deriva con `view()` y la máscara de los costados son lo más nuevo.
 
 La propuesta para los tres roles está en `Docs/SUGERENCIAS/HILO-para-experiencia-y-contenido-d75-la-redondopedia-de-noche.md`.
+
+## D-76 — Al bestiario se entra caminando, el camino es la pantalla entera, y suena
+
+- **Fecha:** 2026-10-18
+- **Estado:** activa. Pedido directo del usuario, textual: *"El entorno caminable debe ser lo
+  principal del bestiario, es decir arrancar ahi y que para salir debas tocar algo, no puedas salirte
+  scrolleando sin querer, al final de las escenas que no siga para abajo. Ademas que en cada personaje
+  suene la parte del tema que habla de el si tiene, ahora no tenemos eso, hagamos que se escuchen
+  recortes como lejos de el album donde esta inspirado o que mas personajes tenga ese entorno."* Y
+  a mitad de camino: *"y que se escuchen otras cosas, pasos, sonidos de los personajes, ruidos del
+  entorno, que sea todo bien inmersivo"*. La escribe el hilo principal en la rama
+  `bestiario/entorno-primero`, sobre `main` en `46d36d1` (con el PR #57 adentro).
+- **Es una decisión aparte y no una enmienda de `D-73`** porque cambia la puerta y suma un sentido
+  (el oído). Además, las enmiendas de `D-73` las estaban esperando cuatro ramas a la vez. Antes de
+  tomar el número se miraron `origin/main`, las ramas remotas y los worktrees: nadie usa `D-76`.
+- **Enmienda** la frase de `D-73` que decía que al bestiario se entra por el plano. **No toca** los
+  recintos, el plano, las fichas ni la regla de `enEspera`.
+
+### Lo que cambia
+
+1. **La puerta.** El casete B3 de la home y la tarjeta de la Redondopedia llevan a `ENTRADA`
+   (`lib/bestiario/camino.ts`), que es el primer tramo: el monte. El plano con los recintos sigue en
+   `/redondopedia/bestiario/` y se llega desde el camino con "Al plano".
+2. **La pantalla entera.** Con la isla andando, `html.camino-pantalla`:
+   - el camino es la página: la cabecera y el tablero (el cartel, la instrucción, la libreta y los
+     botones) flotan encima de la escena;
+   - no hay pie ni lista abajo, así que el documento termina en el cruce;
+   - `overscroll-behavior` saca el rebote y el "tirá para recargar";
+   - se sale tocando "Al plano" o un cartel del cruce;
+   - la lista de fichas se abre con "Mirá la lista" y se cierra con la cruz o con Escape;
+   - en el cruce, el tablero se achica al nombre de la región.
+
+   **Sin JavaScript o con movimiento reducido no cambia nada**: todo queda en el flujo, la lista
+   abajo y el pie al final (molinetes abiertos).
+3. **El recital de lejos** (`scripts/bestiario/lejos.ts`). Suenan los recortes del disco de la región
+   si tiene al menos tres. Si no, los del disco del que salen más bichos del camino (`fondoDe`, en
+   `lib/bestiario/sonido.ts`). El monte suena a *Lobo suelto* y la pastura a *Cordero atado*. El
+   recorte pasa por un pasabajos, un pasaaltos y un eco corto, todo bajito; a medida que se camina el
+   filtro se abre un poco. Cuando suenan los diez segundos de una ficha, el recital se aparta. Un
+   renglón dice qué disco suena: es registro 3, y dice la verdad sobre lo que se oye.
+4. **Los ruidos del camino** (`scripts/bestiario/entorno.ts`), sintetizados, sin un solo archivo:
+   - pasos atados a lo caminado (hojas o pasto), con tope de velocidad;
+   - viento, grillos, la lechuza del monte y el cencerro de la pastura, que suena también al tocar a
+     la vaca.
+
+   Las recetas por región son números en `RECETAS`, y el test mira que no pidan un sonido que no se
+   sabe hacer.
+5. **Nada suena sin un toque** (como en `D-66`). Un botón prende el recital y los ruidos juntos, y
+   pide la sesión de la música (`sonarAunqueEsteEnSilencio`). Si quedó prendido, la próxima región lo
+   recuerda, pero espera el primer toque.
+
+### Lo que queda afuera, y por qué
+
+- **La parte del tema que nombra a cada personaje** (`T-481`). Los recortes del sitio son los
+  primeros 15 segundos de cada tema, los temas enteros no están en el repo y no hay minuto de cada
+  verso. Hacer sonar el arranque del tema con el verso escrito en el bocadillo sería un rótulo que
+  miente. Queda pedido en `Docs/SUGERENCIAS/HILO-sonidos-del-bestiario.md`.
+- **Las voces y los animales.** La risa del gordo Pierre la graba el usuario; los perros, los gatos,
+  los balidos y los cristales salen de Freesound CC0. El reparto completo, región por región, está en
+  la misma sugerencia (`T-482`).
+- **Las otras diez regiones** suenan cuando tengan su camino: la receta es un renglón por región.
+
+### Verificado
+
+`npm test` (1691), `npm run check` (0 errores) y `npm run build`. En el navegador del panel, a
+375×812:
+
+- el monte arranca con la escena entera y el documento termina en el cruce;
+- la lista abre y cierra;
+- el botón de sonido baja los recortes de *Lobo suelto*, y la pastura anuncia *Cordero atado*.
+
+**Falta:** oírlo en un teléfono de verdad (`T-483`): el filtro, el volumen relativo, los pasos al
+scrollear rápido y la llave de silencio del iPhone.
