@@ -5164,6 +5164,7 @@ renumera esta al integrar (`integrar.md`).
   Barbazul), `T-435` (`--bestia-barbazul-azul` al lienzo, cargado primero en `tokens.css` como las
   demás del bestiario) y `T-437`/`T-439`: la animación se vio con movimiento reducido simulado, porque
   con el panel del navegador oculto el navegador casi no avanza cuadros.
+
 ### Enmienda del 2026-10-18 (12): el negro Atila, a aerógrafo, en la medianera del baldío
 
 Pedido del usuario, textual: *"Hace a El negro Atila para el bestiario redondo, diseñalo como rocambole,
