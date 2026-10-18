@@ -13,6 +13,7 @@ import { PIEZAS_BAJO } from './arte-bajo.ts';
 import { PIEZAS_PRISION } from './arte-prision.ts';
 import { PIEZAS_BARBAZUL, PIEZAS_PUERTA } from './arte-barbazul.ts';
 import { PIEZAS_ENTORNOS } from './arte-entornos.ts';
+import { PIEZAS_ATILA } from './arte-atila.ts';
 
 
 
@@ -553,4 +554,6 @@ export const PIEZAS: readonly Pieza[] = [
   // La undécima vuelta: Barbazul, tallado como el barbudo de la contratapa, y la puerta de su cuarto (`arte-barbazul.ts`).
   ...PIEZAS_PUERTA,
   ...PIEZAS_BARBAZUL,
+  // La duodécima vuelta: el negro Atila en la medianera del baldío, a aerógrafo (`arte-atila.ts`).
+  ...PIEZAS_ATILA,
 ];

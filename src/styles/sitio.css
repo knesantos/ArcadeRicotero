@@ -4031,7 +4031,8 @@ body:has(> .lugar) .marca-chica {
 .titere--momo,
 .titere--pierre,
 .titere--dracula,
-.titere--barbazul { cursor: pointer; }
+.titere--barbazul,
+.titere--atila { cursor: pointer; }
 
 /* Sexta vuelta (D-73): el bajo inundado y el gordo Pierre. Los párpados son del papel de *Gulp!*
    con la raya del ojo cerrado; el agua que entra por el vidrio roto, la lluvia de la calle y las
@@ -4069,3 +4070,11 @@ body:has(> .lugar) .marca-chica {
 .bt-barbazul-parpado { fill: var(--fondo); }
 .bt-barbazul-pestana { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 1.2; stroke-linecap: round; }
 .barbazul-sombra { fill: var(--fondo); }
+
+/* Duodécima vuelta (D-73): el negro Atila en la medianera, a aerógrafo como la tapa de *Lobo
+   suelto*. Los párpados son de su piel: el de la luz ocre, el de la sombra hundido; van a media asta
+   todo el tiempo, que es como mira el que mira de reojo. La luz de la sirena se suma a la noche. */
+.bt-atila-parpado { fill: var(--bestia-lobo-ocre); }
+.bt-atila-parpado-oscuro { fill: var(--bestia-lobo-oscuro); }
+.bt-atila-pestana { fill: none; stroke: var(--fondo); stroke-width: 1.6; stroke-linecap: round; }
+.atila-sirena { mix-blend-mode: screen; }

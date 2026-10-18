@@ -8,12 +8,12 @@
  * desde lo oscuro. El fuego del infierno es la pincelada de la tapa de *Gulp!*, teñida.
  */
 
-import { barbazul, dracula, imagen, pierre } from './titeres.ts';
+import { atila, barbazul, dracula, imagen, pierre } from './titeres.ts';
 import { ARMADO } from './recortes.ts';
-import { BAJO, BANDERAS, BARBAZUL, DRACULA, ESCENA, LUZBELITO, MOMO, PERRO, PIERRE, PRISION, PUERTA_DE_BARBAZUL, deLaTapa, llamaEnEscena } from './rig.ts';
+import { ATILA, BAJO, BANDERAS, BARBAZUL, DRACULA, ESCENA, LUZBELITO, MOMO, PERRO, PIERRE, PRISION, PUERTA_DE_BARBAZUL, deLaTapa, llamaEnEscena } from './rig.ts';
 import { agujero } from './arte-bajo.ts';
 
-export { BARBAZUL, DRACULA, LUZBELITO, MOMO, PERRO, PIERRE };
+export { ATILA, BARBAZUL, DRACULA, LUZBELITO, MOMO, PERRO, PIERRE };
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 
@@ -47,8 +47,13 @@ const titere = (clase: string, id: string, nombre: string, cuerpo: string, trans
 const parte = (nombre: string, cuerpo: string): string => `<g data-parte="${nombre}">${cuerpo}</g>`;
 
 /* ------------------------------------------------------------------
-   El baldío: ese perro que sigue allí
-   ------------------------------------------------------------------ */
+   El baldío: ese perro que sigue allí, y el negro Atila por la medianera
+   ------------------------------------------------------------------
+   El Atila (undécima vuelta) no es de tapa: está pintado a aerógrafo en la estética de *Lobo
+   suelto* (`arte-atila.ts`). Camina por el canto de la medianera, y cuando pasa la sirena se tira
+   del otro lado: lo que baja del canto no se ve (`atila-pared`). El vaho va afuera del recorte, así
+   que sube igual desde atrás del muro y lo delata. La luz de la sirena barre todo, de punta a punta.
+*/
 
 export const VECINOS_DEL_BALDIO: Readonly<Record<string, readonly [number, number, Tinta]>> = {
   'el-gato-maton': [300, 206, 'oro'],
@@ -56,7 +61,6 @@ export const VECINOS_DEL_BALDIO: Readonly<Record<string, readonly [number, numbe
   'el-gato-de-susanita': [476, 192, 'oro'],
   'susanita': [520, 238, 'papel'],
   'el-gato-que-llamas-con-silbidos': [762, 214, 'oro'],
-  'el-negro-atila': [610, 168, 'papel'],
   'limon': [150, 196, 'papel'],
   'el-que-no-se-cayo-del-cielo': [862, 252, 'papel'],
   'mi-perro-dinamita': [626, 478, 'oro'],
@@ -69,7 +73,12 @@ export function escenaBaldio(nombres: ReadonlyMap<string, string>): string {
   const [bx, by] = ARMADO.perro.borde;
   return (
     imagen('baldio-lejos') +
+    imagen('atila-tanque') +
     losOjos(VECINOS_DEL_BALDIO, nombres) +
+    `<clipPath id="atila-pared"><rect x="-10" y="-10" width="${ESCENA.ancho + 20}" height="${ATILA.piso + 10}"/></clipPath>` +
+    `<g clip-path="url(#atila-pared)"><g class="titere titere--atila" data-id="el-negro-atila" role="button" tabindex="0" aria-label="${nombres.get('el-negro-atila') ?? ''}">` +
+    `<g id="atila-entero" transform="translate(${ATILA.x} ${ATILA.piso}) scale(${ATILA.escala})">${atila()}</g></g></g>` +
+    `<g class="atila-vahos" aria-hidden="true" pointer-events="none">${[0, 1, 2].map((n) => `<g data-vaho="${n}" opacity="0">${imagen('atila-vaho')}</g>`).join('')}</g>` +
     titere(
       'titere--perro',
       'ese-perro-que-sigue-alli',
@@ -77,6 +86,8 @@ export function escenaBaldio(nombres: ReadonlyMap<string, string>): string {
       parte('boca', imagen('perro-real-boca')) + parte('mandibula', imagen('perro-real-mandibula')) + parte('cabeza', imagen('perro-real-cabeza')),
       `translate(${PERRO.x} ${PERRO.y}) scale(${PERRO.escala}) translate(${-bx} ${-by})`,
     ) +
+    // La sirena de la cana: arranca afuera de la escena, a la izquierda, y la isla la pasa.
+    `<g class="atila-sirena" aria-hidden="true" pointer-events="none" opacity="0" transform="translate(-320 ${ATILA.sirena})">${imagen('atila-sirena')}</g>` +
     `<g pointer-events="none">${imagen('baldio-frente')}</g>`
   );
 }

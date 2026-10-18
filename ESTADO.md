@@ -9,7 +9,7 @@
 
 > ## 🗝️ BARBAZUL, TALLADO, CON LA BARBA DE OTRA PLANCHA (2026-10-18) — enmienda (11) de `D-73`, ciclo 25
 >
-> **En la rama `ciclo-25/bestiario`, con `origin/main` adentro en `168a1bd`; el PR se abre ahora, sin integrar.** Sacada
+> **En la rama `ciclo-25/bestiario`, con `origin/main` adentro en `352ef3a`; el PR se abre ahora, sin integrar.** Sacada
 > de `ciclo-24/bestiario` (PR #56) en `82c4453`. Pedido del usuario, el de las dos vueltas anteriores: *"Agrega otro personaje y pulilo a
 > fondo, se creativo que qeude como uno de rocambole"*.
 >
@@ -24,9 +24,22 @@
 >   entornos (#57), que ya está en `main`; si otra rama llega antes con la (11), se renumera esta.
 > - **Abierto:** `T-431`, `T-435` (el azul nuevo al lienzo), `T-437`/`T-439`.
 
+> ## 🧥 EL NEGRO ATILA (2026-10-18) — duodécima enmienda de `D-73`
+>
+> **En main desde el PR #60** (rama `bestiario/negro-atila`, worktree `.claude/worktrees/bestiario-atila`), que entró con `main` adentro
+> en `168a1bd` (los seis entornos, PR #57, y el camino como puerta, PR #59). Pedido del usuario: *"Hace a El negro Atila para el bestiario redondo, diseñalo como rocambole [...] chisotos y acido"*.
+>
+> - **A aerógrafo, como la tapa de *Lobo suelto***: la cara partida en luz y sombra, el ojo ojeroso, la
+>   bufanda acanalada como el pecho del lobo. Camina por la medianera del baldío, hundido en el gabán,
+>   mascando el frío (vaho). Cuando pasa la sirena de ocasión se tira del otro lado y lo delata el vaho.
+> - **Tocado, abre el gabán**: relojes, cucharitas, el eslabón de la cadena del lobo, la dentadura del caníbal
+>   desdentado y la sirena de la cana. Tres testimonios del memoir (`RES-21`, p. 321).
+> - **Verificado**: tests, una simulación de la conducta y el panel a 375 px, que estaba oculto: **la animación no
+>   se vio correr** (`T-480`).
+
 > ## 👣 AL BESTIARIO SE ENTRA CAMINANDO, Y SUENA (2026-10-18) — `D-76`
 >
-> **Sin integrar: espera su PR** (rama `bestiario/entorno-primero`, worktree `.claude/worktrees/bestiario-entorno`).
+> **En main desde el PR #59** (rama `bestiario/entorno-primero`), fusión `168a1bd`.
 > Pedido del usuario: *"El entorno caminable debe ser lo principal del bestiario [...] que para salir debas tocar
 > algo"* y *"que se escuchen otras cosas, pasos, sonidos de los personajes, ruidos del entorno"*.
 >

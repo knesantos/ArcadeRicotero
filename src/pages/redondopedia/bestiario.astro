@@ -91,7 +91,8 @@ const recintos = RECORRIDO.map((id) => {
   // figuras del plano, cada uno en la tapa de su disco.
   // `foco`: dónde arranca mirando la escena cuando no entra entera (el perro entra por el borde).
   const deNoche: Record<string, { escena: (n: ReadonlyMap<string, string>) => string; foco: number }> = {
-    'los-techos': { escena: escenaBaldio, foco: 260 },
+    // En el baldío, entre los dientes del perro y el Atila en la medianera: entran los dos.
+    'los-techos': { escena: escenaBaldio, foco: 470 },
     'el-infierno': { escena: escenaInfierno, foco: LUZBELITO.x },
     'el-templo': { escena: escenaTemplo, foco: MOMO.argolla.x },
     'el-bajo': { escena: escenaBajo, foco: PIERRE.x - 60 },
