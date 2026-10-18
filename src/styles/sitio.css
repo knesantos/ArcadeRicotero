@@ -4119,6 +4119,9 @@ body:has(> .lugar) .marca-chica {
 /* ⟨/el caníbal⟩ */
 
 /* ⟨la Mariposa Pontiac⟩ */
+/* Va adentro de su fierro, que es el que se toca. Lo único que dibuja la página son los párpados de
+   los dos ojos de los óvalos: del yeso del busto a media luz, como la cara que los rodea. */
+.bt-pontiac-parpado { fill: var(--bestia-pontiac-yeso-medio); }
 /* ⟨/la Mariposa Pontiac⟩ */
 
 /* ⟨el diablo que mea⟩ */

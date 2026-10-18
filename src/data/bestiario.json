@@ -1700,7 +1700,12 @@
       "dibujo": { "f": "maquina", "que": "auto-mariposa" },
       "tema": "mariposa-pontiac-rock-del-pais",
       "verso": ["¡Ay! Mariposa pontiac, ¿qué va a ser de mí?"],
-      "estampa": "Medio mariposa, medio auto de los grandes. Va por la ruta con las alas abiertas.",
+      "estampa": "Un Pontiac de los grandes, de cola larga, y encima una polilla de noche. Las alas son el mármol de la tapa de Luzbelito, y en cada óvalo de cobre hay un ojo. En la trompa lleva el busto con su vela. Persigue la luz, como toda polilla, y tocada despega. La letra le habla y le dice nena: lo demás es del dibujo.",
+      "cuenta": [
+        { "rotulo": "hecho", "texto": "Ya estaba en los Demos RCA, que la banda grabó en abril de 1982: un lado en estudio y el otro en vivo, en Pan Caliente. RCA no los fichó.", "fuente": "RES-312" },
+        { "rotulo": "testimonio", "texto": "Era de las canciones que esperaban guardadas: estaba para Gulp! y no entró.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 185)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "En Luzbelito era, con Blues de la libertad, una de las dos canciones viejas: lo demás del disco era una serie nueva. Para entonces ya no lo conmovían; andaba buscando otras cosas.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (pp. 361 y 369)", "fuente": "RES-21" }
+      ],
       "cerca": ["la-lechuza-que-circula", "el-zumba"]
     },
     {
