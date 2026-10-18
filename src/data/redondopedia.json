@@ -139,7 +139,8 @@
         "un-baion-para-el-ojo-idiota",
         "la-leyenda-de-ji-ji-ji",
         "indio-solari",
-        "ji-ji-ji"
+        "ji-ji-ji",
+        "temas-fuera-de-los-discos"
       ]
     },
     {
@@ -849,7 +850,7 @@
       "slug": "semilla-bucciarelli",
       "tipo": "persona",
       "titulo": "Semilla Bucciarelli",
-      "resumen": "Semilla Bucciarelli fue el bajista de la formación estable de Patricio Rey y sus Redonditos de Ricota, desde 1987 hasta la ruptura. En un cancionero firmado casi por completo por la dupla Solari–Beilinson, su nombre aparece como tercer autor en las dos únicas excepciones de todo el catálogo: «Ella debe estar tan linda» y «Mi perro dinamita» — y esta última, según contó el propio Indio, era el tema que él no quería ni editar y terminó siendo uno de los más populares.",
+      "resumen": "Semilla Bucciarelli fue el bajista de Patricio Rey y sus Redonditos de Ricota desde 1982 hasta la ruptura: tocó en todos los discos de estudio, y desde 1987 integró la formación de cinco que llegó hasta el final. En un cancionero firmado casi por completo por la dupla Solari–Beilinson, su nombre aparece como tercer autor en las dos únicas excepciones de todo el catálogo: «Ella debe estar tan linda» y «Mi perro dinamita» — y esta última, según contó el propio Indio, era el tema que él no quería ni editar y terminó siendo uno de los más populares.",
       "datos": [
         {
           "etiqueta": "Rol",
@@ -858,10 +859,16 @@
           "fuente": "RES-05"
         },
         {
-          "etiqueta": "En la formación estable",
-          "valor": "Desde 1987 hasta la ruptura",
+          "etiqueta": "En la banda",
+          "valor": "Bajo desde 1982, en todos los discos de estudio",
           "rotulo": "hecho",
-          "fuente": "RES-05"
+          "fuente": "RES-337"
+        },
+        {
+          "etiqueta": "En la formación de cinco",
+          "valor": "Desde 1987 hasta la ruptura, con Sidotti y Dawi",
+          "rotulo": "hecho",
+          "fuente": "RES-337"
         },
         {
           "etiqueta": "Coautoría",
@@ -878,9 +885,9 @@
       ],
       "cuerpo": [
         {
-          "texto": "Semilla Bucciarelli fue el bajo de la [[la-formacion|formación estable]] de los Redondos, desde 1987 hasta [[la-separacion|la ruptura]].",
+          "texto": "Semilla Bucciarelli fue el bajo de los Redondos desde 1982, cuando entró en lugar de Daniel «Pepe» Fenton, y tocó en todos los discos de estudio, de [[gulp|Gulp!]] (1985) a [[momo-sampler|Momo sampler]] (2000). Lo que empieza en 1987 es otra cosa: la [[la-formacion|formación de cinco]] —el Indio, Skay, Semilla, [[walter-sidotti|Walter Sidotti]] y [[sergio-dawi|Sergio Dawi]]—, que duró hasta [[la-separacion|la ruptura]].",
           "rotulo": "hecho",
-          "fuente": "RES-05",
+          "fuente": "RES-337",
           "quien": null
         },
         {
@@ -989,6 +996,165 @@
         "skay-beilinson",
         "indio-solari",
         "difusion-sin-tele"
+      ]
+    },
+    {
+      "slug": "walter-sidotti",
+      "tipo": "persona",
+      "titulo": "Walter Sidotti",
+      "resumen": "Walter Sidotti fue el baterista de Patricio Rey y sus Redonditos de Ricota de 1987 a 2001, catorce años: los de la formación de cinco con el Indio, Skay, Semilla y Dawi. Casi todo lo demás que se cuenta de él sale de la wiki de fans, y por eso acá va rotulado como leyenda.",
+      "datos": [
+        {
+          "etiqueta": "Rol",
+          "valor": "Batería",
+          "rotulo": "hecho",
+          "fuente": "RES-318"
+        },
+        {
+          "etiqueta": "En la banda",
+          "valor": "De 1987 a 2001",
+          "rotulo": "hecho",
+          "fuente": "RES-318"
+        },
+        {
+          "etiqueta": "En la formación de cinco",
+          "valor": "Desde 1987, con el Indio, Skay, Semilla y Dawi",
+          "rotulo": "hecho",
+          "fuente": "RES-337"
+        },
+        {
+          "etiqueta": "Nacimiento",
+          "valor": "4 de enero de 1961 — lo dice solo la wiki de fans",
+          "rotulo": "leyenda",
+          "fuente": "RES-318"
+        },
+        {
+          "etiqueta": "Primer recital con la banda",
+          "valor": "15 de mayo de 1987, en Caras + Caras — lo dice solo la wiki de fans",
+          "rotulo": "leyenda",
+          "fuente": "RES-318"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Walter Sidotti tocó la batería en los Redondos de 1987 a 2001: catorce años, hasta el final. Con el [[indio-solari|Indio]], [[skay-beilinson|Skay]], [[semilla-bucciarelli|Semilla]] y [[sergio-dawi|Dawi]] armó la formación de cinco que quedó fija desde 1987 y llegó hasta [[la-separacion|la separación]]. En ese período salieron los discos que van de [[un-baion-para-el-ojo-idiota|Un baión para el ojo idiota]] (1988) a [[momo-sampler|Momo sampler]].",
+          "rotulo": "hecho",
+          "fuente": "RES-318, RES-337",
+          "quien": null
+        },
+        {
+          "texto": "Para lo que sigue hay una sola fuente: la wiki de fans. Wikipedia en español no le dedicó artículo, así que nadie más lo confirma, y por eso va todo como leyenda. Según esa wiki, nació el 4 de enero de 1961. Tocaba en La Favorita con Willy Crook, el saxofonista de los primeros discos, y Crook lo recomendó cuando la banda buscaba baterista. Hubo una audición con otros bateristas. Su primer recital con los Redondos habría sido el 15 de mayo de 1987, en Caras + Caras.",
+          "rotulo": "leyenda",
+          "fuente": "RES-318",
+          "quien": null
+        },
+        {
+          "texto": "El puesto lo había dejado Juan «Piojo» Ábalos. Según la misma wiki, tocó en [[gulp|Gulp!]] y en [[oktubre|Oktubre]] y se fue a fines de 1986, por no llegar a un acuerdo económico por los discos.",
+          "rotulo": "leyenda",
+          "fuente": "RES-321",
+          "quien": null
+        },
+        {
+          "texto": "Después de 2001 la wiki lo anota en La Favorita, en Heroicos Sobrevivientes, en The Comando Pickless y, entre 2016 y 2018, en [[los-decoradores|Los Decoradores]]. En 2013 grabó con Semilla y Dawi «La pajarita pechiblanca», un tema de «Pajaritos, bravos muchachitos», el disco del Indio, y en 2014 tocaron con él en Gualeguaychú.",
+          "rotulo": "leyenda",
+          "fuente": "RES-318, RES-322",
+          "quien": null
+        },
+        {
+          "texto": "Hay un detalle chico que se puede comprobar con el disco en la mano. En el sobre de [[bang-bang-estas-liquidado|¡Bang! ¡Bang!... Estás liquidado]] (1989) la banda lo llama «caballito valiente, triturador de tambores enojados». Lo transcribe la wiki de fans: fijate si el sobre lo dice.",
+          "rotulo": "leyenda",
+          "fuente": "RES-318",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "semilla-bucciarelli",
+        "sergio-dawi",
+        "la-formacion",
+        "la-separacion"
+      ]
+    },
+    {
+      "slug": "sergio-dawi",
+      "tipo": "persona",
+      "titulo": "Sergio Dawi",
+      "resumen": "Sergio Dawi tocó el saxo en Patricio Rey y sus Redonditos de Ricota de 1987 a 2001. Nació en San Telmo en 1955, pasó nueve años en España y, antes de entrar, armó un dúo, Dosaxos2, con el que lo vieron Skay y Poli. Del solo de «Ji ji ji» se cuentan dos versiones, y no coinciden.",
+      "datos": [
+        {
+          "etiqueta": "Nacimiento",
+          "valor": "20 de octubre de 1955, en San Telmo",
+          "rotulo": "hecho",
+          "fuente": "RES-319"
+        },
+        {
+          "etiqueta": "Rol",
+          "valor": "Saxo",
+          "rotulo": "hecho",
+          "fuente": "RES-319"
+        },
+        {
+          "etiqueta": "En la banda",
+          "valor": "De 1987 a 2001",
+          "rotulo": "hecho",
+          "fuente": "RES-319"
+        },
+        {
+          "etiqueta": "Antes",
+          "valor": "Dosaxos2, dúo con Damián Nisenson (1985)",
+          "rotulo": "hecho",
+          "fuente": "RES-319"
+        },
+        {
+          "etiqueta": "Después",
+          "valor": "Dawi y los Estrellados, SemiDawi y Los Decoradores",
+          "rotulo": "hecho",
+          "fuente": "RES-319"
+        },
+        {
+          "etiqueta": "El solo de «Ji ji ji»",
+          "valor": "Dos versiones: el Indio se lo atribuye a Dawi, Skay lo niega",
+          "rotulo": "leyenda",
+          "fuente": "RES-319"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Sergio Dawi tocó el saxo en los Redondos de 1987 a 2001, en la [[la-formacion|formación de cinco]] con el [[indio-solari|Indio]], [[skay-beilinson|Skay]], [[semilla-bucciarelli|Semilla]] y [[walter-sidotti|Walter Sidotti]]. Nació el 20 de octubre de 1955 en San Telmo.",
+          "rotulo": "hecho",
+          "fuente": "RES-319, RES-337",
+          "quien": null
+        },
+        {
+          "texto": "Su padre, Enrique Dawi, era director de cine. Su madre, María Teresa Corral, tenía el sello La Cornamusa, donde él trabajó de cadete. Pasó nueve años en España.",
+          "rotulo": "hecho",
+          "fuente": "RES-319",
+          "quien": null
+        },
+        {
+          "texto": "En 1985 armó con Damián Nisenson el dúo escénico Dosaxos2, que tocó en la noche inaugural del Parakultural, en 1986. Ahí lo vieron [[skay-beilinson|Skay]] y [[la-negra-poli|la Negra Poli]]. Al año siguiente estaba en la banda.",
+          "rotulo": "hecho",
+          "fuente": "RES-319",
+          "quien": null
+        },
+        {
+          "texto": "Después de 2001 tocó en Dawi y los Estrellados y en SemiDawi, con [[semilla-bucciarelli|Semilla]]. Desde 2016 integra [[los-decoradores|Los Decoradores]], conocidos desde 2018 como Kermesse Redonda. El año en que se formó esa banda tiene dos versiones, y están en su artículo.",
+          "rotulo": "hecho",
+          "fuente": "RES-319, RES-47",
+          "quien": null
+        },
+        {
+          "texto": "Del solo de [[ji-ji-ji|Ji ji ji]] circulan dos versiones. El Indio le atribuye a Dawi el fraseo de saxo que Skay pasó a la guitarra y que terminó siendo el solo del tema. Skay lo niega y cuenta que el tema salió en un balcón, recordando a Hendrix: es la historia del balcón que también aparece en el artículo del tema. Wikipedia recoge las dos, y acá no está la cita de primera mano de ninguno de los dos. Entra como leyenda, con las dos puntas a la vista.",
+          "rotulo": "leyenda",
+          "fuente": "RES-319",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "walter-sidotti",
+        "semilla-bucciarelli",
+        "los-decoradores",
+        "ji-ji-ji",
+        "la-formacion"
       ]
     },
     {
@@ -1962,6 +2128,179 @@
         "los-fundamentalistas",
         "gulp",
         "oktubre"
+      ]
+    },
+    {
+      "slug": "temas-fuera-de-los-discos",
+      "tipo": "concepto",
+      "titulo": "Los temas que no están en los discos",
+      "resumen": "Los diez discos de estudio suman 105 temas, pero la banda tocó otros que nunca entraron. La wiki de fans los junta como inéditos y cuenta que circularon en casetes piratas. Algunos salieron después, una letra que el Indio dice suya terminó en un disco de Sumo, y de casi todos solo queda lo que cuenta la gente.",
+      "datos": [
+        {
+          "etiqueta": "Discos de estudio",
+          "valor": "Diez discos, 105 temas",
+          "rotulo": "hecho",
+          "fuente": "RES-20"
+        },
+        {
+          "etiqueta": "Demos RCA",
+          "valor": "Abril de 1982: cinco temas, un lado en estudio y otro en vivo",
+          "rotulo": "hecho",
+          "fuente": "RES-312"
+        },
+        {
+          "etiqueta": "Único álbum en vivo",
+          "valor": "«En directo» (1992), con un inédito: «Blues del noticiero»",
+          "rotulo": "hecho",
+          "fuente": "RES-333"
+        },
+        {
+          "etiqueta": "Una letra del Indio en un disco ajeno",
+          "valor": "«Mejor no hablar de ciertas cosas», en «Divididos por la felicidad» de Sumo (1985)",
+          "rotulo": "testimonio",
+          "fuente": "RES-329"
+        },
+        {
+          "etiqueta": "El inventario de inéditos",
+          "valor": "Lo junta la wiki de fans; casi todo es leyenda",
+          "rotulo": "leyenda",
+          "fuente": "RES-328"
+        }
+      ],
+      "cuerpo": [
+        {
+          "texto": "Los diez discos de estudio de los Redondos suman 105 temas.",
+          "rotulo": "hecho",
+          "fuente": "RES-20",
+          "quien": null
+        },
+        {
+          "texto": "La wiki de fans cuenta que hubo otra discografía, la que circuló en casetes piratas, y junta bajo el nombre de «inéditos» lo que la banda tocó y no grabó en un disco de estudio. Casi todo lo que sigue sale de ahí. Lo que otra fuente confirma va como hecho o como testimonio; lo demás queda como leyenda, que también es contenido.",
+          "rotulo": "leyenda",
+          "fuente": "RES-328",
+          "quien": null
+        },
+        {
+          "texto": "Honolulu es de antes. El Indio la cuenta como parte del «caldo prebiótico» platense, cuando todavía no eran los Redondos.",
+          "rotulo": "testimonio",
+          "fuente": "RES-328",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco»"
+        },
+        {
+          "texto": "La wiki de fans la describe como un blues. Pepe Fenton, en «Fuimos Reyes», la da como la primera canción que tuvieron lista, y cuenta que, después de los primeros años, la banda la volvió a tocar en Mar del Plata, el 12 de agosto de 1994.",
+          "rotulo": "leyenda",
+          "fuente": "RES-328",
+          "quien": null
+        },
+        {
+          "texto": "De la época de Tito Fargo, entre 1984 y 1985, la wiki rescata tres: «Mi genio amor», «Rodando» y «El regreso de Mao». Dice que las compuso con el Indio, que la más conocida es «Mi genio amor» y que haber quedado fuera de los discos fue una de las razones por las que Fargo se fue.",
+          "rotulo": "leyenda",
+          "fuente": "RES-328, RES-322",
+          "quien": null
+        },
+        {
+          "texto": "En el libro del Indio, el que pregunta, Marcelo Figueras, la presenta como la favorita de muchos.",
+          "rotulo": "testimonio",
+          "fuente": "RES-328",
+          "quien": "Marcelo Figueras, en «Recuerdos que mienten un poco»"
+        },
+        {
+          "texto": "La wiki de fans anota que el Indio dedicó «Mi genio amor» a [[walter-bulacio|Walter Bulacio]] en octubre de 1991. Solo lo dice esa wiki.",
+          "rotulo": "leyenda",
+          "fuente": "RES-328",
+          "quien": null
+        },
+        {
+          "texto": "De «De estos polvos, futuros lodos» queda la letra y nada más. Está impresa en el sobre interno de [[oktubre|Oktubre]], pero la canción no está en el disco: según el Indio, la sacaron cuando el sobre ya estaba impreso.",
+          "rotulo": "testimonio",
+          "fuente": "RES-328",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco»"
+        },
+        {
+          "texto": "En abril de 1982 la banda grabó los Demos RCA: un lado en estudio y el otro en vivo, del festival de Pan Caliente, que está contado en [[la-formacion|la formación]]. Son cinco temas: «Nene nena», «Un tal Brigitte Bardot», «Mariposa Pontiac», «Superlógico» y «Pura suerte». En «Superlógico» hacen los coros las Bay Biscuits: Fabiana Cantilo, Isabel de Sebastián, Diana Nylon y Viviana Tellas. RCA no los fichó, y las FM pasaban el demo igual.",
+          "rotulo": "hecho",
+          "fuente": "RES-312",
+          "quien": null
+        },
+        {
+          "texto": "Según la wiki, «Nene nena» se tocó de 1982 hasta los noventa, y en 2014 [[semilla-bucciarelli|Semilla]] la metió en la lista de Gualeguaychú.",
+          "rotulo": "leyenda",
+          "fuente": "RES-328",
+          "quien": null
+        },
+        {
+          "texto": "En 1985 y 1986, cuenta la wiki, la banda enganchaba a mitad o al final de los recitales un popurrí: «El gordo tramposo», «El Hidromedusa», «El Super Sport», «Honolulu», «Imperialismo espacial» y «Un tal Brigitte Bardot».",
+          "rotulo": "leyenda",
+          "fuente": "RES-328",
+          "quien": null
+        },
+        {
+          "texto": "El Indio, en su libro, nombra «Imperialismo espacial», «El Hidromedusa» y «El super sport» en el mismo pasaje que «Honolulu». El orden y el armado del popurrí siguen siendo cosa de la wiki.",
+          "rotulo": "testimonio",
+          "fuente": "RES-328",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco»"
+        },
+        {
+          "texto": "Una letra del Indio terminó en un disco de otra banda, según cuenta él: Luca Prodan se llevó la letra de «Mejor no hablar de ciertas cosas» de lo de Poli, sin pedirla. No le molestó, y la versión de Sumo le parece mejor que la que hacían él y Skay.",
+          "rotulo": "testimonio",
+          "fuente": "RES-329",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco»"
+        },
+        {
+          "texto": "Sumo grabó «Mejor no hablar de ciertas cosas» en «Divididos por la felicidad», de 1985.",
+          "rotulo": "hecho",
+          "fuente": "RES-329",
+          "quien": null
+        },
+        {
+          "texto": "La wiki agrega que los Redondos la usaban en las pruebas de sonido.",
+          "rotulo": "leyenda",
+          "fuente": "RES-329",
+          "quien": null
+        },
+        {
+          "texto": "En septiembre de 2021 el Indio publicó en su canal «Quema el celo» y «Rock de las abejas», grabados en las sesiones de [[luzbelito|Luzbelito]] y dejados afuera del disco. Lo contaron Forbes Argentina y Tiempo Argentino.",
+          "rotulo": "hecho",
+          "fuente": "RES-328 (prensa: Forbes Argentina y Tiempo Argentino)",
+          "quien": null
+        },
+        {
+          "texto": "La wiki agrega que las dos se tocaban en vivo desde los ochenta.",
+          "rotulo": "leyenda",
+          "fuente": "RES-328",
+          "quien": null
+        },
+        {
+          "texto": "El único álbum en vivo de la banda, «En directo» (1992), trae un inédito: «Blues del noticiero». Junta fragmentos del Teatro de Verano de Montevideo (8 de diciembre de 1989) y de Obras (29 de diciembre de 1991), y lo llaman «el pirata oficial».",
+          "rotulo": "hecho",
+          "fuente": "RES-333",
+          "quien": null
+        },
+        {
+          "texto": "Según la wiki, «Reina Momo (La Tomatita)» iba a estar en [[momo-sampler|Momo sampler]]. La mezcla no convenció, circuló en internet desde 2009 o 2010 y en 2021 se subió masterizada al canal del Indio. La búsqueda de prensa no encontró nada que lo confirme: va como lo que dice la wiki y nada más.",
+          "rotulo": "leyenda",
+          "fuente": "RES-328",
+          "quien": null
+        },
+        {
+          "texto": "«Las mañanitas del Rey David» fue una improvisación de menos de cuarenta segundos, el 24 de junio de 1989 en Gimnasia de La Plata, para calmar a la gente que cantaba contra la policía.",
+          "rotulo": "leyenda",
+          "fuente": "RES-328",
+          "quien": null
+        },
+        {
+          "texto": "La wiki suma más nombres: «El gordo tramposo», «Nene, no comprendo tus ambiciones», «Soy un perdido eléctrico» (también «El hombre eléctrico»), «Cua-cua amén», «Roxana porcellana», «Crazy jazz» y «Kazachok», de la que hay un solo registro, de 1985. Aparece también «¡Oh mami!», que figura además como «A toda velocidad» y que la wiki ubica en 1979; sugiere que de ahí sale «Vamos las bandas».",
+          "rotulo": "leyenda",
+          "fuente": "RES-328",
+          "quien": null
+        }
+      ],
+      "veaTambien": [
+        "oktubre",
+        "luzbelito",
+        "momo-sampler",
+        "semilla-bucciarelli",
+        "la-formacion"
       ]
     },
     {
