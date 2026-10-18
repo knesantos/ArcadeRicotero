@@ -9,7 +9,7 @@
 
 > ## 🍾 EL GORDO PIERRE, A PINCEL SECO (2026-10-17) — sexta enmienda de `D-73`, ciclo 23
 >
-> **En la rama `ciclo-23/bestiario`, PR #52 abierto, sin integrar.** Pedido del usuario: *"Agrega otro personaje y pulilo a
+> **En `main` desde el PR #52 (rama `ciclo-23/bestiario`).** Pedido del usuario: *"Agrega otro personaje y pulilo a
 > fondo, se creativo que quede como uno de rocambole"*.
 >
 > - **El bajo inundado es el quinto recinto de noche**: la Esquina del Sol con el agua adentro (`RES-340`), en
