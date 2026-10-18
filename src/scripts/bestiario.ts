@@ -16,9 +16,13 @@
  */
 
 import { BESTIARIO } from '../lib/bestiario/copy.ts';
-import { ACECHO, ACHATE, ESCALA_CORDERO, ESCALA_LOBO, PALO, SOGA, profundidad } from '../lib/bestiario/rig.ts';
+// La isla solo se lleva números: la geometría vive en `rig.ts` y `recortes.ts`, nunca en los
+// módulos que dibujan (`arte*.ts`, `escenas.ts`, `titeres.ts`), que correrían el aerógrafo entero
+// en el teléfono al abrir la página. `bestiario.test.ts` lo vigila.
+import {
+  ACECHO, ACHATE, ESCALA_CORDERO, ESCALA_LOBO, LUZBELITO as LUZ, MOMO as MOMO_ESC, PALO, SOGA, profundidad,
+} from '../lib/bestiario/rig.ts';
 import { ARMADO } from '../lib/bestiario/recortes.ts';
-import { LUZBELITO as LUZ, MOMO as MOMO_ESC } from '../lib/bestiario/escenas.ts';
 import { crearRocola } from './rocola.ts';
 
 interface BestiaIsla {

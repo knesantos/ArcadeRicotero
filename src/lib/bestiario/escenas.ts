@@ -10,6 +10,9 @@
 
 import { imagen } from './titeres.ts';
 import { ARMADO } from './recortes.ts';
+import { LUZBELITO, MOMO, PERRO, llamaEnEscena } from './rig.ts';
+
+export { LUZBELITO, MOMO, PERRO };
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 
@@ -40,9 +43,6 @@ const parte = (nombre: string, cuerpo: string): string => `<g data-parte="${nomb
 /* ------------------------------------------------------------------
    El baldío: ese perro que sigue allí
    ------------------------------------------------------------------ */
-
-/** Dónde entra el perro: por el borde izquierdo, como en la tapa. */
-export const PERRO = { x: 0, y: 470, escala: 1.15 } as const;
 
 export const VECINOS_DEL_BALDIO: Readonly<Record<string, readonly [number, number, Tinta]>> = {
   'el-gato-maton': [300, 206, 'oro'],
@@ -79,16 +79,6 @@ export function escenaBaldio(nombres: ReadonlyMap<string, string>): string {
    El infierno: Luzbelito y su vela
    ------------------------------------------------------------------ */
 
-/** Dónde está la piedra, y de qué tamaño va el busto. */
-export const LUZBELITO = { x: 452, y: 418, escala: 0.95 } as const;
-
-/** Dónde queda la llama en la escena, para el resplandor. */
-export function llamaEnEscena(): { x: number; y: number } {
-  const [px, py] = ARMADO.luzbelito.piso;
-  const [lx, ly] = ARMADO.luzbelito.llama;
-  return { x: LUZBELITO.x + (lx - px) * LUZBELITO.escala, y: LUZBELITO.y + (ly - py) * LUZBELITO.escala };
-}
-
 export const VECINOS_DEL_INFIERNO: Readonly<Record<string, readonly [number, number, Tinta]>> = {
   'el-diablo-mas-veloz': [706, 292, 'rojo'],
   'zippo': [826, 392, 'oro'],
@@ -121,9 +111,6 @@ export function escenaInfierno(nombres: ReadonlyMap<string, string>): string {
 /* ------------------------------------------------------------------
    El templo: el medallón de Momo
    ------------------------------------------------------------------ */
-
-/** De dónde cuelga el cordón, dónde queda la argolla y de qué tamaño va el medallón. */
-export const MOMO = { cuelga: { x: 450, y: -10 }, argolla: { x: 450, y: 212 }, escala: 0.62 } as const;
 
 export const VECINOS_DEL_TEMPLO: Readonly<Record<string, readonly [number, number, Tinta]>> = {
   'el-santo-fumador': [164, 300, 'papel'],

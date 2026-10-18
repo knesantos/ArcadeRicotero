@@ -255,3 +255,39 @@ test('los cinco de tapa tienen retrato de ficha, encuadrado en sus piezas; los d
   }
   assert.equal(retrato('la-mosca'), null);
 });
+
+/*
+ * La isla se lleva números (`D-73`, sexta vuelta).
+ */
+
+/** Todo lo que un archivo importa, de punta a punta, siguiendo los caminos relativos. */
+function importados(desde: string): string[] {
+  const vistos = new Set<string>();
+  const pendientes = [desde];
+  while (pendientes.length) {
+    const archivo = pendientes.pop()!;
+    if (vistos.has(archivo)) continue;
+    vistos.add(archivo);
+    const carpeta = archivo.slice(0, archivo.lastIndexOf('/'));
+    for (const m of readFileSync(archivo, 'utf-8').matchAll(/(?:^|\n)\s*(?:import|export)[^'"]*?from\s+'(\.[^']+)'/g)) {
+      const ruta: string[] = [];
+      for (const p of `${carpeta}/${m[1]}`.split('/')) {
+        if (p === '..') ruta.pop();
+        else if (p !== '.') ruta.push(p);
+      }
+      pendientes.push(ruta.join('/'));
+    }
+  }
+  return [...vistos].map((r) => r.slice(r.lastIndexOf('/') + 1));
+}
+
+test('la isla se lleva números: no importa nada que dibuje', () => {
+  // Si la isla importa un módulo que dibuja, el teléfono corre el aerógrafo entero al abrir la
+  // página para no usarlo. Pasó en la quinta vuelta: `escenas.ts` arrastraba `arte.ts`.
+  const dibujan = ['arte.ts', 'arte-bajo.ts', 'aerografo.ts', 'pincel.ts', 'escenas.ts', 'escena-monte.ts', 'titeres.ts', 'figuras.ts', 'mapa.ts'];
+  const llevados = importados('src/scripts/bestiario.ts');
+  assert.ok(llevados.includes('rig.ts'), 'la isla dejó de leer rig.ts: el censo no está mirando bien');
+  assert.deepEqual(llevados.filter((n) => dibujan.includes(n)), [], `la isla se lleva al teléfono: ${llevados.join(', ')}`);
+  // Y el censo sabe encontrar: desde las escenas, que sí dibujan, llega al aerógrafo.
+  assert.ok(importados('src/lib/bestiario/escenas.ts').includes('aerografo.ts'));
+});
