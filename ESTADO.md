@@ -9,7 +9,7 @@
 
 > ## 🧥 EL NEGRO ATILA (2026-10-18) — duodécima enmienda de `D-73`
 >
-> **Sin integrar: espera en el PR #60** (rama `bestiario/negro-atila`, worktree `.claude/worktrees/bestiario-atila`), con `main` adentro
+> **En main desde el PR #60** (rama `bestiario/negro-atila`, worktree `.claude/worktrees/bestiario-atila`), que entró con `main` adentro
 > en `168a1bd` (los seis entornos, PR #57, y el camino como puerta, PR #59). Pedido del usuario: *"Hace a El negro Atila para el bestiario redondo, diseñalo como rocambole [...] chisotos y acido"*.
 >
 > - **A aerógrafo, como la tapa de *Lobo suelto***: la cara partida en luz y sombra, el ojo ojeroso, la
@@ -22,7 +22,7 @@
 
 > ## 👣 AL BESTIARIO SE ENTRA CAMINANDO, Y SUENA (2026-10-18) — `D-76`
 >
-> **Sin integrar: espera su PR** (rama `bestiario/entorno-primero`, worktree `.claude/worktrees/bestiario-entorno`).
+> **En main desde el PR #59** (rama `bestiario/entorno-primero`), fusión `168a1bd`.
 > Pedido del usuario: *"El entorno caminable debe ser lo principal del bestiario [...] que para salir debas tocar
 > algo"* y *"que se escuchen otras cosas, pasos, sonidos de los personajes, ruidos del entorno"*.
 >
