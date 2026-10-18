@@ -9,8 +9,8 @@
 
 > ## 🌲 EL CAMINO CON CRUCES: EL BESTIARIO SE CAMINA (2026-10-18) — `D-73`, enmienda 9
 >
-> **Sin commitear, en la rama `bestiario/camino-con-cruces`** (worktree `.claude/worktrees/bestiario-camino`, sobre
-> `main` en `159b1bc`). Pedido del usuario: que los entornos estén conectados y sea una aventura scrolleable donde
+> **Espera en el PR #54, sin integrar**, desde la rama `bestiario/camino-con-cruces` (worktree
+> `.claude/worktrees/bestiario-camino`, sobre `main` en `159b1bc`). Pedido del usuario: que los entornos estén conectados y sea una aventura scrolleable donde
 > aparecen los personajes y se elige con flechas adónde ir. Se investigaron cinco formas y eligió, textual: *"Dale con
 > el camino con cruces: una página por región, scroll que camina de costado y flechas en el cruce. Arrancá por el monte
 > y la pastura como prueba."*
