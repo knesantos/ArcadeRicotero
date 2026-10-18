@@ -38,7 +38,7 @@ import {
   type Bestia,
 } from '../../lib/bestiario/mapa.ts';
 import { ESCENA, escenaMonte } from '../../lib/bestiario/escena-monte.ts';
-import { escenaBaldio, escenaInfierno, escenaTemplo, LUZBELITO, MOMO } from '../../lib/bestiario/escenas.ts';
+import { escenaBajo, escenaBaldio, escenaInfierno, escenaTemplo, LUZBELITO, MOMO, PIERRE } from '../../lib/bestiario/escenas.ts';
 import { retrato } from '../../lib/bestiario/titeres.ts';
 import { PALO } from '../../lib/bestiario/rig.ts';
 import { tituloDelDisco } from '../../lib/letra/discos.ts';
@@ -95,12 +95,14 @@ const recintos = RECORRIDO.map((id) => {
     };
   }
   const region = regionDe.get(id)!;
-  // Los recintos con protagonista de tapa (D-73): de noche, con su escena por capas.
+  // Los recintos de noche (D-73): los de protagonista de tapa, y el bajo, con el gordo Pierre
+  // pintado en la estética de *Gulp!*. Cada uno con su escena por capas.
   // `foco`: dónde arranca mirando la escena cuando no entra entera (el perro entra por el borde).
   const deNoche: Record<string, { escena: (n: ReadonlyMap<string, string>) => string; foco: number }> = {
     'los-techos': { escena: escenaBaldio, foco: 260 },
     'el-infierno': { escena: escenaInfierno, foco: LUZBELITO.x },
     'el-templo': { escena: escenaTemplo, foco: MOMO.argolla.x },
+    'el-bajo': { escena: escenaBajo, foco: PIERRE.x - 60 },
   };
   if (deNoche[id]) {
     return {

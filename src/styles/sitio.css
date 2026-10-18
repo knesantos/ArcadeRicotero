@@ -3519,4 +3519,24 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 .infierno-fuego { mix-blend-mode: screen; }
 .titere--perro,
 .titere--luzbelito,
-.titere--momo { cursor: pointer; }
+.titere--momo,
+.titere--pierre { cursor: pointer; }
+
+/* Sexta vuelta (D-73): el bajo inundado y el gordo Pierre. Los párpados son del papel de *Gulp!*
+   con la raya del ojo cerrado; el agua que entra por el vidrio roto, la lluvia de la calle y las
+   ondas son trazos vivos que mueve la isla, en las tintas de *Un baión*. El reflejo de Pierre y el
+   de los ojos que miran desde el agua van apagados. */
+.bt-pierre-parpado { fill: var(--disco-gulp-apoyo); }
+.bt-pierre-pestana { fill: none; stroke: var(--fondo); stroke-width: 4; stroke-linecap: round; }
+.bajo-chorro {
+  fill: none;
+  stroke: var(--entorno-baion-luz);
+  stroke-width: 2.2;
+  stroke-opacity: 0.7;
+  stroke-dasharray: 10 7;
+  stroke-linecap: round;
+}
+.bajo-lluvia { fill: none; stroke: var(--acento-2); stroke-width: 1.4; stroke-opacity: 0.55; stroke-linecap: round; }
+.bajo-onda { fill: none; stroke: var(--entorno-baion-luz); stroke-width: 1.6; }
+.bajo-reflejo { opacity: 0.45; }
+.ojos-reflejo { opacity: 0.28; }
