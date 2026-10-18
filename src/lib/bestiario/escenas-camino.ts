@@ -18,6 +18,7 @@ import { PIEZAS_CAMINO, cajaDelCruce } from './arte-camino.ts';
 import { K_ENTORNO, RECINTO, type Tramo } from './camino.ts';
 import { escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, ojos, type Tinta } from './escenas.ts';
 import { cosa, VELOCIDAD_DE_CARRIL } from './escenas-entornos.ts';
+import { capasDe, fierroDe, sinTitere } from './elenco.ts';
 import { vacaEnElClaro } from './escena-vaca.ts';
 import { ARMADO } from './recortes.ts';
 import { ACECHO, ACHATE, ESCALA_CORDERO, ESCALA_LOBO, PALO, profundidad } from './rig.ts';
@@ -125,14 +126,16 @@ function fierro(id: string, nombre: string): string {
     `<g class="bestia bestia--fierro" data-id="${id}" data-x="${x}" data-y="${f(arriba)}" data-velocidad="${VELOCIDAD_DE_CARRIL[carril]}" role="button" tabindex="0" aria-label="${nombre}">` +
     `<g class="cuerpo">` +
     `<circle class="toque" cx="${x}" cy="${f(y - 40)}" r="56"/>` +
-    `<g transform="translate(${x} ${y})">${imagen(pieza)}</g>` +
+    `<g transform="translate(${x} ${y})">${fierroDe(id) ?? imagen(pieza)}</g>` +
     `<g class="marca-anotada" transform="translate(${x + 40} ${f(arriba - 10)})"><circle r="6" class="b-pp b-borde"/><path d="M-3 0 l2 2.5 l4 -5" class="b-tz" stroke-width="2"/></g>` +
     `</g></g>`
   );
 }
 
 function pisoDeEntorno(t: Tramo, nombres: Nombres): string {
-  const { ojos: losOjos, cosas } = HABITANTES[t.region]!;
+  // Los del elenco que ya tienen títere no van como ojos ni como cosa: van en sus capas, corridas con k.
+  const { ojos: todos, cosas: todas } = HABITANTES[t.region]!;
+  const [losOjos, cosas] = [sinTitere(todos), sinTitere(todas)];
   const quietas = t.region === 'la-ruta';
   const lasCosas = Object.entries(cosas)
     .map(([id, [x, y, r]]) => cosa(id, nombres.get(id) ?? id, [Math.round(x * K_ENTORNO), y, r], quietas))
@@ -160,10 +163,13 @@ function pisoDeEntorno(t: Tramo, nombres: Nombres): string {
     extra = `<g class="cyber-nevada" pointer-events="none"><g class="cyber-nevada-copos">${copos}</g></g>`;
   }
   return (
+    capasDe(t.region, 'atras', nombres, K_ENTORNO) +
     imagenDePieza(piezaDelCamino(t.piezas.piso!)) +
     cruce(t) +
     `<g class="ojos-del-recinto">${quietas ? ojosDelEntorno.replaceAll('class="bestia bestia--ojos"', 'class="bestia bestia--ojos" data-quieto=""') : ojosDelEntorno}${lasCosas}</g>` +
-    extra
+    extra +
+    capasDe(t.region, 'figura', nombres, K_ENTORNO) +
+    capasDe(t.region, 'delante', nombres, K_ENTORNO)
   );
 }
 

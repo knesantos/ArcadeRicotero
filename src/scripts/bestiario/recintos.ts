@@ -19,6 +19,7 @@ import { ARMADO } from '../../lib/bestiario/recortes.ts';
 import { girar, hacia, parpado, partes, suave } from './articular.ts';
 import { armarPastura } from './pastura.ts';
 import { armarAtila } from './atila.ts';
+import { conElenco } from './vivos.ts';
 
 /** La raíz de una escena: el `<svg>` del recinto, o el grupo que la lleva adentro del camino. */
 export type Raiz = SVGSVGElement | SVGGElement;
@@ -1145,5 +1146,6 @@ const CONTROLADORES: Readonly<Record<string, (svg: Raiz, ctx: Contexto) => Vida>
 
 /** Arma la vida de un recinto: `recinto` es el id del recinto en el plano (`recintoDe` en `camino.ts`). */
 export function armarRecinto(recinto: string, svg: Raiz, ctx: Contexto): Vida {
-  return (CONTROLADORES[recinto] ?? recintoDeMapa)(svg, ctx);
+  // Los títeres de la decimoquinta vuelta viven en su archivo y se suman acá (`vivos.ts`).
+  return conElenco((CONTROLADORES[recinto] ?? recintoDeMapa)(svg, ctx), svg, ctx);
 }

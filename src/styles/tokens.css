@@ -263,6 +263,38 @@
   --bestia-limon-verde: #4b8a39; /* el verde del limon */
   --bestia-limon-claro: #8dbb48; /* donde le pega el farol */
   --bestia-limon-brillo: #d9e46c; /* el brillo, que tira al amarillo del farol */
+  /* Decimoquinta vuelta (D-73): el elenco de diez, uno por entorno (`elenco.ts`). Cada personaje
+     tiene su bloque: sus tintas van entre su apertura y su cierre, y en ningun otro lado. Ninguna
+     escribe texto: no entran al test AA. Faltan en el lienzo (T-435). */
+  /* ⟨la bestia pop⟩ */
+  /* ⟨/la bestia pop⟩ */
+
+  /* ⟨el monito que trepa⟩ */
+  /* ⟨/el monito que trepa⟩ */
+
+  /* ⟨el Capitan Buscapina⟩ */
+  /* ⟨/el Capitan Buscapina⟩ */
+
+  /* ⟨el pibe de los astilleros⟩ */
+  /* ⟨/el pibe de los astilleros⟩ */
+
+  /* ⟨el canibal⟩ */
+  /* ⟨/el canibal⟩ */
+
+  /* ⟨la Mariposa Pontiac⟩ */
+  /* ⟨/la Mariposa Pontiac⟩ */
+
+  /* ⟨el diablo que mea⟩ */
+  /* ⟨/el diablo que mea⟩ */
+
+  /* ⟨el rato molhado⟩ */
+  /* ⟨/el rato molhado⟩ */
+
+  /* ⟨el Morta⟩ */
+  /* ⟨/el Morta⟩ */
+
+  /* ⟨el esclavo sensible y chillon⟩ */
+  /* ⟨/el esclavo sensible y chillon⟩ */
 
   /* Collage de cassette (UX-04: el collage es tecnica fichada de Rocambole, RES-06).
      Papel de etiqueta: sobre el escribe la tinta del fondo (--fondo), par testeado.

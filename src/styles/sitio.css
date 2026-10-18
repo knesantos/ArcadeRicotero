@@ -4097,3 +4097,38 @@ body:has(> .lugar) .marca-chica {
 .bt-limon-pupila { fill: var(--fondo); }
 .bt-limon-parpado { fill: var(--bestia-limon-verde); }
 .baldio-linterna { mix-blend-mode: screen; pointer-events: none; }
+
+/* Decimoquinta vuelta (D-73): el elenco de diez, uno por entorno (`elenco.ts`). Lo que la página
+   dibuja de cada títere (pupilas, párpados, lo que la isla prende y apaga) va en su bloque, con las
+   tintas de su bloque de `tokens.css`. Todos se tocan. */
+.titere--bestia-pop, .titere--monito, .titere--buscapina, .titere--pibe, .titere--canibal,
+.titere--pontiac, .titere--diablo, .titere--rato, .titere--morta, .titere--esclavo { cursor: pointer; }
+/* ⟨la bestia pop⟩ */
+/* ⟨/la bestia pop⟩ */
+
+/* ⟨el monito que trepa⟩ */
+/* ⟨/el monito que trepa⟩ */
+
+/* ⟨el Capitán Buscapina⟩ */
+/* ⟨/el Capitán Buscapina⟩ */
+
+/* ⟨el pibe de los astilleros⟩ */
+/* ⟨/el pibe de los astilleros⟩ */
+
+/* ⟨el caníbal⟩ */
+/* ⟨/el caníbal⟩ */
+
+/* ⟨la Mariposa Pontiac⟩ */
+/* ⟨/la Mariposa Pontiac⟩ */
+
+/* ⟨el diablo que mea⟩ */
+/* ⟨/el diablo que mea⟩ */
+
+/* ⟨el rato molhado⟩ */
+/* ⟨/el rato molhado⟩ */
+
+/* ⟨el Morta⟩ */
+/* ⟨/el Morta⟩ */
+
+/* ⟨el esclavo sensible y chillón⟩ */
+/* ⟨/el esclavo sensible y chillón⟩ */

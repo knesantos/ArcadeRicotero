@@ -16,6 +16,7 @@ import { PIEZAS_PRISION } from './arte-prision.ts';
 import { PIEZAS_BARBAZUL, PIEZAS_PUERTA } from './arte-barbazul.ts';
 import { PIEZAS_ENTORNOS } from './arte-entornos.ts';
 import { PIEZAS_ATILA } from './arte-atila.ts';
+import { PIEZAS_ELENCO } from './elenco.ts';
 
 
 
@@ -562,4 +563,6 @@ export const PIEZAS: readonly Pieza[] = [
   ...PIEZAS_ATILA,
   // La decimocuarta vuelta: Limón por las chapas del baldío, a crayón, y las linternas del bloque (`arte-baldio.ts`).
   ...PIEZAS_BALDIO,
+  // La decimoquinta vuelta: el elenco de diez, uno por entorno, cada uno en su `arte-<slug>.ts` (`elenco.ts`).
+  ...PIEZAS_ELENCO,
 ];

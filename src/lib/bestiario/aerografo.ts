@@ -120,3 +120,19 @@ export interface Pieza {
 
 /** La ruta pública de la imagen de una pieza. */
 export const rutaDePieza = (nombre: string): string => `/bestiario/${nombre}.webp`;
+
+/**
+ * Las imágenes de un juego de piezas, cada una en su caja. Es lo que usa cada personaje del elenco
+ * (`elenco.ts`) para armar su títere con sus propias piezas, sin pasar por `titeres.ts`, que junta
+ * todas las del bestiario y lo importaría de vuelta.
+ */
+export function imagenesDe(piezas: readonly Pieza[]): (nombre: string) => string {
+  const cajas = new Map(piezas.map((p) => [p.nombre, p.caja] as const));
+  const f = (v: number): string => (Math.round(v * 10) / 10).toString();
+  return (nombre) => {
+    const caja = cajas.get(nombre);
+    if (!caja) throw new Error(`no hay pieza "${nombre}" entre las del personaje`);
+    const [x, y, ancho, alto] = caja;
+    return `<image href="${rutaDePieza(nombre)}" x="${f(x)}" y="${f(y)}" width="${ancho}" height="${alto}" preserveAspectRatio="none"/>`;
+  };
+}

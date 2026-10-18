@@ -12,6 +12,7 @@ import { atila, barbazul, dracula, imagen, limon, pierre } from './titeres.ts';
 import { ARMADO } from './recortes.ts';
 import { ATILA, BAJO, BANDERAS, BARBAZUL, CHAPA, DRACULA, ESCENA, LIMON, LINTERNAS, LUZBELITO, MOMO, PERRO, PIERRE, PRISION, PUERTA_DE_BARBAZUL, deLaTapa, llamaEnEscena } from './rig.ts';
 import { agujero } from './arte-bajo.ts';
+import { capasDe, sinTitere } from './elenco.ts';
 
 export { ATILA, BARBAZUL, DRACULA, LIMON, LUZBELITO, MOMO, PERRO, PIERRE };
 
@@ -37,7 +38,8 @@ export function ojos(id: string, nombre: string, x: number, y: number, tinta: Ti
 }
 
 const losOjos = (vecinos: Readonly<Record<string, readonly [number, number, Tinta]>>, nombres: ReadonlyMap<string, string>, enElAgua?: (y: number) => boolean): string =>
-  `<g class="ojos-del-recinto">${Object.entries(vecinos)
+  // Los del elenco de la decimoquinta vuelta que ya tienen títere no se dibujan como ojos (`elenco.ts`).
+  `<g class="ojos-del-recinto">${Object.entries(sinTitere(vecinos))
     .map(([id, [x, y, t]]) => ojos(id, nombres.get(id) ?? id, x, y, t, enElAgua?.(y) ?? false))
     .join('')}</g>`;
 
@@ -135,6 +137,7 @@ export function escenaInfierno(nombres: ReadonlyMap<string, string>): string {
     // El fuego: la pincelada de *Gulp!*, teñida, que se suma a lo oscuro como luz.
     `<g class="infierno-fuego" transform="translate(-30 -330) scale(1)">${imagen('infierno-pincelada')}</g>` +
     imagen('infierno-cerca') +
+    capasDe('el-infierno', 'atras', nombres) +
     `<g class="luz-de-vela" data-x="${f(luz.x)}" data-y="${f(luz.y)}" transform="translate(${f(luz.x)} ${f(luz.y)})">${imagen('luzbelito-luz')}</g>` +
     losOjos(VECINOS_DEL_INFIERNO, nombres) +
     titere(
@@ -144,7 +147,9 @@ export function escenaInfierno(nombres: ReadonlyMap<string, string>): string {
       parte('busto', imagen('luzbelito-real-busto') + parte('llama', imagen('luzbelito-real-llama'))),
       `translate(${LUZBELITO.x} ${LUZBELITO.y}) scale(${LUZBELITO.escala}) translate(${-px} ${-py})`,
     ) +
-    `<g pointer-events="none">${imagen('infierno-frente')}</g>`
+    capasDe('el-infierno', 'figura', nombres) +
+    `<g pointer-events="none">${imagen('infierno-frente')}</g>` +
+    capasDe('el-infierno', 'delante', nombres)
   );
 }
 
@@ -174,13 +179,16 @@ export function escenaTemplo(nombres: ReadonlyMap<string, string>): string {
     parte('medallon', imagen('momo-real-medallon') + `<g clip-path="url(#corte-medallon)"><g data-parte="brillo" transform="translate(${cx - 400} ${cy}) scale(1.6)">${imagen('momo-brillo')}</g></g>`);
   return (
     imagen('templo-lejos') +
+    capasDe('el-templo', 'atras', nombres) +
     losOjos(VECINOS_DEL_TEMPLO, nombres) +
     `<g class="titere titere--momo" data-id="momo" role="button" tabindex="0" aria-label="${nombres.get('momo') ?? ''}">` +
     `<g data-parte="pendulo">` +
     `<path d="M${MOMO.cuelga.x} ${MOMO.cuelga.y} L${MOMO.argolla.x} ${MOMO.argolla.y}" class="bt-trazo-cordon" stroke-width="2.4"/>` +
     `<g transform="translate(${MOMO.argolla.x} ${MOMO.argolla.y}) scale(${MOMO.escala}) translate(${-ax} ${-ay})">${medallon}</g>` +
     `</g></g>` +
-    `<g pointer-events="none">${imagen('templo-frente')}</g>`
+    capasDe('el-templo', 'figura', nombres) +
+    `<g pointer-events="none">${imagen('templo-frente')}</g>` +
+    capasDe('el-templo', 'delante', nombres)
   );
 }
 
@@ -246,6 +254,7 @@ export function escenaBajo(nombres: ReadonlyMap<string, string>): string {
     `<g class="bajo-chorros" pointer-events="none">${chorro}</g>` +
     `<g class="bajo-ondas-vivas" pointer-events="none" data-onda="puerta"></g>` +
     `<g class="bajo-ondas-vivas" pointer-events="none" data-onda="pierre-atras"></g>` +
+    capasDe('el-bajo', 'atras', nombres) +
     // Pierre: el títere va adentro de un grupo con id, que el reflejo copia con <use>.
     `<g class="titere titere--pierre" data-id="el-gordo-pierre" role="button" tabindex="0" aria-label="${nombres.get('el-gordo-pierre') ?? ''}">` +
     `<g id="pierre-entero" transform="translate(${px} ${agua}) scale(${escala})">${pierre()}</g></g>` +
@@ -258,7 +267,9 @@ export function escenaBajo(nombres: ReadonlyMap<string, string>): string {
     `<g transform="translate(0 ${agua * 2}) scale(1 -1)"><g data-parte="reflejo"><use href="#pierre-entero"/></g></g></g>` +
     `<g class="bajo-ondas-vivas" pointer-events="none" clip-path="url(#bajo-adelante)" data-onda="pierre"></g>` +
     losOjos(VECINOS_DEL_BAJO, nombres, (y) => y > BAJO.fondo) +
-    `<g pointer-events="none">${imagen('bajo-frente')}</g>`
+    capasDe('el-bajo', 'figura', nombres) +
+    `<g pointer-events="none">${imagen('bajo-frente')}</g>` +
+    capasDe('el-bajo', 'delante', nombres)
   );
 }
 
@@ -304,6 +315,8 @@ export function escenaPrision(nombres: ReadonlyMap<string, string>): string {
     imagen('prision-lejos') +
     `<clipPath id="prision-calle"><path d="${hueco}"/></clipPath>` +
     `<g class="prision-banderas" clip-path="url(#prision-calle)" pointer-events="none">${banderas}</g>` +
+    // Lo de atrás del elenco va adentro de las celdas: detrás de la reja.
+    capasDe('la-prision', 'atras', nombres) +
     `<g pointer-events="none">${imagen('prision-reja')}</g>` +
     // El cuarto de Barbazul, que arranca a oscuras, y la hoja de su puerta, cerrada.
     `<g pointer-events="none"><g data-parte="cuarto" opacity="0">${imagen('prision-cuarto')}</g>` +
@@ -322,7 +335,9 @@ export function escenaPrision(nombres: ReadonlyMap<string, string>): string {
     `<ellipse class="barbazul-sombra" cx="${B.x}" cy="${B.piso + 2}" rx="${f(120 * B.escala)}" ry="6" pointer-events="none"/>` +
     `<g class="titere titere--barbazul" data-id="barbazul" role="button" tabindex="0" aria-label="${nombres.get('barbazul') ?? ''}">` +
     `<g id="barbazul-entero" transform="translate(${B.x} ${B.piso}) scale(${B.escala})">${barbazul()}</g></g>` +
+    capasDe('la-prision', 'figura', nombres) +
     `<g pointer-events="none">${imagen('prision-columna')}${imagen('prision-jaula')}` +
-    `<g data-parte="puerta-jaula" data-bisagra="${J.puerta.x}">${imagen('prision-puerta')}</g></g>`
+    `<g data-parte="puerta-jaula" data-bisagra="${J.puerta.x}">${imagen('prision-puerta')}</g></g>` +
+    capasDe('la-prision', 'delante', nombres)
   );
 }

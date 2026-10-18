@@ -21,7 +21,7 @@ import { CORRE, PIEZAS_ATILA } from './arte-atila.ts';
 import { PIEZAS_BALDIO, PIEZAS_LIMON } from './arte-baldio.ts';
 import { envolventes, tallar, tono } from './grabado.ts';
 import { ESPERA, GUARDADO, SIN_ISLA, enEspera, pidePiezas } from './carga.ts';
-import { ENTORNOS, PIEZAS_ENTORNOS, luzQueAsoma } from './arte-entornos.ts';
+import { ENTORNOS, luzQueAsoma } from './arte-entornos.ts';
 import { ENTORNOS_DE_NOCHE, QUIENES } from './escenas-entornos.ts';
 import { ALTO as ALTO_ENTORNO, ANCHO as ANCHO_ENTORNO, FIERROS, RUTA } from './rig-entornos.ts';
 
@@ -315,7 +315,9 @@ test('la isla se lleva números: no importa nada que dibuje', () => {
   const dibujan = ['arte.ts', 'arte-bajo.ts', 'arte-entornos.ts', 'arte-prision.ts', 'arte-barbazul.ts', 'arte-atila.ts', 'aerografo.ts', 'pincel.ts', 'grabado.ts', 'escenas.ts', 'escenas-entornos.ts', 'escena-monte.ts', 'titeres.ts', 'figuras.ts', 'mapa.ts'];
   const llevados = importados('src/scripts/bestiario.ts');
   assert.ok(llevados.includes('rig.ts'), 'la isla dejó de leer rig.ts: el censo no está mirando bien');
-  assert.deepEqual(llevados.filter((n) => dibujan.includes(n)), [], `la isla se lleva al teléfono: ${llevados.join(', ')}`);
+  // El elenco de la decimoquinta vuelta dibuja en `arte-<slug>.ts` y se junta en `elenco.ts`.
+  const dibuja = (n: string): boolean => dibujan.includes(n) || n === 'elenco.ts' || n.startsWith('arte-');
+  assert.deepEqual(llevados.filter(dibuja), [], `la isla se lleva al teléfono: ${llevados.join(', ')}`);
   // Y el censo sabe encontrar: desde las escenas, que sí dibujan, llega al aerógrafo.
   assert.ok(importados('src/lib/bestiario/escenas.ts').includes('aerografo.ts'));
 });
@@ -627,7 +629,8 @@ test('cada entorno de noche tiene a todos los suyos, y nadie se sale de la escen
 
 test('cada pieza que piden los seis entornos está impresa en public/bestiario', () => {
   const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
-  const impresas = PIEZAS_ENTORNOS.map((p) => p.nombre);
+  // Las del entorno y las del elenco que vive en él (`elenco.ts`): todas pasan por `arte.ts`.
+  const impresas = PIEZAS.map((p) => p.nombre);
   for (const { escena } of Object.values(ENTORNOS_DE_NOCHE)) {
     const piden = [...escena(nombres).matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]!);
     assert.ok(piden.length >= 3);
