@@ -9,8 +9,8 @@
 
 > ## 🧭 LOS TRECE ENTORNOS, CONECTADOS Y DE COSTADO (2026-10-18) — `D-77`
 >
-> **Sin integrar**: rama `bestiario/todo-caminable`, worktree `.claude/worktrees/camino-todo`, sobre `main` en
-> `cc58d47`. Pedido del usuario: *"Todos los entornos deben ser caminables y conectados. En móvil que haya que
+> **Espera en el PR #65**, sin integrar: rama `bestiario/todo-caminable`, worktree `.claude/worktrees/camino-todo`,
+> sobre `main` en `cc58d47`. Los checks del PR, en verde. Pedido del usuario: *"Todos los entornos deben ser caminables y conectados. En móvil que haya que
 > scrollear para el lado donde avanzás, no para abajo"*, *"siempre en pantalla completa"*, *"que la ficha sea una
 > ficha flotando sin tapar toda la pantalla"* y *"si entrás al bestiario ya estás caminando y con el sonido activado"*.
 >
