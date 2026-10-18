@@ -101,6 +101,10 @@ export const armarPontiac: Armar = (marcos, esc) => {
   const x = (g: SVGGElement | null): number => Number(g?.dataset.ahora ?? g?.dataset.x ?? 0);
   const carril = CARRIL_DE[ID]!;
   const velocidad = Number(fierro?.dataset.velocidad ?? 46);
+  // El bocadillo lo cuelga la isla de `data-y` del fierro, 26 más arriba. El del fierro viejo cae a la
+  // altura del techo, y con las alas paradas le taparía el ojo del ala de adelante justo cuando la
+  // tocan: se cuelga arriba de las alas.
+  if (fierro) fierro.dataset.y = String(carril + A.globo + 26);
 
   // Lo que se mueve con peso.
   const abre: Resorte = { v: QUIETA.abre, vel: 0 };

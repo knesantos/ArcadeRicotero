@@ -253,6 +253,22 @@ test('entra entera en el recinto y no le tapa la cara a nadie de la banquina', (
   }
 });
 
+test('el bocadillo cuelga arriba de las alas: no le tapa los ojos cuando la tocan', () => {
+  const r = rutaViva();
+  const cuelga = Number(r.fierro.dataset.y) - 26;
+  const arriba = Math.min(...alasEnLaEscena().flatMap((a) => a.puntos.map((q) => q[1])));
+  assert.ok(cuelga < arriba, `el bocadillo cuelga en ${cuelga}, y las alas llegan a ${arriba.toFixed(0)}`);
+  assert.ok(cuelga > 150, 'arriba del bocadillo no queda lugar');
+  // Los ojos, en el susto, quedan debajo de donde cuelga.
+  const t = transformaciones(ASUSTADA);
+  const y = RUTA.carriles[FIERROS[ID].carril];
+  for (const [i, ala] of [[0, 'ala-anterior'], [1, 'ala-posterior']] as const) {
+    const k = i ? PONTIAC_ARMADO.escalaAlas.posterior : PONTIAC_ARMADO.escalaAlas.anterior;
+    const [, oy] = aplicar(mult(mult(matriz(t[ala]!.transform), achica(k)), matriz('')), PONTIAC_ARMADO.ojos[i]!.centro);
+    assert.ok(y + oy - PONTIAC_ARMADO.ovalos[i]![1] > cuelga + 20, `el bocadillo le tapa el ojo ${i + 1}`);
+  }
+});
+
 test('la pose quieta es la de sin JavaScript, en el recinto y en el camino', () => {
   for (const [marcado, ancho] of [[escenaRuta(nombres), 900], [pisoDelCamino(CAMINOS['la-ruta']!, nombres), CAMINOS['la-ruta']!.escena]] as const) {
     const html = armar(marcado);
@@ -303,6 +319,21 @@ test('viaja con el tránsito y respira con las alas, cada vez distinto, y cada t
   assert.ok(Math.min(...alturas) < 0.82, 'nunca abre las alas');
   assert.ok(new Set(antena).size > 200, 'las antenas no tantean');
   assert.ok(parpadeos >= 5, `parpadeó ${parpadeos} veces en 40 segundos`);
+});
+
+test('en el camino de la ruta también viaja con el tránsito y vive, corrida con k', () => {
+  const tramo = CAMINOS['la-ruta']!;
+  const r = rutaViva(false, pisoDelCamino(tramo, nombres), tramo.escena);
+  const desde = Number(r.fierro.dataset.x);
+  assert.ok(desde > FIERROS[ID].x * 2, 'en el camino no está corrida con k');
+  const alas = new Set<string>();
+  r.correr(4, () => alas.add(r.parte('ala-anterior').getAttribute('transform')!));
+  assert.ok(Number(r.fierro.dataset.ahora) > desde + 150, 'en el camino no viaja');
+  assert.ok(alas.size > 12, `en el camino no respira (${alas.size} poses en 4 segundos)`);
+  r.vida.reaccionar(ID, r.reloj);
+  let alto = 0;
+  r.correr(r.reloj + 2, () => (alto = Math.max(alto, altoDe(r))));
+  assert.ok(alto > 20, 'en el camino no despega');
 });
 
 test('cuando alcanza al bondi, el viento le tira las alas para atrás y mira al zumba colgado', () => {

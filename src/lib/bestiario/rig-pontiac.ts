@@ -51,6 +51,12 @@ export const PONTIAC_ARMADO = {
   faro: [110, -45] as P,
   /** Donde se apoya cuando cabecea: el medio del auto, a la altura de los ejes. */
   cabeceo: [0, -20] as P,
+  /**
+   * Dónde cuelga el bocadillo, sobre el carril: arriba de las alas. El fierro viejo lo colgaba a la
+   * altura del techo, y con las alas paradas el bocadillo le tapaba el ojo del ala de adelante justo
+   * cuando la tocan (`scripts/bestiario/pontiac.ts` se lo dice al fierro).
+   */
+  globo: -204,
 } as const;
 
 /**
