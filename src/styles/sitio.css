@@ -3366,11 +3366,21 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   height: auto;
 }
 
-.recinto-escena--la-ruta .recinto-svg { aspect-ratio: 400 / 220; }
-
 .bestiario-svg .sendero { fill: var(--papel); }
 .bestiario-svg .region-borde--cerco { stroke-width: 4; stroke-dasharray: 2 6; }
-.bestiario-svg .ruta-asfalto { fill: var(--papel-tenue); }
+
+/* Octava vuelta (D-73): los seis entornos de noche. En Cybersiberia nieva: dos copias de la misma
+   capa de copos, una arriba de la otra, que bajan y se repiten. Con movimiento reducido, no nieva. */
+.cyber-nevada-copos { animation: nevar var(--duracion-nevada) linear infinite; }
+
+@keyframes nevar {
+  from { transform: translateY(0); }
+  to { transform: translateY(640px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cyber-nevada-copos { animation: none; }
+}
 
 /* Los títeres se tocan; el cordero, además, se arrastra: el dedo no tiene que mover la página. */
 .titere { cursor: pointer; outline: none; }

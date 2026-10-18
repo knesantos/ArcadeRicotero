@@ -352,6 +352,7 @@
      `Docs/SUGERENCIAS/HILO-para-experiencia-desvios-del-ciclo-11.md`. */
   --escalon-umbral: 70ms;
   --duracion-vuelo: 17s; /* el ciclo de la mosca, lo unico vivo del sitio */
+  --duracion-nevada: 16s; /* lo que tarda un copo en cruzar Cybersiberia, en el bestiario (D-73) */
 
   /* Una sola curva para todo, para que se note que es la misma camara en todos lados.
      Arranca rapido —la cinta engancha— y afloja largo —el carrete recoge—. SIN REBOTE:

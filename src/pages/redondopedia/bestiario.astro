@@ -27,18 +27,17 @@ import {
   LADO,
   cajaDeFigura,
   dibujarRecinto,
-  dibujarRuta,
   dibujarSuelo,
   lugarDelRotulo,
   punto,
   simbolos,
   tintaDe,
-  RUTA,
   type Bestiario,
   type Bestia,
 } from '../../lib/bestiario/mapa.ts';
 import { ESCENA, escenaMonte } from '../../lib/bestiario/escena-monte.ts';
 import { escenaBajo, escenaBaldio, escenaInfierno, escenaTemplo, LUZBELITO, MOMO, PIERRE } from '../../lib/bestiario/escenas.ts';
+import { ENTORNOS_DE_NOCHE } from '../../lib/bestiario/escenas-entornos.ts';
 import { retrato } from '../../lib/bestiario/titeres.ts';
 import { PALO } from '../../lib/bestiario/rig.ts';
 import { tituloDelDisco } from '../../lib/letra/discos.ts';
@@ -96,13 +95,15 @@ const recintos = RECORRIDO.map((id) => {
   }
   const region = regionDe.get(id)!;
   // Los recintos de noche (D-73): los de protagonista de tapa, y el bajo, con el gordo Pierre
-  // pintado en la estética de *Gulp!*. Cada uno con su escena por capas.
+  // pintado en la estética de *Gulp!*. Cada uno con su escena por capas. La octava vuelta suma los
+  // seis entornos que seguían con las figuras del plano, cada uno en la tapa de su disco.
   // `foco`: dónde arranca mirando la escena cuando no entra entera (el perro entra por el borde).
   const deNoche: Record<string, { escena: (n: ReadonlyMap<string, string>) => string; foco: number }> = {
     'los-techos': { escena: escenaBaldio, foco: 260 },
     'el-infierno': { escena: escenaInfierno, foco: LUZBELITO.x },
     'el-templo': { escena: escenaTemplo, foco: MOMO.argolla.x },
     'el-bajo': { escena: escenaBajo, foco: PIERRE.x - 60 },
+    ...ENTORNOS_DE_NOCHE,
   };
   if (deNoche[id]) {
     return {
@@ -113,17 +114,6 @@ const recintos = RECORRIDO.map((id) => {
       caja: `0 0 ${ESCENA.ancho} ${ESCENA.alto}`,
       foco: deNoche[id]!.foco,
       svg: deNoche[id]!.escena(nombres),
-      bestias: bestias.filter((b) => b.region === id),
-    };
-  }
-  if (id === 'la-ruta') {
-    return {
-      id,
-      nombre: region.nombre,
-      canta: region.canta,
-      tinta: tintaDe(region.disco),
-      caja: `0 0 ${RUTA.ancho} ${RUTA.alto}`,
-      svg: dibujarRuta(datos),
       bestias: bestias.filter((b) => b.region === id),
     };
   }
