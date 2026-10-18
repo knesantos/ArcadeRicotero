@@ -228,3 +228,48 @@ export const deLaTapa = ([x, y]: readonly [number, number]): [number, number] =>
  * camina, de dónde a dónde, y de qué tamaño va.
  */
 export const DRACULA = { x: 330, piso: 624, desde: 196, hasta: 590, escala: 0.8 } as const;
+
+/* ------------------------------------------------------------------
+   El negro Atila, en la medianera del baldío (`D-73`, undécima vuelta)
+   ------------------------------------------------------------------ */
+
+/**
+ * Dónde gira cada pieza del Atila, en coordenadas de títere: el (0, 0) es el piso entre los
+ * zapatos, y arriba es negativo. Lo dibuja `arte-atila.ts` y lo mueve la isla.
+ */
+export const ATILA_ARMADO = {
+  /** El cogote: de acá se hunde la cabeza adentro del cuello del gabán, y se ladea. */
+  cuello: [0, -330],
+  /** De dónde se mueve cada pierna, escondido debajo del gabán. */
+  caderas: [
+    [-18, -176],
+    [18, -176],
+  ],
+  /** Las bisagras del gabán, en la costura de cada costado: cada hoja se abre contra la suya. */
+  bisagras: [
+    [-82, -210],
+    [82, -210],
+  ],
+  /**
+   * Los ojos de la tapa del lobo: el grande de la luz y el chico de la sombra. El iris se corre
+   * adentro del blanco hasta `mira` (lo que mira de reojo), y el párpado lo tapa al parpadear.
+   */
+  ojos: [
+    { centro: [-14, -414], radio: [10, 8.6], mira: [4.2, 2.6] },
+    { centro: [15, -413], radio: [7.5, 6.5], mira: [3, 2] },
+  ],
+  /** Por dónde sale el vaho: la boca, debajo de la bufanda. */
+  boca: [8, -374],
+  /** La lucecita de la sirena del forro, y el brillo del bolsillo. */
+  sirena: [-146, -256],
+  brillo: [56, -170],
+} as const;
+
+/**
+ * El Atila camina por arriba de la medianera del baldío (`piso`, el canto del muro), de `desde` a
+ * `hasta`, lejos del perro y antes del tanque. Cuando pasa la sirena se tira del otro lado: baja
+ * hasta `escondido` (no se ve nada) y después asoma hasta `asoma` (el funyi y los ojos). Del gato
+ * matón, a la izquierda, no pasa: lo huele desde `olfatea`. La luz de la sirena barre los techos a
+ * la altura `sirena`, de afuera a afuera.
+ */
+export const ATILA = { x: 610, piso: 300, escala: 0.5, desde: 470, hasta: 716, olfatea: 520, escondido: 270, asoma: 196, sirena: 236 } as const;

@@ -11,7 +11,7 @@
 import { PIEZAS } from './arte.ts';
 import { rutaDePieza } from './aerografo.ts';
 import { ARMADO, RECORTES, cajaDeRecorte } from './recortes.ts';
-import { DRACULA_ARMADO, PIERRE_ARMADO, VACA_ARMADO } from './rig.ts';
+import { ATILA_ARMADO, DRACULA_ARMADO, PIERRE_ARMADO, VACA_ARMADO } from './rig.ts';
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 const cajas = new Map<string, readonly [number, number, number, number]>([
@@ -169,6 +169,49 @@ export function dracula(): string {
 }
 
 /**
+ * El negro Atila (`D-73`, undécima vuelta): no es de tapa, está pintado a aerógrafo en la estética
+ * de *Lobo suelto* (`arte-atila.ts`). Va de atrás para adelante: las piernas, la espalda del gabán
+ * con el torso flaco, la cabeza (con los iris que miran de reojo y los párpados), el forro plegado
+ * contra cada bisagra, las dos hojas del gabán, el cuello levantado con la bufanda —la cabeza se
+ * hunde detrás— y las manos que lo tienen cerrado.
+ */
+export function atila(conIds = true): string {
+  const A = ATILA_ARMADO;
+  const ojo = (n: 1 | 2): string => {
+    const { centro: [cx, cy], radio: [rx, ry] } = A.ojos[n - 1];
+    const iris = `<g data-parte="iris-${n}" transform="translate(${cx} ${cy})">${imagen(`atila-iris-${n}`)}</g>`;
+    const parpado =
+      `<g data-parte="parpado-${n}" data-pivote="${cx} ${f(cy - ry)}" transform="scale(1 0)">` +
+      `<ellipse cx="${cx}" cy="${cy}" rx="${f(rx * 1.12)}" ry="${f(ry * 1.08)}" class="bt-atila-parpado${n === 2 ? '-oscuro' : ''}"/>` +
+      `<path d="M${f(cx - rx)} ${f(cy + ry * 0.5)} Q${cx} ${f(cy + ry * 1.25)} ${f(cx + rx)} ${f(cy + ry * 0.5)}" class="bt-atila-pestana"/></g>`;
+    // El iris no se sale del blanco: va recortado por el ojo (en la escena; el retrato no lo necesita).
+    return conIds ? `<clipPath id="atila-ojo-${n}"><ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/></clipPath><g clip-path="url(#atila-ojo-${n})">${iris}</g>${parpado}` : iris;
+  };
+  // El forro arranca plegado contra su bisagra: sin la isla, el gabán está cerrado.
+  const plegado = (n: 1 | 2, dentro = ''): string => {
+    const [hx] = A.bisagras[n - 1];
+    return `<g data-parte="forro-${n}" data-bisagra="${hx}" transform="translate(${hx} 0) scale(0.001 1) translate(${-hx} 0)">${imagen(`atila-forro-${n}`)}${dentro}</g>`;
+  };
+  const [sx, sy] = A.sirena;
+  const [bx, by] = A.brillo;
+  return (
+    `<g data-titere="atila">` +
+    parte('pierna-1', imagen('atila-pierna-1')) +
+    parte('pierna-2', imagen('atila-pierna-2')) +
+    parte('cuerpo', imagen('atila-cuerpo')) +
+    parte('cabeza', imagen('atila-cabeza') + ojo(1) + ojo(2)) +
+    plegado(1, `<g data-parte="sirena-luz" opacity="0" transform="translate(${sx} ${sy})">${imagen('atila-sirena-chica')}</g>`) +
+    plegado(2) +
+    `<g data-parte="hoja-1" data-bisagra="${A.bisagras[0][0]}">${imagen('atila-hoja-1')}</g>` +
+    `<g data-parte="hoja-2" data-bisagra="${A.bisagras[1][0]}">${imagen('atila-hoja-2')}` +
+    `<g data-parte="brillo" opacity="0" transform="translate(${bx} ${by})">${imagen('atila-brillo')}</g></g>` +
+    parte('cuello', imagen('atila-cuello')) +
+    parte('manos', imagen('atila-manos')) +
+    `</g>`
+  );
+}
+
+/**
  * El retrato de ficha de los que tienen tapa (`D-73`, pulida): las mismas piezas del títere,
  * quietas y encuadradas en la caja que las junta. Así la ficha muestra al bicho que se tocó en
  * la escena, y no la figura del plano. `null` para los demás, que siguen con su figura.
@@ -208,6 +251,18 @@ const PIEZAS_DEL_RETRATO: Readonly<Record<string, { piezas: readonly string[]; c
       ['dracula-capa-atras', 'dracula-pierna-1', 'dracula-pierna-2', 'dracula-cuerpo', 'dracula-boca', 'dracula-mandibula', 'dracula-cabeza', 'dracula-forro-1', 'dracula-forro-2', 'dracula-pelo']
         .map(imagen)
         .join(''),
+  },
+  // El Atila tampoco es de tapa: la ficha lo muestra con el gabán abierto, con todo lo que se llevó.
+  'el-negro-atila': {
+    piezas: ['atila-forro-1', 'atila-forro-2', 'atila-cabeza', 'atila-pierna-1', 'atila-pierna-2'],
+    cuerpo: () => {
+      const iris = ([cx, cy]: readonly [number, number], n: 1 | 2): string => `<g transform="translate(${cx + 3} ${cy})">${imagen(`atila-iris-${n}`)}</g>`;
+      return (
+        ['atila-pierna-1', 'atila-pierna-2', 'atila-cuerpo', 'atila-cabeza'].map(imagen).join('') +
+        iris(ATILA_ARMADO.ojos[0].centro, 1) + iris(ATILA_ARMADO.ojos[1].centro, 2) +
+        ['atila-forro-1', 'atila-forro-2', 'atila-cuello'].map(imagen).join('')
+      );
+    },
   },
 };
 

@@ -1,6 +1,6 @@
 # INV-360 — Aquella solitaria vaca cubana y el pedazo de satélite
 
-> Ficha `RES-360`, para la vaca del bestiario redondo (`D-73`, duodécima enmienda). Lo de la web
+> Ficha `RES-360`, para la vaca del bestiario redondo (`D-73`, decimotercera enmienda). Lo de la web
 > lo buscó `investigador` el 2026-10-18 (subagente, con la web); lo del memoir lo leyó el hilo
 > principal con `pdftotext` (`voz-ricotera.md` §2). Lo pasó a este archivo el hilo principal,
 > porque el rol no tiene con qué escribir (`D-12`). Consulta de todas las URL: **2026-10-18**.

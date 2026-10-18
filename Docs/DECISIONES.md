@@ -5104,13 +5104,70 @@ a `main` como la (7) (PR #54), y la drácula y la carga de a una como la (8) y l
 - Sin tareas nuevas. `T-435` suma las tintas nuevas al lienzo; `T-437` y `T-439` (los cuadros por segundo en
   un teléfono de verdad) ahora incluyen la nieve.
 
-### Enmienda del 2026-10-18 (12): la vaca cubana, a plumín, con la tele hecha satélite
+### Enmienda del 2026-10-18 (12): el negro Atila, a aerógrafo, en la medianera del baldío
+
+Pedido del usuario, textual: *"Hace a El negro Atila para el bestiario redondo, diseñalo como rocambole,
+integra todo, que tenga sentido y detalles bien redondos, se creativo, chisotos y acido"*. La escribe el hilo
+principal en la rama `bestiario/negro-atila`, sobre `main` en `45777d4`, con `main` adentro en `46d36d1` (los
+seis entornos, PR #57). Es la duodécima porque la (11) la tiene reservada Barbazul (`bestiario-25`); si
+alguna entra antes con este número, se renumera al integrar, como dice `integrar.md`.
+
+- **Por qué el Atila.** Es uno de los 27 que el usuario puso primero a diseño (`HILO-para-bestiario-prioridad-de-figuras`),
+  y su fondo, el baldío, ya estaba. No está en ninguna tapa: se inventa en la de su disco (`T-440`), que es
+  *Lobo suelto* (1993; el tema es la pista 2).
+- **La técnica es la de esa tapa: aerógrafo en sepia** (`lib/bestiario/arte-atila.ts`, con las tintas
+  `--bestia-lobo-*` que ya existían: no suma tokens). La cara va partida en una mitad de luz y otra hundida
+  en sombra, como la del lobo; el ojo de la luz es grande, ojeroso y de iris humano, y el de la sombra,
+  chico y amarillo. La bufanda va acanalada como el pecho del lobo, y el cuello levantado del gabán abre en
+  punta, como sus orejas. El canto que da al farol lleva la luz lila del baldío: es un recorte de *Lobo
+  suelto* pegado en la noche de *Un baión*.
+- **Lo que sale de la letra**: el gabán donde se hunde (la cabeza baja detrás del cuello), el frío
+  masticado (masca, y le sale vaho), el metálico brillo del bolsillo (se escapa cada tanto), el olfato del
+  ratón (del gato matón no pasa: lo huele y se vuelve) y el ladrón al que nunca atrapan.
+- **Lo que agrega el dibujo, y la estampa lo dice**: cada tanto barre los techos la sirena de la cana, una
+  luz roja de ocasión que falla. Él se tira del otro lado de la medianera (lo que baja del canto del muro no
+  se ve: `atila-pared`), y lo delata el vaho, que va afuera del recorte y sube igual. Después asoman el funyi
+  y los ojos, miran para los dos lados, y vuelve. **Tocado, abre el gabán como un vendedor de vereda**, con
+  las dos hojas que giran en la costura como la capa de la drácula. En el forro tiene relojes, cucharitas,
+  una llave, un eslabón de la cadena del lobo (por algo anda suelto), la dentadura del caníbal desdentado
+  (por eso enseña a masticar sin dientes) y la sirena de la cana, que se prende (por eso compró matraca
+  nueva, de ocasión). Y guiña. La ficha lo retrata así, abierto.
+- **En los techos de la derecha, un tanque de agua** en el crayón del baldío. El gato que llamás con
+  silbidos mira desde ahí.
+- **Lo que se cuenta: tres testimonios del memoir** (`RES-21`, p. 321, cotejados con `pdftotext`): que el
+  tema es una declaración de amor a los perejiles que iban a ver a la banda y que Atila es una invención;
+  que hay gente que se calza el saco del personaje para tener más levante, como pasó con el Negro Cañón; y
+  que la batería electrónica sonó rudimentaria y todavía le duele.
+- **La isla no se lleva el dibujo**: la geometría vive en `rig.ts` (`ATILA`, `ATILA_ARMADO`) y la conducta en
+  `scripts/bestiario/atila.ts`, aparte, como la pastura; la isla del bestiario solo lo arma en el recinto del
+  perro. Lo compartido se tocó lo mínimo, porque otras sesiones están haciendo personajes al mismo tiempo.
+- **El baldío arranca mirando entre el perro y el Atila** (`foco` 470): en el teléfono entran los dos.
+- Las 17 piezas nuevas pesan 117 kB (119.572 bytes).
+
+#### Cómo se verificó
+
+`bestiario.test.ts` suma tres pruebas: el títere entero con sus bisagras, que escondido no se le ve ni el
+funyi y asomado sí los ojos, y que lo que se llevó es de bestias que existen. La conducta se corrió en Node
+contra un DOM de juguete, un minuto: mientras pasa la luz estuvo escondido el 100 % de los cuadros, caminó
+entre 471 y 693, y al tocarlo abrió el forro y lo volvió a cerrar. En el navegador del panel, a 375 px: la
+escena arranca con él a la vista, el bocadillo dice el verso colgado sobre la pared y la ficha lo muestra
+con el gabán abierto. **El panel estuvo oculto**, así que la animación no se vio correr: eso queda para `T-480`.
+
+#### Abierto, sin trabar
+
+- `T-480`: ver al Atila animado con el panel visible o en un teléfono: el paso por la medianera, la sirena
+  que barre, el vaho que lo delata y el gabán que se abre.
+- Siguen `T-431` (que `contenido` lea la estampa y los testimonios nuevos) y `T-437`/`T-439` (los cuadros por
+  segundo: el baldío suma una luz con `mix-blend-mode`).
+
+### Enmienda del 2026-10-18 (13): la vaca cubana, a plumín, con la tele hecha satélite
 
 Pedido del usuario, textual: *"Hace otro ciclo sobre el bestiario redondo. Agrega otro personaje y
 pulilo a fondo, se creativo que qeude como uno de rocambole."* Y, con Limón tomado por otra sesión:
 *"hace la vaca cubana"*. La escribe el hilo principal en la rama `ciclo-26/bestiario`, sobre `main` en
-`c1355e0`, y junta `main` en `46d36d1` (#56 y #57 adentro). Se numera **duodécima** porque la (11)
-es de Barbazul, que todavía no entró; si llega antes otra, se renumera al integrar (`integrar.md`).
+`c1355e0`, y junta `main` en `46d36d1` (#56 y #57 adentro). Se escribió como **duodécima**, porque la (11)
+es de Barbazul, que todavía no entró, y **se renumeró a decimotercera** al juntar `main` en `352ef3a`: el negro
+Atila (#60) llegó antes con la (12). Si llega antes otra, se renumera otra vez (`integrar.md`).
 
 - **Por qué la vaca.** Era de la lista que el usuario pasó a diseño detallado
   (`Docs/SUGERENCIAS/HILO-para-bestiario-prioridad-de-figuras.md`) y su fondo ya estaba: la pastura.
