@@ -3517,7 +3517,8 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 .titere--luzbelito,
 .titere--momo,
 .titere--pierre,
-.titere--dracula { cursor: pointer; }
+.titere--dracula,
+.titere--limon { cursor: pointer; }
 
 /* Sexta vuelta (D-73): el bajo inundado y el gordo Pierre. Los párpados son del papel de *Gulp!*
    con la raya del ojo cerrado; el agua que entra por el vidrio roto, la lluvia de la calle y las
@@ -3547,3 +3548,10 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 .dracula-sombra { fill: var(--fondo); }
 .dracula-taco { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 2; stroke-linecap: round; }
 .bestiario-svg .bestia--jaula .toque { fill: transparent; }
+
+/* Décima vuelta (D-73): Limón por las chapas del baldío. Las pupilas son tinta que la isla corre
+   (mira para atrás mientras corre); los párpados, del verde de la cáscara. Las linternas del bloque
+   son luz: se suman a lo oscuro, como el fuego del infierno, y no se llevan los toques. */
+.bt-limon-pupila { fill: var(--fondo); }
+.bt-limon-parpado { fill: var(--bestia-limon-verde); }
+.baldio-linterna { mix-blend-mode: screen; pointer-events: none; }

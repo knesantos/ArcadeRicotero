@@ -1189,10 +1189,14 @@
       "region": "los-techos",
       "pos": { "ang": 259, "r": 352 },
       "tam": 32,
-      "dibujo": { "f": "persona", "ropa": "remera", "pose": "corre" },
+      "dibujo": { "f": "cosa", "que": "limon" },
       "tema": "me-matan-limon",
       "verso": ["Me matan, Limón", "Por los techos viene el bloque"],
-      "estampa": "Corre por las chapas, con todo el bloque atrás.",
+      "estampa": "Corre por las chapas del baldío, con las linternas del bloque atrás, y cuando llega a la punta mira para atrás y jadea. Pintado a crayón, como el perro de Un baión, y recortado como un títere. Que sea un limón, de los verdes de Colombia, es del dibujo: la letra le dice Limón y nada más.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "El Indio contó que el tema narra en primera persona el final de Pablo Escobar: las dos mujeres que lo delatan, y el Bloque de Búsqueda que lo persiguió a él y a su ladero por los tejados.", "quien": "Indio Solari, en «Recuerdos que mienten un poco»", "fuente": "RES-21" },
+        { "rotulo": "hecho", "texto": "El Limón existió: Álvaro de Jesús Agudelo, chofer y custodio de Escobar, murió con él en Medellín el 2 de diciembre de 1993. El tema salió casi tres años después, en Luzbelito.", "fuente": "RES-170" }
+      ],
       "cerca": ["el-negro-atila"]
     },
     {

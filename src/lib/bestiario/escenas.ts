@@ -8,12 +8,12 @@
  * desde lo oscuro. El fuego del infierno es la pincelada de la tapa de *Gulp!*, teñida.
  */
 
-import { dracula, imagen, pierre } from './titeres.ts';
+import { dracula, imagen, limon, pierre } from './titeres.ts';
 import { ARMADO } from './recortes.ts';
-import { BAJO, BANDERAS, DRACULA, ESCENA, LUZBELITO, MOMO, PERRO, PIERRE, PRISION, deLaTapa, llamaEnEscena } from './rig.ts';
+import { BAJO, BANDERAS, CHAPA, DRACULA, ESCENA, LIMON, LINTERNAS, LUZBELITO, MOMO, PERRO, PIERRE, PRISION, deLaTapa, llamaEnEscena } from './rig.ts';
 import { agujero } from './arte-bajo.ts';
 
-export { DRACULA, LUZBELITO, MOMO, PERRO, PIERRE };
+export { DRACULA, LIMON, LUZBELITO, MOMO, PERRO, PIERRE };
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 
@@ -47,7 +47,7 @@ const titere = (clase: string, id: string, nombre: string, cuerpo: string, trans
 const parte = (nombre: string, cuerpo: string): string => `<g data-parte="${nombre}">${cuerpo}</g>`;
 
 /* ------------------------------------------------------------------
-   El baldío: ese perro que sigue allí
+   El baldío: ese perro que sigue allí, y Limón por los techos
    ------------------------------------------------------------------ */
 
 export const VECINOS_DEL_BALDIO: Readonly<Record<string, readonly [number, number, Tinta]>> = {
@@ -57,7 +57,6 @@ export const VECINOS_DEL_BALDIO: Readonly<Record<string, readonly [number, numbe
   'susanita': [520, 238, 'papel'],
   'el-gato-que-llamas-con-silbidos': [762, 214, 'oro'],
   'el-negro-atila': [610, 168, 'papel'],
-  'limon': [150, 196, 'papel'],
   'el-que-no-se-cayo-del-cielo': [862, 252, 'papel'],
   'mi-perro-dinamita': [626, 478, 'oro'],
   'los-perros-sin-folleto': [790, 560, 'oro'],
@@ -65,11 +64,31 @@ export const VECINOS_DEL_BALDIO: Readonly<Record<string, readonly [number, numbe
   'el-perro-que-no-mira-el-cielo': [384, 468, 'papel'],
 };
 
+/**
+ * El haz de una linterna del bloque, de un lado. Sin la isla queda quieto: el de la derecha
+ * prendido sobre los techos, el de la izquierda apagado. Con la isla barren y persiguen a Limón.
+ */
+function linterna(lado: 'der' | 'izq'): string {
+  const { x, y, barre } = LINTERNAS[lado];
+  const ang = (barre[0] + barre[1]) / 2;
+  return (
+    `<g class="baldio-linterna" data-lado="${lado}" transform="translate(${x} ${y}) rotate(${ang})" opacity="${lado === 'der' ? 0.85 : 0}">` +
+    imagen('baldio-linterna') +
+    `</g>`
+  );
+}
+
 export function escenaBaldio(nombres: ReadonlyMap<string, string>): string {
   const [bx, by] = ARMADO.perro.borde;
+  // Sin la isla, Limón queda parado en el medio de la chapa, mirando para la linterna que viene.
+  const quieto = Math.round((LIMON.desde + LIMON.hasta) / 2);
   return (
     imagen('baldio-lejos') +
     losOjos(VECINOS_DEL_BALDIO, nombres) +
+    imagen('baldio-chapa') +
+    linterna('der') +
+    linterna('izq') +
+    titere('titere--limon', 'limon', nombres.get('limon') ?? '', limon(), `translate(${quieto} ${CHAPA.piso}) scale(${LIMON.escala})`) +
     titere(
       'titere--perro',
       'ese-perro-que-sigue-alli',

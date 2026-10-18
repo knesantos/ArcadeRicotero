@@ -10,6 +10,7 @@
 
 import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
 import { PIEZAS_BAJO } from './arte-bajo.ts';
+import { PIEZAS_BALDIO } from './arte-baldio.ts';
 import { PIEZAS_PRISION } from './arte-prision.ts';
 
 
@@ -474,4 +475,6 @@ export const PIEZAS: readonly Pieza[] = [
   ...PIEZAS_BAJO,
   // La séptima vuelta: la prisión de Barbazul y la drácula con tacones, tallados (`arte-prision.ts`).
   ...PIEZAS_PRISION,
+  // La décima vuelta: Limón por las chapas del baldío, a crayón, y las linternas del bloque (`arte-baldio.ts`).
+  ...PIEZAS_BALDIO,
 ];

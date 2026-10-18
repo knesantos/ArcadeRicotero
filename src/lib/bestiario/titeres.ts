@@ -11,7 +11,7 @@
 import { PIEZAS } from './arte.ts';
 import { rutaDePieza } from './aerografo.ts';
 import { ARMADO, RECORTES, cajaDeRecorte } from './recortes.ts';
-import { DRACULA_ARMADO, PIERRE_ARMADO } from './rig.ts';
+import { DRACULA_ARMADO, LIMON_ARMADO, PIERRE_ARMADO } from './rig.ts';
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 const cajas = new Map<string, readonly [number, number, number, number]>([
@@ -122,11 +122,46 @@ export function dracula(): string {
 }
 
 /**
+ * Limón (`D-73`, décima vuelta): no es de tapa, está pintado a crayón en la estética del baldío
+ * (`arte-baldio.ts`) y recortado en piezas. Cada pierna y cada brazo cuelga de su cadera o su
+ * hombro: la pieza está dibujada desde ahí, así que la isla la gira sobre el (0, 0) de su grupo.
+ * La hoja gira en el cabito y la boca jadea, achicándose de arriba para abajo. Las pupilas no se
+ * imprimen: son dos puntos de tinta que la isla corre, para que mire para atrás mientras corre.
+ */
+export function limon(): string {
+  const A = LIMON_ARMADO;
+  const colgado = (nombre: string, pieza: string, [x, y]: readonly [number, number]): string =>
+    `<g transform="translate(${x} ${y})"><g data-parte="${nombre}">${imagen(pieza)}</g></g>`;
+  const [boX, boY] = A.boca;
+  const ojos = A.ojos
+    .map(
+      ({ centro: [cx, cy], radio: [rx, ry] }, i) =>
+        `<circle data-parte="pupila-${i + 1}" cx="${cx + 2}" cy="${cy + 1}" r="${(rx * 0.42).toFixed(1)}" class="bt-limon-pupila"/>` +
+        `<ellipse data-parte="parpado-${i + 1}" data-pivote="${cx} ${cy - ry}" cx="${cx}" cy="${cy}" rx="${rx + 1}" ry="${ry + 1}" class="bt-limon-parpado" transform="scale(1 0)"/>`,
+    )
+    .join('');
+  return (
+    `<g data-titere="limon">` +
+    colgado('brazo-2', 'limon-brazo-atras', A.hombros[0]) +
+    colgado('pierna-2', 'limon-pierna-atras', A.caderas[0]) +
+    `<g data-parte="fruta">` +
+    `<g data-parte="hoja">${imagen('limon-hoja')}</g>` +
+    imagen('limon-fruta') +
+    `<g data-parte="boca" data-pivote="${boX} ${boY - 5}">${imagen('limon-boca')}</g>` +
+    ojos +
+    `</g>` +
+    colgado('pierna-1', 'limon-pierna', A.caderas[1]) +
+    colgado('brazo-1', 'limon-brazo', A.hombros[1]) +
+    `</g>`
+  );
+}
+
+/**
  * El retrato de ficha de los que tienen tapa (`D-73`, pulida): las mismas piezas del títere,
  * quietas y encuadradas en la caja que las junta. Así la ficha muestra al bicho que se tocó en
  * la escena, y no la figura del plano. `null` para los demás, que siguen con su figura.
  */
-const PIEZAS_DEL_RETRATO: Readonly<Record<string, { piezas: readonly string[]; cuerpo: () => string }>> = {
+const PIEZAS_DEL_RETRATO: Readonly<Record<string, { piezas: readonly string[]; cuerpo: () => string; caja?: readonly [number, number, number, number] }>> = {
   'el-lobo-suelto': { piezas: ['lobo-real-pecho', 'lobo-real-cabeza'], cuerpo: lobo },
   'el-cordero-atado': {
     piezas: ['cordero-real-pata-tras', 'cordero-real-pata-del', 'cordero-real-cuerpo', 'cordero-real-cabeza'],
@@ -155,16 +190,21 @@ const PIEZAS_DEL_RETRATO: Readonly<Record<string, { piezas: readonly string[]; c
         .map(imagen)
         .join(''),
   },
+  // Limón tampoco es de tapa. Sus piernas y brazos están dibujados desde la cadera y el hombro, así
+  // que la caja no sale de las piezas: es la del títere entero, de la hoja a las zapatillas.
+  limon: { piezas: ['limon-fruta'], cuerpo: limon, caja: [-62, -114, 52, 4] },
 };
 
 export function retrato(id: string): { caja: string; svg: string } | null {
   const r = PIEZAS_DEL_RETRATO[id];
   if (!r) return null;
   const cs = r.piezas.map((n) => cajas.get(n)!);
-  const x0 = Math.min(...cs.map((c) => c[0]));
-  const y0 = Math.min(...cs.map((c) => c[1]));
-  const x1 = Math.max(...cs.map((c) => c[0] + c[2]));
-  const y1 = Math.max(...cs.map((c) => c[1] + c[3]));
+  const [x0, y0, x1, y1] = r.caja ?? [
+    Math.min(...cs.map((c) => c[0])),
+    Math.min(...cs.map((c) => c[1])),
+    Math.max(...cs.map((c) => c[0] + c[2])),
+    Math.max(...cs.map((c) => c[1] + c[3])),
+  ];
   const aire = Math.max(x1 - x0, y1 - y0) * 0.04;
   return { caja: `${f(x0 - aire)} ${f(y0 - aire)} ${f(x1 - x0 + aire * 2)} ${f(y1 - y0 + aire * 2)}`, svg: r.cuerpo() };
 }
