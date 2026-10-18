@@ -86,7 +86,7 @@ export function pierre(): string {
 }
 
 /**
- * La drácula con tacones (`D-73`, séptima vuelta): no es de tapa, está tallada en la estética de
+ * La drácula con tacones (`D-73`, octava vuelta): no es de tapa, está tallada en la estética de
  * *Oktubre* (`arte-prision.ts`) y recortada en piezas. La capa se abre como dos puertas de papel:
  * cada mitad negra (`capa-1`, `capa-2`) se achica contra su hombro, y del otro lado se despliega
  * el forro rojo (`forro-1`, `forro-2`), que arranca plegado. Los mechones de adelante (`pelo`) van

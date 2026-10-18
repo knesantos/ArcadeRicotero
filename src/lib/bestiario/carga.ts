@@ -1,5 +1,5 @@
 /**
- * La carga de a una (`D-73`, octava vuelta, `T-445`): que la página del bestiario no baje todas
+ * La carga de a una (`D-73`, novena vuelta, `T-445`): que la página del bestiario no baje todas
  * las imágenes de una al abrir.
  *
  * Cada recinto de noche y cada retrato de un títere son un SVG con `<image>` que apuntan a las

@@ -791,11 +791,24 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   // `D-73`: el bestiario redondo, en la Redondopedia (`sitio.css`). Sus estados: la bestia que
   // está hablando y las ya anotadas (las dos con forma: un aro punteado y un sello con tilde),
   // la fila del índice anotada, el botón que suena y la soga del cordero cuando está tensa.
+  // La pastura (el lobo y el cordero) vive aparte desde la séptima vuelta, porque la comparte con
+  // el camino con cruces: la soga tensa la crea ese módulo, y cuenta como de la isla.
   'bestiario.ts': {
     juego: 'D-73, el bestiario redondo',
-    fuente: leer('src/scripts/bestiario.ts'),
+    fuente: leer('src/scripts/bestiario.ts') + leer('src/scripts/bestiario/pastura.ts'),
     estados: ['.bestia--elegida', '.bestia--anotada', '.bestiario-item--anotada', '.bestiario-escuchar--sonando', '.soga--tensa', '.bocadillo--abajo'],
     hoja: 'src/styles/sitio.css',
+  },
+
+  // `D-73`, séptima vuelta: el camino con cruces. Sus estados propios viven en `camino.css`: la
+  // escena andando (pegada a la pantalla), los ojos que se encienden al llegar y el cruce a la
+  // vista. Los que comparte con el bestiario (la bestia que habla, las anotadas, el botón que
+  // suena, la soga) son los de arriba y los pinta `sitio.css`.
+  'camino.ts': {
+    juego: 'D-73, el camino con cruces',
+    fuente: leer('src/scripts/camino.ts'),
+    estados: ['.camino--andando', '.aparece--a-la-vista', '.cruce--a-la-vista'],
+    hoja: 'src/styles/camino.css',
   },
 
   'analitica.ts': { sinTablero: 'la analitica de Vercel (D-56); pega un script y no toca el DOM visible' },

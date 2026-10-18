@@ -387,7 +387,7 @@ test('el pincel seco sale igual en cada impresión, y no rompe ningún número',
 });
 
 /*
- * La séptima vuelta: la prisión de Barbazul y la drácula con tacones, tallados como la gente de
+ * La octava vuelta: la prisión de Barbazul y la drácula con tacones, tallados como la gente de
  * la tapa de *Oktubre* (`arte-prision.ts`, `grabado.ts`).
  */
 
@@ -469,7 +469,7 @@ test('la talla de Oktubre sale igual en cada impresión, corta donde hay luz y n
 });
 
 /*
- * La octava vuelta (`T-445`): la carga de a una. Las escenas y los retratos esperan en un
+ * La novena vuelta (`T-445`): la carga de a una. Las escenas y los retratos esperan en un
  * `<noscript>` y la isla los arma cuando se acercan (`carga.ts`).
  */
 
@@ -491,10 +491,18 @@ test('lo que espera no baja nada hasta que la isla lo arma, y sin JavaScript se 
 test('la página no dibuja de entrada ni una escena ni un retrato que pidan piezas', () => {
   // Si alguien vuelve a poner `set:html={rc.svg}` o un retrato a mano, la página vuelve a bajar
   // todas las piezas de una. Medido antes de esta vuelta: 59 imágenes, 1673 kB.
+  // La ficha vive en su componente (`FichaBestia.astro`), que comparte con el camino: ahí los
+  // retratos esperan cuando la página lo pide (`espera`), y la del bestiario lo pide.
   const pagina = readFileSync('src/pages/redondopedia/bestiario.astro', 'utf-8');
-  assert.ok(!/set:html=\{rc\.svg\}/.test(pagina), 'una escena se dibuja de entrada');
-  assert.ok(!/set:html=\{retrato\([^)]*\)!?\.svg\}/.test(pagina), 'un retrato se dibuja de entrada');
-  assert.equal(pagina.match(/enEspera\(/g)?.length, 3, 'las escenas y los dos retratos de cada ficha esperan');
+  const ficha = readFileSync('src/components/bestiario/FichaBestia.astro', 'utf-8');
+  for (const [nombre, fuente] of [['la página', pagina], ['la ficha', ficha]] as const) {
+    assert.ok(!/set:html=\{(rc|r)\.svg\}/.test(fuente), `${nombre} dibuja de entrada una escena o un retrato`);
+    assert.ok(!/set:html=\{retrato\([^)]*\)!?\.svg\}/.test(fuente), `${nombre} dibuja de entrada un retrato`);
+  }
+  assert.equal(pagina.match(/enEspera\(/g)?.length, 1, 'las escenas esperan');
+  assert.ok(/espera \? enEspera\(atributos, r!\.svg\)/.test(ficha), 'los retratos de la ficha no saben esperar');
+  // La etiqueta lleva funciones flecha adentro (`=>`): se mira la línea entera, no hasta el primer `>`.
+  assert.match(pagina, /<FichaBestia\b[^\n]*\sespera\s*\/>/, 'el índice del bestiario no pide que los retratos esperen');
   assert.ok(pagina.includes('set:html={SIN_ISLA}'), 'sin JavaScript se verían dos veces');
   // La isla arma lo que espera: en el recinto que se acerca y en la ficha que se copia a la hoja.
   const isla = readFileSync('src/scripts/bestiario.ts', 'utf-8');
