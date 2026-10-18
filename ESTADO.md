@@ -5,7 +5,25 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-17
+**Última actualización:** 2026-10-18
+
+> ## 🎨 LOS SEIS ENTORNOS, CADA UNO EN SU TAPA (2026-10-18) — décima enmienda de `D-73`
+>
+> **Sin commitear todavía, en la rama `bestiario/fondos-rocambole`** (worktree `.claude/worktrees/bestiario-fondos`). Pedido del
+> usuario: *"Armá un fondo bien rocambole para cada uno de los entornos del bestiario redondo"*, con el camino
+> scrolleable en mente.
+>
+> - **Cierra `T-443`**: el galpón (*En directo*), el árbol del gran bonete (*Luzbelito*), Cybersiberia (*Último
+>   bondi*, con nieve), los astilleros (*Cordero atado*, disco 2), la mesa (*La mosca y la sopa*, con la mosca
+>   pintada: `T-442`) y la ruta (el surco del disco, con los cuatro fierros que pasan) son recintos de noche a
+>   aerógrafo, con los colores medidos en las tapas. La prisión la hizo la rama de la drácula.
+> - **Mejorados**: el infierno tiene piso de damero de salón de baile; el templo, serpentinas y papel picado.
+> - **Listos para el camino**: cada capa es `(ancho, alto)`, los hitos en el piso, la geometría en
+>   `rig-entornos.ts`, y `luzQueAsoma` para anunciar cada región desde la vecina.
+> - **Verde:** `npm test` (1657), `npm run check`, `npm run build`. Visto en el navegador del panel a 375 y 800 px.
+> - **Al integrar**: choca con la drácula y el camino en `bestiario.astro` (el `deNoche`), `arte.ts`, `sitio.css`,
+>   `tokens.css`, `DECISIONES` y este archivo; son todos de "dos entradas nuevas". La (7) y la (8) son de la
+>   drácula (PR #56) y la (9) del camino (PR #54): si llegan en otro orden, se renumera.
 
 > ## 📼 EL BESTIARIO ENTRA A LA HOME (2026-10-17) — casete B3 del lado B
 >

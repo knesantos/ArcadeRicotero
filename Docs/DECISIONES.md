@@ -4840,6 +4840,62 @@ módulo que dibuja.
 - Para el próximo inventado de *Gulp!* (Barbazul, el que no se cayó del cielo) la técnica ya está:
   `pincel.ts`.
 
+### Enmienda del 2026-10-18 (10): los seis entornos, cada uno en la tapa de su disco
+
+Pedido del usuario, textual: *"Armá un fondo bien rocambole para cada uno de los entornos del bestiario
+redondo [...] un entorno adecuado para cada parte del mapa. Si ya tiene un entorno hecho bien buscá cómo
+mejorarlo."* Y a mitad de camino: *"ahora el bestiario es una especie de aventura scrolleable. Que tus
+fondos lo tengan en cuenta."* La escribe el hilo principal en la rama `bestiario/fondos-rocambole`, sobre
+`main` en `159b1bc`, en paralelo con la drácula (`ciclo-24/bestiario`, que hizo la prisión) y el camino
+con cruces (`bestiario/camino-con-cruces`). Por eso la prisión no está acá. Es la décima porque la (7) y la
+(8) son de la drácula (PR #56) y la (9) del camino (PR #54), los tres sin integrar todavía: si el orden de
+llegada a `main` cambia, se renumera al integrar (`integrar.md`).
+
+- **Cierra `T-443`**: los seis recintos que seguían con las figuras del plano pasan a ser de noche,
+  pintados a aerógrafo en tres capas (`lib/bestiario/arte-entornos.ts`). Cada uno viste la tapa de su
+  disco (`D-19`), con los colores medidos con k-medias sobre las tapas reales de
+  `Docs/INVESTIGACION/TapasDiscos/` (los `--entorno-*` nuevos de `tokens.css`):
+  - **El galpón** es la noche de *En directo*: la luz roja que revienta arriba a la derecha, la gente
+    impresa en trama de puntos, de espaldas, con una bengala, y en el tablado la silla vacía bajo el
+    seguidor, la fuente de buñuelos y la bestia pop, encorvada y con lentejuelas. De fondo cuelga un disco.
+  - **El árbol del gran bonete** es *Luzbelito*: la llanura roja con huevos de plata bajo el cielo violeta
+    del interior del disco, y el árbol hecho del mármol verde del frente. Del marco de cobre de la tapa,
+    colgado vacío de una rama, se ve otra noche, con luna.
+  - **Cybersiberia** es *Último bondi*: el cielo es la chapa remachada de la tapa, con las pistas de
+    circuito en relieve, y la tele es el ojo de buey, prendida en la nieve, con el Alien Duce adentro. La
+    fila de agujeros de la tapa son los puntos que se come el pac-man. **Nieva** (una animación en bucle,
+    `nevar`, que se apaga con movimiento reducido como la mosca).
+  - **Los astilleros** son la contratapa del disco 2 de *Cordero atado*: tiza azul y espirales sobre lo
+    oscuro, los containers en el naranja del frente, y la luz de un farol de sodio.
+  - **La mesa** es *La mosca y la sopa*: un collage de papel rasgado sobre el rojo de la tapa. La foto del
+    escenario del frente tiene su seguidor, que se escapa de la foto y cae en la olla de la contratapa. Por
+    la ventana se ve la pastura. **La mosca queda pintada acá** (`T-442`, en su estética).
+  - **La ruta** es el surco del disco: el asfalto es vinilo, y en el horizonte se recorta el mundo redondo
+    entero, cada región con su luz. Los cuatro fierros pasan pintados —el último bondi de chapa remachada
+    con ojos de buey por ventanillas, la Mariposa Pontiac con alas, el camión del héroe del whisky y el
+    toxi-taxi con su sombra atrás— y lo que espera en la banquina se queda quieto.
+- **Los bichos siguen el régimen de los recintos de noche**: los que miran desde lo oscuro son ojos, y los
+  que no tienen ojos —una cosa, como la silla, la tele o el balde de almejas, o uno que se ve de
+  espaldas— se tocan donde están pintados (`cosa()` en `escenas-entornos.ts`). Cada uno tiene su silueta
+  pintada debajo de los ojos, para que no floten.
+- **Para el camino** (la aventura que se camina de costado): cada capa es una función de `(ancho, alto)`
+  que siembra todo el ancho de una vez, lo lejano es ambiente y los hitos van en el piso, y la geometría
+  vive en `rig-entornos.ts`, que son números. `luzQueAsoma(región, x, y)` pinta la luz de cada entorno
+  para anunciarlo desde el vecino. El recinto imprime las capas a 900; las largas las suma el camino
+  cuando arme cada tramo. Un test las arma a 1850, 2400 y 3036 sin imprimirlas.
+- **Mejora de dos que ya estaban**: el infierno encantador tenía la mitad de abajo vacía y ahora es un
+  salón de baile, con piso de damero en perspectiva que devuelve el fuego de *Gulp!*; el templo de Momo
+  tiene serpentinas colgando de la guirnalda y papel picado en el piso, en la plata y el oro de *Momo
+  Sampler*.
+- **La ruta de papel del plano** (`dibujarRuta` en `mapa.ts`) se borró: ya no la usaba nadie.
+- Las 23 piezas nuevas pesan 2,5 MB: lo lejano a 2 por unidad y lo transparente a 1,5, que con alfa pesa
+  el doble y en un teléfono no se distingue.
+
+#### Abierto, sin trabar
+
+- Sin tareas nuevas. `T-435` suma las tintas nuevas al lienzo; `T-437` y `T-439` (los cuadros por segundo en
+  un teléfono de verdad) ahora incluyen la nieve.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17
