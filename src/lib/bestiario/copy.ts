@@ -14,7 +14,7 @@ export const BESTIARIO = {
     `${cuantos} bichos y personajes de los diez discos, cada uno en su recinto, al lado de los que se le parecen. Tocá un bicho y te dice su verso; tocalo de nuevo y abrís su ficha.`,
   mapa: 'El mundo redondo, visto desde arriba',
   plano: 'El plano del recorrido',
-  alPlano: 'Tocá una región del plano para bajar a su recinto, o seguí bajando y recorrelos en orden.',
+  alPlano: 'Tocá una región del plano y entrás caminando. Abajo están los recintos, uno detrás del otro.',
   recinto: (n: number): string => `RECINTO ${n}`,
   recintoMonte: 'El monte del lobo y la pastura',
   abrirFicha: 'Abrí la ficha',
@@ -65,11 +65,11 @@ export const BESTIARIO = {
  * cruce; registro 3, seco, en la instrucción y en los sellos.
  */
 export const CAMINO = {
-  /** La salida del camino (`D-76`): al plano redondo, con los recintos que todavía no se caminan. */
+  /** La salida del camino (`D-76`): al plano redondo, con los trece recintos uno detrás del otro. */
   volver: 'AL PLANO',
   sello: 'CAMINO DEL BESTIARIO',
-  /** La instrucción, abajo del nombre: la línea que nombra lo que hay que hacer. */
-  bajada: 'Bajá para caminar. Al final hay un cruce y elegís para dónde seguir.',
+  /** La instrucción, abajo del nombre: la línea que nombra lo que hay que hacer (`D-77`: de costado). */
+  bajada: 'Deslizá de costado para caminar. Al final hay un cruce y elegís para dónde seguir.',
   /** Sin movimiento, la escena se corre con el dedo, como los recintos de noche. */
   deslizar: 'Deslizá de costado para caminar.',
   escena: 'El camino, visto de costado',

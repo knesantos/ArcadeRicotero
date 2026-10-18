@@ -76,8 +76,8 @@ export function fondoDe(
  * cuánto pasa algo y qué suena al tocar a quién.
  */
 export interface Receta {
-  /** Lo que cruje bajo los pies. */
-  suelo: 'hojas' | 'pasto';
+  /** Lo que suena bajo los pies. */
+  suelo: 'hojas' | 'pasto' | 'tablas' | 'baldosa' | 'chapa' | 'nieve' | 'agua' | 'tierra';
   /** Cada cuánto se da un paso, en unidades de escena (`ALTO` = 640). */
   zancada: number;
   /** El volumen del viento; 0, sin viento. */
@@ -108,7 +108,74 @@ export const RECETAS: Readonly<Record<string, Receta>> = {
     cadaTanto: { cencerro: [14, 30] },
     alTocar: { 'aquella-solitaria-vaca-cubana': 'cencerro' },
   },
+  // Desde `D-77` se caminan las trece, y cada una suena a lo suyo.
+  // La mesa: baldosa, y las moscas que dan vueltas sobre la sopa.
+  'la-mesa': {
+    suelo: 'baldosa',
+    zancada: 80,
+    viento: 0,
+    grillos: 0,
+    cadaTanto: { zumbido: [8, 18] },
+    alTocar: { 'la-mosca': 'zumbido', 'el-moscon-zumbon': 'zumbido', 'el-moscardon-imaginario': 'zumbido' },
+  },
+  // Los techos: la chapa bajo los pies, el viento de arriba y, cada tanto, la sirena de la cana.
+  'los-techos': { suelo: 'chapa', zancada: 90, viento: 0.06, grillos: 0.008, cadaTanto: { sirena: [26, 48] } },
+  // La prisión: el pasillo de baldosa, una gotera, y el manojo de llaves de Barbazul.
+  'la-prision': {
+    suelo: 'baldosa',
+    zancada: 80,
+    viento: 0.02,
+    grillos: 0,
+    cadaTanto: { cadena: [12, 26], gota: [5, 12] },
+    alTocar: { barbazul: 'cadena', 'la-fiera-mas-fiera': 'cadena' },
+  },
+  // El infierno: tierra seca, y las brasas que chisporrotean.
+  'el-infierno': { suelo: 'tierra', zancada: 85, viento: 0.04, grillos: 0, cadaTanto: { brasas: [2, 6] } },
+  // El bajo inundado: se camina en el agua, y por el vidrio roto entra la gotera.
+  'el-bajo': { suelo: 'agua', zancada: 95, viento: 0, grillos: 0, cadaTanto: { gota: [1.5, 4] } },
+  // Los astilleros: los tablones del muelle, el agua contra los pilotes y el ferry que sale.
+  'los-astilleros': { suelo: 'tablas', zancada: 85, viento: 0.05, grillos: 0, cadaTanto: { ola: [4, 9], bocina: [30, 55] } },
+  // El templo: el piso del salón, y de lejos el bombo de la murga.
+  'el-templo': {
+    suelo: 'baldosa',
+    zancada: 80,
+    viento: 0,
+    grillos: 0.006,
+    cadaTanto: { bombo: [6, 14] },
+    alTocar: { 'la-murga-de-los-renegados': 'bombo' },
+  },
+  // Cybersiberia: nieve, viento de estepa y la tele que se va de canal.
+  cybersiberia: {
+    suelo: 'nieve',
+    zancada: 80,
+    viento: 0.08,
+    grillos: 0,
+    cadaTanto: { interferencia: [10, 22] },
+    alTocar: { 'la-divina-tv-fuhrer': 'interferencia' },
+  },
+  // El árbol: la llanura de tierra, grillos, y la lechuza que circula por la copa.
+  'el-arbol': {
+    suelo: 'tierra',
+    zancada: 85,
+    viento: 0.05,
+    grillos: 0.015,
+    cadaTanto: { lechuza: [18, 34] },
+    alTocar: { 'la-lechuza-que-circula': 'lechuza' },
+  },
+  // El galpón: el tablado, y la gente que murmura esperando que arranque.
+  'el-galpon': { suelo: 'tablas', zancada: 80, viento: 0, grillos: 0, cadaTanto: { gente: [9, 18] } },
+  // La ruta: la banquina de tierra, los grillos del campo y los fierros que pasan.
+  'la-ruta': {
+    suelo: 'tierra',
+    zancada: 90,
+    viento: 0.06,
+    grillos: 0.014,
+    cadaTanto: { motor: [9, 20] },
+    alTocar: { 'el-zumba': 'motor', 'el-heroe-del-whisky': 'motor', 'la-mariposa-pontiac': 'motor', 'el-toxi-taxi': 'motor' },
+  },
 };
 
 /** Los sonidos que `entorno.ts` sabe hacer. El test mira que las recetas no pidan otros. */
-export const SINTETIZADOS = ['lechuza', 'cencerro', 'grillo'] as const;
+export const SINTETIZADOS = [
+  'lechuza', 'cencerro', 'grillo', 'zumbido', 'sirena', 'cadena', 'gota', 'brasas', 'ola', 'bocina', 'bombo', 'interferencia', 'gente', 'motor',
+] as const;

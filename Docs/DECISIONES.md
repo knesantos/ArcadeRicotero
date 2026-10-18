@@ -5590,3 +5590,93 @@ La propuesta para los tres roles está en `Docs/SUGERENCIAS/HILO-para-experienci
 
 **Falta:** oírlo en un teléfono de verdad (`T-483`): el filtro, el volumen relativo, los pasos al
 scrollear rápido y la llave de silencio del iPhone.
+
+## D-77 — Los trece entornos se caminan de costado, están conectados y son la pantalla entera
+
+- **Fecha:** 2026-10-18
+- **Estado:** activa. Pedido directo del usuario, textual: *"Todos los entornos deben ser caminables y
+  conectados. En móvil que haya que scrollear para el lado donde avanzás, no para abajo"*. Y a mitad
+  de camino: *"Si el entorno es chico por naturaleza del concepto está bien que no se camine pero debe
+  ser inmersivo, siempre en pantalla completa. Que en móvil la ficha tampoco te saque de la inmersión,
+  que sea una ficha flotando sin tapar toda la pantalla. El objetivo de esta sesión es conectar todos
+  los entornos y hacerlos inmersivos"*, y *"si entrás al bestiario ya estás caminando y con el sonido
+  activado"*. La escribe el hilo principal en la rama `bestiario/todo-caminable` (worktree
+  `.claude/worktrees/camino-todo`), sobre `main` en `cc58d47`.
+- **Es decisión aparte** y no enmienda de `D-73` ni de `D-76`, porque cambia el eje del camino
+  (de bajar a deslizar de costado) y cierra `T-470`. Antes de tomar el número se miraron `origin/main`
+  y las ramas remotas: nadie usa `D-77`. Se le avisó del número a la sesión que suma diez personajes
+  (`bestiario/diez`), que corre al mismo tiempo.
+- **Enmienda** de `D-73` (séptima vuelta) la frase *"un píxel de bajar es un píxel de caminar"*: ahora
+  es de deslizar. **Enmienda** de `D-76` que sin JavaScript *o con movimiento reducido* todo quedaba en
+  el flujo: con movimiento reducido el camino también es la pantalla entera, solo que quieto. Y que el
+  sonido arrancaba apagado: ahora arranca pedido y suena con el primer toque.
+
+### Lo que cambia
+
+1. **Las trece regiones tienen su camino** (`lib/bestiario/camino.ts`), en tres formas:
+   - **largo**: el monte y la pastura, como estaban.
+   - **entorno**: los seis de la décima vuelta, pintados a 2400 de largo con las mismas funciones que
+     pintan su recinto (`arte-entornos.ts`, que reciben el ancho: las cosas fijas se corren con
+     `k = 2400/900` y lo suelto se siembra a lo largo). Los bichos van en `x·k`, donde el dibujo los
+     espera. Tienen paralaje, y lo lejano se acomoda para caer justo detrás del piso cuando el centro
+     del recinto (`foco`) pasa por la vista: el disco sigue colgado arriba de la silla vacía y la
+     ventana arriba de la olla. Los de adentro (el galpón, la mesa) tienen la pared cerca: el fondo
+     va a 0,8.
+   - **recinto**: los cinco de títeres (techos, prisión, infierno, bajo, templo), enteros. Son chicos
+     por naturaleza: no se caminan, se ven a pantalla completa y se recorren con el dedo, con la
+     misma escena y la misma vida que en el bestiario.
+2. **Conectados.** Los once nuevos terminan en una pieza de cruce (`camino-<región>-cruce`): la noche
+   se come el borde de la escena, apenas (en el bajo hay sirenas en 862 de 900), y la picada se abre
+   hacia la luz del disco de cada vecina, que asoma en el horizonte. Ahí, sin ningún bicho abajo, se
+   paran los carteles. Todos los carteles llevan a otro camino. El test mira que desde el monte se
+   llegue caminando a las trece regiones y que de todas se vuelva.
+3. **De costado.** La escena es la pantalla entera (`position: fixed`) y se corre con el scroll de
+   costado del navegador, con su inercia: el dedo que baja no hace nada. En la compu, la ruedita (que
+   solo sabe bajar) camina de costado, y las flechas, Avance de página, Inicio y Fin también. Donde hay
+   capas, la vista queda pegada a la pantalla (`sticky`) mientras la tira pasa, y la isla corre cada
+   capa a su velocidad.
+4. **La ficha y la lista flotan.** En el teléfono son un recorte despegado de los bordes, abajo, que
+   ocupa como mucho el 58 % del alto: la escena sigue ahí arriba. Tocar afuera la cierra. En la compu,
+   a un costado, como en el bestiario. Un enlace de "Anda cerca" a un bicho de otra región lleva a su
+   camino con su ficha abierta (`#el-id`).
+5. **Caminando, el tablero se achica** al nombre de la región y los dos botones.
+6. **Se entra con el sonido pedido.** El botón arranca en "Pará", y el recital y los ruidos suenan con
+   el primer toque (el navegador no deja antes). Apagado, queda recordado para la región que sigue.
+   Cada región tiene su receta (`RECETAS`): suelos propios —tablas, baldosa, chapa, nieve, agua,
+   tierra— y lo que pasa cada tanto, sintetizado: la gotera, el motor de los fierros, las moscas, la
+   sirena de lejos, el bombo de la murga, las llaves de Barbazul, las brasas, el agua del muelle, la
+   bocina del ferry, la tele y el murmullo de la gente.
+7. **El plano** sigue en `/redondopedia/bestiario/`, a un toque desde cada camino. Sus rótulos llevan
+   ahora a caminar cada región, y los doce recintos tienen su puerta "Entrá caminando".
+8. **Por dentro:** la vida de cada recinto salió de la isla del bestiario a
+   `scripts/bestiario/recintos.ts`, con un contexto que presta cada isla; el piso de cada tramo lo
+   arma `lib/bestiario/escenas-camino.ts`. Las dos islas siguen llevándose solo números.
+
+### Lo que queda afuera, y por qué
+
+- **Los recintos de títeres no se alargaron.** Su arte es de 900 y sus títeres caminan por lugares
+  fijos (la drácula por el pasillo, Pierre en el agua). Alargarlos pide pintar de nuevo cada fondo; el
+  usuario dijo que lo chico por naturaleza está bien que no se camine.
+- **El plano todavía muestra los recintos uno debajo del otro**, en el flujo de la página (`T-491`).
+- **Los diez personajes nuevos** de la sesión que corre al mismo tiempo (`bestiario/diez`) entran a
+  los recintos de títeres solos; en los seis entornos largos hay que llamar a su `capasDe(..., k)` y en
+  la isla a `armarPersonajes` (`T-492`).
+
+### Verificado
+
+`npm test` (1707), `npm run check` (0 errores) y `npm run build` (179 páginas). En el navegador del
+panel, a 375×812: la prisión, el galpón, la mesa, la ruta, Cybersiberia, el monte y la pastura de
+punta a punta, con el cruce al final; la drácula tocada abre la capa y su ficha flota abajo. A
+1280×800, la ruedita camina de costado en la mesa sin mover la página. El plano arma sus recintos con
+el módulo nuevo. **No se oyó** nada: el panel no tiene parlantes (`T-490`).
+
+### Abierto
+
+- `T-490`: probarlo en un teléfono de verdad, gama baja e iPhone: el deslizar de costado con inercia,
+  el gesto de volver de iOS en el borde, la vista pegada con paralaje, el primer toque que prende el
+  sonido y cómo suena cada receta.
+- `T-491`: que `experiencia` decida si el plano queda como galería de recintos o pasa a ser solo el
+  mapa con las puertas (`T-472` lo preguntaba para los rótulos).
+- `T-492`: los personajes de `bestiario/diez` en los caminos largos y en la isla del camino.
+- `T-493`: la ficha flotante y la pieza del cruce al lienzo (hoja 08, componentes). No trajeron
+  tintas nuevas: todo sale de `tokens.css`.

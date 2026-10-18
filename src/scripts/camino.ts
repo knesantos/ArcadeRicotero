@@ -1,36 +1,49 @@
 /**
- * La isla del camino con cruces (`D-73`, séptima vuelta): bajar es caminar.
+ * La isla del camino con cruces (`D-73`, séptima vuelta; `D-76`; `D-77`): deslizar de costado es
+ * caminar.
  *
- * La escena queda pegada a la pantalla mientras su sección pasa, y cada capa se corre a su
- * velocidad (`data-f`): lo lejano despacio, el piso a la par del dedo, lo de adelante más rápido.
- * Un píxel de bajar es un píxel de caminar, porque la sección mide eso de alto. Los ojos de lo
- * oscuro se encienden cuando se llega a ellos; el lobo suelto, en su monte, asoma cuando lo tenés
- * cerca y te sigue con la cabeza; en la pastura, el lobo y el cordero viven como en su recinto
- * (`bestiario/pastura.ts`). Al final aparece el cruce, con un cartel por región vecina.
+ * ## Se avanza para el lado donde se camina (`D-77`)
  *
- * Tocar un bicho le hace decir su verso; tocarlo de nuevo abre su ficha, que es la misma de la
- * lista de abajo. Lo que abrís queda anotado en el teléfono, con la misma libreta del bestiario.
+ * Pedido del usuario: *"en móvil que haya que scrollear para el lado donde avanzás, no para
+ * abajo"*. La escena es la página entera y se corre de costado con el dedo, con el scroll del
+ * navegador, su inercia y su borde. En la compu, la ruedita (que solo sabe bajar) camina de
+ * costado, y las flechas también. La isla no secuestra nada: lee dónde quedó el scroll.
  *
- * Con movimiento reducido no camina nada: la escena queda como tira que se corre de costado
- * con el dedo, todo a la vista, y los bichos se tocan igual. Sin JavaScript, lo mismo.
+ * Donde hay capas (el monte, la pastura y los seis entornos largos), la escena queda quieta en la
+ * pantalla mientras su tira pasa, y la isla corre cada capa a su velocidad (`data-f`): lo lejano
+ * despacio, el piso a la par del dedo, lo de adelante más rápido. Un píxel de deslizar es un píxel
+ * de caminar. Los cinco recintos de títeres son una sola capa: se corren con el scroll y nada más.
  *
- * ## La pantalla entera y el sonido (`D-76`)
+ * Los ojos de lo oscuro se encienden cuando se llega a ellos; el lobo suelto, en su monte, asoma
+ * cuando lo tenés cerca y te sigue con la cabeza; en la pastura, el lobo y el cordero viven como
+ * en su recinto (`bestiario/pastura.ts`), y cada recinto vive con su controlador
+ * (`bestiario/recintos.ts`), el mismo del bestiario. Al final aparece el cruce, con un cartel por
+ * región vecina.
  *
- * Andando, el camino es la página (`html.camino-pantalla`): no hay nada abajo del cruce, la
- * lista de fichas se abre con un botón y se sale tocando "Al plano" o un cartel del cruce. Y un
- * botón prende el sonido: el recital de lejos (`bestiario/lejos.ts`) y los ruidos del camino,
- * con los pasos atados a lo caminado (`bestiario/entorno.ts`). Queda recordado para la próxima
- * región, pero nada suena hasta el primer toque.
+ * Tocar un bicho le hace decir su verso; tocarlo de nuevo abre su ficha, que flota encima de la
+ * escena sin taparla entera. Lo que abrís queda anotado en el teléfono, con la misma libreta del
+ * bestiario.
+ *
+ * Siempre a pantalla completa, también con movimiento reducido: ahí nada se mueve solo y las capas
+ * van juntas. Sin JavaScript, la escena es una tira en el flujo de la página, con la lista abajo.
+ *
+ * ## El sonido (`D-76`, `D-77`)
+ *
+ * Se entra con el sonido prendido: el recital de lejos (`bestiario/lejos.ts`) y los ruidos del
+ * camino, con los pasos atados a lo caminado (`bestiario/entorno.ts`). El navegador no deja que
+ * suene nada antes del primer toque, así que arranca ahí, sin buscar el botón. El botón lo apaga, y
+ * apagado queda recordado para la región que sigue.
  */
 
 import { BESTIARIO, CAMINO } from '../lib/bestiario/copy.ts';
 // Solo números, como la isla del bestiario: nada que dibuje (`camino.test.ts` lo vigila).
 import { ACECHO, ESCALA_LOBO } from '../lib/bestiario/rig.ts';
 import { ARMADO } from '../lib/bestiario/recortes.ts';
-import { ALTO, camara } from '../lib/bestiario/camino.ts';
+import { ALTO, corrimiento, type Forma } from '../lib/bestiario/camino.ts';
 import { crearRocola } from './rocola.ts';
 import { girar, hacia, parpado, partes, suave } from './bestiario/articular.ts';
-import { armarPastura, type Pastura } from './bestiario/pastura.ts';
+import { armarPastura } from './bestiario/pastura.ts';
+import { armarRecinto, type Raiz, type Vida } from './bestiario/recintos.ts';
 import { crearLejos } from './bestiario/lejos.ts';
 import { crearEntorno } from './bestiario/entorno.ts';
 import { RECETAS } from '../lib/bestiario/sonido.ts';
@@ -38,7 +51,11 @@ import { contextoVivo } from '../lib/audio/contexto.ts';
 
 interface Datos {
   region: string;
+  forma: Forma;
+  /** Todo lo que se recorre, la escena y dónde lo lejano cae detrás del piso, en unidades. */
   ancho: number;
+  escena: number;
+  foco: number;
   total: number;
   lobo: number | null;
   claro: number | null;
@@ -52,8 +69,11 @@ const bestias = new Map(datos.bestias.map((b) => [b.id, b]));
 
 const camino = document.getElementById('camino')!;
 const escenario = document.getElementById('escenario')!;
+const tira = document.getElementById('tira')!;
+const vista = document.getElementById('vista')!;
 const piso = camino.querySelector<SVGSVGElement>('svg.capa')!;
 const capas = [...camino.querySelectorAll<HTMLElement>('.capa')].map((el) => ({ el, f: Number(el.dataset.f) }));
+const conCapas = capas.some((c) => c.f !== 1);
 const cruce = document.getElementById('cruce')!;
 const apariciones = [...piso.querySelectorAll<SVGGElement>('.aparece')].map((el) => ({ el, x: Number(el.dataset.x) }));
 
@@ -114,6 +134,7 @@ function anotar(id: string): void {
 
 let volverA: Element | null = null;
 
+/** La ficha flota encima de la escena (`D-77`): la escena sigue ahí, alrededor. */
 function abrir(id: string): void {
   const original = document.querySelector<HTMLElement>(`.bestiario-ficha[data-bestia="${id}"] .bestiario-cuerpo`);
   if (!original) return;
@@ -134,6 +155,7 @@ function abrir(id: string): void {
 function cerrarHoja(): void {
   if (hoja.hidden) return;
   rocola.parar();
+  lejos.apartar(false);
   hoja.hidden = true;
   if (volverA instanceof HTMLElement || volverA instanceof SVGElement) volverA.focus({ preventScroll: true });
 }
@@ -147,6 +169,7 @@ function escuchar(boton: HTMLButtonElement): void {
   if (rocola.sonando === slug) {
     rocola.parar();
     soltar();
+    lejos.apartar(false);
     return;
   }
   rocola.tocar(slug, () => {
@@ -163,8 +186,11 @@ let callarEn = 0;
 /** Dónde estaba la cámara cuando el bicho empezó a hablar: si se camina, el bocadillo se va. */
 let camAlHablar = 0;
 
-/** El bicho dice su verso: el bocadillo se cuelga arriba del punto de la pantalla (`sx`, `sy`). */
-function hablar(id: string, sx: number, sy: number): void {
+/**
+ * El bicho dice su verso: el bocadillo se cuelga arriba del punto de la pantalla (`sx`, `sy`), o
+ * abajo si arriba no entra o si `preferirAbajo` (los títeres grandes, que si no se tapan la cara).
+ */
+function hablar(id: string, sx: number, sy: number, preferirAbajo = false): void {
   const b = bestias.get(id);
   if (!b) return;
   if (hablando === id && !bocadillo.hidden) {
@@ -178,13 +204,13 @@ function hablar(id: string, sx: number, sy: number): void {
   const caja = escenario.getBoundingClientRect();
   const ancho = bocadillo.offsetWidth;
   const alto = bocadillo.offsetHeight;
-  // En coordenadas del contenido del escenario: quieto, la tira se corre de costado.
+  // En coordenadas del contenido del escenario, que se corre de costado.
   const px = sx - caja.left - escenario.clientLeft + escenario.scrollLeft;
   const py = sy - caja.top - escenario.clientTop;
   const desde = escenario.scrollLeft + 6;
   const hasta = escenario.scrollLeft + escenario.clientWidth - ancho - 6;
   const izquierda = Math.min(Math.max(px - ancho / 2, desde), Math.max(hasta, desde));
-  const abajo = py - alto - 14 < 6;
+  const abajo = preferirAbajo || py - alto - 14 < 6;
   bocadillo.classList.toggle('bocadillo--abajo', abajo);
   bocadillo.style.left = `${izquierda}px`;
   bocadillo.style.top = `${abajo ? Math.min(py + 40, escenario.clientHeight - alto - 6) : py - alto - 14}px`;
@@ -210,64 +236,81 @@ function enPantalla(el: SVGGraphicsElement, x: number, y: number): { x: number; 
 }
 
 /* ------------------------------------------------------------------
-   La cámara: el scroll de la página, pasado a lo que se camina
+   La cámara: el scroll de costado, pasado a lo que se camina
    ------------------------------------------------------------------ */
 
-/** Píxeles por unidad de escena, el ancho del piso y el de la vista, en píxeles. */
+/** Píxeles por unidad de escena, el ancho de la tira y el de la vista, en píxeles. */
 let escala = 1;
 let anchoPx = 0;
 let vistaPx = 0;
 /** Lo caminado, en píxeles: cuánto se corrió el piso. */
 let cam = 0;
-let andando = false;
+/** Si las capas se corren cada una a su velocidad (con capas y sin movimiento reducido). */
+let paralaje = false;
+
+const recorrido = (): number => Math.max(0, anchoPx - vistaPx);
 
 function medir(): void {
-  andando = !quieto();
-  camino.classList.toggle('camino--andando', andando);
-  document.documentElement.classList.toggle('camino-pantalla', andando);
-  abrirLista.hidden = !andando;
-  if (!andando) cerrarLista();
-  if (!andando) {
-    camino.style.removeProperty('--recorrido');
-    for (const c of capas) c.el.style.removeProperty('transform');
-    cam = escenario.scrollLeft;
-    return;
-  }
+  paralaje = conCapas && !quieto();
+  camino.classList.add('camino--andando');
+  camino.classList.toggle('camino--paralaje', paralaje);
+  document.documentElement.classList.add('camino-pantalla');
+  abrirLista.hidden = false;
   const alto = escenario.clientHeight;
   escala = alto / ALTO;
   anchoPx = datos.ancho * escala;
   vistaPx = escenario.clientWidth;
-  camino.style.setProperty('--recorrido', `${Math.round(Math.max(0, anchoPx - vistaPx) + alto)}px`);
+  tira.style.width = `${Math.round(anchoPx)}px`;
+  vista.style.width = paralaje ? `${vistaPx}px` : '';
+  if (!paralaje) for (const c of capas) c.el.style.removeProperty('transform');
 }
 
-/** Cuánto de la sección ya pasó, de 0 a 1. */
-function avance(): number {
-  const r = camino.getBoundingClientRect();
-  const recorrido = r.height - escenario.clientHeight;
-  return recorrido > 0 ? Math.min(1, Math.max(0, -r.top / recorrido)) : 0;
-}
+/** Cuánto de la tira ya se caminó, de 0 a 1. */
+const avance = (): number => (recorrido() > 0 ? Math.min(1, cam / recorrido()) : 1);
 
-/** Dónde empieza y termina la caminata, en el scroll de la página. */
-function tramoDeScroll(): { desde: number; hasta: number } {
-  const desde = camino.getBoundingClientRect().top + window.scrollY;
-  return { desde, hasta: desde + camino.offsetHeight - escenario.clientHeight };
+/**
+ * Si el cruce ya está a la vista. En un tramo largo, al final de la caminata, encima del piso.
+ * En los demás, cuando la noche del cruce llena casi toda la vista, o cuando no se puede caminar
+ * más: así ningún bicho del final queda debajo de los carteles.
+ */
+function enElCruce(): boolean {
+  if (datos.forma === 'largo') return avance() > 0.9;
+  const v = vistaPx / escala;
+  return cam / escala >= Math.min(datos.escena - 0.1 * v, recorrido() / escala) - 1;
 }
 
 function encuadrar(): void {
-  if (!andando) return;
-  const p = avance();
-  cam = camara(p, anchoPx, vistaPx);
-  for (const c of capas) c.el.style.transform = `translate3d(${(-cam * c.f).toFixed(1)}px, 0, 0)`;
+  cam = escenario.scrollLeft;
+  if (paralaje) {
+    const focoPx = datos.foco * escala;
+    for (const c of capas) c.el.style.transform = `translate3d(${(-corrimiento(c.f, cam, focoPx, vistaPx)).toFixed(1)}px, 0, 0)`;
+  }
   for (const a of apariciones) {
     const x = a.x * escala - cam;
     a.el.classList.toggle('aparece--a-la-vista', x > -20 && x < vistaPx * 0.92);
   }
-  cruce.classList.toggle('cruce--a-la-vista', p > 0.9);
-  camino.classList.toggle('camino--caminando', p > 0.015);
-  camino.classList.toggle('camino--al-final', p > 0.9);
-  lejos.acercar(p);
+  const alFinal = enElCruce();
+  cruce.classList.toggle('cruce--a-la-vista', alFinal);
+  camino.classList.toggle('camino--caminando', cam > 24);
+  camino.classList.toggle('camino--al-final', alFinal);
+  lejos.acercar(avance());
   entorno?.caminar(cam / escala);
   if (hablando && Math.abs(cam - camAlHablar) > 60) callar();
+}
+
+/** A dónde quiere llegar la ruedita o el teclado, en píxeles; se llega de a poco. */
+let objetivo: number | null = null;
+
+function irA(x: number, deUna = false): void {
+  const meta = Math.min(recorrido(), Math.max(0, x));
+  if (deUna || quieto()) {
+    objetivo = null;
+    escenario.scrollLeft = meta;
+    encuadrar();
+    return;
+  }
+  objetivo = meta;
+  arrancar();
 }
 
 /** Trae a la vista algo de la escena que quedó afuera (se llegó con el teclado). */
@@ -276,17 +319,12 @@ function traer(el: Element): void {
   const caja = escenario.getBoundingClientRect();
   const centro = r.left + r.width / 2;
   if (centro > caja.left + 40 && centro < caja.right - 40) return;
-  const delta = centro - (caja.left + caja.width / 2);
-  // Andando, un píxel de bajar es un píxel de caminar; quieto, la tira se corre de costado.
-  if (andando) window.scrollBy({ top: delta, behavior: 'instant' });
-  else escenario.scrollLeft += delta;
+  irA(escenario.scrollLeft + centro - (caja.left + caja.width / 2), true);
 }
 
-/** Al cruce: andando, es el final de la caminata. */
+/** Al cruce: el final de la caminata. */
 function alCruce(enfocar: boolean): void {
-  if (andando) window.scrollTo({ top: tramoDeScroll().hasta, behavior: 'instant' });
-  else escenario.scrollLeft = escenario.scrollWidth;
-  encuadrar();
+  irA(recorrido(), true);
   if (enfocar) cruce.querySelector<HTMLElement>('.cartel-cruce')?.focus({ preventScroll: true });
 }
 
@@ -317,9 +355,10 @@ abrirLista.addEventListener('click', () => {
 cerrarListaBoton.addEventListener('click', cerrarLista);
 
 /* ------------------------------------------------------------------
-   El sonido: el recital de lejos y los ruidos del camino (`D-76`)
+   El sonido: el recital de lejos y los ruidos del camino (`D-76`, `D-77`)
    ------------------------------------------------------------------ */
 
+/** Lo único que se guarda es que se apagó: sin nada guardado, se entra con el sonido prendido. */
 const CLAVE_SONIDO = 'fichin-bestiario-sonido';
 const lejos = crearLejos(datos.lejos);
 const receta = RECETAS[datos.region];
@@ -327,12 +366,20 @@ const entorno = receta ? crearEntorno(receta) : null;
 const botonSonido = document.getElementById('lejos') as HTMLButtonElement | null;
 const suena = document.getElementById('suena');
 
+function quiereSonido(): boolean {
+  try {
+    return localStorage.getItem(CLAVE_SONIDO) !== '0';
+  } catch {
+    return true;
+  }
+}
+
 function recordarSonido(si: boolean): void {
   try {
-    if (si) localStorage.setItem(CLAVE_SONIDO, '1');
-    else localStorage.removeItem(CLAVE_SONIDO);
+    if (si) localStorage.removeItem(CLAVE_SONIDO);
+    else localStorage.setItem(CLAVE_SONIDO, '0');
   } catch {
-    // Sin dónde guardar, la próxima región arranca callada.
+    // Sin dónde guardar, la próxima región arranca con el sonido, como siempre.
   }
 }
 
@@ -349,81 +396,71 @@ async function prenderSonido(): Promise<boolean> {
   if (!ok || !ctx) return false;
   entorno?.prender(ctx);
   entorno?.caminar(cam / escala);
-  pintarSonido(true);
   return true;
 }
 
 function apagarSonido(): void {
   lejos.apagar();
   entorno?.apagar();
-  pintarSonido(false);
+}
+
+/** Con el sonido pedido, cada toque lo intenta hasta que el navegador lo deja sonar. */
+let pedido = false;
+const GESTOS = ['pointerup', 'touchend', 'keydown', 'click'] as const;
+
+function alTocar(ev: Event): void {
+  if ((ev.target as Element | null)?.closest?.('#lejos')) return;
+  if (!pedido || lejos.prendido) return soltarGestos();
+  void prenderSonido().then((ok) => {
+    if (ok) soltarGestos();
+  });
+}
+
+function esperarGestos(): void {
+  for (const g of GESTOS) document.addEventListener(g, alTocar, true);
+}
+
+function soltarGestos(): void {
+  for (const g of GESTOS) document.removeEventListener(g, alTocar, true);
 }
 
 if (botonSonido && datos.lejos.length) {
   botonSonido.hidden = false;
   botonSonido.addEventListener('click', () => {
-    if (lejos.prendido) {
+    if (pedido) {
+      pedido = false;
       apagarSonido();
-      recordarSonido(false);
+      soltarGestos();
     } else {
-      void prenderSonido().then((ok) => recordarSonido(ok));
+      pedido = true;
+      void prenderSonido();
     }
+    pintarSonido(pedido);
+    recordarSonido(pedido);
   });
-  // Lo dejó prendido en la región de antes: suena con el primer toque de esta.
-  let recordado = false;
-  try {
-    recordado = localStorage.getItem(CLAVE_SONIDO) === '1';
-  } catch {
-    recordado = false;
-  }
-  if (recordado) {
-    const alPrimerToque = (ev: Event): void => {
-      if ((ev.target as Element | null)?.closest?.('#lejos')) return;
-      document.removeEventListener('pointerup', alPrimerToque, true);
-      document.removeEventListener('keydown', alPrimerToque, true);
-      if (!lejos.prendido) void prenderSonido();
-    };
-    document.addEventListener('pointerup', alPrimerToque, true);
-    document.addEventListener('keydown', alPrimerToque, true);
-  }
+  // Se entra con el sonido prendido (`D-77`): suena con el primer toque, sin buscar el botón.
+  pedido = quiereSonido();
+  pintarSonido(pedido);
+  if (pedido) esperarGestos();
 }
 
 /* ------------------------------------------------------------------
    Los que viven en el camino
    ------------------------------------------------------------------ */
 
-/** Unos ojos en lo oscuro: parpadean y se corren un poco. Tocados, pestañean. */
-const ojos = [...piso.querySelectorAll<SVGGElement>('.bestia--ojos')].map((g, i) => ({
-  g,
-  cuerpo: g.querySelector<SVGGElement>('.cuerpo')!,
-  x: Number(g.dataset.x),
-  y: Number(g.dataset.y),
-  semilla: i * 1.7 + (g.dataset.id?.length ?? 0),
-  tocado: -10,
-}));
+let reloj = 0;
 
-function vivirOjos(t: number): void {
-  for (const o of ojos) {
-    const ciclo = (t + o.semilla * 1.9) % (4 + (o.semilla % 3));
-    const cerrados = ciclo < 0.16 || (t - o.tocado > 0 && t - o.tocado < 0.5) ? 0.1 : 1;
-    const corre = Math.sin(t * 0.35 + o.semilla) * 3;
-    o.cuerpo.setAttribute('transform', `translate(${corre.toFixed(2)} 0) translate(${o.x} ${o.y}) scale(1 ${cerrados}) translate(${-o.x} ${-o.y})`);
-  }
-}
-
-for (const o of ojos) {
-  const tocar = (): void => {
-    o.tocado = reloj;
-    const p = enPantalla(o.g, o.x, o.y - 8);
-    hablar(o.g.dataset.id!, p.x, p.y);
+/** Lo que cada escena le pide a la isla: el bocadillo en sus coordenadas, el reloj y la quietud. */
+function contexto(marco: SVGGraphicsElement, ancho: number): { hablar(id: string, x: number, y: number, abajo?: boolean): void; quieto(): boolean; reloj(): number; ancho: number } {
+  return {
+    hablar: (id, x, y, abajo) => {
+      const p = enPantalla(marco, x, y);
+      hablar(id, p.x, p.y, abajo);
+    },
+    quieto,
+    reloj: () => reloj,
+    ancho,
   };
-  o.g.addEventListener('click', tocar);
-  o.g.addEventListener('keydown', (ev) => {
-    if (ev.key === 'Enter' || ev.key === ' ') {
-      ev.preventDefault();
-      tocar();
-    }
-  });
 }
 
 /**
@@ -447,7 +484,7 @@ function armarLoboDelMonte(x: number): { mover(t: number, dt: number): void } {
     g.setAttribute('transform', `translate(${x} ${y.toFixed(1)}) scale(${ESCALA_LOBO}) translate(${-AL.piso[0]} ${-AL.piso[1]})`);
     const respira = Math.sin(t * 1.7) * 0.012;
     p.get('pecho')?.setAttribute('transform', `translate(${AL.piso[0]} ${AL.piso[1]}) scale(1 ${(1 + respira).toFixed(4)}) translate(${-AL.piso[0]} ${-AL.piso[1]})`);
-    const centro = andando ? (cam + vistaPx / 2) / escala : x;
+    const centro = (cam + vistaPx / 2) / escala;
     const ladeo = Math.max(-7, Math.min(7, (centro - x) / 30)) + Math.sin(t * 0.7) * 1.2;
     girar(p.get('cabeza'), ladeo, AL.cabeza, `translate(0 ${(-respira * 300).toFixed(2)}) `);
     if (t > lobo.parpadeo + 0.15) lobo.parpadeo = t + 2.5 + Math.random() * 4;
@@ -486,24 +523,68 @@ function armarLoboDelMonte(x: number): { mover(t: number, dt: number): void } {
   };
 }
 
-const loboDelMonte = datos.lobo !== null && datos.claro === null ? armarLoboDelMonte(datos.lobo) : null;
-
-let reloj = 0;
-
-/** En la pastura: el claro del recinto, corrido adentro del piso largo. */
-let pastura: Pastura | null = null;
-if (datos.claro !== null) {
-  const marco = piso.querySelector<SVGGElement>('.claro')!;
-  pastura = armarPastura(piso, {
-    marco,
-    hablar: (id, x, y) => {
-      const p = enPantalla(marco, x, y);
-      hablar(id, p.x, p.y);
+/**
+ * La vida del tramo. Los ojos y las cosas viven como en cualquier recinto (`recintos.ts`); el
+ * monte suma su lobo; la pastura, el claro del recinto corrido adentro del piso; los entornos y
+ * los recintos, el controlador de su recinto.
+ */
+function armarVida(): Vida {
+  if (datos.forma === 'recinto') {
+    const marco = piso.querySelector<SVGGElement>('.recinto-en-camino')!;
+    return armarRecinto(datos.region, marco, contexto(marco, datos.escena));
+  }
+  if (datos.forma === 'entorno') return armarRecinto(datos.region, piso, contexto(piso, datos.escena));
+  // Los tramos largos: los ojos viven como los del mapa, y encima, los títeres de cada uno.
+  const ojos = armarRecinto('', piso, contexto(piso, datos.ancho));
+  if (datos.claro !== null) {
+    const marco = piso.querySelector<SVGGElement>('.claro')!;
+    const pastura = armarPastura(piso, { marco, ...contexto(marco, datos.ancho) });
+    return {
+      mover: (t, dt) => {
+        ojos.mover(t, dt);
+        pastura.mover(t, dt);
+      },
+      reaccionar: (id, t) => {
+        if (!pastura.reaccionar(id, t)) ojos.reaccionar(id, t);
+      },
+    };
+  }
+  const lobo = datos.lobo !== null ? armarLoboDelMonte(datos.lobo) : null;
+  return {
+    mover: (t, dt) => {
+      ojos.mover(t, dt);
+      lobo?.mover(t, dt);
     },
-    quieto,
-    reloj: () => reloj,
-  });
+    reaccionar: ojos.reaccionar,
+  };
 }
+
+const vida = armarVida();
+
+/** Tocar un bicho de los que no son títeres (los títeres tienen sus propios toques). */
+function tocarBicho(g: SVGGElement): void {
+  const id = g.dataset.id!;
+  vida.reaccionar(id, reloj);
+  if (quieto()) vida.mover(reloj, 0);
+  const x = Number(g.dataset.ahora ?? g.dataset.x);
+  const y = Number(g.dataset.y) - 26;
+  // Las coordenadas del bicho son las de su escena: la del recinto, o el piso entero.
+  const marco = g.closest<SVGGElement>('.recinto-en-camino, .claro') ?? piso;
+  const p = enPantalla(marco, x, y);
+  hablar(id, p.x, p.y);
+}
+
+piso.addEventListener('click', (ev) => {
+  const g = (ev.target as Element).closest<SVGGElement>('.bestia');
+  if (g) tocarBicho(g);
+});
+piso.addEventListener('keydown', (ev) => {
+  const g = (ev.target as Element).closest<SVGGElement>('.bestia');
+  if (g && (ev.key === 'Enter' || ev.key === ' ')) {
+    ev.preventDefault();
+    tocarBicho(g);
+  }
+});
 
 /* ------------------------------------------------------------------
    El reloj: anda mientras la escena se ve
@@ -511,32 +592,32 @@ if (datos.claro !== null) {
 
 let antes = 0;
 let corriendo = false;
-let aLaVista = false;
 
 function cuadro(ahora: number): void {
   const dt = Math.min((ahora - antes) / 1000, 0.05);
   antes = ahora;
   reloj += dt;
+  // La ruedita y el teclado llegan de a poco: el scroll se acerca a donde se pidió.
+  if (objetivo !== null) {
+    const falta = objetivo - escenario.scrollLeft;
+    if (Math.abs(falta) < 1) {
+      escenario.scrollLeft = objetivo;
+      objetivo = null;
+    } else escenario.scrollLeft += falta * Math.min(1, dt * 12);
+  }
   encuadrar();
-  vivirOjos(reloj);
-  loboDelMonte?.mover(reloj, dt);
-  pastura?.mover(reloj, dt);
+  vida.mover(reloj, dt);
   if (hablando && ahora > callarEn) callar();
-  if (aLaVista && andando && document.visibilityState === 'visible') requestAnimationFrame(cuadro);
+  if (!quieto() && document.visibilityState === 'visible') requestAnimationFrame(cuadro);
   else corriendo = false;
 }
 
 function arrancar(): void {
-  if (corriendo || !andando || !aLaVista) return;
+  if (corriendo || quieto()) return;
   corriendo = true;
   antes = performance.now();
   requestAnimationFrame(cuadro);
 }
-
-new IntersectionObserver((entradas) => {
-  aLaVista = entradas.some((e) => e.isIntersecting);
-  arrancar();
-}).observe(camino);
 
 document.addEventListener('visibilitychange', arrancar);
 
@@ -547,11 +628,7 @@ window.addEventListener('resize', () => {
     const p = avance();
     medir();
     // Al cambiar el tamaño, se queda en el mismo punto del camino.
-    if (andando) {
-      const { desde, hasta } = tramoDeScroll();
-      window.scrollTo({ top: desde + p * (hasta - desde), behavior: 'instant' });
-    }
-    encuadrar();
+    irA(p * recorrido(), true);
     arrancar();
   });
 });
@@ -559,26 +636,87 @@ window.addEventListener('resize', () => {
 movimiento.addEventListener('change', () => {
   medir();
   encuadrar();
+  if (quieto()) vida.mover(reloj, 0);
   arrancar();
+});
+
+/* ------------------------------------------------------------------
+   Caminar: el dedo, la ruedita y el teclado
+   ------------------------------------------------------------------ */
+
+// El dedo: el scroll de costado del navegador. La isla solo mira dónde quedó.
+escenario.addEventListener(
+  'scroll',
+  () => {
+    if (objetivo === null || Math.abs(objetivo - escenario.scrollLeft) < 1) encuadrar();
+  },
+  { passive: true },
+);
+// Si el dedo agarra la escena mientras la ruedita la llevaba, manda el dedo.
+escenario.addEventListener('pointerdown', () => (objetivo = null), { passive: true });
+
+/** Lo que flota encima: ahí la ruedita y las flechas son de ellos. */
+const encima = (el: Element | null): boolean => !!el?.closest?.('.bestiario-hoja, .camino-fichas--abierta');
+
+// La ruedita sabe bajar: en el camino, bajar es caminar.
+document.addEventListener(
+  'wheel',
+  (ev) => {
+    if (ev.ctrlKey || encima(ev.target as Element)) return;
+    const unidad = ev.deltaMode === 1 ? 16 : ev.deltaMode === 2 ? vistaPx : 1;
+    const dy = ev.deltaY * unidad;
+    const dx = ev.deltaX * unidad;
+    // De costado (un panel táctil) camina solo, con el scroll del navegador.
+    if (Math.abs(dy) <= Math.abs(dx)) return;
+    ev.preventDefault();
+    irA((objetivo ?? escenario.scrollLeft) + dy);
+  },
+  { passive: false },
+);
+
+document.addEventListener('keydown', (ev) => {
+  if (ev.key === 'Escape') {
+    if (!hoja.hidden) cerrarHoja();
+    else if (lista.classList.contains('camino-fichas--abierta')) cerrarLista();
+    else callar();
+    return;
+  }
+  const el = ev.target as Element;
+  if (ev.defaultPrevented || ev.altKey || ev.ctrlKey || ev.metaKey || encima(el) || el.closest('input, textarea, select')) return;
+  const boton = el.closest('a, button, [role="button"]');
+  const paso = vistaPx * 0.25;
+  const hoja_ = vistaPx * 0.8;
+  const desde = objetivo ?? escenario.scrollLeft;
+  const metas: Record<string, number> = {
+    ArrowRight: desde + paso,
+    ArrowDown: desde + paso,
+    ArrowLeft: desde - paso,
+    ArrowUp: desde - paso,
+    PageDown: desde + hoja_,
+    PageUp: desde - hoja_,
+    Home: 0,
+    End: recorrido(),
+  };
+  // La barra espaciadora es de los botones; afuera de ellos, camina como en una página.
+  if (ev.key === ' ' && !boton) metas[' '] = desde + (ev.shiftKey ? -hoja_ : hoja_);
+  const meta = metas[ev.key];
+  if (meta === undefined) return;
+  ev.preventDefault();
+  irA(meta);
 });
 
 /* ------------------------------------------------------------------
    Los toques de la página
    ------------------------------------------------------------------ */
 
-// Con el teclado, lo que recibe el foco adentro de la escena se trae a la vista; el cruce,
-// andando, está al final de la caminata.
+// Con el teclado, lo que recibe el foco adentro de la escena se trae a la vista; el cruce, al
+// final de la caminata.
 escenario.addEventListener('focusin', (ev) => {
   const el = ev.target as Element;
   if (cruce.contains(el)) {
-    if (andando && !cruce.classList.contains('cruce--a-la-vista')) alCruce(false);
+    if (!cruce.classList.contains('cruce--a-la-vista')) alCruce(false);
   } else if (el.closest('.bestia, .titere')) traer(el);
 });
-
-// Quieto, la tira se corre de costado con el dedo: los pasos salen de ahí.
-escenario.addEventListener('scroll', () => {
-  if (!andando) entorno?.caminar(escenario.scrollLeft / (escenario.clientHeight / ALTO));
-}, { passive: true });
 
 camino.querySelector('.camino-saltar')!.addEventListener('click', (ev) => {
   ev.preventDefault();
@@ -588,13 +726,6 @@ camino.querySelector('.camino-saltar')!.addEventListener('click', (ev) => {
 bocadilloFicha.addEventListener('click', () => abrir(bocadilloFicha.dataset.ir!));
 cerrar.addEventListener('click', cerrarHoja);
 
-document.addEventListener('keydown', (ev) => {
-  if (ev.key !== 'Escape') return;
-  if (!hoja.hidden) cerrarHoja();
-  else if (lista.classList.contains('camino-fichas--abierta')) cerrarLista();
-  else callar();
-});
-
 document.addEventListener('click', (ev) => {
   const el = ev.target as Element;
   const escucha = el.closest<HTMLButtonElement>('[data-escuchar]');
@@ -603,16 +734,24 @@ document.addEventListener('click', (ev) => {
     return;
   }
   // Un vecino de "Anda cerca" que vive en esta página abre su ficha acá; si vive en otra,
-  // el enlace lleva a su página.
+  // el enlace lleva a su camino, que la abre al llegar.
   const ir = el.closest<HTMLElement>('[data-ir]');
   if (ir && ir !== bocadilloFicha && bestias.has(ir.dataset.ir!)) {
     ev.preventDefault();
-    abrir(ir.dataset.ir!);
+    llevarA(ir.dataset.ir!);
     return;
   }
-  // Tocar la escena fuera de un bicho calla el bocadillo.
+  // Tocar la escena fuera de un bicho calla el bocadillo; tocar afuera de la ficha la cierra.
   if (!bocadillo.hidden && !el.closest('.bocadillo, .bestia, .titere')) callar();
+  if (!hoja.hidden && !el.closest('.bestiario-hoja, .bocadillo, .bestia, .titere, .camino-fichas')) cerrarHoja();
 });
+
+/** Lleva hasta un bicho de esta página y abre su ficha: lo pide un enlace de otro camino. */
+function llevarA(id: string): void {
+  const g = piso.querySelector<SVGGElement>(`.bestia[data-id="${id}"], .titere[data-id="${id}"]`);
+  if (g) traer(g);
+  abrir(id);
+}
 
 /* ------------------------------------------------------------------
    Arranque
@@ -622,6 +761,12 @@ for (const id of anotadas) if (bestias.has(id)) pintarAnotada(id);
 pintarLibreta();
 medir();
 encuadrar();
-// Se llegó al cruce volviendo de la región de al lado (`#cruce`): se aparece al final del camino.
-if (location.hash === '#cruce') requestAnimationFrame(() => alCruce(false));
+if (quieto()) vida.mover(0, 0);
+requestAnimationFrame(() => {
+  // Se llegó al cruce volviendo de la región de al lado (`#cruce`): se aparece al final del
+  // camino. Un enlace a un bicho (`#el-lobo-suelto`) lleva hasta él con su ficha abierta.
+  const pedido = decodeURIComponent(location.hash.slice(1));
+  if (pedido === 'cruce') alCruce(false);
+  else if (bestias.has(pedido)) llevarA(pedido);
+});
 arrancar();

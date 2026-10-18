@@ -7,14 +7,16 @@
    adelante. Esta hoja la importan solo esas páginas; lo que comparten con el bestiario (el
    cartel de sello, el bocadillo, la hoja de la ficha, las fichas) sigue en `sitio.css`.
 
-   DOS MODOS, Y EL DE ABAJO ALCANZA SOLO:
+   TRES MODOS, Y EL DE ABAJO ALCANZA SOLO:
 
-   - **Quieto** (sin JavaScript o con movimiento reducido): la escena es una tira que se corre
-     de costado con el dedo, como los recintos de noche. Las capas van juntas y el cruce está
-     al final de la tira.
-   - **Andando** (`.camino--andando`, lo pone la isla): la escena queda pegada a la pantalla
-     mientras la sección pasa, y la isla corre cada capa a su velocidad con el scroll. El alto
-     de la sección (`--recorrido`) lo calcula la isla: un píxel de bajar es un píxel de caminar.
+   - **Sin JavaScript**: la escena es una tira en el flujo de la página, que se corre de costado
+     con el dedo, como los recintos de noche. Las capas van juntas y el cruce está al final.
+   - **Andando** (`.camino--andando`, lo pone la isla): la escena es la pantalla entera y se corre
+     de costado (`D-77`: se avanza para el lado donde se camina, no para abajo). Así también con
+     movimiento reducido, y así en los recintos de títeres, que son una sola capa.
+   - **Con paralaje** (`.camino--paralaje`, donde hay capas y movimiento): la vista queda pegada a
+     la pantalla mientras la tira pasa por debajo, y la isla corre cada capa a su velocidad. Un
+     píxel de deslizar es un píxel de caminar.
 
    Lo que aparece (los ojos al llegar, el cruce al final) aparece con opacidad sobre
    `--duracion-umbral`, que el corte de movimiento reducido lleva a cero. Ninguna sombra ni
@@ -69,12 +71,18 @@
   border-block: var(--linea) solid var(--bestia-lobo-sombra);
 }
 
-/* La tira: tan ancha como pide el piso a este alto. */
+/* La tira: tan ancha como pide el piso a este alto. Con la isla, el ancho lo pone ella, exacto. */
 .camino-tira {
   position: relative;
   height: 100%;
   width: calc(var(--alto-escena) * var(--ancho) / var(--alto));
   overflow: hidden;
+}
+
+/* La vista: cubre la tira entera, y las capas se paran en ella. */
+.camino-vista {
+  position: absolute;
+  inset: 0;
 }
 
 .camino .capa {
@@ -93,22 +101,47 @@
 
 .camino-deslizar { padding-inline: var(--espacio-2); }
 
-/* ---- Andando: la escena pegada a la pantalla ---------------------- */
+/* ---- Andando: la escena es la pantalla, y se corre de costado (D-77) ---- */
 
-.camino--andando { height: var(--recorrido, auto); }
-
+/* La escena entera, siempre: se camina deslizando de costado, con el scroll del navegador. El dedo
+   que baja no hace nada, y el que tira para el costado no vuelve a la página de antes. */
 .camino--andando .camino-escenario {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   height: 100svh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+  touch-action: pan-x pinch-zoom;
+  scrollbar-width: none;
+  border: 0;
+}
+
+.camino--andando .camino-escenario::-webkit-scrollbar { display: none; }
+
+.camino--andando { --alto-escena: 100svh; }
+
+/* Una escena más angosta que la pantalla (un recinto en la compu) queda en el medio. */
+.camino--andando .camino-tira { margin-inline: auto; }
+.camino--andando .camino-deslizar { display: none; }
+
+/* Con paralaje, la vista queda quieta en la pantalla mientras la tira pasa: las capas las corre
+   la isla, cada una a su velocidad. La tira no recorta: si recortara, sería ella la caja de
+   scroll de la vista, y la vista no se pegaría a la pantalla. Recorta la vista. */
+.camino--paralaje .camino-tira { overflow: visible; }
+
+.camino--paralaje .camino-vista {
+  position: sticky;
+  left: 0;
+  height: 100%;
   overflow: hidden;
 }
 
-.camino--andando .camino-tira { width: 100%; }
-.camino--andando .capa { will-change: transform; }
-.camino--andando .camino-deslizar { display: none; }
+.camino--paralaje .capa { will-change: transform; }
 
-/* Los ojos se encienden cuando se llega a ellos. Solo andando: quieto, se ven todos. */
+/* Los ojos se encienden cuando se llega a ellos. Solo andando: sin la isla, se ven todos. */
 .camino--andando .aparece {
   opacity: 0;
   transition: opacity var(--duracion-umbral) var(--curva-cinta);
@@ -132,13 +165,13 @@
   padding: var(--espacio-2);
 }
 
-.camino--andando .cruce {
+.camino--paralaje .cruce {
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--duracion-umbral) var(--curva-cinta);
 }
 
-.camino--andando .cruce--a-la-vista {
+.camino--paralaje .cruce--a-la-vista {
   opacity: 1;
   pointer-events: auto;
 }
@@ -396,17 +429,12 @@ html.camino-pantalla body { background: var(--fondo); }
 /* Los dos botones en un renglón, aun a 320 px. */
 .camino-pantalla .camino-boton { padding: 0 0.6rem; font-size: 0.7rem; }
 
-/* Una vez que se arrancó a caminar, la instrucción y la libreta se van: queda el cartel. */
-.camino-pantalla .camino-bajada,
-.camino-pantalla .camino-tablero .bestiario-libreta {
-  transition: opacity var(--duracion-umbral) var(--curva-cinta);
-}
-
+/* Caminando, el cartel se achica al nombre y los botones: lo demás tapaba la escena (D-77). */
 .camino--caminando .camino-bajada,
-.camino--caminando .camino-tablero .bestiario-libreta {
-  opacity: 0;
-  pointer-events: none;
-}
+.camino--caminando .camino-tablero .bestiario-libreta,
+.camino--caminando .camino-cartel .bestiario-canta,
+.camino--caminando .camino-cartel .recinto-numero,
+.camino--caminando .camino-suena { display: none; }
 
 /* En el cruce, el tablero se achica al nombre: los carteles del cruce mandan, y bajan lo
    justo para no quedar debajo de él. */
@@ -420,26 +448,44 @@ html.camino-pantalla body { background: var(--fondo); }
   padding-top: calc(var(--toque-min) * 2 + var(--espacio-1) * 2 + 3rem);
 }
 
-/* La lista, abierta: una hoja entera encima del camino, con su cruz. */
-.camino-pantalla .camino-fichas--abierta {
+/* La lista y la ficha flotan encima de la escena sin taparla entera (D-77): un recorte de papel
+   oscuro con el borde grueso, despegado de los bordes, y la escena sigue ahí alrededor. Pedido del
+   usuario: *"que en móvil la ficha tampoco te saque de la inmersión"*. */
+.camino-pantalla .camino-fichas--abierta,
+.camino-pantalla .bestiario-hoja {
   position: fixed;
-  inset: 0;
-  z-index: 35;
+  top: auto;
+  left: var(--espacio-1);
+  right: var(--espacio-1);
+  bottom: calc(var(--espacio-1) + env(safe-area-inset-bottom, 0px));
+  width: auto;
+  max-height: 58svh;
   margin: 0;
-  padding: calc(var(--toque-min) + var(--espacio-2)) var(--espacio-2) var(--espacio-4);
+  padding: var(--espacio-1) var(--espacio-2) var(--espacio-3);
   overflow-y: auto;
   overscroll-behavior: contain;
   background: var(--fondo);
+  border: var(--linea) solid var(--papel);
+  border-radius: 3px;
+}
+
+.camino-pantalla .camino-fichas--abierta { z-index: 35; max-height: 70svh; }
+/* La ficha abre encima de la lista. */
+.camino-pantalla .bestiario-hoja { z-index: 40; }
+
+/* En la compu, a un costado, como en el bestiario: la escena queda entera a la vista. */
+@media (min-width: 52rem) {
+  .camino-pantalla .camino-fichas--abierta,
+  .camino-pantalla .bestiario-hoja {
+    left: auto;
+    right: var(--espacio-2);
+    bottom: var(--espacio-2);
+    width: min(30rem, 42vw);
+    max-height: 82svh;
+  }
 }
 
 .camino-fichas--abierta .bestiario-lista { max-width: var(--ancho-hoja); margin-inline: auto; }
 
-.camino-fichas .camino-cerrar-lista {
-  position: fixed;
-  top: var(--espacio-1);
-  right: var(--espacio-2);
-  z-index: 36;
-}
-
-/* La ficha abre encima de la lista. */
-.camino-pantalla .bestiario-hoja { z-index: 40; }
+/* La cruz de la lista va pegada arriba adentro de la lista, como la de la ficha. */
+.camino-fichas .camino-cerrar-lista { z-index: 1; }

@@ -7,6 +7,27 @@
 
 **Última actualización:** 2026-10-18
 
+> ## 🧭 LOS TRECE ENTORNOS, CONECTADOS Y DE COSTADO (2026-10-18) — `D-77`
+>
+> **En `main` desde el PR #65** (rama `bestiario/todo-caminable`, worktree `.claude/worktrees/camino-todo`), sobre
+> `main` en `cc58d47`, que no se había movido. Lo integró Claude a pedido del usuario (*"Integrá el PR #65 a main"*). Pedido del usuario: *"Todos los entornos deben ser caminables y conectados. En móvil que haya que
+> scrollear para el lado donde avanzás, no para abajo"*, *"siempre en pantalla completa"*, *"que la ficha sea una
+> ficha flotando sin tapar toda la pantalla"* y *"si entrás al bestiario ya estás caminando y con el sonido activado"*.
+>
+> - **Las trece regiones tienen su camino**, y desde el monte se llega a todas y se vuelve (lo mira el test). El
+>   monte y la pastura, como estaban; los seis entornos de la décima vuelta, pintados a 2400 con paralaje; los cinco
+>   recintos de títeres, enteros y a pantalla completa (son chicos por naturaleza: no se caminan, se recorren).
+> - **Cada uno termina en un cruce**: la noche se come el borde de la escena y la picada se abre hacia la luz de cada
+>   vecina. Todos los carteles llevan a otro camino.
+> - **Se avanza de costado**: en el teléfono, el scroll de costado del navegador; en la compu, la ruedita y las flechas.
+> - **La ficha y la lista flotan** abajo, sin tapar la escena entera. Caminando, el tablero se achica al nombre.
+> - **Se entra con el sonido pedido**, que suena con el primer toque, y cada región tiene su receta de ruidos.
+> - **Por dentro**: la vida de los recintos pasó a `scripts/bestiario/recintos.ts` (la usan las dos islas), y el piso
+>   de cada tramo lo arma `lib/bestiario/escenas-camino.ts`. Los rótulos del plano llevan a caminar.
+> - **Verde:** `npm test` (1707), `npm run check`, `npm run build`. Visto en el panel a 375×812 y 1280×800.
+> - **Abierto:** `T-490` (teléfono de verdad y oírlo), `T-491` (el plano como galería o solo mapa), `T-492` (los diez
+>   personajes de `bestiario/diez` en los caminos largos), `T-493` (lienzo).
+
 > ## 🍋 LIMÓN, POR LAS CHAPAS DEL BALDÍO (2026-10-18) — decimocuarta enmienda de `D-73`
 >
 > **En `main` desde el PR #63** (rama `bestiario/limon`, worktree `.claude/worktrees/bestiario-limon`), con `main`

@@ -4,7 +4,10 @@
  *
  * Pedido del usuario: *"que se escuchen otras cosas, pasos, sonidos de los personajes, ruidos
  * del entorno, que sea todo bien inmersivo"*. Acá está lo que la síntesis hace bien —ruido con
- * forma: hojas, pasto, viento, insectos, un cencerro, un pájaro de noche—. Lo que no hace bien
+ * forma: hojas, pasto, viento, insectos, un cencerro, un pájaro de noche—. Desde `D-77` se caminan
+ * las trece regiones, y cada una suma su suelo (tablas, baldosa, chapa, nieve, agua, tierra) y lo
+ * suyo: una gotera, un motor que pasa, las moscas, la sirena de lejos, el bombo de la murga, las
+ * llaves, las brasas, el agua del muelle, la bocina del ferry, la tele y la gente. Lo que no hace bien
  * (una voz, una risa, un aullido, un balido) no se finge con osciladores: queda pedido en
  * `Docs/SUGERENCIAS/HILO-sonidos-del-bestiario.md`, para grabarlo o bajarlo.
  *
@@ -77,6 +80,23 @@ export function crearEntorno(receta: Receta): Entorno {
     s.start(t, Math.random() * 1.5, o.dura + 0.05);
   }
 
+  /**
+   * Cada suelo: el golpe del talón (un pasabajos corto) y, encima, lo que suena según dónde se
+   * pisa, que son unos cuantos golpecitos de ruido por un filtro. Las hojas crujen, el pasto roza,
+   * la tabla golpea hueco, la baldosa taconea, la chapa resuena, la nieve chirría, el agua salpica
+   * y la tierra raspa.
+   */
+  const SUELOS: Record<Receta['suelo'], { talon: readonly [number, number, number]; encima: { tipo: BiquadFilterType; f: number; q: number; dura: number; vol: number }; veces: number }> = {
+    hojas: { talon: [380, 0.09, 0.5], encima: { tipo: 'bandpass', f: 3200, q: 0.9, dura: 0.16, vol: 0.22 }, veces: 3 },
+    pasto: { talon: [380, 0.09, 0.5], encima: { tipo: 'bandpass', f: 5200, q: 0.5, dura: 0.12, vol: 0.1 }, veces: 2 },
+    tablas: { talon: [220, 0.16, 0.6], encima: { tipo: 'bandpass', f: 880, q: 3, dura: 0.06, vol: 0.2 }, veces: 1 },
+    baldosa: { talon: [600, 0.05, 0.35], encima: { tipo: 'highpass', f: 2800, q: 0.7, dura: 0.035, vol: 0.18 }, veces: 1 },
+    chapa: { talon: [300, 0.08, 0.4], encima: { tipo: 'bandpass', f: 1750, q: 9, dura: 0.32, vol: 0.16 }, veces: 1 },
+    nieve: { talon: [420, 0.07, 0.3], encima: { tipo: 'bandpass', f: 1400, q: 0.6, dura: 0.06, vol: 0.14 }, veces: 4 },
+    agua: { talon: [260, 0.12, 0.35], encima: { tipo: 'bandpass', f: 720, q: 1.2, dura: 0.24, vol: 0.24 }, veces: 2 },
+    tierra: { talon: [480, 0.08, 0.45], encima: { tipo: 'bandpass', f: 2500, q: 0.6, dura: 0.08, vol: 0.08 }, veces: 2 },
+  };
+
   function paso(): void {
     if (!ctx || !general) return;
     const c = ctx;
@@ -84,12 +104,10 @@ export function crearEntorno(receta: Receta): Entorno {
     const destino = paneo(c, pie * 0.18);
     destino.connect(general);
     const fuerza = 0.85 + Math.random() * 0.3;
-    // El golpe sordo del talón y, encima, lo que cruje: hojas secas o pasto.
-    soplo(c, destino, { tipo: 'lowpass', f: 380, q: 0.7, dura: 0.09, vol: 0.5 * fuerza });
-    const suelo = receta.suelo;
-    const cruje = suelo === 'hojas' ? { f: 3200, q: 0.9, dura: 0.16, vol: 0.22 } : { f: 5200, q: 0.5, dura: 0.12, vol: 0.1 };
-    for (let i = 0; i < (suelo === 'hojas' ? 3 : 2); i++) {
-      soplo(c, destino, { tipo: 'bandpass', ...cruje, vol: cruje.vol * fuerza, cuando: c.currentTime + 0.01 + i * (0.018 + Math.random() * 0.03) });
+    const { talon: [f, dura, vol], encima, veces } = SUELOS[receta.suelo];
+    soplo(c, destino, { tipo: 'lowpass', f, q: 0.7, dura, vol: vol * fuerza });
+    for (let i = 0; i < veces; i++) {
+      soplo(c, destino, { ...encima, vol: encima.vol * fuerza, cuando: c.currentTime + 0.01 + i * (0.018 + Math.random() * 0.03) });
     }
   }
 
@@ -205,7 +223,221 @@ export function crearEntorno(receta: Receta): Entorno {
     g.connect(destino);
   }
 
-  const SONIDOS: Record<string, () => void> = { lechuza, cencerro, grillo };
+  /** Un oscilador con su envolvente: sube rápido, se sostiene y se apaga. */
+  function tono(destino: AudioNode, o: { tipo: OscillatorType; f0: number; f1?: number; dura: number; vol: number; cuando?: number }): OscillatorNode {
+    const c = ctx!;
+    const t = o.cuando ?? c.currentTime;
+    const osc = c.createOscillator();
+    osc.type = o.tipo;
+    osc.frequency.setValueAtTime(o.f0, t);
+    if (o.f1 !== undefined) osc.frequency.exponentialRampToValueAtTime(o.f1, t + o.dura);
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(o.vol, t + Math.min(0.03, o.dura / 4));
+    g.gain.exponentialRampToValueAtTime(0.0001, t + o.dura);
+    osc.connect(g);
+    g.connect(destino);
+    osc.start(t);
+    osc.stop(t + o.dura + 0.05);
+    return osc;
+  }
+
+  /** Un destino con paneo y, si se pide, lejos: un pasabajos que se come los agudos. */
+  function salida(p: number, lejos?: number): AudioNode {
+    const c = ctx!;
+    const destino = paneo(c, p);
+    destino.connect(general!);
+    if (!lejos) return destino;
+    const f = c.createBiquadFilter();
+    f.type = 'lowpass';
+    f.frequency.value = lejos;
+    f.connect(destino);
+    return f;
+  }
+
+  /** Un paneo que cruza de un lado al otro mientras dura el sonido. */
+  function cruzando(dura: number, desde: number): AudioNode {
+    const c = ctx!;
+    const t = c.currentTime;
+    const pan = c.createStereoPanner?.();
+    const destino: AudioNode = pan ?? c.createGain();
+    destino.connect(general!);
+    if (pan) {
+      pan.pan.setValueAtTime(desde, t);
+      pan.pan.linearRampToValueAtTime(-desde, t + dura);
+    }
+    return destino;
+  }
+
+  /** Una gota que cae en el agua: un tono que baja de golpe. */
+  function gota(): void {
+    if (!ctx || !general) return;
+    tono(salida(Math.random() * 1.2 - 0.6), { tipo: 'sine', f0: 1500 + Math.random() * 500, f1: 520, dura: 0.07, vol: 0.06 });
+  }
+
+  /** Las moscas: un zumbido que tiembla y cruza de un lado al otro. */
+  function zumbido(): void {
+    if (!ctx || !general) return;
+    const c = ctx;
+    const t = c.currentTime;
+    const dura = 1.4 + Math.random() * 1.2;
+    const filtro = c.createBiquadFilter();
+    filtro.type = 'bandpass';
+    filtro.frequency.value = 900;
+    filtro.Q.value = 1.5;
+    filtro.connect(cruzando(dura, Math.random() < 0.5 ? -0.8 : 0.8));
+    const ala = tono(filtro, { tipo: 'sawtooth', f0: 200 + Math.random() * 40, dura, vol: 0.035 });
+    const temblor = c.createOscillator();
+    temblor.frequency.value = 9;
+    const temblorG = c.createGain();
+    temblorG.gain.value = 14;
+    temblor.connect(temblorG);
+    temblorG.connect(ala.frequency);
+    temblor.start(t);
+    temblor.stop(t + dura + 0.05);
+  }
+
+  /** La sirena de la cana, de lejos: un tono que sube y baja dos veces. */
+  function sirena(): void {
+    if (!ctx || !general) return;
+    const c = ctx;
+    const t = c.currentTime;
+    const o = c.createOscillator();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(640, t);
+    for (let i = 0; i < 2; i++) {
+      o.frequency.linearRampToValueAtTime(940, t + i * 1.6 + 0.8);
+      o.frequency.linearRampToValueAtTime(640, t + i * 1.6 + 1.6);
+    }
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.04, t + 0.6);
+    g.gain.setValueAtTime(0.04, t + 2.6);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 3.3);
+    o.connect(g);
+    g.connect(salida(Math.random() < 0.5 ? -0.7 : 0.7, 1200));
+    o.start(t);
+    o.stop(t + 3.4);
+  }
+
+  /** Las llaves y las cadenas: unos cuantos golpecitos metálicos, desparejos. */
+  function cadena(): void {
+    if (!ctx || !general) return;
+    const c = ctx;
+    const destino = salida(Math.random() * 1.2 - 0.6);
+    const golpes = 4 + Math.floor(Math.random() * 4);
+    for (let i = 0; i < golpes; i++) {
+      soplo(c, destino, { tipo: 'bandpass', f: 4200 + Math.random() * 2400, q: 12, dura: 0.12, vol: 0.12, cuando: c.currentTime + i * (0.05 + Math.random() * 0.07) });
+    }
+  }
+
+  /** Las brasas del infierno: chispazos cortos y secos, de a varios. */
+  function brasas(): void {
+    if (!ctx || !general) return;
+    const c = ctx;
+    const destino = salida(Math.random() * 1.4 - 0.7);
+    const chispas = 2 + Math.floor(Math.random() * 5);
+    for (let i = 0; i < chispas; i++) {
+      soplo(c, destino, { tipo: 'highpass', f: 2200 + Math.random() * 2000, q: 0.8, dura: 0.02, vol: 0.12, cuando: c.currentTime + Math.random() * 0.6 });
+    }
+  }
+
+  /** Un ruido largo con forma: el agua del muelle, la gente del galpón. */
+  function oleada(o: { tipo: BiquadFilterType; f: readonly number[]; q: number; vol: number; dura: number; destino: AudioNode }): void {
+    const c = ctx!;
+    const t = c.currentTime;
+    const s = c.createBufferSource();
+    s.buffer = ruido;
+    s.loop = true;
+    const filtro = c.createBiquadFilter();
+    filtro.type = o.tipo;
+    filtro.Q.value = o.q;
+    o.f.forEach((f, i) => filtro.frequency[i ? 'linearRampToValueAtTime' : 'setValueAtTime'](f, t + (o.dura * i) / (o.f.length - 1 || 1)));
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(o.vol, t + o.dura * 0.4);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + o.dura);
+    s.connect(filtro);
+    filtro.connect(g);
+    g.connect(o.destino);
+    s.start(t, Math.random() * 1.5);
+    s.stop(t + o.dura + 0.05);
+  }
+
+  /** El agua contra los pilotes del muelle: una ola grave que va y viene. */
+  function ola(): void {
+    if (!ctx || !general) return;
+    oleada({ tipo: 'lowpass', f: [300, 900, 250], q: 0.7, vol: 0.16, dura: 2.3, destino: salida(Math.random() * 1.2 - 0.6) });
+  }
+
+  /** La gente que espera en el galpón: un murmullo que crece y se va. */
+  function gente(): void {
+    if (!ctx || !general) return;
+    oleada({ tipo: 'bandpass', f: [600, 700, 600], q: 0.8, vol: 0.05, dura: 4.5, destino: salida(0, 1400) });
+  }
+
+  /** La bocina del ferry que sale: dos notas graves, un poco desafinadas entre sí. */
+  function bocina(): void {
+    if (!ctx || !general) return;
+    const destino = salida(0.5, 700);
+    for (const f of [110, 113.5]) tono(destino, { tipo: 'sawtooth', f0: f, dura: 2.2, vol: 0.05 });
+  }
+
+  /** El bombo de la murga, de lejos: un golpe grave que se apaga, y su contratiempo. */
+  function bombo(): void {
+    if (!ctx || !general) return;
+    const c = ctx;
+    const destino = salida(-0.4, 500);
+    for (const [cuando, vol] of [[0, 0.22], [0.42, 0.14], [0.63, 0.18]] as const) {
+      tono(destino, { tipo: 'sine', f0: 92, f1: 48, dura: 0.35, vol, cuando: c.currentTime + cuando });
+    }
+  }
+
+  /** La tele que se va de canal: chasquidos de estática. */
+  function interferencia(): void {
+    if (!ctx || !general) return;
+    const c = ctx;
+    const destino = salida(0);
+    for (let i = 0; i < 3; i++) {
+      soplo(c, destino, { tipo: 'highpass', f: 1800, q: 0.5, dura: 0.18 + Math.random() * 0.2, vol: 0.05, cuando: c.currentTime + i * 0.22 });
+    }
+  }
+
+  /** Un fierro que pasa por la ruta: el motor viene de un lado, crece y se va para el otro. */
+  function motor(): void {
+    if (!ctx || !general) return;
+    const c = ctx;
+    const t = c.currentTime;
+    const dura = 3.2;
+    const filtro = c.createBiquadFilter();
+    filtro.type = 'lowpass';
+    filtro.frequency.setValueAtTime(260, t);
+    filtro.frequency.linearRampToValueAtTime(900, t + dura / 2);
+    filtro.frequency.linearRampToValueAtTime(220, t + dura);
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.12, t + dura / 2);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dura);
+    filtro.connect(g);
+    g.connect(cruzando(dura, -0.9));
+    const o = c.createOscillator();
+    o.type = 'sawtooth';
+    // Cuando pasa, el tono sube al acercarse y baja al irse.
+    o.frequency.setValueAtTime(58, t);
+    o.frequency.linearRampToValueAtTime(66, t + dura / 2);
+    o.frequency.linearRampToValueAtTime(50, t + dura);
+    o.connect(filtro);
+    o.start(t);
+    o.stop(t + dura + 0.05);
+    const s = c.createBufferSource();
+    s.buffer = ruido;
+    s.connect(filtro);
+    s.start(t, 0, dura);
+  }
+
+  const SONIDOS: Record<string, () => void> = {
+    lechuza, cencerro, grillo, zumbido, sirena, cadena, gota, brasas, ola, bocina, bombo, interferencia, gente, motor,
+  };
 
   /** Agenda algo que vuelve cada tanto, con azar para que no se oiga la cuenta. */
   function cadaTanto(hacer: () => void, min: number, max: number): void {
