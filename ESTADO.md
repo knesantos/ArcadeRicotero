@@ -344,7 +344,7 @@
 
 > ## 📚 UNA VUELTA ENTERA DE INVESTIGACIÓN PARA LA REDONDOPEDIA (2026-10-15) — `INV-300`
 >
-> **Solo documentos, en la misma carpeta que `ciclo-21/recitales`, sin commitear.** Pedido del usuario:
+> **En `main` desde el PR #64 (rama `investigacion/inv-300-wiki`).** Quedó sin commitear en la carpeta principal hasta el 2026-10-18, cuando se guardó tal cual. Pedido del usuario:
 > *"Hace una vuelta entera de buscar mas informacion en la wiki para la web y juegos"* (la wiki es la
 > Redondopedia).
 >
