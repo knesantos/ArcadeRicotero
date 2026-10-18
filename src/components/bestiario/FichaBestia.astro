@@ -1,0 +1,116 @@
+---
+/**
+ * La ficha de una bestia (`D-73`): una sola versión, que usan el índice del bestiario y la lista
+ * de cada camino. La isla la copia a la hoja cuando se toca al bicho en su escena.
+ *
+ * - `tinta`: el acento de su región (`--tr`).
+ * - `hrefCerca`: adónde lleva el chip de cada vecino de "Anda cerca". En el índice, a su ficha
+ *   en la misma página; en un camino, a la página donde vive.
+ * - `conMapa`: el botón "Buscala en el mapa", que solo tiene sentido en la página del plano.
+ * - `dePaso`: un sello para el que no vive en la región pero anda por el camino.
+ */
+import { BESTIARIO, CAMINO } from '../../lib/bestiario/copy.ts';
+import { conAudio, etiquetaRotulo, saleEn } from '../../lib/bestiario/fichas.ts';
+import { retrato } from '../../lib/bestiario/titeres.ts';
+import type { Bestia } from '../../lib/bestiario/mapa.ts';
+
+interface Props {
+  bestia: Bestia;
+  tinta: string;
+  nombres: ReadonlyMap<string, string>;
+  hrefCerca: (id: string) => string;
+  conMapa?: boolean;
+  dePaso?: boolean;
+}
+
+const { bestia: b, tinta, nombres, hrefCerca, conMapa = false, dePaso = false } = Astro.props;
+const r = retrato(b.id);
+---
+
+<li id={`b-${b.id}`} class="bestiario-item" data-id={b.id}>
+  <details class="bestiario-ficha" data-bestia={b.id}>
+    <summary>
+      {r ? (
+        <svg class="bestiario-mini bestiario-mini--tapa" viewBox={r.caja} aria-hidden="true" set:html={r.svg} />
+      ) : (
+        <svg class="bestiario-mini" viewBox="-10 -15 120 115" aria-hidden="true" style={`--tr: ${tinta}`}>
+          <use href={`#fig-${b.id}`} />
+        </svg>
+      )}
+      <span class="bestiario-nombre">{b.nombre}</span>
+      {dePaso && <span class="bestiario-de-paso">{CAMINO.dePaso}</span>}
+      <span class="bestiario-anotada-sello">{BESTIARIO.anotada}</span>
+    </summary>
+    <div class="bestiario-cuerpo" style={`--tr: ${tinta}`}>
+      <p class="bestiario-sello">{BESTIARIO.clases[b.clase]}</p>
+      <h4 class="bestiario-ficha-titulo" data-titulo>{b.nombre}</h4>
+      {r ? (
+        <svg class="bestiario-figura bestiario-figura--tapa" viewBox={r.caja} aria-hidden="true" set:html={r.svg} />
+      ) : (
+        <svg class="bestiario-figura" viewBox="-10 -15 120 115" aria-hidden="true">
+          <use href={`#fig-${b.id}`} />
+        </svg>
+      )}
+
+      {b.tema ? (
+        <>
+          <p class="bestiario-sale">
+            <span class="bestiario-sub">{BESTIARIO.saleEn}</span> {saleEn(b.tema)}
+          </p>
+          <blockquote class="bestiario-verso">
+            {b.verso!.map((v) => <span>{v}</span>)}
+          </blockquote>
+        </>
+      ) : (
+        <p class="bestiario-sale">{BESTIARIO.sinTema}</p>
+      )}
+      {(b.tambien ?? []).map((t) => (
+        <p class="bestiario-tambien">
+          <span class="bestiario-sub">{BESTIARIO.tambienEn}</span> {saleEn(t.tema)}: «{t.verso.join(' / ')}»
+        </p>
+      ))}
+
+      <p class="bestiario-sub">{BESTIARIO.laEstampa}</p>
+      <p class="bestiario-estampa">{b.estampa}</p>
+
+      {b.cuenta && b.cuenta.length > 0 && (
+        <>
+          <p class="bestiario-sub">{BESTIARIO.seCuenta}</p>
+          {b.cuenta.map((c) => (
+            <p class={`parrafo parrafo--${c.rotulo}`}>
+              {c.rotulo !== 'hecho' && <span class="marca-rotulo">{etiquetaRotulo(c)}</span>}
+              {c.texto}
+              {c.fuente && <span class="fuente-chip"> — {c.rotulo === 'hecho' ? 'hecho · ' : ''}{c.fuente}</span>}
+            </p>
+          ))}
+        </>
+      )}
+
+      <div class="bestiario-acciones">
+        {b.tema && conAudio.has(b.tema) && (
+          <button type="button" class="bestiario-escuchar" data-escuchar={b.tema}>
+            {BESTIARIO.escuchar}
+          </button>
+        )}
+        {b.tema && <a href={`/letras-y-acordes/${b.tema}/`}>{BESTIARIO.leerLetra}</a>}
+        {b.articulo && <a href={`/redondopedia/${b.articulo}/`}>{BESTIARIO.leerArticulo}</a>}
+        {conMapa && (
+          <button type="button" class="bestiario-ver solo-indice" data-ver={b.id}>
+            {BESTIARIO.verEnElMapa}
+          </button>
+        )}
+      </div>
+
+      <p class="bestiario-sub">{BESTIARIO.andaCerca}</p>
+      <ul class="bestiario-chips">
+        {b.cerca.map((id) => (
+          <li>
+            <a class="bestiario-chip" href={hrefCerca(id)} data-ir={id}>
+              {nombres.get(id)}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </details>
+</li>

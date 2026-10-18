@@ -21,9 +21,41 @@
 > - **Listos para el camino**: cada capa es `(ancho, alto)`, los hitos en el piso, la geometría en
 >   `rig-entornos.ts`, y `luzQueAsoma` para anunciar cada región desde la vecina.
 > - **Verde:** `npm test` (1657), `npm run check`, `npm run build`. Visto en el navegador del panel a 375 y 800 px.
-> - **Al integrar**: choca con la drácula y el camino en `bestiario.astro` (el `deNoche`), `arte.ts`, `sitio.css`,
->   `tokens.css`, `DECISIONES` y este archivo; son todos de "dos entradas nuevas". La (7) y la (8) son de la
->   drácula (PR #56) y la (9) del camino (PR #54): si llegan en otro orden, se renumera.
+> - **`main` ya está adentro**, con el camino (PR #54, enmienda 7). Falta la drácula (PR #56, enmiendas 8 y 9): al
+>   integrar choca en `bestiario.astro` (el `deNoche`), `arte.ts`, `sitio.css`, `tokens.css`, `DECISIONES` y este
+>   archivo, todos de "dos entradas nuevas". Si llega después que este PR, se renumera.
+
+> ## 🌲 EL CAMINO CON CRUCES: EL BESTIARIO SE CAMINA (2026-10-18) — `D-73`, enmienda 7
+>
+> **Integrada a `main` con el PR #54**, desde la rama `bestiario/camino-con-cruces` sobre `159b1bc`. La fusionó Claude a
+> pedido del usuario (*"integra a main"*). Se escribió como novena enmienda de `D-73` y se renumeró a séptima al integrar,
+> porque llegó antes que la drácula y la carga de a una (`ciclo-24/bestiario`), que pasan a octava y novena.
+> Pedido del usuario: que los entornos estén conectados y sea una aventura scrolleable donde aparecen
+> los personajes y se elige con flechas adónde ir. Se investigaron cinco formas y eligió, textual: *"Dale con
+> el camino con cruces: una página por región, scroll que camina de costado y flechas en el cruce. Arrancá por el monte
+> y la pastura como prueba."*
+>
+> - **`/redondopedia/bestiario/el-monte/` y `/la-pastura/`**: bajar camina la escena de costado (lejos 0,45, piso 1,
+>   frente 1,3; un píxel de bajar es un píxel de caminar). Los ojos se encienden al llegar, el lobo asoma cuando lo
+>   tenés cerca y te sigue con la cabeza, y en la pastura el lobo y el cordero viven como en su recinto. Al final, el
+>   cruce: un cartel por región vecina con la flecha según el plano redondo; las que todavía no se caminan llevan a
+>   su recinto ("EN EL PLANO"). El recinto del monte suma la puerta "Entrá caminando".
+> - **Lo que tocó de lo existente:** la lógica del lobo y el cordero pasó a `scripts/bestiario/pastura.ts` (la usan
+>   las dos islas), la ficha a `components/bestiario/FichaBestia.astro`, `arte.ts` separa `claroDeLaPastura()`, y la
+>   imprenta imprime también `PIEZAS_CAMINO` (cuatro piezas, 567 kB).
+> - **Molinetes:** sin JavaScript o con movimiento reducido, la escena es una tira que se corre con el dedo, con todo a
+>   la vista y los títeres en pose quieta.
+> - **Verde:** `npm test` (1662), `npm run check` y `npm run build`. Probado en el navegador a 390 px y a 1280 px:
+>   caminar, el lobo que asoma, tocar al cordero, abrir la ficha, la libreta, ir y volver por el cruce, la vista sin
+>   JavaScript y la de movimiento reducido.
+> - **Coordinado con la sesión de los fondos** (`bestiario/fondos-rocambole`): arma el arte de seis entornos con
+>   funciones `(ancho, alto = 640)` según la especificación del camino, para que cada tramo nuevo las use (`T-470`).
+> - **Abierto, sin trabar:** `T-470` (los otros tramos), `T-471` (teléfono de verdad), `T-472` (`experiencia`),
+>   `T-473` (el recinto del monte sin JavaScript dibuja los títeres enormes, defecto previo) y `T-474` (lienzo).
+> - **`ciclo-24/bestiario` (la drácula y la carga de a una) choca al integrar**: las dos ramas tocan `bestiario.astro` y
+>   `scripts/bestiario.ts`, y como esta entró primero, acomoda aquella: la ficha de `FichaBestia.astro` tiene que dibujar los
+>   retratos con `enEspera(...)` de `carga.ts`, y el test que cuenta tres `enEspera(` en `bestiario.astro` se ajusta;
+>   `recintoDeLaDracula` importa `partes`, `girar`, `parpado`, `hacia` y `suave` de `scripts/bestiario/articular.ts`.
 
 > ## 📼 EL BESTIARIO ENTRA A LA HOME (2026-10-17) — casete B3 del lado B
 >

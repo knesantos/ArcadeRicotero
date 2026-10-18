@@ -3503,6 +3503,29 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 .recinto-volver:hover,
 .recinto-volver:focus-visible { color: var(--texto); }
 
+/* La puerta de un recinto que ya se camina (D-73, séptima vuelta): un sello pegado al cartel,
+   que lleva a su camino con cruces. */
+.recinto-camino {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  margin: var(--espacio-1) 0 var(--espacio-1) var(--espacio-2);
+  padding: 0 0.8rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--fondo);
+  background: var(--papel);
+  border: var(--linea) solid var(--tr);
+  border-radius: 3px;
+  transform: rotate(1.2deg);
+}
+
+.recinto-camino:hover,
+.recinto-camino:focus-visible { border-style: dashed; }
+
 /* Los cinco de tapa se retratan con su recorte, sobre la tinta de su escena y no sobre papel. */
 .bestiario-figura--tapa,
 .bestiario-mini--tapa { background: var(--fondo); }

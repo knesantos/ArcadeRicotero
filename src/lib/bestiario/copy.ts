@@ -55,4 +55,30 @@ export const BESTIARIO = {
     resumen: 'Los bichos y la gente de las letras, cada uno en su rincón de un mapa que se recorre desde arriba.',
   },
   volverPortada: 'A LA REDONDOPEDIA',
+  /** La puerta de un recinto que ya tiene su camino (`D-73`, séptima vuelta). */
+  entrarCaminando: 'Entrá caminando',
+} as const;
+
+/**
+ * El camino con cruces (`D-73`, séptima vuelta): cada región es una página que se camina de
+ * costado. Registro 1 en el nombre y la acotación de la región (del JSON) y en el cartel del
+ * cruce; registro 3, seco, en la instrucción y en los sellos.
+ */
+export const CAMINO = {
+  volver: 'AL BESTIARIO',
+  sello: 'CAMINO DEL BESTIARIO',
+  /** La instrucción, abajo del nombre: la línea que nombra lo que hay que hacer. */
+  bajada: 'Bajá para caminar. Al final hay un cruce y elegís para dónde seguir.',
+  /** Sin movimiento, la escena se corre con el dedo, como los recintos de noche. */
+  deslizar: 'Deslizá de costado para caminar.',
+  escena: 'El camino, visto de costado',
+  saltar: 'Saltá al cruce',
+  cruce: {
+    titulo: 'Elegí para dónde seguir.',
+    etiqueta: 'El cruce',
+    /** En el cartel de una región que todavía no se camina: lleva a su recinto. */
+    enElPlano: 'EN EL PLANO',
+  },
+  dePaso: 'DE PASO',
+  aca: 'Los que andan por acá',
 } as const;
