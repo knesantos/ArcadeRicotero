@@ -9,7 +9,7 @@
 
 > ## 🗝️ BARBAZUL, TALLADO, CON LA BARBA DE OTRA PLANCHA (2026-10-18) — enmienda (11) de `D-73`, ciclo 25
 >
-> **En la rama `ciclo-25/bestiario`, con `origin/main` adentro en `46d36d1`; el PR se abre ahora, sin integrar.** Sacada
+> **En la rama `ciclo-25/bestiario`, con `origin/main` adentro en `168a1bd`; el PR se abre ahora, sin integrar.** Sacada
 > de `ciclo-24/bestiario` (PR #56) en `82c4453`. Pedido del usuario, el de las dos vueltas anteriores: *"Agrega otro personaje y pulilo a
 > fondo, se creativo que qeude como uno de rocambole"*.
 >
@@ -23,6 +23,26 @@
 > - **Para integrar** (`integrar.md`): si `main` se movió, juntarlo de nuevo. La (11) va después de la (10) de los
 >   entornos (#57), que ya está en `main`; si otra rama llega antes con la (11), se renumera esta.
 > - **Abierto:** `T-431`, `T-435` (el azul nuevo al lienzo), `T-437`/`T-439`.
+
+> ## 👣 AL BESTIARIO SE ENTRA CAMINANDO, Y SUENA (2026-10-18) — `D-76`
+>
+> **Sin integrar: espera su PR** (rama `bestiario/entorno-primero`, worktree `.claude/worktrees/bestiario-entorno`).
+> Pedido del usuario: *"El entorno caminable debe ser lo principal del bestiario [...] que para salir debas tocar
+> algo"* y *"que se escuchen otras cosas, pasos, sonidos de los personajes, ruidos del entorno"*.
+>
+> - **La puerta es el monte.** La home y la Redondopedia llevan al camino. El plano queda a un toque ("Al plano").
+> - **Pantalla entera.** Andando, el camino es la página: no hay nada abajo del cruce, no rebota, y se sale tocando.
+>   La lista de fichas se abre con "Mirá la lista". Sin JavaScript, todo igual que antes.
+> - **Suena, si lo prendés.** Recortes del disco del entorno, de lejos y filtrados: *Lobo suelto* en el monte,
+>   *Cordero atado* en la pastura. Más pasos atados al scroll, viento, grillos, una lechuza y el cencerro, todo
+>   sintetizado, sin archivos.
+> - **Qué se graba, qué se baja y qué se sintetiza**, región por región: `Docs/SUGERENCIAS/HILO-sonidos-del-bestiario.md`.
+>   La risa del gordo Pierre la grabás vos; los animales y los cristales, de Freesound CC0.
+> - **Abierto:**
+>   - `T-481`: el verso de cada personaje. Faltan el minuto de cada verso y los temas enteros en disco.
+>   - `T-482`: los sonidos grabados y los bajados.
+>   - `T-483`: probarlo en un teléfono de verdad.
+> - **Verde:** `npm test` (1691), `npm run check`, `npm run build`. Visto en el panel a 375×812.
 
 > ## 🎨 LOS SEIS ENTORNOS, CADA UNO EN SU TAPA (2026-10-18) — décima enmienda de `D-73`
 >
