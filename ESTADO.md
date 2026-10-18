@@ -9,7 +9,7 @@
 
 > ## 🦇 LA DRÁCULA CON TACONES, TALLADA COMO OKTUBRE, Y LA CARGA DE A UNA (2026-10-18) — séptima y octava enmiendas de `D-73`, ciclo 24
 >
-> **En la rama `ciclo-24/bestiario` (worktree `.claude/worktrees/bestiario-24`), sin commitear.** Pedido del
+> **En la rama `ciclo-24/bestiario`, PR #56 abierto, sin integrar (con `origin/main` adentro en `159b1bc`).** Pedido del
 > usuario, el mismo de Pierre: *"Agrega otro personaje y pulilo a fondo, se creativo que quede como uno de
 > rocambole"*; eligió *"Otro más, encima del #52"*.
 >
@@ -27,7 +27,8 @@
 > - **Abierto:** `T-444` (Barbazul), `T-431`, `T-435`, `T-437`/`T-439` (la mitad que pide un teléfono), `T-443`
 >   (seis recintos; la sesión de `bestiario/fondos-rocambole` está con los fondos de esos seis: sus escenas tienen
 >   que pasar por `enEspera`).
-> - **Para integrar:** juntar `origin/main` antes (entraron el #52 y el #53).
+> - **Para integrar** (`integrar.md`): si `main` se movió, juntarlo de nuevo. La rama `bestiario/camino-con-cruces` escribió su
+>   enmienda de `D-73` como (9) y se acomoda a `enEspera` cuando esta entre.
 
 > ## 📼 EL BESTIARIO ENTRA A LA HOME (2026-10-17) — casete B3 del lado B
 >
