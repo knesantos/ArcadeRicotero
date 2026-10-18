@@ -9,9 +9,9 @@
 
 > ## 🌑 LA REDONDOPEDIA DE NOCHE (2026-10-17) — `D-75`
 >
-> **Sin commitear**, en el worktree `.claude/worktrees/redondopedia-inmersiva`, rama
-> `diseno/redondopedia-inmersiva`, sobre `main` en `83f6172`. Todavía no tiene adentro el PR #53 (el
-> bestiario en la home, que entró a `main` en `159b1bc`). Pedido del usuario: *"Hace una pulida extrema
+> **Espera en el PR #55**, sin fusionar, rama `diseno/redondopedia-inmersiva` (worktree
+> `.claude/worktrees/redondopedia-inmersiva`), con `main` adentro en `159b1bc` (el bestiario en la home,
+> PR #53). Seis commits chicos y la fusión de `main`. Pedido del usuario: *"Hace una pulida extrema
 > de ui/ux a la redondopedia, debe sentirse inmersiva, misteriosa y mistica. Al mismo tiempo debe ser
 > facil de leer y que leyendo algo te de ganas de seguir con otra cosa"*.
 >
