@@ -23,7 +23,7 @@ import { BESTIARIO } from '../lib/bestiario/copy.ts';
 // módulos que dibujan (`arte*.ts`, `escenas.ts`, `titeres.ts`), que correrían el aerógrafo entero
 // en el teléfono al abrir la página. `bestiario.test.ts` lo vigila.
 import {
-  BAJO, DRACULA, DRACULA_ARMADO, LUZBELITO as LUZ, MOMO as MOMO_ESC, PIERRE, PIERRE_ARMADO, PRISION,
+  BAJO, BARBAZUL, BARBAZUL_ARMADO, DRACULA, DRACULA_ARMADO, LUZBELITO as LUZ, MOMO as MOMO_ESC, PIERRE, PIERRE_ARMADO, PRISION,
 } from '../lib/bestiario/rig.ts';
 import { ARMADO } from '../lib/bestiario/recortes.ts';
 import { ESPERA, GUARDADO } from '../lib/bestiario/carga.ts';
@@ -790,6 +790,228 @@ function recintoDePierre(escena: HTMLElement, svg: SVGSVGElement): Recinto {
 }
 
 /* ------------------------------------------------------------------
+   Barbazul, el dueño de la prisión (undécima vuelta)
+   ------------------------------------------------------------------ */
+
+/** El ángulo de un vector, en grados. */
+const angulo = (x: number, y: number): number => (Math.atan2(y, x) * 180) / Math.PI;
+const vuelta = (a: number): number => ((((a + 180) % 360) + 360) % 360) - 180;
+
+/**
+ * Un brazo de dos tramos que lleva la mano a un punto: devuelve cuánto gira el brazo en el hombro
+ * y cuánto gira el antebrazo adentro del brazo, que es como están anidados en la página. El codo
+ * queda del lado más cerca de donde estaba (`antes`): arranca donde está cuando el brazo cuelga, y
+ * de ahí en más sigue de cuadro en cuadro sin saltar a la otra solución.
+ */
+function alcanzar(
+  [sx, sy]: readonly [number, number],
+  [ex, ey]: readonly [number, number],
+  [hx, hy]: readonly [number, number],
+  [tx, ty]: readonly [number, number],
+  [ax, ay]: readonly [number, number],
+): { brazo: number; antebrazo: number; codo: [number, number] } {
+  const l1 = Math.hypot(ex - sx, ey - sy);
+  const l2 = Math.hypot(hx - ex, hy - ey);
+  const d = Math.min(l1 + l2 - 1, Math.max(Math.abs(l1 - l2) + 1, Math.hypot(tx - sx, ty - sy)));
+  const phi = Math.atan2(ty - sy, tx - sx);
+  const alfa = Math.acos(Math.min(1, Math.max(-1, (l1 * l1 + d * d - l2 * l2) / (2 * l1 * d))));
+  const codos = [phi + alfa, phi - alfa].map((a) => [sx + Math.cos(a) * l1, sy + Math.sin(a) * l1] as const);
+  const lejos = ([x, y]: readonly [number, number]): number => Math.hypot(x - ax, y - ay);
+  const [cx, cy] = lejos(codos[0]!) < lejos(codos[1]!) ? codos[0]! : codos[1]!;
+  const brazo = vuelta(angulo(cx - sx, cy - sy) - angulo(ex - sx, ey - sy));
+  const absoluto = angulo(tx - cx, ty - cy) - angulo(hx - ex, hy - ey);
+  return { brazo, antebrazo: vuelta(absoluto - brazo), codo: [cx, cy] };
+}
+
+/** Lo que cuelga (la barba, el manojo) sigue a su meta con retraso y se mece: un resorte con freno. */
+interface Resorte {
+  v: number;
+  p: number;
+}
+function resorte(r: Resorte, meta: number, dt: number, rigidez: number, freno: number): number {
+  r.v += ((meta - r.p) * rigidez - r.v * freno) * dt;
+  r.p += r.v * dt;
+  return r.p;
+}
+
+/**
+ * Barbazul recibe en la entrada de su prisión, adelante a la izquierda. Respira, parpadea y mira
+ * a la drácula cuando taconea por el pasillo, y de a ratos te mira a vos. Cada tanto se alisa la
+ * barba con la mano, o sacude el manojo, que se mece colgado del puño. Tocado, **hace la
+ * reverencia del anfitrión**: inclina la cabeza, se lleva la mano al pecho y con la otra te abre
+ * el paso, manojo en mano, mirándote por debajo de las cejas. Y al fondo, detrás de él, la puerta
+ * de su cuarto se entreabre sola: sale una luz roja que se derrama por el piso, y se cierra antes
+ * de que él se enderece. Si la drácula está quieta, se da vuelta a mirarlo (`alSaludar`).
+ */
+function barbazulDeLaPrision(escena: HTMLElement, svg: SVGSVGElement, laDracula: () => number, alSaludar: () => void): { pintar(t: number, dt: number): void; reverencia(t: number): void } {
+  const g = svg.querySelector<SVGGElement>('.titere--barbazul')!;
+  const entero = svg.querySelector<SVGGElement>('#barbazul-entero')!;
+  const p = partes(g);
+  const cuarto = svg.querySelector<SVGGElement>('[data-parte="cuarto"]');
+  const hoja = svg.querySelector<SVGGElement>('[data-parte="hoja"]');
+  const AB = BARBAZUL_ARMADO;
+  const { x: bx, piso, escala } = BARBAZUL;
+
+  /** La reverencia: se inclina en menos de un segundo, la sostiene, y se endereza. */
+  const BAJA = 0.7;
+  const SOSTIENE = 1.8;
+  const SUBE = 0.9;
+  let reverenciaDesde = -10;
+  function inclinado(t: number): number {
+    const u = t - reverenciaDesde;
+    if (u < 0 || u > BAJA + SOSTIENE + SUBE) return 0;
+    if (u < BAJA) return suave(u / BAJA);
+    if (u < BAJA + SOSTIENE) return 1;
+    return 1 - suave((u - BAJA - SOSTIENE) / SUBE);
+  }
+  /**
+   * La puerta del cuarto: se abre un poco después de que él se inclina y se cierra de un golpe
+   * antes de que se enderece. Tiene su propio arranque: si lo tocan de nuevo mientras está
+   * inclinado, la reverencia se estira y la puerta sigue abierta, no vuelve a empezar.
+   */
+  let puertaDesde = -10;
+  function entreabierta(t: number): number {
+    const fin = reverenciaDesde + BAJA + SOSTIENE - 0.1;
+    if (t < puertaDesde + 0.35 || t > fin) return 0;
+    const abre = suave((t - puertaDesde - 0.35) / 0.8);
+    const cierra = t > fin - 0.2 ? (fin - t) / 0.2 : 1;
+    return Math.min(abre, cierra);
+  }
+
+  /** La mano que se alisa la barba: va al bigote (`k` sube), baja por la barba (`s` de 0 a 1) y vuelve. */
+  const ALISA = 2.4;
+  let alisaDesde = -10;
+  function alisa(t: number): { k: number; s: number } {
+    const u = (t - alisaDesde) / ALISA;
+    if (u < 0 || u > 1) return { k: 0, s: 0 };
+    const k = u < 0.25 ? suave(u / 0.25) : u < 0.78 ? 1 : 1 - suave((u - 0.78) / 0.22);
+    return { k, s: suave((u - 0.25) / 0.5) };
+  }
+
+  let proximo = 4 + Math.random() * 3;
+  let parpadeo = 2;
+  // A quién mira: a la drácula (1) o a vos (0). Cambia cada tanto.
+  let aElla = 1;
+  let cambiaMirada = 3;
+  let mirada = 0;
+  const barba: Resorte = { v: 0, p: 0 };
+  const manojo: Resorte = { v: 0, p: 0 };
+  let cabezaAntes = 0;
+  let brazoAntes = 0;
+  let codo: [number, number] = [...BARBAZUL_ARMADO.codos[0]];
+
+  function pintar(t: number, dt: number): void {
+    const k = inclinado(t);
+    if (!k && t > proximo && !quieto()) {
+      if (Math.random() < 0.55) alisaDesde = t;
+      // O sacude el manojo: un golpe de muñeca, y las llaves se mecen.
+      else manojo.v += (Math.random() < 0.5 ? -1 : 1) * 150;
+      proximo = t + 6 + Math.random() * 6;
+    }
+
+    // Respira, y en la reverencia se inclina hacia el pasillo, del lado del que te abre el paso.
+    const respira = Math.sin(t * 1.15);
+    entero.setAttribute('transform', `translate(${bx} ${(piso + respira * 0.6).toFixed(2)}) rotate(${(2.6 * k).toFixed(2)}) scale(${escala})`);
+
+    // La mirada: a la drácula o a vos; en la reverencia, a vos, de abajo para arriba.
+    if (t > cambiaMirada) {
+      aElla = aElla ? 0 : 1;
+      cambiaMirada = t + (aElla ? 5 + Math.random() * 4 : 2.5 + Math.random() * 2.5);
+    }
+    const haciaElla = Math.min(1, Math.max(-1, (laDracula() - bx) / 360));
+    const meta = k ? 0 : aElla * haciaElla;
+    mirada = dt ? hacia(mirada, meta, dt * 2.2) : meta;
+    const [mx, my] = AB.mira;
+    const pupila = `translate(${(mirada * mx).toFixed(2)} ${(-my * 0.9 * k + Math.sin(t * 0.4) * 0.3).toFixed(2)})`;
+    p.get('pupila-1')?.setAttribute('transform', pupila);
+    p.get('pupila-2')?.setAttribute('transform', pupila);
+    if (t > parpadeo + 0.15) parpadeo = t + 2.8 + Math.random() * 3.6;
+    const ciego = t > parpadeo && t < parpadeo + 0.15 ? 1 : 0;
+    // Los párpados pesan, y en la reverencia bajan un poco más.
+    parpado(p.get('parpado-1'), Math.max(ciego, 0.18 + 0.22 * k));
+    parpado(p.get('parpado-2'), Math.max(ciego, 0.18 + 0.22 * k));
+
+    // La cabeza sigue un poco la mirada; en la reverencia cabecea y se ladea hacia el pasillo.
+    const [nx, ny] = AB.cuello;
+    const ladea = mirada * 2.2 + Math.sin(t * 0.5) * 0.8 + 6 * k;
+    p.get('cabeza')?.setAttribute('transform', `translate(${(4 * k).toFixed(2)} ${(16 * k).toFixed(2)}) rotate(${ladea.toFixed(2)} ${nx} ${ny})`);
+    // La barba cuelga de la cara y llega tarde a cada movimiento de la cabeza: se mece.
+    const giroCabeza = dt ? (ladea - cabezaAntes) / dt : 0;
+    cabezaAntes = ladea;
+    const [ax, ay] = AB.barba;
+    const mece = dt ? resorte(barba, -ladea * 0.55 - giroCabeza * 0.04, dt, 30, 4.5) : -ladea * 0.55;
+    p.get('barba')?.setAttribute('transform', `rotate(${mece.toFixed(2)} ${ax} ${ay})`);
+
+    // La mano de la izquierda: colgando, alisando la barba, o en el pecho en la reverencia.
+    const { k: ka, s } = alisa(t);
+    const [h1, h2] = AB.hombros;
+    const [c1, c2] = AB.codos;
+    const [m1] = AB.manos;
+    const { desde: ad, hasta: ah } = AB.alisa;
+    const peso = Math.max(ka, k);
+    const destino: readonly [number, number] = k >= ka ? [AB.pecho[0], AB.pecho[1] + 12 * k] : [ad[0] + (ah[0] - ad[0]) * s, ad[1] + (ah[1] - ad[1]) * s];
+    const meta1: [number, number] = [m1[0] + (destino[0] - m1[0]) * peso, m1[1] + (destino[1] - m1[1]) * peso];
+    const izq = peso > 0.001 ? alcanzar(h1, c1, m1, meta1, codo) : { brazo: Math.sin(t * 1.15) * 0.5, antebrazo: 0, codo: [...c1] as [number, number] };
+    codo = izq.codo;
+    girar(p.get('brazo-1'), izq.brazo, h1);
+    girar(p.get('antebrazo-1'), izq.antebrazo, c1);
+    // Mientras la mano baja por la barba, la tira para su lado; cuando la suelta, la barba se mece.
+    if (dt && ka > 0.5 && s > 0 && s < 1) barba.v += 18 * dt;
+
+    // La mano de la derecha, con el manojo: en la reverencia se abre hacia el pasillo; quieta, cuelga.
+    const brazo2 = -40 * k + Math.sin(t * 1.15 + 1) * 0.6;
+    const antebrazo2 = -24 * k;
+    girar(p.get('brazo-2'), brazo2, h2);
+    girar(p.get('antebrazo-2'), antebrazo2, c2);
+    // El manojo cuelga derecho aunque el brazo gire, y se mece con cada movimiento del brazo.
+    const giroBrazo = dt ? (brazo2 + antebrazo2 - brazoAntes) / dt : 0;
+    brazoAntes = brazo2 + antebrazo2;
+    const balanceo = dt ? resorte(manojo, -giroBrazo * 0.05, dt, 22, 2.6) : 0;
+    girar(p.get('llaves'), -(brazo2 + antebrazo2) + balanceo, AB.llavero);
+
+    // Al fondo, la puerta del cuarto: la hoja se achica contra su bisagra y sale la luz roja.
+    const abre = entreabierta(t);
+    if (hoja) {
+      const hx = Number(hoja.dataset.bisagra);
+      hoja.setAttribute('transform', `translate(${hx} 0) scale(${(1 - 0.78 * abre).toFixed(3)} 1) translate(${-hx} 0)`);
+    }
+    cuarto?.setAttribute('opacity', (abre * (0.92 + Math.sin(t * 9) * 0.04)).toFixed(2));
+  }
+
+  function reverencia(t: number): void {
+    // Si ya está inclinado, sostiene la reverencia un rato más.
+    const u = t - reverenciaDesde;
+    if (u >= 0 && u < BAJA + SOSTIENE) reverenciaDesde = Math.max(reverenciaDesde, t - BAJA);
+    else {
+      reverenciaDesde = t;
+      puertaDesde = t;
+    }
+    alisaDesde = -10;
+    alSaludar();
+  }
+
+  const tocar = (): void => {
+    reverencia(reloj);
+    if (quieto()) {
+      // Sin movimiento, queda en la reverencia, con la puerta del cuarto entreabierta.
+      reverenciaDesde = reloj - BAJA - 0.9;
+      puertaDesde = reverenciaDesde;
+      pintar(reloj, 0);
+    }
+    // El bocadillo le cuelga de la barba, sobre el pecho: que se le vea la cara.
+    hablar('barbazul', escena, svg, bx, piso - 330 * escala, true);
+  };
+  g.addEventListener('click', tocar);
+  g.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter' || ev.key === ' ') {
+      ev.preventDefault();
+      tocar();
+    }
+  });
+  return { pintar, reverencia };
+}
+
+/* ------------------------------------------------------------------
    La drácula con tacones, en la prisión de Barbazul (octava vuelta)
    ------------------------------------------------------------------ */
 
@@ -801,7 +1023,7 @@ function recintoDePierre(escena: HTMLElement, svg: SVGSVGElement): Recinto {
  * banderas de *Oktubre* flamean detrás de la reja, y la puerta de la jaula vacía de la fiera se
  * mece; tocada la jaula, chirría.
  */
-function recintoDeLaDracula(escena: HTMLElement, svg: SVGSVGElement): Recinto {
+function recintoDeLaPrision(escena: HTMLElement, svg: SVGSVGElement): Recinto {
   const deMapa = recintoDeMapa(escena, svg);
   const g = svg.querySelector<SVGGElement>('.titere--dracula')!;
   const entera = svg.querySelector<SVGGElement>('#dracula-entera')!;
@@ -987,16 +1209,26 @@ function recintoDeLaDracula(escena: HTMLElement, svg: SVGSVGElement): Recinto {
       tocar();
     }
   });
+  // Barbazul, en la entrada: mira a la drácula por dónde va, y cuando saluda, ella lo mira a él.
+  const barbazul = barbazulDeLaPrision(escena, svg, () => x, () => {
+    if (modo === 'para') {
+      mira = -1;
+      hasta = Math.max(hasta, reloj + 2.5);
+    }
+  });
   pintar(0, 0);
+  barbazul.pintar(0, 0);
   return {
     escena,
     svg,
     mover: (t, dt) => {
       deMapa.mover(t, dt);
       pintar(t, dt);
+      barbazul.pintar(t, dt);
     },
     reaccionar: (id, t) => {
       if (id === 'la-dracula-con-tacones') abrirLaCapa(t);
+      else if (id === 'barbazul') barbazul.reverencia(t);
       else if (id === 'la-fiera-mas-fiera') {
         chirria = t;
         if (quieto()) pintar(t + 0.3, 0);
@@ -1036,7 +1268,7 @@ function montar(escena: HTMLElement): void {
     'el-infierno': recintoDeLuzbelito,
     'el-templo': recintoDeMomo,
     'el-bajo': recintoDePierre,
-    'la-prision': recintoDeLaDracula,
+    'la-prision': recintoDeLaPrision,
     'la-ruta': recintoDeRuta,
   };
   const r = (controlador[id ?? ''] ?? recintoDeMapa)(escena, svg);
