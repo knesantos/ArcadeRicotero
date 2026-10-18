@@ -9,7 +9,7 @@
 
 > ## 🍋 LIMÓN, POR LAS CHAPAS DEL BALDÍO (2026-10-18) — decimocuarta enmienda de `D-73`
 >
-> **Sin integrar: espera en el PR #@@PR@@**, rama `bestiario/limon` (worktree `.claude/worktrees/bestiario-limon`), con `main`
+> **En `main` desde el PR #63** (rama `bestiario/limon`, worktree `.claude/worktrees/bestiario-limon`), con `main`
 > juntado en `250fb04` (hasta el #62, la vaca). El usuario eligió 27 bestias para dibujar con más detalle
 > (`Docs/SUGERENCIAS/HILO-para-bestiario-prioridad-de-figuras.md`) y empezó por Limón: *"un limón colombiano que corre
 > por las chapas"*.
