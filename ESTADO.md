@@ -9,7 +9,7 @@
 
 > ## 🗝️ BARBAZUL, TALLADO, CON LA BARBA DE OTRA PLANCHA (2026-10-18) — enmienda (11) de `D-73`, ciclo 25
 >
-> **En la rama `ciclo-25/bestiario`, con `origin/main` adentro en `352ef3a`; el PR se abre ahora, sin integrar.** Sacada
+> **Sin integrar: espera en el PR #61** (rama `ciclo-25/bestiario`, con `origin/main` adentro en `352ef3a`). Sacada
 > de `ciclo-24/bestiario` (PR #56) en `82c4453`. Pedido del usuario, el de las dos vueltas anteriores: *"Agrega otro personaje y pulilo a
 > fondo, se creativo que qeude como uno de rocambole"*.
 >
@@ -18,7 +18,7 @@
 >   la drácula cuando pasa, se alisa la barba, sacude el manojo. Tocado, hace la reverencia del anfitrión
 >   y al fondo se le entreabre el cuarto: la luz roja corre por el piso hasta sus pies. La llave chiquita
 >   del manojo tiene la mancha del cuento.
-> - **Verde:** `npm test` (1663), `npm run check`, `npm run build`. Visto a 375 y 1280 px; la reverencia,
+> - **Verde:** `npm test` (1698), `npm run check`, `npm run build`, en la rama fusionada. Visto a 375 y 1280 px; la reverencia,
 >   con movimiento reducido simulado (con el panel oculto el navegador casi no avanza cuadros).
 > - **Para integrar** (`integrar.md`): si `main` se movió, juntarlo de nuevo. La (11) va después de la (10) de los
 >   entornos (#57), que ya está en `main`; si otra rama llega antes con la (11), se renumera esta.
