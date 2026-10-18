@@ -164,9 +164,11 @@
       "dibujo": { "f": "cosa", "que": "bestia-pop" },
       "tema": "la-bestia-pop",
       "verso": ["Vamos a brillar, mi amor"],
-      "estampa": "Un bicho grande que brilla, parado en el escenario del galpón. No tiene cara fija: cada uno le pone la que quiere.",
+      "estampa": "Pincel seco, como la tapa de Gulp!, su disco. Un bicho encorvado, de lentejuelas que solo brillan donde les pega el reflector. El Indio nunca dijo quién es, y el dibujo no le pone cara: en el hueco se imprime la de alguien de la gente, en la trama de En directo, y cambia. Eso es del dibujo; el brillo, de la letra.",
       "cuenta": [
         { "rotulo": "testimonio", "texto": "En 1985 el Indio dijo que el tema era una joda a ellos mismos y al medio, y que la canción no tenía que agotar lo que resuena.", "quien": "Indio Solari, en La Nación (nota de 2020 que lo cita) y en su memoir", "fuente": "RES-341" },
+        { "rotulo": "testimonio", "texto": "Mucha gente cantaba el estribillo en serio, como un grito de batalla. Él lo entendía con ironía: en el rock del Luna Park no veía ningún brillo verdadero. Brillar puede ser una invitación a vivir en plenitud, o el brillo fugaz y artificial de la merca.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 189)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "No cuenta por qué escribió cada cosa, para no arruinarle a nadie la experiencia: la gente le cuelga al artista sus propias necesidades e ilusiones.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 190)", "fuente": "RES-21" },
         { "rotulo": "leyenda", "texto": "Circulan dos candidatos para ser la bestia: Carlos Monzón y el Negro José Luis, el de la barra de Gimnasia. El Indio los desmintió a todos.", "fuente": "RES-342" }
       ],
       "cerca": ["patricio-rey", "el-heroe-del-whisky"]
