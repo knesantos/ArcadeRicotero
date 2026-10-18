@@ -144,7 +144,8 @@ function vetas(x0: number, y0: number, x1: number, y1: number, cuantas: number, 
    ------------------------------------------------------------------
    Un galpón de chapa de noche, con las cabriadas recortadas contra una luz roja que revienta
    arriba a la derecha, como en la tapa de *En directo*. De fondo del escenario cuelga un disco; en
-   el tablado, una silla vacía bajo el seguidor, la fuente de buñuelos y la bestia pop, que brilla.
+   el tablado, una silla vacía bajo el seguidor y la fuente de buñuelos; a la izquierda se para la
+   bestia pop, que es un títere aparte (`arte-bestia-pop.ts`).
    Adelante, la gente de espaldas, impresa en trama de puntos, con una bengala.
 */
 
@@ -311,49 +312,8 @@ function fuenteDeBunuelos(x: number, piso: number): string {
   );
 }
 
-/**
- * La bestia pop: un bicho grande, encorvado, con los brazos largos hasta el piso y sin cara fija.
- * Brilla: lentejuelas adentro, el canto prendido por el reflector y un halo afuera.
- */
-function bestiaPop(x: number, piso: number, alto: number): string {
-  const a = alto;
-  const p = (dx: number, dy: number): string => `${f(x + dx * a)} ${f(piso - dy * a)}`;
-  const cuerpo =
-    `M${p(-0.6, 0)} C${p(-0.64, 0.2)} ${p(-0.62, 0.5)} ${p(-0.46, 0.7)} ` +
-    `C${p(-0.38, 0.8)} ${p(-0.26, 0.82)} ${p(-0.15, 0.84)} C${p(-0.2, 0.96)} ${p(-0.14, 1.1)} ${p(0.02, 1.1)} ` +
-    `C${p(0.18, 1.1)} ${p(0.22, 0.96)} ${p(0.16, 0.84)} C${p(0.27, 0.82)} ${p(0.38, 0.8)} ${p(0.46, 0.7)} ` +
-    `C${p(0.6, 0.5)} ${p(0.62, 0.2)} ${p(0.6, 0)} L${p(0.45, 0)} C${p(0.46, 0.2)} ${p(0.42, 0.36)} ${p(0.31, 0.46)} ` +
-    `C${p(0.31, 0.3)} ${p(0.29, 0.12)} ${p(0.27, 0)} L${p(0.06, 0)} L${p(0.02, 0.16)} L${p(-0.04, 0)} L${p(-0.27, 0)} ` +
-    `C${p(-0.29, 0.12)} ${p(-0.31, 0.3)} ${p(-0.31, 0.46)} C${p(-0.42, 0.36)} ${p(-0.46, 0.2)} ${p(-0.45, 0)} Z`;
-  const rnd = azar(43);
-  let lentejuelas = '';
-  for (let i = 0; i < 70; i++) {
-    const px = x - a * 0.6 + rnd() * a * 1.2;
-    const py = piso - rnd() * a;
-    lentejuelas += `<circle cx="${f(px)}" cy="${f(py)}" r="${f(0.8 + rnd() * 2)}" fill="${rnd() < 0.5 ? G.oro : G.papel}" opacity="${f(0.25 + rnd() * 0.6)}"/>`;
-  }
-  let chispas = '';
-  for (let i = 0; i < 8; i++) {
-    const ang = rnd() * Math.PI * 2;
-    const d = a * (0.6 + rnd() * 0.2);
-    chispas += chispa(x + Math.cos(ang) * d * 0.85, piso - a * 0.55 + Math.sin(ang) * d * 0.7, 3 + rnd() * 6, rnd() < 0.6 ? G.oro : G.papel, 0.85);
-  }
-  // El canto que mira al reflector: el hombro y el brazo derechos, prendidos.
-  const canto = `M${p(0.14, 0.92)} C${p(0.26, 0.86)} ${p(0.38, 0.84)} ${p(0.46, 0.72)} C${p(0.6, 0.5)} ${p(0.62, 0.2)} ${p(0.6, 0)} L${p(0.53, 0)} C${p(0.55, 0.22)} ${p(0.52, 0.48)} ${p(0.4, 0.66)} C${p(0.32, 0.76)} ${p(0.22, 0.8)} ${p(0.12, 0.84)} Z`;
-  return (
-    nube(x, piso - a * 0.5, a * 0.75, a * 0.62, G.oro, 'xl', 0.12) +
-    nube(x + a * 0.2, piso - a * 0.5, a * 0.6, a * 0.55, G.rojo, 'xl', 0.2) +
-    nube(x, piso + 2, a * 0.66, 7, G.negro, 's', 0.8) +
-    enmascarado('g-bestia-pop', cuerpo,
-      forma(cuerpo, G.negro) +
-      trama(x - a * 0.7, piso - a * 1.05, x + a * 0.7, piso, 5, (px, py) => 0.05 + ((px - x) / a) * 0.8 + ((piso - py) / a) * 0.35, G.rojo, 0.7) +
-      nube(x - a * 0.25, piso - a * 0.35, a * 0.3, a * 0.5, G.negro, 'l', 0.75) +
-      lentejuelas +
-      soplo(canto, G.oro, 's', 0.55) +
-      soplo(canto, G.vivo, 'm', 0.35)) +
-    chispas
-  );
-}
+// La bestia pop ya no se pinta acá: desde la decimoquinta vuelta es un títere de papel que se para
+// en el tablado (`arte-bestia-pop.ts`, `elenco.ts`). El galpón le deja libre el lugar de `GALPON.bestiaPop`.
 
 /** Un bafle sobre el tablado: la caja negra y la tela de la reja, con el canto prendido. */
 function bafle(x: number, piso: number, w: number, h: number, id: string): string {
@@ -396,7 +356,6 @@ function galponPiso(ancho = ANCHO, alto = ALTO): string {
     nube(sx, s.piso + 2, 112, 18, G.luz, 'm', 0.5) +
     nube(sx, s.piso + 2, 60, 9, G.papel, 's', 0.35) +
     `</g>` +
-    bestiaPop(GALPON.bestiaPop.x * k, GALPON.bestiaPop.piso, GALPON.bestiaPop.alto) +
     silla(sx, s.piso) +
     fuenteDeBunuelos(GALPON.fuente.x * k, GALPON.fuente.piso)
   );
