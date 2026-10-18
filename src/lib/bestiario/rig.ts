@@ -137,7 +137,7 @@ export const BAJO = {
 export const PIERRE = { x: 486, agua: 476, escala: 0.9 } as const;
 
 /* ------------------------------------------------------------------
-   La prisión de Barbazul y la drácula con tacones (`D-73`, séptima vuelta)
+   La prisión de Barbazul y la drácula con tacones (`D-73`, octava vuelta)
    ------------------------------------------------------------------ */
 
 /**

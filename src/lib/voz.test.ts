@@ -334,6 +334,10 @@ test('voz 4.1: la linea grande no pasa de ocho palabras', () => {
   const grandes: Array<[string, string]> = [
     ['portal.titulo', sitio.PORTAL.titulo],
     ['redondopedia.titulo', sitio.REDONDOPEDIA.titulo],
+    // `D-75`: los tres hilos del pie de cada artículo, que son línea grande (registro 1).
+    ['redondopedia.veaTambien', sitio.REDONDOPEDIA.veaTambien],
+    ['redondopedia.oreja', sitio.REDONDOPEDIA.oreja],
+    ['redondopedia.tambienAnda', sitio.REDONDOPEDIA.tambienAnda],
     ...sitio.JUEGOS.map((c) => [`casete "${c.titulo}"`, c.titulo] as [string, string]),
     ...sitio.LADO_B.map((c) => [`casete "${c.titulo}"`, c.titulo] as [string, string]),
     // Los renglones del lugar (`CNT-13`) son la línea que canta de cada pantalla, y `CNT-13`

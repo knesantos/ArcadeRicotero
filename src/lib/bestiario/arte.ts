@@ -65,7 +65,7 @@ export const ESCENA_ARTE = { ancho: 900, alto: 640 } as const;
 export const PALO_ARTE = { x: 450, y: 418 } as const;
 export const PASTURA_ARTE = { rx: 262, ry: 138 } as const;
 
-const M = {
+export const M = {
   claro: 'var(--entorno-monte-claro)',
   medio: 'var(--entorno-monte-medio)',
   hondo: 'var(--entorno-monte-hondo)',
@@ -78,7 +78,7 @@ const M = {
   azulHondo: 'var(--bestia-cordero-lana)',
 };
 
-function azar(semilla: number): () => number {
+export function azar(semilla: number): () => number {
   let a = semilla >>> 0;
   return () => {
     a = (a + 0x6d2b79f5) >>> 0;
@@ -117,7 +117,7 @@ function tira(x: number, arriba: number, abajo: number, ancho: number, cuerpo: s
     nube(punta.x, abajo, ancho, alto * 0.25, M.negro, 'l', 0.8));
 }
 
-function filaDeTiras(arriba: number, abajo: number, cuerpo: string, luz: string, semilla: number, prefijo: string, desde = -20, hasta = ESCENA_ARTE.ancho + 20): string {
+export function filaDeTiras(arriba: number, abajo: number, cuerpo: string, luz: string, semilla: number, prefijo: string, desde = -20, hasta = ESCENA_ARTE.ancho + 20): string {
   const rnd = azar(semilla);
   let s = '';
   let x = desde;
@@ -180,12 +180,24 @@ function monteLejos(): string {
  */
 function monteCerca(): string {
   const { ancho, alto } = ESCENA_ARTE;
-  const { x: px, y: py } = PALO_ARTE;
-  const { rx, ry } = PASTURA_ARTE;
   return (
     `<g filter="url(#rociado)">` +
     soplo(`M-40 300 C200 286, 700 286, ${ancho + 40} 300 L${ancho + 40} ${alto + 40} L-40 ${alto + 40} Z`, M.oscuro, 'm') +
     soplo(`M-40 318 C200 306, 700 306, ${ancho + 40} 318 L${ancho + 40} ${alto + 40} L-40 ${alto + 40} Z`, M.oscuro, 's') +
+    claroDeLaPastura() +
+    `</g>`
+  );
+}
+
+/**
+ * El claro, sin el piso del monte alrededor: la pastura, el círculo pelado y el palo. Aparte
+ * para que el camino con cruces (`arte-camino.ts`) lo apoye sobre su piso largo sin arrastrar el
+ * del recinto, que termina en los costados de la escena.
+ */
+export function claroDeLaPastura(): string {
+  const { x: px, y: py } = PALO_ARTE;
+  const { rx, ry } = PASTURA_ARTE;
+  return (
     nube(px, py + 10, rx + 120, ry + 70, M.negro, 'xl', 0.4) +
     // La pastura: el naranja de la tapa, que brilla en el medio y se apaga en la orilla.
     `<ellipse cx="${px}" cy="${py}" rx="${rx}" ry="${ry}" fill="${M.naranjaHonda}" filter="url(#soplo-s)"/>` +
@@ -200,8 +212,7 @@ function monteCerca(): string {
     nube(px + 4, py + 2, 14, 4, M.negro, 's', 0.8) +
     enmascarado('m-palo', `M${px - 4.5} ${py} L${px - 4} ${py - 50} L${px + 4} ${py - 53} L${px + 4.5} ${py} Z`,
       forma(`M${px - 4.5} ${py} L${px - 4} ${py - 50} L${px + 4} ${py - 53} L${px + 4.5} ${py} Z`, M.sombra) +
-      nube(px - 3, py - 26, 2, 24, M.claro, 's', 0.7) + nube(px + 4, py - 26, 2.5, 26, M.negro, 's', 0.9)) +
-    `</g>`
+      nube(px - 3, py - 26, 2, 24, M.claro, 's', 0.7) + nube(px + 4, py - 26, 2.5, 26, M.negro, 's', 0.9))
   );
 }
 
@@ -473,7 +484,7 @@ export const PIEZAS: readonly Pieza[] = [
   { nombre: 'momo-brillo', caja: [-120, -260, 240, 520], dibujo: brilloMedallon(), densidad: 1 },
   // La sexta vuelta: el bajo inundado y el gordo Pierre, pintado a pincel seco (`arte-bajo.ts`).
   ...PIEZAS_BAJO,
-  // La séptima vuelta: la prisión de Barbazul y la drácula con tacones, tallados (`arte-prision.ts`).
+  // La octava vuelta: la prisión de Barbazul y la drácula con tacones, tallados (`arte-prision.ts`).
   ...PIEZAS_PRISION,
   // La décima vuelta: Limón por las chapas del baldío, a crayón, y las linternas del bloque (`arte-baldio.ts`).
   ...PIEZAS_BALDIO,

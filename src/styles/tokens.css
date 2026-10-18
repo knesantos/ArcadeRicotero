@@ -184,7 +184,7 @@
   --entorno-bajo-celeste: #4772b3; /* los rayones claros de esa contratapa */
   --entorno-bajo-llama: #f7793c; /* la llama de la contratapa, naranja */
   --entorno-bajo-llama-clara: #fbe755; /* y su corazon amarillo */
-  /* Septima vuelta (D-73): la drácula con tacones y la prision de Barbazul, tallados como la
+  /* Octava vuelta (D-73): la drácula con tacones y la prision de Barbazul, tallados como la
      gente de la tapa de *Oktubre* (`grabado.ts`). La plancha es `--fondo` (la tapa mide #111211),
      el rojo de las banderas es `--disco-oktubre-tinta`, y el gris que Rocambole conto que agrego
      es `--disco-oktubre-apoyo`: con el se tallan los planos de atras, para que la drácula se
@@ -239,6 +239,10 @@
      `currentColor`, asi que toma la tinta del lugar donde vive y no trae una suya.
      No lleva credito: es un motivo generico de la tecnica, no un recorte de ninguna tapa. */
   --textura-rodillo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='14'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.06 0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.85 0.85 0.85 0 -0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
+  /* El mismo rodillo puesto de canto (`D-75`): las vetas corren a lo alto, para gastar el
+     costado de una capa como el de arriba gasta su borde de abajo. Es la misma receta con los
+     dos ejes cambiados, no un motivo nuevo. */
+  --textura-rodillo-canto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='240'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9 0.06' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.85 0.85 0.85 0 -0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
 
   /* La almohadilla (`D-64`, hoja 07). Las tapas de los juegos —el título del casete, el de la
      carátula, el h1 de cada juego y el macizo del sello— salen de la misma almohadilla de goma
@@ -430,6 +434,20 @@
   --espacio-2: 1rem;
   --espacio-3: 1.5rem;
   --espacio-4: 2.5rem;
+
+  /* El lugar de la Redondopedia (`D-75`): la tapa velada que sube detrás del título.
+
+     - `--alto-lugar` es cuánto baja la capa: lo bastante para que la tapa llene el primer
+       vistazo y se pierda en la tinta mientras arranca la bajada, nunca detrás del cuerpo
+       rotulado. Con techo de ventana en `sitio.css`, para que en una pantalla baja no tape todo.
+     - `--aire-lugar` es cuánta tapa se ve arriba del título antes de que empiece a escribirse
+       algo: el escalón que se baja al entrar. Crece con el alto de la ventana, con techo. */
+  --alto-lugar: 30rem;
+  --aire-lugar: clamp(2.5rem, 12svh, 6.5rem);
+  /* Y cuánto se abre a lo ancho en la computadora: la tapa a menos del doble de su archivo
+     (los fondos miden entre 400 y 590 px), con los costados gastados. En el teléfono ocupa
+     el ancho entero de la ventana, que es menos que esto. */
+  --ancho-lugar: 52rem;
 
   /* ------------------------------------------------------------------
      La mesa (`D-54`, `UX-35`). Cómo se apoya el sitio en una pantalla ancha. La hoja 15 del

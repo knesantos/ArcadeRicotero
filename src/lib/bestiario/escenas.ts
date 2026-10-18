@@ -248,7 +248,7 @@ export function escenaBajo(nombres: ReadonlyMap<string, string>): string {
 }
 
 /* ------------------------------------------------------------------
-   La prisión de Barbazul: la drácula con tacones (séptima vuelta)
+   La prisión de Barbazul: la drácula con tacones (octava vuelta)
    ------------------------------------------------------------------
    La drácula no es de tapa: está tallada en la estética de *Oktubre* (`arte-prision.ts`). Capas,
    de atrás para adelante: el pasillo con la calle de la tapa en la ventana (`prision-lejos`), las
