@@ -51,3 +51,41 @@ export function llamaEnEscena(): { x: number; y: number } {
 
 /** De dónde cuelga el cordón de Momo, dónde queda la argolla y de qué tamaño va el medallón. */
 export const MOMO = { cuelga: { x: 450, y: -10 }, argolla: { x: 450, y: 212 }, escala: 0.62 } as const;
+
+/* ------------------------------------------------------------------
+   El bajo inundado y el gordo Pierre (`D-73`, sexta vuelta)
+   ------------------------------------------------------------------ */
+
+/**
+ * Dónde gira cada pieza del gordo Pierre, en coordenadas de títere: el (0, 0) es el agua
+ * debajo del medio de la panza, y arriba es negativo. Lo dibuja `arte-bajo.ts` y lo mueve la isla.
+ */
+export const PIERRE_ARMADO = {
+  /** El cogote: de acá se ladea la cabeza. */
+  cuello: [0, -226],
+  /** El hombro y el codo del brazo de la botella. */
+  hombro: [-150, -188],
+  codo: [-222, -116],
+  /** El pico de la botella, con el brazo quieto, y la boca, adonde lo lleva el trago. */
+  pico: [-210, -342],
+  boca: [-4, -242],
+  /** Cuánto giran el brazo y el antebrazo para empinarse la botella: el pico llega a la boca. */
+  trago: { brazo: 80, antebrazo: 9 },
+  /**
+   * Los ojos: el centro de cada uno (de ahí los pinta `arte-bajo.ts`) y el párpado de papel que
+   * lo tapa al parpadear, un poco más arriba, porque el ojo achinado es una medialuna.
+   */
+  ojos: [
+    { centro: [-38, -304], parpado: [-38, -309], radio: [28, 10] },
+    { centro: [38, -304], parpado: [38, -309], radio: [28, 10] },
+  ],
+} as const;
+
+/** El bajo: dónde está el agua contra la pared y dónde la toca Pierre, y de qué tamaño va. */
+export const BAJO = {
+  /** La línea del agua contra la pared del fondo. */
+  fondo: 372,
+  /** La puerta del vidrio roto: el agujero, por donde entra el agua. */
+  agujero: { x: 196, y: 176 },
+} as const;
+export const PIERRE = { x: 486, agua: 476, escala: 0.9 } as const;

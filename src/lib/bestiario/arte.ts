@@ -9,6 +9,7 @@
  */
 
 import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
+import { PIEZAS_BAJO } from './arte-bajo.ts';
 
 
 
@@ -468,4 +469,6 @@ export const PIEZAS: readonly Pieza[] = [
   { nombre: 'templo-lejos', caja: [0, 0, ESCENA_ARTE.ancho, ESCENA_ARTE.alto], dibujo: temploLejos(), opaca: true, densidad: 2 },
   { nombre: 'templo-frente', caja: [0, 560, ESCENA_ARTE.ancho, ESCENA_ARTE.alto - 560], dibujo: temploFrente(), densidad: 2 },
   { nombre: 'momo-brillo', caja: [-120, -260, 240, 520], dibujo: brilloMedallon(), densidad: 1 },
+  // La sexta vuelta: el bajo inundado y el gordo Pierre, pintado a pincel seco (`arte-bajo.ts`).
+  ...PIEZAS_BAJO,
 ];
