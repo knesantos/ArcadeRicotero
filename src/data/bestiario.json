@@ -1019,8 +1019,8 @@
       "dibujo": { "f": "persona", "con": ["barba", "llaves"], "ropa": "levita" },
       "tema": "barbazul-versus-el-amor-letal",
       "verso": ["Esta vez, por fin, la prisión", "te va a gustar."],
-      "estampa": "El dueño de la prisión, con la barba larga y el manojo de llaves. Te recibe como a un invitado.",
-      "cerca": ["el-reo-semental", "las-sirenas", "las-antiguas-lobas"]
+      "estampa": "Tallado como el barbudo de la contratapa de Oktubre. Te recibe en la entrada como a un invitado; tocado, hace la reverencia y al fondo se le entreabre el cuarto. La barba es otra plancha, azul y corrida: el azul lo pide el nombre, no la letra. La llave chiquita con la mancha es del cuento de Perrault.",
+      "cerca": ["el-reo-semental", "la-dracula-con-tacones", "las-sirenas", "las-antiguas-lobas"]
     },
     {
       "id": "el-reo-semental",

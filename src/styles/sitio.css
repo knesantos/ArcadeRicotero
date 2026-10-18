@@ -4031,6 +4031,7 @@ body:has(> .lugar) .marca-chica {
 .titere--momo,
 .titere--pierre,
 .titere--dracula,
+.titere--barbazul,
 .titere--atila { cursor: pointer; }
 
 /* Sexta vuelta (D-73): el bajo inundado y el gordo Pierre. Los párpados son del papel de *Gulp!*
@@ -4073,7 +4074,15 @@ body:has(> .lugar) .marca-chica {
 .dracula-taco { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 2; stroke-linecap: round; }
 .bestiario-svg .bestia--jaula .toque { fill: transparent; }
 
-/* Undécima vuelta (D-73): el negro Atila en la medianera, a aerógrafo como la tapa de *Lobo
+/* Undécima vuelta (D-73): Barbazul. Las pupilas son de la página, en la tinta de la plancha y con
+   un brillo de papel, porque la isla las hace mirar; el párpado es de tinta, como el de la drácula. */
+.bt-barbazul-pupila { fill: var(--fondo); }
+.bt-barbazul-brillo { fill: var(--bestia-dracula-papel); }
+.bt-barbazul-parpado { fill: var(--fondo); }
+.bt-barbazul-pestana { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 1.2; stroke-linecap: round; }
+.barbazul-sombra { fill: var(--fondo); }
+
+/* Duodécima vuelta (D-73): el negro Atila en la medianera, a aerógrafo como la tapa de *Lobo
    suelto*. Los párpados son de su piel: el de la luz ocre, el de la sombra hundido; van a media asta
    todo el tiempo, que es como mira el que mira de reojo. La luz de la sirena se suma a la noche. */
 .bt-atila-parpado { fill: var(--bestia-lobo-ocre); }

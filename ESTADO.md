@@ -10,7 +10,7 @@
 > ## 🐄 LA VACA CUBANA, A PLUMÍN, CON LA TELE HECHA SATÉLITE (2026-10-18) — decimotercera enmienda de `D-73`
 >
 > **Sin integrar**, en la rama `ciclo-26/bestiario` (worktree `.claude/worktrees/bestiario-26`), sobre `main`
-> en `c1355e0` y con `main` juntado en `168a1bd` (#56, #57 y #59 adentro). Pedido del usuario: *"Hace otro ciclo
+> en `c1355e0` y con `main` juntado en `e07fe38` (hasta el #61, Barbazul). Pedido del usuario: *"Hace otro ciclo
 > sobre el bestiario redondo. Agrega otro personaje y pulilo a fondo, se creativo que qeude como uno de
 > rocambole"*, y *"hace la vaca cubana"*.
 >
@@ -29,6 +29,23 @@
 >   `launch.json` de la carpeta principal. Antes del PR hay que mirarla a 375 px: la rumia, el satélite, la
 >   caída y el camino de la pastura.
 > - **Abierto:** `T-431`, `T-435`, `T-437`/`T-439` (ver la enmienda).
+> ## 🗝️ BARBAZUL, TALLADO, CON LA BARBA DE OTRA PLANCHA (2026-10-18) — enmienda (11) de `D-73`, ciclo 25
+>
+> **En main desde el PR #61** (rama `ciclo-25/bestiario`), fusión `e07fe38`. Sacada
+> de `ciclo-24/bestiario` (PR #56) en `82c4453`. Pedido del usuario, el de las dos vueltas anteriores: *"Agrega otro personaje y pulilo a
+> fondo, se creativo que qeude como uno de rocambole"*.
+>
+> - **Barbazul recibe en la entrada de la prisión** (`T-444`): tallado como el barbudo de la contratapa
+>   de *Oktubre* (`arte-barbazul.ts`), y **la barba es otra plancha, azul y corrida de registro**. Mira a
+>   la drácula cuando pasa, se alisa la barba, sacude el manojo. Tocado, hace la reverencia del anfitrión
+>   y al fondo se le entreabre el cuarto: la luz roja corre por el piso hasta sus pies. La llave chiquita
+>   del manojo tiene la mancha del cuento.
+> - **Verde:** `npm test` (1698), `npm run check`, `npm run build`, en la rama fusionada. Visto a 375 y 1280 px; la reverencia,
+>   con movimiento reducido simulado (con el panel oculto el navegador casi no avanza cuadros).
+> - **Para integrar** (`integrar.md`): si `main` se movió, juntarlo de nuevo. La (11) va después de la (10) de los
+>   entornos (#57), que ya está en `main`; si otra rama llega antes con la (11), se renumera esta.
+> - **Abierto:** `T-431`, `T-435` (el azul nuevo al lienzo), `T-437`/`T-439`.
+
 > ## 🧥 EL NEGRO ATILA (2026-10-18) — duodécima enmienda de `D-73`
 >
 > **En main desde el PR #60** (rama `bestiario/negro-atila`, worktree `.claude/worktrees/bestiario-atila`), que entró con `main` adentro

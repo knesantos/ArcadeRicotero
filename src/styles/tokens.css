@@ -249,6 +249,11 @@
      despegue de la pared. Aca se mide el blanco de la gente tallada, en las caras del frente.
      Ninguno escribe texto: no entran al test AA. Faltan en el lienzo (T-435). */
   --bestia-dracula-papel: #e8eadd; /* el blanco de las caras talladas del frente de Oktubre */
+  /* Undecima vuelta (D-73): Barbazul, tallado como el barbudo de la contratapa de *Oktubre*. La
+     barba sale de una segunda plancha, entintada de azul y corrida de registro: es el unico azul
+     de la prision. No se midio de ninguna tapa, porque en *Oktubre* no hay azul: lo pide el
+     nombre. No escribe texto: no entra al test AA. Falta en el lienzo (T-435). */
+  --bestia-barbazul-azul: #3f68d2; /* la segunda plancha: el azul de la barba */
 
   /* Collage de cassette (UX-04: el collage es tecnica fichada de Rocambole, RES-06).
      Papel de etiqueta: sobre el escribe la tinta del fondo (--fondo), par testeado.

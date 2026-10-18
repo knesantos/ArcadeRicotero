@@ -4,18 +4,19 @@ import { readFileSync } from 'node:fs';
 import { dibujar, dibujarGrupo } from './figuras.ts';
 import { adentro, camara, contorno, dibujarRecinto, dibujarSuelo, punto, simbolos, type Bestiario } from './mapa.ts';
 import { existsSync } from 'node:fs';
-import { atila, lobo, cordero, dracula, pierre, retrato } from './titeres.ts';
+import { atila, barbazul, lobo, cordero, dracula, pierre, retrato } from './titeres.ts';
 import { escenaMonte, VECINOS_DEL_MONTE } from './escena-monte.ts';
 import {
   CHORRO, JAULA_VACIA, escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, VECINOS_DE_LA_PRISION, VECINOS_DEL_BAJO, VECINOS_DEL_BALDIO,
   VECINOS_DEL_INFIERNO, VECINOS_DEL_TEMPLO,
 } from './escenas.ts';
-import { ACECHO, ACHATE, ATILA, ATILA_ARMADO, BAJO, BANDERAS, CIELO_VACA, DRACULA, DRACULA_ARMADO, PASTURA, ESCENA, PALO, PIERRE, PIERRE_ARMADO, PRISION, SOGA, VACA, VACA_ARMADO, deLaTapa } from './rig.ts';
+import { ACECHO, ACHATE, ATILA, ATILA_ARMADO, BAJO, BANDERAS, BARBAZUL, BARBAZUL_ARMADO, CIELO_VACA, DRACULA, DRACULA_ARMADO, PASTURA, ESCENA, PALO, PIERRE, PIERRE_ARMADO, PRISION, PUERTA_DE_BARBAZUL, SOGA, VACA, VACA_ARMADO, deLaTapa } from './rig.ts';
 import { ARMADO, RECORTES, cajaDeRecorte, LADO_TAPA } from './recortes.ts';
 import { PIEZAS } from './arte.ts';
 import { ETIQUETA, PIEZAS_BAJO, PIEZAS_PIERRE, PUERTA, agujero } from './arte-bajo.ts';
 import { pincelada } from './pincel.ts';
-import { PIEZAS_DRACULA, PIEZAS_PRISION } from './arte-prision.ts';
+import { PIEZAS_DRACULA, PIEZAS_PRISION, cajaDe } from './arte-prision.ts';
+import { PIEZAS_BARBAZUL, PIEZAS_PUERTA } from './arte-barbazul.ts';
 import { CORRE, PIEZAS_ATILA } from './arte-atila.ts';
 import { envolventes, tallar, tono } from './grabado.ts';
 import { ESPERA, GUARDADO, SIN_ISLA, enEspera, pidePiezas } from './carga.ts';
@@ -158,7 +159,7 @@ test('ni un hex en el bestiario: los colores son clases que pinta sitio.css', ()
   const fuentes = [
     'src/lib/bestiario/figuras.ts', 'src/lib/bestiario/mapa.ts', 'src/lib/bestiario/titeres.ts', 'src/lib/bestiario/escena-monte.ts',
     'src/lib/bestiario/escenas.ts', 'src/lib/bestiario/rig.ts', 'src/lib/bestiario/arte-bajo.ts', 'src/lib/bestiario/pincel.ts',
-    'src/lib/bestiario/arte-prision.ts', 'src/lib/bestiario/grabado.ts', 'src/lib/bestiario/aerografo.ts',
+    'src/lib/bestiario/arte-prision.ts', 'src/lib/bestiario/arte-barbazul.ts', 'src/lib/bestiario/grabado.ts', 'src/lib/bestiario/aerografo.ts',
     'src/lib/bestiario/arte-entornos.ts', 'src/lib/bestiario/escenas-entornos.ts', 'src/lib/bestiario/rig-entornos.ts',
     'src/scripts/bestiario.ts', 'src/data/bestiario.json',
   ];
@@ -309,7 +310,7 @@ function importados(desde: string): string[] {
 test('la isla se lleva números: no importa nada que dibuje', () => {
   // Si la isla importa un módulo que dibuja, el teléfono corre el aerógrafo entero al abrir la
   // página para no usarlo. Pasó en la quinta vuelta: `escenas.ts` arrastraba `arte.ts`.
-  const dibujan = ['arte.ts', 'arte-bajo.ts', 'arte-entornos.ts', 'arte-prision.ts', 'arte-atila.ts', 'aerografo.ts', 'pincel.ts', 'grabado.ts', 'escenas.ts', 'escenas-entornos.ts', 'escena-monte.ts', 'titeres.ts', 'figuras.ts', 'mapa.ts'];
+  const dibujan = ['arte.ts', 'arte-bajo.ts', 'arte-entornos.ts', 'arte-prision.ts', 'arte-barbazul.ts', 'arte-atila.ts', 'aerografo.ts', 'pincel.ts', 'grabado.ts', 'escenas.ts', 'escenas-entornos.ts', 'escena-monte.ts', 'titeres.ts', 'figuras.ts', 'mapa.ts'];
   const llevados = importados('src/scripts/bestiario.ts');
   assert.ok(llevados.includes('rig.ts'), 'la isla dejó de leer rig.ts: el censo no está mirando bien');
   assert.deepEqual(llevados.filter((n) => dibujan.includes(n)), [], `la isla se lleva al teléfono: ${llevados.join(', ')}`);
@@ -426,7 +427,7 @@ test('la prisión tiene a todos los suyos: la drácula camina por el pasillo, y 
   const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
   const escena = escenaPrision(nombres);
   const delRecinto = datos.bestias.filter((b) => b.region === 'la-prision').map((b) => b.id).sort();
-  assert.deepEqual(delRecinto, ['la-dracula-con-tacones', JAULA_VACIA.id, ...Object.keys(VECINOS_DE_LA_PRISION)].sort(), 'en la prisión falta o sobra alguien');
+  assert.deepEqual(delRecinto, ['barbazul', 'la-dracula-con-tacones', JAULA_VACIA.id, ...Object.keys(VECINOS_DE_LA_PRISION)].sort(), 'en la prisión falta o sobra alguien');
   assert.ok(!/NaN|undefined|Infinity/.test(escena), 'la prisión tiene un número roto');
   for (const [id, [x, y]] of Object.entries(VECINOS_DE_LA_PRISION)) assert.ok(x >= 0 && x <= ESCENA.ancho && y >= 0 && y <= ESCENA.alto, `${id} se sale`);
   assert.ok(escena.includes(`data-id="${JAULA_VACIA.id}"`), 'la jaula vacía no se puede tocar');
@@ -472,6 +473,92 @@ test('la talla de Oktubre sale igual en cada impresión, corta donde hay luz y n
   const area = (d: string): number => [...d.matchAll(/[ML]/g)].length;
   assert.ok(area(tallar(lineas, () => 1, { ancho: 3, semilla: 7 })) >= area(tallar(lineas, () => 0.5, { ancho: 3, semilla: 7 })));
   for (const p of PIEZAS_PRISION) assert.ok(!/NaN|undefined|Infinity/.test(p.dibujo), `${p.nombre} tiene un número roto`);
+});
+
+/*
+ * La undécima vuelta: Barbazul, tallado como el barbudo de la contratapa de *Oktubre*, con la barba
+ * de otra plancha, y la puerta de su cuarto (`arte-barbazul.ts`).
+ */
+
+test('Barbazul es un títere entero: cada pieza que mueve la isla, con su imagen y su pivote', () => {
+  const marcado = barbazul();
+  const partes = ['cuerpo', 'cabeza', 'barba', 'pupila-1', 'pupila-2', 'parpado-1', 'parpado-2', 'brazo-1', 'antebrazo-1', 'brazo-2', 'antebrazo-2', 'llaves'];
+  for (const parte of partes) assert.ok(marcado.includes(`data-parte="${parte}"`), `a Barbazul le falta ${parte}`);
+  const imagenes = [...marcado.matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]!);
+  assert.deepEqual([...imagenes].sort(), PIEZAS_BARBAZUL.map((p) => p.nombre).sort(), 'Barbazul usa piezas que no se imprimen, o le sobra una');
+  const caja = (nombre: string): readonly [number, number, number, number] => PIEZAS_BARBAZUL.find((p) => p.nombre === nombre)!.caja;
+  const adentro = (nombre: string, [x, y]: readonly [number, number]): boolean => {
+    const [x0, y0, ancho, alto] = caja(nombre);
+    return x >= x0 && x <= x0 + ancho && y >= y0 && y <= y0 + alto;
+  };
+  const A = BARBAZUL_ARMADO;
+  for (const o of A.ojos) assert.ok(adentro('barbazul-cabeza', o.centro), 'un ojo se salió de la cara');
+  assert.ok(adentro('barbazul-levita', A.cuello) && adentro('barbazul-cabeza', A.cuello), 'la cabeza cabecea en el aire');
+  assert.ok(adentro('barbazul-barba', A.barba), 'la barba no cuelga de la cara');
+  for (const n of [0, 1] as const) {
+    assert.ok(adentro(`barbazul-brazo-${n + 1}`, A.hombros[n]) && adentro(`barbazul-brazo-${n + 1}`, A.codos[n]), `el brazo ${n + 1} no va del hombro al codo`);
+    assert.ok(adentro(`barbazul-antebrazo-${n + 1}`, A.codos[n]) && adentro(`barbazul-antebrazo-${n + 1}`, A.manos[n]), `el antebrazo ${n + 1} no va del codo a la mano`);
+  }
+  // El manojo cuelga del puño de la derecha, y la mano de la izquierda alcanza la barba y el pecho.
+  assert.ok(adentro('barbazul-llaves', A.llavero) && adentro('barbazul-antebrazo-2', A.llavero), 'el manojo no cuelga del puño');
+  const largo = Math.hypot(A.codos[0][0] - A.hombros[0][0], A.codos[0][1] - A.hombros[0][1]) + Math.hypot(A.manos[0][0] - A.codos[0][0], A.manos[0][1] - A.codos[0][1]);
+  for (const p of [A.alisa.desde, A.alisa.hasta, A.pecho]) assert.ok(Math.hypot(p[0] - A.hombros[0][0], p[1] - A.hombros[0][1]) < largo - 4, 'la mano no llega a la barba');
+  for (const p of [A.alisa.desde, A.alisa.hasta]) assert.ok(adentro('barbazul-barba', p), 'la mano se alisa algo que no es la barba');
+  // Sin la isla, quieto: los párpados arrancan abiertos (en cero) y la pupila mira de frente.
+  for (const m of marcado.matchAll(/data-parte="parpado-\d"[^>]*>/g)) assert.match(m[0], /scale\(1 0\)/);
+});
+
+test('la barba de Barbazul sale de otra plancha: azul, y corrida de registro', () => {
+  const barba = PIEZAS_BARBAZUL.find((p) => p.nombre === 'barbazul-barba')!.dibujo;
+  // El azul que se salió del negro, corrido, y lo tallado entintado de azul adentro de la plancha.
+  assert.match(barba, /<path d="[^"]+" transform="translate\(-?[\d.]+ -?[\d.]+\)" fill="var\(--bestia-barbazul-azul\)"/);
+  assert.ok(barba.includes('clip-path="url(#bb-azul)"'), 'lo tallado de la barba no se entinta de azul');
+  // El azul es solo de la barba: ninguna otra pieza de Barbazul lo usa.
+  for (const p of PIEZAS_BARBAZUL) if (p.nombre !== 'barbazul-barba') assert.ok(!p.dibujo.includes('--bestia-barbazul-azul'), `${p.nombre} tiene azul`);
+  // Y el token existe: un color sin token es un defecto.
+  assert.match(readFileSync('src/styles/tokens.css', 'utf-8'), /--bestia-barbazul-azul: #[0-9a-f]{6};/);
+  // La llave chiquita del manojo tiene la mancha: el rojo de las banderas, y nada más de rojo.
+  const llaves = PIEZAS_BARBAZUL.find((p) => p.nombre === 'barbazul-llaves')!.dibujo;
+  assert.equal(llaves.match(/var\(--disco-oktubre-tinta\)/g)?.length, 1, 'la mancha de la llave no está, o hay más de una');
+  for (const p of [...PIEZAS_BARBAZUL, ...PIEZAS_PUERTA]) assert.ok(!/NaN|undefined|Infinity/.test(p.dibujo), `${p.nombre} tiene un número roto`);
+});
+
+test('Barbazul recibe en la entrada: entero en la escena, sin meterse en la jaula ni taparle la cara a nadie', () => {
+  const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
+  const escena = escenaPrision(nombres);
+  assert.ok(escena.includes('data-id="barbazul"'), 'Barbazul no se puede tocar');
+  assert.ok(!Object.keys(VECINOS_DE_LA_PRISION).includes('barbazul'), 'Barbazul sigue siendo un par de ojos');
+  // Va delante de la drácula (está más cerca) y detrás de la columna de adelante.
+  const [enDracula, enBarbazul, enColumna] = ['titere--dracula', 'titere--barbazul', 'prision-columna'].map((s) => escena.indexOf(s));
+  assert.ok(enDracula < enBarbazul && enBarbazul < enColumna, 'Barbazul no está entre la drácula y la columna');
+  assert.ok(BARBAZUL.piso > DRACULA.piso && BARBAZUL.piso <= ESCENA.alto, 'Barbazul no está más adelante que la drácula');
+  // Entero en la escena, con el pelo y el ruedo de la levita adentro.
+  const [x0, y0, ancho] = cajaDe(PIEZAS_BARBAZUL.map((p) => p.caja).flatMap(([x, y, w, h]) => [[x, y], [x + w, y + h]] as [number, number][]), 0);
+  assert.ok(BARBAZUL.x + x0 * BARBAZUL.escala > -20 && BARBAZUL.x + (x0 + ancho) * BARBAZUL.escala < PRISION.jaula.x0, 'Barbazul se sale de la escena o se mete en la jaula');
+  assert.ok(BARBAZUL.piso + y0 * BARBAZUL.escala > 0, 'a Barbazul se le corta la cabeza');
+  // La drácula, con la capa cerrada, nunca le tapa la cara: arranca a la derecha de su barba.
+  const caraDerecha = BARBAZUL.x + 58 * BARBAZUL_ARMADO.agranda * BARBAZUL.escala;
+  assert.ok(DRACULA.desde - 128 * DRACULA.escala > caraDerecha, 'la drácula le tapa la cara a Barbazul');
+});
+
+test('la puerta del cuarto arranca cerrada, y su luz corre por el piso hasta los pies de Barbazul', () => {
+  const escena = escenaPrision(new Map());
+  // Sin la isla, el cuarto está a oscuras y la hoja cerrada.
+  assert.match(escena, /<g data-parte="cuarto" opacity="0">/);
+  assert.match(escena, new RegExp(`<g data-parte="hoja" data-bisagra="${PUERTA_DE_BARBAZUL.x0}">`));
+  // La hoja tapa el hueco entero de la puerta.
+  const [hx, hy, hw, hh] = PIEZAS_PUERTA.find((p) => p.nombre === 'prision-hoja')!.caja;
+  const P = PUERTA_DE_BARBAZUL;
+  assert.ok(hx <= P.x0 && hx + hw >= P.x1 && hy <= P.arco && hy + hh >= P.piso, 'la hoja no tapa la puerta');
+  // La luz del cuarto llega del umbral hasta los pies de Barbazul.
+  const [cx, cy, cw, ch] = PIEZAS_PUERTA.find((p) => p.nombre === 'prision-cuarto')!.caja;
+  assert.ok(cy <= P.arco && cy + ch >= BARBAZUL.piso, 'la luz no llega al piso de adelante');
+  assert.ok(cx <= BARBAZUL.x && cx + cw >= P.x1, 'la luz no llega a los pies de Barbazul');
+  // Las llaves ya no cuelgan del clavo de la pared: las tiene él.
+  const lejos = PIEZAS_PRISION.find((p) => p.nombre === 'prision-lejos')!.dibujo;
+  assert.ok(!PIEZAS_PRISION.some((p) => p.nombre.startsWith('barbazul')) && lejos.length > 0);
+  // Y la isla no se lleva el dibujo de Barbazul al teléfono.
+  assert.ok(!readFileSync('src/scripts/bestiario.ts', 'utf-8').includes('arte-barbazul'), 'la isla importa el dibujo de Barbazul');
 });
 
 /*
