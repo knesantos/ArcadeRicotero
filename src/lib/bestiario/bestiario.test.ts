@@ -10,7 +10,7 @@ import {
   CHORRO, JAULA_VACIA, escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, VECINOS_DE_LA_PRISION, VECINOS_DEL_BAJO, VECINOS_DEL_BALDIO,
   VECINOS_DEL_INFIERNO, VECINOS_DEL_TEMPLO,
 } from './escenas.ts';
-import { ACECHO, BAJO, BANDERAS, DRACULA, DRACULA_ARMADO, PASTURA, ESCENA, PALO, PIERRE, PIERRE_ARMADO, PRISION, deLaTapa } from './rig.ts';
+import { ACECHO, ACHATE, BAJO, BANDERAS, CIELO_VACA, DRACULA, DRACULA_ARMADO, PASTURA, ESCENA, PALO, PIERRE, PIERRE_ARMADO, PRISION, SOGA, VACA, VACA_ARMADO, deLaTapa } from './rig.ts';
 import { ARMADO, RECORTES, cajaDeRecorte, LADO_TAPA } from './recortes.ts';
 import { PIEZAS } from './arte.ts';
 import { ETIQUETA, PIEZAS_BAJO, PIEZAS_PIERRE, PUERTA, agujero } from './arte-bajo.ts';
@@ -203,7 +203,7 @@ test('cada recorte cae adentro de la tapa, y cada pivote adentro de su pieza', (
 test('la escena del monte sale entera, y nadie del monte ni de la pastura queda afuera de su recinto', () => {
   const escena = escenaMonte(new Map(datos.bestias.map((b) => [b.id, b.nombre])));
   assert.ok(!/NaN|undefined|Infinity/.test(escena), 'hay un número roto en la escena del monte');
-  const titeres = ['el-lobo-suelto', 'el-cordero-atado'];
+  const titeres = ['el-lobo-suelto', 'el-cordero-atado', 'aquella-solitaria-vaca-cubana'];
   const delRecinto = datos.bestias.filter((b) => b.region === 'el-monte' || b.region === 'la-pastura').map((b) => b.id);
   const puestos = [...titeres, ...Object.keys(VECINOS_DEL_MONTE)];
   assert.deepEqual([...delRecinto].sort(), [...puestos].sort());
@@ -566,4 +566,48 @@ test('los fierros de la ruta pasan por su carril, con las ruedas adentro de su i
     assert.ok(x >= 0 && x <= ANCHO_ENTORNO);
     assert.ok(existsSync(`public/bestiario/${pieza}.webp`), `${pieza} no está impresa`);
   }
+});
+
+/* ------------------------------------------------------------------
+   La vaca cubana (D-73): a plumín, en la punta de la pastura, con su satélite
+   ------------------------------------------------------------------ */
+
+test('la vaca está en la punta de la pastura, con las patas de adelante en el pasto', () => {
+  const enLaPastura = (x: number, y: number): number => ((x - PALO.x) / PASTURA.rx) ** 2 + ((y - PALO.y) / PASTURA.ry) ** 2;
+  const manoDelantera = VACA.x - 112 * VACA.escala;
+  assert.ok(enLaPastura(manoDelantera, VACA.y) < 1, 'las patas de adelante quedaron afuera del pasto');
+  assert.ok(enLaPastura(VACA.x + 160 * VACA.escala, VACA.y) > 0.8, 'la vaca no está en la punta: está en el medio');
+  // Lejos del cordero: ni la punta de la soga llega a las patas de adelante.
+  assert.ok(manoDelantera - 20 > PALO.x + SOGA, 'el cordero le pisa las patas a la vaca');
+});
+
+test('el pedazo cae en el pasto, al lado de la vaca, y no encima del cordero ni de ella', () => {
+  const [ix, iy] = CIELO_VACA.impacto;
+  assert.ok(((ix - PALO.x) / PASTURA.rx) ** 2 + ((iy - PALO.y) / PASTURA.ry) ** 2 < 1, 'el pedazo cae afuera de la pastura');
+  // El círculo de la soga, en pantalla: el cordero nunca está donde cae.
+  const u = ix - PALO.x;
+  const v = (iy - PALO.y) / ACHATE;
+  assert.ok(Math.hypot(u, v) > SOGA + 40, 'el pedazo le cae encima al cordero');
+  // Al lado de las patas de adelante, adelante de ella y no adentro de su cuerpo.
+  const manoDelantera = VACA.x - 112 * VACA.escala;
+  assert.ok(Math.abs(ix - manoDelantera) < 60 && iy > VACA.y, 'el pedazo no cae al lado de la vaca');
+});
+
+test('el satélite cruza por el cielo, de un costado al otro, y la vaca lo puede mirar', () => {
+  const { desde, hasta } = CIELO_VACA.satelite;
+  assert.ok(desde[0] > ESCENA.ancho && hasta[0] < 0, 'el satélite no cruza la escena entera');
+  assert.ok(Math.max(desde[1], hasta[1]) < 200, 'el satélite pasa por adentro del monte');
+  // La cabeza, girada para mirar el cielo, apunta para arriba: el hocico queda más alto que el cogote.
+  const a = (VACA_ARMADO.mira * Math.PI) / 180;
+  assert.ok(Math.sin(a) > 0.4, 'mirando el cielo, la vaca mira de frente');
+});
+
+test('la vaca tiene su retrato de ficha y la escena del monte la arma entera', () => {
+  const r = retrato('aquella-solitaria-vaca-cubana');
+  assert.ok(r && r.svg.includes('vaca-cabeza') && r.svg.includes('vaca-ojo-retrato') && !/NaN/.test(r.caja));
+  const escena = escenaMonte(new Map(datos.bestias.map((b) => [b.id, b.nombre])));
+  assert.ok(escena.includes('data-id="aquella-solitaria-vaca-cubana"'));
+  for (const pieza of ['vaca-cuerpo', 'vaca-cabeza', 'vaca-satelite', 'vaca-pedazo', 'vaca-pozo']) assert.ok(escena.includes(`/bestiario/${pieza}.webp`), `falta ${pieza}`);
+  // Lo que solo aparece cuando la tocan arranca sin verse: sin JavaScript, la vaca mira el satélite y nada más.
+  for (const clase of ['vaca-pozo', 'vaca-pedazo', 'vaca-estallido']) assert.ok(new RegExp(`class="${clase}"[^>]*opacity="0"`).test(escena), `${clase} se ve sin que la toquen`);
 });
