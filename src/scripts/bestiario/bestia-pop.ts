@@ -201,8 +201,8 @@ export const armarBestiaPop: Armar | null = (marcos: readonly SVGGElement[], esc
 
     // Lo que decide: un gesto por vez, y los tiempos se corren para que nunca sea un reloj.
     if (e.modo !== 'mira' && u > total(DURA[e.modo])) {
-      if (e.modo === 'tapa') e.proximaTapa = t + 9 + Math.random() * 8;
-      if (e.modo === 'busca') e.proximaBusca = t + 15 + Math.random() * 9;
+      if (e.modo === 'tapa') e.proximaTapa = t + 12 + Math.random() * 9;
+      if (e.modo === 'busca') e.proximaBusca = t + 16 + Math.random() * 10;
       // Después de un gesto respira un rato encorvada: nada de encadenar uno con otro.
       e.proximaTapa = Math.max(e.proximaTapa, t + 3 + Math.random() * 3);
       e.proximaBusca = Math.max(e.proximaBusca, t + 4 + Math.random() * 4);
@@ -217,17 +217,18 @@ export const armarBestiaPop: Armar | null = (marcos: readonly SVGGElement[], esc
         // Sin taparse: una cara se le funde en la siguiente, como si la pusiera otro.
         e.otra = otraCara(e.cara);
         e.funde = t;
-        e.proximoFundido = t + 14 + Math.random() * 9;
+        e.proximoFundido = t + 15 + Math.random() * 9;
       }
     }
 
     // Las caras: el fundido, el cambio detrás de la mano y el carrusel de cuando brilla.
-    let caras = Array.from({ length: A.caras }, (_, i) => (i === e.cara ? 1 : 0));
     const f = (t - e.funde) / FUNDE;
+    if (f >= 1 && e.cara !== e.otra) e.cara = e.otra;
+    let caras: number[] = Array.from({ length: A.caras }, (_, i) => (i === e.cara ? 1 : 0));
     if (f >= 0 && f < 1) {
       const k = suave(f);
       caras = caras.map((_, i) => (i === e.cara ? 1 - k : i === e.otra ? k : 0));
-    } else if (f >= 1 && e.cara !== e.otra) e.cara = e.otra;
+    }
     const kTapa = e.modo === 'tapa' ? avance(u, DURA.tapa) : 0;
     if (e.modo === 'tapa' && !e.cambiada && u > DURA.tapa[0] + DURA.tapa[1] * 0.45) {
       e.cara = otraCara(e.cara);

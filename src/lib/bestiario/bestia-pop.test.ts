@@ -46,6 +46,10 @@ test('la bestia pop es un títere entero: cada parte que mueve la isla, con su i
     assert.ok(adentro(A.codos[n], R[`brazo-${n + 1}`]!) && adentro(A.codos[n], R[`antebrazo-${n + 1}`]!), `el codo ${n + 1} no une sus dos piezas`);
     assert.ok(adentro(A.manos[n], R[`antebrazo-${n + 1}`]!), `los nudillos ${n + 1} no están en su mano`);
   }
+  // Cada destello cae sobre la pieza que lo lleva: no queda una estrella flotando al lado.
+  for (const [parte, lista] of Object.entries(CHISPAS)) {
+    for (const [x, y] of lista) assert.ok(adentro([x, y], R[parte]!), `el destello (${x}, ${y}) se sale de ${parte}`);
+  }
   // La cara: el hueco está adentro de la cabeza, y cada cara entra en el hueco.
   for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]] as const) {
     assert.ok(adentro([A.cara.centro[0] + dx * A.cara.radio[0], A.cara.centro[1] + dy * A.cara.radio[1]], R.cabeza!), 'la cara se sale de la cabeza');
@@ -207,10 +211,19 @@ test('viva: se cambia la cara sola, se la tapa, busca la luz, y tocada brilla co
   const { esc, dichos, reloj } = escenario(false);
   const vivo = armarBestiaPop!([j.marco as unknown as SVGGElement], esc);
   const visto = { caras: new Set<number>(), tapa: false, busca: false, mezcla: false };
+  let puesta = 0;
+  let desde = 0;
   for (let t = 0; t < 70; t += 1 / 30) {
     vivo.mover(t, 1 / 30);
     const ops = Array.from({ length: A.caras }, (_, i) => Number(j.parte(`cara-${i + 1}`).getAttribute('opacity')));
     ops.forEach((o, i) => o > 0.99 && visto.caras.add(i));
+    // La que más se ve: si cambia, que no sea un parpadeo de un cuadro, que vuelve a la de antes.
+    const ahora = ops.indexOf(Math.max(...ops));
+    if (ahora !== puesta) {
+      assert.ok(t - desde > 1, `en ${t.toFixed(2)} la cara cambió dos veces en un segundo`);
+      puesta = ahora;
+      desde = t;
+    }
     if (ops.filter((o) => o > 0.05).length === 2) visto.mezcla = true;
     // Siempre hay una cara puesta: nunca queda el hueco vacío.
     assert.ok(ops.reduce((a, b) => a + b, 0) > 0.95, `en ${t.toFixed(2)} no tiene cara`);

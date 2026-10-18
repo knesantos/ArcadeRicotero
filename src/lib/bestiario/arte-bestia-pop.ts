@@ -217,7 +217,8 @@ function adentro([x, y]: P, pts: readonly P[]): boolean {
 function cuerpo(): string {
   const d = poli(CUERPO);
   const caja = cajaDe(CUERPO, 2);
-  const vol: Volumen = { c: [4, -120], r: [84, 76], angulo: 78, ancho: 15, semilla: 1201 };
+  // Las pasadas cruzan en diagonal, como los brochazos de la tapa de *Gulp!*.
+  const vol: Volumen = { c: [4, -120], r: [84, 76], angulo: 62, ancho: 15, semilla: 1201 };
   // El forro del abanico: rojo corrido sobre amarillo, en pasadas que salen de la nuca como rayos, y lo
   // hondo pegado a la cabeza, que le tira sombra.
   const [cx, cy] = CUELLO.c;
@@ -407,6 +408,17 @@ function luzDeCara(c: Cara, u0: number, v: number): number {
   const u = u0 / c.ancho;
   const w = v > 0.2 ? 1 - 0.3 * (v - 0.2) ** 2 : 1;
   const borde = (u / w) ** 2 + v * v;
+  // El pelo: casi negro, pero el reflector le prende los mechones de su lado, y así se le ve la forma.
+  const ondas = Math.cos(u * 9) * 0.05;
+  const frente = c.pelo === 'rulos' ? -0.5 : c.pelo === 'largo' ? -0.6 : -0.7;
+  const lado = c.pelo === 'largo' ? Math.abs(u) > 0.8 - Math.max(0, v) * 0.1 : c.pelo === 'rulos' ? Math.abs(u) > 0.84 + Math.sin(v * 12) * 0.05 : false;
+  const melena =
+    c.pelo === 'rulos' ? (u / 1.32) ** 2 + ((v + 0.12) / 1.22) ** 2 < 1 : c.pelo === 'largo' ? (u / 1.12) ** 2 + ((v + 0.05) / 1.28) ** 2 < 1 && v < 1.05 : borde < 1.05;
+  if (melena && (borde > 1.05 || v < frente + ondas || lado)) {
+    const prende = Math.max(0, u * 0.7 - v * 0.4 + 0.15);
+    const textura = c.pelo === 'rulos' ? 0.5 + 0.5 * Math.sin(u * 15) * Math.sin(v * 13) : 0.5 + 0.5 * Math.sin(u * 26 + v * 3);
+    return Math.max(0, Math.min(0.42, prende * textura * 0.55));
+  }
   if (borde > 1.05) return 0;
   // La luz del reflector, de arriba a la derecha: el lado de la sombra se hunde en lo negro.
   let b = 0.46 + 0.26 * u - 0.12 * v;
@@ -414,7 +426,11 @@ function luzDeCara(c: Cara, u0: number, v: number): number {
   const ojo = c.ojos === 'cerrados' ? 0.3 : 0.75;
   b += 0.16 * (g(u, v, -0.36, -0.44, 0.26, 0.1) + g(u, v, 0.36, -0.44, 0.26, 0.1));
   b -= ojo * (g(u, v, -0.36, -0.2, 0.22, 0.13) + g(u, v, 0.36, -0.2, 0.22, 0.13));
-  if (c.ojos === 'cerrados') b -= 0.55 * (g(u, v, -0.36, -0.15, 0.2, 0.035) + g(u, v, 0.36, -0.15, 0.2, 0.035));
+  if (c.ojos === 'cerrados') {
+    // Los párpados bajos: una raya que se curva para abajo, como el que canta con los ojos cerrados.
+    const raya = (cu: number): number => Math.exp(-(((v + 0.14 - 0.5 * (u - cu) ** 2) / 0.04) ** 2) - ((u - cu) / 0.2) ** 2);
+    b -= 0.95 * (raya(-0.36) + raya(0.36));
+  }
   if (c.ojos === 'anteojos') {
     const lente = (cu: number): number => (Math.abs(u - cu) < 0.28 && Math.abs(v + 0.2) < 0.15 ? 1 : 0);
     if (lente(-0.36) || lente(0.36) || (Math.abs(u) < 0.1 && Math.abs(v + 0.26) < 0.04)) return 0;
@@ -423,20 +439,17 @@ function luzDeCara(c: Cara, u0: number, v: number): number {
   b -= 0.5 * g(u, v, 0.02, 0.4, 0.2, 0.06) + 0.25 * g(u, v, -0.15, 0.18, 0.08, 0.2);
   b += 0.12 * g(u, v, -0.52, 0.1, 0.2, 0.16) + 0.22 * g(u, v, 0.52, 0.1, 0.2, 0.16);
   b -= 0.16 * (g(u, v, -0.6, 0.45, 0.16, 0.25) + g(u, v, 0.6, 0.45, 0.16, 0.25));
-  if (c.boca === 'grita') b -= 1.1 * g(u, v, 0.02, 0.64, 0.22, 0.2) - 0.3 * g(u, v, 0.02, 0.47, 0.16, 0.035);
-  else if (c.boca === 'sonrie') {
-    const vm = 0.6 - 0.35 * u * u;
-    b -= 0.7 * Math.exp(-(((v - vm) / 0.055) ** 2) - (u / 0.36) ** 2);
-    b += 0.14 * (g(u, v, -0.44, 0.3, 0.16, 0.12) + g(u, v, 0.44, 0.3, 0.16, 0.12));
+  if (c.boca === 'grita') {
+    // La boca abierta de cantar a los gritos: un pozo negro, con la fila de dientes arriba.
+    if (((u - 0.02) / 0.3) ** 2 + ((v - 0.66) / 0.26) ** 2 < 1) return v < 0.47 && Math.abs(u) < 0.2 ? 0.55 : 0;
+    b += 0.1 * g(u, v, 0.02, 0.98, 0.3, 0.08);
+  } else if (c.boca === 'sonrie') {
+    const vm = 0.58 - 0.4 * u * u;
+    b -= 0.95 * Math.exp(-(((v - vm) / 0.06) ** 2) - (u / 0.4) ** 2);
+    b += 0.2 * (g(u, v, -0.44, 0.28, 0.16, 0.12) + g(u, v, 0.44, 0.28, 0.16, 0.12));
   } else b -= 0.6 * g(u, v, 0.02, 0.64, 0.28, 0.05) - 0.14 * g(u, v, 0.03, 0.74, 0.18, 0.05);
   if (c.bigote) b -= 0.8 * g(u, v, 0.02, 0.5, 0.32, 0.07);
   b += 0.12 * g(u, v, 0.06, 0.95, 0.24, 0.1);
-  // El pelo: lo negro de arriba, y a los costados si es largo o con rulos.
-  const ondas = Math.cos(u * 9) * 0.05;
-  const frente = c.pelo === 'rulos' ? -0.5 : c.pelo === 'largo' ? -0.6 : -0.7;
-  if (v < frente + ondas) return 0;
-  if (c.pelo === 'largo' && Math.abs(u) > 0.8 - Math.max(0, v) * 0.1) return 0;
-  if (c.pelo === 'rulos' && Math.abs(u) > 0.84 + Math.sin(v * 12) * 0.05) return 0;
   return Math.max(0, Math.min(1, b));
 }
 
@@ -447,8 +460,8 @@ function cara(c: Cara): string {
   const paso = 2.05;
   let hondos = '';
   let claros = '';
-  for (let y = cy - ry - 2, fila = 0; y < cy + ry + 2; y += paso * 0.87, fila++) {
-    for (let x = cx - rx - 2 + (fila % 2) * paso * 0.5; x < cx + rx + 2; x += paso) {
+  for (let y = cy - ry - 4, fila = 0; y < cy + ry + 4; y += paso * 0.87, fila++) {
+    for (let x = cx - rx - 4 + (fila % 2) * paso * 0.5; x < cx + rx + 4; x += paso) {
       // La cara ladeada: se mira el punto girado al revés.
       const [qx, qy] = rotar([x, y], CARA, -c.giro);
       const l = luzDeCara(c, (qx - cx) / (rx * 0.86), (qy - cy) / (ry * 0.84));
@@ -566,7 +579,11 @@ function antebrazo(n: 0 | 1): string {
       `</g>` +
       lentejuelas(`bpa${n}-lent`, d, caja, vol, n ? 40 : 18, 1620 + n * 40, manga) +
       puno(n ? 1 : -1, muneca, 1640 + n * 40, n ? 0.8 : 0.2) +
-      (n ? filo(`M98 -96 L104 -80 L106 -60 L104 -46 L111 -32 L116 -16 L112 -6 L108 -18 L104 -34 L100 -48 L100 -62 L98 -80 Z`, 0.7) : nube(-104, -40, 14, 50, T.negro, 'm', 0.45)),
+      (n
+        ? filo(`M98 -96 L104 -80 L106 -60 L104 -46 L111 -32 L116 -16 L112 -6 L108 -18 L104 -34 L100 -48 L100 -62 L98 -80 Z`, 0.7) +
+          // Abajo, la mano de atrás ya toca el borde del charco del seguidor: una luz pálida, prestada.
+          nube(114, -14, 9, 18, T.seguidor, 'm', 0.5)
+        : nube(-104, -40, 14, 50, T.negro, 'm', 0.45)),
   );
 }
 
@@ -606,7 +623,8 @@ function piernas(): string {
       tinta(pincelada([[-32, -70], [-34, -50], [-36, -30], [-38, -14]], { ancho: 2.4, seco: 0.3, grano: 12 }, 1730) + pincelada([[30, -70], [33, -50], [36, -30], [40, -14]], { ancho: 2.4, seco: 0.3, grano: 12 }, 1731)) +
       filo(`M48 -76 L52 -58 L56 -38 L62 -18 L66 -18 L60 -40 L56 -60 L52 -76 Z`, 0.6) +
       bota(-80, -8, -70, 1740) +
-      bota(8, 82, 72, 1750),
+      bota(8, 82, 72, 1750) +
+      nube(82, -6, 7, 7, T.seguidor, 's', 0.55),
   );
 }
 
@@ -664,8 +682,8 @@ const img = imagenesDe(PIEZAS_BESTIA_POP);
 export const CHISPAS: Readonly<Record<string, ReadonlyArray<readonly [number, number, number]>>> = {
   cuerpo: [[-30, -204, 0.45], [40, -205, 1], [64, -184, 1], [24, -150, 0.8], [79, -140, 1], [76, -104, 0.9], [62, -66, 0.7], [8, -116, 1], [-44, -140, 0.25], [40, -50, 0.6]],
   'brazo-1': [[-78, -152, 0.35], [-92, -104, 0.2]],
-  'antebrazo-1': [[-70, -60, 0.4], [-74, -2, 0.5]],
-  'brazo-2': [[88, -150, 1], [100, -102, 0.9]],
+  'antebrazo-1': [[-70, -60, 0.4], [-82, -3, 0.5]],
+  'brazo-2': [[84, -148, 1], [98, -102, 0.9]],
   'antebrazo-2': [[104, -64, 1], [108, -4, 0.9]],
   piernas: [[-70, -9, 0.4], [72, -9, 1]],
 };
@@ -716,5 +734,5 @@ export const BESTIA_POP: Personaje | null = {
   ancla: POP.x,
   piezas: PIEZAS_BESTIA_POP,
   capas: { figura: (nombres) => titere(nombres.get(ID) ?? 'La bestia pop') },
-  retrato: { caja: [-124, -218, 248, 222], cuerpo: adentroDelTitere },
+  retrato: { caja: [-132, -228, 264, 236], cuerpo: adentroDelTitere },
 };
