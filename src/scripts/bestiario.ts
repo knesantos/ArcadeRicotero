@@ -20,7 +20,8 @@ import { BESTIARIO } from '../lib/bestiario/copy.ts';
 // módulos que dibujan (`arte*.ts`, `escenas.ts`, `titeres.ts`), que correrían el aerógrafo entero
 // en el teléfono al abrir la página. `bestiario.test.ts` lo vigila.
 import {
-  ACECHO, ACHATE, BAJO, ESCALA_CORDERO, ESCALA_LOBO, LUZBELITO as LUZ, MOMO as MOMO_ESC, PALO, PIERRE, PIERRE_ARMADO, SOGA, profundidad,
+  ACECHO, ACHATE, BAJO, DRACULA, DRACULA_ARMADO, ESCALA_CORDERO, ESCALA_LOBO, LUZBELITO as LUZ, MOMO as MOMO_ESC, PALO, PIERRE, PIERRE_ARMADO, PRISION,
+  SOGA, profundidad,
 } from '../lib/bestiario/rig.ts';
 import { ARMADO } from '../lib/bestiario/recortes.ts';
 import { crearRocola } from './rocola.ts';
@@ -991,6 +992,222 @@ function recintoDePierre(escena: HTMLElement, svg: SVGSVGElement): Recinto {
 }
 
 /* ------------------------------------------------------------------
+   La drácula con tacones, en la prisión de Barbazul (séptima vuelta)
+   ------------------------------------------------------------------ */
+
+/**
+ * La drácula taconea por el pasillo de las celdas: camina un tramo, se para, mira, parpadea, y
+ * vuelve a caminar; cada taco que apoya suena en el piso con dos cortes blancos. Tocada, abre la
+ * capa como dos puertas de papel —la mitad negra se achica contra el hombro y del otro lado se
+ * despliega el forro, rojo como las banderas de la ventana— y muestra los colmillos. Afuera, las
+ * banderas de *Oktubre* flamean detrás de la reja, y la puerta de la jaula vacía de la fiera se
+ * mece; tocada la jaula, chirría.
+ */
+function recintoDeLaDracula(escena: HTMLElement, svg: SVGSVGElement): Recinto {
+  const deMapa = recintoDeMapa(escena, svg);
+  const g = svg.querySelector<SVGGElement>('.titere--dracula')!;
+  const entera = svg.querySelector<SVGGElement>('#dracula-entera')!;
+  const p = partes(g);
+  const sombra = svg.querySelector<SVGEllipseElement>('[data-parte="sombra"]');
+  const taco = svg.querySelector<SVGPathElement>('[data-parte="taco"]');
+  const puerta = svg.querySelector<SVGGElement>('[data-parte="puerta-jaula"]');
+  const banderas = [...svg.querySelectorAll<SVGGElement>('[data-bandera]')].map((b) => ({
+    g: b,
+    asta: (b.dataset.asta ?? '0 0').split(' ').map(Number) as [number, number],
+    fase: Number(b.dataset.bandera) * 1.3,
+  }));
+  const AD = DRACULA_ARMADO;
+  const { piso, escala, desde: izquierda, hasta: derecha } = DRACULA;
+
+  type Modo = 'camina' | 'para' | 'abre';
+  let modo: Modo = 'para';
+  let x: number = DRACULA.x;
+  let meta = x;
+  let hasta = 2;
+  let fase = 0;
+  let abreDesde = -10;
+  let parpadeo = 1.5;
+  let tacoEn = -10;
+  let tacoX = 0;
+  let chirria = -10;
+  let ultimoPaso = 0;
+  // Quieta, hace una de dos: se acomoda la capa (asoma el forro) o mira para la ventana.
+  let acomodaDesde = -10;
+  let mira = 0;
+  let mirando = 0;
+  // El reloj de las banderas: corre más rápido cuando sopla, sin saltar de fase.
+  let soplo = 0;
+
+  /** Cuánto está abierta la capa, de 0 a 1: se abre en medio segundo, se sostiene y se cierra. */
+  const ABRE = 0.55;
+  const SOSTIENE = 1.9;
+  const CIERRA = 0.6;
+  function abierta(t: number): number {
+    const u = t - abreDesde;
+    if (u < 0 || u > ABRE + SOSTIENE + CIERRA) return 0;
+    if (u < ABRE) return suave(u / ABRE);
+    if (u < ABRE + SOSTIENE) return 1;
+    return 1 - suave((u - ABRE - SOSTIENE) / CIERRA);
+  }
+
+  /** Se acomoda la capa: la abre un poco y la cierra, en menos de un segundo. */
+  function acomoda(t: number): number {
+    const u = (t - acomodaDesde) / 0.9;
+    return u < 0 || u > 1 ? 0 : Math.sin(Math.PI * u) * 0.34;
+  }
+
+  /** Una mitad de la capa: la negra se da vuelta contra el hombro y del otro lado aparece el forro. */
+  function capa(n: 1 | 2, k: number, t: number, mece: number): void {
+    const [hx, hy] = AD.hombros[n - 1];
+    const lado = n === 1 ? -1 : 1;
+    const c = Math.cos(k * Math.PI * 0.94);
+    const negra = p.get(`capa-${n}`);
+    const forro = p.get(`forro-${n}`);
+    if (c > 0) {
+      negra?.setAttribute('transform', `translate(${hx} ${hy}) rotate(${(mece * lado).toFixed(2)}) scale(${c.toFixed(3)} 1) translate(${-hx} ${-hy})`);
+      forro?.setAttribute('transform', `translate(${hx} 0) scale(0.001 1) translate(${-hx} 0)`);
+    } else {
+      negra?.setAttribute('transform', `translate(${hx} 0) scale(0.001 1) translate(${-hx} 0)`);
+      // Abierta, el ala sube un poco y flamea como las banderas de afuera.
+      const sube = -lado * 6 * k;
+      const flamea = Math.sin(t * 6.5 + n * 1.7) * 2.6 * k;
+      forro?.setAttribute('transform', `translate(${hx} ${hy}) rotate(${sube.toFixed(2)}) skewY(${flamea.toFixed(2)}) scale(${(-c).toFixed(3)} 1) translate(${-hx} ${-hy})`);
+    }
+  }
+
+  function pintar(t: number, dt: number): void {
+    const k = abierta(t);
+    const capaAbierta = Math.max(k, acomoda(t));
+    if (modo === 'abre' && t - abreDesde > ABRE + SOSTIENE + CIERRA) {
+      modo = 'para';
+      hasta = t + 1.2;
+    } else if (modo === 'para' && t > hasta && !quieto()) {
+      // A otro lado del pasillo, lejos de donde está.
+      let otra = izquierda + Math.random() * (derecha - izquierda);
+      if (Math.abs(otra - x) < 140) otra = x < (izquierda + derecha) / 2 ? Math.min(derecha, x + 160 + Math.random() * 120) : Math.max(izquierda, x - 160 - Math.random() * 120);
+      meta = otra;
+      modo = 'camina';
+      mira = 0;
+    } else if (modo === 'camina') {
+      const paso = Math.sign(meta - x) * Math.min(Math.abs(meta - x), 46 * dt);
+      x += paso;
+      fase += (Math.abs(paso) / 34) * Math.PI;
+      // Cada vez que apoya un taco: el golpe en el piso.
+      const pasos = Math.floor(fase / Math.PI);
+      if (pasos !== ultimoPaso) {
+        ultimoPaso = pasos;
+        tacoEn = t;
+        tacoX = x + (pasos % 2 ? 1 : -1) * 18 * escala;
+      }
+      if (Math.abs(meta - x) < 0.5) {
+        modo = 'para';
+        hasta = t + 1.8 + Math.random() * 2.2;
+        if (Math.random() < 0.4) acomodaDesde = t + 0.5;
+        else mira = x < (PRISION.ventana.x0 + PRISION.ventana.x1) / 2 ? 1 : -1;
+        // Termina el paso con los dos pies juntos.
+        fase = Math.round(fase / Math.PI) * Math.PI;
+      }
+    }
+
+    // Las piernas: una adelante y otra atrás, como se camina en el teatro de papel; la que se
+    // adelanta se levanta un poco. Quieta, las dos juntas.
+    const andar = modo === 'camina' ? 1 : 0;
+    const s = Math.sin(fase) * andar;
+    const levanta = (lado: number): number => Math.max(0, Math.cos(fase) * lado) * 5 * andar;
+    girar(p.get('pierna-1'), s * 7, AD.caderas[0], `translate(0 ${(-levanta(1)).toFixed(2)}) `);
+    girar(p.get('pierna-2'), -s * 7, AD.caderas[1], `translate(0 ${(-levanta(-1)).toFixed(2)}) `);
+    const rebota = -Math.abs(Math.sin(fase)) * 3 * andar + Math.sin(t * 1.3) * 0.8;
+    const inclina = Math.sign(meta - x) * 1.4 * andar;
+    entera.setAttribute('transform', `translate(${x.toFixed(1)} ${(piso + rebota).toFixed(2)}) rotate(${inclina.toFixed(2)}) scale(${escala})`);
+
+    // La capa: cerrada se mece con el paso; tocada, se abre.
+    const mece = Math.sin(fase) * 1.6 * andar + Math.sin(t * 0.9) * 0.4;
+    capa(1, capaAbierta, t, mece);
+    capa(2, capaAbierta, t, mece);
+    p.get('mano')?.setAttribute('opacity', (1 - suave(capaAbierta / 0.2)).toFixed(2));
+
+    // La cabeza: se ladea apenas; con la capa abierta se va para atrás, abre la boca y entorna los ojos.
+    const [cx, cy] = AD.cuello;
+    mirando = hacia(mirando, mira, dt * 1.6);
+    const ladea = Math.sin(t * 0.55) * 1.6 - 4 * k + 5 * suave(Math.abs(mirando)) * Math.sign(mirando);
+    const cabeza = `translate(0 ${(-2 * k).toFixed(2)}) rotate(${ladea.toFixed(2)} ${cx} ${cy})`;
+    p.get('cabeza')?.setAttribute('transform', cabeza);
+    p.get('pelo')?.setAttribute('transform', cabeza);
+    p.get('mandibula')?.setAttribute('transform', `translate(0 ${(7 * k).toFixed(2)})`);
+    if (t > parpadeo + 0.16) parpadeo = t + 2.6 + Math.random() * 3.4;
+    const ciega = t > parpadeo && t < parpadeo + 0.16 ? 1 : 0;
+    parpado(p.get('parpado-1'), Math.max(ciega, AD.entornados + 0.3 * k));
+    parpado(p.get('parpado-2'), Math.max(ciega, AD.entornados + 0.3 * k));
+
+    // La sombra en el piso, más ancha con las alas abiertas, y el golpe del taco.
+    sombra?.setAttribute('cx', x.toFixed(1));
+    sombra?.setAttribute('rx', (64 * escala * (1 + 1.6 * k)).toFixed(1));
+    const golpe = 1 - (t - tacoEn) / 0.22;
+    taco?.setAttribute('opacity', golpe > 0 ? golpe.toFixed(2) : '0');
+    if (golpe > 0) taco?.setAttribute('transform', `translate(${tacoX.toFixed(1)} ${piso}) scale(${escala})`);
+
+    // Afuera flamean las banderas, más fuerte cuando ella abre la capa; y la puerta de la jaula
+    // se mece: tocada, chirría y va y viene.
+    const viento = 1 + 1.6 * k;
+    soplo += dt * viento;
+    for (const b of banderas) {
+      const [ax, ay] = b.asta;
+      const rota = Math.sin(soplo * 1.6 + b.fase) * 2.6 * viento;
+      const tuerce = Math.sin(soplo * 2.4 + b.fase * 1.7) * 5 * viento;
+      b.g.setAttribute('transform', `translate(${ax} ${ay}) rotate(${rota.toFixed(2)}) skewY(${tuerce.toFixed(2)}) translate(${-ax} ${-ay})`);
+    }
+    if (puerta) {
+      const bx = Number(puerta.dataset.bisagra);
+      const u = t - chirria;
+      const vaivien = u >= 0 && u < 4 ? Math.sin(u * 5.5) * 0.36 * Math.exp(-u * 1.1) : 0;
+      const abre = 0.9 + Math.sin(t * 0.7) * 0.05 + vaivien;
+      puerta.setAttribute('transform', `translate(${bx} 0) scale(${Math.min(1, Math.max(0.25, abre)).toFixed(3)} 1) translate(${-bx} 0)`);
+    }
+  }
+
+  function abrirLaCapa(t: number): void {
+    // Si ya la tiene abierta, la sostiene un rato más.
+    if (modo === 'abre' && t - abreDesde < ABRE + SOSTIENE) abreDesde = Math.max(abreDesde, t - ABRE);
+    else abreDesde = t;
+    modo = 'abre';
+  }
+
+  const tocar = (): void => {
+    abrirLaCapa(reloj);
+    if (quieto()) {
+      // Sin movimiento, queda abierta y quieta: las alas rojas, la boca abierta.
+      abreDesde = reloj - ABRE;
+      pintar(reloj, 0);
+    }
+    // El bocadillo le cuelga del mentón, sobre el pecho: que se le vea la cara.
+    hablar('la-dracula-con-tacones', escena, svg, x, piso - 440 * escala, true);
+  };
+  g.addEventListener('click', tocar);
+  g.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter' || ev.key === ' ') {
+      ev.preventDefault();
+      tocar();
+    }
+  });
+  pintar(0, 0);
+  return {
+    escena,
+    svg,
+    mover: (t, dt) => {
+      deMapa.mover(t, dt);
+      pintar(t, dt);
+    },
+    reaccionar: (id, t) => {
+      if (id === 'la-dracula-con-tacones') abrirLaCapa(t);
+      else if (id === 'la-fiera-mas-fiera') {
+        chirria = t;
+        if (quieto()) pintar(t + 0.3, 0);
+      } else deMapa.reaccionar(id, t);
+    },
+  };
+}
+
+/* ------------------------------------------------------------------
    El armado
    ------------------------------------------------------------------ */
 
@@ -1016,6 +1233,7 @@ for (const escena of document.querySelectorAll<HTMLElement>('.recinto-escena')) 
     'el-infierno': recintoDeLuzbelito,
     'el-templo': recintoDeMomo,
     'el-bajo': recintoDePierre,
+    'la-prision': recintoDeLaDracula,
     'la-ruta': recintoDeRuta,
   };
   const r = (controlador[id ?? ''] ?? recintoDeMapa)(escena, svg);
