@@ -666,7 +666,6 @@ function arbolPiso(ancho = ANCHO, alto = ALTO): string {
   const at = (id: string): readonly [number, number] => [X(o[id]![0]), o[id]![1]];
   const [cx, cy] = at('el-que-duerme-colgado');
   const [jx, jy] = at('el-jocker-burlon');
-  const [mnx, mny] = at('el-monito-que-trepa');
   const [scx, scy] = at('el-senor-de-los-cielos');
   const [lx, ly] = at('la-lechuza-que-circula');
   const [a1x, a1y] = at('el-angel-de-la-soledad');
@@ -698,12 +697,7 @@ function arbolPiso(ancho = ANCHO, alto = ALTO): string {
     trazo(`M${f(jx + 10)} ${f(jy + 10)} L${f(jx + 14)} 306`, A.negro, 5) +
     figura(jx, jy, 74, A.negro) +
     bonete(jx, jy - 8) +
-    // El monito, a media altura del tronco, subiendo.
-    forma(elipse(mnx - 1, mny + 18, 9, 14), A.negro) +
-    forma(circulo(mnx, mny, 8), A.negro) +
-    nube(mnx - 2, mny + 28, 6, 5, A.cobre, 's', 0.55) +
-    trazo(`M${f(mnx - 6)} ${f(mny + 10)} l-10 -14 M${f(mnx + 6)} ${f(mny + 12)} l10 -10 M${f(mnx - 6)} ${f(mny + 30)} l-8 8 M${f(mnx + 4)} ${f(mny + 30)} l10 6`, A.negro, 3.4) +
-    trazo(`M${f(mnx - 4)} ${f(mny + 32)} q-14 10 -6 22 q6 6 10 -2`, A.negro, 2) +
+    // El monito que trepa ya no se pinta acá: es un títere (`arte-monito.ts`) que trepa este tronco.
     // El bicho del gran bonete, trepado y abrazado al fruto, que no lo suelta.
     forma(elipse(bgx + 2, bgy + 12, 11, 15), A.negro) +
     trazo(`M${f(bgx - 6)} ${f(bgy + 8)} Q${f(bgx - 26)} ${f(bgy + 10)} ${f(bgx - 30)} ${f(bgy + 24)} M${f(bgx - 4)} ${f(bgy + 20)} Q${f(bgx - 20)} ${f(bgy + 30)} ${f(bgx - 34)} ${f(bgy + 30)}`, A.negro, 4) +
