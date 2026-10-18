@@ -172,6 +172,48 @@
   --entorno-monte-claro: #d9c6be;
   --entorno-monte-medio: #a8968b;
   --entorno-monte-hondo: #524c47;
+  /* Octava vuelta (D-73): los seis entornos que seguian con las figuras del plano, cada uno en la
+     tapa de su disco. Medidos con k-medias sobre las tapas de Docs/INVESTIGACION/TapasDiscos/: el
+     galpon en el rojo tramado de *En directo*; el arbol en el marmol verde del frente de *Luzbelito*
+     y la llanura roja bajo el cielo violeta de su interior; Cybersiberia en el acero remachado de
+     *Ultimo bondi*, con el vidrio del ojo de buey y la lente de su interior; los astilleros en la
+     tiza azul de la contratapa del disco 2 de *Cordero atado*; la mesa en el rojo y el seguidor de
+     *La mosca y la sopa* y el sepia del collage de su contratapa. Ninguno escribe texto: no entran
+     al test AA. Faltan en el lienzo (T-435). */
+  --entorno-galpon-noche: #381f2f;
+  --entorno-galpon-rojo: #cb3539;
+  --entorno-galpon-brasa: #7f2e34;
+  --entorno-galpon-luz: #c7bbb9;
+  --entorno-arbol-marmol: #2b4840;
+  --entorno-arbol-marmol-hondo: #223530;
+  --entorno-arbol-marmol-claro: #466156;
+  --entorno-arbol-veta: #f1dcba;
+  --entorno-arbol-cobre: #d58e61;
+  --entorno-arbol-cobre-hondo: #76513c;
+  --entorno-arbol-tierra: #611a29;
+  --entorno-arbol-tierra-honda: #2a1223;
+  --entorno-arbol-tierra-viva: #922f34;
+  --entorno-arbol-cielo: #411634;
+  --entorno-arbol-violeta: #5a395c;
+  --entorno-arbol-nube: #c3a9a9;
+  --entorno-cyber-acero-hondo: #1f2222;
+  --entorno-cyber-acero: #393f40;
+  --entorno-cyber-acero-claro: #5c6261;
+  --entorno-cyber-nieve: #e4e3e0;
+  --entorno-cyber-vidrio: #d9c398;
+  --entorno-cyber-lente: #98cbd7;
+  --entorno-cyber-oxido: #5d514a;
+  --entorno-astillero-noche: #293843;
+  --entorno-astillero-tiza: #4d7fbb;
+  --entorno-astillero-azul: #497395;
+  --entorno-astillero-tiza-clara: #bbccd7;
+  --entorno-mesa-rojo: #c82f1f;
+  --entorno-mesa-luz: #c5451d;
+  --entorno-mesa-haz: #d1d6e9;
+  --entorno-mesa-papel: #e0d4c5;
+  --entorno-mesa-sepia: #875f3f;
+  --entorno-mesa-sepia-clara: #dcbe9b;
+  --entorno-mesa-sepia-honda: #563f2a;
   /* Sexta vuelta (D-73): el gordo Pierre y el bajo inundado. Pierre es de *Gulp!* y se pinta en
      su estetica: el negro del pincel seco es `--fondo` (la tapa mide #131514), el papel es la
      crema de *Gulp!* (`--disco-gulp-apoyo`), el rojo de las letras corridas es
