@@ -605,18 +605,21 @@ const boleta = (): string => boletaD(0, 0, 16, 11, 0, 111, 0.55);
 const vaho = (): string => nube(0, 0, 13, 8, T.nieve, 'm', 0.5) + nube(4, -3, 7, 5, T.lente, 's', 0.45) + nube(-3, 2, 5, 3, T.nieve, 's', 0.4);
 
 /**
- * La luz de la tele, que la página suma (`mix-blend-mode: screen`) y la isla hace titilar. Va detrás
- * de él, porque la tele está detrás: un halo arriba de la gorra y de los hombros, en el aire con
- * nieve, y el charco a los costados.
+ * La luz de la tele, que la página suma (`mix-blend-mode: screen`) y la isla hace titilar: el halo en
+ * el aire con nieve arriba de la gorra, el charco a los costados, y encima de él lo que mira para
+ * arriba (la copa de la gorra, los hombros, la rodilla, el filo del brazo en que se apoya). Así,
+ * cuando cambia de canal, lo que cambia es la luz que le pega a él.
  */
 function luz(color: string): string {
   return (
-    nube(-6, -196, 46, 16, color, 'l', 0.7) +
-    nube(-56, -120, 16, 10, color, 'm', 0.45) +
-    nube(42, -114, 16, 10, color, 'm', 0.45) +
+    nube(-6, -198, 46, 15, color, 'l', 0.7) +
+    nube(-8, -186, 24, 5, color, 'm', 0.55) +
+    nube(-46, -117, 14, 4.5, color, 'm', 0.6) +
+    nube(26, -112, 12, 4, color, 'm', 0.5) +
+    nube(70, -80, 10, 4, color, 'm', 0.5) +
+    nube(-68, -82, 4, 22, color, 'm', 0.35) +
     nube(-104, -20, 26, 8, color, 'm', 0.4) +
-    nube(100, -26, 26, 8, color, 'm', 0.4) +
-    nube(-6, -150, 70, 60, color, 'xl', 0.22)
+    nube(100, -26, 26, 8, color, 'm', 0.4)
   );
 }
 
@@ -681,7 +684,6 @@ export function adentroDelTitere(): string {
     parte(`brazo-${n + 1}`, parte(`antebrazo-${n + 1}`, img(`buscapina-antebrazo-${n + 1}`)) + img(`buscapina-brazo-${n + 1}`));
   const [bx, by] = A.boca;
   return (
-    `<g class="bt-buscapina-luz">${parte('luz', img('buscapina-luz'), ' opacity="0.6"')}${parte('luz-cancha', img('buscapina-luz-cancha'), ' opacity="0"')}</g>` +
     parte('piernas', img('buscapina-piernas')) +
     parte(
       'espalda',
@@ -692,7 +694,8 @@ export function adentroDelTitere(): string {
         parte('cabeza', parte('nuca', img('buscapina-cabeza')) + parte('vuelta', img('buscapina-cabeza-vuelta'), ' opacity="0"')) +
         parte('vaho', img('buscapina-vaho'), ` opacity="0" transform="translate(${bx + 10} ${by - 6})"`),
     ) +
-    parte('boleta', img('buscapina-boleta'), ' opacity="0"')
+    parte('boleta', img('buscapina-boleta'), ' opacity="0"') +
+    `<g class="bt-buscapina-luz">${parte('luz', img('buscapina-luz'), ' opacity="0.6"')}${parte('luz-cancha', img('buscapina-luz-cancha'), ' opacity="0"')}</g>`
   );
 }
 

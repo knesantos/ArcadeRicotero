@@ -4,16 +4,14 @@
  * para recortar cada pieza alrededor de su bisagra, y los lee la conducta
  * (`scripts/bestiario/buscapina.ts`) para moverlas sin llevarse el aerógrafo al teléfono.
  *
- * Todo va en coordenadas de títere: el (0, 0) es la nieve donde está sentado, entre las dos rodillas;
- * arriba es negativo. A escala 1 mide lo que mide el dibujo; la escena lo achica (`BUSCA.escala`).
+ * Todo va en coordenadas de títere: el (0, 0) es la nieve donde está sentado, debajo de la espina;
+ * arriba es negativo. Sentado, de la nieve a la copa de la gorra, mide unos 195; la escena lo achica a
+ * la mitad (`BUSCA.escala`), que es lo que mide una persona sentada al lado de los de Cybersiberia.
  */
 
-import { CYBER, COSAS_DE_CYBERSIBERIA } from './rig-entornos.ts';
+import { CYBER } from './rig-entornos.ts';
 
 export type P = readonly [number, number];
-
-/** Lo que mide sentado, de la nieve a la copa de la gorra. */
-export const ALTO_DIBUJADO = 202;
 
 /**
  * Dónde está sentado: delante de la tele, un poco a la izquierda del medio (la mira de abajo y de
@@ -79,9 +77,6 @@ export const BUSCA_ARMADO = {
   tirita: 1.1,
 } as const;
 
-/** La vieja silueta pintada: el capitán se toca ahora en el títere, y esto queda para los tests. */
-export const SILUETA_VIEJA = COSAS_DE_CYBERSIBERIA['el-capitan-buscapina']!;
-
 /** Un punto del títere, llevado al recinto. */
 export const enElRecinto = ([x, y]: P): P => [BUSCA.x + x * BUSCA.escala, BUSCA.piso + y * BUSCA.escala];
 
@@ -104,8 +99,11 @@ export function enElAntebrazo(n: 0 | 1, p: P, { brazo, antebrazo }: Gesto): P {
 /** Dónde queda la mano `n` con el gesto puesto. */
 export const manoCon = (n: 0 | 1, g: Gesto): P => enElAntebrazo(n, BUSCA_ARMADO.manos[n], g);
 
-/** El golpe de muñeca con que la suelta: el de `paga`, con el antebrazo un poco más atrás. */
-export const SUELTA: Gesto = { brazo: BUSCA_ARMADO.gestos.paga.brazo, antebrazo: BUSCA_ARMADO.gestos.paga.antebrazo + 22 };
+/**
+ * El golpe de muñeca con que la suelta: desde `paga`, el antebrazo se abre para afuera, lejos de la
+ * cara, que es como se tira algo por encima del hombro sin mirar dónde cae.
+ */
+export const SUELTA: Gesto = { brazo: BUSCA_ARMADO.gestos.paga.brazo - 8, antebrazo: BUSCA_ARMADO.gestos.paga.antebrazo - 34 };
 
 /**
  * El vuelo de la boleta: una parábola que sale de la mano, por encima del hombro, en el golpe de

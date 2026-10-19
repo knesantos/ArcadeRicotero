@@ -266,12 +266,10 @@ test('vivo: respira con vaho, cambia al partido, se agarra el costado, tirita, y
     vivo.mover(t, 1 / 30);
     if (opacidad(j.parte('vuelta')) > 0.95) mira = true;
     if (giro(j.parte('brazo-1').getAttribute('transform')) > A.gestos.paga.brazo * 0.9) arriba = true;
-    const tr = j.parte('boleta').getAttribute('transform')!;
-    const [bx, by] = /translate\((-?[\d.]+) (-?[\d.]+)\)/.exec(tr)!.slice(1).map(Number) as [number, number];
+    const by = Number(/translate\(-?[\d.]+ (-?[\d.]+)\)/.exec(j.parte('boleta').getAttribute('transform')!)![1]);
     if (t > t0 + PAGA.suelta + 0.1 && opacidad(j.parte('boleta')) > 0.9 && by < A.hombros[0][1]) vuela = true;
-    if (t < t0 + PAGA.sube[0]) continue;
-    assert.ok(opacidad(j.parte('boleta')) > 0 || t < t0 + PAGA.sube[0] + 0.05, `en ${(t - t0).toFixed(2)} la boleta no está`);
-    void bx;
+    // Desde que la agarra hasta que cae, la boleta se ve siempre: en la mano o en el aire.
+    if (t > t0 + PAGA.sube[0] + 0.05) assert.ok(opacidad(j.parte('boleta')) > 0, `en ${(t - t0).toFixed(2)} la boleta no está`);
   }
   assert.ok(mira, 'tocado, no se da vuelta a mirarte');
   assert.ok(arriba, 'tocado, no levanta la mano de las boletas');

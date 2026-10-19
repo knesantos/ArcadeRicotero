@@ -108,7 +108,9 @@ export function escribir(p: Pose): Record<string, { transform?: string; opacity?
       transform: `translate(${n2(p.tirita)} 0) rotate(${n2(p.inclina)} ${ax} ${ay}) translate(${ax} ${ay}) scale(1 ${(1 + p.respira * 0.012).toFixed(4)}) translate(${-ax} ${-ay})`,
     },
     cabeza: { transform: `rotate(${n2(p.cabeza)} ${cx} ${cy})` },
-    nuca: { opacity: n2(1 - p.vuelta) },
+    // La cara vuelta se funde encima de la nuca, que no se apaga hasta que la tapa entera: así no se
+    // ve la nieve a través de la cabeza a mitad del giro.
+    nuca: { opacity: p.vuelta < 0.98 ? '1.00' : '0.00' },
     vuelta: { opacity: n2(p.vuelta) },
     nieve: { opacity: n2(p.nieve) },
     vaho: { transform: `translate(${n2(p.vaho.x)} ${n2(p.vaho.y)}) scale(${n2(p.vaho.s)})`, opacity: n2(p.vaho.o) },
@@ -291,7 +293,7 @@ export const armarBuscapina: Armar | null = (marcos: readonly SVGGElement[], esc
     // La luz: la de la tele titila siempre; cuando cambia de canal se corta un instante, y el partido es tibio.
     const corte = e.modo === 'canal' && u > DURA.canal[0] + 0.15 && u < DURA.canal[0] + 0.45 ? 0.15 : 1;
     const tv = 0.6 + titila(t);
-    const cancha = e.partido ? 0.75 + 0.15 * Math.sin(t * 3.1) * Math.sin(t * 1.7) : 0;
+    const cancha = e.partido ? 0.85 + 0.15 * Math.sin(t * 3.1) * Math.sin(t * 1.7) : 0;
     aplicar({
       brazos: [b0, b1],
       inclina,
