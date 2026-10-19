@@ -4126,6 +4126,22 @@ body:has(> .lugar) .marca-chica {
 /* ⟨/el Capitán Buscapina⟩ */
 
 /* ⟨el pibe de los astilleros⟩ */
+/* Los ojos del recorte: la pupila en el negro del pelo de la contratapa, y el párpado de su piel en
+   la sombra de la cuenca, a media asta, que es como mira el que vigila. */
+.bt-pibe-pupila { fill: var(--bestia-pibe-pelo); }
+.bt-pibe-parpado { fill: var(--bestia-pibe-piel-honda); }
+/* El grito de la contratapa: la boca abierta y los dientes de arriba. */
+.bt-pibe-boca { fill: var(--bestia-pibe-boca); }
+.bt-pibe-dientes { fill: var(--bestia-pibe-papel); }
+/* El pucho: el papel, la ceniza larga que no se cae (gris de tiza) y la brasa, en el sodio del farol. */
+.bt-pibe-pucho { fill: none; stroke: var(--bestia-pibe-papel); stroke-width: 1.5; stroke-linecap: round; }
+.bt-pibe-ceniza { fill: none; stroke: var(--entorno-astillero-tiza-clara); stroke-width: 1.6; stroke-linecap: round; }
+.bt-pibe-brasa { fill: var(--disco-cordero-atado-tinta); }
+/* La luz de la brasa en la cara: se suma a lo de abajo, como las linternas del baldío. */
+.bt-pibe-resplandor { mix-blend-mode: screen; pointer-events: none; }
+/* Lo que se afana de la caja: un pedal negro con el cromo que agarra la luz. */
+.bt-pibe-botin { fill: var(--fondo); }
+.bt-pibe-cromo { fill: none; stroke: var(--entorno-astillero-tiza-clara); stroke-width: 1; stroke-linecap: round; }
 /* ⟨/el pibe de los astilleros⟩ */
 
 /* ⟨el caníbal⟩ */

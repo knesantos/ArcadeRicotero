@@ -1276,7 +1276,6 @@ function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
 
   const o = OJOS_DE_LOS_ASTILLEROS;
   const at = (id: string): [number, number] => [X(o[id]![0]), o[id]![1]];
-  const [pbx, pby] = at('el-pibe-de-los-astilleros');
   const [rnx, rny] = at('la-rana-rubia');
   const [lyx, lyy] = at('la-gran-lady');
   const [btx, bty] = at('el-botija-rapado');
@@ -1285,13 +1284,7 @@ function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
   const [asx, asy] = at('el-as-del-club-paris');
   const [nvx, nvy] = [X(COSAS_DE_LOS_ASTILLEROS['la-pequena-novia-del-carioca']![0]), COSAS_DE_LOS_ASTILLEROS['la-pequena-novia-del-carioca']![1]];
 
-  const pibe =
-    forma(circulo(pbx, pby, 9), T.negro) +
-    forma(`M${f(pbx - 12)} ${f(pby + 8)} L${f(pbx + 12)} ${f(pby + 8)} L${f(pbx + 14)} ${f(pila.arriba)} L${f(pbx - 14)} ${f(pila.arriba)} Z`, T.negro) +
-    trazo(`M${f(pbx - 8)} ${f(pila.arriba - 2)} L${f(pbx - 12)} ${f(pila.arriba + 34)} M${f(pbx + 8)} ${f(pila.arriba - 2)} L${f(pbx + 6)} ${f(pila.arriba + 36)}`, T.negro, 7) +
-    // La guitarra roja, cruzada.
-    forma(elipse(pbx + 6, pby + 26, 11, 8), T.rojo) + forma(elipse(pbx + 14, pby + 20, 7, 6), T.rojo) +
-    trazo(`M${f(pbx + 2)} ${f(pby + 30)} L${f(pbx + 36)} ${f(pby + 2)}`, T.negro, 2.6) + forma(circulo(pbx + 8, pby + 24, 2.2), T.negro);
+  // El pibe ya no se pinta acá: es un títere del elenco (`arte-pibe.ts`), sentado en esta pila.
   const rana =
     forma(`M${f(rnx - 18)} ${f(pila.arriba)} C${f(rnx - 20)} ${f(rny + 4)} ${f(rnx - 10)} ${f(rny - 6)} ${f(rnx - 6)} ${f(rny - 3)} Q${f(rnx)} ${f(rny - 5)} ${f(rnx + 6)} ${f(rny - 3)} C${f(rnx + 10)} ${f(rny - 6)} ${f(rnx + 20)} ${f(rny + 4)} ${f(rnx + 18)} ${f(pila.arriba)} Z`, T.negro) +
     trazo(`M${f(rnx - 18)} ${f(pila.arriba)} C${f(rnx - 20)} ${f(rny + 4)} ${f(rnx - 10)} ${f(rny - 6)} ${f(rnx - 6)} ${f(rny - 3)} Q${f(rnx)} ${f(rny - 5)} ${f(rnx + 6)} ${f(rny - 3)} C${f(rnx + 10)} ${f(rny - 6)} ${f(rnx + 20)} ${f(rny + 4)} ${f(rnx + 18)} ${f(pila.arriba)}`, T.oro, 1.6, 0.8);
@@ -1385,7 +1378,7 @@ function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
     `<g filter="url(#rociado)">${pilaDeContainers}</g>` +
     poste +
     hamacaEntera +
-    pibe + rana + botija + hija + novia + pesca + as + elBalde
+    rana + botija + hija + novia + pesca + as + elBalde
   );
 }
 
