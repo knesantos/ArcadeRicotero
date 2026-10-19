@@ -128,7 +128,7 @@ const COLA: readonly P[] = [
 /** El mármol de la tapa es oscuro para una polilla luna: se aclara, sin perder las vetas. */
 const ACLARA =
   `<filter id="m-pontiac-aclara" color-interpolation-filters="sRGB"><feComponentTransfer>` +
-  `<feFuncR type="gamma" amplitude="1.3" exponent="0.72"/><feFuncG type="gamma" amplitude="1.38" exponent="0.7"/><feFuncB type="gamma" amplitude="1.2" exponent="0.78"/>` +
+  `<feFuncR type="gamma" amplitude="1.18" exponent="0.78"/><feFuncG type="gamma" amplitude="1.26" exponent="0.74"/><feFuncB type="gamma" amplitude="1.12" exponent="0.8"/>` +
   `</feComponentTransfer></filter>`;
 /** El mármol aclarado. El filtro (`ACLARA`) va una vez al principio de cada pieza que lo usa. */
 const marmolClaro = (s: string): string => `<g filter="url(#m-pontiac-aclara)">${s}</g>`;
