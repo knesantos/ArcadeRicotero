@@ -44,6 +44,11 @@ export const PIBE_ARMADO = {
   labio: [9.4, -51.2] as Punto,
   /** El bolsillo canguro del buzo, donde guarda lo que se afana. */
   bolsillo: [1, -6] as Punto,
+  /**
+   * La cabeza se dibuja a la medida del cuerpo y se agranda desde el cuello: a la medida, en el
+   * teléfono la cara se perdía, y el pibe de la contratapa es todo cara.
+   */
+  agranda: 1.18,
 } as const;
 
 /** El pibe en el recinto: arriba del container de más arriba de la pila, mirando al muelle. */
@@ -197,9 +202,9 @@ export const QUIETA: Momento = {
 };
 
 /** La caja arriba de la cabeza, parado: un poco torcida, como se levanta lo que pesa. */
-export const CAJA_ARRIBA: Lugar = { x: 2, y: -84, giro: -4 };
-/** De dónde la agarra con cada mano: los cantos de abajo de la caja, del lado de atrás. */
-export const AGARRE_CAJA: readonly [Punto, Punto] = [[-15, -8], [15, -8]];
+export const CAJA_ARRIBA: Lugar = { x: 2, y: -87, giro: -4 };
+/** De dónde la agarra con cada mano: las esquinas de abajo de la caja, del lado de atrás. */
+export const AGARRE_CAJA: readonly [Punto, Punto] = [[-15.5, -4], [15.5, -4]];
 /** Adónde mete la mano para rapiñar: adentro de la caja, detrás del frente. */
 export const ADENTRO_CAJA: Punto = [4, -10];
 
@@ -219,6 +224,8 @@ export const cajaEnSuLugar = (cadera: Punto): Lugar => {
 export const ALZADA: Momento = {
   ...QUIETA,
   parado: 1,
+  // Se tira un poco para atrás, del lado de la izquierda: el que grita para arriba.
+  inclina: -4,
   manos: [enLaCaja(AGARRE_CAJA[0], CAJA_ARRIBA), enLaCaja(AGARRE_CAJA[1], CAJA_ARRIBA)],
   caja: CAJA_ARRIBA,
   cabeza: MIRADAS.arriba.cabeza,
@@ -319,12 +326,12 @@ export function pose(m: Momento): Pose {
   const piernas = ([0, 1] as const).map((n) => {
     const lado = n === 0 ? -1 : 1;
     // Sentado en el canto, las rodillas abiertas y los pies juntos, colgando; parado, plantado.
-    const giro = -lado * mezcla(26, 6, m.parado);
+    const giro = -lado * mezcla(26, 9, m.parado);
     const [hx, hy] = A.caderas[n];
     const rodilla = rotar([hx, hy + A.largos.muslo * muslo], [hx, hy], giro);
     // Patea: la pierna va y viene, y cuando va para adelante se ve más corta.
     const patea = m.patas[n] * (1 - m.parado);
-    const giroPierna = lado * mezcla(10, -3, m.parado) + patea * 7;
+    const giroPierna = lado * mezcla(10, -4, m.parado) + patea * 7;
     const acortePierna = pierna * (1 - 0.14 * Math.max(0, patea));
     const suela = rotar([rodilla[0], rodilla[1] + A.largos.pierna * acortePierna], rodilla, giroPierna);
     return { giro, acorte: muslo, rodilla, giroPierna, acortePierna, suela };
@@ -336,7 +343,8 @@ export function pose(m: Momento): Pose {
 export function enLaCabeza(p: Punto, m: Momento): Punto {
   const A = PIBE_ARMADO;
   const cuello = delTorso(A.cuello, m);
-  const [x, y] = rotar(p, A.cuello, m.inclina + m.cabeza);
+  const grande: Punto = [A.cuello[0] + (p[0] - A.cuello[0]) * A.agranda, A.cuello[1] + (p[1] - A.cuello[1]) * A.agranda];
+  const [x, y] = rotar(grande, A.cuello, m.inclina + m.cabeza);
   return [x + cuello[0] - A.cuello[0], y + cuello[1] - A.cuello[1]];
 }
 
@@ -366,7 +374,9 @@ export function marcas(m: Momento): { transform: Record<string, string>; opacity
     entero: `translate(${n2(p.cadera[0])} ${n2(p.cadera[1])}) scale(${LUGAR.escala})`,
     torso,
     guitarra: `${torso} rotate(${n2(m.guitarra)} ${A.correa[0]} ${A.correa[1]})`,
-    cabeza: `translate(${n2(p.cuello[0] - A.cuello[0])} ${n2(p.cuello[1] - A.cuello[1])}) rotate(${n2(m.inclina + m.cabeza)} ${A.cuello[0]} ${A.cuello[1]})`,
+    cabeza:
+      `translate(${n2(p.cuello[0] - A.cuello[0])} ${n2(p.cuello[1] - A.cuello[1])}) rotate(${n2(m.inclina + m.cabeza)} ${A.cuello[0]} ${A.cuello[1]}) ` +
+      `translate(${A.cuello[0]} ${A.cuello[1]}) scale(${A.agranda}) translate(${-A.cuello[0]} ${-A.cuello[1]})`,
     pucho: `translate(${A.labio[0]} ${n2(A.labio[1] + m.grito * 2.4)}) rotate(${n2(PUCHO.giro + m.pucho)})`,
     ceniza: `translate(${PUCHO.largo} 0) scale(${(m.ceniza / 10).toFixed(3)} 1)`,
     caja: `translate(${n2(p.caja.x)} ${n2(p.caja.y)}) rotate(${n2(p.caja.giro)})`,

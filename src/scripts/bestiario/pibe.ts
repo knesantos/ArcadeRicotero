@@ -239,6 +239,7 @@ export function armarPibeCon(marcos: readonly SVGGElement[], esc: Escenario, aza
     } else if (modo === 'grito') {
       const gr = grito(u, (k) => cajaEnSuLugar(caderaEn(k)));
       m.parado = gr.parado;
+      m.inclina = ALZADA.inclina * gr.grito + gr.sacude * 1.4;
       m.caja = gr.caja;
       m.grito = gr.grito;
       if (gr.manos) manos = gr.manos;

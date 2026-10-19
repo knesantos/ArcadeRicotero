@@ -5,7 +5,7 @@ import { capasDe, retratoDe } from './elenco.ts';
 import { CAJA_FRENTE, PIEZAS_PIBE, RETRATO, STRATO } from './arte-pibe.ts';
 import {
   ADENTRO_CAJA, AGARRE_CAJA, ALZADA, CAJA, CAJA_ARRIBA, CENIZA, LUGAR, PARADO, PIBE_ARMADO, QUIETA, RANA, VERSO, alRecinto, alTitere,
-  caderaEn, cajaEnSuLugar, enLaCaja, manoQuieta, pose, puchoEn, rotar, type Momento, type Punto,
+  caderaEn, cajaEnSuLugar, enLaCabeza, enLaCaja, manoQuieta, pose, puchoEn, rotar, type Momento, type Punto,
 } from './rig-pibe.ts';
 import { ASTILLERO, COSAS_DE_LOS_ASTILLEROS, OJOS_DE_LOS_ASTILLEROS } from './rig-entornos.ts';
 import { DURA, armarPibeCon, cenizaTras, grito, rapina } from '../../scripts/bestiario/pibe.ts';
@@ -55,7 +55,7 @@ const momentos: Momento[] = [
 /** Los puntos del cuerpo y de la caja de un momento, en el recinto. */
 function puntos(m: Momento): Punto[] {
   const p = pose(m);
-  const out: Punto[] = [p.cadera, alRecinto(p.cuello, p.cadera), alRecinto([p.cuello[0], p.cuello[1] - 30], p.cadera)];
+  const out: Punto[] = [p.cadera, alRecinto(p.cuello, p.cadera), ...[[-2, -78], [16.4, -56], [-14, -62]].map((q) => alRecinto(enLaCabeza(q as unknown as Punto, m), p.cadera))];
   for (const n of [0, 1] as const) {
     out.push(alRecinto(p.hombros[n], p.cadera), alRecinto(p.brazos[n].punta, p.cadera), alRecinto(p.piernas[n].rodilla, p.cadera), alRecinto(p.piernas[n].suela, p.cadera));
   }
@@ -142,8 +142,8 @@ test('parado, pisa el container; y la caja en alto queda arriba de la cabeza, co
   }
   // La caja va arriba de la coronilla, con la cabeza echada para atrás.
   const fondoDeLaCaja = enLaCaja([0, 0], CAJA_ARRIBA)[1];
-  const coronilla = rotar([A.cuello[0], -77], A.cuello, ALZADA.inclina + ALZADA.cabeza)[1] + (p.cuello[1] - A.cuello[1]);
-  assert.ok(fondoDeLaCaja < coronilla, 'la caja le pisa la cabeza');
+  const coronilla = Math.min(...[-2, 2, 6, 10].map((x) => enLaCabeza([x, -77], ALZADA)[1]));
+  assert.ok(fondoDeLaCaja < coronilla, `la caja le pisa la cabeza (${fondoDeLaCaja.toFixed(1)} y ${coronilla.toFixed(1)})`);
   assert.equal(ALZADA.grito, 1);
 });
 
