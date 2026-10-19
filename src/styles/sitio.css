@@ -4171,6 +4171,19 @@ body:has(> .lugar) .marca-chica {
 /* ⟨/la Mariposa Pontiac⟩ */
 
 /* ⟨el diablo que mea⟩ */
+/* El ojo de la cara vuelta: de persona, con el iris del rojo de los ojos del infierno (los que tenía
+   antes de ser títere), y el párpado del cobre de la pelada, que baja cuando desconfía. */
+.bt-diablo-iris { fill: var(--marca-rojo); }
+.bt-diablo-pupila { fill: var(--fondo); }
+.bt-diablo-brillo { fill: var(--bestia-diablo-brillo); }
+.bt-diablo-parpado { fill: var(--bestia-diablo-cobre-hondo); }
+/* El chorro es un arco de brasa: el halo del fuego, sumado como luz, y adentro las gotas del oro de la
+   vela, que corren. Donde cae, un brillo que se seca y unas chispas. Nada de esto se toca. */
+.bt-diablo-halo { fill: none; stroke: var(--entorno-infierno-fuego); stroke-width: 7; stroke-linecap: round; mix-blend-mode: screen; }
+.bt-diablo-chorro { fill: none; stroke: var(--bestia-diablo-brillo); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 26 1.8 9 1.4 4 2.2; }
+.bt-diablo-charco { fill: var(--entorno-infierno-fuego); mix-blend-mode: screen; }
+.bt-diablo-chispa { fill: var(--acento-2); }
+.diablo-suelo { pointer-events: none; }
 /* ⟨/el diablo que mea⟩ */
 
 /* ⟨el rato molhado⟩ */
