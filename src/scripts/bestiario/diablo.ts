@@ -243,7 +243,7 @@ export function armarDiabloCon(marcos: readonly SVGGElement[], esc: Escenario, a
       // Sube la mano a la pelada, se palpa dos veces, no está. Se da vuelta a mirar quién fue.
       alza = Math.min(1, ug / 0.6) * (1 - Math.max(0, Math.min(1, (ug - 3.1) / 0.7)));
       palmea = ug > 0.6 && ug < 1.4 ? 3 * Math.abs(Math.sin((ug - 0.6) * Math.PI * 2.5)) : 0;
-      vuelta = suave((ug - 1.4) / 0.35) * (1 - suave((ug - 2.7) / 0.35));
+      vuelta = suave((ug - 1.4) / 0.22) * (1 - suave((ug - 2.7) / 0.22));
       mira = ug < 2.1 ? [1, -0.4] : [0.8, 0.4];
       parpado = 0.55;
       cabeza = palmea ? 4 : cabeza;
@@ -251,8 +251,8 @@ export function armarDiabloCon(marcos: readonly SVGGElement[], esc: Escenario, a
     }
     if (e.gesto === 'pescado') {
       // Lo pescaste: se da vuelta de golpe con el ojo grande, lo achica, se lleva la mano a la pelada.
-      vuelta = suave(ug / 0.3) * (1 - suave((ug - 2.8) / 0.4));
-      alza = Math.min(1, Math.max(0, (ug - 0.15) / 0.6)) * (1 - Math.max(0, Math.min(1, (ug - 2.6) / 0.6)));
+      vuelta = suave(ug / 0.2) * (1 - suave((ug - 2.8) / 0.25));
+      alza =Math.min(1, Math.max(0, (ug - 0.15) / 0.6)) * (1 - Math.max(0, Math.min(1, (ug - 2.6) / 0.6)));
       palmea = ug > 1.1 && ug < 1.5 ? 2.6 * Math.abs(Math.sin((ug - 1.1) * Math.PI * 2.5)) : 0;
       mira = [-0.55, 0.15];
       parpado = ug < 0.8 ? 0 : 0.45;
@@ -264,7 +264,7 @@ export function armarDiabloCon(marcos: readonly SVGGElement[], esc: Escenario, a
     if (e.gesto === 'mira') {
       // Alguien anda por ahí: se da vuelta a mirar, por si fue ese el del gorro. A la vela, por encima
       // del hombro; a la puerta, que le queda del otro lado, nada más gira la nuca.
-      const k = suave(ug / 0.3) * (1 - suave((ug - (TIEMPOS.mira - 0.4)) / 0.4));
+      const k = suave(ug / 0.22) * (1 - suave((ug - (TIEMPOS.mira - 0.3)) / 0.25));
       if (e.miraA === 'vela') {
         vuelta = k;
         mira = [0.9, -0.3];
