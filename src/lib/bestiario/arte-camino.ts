@@ -190,8 +190,24 @@ export const PIEZAS_CAMINO: readonly Pieza[] = [
 export const cajaDelCruce = (t: Tramo): readonly [number, number, number, number] => [t.escena - SOLAPE, 0, SOLAPE + CRUCE, ALTO];
 
 /** Donde el descampado se junta con el cielo, y donde nace la picada. */
-const HORIZONTE = 404;
+export const HORIZONTE = 404;
 const PICADA = 590;
+
+/**
+ * Dónde termina cada picada del cruce, en x del piso: una por vecina, repartidas en el descampado.
+ * La página clava ahí el poste de cada cartel, así el cartel queda arriba de su camino.
+ */
+export function destinosDelCruce(t: Tramo, n: number): number[] {
+  const [x0, , ancho] = cajaDelCruce(t);
+  const fin = x0 + ancho;
+  // Juntas al final: un teléfono parado ve menos de 300 de ancho, y los carteles tienen que entrar.
+  const tramo = Math.min(fin - (t.escena + 56) - 80, ABANICO);
+  const paso = tramo / Math.max(1, n);
+  return Array.from({ length: n }, (_, i) => fin - 30 - tramo + paso * (i + 0.5));
+}
+
+/** Lo ancho que se abren las picadas del cruce, en unidades del piso. */
+const ABANICO = 250;
 
 /**
  * La pieza del cruce de un tramo. `luces`: la tinta del disco de cada vecina, en el orden de los
@@ -204,9 +220,8 @@ export function piezaDelCruce(t: Tramo, luces: readonly string[]): Pieza {
   const borde = t.escena + 56;
   const fin = x0 + ancho;
   const rect = (a: number, b: number): string => `M${a} -40 L${b} -40 L${b} ${ALTO + 40} L${a} ${ALTO + 40} Z`;
-  const n = Math.max(1, luces.length);
-  const paso = (fin - borde - 80) / n;
-  const destinos = luces.map((_, i) => ({ x: borde + 40 + paso * (i + 0.5), y: HORIZONTE - 8 + rnd() * 16 }));
+  const xs = destinosDelCruce(t, luces.length);
+  const destinos = luces.map((_, i) => ({ x: xs[i]!, y: HORIZONTE - 8 + rnd() * 16 }));
 
   // Las luces de las vecinas, detrás del horizonte: un resplandor ancho y un centro chico.
   let luz = '';

@@ -5812,3 +5812,41 @@ el módulo nuevo. **No se oyó** nada: el panel no tiene parlantes (`T-490`).
 - `T-492`: los personajes de `bestiario/diez` en los caminos largos y en la isla del camino.
 - `T-493`: la ficha flotante y la pieza del cruce al lienzo (hoja 08, componentes). No trajeron
   tintas nuevas: todo sale de `tokens.css`.
+
+### Primera enmienda (2026-10-18): el camino liviano, la puerta y los postes del cruce
+
+Pedido del usuario, textual, mirándolo en el teléfono: *"En móvil se ven muy grandes los textos y
+tapan a los personajes y molestan. Que se achiquen, que haya para leer solo cuando el usuario quiera.
+Usemos el mismo truco para poner la música que con el juego Adiviná el tema, que suene de una. Ahora
+suena solo si tocás en la pantalla"*, y después: *"Lo mismo para las fichas, me gustaría que los
+caminos estén representados por el entorno para definir a dónde ir, y que los carteles estén arriba
+del camino"*. Rama `bestiario/camino-liviano`, sobre `main` en `4072abd`.
+
+1. **El tablero se pliega.** Arriba queda un renglón: la salida chica a la izquierda y el nombre de
+   la región chico a la derecha. El nombre es el botón: tocarlo despliega el sello, lo que canta, la
+   bajada, la libreta y los botones; caminar un trecho lo vuelve a plegar. El papel de los dos se
+   achica, y el toque sigue siendo de `--toque-min` con un borde invisible que se estira afuera. Sale
+   el plegado automático de `.camino--caminando` y `.camino--al-final`, que ya no hacen falta.
+2. **La puerta.** Deslizar no es un toque para el navegador, así que con el dedo corriendo la escena
+   el sonido no arrancaba. El truco de "Adiviná el tema" es que "Jugá" es un toque de verdad y adentro
+   de ese toque se despierta la salida. Acá es lo mismo: con el sonido pedido, se entra por una puerta
+   que es la pantalla entera, con la escena atrás y el sello «Tocá y entrá con sonido». Ese toque
+   prende el recital y los ruidos y abre el camino. Abajo, «Entrá sin sonido» lo apaga y lo recuerda;
+   con el sonido apagado de antes no hay puerta. **No hay forma de que suene sin ningún toque**: el
+   navegador no lo deja, en ningún teléfono.
+3. **La ficha flotante, chica.** En el teléfono, la ficha ocupa como mucho el 42 % del alto (la
+   lista, el 46 %), con letra más chica y la figura al costado del texto.
+4. **Los carteles del cruce, en postes arriba de su camino.** Donde hay pieza de cruce (los once
+   nuevos), cada cartel va clavado en un poste al final de su picada, frente a la luz de su disco: el
+   entorno dice para dónde va cada camino. El cruce pasa a ser una capa más, que se corre con el piso,
+   y los carteles se ven venir en vez de aparecer. Llevan la flecha y el nombre; lo que canta cada
+   región queda para cuando se entra. Las picadas se juntaron en los últimos 250 del cruce
+   (`destinosDelCruce`) para que entren en un teléfono parado, y se reimprimieron las once piezas.
+
+**Queda afuera:** el monte y la pastura no tienen picadas dibujadas (su final es el claro del monte),
+así que ahí los carteles siguen en columna. Darles picadas pide una pieza de cruce para los largos.
+
+**Verificado:** `npm test` (1707), `npm run check` (0 errores), `npm run build` (179 páginas). En el
+panel, a 375×812: la puerta en la prisión, el renglón de arriba plegado y desplegado, la ficha de
+Barbazul abierta con él a la vista, y los cuatro postes del galpón sobre sus luces; a 1280×800, los
+cuatro de la mesa. **No se oyó** (el panel no tiene parlantes) y falta el teléfono de verdad (`T-490`).

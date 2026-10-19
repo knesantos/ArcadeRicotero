@@ -307,8 +307,6 @@ function encuadrar(): void {
   }
   const alFinal = enElCruce();
   cruce.classList.toggle('cruce--a-la-vista', alFinal);
-  camino.classList.toggle('camino--caminando', cam > 24);
-  camino.classList.toggle('camino--al-final', alFinal);
   lejos.acercar(avance());
   entorno?.caminar(cam / escala);
   if (hablando && Math.abs(cam - camAlHablar) > 60) callar();
@@ -425,7 +423,7 @@ let pedido = false;
 const GESTOS = ['pointerup', 'touchend', 'keydown', 'click'] as const;
 
 function alTocar(ev: Event): void {
-  if ((ev.target as Element | null)?.closest?.('#lejos')) return;
+  if ((ev.target as Element | null)?.closest?.('#lejos, #entra-callado')) return;
   if (!pedido || lejos.prendido) return soltarGestos();
   void prenderSonido().then((ok) => {
     if (ok) soltarGestos();
@@ -457,7 +455,74 @@ if (botonSonido && datos.lejos.length) {
   // Se entra con el sonido prendido (`D-77`): suena con el primer toque, sin buscar el botón.
   pedido = quiereSonido();
   pintarSonido(pedido);
-  if (pedido) esperarGestos();
+  if (pedido) {
+    esperarGestos();
+    abrirPuerta();
+  }
+}
+
+/*
+ * La puerta. Deslizar no es un toque para el navegador: con el dedo corriendo la escena, el
+ * sonido no arrancaba nunca. Es el mismo truco que el "Jugá" de "Adiviná el tema": un toque
+ * de verdad al entrar, que despierta la salida adentro del gesto (`alTocar`, que escucha en la
+ * captura, ya lo hace) y abre el camino. Solo sale con el sonido pedido.
+ */
+function abrirPuerta(): void {
+  const puerta = document.getElementById('puerta');
+  const entra = document.getElementById('entra');
+  const callado = document.getElementById('entra-callado');
+  if (!puerta || !entra || !callado) return;
+  const cerrar = (): void => {
+    puerta.hidden = true;
+    document.documentElement.classList.remove('camino-con-puerta');
+  };
+  puerta.hidden = false;
+  document.documentElement.classList.add('camino-con-puerta');
+  entra.focus({ preventScroll: true });
+  entra.addEventListener('click', cerrar);
+  callado.addEventListener('click', () => {
+    pedido = false;
+    apagarSonido();
+    soltarGestos();
+    pintarSonido(false);
+    recordarSonido(false);
+    cerrar();
+  });
+}
+
+/* ------------------------------------------------------------------
+   El tablero plegado (`D-77`)
+   ------------------------------------------------------------------
+
+   Pedido del usuario: *"en móvil se ven muy grandes los textos y tapan a los personajes. Que
+   haya para leer solo cuando el usuario quiera"*. Queda el nombre, chico; tocarlo despliega
+   la bajada, la libreta y los botones. Caminar un trecho lo vuelve a plegar. */
+const tablero = document.getElementById('tablero');
+const nombre = tablero?.querySelector('.recinto-nombre');
+if (tablero && nombre) {
+  const plegar = document.createElement('button');
+  plegar.type = 'button';
+  plegar.className = 'camino-plegar';
+  plegar.setAttribute('aria-expanded', 'false');
+  plegar.setAttribute('aria-controls', 'tablero');
+  plegar.title = CAMINO.desplegar;
+  plegar.textContent = nombre.textContent;
+  nombre.replaceChildren(plegar);
+  tablero.classList.add('camino-tablero--plegado');
+  let camAlAbrir = 0;
+  const pintar = (abierto: boolean): void => {
+    tablero.classList.toggle('camino-tablero--plegado', !abierto);
+    plegar.setAttribute('aria-expanded', String(abierto));
+    camAlAbrir = escenario.scrollLeft;
+  };
+  plegar.addEventListener('click', () => pintar(tablero.classList.contains('camino-tablero--plegado')));
+  escenario.addEventListener(
+    'scroll',
+    () => {
+      if (!tablero.classList.contains('camino-tablero--plegado') && Math.abs(escenario.scrollLeft - camAlAbrir) > 240) pintar(false);
+    },
+    { passive: true },
+  );
 }
 
 /* ------------------------------------------------------------------
