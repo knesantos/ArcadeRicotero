@@ -91,4 +91,11 @@ export const CAMINO = {
     apagar: '■ Pará',
     suena: (disco: string): string => `De lejos suena ${disco}.`,
   },
+  /** La puerta: el toque que deja sonar (el navegador no deja antes), como el "Jugá" de los juegos. */
+  puerta: {
+    entra: 'Tocá y entrá con sonido',
+    callado: 'Entrá sin sonido',
+  },
+  /** El nombre de la región es el botón que despliega lo demás: se lee cuando uno quiere. */
+  desplegar: 'Mirá qué hay acá',
 } as const;

@@ -38,7 +38,7 @@ import FichaBestia from '../../../components/bestiario/FichaBestia.astro';
 import { BESTIARIO, CAMINO } from '../../../lib/bestiario/copy.ts';
 import { lugarDelRotulo, simbolos, tintaDe, type Bestiario, type Bestia } from '../../../lib/bestiario/mapa.ts';
 import { ALTO, CAMINOS, CON_CAMINO, hrefDeRegion } from '../../../lib/bestiario/camino.ts';
-import { PIEZAS_CAMINO } from '../../../lib/bestiario/arte-camino.ts';
+import { destinosDelCruce, HORIZONTE, PIEZAS_CAMINO } from '../../../lib/bestiario/arte-camino.ts';
 import { rutaDePieza } from '../../../lib/bestiario/aerografo.ts';
 import { pisoDelCamino } from '../../../lib/bestiario/escenas-camino.ts';
 import { conAudio, loQueDice } from '../../../lib/bestiario/fichas.ts';
@@ -86,6 +86,13 @@ const pisoSvg = pisoDelCamino(tramo, nombres);
  * redondo. Las que todavía no se caminan llevan a su recinto, y el cartel lo dice.
  */
 const aqui = lugarDelRotulo(region);
+/**
+ * Donde hay pieza de cruce, cada cartel va clavado en un poste arriba de su picada, frente a la
+ * luz de su disco: el entorno dice para dónde va cada camino. El cruce entonces es una capa más,
+ * que se corre con el piso. En el monte y la pastura, que no tienen picadas, siguen en columna.
+ */
+const postes = tramo.piezas.cruce ? destinosDelCruce(tramo, region.vecinas.length) : null;
+const pasoPoste = postes && postes.length > 1 ? postes[1]! - postes[0]! : 160;
 const carteles = region.vecinas.map((v) => {
   const r = regionDe.get(v)!;
   const alla = lugarDelRotulo(r);
@@ -142,7 +149,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
     style={`--ancho: ${tramo.ancho}; --alto: ${ALTO}; --tr: ${tinta}`}
   >
     {/* El tablero: arriba de la escena, en el flujo; con la isla andando, flota encima (`D-76`). */}
-    <div class="camino-tablero">
+    <div class="camino-tablero" id="tablero">
       <header class="recinto-cartel camino-cartel">
         <p class="recinto-numero">{CAMINO.sello}</p>
         <h1 class="recinto-nombre">{region.nombre}</h1>
@@ -206,12 +213,22 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
             )
           }
 
-          <nav class="cruce" id="cruce" aria-labelledby="cruce-titulo" style={`--cruce: ${tramo.ancho - tramo.escena}`}>
+          <nav
+            class:list={['cruce', { 'cruce--picadas capa': postes }]}
+            id="cruce"
+            aria-labelledby="cruce-titulo"
+            data-f={postes ? '1' : undefined}
+            style={
+              postes
+                ? `--cruce: ${tramo.ancho - tramo.escena}; --paso: ${pasoPoste.toFixed(1)}; --xt: ${((postes[0]! + postes[postes.length - 1]!) / 2).toFixed(1)}`
+                : `--cruce: ${tramo.ancho - tramo.escena}`
+            }
+          >
             <p class="cruce-titulo" id="cruce-titulo">{CAMINO.cruce.titulo}</p>
             <ul class="cruce-carteles">
               {
                 carteles.map((c, n) => (
-                  <li>
+                  <li style={postes ? `--x: ${postes[n]!.toFixed(1)}; --y: ${HORIZONTE}; --poste: ${n % 2 ? 150 : 72}` : undefined}>
                     <a
                       class:list={['cartel-cruce', { 'cartel-cruce--plano': !c.seCamina }]}
                       href={c.href}
@@ -235,6 +252,18 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
     </div>
     <p class="recinto-deslizar camino-deslizar">{CAMINO.deslizar}</p>
   </section>
+
+  {/* La puerta (`D-77`): el primer toque es el que deja sonar, como el "Jugá" de los juegos. */}
+  {
+    fondo && (
+      <div class="camino-puerta" id="puerta" hidden style={`--tr: ${tinta}`}>
+        <button type="button" class="camino-puerta-entra" id="entra">
+          <span class="camino-puerta-sello">{CAMINO.puerta.entra}</span>
+        </button>
+        <button type="button" class="camino-puerta-callado" id="entra-callado">{CAMINO.puerta.callado}</button>
+      </div>
+    )
+  }
 
   <div class="bocadillo" id="bocadillo" hidden role="status">
     <p class="bocadillo-verso" id="bocadillo-verso"></p>
