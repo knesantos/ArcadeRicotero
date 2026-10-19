@@ -989,7 +989,6 @@ function cyberPiso(ancho = ANCHO, alto = ALTO): string {
 
   const o = OJOS_DE_CYBERSIBERIA;
   const at = (id: string): [number, number] => [X(o[id]![0]), o[id]![1]];
-  const [bx, by] = [X(COSAS_DE_CYBERSIBERIA['el-capitan-buscapina']![0]), COSAS_DE_CYBERSIBERIA['el-capitan-buscapina']![1]];
   const [gax, gay] = at('el-rey-garufa');
   const [wx, wy] = at('super-walter');
   const [cbx, cby] = at('comboman');
@@ -1000,12 +999,8 @@ function cyberPiso(ancho = ANCHO, alto = ALTO): string {
   const [spx, spy] = at('el-super-boca');
   const [gvx, gvy] = [X(COSAS_DE_CYBERSIBERIA['el-gavilan']![0]), COSAS_DE_CYBERSIBERIA['el-gavilan']![1]];
 
-  // El capitán Buscapina, de espaldas, sentado en la nieve frente a la tele, con la gorra puesta.
-  const buscapina =
-    `M${f(bx - 30)} ${f(by + 40)} C${f(bx - 32)} ${f(by + 14)} ${f(bx - 22)} ${f(by + 2)} ${f(bx - 12)} ${f(by - 2)} ` +
-    `C${f(bx - 16)} ${f(by - 14)} ${f(bx - 12)} ${f(by - 30)} ${f(bx)} ${f(by - 30)} C${f(bx + 12)} ${f(by - 30)} ${f(bx + 16)} ${f(by - 14)} ${f(bx + 12)} ${f(by - 2)} ` +
-    `C${f(bx + 22)} ${f(by + 2)} ${f(bx + 32)} ${f(by + 14)} ${f(bx + 30)} ${f(by + 40)} Z ` +
-    `M${f(bx - 15)} ${f(by - 22)} Q${f(bx)} ${f(by - 40)} ${f(bx + 15)} ${f(by - 22)} Z`;
+  // El capitán Buscapina ya no se pinta acá: es un títere del elenco (`arte-buscapina.ts`), sentado
+  // en este mismo charco de luz.
   const garufa = parado(gax, gay, 78);
   const sapo = `M${f(sx - 18)} ${f(sy + 16)} C${f(sx - 22)} ${f(sy + 2)} ${f(sx - 12)} ${f(sy - 8)} ${f(sx - 6)} ${f(sy - 4)} Q${f(sx)} ${f(sy - 6)} ${f(sx + 6)} ${f(sy - 4)} C${f(sx + 12)} ${f(sy - 8)} ${f(sx + 22)} ${f(sy + 2)} ${f(sx + 18)} ${f(sy + 16)} Z`;
   const chancho = circulo(px, py + 4, 15) + ` ${elipse(px + 26, py + 18, 30, 17)} M${f(px - 13)} ${f(py - 6)} l-4 -12 l12 6 Z M${f(px + 13)} ${f(py - 6)} l4 -12 l-12 6 Z` +
@@ -1039,7 +1034,6 @@ function cyberPiso(ancho = ANCHO, alto = ALTO): string {
     sombraEnLaNieve(px + 20, py + 42, 46) + canto(chancho, 2.5, -2) + forma(chancho, C.negro) + corona(px, py - 12, 7) + nube(px, py + 12, 7, 5, C.oxido, 's', 0.8) +
     sombraEnLaNieve(dx, dy + 84, 30) + canto(robot, -2.5, -2) + forma(robot, C.negro) +
     `<g transform="rotate(-8 ${f(dx + 30)} ${f(dy + 40)})">` + forma(caja(dx + 22, dy - 6, 12, 62), C.hondo) + forma(caja(dx + 25, dy - 22, 6, 18), C.hondo) + trazo(`M${f(dx + 25)} ${f(dy + 2)} L${f(dx + 25)} ${f(dy + 52)}`, C.lente, 1.6, 0.7) + `</g>` +
-    sombraEnLaNieve(bx, by + 40, 50) + canto(buscapina, 0, -3, 0.8) + forma(buscapina, C.negro) +
     sombraEnLaNieve(sx, sy + 16, 26) + canto(sapo, 0, -2) + forma(sapo, C.negro) + corona(sx, sy - 10, 5) +
     sombraEnLaNieve(gax, gay + 78, 30) + canto(garufa, -2.5, -2) + forma(garufa, C.negro) + corona(gax, gay - 8, 7) +
     nube(gax, gay + 30, 22, 18, C.rojo, 'l', 0.6) + forma(`M${f(gax)} ${f(gay + 38)} C${f(gax - 12)} ${f(gay + 28)} ${f(gax - 8)} ${f(gay + 18)} ${f(gax)} ${f(gay + 24)} C${f(gax + 8)} ${f(gay + 18)} ${f(gax + 12)} ${f(gay + 28)} ${f(gax)} ${f(gay + 38)} Z`, C.rojo) +

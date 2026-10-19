@@ -331,10 +331,14 @@
       "region": "cybersiberia",
       "pos": { "ang": 30, "r": 330 },
       "tam": 38,
-      "dibujo": { "f": "persona", "con": ["gorra"], "ropa": "uniforme", "pose": "sentado" },
+      "dibujo": { "f": "persona", "con": ["gorra"], "ropa": "nada", "pose": "sentado" },
       "tema": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
       "verso": ["El Capitán Buscapina salda deudas.", "Sentado, en bolas, watcheando la tele"],
-      "estampa": "Sentado en la nieve frente a la tele, con la gorra puesta y nada más.",
+      "estampa": "Aerógrafo frío, como la banda en el ojo de buey de Último bondi a Finisterre: lo vemos de atrás y lo dibuja nada más la luz de la tele. De la letra es que esté en bolas, mirando, y que salde deudas. La capa sale del cómic que contó el Indio. La gorra, las boletas y la que te tira si lo tocás son del dibujo.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "La canción remite a una noche de ácido en el Pinamar de hace mucho: el Indio empezó a dibujar un cómic con Fenton de superhéroe, con una capa que tenía el sello del laboratorio que hace la Buscapina, porque Fenton tenía problemas de hígado espantosos y aun así no se cuidaba. Los demás en la mesa le tiraban ideas.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 390)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "El tercer y último videoclip de la banda estuvo inspirado en el Capitán Buscapina, con la misma estética de superhéroes de la tapa de Último bondi.", "quien": "Indio Solari, en «Recuerdos que mienten un poco»", "fuente": "RES-22" }
+      ],
       "cerca": ["el-rey-garufa", "super-walter"]
     },
     {

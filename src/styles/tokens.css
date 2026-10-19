@@ -288,6 +288,16 @@
   /* ⟨/el monito que trepa⟩ */
 
   /* ⟨el Capitan Buscapina⟩ */
+  /* El Capitan Buscapina: la piel es la de la banda dentro del ojo de buey de *Ultimo bondi*, que
+     son postales virtuales (gente de computadora, piel de plastico tibia, sombra honda y un reflejo
+     violeta); lo frio se lo pone la tele, con las tintas de Cybersiberia, que ya estan. Se miden en
+     el frente (953 px) y en la contratapa (1181 px), mediana de cada zona salvo donde se dice. */
+  --bestia-buscapina-piel: #c48559; /* la frente de la cara del medio del ojo de buey (zona 440,398 de 18x14) */
+  --bestia-buscapina-piel-clara: #d9b585; /* la frente de arriba a la derecha, donde revienta la luz (495,318) */
+  --bestia-buscapina-piel-honda: #824533; /* la cara de la derecha en la sombra (552,400) */
+  --bestia-buscapina-violeta: #60436f; /* el reflejo violeta en la cara de abajo a la izquierda (percentil 90 de lo violeta, 270,470 de 140x160) */
+  --bestia-buscapina-rojo: #943732; /* la vincha roja de abajo a la izquierda (345,412): el forro de la capa */
+  --bestia-buscapina-papel: #cabfa3; /* el papel quemado de la contratapa, el de la lista de temas (560,380 de 40 px) */
   /* ⟨/el Capitan Buscapina⟩ */
 
   /* ⟨el pibe de los astilleros⟩ */
