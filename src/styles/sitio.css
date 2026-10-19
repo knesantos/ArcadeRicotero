@@ -4177,6 +4177,24 @@ body:has(> .lugar) .marca-chica {
 /* ⟨/el rato molhado⟩ */
 
 /* ⟨el Morta⟩ */
+/* El ojo de persona del Morta: el iris en la pintura de murga de la cara del interior de *Momo Sampler*
+   (un marrón colorado, de gin), la pupila en la tinta de la plancha con un brillo, y el párpado de su
+   piel, pesado. Adentro de la boca que relincha: lo hondo de la cara, la lengua de la pintura y los
+   dientes de caballo. El aceite es negro con el reflejo de la plata del medallón; el chorro y la gota no
+   se tocan aparte. */
+.bt-morta-iris { fill: var(--bestia-morta-pintura); }
+.bt-morta-pupila { fill: var(--fondo); }
+.bt-morta-brillo { fill: var(--bestia-morta-brillo); }
+.bt-morta-parpado { fill: var(--bestia-morta-piel); }
+.bt-morta-pestana { fill: none; stroke: var(--bestia-morta-hondo); stroke-width: 1.2; stroke-linecap: round; }
+.bt-morta-boca { fill: var(--bestia-morta-hondo); }
+.bt-morta-lengua { fill: var(--bestia-morta-pintura); }
+.bt-morta-dientes { fill: var(--bestia-ojo-blanco); }
+.bt-morta-aceite { fill: var(--fondo); }
+.bt-morta-reflejo { fill: var(--disco-momo-sampler-tinta); }
+.bt-morta-chorro { fill: var(--fondo); }
+.bt-morta-chorro-brillo { fill: none; stroke: var(--disco-momo-sampler-tinta); stroke-width: 0.9; stroke-linecap: round; stroke-linejoin: round; stroke-opacity: 0.8; }
+.titere--morta [data-parte="chorro"], .titere--morta [data-parte="chorro-brillo"], .titere--morta [data-parte="gota"] { pointer-events: none; }
 /* ⟨/el Morta⟩ */
 
 /* ⟨el esclavo sensible y chillón⟩ */
