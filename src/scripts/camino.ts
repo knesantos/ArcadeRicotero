@@ -210,7 +210,10 @@ function hablar(id: string, sx: number, sy: number, preferirAbajo = false): void
   const desde = escenario.scrollLeft + 6;
   const hasta = escenario.scrollLeft + escenario.clientWidth - ancho - 6;
   const izquierda = Math.min(Math.max(px - ancho / 2, desde), Math.max(hasta, desde));
-  const abajo = preferirAbajo || py - alto - 14 < 6;
+  // El tablero flota encima de la escena (`D-77`): si arriba del bicho no hay lugar debajo de él,
+  // el bocadillo va abajo. Pasaba con los títeres altos: el cartel le tapaba "Abrí la ficha".
+  const techo = techoDelTablero(caja, izquierda - escenario.scrollLeft + caja.left + escenario.clientLeft, ancho);
+  const abajo = preferirAbajo || py - alto - 14 < techo + 6;
   bocadillo.classList.toggle('bocadillo--abajo', abajo);
   bocadillo.style.left = `${izquierda}px`;
   bocadillo.style.top = `${abajo ? Math.min(py + 40, escenario.clientHeight - alto - 6) : py - alto - 14}px`;
@@ -221,6 +224,19 @@ function hablar(id: string, sx: number, sy: number, preferirAbajo = false): void
   camAlHablar = cam;
   for (const g of piso.querySelectorAll('.bestia--elegida')) g.classList.remove('bestia--elegida');
   piso.querySelector(`.bestia[data-id="${id}"]`)?.classList.add('bestia--elegida');
+}
+
+/**
+ * Hasta dónde baja el tablero cuando flota encima de la escena, en coordenadas del escenario, si
+ * queda de costado sobre el bocadillo (`x` y `ancho`, en pantalla). Si va arriba, en el flujo de la
+ * página, o si no se cruzan, no cuenta.
+ */
+function techoDelTablero(caja: DOMRect, x: number, ancho: number): number {
+  const tablero = document.querySelector<HTMLElement>('.camino-tablero');
+  if (!tablero || getComputedStyle(tablero).position !== 'fixed') return 0;
+  const t = tablero.getBoundingClientRect();
+  if (t.right < x || t.left > x + ancho) return 0;
+  return Math.max(0, t.bottom - caja.top);
 }
 
 function callar(): void {
