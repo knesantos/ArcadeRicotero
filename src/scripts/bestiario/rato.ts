@@ -22,7 +22,7 @@
  */
 
 import {
-  BRAZOS, GESTOS, PORRON_EN_LA_MANGA, RATO, RATO_ARMADO, VERSO, VUELCO, alRecinto, brazos, brindando, enLaCabeza, entre, suelas, transformes, vuelco,
+  BRAZOS, GESTOS, PORRON_EN_LA_MANGA, RATO, RATO_ARMADO, VERSO, VUELCO, alRecinto, brazos, brindando, chorreaEn, enLaCabeza, entre, suelas, transformes, vuelco,
   type Gesto, type Punto,
 } from '../../lib/bestiario/rig-rato.ts';
 import { hacia, partes, suave } from './articular.ts';
@@ -127,6 +127,9 @@ export function armarRatoCon(marcos: readonly SVGGElement[], esc: Escenario, aza
         const frota = Math.sin(Math.max(0, u - 0.42) * Math.PI * 2.6) * 11 * Math.min(1, suave((u - 0.3) / 0.2)) * e;
         g = entre(g, { ...g, brazo2: [BRAZOS.manga[0], BRAZOS.manga[1]], porron: PORRON_EN_LA_MANGA, cabeza: 4, corre: [1, 1], mira: [0.2, 0.6], parpados: [0.66, 0.62] }, e);
         g.brazo2 = [g.brazo2[0] + frota * 0.35, g.brazo2[1] + frota];
+        // El porrón se da vuelta antes de que el puño llegue a la cara, y la manga pasa por delante.
+        g.porron = PORRON_EN_LA_MANGA * suave(Math.min(1, e * 2.5));
+        g.delante = e > 0.1 ? 1 : 0;
         g.bigotes = -frota * 0.4;
         break;
       }
@@ -263,7 +266,7 @@ export function armarRatoCon(marcos: readonly SVGGElement[], esc: Escenario, aza
     // El chorro de las botas dadas vuelta: de la boca de la caña, que está en el puño, hasta el agua.
     const chorro = p.get('chorro');
     const u = t - desde;
-    chorrea = modo === 'vuelca' && u > VUELCO.gira - 0.15 && u < VUELCO.sacude + 0.1;
+    chorrea = modo === 'vuelca' && chorreaEn(u);
     if (chorro) {
       if (chorrea) {
         const [x, y] = alRecinto(brazos(g)[0].puno, g);
@@ -284,7 +287,7 @@ export function armarRatoCon(marcos: readonly SVGGElement[], esc: Escenario, aza
     for (const [nombre, valor] of Object.entries(t)) {
       const el = p.get(nombre);
       if (!el) continue;
-      if (nombre === 'brillo') el.setAttribute('opacity', valor);
+      if (nombre === 'brillo' || nombre === 'delante') el.setAttribute('opacity', valor);
       else el.setAttribute('transform', valor);
     }
   }

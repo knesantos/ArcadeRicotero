@@ -91,6 +91,8 @@ const linea = (pts: readonly P[]): string => `M${pts.map(([x, y]) => `${f(x)} ${
 const elipse = (x: number, y: number, rx: number, ry: number): string =>
   `M${f(x - rx)} ${f(y)} a${f(rx)} ${f(ry)} 0 1 0 ${f(rx * 2)} 0 a${f(rx)} ${f(ry)} 0 1 0 ${f(-rx * 2)} 0 Z`;
 const conGrano = (s: string): string => `<g filter="url(#grano)">${s}</g>`;
+/** El rociado de la boquilla abierta encima del grano: el polvo grueso de la cara del interior de *Momo Sampler*. */
+const conRociado = (s: string): string => `<g filter="url(#rociado)">${conGrano(s)}</g>`;
 
 /**
  * La máscara del aerógrafo, con varias siluetas que se suman. La imprenta junta los caminos del
@@ -347,7 +349,7 @@ function cabeza(): string {
     const [cx, cy] = o.centro;
     const [rx, ry] = o.radio;
     return (
-      nube(cx, cy + 0.5, rx + 5, ry + 5, C.negro, 's', enLaLuz ? 0.55 : 0.75) +
+      nube(cx, cy + 0.5, rx + 5, ry + 5, C.negro, 's', enLaLuz ? 0.7 : 0.85) +
       `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${C.blanco}"${enLaLuz ? '' : ' opacity="0.62"'}/>` +
       // La sombra del párpado sobre el blanco, y la esquina de adentro, rosada.
       nube(cx, cy - ry * 0.55, rx * 1.05, ry * 0.6, C.hondo, 'xs', 0.55) +
@@ -367,11 +369,14 @@ function cabeza(): string {
     // La mitad de la luz: la coronilla, la frente, el lomo del hocico y el cachete de allá. Soplado
     // de a capas, de lo hondo a lo claro, como la frente de la cara del interior.
     // La bóveda de la frente.
-    nube(16, -184, 20, 14, C.pelo, 'l', 0.95) +
+    nube(16, -184, 20, 14, C.pelo, 'l', 0.72) +
     nube(22, -190, 10, 6, C.pelo, 'm', 0.8) +
-    nube(-10, -198, 12, 6, C.pelo, 'm', 0.5) +
+    nube(-10, -198, 12, 6, C.pelo, 'm', 0.4) +
+    nube(14, -187, 14, 8, C.plata, 'l', 0.26) +
     // El hocico es un caño: prendido arriba, se apaga para abajo.
-    soplo('M22 -176 Q44 -158 58 -138 Q66 -127 72 -118 L66 -112 Q56 -122 46 -134 Q32 -152 16 -168 Z', C.pelo, 'm', 0.9) +
+    soplo('M22 -176 Q44 -158 58 -138 Q66 -127 72 -118 L66 -112 Q56 -122 46 -134 Q32 -152 16 -168 Z', C.pelo, 'm', 0.8) +
+    nube(36, -142, 5, 3, C.plata, 's', 0.35) +
+    nube(66, -125, 4, 2, C.plata, 's', 0.5) +
     nube(52, -118, 16, 5, C.hondo, 'm', 0.55, 30) +
     // El pómulo de allá, debajo del ojo, y la cuenca de ese ojo, que se hunde.
     nube(38, -138, 9, 7, C.pelo, 'm', 0.55) +
@@ -379,8 +384,10 @@ function cabeza(): string {
     peinadoMojado(rnd, 170, enElipse(rnd, 6, -156, 60, 56), flujoDeLaCabeza, 3.2, 8, luzDeLaCabeza, (p) => enPoligono(CABEZA, p)) +
     // Lo más mojado, donde más pega la luz: la frente y el lomo del hocico, en la plata de la nariz de
     // la cara del interior. Borde blando arriba, cortado abajo, como el brillo de un caño.
-    nube(18, -188, 10, 5, C.plata, 'm', 0.5) +
-    soplo('M26 -184 Q42 -166 54 -148 Q62 -136 70 -124 L67.6 -122.4 Q59 -134 51 -146 Q38 -164 23 -181 Z', C.plata, 'xs', 0.7) +
+    nube(18, -188, 10, 5, C.plata, 'm', 0.55) +
+    nube(22, -191, 3.4, 1.6, C.plata, 'xs', 0.85, -12) +
+    nube(44, -156, 2.2, 1.2, C.plata, 'xs', 0.8, -40) +
+    soplo('M26 -184 Q42 -166 54 -148 Q62 -136 70 -124 L67.6 -122.4 Q59 -134 51 -146 Q38 -164 23 -181 Z', C.plata, 'xs', 0.82) +
     nube(40, -156, 4, 8, C.plata, 's', 0.35, -40) +
     // El canto que da a la puerta: la luz tibia de la calle por el vidrio roto.
     trazo('M-10 -203.4 Q12 -203.4 26 -192 Q36 -181 43 -165 Q53 -148 66 -131 Q72 -124 75 -116', C.llama, 1.8, 0.6) +
@@ -426,7 +433,7 @@ function cabeza(): string {
     // Los poros de los bigotes, en el costado del hocico.
     [[54, -116], [58, -113], [62, -116], [56, -110], [60, -109], [64, -111], [52, -112]].map(([x, y]) => nube(x!, y!, 0.7, 0.6, C.negro, 'xs', 0.75)).join('') +
     brillos(m, 1223, 0.1, 0.35);
-  return conGrano(enmascarado('m-rato-cabeza', [silueta, orejaD, dientes], adentro));
+  return conRociado(enmascarado('m-rato-cabeza', [silueta, orejaD, dientes], adentro));
 }
 
 /** Un óvalo girado, en puntos (girando como el contorno de la cabeza, para que la máscara los sume). */
@@ -561,10 +568,17 @@ function cuerpo(): string {
     forma(silueta, C.rojoHondo) +
     // La camisa de raso: el hombro de allá agarra la luz de la puerta; el de acá, apenas el brillo.
     nube(40, -62, 18, 22, C.rojo, 'l', 0.9) +
-    nube(46, -70, 7, 9, C.plata, 'm', 0.3) +
+    nube(46, -70, 7, 9, C.plata, 'm', 0.42) +
+    nube(48, -74, 2.4, 3.4, C.plata, 's', 0.6) +
     nube(52, -40, 6, 30, C.rojo, 'm', 0.6) +
     nube(-44, -66, 12, 12, C.rojo, 'm', 0.5) +
     nube(-56, -40, 4, 26, C.rojo, 's', 0.35) +
+    // El lado de acá del pecho, lejos de la puerta, se hunde; el raso agarra un brillo largo en el canto.
+    nube(-46, -24, 16, 40, C.negro, 'l', 0.4) +
+    nube(-58, -50, 1.6, 18, C.plata, 's', 0.3) +
+    // Los pliegues grandes del raso mojado, cruzados, con el brillo del lado de la luz.
+    [[-50, -70, -24, -10], [30, -70, 50, -20], [24, -40, 40, 0]].map(([a, b, c, d]) => trazo(`M${a} ${b} Q${f((a! + c!) / 2 - 6)} ${f((b! + d!) / 2)} ${c} ${d}`, C.negro, 3.4, 0.35)).join('') +
+    [[-48, -70, -22, -10], [32, -70, 52, -20]].map(([a, b, c, d]) => trazo(`M${a! + 3} ${b} Q${f((a! + c!) / 2 - 2)} ${f((b! + d!) / 2)} ${c! + 3} ${d}`, C.rojo, 1.4, 0.55)).join('') +
     // Los pliegues del raso, donde se pega mojado.
     [[-48, -54, -36, -20], [-40, -30, -30, -2], [34, -50, 42, -14], [44, -30, 50, -4]].map(([a, b, c, d]) => trazo(`M${a} ${b} Q${f((a! + c!) / 2 + 3)} ${f((b! + d!) / 2)} ${c} ${d}`, C.rojoHondo, 2.4, 0.6)).join('') +
     [[-46, -58, -34, -24], [36, -54, 44, -18]].map(([a, b, c, d]) => trazo(`M${a! + 1.6} ${b} Q${f((a! + c!) / 2 + 4.6)} ${f((b! + d!) / 2)} ${c! + 1.6} ${d}`, C.rojo, 1, 0.5)).join('') +
@@ -593,7 +607,7 @@ function cuerpo(): string {
     nube(54, -8, 4, 10, C.celeste, 's', 0.4) +
     // `panoAlla` queda como recorte del raso: el canto del paño contra el pecho.
     `<path d="${panoAlla}" fill="none" stroke="${C.negro}" stroke-width="1.2" opacity="0.3"/>`;
-  return conGrano(enmascarado('m-rato-cuerpo', silueta, adentro));
+  return conRociado(enmascarado('m-rato-cuerpo', silueta, adentro));
 }
 
 /* ------------------------------------------------------------------
@@ -615,7 +629,7 @@ function brazo(n: 0 | 1): string {
       ? [0, 1, 2, 3].map((i) => trazo(`M${f(s[0] - 12)} ${f(codo[1] + 4 + i * 4.6)} Q${f(s[0])} ${f(codo[1] + 1 + i * 4.6)} ${f(s[0] + 12)} ${f(codo[1] + 5 + i * 4.6)}`, C.rojoHondo, 2, 0.75)).join('') +
         [0, 1, 2].map((i) => trazo(`M${f(s[0] - 6)} ${f(codo[1] + 6 + i * 4.6)} Q${f(s[0] + 2)} ${f(codo[1] + 3.6 + i * 4.6)} ${f(s[0] + 10)} ${f(codo[1] + 6.6 + i * 4.6)}`, C.rojo, 0.9, 0.55)).join('')
       : '';
-  return conGrano(
+  return conRociado(
     enmascarado(`m-rato-brazo-${n + 1}`, t.d,
       forma(t.d, C.rojoHondo) +
       nube(mx + 6 * luzDerecha, my, 7, L.brazo * 0.5, C.rojo, 'm', n === 1 ? 0.95 : 0.6) +
@@ -642,7 +656,7 @@ function antebrazo1(): string {
     nube(codo[0] + 7, (codo[1] + puno[1]) / 2 - 8, 1.8, 14, C.plata, 's', 0.4) +
     mechas(rnd, 40, enElipse(rnd, codo[0], (codo[1] + puno[1]) / 2, 8, 24), () => Math.PI / 2, 6, ([x]) => Math.max(0, (x - codo[0] + 2) / 10)) +
     brillos(m, 1279, 0.18, 0.45);
-  return conGrano(enmascarado('m-rato-antebrazo-1', silueta, adentro));
+  return conRociado(enmascarado('m-rato-antebrazo-1', silueta, adentro));
 }
 
 /**
@@ -696,7 +710,7 @@ function antebrazo2(): string {
     nube(mx, codo[1] - 4, 10, 5, C.hondo, 's', 0.5));
   const g = A.porron;
   const [px, py] = puno;
-  return conGrano(manga + `<g transform="rotate(${g} ${f(px)} ${f(py)})">${mano(puno, -1, 'm-rato-mano-2')}</g>`);
+  return conRociado(manga + `<g transform="rotate(${g} ${f(px)} ${f(py)})">${mano(puno, -1, 'm-rato-mano-2')}</g>`);
 }
 
 /**
@@ -900,11 +914,15 @@ function destello(t: Readonly<Record<string, string>>): string {
 
 /** El rato armado con las transformaciones de un gesto (`transformes`, `rig-rato.ts`). `ID` se cambia por el prefijo. */
 function armado(t: Readonly<Record<string, string>>): string {
-  // El brazo del porrón va delante de la cabeza: cuando se seca la nariz, la manga le pasa por abajo.
+  // El brazo del porrón es el de allá: va detrás de la cabeza. Cuando se seca la nariz, la manga le pasa
+  // por delante: para eso hay una copia encima de la cabeza, apagada, que se prende (las mismas imágenes).
+  const brazo2 = (s: string): string =>
+    parte(`brazo-2${s}`, img('rato-brazo-2') + parte(`antebrazo-2${s}`, parte(`porron${s}`, img('rato-porron'), t[`porron${s}`]) + img('rato-antebrazo-2'), t[`antebrazo-2${s}`]), t[`brazo-2${s}`]);
   return (
     img('rato-cuerpo') +
+    brazo2('') +
     parte('cabeza', img('rato-cabeza') + ojos(t) + destello(t) + parte('bigotes', img('rato-bigotes'), t.bigotes) + parte('oreja', img('rato-oreja'), t.oreja), t.cabeza) +
-    parte('brazo-2', img('rato-brazo-2') + parte('antebrazo-2', parte('porron', img('rato-porron'), t.porron) + img('rato-antebrazo-2'), t['antebrazo-2']), t['brazo-2']) +
+    `<g data-parte="delante" opacity="${t.delante}">${brazo2('-delante')}</g>` +
     parte('brazo-1', img('rato-brazo-1') + parte('antebrazo-1', img('rato-antebrazo-1') + parte('botas', img('rato-botas'), t.botas) + img('rato-puno-1'), t['antebrazo-1']), t['brazo-1'])
   );
 }
@@ -958,7 +976,7 @@ export function ratoEn(g: Gesto | 'nada' | 'brinda' = 'nada', prefijo = 'rato', 
     `<g transform="translate(0 ${agua * 2}) scale(1 -1)"><g data-parte="reflejo"><use href="#${id('entero')}"/></g></g></g>` +
     // Lo de adelante: las ondas, cortadas donde el agua lo toca, y el anillo de agua pegado al pecho.
     `<g aria-hidden="true" pointer-events="none" clip-path="url(#${id('mojado')})">` +
-    `<ellipse class="bajo-onda" cx="${R.x - 1}" cy="${agua + 0.6}" rx="${f(60 * R.escala)}" ry="3" opacity="0.3"/>` +
+    `<ellipse class="bajo-onda" cx="${R.x - 1}" cy="${agua + 0.6}" rx="${f(58 * R.escala)}" ry="2.6" opacity="0.22"/>` +
     ondas('adelante') +
     `</g>`
   );

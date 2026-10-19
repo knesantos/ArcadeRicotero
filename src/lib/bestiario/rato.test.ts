@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { capasDe, retratoDe } from './elenco.ts';
 import { CABEZA, CUERPO, MEDALLON, PIEZAS_RATO, RETRATO, TIRAS } from './arte-rato.ts';
 import {
-  BOTAS, BRAZOS, GESTOS, PORRON_EN_LA_MANGA, RATO, RATO_ARMADO, VERSO, VUELCO, alRecinto, anguloPorron, brazo, brazos, brindando, dibujado, enLaCabeza, entre, suelas, vuelco,
+  BOTAS, BRAZOS, GESTOS, PORRON_EN_LA_MANGA, RATO, RATO_ARMADO, VERSO, VUELCO, alRecinto, anguloPorron, brazo, brazos, brindando, chorreaEn, dibujado, enLaCabeza, entre, suelas, vuelco,
   type Gesto, type Punto,
 } from './rig-rato.ts';
 import { BAJO } from './rig.ts';
@@ -128,6 +128,12 @@ test('las botas no se mojan: en alto nadando y brindando, y solo tocan el agua c
   // Dadas vuelta para sacarles el agua, la boca de la caña queda abajo y la suela arriba del puño.
   const b = brazo(0, BRAZOS.arriba);
   assert.ok(suelas(POSES.vuelca!)[1] < b.puno[1] - BOTAS.largo * 0.8, 'vaciándolas no las da vuelta');
+  // El agua que les sale cae al costado de él, no encima: el puño queda afuera del cuerpo y del codo.
+  for (let u = 0; u < VUELCO.fin; u += 0.05) {
+    if (!chorreaEn(u)) continue;
+    const b1 = brazo(0, vuelco(u, BRAZOS.cansado).brazo1);
+    assert.ok(b1.puno[0] < Math.min(...CUERPO.map((p) => p[0])) - 12 && b1.puno[0] < b1.codo[0] - 10, `a ${u.toFixed(2)} s el chorro le cae encima`);
+  }
   // Nadando cuelgan derecho, aunque el brazo esté doblado.
   assert.ok(Math.abs(suelas(GESTOS.nada)[0] - brazos(GESTOS.nada)[0].puno[0]) < 1);
 });

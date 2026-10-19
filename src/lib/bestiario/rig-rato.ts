@@ -90,6 +90,11 @@ export interface Gesto {
   brillo: number;
   /** Cuánto gira el porrón adentro del puño, en grados (0 es como lo agarra nadando). */
   porron: number;
+  /**
+   * Si el brazo de allá pasa por delante de la cara (1) o por detrás (0). Es el de allá: va detrás de
+   * la cabeza, también cuando brinda; nada más cuando se seca la nariz la manga le pasa por delante.
+   */
+  delante: number;
 }
 
 /**
@@ -101,7 +106,7 @@ export const GESTOS: Readonly<Record<'nada' | 'brinda', Gesto>> = {
   nada: {
     sube: 0,
     mece: 0,
-    brazo1: [-43, 47],
+    brazo1: [-20, -40],
     brazo2: [164, -125],
     hamaca: 0,
     vuelca: 0,
@@ -116,11 +121,12 @@ export const GESTOS: Readonly<Record<'nada' | 'brinda', Gesto>> = {
     punta: 0,
     brillo: 0,
     porron: 0,
+    delante: 0,
   },
   brinda: {
     sube: 26,
     mece: -2,
-    brazo1: [-30, 4],
+    brazo1: [-10, -35],
     brazo2: [18, 10],
     hamaca: -6,
     vuelca: 0,
@@ -135,6 +141,7 @@ export const GESTOS: Readonly<Record<'nada' | 'brinda', Gesto>> = {
     punta: 8,
     brillo: 1,
     porron: 16,
+    delante: 0,
   },
 };
 
@@ -147,6 +154,7 @@ export const BRAZOS = {
   manga: [74, -137] as Punto,
   cansado: [-112, 127] as Punto,
   arriba: [-13, 10] as Punto,
+  vacia: [-28, 0] as Punto,
 } as const;
 /** Al secarse la nariz da vuelta el porrón para abajo, para no pegarse con él en la cara. */
 export const PORRON_EN_LA_MANGA = -72;
@@ -173,6 +181,7 @@ export function entre(a: Gesto, b: Gesto, k: number): Gesto {
     punta: m(a.punta, b.punta),
     brillo: m(a.brillo, b.brillo),
     porron: m(a.porron, b.porron),
+    delante: m(a.delante, b.delante),
   };
 }
 
@@ -190,25 +199,32 @@ export function brindando(e: number): Gesto {
  * Cuando vacía las botas, en segundos: el tirón para arriba, la vuelta, el chorro, la sacudida, las
  * vuelve a dar vuelta (con el brazo arriba, así no barren para el costado) y baja el brazo.
  */
-export const VUELCO = { tiron: 0.45, gira: 1.05, chorro: 2.0, sacude: 2.55, endereza: 3.05, fin: 3.6 } as const;
+export const VUELCO = { tiron: 0.45, gira: 1.05, afuera: 1.4, chorro: 2.25, sacude: 2.8, adentro: 3.1, endereza: 3.6, fin: 4.15 } as const;
 
-/** El brazo de las botas mientras las vacía, `u` segundos después de que tocaron el agua (`desde`: cómo quedó el brazo). */
+/**
+ * El brazo de las botas mientras las vacía, `u` segundos después de que tocaron el agua (`desde`: cómo
+ * quedó el brazo). Las da vuelta con el puño arriba del hombro, que así no barren fuera del bajo, y las
+ * saca para el costado para vaciarlas: el agua cae al lado de él, no encima.
+ */
 export function vuelco(u: number, desde: Punto): { brazo1: Punto; vuelca: number; hamaca: number } {
   const V = VUELCO;
   const a = BRAZOS.arriba;
-  const hacia = (de: Punto, k: number): Punto => [de[0] + (a[0] - de[0]) * k, de[1] + (a[1] - de[1]) * k];
-  if (u < V.tiron) {
-    const k = suave(u / V.tiron);
-    return { brazo1: hacia(desde, k), vuelca: 0, hamaca: 18 * Math.sin(k * Math.PI) };
-  }
-  if (u < V.gira) return { brazo1: a, vuelca: suave((u - V.tiron) / (V.gira - V.tiron)), hamaca: 0 };
-  if (u < V.chorro) return { brazo1: a, vuelca: 1, hamaca: Math.sin((u - V.gira) * 3) * 2 };
-  if (u < V.sacude) return { brazo1: [a[0] + Math.sin(u * 25) * 3, a[1]], vuelca: 1, hamaca: Math.sin(u * 25) * 14 };
-  if (u < V.endereza) return { brazo1: a, vuelca: 1 - suave((u - V.sacude) / (V.endereza - V.sacude)), hamaca: 0 };
-  const k = suave((u - V.endereza) / (V.fin - V.endereza));
+  const v = BRAZOS.vacia;
+  const de = (p: Punto, q: Punto, k: number): Punto => [p[0] + (q[0] - p[0]) * k, p[1] + (q[1] - p[1]) * k];
+  const k = (d: number, h: number): number => suave((u - d) / (h - d));
+  if (u < V.tiron) return { brazo1: de(desde, a, k(0, V.tiron)), vuelca: 0, hamaca: 18 * Math.sin(k(0, V.tiron) * Math.PI) };
+  if (u < V.gira) return { brazo1: a, vuelca: k(V.tiron, V.gira), hamaca: 0 };
+  if (u < V.afuera) return { brazo1: de(a, v, k(V.gira, V.afuera)), vuelca: 1, hamaca: -6 * Math.sin(k(V.gira, V.afuera) * Math.PI) };
+  if (u < V.chorro) return { brazo1: v, vuelca: 1, hamaca: Math.sin((u - V.afuera) * 3) * 2 };
+  if (u < V.sacude) return { brazo1: [v[0] + Math.sin(u * 25) * 3, v[1]], vuelca: 1, hamaca: Math.sin(u * 25) * 14 };
+  if (u < V.adentro) return { brazo1: de(v, a, k(V.sacude, V.adentro)), vuelca: 1, hamaca: 0 };
+  if (u < V.endereza) return { brazo1: a, vuelca: 1 - k(V.adentro, V.endereza), hamaca: 0 };
   const n = GESTOS.nada.brazo1;
-  return { brazo1: [a[0] + (n[0] - a[0]) * k, a[1] + (n[1] - a[1]) * k], vuelca: 0, hamaca: Math.sin(k * Math.PI) * -6 };
+  return { brazo1: de(a, n, k(V.endereza, V.fin)), vuelca: 0, hamaca: Math.sin(k(V.endereza, V.fin) * Math.PI) * -6 };
 }
+
+/** El chorro de las botas sale mientras están dadas vuelta y afuera, al costado. */
+export const chorreaEn = (u: number): boolean => u > VUELCO.afuera - 0.1 && u < VUELCO.sacude + 0.05;
 
 /** Cuánto se corre la pupila adentro del blanco, en el títere. */
 export const MIRA = [3.2, 1.6] as const;
@@ -310,6 +326,9 @@ export function transformes(g: Gesto): Record<string, string> {
   t.botas = `rotate(${n2(anguloBotas(b1, g))} ${p1[0]} ${p1[1]})`;
   const p2 = dibujado(1).puno;
   t.porron = `rotate(${n2(g.porron)} ${p2[0]} ${p2[1]})`;
+  // La copia del brazo de allá que pasa por delante de la cara: los mismos giros, y se prende o se apaga.
+  for (const n of ['brazo-2', 'antebrazo-2', 'porron']) t[`${n}-delante`] = t[n]!;
+  t.delante = g.delante > 0.5 ? '1' : '0';
   for (const n of [1, 2] as const) {
     t[`pupila-${n}`] = `translate(${n2(g.mira[0] * MIRA[0])} ${n2(g.mira[1] * MIRA[1])})`;
     const [px, py] = PIVOTES_PARPADO[n - 1]!;
