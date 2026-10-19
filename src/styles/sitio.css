@@ -4158,6 +4158,18 @@ body:has(> .lugar) .marca-chica {
 /* ⟨/el diablo que mea⟩ */
 
 /* ⟨el rato molhado⟩ */
+/* Los ojos de persona del rato: el iris en el lila del ojo de la contratapa de *Momo Sampler*, la
+   pupila en lo hondo de la piel, con el brillo de plata mojada, y el párpado pesado, a media asta: su
+   cara es tan expresiva como el par de sus botas nuevas. El de la sombra, del violeta hondo; el de la
+   luz, del pelo. El destello de los dientes de oro cuando brinda, y las gotas que le caen del hocico. */
+.bt-rato-iris { fill: var(--bestia-rato-iris); }
+.bt-rato-pupila { fill: var(--bestia-rato-hondo); }
+.bt-rato-brillo { fill: var(--bestia-rato-plata); }
+.bt-rato-parpado { fill: var(--bestia-rato-pelo); stroke: var(--fondo); stroke-width: 0.9; }
+.bt-rato-parpado-hondo { fill: var(--bestia-rato-hondo); stroke: var(--fondo); stroke-width: 0.9; }
+.bt-rato-destello { fill: none; stroke: var(--bestia-rato-oro); stroke-width: 1.2; stroke-linecap: round; }
+.bt-rato-chispa { fill: var(--bestia-rato-plata); }
+.bt-rato-gota { fill: var(--entorno-baion-luz); }
 /* ⟨/el rato molhado⟩ */
 
 /* ⟨el Morta⟩ */

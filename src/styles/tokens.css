@@ -356,6 +356,24 @@
   /* ⟨/el diablo que mea⟩ */
 
   /* ⟨el rato molhado⟩ */
+  /* El rato molhado es de *Momo Sampler* y se pinta a aerografo como la cara del interior de ese
+     disco: piel violeta casi negra que sale de lo oscuro, con el brillo de plata mojada en la frente
+     y la nariz. Lo pelado del raton (la nariz, las orejas, las manos, la cola) es el lila del labio
+     de la contratapa; la camisa, el rojo de adentro de las letras del titulo; la cadena, los dientes
+     y el porron, su oro; las botas, el medallon del frente. Medidas con `sharp` en
+     momo-sampler-interior-frontal (953 px), -trasera (1181 px) y -frontal (953 px): zona (x, y) y
+     lado, mediana salvo donde se dice. */
+  --bestia-rato-hondo: #23172f; /* la piel en lo hondo (interior, zona 425,350 de 6 px) */
+  --bestia-rato-pelo: #493f55; /* la frente a media luz (interior, zona 455,335 de 5 px) */
+  --bestia-rato-plata: #d8d5e3; /* el brillo de la nariz, plata mojada (interior, zona 422,402 de 2 px) */
+  --bestia-rato-lila: #9a85b1; /* el labio de la contratapa (trasera, zona 540,725 de 4 px) */
+  --bestia-rato-lila-honda: #5c364f; /* el labio del interior, en la sombra (zona 432,440 de 2 px, percentil 90) */
+  --bestia-rato-iris: #8e87a8; /* el lila del ojo de la contratapa (trasera, zona 470,300 de 6 px) */
+  --bestia-rato-rojo: #b36046; /* el rojo de adentro de las letras del titulo (trasera, zona 462,70 de 3 px) */
+  --bestia-rato-rojo-hondo: #612123; /* ese rojo donde se apaga (trasera, zona 560,72 de 3 px) */
+  --bestia-rato-oro: #ffd974; /* el oro de las letras del titulo (trasera, zona 610,75 de 12 px, percentil 90) */
+  --bestia-rato-oro-hondo: #a16908; /* el oro de las letras a media luz (misma zona) */
+  --bestia-rato-cromo: #8c8c8c; /* el medallon del frente (frontal, zona 555,470 de 60 px) */
   /* ⟨/el rato molhado⟩ */
 
   /* ⟨el Morta⟩ */

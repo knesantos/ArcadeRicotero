@@ -889,7 +889,12 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "redondas", "hocico": "largo", "cola": "fina", "pose": "nada" },
       "tema": "rato-molhado",
       "verso": ["Tumberito jamon y porron", "mira vos que tan lejos llego"],
-      "estampa": "El título está en portugués: rata mojada. Nada perfumada, con botas nuevas.",
+      "estampa": "El título está en portugués: ratón mojado. De la letra son las botas nuevas, el porrón, la gargantilla y la manga con que se seca la nariz. Del dibujo, que sea un ratón de verdad, que tenga las botas en alto para no mojarlas, la camisa colorada y el medallón de Momo colgado del cuello, recortado de la tapa del disco.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "Para el Indio, el rato es un tumberito: hijo de un preso, concebido debajo de una manta en una visita higiénica de su madre a la cárcel. Guapea en Plaza Irlanda porque es bravo, como los pibes que no tienen nada que perder.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 430)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "Dice que de ahí sale lo de la gargantilla de sangre: el rato es muy capaz de degollarte. Y que con los pibes como él, en todo el disco, se guardó la ternura.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 430)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "Es el último tema del último disco de Los Redondos. Como la banda se separó poco después, él siempre lo tomó como una despedida, involuntaria pero perfecta.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 430)", "fuente": "RES-21" }
+      ],
       "cerca": ["el-raton", "el-gordo-pierre"]
     },
     {
