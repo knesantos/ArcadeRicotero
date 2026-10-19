@@ -297,6 +297,29 @@
   /* ⟨/el canibal⟩ */
 
   /* ⟨la Mariposa Pontiac⟩ */
+  /* La Mariposa Pontiac es de *Luzbelito*: la chapa es la tierra roja del interior del disco,
+     el cromo es la plata de los huevos de esa tierra, las alas son el marmol del frente (recortado
+     de la tapa) y los ojos van en el ovalo de cobre, hechos del yeso del busto. Medidas con
+     k-medias en luzbelito-frontal, luzbelito-interior-frontal y luzbelito-cd. El marmol de base es
+     el de --entorno-arbol-*, medido en la misma tapa. */
+  --bestia-pontiac-chapa: #6a1a28; /* la tierra roja del interior */
+  --bestia-pontiac-chapa-viva: #87232f; /* la tierra donde le da la luz */
+  --bestia-pontiac-chapa-honda: #2d1325; /* la tierra en sombra */
+  --bestia-pontiac-cielo: #72516d; /* el cielo violeta del interior: lo que refleja la chapa */
+  --bestia-pontiac-nube: #ceb6b7; /* la nube clara: la raya del horizonte reflejada */
+  --bestia-pontiac-cromo-hondo: #664a54; /* los huevos de plata, en sombra */
+  --bestia-pontiac-cromo: #866972; /* los huevos de plata */
+  --bestia-pontiac-cromo-claro: #b7929b; /* los huevos, donde da la luz */
+  --bestia-pontiac-brillo: #f6e5e2; /* el brillo de los huevos */
+  --bestia-pontiac-veta: #708679; /* las vetas claras del marmol del frente */
+  --bestia-pontiac-cobre-hondo: #6b4130; /* el ovalo de cobre, oxidado */
+  --bestia-pontiac-cobre: #c67350; /* el ovalo de cobre */
+  --bestia-pontiac-cobre-claro: #f09d65; /* el cobre donde da la vela */
+  --bestia-pontiac-yeso: #e3d6b4; /* el busto, en la luz */
+  --bestia-pontiac-yeso-medio: #b59572; /* el busto, a media luz */
+  --bestia-pontiac-yeso-hondo: #8a5a3d; /* el busto, en la sombra */
+  --bestia-pontiac-llama: #db6d47; /* la llama corrida del CD, naranja */
+  --bestia-pontiac-llama-clara: #fcec83; /* y su amarillo */
   /* ⟨/la Mariposa Pontiac⟩ */
 
   /* ⟨el diablo que mea⟩ */
