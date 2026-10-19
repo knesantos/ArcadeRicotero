@@ -686,7 +686,11 @@
       "dibujo": { "f": "persona", "con": ["guitarra"], "ropa": "campera" },
       "tema": "el-pibe-de-los-astilleros",
       "verso": ["El pibe de los astilleros nunca se rendía", "Rapiñaba montado a los containers"],
-      "estampa": "Arriba de una pila de containers, con la guitarra roja colgada.",
+      "estampa": "Sentado en el canto de la pila, con la strato roja a la espalda y el pucho con la ceniza que no se cae: eso es de la letra. La caja de cartón y el grito son del dibujo, recortado del pibe de buzo rojo que grita con una caja en la cabeza en la contratapa del disco. Nadie dice que sea él.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "Dice que es una pintura imaginaria, hecha con lo que le contaba un amigo: el padre había sido marino mercante y jefe de puerto, quiso meterlo a laburar y no duró. Un día el amigo apareció con una caja llena de pedales Vox y los repartió entre todos.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 303)", "fuente": "RES-21" },
+        { "rotulo": "hecho", "texto": "En las 99 listas de la wiki de fans abre 13 recitales: es el segundo tema con que más arrancaban, después de «Un ángel para tu soledad».", "fuente": "RES-303" }
+      ],
       "cerca": ["la-rana-rubia"]
     },
     {

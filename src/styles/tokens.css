@@ -301,6 +301,23 @@
   /* ⟨/el Capitan Buscapina⟩ */
 
   /* ⟨el pibe de los astilleros⟩ */
+  /* El pibe es un recorte de la contratapa de *La mosca y la sopa* (el disco del tema): el chico de
+     buzo rojo que grita con una caja de cartón en la cabeza, pegado con el canto de papel rasgado.
+     Medidas en la-mosca-y-la-sopa-trasera.jpg (1181 px; mediana y percentiles de cada zona, `sharp`),
+     y la strato en el rojo del frente. La luz de sodio y la tiza son las de los astilleros. */
+  --bestia-pibe-buzo: #d64435; /* el buzo, mediana del pecho (zona 470,700 de 140 x 150) */
+  --bestia-pibe-buzo-luz: #e94633; /* el buzo donde le pega la luz (zona 555,765, percentil 90) */
+  --bestia-pibe-buzo-hondo: #7e2624; /* los pliegues del buzo (zona 470,700, percentil 10) */
+  --bestia-pibe-piel: #e1774f; /* la cara a media luz (zona 600,600, percentil 90) */
+  --bestia-pibe-piel-luz: #ee8e51; /* la frente y el pómulo prendidos (zona 590,590, percentil 90) */
+  --bestia-pibe-piel-honda: #933f34; /* debajo de la nariz y de la pera (zona 595,630, mediana) */
+  --bestia-pibe-pelo: #211715; /* el pelo (zona 600,560, mediana) */
+  --bestia-pibe-boca: #251112; /* adentro de la boca abierta del grito (zona 568,655, mediana) */
+  --bestia-pibe-carton: #c06842; /* el canto de la caja con luz (zona 545,420, mediana) */
+  --bestia-pibe-carton-hondo: #953c2a; /* el frente de la caja, debajo de la pera (zona 600,685, mediana) */
+  --bestia-pibe-papel: #d1bcab; /* el canto de papel rasgado del recorte (zona 484,535, mediana) */
+  --bestia-pibe-grafa: #402d26; /* el suelo oscuro del collage, para el pantalón (zona 100,640, percentil 10) */
+  --bestia-pibe-strato: #b82918; /* el rojo del frente del disco (la-mosca-y-la-sopa-frontal.jpg, zona 100,750, mediana) */
   /* ⟨/el pibe de los astilleros⟩ */
 
   /* ⟨el canibal⟩ */
