@@ -615,10 +615,14 @@
       "region": "el-templo",
       "pos": { "ang": 76, "r": 188 },
       "tam": 34,
-      "dibujo": { "f": "cuadrupedo", "orejas": "punta", "hocico": "largo", "cola": "peluda", "cuello": "largo", "con": ["toallon"] },
+      "dibujo": { "f": "cuadrupedo", "orejas": "punta", "hocico": "largo", "cola": "peluda", "cuello": "largo", "con": ["toallon"], "pose": "parado-dos" },
       "tema": "morta-punto-com",
       "verso": ["El Morta quiere más japines", "Va perdiendo aceite, relincha de más"],
-      "estampa": "La letra dice que relincha, y la estampa lo toma al pie: medio caballo, envuelto en un toallón.",
+      "estampa": "Medio caballo y medio tipo, parado como puede, con el toallón atado a la cintura. De la letra son el relincho, el aceite que pierde y el toallón que le tapa el rabo. Del dibujo son la cadenita con un Momo chiquito, las rayas de murga de la cara del interior del disco y la mancha que deja en el papel picado.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "Lo cuenta como la historia de un hamponcito de barrio con el marulo lleno de aserrín, el pícaro típico: de los que la pegan un día y después tienen que salir a yugarla otra vez. No es, dice, un tipo de gustos refinados.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 423)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "El Morta, Huesito y Mister Ed eran tres pistoleros que veía en un baño turco: dejaban las armas en el locker, mandaban la ropa a lavar y se iban a las cámaras. Le puso «Lavi-rap» porque así se entendía mejor que hablando de baños turcos, y no «laverrap» para no comerse un juicio.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 332)", "fuente": "RES-21" }
+      ],
       "tambien": [{ "tema": "lavi-rap", "verso": ["El morta, huesito y mister ed"] }],
       "cerca": ["mister-ed-y-huesito"]
     },

@@ -394,6 +394,21 @@
   /* ⟨/el rato molhado⟩ */
 
   /* ⟨el Morta⟩ */
+  /* El Morta es de *Momo Sampler* y se pinta a aerografo como la cara del interior del disco: la piel
+     violeta casi negra, la luz lila, las rayas de pintura de murga en los cachetes y la boca abierta
+     del grito. El toallon es la plata del medallon de la tapa. Medidas con `sharp` en
+     momo-sampler-interior-frontal.jpg y momo-sampler-frontal.jpg (953 px): zona (x, y) y lado. */
+  --bestia-morta-hondo: #26182d; /* la cara en lo hondo (interior, zona 392,425 de 8 px, media) */
+  --bestia-morta-piel: #392135; /* el cachete a media luz (interior, zona 395,415 de 12 px, media) */
+  --bestia-morta-media: #573e51; /* lo mas claro de ese cachete (misma zona, percentil 90) */
+  --bestia-morta-lila: #726880; /* la frente donde le da la luz (interior, zona 440,330 de 10 px, mediana) */
+  --bestia-morta-lila-clara: #9a8fa0; /* lo mas prendido de la frente (misma zona, percentil 90) */
+  --bestia-morta-brillo: #eae2f1; /* el brillo de la nariz (interior, zona 425,402 de 3 px, mediana) */
+  --bestia-morta-pintura: #7a4b5d; /* la raya de murga del cachete (interior, zona 402,405 de 4 px, mediana) */
+  --bestia-morta-pintura-viva: #924967; /* el labio de la boca que grita (interior, zona 437,442 de 4 px, percentil 90) */
+  --bestia-morta-violeta: #795b7f; /* la raya violeta del otro cachete (interior, zona 360,412 de 4 px, mediana) */
+  --bestia-morta-metal: #8b8b8b; /* el relieve del medallon de Momo (frente, zona 555,500 de 120 px, mediana): el toallon */
+  --bestia-morta-metal-hondo: #4f4f4f; /* lo hondo del relieve, el ceño (frente, zona 470,420 de 12 px, mediana) */
   /* ⟨/el Morta⟩ */
 
   /* ⟨el esclavo sensible y chillon⟩ */
