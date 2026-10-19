@@ -613,6 +613,18 @@ function cajaDeCarton(): string {
   const rnd = azar(571);
   let rayas = '';
   for (let i = 0; i < 7; i++) rayas += trazo(`M${f(-a + 1 + rnd() * 5)} ${f(-h + 9.4 + i * 1.9)} l${f(16 + rnd() * 12)} 0`, C.cartonHondo, 0.4, 0.22);
+  // La veta del corrugado, que la luz rasante del farol marca en el frente.
+  for (let x = -a + 1.2; x < a; x += 1.3) rayas += trazo(`M${f(x)} ${f(-h + 8)} L${f(x)} -0.6`, x > 0 ? C.sodio : C.cartonHondo, 0.3, x > 0 ? 0.12 : 0.18);
+  // El canto cortado de una solapa: la onda del corrugado entre las dos caras.
+  const onda = (p: P, q: P): string => {
+    const n = Math.max(3, Math.round(Math.hypot(q[0] - p[0], q[1] - p[1]) / 1.1));
+    let d = `M${f(p[0])} ${f(p[1])}`;
+    for (let i = 1; i <= n; i++) {
+      const [x, y] = [p[0] + ((q[0] - p[0]) * i) / n, p[1] + ((q[1] - p[1]) * i) / n];
+      d += ` L${f(x + (i % 2 ? 0.35 : -0.35))} ${f(y + (i % 2 ? -0.35 : 0.35))}`;
+    }
+    return trazo(d, C.papel, 0.35, 0.55);
+  };
   // La flecha de "este lado arriba", impresa en el cartón.
   const flecha = (x: number): string => forma(`M${f(x)} -11.6 l2 2.8 l-1.1 0 l0 4 l-1.8 0 l0 -4 l-1.1 0 Z`, C.negro, 0.55);
   const solapa = (id: string, pts: readonly P[], adentro: string): string => enmascarado(id, poli(pts), forma(poli(pts), C.carton) + adentro);
@@ -629,7 +641,8 @@ function cajaDeCarton(): string {
     solapa('p-pibe-caja-solapa-f', solapaF, nube(0, -h + 4, 16, 3, C.carton, 's', 0.5) + nube(-a + 3, -h + 4, 5, 5, C.negro, 's', 0.35) + nube(a - 3, -h + 3, 4, 4, C.sodio, 's', 0.35)) +
     trazo(`M${-a + 0.6} ${-h + 0.2} L${a - 0.6} ${-h + 0.2}`, C.carton, 0.8, 0.8) +
     solapa('p-pibe-caja-solapa-i', solapaI, nube(-a - 4, -h - 4, 5, 3, C.cartonHondo, 's', 0.8) + nube(-a - 8, -h - 9, 3, 1.4, C.tiza, 's', 0.4)) +
-    solapa('p-pibe-caja-solapa-d', solapaD, nube(a + 6, -h - 6, 3, 5, C.sodio, 's', 0.6) + nube(a + 2, -h - 1, 2, 2, C.cartonHondo, 's', 0.6));
+    solapa('p-pibe-caja-solapa-d', solapaD, nube(a + 6, -h - 6, 3, 5, C.sodio, 's', 0.6) + nube(a + 2, -h - 1, 2, 2, C.cartonHondo, 's', 0.6)) +
+    onda(solapaI[1]!, solapaI[2]!) + onda(solapaD[1]!, solapaD[2]!) + onda([-a + 1.2, -h + 7.4], [a - 1, -h + 8]);
   // El canto de cartón cortado no se rasga: la caja es la caja, no un recorte.
   return conGrano(foto);
 }
