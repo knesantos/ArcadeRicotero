@@ -4113,6 +4113,11 @@ body:has(> .lugar) .marca-chica {
 /* ⟨/el monito que trepa⟩ */
 
 /* ⟨el Capitán Buscapina⟩ */
+/* La luz de la tele que le pega por atrás, y la del partido cuando cambia de canal: se suman a la
+   nieve, como las linternas del bloque, y no se llevan el toque de la tele ni del Alien Duce. La boleta
+   que tira y el vaho tampoco se tocan: el toque es del títere. */
+.bt-buscapina-luz { mix-blend-mode: screen; pointer-events: none; }
+.titere--buscapina [data-parte="boleta"], .titere--buscapina [data-parte="vaho"] { pointer-events: none; }
 /* ⟨/el Capitán Buscapina⟩ */
 
 /* ⟨el pibe de los astilleros⟩ */
