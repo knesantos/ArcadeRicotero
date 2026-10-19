@@ -294,6 +294,26 @@
   /* ⟨/el pibe de los astilleros⟩ */
 
   /* ⟨el canibal⟩ */
+  /* El canibal es de *Cordero atado* y se pinta a aerografo como el frente de ese disco: el saco es la
+     lana azul del cordero, la cara la mascara marron con el ojo verde de persona, las manos la pezuna
+     con sus unas blancas y cuadradas, y la sonrisa la de la contratapa. Medidas con `sharp` en
+     lobo-suelto-cordero-atado-cd2-frontal (953 px), -cd2-trasera (1181 px) y -cd1-interior-frontal
+     (953 px): zona (x, y) y lado, mediana o percentil. La servilleta, la salsa y los cubiertos son de la
+     mesa, con sus tintas. */
+  --bestia-canibal-lana: #2b4a66; /* la lana del cordero donde le da luz (frente, zona 330,480 de 17 px, mediana) */
+  --bestia-canibal-lana-honda: #2a3344; /* la lana en la media sombra (frente, zona 200,200 de 21 px, mediana) */
+  --bestia-canibal-lana-viva: #406cad; /* el azul de tiza de la contratapa (zona 550,390 de 13 px, mediana): el filo que agarra la ventana */
+  --bestia-canibal-mascara: #785e45; /* la mascara marron a media luz (frente, zona 560,150 de 13 px, mediana) */
+  --bestia-canibal-mascara-luz: #a07952; /* la mascara donde le pega la luz (frente, zona 620,230 de 13 px, mediana) */
+  --bestia-canibal-piel: #6f5c55; /* la piel gris de la frente de la bestia (frente, zona 400,100 de 13 px, mediana) */
+  --bestia-canibal-carne: #6e3637; /* la piel roja que rodea el ojo de arriba (frente, zona 520,110 de 9 px, mediana) */
+  --bestia-canibal-hondo: #27262c; /* la mascara en lo hondo (frente, zona 430,200 de 17 px, mediana) */
+  --bestia-canibal-pezunia: #714a39; /* la pezuna: las manos (frente, zona 330,880 de 21 px, mediana) */
+  --bestia-canibal-pezunia-luz: #a76743; /* la pezuna donde le da la luz (misma zona, percentil 90) */
+  --bestia-canibal-una: #e8e5d2; /* la una blanca y cuadrada de la pezuna (frente, zona 275,880 de 9 px, percentil 90): unas y dientes */
+  --bestia-canibal-iris: #516559; /* el ojo verde de persona (frente, zona 474,66 de 3 px, percentil 90) */
+  --bestia-canibal-boca: #1d262f; /* el negro de la boca que se rie en la contratapa (zona 543,330 de 5 px, mediana) */
+  --bestia-canibal-lengua: #9c3d41; /* el telefono rojo del interior del disco 1, en la sombra (zona 660,360 de 9 px, mediana) */
   /* ⟨/el canibal⟩ */
 
   /* ⟨la Mariposa Pontiac⟩ */
