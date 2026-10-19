@@ -1097,7 +1097,15 @@
       "dibujo": { "f": "persona", "con": ["cadena"], "ropa": "remera" },
       "tema": "preso-en-mi-ciudad",
       "verso": ["Fue un esclavo sensible y chillón", "y fácil para el gatillo"],
-      "estampa": "Encadenado y llorando. Ahora ya casi no llora.",
+      "estampa": "Tallado como el pibe del flequillo del frente de Oktubre. Sentado en el catre de su celda, mira la calle por la reja; si la drácula taconea cerca, la sigue con los ojos. Le vienen los hipos y se le cortan: la lágrima no cae. Tocalo y chilla. El grillete y el catre son del dibujo; los ojos al rojo vivo, de la letra.",
+      "cuenta": [
+        {
+          "rotulo": "testimonio",
+          "texto": "De ahí viene la sensación de estar atrapado en libertad: no había ninguna seguridad de que no volviera el quilombo del que se acababa de zafar. La Plaza de Mayo llena, aplaudiendo a Galtieri durante Malvinas, le había quedado grabada, y le daba vergüenza ajena.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (pp. 210-211)",
+          "fuente": "RES-21"
+        }
+      ],
       "cerca": ["la-dracula-con-tacones", "el-pichon"]
     },
     {

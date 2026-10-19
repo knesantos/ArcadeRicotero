@@ -4223,4 +4223,14 @@ body:has(> .lugar) .marca-chica {
 /* ⟨/el Morta⟩ */
 
 /* ⟨el esclavo sensible y chillón⟩ */
+/* Los ojos del pibe preso: la pupila en la tinta de la plancha, con un brillo de papel, porque la isla
+   la hace mirar la calle, a la drácula o a vos; el párpado es de tinta, pesado, como el de los demás
+   tallados de la prisión. Abajo, el borde al rojo vivo que pide la letra, y la lágrima, del papel de la
+   gente, que la isla asoma y no deja caer. */
+.bt-esclavo-pupila { fill: var(--fondo); }
+.bt-esclavo-brillo { fill: var(--bestia-dracula-papel); }
+.bt-esclavo-parpado { fill: var(--fondo); }
+.bt-esclavo-rojo { fill: var(--bestia-esclavo-ojo); }
+.bt-esclavo-lagrima { fill: var(--bestia-dracula-papel); }
+.titere--esclavo [data-parte="lagrima"], .titere--esclavo [data-parte="rojo"] { pointer-events: none; }
 /* ⟨/el esclavo sensible y chillón⟩ */

@@ -432,6 +432,11 @@
   /* ⟨/el Morta⟩ */
 
   /* ⟨el esclavo sensible y chillon⟩ */
+  /* El esclavo esta tallado como la gente de *Oktubre*, con las tintas de su prision (`--fondo`,
+     `--bestia-dracula-papel`, `--disco-oktubre-apoyo`). Lo unico suyo son los ojos al rojo vivo de la
+     letra, y no son el rojo de las banderas: en la tapa hay otro rojo, el del ojo del hombre de barba
+     del frente, y es ese. Medido con `sharp` en oktubre-frontal.jpg (953 px). */
+  --bestia-esclavo-ojo: #aa1f32; /* el rojo en el ojo del hombre de barba del frente de Oktubre (zona 291,845 de 1 px: el mas rojo de la mancha) */
   /* ⟨/el esclavo sensible y chillon⟩ */
 
   /* Collage de cassette (UX-04: el collage es tecnica fichada de Rocambole, RES-06).
