@@ -1528,7 +1528,11 @@
       "dibujo": { "f": "persona", "con": ["servilleta", "tenedor"], "ropa": "saco", "pose": "sentado" },
       "tema": "yo-canibal",
       "verso": ["Soy un gourmet que huele eternamente mal.", "Un caníbal de mi estilo."],
-      "estampa": "En la cabecera, con la servilleta atada al cuello. Mira por la ventana para el lado de la pastura.",
+      "estampa": "En la cabecera, con la servilleta atada al cuello y los cubiertos parados, mira por la ventana para el lado de la pastura. De la letra es el gourmet que huele mal: las moscas lo prefieren a él. Del dibujo son el saco, hecho con la lana del cordero de la tapa, y la sonrisa de la contratapa.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "Las viejas compotas que no dan respiro son, dice, las creencias que dejaron los muertos hace demasiado y que todavía marcan la vida como si valieran: leyes de hace siglos, la religión misma.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 328)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "Lo del oro falso viene de un vermouth de esa época que se vendía con oro flotando adentro. Trucho, por supuesto.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 328)", "fuente": "RES-21" }
+      ],
       "cerca": ["el-cordero-atado", "el-canibal-desdentado"]
     },
     {

@@ -1412,7 +1412,8 @@ function astilleroFrente(ancho = ANCHO, alto = ALTO): string {
    un seguidor blanco que cruza en diagonal. La contratapa es collage de papel rasgado: el edificio
    de columnas en sepia, la olla con el cucharón. La mesa está armada así: la pared es ese rojo, con
    recortes pegados; el seguidor se escapa de la foto y cae en la olla, que es un recorte con su
-   canto de papel blanco. Los que cenan son sombras del otro lado del mantel.
+   canto de papel blanco. Los que cenan son sombras del otro lado del mantel; en la cabecera de la
+   izquierda se sienta el caníbal, que es un títere aparte (`arte-canibal.ts`).
 */
 
 const M2 = {
@@ -1568,13 +1569,14 @@ function mesaPiso(ancho = ANCHO, alto = ALTO): string {
       extra
     );
   };
-  const [cx, cy] = at('el-canibal');
+  // El caníbal ya no se pinta acá: es un títere (`arte-canibal.ts`) que se sienta en la cabecera. Su
+  // plato se queda donde estaba, que es donde él se sienta.
+  const [cx] = at('el-canibal');
   const [mx, my] = at('la-mula-de-la-enfermedad');
   const [px, py] = at('pituca');
   const [mtx, mty] = at('el-club-de-mantis');
   const [tx, ty] = at('la-tipa-rapaz');
   const [vx, vy] = at('el-verdugo-que-cena');
-  const servilleta = forma(`M${f(cx - 12)} ${f(cy + 16)} L${f(cx + 12)} ${f(cy + 16)} L${f(cx)} ${f(cy + 38)} Z`, M2.blanco, 0.9);
   const toallon = forma(`M${f(px - 30)} ${f(py + 24)} C${f(px - 20)} ${f(py + 8)} ${f(px + 20)} ${f(py + 8)} ${f(px + 30)} ${f(py + 24)} L${f(px + 26)} ${f(atras)} L${f(px + 16)} ${f(atras)} L${f(px + 12)} ${f(py + 22)} L${f(px - 12)} ${f(py + 22)} L${f(px - 16)} ${f(atras)} L${f(px - 26)} ${f(atras)} Z`, M2.blanco, 0.85) +
     [0, 1].map((i) => trazo(`M${f(px - 28 + i * 4)} ${f(py + 30 + i * 6)} L${f(px - 22 + i * 4)} ${f(atras)}`, M2.vivo, 2, 0.8)).join('') +
     trazo(`M${f(px + 18)} ${f(py + 40)} q3 -4 6 0 q3 4 6 0`, M2.naranja, 1.2, 0.9);
@@ -1600,7 +1602,6 @@ function mesaPiso(ancho = ANCHO, alto = ALTO): string {
     `<path d="M${f(tx + 30)} ${f(ty + 2)} Q${f(tx + 36)} ${f(ty + 18)} ${f(tx + 42)} ${f(ty + 2)} Z" fill="${M2.vivo}" opacity="0.85"/>` +
     trazo(`M${f(tx + 29)} ${f(ty)} Q${f(tx + 36)} ${f(ty + 22)} ${f(tx + 43)} ${f(ty)} M${f(tx + 36)} ${f(ty + 12)} L${f(tx + 36)} ${f(ty + 24)} M${f(tx + 31)} ${f(ty + 24)} L${f(tx + 41)} ${f(ty + 24)}`, M2.haz, 1.4, 0.9);
   const comensales =
-    comensal('el-canibal', servilleta) +
     comensal('el-canibal-desdentado') +
     `<g>${orejas}${comensal('la-mula-de-la-enfermedad')}</g>` +
     comensal('pituca', toallon) +
