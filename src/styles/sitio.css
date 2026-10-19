@@ -4110,6 +4110,16 @@ body:has(> .lugar) .marca-chica {
 /* ⟨/la bestia pop⟩ */
 
 /* ⟨el monito que trepa⟩ */
+/* Los ojos de persona del monito: el iris del barro de la frente, la pupila en el morado de las
+   cuencas del busto, con un brillo, y el párpado de su barro, que va a media asta: mira de reojo,
+   desconfiado. */
+.bt-monito-iris { fill: var(--bestia-monito-ocre); }
+.bt-monito-pupila { fill: var(--bestia-monito-cuenca); }
+.bt-monito-brillo { fill: var(--bestia-monito-diente); }
+.bt-monito-parpado { fill: var(--bestia-monito-ocre); }
+/* La mueca del busto, arriba de todo: la boca en el morado de las cuencas y los dientes pelados. */
+.bt-monito-boca { fill: var(--bestia-monito-cuenca); }
+.bt-monito-dientes { fill: var(--bestia-monito-diente); }
 /* ⟨/el monito que trepa⟩ */
 
 /* ⟨el Capitán Buscapina⟩ */
