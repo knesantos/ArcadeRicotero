@@ -9,8 +9,7 @@
 
 > ## 🪧 EL CAMINO LIVIANO: LA PUERTA, EL RENGLÓN CHICO Y LOS POSTES (2026-10-18) — enmienda de `D-77`
 >
-> **Sin integrar**: rama `bestiario/camino-liviano`, worktree `.claude/worktrees/camino-todo`, sobre `main` en
-> `4072abd`. Pedido del usuario, mirándolo en el teléfono: *"se ven muy grandes los textos y tapan a los
+> **En `main` desde el PR #66** (commit de fusión `c79cb82`), rama `bestiario/camino-liviano`. Pedido del usuario, mirándolo en el teléfono: *"se ven muy grandes los textos y tapan a los
 > personajes"*, *"que suene de una"*, *"lo mismo para las fichas"* y *"que los carteles estén arriba del camino"*.
 >
 > - **Arriba, un renglón chico**: la salida y el nombre. Tocar el nombre despliega lo demás; caminar lo pliega.
