@@ -203,7 +203,9 @@ test('las dos islas se llevan números: ni el camino ni el bestiario importan al
   for (const isla of ['src/scripts/camino.ts', 'src/scripts/bestiario.ts']) {
     const llevados = importados(isla);
     assert.ok(llevados.includes('rig.ts') && llevados.includes('pastura.ts') && llevados.includes('recintos.ts'), `${isla}: el censo no está mirando bien`);
-    assert.deepEqual(llevados.filter((n) => dibujan.includes(n)), [], `${isla} se lleva al teléfono: ${llevados.join(', ')}`);
+    // El elenco de la decimoquinta vuelta dibuja en `arte-<slug>.ts` y se junta en `elenco.ts`.
+    const dibuja = (n: string): boolean => dibujan.includes(n) || n === 'elenco.ts' || n.startsWith('arte-');
+    assert.deepEqual(llevados.filter(dibuja), [], `${isla} se lleva al teléfono: ${llevados.join(', ')}`);
   }
   // Y el guardián sabe encontrar: la página sí dibuja.
   assert.ok(importados('src/lib/bestiario/arte-camino.ts').includes('aerografo.ts'));

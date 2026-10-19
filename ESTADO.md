@@ -5,7 +5,27 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-18
+**Última actualización:** 2026-10-19
+
+> ## 🎭 EL ELENCO DE DIEZ, UNO POR ENTORNO (2026-10-19) — decimoquinta enmienda de `D-73`
+>
+> **Rama `bestiario/diez`** (worktree `.claude/worktrees/bestiario-diez`), sobre `main` en `4072abd` (con el #65 adentro).
+> Pedido del usuario: *"orquestar la creación y diseño pulido al máximo al estilo rocambole [de] al menos 10
+> personajes/bestias más [...] dividir lo más posible en entornos que tengan menos personajes"*.
+>
+> - **Diez títeres nuevos, uno por entorno**: la bestia pop (galpón), el monito que trepa (árbol, con la animación en dos
+>   tiempos que pidió el usuario), el Capitán Buscapina (Cybersiberia), el pibe de los astilleros, el caníbal (mesa), la
+>   Mariposa Pontiac (ruta: el primer fierro que es títere), el diablo que mea (infierno), el rato molhado (bajo), el
+>   Morta (templo) y el esclavo sensible y chillón (prisión). Cada uno en la técnica de su tapa, con tintas medidas,
+>   conducta que sale de la letra y el verso hecho gesto al tocarlo.
+> - **Cómo**: una base (`elenco.ts`, `scripts/bestiario/vivos.ts`) con diez lugares, y diez subagentes Opus en paralelo,
+>   cada uno en su rama `elenco/<slug>`. Cada personaje vive en sus archivos (`arte-`, `rig-`, `scripts/bestiario/`,
+>   `<slug>.test.ts`) y entra solo en su recinto y en su camino. **Cierra `T-492`.**
+> - **Arreglado al integrar**: el bocadillo del camino ya no queda debajo del tablero; el galpón arranca mirando a la bestia.
+> - **Verde:** `npm test` (1825), `npm run check`, `npm run build`. En el panel a 375 px: los diez se arman y se mueven en el
+>   bestiario sin errores; la bestia pop andando en su camino; la ficha del Morta con su retrato.
+> - **Sin ver**: la animación de cada uno en un teléfono de verdad y los cuadros por segundo (`T-490`, `T-437`, `T-439`).
+> - **Abierto:** `T-500` (los sonidos del elenco), `T-501` (cotejar las páginas del memoir que citan), `T-431`, `T-435`.
 
 > ## 🪧 EL CAMINO LIVIANO: LA PUERTA, EL RENGLÓN CHICO Y LOS POSTES (2026-10-18) — enmienda de `D-77`
 >
@@ -39,8 +59,8 @@
 > - **Por dentro**: la vida de los recintos pasó a `scripts/bestiario/recintos.ts` (la usan las dos islas), y el piso
 >   de cada tramo lo arma `lib/bestiario/escenas-camino.ts`. Los rótulos del plano llevan a caminar.
 > - **Verde:** `npm test` (1707), `npm run check`, `npm run build`. Visto en el panel a 375×812 y 1280×800.
-> - **Abierto:** `T-490` (teléfono de verdad y oírlo), `T-491` (el plano como galería o solo mapa), `T-492` (los diez
->   personajes de `bestiario/diez` en los caminos largos), `T-493` (lienzo).
+> - **Abierto:** `T-490` (teléfono de verdad y oírlo), `T-491` (el plano como galería o solo mapa), `T-493` (lienzo).
+>   `T-492` lo cerró el elenco de diez.
 
 > ## 🍋 LIMÓN, POR LAS CHAPAS DEL BALDÍO (2026-10-18) — decimocuarta enmienda de `D-73`
 >

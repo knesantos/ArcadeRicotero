@@ -4097,3 +4097,140 @@ body:has(> .lugar) .marca-chica {
 .bt-limon-pupila { fill: var(--fondo); }
 .bt-limon-parpado { fill: var(--bestia-limon-verde); }
 .baldio-linterna { mix-blend-mode: screen; pointer-events: none; }
+
+/* Decimoquinta vuelta (D-73): el elenco de diez, uno por entorno (`elenco.ts`). Lo que la página
+   dibuja de cada títere (pupilas, párpados, lo que la isla prende y apaga) va en su bloque, con las
+   tintas de su bloque de `tokens.css`. Todos se tocan. */
+.titere--bestia-pop, .titere--monito, .titere--buscapina, .titere--pibe, .titere--canibal,
+.titere--pontiac, .titere--diablo, .titere--rato, .titere--morta, .titere--esclavo { cursor: pointer; }
+/* ⟨la bestia pop⟩ */
+/* Los destellos de las lentejuelas: estrellas en el rosado del reflector de *En directo*, que la isla
+   hace saltar. No se toca un destello: el toque es del títere entero. */
+.bt-bestia-pop-chispa { fill: var(--bestia-pop-reflector); pointer-events: none; }
+/* ⟨/la bestia pop⟩ */
+
+/* ⟨el monito que trepa⟩ */
+/* Los ojos de persona del monito: el iris del barro de la frente, la pupila en el morado de las
+   cuencas del busto, con un brillo, y el párpado de su barro, que va a media asta: mira de reojo,
+   desconfiado. */
+.bt-monito-iris { fill: var(--bestia-monito-ocre); }
+.bt-monito-pupila { fill: var(--bestia-monito-cuenca); }
+.bt-monito-brillo { fill: var(--bestia-monito-diente); }
+.bt-monito-parpado { fill: var(--bestia-monito-ocre); }
+/* La mueca del busto, arriba de todo: la boca en el morado de las cuencas y los dientes pelados. */
+.bt-monito-boca { fill: var(--bestia-monito-cuenca); }
+.bt-monito-dientes { fill: var(--bestia-monito-diente); }
+/* ⟨/el monito que trepa⟩ */
+
+/* ⟨el Capitán Buscapina⟩ */
+/* La luz de la tele que le pega por atrás, y la del partido cuando cambia de canal: se suman a la
+   nieve, como las linternas del bloque, y no se llevan el toque de la tele ni del Alien Duce. La boleta
+   que tira y el vaho tampoco se tocan: el toque es del títere. */
+.bt-buscapina-luz { mix-blend-mode: screen; pointer-events: none; }
+.titere--buscapina [data-parte="boleta"], .titere--buscapina [data-parte="vaho"] { pointer-events: none; }
+/* ⟨/el Capitán Buscapina⟩ */
+
+/* ⟨el pibe de los astilleros⟩ */
+/* Los ojos del recorte: la pupila en el negro del pelo de la contratapa, y el párpado de su piel en
+   la sombra de la cuenca, a media asta, que es como mira el que vigila. */
+.bt-pibe-pupila { fill: var(--bestia-pibe-pelo); }
+.bt-pibe-parpado { fill: var(--bestia-pibe-piel-honda); }
+/* El grito de la contratapa: la boca abierta y los dientes de arriba. */
+.bt-pibe-boca { fill: var(--bestia-pibe-boca); }
+.bt-pibe-dientes { fill: var(--bestia-pibe-papel); }
+/* El pucho: el papel, la ceniza larga que no se cae (gris de tiza) y la brasa, en el sodio del farol. */
+.bt-pibe-pucho { fill: none; stroke: var(--bestia-pibe-papel); stroke-width: 1.5; stroke-linecap: round; }
+.bt-pibe-ceniza { fill: none; stroke: var(--entorno-astillero-tiza-clara); stroke-width: 1.6; stroke-linecap: round; }
+.bt-pibe-brasa { fill: var(--disco-cordero-atado-tinta); }
+/* La luz de la brasa en la cara: se suma a lo de abajo, como las linternas del baldío. */
+.bt-pibe-resplandor { mix-blend-mode: screen; pointer-events: none; }
+/* Lo que se afana de la caja: un pedal negro con el cromo que agarra la luz. */
+.bt-pibe-botin { fill: var(--fondo); }
+.bt-pibe-cromo { fill: none; stroke: var(--entorno-astillero-tiza-clara); stroke-width: 1; stroke-linecap: round; }
+/* ⟨/el pibe de los astilleros⟩ */
+
+/* ⟨el caníbal⟩ */
+/* Los ojos de persona del caníbal: el iris verde de la bestia de *Cordero atado*, la pupila en el negro
+   de la boca de la contratapa, con un brillo, y el párpado de la máscara marrón, que va a media asta:
+   mira la pastura con ganas. La sonrisa de la contratapa (la boca negra y los dientes del blanco de las
+   uñas) y la lengua, que la isla prende y apaga. Las moscas van adentro del títere: tocarlas es tocarlo. */
+.bt-canibal-iris { fill: var(--bestia-canibal-iris); }
+.bt-canibal-pupila { fill: var(--bestia-canibal-boca); }
+.bt-canibal-brillo { fill: var(--bestia-canibal-una); }
+.bt-canibal-parpado { fill: var(--bestia-canibal-mascara); }
+.bt-canibal-pestana { fill: none; stroke: var(--bestia-canibal-hondo); stroke-width: 1.1; stroke-linecap: round; }
+.bt-canibal-boca { fill: var(--bestia-canibal-boca); }
+.bt-canibal-dientes { fill: var(--bestia-canibal-una); }
+.bt-canibal-lengua { fill: var(--bestia-canibal-lengua); }
+/* ⟨/el caníbal⟩ */
+
+/* ⟨la Mariposa Pontiac⟩ */
+/* Va adentro de su fierro, que es el que se toca. Lo único que dibuja la página son los párpados de
+   los dos ojos de los óvalos: del yeso del busto a media luz, como la cara que los rodea. */
+.bt-pontiac-parpado { fill: var(--bestia-pontiac-yeso-medio); }
+/* ⟨/la Mariposa Pontiac⟩ */
+
+/* ⟨el diablo que mea⟩ */
+/* El ojo de la cara vuelta: de persona, con el iris del rojo de los ojos del infierno (los que tenía
+   antes de ser títere), y el párpado del cobre de la pelada, que baja cuando desconfía. */
+.bt-diablo-iris { fill: var(--marca-rojo); }
+.bt-diablo-pupila { fill: var(--fondo); }
+.bt-diablo-brillo { fill: var(--bestia-diablo-brillo); }
+.bt-diablo-parpado { fill: var(--bestia-diablo-cobre-hondo); }
+/* El chorro es un arco de brasa: el halo del fuego, sumado como luz, y adentro las gotas del oro de la
+   vela, que corren. Donde cae, un brillo que se seca y unas chispas. Nada de esto se toca. */
+.bt-diablo-halo { fill: none; stroke: var(--entorno-infierno-fuego); stroke-width: 7; stroke-linecap: round; mix-blend-mode: screen; }
+.bt-diablo-chorro { fill: none; stroke: var(--bestia-diablo-brillo); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 26 1.8 9 1.4 4 2.2; }
+.bt-diablo-charco { fill: var(--entorno-infierno-fuego); mix-blend-mode: screen; }
+.bt-diablo-chispa { fill: var(--acento-2); }
+.diablo-suelo { pointer-events: none; }
+/* ⟨/el diablo que mea⟩ */
+
+/* ⟨el rato molhado⟩ */
+/* Los ojos de persona del rato: el iris en el lila del ojo de la contratapa de *Momo Sampler*, la
+   pupila en lo hondo de la piel, con el brillo de plata mojada, y el párpado pesado, a media asta: su
+   cara es tan expresiva como el par de sus botas nuevas. El de la sombra, del violeta hondo; el de la
+   luz, del pelo. El destello de los dientes de oro cuando brinda, y las gotas que le caen del hocico. */
+.bt-rato-iris { fill: var(--bestia-rato-iris); }
+.bt-rato-pupila { fill: var(--bestia-rato-hondo); }
+.bt-rato-brillo { fill: var(--bestia-rato-plata); }
+.bt-rato-parpado { fill: var(--bestia-rato-pelo); stroke: var(--fondo); stroke-width: 0.9; }
+.bt-rato-parpado-hondo { fill: var(--bestia-rato-hondo); stroke: var(--fondo); stroke-width: 0.9; }
+.bt-rato-destello { fill: none; stroke: var(--bestia-rato-oro); stroke-width: 1.2; stroke-linecap: round; }
+.bt-rato-chispa { fill: var(--bestia-rato-plata); }
+.bt-rato-gota { fill: var(--entorno-baion-luz); }
+/* ⟨/el rato molhado⟩ */
+
+/* ⟨el Morta⟩ */
+/* El ojo de persona del Morta: el iris en la pintura de murga de la cara del interior de *Momo Sampler*
+   (un marrón colorado, de gin), la pupila en la tinta de la plancha con un brillo, y el párpado de su
+   piel, pesado. Adentro de la boca que relincha: lo hondo de la cara, la lengua de la pintura y los
+   dientes de caballo. El aceite es negro con el reflejo de la plata del medallón; el chorro y la gota no
+   se tocan aparte. */
+.bt-morta-iris { fill: var(--bestia-morta-pintura); }
+.bt-morta-pupila { fill: var(--fondo); }
+.bt-morta-brillo { fill: var(--bestia-morta-brillo); }
+.bt-morta-parpado { fill: var(--bestia-morta-piel); }
+.bt-morta-pestana { fill: none; stroke: var(--bestia-morta-hondo); stroke-width: 1.2; stroke-linecap: round; }
+.bt-morta-boca { fill: var(--bestia-morta-hondo); }
+.bt-morta-lengua { fill: var(--bestia-morta-pintura); }
+.bt-morta-dientes { fill: var(--bestia-ojo-blanco); }
+.bt-morta-aceite { fill: var(--fondo); }
+.bt-morta-reflejo { fill: var(--disco-momo-sampler-tinta); }
+.bt-morta-chorro { fill: var(--fondo); }
+.bt-morta-chorro-brillo { fill: none; stroke: var(--disco-momo-sampler-tinta); stroke-width: 0.9; stroke-linecap: round; stroke-linejoin: round; stroke-opacity: 0.8; }
+.titere--morta [data-parte="chorro"], .titere--morta [data-parte="chorro-brillo"], .titere--morta [data-parte="gota"] { pointer-events: none; }
+/* ⟨/el Morta⟩ */
+
+/* ⟨el esclavo sensible y chillón⟩ */
+/* Los ojos del pibe preso: la pupila en la tinta de la plancha, con un brillo de papel, porque la isla
+   la hace mirar la calle, a la drácula o a vos; el párpado es de tinta, pesado, como el de los demás
+   tallados de la prisión. Abajo, el borde al rojo vivo que pide la letra, y la lágrima, del papel de la
+   gente, que la isla asoma y no deja caer. */
+.bt-esclavo-pupila { fill: var(--fondo); }
+.bt-esclavo-brillo { fill: var(--bestia-dracula-papel); }
+.bt-esclavo-parpado { fill: var(--fondo); }
+.bt-esclavo-rojo { fill: var(--bestia-esclavo-ojo); }
+.bt-esclavo-lagrima { fill: var(--bestia-dracula-papel); }
+.titere--esclavo [data-parte="lagrima"], .titere--esclavo [data-parte="rojo"] { pointer-events: none; }
+/* ⟨/el esclavo sensible y chillón⟩ */

@@ -5342,6 +5342,138 @@ PR #60) y la decimotercera (la vaca cubana, PR #62).
   las de los seis entornos de la décima ya tienen escena.
 - `T-435` suma las cuatro tintas de Limón al lienzo; `T-431`, que `contenido` lea su estampa y su cuenta.
 
+### Enmienda del 2026-10-18 (15): el elenco de diez, uno por entorno
+
+Pedido del usuario, textual: *"El objetivo de esta sesion es orquestar la creacion y diseño pulido al maximo al
+estilo rocambole al menos 10 personajes/bestias mas. Tratando de dividir lo mas posible en entornos que tengan menos
+personajes. El objetivo es integrar 10 personajes de maxima calidad al bestiario."* Y cuando se le preguntó cuáles y
+cómo: *"no me tenes que preguntar tantas cosas. Te dije que hagas 10 arreglate"*. La escribe el hilo principal en la
+rama `bestiario/diez`, sobre `main` en `4072abd` (el camino de los trece entornos, `D-77`, PR #65, adentro).
+
+#### Cuáles, y por qué esos
+
+Uno por entorno, empezando por los que no tenían ningún títere (los seis de la décima vuelta), después los que tenían
+uno (el infierno, el bajo, el templo) y por último la prisión, que tenía dos. Salvo el del templo, que no tenía
+ninguno en la lista, todos son de los 27 que el usuario puso primero a diseño
+(`Docs/SUGERENCIAS/HILO-para-bestiario-prioridad-de-figuras.md`). En el galpón, la bestia pop; en el árbol, el monito
+que trepa, con la animación en dos tiempos que el usuario pidió; en Cybersiberia, el Capitán Buscapina; en los
+astilleros, el pibe; en la mesa, el caníbal; en la ruta, la Mariposa Pontiac; en el infierno, el diablo que mea en todas
+partes; en el bajo, el rato molhado; en el templo, el Morta; en la prisión, el esclavo sensible y chillón.
+
+#### Cómo se hizo: una base, y diez diseñadores en paralelo
+
+- **La base** (`elenco.ts`, `scripts/bestiario/vivos.ts`). Diez lugares reservados que valen `null` hasta que el
+  personaje existe. Cada uno vive entero en sus archivos: el dibujo en `arte-<slug>.ts`, los números (y la cuenta de la
+  pose, como funciones puras) en `rig-<slug>.ts`, la conducta en `scripts/bestiario/<slug>.ts` y sus pruebas en
+  `<slug>.test.ts`. Sus tintas van en un bloque propio de `tokens.css`, y sus clases en uno de `sitio.css`. Las escenas
+  piden las capas del elenco (`atras`, `figura`, `delante`) y dejan de dibujar como ojos o como cosa a quien ya tiene
+  títere. En la ruta, un fierro puede ser títere (`fierroDe`). El camino corre a cada uno con un marco
+  (`ancla · (k − 1)`), así que adentro todo sigue en las coordenadas del recinto. Y `armarRecinto` suma la conducta del
+  elenco a toda escena, la del bestiario y la del camino. Con las capas en `escenas-camino.ts`, eso **cierra `T-492`**:
+  los diez caminan en sus caminos.
+- **Diez subagentes**, uno por personaje, de a tres en paralelo, cada uno en su worktree y su rama `elenco/<slug>`, con
+  un brief común: la técnica sale de las tapas, las tintas se miden en las tapas, sin contorno, ojos humanos en los
+  animales, mínimo tres vueltas de corrección mirando lo impreso, una conducta que salga de la letra, y el toque como el
+  verso hecho gesto. El hilo principal juntó cada rama en `bestiario/diez` y la miró en el navegador. Como cada uno tocó
+  solo lo suyo, las diez fusiones salieron sin un conflicto.
+- `elenco.test.ts` mira lo que vale para los diez: que el que tiene dibujo tenga conducta y retrato, que se toque una
+  sola vez, que ya no esté como ojos, que sus piezas estén impresas y que entre en el camino corrido con `k`.
+
+#### Los diez
+
+- **La bestia pop, a pincel seco, con la cara de la gente** (*La bestia pop*, *Gulp!*). Es pincel seco y fotocopia, como
+  Pierre: papel crema tapado de negro en diagonal, y lentejuelas del rojo de las letras corrido sobre el amarillo, que
+  solo brillan del lado de la luz. Brilla con luz prestada. **La cara no es suya**: en el hueco negro va la de alguien de
+  la gente, en la trama roja de *En directo*, y son cuatro, que se funden o que se tapa con la mano. Sale del memoir
+  (`RES-21`, p. 190): la gente le cuelga al artista sus propias ilusiones. La silla vacía de al lado no tiene ninguna
+  cara. Estira el brazo hasta el cono del seguidor, sin llegar a la silla. **Tocada, brilla**: se endereza, levanta los
+  brazos como la gente levanta los puños, crece el halo y le pasan las caras. Hubo cuatro vueltas, y la segunda tenía un
+  contorno de dibujito.
+- **El monito que trepa, modelado en el barro del busto de *Luzbelito*** (*Juguetes perdidos*). Pelo de surcos de
+  palillo, y cara, manos y culo de barro liso y picado, con ojos de persona. Trepa de espaldas, agarrado del canto del
+  tronco: los puños y los pies quedan fijos en la corteza y el cuerpo sube a tirones. **Es el verso hecho movimiento**,
+  como lo pidió el usuario: abajo, la cola enrulada le tapa el culo; al trepar la levanta, y el culo asoma más cuanto
+  más alto. Arriba te mira por arriba del hombro pelando los dientes como el busto, baja ligero y lo primero que hace
+  abajo es taparse. Hubo siete vueltas; la primera parecía un chimpancé de libro infantil.
+- **El Capitán Buscapina, a aerógrafo frío, como si la tele lo soplara** (*Último bondi a Finisterre*). Lo vemos a
+  contraluz de la pantalla, en bolas en la nieve, con la gorra, echado sobre la capa de látex del cómic que el Indio
+  dibujó en Pinamar (`RES-21`, p. 390). Respira echando vaho, cambia de canal (si agarra el partido, la luz se pone
+  tibia), se agarra el hígado y tirita. **Tocado, salda la deuda**: te mira por encima del hombro y te tira una boleta
+  para atrás, que la nieve va tapando. Hubo nueve vueltas; la primera era un muñeco de yoga sobre un flotador.
+- **El pibe de los astilleros, recortado de la contratapa de *La mosca y la sopa***. El disco del tema tiene un pibe en
+  la contratapa, de buzo rojo, gritando con una caja en la cabeza. Cada pieza es una foto pegada, con el canto de papel
+  rasgado: eso lo despega de los containers sin contorno. Le pega la luz de sodio del farol. Fuma, y la ceniza crece y
+  no se cae nunca. Rapiña: saca un pedal de la caja y se lo guarda, porque un amigo apareció con *"una caja llena de
+  pedales Vox"* (`RES-21`, p. 303). **Tocado, se para con la caja en alto y grita**: las manos arriba, como se rinde
+  uno, pero con lo afanado en las manos. *Nunca se rendía.* Hubo cuatro vueltas.
+- **El caníbal, con el saco del cordero que se va a comer** (*Yo caníbal*, *Cordero atado*). La cara es la máscara
+  marrón de la bestia del frente, con el ojo verde de persona; las manos, su pezuña; **el saco, la lana azul en escamas
+  del cordero**; y la sonrisa, la medialuna de dientes de la contratapa. La servilleta es papel de la mesa, con la salsa
+  de la olla. Mira por la ventana para el lado de la pastura, olfatea, y golpea la mesa con el tenedor mirando el plato
+  vacío; tres moscas lo rondan. **Tocado**, se le vuelan las moscas, te pela la sonrisa y afila el cuchillo contra el
+  tenedor. Hubo seis vueltas.
+- **La Mariposa Pontiac, el primer fierro que es títere** (*Mariposa Pontiac*, *Luzbelito*). Es un Pontiac de cola
+  larga a aerógrafo, con la chapa de la tierra roja del interior, y encima una polilla luna. Sus alas son el mármol de
+  la tapa de verdad (`tapa:luzbelito-frontal`), y cada ocelo es el óvalo de cobre con un ojo humano de yeso. En la punta
+  del capó, el busto con su vela. El tránsito la lleva; ella respira con las alas y mira la luz del que va adelante,
+  porque es polilla. **Tocada** (*"¿qué va a ser de mí?"*), despega asustada a los aletazos y la suspensión la recibe.
+  Hubo cuatro vueltas; la primera tenía alas de libélula.
+- **El diablo que mea en todas partes, hecho con las cosas de la tapa de *Luzbelito*** (*Juguetes perdidos*). La pelada
+  y las manos son el cobre oxidado del óvalo, el frac es el cuero verde del lomo del libro con el marmolado de la tapa
+  de verdad, y los cuernos son el yeso del busto. Se lo ve de espaldas. El chorro es un arco de brasa que barre el
+  damero, y donde cae queda un brillo que se seca, unas chispas y vapor: **no hace espuma**. Se palpa la pelada (no
+  está el gorro) y mira con desconfianza. **Tocado, lo pescaste**: te mira por encima del hombro con un ojo rojo, se
+  lleva la mano a la pelada y sigue. Hubo seis vueltas. El tono, pedido en el brief: picaresco, nunca explícito.
+- **El rato molhado, nadando en el bajo con el medallón de Momo** (*Rato molhado*, *Momo Sampler*). Es la cara del
+  interior de *Momo Sampler*, a aerógrafo violeta casi negro con plata mojada, y la raya de la murga bajo los ojos de
+  persona. Del cuello le cuelga **el medallón recortado de la tapa de verdad**. Está metido en el agua hasta el pecho,
+  con su reflejo en tiras, como Pierre. Le gotea el hocico, huele para el lado de la botella de Pierre, y se le cansa el
+  brazo de las botas nuevas hasta que tocan el agua (*"tan expresiva como el par de sus botas nuevas"*). **Tocado,
+  brinda.** Se corrigió la estampa vieja: el Indio traduce el título como *ratón mojado* (`RES-21`, p. 430). Hubo seis
+  vueltas.
+- **El Morta, a aerógrafo, perdiendo aceite en el templo** (*Morta punto com*, *Momo Sampler*). Es medio caballo y medio
+  tipo de barrio con panza, envuelto en un toallón de la plata del medallón, con la murga en el cachete y ojos de persona.
+  Se bambolea a estribor como un resorte flojo y gotea aceite en una mancha que crece y se seca. **Tocado, relincha de
+  más**: tira la cabeza para arriba con el grito del interior del disco, se le escapa un chorro de aceite, brinca y cae
+  escorado (*"brinca y cae levemente hacia su estribor"*). Hubo cinco vueltas.
+- **El esclavo sensible y chillón, tallado, preso en su celda** (*Preso en mi ciudad*, *Oktubre*, el tema de la
+  drácula). Está tallado como la gente de la tapa (`grabado.ts`), y la vara es el pibe del flequillo del frente: cara
+  blanca, párpado pesado, pelo negro tupido y la mitad de la cara comida por la sombra. Vive en la celda del fondo a la
+  derecha, al lado de la ventana, detrás de su reja, que se vuelve a tallar delante de él, idéntica a la del fondo. Está
+  sentado en un catre, abrazado a las rodillas, con grillete y cadena. Su único color es el rojo de *"ojos al rojo
+  vivo"*, el que la tapa le pone en el ojo al hombre de barba del frente. Mira la calle por la reja de la ventana.
+  **Casi llora**: le dan tres hipos, y la lágrima baja y no cae (*"ahora ya casi no llora"*). Cuando la drácula taconea
+  cerca, pega un respingo con cada taco: *fácil para el gatillo*, sin armas. **Tocado, chilla**: se agarra del barrote,
+  echa la cabeza atrás, y el chillido se le corta de golpe; te mira, traga y vuelve a abrazarse las rodillas. La cuenta
+  trae un testimonio del memoir sobre *atrapado en libertad* (`RES-21`, pp. 210-211). El tono, pedido en el brief: un
+  preso de la ciudad, con la dignidad de la gente de la tapa, nunca un chiste sobre la esclavitud. Hubo cinco vueltas;
+  la primera, de frente, se leía como alguien parado de sobretodo.
+
+#### Lo que se arregló al integrar
+
+- **El bocadillo del camino** se metía debajo del tablero que flota arriba (`D-77`): con los títeres altos, el cartel
+  tapaba "Abrí la ficha". Ahora, si arriba del bicho no hay lugar debajo del tablero, va abajo (`scripts/camino.ts`).
+- **El galpón** arranca mirando entre la bestia pop y la silla vacía (`foco` 360): con 450, en el teléfono la bestia
+  quedaba cortada.
+
+#### Cómo se verificó
+
+Cada personaje trae su test (entre 9 y 13 pruebas), y casi todos corren su conducta contra un DOM de juguete. Con los
+diez juntos: `npm test` (1825), `npm run check` (0 errores) y `npm run build`.
+En el navegador del panel, a 375 px: la bestia pop en el camino del galpón, que respira, cambia de cara y brilla al
+tocarla, con su bocadillo; la página del bestiario arma los diez recintos y todos los títeres se mueven, sin un error en
+la consola; la ficha del Morta muestra su retrato. **No se vio cuadro por cuadro en un teléfono de verdad**, ni se
+midieron los cuadros por segundo con diez títeres más (`T-437`, `T-439`, `T-490`).
+
+#### Abierto, sin trabar
+
+- `T-500`: los sonidos del elenco en el camino (`sonido.ts`, `D-76`): el zumbido de las moscas del caníbal, el relincho
+  del Morta, el chorro de las botas del rato.
+- `T-501`: que `investigador` coteje las páginas del memoir que citan las cuentas nuevas. El que hizo al Morta contó las
+  páginas por el pie de página, y con esa cuenta la cita del caníbal (p. 328) caería en la 329.
+- Siguen `T-431` (que `contenido` lea las diez estampas y las cuentas nuevas), `T-435` (los diez bloques de tintas al
+  lienzo) y `T-437`/`T-439`/`T-490` (verlos en un teléfono de verdad).
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17

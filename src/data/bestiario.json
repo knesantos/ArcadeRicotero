@@ -164,9 +164,11 @@
       "dibujo": { "f": "cosa", "que": "bestia-pop" },
       "tema": "la-bestia-pop",
       "verso": ["Vamos a brillar, mi amor"],
-      "estampa": "Un bicho grande que brilla, parado en el escenario del galpón. No tiene cara fija: cada uno le pone la que quiere.",
+      "estampa": "Pincel seco, como la tapa de Gulp!, su disco. Un bicho encorvado, de lentejuelas que solo brillan donde les pega el reflector. El Indio nunca dijo quién es, y el dibujo no le pone cara: en el hueco se imprime la de alguien de la gente, en la trama de En directo, y cambia. Eso es del dibujo; el brillo, de la letra.",
       "cuenta": [
         { "rotulo": "testimonio", "texto": "En 1985 el Indio dijo que el tema era una joda a ellos mismos y al medio, y que la canción no tenía que agotar lo que resuena.", "quien": "Indio Solari, en La Nación (nota de 2020 que lo cita) y en su memoir", "fuente": "RES-341" },
+        { "rotulo": "testimonio", "texto": "Mucha gente cantaba el estribillo en serio, como un grito de batalla. Él lo entendía con ironía: en el rock del Luna Park no veía ningún brillo verdadero. Brillar puede ser una invitación a vivir en plenitud, o el brillo fugaz y artificial de la merca.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 189)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "No cuenta por qué escribió cada cosa, para no arruinarle a nadie la experiencia: la gente le cuelga al artista sus propias necesidades e ilusiones.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 190)", "fuente": "RES-21" },
         { "rotulo": "leyenda", "texto": "Circulan dos candidatos para ser la bestia: Carlos Monzón y el Negro José Luis, el de la barra de Gimnasia. El Indio los desmintió a todos.", "fuente": "RES-342" }
       ],
       "cerca": ["patricio-rey", "el-heroe-del-whisky"]
@@ -221,7 +223,11 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "redondas", "hocico": "corto", "cola": "enrulada", "pose": "trepa" },
       "tema": "juguetes-perdidos",
       "verso": ["Cuanto más alto trepa el monito", "El culo más se le ve"],
-      "estampa": "A media altura del tronco, subiendo. Desde abajo se le ve lo que el verso dice que se le ve.",
+      "estampa": "A media altura del tronco, abrazado, con la cola enrulada colgando encima del culo. Lo de la letra pasa cuando trepa: cuanto más alto, más se le ve. Lo demás es del dibujo: arriba te mira por arriba del hombro y pela los dientes como el busto de la vela de Luzbelito, que es el barro en que está modelado.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "En la película de un recital suyo, donde los gestos se ven de cerca, dice que al cantar «Cuanto más alto trepa el monito» queda claro que el monito es él.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 547)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "Le parece un tema medio sermonero: el que habla es el cantante, separado de la gente que está ahí abajo, y no se dibuja bajo la mejor luz. Es un tipo que se cuestiona a sí mismo en voz alta.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 370)", "fuente": "RES-21" }
+      ],
       "tambien": [{ "tema": "un-pacman-en-el-savoy", "verso": ["pero el mono es de él."] }],
       "cerca": ["el-bicho-del-gran-bonete", "el-pac-man"]
     },
@@ -325,10 +331,14 @@
       "region": "cybersiberia",
       "pos": { "ang": 30, "r": 330 },
       "tam": 38,
-      "dibujo": { "f": "persona", "con": ["gorra"], "ropa": "uniforme", "pose": "sentado" },
+      "dibujo": { "f": "persona", "con": ["gorra"], "ropa": "nada", "pose": "sentado" },
       "tema": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
       "verso": ["El Capitán Buscapina salda deudas.", "Sentado, en bolas, watcheando la tele"],
-      "estampa": "Sentado en la nieve frente a la tele, con la gorra puesta y nada más.",
+      "estampa": "Aerógrafo frío, como la banda en el ojo de buey de Último bondi a Finisterre: lo vemos de atrás y lo dibuja nada más la luz de la tele. De la letra es que esté en bolas, mirando, y que salde deudas. La capa sale del cómic que contó el Indio. La gorra, las boletas y la que te tira si lo tocás son del dibujo.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "La canción remite a una noche de ácido en el Pinamar de hace mucho: el Indio empezó a dibujar un cómic con Fenton de superhéroe, con una capa que tenía el sello del laboratorio que hace la Buscapina, porque Fenton tenía problemas de hígado espantosos y aun así no se cuidaba. Los demás en la mesa le tiraban ideas.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 390)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "El tercer y último videoclip de la banda estuvo inspirado en el Capitán Buscapina, con la misma estética de superhéroes de la tapa de Último bondi.", "quien": "Indio Solari, en «Recuerdos que mienten un poco»", "fuente": "RES-22" }
+      ],
       "cerca": ["el-rey-garufa", "super-walter"]
     },
     {
@@ -605,10 +615,14 @@
       "region": "el-templo",
       "pos": { "ang": 76, "r": 188 },
       "tam": 34,
-      "dibujo": { "f": "cuadrupedo", "orejas": "punta", "hocico": "largo", "cola": "peluda", "cuello": "largo", "con": ["toallon"] },
+      "dibujo": { "f": "cuadrupedo", "orejas": "punta", "hocico": "largo", "cola": "peluda", "cuello": "largo", "con": ["toallon"], "pose": "parado-dos" },
       "tema": "morta-punto-com",
       "verso": ["El Morta quiere más japines", "Va perdiendo aceite, relincha de más"],
-      "estampa": "La letra dice que relincha, y la estampa lo toma al pie: medio caballo, envuelto en un toallón.",
+      "estampa": "Medio caballo y medio tipo, parado como puede, con el toallón atado a la cintura. De la letra son el relincho, el aceite que pierde y el toallón que le tapa el rabo. Del dibujo son la cadenita con un Momo chiquito, las rayas de murga de la cara del interior del disco y la mancha que deja en el papel picado.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "Lo cuenta como la historia de un hamponcito de barrio con el marulo lleno de aserrín, el pícaro típico: de los que la pegan un día y después tienen que salir a yugarla otra vez. No es, dice, un tipo de gustos refinados.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 423)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "El Morta, Huesito y Mister Ed eran tres pistoleros que veía en un baño turco: dejaban las armas en el locker, mandaban la ropa a lavar y se iban a las cámaras. Le puso «Lavi-rap» porque así se entendía mejor que hablando de baños turcos, y no «laverrap» para no comerse un juicio.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 332)", "fuente": "RES-21" }
+      ],
       "tambien": [{ "tema": "lavi-rap", "verso": ["El morta, huesito y mister ed"] }],
       "cerca": ["mister-ed-y-huesito"]
     },
@@ -676,7 +690,11 @@
       "dibujo": { "f": "persona", "con": ["guitarra"], "ropa": "campera" },
       "tema": "el-pibe-de-los-astilleros",
       "verso": ["El pibe de los astilleros nunca se rendía", "Rapiñaba montado a los containers"],
-      "estampa": "Arriba de una pila de containers, con la guitarra roja colgada.",
+      "estampa": "Sentado en el canto de la pila, con la strato roja a la espalda y el pucho con la ceniza que no se cae: eso es de la letra. La caja de cartón y el grito son del dibujo, recortado del pibe de buzo rojo que grita con una caja en la cabeza en la contratapa del disco. Nadie dice que sea él.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "Dice que es una pintura imaginaria, hecha con lo que le contaba un amigo: el padre había sido marino mercante y jefe de puerto, quiso meterlo a laburar y no duró. Un día el amigo apareció con una caja llena de pedales Vox y los repartió entre todos.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 303)", "fuente": "RES-21" },
+        { "rotulo": "hecho", "texto": "En las 99 listas de la wiki de fans abre 13 recitales: es el segundo tema con que más arrancaban, después de «Un ángel para tu soledad».", "fuente": "RES-303" }
+      ],
       "cerca": ["la-rana-rubia"]
     },
     {
@@ -879,7 +897,12 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "redondas", "hocico": "largo", "cola": "fina", "pose": "nada" },
       "tema": "rato-molhado",
       "verso": ["Tumberito jamon y porron", "mira vos que tan lejos llego"],
-      "estampa": "El título está en portugués: rata mojada. Nada perfumada, con botas nuevas.",
+      "estampa": "El título está en portugués: ratón mojado. De la letra son las botas nuevas, el porrón, la gargantilla y la manga con que se seca la nariz. Del dibujo, que sea un ratón de verdad, que tenga las botas en alto para no mojarlas, la camisa colorada y el medallón de Momo colgado del cuello, recortado de la tapa del disco.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "Para el Indio, el rato es un tumberito: hijo de un preso, concebido debajo de una manta en una visita higiénica de su madre a la cárcel. Guapea en Plaza Irlanda porque es bravo, como los pibes que no tienen nada que perder.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 430)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "Dice que de ahí sale lo de la gargantilla de sangre: el rato es muy capaz de degollarte. Y que con los pibes como él, en todo el disco, se guardó la ternura.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 430)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "Es el último tema del último disco de Los Redondos. Como la banda se separó poco después, él siempre lo tomó como una despedida, involuntaria pero perfecta.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 430)", "fuente": "RES-21" }
+      ],
       "cerca": ["el-raton", "el-gordo-pierre"]
     },
     {
@@ -975,7 +998,10 @@
       "dibujo": { "f": "persona", "con": ["cuernos", "cola-diablo"], "ropa": "saco", "pose": "de-espaldas" },
       "tema": "juguetes-perdidos",
       "verso": ["Sin ese diablo que mea en todas partes", "Y en ningún lado hace espuma!", "Vas a robarle el gorro al diablo, así"],
-      "estampa": "De espaldas, contra una pared. Le falta el gorro: se lo robó alguien.",
+      "estampa": "Que mee en todas partes y en ningún lado haga espuma es de la letra, y que alguien le va a robar el gorro: por eso se palpa la pelada y desconfía. Lo demás es del dibujo: de espaldas contra la pared de fuego, el frac de cuero, la cabeza de cobre y los cuernos de yeso, hechos con cosas de la tapa de Luzbelito.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "Cuenta que en el tema les dice a los pibes que se rían del diablo y le pierdan el miedo, que no es para tanto; que si uno lee el Antiguo Testamento, el que asusta en serio es Dios.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 370)", "fuente": "RES-21" }
+      ],
       "cerca": ["el-diablo-de-muchos-cuernos"]
     },
     {
@@ -1071,7 +1097,15 @@
       "dibujo": { "f": "persona", "con": ["cadena"], "ropa": "remera" },
       "tema": "preso-en-mi-ciudad",
       "verso": ["Fue un esclavo sensible y chillón", "y fácil para el gatillo"],
-      "estampa": "Encadenado y llorando. Ahora ya casi no llora.",
+      "estampa": "Tallado como el pibe del flequillo del frente de Oktubre. Sentado en el catre de su celda, mira la calle por la reja; si la drácula taconea cerca, la sigue con los ojos. Le vienen los hipos y se le cortan: la lágrima no cae. Tocalo y chilla. El grillete y el catre son del dibujo; los ojos al rojo vivo, de la letra.",
+      "cuenta": [
+        {
+          "rotulo": "testimonio",
+          "texto": "De ahí viene la sensación de estar atrapado en libertad: no había ninguna seguridad de que no volviera el quilombo del que se acababa de zafar. La Plaza de Mayo llena, aplaudiendo a Galtieri durante Malvinas, le había quedado grabada, y le daba vergüenza ajena.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (pp. 210-211)",
+          "fuente": "RES-21"
+        }
+      ],
       "cerca": ["la-dracula-con-tacones", "el-pichon"]
     },
     {
@@ -1522,7 +1556,11 @@
       "dibujo": { "f": "persona", "con": ["servilleta", "tenedor"], "ropa": "saco", "pose": "sentado" },
       "tema": "yo-canibal",
       "verso": ["Soy un gourmet que huele eternamente mal.", "Un caníbal de mi estilo."],
-      "estampa": "En la cabecera, con la servilleta atada al cuello. Mira por la ventana para el lado de la pastura.",
+      "estampa": "En la cabecera, con la servilleta atada al cuello y los cubiertos parados, mira por la ventana para el lado de la pastura. De la letra es el gourmet que huele mal: las moscas lo prefieren a él. Del dibujo son el saco, hecho con la lana del cordero de la tapa, y la sonrisa de la contratapa.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "Las viejas compotas que no dan respiro son, dice, las creencias que dejaron los muertos hace demasiado y que todavía marcan la vida como si valieran: leyes de hace siglos, la religión misma.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 328)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "Lo del oro falso viene de un vermouth de esa época que se vendía con oro flotando adentro. Trucho, por supuesto.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 328)", "fuente": "RES-21" }
+      ],
       "cerca": ["el-cordero-atado", "el-canibal-desdentado"]
     },
     {
@@ -1700,7 +1738,12 @@
       "dibujo": { "f": "maquina", "que": "auto-mariposa" },
       "tema": "mariposa-pontiac-rock-del-pais",
       "verso": ["¡Ay! Mariposa pontiac, ¿qué va a ser de mí?"],
-      "estampa": "Medio mariposa, medio auto de los grandes. Va por la ruta con las alas abiertas.",
+      "estampa": "Un Pontiac de los grandes, de cola larga, y encima una polilla de noche. Las alas son el mármol de la tapa de Luzbelito, y en cada óvalo de cobre hay un ojo. En la trompa lleva el busto con su vela. Persigue la luz, como toda polilla, y tocada despega. La letra le habla y le dice nena: lo demás es del dibujo.",
+      "cuenta": [
+        { "rotulo": "hecho", "texto": "Ya estaba en los Demos RCA, que la banda grabó en abril de 1982: un lado en estudio y el otro en vivo, en Pan Caliente. RCA no los fichó.", "fuente": "RES-312" },
+        { "rotulo": "testimonio", "texto": "Era de las canciones que esperaban guardadas: estaba para Gulp! y no entró.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 185)", "fuente": "RES-21" },
+        { "rotulo": "testimonio", "texto": "En Luzbelito era, con Blues de la libertad, una de las dos canciones viejas: lo demás del disco era una serie nueva. Para entonces ya no lo conmovían; andaba buscando otras cosas.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (pp. 361 y 369)", "fuente": "RES-21" }
+      ],
       "cerca": ["la-lechuza-que-circula", "el-zumba"]
     },
     {

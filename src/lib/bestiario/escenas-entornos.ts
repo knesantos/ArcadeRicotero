@@ -12,6 +12,7 @@
 
 import { imagen } from './titeres.ts';
 import { ojos } from './escenas.ts';
+import { LUGAR_EN_EL_ELENCO, capasDe, fierroDe, sinTitere } from './elenco.ts';
 import {
   COSAS_DE_CYBERSIBERIA, COSAS_DE_LA_MESA, COSAS_DE_LA_RUTA, COSAS_DE_LOS_ASTILLEROS, COSAS_DEL_ARBOL, COSAS_DEL_GALPON, FIERROS,
   OJOS_DE_CYBERSIBERIA, OJOS_DE_LA_MESA, OJOS_DE_LA_RUTA, OJOS_DE_LOS_ASTILLEROS, OJOS_DEL_ARBOL, OJOS_DEL_GALPON, RUTA,
@@ -39,26 +40,45 @@ export function cosa(id: string, nombre: string, [x, y, r]: Cosa, quieta = false
   );
 }
 
-/** Los de un recinto: los ojos y las cosas, en ese orden. */
+/**
+ * Los de un recinto: los ojos y las cosas, en ese orden. Los del elenco de la decimoquinta vuelta que
+ * ya tienen títere no van acá: los dibuja su capa (`elenco.ts`).
+ */
 function habitantes(vecinos: Readonly<Record<string, Ojos>>, cosas: Readonly<Record<string, Cosa>>, nombres: Nombres, quietos = false): string {
-  const losOjos = Object.entries(vecinos)
+  const losOjos = Object.entries(sinTitere(vecinos))
     .map(([id, [x, y, tinta]]) => {
       const marcado = ojos(id, nombres.get(id) ?? id, x, y, tinta);
       return quietos ? marcado.replace('class="bestia bestia--ojos"', 'class="bestia bestia--ojos" data-quieto=""') : marcado;
     })
     .join('');
-  const lasCosas = Object.entries(cosas).map(([id, c]) => cosa(id, nombres.get(id) ?? id, c, quietos)).join('');
+  const lasCosas = Object.entries(sinTitere(cosas)).map(([id, c]) => cosa(id, nombres.get(id) ?? id, c, quietos)).join('');
   return `<g class="ojos-del-recinto">${losOjos}${lasCosas}</g>`;
 }
 
 const frente = (nombre: string): string => `<g pointer-events="none">${imagen(nombre)}</g>`;
 
+/**
+ * Las capas de un entorno, con el elenco en su lugar: lo de atrás entre lo lejano y el piso, el
+ * títere después de los ojos y antes de lo de adelante, y lo que va delante de todo al final.
+ */
+function capas(region: string, lejos: string, piso: string, medio: string, adelante: string, nombres: Nombres): string {
+  return (
+    imagen(lejos) +
+    capasDe(region, 'atras', nombres) +
+    imagen(piso) +
+    medio +
+    capasDe(region, 'figura', nombres) +
+    frente(adelante) +
+    capasDe(region, 'delante', nombres)
+  );
+}
+
 export function escenaGalpon(nombres: Nombres): string {
-  return imagen('galpon-lejos') + imagen('galpon-piso') + habitantes(OJOS_DEL_GALPON, COSAS_DEL_GALPON, nombres) + frente('galpon-frente');
+  return capas('el-galpon', 'galpon-lejos', 'galpon-piso', habitantes(OJOS_DEL_GALPON, COSAS_DEL_GALPON, nombres), 'galpon-frente', nombres);
 }
 
 export function escenaArbol(nombres: Nombres): string {
-  return imagen('arbol-lejos') + imagen('arbol-piso') + habitantes(OJOS_DEL_ARBOL, COSAS_DEL_ARBOL, nombres) + frente('arbol-frente');
+  return capas('el-arbol', 'arbol-lejos', 'arbol-piso', habitantes(OJOS_DEL_ARBOL, COSAS_DEL_ARBOL, nombres), 'arbol-frente', nombres);
 }
 
 /** Cybersiberia, con la nieve que cae: dos copias de la misma capa, una arriba de la otra, que la página corre. */
@@ -68,15 +88,15 @@ export function escenaCybersiberia(nombres: Nombres): string {
     imagen('cyber-nieve') +
     `<g transform="translate(0 -640)">${imagen('cyber-nieve')}</g>` +
     `</g></g>`;
-  return imagen('cyber-lejos') + imagen('cyber-piso') + habitantes(OJOS_DE_CYBERSIBERIA, COSAS_DE_CYBERSIBERIA, nombres) + nevada + frente('cyber-frente');
+  return capas('cybersiberia', 'cyber-lejos', 'cyber-piso', habitantes(OJOS_DE_CYBERSIBERIA, COSAS_DE_CYBERSIBERIA, nombres) + nevada, 'cyber-frente', nombres);
 }
 
 export function escenaAstilleros(nombres: Nombres): string {
-  return imagen('astillero-lejos') + imagen('astillero-piso') + habitantes(OJOS_DE_LOS_ASTILLEROS, COSAS_DE_LOS_ASTILLEROS, nombres) + frente('astillero-frente');
+  return capas('los-astilleros', 'astillero-lejos', 'astillero-piso', habitantes(OJOS_DE_LOS_ASTILLEROS, COSAS_DE_LOS_ASTILLEROS, nombres), 'astillero-frente', nombres);
 }
 
 export function escenaMesa(nombres: Nombres): string {
-  return imagen('mesa-lejos') + imagen('mesa-piso') + habitantes(OJOS_DE_LA_MESA, COSAS_DE_LA_MESA, nombres) + frente('mesa-frente');
+  return capas('la-mesa', 'mesa-lejos', 'mesa-piso', habitantes(OJOS_DE_LA_MESA, COSAS_DE_LA_MESA, nombres), 'mesa-frente', nombres);
 }
 
 /**
@@ -95,7 +115,8 @@ function fierro(id: string, nombre: string): string {
     `<g class="bestia bestia--fierro" data-id="${id}" data-x="${x}" data-y="${f(arriba)}" data-velocidad="${VELOCIDAD_DE_CARRIL[carril]}" role="button" tabindex="0" aria-label="${nombre}">` +
     `<g class="cuerpo">` +
     `<circle class="toque" cx="${x}" cy="${f(y - 40)}" r="56"/>` +
-    `<g transform="translate(${x} ${y})">${imagen(pieza)}</g>` +
+    // Si el fierro ya es un títere del elenco (la Mariposa Pontiac), viaja él en lugar de la imagen.
+    `<g transform="translate(${x} ${y})">${fierroDe(id) ?? imagen(pieza)}</g>` +
     marca(x + 40, arriba - 10) +
     `</g></g>`
   );
@@ -111,18 +132,20 @@ export function escenaRuta(nombres: Nombres): string {
       .filter((id) => FIERROS[id as keyof typeof FIERROS].carril === c)
       .map((id) => fierro(id, nombres.get(id) ?? id))
       .join('');
-  return (
-    imagen('ruta-lejos') +
-    imagen('ruta-piso') +
-    habitantes(OJOS_DE_LA_RUTA, COSAS_DE_LA_RUTA, nombres, true) +
-    `<g class="fierros">${porCarril(0)}${porCarril(1)}</g>` +
-    frente('ruta-frente')
+  return capas(
+    'la-ruta',
+    'ruta-lejos',
+    'ruta-piso',
+    habitantes(OJOS_DE_LA_RUTA, COSAS_DE_LA_RUTA, nombres, true) + `<g class="fierros">${porCarril(0)}${porCarril(1)}</g>`,
+    'ruta-frente',
+    nombres,
   );
 }
 
 /** Los seis recintos, con la escena y dónde arranca mirando cuando no entra entera. */
 export const ENTORNOS_DE_NOCHE: Readonly<Record<string, { escena: (n: Nombres) => string; foco: number }>> = {
-  'el-galpon': { escena: escenaGalpon, foco: 450 },
+  // Entre la bestia pop y la silla vacía: con 450, en el teléfono la bestia quedaba cortada.
+  'el-galpon': { escena: escenaGalpon, foco: 360 },
   'el-arbol': { escena: escenaArbol, foco: 450 },
   cybersiberia: { escena: escenaCybersiberia, foco: 450 },
   'los-astilleros': { escena: escenaAstilleros, foco: 300 },
@@ -130,12 +153,18 @@ export const ENTORNOS_DE_NOCHE: Readonly<Record<string, { escena: (n: Nombres) =
   'la-ruta': { escena: escenaRuta, foco: FIERROS['el-zumba'].x },
 };
 
-/** Todos los que viven en cada uno de los seis: lo usa el test para que nadie falte ni sobre. */
+/**
+ * Todos los que viven en cada uno de los seis: lo usa el test para que nadie falte ni sobre. Los del
+ * elenco cuentan una sola vez, aunque sigan anotados como ojos o como cosa en `rig-entornos.ts`.
+ */
+const conElElenco = (region: string, ids: readonly string[]): readonly string[] => [
+  ...new Set([...ids, ...Object.entries(LUGAR_EN_EL_ELENCO).filter(([, r]) => r === region).map(([id]) => id)]),
+];
 export const QUIENES: Readonly<Record<string, readonly string[]>> = {
-  'el-galpon': [...Object.keys(OJOS_DEL_GALPON), ...Object.keys(COSAS_DEL_GALPON)],
-  'el-arbol': [...Object.keys(OJOS_DEL_ARBOL), ...Object.keys(COSAS_DEL_ARBOL)],
-  cybersiberia: [...Object.keys(OJOS_DE_CYBERSIBERIA), ...Object.keys(COSAS_DE_CYBERSIBERIA)],
-  'los-astilleros': [...Object.keys(OJOS_DE_LOS_ASTILLEROS), ...Object.keys(COSAS_DE_LOS_ASTILLEROS)],
-  'la-mesa': [...Object.keys(OJOS_DE_LA_MESA), ...Object.keys(COSAS_DE_LA_MESA)],
-  'la-ruta': [...Object.keys(OJOS_DE_LA_RUTA), ...Object.keys(COSAS_DE_LA_RUTA), ...Object.keys(FIERROS)],
+  'el-galpon': conElElenco('el-galpon', [...Object.keys(OJOS_DEL_GALPON), ...Object.keys(COSAS_DEL_GALPON)]),
+  'el-arbol': conElElenco('el-arbol', [...Object.keys(OJOS_DEL_ARBOL), ...Object.keys(COSAS_DEL_ARBOL)]),
+  cybersiberia: conElElenco('cybersiberia', [...Object.keys(OJOS_DE_CYBERSIBERIA), ...Object.keys(COSAS_DE_CYBERSIBERIA)]),
+  'los-astilleros': conElElenco('los-astilleros', [...Object.keys(OJOS_DE_LOS_ASTILLEROS), ...Object.keys(COSAS_DE_LOS_ASTILLEROS)]),
+  'la-mesa': conElElenco('la-mesa', [...Object.keys(OJOS_DE_LA_MESA), ...Object.keys(COSAS_DE_LA_MESA)]),
+  'la-ruta': conElElenco('la-ruta', [...Object.keys(OJOS_DE_LA_RUTA), ...Object.keys(COSAS_DE_LA_RUTA), ...Object.keys(FIERROS)]),
 };

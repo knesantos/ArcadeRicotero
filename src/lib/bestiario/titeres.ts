@@ -12,6 +12,7 @@ import { PIEZAS } from './arte.ts';
 import { rutaDePieza } from './aerografo.ts';
 import { ARMADO, RECORTES, cajaDeRecorte } from './recortes.ts';
 import { ATILA_ARMADO, BARBAZUL_ARMADO, DRACULA_ARMADO, LIMON_ARMADO, PIERRE_ARMADO, VACA_ARMADO } from './rig.ts';
+import { retratoDe } from './elenco.ts';
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 const cajas = new Map<string, readonly [number, number, number, number]>([
@@ -341,6 +342,12 @@ const PIEZAS_DEL_RETRATO: Readonly<Record<string, { piezas: readonly string[]; c
 };
 
 export function retrato(id: string): { caja: string; svg: string } | null {
+  // Los del elenco de la decimoquinta vuelta traen su retrato con la caja ya puesta (`elenco.ts`).
+  const delElenco = retratoDe(id);
+  if (delElenco) {
+    const [x, y, ancho, alto] = delElenco.caja;
+    return { caja: `${f(x)} ${f(y)} ${f(ancho)} ${f(alto)}`, svg: delElenco.cuerpo() };
+  }
   const r = PIEZAS_DEL_RETRATO[id];
   if (!r) return null;
   const cs = r.caja ? [r.caja] : r.piezas.map((n) => cajas.get(n)!);

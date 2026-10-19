@@ -1,0 +1,125 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { existsSync, readFileSync } from 'node:fs';
+import { CON_TITERE, ELENCO, LUGAR_EN_EL_ELENCO, capasDe, retratoDe, type Capa } from './elenco.ts';
+import { PIEZAS } from './arte.ts';
+import { RECORTES } from './recortes.ts';
+import { escenaBajo, escenaInfierno, escenaPrision, escenaTemplo } from './escenas.ts';
+import { ENTORNOS_DE_NOCHE } from './escenas-entornos.ts';
+import { pisoDelCamino } from './escenas-camino.ts';
+import { CAMINOS, K_ENTORNO } from './camino.ts';
+import { retrato } from './titeres.ts';
+import { CON_CONDUCTA } from '../../scripts/bestiario/vivos.ts';
+
+/**
+ * El elenco de la decimoquinta vuelta (`D-73`): lo que vale para cada uno de los diez, se haya hecho
+ * ya o no. Lo de cada personaje (que la mano alcance la boca, que pise el piso) va en su propio test,
+ * `<slug>.test.ts`; acá va lo que los junta con el resto del bestiario.
+ */
+
+const datos = JSON.parse(readFileSync('src/data/bestiario.json', 'utf-8')) as { bestias: Array<{ id: string; nombre: string; region: string }> };
+const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
+const roto = /NaN|undefined|Infinity/;
+
+/** La escena del recinto de cada región, como la dibuja la página del bestiario. */
+const ESCENA: Readonly<Record<string, (n: ReadonlyMap<string, string>) => string>> = {
+  ...Object.fromEntries(Object.entries(ENTORNOS_DE_NOCHE).map(([r, { escena }]) => [r, escena])),
+  'el-infierno': escenaInfierno,
+  'el-bajo': escenaBajo,
+  'el-templo': escenaTemplo,
+  'la-prision': escenaPrision,
+};
+
+test('el elenco son diez, uno por entorno, y cada uno es una bestia de esa región', () => {
+  const lugares = Object.entries(LUGAR_EN_EL_ELENCO);
+  assert.equal(lugares.length, 10);
+  assert.equal(new Set(lugares.map(([, r]) => r)).size, 10, 'dos del elenco en el mismo entorno');
+  for (const [id, region] of lugares) {
+    const b = datos.bestias.find((x) => x.id === id);
+    assert.ok(b, `${id} no está en el bestiario`);
+    assert.equal(b.region, region, `${id} no vive en ${region}`);
+    assert.ok(ESCENA[region], `${region} no tiene escena de noche`);
+  }
+  for (const p of ELENCO) assert.equal(LUGAR_EN_EL_ELENCO[p.id], p.region, `${p.id} está anotado en otra región`);
+});
+
+test('el que tiene dibujo tiene conducta, y al revés', () => {
+  assert.deepEqual([...CON_CONDUCTA].sort(), ELENCO.map((p) => p.id).sort());
+});
+
+test('las piezas del elenco tienen nombre propio y están impresas', () => {
+  const todas = [...PIEZAS.map((p) => p.nombre), ...RECORTES.map((r) => r.nombre)];
+  assert.equal(new Set(todas).size, todas.length, 'hay dos piezas con el mismo nombre');
+  for (const p of ELENCO) {
+    assert.ok(p.piezas.length > 0, `${p.id} no tiene piezas`);
+    for (const q of p.piezas) {
+      assert.ok(existsSync(`public/bestiario/${q.nombre}.webp`), `${q.nombre} no está impresa`);
+      assert.ok(!roto.test(q.dibujo) && !q.caja.some((v) => !Number.isFinite(v)), `${q.nombre} tiene un número roto`);
+    }
+  }
+});
+
+test('ni un hex en el elenco: las tintas son tokens', () => {
+  const malos: string[] = [];
+  for (const archivo of ['src/lib/bestiario/elenco.ts', 'src/scripts/bestiario/vivos.ts']) {
+    if (/#[0-9a-fA-F]{3,8}\b(?![-\w])/.test(readFileSync(archivo, 'utf-8'))) malos.push(archivo);
+  }
+  for (const p of ELENCO) {
+    // Lo que se imprime se resuelve contra `tokens.css`: acá solo puede haber `var(--...)`.
+    for (const q of p.piezas) if (/(fill|stroke|stop-color|flood-color|color)="#[0-9a-fA-F]{3,8}"/.test(q.dibujo)) malos.push(q.nombre);
+  }
+  assert.deepEqual(malos, []);
+});
+
+test('el que tiene títere se toca como títere, y ya no está como ojos ni como cosa', () => {
+  for (const p of ELENCO) {
+    const escena = ESCENA[p.region]!(nombres);
+    assert.ok(!roto.test(escena), `${p.region} tiene un número roto`);
+    assert.ok(escena.includes(`data-marco="${p.id}"`), `${p.id} no está en la escena de ${p.region}`);
+    assert.ok(!escena.includes(`bestia--ojos" data-id="${p.id}"`), `${p.id} sigue siendo ojos en lo oscuro`);
+    assert.ok(!escena.includes(`bestia--cosa" data-id="${p.id}"`), `${p.id} sigue siendo una cosa pintada`);
+    // Se toca una sola vez: el títere (o, en la ruta, el fierro que lo lleva).
+    const toques = [...escena.matchAll(new RegExp(`data-id="${p.id}"`, 'g'))].length;
+    assert.equal(toques, 1, `${p.id} se puede tocar en ${toques} lugares`);
+    if (!p.fierro) {
+      assert.match(escena, new RegExp(`<g class="titere titere--[a-z-]+" data-id="${p.id}" role="button" tabindex="0" aria-label="[^"]+"`), `${p.id} no es un títere que se toca`);
+    }
+  }
+});
+
+test('lo que pide el elenco está impreso, y cada capa sale sin un número roto', () => {
+  const impresas = new Set([...PIEZAS.map((p) => p.nombre), ...RECORTES.map((r) => r.nombre)]);
+  for (const p of ELENCO) {
+    const marcado = (['atras', 'figura', 'delante'] as Capa[]).map((c) => capasDe(p.region, c, nombres)).join('') + (p.fierro?.() ?? '');
+    assert.ok(!roto.test(marcado), `${p.id}: número roto`);
+    const piden = [...marcado.matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]!);
+    assert.deepEqual(piden.filter((n) => !impresas.has(n)), [], `${p.id} pide piezas que no están`);
+    assert.ok(p.ancla >= 0 && p.ancla <= 900, `${p.id}: el ancla se sale del recinto`);
+  }
+});
+
+test('en el camino, el elenco va en su entorno corrido con k, y en los recintos va entero', () => {
+  for (const p of ELENCO) {
+    const tramo = CAMINOS[p.region];
+    assert.ok(tramo, `${p.region} no tiene camino`);
+    const piso = pisoDelCamino(tramo, nombres);
+    assert.ok(piso.includes(`data-marco="${p.id}"`), `${p.id} no camina en ${p.region}`);
+    assert.ok(!piso.includes(`bestia--ojos" data-id="${p.id}"`), `${p.id} sigue siendo ojos en el camino`);
+    if (tramo.forma === 'entorno' && !p.fierro) {
+      const dx = Math.round(p.ancla * (K_ENTORNO - 1));
+      assert.ok(piso.includes(`data-marco="${p.id}" data-capa="figura" data-dx="${dx}"`) || piso.includes(`data-marco="${p.id}" data-capa="atras" data-dx="${dx}"`), `${p.id} no se corrió con k en el camino`);
+    }
+  }
+});
+
+test('cada uno del elenco tiene su retrato de ficha, encuadrado', () => {
+  for (const p of ELENCO) {
+    assert.ok(retratoDe(p.id), `${p.id} no tiene retrato`);
+    const r = retrato(p.id);
+    assert.ok(r && !roto.test(r.svg) && !roto.test(r.caja), `${p.id}: retrato roto`);
+    const [, , ancho, alto] = r.caja.split(' ').map(Number);
+    assert.ok(ancho! > 20 && alto! > 20, `${p.id}: el retrato no tiene caja`);
+  }
+  // Los que todavía no tienen títere siguen con su figura.
+  for (const id of Object.keys(LUGAR_EN_EL_ELENCO)) if (!CON_TITERE.has(id)) assert.equal(retratoDe(id), null);
+});
