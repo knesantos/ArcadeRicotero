@@ -7,6 +7,21 @@
 
 **Última actualización:** 2026-10-18
 
+> ## 🪧 EL CAMINO LIVIANO: LA PUERTA, EL RENGLÓN CHICO Y LOS POSTES (2026-10-18) — enmienda de `D-77`
+>
+> **Sin integrar**: rama `bestiario/camino-liviano`, worktree `.claude/worktrees/camino-todo`, sobre `main` en
+> `4072abd`. Pedido del usuario, mirándolo en el teléfono: *"se ven muy grandes los textos y tapan a los
+> personajes"*, *"que suene de una"*, *"lo mismo para las fichas"* y *"que los carteles estén arriba del camino"*.
+>
+> - **Arriba, un renglón chico**: la salida y el nombre. Tocar el nombre despliega lo demás; caminar lo pliega.
+> - **La puerta**: con el sonido pedido se entra con un toque («Tocá y entrá con sonido»), que es el que deja
+>   sonar, como el "Jugá" de "Adiviná el tema". Deslizar no cuenta como toque. «Entrá sin sonido» lo apaga.
+> - **La ficha y la lista flotan más chicas** (42 % y 46 % del alto), con la figura al costado.
+> - **En los once cruces nuevos, cada cartel va en un poste al final de su picada**, frente a la luz de su disco,
+>   y se corre con el piso. Se reimprimieron las once piezas de cruce. El monte y la pastura siguen en columna.
+> - **Verde:** `npm test` (1707), `npm run check`, `npm run build`. Visto en el panel a 375×812 y 1280×800.
+> - **Abierto:** `T-490` (oírlo en un teléfono de verdad), picadas para el monte y la pastura.
+
 > ## 🧭 LOS TRECE ENTORNOS, CONECTADOS Y DE COSTADO (2026-10-18) — `D-77`
 >
 > **En `main` desde el PR #65** (rama `bestiario/todo-caminable`, worktree `.claude/worktrees/camino-todo`), sobre
