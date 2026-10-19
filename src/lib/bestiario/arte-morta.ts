@@ -167,7 +167,7 @@ function pelo(id: string, mechones: readonly Mechon[], luz: (p: P) => number, br
   for (const m of mechones) {
     const k = luz(m.eje[0]!);
     const lomo = curva(m.eje.slice(0, 6), false);
-    adentro += pasada(lomo, M.hondo, m.ancho * 0.7, 's', 0.9) + pasada(curva(m.eje.slice(0, 4), false), M.piel, m.ancho * 0.35, 's', 0.2 + k * 0.6);
+    adentro += pasada(lomo, M.hondo, m.ancho * 0.7, 's', 0.9) + pasada(curva(m.eje.slice(0, 4), false), k > 0.45 ? M.media : M.piel, m.ancho * 0.35, 's', 0.2 + k * 0.6);
   }
   // Los brillos del mojado: hilos que siguen el mechón, solo en los que agarran la luz.
   for (const [i, m] of mechones.entries()) {
@@ -288,10 +288,9 @@ function cabeza(): string {
   const raya = (y0: number, x0: number, x1: number, ancho: number, tinta: string, o: number): string =>
     soplo(`M${f(x0)} ${f(y0)} Q${f((x0 + x1) / 2)} ${f(y0 + 3)} ${f(x1)} ${f(y0 + 1)} L${f(x1)} ${f(y0 + 1 + ancho)} Q${f((x0 + x1) / 2)} ${f(y0 + 3 + ancho)} ${f(x0)} ${f(y0 + ancho)} Z`, tinta, 'xs', o);
   const murga =
-    raya(1.5, -36, -4, 3.8, M.pinturaViva, 0.95) +
-    raya(7.4, -40, -8, 3, M.violeta, 0.9) +
-    raya(5.5, -64, -52, 3, M.pinturaViva, 0.8) +
-    raya(-11.5, -14, 2, 2.4, M.pintura, 0.7);
+    raya(1, -34, -2, 4.6, M.pinturaViva, 1) +
+    raya(7.6, -38, -6, 3.4, M.violeta, 1) +
+    raya(5.5, -66, -52, 3.4, M.pinturaViva, 0.9);
   // Los espirales de plata de la frente de la cara del interior, un poco borroneados.
   const espirales =
     trazo(espiral(-33, -19, 4.6), M.plata, 0.9, 0.6) +
@@ -410,8 +409,8 @@ function pescuezo(): string {
     nube(-46, -300, 3, 30, M.hondo, 'm', 0.6) +
     // El canto de la garganta, que agarra los focos.
     trazo('M-47 -292 Q-48.6 -312 -43 -333', M.foco, 1, 0.45) +
-    // Abajo, donde se junta con los hombros de tipo: se hunde.
-    nube(-4, -263, 36, 6, M.negro, 'm', 0.6) +
+    // Abajo, donde se junta con los hombros de tipo: se funde con el pecho, que está en lo hondo.
+    nube(-2, -262, 44, 9, M.hondo, 'm', 0.95) +
     manchas(rnd, 14, [-44, -350, 74, 86], (p) => (p[0] < -8 ? 0.6 : 0.1));
   return conRociado(enmascarado('m-morta-pescuezo', sil, adentro) + crin);
 }
@@ -790,7 +789,7 @@ function ojo(t: Readonly<Record<string, string>>): string {
   const [cx, cy] = CL.ojo.centro;
   const [rx, ry] = CL.ojo.radio;
   const [px, py] = PIVOTE_PARPADO;
-  const ri = ry * 0.9;
+  const ri = ry * 1.02;
   return (
     // La pupila se recorta en el blanco: mire adonde mire, no se sale del ojo.
     `<clipPath id="m-morta-blanco"><ellipse cx="${cx}" cy="${f(cy + 0.3)}" rx="${rx}" ry="${f(ry + 0.2)}"/></clipPath>` +

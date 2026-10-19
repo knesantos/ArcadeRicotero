@@ -132,7 +132,7 @@ export const DOBLA: readonly [Punto, Punto] = [[-1, 0.15], [1, 0]];
 export const POSES: Readonly<Record<'de-pie' | 'relincha', Pose>> = {
   'de-pie': {
     escora: -4, salto: 0, torso: -1.5, respira: 0, cuello: 0, cabeza: 0, quijada: 0, orejas: -8, toallon: 0,
-    manos: MANOS_QUIETAS, patas: [0, 0], cola: 0, mira: [0.35, 0.1], parpado: 0.42,
+    manos: MANOS_QUIETAS, patas: [0, 0], cola: 0, mira: [0.3, 0.15], parpado: 0.34,
   },
   relincha: {
     escora: -7, salto: 0, torso: 3, respira: 1, cuello: 14, cabeza: 34, quijada: 1, orejas: -30, toallon: 3,
