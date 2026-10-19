@@ -363,7 +363,7 @@ function espalda(): string {
    ------------------------------------------------------------------ */
 
 const BRAZO_1: readonly P[] = [[-40, -112], [-55, -114], [-64, -104], [-68, -88], [-70, -72], [-69, -58], [-64, -49], [-56, -51], [-54, -64], [-50, -82], [-44, -100]];
-const ANTEBRAZO_1: readonly P[] = [[-55, -62], [-70, -64], [-74, -46], [-78, -28], [-81, -12], [-88, -2], [-86, 6], [-70, 7], [-66, -2], [-67, -14], [-64, -32], [-60, -48]];
+const ANTEBRAZO_1: readonly P[] = [[-54, -64], [-72, -66], [-76, -48], [-79, -30], [-81, -16], [-88, -4], [-86, 6], [-70, 7], [-66, -2], [-69, -16], [-66, -34], [-60, -50]];
 const BRAZO_2: readonly P[] = [[26, -106], [40, -110], [48, -102], [54, -90], [59, -76], [63, -64], [60, -54], [52, -54], [48, -64], [42, -78], [34, -92]];
 const ANTEBRAZO_2: readonly P[] = [[50, -66], [62, -70], [74, -71], [84, -68], [88, -60], [84, -53], [74, -54], [62, -54], [52, -56]];
 
@@ -378,6 +378,9 @@ function brazo(n: 0 | 1): string {
     // El lado de adentro, que da al cuerpo: hondo, y el codo, huesudo.
     nube((hx + ex) / 2 - lado * 6, (hy + ey) / 2 + 4, 4, 24, T.negro, 'm', 0.6) +
     nube(ex + lado, ey + 2, 3, 3, T.honda, 's', 0.8) +
+    // Donde el deltoides se mete en el brazo: un surco corto, y el tríceps flojo, de hombre grande.
+    soplo(`M${hx + lado * 10} ${hy + 12} Q${hx + lado * 14} ${hy + 22} ${hx + lado * 12} ${hy + 30} L${hx + lado * 10} ${hy + 30} Q${hx + lado * 11} ${hy + 22} ${hx + lado * 8} ${hy + 13} Z`, T.negro, 's', 0.55) +
+    nube(ex - lado * 3, ey - 12, 5, 9, T.honda, 'm', 0.5) +
     (n === 0 ? nube(-69, -80, 2, 16, T.lente, 's', 0.6) : '') +
     gallina([[(hx + ex) / 2 + lado * 7, (hy + ey) / 2 - 8, 2.4, 18]], 71 + n, 24)));
 }
@@ -416,6 +419,9 @@ function antebrazo(n: 0 | 1): string {
       contraluz(d, [(ex + mx) / 2, (ey + my) / 2], [-0.85, -0.5], 1.5, 0.95, 0.2) +
       nube((ex + mx) / 2 + 5, (ey + my) / 2, 4, 22, T.negro, 'm', 0.55) +
       nube(-80, -26, 1.8, 14, T.lente, 's', 0.55) +
+      // El codo trabado, que aguanta el peso, y la muñeca doblada contra la capa.
+      nube(-70, -60, 3.4, 3, T.clara, 's', 0.45) +
+      trazo('M-82 -9 Q-76 -7 -69 -9', T.negro, 1, 0.6) +
       gallina([[(ex + mx) / 2 - 6, (ey + my) / 2 - 10, 2, 14]], 81, 16));
     return conGrano(brazo + manoPlantada());
   }
