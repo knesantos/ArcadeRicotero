@@ -333,6 +333,26 @@
   /* ⟨/la Mariposa Pontiac⟩ */
 
   /* ⟨el diablo que mea⟩ */
+  /* El diablo que mea en todas partes es de *Luzbelito* y esta hecho con lo que hay en esa tapa: la
+     pelada y las manos son el cobre oxidado del ovalo, el frac es el cuero verde del lomo del libro
+     (forrado con el papel marmolado), los cuernos son el yeso del busto y el pantalon el cielo
+     violeta del interior. Medidas con `sharp` en luzbelito-frontal y luzbelito-interior-frontal
+     (953 px): percentiles de luminancia de cada zona, promedio de una franja del 6 %. */
+  --bestia-diablo-cobre: #c1714d; /* el anillo de cobre del ovalo del frente (mediana) */
+  --bestia-diablo-cobre-claro: #f4aa6f; /* ese cobre donde le pega la luz (percentil 75) */
+  --bestia-diablo-cobre-hondo: #83543f; /* el cobre en la sombra (percentil 30) */
+  --bestia-diablo-brillo: #f9d792; /* el brillo del cobre (percentil 90) */
+  --bestia-diablo-oxido: #524236; /* las manchas de oxido del anillo (percentil 15) */
+  --bestia-diablo-verdin: #2e332f; /* el verdin del anillo, lo mas oscuro (percentil 5) */
+  --bestia-diablo-cuero: #1f2623; /* el cuero verde del lomo del libro (mediana, x 12-100) */
+  --bestia-diablo-cuero-claro: #273f34; /* las grietas del cuero, donde agarra luz (percentil 97) */
+  --bestia-diablo-marmol: #38584e; /* el papel marmolado del frente (mediana): el forro */
+  --bestia-diablo-veta: #75917b; /* las vetas claras del marmolado (percentil 97) */
+  --bestia-diablo-hueso: #c8b190; /* el yeso del busto del frente (percentil 75): los cuernos */
+  --bestia-diablo-hueso-claro: #f8ddbc; /* el yeso del busto del interior, en la luz (percentil 90) */
+  --bestia-diablo-hueso-hondo: #553a2d; /* el yeso en la sombra (mediana del busto del frente) */
+  --bestia-diablo-violeta: #6c4669; /* el cielo del interior (mediana): el pantalon en la luz */
+  --bestia-diablo-violeta-hondo: #46224c; /* el cielo en la sombra (percentil 30): el pantalon */
   /* ⟨/el diablo que mea⟩ */
 
   /* ⟨el rato molhado⟩ */
