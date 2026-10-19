@@ -4134,6 +4134,18 @@ body:has(> .lugar) .marca-chica {
 /* ⟨/el pibe de los astilleros⟩ */
 
 /* ⟨el caníbal⟩ */
+/* Los ojos de persona del caníbal: el iris verde de la bestia de *Cordero atado*, la pupila en el negro
+   de la boca de la contratapa, con un brillo, y el párpado de la máscara marrón, que va a media asta:
+   mira la pastura con ganas. La sonrisa de la contratapa (la boca negra y los dientes del blanco de las
+   uñas) y la lengua, que la isla prende y apaga. Las moscas van adentro del títere: tocarlas es tocarlo. */
+.bt-canibal-iris { fill: var(--bestia-canibal-iris); }
+.bt-canibal-pupila { fill: var(--bestia-canibal-boca); }
+.bt-canibal-brillo { fill: var(--bestia-canibal-una); }
+.bt-canibal-parpado { fill: var(--bestia-canibal-mascara); }
+.bt-canibal-pestana { fill: none; stroke: var(--bestia-canibal-hondo); stroke-width: 1.1; stroke-linecap: round; }
+.bt-canibal-boca { fill: var(--bestia-canibal-boca); }
+.bt-canibal-dientes { fill: var(--bestia-canibal-una); }
+.bt-canibal-lengua { fill: var(--bestia-canibal-lengua); }
 /* ⟨/el caníbal⟩ */
 
 /* ⟨la Mariposa Pontiac⟩ */
