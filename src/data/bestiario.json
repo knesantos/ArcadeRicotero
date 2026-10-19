@@ -985,7 +985,10 @@
       "dibujo": { "f": "persona", "con": ["cuernos", "cola-diablo"], "ropa": "saco", "pose": "de-espaldas" },
       "tema": "juguetes-perdidos",
       "verso": ["Sin ese diablo que mea en todas partes", "Y en ningún lado hace espuma!", "Vas a robarle el gorro al diablo, así"],
-      "estampa": "De espaldas, contra una pared. Le falta el gorro: se lo robó alguien.",
+      "estampa": "Que mee en todas partes y en ningún lado haga espuma es de la letra, y que alguien le va a robar el gorro: por eso se palpa la pelada y desconfía. Lo demás es del dibujo: de espaldas contra la pared de fuego, el frac de cuero, la cabeza de cobre y los cuernos de yeso, hechos con cosas de la tapa de Luzbelito.",
+      "cuenta": [
+        { "rotulo": "testimonio", "texto": "Cuenta que en el tema les dice a los pibes que se rían del diablo y le pierdan el miedo, que no es para tanto; que si uno lee el Antiguo Testamento, el que asusta en serio es Dios.", "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 370)", "fuente": "RES-21" }
+      ],
       "cerca": ["el-diablo-de-muchos-cuernos"]
     },
     {
