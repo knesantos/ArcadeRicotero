@@ -11,13 +11,12 @@ export const BESTIARIO = {
   /** El renglón del lugar: canta, ocho palabras como mucho. */
   dondeEstas: 'Los bichos que viven en las letras.',
   bajada: (cuantos: number): string =>
-    `${cuantos} bichos y personajes de los diez discos, cada uno en su recinto, al lado de los que se le parecen. Tocá un bicho y te dice su verso; tocalo de nuevo y abrís su ficha.`,
+    `${cuantos} bichos y personajes de los diez discos, cada uno en su recinto, al lado de los que se le parecen. Tocá un bicho y abrís su ficha. Algunos dicen su verso solos, de vez en cuando.`,
   mapa: 'El mundo redondo, visto desde arriba',
   plano: 'El plano del recorrido',
   alPlano: 'Tocá una región del plano y entrás caminando. Abajo están los recintos, uno detrás del otro.',
   recinto: (n: number): string => `RECINTO ${n}`,
   recintoMonte: 'El monte del lobo y la pastura',
-  abrirFicha: 'Abrí la ficha',
   regiones: 'Las regiones',
   libreta: (anotados: number, total: number): string => `Anotaste ${anotados} de ${total}.`,
   libretaVacia: (total: number): string => `Son ${total}. Cada uno que abrís queda anotado en este teléfono.`,
@@ -90,11 +89,6 @@ export const CAMINO = {
     prender: '▶ Escuchá de lejos',
     apagar: '■ Pará',
     suena: (disco: string): string => `De lejos suena ${disco}.`,
-  },
-  /** La puerta: el toque que deja sonar (el navegador no deja antes), como el "Jugá" de los juegos. */
-  puerta: {
-    entra: 'Tocá y entrá con sonido',
-    callado: 'Entrá sin sonido',
   },
   /** El nombre de la región es el botón que despliega lo demás: se lee cuando uno quiere. */
   desplegar: 'Mirá qué hay acá',

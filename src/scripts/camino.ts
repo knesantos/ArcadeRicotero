@@ -48,6 +48,7 @@ import { crearLejos } from './bestiario/lejos.ts';
 import { crearEntorno } from './bestiario/entorno.ts';
 import { RECETAS } from '../lib/bestiario/sonido.ts';
 import { contextoVivo } from '../lib/audio/contexto.ts';
+import { Charla } from '../lib/bestiario/charla.ts';
 
 interface Datos {
   region: string;
@@ -83,7 +84,6 @@ const cerrar = document.getElementById('cerrar')!;
 const libreta = document.getElementById('libreta')!;
 const bocadillo = document.getElementById('bocadillo')!;
 const bocadilloVerso = document.getElementById('bocadillo-verso')!;
-const bocadilloFicha = document.getElementById('bocadillo-ficha')!;
 
 const rocola = crearRocola();
 const movimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -133,6 +133,8 @@ function anotar(id: string): void {
    ------------------------------------------------------------------ */
 
 let volverA: Element | null = null;
+/** La bestia de la ficha abierta, o `null`. */
+let abierta: string | null = null;
 
 /** La ficha flota encima de la escena (`D-77`): la escena sigue ahí, alrededor. */
 function abrir(id: string): void {
@@ -148,6 +150,7 @@ function abrir(id: string): void {
   hojaCuerpo.replaceChildren(copia);
   hoja.hidden = false;
   hoja.scrollTop = 0;
+  abierta = id;
   anotar(id);
   cerrar.focus({ preventScroll: true });
 }
@@ -157,25 +160,33 @@ function cerrarHoja(): void {
   rocola.parar();
   lejos.apartar(false);
   hoja.hidden = true;
+  abierta = null;
   if (volverA instanceof HTMLElement || volverA instanceof SVGElement) volverA.focus({ preventScroll: true });
 }
 
 function escuchar(boton: HTMLButtonElement): void {
   const slug = boton.dataset.escuchar!;
+  // Con recorte propio (`D-78`) la clave es la url: el monito y el diablo comparten tema.
+  const url = boton.dataset.recorte;
+  const clave = url ?? slug;
   const soltar = (): void => {
     boton.classList.remove('bestiario-escuchar--sonando');
     boton.textContent = BESTIARIO.escuchar;
   };
-  if (rocola.sonando === slug) {
+  if (rocola.sonando === clave) {
     rocola.parar();
     soltar();
     lejos.apartar(false);
     return;
   }
-  rocola.tocar(slug, () => {
-    soltar();
-    lejos.apartar(false);
-  });
+  rocola.tocar(
+    clave,
+    () => {
+      soltar();
+      lejos.apartar(false);
+    },
+    url,
+  );
   lejos.apartar(true);
   boton.classList.add('bestiario-escuchar--sonando');
   boton.textContent = BESTIARIO.sonando;
@@ -187,19 +198,15 @@ let callarEn = 0;
 let camAlHablar = 0;
 
 /**
- * El bicho dice su verso: el bocadillo se cuelga arriba del punto de la pantalla (`sx`, `sy`), o
+ * El bicho dice su verso, sin que lo toquen: al pasarle el mouse por arriba, o solo, de vez en
+ * cuando (`lib/bestiario/charla.ts`). El bocadillo se cuelga arriba del punto de la pantalla (`sx`, `sy`), o
  * abajo si arriba no entra o si `preferirAbajo` (los títeres grandes, que si no se tapan la cara).
  */
-function hablar(id: string, sx: number, sy: number, preferirAbajo = false): void {
+function decir(id: string, sx: number, sy: number, preferirAbajo = false, dura = 8000): void {
   const b = bestias.get(id);
   if (!b) return;
-  if (hablando === id && !bocadillo.hidden) {
-    abrir(id);
-    return;
-  }
   escenario.append(bocadillo);
   bocadilloVerso.textContent = `«${b.dice}»`;
-  bocadilloFicha.dataset.ir = id;
   bocadillo.hidden = false;
   const caja = escenario.getBoundingClientRect();
   const ancho = bocadillo.offsetWidth;
@@ -211,7 +218,7 @@ function hablar(id: string, sx: number, sy: number, preferirAbajo = false): void
   const hasta = escenario.scrollLeft + escenario.clientWidth - ancho - 6;
   const izquierda = Math.min(Math.max(px - ancho / 2, desde), Math.max(hasta, desde));
   // El tablero flota encima de la escena (`D-77`): si arriba del bicho no hay lugar debajo de él,
-  // el bocadillo va abajo. Pasaba con los títeres altos: el cartel le tapaba "Abrí la ficha".
+  // el bocadillo va abajo. Pasaba con los títeres altos: el cartel le tapaba el verso.
   const techo = techoDelTablero(caja, izquierda - escenario.scrollLeft + caja.left + escenario.clientLeft, ancho);
   const abajo = preferirAbajo || py - alto - 14 < techo + 6;
   bocadillo.classList.toggle('bocadillo--abajo', abajo);
@@ -219,11 +226,30 @@ function hablar(id: string, sx: number, sy: number, preferirAbajo = false): void
   bocadillo.style.top = `${abajo ? Math.min(py + 40, escenario.clientHeight - alto - 6) : py - alto - 14}px`;
   bocadillo.style.setProperty('--punta', `${Math.min(Math.max(px - izquierda, 16), ancho - 16)}px`);
   hablando = id;
-  entorno?.tocar(id);
-  callarEn = performance.now() + 8000;
+  callarEn = performance.now() + dura;
   camAlHablar = cam;
   for (const g of piso.querySelectorAll('.bestia--elegida')) g.classList.remove('bestia--elegida');
   piso.querySelector(`.bestia[data-id="${id}"]`)?.classList.add('bestia--elegida');
+}
+
+/**
+ * Tocar un bicho (`D-78`): se abre su ficha y, con el sonido prendido, suena su tema desde el
+ * verso. Sin recorte propio suena lo de siempre al tocarlo (el cencerro, la cadena…), no un
+ * pedazo cualquiera del tema. Tocarlo de nuevo mientras suena lo para. Todos los toques pasan por
+ * acá: los bichos sueltos, el lobo y los títeres, que primero hacen su gesto.
+ */
+function hablar(id: string, _sx?: number, _sy?: number, _abajo?: boolean): void {
+  if (!bestias.has(id)) return;
+  const boton = (): HTMLButtonElement | null => hojaCuerpo.querySelector<HTMLButtonElement>('[data-escuchar][data-recorte]');
+  if (abierta === id && !hoja.hidden) {
+    const b = boton();
+    if (b && conSonido()) escuchar(b);
+    return;
+  }
+  abrir(id);
+  const b = boton();
+  if (b && conSonido()) escuchar(b);
+  else if (conSonido()) entorno?.tocar(id);
 }
 
 /**
@@ -420,10 +446,15 @@ function apagarSonido(): void {
 
 /** Con el sonido pedido, cada toque lo intenta hasta que el navegador lo deja sonar. */
 let pedido = false;
+
+/** Si tocar un bicho hace ruido: lo que dice el botón del camino, o lo último que se eligió. */
+function conSonido(): boolean {
+  return botonSonido && datos.lejos.length ? pedido : quiereSonido();
+}
 const GESTOS = ['pointerup', 'touchend', 'keydown', 'click'] as const;
 
 function alTocar(ev: Event): void {
-  if ((ev.target as Element | null)?.closest?.('#lejos, #entra-callado')) return;
+  if ((ev.target as Element | null)?.closest?.('#lejos')) return;
   if (!pedido || lejos.prendido) return soltarGestos();
   void prenderSonido().then((ok) => {
     if (ok) soltarGestos();
@@ -452,43 +483,19 @@ if (botonSonido && datos.lejos.length) {
     pintarSonido(pedido);
     recordarSonido(pedido);
   });
-  // Se entra con el sonido prendido (`D-77`): suena con el primer toque, sin buscar el botón.
+  // Se entra con el sonido prendido (`D-77`), y sin puerta (`D-78`): se intenta de una, al cargar.
+  // Si el navegador lo deja (en la compu, viniendo de otra página del sitio, casi siempre), suena
+  // ya; si no (el iPhone nunca deja), arranca con el primer toque, sea donde sea.
   pedido = quiereSonido();
   pintarSonido(pedido);
   if (pedido) {
     esperarGestos();
-    abrirPuerta();
+    void prenderSonido().then((ok) => {
+      if (ok) soltarGestos();
+    });
   }
 }
 
-/*
- * La puerta. Deslizar no es un toque para el navegador: con el dedo corriendo la escena, el
- * sonido no arrancaba nunca. Es el mismo truco que el "Jugá" de "Adiviná el tema": un toque
- * de verdad al entrar, que despierta la salida adentro del gesto (`alTocar`, que escucha en la
- * captura, ya lo hace) y abre el camino. Solo sale con el sonido pedido.
- */
-function abrirPuerta(): void {
-  const puerta = document.getElementById('puerta');
-  const entra = document.getElementById('entra');
-  const callado = document.getElementById('entra-callado');
-  if (!puerta || !entra || !callado) return;
-  const cerrar = (): void => {
-    puerta.hidden = true;
-    document.documentElement.classList.remove('camino-con-puerta');
-  };
-  puerta.hidden = false;
-  document.documentElement.classList.add('camino-con-puerta');
-  entra.focus({ preventScroll: true });
-  entra.addEventListener('click', cerrar);
-  callado.addEventListener('click', () => {
-    pedido = false;
-    apagarSonido();
-    soltarGestos();
-    pintarSonido(false);
-    recordarSonido(false);
-    cerrar();
-  });
-}
 
 /* ------------------------------------------------------------------
    El tablero plegado (`D-77`)
@@ -804,7 +811,6 @@ camino.querySelector('.camino-saltar')!.addEventListener('click', (ev) => {
   alCruce(true);
 });
 
-bocadilloFicha.addEventListener('click', () => abrir(bocadilloFicha.dataset.ir!));
 cerrar.addEventListener('click', cerrarHoja);
 
 document.addEventListener('click', (ev) => {
@@ -817,7 +823,7 @@ document.addEventListener('click', (ev) => {
   // Un vecino de "Anda cerca" que vive en esta página abre su ficha acá; si vive en otra,
   // el enlace lleva a su camino, que la abre al llegar.
   const ir = el.closest<HTMLElement>('[data-ir]');
-  if (ir && ir !== bocadilloFicha && bestias.has(ir.dataset.ir!)) {
+  if (ir && bestias.has(ir.dataset.ir!)) {
     ev.preventDefault();
     llevarA(ir.dataset.ir!);
     return;
@@ -833,6 +839,57 @@ function llevarA(id: string): void {
   if (g) traer(g);
   abrir(id);
 }
+
+/* ------------------------------------------------------------------
+   El verso sin tocar: el mouse encima, y las que hablan solas (`D-78`)
+   ------------------------------------------------------------------ */
+
+const BICHOS = '.bestia[data-id], .titere[data-id]';
+/** Las que tienen verso: las otras no tienen nada que decir solas. */
+const conVerso = new Set(datos.bestias.filter((b) => b.dice !== BESTIARIO.sinTema).map((b) => b.id));
+let conMouse: string | null = null;
+
+/** Dice su verso arriba del dibujo, donde esté. */
+function decirArriba(g: Element, dura?: number): void {
+  const r = g.getBoundingClientRect();
+  decir(g.getAttribute('data-id')!, r.left + r.width / 2, r.top + Math.min(r.height * 0.15, 40), false, dura);
+}
+
+piso.addEventListener('pointerover', (ev) => {
+  if (ev.pointerType !== 'mouse') return;
+  const g = (ev.target as Element).closest(BICHOS);
+  const id = g?.getAttribute('data-id');
+  if (!g || !id || id === conMouse || !conVerso.has(id) || !hoja.hidden) return;
+  conMouse = id;
+  decirArriba(g);
+});
+piso.addEventListener('pointerout', (ev) => {
+  if (ev.pointerType !== 'mouse' || !conMouse) return;
+  const g = (ev.target as Element).closest(BICHOS);
+  if (g && g.contains(ev.relatedTarget as Node | null)) return;
+  if (hablando === conMouse) callar();
+  conMouse = null;
+});
+
+/** De vez en cuando, una de las que se ven dice su verso sola: una de cada cinco que aparecen. */
+const charla = new Charla();
+window.setInterval(() => {
+  if (document.visibilityState !== 'visible') return;
+  const caja = escenario.getBoundingClientRect();
+  const visibles: string[] = [];
+  const porId = new Map<string, Element>();
+  for (const g of piso.querySelectorAll(BICHOS)) {
+    const id = g.getAttribute('data-id')!;
+    if (!conVerso.has(id) || porId.has(id)) continue;
+    const r = g.getBoundingClientRect();
+    if (r.width && r.left >= caja.left && r.right <= caja.right && r.bottom > caja.top && r.top < caja.bottom) {
+      visibles.push(id);
+      porId.set(id, g);
+    }
+  }
+  const id = charla.mirar(visibles, performance.now(), !hoja.hidden || !bocadillo.hidden || conMouse !== null);
+  if (id) decirArriba(porId.get(id)!, 5000);
+}, 700);
 
 /* ------------------------------------------------------------------
    Arranque

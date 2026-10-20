@@ -44,6 +44,8 @@ tmp/
 # produccion — en silencio, que es la peor forma. RES-50 ya midio que ~180 MB no
 # molestan ni a Vercel Hobby ni a GitHub.
 !public/audio/temas/*.mp3
+# D-78: los recortes del bestiario que arrancan en el verso de cada bestia.
+!public/audio/bestiario/*.mp3
 
 # Generado por Astro
 .astro/

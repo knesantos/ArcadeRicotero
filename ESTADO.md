@@ -5,7 +5,25 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-19
+**Última actualización:** 2026-10-20
+
+> ## 🎵 EL VERSO SUENA DONDE SE LEE (2026-10-20) — `D-78`
+>
+> **Rama `multimedia/redondos-letras-sincronizadas`**, sin integrar. Pedido del usuario: que el "Escuchar" de la ficha
+> arranque en el verso que muestra, de forma automática y sin tocar la discografía.
+>
+> - **`npm run sincronizar-bestiario -- "<carpeta de discos>"`**: busca el segundo del verso en LRCLIB (solo el número,
+>   cotejando la duración con el máster), corta 10 s y los deja en `public/audio/bestiario/<id>.mp3`. Manifiesto en
+>   `src/data/bestiario-sincro.json`. Los discos se le pasan como carpetas al script, viven fuera del repo
+>   y solo se leen. ffmpeg se instaló con winget.
+> - **Las once bestias con títere sincronizadas.** El caníbal sale de una copia aparte de *Lobo suelto*, porque la
+>   carpeta de discos principal no tiene *Yo caníbal*.
+> - **Verde:** `npm test` (1831), `npm run check`, `npm run build`.
+> - **Corrido para todas:** 103 de 118 sincronizadas; las 15 que faltan están en `sinSincronizar` con su motivo
+>   (6 sin máster en las carpetas, 9 con el verso que no aparece en LRCLIB).
+> - **Sin oír:** ningún recorte todavía, empezando por los siete que coinciden por debajo del 100 % (el Morta, entre ellos).
+> - **Segunda vuelta:** tocar un bicho abre la ficha directo y, en el camino con sonido, suena su recorte; el verso aparece
+>   con el mouse encima o solo (una de cada cinco que aparecen). Sin el botón "Abrí la ficha". **Sin probar en el navegador.**
 
 > ## 🎭 EL ELENCO DE DIEZ, UNO POR ENTORNO (2026-10-19) — decimoquinta enmienda de `D-73`
 >

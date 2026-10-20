@@ -21,8 +21,12 @@ import { urlDeFragmento } from '../lib/audio/rutas-de-audio.ts';
 export const SEGUNDOS_POR_TEMA = 10;
 
 export interface Rocola {
-  /** Hace sonar un recorte. Si ya sonaba otro, lo corta. */
-  tocar(slug: string, alTerminar?: () => void): void;
+  /**
+   * Hace sonar un recorte. Si ya sonaba otro, lo corta. `url` reemplaza al fragmento del tema
+   * (el bestiario la usa para el recorte que arranca en el verso, `D-78`); entonces `clave` es
+   * lo que devuelve `sonando`.
+   */
+  tocar(clave: string, alTerminar?: () => void, url?: string): void;
   /**
    * Hace sonar una lista en orden. `alCambiar` avisa qué posición empieza a sonar, y
    * `alTerminar`, que terminó o que alguien la cortó.
@@ -49,7 +53,7 @@ export function crearRocola(): Rocola {
     f?.();
   }
 
-  function sonar(slug: string, v: number, siguiente: () => void): void {
+  function sonar(slug: string, v: number, siguiente: () => void, url = urlDeFragmento(slug)): void {
     if (!audio) {
       audio = new Audio();
       audio.preload = 'none';
@@ -61,7 +65,7 @@ export function crearRocola(): Rocola {
     a.ontimeupdate = () => {
       if (v === vuelta && a.currentTime >= SEGUNDOS_POR_TEMA) siguiente();
     };
-    a.src = urlDeFragmento(slug);
+    a.src = url;
     a.currentTime = 0;
     void a.play().catch(() => {
       // Sin gesto o sin red: no suena, y la lista no se queda colgada esperando.
@@ -70,13 +74,13 @@ export function crearRocola(): Rocola {
   }
 
   const rocola: Rocola = {
-    tocar(slug, alTerminar) {
+    tocar(clave, alTerminar, url) {
       const anterior = alFin;
       alFin = null;
       const v = ++vuelta;
       anterior?.();
       alFin = alTerminar ?? null;
-      sonar(slug, v, () => terminar(v));
+      sonar(clave, v, () => terminar(v), url);
     },
     tocarLista(slugs, alCambiar, alTerminar) {
       const anterior = alFin;

@@ -25,6 +25,7 @@ import { BESTIARIO } from '../lib/bestiario/copy.ts';
 import { ESPERA, GUARDADO } from '../lib/bestiario/carga.ts';
 import { crearRocola } from './rocola.ts';
 import { armarRecinto } from './bestiario/recintos.ts';
+import { Charla } from '../lib/bestiario/charla.ts';
 
 interface BestiaIsla {
   id: string;
@@ -46,9 +47,13 @@ const cerrar = document.getElementById('cerrar')!;
 const libreta = document.getElementById('libreta')!;
 const bocadillo = document.getElementById('bocadillo')!;
 const bocadilloVerso = document.getElementById('bocadillo-verso')!;
-const bocadilloFicha = document.getElementById('bocadillo-ficha')!;
 
 const rocola = crearRocola();
+const BICHOS = '.bestia[data-id], .titere[data-id]';
+/** Las que tienen verso: las otras no tienen nada que decir solas. */
+const conVerso = new Set(datos.bestias.filter((b) => b.dice !== BESTIARIO.sinTema).map((b) => b.id));
+/** La que tiene el mouse encima, en una computadora. */
+let encima: string | null = null;
 const quieto = (): boolean => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ------------------------------------------------------------------
@@ -143,16 +148,19 @@ function cerrarHoja(): void {
 
 function escuchar(boton: HTMLButtonElement): void {
   const slug = boton.dataset.escuchar!;
+  // Con recorte propio (`D-78`) la clave es la url: el monito y el diablo comparten tema.
+  const url = boton.dataset.recorte;
+  const clave = url ?? slug;
   const soltar = (): void => {
     boton.classList.remove('bestiario-escuchar--sonando');
     boton.textContent = BESTIARIO.escuchar;
   };
-  if (rocola.sonando === slug) {
+  if (rocola.sonando === clave) {
     rocola.parar();
     soltar();
     return;
   }
-  rocola.tocar(slug, soltar);
+  rocola.tocar(clave, soltar, url);
   boton.classList.add('bestiario-escuchar--sonando');
   boton.textContent = BESTIARIO.sonando;
 }
@@ -161,54 +169,46 @@ let hablando: string | null = null;
 let callarEn = 0;
 
 /**
- * El bicho dice su verso: el bocadillo aparece arriba de él, adentro de su escena. Las escenas
- * de noche se corren de costado, así que todo se mide contra lo que se ve, no contra la escena
- * entera: si el bicho quedó afuera (se llegó con el teclado), la escena lo trae primero.
- * `abajo` lo cuelga debajo del punto aunque arriba entre: el gordo Pierre llena la pantalla del
- * teléfono, y arriba le taparía la cara mientras se ríe.
+ * El bicho dice su verso, sin que lo toquen (`D-78`): al pasarle el mouse por arriba, o solo, de
+ * vez en cuando (`lib/bestiario/charla.ts`). El bocadillo se cuelga arriba del dibujo, adentro de
+ * su escena, y si arriba no entra va abajo, con la punta para arriba.
  */
-function hablar(id: string, escena: HTMLElement, svg: SVGSVGElement, x: number, y: number, preferirAbajo = false): void {
+function decir(id: string, escena: HTMLElement, g: Element, dura = 8000): void {
   const b = bestias.get(id);
-  if (!b || !svg.getScreenCTM()) return;
-  if (hablando === id && !bocadillo.hidden) {
-    abrir(id);
-    return;
-  }
-  let p = new DOMPoint(x, y).matrixTransform(svg.getScreenCTM()!);
-  let caja = escena.getBoundingClientRect();
-  if (p.x < caja.left + 40 || p.x > caja.right - 40) {
-    escena.scrollLeft += p.x - (caja.left + caja.width / 2);
-    p = new DOMPoint(x, y).matrixTransform(svg.getScreenCTM()!);
-    caja = escena.getBoundingClientRect();
-  }
+  if (!b) return;
+  const r = g.getBoundingClientRect();
+  const caja = escena.getBoundingClientRect();
   escena.append(bocadillo);
   bocadilloVerso.textContent = `«${b.dice}»`;
-  bocadilloFicha.dataset.ir = id;
   bocadillo.hidden = false;
   const ancho = bocadillo.offsetWidth;
   const alto = bocadillo.offsetHeight;
   // En coordenadas del contenido de la escena: lo corrido de costado se suma, el borde se resta.
-  const px = p.x - caja.left - escena.clientLeft + escena.scrollLeft;
-  const py = p.y - caja.top - escena.clientTop;
+  const px = r.left + r.width / 2 - caja.left - escena.clientLeft + escena.scrollLeft;
+  const py = r.top + Math.min(r.height * 0.15, 40) - caja.top - escena.clientTop;
   const desde = escena.scrollLeft + 6;
   const hasta = escena.scrollLeft + escena.clientWidth - ancho - 6;
   const izquierda = Math.min(Math.max(px - ancho / 2, desde), Math.max(hasta, desde));
-  // Si arriba no entra, va abajo del bicho, con la punta para arriba.
-  const abajo = preferirAbajo || py - alto - 14 < 6;
+  const abajo = py - alto - 14 < 6;
   bocadillo.classList.toggle('bocadillo--abajo', abajo);
   bocadillo.style.left = `${izquierda}px`;
   bocadillo.style.top = `${abajo ? Math.min(py + 52, escena.clientHeight - alto - 6) : py - alto - 14}px`;
   bocadillo.style.setProperty('--punta', `${Math.min(Math.max(px - izquierda, 16), ancho - 16)}px`);
   hablando = id;
-  callarEn = performance.now() + 8000;
-  for (const g of document.querySelectorAll('.bestia--elegida')) g.classList.remove('bestia--elegida');
-  escena.querySelector(`.bestia[data-id="${id}"]`)?.classList.add('bestia--elegida');
+  callarEn = performance.now() + dura;
+}
+
+/**
+ * Tocar un bicho del mapa abre su ficha, directo (`D-78`). Acá no suena: el mapa no tiene botón de
+ * sonido, y explorar tocando de a uno se volvería ruidoso. El tema está en el botón de la ficha.
+ */
+function hablar(id: string): void {
+  if (bestias.has(id)) abrir(id);
 }
 
 function callar(): void {
   bocadillo.hidden = true;
   hablando = null;
-  for (const g of document.querySelectorAll('.bestia--elegida')) g.classList.remove('bestia--elegida');
 }
 
 /* ------------------------------------------------------------------
@@ -274,7 +274,7 @@ function montar(escena: HTMLElement): void {
   const svg = escena.querySelector<SVGSVGElement>('svg')!;
   // La vida de cada escena vive en `bestiario/recintos.ts`, que comparte con el camino.
   const vida = armarRecinto(escena.dataset.recinto ?? '', svg, {
-    hablar: (b, x, y, abajo) => hablar(b, escena, svg, x, y, abajo),
+    hablar: (b) => hablar(b),
     quieto,
     reloj: () => reloj,
     ancho: svg.viewBox.baseVal.width,
@@ -306,18 +306,31 @@ function montar(escena: HTMLElement): void {
   escena.addEventListener('click', (ev) => {
     const g = (ev.target as Element).closest<SVGGElement>('.bestia');
     if (!g) return;
-    const x = Number(g.dataset.ahora ?? g.dataset.x);
-    const y = Number(g.dataset.y) - 26;
     r.reaccionar(g.dataset.id!, reloj);
-    hablar(g.dataset.id!, escena, svg, x, y);
+    hablar(g.dataset.id!);
   });
   escena.addEventListener('keydown', (ev) => {
     const g = (ev.target as Element).closest<SVGGElement>('.bestia');
     if (g && (ev.key === 'Enter' || ev.key === ' ')) {
       ev.preventDefault();
       r.reaccionar(g.dataset.id!, reloj);
-      hablar(g.dataset.id!, escena, svg, Number(g.dataset.ahora ?? g.dataset.x), Number(g.dataset.y) - 26);
+      hablar(g.dataset.id!);
     }
+  });
+  escena.addEventListener('pointerover', (ev) => {
+    if (ev.pointerType !== 'mouse') return;
+    const g = (ev.target as Element).closest(BICHOS);
+    const id = g?.getAttribute('data-id');
+    if (!g || !id || id === encima || !conVerso.has(id) || !hoja.hidden) return;
+    encima = id;
+    decir(id, escena, g);
+  });
+  escena.addEventListener('pointerout', (ev) => {
+    if (ev.pointerType !== 'mouse' || !encima) return;
+    const g = (ev.target as Element).closest(BICHOS);
+    if (g && g.contains(ev.relatedTarget as Node | null)) return;
+    if (hablando === encima) callar();
+    encima = null;
   });
   for (const id of anotadas) for (const g of escena.querySelectorAll(`.bestia[data-id="${id}"]`)) g.classList.add('bestia--anotada');
 }
@@ -343,10 +356,7 @@ for (const item of document.querySelectorAll<HTMLElement>('.bestiario-item')) if
 
 document.addEventListener('visibilitychange', arrancar);
 
-/* Los botones: el bocadillo, las fichitas de cada recinto, la hoja y el índice. */
-bocadilloFicha.addEventListener('click', () => {
-  if (bocadilloFicha.dataset.ir) abrir(bocadilloFicha.dataset.ir);
-});
+/* Los botones: las fichitas de cada recinto, la hoja y el índice. */
 
 document.querySelector('.recorrido')!.addEventListener('click', (ev) => {
   const chip = (ev.target as Element).closest<HTMLButtonElement>('.bestiario-chip[data-ir]');
@@ -396,6 +406,29 @@ indice.addEventListener('click', (e) => {
   const sonar = objetivo.closest<HTMLButtonElement>('[data-escuchar]');
   if (sonar) escuchar(sonar);
 });
+
+/* Las que hablan solas: una de cada cinco que aparecen, de a una, en los recintos que se ven. */
+const charla = new Charla();
+window.setInterval(() => {
+  if (document.visibilityState !== 'visible') return;
+  const ids: string[] = [];
+  const donde = new Map<string, { escena: HTMLElement; g: Element }>();
+  for (const r of visibles) {
+    const caja = r.escena.getBoundingClientRect();
+    for (const g of r.escena.querySelectorAll(BICHOS)) {
+      const id = g.getAttribute('data-id')!;
+      if (!conVerso.has(id) || donde.has(id)) continue;
+      const b = g.getBoundingClientRect();
+      const enEscena = b.width && b.left >= caja.left && b.right <= caja.right && b.top >= caja.top && b.bottom <= caja.bottom;
+      if (enEscena && b.top >= 0 && b.bottom <= window.innerHeight) {
+        ids.push(id);
+        donde.set(id, { escena: r.escena, g });
+      }
+    }
+  }
+  const id = charla.mirar(ids, performance.now(), !hoja.hidden || !bocadillo.hidden || encima !== null);
+  if (id) decir(id, donde.get(id)!.escena, donde.get(id)!.g, 5000);
+}, 700);
 
 /* Arranque: lo anotado, y una dirección que trae una bestia. */
 for (const id of anotadas) pintarAnotada(id);

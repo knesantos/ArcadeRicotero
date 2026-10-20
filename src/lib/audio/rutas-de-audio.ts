@@ -23,6 +23,14 @@ export const CARPETA_FRAGMENTOS = '/audio/fragmentos';
 /** Dónde viven los temas enteros (`D-23`, nivel 2; `D-22`). */
 export const CARPETA_TEMAS = '/audio/temas';
 
+/** Dónde viven los recortes del bestiario que arrancan en el verso de cada bestia (`D-78`). */
+export const CARPETA_BESTIARIO = '/audio/bestiario';
+
+/** El recorte de una bestia. Existe solo para las de `bestiario-sincro.json`. */
+export function urlDeRecorteBestia(id: string): string {
+  return `${CARPETA_BESTIARIO}/${id}.mp3`;
+}
+
 /** El recorte de un tema. Existe para los 95 que `generar-fragmentos` ya produjo. */
 export function urlDeFragmento(slug: string): string {
   return `${CARPETA_FRAGMENTOS}/${slug}.mp3`;

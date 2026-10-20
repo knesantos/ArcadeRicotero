@@ -9,6 +9,8 @@ import { tituloDelDisco } from '../letra/discos.ts';
 import { indexarFragmentos, type Manifiesto } from '../tema/catalogo.ts';
 import { leerTemas, slugDeTitulo } from '../letra/temas.ts';
 import manifiesto from '../../data/adivinar-tema.json';
+import sincro from '../../data/bestiario-sincro.json';
+import { urlDeRecorteBestia } from '../audio/rutas-de-audio.ts';
 import cancionero from '../../data/cancionero.json';
 import type { Bestia } from './mapa.ts';
 
@@ -17,6 +19,12 @@ const temas = new Map(cancionero.temas.map((t) => [t.slug, { titulo: t.titulo, d
 /** Qué temas tienen recorte: los 105 de `RES-20`, como en "En vivo". El slug es el mismo del cancionero. */
 const slugs105 = new Set(leerTemas().map((t) => slugDeTitulo(t.titulo)));
 export const conAudio: ReadonlySet<string> = new Set(indexarFragmentos(manifiesto as unknown as Manifiesto, slugs105).keys());
+
+/** Las bestias con recorte propio, que arranca en su verso (`D-78`, `bestiario-sincro.json`). */
+const sincronizadas: ReadonlySet<string> = new Set(sincro.recortes.map((r) => r.id));
+
+/** El recorte que arranca en el verso de la bestia, o `null` si sigue con el fragmento del tema. */
+export const recorteDe = (id: string): string | null => (sincronizadas.has(id) ? urlDeRecorteBestia(id) : null);
 
 export const saleEn = (slug: string): string => {
   const t = temas.get(slug)!;
