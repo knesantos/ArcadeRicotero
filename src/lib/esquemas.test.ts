@@ -73,6 +73,8 @@ for (const archivo of [
   'lugares-recital',
   // `D-73`, el 2026-10-16: el bestiario redondo, sus regiones y sus bestias.
   'bestiario',
+  // `D-78`, el 2026-10-20: el segundo del verso de cada bestia y su recorte.
+  'bestiario-sincro',
 ] as const) {
   test(`${archivo}.json valida contra su schema`, () => {
     const errores = erroresDe(archivo, archivo);

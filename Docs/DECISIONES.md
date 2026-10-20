@@ -5850,3 +5850,69 @@ así que ahí los carteles siguen en columna. Darles picadas pide una pieza de c
 panel, a 375×812: la puerta en la prisión, el renglón de arriba plegado y desplegado, la ficha de
 Barbazul abierta con él a la vista, y los cuatro postes del galpón sobre sus luces; a 1280×800, los
 cuatro de la mesa. **No se oyó** (el panel no tiene parlantes) y falta el teléfono de verdad (`T-490`).
+
+## D-78 — El "Escuchar" de la ficha arranca en el verso de la bestia
+
+- **Fecha:** 2026-10-20
+- **Estado:** activa. Pedido del usuario: que en el bestiario el tema *"comience a sonar en el momento
+  de la letra que se muestra en pantalla"*; que no se haga a mano, *"probemos el procedimiento
+  automático"*; y que de la discografía *"no deberíamos modificar ni eliminar ni crear nada, solo se
+  deberían generar recortes en otra carpeta aparte, dentro del repo"*. La escribe el hilo principal en
+  la rama `multimedia/redondos-letras-sincronizadas`. Antes de tomar el número se miraron las ramas
+  locales y remotas: nadie usa `D-78`.
+- **Contexto:** el "Escuchar" de la ficha tocaba el fragmento de "adiviná el tema": 10 s recortados a
+  mano (PR #8) desde un punto que no quedó anotado, así que el verso de la bestia casi nunca caía
+  adentro. Y en `public/audio/temas/` no hay ningún tema entero.
+- **Decisión:** un recorte propio por bestia, que arranca en su verso.
+  1. `desdeSeg` es el segundo **del máster** donde empieza el verso, no del fragmento. Sale de
+     **LRCLIB** (lrclib.net), la base abierta de letras sincronizadas: se elige la versión de duración
+     más parecida a la del máster (±2 s) y se busca el renglón del verso. **De LRCLIB se guarda solo el
+     número**, nunca la letra.
+  2. `npm run sincronizar-bestiario -- "<carpeta de discos>"` mide el máster con ffprobe, consulta
+     LRCLIB y corta 10 s (lo que deja sonar la rocola) desde 0,35 s antes, a 96 kbps mono y -14 LUFS,
+     como los fragmentos. Los deja en `public/audio/bestiario/<id>.mp3` y anota todo en
+     `src/data/bestiario-sincro.json`, con su schema. **Los másteres solo se leen.**
+  3. Lo que no se puede sincronizar queda en `sinSincronizar` con su motivo, y esa bestia sigue
+     sonando como hasta hoy.
+- **Alternativas descartadas:** guardar `desdeSeg` en `bestiario.json` (lo escribe un script, y
+  `bestiario.json` es contenido curado a mano); archivos LRC enteros (la ficha muestra una sola frase,
+  y obligarían a bajar el tema entero, 3–4 MB, para oír 10 s); marcar de oído (son 118 versos); y
+  alinear con reconocimiento de voz (con esa voz y esa mezcla falla, y habría que revisar todo igual).
+- **Primera tanda:** las once bestias con títere (`D-73`). Las once sincronizaron, con la duración de
+  LRCLIB a ≤0,3 s del máster. *Yo caníbal* no está en la carpeta oficial y salió de una copia aparte,
+  con autorización del usuario.
+
+**Verificado:** `npm test` (1831), `npm run check` (0 errores), `npm run build` (179 páginas, los once
+recortes en la ficha). Ningún archivo de las carpetas de discos cambió. **No se oyó** todavía: el
+Morta coincide al 80 % con su renglón y es el primero a escuchar.
+
+### D-78, segunda vuelta — Tocar abre la ficha; el verso se lee sin tocar
+
+- **Fecha:** 2026-10-20. Pedido del usuario: *"Que no haya un pre mensaje 'Abrí la ficha'. Que la ficha
+  se abra directamente y que, a veces sí y a veces no, las bestias hablen por sí solas [...] un 20%"*, y
+  *"que la frase aparezca cuando pasás el mouse por arriba, y al tocar la criatura, suena el recorte y
+  se abre la ficha"*.
+- **Tocar** un bicho (suelto, el lobo o un títere, que primero hace su gesto) abre la ficha directo. En
+  el camino, con el sonido prendido, suena su recorte desde el verso; tocarlo de nuevo lo para. Sin
+  recorte propio suena lo sintetizado de siempre (`RECETAS.alTocar`), no un pedazo cualquiera del tema.
+  **En el mapa no suena**: no tiene botón de sonido, y explorar de a uno se volvería ruidoso.
+- **El verso sin tocar**: con mouse, al pasar por encima. Y solas: una de cada cinco que aparecen en
+  pantalla, de a una, con 9 s de aire entre una y otra, nunca con la ficha abierta ni encima de otro
+  bocadillo (`lib/bestiario/charla.ts`, con su test). En el teléfono es la única manera de leer un verso
+  sin tocar.
+- **Se sacó** el botón "Abrí la ficha" del bocadillo, y la bajada del bestiario dejó de explicar el doble
+  toque. **Enmienda** a `D-73` en eso: el primer toque ya no es "te dice su verso".
+
+**Verificado:** `npm test` (1836), `npm run check` (0 errores), `npm run build` (179 páginas). **Sin
+probar en el navegador** (el panel no tuvo permiso): falta verlo con mouse y en un teléfono.
+
+### D-78, tercera vuelta — Sin puerta: el sonido se intenta al cargar
+
+- **Fecha:** 2026-10-20. Pedido del usuario: *"Sacar lo de tocar y que suene con sonido [...] que suene
+  de una"*. **Enmienda** a `D-77`: se saca la puerta ("Tocá y entrá con sonido" / "Entrá sin sonido").
+- Con el sonido pedido, el camino lo prende **al cargar**. Si el navegador lo deja, suena de una; si no,
+  arranca con el primer toque en cualquier lado (los gestos que ya escuchaba `alTocar`). Deslizar no
+  cuenta como toque para el navegador: en el teléfono el primer toque suele ser tocar un bicho, que
+  ahora abre la ficha y prende el sonido en el mismo gesto. El botón del camino sigue apagándolo.
+
+**Verificado:** `npm test` (1836), `npm run check`, `npm run build`. **Sin probar en el navegador.**

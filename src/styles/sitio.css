@@ -3869,7 +3869,7 @@ body:has(> .lugar) .marca-chica {
 .titere:focus-visible { outline: 2px dashed var(--acento-2); }
 .soga--tensa { stroke-width: 3.2; }
 
-/* El bocadillo: lo que dice el bicho que tocaste. Papel, borde grueso, una punta abajo. */
+/* El bocadillo: lo que dice un bicho, con el mouse encima o solo (D-78). Papel, borde grueso, una punta abajo. */
 .bocadillo {
   position: absolute;
   z-index: 2;
@@ -3903,26 +3903,10 @@ body:has(> .lugar) .marca-chica {
 }
 
 .bocadillo-verso {
-  margin: 0 0 0.4rem;
+  margin: 0;
   font-style: italic;
   line-height: 1.35;
 }
-
-.bocadillo-ficha {
-  min-height: var(--toque-min);
-  padding: 0.2rem 0.7rem;
-  font-family: var(--fuente-rotulada);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  color: var(--fondo);
-  background: transparent;
-  border: 2px solid var(--fondo);
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-.bocadillo-ficha:hover,
-.bocadillo-ficha:focus-visible { border-style: dashed; }
 
 /* La tercera vuelta (D-73): el monte de noche. La escena es más ancha que un teléfono y se
    recorre de costado; en el teléfono va de borde a borde, sin el margen de la hoja. */

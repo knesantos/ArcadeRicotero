@@ -253,21 +253,8 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
     <p class="recinto-deslizar camino-deslizar">{CAMINO.deslizar}</p>
   </section>
 
-  {/* La puerta (`D-77`): el primer toque es el que deja sonar, como el "Jugá" de los juegos. */}
-  {
-    fondo && (
-      <div class="camino-puerta" id="puerta" hidden style={`--tr: ${tinta}`}>
-        <button type="button" class="camino-puerta-entra" id="entra">
-          <span class="camino-puerta-sello">{CAMINO.puerta.entra}</span>
-        </button>
-        <button type="button" class="camino-puerta-callado" id="entra-callado">{CAMINO.puerta.callado}</button>
-      </div>
-    )
-  }
-
   <div class="bocadillo" id="bocadillo" hidden role="status">
     <p class="bocadillo-verso" id="bocadillo-verso"></p>
-    <button type="button" class="bocadillo-ficha" id="bocadillo-ficha">{BESTIARIO.abrirFicha}</button>
   </div>
 
   <div class="bestiario-hoja" id="hoja" hidden role="dialog" aria-modal="false" aria-labelledby="hoja-titulo">

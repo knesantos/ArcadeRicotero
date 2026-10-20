@@ -13,7 +13,7 @@
  *   a los títeres que retrata, así que ahí no ahorraría nada.
  */
 import { BESTIARIO, CAMINO } from '../../lib/bestiario/copy.ts';
-import { conAudio, etiquetaRotulo, saleEn } from '../../lib/bestiario/fichas.ts';
+import { conAudio, etiquetaRotulo, recorteDe, saleEn } from '../../lib/bestiario/fichas.ts';
 import { retrato } from '../../lib/bestiario/titeres.ts';
 import { enEspera } from '../../lib/bestiario/carga.ts';
 import type { Bestia } from '../../lib/bestiario/mapa.ts';
@@ -97,8 +97,8 @@ const conRetrato = (clase: string): string => {
       )}
 
       <div class="bestiario-acciones">
-        {b.tema && conAudio.has(b.tema) && (
-          <button type="button" class="bestiario-escuchar" data-escuchar={b.tema}>
+        {b.tema && (recorteDe(b.id) || conAudio.has(b.tema)) && (
+          <button type="button" class="bestiario-escuchar" data-escuchar={b.tema} data-recorte={recorteDe(b.id)}>
             {BESTIARIO.escuchar}
           </button>
         )}
