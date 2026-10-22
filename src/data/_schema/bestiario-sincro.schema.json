@@ -14,16 +14,20 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "tema", "desdeSeg", "coincidencia", "lrclib", "duracionMasterSeg", "difDuracionSeg"],
+        "required": ["id", "tema", "desdeSeg", "duracionMasterSeg"],
         "properties": {
           "id": { "$ref": "#/$defs/slug", "comment": "id de la bestia en bestiario.json" },
           "tema": { "$ref": "#/$defs/slug", "comment": "slug de cancionero.json" },
           "desdeSeg": { "type": "number", "minimum": 0 },
+          "arranque": { "const": true, "comment": "D-73, decimosexta vuelta: el recorte va desde el segundo cero del tema, sin LRCLIB (DESDE_EL_ARRANQUE, lib/bestiario/sincro.ts)" },
           "coincidencia": { "type": "number", "minimum": 0, "maximum": 1 },
           "lrclib": { "type": "integer", "comment": "id de la versión de LRCLIB de donde salió el tiempo" },
           "duracionMasterSeg": { "type": "number", "exclusiveMinimum": 0 },
           "difDuracionSeg": { "type": "number" }
-        }
+        },
+        "if": { "not": { "required": ["arranque"] } },
+        "then": { "required": ["coincidencia", "lrclib", "difDuracionSeg"] },
+        "else": { "properties": { "desdeSeg": { "const": 0 } } }
       }
     },
     "sinSincronizar": {
