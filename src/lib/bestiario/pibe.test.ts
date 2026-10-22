@@ -19,7 +19,7 @@ import { DURA, armarPibeCon, cenizaTras, grito, rapina } from '../../scripts/bes
 
 const datos = JSON.parse(readFileSync('src/data/bestiario.json', 'utf-8')) as { bestias: Array<{ id: string; nombre: string; estampa: string; cuenta?: Array<{ rotulo: string; fuente?: string; quien?: string }> }> };
 const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
-const marcado = capasDe('los-astilleros', 'figura', nombres);
+const marcado = capasDe('los-astilleros', 'figura', nombres, 1, 'el-pibe-de-los-astilleros');
 const A = PIBE_ARMADO;
 const caja = (nombre: string): readonly [number, number, number, number] => PIEZAS_PIBE.find((p) => p.nombre === nombre)!.caja;
 const adentro = (nombre: string, [x, y]: Punto): boolean => {
