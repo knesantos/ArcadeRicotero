@@ -155,15 +155,28 @@ export function camaraDe(p: { x: number; y: number }, lado = 300): Caja {
   return { x: p.x - lado / 2, y: p.y - lado / 2, lado };
 }
 
-/** Dónde va el rótulo de la región en el mapa entero, en porcentaje del lado. */
-export function lugarDelRotulo(region: Region): { x: number; y: number } {
+/**
+ * Dónde va el rótulo de la región en el mapa entero, en porcentaje del lado. Con `todas`, el rótulo
+ * de un sector que cae arriba de un claro (el monte, que tiene la pastura adentro) se corre a la
+ * punta libre del sector: si no, los dos rótulos quedaban uno encima del otro y el monte no se leía.
+ */
+export function lugarDelRotulo(region: Region, todas: readonly Region[] = []): { x: number; y: number } {
   const forma = region.forma;
   let p: { x: number; y: number };
   switch (forma.tipo) {
     case 'centro': p = { x: CENTRO, y: CENTRO + forma.radio * 0.62 }; break;
     case 'claro': p = polar(forma.angulo, forma.distancia); break;
     case 'anillo': p = polar(180, (forma.adentro + forma.afuera) / 2); break;
-    case 'sector': p = polar((forma.desde + forma.hasta) / 2, (forma.adentro + forma.afuera) / 2); break;
+    case 'sector': {
+      p = polar((forma.desde + forma.hasta) / 2, (forma.adentro + forma.afuera) / 2);
+      const claro = todas.find((r) => r.forma.tipo === 'claro' && adentro(r.forma, p));
+      if (claro && claro.forma.tipo === 'claro') {
+        // La punta del sector más lejos del claro, cerca del borde de afuera.
+        const lejos = Math.abs(forma.desde - claro.forma.angulo) > Math.abs(forma.hasta - claro.forma.angulo) ? forma.desde + 7 : forma.hasta - 7;
+        p = polar(lejos, forma.afuera - 34);
+      }
+      break;
+    }
   }
   return { x: (p.x / LADO) * 100, y: (p.y / LADO) * 100 };
 }
@@ -436,13 +449,17 @@ export const AUMENTO = 1.4;
 export function dibujarSuelo(datos: Bestiario): string {
   let s = `<circle cx="${CENTRO}" cy="${CENTRO}" r="478" class="tn"/>`;
   s += `<circle cx="${CENTRO}" cy="${CENTRO}" r="432" class="pp suelo"/>`;
+  // La tierra a aerógrafo (`D-79`, `arte-portal.ts`): el papel viejo con cada región soplada.
+  // Encima van los bordes, el paisaje y las bestias en tinta plana, como sellos en un plano pintado.
+  s += `<image href="/bestiario/mapa-tierra.webp" x="0" y="0" width="${LADO}" height="${LADO}" class="tierra"/>`;
   for (const region of datos.regiones) {
     if (region.forma.tipo === 'anillo') continue;
     const tinta = tintaDe(region.disco);
     const delaRegion = datos.bestias.filter((b) => b.region === region.id);
     s += `<g class="region region--${region.id}" data-region="${region.id}" style="--tr: ${tinta}">`;
     s += `<path d="${contorno(region.forma)}" class="region-suelo"/>`;
-    s += paisaje(region, datos.regiones, delaRegion);
+    // En la entrada (`D-79`) la escena a aerógrafo de `arte-mapa.ts` reemplaza estos dibujos.
+    s += `<g class="paisaje">${paisaje(region, datos.regiones, delaRegion)}</g>`;
     s += `<path d="${contorno(region.forma)}" class="region-borde"/>`;
     s += `</g>`;
   }

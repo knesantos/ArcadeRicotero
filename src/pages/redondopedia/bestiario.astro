@@ -36,6 +36,7 @@ import {
   dibujarRecinto,
   dibujarSuelo,
   lugarDelRotulo,
+  polar,
   punto,
   simbolos,
   tintaDe,
@@ -45,7 +46,7 @@ import { ESCENA, escenaMonte } from '../../lib/bestiario/escena-monte.ts';
 import { BARBAZUL, escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, LUZBELITO, MOMO, PIERRE } from '../../lib/bestiario/escenas.ts';
 import { ENTORNOS_DE_NOCHE } from '../../lib/bestiario/escenas-entornos.ts';
 import { enEspera, SIN_ISLA } from '../../lib/bestiario/carga.ts';
-import { PALO } from '../../lib/bestiario/rig.ts';
+import { PALO, marcoDelRecinto } from '../../lib/bestiario/rig.ts';
 import { CON_CAMINO, hrefDeRegion, recintoDe } from '../../lib/bestiario/camino.ts';
 import FichaBestia from '../../components/bestiario/FichaBestia.astro';
 import { loQueDice } from '../../lib/bestiario/fichas.ts';
@@ -106,8 +107,9 @@ const recintos = RECORRIDO.map((id) => {
       nombre: region.nombre,
       canta: region.canta,
       tinta: tintaDe(region.disco),
-      caja: `0 0 ${ESCENA.ancho} ${ESCENA.alto}`,
-      foco: deNoche[id]!.foco,
+      // Los recintos agrandados arrancan antes del cero (`MARCO_DEL_RECINTO`); el foco se cuenta desde el borde.
+      caja: `${marcoDelRecinto(id).x} 0 ${marcoDelRecinto(id).ancho} ${ESCENA.alto}`,
+      foco: deNoche[id]!.foco - marcoDelRecinto(id).x,
       svg: deNoche[id]!.escena(nombres),
       bestias: bestias.filter((b) => b.region === id),
     };
@@ -138,6 +140,9 @@ const paraLaIsla = {
   })),
 };
 
+/** El sello «Estás acá»: sobre la ruta, del lado del molinete del cartel, que es por donde se entra. */
+const aca = (({ x, y }) => ({ x: (x / LADO) * 100, y: (y / LADO) * 100 }))(polar(162, 462));
+
 const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín Ricotero`;
 ---
 
@@ -160,6 +165,10 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
   {/* El plano del recorrido: el mundo redondo entero. Es la imagen; la navegación va por los
       rótulos, que son enlaces y llevan a caminar su región a pantalla completa (`D-77`). */}
   <section class="bestiario" id="plano" aria-label={BESTIARIO.plano}>
+    {/* La entrada (`D-79`): el plano va clavado en un cartel, en la puerta de un mundo de noche.
+        El fondo y el frente son imágenes impresas (`arte-portal.ts`); el plano sigue siendo el SVG. */}
+    <div class="portal">
+    <img class="portal-capa" src="/bestiario/portal-fondo.webp" alt="" width="1100" height="1606" decoding="async" />
     <div class="bestiario-marco" id="marco" data-vista="lejos">
       <svg id="mapa" class="bestiario-svg" viewBox={`0 0 ${LADO} ${LADO}`} aria-hidden="true">
         <defs set:html={simbolos(bestias)} />
@@ -182,11 +191,12 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
           }
         </g>
       </svg>
+      <img class="portal-luz" src="/bestiario/portal-luz.webp" alt="" width="460" height="460" decoding="async" />
 
       <nav class="bestiario-rotulos" aria-label={BESTIARIO.regiones}>
         {
           regiones.map((r) => {
-            const l = lugarDelRotulo(r);
+            const l = lugarDelRotulo(r, regiones);
             return (
               <a
                 class={`rotulo-region rotulo-region--${r.id}`}
@@ -200,6 +210,9 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
           })
         }
       </nav>
+      <p class="estas-aca" style={`left: ${aca.x}%; top: ${aca.y}%`}>{BESTIARIO.estasAca}</p>
+    </div>
+    <img class="portal-capa portal-capa--frente" src="/bestiario/portal-frente.webp" alt="" width="1100" height="1606" decoding="async" />
     </div>
     <p class="bestiario-pie-plano">{BESTIARIO.alPlano}</p>
   </section>

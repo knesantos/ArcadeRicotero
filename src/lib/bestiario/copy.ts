@@ -14,6 +14,8 @@ export const BESTIARIO = {
     `${cuantos} bichos y personajes de los diez discos, cada uno en su recinto, al lado de los que se le parecen. Tocá un bicho y abrís su ficha. Algunos dicen su verso solos, de vez en cuando.`,
   mapa: 'El mundo redondo, visto desde arriba',
   plano: 'El plano del recorrido',
+  /** El sello del plano en la entrada (`D-79`): donde está parada la gente, del lado del molinete. */
+  estasAca: 'ESTÁS ACÁ',
   alPlano: 'Tocá una región del plano y entrás caminando. Abajo están los recintos, uno detrás del otro.',
   recinto: (n: number): string => `RECINTO ${n}`,
   recintoMonte: 'El monte del lobo y la pastura',
