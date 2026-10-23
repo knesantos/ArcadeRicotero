@@ -37,6 +37,9 @@ const { PIEZAS_CAMINO, piezasDeLosCruces } = await importar('src/lib/bestiario/a
 // Y los cruces de `D-77`: necesitan saber quién es vecino de quién, que está en el JSON.
 const { regiones } = JSON.parse(readFileSync(resolve(raiz, 'src/data/bestiario.json'), 'utf-8'));
 const CRUCES = piezasDeLosCruces(regiones);
+// La entrada (`D-79`): el portal, el cartel y la tierra del plano, que pinta cada región del JSON.
+const { piezasDelPortal, tierrasDe } = await importar('src/lib/bestiario/arte-portal.ts');
+const PORTAL = piezasDelPortal(tierrasDe(regiones));
 
 const { valores } = leerDeclaraciones(readFileSync(resolve(raiz, 'src/styles/tokens.css'), 'utf-8'));
 
@@ -68,7 +71,7 @@ const hoja = process.argv.includes('--hoja') ? process.argv[process.argv.indexOf
 const solo = process.argv.includes('--solo') ? process.argv[process.argv.indexOf('--solo') + 1].split(',') : null;
 const impresas = [];
 
-for (const p of [...PIEZAS, ...PIEZAS_CAMINO, ...CRUCES]) {
+for (const p of [...PIEZAS, ...PIEZAS_CAMINO, ...CRUCES, ...PORTAL]) {
   if (solo && !solo.some((prefijo) => p.nombre.startsWith(prefijo))) continue;
   const [x, y, ancho, alto] = p.caja;
   const densidad = p.densidad ?? 2.5;

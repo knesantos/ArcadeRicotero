@@ -1,0 +1,147 @@
+---
+/**
+ * Los ruidos del bestiario, para oírlos de a uno. No es una pantalla del juego: es una
+ * herramienta, como el diagnóstico de audio.
+ *
+ * Existe porque en el camino todo suena mezclado y cuando se le canta, y así no se puede juzgar
+ * un paso ni un vidrio. Acá cada región se prende sola, se camina sin tocar la pantalla, y cada
+ * efecto tiene su botón, con el aviso de si sonó el archivo o la síntesis de respaldo.
+ *
+ * No se enlaza desde ningún lado a propósito. Se llega escribiendo la dirección.
+ */
+import '../styles/tokens.css';
+import '../styles/sitio.css';
+import Cabeza from '../components/Cabeza.astro';
+import { PORTAL } from '../lib/sitio/copy.ts';
+import { EFECTOS, RECETAS, SUELOS } from '../lib/bestiario/sonido.ts';
+import bestiario from '../data/bestiario.json';
+
+const TITULO = 'Los ruidos del bestiario — Fichín Ricotero';
+
+/** "El galpón" se lee "el galpón" en medio de un botón; "Cybersiberia" queda como está. */
+const enMinuscula = (corto: string): string => corto.replace(/^(El|La|Los|Las) /, (a) => a.toLowerCase());
+
+const regiones = bestiario.regiones.filter((r) => RECETAS[r.id]).map((r) => ({ id: r.id, nombre: enMinuscula(r.corto) }));
+const pasos = SUELOS.map((s) => ({ nombre: `pasos-${s}`, suelo: s, dice: EFECTOS[`pasos-${s}`]!.dice }));
+const sueltos = Object.entries(EFECTOS).filter(([n, e]) => !n.startsWith('pasos-') && !e.bucle);
+const camas = Object.entries(EFECTOS).filter(([, e]) => e.bucle);
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>{TITULO}</title>
+    <Cabeza titulo={TITULO} descripcion="Herramienta para oír los ruidos del bestiario de a uno." />
+  </head>
+  <body class="con-grano">
+    <main id="app">
+      <section class="pantalla contenido-sitio">
+        <header class="cabecera-sitio">
+          <a class="volver" href="/">← {PORTAL.volverAlArcade}</a>
+        </header>
+
+        <h1>Los ruidos del bestiario</h1>
+        <p class="tenue">
+          Esto no es un juego. Cada botón hace sonar un ruido del camino. Al lado queda escrito si sonó
+          el archivo o la síntesis que lo reemplaza mientras el archivo no está.
+        </p>
+
+        <h2 class="rb-titulo">Cada región entera</h2>
+        <p class="tenue">Prendé una y caminá: suenan su sala, su fondo, sus pasos y lo que pasa cada tanto.</p>
+        <div class="rb-botones">
+          {regiones.map((r) => (
+            <button
+              class="secundario"
+              type="button"
+              aria-pressed="false"
+              data-region={r.id}
+              data-prender={`Prendé ${r.nombre}`}
+              data-apagar={`Apagá ${r.nombre}`}
+            >
+              Prendé {r.nombre}
+            </button>
+          ))}
+        </div>
+        <button id="caminar" class="primario rb-caminar" type="button" disabled aria-pressed="false" data-andar="Caminá" data-parar="Pará">
+          Caminá
+        </button>
+
+        <h2 class="rb-titulo">Los pasos</h2>
+        <ul class="rb-lista">
+          {pasos.map((p) => (
+            <li>
+              <button class="secundario" type="button" data-efecto={p.nombre} data-suelo={p.suelo}>Oí {p.dice}</button>
+              <output aria-live="polite"></output>
+            </li>
+          ))}
+        </ul>
+
+        <h2 class="rb-titulo">Lo que pasa cada tanto</h2>
+        <ul class="rb-lista">
+          {sueltos.map(([nombre, e]) => (
+            <li>
+              <button class="secundario" type="button" data-efecto={nombre}>Oí {e.dice}</button>
+              <output aria-live="polite"></output>
+            </li>
+          ))}
+        </ul>
+
+        <h2 class="rb-titulo">Los fondos</h2>
+        <p class="tenue">Cada uno suena seis segundos y se va.</p>
+        <ul class="rb-lista">
+          {camas.map(([nombre, e]) => (
+            <li>
+              <button class="secundario" type="button" data-efecto={nombre}>Oí {e.dice}</button>
+              <output aria-live="polite"></output>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <footer class="pie-sitio">{PORTAL.pie}</footer>
+    </main>
+
+    <script src="../scripts/bestiario/oir.ts"></script>
+
+    <style>
+      .rb-titulo {
+        margin-top: var(--espacio-4, 2rem);
+      }
+
+      .rb-botones {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--espacio-2);
+        margin-top: var(--espacio-2);
+      }
+
+      .rb-caminar {
+        margin-top: var(--espacio-3);
+      }
+
+      .rb-lista {
+        list-style: none;
+        padding: 0;
+        margin: var(--espacio-2) 0;
+        display: grid;
+        gap: var(--espacio-1);
+      }
+
+      .rb-lista li {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--espacio-2);
+      }
+
+      .rb-lista output {
+        color: var(--texto-tenue);
+        font-family: var(--fuente);
+        font-size: 0.85rem;
+      }
+    </style>
+  </body>
+</html>

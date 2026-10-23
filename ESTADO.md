@@ -7,6 +7,46 @@
 
 **Última actualización:** 2026-10-23
 
+> ## 🎥 LA CÁMARA QUE CAMINA, LA FICHA QUE NO TAPA Y EL PLANO PINTADO ZONA POR ZONA (2026-10-23) — `D-79` (2.ª vuelta) y `D-80`
+>
+> **La misma rama `bestiario/sonido-y-portal`**, sin commitear.
+>
+> - **El plano**: cada una de las doce zonas tiene su escena a aerógrafo (`arte-mapa-*.ts`). Va de
+>   borde a borde en el teléfono y hasta 52 rem en la compu. El molinete es ahora uno de cancha, y el
+>   rótulo del monte ya no queda debajo del de la pastura.
+> - **La cámara del camino** (`camara.ts`): el vaivén de los pasos, la inercia, el respirar, los
+>   sacudones (el meteorito de la vaca, el grito del pibe, el bombo y el vidrio), el retumbo de la ruta,
+>   el acercarse al tocar y la entrada. Nada de esto se mueve con movimiento reducido.
+> - **La ficha** se abre donde no tapa al bicho (`hoja.ts`): arriba o abajo en el teléfono, de costado
+>   en la compu.
+> - **Los encimados**: la vaca se corrió lejos del cordero, y el templo, los techos, la prisión y el
+>   bajo se ensancharon a 1400–1500, con los bichos repartidos.
+> - **Verde:** `npm test` (1854), `npm run check`, `npm run build`. Probado en el navegador con un
+>   iframe.
+> - **Falta**:
+>   - verlo en un teléfono de verdad;
+>   - traer `main` (con el PR #71) a la rama, cuando se commitee.
+
+> ## 🚪 LA ENTRADA DEL BESTIARIO Y LOS RUIDOS DESDE ARCHIVOS (2026-10-23) — `D-79`
+>
+> **Rama `bestiario/sonido-y-portal`**, sin integrar. Pedido del usuario: mejores ruidos en el bestiario
+> (pasos, agua, botellas rotas), y un plano rocambolesco, *"como si estuvieras parado en la entrada de un
+> mundo misterioso con un mapa"*.
+>
+> - **La entrada**: el plano va clavado en un cartel, en la puerta de un mundo de noche.
+>   - Cuatro piezas a aerógrafo (`arte-portal.ts`): el horizonte del mundo redondo, el arco de hierro,
+>     el molinete abierto y el farol.
+>   - La tierra del plano ahora va soplada.
+>   - Un sello «ESTÁS ACÁ» sobre la ruta.
+> - **Los ruidos**: `entorno.ts` toca archivos del manifiesto `EFECTOS`. Si un archivo falta, suena la
+>   síntesis, que también se mejoró: pasos por suelo, chapoteo, vidrio, la sala de cada región y fondos
+>   en bucle. Se oye todo junto en `/diagnostico-bestiario/`.
+> - **Verde:** `npm test` (1838), `npm run check`, `npm run build`. Visto en el panel a 375 px y en escritorio.
+> - **Falta**:
+>   - **bajar los archivos**: todavía no hay ninguno. Los candidatos están en `RES-371`, y cada uno se
+>     baja con el OK del usuario;
+>   - oír la síntesis nueva en un teléfono.
+
 > ## 🪰 TRES MÁS, ELEGIDOS POR EL HILO: EL ÁNGEL DE LA SOLEDAD, EL PAC-MAN Y LA MOSCA (2026-10-22) — decimoséptima enmienda de `D-73`
 >
 > **En `main` desde el PR #70** (commit de fusión `274a6d4`), rama `bestiario/seis`, que salió de `bestiario/tres` y entró

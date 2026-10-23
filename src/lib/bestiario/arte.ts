@@ -11,12 +11,13 @@
 import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
 import { PIEZAS_BAJO } from './arte-bajo.ts';
 import { PIEZAS_VACA } from './arte-vaca.ts';
-import { PIEZAS_BALDIO } from './arte-baldio.ts';
+import { FAROL_DEL_FONDO, PIEZAS_BALDIO } from './arte-baldio.ts';
 import { PIEZAS_PRISION } from './arte-prision.ts';
 import { PIEZAS_BARBAZUL, PIEZAS_PUERTA } from './arte-barbazul.ts';
 import { PIEZAS_ENTORNOS } from './arte-entornos.ts';
 import { PIEZAS_ATILA } from './arte-atila.ts';
 import { PIEZAS_ELENCO } from './elenco.ts';
+import { marcoDelRecinto } from './rig.ts';
 
 
 
@@ -268,9 +269,20 @@ function rayones(x0: number, y0: number, x1: number, y1: number, cuantos: number
   return s;
 }
 
+/**
+ * Los techos se agrandaron a la derecha (`MARCO_DEL_RECINTO`): el perro sigue entrando por el borde
+ * izquierdo. Lo de los 900 de siempre se pinta igual, y la parte nueva sigue con otra semilla y otro
+ * farol, más lejos y más tenue.
+ */
+const TECHOS = marcoDelRecinto('los-techos');
+
 function baldioLejos(): string {
-  const { ancho, alto } = ESCENA_ARTE;
+  const { alto } = ESCENA_ARTE;
+  const ancho = TECHOS.ancho;
   const farol = { x: 650, y: 130 };
+  const otro = FAROL_DEL_FONDO;
+  const nuevo = (x0: number, y0: number, y1: number, cuantos: number, colores: readonly string[], semilla: number): string =>
+    rayones(x0, y0, ancho + 20, y1, Math.round((cuantos * (ancho + 20 - x0)) / 940), colores, semilla);
   // Los techos: chapa a dos aguas y en diente de sierra, con antenas de tele.
   const rnd = azar(61);
   let techos = '';
@@ -292,22 +304,31 @@ function baldioLejos(): string {
     `<g filter="url(#rociado)">` +
     `<rect x="-10" y="-10" width="${ancho + 20}" height="${alto + 20}" fill="${B.noche}"/>` +
     // El cielo rayado, y la luz del farol que aprieta los rayones alrededor.
-    rayones(-20, -20, ancho + 20, 300, 900, [B.violeta, B.azul, B.violeta, B.noche, B.lila], 5) +
+    rayones(-20, -20, 920, 300, 900, [B.violeta, B.azul, B.violeta, B.noche, B.lila], 5) +
+    nuevo(920, -20, 300, 900, [B.violeta, B.azul, B.violeta, B.noche, B.lila], 105) +
     nube(farol.x, farol.y, 120, 90, B.lila, 'xl', 0.5) +
     rayones(farol.x - 170, farol.y - 120, farol.x + 170, farol.y + 140, 260, [B.luz, B.lila, B.luz], 9, farol.x, farol.y) +
     nube(farol.x, farol.y, 22, 18, B.luz, 'm') +
+    nube(otro.x, otro.y, 100, 76, B.lila, 'xl', 0.4) +
+    rayones(otro.x - 140, otro.y - 110, otro.x + 140, otro.y + 120, 180, [B.luz, B.lila, B.luz], 109, otro.x, otro.y) +
+    nube(otro.x, otro.y, 18, 15, B.luz, 'm', 0.85) +
     techos +
     // Los cantos de las chapas, tocados por la luz.
-    rayones(-20, 180, ancho + 20, 260, 120, [B.lila, B.violeta], 13) +
+    rayones(-20, 180, 920, 260, 120, [B.lila, B.violeta], 13) +
+    nuevo(920, 180, 260, 120, [B.lila, B.violeta], 113) +
     // La medianera, con los ladrillos rayados.
     forma(`M-10 300 L${ancho + 10} 300 L${ancho + 10} 392 L-10 392 Z`, B.violeta) +
-    rayones(-10, 300, ancho + 10, 392, 260, [B.noche, B.rosa, B.lila], 17) +
+    rayones(-10, 300, 910, 392, 260, [B.noche, B.rosa, B.lila], 17) +
+    nuevo(910, 300, 392, 260, [B.noche, B.rosa, B.lila], 117) +
     nube(farol.x, 360, 200, 40, B.lila, 'l', 0.35) +
+    nube(otro.x, 360, 170, 36, B.lila, 'l', 0.28) +
     // El piso del baldío, oscuro, con la luz del farol que cae.
     forma(`M-10 386 L${ancho + 10} 386 L${ancho + 10} ${alto + 10} L-10 ${alto + 10} Z`, B.noche) +
     nube(farol.x - 20, 520, 220, 70, B.violeta, 'xl', 0.9) +
     nube(farol.x - 20, 520, 120, 36, B.lila, 'l', 0.35) +
-    rayones(-10, 392, ancho + 10, alto, 700, [B.violeta, B.azul, B.noche, B.noche, B.lila], 21) +
+    nube(otro.x - 20, 520, 190, 60, B.violeta, 'xl', 0.75) +
+    rayones(-10, 392, 910, alto, 700, [B.violeta, B.azul, B.noche, B.noche, B.lila], 21) +
+    nuevo(910, 392, alto, 700, [B.violeta, B.azul, B.noche, B.noche, B.lila], 121) +
     // Una goma tirada y unos yuyos.
     `<ellipse cx="340" cy="548" rx="34" ry="12" fill="none" stroke="${B.negro}" stroke-width="9"/>` +
     rayones(320, 470, 480, 520, 60, [B.azul, B.lila], 23, 400, 540) +
@@ -316,7 +337,8 @@ function baldioLejos(): string {
 }
 
 function baldioFrente(): string {
-  const { ancho, alto } = ESCENA_ARTE;
+  const { alto } = ESCENA_ARTE;
+  const ancho = TECHOS.ancho;
   const rnd = azar(29);
   let yuyos = '';
   for (let x = -10; x < ancho + 10; x += 14 + rnd() * 18) {
@@ -473,11 +495,11 @@ export const FOCOS_TEMPLO: ReadonlyArray<readonly [number, number]> = (() => {
  * picado en el piso donde cae la luz. Todo en la plata, el peltre y el oro de los focos: el templo
  * sigue vistiendo *Momo Sampler*.
  */
-function carnaval(ancho: number, alto: number): string {
-  const rnd = azar(613);
+function carnaval(ancho: number, alto: number, focos = FOCOS_TEMPLO, semilla = 613, desde = 0): string {
+  const rnd = azar(semilla);
   const colores = [P.plata, P.foco, P.peltre, 'var(--papel)'];
   let serpentinas = '';
-  FOCOS_TEMPLO.forEach(([x, y], i) => {
+  focos.forEach(([x, y], i) => {
     if (i % 2) return;
     const largo = 50 + rnd() * 90;
     const vueltas = 3 + rnd() * 3;
@@ -489,8 +511,8 @@ function carnaval(ancho: number, alto: number): string {
     serpentinas += trazo(d, colores[i % colores.length]!, 1.8, 0.75);
   });
   let picado = '';
-  for (let i = 0; i < 160; i++) {
-    const x = ancho / 2 + (rnd() - 0.5) * ancho * (0.4 + rnd() * 0.6);
+  for (let i = 0; i < 160 * (ancho / 900); i++) {
+    const x = desde + ancho / 2 + (rnd() - 0.5) * ancho * (0.4 + rnd() * 0.6);
     const y = alto - 90 + rnd() * 90;
     const w = 3 + rnd() * 4;
     picado += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${(w * 0.6).toFixed(1)}" fill="${colores[i % colores.length]}" opacity="${(0.35 + rnd() * 0.5).toFixed(2)}" transform="rotate(${Math.round(rnd() * 180)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`;
@@ -498,10 +520,28 @@ function carnaval(ancho: number, alto: number): string {
   return serpentinas + picado;
 }
 
+/**
+ * El templo se agrandó para los dos lados (`MARCO_DEL_RECINTO`): Momo sigue colgado en el medio, y
+ * para afuera sigue el mismo galpón, con otra columna de cada lado y la guirnalda que sigue.
+ */
+const TEMPLO = marcoDelRecinto('el-templo');
+const TRAMOS_DE_LAS_ALAS = [
+  [TEMPLO.x - 20, -10, 70, 60], [890, TEMPLO.x + TEMPLO.ancho + 20, 70, 60],
+  [TEMPLO.x + 10, 120, 150, 80], [780, TEMPLO.x + TEMPLO.ancho - 10, 150, 80],
+] as const;
+const FOCOS_DE_LAS_ALAS: ReadonlyArray<readonly [number, number]> = TRAMOS_DE_LAS_ALAS.flatMap(([x0, x1, y0, comba]) =>
+  Array.from({ length: 6 }, (_, i) => {
+    const t = (i + 1) / 7;
+    return [x0 + (x1 - x0) * t, y0 + 4 * comba * t * (1 - t)] as const;
+  }),
+);
+
 function temploLejos(): string {
-  const { ancho, alto } = ESCENA_ARTE;
+  const { alto } = ESCENA_ARTE;
+  const ancho = 900;
+  const [d0, d1] = [TEMPLO.x, TEMPLO.x + TEMPLO.ancho];
   let cables = '';
-  for (const [x0, x1, y0, comba] of [[-20, 460, 70, 70], [440, 920, 70, 70], [100, 800, 150, 90]] as const) {
+  for (const [x0, x1, y0, comba] of [[-20, 460, 70, 70], [440, 920, 70, 70], [100, 800, 150, 90], ...TRAMOS_DE_LAS_ALAS] as const) {
     cables += trazo(`M${x0} ${y0} Q${(x0 + x1) / 2} ${y0 + 2 * comba} ${x1} ${y0}`, P.peltre, 1.6, 0.8);
   }
   const columna = (x: number): string =>
@@ -511,22 +551,30 @@ function temploLejos(): string {
       [90, 200, 310, 420, 530].map((y) => espiralPlata(x + 35, y, 24)).join(''));
   return (
     `<g filter="url(#rociado)">` +
-    `<rect x="-10" y="-10" width="${ancho + 20}" height="${alto + 20}" fill="${P.negro}"/>` +
+    `<rect x="${d0 - 10}" y="-10" width="${d1 - d0 + 20}" height="${alto + 20}" fill="${P.negro}"/>` +
     // El galpón de luz: la luz cálida de los focos contra el techo, y el piso que la devuelve.
     nube(ancho / 2, 120, 420, 120, P.foco, 'xl', 0.16) +
     nube(ancho / 2, 600, 380, 70, P.peltre, 'xl', 0.45) +
     nube(ancho / 2, 610, 160, 26, P.plata, 'l', 0.3) +
-    columna(30) + columna(ancho - 100) +
+    // Las alas, más a media luz: el centro es de Momo.
+    nube(d0 + 150, 130, 220, 100, P.foco, 'xl', 0.1) +
+    nube(d1 - 150, 130, 220, 100, P.foco, 'xl', 0.1) +
+    nube(d0 + 150, 605, 200, 50, P.peltre, 'xl', 0.3) +
+    nube(d1 - 150, 605, 200, 50, P.peltre, 'xl', 0.3) +
+    columna(d0 + 10) + columna(30) + columna(ancho - 100) + columna(d1 - 80) +
     cables +
-    FOCOS_TEMPLO.map(([x, y]) => trazo(`M${x.toFixed(1)} ${(y - 2).toFixed(1)} l0 8`, P.peltre, 2) + nube(x, y + 12, 26, 26, P.foco, 'l', 0.45) + nube(x, y + 12, 5, 6, P.foco, 'xs', 0.95) + nube(x, y + 11, 2, 2.5, 'var(--papel)', 'xs')).join('') +
+    [...FOCOS_TEMPLO, ...FOCOS_DE_LAS_ALAS].map(([x, y]) => trazo(`M${x.toFixed(1)} ${(y - 2).toFixed(1)} l0 8`, P.peltre, 2) + nube(x, y + 12, 26, 26, P.foco, 'l', 0.45) + nube(x, y + 12, 5, 6, P.foco, 'xs', 0.95) + nube(x, y + 11, 2, 2.5, 'var(--papel)', 'xs')).join('') +
     carnaval(ancho, alto) +
+    carnaval(-d0, alto, FOCOS_DE_LAS_ALAS.slice(0, 12), 617, d0) +
+    carnaval(d1 - ancho, alto, FOCOS_DE_LAS_ALAS.slice(12), 619, ancho) +
     `</g>`
   );
 }
 
 function temploFrente(): string {
-  const { ancho, alto } = ESCENA_ARTE;
-  return `<g>${soplo(`M-10 ${alto - 40} C300 ${alto - 56}, 600 ${alto - 56}, ${ancho + 10} ${alto - 40} L${ancho + 10} ${alto + 10} L-10 ${alto + 10} Z`, P.negro, 'm', 0.9)}</g>`;
+  const { alto } = ESCENA_ARTE;
+  const [d0, d1] = [TEMPLO.x, TEMPLO.x + TEMPLO.ancho];
+  return `<g>${soplo(`M${d0 - 10} ${alto - 40} L-10 ${alto - 40} C300 ${alto - 56}, 600 ${alto - 56}, 910 ${alto - 40} L${d1 + 10} ${alto - 40} L${d1 + 10} ${alto + 10} L${d0 - 10} ${alto + 10} Z`, P.negro, 'm', 0.9)}</g>`;
 }
 
 /** El brillo que le pasa por encima al medallón: una franja soplada, que la isla corre. */
@@ -539,14 +587,14 @@ export const PIEZAS: readonly Pieza[] = [
   { nombre: 'monte-cerca', caja: [0, 240, ESCENA_ARTE.ancho, ESCENA_ARTE.alto - 240], dibujo: monteCerca(), densidad: 2 },
   { nombre: 'monte-frente', caja: [0, 0, ESCENA_ARTE.ancho, ESCENA_ARTE.alto], dibujo: frenteMonte(), densidad: 2 },
   { nombre: 'cordero-lomo', caja: [-180, -220, 610, 540], dibujo: lomoCordero(), densidad: 0.55 },
-  { nombre: 'baldio-lejos', caja: [0, 0, ESCENA_ARTE.ancho, ESCENA_ARTE.alto], dibujo: baldioLejos(), opaca: true, densidad: 2 },
-  { nombre: 'baldio-frente', caja: [0, 520, ESCENA_ARTE.ancho, ESCENA_ARTE.alto - 520], dibujo: baldioFrente(), densidad: 2 },
+  { nombre: 'baldio-lejos', caja: [0, 0, TECHOS.ancho, ESCENA_ARTE.alto], dibujo: baldioLejos(), opaca: true, densidad: 2 },
+  { nombre: 'baldio-frente', caja: [0, 520, TECHOS.ancho, ESCENA_ARTE.alto - 520], dibujo: baldioFrente(), densidad: 2 },
   { nombre: 'infierno-lejos', caja: [0, 0, ESCENA_ARTE.ancho, ESCENA_ARTE.alto], dibujo: infiernoLejos(), opaca: true, densidad: 2 },
   { nombre: 'infierno-cerca', caja: [0, 300, ESCENA_ARTE.ancho, ESCENA_ARTE.alto - 300], dibujo: infiernoCerca(), densidad: 2 },
   { nombre: 'infierno-frente', caja: [0, 520, ESCENA_ARTE.ancho, ESCENA_ARTE.alto - 520], dibujo: infiernoFrente(), densidad: 2 },
   { nombre: 'luzbelito-luz', caja: [-150, -170, 300, 340], dibujo: luzDeVela(), densidad: 1 },
-  { nombre: 'templo-lejos', caja: [0, 0, ESCENA_ARTE.ancho, ESCENA_ARTE.alto], dibujo: temploLejos(), opaca: true, densidad: 2 },
-  { nombre: 'templo-frente', caja: [0, 560, ESCENA_ARTE.ancho, ESCENA_ARTE.alto - 560], dibujo: temploFrente(), densidad: 2 },
+  { nombre: 'templo-lejos', caja: [TEMPLO.x, 0, TEMPLO.ancho, ESCENA_ARTE.alto], dibujo: temploLejos(), opaca: true, densidad: 2 },
+  { nombre: 'templo-frente', caja: [TEMPLO.x, 560, TEMPLO.ancho, ESCENA_ARTE.alto - 560], dibujo: temploFrente(), densidad: 2 },
   { nombre: 'momo-brillo', caja: [-120, -260, 240, 520], dibujo: brilloMedallon(), densidad: 1 },
   // La sexta vuelta: el bajo inundado y el gordo Pierre, pintado a pincel seco (`arte-bajo.ts`).
   ...PIEZAS_BAJO,

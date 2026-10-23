@@ -3379,6 +3379,80 @@ body:has(> .lugar) .marca-chica {
   transform: rotate(-0.5deg);
 }
 
+/* La entrada (`D-79`): el plano clavado en el cartel, entre el fondo y el frente impresos
+   (`lib/bestiario/arte-portal.ts`). Las medidas salen de `PORTAL` y `PLANO`: la escena es de
+   1000 × 1460 y el plano, un cuadrado de 960 que arranca en (20, 380). */
+.portal {
+  position: relative;
+  aspect-ratio: 1000 / 1460;
+  width: 100%;
+  background: var(--fondo);
+}
+
+/* El plano sale de la columna de lectura: en el teléfono va de borde a borde, y en la
+   computadora crece hasta 52 rem. Es para mirar, no para leer: la medida de línea no corre. */
+.bestiario:has(.portal) {
+  max-width: none;
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+}
+
+@media (min-width: 40rem) {
+  .bestiario:has(.portal) {
+    width: min(52rem, calc(100vw - 3rem));
+    margin-inline: calc(50% - min(26rem, 50vw - 1.5rem));
+  }
+}
+
+/* Los dibujos chicos del plano los reemplaza la escena de cada zona, que viene en la tierra. */
+.portal .bestiario-svg .paisaje { display: none; }
+
+.bestiario-pie-plano { padding-inline: var(--espacio-2); }
+
+.portal-capa {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.portal .bestiario-marco {
+  position: absolute;
+  left: 2%;
+  top: 26.027%;
+  width: 96%;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+.portal-luz {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* El sello de dónde está parada la gente: papel sobre tinta, al revés de los rótulos, que son
+   los que se tocan. */
+.estas-aca {
+  position: absolute;
+  margin: 0;
+  padding: 0.15em 0.45em;
+  white-space: nowrap;
+  font-family: var(--fuente-rotulada);
+  font-size: clamp(0.55rem, 2.1vw, 0.85rem);
+  letter-spacing: 0.05em;
+  color: var(--papel);
+  background: var(--fondo);
+  border: 2px solid var(--acento-2);
+  border-radius: 3px;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(4deg);
+}
+
 .bestiario-svg {
   display: block;
   width: 100%;
@@ -3414,7 +3488,8 @@ body:has(> .lugar) .marca-chica {
 
 /* El suelo y las regiones. */
 .bestiario-svg .suelo { fill: var(--papel); }
-.bestiario-svg .region-suelo { fill: var(--tr); fill-opacity: 0.32; }
+/* La tierra ya viene soplada en `mapa-tierra.webp`: la tinta plana de la región queda apenas. */
+.bestiario-svg .region-suelo { fill: var(--tr); fill-opacity: 0.08; }
 .bestiario-svg .region-borde {
   fill: none;
   stroke: var(--fondo);
@@ -3588,6 +3663,21 @@ body:has(> .lugar) .marca-chica {
 }
 
 .bestiario-hoja .solo-indice { display: none; }
+
+/* Donde no tapa al bicho tocado (`D-80`): la isla elige el lado y, en el teléfono, el alto. */
+.bestiario-hoja--arriba {
+  top: 0;
+  bottom: auto;
+  border-top: 0;
+  border-bottom: var(--linea) solid var(--papel);
+}
+
+@media (min-width: 52rem) {
+  .bestiario-hoja--izquierda {
+    left: var(--espacio-2);
+    right: auto;
+  }
+}
 
 /* La ficha, igual en la hoja y en el índice. */
 .bestiario-sello {

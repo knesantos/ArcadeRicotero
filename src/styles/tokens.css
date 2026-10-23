@@ -160,6 +160,15 @@
   --entorno-infierno-brasa: #6e1a10;
   --entorno-infierno-fuego: #f08a24;
   --entorno-templo-foco: #f2c46b;
+  /* La entrada del bestiario (`D-79`): la noche de *Lobo suelto* sobre el horizonte, la madera
+     del cartel en el cuero de *Luzbelito* y el farol que lo alumbra. */
+  --portal-cielo: #0a2a36;
+  --portal-niebla: #8a9a9c;
+  --portal-luna: #efe6c6;
+  --portal-madera: #7a5434;
+  --portal-madera-honda: #2c1b11;
+  --portal-quemado: #4a2e1b;
+  --portal-farol: #ffcf73;
   --bestia-cordero-lana: #293d54;
   --bestia-cordero-lana-clara: #4a6890;
   --bestia-cordero-lana-oscura: #1c2a3a;

@@ -53,18 +53,24 @@ que aprueba, archivo por archivo**: ninguna sesión baja sonidos por su cuenta.
 
 | Región | Ambiente | Al tocar o al llegar a un personaje |
 |---|---|---|
-| **El monte** | ✔ S viento, grillos, lechuza, pasos en hojas | **B** aullido para el lobo suelto (la síntesis lo hace de dibujito); **S** un gruñido grave sí se puede hacer |
+| **El monte** | ✔ S viento, grillos, lechuza, pasos en hojas, ramas que crujen, sala casi seca | **B** aullido para el lobo suelto (la síntesis lo hace de dibujito); **S** un gruñido grave sí se puede hacer |
 | **La pastura** | ✔ S pasto, grillos, cencerro | ✔ S cencerro de la vaca; **B** balido para el cordero y las ovejas, mugido para la vaca; **B** ladrido para el ovejero |
-| **Los techos** | **S** viento en las chapas, una canaleta que gotea | **B** gatos peleando (*Gatos arriba, perros abajo*); **B** ladridos lejanos; **G** el negro Atila |
-| **El bajo** | **S** agua, goteo, el chapoteo de los pasos | **G** **la risa del gordo Pierre** (es el ejemplo justo: tiene que ser una risa de alguien); **B** cristales rotos para el vitricida |
-| **El infierno** | **S** fuego crepitando, un zumbido grave | **G** Luzbelito, y las sirenas si cantan; **S** campanadas |
-| **El templo** | **B** murga lejana o bombo, o el disco de lejos | **G** Momo; **S** platillos y sonajas |
-| **Los astilleros** | **S** viento de río, metal que golpea, una sirena de barco | **B** grúa y cadenas; **G** los personajes que hablan |
-| **Cybersiberia** | **S** viento helado, zumbido eléctrico, la estática de la tele | **S** el beep del Alien Duce; **G** su voz, si alguna vez habla |
-| **El árbol** | **S** viento seco, crujido de ramas | **G** el ángel; **S** juguetes a cuerda (un clic mecánico) |
-| **La mesa** | **S** cubiertos, una olla que hierve | **S** el zumbido de la mosca, que se hace muy bien; **G** el caníbal |
-| **El galpón** | **B** multitud lejana, o el disco de lejos | **G** nada: la silla de Patricio Rey va en silencio, y ese silencio es el sonido |
-| **La ruta** | **S** el viento de la ruta, un motor que pasa | **B** el colectivo viejo y la bocina de la Pontiac; **S** el taxi que pasa |
+| **Los techos** | ✔ S viento, pasos en chapa, la canaleta que gotea, la sirena de lejos | **B** gatos peleando (*Gatos arriba, perros abajo*); **B** ladridos lejanos; **G** el negro Atila |
+| **El bajo** | ✔ S agua que corre, goteo, el chapoteo de los pasos, una botella que se rompe cada tanto | **G** **la risa del gordo Pierre** (es el ejemplo justo: tiene que ser una risa de alguien); ✔ S el vidrio al tocar a Pierre y al amorcito que mordió el vidrio (**B** si se consigue uno mejor) |
+| **El infierno** | ✔ S fuego crepitando, brasas, eco de caverna | **G** Luzbelito, y las sirenas si cantan; ✔ S campanadas, también al tocar a Mandinga |
+| **El templo** | ✔ S el bombo de lejos, eco largo de salón; **B** murga lejana | **G** Momo; **S** platillos y sonajas |
+| **Los astilleros** | ✔ S viento, el río contra los pilotes, las olas, el metal que golpea, la bocina del ferry | **B** grúa y cadenas; ✔ S el metal al tocar al pibe; **G** los personajes que hablan |
+| **Cybersiberia** | ✔ S viento helado, zumbido eléctrico, la estática de la tele | ✔ S la estática de la tele y de los buitres, la sirena de Drogocop; **S** el beep del Alien Duce; **G** su voz, si alguna vez habla |
+| **El árbol** | ✔ S viento seco, grillos, crujido de ramas, la lechuza | ✔ S la rama al tocar al monito y al que duerme colgado; **G** el ángel; **S** juguetes a cuerda (un clic mecánico) |
+| **La mesa** | ✔ S cubiertos, una olla que hierve, las moscas | ✔ S el zumbido de la mosca; ✔ S los cubiertos del caníbal, el verdugo y Pituca; **G** el caníbal |
+| **El galpón** | ✔ S la gente que espera, eco de galpón grande; **B** multitud lejana | **G** nada: la silla de Patricio Rey va en silencio, y ese silencio es el sonido |
+| **La ruta** | ✔ S el viento de la ruta, grillos, un motor que pasa | **B** el colectivo viejo y la bocina de la Pontiac; ✔ S el taxi que pasa |
+
+**Desde el pedido de archivos (2026-10-23):** cada ruido tiene nombre en el manifiesto `EFECTOS` de
+`src/lib/bestiario/sonido.ts` y busca sus variantes en `public/audio/bestiario/fx/<nombre>-<n>.mp3`
+(desde el 1). Mientras `variantes` está en 0, o si el archivo no carga, suena la síntesis de la tabla.
+Todas las regiones tienen además su sala (eco) y, donde corresponde, una cama de fondo. Para oírlos de
+a uno: `/diagnostico-bestiario/`, que dice al lado de cada botón si sonó el archivo o la síntesis.
 
 ## Lo que hay que grabar
 

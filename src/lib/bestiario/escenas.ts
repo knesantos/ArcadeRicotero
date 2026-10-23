@@ -10,7 +10,7 @@
 
 import { atila, barbazul, dracula, imagen, limon, pierre } from './titeres.ts';
 import { ARMADO } from './recortes.ts';
-import { ATILA, BAJO, BANDERAS, BARBAZUL, CHAPA, DRACULA, ESCENA, LIMON, LINTERNAS, LUZBELITO, MOMO, PERRO, PIERRE, PRISION, PUERTA_DE_BARBAZUL, deLaTapa, llamaEnEscena } from './rig.ts';
+import { ATILA, BAJO, BANDERAS, BARBAZUL, CHAPA, DRACULA, ESCENA, LIMON, LINTERNAS, LUZBELITO, MOMO, PERRO, PIERRE, PRISION, PUERTA_DE_BARBAZUL, deLaTapa, llamaEnEscena, marcoDelRecinto } from './rig.ts';
 import { agujero } from './arte-bajo.ts';
 import { capasDe, sinTitere } from './elenco.ts';
 
@@ -59,17 +59,21 @@ const parte = (nombre: string, cuerpo: string): string => `<g data-parte="${nomb
    las linternas del bloque atrás (`arte-baldio.ts`).
 */
 
+// Los techos se agrandaron a la derecha (`MARCO_DEL_RECINTO`): Susanita y su gato dejan el canto
+// por donde camina el Atila y se suben a los techos nuevos, debajo del otro farol; los perros se
+// abren por el baldío.
 export const VECINOS_DEL_BALDIO: Readonly<Record<string, readonly [number, number, Tinta]>> = {
   'el-gato-maton': [300, 206, 'oro'],
   'el-raton': [344, 252, 'papel'],
-  'el-gato-de-susanita': [476, 192, 'oro'],
-  'susanita': [520, 238, 'papel'],
+  'el-gato-de-susanita': [1150, 168, 'oro'],
+  'susanita': [1196, 214, 'papel'],
   'el-gato-que-llamas-con-silbidos': [762, 214, 'oro'],
-  'el-que-no-se-cayo-del-cielo': [862, 252, 'papel'],
-  'mi-perro-dinamita': [742, 468, 'oro'],
-  'los-perros-sin-folleto': [812, 566, 'oro'],
-  'el-perro-manso': [676, 604, 'papel'],
-  'el-perro-que-no-mira-el-cielo': [300, 612, 'papel'],
+  'el-que-no-se-cayo-del-cielo': [1420, 236, 'papel'],
+  'mi-perro-dinamita': [700, 486, 'oro'],
+  'los-perros-sin-folleto': [1180, 560, 'oro'],
+  // A la derecha: donde estaba se paró el buen psicópata con su perro (`D-73`, decimosexta enmienda).
+  'el-perro-manso': [1330, 600, 'papel'],
+  'el-perro-que-no-mira-el-cielo': [980, 610, 'papel'],
 };
 
 /**
@@ -94,7 +98,7 @@ export function escenaBaldio(nombres: ReadonlyMap<string, string>): string {
     imagen('baldio-lejos') +
     imagen('atila-tanque') +
     losOjos(VECINOS_DEL_BALDIO, nombres) +
-    `<clipPath id="atila-pared"><rect x="-10" y="-10" width="${ESCENA.ancho + 20}" height="${ATILA.piso + 10}"/></clipPath>` +
+    `<clipPath id="atila-pared"><rect x="-10" y="-10" width="${marcoDelRecinto('los-techos').ancho + 20}" height="${ATILA.piso + 10}"/></clipPath>` +
     `<g clip-path="url(#atila-pared)"><g class="titere titere--atila" data-id="el-negro-atila" role="button" tabindex="0" aria-label="${nombres.get('el-negro-atila') ?? ''}">` +
     `<g id="atila-entero" transform="translate(${ATILA.x} ${ATILA.piso}) scale(${ATILA.escala})">${atila()}</g></g></g>` +
     `<g class="atila-vahos" aria-hidden="true" pointer-events="none">${[0, 1, 2].map((n) => `<g data-vaho="${n}" opacity="0">${imagen('atila-vaho')}</g>`).join('')}</g>` +
@@ -161,17 +165,19 @@ export function escenaInfierno(nombres: ReadonlyMap<string, string>): string {
    El templo: el medallón de Momo
    ------------------------------------------------------------------ */
 
+// El templo se agrandó para los dos lados (`MARCO_DEL_RECINTO`): los que se le encimaban a Momo
+// cuando se hamaca, al Morta o a una columna se abren para las alas.
 export const VECINOS_DEL_TEMPLO: Readonly<Record<string, readonly [number, number, Tinta]>> = {
-  'el-santo-fumador': [164, 300, 'papel'],
-  'los-gallos-sofocados': [742, 520, 'oro'],
-  'marita-la-virgencita': [300, 470, 'papel'],
+  'el-santo-fumador': [-120, 300, 'papel'],
+  'los-gallos-sofocados': [1010, 520, 'oro'],
+  'marita-la-virgencita': [190, 470, 'papel'],
   'la-polilla': [604, 150, 'papel'],
-  'la-murga-de-los-renegados': [212, 560, 'papel'],
+  'la-murga-de-los-renegados': [-40, 572, 'papel'],
   'el-morta': [652, 440, 'oro'],
-  'mister-ed-y-huesito': [562, 560, 'papel'],
-  'el-doctor-saturno': [796, 300, 'papel'],
-  'el-sheriff': [124, 520, 'oro'],
-  'la-bailarina': [384, 562, 'papel'],
+  'mister-ed-y-huesito': [930, 566, 'papel'],
+  'el-doctor-saturno': [1000, 300, 'papel'],
+  'el-sheriff': [-170, 530, 'oro'],
+  'la-bailarina': [270, 586, 'papel'],
 };
 
 export function escenaTemplo(nombres: ReadonlyMap<string, string>): string {
@@ -206,15 +212,17 @@ export function escenaTemplo(nombres: ReadonlyMap<string, string>): string {
    ondas, los ojos de los demás y lo que flota adelante (`bajo-frente`).
 */
 
+// El bajo se agrandó para los dos lados (`MARCO_DEL_RECINTO`): el ahogado y los náufragos se
+// abren a la izquierda, del lado del bote; la ventana del amorcito y el escenario se corrieron a la derecha.
 export const VECINOS_DEL_BAJO: Readonly<Record<string, readonly [number, number, Tinta]>> = {
-  'el-amorcito-que-mordio-el-vidrio': [646, 182, 'papel'],
-  'el-ahogado-y-su-fiel-fantasma': [330, 506, 'papel'],
-  'los-nenes-de-oro': [722, 462, 'oro'],
+  'el-amorcito-que-mordio-el-vidrio': [796, 182, 'papel'],
+  'el-ahogado-y-su-fiel-fantasma': [-170, 486, 'papel'],
+  'los-nenes-de-oro': [880, 470, 'oro'],
   'el-polizon-del-remolque': [252, 604, 'papel'],
   'el-rato-molhado': [92, 452, 'oro'],
-  'los-naufragos': [596, 560, 'papel'],
-  'las-sirenas': [862, 420, 'oro'],
-  'la-anguila': [826, 598, 'rojo'],
+  'los-naufragos': [-60, 596, 'papel'],
+  'las-sirenas': [1130, 430, 'oro'],
+  'la-anguila': [1076, 600, 'rojo'],
 };
 
 /**
@@ -248,7 +256,8 @@ export function escenaBajo(nombres: ReadonlyMap<string, string>): string {
     for (const dy of [-70, 0, 70]) lluvia += `<path class="bajo-lluvia" d="M${x} ${y + dy} l-5 14"/>`;
   }
   const { x: px, agua, escala } = PIERRE;
-  const debajoDelAgua = (id: string, y: number): string => `<clipPath id="${id}"><rect x="-10" y="${y}" width="920" height="${ESCENA.alto - y + 10}"/></clipPath>`;
+  const sala = marcoDelRecinto('el-bajo');
+  const debajoDelAgua = (id: string, y: number): string => `<clipPath id="${id}"><rect x="${sala.x - 10}" y="${y}" width="${sala.ancho + 20}" height="${ESCENA.alto - y + 10}"/></clipPath>`;
   return (
     imagen('bajo-lejos') +
     imagen('bajo-agua') +
@@ -293,13 +302,16 @@ export function escenaBajo(nombres: ReadonlyMap<string, string>): string {
 
 export const VECINOS_DE_LA_PRISION: Readonly<Record<string, readonly [number, number, Tinta]>> = {
   // Barbazul ya no es un par de ojos en su puerta: es el títere de la entrada.
-  'el-reo-semental': [206, 318, 'papel'],
+  // Agrandada la prisión (`MARCO_DEL_RECINTO`), los que miraban desde atrás de Barbazul pasan a la
+  // celda nueva de la izquierda, y los reos dejan la celda del esclavo por la nueva de la derecha.
+  'el-reo-semental': [-170, 396, 'papel'],
   'el-esclavo-sensible-y-chillon': [214, 410, 'papel'],
-  'los-reos-de-la-sociedad': [712, 382, 'papel'],
+  'los-reos-de-la-sociedad': [1056, 420, 'papel'],
   'los-titanes-del-orden-viril': [622, 322, 'rojo'],
-  'el-chivato': [236, 396, 'oro'],
+  'el-chivato': [-110, 466, 'oro'],
   'el-pichon': [558, 324, 'papel'],
-  'el-pajarito-del-lavi-rap': [222, 162, 'oro'],
+  // Adentro de su jaulita (`JAULITA` en `arte-prision.ts`), que cuelga en el ala de la izquierda.
+  'el-pajarito-del-lavi-rap': [-130, 162, 'oro'],
 };
 
 /** La fiera más fiera no está: se toca la jaula vacía, adelante a la derecha. */

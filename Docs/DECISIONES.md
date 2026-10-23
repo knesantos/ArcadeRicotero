@@ -6075,3 +6075,150 @@ probar en el navegador** (el panel no tuvo permiso): falta verlo con mouse y en 
   ahora abre la ficha y prende el sonido en el mismo gesto. El botón del camino sigue apagándolo.
 
 **Verificado:** `npm test` (1836), `npm run check`, `npm run build`. **Sin probar en el navegador.**
+
+## D-79 — La entrada del bestiario y los ruidos que se tocan desde archivos
+
+- **Fecha:** 2026-10-23. Pedidos del usuario: *"Mejora de ambiente en sonido del bestiario, mejores
+  efectos de sonido, mejores pasos, pasos en el agua, botellas rotas etc"*; *"Que el mapa tenga un
+  diseño rocambolesco también y se vea como si estuvieras parado en la entrada de un mundo misterioso
+  con un mapa"*; y a mitad de camino: *"Los efectos de sonido van a quedar mejor si buscas una libreria
+  con efectos ya hechos y cargados, que hacerlos vos"*.
+
+### La entrada
+
+- El plano del bestiario va **clavado en un cartel de tablones, en la puerta de un mundo de noche**
+  (`lib/bestiario/arte-portal.ts`). Arriba asoma el horizonte del mundo redondo: el árbol, el galpón con
+  la luz roja, el templo con la guirnalda, la grúa y la antena. Abajo, en la esquina que el círculo deja
+  libre, está **el molinete abierto**, que es por donde se entra (los molinetes de `CLAUDE.md`).
+- Son cuatro piezas a aerógrafo, que imprime `scripts/imprimir-bestiario.mjs` como las de los caminos
+  (excepción declarada de `D-73`):
+  - `portal-fondo`: el cielo, el horizonte y el cartel;
+  - `mapa-tierra`: el papel viejo con cada región soplada en su disco, que va adentro del SVG del plano;
+  - `portal-luz`: el farol y las esquinas oscuras;
+  - `portal-frente`: el portón, el arco de hierro, el molinete y la niebla.
+- El plano sigue siendo el SVG de siempre, con sus rótulos tocables. Las regiones, el paisaje y las
+  bestias quedan en tinta plana encima de la tierra soplada, como sellos sobre un plano pintado. Suma
+  un sello **«ESTÁS ACÁ»** sobre la ruta, del lado del molinete.
+- Las tintas nuevas son los `--portal-*` de `tokens.css`: la noche sale de *Lobo suelto* y la madera
+  del cuero de *Luzbelito*. Ninguna se usa como texto.
+
+### Los ruidos
+
+- `entorno.ts` ahora **toca archivos**. El manifiesto `EFECTOS` está en `sonido.ts`, y los archivos van
+  en `public/audio/bestiario/fx/<efecto>-<n>.mp3`.
+  - Cada efecto puede tener varias variantes. Nunca suena la misma dos veces seguidas, y el tono y el
+    volumen cambian un poco cada vez.
+  - Se carga solo lo que pide la región, y sin apuro.
+  - **Si un archivo falta, suena la síntesis de respaldo**, que también se mejoró:
+    - pasos en dos tiempos, con un modelo por suelo;
+    - chapoteo con burbujas;
+    - una botella que se rompe;
+    - ramas, cubiertos, olla, campanas y metal.
+- Cada región tiene **su sala**, una reverberación sintetizada: larga en la prisión y el templo, grande
+  en el galpón, casi seca en el monte. Algunas tienen además **un fondo en bucle**: agua en el bajo,
+  río en los astilleros, fuego en el infierno, zumbido eléctrico en Cybersiberia.
+- **Hoy todas las variantes están en 0**, así que suena la síntesis. Los archivos todavía no se bajaron:
+  bajar es un paso que aprueba el usuario, archivo por archivo (`HILO-sonidos-del-bestiario.md`). Los
+  bancos candidatos están en `RES-371`. Cuando un archivo entra, se sube su número en `EFECTOS`, el test
+  verifica que esté en disco, y se anota en `CNT-01`.
+- Para oírlo todo, sin pasar por el juego: `/diagnostico-bestiario/`. Tiene `noindex` y ningún enlace.
+  Al lado de cada botón dice si sonó el archivo o la síntesis.
+
+**Verificado:** `npm test` (1838), `npm run check` (0 errores), `npm run build`. En el panel, a 375 px y en escritorio:
+el portal armado con el plano y sus rótulos; el diagnóstico tocando por síntesis; el camino del bajo
+carga sin errores. **Sin oír**: nadie escuchó todavía la síntesis nueva ni la sala.
+
+### D-79, segunda vuelta — Cada zona del plano con su escena, el plano más grande y el molinete de cancha
+
+- **Fecha:** 2026-10-23. Pedidos del usuario: *"que se sigan diferenciando las zonas, pero que sea más
+  grande el mapa, con detalles de cada zona, un diseño más detallado y complejo. Más rocambolesco"*, y
+  *"me encanta el molinete también, mejoralo que se vea mejor"*.
+- **Las zonas.** Cada región tiene su escena vista desde arriba, a aerógrafo, en la paleta de su disco
+  (`lib/bestiario/arte-mapa.ts`).
+  - Están repartidas en tres archivos, de a cuatro zonas: `arte-mapa-norte.ts`, `-sur.ts` y `-oeste.ts`.
+    Las pintaron tres subagentes, cada uno en el suyo.
+  - Cada escena va recortada por el contorno de su región. Los dibujitos planos de `paisaje()` se
+    esconden en la entrada, y el borde punteado de cada región sigue marcando dónde termina.
+  - Debajo de cada bicho y de cada rótulo quedan valores medios o claros, para que los sellos en tinta
+    se lean.
+  - La tierra se imprime a 2000 px y pesa 467 kB.
+  - Para mirarla mientras se pinta: `node --experimental-strip-types scripts/mirar-mapa.mjs <png> [--zona <id>]`.
+- **Más grande.** El plano sale de la columna de lectura: en el teléfono va de borde a borde, y en la
+  computadora crece hasta 52 rem. Adentro del cartel también creció: pasó de 920 a 960 unidades.
+- **El rótulo del monte** caía justo debajo del de la pastura y no se leía. `lugarDelRotulo` ahora lo
+  corre a la punta libre del sector cuando hay un claro debajo.
+- **El molinete**, de cancha:
+  - el gabinete de chapa gastada, con óxido;
+  - la lucecita de paso prendida;
+  - el eje y el cubo;
+  - tres brazos de caño cromado, con el de arriba levantado, que es el que alguien dejó pasar.
+
+## D-80 — La cámara del camino, la ficha que no tapa y los bichos que no se enciman
+
+- **Fecha:** 2026-10-23. Pedidos del usuario: *"agreguemos también unas animaciones de caminata para la
+  cámara y cosas así, que con el meteorito que cae de la vaca cubana se mueva la cámara [...] pensá las
+  que hacen falta para que sea más inmersiva la aventura"*; *"agrandar el espacio de los entornos que
+  están muy cargados, o separar un poco bestias, como el cordero y la vaca se enciman mucho"*; y *"que
+  las fichas se abran de una pero sin tapar nunca a la bestia de la ficha"*.
+
+### La cámara
+
+Son siete movimientos, y todos se apagan con movimiento reducido (`lib/bestiario/camara.ts`, con su
+test):
+
+1. **La caminata**: un vaivén atado a lo caminado, con la zancada de los pasos que suenan.
+2. **La inercia**: un resorte que adelanta y abre el plano al caminar ligero.
+3. **El respirar**: quieto, la escena se mueve apenas.
+4. **El sacudón**: un trauma que se suma y se apaga.
+5. **El retumbo**: en la ruta, cuando un fierro pasa cerca.
+6. **El acercarse**: al tocar un bicho, la cámara se arrima a él.
+7. **La entrada**: al llegar, la cámara se asoma y se asienta.
+
+La escena va siempre agrandada un 6 %, y ningún corrimiento pasa ese margen: no se ve el borde.
+
+Los sacudones van por un evento del documento (`scripts/bestiario/sacudon.ts`), así que nadie tiene que
+conocer a la cámara. Hoy los piden:
+
+- el meteorito de la vaca, cuando pega (0,95);
+- el grito del pibe (0,4);
+- el bombo, el vidrio, el metal y la campana, cuando suenan.
+
+### La ficha
+
+Se abre del lado donde no tapa al bicho tocado (`lib/bestiario/hoja.ts`, con su test). Vale en el
+camino y en la página del bestiario, si el bicho está en pantalla.
+
+- **En el teléfono**: arriba o abajo, achicada hasta el lugar libre (entre 26 % y 46 % del alto).
+- **En la computadora**: a la izquierda o a la derecha. Si igual no entra, la escena se corre lo justo.
+
+### Los encimados
+
+- **La vaca** pasó de x 652 a 712, y el pedazo de satélite cae en (626, 510). El test ahora mide también
+  las cabezas: el hocico de la vaca y el del cordero en la punta de la soga.
+- **Los recintos cargados** se miden en el navegador:
+  - los techos tienen 13 bichos y el templo 11, en 900 unidades; los entornos tienen de 7 a 10 en 2400;
+  - los que se enciman están en el bajo, el templo, la prisión y los techos.
+- **Los cuatro recintos cargados se ensancharon.** Lo hizo un subagente, uno por uno.
+  - La escena sigue en sus 900 y el dibujo se extiende hacia afuera: no se estira nada. El ancho de cada
+    uno lo fija `MARCO_DEL_RECINTO` en `rig.ts`.
+  - El templo va de −300 a 1200, con una columna y una guirnalda más de cada lado.
+  - Los techos van de 0 a 1500, con un segundo farol y más chapas. Limón ahora corre de 560 a 1340.
+  - La prisión va de −250 a 1150, con una celda grande en cada ala.
+  - El bajo va de −250 a 1200: la pared sigue con la contratapa, y la ventana y el escenario se corren.
+  - Los bichos chicos salieron de encima de Momo, Barbazul, Pierre y Limón. El test nuevo
+    `recintos-anchos.test.ts` falla si dos pares de ojos quedan a menos de 60, o unos ojos a menos de 40
+    de un títere.
+  - En el teléfono, los caminos pasaron de 1692 px a entre 2323 y 2449.
+  - El templo, la prisión y el bajo ahora se entran por el ala izquierda, no de frente al protagonista.
+
+**Verificado:** `npm test` (1854), `npm run check` (0 errores), `npm run build`.
+
+En el navegador, con un iframe porque el panel oculto no corre `requestAnimationFrame`:
+
+- caminando, la cámara va y viene unos 3 px y se bambolea ±0,1°;
+- el meteorito sacude 0,75° al pegar y se calma;
+- la ficha de la vaca se abre arriba, sin tocarla;
+- ya no se enciman bichos en el bajo, la prisión, los techos ni la pastura. Lo que queda en el templo es
+  la caja del brillo del medallón de Momo, no un bicho.
+
+**Sin probar** en un teléfono de verdad, y sin oír.

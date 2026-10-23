@@ -10,7 +10,7 @@ import {
   CHORRO, JAULA_VACIA, escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, VECINOS_DE_LA_PRISION, VECINOS_DEL_BAJO, VECINOS_DEL_BALDIO,
   VECINOS_DEL_INFIERNO, VECINOS_DEL_TEMPLO,
 } from './escenas.ts';
-import { ACECHO, ACHATE, ATILA, ATILA_ARMADO, BAJO, BANDERAS, BARBAZUL, BARBAZUL_ARMADO, CHAPA, CIELO_VACA, DRACULA, DRACULA_ARMADO, PASTURA, ESCENA, LIMON, LIMON_ARMADO, LINTERNAS, PALO, PERRO, PIERRE, PIERRE_ARMADO, PRISION, PUERTA_DE_BARBAZUL, SOGA, VACA, VACA_ARMADO, deLaTapa } from './rig.ts';
+import { ACECHO, ACHATE, ATILA, ATILA_ARMADO, BAJO, BANDERAS, BARBAZUL, BARBAZUL_ARMADO, CHAPA, CIELO_VACA, DRACULA, DRACULA_ARMADO, PASTURA, ESCENA, LIMON, LIMON_ARMADO, LINTERNAS, PALO, PERRO, PIERRE, PIERRE_ARMADO, PRISION, PUERTA_DE_BARBAZUL, SOGA, VACA, VACA_ARMADO, deLaTapa, marcoDelRecinto } from './rig.ts';
 import { ARMADO, RECORTES, cajaDeRecorte, LADO_TAPA } from './recortes.ts';
 import { PIEZAS } from './arte.ts';
 import { ETIQUETA, PIEZAS_BAJO, PIEZAS_PIERRE, PUERTA, agujero } from './arte-bajo.ts';
@@ -260,7 +260,9 @@ test('cada recinto de noche tiene a todos los suyos: el protagonista de tapa y l
     for (const id of otros) assert.ok(escena.includes(`data-id="${id}"`), `${region} no tiene a ${id}`);
     assert.ok(escena.includes(`data-id="${protagonista}"`), `${region} no tiene a su protagonista`);
     assert.ok(!/NaN|undefined|Infinity/.test(escena), `${region} tiene un número roto`);
-    for (const [id, [x, y]] of Object.entries(vecinos)) assert.ok(x >= 0 && x <= ESCENA.ancho && y >= 0 && y <= ESCENA.alto, `${id} se sale`);
+    // Cada recinto mide lo suyo (`MARCO_DEL_RECINTO`): los agrandados arrancan antes del cero.
+    const marco = marcoDelRecinto(region);
+    for (const [id, [x, y]] of Object.entries(vecinos)) assert.ok(x >= marco.x && x <= marco.x + marco.ancho && y >= 0 && y <= ESCENA.alto, `${id} se sale`);
     // El protagonista es de la tapa: sus imágenes son recortes.
     const imagenes = [...escena.matchAll(/href="\/bestiario\/([a-z0-9-]+-real-[a-z0-9-]+)\.webp"/g)];
     assert.ok(imagenes.length > 0, `${region}: el protagonista no es un recorte de la tapa`);
@@ -365,9 +367,10 @@ test('el bajo tiene a todos los suyos, y Pierre está en el agua, entre la pared
   assert.ok(!/NaN|undefined|Infinity/.test(escena), 'el bajo tiene un número roto');
   assert.equal(escena.match(/id="pierre-entero"/g)?.length, 1, 'el reflejo copia a Pierre por su id, que tiene que ser uno solo');
   assert.ok(escena.includes('href="#pierre-entero"'), 'Pierre no tiene reflejo');
-  for (const [id, [x, y]] of Object.entries(VECINOS_DEL_BAJO)) assert.ok(x >= 0 && x <= ESCENA.ancho && y >= 0 && y <= ESCENA.alto, `${id} se sale`);
+  const sala = marcoDelRecinto('el-bajo');
+  for (const [id, [x, y]] of Object.entries(VECINOS_DEL_BAJO)) assert.ok(x >= sala.x && x <= sala.x + sala.ancho && y >= 0 && y <= ESCENA.alto, `${id} se sale`);
   assert.ok(PIERRE.agua > BAJO.fondo && PIERRE.agua < ESCENA.alto - 60, 'Pierre no está metido en el agua');
-  assert.ok(escena.includes(`<rect x="-10" y="${PIERRE.agua}"`), 'el agua de adelante no lo corta donde lo toca');
+  assert.ok(escena.includes(`<rect x="${sala.x - 10}" y="${PIERRE.agua}" width="${sala.ancho + 20}"`), 'el agua de adelante no lo corta donde lo toca, de punta a punta');
   // El agujero está en el vidrio de la puerta, y el agua que entra cae hasta el agua.
   for (const [x, y] of agujero()) {
     const [vx0, vy0, vx1, vy1] = PUERTA.vidrio;
@@ -435,7 +438,8 @@ test('la prisión tiene a todos los suyos: la drácula camina por el pasillo, y 
   const delRecinto = datos.bestias.filter((b) => b.region === 'la-prision').map((b) => b.id).sort();
   assert.deepEqual(delRecinto, ['barbazul', 'la-dracula-con-tacones', JAULA_VACIA.id, ...Object.keys(VECINOS_DE_LA_PRISION)].sort(), 'en la prisión falta o sobra alguien');
   assert.ok(!/NaN|undefined|Infinity/.test(escena), 'la prisión tiene un número roto');
-  for (const [id, [x, y]] of Object.entries(VECINOS_DE_LA_PRISION)) assert.ok(x >= 0 && x <= ESCENA.ancho && y >= 0 && y <= ESCENA.alto, `${id} se sale`);
+  const pasillo = marcoDelRecinto('la-prision');
+  for (const [id, [x, y]] of Object.entries(VECINOS_DE_LA_PRISION)) assert.ok(x >= pasillo.x && x <= pasillo.x + pasillo.ancho && y >= 0 && y <= ESCENA.alto, `${id} se sale`);
   assert.ok(escena.includes(`data-id="${JAULA_VACIA.id}"`), 'la jaula vacía no se puede tocar');
   // La jaula se toca pero no mira: adentro de su grupo no hay ni un ojo.
   const jaula = escena.slice(escena.indexOf(`data-id="${JAULA_VACIA.id}"`), escena.indexOf('</g>', escena.indexOf(`data-id="${JAULA_VACIA.id}"`)));
@@ -676,6 +680,9 @@ test('la vaca está en la punta de la pastura, con las patas de adelante en el p
   assert.ok(enLaPastura(VACA.x + 160 * VACA.escala, VACA.y) > 0.8, 'la vaca no está en la punta: está en el medio');
   // Lejos del cordero: ni la punta de la soga llega a las patas de adelante.
   assert.ok(manoDelantera - 20 > PALO.x + SOGA, 'el cordero le pisa las patas a la vaca');
+  // Ni las cabezas se tocan (`D-80`): el hocico de la vaca (la cabeza llega a -142 de su armado) y el
+  // del cordero, que asoma unas 50 unidades más allá de la punta de la soga.
+  assert.ok(VACA.x - 142 * VACA.escala > PALO.x + SOGA + 50 + 20, 'el cordero y la vaca se enciman');
 });
 
 test('el pedazo cae en el pasto, al lado de la vaca, y no encima del cordero ni de ella', () => {
@@ -808,7 +815,8 @@ test('Limón corre por la chapa del baldío, adentro de la escena, sin meterse a
   assert.ok(!/NaN|undefined|Infinity/.test(escena), 'el baldío tiene un número roto');
   assert.ok(CHAPA.arriba < CHAPA.piso && CHAPA.piso < CHAPA.abajo, 'la chapa está dada vuelta');
   const ancho = (LIMON_ARMADO.fruta.radio[0] + 12) * LIMON.escala;
-  assert.ok(LIMON.desde - ancho > 0 && LIMON.hasta + ancho < ESCENA.ancho, 'Limón se sale de la escena al correr');
+  const techos = marcoDelRecinto('los-techos');
+  assert.ok(LIMON.desde - ancho > techos.x && LIMON.hasta + ancho < techos.x + techos.ancho, 'Limón se sale de la escena al correr');
   // El perro asoma por el borde izquierdo con la cabeza, que llega hasta x ~ 290; Limón no corre sobre ella.
   assert.ok(LIMON.desde >= PERRO.x + 240, 'Limón corre encima del perro');
   // La chapa va delante de la medianera y Limón delante de la chapa; las linternas, entre los dos.
@@ -818,11 +826,11 @@ test('Limón corre por la chapa del baldío, adentro de la escena, sin meterse a
   // Las linternas salen de afuera de la escena y barren para adentro.
   for (const lado of ['der', 'izq'] as const) {
     const L = LINTERNAS[lado];
-    assert.ok(L.x < 0 || L.x > ESCENA.ancho, `la linterna ${lado} sale de adentro de la escena`);
+    assert.ok(L.x < techos.x || L.x > techos.x + techos.ancho, `la linterna ${lado} sale de adentro de la escena`);
     for (const a of L.barre) {
       const r = (a * Math.PI) / 180;
       const [x, y] = [L.x + Math.cos(r) * LINTERNAS.largo * 0.6, L.y + Math.sin(r) * LINTERNAS.largo * 0.6];
-      assert.ok(x > 0 && x < ESCENA.ancho && y > 0 && y < ESCENA.alto, `la linterna ${lado} barre afuera de los techos`);
+      assert.ok(x > techos.x && x < techos.x + techos.ancho && y > 0 && y < ESCENA.alto, `la linterna ${lado} barre afuera de los techos`);
     }
   }
 });

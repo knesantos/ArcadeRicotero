@@ -26,7 +26,7 @@
 
 import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
 import { azar, mancha, pincelada, tinta, volumen, type P, type Pincel } from './pincel.ts';
-import { BAJO, PIERRE, PIERRE_ARMADO as A } from './rig.ts';
+import { BAJO, PIERRE, PIERRE_ARMADO as A, marcoDelRecinto } from './rig.ts';
 
 const T = {
   papel: 'var(--disco-gulp-apoyo)',
@@ -472,6 +472,16 @@ const B = {
 
 export const ESCENA_BAJO = { ancho: 900, alto: 640 } as const;
 
+/**
+ * El bajo se agrandó para los dos lados (`MARCO_DEL_RECINTO`). Pierre, la puerta y el bote quedan
+ * donde estaban; la ventana y el escenario se corren a la derecha, y la pared y el agua siguen.
+ */
+const SALA = marcoDelRecinto('el-bajo');
+const [S0, S1] = [SALA.x, SALA.x + SALA.ancho];
+/** Cuánto se corren la ventana y el escenario (con su silla) a la derecha, para dejarle aire a Pierre. */
+export const CORRE_VENTANA = 150;
+export const CORRE_ESCENARIO = 250;
+
 interface Rayado {
   angulo?: number;
   largo?: readonly [number, number];
@@ -608,7 +618,8 @@ function ventana(): string {
 
 /** El escenario: la banda tocó igual. El bafle, el pie del micrófono y el bombo con el sol pintado. */
 function escenario(): string {
-  const { ancho } = ESCENA_BAJO;
+  // Se dibuja en su lugar de siempre y se corre entero; la tarima llega hasta el borde nuevo.
+  const ancho = S1 - CORRE_ESCENARIO;
   const { fondo } = BAJO;
   const rayos = Array.from({ length: 10 }, (_, i) => {
     const a = (i / 10) * Math.PI * 2;
@@ -647,23 +658,34 @@ function bajoLejos(): string {
   const { ancho, alto } = ESCENA_BAJO;
   const { fondo } = BAJO;
   // La pared: la contratapa de *Un baión*, llevada a lo oscuro. Es crayón de Rocambole, no un dibujo.
+  // Agrandada, más allá de los 900 de siempre asomarían el lomo y la lista de temas: la pared sigue
+  // con el mismo pedazo limpio, espejado contra cada borde, así no hay costura.
+  const contratapa = `<g transform="scale(1.552 1.66) translate(-50 -150)"><image href="tapa:un-baion-para-el-ojo-idiota-trasera" x="0" y="0" width="953" height="750" preserveAspectRatio="none"/></g>`;
+  const tramo = (id: string, x0: number, x1: number, espejo: string): string =>
+    `<clipPath id="${id}"><rect x="${x0}" y="-10" width="${x1 - x0}" height="${fondo + 12}"/></clipPath>` +
+    `<g clip-path="url(#${id})"><g transform="${espejo}">${contratapa}</g></g>`;
   const pared =
     `<filter id="tapa-de-noche" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.42 0 0 0 0  0 0.4 0 0 0  0 0 0.56 0 0.02  0 0 0 1 0"/></filter>` +
-    `<clipPath id="bl-pared"><rect x="-10" y="-10" width="${ancho + 20}" height="${fondo + 12}"/></clipPath>` +
-    `<g clip-path="url(#bl-pared)" filter="url(#tapa-de-noche)"><g transform="scale(1.552 1.66) translate(-50 -150)">` +
-    `<image href="tapa:un-baion-para-el-ojo-idiota-trasera" x="0" y="0" width="953" height="750" preserveAspectRatio="none"/></g></g>`;
+    `<g filter="url(#tapa-de-noche)">` +
+    tramo('bl-pared', -10, ancho + 10, '') +
+    tramo('bl-pared-izq', S0 - 10, 0, 'scale(-1 1)') +
+    tramo('bl-pared-der', ancho, S1 + 10, `translate(${ancho * 2} 0) scale(-1 1)`) +
+    `</g>`;
   return (
     `<g filter="url(#rociado)">` +
-    `<rect x="-10" y="-10" width="${ancho + 20}" height="${alto + 20}" fill="${B.noche}"/>` +
+    `<rect x="${S0 - 10}" y="-10" width="${S1 - S0 + 20}" height="${alto + 20}" fill="${B.noche}"/>` +
     pared +
     // Lo oscuro de arriba y de los rincones: la sala está a media luz.
     nube(ancho / 2, -40, 520, 140, B.negro, 'xl', 0.75) +
+    nube(S0 + 100, -40, 260, 140, B.negro, 'xl', 0.75) +
+    nube(S1 - 120, -40, 260, 140, B.negro, 'xl', 0.75) +
     nube(440, 170, 120, 160, B.negro, 'xl', 0.35) +
+    nube(S0 + 60, 220, 120, 200, B.negro, 'xl', 0.35) +
     // El fuego, del lado que da al infierno: tiñe el rincón de la derecha.
-    nube(ancho + 20, fondo - 40, 120, 140, B.llama, 'xl', 0.3) +
+    nube(S1 + 20, fondo - 40, 120, 140, B.llama, 'xl', 0.3) +
     puerta() +
-    ventana() +
-    escenario() +
+    `<g transform="translate(${CORRE_VENTANA} 0)">${ventana()}</g>` +
+    `<g transform="translate(${CORRE_ESCENARIO} 0)">${escenario()}</g>` +
     // La luz de la calle que entra por el agujero y cruza la sala, apenas: es aerógrafo.
     soplo(`M180 150 L230 150 L640 ${fondo + 4} L300 ${fondo + 4} Z`, B.llama, 'xl', 0.12) +
     soplo(`M190 160 L220 160 L520 ${fondo + 4} L330 ${fondo + 4} Z`, B.llamaClara, 'xl', 0.08) +
@@ -686,13 +708,14 @@ function bajoAgua(): string {
   const [cx0, cy0, cx1, cy1] = CRAYON_LIMPIO;
   const sx = ancho / 2 / (cx1 - cx0);
   const sy = (alto - fondo + 8) / (cy1 - cy0);
-  const paño = (espejo: boolean): string =>
-    `<g transform="translate(${espejo ? ancho : 0} ${fondo - 4}) scale(${espejo ? -sx : sx} ${sy}) translate(${-cx0} ${-cy0})">` +
+  // Cada paño mide media escena de las de siempre; agrandada, siguen alternando para los dos lados.
+  const paño = (espejo: boolean, x = espejo ? ancho : 0): string =>
+    `<g transform="translate(${x} ${fondo - 4}) scale(${espejo ? -sx : sx} ${sy}) translate(${-cx0} ${-cy0})">` +
     `<g clip-path="url(#ba-limpio)"><image href="tapa:un-baion-para-el-ojo-idiota-trasera" x="0" y="0" width="953" height="750" preserveAspectRatio="none"/></g></g>`;
   const crayon =
     `<filter id="agua-de-noche" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.36 0 0 0 0  0 0.36 0 0 0  0 0 0.52 0 0.02  0 0 0 1 0"/></filter>` +
     `<clipPath id="ba-limpio"><rect x="${cx0}" y="${cy0}" width="${cx1 - cx0}" height="${cy1 - cy0}"/></clipPath>` +
-    `<g filter="url(#agua-de-noche)">${paño(false)}${paño(true)}</g>`;
+    `<g filter="url(#agua-de-noche)">${paño(false)}${paño(true)}${paño(true, 0)}${paño(false, ancho)}</g>`;
   let rayas = '';
   for (let banda = 0; banda < 6; banda++) {
     const y0 = fondo + ((alto - fondo) * banda) / 6;
@@ -705,24 +728,34 @@ function bajoAgua(): string {
       temblor: 0.03,
       opacidad: [0.25, 0.6],
     });
+    // Las alas, con la misma mano y otra semilla.
+    for (const [a, b, sem] of [[S0 - 20, -20, 1430], [ancho + 20, S1 + 20, 1440]] as const) {
+      rayas += rayado([a, y0, b, y1], Math.round((26 * (b - a)) / (ancho + 40)), [B.celeste, B.lila, B.agua], sem + banda, {
+        angulo: 0, largo: [30 * k, 90 * k], grueso: [1.2 * k, 2.4 * k], temblor: 0.03, opacidad: [0.25, 0.6],
+      });
+    }
   }
   // Los reflejos: la luz de la calle debajo de la puerta, la lamparita y el fuego del rincón.
   const reflejo = (x0: number, x1: number, y0: number, y1: number, colores: readonly string[], n: number, s: number): string =>
     rayado([x0, y0, x1, y1], n, colores, s, { angulo: 0, largo: [10, 44], grueso: [1.1, 2.6], temblor: 0.05, opacidad: [0.3, 0.85] });
   return (
     `<g filter="url(#rociado)">` +
-    forma(rect(-10, fondo - 4, ancho + 10, alto + 10), B.noche) +
+    forma(rect(S0 - 10, fondo - 4, S1 + 10, alto + 10), B.noche) +
     crayon +
     rayas +
     reflejo(PUERTA.vidrio[0] + 10, PUERTA.vidrio[2] - 10, fondo + 6, fondo + 150, [B.llamaClara, B.oro, B.llama], 64, 1420) +
     nube(198, fondo + 70, 60, 90, B.llama, 'xl', 0.25) +
-    reflejo(770, 830, fondo + 6, fondo + 120, [B.oro, B.llamaClara], 28, 1421) +
-    reflejo(820, ancho + 10, fondo + 10, fondo + 200, [B.llama, B.rojo], 34, 1422) +
-    nube(ancho, fondo + 90, 90, 100, B.llama, 'xl', 0.2) +
+    reflejo(770 + CORRE_ESCENARIO, 830 + CORRE_ESCENARIO, fondo + 6, fondo + 120, [B.oro, B.llamaClara], 28, 1421) +
+    reflejo(S1 - 80, S1 + 10, fondo + 10, fondo + 200, [B.llama, B.rojo], 34, 1422) +
+    nube(S1, fondo + 90, 90, 100, B.llama, 'xl', 0.2) +
     // El borde del agua contra la pared: una raya de luz rota.
     reflejo(-10, ancho + 10, fondo - 2, fondo + 3, [B.lila, B.luzFria], 70, 1423) +
+    reflejo(S0 - 10, -10, fondo - 2, fondo + 3, [B.lila, B.luzFria], 20, 1424) +
+    reflejo(ancho + 10, S1 + 10, fondo - 2, fondo + 3, [B.lila, B.luzFria], 24, 1425) +
     // Más oscuro adelante: la sala se hunde hacia el que mira.
     nube(ancho / 2, alto + 30, 560, 90, B.negro, 'xl', 0.55) +
+    nube(S0 + 100, alto + 30, 260, 90, B.negro, 'xl', 0.55) +
+    nube(S1 - 120, alto + 30, 260, 90, B.negro, 'xl', 0.55) +
     `</g>`
   );
 }
@@ -742,9 +775,8 @@ function bajoFrente(): string {
     fibra([[24, 600], [40, 572], [120, 562], [200, 566], [236, 590]], 3.4, 1502) +
     fibra([[40, 570], [120, 559], [196, 563]], 1.8, 1507, B.llama) +
     fibra([[60, 590], [130, 582], [204, 586]], 1.8, 1503) +
-    // La silla, con el respaldo afuera del agua.
-    forma(silla, B.negro) +
-    fibra([[776, 600], [778, 528]], 2.4, 1504, B.rosa) +
+    // La silla, con el respaldo afuera del agua: se corrió con el escenario.
+    `<g transform="translate(${CORRE_ESCENARIO} 0)">${forma(silla, B.negro)}${fibra([[776, 600], [778, 528]], 2.4, 1504, B.rosa)}</g>` +
     // La botella vacía que flota acostada, y un papel con algo escrito que ya no se lee.
     forma('M392 588 L436 580 C442 579 446 583 444 588 L452 588 L452 594 L444 594 C444 600 440 602 436 601 L394 600 Z', B.noche) +
     fibra([[392, 588], [436, 580], [452, 588], [452, 594], [436, 601], [394, 600]], 2.2, 1505, B.negro, true) +
@@ -754,7 +786,7 @@ function bajoFrente(): string {
     `</g>` +
     // La franja de adelante, más oscura, para que lo que flota tenga dónde apoyarse. Sin grano:
     // en una franja soplada no se ve, y no se deja comprimir.
-    soplo(`M-10 ${alto - 20} L${ancho + 10} ${alto - 20} L${ancho + 10} ${alto + 10} L-10 ${alto + 10} Z`, B.negro, 'm', 0.6)
+    soplo(`M${S0 - 10} ${alto - 20} L${S1 + 10} ${alto - 20} L${S1 + 10} ${alto + 10} L${S0 - 10} ${alto + 10} Z`, B.negro, 'm', 0.6)
   );
 }
 
@@ -776,8 +808,8 @@ function bajoOndas(): string {
 
 export const PIEZAS_BAJO: readonly Pieza[] = [
   ...PIEZAS_PIERRE,
-  { nombre: 'bajo-lejos', caja: [0, 0, ESCENA_BAJO.ancho, ESCENA_BAJO.alto], dibujo: bajoLejos(), opaca: true, densidad: 2 },
-  { nombre: 'bajo-agua', caja: [0, BAJO.fondo - 4, ESCENA_BAJO.ancho, ESCENA_BAJO.alto - BAJO.fondo + 4], dibujo: bajoAgua(), opaca: true, densidad: 2 },
-  { nombre: 'bajo-frente', caja: [0, 520, ESCENA_BAJO.ancho, ESCENA_BAJO.alto - 520], dibujo: bajoFrente(), densidad: 2 },
+  { nombre: 'bajo-lejos', caja: [S0, 0, SALA.ancho, ESCENA_BAJO.alto], dibujo: bajoLejos(), opaca: true, densidad: 2 },
+  { nombre: 'bajo-agua', caja: [S0, BAJO.fondo - 4, SALA.ancho, ESCENA_BAJO.alto - BAJO.fondo + 4], dibujo: bajoAgua(), opaca: true, densidad: 2 },
+  { nombre: 'bajo-frente', caja: [S0, 520, SALA.ancho, ESCENA_BAJO.alto - 520], dibujo: bajoFrente(), densidad: 2 },
   { nombre: 'bajo-ondas', caja: [0, BAJO.fondo, ESCENA_BAJO.ancho, ESCENA_BAJO.alto - BAJO.fondo], dibujo: bajoOndas(), opaca: true, densidad: 1 },
 ];

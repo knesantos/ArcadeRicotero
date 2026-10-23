@@ -8,7 +8,8 @@
  *   hundido detrás del borde, y en la pastura el claro del recinto corrido adentro del piso.
  * - **entorno** (los seis de la décima vuelta): el piso impreso a lo largo y los mismos bichos del
  *   recinto (`rig-entornos.ts`), corridos con `k` como corre el dibujo sus cosas fijas.
- * - **recinto** (los cinco de títeres): la escena del recinto, entera, la misma del bestiario.
+ * - **recinto** (los cinco de títeres): la escena del recinto, entera, la misma del bestiario, con
+ *   el ancho de su recinto (`MARCO_DEL_RECINTO` en `rig.ts`).
  *
  * Los dos últimos terminan en la pieza del cruce, que no se toca: los bichos de abajo se tocan igual.
  */
@@ -21,7 +22,7 @@ import { cosa, VELOCIDAD_DE_CARRIL } from './escenas-entornos.ts';
 import { capasDe, fierroDe, sinTitere } from './elenco.ts';
 import { vacaEnElClaro } from './escena-vaca.ts';
 import { ARMADO } from './recortes.ts';
-import { ACECHO, ACHATE, ESCALA_CORDERO, ESCALA_LOBO, PALO, profundidad } from './rig.ts';
+import { ACECHO, ACHATE, ESCALA_CORDERO, ESCALA_LOBO, PALO, marcoDelRecinto, profundidad } from './rig.ts';
 import {
   ALTO, COSAS_DE_CYBERSIBERIA, COSAS_DE_LA_MESA, COSAS_DE_LA_RUTA, COSAS_DE_LOS_ASTILLEROS, COSAS_DEL_ARBOL, COSAS_DEL_GALPON, FIERROS,
   OJOS_DE_CYBERSIBERIA, OJOS_DE_LA_MESA, OJOS_DE_LA_RUTA, OJOS_DE_LOS_ASTILLEROS, OJOS_DEL_ARBOL, OJOS_DEL_GALPON, RUTA,
@@ -186,8 +187,15 @@ export const ESCENA_DEL_RECINTO: Readonly<Record<string, (n: Nombres) => string>
   'la-prision': escenaPrision,
 };
 
+/**
+ * El recinto va entero, y el que se agrandó para los dos lados arranca antes del cero
+ * (`MARCO_DEL_RECINTO`): se corre para que su borde izquierdo caiga en el principio del piso. Adentro
+ * valen las coordenadas del recinto, y la isla las pasa a la pantalla con el marco.
+ */
 function pisoDeRecinto(t: Tramo, nombres: Nombres): string {
-  return `<g class="recinto-en-camino" data-recinto="${t.region}">${ESCENA_DEL_RECINTO[t.region]!(nombres)}</g>` + cruce(t);
+  const { x } = marcoDelRecinto(t.region);
+  const corre = x ? ` transform="translate(${-x} 0)"` : '';
+  return `<g class="recinto-en-camino" data-recinto="${t.region}"${corre}>${ESCENA_DEL_RECINTO[t.region]!(nombres)}</g>` + cruce(t);
 }
 
 /** El piso de un tramo, con todos los que viven en él. */

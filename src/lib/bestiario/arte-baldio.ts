@@ -26,7 +26,7 @@
 
 import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
 import { azar, type P } from './pincel.ts';
-import { CHAPA, ESCENA, LIMON_ARMADO as A, LINTERNAS } from './rig.ts';
+import { CHAPA, LIMON_ARMADO as A, LINTERNAS, marcoDelRecinto } from './rig.ts';
 
 const L = {
   hondo: 'var(--bestia-limon-hondo)',
@@ -279,19 +279,24 @@ function brazo(atras: boolean, semilla: number): string {
  * corre. Las ondas de la chapa son rayones verticales, alternados en lila (donde les pega el farol)
  * y en la noche; con dos o tres chapas levantadas, y los clavos.
  */
+/** Los techos, agrandados a la derecha, y el farol de la parte nueva (el otro lo pinta `arte.ts`). */
+const TECHOS = marcoDelRecinto('los-techos');
+export const FAROL_DEL_FONDO = { x: 1240, y: 150 } as const;
+
 function chapa(): string {
-  const { ancho } = ESCENA;
+  // De punta a punta de los techos, que se agrandaron a la derecha (`MARCO_DEL_RECINTO`).
+  const { ancho } = TECHOS;
   const { arriba, piso, abajo } = CHAPA;
   const rnd = azar(451);
   let s = forma(`M-10 ${piso} L${ancho + 10} ${piso} L${ancho + 10} ${abajo} L-10 ${abajo} Z`, L.violeta);
   for (let x = -10; x < ancho + 10; x += 7) {
-    const luz = Math.max(0, 1 - Math.abs(x - 650) / 420);
+    const luz = Math.max(0, 1 - Math.abs(x - 650) / 420, 0.8 - Math.abs(x - FAROL_DEL_FONDO.x) / 380);
     s += rayon(x, piso + 1, Math.PI / 2, abajo - piso - 2, (x / 7) % 2 < 1 ? L.noche : rnd() < luz ? L.luz : L.lila, 3.4, 0.55 + luz * 0.35);
   }
   // El filo de arriba, que es lo que pisa, tocado por la luz.
   for (let x = -10; x < ancho + 10; x += 10 + rnd() * 12) s += rayon(x, piso, (rnd() - 0.5) * 0.15, 10 + rnd() * 14, rnd() < 0.5 ? L.luz : L.lila, 2.2, 0.8);
   // Las chapas levantadas, con su sombra abajo.
-  for (const x of [384, 548, 742]) {
+  for (const x of [384, 548, 742, 1086, 1288]) {
     s += forma(`M${x} ${piso} L${x + 46} ${piso} L${x + 44} ${arriba} L${x + 2} ${arriba + 3} Z`, L.violeta);
     for (let k = 0; k < 7; k++) s += rayon(x + 3 + k * 6, piso, -Math.PI / 2 + 0.06, piso - arriba - 2, k % 2 ? L.noche : L.lila, 3, 0.7);
     s += nube(x + 22, piso + 4, 26, 3, L.noche, 's', 0.8);
@@ -341,7 +346,7 @@ export const PIEZAS_LIMON: readonly Pieza[] = [
 ];
 
 export const PIEZAS_BALDIO: readonly Pieza[] = [
-  { nombre: 'baldio-chapa', caja: [0, CHAPA.arriba - 4, ESCENA.ancho, CHAPA.abajo - CHAPA.arriba + 16], dibujo: chapa(), densidad: 2 },
+  { nombre: 'baldio-chapa', caja: [0, CHAPA.arriba - 4, TECHOS.ancho, CHAPA.abajo - CHAPA.arriba + 16], dibujo: chapa(), densidad: 2 },
   { nombre: 'baldio-linterna', caja: [-20, -110, LINTERNAS.largo + 20, 220], dibujo: linterna(), densidad: 1 },
   ...PIEZAS_LIMON,
 ];

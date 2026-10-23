@@ -10,6 +10,25 @@ import { ARMADO } from './recortes.ts';
 
 /** La escena: un claro de noche, más ancho que un teléfono. Se recorre de costado. */
 export const ESCENA = { ancho: 900, alto: 640 } as const;
+
+/**
+ * Lo que mide cada recinto de noche, de costado. Todos nacieron de 900; los que estaban muy
+ * cargados se agrandan (pedido del usuario: *"agrandar el espacio de los entornos que están muy
+ * cargados, o separar un poco bestias"*). Se agrandan **sin mover lo que ya estaba**: la escena de
+ * 900 queda donde estaba, con su protagonista en el medio, y el dibujo sigue para afuera. Por eso
+ * un recinto puede arrancar antes del cero: `x` es dónde empieza y `ancho` lo que mide. El baldío
+ * crece solo a la derecha, porque el perro entra por el borde izquierdo, como en la tapa.
+ */
+export const MARCO_DEL_RECINTO: Readonly<Record<string, { readonly x: number; readonly ancho: number }>> = {
+  'los-techos': { x: 0, ancho: 1500 },
+  'la-prision': { x: -250, ancho: 1400 },
+  'el-bajo': { x: -250, ancho: 1450 },
+  'el-templo': { x: -300, ancho: 1500 },
+};
+
+/** El marco de un recinto de noche: los que no se agrandaron miden los 900 de siempre. */
+export const marcoDelRecinto = (region: string): { readonly x: number; readonly ancho: number } =>
+  MARCO_DEL_RECINTO[region] ?? { x: 0, ancho: ESCENA.ancho };
 /** El palo, clavado en el medio de la pastura. */
 export const PALO = { x: 450, y: 418 } as const;
 /** Cuánto se aplasta el piso al verlo de costado: un punto (u, v) se ve en (x + u, y + v · ACHATE). */
@@ -73,15 +92,17 @@ export const LIMON_ARMADO = {
  * de arriba, donde pisa, y es el mismo canto por donde camina el negro Atila (`ATILA.piso`); corre de `desde` a `hasta`, sin meterse arriba del perro.
  */
 export const CHAPA = { arriba: 288, piso: 300, abajo: 314 } as const;
-export const LIMON = { desde: 250, hasta: 820, escala: 1.2, velocidad: 200 } as const;
+// Con los techos agrandados a la derecha (`MARCO_DEL_RECINTO`), Limón corre por la chapa nueva:
+// arranca después del Atila y llega hasta el otro farol, y parado queda lejos de los gatos.
+export const LIMON = { desde: 560, hasta: 1340, escala: 1.2, velocidad: 200 } as const;
 
 /**
  * Las linternas del bloque: salen de afuera de la escena, arriba, una de cada lado, y barren los
  * techos entre dos ángulos (en grados, como `rotate()`: 0 es para la derecha, y crece hacia abajo).
  */
 export const LINTERNAS = {
-  largo: 620,
-  der: { x: 960, y: 70, barre: [146, 172] },
+  largo: 900,
+  der: { x: 1560, y: 70, barre: [140, 172] },
   izq: { x: -60, y: 70, barre: [8, 34] },
 } as const;
 
@@ -173,7 +194,9 @@ export const VACA_ARMADO = {
 } as const;
 
 /** Dónde está la vaca: en la punta de la pastura, con las patas de atrás en el pasto del borde. */
-export const VACA = { x: 652, y: 470, escala: 0.5 } as const;
+// Corrida de 652 a 712 (`D-80`): el hocico del cordero, en la punta de la soga, le tocaba el de la
+// vaca. Pedido del usuario: *"el cordero y la vaca se enciman mucho"*.
+export const VACA = { x: 712, y: 470, escala: 0.5 } as const;
 
 /**
  * El cielo de la vaca. Por arriba cruza la tele de la tapa de *Un baión* hecha satélite, de
@@ -184,7 +207,7 @@ export const CIELO_VACA = {
   satelite: { desde: [1010, 66], hasta: [-110, 122], dura: 34, pausa: 16, escala: 0.4 },
   /** Si cuando la tocan el satélite no se ve, el pedazo viene de acá, de arriba, fuera de cuadro. */
   arriba: [760, -40],
-  impacto: [566, 522],
+  impacto: [626, 510],
   /** Lo que tarda en caer el pedazo, y de qué tamaño va. */
   cae: 1.7,
   pedazo: 0.5,
