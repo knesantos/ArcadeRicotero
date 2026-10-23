@@ -9,7 +9,7 @@
 
 > ## 👑 LA MARCA: LA FR CORONADA, EN EL SITIO Y EN UN ARTIFACT (2026-10-23) — `D-82`
 >
-> **En el PR #74**, rama `difusion/redes`, junto con las redes de abajo. Sin integrar.
+> **En `main` desde el PR #74** (commit de fusión `74c426b`), rama `difusion/redes`, junto con las redes de abajo. Lo integró Claude a pedido del usuario (*"Integralo a main cuando los checks estén en verde"*).
 >
 > - **El logo**: homenaje al PR coronado, con la F en el lugar de la P y la misma corona del original,
 >   vectorizada de la referencia de `RES-42`. `python scripts/generar-logo.py` deja cinco SVG en `public/marca/`.
@@ -22,7 +22,7 @@
 
 > ## 📣 LAS REDES: EL ROL `difusion`, LAS PIEZAS Y LA COLA EN BUFFER (2026-10-23) — `D-81`
 >
-> **En el PR #74**, rama `difusion/redes` sobre `main` en `235e369`. Sin integrar. Pedido del usuario: armar
+> **En `main` desde el PR #74** (commit de fusión `74c426b`), rama `difusion/redes`. Pedido del usuario: armar
 > Instagram y X *"de la forma más automática y simple"*. Metricool quedó afuera porque no le gustó.
 >
 > - **Rol nuevo, el octavo:** `difusion`, con carpeta `Docs/DIFUSION/` y prefijo `DIF-`. Escribe
