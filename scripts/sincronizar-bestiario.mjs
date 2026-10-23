@@ -20,13 +20,16 @@
  *
  * Lo que no puede sincronizar (sin máster, sin versión que dure lo mismo, verso que no aparece)
  * no lo corta y lo deja anotado en `sinSincronizar`: esa bestia sigue sonando como hasta hoy.
+ *
+ * Las de `DESDE_EL_ARRANQUE` (`lib/bestiario/sincro.ts`) no buscan su verso: el recorte va desde el
+ * segundo cero del máster, que es el arranque del tema, y no le pregunta nada a LRCLIB.
  */
 
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join, extname, basename } from 'node:path';
 import { normalizar } from '../src/lib/texto.ts';
-import { elegirVersion, ubicarVerso } from '../src/lib/bestiario/sincro.ts';
+import { DESDE_EL_ARRANQUE, elegirVersion, ubicarVerso } from '../src/lib/bestiario/sincro.ts';
 import { SEGUNDOS_POR_TEMA } from '../src/scripts/rocola.ts';
 
 const DESTINO = join('public', 'audio', 'bestiario');
@@ -161,15 +164,21 @@ for (const b of elegidas) {
   if (!m) { falla('no está el máster en las carpetas, o ffprobe no lo pudo medir'); continue; }
   const { ruta: master, dur } = m;
 
-  if (!cache.has(b.tema)) cache.set(b.tema, await versiones(titulo));
-  const lista = cache.get(b.tema);
-  if (!lista) { falla('LRCLIB no contestó'); continue; }
-  const version = elegirVersion(lista, dur);
-  if (!version) { falla('LRCLIB no tiene una versión sincronizada que dure lo mismo que el máster'); continue; }
-  const lugar = ubicarVerso(version.syncedLyrics, b.verso[0]);
-  if (!lugar) { falla('el verso no aparece en la versión de LRCLIB'); continue; }
+  // Desde el arranque: el segundo cero, sin verso ni LRCLIB.
+  const arranque = DESDE_EL_ARRANQUE.has(b.id);
+  let lugar = { seg: 0, coincidencia: 1 };
+  let version = null;
+  if (!arranque) {
+    if (!cache.has(b.tema)) cache.set(b.tema, await versiones(titulo));
+    const lista = cache.get(b.tema);
+    if (!lista) { falla('LRCLIB no contestó'); continue; }
+    version = elegirVersion(lista, dur);
+    if (!version) { falla('LRCLIB no tiene una versión sincronizada que dure lo mismo que el máster'); continue; }
+    lugar = ubicarVerso(version.syncedLyrics, b.verso[0]);
+    if (!lugar) { falla('el verso no aparece en la versión de LRCLIB'); continue; }
+  }
 
-  const desde = Math.max(0, lugar.seg - PREVIO_SEG);
+  const desde = arranque ? 0 : Math.max(0, lugar.seg - PREVIO_SEG);
   const salida = join(DESTINO, `${b.id}.mp3`);
   // El corte va en la entrada (`-ss` / `-t`), que es exacto y no lee el resto del tema.
   // `loudnorm` sobre esos 10 s los deja al volumen de los fragmentos (-14 LUFS).
@@ -183,16 +192,21 @@ for (const b of elegidas) {
   if (r.status !== 0) { falla(`ffmpeg falló — ${(r.stderr ?? '').trim().split('\n').pop()}`); continue; }
 
   pendientes.delete(b.id);
-  hechos.set(b.id, {
-    id: b.id,
-    tema: b.tema,
-    desdeSeg: Number(lugar.seg.toFixed(2)),
-    coincidencia: Number(lugar.coincidencia.toFixed(2)),
-    lrclib: version.id,
-    duracionMasterSeg: Number(dur.toFixed(1)),
-    difDuracionSeg: Number((version.duration - dur).toFixed(1)),
-  });
-  console.log(`  ✔ ${b.id}: ${lugar.seg.toFixed(2)} s (coincide ${Math.round(lugar.coincidencia * 100)} %)`);
+  hechos.set(
+    b.id,
+    arranque
+      ? { id: b.id, tema: b.tema, desdeSeg: 0, arranque: true, duracionMasterSeg: Number(dur.toFixed(1)) }
+      : {
+          id: b.id,
+          tema: b.tema,
+          desdeSeg: Number(lugar.seg.toFixed(2)),
+          coincidencia: Number(lugar.coincidencia.toFixed(2)),
+          lrclib: version.id,
+          duracionMasterSeg: Number(dur.toFixed(1)),
+          difDuracionSeg: Number((version.duration - dur).toFixed(1)),
+        },
+  );
+  console.log(arranque ? `  ✔ ${b.id}: desde el arranque del tema` : `  ✔ ${b.id}: ${lugar.seg.toFixed(2)} s (coincide ${Math.round(lugar.coincidencia * 100)} %)`);
 }
 
 const orden = new Map(bestiario.bestias.map((b, i) => [b.id, i]));
@@ -203,7 +217,7 @@ writeFileSync(
     {
       decision: 'D-78',
       actualizado: new Date().toISOString().slice(0, 10),
-      nota: 'Lo escribe scripts/sincronizar-bestiario.mjs. desdeSeg es el segundo del máster donde empieza el verso, sacado de LRCLIB (lrclib.net); de ahí no se guarda la letra. Cada recorte vive en public/audio/bestiario/<id>.mp3.',
+      nota: 'Lo escribe scripts/sincronizar-bestiario.mjs. desdeSeg es el segundo del máster donde empieza el verso, sacado de LRCLIB (lrclib.net); de ahí no se guarda la letra. Los que tienen arranque: true van desde el segundo cero del tema, sin LRCLIB. Cada recorte vive en public/audio/bestiario/<id>.mp3.',
       recortes: [...hechos.values()].sort(porOrden),
       sinSincronizar: [...pendientes.values()].sort(porOrden),
     },

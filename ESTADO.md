@@ -5,7 +5,29 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-20
+**Última actualización:** 2026-10-22
+
+> ## 🐖 TRES MÁS: LA HIJA DEL FLETERO, EL BUEN PSICÓPATA Y PORCO REX (2026-10-22) — decimosexta enmienda de `D-73`
+>
+> **Rama `bestiario/tres`** (worktree `.claude/worktrees/bestiario-tres`), sobre `main` en `0be8dc6`, **sin integrar**.
+> Pedido del usuario: *"agrega al bestiario [...] La hija del fletero, El buen Piscopata (que suene el inicio del tema [...])
+> y otro que elijas vos. Que sean bien rocambolescos"*.
+>
+> - **La hija del fletero** (astilleros): grisalla como la mujer del tubo del interior de *Lobo suelto*, con el rosa del
+>   tubo como único color. En la popa del ferry, hablando por un tubo cuyo cable rizado se mete en el agua; le llegan
+>   descargas por el cable y se le para el pelo. Tocada, te mira y la descarga baja al muelle.
+> - **El buen psicópata** (nuevo, en el baldío): el hombre de la gorra de la tapa de *Bang! Bang!*, a guache, mirando el
+>   fusilamiento de la tapa de verdad en un caballete, con el perro de la parabellum que tira saltos mortales. Tocado, el
+>   perro dispara una banderita *BANG* y él te saluda con la gorra.
+> - **Porco Rex** (elegido por el hilo principal, Cybersiberia): un chancho rey en postal virtual de *Último bondi*, con
+>   corona remachada y los anteojos de la banda. Trota, resopla, se revuelca en el barro; tocado, se para y hace los cuernos.
+> - **Alrededor**: el elenco son trece; el baldío llama al elenco; salen las siluetas viejas de la hija y del chancho;
+>   en estos tres **la ficha espera al gesto** (1–1,2 s) y **el psicópata va desde el arranque del tema** (enmiendas a `D-78`).
+> - **Verde:** `npm test` (1871), `npm run check`, `npm run build` (179 páginas). En el panel a 375 px, andando los tres.
+> - **Falta, y no se puede desde acá:** cortar el arranque de *La parabellum* (`T-502`): el máster no está en esta
+>   máquina. Con la carpeta de los discos: `npm run sincronizar-bestiario -- "<carpeta>" --ids=el-buen-psicopata`.
+>   Hasta entonces suena como los que no tienen recorte.
+> - **Abierto:** `T-502`, `T-503` (cotejar las páginas del memoir), `T-431`, `T-435`, `T-437`/`T-439`/`T-490`.
 
 > ## 🎵 EL VERSO SUENA DONDE SE LEE (2026-10-20) — `D-78`
 >

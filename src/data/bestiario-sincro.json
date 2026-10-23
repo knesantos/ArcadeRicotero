@@ -1,7 +1,7 @@
 {
   "decision": "D-78",
   "actualizado": "2026-10-20",
-  "nota": "Lo escribe scripts/sincronizar-bestiario.mjs. desdeSeg es el segundo del máster donde empieza el verso, sacado de LRCLIB (lrclib.net); de ahí no se guarda la letra. Cada recorte vive en public/audio/bestiario/<id>.mp3.",
+  "nota": "Lo escribe scripts/sincronizar-bestiario.mjs. desdeSeg es el segundo del máster donde empieza el verso, sacado de LRCLIB (lrclib.net); de ahí no se guarda la letra. Los que tienen arranque: true van desde el segundo cero del tema, sin LRCLIB. Cada recorte vive en public/audio/bestiario/<id>.mp3.",
   "recortes": [
     {
       "id": "la-bestia-pop",
@@ -986,6 +986,11 @@
       "id": "los-perros-sin-folleto",
       "tema": "buenas-noticias",
       "motivo": "el verso no aparece en la versión de LRCLIB"
+    },
+    {
+      "id": "el-buen-psicopata",
+      "tema": "la-parabellum-del-buen-psicopata",
+      "motivo": "va desde el arranque del tema (pedido del usuario) y el máster no está en esta máquina: correr npm run sincronizar-bestiario -- \"<carpeta de discos>\" --ids=el-buen-psicopata"
     },
     {
       "id": "el-canibal-desdentado",

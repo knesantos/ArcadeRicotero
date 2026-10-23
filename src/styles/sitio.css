@@ -4218,3 +4218,43 @@ body:has(> .lugar) .marca-chica {
 .bt-esclavo-lagrima { fill: var(--bestia-dracula-papel); }
 .titere--esclavo [data-parte="lagrima"], .titere--esclavo [data-parte="rojo"] { pointer-events: none; }
 /* ⟨/el esclavo sensible y chillón⟩ */
+
+/* Decimosexta vuelta (D-73): tres más, cada uno en su bloque, con las tintas de su bloque de
+   `tokens.css`. */
+.titere--hija, .titere--psicopata, .titere--porco { cursor: pointer; }
+
+/* ⟨la hija del fletero⟩ */
+/* El cable rizado del tubo, en el rosa del tubo, con un hilo de brillo encima; lo hundido, en la tiza
+   del agua, apenas. La chispa y la luz de la descarga son luz: se suman a lo oscuro. El párpado es de la
+   piel gris de la grisalla. Nada de esto se toca: el toque es del títere entero. */
+.bt-hija-cable { fill: none; stroke: var(--bestia-hija-tubo); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.bt-hija-cable-luz { fill: none; stroke: var(--bestia-hija-tubo-luz); stroke-width: 0.5; stroke-linecap: round; stroke-linejoin: round; stroke-opacity: 0.7; transform: translate(-0.4px, -0.5px); }
+.bt-hija-hundido { fill: none; stroke: var(--entorno-astillero-tiza-clara); stroke-width: 1.4; stroke-linecap: round; stroke-opacity: 0.32; stroke-dasharray: 3 4; }
+.bt-hija-onda { fill: none; stroke: var(--entorno-astillero-tiza-clara); stroke-width: 0.8; }
+.bt-hija-parpado { fill: var(--bestia-hija-media); }
+.bt-hija-chispa, .bt-hija-resplandor { mix-blend-mode: screen; }
+.titere--hija [data-parte="hundido"], .titere--hija [data-parte="ondas"], .titere--hija [data-parte="cable"], .titere--hija [data-parte="cable-luz"],
+.titere--hija [data-parte="chispa"], .titere--hija [data-parte="resplandor"] { pointer-events: none; }
+/* ⟨/la hija del fletero⟩ */
+
+/* ⟨el buen psicópata⟩ */
+/* La correa de cuero, en el marrón de los pliegues de la tapa; los párpados, de la piel de él y del pelo
+   del perro. La luz de la lamparita del cuadro es luz: se suma a lo oscuro. Ni la correa ni el cuadro
+   se tocan: el toque es del títere entero. */
+.bt-psicopata-correa { fill: none; stroke: var(--bestia-psicopata-pliegue); stroke-width: 3.2; stroke-linecap: round; }
+.bt-psicopata-parpado { fill: var(--bestia-psicopata-ocre); }
+.bt-psicopata-parpado-perro { fill: var(--bestia-psicopata-zorro); }
+.bt-psicopata-luz { mix-blend-mode: screen; pointer-events: none; }
+.titere--psicopata [data-parte="correa"], .titere--psicopata [data-parte="humo"], .titere--psicopata [data-parte="bandera"] { pointer-events: none; }
+/* ⟨/el buen psicópata⟩ */
+
+/* ⟨Porco Rex⟩ */
+/* La sombra en la nieve, del acero hondo de Cybersiberia; lo de adentro de la boca cuando chilla y la
+   ceja que asoma arriba de los anteojos, de la piel en la sombra. El brillo de la tele en los
+   anteojos y el vaho son luz. Nada de esto se toca: el toque es del títere entero. */
+.bt-porco-sombra { fill: var(--entorno-cyber-acero-hondo); opacity: 0.55; }
+.bt-porco-adentro { fill: var(--bestia-porco-piel-honda); }
+.bt-porco-ceja { fill: none; stroke: var(--bestia-porco-piel-honda); stroke-width: 1.6; stroke-linecap: round; }
+.titere--porco [data-parte="brillo"], .titere--porco [data-parte="vaho"] { mix-blend-mode: screen; }
+.titere--porco [data-parte="brillo"], .titere--porco [data-parte="vaho"], .titere--porco [data-parte="salpica"] { pointer-events: none; }
+/* ⟨/Porco Rex⟩ */
