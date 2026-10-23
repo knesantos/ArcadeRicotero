@@ -5,12 +5,12 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-22
+**Última actualización:** 2026-10-23
 
 > ## 🪰 TRES MÁS, ELEGIDOS POR EL HILO: EL ÁNGEL DE LA SOLEDAD, EL PAC-MAN Y LA MOSCA (2026-10-22) — decimoséptima enmienda de `D-73`
 >
-> **Rama `bestiario/seis`** (worktree `.claude/worktrees/bestiario-seis`), **sobre `bestiario/tres`** (el PR #69), **sin
-> integrar**: entra después del #69, o con él. Pedido del usuario: *"Agrega al bestiario con su diseño, animacion y todo bien
+> **En `main` desde el PR #70** (commit de fusión `274a6d4`), rama `bestiario/seis`, que salió de `bestiario/tres` y entró
+> después del #69. Lo integró Claude a pedido del usuario (*"Integrá todo a main"*). Pedido del usuario: *"Agrega al bestiario con su diseño, animacion y todo bien
 > pulido a 3 bestias que elijas vos."*
 >
 > - **El ángel de la soledad** (árbol): soplado en el sepia de la contratapa de *Lobo suelto*, con las plumas hechas de los
@@ -30,7 +30,8 @@
 
 > ## 🐖 TRES MÁS: LA HIJA DEL FLETERO, EL BUEN PSICÓPATA Y PORCO REX (2026-10-22) — decimosexta enmienda de `D-73`
 >
-> **Rama `bestiario/tres`** (worktree `.claude/worktrees/bestiario-tres`), sobre `main` en `0be8dc6`, **sin integrar**.
+> **En `main` desde el PR #69** (commit de fusión `a188412`), rama `bestiario/tres`, sobre `main` en `0be8dc6`. Lo integró
+> Claude a pedido del usuario (*"Integrá todo a main"*).
 > Pedido del usuario: *"agrega al bestiario [...] La hija del fletero, El buen Piscopata (que suene el inicio del tema [...])
 > y otro que elijas vos. Que sean bien rocambolescos"*.
 >
