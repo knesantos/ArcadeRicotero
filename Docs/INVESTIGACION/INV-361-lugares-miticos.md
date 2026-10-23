@@ -1,6 +1,6 @@
 # INV-361 — Los lugares míticos: Pigüé y los otros que no están en el mapa
 
-> Fichas `RES-361` … `RES-376`, para los lugares escondidos del bestiario redondo: lugares reales,
+> Fichas `RES-361` … `RES-386`, para los lugares escondidos del bestiario redondo: lugares reales,
 > fuera del mapa, adonde te mandan las bestias en una búsqueda del tesoro, con un integrante que no
 > habla y se insinúa por sus objetos (pedido del usuario, 2026-10-23). Lo buscó `investigador` el
 > 2026-10-23 (subagente, con la web); lo pasó a este archivo el hilo principal, porque el rol no
@@ -8,8 +8,12 @@
 >
 > **El libro, en parte.** La primera pasada salió de reseñas, de un extracto de Planeta en Infobae y
 > de entrevistas. Después el usuario mandó fotos de su ejemplar de *Fuimos reyes* (pp. 45-59 salteadas,
-> capítulo 2, "Paz, amor y ERP"): con eso se corrigió `RES-361` y salieron `RES-371` … `RES-376`.
+> capítulo 2, "Paz, amor y ERP"): con eso se corrigió `RES-361` y salieron `RES-381` … `RES-386`.
 > Las fotos quedaron fuera del repo, en el scratchpad de la sesión.
+>
+> **Renumeradas:** estas fichas del libro se escribieron primero como `RES-371` … `RES-376`, pero
+> ese mismo día otra sesión ya había tomado la `RES-371` (`INV-371`, bancos de efectos). Pasaron a
+> `RES-381` … `RES-386`; del 372 al 380 queda libre.
 >
 > **Fuera de este encargo:** la muerte del Indio, Bulacio y Olavarría (registro 3, `CNT-04`/`CNT-06`).
 > Ya fichado y no repetido: `RES-336` (Cofradía, Diplodocum, Teatro Ópera 5-11-1969).
@@ -170,7 +174,7 @@
 
 *De acá para abajo, lo que salió de las fotos del libro (2026-10-23).*
 
-## RES-371 — La Casa de la Luna, en Tolosa: un vagón de vidrio
+## RES-381 — La Casa de la Luna, en Tolosa: un vagón de vidrio
 
 - **Hallazgo:** la comunidad que armaron Poli, Skay y sus hermanos Guillermo y Daniel, en Tolosa,
   cuando Poli empezó a espaciar sus visitas a la Cofradía (p. 48). Los dueños de la casa eran una
@@ -183,7 +187,7 @@
 - **Rótulo:** hecho (lo narra el libro); el ida y vuelta, testimonio de Rocambole.
 - **Fuente:** *Fuimos reyes*, pp. 48-49, 55.
 
-## RES-372 — Los territorios móviles de Poli y Skay
+## RES-382 — Los territorios móviles de Poli y Skay
 
 - **Hallazgo:** *"Las comunidades eran, finalmente, territorios móviles, resbaladizos."* En un lapso
   corto, Poli y Skay vivieron, a veces en grupo y a veces no, en la **Isla Paulino**, en **Ostende**,
@@ -197,7 +201,7 @@
 - **Rótulo:** hecho (la lista la da el libro); Villa Elisa, testimonio de Poli.
 - **Fuente:** *Fuimos reyes*, pp. 51, 55.
 
-## RES-373 — La Cofradía: el año, y las dos casas
+## RES-383 — La Cofradía: el año, y las dos casas
 
 - **Hallazgo:** Rocambole dice que la Cofradía *"se inició en el verano del 67"*, cuando unos de
   Bellas Artes decidieron vivir todos juntos (p. 46). Primero una casa chorizo en 13 y 41; con la plata
@@ -211,13 +215,13 @@
   respuesta 9. Con el verano del 67 de Rocambole serían 10 (o 9 y pico). Es exactamente el caso que
   `CLAUDE.md` deja estricto. **Resuelto el 2026-10-23 por el hilo principal, a pedido del usuario:**
   `MM-08` (el año de fundación) y `MM-09` (la cuenta) ahora preguntan por el festival del Club Atenas,
-  abril de 1970, que no está en disputa: 1970 y 7 años hasta el Lozanazo, con fuente `RES-373`. El año
+  abril de 1970, que no está en disputa: 1970 y 7 años hasta el Lozanazo, con fuente `RES-383`. El año
   de fundación queda fuera de los juegos hasta que se resuelva el 67 contra el 68.
 - **Atributos simbólicos:** la casa en el borde de la ciudad, el parque, las carpas, las artesanías.
 - **Rótulo:** el 67 es testimonio de Rocambole, fundador; las casas y el festival, hecho según el libro.
 - **Fuente:** *Fuimos reyes*, pp. 46-47.
 
-## RES-374 — Cómo se los veía: el Indio de gamulán y Poli de cuero en moto
+## RES-384 — Cómo se los veía: el Indio de gamulán y Poli de cuero en moto
 
 - **Hallazgo:** la primera vez que Fenton vio al Indio, en una reunión de siloístas, era *"un hombre
   más bien bajo, con pelo hasta los hombros, flaco y abrigado por un pesado gamulán"*. Lo llamaban "El
@@ -231,7 +235,7 @@
 - **Rótulo:** testimonio (Fenton, Isa Portugheis, Kubero Díaz, en el libro).
 - **Fuente:** *Fuimos reyes*, pp. 48, 56, 57.
 
-## RES-375 — Mar Azul, 1974: la tribu en carpas
+## RES-385 — Mar Azul, 1974: la tribu en carpas
 
 - **Hallazgo:** Isa Portugheis vio al Indio por última vez antes de irse a Europa en 1974, en Mar Azul:
   *"Éramos una tribu hippie con carpas que tomaba sol en bolas"*; cuando pasaba la policía se tapaban o
@@ -240,7 +244,7 @@
 - **Rótulo:** testimonio de Isa Portugheis.
 - **Fuente:** *Fuimos reyes*, p. 56.
 
-## RES-376 — Babú, 48 entre 9 y 10
+## RES-386 — Babú, 48 entre 9 y 10
 
 - **Hallazgo:** un boliche platense lleno de hippies. Bien tarde, Sergio Martínez, después Mufercho,
   se sentaba en la cabina del disc-jockey y ponía rock progresivo y mucho Hendrix. Ahí conoció a Skay

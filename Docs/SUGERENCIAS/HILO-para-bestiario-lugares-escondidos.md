@@ -48,8 +48,8 @@ detallado. Deben ser las bestias importantes."*
 
 En reserva quedan **el caníbal y el Morta**, para el Sandra Tango Club (`RES-367`), si entra. Y del
 libro salieron dos candidatos más: **la Casa de la Luna**, un vagón de ferrocarril de vidrio, madera y
-piedras en Tolosa (`RES-371`), y **la Isla Paulino**, el lugar más fuera del mapa de los que vivieron
-Poli y Skay (`RES-372`).
+piedras en Tolosa (`RES-381`), y **la Isla Paulino**, el lugar más fuera del mapa de los que vivieron
+Poli y Skay (`RES-382`).
 
 ## Las pistas: cómo suenan
 
@@ -81,8 +81,8 @@ cada línea cumple cuatro cosas:
 | pibe de los astilleros | levanta la caja hacia el borde | *Bajá donde silba el que no habla.* | el sótano y el silbato de Skay (`RES-365`) |
 | Limón | rueda por las chapas | *Rodá conmigo hasta la medianera.* | Atila, en la medianera |
 | negro Atila | mira por arriba del muro | *Saltá el muro: hay pelota y pólvora.* | la calle 41 (`RES-369`) |
-| esclavo sensible | mira la calle por la reja | *Buscá la cabeza que llora cera.* | Luzbelito y su vela (y la vela que dibujaba el Indio de chico, `RES-374`) |
-| Luzbelito | la llama se tuerce hacia el borde | *Me tallaron manos que vivían juntas.* | la Cofradía, comunidad de artesanos (`RES-373`) |
+| esclavo sensible | mira la calle por la reja | *Buscá la cabeza que llora cera.* | Luzbelito y su vela (y la vela que dibujaba el Indio de chico, `RES-384`) |
+| Luzbelito | la llama se tuerce hacia el borde | *Me tallaron manos que vivían juntas.* | la Cofradía, comunidad de artesanos (`RES-383`) |
 | drácula con tacones | taconea hacia Barbazul | *Seguí al que carga las llaves.* | Barbazul |
 | Barbazul | levanta el llavero hacia el baldío | *Detrás del borde ladra uno que sigue.* | ese perro que sigue allí |
 | ese perro que sigue allí | se mete por el borde | *(sin línea: ladra y se va por el borde)* | Parque Leloir |
@@ -92,7 +92,7 @@ cada línea cumple cuatro cosas:
 - **Pigüé** (corregido con el libro, `RES-361`): un rancho junto al arroyo, el horno de barro, el
   fogón de noche con una guitarra, el arco y la flecha, una vizcacha, la vaca que no se deja ordeñar,
   una bolsa de harina. Una figura de pelo largo de espaldas al fuego, tocando; otra de cuero negro
-  (Poli, `RES-374`). Sin alcohol a la vista: no había. Es, según el libro, el lugar más feliz de Skay.
+  (Poli, `RES-384`). Sin alcohol a la vista: no había. Es, según el libro, el lugar más feliz de Skay.
 - **El Lozano:** el escenario a ras de la gente, gallinas sueltas, matafuegos abiertos, un overol
   blanco de "astronauta" colgado, vacío. Testimonio.
 - **Salta:** el micro Volvo al amanecer frente al bar El Polaco, cuatro siluetas mirándose, campos de
@@ -104,9 +104,9 @@ cada línea cumple cuatro cosas:
 - **La calle 41:** la calle cortada en las dos esquinas, la pelota, hondas de palo, tapitas sobre las
   vías del tranvía, el cartel de Sidral. Un pibe de espaldas. Testimonio del memoir.
 - **La Cofradía:** la casa de media manzana en el borde de la ciudad, con parque, árboles y carpas;
-  un taller de artesanos, herramientas, yeso, cuero; una guitarra contra la pared (`RES-373`).
+  un taller de artesanos, herramientas, yeso, cuero; una guitarra contra la pared (`RES-383`).
 - **Para insinuar al Indio** en cualquier lugar donde esté: flaco, pelo a los hombros, un gamulán
-  pesado, de espaldas; o el chico que dibuja una vela chorreando cera (`RES-374`). Nunca la pelada ni
+  pesado, de espaldas; o el chico que dibuja una vela chorreando cera (`RES-384`). Nunca la pelada ni
   los lentes.
 - **Parque Leloir:** un laberinto de cercos, los ovejeros, una ventana encendida en planta baja (el
   estudio). El laberinto, **leyenda**. Nada de su final: eso es registro 3 y no entra al bestiario.
