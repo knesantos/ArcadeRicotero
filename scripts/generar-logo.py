@@ -11,28 +11,38 @@ Escribe en `public/marca/`:
   · fr-tinta.svg          — la marca a una tinta (`--fondo`), para apoyar sobre el papel
   · fr-papel.svg          — la marca a una tinta (`--papel`), para apoyar sobre una tapa o un color
 
-**Es un homenaje al PR coronado, no una copia.** La composición sigue el logo de la banda —la
-letra grande que baja a la izquierda, la R más chica y más alta a la derecha, apenas
-tocándose, y la corona torcida arriba con sus joyas y su ala vista desde abajo—, calcada sobre
-la referencia que trae la fuente (`RES-42`, `Docs/INVESTIGACION/Tipografia/Patricio-Rey-Regular.zip`).
-Pero la F reemplaza a la P y la corona está dibujada acá, trazo por trazo; la banda no firma
-nada del sitio.
+**Es un homenaje al PR coronado.** La composición es la del logo de la banda —la letra grande
+que baja a la izquierda, la R más chica y más alta a la derecha, apenas tocándose, y la corona
+torcida arriba—, con la F en el lugar de la P. La referencia es la imagen que trae la fuente
+(`RES-42`, `FOTO.png` en `Docs/INVESTIGACION/Tipografia/Patricio-Rey-Regular.zip`).
+
+**La corona es la misma del original**: se vectoriza de esa imagen cada vez que corre esto
+(contornos del blanco, con lo negro calado), así que las joyas, el filete y el adentro del ala
+dejan ver el fondo. El usuario la pidió así: *"que sea la misma corona"*. Una corona dibujada a
+mano, la primera versión, se veía cortada.
 
 **Las letras salen de la fuente**: son los glifos de `public/fuentes/patricio-rey.woff` pasados
 a trazo, girados y escalados hasta calzar en el lugar de la P y la R del original. **Los
 colores salen de `tokens.css`**, como en `generar-marca-social.mjs`.
 
-Las coordenadas son las de la referencia (2000 × 1600): así se puede volver a calcar encima.
+Las coordenadas son las de la referencia a 2000 × 1600 (dos tercios de la imagen): así se
+puede volver a calcar encima. Necesita `fonttools`, `numpy`, `pillow` y `contourpy`.
 """
+import io
 import re
+import zipfile
 from pathlib import Path
 
+import numpy as np
+from contourpy import FillType, contour_generator
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.ttLib import TTFont
+from PIL import Image, ImageFilter
 
 RAIZ = Path(__file__).resolve().parent.parent
 TOKENS = (RAIZ / 'src/styles/tokens.css').read_text(encoding='utf-8')
 SALIDA = RAIZ / 'public/marca'
+REFERENCIA = RAIZ / 'Docs/INVESTIGACION/Tipografia/Patricio-Rey-Regular.zip'
 
 
 def token(nombre: str) -> str:
@@ -45,7 +55,6 @@ def token(nombre: str) -> str:
 ROJO = token('--marca-rojo')
 TINTA = token('--fondo')
 PAPEL = token('--papel')
-CANTO = token('--papel-borde')
 
 fuente = TTFont(RAIZ / 'public/fuentes/patricio-rey.woff')
 glifos = fuente.getGlyphSet()
@@ -58,6 +67,73 @@ def glifo(letra: str) -> tuple[str, float]:
     glifos[nombre].draw(trazo)
     return trazo.getCommands(), glifos[nombre].width
 
+
+# ---------------------------------------------------------------- la corona
+
+# La caja de la corona en la imagen original (3000 × 2400), y cuánto se suaviza el borde.
+CAJA_CORONA = (870, 150, 1700, 880)
+UMBRAL = 110
+TOLERANCIA = 0.9  # en píxeles de la imagen: lo que se le permite a la simplificación
+
+
+def simplificar(puntos: np.ndarray, tolerancia: float) -> np.ndarray:
+    """Douglas-Peucker: saca los puntos que no cambian la forma más que la tolerancia."""
+    if len(puntos) < 4:
+        return puntos
+    guardar = np.zeros(len(puntos), dtype=bool)
+    guardar[0] = guardar[-1] = True
+    pila = [(0, len(puntos) - 1)]
+    while pila:
+        i, j = pila.pop()
+        a, b = puntos[i], puntos[j]
+        tramo = puntos[i + 1:j]
+        if not len(tramo):
+            continue
+        ab = b - a
+        largo = np.hypot(*ab) or 1.0
+        dist = np.abs(ab[0] * (tramo[:, 1] - a[1]) - ab[1] * (tramo[:, 0] - a[0])) / largo
+        k = int(np.argmax(dist))
+        if dist[k] > tolerancia:
+            guardar[i + 1 + k] = True
+            pila += [(i, i + 1 + k), (i + 1 + k, j)]
+    return puntos[guardar]
+
+
+def trazar_corona() -> str:
+    """Los contornos del blanco de la corona del original, en coordenadas de la referencia."""
+    with zipfile.ZipFile(REFERENCIA) as z:
+        imagen = Image.open(io.BytesIO(z.read('FOTO.png'))).convert('L')
+    x0, y0, x1, y1 = CAJA_CORONA
+    gris = np.asarray(imagen.crop(CAJA_CORONA).filter(ImageFilter.GaussianBlur(1.2)), dtype=float)
+    polis, codigos = contour_generator(z=gris, fill_type=FillType.OuterCode).filled(UMBRAL, 256)
+    trazo = []
+    for pts, cods in zip(polis, codigos):
+        # Cada polígono trae su borde de afuera y sus agujeros: se parte en anillos.
+        inicios = list(np.flatnonzero(cods == 1)) + [len(pts)]
+        for i, j in zip(inicios, inicios[1:]):
+            # El anillo cierra repitiendo el primer punto: se parte en el punto más lejano y se
+            # simplifica cada mitad, que si no Douglas-Peucker ve un tramo de largo cero.
+            anillo = pts[i:j - 1] if np.allclose(pts[i], pts[j - 1]) else pts[i:j]
+            if len(anillo) < 3:
+                continue
+            k = int(np.argmax(np.hypot(*(anillo - anillo[0]).T)))
+            anillo = np.vstack([simplificar(anillo[:k + 1], TOLERANCIA)[:-1],
+                                simplificar(np.vstack([anillo[k:], anillo[:1]]), TOLERANCIA)[:-1]])
+            if len(anillo) < 3:
+                continue
+            xy = [f'{(x + x0) / 1.5:.1f},{(y + y0) / 1.5:.1f}' for x, y in anillo]
+            trazo.append('M' + 'L'.join(xy) + 'Z')
+    return ''.join(trazo)
+
+
+CORONA = trazar_corona()
+
+
+def corona(tinta: str) -> str:
+    return f'<path fill="{tinta}" fill-rule="evenodd" d="{CORONA}"/>'
+
+
+# ---------------------------------------------------------------- las letras
 
 # Dónde cae cada letra: centro en la referencia, escala y giro. El centro del glifo es el de
 # su caja en la fuente (y para arriba). Calcado sobre la P y la R del PR coronado.
@@ -73,23 +149,6 @@ def letra(c: str, tinta: str) -> str:
     (cx, cy), s, giro, (gx, gy) = l['centro'], l['escala'], l['giro'], l['glifo']
     return (f'<g transform="translate({cx},{cy}) rotate({giro}) scale({s},{-s}) translate({-gx},{-gy})">'
             f'<path d="{d}" fill="{tinta}"/></g>')
-
-
-def corona(cuerpo: str, cara: str, detalle: str) -> str:
-    """La corona torcida, vista un poco desde abajo: cuatro puntas de llama, tres joyas, dos
-    perlas y el ala ovalada con el adentro oscuro y sus rayas."""
-    return f'''<g transform="translate(590,100)">
-<path fill="{cuerpo}" d="M5,252 L125,168 L190,195 C175,130 180,60 215,50 C250,45 300,110 330,140 L370,62 L425,122 C450,80 480,20 515,10 C510,70 512,140 518,200 L525,270 L180,420 C120,370 60,300 5,252 Z"/>
-<path fill="{cara}" d="M5,252 L125,168 L150,200 L120,330 C80,310 40,280 5,252 Z"/>
-<ellipse cx="355" cy="375" rx="198" ry="66" transform="rotate(-22 355 375)" fill="{cuerpo}" stroke="{detalle}" stroke-width="6"/>
-<ellipse cx="358" cy="378" rx="172" ry="46" transform="rotate(-22 358 378)" fill="{detalle}"/>
-<g fill="none" stroke="{cuerpo}" stroke-width="7" stroke-linecap="round" transform="rotate(-22 358 378)">
-<path d="M230,380 C280,392 340,394 400,388"/><path d="M215,365 C270,376 330,380 380,372"/><path d="M245,395 C300,404 350,404 420,398"/><path d="M300,360 L320,350"/>
-</g>
-<circle cx="170" cy="318" r="14" fill="{detalle}"/><circle cx="290" cy="250" r="14" fill="{detalle}"/><circle cx="415" cy="203" r="14" fill="{detalle}"/>
-<circle cx="512" cy="198" r="14" fill="{cuerpo}" stroke="{detalle}" stroke-width="5"/>
-<circle cx="112" cy="362" r="12" fill="{cuerpo}" stroke="{detalle}" stroke-width="4"/>
-</g>'''
 
 
 def nombre(tinta: str) -> str:
@@ -108,8 +167,8 @@ def nombre(tinta: str) -> str:
             + ''.join(partes) + '</g>')
 
 
-def marca(letras: str, cuerpo: str, cara: str, detalle: str) -> str:
-    return corona(cuerpo, cara, detalle) + letra('F', letras) + letra('R', letras)
+def marca(letras: str, cabeza: str) -> str:
+    return corona(cabeza) + letra('F', letras) + letra('R', letras)
 
 
 def svg(caja: tuple[int, int, int, int], cuerpo: str) -> str:
@@ -124,13 +183,13 @@ COMPLETO = (240, 70, 1540, 1450)
 
 def main() -> None:
     SALIDA.mkdir(parents=True, exist_ok=True)
-    color = marca(ROJO, PAPEL, CANTO, TINTA)
+    # A color: las letras en el rojo de Oktubre y la corona en el papel, que es el blanco de la marca.
+    color = marca(ROJO, PAPEL)
     salidas = {
         'fr.svg': svg(ISOTIPO, color),
         'fichin-ricotero.svg': svg(COMPLETO, color + nombre(ROJO)),
-        # A una tinta: los detalles de la corona se recortan con la tinta de donde va a apoyar.
-        'fr-tinta.svg': svg(ISOTIPO, marca(TINTA, TINTA, TINTA, PAPEL)),
-        'fr-papel.svg': svg(ISOTIPO, marca(PAPEL, PAPEL, PAPEL, TINTA)),
+        'fr-tinta.svg': svg(ISOTIPO, marca(TINTA, TINTA)),
+        'fr-papel.svg': svg(ISOTIPO, marca(PAPEL, PAPEL)),
         # El disco de tinta, como el del original: la marca entra entera en el círculo.
         'fr-redondo.svg': svg((300, -50, 1400, 1400),
                               f'<circle cx="1000" cy="650" r="700" fill="{TINTA}"/>'
@@ -138,7 +197,7 @@ def main() -> None:
     }
     for archivo, texto in salidas.items():
         (SALIDA / archivo).write_text(texto, encoding='utf-8')
-        print(f'  public/marca/{archivo}')
+        print(f'  public/marca/{archivo}  {len(texto.encode()) // 1024} KB')
 
 
 if __name__ == '__main__':
