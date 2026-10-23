@@ -174,7 +174,8 @@ export const VECINOS_DEL_TEMPLO: Readonly<Record<string, readonly [number, numbe
   'la-polilla': [604, 150, 'papel'],
   'la-murga-de-los-renegados': [-40, 572, 'papel'],
   'el-morta': [652, 440, 'oro'],
-  'mister-ed-y-huesito': [930, 566, 'papel'],
+  // Mister Ed se corrió a la derecha para dejarle el aire al Dr. Saturno, que flota delante de la columna.
+  'mister-ed-y-huesito': [985, 580, 'papel'],
   'el-doctor-saturno': [1000, 300, 'papel'],
   'el-sheriff': [-170, 530, 'oro'],
   'la-bailarina': [270, 586, 'papel'],

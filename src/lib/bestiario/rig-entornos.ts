@@ -207,7 +207,8 @@ export const OJOS_DE_LA_MESA: Readonly<Record<string, Ojos>> = {
 export const COSAS_DE_LA_MESA: Readonly<Record<string, Cosa>> = {
   'la-mosca': [470, 232, 26],
   'el-moscon-zumbon': [760, 384, 28],
-  'el-moscardon-imaginario': [840, 236, 30],
+  // Se corrió de al lado del verdugo, que ahora tiene el hacha ahí: zumba al costado de la ventana.
+  'el-moscardon-imaginario': [540, 206, 30],
   'las-hormigas': [672, 414, 26],
   'la-hormiga-dormida': [570, 416, 22],
 };

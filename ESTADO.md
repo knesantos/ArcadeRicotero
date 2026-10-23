@@ -7,6 +7,20 @@
 
 **Última actualización:** 2026-10-23
 
+> ## 🪓 TRES BESTIAS MÁS EN LOS ENTORNOS FLACOS: EL VERDUGO, EL DR. SATURNO Y TU ANIMAL (2026-10-23) — `D-73` (18)
+>
+> **Sin integrar**, en la rama `bestiario/tres-del-fondo`. Pedido del usuario: tres bestias rocambolescas y misteriosas, en
+> los entornos con menos personajes detallados. Se contó entorno por entorno: el monte (1 de 8), la mesa (2 de 12) y el templo
+> (2 de 11).
+>
+> - **El verdugo que cena distinguido** (mesa, *Jijiji*): tallado como *Oktubre* y recortado en papel. Cena solo; tocado, brinda.
+> - **El Dr. Saturno** (templo, *Momo sampler*): aerógrafo violeta, flota, con el anillo y tres lunitas. Tocado, da un turno.
+> - **Tu animal** (monte, *Gulp!*): pincel seco petróleo, se esconde y quedan los ojos; la correa se va del monte. Tocado, se
+>   muestra. Es el primero del elenco en el monte: el monte y su tramo del camino ya llaman al elenco.
+> - **Verde:** `npm test` (1948), `npm run check` (0 errores), `npm run build` (180 páginas). En el sitio servido, las tres
+>   escenas arman los títeres. **No se vieron animar**: el panel estaba oculto.
+> - **Falta**: `T-506` (verlos en un teléfono de verdad) y `T-507` (las tintas al lienzo; que `contenido` lea las estampas).
+
 > ## 👑 LA MARCA: LA FR CORONADA, EN EL SITIO Y EN UN ARTIFACT (2026-10-23) — `D-82`
 >
 > **En `main` desde el PR #74** (commit de fusión `74c426b`), rama `difusion/redes`, junto con las redes de abajo. Lo integró Claude a pedido del usuario (*"Integralo a main cuando los checks estén en verde"*).

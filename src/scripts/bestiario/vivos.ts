@@ -27,6 +27,9 @@ import { armarPorco } from './porco.ts';
 import { armarAngel } from './angel.ts';
 import { armarPacman } from './pacman.ts';
 import { armarMosca } from './mosca.ts';
+import { armarVerdugo } from './verdugo.ts';
+import { armarSaturno } from './saturno.ts';
+import { armarAnimal } from './animal.ts';
 
 /**
  * Lo que la escena le presta a un personaje. Las coordenadas de `hablar` van en las del recinto
@@ -70,6 +73,9 @@ const CONDUCTAS: Readonly<Record<string, Armar | null>> = {
   'el-angel-de-la-soledad': armarAngel,
   'el-pac-man': armarPacman,
   'la-mosca': armarMosca,
+  'el-verdugo-que-cena': armarVerdugo,
+  'el-doctor-saturno': armarSaturno,
+  'tu-animal': armarAnimal,
 };
 
 /** Los ids que tienen conducta: el test mira que coincidan con los que tienen dibujo. */
