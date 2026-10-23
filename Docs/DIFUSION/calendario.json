@@ -1,0 +1,59 @@
+{
+  "posteos": [
+    {
+      "id": "DIF-10",
+      "fecha": "2026-10-27T19:00:00-03:00",
+      "redes": [
+        "instagram",
+        "x"
+      ],
+      "estado": "borrador",
+      "x": "¿Te alcanza una décima de segundo para sacar el tema?\n\nAdiviná el tema: suena un pedacito y, si no sale, suena un poco más. Gratis, sin cuenta, desde el teléfono.\n\nhttps://fichinricotero.com.ar/juegos/adivinar-el-tema/",
+      "instagram": "¿Te alcanza una décima de segundo para sacar el tema?\n\nAdiviná el tema, en el Fichín Ricotero: suena un pedacito y, si no sale, suena un poco más. Cuanto antes la pegás, más puntos.\n\nGratis y sin cuenta. El enlace está en la bio.\n\n#redondos #patriciorey",
+      "enlace": "https://fichinricotero.com.ar/juegos/adivinar-el-tema/",
+      "pieza": {
+        "disco": "oktubre",
+        "titulo": "Te alcanza una décima de segundo",
+        "bajada": "Adiviná el tema. Gratis y sin cuenta.",
+        "imagen": "tapas/oktubre.jpg"
+      },
+      "alt": "Cartel del Fichín Ricotero con la tapa de Oktubre pegada con cinta y el título «Te alcanza una décima de segundo»."
+    },
+    {
+      "id": "DIF-11",
+      "fecha": "2026-10-29T19:00:00-03:00",
+      "redes": [
+        "instagram",
+        "x"
+      ],
+      "estado": "borrador",
+      "x": "Barro, amigos, el pogo, la vuelta a casa.\n\n¿Qué tipo de ricotero sos? Una noche de recital contada en preguntas y, al final, tu lugar en el plano.\n\nhttps://fichinricotero.com.ar/juegos/dos-ejes/",
+      "instagram": "Barro, amigos, el pogo, la vuelta a casa.\n\n¿Qué tipo de ricotero sos? Una noche de recital contada en preguntas y, al final, tu lugar en el plano. Después lo compartís.\n\nGratis y sin cuenta. El enlace está en la bio.\n\n#redondos #ricoteros",
+      "enlace": "https://fichinricotero.com.ar/juegos/dos-ejes/",
+      "pieza": {
+        "disco": "lobo-suelto",
+        "titulo": "Contá tu noche de recital",
+        "bajada": "¿Qué tipo de ricotero sos? Una noche en preguntas y tu lugar en el plano."
+      },
+      "alt": "Cartel del Fichín Ricotero en naranja de Lobo suelto con el título «Contá tu noche de recital»."
+    },
+    {
+      "id": "DIF-12",
+      "fecha": "2026-10-31T19:00:00-03:00",
+      "redes": [
+        "instagram",
+        "x"
+      ],
+      "estado": "borrador",
+      "x": "Rocambole dibujó. Vos ponés el disco.\n\nAdiviná la tapa: arranca fácil y se pone bravo.\n\nhttps://fichinricotero.com.ar/juegos/adivinar-la-tapa/",
+      "instagram": "Rocambole dibujó. Vos ponés el disco.\n\nAdiviná la tapa, en el Fichín Ricotero: arranca fácil y se pone bravo. Gratis y sin cuenta. El enlace está en la bio.\n\n#redondos #rocambole",
+      "enlace": "https://fichinricotero.com.ar/juegos/adivinar-la-tapa/",
+      "pieza": {
+        "disco": "gulp",
+        "titulo": "Rocambole dibujó, vos ponés el disco",
+        "bajada": "Adiviná la tapa. Gratis y sin cuenta."
+      },
+      "alt": "Cartel del Fichín Ricotero en el rojo de Gulp! con el título «Rocambole dibujó, vos ponés el disco»."
+    }
+  ]
+}

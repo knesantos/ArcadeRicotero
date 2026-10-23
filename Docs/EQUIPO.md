@@ -15,6 +15,7 @@ activo real es el banco de contenido, y la app es el vehículo que lo hace jugab
 | `experiencia` | Diseña los flujos de sesión corta en móvil y el sistema visual de línea rocambolesca | `Docs/UX/` | `UX-` | sonnet | sí |
 | `revisor` | Verifica lo entregado contra los criterios declarados y contra el schema, con contexto fresco | `Docs/REVISIONES/` | `FIND-` | sonnet | no · read-only |
 | `orquestador` | Corta el trabajo en tareas que cierren enteras en una ráfaga y detecta los huecos entre roles | `Docs/ORQ/` | `T-` | opus | sí |
+| `difusion` | Arma el calendario de posteos de Instagram y X, cada uno con su texto por red y su pieza (`D-81`) | `Docs/DIFUSION/` | `DIF-` | sonnet | sí |
 
 Los dos roles marcados **read-only** no tocan el disco: devuelven su ficha o su hallazgo
 listo para pegar, y lo escribe el hilo principal en la carpeta que les corresponde. Es a
@@ -32,6 +33,7 @@ Docs/CONTENIDO/      -> contenido
 Docs/UX/             -> experiencia
 Docs/REVISIONES/     -> revisor        (vía hilo principal)
 Docs/ORQ/            -> orquestador
+Docs/DIFUSION/       -> difusion       (public/redes/ y scripts/redes.mjs: hilo principal)
 src/data/*.json      -> contenido      (el schema que los rige es de arquitectura)
 
 ESTADO.md            -> hilo principal   NINGÚN rol lo escribe
@@ -42,7 +44,7 @@ Docs/IDS.md          -> hilo principal
 CLAUDE.md · README.md -> hilo principal
 ```
 
-Siete carpetas, siete dueños, cero solapamiento de escritura. La única ruta compartida es
+Ocho carpetas, ocho dueños, cero solapamiento de escritura. La única ruta compartida es
 `src/data/`: **`contenido` llena los JSON, `arquitectura` define el schema que los valida.**
 Nadie más los toca.
 
@@ -175,6 +177,21 @@ dos roles más parecidos del roster no compartan ni herramientas ni sustantivos.
 de tres ciclos `investigador` no se invoca al menos una vez por ciclo, se fusiona de vuelta
 en `contenido` y el roster baja a seis sin ceremonia.
 
+### El octavo rol: `difusion` (`D-81`)
+
+*¿Qué produce que ningún otro produce?* **Lo que el sitio dice afuera, con fecha.** Un posteo
+no es una pregunta del banco ni una pantalla: tiene otro largo (280 caracteres en X), otra
+vidriera (gente que nunca entró), un calendario y una cola que se llena y se vacía. Ninguno de
+los siete tiene eso en su vara. `contenido` es el candidato natural a absorberlo, y se descartó
+porque mezclaría el ritmo del banco (pocas piezas, muy revisadas) con el de las redes (tres por
+semana, con fecha).
+
+El costo, igual que con el séptimo, es ruteo. Se paga con un vocabulario que nadie más usa
+(Instagram, X, posteo, calendario, cola) y con límites duros: `difusion` no corre nada
+(`D-12`), no busca en la web (la puerta es `investigador`) y **no publica**: publicar es del hilo
+principal con el sí del usuario. **Si en dos meses no salió un posteo, se saca** y el roster
+vuelve a siete sin ceremonia.
+
 ## Roles descartados
 
 | Rol | Por qué no entró |
@@ -184,7 +201,7 @@ en `contenido` y el roster baja a seis sin ceremonia.
 | `seguridad` | Sin login, sin backend y sin datos de usuario no hay superficie que proteger. El riesgo de derechos es legal, no de seguridad, y su dueño es `contenido`. |
 | `operaciones` | Hosting estático con deploy por push. Cabe en diez líneas del `CLAUDE.md`, no en un rol. |
 | `analitica` | Sin backend ni cuentas no hay qué instrumentar, y el brief no declara ninguna hipótesis que medir. |
-| `difusion` | La v1 es construir, no lanzar. Es el candidato número uno a sumar en la v2, cuando haya algo jugable que mostrar. |
+| ~~`difusion`~~ | La v1 era construir, no lanzar. **Entró el 2026-10-23** (`D-81`), cuando el usuario abrió las cuentas: ver "El octavo rol". |
 
 ## Cómo cambiar el equipo
 
@@ -192,8 +209,8 @@ en `contenido` y el roster baja a seis sin ceremonia.
   Si no hay respuesta, no entra. Escribí la respuesta acá abajo.
 - **Sacar un rol** que lleva un ciclo sin producir nada: hacelo sin culpa. Un agente que
   no se usa igual compite por atención en el ruteo.
-- Tope: 6 roles. Este proyecto va a 7 con la justificación escrita más arriba, que es la
-  escotilla que la regla contempla. Agregar un octavo exige sacar uno.
+- Tope: 6 roles. Este proyecto va a 8, cada uno con su justificación escrita más arriba, que
+  es la escotilla que la regla contempla. Un noveno exige sacar uno.
 
 ### Cambios al roster
 
@@ -201,3 +218,4 @@ en `contenido` y el roster baja a seis sin ceremonia.
 |---|---|---|
 | 2026-08-19 | Roster inicial de 6 | Generado por el instanciador: arquetipo `sitio-contenido` más `arquitectura` por la decisión de audio y Spotify |
 | 2026-08-19 | Entra `investigador` (7 roles) | Pedido explícito del usuario. Separa traer el hecho de redactar la pregunta; ver justificación del roster ampliado |
+| 2026-10-23 | Entra `difusion` (8 roles) | Pedido explícito del usuario: abrir Instagram y X y manejarlos lo más automático posible (`D-81`); ver "El octavo rol" |

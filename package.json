@@ -22,7 +22,8 @@
     "generar-dos-ejes": "node --experimental-strip-types scripts/generar-dos-ejes.mjs",
     "imprimir-bestiario": "node --experimental-strip-types scripts/imprimir-bestiario.mjs",
     "recortar-bestiario": "node --experimental-strip-types scripts/recortar-bestiario.mjs",
-    "sincronizar-bestiario": "node --experimental-strip-types scripts/sincronizar-bestiario.mjs"
+    "sincronizar-bestiario": "node --experimental-strip-types scripts/sincronizar-bestiario.mjs",
+    "redes": "node --experimental-strip-types scripts/redes.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "2.0.1",
