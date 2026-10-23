@@ -71,8 +71,9 @@ export const VECINOS_DEL_BALDIO: Readonly<Record<string, readonly [number, numbe
   'el-que-no-se-cayo-del-cielo': [1420, 236, 'papel'],
   'mi-perro-dinamita': [700, 486, 'oro'],
   'los-perros-sin-folleto': [1180, 560, 'oro'],
-  'el-perro-manso': [520, 590, 'papel'],
-  'el-perro-que-no-mira-el-cielo': [384, 468, 'papel'],
+  // A la derecha: donde estaba se paró el buen psicópata con su perro (`D-73`, decimosexta enmienda).
+  'el-perro-manso': [1330, 600, 'papel'],
+  'el-perro-que-no-mira-el-cielo': [980, 610, 'papel'],
 };
 
 /**
