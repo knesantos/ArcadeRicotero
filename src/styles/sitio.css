@@ -4258,3 +4258,50 @@ body:has(> .lugar) .marca-chica {
 .titere--porco [data-parte="brillo"], .titere--porco [data-parte="vaho"] { mix-blend-mode: screen; }
 .titere--porco [data-parte="brillo"], .titere--porco [data-parte="vaho"], .titere--porco [data-parte="salpica"] { pointer-events: none; }
 /* ⟨/Porco Rex⟩ */
+
+/* Decimoséptima vuelta (D-73): tres más, cada uno en su bloque, con las tintas de su bloque de
+   `tokens.css`. */
+.titere--angel, .titere--pacman, .titere--mosca { cursor: pointer; }
+
+/* ⟨el ángel de la soledad⟩ */
+/* La sombra en la tierra roja, de la tierra honda del árbol; los párpados, del sepia de la cara; la ceja
+   que sube cuando no cree, de lo hondo de los pliegues. Las pupilas son lo más hondo, con su brillo de
+   papel. El huevo que ataja no se toca: el toque es del títere entero. */
+.bt-angel-sombra { fill: var(--entorno-arbol-tierra-honda); opacity: 0.7; }
+.bt-angel-parpado { fill: var(--bestia-angel-sepia); }
+.bt-angel-ceja { fill: none; stroke: var(--bestia-angel-hondo); stroke-width: 1.4; stroke-linecap: round; }
+.bt-angel-pupila { fill: var(--bestia-angel-hondo); }
+.bt-angel-brillo { fill: var(--bestia-angel-luz); }
+.titere--angel [data-parte="huevo"] { pointer-events: none; }
+/* ⟨/el ángel de la soledad⟩ */
+
+/* ⟨el pac-man⟩ */
+/* El único del bestiario que es pixel: las tintas son las del fichín (`--px-*`, hoja 14 del lienzo) y
+   el pixel va con el borde vivo, sin suavizar. El amarillo es el tesoro; el fantasma, el rojo del
+   infierno de Gulp!, y asustado se pone del azul del pelo de Poligirl, con la cara del durazno del
+   infierno. Los puntos son la luz. El pasillo entero se toca, aunque no se vea: es fino para un dedo. */
+.titere--pacman path, .bt-pacman-retrato path { shape-rendering: crispEdges; }
+.bt-pacman-retrato image { mix-blend-mode: screen; }
+.bt-pacman-amarillo { fill: var(--px-tesoro); }
+.bt-pacman-punto { fill: var(--px-luz); }
+.bt-pacman-rojo { fill: var(--px-infierno); }
+.bt-pacman-azul { fill: var(--px-poli-1); }
+.bt-pacman-cara { fill: var(--px-infierno-3); }
+.bt-pacman-blanco { fill: var(--px-blanco-gulp); }
+.bt-pacman-cara-titila { fill: var(--px-infierno); }
+.bt-pacman-ojo { fill: var(--px-luz); }
+.bt-pacman-pupila { fill: var(--px-poli-1); }
+.bt-pacman-puntaje { fill: var(--px-luz); }
+.bt-pacman-toque { fill: transparent; }
+.titere--pacman [data-parte="halo-fantasma"], .titere--pacman image { mix-blend-mode: screen; pointer-events: none; }
+/* ⟨/el pac-man⟩ */
+
+/* ⟨la mosca⟩ */
+/* La sombra en el borde de la olla, de lo negro de entre los pelos; los anillos de la sopa, del papel del
+   collage, como el canto del recorte. Se toca el aire donde vuela, que ella es chica para un dedo. */
+.bt-mosca-sombra { fill: var(--bestia-mosca-honda); }
+.bt-mosca-anillo { fill: none; stroke: var(--entorno-mesa-papel); stroke-width: 1.2; }
+.bt-mosca-toque { fill: transparent; }
+.titere--mosca [data-parte="anillo"], .titere--mosca [data-parte="sombra"], .titere--mosca [data-parte="zumbido"] { pointer-events: none; }
+.titere--mosca [data-parte="zumbido"] { mix-blend-mode: screen; }
+/* ⟨/la mosca⟩ */

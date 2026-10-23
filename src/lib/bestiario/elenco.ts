@@ -29,6 +29,9 @@ import { ESCLAVO } from './arte-esclavo.ts';
 import { HIJA } from './arte-hija.ts';
 import { PSICOPATA } from './arte-psicopata.ts';
 import { PORCO } from './arte-porco.ts';
+import { ANGEL } from './arte-angel.ts';
+import { PACMAN } from './arte-pacman.ts';
+import { MOSCA } from './arte-mosca.ts';
 
 export type Nombres = ReadonlyMap<string, string>;
 
@@ -72,7 +75,7 @@ export interface Personaje {
  * Los lugares, en el orden del recorrido: los diez de la decimoquinta vuelta y los tres de la
  * decimosexta. `null` es que todavía son ojos en lo oscuro.
  */
-const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO];
+const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA];
 
 /** Los que ya tienen títere. */
 export const ELENCO: readonly Personaje[] = LUGARES.filter((p): p is Personaje => p !== null);
@@ -133,4 +136,9 @@ export const LUGAR_EN_EL_ELENCO: Readonly<Record<string, string>> = {
   'la-hija-del-fletero': 'los-astilleros',
   'el-buen-psicopata': 'los-techos',
   'porco-rex': 'cybersiberia',
+  // La decimoséptima: tres que eligió el hilo principal, cada uno en un entorno que tenía uno solo o en el
+  // del fichín.
+  'el-angel-de-la-soledad': 'el-arbol',
+  'el-pac-man': 'cybersiberia',
+  'la-mosca': 'la-mesa',
 };

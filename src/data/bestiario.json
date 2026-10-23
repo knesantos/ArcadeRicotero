@@ -267,7 +267,21 @@
       "dibujo": { "f": "persona", "con": ["alas"], "ropa": "tunica" },
       "tema": "un-angel-para-tu-soledad",
       "verso": ["Y caes en manos", "Del Ángel de la soledad", "Tampoco cree en lo que oye"],
-      "estampa": "Al pie del árbol, con las alas cerradas. Ataja a los que se caen de arriba, y no les cree nada.",
+      "estampa": "Al pie del árbol, envuelto en las alas como en una capa. Las plumas son los dientes de las máscaras de papel de la contratapa de Lobo suelto, su disco, y eso es del dibujo. De la letra es que ataja a los que se caen de arriba, y que no les cree nada.",
+      "cuenta": [
+        {
+          "rotulo": "testimonio",
+          "texto": "Dice que es un himno, de esas canciones que cada tanto hay que tocar: uno no es dueño de las canciones que la gente elige quedarse.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 324)",
+          "fuente": "RES-21"
+        },
+        {
+          "rotulo": "testimonio",
+          "texto": "Es de las pocas canciones en las que habla a conciencia de la gente que lo va a ver: de los que están y de los que no pudieron ir. La soledad, dice, es inevitable, y al final él también se incluye.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 324)",
+          "fuente": "RES-21"
+        }
+      ],
       "cerca": ["el-angel-guardian", "el-angelito-frito"]
     },
     {
@@ -510,7 +524,7 @@
       "dibujo": { "f": "maquina", "que": "pacman" },
       "tema": "un-pacman-en-el-savoy",
       "verso": ["Nuestro pac-man no es de nadie,", "y todo el hambre del nuevo pac-man."],
-      "estampa": "Come puntos por un pasillo de la pantalla. Es el único bicho del mapa que nació en un fichín.",
+      "estampa": "Come puntos por una fila de la nieve, con un fantasma atrás. Es el único bicho del mapa que nació en un fichín, y por eso es el único de pixel, en las tintas del fichín: eso es del dibujo. De la letra es el hambre. Tocalo y le das la pastilla.",
       "cerca": ["el-monito-que-trepa"]
     },
     {
@@ -1668,9 +1682,21 @@
       "tema": "queso-ruso",
       "verso": ["Sentís la mosca joder detrás de la oreja"],
       "articulo": "la-mosca-y-la-sopa",
-      "estampa": "Dando vueltas sobre el plato de sopa. Es la misma que vuela por la portada del sitio.",
+      "estampa": "Da vueltas sobre la olla y se posa en la sopa. Es la mosca del rótulo de la tapa, recortada con su canto de papel, y eso es del dibujo. De la letra es que te jode detrás de la oreja: tocala. La que vuela por la portada del sitio es su prima.",
       "cuenta": [
-        { "rotulo": "hecho", "texto": "Junto con la sopa le da nombre al disco de 1991, La mosca y la sopa.", "fuente": "artículo «La mosca y la sopa»" }
+        { "rotulo": "hecho", "texto": "Junto con la sopa le da nombre al disco de 1991, La mosca y la sopa.", "fuente": "artículo «La mosca y la sopa»" },
+        {
+          "rotulo": "testimonio",
+          "texto": "Dice que el título es una forma gráfica de decir que algo rico se arruinó por un elemento extraño que le cayó adentro. La vida es así.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 293)",
+          "fuente": "RES-21"
+        },
+        {
+          "rotulo": "testimonio",
+          "texto": "Del verso de la mosca que jode detrás de la oreja dice que habla de la gente que compra la revista Hola cuando apenas le alcanza para pagarla.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 304)",
+          "fuente": "RES-21"
+        }
       ],
       "cerca": ["el-moscon-zumbon", "las-hormigas", "la-polilla"]
     },

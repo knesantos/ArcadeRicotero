@@ -31,14 +31,15 @@ const ESCENA: Readonly<Record<string, (n: ReadonlyMap<string, string>) => string
   'los-techos': escenaBaldio,
 };
 
-/** Los diez de la decimoquinta vuelta, uno por entorno; después vienen los de la decimosexta. */
+/** Los diez de la decimoquinta vuelta, uno por entorno; después vienen los de la decimosexta y la decimoséptima. */
 const DIEZ = Object.keys(LUGAR_EN_EL_ELENCO).slice(0, 10);
 
-test('el elenco son los diez, uno por entorno, y los tres de la decimosexta; cada uno es una bestia de esa región', () => {
+test('el elenco son los diez, uno por entorno, y los tres de la decimosexta y los tres de la decimoséptima; cada uno es una bestia de esa región', () => {
   const lugares = Object.entries(LUGAR_EN_EL_ELENCO);
-  assert.equal(lugares.length, 13);
+  assert.equal(lugares.length, 16);
   assert.equal(new Set(DIEZ.map((id) => LUGAR_EN_EL_ELENCO[id])).size, 10, 'dos de los diez en el mismo entorno');
-  assert.deepEqual(lugares.slice(10).map(([id]) => id), ['la-hija-del-fletero', 'el-buen-psicopata', 'porco-rex']);
+  assert.deepEqual(lugares.slice(10, 13).map(([id]) => id), ['la-hija-del-fletero', 'el-buen-psicopata', 'porco-rex']);
+  assert.deepEqual(lugares.slice(13).map(([id]) => id), ['el-angel-de-la-soledad', 'el-pac-man', 'la-mosca']);
   for (const [id, region] of lugares) {
     const b = datos.bestias.find((x) => x.id === id);
     assert.ok(b, `${id} no está en el bestiario`);

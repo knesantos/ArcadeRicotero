@@ -24,6 +24,9 @@ import { armarEsclavo } from './esclavo.ts';
 import { armarHija } from './hija.ts';
 import { armarPsicopata } from './psicopata.ts';
 import { armarPorco } from './porco.ts';
+import { armarAngel } from './angel.ts';
+import { armarPacman } from './pacman.ts';
+import { armarMosca } from './mosca.ts';
 
 /**
  * Lo que la escena le presta a un personaje. Las coordenadas de `hablar` van en las del recinto
@@ -64,6 +67,9 @@ const CONDUCTAS: Readonly<Record<string, Armar | null>> = {
   'la-hija-del-fletero': armarHija,
   'el-buen-psicopata': armarPsicopata,
   'porco-rex': armarPorco,
+  'el-angel-de-la-soledad': armarAngel,
+  'el-pac-man': armarPacman,
+  'la-mosca': armarMosca,
 };
 
 /** Los ids que tienen conducta: el test mira que coincidan con los que tienen dibujo. */
