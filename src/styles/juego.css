@@ -4237,13 +4237,17 @@ body > main {
    Las dos pantallas mas densas —`adivinar-el-tema` y `adivinar-por-la-letra`, que pelean
    el espacio por pixel— la achican en su propio alcance a proposito. El alcance de Astro
    agrega un atributo al selector, asi que su regla le gana a esta sin `!important`. */
+.marca img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* La marca de la hoja: el logo completo (`D-82`), como las otras tres formas. */
 .marca {
-  font-family: var(--fuente-titular);
-  font-size: clamp(1.9rem, 9vw, 2.6rem);
-  line-height: 0.96;
-  color: var(--marca-rojo);
+  width: clamp(7.5rem, 36vw, 9.5rem);
+  line-height: 0;
   margin: var(--espacio-3) 0 var(--espacio-2);
-  max-width: 7ch;
   view-transition-name: marca;
   /* Tinta plana, sin eco: la sombra de las letras salio de todos lados (`D-64`). */
 }
@@ -4507,11 +4511,7 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   .caratula-marca {
     display: block;
     margin: 0;
-    max-width: 7ch;
-    font-family: var(--fuente-titular);
-    font-size: 1.85rem;
-    line-height: 0.96;
-    color: var(--marca-rojo);
+    width: 9rem;
     view-transition-name: marca;
   }
 

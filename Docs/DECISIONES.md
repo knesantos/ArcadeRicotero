@@ -6290,8 +6290,8 @@ cuando se sepa.
    sobre la referencia que trae la fuente (`RES-42`, `FOTO.png` del zip de Patricio Rey): la F grande
    que baja a la izquierda en el lugar de la P, la R más chica y más alta, apenas tocándose, y la
    corona torcida arriba, con cuatro puntas de llama, tres joyas, dos perlas y el ala vista desde
-   abajo. Las letras son los glifos de la fuente pasados a trazo y girados para calzar; **la corona
-   se dibujó acá**, y la F reemplaza a la P: no se usa el PR original.
+   abajo. Las letras son los glifos de la fuente pasados a trazo y girados para calzar, y la F
+   reemplaza a la P. **La corona es la misma del original** (enmienda de abajo).
 2. **Cinco archivos** en `public/marca/`, impresos por `scripts/generar-logo.py` con los colores de
    `tokens.css`: `fichin-ricotero` (con el nombre abajo, como PATRICIO REY), `fr`, `fr-redondo` (en el
    disco de tinta, como el original), `fr-tinta` y `fr-papel`.
@@ -6309,9 +6309,21 @@ cuando se sepa.
   usuario la encontró pobre, "simplemente la FR con la tipografía".
 - **Usar el PR original**: es el logo de la banda y el sitio no firma en su nombre.
 
-### Lo que queda
+### Enmienda 1 (2026-10-23): la misma corona, y el sitio la usa
 
-- **El sitio todavía no usa la marca**: el favicon, el ícono de inicio y la tarjeta de compartir
-  siguen siendo los de `generar-marca-social.mjs`. Cambiarlos es cambiar la cara del sitio: pasa
-  primero por el lienzo, como manda `diseno-marca.md`.
-- Pegar la marca en el lienzo de marca, en la hoja 01.
+Pedidos del usuario: *"está como medio cortada la corona, que sea la misma corona"* y
+*"actualizá los logos en la página"*.
+
+- **La corona se vectoriza del original** cada vez que corre `generar-logo.py` (contornos del
+  blanco con `contourpy` y Douglas-Peucker, lo negro calado). La dibujada a mano se veía cortada
+  y tenía un gris en la cara izquierda que el original no tiene.
+- **El sitio usa la marca**, en las cuatro formas que comparten la transición `marca`: el logo
+  completo en la portada (`.marca-grande`), en la hoja de cada juego (`.marca`) y en la mesa del
+  escritorio (`.caratula-marca`); la FR sola en la cabecera de regreso (`.marca-chica`), a 56 px.
+- **Favicon, ícono de inicio y tarjeta para compartir** salen ahora de `public/marca/`
+  (`generar-marca-social.mjs`, reescrito sobre `sharp`). La tarjeta dejó la figura encadenada
+  de Rocambole, así que su `og:image:alt` ya no lleva ese crédito.
+- `fuentes.test.ts` acepta que una forma de la marca sea una imagen, siempre que salga de
+  `public/marca/`.
+- **Salteó el circuito de `diseno-marca.md`** (primero el lienzo) por pedido directo del usuario.
+  Queda pegar la marca en la hoja 01 del lienzo.

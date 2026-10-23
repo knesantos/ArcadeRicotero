@@ -81,7 +81,7 @@ export const PORTAL = {
    * `Docs/SUGERENCIAS/HILO-para-investigador-figura-encadenada.md`.
    */
   altTarjeta:
-    'Calco en línea blanca de la figura encadenada, del arte de Rocambole (Ricardo Cohen).',
+    'La marca del Fichín Ricotero: una F y una R rojas con una corona arriba, y el nombre abajo.',
   creditoTapas: (discos: readonly string[]) =>
     `En esta pantalla, arte de ${discos.length === 1 ? 'la tapa de' : 'las tapas de'} ` +
     `${discos.length > 1 ? `${discos.slice(0, -1).join(', ')} y ${discos.at(-1)}` : discos[0]}, ` +

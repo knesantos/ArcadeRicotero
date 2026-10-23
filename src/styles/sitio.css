@@ -648,27 +648,39 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   transform: rotate(-1.6deg);
 }
 
+/* Desde `D-82` las cuatro formas de la marca son el logo, no la palabra escrita: la FR
+   coronada que imprime `scripts/generar-logo.py`. La chica es la FR sola; las grandes llevan
+   el nombre abajo. El tamaño lo pone el ancho; la imagen llena su caja. */
+.marca-chica,
+.marca-grande,
+.caratula-marca {
+  line-height: 0;
+}
+
+.marca-chica img,
+.marca-grande img,
+.caratula-marca img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .marca-chica {
-  font-family: var(--fuente-titular);
-  font-size: 1.05rem;
-  line-height: 1;
-  color: var(--marca-rojo);
+  display: block;
+  /* 4,5 rem: con el relleno de la cabecera de un lugar, la FR queda en 56 px de ancho, arriba
+     del mínimo de 48 de alto donde la corona todavía se lee (el manual de marca, `D-82`). */
+  width: 4.5rem;
+  flex-shrink: 0;
   text-decoration: none;
-  max-width: 8ch;
-  text-align: right;
   view-transition-name: marca;
 }
 
 /* ---- La marca grande del portal ---- */
 
 .marca-grande {
-  font-family: var(--fuente-titular);
-  font-size: clamp(2.6rem, 13vw, 4rem);
-  line-height: 0.92;
-  color: var(--marca-rojo);
+  width: clamp(10rem, 50vw, 14rem);
   /* `UX-25` §1: el aire de arriba cede, la letra no. De `--espacio-3` a `--espacio-2`. */
   margin: var(--espacio-2) 0 var(--espacio-1);
-  max-width: 7ch;
   /* El tercero de los tres nombres (`ADR-03` §6.3). La firma es la misma de un lado y del
      otro, asi que el navegador la mueve de su lugar en la portada al suyo en la cabecera
      en vez de dibujarla dos veces. Las cuatro formas de la marca —esta, la chica del
@@ -2691,7 +2703,7 @@ body:has(> .lugar) .marca-chica {
   }
 
   .marca-grande {
-    font-size: clamp(4.25rem, 5.6vw, 5.75rem);
+    width: clamp(15rem, 19vw, 19rem);
   }
 
   .donde-estas {

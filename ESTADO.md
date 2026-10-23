@@ -7,22 +7,22 @@
 
 **Última actualización:** 2026-10-23
 
-> ## 👑 LA MARCA: LA FR CORONADA Y EL SISTEMA DE MARCA EN UN ARTIFACT (2026-10-23) — `D-82`
+> ## 👑 LA MARCA: LA FR CORONADA, EN EL SITIO Y EN UN ARTIFACT (2026-10-23) — `D-82`
 >
-> **Sin commitear**, en la rama `difusion/redes`, junto con las redes de abajo.
+> **En el PR #74**, rama `difusion/redes`, junto con las redes de abajo. Sin integrar.
 >
-> - **El logo**: homenaje al PR coronado, con la F en el lugar de la P y una corona dibujada acá.
->   `python scripts/generar-logo.py` deja cinco SVG en `public/marca/`.
-> - **El sistema de marca**: https://claude.ai/artifact/49r6PNWPk241GcQBfNWbZL (privado). Tiene tokens,
->   letras, voz, logos y cuatro componentes, copiados de `tokens.css`, `juego.css` y `sitio.css`.
-> - **Las redes ya lo usan**: la foto de perfil y el banner de X.
-> - **Falta**:
->   - que el sitio use la marca (favicon, ícono, tarjeta de compartir), pasando primero por el lienzo;
->   - pegarla en la hoja 01 del lienzo.
+> - **El logo**: homenaje al PR coronado, con la F en el lugar de la P y la misma corona del original,
+>   vectorizada de la referencia de `RES-42`. `python scripts/generar-logo.py` deja cinco SVG en `public/marca/`.
+> - **El sitio la usa**: portada, hoja de cada juego, mesa del escritorio y cabecera de regreso; favicon,
+>   ícono de inicio y tarjeta para compartir (`npm run generar-marca-social`). Visto en el navegador a 375
+>   px y a 1366.
+> - **El sistema de marca**: https://claude.ai/artifact/49r6PNWPk241GcQBfNWbZL (privado).
+> - **Las redes ya la usan**: la foto de perfil y el banner de X.
+> - **Falta**: pegarla en la hoja 01 del lienzo, y verla en un teléfono de verdad.
 
 > ## 📣 LAS REDES: EL ROL `difusion`, LAS PIEZAS Y LA COLA EN BUFFER (2026-10-23) — `D-81`
 >
-> **Sin commitear**, en la rama `difusion/redes` sobre `main` en `235e369`. Pedido del usuario: armar
+> **En el PR #74**, rama `difusion/redes` sobre `main` en `235e369`. Sin integrar. Pedido del usuario: armar
 > Instagram y X *"de la forma más automática y simple"*. Metricool quedó afuera porque no le gustó.
 >
 > - **Rol nuevo, el octavo:** `difusion`, con carpeta `Docs/DIFUSION/` y prefijo `DIF-`. Escribe

@@ -54,7 +54,7 @@ const { caratula: c, piezaSopla = false } = Astro.props;
   {/* La marca de la mesa. En el teléfono no se ve: ahí la marca vive en la hoja, como
       siempre. Las dos llevan el nombre del tránsito (`marca`), y nunca se ven las dos a la
       vez — un nombre repetido a la vista apaga el paso sin avisar (`ADR-03` §6.3). */}
-  <p class="caratula-marca" aria-hidden="true">FICHÍN RICOTERO</p>
+  <p class="caratula-marca" aria-hidden="true"><img src="/marca/fichin-ricotero.svg" alt="" width="1540" height="1450" /></p>
   <div class="caratula-frente">
     <img
       class:list={['caratula-arte', 'casete-arte', `casete-arte--${c.material}`, { 'casete-arte--apaisada': c.apaisada }]}

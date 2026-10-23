@@ -719,8 +719,7 @@
   }
 
   .juego-skayboy .marca {
-    font-size: 1rem;
-    max-width: none;
+    width: 3.5rem;
   }
 
   .juego-skayboy .pantalla h1 {
@@ -965,8 +964,7 @@
   }
 
   .juego-skayboy .marca {
-    font-size: 1.15rem;
-    max-width: none;
+    width: 4.5rem;
   }
 
   .juego-skayboy .pantalla h1 {
