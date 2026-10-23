@@ -49,3 +49,6 @@ tmp/
 
 # Generado por Astro
 .astro/
+
+# El lote de las redes se regenera con `npm run redes -- lote` (D-81)
+Docs/DIFUSION/lote/

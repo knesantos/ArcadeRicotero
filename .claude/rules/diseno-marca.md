@@ -19,6 +19,11 @@ lienzo, y la 15 (la mesa, `D-54`) está escrita en
 `Docs/SUGERENCIAS/lienzo-hoja-15-la-mesa.dc.html` y falta pegarla (`T-319`; antes hay que
 sacarle el canto, que se retiró en el ciclo 18).
 
+**La marca** (la FR coronada, `D-82`) vive en `public/marca/` y la imprime
+`scripts/generar-logo.py`; no se dibuja a mano. Hay una copia del sistema para otros agentes en
+el artifact https://claude.ai/artifact/49r6PNWPk241GcQBfNWbZL: si cambia un valor, se cambia
+primero acá y después se copia allá.
+
 Su espejo en el código es **`src/styles/tokens.css`**: el único archivo del repo donde
 puede vivir un hex, una familia tipográfica o una medida de marca.
 

@@ -193,6 +193,12 @@ test('ninguna marca escrita en una página pide una letra que el calco no tiene'
     for (const m of fuente.matchAll(patron)) {
       const [, , forma, texto] = m;
       vistas.set(forma!, vistas.get(forma!)! + 1);
+      // Desde `D-82` la marca es el logo: una imagen de `public/marca/` no pide letras. Lo
+      // que sí se pide es que sea la de la marca y no otra.
+      if (/<img\s/.test(texto!)) {
+        assert.match(texto!, /^\s*<img\s[^>]*src="\/marca\/[a-z-]+\.svg"[^>]*\/>\s*$/, `${ruta}: la marca .${forma} es una imagen que no sale de public/marca/`);
+        continue;
+      }
       assert.ok(!/[{<]/.test(texto!), `${ruta}: la marca .${forma} no es texto fijo ("${texto!.trim()}"); este caso no la puede mirar`);
       assert.deepEqual(faltanEnElCalco(texto!), [], `${ruta}: "${texto!.trim()}"`);
     }

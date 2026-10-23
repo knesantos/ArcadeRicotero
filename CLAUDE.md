@@ -41,9 +41,10 @@ tiempo real.
 | `experiencia` | Flujos de sesión corta en móvil, sistema visual | `Docs/UX/` | `UX-` |
 | `revisor` | Verifica lo entregado contra los criterios | `Docs/REVISIONES/` | `FIND-` |
 | `orquestador` | Tareas por ráfaga, coherencia entre roles | `Docs/ORQ/` | `T-` |
+| `difusion` | Posteos de Instagram y X, calendario (`D-81`) | `Docs/DIFUSION/` | `DIF-` |
 
-Siete roles, no seis: la justificación está escrita en `Docs/EQUIPO.md`, bajo
-"Justificación del roster ampliado". Se invocan por nombre (`@agent-contenido`) o Claude
+Ocho roles, no seis: la justificación está escrita en `Docs/EQUIPO.md`, bajo
+"Justificación del roster ampliado" y "El octavo rol". Se invocan por nombre (`@agent-contenido`) o Claude
 delega solo cuando la tarea coincide con la descripción del rol.
 
 **Una sola puerta a la web:** `investigador` es el único rol con `WebSearch` y
@@ -137,11 +138,12 @@ python3 ../InstanciadorProyectos/scripts/validar_instancia.py .
 
 El validador **vive en el instanciador, no acá** (`D-11`): valida frontmatter de agentes
 y skills, presupuestos y colisiones de ruteo, desde afuera de la instancia. Se corre desde
-la raíz del proyecto. Sale `APTA` con **dos avisos esperados** — el largo de este archivo, que se acerca al tope de 200 líneas, y siete roles sobre un tope de
+la raíz del proyecto. Sale `APTA` con **dos avisos esperados** — el largo de este archivo, que se acerca al tope de 200 líneas, y ocho roles sobre un tope de
 seis, justificado en `Docs/EQUIPO.md`. Un aviso no es un error: el código de salida es 0.
 
 `/kickoff` la primera vez · `/estado` al empezar · `/ciclo` para planificar el próximo
-tramo · `/coherencia` antes de construir algo nuevo y al cerrar cada ciclo.
+tramo · `/coherencia` antes de construir algo nuevo y al cerrar cada ciclo · `/redes` para
+llenar y programar la semana de Instagram y X (`D-81`).
 
 ## 8. Qué NO hacer
 

@@ -7,6 +7,41 @@
 
 **Última actualización:** 2026-10-23
 
+> ## 👑 LA MARCA: LA FR CORONADA, EN EL SITIO Y EN UN ARTIFACT (2026-10-23) — `D-82`
+>
+> **En el PR #74**, rama `difusion/redes`, junto con las redes de abajo. Sin integrar.
+>
+> - **El logo**: homenaje al PR coronado, con la F en el lugar de la P y la misma corona del original,
+>   vectorizada de la referencia de `RES-42`. `python scripts/generar-logo.py` deja cinco SVG en `public/marca/`.
+> - **El sitio la usa**: portada, hoja de cada juego, mesa del escritorio y cabecera de regreso; favicon,
+>   ícono de inicio y tarjeta para compartir (`npm run generar-marca-social`). Visto en el navegador a 375
+>   px y a 1366.
+> - **El sistema de marca**: https://claude.ai/artifact/49r6PNWPk241GcQBfNWbZL (privado).
+> - **Las redes ya la usan**: la foto de perfil y el banner de X.
+> - **Falta**: pegarla en la hoja 01 del lienzo, y verla en un teléfono de verdad.
+
+> ## 📣 LAS REDES: EL ROL `difusion`, LAS PIEZAS Y LA COLA EN BUFFER (2026-10-23) — `D-81`
+>
+> **En el PR #74**, rama `difusion/redes` sobre `main` en `235e369`. Sin integrar. Pedido del usuario: armar
+> Instagram y X *"de la forma más automática y simple"*. Metricool quedó afuera porque no le gustó.
+>
+> - **Rol nuevo, el octavo:** `difusion`, con carpeta `Docs/DIFUSION/` y prefijo `DIF-`. Escribe
+>   borradores, no publica. Justificado en `Docs/EQUIPO.md`, "El octavo rol".
+> - **`/redes`**: hace la semana entera. `difusion` escribe, se imprimen las piezas y el usuario dice
+>   que sí. Después se cargan en la cola de Buffer, cada una a su hora.
+> - **`npm run redes -- …`**: `validar`, `piezas`, `perfil`, `lote`, `canales` y `cola`. Las piezas
+>   salen de Edge sin ventana, con los tokens y las letras reales, a `public/redes/`. Ya están
+>   impresos la foto de perfil, el banner de X y `DIF-10` … `DIF-12`.
+> - **Verde:** `npm test` (1921), `npm run check`, `npm run build`, y el validador del instanciador da
+>   `APTA` con un aviso (8 roles).
+> - **Falta**:
+>   - **que el usuario abra las cuentas** (Instagram creador, X y Buffer Free) y deje la clave de
+>     Buffer en `.env`. El paso a paso está en `DIF-01`;
+>   - aprobar `DIF-10` … `DIF-12`, integrar el sitio con las piezas y correr `/redes cola`;
+>   - **ver si Buffer Free deja publicar en X** (`RES-402`). Si no deja, el camino B está en `D-81`;
+>   - el hilo de doce posteos de la rama `difusion/hilo-fichin` (PR #31) sigue sin integrar:
+>     `difusion` lo puede pasar al calendario.
+
 > ## 🎥 LA CÁMARA QUE CAMINA, LA FICHA QUE NO TAPA Y EL PLANO PINTADO ZONA POR ZONA (2026-10-23) — `D-79` (2.ª vuelta) y `D-80`
 >
 > **En `main` desde el PR #72** (commit de fusión `2bd7fbb`), rama `bestiario/sonido-y-portal`, junto con la entrada y los ruidos de abajo. Lo integró Claude a pedido del usuario (*"commiteá e integrá todo a main"*).

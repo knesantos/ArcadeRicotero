@@ -17,6 +17,7 @@ import * as masOMenos from './mas-o-menos/copy.ts';
 import * as recital from './recital/copy.ts';
 import * as bestiario from './bestiario/copy.ts';
 import { FILAS } from './ponelos/filas.ts';
+import { textosVisibles as textosDeLasRedes, type Calendario } from './difusion/calendario.ts';
 
 /**
  * La auditoria a maquina de `.claude/rules/voz-ricotera.md`, seccion 8.
@@ -260,12 +261,21 @@ function cadenasDelBestiario(): string[] {
   ];
 }
 
+/**
+ * Lo que el sitio dice afuera, en Instagram y en X (`D-81`). Es la misma voz con otra
+ * vidriera: un anglicismo en un posteo se lee igual que en un botón, y lo lee más gente.
+ */
+function cadenasDeLasRedes(): string[] {
+  return textosDeLasRedes(JSON.parse(readFileSync('Docs/DIFUSION/calendario.json', 'utf-8')) as Calendario);
+}
+
 const VISIBLE: ReadonlyArray<readonly [string, string]> = [
   ...MODULOS.flatMap(([donde, modulo]) => cadenas(modulo).map((texto) => [donde, texto] as const)),
   ...cadenasDelBanco().map((texto) => ['dos-ejes', texto] as const),
   ...cadenasDelQuiz().map((texto) => ['quiz.json', texto] as const),
   ...cadenasDeLasFilas().map((texto) => ['ponelos/filas', texto] as const),
   ...cadenasDelBestiario().map((texto) => ['bestiario.json', texto] as const),
+  ...cadenasDeLasRedes().map((texto) => ['redes', texto] as const),
 ];
 
 const sinTilde = (s: string): string => s.normalize('NFD').replace(/[̀-ͯ]/g, '');
