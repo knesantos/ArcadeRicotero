@@ -74,6 +74,8 @@ a la otra qué número tomó.
 | `D-73`, decimosexta enmienda · `T-502`, `T-503` | **Tres más: la hija del fletero, el buen psicópata y Porco Rex** (`D-73`), 2026-10-22. Pedido del usuario: *"Agrega al bestiario con su diseño, animacion y todo bien pulido a estas bestias [...] y otro que elijas vos"*. La escribe el hilo principal en la rama `bestiario/tres`, sobre `main` en `0be8dc6`. Antes de tomar `T-502` se miraron `origin/main` y todas las ramas, locales y remotas: la última era `T-501`. Enmienda a `D-78` (la ficha espera al gesto; el recorte desde el arranque del tema) | 2026-10-22 | **activa** |
 | `D-73`, decimoséptima enmienda · `T-504`, `T-505` | **Tres más, elegidos por el hilo principal: el ángel de la soledad, el pac-man y la mosca** (`D-73`), 2026-10-22. Pedido del usuario: *"Agrega al bestiario con su diseño, animacion y todo bien pulido a 3 bestias que elijas vos"*. La escribe el hilo principal en la rama `bestiario/seis`, sobre `bestiario/tres` (el PR #69, sin integrar). Antes de tomar `T-504` se miraron `origin/main` y todas las ramas remotas: la última era `T-503` | 2026-10-22 | **activa** |
 
+| `D-81` · `DIF-01`+ · `RES-400` … `RES-409` (archivo `INV-400`) | **Las redes: el rol `difusion` y la cola en Buffer** (`D-81`), 2026-10-23. Pedido del usuario: *"armá un instagram y un twitter para la página, el rol, la carpeta, las cuentas, las herramientas"*. La escribe el hilo principal en la rama `difusion/redes`, sobre `main` en `235e369`. Antes de tomar los números se miraron las ramas remotas: `D-80` era el último. **Las fichas se escribieron como `RES-380` … `RES-389` y se renumeraron antes de commitear**: `RES-381` … `RES-386` ya eran de `INV-361`. `DIF-` es de `difusion` desde ahora, y los posteos los numera solo | 2026-10-23 | **activa** (`RES-409` sin usar) |
+| `D-82` | **La marca es la FR coronada, y el sistema de marca vive también en un artifact** (`D-82`), 2026-10-23. Pedido del usuario: *"armá un diseño de marca, un logo, todo [...] que el logo sea FR con la tipografía del PR de Patricio Rey"*. La escribe el hilo principal en la misma rama que `D-81`, `difusion/redes` | 2026-10-23 | **cerrada** |
 
 > **El caso que esta tabla existe para evitar pasó igual, el 2026-09-01, y quedó anotado
 > porque es la mejor evidencia que tiene esta sección.** Las dos sesiones planificaron su
@@ -161,6 +163,7 @@ contienen. Un archivo `Docs/PRODUCTO/PRD-quiz-juego1.md` puede contener varias h
 | `UX-` | `UX-` | Flujo, pantalla o pieza de sistema visual | `experiencia` | `Docs/UX/` |
 | `REV-` | `FIND-` | Hallazgo de revisión, con criterio incumplido y evidencia | `revisor` | `Docs/REVISIONES/` |
 | `ORQ-` | `T-` | Tarea ejecutable de un ciclo, con dueño y verificación | `orquestador` | `Docs/ORQ/` |
+| `DIF-` | `DIF-` | Hoja de la línea de las redes (`DIF-01` … `DIF-09`) o posteo del calendario (`DIF-10` en adelante) | `difusion` | `Docs/DIFUSION/` |
 
 ## Reglas
 

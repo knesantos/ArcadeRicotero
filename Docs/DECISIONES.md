@@ -6222,3 +6222,96 @@ En el navegador, con un iframe porque el panel oculto no corre `requestAnimation
   la caja del brillo del medallón de Momo, no un bicho.
 
 **Sin probar** en un teléfono de verdad, y sin oír.
+
+## D-81 — Las redes: un octavo rol, `difusion`, y la cola en Buffer
+
+- **Fecha:** 2026-10-23. Pedido del usuario: *"Vamos a armar un instagram y un twitter para la
+  pagina, arma el rol, la carpeta, las cuentas, las herramientas todo lo necesario para manejar de la
+  forma mas automatica y simple las redes."* Y, a mitad de camino, sobre Metricool (que ya tenía con
+  la marca de otro proyecto): *"no se usa mucho para torneo, no me gusto"*.
+- **Estado:** aceptada. Deja atrás la alternativa descartada de `D-10` (sumar `difusion`), que
+  `Docs/EQUIPO.md` ya nombraba como el candidato número uno para cuando hubiera algo jugable.
+
+### Qué se decidió
+
+1. **Entra `difusion` como octavo rol**, con carpeta `Docs/DIFUSION/` y prefijo `DIF-`. La
+   justificación del octavo está en `Docs/EQUIPO.md`. Escribe posteos en borrador; no corre
+   nada, no busca en la web y no publica.
+2. **La cola es Buffer, plan gratis, con su API** (`RES-402`, `RES-407`). Cuesta 0, el plan
+   gratis trae clave de API, y Buffer tiene el reloj: ni la API de Instagram ni la de X
+   programan (`RES-405`, `RES-406`, `RES-408`), y el sitio no tiene servidor para correr uno.
+3. **Las piezas las imprime el navegador** con los tokens y las letras reales del sitio
+   (`scripts/redes.mjs`), y viven en `public/redes/`: Buffer baja la imagen por URL, así que se
+   publican con el sitio.
+4. **Un solo gesto del usuario por semana**: decir que sí a una lista de posteos (`/redes`). Nada
+   sale sin ese sí en el chat; publicar es hacia afuera.
+5. **Las cuentas las abre el usuario.** Claude no crea cuentas ni escribe contraseñas. El paso a
+   paso y la clave de Buffer (en `.env`, que no se sube) están en `DIF-01`.
+
+### Alternativas descartadas
+
+- **Metricool**: el usuario lo descartó. Además el plan gratis no tiene X y la segunda marca
+  cuesta 16 EUR por mes (`RES-400`).
+- **Publicar directo por las API de X e Instagram**: X cobra hasta 0,20 USD por posteo con
+  enlace (`RES-405`), Instagram pide una app de Meta, y las dos piden un reloj propio, que acá
+  sería un cron en otro lado.
+- **Meta Business Suite**: gratis, pero solo Instagram y a mano (`RES-403`).
+- **El programador de X**: es de Premium (`RES-404`).
+- **Que `contenido` escriba los posteos**: su vara es el banco y la nota de derechos; un posteo
+  tiene otro largo, otra vidriera y un calendario, y meterlo ahí mezcla dos ritmos.
+
+### Camino B, si Buffer no deja X gratis
+
+Instagram sigue por Buffer. X: o Buffer Essentials (5 USD por mes por canal, `RES-402`), o el
+lote a mano (`npm run redes -- lote` deja el texto y la imagen de cada uno). Lo decide el usuario
+cuando se sepa.
+
+### Consecuencias
+
+- `scripts/redes.mjs`: `validar`, `piezas`, `perfil`, `lote`, `canales` y `cola`.
+- `src/lib/difusion/calendario.ts` con su test; `voz.test.ts` lee también los posteos.
+- `.claude/agents/difusion.md`, `.claude/skills/difusion-metodo/` y `.claude/skills/redes/`.
+- `Docs/DIFUSION/`: `DIF-01` (cuentas y perfil), `DIF-02` (línea editorial) y el calendario, con
+  tres borradores (`DIF-10` … `DIF-12`) para la primera semana.
+- `INV-400` con `RES-400` … `RES-408`.
+- **Sin probar todavía**: la cola contra Buffer de verdad, que necesita las cuentas y la clave.
+
+## D-82 — La marca es la FR coronada, y el sistema de marca vive también en un artifact
+
+- **Fecha:** 2026-10-23. Pedidos del usuario: *"Hay que armar también un diseño de marca, un logo
+  todo. Armá un artifact de design system para la marca. Me gusta que el logo sea FR con la
+  tipografía del PR de Patricio Rey"*, y después *"Hacé más detallado el logo, o sea que sea más
+  parecido al PR real, que no sea simplemente la FR con la tipografía"*.
+- **Estado:** aceptada.
+
+### Qué se decidió
+
+1. **La marca es un homenaje al PR coronado.** Toma la composición del logo de la banda, calcada
+   sobre la referencia que trae la fuente (`RES-42`, `FOTO.png` del zip de Patricio Rey): la F grande
+   que baja a la izquierda en el lugar de la P, la R más chica y más alta, apenas tocándose, y la
+   corona torcida arriba, con cuatro puntas de llama, tres joyas, dos perlas y el ala vista desde
+   abajo. Las letras son los glifos de la fuente pasados a trazo y girados para calzar; **la corona
+   se dibujó acá**, y la F reemplaza a la P: no se usa el PR original.
+2. **Cinco archivos** en `public/marca/`, impresos por `scripts/generar-logo.py` con los colores de
+   `tokens.css`: `fichin-ricotero` (con el nombre abajo, como PATRICIO REY), `fr`, `fr-redondo` (en el
+   disco de tinta, como el original), `fr-tinta` y `fr-papel`.
+3. **Las redes ya la usan**: la foto de perfil es `fr-redondo` y el banner de X es `fichin-ricotero`
+   (`npm run redes -- perfil`).
+4. **El sistema de marca se publicó como artifact** (tipo Design System):
+   https://claude.ai/artifact/49r6PNWPk241GcQBfNWbZL. Es la versión que leen otros agentes y otras
+   herramientas: tokens, letras, voz, logos y cuatro componentes (botón, sello, rótulo y la pieza de
+   redes). **No reemplaza al lienzo** de `diseno-marca.md`, que sigue siendo la fuente de verdad: los
+   valores del artifact son copia exacta de `tokens.css`.
+
+### Alternativas descartadas
+
+- **La FR sola, con la R encimada sobre la F** (la primera versión de esta misma decisión): el
+  usuario la encontró pobre, "simplemente la FR con la tipografía".
+- **Usar el PR original**: es el logo de la banda y el sitio no firma en su nombre.
+
+### Lo que queda
+
+- **El sitio todavía no usa la marca**: el favicon, el ícono de inicio y la tarjeta de compartir
+  siguen siendo los de `generar-marca-social.mjs`. Cambiarlos es cambiar la cara del sitio: pasa
+  primero por el lienzo, como manda `diseno-marca.md`.
+- Pegar la marca en el lienzo de marca, en la hoja 01.
