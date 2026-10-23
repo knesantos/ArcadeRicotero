@@ -30,6 +30,7 @@ import { armarMosca } from './mosca.ts';
 import { armarVerdugo } from './verdugo.ts';
 import { armarSaturno } from './saturno.ts';
 import { armarAnimal } from './animal.ts';
+import { armarDinamita } from './dinamita.ts';
 
 /**
  * Lo que la escena le presta a un personaje. Las coordenadas de `hablar` van en las del recinto
@@ -76,6 +77,7 @@ const CONDUCTAS: Readonly<Record<string, Armar | null>> = {
   'el-verdugo-que-cena': armarVerdugo,
   'el-doctor-saturno': armarSaturno,
   'tu-animal': armarAnimal,
+  'mi-perro-dinamita': armarDinamita,
 };
 
 /** Los ids que tienen conducta: el test mira que coincidan con los que tienen dibujo. */

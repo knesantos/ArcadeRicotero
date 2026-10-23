@@ -5712,6 +5712,43 @@ las animaciones no se vieron correr en el navegador.
   tarda tu animal en esconderse), junto con `T-504`.
 - `T-507`: pasar al lienzo los tres bloques de tintas nuevos, como `T-435`; y que `contenido` lea las tres estampas (`T-431`).
 
+### Enmienda del 2026-10-23 (19): mi perro dinamita, con la mecha y la explosión
+
+Pedido del usuario, textual: *"Diseña, e integra bien pulido y bien rocambolesco al perro dinamita. La venis rompiendo con
+los diseños"*, y a mitad de camino *"Que tenga una buena animacion y explosion"*. La escribe el hilo principal en la rama
+`bestiario/tres-del-fondo`, sobre la decimoctava (`29d3700`). Sin subagentes. Antes de tomar `T-508` se miraron todas las
+ramas: la última era `T-507`.
+
+#### El dibujo
+
+- **Al pie de la letra, como Rocambole.** El cuerpo es un atado de tres cartuchos rojos con dos vueltas de alambre, y la cola
+  es la mecha: *"no mueve el rabo con docilidad"* porque no puede. Del cuello para adelante es un callejero flaco, de hocico
+  largo y orejas de punta, con la trufa que le late (*"con el hocico afiebrado"*). La letra no dice que sea dinamita de
+  verdad: eso es del dibujo, y la estampa lo dice.
+- **Las tintas son las de *La mosca y la sopa*, su disco**, medidas con sharp en la tapa y el interior
+  (`⟨mi perro dinamita⟩` en `tokens.css`): el rojo del sobre para los cartuchos, las luces naranjas del escenario para el
+  fuego, el negro de la sala, el blanco del cañón de luz para el ojo y la chispa, y el amarillo de las letras del rótulo. El
+  pelo es el sepia de la foto del interior. El cartucho del medio lleva el rótulo negro torcido de esa tapa, con *DINAMITA*
+  en palotes; la estrella de la explosión dice *BUM* en el mismo amarillo.
+- **Aerógrafo con máscara**, como el resto del elenco: 16 piezas, 120 kB. El humo son bocanadas de borde duro con el volumen
+  soplado adentro, no una mancha: la primera versión era un desenfoque gris y se rehízo.
+
+#### La conducta (`scripts/bestiario/dinamita.ts`)
+
+- **Solo**, nada en bucle: trota por la tierra del baldío y se da vuelta como un títere de papel, jadea, olfatea, aúlla, y de
+  a ratos le salta una chispa sola en la punta de la mecha y la mira de reojo.
+- **Tocado**: la chispa baja por la cola mientras él tiembla y se agacha; al llegar al cartucho estalla (fogonazo, estrella,
+  esquirlas, humo y un sacudón de cámara de 0,72, entre el bombo y el meteorito de la vaca). Vuela en pedazos y se rearma como
+  en los dibujos animados, tiznado y con la mecha corta; le dan vueltas los ojos, se sacude el hollín y aúlla. La ficha se
+  abre a los 3,3 s, ya armado. La mecha vuelve a crecer y el tizne se le va en unos diez segundos.
+- **Con movimiento reducido** no explota nada: el toque lo pasa a la pose del aullido, tiznado.
+- **Al tocarlo no suena una explosión**: suena su tema desde el verso, como todo bicho con recorte (`D-78`). El efecto
+  sintetizado se descartó por eso.
+- Vive a la derecha del buen psicópata (`LUGAR.x` 772) y camina 110 unidades para cada lado sin taparle la cara a nadie.
+
+`npm test` (1958), `npm run check` y `npm run build` en verde. Probado en la página del baldío en un iframe con rAF
+reemplazado: trota, se da vuelta, aúlla, y la explosión corre entera hasta abrir la ficha.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17

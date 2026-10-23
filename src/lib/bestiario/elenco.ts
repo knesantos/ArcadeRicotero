@@ -35,6 +35,7 @@ import { MOSCA } from './arte-mosca.ts';
 import { VERDUGO_CENA } from './arte-verdugo.ts';
 import { SATURNO_DOCTOR } from './arte-saturno.ts';
 import { TU_ANIMAL } from './arte-animal.ts';
+import { DINAMITA } from './arte-dinamita.ts';
 
 export type Nombres = ReadonlyMap<string, string>;
 
@@ -78,7 +79,7 @@ export interface Personaje {
  * Los lugares, en el orden del recorrido: los diez de la decimoquinta vuelta y los tres de la
  * decimosexta. `null` es que todavía son ojos en lo oscuro.
  */
-const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA, VERDUGO_CENA, SATURNO_DOCTOR, TU_ANIMAL];
+const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA, VERDUGO_CENA, SATURNO_DOCTOR, TU_ANIMAL, DINAMITA];
 
 /** Los que ya tienen títere. */
 export const ELENCO: readonly Personaje[] = LUGARES.filter((p): p is Personaje => p !== null);
@@ -164,4 +165,6 @@ export const LUGAR_EN_EL_ELENCO: Readonly<Record<string, string>> = {
   'el-verdugo-que-cena': 'la-mesa',
   'el-doctor-saturno': 'el-templo',
   'tu-animal': 'el-monte',
+  // La decimonovena: el perro dinamita, en la tierra del baldío, a la derecha del buen psicópata.
+  'mi-perro-dinamita': 'los-techos',
 };

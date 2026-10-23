@@ -4350,6 +4350,19 @@ body:has(> .lugar) .marca-chica {
 .titere--psicopata [data-parte="correa"], .titere--psicopata [data-parte="humo"], .titere--psicopata [data-parte="bandera"] { pointer-events: none; }
 /* ⟨/el buen psicópata⟩ */
 
+/* ⟨mi perro dinamita⟩ */
+/* La mecha es un cordel trenzado: el sepia claro del interior, con la trenza en el sepia del pelo. La
+   pupila, del negro de la sala; el párpado, del pelo. La fiebre de la trufa es luz: se suma a lo de abajo.
+   El toque es el perro parado (el rectángulo que no se ve), nunca la explosión ni el humo. */
+.bt-dinamita-mecha { fill: none; stroke: var(--bestia-dinamita-pelo-claro); stroke-width: 3.8; stroke-linecap: round; }
+.bt-dinamita-trenza { fill: none; stroke: var(--bestia-dinamita-pelo); stroke-width: 3.8; stroke-dasharray: 1.4 2.4; opacity: 0.8; }
+.bt-dinamita-pupila { fill: var(--bestia-dinamita-negro); }
+.bt-dinamita-brillo { fill: var(--bestia-dinamita-foco); }
+.bt-dinamita-parpado { fill: var(--bestia-dinamita-pelo-medio); }
+.bt-dinamita-toque { fill: transparent; }
+.titere--dinamita [data-parte="fiebre"], .titere--dinamita [data-parte="chispa"] { mix-blend-mode: screen; }
+.titere--dinamita [data-parte="entero"] { pointer-events: none; }
+/* ⟨/mi perro dinamita⟩ */
 
 /* ⟨Porco Rex⟩ */
 /* La sombra en la nieve, del acero hondo de Cybersiberia; lo de adentro de la boca cuando chilla y la

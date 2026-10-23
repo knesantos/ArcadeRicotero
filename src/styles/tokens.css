@@ -523,6 +523,26 @@
   --bestia-mosca-reflejo: #d0afa6; /* el reflejo rosado del lomo (zona 770,945, percentil 97) */
   /* ⟨/la mosca⟩ */
 
+  /* ⟨mi perro dinamita⟩ */
+  /* Mi perro dinamita (decimonovena vuelta, D-73) es de *La mosca y la sopa* (el disco del tema): los
+     cartuchos son el rojo del sobre, la explosion son las luces del escenario, el foco y el amarillo del
+     rotulo, y el pelo es el sepia de la foto del interior. Medido con sharp en
+     la-mosca-y-la-sopa-frontal-real.jpg (1079 px) y la-mosca-y-la-sopa-interior-frontal.jpg (953 px):
+     zona (x, y) y lado, y el percentil por luminancia. */
+  --bestia-dinamita-rojo: #c82f1f; /* el rojo del sobre (frente, zona 40,650 de 200, mediana): los cartuchos */
+  --bestia-dinamita-rojo-hondo: #a31e19; /* el rojo del escenario en la sombra (frente, zona 300,260 de 300 x 100, percentil 10) */
+  --bestia-dinamita-brasa: #241011; /* lo mas hondo del escenario (frente, zona 230,260 de 500 x 120, percentil 3) */
+  --bestia-dinamita-naranja: #c65614; /* las luces del escenario (frente, zona 300,260 de 300 x 100, percentil 90): el alambre y el fuego */
+  --bestia-dinamita-luces: #d26c1a; /* las luces del escenario donde arden (la misma zona, percentil 98) */
+  --bestia-dinamita-amarillo: #f8f943; /* las letras del rotulo (frente, zona 420,780 de 480 x 200, percentil 97) */
+  --bestia-dinamita-negro: #0c0b10; /* la sala a oscuras (frente, zona 300,500 de 300 x 80, mediana): el rotulo y el hollin */
+  --bestia-dinamita-foco: #e9ebe0; /* el canon de luz de la derecha (frente, zona 860,240 de 40, percentil 90): el ojo y la chispa */
+  --bestia-dinamita-foco-frio: #94a2af; /* el canon de luz por la mitad (la misma zona, mediana): el humo */
+  --bestia-dinamita-pelo: #8a552d; /* la piedra del museo donde le da el sol (interior, zona 420,380 de 80 x 120, percentil 90) */
+  --bestia-dinamita-pelo-medio: #6e4f3a; /* la piedra del museo (la misma zona, mediana): el pelo */
+  --bestia-dinamita-pelo-sombra: #29261d; /* la sombra de la columna (interior, zona 190,300 de 40 x 300, percentil 10) */
+  --bestia-dinamita-pelo-claro: #d2c599; /* el cielo sepia (interior, zona 20,100 de 40 x 200, percentil 90): el pelo prendido y la mecha */
+  /* ⟨/mi perro dinamita⟩ */
 
   /* ⟨el verdugo⟩ */
   /* El verdugo que cena distinguido (decimoctava vuelta, D-73) es de Jijiji, en Oktubre: esta tallado

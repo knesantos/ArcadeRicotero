@@ -36,14 +36,16 @@ const ESCENA: Readonly<Record<string, (n: ReadonlyMap<string, string>) => string
 /** Los diez de la decimoquinta vuelta, uno por entorno; después vienen los de la decimosexta, la decimoséptima y la decimoctava. */
 const DIEZ = Object.keys(LUGAR_EN_EL_ELENCO).slice(0, 10);
 
-test('el elenco son los diez, uno por entorno, y los tres de la decimosexta, la decimoséptima y la decimoctava; cada uno es una bestia de esa región', () => {
+test('el elenco son los diez, uno por entorno, los tres de la decimosexta, la decimoséptima y la decimoctava, y el de la decimonovena; cada uno es una bestia de esa región', () => {
   const lugares = Object.entries(LUGAR_EN_EL_ELENCO);
-  assert.equal(lugares.length, 19);
+  assert.equal(lugares.length, 20);
   assert.equal(new Set(DIEZ.map((id) => LUGAR_EN_EL_ELENCO[id])).size, 10, 'dos de los diez en el mismo entorno');
   assert.deepEqual(lugares.slice(10, 13).map(([id]) => id), ['la-hija-del-fletero', 'el-buen-psicopata', 'porco-rex']);
   assert.deepEqual(lugares.slice(13, 16).map(([id]) => id), ['el-angel-de-la-soledad', 'el-pac-man', 'la-mosca']);
   // La decimoctava: uno en cada uno de los tres entornos con menos títeres para los bichos que tienen.
-  assert.deepEqual(lugares.slice(16).map(([id]) => id), ['el-verdugo-que-cena', 'el-doctor-saturno', 'tu-animal']);
+  assert.deepEqual(lugares.slice(16, 19).map(([id]) => id), ['el-verdugo-que-cena', 'el-doctor-saturno', 'tu-animal']);
+  // La decimonovena: el perro dinamita, en el baldío.
+  assert.deepEqual(lugares.slice(19).map(([id]) => id), ['mi-perro-dinamita']);
   for (const [id, region] of lugares) {
     const b = datos.bestias.find((x) => x.id === id);
     assert.ok(b, `${id} no está en el bestiario`);

@@ -7,6 +7,24 @@
 
 **Última actualización:** 2026-10-23
 
+> ## 🧨 MI PERRO DINAMITA, CON MECHA Y EXPLOSIÓN (2026-10-23) — `D-73`, decimonovena vuelta
+>
+> **Commiteado en la rama `bestiario/tres-del-fondo`**, encima de la decimoctava (`29d3700`); **sin PR ni integrar a
+> `main`**. `T-508`. Pedido del usuario: *"Diseña, e integra bien pulido y bien rocambolesco al perro dinamita"* y *"que
+> tenga una buena animacion y explosion"*.
+>
+> - **El dibujo** (`arte-dinamita.ts`, 16 piezas, 120 kB): el cuerpo es un atado de tres cartuchos con alambre, la
+>   cola es la mecha y del cuello para adelante es un callejero flaco con la trufa que le arde. Soplado en las tintas
+>   de *La mosca y la sopa*, medidas con sharp (`⟨mi perro dinamita⟩` en `tokens.css`), con el rótulo torcido de esa
+>   tapa diciendo DINAMITA.
+> - **La conducta** (`scripts/bestiario/dinamita.ts`): solo trota por el baldío, se da vuelta, jadea, olfatea, aúlla
+>   y le chisporrotea la mecha. Tocado, la mecha se quema, tiembla y explota: fogonazo, estrella del BUM, esquirlas,
+>   humo y sacudón de cámara. Vuela en pedazos, se rearma tiznado, se marea, se sacude y aúlla. Después se abre la
+>   ficha. Con movimiento reducido pasa a la pose del aullido.
+> - **Verde:** `npm test` (1958, con los 10 de `dinamita.test.ts`), `npm run check`, `npm run build`. Probado en
+>   la página del baldío en un iframe con rAF reemplazado.
+> - **Falta**: el PR de la rama (con la decimoctava), y verlo en un teléfono de verdad.
+
 > ## 🪓 TRES BESTIAS MÁS EN LOS ENTORNOS FLACOS: EL VERDUGO, EL DR. SATURNO Y TU ANIMAL (2026-10-23) — `D-73` (18)
 >
 > **Sin integrar**, en la rama `bestiario/tres-del-fondo`. Pedido del usuario: tres bestias rocambolescas y misteriosas, en
