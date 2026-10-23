@@ -281,7 +281,8 @@ test('los cinco de tapa tienen retrato de ficha, encuadrado en sus piezas; los d
     assert.ok(ancho! > 50 && alto! > 50 && !/NaN/.test(r.caja), `${id}: caja rota (${r.caja})`);
     assert.ok(r.svg.includes('-real-'), `${id}: el retrato no es la tapa`);
   }
-  assert.equal(retrato('la-mosca'), null);
+  // La mosca tiene títere desde la decimoséptima vuelta: el que sigue con su figura es el moscón.
+  assert.equal(retrato('el-moscon-zumbon'), null);
 });
 
 /*

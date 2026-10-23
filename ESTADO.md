@@ -7,6 +7,27 @@
 
 **Última actualización:** 2026-10-22
 
+> ## 🪰 TRES MÁS, ELEGIDOS POR EL HILO: EL ÁNGEL DE LA SOLEDAD, EL PAC-MAN Y LA MOSCA (2026-10-22) — decimoséptima enmienda de `D-73`
+>
+> **Rama `bestiario/seis`** (worktree `.claude/worktrees/bestiario-seis`), **sobre `bestiario/tres`** (el PR #69), **sin
+> integrar**: entra después del #69, o con él. Pedido del usuario: *"Agrega al bestiario con su diseño, animacion y todo bien
+> pulido a 3 bestias que elijas vos."*
+>
+> - **El ángel de la soledad** (árbol): soplado en el sepia de la contratapa de *Lobo suelto*, con las plumas hechas de los
+>   dientes serruchados de sus máscaras. Envuelto en las alas como en una capa; ataja el huevo que se cae del nido, lo
+>   escucha, no le cree y lo tira de vuelta. Tocado, abre las alas para recibirte y abraza el aire.
+> - **El pac-man** (Cybersiberia): el único del bestiario de pixel, en las tintas del fichín, con el resplandor a aerógrafo.
+>   Juega una partida sola en la fila de puntos: lo persigue un fantasma, se muere si lo arrinconan, se lo come con la
+>   pastilla. Tocado, le da el hambre.
+> - **La mosca** (mesa): el recorte de la mosca del rótulo de *La mosca y la sopa*, con su canto de papel. Vuela en ochos
+>   sobre la olla y se posa en el borde, en el cucharón y en la sopa (hace anillos), y se frota las patas. Tocada, se te
+>   viene encima y se va por detrás de la oreja.
+> - **Alrededor**: el elenco son dieciséis; salen del piso la silueta del ángel, la fila del pac-man y la mosca pintada;
+>   bloques de tintas nuevos del ángel y la mosca; cuentas con testimonio del memoir (pp. 293, 304, 324).
+> - **Verde:** `npm test` (1898), `npm run check`, `npm run build` (179 páginas). En el panel a 375 px, los tres se arman,
+>   el toque hace el gesto y abre la ficha. **Sin ver a velocidad real**: el panel estaba oculto y frenaba el reloj.
+> - **Abierto:** `T-504` (verlos en un teléfono de verdad), `T-505` (cotejar las páginas del memoir), `T-431`, `T-435`, `T-500`.
+
 > ## 🐖 TRES MÁS: LA HIJA DEL FLETERO, EL BUEN PSICÓPATA Y PORCO REX (2026-10-22) — decimosexta enmienda de `D-73`
 >
 > **Rama `bestiario/tres`** (worktree `.claude/worktrees/bestiario-tres`), sobre `main` en `0be8dc6`, **sin integrar**.

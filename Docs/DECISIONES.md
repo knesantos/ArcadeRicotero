@@ -5555,6 +5555,84 @@ parabellum* no está cortado.
 - Siguen `T-431` (que `contenido` lea las tres estampas y cuentas), `T-435` (los tres bloques de tintas al lienzo) y
   `T-437`/`T-439`/`T-490` (verlos en un teléfono de verdad).
 
+### Enmienda del 2026-10-22 (17): tres más, elegidos por el hilo principal — el ángel de la soledad, el pac-man y la mosca
+
+Pedido del usuario, textual: *"Agrega al bestiario con su diseño, animacion y todo bien pulido a 3 bestias que elijas
+vos."* La escribe el hilo principal en la rama `bestiario/seis`, **sobre `bestiario/tres`** (el PR #69, sin integrar
+todavía), porque las dos vueltas tocan los mismos registros: el elenco, la vida y los bloques de tintas. Sin subagentes:
+los tres los hizo el hilo principal, de a uno.
+
+#### Cuáles, y por qué
+
+De los 27 que el usuario puso primero (`Docs/SUGERENCIAS/HILO-para-bestiario-prioridad-de-figuras.md`), tres de entornos
+que tenían uno solo, o en el del fichín, y cada uno en una técnica distinta de las que ya hay:
+
+- **El ángel de la soledad**, en el árbol, que tenía solo al monito. Era una silueta negra pintada en el piso.
+- **El pac-man**, en Cybersiberia. Es el único bicho del mapa que nació en un fichín, en un sitio que se llama Fichín
+  Ricotero: era la deuda más obvia.
+- **La mosca**, en la mesa, que tenía solo al caníbal. Le da nombre al disco, y estaba pintada chiquita sobre la olla.
+
+#### Los tres
+
+- **El ángel, soplado en el sepia de la contratapa de *Lobo suelto*** (*Un ángel para tu soledad*, disco 1). La contratapa
+  es aerógrafo de pliegues blandos cortados por máscaras de papel con el borde serruchado: la túnica son los pliegues y
+  **las plumas son los dientes**, en filas a lo largo del ala, con el hueso liso y prendido arriba. La cara es la grisalla
+  del lobo del frente, con un ojo más grande que el otro, los párpados pesados y la ceja que sube. Cerradas, las alas lo
+  envuelven como una capa (*"con las alas cerradas"*, decía la estampa). Del nido de los pájaros de la noche, que le queda
+  justo arriba, se cae un huevo de plata: lo ve venir, abre un poco las alas, lo ataja agachándose, **se lo lleva a la oreja,
+  lo escucha con los ojos cerrados, levanta la ceja, dice que no con la cabeza** (*"tampoco cree en lo que oye"*) y lo tira
+  de vuelta al nido. En el camino el nido se corre con la copa, y la caída se corrige con `k`. **Tocado, abre las alas del
+  todo y las manos, para recibir al que se cae** (*"y caes en manos del Ángel de la soledad"*), las cierra abrazando el aire
+  y dice que no. Hubo tres vueltas: en la primera las alas abiertas eran dos tablones serruchados.
+- **El pac-man es pixel** (*Un Pac-Man en el Savoy*, *¡Bang! ¡Bang!*). Es la única excepción del bestiario al aerógrafo, y
+  es a propósito: está dibujado en las tintas del fichín (`--px-*`, la hoja 14), con el borde vivo (`crispEdges`), y lo
+  que le pasa alrededor sí es aerógrafo, el resplandor que larga en la nieve. Pixel adentro, imprenta afuera, como manda
+  `D-41`. Ocupa la fila de puntos que ya estaba pintada, que sale del piso. Juega una partida sola: come la fila (y cuando
+  la deja limpia los puntos vuelven), lo persigue un fantasma que aparece por la punta más lejana, le huye si lo tiene de
+  frente, y **si lo arrinconan se muere como en el fichín** y vuelve a aparecer (*"nuestro pac-man no es de nadie"*). Si
+  come la pastilla de la punta, el fantasma se pone azul, se lo come, sale el 200 y los ojos se van solos a su casa.
+  **Tocado, le da el hambre** (*"todo el hambre del nuevo pac-man"*): el poder sin pastilla, y si no había fantasma, aparece
+  uno ya azul. Como la fila es fina para un dedo, se toca el pasillo entero.
+- **La mosca es un recorte de la mosca del rótulo de la tapa** (*Queso ruso*, *La mosca y la sopa*). En la tapa es una foto
+  de mosca vista de arriba, pegada sobre el rótulo; en la mesa todo es collage, así que es esa foto recortada, con el canto
+  blanco del papel, el lomo azul acero, la panza en damero, los ojos rojizos y las alas de vidrio con venas. La foto de la
+  tapa es demasiado chica para recortarla de verdad: está pintada, con las tintas medidas en ella. Vuela en ochos sobre la
+  olla, adentro del seguidor, y **se posa en el borde, en la punta del cucharón y en la sopa**, donde hace anillos; posada se
+  frota las patas, da dos pasitos y se da vuelta. **Tocada, se te viene encima** (*"sentís la mosca joder detrás de la
+  oreja"*): crece delante de la cara de quien mira, zumba en zigzag y se va de golpe por arriba, y al rato vuelve. También se
+  toca el aire donde vuela, que ella es chica para un dedo. La de la portada del sitio no cambia.
+
+#### Lo que cambió alrededor
+
+- **El elenco son dieciséis** (`elenco.ts`). Los tests del caníbal y del monito pasan a mirar solo a su personaje (`solo`),
+  como el del pibe en la vuelta anterior, y el ejemplo de "sigue con su figura" de `bestiario.test.ts` pasa a ser el moscón.
+- **Salen del piso** la silueta del ángel (árbol), la fila de puntos y el pac-man (Cybersiberia) y la mosca (mesa), con los
+  pisos y sus tiras del camino reimpresos.
+- **Tintas nuevas** en `tokens.css`: un bloque del ángel (contratapa de *Lobo suelto*, medida con `sharp`) y uno de la mosca
+  (el rótulo de *La mosca y la sopa*). El pac-man no suma ninguna: son las quince del fichín.
+- **Cuentas nuevas, con testimonio fichado** del memoir (`RES-21`): del ángel, que es un himno y que es de las pocas
+  canciones en las que habla a conciencia de la gente que lo va a ver (p. 324); de la mosca, lo que quiere decir el título
+  del disco (p. 293) y lo de la revista *Hola* (p. 304). Del pac-man el memoir no dice nada: va sin cuenta. Las páginas se
+  contaron por el número impreso al pie, con `pdftotext`.
+- Los tres abren la ficha después del gesto (1 a 1,1 s), como los de la decimosexta.
+
+#### Cómo se verificó
+
+Cada uno trae su test (10, 9 y 8 pruebas), con su conducta contra un DOM de juguete: la del pac-man juega cinco partidas de
+noventa segundos y mira que coma, que reponga la fila, que se muera y que se coma al fantasma. Con los dieciséis: `npm test`
+(1898), `npm run check` (0 errores) y `npm run build` (179 páginas). Las piezas se miraron impresas, en hojas de poses con
+zoom, sobre su fondo. En el navegador del panel, a 375 px: los tres se arman en su camino, el toque hace el gesto y abre la
+ficha, y el pac-man juega solo. **El panel estaba oculto**, así que el navegador frenaba el reloj de las escenas: el ritmo de
+las animaciones no se vio a velocidad real.
+
+#### Abierto, sin trabar
+
+- `T-504`: verlos a velocidad real en un teléfono de verdad (los tiempos del ataje del ángel, el ritmo de la partida del
+  pac-man, si el zumbido de la mosca se lee), junto con `T-490`.
+- `T-505`: que `investigador` coteje las páginas del memoir de las cuentas nuevas (293, 304 y 324), como en `T-501` y `T-503`.
+- Siguen `T-431` (que `contenido` lea las tres estampas y cuentas), `T-435` (los dos bloques de tintas al lienzo) y `T-500`
+  (los sonidos del elenco: el pac-man pide los suyos).
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17
