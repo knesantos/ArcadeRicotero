@@ -448,6 +448,81 @@
   --bestia-esclavo-ojo: #aa1f32; /* el rojo en el ojo del hombre de barba del frente de Oktubre (zona 291,845 de 1 px: el mas rojo de la mancha) */
   /* ⟨/el esclavo sensible y chillon⟩ */
 
+  /* ⟨la hija del fletero⟩ */
+  /* La hija del fletero (decimosexta vuelta, D-73) esta pintada como la mujer del tubo del interior
+     del disco 1 de *Lobo suelto* (el disco del tema): aerografo gris, casi foto, y un solo color, el
+     rosa del tubo. Medido con PIL en lobo-suelto-cordero-atado-cd1-interior-frontal.jpg (953 px):
+     mediana y percentiles por luminancia de cada zona. El sodio y la tiza que le pegan son los del
+     muelle. Ninguno escribe texto: no entran al test AA. Faltan en el lienzo (T-435). */
+  --bestia-hija-honda: #231a1b; /* la sombra mas honda de la piel, debajo del brazo (zona 250,520 de 120 x 100, percentil 10) */
+  --bestia-hija-media: #7d8e7c; /* el gris verdoso de la piel a media luz (zona 250,520, mediana) */
+  --bestia-hija-gris: #95988f; /* el gris de la ropa y del hombro (zona 380,600 de 120 x 100, mediana) */
+  --bestia-hija-clara: #d1d0d6; /* la piel donde le da la luz (zona 520,470 de 200 x 150, mediana) */
+  --bestia-hija-luz: #f3edf7; /* el brillo de los nudillos (zona 300,330 de 100 x 60, mediana) */
+  --bestia-hija-pelo: #1d1e22; /* el pelo negro de la izquierda (zona 30,150 de 80 x 200, mediana) */
+  --bestia-hija-tubo: #962a41; /* el tubo del telefono (zona 600,330 de 70 x 40, mediana) */
+  --bestia-hija-tubo-luz: #e699c3; /* el brillo del tubo (zona 600,330, percentil 90) */
+  --bestia-hija-tubo-hondo: #4a070e; /* el tubo en la sombra (zona 600,330, percentil 10) */
+  /* ⟨/la hija del fletero⟩ */
+
+  /* ⟨el buen psicopata⟩ */
+  /* El buen psicopata (decimosexta vuelta, D-73) es el hombre de la gorra de la tapa de *Bang! Bang!
+     Estas liquidado* (el disco del tema), pintado como ella: guache denso, ocres que saltan al
+     amarillo y pliegues casi negros. Medido con PIL en bang-bang-estas-liquidado-frontal.jpg y en su
+     interior (953 px). */
+  --bestia-psicopata-ocre: #8e3523; /* el sobretodo a media luz (interior, zona 150,600 de 150 x 250, mediana) */
+  --bestia-psicopata-ocre-luz: #f49b49; /* el sobretodo donde le pega la luz (interior, la misma zona, percentil 90) */
+  --bestia-psicopata-amarillo: #f0d554; /* el filo de la gorra y del cuello que salta al amarillo (frente, zona 760,250 de 120 x 50, percentil 90) */
+  --bestia-psicopata-pliegue: #3c2a1e; /* el fondo de los pliegues (frente, zona 800,560 de 80 x 200, mediana) */
+  --bestia-psicopata-gorra: #9e5b2e; /* la gorra (frente, zona 760,250, mediana) */
+  --bestia-psicopata-piel: #d6b651; /* la cara de perfil (frente, zona 748,360 de 30 x 60, mediana) */
+  --bestia-psicopata-barba: #422807; /* la barba y la patilla (frente, zona 760,410 de 40 x 50, mediana) */
+  --bestia-psicopata-puntilla: #dba052; /* el puno de puntilla (frente, zona 430,850 de 60 x 50, mediana) */
+  --bestia-psicopata-zorro: #d9813a; /* el perro de la parabellum (frente, zona 280,880 de 60 x 50, mediana) */
+  --bestia-psicopata-acero: #7358a5; /* la pistola, que toma el violeta de la pared (frente, zona 200,810 de 150 x 40, mediana) */
+  --bestia-psicopata-pared: #663b82; /* el granito violeta de la pared del museo (frente, zona 120,760 de 120 x 120, mediana) */
+  --bestia-psicopata-marco: #e2592f; /* el marco del cuadro (frente, zona 40,300 de 14 x 300, mediana) */
+  /* ⟨/el buen psicopata⟩ */
+
+  /* ⟨Porco Rex⟩ */
+  /* Porco Rex (decimosexta vuelta, D-73) es una postal virtual, como las caras de la banda en el ojo
+     de buey de *Ultimo bondi a Finisterre* (el disco de su tema, que el interior firma "Postales
+     virtuales: Rocambole"): piel de muneco de computadora, con el brillo duro del render, y una
+     corona del acero remachado de la tapa. Medido con PIL en ultimo-bondi-a-finisterre-frontal.jpg
+     (953 px). El chancho no esta en la tapa: el rosa sale de la piel de la banda corrida al rosa. */
+  --bestia-porco-piel: #cd9469; /* la piel de las caras del ojo de buey (zona 440,400 de 60 x 60, percentil 90) */
+  --bestia-porco-piel-luz: #e8dca2; /* la frente donde pega el render (zona 470,330 de 40 x 40, percentil 90) */
+  --bestia-porco-piel-honda: #492a27; /* la piel en la sombra, debajo del gorro rojo (zona 300,420 de 60 x 30, mediana) */
+  --bestia-porco-rosa: #c87c78; /* la piel corrida al rosa de chancho: la del ojo de buey con el rojo del gorro (zona 300,420, percentil 90, mezclado con la de 440,400) */
+  --bestia-porco-barro: #3b2f27; /* el barro: la nieve pisada con el oxido de la tapa (--entorno-cyber-oxido, mas hondo) */
+  /* ⟨/Porco Rex⟩ */
+
+  /* ⟨el angel de la soledad⟩ */
+  /* El angel de la soledad (decimoseptima vuelta, D-73) esta pintado como la contratapa del disco 1 de
+     *Lobo suelto* (el disco del tema): aerografo sepia, pliegues blandos y el borde serruchado de las
+     mascaras de papel, que son sus plumas. Medido con sharp en lobo-suelto-cordero-atado-cd1-trasera.jpg
+     (1181 px): percentiles por luminancia de cada zona. La luz roja de la llanura y la violeta del
+     cielo que le pegan son las del arbol. Ninguno escribe texto: no entran al test AA. */
+  --bestia-angel-hondo: #43342f; /* lo mas hondo de los pliegues de arriba (zona 600,40 de 500 x 200, percentil 5) */
+  --bestia-angel-sepia: #887058; /* el sepia de los pliegues a media luz (zona 600,40, mediana) */
+  --bestia-angel-medio: #a59675; /* el sepia claro del pliegue grande (zona 750,300 de 300 x 500, mediana) */
+  --bestia-angel-crema: #d6c9b8; /* el papel donde pega la luz (zona 600,40, percentil 90) */
+  --bestia-angel-luz: #ecd3bf; /* el brillo del borde serruchado (zona 900,150 de 150 x 150, percentil 90) */
+  --bestia-angel-frio: #364049; /* el gris frio que asoma en las sombras de abajo (zona 300,700 de 500 x 200, percentil 10) */
+  /* ⟨/el angel de la soledad⟩ */
+
+  /* ⟨la mosca⟩ */
+  /* La mosca (decimoseptima vuelta, D-73) es la del rotulo de *La mosca y la sopa* (el disco de su
+     nombre y el de Queso ruso): una foto de mosca pegada sobre el rotulo, que en la mesa es un recorte
+     con su canto de papel. Medido con sharp en la-mosca-y-la-sopa-frontal-real.jpg (1079 px), sobre la
+     mosca del rotulo, que es chica: el reflejo rosado es el rojo de la tapa en el lomo. */
+  --bestia-mosca-cuerpo: #2c3346; /* el lomo azul acero (zona 745,925 de 40 x 40, mediana) */
+  --bestia-mosca-honda: #09101a; /* lo negro de entre los pelos (zona 745,925, percentil 10) */
+  --bestia-mosca-plata: #85868a; /* el gris de las alas (zona 745,925, percentil 97) */
+  --bestia-mosca-ojo: #504452; /* el ojo, que toma el rojo del fondo (zona 770,945 de 30 x 30, mediana) */
+  --bestia-mosca-reflejo: #d0afa6; /* el reflejo rosado del lomo (zona 770,945, percentil 97) */
+  /* ⟨/la mosca⟩ */
+
   /* Collage de cassette (UX-04: el collage es tecnica fichada de Rocambole, RES-06).
      Papel de etiqueta: sobre el escribe la tinta del fondo (--fondo), par testeado.
      El borde del papel no se usa como texto — como los -apoyo, no entra al test AA. */

@@ -23,6 +23,14 @@
 
 import { normalizar } from '../texto.ts';
 
+/**
+ * Las bestias que no suenan desde su verso sino **desde el arranque del tema**: el recorte empieza en
+ * el segundo cero del máster, sin LRCLIB. El buen psicópata (`D-73`, decimosexta vuelta) es el primero,
+ * a pedido del usuario: *"que suene el inicio del tema 'La parabellum del buen psicópata'"*, que
+ * arranca con el riff de guitarra.
+ */
+export const DESDE_EL_ARRANQUE: ReadonlySet<string> = new Set(['el-buen-psicopata']);
+
 /** Cuánto puede diferir la duración de la versión de LRCLIB de la del máster, en segundos. */
 export const TOLERANCIA_SEG = 2;
 

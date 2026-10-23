@@ -18,7 +18,7 @@ import { armarMonitoCon } from '../../scripts/bestiario/monito.ts';
 
 const datos = JSON.parse(readFileSync('src/data/bestiario.json', 'utf-8')) as { bestias: Array<{ id: string; nombre: string; estampa: string; cuenta?: Array<{ rotulo: string; fuente: string }> }> };
 const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
-const marcado = capasDe('el-arbol', 'figura', nombres);
+const marcado = capasDe('el-arbol', 'figura', nombres, 1, 'el-monito-que-trepa');
 const A = MONITO_ARMADO;
 const caja = (nombre: string): readonly [number, number, number, number] => PIEZAS_MONITO.find((p) => p.nombre === nombre)!.caja;
 const adentro = (nombre: string, [x, y]: Punto): boolean => {

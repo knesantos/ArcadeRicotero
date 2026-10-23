@@ -101,6 +101,8 @@ export function escenaBaldio(nombres: ReadonlyMap<string, string>): string {
     `<g clip-path="url(#atila-pared)"><g class="titere titere--atila" data-id="el-negro-atila" role="button" tabindex="0" aria-label="${nombres.get('el-negro-atila') ?? ''}">` +
     `<g id="atila-entero" transform="translate(${ATILA.x} ${ATILA.piso}) scale(${ATILA.escala})">${atila()}</g></g></g>` +
     `<g class="atila-vahos" aria-hidden="true" pointer-events="none">${[0, 1, 2].map((n) => `<g data-vaho="${n}" opacity="0">${imagen('atila-vaho')}</g>`).join('')}</g>` +
+    // El cuadro del buen psicópata, en su caballete en la tierra (decimosexta vuelta, `arte-psicopata.ts`).
+    capasDe('los-techos', 'atras', nombres) +
     // La chapa que remata la medianera va delante del Atila (le tapa los pies cuando se tira del otro
     // lado), y Limón corre por ella con las linternas del bloque atrás.
     imagen('baldio-chapa') +
@@ -114,6 +116,8 @@ export function escenaBaldio(nombres: ReadonlyMap<string, string>): string {
       parte('boca', imagen('perro-real-boca')) + parte('mandibula', imagen('perro-real-mandibula')) + parte('cabeza', imagen('perro-real-cabeza')),
       `translate(${PERRO.x} ${PERRO.y}) scale(${PERRO.escala}) translate(${-bx} ${-by})`,
     ) +
+    // El buen psicópata y su perro, delante del perro de la tapa y detrás del pasto.
+    capasDe('los-techos', 'figura', nombres) +
     // La sirena de la cana: arranca afuera de la escena, a la izquierda, y la isla la pasa.
     `<g class="atila-sirena" aria-hidden="true" pointer-events="none" opacity="0" transform="translate(-320 ${ATILA.sirena})">${imagen('atila-sirena')}</g>` +
     `<g pointer-events="none">${imagen('baldio-frente')}</g>`

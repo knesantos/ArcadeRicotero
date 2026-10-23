@@ -1,7 +1,7 @@
 {
   "pieza": "bestiario",
   "decision": "D-73",
-  "actualizado": "2026-10-18",
+  "actualizado": "2026-10-22",
   "nota": "El bestiario redondo: los bichos y la gente que viven en las letras de los diez discos, más los tres del mito que no salen de ninguna letra. Cada uno vive en una región del mundo redondo, al lado de los que se le parecen. El verso de cada ficha se coteja a máquina contra cancionero.json (bestiario.test.ts); lo que se cuenta aparte lleva su rótulo. La estampa es el dibujo del sitio y dice lo que agrega a la letra.",
   "regiones": [
     {
@@ -267,7 +267,21 @@
       "dibujo": { "f": "persona", "con": ["alas"], "ropa": "tunica" },
       "tema": "un-angel-para-tu-soledad",
       "verso": ["Y caes en manos", "Del Ángel de la soledad", "Tampoco cree en lo que oye"],
-      "estampa": "Al pie del árbol, con las alas cerradas. Ataja a los que se caen de arriba, y no les cree nada.",
+      "estampa": "Al pie del árbol, envuelto en las alas como en una capa. Las plumas son los dientes de las máscaras de papel de la contratapa de Lobo suelto, su disco, y eso es del dibujo. De la letra es que ataja a los que se caen de arriba, y que no les cree nada.",
+      "cuenta": [
+        {
+          "rotulo": "testimonio",
+          "texto": "Dice que es un himno, de esas canciones que cada tanto hay que tocar: uno no es dueño de las canciones que la gente elige quedarse.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 324)",
+          "fuente": "RES-21"
+        },
+        {
+          "rotulo": "testimonio",
+          "texto": "Es de las pocas canciones en las que habla a conciencia de la gente que lo va a ver: de los que están y de los que no pudieron ir. La soledad, dice, es inevitable, y al final él también se incluye.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 324)",
+          "fuente": "RES-21"
+        }
+      ],
       "cerca": ["el-angel-guardian", "el-angelito-frito"]
     },
     {
@@ -416,7 +430,21 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "chicas", "hocico": "chato", "cola": "enrulada", "con": ["corona"] },
       "tema": "alien-duce",
       "verso": ["va Porco Rex a Porno Rock!"],
-      "estampa": "Un chancho con corona que va al trote. Rey de algo, seguro.",
+      "estampa": "Trota solo en la nieve, con la corona remachada como el ojo de buey de Último bondi y los anteojos negros de la banda que asoma adentro. De la letra es que va a Porno Rock. El barro, la piel de muñeco de plástico y los cuernos que hace con la pezuña son del dibujo.",
+      "cuenta": [
+        {
+          "rotulo": "testimonio",
+          "texto": "Dice que en «Alien Duce» asoma por primera vez: un rey al que la banda llevó a la porcarata que hacía ella misma. Arrastrado al barro.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 397)",
+          "fuente": "RES-21"
+        },
+        {
+          "rotulo": "testimonio",
+          "texto": "Años después le puso el nombre a un disco solista. Porco Rex, o sea PR, es lo que quedó de Patricio Rey: el fondo de la olla, la desconfianza, la traición.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 485)",
+          "fuente": "RES-21"
+        }
+      ],
       "cerca": ["el-alien-duce"]
     },
     {
@@ -496,7 +524,7 @@
       "dibujo": { "f": "maquina", "que": "pacman" },
       "tema": "un-pacman-en-el-savoy",
       "verso": ["Nuestro pac-man no es de nadie,", "y todo el hambre del nuevo pac-man."],
-      "estampa": "Come puntos por un pasillo de la pantalla. Es el único bicho del mapa que nació en un fichín.",
+      "estampa": "Come puntos por una fila de la nieve, con un fantasma atrás. Es el único bicho del mapa que nació en un fichín, y por eso es el único de pixel, en las tintas del fichín: eso es del dibujo. De la letra es el hambre. Tocalo y le das la pastilla.",
       "cerca": ["el-monito-que-trepa"]
     },
     {
@@ -720,7 +748,21 @@
       "dibujo": { "f": "persona", "con": ["valija"], "ropa": "vestido" },
       "tema": "la-hija-del-fletero",
       "verso": ["La hija del fletero, linda infinita", "Volvió a Madrid donde parece que es feliz"],
-      "estampa": "En la cubierta de un barco que sale, con una valija. No mira para atrás.",
+      "estampa": "Se vuelve a Madrid en la popa del ferry, con el tubo rojo en la oreja y el cable metido en el agua, hasta el muelle. Las descargas y la mirada que voltea son de la letra. El teléfono es del dibujo: aerógrafo gris, como la mujer del tubo del interior de Lobo suelto, su disco.",
+      "cuenta": [
+        {
+          "rotulo": "testimonio",
+          "texto": "Dice que es una historia cerrada, un cuento perfecto, como una fotonovela: un desengaño amoroso que salió entero de la imaginación. Que la historia no sea cierta no quiere decir que la emoción no lo sea.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 327)",
+          "fuente": "RES-21"
+        },
+        {
+          "rotulo": "testimonio",
+          "texto": "Del verso «siempre fui menos que mi reputación» dice que es la verdad: la fama es un chaleco que siempre queda mal de sisa.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 328)",
+          "fuente": "RES-21"
+        }
+      ],
       "cerca": ["las-almejas", "la-pequena-novia-del-carioca"]
     },
     {
@@ -1359,6 +1401,33 @@
       "tambien": [{ "tema": "nueva-roma", "verso": ["A un perro se lo cura como (ay) se cura a un perro,"] }],
       "cerca": ["los-titanes-del-orden-viril"]
     },
+    {
+      "id": "el-buen-psicopata",
+      "nombre": "El buen psicópata",
+      "clase": "personaje",
+      "region": "los-techos",
+      "pos": { "ang": 283, "r": 335 },
+      "tam": 34,
+      "dibujo": { "f": "persona", "ropa": "gaban", "con": ["gorra", "barba"] },
+      "tema": "la-parabellum-del-buen-psicopata",
+      "verso": ["La noche tira un salto mortal."],
+      "estampa": "Mira un fusilamiento en un caballete, en el medio del baldío, como quien mira un cuadro en un museo, con su perro de paseo: la parabellum le crece en la cabeza. Sale de la tapa de Bang! Bang!, su disco, y es del dibujo. De la letra es el salto mortal. Tocalo: el perro dispara una banderita.",
+      "cuenta": [
+        {
+          "rotulo": "testimonio",
+          "texto": "El título aggiorna la parábola del buen samaritano. Dice que lo repitió muchas veces: al hombre del futuro, el que logre adaptarse y sobrevivir, no le va a quedar otra que ser un psicópata.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (pp. 253-254)",
+          "fuente": "RES-21"
+        },
+        {
+          "rotulo": "testimonio",
+          "texto": "El disco salió el año de La Tablada, con mucho olor a pólvora. Por eso imaginó que hasta te podía fusilar la Cruz Roja: no había que confiar en nadie, ni siquiera en él.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 252)",
+          "fuente": "RES-21"
+        }
+      ],
+      "cerca": ["el-joven-lobo", "mi-perro-dinamita"]
+    },
 
     {
       "id": "el-lobo-suelto",
@@ -1613,9 +1682,21 @@
       "tema": "queso-ruso",
       "verso": ["Sentís la mosca joder detrás de la oreja"],
       "articulo": "la-mosca-y-la-sopa",
-      "estampa": "Dando vueltas sobre el plato de sopa. Es la misma que vuela por la portada del sitio.",
+      "estampa": "Da vueltas sobre la olla y se posa en la sopa. Es la mosca del rótulo de la tapa, recortada con su canto de papel, y eso es del dibujo. De la letra es que te jode detrás de la oreja: tocala. La que vuela por la portada del sitio es su prima.",
       "cuenta": [
-        { "rotulo": "hecho", "texto": "Junto con la sopa le da nombre al disco de 1991, La mosca y la sopa.", "fuente": "artículo «La mosca y la sopa»" }
+        { "rotulo": "hecho", "texto": "Junto con la sopa le da nombre al disco de 1991, La mosca y la sopa.", "fuente": "artículo «La mosca y la sopa»" },
+        {
+          "rotulo": "testimonio",
+          "texto": "Dice que el título es una forma gráfica de decir que algo rico se arruinó por un elemento extraño que le cayó adentro. La vida es así.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 293)",
+          "fuente": "RES-21"
+        },
+        {
+          "rotulo": "testimonio",
+          "texto": "Del verso de la mosca que jode detrás de la oreja dice que habla de la gente que compra la revista Hola cuando apenas le alcanza para pagarla.",
+          "quien": "Indio Solari, en «Recuerdos que mienten un poco» (p. 304)",
+          "fuente": "RES-21"
+        }
       ],
       "cerca": ["el-moscon-zumbon", "las-hormigas", "la-polilla"]
     },

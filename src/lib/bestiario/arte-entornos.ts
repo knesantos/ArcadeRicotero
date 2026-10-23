@@ -627,7 +627,6 @@ function arbolPiso(ancho = ANCHO, alto = ALTO): string {
   const [jx, jy] = at('el-jocker-burlon');
   const [scx, scy] = at('el-senor-de-los-cielos');
   const [lx, ly] = at('la-lechuza-que-circula');
-  const [a1x, a1y] = at('el-angel-de-la-soledad');
   const [a2x, a2y] = at('el-angel-guardian');
   const [a3x, a3y] = at('los-angelitos-profesionales');
   const [fx, fy] = at('el-angelito-frito');
@@ -666,7 +665,7 @@ function arbolPiso(ancho = ANCHO, alto = ALTO): string {
     forma(circulo(lx, ly, 12), A.negro) +
     forma(`M${f(lx - 11)} ${f(ly - 4)} L${f(lx - 9)} ${f(ly - 18)} L${f(lx - 3)} ${f(ly - 9)} Z M${f(lx + 11)} ${f(ly - 4)} L${f(lx + 9)} ${f(ly - 18)} L${f(lx + 3)} ${f(ly - 9)} Z`, A.negro) +
     // Los ángeles, al pie del árbol: las alas cerradas y pálidas, el cuerpo en sombra.
-    alas(a1x, a1y, 62) + figura(a1x, a1y, 62, A.negro) +
+    // El ángel de la soledad ya no se pinta acá: es un títere del elenco (`arte-angel.ts`), en este mismo pie.
     alas(a2x, a2y, 60) + figura(a2x, a2y, 60, A.negro) +
     `<ellipse cx="${f(a2x + 9)}" cy="${f(a2y - 15)}" rx="13" ry="4" fill="none" stroke="${A.oro}" stroke-width="2.6" transform="rotate(24 ${f(a2x + 9)} ${f(a2y - 15)})"/>` +
     nube(a2x + 9, a2y - 15, 16, 8, A.oro, 's', 0.35) +
@@ -970,17 +969,8 @@ function cyberPiso(ancho = ANCHO, alto = ALTO): string {
     const d = `M${f(x0)} ${CYBER.tele.piso - 4} L${f(x0)} ${y1} L${f(x2)} ${y1}`;
     cables += pista(d, 6, 0.9) + `<g transform="translate(0 -3)">${trazo(d, C.nieve, 2, 0.5)}</g>` + terminal(x2, y1, 6);
   }
-  // La fila de puntos que se come el pac-man: como la fila de agujeros de la tapa, pero prendidos.
-  const { desde, hasta, y: yp } = CYBER.puntos;
-  let puntos = '';
-  for (let x = X(desde); x < X(hasta); x += 22) puntos += nube(x, yp, 6, 4, C.oro, 's', 0.45) + forma(circulo(x, yp, 3), C.papel);
-  const { x: pmx, y: pmy, r: pmr } = CYBER.pacman;
-  const pm = X(pmx);
-  const pacman =
-    nube(pm, pmy, pmr * 2.4, pmr * 1.8, C.oro, 'xl', 0.45) +
-    forma(`M${f(pm)} ${f(pmy)} L${f(pm - pmr * Math.cos(0.6))} ${f(pmy - pmr * Math.sin(0.6))} A${pmr} ${pmr} 0 1 1 ${f(pm - pmr * Math.cos(0.6))} ${f(pmy + pmr * Math.sin(0.6))} Z`, C.oro) +
-    nube(pm + 4, pmy + 6, pmr * 0.6, pmr * 0.5, C.oxido, 's', 0.5) +
-    forma(circulo(pm + 2, pmy - pmr * 0.5, 2.6), C.negro);
+  // La fila de puntos y el pac-man ya no se pintan acá: son un títere del elenco (`arte-pacman.ts`), en esta
+  // misma fila de la nieve.
 
   // Las huellas del Rey Garufa, que viene caminando solo desde el borde.
   const [gx, gy] = OJOS_DE_CYBERSIBERIA['el-rey-garufa']!;
@@ -993,7 +983,6 @@ function cyberPiso(ancho = ANCHO, alto = ALTO): string {
   const [wx, wy] = at('super-walter');
   const [cbx, cby] = at('comboman');
   const [sx, sy] = at('la-princesita-sapito');
-  const [px, py] = at('porco-rex');
   const [cmx, cmy] = at('los-camellos-prestigiosos');
   const [dx, dy] = at('drogocop');
   const [spx, spy] = at('el-super-boca');
@@ -1003,8 +992,7 @@ function cyberPiso(ancho = ANCHO, alto = ALTO): string {
   // en este mismo charco de luz.
   const garufa = parado(gax, gay, 78);
   const sapo = `M${f(sx - 18)} ${f(sy + 16)} C${f(sx - 22)} ${f(sy + 2)} ${f(sx - 12)} ${f(sy - 8)} ${f(sx - 6)} ${f(sy - 4)} Q${f(sx)} ${f(sy - 6)} ${f(sx + 6)} ${f(sy - 4)} C${f(sx + 12)} ${f(sy - 8)} ${f(sx + 22)} ${f(sy + 2)} ${f(sx + 18)} ${f(sy + 16)} Z`;
-  const chancho = circulo(px, py + 4, 15) + ` ${elipse(px + 26, py + 18, 30, 17)} M${f(px - 13)} ${f(py - 6)} l-4 -12 l12 6 Z M${f(px + 13)} ${f(py - 6)} l4 -12 l-12 6 Z` +
-    [px + 4, px + 14, px + 38, px + 48].map((lx) => ` ${caja(lx - 3, py + 26, 6, 16)}`).join('');
+  // Porco Rex ya no se pinta acá: es un títere del elenco (`arte-porco.ts`), que trota en esta nieve.
   const camello = elipse(cmx - 3, cmy + 1, 10, 6) +
     ` M${f(cmx + 2)} ${f(cmy - 2)} C${f(cmx + 14)} ${f(cmy)} ${f(cmx + 10)} ${f(cmy + 22)} ${f(cmx + 20)} ${f(cmy + 30)} Q${f(cmx + 30)} ${f(cmy + 4)} ${f(cmx + 42)} ${f(cmy + 24)} Q${f(cmx + 54)} ${f(cmy + 2)} ${f(cmx + 66)} ${f(cmy + 26)} Q${f(cmx + 76)} ${f(cmy + 34)} ${f(cmx + 72)} ${f(cmy + 46)} L${f(cmx + 18)} ${f(cmy + 48)} Q${f(cmx + 4)} ${f(cmy + 30)} ${f(cmx - 2)} ${f(cmy + 4)} Z` +
     [cmx + 22, cmx + 32, cmx + 58, cmx + 68].map((lx) => ` ${caja(lx - 2.5, cmy + 44, 5, 34)}`).join('');
@@ -1024,14 +1012,11 @@ function cyberPiso(ancho = ANCHO, alto = ALTO): string {
     `<g filter="url(#rociado)">` +
     cables +
     huellas +
-    puntos +
     `</g>` +
     tele(tx) +
     teleChica(X(CYBER.teleChica.x)) +
-    pacman +
     // Los de la nieve, recortados contra la luz de la tele, con el canto prendido.
     sombraEnLaNieve(cmx + 46, cmy + 78, 46) + canto(camello, 2, -2, 0.5) + forma(camello, C.hondo) +
-    sombraEnLaNieve(px + 20, py + 42, 46) + canto(chancho, 2.5, -2) + forma(chancho, C.negro) + corona(px, py - 12, 7) + nube(px, py + 12, 7, 5, C.oxido, 's', 0.8) +
     sombraEnLaNieve(dx, dy + 84, 30) + canto(robot, -2.5, -2) + forma(robot, C.negro) +
     `<g transform="rotate(-8 ${f(dx + 30)} ${f(dy + 40)})">` + forma(caja(dx + 22, dy - 6, 12, 62), C.hondo) + forma(caja(dx + 25, dy - 22, 6, 18), C.hondo) + trazo(`M${f(dx + 25)} ${f(dy + 2)} L${f(dx + 25)} ${f(dy + 52)}`, C.lente, 1.6, 0.7) + `</g>` +
     sombraEnLaNieve(sx, sy + 16, 26) + canto(sapo, 0, -2) + forma(sapo, C.negro) + corona(sx, sy - 10, 5) +
@@ -1273,7 +1258,6 @@ function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
   const [rnx, rny] = at('la-rana-rubia');
   const [lyx, lyy] = at('la-gran-lady');
   const [btx, bty] = at('el-botija-rapado');
-  const [hjx, hjy] = at('la-hija-del-fletero');
   const [lnx, lny] = at('la-del-lanchon');
   const [asx, asy] = at('el-as-del-club-paris');
   const [nvx, nvy] = [X(COSAS_DE_LOS_ASTILLEROS['la-pequena-novia-del-carioca']![0]), COSAS_DE_LOS_ASTILLEROS['la-pequena-novia-del-carioca']![1]];
@@ -1302,10 +1286,7 @@ function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
     forma(circulo(btx, bty, 9), T.negro) +
     forma(`M${f(btx - 11)} ${f(bty + 8)} L${f(btx + 11)} ${f(bty + 8)} L${f(btx + 14)} ${f(bty + 40)} L${f(btx + 4)} ${f(bty + 40)} L${f(btx + 10)} ${f(bty + 58)} L${f(btx)} ${f(bty + 58)} L${f(btx - 4)} ${f(bty + 42)} L${f(btx - 14)} ${f(bty + 54)} L${f(btx - 20)} ${f(bty + 48)} L${f(btx - 10)} ${f(bty + 36)} Z`, T.negro) +
     nube(btx - 3, bty - 4, 6, 4, T.clara, 's', 0.4);
-  // La hija del fletero en la popa, con la valija; no mira para atrás.
-  const hija =
-    forma(circulo(hjx, hjy, 7), T.negro) + forma(`M${f(hjx - 9)} ${f(hjy + 6)} L${f(hjx + 9)} ${f(hjy + 6)} L${f(hjx + 13)} ${f(hjy + 32)} L${f(hjx - 13)} ${f(hjy + 32)} Z`, T.negro) +
-    forma(caja(hjx + 14, hjy + 16, 18, 14), T.naranjaHonda) + trazo(`M${f(hjx + 19)} ${f(hjy + 16)} q4 -6 8 0`, T.negro, 1.6);
+  // La hija del fletero ya no se pinta acá: es un títere del elenco (`arte-hija.ts`), en la popa de este ferry.
 
   // El lanchón amarrado, con la proa para el muelle, y la del lanchón sentada en la proa.
   const [l0, l1] = [X(lanchon.x0), X(lanchon.x1)];
@@ -1372,7 +1353,7 @@ function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
     `<g filter="url(#rociado)">${pilaDeContainers}</g>` +
     poste +
     hamacaEntera +
-    rana + botija + hija + novia + pesca + as + elBalde
+    rana + botija + novia + pesca + as + elBalde
   );
 }
 
@@ -1650,7 +1631,6 @@ function mesaPiso(ancho = ANCHO, alto = ALTO): string {
     forma(`M${f(ax)} ${f(ap - 22)} C${f(ax - 18)} ${f(ap - 30)} ${f(ax - 18)} ${f(ap)} ${f(ax)} ${f(ap - 2)} C${f(ax + 18)} ${f(ap)} ${f(ax + 18)} ${f(ap - 30)} ${f(ax)} ${f(ap - 22)} Z`, M2.vivo) +
     nube(ax - 6, ap - 18, 4, 5, M2.blanco, 's', 0.6) + trazo(`M${f(ax)} ${f(ap - 22)} q2 -6 6 -8`, M2.sepiaHonda, 1.6), 451);
 
-  const [msx, msy] = [X(COSAS_DE_LA_MESA['la-mosca']![0]), COSAS_DE_LA_MESA['la-mosca']![1]];
   const [mdx, mdy] = [X(COSAS_DE_LA_MESA['el-moscardon-imaginario']![0]), COSAS_DE_LA_MESA['el-moscardon-imaginario']![1]];
   const [hpx, hpy] = [MESA.haz.hasta[0] * k, MESA.haz.hasta[1]];
   // Abajo de la mesa, en lo oscuro, el chimpancé de la misma estrofa que la mula.
@@ -1669,7 +1649,7 @@ function mesaPiso(ancho = ANCHO, alto = ALTO): string {
     recorte('m-olla', ox - ow / 2 - 14, op - oh - 50, ow + 28, oh + 54, -2, ollaAdentro, 471) +
     nube(hpx, hpy + 6, 120, 18, M2.haz, 'l', 0.35) +
     miel + hormigas + vaso + membrillo + dormida + queso + manzana +
-    mosca(msx, msy, 9) +
+    // La mosca ya no se pinta acá: es un títere del elenco (`arte-mosca.ts`), que vuela sobre esta olla.
     mosca(mdx, mdy, 16, true) +
     chimpance
   );

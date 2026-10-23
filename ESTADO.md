@@ -47,6 +47,50 @@
 >     baja con el OK del usuario;
 >   - oír la síntesis nueva en un teléfono.
 
+> ## 🪰 TRES MÁS, ELEGIDOS POR EL HILO: EL ÁNGEL DE LA SOLEDAD, EL PAC-MAN Y LA MOSCA (2026-10-22) — decimoséptima enmienda de `D-73`
+>
+> **En `main` desde el PR #70** (commit de fusión `274a6d4`), rama `bestiario/seis`, que salió de `bestiario/tres` y entró
+> después del #69. Lo integró Claude a pedido del usuario (*"Integrá todo a main"*). Pedido del usuario: *"Agrega al bestiario con su diseño, animacion y todo bien
+> pulido a 3 bestias que elijas vos."*
+>
+> - **El ángel de la soledad** (árbol): soplado en el sepia de la contratapa de *Lobo suelto*, con las plumas hechas de los
+>   dientes serruchados de sus máscaras. Envuelto en las alas como en una capa; ataja el huevo que se cae del nido, lo
+>   escucha, no le cree y lo tira de vuelta. Tocado, abre las alas para recibirte y abraza el aire.
+> - **El pac-man** (Cybersiberia): el único del bestiario de pixel, en las tintas del fichín, con el resplandor a aerógrafo.
+>   Juega una partida sola en la fila de puntos: lo persigue un fantasma, se muere si lo arrinconan, se lo come con la
+>   pastilla. Tocado, le da el hambre.
+> - **La mosca** (mesa): el recorte de la mosca del rótulo de *La mosca y la sopa*, con su canto de papel. Vuela en ochos
+>   sobre la olla y se posa en el borde, en el cucharón y en la sopa (hace anillos), y se frota las patas. Tocada, se te
+>   viene encima y se va por detrás de la oreja.
+> - **Alrededor**: el elenco son dieciséis; salen del piso la silueta del ángel, la fila del pac-man y la mosca pintada;
+>   bloques de tintas nuevos del ángel y la mosca; cuentas con testimonio del memoir (pp. 293, 304, 324).
+> - **Verde:** `npm test` (1898), `npm run check`, `npm run build` (179 páginas). En el panel a 375 px, los tres se arman,
+>   el toque hace el gesto y abre la ficha. **Sin ver a velocidad real**: el panel estaba oculto y frenaba el reloj.
+> - **Abierto:** `T-504` (verlos en un teléfono de verdad), `T-505` (cotejar las páginas del memoir), `T-431`, `T-435`, `T-500`.
+
+> ## 🐖 TRES MÁS: LA HIJA DEL FLETERO, EL BUEN PSICÓPATA Y PORCO REX (2026-10-22) — decimosexta enmienda de `D-73`
+>
+> **En `main` desde el PR #69** (commit de fusión `a188412`), rama `bestiario/tres`, sobre `main` en `0be8dc6`. Lo integró
+> Claude a pedido del usuario (*"Integrá todo a main"*).
+> Pedido del usuario: *"agrega al bestiario [...] La hija del fletero, El buen Piscopata (que suene el inicio del tema [...])
+> y otro que elijas vos. Que sean bien rocambolescos"*.
+>
+> - **La hija del fletero** (astilleros): grisalla como la mujer del tubo del interior de *Lobo suelto*, con el rosa del
+>   tubo como único color. En la popa del ferry, hablando por un tubo cuyo cable rizado se mete en el agua; le llegan
+>   descargas por el cable y se le para el pelo. Tocada, te mira y la descarga baja al muelle.
+> - **El buen psicópata** (nuevo, en el baldío): el hombre de la gorra de la tapa de *Bang! Bang!*, a guache, mirando el
+>   fusilamiento de la tapa de verdad en un caballete, con el perro de la parabellum que tira saltos mortales. Tocado, el
+>   perro dispara una banderita *BANG* y él te saluda con la gorra.
+> - **Porco Rex** (elegido por el hilo principal, Cybersiberia): un chancho rey en postal virtual de *Último bondi*, con
+>   corona remachada y los anteojos de la banda. Trota, resopla, se revuelca en el barro; tocado, se para y hace los cuernos.
+> - **Alrededor**: el elenco son trece; el baldío llama al elenco; salen las siluetas viejas de la hija y del chancho;
+>   en estos tres **la ficha espera al gesto** (1–1,2 s) y **el psicópata va desde el arranque del tema** (enmiendas a `D-78`).
+> - **Verde:** `npm test` (1871), `npm run check`, `npm run build` (179 páginas). En el panel a 375 px, andando los tres.
+> - **Falta, y no se puede desde acá:** cortar el arranque de *La parabellum* (`T-502`): el máster no está en esta
+>   máquina. Con la carpeta de los discos: `npm run sincronizar-bestiario -- "<carpeta>" --ids=el-buen-psicopata`.
+>   Hasta entonces suena como los que no tienen recorte.
+> - **Abierto:** `T-502`, `T-503` (cotejar las páginas del memoir), `T-431`, `T-435`, `T-437`/`T-439`/`T-490`.
+
 > ## 🎵 EL VERSO SUENA DONDE SE LEE (2026-10-20) — `D-78`
 >
 > **Rama `multimedia/redondos-letras-sincronizadas`**, sin integrar. Pedido del usuario: que el "Escuchar" de la ficha

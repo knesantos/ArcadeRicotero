@@ -1,6 +1,7 @@
 /**
  * El elenco de la decimoquinta vuelta (`D-73`): diez que pasan de ojos en lo oscuro a títere, uno
- * por entorno, empezando por los que no tenían ninguno.
+ * por entorno, empezando por los que no tenían ninguno. La decimosexta suma tres: la hija del
+ * fletero en los astilleros, el buen psicópata en el baldío y Porco Rex en Cybersiberia.
  *
  * Cada personaje vive entero en sus archivos: el dibujo en `arte-<slug>.ts`, los números en
  * `rig-<slug>.ts` y la conducta en `scripts/bestiario/<slug>.ts`. Este registro es lo único que los
@@ -25,6 +26,12 @@ import { DIABLO } from './arte-diablo.ts';
 import { RATO } from './arte-rato.ts';
 import { MORTA } from './arte-morta.ts';
 import { ESCLAVO } from './arte-esclavo.ts';
+import { HIJA } from './arte-hija.ts';
+import { PSICOPATA } from './arte-psicopata.ts';
+import { PORCO } from './arte-porco.ts';
+import { ANGEL } from './arte-angel.ts';
+import { PACMAN } from './arte-pacman.ts';
+import { MOSCA } from './arte-mosca.ts';
 
 export type Nombres = ReadonlyMap<string, string>;
 
@@ -64,8 +71,11 @@ export interface Personaje {
   retrato?: { caja: readonly [number, number, number, number]; cuerpo: () => string };
 }
 
-/** Los diez lugares, en el orden del recorrido. `null` es que todavía son ojos en lo oscuro. */
-const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO];
+/**
+ * Los lugares, en el orden del recorrido: los diez de la decimoquinta vuelta y los tres de la
+ * decimosexta. `null` es que todavía son ojos en lo oscuro.
+ */
+const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA];
 
 /** Los que ya tienen títere. */
 export const ELENCO: readonly Personaje[] = LUGARES.filter((p): p is Personaje => p !== null);
@@ -86,10 +96,11 @@ const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 /**
  * El marcado de los personajes de una región para una capa. Cada uno va en su marco, corrido
  * `ancla · (k − 1)`: en el recinto `k` es 1 y el marco no corre nada; en el camino, el piso largo de
- * los seis entornos pide `K_ENTORNO`.
+ * los seis entornos pide `K_ENTORNO`. Con `solo`, nada más el de ese id: el test de cada personaje lo
+ * mira solo, aunque comparta la región con otro.
  */
-export function capasDe(region: string, capa: Capa, nombres: Nombres, k = 1): string {
-  return ELENCO.filter((p) => p.region === region && p.capas[capa])
+export function capasDe(region: string, capa: Capa, nombres: Nombres, k = 1, solo?: string): string {
+  return ELENCO.filter((p) => p.region === region && p.capas[capa] && (!solo || p.id === solo))
     .map((p) => {
       const dx = Math.round(p.ancla * (k - 1));
       const corre = dx ? ` transform="translate(${f(dx)} 0)"` : '';
@@ -121,4 +132,13 @@ export const LUGAR_EN_EL_ELENCO: Readonly<Record<string, string>> = {
   'el-rato-molhado': 'el-bajo',
   'el-morta': 'el-templo',
   'el-esclavo-sensible-y-chillon': 'la-prision',
+  // La decimosexta vuelta: tres más, pedidos por el usuario (dos) y elegido por el hilo principal (uno).
+  'la-hija-del-fletero': 'los-astilleros',
+  'el-buen-psicopata': 'los-techos',
+  'porco-rex': 'cybersiberia',
+  // La decimoséptima: tres que eligió el hilo principal, cada uno en un entorno que tenía uno solo o en el
+  // del fichín.
+  'el-angel-de-la-soledad': 'el-arbol',
+  'el-pac-man': 'cybersiberia',
+  'la-mosca': 'la-mesa',
 };

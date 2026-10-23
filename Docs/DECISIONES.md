@@ -5474,6 +5474,165 @@ midieron los cuadros por segundo con diez títeres más (`T-437`, `T-439`, `T-49
 - Siguen `T-431` (que `contenido` lea las diez estampas y las cuentas nuevas), `T-435` (los diez bloques de tintas al
   lienzo) y `T-437`/`T-439`/`T-490` (verlos en un teléfono de verdad).
 
+### Enmienda del 2026-10-22 (16): tres más — la hija del fletero, el buen psicópata y Porco Rex
+
+Pedido del usuario, textual: *"Agrega al bestiario con su diseño, animacion y todo bien pulido a estas bestias : La hija
+del fletero, El buen Piscopata (que suene el inicio del tema "La parabellum del buen psicopata") y otro que elijas vos. Que
+sean bien rocambolescos"*. La escribe el hilo principal en la rama `bestiario/tres`, sobre `main` en `0be8dc6` (el
+`D-78` adentro). Esta vez sin subagentes: los tres los hizo el hilo principal, de a uno, con la misma base que el elenco.
+
+#### Cuáles, y por qué el tercero
+
+- **La hija del fletero**, en los astilleros: es de los 27 que el usuario puso primero. Hasta hoy era una silueta negra
+  en la cubierta del ferry, pintada en el piso.
+- **El buen psicópata** no estaba en el bestiario. Entra nuevo, en los techos y el baldío, que es la región que viste
+  *Bang! Bang! Estás liquidado*, el disco de su tema.
+- **Porco Rex**, elegido por el hilo principal, en Cybersiberia (que tenía uno solo). Es de los que más dice el memoir: un
+  rey arrastrado al barro (`RES-21`, p. 397) y lo que quedó de Patricio Rey (p. 485). Y es un bicho, al lado de dos
+  personas.
+
+#### Los tres
+
+- **La hija del fletero, en grisalla con un solo color** (*La hija del fletero*, *Lobo suelto*). Está pintada como la
+  mujer del tubo del interior del disco 1: aerógrafo gris, casi foto, con el rosa del tubo como único color, que le pinta
+  también la boca. El Indio dice que la canción es como una fotonovela (p. 327), y la grisalla con un color es eso. Está
+  en la popa del ferry que sale, de espaldas al muelle, hablando por un tubo rojo cuyo cable rizado pasa por la baranda y
+  se mete en el agua, para el lado del muelle. El viento del río le mueve el pañuelo, la pollera y la melena. *"Todavía
+  su amor me da descargas"*: cada tanto sube una chispa rosa por el cable y, cuando le llega, se le suben los hombros y
+  se le para el pelo de estática. **Tocada, te mira** (*"recuerdo cómo su mirada me volteó"*): baja el tubo, se da vuelta
+  por encima del hombro con el ojo grande de la tapa, y la descarga baja por el cable hasta el agua. Hubo cuatro vueltas;
+  la primera era gigante al lado de la cabina y el pañuelo parecía una lanza.
+- **El buen psicópata, sacado de la tapa de *Bang! Bang!*** (*La parabellum del buen psicópata*). Es el hombre de gorra,
+  barba y sobretodo de la tapa, pintado a guache: ocres que saltan al amarillo en el lomo de cada pliegue, a brochazos de
+  borde nítido. Como en la tapa, mira de espaldas un fusilamiento en un museo; acá el museo es el baldío: el cuadro está
+  en un caballete en la tierra, con una lamparita de museo, y **el cuadro es el de la tapa de verdad**, recortado
+  (`tapa:bang-bang-estas-liquidado-frontal`), con el de la Cruz Roja que fusila (p. 252). Lleva atado un perro zorro al que
+  la parabellum, una Luger, le crece en la cabeza, como el de la tapa. El perro, de la nada, tira un salto mortal (*"la
+  noche tira un salto mortal"*). **Tocado, el perro dispara**: sale una banderita violeta que dice *BANG* en las letras
+  amarillas de la contratapa, y el culatazo lo tira en un salto mortal para atrás; él se da vuelta y te saluda tocándose la
+  gorra, como un señor. El tono, el del título: el buen samaritano aggiornado (pp. 253-254), nunca un tiro de verdad.
+  Hubo cinco vueltas; en la primera el sobretodo era una bata a rayas.
+- **Porco Rex, una postal virtual** (*Alien Duce*, *Último bondi a Finisterre*). No está en ninguna tapa: se inventa en la
+  de su disco, que firma *"Postales virtuales: Rocambole"*, como las caras de la banda en el ojo de buey. Es un chancho de
+  computadora de 1998: piel de plástico rosa con el brillo duro del render, el celeste de la tele en el borde, una corona
+  del acero remachado de la tapa que le queda chica, los anteojos negros de la banda, un cuellito de armiño, y barro. Trota
+  solo de punta a punta de su campo (*"la soledad es el campo de juego de Porco Rex"*, p. 486), resopla y pega la vuelta,
+  larga vaho, mira la tele grande y se revuelca en su charco. **Tocado, va a Porno Rock**: se para en dos patas, hace los
+  cuernos con las pezuñas partidas, chilla, y la corona le salta y le vuelve a caer torcida. Hubo cuatro vueltas; en la
+  primera la cabeza era chica y el barro parecía una fila de uvas.
+
+#### Lo que cambió alrededor
+
+- **El elenco son trece** (`elenco.ts`): los diez de la decimoquinta, uno por entorno, y estos tres. `capasDe` acepta un
+  `solo`, para que el test de cada personaje lo mire solo aunque comparta la región (los astilleros ya tienen dos).
+- **El baldío llama a las capas del elenco** (`escenaBaldio`), que no tenía ninguno. Cuatro ojos del baldío se corrieron
+  para que el psicópata y su cuadro no se los tapen: mi perro dinamita, los perros sin folleto, el perro manso y el que no
+  mira el cielo.
+- **La silueta de la hija** sale del piso de los astilleros y **la del chancho** del de Cybersiberia, reimpresos con sus
+  tiras del camino. Porco trota más atrás que donde estaba la silueta: ahí le tapaba la cara a Drogocop y a las monjas.
+- **Enmienda a `D-78`: el gesto antes que la ficha**, para estos tres. Tocarlos abre la ficha entre 1 y 1,2 s después,
+  porque en el teléfono la ficha tapa la mitad de abajo de la escena, que es donde pasa el remate (la banderita, el rock,
+  la mirada). Con movimiento reducido se abre enseguida. Los diez de antes siguen como estaban.
+- **Enmienda a `D-78`: desde el arranque del tema.** `DESDE_EL_ARRANQUE` (`lib/bestiario/sincro.ts`) lista las bestias
+  cuyo recorte va desde el segundo cero del máster, sin LRCLIB; el script las corta así y el schema del manifiesto lo
+  acepta (`arranque: true`). El primero es el psicópata, por el pedido del usuario. **El máster no está en esta máquina**
+  (se buscó en C: y en G:), así que queda en `sinSincronizar` con el comando que lo corta, y hasta entonces suena como los
+  que no tienen recorte. El fragmento de "adiviná el tema" no sirve: se cortó a mano, desde un punto que no quedó anotado.
+
+#### Cómo se verificó
+
+Cada uno trae su test (11, 12 y 11 pruebas), con su conducta contra un DOM de juguete. Con los trece: `npm test` (1871),
+`npm run check` (0 errores) y `npm run build` (179 páginas). Cada pieza se miró impresa con un rasterizador de la escena
+entera, con zoom. En el navegador del panel, a 375 px: el psicópata en su camino dispara la banderita y el perro da el salto
+mortal, Porco trota y se para, la hija habla en la popa, sin errores en la consola. **No se oyó nada**: el arranque de *La
+parabellum* no está cortado.
+
+#### Abierto, sin trabar
+
+- `T-502`: cortar el arranque de *La parabellum*: `npm run sincronizar-bestiario -- "<carpeta de discos>" --ids=el-buen-psicopata`.
+- `T-503`: que `investigador` coteje las páginas del memoir que citan las tres cuentas (252, 253-254, 327, 328, 397, 485 y
+  486), contadas por el pie de página, como en `T-501`.
+- Siguen `T-431` (que `contenido` lea las tres estampas y cuentas), `T-435` (los tres bloques de tintas al lienzo) y
+  `T-437`/`T-439`/`T-490` (verlos en un teléfono de verdad).
+
+### Enmienda del 2026-10-22 (17): tres más, elegidos por el hilo principal — el ángel de la soledad, el pac-man y la mosca
+
+Pedido del usuario, textual: *"Agrega al bestiario con su diseño, animacion y todo bien pulido a 3 bestias que elijas
+vos."* La escribe el hilo principal en la rama `bestiario/seis`, **sobre `bestiario/tres`** (el PR #69, sin integrar
+todavía), porque las dos vueltas tocan los mismos registros: el elenco, la vida y los bloques de tintas. Sin subagentes:
+los tres los hizo el hilo principal, de a uno.
+
+#### Cuáles, y por qué
+
+De los 27 que el usuario puso primero (`Docs/SUGERENCIAS/HILO-para-bestiario-prioridad-de-figuras.md`), tres de entornos
+que tenían uno solo, o en el del fichín, y cada uno en una técnica distinta de las que ya hay:
+
+- **El ángel de la soledad**, en el árbol, que tenía solo al monito. Era una silueta negra pintada en el piso.
+- **El pac-man**, en Cybersiberia. Es el único bicho del mapa que nació en un fichín, en un sitio que se llama Fichín
+  Ricotero: era la deuda más obvia.
+- **La mosca**, en la mesa, que tenía solo al caníbal. Le da nombre al disco, y estaba pintada chiquita sobre la olla.
+
+#### Los tres
+
+- **El ángel, soplado en el sepia de la contratapa de *Lobo suelto*** (*Un ángel para tu soledad*, disco 1). La contratapa
+  es aerógrafo de pliegues blandos cortados por máscaras de papel con el borde serruchado: la túnica son los pliegues y
+  **las plumas son los dientes**, en filas a lo largo del ala, con el hueso liso y prendido arriba. La cara es la grisalla
+  del lobo del frente, con un ojo más grande que el otro, los párpados pesados y la ceja que sube. Cerradas, las alas lo
+  envuelven como una capa (*"con las alas cerradas"*, decía la estampa). Del nido de los pájaros de la noche, que le queda
+  justo arriba, se cae un huevo de plata: lo ve venir, abre un poco las alas, lo ataja agachándose, **se lo lleva a la oreja,
+  lo escucha con los ojos cerrados, levanta la ceja, dice que no con la cabeza** (*"tampoco cree en lo que oye"*) y lo tira
+  de vuelta al nido. En el camino el nido se corre con la copa, y la caída se corrige con `k`. **Tocado, abre las alas del
+  todo y las manos, para recibir al que se cae** (*"y caes en manos del Ángel de la soledad"*), las cierra abrazando el aire
+  y dice que no. Hubo tres vueltas: en la primera las alas abiertas eran dos tablones serruchados.
+- **El pac-man es pixel** (*Un Pac-Man en el Savoy*, *¡Bang! ¡Bang!*). Es la única excepción del bestiario al aerógrafo, y
+  es a propósito: está dibujado en las tintas del fichín (`--px-*`, la hoja 14), con el borde vivo (`crispEdges`), y lo
+  que le pasa alrededor sí es aerógrafo, el resplandor que larga en la nieve. Pixel adentro, imprenta afuera, como manda
+  `D-41`. Ocupa la fila de puntos que ya estaba pintada, que sale del piso. Juega una partida sola: come la fila (y cuando
+  la deja limpia los puntos vuelven), lo persigue un fantasma que aparece por la punta más lejana, le huye si lo tiene de
+  frente, y **si lo arrinconan se muere como en el fichín** y vuelve a aparecer (*"nuestro pac-man no es de nadie"*). Si
+  come la pastilla de la punta, el fantasma se pone azul, se lo come, sale el 200 y los ojos se van solos a su casa.
+  **Tocado, le da el hambre** (*"todo el hambre del nuevo pac-man"*): el poder sin pastilla, y si no había fantasma, aparece
+  uno ya azul. Como la fila es fina para un dedo, se toca el pasillo entero.
+- **La mosca es un recorte de la mosca del rótulo de la tapa** (*Queso ruso*, *La mosca y la sopa*). En la tapa es una foto
+  de mosca vista de arriba, pegada sobre el rótulo; en la mesa todo es collage, así que es esa foto recortada, con el canto
+  blanco del papel, el lomo azul acero, la panza en damero, los ojos rojizos y las alas de vidrio con venas. La foto de la
+  tapa es demasiado chica para recortarla de verdad: está pintada, con las tintas medidas en ella. Vuela en ochos sobre la
+  olla, adentro del seguidor, y **se posa en el borde, en la punta del cucharón y en la sopa**, donde hace anillos; posada se
+  frota las patas, da dos pasitos y se da vuelta. **Tocada, se te viene encima** (*"sentís la mosca joder detrás de la
+  oreja"*): crece delante de la cara de quien mira, zumba en zigzag y se va de golpe por arriba, y al rato vuelve. También se
+  toca el aire donde vuela, que ella es chica para un dedo. La de la portada del sitio no cambia.
+
+#### Lo que cambió alrededor
+
+- **El elenco son dieciséis** (`elenco.ts`). Los tests del caníbal y del monito pasan a mirar solo a su personaje (`solo`),
+  como el del pibe en la vuelta anterior, y el ejemplo de "sigue con su figura" de `bestiario.test.ts` pasa a ser el moscón.
+- **Salen del piso** la silueta del ángel (árbol), la fila de puntos y el pac-man (Cybersiberia) y la mosca (mesa), con los
+  pisos y sus tiras del camino reimpresos.
+- **Tintas nuevas** en `tokens.css`: un bloque del ángel (contratapa de *Lobo suelto*, medida con `sharp`) y uno de la mosca
+  (el rótulo de *La mosca y la sopa*). El pac-man no suma ninguna: son las quince del fichín.
+- **Cuentas nuevas, con testimonio fichado** del memoir (`RES-21`): del ángel, que es un himno y que es de las pocas
+  canciones en las que habla a conciencia de la gente que lo va a ver (p. 324); de la mosca, lo que quiere decir el título
+  del disco (p. 293) y lo de la revista *Hola* (p. 304). Del pac-man el memoir no dice nada: va sin cuenta. Las páginas se
+  contaron por el número impreso al pie, con `pdftotext`.
+- Los tres abren la ficha después del gesto (1 a 1,1 s), como los de la decimosexta.
+
+#### Cómo se verificó
+
+Cada uno trae su test (10, 9 y 8 pruebas), con su conducta contra un DOM de juguete: la del pac-man juega cinco partidas de
+noventa segundos y mira que coma, que reponga la fila, que se muera y que se coma al fantasma. Con los dieciséis: `npm test`
+(1898), `npm run check` (0 errores) y `npm run build` (179 páginas). Las piezas se miraron impresas, en hojas de poses con
+zoom, sobre su fondo. En el navegador del panel, a 375 px: los tres se arman en su camino, el toque hace el gesto y abre la
+ficha, y el pac-man juega solo. **El panel estaba oculto**, así que el navegador frenaba el reloj de las escenas: el ritmo de
+las animaciones no se vio a velocidad real.
+
+#### Abierto, sin trabar
+
+- `T-504`: verlos a velocidad real en un teléfono de verdad (los tiempos del ataje del ángel, el ritmo de la partida del
+  pac-man, si el zumbido de la mosca se lee), junto con `T-490`.
+- `T-505`: que `investigador` coteje las páginas del memoir de las cuentas nuevas (293, 304 y 324), como en `T-501` y `T-503`.
+- Siguen `T-431` (que `contenido` lea las tres estampas y cuentas), `T-435` (los dos bloques de tintas al lienzo) y `T-500`
+  (los sonidos del elenco: el pac-man pide los suyos).
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17

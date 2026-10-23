@@ -247,10 +247,11 @@ test('cada pieza del aerógrafo y cada recorte están en public/bestiario', () =
 
 test('cada recinto de noche tiene a todos los suyos: el protagonista de tapa y los demás como ojos', () => {
   const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
-  // En el baldío, además del perro de la tapa, andan dos títeres: el negro Atila por la medianera
-  // (duodécima vuelta) y Limón por la chapa (decimocuarta).
+  // En el baldío, además del perro de la tapa, andan tres títeres: el negro Atila por la medianera
+  // (duodécima vuelta), Limón por la chapa (decimocuarta) y el buen psicópata, en la tierra, mirando su
+  // cuadro (decimosexta).
   for (const [region, protagonista, vecinos, escena, otros] of [
-    ['los-techos', 'ese-perro-que-sigue-alli', VECINOS_DEL_BALDIO, escenaBaldio(nombres), ['el-negro-atila', 'limon']],
+    ['los-techos', 'ese-perro-que-sigue-alli', VECINOS_DEL_BALDIO, escenaBaldio(nombres), ['el-negro-atila', 'limon', 'el-buen-psicopata']],
     ['el-infierno', 'luzbelito', VECINOS_DEL_INFIERNO, escenaInfierno(nombres), []],
     ['el-templo', 'momo', VECINOS_DEL_TEMPLO, escenaTemplo(nombres), []],
   ] as const) {
@@ -282,7 +283,8 @@ test('los cinco de tapa tienen retrato de ficha, encuadrado en sus piezas; los d
     assert.ok(ancho! > 50 && alto! > 50 && !/NaN/.test(r.caja), `${id}: caja rota (${r.caja})`);
     assert.ok(r.svg.includes('-real-'), `${id}: el retrato no es la tapa`);
   }
-  assert.equal(retrato('la-mosca'), null);
+  // La mosca tiene títere desde la decimoséptima vuelta: el que sigue con su figura es el moscón.
+  assert.equal(retrato('el-moscon-zumbon'), null);
 });
 
 /*

@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { CON_TITERE, ELENCO, LUGAR_EN_EL_ELENCO, capasDe, retratoDe, type Capa } from './elenco.ts';
 import { PIEZAS } from './arte.ts';
 import { RECORTES } from './recortes.ts';
-import { escenaBajo, escenaInfierno, escenaPrision, escenaTemplo } from './escenas.ts';
+import { escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo } from './escenas.ts';
 import { ENTORNOS_DE_NOCHE } from './escenas-entornos.ts';
 import { pisoDelCamino } from './escenas-camino.ts';
 import { CAMINOS, K_ENTORNO } from './camino.ts';
@@ -28,12 +28,18 @@ const ESCENA: Readonly<Record<string, (n: ReadonlyMap<string, string>) => string
   'el-bajo': escenaBajo,
   'el-templo': escenaTemplo,
   'la-prision': escenaPrision,
+  'los-techos': escenaBaldio,
 };
 
-test('el elenco son diez, uno por entorno, y cada uno es una bestia de esa región', () => {
+/** Los diez de la decimoquinta vuelta, uno por entorno; después vienen los de la decimosexta y la decimoséptima. */
+const DIEZ = Object.keys(LUGAR_EN_EL_ELENCO).slice(0, 10);
+
+test('el elenco son los diez, uno por entorno, y los tres de la decimosexta y los tres de la decimoséptima; cada uno es una bestia de esa región', () => {
   const lugares = Object.entries(LUGAR_EN_EL_ELENCO);
-  assert.equal(lugares.length, 10);
-  assert.equal(new Set(lugares.map(([, r]) => r)).size, 10, 'dos del elenco en el mismo entorno');
+  assert.equal(lugares.length, 16);
+  assert.equal(new Set(DIEZ.map((id) => LUGAR_EN_EL_ELENCO[id])).size, 10, 'dos de los diez en el mismo entorno');
+  assert.deepEqual(lugares.slice(10, 13).map(([id]) => id), ['la-hija-del-fletero', 'el-buen-psicopata', 'porco-rex']);
+  assert.deepEqual(lugares.slice(13).map(([id]) => id), ['el-angel-de-la-soledad', 'el-pac-man', 'la-mosca']);
   for (const [id, region] of lugares) {
     const b = datos.bestias.find((x) => x.id === id);
     assert.ok(b, `${id} no está en el bestiario`);
