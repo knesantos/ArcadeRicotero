@@ -40,6 +40,58 @@
         "4331"
       ],
       "port": 4331
+    },
+    {
+      "name": "bestiario-25",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "astro",
+        "dev",
+        "--root",
+        "C:/Users/santi/Proyectos/InstanciadorProyectos/RicotaArcade/.claude/worktrees/bestiario-25",
+        "--port",
+        "4341"
+      ],
+      "port": 4341
+    },
+    {
+      "name": "camino-todo",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "astro",
+        "dev",
+        "--root",
+        "C:/Users/santi/Proyectos/InstanciadorProyectos/RicotaArcade/.claude/worktrees/camino-todo",
+        "--port",
+        "4351"
+      ],
+      "port": 4351
+    },
+    {
+      "name": "bestiario-tres",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "astro",
+        "dev",
+        "--root",
+        "C:/Users/santi/Proyectos/InstanciadorProyectos/RicotaArcade/.claude/worktrees/bestiario-tres",
+        "--port",
+        "4361"
+      ],
+      "port": 4361
+    },
+    {
+      "name": "bestiario-seis",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "astro",
+        "dev",
+        "--root",
+        "C:/Users/santi/Proyectos/InstanciadorProyectos/RicotaArcade/.claude/worktrees/bestiario-seis",
+        "--port",
+        "4367"
+      ],
+      "port": 4367
     }
   ]
 }

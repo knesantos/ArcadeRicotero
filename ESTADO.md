@@ -9,7 +9,7 @@
 
 > ## 🎥 LA CÁMARA QUE CAMINA, LA FICHA QUE NO TAPA Y EL PLANO PINTADO ZONA POR ZONA (2026-10-23) — `D-79` (2.ª vuelta) y `D-80`
 >
-> **La misma rama `bestiario/sonido-y-portal`**, sin commitear.
+> **En `main` desde el PR #72** (commit de fusión `2bd7fbb`), rama `bestiario/sonido-y-portal`, junto con la entrada y los ruidos de abajo. Lo integró Claude a pedido del usuario (*"commiteá e integrá todo a main"*).
 >
 > - **El plano**: cada una de las doce zonas tiene su escena a aerógrafo (`arte-mapa-*.ts`). Va de
 >   borde a borde en el teléfono y hasta 52 rem en la compu. El molinete es ahora uno de cancha, y el
@@ -25,11 +25,11 @@
 >   iframe.
 > - **Falta**:
 >   - verlo en un teléfono de verdad;
->   - traer `main` (con el PR #71) a la rama, cuando se commitee.
+>   - darles claro en la tierra pintada del plano a los seis bichos nuevos del #69 y el #70.
 
 > ## 🚪 LA ENTRADA DEL BESTIARIO Y LOS RUIDOS DESDE ARCHIVOS (2026-10-23) — `D-79`
 >
-> **Rama `bestiario/sonido-y-portal`**, sin integrar. Pedido del usuario: mejores ruidos en el bestiario
+> **En `main` desde el PR #72** (commit de fusión `2bd7fbb`), rama `bestiario/sonido-y-portal`. Pedido del usuario: mejores ruidos en el bestiario
 > (pasos, agua, botellas rotas), y un plano rocambolesco, *"como si estuvieras parado en la entrada de un
 > mundo misterioso con un mapa"*.
 >
