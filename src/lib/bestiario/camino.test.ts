@@ -6,7 +6,7 @@ import {
 } from './camino.ts';
 import { PALO_EN_EL_CAMINO, PIEZAS_CAMINO, cajaDelCruce, piezasDeLosCruces } from './arte-camino.ts';
 import { pisoDelCamino } from './escenas-camino.ts';
-import { ACECHO, PALO, PASTURA } from './rig.ts';
+import { ACECHO, PALO, PASTURA, marcoDelRecinto } from './rig.ts';
 import { rutaDePieza } from './aerografo.ts';
 import type { Bestiario } from './mapa.ts';
 
@@ -56,9 +56,11 @@ test('cada bicho de la región anda por su camino, una vez, y ninguno queda en l
     const esperados = [...deLaRegion, ...(tramo.deVisita ?? [])].sort();
     assert.deepEqual([...new Set(tocables)].sort(), esperados, `${id}: la escena y el JSON no tienen los mismos bichos`);
     assert.equal(new Set(tocables).size, tocables.length, `${id}: un bicho aparece dos veces`);
-    // Nadie vive debajo de los carteles: los bichos están en la escena, antes del cruce.
+    // Nadie vive debajo de los carteles: los bichos están en la escena, antes del cruce. Adentro de un
+    // recinto valen sus coordenadas, y el recinto agrandado para los dos lados va corrido.
+    const dx = tramo.forma === 'recinto' ? -marcoDelRecinto(id).x : 0;
     for (const m of piso.matchAll(/data-id="([^"]+)" data-x="(-?[\d.]+)" data-y="(-?[\d.]+)"/g)) {
-      const [x, y] = [Number(m[2]), Number(m[3])];
+      const [x, y] = [Number(m[2]) + dx, Number(m[3])];
       assert.ok(x > 20 && x < tramo.escena - 20 && y > 0 && y < ALTO, `${id}: ${m[1]} quedó afuera de la escena (${x}, ${y})`);
     }
   }
@@ -93,7 +95,9 @@ test('las tres formas: largo, entorno a lo largo y recinto entero con su cruce',
       assert.equal(cajaDelCruce(t)[0] + cajaDelCruce(t)[2], t.ancho, `${t.region}: el cruce no llega al final`);
     }
     if (t.forma === 'recinto') {
-      assert.equal(t.escena, RECINTO);
+      // Mide lo que mide su recinto: los 900 de siempre, o lo que se agrandó.
+      assert.equal(t.escena, marcoDelRecinto(t.region).ancho);
+      assert.ok(t.escena >= RECINTO, `${t.region}: un recinto no se achica`);
       assert.ok(!conParalaje(t), `${t.region}: un recinto es una sola capa`);
     }
     if (t.forma === 'entorno') assert.ok(t.foco > 0 && t.foco < t.escena, `${t.region}: el foco cae afuera de la escena`);

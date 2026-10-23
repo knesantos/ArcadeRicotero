@@ -19,7 +19,7 @@
 import { type Pieza } from './aerografo.ts';
 import { azar } from './pincel.ts';
 import { bola, cubica, envolventes, paralelas, picado, plancha, rayos, siguiendo, tallar, tono, trazo, type Mancha, type P } from './grabado.ts';
-import { BANDERAS, DRACULA_ARMADO as A, PRISION, deLaTapa } from './rig.ts';
+import { BANDERAS, DRACULA_ARMADO as A, PRISION, deLaTapa, marcoDelRecinto } from './rig.ts';
 
 const T = {
   negro: 'var(--fondo)',
@@ -537,6 +537,19 @@ function pelo(): string {
 const { fuga: [VX, VY], fondo: F, ventana: V, jaula: J } = PRISION;
 const ANCHO = 900;
 const ALTO = 640;
+/**
+ * La prisión se agrandó para los dos lados (`MARCO_DEL_RECINTO`): el pasillo de 900 queda igual, y
+ * para afuera siguen las paredes de los costados, ya pegadas al que mira, con una celda más de cada
+ * lado. La jaulita del pajarito se descolgó de arriba de Barbazul y cuelga en el ala de la izquierda.
+ */
+const SALA = marcoDelRecinto('la-prision');
+const [S0, S1] = [SALA.x, SALA.x + SALA.ancho];
+/** Hasta dónde llega cada pared del costado, en el `u` de `enPared`: más cerca que el borde de siempre. */
+const U_DEL_ALA = Math.min((S0 - 10) / F.x0, (ANCHO - (S1 + 10)) / (ANCHO - F.x1));
+/** Las celdas de las alas, en el `u` de `enPared`: la reja grande, de tan cerca. */
+export const CELDAS_DE_LAS_ALAS = { u0: -0.9, u1: -0.3, alto: 0.6 } as const;
+/** La jaulita del pajarito del Lavi-rap: el medio, de dónde cuelga y lo que mide. */
+export const JAULITA = { x: -130, arriba: 124, alto: 56, ancho: 44 } as const;
 
 /** La ventana: el hueco con el arco. */
 function hueco(): string {
@@ -664,6 +677,18 @@ function prisionLejos(): string {
     return (x, y) => manchas.reduce((t, m) => t + m.p * Math.max(0, 1 - Math.hypot(x - m.x, (y - m.y) * 2.2) / m.r), 0);
   };
   const luzPiso = tono(0.06, [charco, gastado(311), { c: [450, ALTO], r: [460, 120], peso: 0.1, blando: 1 }]);
+  // Las alas: la misma pared del costado, siguiendo hacia el que mira, con las hiladas que vienen del fondo.
+  const ala = (lado: number): P[][] =>
+    Array.from({ length: 30 }, (_, i) => {
+      const v = (i + 0.5) / 30;
+      return [enPared(lado, U_DEL_ALA, v), enPared(lado, U_DEL_ALA / 2, v), enPared(lado, 0, v)];
+    });
+  const luzDeLasAlas = tono(0.06, [
+    { c: [S0 + 110, 300], r: [170, 280], peso: 0.34, blando: 1 },
+    { c: [S1 - 110, 300], r: [170, 280], peso: 0.34, blando: 1 },
+  ]);
+  const enAla = (lado: number): P[] => (lado < 0 ? [[S0 - 10, -10], [0, -10], [0, ALTO + 10], [S0 - 10, ALTO + 10]] : [[ANCHO, -10], [S1 + 10, -10], [S1 + 10, ALTO + 10], [ANCHO, ALTO + 10]]);
+  const ancha: readonly [number, number, number, number] = [S0, 0, S1 - S0, ALTO];
   const filas: P[][] = [];
   for (let k = 0; k < 28; k++) {
     const t = (k + 0.5) / 28;
@@ -680,7 +705,11 @@ function prisionLejos(): string {
   const { x: tx, y: ty, escala } = PRISION.tapa;
   const lado = 953 * escala;
   return (
-    `<rect x="0" y="0" width="${ANCHO}" height="${ALTO}" fill="${T.negro}"/>` +
+    `<rect x="${S0}" y="0" width="${S1 - S0}" height="${ALTO}" fill="${T.negro}"/>` +
+    plancha('pr-ala-izq', poli(enAla(-1)), { negro: T.negro, papel: T.gris, tallas: tallar(ala(-1), luzDeLasAlas, { ancho: 9, umbral: [0.05, 0.9], punta: 40, pulso: 0.6, semilla: 386 }), caja: ancha, motas: false }) +
+    plancha('pr-ala-der', poli(enAla(1)), { negro: T.negro, papel: T.gris, tallas: tallar(ala(1), luzDeLasAlas, { ancho: 9, umbral: [0.05, 0.9], punta: 40, pulso: 0.6, semilla: 388 }), caja: ancha, motas: false }) +
+    celda(-1, CELDAS_DE_LAS_ALAS.u0, CELDAS_DE_LAS_ALAS.u1, CELDAS_DE_LAS_ALAS.alto, T.papel, 390) +
+    celda(1, CELDAS_DE_LAS_ALAS.u0, CELDAS_DE_LAS_ALAS.u1, CELDAS_DE_LAS_ALAS.alto, T.papel, 395) +
     `<clipPath id="pr-calle"><path d="${hueco()}"/></clipPath>` +
     `<g clip-path="url(#pr-calle)"><image href="tapa:oktubre-frontal" x="${tx}" y="${ty}" width="${lado}" height="${lado}"/>` +
     `<image href="tapa:oktubre-frontal" x="${tx}" y="${ty}" width="${lado}" height="${lado}" filter="url(#sin-rojo)"/></g>` +
@@ -714,7 +743,7 @@ function prisionLejos(): string {
     `<clipPath id="pr-sin-calle"><path d="M0 0 H${ANCHO} V${ALTO} H0 Z ${hueco()}" clip-rule="evenodd"/></clipPath>` +
     `<g clip-path="url(#pr-sin-calle)" filter="url(#gubia)"><path d="${tallar(rayosDelFoco, luzDelFoco, { ancho: 1.6, umbral: [0.12, 0.9], punta: 14, semilla: 321 })}" fill="${T.papel}"/></g>` +
     `<path d="${trazo([[foco[0], 0], [foco[0], foco[1] - 10]], 1.6, 322, () => 1) + curva([[foco[0] - 4.5, foco[1] - 4], [foco[0], foco[1] - 10], [foco[0] + 4.5, foco[1] - 4], [foco[0] + 3.6, foco[1] + 3], [foco[0], foco[1] + 6], [foco[0] - 3.6, foco[1] + 3]])}" fill="${T.papel}" filter="url(#gubia)"/>` +
-    jaulita(222, 124, 56, 44, 380)
+    jaulita(JAULITA.x, JAULITA.arriba, JAULITA.alto, JAULITA.ancho, 380)
   );
 }
 
@@ -825,7 +854,7 @@ export const PIEZAS_DRACULA: readonly Pieza[] = [
 const { puerta: PJ } = PRISION.jaula;
 
 export const PIEZAS_PRISION: readonly Pieza[] = [
-  { nombre: 'prision-lejos', caja: [0, 0, ANCHO, ALTO], dibujo: prisionLejos(), opaca: true, densidad: 1.7, calidad: 72 },
+  { nombre: 'prision-lejos', caja: [S0, 0, S1 - S0, ALTO], dibujo: prisionLejos(), opaca: true, densidad: 1.7, calidad: 72 },
   ...BANDERAS.map((b, i): Pieza => ({ nombre: `prision-bandera-${i + 1}`, caja: cajaDe(b.poligono.map(deLaTapa), 2), dibujo: bandera(i), densidad: 3 })),
   { nombre: 'prision-reja', caja: [V.x0 - 22, V.clave - 26, V.x1 - V.x0 + 44, V.abajo - V.clave + 48], dibujo: prisionReja(), densidad: 2 },
   { nombre: 'prision-columna', caja: [0, 0, 64, ALTO], dibujo: prisionFrente(), densidad: 2 },

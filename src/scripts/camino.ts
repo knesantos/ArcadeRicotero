@@ -49,6 +49,9 @@ import { crearEntorno } from './bestiario/entorno.ts';
 import { RECETAS } from '../lib/bestiario/sonido.ts';
 import { contextoVivo } from '../lib/audio/contexto.ts';
 import { Charla } from '../lib/bestiario/charla.ts';
+import { crearCamara, transformDe, type Encuadre } from '../lib/bestiario/camara.ts';
+import { alSacudon } from './bestiario/sacudon.ts';
+import { lugarDeLaFicha, type Lado } from '../lib/bestiario/hoja.ts';
 
 interface Datos {
   region: string;
@@ -152,7 +155,32 @@ function abrir(id: string): void {
   hoja.scrollTop = 0;
   abierta = id;
   anotar(id);
+  ubicarHoja(id);
   cerrar.focus({ preventScroll: true });
+}
+
+/** En la compu la ficha va de costado; en el teléfono, a lo ancho (`camino.css`, el corte de 52 rem). */
+const fichaDeCostado = window.matchMedia('(min-width: 52rem)');
+const LADOS: readonly Lado[] = ['arriba', 'abajo', 'izquierda', 'derecha'];
+
+/**
+ * La ficha se abre donde no tapa al bicho (`D-80`, `lib/bestiario/hoja.ts`): arriba o abajo en el
+ * teléfono, achicada hasta el lugar libre; de costado en la compu, y si igual no entra, la escena se
+ * corre lo justo para que el bicho quede a la vista.
+ */
+function ubicarHoja(id: string): void {
+  const vistaCaja = escenario.getBoundingClientRect();
+  // El bicho que se ve: si hay dos con el mismo id (un títere y su sello), el que está en pantalla.
+  const candidatos = [...piso.querySelectorAll(`[data-id="${CSS.escape(id)}"]`)].map((el) => el.getBoundingClientRect());
+  const bicho = candidatos.find((r) => r.width > 0 && r.right > vistaCaja.left && r.left < vistaCaja.right) ?? candidatos[0];
+  hoja.classList.remove(...LADOS.map((l) => `bestiario-hoja--${l}`));
+  hoja.style.removeProperty('max-height');
+  if (!bicho) return;
+  const renglon = document.querySelector<HTMLElement>('.camino-tablero')?.getBoundingClientRect().bottom ?? 0;
+  const lugar = lugarDeLaFicha(bicho, vistaCaja, fichaDeCostado.matches, hoja.getBoundingClientRect().width, renglon);
+  hoja.classList.add(`bestiario-hoja--${lugar.lado}`);
+  if (lugar.alto) hoja.style.maxHeight = `${lugar.alto}px`;
+  if (lugar.correr) irA(escenario.scrollLeft + lugar.correr);
 }
 
 function cerrarHoja(): void {
@@ -287,6 +315,17 @@ let anchoPx = 0;
 let vistaPx = 0;
 /** Lo caminado, en píxeles: cuánto se corrió el piso. */
 let cam = 0;
+/** El paralaje de cada capa, en píxeles: lo que se corre por lo caminado, sin la cámara. */
+let corridas: number[] = capas.map(() => 0);
+/**
+ * El cuerpo de quien camina (`D-80`, `lib/bestiario/camara.ts`): el vaivén de los pasos, la inercia,
+ * los sacudones, el retumbo y el arrimarse. Con movimiento reducido no se usa.
+ */
+const camara = crearCamara(RECETAS[datos.region]?.zancada ?? 85, 0);
+let encuadre: Encuadre | null = null;
+/** Dónde estaba el piso en el cuadro anterior: lo caminado entre cuadro y cuadro mueve el cuerpo. */
+let camEnElCuadro: number | null = null;
+alSacudon((fuerza) => camara.sacudir(fuerza));
 /** Si las capas se corren cada una a su velocidad (con capas y sin movimiento reducido). */
 let paralaje = false;
 
@@ -304,7 +343,35 @@ function medir(): void {
   vistaPx = escenario.clientWidth;
   tira.style.width = `${Math.round(anchoPx)}px`;
   vista.style.width = paralaje ? `${vistaPx}px` : '';
-  if (!paralaje) for (const c of capas) c.el.style.removeProperty('transform');
+  if (!paralaje) corridas = capas.map(() => 0);
+  if (quieto()) {
+    encuadre = null;
+    for (const c of capas) c.el.style.removeProperty('transform');
+  }
+}
+
+/**
+ * Cada capa, con su paralaje y la cámara encima. Sin paralaje la capa empieza en la punta de la tira,
+ * que está corrida `cam` a la izquierda de la vista.
+ */
+function pintarCapas(): void {
+  if (!encuadre && !paralaje) return;
+  capas.forEach((c, i) => {
+    const corrida = corridas[i]!;
+    c.el.style.transform = encuadre ? transformDe(encuadre, paralaje ? 0 : -cam, corrida) : `translate3d(${corrida.toFixed(1)}px, 0, 0)`;
+  });
+}
+
+/** El retumbo de la ruta: los fierros que pasan cerca del medio de la vista hacen temblar el piso. */
+function retumboDeLaRuta(): number {
+  if (datos.region !== 'la-ruta') return 0;
+  const medio = (cam + vistaPx / 2) / escala;
+  let nivel = 0;
+  for (const g of piso.querySelectorAll<SVGGElement>('.bestia[data-velocidad]')) {
+    const x = Number(g.dataset.ahora ?? g.dataset.x);
+    nivel = Math.max(nivel, 1 - Math.abs(x - medio) / 420);
+  }
+  return Math.max(0, nivel) * 0.8;
 }
 
 /** Cuánto de la tira ya se caminó, de 0 a 1. */
@@ -325,8 +392,9 @@ function encuadrar(): void {
   cam = escenario.scrollLeft;
   if (paralaje) {
     const focoPx = datos.foco * escala;
-    for (const c of capas) c.el.style.transform = `translate3d(${(-corrimiento(c.f, cam, focoPx, vistaPx)).toFixed(1)}px, 0, 0)`;
+    corridas = capas.map((c) => -corrimiento(c.f, cam, focoPx, vistaPx));
   }
+  pintarCapas();
   for (const a of apariciones) {
     const x = a.x * escala - cam;
     a.el.classList.toggle('aparece--a-la-vista', x > -20 && x < vistaPx * 0.92);
@@ -666,6 +734,16 @@ piso.addEventListener('click', (ev) => {
   const g = (ev.target as Element).closest<SVGGElement>('.bestia');
   if (g) tocarBicho(g);
 });
+
+// Tocar cualquier bicho, suelto o títere, arrima la cámara hacia él (`D-80`).
+escenario.addEventListener('click', (ev) => {
+  if (quieto()) return;
+  const g = (ev.target as Element).closest(BICHOS);
+  if (!g) return;
+  const r = g.getBoundingClientRect();
+  const caja = escenario.getBoundingClientRect();
+  camara.acercarse(r.left + r.width / 2 - caja.left, r.top + r.height / 2 - caja.top, reloj);
+});
 piso.addEventListener('keydown', (ev) => {
   const g = (ev.target as Element).closest<SVGGElement>('.bestia');
   if (g && (ev.key === 'Enter' || ev.key === ' ')) {
@@ -695,6 +773,15 @@ function cuadro(ahora: number): void {
   }
   encuadrar();
   vida.mover(reloj, dt);
+  if (!quieto()) {
+    // Un salto (ir a un bicho, volver del cruce) no es caminar: no mueve el cuerpo.
+    const paso = camEnElCuadro === null ? 0 : (cam - camEnElCuadro) / escala;
+    if (Math.abs(paso) < 160) camara.caminar(paso, dt);
+    camEnElCuadro = cam;
+    camara.retumbar(retumboDeLaRuta());
+    encuadre = camara.encuadre(reloj, dt, vistaPx, escenario.clientHeight);
+    pintarCapas();
+  }
   if (hablando && ahora > callarEn) callar();
   if (!quieto() && document.visibilityState === 'visible') requestAnimationFrame(cuadro);
   else corriendo = false;

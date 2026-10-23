@@ -13,6 +13,7 @@ import { ACECHO, ACHATE, ESCALA_CORDERO, ESCALA_LOBO, PALO, SOGA, profundidad } 
 import { ARMADO } from '../../lib/bestiario/recortes.ts';
 import { girar, hacia, parpado, partes, suave } from './articular.ts';
 import { armarVaca } from './vaca.ts';
+import { sacudir } from './sacudon.ts';
 
 export interface Escenario {
   /** El elemento cuyas coordenadas son las del recinto. */
@@ -264,6 +265,8 @@ export function armarPastura(raiz: ParentNode, esc: Escenario): Pastura {
   // La vaca cubana vive en la punta de la pastura: cuando le cae el pedazo al lado, el cordero
   // bala y el lobo se esconde.
   const vaca = armarVaca(raiz, esc, (t) => {
+    // El pedazo de satélite pega en la pastura: en el camino, la cámara se sacude entera (`D-80`).
+    sacudir(0.95);
     oveja.balaHasta = t + 1.2;
     if (lobo.alzado > 0.2 && lobo.modo !== 'baja') {
       lobo.modo = 'baja';

@@ -141,6 +141,10 @@
 
 .camino--paralaje .capa { will-change: transform; }
 
+/* La cámara (`D-80`) gira y escala cada capa alrededor de un punto de la vista que calcula la isla,
+   así que el origen de cada capa es su esquina. */
+.camino--andando .capa { transform-origin: 0 0; }
+
 /* Los ojos se encienden cuando se llega a ellos. Solo andando: sin la isla, se ven todos. */
 .camino--andando .aparece {
   opacity: 0;
@@ -615,6 +619,20 @@ html.camino-pantalla body { background: var(--fondo); }
     bottom: var(--espacio-2);
     width: min(30rem, 42vw);
     max-height: 82svh;
+  }
+}
+
+/* La ficha se abre donde no tapa al bicho (`D-80`): la isla elige el lado y, en el teléfono, el
+   alto (`lib/bestiario/hoja.ts`). Arriba se para debajo del renglón del camino. */
+.camino-pantalla .bestiario-hoja--arriba {
+  top: calc(var(--toque-min) + var(--espacio-1) * 2);
+  bottom: auto;
+}
+
+@media (min-width: 52rem) {
+  .camino-pantalla .bestiario-hoja--izquierda {
+    left: var(--espacio-2);
+    right: auto;
   }
 }
 

@@ -28,6 +28,7 @@ import {
 } from '../../lib/bestiario/rig-pibe.ts';
 import { hacia, partes, suave } from './articular.ts';
 import type { Armar, Escenario, Vivo } from './vivos.ts';
+import { sacudir } from './sacudon.ts';
 
 const ID = 'el-pibe-de-los-astilleros';
 
@@ -159,9 +160,13 @@ export function armarPibeCon(marcos: readonly SVGGElement[], esc: Escenario, aza
   // Lo que se suaviza de cuadro en cuadro: arranca en la pose quieta.
   const cara = { cabeza: QUIETA.cabeza, mira: [...QUIETA.mira] as [number, number], parpados: [...QUIETA.parpados] as [number, number] };
 
+  /** Si el grito ya sacudió la cámara del camino (`D-80`): una vez por grito. */
+  let gritoSacudio = false;
+
   const empezar = (m: Modo, t: number): void => {
     modo = m;
     desde = t;
+    gritoSacudio = false;
   };
 
   const gritar = (t: number): void => {
@@ -243,6 +248,11 @@ export function armarPibeCon(marcos: readonly SVGGElement[], esc: Escenario, aza
       m.caja = gr.caja;
       m.grito = gr.grito;
       if (gr.manos) manos = gr.manos;
+      // Cuando llega arriba con la caja y grita, la cámara lo siente.
+      if (!gritoSacudio && u >= 1.5) {
+        gritoSacudio = true;
+        sacudir(0.4);
+      }
       mira = u < 0.9 ? 'caja' : u < 3.6 ? 'arriba' : 'vos';
     }
 

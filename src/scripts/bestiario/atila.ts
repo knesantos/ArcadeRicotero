@@ -14,7 +14,7 @@
  * Vive aparte de la isla, como la pastura: se lleva números (`rig.ts`) y nada que dibuje.
  */
 
-import { ATILA, ATILA_ARMADO } from '../../lib/bestiario/rig.ts';
+import { ATILA, ATILA_ARMADO, marcoDelRecinto } from '../../lib/bestiario/rig.ts';
 import { girar, hacia, parpado, partes, suave } from './articular.ts';
 
 export interface EscenarioAtila {
@@ -106,7 +106,8 @@ export function armarAtila(raiz: ParentNode, esc: EscenarioAtila): Atila {
       luz.setAttribute('opacity', '0');
       return;
     }
-    const sx = -320 + u * 1540;
+    // De afuera a afuera de los techos, que se agrandaron (`MARCO_DEL_RECINTO`).
+    const sx = -320 + u * (marcoDelRecinto('los-techos').ancho + 640);
     const gira = 0.5 + 0.5 * Math.sin(t * Math.PI * 2 * 1.8);
     const falla = Math.sin(t * 13.7) + Math.sin(t * 7.3 + 1) > 1.45 ? 0.15 : 1;
     const entra = Math.min(1, u / 0.08, (1 - u) / 0.08);

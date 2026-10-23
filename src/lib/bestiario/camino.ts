@@ -29,6 +29,8 @@
  * de afuera se come el borde de la escena, y ahí, sin ningún bicho abajo, se paran los carteles.
  */
 
+import { marcoDelRecinto } from './rig.ts';
+
 /** El alto de toda escena del camino, el mismo de los recintos de noche (`rig.ts`). */
 export const ALTO = 640;
 
@@ -40,7 +42,7 @@ export const VISTA_MIN = 280;
 /** Las velocidades de las capas del monte: lo lejano, el piso con los bichos y lo de adelante. */
 export const VELOCIDAD = { lejos: 0.45, piso: 1, frente: 1.3 } as const;
 
-/** El ancho de un recinto de noche (`ESCENA` en `rig.ts`). */
+/** El ancho de un recinto de noche de los de siempre (`ESCENA` en `rig.ts`); los agrandados, en `MARCO_DEL_RECINTO`. */
 export const RECINTO = 900;
 /** Lo largo de un entorno de la décima vuelta pintado para caminarlo. */
 export const LARGO = 2400;
@@ -123,13 +125,17 @@ function entorno(region: string, pieza: string, lejos: number, foco: number): Tr
   };
 }
 
-/** Un recinto de títeres, entero: la escena del bestiario, y el cruce pegado a su borde. */
+/**
+ * Un recinto de títeres, entero: la escena del bestiario, y el cruce pegado a su borde. Mide lo que
+ * mida su recinto (`MARCO_DEL_RECINTO`); el que arranca antes del cero se corre para entrar entero.
+ */
 function recinto(region: string): Tramo {
+  const { ancho } = marcoDelRecinto(region);
   return {
     region,
     forma: 'recinto',
-    ancho: RECINTO + CRUCE,
-    escena: RECINTO,
+    ancho: ancho + CRUCE,
+    escena: ancho,
     velocidad: SIN_PARALAJE,
     foco: 0,
     piezas: { lejos: null, piso: null, frente: null, cruce: `camino-${region}-cruce` },

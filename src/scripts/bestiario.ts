@@ -26,6 +26,7 @@ import { ESPERA, GUARDADO } from '../lib/bestiario/carga.ts';
 import { crearRocola } from './rocola.ts';
 import { armarRecinto } from './bestiario/recintos.ts';
 import { Charla } from '../lib/bestiario/charla.ts';
+import { lugarDeLaFicha, type Lado } from '../lib/bestiario/hoja.ts';
 
 interface BestiaIsla {
   id: string;
@@ -135,7 +136,28 @@ function abrir(id: string): void {
   hoja.scrollTop = 0;
   anotar(id);
   history.replaceState(null, '', `#${id}`);
+  ubicarHoja(id);
   cerrar.focus({ preventScroll: true });
+}
+
+const fichaDeCostado = window.matchMedia('(min-width: 52rem)');
+const LADOS: readonly Lado[] = ['arriba', 'abajo', 'izquierda', 'derecha'];
+
+/**
+ * La ficha se abre donde no tapa al bicho (`D-80`, `lib/bestiario/hoja.ts`), si el bicho está en
+ * pantalla: abierta desde el índice o desde un enlace, no hay a quién no tapar.
+ */
+function ubicarHoja(id: string): void {
+  hoja.classList.remove(...LADOS.map((l) => `bestiario-hoja--${l}`));
+  hoja.style.removeProperty('max-height');
+  const ventana = { left: 0, top: 0, right: innerWidth, bottom: innerHeight };
+  const bicho = [...document.querySelectorAll(`.recinto [data-id="${CSS.escape(id)}"]`)]
+    .map((el) => el.getBoundingClientRect())
+    .find((r) => r.width > 0 && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth);
+  if (!bicho) return;
+  const lugar = lugarDeLaFicha(bicho, ventana, fichaDeCostado.matches, hoja.getBoundingClientRect().width, 0);
+  hoja.classList.add(`bestiario-hoja--${lugar.lado}`);
+  if (lugar.alto) hoja.style.maxHeight = `${lugar.alto}px`;
 }
 
 function cerrarHoja(): void {
