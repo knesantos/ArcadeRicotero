@@ -172,12 +172,14 @@ export const VECINOS_DEL_TEMPLO: Readonly<Record<string, readonly [number, numbe
   'los-gallos-sofocados': [1010, 520, 'oro'],
   'marita-la-virgencita': [190, 470, 'papel'],
   'la-polilla': [604, 150, 'papel'],
-  'la-murga-de-los-renegados': [-40, 572, 'papel'],
+  // La murga se corrió a la derecha de la columna para dejarle el anda al santo fumador.
+  'la-murga-de-los-renegados': [24, 576, 'papel'],
   'el-morta': [652, 440, 'oro'],
   // Mister Ed se corrió a la derecha para dejarle el aire al Dr. Saturno, que flota delante de la columna.
   'mister-ed-y-huesito': [985, 580, 'papel'],
   'el-doctor-saturno': [1000, 300, 'papel'],
-  'el-sheriff': [-170, 530, 'oro'],
+  // El sheriff, más contra la primera columna: el anda del santo fumador tiene varas largas.
+  'el-sheriff': [-226, 530, 'oro'],
   'la-bailarina': [270, 586, 'papel'],
 };
 

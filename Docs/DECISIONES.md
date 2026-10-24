@@ -5749,6 +5749,55 @@ ramas: la última era `T-507`.
 `npm test` (1958), `npm run check` y `npm run build` en verde. Probado en la página del baldío en un iframe con rAF
 reemplazado: trota, se da vuelta, aúlla, y la explosión corre entera hasta abrir la ficha.
 
+### Enmienda del 2026-10-24 (20): cinco del fondo, en los entornos más flacos
+
+Pedido del usuario, textual: *"Elegi 5 bestias del bestiario sin un diseño complejo y rocambolesco hecho y diseñalo e
+implementalo correctamente bien pulido con su animacion y arte rocambole. Me encanta como estan quedando todos con sus
+detalles de la letra reflejados en el arte"*. La escribe el hilo principal en la rama `bestiario/cinco-del-fondo`, sobre
+`main` en `5c98d2b`. Sin subagentes. Antes de tomar `T-509` se miraron todas las ramas: la última era `T-508`.
+
+#### Cuáles, y por qué esos
+
+Se contó, entorno por entorno, quién ya era títere. Los más flacos eran el infierno (uno: el diablo que mea) y la ruta (uno:
+la Pontiac), y después el árbol y el templo (dos cada uno). Entre los que seguían siendo ojos se eligieron los de letra con
+más objetos para dibujar:
+
+- **Zippo** (infierno, *Cruz diablo!*, *Luzbelito*): la cabeza es el encendedor, con la tapa que hace *clac*; vuela en una
+  avioneta de lata hecha migas, con el asiento del copiloto vacío, la mala sombra con ojos en el damero, las fichas que se le
+  caen y la risa de mil dientes de azufre. Lo sigue un nubarrón negro (*"su cielo ennegrece"*), que además lo recorta contra el
+  fuego de *Gulp!* del fondo. Tintas: la galleta del compact.
+- **El diablo más veloz** (infierno, *Fanfarria del cabrío*, *Luzbelito*): un cabrío que arrastra las pezuñas sacando chispas,
+  con el reloj de bolsillo sin agujas, la manzana con el sello de prohibido, el fuego robado en el bolsillo del corazón, la
+  lengua de oro y la Caja de los Truenos. La manzana la muerde en el aire: el brazo no llegaba a la boca, y tirarla es más del
+  personaje. Tintas: la contratapa (el diablo que mea ya tenía el frente y el interior).
+- **El santo fumador** (templo, *Templo de Momo*, *Momo sampler*): fundido en la plata del medallón (es de La Plata), duerme
+  parado en el anda de una procesión con el pucho en la mano de la bendición; la aureola es un tubo de galpón que titila.
+- **El que duerme colgado** (árbol, *¡Es hora de levantarse, querido!*, *Cordero atado*): cabeza abajo de la rama soldada,
+  envuelto en el saco de plumas del bicho de la tapa como un murciélago; el temor es un carozo almibarado con moño sentado en
+  su dedo, y el sueño de angelitos gangsters está dibujado con la tiza de la contratapa.
+- **La bella señora desencarnada** (ruta, *Juguetes perdidos*, *Luzbelito*): una calavera con mantilla, peineta, guantes y
+  rouge, parada en la banquina de este lado; los fierros pasan por detrás. Le late el corazón doble, y tocada se levanta el velo
+  y se le viene el día en el pecho, en el resplandor del horizonte del interior de la tapa.
+
+#### Lo que se tocó alrededor
+
+- **Dos siluetas pintadas que se fueron**: la del colgado en el piso del árbol y la de la señora en el de la ruta. Se
+  reimprimieron `arbol-piso`, `camino-arbol-piso`, `ruta-piso` y `camino-ruta-piso`.
+- **Dos ojos corridos en el templo**: el sheriff y la murga, para dejarle el anda al santo.
+- **El test del elenco mide el ancla contra el marco del recinto** (`marcoDelRecinto`), no contra los 900 de siempre: el santo
+  vive en el ala izquierda del templo agrandado (x −104), como ya vivían ahí sus ojos.
+- **`diablo.test.ts` mira al diablo solo** (`capasDe(..., 'el-diablo-que-mea-en-todas-partes')`), como el del Morta: ahora el
+  infierno tiene otros dos títeres con partes del mismo nombre.
+- **`trazos.ts`** junta la curva, la elipse, la caja y el grano que repetía cada dibujo, y **`juguete.ts`** el DOM de juguete
+  de los tests. Los cinco nuevos los usan; los de antes siguen con su copia.
+
+Cada uno trae su bloque de tintas medidas con sharp en `tokens.css`, su bloque en `sitio.css`, su conducta en
+`scripts/bestiario/` y su test (9 cada uno). `npm test` (2002), `npm run check` y `npm run build` en verde. Se los vio
+animar en el servidor de desarrollo, con el toque disparado a mano, y en sus escenas de verdad.
+
+- `T-509`: verlos en un teléfono de verdad, y que `contenido` lea las cinco estampas; pasar los cinco bloques de tintas al
+  lienzo, como `T-507`.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17

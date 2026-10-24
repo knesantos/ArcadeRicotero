@@ -4455,3 +4455,46 @@ body:has(> .lugar) .marca-chica {
 .bt-animal-toque { fill: transparent; }
 .titere--animal [data-parte="sombra"] { pointer-events: none; }
 /* ⟨/tu animal⟩ */
+
+/* ⟨zippo⟩ */
+/* La llama, el azufre de la risa y el borron de la helice son luz: se suman a lo oscuro del infierno. El
+   nubarron que lo sigue, el humo que deja, las fichas que se le caen y su mala sombra en el damero no se tocan: el toque es de el. */
+.titere--zippo { cursor: pointer; }
+.titere--zippo [data-parte="llama"], .titere--zippo [data-parte="azufre"], .titere--zippo [data-parte="borron"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--zippo [data-parte^="humo-"], .titere--zippo [data-parte^="ficha-"], .titere--zippo [data-parte="nubarron"] { pointer-events: none; }
+[data-marco="zippo"] [data-parte="sombra"] { pointer-events: none; }
+/* ⟨/zippo⟩ */
+
+/* ⟨el diablo mas veloz⟩ */
+/* La sombra en el damero, del verdin del fondo del ovalo. Los rayos de la Caja de los Truenos, el fuego
+   robado y el borron de lo veloz son luz o movimiento: se suman y no se tocan. La caja si se toca: es suya. */
+.titere--veloz { cursor: pointer; }
+.bt-veloz-sombra { fill: var(--bestia-veloz-verdin); opacity: 0.7; }
+.titere--veloz [data-parte="rayos"], .titere--veloz [data-parte="fuego"], .titere--veloz [data-parte="chispas"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--veloz [data-parte="estela"] { pointer-events: none; }
+/* ⟨/el diablo mas veloz⟩ */
+
+/* ⟨el santo fumador⟩ */
+/* La sombra del anda en el piso del templo, del fondo del interior de Momo sampler. La aureola, cuando
+   encandila, la brasa y el humo son luz: se suman a lo oscuro y no se tocan. */
+.titere--fumador { cursor: pointer; }
+.bt-fumador-sombra { fill: var(--bestia-fumador-hondo); opacity: 0.75; }
+.titere--fumador [data-parte="encandila"], .titere--fumador [data-parte="aureola"], .titere--fumador [data-parte="brasa"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--fumador [data-parte="hilo"], .titere--fumador [data-parte^="anillo-"], .titere--fumador [data-parte="cae"], .titere--fumador [data-parte="sombra"] { pointer-events: none; }
+/* ⟨/el santo fumador⟩ */
+
+/* ⟨el que duerme colgado⟩ */
+/* El sueno de tiza, el fogonazo de los angelitos y el sueno reventado son del sueno: no se tocan, el toque
+   es del que duerme. La gota de almibar tampoco. */
+.titere--colgado { cursor: pointer; }
+.titere--colgado [data-parte="sueno"], .titere--colgado [data-parte="pop"], .titere--colgado [data-parte="gota"] { pointer-events: none; }
+.titere--colgado [data-parte^="tiro-"] { mix-blend-mode: screen; }
+/* ⟨/el que duerme colgado⟩ */
+
+/* ⟨la bella senora desencarnada⟩ */
+/* La sombra en la banquina, de la tierra honda de la tapa. El dia que se le viene en el corazon y la luz
+   de las cuencas son luz: se suman a lo oscuro de la ruta y no se tocan. */
+.titere--desencarnada { cursor: pointer; }
+.bt-desencarnada-sombra { fill: var(--bestia-desencarnada-tierra-honda); opacity: 0.8; }
+.titere--desencarnada [data-parte="dia"], .titere--desencarnada [data-parte="cuencas"] { mix-blend-mode: screen; pointer-events: none; }
+/* ⟨/la bella senora desencarnada⟩ */

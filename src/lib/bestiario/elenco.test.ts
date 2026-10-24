@@ -10,6 +10,7 @@ import { ENTORNOS_DE_NOCHE } from './escenas-entornos.ts';
 import { pisoDelCamino } from './escenas-camino.ts';
 import { CAMINOS, K_ENTORNO } from './camino.ts';
 import { retrato } from './titeres.ts';
+import { marcoDelRecinto } from './rig.ts';
 import { CON_CONDUCTA } from '../../scripts/bestiario/vivos.ts';
 
 /**
@@ -36,16 +37,18 @@ const ESCENA: Readonly<Record<string, (n: ReadonlyMap<string, string>) => string
 /** Los diez de la decimoquinta vuelta, uno por entorno; después vienen los de la decimosexta, la decimoséptima y la decimoctava. */
 const DIEZ = Object.keys(LUGAR_EN_EL_ELENCO).slice(0, 10);
 
-test('el elenco son los diez, uno por entorno, los tres de la decimosexta, la decimoséptima y la decimoctava, y el de la decimonovena; cada uno es una bestia de esa región', () => {
+test('el elenco son los diez, uno por entorno, los tres de la decimosexta, la decimoséptima y la decimoctava, el de la decimonovena y los cinco de la vigésima; cada uno es una bestia de esa región', () => {
   const lugares = Object.entries(LUGAR_EN_EL_ELENCO);
-  assert.equal(lugares.length, 20);
+  assert.equal(lugares.length, 25);
   assert.equal(new Set(DIEZ.map((id) => LUGAR_EN_EL_ELENCO[id])).size, 10, 'dos de los diez en el mismo entorno');
   assert.deepEqual(lugares.slice(10, 13).map(([id]) => id), ['la-hija-del-fletero', 'el-buen-psicopata', 'porco-rex']);
   assert.deepEqual(lugares.slice(13, 16).map(([id]) => id), ['el-angel-de-la-soledad', 'el-pac-man', 'la-mosca']);
   // La decimoctava: uno en cada uno de los tres entornos con menos títeres para los bichos que tienen.
   assert.deepEqual(lugares.slice(16, 19).map(([id]) => id), ['el-verdugo-que-cena', 'el-doctor-saturno', 'tu-animal']);
   // La decimonovena: el perro dinamita, en el baldío.
-  assert.deepEqual(lugares.slice(19).map(([id]) => id), ['mi-perro-dinamita']);
+  assert.deepEqual(lugares.slice(19, 20).map(([id]) => id), ['mi-perro-dinamita']);
+  // La vigésima: cinco en los entornos más flacos de títeres, dos de ellos en el infierno, que tenía uno solo.
+  assert.deepEqual(lugares.slice(20).map(([id]) => id), ['zippo', 'el-diablo-mas-veloz', 'el-santo-fumador', 'el-que-duerme-colgado', 'la-bella-senora-desencarnada']);
   for (const [id, region] of lugares) {
     const b = datos.bestias.find((x) => x.id === id);
     assert.ok(b, `${id} no está en el bestiario`);
@@ -106,7 +109,9 @@ test('lo que pide el elenco está impreso, y cada capa sale sin un número roto'
     assert.ok(!roto.test(marcado), `${p.id}: número roto`);
     const piden = [...marcado.matchAll(/href="\/bestiario\/([a-z0-9-]+)\.webp"/g)].map((m) => m[1]!);
     assert.deepEqual(piden.filter((n) => !impresas.has(n)), [], `${p.id} pide piezas que no están`);
-    assert.ok(p.ancla >= 0 && p.ancla <= 900, `${p.id}: el ancla se sale del recinto`);
+    // El recinto es el de siempre (900) o el agrandado para los dos lados (`MARCO_DEL_RECINTO`), como el templo.
+    const marco = marcoDelRecinto(p.region);
+    assert.ok(p.ancla >= marco.x && p.ancla <= marco.x + marco.ancho, `${p.id}: el ancla se sale del recinto`);
   }
 });
 

@@ -5,7 +5,23 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-23
+**Última actualización:** 2026-10-24
+
+> ## 🛩️ CINCO DEL FONDO: ZIPPO, EL DIABLO MÁS VELOZ, EL SANTO FUMADOR, EL COLGADO Y LA SEÑORA (2026-10-24) — `D-73` (20)
+>
+> **En el PR #79** (rama `bestiario/cinco-del-fondo`, sobre `main` en `5c98d2b`), con los checks en verde; **sin integrar**. `T-509`. Pedido
+> del usuario: cinco bestias sin diseño complejo, pulidas, con su animación y el arte rocambolesco, con los detalles de la letra.
+>
+> - **Infierno** (tenía uno solo): **Zippo**, la cabeza es el encendedor, en su avioneta hecha migas; tocado, picada en rizo
+>   cabeza abajo y risa de azufre. **El diablo más veloz**, cabrío que arrastra los pies; tocado, en un parpadeo patea la Caja
+>   de los Truenos y vuelve arrastrándose.
+> - **Templo**: **el santo fumador**, de plata, dormido en su anda con el pucho; tocado, desfila.
+> - **Árbol**: **el que duerme colgado**, de la rama soldada, soñando angelitos gangsters de tiza; tocado, se despierta.
+> - **Ruta** (tenía uno solo): **la bella señora desencarnada**, calavera con mantilla; tocada, se le viene el día en el pecho.
+> - Se sacaron sus siluetas pintadas del piso del árbol y de la ruta (reimpresos), y se corrieron los ojos del sheriff y la
+>   murga en el templo.
+> - **Verde:** `npm test` (2002), `npm run check`, `npm run build`. Vistos animar en el servidor de desarrollo.
+> - **Falta**: integrar el #79, y `T-509` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
 
 > ## 🧨 MI PERRO DINAMITA, CON MECHA Y EXPLOSIÓN (2026-10-23) — `D-73`, decimonovena vuelta
 >
