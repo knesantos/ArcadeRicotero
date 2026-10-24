@@ -9,8 +9,8 @@
 
 > ## 🧨 MI PERRO DINAMITA, CON MECHA Y EXPLOSIÓN (2026-10-23) — `D-73`, decimonovena vuelta
 >
-> **Commiteado en la rama `bestiario/tres-del-fondo`**, encima de la decimoctava (`29d3700`); **sin PR ni integrar a
-> `main`**. `T-508`. Pedido del usuario: *"Diseña, e integra bien pulido y bien rocambolesco al perro dinamita"* y *"que
+> **En `main` desde el PR #76** (commit de fusión `7fb4e33`), rama `bestiario/tres-del-fondo`, junto con la decimoctava de
+> abajo. Lo integró Claude a pedido del usuario (*"Integralo a main."*). `T-508`. Pedido del usuario: *"Diseña, e integra bien pulido y bien rocambolesco al perro dinamita"* y *"que
 > tenga una buena animacion y explosion"*.
 >
 > - **El dibujo** (`arte-dinamita.ts`, 16 piezas, 120 kB): el cuerpo es un atado de tres cartuchos con alambre, la
@@ -23,11 +23,11 @@
 >   ficha. Con movimiento reducido pasa a la pose del aullido.
 > - **Verde:** `npm test` (1958, con los 10 de `dinamita.test.ts`), `npm run check`, `npm run build`. Probado en
 >   la página del baldío en un iframe con rAF reemplazado.
-> - **Falta**: el PR de la rama (con la decimoctava), y verlo en un teléfono de verdad.
+> - **Falta**: verlo en un teléfono de verdad.
 
 > ## 🪓 TRES BESTIAS MÁS EN LOS ENTORNOS FLACOS: EL VERDUGO, EL DR. SATURNO Y TU ANIMAL (2026-10-23) — `D-73` (18)
 >
-> **Sin integrar**, en la rama `bestiario/tres-del-fondo`. Pedido del usuario: tres bestias rocambolescas y misteriosas, en
+> **En `main` desde el PR #76** (commit de fusión `7fb4e33`), rama `bestiario/tres-del-fondo`. Pedido del usuario: tres bestias rocambolescas y misteriosas, en
 > los entornos con menos personajes detallados. Se contó entorno por entorno: el monte (1 de 8), la mesa (2 de 12) y el templo
 > (2 de 11).
 >
