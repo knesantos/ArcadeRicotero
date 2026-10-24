@@ -4498,3 +4498,13 @@ body:has(> .lugar) .marca-chica {
 .bt-desencarnada-sombra { fill: var(--bestia-desencarnada-tierra-honda); opacity: 0.8; }
 .titere--desencarnada [data-parte="dia"], .titere--desencarnada [data-parte="cuencas"] { mix-blend-mode: screen; pointer-events: none; }
 /* ⟨/la bella senora desencarnada⟩ */
+
+/* ⟨el esclavo encadenado⟩ */
+/* La sombra de las rodillas es la tinta del fondo, como la de Barbazul y la drácula. La chispa del eslabón
+   es el rojo de las banderas de la tapa con rayas de papel, y no se toca: el toque es del que rompe. */
+.titere--encadenado { cursor: pointer; }
+.bt-encadenado-sombra { fill: var(--fondo); }
+.bt-encadenado-chispa { fill: var(--disco-oktubre-tinta); }
+.bt-encadenado-rayo { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 4; stroke-linecap: square; }
+.titere--encadenado [data-parte="chispa"] { pointer-events: none; }
+/* ⟨/el esclavo encadenado⟩ */

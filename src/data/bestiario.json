@@ -1151,6 +1151,23 @@
       "cerca": ["la-dracula-con-tacones", "el-pichon"]
     },
     {
+      "id": "el-esclavo-encadenado",
+      "nombre": "El esclavo encadenado",
+      "clase": "personaje",
+      "region": "la-prision",
+      "pos": { "ang": 221, "r": 300 },
+      "tam": 34,
+      "dibujo": { "f": "persona", "con": ["cadena"], "ropa": "tunica", "pose": "mira-arriba" },
+      "tema": "preso-en-mi-ciudad",
+      "verso": ["Casi ya no llora, ¡atrapado en libertad!"],
+      "tambien": [{ "tema": "nuestro-amo-juega-al-esclavo", "verso": ["Nuestro amo juega al esclavo"] }],
+      "estampa": "El dibujo de Rocambole que la gente asocia con Oktubre, tal cual: de rodillas, la cabeza para atrás, el puño en alto con la cadena. Se escapó de la celda de los reos. Tocalo y rompe la cadena, que salta con una chispa roja; después vuelve a estar en el puño. El dibujo es el de siempre; lo que vuelve, del verso.",
+      "cuenta": [
+        { "rotulo": "leyenda", "texto": "Casi todos lo ponen en la tapa de Oktubre. Lo que se cuenta es que no venía en el vinilo del 86 y que se hizo conocido con la reedición en CD. No hay ficha que lo cierre.", "fuente": "INV-02" }
+      ],
+      "cerca": ["el-esclavo-sensible-y-chillon", "los-reos-de-la-sociedad"]
+    },
+    {
       "id": "el-pichon",
       "nombre": "El pichón",
       "clase": "bestia",
