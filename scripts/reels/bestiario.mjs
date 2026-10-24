@@ -50,7 +50,8 @@ function capa(tr) {
 ${tr.lineas.map(([, , texto], i) => `<p class="linea" id="l${i}">${texto}</p>`).join('\n')}
 ${tr.cartel === undefined ? '<div id="cartel"></div>' : cartel({
     titulo: 'Bestiario redondo',
-    fuente: 'var(--fuente-marca-firma)',
+    // La letra de Lobo suelto, por pedido del usuario: el título va grande, de 28 px para arriba como pide la fuente.
+    fuente: 'var(--fuente-lobo-suelto)',
     color: 'var(--entorno-pastura)',
     canta: 'Un cordero azul pasta al lado del lobo.',
     nombra: `${BICHOS} bichos y personajes de los diez discos, cada uno en su rincón de un mundo redondo que se camina.`,

@@ -51,16 +51,26 @@ export function tokens() {
  * Con `html`, va a la raíz del sitio y reemplaza el documento (las fuentes quedan en el mismo origen).
  */
 export async function grabar({ url, html, duracion, salida, antes, virtual = false }) {
-  // En un solo proceso el arranque a veces se cae a la primera; con un segundo intento alcanza.
+  // En un solo proceso el arranque a veces se cuelga (casi siempre al abrir la pestaña): se cierra y se vuelve a probar.
   const lanzar = () => puppeteer.launch({
     executablePath: requerida('NAVEGADOR'),
     headless: 'shell',
-    protocolTimeout: 240000,
+    protocolTimeout: 60000,
     // Un solo proceso y sin GPU: así arranca también donde no puede abrir procesos hijos.
     args: ['--no-sandbox', '--single-process', '--disable-gpu', '--disable-software-rasterizer', '--in-process-gpu', '--hide-scrollbars', '--mute-audio', '--autoplay-policy=no-user-gesture-required'],
   });
-  const nav = await lanzar().catch(lanzar);
-  const page = await nav.newPage();
+  let nav, page;
+  for (let intento = 1; !page; intento++) {
+    try {
+      nav = await lanzar();
+      page = await nav.newPage();
+    } catch (e) {
+      await nav?.close().catch(() => {});
+      nav = undefined;
+      if (intento === 3) throw e;
+      console.log(`  el navegador no arrancó (${e.message.slice(0, 60)}); intento ${intento + 1}`);
+    }
+  }
   await page.setViewport({ width: 360, height: 640, deviceScaleFactor: 3, isMobile: true, hasTouch: true });
   if (virtual) {
     // El reloj de mentira: rAF y performance.now avanzan solo cuando el motor lo pide.
