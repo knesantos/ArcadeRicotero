@@ -5,7 +5,25 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-23
+**Última actualización:** 2026-10-24
+
+> ## 🎞️ TRES REELS EN EL CALENDARIO (2026-10-24) — `D-81`
+>
+> Rama `difusion/reels`, **sin integrar**. Pedido del usuario: *"Armate unos buenos reels ricoteros sobre los juegos
+> adivina el tema, sacalo por la letra y el bestiario redondo. Que se entienda lo que son pero no muestren de mas"*.
+>
+> - **Los reels** (`public/redes/DIF-13/14/15.mp4`, 1080x1920, 15 a 16 s): Adiviná el tema sube la escalera
+>   0,1-0,5-2-4 s de *Juguetes perdidos* y corta sin decir cuál era; Sacalo por la letra tacha ocho versos con fibra y
+>   deja una palabra de cada uno; el bestiario camina el infierno con su reloj de verdad y se apaga antes de verlos
+>   enteros. Los carteles cuentan temas y bichos desde los JSON.
+> - **El generador** (`npm run reels -- <tema|letra|bestiario> DIF-XX`, `scripts/reels/`): graba cuadro por cuadro
+>   con `puppeteer-core` contra `astro dev`. Necesita `NAVEGADOR` (chrome-headless-shell: Edge sin ventana no levanta en
+>   esta PC) y `FFMPEG`; está en la cabecera de `motor.mjs`. **Grabar desde un checkout limpio**: el dev server sirve lo
+>   que haya sin commitear, y el bestiario mostraría bichos sin publicar.
+> - **El calendario**: `DIF-13` a `DIF-15` en borrador (3, 5 y 7 de noviembre). La pieza acepta `video`;
+>   `redes cola` no sube video todavía y frena: los reels van a mano con el lote.
+> - **Verde:** `npm test` (1959), `npm run check`, `npm run redes -- validar`. **Falta**: el visto bueno del usuario
+>   a los textos, y verlos subidos en Instagram (puede silenciar el audio de los temas; si hay reclamo, se baja, `D-14`).
 
 > ## 🧨 MI PERRO DINAMITA, CON MECHA Y EXPLOSIÓN (2026-10-23) — `D-73`, decimonovena vuelta
 >

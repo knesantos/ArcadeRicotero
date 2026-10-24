@@ -54,6 +54,63 @@
         "bajada": "Adiviná la tapa. Gratis y sin cuenta."
       },
       "alt": "Cartel del Fichín Ricotero en el rojo de Gulp! con el título «Rocambole dibujó, vos ponés el disco»."
+    },
+    {
+      "id": "DIF-13",
+      "fecha": "2026-11-03T19:00:00-03:00",
+      "redes": [
+        "instagram",
+        "x"
+      ],
+      "estado": "borrador",
+      "x": "Una décima de segundo, medio, dos, cuatro. ¿En cuál la sacaste?\n\nAdiviná el tema: suena un pedacito y, si no sale, suena un poco más. Gratis y sin cuenta.\n\nhttps://fichinricotero.com.ar/juegos/adivinar-el-tema/",
+      "instagram": "Una décima de segundo, medio, dos, cuatro. ¿En cuál la sacaste?\n\nAdiviná el tema: suena un pedacito y, si no sale, suena un poco más. Gratis y sin cuenta. El enlace está en la bio.\n\n#redondos #patriciorey",
+      "enlace": "https://fichinricotero.com.ar/juegos/adivinar-el-tema/",
+      "pieza": {
+        "disco": "lobo-suelto",
+        "titulo": "Una décima te tiene que alcanzar",
+        "bajada": "Adiviná el tema. Gratis y sin cuenta.",
+        "video": "redes/DIF-13.mp4"
+      },
+      "alt": "Reel vertical: un surco que se prende de a poco mientras suena un tema en 0,1, 0,5, 2 y 4 segundos, sin decir cuál es. Cierra con el cartel de Adiviná el tema."
+    },
+    {
+      "id": "DIF-14",
+      "fecha": "2026-11-05T19:00:00-03:00",
+      "redes": [
+        "instagram",
+        "x"
+      ],
+      "estado": "borrador",
+      "x": "Ocho versos tachados. De cada uno, una palabra.\n\nSacalo por la letra: un verso te tiene que alcanzar; si no, te damos más. Gratis y sin cuenta.\n\nhttps://fichinricotero.com.ar/juegos/adivinar-por-la-letra/",
+      "instagram": "Ocho versos tachados. De cada uno, una palabra.\n\nSacalo por la letra: un verso te tiene que alcanzar; si no, te damos más. Gratis y sin cuenta. El enlace está en la bio.\n\n#redondos #ricoteros",
+      "enlace": "https://fichinricotero.com.ar/juegos/adivinar-por-la-letra/",
+      "pieza": {
+        "disco": "la-mosca",
+        "titulo": "Un verso te tiene que alcanzar",
+        "bajada": "Sacalo por la letra. Gratis y sin cuenta.",
+        "video": "redes/DIF-14.mp4"
+      },
+      "alt": "Reel vertical: un papel con renglones donde los versos llegan tachados con fibra, de a uno, dos, cuatro y ocho, y de cada uno queda una palabra a la vista. Cierra con el cartel de Sacalo por la letra."
+    },
+    {
+      "id": "DIF-15",
+      "fecha": "2026-11-07T19:00:00-03:00",
+      "redes": [
+        "instagram",
+        "x"
+      ],
+      "estado": "borrador",
+      "x": "Dos ojos amarillos arriba de la puerta.\n\nEl bestiario redondo: 121 bichos y personajes de las letras, cada uno en su rincón de un mundo que se camina. En la Redondopedia, gratis y sin cuenta.\n\nhttps://fichinricotero.com.ar/redondopedia/bestiario/",
+      "instagram": "Dos ojos amarillos arriba de la puerta.\n\nEl bestiario redondo: 121 bichos y personajes de las letras, cada uno en su rincón de un mundo que se camina. En la Redondopedia, gratis y sin cuenta. El enlace está en la bio.\n\n#redondos #ricoteros",
+      "enlace": "https://fichinricotero.com.ar/redondopedia/bestiario/",
+      "pieza": {
+        "disco": "lobo-suelto",
+        "titulo": "Algo te mira desde la puerta",
+        "bajada": "Bestiario redondo, en la Redondopedia.",
+        "video": "redes/DIF-15.mp4"
+      },
+      "alt": "Reel vertical: se camina de costado el infierno encantador del bestiario, con dos ojos amarillos arriba de una puerta y bichos que asoman a medias; se apaga antes de verlos enteros. Cierra con el cartel de Bestiario redondo."
     }
   ]
 }
