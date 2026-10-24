@@ -23,7 +23,8 @@
     "imprimir-bestiario": "node --experimental-strip-types scripts/imprimir-bestiario.mjs",
     "recortar-bestiario": "node --experimental-strip-types scripts/recortar-bestiario.mjs",
     "sincronizar-bestiario": "node --experimental-strip-types scripts/sincronizar-bestiario.mjs",
-    "redes": "node --experimental-strip-types scripts/redes.mjs"
+    "redes": "node --experimental-strip-types scripts/redes.mjs",
+    "reels": "node scripts/reels.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "2.0.1",
@@ -35,6 +36,7 @@
     "@types/node": "^26.2.0",
     "ajv": "8.20.0",
     "fontkitten": "1.0.3",
+    "puppeteer-core": "23.11.1",
     "sharp": "0.34.5",
     "typescript": "^5.7.3"
   }
