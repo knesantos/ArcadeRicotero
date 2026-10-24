@@ -72,7 +72,7 @@
         "bajada": "Adiviná el tema. Gratis y sin cuenta.",
         "video": "redes/DIF-13.mp4"
       },
-      "alt": "Reel vertical: un surco que se prende de a poco mientras suena un tema en 0,1, 0,5, 2 y 4 segundos, sin decir cuál es. Cierra con el cartel de Adiviná el tema."
+      "alt": "Reel vertical: un surco que se prende de a poco mientras suena un tema en 0,1, 0,5, 2 y 4 segundos, sin decir cuál es; el tema sigue sonando bajo el cartel de Adiviná el tema."
     },
     {
       "id": "DIF-14",
@@ -101,16 +101,16 @@
         "x"
       ],
       "estado": "borrador",
-      "x": "Dos ojos amarillos arriba de la puerta.\n\nEl bestiario redondo: 121 bichos y personajes de las letras, cada uno en su rincón de un mundo que se camina. En la Redondopedia, gratis y sin cuenta.\n\nhttps://fichinricotero.com.ar/redondopedia/bestiario/",
-      "instagram": "Dos ojos amarillos arriba de la puerta.\n\nEl bestiario redondo: 121 bichos y personajes de las letras, cada uno en su rincón de un mundo que se camina. En la Redondopedia, gratis y sin cuenta. El enlace está en la bio.\n\n#redondos #ricoteros",
+      "x": "Una barba azul detrás de las rejas. Un lobo, un cordero y una vaca en la pastura.\n\nEl bestiario redondo: 121 bichos y personajes de las letras, cada uno en su rincón de un mundo que se camina. En la Redondopedia, gratis y sin cuenta.\n\nhttps://fichinricotero.com.ar/redondopedia/bestiario/",
+      "instagram": "Una barba azul detrás de las rejas. Un lobo, un cordero y una vaca en la pastura.\n\nEl bestiario redondo: 121 bichos y personajes de las letras, cada uno en su rincón de un mundo que se camina. En la Redondopedia, gratis y sin cuenta. El enlace está en la bio.\n\n#redondos #ricoteros",
       "enlace": "https://fichinricotero.com.ar/redondopedia/bestiario/",
       "pieza": {
         "disco": "lobo-suelto",
-        "titulo": "Algo te mira desde la puerta",
+        "titulo": "Una barba azul detrás de las rejas",
         "bajada": "Bestiario redondo, en la Redondopedia.",
         "video": "redes/DIF-15.mp4"
       },
-      "alt": "Reel vertical: se camina de costado el infierno encantador del bestiario, con dos ojos amarillos arriba de una puerta y bichos que asoman a medias; se apaga antes de verlos enteros. Cierra con el cartel de Bestiario redondo."
+      "alt": "Reel vertical: se camina de costado la prisión de Barbazul, con su barba azul y la gente detrás de las rejas, y después la pastura del cordero, donde andan un lobo, un cordero azul y una vaca. Cierra con el cartel de Bestiario redondo."
     }
   ]
 }

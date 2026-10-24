@@ -55,6 +55,7 @@ export async function grabar({ url, html, duracion, salida, antes, virtual = fal
   const lanzar = () => puppeteer.launch({
     executablePath: requerida('NAVEGADOR'),
     headless: 'shell',
+    protocolTimeout: 240000,
     // Un solo proceso y sin GPU: así arranca también donde no puede abrir procesos hijos.
     args: ['--no-sandbox', '--single-process', '--disable-gpu', '--disable-software-rasterizer', '--in-process-gpu', '--hide-scrollbars', '--mute-audio', '--autoplay-policy=no-user-gesture-required'],
   });
@@ -87,7 +88,9 @@ export async function grabar({ url, html, duracion, salida, antes, virtual = fal
     await page.setRequestInterception(true);
     page.on('request', (r) => (r.url() === url ? r.respond({ status: 200, contentType: 'text/html; charset=utf-8', body: html }) : r.continue()));
   }
-  await page.goto(url, { waitUntil: 'networkidle0', timeout: 120000 });
+  // Algunos caminos nunca dejan la red quieta (la rocola pide recortes): se espera la carga y un rato de calma.
+  await page.goto(url, { waitUntil: 'load', timeout: 120000 });
+  await page.waitForNetworkIdle({ idleTime: 500, timeout: 15000 }).catch(() => {});
   await page.evaluate(() => document.fonts.ready);
   if (antes) await antes(page);
   if (process.env.FOTOS) {

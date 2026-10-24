@@ -7,7 +7,9 @@ if (!DESTINO) throw new Error('Uso: npm run reels -- tema <destino.mp4>');
 const T = trabajo();
 // El tema que suena: uno que se reconoce entre los 2 y los 4 segundos, no en la décima.
 const TEMA = process.argv[3] ?? 'juguetes-perdidos';
-const DURACION = 16.5;
+const DURACION = 19;
+// Después del "¿Ya la tenés?" el tema sigue desde donde quedó, bajo el cartel, y nadie dice cuál es.
+const SIGUE = { desde: 4, t: 12.6 };
 // Los cuatro primeros escalones de la escalera del juego (src/lib/tema/escalera.ts).
 const PASOS = [
   { s: 0.1, t: 1.5, rotulo: '0,1 s' },
@@ -82,7 +84,11 @@ await grabar({ html: pagina(css, cuerpo, js), duracion: DURACION, salida: video 
 const frag = `${REPO}/public/audio/fragmentos/${TEMA}.mp3`;
 const partes = PASOS.map((p, i) =>
   `[s${i}]atrim=0:${p.s},asetpts=PTS-STARTPTS,afade=t=out:st=${Math.max(0, p.s - 0.03)}:d=0.03,adelay=${Math.round(p.t * 1000)}|${Math.round(p.t * 1000)}[a${i}]`);
-const filtro = `[0:a]asplit=${PASOS.length}${PASOS.map((_, i) => `[s${i}]`).join('')};${partes.join(';')};anullsrc=r=44100:cl=stereo,atrim=0:${DURACION}[silencio];[silencio]${PASOS.map((_, i) => `[a${i}]`).join('')}amix=inputs=${PASOS.length + 1}:normalize=0:duration=first[out]`;
+const n = PASOS.length;
+const ms = Math.round(SIGUE.t * 1000);
+const sigue = `[s${n}]atrim=${SIGUE.desde},asetpts=PTS-STARTPTS,afade=t=in:d=0.04,afade=t=out:st=${10 - SIGUE.desde - 1.2}:d=1.2,adelay=${ms}|${ms}[a${n}]`;
+// Fuerte: en el teléfono suena por el parlante chico, y los pasos cortos se tienen que oír.
+const filtro = `[0:a]asplit=${n + 1}${PASOS.concat(SIGUE).map((_, i) => `[s${i}]`).join('')};${partes.join(';')};${sigue};anullsrc=r=44100:cl=stereo,atrim=0:${DURACION}[silencio];[silencio]${PASOS.concat(SIGUE).map((_, i) => `[a${i}]`).join('')}amix=inputs=${n + 2}:normalize=0:duration=first,volume=1.9,alimiter=limit=0.95[out]`;
 await correr(FFMPEG, ['-y', '-i', frag, '-filter_complex', filtro, '-map', '[out]', '-c:a', 'aac', '-b:a', '192k', audio]);
 await juntar(video, audio, DESTINO);
 console.log(`listo: ${DESTINO}`);
