@@ -19,8 +19,8 @@ import { armarDiabloCon, barridoMaximo } from '../../scripts/bestiario/diablo.ts
 const ID = 'el-diablo-que-mea-en-todas-partes';
 const datos = JSON.parse(readFileSync('src/data/bestiario.json', 'utf-8')) as { bestias: Array<{ id: string; nombre: string; estampa: string; cuenta?: Array<{ rotulo: string; fuente: string }> }> };
 const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
-const figura = capasDe('el-infierno', 'figura', nombres);
-const atras = capasDe('el-infierno', 'atras', nombres);
+const figura = capasDe('el-infierno', 'figura', nombres, 1, 'el-diablo-que-mea-en-todas-partes');
+const atras = capasDe('el-infierno', 'atras', nombres, 1, 'el-diablo-que-mea-en-todas-partes');
 const caja = (nombre: string): readonly [number, number, number, number] => PIEZAS_DIABLO.find((p) => p.nombre === `diablo-${nombre}`)!.caja;
 const adentro = (nombre: string, [x, y]: P): boolean => {
   const [x0, y0, w, h] = caja(nombre);

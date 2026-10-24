@@ -623,7 +623,6 @@ function arbolPiso(ancho = ANCHO, alto = ALTO): string {
   const [mx, my] = [X(ARBOL.marco.x), ARBOL.marco.y];
   const o = OJOS_DEL_ARBOL;
   const at = (id: string): readonly [number, number] => [X(o[id]![0]), o[id]![1]];
-  const [cx, cy] = at('el-que-duerme-colgado');
   const [jx, jy] = at('el-jocker-burlon');
   const [scx, scy] = at('el-senor-de-los-cielos');
   const [lx, ly] = at('la-lechuza-que-circula');
@@ -646,11 +645,7 @@ function arbolPiso(ancho = ANCHO, alto = ALTO): string {
     forma(`M${f(scx - 10)} ${f(scy + 8)} C${f(scx - 18)} ${f(scy + 24)} ${f(scx - 26)} ${f(scy + 36)} ${f(scx - 30)} ${f(scy + 40)} L${f(scx + 30)} ${f(scy + 40)} C${f(scx + 22)} ${f(scy + 34)} ${f(scx + 16)} ${f(scy + 22)} ${f(scx + 10)} ${f(scy + 8)} Z`, A.negro) +
     trazo(`M${f(scx + 12)} ${f(scy + 22)} L${f(scx + 40)} ${f(scy + 10)}`, A.plata, 2.4) +
     chispa(scx + 40, scy + 10, 7, A.papel, 0.9) +
-    // El que duerme colgado de la rama soldada, cabeza abajo, como un murciélago.
-    trazo(`M${f(cx - 6)} ${f(sy0 + (sy1 - sy0) * 0.73 + 2)} L${f(cx - 4)} ${f(cy - 30)} M${f(cx + 6)} ${f(sy0 + (sy1 - sy0) * 0.73 + 2)} L${f(cx + 4)} ${f(cy - 30)}`, A.negro, 7) +
-    forma(`M${f(cx - 11)} ${f(cy - 34)} L${f(cx + 11)} ${f(cy - 34)} L${f(cx + 8)} ${f(cy - 8)} L${f(cx - 8)} ${f(cy - 8)} Z`, A.negro) +
-    forma(circulo(cx, cy, 10), A.negro) +
-    trazo(`M${f(cx - 9)} ${f(cy - 14)} L${f(cx - 12)} ${f(cy + 22)} M${f(cx + 9)} ${f(cy - 14)} L${f(cx + 12)} ${f(cy + 22)}`, A.negro, 4) +
+    // El que duerme colgado ya no se pinta acá: es un títere del elenco (`arte-colgado.ts`) en esta misma rama.
     // El jocker burlón, colgado de un brazo de la rama baja, con el bonete de tres puntas.
     trazo(`M${f(jx + 10)} ${f(jy + 10)} L${f(jx + 14)} 306`, A.negro, 5) +
     figura(jx, jy, 74, A.negro) +
@@ -1793,14 +1788,8 @@ function rutaPiso(ancho = ANCHO, alto = ALTO): string {
     nube(vx + 58, vp - 26, 6, 5, R.papel, 's', 0.9) +
     forma(caja(vx - 62, vp - 24, 6, 6), R.vivo, 0.8);
   const o = OJOS_DE_LA_RUTA;
-  const [sx, sy] = [X(o['la-bella-senora-desencarnada']![0]), o['la-bella-senora-desencarnada']![1]];
   const [pbx, pby] = [X(o['la-piba-de-greenpeace']![0]), o['la-piba-de-greenpeace']![1]];
-  // La bella señora, esperando parada al costado: casi sin cuerpo, con un velo pálido alrededor.
-  const senora =
-    nube(sx, sy + 26, 22, 44, R.papel, 'l', 0.2) +
-    forma(circulo(sx, sy, 9), R.negro) +
-    forma(`M${f(sx - 8)} ${f(sy + 8)} L${f(sx + 8)} ${f(sy + 8)} L${f(sx + 16)} ${f(arriba - 2)} L${f(sx - 16)} ${f(arriba - 2)} Z`, R.negro, 0.85) +
-    soplo(`M${f(sx - 10)} ${f(sy - 10)} Q${f(sx)} ${f(sy - 18)} ${f(sx + 10)} ${f(sy - 10)} L${f(sx + 22)} ${f(arriba - 2)} L${f(sx - 22)} ${f(arriba - 2)} Z`, R.papel, 's', 0.16);
+  // La bella señora ya no se pinta acá: es un títere del elenco (`arte-desencarnada.ts`), en la banquina de este lado.
   // La piba con la remera, dormida en el pasto (o haciéndose).
   const piba =
     forma(circulo(pbx, pby, 9), R.negro) +
@@ -1821,7 +1810,6 @@ function rutaPiso(ancho = ANCHO, alto = ALTO): string {
     yuyos(-10, ancho + 10, arriba, 30, Math.round(160 * k), 523, R.topo, R.cuero) +
     yuyos(-10, ancho + 10, alto, 50, Math.round(120 * k), 527, R.topo, R.cuero) +
     telegrafo +
-    senora +
     volcado +
     piba
   );

@@ -321,7 +321,7 @@
       "dibujo": { "f": "persona", "ropa": "saco", "pose": "colgado" },
       "tema": "es-hora-de-levantarse-querido",
       "verso": ["Dormís colgado en la rama", "Que soldaste con primor"],
-      "estampa": "Cabeza abajo, de una rama soldada. Duerme como un murciélago y sueña con angelitos.",
+      "estampa": "Cabeza abajo de la rama que soldó él mismo, envuelto en el saco como un murciélago. Viste Cordero atado, su disco, y sueña en la tiza de la contratapa. De la letra son los angelitos gangsters, el laurel y el temor, un carozo almibarado en su dedo; del dibujo, el gorro y el moño del temor. Tocalo: es la hora, querido.",
       "cerca": ["los-angelitos-profesionales"]
     },
     {
@@ -578,7 +578,7 @@
       "dibujo": { "f": "persona", "con": ["aureola", "humo"], "ropa": "tunica" },
       "tema": "templo-de-momo",
       "verso": ["Santo fumador, de alla de La Plata", "Sali del letargo veni a desfilar"],
-      "estampa": "Con aureola y humo, despertándose para desfilar.",
+      "estampa": "Duerme parado en el anda, con el pucho en la mano de la bendición. Está fundido en la plata del medallón de Momo sampler, su disco, y es de plata porque es de La Plata. De la letra son el pucho, el letargo, el desfile y la flor chillona; del dibujo, la aureola de tubo de galpón. Tocalo: sale del letargo.",
       "cerca": ["momo"]
     },
     {
@@ -1014,7 +1014,7 @@
       "dibujo": { "f": "persona", "con": ["cuernos", "cola-diablo", "manzana"], "ropa": "saco", "pose": "arrastra" },
       "tema": "fanfarria-del-cabrio",
       "verso": ["llegó el que no tiene tiempo", "el diablo más veloz", "arrastrando los pies."],
-      "estampa": "El más rápido del infierno, y camina arrastrando los pies. Muerde una manzana porque se la prohibieron.",
+      "estampa": "El más rápido del infierno, y anda arrastrando los pies. Viste la contratapa de Luzbelito, su disco. De la letra son el que no tiene tiempo, la manzana prohibida, el fuego robado en el corazón, la lengua de oro y la Caja de los Truenos; del dibujo, el reloj sin agujas. Tocalo y vas a ver lo veloz.",
       "cerca": ["luzbelito", "el-chivato"]
     },
     {
@@ -1027,7 +1027,7 @@
       "dibujo": { "f": "persona", "con": ["llama"], "ropa": "campera", "pose": "corre" },
       "tema": "cruz-diablo",
       "verso": ["Zippo, una risa de mil dientes", "cargados de azufre"],
-      "estampa": "Baja en picada hacia el fuego, sin copiloto, con la cabeza prendida como un encendedor.",
+      "estampa": "Vuela solo por el cielo del infierno, en una avioneta hecha migas. Está soplado en el fuego de la galleta de Luzbelito, su disco. De la letra son la picada, la mala sombra a la que chista, el asiento sin copiloto y la risa de mil dientes; del dibujo, que la cabeza es el encendedor. Tocalo: se manda.",
       "cerca": ["la-anguila", "el-perro-manso"]
     },
     {
@@ -1876,7 +1876,7 @@
       "dibujo": { "f": "persona", "con": ["calavera"], "ropa": "vestido" },
       "tema": "juguetes-perdidos",
       "verso": ["Esperando allí nomás, en el camino", "La bella señora está desencarnada"],
-      "estampa": "Parada al costado de la ruta, esperando. No hace dedo: espera.",
+      "estampa": "Parada al costado de la ruta, de este lado. No hace dedo: espera. Viste el interior de Luzbelito, su disco. De la letra son la espera en el camino, las banderas en el corazón, las sedas que guardan nombres y el día que se viene; del dibujo, la mantilla, la cartera de perla y el rouge. Tocala: se levanta el velo.",
       "cerca": ["el-taxi-paranormal"]
     },
     {

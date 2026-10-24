@@ -581,6 +581,102 @@
   --bestia-animal-rojo: #ed5d43; /* el rojo de las letras (misma zona, mediana): el collar y la boca */
   /* ⟨/tu animal⟩ */
 
+  /* ⟨zippo⟩ */
+  /* Zippo (vigesima vuelta, D-73) es de Cruz diablo!, en Luzbelito: esta soplado en las tintas de la
+     galleta del compact, el fuego que la cruza en diagonal sobre el negro, el laton del anillo del medio
+     y el violeta del canto. Medido con sharp en luzbelito-cd.jpg (921 px): zona (x, y) y lado. */
+  --bestia-zippo-negro: #110f12; /* el negro de la galleta (zona 180,620 de 20, mediana) */
+  --bestia-zippo-brasa: #704429; /* donde el fuego se apaga en el negro (misma zona, percentil 97): la campera */
+  --bestia-zippo-rojo: #c24c32; /* el borde del fuego (zona 190,560 de 24, percentil 10): la avioneta */
+  --bestia-zippo-naranja: #f58e54; /* el fuego a media luz (misma zona, mediana) */
+  --bestia-zippo-ambar: #fead5b; /* la cola del fuego (zona 700,200 de 40, percentil 10) */
+  --bestia-zippo-amarillo: #fee06e; /* lo amarillo de esa cola (misma zona, mediana): el azufre */
+  --bestia-zippo-nucleo: #ffffa9; /* el corazon del fuego (zona 300,330 de 20, mediana) */
+  --bestia-zippo-crema: #fdfccc; /* lo mas prendido del corazon (misma zona, percentil 75): el corderito y la cinta */
+  --bestia-zippo-laton: #806c54; /* el laton del anillo del medio (zona 460,330 de 16, percentil 75): el encendedor */
+  --bestia-zippo-laton-hondo: #685745; /* ese laton en la sombra (misma zona, mediana) */
+  --bestia-zippo-violeta: #915986; /* el violeta donde el fuego toca el titulo (zona 400,250 de 16, percentil 10): la bufanda */
+  /* ⟨/zippo⟩ */
+
+  /* ⟨el diablo mas veloz⟩ */
+  /* El diablo mas veloz (vigesima vuelta, D-73) es de Fanfarria del cabrio, en Luzbelito: viste la
+     contratapa, la pared de revoque verdosa, el ovalo de hierro oxidado y la cera de las dos velas. El
+     diablo que mea ya se llevo el frente y el interior de esa tapa. Medido con sharp en
+     luzbelito-trasera.jpg (1181 px): zona (x, y) y lado. */
+  --bestia-veloz-pared: #577969; /* el revoque a media luz (zona 950,300 de 40, mediana): el saco */
+  --bestia-veloz-pared-clara: #919a6f; /* el revoque donde pega la vela (misma zona, percentil 75) */
+  --bestia-veloz-pared-honda: #254d55; /* las grietas del revoque (misma zona, percentil 10) */
+  --bestia-veloz-oxido: #c05d3e; /* el oxido del ovalo (zona 130,450 de 24, mediana): la piel y la manzana */
+  --bestia-veloz-oxido-hondo: #4c3b33; /* el hierro del ovalo en la sombra (zona 150,300 de 16, mediana) */
+  --bestia-veloz-verdin: #192d2c; /* el fondo del ovalo (zona 760,620 de 20, mediana): lo mas hondo */
+  --bestia-veloz-cera: #fcd384; /* la vela de la derecha (zona 640,800 de 30, mediana): los cuernos */
+  --bestia-veloz-cera-ambar: #f9b260; /* la cera en la sombra (misma zona, percentil 10) */
+  --bestia-veloz-cera-clara: #ffe988; /* la cera prendida (misma zona, percentil 90): la lengua de oro */
+  --bestia-veloz-rosa: #f7d1d0; /* el brillo rosado del revoque junto a la vela (zona 870,500 de 30, percentil 90) */
+  /* ⟨/el diablo mas veloz⟩ */
+
+  /* ⟨la bella senora desencarnada⟩ */
+  /* La bella senora desencarnada (vigesima vuelta, D-73) es de Juguetes perdidos, en Luzbelito: viste
+     el interior de esa tapa, la tierra roja, el cielo violeta con las nubes blancas, el yeso del busto,
+     los huevos de perla y el resplandor del horizonte, que es el dia que se viene. Medido con sharp en
+     luzbelito-interior-frontal.jpg (953 px): zona (x, y) y lado. */
+  --bestia-desencarnada-violeta: #3a1541; /* el cielo arriba a la izquierda (zona 150,300 de 30, mediana) */
+  --bestia-desencarnada-violeta-clara: #48214d; /* ese cielo donde aclara (misma zona, percentil 97) */
+  --bestia-desencarnada-tierra: #471425; /* la tierra roja (zona 300,700 de 40, mediana): el vestido */
+  --bestia-desencarnada-tierra-clara: #6c243a; /* la tierra donde le da la luz (misma zona, percentil 97) */
+  --bestia-desencarnada-tierra-honda: #261527; /* la tierra en la sombra (zona 600,850 de 40, mediana) */
+  --bestia-desencarnada-perla: #7d6269; /* el huevo de la izquierda (zona 170,800 de 16, mediana) */
+  --bestia-desencarnada-perla-clara: #9f838f; /* el brillo del huevo (misma zona, percentil 97) */
+  --bestia-desencarnada-nube: #fdfdfb; /* la nube del medio (zona 550,170 de 30, mediana): el velo */
+  --bestia-desencarnada-nube-sombra: #a88a70; /* la panza de la nube baja (zona 300,380 de 30, percentil 10) */
+  --bestia-desencarnada-yeso: #dfa49e; /* el yeso del busto (zona 620,540 de 20, mediana): la calavera */
+  --bestia-desencarnada-yeso-claro: #ffe4e2; /* el yeso prendido (misma zona, percentil 75) */
+  --bestia-desencarnada-cobre: #a93133; /* el cobre del ovalo (zona 480,560 de 16, percentil 90): el corazon */
+  --bestia-desencarnada-alba: #dec69a; /* el resplandor del horizonte (zona 80,540 de 30, mediana): el dia */
+  --bestia-desencarnada-alba-clara: #fff9cb; /* lo mas prendido del resplandor (misma zona, percentil 97) */
+  /* ⟨/la bella senora desencarnada⟩ */
+
+  /* ⟨el que duerme colgado⟩ */
+  /* El que duerme colgado (vigesima vuelta, D-73) es de Es hora de levantarse, querido!, en Cordero
+     atado: viste el bicho de plumas azules del frente sobre el naranja, con sus pezunas de ocre y sus
+     unas, y la tiza azul de la contratapa. Medido con sharp en lobo-suelto-cordero-atado-cd2-frontal.jpg
+     (953 px) y en la trasera (1181 px): zona (x, y) y lado. */
+  --bestia-colgado-azul: #273f5b; /* las plumas del lomo (zona 300,520 de 30, mediana): el saco */
+  --bestia-colgado-azul-claro: #2f4d73; /* la pluma prendida (misma zona, percentil 97) */
+  --bestia-colgado-azul-hondo: #1c3352; /* entre las plumas (zona 400,470 de 16, percentil 30) */
+  --bestia-colgado-tiza: #4b7cbe; /* la tiza azul de la contratapa (zona 800,200 de 40, percentil 75): el sueno */
+  --bestia-colgado-naranja: #d5784d; /* el naranja del fondo (zona 850,500 de 40, mediana) */
+  --bestia-colgado-naranja-clara: #e0824f; /* ese naranja prendido (misma zona, percentil 97): el almibar */
+  --bestia-colgado-ocre: #c77432; /* la pezuna de adelante (zona 330,905 de 16, mediana): el carozo */
+  --bestia-colgado-ocre-hondo: #594930; /* la pezuna de atras (zona 770,840 de 16, mediana) */
+  --bestia-colgado-tinta: #222423; /* el hocico negro (zona 330,370 de 30, mediana) */
+  --bestia-colgado-piel: #845e3a; /* la cara del bicho (zona 620,250 de 20, mediana) */
+  --bestia-colgado-piel-clara: #b4744e; /* la cara donde pega la luz (misma zona, percentil 90) */
+  --bestia-colgado-una: #ece5d3; /* la una de la pezuna (zona 275,885 de 6, mediana) */
+  --bestia-colgado-verde: #2d4340; /* el iris verde (zona 690,290 de 8, percentil 90) */
+  /* ⟨/el que duerme colgado⟩ */
+
+  /* ⟨el santo fumador⟩ */
+  /* El santo fumador (vigesima vuelta, D-73) es de Templo de Momo, en Momo sampler: esta fundido en la
+     plata del medallon del frente, la aureola es el oro de las letras del interior y la flor chillona es
+     el rosa de esas letras; el humo, la mascara del interior donde le da la luz. Medido con sharp en
+     momo-sampler-frontal.jpg y momo-sampler-interior-frontal.jpg (953 px): zona (x, y) y lado. */
+  --bestia-fumador-plata-honda: #505050; /* el medallon en la sombra (frontal, zona 520,400 de 30, percentil 10) */
+  --bestia-fumador-plata: #6d6d6d; /* el medallon (misma zona, mediana) */
+  --bestia-fumador-plata-clara: #8b8b8b; /* el medallon donde pega la luz (misma zona, percentil 90) */
+  --bestia-fumador-lomo: #bfbfbf; /* el lomo de la tapa (frontal, zona 50,500 de 30, mediana) */
+  --bestia-fumador-brillo: #e1e1e1; /* lo mas prendido del lomo (misma zona, percentil 90) */
+  --bestia-fumador-hondo: #23172f; /* el fondo del interior (zona 300,700 de 40, mediana) */
+  --bestia-fumador-humo: #9a858c; /* la mascara a media luz (interior, zona 420,330 de 20, mediana) */
+  --bestia-fumador-humo-claro: #e2d1d9; /* la mascara donde pega la luz (misma zona, percentil 75) */
+  --bestia-fumador-oro: #fcd786; /* el oro de MOMO SAMPLER (interior, zona 430,128 de 8, percentil 90): la aureola */
+  --bestia-fumador-oro-claro: #ffe1b7; /* lo mas prendido de ese oro (misma zona, percentil 97) */
+  --bestia-fumador-cobre: #773505; /* el borde quemado de las letras (zona 520,145 de 10, percentil 30): la brasa */
+  --bestia-fumador-flor: #da8e80; /* el rosa de las letras (zona 330,145 de 8, mediana): la flor chillona */
+  --bestia-fumador-flor-clara: #e59598; /* ese rosa prendido (misma zona, percentil 75) */
+  --bestia-fumador-flor-honda: #bf7143; /* ese rosa en la sombra (misma zona, percentil 10) */
+  /* ⟨/el santo fumador⟩ */
+
   /* Collage de cassette (UX-04: el collage es tecnica fichada de Rocambole, RES-06).
      Papel de etiqueta: sobre el escribe la tinta del fondo (--fondo), par testeado.
      El borde del papel no se usa como texto — como los -apoyo, no entra al test AA. */
