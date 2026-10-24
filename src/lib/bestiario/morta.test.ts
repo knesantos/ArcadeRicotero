@@ -23,8 +23,8 @@ const datos = JSON.parse(readFileSync('src/data/bestiario.json', 'utf-8')) as {
   bestias: Array<{ id: string; nombre: string; estampa: string; verso: string[]; cuenta?: Array<{ rotulo: string; texto: string; fuente?: string; quien?: string }> }>;
 };
 const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
-const figura = capasDe('el-templo', 'figura', nombres);
-const atras = capasDe('el-templo', 'atras', nombres);
+const figura = capasDe('el-templo', 'figura', nombres, 1, 'el-morta');
+const atras = capasDe('el-templo', 'atras', nombres, 1, 'el-morta');
 const caja = (nombre: string): readonly [number, number, number, number] => PIEZAS_MORTA.find((p) => p.nombre === nombre)!.caja;
 const adentro = (nombre: string, [x, y]: Punto): boolean => {
   const [x0, y0, w, h] = caja(nombre);

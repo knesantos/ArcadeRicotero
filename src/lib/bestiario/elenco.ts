@@ -32,6 +32,10 @@ import { PORCO } from './arte-porco.ts';
 import { ANGEL } from './arte-angel.ts';
 import { PACMAN } from './arte-pacman.ts';
 import { MOSCA } from './arte-mosca.ts';
+import { VERDUGO_CENA } from './arte-verdugo.ts';
+import { SATURNO_DOCTOR } from './arte-saturno.ts';
+import { TU_ANIMAL } from './arte-animal.ts';
+import { DINAMITA } from './arte-dinamita.ts';
 
 export type Nombres = ReadonlyMap<string, string>;
 
@@ -75,7 +79,7 @@ export interface Personaje {
  * Los lugares, en el orden del recorrido: los diez de la decimoquinta vuelta y los tres de la
  * decimosexta. `null` es que todavía son ojos en lo oscuro.
  */
-const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA];
+const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA, VERDUGO_CENA, SATURNO_DOCTOR, TU_ANIMAL, DINAMITA];
 
 /** Los que ya tienen títere. */
 export const ELENCO: readonly Personaje[] = LUGARES.filter((p): p is Personaje => p !== null);
@@ -103,6 +107,21 @@ export function capasDe(region: string, capa: Capa, nombres: Nombres, k = 1, sol
   return ELENCO.filter((p) => p.region === region && p.capas[capa] && (!solo || p.id === solo))
     .map((p) => {
       const dx = Math.round(p.ancla * (k - 1));
+      const corre = dx ? ` transform="translate(${f(dx)} 0)"` : '';
+      return `<g data-marco="${p.id}" data-capa="${capa}" data-dx="${dx}"${corre}>${p.capas[capa]!(nombres)}</g>`;
+    })
+    .join('');
+}
+
+/**
+ * El marcado de los personajes de una región para una capa, cada uno corrido lo que diga `dxDe`. Es para
+ * los tramos largos del camino (el monte), donde el recinto no se estira con `k`: cada personaje se corre
+ * entero adonde lo esperaban sus ojos en el tramo.
+ */
+export function capasCorridas(region: string, capa: Capa, nombres: Nombres, dxDe: (p: Personaje) => number): string {
+  return ELENCO.filter((p) => p.region === region && p.capas[capa])
+    .map((p) => {
+      const dx = Math.round(dxDe(p));
       const corre = dx ? ` transform="translate(${f(dx)} 0)"` : '';
       return `<g data-marco="${p.id}" data-capa="${capa}" data-dx="${dx}"${corre}>${p.capas[capa]!(nombres)}</g>`;
     })
@@ -141,4 +160,11 @@ export const LUGAR_EN_EL_ELENCO: Readonly<Record<string, string>> = {
   'el-angel-de-la-soledad': 'el-arbol',
   'el-pac-man': 'cybersiberia',
   'la-mosca': 'la-mesa',
+  // La decimoctava: tres que eligió el hilo principal en los entornos con menos títeres para cuántos bichos
+  // tienen: el monte, la mesa y el templo.
+  'el-verdugo-que-cena': 'la-mesa',
+  'el-doctor-saturno': 'el-templo',
+  'tu-animal': 'el-monte',
+  // La decimonovena: el perro dinamita, en la tierra del baldío, a la derecha del buen psicópata.
+  'mi-perro-dinamita': 'los-techos',
 };

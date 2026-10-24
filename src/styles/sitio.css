@@ -4350,6 +4350,20 @@ body:has(> .lugar) .marca-chica {
 .titere--psicopata [data-parte="correa"], .titere--psicopata [data-parte="humo"], .titere--psicopata [data-parte="bandera"] { pointer-events: none; }
 /* ⟨/el buen psicópata⟩ */
 
+/* ⟨mi perro dinamita⟩ */
+/* La mecha es un cordel trenzado: el sepia claro del interior, con la trenza en el sepia del pelo. La
+   pupila, del negro de la sala; el párpado, del pelo. La fiebre de la trufa es luz: se suma a lo de abajo.
+   El toque es el perro parado (el rectángulo que no se ve), nunca la explosión ni el humo. */
+.bt-dinamita-mecha { fill: none; stroke: var(--bestia-dinamita-pelo-claro); stroke-width: 3.8; stroke-linecap: round; }
+.bt-dinamita-trenza { fill: none; stroke: var(--bestia-dinamita-pelo); stroke-width: 3.8; stroke-dasharray: 1.4 2.4; opacity: 0.8; }
+.bt-dinamita-pupila { fill: var(--bestia-dinamita-negro); }
+.bt-dinamita-brillo { fill: var(--bestia-dinamita-foco); }
+.bt-dinamita-parpado { fill: var(--bestia-dinamita-pelo-medio); }
+.bt-dinamita-toque { fill: transparent; }
+.titere--dinamita [data-parte="fiebre"], .titere--dinamita [data-parte="chispa"] { mix-blend-mode: screen; }
+.titere--dinamita [data-parte="entero"] { pointer-events: none; }
+/* ⟨/mi perro dinamita⟩ */
+
 /* ⟨Porco Rex⟩ */
 /* La sombra en la nieve, del acero hondo de Cybersiberia; lo de adentro de la boca cuando chilla y la
    ceja que asoma arriba de los anteojos, de la piel en la sombra. El brillo de la tele en los
@@ -4407,3 +4421,37 @@ body:has(> .lugar) .marca-chica {
 .titere--mosca [data-parte="anillo"], .titere--mosca [data-parte="sombra"], .titere--mosca [data-parte="zumbido"] { pointer-events: none; }
 .titere--mosca [data-parte="zumbido"] { mix-blend-mode: screen; }
 /* ⟨/la mosca⟩ */
+
+/* ⟨el verdugo⟩ */
+/* Lo que asoma por los agujeros de la capucha: dos puntos al rojo de la bandera de *Oktubre*, con su
+   brasa alrededor, que se suma a lo negro. Con la risa se achinan: dos rayitas del mismo rojo. */
+.titere--verdugo { cursor: pointer; }
+.bt-verdugo-ojo { fill: var(--bestia-verdugo-rojo); }
+.bt-verdugo-brasa { fill: var(--bestia-verdugo-brasa); opacity: 0.55; mix-blend-mode: screen; }
+.bt-verdugo-risa { fill: none; stroke: var(--bestia-verdugo-rojo); stroke-width: 1.4; stroke-linecap: round; }
+.titere--verdugo [data-parte="filo"] { mix-blend-mode: screen; pointer-events: none; }
+/* ⟨/el verdugo⟩ */
+
+/* ⟨el dr. saturno⟩ */
+/* La sombra en el piso del templo, de lo hondo de la mascara: no pisa, asi que la sombra se achica y se
+   aclara cuanto mas flota. El halo y el destello del espejo son luz: se suman a lo oscuro y no se tocan.
+   El boleto que da tampoco: el toque es del titere. */
+.titere--saturno { cursor: pointer; }
+.bt-saturno-sombra { fill: var(--bestia-saturno-hondo); }
+.titere--saturno [data-parte="halo"], .titere--saturno [data-parte="espejo"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--saturno [data-parte="boleto"], .titere--saturno [data-parte="sombra"] { pointer-events: none; }
+/* ⟨/el dr. saturno⟩ */
+
+/* ⟨tu animal⟩ */
+/* Lo que siempre se ve de tu animal: los ojos amarillos, con el resplandor que se suma a lo oscuro, la
+   pupila en la tinta de la brocha y el parpado del mismo petroleo. La correa es una pincelada roja que se
+   va para afuera del monte. Se toca el hueco oscuro donde esta, no solo el cuerpo. */
+.titere--animal { cursor: pointer; }
+.bt-animal-ojo { fill: var(--bestia-animal-ojo); }
+.bt-animal-pupila { fill: var(--bestia-animal-tinta); }
+.bt-animal-parpado { fill: var(--bestia-animal-verde); }
+.bt-animal-correa { fill: none; stroke: var(--bestia-animal-rojo); stroke-width: 3; stroke-linecap: round; pointer-events: none; }
+.bt-animal-sombra { fill: var(--bestia-animal-tinta); }
+.bt-animal-toque { fill: transparent; }
+.titere--animal [data-parte="sombra"] { pointer-events: none; }
+/* ⟨/tu animal⟩ */

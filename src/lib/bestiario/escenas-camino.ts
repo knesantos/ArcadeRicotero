@@ -19,7 +19,7 @@ import { PIEZAS_CAMINO, cajaDelCruce } from './arte-camino.ts';
 import { K_ENTORNO, RECINTO, type Tramo } from './camino.ts';
 import { escenaBajo, escenaBaldio, escenaInfierno, escenaPrision, escenaTemplo, ojos, type Tinta } from './escenas.ts';
 import { cosa, VELOCIDAD_DE_CARRIL } from './escenas-entornos.ts';
-import { capasDe, fierroDe, sinTitere } from './elenco.ts';
+import { capasCorridas, capasDe, fierroDe, sinTitere, type Personaje } from './elenco.ts';
 import { vacaEnElClaro } from './escena-vaca.ts';
 import { ARMADO } from './recortes.ts';
 import { ACECHO, ACHATE, ESCALA_CORDERO, ESCALA_LOBO, PALO, marcoDelRecinto, profundidad } from './rig.ts';
@@ -88,7 +88,16 @@ const titereLobo = (x: number, nombres: Nombres): string =>
 function pisoLargo(t: Tramo, nombres: Nombres): string {
   const piso = imagenDePieza(piezaDelCamino(t.piezas.piso!));
   const claro = t.claro;
-  if (!claro) return `<g class="acecho">${t.lobo ? titereLobo(t.lobo.x, nombres) : ''}</g>` + piso + ojosQueAparecen(t.ojos, nombres);
+  if (!claro) {
+    // Los del elenco que viven en el tramo (tu animal, en el monte) van donde estaban sus ojos, corridos enteros.
+    const dxDe = (p: Personaje): number => (t.ojos[p.id]?.[0] ?? p.ancla) - p.ancla;
+    return (
+      capasCorridas(t.region, 'atras', nombres, dxDe) +
+      `<g class="acecho">${t.lobo ? titereLobo(t.lobo.x, nombres) : ''}</g>` + piso + ojosQueAparecen(sinTitere(t.ojos), nombres) +
+      capasCorridas(t.region, 'figura', nombres, dxDe) +
+      capasCorridas(t.region, 'delante', nombres, dxDe)
+    );
+  }
   return (
     `<g class="acecho" transform="translate(${claro.dx} 0)">${titereLobo(560, nombres)}</g>` +
     piso +

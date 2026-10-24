@@ -7,6 +7,38 @@
 
 **Última actualización:** 2026-10-23
 
+> ## 🧨 MI PERRO DINAMITA, CON MECHA Y EXPLOSIÓN (2026-10-23) — `D-73`, decimonovena vuelta
+>
+> **Commiteado en la rama `bestiario/tres-del-fondo`**, encima de la decimoctava (`29d3700`); **sin PR ni integrar a
+> `main`**. `T-508`. Pedido del usuario: *"Diseña, e integra bien pulido y bien rocambolesco al perro dinamita"* y *"que
+> tenga una buena animacion y explosion"*.
+>
+> - **El dibujo** (`arte-dinamita.ts`, 16 piezas, 120 kB): el cuerpo es un atado de tres cartuchos con alambre, la
+>   cola es la mecha y del cuello para adelante es un callejero flaco con la trufa que le arde. Soplado en las tintas
+>   de *La mosca y la sopa*, medidas con sharp (`⟨mi perro dinamita⟩` en `tokens.css`), con el rótulo torcido de esa
+>   tapa diciendo DINAMITA.
+> - **La conducta** (`scripts/bestiario/dinamita.ts`): solo trota por el baldío, se da vuelta, jadea, olfatea, aúlla
+>   y le chisporrotea la mecha. Tocado, la mecha se quema, tiembla y explota: fogonazo, estrella del BUM, esquirlas,
+>   humo y sacudón de cámara. Vuela en pedazos, se rearma tiznado, se marea, se sacude y aúlla. Después se abre la
+>   ficha. Con movimiento reducido pasa a la pose del aullido.
+> - **Verde:** `npm test` (1958, con los 10 de `dinamita.test.ts`), `npm run check`, `npm run build`. Probado en
+>   la página del baldío en un iframe con rAF reemplazado.
+> - **Falta**: el PR de la rama (con la decimoctava), y verlo en un teléfono de verdad.
+
+> ## 🪓 TRES BESTIAS MÁS EN LOS ENTORNOS FLACOS: EL VERDUGO, EL DR. SATURNO Y TU ANIMAL (2026-10-23) — `D-73` (18)
+>
+> **Sin integrar**, en la rama `bestiario/tres-del-fondo`. Pedido del usuario: tres bestias rocambolescas y misteriosas, en
+> los entornos con menos personajes detallados. Se contó entorno por entorno: el monte (1 de 8), la mesa (2 de 12) y el templo
+> (2 de 11).
+>
+> - **El verdugo que cena distinguido** (mesa, *Jijiji*): tallado como *Oktubre* y recortado en papel. Cena solo; tocado, brinda.
+> - **El Dr. Saturno** (templo, *Momo sampler*): aerógrafo violeta, flota, con el anillo y tres lunitas. Tocado, da un turno.
+> - **Tu animal** (monte, *Gulp!*): pincel seco petróleo, se esconde y quedan los ojos; la correa se va del monte. Tocado, se
+>   muestra. Es el primero del elenco en el monte: el monte y su tramo del camino ya llaman al elenco.
+> - **Verde:** `npm test` (1948), `npm run check` (0 errores), `npm run build` (180 páginas). En el sitio servido, las tres
+>   escenas arman los títeres. **No se vieron animar**: el panel estaba oculto.
+> - **Falta**: `T-506` (verlos en un teléfono de verdad) y `T-507` (las tintas al lienzo; que `contenido` lea las estampas).
+
 > ## 👑 LA MARCA: LA FR CORONADA, EN EL SITIO Y EN UN ARTIFACT (2026-10-23) — `D-82`
 >
 > **En `main` desde el PR #74** (commit de fusión `74c426b`), rama `difusion/redes`, junto con las redes de abajo. Lo integró Claude a pedido del usuario (*"Integralo a main cuando los checks estén en verde"*).

@@ -523,6 +523,64 @@
   --bestia-mosca-reflejo: #d0afa6; /* el reflejo rosado del lomo (zona 770,945, percentil 97) */
   /* ⟨/la mosca⟩ */
 
+  /* ⟨mi perro dinamita⟩ */
+  /* Mi perro dinamita (decimonovena vuelta, D-73) es de *La mosca y la sopa* (el disco del tema): los
+     cartuchos son el rojo del sobre, la explosion son las luces del escenario, el foco y el amarillo del
+     rotulo, y el pelo es el sepia de la foto del interior. Medido con sharp en
+     la-mosca-y-la-sopa-frontal-real.jpg (1079 px) y la-mosca-y-la-sopa-interior-frontal.jpg (953 px):
+     zona (x, y) y lado, y el percentil por luminancia. */
+  --bestia-dinamita-rojo: #c82f1f; /* el rojo del sobre (frente, zona 40,650 de 200, mediana): los cartuchos */
+  --bestia-dinamita-rojo-hondo: #a31e19; /* el rojo del escenario en la sombra (frente, zona 300,260 de 300 x 100, percentil 10) */
+  --bestia-dinamita-brasa: #241011; /* lo mas hondo del escenario (frente, zona 230,260 de 500 x 120, percentil 3) */
+  --bestia-dinamita-naranja: #c65614; /* las luces del escenario (frente, zona 300,260 de 300 x 100, percentil 90): el alambre y el fuego */
+  --bestia-dinamita-luces: #d26c1a; /* las luces del escenario donde arden (la misma zona, percentil 98) */
+  --bestia-dinamita-amarillo: #f8f943; /* las letras del rotulo (frente, zona 420,780 de 480 x 200, percentil 97) */
+  --bestia-dinamita-negro: #0c0b10; /* la sala a oscuras (frente, zona 300,500 de 300 x 80, mediana): el rotulo y el hollin */
+  --bestia-dinamita-foco: #e9ebe0; /* el canon de luz de la derecha (frente, zona 860,240 de 40, percentil 90): el ojo y la chispa */
+  --bestia-dinamita-foco-frio: #94a2af; /* el canon de luz por la mitad (la misma zona, mediana): el humo */
+  --bestia-dinamita-pelo: #8a552d; /* la piedra del museo donde le da el sol (interior, zona 420,380 de 80 x 120, percentil 90) */
+  --bestia-dinamita-pelo-medio: #6e4f3a; /* la piedra del museo (la misma zona, mediana): el pelo */
+  --bestia-dinamita-pelo-sombra: #29261d; /* la sombra de la columna (interior, zona 190,300 de 40 x 300, percentil 10) */
+  --bestia-dinamita-pelo-claro: #d2c599; /* el cielo sepia (interior, zona 20,100 de 40 x 200, percentil 90): el pelo prendido y la mecha */
+  /* ⟨/mi perro dinamita⟩ */
+
+  /* ⟨el verdugo⟩ */
+  /* El verdugo que cena distinguido (decimoctava vuelta, D-73) es de Jijiji, en Oktubre: esta tallado
+     como la gente de esa tapa y recortado en papel como todo lo de la mesa. Las caras talladas son
+     `--bestia-dracula-papel`, el canto es `--entorno-mesa-papel`. Medido con sharp en
+     oktubre-frontal.jpg (953 px): zona (x, y) y lado. */
+  --bestia-verdugo-negro: #131313; /* la plancha negra del cielo de la tapa (zona 100,100 de 60, mediana) */
+  --bestia-verdugo-rojo: #e41913; /* la bandera de la derecha (zona 450,500 de 14, mediana): el moño, el vino, la guinda */
+  --bestia-verdugo-brasa: #aa1f32; /* el rojo hondo en el ojo del hombre de barba (zona 291,845 de 1 px): lo que asoma por los agujeros */
+  /* ⟨/el verdugo⟩ */
+
+  /* ⟨el dr. saturno⟩ */
+  /* El Dr. Saturno (decimoctava vuelta, D-73) es de Momo sampler, el disco del templo: la cara es la
+     mascara de murga de la contratapa, el guardapolvo la plata del envase y el anillo el oro y el cobre
+     de las letras del titulo. Medido con sharp en momo-sampler-trasera.jpg (1181 px): zona (x, y) y lado. */
+  --bestia-saturno-hondo: #22142d; /* lo hondo de la mascara, debajo del pomulo (zona 700,560 de 16, mediana) */
+  --bestia-saturno-violeta: #382c44; /* la mascara a media luz (zona 1000,480 de 20, mediana) */
+  --bestia-saturno-lila: #4d4262; /* el lomo de la ceja donde le da la luz (zona 420,240 de 24, mediana) */
+  --bestia-saturno-lila-clara: #584d6d; /* lo mas prendido de esa ceja (misma zona, percentil 90) */
+  --bestia-saturno-brillo: #e4e3f1; /* los dientes que brillan (zona 490,668 de 10, percentil 90) */
+  --bestia-saturno-plata: #b2aab7; /* el lomo plateado del envase (zona 1150,620 de 30, mediana): el guardapolvo */
+  --bestia-saturno-plata-clara: #d5cdd8; /* lo mas prendido del lomo (misma zona, percentil 90) */
+  --bestia-saturno-oro: #efc87b; /* el oro de las letras de MOMO SAMPLER (zona 520,62 de 10, percentil 90) */
+  --bestia-saturno-cobre: #b2604b; /* el cobre de esas letras (misma zona, mediana) */
+  --bestia-saturno-cobre-hondo: #762601; /* el borde quemado de las letras (misma zona, percentil 10) */
+  /* ⟨/el dr. saturno⟩ */
+
+  /* ⟨tu animal⟩ */
+  /* Tu animal (decimoctava vuelta, D-73) es de Unos pocos peligros sensatos, en Gulp!: esta pintado con
+     la brocha seca de esa tapa, que en el interior no es negra sino petroleo, y lo de color son el rojo y
+     el amarillo corridos de las letras. La luz de la luna es el crema del papel (`--disco-gulp-apoyo`).
+     Medido con sharp en gulp-interior-frontal.jpg (953 px): zona (x, y) y lado. */
+  --bestia-animal-tinta: #11201d; /* la brocha negra verdosa (zona 500,140 de 30, mediana) */
+  --bestia-animal-verde: #013327; /* donde la brocha cargo de mas, petroleo (zona 60,240 de 30, percentil 10) */
+  --bestia-animal-ojo: #fffb6d; /* el amarillo corrido debajo de las letras (zona 150,600 de 30, percentil 90): los ojos */
+  --bestia-animal-rojo: #ed5d43; /* el rojo de las letras (misma zona, mediana): el collar y la boca */
+  /* ⟨/tu animal⟩ */
+
   /* Collage de cassette (UX-04: el collage es tecnica fichada de Rocambole, RES-06).
      Papel de etiqueta: sobre el escribe la tinta del fondo (--fondo), par testeado.
      El borde del papel no se usa como texto — como los -apoyo, no entra al test AA. */

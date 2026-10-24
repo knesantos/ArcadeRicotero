@@ -5633,6 +5633,122 @@ las animaciones no se vio a velocidad real.
 - Siguen `T-431` (que `contenido` lea las tres estampas y cuentas), `T-435` (los dos bloques de tintas al lienzo) y `T-500`
   (los sonidos del elenco: el pac-man pide los suyos).
 
+### Enmienda del 2026-10-23 (18): tres más, en los entornos con menos títeres — el verdugo, el Dr. Saturno y tu animal
+
+Pedido del usuario, textual: *"Esta sesion esta encargada de que se diseñen bien rocambolescas y misteriosas e integren 3
+bestias al bestiario. Analiza que entornos le faltan mas personajes detallados y hacelos."* La escribe el hilo principal en
+la rama `bestiario/tres-del-fondo`, sobre `main` en `e1d1728`. Sin subagentes: los tres los hizo el hilo principal, de a uno.
+Antes de tomar `T-506` se miraron `origin/main` y todas las ramas remotas: la última era `T-505`.
+
+#### Cuáles, y por qué
+
+Se contó, entorno por entorno, cuántos bichos tienen títere (los del elenco, los recortes de tapa y los títeres viejos de
+`titeres.ts`) contra cuántos viven ahí. Los tres más flacos:
+
+- **El monte**: 1 de 8 (el lobo, que es recorte de tapa). Nadie del elenco vivía ahí: hubo que conectarlo.
+- **La mesa**: 2 de 12 (el caníbal y la mosca).
+- **El templo**: 2 de 11 (Momo, que es recorte, y el Morta).
+
+De cada uno se eligió el que más daba para lo rocambolesco y lo misterioso, y cada uno se viste con la tapa del disco de su
+tema, que es lo que ya hacían los otros:
+
+- **El verdugo que cena distinguido** (*Jijiji*, *Oktubre*), en la mesa. Era una capucha negra pintada en el piso.
+- **El Dr. Saturno** (*Dr. Saturno*, *Momo sampler*, el disco del templo). Eran dos ojos en lo oscuro.
+- **Tu animal** (*Unos pocos peligros sensatos*, *Gulp!*), en el monte. Eran dos ojos, y la estampa ya decía que es eso: una
+  sombra con dos ojos.
+
+#### Los tres
+
+- **El verdugo está tallado y recortado.** Tallado como la gente de la tapa de *Oktubre* (`grabado.ts`), en el negro y el rojo
+  medidos de esa tapa; y recortado con el canto de papel, porque en la mesa todo es collage. Capucha de punta con dos puntos
+  al rojo por los agujeros, guantes blancos, el meñique parado con la copa, la guinda pinchada, y el hacha apoyada en la silla.
+  El respaldo va en el gris que Rocambole agregó a esa tapa, como los planos de atrás de la prisión, para que la capucha negra
+  se despegue. Solo, **cena eligiendo qué hacer**: pincha la guinda, se levanta el faldón de la capucha como una cortina y
+  abajo asoma una pera blanca, toma de la copa (que se le vuelve a llenar sola), mira y se ríe (*"ji ji ji"*: tres sacudones
+  con los ojos achinados). **Tocado, brinda por tu suerte**: la copa en alto, la luz le corre por el filo del hacha, y se ríe.
+- **El Dr. Saturno es aerógrafo de *Momo sampler*.** La cara es la máscara de murga de la contratapa, violeta y honda, con los
+  dientes que brillan; el guardapolvo es la plata del envase; el anillo del planeta, puesto en la cabeza, es el oro y el cobre
+  de las letras del título. Los créditos de esa contratapa llaman *saturnales* a las estampas del disco. **No pisa**: flota, el
+  guardapolvo termina en jirones y la sombra en el piso se achica cuando sube. Tres lunitas le dan la vuelta a la cabeza por el
+  anillo, por delante y por detrás. Solo, ausculta su propio anillo con el estetoscopio (las lunitas se frenan para no hacer
+  ruido), se le prende el espejo de frente de los doctores de antes, llama al que sigue y hace bailar el anillo. **Tocado, da
+  un turno** (*"Dr. Saturno, dame un turno!"*): sale un boleto del turnero, vuela y cae dando vueltas al piso del templo, con el
+  anillo desbocado y el halo prendido.
+- **Tu animal es pincel seco de *Gulp!*.** La brocha del interior de esa tapa no es negra, es petróleo, medido; lo de color son
+  el rojo y el amarillo corridos de las letras: los ojos, el collar y la boca. Qué animal es no lo dice la letra y el dibujo
+  tampoco del todo: grande, flaco, encorvado, con la melena erizada en la cruz y el hocico largo. Hubo dos vueltas: la primera
+  era un chanchito tierno con anteojos. Lleva collar, y **la correa se va para arriba y afuera del monte**: alguien lo cuida
+  (eso es del dibujo; de la letra es que cada uno tiene el suyo). Solo, **se esconde**: el cuerpo se apaga y quedan los ojos,
+  que siguen mirando; olfatea, mira, se acomoda, parpadea. **Tocado, se muestra**: sale entero, pela los dientes con la correa
+  tensa, como si lo frenaran de arriba, y después baja la cabeza para que lo acaricies y mueve la cola.
+
+#### Lo que cambió alrededor
+
+- **El elenco son diecinueve** (`elenco.ts`), y por primera vez vive uno en el monte: `escena-monte.ts` llama al elenco, y el
+  tramo largo del monte en el camino también, con `capasCorridas`, que corre a cada personaje adonde lo esperaban sus ojos en
+  el tramo (el monte no se estira con `k`).
+- **Se corrieron tres ojos**: el moscardón imaginario (de al lado del verdugo, donde ahora está el hacha, al costado de la
+  ventana), Mister Ed (a la derecha, para dejarle aire al doctor) y el joven lobo (más arriba en el bosque: abajo, en el borde
+  del monte, ahora está tu animal, lejos de la vaca y de las tiras de adelante).
+- **Sale del piso de la mesa** la silueta del verdugo, con el piso y su tira del camino reimpresos.
+- **Tintas nuevas** en `tokens.css`, medidas con `sharp`: un bloque del verdugo (*Oktubre*), uno del Dr. Saturno (contratapa
+  de *Momo sampler*) y uno de tu animal (interior de *Gulp!*). Cada uno con su bloque de clases en `sitio.css`.
+- **Estampas nuevas** para los tres, que dicen qué es de la letra y qué del dibujo. Sin cuentas nuevas: del memoir no se sacó
+  nada esta vez. Los tres ya tenían su recorte de audio (`bestiario-sincro.json`).
+- El test del Morta pasa a mirar solo a su personaje (`solo`), como los del caníbal y el monito.
+
+#### Cómo se verificó
+
+Cada uno trae su test (9 pruebas cada uno), con su conducta contra un DOM de juguete: que la pose de la isla sea la del HTML,
+que viva noventa segundos sin romperse y sin repetirse, que tocado haga el gesto y diga su verso, y que con movimiento
+reducido cambie de pose. Con los diecinueve: `npm test` (1948), `npm run check` (0 errores) y `npm run build` (180 páginas).
+Las piezas se miraron impresas, sueltas y armadas sobre su fondo, y cada escena entera. En el sitio servido (`npm run
+preview`), a 375 px: las tres escenas arman los títeres, ya no como ojos, con todas sus imágenes. **El panel estaba oculto**:
+las animaciones no se vieron correr en el navegador.
+
+#### Abierto, sin trabar
+
+- `T-506`: verlos a velocidad real en un teléfono de verdad (el ritmo de la cena del verdugo, la vuelta de las lunitas, lo que
+  tarda tu animal en esconderse), junto con `T-504`.
+- `T-507`: pasar al lienzo los tres bloques de tintas nuevos, como `T-435`; y que `contenido` lea las tres estampas (`T-431`).
+
+### Enmienda del 2026-10-23 (19): mi perro dinamita, con la mecha y la explosión
+
+Pedido del usuario, textual: *"Diseña, e integra bien pulido y bien rocambolesco al perro dinamita. La venis rompiendo con
+los diseños"*, y a mitad de camino *"Que tenga una buena animacion y explosion"*. La escribe el hilo principal en la rama
+`bestiario/tres-del-fondo`, sobre la decimoctava (`29d3700`). Sin subagentes. Antes de tomar `T-508` se miraron todas las
+ramas: la última era `T-507`.
+
+#### El dibujo
+
+- **Al pie de la letra, como Rocambole.** El cuerpo es un atado de tres cartuchos rojos con dos vueltas de alambre, y la cola
+  es la mecha: *"no mueve el rabo con docilidad"* porque no puede. Del cuello para adelante es un callejero flaco, de hocico
+  largo y orejas de punta, con la trufa que le late (*"con el hocico afiebrado"*). La letra no dice que sea dinamita de
+  verdad: eso es del dibujo, y la estampa lo dice.
+- **Las tintas son las de *La mosca y la sopa*, su disco**, medidas con sharp en la tapa y el interior
+  (`⟨mi perro dinamita⟩` en `tokens.css`): el rojo del sobre para los cartuchos, las luces naranjas del escenario para el
+  fuego, el negro de la sala, el blanco del cañón de luz para el ojo y la chispa, y el amarillo de las letras del rótulo. El
+  pelo es el sepia de la foto del interior. El cartucho del medio lleva el rótulo negro torcido de esa tapa, con *DINAMITA*
+  en palotes; la estrella de la explosión dice *BUM* en el mismo amarillo.
+- **Aerógrafo con máscara**, como el resto del elenco: 16 piezas, 120 kB. El humo son bocanadas de borde duro con el volumen
+  soplado adentro, no una mancha: la primera versión era un desenfoque gris y se rehízo.
+
+#### La conducta (`scripts/bestiario/dinamita.ts`)
+
+- **Solo**, nada en bucle: trota por la tierra del baldío y se da vuelta como un títere de papel, jadea, olfatea, aúlla, y de
+  a ratos le salta una chispa sola en la punta de la mecha y la mira de reojo.
+- **Tocado**: la chispa baja por la cola mientras él tiembla y se agacha; al llegar al cartucho estalla (fogonazo, estrella,
+  esquirlas, humo y un sacudón de cámara de 0,72, entre el bombo y el meteorito de la vaca). Vuela en pedazos y se rearma como
+  en los dibujos animados, tiznado y con la mecha corta; le dan vueltas los ojos, se sacude el hollín y aúlla. La ficha se
+  abre a los 3,3 s, ya armado. La mecha vuelve a crecer y el tizne se le va en unos diez segundos.
+- **Con movimiento reducido** no explota nada: el toque lo pasa a la pose del aullido, tiznado.
+- **Al tocarlo no suena una explosión**: suena su tema desde el verso, como todo bicho con recorte (`D-78`). El efecto
+  sintetizado se descartó por eso.
+- Vive a la derecha del buen psicópata (`LUGAR.x` 772) y camina 110 unidades para cada lado sin taparle la cara a nadie.
+
+`npm test` (1958), `npm run check` y `npm run build` en verde. Probado en la página del baldío en un iframe con rAF
+reemplazado: trota, se da vuelta, aúlla, y la explosión corre entera hasta abrir la ficha.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17

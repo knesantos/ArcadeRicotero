@@ -1544,11 +1544,11 @@ function mesaPiso(ancho = ANCHO, alto = ALTO): string {
   const [px, py] = at('pituca');
   const [mtx, mty] = at('el-club-de-mantis');
   const [tx, ty] = at('la-tipa-rapaz');
-  const [vx, vy] = at('el-verdugo-que-cena');
+  // El verdugo tampoco: es un títere tallado (`arte-verdugo.ts`) que cena en la otra punta. Su plato queda.
+  const [vx] = at('el-verdugo-que-cena');
   const toallon = forma(`M${f(px - 30)} ${f(py + 24)} C${f(px - 20)} ${f(py + 8)} ${f(px + 20)} ${f(py + 8)} ${f(px + 30)} ${f(py + 24)} L${f(px + 26)} ${f(atras)} L${f(px + 16)} ${f(atras)} L${f(px + 12)} ${f(py + 22)} L${f(px - 12)} ${f(py + 22)} L${f(px - 16)} ${f(atras)} L${f(px - 26)} ${f(atras)} Z`, M2.blanco, 0.85) +
     [0, 1].map((i) => trazo(`M${f(px - 28 + i * 4)} ${f(py + 30 + i * 6)} L${f(px - 22 + i * 4)} ${f(atras)}`, M2.vivo, 2, 0.8)).join('') +
     trazo(`M${f(px + 18)} ${f(py + 40)} q3 -4 6 0 q3 4 6 0`, M2.naranja, 1.2, 0.9);
-  const capucha = forma(`M${f(vx - 16)} ${f(vy + 10)} Q${f(vx - 16)} ${f(vy - 20)} ${f(vx)} ${f(vy - 38)} Q${f(vx + 16)} ${f(vy - 20)} ${f(vx + 16)} ${f(vy + 10)} Z`, M2.negro);
   const orejas = forma(`M${f(mx - 8)} ${f(my - 10)} L${f(mx - 18)} ${f(my - 40)} L${f(mx - 2)} ${f(my - 12)} Z M${f(mx + 8)} ${f(my - 10)} L${f(mx + 18)} ${f(my - 40)} L${f(mx + 2)} ${f(my - 12)} Z`, M2.negro) +
     forma(elipse(mx, my + 14, 10, 12), M2.negro) + forma(caja(mx - 3, my + 22, 9, 3), M2.oro);
   /** Una mantis de frente: la cabeza en triángulo con los ojos grandes y los brazos plegados para rezar. */
@@ -1574,8 +1574,7 @@ function mesaPiso(ancho = ANCHO, alto = ALTO): string {
     `<g>${orejas}${comensal('la-mula-de-la-enfermedad')}</g>` +
     comensal('pituca', toallon) +
     mantis +
-    tipa +
-    comensal('el-verdugo-que-cena', capucha);
+    tipa;
 
   // Lo que hay en la mesa.
   const platos = [cx, X(OJOS_DE_LA_MESA['el-canibal-desdentado']![0]), mx, px, mtx, vx].map((x) => forma(elipse(x, atras + 12, 24, 6), M2.blanco, 0.9) + forma(elipse(x, atras + 12, 16, 3.6), M2.papel)).join('');

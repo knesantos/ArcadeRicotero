@@ -677,7 +677,7 @@
       "dibujo": { "f": "persona", "con": ["anillo"], "ropa": "guardapolvo" },
       "tema": "dr-saturno",
       "verso": ["Dr. Saturno, dame un turno!", "Estoy meando la puerta en tu cueva, doctor de amor"],
-      "estampa": "Atiende en una cueva al costado del templo, con un anillo en la cabeza como el planeta.",
+      "estampa": "Atiende en su cueva, al costado del templo, sin pisar el piso. Está soplado en las tintas de Momo sampler, su disco, cuya contratapa llama saturnales a sus estampas. De la letra son el doctor, la cueva y el turno; del dibujo, el anillo con sus lunitas, el espejo de frente y el turnero. Pedile uno.",
       "cerca": ["la-murga-de-los-renegados"]
     },
     {
@@ -1344,7 +1344,7 @@
       "tema": "mi-perro-dinamita",
       "verso": ["con el hocico afiebrado", "No mueve el rabo con docilidad", "y aúlla este rock'n roll!"],
       "articulo": "mi-perro-dinamita",
-      "estampa": "Parado en el medio del baldío, con la cola dura como una mecha. No da la pata, no se hace el muerto: ladra.",
+      "estampa": "Anda al trote por la tierra del baldío, con el cuerpo hecho un atado de tres cartuchos. Está soplado en las tintas de La mosca y la sopa, su disco, y lleva su rótulo torcido, que acá dice DINAMITA. De la letra son el hocico afiebrado y el aullido; del dibujo, que el rabo es la mecha. Tocalo: se prende.",
       "cerca": ["ese-perro-que-sigue-alli", "los-perros-sin-folleto", "el-ovejero"]
     },
     {
@@ -1535,7 +1535,7 @@
       "dibujo": { "f": "cosa", "que": "sombra" },
       "tema": "unos-pocos-peligros-sensatos",
       "verso": ["Si vos cuidás que tu animal", "No nos muestre libremente", "del cuento de la muerte."],
-      "estampa": "Una sombra con dos ojos entre los árboles. Cada uno tiene el suyo, y lo cuida.",
+      "estampa": "Una sombra con dos ojos entre las tiras del monte, y casi nunca más que eso. Está pintado con la brocha seca de Gulp!, su disco, que en el interior de la tapa es petróleo y no negra. Del dibujo son el collar y la correa que se va del monte; de la letra, que cada uno tiene el suyo y lo cuida. Tocalo: se muestra.",
       "cerca": ["el-lobo-suelto"]
     },
 
@@ -1668,7 +1668,7 @@
       "dibujo": { "f": "persona", "con": ["capucha"], "ropa": "levita", "pose": "sentado" },
       "tema": "jijiji",
       "verso": ["El hijo tenaz de tu enemigo", "El muy verdugo cena distinguido"],
-      "estampa": "En la otra punta de la mesa, de capucha y con buenos modales. Brinda por tu suerte.",
+      "estampa": "En la otra punta de la mesa, con buenos modales: el meñique parado, la copa, la guinda pinchada. Está tallado como la gente de la tapa de Oktubre, su disco, y recortado en papel como todo lo de la mesa. De la letra es que cena distinguido; del dibujo, la capucha, el hacha y los dos puntos rojos. Tocalo: brinda.",
       "cerca": ["el-canibal-desdentado"]
     },
     {
