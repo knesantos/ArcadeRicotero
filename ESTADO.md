@@ -9,8 +9,8 @@
 
 > ## ⛓️ EL ESCLAVO ENCADENADO, EN LA PRISIÓN (2026-10-24) — `D-73` (21)
 >
-> **Commiteado en la rama `bestiario/esclavo-encadenado`**, en el worktree `.claude/worktrees/encadenado`, sobre `main` en
-> `a206ce2`. **Sin PR todavía.** `T-510`. Pedido del usuario, con la imagen: *"Diseña e implementa una bestia del bestiario
+> **En el PR #81, sin integrar**, rama `bestiario/esclavo-encadenado` (worktree `.claude/worktrees/encadenado`), sobre `main`
+> en `a206ce2`. `T-510`. Pedido del usuario, con la imagen: *"Diseña e implementa una bestia del bestiario
 > redondo que sea esta, usa la imagen de base, es uno de los de la tapa de oktubre, es importante."*
 >
 > - **Bestia nueva**, `el-esclavo-encadenado`: el estarcido de Rocambole que trajo el usuario, **sin redibujar**, cortado en
@@ -21,7 +21,7 @@
 > - **Cómo**: `scripts/preparar-encadenado.mjs` saca la silueta maciza del máster; la imprenta suma `href="master:…"`. No se
 >   tocaron `recortes.ts` ni `recortar-bestiario.mjs`, que otra sesión tiene sin commitear (Luzbelito macizo).
 > - **Verde:** `npm test` (2009), `npm run check`, `npm run build`. Visto en un iframe de teléfono y cuadro por cuadro.
-> - **Falta**: PR e integrar, verlo en un teléfono de verdad, que `contenido` lea estampa y leyenda.
+> - **Falta**: integrar el #81, verlo en un teléfono de verdad, que `contenido` lea estampa y leyenda.
 
 > ## 🛩️ CINCO DEL FONDO: ZIPPO, EL DIABLO MÁS VELOZ, EL SANTO FUMADOR, EL COLGADO Y LA SEÑORA (2026-10-24) — `D-73` (20)
 >
