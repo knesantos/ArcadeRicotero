@@ -9,7 +9,7 @@
 
 > ## 🕯️ LUZBELITO, MACIZO (2026-10-24) — `D-73`, pulida
 >
-> **En la rama `bestiario/luzbelito-macizo`**, sobre `main` en `a206ce2`; **sin integrar**. Pedido del usuario: el
+> **En el PR #82** (rama `bestiario/luzbelito-macizo`, sobre `main` en `a206ce2`); **sin integrar**. Pedido del usuario: el
 > busto de Luzbelito *"está como mal cortado y se transparenta mucho"*.
 >
 > - **Por qué pasaba:** el busto se separaba del óvalo negro por luminosidad, y la sombra de la cara y del cuello es casi igual
