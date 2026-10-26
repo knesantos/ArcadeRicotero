@@ -296,6 +296,15 @@
   --bestia-monito-diente: #f6e8e5; /* los dientes pelados */
   /* ⟨/el monito que trepa⟩ */
 
+  /* ⟨el lente de Luzbelito⟩ */
+  /* El lente oscuro del antiparras del busto, repintado encima del recorte porque es del mismo
+     verde negro que el ovalo (luzbelito-frontal.jpg, 953 px; pixeles del lente, `sharp`). */
+  --bestia-luzbelito-vidrio: #1f2e29; /* el vidrio, en lo hondo */
+  --bestia-luzbelito-vidrio-luz: #2f4a3f; /* el vidrio, arriba, donde le llega la vela */
+  --bestia-luzbelito-aro: #49413e; /* el aro del antiparras, junto a la correa */
+  --bestia-luzbelito-brillo: #f8f6cf; /* el brillo de la vela en el vidrio */
+  /* ⟨/el lente de Luzbelito⟩ */
+
   /* ⟨el Capitan Buscapina⟩ */
   /* El Capitan Buscapina: la piel es la de la banda dentro del ojo de buey de *Ultimo bondi*, que
      son postales virtuales (gente de computadora, piel de plastico tibia, sombra honda y un reflejo
