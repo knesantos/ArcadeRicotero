@@ -36,6 +36,7 @@ import { armarVeloz } from './veloz.ts';
 import { armarFumador } from './fumador.ts';
 import { armarColgado } from './colgado.ts';
 import { armarDesencarnada } from './desencarnada.ts';
+import { armarEncadenado } from './encadenado.ts';
 
 /**
  * Lo que la escena le presta a un personaje. Las coordenadas de `hablar` van en las del recinto
@@ -88,6 +89,7 @@ const CONDUCTAS: Readonly<Record<string, Armar | null>> = {
   'el-santo-fumador': armarFumador,
   'el-que-duerme-colgado': armarColgado,
   'la-bella-senora-desencarnada': armarDesencarnada,
+  'el-esclavo-encadenado': armarEncadenado,
 };
 
 /** Los ids que tienen conducta: el test mira que coincidan con los que tienen dibujo. */

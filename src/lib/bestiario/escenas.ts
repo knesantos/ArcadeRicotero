@@ -309,7 +309,7 @@ export const VECINOS_DE_LA_PRISION: Readonly<Record<string, readonly [number, nu
   // celda nueva de la izquierda, y los reos dejan la celda del esclavo por la nueva de la derecha.
   'el-reo-semental': [-170, 396, 'papel'],
   'el-esclavo-sensible-y-chillon': [214, 410, 'papel'],
-  'los-reos-de-la-sociedad': [1056, 420, 'papel'],
+  'los-reos-de-la-sociedad': [1108, 432, 'papel'],
   'los-titanes-del-orden-viril': [622, 322, 'rojo'],
   'el-chivato': [-110, 466, 'oro'],
   'el-pichon': [558, 324, 'papel'],

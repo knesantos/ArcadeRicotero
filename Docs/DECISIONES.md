@@ -5798,6 +5798,48 @@ animar en el servidor de desarrollo, con el toque disparado a mano, y en sus esc
 - `T-509`: verlos en un teléfono de verdad, y que `contenido` lea las cinco estampas; pasar los cinco bloques de tintas al
   lienzo, como `T-507`.
 
+### Enmienda del 2026-10-24 (21): el esclavo encadenado, el dibujo que trajo el usuario
+
+Pedido del usuario, textual, con la imagen: *"Diseña e implementa una bestia del bestiario redondo que sea esta, usa la
+imagen de base, es uno de los de la tapa de oktubre, es importante."* La imagen es el estarcido blanco sobre negro del esclavo
+que rompe las cadenas, el de Rocambole que ya estaba en la portada (`public/arte/oktubre-cadena.png`). La escribe el hilo
+principal en la rama `bestiario/esclavo-encadenado`, en un worktree aparte desde `main` en `a206ce2`, porque otra sesión tenía
+sin commitear `recortes.ts` y `recortar-bestiario.mjs` en el checkout principal. Sin subagentes. Antes de tomar `T-510` se
+miraron todas las ramas: la última era `T-509`.
+
+#### Qué es y cómo se hizo
+
+- **Una bestia nueva, `el-esclavo-encadenado`**, en la prisión de Barbazul, que es de *Oktubre*. No sale nombrado en ninguna
+  letra, pero no es del mito: su verso es *"Casi ya no llora, ¡atrapado en libertad!"* (*Preso en mi ciudad*, de ese disco), y
+  también *"Nuestro amo juega al esclavo"*. El esclavo sensible y chillón sigue siendo otro: es el de la letra, en su celda.
+- **No se redibuja.** El dibujo del usuario quedó como máster (`Docs/UX/recortes-master/esclavo-encadenado.png`) y
+  `scripts/preparar-encadenado.mjs` le saca la **silueta maciza** (lo blanco con las rendijas cerradas y los agujeros tapados):
+  así el negro de adentro es tinta y no deja ver la prisión, que es lo que le pasaba al busto de Luzbelito. Las cadenas, en
+  cambio, quedan caladas, con un canto de tinta de tres píxeles que las despega de los barrotes de la celda de atrás.
+- **La imprenta aprendió `href="master:…"`**, como ya sabía `href="tapa:…"`: mete el `.png` de `Docs/UX/recortes-master/`
+  adentro de la pieza. Cada pieza es el máster recortado por un polígono (`rig-encadenado.ts`) y teñido con tokens
+  (`--bestia-dracula-papel` y `--fondo`): siete piezas, 67 kB. No se tocaron `recortes.ts` ni `recortar-bestiario.mjs`.
+- **Dónde**: arrodillado adelante de la celda de los reos (x 975), entre la jaula vacía de la fiera y la reja; se escapó de
+  la celda y se quedó ahí. Los ojos de los reos se corrieron adentro de su celda, a la derecha (1056 → 1108).
+- **Qué hace**: respira, tironea la cadena, ruge con la cabeza para atrás, aprieta el puño. Tocado, **rompe la cadena**: carga,
+  da el tirón, el eslabón salta con una chispa en el rojo de las banderas, la cadena sale despedida hacia la jaula y él ruge.
+  Después la cadena vuelve a estar en el puño y él baja un poco la cabeza: atrapado en libertad. Pide un sacudón de cámara.
+  Con movimiento reducido, el toque lo pasa de la pose del dibujo a la de la cadena rota.
+
+#### De qué disco: rotulado, no afirmado
+
+El usuario lo pone en la tapa de *Oktubre*, y es lo que piensa casi todo el mundo. Pero `INV-02` reportó que la figura no
+venía en el vinilo del 86 y que se difundió con la reedición en CD, y eso sigue sin ficha (`public/arte/README.md`, "Lo que NO
+va acá"). La ficha lo dice como **leyenda**, con las dos versiones, y la estampa dice "el dibujo de Rocambole que la gente
+asocia con Oktubre", que es cierto se cierre como se cierre. Si `investigador` cierra la pregunta, se cambia el rótulo y nada
+más.
+
+`encadenado.test.ts` (7), y los conteos de la prisión y del elenco. `npm test` (2009), `npm run check` y `npm run build` en
+verde. Visto en la escena en un iframe de teléfono, y los cuadros del toque renderizados uno por uno.
+
+- `T-510`: verlo en un teléfono de verdad; que `contenido` lea la estampa y la leyenda; la ficha `RES-` que cierre de qué
+  edición es la figura sigue pedida en `Docs/SUGERENCIAS/HILO-para-investigador-figura-encadenada.md`.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17

@@ -436,7 +436,8 @@ test('la prisión tiene a todos los suyos: la drácula camina por el pasillo, y 
   const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
   const escena = escenaPrision(nombres);
   const delRecinto = datos.bestias.filter((b) => b.region === 'la-prision').map((b) => b.id).sort();
-  assert.deepEqual(delRecinto, ['barbazul', 'la-dracula-con-tacones', JAULA_VACIA.id, ...Object.keys(VECINOS_DE_LA_PRISION)].sort(), 'en la prisión falta o sobra alguien');
+  // El esclavo encadenado es títere del elenco, adelante de la celda de los reos (`arte-encadenado.ts`).
+  assert.deepEqual(delRecinto, ['barbazul', 'la-dracula-con-tacones', 'el-esclavo-encadenado', JAULA_VACIA.id, ...Object.keys(VECINOS_DE_LA_PRISION)].sort(), 'en la prisión falta o sobra alguien');
   assert.ok(!/NaN|undefined|Infinity/.test(escena), 'la prisión tiene un número roto');
   const pasillo = marcoDelRecinto('la-prision');
   for (const [id, [x, y]] of Object.entries(VECINOS_DE_LA_PRISION)) assert.ok(x >= pasillo.x && x <= pasillo.x + pasillo.ancho && y >= 0 && y <= ESCENA.alto, `${id} se sale`);

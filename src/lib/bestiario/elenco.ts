@@ -41,6 +41,7 @@ import { VELOZ_PERSONAJE } from './arte-veloz.ts';
 import { FUMADOR_PERSONAJE } from './arte-fumador.ts';
 import { COLGADO_PERSONAJE } from './arte-colgado.ts';
 import { DESENCARNADA } from './arte-desencarnada.ts';
+import { ENCADENADO_PERSONAJE } from './arte-encadenado.ts';
 
 export type Nombres = ReadonlyMap<string, string>;
 
@@ -84,7 +85,7 @@ export interface Personaje {
  * Los lugares, en el orden del recorrido: los diez de la decimoquinta vuelta y los tres de la
  * decimosexta. `null` es que todavía son ojos en lo oscuro.
  */
-const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA, VERDUGO_CENA, SATURNO_DOCTOR, TU_ANIMAL, DINAMITA, ZIPPO_PERSONAJE, VELOZ_PERSONAJE, FUMADOR_PERSONAJE, COLGADO_PERSONAJE, DESENCARNADA];
+const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA, VERDUGO_CENA, SATURNO_DOCTOR, TU_ANIMAL, DINAMITA, ZIPPO_PERSONAJE, VELOZ_PERSONAJE, FUMADOR_PERSONAJE, COLGADO_PERSONAJE, DESENCARNADA, ENCADENADO_PERSONAJE];
 
 /** Los que ya tienen títere. */
 export const ELENCO: readonly Personaje[] = LUGARES.filter((p): p is Personaje => p !== null);
@@ -179,4 +180,6 @@ export const LUGAR_EN_EL_ELENCO: Readonly<Record<string, string>> = {
   'el-santo-fumador': 'el-templo',
   'el-que-duerme-colgado': 'el-arbol',
   'la-bella-senora-desencarnada': 'la-ruta',
+  // La vigesimoprimera: el esclavo encadenado, que pidió el usuario con su dibujo, adelante de la celda de los reos.
+  'el-esclavo-encadenado': 'la-prision',
 };
