@@ -5,7 +5,22 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-24
+**Última actualización:** 2026-10-28
+
+> ## 📺 DOS JUEGOS PARA JUGAR ADENTRO DE X, A PRUEBA (2026-10-28) — `T-512`
+>
+> **Sin integrar**, rama `worktree-difusion-x-player`. Pedido del usuario: investigar las "miniapps" de X y armar
+> *"para noche ricotera y adivina el tema"*.
+>
+> - **Lo que encontró `investigador`** (sin ficha `RES` todavía; no pudo abrir developer.x.com): X **no tiene miniapps**. La
+>   única vía es la **Player Card** (`twitter:card=player`, un iframe dentro del posteo), pensada para video y audio. Según sus
+>   foros pide aprobación manual, no se ve en el timeline y puede no verse en el celular.
+> - **Qué hay**: `/en-x/adivinar-el-tema/` y `/en-x/que-tipo-de-ricotero-sos/`, páginas puente con la Player Card
+>   que mandan al juego a quien las abre. El iframe carga el juego de siempre con `?incrustado`: `Cabeza` (`incrustable`) le
+>   pone `<base target="_blank">` para que ningún enlace navegue adentro del recuadro. Tamaño apostado: 480 × 720.
+> - **Verde:** `npm test` (2009), `npm run check`, `npm run build`. Los dos juegos se jugaron en un iframe de 480 × 720.
+> - **Falta**: publicar, pegar el enlace en un posteo real y mirarlo en iOS, Android y web. Si X no lo muestra, se
+>   queda la tarjeta grande de siempre. Que `investigador` deje la ficha `RES` con lo que el posteo confirme.
 
 > ## ⛓️ EL ESCLAVO ENCADENADO, EN LA PRISIÓN (2026-10-24) — `D-73` (21)
 >

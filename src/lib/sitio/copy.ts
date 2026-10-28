@@ -417,6 +417,16 @@ export const OKTUBRE = {
 } as const;
 
 /**
+ * La página puente para X (`/en-x/<juego>/`): la que se pega en un posteo para que X arme la
+ * Player Card con el juego adentro. Quien la abre en un navegador no se queda acá: lo manda
+ * derecho al juego. Todo registro 3, porque solo se ve medio segundo o sin JavaScript.
+ */
+export const EN_X = {
+  /** Si la redirección no anda, el enlace a mano. */
+  seguir: 'Seguí al juego',
+} as const;
+
+/**
  * La carátula de cada juego (`D-54`, `UX-35`). Todo registro 3: dice qué hay y se calla.
  *
  * El nombre del juego y la lista de temas no se escriben acá: salen de `JUEGOS`, igual que

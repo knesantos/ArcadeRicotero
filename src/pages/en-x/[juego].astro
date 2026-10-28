@@ -1,0 +1,73 @@
+---
+/**
+ * La página puente para X: la dirección que se pega en un posteo para que el juego se juegue
+ * adentro del posteo, en el iframe de una **Player Card** (`twitter:card=player`).
+ *
+ * Es una prueba, no una vía confirmada. X no tiene un programa de miniapps, y la Player Card
+ * se pensó para video y audio: según sus foros pide aprobación manual, no se ve en el timeline
+ * y puede no verse en el celular. Hasta que un posteo real diga lo contrario, la vía segura sigue
+ * siendo la tarjeta grande de cada juego.
+ *
+ * Quien abre esta dirección en un navegador no se queda acá: lo manda al juego. El que la lee es
+ * el rastreador de X, y lo único que necesita son las etiquetas de `Cabeza`. El juego que entra
+ * en el iframe es la misma pantalla de siempre con `?incrustado`, sin una copia aparte.
+ *
+ * **Molinetes abiertos (`D-14`):** el reproductor no pide nada que el sitio no pida. Si X no lo
+ * muestra, la tarjeta cae a la imagen y el enlace lleva al juego.
+ */
+import '../../styles/tokens.css';
+import '../../styles/juego.css';
+import Cabeza from '../../components/Cabeza.astro';
+import { EN_X } from '../../lib/sitio/copy.ts';
+import { PANTALLA_0 as TEMA } from '../../lib/tema/copy.ts';
+import { PANTALLA_0 as EJES, TARJETA } from '../../lib/dos-ejes/copy.ts';
+import { servir } from '../../lib/dos-ejes/servir.ts';
+import { VISTA_PREVIA_JUEGO } from '../../lib/dos-ejes/arte.ts';
+import crudo from '../../data/dos-ejes.json';
+
+export function getStaticPaths() {
+  const banco = servir(crudo as unknown as Parameters<typeof servir>[0]);
+  return [
+    {
+      params: { juego: 'adivinar-el-tema' },
+      props: {
+        ruta: '/juegos/adivinar-el-tema/',
+        titulo: 'Adiviná el tema — Fichín Ricotero',
+        descripcion: TEMA.subtitulo,
+      },
+    },
+    {
+      params: { juego: 'que-tipo-de-ricotero-sos' },
+      props: {
+        ruta: '/juegos/dos-ejes/',
+        titulo: '¿Qué tipo de ricotero sos? — Fichín Ricotero',
+        descripcion: EJES.subtitulo(banco.momentos.length, banco.preguntasPorEje * 2),
+        imagen: VISTA_PREVIA_JUEGO,
+        imagenAlt: TARJETA.altJuego,
+      },
+    },
+  ];
+}
+
+const { ruta, titulo, descripcion, imagen, imagenAlt } = Astro.props;
+const imagenPropia = imagen && imagenAlt ? { imagen, imagenAlt } : {};
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={descripcion} />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0; url=${ruta}`} />
+    <link rel="canonical" href={new URL(ruta, Astro.site).href} />
+    <title>{titulo}</title>
+    <Cabeza titulo={titulo} descripcion={descripcion} reproductor={ruta} {...imagenPropia} />
+  </head>
+  <body class="con-grano">
+    <main class="pantalla">
+      <p><a href={ruta}>{EN_X.seguir}</a></p>
+    </main>
+  </body>
+</html>
