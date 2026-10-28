@@ -636,6 +636,107 @@
   --bestia-desencarnada-alba-clara: #fff9cb; /* lo mas prendido del resplandor (misma zona, percentil 97) */
   /* ⟨/la bella senora desencarnada⟩ */
 
+  /* ⟨el gato maton⟩ */
+  /* El gato maton (vigesimosegunda vuelta, D-73) es de Rock para el negro Atila, en Lobo suelto: viste la
+     bestia de esa tapa, el crema y el sepia soplados, el hollin alrededor del ojo, la cadena de gillettes y
+     el negro de abajo, que es la gorra de cana. La sirena nueva es de la tapa gemela, Cordero atado: el
+     naranja del fondo y el azul de la bestia. Medido con sharp en lobo-suelto.jpg y cordero-atado.jpg
+     (public/tapas, 320 px): zona (x, y) y radio. */
+  --bestia-maton-crema: #d0b49e; /* el pecho de la bestia (zona 120,200 de 10, mediana) */
+  --bestia-maton-crema-clara: #dfccce; /* el papel de la tapa (zona 30,30 de 10, mediana): la luz del farol */
+  --bestia-maton-sepia: #aa8a75; /* el sepia del cuello (zona 100,250 de 8, mediana): el pelo */
+  --bestia-maton-sepia-honda: #635042; /* ese sepia en la sombra (misma zona, percentil 10) */
+  --bestia-maton-ceniza: #7b7c81; /* la oreja gris (zona 60,60 de 8, mediana) */
+  --bestia-maton-ceniza-clara: #b4acaa; /* esa oreja donde aclara (misma zona, percentil 90) */
+  --bestia-maton-hollin: #3f362d; /* la mancha del hocico (zona 170,140 de 6, percentil 10): las rayas */
+  --bestia-maton-carbon: #2c2c34; /* el negro de abajo a la derecha (zona 240,260 de 10, mediana): la gorra */
+  --bestia-maton-carbon-hondo: #22252e; /* ese negro en lo hondo (misma zona, percentil 10) */
+  --bestia-maton-ojo: #b6c3cb; /* el blanco del ojo de la izquierda (zona 120,85 de 4, percentil 90) */
+  --bestia-maton-pupila: #17212a; /* la pupila (misma zona, percentil 10) */
+  --bestia-maton-hoja: #cecccd; /* la gillette de la cadena (zona 245,215 de 6, mediana): el collar */
+  --bestia-maton-hoja-clara: #e3e8eb; /* el filo de la gillette (misma zona, percentil 97) */
+  --bestia-maton-rosa: #c6aa94; /* el labio de la bestia (zona 155,165 de 3, percentil 97): la lengua */
+  --bestia-maton-sirena-naranja: #d77b48; /* el naranja de Cordero atado (zona 280,150 de 8, mediana) */
+  --bestia-maton-sirena-azul: #294366; /* el azul de la bestia de Cordero atado (zona 30,30 de 8, mediana) */
+  /* ⟨/el gato maton⟩ */
+
+  /* ⟨el amorcito que mordio el vidrio⟩ */
+  /* El amorcito que mordio el vidrio (vigesimosegunda vuelta, D-73) es de Nam fri frufi fali fru, en
+     Gulp!: viste esa tapa, el papel blanco de la fotocopia, la tinta, el verde acido de las letras escritas
+     a mano y el rojo del sello de Gulp! de la contratapa. El vidrio y la soda reflejan la luz del bajo
+     (--entorno-bajo-celeste, --entorno-bajo-llama-clara). Medido con sharp en gulp.jpg (320 px) y en
+     trasera/gulp.jpg (320 px): zona (x, y) y radio. */
+  --bestia-amorcito-papel: #e4e3e1; /* el papel de la contratapa (trasera, zona 160,200 de 10, mediana): la piel */
+  --bestia-amorcito-papel-claro: #fffefc; /* el papel donde no hay nada (trasera, zona 60,100 de 6, percentil 90) */
+  --bestia-amorcito-gris: #7d7a71; /* el gris de la fotocopia (zona 150,180 de 8, mediana): la sombra de la piel */
+  --bestia-amorcito-tinta: #1d1d1b; /* la tinta de abajo (zona 260,280 de 10, mediana): el pelo y el vestido */
+  --bestia-amorcito-tinta-honda: #040f09; /* la tinta en lo hondo (misma zona, percentil 10) */
+  --bestia-amorcito-verde: #9dc16a; /* la P de Patricio escrita a mano (zona 52,85 de 2, mediana) */
+  --bestia-amorcito-verde-claro: #b5db74; /* esa letra donde carga la tinta (misma zona, percentil 90) */
+  --bestia-amorcito-verde-hondo: #163b08; /* el verde que se mete en lo negro (zona 80,90 de 6, mediana) */
+  --bestia-amorcito-rojo: #b6523a; /* el sello de Gulp! (trasera, zona 200,85 de 3, mediana): la boca */
+  --bestia-amorcito-rojo-hondo: #9f4626; /* el sello donde carga (misma zona, percentil 10) */
+  --bestia-amorcito-rubor: #ffd3af; /* el borde del sello sobre el papel (misma zona, percentil 90): los cachetes */
+  /* ⟨/el amorcito que mordio el vidrio⟩ */
+
+  /* ⟨las sirenas⟩ */
+  /* Las sirenas (vigesimosegunda vuelta, D-73) son de Barbazul versus el amor letal, en Gulp!: visten esa
+     tapa, el blanco de las manchas de la fotocopia, la tinta, y el verde de las letras de Patricio Rey de lo
+     hondo a lo que brilla, que son las escamas; las bocas, el rojo del sello de la contratapa. La espuma es
+     la luz del bajo (--entorno-bajo-celeste). Medido con sharp en gulp.jpg (320 px), detalle/gulp-zoom.jpg
+     (480 px) y trasera/gulp.jpg (320 px): zona (x, y) y radio. */
+  --bestia-sirenas-piel: #fefeff; /* la mancha blanca de abajo (zona 60,250 de 6, mediana) */
+  --bestia-sirenas-sombra: #9b9f9e; /* el gris donde la mancha se corta (zona 120,40 de 4, percentil 97) */
+  --bestia-sirenas-tinta: #131514; /* la tinta del medio (zona 230,120 de 4, mediana): el pelo */
+  --bestia-sirenas-tinta-honda: #0c0c0c; /* esa tinta en lo hondo (misma zona, percentil 10) */
+  --bestia-sirenas-escama: #0e3800; /* el verde metido en lo negro (zona 300,200 de 6, mediana) */
+  --bestia-sirenas-escama-clara: #8eb66d; /* ese verde donde aclara (misma zona, percentil 90) */
+  --bestia-sirenas-verde: #a3ce63; /* la letra a mano en el detalle (zoom, zona 100,100 de 6, mediana): la aleta */
+  --bestia-sirenas-agua: #03262a; /* el verde de agua del fondo de la letra (zoom, zona 200,200 de 6, percentil 10) */
+  --bestia-sirenas-radio: #fff078; /* donde la letra se quema de luz (misma zona, percentil 90): el prendedor */
+  --bestia-sirenas-radio-claro: #e2f4cc; /* la letra pasada de luz (zona 200,240 de 4, percentil 97) */
+  --bestia-sirenas-boca: #b6523a; /* el sello de Gulp! (trasera, zona 200,85 de 3, mediana) */
+  /* ⟨/las sirenas⟩ */
+
+  /* ⟨mandinga⟩ */
+  /* Mandinga (vigesimosegunda vuelta, D-73) es de Rato molhado, en Momo sampler: es una sombra chinesca, un
+     titere de recorte, y el recorte es el violeta casi negro de la contratapa; el calado, los cantos, los
+     cuernos y el brillo de las botas son la plata del medallon del frente. El candil es el fuego del infierno
+     (--entorno-infierno-fuego, --entorno-infierno-brasa). Medido con sharp en momo-sampler.jpg (320 px) y en
+     trasera/momo-sampler.jpg (320 px): zona (x, y) y radio. */
+  --bestia-mandinga-recorte: #23152e; /* el violeta de la contratapa (trasera, zona 160,160 de 20, mediana) */
+  --bestia-mandinga-violeta: #51435a; /* ese violeta donde aclara (misma zona, percentil 97) */
+  --bestia-mandinga-negro: #010101; /* el negro del frente (zona 100,100 de 10, mediana) */
+  --bestia-mandinga-plata: #838383; /* la plata del medallon (zona 185,170 de 8, mediana): el calado */
+  --bestia-mandinga-plata-clara: #bbbbbb; /* el medallon donde le pega la luz (misma zona, percentil 97) */
+  --bestia-mandinga-plata-media: #5d5d5d; /* la plata de la frente de Momo (zona 160,140 de 6, mediana) */
+  --bestia-mandinga-plata-honda: #3b3b3b; /* esa plata en lo hondo (misma zona, percentil 10): las varillas */
+  --bestia-mandinga-papel: #e7e7e7; /* la tira de la izquierda (zona 15,150 de 8, percentil 97): el charol */
+  /* ⟨/mandinga⟩ */
+
+  /* ⟨el alien duce⟩ */
+  /* El Alien Duce (vigesimosegunda vuelta, D-73) es de Alien Duce, en Ultimo bondi a Finisterre: viste esa
+     tapa, el acero remachado del marco (el uniforme), el cromo de los remaches y la perilla (las charreteras,
+     los botones y la bola de efectos), la piel de los de la foto del ojo de buey y el rojo de la gorra del de
+     la izquierda (las lamparitas de las antenas y la banda). El ticket es el brillo de la perilla. La pantalla
+     es la de la tele del recinto (--entorno-cyber-lente, --entorno-cyber-vidrio). Medido con sharp en
+     ultimo-bondi-a-finisterre.jpg (320 px) y detalle/ultimo-bondi-a-finisterre-zoom.jpg (480 px): zona (x, y)
+     y radio. */
+  --bestia-alien-acero: #2f3130; /* el acero de arriba del marco (zona 160,40 de 12, mediana): el uniforme */
+  --bestia-alien-acero-hondo: #1a2020; /* ese acero en lo hondo (misma zona, percentil 10) */
+  --bestia-alien-acero-claro: #6d7778; /* ese acero donde le pega la luz (misma zona, percentil 90) */
+  --bestia-alien-cromo: #b6b9c0; /* el remache prendido (misma zona, percentil 97) */
+  --bestia-alien-cromo-claro: #fbffff; /* la perilla de abajo a la derecha (zona 260,290 de 3, percentil 97) */
+  --bestia-alien-cuero: #31322c; /* la campera de cuero del del medio (zoom, zona 300,260 de 8, mediana): los guantes */
+  --bestia-alien-piel: #c89b7c; /* la cara del del medio (zoom, zona 170,140 de 6, percentil 90) */
+  --bestia-alien-piel-honda: #836565; /* esa cara en la sombra (misma zona, mediana) */
+  --bestia-alien-piel-sombra: #483b35; /* el ojo en lo hondo (zoom, zona 200,170 de 10, mediana): el ceno */
+  --bestia-alien-piel-clara: #e0d094; /* la mascara blanca de arriba (zoom, zona 290,30 de 8, percentil 90) */
+  --bestia-alien-rojo: #b53832; /* la gorra roja de la izquierda (zoom, zona 30,150 de 10, mediana) */
+  --bestia-alien-rojo-hondo: #af3530; /* esa gorra en la sombra (misma zona, percentil 10) */
+  --bestia-alien-papel: #fff9e9; /* el brillo de la perilla (zona 290,300 de 6, percentil 90): el ticket */
+  /* ⟨/el alien duce⟩ */
+
   /* ⟨el que duerme colgado⟩ */
   /* El que duerme colgado (vigesima vuelta, D-73) es de Es hora de levantarse, querido!, en Cordero
      atado: viste el bicho de plumas azules del frente sobre el naranja, con sus pezunas de ocre y sus

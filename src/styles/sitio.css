@@ -4499,6 +4499,47 @@ body:has(> .lugar) .marca-chica {
 .titere--desencarnada [data-parte="dia"], .titere--desencarnada [data-parte="cuencas"] { mix-blend-mode: screen; pointer-events: none; }
 /* ⟨/la bella senora desencarnada⟩ */
 
+/* ⟨el gato maton⟩ */
+/* La sombra en la chapa es el negro de la gorra. La luz de la sirena y sus haces son luz: se suman a lo
+   oscuro de los techos y no se tocan; el ra-ta-ta de la matraca tampoco. */
+.titere--maton { cursor: pointer; }
+.bt-maton-sombra { fill: var(--bestia-maton-carbon-hondo); opacity: 0.7; }
+.titere--maton [data-parte="haz"], .titere--maton [data-parte="luz"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--maton [data-parte="ratata"] { pointer-events: none; }
+/* ⟨/el gato maton⟩ */
+
+/* ⟨el amorcito que mordio el vidrio⟩ */
+/* El chorro de soda, las migas del vidrio, la burbuja del hipo y el Nam escrito en el aire no se tocan: el
+   toque es de ella. */
+.titere--amorcito { cursor: pointer; }
+.titere--amorcito [data-parte="chorro"], .titere--amorcito [data-parte="migas"], .titere--amorcito [data-parte="hipo"], .titere--amorcito [data-parte="nam"] { pointer-events: none; }
+/* ⟨/el amorcito que mordio el vidrio⟩ */
+
+/* ⟨las sirenas⟩ */
+/* El brillo del prendedor radioactivo es luz y se suma al agua oscura. Lo que cantan, las salpicaduras y
+   las ondas no se tocan: el toque es de ellas. */
+.titere--sirenas { cursor: pointer; }
+.titere--sirenas [data-parte="radio"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--sirenas [data-parte="canto"], .titere--sirenas [data-parte^="salpica-"], .titere--sirenas [data-parte^="ondas-"] { pointer-events: none; }
+/* ⟨/las sirenas⟩ */
+
+/* ⟨mandinga⟩ */
+/* El resplandor del candil y el fogonazo que encandila son luz: se suman al infierno y no se tocan. La
+   sombra chinesca de la pared tampoco: el toque es del titere. */
+.titere--mandinga { cursor: pointer; }
+.titere--mandinga [data-parte="resplandor"], .titere--mandinga [data-parte="destello"], .titere--mandinga [data-parte="llama"] { mix-blend-mode: screen; pointer-events: none; }
+.mandinga-pared { mix-blend-mode: multiply; }
+.bt-mandinga-varilla { fill: none; stroke: var(--bestia-mandinga-plata-honda); stroke-width: 1.6; }
+/* ⟨/mandinga⟩ */
+
+/* ⟨el alien duce⟩ */
+/* Los puntos de la bola de efectos, las lamparitas y los destellos son luz: se suman a la nieve y al acero y
+   no se tocan. El ticket y el bollo tampoco: el toque es de la pantalla. */
+.titere--alien { cursor: pointer; }
+.titere--alien [data-parte="puntos"], .titere--alien [data-parte="lamparas"], .titere--alien [data-parte="brillos"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--alien [data-parte="ticket"], .titere--alien [data-parte="bollo"], .titere--alien [data-parte="ruido"] { pointer-events: none; }
+/* ⟨/el alien duce⟩ */
+
 /* ⟨el esclavo encadenado⟩ */
 /* La sombra de las rodillas es la tinta del fondo, como la de Barbazul y la drácula. La chispa del eslabón
    es el rojo de las banderas de la tapa con rayas de papel, y no se toca: el toque es del que rompe. */

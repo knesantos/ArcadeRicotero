@@ -5,7 +5,22 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-24
+**Última actualización:** 2026-10-28
+
+> ## 📺 CINCO QUE ERAN OJOS: EL ALIEN DUCE, LAS SIRENAS, EL AMORCITO, EL GATO MATÓN Y MANDINGA (2026-10-28) — `D-73` (22)
+>
+> **Sin integrar**, en la rama `bestiario/cinco-mas` (sobre `main` en `0260770`). `T-511`. Pedido del usuario: cinco bestias
+> sin diseño complejo, rocambolescas, con animaciones complejas y los detalles de la letra; una tenía que ser el Alien Duce.
+>
+> - **Cybersiberia**: **el Alien Duce**, adentro de la pantalla de la tele, con el cráneo de bola de espejos que tira puntos de
+>   luz; tocado se aplasta contra el vidrio, escupe el ticket del evangelio hasta la nieve, lo chupa y lo escupe en un bollo.
+> - **El bajo** (tenía uno solo): **las sirenas**, la gata linda y la llena con el botín, que cantan, colean y se zambullen; y
+>   **el amorcito**, colgada de su ventana rota con el vidrio entre los dientes y el sifón; tocada muerde, ¡ÑAM!, y cabalga.
+> - **Los techos**: **el gato matón**, la cana con sirena y matraca de ocasión; tocado sale de operativo y salta al ratón.
+> - **El infierno**: **Mandinga**, un títere de sombra con varillas; tocado saluda, su sombra crece en la pared, encandila y se va.
+> - Los ojos del ratón bajaron a la chapa; `rato.test.ts` mira al rato solo.
+> - **Verde:** `npm test` (2046), `npm run check`, `npm run build`. Vistos vivir y responder al toque en la página de cada recinto.
+> - **Falta**: `T-511` (verlos en un teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
 
 > ## ⛓️ EL ESCLAVO ENCADENADO, EN LA PRISIÓN (2026-10-24) — `D-73` (21)
 >
