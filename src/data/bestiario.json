@@ -417,7 +417,7 @@
       "dibujo": { "f": "persona", "con": ["antenas"], "ropa": "uniforme" },
       "tema": "alien-duce",
       "verso": ["Alien Duce dice desde la TV", "que no quiere estar jamas en la TV"],
-      "estampa": "Habla desde adentro de una pantalla, con antenas. Arriba le da vueltas un gavilán.",
+      "estampa": "Habla desde adentro de la pantalla de la tele, y no quiere estar en la tele. Viste Último bondi a Finisterre, su disco. De la letra son el look bola de efectos, el evangelio escrito en los tickets del súper, el matón y que chupa y escupe; del dibujo, el uniforme de opereta y las antenas. Tocalo: el evangelio.",
       "cerca": ["el-gavilan", "porco-rex"]
     },
     {
@@ -886,7 +886,7 @@
       "dibujo": { "f": "persona", "ropa": "vestido", "con": ["vidrio"] },
       "tema": "nam-fri-frufi-fali-fru",
       "verso": ["Voy a cuidar de mi amorcito", "Que mordió el vidrio por demás otra vez"],
-      "estampa": "En la ventana de al lado, también rota, con un pedazo de vidrio entre los dientes.",
+      "estampa": "Colgada de su ventana, también rota, con un pedazo de vidrio entre los dientes. Viste Gulp!, su disco. De la letra son el vidrio, el sifón, la borrachera de otra vez y el ñam cuando muerde alocada; del dibujo, los ojos que no se ponen de acuerdo y el hipo de soda. Tocala: muerde.",
       "cerca": ["el-gordo-pierre"]
     },
     {
@@ -972,7 +972,7 @@
       "dibujo": { "f": "persona", "con": ["cola-de-pez"], "ropa": "nada" },
       "tema": "barbazul-versus-el-amor-letal",
       "verso": ["Gatas lindas, sirenas llenas."],
-      "estampa": "En el borde del agua, del lado que da al fuego. Le cantan a Luzbelito y él no se da vuelta.",
+      "estampa": "En el agua, del lado que da al fuego. Le cantan a Luzbelito y él no se da vuelta. Visten Gulp!, su disco. De la letra son la gata linda, la llena, la camisa apretada con lo radioactivo y el botín que reclaman para la prisión; del dibujo, que el botín es un botín. Tocalas: cantan.",
       "tambien": [{ "tema": "luzbelito-y-las-sirenas", "verso": ["Luzbelito sabe que su destino es de soledad"] }],
       "cerca": ["luzbelito", "barbazul"]
     },
@@ -1073,7 +1073,7 @@
       "dibujo": { "f": "persona", "con": ["cuernos", "sombrero"], "ropa": "poncho" },
       "tema": "rato-molhado",
       "verso": ["mandinga lo pone así", "siniestro pero gentil"],
-      "estampa": "Con sombrero y poncho, gentil. Así es como se presenta.",
+      "estampa": "Gentil, con sombrero y poncho, y es una sombra chinesca: un recorte con varillas. Viste Momo sampler, su disco. De la letra son lo siniestro y gentil, el cascabel, la manga en la nariz y la cara como sus botas nuevas; del dibujo, el candil y la sombra, que muestra lo que él no. Tocalo: encandila y se va.",
       "cerca": ["el-diablo-de-muchos-cuernos", "el-rato-molhado"]
     },
 
@@ -1245,7 +1245,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "punta", "hocico": "corto", "cola": "larga", "pose": "acecha" },
       "tema": "rock-para-el-negro-atila",
       "verso": ["Quiero verte oler como el ratón,", "el peligro del gato matón."],
-      "estampa": "En la cornisa, agazapado, mirando para abajo. Abajo hay un ratón que ya lo olió.",
+      "estampa": "Agazapado en la chapa del canto, mirando para abajo, donde el ratón ya lo olió. Viste Lobo suelto, su disco, con la sirena de la tapa gemela. De la letra son la cana, la sirena nueva y la matraca de ocasión; del dibujo, la gorra, el collar de gillettes y la etiqueta del precio. Tocalo: sale de operativo.",
       "cerca": ["el-raton", "el-negro-atila"]
     },
     {

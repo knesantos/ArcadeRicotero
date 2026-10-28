@@ -20,7 +20,8 @@ import { armarRatoCon, TIEMPOS } from '../../scripts/bestiario/rato.ts';
 
 const datos = JSON.parse(readFileSync('src/data/bestiario.json', 'utf-8')) as { bestias: Array<{ id: string; nombre: string; estampa: string; cuenta?: Array<{ rotulo: string; fuente: string; texto: string }> }> };
 const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
-const marcado = capasDe('el-bajo', 'figura', nombres);
+// Solo el rato: el bajo tiene otros títeres con partes del mismo nombre (las sirenas, `D-73`, 22).
+const marcado = capasDe('el-bajo', 'figura', nombres, 1, 'el-rato-molhado');
 const A = RATO_ARMADO;
 const caja = (nombre: string): readonly [number, number, number, number] => PIEZAS_RATO.find((p) => p.nombre === nombre)!.caja;
 const adentro = (nombre: string, [x, y]: Punto): boolean => {

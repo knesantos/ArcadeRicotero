@@ -42,6 +42,11 @@ import { FUMADOR_PERSONAJE } from './arte-fumador.ts';
 import { COLGADO_PERSONAJE } from './arte-colgado.ts';
 import { DESENCARNADA } from './arte-desencarnada.ts';
 import { ENCADENADO_PERSONAJE } from './arte-encadenado.ts';
+import { MATON_PERSONAJE } from './arte-maton.ts';
+import { AMORCITO_PERSONAJE } from './arte-amorcito.ts';
+import { SIRENAS_PERSONAJE } from './arte-sirenas.ts';
+import { MANDINGA_PERSONAJE } from './arte-mandinga.ts';
+import { ALIEN_PERSONAJE } from './arte-alien.ts';
 
 export type Nombres = ReadonlyMap<string, string>;
 
@@ -85,7 +90,7 @@ export interface Personaje {
  * Los lugares, en el orden del recorrido: los diez de la decimoquinta vuelta y los tres de la
  * decimosexta. `null` es que todavía son ojos en lo oscuro.
  */
-const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA, VERDUGO_CENA, SATURNO_DOCTOR, TU_ANIMAL, DINAMITA, ZIPPO_PERSONAJE, VELOZ_PERSONAJE, FUMADOR_PERSONAJE, COLGADO_PERSONAJE, DESENCARNADA, ENCADENADO_PERSONAJE];
+const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA, VERDUGO_CENA, SATURNO_DOCTOR, TU_ANIMAL, DINAMITA, ZIPPO_PERSONAJE, VELOZ_PERSONAJE, FUMADOR_PERSONAJE, COLGADO_PERSONAJE, DESENCARNADA, ENCADENADO_PERSONAJE, MATON_PERSONAJE, AMORCITO_PERSONAJE, SIRENAS_PERSONAJE, MANDINGA_PERSONAJE, ALIEN_PERSONAJE];
 
 /** Los que ya tienen títere. */
 export const ELENCO: readonly Personaje[] = LUGARES.filter((p): p is Personaje => p !== null);
@@ -182,4 +187,12 @@ export const LUGAR_EN_EL_ELENCO: Readonly<Record<string, string>> = {
   'la-bella-senora-desencarnada': 'la-ruta',
   // La vigesimoprimera: el esclavo encadenado, que pidió el usuario con su dibujo, adelante de la celda de los reos.
   'el-esclavo-encadenado': 'la-prision',
+  // La vigesimosegunda: cinco que eligió el hilo principal entre los que seguían siendo ojos, salvo el Alien Duce,
+  // que pidió el usuario: dos en el bajo, que tenía uno solo del elenco, uno en los techos, uno en el infierno y
+  // uno en Cybersiberia.
+  'el-gato-maton': 'los-techos',
+  'el-amorcito-que-mordio-el-vidrio': 'el-bajo',
+  'las-sirenas': 'el-bajo',
+  'mandinga': 'el-infierno',
+  'el-alien-duce': 'cybersiberia',
 };
