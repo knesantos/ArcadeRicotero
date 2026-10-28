@@ -9,7 +9,7 @@
 
 > ## 📺 CINCO QUE ERAN OJOS: EL ALIEN DUCE, LAS SIRENAS, EL AMORCITO, EL GATO MATÓN Y MANDINGA (2026-10-28) — `D-73` (22)
 >
-> **Sin integrar**, en la rama `bestiario/cinco-mas` (sobre `main` en `0260770`). `T-511`. Pedido del usuario: cinco bestias
+> **En `main`** por el PR #84 (fusión `84a4b09`), desde la rama `bestiario/cinco-mas`. `T-511`. Pedido del usuario: cinco bestias
 > sin diseño complejo, rocambolescas, con animaciones complejas y los detalles de la letra; una tenía que ser el Alien Duce.
 >
 > - **Cybersiberia**: **el Alien Duce**, adentro de la pantalla de la tele, con el cráneo de bola de espejos que tira puntos de
