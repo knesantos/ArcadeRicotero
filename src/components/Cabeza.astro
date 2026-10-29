@@ -52,11 +52,18 @@ interface EnX {
    * reproductor de X dejaría el sitio entero encerrado en un recuadro.
    */
   incrustable?: boolean;
+  /**
+   * Con `incrustable`: la sección que se recorre **adentro** del reproductor (`T-517`). Los
+   * enlaces que cuelgan de esta ruta, y los que saltan a un `#` de la misma pantalla, se quedan
+   * en el recuadro; el resto sigue abriéndose afuera. Lo usa el bestiario, donde pasar de una
+   * región a otra es el paseo y no una salida.
+   */
+  adentro?: string;
 }
 
 type Props = Base & ConImagen & EnX;
 
-const { titulo, descripcion, imagen: propia, imagenAlt, reproductor, incrustable } = Astro.props;
+const { titulo, descripcion, imagen: propia, imagenAlt, reproductor, incrustable, adentro = null } = Astro.props;
 
 const url = new URL(Astro.url.pathname, Astro.site).href;
 const imagen = new URL(propia ?? '/tarjeta.png', Astro.site).href;
@@ -66,12 +73,27 @@ const reproductorUrl = reproductor && new URL(`${reproductor}?incrustado`, Astro
 ---
 
 {incrustable && (
-  <script is:inline>
+  <script is:inline define:vars={{ adentro }}>
     if (window.self !== window.top || new URLSearchParams(location.search).has('incrustado')) {
       document.documentElement.classList.add('incrustado');
       const base = document.createElement('base');
       base.target = '_blank';
       document.head.append(base);
+      // Lo de adentro se queda adentro: un enlace sin `target` propio toma el del `<base>`, así
+      // que se le pone `_self` justo antes de que el toque lo siga.
+      document.addEventListener(
+        'click',
+        (e) => {
+          const a = e.target instanceof Element ? e.target.closest('a[href]') : null;
+          if (!a || a.hasAttribute('target')) return;
+          const href = a.getAttribute('href') ?? '';
+          const url = new URL(href, location.href);
+          const mismaPantalla = href.startsWith('#');
+          const deLaSeccion = adentro && url.origin === location.origin && url.pathname.startsWith(adentro);
+          if (mismaPantalla || deLaSeccion) a.target = '_self';
+        },
+        true,
+      );
     }
   </script>
 )}

@@ -15,14 +15,17 @@
 export const PUENTES: ReadonlyArray<readonly [juego: string, puente: string]> = [
   ['/juegos/adivinar-el-tema/', '/en-x/adivinar-el-tema/'],
   ['/juegos/dos-ejes/', '/en-x/que-tipo-de-ricotero-sos/'],
+  // El bestiario redondo (`T-517`): la portada y cada región que se camina, que cuelgan de acá.
+  ['/redondopedia/bestiario/', '/en-x/bestiario/'],
 ];
 
-/** El reproductor que X dibuja: vertical, porque los dos juegos se pensaron para el celular parado. */
+/** El reproductor que X dibuja: vertical, porque todo lo que va adentro se pensó para el celular parado. */
 export const REPRODUCTOR = { ancho: 480, alto: 720 } as const;
 
 /**
  * La puente de una dirección del sitio, con lo que traiga detrás: las postales de dos ejes
- * (`cu-1/` … `cu-4/`) tienen la suya, y el desafío de la búsqueda viaja tal cual.
+ * (`cu-1/` … `cu-4/`) y las regiones del bestiario tienen la suya, y el desafío de la búsqueda
+ * y la bestia del `#` viajan tal cual.
  * Una dirección sin puente vuelve como llegó.
  */
 export function puenteDe(direccion: string): string {
