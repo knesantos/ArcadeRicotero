@@ -9,7 +9,8 @@
 
 > ## 📺 ADENTRO DE X, SIN SCROLL (2026-10-29) — `T-518`
 >
-> **Sin integrar**, rama `x-sin-scroll`. El usuario lo probó en un posteo de verdad: **el reproductor anda** (en la compu y
+> **En `main` por el PR #97** (fusión `7d28bc9`), rama `x-sin-scroll`. Lo integró Claude a pedido del usuario (*"Sí,
+> integralo"*), con `main` sin moverse desde la rama y todo verde. El usuario lo probó en un posteo de verdad: **el reproductor anda** (en la compu y
 > en el celular, sin aprobación de X). Pero en la compu X dibuja el recuadro de unos **340 × 340** —no los 480 × 720 de
 > las etiquetas— sin dejar bajar, y no se llegaba a la caja de escribir; en el celular lo abre en una ventana de unos
 > **370 × 560**. Pedido textual: *"rediseñarlo para que sea mínimo el de x"*, *"que sea todo sin scroll"*, y del bestiario
