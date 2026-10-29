@@ -7,6 +7,27 @@
 
 **Última actualización:** 2026-10-28
 
+> ## 📺 DOS JUEGOS PARA JUGAR ADENTRO DE X, A PRUEBA (2026-10-28) — `T-513`
+>
+> **Sin integrar**, rama `worktree-difusion-x-player`. Pedido del usuario: investigar las "miniapps" de X y armar
+> *"para noche ricotera y adivina el tema"*.
+>
+> - **Lo que encontró `investigador`** (sin ficha `RES` todavía; no pudo abrir developer.x.com): X **no tiene miniapps**. La
+>   única vía es la **Player Card** (`twitter:card=player`, un iframe dentro del posteo), pensada para video y audio. Según sus
+>   foros pide aprobación manual, no se ve en el timeline y puede no verse en el celular.
+> - **Qué hay**: siete páginas puente en `/en-x/` (`[...juego].astro`): "Adiviná el tema", "¿Qué tipo de ricotero sos?" y
+>   sus cuatro postales. Llevan la Player Card y mandan al juego a quien las abre, con el desafío de la dirección. El iframe
+>   carga el juego de siempre con `?incrustado`: `Cabeza` (`incrustable`) le pone `html.incrustado` y `<base target="_blank">`.
+>   Tamaño apostado: 480 × 720 (`REPRODUCTOR` en `lib/en-x.ts`).
+> - **El modo incrustado** (`juego.css`, sección "Adentro de X"): la cabecera y la marca grande se cambian por la franja de
+>   `FranjaEnX.astro` (FR chica + "SEGUÍ EN EL FICHÍN"), así a 360 × 540 entran el título y el botón de empezar sin
+>   scroll; en "Adiviná el tema" la escalera de intentos se pliega con poco alto y en el resultado suben el puntaje y
+>   "Compartí". **"Compartí" adentro de X postea** (`scripts/en-x.ts`): abre el posteo ya escrito con **la puente** como
+>   dirección (la postal de la manera que salió, en dos ejes), así el posteo nuevo también se juega adentro.
+> - **Verde:** `npm test` (2013), `npm run check`, `npm run build`. Los dos juegos se jugaron enteros a 360 × 540 y 480 × 720,
+>   con el posteo de X armado y la puente probada con un desafío.
+> - **Falta**: publicar, pegar el enlace en un posteo real y mirarlo en iOS, Android y web. Si X no lo muestra, se
+>   queda la tarjeta grande de siempre. Que `investigador` deje la ficha `RES` con lo que el posteo confirme.
 > ## 🐐 SIETE QUE ERAN OJOS: EL CHIVATO, LOS GALLOS, LA ANGUILA, LA LECHUZA, EL ANZUELO, LA PIBA Y LAS LOBAS (2026-10-28) — `D-73` (23)
 >
 > **En `main`** por el PR #86 (fusión `b1677df`), desde la rama `bestiario/siete`.
