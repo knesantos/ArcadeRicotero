@@ -47,7 +47,7 @@ import { armarRecinto, type Raiz, type Vida } from './bestiario/recintos.ts';
 import { crearLejos } from './bestiario/lejos.ts';
 import { crearEntorno } from './bestiario/entorno.ts';
 import { RECETAS } from '../lib/bestiario/sonido.ts';
-import { contextoVivo } from '../lib/audio/contexto.ts';
+import { contextoVivo, despertarSalida } from '../lib/audio/contexto.ts';
 import { Charla } from '../lib/bestiario/charla.ts';
 import { PRIMER_PASO, crearCamara, primerPaso, transformDe, type Encuadre } from '../lib/bestiario/camara.ts';
 import { alSacudon } from './bestiario/sacudon.ts';
@@ -212,6 +212,7 @@ function escuchar(boton: HTMLButtonElement): void {
     rocola.parar();
     soltar();
     lejos.apartar(false);
+    revivirRecital();
     return;
   }
   rocola.tocar(
@@ -219,6 +220,7 @@ function escuchar(boton: HTMLButtonElement): void {
     () => {
       soltar();
       lejos.apartar(false);
+      revivirRecital();
     },
     url,
   );
@@ -544,12 +546,27 @@ function conSonido(): boolean {
 }
 const GESTOS = ['pointerup', 'touchend', 'keydown', 'click'] as const;
 
+/**
+ * Cada toque, mientras el sonido esté pedido: lo prende si todavía no arrancó, y si ya andaba y el
+ * contexto se durmió, lo despierta (`T-519`). En el celular el `<audio>` de una bestia puede dejar
+ * el Web Audio del recital suspendido al terminar, y antes la escucha de toques se soltaba con el
+ * primero que andaba: el camino quedaba mudo hasta recargar. Un `resume()` que no hacía falta no
+ * cuesta nada.
+ */
 function alTocar(ev: Event): void {
   if ((ev.target as Element | null)?.closest?.('#lejos')) return;
-  if (!pedido || lejos.prendido) return soltarGestos();
-  void prenderSonido().then((ok) => {
-    if (ok) soltarGestos();
-  });
+  if (!pedido) return soltarGestos();
+  if (lejos.prendido) {
+    if (contextoVivo()?.state !== 'running') void despertarSalida();
+    return;
+  }
+  void prenderSonido();
+}
+
+/** Al terminar de hablar una bestia, el contexto del recital se intenta despertar sin esperar un toque. */
+function revivirRecital(): void {
+  const ctx = contextoVivo();
+  if (pedido && ctx && ctx.state !== 'running') void ctx.resume().catch(() => {});
 }
 
 function esperarGestos(): void {
@@ -569,6 +586,7 @@ if (botonSonido && datos.lejos.length) {
       soltarGestos();
     } else {
       pedido = true;
+      esperarGestos();
       void prenderSonido();
     }
     pintarSonido(pedido);
@@ -581,9 +599,7 @@ if (botonSonido && datos.lejos.length) {
   pintarSonido(pedido);
   if (pedido) {
     esperarGestos();
-    void prenderSonido().then((ok) => {
-      if (ok) soltarGestos();
-    });
+    void prenderSonido();
   }
 }
 

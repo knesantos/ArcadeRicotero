@@ -561,6 +561,32 @@ html.incrustado.camino-pantalla .franja-en-x {
   padding: 0 var(--espacio-2) var(--espacio-1);
 }
 
+/* La ficha y la lista, angostas y bajas adentro de X (`T-519`). Pedido del usuario, mirando el
+   posteo: *"aún están muy grandes las fichas"*. A lo ancho del recuadro tapaban media escena: van
+   contra el borde derecho, con el ancho de una tarjeta y un tercio del alto, y lo demás se lee
+   bajando adentro. Con mouse, la cruz también achica: el toque de 48 px es del dedo. */
+html.incrustado.camino-pantalla :is(.bestiario-hoja, .camino-fichas--abierta) {
+  left: auto;
+  right: var(--espacio-1);
+  width: min(17rem, calc(100% - var(--espacio-1) * 2));
+  max-height: 34svh;
+  padding: 0.4rem var(--espacio-1) var(--espacio-1);
+}
+
+html.incrustado.camino-pantalla .bestiario-hoja .bestiario-figura {
+  width: 3.5rem;
+}
+
+@media (hover: hover) {
+  html.incrustado.camino-pantalla .bestiario-cerrar {
+    min-width: 0;
+    min-height: 0;
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.9rem;
+  }
+}
+
 /* El aviso de caminar, arriba de la franja y no debajo: en el posteo de prueba (`T-518`) la franja
    lo tapaba entero, y nada decía que la escena seguía de costado. */
 html.incrustado .camino--andando.camino--invita .camino-deslizar {
