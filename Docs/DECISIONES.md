@@ -5840,6 +5840,114 @@ verde. Visto en la escena en un iframe de teléfono, y los cuadros del toque ren
 - `T-510`: verlo en un teléfono de verdad; que `contenido` lea la estampa y la leyenda; la ficha `RES-` que cierre de qué
   edición es la figura sigue pedida en `Docs/SUGERENCIAS/HILO-para-investigador-figura-encadenada.md`.
 
+### Enmienda del 2026-10-28 (22): cinco que eran ojos, con el Alien Duce que pidió el usuario
+
+Pedido del usuario, textual: *"Elegi 5 bestias sin un diseño complejo y diseña e integra al bestiario. Diseños bien
+rocambolescos, con personalidad y animaciones complejas. Que tengan buenos detalles de la letra."* Y en la mitad: *"Que una de
+las bestias sea alien duce. Las demas elegilas"*. La escribe el hilo principal en la rama `bestiario/cinco-mas`, sobre `main` en
+`0260770`. Sin subagentes. Antes de tomar `T-511` se miraron todas las ramas: la última era `T-510`.
+
+#### Cuáles, y por qué esos
+
+Se contó, entorno por entorno, quién seguía siendo ojos en lo oscuro. El bajo tenía uno solo del elenco (el rato) y dos ojos
+con mucha letra; los techos, catorce bichos y dos títeres. Entre los que seguían siendo ojos se eligieron los de letra con más
+objetos para dibujar. El reo semental, que estaba en la lista, salió para dejarle el lugar al Alien Duce.
+
+- **El Alien Duce** (Cybersiberia, *Alien Duce*, *Último bondi a Finisterre*): adentro de la pantalla de ojo de buey de la tele
+  grande, que ya era el ojo de buey de esa tapa, cortado por el círculo. Busto de dictador de opereta, con la quijada para arriba,
+  charreteras y botones de cromo, banda roja y medallas (un disquito, un ticket, una tecla); el cráneo es una **bola de espejos**
+  (*"su look bola de efectos"*) que tira puntos de luz por la nieve y el acero, y le tapa hasta las cejas. Antenas con lamparita.
+  Tocado se aplasta contra el vidrio gritando (*"no quiere estar jamás en la TV"*), le sale por la boca, atravesando la pantalla,
+  el ticket del súper con el evangelio garabateado, que llega a la nieve; lo chupa, mastica y lo escupe hecho un bollo (*"chupa y
+  escupe al fin"*). El ticket no dice la marca del súper: la letra la dice, el dibujo no la pinta.
+- **Las sirenas** (el bajo, *Barbazul versus el amor letal*, *Gulp!*): dos, porque la letra las nombra de a dos. La gata linda,
+  con orejas y bigotes de gata, la camisa apretada y un prendedor radioactivo que brilla; y la llena, redonda como una luna, con
+  el botín que reclaman para la prisión, que es un botín de cordones. El agua las corta en la cintura con un `clipPath` en sus
+  coordenadas, y por adentro de ese corte se zambullen. Tocadas, cantan para el lado del fuego, golpean el agua con la cola, se
+  zambullen y salen.
+- **El amorcito que mordió el vidrio** (el bajo, *Ñam fri frufi fali fru*, *Gulp!*): colgada del marco de su ventana rota, con
+  los codos apoyados, un vidrio entre los dientes y el sifón en la mano. Borracha: se mece, tiene hipo de soda, dormita. Tocada
+  muerde alocada: el vidrio salta en migas, aparece el **¡ÑAM!** escrito en el aire con la letra a mano de la tapa, y cabalga en el
+  marco revoleando el sifón. Al final ya tiene otro vidrio.
+- **El gato matón** (los techos, *Rock para el negro Atila*, *Lobo suelto*): en la letra el gato matón es la cana, así que tiene
+  gorra de vigilante con la sirena nueva arriba (naranja y azul de *Cordero atado*, la tapa gemela) y la matraca de ocasión con
+  la etiqueta del precio colgando; el collar es la cadena de gillettes de la tapa. Agazapado en la chapa del canto, a la izquierda
+  de donde camina el Atila. Tocado sale de operativo: sirena, matraca, meneo, salto adonde estaba el ratón, y nada.
+- **Mandinga** (el infierno, *Rato molhado*, *Momo sampler*): como la letra lo llama sombra chinesca, **es un títere de sombra**,
+  un recorte de perfil sostenido con varillas desde abajo, en el violeta casi negro de la contratapa con el calado de plata del
+  medallón. Las botas nuevas son lo único que brilla (*"su cara es tan expresiva como el par de sus botas nuevas"*). Tiene un
+  candil en el piso y su sombra en la pared del fondo, que muestra los cuernos largos, las garras y la cola que el recorte no
+  muestra. Tocado saluda sacándose el sombrero (y se le ven los cuernos), la sombra crece, un fogonazo encandila y se pone de
+  canto: se va. Las varillas de las manos son una raya de largo 1 que la cuenta gira y estira desde la mano hasta abajo del piso.
+
+#### Lo que se tocó alrededor
+
+- **Los ojos del ratón** bajaron a la chapa, delante de la cara del gato (344, 252 → 370, 282).
+- **`rato.test.ts` mira al rato solo** (`capasDe(..., 'el-rato-molhado')`), como ya hacían el del diablo y el del Morta: ahora el
+  bajo tiene otros títeres con partes del mismo nombre.
+- Las cinco estampas se reescribieron con el molde de la vigésima; la de Mandinga entra justo en los 320 del schema.
+
+Cada uno trae su bloque de tintas medidas con sharp en las tapas de `public/tapas/` (`tokens.css`), su bloque en `sitio.css`,
+su conducta en `scripts/bestiario/` y su test (7 u 8 cada uno). `npm test` (2046), `npm run check` y `npm run build` en verde.
+Se los vio en sus escenas con la imprenta, pose por pose, y en la página de cada recinto, en un iframe con `requestAnimationFrame`
+reemplazado: viven, y el toque corre entero hasta abrir la ficha.
+
+- `T-511`: verlos en un teléfono de verdad, que `contenido` lea las cinco estampas, y pasar los cinco bloques de tintas al lienzo.
+
+### Enmienda del 2026-10-28 (23): siete que eran ojos o una silueta pintada, uno por entorno flaco
+
+Pedido del usuario, textual: *"Elegi otras 7 bestias que no tengan un diseñp complejo y dales un buen diseño rocambolesco con
+buenos detalles y una animacion compleja y acorde al personajes"*. La escribe el hilo principal en la rama `bestiario/siete`,
+sobre `bestiario/cinco-mas` en `689266f` (la vigesimosegunda, todavía sin integrar). Antes de tomar `T-512` se miraron todas las
+ramas: la última era `T-511`.
+
+#### Cuáles, y por qué esos
+
+Uno por entorno con pocos títeres para los bichos que tiene, entre los que seguían siendo ojos o una silueta pintada en el piso.
+Se descartaron la drácula con tacones y el lobo suelto, que ya eran títeres de las primeras vueltas.
+
+- **El chivato** (la prisión, *Murga purga*, *Momo sampler*): un chivito murguero parado en dos patas, con levita de lentejuelas,
+  galera entre los cuernos, la oreja pegada a la reja de la celda del reo, la libretita y el lápiz atrás de la oreja. La palabra
+  sirve para el animal y para el buchón. Solo escucha, anota, mastica la hoja o se hace el distraído; tocado canta la delación de
+  murguero, se le vuela la lista adentro de la celda, y se encoge.
+- **Los gallos sofocados** (el templo, *Templo de Momo* y *Pool, Averna y Papusa*, *Momo sampler*): dos gallos de fin de fiesta
+  apoyados uno en el otro, el del espolón de oro con la botella de licor y el flaco con la flor chillona. Tocados arman una riña
+  de opereta, se les ahoga el cacareo y terminan abrazados.
+- **La anguila** (el bajo, *Cruz Diablo*, *Luzbelito*): medio hundida en un charco de barro; el cuerpo es una cadena de doce
+  segmentos de largo fijo con una onda que viaja de la cabeza a la cola, y el barro corta lo que queda abajo. Tocada salta en arco
+  chorreando, se le escapa la burbuja del último aire y el barro se la vuelve a tragar.
+- **La lechuza que circula** (el árbol, *Mariposa Pontiac / Rock del país*, *Luzbelito*): lechuza de campanario en una rama seca,
+  mordiendo un pito de vigilante, con un boleto pinchado en la rama y una anilla en la pata. Gira la cabeza de más; tocada pita y
+  da la vuelta al árbol sin dejar de mirarte.
+- **El que mordió el anzuelo** (los astilleros, *Esa estrella era mi lujo*, *Bang! Bang! Estás liquidado*): un pescado iluso
+  colgado del labio en la caña del muelle, con la estrella de lata de cebo y los anzuelos viejos de las otras veces. Tocado se
+  zafa, se hunde detrás del canto y vuelve a saltar a morder.
+- **La piba con la remera de Greenpeace** (la ruta, *Momo sampler*): dormida en la banquina en un almohadón de sillón, o
+  haciéndose. La remera lleva una ballena pintada a mano y no el logo (el precedente del ticket del Alien; lo mira su test).
+  Abre un ojo cuando pasa un fierro; tocada ronca de mentira, espía, se pone colorada y se vuelve a tirar.
+- **Las antiguas lobas** (el monte, *Barbazul versus el amor letal*, *Gulp!*): dos lobas viejas echadas como muertas, una con la
+  boca pintada y el collar roto, la otra tuerta con catarata. Tocadas se paran crujiendo, aúllan a dúo, trotan de jóvenes un
+  momento y se vuelven a echar.
+
+#### Cómo se hizo, y lo que se tocó alrededor
+
+- El hilo principal armó primero el andamiaje (esqueletos registrados en `elenco.ts` y `vivos.ts`, y bloques vacíos con sus
+  marcadores en `tokens.css` y `sitio.css`), y cada bestia la dibujó y animó un subagente propio (siete en paralelo, en Opus), que
+  escribió solo sus archivos y su bloque y miró sus poses impresas antes de entregar. Lo compartido lo integró el hilo principal.
+- **Se sacaron del piso** las siluetas pintadas de la lechuza (árbol), del pescado colgando de la línea (astilleros, queda la caña)
+  y de la piba (ruta), en `arte-entornos.ts`, y se reimprimieron esos tres pisos y sus versiones del camino. Sus tests miran que no
+  vuelvan. Se sacó `ASTILLERO.pescado` de `rig-entornos.ts`, que ya no lo usa nadie.
+- Los ojos viejos se quedan en sus listas (los cuenta `bestiario.test.ts`); `sinTitere` los saca de la escena.
+- Las siete estampas, con el molde de la vigésima; los discos se cotejaron contra `cancionero.json`.
+
+Cada uno trae su bloque de tintas medidas con sharp en su tapa, su bloque en `sitio.css`, su conducta y su test (8 o 9). `npm test`
+(2105), `npm run check` y `npm run build` en verde. Los siete se vieron vivir y responder al toque en la página de su recinto,
+en un iframe con `requestAnimationFrame` reemplazado, sin errores.
+
+- `T-512`: verlos en un teléfono de verdad, que `contenido` lea las siete estampas, pasar los siete bloques de tintas al lienzo, y
+  ver si `arte-desencarnada.ts` estira `ruta-piso` en su retrato (lo señaló el que hizo la piba: pinta en 0,0,900,640 una pieza
+  de caja 0,200,900,440).
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17

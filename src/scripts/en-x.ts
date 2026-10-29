@@ -1,5 +1,5 @@
 /**
- * "Compartí" cuando el juego se juega adentro de X (`T-512`).
+ * "Compartí" cuando el juego se juega adentro de X (`T-513`).
  *
  * Adentro del reproductor la escalera de siempre (`compartir.ts`) se queda corta: un iframe
  * ajeno no tiene permiso para el menú del sistema ni para el portapapeles, y terminaba en la

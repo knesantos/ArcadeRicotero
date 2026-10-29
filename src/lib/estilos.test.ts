@@ -814,7 +814,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'analitica.ts': { sinTablero: 'la analitica de Vercel (D-56); pega un script y no toca el DOM visible' },
   'armar-cancionero.ts': { sinTablero: 'arma un HTML autocontenido que se descarga; sus estilos viajan adentro de ese archivo, no en las hojas del sitio' },
   'cancion.ts': { sinTablero: 'transportar y bajar solo en la ficha de un tema; no hay partida ni respuesta que senalar' },
-  'en-x.ts': { sinTablero: 'el posteo de X ya escrito cuando el juego se juega adentro de un posteo (T-512); no crea elementos ni clases' },
+  'en-x.ts': { sinTablero: 'el posteo de X ya escrito cuando el juego se juega adentro de un posteo (T-513); no crea elementos ni clases' },
   'compartir.ts': { sinTablero: 'el boton de compartir de tapa, letra y dos ejes (con la tarjeta fija de su identidad, D-57); sus tres clases son las de compartir de juego.css' },
   'correccion.ts': { sinTablero: 'el boton de correccion compartido; abre un formulario, no pinta estado de partida' },
   'diagnostico-audio.ts': { sinTablero: 'pantalla de medicion; sus reglas viven en el <style> de su propia pagina y la cubre la red derivada' },

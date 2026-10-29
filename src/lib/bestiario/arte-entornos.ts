@@ -29,7 +29,7 @@ import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.
 import { azar } from './pincel.ts';
 import {
   ALTO, ANCHO, ARBOL, ASTILLERO, COSAS_DE_CYBERSIBERIA, COSAS_DE_LOS_ASTILLEROS, CYBER, GALPON, OJOS_DE_CYBERSIBERIA,
-  COSAS_DE_LA_MESA, FIERROS, MESA, OJOS_DE_LA_MESA, OJOS_DE_LA_RUTA, OJOS_DE_LOS_ASTILLEROS, OJOS_DEL_ARBOL, RUTA,
+  COSAS_DE_LA_MESA, FIERROS, MESA, OJOS_DE_LA_MESA, OJOS_DE_LOS_ASTILLEROS, OJOS_DEL_ARBOL, RUTA,
 } from './rig-entornos.ts';
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
@@ -625,7 +625,6 @@ function arbolPiso(ancho = ANCHO, alto = ALTO): string {
   const at = (id: string): readonly [number, number] => [X(o[id]![0]), o[id]![1]];
   const [jx, jy] = at('el-jocker-burlon');
   const [scx, scy] = at('el-senor-de-los-cielos');
-  const [lx, ly] = at('la-lechuza-que-circula');
   const [a2x, a2y] = at('el-angel-guardian');
   const [a3x, a3y] = at('los-angelitos-profesionales');
   const [fx, fy] = at('el-angelito-frito');
@@ -655,10 +654,7 @@ function arbolPiso(ancho = ANCHO, alto = ALTO): string {
     forma(elipse(bgx + 2, bgy + 12, 11, 15), A.negro) +
     trazo(`M${f(bgx - 6)} ${f(bgy + 8)} Q${f(bgx - 26)} ${f(bgy + 10)} ${f(bgx - 30)} ${f(bgy + 24)} M${f(bgx - 4)} ${f(bgy + 20)} Q${f(bgx - 20)} ${f(bgy + 30)} ${f(bgx - 34)} ${f(bgy + 30)}`, A.negro, 4) +
     trazo(`M${f(bgx + 6)} ${f(bgy - 4)} q4 -10 10 -12 M${f(bgx - 2)} ${f(bgy - 4)} q-2 -10 2 -14`, A.negro, 2) +
-    // La lechuza, dando vueltas por el cielo con las alas abiertas.
-    forma(`M${f(lx)} ${f(ly - 8)} C${f(lx - 20)} ${f(ly - 22)} ${f(lx - 40)} ${f(ly - 12)} ${f(lx - 56)} ${f(ly - 4)} C${f(lx - 36)} ${f(ly - 2)} ${f(lx - 20)} ${f(ly + 6)} ${f(lx - 8)} ${f(ly + 16)} L${f(lx)} ${f(ly + 22)} L${f(lx + 8)} ${f(ly + 16)} C${f(lx + 20)} ${f(ly + 6)} ${f(lx + 36)} ${f(ly - 2)} ${f(lx + 56)} ${f(ly - 4)} C${f(lx + 40)} ${f(ly - 12)} ${f(lx + 20)} ${f(ly - 22)} ${f(lx)} ${f(ly - 8)} Z`, A.negro, 0.92) +
-    forma(circulo(lx, ly, 12), A.negro) +
-    forma(`M${f(lx - 11)} ${f(ly - 4)} L${f(lx - 9)} ${f(ly - 18)} L${f(lx - 3)} ${f(ly - 9)} Z M${f(lx + 11)} ${f(ly - 4)} L${f(lx + 9)} ${f(ly - 18)} L${f(lx + 3)} ${f(ly - 9)} Z`, A.negro) +
+    // La lechuza que circula ya no se pinta acá: es un títere del elenco (`arte-lechuza.ts`), en su rama seca.
     // Los ángeles, al pie del árbol: las alas cerradas y pálidas, el cuerpo en sombra.
     // El ángel de la soledad ya no se pinta acá: es un títere del elenco (`arte-angel.ts`), en este mismo pie.
     alas(a2x, a2y, 60) + figura(a2x, a2y, 60, A.negro) +
@@ -1212,7 +1208,7 @@ function ferry(k: number): string {
 function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
   const k = ancho / ANCHO;
   const X = (x: number): number => x * k;
-  const { muelle, pila, farol, hamaca, planchada, cania, pescado, lanchon, balde, valija } = ASTILLERO;
+  const { muelle, pila, farol, hamaca, planchada, cania, lanchon, balde, valija } = ASTILLERO;
   const rnd = azar(331);
 
   // El muelle: tablones cada vez más anchos, con la tiza en las juntas.
@@ -1299,20 +1295,14 @@ function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
     forma(`M${f(nvx - 8)} ${f(nvy - 14)} L${f(nvx + 8)} ${f(nvy - 14)} L${f(nvx + 18)} ${f(nvy + 34)} L${f(nvx - 18)} ${f(nvy + 34)} Z`, T.negro) +
     soplo(`M${f(nvx - 8)} ${f(nvy - 14)} L${f(nvx - 18)} ${f(nvy + 34)} L${f(nvx - 14)} ${f(nvy + 34)} L${f(nvx - 5)} ${f(nvy - 12)} Z`, T.sodio, 'xs', 0.5);
 
-  // La caña apoyada en la bita, y el que mordió el anzuelo colgando de la línea.
+  // La caña apoyada en la bita. El que mordió el anzuelo ya no se pinta acá: es un títere del elenco (`arte-anzuelo.ts`),
+  // que cuelga de la punta de esta caña.
   const [cx, cpy] = [X(cania.x), cania.piso];
   const [ptx, pty] = [X(cania.punta[0]), cania.punta[1]];
-  const [psx, psy] = [X(pescado.x), pescado.y];
   const bita = (bx: number, by: number): string => forma(`M${f(bx - 9)} ${f(by)} L${f(bx - 7)} ${f(by - 16)} L${f(bx - 12)} ${f(by - 20)} L${f(bx + 12)} ${f(by - 20)} L${f(bx + 7)} ${f(by - 16)} L${f(bx + 9)} ${f(by)} Z`, T.negro) + trazo(`M${f(bx - 12)} ${f(by - 20)} L${f(bx + 12)} ${f(by - 20)}`, T.clara, 1.4, 0.7);
-  const pez = `M${f(psx)} ${f(psy)} C${f(psx + 12)} ${f(psy + 10)} ${f(psx + 12)} ${f(psy + 34)} ${f(psx + 2)} ${f(psy + 46)} L${f(psx + 12)} ${f(psy + 60)} L${f(psx)} ${f(psy + 54)} L${f(psx - 12)} ${f(psy + 60)} L${f(psx - 2)} ${f(psy + 46)} C${f(psx - 12)} ${f(psy + 34)} ${f(psx - 12)} ${f(psy + 10)} ${f(psx)} ${f(psy)} Z`;
   const pesca =
     bita(cx, cpy) +
-    trazo(`M${f(cx - 4)} ${f(cpy - 6)} L${f(ptx)} ${f(pty)}`, T.negro, 3) + trazo(`M${f(cx - 4)} ${f(cpy - 7)} L${f(ptx)} ${f(pty - 1)}`, T.clara, 0.9, 0.5) +
-    trazo(`M${f(ptx)} ${f(pty)} L${f(psx)} ${f(psy - 4)}`, T.clara, 0.8, 0.7) +
-    trazo(`M${f(psx)} ${f(psy - 4)} q-4 0 -3 5`, T.clara, 1.2) +
-    enmascarado('t-pez', pez, forma(pez, T.azul) + nube(psx - 4, psy + 20, 6, 20, T.clara, 's', 0.6) + nube(psx + 6, psy + 30, 8, 24, T.negro, 's', 0.6)) +
-    `<g filter="url(#tiza)">${trazo(pez, T.clara, 1.4, 0.8)}${[0, 1, 2, 3].map((i) => trazo(`M${f(psx - 6)} ${f(psy + 14 + i * 7)} q6 4 12 0`, T.clara, 1, 0.6)).join('')}</g>` +
-    forma(circulo(psx + 3, psy + 9, 1.8), T.papel);
+    trazo(`M${f(cx - 4)} ${f(cpy - 6)} L${f(ptx)} ${f(pty)}`, T.negro, 3) + trazo(`M${f(cx - 4)} ${f(cpy - 7)} L${f(ptx)} ${f(pty - 1)}`, T.clara, 0.9, 0.5);
 
   // El as del Club París, esperando con todo lo suyo en una valija.
   const [vx, vy] = [X(valija.x), valija.piso];
@@ -1787,14 +1777,8 @@ function rutaPiso(ancho = ANCHO, alto = ALTO): string {
     [vx - 38, vx + 38].map((wx) => forma(circulo(wx, vp - 40, 12), R.negro) + forma(circulo(wx, vp - 40, 5), R.tenue)).join('') +
     nube(vx + 58, vp - 26, 6, 5, R.papel, 's', 0.9) +
     forma(caja(vx - 62, vp - 24, 6, 6), R.vivo, 0.8);
-  const o = OJOS_DE_LA_RUTA;
-  const [pbx, pby] = [X(o['la-piba-de-greenpeace']![0]), o['la-piba-de-greenpeace']![1]];
   // La bella señora ya no se pinta acá: es un títere del elenco (`arte-desencarnada.ts`), en la banquina de este lado.
-  // La piba con la remera, dormida en el pasto (o haciéndose).
-  const piba =
-    forma(circulo(pbx, pby, 9), R.negro) +
-    forma(`M${f(pbx + 8)} ${f(pby - 4)} Q${f(pbx + 40)} ${f(pby - 10)} ${f(pbx + 70)} ${f(pby - 4)} L${f(pbx + 96)} ${f(pby + 2)} L${f(pbx + 96)} ${f(pby + 10)} Q${f(pbx + 40)} ${f(pby + 12)} ${f(pbx + 6)} ${f(pby + 10)} Z`, R.negro) +
-    forma(`M${f(pbx + 12)} ${f(pby - 4)} Q${f(pbx + 26)} ${f(pby - 8)} ${f(pbx + 42)} ${f(pby - 6)} L${f(pbx + 42)} ${f(pby + 10)} L${f(pbx + 12)} ${f(pby + 10)} Z`, R.papel, 0.55);
+  // La piba con la remera tampoco: es un títere del elenco (`arte-piba.ts`), dormida en esta banquina (o haciéndose).
   return (
     `<g filter="url(#rociado)">` +
     // La banquina de arriba, con el pasto, y lo que alumbran los faros al pasar.
@@ -1810,8 +1794,7 @@ function rutaPiso(ancho = ANCHO, alto = ALTO): string {
     yuyos(-10, ancho + 10, arriba, 30, Math.round(160 * k), 523, R.topo, R.cuero) +
     yuyos(-10, ancho + 10, alto, 50, Math.round(120 * k), 527, R.topo, R.cuero) +
     telegrafo +
-    volcado +
-    piba
+    volcado
   );
 }
 

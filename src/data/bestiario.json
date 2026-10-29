@@ -254,7 +254,7 @@
       "dibujo": { "f": "ave", "tipo": "lechuza" },
       "tema": "mariposa-pontiac-rock-del-pais",
       "verso": ["Con la lechuza que circula, ya no se puede más"],
-      "estampa": "Da vueltas sobre todo el mapa con los ojos abiertos. Qué es la lechuza, cada uno lo sabe.",
+      "estampa": "Parada en una rama seca del árbol, mordiendo el pito. Viste Luzbelito, su disco. De la letra son el pito de vigilante y el boleto pinchado en la rama; del dibujo, los ojos de disco y la anilla en la pata. Tocala: gira la cabeza de más, pita y da la vuelta al árbol sin dejar de mirarte.",
       "cerca": ["los-pajaros-de-la-noche", "la-mariposa-pontiac"]
     },
     {
@@ -417,7 +417,7 @@
       "dibujo": { "f": "persona", "con": ["antenas"], "ropa": "uniforme" },
       "tema": "alien-duce",
       "verso": ["Alien Duce dice desde la TV", "que no quiere estar jamas en la TV"],
-      "estampa": "Habla desde adentro de una pantalla, con antenas. Arriba le da vueltas un gavilán.",
+      "estampa": "Habla desde adentro de la pantalla de la tele, y no quiere estar en la tele. Viste Último bondi a Finisterre, su disco. De la letra son el look bola de efectos, el evangelio escrito en los tickets del súper, el matón y que chupa y escupe; del dibujo, el uniforme de opereta y las antenas. Tocalo: el evangelio.",
       "cerca": ["el-gavilan", "porco-rex"]
     },
     {
@@ -592,7 +592,7 @@
       "dibujo": { "f": "ave", "tipo": "gallo" },
       "tema": "templo-de-momo",
       "verso": ["Vienen tambaleando, gallos sofocados"],
-      "estampa": "Dos gallos que llegan tambaleando a la fiesta.",
+      "estampa": "Dos gallos apoyados uno en el otro en el ala del templo, sofocados. Visten Momo sampler, su disco. De la letra son el tambaleo, el espolón de oro, la flor chillona y la botella de licor; del dibujo, la serpentina y el papel picado. Tocalos: arman una riña de opereta, se les ahoga el cacareo y terminan abrazados.",
       "tambien": [{ "tema": "pool-averna-y-papusa", "verso": ["No hay quien le quite a ese gallo el espolon!"] }],
       "cerca": ["momo"]
     },
@@ -854,7 +854,7 @@
       "dibujo": { "f": "pez", "con": ["anzuelo"] },
       "tema": "esa-estrella-era-mi-lujo",
       "verso": ["Mordí el anzuelo una vez más", "Siempre un iluso"],
-      "estampa": "La letra lo dice de una persona; la estampa lo dibuja pescado, colgando de la línea que baja del muelle.",
+      "estampa": "Colgado del labio en la caña del muelle, feliz. Viste Bang! Bang! Estás liquidado, su disco. De la letra son el anzuelo, la estrella de lata que mordió y los anzuelos viejos de las otras veces; del dibujo, el plomito, los cachetes colorados y la sonrisa boba. Tocalo: se zafa, se hunde y vuelve a morder.",
       "cerca": ["la-anguila", "el-gordo-pierre"]
     },
 
@@ -886,7 +886,7 @@
       "dibujo": { "f": "persona", "ropa": "vestido", "con": ["vidrio"] },
       "tema": "nam-fri-frufi-fali-fru",
       "verso": ["Voy a cuidar de mi amorcito", "Que mordió el vidrio por demás otra vez"],
-      "estampa": "En la ventana de al lado, también rota, con un pedazo de vidrio entre los dientes.",
+      "estampa": "Colgada de su ventana, también rota, con un pedazo de vidrio entre los dientes. Viste Gulp!, su disco. De la letra son el vidrio, el sifón, la borrachera de otra vez y el ñam cuando muerde alocada; del dibujo, los ojos que no se ponen de acuerdo y el hipo de soda. Tocala: muerde.",
       "cerca": ["el-gordo-pierre"]
     },
     {
@@ -972,7 +972,7 @@
       "dibujo": { "f": "persona", "con": ["cola-de-pez"], "ropa": "nada" },
       "tema": "barbazul-versus-el-amor-letal",
       "verso": ["Gatas lindas, sirenas llenas."],
-      "estampa": "En el borde del agua, del lado que da al fuego. Le cantan a Luzbelito y él no se da vuelta.",
+      "estampa": "En el agua, del lado que da al fuego. Le cantan a Luzbelito y él no se da vuelta. Visten Gulp!, su disco. De la letra son la gata linda, la llena, la camisa apretada con lo radioactivo y el botín que reclaman para la prisión; del dibujo, que el botín es un botín. Tocalas: cantan.",
       "tambien": [{ "tema": "luzbelito-y-las-sirenas", "verso": ["Luzbelito sabe que su destino es de soledad"] }],
       "cerca": ["luzbelito", "barbazul"]
     },
@@ -986,7 +986,7 @@
       "dibujo": { "f": "anguila" },
       "tema": "cruz-diablo",
       "verso": ["Un barro que asfixia esa anguila"],
-      "estampa": "En el barro donde el agua se junta con el fuego. Se ahoga en lo espeso.",
+      "estampa": "En el barro del rincón donde el agua da con el fuego, medio hundida, boqueando. Viste Luzbelito, su disco. De la letra son el barro que asfixia, los moretones, la boca que traga mal y los centavos hundidos; del dibujo, el ojito de pez asustado y el pegote de barro. Tocala: salta y el barro se la vuelve a tragar.",
       "cerca": ["zippo", "las-sirenas"]
     },
 
@@ -1073,7 +1073,7 @@
       "dibujo": { "f": "persona", "con": ["cuernos", "sombrero"], "ropa": "poncho" },
       "tema": "rato-molhado",
       "verso": ["mandinga lo pone así", "siniestro pero gentil"],
-      "estampa": "Con sombrero y poncho, gentil. Así es como se presenta.",
+      "estampa": "Gentil, con sombrero y poncho, y es una sombra chinesca: un recorte con varillas. Viste Momo sampler, su disco. De la letra son lo siniestro y gentil, el cascabel, la manga en la nariz y la cara como sus botas nuevas; del dibujo, el candil y la sombra, que muestra lo que él no. Tocalo: encandila y se va.",
       "cerca": ["el-diablo-de-muchos-cuernos", "el-rato-molhado"]
     },
 
@@ -1217,7 +1217,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "cuernos", "hocico": "largo", "cola": "corta", "con": ["barbita"] },
       "tema": "murga-purga",
       "verso": ["Penas del corazón", "Que duran siempre menos", "Que las de prisión, chivato."],
-      "estampa": "Un chivito con barba, en la puerta de la prisión. La palabra sirve para el animal y para el buchón.",
+      "estampa": "Con la oreja pegada a la reja de la celda del reo, vestido de murguero. Viste Momo sampler, su disco. De la letra son el buche, el sebo y el bolsillo sin propina; del dibujo, la libretita, el lápiz atrás de la oreja y la galera entre los cuernos. Tocalo: canta la delación, se le vuela la lista y se encoge.",
       "cerca": ["el-diablo-mas-veloz"]
     },
     {
@@ -1245,7 +1245,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "punta", "hocico": "corto", "cola": "larga", "pose": "acecha" },
       "tema": "rock-para-el-negro-atila",
       "verso": ["Quiero verte oler como el ratón,", "el peligro del gato matón."],
-      "estampa": "En la cornisa, agazapado, mirando para abajo. Abajo hay un ratón que ya lo olió.",
+      "estampa": "Agazapado en la chapa del canto, mirando para abajo, donde el ratón ya lo olió. Viste Lobo suelto, su disco, con la sirena de la tapa gemela. De la letra son la cana, la sirena nueva y la matraca de ocasión; del dibujo, la gorra, el collar de gillettes y la etiqueta del precio. Tocalo: sale de operativo.",
       "cerca": ["el-raton", "el-negro-atila"]
     },
     {
@@ -1500,7 +1500,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "punta", "hocico": "largo", "cola": "peluda" },
       "tema": "barbazul-versus-el-amor-letal",
       "verso": ["Y antiguas lobas pulpas que reviven"],
-      "estampa": "Dos lobas viejas que vuelven a andar por el monte.",
+      "estampa": "Echadas al pie de las tiras del monte, como muertas. Visten Gulp!, su disco. De la letra son la boca pintada, el collar roto de la prisión, el aullido que no se oye y la manzana firme; del dibujo, la oreja mordida y el ojo con catarata. Tocalas: se paran crujiendo, aúllan a dúo, trotan de jóvenes y se vuelven a echar.",
       "cerca": ["el-lobo-caido", "barbazul"]
     },
     {
@@ -1906,7 +1906,7 @@
       "dibujo": { "f": "persona", "ropa": "remera", "pose": "duerme" },
       "tema": "una-piba-con-la-remera-de-greenpeace",
       "verso": ["Esta dormida o finge que duerme"],
-      "estampa": "Dormida al costado del camino, o haciéndose. Lejos de las vías.",
+      "estampa": "Dormida en la banquina, la cabeza en un almohadón de sillón, o haciéndose. Viste Momo sampler, su disco. De la letra son los sillones, las zapatillas para salir corriendo y el mirar atrás; del dibujo, la ballena pintada a mano y el mosquito. Tocala: ronca de mentira, espía con un ojo y se pone colorada.",
       "cerca": ["la-bella-senora-desencarnada"]
     }
   ]

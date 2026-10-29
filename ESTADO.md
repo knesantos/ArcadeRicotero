@@ -7,7 +7,7 @@
 
 **Última actualización:** 2026-10-28
 
-> ## 📺 DOS JUEGOS PARA JUGAR ADENTRO DE X, A PRUEBA (2026-10-28) — `T-512`
+> ## 📺 DOS JUEGOS PARA JUGAR ADENTRO DE X, A PRUEBA (2026-10-28) — `T-513`
 >
 > **Sin integrar**, rama `worktree-difusion-x-player`. Pedido del usuario: investigar las "miniapps" de X y armar
 > *"para noche ricotera y adivina el tema"*.
@@ -28,6 +28,36 @@
 >   con el posteo de X armado y la puente probada con un desafío.
 > - **Falta**: publicar, pegar el enlace en un posteo real y mirarlo en iOS, Android y web. Si X no lo muestra, se
 >   queda la tarjeta grande de siempre. Que `investigador` deje la ficha `RES` con lo que el posteo confirme.
+> ## 🐐 SIETE QUE ERAN OJOS: EL CHIVATO, LOS GALLOS, LA ANGUILA, LA LECHUZA, EL ANZUELO, LA PIBA Y LAS LOBAS (2026-10-28) — `D-73` (23)
+>
+> **En `main`** por el PR #86 (fusión `b1677df`), desde la rama `bestiario/siete`.
+> `T-512`. Pedido del usuario: otras siete bestias sin diseño complejo, rocambolescas, con buenos detalles y animación acorde.
+>
+> - **Prisión**: el chivato murguero con la oreja en la reja; tocado canta la delación y se le vuela la lista.
+> - **Templo**: los gallos sofocados, borrachos de fin de fiesta; tocados, riña de opereta y abrazo.
+> - **Bajo**: la anguila en el barro, que ondula de verdad; tocada salta y el barro se la traga.
+> - **Árbol**: la lechuza que circula, con el pito de vigilante; tocada da la vuelta al árbol mirándote.
+> - **Astilleros**: el que mordió el anzuelo, colgado de la caña; tocado se zafa y vuelve a morder.
+> - **Ruta**: la piba con la remera (ballena, sin logo), que finge que duerme; tocada ronca de mentira y espía.
+> - **Monte**: las antiguas lobas; tocadas reviven, aúllan a dúo, trotan y se vuelven a echar.
+> - Se sacaron del piso las siluetas pintadas de la lechuza, el pescado y la piba (reimpresos).
+> - **Verde:** `npm test` (2105), `npm run check`, `npm run build`. Vistos vivir y responder al toque en la página de cada recinto.
+> - **Falta**: `T-512` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo, el retrato de la desencarnada).
+
+> ## 📺 CINCO QUE ERAN OJOS: EL ALIEN DUCE, LAS SIRENAS, EL AMORCITO, EL GATO MATÓN Y MANDINGA (2026-10-28) — `D-73` (22)
+>
+> **En `main`** por el PR #84 (fusión `84a4b09`), desde la rama `bestiario/cinco-mas`. `T-511`. Pedido del usuario: cinco bestias
+> sin diseño complejo, rocambolescas, con animaciones complejas y los detalles de la letra; una tenía que ser el Alien Duce.
+>
+> - **Cybersiberia**: **el Alien Duce**, adentro de la pantalla de la tele, con el cráneo de bola de espejos que tira puntos de
+>   luz; tocado se aplasta contra el vidrio, escupe el ticket del evangelio hasta la nieve, lo chupa y lo escupe en un bollo.
+> - **El bajo** (tenía uno solo): **las sirenas**, la gata linda y la llena con el botín, que cantan, colean y se zambullen; y
+>   **el amorcito**, colgada de su ventana rota con el vidrio entre los dientes y el sifón; tocada muerde, ¡ÑAM!, y cabalga.
+> - **Los techos**: **el gato matón**, la cana con sirena y matraca de ocasión; tocado sale de operativo y salta al ratón.
+> - **El infierno**: **Mandinga**, un títere de sombra con varillas; tocado saluda, su sombra crece en la pared, encandila y se va.
+> - Los ojos del ratón bajaron a la chapa; `rato.test.ts` mira al rato solo.
+> - **Verde:** `npm test` (2046), `npm run check`, `npm run build`. Vistos vivir y responder al toque en la página de cada recinto.
+> - **Falta**: `T-511` (verlos en un teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
 
 > ## ⛓️ EL ESCLAVO ENCADENADO, EN LA PRISIÓN (2026-10-24) — `D-73` (21)
 >

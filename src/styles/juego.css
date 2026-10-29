@@ -6925,7 +6925,7 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 }
 
 /* ==========================================================================
-   Adentro de X (`T-512`)
+   Adentro de X (`T-513`)
 
    Cuando el juego se juega en el reproductor de un posteo (`?incrustado`, o metido en un
    marco ajeno), `Cabeza` le pone `html.incrustado` antes de pintar. No hay sitio alrededor:

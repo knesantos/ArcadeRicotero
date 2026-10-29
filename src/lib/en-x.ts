@@ -1,5 +1,5 @@
 /**
- * Los juegos que se juegan adentro de un posteo de X (`T-512`).
+ * Los juegos que se juegan adentro de un posteo de X (`T-513`).
  *
  * X no tiene miniapps: la única vía es la **Player Card**, un iframe adentro del posteo que
  * apunta al juego de siempre con `?incrustado`. La dirección que se pega en X no es la del

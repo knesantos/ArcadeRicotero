@@ -64,7 +64,8 @@ const parte = (nombre: string, cuerpo: string): string => `<g data-parte="${nomb
 // abren por el baldío.
 export const VECINOS_DEL_BALDIO: Readonly<Record<string, readonly [number, number, Tinta]>> = {
   'el-gato-maton': [300, 206, 'oro'],
-  'el-raton': [344, 252, 'papel'],
+  // El ratón bajó a la chapa, delante de la cara del gato matón, que ahora es títere (`arte-maton.ts`).
+  'el-raton': [370, 282, 'papel'],
   'el-gato-de-susanita': [1150, 168, 'oro'],
   'susanita': [1196, 214, 'papel'],
   'el-gato-que-llamas-con-silbidos': [762, 214, 'oro'],
