@@ -145,6 +145,24 @@
 > - **Verde:** `npm test` (2009), `npm run check`, `npm run build`. Visto en un iframe de teléfono y cuadro por cuadro.
 > - **Falta**: verlo en un teléfono de verdad, que `contenido` lea estampa y leyenda.
 
+> ## 🕯️ LUZBELITO, MACIZO (2026-10-24) — `D-73`, pulida
+>
+> **En el PR #82** (rama `bestiario/luzbelito-macizo`, sobre `main` en `a206ce2`); **sin integrar**. Pedido del usuario: el
+> busto de Luzbelito *"está como mal cortado y se transparenta mucho"*.
+>
+> - **Por qué pasaba:** el busto se separaba del óvalo negro por luminosidad, y la sombra de la cara y del cuello es casi igual
+>   de oscura que el fondo: quedaba lleno de agujeros por donde se veía el fuego, con restos del pie y del marco abajo.
+> - **El arreglo:** `recortes.ts` suma la opción `macizo` (la silueta se separa por distancia al negro verdoso del óvalo, se le
+>   tapan los agujeros y queda la pieza más grande; solo se sopla el canto) y `scripts/recortar-bestiario.mjs` la imprime. El
+>   polígono ahora corta en la base del busto. Segunda pasada, a pedido (*"el lente izquierdo corta mal"*): el lente oscuro del
+>   antiparras, del mismo verde negro que el óvalo, va dibujado a mano (`incluye`), y al canto se le pela el ribete del fondo
+>   que dejaba un contorno oscuro (`pelar`). Tercera (*"todavía no se recorta bien el lente, generalo"*): el lente ya no se
+>   corta, **se repinta** encima de la tapa (`pintado`, `lenteDeLuzbelito` en `recortes.ts`): vidrio oval con aro, soplado de
+>   lo hondo a la luz de la vela, con el brillo y el grano, en tintas nuevas (`⟨el lente de Luzbelito⟩` en `tokens.css`).
+>   **Falta pasar esas cuatro tintas al lienzo.** Se reimprimió solo `luzbelito-real-busto.webp`; los demás recortes salen iguales.
+> - **Verde:** `npm test` (2002), `npm run check`, `npm run build`. Visto en la escena del infierno y en la ficha, sobre el fuego.
+> - **Falta:** integrar el PR, y pasar las cuatro tintas del lente al lienzo.
+
 > ## 🛩️ CINCO DEL FONDO: ZIPPO, EL DIABLO MÁS VELOZ, EL SANTO FUMADOR, EL COLGADO Y LA SEÑORA (2026-10-24) — `D-73` (20)
 >
 > **En `main` desde el PR #79** (commit de fusión `7e76bf7`), rama `bestiario/cinco-del-fondo`. Lo integró Claude a pedido del
