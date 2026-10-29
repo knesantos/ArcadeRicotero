@@ -193,6 +193,10 @@ const ANIMACIONES = [
   // El sello del momento de "¿Qué tipo de ricotero sos?" (`UX-36` §4.5): se apoya en la hoja
   // cuando cambia el momento, cinco veces por noche. Es el único movimiento de ese juego.
   { nombre: 'momento-entra', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },
+  // Los sellos del bestiario que se asientan (`D-83`): el bocadillo, el «Anotado» y la libreta
+  // terminan de apoyar; la hoja de la ficha baja los últimos píxeles. Un solo token los apaga.
+  { nombre: 'sello-apoya', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/sitio.css' },
+  { nombre: 'hoja-apoya', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/sitio.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

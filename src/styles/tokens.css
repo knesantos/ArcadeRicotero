@@ -916,6 +916,183 @@
   --bestia-lobas-papel: #e4e3e1; /* el papel de la contratapa (trasera, zona 160,200 de 10, mediana): el polvo y el vaho */
   /* ⟨/las antiguas lobas⟩ */
 
+  /* ⟨el diablo de muchos cuernos⟩ */
+  /* El diablo de muchos cuernos (vigesimocuarta vuelta, D-73) es de El infierno esta encantador esta noche, en
+     Gulp!: la cara y la cola son el rojo de las letras del interior, el chaleco y el brote el verde de las
+     letras del frente, el monoculo, el mono y el diente el amarillo que asoma debajo del rojo, la levita el
+     negro de la tinta y los guantes, la camisa y los cuernos el papel de la contratapa. Medido con sharp en
+     gulp-frontal.jpg, gulp-interior-frontal.jpg y gulp-trasera.jpg (953 px): zona (x, y), radio, los pixeles
+     de ese tono y el percentil de luz. */
+  --bestia-cuernos-negro: #131313; /* el negro de la tinta del frente (zona 600,500 de 60, mediana) */
+  --bestia-cuernos-grafito: #58534f; /* el borde de la letra de maquina de la contratapa (zona 480,180 de 30, percentil 5): las rayas del pantalon */
+  --bestia-cuernos-grafito-claro: #726d69; /* esa misma zona (percentil 10): el lustre de la levita */
+  --bestia-cuernos-papel: #fdf7f7; /* el papel de la contratapa (zona 480,180 de 30, los blancos, mediana): guantes y camisa */
+  --bestia-cuernos-papel-hondo: #dcdadb; /* ese papel donde se ensucia (misma zona, percentil 5) */
+  --bestia-cuernos-crema: #ded6bf; /* el blanco del frente donde amarillea (zona 820,600 de 60, percentil 5): los cuernos viejos */
+  --bestia-cuernos-rojo: #e14642; /* el rojo de las letras del interior (zona 250,250 de 150, los rojos, percentil 5): la cara */
+  --bestia-cuernos-rojo-vivo: #f15141; /* esas letras (misma zona, percentil 10): los cachetes y el clavel */
+  --bestia-cuernos-naranja: #e96729; /* esas letras (misma zona, mediana): la luz de la frente */
+  --bestia-cuernos-rojo-hondo: #962914; /* el rojo de las letras donde lo come el negro (zona 400,400 de 350, mediana) */
+  --bestia-cuernos-sangre: #550c15; /* esa misma zona (percentil 10): la boca */
+  --bestia-cuernos-amarillo: #fff071; /* el amarillo que asoma debajo del rojo (zona 250,250 de 150, los amarillos, mediana): el mono */
+  --bestia-cuernos-oro: #ef9839; /* ese amarillo donde se mezcla con el rojo (misma zona, percentil 5): el monoculo y los carneros */
+  --bestia-cuernos-verde: #99d25f; /* el verde de las letras del frente (zona 250,250 de 120, los verdes, mediana): el chaleco */
+  --bestia-cuernos-verde-vivo: #c2db37; /* esas letras (misma zona, percentil 90): la hoja del brote */
+  --bestia-cuernos-verde-hondo: #446f37; /* esas letras (misma zona, percentil 5) */
+  --bestia-cuernos-verde-noche: #103917; /* el verde de las letras donde lo come el negro (zona 400,400 de 350, mediana) */
+  /* ⟨/el diablo de muchos cuernos⟩ */
+
+  /* ⟨la princesita sapito⟩ */
+  /* La princesita sapito (vigesimocuarta vuelta, D-73) es de Las increibles andanzas del Capitan Buscapina en
+     Cybersiberia, en Ultimo bondi a Finisterre: viste el interior de esa tapa. El cuero de sapo es el bronce
+     verde de la chapa de PSICONAUTAS, las verrugas son la piedra del panel de los naipes, el colorete, la
+     pintura de la boca y el tul son el corazon del as, la panza, el ojo blanco y la nieve del trono son el
+     naipe, y el zapatito de cristal es la lente de la camara. La corona es el amarillo de la campera del de
+     la derecha en el frente. Medido con sharp en ultimo-bondi-a-finisterre-interior-frontal.jpg y
+     ultimo-bondi-a-finisterre-frontal.jpg (953 px): zona (x, y) y radio. */
+  --bestia-sapito-verde: #909165; /* la chapa de PSICONAUTAS (interior, zona 470,295 de 12, mediana): el cuero */
+  --bestia-sapito-verde-hondo: #66604a; /* esa chapa en lo hondo (misma zona, percentil 10) */
+  --bestia-sapito-verde-claro: #cabe84; /* esa chapa donde le pega la luz (misma zona, percentil 90): la panza */
+  --bestia-sapito-piedra: #636558; /* el panel gris verdoso de los naipes (interior, zona 510,610 de 12, mediana): las verrugas */
+  --bestia-sapito-oxido: #85684a; /* el borde oxidado de la chapa (interior, zona 650,300 de 10, percentil 10) */
+  --bestia-sapito-oro: #c49b59; /* la campera amarilla del de la derecha (frente, zona 560,560 de 10, mediana): la corona */
+  --bestia-sapito-oro-claro: #d3d278; /* esa campera en la luz (misma zona, percentil 90) */
+  --bestia-sapito-rojo: #ce5252; /* el corazon del as (interior, zona 528,484 de 2, percentil 10): la boca pintada */
+  --bestia-sapito-tul: #df887e; /* ese corazon en el borde (misma zona, percentil 90): el tul y el colorete */
+  --bestia-sapito-tul-claro: #eeaa9d; /* ese corazon en lo mas claro (misma zona, percentil 97) */
+  --bestia-sapito-naipe: #e6e5d0; /* el blanco del naipe (interior, zona 548,478 de 3, mediana): la nieve y lo blanco */
+  --bestia-sapito-lente: #5e7a8f; /* la lente de la camara (interior, zona 782,562 de 6, mediana): el zapatito */
+  --bestia-sapito-lente-claro: #78b2b6; /* el brillo de la lente (interior, zona 795,575 de 5, percentil 90) */
+  --bestia-sapito-negro: #1a1a26; /* el fondo de la derecha (interior, zona 880,410 de 10, mediana): las pupilas */
+  /* ⟨/la princesita sapito⟩ */
+
+  /* ⟨la tipa rapaz⟩ */
+  /* La tipa rapaz (vigesimocuarta vuelta, D-73) es de Un poco de amor frances, en La mosca y la sopa: viste
+     esa tapa. El vestido es el negro del cartel del titulo y la gente a oscuras, las lentejuelas y la piel son
+     el seguidor y su halo, el peinado es el amarillo de las letras, la estola es la gente donde le pega la luz
+     barrada con el rosado del escenario, y las unas, la boca y el coctel son el rojo del fondo. Medido con
+     sharp en la-mosca-y-la-sopa-frontal.jpg (953 px): zona (x, y) y radio. */
+  --bestia-rapaz-negro: #281413; /* el cartel negro del titulo (zona 560,830 de 40, percentil 8): el vestido */
+  --bestia-rapaz-hondo: #1d0d0d; /* la gente en lo hondo (zona 400,600 de 25, percentil 10): la sombra y el lunar */
+  --bestia-rapaz-pardo: #4e1b17; /* la gente donde le pega la luz (zona 200,470 de 30, percentil 80): las plumas y el cuero */
+  --bestia-rapaz-salmon: #c5756a; /* el escenario (zona 600,390 de 10, mediana): las barras de las plumas y la sombra de la piel */
+  --bestia-rapaz-rosa: #e28b82; /* la luz rosada del escenario (zona 440,310 de 8, mediana): el colorete y la sombra de ojos */
+  --bestia-rapaz-violeta: #98464a; /* esa luz donde se apaga (zona 420,300 de 6, percentil 30): los pliegues y la boca por dentro */
+  --bestia-rapaz-rojo: #b52e1b; /* el rojo del fondo de la tapa (zona 40,500 de 12, mediana): las unas, la boca y el coctel */
+  --bestia-rapaz-piel: #ecb58c; /* el halo del seguidor de la izquierda (zona 120,300 de 40, percentil 40): la piel */
+  --bestia-rapaz-piel-clara: #f7dab0; /* el halo donde carga (zona 110,290 de 12, mediana): la piel con luz */
+  --bestia-rapaz-luz: #ffe4bc; /* el seguidor (zona 280,180 de 10, percentil 95): los brillos y el vidrio */
+  --bestia-rapaz-perla: #fcf8dd; /* la mosca del cartel, donde blanquea (zona 650,880 de 20, percentil 95): las perlas y los ojos */
+  --bestia-rapaz-amarillo: #fef045; /* las letras del titulo (zona 560,830 de 40, percentil 97): el peinado y el oro de lata */
+  --bestia-rapaz-pelo-hondo: #dc866b; /* las luces del techo (zona 530,200 de 30, percentil 99): la sombra del peinado */
+  /* ⟨/la tipa rapaz⟩ */
+
+  /* ⟨el raton⟩ */
+  /* El raton (vigesimocuarta vuelta, D-73) es de Rock para el negro Atila, en Lobo suelto: viste ese disco.
+     El pelo es el gris verdoso soplado de las manos del interior, la nariz es el rojo de la lengua de ese
+     mismo interior, y lo pelado (orejas, manos, cola) es el lila de la cara de la bestia de la tapa. La
+     canaleta es el zinc de esas manos con el oxido de la cadena de gillettes. Medido con sharp en
+     Docs/INVESTIGACION/TapasDiscos/lobo-suelto-cordero-atado-cd1-frontal.jpg y -interior-frontal.jpg (953 px):
+     zona (x, y) y radio. */
+  --bestia-raton-pelo: #839182; /* la sombra del brazo del interior (interior, zona 318,476 de 12, mediana) */
+  --bestia-raton-pelo-claro: #b9beba; /* ese brazo donde aclara (misma zona, percentil 90) */
+  --bestia-raton-pelo-hondo: #536861; /* ese brazo en lo hondo (misma zona, percentil 10) */
+  --bestia-raton-gris: #4e5160; /* el hollin del ojo izquierdo de la bestia (frontal, zona 230,160 de 10, mediana): el lomo */
+  --bestia-raton-tinta: #2f2e34; /* el negro de la derecha de la bestia (frontal, zona 700,330 de 10, mediana): el ojo */
+  --bestia-raton-panza: #e2e1e9; /* el brazo del interior a plena luz (interior, zona 500,600 de 12, mediana) */
+  --bestia-raton-rosa: #ccb7b4; /* el cachete lila de la bestia (frontal, zona 397,318 de 12, mediana): lo pelado */
+  --bestia-raton-rosa-clara: #e2d3d0; /* ese cachete donde aclara (misma zona, percentil 97) */
+  --bestia-raton-nariz: #9e2538; /* la lengua roja del interior (interior, zona 660,380 de 10, percentil 90) */
+  --bestia-raton-nariz-honda: #570e22; /* esa lengua en lo hondo (misma zona, mediana) */
+  --bestia-raton-ojo: #c7be95; /* el ambar del ojo derecho de la bestia (frontal, zona 560,212 de 3, percentil 90) */
+  --bestia-raton-diente: #c7be95; /* ese mismo ambar: los dientes de roer */
+  --bestia-raton-queso: #c9c0a3; /* ese ojo donde mas aclara (misma zona, percentil 97): el queso de rallar */
+  --bestia-raton-queso-cascara: #ba9b7e; /* el pecho de la bestia (frontal, zona 580,380 de 10, mediana): la cascara */
+  --bestia-raton-queso-hondo: #ab8d73; /* el pecho de la izquierda en la sombra (frontal, zona 180,580 de 12, percentil 10) */
+  --bestia-raton-zinc: #c3c8c1; /* el brazo del interior en la media luz (interior, zona 500,600 de 12, percentil 10): la canaleta */
+  --bestia-raton-zinc-claro: #eae9f1; /* ese brazo donde brilla (misma zona, percentil 90) */
+  --bestia-raton-zinc-hondo: #494c55; /* el gris del fondo arriba a la izquierda (frontal, zona 150,140 de 10, mediana) */
+  --bestia-raton-oxido: #776153; /* la gillette de la cadena en la sombra (frontal, zona 762,603 de 10, percentil 10) */
+  --bestia-raton-hueco: #23282e; /* el negro de la derecha en lo hondo (frontal, zona 700,330 de 10, percentil 10) */
+  --bestia-raton-hoja: #705949; /* la oreja de la derecha de la bestia (frontal, zona 667,95 de 10, mediana): la hoja seca */
+  /* ⟨/el raton⟩ */
+
+  /* ⟨la polilla⟩ */
+  /* La polilla (vigesimocuarta vuelta, D-73) es de Murga de la virgencita, en Momo sampler: viste la
+     contratapa de ese disco. El polvo de las alas es la luz lila de la mascara, lo claro es su boca, el pelo
+     es el violeta de la sombra, el cuello de piel es el lomo plateado del envase, el lentejuelon y el foco son
+     el oro de las letras del titulo y el ojo de mentira es el rojo de adentro de esas letras. Medido con sharp
+     en momo-sampler-trasera.jpg (1181 px) y momo-sampler-interior-frontal.jpg (953 px): zona (x, y) y radio. */
+  --bestia-polilla-polvo: #9185ab; /* la luz lila de la mascara (trasera, zona 760,280 de 30, percentil 97): el polvo de las alas */
+  --bestia-polilla-polvo-claro: #c4aed4; /* la boca de la mascara (trasera, zona 560,715 de 20, percentil 97): las alas de atras y la pelusa */
+  --bestia-polilla-polvo-hondo: #756b86; /* esa luz a media sombra (trasera, zona 480,250 de 30, percentil 80): las bandas y el borde */
+  --bestia-polilla-pelo: #4f496b; /* la luz violeta de la sombra (trasera, zona 330,560 de 10, mediana): el pelo y el manto */
+  --bestia-polilla-pelo-hondo: #3c3350; /* la misma luz en lo hondo (misma zona, percentil 10): las rayas y las patas */
+  --bestia-polilla-negro: #1f1128; /* lo negro de la contratapa (trasera, zona 197,295 de 12, percentil 10): los ojos */
+  --bestia-polilla-rosa: #6e4e77; /* la boca a media luz (trasera, zona 600,720 de 8, percentil 90): el vestido de la estampita */
+  --bestia-polilla-plata: #bdb5c2; /* el lomo plateado del envase (trasera, zona 25,400 de 10, mediana): las antenas y el casquillo */
+  --bestia-polilla-plata-clara: #d7cedf; /* ese lomo donde brilla (misma zona, percentil 90): el cuello de piel y el batido */
+  --bestia-polilla-brillo: #f5f4ff; /* el diente que brilla en la boca (trasera, zona 490,680 de 4, percentil 99): los brillos y el vidrio */
+  --bestia-polilla-papel: #ede2f2; /* la letra blanca del interior (interior, zona 600,260 de 20, percentil 97): la estampita */
+  --bestia-polilla-oro: #ffea8b; /* las letras del titulo (trasera, zona 610,70 de 3, percentil 90): el lentejuelon y el foco */
+  --bestia-polilla-oro-hondo: #8b5c28; /* esas letras a media luz (misma zona, percentil 30): el marco de la estampita y la trompa */
+  --bestia-polilla-rojo: #821a19; /* el rojo de adentro de las letras (trasera, zona 462,70 de 3, percentil 15): el ojo de mentira */
+  /* ⟨/la polilla⟩ */
+
+  /* ⟨el botija rapado⟩ */
+  /* El botija rapado (vigesimocuarta vuelta, D-73) es de Botija rapado, en Lobo suelto, cordero atado: el
+     pibe viste la tapa del disco dos. La piel es la cara del cordero; la remera, su lana azul; la bermuda y
+     las zapatillas, la tinta del hocico; el bolso, el naranja del fondo; la correa y el termo, las pezunas;
+     la cinta de embalar y la franja del boleto, las letras del titulo; el ojo, el verde de los ojos del
+     cordero; lo blanco, sus unas. Medido con sharp en lobo-suelto-cordero-atado-cd2-frontal.jpg (953 px):
+     zona (x, y) y radio. */
+  --bestia-botija-piel: #8c6754; /* la frente del cordero (zona 560,170 de 10, mediana): la piel */
+  --bestia-botija-piel-clara: #9c7965; /* la frente donde le da la luz (misma zona, percentil 97): la luz de la piel */
+  --bestia-botija-piel-honda: #5f4630; /* la mejilla en la sombra (zona 640,340 de 8, percentil 10): la piel en la sombra */
+  --bestia-botija-azul: #253f58; /* la lana del lomo (zona 300,520 de 10, mediana): la remera */
+  --bestia-botija-azul-claro: #304d77; /* las escamas de la lana (zona 330,500 de 10, percentil 90): la luz de la remera */
+  --bestia-botija-azul-hondo: #23334a; /* la lana del lomo (zona 300,520 de 10, percentil 10): los pliegues y la pelusa del rapado */
+  --bestia-botija-tinta: #242527; /* el hocico (zona 300,370 de 10, mediana): la bermuda, las zapatillas y la pupila */
+  --bestia-botija-naranja: #d1794b; /* el fondo de la tapa (zona 850,450 de 12, mediana): el bolso de lona y el reloj */
+  --bestia-botija-naranja-clara: #e1834d; /* el fondo de la tapa (misma zona, percentil 97): la luz del bolso */
+  --bestia-botija-cuero: #af7a52; /* la pezuna de adelante (zona 650,700 de 10, mediana): la correa del bolso */
+  --bestia-botija-cuero-hondo: #825432; /* la pezuna de atras (zona 760,830 de 8, mediana): el termo y las costuras */
+  --bestia-botija-marron: #4a3932; /* el cuerno (zona 700,90 de 8, mediana): la ceja y lo gastado */
+  --bestia-botija-amarillo: #d3922c; /* la A del titulo (zona 630,700 de 4, mediana): la cinta de embalar y el boleto */
+  --bestia-botija-hueso: #efe8d6; /* las unas de la pata (zona 270,885 de 4, mediana): lo blanco del ojo, el boleto y las medias */
+  --bestia-botija-verde: #617367; /* el ojo de arriba del cordero (zona 473,66 de 2, percentil 97): el iris */
+  /* ⟨/el botija rapado⟩ */
+
+  /* ⟨el jocker burlon⟩ */
+  /* El jocker burlon (vigesimocuarta vuelta, D-73) es de El arbol del gran bonete, en Ultimo bondi a
+     Finisterre: viste las dos caras de esa tapa. Los naipes, el blanco de la cara y los ases son los del
+     panel de PSICONAUTAS del interior (el corazon del as, el negro de la pica); el traje de rombos es el
+     panuelo rojo del de la izquierda en el frente y la campera amarilla del de la derecha; la piel, la cara
+     del del medio; los cascabeles y los remaches, el cobre de las letras de abajo; la estrella de lata, el
+     remache de la esquina; los ojos, la lente de la camara. Medido con sharp en
+     ultimo-bondi-a-finisterre-frontal.jpg e ultimo-bondi-a-finisterre-interior-frontal.jpg (953 px):
+     zona (x, y) y radio. */
+  --bestia-jocker-rojo: #c33e35; /* el panuelo rojo (frente, zona 386,436 de 4, mediana): los rombos del traje y la punta del bonete */
+  --bestia-jocker-rojo-claro: #ef5e65; /* el corazon del as (interior, zona 528,484 de 1, percentil 90): la luz del rojo y el cachete */
+  --bestia-jocker-rojo-hondo: #8f3632; /* el panuelo en el pliegue (frente, zona 360,420 de 10, percentil 25): los rombos en la sombra y la boca */
+  --bestia-jocker-oro: #d4c453; /* la campera amarilla (frente, zona 530,585 de 6, mediana): los otros rombos y el bonete */
+  --bestia-jocker-oro-viejo: #d0a240; /* la campera en el pliegue (frente, zona 530,590 de 10, percentil 25): el oro en la sombra */
+  --bestia-jocker-piel: #cfa484; /* la cara del del medio (frente, zona 440,420 de 6, mediana): la piel */
+  --bestia-jocker-piel-clara: #e4d6a5; /* esa cara en la luz (misma zona, percentil 95): la luz de la piel */
+  --bestia-jocker-piel-honda: #58463c; /* esa cara en la sombra (misma zona, percentil 8): la sombra de la piel y la ceja */
+  --bestia-jocker-naipe: #e7e4d1; /* el blanco del naipe (interior, zona 548,478 de 3, mediana): los naipes y la mitad pintada de la cara */
+  --bestia-jocker-naipe-hondo: #c6c6ac; /* ese naipe en el borde (misma zona, percentil 5): la sombra del papel */
+  --bestia-jocker-pica: #251728; /* la pica del as (interior, zona 578,540 de 4, percentil 3): las picas, las pupilas y las medias */
+  --bestia-jocker-cobre: #7b513b; /* las letras de abajo (interior, zona 240,924 de 4, mediana): los cascabeles en la sombra y la pinza */
+  --bestia-jocker-cobre-hondo: #6b4737; /* esas letras en lo hondo (interior, zona 424,920 de 4, mediana): las costuras y lo gastado */
+  --bestia-jocker-chapa: #a39781; /* el remache de la esquina (frente, zona 895,880 de 14, percentil 35): la estrella de lata */
+  --bestia-jocker-chapa-clara: #fffefb; /* el brillo del remache (frente, zona 895,880 de 10, percentil 60): la luz de la lata */
+  --bestia-jocker-chapa-honda: #484848; /* el remache en la sombra (frente, zona 895,880 de 14, percentil 8): el borde de la lata */
+  --bestia-jocker-lente: #6c939a; /* la lente de la camara (interior, zona 790,570 de 4, percentil 60): el ojo */
+  --bestia-jocker-lente-clara: #7bb3b2; /* el brillo de la lente (interior, zona 795,575 de 5, percentil 90): la luz del ojo */
+  --bestia-jocker-negro: #2c3739; /* la chapa negra del frente (zona 860,120 de 10, percentil 40): lo hondo del traje */
+  /* ⟨/el jocker burlon⟩ */
+
   /* ⟨el que duerme colgado⟩ */
   /* El que duerme colgado (vigesima vuelta, D-73) es de Es hora de levantarse, querido!, en Cordero
      atado: viste el bicho de plumas azules del frente sobre el naranja, con sus pezunas de ocre y sus
@@ -1078,6 +1255,7 @@
 
   /* Atmosfera. Las tres se van a cero con `prefers-reduced-motion`. */
   --duracion-paso: 200ms; /* el cruce entre dos pantallas (ADR-03) */
+  --duracion-sello: 220ms; /* un sello que termina de apoyar: el bocadillo, la hoja de la ficha, el anotado (D-83) */
   --duracion-umbral: 380ms; /* cada sub-paso del asentamiento de la portada */
   /* El escalon entre un sub-paso del umbral y el siguiente. `UX-20` §4 nombro la
      duracion de cada sub-paso y no la separacion entre ellos; sin un token para eso, los
@@ -1446,6 +1624,7 @@ a[role='button'] {
   :root {
     --duracion-paso: 0ms;
     --duracion-umbral: 0ms;
+    --duracion-sello: 0ms;
     --escalon-umbral: 0ms;
     --hondura-transito: 1;
     --deriva-capa-fondo: 0%;

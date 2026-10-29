@@ -3564,6 +3564,7 @@ body:has(> .lugar) .marca-chica {
   pointer-events: auto;
   cursor: pointer;
   transform: translate(-50%, -50%) rotate(-2deg);
+  transition: border-color var(--duracion-toque);
 }
 
 .rotulo-region:nth-child(even) { transform: translate(-50%, -50%) rotate(2deg); }
@@ -3624,6 +3625,7 @@ body:has(> .lugar) .marca-chica {
   border: 2px solid var(--papel-tenue);
   border-radius: 3px;
   cursor: pointer;
+  transition: border-color var(--duracion-toque);
 }
 
 .bestiario-chip:hover,
@@ -4009,6 +4011,72 @@ body:has(> .lugar) .marca-chica {
   font-style: italic;
   line-height: 1.35;
 }
+
+/* Los sellos se asientan (D-83). Nada aparece con un fundido (el umbral de arriba lo dice): un
+   sello llega ya estampado y lo único que hace es terminar de apoyar, como la marca en la portada.
+   El bocadillo gira apenas alrededor de su punta; el sello «Anotado» recién puesto baja de más
+   arriba, que es un golpe de sello; la hoja de la ficha baja (o sube, o entra de costado) los
+   últimos píxeles hasta su lugar. Todo en `--duracion-sello`, que el corte de movimiento reducido
+   lleva a cero: con relleno `both`, aparecen ya apoyados. */
+@keyframes sello-apoya {
+  from {
+    scale: var(--sello-desde, 1.06);
+    rotate: var(--sello-giro, -2deg);
+  }
+}
+
+@keyframes hoja-apoya {
+  from {
+    translate: var(--desde-hoja, 0 10px);
+  }
+}
+
+.bocadillo:not([hidden]) {
+  transform-origin: var(--punta, 50%) 100%;
+  animation: sello-apoya var(--duracion-sello) var(--curva-cinta) both;
+}
+
+.bocadillo--abajo:not([hidden]) { transform-origin: var(--punta, 50%) 0; }
+
+.bestiario-hoja:not([hidden]) { animation: hoja-apoya var(--duracion-sello) var(--curva-cinta) both; }
+
+.bestiario-hoja--arriba { --desde-hoja: 0 -10px; }
+
+@media (min-width: 52rem) {
+  .bestiario-hoja { --desde-hoja: 10px 0; }
+  .bestiario-hoja--izquierda { --desde-hoja: -10px 0; }
+}
+
+/* En la hoja, el sello «Anotado» va al lado del sello de clase, con la cuenta de la libreta: así lo
+   anotado se ve donde se anota, también en el camino, donde la libreta vive plegada en el tablero.
+   El recién anotado se estampa; el de siempre ya está apoyado. */
+.bestiario-anotada-sello--hoja {
+  display: inline-block;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+.bestiario-anotada-sello--nueva {
+  --sello-desde: 1.35;
+  --sello-giro: -9deg;
+  color: var(--texto);
+  border-color: var(--acento-2);
+  animation: sello-apoya var(--duracion-sello) var(--curva-cinta) both;
+}
+
+.bestiario-hoja-cuenta {
+  display: inline-block;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+/* La libreta se vuelve a sellar cada vez que la cuenta sube. */
+.bestiario-libreta--sella { animation: sello-apoya var(--duracion-sello) var(--curva-cinta) both; }
 
 /* La tercera vuelta (D-73): el monte de noche. La escena es más ancha que un teléfono y se
    recorre de costado; en el teléfono va de borde a borde, sin el margen de la hoja. */
@@ -4599,6 +4667,56 @@ body:has(> .lugar) .marca-chica {
 .titere--lobas [data-parte^="vaho-"] { mix-blend-mode: screen; pointer-events: none; }
 .titere--lobas [data-parte^="polvo-"], .titere--lobas [data-parte^="cruje-"] { pointer-events: none; }
 /* ⟨/las antiguas lobas⟩ */
+
+/* ⟨el diablo de muchos cuernos⟩ */
+/* Se toca el diablo. El cordon del monoculo es el oro del aro, finito, y no se toca: es un hilo. */
+.titere--cuernos { cursor: pointer; }
+.titere--cuernos [data-parte="cordon"] { pointer-events: none; }
+.bt-cuernos-cordon { fill: none; stroke: var(--bestia-cuernos-oro); stroke-width: 0.8; }
+/* ⟨/el diablo de muchos cuernos⟩ */
+
+/* ⟨la princesita sapito⟩ */
+/* Se toca la sapita, y su trono de nieve con ella. Las chispas son luz: se suman a la nieve. El copo, el vaho,
+   la lengua, las chispas y el puf no se tocan: el toque es de ella. */
+.titere--sapito { cursor: pointer; }
+.titere--sapito [data-parte="chispas"] { mix-blend-mode: screen; }
+.titere--sapito [data-parte="chispas"], .titere--sapito [data-parte="puf"], .titere--sapito [data-parte="copo"], .titere--sapito [data-parte="vaho"], .titere--sapito [data-parte="lengua"] { pointer-events: none; }
+/* ⟨/la princesita sapito⟩ */
+
+/* ⟨la tipa rapaz⟩ */
+/* Se toca la tipa; la billetera es ajena y esta en el mantel, el billete y las plumas sueltas son aire: no se
+   tocan. Las ninas de los ojos son tinta de la pagina, para que miren de reojo sin imprimir nada. */
+.titere--rapaz { cursor: pointer; }
+.titere--rapaz [data-parte="billetera-mesa"], .titere--rapaz [data-parte="billete"], .titere--rapaz [data-parte="plumas"] { pointer-events: none; }
+.bt-rapaz-iris { fill: var(--bestia-rapaz-hondo); }
+.bt-rapaz-brillo { fill: var(--bestia-rapaz-perla); }
+/* ⟨/la tipa rapaz⟩ */
+
+/* ⟨el raton⟩ */
+/* El olor del gato que le llega a la nariz no se toca: el toque es del raton y de su canaleta. */
+.titere--raton { cursor: pointer; }
+.titere--raton [data-parte="olor"] { pointer-events: none; }
+/* ⟨/el raton⟩ */
+
+/* ⟨la polilla⟩ */
+/* Se toca la polilla, y su foco con ella: es de ella. El chispazo, el halo y el polvo son luz y aire: no se tocan. */
+.titere--polilla { cursor: pointer; }
+.titere--polilla [data-parte="golpe"], .titere--polilla [data-parte="halo"], .titere--polilla [data-parte^="polvo-"] { pointer-events: none; }
+/* ⟨/la polilla⟩ */
+
+/* ⟨el botija rapado⟩ */
+/* El botija es flaco: el toque se agranda con una caja sin tinta. Las gotas del susto no se tocan. */
+.titere--botija { cursor: pointer; }
+.bt-botija-toque { fill: transparent; }
+.titere--botija [data-parte="gotas"] { pointer-events: none; }
+/* ⟨/el botija rapado⟩ */
+
+/* ⟨el jocker burlon⟩ */
+/* Se toca el jocker, con sus naipes. El tilin de los cascabeles y el brillo de la estrella son aire y luz:
+   no se tocan. */
+.titere--jocker { cursor: pointer; }
+.titere--jocker [data-parte="tilin"], .titere--jocker [data-parte="brillo"] { pointer-events: none; }
+/* ⟨/el jocker burlon⟩ */
 
 /* ⟨el esclavo encadenado⟩ */
 /* La sombra de las rodillas es la tinta del fondo, como la de Barbazul y la drácula. La chispa del eslabón

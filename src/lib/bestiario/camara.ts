@@ -36,6 +36,19 @@ export const CAMARA = {
   entrada: { cerca: 0.05, baja: 0.02, dura: 1.8 },
 } as const;
 
+/**
+ * El primer paso (`D-83`): al llegar a un camino, la cámara da un paso sola, corto y despacio, para
+ * que se vea que el mundo se corre de costado y asome lo primero que hay. Es la invitación a caminar
+ * sin decirla. `cuanto` es la parte de la vista que se camina, con un tope en píxeles, en `dura`
+ * segundos. Cualquier gesto lo corta, y con movimiento reducido no se da.
+ */
+export const PRIMER_PASO = { cuanto: 0.3, tope: 150, dura: 1.6 } as const;
+
+/** Cuánto del primer paso ya se dio, de 0 a 1, para un tiempo `u` de 0 a 1: arranca y llega despacio. */
+export function primerPaso(u: number): number {
+  return suave(u);
+}
+
 export interface Encuadre {
   /** El corrimiento, en píxeles de pantalla. */
   x: number;
