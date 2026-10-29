@@ -23,6 +23,7 @@ import { PANTALLA_0, TARJETA } from '../../lib/dos-ejes/copy.ts';
 import { servir } from '../../lib/dos-ejes/servir.ts';
 import { VISTA_PREVIA_JUEGO } from '../../lib/dos-ejes/arte.ts';
 import Cabeza from '../../components/Cabeza.astro';
+import FranjaEnX from '../../components/FranjaEnX.astro';
 import PieImprenta from '../../components/PieImprenta.astro';
 import Caratula from '../../components/Caratula.astro';
 import Tapa from '../../components/dos-ejes/Tapa.astro';
@@ -46,9 +47,10 @@ const SUBTITULO = PANTALLA_0.subtitulo(banco.momentos.length, banco.preguntasPor
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={SUBTITULO} />
     <title>{TITULO}</title>
-    <Cabeza titulo={TITULO} descripcion={SUBTITULO} imagen={VISTA_PREVIA_JUEGO} imagenAlt={TARJETA.altJuego} />
+    <Cabeza titulo={TITULO} descripcion={SUBTITULO} imagen={VISTA_PREVIA_JUEGO} imagenAlt={TARJETA.altJuego} incrustable />
   </head>
   <body class="con-grano">
+    <FranjaEnX />
     <main id="app" class={`juego--${caratula.casete.variante} disco--luzbelito`}>
       <section id="inicio" class="pantalla">
         <header class="cabecera-sitio">

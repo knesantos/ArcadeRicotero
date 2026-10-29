@@ -1,0 +1,22 @@
+---
+/**
+ * La franja de arriba del juego cuando se juega adentro de X (`T-513`).
+ *
+ * Adentro del reproductor no hay sitio alrededor: el posteo es la única puerta, y el
+ * "← AL FICHÍN" de la cabecera hablaba de volver a un lugar donde el que juega nunca estuvo.
+ * Así que la cabecera y la marca grande se van, y en su lugar queda esta tira: la FR chica,
+ * que dice de quién es el juego, y la salida al sitio, que se abre en una pestaña nueva por el
+ * `<base target="_blank">` que pone `Cabeza`.
+ *
+ * Existe en todas las pantallas y solo se ve con `html.incrustado` (`juego.css`): fuera de X
+ * no ocupa lugar ni se lee.
+ */
+import { EN_X } from '../lib/sitio/copy.ts';
+---
+
+<header class="franja-en-x">
+  <a class="marca-chica" href="/" aria-label={EN_X.marca}>
+    <img src="/marca/fr.svg" alt="" width="1290" height="1170" />
+  </a>
+  <a class="volver" href="/">{EN_X.alSitio}</a>
+</header>

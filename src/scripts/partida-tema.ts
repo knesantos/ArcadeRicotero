@@ -48,6 +48,7 @@ import { claseDisco } from '../lib/tema/paleta.ts';
 import { armarVuelta } from '../lib/tema/vuelta.ts';
 import { nombreArchivo } from '../lib/tarjeta/plan.ts';
 import { dibujarTarjeta } from './tarjeta.ts';
+import { incrustado, postearEnX } from './en-x.ts';
 import {
   armarEstampa,
   armarEstampita,
@@ -1405,6 +1406,10 @@ async function compartirResultado(boton: HTMLButtonElement): Promise<void> {
   const t = tramo(aciertos, ronda.length);
   const tiempoTotal = duracion(sumarTiempos(tiempos));
   const texto = `${TRAMOS[t]} ${tiempoTotal} · ${RESULTADO.puntos(puntaje, maximo)}`;
+
+  // Adentro de X, el posteo ya escrito va primero (`en-x.ts`): antes de dibujar, que es el
+  // primer `await` y le haría perder el toque a la pestaña nueva.
+  if (incrustado() && postearEnX(texto, url)) return;
 
   // Dibujar puede tardar un parpadeo (hay que esperar las letras). Un boton mudo se toca
   // dos veces, asi que dice lo que esta haciendo y no se deja tocar de nuevo.
