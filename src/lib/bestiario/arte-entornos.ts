@@ -1510,7 +1510,6 @@ function mesaPiso(ancho = ANCHO, alto = ALTO): string {
   const [cx] = at('el-canibal');
   const [mx, my] = at('la-mula-de-la-enfermedad');
   const [px, py] = at('pituca');
-  const [mtx, mty] = at('el-club-de-mantis');
   // El verdugo tampoco: es un títere tallado (`arte-verdugo.ts`) que cena en la otra punta. Su plato queda.
   const [vx] = at('el-verdugo-que-cena');
   const toallon = forma(`M${f(px - 30)} ${f(py + 24)} C${f(px - 20)} ${f(py + 8)} ${f(px + 20)} ${f(py + 8)} ${f(px + 30)} ${f(py + 24)} L${f(px + 26)} ${f(atras)} L${f(px + 16)} ${f(atras)} L${f(px + 12)} ${f(py + 22)} L${f(px - 12)} ${f(py + 22)} L${f(px - 16)} ${f(atras)} L${f(px - 26)} ${f(atras)} Z`, M2.blanco, 0.85) +
@@ -1518,27 +1517,14 @@ function mesaPiso(ancho = ANCHO, alto = ALTO): string {
     trazo(`M${f(px + 18)} ${f(py + 40)} q3 -4 6 0 q3 4 6 0`, M2.naranja, 1.2, 0.9);
   const orejas = forma(`M${f(mx - 8)} ${f(my - 10)} L${f(mx - 18)} ${f(my - 40)} L${f(mx - 2)} ${f(my - 12)} Z M${f(mx + 8)} ${f(my - 10)} L${f(mx + 18)} ${f(my - 40)} L${f(mx + 2)} ${f(my - 12)} Z`, M2.negro) +
     forma(elipse(mx, my + 14, 10, 12), M2.negro) + forma(caja(mx - 3, my + 22, 9, 3), M2.oro);
-  /** Una mantis de frente: la cabeza en triángulo con los ojos grandes y los brazos plegados para rezar. */
-  const unaMantis = (x: number, y: number, escala: number): string => {
-    const e = (v: number): string => f(v * escala);
-    return (
-      forma(`M${f(x - 11 * escala)} ${f(y - 6 * escala)} L${f(x + 11 * escala)} ${f(y - 6 * escala)} L${f(x)} ${f(y + 9 * escala)} Z`, M2.negro) +
-      forma(circulo(x - 9 * escala, y - 7 * escala, 4 * escala), M2.negro) + forma(circulo(x + 9 * escala, y - 7 * escala, 4 * escala), M2.negro) +
-      forma(`M${f(x - 4 * escala)} ${f(y + 6 * escala)} L${f(x + 4 * escala)} ${f(y + 6 * escala)} L${f(x + 6 * escala)} ${atras} L${f(x - 6 * escala)} ${atras} Z`, M2.negro) +
-      trazo(`M${f(x - 4 * escala)} ${f(y + 14 * escala)} l-${e(10)} ${e(12)} l${e(8)} -${e(18)} M${f(x + 4 * escala)} ${f(y + 14 * escala)} l${e(10)} ${e(12)} l-${e(8)} -${e(18)}`, M2.negro, 3.4 * escala) +
-      trazo(`M${f(x - 3 * escala)} ${f(y - 10 * escala)} q-${e(6)} -${e(16)} -${e(16)} -${e(20)} M${f(x + 3 * escala)} ${f(y - 10 * escala)} q${e(6)} -${e(16)} ${e(16)} -${e(20)}`, M2.negro, 1.4)
-    );
-  };
-  const mantis = unaMantis(mtx - 34, mty + 10, 0.85) + unaMantis(mtx + 34, mty + 12, 0.8) + unaMantis(mtx, mty, 1);
   // La tipa rapaz tampoco: es un títere (`arte-rapaz.ts`) parada al lado de la mesa, con su copa.
   const comensales =
     comensal('el-canibal-desdentado') +
     `<g>${orejas}${comensal('la-mula-de-la-enfermedad')}</g>` +
-    comensal('pituca', toallon) +
-    mantis;
+    comensal('pituca', toallon);
 
   // Lo que hay en la mesa.
-  const platos = [cx, X(OJOS_DE_LA_MESA['el-canibal-desdentado']![0]), mx, px, mtx, vx].map((x) => forma(elipse(x, atras + 12, 24, 6), M2.blanco, 0.9) + forma(elipse(x, atras + 12, 16, 3.6), M2.papel)).join('');
+  const platos = [cx, X(OJOS_DE_LA_MESA['el-canibal-desdentado']![0]), mx, px, X(OJOS_DE_LA_MESA['el-club-de-mantis']![0]), vx].map((x) => forma(elipse(x, atras + 12, 24, 6), M2.blanco, 0.9) + forma(elipse(x, atras + 12, 16, 3.6), M2.papel)).join('');
   const { x: ox0, piso: op, ancho: ow, alto: oh } = MESA.olla;
   const ox = X(ox0);
   const ollaAdentro =

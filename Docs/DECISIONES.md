@@ -6006,6 +6006,103 @@ Cada uno trae su bloque de tintas medidas con sharp en su tapa, su bloque en `si
   avise a un vecino del toque ajeno. Y del botija: el molinete de brazos del toque roza un instante el pañuelo de la hija del
   fletero.
 
+### Enmienda del 2026-10-29 (25): cinco que seguían siendo ojos en la profundidad de la noche
+
+Pedido del usuario, textual: *"Elegi diseña e integra 5 bestias del bestiario. Que hoy sean ojos en la profundidad de la noche, dales
+vida, animalos, dales detalles unicos, estas haciendo un trabajo increible."* La escribe el hilo principal en la rama
+`bestiario/cinco-noche`, sobre `bestiario/siete-mas` en `49351b3` (la vigesimocuarta, todavía sin integrar en el #88). Antes de tomar
+el número se miraron todas las ramas y `T-513` era el último; la tarea se escribió como `T-514` y **se renumeró a `T-516`** al
+fusionar, porque `T-514` y `T-515` ya eran de la pulida (`D-83`, #91), que llegó antes a `main`.
+
+#### Cuáles, y por qué esos
+
+Se contó, recinto por recinto, cuántos títeres del elenco tiene cada uno y cuántos siguen siendo ojos: el infierno ya no tiene
+ninguno; el monte tenía dos títeres y ocho pares de ojos, la prisión tres y cinco, el bajo cuatro y cuatro, la mesa cuatro y ocho,
+los techos cuatro y siete. Uno por cada uno de esos cinco, elegidos por lo que la letra deja animar y por lo que tienen de noche:
+
+- **El rey de esta jungla** (el monte, *Etiqueta negra*, *Lobo suelto, cordero atado*): la tumba en la ladera, entre los árboles,
+  arriba del borde del piso. La letra no dice qué bicho era el rey: acá es un león viejo, con la oreja mordida, una cicatriz cosida
+  en la frente y un colmillo partido, enterrado en un montículo de tierra removida del que asoman los ojos, la frente y la melena
+  con una raíz enredada: *mira crecer las flores desde abajo*. La cruz son dos palos de rama atados con alambre, con una etiqueta
+  negra de botella clavada de epitafio; al pie, la corona recortada de una lata de tomate; al lado, el patín de lata con la llave
+  colgando y una rueda floja; encima, cuatro flores, florcitas blancas y un hueso que asoma. Solo mira una flor y otra, se abre un
+  capullo, la rueda gira con el viento, cae un pétalo, cruza un escarabajo que sigue con los ojos, o duerme un rato largo; tocado,
+  la tierra tiembla y se parte, asoma hasta la boca, la corona le salta a la cabeza torcida, ruge sin voz, las flores crecen y se
+  abren todas, el patín se suelta y rueda, la cruz se tambalea, y se hunde despacio.
+- **El ahogado y su fiel fantasma** (el bajo, *Divina TV Führer*, *Oktubre*): dos en un títere, en el agua de la izquierda, entre el
+  borde del recinto y el bote dado vuelta, con la línea del agua en 500. El ahogado tiene los ojos desorbitados con venitas, el pelo
+  y el bigote pegados, la piel verdosa (el negro de la xilografía de *Oktubre* tira a verde de agua), una mano arriba que parece
+  pedir auxilio pero tiene la moneda para el barquero, la otra agarrada a un salvavidas desinflado rojo de bandera, y el sombrero
+  de fieltro flotando aparte. El fantasma es una sábana con agujeros de verdad (se ve la noche a través), la marca de la planchada,
+  un remiendo en punto cruz y la etiqueta del lavadero en la espalda, atada con un piolín al tobillo del otro. Solos, él sube y baja,
+  manotea, escupe, hace *glu glu*; ella flota, se infla, se da vuelta, lo sostiene de la cabeza; a veces se miran. Tocados, él se va
+  a pique (la mano con la moneda es lo último), el fantasma hace BU con las mangas arriba y se zambulle detrás, silencio con
+  burbujas, y salen los dos de golpe, él con un alga y un pescado en la cabeza, ella escurriendo la sábana. El verso lo dicen con el
+  BU, a los 1,5 s.
+- **El pichón** (la prisión, *Preso en mi ciudad*, *Oktubre*): un pichón de paloma de ciudad, de los feos, parado en el alféizar de
+  la ventana del fondo, del lado de adentro de la reja (capa `atras`; las plumas, el fogonazo y los agujeros van delante de la reja,
+  sin toque). Plumón crudo entre las plumas nuevas, cañones sin abrir en la panza, cuello tornasolado, pico blando con las
+  comisuras amarillas, el ojo grande de susto, una pata vendada con un trapo, y en el ala el hueco de la pluma que le falta. En el
+  alféizar, una lata con etiqueta roja y tres tiros, un casquillo entre las migas y una pizarrita con palitos de tiza: la cuenta de
+  los tiros que esquivó. Solo picotea, se esponja, se sacude, se rasca, mira al pasillo con un ojo y después con el otro, duerme con
+  un ojo cerrado, da dos pasos cabeceando. Tocado, fogonazo desde abajo, salta con las alas abiertas y se tira del lado de la calle,
+  vuelan plumas, se abre un agujero nuevo en la piedra que se queda (cada tiro suma uno y un palito; al séptimo vuelve a empezar),
+  asoma la cabeza, mira el agujero, se sacude y hace la raya. Los que practican están de este lado; él siempre zafa. Salió chico la
+  primera vez (treinta unidades, menos que sus ojos en lo oscuro) y se agrandó al doble, con los ojos corridos en
+  `VECINOS_DE_LA_PRISION`.
+- **El club de mantis** (la mesa, *Superlógico*, *Gulp!*): tres mantis sentadas a la mesa como señoras de club de barrio, en x 552,
+  600 y 638, con la servilleta atada al cogote, muy nerviosas: se hamacan siempre, cada una a su ritmo, como se hamacan las mantis
+  de verdad. La de la izquierda tiene un abanico rojo y amarillo con puntilla; la del medio, ojos de oro (los que se veían en lo
+  oscuro), collar de perlas y una M bordada; la de la derecha mastica con una pata de no se sabe qué asomándole de la boca y la
+  servilleta manchada de tuco. Las tres tienen pseudopupilas que siguen al que mira, ocelos y pinzas con espinas; en la mesa hay
+  una fuente de masitas sobre una blonda. El macho es más chico, de moño amarillo con lunares, y llega con un clavel por el mantel
+  del lado de la tipa rapaz. Solas giran la cabeza de golpe y las otras la siguen, se limpian una antena, abanican, mastican y
+  tragan, chasquean las pinzas, se pasan la fuente, se miran; un tirón de cabeza les hace de pestañeo. Tocadas, el macho llega y se
+  quedan quietas siguiéndolo con las pseudopupilas, él saluda y se sienta en el plato, ellas lo rodean y en un cuadro, ÑAC: queda
+  el clavel y una antena; mastican, se limpian con la servilleta, se calman, y al rato el macho vuelve a estar llegando. El verso
+  sale recién comido el macho. Las tres mantis negras que pintaba el piso de la mesa se sacaron de `mesaPiso()` y se
+  reimprimieron `mesa-piso` y `camino-mesa-piso`.
+- **El que no se cayó del cielo** (los techos, *Yo no me caí del cielo*, *Gulp!*): sentado de frente en el filo de la chapa, a la
+  derecha de todo, debajo del farol del fondo, con las piernas colgando delante de la medianera. El saco verde arrugado, con un
+  botón del que queda solo el hilo; la corbata floja con una mancha de ginebra; la servilleta del bar en el bolsillo, con un
+  teléfono anotado en birome roja; la medalla de la virgen, que cuelga a plomo; el ojo hinchado con moretón verde y amarillo, la
+  ceja cortada, la barba de dos días, la nariz colorada y el pelo revuelto con canas; la media roja con el talón agujereado, el
+  zapato a medio salir, un posavasos pegado a la otra suela y la botella vacía en la chapa. **El vaso nunca se vuelca**: `marcas()`
+  lo endereza en cada cuadro, y el test lo comprueba en todas las poses. Solo bebe, mira el cielo y niega, se tambalea, bosteza,
+  olfatea al gato matón (*hay mucho olor a gato*: está en la misma chapa, a la izquierda) con cara de asco y se tapa la nariz,
+  cabecea y se despierta de golpe, hamaca los pies hasta que el zapato casi se sale, y la botella rueda y vuelve. Tocado, se
+  tambalea, se cae y queda colgado de una mano del filo, se balancea y patalea, se sube con un codo y después con el otro, se
+  sacude el saco y brinda mirando para arriba; ahí dice el verso.
+
+#### Cómo se hizo, y lo que se tocó alrededor
+
+- El hilo principal eligió los cinco contando títeres y ojos por recinto, armó primero el andamiaje (esqueletos registrados en
+  `elenco.ts` y `vivos.ts`, bloques vacíos con sus marcas en `tokens.css` y `sitio.css`, `elenco.test.ts` de 45 a 50), y cada
+  bestia la dibujó y animó un subagente propio en Opus, **de a tres por vez** como pide la regla de la PC (la paginación estaba en
+  1 GiB y había 25 procesos `claude` abiertos, más de los 20 que la regla manda avisar): cada uno escribió solo sus cuatro
+  archivos y sus dos bloques, midió sus tintas con sharp en la tapa de su disco y miró sus poses impresas antes de entregar. Lo
+  compartido lo integró el hilo principal, que además miró cada títere en su recinto con un previsualizador propio del scratchpad
+  (la escena entera a PNG con sharp; el lobo y el cordero del monte no traen pose en el HTML y hubo que posarlos a mano para que
+  no taparan todo).
+- **El pichón salió chico** la primera vez: treinta unidades de ancho, menos que el círculo de ojos que reemplazaba, imposible de
+  tocar en un teléfono. Se le pidió al dibujante que lo agrandara: quedó a escala 1,45 (unas 70 unidades de alto, entre tres
+  barrotes) y sus ojos se corrieron de [558, 324] a [506, 289] en `VECINOS_DE_LA_PRISION`, con el comentario de por qué.
+- **El test del esclavo** armaba la capa `atras` de la prisión sin filtrar por id (era el único de esa capa); con el pichón al
+  lado se le metían sus piezas y su `cabeza`. Ahora pide solo el esclavo (`capasDe(..., 1, ID)`), como ya hacían los demás.
+- **Las estampas tienen tope**: el schema las limita a 320 caracteres y las cinco propuestas lo pasaban. Se acortaron a mano, sin
+  perder lo que el dibujo pone de más respecto de la letra.
+- **Se sacaron del piso** las tres mantis negras de `mesaPiso()` (`arte-entornos.ts`) y se reimprimieron `mesa-piso` y
+  `camino-mesa-piso`. Los demás ojos viejos se quedan en sus listas; `sinTitere` los saca de la escena.
+- Las cinco estampas las propuso cada dibujante y las revisó y acortó el hilo principal contra el dibujo.
+
+Cada uno trae su bloque de tintas medidas con sharp en su tapa (rey 20 en *Lobo suelto, cordero atado*; ahogado 20 y pichón 18 en
+*Oktubre*; mantis 17 y cielo 19 en *Gulp!*), su bloque en `sitio.css`, su conducta y su test de 9. Las piezas: rey 28 (171 kB),
+ahogado 23 (129 kB), pichón 20 (98 kB), mantis 24 (95 kB), cielo 22 (91 kB).
+
+- `T-516`: verlos en un teléfono de verdad, que `contenido` lea las cinco estampas y pasar los cinco bloques de tintas al lienzo.
+  Queda la idea del dibujante del rey de avisar a un vecino del toque ajeno (que el lobo se asome cuando ruge el león), la misma que
+  dejó el ratón en la vigesimocuarta.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17

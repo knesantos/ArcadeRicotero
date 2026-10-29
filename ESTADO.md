@@ -7,6 +7,29 @@
 
 **Última actualización:** 2026-10-29
 
+> ## 🦁 CINCO QUE ERAN OJOS EN LA PROFUNDIDAD DE LA NOCHE: EL REY DE ESTA JUNGLA, EL AHOGADO Y SU FIEL FANTASMA, EL PICHÓN, EL CLUB DE MANTIS Y EL QUE NO SE CAYÓ DEL CIELO (2026-10-29) — `D-73` (25)
+>
+> **Sin integrar**, en la rama `bestiario/cinco-noche`, nacida sobre `bestiario/siete-mas` (`49351b3`, la vigesimocuarta, que entró
+> a `main` por el #88), con `main` adentro. `T-516` (se escribió como `T-514` y se renumeró: `T-514` y `T-515` ya eran de la pulida, `D-83`). Pedido del usuario: cinco bestias que hoy sean ojos en la profundidad de la noche, con vida,
+> animación y detalles únicos. Se eligió una por recinto entre los que menos títeres tienen (el infierno ya no tiene ojos).
+>
+> - **Monte**: el rey de esta jungla, un león viejo enterrado hasta los ojos entre las flores, con la cruz de la etiqueta negra, la
+>   corona de lata y el patín; tocado asoma, ruge sin voz, crecen las flores, rueda el patín y se vuelve a hundir.
+> - **Bajo**: el ahogado y su fiel fantasma, dos en un títere a la izquierda del bote; tocados él se va a pique, la sábana hace BU y
+>   se zambulle detrás, y vuelven los dos chorreando.
+> - **Prisión**: el pichón en el alféizar de la ventana, detrás de la reja (capa `atras`), con la pizarrita de los tiros que esquivó;
+>   tocado, fogonazo, salta, vuelan plumas, queda un agujero nuevo en la piedra y hace la raya. Salió chico y se agrandó al doble:
+>   sus ojos se corrieron a [506, 289].
+> - **Mesa**: el club de mantis, tres señoras con servilleta que se hamacan y siguen con la pseudopupila al macho que llega con un
+>   clavel; tocadas, ÑAC. Se sacaron las tres mantis pintadas del piso (`mesa-piso` y `camino-mesa-piso` reimpresos).
+> - **Techos**: el que no se cayó del cielo, sentado en el filo de la chapa con el vaso que nunca se vuelca; tocado se cae, queda
+>   colgado de una mano, se sube y brinda.
+> - Alrededor: `esclavo.test.ts` ahora pide solo al esclavo en la capa `atras` de la prisión (se le metía el pichón); las cinco
+>   estampas se acortaron al tope de 320 caracteres del schema.
+> - **Verde:** `npm test` (2209), `npm run check` (0 errores), `npm run build` (180 páginas). Vistos vivir y responder al toque en
+>   la página de cada recinto, con la ficha abierta.
+> - **Falta**: `T-516` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
+
 > ## ✨ LA PULIDA DEL BESTIARIO: EL PRIMER PASO, LOS SELLOS QUE SE ASIENTAN Y EL ANOTADO A LA VISTA (2026-10-29) — `D-83`
 >
 > **Sin integrar**, en la rama `bestiario/pulida` (worktree `.claude/worktrees/pulida-bestiario`), sobre `bestiario/siete-mas`

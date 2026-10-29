@@ -23,7 +23,8 @@ const datos = JSON.parse(readFileSync('src/data/bestiario.json', 'utf-8')) as {
   bestias: Array<{ id: string; nombre: string; estampa: string; dibujo: Record<string, unknown>; cuenta?: Array<{ rotulo: string; fuente: string; quien?: string }> }>;
 };
 const nombres = new Map(datos.bestias.map((b) => [b.id, b.nombre]));
-const marcado = capasDe('la-prision', 'atras', nombres);
+// Solo el esclavo: desde la vigesimoquinta vuelta el pichón también va en la capa de atrás de la prisión.
+const marcado = capasDe('la-prision', 'atras', nombres, 1, 'el-esclavo-sensible-y-chillon');
 const A = ESCLAVO_ARMADO;
 const K = A.agranda;
 const caja = (nombre: string): readonly [number, number, number, number] => PIEZAS_ESCLAVO.find((p) => p.nombre === nombre)!.caja;

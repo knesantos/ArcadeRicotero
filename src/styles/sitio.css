@@ -4718,6 +4718,38 @@ body:has(> .lugar) .marca-chica {
 .titere--jocker [data-parte="tilin"], .titere--jocker [data-parte="brillo"] { pointer-events: none; }
 /* ⟨/el jocker burlon⟩ */
 
+/* ⟨el rey de esta jungla⟩ */
+/* Se toca la tumba entera: la tierra, la cruz, el patin. Los terrones que salta y el petalo que cae son aire: no se tocan. */
+.titere--rey { cursor: pointer; }
+.titere--rey [data-parte="terrones"], .titere--rey [data-parte="petalo"] { pointer-events: none; }
+/* ⟨/el rey de esta jungla⟩ */
+
+/* ⟨el ahogado y su fiel fantasma⟩ */
+/* Se tocan los dos, el ahogado y su fantasma, y lo suyo que flota: el sombrero. Las ondas, el chorrito y las burbujas son agua y aire: no se tocan. */
+.titere--ahogado { cursor: pointer; }
+.titere--ahogado [data-parte="ondas"], .titere--ahogado [data-parte="chorro"], .titere--ahogado [data-parte="burbujon"], .titere--ahogado [data-parte^="burbujas-"] { pointer-events: none; }
+/* ⟨/el ahogado y su fiel fantasma⟩ */
+
+/* ⟨el pichon⟩ */
+/* El pichón se toca a través de la reja, que no ataja el dedo. Los tiros de delante de la reja (el fogonazo,
+   las plumas que vuelan y los agujeros de la piedra) no se tocan: el toque es del pichón. */
+.titere--pichon { cursor: pointer; }
+.pichon-tiros { pointer-events: none; }
+/* ⟨/el pichon⟩ */
+
+/* ⟨el club de mantis⟩ */
+/* Se tocan las tres mantis y el macho que llega. Lo que hay en el mantel (la fuente de masitas, la flor y la
+   antena que quedan en el plato) es de la mesa: no se toca. */
+.titere--mantis { cursor: pointer; }
+.titere--mantis [data-parte="fuente"], .titere--mantis [data-parte="flor"], .titere--mantis [data-parte="antena-suelta"] { pointer-events: none; }
+/* ⟨/el club de mantis⟩ */
+
+/* ⟨el que no se cayo del cielo⟩ */
+/* Se toca el tipo, y su botella con el: es de el. El olor a gato que le llega es aire: no se toca. */
+.titere--cielo { cursor: pointer; }
+.titere--cielo [data-parte="olor"] { pointer-events: none; }
+/* ⟨/el que no se cayo del cielo⟩ */
+
 /* ⟨el esclavo encadenado⟩ */
 /* La sombra de las rodillas es la tinta del fondo, como la de Barbazul y la drácula. La chispa del eslabón
    es el rojo de las banderas de la tapa con rayas de papel, y no se toca: el toque es del que rompe. */
