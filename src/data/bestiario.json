@@ -210,7 +210,7 @@
       "dibujo": { "f": "persona", "con": ["bonete"], "ropa": "saco" },
       "tema": "el-arbol-del-gran-bonete",
       "verso": ["Soy un jocker burlón", "de la \"Estrella del Sur\"."],
-      "estampa": "Colgado de una rama baja con el bonete de tres puntas. Es el comodín: puede ser cualquier carta.",
+      "estampa": "Cuelga de un brazo de la rama baja, con el bonete de tres puntas y un cascabel en cada una. Tiene la cara partida como las figuras de la baraja y los cuatro ases en la mano. Del pecho le cuelga una estrella de lata. Es el comodín: cuando lo tocás, se da vuelta y por un rato es otra carta…",
       "cerca": ["el-bicho-del-gran-bonete"]
     },
     {
@@ -404,7 +404,7 @@
       "dibujo": { "f": "rana", "con": ["corona"] },
       "tema": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
       "verso": ["Su princesita, ay, se transformó en sapito"],
-      "estampa": "Un sapo con corona chica, sentado en la nieve. El cuento al revés.",
+      "estampa": "El cuento al revés. Le quedó lo que no se cae: una corona de lata torcida, un jirón de tul, un zapatito de cristal que le entra en la punta de los dedos. Cuando cierra los ojos y pone la trompa, sale una nube de nieve. Abajo sigue el sapo.",
       "cerca": ["el-rey-garufa", "la-rana-rubia"]
     },
     {
@@ -619,7 +619,7 @@
       "dibujo": { "f": "bicho", "tipo": "polilla" },
       "tema": "murga-de-la-virgencita",
       "verso": ["Otra polilla en busca de la luz"],
-      "estampa": "Contra el farol, dando golpes.",
+      "estampa": "Una polilla de ropero, gorda y peluda, colgada del cable de la guirnalda como del pasamanos de un colectivo. En las alas de adelante lleva una estampita de la virgencita. Tiene un ala zurcida: a ella también se la comieron. Se da contra el foco, queda mareada y vuelve…",
       "cerca": ["marita-la-virgencita", "la-mosca"]
     },
     {
@@ -801,7 +801,7 @@
       "dibujo": { "f": "persona", "ropa": "remera", "con": ["pelado"] },
       "tema": "botija-rapado",
       "verso": ["Pudo cruzar el charco a tiempo", "Zafó!"],
-      "estampa": "Rapado, subiéndose al ferry a último momento, tarareando.",
+      "estampa": "Lo raparon a las apuradas y la máquina le dejó un tajito en la nuca: ahí está la curita. Muerde el boleto para tener las manos libres. Todo lo suyo va en un bolso con el cierre roto, atado con cinta, y asoma el termo. Mira el reloj, mira para atrás… y el ferry ya está saliendo.",
       "cerca": ["la-hija-del-fletero"]
     },
     {
@@ -1056,7 +1056,7 @@
       "dibujo": { "f": "persona", "con": ["muchos-cuernos", "cola-diablo"], "ropa": "levita" },
       "tema": "el-infierno-esta-encantador-esta-noche",
       "verso": ["para cerrar un ojo y ver", "cuantos cuernos tiene el diablo"],
-      "estampa": "Recibe en la puerta del salón, con más cuernos de los que se pueden contar de un ojo.",
+      "estampa": "Es el que recibe en la puerta del salón, de levita y monóculo. Tiene un cuerno de cada bicho, y en el de cabra cuelga la galera de alguno que entró. Para contarlos cierra un ojo, como dice la letra. Nunca le da: cuando termina, le sale otro.",
       "tambien": [
         { "tema": "espejismo", "verso": ["(en ciertas cosas, el diablo siempre es neutral)"] },
         { "tema": "rock-yugular", "verso": ["Risas en el taller del diablo"] }
@@ -1258,7 +1258,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "redondas", "hocico": "largo", "cola": "fina" },
       "tema": "rock-para-el-negro-atila",
       "verso": ["Quiero verte oler como el ratón,"],
-      "estampa": "Quieto en la canaleta, con el gato encima. Huele el peligro.",
+      "estampa": "Vive en la canaleta, con un queso de rallar robado. Es todo hocico: la nariz colorada, los bigotes que trabajan solos. Tiene la oreja mordida y una curita en la cola, así que ya zafó otras veces. Cuando el olor baja de la chapa, se congela. Después no está. Al rato asoma el hocico.",
       "tambien": [{ "tema": "noticias-de-ayer", "verso": ["que gocen los ratones"] }],
       "cerca": ["el-gato-maton", "el-rato-molhado"]
     },
@@ -1795,7 +1795,7 @@
       "dibujo": { "f": "persona", "con": ["copa"], "ropa": "vestido" },
       "tema": "un-poco-de-amor-frances",
       "verso": ["Una tipa rapaz", "Como te gusta a vos"],
-      "estampa": "Parada al lado de la mesa, con una copa. No es sincera, pero da gusto oírla.",
+      "estampa": "Se para al lado de la mesa como quien no quiere la cosa. La copa en una mano y la otra en el mantel, cerca de lo que no es suyo. Mira de reojo, con los párpados a media asta. Cuando se ríe, algo ya cambió de dueño. Y brinda igual.",
       "cerca": ["las-hormigas"]
     },
     {

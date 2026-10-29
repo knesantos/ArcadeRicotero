@@ -5,7 +5,23 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-28
+**Última actualización:** 2026-10-29
+
+> ## 🃏 SIETE MÁS QUE ERAN OJOS: EL DIABLO DE MUCHOS CUERNOS, LA PRINCESITA SAPITO, LA TIPA RAPAZ, EL RATÓN, LA POLILLA, EL BOTIJA Y EL JOCKER (2026-10-29) — `D-73` (24)
+>
+> **Sin integrar**, en la rama `bestiario/siete-mas`, sobre `bestiario/siete` (`2dd328b`): trae adentro la vigesimotercera (#86).
+> `T-513`. Pedido del usuario: otras siete bestias sin diseño complejo, rocambolescas, con buenos detalles y animación acorde.
+>
+> - **Infierno**: el diablo de muchos cuernos, portero de levita; tocado se cuenta los cuernos y le brota otro.
+> - **Cybersiberia**: la princesita sapito en su trono de nieve; tocada pone la trompa, puf, y sigue sapo.
+> - **Mesa**: la tipa rapaz; tocada se queda con la billetera del mantel y brinda.
+> - **Techos**: el ratón de canaleta; tocado huele al gato, se esconde y vuelve a asomar el hocico.
+> - **Templo**: la polilla colgada de la guirnalda, con su foco; tocada se da contra el vidrio e insiste.
+> - **Astilleros**: el botija rapado en la planchada; tocado salta al ferry y «¡Zafó!».
+> - **Árbol**: el jocker burlón colgado de la rama; tocado se da vuelta como un naipe.
+> - Se sacaron del piso las siluetas de la princesita, la tipa, el botija y el jocker (reimpresos).
+> - **Verde:** `npm test` (2164), `npm run check`, `npm run build`.
+> - **Falta**: `T-513` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
 
 > ## 🐐 SIETE QUE ERAN OJOS: EL CHIVATO, LOS GALLOS, LA ANGUILA, LA LECHUZA, EL ANZUELO, LA PIBA Y LAS LOBAS (2026-10-28) — `D-73` (23)
 >

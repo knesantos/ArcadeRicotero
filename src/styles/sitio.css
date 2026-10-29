@@ -4600,6 +4600,56 @@ body:has(> .lugar) .marca-chica {
 .titere--lobas [data-parte^="polvo-"], .titere--lobas [data-parte^="cruje-"] { pointer-events: none; }
 /* ⟨/las antiguas lobas⟩ */
 
+/* ⟨el diablo de muchos cuernos⟩ */
+/* Se toca el diablo. El cordon del monoculo es el oro del aro, finito, y no se toca: es un hilo. */
+.titere--cuernos { cursor: pointer; }
+.titere--cuernos [data-parte="cordon"] { pointer-events: none; }
+.bt-cuernos-cordon { fill: none; stroke: var(--bestia-cuernos-oro); stroke-width: 0.8; }
+/* ⟨/el diablo de muchos cuernos⟩ */
+
+/* ⟨la princesita sapito⟩ */
+/* Se toca la sapita, y su trono de nieve con ella. Las chispas son luz: se suman a la nieve. El copo, el vaho,
+   la lengua, las chispas y el puf no se tocan: el toque es de ella. */
+.titere--sapito { cursor: pointer; }
+.titere--sapito [data-parte="chispas"] { mix-blend-mode: screen; }
+.titere--sapito [data-parte="chispas"], .titere--sapito [data-parte="puf"], .titere--sapito [data-parte="copo"], .titere--sapito [data-parte="vaho"], .titere--sapito [data-parte="lengua"] { pointer-events: none; }
+/* ⟨/la princesita sapito⟩ */
+
+/* ⟨la tipa rapaz⟩ */
+/* Se toca la tipa; la billetera es ajena y esta en el mantel, el billete y las plumas sueltas son aire: no se
+   tocan. Las ninas de los ojos son tinta de la pagina, para que miren de reojo sin imprimir nada. */
+.titere--rapaz { cursor: pointer; }
+.titere--rapaz [data-parte="billetera-mesa"], .titere--rapaz [data-parte="billete"], .titere--rapaz [data-parte="plumas"] { pointer-events: none; }
+.bt-rapaz-iris { fill: var(--bestia-rapaz-hondo); }
+.bt-rapaz-brillo { fill: var(--bestia-rapaz-perla); }
+/* ⟨/la tipa rapaz⟩ */
+
+/* ⟨el raton⟩ */
+/* El olor del gato que le llega a la nariz no se toca: el toque es del raton y de su canaleta. */
+.titere--raton { cursor: pointer; }
+.titere--raton [data-parte="olor"] { pointer-events: none; }
+/* ⟨/el raton⟩ */
+
+/* ⟨la polilla⟩ */
+/* Se toca la polilla, y su foco con ella: es de ella. El chispazo, el halo y el polvo son luz y aire: no se tocan. */
+.titere--polilla { cursor: pointer; }
+.titere--polilla [data-parte="golpe"], .titere--polilla [data-parte="halo"], .titere--polilla [data-parte^="polvo-"] { pointer-events: none; }
+/* ⟨/la polilla⟩ */
+
+/* ⟨el botija rapado⟩ */
+/* El botija es flaco: el toque se agranda con una caja sin tinta. Las gotas del susto no se tocan. */
+.titere--botija { cursor: pointer; }
+.bt-botija-toque { fill: transparent; }
+.titere--botija [data-parte="gotas"] { pointer-events: none; }
+/* ⟨/el botija rapado⟩ */
+
+/* ⟨el jocker burlon⟩ */
+/* Se toca el jocker, con sus naipes. El tilin de los cascabeles y el brillo de la estrella son aire y luz:
+   no se tocan. */
+.titere--jocker { cursor: pointer; }
+.titere--jocker [data-parte="tilin"], .titere--jocker [data-parte="brillo"] { pointer-events: none; }
+/* ⟨/el jocker burlon⟩ */
+
 /* ⟨el esclavo encadenado⟩ */
 /* La sombra de las rodillas es la tinta del fondo, como la de Barbazul y la drácula. La chispa del eslabón
    es el rojo de las banderas de la tapa con rayas de papel, y no se toca: el toque es del que rompe. */

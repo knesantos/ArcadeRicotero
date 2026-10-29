@@ -5948,6 +5948,64 @@ en un iframe con `requestAnimationFrame` reemplazado, sin errores.
   ver si `arte-desencarnada.ts` estira `ruta-piso` en su retrato (lo señaló el que hizo la piba: pinta en 0,0,900,640 una pieza
   de caja 0,200,900,440).
 
+### Enmienda del 2026-10-29 (24): siete que seguían siendo ojos, uno por entorno y sin repetir bicho
+
+Pedido del usuario, textual, igual que la vigesimotercera: *"Elegi otras 7 bestias que no tengan un diseñp complejo y dales un
+buen diseño rocambolesco con buenos detalles y una animacion compleja y acorde al personajes"*. La escribe el hilo principal en la
+rama `bestiario/siete-mas`, sobre `bestiario/siete` en `2dd328b` (la vigesimotercera, todavía sin integrar en el #86). Antes de tomar
+`T-513` se miraron todas las ramas: la última era `T-512`.
+
+#### Cuáles, y por qué esos
+
+Uno por entorno entre los que seguían siendo ojos, sin repetir un bicho que ya tuviera títere (por eso no la rana rubia, que con la
+princesita serían dos sapos, ni el joven lobo, al lado de las lobas). Entran cuatro entornos que la vigesimotercera no tocó: el
+infierno, Cybersiberia, la mesa y los techos.
+
+- **El diablo de muchos cuernos** (el infierno, *El infierno está encantador esta noche*, *Gulp!*): el portero del salón, de levita,
+  monóculo y guantes, con ocho cuernos de ocho bichos distintos que le hacen de perchero (la galera de un invitado, la ficha del
+  guardarropa). Solo convida, mira el reloj, se rasca entre los cuernos, se le cae el monóculo o golpea la cola; tocado cierra un
+  ojo y se cuenta los cuernos de a uno, y cuando termina le brota otro.
+- **La princesita sapito** (Cybersiberia, *Las increíbles andanzas del Capitán Buscapina…*, *Último bondi a Finisterre*): el cuento
+  al revés, una sapa con corona de lata torcida, jirón de tul y un zapatito de cristal en la punta de los dedos, en un trono de
+  nieve. Croa, caza copos con la lengua, se endereza la corona, tirita; tocada pone la trompa entre chispas, puf, y sigue sapo.
+- **La tipa rapaz** (la mesa, *Un poco de amor francés*, *La mosca y la sopa*): señora de fiesta recortada de una revista de
+  sociales, con nariz de pico, estola de plumas y uñas de garra, persona y no caricatura. Gira la copa, ojea los platos ajenos, se
+  ríe de costado; tocada se queda con la billetera del mantel, se guarda el billete y brinda como si nada.
+- **El ratón** (los techos, *Rock para el negro Atila*, *Lobo suelto*): ratón de canaleta todo hocico, con la oreja mordida, una
+  curita en la cola y un queso de rallar robado. Olfatea, se lava la cara, se para a mirar, se esconde, roe; tocado huele al gato
+  matón, se congela, se tira a la canaleta y vuelve a asomar el hocico.
+- **La polilla** (el templo, *Murga de la virgencita*, *Momo sampler*): polilla de ropero colgada del cable de la guirnalda como
+  del pasamanos del colectivo, con la estampita de la virgencita en las alas de adelante y un ala zurcida. Trae su foco; sola da
+  rondas en espiral y se golpea contra el vidrio, que se hamaca y titila; tocada va derecho, se da el golpe, queda mareada e insiste.
+- **El botija rapado** (los astilleros, *Botija rapado*, *Cordero atado*): pibe rapado a las apuradas, con la curita en la nuca, el
+  boleto en los dientes y el bolso atado con cinta, en la planchada del ferry. Tararea, mira el reloj y para atrás; tocado corre,
+  salta y cae con un pie en la borda, y el «¡Zafó!» de la letra con el boleto en el aire.
+- **El jocker burlón** (el árbol, *El árbol del gran bonete*, *Último bondi a Finisterre*): bufón de baraja vieja colgado de un
+  brazo de la rama baja, con la cara partida como una figura, el bonete de tres cascabeles, los cuatro ases y la estrella de lata
+  del Sur. Se hamaca, abanica los naipes, se ríe del ángel de abajo; tocado da el molinete y se da vuelta como un naipe: el dorso,
+  el as de picas, y otra vez él.
+
+#### Cómo se hizo, y lo que se tocó alrededor
+
+- El hilo principal armó primero el andamiaje (esqueletos registrados en `elenco.ts` y `vivos.ts`, bloques vacíos con sus
+  marcadores en `tokens.css` y `sitio.css`, `elenco.test.ts` de 38 a 45), y cada bestia la dibujó y animó un subagente propio en
+  Opus, **de a tres por vez** como pide la regla de la PC (la paginación estaba en 14 GiB): cada uno escribió solo sus archivos y
+  su bloque y miró sus poses impresas antes de entregar. Lo compartido lo integró el hilo principal.
+- **Se sacaron del piso** las siluetas pintadas de la princesita (Cybersiberia), la tipa (la mesa), el botija (astilleros) y el
+  jocker (el árbol), con el ayudante `bonete` que quedó sin uso, en `arte-entornos.ts`; se reimprimieron esos cuatro pisos y sus
+  versiones del camino. Sus tests miran que no vuelvan.
+- Los ojos viejos se quedan en sus listas (los cuenta `bestiario.test.ts`); `sinTitere` los saca de la escena.
+- Las siete estampas las propuso cada dibujante y las revisó el hilo principal contra el dibujo (a la de la polilla se le corrigió
+  que la estampita va solo en las alas de adelante).
+
+Cada uno trae su bloque de tintas medidas con sharp en su tapa, su bloque en `sitio.css`, su conducta y su test (8 o 9). `npm test`
+(2164), `npm run check` y `npm run build` en verde.
+
+- `T-513`: verlos en un teléfono de verdad, que `contenido` lea las siete estampas y pasar los siete bloques de tintas al lienzo.
+  Queda una idea del que hizo el ratón: que cuando se toca al gato matón el ratón ya esté escondido, lo que pide que `vivos.ts`
+  avise a un vecino del toque ajeno. Y del botija: el molinete de brazos del toque roza un instante el pañuelo de la hija del
+  fletero.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17
