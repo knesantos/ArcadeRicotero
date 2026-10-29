@@ -5,8 +5,28 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-28
+**Última actualización:** 2026-10-29
 
+> ## 📺 EL BESTIARIO ADENTRO DE X, A PRUEBA (2026-10-29) — `T-516`
+>
+> **Sin integrar**, rama `claude/bestiario-en-x-9ae3b4`. Pedido del usuario: sumar el bestiario redondo a la vía de la
+> Player Card de `T-513`. (`T-514` y `T-515` los toma la rama `bestiario/pulida`.)
+>
+> - **Puentes**: `/en-x/bestiario/` y una por cada región que se camina (`/en-x/bestiario/<región>/`), en `PUENTES` de
+>   `lib/en-x.ts`. La del bestiario **entra por el monte** (`ENTRADA`, como la puerta de la Redondopedia, `D-76`) y no por
+>   el plano, que en el recuadro no se ve sin bajar. Sin puente por bestia: ninguna tiene vista previa propia, y la bestia
+>   viaja en el `#` de la región, que la puente le pasa al bestiario en un navegador.
+> - **Modo incrustado**: `Base` acepta `incrustable="<sección>"`: pone la franja y le pasa a `Cabeza` la prop nueva
+>   `adentro`, para que los enlaces de esa sección y los `#` **se queden en el recuadro** (pasar de región a región es el
+>   paseo, no una salida); el resto sigue abriéndose afuera. En el camino a pantalla entera queda "← AL PLANO" arriba y la
+>   franja baja a la esquina de abajo (`camino.css`). Las reglas comunes de la franja pasaron de `juego.css` a `sitio.css`,
+>   que el bestiario sí carga.
+> - **`localStorage`**: ya iba envuelto; probado en un marco donde tira, en el build: la isla anda y anota en memoria.
+> - **Compartir**: el bestiario no tiene "Compartí"; no hay nada que cambiar.
+> - **Verde:** `npm test` (2111), `npm run check`, `npm run build`. Probado incrustado a 360 × 540 y 480 × 720: la escena se
+>   ve sin scroll, la animación corre en el iframe, tocar una bestia abre la ficha, y los juegos de `T-513` siguen igual.
+> - **Falta**: lo mismo que `T-513`, mirarlo en un posteo real. Al fusionar, chocan `[region].astro`, `camino.css` y
+>   `sitio.css` con `bestiario/pulida` si entra antes.
 > ## 📺 DOS JUEGOS PARA JUGAR ADENTRO DE X, A PRUEBA (2026-10-28) — `T-513`
 >
 > **Sin integrar**, rama `worktree-difusion-x-player`. Pedido del usuario: investigar las "miniapps" de X y armar
