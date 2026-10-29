@@ -9,7 +9,7 @@
 
 > ## 🦁 CINCO QUE ERAN OJOS EN LA PROFUNDIDAD DE LA NOCHE: EL REY DE ESTA JUNGLA, EL AHOGADO Y SU FIEL FANTASMA, EL PICHÓN, EL CLUB DE MANTIS Y EL QUE NO SE CAYÓ DEL CIELO (2026-10-29) — `D-73` (25)
 >
-> **Sin integrar**, en la rama `bestiario/cinco-noche`, nacida sobre `bestiario/siete-mas` (`49351b3`, la vigesimocuarta, que entró
+> **En `main`** por el PR #93 (fusión `ac0c6f6`), desde la rama `bestiario/cinco-noche`, nacida sobre `bestiario/siete-mas` (`49351b3`, la vigesimocuarta, que entró
 > a `main` por el #88), con `main` adentro. `T-516` (se escribió como `T-514` y se renumeró: `T-514` y `T-515` ya eran de la pulida, `D-83`). Pedido del usuario: cinco bestias que hoy sean ojos en la profundidad de la noche, con vida,
 > animación y detalles únicos. Se eligió una por recinto entre los que menos títeres tienen (el infierno ya no tiene ojos).
 >
@@ -63,7 +63,7 @@
 
 > ## 🃏 SIETE MÁS QUE ERAN OJOS: EL DIABLO DE MUCHOS CUERNOS, LA PRINCESITA SAPITO, LA TIPA RAPAZ, EL RATÓN, LA POLILLA, EL BOTIJA Y EL JOCKER (2026-10-29) — `D-73` (24)
 >
-> **Sin integrar**, en la rama `bestiario/siete-mas`, nacida sobre `bestiario/siete` (`2dd328b`), con `main` ya adentro (la vigesimotercera entró por el #86).
+> **En `main`** por el PR #88 (fusión `49351b3`), desde la rama `bestiario/siete-mas`, nacida sobre `bestiario/siete` (`2dd328b`), con `main` ya adentro (la vigesimotercera entró por el #86).
 > `T-513`. Pedido del usuario: otras siete bestias sin diseño complejo, rocambolescas, con buenos detalles y animación acorde.
 >
 > - **Infierno**: el diablo de muchos cuernos, portero de levita; tocado se cuenta los cuernos y le brota otro.
