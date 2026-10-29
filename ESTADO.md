@@ -7,6 +7,32 @@
 
 **Última actualización:** 2026-10-29
 
+> ## 📺 ADENTRO DE X, SIN SCROLL (2026-10-29) — `T-518`
+>
+> **Sin integrar**, rama `x-sin-scroll`. El usuario lo probó en un posteo de verdad: **el reproductor anda** (en la compu y
+> en el celular, sin aprobación de X). Pero en la compu X dibuja el recuadro de unos **340 × 340** —no los 480 × 720 de
+> las etiquetas— sin dejar bajar, y no se llegaba a la caja de escribir; en el celular lo abre en una ventana de unos
+> **370 × 560**. Pedido textual: *"rediseñarlo para que sea mínimo el de x"*, *"que sea todo sin scroll"*, y del bestiario
+> *"que se note que sea un scroll lateral en celu y en la compu scroll para abajo"* y *"todos los textos bastante más
+> chicos, en la compu tapan demasiado"*.
+>
+> - **Los dos juegos** (`juego.css`, "Adentro de X" → "Sin scroll"): cada pantalla es la ventana entera, con el botón
+>   abajo. Lo que no entra se va (los once pozos, el aviso de antes de arrancar, la lista de temas del resultado, el plano
+>   de las cuatro maneras); lo que hace falta para jugar queda. En "Adiviná el tema" la partida es una grilla: la caja a lo
+>   ancho y **"Escuchá" y "Pasá" lado a lado**, y las sugerencias se abren encima de la cinta. Con alto de celular vuelve
+>   la escalera de intentos. Un escalón más chico para `max-height: 30rem` (la compu).
+> - **El aviso de "abrilo aparte"** del navegador incrustado ya no sale adentro del reproductor (`partida-tema.ts`).
+> - **La franja**, más baja: la FR en el mínimo de 48 px (`D-82`) y la salida en cinta chica (`sitio.css`).
+> - **El bestiario**: el aviso de caminar quedaba **tapado por la franja**; ahora va arriba. Adentro de X con mouse dice
+>   *"Bajá con la ruedita para caminar."* (`CAMINO.ruedita`), y la ruedita ya caminaba. Todo el texto de las dos pantallas
+>   del bestiario baja al 87,5 % (al 70 % con mouse); el toque no, que va en píxeles. "← AL PLANO" abre **el plano solo**,
+>   cuadrado y del tamaño de la ventana, sin los 24.000 px de la portada.
+> - **Verde:** `npm test` (2217), `npm run check`, `npm run build` (200 páginas). Medido a 340 × 340 y 370 × 560 pantalla
+>   por pantalla (portada, partida, sugerencias, revelación con el reproductor del tema entero, resultado; las tres de la
+>   noche; el camino y el plano), y la ruedita probada en un iframe de 340 con mouse.
+> - **Falta**: mirarlo de nuevo en un posteo (X guarda la tarjeta en caché: agregarle `?v=2` a la dirección), y las
+>   postales `cu-N` de la noche, que usan la misma hoja pero no se recorrieron una por una.
+
 > ## 🔀 SEIS PR A `main`, EN ORDEN Y CON `main` ADENTRO (2026-10-29)
 >
 > Pedido del usuario: *"mergea todo a main resolviendo conflictos y mergeando en orden"*. Lo hizo el hilo principal en el

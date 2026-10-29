@@ -698,18 +698,123 @@ html.incrustado .franja-en-x {
   width: 100%;
   max-width: var(--ancho-hoja);
   margin-inline: auto;
-  padding: var(--espacio-1) var(--espacio-2) 0;
+  padding: 0.35rem var(--espacio-2) 0;
+  flex: none;
 }
 
-/* 3,5 rem: la FR queda en 56 px, arriba del mínimo de 48 donde la corona todavía se lee
-   (`D-82`). Se queda con el nombre de tránsito `marca`: en el recuadro la de la hoja no se
-   ve, y la de la carátula solo aparece en el escritorio. */
+/* La FR en el mínimo de 48 px de alto donde la corona todavía se lee (`D-82`): 3,35 rem de ancho
+   por la proporción del dibujo. En la compu X dibuja el recuadro de unos 340 × 340 (`T-518`), y
+   cada píxel de la franja es uno menos para el juego. Se queda con el nombre de tránsito `marca`:
+   en el recuadro la de la hoja no se ve, y la de la carátula solo aparece en el escritorio. */
 html.incrustado .franja-en-x .marca-chica {
-  width: 3.5rem;
+  width: 3.35rem;
+}
+
+/* La salida, en cinta chica: 2 rem a la vista y el toque estirado hasta `--toque-min` por afuera,
+   como el "← AL PLANO" del camino. */
+html.incrustado .franja-en-x .volver {
+  position: relative;
+  min-height: 0;
+  line-height: 2rem;
+  padding: 0 0.6rem;
+  font-size: 0.68rem;
+}
+
+html.incrustado .franja-en-x .volver::after {
+  content: '';
+  position: absolute;
+  inset: calc((var(--toque-min) - 2rem) / -2) -0.25rem;
 }
 
 html.incrustado .cabecera-sitio {
   display: none;
+}
+
+/* Los textos del bestiario adentro de X, más chicos (`T-518`). Pedido del usuario, mirando el
+   posteo de prueba: *"todos los textos bastante más chicos, en la compu tapan demasiado"*. La
+   escena es lo que se mira, y los carteles, los botones y la ficha flotan encima: se achica la
+   medida de la que sale todo `rem`. El toque no se achica: `--toque-min` va en píxeles. En la
+   compu, con mouse, el recuadro es un cuadrado de 340 y se achica más. */
+html.incrustado:has(.camino, #plano) {
+  font-size: 87.5%;
+}
+
+@media (hover: hover) {
+  html.incrustado:has(.camino, #plano) {
+    font-size: 70%;
+  }
+}
+
+/* La FR no baja del mínimo de 48 px de alto donde la corona se lee (`D-82`), achique lo que
+   achique la letra. */
+html.incrustado:has(.camino, #plano) .franja-en-x .marca-chica {
+  width: 53px;
+}
+
+/* El plano del bestiario adentro de X (`T-518`): "← AL PLANO" lo abre en el mismo recuadro, y ahí
+   la portada entera eran 24.000 px de bajar que en la compu X no deja bajar. Adentro queda el
+   plano solo, del tamaño de la ventana: el título, el mundo redondo y sus rótulos, que llevan a
+   caminar cada región. El cartel impreso alrededor (`D-79`) se va con lo demás: su alto es una
+   vez y media su ancho y no entra. Los recintos, el índice y la libreta están en el sitio. */
+html.incrustado body:has(#plano) {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+html.incrustado body:has(#plano) .contenido-sitio {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1 1 0;
+  padding-block: 0;
+}
+
+html.incrustado body:has(#plano) :is(
+  .bestiario-portada > :not(.bestiario-titulo),
+  .bestiario-pie-plano,
+  .contenido-sitio > hr,
+  .recorrido,
+  .bestiario-indice,
+  .portal-capa,
+  .pie-imprenta
+) {
+  display: none;
+}
+
+html.incrustado .bestiario-portada {
+  margin: 0;
+  padding: var(--espacio-1) var(--espacio-2) 0;
+}
+
+html.incrustado .bestiario-titulo {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+/* El plano, cuadrado, con el lado que deje libre lo más chico de la ventana: la sección es un
+   contenedor de tamaño, y el lado sale de sus dos medidas. */
+html.incrustado #plano {
+  flex: 1 1 0;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  margin: 0;
+  padding: var(--espacio-1);
+  box-sizing: border-box;
+  container-type: size;
+}
+
+html.incrustado #plano .portal {
+  aspect-ratio: 1;
+  width: min(100cqw, 100cqh);
+  background: none;
+}
+
+html.incrustado #plano .portal .bestiario-marco {
+  inset: 0;
+  width: 100%;
 }
 
 /* ---- La marca grande del portal ---- */

@@ -6944,36 +6944,441 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
    también va adentro de X y no carga esta hoja. */
 html.incrustado .pantalla > .marca,
 html.incrustado #resultado a.volver,
-html.incrustado #resultado a.accion-abajo {
+html.incrustado #resultado a.accion-abajo,
+html.incrustado .pie-imprenta,
+html.incrustado .caratula {
   display: none;
 }
 
-/* El aire de arriba de cada pantalla lo pone la franja. */
-html.incrustado body > main > .pantalla:first-of-type > h1:first-of-type {
-  margin-top: var(--espacio-2);
+/* --------------------------------------------------------------------------
+   Sin scroll (`T-518`)
+
+   Probado en un posteo de verdad (2026-10-29): en la compu X dibuja el recuadro de unos
+   **340 × 340** —no el 480 × 720 que piden las etiquetas— y no deja bajar adentro; en el
+   celular lo abre en una ventana de unos **370 × 560**, donde bajar adentro de X queda raro.
+   El pedido del usuario, textual: *"que sea todo sin scroll"*.
+
+   Así que adentro del recuadro cada pantalla es la ventana entera, una columna que reparte el
+   alto: la franja arriba, el juego en el medio y el botón abajo, contra el pulgar. Lo que no
+   entra no se apila: se va. Queda lo que hace falta para jugar y lo que dice qué es esto
+   (la regla de las dos líneas); lo demás está a un toque en "Seguí en el Fichín".
+
+   Dos escalones de alto: lo de abajo vale siempre adentro de X, y lo de `max-height: 30rem`
+   (480 px) es la compu, donde el cuadrado se come hasta los renglones de ayuda.
+   -------------------------------------------------------------------------- */
+html.incrustado body {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
 }
 
-@media (max-height: 40rem) {
-  html.incrustado .juego-tema .intentos {
-    display: none;
+html.incrustado body > main {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  padding-block: 0;
+}
+
+html.incrustado body > main > .pantalla:not([hidden]) {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  margin-block: 0;
+  padding-block: var(--espacio-1) 0.75rem;
+}
+
+/* Los botones grandes, en la zona pulgar justa: `--toque-min`, sin el relleno de más. */
+html.incrustado .pantalla :is(.primario, .secundario, .seguir) {
+  min-height: var(--toque-min);
+  padding-block: 0;
+}
+
+/* El título de la portada, en una línea y al tamaño del recuadro. */
+html.incrustado body > main > .pantalla > h1 {
+  margin: var(--espacio-1) 0 0;
+  font-size: clamp(1.45rem, 8vw, 2rem);
+}
+
+html.incrustado .pantalla > .donde-estas {
+  margin-top: 0.25rem;
+}
+
+/* El botón de cada pantalla, abajo de todo. */
+html.incrustado :is(#portada .arranque, #jugar, .ejes-empezar) {
+  margin-top: auto;
+}
+
+/* ---- "Adiviná el tema": la portada ---- */
+
+/* Los once pozos, el aviso de antes de arrancar y el "95 temas" se van: adentro de X se juega con
+   todos los discos, que es lo que ya venía elegido. Elegir disco está en el sitio. */
+html.incrustado .juego-tema #portada :is(.elegi, .pozos, .pozos-plegado, .aviso-sonido, #cuantos) {
+  display: none;
+}
+
+html.incrustado .juego-tema #portada .arranque {
+  position: static;
+  padding: 0;
+  background: none;
+}
+
+html.incrustado .juego-tema #portada .premios {
+  margin-block: var(--espacio-2) var(--espacio-2);
+}
+
+/* ---- "Adiviná el tema": la partida ---- */
+
+/* La escalera de intentos repite lo que dice la cinta (vuelve donde sobra alto, más abajo), y la
+   ayuda del buscador la dice la caja. */
+html.incrustado .juego-tema :is(.intentos, .buscador-ayuda) {
+  display: none;
+}
+
+/* Una grilla para la pantalla entera, con la cinta y el buscador abiertos adentro
+   (`display: contents`): así "Escuchá" y "Pasá" van en el mismo renglón, abajo de la caja,
+   que es un renglón entero menos. Mientras se busca, las sugerencias se apoyan encima de la
+   cinta, en las filas de arriba de la caja. */
+html.incrustado .juego-tema #partida:not(:has(> .revelacion:not([hidden]))) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto auto auto 1fr auto auto auto;
+  grid-template-areas:
+    'cabecera cabecera'
+    'etiqueta etiqueta'
+    'cinta cinta'
+    'intentos intentos'
+    'ayuda ayuda'
+    'caja caja'
+    'escuchar arriesgar';
+  column-gap: var(--espacio-1);
+}
+
+/* En el celular sobra alto: vuelve la escalera de intentos, en el hueco entre la cinta y la caja. */
+@media (min-height: 33rem) {
+  html.incrustado .juego-tema #partida .intentos:not([hidden]) {
+    display: grid;
+    grid-area: intentos;
+    align-self: start;
+    margin: var(--espacio-2) 0 0;
   }
 }
 
-html.incrustado .juego-tema #resultado:not([hidden]) {
-  display: flex;
-  flex-direction: column;
+html.incrustado .juego-tema #partida :is(.reproductor, .buscador:not([hidden])) {
+  display: contents;
 }
+
+html.incrustado .juego-tema #partida .cabecera {
+  grid-area: cabecera;
+  margin: 0;
+}
+
+html.incrustado .juego-tema #partida .reproductor-cabeza {
+  grid-area: etiqueta;
+  margin-top: var(--espacio-1);
+}
+
+html.incrustado .juego-tema #partida .cinta-fila {
+  grid-area: cinta;
+}
+
+html.incrustado .juego-tema #partida .sin-sonido {
+  grid-area: ayuda;
+  margin: 0;
+}
+
+html.incrustado .juego-tema #partida .buscador-fila {
+  grid-area: caja;
+  margin-top: var(--espacio-1);
+}
+
+html.incrustado .juego-tema #partida :is(.escuchar, .arriesgar) {
+  min-height: var(--toque-min);
+  margin: var(--espacio-1) 0 0;
+  padding: 0 var(--espacio-1);
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+html.incrustado .juego-tema #partida:not([hidden]) {
+  padding-top: 0.35rem;
+}
+
+html.incrustado .juego-tema #partida .escuchar {
+  grid-area: escuchar;
+}
+
+html.incrustado .juego-tema #partida .arriesgar {
+  grid-area: arriesgar;
+}
+
+/* Posicionada sobre su área de la grilla (las cinco filas de arriba de la caja), no en el flujo:
+   si contara para el alto, abrirla estiraría la pantalla y la empujaría fuera del recuadro. */
+html.incrustado .juego-tema #partida:not([hidden]) {
+  position: relative;
+}
+
+html.incrustado .juego-tema #partida .sugerencias {
+  grid-row: 1 / 6;
+  grid-column: 1 / -1;
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 3;
+  max-height: 100%;
+}
+
+/* ---- "Adiviná el tema": la revelación ---- */
+
+/* Al revelar, la cinta ya dijo lo suyo: el lugar es del tema. */
+html.incrustado .juego-tema #partida:has(> .revelacion:not([hidden])) > :is(.reproductor, .cabecera) {
+  display: none;
+}
+
+html.incrustado .juego-tema #partida > .revelacion:not([hidden]) {
+  flex: 0 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  grid-auto-rows: min-content;
+  column-gap: var(--espacio-2);
+  align-content: start;
+  margin: 0;
+}
+
+html.incrustado .juego-tema .revelacion > :not(.estampa) {
+  grid-column: 1 / -1;
+}
+
+html.incrustado .juego-tema .revelacion > .estampa {
+  grid-column: 1;
+  grid-row: 2 / span 3;
+  width: 100%;
+  margin: 0;
+}
+
+html.incrustado .juego-tema .revelacion > :is(.revelacion-titulo, .revelacion-ficha, .revelacion-costo) {
+  grid-column: 2;
+  margin: 0;
+}
+
+html.incrustado .juego-tema .revelacion-titulo {
+  align-self: end;
+  font-size: 1.15rem;
+}
+
+html.incrustado .juego-tema .revelacion :is(.estampa-girar, .estampa-pie, .revelacion-escuchar, .revelacion-letra) {
+  display: none;
+}
+
+html.incrustado .juego-tema .revelacion-audio {
+  width: 100%;
+  margin-top: var(--espacio-1);
+}
+
+html.incrustado .juego-tema .revelacion > .seguir {
+  align-self: end;
+  margin-top: var(--espacio-2);
+}
+
+/* ---- "Adiviná el tema": el resultado ---- */
 
 /* El sello del desenlace es una estampa, no un renglón: en una columna flexible se estiraba
    al ancho entero. */
 html.incrustado .juego-tema #resultado > .rotulo-desenlace {
   align-self: flex-start;
+  margin: 0;
 }
 
-html.incrustado .juego-tema #resultado > .afiche-canta,
-html.incrustado .juego-tema #resultado > .resumen-titulo,
-html.incrustado .juego-tema #resultado > .resumen {
-  order: 1;
+/* La lista de los cuatro temas es lo que se va: el puntaje, el tiempo y "Compartí" son el
+   resultado. */
+html.incrustado .juego-tema #resultado > :is(.afiche-canta, .resumen-titulo, .resumen) {
+  display: none;
+}
+
+html.incrustado .juego-tema #resultado > .tramo {
+  margin: var(--espacio-1) 0 0;
+  font-size: 1.35rem;
+}
+
+html.incrustado .juego-tema #resultado > .cifra {
+  margin: var(--espacio-1) 0 0;
+}
+
+/* "Compartí" y "Otra vuelta", abajo, contra el pulgar. */
+html.incrustado .juego-tema #resultado > .primario {
+  margin-top: auto;
+}
+
+html.incrustado .juego-tema #resultado > :is(.primario, .secundario) {
+  min-height: var(--toque-min);
+  margin-bottom: 0;
+}
+
+html.incrustado .juego-tema #resultado > .secundario {
+  margin-top: var(--espacio-1);
+}
+
+/* ---- "¿Qué tipo de ricotero sos?" ---- */
+
+html.incrustado #inicio .ejes-tapa {
+  margin-block: var(--espacio-2) var(--espacio-1);
+}
+
+/* La hoja de cada pregunta ocupa el alto que queda: las dos opciones abajo, contra el pulgar. */
+html.incrustado .ejes-hoja:not(.ejes-hoja--final) {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: var(--espacio-1) var(--espacio-2) var(--espacio-2);
+}
+
+html.incrustado .ejes-canta {
+  margin: var(--espacio-1) 0 0;
+}
+
+html.incrustado .ejes-enunciado {
+  margin: var(--espacio-1) 0 var(--espacio-2);
+  font-size: 1.12rem;
+}
+
+html.incrustado .ejes-opciones {
+  gap: var(--espacio-1);
+  margin-top: auto;
+}
+
+html.incrustado .ejes-opcion {
+  min-height: var(--toque-min);
+  padding-block: 0.3rem;
+  font-size: 1rem;
+}
+
+/* Las teclas no se usan adentro de un posteo; "la anterior" queda, chica, debajo de la hoja. */
+html.incrustado :is(.ejes-teclas, .ejes-opcion-tecla) {
+  display: none;
+}
+
+html.incrustado .ejes-pie-partida {
+  flex: none;
+  margin-top: var(--espacio-1);
+}
+
+html.incrustado .ejes-pie-partida:not(:has(.ejes-anterior)) {
+  display: none;
+}
+
+html.incrustado .ejes-anterior {
+  position: relative;
+  min-height: 0;
+  line-height: 2rem;
+  font-size: 0.68rem;
+}
+
+html.incrustado .ejes-anterior::after {
+  content: '';
+  position: absolute;
+  inset: calc((var(--toque-min) - 2rem) / -2) -0.25rem;
+}
+
+/* El resultado: la hoja con el nombre, y "Compartí" y "Otra noche" lado a lado. El plano de las
+   cuatro maneras, la grilla y "Bajá la tarjeta" están en el sitio. */
+html.incrustado #resultado :is(.ejes-cuatro, .ejes-bajar, .ejes-contraste, .ejes-marca, .ejes-esquinero, .salida-resultado) {
+  display: none;
+}
+
+html.incrustado .ejes-hoja--final {
+  flex: 1 1 0;
+  min-height: 0;
+  margin: var(--espacio-1) 0 0;
+  padding: var(--espacio-2);
+  /* La bajada de una manera larga, en un celular bajo, se lee dentro de la hoja: nunca cortada. */
+  overflow-y: auto;
+}
+
+html.incrustado .ejes-nombre {
+  font-size: 1.7rem;
+}
+
+html.incrustado .ejes-acciones {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--espacio-1);
+  margin-top: var(--espacio-2);
+}
+
+html.incrustado .ejes-acciones > :is(.primario, .secundario) {
+  margin: 0;
+  padding-inline: var(--espacio-1);
+  font-size: 1rem;
+}
+
+html.incrustado .ejes-acciones > :not(.primario, .secundario) {
+  grid-column: 1 / -1;
+}
+
+/* ---- La compu: el cuadrado de 340 ---- */
+@media (max-height: 30rem) {
+  html.incrustado #inicio > .tenue,
+  html.incrustado .ejes-canta,
+  html.incrustado .ejes-bajada {
+    display: none;
+  }
+
+  /* La tapa del libro, con menos mármol arriba y abajo de la etiqueta. */
+  html.incrustado #inicio .ejes-tapa {
+    margin-block: var(--espacio-1) 0.25rem;
+    padding-block: 14px 12px;
+  }
+
+  html.incrustado body > main > .pantalla > h1 {
+    margin-top: 0.25rem;
+  }
+
+  html.incrustado .pantalla > .donde-estas {
+    margin-bottom: 0.25rem;
+  }
+
+  html.incrustado .juego-tema #portada > .tenue,
+  html.incrustado .juego-tema #partida .sin-sonido,
+  html.incrustado .juego-tema #resultado > .rotulo-desenlace {
+    display: none;
+  }
+
+  html.incrustado .juego-tema #partida .reproductor {
+    padding-block: 0.4rem;
+  }
+
+  html.incrustado .juego-tema .revelacion-cabeza .micro {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.2;
+  }
+
+  html.incrustado .juego-tema #partida > .revelacion:not([hidden]) {
+    padding: 0.6rem 0.75rem;
+  }
+
+  html.incrustado .juego-tema .revelacion-audio {
+    height: 2.5rem;
+  }
+
+  html.incrustado .juego-tema .revelacion > .seguir {
+    margin-top: var(--espacio-1);
+  }
+
+  html.incrustado .juego-tema .revelacion > .estampa {
+    width: 6rem;
+  }
+
+  html.incrustado .juego-tema #partida > .revelacion:not([hidden]) {
+    grid-template-columns: 6rem minmax(0, 1fr);
+  }
 }
 
 /* La puente (`/en-x/`): solo se ve si la redirección no anduvo. La marca, el juego y un botón. */
