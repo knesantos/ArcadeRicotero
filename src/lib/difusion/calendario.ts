@@ -27,6 +27,11 @@ export interface Pieza {
   readonly bajada: string;
   /** Una imagen de `public/`, sin la barra inicial (una tapa, un bicho). Opcional. */
   readonly imagen?: string;
+  /**
+   * Un reel en vez de cartel: `redes/<id>.mp4`, que graba `npm run reels`. Con video, la pieza
+   * no se imprime: el disco, el título y la bajada quedan como ficha de lo que dice el reel.
+   */
+  readonly video?: string;
 }
 
 export interface Posteo {
@@ -85,6 +90,8 @@ export function validar(cal: Calendario): string[] {
     if (!p.pieza?.titulo?.trim()) en('la pieza no tiene título');
     else if (p.pieza.titulo.trim().split(/\s+/).length > 8) en('el título de la pieza pasa de ocho palabras (voz 4.1)');
     if (!p.pieza?.bajada?.trim()) en('la pieza no tiene bajada');
+    if (p.pieza?.video !== undefined && p.pieza.video !== `redes/${p.id}.mp4`)
+      en(`el video tiene que ser redes/${p.id}.mp4 (lo deja ahí npm run reels)`);
     for (const f of p.fuentes ?? []) if (!/^RES-\d{2,}$/.test(f)) en(`fuente "${f}" no es una ficha RES-`);
 
     const textos: Array<[string, string | undefined]> = [

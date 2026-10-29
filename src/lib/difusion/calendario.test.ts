@@ -16,7 +16,7 @@ test('D-81: lo aprobado o en cola tiene sus piezas impresas', () => {
   // publicada en el sitio para que la herramienta la baje por URL.
   const faltan = cal.posteos
     .filter((p) => p.estado === 'aprobado' || p.estado === 'en-cola')
-    .flatMap((p) => p.redes.map((r) => `public/redes/${p.id}-${r}.jpg`))
+    .flatMap((p) => (p.pieza.video ? [`public/${p.pieza.video}`] : p.redes.map((r) => `public/redes/${p.id}-${r}.jpg`)))
     .filter((f) => !existsSync(f));
   assert.deepEqual(faltan, []);
 });
@@ -35,6 +35,12 @@ const base: Posteo = {
 
 test('un posteo bien armado pasa', () => {
   assert.deepEqual(validar({ posteos: [base] }), []);
+});
+
+test('un reel vive en redes/<id>.mp4 y en ningún otro lado', () => {
+  assert.deepEqual(validar({ posteos: [{ ...base, pieza: { ...base.pieza, video: 'redes/DIF-99.mp4' } }] }), []);
+  const errores = validar({ posteos: [{ ...base, pieza: { ...base.pieza, video: 'reels/otro.mp4' } }] });
+  assert.match(errores.join(' '), /redes\/DIF-99\.mp4/);
 });
 
 test('X cuenta el enlace como 23', () => {

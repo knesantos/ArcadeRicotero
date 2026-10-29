@@ -2,7 +2,7 @@
  * Las redes del sitio, de punta a punta (`D-81`).
  *
  *   npm run redes -- validar          revisa el calendario (forma, largo, voz a máquina)
- *   npm run redes -- piezas [DIF-XX]  imprime las piezas de lo aprobado (o de un posteo)
+ *   npm run redes -- piezas [DIF-XX]  imprime las piezas de lo aprobado (o de un posteo); los reels los graba `npm run reels`
  *   npm run redes -- lote             arma lote.json + lote.md con lo aprobado, para cargarlo a mano
  *   npm run redes -- perfil           imprime la foto de perfil (1080) y el banner de X (1500x500)
  *   npm run redes -- canales          lista los canales conectados en Buffer
@@ -164,6 +164,12 @@ img{display:block;${cuadrada ? `width:${ancho}px;height:${alto}px` : `height:${M
 }
 
 async function imprimir(p) {
+  if (p.pieza.video) {
+    // Un reel no se imprime: lo graba `npm run reels`. Acá solo se mira que esté.
+    const archivo = `public/${p.pieza.video}`;
+    console.log(existsSync(archivo) ? `  ${archivo} (reel)` : `  falta ${archivo}: grabalo con "npm run reels"`);
+    return;
+  }
   mkdirSync(SALIDA, { recursive: true });
   for (const red of p.redes) {
     const [ancho, alto] = MEDIDAS[red];
@@ -205,8 +211,9 @@ if (orden === 'validar') {
       red,
       fecha: p.fecha,
       texto: red === 'x' ? p.x : p.instagram,
-      imagen: `${SITIO}/redes/${p.id}-${red}.jpg`,
-      archivo: `public/redes/${p.id}-${red}.jpg`,
+      ...(p.pieza.video
+        ? { video: `${SITIO}/${p.pieza.video}`, archivo: `public/${p.pieza.video}` }
+        : { imagen: `${SITIO}/redes/${p.id}-${red}.jpg`, archivo: `public/redes/${p.id}-${red}.jpg` }),
       alt: p.alt,
     })),
   );
@@ -216,7 +223,7 @@ if (orden === 'validar') {
   }
   const faltan = lote.filter((l) => !existsSync(l.archivo));
   if (faltan.length) {
-    console.error(`Faltan piezas: ${faltan.map((l) => l.archivo).join(', ')}. Corré "npm run redes -- piezas".`);
+    console.error(`Faltan piezas: ${faltan.map((l) => l.archivo).join(', ')}. Corré "npm run redes -- piezas" (o "npm run reels" para un video).`);
     process.exit(1);
   }
   mkdirSync(LOTE, { recursive: true });
@@ -224,7 +231,7 @@ if (orden === 'validar') {
   writeFileSync(
     `${LOTE}/lote.md`,
     `# Lote para la cola\n\n${lote
-      .map((l) => `## ${l.id} · ${l.red === 'x' ? 'X' : 'Instagram'} · ${l.fecha}\n\nImagen: \`${l.archivo}\`\n\n\`\`\`\n${l.texto}\n\`\`\`\n\nDescripción de la imagen: ${l.alt}\n`)
+      .map((l) => `## ${l.id} · ${l.red === 'x' ? 'X' : 'Instagram'} · ${l.fecha}\n\n${l.video ? 'Video (reel)' : 'Imagen'}: \`${l.archivo}\`\n\n\`\`\`\n${l.texto}\n\`\`\`\n\nDescripción de la imagen: ${l.alt}\n`)
       .join('\n')}`,
   );
   console.log(`Lote: ${lote.length} publicaciones en ${LOTE}/lote.json y lote.md.`);
@@ -300,6 +307,13 @@ async function cargarCola(cal, prueba) {
   if (!aprobados.length) {
     console.log('No hay nada aprobado para mandar a la cola.');
     return;
+  }
+  // Los reels van a mano por ahora: la subida de video por la API de Buffer no está probada,
+  // y un posteo a medias en la cola es peor que uno que no salió.
+  const reels = aprobados.filter((p) => p.pieza.video);
+  if (reels.length) {
+    console.error(`${reels.map((p) => p.id).join(', ')} son reels: cargalos a mano con el lote ("npm run redes -- lote") y sacalos de aprobado antes de usar la cola.`);
+    process.exit(1);
   }
 
   // La imagen la baja Buffer desde el sitio: si no está publicada todavía, no se manda nada.
