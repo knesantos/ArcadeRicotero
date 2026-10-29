@@ -322,27 +322,25 @@
   color: var(--fondo);
   border: none;
   border-radius: var(--radio);
-  /* La tecla (`D-54`): un canto de sombra dura abajo, en el apoyo del disco, que se hunde al
-     apretar. Lo tenían dos juegos ("Adiviná el tema" y "Sacalo por la letra"), cada uno
-     escrito a mano; ahora es del botón y cada juego le pone su apoyo (`.juego--*`). Es
-     sombra plana, sin difuminar —la única que `diseno-marca.md` admite—, y el hundirse es
-     respuesta al toque: dura `--duracion-toque`, que el movimiento reducido no apaga. */
-  box-shadow: 0 4px 0 var(--canto-accion, var(--borde));
+  /* La tecla (`D-54`) se hunde al apretar: baja 2 px y la tinta se aclara un poco. Ya no
+     lleva el canto de sombra dura de abajo (`D-64`, la sombra salió de todos lados). El
+     hundirse es respuesta al toque: dura `--duracion-toque`, que el movimiento reducido no
+     apaga. Aclara y no oscurece a propósito: la letra es `--fondo`, y aclarar el relleno solo
+     le puede subir el contraste —oscurecerlo armaba un par que nadie mide—. */
   transition:
     translate var(--duracion-toque) var(--curva-cinta),
-    box-shadow var(--duracion-toque) var(--curva-cinta);
+    filter var(--duracion-toque) var(--curva-cinta);
   touch-action: manipulation;
 }
 
 .primario:active:not(:disabled) {
-  translate: 0 3px;
-  box-shadow: 0 1px 0 var(--canto-accion, var(--borde));
+  translate: 0 2px;
+  filter: brightness(1.1);
 }
 
 .primario:disabled {
   background: var(--borde);
   color: var(--texto-tenue);
-  box-shadow: none;
 }
 
 .secundario {
@@ -419,29 +417,12 @@ a.secundario {
   letter-spacing: 0.04em;
   background: var(--cat-historia); /* el resultado viste Gulp! */
   color: var(--fondo);
-  /* El canto de la tecla (`D-54`) es de su misma tinta y no del disco del juego: el botón de
-     compartir viste Gulp! en los ocho, y un canto ajeno debajo lo volvía de otro disco. Es
-     el rojo de Gulp! hundido en el fondo, no un color nuevo. */
-  --canto-accion: color-mix(in srgb, var(--cat-historia) 45%, var(--fondo));
 }
 
-/*
- * La deuda de tildes de la regla de marca, hecha clase.
- *
- * La letra de la firma es una digitalizacion fan (`RES-42`) y **no tiene acentos**: un
- * boton que dice "Comparti" con tilde sale con esa letra hasta la I y despues salta a la
- * de repuesto a mitad de palabra. Se ve roto, y se veia roto de verdad — medido en la
- * pantalla de resultado de `US-02`, no supuesto.
- *
- * La regla ya decia que hacer: hasta derivar los acentos, esas palabras van en
- * `--fuente-rotulada`, que es completa. Lo que la regla PROHIBE es la otra salida —
- * escribir "COMPARTI" sin tilde para que entre en la fuente: `D-17` no negocia el voseo.
- * El dia que los acentos existan, esta clase se borra y no queda rastro.
- */
-.primario.firma.con-tilde {
-  font-family: var(--fuente-rotulada);
-  font-size: 1.15rem;
-}
+/* La deuda de tildes, pagada (`D-65`). Hasta el 2026-10-05 este botón llevaba `.con-tilde`,
+   que lo mandaba a la rotulada: la letra de la firma no tenía la Í de COMPARTÍ, y la palabra
+   saltaba de letra a mitad de camino. `scripts/derivar-patricio-rey.py` le dio las tildes y
+   los signos con material de la propia letra, y la clase salió del sitio. */
 
 /* ---- Adivinar la tapa (US-04) ----
    Acá la tapa NO es decoración de sección: es la pregunta. Por eso se muestra grande,
@@ -484,8 +465,6 @@ a.secundario {
   padding: var(--espacio-2);
   border: var(--linea) solid var(--cat-letras);
   border-radius: var(--radio);
-  /* Sombra dura desplazada, como recorte pegado. Nada de elevacion difusa. */
-  box-shadow: 4px 4px 0 var(--borde);
 }
 
 .verso-contexto {
@@ -533,7 +512,7 @@ a.secundario {
    de disco no llegan a AA sobre el elevado, y la regla anti-slop pedia lo mismo por
    otro motivo ("la pieza se recorta por borde grueso y cinta, y la tinta queda sobre
    --fondo, que es el par testeado"). Asi que las piezas de este juego se separan por
-   borde grueso y sombra dura desplazada, no por un gris arriba de otro gris.
+   borde grueso, sin sombra (`D-64`), no por un gris arriba de otro gris.
 
    Las clases las crea `src/scripts/partida-tema.ts` y las cubre `estilos.test.ts`. */
 
@@ -684,8 +663,9 @@ a.secundario {
    es la puerta de entrada, no un disco mas. */
 .pozo[aria-pressed='true'] {
   border-color: var(--tinta-disco, var(--cat-mitologia));
-  /* Sombra dura desplazada: papel sobre papel, no elevacion difusa. */
-  box-shadow: 3px 3px 0 var(--apoyo-disco, var(--cat-mitologia-apoyo));
+  /* Ningun estado se dice solo con color: el borde engorda hacia adentro, sin correr el
+     layout. La sombra desplazada que lo apoyaba salio con `D-64`. */
+  box-shadow: inset 0 0 0 var(--linea) var(--tinta-disco, var(--cat-mitologia));
 }
 
 .pozo[aria-pressed='true'] .pozo-titulo {
@@ -968,8 +948,6 @@ a.secundario {
   background: var(--papel);
   border: 2px solid var(--papel-borde);
   border-radius: 2px;
-  /* Papel sobre papel: sombra dura en el apoyo de Lobo suelto, nunca una difusa. */
-  box-shadow: 3px 3px 0 var(--cat-mitologia-apoyo);
   /* Pegada a mano: apenas torcida, como todo lo que se pega en este sitio. */
   rotate: -0.6deg;
   /* El `multiply` de la tinta se detiene en el papel y no se mezcla con la tapa velada de
@@ -1113,11 +1091,11 @@ a.secundario {
  * La tecla de escuchar. El pedido fue "facil y rapido": ancho completo, alto de sobra
  * para el pulgar y en el mismo lugar de la pantalla siempre.
  *
- * **Es una tecla, no un rectangulo**: tiene canto —la sombra dura de abajo, en el apoyo
- * de Lobo suelto— y al apretarla se hunde. Y mientras suena **queda hundida**, como la
- * tecla de PLAY de una casetera, que se traba abajo mientras la cinta corre. El hundirse
- * es respuesta al toque, asi que dura `--duracion-toque`: el corte de movimiento reducido
- * no la apaga, porque es la confirmacion de que el dedo llego.
+ * **Es una tecla, no un rectangulo**: al apretarla se hunde y se aclara la tinta. El canto
+ * de sombra dura que tenia salio con `D-64`. Y mientras suena **queda vacia** —tinta sobre
+ * fondo, con su contorno—, como la tecla de PLAY de una casetera, que se traba mientras la
+ * cinta corre. El hundirse es respuesta al toque, asi que dura `--duracion-toque`: el corte
+ * de movimiento reducido no la apaga, porque es la confirmacion de que el dedo llego.
  */
 .escuchar {
   display: flex;
@@ -1134,16 +1112,19 @@ a.secundario {
   font-family: var(--fuente-rotulada);
   font-size: 1.25rem;
   letter-spacing: 0.04em;
-  box-shadow: 0 5px 0 var(--cat-mitologia-apoyo);
   transition:
     translate var(--duracion-toque) var(--curva-cinta),
-    box-shadow var(--duracion-toque) var(--curva-cinta);
+    filter var(--duracion-toque) var(--curva-cinta);
   touch-action: manipulation;
 }
 
 .escuchar:active:not(:disabled) {
-  translate: 0 4px;
-  box-shadow: 0 1px 0 var(--cat-mitologia-apoyo);
+  translate: 0 2px;
+}
+
+/* Sonando ya es tinta sobre fondo: apagarle la tinta dejaria el naranja sobre el naranja. */
+.escuchar:not(.escuchar--sonando):active:not(:disabled) {
+  filter: brightness(1.1);
 }
 
 /* Simbolo ademas de texto: se reconoce sin leer, que es lo que uno hace con un play.
@@ -1168,14 +1149,11 @@ a.secundario {
   clip-path: polygon(8% 0%, 100% 50%, 8% 100%);
 }
 
-/* Sonando: la tecla queda trabada abajo y se vacia — tinta sobre fondo, con el borde. */
+/* Sonando: la tecla se vacia — tinta sobre fondo, con el borde. */
 .escuchar--sonando {
   background: var(--fondo);
   color: var(--cat-mitologia);
-  translate: 0 4px;
-  box-shadow:
-    inset 0 0 0 var(--linea) var(--cat-mitologia),
-    0 1px 0 var(--cat-mitologia-apoyo);
+  box-shadow: inset 0 0 0 var(--linea) var(--cat-mitologia);
 }
 
 /* El cuadrado de parar, mismo tratamiento. Va apenas torcido: es el idioma de sello de
@@ -1189,7 +1167,6 @@ a.secundario {
 .escuchar:disabled {
   background: var(--borde);
   color: var(--texto-tenue);
-  box-shadow: none;
 }
 
 .aviso-sonido {
@@ -1257,7 +1234,7 @@ a.secundario {
   color: var(--texto-tenue);
 }
 
-/* La lista: recorte pegado sobre el fondo, con borde grueso y sombra dura. */
+/* La lista: recorte pegado sobre el fondo, con borde grueso. */
 .sugerencias {
   position: absolute;
   left: 0;
@@ -1286,7 +1263,6 @@ a.secundario {
      sin declararlo, queda el de "adivina el tema", que es donde nacio. */
   border: var(--linea) solid var(--tinte-lista, var(--cat-mitologia-apoyo));
   border-radius: 3px;
-  box-shadow: 4px 4px 0 var(--borde);
 }
 
 .sugerencias[hidden] {
@@ -1412,33 +1388,31 @@ a.secundario {
 
 /* ---- Las teclas de los dos juegos de sacar temas ----
  *
- * Arriesgar/pasar y seguir tienen canto: una sombra dura abajo que se hunde al apretar,
- * como la tecla de escuchar. Cada juego pone su tinta y su canto —Lobo suelto en el de
- * audio, Momo Sampler en el de la letra (`D-19`, `UX-08`)— y la regla es una sola. Van
- * acotadas a los dos juegos porque `.seguir` y `.arriesgar` no son de nadie mas. */
+ * Arriesgar/pasar y seguir se hunden al apretar —bajan 2 px y la tinta se aclara un poco—,
+ * como la tecla de escuchar. Sin canto debajo: salio con `D-64`. Cada juego pone su tinta
+ * —Lobo suelto en el de audio, Momo Sampler en el de la letra (`D-19`, `UX-08`)— y la
+ * regla es una sola. Van acotadas a los dos juegos porque `.seguir` y `.arriesgar` no son
+ * de nadie mas. */
 
 .juego-tema {
   --tinte-tecla: var(--cat-mitologia);
-  --canto-tecla: var(--cat-mitologia-apoyo);
 }
 
 :is(.juego-tema, .juego-por-la-letra) :is(.arriesgar, .seguir) {
   margin-bottom: 5px;
-  box-shadow: 0 4px 0 var(--borde);
   transition:
     translate var(--duracion-toque) var(--curva-cinta),
-    box-shadow var(--duracion-toque) var(--curva-cinta),
-    background-color var(--duracion-toque) var(--curva-cinta);
+    filter var(--duracion-toque) var(--curva-cinta);
   touch-action: manipulation;
 }
 
-:is(.juego-tema, .juego-por-la-letra) :is(.arriesgar--listo, .seguir) {
-  box-shadow: 0 4px 0 var(--canto-tecla);
+:is(.juego-tema, .juego-por-la-letra) :is(.arriesgar:active:not(:disabled), .seguir:active) {
+  translate: 0 2px;
 }
 
-:is(.juego-tema, .juego-por-la-letra) :is(.arriesgar:active:not(:disabled), .seguir:active) {
-  translate: 0 3px;
-  box-shadow: 0 1px 0 var(--borde);
+/* La tinta se aclara solo donde el boton la tiene: "Pasa" es contorno sobre el fondo. */
+:is(.juego-tema, .juego-por-la-letra) :is(.arriesgar--listo:active:not(:disabled), .seguir:active) {
+  filter: brightness(1.1);
 }
 
 /* La caja de texto, un poco mas alta que el piso de toque: es donde el pulgar vuelve cada
@@ -1614,7 +1588,6 @@ a.secundario {
   margin-bottom: var(--espacio-1);
   overscroll-behavior: contain;
   touch-action: pan-y;
-  box-shadow: none;
 }
 
 .partida--tecleando .arriesgar {
@@ -1637,7 +1610,6 @@ a.secundario {
   background: var(--papel);
   color: var(--fondo);
   border: 2px solid var(--papel-borde);
-  box-shadow: 4px 4px 0 var(--canto-tecla, var(--cat-mitologia-apoyo));
   rotate: -0.8deg;
   font-family: var(--fuente-rotulada);
   text-align: center;
@@ -1702,17 +1674,16 @@ a.secundario {
  * la tinta real de su disco, y `contraste.test.ts` deja escrito que **esas tintas no
  * llegan a AA sobre `--fondo-elevado`** — el naranja de La mosca y la sopa da 4,32:1. El
  * de marca: la cabecera de este bloque ya pedia lo mismo por otro camino ("las piezas de
- * este juego se separan por borde grueso y sombra dura desplazada, no por un gris arriba
- * de otro gris"), y el gris sobre gris es un tic vetado por nombre.
+ * este juego se separan por borde grueso, no por un gris arriba de otro gris"), y el gris
+ * sobre gris es un tic vetado por nombre.
  *
  * La pieza se recorta con el borde grueso que `.feedback` ya le da —tenido de verde o de
- * rojo segun como salio— y una sombra dura en el apoyo del disco, que es papel sobre
- * papel. Es el mismo recurso del pozo elegido en la portada.
+ * rojo segun como salio— y nada mas: la sombra dura en el apoyo del disco que llevaba
+ * salio con `D-64`.
  */
 .revelacion {
   margin-top: var(--espacio-3);
   background: var(--fondo);
-  box-shadow: 4px 4px 0 var(--apoyo-disco, var(--borde));
 }
 
 .revelacion[hidden] {
@@ -2129,7 +2100,6 @@ a.secundario {
   margin: var(--espacio-3) 0 var(--espacio-2);
   padding: 28px 8px 24px 0;
   border: var(--linea) solid var(--apoyo-disco);
-  box-shadow: 5px 5px 0 var(--borde);
   transform: rotate(-0.8deg);
 }
 
@@ -2179,7 +2149,6 @@ a.secundario {
   margin: 0 0 0 calc(1.4rem + 8px);
   padding: var(--espacio-1) 14px;
   border-radius: 3px;
-  box-shadow: 3px 3px 0 var(--borde);
   transform: rotate(0.7deg);
 }
 
@@ -2241,9 +2210,12 @@ a.secundario {
   transform: rotate(-0.7deg);
 }
 
+/* El nombre de una manera va siempre en la letra que viste *Luzbelito* (`D-67`): en la tapa del
+   amigo, en el resultado y en la grilla de las cuatro. Es más angosta que la rotulada a igual
+   mayúscula, así que ningún corte de renglón medido acá empeora. */
 .ejes-amigo-nombre {
   display: block;
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-luzbelito);
   /* 1,5 y no 1,6 rem: «Ronda en cualquier» mide 270 px a 1,6 y el renglon util, 271. */
   font-size: 1.5rem;
   line-height: 1.15;
@@ -2266,33 +2238,15 @@ a.secundario {
 /* ---- La hoja de la pregunta ---- */
 
 /* La hoja va recta: es la pagina del libro, y lo torcido es lo que se pega encima. El canto
-   de las hojas que faltan son sombras duras escalonadas, papel y tinta alternados: objeto,
-   no numero, y se van afinando hasta la ultima hoja. El margen derecho deja ver el canto. */
+   de las hojas que faltan, que se dibujaba con sombras duras escalonadas, salio con `D-64`:
+   cuantas quedan lo dice el folio (`3 de 10`). */
 .ejes-hoja {
   position: relative;
-  margin: var(--espacio-3) var(--espacio-1) var(--espacio-2) 0;
+  /* Sin margen a la derecha: era el lugar del canto de las hojas, que salió con `D-64`. */
+  margin: var(--espacio-3) 0 var(--espacio-2);
   padding: var(--espacio-2) var(--espacio-2) var(--espacio-3);
   border: 2px solid var(--fondo);
   border-radius: 3px;
-  box-shadow: 3px 3px 0 var(--papel-borde), 5px 5px 0 var(--fondo), 7px 7px 0 var(--papel-borde), 9px 9px 0 var(--fondo),
-    11px 11px 0 var(--papel-borde), 13px 13px 0 var(--fondo), 15px 15px 0 var(--papel-borde), 17px 17px 0 var(--borde);
-}
-
-.ejes-hoja[data-quedan='3'] {
-  box-shadow: 3px 3px 0 var(--papel-borde), 5px 5px 0 var(--fondo), 7px 7px 0 var(--papel-borde), 9px 9px 0 var(--fondo),
-    11px 11px 0 var(--papel-borde), 13px 13px 0 var(--borde);
-}
-
-.ejes-hoja[data-quedan='2'] {
-  box-shadow: 3px 3px 0 var(--papel-borde), 5px 5px 0 var(--fondo), 7px 7px 0 var(--papel-borde), 9px 9px 0 var(--borde);
-}
-
-.ejes-hoja[data-quedan='1'] {
-  box-shadow: 3px 3px 0 var(--papel-borde), 5px 5px 0 var(--borde);
-}
-
-.ejes-hoja[data-quedan='0'] {
-  box-shadow: 4px 4px 0 var(--borde);
 }
 
 /* La cabecera, como el encabezado de una pagina de libro: el sello, el folio y una regla
@@ -2388,14 +2342,10 @@ a.secundario {
   color: var(--fondo);
   border: 2px solid var(--fondo);
   border-radius: 3px;
-  box-shadow: 3px 3px 0 var(--fondo);
   transform: rotate(-0.4deg);
   touch-action: manipulation;
   cursor: pointer;
-  transition:
-    translate var(--duracion-toque) var(--curva-cinta),
-    box-shadow var(--duracion-toque) var(--curva-cinta),
-    border-width var(--duracion-toque) var(--curva-cinta);
+  transition: border-width var(--duracion-toque) var(--curva-cinta);
 }
 
 .ejes-opcion:nth-child(2) {
@@ -2407,16 +2357,14 @@ a.secundario {
   display: none;
 }
 
-/* Elegida: apretada contra el papel (se hunde, se apaga la sombra), borde de 4 px y la marca
-   de `aria-pressed`. Tres cambios de forma, ninguno de color, y nunca ✔: aca no hay acierto.
+/* Elegida: borde de 4 px y la marca de `aria-pressed`. Un cambio de forma, ninguno de color,
+   y nunca ✔: aca no hay acierto. Ya no se hunde ni lleva sombra (`D-64`): el borde alcanza.
    La otra no se apaga: apagarla la haria leer como la perdedora (`UX-06` §3).
 
    La que se habia elegido, cuando se vuelve a una hoja, tiene **la misma forma**, sin
    inercia: un toque en la otra la reemplaza, uno en la misma la confirma. */
 .ejes-opcion--elegida,
 .ejes-opcion--antes {
-  translate: 3px 3px;
-  box-shadow: 0 0 0 var(--fondo);
   border-width: 4px;
 }
 
@@ -2478,7 +2426,6 @@ a.secundario {
 .ejes-hoja--final {
   margin-top: var(--espacio-2);
   padding: var(--espacio-2) var(--espacio-2) var(--espacio-3);
-  box-shadow: 5px 5px 0 var(--borde);
   transform: rotate(-0.5deg);
 }
 
@@ -2499,12 +2446,14 @@ a.secundario {
   color: var(--fondo);
 }
 
+/* El juego, en su letra (`D-67`), un escalón más grande que el rótulo que era: esta letra ya
+   separa sola las suyas y no pide el aire de la rotulada. */
 .ejes-marca-juego {
   display: block;
   margin-top: 0.2rem;
-  font-family: var(--fuente-rotulada);
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
+  font-family: var(--fuente-luzbelito);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--papel-tenue);
 }
@@ -2529,9 +2478,9 @@ a.secundario {
 }
 
 /* El nombre es lo mas grande de la pantalla (`UX-06` §4), mas que el boton de compartir.
-   Quieto: sin eco ni registro corrido, que son del `h1`. */
+   Quieto: sin sombra ni registro corrido (`D-64`). */
 .ejes-nombre {
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-luzbelito);
   font-weight: 400;
   font-size: 2.1rem;
   line-height: 1.08;
@@ -2608,7 +2557,7 @@ a.secundario {
 
 .ejes-cuatro-titulo {
   margin: 0;
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-luzbelito);
   font-weight: 400;
   font-size: 1.1rem;
   letter-spacing: 0.04em;
@@ -2704,7 +2653,7 @@ a.secundario {
 }
 
 .ejes-manera-nombre {
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-luzbelito);
   font-size: 0.95rem;
   line-height: 1.2;
 }
@@ -2729,7 +2678,8 @@ a.secundario {
 
 /* "QUIEN TE LO MANDO" no entra en un renglon en una celda de 116 px: se parte adentro de su
    rectangulo, como un sello de dos renglones, y no con el borde cortado. */
-.ejes-manera-sello {
+.ejes-manera-sello,
+.ejes-plano-sello {
   display: inline-block;
   max-width: 100%;
   padding: 0.05rem 0.35rem;
@@ -2753,8 +2703,189 @@ a.secundario {
   border-style: dashed;
 }
 
-.ejes-manera-sello--suya {
+.ejes-manera-sello--suya,
+.ejes-plano-sello--suya {
   border-style: dashed;
+}
+
+/* ---- El plano de dos ejes (`UX-38`): un recorte de papel pegado arriba de la grilla ---- */
+
+/* Papel liso y su tinta (el par testeado `--fondo` sobre `--papel`, como la hoja); el borde es
+   el topo de *Luzbelito*, como la tapa (`D-19`). Torcido al revés que la última hoja: otra
+   mano. El tope de 26 rem vale en todas las anchuras: es un recorte pegado, no una columna, y
+   en la mesa crece el aire, no la letra (`UX-35` §4.4). */
+.ejes-plano {
+  position: relative;
+  max-width: min(26rem, calc(100% - var(--espacio-1)));
+  margin: var(--espacio-3) auto var(--espacio-3);
+  padding: 12px;
+  border: var(--linea) solid var(--apoyo-disco, var(--borde));
+  border-radius: 3px;
+  background: var(--papel);
+  color: var(--fondo);
+  transform: rotate(0.5deg);
+}
+
+/* La cinta que lo sostiene, la misma de la etiqueta de la tapa. */
+.ejes-plano::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 14%;
+  width: 72px;
+  height: 22px;
+  background: color-mix(in srgb, var(--papel) 30%, transparent);
+  transform: rotate(-4deg);
+  border-radius: 2px;
+}
+
+/* Dos columnas y dos filas iguales, y entre las filas la franja del eje horizontal. Con el
+   alto libre, las dos `1fr` toman la mayor: la tuya, con su sello, no puede salir más grande
+   que las otras tres. */
+.ejes-plano-cruz {
+  position: relative;
+  display: grid;
+  /* `minmax(0, 1fr)` y no `1fr`: con el texto del sistema al 200 %, una palabra del sello
+     ensanchaba la columna de la tuya y el eje del medio dejaba de caer entre las dos. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: 1fr auto 1fr;
+  column-gap: 10px;
+  margin: 8px 0;
+}
+
+/* Los ejes: elementos vacíos que solo llevan borde. Sin flecha ni rayitas: una marca regular
+   sobre un eje es una escala, y una flecha dice "más hacia acá" (`UX-38` §1.4). El vertical
+   cruza el aire de la cruz y llega a los polos de arriba y de abajo. */
+.ejes-plano-eje {
+  position: absolute;
+  pointer-events: none;
+}
+
+.ejes-plano-eje--vertical {
+  top: -8px;
+  bottom: -8px;
+  left: calc(50% - 1px);
+  border-right: 2px solid var(--papel-tenue);
+}
+
+.ejes-plano-eje--horizontal {
+  top: calc(50% - 1px);
+  right: 0;
+  left: 0;
+  border-top: 2px solid var(--papel-tenue);
+}
+
+.ejes-plano-cuadrante--arriba {
+  grid-row: 1;
+}
+
+.ejes-plano-cuadrante--abajo {
+  grid-row: 3;
+}
+
+/* Los cuatro miden lo mismo: el lugar del borde se guarda con relleno (7 px sin marca, 3 de
+   borde y 4 de relleno en la tuya, 2 y 5 en la del amigo) y no con un borde transparente,
+   que el contraste forzado pinta y deja a las cuatro con el recuadro de la tuya. */
+.ejes-plano-cuadrante {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 5rem;
+  margin: 3px;
+  padding: 7px;
+  border-radius: 3px;
+  text-align: center;
+}
+
+/* La tuya: borde grueso y su sello. La marca va en la tinta y no en el cuero, que sobre el
+   papel no llega a 3 : 1; lo que marca es la forma más el sello, nunca el color. */
+.ejes-plano-cuadrante--tuya {
+  padding: 4px;
+  border: var(--linea) solid var(--fondo);
+}
+
+/* La de quien mandó el enlace: punteado fino, con un píxel de relleno que completa los 3. */
+.ejes-plano-cuadrante--suya {
+  padding: 5px;
+  border: 2px dashed var(--fondo);
+}
+
+/* La misma manera: grueso y punteado, con los dos sellos (como en la grilla). */
+.ejes-plano-cuadrante--tuya.ejes-plano-cuadrante--suya {
+  padding: 4px;
+  border-width: var(--linea);
+  border-style: dashed;
+}
+
+.ejes-plano-sellos {
+  overflow-wrap: anywhere;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem;
+  max-width: 100%;
+}
+
+/* El nombre a 0,8 y no a los 0,95 de la grilla: el plano orienta y la grilla lee. Se parte,
+   nunca se corta. En la letra de *Luzbelito*, como el nombre en todos lados (`D-67`). */
+.ejes-plano-nombre {
+  max-width: 100%;
+  font-family: var(--fuente-luzbelito);
+  font-size: 0.8rem;
+  line-height: 1.2;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+/* Los cuatro extremos: el polo en la rotulada y sus palabras debajo, en dos renglones para
+   que los dos del eje horizontal entren lado a lado a 320. */
+.ejes-plano-polo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--papel-tenue);
+}
+
+.ejes-plano-polo-eje {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ejes-plano-polo-dice {
+  font-size: 0.8rem;
+}
+
+/* Los dos del medio montan el eje horizontal, que corre entero: el polo arriba de la línea y
+   sus palabras abajo, como el rótulo de un eje. Cortar la línea con el rótulo dejaba un brazo
+   más largo que el otro ("Orden" contra "sobre la marcha") y la cruz parecía corrida. */
+.ejes-plano-polo--izquierda,
+.ejes-plano-polo--derecha {
+  grid-row: 2;
+  align-self: center;
+  gap: 8px;
+  margin: 6px 0;
+  overflow-wrap: anywhere;
+}
+
+.ejes-plano-polo--izquierda {
+  grid-column: 1;
+  justify-self: start;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.ejes-plano-polo--derecha {
+  grid-column: 2;
+  justify-self: end;
+  align-items: flex-end;
+  text-align: right;
 }
 
 /* ---- Por debajo de 22 rem: una columna, en el orden relativo (`UX-36` §5.3) ---- */
@@ -2775,6 +2906,14 @@ a.secundario {
     padding: 6px 10px;
   }
 
+  /* El aire entre la bajada y «Empezá la noche», de 24 a 16 px: `D-67` pasó el título a la letra
+     de la banda, 7 px más alto, y el botón había vuelto a 570 a 320 × 568 (`FIND-131` de
+     `REV-20`). El margen de la tapa no sirve de palanca: colapsa con el del renglón del lugar.
+     Se toca el aire, nunca la letra (`UX-36` §3.4). */
+  .ejes-empezar {
+    margin-top: var(--espacio-2);
+  }
+
   .ejes-tapa-esquinero {
     width: 3.2rem;
     height: 3.7rem;
@@ -2793,6 +2932,14 @@ a.secundario {
   }
 
   .ejes-grilla-columnas {
+    display: none;
+  }
+}
+
+/* Por debajo de 18 rem, que solo alcanza el zoom del navegador, el plano se va: la grilla lo
+   dice todo (`UX-38` §4.3). */
+@media (max-width: 17.99rem) {
+  .ejes-plano {
     display: none;
   }
 }
@@ -2890,20 +3037,7 @@ a.secundario {
   opacity: 0.75;
 }
 
-/* El aviso de escalon: una sola vez por salto, sin pantalla intermedia ni toque extra.
-   Borde, no relleno — es un rotulo de registro 3, no un festejo. */
-.escalon {
-  margin: 0 0 var(--espacio-2);
-  padding: calc(var(--espacio-1) * 0.75) var(--espacio-2);
-  border: 2px solid var(--acento-2);
-  border-radius: 3px;
-  color: var(--acento-2);
-  font-family: var(--fuente-rotulada);
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  display: inline-block;
-}
+/* El aviso de escalon vive con el resto del quiz de `D-71`, al final de esta hoja. */
 
 /* La retirada voluntaria. Lejos de la zona pulgar y en texto chico: si quedara a mano
    de las opciones, la gente cerraria la partida sin querer. */
@@ -2976,6 +3110,479 @@ a.secundario {
   font-size: 1.6rem;
 }
 
+/* ==========================================================================
+   Preguntas ricoteras, que se sienta como un fichín (`D-71`, ciclo 20).
+
+   El usuario lo jugó y lo dijo entero: *"hoy está muy duro y feo"*. Medido a 375 px: cuatro
+   cajas grises de formulario, una cabecera de 13 px, el `SEGUÍ` abajo del pliegue y "Cerrá la
+   partida" entre las opciones y la respuesta. Lo que sigue lo resuelve en el idioma del sitio
+   —recorte con cinta, sello de goma, tinta plana, borde grueso, rotación a mano— y con lo que
+   el sistema ya tenía: el sello que cae (`sello-golpe`), el que se apoya (`momento-entra`) y
+   la foto que se fija (`fijado`). Ni un hex, ni una sombra, ni una pastilla. Todos los pares
+   de color que se usan acá ya están en `contraste.test.ts`.
+   ========================================================================== */
+
+/* ---- El tablero: las fichas, el número y el riel ---- */
+
+.tablero {
+  display: grid;
+  gap: 0.6rem;
+  margin-bottom: var(--espacio-2);
+}
+
+.tablero-fila {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+/* Las vidas pasan de una línea de 13 px a tres fichas que se ven desde lejos. */
+.tablero .vidas {
+  font-size: 1.45rem;
+  gap: 0.15em;
+}
+
+.tablero .vidas-rotulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  align-self: center;
+}
+
+.tablero-numero {
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.45rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--texto);
+}
+
+/* "Cerrá la partida" sube al tablero: arriba a la derecha es lo más lejos del pulgar que hay
+   en un teléfono (`BR-19` apartado 7). Sigue chico y sin relleno. */
+.tablero .retirada {
+  margin: 0 0 0 auto;
+}
+
+.tablero .retirada-disparador {
+  font-size: 0.8rem;
+  padding-inline: 0.25rem;
+}
+
+.retirada--confirma {
+  margin: 0 0 var(--espacio-2);
+  text-align: left;
+}
+
+/* El riel: un paso por pregunta, los escalones separados. El acierto es un paso lleno y
+   alto, el error uno hueco y alto, el que se juega uno amarillo y más alto, lo que falta uno
+   bajo y apagado: la forma dice el estado además de la tinta. */
+.riel {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 12px;
+}
+
+.riel-tramo {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  min-width: 0;
+}
+
+.riel-paso {
+  flex: 1 1 0;
+  min-width: 2px;
+  height: 5px;
+  background: var(--borde);
+  border-radius: 1px;
+}
+
+.riel-paso--ok {
+  height: 10px;
+  background: var(--acento-3);
+}
+
+.riel-paso--no {
+  height: 10px;
+  background: none;
+  border: 1.5px solid var(--acento-4);
+}
+
+.riel-paso--ahora {
+  height: 12px;
+  background: var(--acento-2);
+}
+
+/* ---- La pregunta: un recorte pegado con cinta ---- */
+
+.ficha-pregunta {
+  position: relative;
+  margin: var(--espacio-3) 3px 0;
+  padding: var(--espacio-3) var(--espacio-2) var(--espacio-2);
+  background: var(--fondo);
+  border: var(--linea) solid var(--tinta-ficha, var(--borde));
+  border-radius: 3px;
+  transform: rotate(-0.5deg);
+  /* Se apoya en la hoja: llega torcida de más y se asienta. Con movimiento reducido,
+     `--duracion-paso` vale cero y aparece ya apoyada. */
+  animation: momento-entra var(--duracion-paso) var(--curva-cinta) both;
+}
+
+/* La cinta que la sostiene, la misma del afiche de octubre y de los casetes. */
+.ficha-pregunta::before {
+  content: '';
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  width: 84px;
+  height: 24px;
+  margin-left: -42px;
+  background: color-mix(in srgb, var(--papel) 30%, transparent);
+  border-radius: 2px;
+  transform: rotate(-3deg);
+}
+
+/* La mezcla (`D-19`): el borde lo tiñe el disco de la categoría, como la estampa de cada
+   sección. Acierto y error nunca se disfrazan de disco: esos van en la respuesta. */
+.ficha-pregunta--historia {
+  --tinta-ficha: var(--cat-historia);
+}
+
+.ficha-pregunta--discos {
+  --tinta-ficha: var(--cat-discos);
+}
+
+.ficha-pregunta--letras {
+  --tinta-ficha: var(--cat-letras);
+}
+
+.ficha-pregunta--mitologia {
+  --tinta-ficha: var(--cat-mitologia);
+}
+
+.ficha-sellos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-1);
+  margin-bottom: var(--espacio-2);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ficha-sellos .categoria {
+  font-family: var(--fuente-rotulada);
+  border-width: 2px;
+  transform: rotate(-2deg);
+}
+
+.ficha-pregunta .enunciado {
+  margin: 0;
+  font-size: clamp(1.3rem, 5.4vw, 1.6rem);
+  font-weight: 700;
+  line-height: 1.25;
+  text-wrap: pretty;
+}
+
+/* El aviso de escalón: una franja estampada adentro de la ficha. El rótulo seco y, al lado,
+   la línea que canta. Cae como sello una sola vez por salto (`UX-07`: sin pantalla aparte). */
+.escalon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  margin: 0 0 var(--espacio-2);
+  padding: 0.45rem 0.75rem;
+  border: 2px solid var(--acento-2);
+  border-radius: 3px;
+  rotate: -1deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+.escalon-rotulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: var(--acento-2);
+}
+
+.escalon-canta {
+  font-size: 0.95rem;
+  color: var(--texto);
+}
+
+/* ---- Las opciones, con letra ---- */
+
+/* Una columna siempre en el teléfono: la mitad de las opciones del banco no entran en media
+   pantalla sin partirse en tres renglones. Dos columnas recién en pantalla grande. */
+.opciones--letradas {
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+  margin-top: var(--espacio-3);
+}
+
+@media (min-width: 40rem) {
+  .opciones--letradas {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.opciones--letradas .opcion {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.5rem;
+  padding: 0.55rem 0.9rem 0.55rem 0.6rem;
+  background: var(--fondo);
+  font-size: 1.05rem;
+  line-height: 1.3;
+  touch-action: manipulation;
+}
+
+/* La tecla se hunde al apretarla, como `.primario`: es la respuesta al dedo, no un adorno. */
+.opciones--letradas .opcion:active:not(:disabled) {
+  translate: 0 2px;
+}
+
+/* La letra es un sello de goma chico, hueco y apenas torcido. Va en la tinta de su opción:
+   cuando la opción cambia de estado, la letra cambia con ella. */
+.opcion-letra {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.95rem;
+  line-height: 1;
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  transform: rotate(-3deg);
+}
+
+.opcion:nth-child(even) .opcion-letra {
+  transform: rotate(2deg);
+}
+
+/* La elegida que no iba queda tachada, como se tacha en una planilla. El ✕ sigue estando. */
+.opcion.es-elegida .opcion-texto {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+/* Las otras dos se apagan pero se leen: deshabilitada no es borrada. */
+.opcion.es-otra {
+  color: var(--texto-tenue);
+}
+
+/* ---- La respuesta ---- */
+
+#partida .revelacion {
+  position: relative;
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-2);
+  border-radius: 3px;
+  transform: rotate(0.4deg);
+  /* Que el desplazamiento la deje entera arriba de la barra del `SEGUÍ`. */
+  scroll-margin-bottom: 7rem;
+}
+
+#partida .revelacion.no .micro {
+  font-family: var(--fuente-rotulada);
+  font-weight: 400;
+  font-size: 1.15rem;
+}
+
+/* La racha: un segundo sello, amarillo, que cae un compás después del grito. */
+.racha {
+  flex: none;
+  margin: 0;
+  padding: 0.2em 0.6em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--acento-2);
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  rotate: 4deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) var(--escalon-pasada) both;
+}
+
+.respuesta-cuerpo {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--espacio-2);
+  align-items: start;
+  margin-top: var(--espacio-2);
+}
+
+.respuesta-cuerpo:not(:has(.respuesta-tapa)) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* La tapa del disco del que se hablaba: se fija de arriba abajo, como la hoja que sale de
+   la prensa (`fijado`), apenas torcida. */
+.respuesta-tapa {
+  display: block;
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  rotate: -2deg;
+  animation: fijado var(--duracion-pasada) var(--curva-cinta) var(--escalon-pasada) both;
+}
+
+/* La respuesta, escrita grande: en el error es lo que hay que llevarse. */
+.respuesta-dato {
+  margin: 0 0 0.4rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.2rem;
+  line-height: 1.15;
+  color: var(--texto);
+  overflow-wrap: anywhere;
+}
+
+/* La explicación es el premio de haber respondido: se lee en la tinta del texto y no en la
+   tenue, que era la de una nota al pie. */
+#partida .revelacion .explicacion {
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+/* `SEGUÍ` pegado abajo, en la zona del pulgar y siempre a la vista. */
+.seguir-barra {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  margin-top: var(--espacio-2);
+  padding: var(--espacio-1) 0 calc(var(--espacio-2) + env(safe-area-inset-bottom, 0px));
+  background: var(--fondo);
+}
+
+.seguir-barra .primario {
+  margin-top: 0;
+}
+
+/* ---- El resultado ---- */
+
+#resultado .rotulo-desenlace {
+  display: inline-block;
+  margin-top: var(--espacio-2);
+  padding: 0.25em 0.7em;
+  font-size: 0.9rem;
+  color: var(--texto);
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  rotate: -4deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+/* La ficha a la que llegaste, grande, en el amarillo de las fichas de vida: es la misma
+   moneda. En rojo se peleaba con el encabezado de la derrota, que ya es rojo. */
+.resultado-numero {
+  margin: var(--espacio-2) 0 0;
+  font-family: var(--fuente-rotulada);
+  font-size: clamp(4rem, 22vw, 6rem);
+  line-height: 0.9;
+  color: var(--acento-2);
+}
+
+#resultado .resultado-numero + .puntaje {
+  margin-top: var(--espacio-1);
+  font-size: 1.1rem;
+}
+
+/* La planilla: lo que el riel fue diciendo, puesto entero. Símbolo en cada casilla. */
+.planilla {
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-2);
+  border: 2px dashed var(--borde);
+  border-radius: 3px;
+}
+
+.planilla-rotulo {
+  margin: 0 0 var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+.planilla-grilla {
+  display: grid;
+  gap: var(--espacio-1);
+}
+
+.planilla-tramo {
+  display: grid;
+  gap: 0.3rem;
+}
+
+/* El nivel va arriba de sus casillas y no al costado: así entran quince por renglón a
+   375 px y cada escalón se lee como una tira entera. */
+.planilla-nivel {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--texto-tenue);
+}
+
+.planilla-casillas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.planilla-casilla {
+  display: grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  font-size: 0.7rem;
+  line-height: 1;
+  color: var(--texto-tenue);
+  border: 1.5px solid var(--borde);
+  border-radius: 2px;
+}
+
+.planilla-casilla--ok {
+  color: var(--acento-3);
+  border-color: var(--acento-3);
+}
+
+.planilla-casilla--no {
+  color: var(--acento-4);
+  border-color: var(--acento-4);
+}
+
+.planilla-casilla--resto {
+  border-style: dashed;
+}
+
+/* ---- La portada: cómo se juega, con las tres fichas a la vista ---- */
+
+.como-se-juega {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  margin: var(--espacio-3) 0 0;
+  font-size: 1rem;
+  color: var(--texto);
+}
+
+.como-se-juega-fichas {
+  font-size: 1.45rem;
+  letter-spacing: 0.15em;
+  color: var(--acento-2);
+}
+
 /* La fuente del verso en el panel de respuesta (`T-145`, `D-25`). Registro 3: letra
    chica y tenue — informa, no decora. El subrayado fino es el idioma de enlace del
    sitio, no una barra de acento. */
@@ -3021,9 +3628,8 @@ a.secundario {
 .juego-por-la-letra {
   --tinte-accion: var(--disco-momo-sampler-tinta);
   --tinte-lista: var(--disco-momo-sampler-apoyo);
-  /* Las teclas con canto (arriba, con las del hermano): la plata de la tapa y su peltre. */
+  /* La tinta de las teclas (arriba, con las del hermano): la plata de la tapa. */
   --tinte-tecla: var(--disco-momo-sampler-tinta);
-  --canto-tecla: var(--disco-momo-sampler-apoyo);
 }
 
 /* La cabecera no pone su propio margen aca: la columna flex ya reparte con `gap`, y los
@@ -3120,15 +3726,14 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
  * el contenedor de scroll (`overflow-y: auto`), no un recorte estatico como el
  * `.verso-bloque` de `US-03`. Un `transform` ahi crea bloque contenedor y contexto de
  * apilado, y complica el scroll y cualquier hijo posicionado. El borde tenido, el fondo
- * elevado y la sombra dura desplazada ya son el recorte pegado; la inclinacion era la
- * parte prescindible.
+ * elevado ya son el recorte pegado (la sombra dura desplazada salio con `D-64`); la
+ * inclinacion era la parte prescindible.
  *
  * **Desde el pulido de arte (2026-09-25) la hoja es PAPEL**, no el gris elevado de `UX-08`
  * §4. El lugar de este juego lo dice con todas las letras —"un papel arrugado te pesa en el
  * bolsillo" (`CNT-13`)— y la hoja era la unica pieza del tablero que no lo era: una caja
  * gris sobre negro, que es el "gris arriba de otro gris" que la tabla anti-slop veta. Ahora
- * es el papel de las etiquetas de casete, con los renglones en el borde del papel y la
- * sombra dura en el peltre de Momo. Queda propuesto a `experiencia` para que lo ratifique
+ * es el papel de las etiquetas de casete, con los renglones en el borde del papel. Queda propuesto a `experiencia` para que lo ratifique
  * en `UX-08`.
  *
  * OJO CON EL CONTRASTE: sobre `--papel` el par testeado es `--fondo` ("tinta sobre papel de
@@ -3160,7 +3765,6 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
   color: var(--fondo);
   border: 2px solid var(--papel-borde);
   border-radius: 3px;
-  box-shadow: 4px 4px 0 var(--disco-momo-sampler-apoyo);
   overscroll-behavior: contain;
 }
 
@@ -3633,33 +4237,19 @@ body > main {
    Las dos pantallas mas densas —`adivinar-el-tema` y `adivinar-por-la-letra`, que pelean
    el espacio por pixel— la achican en su propio alcance a proposito. El alcance de Astro
    agrega un atributo al selector, asi que su regla le gana a esta sin `!important`. */
-.marca {
-  font-family: var(--fuente-titular);
-  font-size: clamp(1.9rem, 9vw, 2.6rem);
-  line-height: 0.96;
-  color: var(--marca-rojo);
-  margin: var(--espacio-3) 0 var(--espacio-2);
-  max-width: 7ch;
-  view-transition-name: marca;
-  /* El registro imperfecto (`UX-22` §8): la explicacion entera esta en `sitio.css`.
-     El eco de la marca es siempre el borde del papel, aunque la pantalla vista un disco
-     (`D-54`): la marca es de Oktubre en todas las pantallas, y el apoyo de cada disco es
-     para el titulo del juego, no para la firma del sitio. */
-  --tinta-registro: var(--borde);
-  text-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
+.marca img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
-/* El h1 de cada juego, con su eco de segunda tinta.
-
-   Hasta el ciclo 16 decia aca que un juego no viste ningun disco y que por eso el eco caia
-   al borde del papel. **Desde `D-54` cada juego viste el disco de su casete** (`.juego--*`,
-   el mismo mapa que `.casete--*` del portal), y el eco toma el apoyo de ese disco: el
-   petroleo de Lobo suelto detras de "Adiviná el tema", el ocre de ¡Bang! ¡Bang! detras de
-   "Ponelos en fila". Cambia tambien en el telefono (`REV-18`, `FIND-109`). Donde la pagina
-   no viste ninguno, el eco sigue cayendo al borde del papel, que es el valor de
-   `--tinta-registro` en `tokens.css`. */
-.pantalla h1 {
-  text-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
+/* La marca de la hoja: el logo completo (`D-82`), como las otras tres formas. */
+.marca {
+  width: clamp(7.5rem, 36vw, 9.5rem);
+  line-height: 0;
+  margin: var(--espacio-3) 0 var(--espacio-2);
+  view-transition-name: marca;
+  /* Tinta plana, sin eco: la sombra de las letras salio de todos lados (`D-64`). */
 }
 
 /* ==========================================================================
@@ -3698,12 +4288,30 @@ body > main {
    ocho sitios. Ahora es uno solo, y cada juego le pone la tinta de su disco (`D-19`).
 
    **`font-weight: normal` no es un detalle.** Un `h1` sale en negrita por defecto, y la
-   rotulada tiene un peso solo: el navegador la engordaba a mano en los ocho títulos, que es
-   la negrita falsa que `estilos.test.ts` ya prohíbe en los botones desde el ciclo 16. */
+   letra tiene un peso solo: el navegador la engordaba a mano en los ocho títulos, que es
+   la negrita falsa que `estilos.test.ts` ya prohíbe en los botones desde el ciclo 16.
+
+   **Desde `D-65` va en la letra de la banda**, la digitalización de Patricio Rey (`RES-42`),
+   con las tildes y los signos derivados de su propio material. El usuario, textual: *"hay
+   que usar la tipografia de los discos en mas lados"*. Va acá y no en el título del casete
+   porque esta letra se lee desde unos 19 px, gira cada letra y cansa en frases largas: los
+   títulos de juego son de dos a cinco palabras y van de 29 px para arriba. A igual cuerpo
+   se ve más chica que la rotulada, por eso sube un escalón. La comparte la página de
+   diagnóstico de audio, que usa la misma regla.
+
+   **Desde `D-67`, dos juegos escriben en la letra de su disco**, que traen de su variante
+   (`--fuente-disco`, en `sitio.css`): "Adiviná el tema" en la de *Lobo suelto* y "¿Qué tipo de
+   ricotero sos?" en la que viste *Luzbelito*. Las dos se escalaron a la mayúscula del sistema al
+   derivarlas, así que el cuerpo es el mismo de los ocho. Los otros seis siguen en la de la
+   banda: sus discos no tienen letra.
+
+   **El colchón de abajo no es aire:** la máscara de abajo recorta en la caja, y la cola de ¡ y
+   de ¿ baja más que la caja de la línea (-258 contra -196 unidades). Lo pone el padding, y el
+   margen lo devuelve: el renglón no se mueve. */
 .pantalla > h1 {
-  font-family: var(--fuente-rotulada);
+  font-family: var(--fuente-disco, var(--fuente-marca-firma));
   font-weight: normal;
-  font-size: clamp(1.65rem, 7vw, 2.15rem);
+  font-size: clamp(1.8rem, 7.6vw, 2.35rem);
   line-height: 1.04;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -3713,10 +4321,26 @@ body > main {
      tienen su par AA sobre `--fondo` en `contraste.test.ts`, y las tres que se apoyan sobre
      una tapa velada tienen además el de texto grande sobre el peor caso del velo. */
   color: var(--tinta-titulo, var(--tinte-sello, var(--tinte, var(--texto))));
-  margin: 0 0 var(--espacio-1);
+  padding-bottom: 0.07em;
+  margin: 0 0 calc(var(--espacio-1) - 0.07em);
 }
 
-/* ---- La acción de cada juego: la tinta de su disco, con el canto de su apoyo ----
+/* El título de cada juego sale de la misma almohadilla que su casete (`D-64`), pero solo con
+   la sal: es tinta de color sobre el negro y no tiene margen para aclararse —la presión dejaba
+   "Completá la letra" en 3,39:1—. La sal saca puntos enteros y no le cambia el color a
+   ninguno, así que ningún par AA se mueve. La tesela va al doble que en el casete porque la
+   letra mide el doble, y el golpe es el del casete (`--golpe`, en `sitio.css`). La de *Lobo
+   suelto* no lleva sal (`--sal-del-titulo: none`): con trazo de pelo se lleva trazos enteros. */
+.pantalla h1 {
+  -webkit-mask-image: var(--sal-del-titulo, var(--textura-tinta-sal));
+  mask-image: var(--sal-del-titulo, var(--textura-tinta-sal));
+  -webkit-mask-size: 480px 480px;
+  mask-size: 480px 480px;
+  -webkit-mask-position: calc(var(--golpe, 0) * -122px) calc(var(--golpe, 0) * -74px);
+  mask-position: calc(var(--golpe, 0) * -122px) calc(var(--golpe, 0) * -74px);
+}
+
+/* ---- La acción de cada juego: la tinta de su disco ----
 
    Cinco de los ocho botones principales ya iban en la tinta de su disco y tres iban en el
    rojo de la marca, que es el repuesto de `.primario` y que nadie había elegido para ellos
@@ -3724,18 +4348,18 @@ body > main {
    tres juegos de discos distintos con el mismo botón rojo dicen que son el mismo juego. La
    regla de marca lo dice al revés: **lo que rota por sección es el acento y la letra grande**.
 
-   Cada tinta tiene su par con `--fondo` encima en `contraste.test.ts`. El canto es apoyo:
-   borde y sombra, nunca letra. Las tres pantallas que ya declaraban su `--tinte-accion` lo
-   siguen haciendo, con el mismo valor. */
-.juego--marca { --tinte-accion: var(--marca-rojo); --canto-accion: var(--disco-oktubre-apoyo); }
-.juego--historia { --tinte-accion: var(--cat-historia); --canto-accion: var(--cat-historia-apoyo); }
-.juego--discos { --tinte-accion: var(--cat-discos); --canto-accion: var(--cat-discos-apoyo); }
-.juego--letras { --tinte-accion: var(--cat-letras); --canto-accion: var(--cat-letras-apoyo); }
-.juego--mitologia { --tinte-accion: var(--cat-mitologia); --canto-accion: var(--cat-mitologia-apoyo); }
-.juego--momo { --tinte-accion: var(--disco-momo-sampler-tinta); --canto-accion: var(--disco-momo-sampler-apoyo); }
-.juego--baion { --tinte-accion: var(--disco-un-baion-para-el-ojo-idiota-tinta); --canto-accion: var(--disco-un-baion-para-el-ojo-idiota-apoyo); }
-.juego--bang { --tinte-accion: var(--disco-bang-bang-estas-liquidado-tinta); --canto-accion: var(--disco-bang-bang-estas-liquidado-apoyo); }
-.juego--luzbelito { --tinte-accion: var(--disco-luzbelito-tinta); --canto-accion: var(--disco-luzbelito-apoyo); }
+   Cada tinta tiene su par con `--fondo` encima en `contraste.test.ts`. El canto de apoyo que
+   llevaba cada botón (`D-54`) salió con `D-64`. Las tres pantallas que ya declaraban su
+   `--tinte-accion` lo siguen haciendo, con el mismo valor. */
+.juego--marca { --tinte-accion: var(--marca-rojo); }
+.juego--historia { --tinte-accion: var(--cat-historia); }
+.juego--discos { --tinte-accion: var(--cat-discos); }
+.juego--letras { --tinte-accion: var(--cat-letras); }
+.juego--mitologia { --tinte-accion: var(--cat-mitologia); }
+.juego--momo { --tinte-accion: var(--disco-momo-sampler-tinta); }
+.juego--baion { --tinte-accion: var(--disco-un-baion-para-el-ojo-idiota-tinta); }
+.juego--bang { --tinte-accion: var(--disco-bang-bang-estas-liquidado-tinta); }
+.juego--luzbelito { --tinte-accion: var(--disco-luzbelito-tinta); }
 
 /* ---- La carátula en el teléfono: una calcomanía en la esquina de la cabecera ----
 
@@ -3887,12 +4511,7 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   .caratula-marca {
     display: block;
     margin: 0;
-    max-width: 7ch;
-    font-family: var(--fuente-titular);
-    font-size: 1.85rem;
-    line-height: 0.96;
-    color: var(--marca-rojo);
-    text-shadow: var(--registro) var(--registro) 0 var(--borde);
+    width: 9rem;
     view-transition-name: marca;
   }
 
@@ -3952,6 +4571,9 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
     color: var(--fondo);
     border-radius: 4px;
     transform: rotate(0.5deg);
+    /* Lleva el papel viejo en un `::before`, como la del portal (`D-64`). */
+    position: relative;
+    isolation: isolate;
   }
 
   /* La pista, abajo a la derecha de la etiqueta: el mismo "A3" escrito a mano que tiene el
@@ -3969,13 +4591,44 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 
   .caratula-titulo {
     display: block;
-    margin: 0.2em 0 0;
+    margin: 0.15em 0 -0.05em;
+    /* La máscara recorta en la caja: con 1,15 de interlínea la Á quedaba a 0,02 em del borde. */
+    padding-block: 0.05em;
     font-family: var(--fuente-rotulada);
     font-size: 1.15rem;
     line-height: 1.15;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     text-wrap: balance;
+    /* La misma tinta de sello gastada que el título del casete del portal (`D-64`), con el
+       mismo golpe: son la misma etiqueta. */
+    -webkit-mask-image: var(--textura-tinta);
+    mask-image: var(--textura-tinta);
+    -webkit-mask-size: 240px 240px;
+    mask-size: 240px 240px;
+    -webkit-mask-position: calc(var(--golpe, 0) * -61px) calc(var(--golpe, 0) * -37px);
+    mask-position: calc(var(--golpe, 0) * -61px) calc(var(--golpe, 0) * -37px);
+  }
+
+  /* El papel viejo de la etiqueta, como en el portal. Solo acá, dentro de la mesa: en el
+     teléfono la etiqueta es `display: contents` y un pseudo suyo pintaría una mancha suelta
+     sobre la calcomanía. */
+  @supports (mask-image: none) or (-webkit-mask-image: none) {
+    .caratula-etiqueta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-radius: inherit;
+      pointer-events: none;
+      background: var(--papel-borde);
+      -webkit-mask-image: var(--textura-papel-viejo);
+      mask-image: var(--textura-papel-viejo);
+      -webkit-mask-size: 320px 320px;
+      mask-size: 320px 320px;
+      -webkit-mask-position: calc(var(--golpe, 0) * -83px) calc(var(--golpe, 0) * -131px);
+      mask-position: calc(var(--golpe, 0) * -83px) calc(var(--golpe, 0) * -131px);
+    }
   }
 
   /* La lista de temas: el interior de la tapita, donde se escriben los temas a mano. */
@@ -4061,7 +4714,7 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 
   /* El título de cartel, en la hoja: con la carátula al lado puede gritar un poco más. */
   body > main:has(> .caratula) > .pantalla > h1 {
-    font-size: 2.6rem;
+    font-size: 2.85rem;
     margin-top: var(--espacio-1);
   }
 
@@ -4184,7 +4837,6 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   border: var(--linea) solid var(--borde);
   border-radius: 3px;
   rotate: -1.2deg;
-  box-shadow: 4px 4px 0 var(--apoyo-disco, var(--borde));
 }
 
 .pasada,
@@ -4301,9 +4953,8 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   margin-top: var(--espacio-2);
 }
 
-/* El nombre del disco, en la tinta de su disco y con la segunda tinta corrida: el
-   registro imperfecto de una imprenta a mano. `text-shadow` de desplazamiento plano,
-   que es la unica sombra que la regla de marca admite. */
+/* El nombre del disco, en la tinta de su disco y plano: la segunda tinta corrida que
+   llevaba salio con `D-64`. */
 .estampa-disco {
   font-family: var(--fuente-rotulada);
   font-size: 1rem;
@@ -4311,7 +4962,6 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   line-height: 1.1;
   text-align: center;
   color: var(--tinta-disco, var(--texto));
-  text-shadow: var(--registro) var(--registro) 0 var(--apoyo-disco, var(--borde));
 }
 
 /* Los tres nombres que tienen su propia letra calcada (`CNT-14` §2.7). */
@@ -4487,8 +5137,8 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 }
 
 /* La referencia: el número contra el que se decide. Recorte pegado —borde completo en la
-   tinta del disco y sombra dura en el apoyo—, el mismo idioma que `.verso-bloque`. Nunca
-   la barrita lateral ni la tarjeta elevada. */
+   tinta del disco—, el mismo idioma que `.verso-bloque`. Nunca la barrita lateral ni la
+   tarjeta elevada. */
 .masomenos-referencia {
   margin: 0 0 var(--espacio-3);
   padding: var(--espacio-2);
@@ -4496,7 +5146,6 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   /* Esquina de estampa y no `--radio`: la caja no se toca, y `--radio` es para lo tocable
      grande (`diseno-marca.md`; lo notó `REV-16`). */
   border-radius: 3px;
-  box-shadow: 4px 4px 0 var(--apoyo-disco, var(--borde));
   transform: rotate(-0.6deg);
 }
 
@@ -4679,15 +5328,17 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 }
 
 /*
- * Cada conjunto es una tarjeta recortada, con la tinta de su disco cuando lo tiene.
+ * Cada conjunto es una tarjeta recortada, con la tinta de su disco cuando lo tiene, y desde
+ * `D-69` con su tapa al costado: el disco se reconoce antes de leerlo.
  *
- * Los cinco que cruzan discos —los diez discos, las tapas, los que abren, los que cierran,
- * y los doce sorteados— no llevan ninguna: teñirlos con un disco cualquiera sería decir que
- * ese conjunto es de ese disco, y no lo es.
+ * Los que cruzan discos —los diez discos, las tapas, los que abren, los que cierran, los
+ * sorteados y "Todos los temas"— no llevan ninguna tinta de disco: teñirlos con uno
+ * cualquiera sería decir que ese conjunto es de ese disco, y no lo es.
  */
 .conjunto {
-  display: grid;
-  gap: 0.2em;
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
   width: 100%;
   min-height: var(--toque-min);
   padding: var(--espacio-2);
@@ -4697,6 +5348,32 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   border: var(--linea) solid color-mix(in srgb, var(--tinta-disco, var(--tinte-juego)) 45%, var(--borde));
   border-radius: var(--radio);
   transition: border-color var(--duracion-toque) var(--curva-cinta);
+}
+
+/* Pegadas a mano: ninguna queda derecha, y ninguna se tuerce igual que la de al lado. */
+.conjuntos > li:nth-child(odd) > .conjunto {
+  transform: rotate(-0.4deg);
+}
+
+.conjuntos > li:nth-child(even) > .conjunto {
+  transform: rotate(0.3deg);
+}
+
+.conjunto-texto {
+  display: grid;
+  gap: 0.2em;
+  flex: 1;
+  min-width: 0;
+}
+
+.conjunto-tapa {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  transform: rotate(-2deg);
 }
 
 .conjunto-titulo {
@@ -4719,6 +5396,68 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--texto-tenue);
+}
+
+/*
+ * "Todos los temas" (`D-69`): el conjunto entero, y el que se pidió por nombre. Va primero,
+ * más grande, con la tinta del juego en el borde y las diez tapas en tira — las diez, una
+ * al lado de la otra, porque adentro están los diez discos.
+ */
+.conjunto--todos {
+  flex-wrap: wrap;
+  padding: var(--espacio-3) var(--espacio-2);
+  border-color: var(--tinte-juego);
+}
+
+.conjunto--todos .conjunto-titulo {
+  font-size: 1.45rem;
+}
+
+/* Diez columnas iguales y no una fila flexible: una imagen con su `width` puesto no se
+   achica en una fila flexible, y la tira se salía por el costado de la tarjeta. */
+.conjunto-tira {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 4px;
+  flex: 1 0 100%;
+  min-width: 0;
+}
+
+.conjunto-tira-tapa {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+}
+
+.conjunto-tira-tapa:nth-child(odd) {
+  transform: rotate(-3deg);
+}
+
+.conjunto-tira-tapa:nth-child(even) {
+  transform: rotate(2deg);
+}
+
+/* La partida a medias: arriba de todo, con el sello que lo dice en palabras. */
+.conjunto--retomar {
+  display: grid;
+  gap: 0.35em;
+  border-style: dashed;
+  border-color: var(--acento-2);
+}
+
+.conjunto-sello {
+  justify-self: start;
+  padding: 0.1em 0.6em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--acento-2);
+  border: 2px solid var(--acento-2);
+  border-radius: 3px;
+  transform: rotate(-1.5deg);
 }
 
 /* ---- Pantalla 2: el tablero ---- */
@@ -4759,26 +5498,64 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 }
 
 /*
- * La mano: la única línea que dice qué está pasando, y la única región viva del juego.
- *
- * Va pegada arriba mientras se juega. Con trece fichas y cuatro filas, la bandeja y el
- * destino no entran juntos en 375 px: si esta línea se fuera con el desplazamiento, el
- * jugador perdería de vista qué tiene en la mano justo cuando va a soltarlo.
+ * Las herramientas (`D-69`): cambiar las filas, el sonido, deshacer, mezclar. Sellos chicos
+ * de esquina viva, apenas torcidos; ninguno compite con los botones de fila de abajo.
+ */
+.tablero-herramientas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+  margin: var(--espacio-1) 0 var(--espacio-2);
+}
+
+.herramienta {
+  min-height: var(--toque-min);
+  padding: 0.3em 0.8em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
+  touch-action: manipulation;
+}
+
+.herramienta:nth-child(odd) {
+  transform: rotate(-0.8deg);
+}
+
+.herramienta:nth-child(even) {
+  transform: rotate(0.6deg);
+}
+
+/* Prendida: borde y letra de destaque, y el botón además cambia de palabra ("Listo"). */
+.herramienta--activa {
+  color: var(--acento-2);
+  border-color: var(--acento-2);
+}
+
+.herramienta:disabled {
+  color: var(--texto-tenue);
+  border-style: dashed;
+}
+
+/*
+ * La mano: la línea que dice qué acaba de pasar, y la única región viva del juego. Desde
+ * `D-69` vive adentro del mazo, en la zona del pulgar, que es donde el jugador está mirando.
  */
 .mano {
-  position: sticky;
-  top: 0;
-  z-index: 2;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--espacio-1);
-  min-height: 1.6em;
-  margin: 0 0 var(--espacio-2);
-  padding: 0.4em 0;
-  background: var(--fondo);
-  border-bottom: 2px solid var(--borde);
-  font-size: 0.85rem;
+  min-height: 1.3em;
+  margin: 0.25em 0 0.4em;
+  padding-bottom: 0.2em;
+  border-bottom: 2px solid transparent;
+  font-size: 0.82rem;
   color: var(--texto-tenue);
   transition: border-color var(--duracion-toque) var(--curva-cinta);
 }
@@ -4803,18 +5580,18 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   color: var(--texto);
 }
 
-/* ---- Las cuatro filas ---- */
+/* ---- Las filas ---- */
 
 .filas {
   display: grid;
   gap: var(--espacio-2);
-  margin-bottom: var(--espacio-3);
+  margin-bottom: var(--espacio-2);
 }
 
 /*
  * Una fila es un recorte pegado, no una superficie elevada: fondo igual al del sitio,
- * borde grueso, y apenas torcida. Ninguna de las cuatro cambia de tinte respecto de las
- * otras — el borde sale del disco del juego, que es el mismo para todas.
+ * borde grueso, y apenas torcida. Ninguna cambia de tinte respecto de las otras — el borde
+ * sale del disco del juego, que es el mismo para todas, sean las de siempre o las propias.
  */
 .fila {
   padding: var(--espacio-1);
@@ -4832,8 +5609,8 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 }
 
 /*
- * El destino: la banda entera, no un blanco chico. Es el botón que recibe la ficha que
- * tenés en la mano, y ocupa el ancho completo de la fila porque el pulgar apunta mal.
+ * El destino: la banda entera, no un blanco chico. Manda ahí a la ficha que te toca, y
+ * ocupa el ancho completo de la fila porque el pulgar apunta mal.
  */
 .fila-destino {
   display: flex;
@@ -4848,12 +5625,15 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   border: 0;
   border-bottom: 2px dashed var(--borde);
   border-radius: 0;
+  text-align: start;
   transition: border-color var(--duracion-toque) var(--curva-cinta);
 }
 
-/* El sello de goma con el nombre del lugar. Registro 3, apenas torcido, esquina de 3 px:
-   nunca la pastilla cápsula. */
+/* El sello de goma con el nombre de la fila. Registro 3, apenas torcido, esquina de 3 px:
+   nunca la pastilla cápsula. Un nombre propio largo se parte, no se corta. */
 .fila-sello {
+  max-width: 80%;
+  overflow-wrap: anywhere;
   font-family: var(--fuente-rotulada);
   font-size: 0.8rem;
   letter-spacing: 0.08em;
@@ -4867,14 +5647,15 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 }
 
 .fila-cuenta {
+  flex: none;
   font-family: var(--fuente-rotulada);
   font-size: 0.9rem;
   color: var(--texto-tenue);
   font-variant-numeric: tabular-nums;
 }
 
-/* Las cuatro se abren a la vez cuando hay algo en la mano. A la vez y no una: el jugador
-   elige entre las cuatro, y destacar una sería el sitio opinando. */
+/* Con una ficha puesta en la mano, todas las filas se abren a la vez. A la vez y no una:
+   el jugador elige entre todas, y destacar una sería el sitio opinando. */
 .fila--abierta .fila-destino {
   border-bottom-color: var(--acento-2);
 }
@@ -4899,13 +5680,79 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   display: none;
 }
 
+/* ---- Las filas propias (`D-69`): el nombre se escribe en el sello mismo ---- */
+
+.filas--editando > .fila {
+  border-style: dashed;
+}
+
+/* Mientras se editan las filas, el mazo se despega: pegado abajo tapaba "Sumá una fila". */
+.filas--editando ~ .mazo {
+  position: static;
+}
+
+.fila-edicion {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+}
+
+.fila-nombre {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--toque-min);
+  padding: 0.3em 0.6em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+}
+
+.fila-nombre:focus-visible {
+  border-color: var(--acento-2);
+}
+
+.fila-sacar {
+  flex: none;
+  min-height: var(--toque-min);
+  padding: 0.3em 0.8em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 2px dashed var(--borde);
+  border-radius: 3px;
+}
+
+.fila-sacar:disabled {
+  color: var(--texto-tenue);
+}
+
+.filas-edicion {
+  display: grid;
+  gap: var(--espacio-1);
+}
+
+.filas-edicion .secundario {
+  margin-top: 0;
+}
+
+.filas-ayuda {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--texto-tenue);
+}
+
 /* ---- La pieza, que es la ficha que se mueve ----
 
    **Se llama `pieza` y no `ficha` porque `.ficha` ya existe**: es la tarjeta lateral de un
-   articulo de la Redondopedia, en `sitio.css`, con papel rayado y cinta adhesiva. El
-   choque se descubrio con el tablero ya dibujado, viendo las fichas de los discos salir
-   vestidas de otra cosa. Dos componentes con el mismo nombre de clase es la verdad
-   duplicada de siempre, con el agravante de que no avisa. ---- */
+   articulo de la Redondopedia, en `sitio.css`, con papel rayado y cinta adhesiva. ---- */
 
 .pieza {
   display: flex;
@@ -4917,22 +5764,39 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   background: var(--fondo);
   color: var(--texto);
   border: 2px solid color-mix(in srgb, var(--tinta-disco, var(--borde)) 65%, var(--borde));
-  border-radius: var(--radio);
+  border-radius: 3px;
   transition: border-color var(--duracion-toque) var(--curva-cinta);
   /* Sin el retardo de 300 ms ni el zoom de doble toque. `manipulation` y no `none`: acá no
-     hay arrastre táctil que proteger, y `none` le sacaría el desplazamiento a la bandeja. */
+     hay arrastre táctil que proteger, y `none` le sacaría el desplazamiento al mazo. */
   touch-action: manipulation;
 }
 
+/* Puestas a mano: tres inclinaciones que se alternan, como fichas tiradas sobre la mesa. */
+.fila-piezas > li:nth-child(3n + 1) > .pieza {
+  transform: rotate(-0.7deg);
+}
+
+.fila-piezas > li:nth-child(3n + 2) > .pieza {
+  transform: rotate(0.5deg);
+}
+
 .pieza--puesta {
+  padding: 0.3em 0.6em;
   font-size: 0.9rem;
 }
 
-/* Lo que tenés en la mano: borde de destaque **y** el rótulo de abajo. Dos canales, porque
-   uno solo sería color (`UX-01`). */
+/* Lo que tenés en la mano: borde de destaque **y** el rótulo `EN LA MANO`. Dos canales,
+   porque uno solo sería color (`UX-01`). */
 .pieza--en-mano {
   border-color: var(--acento-2);
   border-width: var(--linea);
+}
+
+/* La que acaba de caer: borde grueso con la tinta entera de su disco, hasta la próxima
+   jugada. Es la que el ojo busca para confirmar que el toque anduvo; lo dice además la mano. */
+.pieza--recien {
+  border-width: var(--linea);
+  border-color: var(--tinta-disco, var(--texto));
 }
 
 .pieza-tapa {
@@ -4957,9 +5821,11 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   line-height: 1.2;
 }
 
+/* El disco de cada tema, en su tinta: es lo que deja reconocer de dónde es cada ficha en
+   una fila de ciento cinco. La tinta de cada disco pasa AA sobre `--fondo`. */
 .pieza-pie {
-  font-size: 0.7rem;
-  color: var(--texto-tenue);
+  font-size: 0.72rem;
+  color: var(--tinta-disco, var(--texto-tenue));
 }
 
 .pieza-mano {
@@ -4974,34 +5840,36 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   flex: none;
 }
 
-/* ---- La bandeja ---- */
+/* ---- El mazo (`D-69`): la que te toca, en la zona del pulgar ----
+
+   Pegado abajo mientras se reparte: la carta y un botón por fila quedan siempre bajo el
+   pulgar, y las filas se llenan arriba. Repartir es un toque por ficha y cero viajes de
+   la mano, que es lo que vuelve jugables los ciento cinco temas en un teléfono. Cuando no
+   queda ninguna, se despega y la lista entera queda a la vista con el botón de compartir. */
 
 .bandeja {
-  padding: var(--espacio-2);
+  padding: var(--espacio-1) var(--espacio-2) var(--espacio-2);
   background: var(--fondo);
-  border: 2px dashed var(--borde);
+  border: var(--linea) solid color-mix(in srgb, var(--tinte-juego) 55%, var(--borde));
   border-radius: var(--radio);
   overflow-anchor: none;
 }
 
-/*
- * La bandeja es **la unica zona con desplazamiento propio**, y es lo que hace jugable el
- * tablero en un telefono.
- *
- * Medido a 375 x 812 con los diez discos: las cuatro filas ocupan ~600 px y la bandeja
- * llena ~900 px mas. Sin tope, agarrar una tapa del fondo de la bandeja y llevarla a
- * "en el pogo" son novecientos pixeles de arrastre de hoja **por cada ficha**, diez
- * veces seguidas. Con la bandeja acotada, las cuatro filas y la bandeja entran juntas y el
- * pulgar no viaja.
- *
- * Es ademas lo que hace el formato en la web: la bandeja es el unico panel que se
- * desplaza solo. No se le pone tope a las filas, que crecen hacia abajo como corresponde.
- */
-.bandeja .fila-piezas {
-  max-height: 42vh;
-  overflow-y: auto;
-  /* Sin esto, el desplazamiento de la bandeja arrastra la hoja entera al llegar al final. */
-  overscroll-behavior: contain;
+/* El aire de abajo que el mazo le quita a la hoja lo pone la isla en `scroll-padding-bottom`
+   del documento, con la altura medida: así lo que toma el foco con el teclado nunca queda
+   escondido detrás del mazo (WCAG 2.4.11). */
+.mazo {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  margin-top: var(--espacio-2);
+  padding-bottom: calc(var(--espacio-2) + env(safe-area-inset-bottom, 0px));
+}
+
+/* Moviendo una que ya estaba puesta: el mazo lo dice con el sello y con el borde cortado. */
+.mazo--moviendo {
+  border-style: dashed;
+  border-color: var(--acento-2);
 }
 
 .bandeja-rotulo {
@@ -5015,20 +5883,25 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 
 .bandeja-sello {
   font-family: var(--fuente-rotulada);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--texto-tenue);
+  color: var(--texto);
   border: 2px solid var(--borde);
   border-radius: 3px;
   padding: 0.2em 0.7em;
   transform: rotate(0.9deg);
 }
 
-/* Vacía no desaparece: sigue ahí, dicha con palabras. Una zona que se esfuma deja al
-   jugador sin saber si terminó o si se rompió algo. */
+.bandeja-rotulo .fila-cuenta {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+/* Vacío no desaparece: sigue ahí, dicho con palabras, y se despega para que se vea la
+   lista entera. Una zona que se esfuma deja al jugador sin saber si terminó o si se rompió. */
 .bandeja--vacia {
-  border-style: solid;
+  position: static;
   border-color: color-mix(in srgb, var(--tinte-juego) 45%, var(--borde));
 }
 
@@ -5036,6 +5909,201 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   margin: var(--espacio-1) 0 0;
   font-size: 0.85rem;
   color: var(--texto-tenue);
+}
+
+/* La carta: la ficha que te toca, grande, con la tinta de su disco en el borde entero. */
+.carta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--fondo);
+  color: var(--texto);
+  border: var(--linea) solid var(--tinta-disco, var(--tinte-juego));
+  border-radius: var(--radio);
+  transform: rotate(-0.6deg);
+}
+
+.carta:not(:has(.carta-tapa)) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.carta--moviendo {
+  border-style: dashed;
+}
+
+.carta-tapa {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  transform: rotate(2deg);
+}
+
+.carta-cuerpo {
+  display: grid;
+  gap: 0.15em;
+  min-width: 0;
+}
+
+.carta-titulo {
+  font-family: var(--fuente-rotulada);
+  font-size: 1.2rem;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.carta-pie {
+  font-size: 0.85rem;
+  color: var(--tinta-disco, var(--texto-tenue));
+}
+
+/* Qué tema de un disco está sonando. Vacío cuando no suena nada: el renglón no salta. */
+.carta-suena {
+  min-height: 1.2em;
+  font-size: 0.8rem;
+  color: var(--texto-tenue);
+}
+
+.carta .pieza-mano {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.carta-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+}
+
+.carta-accion {
+  flex: 1 1 0;
+  min-height: var(--toque-min);
+  padding: 0.3em 0.5em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  transition: border-color var(--duracion-toque) var(--curva-cinta);
+  touch-action: manipulation;
+}
+
+/* Sonando: borde y letra de destaque, y el botón dice "Pará". */
+.carta-accion--sonando {
+  color: var(--acento-2);
+  border-color: var(--acento-2);
+}
+
+/* Un botón por fila, debajo de la carta. Todos con la misma tinta, la del juego: ninguno
+   es el bueno (`BR-22`). */
+.reparto {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.reparto-boton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4em;
+  min-height: var(--toque-min);
+  padding: 0.3em 0.7em;
+  text-align: start;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--fondo);
+  color: var(--texto);
+  border: var(--linea) solid color-mix(in srgb, var(--tinte-juego) 60%, var(--borde));
+  border-radius: var(--radio);
+  transition:
+    translate var(--duracion-toque) var(--curva-cinta),
+    border-color var(--duracion-toque) var(--curva-cinta);
+  touch-action: manipulation;
+}
+
+.reparto-boton:nth-child(odd) {
+  transform: rotate(-0.5deg);
+}
+
+.reparto-boton:nth-child(even) {
+  transform: rotate(0.4deg);
+}
+
+/* Una fila sola en el último renglón ocupa el ancho entero: un hueco al lado parece un
+   botón que falta. */
+.reparto-boton:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+/* La tecla se hunde al apretar, como el botón principal del sitio (`D-54`). */
+.reparto-boton:active {
+  translate: 0 2px;
+  border-color: var(--acento-2);
+}
+
+.reparto-nombre {
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+/* ---- El mazo abierto: elegir cuál sigue, con un filtro por disco ---- */
+
+.mazo-abierto {
+  display: grid;
+  gap: var(--espacio-1);
+}
+
+.mazo-abierto > .secundario {
+  margin-top: 0;
+}
+
+/* Los diez discos en una tira que se corre de costado sin correr la hoja. */
+.mazo-filtros {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px 2px 6px;
+  overscroll-behavior-x: contain;
+}
+
+.filtro {
+  flex: none;
+  min-height: var(--toque-min);
+  padding: 0.2em 0.6em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--fondo);
+  color: var(--tinta-disco, var(--texto));
+  border: 2px solid color-mix(in srgb, var(--tinta-disco, var(--borde)) 70%, var(--borde));
+  border-radius: 3px;
+}
+
+/* El elegido: borde grueso **y** subrayado. Dos canales, ninguno solo de color. */
+.filtro[aria-pressed='true'] {
+  border-width: var(--linea);
+  border-color: var(--tinta-disco, var(--acento-2));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.mazo-lista {
+  max-height: 38vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: 0;
+  padding: 2px;
 }
 
 /* ---- La lámina ---- */
@@ -5063,23 +6131,30 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
   .conjuntos {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  /* "Todos los temas" y la partida a medias ocupan el ancho entero. */
+  .conjuntos-todos,
+  .conjuntos-retomar {
+    grid-column: 1 / -1;
+  }
+
+  .reparto {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  }
+
+  .reparto-boton:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
 }
 
 /* ---- La mesa (`D-54`, `UX-35` §4): el tablero en dos paños ----
 
-   En el teléfono el tablero es una columna y la bandeja tiene desplazamiento propio
-   (42 % del alto) para que las filas y la bandeja entren juntas. En una pantalla ancha eso
-   sigue siendo un viaje: el mouse baja a la bandeja, agarra, sube a la fila, baja otra vez.
-   Desde 80 rem las cuatro filas y la bandeja van **lado a lado**, la bandeja pegada arriba
-   mientras se desplaza la página, y el viaje pasa a ser de costado y corto.
-
-   El tablero de este juego es el único que pide más ancho que `--ancho-tablero`: la
-   bandeja necesita su columna sin comerle el ancho a las fichas puestas. No cambia la isla:
-   el orden del documento es el de siempre (cabecera, mano, filas, bandeja, lámina) y el
-   reparto lo pone la grilla. */
+   En el teléfono el mazo va pegado abajo. En una pantalla ancha eso sigue siendo un viaje:
+   el mouse baja al mazo, sube a mirar la fila, baja otra vez. Desde 80 rem las filas y el
+   mazo van **lado a lado**, el mazo pegado arriba mientras se desplaza la página, y el
+   viaje pasa a ser de costado y corto. No cambia la isla: el orden del documento es el de
+   siempre (cabecera, herramientas, filas, mazo, lámina) y el reparto lo pone la grilla. */
 @media (min-width: 80rem) {
-  /* Desde 80 rem y no desde 64 (`UX-35` §7.5): entre los dos cortes el tablero es una
-     columna, y 52 rem para una columna era ancho de más. */
   .ponelos {
     --ancho-tablero: var(--ancho-tablero-amplio);
   }
@@ -5090,26 +6165,33 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 
   .ponelos > .pantalla:has(> .filas) {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(15rem, 18rem);
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
     column-gap: var(--espacio-3);
     align-items: start;
   }
 
   .ponelos > .pantalla:has(> .filas) > .tablero-cabecera,
-  .ponelos > .pantalla:has(> .filas) > .mano,
+  .ponelos > .pantalla:has(> .filas) > .tablero-herramientas,
   .ponelos > .pantalla:has(> .filas) > .lamina {
     grid-column: 1 / -1;
   }
 
-  /* La bandeja se pega debajo de la mano, que ya está pegada arriba: las dos a la vista
-     mientras las filas crecen hacia abajo. */
-  .ponelos .bandeja {
-    position: sticky;
-    top: 3.5rem;
+  .ponelos > .pantalla:has(> .filas) > .filas {
+    grid-column: 1;
+    grid-row: 3;
   }
 
-  .ponelos .bandeja .fila-piezas {
-    max-height: calc(100svh - 11rem);
+  .ponelos .mazo {
+    grid-column: 2;
+    grid-row: 3;
+    position: sticky;
+    top: var(--espacio-2);
+    bottom: auto;
+    margin-top: 0;
+  }
+
+  .ponelos .mazo-lista {
+    max-height: calc(100svh - 22rem);
   }
 }
 
@@ -5118,11 +6200,816 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 
 @media (hover: hover) and (pointer: fine) {
   .conjunto:hover,
-  .pieza:hover {
+  .pieza:hover,
+  .reparto-boton:hover,
+  .carta-accion:hover,
+  .filtro:hover,
+  .herramienta:hover:not(:disabled) {
     border-color: var(--acento-2);
   }
 
   .fila-destino:hover {
     border-bottom-color: var(--acento-2);
   }
+}
+
+/* Alto contraste y colores forzados: tinta lisa y papel limpio (`D-64`). forced-colors apaga
+   text-shadow solo, pero NO mask-image: si nadie lo hace a mano, la máscara sigue. */
+@media (forced-colors: active), (prefers-contrast: more) {
+  .pantalla h1,
+  .caratula-titulo {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .caratula-etiqueta::before {
+    content: none;
+  }
+}
+
+/* ==================================================================
+   Armá tu recital (`D-72`)
+   ==================================================================
+
+   La lista es una hoja de papel pegada con cinta al piso del escenario, escrita con fibra:
+   tinta (`--fondo`) sobre papel (`--papel`), que es el par testeado del collage. La base no
+   rota; lo que rota es la tinta de *Oktubre* en el acento (`.juego--marca`). Sin sombras
+   (`D-64`), sin pastillas: los sellos van a 3 px y el borde de cada tema lo tiñe su disco.
+*/
+
+.recital .recital-titulo {
+  margin: var(--espacio-3) 0 var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  font-weight: 400;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.recital-fuente,
+.recital-como-suena,
+.recital-estado,
+.recital-retomar-cuenta {
+  margin: 0 0 var(--espacio-2);
+  font-size: 0.9rem;
+  color: var(--texto-tenue);
+}
+
+.recital-como-suena {
+  margin-top: var(--espacio-3);
+}
+
+.recital-retomar-cuenta {
+  margin-top: var(--espacio-1);
+  text-align: center;
+}
+
+/* ---- El lugar: cuatro pestañas y las entradas de papel ---- */
+
+/* Las pestañas son sellos de goma: rectángulo de esquina casi viva, borde fino. La elegida se
+   llena de tinta: el estado es relleno y borde, no solo color. */
+.recital-pestanas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 var(--espacio-2);
+}
+
+.recital-pestana {
+  min-height: var(--toque-min);
+  padding: 0 12px;
+  background: transparent;
+  color: var(--texto);
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  touch-action: manipulation;
+}
+
+.recital-pestana[aria-pressed="true"] {
+  background: var(--texto);
+  color: var(--fondo);
+  border-color: var(--texto);
+}
+
+.recital-lugares {
+  display: grid;
+  gap: var(--espacio-1);
+  margin: 0 0 var(--espacio-3);
+  padding: 0;
+  list-style: none;
+}
+
+/* La entrada: papel con tinta (el par del collage), el cuerpo con el nombre y el talón con la
+   ciudad, separados por la línea de puntos por donde se corta. Torcida a mano, un poco cada una. */
+.recital-entrada {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: 0;
+  background: var(--papel);
+  color: var(--fondo);
+  border: 2px solid var(--papel);
+  border-radius: 3px;
+  font: inherit;
+  text-align: left;
+  touch-action: manipulation;
+}
+
+.recital-lugares li:nth-child(odd) .recital-entrada {
+  rotate: -0.5deg;
+}
+
+.recital-lugares li:nth-child(even) .recital-entrada {
+  rotate: 0.4deg;
+}
+
+.recital-entrada-cuerpo {
+  flex: 1;
+  align-self: center;
+  padding: 10px 12px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.95rem;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.recital-entrada-talon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 34%;
+  margin: 4px;
+  padding: 6px;
+  /* El talón es su propio recuadro de puntos, la parte que se corta y queda en la mano. Entero y
+     no solo el lado: un borde de un solo costado es la barra lateral que veta `diseno-marca.md`. */
+  border: 2px dashed var(--papel-borde);
+  border-radius: 2px;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--papel-tenue);
+}
+
+.recital-entrada:hover,
+.recital-entrada:focus-visible {
+  border-color: var(--tinte-accion);
+}
+
+/* El lugar elegido: borde doble y grueso en la tinta del disco, no solo otro color (`FIND-167`). */
+.recital-entrada[aria-current="true"] {
+  border: 5px double var(--tinte-accion);
+}
+
+/* El lugar escrito a mano: el descampado y el que no está. */
+.recital-escribir {
+  margin: 0 0 var(--espacio-3);
+}
+
+.recital-escribir-bajada {
+  margin: 0 0 var(--espacio-2);
+  color: var(--texto);
+}
+
+.recital-escribir-campo {
+  display: grid;
+  gap: 4px;
+  margin-bottom: var(--espacio-2);
+  font-size: 0.9rem;
+  color: var(--texto-tenue);
+}
+
+.recital-escribir-aviso {
+  min-height: 1.3em;
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--texto);
+}
+
+.recital-escribir-aviso:empty {
+  min-height: 0;
+}
+
+/* ---- La cabecera del armado: el lugar como sello ---- */
+
+.recital-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-1);
+  margin-top: var(--espacio-2);
+}
+
+.recital-sello,
+.recital-ajena {
+  margin: 0;
+  padding: 2px 8px;
+  border: 2px solid var(--tinte-accion);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--texto);
+  rotate: -1.5deg;
+}
+
+.recital-ajena {
+  display: inline-block;
+  margin: var(--espacio-2) 0 0;
+}
+
+.recital-cambiar {
+  min-height: var(--toque-min);
+  padding: 0 var(--espacio-1);
+  background: transparent;
+  color: var(--texto-tenue);
+  border: 0;
+  font: inherit;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---- La hoja ---- */
+
+.recital-hoja {
+  position: relative;
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-2) var(--espacio-2);
+  background: var(--papel);
+  color: var(--fondo);
+  border-radius: 3px;
+  rotate: -0.6deg;
+}
+
+/* La cinta que la pega al piso: un rectángulo plano del borde del papel, torcido. */
+.recital-hoja::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 88px;
+  height: 22px;
+  translate: -50% 0;
+  rotate: 4deg;
+  background: var(--papel-borde);
+}
+
+.recital-hoja--noche {
+  rotate: 0.5deg;
+}
+
+.recital-rotulo {
+  margin: 0 0 var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  color: var(--papel-tenue);
+}
+
+.recital-rotulo--bis {
+  margin-top: var(--espacio-2);
+  padding-top: var(--espacio-1);
+  border-top: 2px dashed var(--papel-borde);
+}
+
+.recital-vacia,
+.recital-cuenta,
+.recital-dura,
+.recital-noche-lugar {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--papel-tenue);
+}
+
+.recital-cuenta {
+  margin-top: var(--espacio-2);
+  text-align: right;
+}
+
+.recital-dura {
+  margin-top: var(--espacio-2);
+}
+
+.recital-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recital-renglon {
+  border-bottom: 1px solid var(--papel-borde);
+}
+
+.recital-renglon-boton {
+  display: grid;
+  grid-template-columns: 2.4ch 1fr;
+  column-gap: var(--espacio-1);
+  align-items: center;
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: 6px 0;
+  background: transparent;
+  color: var(--fondo);
+  border: 0;
+  font: inherit;
+  text-align: left;
+  touch-action: manipulation;
+}
+
+.recital-numero {
+  grid-row: span 2;
+  font-family: var(--fuente-rotulada);
+  color: var(--papel-tenue);
+}
+
+.recital-tema {
+  font-family: var(--fuente-rotulada);
+  font-size: 1rem;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.recital-disco {
+  font-size: 0.8rem;
+  color: var(--papel-tenue);
+}
+
+/* El tema marcado se recorta con un contorno de tinta: un estado es borde, no color. */
+.recital-renglon--marcado {
+  outline: 2px solid var(--fondo);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Lo que suena se subraya grueso, y la región viva lo dice: nunca solo con color. */
+.recital-renglon--sonando .recital-tema {
+  text-decoration: underline 3px;
+  text-underline-offset: 4px;
+}
+
+.recital-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 0 var(--espacio-1);
+}
+
+.recital-accion {
+  min-width: var(--toque-min);
+  min-height: var(--toque-min);
+  padding: 0 12px;
+  background: var(--fondo);
+  color: var(--papel);
+  border: 2px solid var(--fondo);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  touch-action: manipulation;
+}
+
+.recital-accion--sacar {
+  background: transparent;
+  color: var(--fondo);
+}
+
+/* La noche: la lista cerrada, con su número de fibra adelante. */
+.recital-noche-titulo {
+  margin: 0;
+  font-family: var(--fuente-marca-firma);
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--fondo);
+}
+
+.recital-noche-lugar {
+  margin: 4px 0 var(--espacio-2);
+  font-family: var(--fuente-rotulada);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.recital-lista--noche {
+  padding-left: 2.4em;
+  list-style: decimal;
+}
+
+.recital-lista--noche li::marker {
+  font-family: var(--fuente-rotulada);
+  color: var(--papel-tenue);
+}
+
+.recital-lista--noche .recital-renglon {
+  padding: 6px 0;
+}
+
+.recital-lista--noche .recital-tema,
+.recital-lista--noche .recital-disco {
+  display: block;
+}
+
+.recital-sin-recorte,
+.recital-ya {
+  display: inline-block;
+  padding: 1px 5px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  rotate: -2deg;
+  white-space: nowrap;
+}
+
+/* ---- El cajón de los temas ---- */
+
+.recital-cajon {
+  margin-top: var(--espacio-4);
+}
+
+.recital-cajon-cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-1);
+}
+
+.recital-cajon-cabeza .recital-titulo {
+  margin-right: auto;
+}
+
+.recital-chico {
+  min-height: var(--toque-min);
+  padding: 0 12px;
+  background: transparent;
+  color: var(--texto);
+  border: var(--linea) solid var(--borde);
+  border-radius: 3px;
+  font: inherit;
+  font-weight: 700;
+  touch-action: manipulation;
+}
+
+.recital-chico[aria-pressed="true"] {
+  border-style: dashed;
+}
+
+.recital-buscador {
+  width: 100%;
+  margin-top: var(--espacio-2);
+  box-sizing: border-box;
+}
+
+/* Los discos como una tira de tapas que se corre de costado: diez tapas en el ancho de un
+   pulgar, en vez de once botones de texto que se comían media pantalla. La elegida se recorta
+   con borde grueso de tinta y se baja un poco, como una tapa sacada de la pila. */
+.recital-discos {
+  display: flex;
+  gap: 8px;
+  margin: var(--espacio-2) calc(-1 * var(--espacio-2)) 0;
+  padding: 4px var(--espacio-2) 8px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.recital-disco-boton {
+  flex: none;
+  width: 60px;
+  height: 60px;
+  padding: 2px;
+  background: transparent;
+  color: var(--texto);
+  border: 2px solid var(--tinta-disco, var(--borde));
+  border-radius: 3px;
+  scroll-snap-align: start;
+  touch-action: manipulation;
+}
+
+.recital-disco-boton img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.recital-disco-boton--todos {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.recital-disco-boton[aria-pressed="true"] {
+  border: 4px solid var(--texto);
+  translate: 0 4px;
+}
+
+.recital-disco-elegido {
+  margin: 4px 0 var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+.recital-temas {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* La cabecera de cada disco en el cajón: la tapa una sola vez, el título y el año. */
+.recital-temas-disco {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+  margin-top: var(--espacio-2);
+  padding-bottom: 4px;
+  border-bottom: 2px solid var(--tinta-disco, var(--borde));
+}
+
+.recital-temas-disco img {
+  width: 36px;
+  height: 36px;
+  border-radius: 2px;
+}
+
+.recital-temas-disco strong {
+  flex: 1;
+  font-family: var(--fuente-rotulada);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.recital-temas-disco span {
+  font-size: 0.85rem;
+  color: var(--texto-tenue);
+}
+
+.recital-temas-nada {
+  padding: var(--espacio-2) 0;
+  color: var(--texto-tenue);
+}
+
+.recital-tema-cajon {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: 6px 8px;
+  background: transparent;
+  color: var(--texto);
+  border: 1px solid var(--borde);
+  border-radius: 3px;
+  font: inherit;
+  text-align: left;
+  touch-action: manipulation;
+}
+
+.recital-tema-cajon:hover:not(:disabled),
+.recital-tema-cajon:focus-visible {
+  border-color: var(--tinta-disco, var(--texto));
+}
+
+.recital-tema-cajon:disabled {
+  color: var(--texto-tenue);
+  border-style: dashed;
+}
+
+.recital-pista {
+  flex: none;
+  min-width: 2ch;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  text-align: right;
+  color: var(--texto-tenue);
+}
+
+.recital-tema-texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.recital-tema-texto strong {
+  font-weight: 700;
+}
+
+.recital-tema-texto span {
+  font-size: 0.8rem;
+  color: var(--texto-tenue);
+}
+
+/* ---- El pie pegado abajo: cuánto falta y salir a tocar ---- */
+
+.recital-pie {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-1) 0 calc(var(--espacio-1) + env(safe-area-inset-bottom, 0px));
+  background: var(--fondo);
+  border-top: var(--linea) solid var(--borde);
+}
+
+.recital-pie .primario {
+  margin-top: 4px;
+}
+
+.recital-faltan {
+  min-height: 1.3em;
+  margin: 0;
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--texto-tenue);
+}
+
+/* ---- Lo que suena ahora, pegado en el pie ---- */
+
+/* El tema que suena se ve aunque la hoja quede fuera de la pantalla: el sello SUENA, el título
+   y un "Pará" a mano. Es texto y sello, no un color que titila. */
+.recital-suena {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+  margin-bottom: 4px;
+}
+
+.recital-suena-titulo {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recital-suena-parar {
+  min-width: var(--toque-min);
+  min-height: var(--toque-min);
+  padding: 0 12px;
+  background: transparent;
+  color: var(--texto);
+  border: 2px solid var(--texto);
+  border-radius: 3px;
+  font-weight: 700;
+  touch-action: manipulation;
+}
+
+/* El sello SUENA: goma estampada, torcida, en la tinta del disco que viste el juego. Cae con el
+   mismo golpe que el acierto de "Adiviná el tema" (`sello-golpe`); con movimiento reducido la
+   duración es cero y aparece ya apoyado. */
+.recital-suena-sello {
+  display: inline-block;
+  flex: none;
+  padding: 1px 6px;
+  border: 2px solid var(--tinte-accion);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  rotate: -4deg;
+  animation: sello-golpe var(--duracion-pasada) var(--curva-cinta) both;
+}
+
+.recital-suena .recital-suena-sello {
+  color: var(--texto);
+}
+
+/* En la hoja de la noche, el sello va sobre el papel: tinta sobre papel. */
+.recital-hoja .recital-suena-sello {
+  margin-top: 4px;
+  color: var(--fondo);
+  border-color: var(--fondo);
+}
+
+/* El tema recién sumado entra a la hoja como un papelito que se pega: el mismo gesto que el
+   momento de la noche ricotera (`momento-entra`), con su token de duración. */
+.recital-renglon--entra {
+  animation: momento-entra var(--duracion-paso) var(--curva-cinta) both;
+}
+
+/* La noche: escuchar va arriba de la hoja. */
+.recital-noche-controles {
+  margin-top: var(--espacio-2);
+}
+
+.recital-noche-controles .primario {
+  margin-top: 0;
+}
+
+.recital-noche-controles .recital-estado {
+  min-height: 1.3em;
+  margin: var(--espacio-1) 0 0;
+}
+
+.recital-noche-controles .recital-como-suena {
+  margin: 4px 0 0;
+}
+
+/* ==========================================================================
+   Adentro de X (`T-513`)
+
+   Cuando el juego se juega en el reproductor de un posteo (`?incrustado`, o metido en un
+   marco ajeno), `Cabeza` le pone `html.incrustado` antes de pintar. No hay sitio alrededor:
+   el recuadro mide lo que X quiera (480 × 720 en la web, unos 360 × 540 en el celular), y lo
+   que manda es que **el título y el botón de empezar entren sin hacer scroll**.
+
+   - La cabecera ("← AL FICHÍN") y la marca grande se van. Las reemplaza la franja de
+     `FranjaEnX.astro`: la FR chica y la salida al sitio, en una pestaña nueva.
+   - En el resultado, los regresos al portal se van por lo mismo: la franja ya es la salida.
+   - En "Adiviná el tema", la escalera de intentos repite lo que dice la cinta; con poco alto
+     se pliega, y el puntaje y "Compartí" suben antes que la lista de temas.
+
+   La base no rota (`diseno-marca.md`): fondo de tinta, grano y zona pulgar quedan igual.
+   ========================================================================== */
+.franja-en-x {
+  display: none;
+}
+
+html.incrustado .franja-en-x {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-2);
+  /* El `body` de los juegos es una columna flexible centrada: sin el ancho, la franja se
+     encogía a lo que mide su contenido y quedaba en el medio. */
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--ancho-hoja);
+  margin-inline: auto;
+  padding: var(--espacio-1) var(--espacio-2) 0;
+}
+
+/* 3,5 rem: la FR queda en 56 px, arriba del mínimo de 48 donde la corona todavía se lee
+   (`D-82`). Se queda con el nombre de tránsito `marca`: en el recuadro la de la hoja no se
+   ve, y la de la carátula solo aparece en el escritorio. */
+html.incrustado .franja-en-x .marca-chica {
+  width: 3.5rem;
+}
+
+html.incrustado .cabecera-sitio,
+html.incrustado .pantalla > .marca,
+html.incrustado #resultado a.volver,
+html.incrustado #resultado a.accion-abajo {
+  display: none;
+}
+
+/* El aire de arriba de cada pantalla lo pone la franja. */
+html.incrustado body > main > .pantalla:first-of-type > h1:first-of-type {
+  margin-top: var(--espacio-2);
+}
+
+@media (max-height: 40rem) {
+  html.incrustado .juego-tema .intentos {
+    display: none;
+  }
+}
+
+html.incrustado .juego-tema #resultado:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+}
+
+/* El sello del desenlace es una estampa, no un renglón: en una columna flexible se estiraba
+   al ancho entero. */
+html.incrustado .juego-tema #resultado > .rotulo-desenlace {
+  align-self: flex-start;
+}
+
+html.incrustado .juego-tema #resultado > .afiche-canta,
+html.incrustado .juego-tema #resultado > .resumen-titulo,
+html.incrustado .juego-tema #resultado > .resumen {
+  order: 1;
+}
+
+/* La puente (`/en-x/`): solo se ve si la redirección no anduvo. La marca, el juego y un botón. */
+.puente-en-x {
+  padding: var(--espacio-3) var(--espacio-2);
+}
+
+.puente-en-x-seguir {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--toque-min);
+  margin-top: var(--espacio-3);
+  text-decoration: none;
 }

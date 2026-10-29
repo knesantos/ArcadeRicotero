@@ -61,8 +61,6 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   text-decoration: none;
-  /* Sombra dura desplazada, como papel sobre papel. Nada de difuminado. */
-  box-shadow: 4px 4px 0 var(--borde);
 }
 
 .boton-recorte:hover,
@@ -82,7 +80,6 @@
   border: var(--linea) solid var(--apoyo);
   border-radius: var(--radio);
   background: var(--fondo);
-  box-shadow: 5px 5px 0 var(--apoyo);
   overflow: hidden;
 }
 

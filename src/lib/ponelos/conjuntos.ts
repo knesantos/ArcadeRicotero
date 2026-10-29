@@ -33,6 +33,7 @@
  *
  * 1. Los discos, en el orden de `DISCOS` (cronológico).
  * 2. Los temas, por disco en ese mismo orden y, dentro de un disco, por número de pista.
+ *    Es también el orden de "Todos los temas" (`D-69`), que son los 105 de un saque.
  * 3. Los conjuntos sorteados, por el barajado determinista de su semilla.
  *
  * Si alguna de las tres cambia, **los links viejos abren corridos y nadie se entera**. Es
@@ -66,6 +67,11 @@ export interface DiscoDelCatalogo {
 export interface Catalogo {
   readonly temas: readonly TemaDelCatalogo[];
   readonly discos: readonly DiscoDelCatalogo[];
+  /**
+   * Los slugs de los temas que tienen recorte de audio (`D-69`). No arma ningún conjunto:
+   * le dice a la isla qué ficha puede sonar. Opcional, porque sin él el juego se juega mudo.
+   */
+  readonly conAudio?: readonly string[];
 }
 
 /** Lo que la pantalla de elección muestra de cada conjunto, sin armarlo entero. */
@@ -87,6 +93,17 @@ export const PREFIJO_SORTEO = 'az-';
 
 /** El prefijo de los conjuntos por disco. El número es la posición en `DISCOS`. */
 export const PREFIJO_DISCO = 't';
+
+/**
+ * El id de "Todos los temas" (`D-69`): los 105, cada uno con el nombre de su disco al lado.
+ *
+ * Es el conjunto que el usuario pidió por nombre, y el que da vuelta la cuenta vieja de este
+ * archivo: el tope de dieciséis fichas cuidaba una sesión de dos o tres minutos, y el usuario
+ * lo dijo sin vueltas —*"la gracia de los tierlist así es que sean muchísimas cosas las que
+ * estás poniendo en orden, así que más está bien"*—. Lo que hace jugable el largo no es
+ * achicarlo: es repartir de a una (`mazo.ts`) y que la partida quede guardada para seguirla.
+ */
+export const ID_TODOS = 'todos';
 
 /**
  * El generador determinista del sorteo (mulberry32).
@@ -217,6 +234,13 @@ export function armarConjunto(cat: Catalogo, id: string): Conjunto | null {
     };
   }
 
+  if (id === ID_TODOS) {
+    const fichas = todosLosTemas(cat).map((t) => fichaDeTema(cat, t, true));
+    return fichas.length > 0
+      ? { id, nombre: CONJUNTOS.todos.nombre, bajada: CONJUNTOS.todos.bajada, formato: 'titulo', fichas }
+      : null;
+  }
+
   if (id === 'abren' || id === 'cierran') {
     const c = id === 'abren' ? CONJUNTOS.abren : CONJUNTOS.cierran;
     const fichas = DISCOS.map((d) => {
@@ -284,7 +308,8 @@ export function conjuntosOfrecidos(cat: Catalogo, rnd: () => number = Math.rando
   });
 
   const salida: Resumen[] = [];
-  for (const id of ['discos', 'tapas', 'abren', 'cierran', semillaNueva(rnd)]) {
+  // "Todos los temas" va primero: es el conjunto entero, y el que se pidió por nombre.
+  for (const id of [ID_TODOS, 'discos', 'tapas', 'abren', 'cierran', semillaNueva(rnd)]) {
     const c = armarConjunto(cat, id);
     if (c) salida.push(resumir(c, null));
   }

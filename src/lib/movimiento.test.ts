@@ -175,7 +175,13 @@ const ANIMACIONES = [
   { nombre: 'umbral-figura', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/sitio.css' },
   { nombre: 'umbral-sello', apaga: 'token', valor: '--duracion-umbral', hoja: 'src/styles/sitio.css' },
   { nombre: 'vuelo-de-mosca', apaga: 'regla', valor: '.mosca-viva', hoja: 'src/styles/sitio.css' },
+  // La nieve de Cybersiberia, en el bestiario (`D-73`, décima vuelta): un bucle, como la mosca.
+  { nombre: 'nevar', apaga: 'regla', valor: '.cyber-nevada-copos', hoja: 'src/styles/sitio.css' },
   { nombre: 'deriva-de-capa', apaga: 'recorrido', valor: '--deriva-capa-fondo', hoja: 'src/styles/sitio.css' },
+  // La multitud que se acerca al bajar por el portal (`D-63` enmienda 1). Atadas al
+  // desplazamiento: con el corte, el recorrido vale cero y los dos planos quedan quietos.
+  { nombre: 'acercarse-lejos', apaga: 'recorrido', valor: '--acercamiento', hoja: 'src/styles/sitio.css' },
+  { nombre: 'acercarse-cerca', apaga: 'recorrido', valor: '--acercamiento', hoja: 'src/styles/sitio.css' },
   // La imprenta (`UX-22`, ciclo 12). Las cuatro son barridos de `clip-path`: sin opacidad.
   { nombre: 'pasada', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
   { nombre: 'fijado', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
@@ -187,6 +193,10 @@ const ANIMACIONES = [
   // El sello del momento de "¿Qué tipo de ricotero sos?" (`UX-36` §4.5): se apoya en la hoja
   // cuando cambia el momento, cinco veces por noche. Es el único movimiento de ese juego.
   { nombre: 'momento-entra', apaga: 'token', valor: '--duracion-paso', hoja: 'src/styles/juego.css' },
+  // Los sellos del bestiario que se asientan (`D-83`): el bocadillo, el «Anotado» y la libreta
+  // terminan de apoyar; la hoja de la ficha baja los últimos píxeles. Un solo token los apaga.
+  { nombre: 'sello-apoya', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/sitio.css' },
+  { nombre: 'hoja-apoya', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/sitio.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

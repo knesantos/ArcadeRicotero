@@ -10,7 +10,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 
-import { CASETE_CANCIONERO, CASETE_REDONDOPEDIA, JUEGOS, type Casete } from './copy.ts';
+import { JUEGOS, LADO_B, type Casete } from './copy.ts';
 import { arteDeCasete, discoDeRecorte, materialDeCasete } from './arte.ts';
 import { segunLaPartida } from './portal.ts';
 import { cargarBanco, type BancoCrudo } from '../letra/banco.ts';
@@ -64,7 +64,7 @@ test('el portal le pregunta al banco de la letra con la misma función que la p�
  * diferente"*. Hasta ese día tres juegos llevaban el mismo casete dibujado y dos casetes la
  * misma mosca.
  */
-const TODOS: readonly Casete[] = [...JUEGOS, CASETE_CANCIONERO, CASETE_REDONDOPEDIA];
+const TODOS: readonly Casete[] = [...JUEGOS, ...LADO_B];
 
 test('D-49: ningún casete lleva un dibujo genérico en vez de un pedazo de tapa', () => {
   // Lo que se resuelve en pantalla, no lo que dice la copia: `arteDeCasete` cae al casete

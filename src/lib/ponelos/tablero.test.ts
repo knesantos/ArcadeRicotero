@@ -1,7 +1,18 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { FILAS, SIN_UBICAR, filaPorId, filaPorClave, MAX_FILAS_CODIFICABLES } from './filas.ts';
+import {
+  FILAS,
+  SIN_UBICAR,
+  filaPorId,
+  filaPorClave,
+  MAX_FILAS_CODIFICABLES,
+  MAX_FILAS,
+  MIN_FILAS,
+  nombresDeSiempre,
+  sonLasDeSiempre,
+  filasDe,
+} from './filas.ts';
 import {
   vacio,
   esValido,
@@ -12,7 +23,12 @@ import {
   terminado,
   porFila,
   enLaBandeja,
+  sacarFila,
+  ajustarAFilas,
+  entraOtraFila,
+  sePuedeSacar,
   RepartoInvalido,
+  FilasInvalidas,
   type Conjunto,
 } from './tablero.ts';
 
@@ -165,7 +181,58 @@ test('este motor no sabe calcular un puntaje: BR-22 desde el tipo', () => {
   // propósito, y esta línea le va a preguntar por qué.
   const exportado = Object.keys({
     vacio, esValido, ubicar, vaciar, cuentas, restan, terminado, porFila, enLaBandeja,
+    sacarFila, ajustarAFilas, entraOtraFila, sePuedeSacar,
   });
   const sospechosas = exportado.filter((n) => /punt|score|gana|mejor|ranking|orden(ar)?$/i.test(n));
   assert.deepEqual(sospechosas, []);
 });
+
+/* ==================================================================
+   Las filas propias (`D-69`)
+   ================================================================== */
+
+const MIAS = ['Lo pongo en la previa', 'Para manejar', 'Ni a palos'];
+
+test('D-69: las filas van de dos a siete, y siete es lo que entra en tres bits', () => {
+  assert.equal(MAX_FILAS, MAX_FILAS_CODIFICABLES);
+  assert.equal(MIN_FILAS, 2);
+  assert.equal(entraOtraFila(6), true);
+  assert.equal(entraOtraFila(7), false);
+  assert.equal(sePuedeSacar(3), true);
+  assert.equal(sePuedeSacar(2), false);
+});
+
+test('D-69: las de siempre se reconocen, y cualquier cambio deja de serlo', () => {
+  assert.equal(sonLasDeSiempre(nombresDeSiempre()), true);
+  assert.equal(sonLasDeSiempre([...nombresDeSiempre(), 'BAILANDO']), false);
+  assert.equal(sonLasDeSiempre(['EN EL POGO', 'SALTANDO', 'CABECEANDO', 'QUIETO']), false);
+  assert.deepEqual(filasDe(MIAS).map((f) => f.id), [1, 2, 3]);
+});
+
+test('D-69: con filas propias, el tablero acepta hasta la última y nada más allá', () => {
+  assert.equal(esValido([1, 2, 3, 0, 1], 5, 3), true);
+  assert.equal(esValido([1, 2, 4, 0, 1], 5, 3), false);
+  assert.deepEqual(ubicar(vacio(5), 0, 7, 7), [7, 0, 0, 0, 0]);
+  assert.throws(() => ubicar(vacio(5), 0, 4, 3), RepartoInvalido);
+});
+
+test('D-69: porFila arma tantas filas como nombres, con su nombre', () => {
+  const armadas = porFila(CONJUNTO, [1, 2, 3, 0, 1], MIAS);
+  assert.deepEqual(armadas.map((a) => a.fila.nombre), MIAS);
+  assert.deepEqual(armadas.map((a) => a.fichas.map((f) => f.slug)), [['a', 'e'], ['b'], ['c']]);
+  assert.deepEqual(cuentas([1, 2, 3, 0, 1], 3), { 0: 1, 1: 2, 2: 1, 3: 1 });
+});
+
+test('D-69: sacar una fila devuelve sus fichas a la bandeja y sube las de abajo', () => {
+  // Las de la fila que se va no se borran: vuelven al mazo, como cualquier ficha sacada.
+  assert.deepEqual(sacarFila([1, 2, 3, 2, 0], 2, 3), [1, 0, 2, 0, 0]);
+  assert.deepEqual(sacarFila([1, 2, 3, 4, 0], 1, 4), [0, 1, 2, 3, 0]);
+  assert.throws(() => sacarFila([1, 2, 0, 0, 0], 1, 2), FilasInvalidas, 'dejó una sola fila');
+  assert.throws(() => sacarFila([1, 2, 3, 0, 0], 4, 3), FilasInvalidas, 'sacó una fila que no existe');
+});
+
+test('D-69: un reparto con más filas que el tablero se ajusta, sin inventar nada', () => {
+  assert.deepEqual(ajustarAFilas([7, 5, 4, 1, 0], 4), [0, 0, 4, 1, 0]);
+  assert.deepEqual(ajustarAFilas([1, 2, 3, 4, 0], 4), [1, 2, 3, 4, 0]);
+});
+

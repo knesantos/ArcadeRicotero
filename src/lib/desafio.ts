@@ -13,9 +13,11 @@
  * porque lo que comparte `US-08` no es un puntaje sino donde quedo cada ficha:
  *
  * Forma: `https://<sitio>/juegos/ponelos-en-fila/?g=ponelos#o=1.<conjunto>.<carga>`
+ *    o:  `https://<sitio>/juegos/ponelos-en-fila/?g=ponelos#o=2.<conjunto>.<carga>&f=<fila>&f=…`
  *
  *   g  juego        obligatorio, en la query, igual que las otras tres
  *   o  reparto      en el fragmento: version, conjunto, y tres bits por ficha
+ *   f  fila         solo en la version 2 (`D-69`): el nombre de cada fila, en orden
  *
  * Vive en la mitad de abajo de este archivo, con su propio encabezado.
  *
@@ -71,16 +73,27 @@ export type Desafio =
   /**
    * Donde puso cada ficha. Sin numero y **sin nombre**. `US-08` bajo `ADR-06`.
    *
-   * Es la unica de las cuatro que cumple entera la regla 4 de `ADR-02` ("ningun campo es
-   * texto"): `casillas` son enteros que eligen una fila de `FILAS`, y `conjunto` es un
-   * slug que **no se muestra nunca** — se busca en el catalogo y lo que se pinta es el
-   * nombre propio del conjunto, igual que hace `r` en la forma `identidad`.
+   * `casillas` son enteros que eligen una fila, y `conjunto` es un slug que **no se
+   * muestra nunca** — se busca en el catalogo y lo que se pinta es el nombre propio del
+   * conjunto, igual que hace `r` en la forma `identidad`.
+   *
+   * `filas` existe desde `D-69` y es **el unico texto libre de esta forma**: los nombres
+   * que el jugador le puso a sus filas. Sin ellos, una lista con filas propias abriria del
+   * otro lado con las cuatro de siempre — las fichas en su lugar y los carteles cambiados,
+   * que es un rotulo que miente sobre lo que hay adentro. Se limpian con lista blanca al
+   * entrar y al salir (`limpiarNombreFila`), y se escriben con `textContent`, como el `n`.
+   * Cuando no viene, las filas son las cuatro de `FILAS` y el link es de la version 1.
    *
    * No lleva `n` a proposito. Las otras tres cuentan lo que hizo alguien, asi que el
-   * nombre agrega algo; un reparto no es un logro de nadie (`BR-22`), y el nombre seria
-   * el unico texto libre de esta forma a cambio de nada.
+   * nombre agrega algo; un reparto no es un logro de nadie (`BR-22`).
    */
-  | { readonly forma: 'reparto'; readonly juego: string; readonly conjunto: string; readonly casillas: readonly number[] };
+  | {
+      readonly forma: 'reparto';
+      readonly juego: string;
+      readonly conjunto: string;
+      readonly casillas: readonly number[];
+      readonly filas?: readonly string[];
+    };
 
 /**
  * Las tres formas que viajan **en la query**, o sea todo lo que `leerDesafio` puede
@@ -132,12 +145,33 @@ export function armarLink(base: string, d: Desafio): string {
   // un reparto de otro juego sin repetir el descuido de `FIND-28`.
   if (d.forma === 'reparto') {
     if (!CONJUNTO.test(d.conjunto)) throw new RangeError('conjunto invalido');
-    for (const c of d.casillas) {
-      if (!Number.isInteger(c) || c < 0 || c > MAX_CASILLA) {
-        throw new RangeError(`casilla fuera de las cuatro filas: ${c}`);
+    const filas = d.filas;
+    if (filas !== undefined) {
+      if (filas.length < MIN_FILAS_REPARTO || filas.length > MAX_FILAS_REPARTO) {
+        throw new RangeError(`un reparto no puede tener ${filas.length} filas`);
+      }
+      for (const f of filas) {
+        // Un nombre sucio no se limpia en silencio al escribir: se rechaza. Quien arma el
+        // link ya tuvo que limpiarlo al recibirlo del teclado, y si no lo hizo es un error
+        // del juego, no del jugador.
+        if (!f || limpiarNombreFila(f) !== f) throw new RangeError('nombre de fila invalido');
       }
     }
-    url.hash = `o=${VERSION_REPARTO}.${d.conjunto}.${empaquetarReparto(d.casillas)}`;
+    const techo = filas ? filas.length : MAX_CASILLA;
+    for (const c of d.casillas) {
+      if (!Number.isInteger(c) || c < 0 || c > techo) {
+        throw new RangeError(`casilla fuera de las ${techo} filas: ${c}`);
+      }
+    }
+    const carga = empaquetarReparto(d.casillas);
+    if (!filas) {
+      url.hash = `o=${VERSION_REPARTO}.${d.conjunto}.${carga}`;
+      return url.toString();
+    }
+    const fragmento = new URLSearchParams();
+    fragmento.set('o', `${VERSION_REPARTO_CON_FILAS}.${d.conjunto}.${carga}`);
+    for (const f of filas) fragmento.append('f', f);
+    url.hash = fragmento.toString();
     return url.toString();
   }
 
@@ -247,9 +281,12 @@ export function leerDesafio(
    dejar la mitad del tráfico sin ese encabezado encima. Así que la forma nueva se escribe
    acá, con las mismas dos reglas:
 
-   **1. Ningún campo es texto.** Un reparto es una tira de enteros de 0 a 7, y el id del
-   conjunto es un slug de alfabeto cerrado. No hay una sola cadena que alguien pueda
-   escribir y que termine en la pantalla: lo que no es número se rechaza entero.
+   **1. Ningún campo es texto, salvo uno, y ese con lista blanca.** Un reparto es una tira
+   de enteros de 0 a 7, y el id del conjunto es un slug de alfabeto cerrado. Desde `D-69`
+   viajan además los nombres de las filas propias del jugador (`f=`, versión 2): es el
+   único texto que alguien puede escribir y que termina en la pantalla de otro, y por eso
+   entra por `limpiarNombreFila` y se pinta con `textContent`, como el `n` de las otras
+   tres formas.
 
    **2. El reparto no se puede confiar, y acá ni siquiera importa.** Cualquiera edita el
    fragmento. En `marcador` eso era un puntaje inflado; acá no hay puntaje que inflar —
@@ -299,6 +336,60 @@ export const MAX_ITEMS_REPARTO = 120;
  * día que haya una quinta fila, sube `VERSION_REPARTO` y sube esto.
  */
 export const MAX_CASILLA = 4;
+
+/* ------------------------------------------------------------------
+   `D-69` — las filas propias, y la version 2 del empaquetado
+
+   Hasta `D-69` las filas eran cuatro y fijas, y el link no las nombraba: las sabia el
+   codigo. Desde que el jugador las renombra y suma, **el link tiene que llevarlas**, o la
+   lista abre del otro lado con las fichas en su lugar y los carteles de otra persona.
+
+   **Por que una version nueva y no un campo opcional en la 1.** Un lector de la version 1
+   que no sabe de `f` leeria `o=1...`, ignoraria los nombres y pintaria las cuatro de
+   siempre: una lista valida, abierta, y mal rotulada sin que nadie se entere — el defecto
+   silencioso que `VERSION_REPARTO` existe para volver ruidoso. Con `o=2`, el que no sabe
+   leerla no la abre. Y la version 1 se sigue escribiendo cuando las filas son las de
+   siempre: los links viejos y los nuevos sin filas propias son el mismo link.
+
+   **El unico texto libre que entra por el fragmento**, y por eso con las dos reglas del
+   encabezado de este archivo enteras: lista blanca al leer (`limpiarNombreFila`), y quien
+   lo pinta usa `textContent`. Un nombre que no sobrevive a la limpieza descarta el reparto
+   entero, igual que una casilla reservada: media lista ajena es una lista inventada.
+   ------------------------------------------------------------------ */
+
+/** La version del empaquetado que ademas trae los nombres de las filas (`D-69`). */
+export const VERSION_REPARTO_CON_FILAS = 2;
+
+/**
+ * Cuantas filas puede tener un reparto. El techo no es de diseño: tres bits son ocho
+ * valores, el cero es "sin ubicar", y quedan siete filas. El piso es dos porque con una
+ * sola fila no hay nada que repartir.
+ */
+export const MAX_FILAS_REPARTO = 7;
+export const MIN_FILAS_REPARTO = 2;
+
+/** El largo de un nombre de fila. Entra en el sello del tablero y en un renglon de la lamina. */
+export const LARGO_MAX_NOMBRE_FILA = 24;
+
+/**
+ * Deja un nombre de fila en algo seguro de mostrar como texto y de imprimir en la lamina.
+ *
+ * Misma lista blanca que `limpiarNombre`, con la puntuacion que una fila necesita para
+ * decir algo ("¡LA DE LA PREVIA!", "Ni a palos", "11 y 12") y nada de lo que sirve para
+ * armar una etiqueta. La usan los dos lados: la isla, con lo que se escribe en el teclado,
+ * y `leerReparto`, con lo que llega por el fragmento.
+ */
+export function limpiarNombreFila(crudo: string): string {
+  const limpio = Array.from(crudo)
+    .filter((c) => /[\p{L}\p{N}\p{M} \-'.,!?¡¿]/u.test(c))
+    .join('')
+    .replace(/\s+/g, ' ')
+    .trim();
+  // El corte va por letras y no por unidades UTF-16: una letra de fuera del plano básico
+  // (las 𝐀 de las redes) cortada al medio dejaba media letra, y la limpieza dejaba de dar lo
+  // mismo dos veces seguidas — con eso, `armarLink` rechazaba el nombre y compartir no andaba.
+  return Array.from(limpio).slice(0, LARGO_MAX_NOMBRE_FILA).join('').trim();
+}
 
 /** El id de un conjunto ordenable. Alfabeto cerrado, igual que `g` y que `r`. */
 const CONJUNTO = /^[a-z0-9][a-z0-9-]{0,23}$/;
@@ -438,20 +529,212 @@ export function leerReparto(
   const partes = valor.split('.');
   if (partes.length !== 3) return null;
   const [version, conjunto, carga] = partes as [string, string, string];
-  if (version !== String(VERSION_REPARTO)) return null;
+  if (version !== String(VERSION_REPARTO) && version !== String(VERSION_REPARTO_CON_FILAS)) return null;
   if (!CONJUNTO.test(conjunto)) return null;
   // 120 fichas son 45 bytes, y 45 bytes son 60 caracteres. El largo exacto lo decide el
   // conjunto un par de lineas mas abajo; esto solo acota lo que se mira.
   if (!/^[A-Za-z0-9_-]{1,80}$/.test(carga)) return null;
+
+  // `D-69`: la version 2 trae los nombres de las filas, y sin ellos no es una version 2.
+  let filas: string[] | null = null;
+  if (version === String(VERSION_REPARTO_CON_FILAS)) {
+    const crudas = p.getAll('f');
+    if (crudas.length < MIN_FILAS_REPARTO || crudas.length > MAX_FILAS_REPARTO) return null;
+    filas = crudas.map((f) => limpiarNombreFila(f));
+    if (filas.some((f) => f.length === 0)) return null;
+  }
 
   const cuantas = fichasDelConjunto(conjunto);
   if (cuantas === null) return null;
 
   const casillas = desempaquetarReparto(carga, cuantas);
   if (!casillas) return null;
-  // Un valor reservado (5, 6 o 7) es un reparto de una version que este codigo no conoce.
-  // Se descarta **entero** y no la ficha suelta: media lista ajena es una lista inventada.
-  if (casillas.some((c) => c > MAX_CASILLA)) return null;
+  // Un valor por encima de la ultima fila es un reparto de una version que este codigo no
+  // conoce, o un fragmento editado a mano. Se descarta **entero** y no la ficha suelta:
+  // media lista ajena es una lista inventada.
+  const techo = filas ? filas.length : MAX_CASILLA;
+  if (casillas.some((c) => c > techo)) return null;
 
-  return { forma: 'reparto', juego, conjunto, casillas };
+  return filas
+    ? { forma: 'reparto', juego, conjunto, casillas, filas }
+    : { forma: 'reparto', juego, conjunto, casillas };
+}
+
+/* ==================================================================
+   La quinta forma: la lista de un recital armado (`D-72`, "Armá tu recital")
+
+   Forma: `https://<sitio>/juegos/arma-tu-recital/?g=recital#r=1.<lugar>.<lista>.<bises>&l=…&c=…`
+     g        juego        en la query, igual que las otras cuatro
+     r        recital      en el fragmento: versión, lugar, lista y bises
+     lugar    el slug de un lugar del catálogo (`lugares-recital.json`), o `descampado`, u `otro`
+     lista    los temas en orden, dos caracteres por tema: su lugar en los 105, en base 36
+     bises    lo mismo para los bises, y puede venir vacío
+     l        solo con `otro`: el nombre del lugar, escrito a mano
+     c        la ciudad o localidad escrita a mano: obligatoria con `descampado`, opcional con `otro`
+
+   `l` y `c` son **el único texto libre de esta forma**, y entran como los nombres de fila de
+   `D-69`: lista blanca al salir y al entrar (`limpiarLugar`), y se escriben con `textContent`.
+
+   **No entra a la unión `Desafio`, y es a propósito.** Esa unión la recorren `armarLink` y
+   `leerDesafio`, y una forma nueva ahí adentro obliga a tocar las otras cuatro para decir
+   "esto no es mío". Esta forma tiene su par de funciones y no comparte rama con nadie.
+
+   Viaja en el fragmento por la razón que `ADR-06` ya dejó escrita para el reparto: una
+   lista de veinte temas es de quien la armó, y lo que va después del `#` no llega al
+   servidor. Sin nombre, como el reparto: una lista no es un logro de nadie.
+
+   **Es texto de afuera** y entra por la misma regla de este archivo: lista blanca, techos
+   chicos, y ante cualquier cosa rara se descarta la lista entera. Media lista ajena es una
+   lista inventada.
+   ================================================================== */
+
+/**
+ * La versión del empaquetado del recital. La lista dice **qué lugar ocupa cada tema en el
+ * catálogo**, no su nombre: si el orden de los 105 cambiara, un link viejo abriría con otros
+ * temas y nadie lo notaría. Subir este número convierte ese defecto en un link que no abre.
+ */
+export const VERSION_RECITAL = 1;
+
+/**
+ * La huella del orden de los 105 con el que se escribió `VERSION_RECITAL` (los slugs en el
+ * orden de `RES-20`, sha-256, 16 caracteres). `src/lib/recital/link.test.ts` la recalcula: si el
+ * orden cambia, el build se cae y obliga a subir la versión y escribir la huella nueva, en vez
+ * de dejar links viejos que abren con otros temas sin avisar (`REV-23`, `FIND-168`).
+ */
+export const HUELLA_RECITAL = '8736429fcb7201f9';
+
+/** El techo de la lista sin contar los bises. Un recital entero de la banda rondaba los veinte. */
+export const MAX_TEMAS_RECITAL = 24;
+
+/** El techo de los bises. */
+export const MAX_BISES_RECITAL = 4;
+
+/** El slug de un lugar: el mismo alfabeto que `slugDeTitulo`, con un techo. */
+const LUGAR_RECITAL = /^[a-z0-9][a-z0-9-]{0,59}$/;
+
+/** Los dos lugares que no están en el catálogo: los arma el jugador escribiendo. */
+export const LUGAR_DESCAMPADO = 'descampado';
+export const LUGAR_OTRO = 'otro';
+
+/** El techo de un nombre de lugar o de ciudad escrito a mano. */
+export const LARGO_MAX_LUGAR = 40;
+
+/**
+ * Deja un lugar o una ciudad escritos a mano en algo seguro de mostrar como texto: letras,
+ * números, espacios y la puntuación de una dirección. Lista blanca, como `limpiarNombreFila`.
+ */
+export function limpiarLugar(crudo: string): string {
+  return Array.from(crudo)
+    .filter((c) => /[\p{L}\p{N}\p{M} \-'.,]/u.test(c))
+    .join('')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, LARGO_MAX_LUGAR)
+    .trim();
+}
+
+/** Lo que dice un link de recital, ya leído. Índices en el catálogo, sin repetir. */
+export interface RecitalDelLink {
+  readonly lugar: string;
+  /** Solo con `otro`: el nombre escrito a mano, ya limpio. */
+  readonly nombre?: string;
+  /** Con `descampado` (obligatoria) y con `otro` (si vino): la ciudad o localidad, ya limpia. */
+  readonly ciudad?: string;
+  readonly lista: readonly number[];
+  readonly bises: readonly number[];
+}
+
+/** Dos caracteres por tema: 36 × 36 = 1296 lugares, y el catálogo tiene 105. */
+function indiceEnBase36(i: number): string {
+  if (!Number.isInteger(i) || i < 0 || i >= 36 * 36) throw new RangeError(`índice fuera de rango: ${i}`);
+  return i.toString(36).padStart(2, '0');
+}
+
+function leerIndices(carga: string, techo: number): number[] | null {
+  if (carga.length % 2 !== 0) return null;
+  const salida: number[] = [];
+  for (let k = 0; k < carga.length; k += 2) {
+    const n = Number.parseInt(carga.slice(k, k + 2), 36);
+    if (!Number.isInteger(n) || n < 0 || n >= techo) return null;
+    salida.push(n);
+  }
+  return salida;
+}
+
+/**
+ * Arma el link de un recital. Tira `RangeError` ante lo imposible —un tema repetido, una
+ * lista vacía o más larga que el techo—, por la regla de arriba: un link inválido no se
+ * genera.
+ */
+export function armarLinkRecital(base: string, juego: string, r: RecitalDelLink): string {
+  if (!LUGAR_RECITAL.test(r.lugar)) throw new RangeError(`lugar inválido: ${r.lugar}`);
+  if (r.lista.length === 0 || r.lista.length > MAX_TEMAS_RECITAL) throw new RangeError('la lista no tiene un largo posible');
+  if (r.bises.length > MAX_BISES_RECITAL) throw new RangeError('demasiados bises');
+  const todos = [...r.lista, ...r.bises];
+  if (new Set(todos).size !== todos.length) throw new RangeError('un tema no puede sonar dos veces');
+  const nombre = limpiarLugar(r.nombre ?? '');
+  const ciudad = limpiarLugar(r.ciudad ?? '');
+  if (r.lugar === LUGAR_OTRO && !nombre) throw new RangeError('un lugar escrito a mano necesita nombre');
+  if (r.lugar === LUGAR_DESCAMPADO && !ciudad) throw new RangeError('un descampado necesita su localidad');
+  const url = new URL(base);
+  url.search = '';
+  url.searchParams.set('g', juego);
+  const valor = [VERSION_RECITAL, r.lugar, r.lista.map(indiceEnBase36).join(''), r.bises.map(indiceEnBase36).join('')].join('.');
+  const frag = new URLSearchParams({ r: valor });
+  if (r.lugar === LUGAR_OTRO) frag.set('l', nombre);
+  if ((r.lugar === LUGAR_OTRO || r.lugar === LUGAR_DESCAMPADO) && ciudad) frag.set('c', ciudad);
+  url.hash = frag.toString();
+  return url.toString();
+}
+
+/**
+ * Lee un link de recital. `null` quiere decir "entraste normal": un link roto nunca deja a
+ * nadie afuera (`D-14`), el juego abre de cero.
+ *
+ * `cuantosTemas` es el largo del catálogo, y `lugarExiste` dice si el lugar está entre los
+ * que el juego ofrece: un lugar inventado en la barra no se pinta.
+ */
+export function leerRecital(
+  direccion: string,
+  juegoPropio: string,
+  cuantosTemas: number,
+  lugarExiste: (slug: string) => boolean,
+): RecitalDelLink | null {
+  let url: URL;
+  try {
+    url = new URL(direccion);
+  } catch {
+    return null;
+  }
+  if (url.searchParams.get('g') !== juegoPropio) return null;
+  const crudo = url.hash.startsWith('#') ? url.hash.slice(1) : url.hash;
+  if (!crudo) return null;
+  let frag: URLSearchParams;
+  try {
+    frag = new URLSearchParams(crudo);
+  } catch {
+    return null;
+  }
+  const valor = frag.get('r');
+  if (!valor || valor.length > 200) return null;
+  const partes = valor.split('.');
+  if (partes.length !== 4) return null;
+  const [version, lugar, cargaLista, cargaBises] = partes as [string, string, string, string];
+  if (version !== String(VERSION_RECITAL)) return null;
+  if (!LUGAR_RECITAL.test(lugar)) return null;
+  const nombre = limpiarLugar(frag.get('l') ?? '');
+  const ciudad = limpiarLugar(frag.get('c') ?? '');
+  if (lugar === LUGAR_OTRO && !nombre) return null;
+  if (lugar === LUGAR_DESCAMPADO && !ciudad) return null;
+  if (lugar !== LUGAR_OTRO && lugar !== LUGAR_DESCAMPADO && !lugarExiste(lugar)) return null;
+  if (!/^[0-9a-z]*$/.test(cargaLista + cargaBises)) return null;
+  const lista = leerIndices(cargaLista, cuantosTemas);
+  const bises = leerIndices(cargaBises, cuantosTemas);
+  if (!lista || !bises) return null;
+  if (lista.length === 0 || lista.length > MAX_TEMAS_RECITAL || bises.length > MAX_BISES_RECITAL) return null;
+  const todos = [...lista, ...bises];
+  if (new Set(todos).size !== todos.length) return null;
+  if (lugar === LUGAR_OTRO) return ciudad ? { lugar, nombre, ciudad, lista, bises } : { lugar, nombre, lista, bises };
+  if (lugar === LUGAR_DESCAMPADO) return { lugar, ciudad, lista, bises };
+  return { lugar, lista, bises };
 }

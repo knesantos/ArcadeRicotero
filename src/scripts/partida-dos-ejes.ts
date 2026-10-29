@@ -33,6 +33,7 @@ import {
   sortearPartida,
   resolverCuadrante,
   disposicion,
+  planoFijo,
   relacion,
   type Banco,
   type Cuadrante,
@@ -49,6 +50,7 @@ import {
   POLOS,
   lineaQueNombra,
   selloDePolos,
+  textoDelPlano,
 } from '../lib/dos-ejes/copy.ts';
 import { rutaDeTarjeta, rutaDePieza, slugDe } from '../lib/dos-ejes/arte.ts';
 import { leerDesafio } from '../lib/desafio.ts';
@@ -124,13 +126,10 @@ const momentoDe = (id: string) => banco.momentos.find((m) => m.id === id)!;
 function pintarPregunta(antes?: Polo): void {
   const item = ronda[paso]!;
   const momento = momentoDe(item.momento);
-  const quedan = ronda.length - paso - 1;
   bloqueado = false;
   zonaPregunta.replaceChildren();
 
-  // El canto de las hojas que faltan: cuatro escalones, del grueso al fino. No es un número.
   const hoja = el('article', 'ejes-hoja');
-  hoja.dataset['quedan'] = String(Math.min(4, Math.ceil(quedan / 2)));
 
   const cabeza = el('div', 'ejes-hoja-cabeza');
   const sello = el('p', 'ejes-momento', momento.nombre);
@@ -228,13 +227,69 @@ function manera(c: Cuadrante, tuya: boolean, delAmigo: boolean): HTMLElement {
   return li;
 }
 
+type Disposicion = ReturnType<typeof disposicion>;
+
+/** Un extremo de un eje: el polo en la rotulada y, debajo, sus palabras. */
+function polo(p: Polo, lugar: 'arriba' | 'abajo' | 'izquierda' | 'derecha'): HTMLElement {
+  const caja = el('div', `ejes-plano-polo ejes-plano-polo--${lugar}`);
+  caja.append(el('span', 'ejes-plano-polo-eje', EJES[p]), el('span', 'ejes-plano-polo-dice', POLOS[p]));
+  return caja;
+}
+
+/**
+ * El plano de dos ejes (`UX-38`, a pedido del usuario: *"queda lindo ver que está en un plano
+ * de dos ejes"*). Un recorte de papel con los dos ejes en cruz, los cuatro extremos con su
+ * polo y las cuatro maneras, la tuya marcada.
+ *
+ * **Fijo, como el rombo viejo** (`D-62` enmienda 3, la eligió el usuario): Luz arriba, Orden a
+ * la izquierda, el mismo dibujo para todos. Sale de `planoFijo()`, no de una tabla propia; la
+ * grilla de abajo sigue relativa, con la tuya primero, porque es la lista para leer.
+ *
+ * **Sin punto:** la marca es el borde y el sello, como en la grilla. Un punto invita a medir a
+ * qué distancia queda del eje, y `resolverCuadrante` no devuelve ningún número (`BR-17`).
+ *
+ * **Para el lector de pantalla es una imagen con su texto** (`role="img"`), como era el rombo:
+ * la grilla dice las cuatro maneras, pero no que hay dos ejes ni dónde cae la tuya. Adentro no
+ * hay nada que se toque.
+ */
+function plano(id: string): HTMLElement {
+  const { celdas, renglones, columnas } = planoFijo(banco);
+  const recorte = el('div', 'ejes-plano');
+  recorte.setAttribute('role', 'img');
+  recorte.setAttribute('aria-label', textoDelPlano(banco, id, suyo?.id));
+
+  const cruz = el('div', 'ejes-plano-cruz');
+  // Los dos ejes son elementos vacíos con borde, no con fondo: en el contraste forzado el
+  // navegador pisa los fondos y respeta los bordes (`UX-38` §4.4).
+  cruz.append(el('span', 'ejes-plano-eje ejes-plano-eje--vertical'), el('span', 'ejes-plano-eje ejes-plano-eje--horizontal'));
+  celdas.forEach((c, n) => {
+    const tuya = c.id === id;
+    const delAmigo = c.id === suyo?.id;
+    const cuadrante = el('div', `ejes-plano-cuadrante ejes-plano-cuadrante--${n < 2 ? 'arriba' : 'abajo'}`);
+    if (tuya) cuadrante.classList.add('ejes-plano-cuadrante--tuya');
+    if (delAmigo) cuadrante.classList.add('ejes-plano-cuadrante--suya');
+    if (tuya || delAmigo) {
+      const sellos = el('span', 'ejes-plano-sellos');
+      if (tuya) sellos.append(el('span', 'ejes-plano-sello', RESULTADO.tuya));
+      if (delAmigo) sellos.append(el('span', 'ejes-plano-sello ejes-plano-sello--suya', RESULTADO.suya));
+      cuadrante.append(sellos);
+    }
+    cuadrante.append(el('span', 'ejes-plano-nombre', c.nombre));
+    cruz.append(cuadrante);
+  });
+  cruz.append(polo(columnas[0], 'izquierda'), polo(columnas[1], 'derecha'));
+
+  recorte.append(polo(renglones[0], 'arriba'), cruz, polo(renglones[1], 'abajo'));
+  return recorte;
+}
+
 /**
  * Las cuatro maneras en la grilla de dos por dos (`D-57` punto 7): la tuya primero, al lado
  * la que comparte tu polo de luz-oscuridad, abajo la que comparte el de orden-caos. Los
  * rótulos de los márgenes son los polos, no las maneras: dicen qué tienen en común.
  */
-function grilla(id: string): HTMLElement {
-  const { celdas, renglones, columnas } = disposicion(banco, id);
+function grilla(id: string, d: Disposicion): HTMLElement {
+  const { celdas, renglones, columnas } = d;
   const seccion = el('section', 'ejes-cuatro');
   const titulo = el('h3', 'ejes-cuatro-titulo', RESULTADO.lasCuatro);
   titulo.id = 'ejes-cuatro-titulo';
@@ -250,6 +305,14 @@ function grilla(id: string): HTMLElement {
     seccion.append(
       el('p', 'ejes-contraste', CONTRASTE[relacion(banco, id, suyo.id)](suyo.nombre, POLOS[mia.luzOscuridad], POLOS[mia.ordenCaos])),
     );
+  }
+
+  // El plano va antes que la grilla y después del contraste (`UX-38` §3.1): orienta primero,
+  // la grilla lee después. Es un dibujo de más: si no se puede armar, la grilla sigue sola.
+  try {
+    seccion.append(plano(id));
+  } catch {
+    /* sin plano, nada más cambia */
   }
 
   const tabla = el('div', 'ejes-grilla');
@@ -329,7 +392,7 @@ function pintarResultado(): void {
   acciones.append(denuevo);
   zonaResultado.append(acciones);
 
-  zonaResultado.append(grilla(r.id));
+  zonaResultado.append(grilla(r.id, disposicion(banco, r.id)));
 
   const bajar = el('a', 'ejes-bajar', RESULTADO.bajar) as HTMLAnchorElement;
   bajar.href = rutaDeTarjeta(r.id);

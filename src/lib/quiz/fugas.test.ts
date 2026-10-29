@@ -70,19 +70,20 @@ const visible = (i: Item): string =>
  * y poder escribir por que la mencion no contesta. Si contesta, se arregla el texto.
  */
 const MENCION_SIN_RESPUESTA: readonly (readonly [string, string, string])[] = [
-  ['QZ-042', 'QZ-002', 'dice que «Ji ji ji» es de Oktubre; QZ-002 pregunta que disco es de 1986, y el año no aparece'],
-  ['QZ-002', 'QZ-042', 'nombra Oktubre por su fecha; QZ-042 pregunta en que disco esta «Ji ji ji», que no se nombra'],
-  ['QZ-002', 'QZ-043', 'nombra Gulp! como el debut; QZ-043 pregunta en que disco esta «La bestia pop»'],
-  ['QZ-026', 'QZ-005', 'habla de la tapa de superheroes; QZ-005 pregunta por el sello propio'],
-  ['QZ-030', 'QZ-005', 'habla de la nave de la tapa; QZ-005 pregunta por el sello propio'],
-  ['QZ-033', 'QZ-005', 'habla del videoclip; QZ-005 pregunta por el sello propio'],
-  ['QZ-033', 'QZ-026', 'nombra el disco del personaje del videoclip; QZ-026 pregunta por la tapa de superheroes'],
-  ['QZ-008', 'QZ-009', 'nombra el sello de La mosca y la sopa; QZ-009 pregunta el orden, y ninguna fecha aparece'],
-  ['QZ-028', 'QZ-009', 'nombra la tapa de La mosca y la sopa; QZ-009 pregunta el orden, sin fechas'],
+  // Vacia desde el ciclo 20 (`REV-22`, `FIND-143`): el ultimo par, QZ-026 → QZ-005, no
+  // alcanzaba como perdon —compartian respuesta y opciones— y se arreglo en el texto.
 ];
 
 const perdonado = (a: string, b: string): boolean =>
   MENCION_SIN_RESPUESTA.some(([x, y]) => x === a && y === b);
+
+test('la lista de perdonados no tiene muertos: cada par nombra dos items en juego', () => {
+  // `REV-22`: con el banco del ciclo 20 quedaron siete pares que nombraban items retirados.
+  // No rompian nada, pero un perdon muerto es uno que alguien puede revivir sin mirar.
+  const vivos = new Set(items.map((i) => i.id));
+  const muertos = MENCION_SIN_RESPUESTA.filter(([a, b]) => !vivos.has(a) || !vivos.has(b));
+  assert.deepEqual(muertos.map(([a, b]) => `${a} → ${b}`), []);
+});
 
 test('fuga 1: ningun item regala la respuesta de otro que BR-01 pueda servir despues', () => {
   const fugas: string[] = [];

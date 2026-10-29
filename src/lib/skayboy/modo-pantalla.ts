@@ -54,6 +54,13 @@ export interface EntornoDelModo {
   readonly fichin: HTMLElement;
   /** El interruptor: el mismo botón entra y sale (`UX-33 §1.5`). */
   readonly boton: HTMLButtonElement;
+  /**
+   * Otros botones que hacen exactamente lo mismo (`D-61`): el del menú. El pedido al sistema sale de
+   * su toque, en el mismo manejador y sin esperar nada, igual que del sello. **Llevan el verbo
+   * entero a la vista** —el `aria-label` del sello—, porque tienen lugar: en el menú, un `SALÍ`
+   * solo al lado de `Jugá` se lee como salir del juego.
+   */
+  readonly otros?: readonly HTMLButtonElement[];
   /** Una tecla que se muda de lugar con un dedo encima no puede quedar apretada (`UX-28 §3`). */
   readonly soltarTodas: () => void;
 }
@@ -70,6 +77,7 @@ export interface ModoDePantalla {
  */
 export function montarPantallaCompleta(entorno: EntornoDelModo): ModoDePantalla {
   const { documento, ventana, Observador, fichin, boton, soltarTodas } = entorno;
+  const botones = [boton, ...(entorno.otros ?? [])];
   const d = documento as DocumentoConPrefijo;
   const orientacion = entorno.orientacion as Orientacion | undefined;
 
@@ -90,12 +98,19 @@ export function montarPantallaCompleta(entorno: EntornoDelModo): ModoDePantalla 
   const enElModo = (): boolean => documento.documentElement.dataset.pantalla === 'completa';
   const enPantallaDelSistema = (): Element | null => d.fullscreenElement ?? d.webkitFullscreenElement ?? null;
 
-  /** La estampa nombra el estado y el `aria-label` el verbo del toque (`CNT-22 §1`). */
+  /**
+   * La estampa dice lo que hace el toque y el `aria-label` lo mismo con el verbo entero (`CNT-40`,
+   * que enmendó `CNT-22 §1`: la estampa nombraba el estado, y el usuario no la encontró). Todos los
+   * botones del modo, igual. **Sin `aria-pressed`**: un botón de alternancia no cambia de nombre, y
+   * este cambia; con los dos, el lector decía "Salí de pantalla completa, presionado".
+   */
   function pintarBoton(): void {
     const adentro = enElModo();
-    boton.textContent = adentro ? PANTALLA_COMPLETA.completa : PANTALLA_COMPLETA.ventana;
-    boton.setAttribute('aria-label', adentro ? PANTALLA_COMPLETA.salir : PANTALLA_COMPLETA.entrar);
-    boton.setAttribute('aria-pressed', String(adentro));
+    const verbo = adentro ? PANTALLA_COMPLETA.salir : PANTALLA_COMPLETA.entrar;
+    for (const b of botones) {
+      b.textContent = b === boton ? (adentro ? PANTALLA_COMPLETA.completa : PANTALLA_COMPLETA.ventana) : verbo;
+      b.setAttribute('aria-label', verbo);
+    }
   }
 
   /** Una medida de la hoja, en px CSS. Sin ella, cero: el encuadre sigue andando, con menos aire. */
@@ -194,11 +209,13 @@ export function montarPantallaCompleta(entorno: EntornoDelModo): ModoDePantalla 
 
   pintarBoton();
 
-  // Puerta 1: el mismo botón, dado vuelta.
-  boton.addEventListener('click', () => {
-    if (enElModo()) salir();
-    else pedirPantallaCompleta();
-  });
+  // Puerta 1: el mismo botón, dado vuelta. Y los otros que hacen lo mismo (`D-61`: el del menú).
+  for (const b of botones) {
+    b.addEventListener('click', () => {
+      if (enElModo()) salir();
+      else pedirPantallaCompleta();
+    });
+  }
 
   // Puerta 2: `Escape`. Con la API, el navegador la consume y avisa por la puerta 3.
   documento.addEventListener('keydown', (e) => {

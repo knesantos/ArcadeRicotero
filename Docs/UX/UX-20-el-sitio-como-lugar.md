@@ -179,8 +179,8 @@ columnas de la derecha.
 | **Adiviná la tapa** (`US-04`) | Último bondi — discos (`D-19`) | 2: grano + `tapa-fondo--bondi-engranajes` (ya en `adivinar-la-tapa.astro:41`) | **Ojo acá:** el recorte de zoom que hay que adivinar es una tapa real, igual que el fondo atmosférico — pero son dos imágenes con roles distintos y el velo **nunca** se posa sobre la pieza jugable, solo sobre el fondo detrás de ella. Confundir las dos sería tapar la respuesta con el mismo velo que la protege | El crédito de esquina (`UX-04`, condición de `D-21`) sigue siendo el sello fijo, no una firma que aparece y desaparece con la atmósfera |
 | **Sacalo por la letra** (`US-07`) | Momo Sampler — variante `momo` (`UX-08`) | 1 hoy (grano solo — no existe todavía `tapa-fondo--momo-sampler` en `sitio.css`) | Puede sumar su segunda capa cuando `T-186` genere el recorte de Momo Sampler; hasta entonces se queda en 1, nunca se le inventa una imagen de otro disco para "completar" | Igual que los de arriba |
 | **¿Qué tipo de ricotero sos?** (`US-06`, dos ejes) — **enmendada el 2026-10-04, ver debajo de la tabla** | Luzbelito — criterio propio, sin ficha (`dos-ejes.astro`, comentario de cabecera) | **1, y se queda ahí a propósito** | Nada: es el único de los cinco que decido **no** subir a 2 capas. `BR-17` dice que ningún resultado es mejor que otro y que es el juego con el molinete más abierto — vestirlo con una tapa real de fondo sugeriría que hace falta reconocer el disco para jugarlo, que es justo lo que este juego no pide | Ningún resultado del cuestionario se tiñe con más o menos intensidad que otro: los cuatro cuadrantes pesan igual |
-| **Redondopedia — portada e índice** | Gulp! — historia, en la cabecera (`D-19`) | 2 en la franja de cabecera (grano + `tapa-fondo--gulp-pincelada`, `sitio.css:94-97`), **1 en el índice que crece debajo** (ya documentado en el propio CSS, `sitio.css:112-115`: un fondo detrás de una lista sin techo es lo que `UX-04` evita) | El índice pasa a 2 columnas desde 46rem (`UX-10`), y eso es maquetado, no atmósfera — no cambia nada de esta tabla | — |
-| **Redondopedia — un artículo** | El de su categoría: historia / discos / letras / mitología (`D-19`, clases `.articulo--*`) | 1 (grano) + a veces un **detalle recortado** flotante (`.detalle-articulo`), que no cuenta como capa de fondo porque no es de borde a borde | Nada de movimiento nuevo — un artículo es lectura, se entra y se sale (`REDONDOPEDIA.bajada`) | — |
+| **Redondopedia — portada e índice** — **enmendada el 2026-10-17, ver debajo de la tabla** | Gulp! — historia, en la cabecera (`D-19`) | 2 en la franja de cabecera (grano + `tapa-fondo--gulp-pincelada`, `sitio.css:94-97`), **1 en el índice que crece debajo** (ya documentado en el propio CSS, `sitio.css:112-115`: un fondo detrás de una lista sin techo es lo que `UX-04` evita) | El índice pasa a 2 columnas desde 46rem (`UX-10`), y eso es maquetado, no atmósfera — no cambia nada de esta tabla | — |
+| **Redondopedia — un artículo** — **enmendada el 2026-10-17, ver debajo de la tabla** | El de su categoría: historia / discos / letras / mitología (`D-19`, clases `.articulo--*`) | 1 (grano) + a veces un **detalle recortado** flotante (`.detalle-articulo`), que no cuenta como capa de fondo porque no es de borde a borde | Nada de movimiento nuevo — un artículo es lectura, se entra y se sale (`REDONDOPEDIA.bajada`) | — |
 | **Redondopedia — Bulacio, Olavarría, la muerte del Indio** | El tinte de clasificación se queda (es catalogación estática, no atmósfera) | **1, siempre — grano y nada más, nunca velo ni recorte real** | **Nada. Cero.** Ni entrada propia, ni parallax, ni una segunda capa aunque el resto de la Redondopedia la tenga. Es la aplicación visual de lo que `D-20` ya dijo de la voz: *"ahí no hay voz que valga"* — acá no hay atmósfera que valga | Todo: es el piso firme que sostiene el misterio de cualquier otro lado |
 | **Cancionero (letras y acordes)** | La mosca y la sopa — letras, mismo disco que "Completá la letra" (`D-19`) | Hasta 2: grano + `tapa-fondo--mosca-olla` reusado (mismo disco, mismo archivo — no hace falta uno nuevo). Con `--velo-tapa` (86 %), **nunca** `--velo-tapa-titular` (75 %): acá el fondo convive con texto de cuerpo largo (acordes + verso), no solo con un título | Ninguna: el acorde alineado sobre la sílaba (`UX-10`) no se toca por nada de esta hoja | — |
 | **Resultado y compartir** | Gulp! + el lettering del logo (`D-19`) | Hasta 2: grano + `tapa-fondo--gulp-pincelada` reusado (mismo archivo que la cabecera de la Redondopedia) | Vive hoy dentro de `quiz.astro`, fuera del alcance de código de este ciclo (`T-182`) — esta fila es la doctrina que rige **cuando** esa pantalla entre a la gramática del tránsito, no una instrucción para tocarla ahora | El puntaje, el tramo y cualquier rótulo `LEYENDA`/`TESTIMONIO` en la explicación final: nunca tintados por el disco de la sección (`§3`) |
@@ -210,6 +210,33 @@ Por qué no contradice la razón de la fila:
 **`§3` (lo que nunca se mueve) sigue entero.** `§4` no suma tokens: la pausa de la elección
 (`--pausa-eleccion`, 600 ms) es **espera de información**, como `--duracion-toque`, y por eso tampoco
 la apaga el corte de movimiento reducido (`§5`).
+
+**ENMIENDA 2026-10-17 (`D-75`, `UX-39`, `T-451`) — las dos filas de la Redondopedia, en voz alta.** Las
+filas decían: *"Redondopedia — un artículo": una capa (el grano) más a veces un detalle recortado
+flotante, "nada de movimiento nuevo — un artículo es lectura"*; y *"portada e índice": dos capas en la
+franja de cabecera (grano y `tapa-fondo--gulp-pincelada`), una en el índice que crece debajo*. **Lo que
+decían queda escrito arriba. Lo que cambia es esto:**
+
+- **"Redondopedia — un artículo" ahora son 2 capas: el grano y el lugar.** El lugar es una tapa velada
+  (`.tapa-fondo--lugar`, dentro de una caja `.lugar`) que sube desde arriba de la ventana detrás del
+  regreso y del título, mide a lo sumo `--alto-lugar` (30 rem) y se pierde en la tinta antes del cuerpo,
+  con una racleta de 7 rem. Un disco se viste con su propia tapa (`<slug>-zoom`); los demás, con el
+  fondo de su categoría (`LUGAR_POR_CATEGORIA`); **los tres graves, con ninguna: una sola capa, el
+  grano, como decía la fila de abajo**.
+- **Ya hay movimiento, y es el de la doctrina de `§0`.** La capa lleva la deriva de `§1.4` (hasta el
+  8 %, `--deriva-capa-fondo`) **atada a su salida de la ventana** (`animation-timeline: view()`, tramo
+  `exit`), cero JavaScript; con movimiento reducido o sin `view()`, la tapa se queda quieta (`§5`). Lo
+  que se mueve es la cámara, no un elemento, y **el cuerpo sigue quieto**: sobre tinta lisa, sin entrada
+  y sin nada en los rótulos. Por eso "un artículo es lectura" sigue en pie.
+- **El detalle flotante ya no existe.** El recorte chico junto al título (`.detalle-articulo`) lo
+  reemplazó el lugar; `DETALLE_POR_VARIANTE` pasó a ser `LUGAR_POR_CATEGORIA`.
+- **"Redondopedia — portada e índice": la capa ya no está adentro de un recuadro.** Es el lugar de la
+  hoja, con *Gulp!*, como en cada artículo; siguen siendo dos capas (grano y lugar). El índice de abajo
+  sigue sin capa propia: el lugar se gasta antes de llegar a él.
+- **Nada de `§1` se rompe:** ningún paso supera los 400 ms (la deriva va atada al desplazamiento y no a
+  un reloj), hay a lo sumo 2 capas, lo tocable responde desde el cuadro cero (la capa es `aria-hidden` y
+  no recibe el toque) y el recorrido no pasa del 8 %. **La fila de los tres graves no cambia, y `§3` (lo
+  que nunca se mueve) tampoco.** Cómo se ve cada pieza, con medidas y casos, está en `UX-39`.
 
 **Una regla que la tabla no repite en cada fila porque es de todas:** ninguna fila
 supera el techo de 2 capas del `§1.2`, y donde hay parallax, ninguna capa lo hace más

@@ -9,7 +9,7 @@
  * `public/sprites/`; que la isla los use en vez de las tintas provisorias es `T-278`.
  *
  * **Los dos idiomas de `D-41`, ahora dibujados:** todo lo que rodea al recorte es la
- * imprenta del sitio —papel, borde grueso, tinta plana, el eco de segunda tinta— y lo que
+ * imprenta del sitio —papel, borde grueso, tinta plana, sin sombra (`D-64`)— y lo que
  * va a pasar adentro del `<canvas>` es pixel. La frontera se ve, y es el bisel.
  *
  * Arquitectura de islas (`D-02`): HTML estático y una isla, la partida (`T-247`,
@@ -28,7 +28,7 @@ import '../../styles/skayboy.css';
 import Cabeza from '../../components/Cabeza.astro';
 import PieImprenta from '../../components/PieImprenta.astro';
 import { PORTAL } from '../../lib/sitio/copy.ts';
-import { CASETE, PANTALLA, PANTALLA_COMPLETA, PIE_HOMENAJE, TECLAS } from '../../lib/skayboy/copy.ts';
+import { CASETE, FIN_DE_NIVEL, MENU, PANTALLA, PANTALLA_COMPLETA, PIE_HOMENAJE, TECLAS } from '../../lib/skayboy/copy.ts';
 import { nivelesASembrar, problemasDelBanco, type Banco } from '../../lib/skayboy/niveles.ts';
 import { teclaDelBoton } from '../../lib/skayboy/teclado.ts';
 import datos from '../../data/skayboy.json';
@@ -100,7 +100,7 @@ const PISO = [
         </header>
 
         <div class="encabezado-juego">
-          <p class="marca" aria-label="Fichín Ricotero">FICHÍN RICOTERO</p>
+          <p class="marca"><img src="/marca/fichin-ricotero.svg" alt="Fichín Ricotero" width="1540" height="1450" /></p>
           <h1>{CASETE.titulo}</h1>
           <p class="tenue">{CASETE.baja}</p>
           {/*
@@ -161,30 +161,85 @@ const PISO = [
                 área y el Enter del teclado son el mismo control y no hay dos caminos. Nace
                 escondido y la isla lo muestra en el mismo cuadro en que se gana (`D-32` límite
                 3); sin texto visible, porque adentro del área no hay texto (`UX-27 §5.1`).
+
+                **Desde `D-61` es solo del dedo** (`UX-37` §4.5): aparece siempre junto con la
+                tarjeta de fin de nivel, que tiene su propio "Seguí" a la vista, y dos controles con
+                el mismo nombre en la tabulación son uno de más. Sale del orden de tab y del árbol de
+                accesibilidad; el toque sobre el área sigue siendo lo que era.
               */}
-              <button type="button" id="seguir-juego" class="seguir-juego" hidden aria-label={PANTALLA.seguir}></button>
+              <button
+                type="button"
+                id="seguir-juego"
+                class="seguir-juego"
+                hidden
+                tabindex="-1"
+                aria-hidden="true"
+                aria-label={PANTALLA.seguir}
+              ></button>
+              {/*
+                El rótulo de entrada de cada nivel (`D-61` punto 3): número arriba y nombre abajo,
+                un par de segundos al empezar, y se va solo. Es una capa de HTML encima del área,
+                como el contador —nunca texto en el canvas (`ADR-08.2` punto 4)—, y **no toma
+                toques**: el primer dedo del nivel le llega al mando. Lo llena y lo esconde la isla.
+                Para el lector de pantalla lo mismo va por `#aviso-juego`, así que esto es solo para
+                el ojo. Va después del botón de seguir y es un `<p>`, no un `<div>`: el primer
+                `</div>` después del recorte tiene que seguir siendo el del recorte.
+              */}
+              <p id="rotulo-nivel" class="rotulo-nivel" hidden aria-hidden="true">
+                <span class="rotulo-nivel-numero"></span>
+                <span class="rotulo-nivel-nombre"></span>
+              </p>
+              {/*
+                La tarjeta de fin de nivel (`D-61` punto 3, `UX-37` §4): aparece en el mismo cuadro
+                en que se gana (`D-32` límite 3), **en la banda de arriba del área**. En los seis
+                niveles las dos puertas están en la fila de abajo, así que el baile y el contador de
+                lo que juntó cada uno (`UX-33` §2.5) quedan a la vista, y el pie de homenaje no se
+                toca (`BR-26`). Nombra el nivel pasado —y con aire, el que sigue— y ofrece repetir,
+                elegir otro o seguir. Va después de `#seguir-juego`, así se pinta encima y tocar
+                "Repetí" no le llega al toque de seguir. Sin `<div>` adentro: el primer `</div>`
+                después del recorte tiene que seguir siendo el del recorte.
+              */}
+              <section id="fin-nivel" class="fin-nivel juego--historia" hidden aria-labelledby="fin-nivel-rotulo">
+                <span id="fin-nivel-rotulo" class="fin-nivel-rotulo"></span>
+                <span id="fin-nivel-sigue" class="fin-nivel-sigue"></span>
+                <span class="fin-nivel-botones">
+                  <button type="button" id="fin-repetir" class="secundario">{FIN_DE_NIVEL.repetir}</button>
+                  <button type="button" id="fin-menu" class="secundario" aria-haspopup="dialog" aria-controls="menu-juego">{FIN_DE_NIVEL.menu}</button>
+                  <button type="button" id="fin-seguir" class="primario">{PANTALLA.seguir}</button>
+                </span>
+              </section>
             </div>
 
             {/*
-              El interruptor de pantalla completa (`D-47` punto 1, `UX-33 §1.2`, `ADR-10`). Un sello
-              de goma con dos estados, el molde que estrenó la estampa de la cinta (`UX-21`, que ya
-              no está): la estampa nombra en qué estado se está y el `aria-label` el verbo del toque
-              (`CNT-22 §1`). **Vive adentro
-              del mueble y no en la cabecera**, porque con la pantalla completa del sistema lo que
-              no está adentro de `.fichin` no se ve (`ADR-10.5`): este mismo botón es el que saca.
+              Los dos sellos del mueble: el menú (`D-61` punto 1) y el interruptor de pantalla
+              completa (`D-47` punto 1, `UX-33 §1.2`, `ADR-10`). Sellos de goma, el molde que estrenó
+              la estampa de la cinta (`UX-21`). **Viven adentro del mueble y no en la cabecera**,
+              porque con la pantalla completa del sistema lo que no está adentro de `.fichin` no se
+              ve (`ADR-10.5`): el mismo sello es el que saca, y el del menú es la pausa.
 
-              Nace escondido: la isla lo muestra cuando el motor ya dibuja, igual que se va el
-              rótulo de carga. Sin nivel sembrado no hay nada que jugar, y no hay modo (`ADR-10.1`).
-              En vertical la hoja no lo muestra (`UX-33 §1.9`).
+              Desde `D-61` la estampa de pantalla completa **dice lo que hace el toque** y no el
+              estado en que se está (`CNT-40`, que enmienda `CNT-22 §1`): el usuario no lo encontró
+              diciendo "pantalla normal". Y aparece también parado (enmienda `UX-33 §1.9`).
+
+              Nacen escondidos: la isla los muestra cuando el motor ya dibuja, igual que se va el
+              rótulo de carga. Sin nivel sembrado no hay nada que jugar, ni modo (`ADR-10.1`).
             */}
-            <button
-              type="button"
-              id="pantalla-completa"
-              class="pantalla-completa"
-              hidden
-              aria-pressed="false"
-              aria-label={PANTALLA_COMPLETA.entrar}
-            >{PANTALLA_COMPLETA.ventana}</button>
+            <div class="sellos-mueble" hidden>
+              <button
+                type="button"
+                id="abrir-menu"
+                class="sello-mueble"
+                aria-haspopup="dialog"
+                aria-controls="menu-juego"
+                aria-label={MENU.abrir}
+              >{MENU.sello}</button>
+              <button
+                type="button"
+                id="pantalla-completa"
+                class="sello-mueble pantalla-completa"
+                aria-label={PANTALLA_COMPLETA.entrar}
+              >{PANTALLA_COMPLETA.ventana}</button>
+            </div>
 
             {/*
               El aviso de `UX-29 §5`: cuando un personaje vuelve a la entrada, el lector de
@@ -273,6 +328,73 @@ const PISO = [
               </div>
             ))
           }
+
+          {/*
+            El menú (`D-61` puntos 1 y 2, `UX-37` §3). Abre al entrar —el botón grande juega el nivel
+            que corresponde, el mismo que se jugaba antes de `D-61`, tocable en el primer cuadro— y
+            desde la partida, con el sello del mueble, que la deja en pausa. **Los seis niveles
+            abiertos**: la fila dice dónde se retoma, no qué se puede jugar.
+
+            **Su lugar es la región del tubo y los mandos** (`UX-37` §3.3), que mide la isla con
+            `regionDelMenu()` (`menu.ts`): parado, la zona de las teclas, con el nivel a la vista
+            arriba; de costado, el tubo y las dos columnas; en el modo, la sala. **Nunca el pie de
+            homenaje** (`BR-26`), ni la cabecera con el volver. Vive adentro de `.fichin`, así que se
+            ve en la pantalla completa del sistema (`ADR-10.5`). Mientras está abierto, el mueble y
+            los mandos quedan `inert`.
+
+            Las fichas salen de lo sembrado: en producción, solo los `listo`. El estado de cada una
+            (pasada, acá estás) lo pone la isla con el avance del aparato, que no se sabe en el build.
+          */}
+          <section
+            id="menu-juego"
+            class="menu-juego juego--historia"
+            hidden
+            role="dialog"
+            aria-labelledby="menu-juego-titulo"
+          >
+            <div class="menu-hoja">
+              <h2 id="menu-juego-titulo" class="solo-lector">{CASETE.titulo}</h2>
+              <div class="menu-accion">
+                <button type="button" id="menu-jugar" class="primario">{MENU.jugar}</button>
+                <p id="menu-cual" class="menu-cual"></p>
+                <p id="menu-cual-corto" class="menu-cual-corto" aria-hidden="true"></p>
+                <button type="button" id="menu-repetir" class="secundario" hidden>{MENU.repetir}</button>
+                <button
+                  type="button"
+                  id="menu-pantalla"
+                  class="secundario menu-pantalla"
+                  aria-label={PANTALLA_COMPLETA.entrar}
+                >{PANTALLA_COMPLETA.entrar}</button>
+              </div>
+              <div class="menu-lista">
+                <h3 class="menu-niveles">{MENU.niveles}</h3>
+                <ol class="fichas">
+                  {
+                    SEMBRADO.niveles.map((n, i) => (
+                      <li>
+                        <button
+                          type="button"
+                          class="ficha-nivel"
+                          data-nivel={n.id}
+                          aria-label={MENU.etiqueta(i + 1, n.nombre, false, false)}
+                        >
+                          <span class="ficha-nivel-numero" aria-hidden="true">{i + 1}</span>
+                          <span class="ficha-nivel-nombre" aria-hidden="true">{n.nombre}</span>
+                          <span class="ficha-nivel-sello" aria-hidden="true" hidden></span>
+                        </button>
+                      </li>
+                    ))
+                  }
+                </ol>
+                {/* Con mouse, las teclas: en la pantalla completa la leyenda de `D-55` no está. */}
+                <p class="menu-teclas">
+                  {MANDOS.map((mando) => (
+                    <span>{TECLAS.comoSeMueve(mando.quien, tecla(mando.lado, 'salto'), tecla(mando.lado, 'izquierda'), tecla(mando.lado, 'derecha'))}</span>
+                  ))}
+                </p>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
     </main>

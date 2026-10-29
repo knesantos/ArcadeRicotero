@@ -9,7 +9,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check && tsc --noEmit",
-    "test": "node --test src/**/*.test.ts",
+    "test": "node --test \"src/**/*.test.ts\"",
     "ingerir": "node --experimental-strip-types scripts/ingerir-cancionero.mjs",
     "generar-letra": "node --experimental-strip-types scripts/generar-letra.mjs",
     "hoja-de-escucha": "node --experimental-strip-types scripts/hoja-de-escucha.mjs",
@@ -19,7 +19,11 @@
     "ingerir-fragmentos": "node --experimental-strip-types scripts/ingerir-fragmentos.mjs",
     "generar-por-la-letra": "node --experimental-strip-types scripts/generar-por-la-letra.mjs",
     "medir-mas-o-menos": "node --experimental-strip-types scripts/medir-mas-o-menos.mjs",
-    "generar-dos-ejes": "node --experimental-strip-types scripts/generar-dos-ejes.mjs"
+    "generar-dos-ejes": "node --experimental-strip-types scripts/generar-dos-ejes.mjs",
+    "imprimir-bestiario": "node --experimental-strip-types scripts/imprimir-bestiario.mjs",
+    "recortar-bestiario": "node --experimental-strip-types scripts/recortar-bestiario.mjs",
+    "sincronizar-bestiario": "node --experimental-strip-types scripts/sincronizar-bestiario.mjs",
+    "redes": "node --experimental-strip-types scripts/redes.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "2.0.1",

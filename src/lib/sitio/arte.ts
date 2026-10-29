@@ -45,18 +45,18 @@ export function fondoTapa(nombre: string): string | null {
 }
 
 /**
- * Que detalle de tapa viste cada seccion, bajo el mapa de `D-19` y el catalogo `UX-05`.
- * La clave es la `variante` que ya usan los casetes y las pantallas en la cocina.
+ * Que fondo de tapa viste cada categoria de la Redondopedia, bajo el mapa de `D-19`: el
+ * mismo archivo que ya viste la pantalla de esa parte del sitio (la cabecera de la
+ * Redondopedia, "Adiviná el tema", "Completá la letra").
+ *
+ * Hasta `D-75` esto era `DETALLE_POR_VARIANTE` y daba un recorte chico, flotando junto al
+ * titulo. Ahora es la capa de atmosfera de la hoja entera (`lugarDeArticulo`). `discos` no
+ * tiene fila: el articulo de un disco se viste con su propia tapa, no con la de la categoria.
  */
-export const DETALLE_POR_VARIANTE: Record<string, string> = {
+export const LUGAR_POR_CATEGORIA: Record<string, string> = {
   mitologia: 'lobo-tiras',
   letras: 'mosca-olla',
   historia: 'gulp-pincelada',
-  /* Hasta el 2026-10-01 había cuatro filas más —`marca`, `discos`, `momo` y `bang`— y
-     ninguna llegaba a una pantalla: este mapa lo lee solo `detalleArticulo()`, y los tipos
-     de la Redondopedia caen en `historia`, `letras` o `mitologia` (`TIPO_A_CATEGORIA`); el
-     de `discos` es el tipo `disco`, que lleva la tapa entera. Los tres archivos que solo
-     existían para esas filas se publicaban sin que nadie los viera y salieron (`D-51`). */
 };
 
 /**
@@ -66,7 +66,8 @@ export const DETALLE_POR_VARIANTE: Record<string, string> = {
  * pone en el pie (`UX-04`, mecanismo de credito).
  */
 const DISCO_DE: Record<string, string> = {
-  'oktubre-banderas': 'Oktubre',
+  /* `oktubre-banderas` —la franja fija del portal— salió el 2026-10-04 (`D-63`): la
+     multitud de *Oktubre* pasó a ser el piso del pie, y la acredita el pie mismo. */
   'lobo-tiras': 'Lobo suelto',
   'mosca-olla': 'La mosca y la sopa',
   'bondi-engranajes': 'Último bondi a Finisterre',
@@ -81,6 +82,8 @@ const DISCO_DE: Record<string, string> = {
   /* `D-49`: los dos detalles que pasaron a vestir casetes del portal. */
   'un-baion-para-el-ojo-idiota-zoom': 'Un baión para el ojo idiota',
   'gulp-zoom': 'Gulp!',
+  /* `D-72`: la multitud de cerca viste el casete de "Armá tu recital". */
+  'oktubre-zoom': 'Oktubre',
 };
 
 /** Los discos que aparecen en una pantalla, sin repetir y en orden de aparicion. */
@@ -103,19 +106,35 @@ export function discosDe(nombres: readonly (string | null | undefined)[]): reado
 export const SIN_DETALLE_POR_TONO = new Set(SLUGS_GRAVES);
 
 /**
- * El detalle de tapa que acompaña al titulo de un articulo que NO es de disco
- * (`UX-05`, 7b y 7c). Los de disco ya muestran su propia tapa entera: superponerles el
- * recorte de otro disco confundiria cual es cual.
+ * La capa de atmosfera de un articulo de la Redondopedia (`D-75`): la tapa velada que sube
+ * desde arriba de la hoja, detras del titulo, y se acaba antes de que empiece el cuerpo.
+ *
+ * - **Un disco se viste con su propia tapa**, en el detalle de cerca (`-zoom`): ponerle el
+ *   fondo de otro disco confundiria cual es cual, el mismo motivo por el que `UX-05` no le
+ *   ponia recorte. Lo acredita el titulo del articulo, que la pagina ya pasa al pie.
+ * - **Los demas, con el fondo de su categoria** (`LUGAR_POR_CATEGORIA`).
+ * - **Los tres graves, con nada** (`UX-20` §3.4): grano y nada mas, sin velo ni capa.
+ *
+ * Devuelve la ruta y el nombre del derivado, que es con lo que `discosDe` arma el credito.
  */
-export function detalleArticulo(tipo: string, slug: string, categoria: string): string | null {
-  if (tipo === 'disco' || SIN_DETALLE_POR_TONO.has(slug)) return null;
-  return detalleTapa(DETALLE_POR_VARIANTE[categoria] ?? '');
+export function lugarDeArticulo(
+  tipo: string,
+  slug: string,
+  categoria: string,
+): { readonly url: string; readonly nombre: string } | null {
+  if (SIN_DETALLE_POR_TONO.has(slug)) return null;
+  if (tipo === 'disco') {
+    const url = detalleTapa(`${slug}-zoom`);
+    return url ? { url, nombre: `${slug}-zoom` } : null;
+  }
+  const nombre = LUGAR_POR_CATEGORIA[categoria];
+  const url = nombre ? fondoTapa(nombre) : null;
+  return url && nombre ? { url, nombre } : null;
 }
 
 /** Que recorte real reemplaza a cada dibujo de repuesto (ver public/arte/README.md). */
 const RECORTE_REAL: Record<string, string> = {
   '/arte/mosca.svg': 'mosca.png',
-  '/arte/banderas.svg': 'multitud-banderas.png',
   '/arte/perro.svg': 'perro.png',
   '/arte/lobo.svg': 'lobo-recortado.png',
 };
@@ -174,9 +193,25 @@ export function figuraDeDisco(slug: string): string | null {
 }
 
 /**
+ * La gente mirando: el piso del pie de imprenta, de borde a borde (`D-63`).
+ *
+ * Reemplaza a la pasada de ese disco —las dos son el mismo motivo, y la multitud ya trae
+ * sus banderas— y la acredita el pie, igual que a la figura. Hoy hay una sola, la de la
+ * tapa de *Oktubre*, y la pide solo el portal. La produce `scripts/generar-multitud.mjs`.
+ */
+const MULTITUD_DE_DISCO: Record<string, string> = {
+  oktubre: 'multitud-oktubre.png',
+};
+
+export function multitudDeDisco(slug: string): string | null {
+  const archivo = MULTITUD_DE_DISCO[slug];
+  return archivo ? recorte(archivo) : null;
+}
+
+/**
  * Que disco viste cada categoria, escrito con el slug del disco.
  *
- * Es **el mismo mapa de `D-19`** que ya cumple `DETALLE_POR_VARIANTE` unas lineas mas
+ * Es **el mismo mapa de `D-19`** que ya cumple `LUGAR_POR_CATEGORIA` unas lineas mas
  * arriba, dicho en la otra unidad: alla es el nombre del recorte de tapa, aca es el slug
  * del disco. No es un mapa nuevo — si alguno de los dos cambia, cambian los dos.
  */

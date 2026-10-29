@@ -1,7 +1,7 @@
 {
   "contrato": "CTR-20",
   "contratoVersion": 1,
-  "actualizado": "2026-10-02",
+  "actualizado": "2026-10-23",
   "datos": [
     { "id": "MM-01", "familia": "la-banda", "medida": "MM-01", "pregunta": "¿En qué año fue el origen de la banda en La Plata?", "valor": 1976, "escala": "anio", "firmeza": "hecho", "fuente": "RES-05", "estado": "listo" },
     { "id": "MM-02", "familia": "la-banda", "medida": "MM-02", "pregunta": "¿En qué año fue el Lozanazo, el show donde nació el nombre Patricio Rey y sus Redonditos de Ricota?", "valor": 1977, "escala": "anio", "firmeza": "hecho", "fuente": "RES-05", "estado": "listo" },
@@ -10,8 +10,8 @@
     { "id": "MM-05", "familia": "la-banda", "medida": "MM-05", "pregunta": "¿En qué año se separó oficialmente la banda?", "valor": 2001, "escala": "anio", "firmeza": "hecho", "fuente": "RES-05", "estado": "listo" },
     { "id": "MM-06", "familia": "la-banda", "medida": "MM-06", "pregunta": "¿Cuántos años pasaron entre el Lozanazo (1977) y la separación oficial de la banda (2001)?", "valor": 24, "escala": "entero", "unidad": ["año", "años"], "firmeza": "hecho", "fuente": "RES-05", "estado": "listo" },
     { "id": "MM-07", "familia": "la-banda", "medida": "MM-07", "pregunta": "¿En qué año la banda ganó el Konex de Platino a mejor banda de rock de la década?", "valor": 2005, "escala": "anio", "firmeza": "hecho", "fuente": "RES-100", "estado": "listo" },
-    { "id": "MM-08", "familia": "la-banda", "medida": "MM-08", "pregunta": "¿En qué año se formó La Cofradía de la Flor Solar, la comunidad platense de la que salió Skay?", "valor": 1968, "escala": "anio", "firmeza": "hecho", "fuente": "RES-100", "explicacion": "De ahí salieron Skay y Rocambole, antes de que existiera la banda.", "estado": "listo" },
-    { "id": "MM-09", "familia": "la-banda", "medida": "MM-09", "pregunta": "¿Cuántos años pasaron entre la fundación de La Cofradía de la Flor Solar (1968) y el Lozanazo (1977)?", "valor": 9, "escala": "entero", "unidad": ["año", "años"], "firmeza": "hecho", "fuente": "RES-100", "estado": "listo" },
+    { "id": "MM-08", "familia": "la-banda", "medida": "MM-08", "pregunta": "¿En qué año armó La Cofradía de la Flor Solar su festival de tres días en el Club Atenas de La Plata?", "valor": 1970, "escala": "anio", "firmeza": "hecho", "fuente": "RES-383", "explicacion": "Fue en abril, y nada de rock hasta que se pusiera el sol. De la Cofradía salieron Skay y Rocambole, antes de que existiera la banda.", "estado": "listo" },
+    { "id": "MM-09", "familia": "la-banda", "medida": "MM-09", "pregunta": "¿Cuántos años pasaron entre el festival de La Cofradía de la Flor Solar en el Club Atenas (1970) y el Lozanazo (1977)?", "valor": 7, "escala": "entero", "unidad": ["año", "años"], "firmeza": "hecho", "fuente": "RES-383", "estado": "listo" },
     { "id": "MM-10", "familia": "la-banda", "medida": "MM-10", "pregunta": "¿Cuántos meses estuvo caído el catálogo completo de la banda en las plataformas digitales, entre 2016 y 2017?", "valor": 11, "escala": "entero", "unidad": ["mes", "meses"], "firmeza": "hecho", "fuente": "RES-09", "estado": "listo" },
     { "id": "MM-11", "familia": "la-banda", "medida": "MM-11", "pregunta": "¿En qué año se subió por fin el catálogo completo de la banda a streaming?", "valor": 2017, "escala": "anio", "firmeza": "hecho", "fuente": "RES-09", "explicacion": "Antes había estado once meses caído de las plataformas.", "estado": "listo" },
     { "id": "MM-12", "familia": "la-banda", "medida": "MM-12", "pregunta": "¿En qué año se constituyó Erks S.A., la sociedad dueña del catálogo de la banda?", "valor": 1992, "escala": "anio", "firmeza": "hecho", "fuente": "RES-09", "estado": "listo" },

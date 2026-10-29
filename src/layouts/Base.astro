@@ -12,12 +12,16 @@ import '../styles/tokens.css';
 import '../styles/sitio.css';
 import Cabeza from '../components/Cabeza.astro';
 import PieImprenta from '../components/PieImprenta.astro';
-import { conRecorteReal, fondoTapa, medidas } from '../lib/sitio/arte.ts';
+import { conRecorteReal, medidas, recorte } from '../lib/sitio/arte.ts';
 
 interface Props {
   titulo: string;
   descripcion: string;
-  /** Recortes de fondo del collage: se apagan en pantallas de lectura larga. */
+  /**
+   * La multitud de la tapa del disco del pie, mirando desde el final de la página (`D-63`).
+   * Hasta el 2026-10-04 era una franja fija y velada al pie de la ventana; ahora el fondo
+   * es negro liso y la gente es el piso del pie de imprenta. Hoy solo la tiene *Oktubre*.
+   */
   conBanderas?: boolean;
   conMosca?: boolean;
   /** Adonde vuelve la cinta de regreso. Sin esto no hay cabecera (portal). */
@@ -34,6 +38,16 @@ interface Props {
    * pantallas de tono grave y en las herramientas.
    */
   discoDelPie?: string;
+  /**
+   * La tapa velada que viste el arriba de la hoja (`D-75`): la Redondopedia la usa como el
+   * aire del lugar —detrás de la cabecera y del título, acabándose antes del cuerpo—. Es la
+   * misma `.tapa-fondo` de siempre, con su velo y su nombre de tránsito (`lugar`, `ADR-03`),
+   * así que pasar de un artículo a otro corre la cámara de una tapa a la otra.
+   *
+   * La página que la pasa **no pinta otra `.tapa-fondo`**: dos con el mismo nombre de
+   * tránsito lo cancelan entero, y en silencio (ver la portada de la Redondopedia).
+   */
+  lugar?: string | null;
 }
 
 const {
@@ -44,24 +58,19 @@ const {
   volverA,
   tapas = [],
   discoDelPie,
+  lugar,
 } = Astro.props;
 
-/**
- * La franja de multitud con banderas de *Oktubre*. Si el recorte real de la tapa ya
- * esta generado (`D-21`, `scripts/generar-tapas.mjs`), manda la foto; si no, queda el
- * dibujo — el mismo criterio de reemplazo que usa el resto del collage.
- *
- * Va anclada abajo y NUNCA detras de la marca grande: esa se escribe en `--marca-rojo`,
- * que sobre tapa velada no llega a AA. Lo verifica `contraste.test.ts`.
- */
-const bandaOktubre = fondoTapa('oktubre-banderas');
-
-// Las dos piezas del collage que este cascaron pega por su cuenta, con sus medidas
-// leidas del archivo: un `<img>` sin medidas obliga al navegador a maquetar dos veces.
-const arteBanderas = conRecorteReal('/arte/banderas.svg');
+// La pieza del collage que este cascaron pega por su cuenta, con sus medidas leidas del
+// archivo: un `<img>` sin medidas obliga al navegador a maquetar dos veces.
 const arteMosca = conRecorteReal('/arte/mosca.svg');
-const medidaBanderas = medidas(arteBanderas);
 const medidaMosca = medidas(arteMosca);
+
+// La multitud que se acerca al bajar (`D-63` enmienda 1): los dos planos van si están las
+// tres máscaras. Si falta una —el taller no corrió—, no va ninguno, y queda la fila del pie
+// sola, que es lo que había: el mismo criterio de reemplazo que el resto del collage.
+const hayPlanos =
+  conBanderas && ['clara', 'roja', 'silueta'].every((m) => recorte(`multitud-lejos-${m}.png`));
 ---
 
 <!doctype html>
@@ -75,18 +84,14 @@ const medidaMosca = medidas(arteMosca);
     <slot name="cabeza" />
   </head>
   <body class="con-grano">
-    {conBanderas && bandaOktubre && <div class="tapa-fondo tapa-fondo--portal" aria-hidden="true" />}
     {
-      conBanderas && !bandaOktubre && (
-        <img
-          class="banderas-fondo"
-          src={arteBanderas}
-          alt=""
-          aria-hidden="true"
-          decoding="async"
-          width={medidaBanderas?.ancho}
-          height={medidaBanderas?.alto}
-        />
+      /* Detrás de todo y antes que nada: el contenido va arriba por su `z-index` (sitio.css,
+         `.contenido-sitio`), y la fila del pie, que es hermana de la hoja, por orden. */
+      hayPlanos && (
+        <>
+          <div class="plano-gente plano-gente--lejos" aria-hidden="true"><span /></div>
+          <div class="plano-gente plano-gente--cerca" aria-hidden="true"><span /></div>
+        </>
       )
     }
     {
@@ -112,13 +117,26 @@ const medidaMosca = medidas(arteMosca);
         </script>
       )
     }
+    {
+      /* El lugar (`D-75`): hermano de la hoja y no hijo, como la gente del portal, para que
+         mida la ventana y no la columna, y suba detrás de la cabecera hasta arriba de todo.
+         El regreso queda pegado encima, como un recorte sobre la tapa. La caja de afuera
+         gasta los costados en la computadora; la de adentro es la tapa con su velo y su
+         racleta. La imagen entra por `--tapa-*` y el velo lo pone la regla de la hoja
+         (`ADR-05.7`), donde `estilos.test.ts` lo ve. */
+      lugar && (
+        <div class="lugar" aria-hidden="true">
+          <div class="tapa-fondo tapa-fondo--lugar" style={`--tapa-lugar: url('${lugar}')`} />
+        </div>
+      )
+    }
     <div class="contenido-sitio">
       {
         volverA && (
           <header class="cabecera-sitio">
             <a class="volver" href={volverA.href}>← {volverA.texto}</a>
             <a class="marca-chica" href="/" aria-label="Fichín Ricotero, a la portada">
-              FICHÍN RICOTERO
+              <img src="/marca/fr.svg" alt="" width="1290" height="1170" />
             </a>
           </header>
         )
@@ -130,6 +148,6 @@ const medidaMosca = medidas(arteMosca);
         de la ventana sin `100vw`, sin margenes negativos y sin `overflow-x`. Y por eso el
         credito de `D-21` deja de ser un renglon al pie de la nada y queda impreso sobre la
         tinta del disco que acredita. */}
-    <PieImprenta disco={discoDelPie} tapas={tapas} />
+    <PieImprenta disco={discoDelPie} tapas={tapas} multitud={conBanderas} />
   </body>
 </html>

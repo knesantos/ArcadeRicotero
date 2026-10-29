@@ -266,40 +266,113 @@ test('CTR-12 caso 19 (candado 7 de ADR-05.9): la estampa se apoya en papel opaco
   assert.match(declaraciones, /isolation:\s*isolate/, '.estampa-papel perdio el aislamiento del multiply');
 });
 
-test('UX-22 §8: el registro imperfecto vive solo en la letra grande, nunca en un parrafo', () => {
+/*
+ * La sombra salió de todos lados (`D-64`).
+ *
+ * Pedido del usuario, textual: *"saquemos la sombra de todos lados, no me gusta"*. Hasta el
+ * 2026-10-05 este lugar tenía el test del registro imperfecto de `UX-22` §8 —el eco de segunda
+ * tinta detrás de la letra grande—, con una lista cerrada de dónde podía ir. Ahora no puede
+ * ir en ningún lado, y el test se da vuelta: en vez de cuidar dónde va la sombra, cuida que
+ * no vuelva.
+ *
+ * Mira TODO el CSS del sitio —las hojas, `tokens.css` y el `<style>` de cada página—, porque
+ * una sombra escrita a mano en una `.astro` era justo lo que la lista vieja no veía (había
+ * dos: el botón de arranque de "Adiviná el tema" y el de "Sacalo por la letra").
+ *
+ * Lo que sí queda permitido no es sombra: un anillo sin desplazamiento ni difuminado
+ * (`0 0 0 <ancho> <color>`, con o sin `inset`) dibuja un contorno pegado a la pieza. Lo usan
+ * el filo de la aguja de la barra, la tecla que suena y los anillos de Skayboy (`UX-33` §1.4).
+ */
 
-  /*
-   * El eco de segunda tinta es la unica sombra que `diseno-marca.md` admite, y por eso es
-   * la mas facil de convertir en tic: una sombra dura corrida queda "bien" en cualquier
-   * cosa. Esta lista es CERRADA. Sumar un selector es una decision de `UX-22` §8 —que
-   * dice donde si y donde no—, no un descuido de quien pasa por la hoja.
-   *
-   * Lo que el test protege de verdad son los cuatro "nunca" de esa tabla: cuerpo de
-   * texto, rotulos de registro 3, estados de acierto y error, y los tres articulos de
-   * tono grave. Ninguno puede aparecer aca sin que alguien lo escriba a proposito.
-   */
-  const PERMITIDOS = new Set([
-    '.marca-grande', // la marca del portal
-    '.marca', // la marca de la cabecera de cada juego
-    // La misma marca, mudada a la carátula cuando hay mesa (`D-54`, `UX-35` §3). No es un
-    // lugar nuevo: es la de arriba, en la columna, y las dos nunca se ven a la vez.
-    '.caratula-marca',
-    '.pantalla h1', // el h1 de cada juego
-    '.casete-titulo', // el titulo de un casete
-    '.articulo:not(.articulo--grave) h1', // el titulo de articulo, salvo los tres graves
-    '.estampa-disco', // el nombre del disco en la estampa (`UX-22` §2)
-  ]);
-  const encontrados: string[] = [];
-  for (const hoja of HOJAS) {
-    const css = leer(hoja).replace(/\/\*[\s\S]*?\*\//g, '');
-    for (const regla of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
-      if (!/text-shadow[^;]*var\(\s*--registro\s*\)/.test(regla[2]!)) continue;
-      for (const sel of regla[1]!.split(',')) encontrados.push(sel.trim().replace(/\s+/g, ' '));
+/** Los valores de una propiedad en un CSS ya sin comentarios. */
+function valoresDe(css: string, propiedad: string): string[] {
+  // Con o sin prefijo de motor: `-webkit-box-shadow` es la misma sombra con otro nombre.
+  return [...css.matchAll(new RegExp(`(?:^|[;{\\s])(?:-webkit-|-moz-)?${propiedad}\\s*:\\s*([^;}]+)`, 'g'))].map((m) =>
+    m[1]!.trim(),
+  );
+}
+
+/** Parte un valor de CSS en sus capas, por las comas que no están adentro de un paréntesis. */
+function capas(valor: string): string[] {
+  const out: string[] = [];
+  let hondo = 0;
+  let actual = '';
+  for (const c of valor) {
+    if (c === '(') hondo++;
+    if (c === ')') hondo--;
+    if (c === ',' && hondo === 0) {
+      out.push(actual.trim());
+      actual = '';
+    } else actual += c;
+  }
+  out.push(actual.trim());
+  return out;
+}
+
+/** Las sombras corridas de un CSS: toda capa que no sea `none` ni un anillo pegado. */
+function sombrasCorridas(css: string): string[] {
+  const limpio = sinComentarios(css);
+  const malas: string[] = [];
+  for (const v of valoresDe(limpio, 'text-shadow')) if (v !== 'none') malas.push(`text-shadow: ${v}`);
+  for (const v of valoresDe(limpio, 'box-shadow')) {
+    for (const capa of capas(v)) {
+      if (capa === 'none') continue;
+      if (/^(inset\s+)?0(px)?\s+0(px)?\s+0(px)?\s+\S/.test(capa)) continue;
+      malas.push(`box-shadow: ${capa}`);
     }
   }
-  assert.ok(encontrados.length > 0, 'el registro imperfecto desaparecio de las hojas');
-  const intrusos = encontrados.filter((s) => !PERMITIDOS.has(s));
-  assert.deepEqual(intrusos, [], `UX-22 §8 no nombra estos lugares: ${intrusos.join(', ')}`);
+  // Y la que se escribe como filtro: `drop-shadow()` es una sombra corrida igual.
+  for (const v of valoresDe(limpio, 'filter')) if (/drop-shadow\(/.test(v)) malas.push(`filter: ${v}`);
+  return malas;
+}
+
+test('D-64: ninguna letra ni ninguna pieza lleva sombra', () => {
+  const malas = sombrasCorridas(todoElCss());
+  assert.deepEqual(
+    malas,
+    [],
+    `volvió una sombra (D-64 la sacó de todos lados):\n  ${malas.join('\n  ')}\n` +
+      'Lo que separa una pieza del fondo es el borde y el giro, no una sombra.',
+  );
+});
+
+test('D-64: ese control sabe encontrar', () => {
+  // Las tres formas en que una sombra puede volver, y las dos que no son sombra.
+  assert.deepEqual(sombrasCorridas('.x{text-shadow:2px 2px 0 var(--borde)}'), ['text-shadow: 2px 2px 0 var(--borde)']);
+  assert.deepEqual(sombrasCorridas('.x{box-shadow:0 4px 0 var(--borde)}'), ['box-shadow: 0 4px 0 var(--borde)']);
+  assert.deepEqual(sombrasCorridas('.x{box-shadow:var(--registro) var(--registro) 0 red}').length, 1);
+  assert.deepEqual(
+    sombrasCorridas('.x{box-shadow:inset 0 0 0 2px var(--fondo), 3px 3px 0 color-mix(in srgb, red 40%, blue)}'),
+    ['box-shadow: 3px 3px 0 color-mix(in srgb, red 40%, blue)'],
+  );
+  assert.deepEqual(sombrasCorridas('.x{box-shadow:inset 0 0 0 var(--anillo) var(--fondo)} .y{box-shadow:0 0 0 1px red}'), []);
+  assert.deepEqual(sombrasCorridas('.x{text-shadow:none; transition: box-shadow 1s}'), []);
+  assert.deepEqual(sombrasCorridas('/* text-shadow: 2px 2px 0 red */ .x{color:red}'), []);
+  // Las dos formas que la primera versión no veía (las encontró la revisión del 2026-10-05).
+  assert.deepEqual(sombrasCorridas('.x{-webkit-box-shadow:2px 2px 0 red}'), ['box-shadow: 2px 2px 0 red']);
+  assert.deepEqual(sombrasCorridas('.x{filter: drop-shadow(2px 2px 0 red)}'), ['filter: drop-shadow(2px 2px 0 red)']);
+  assert.deepEqual(sombrasCorridas('.x{filter: brightness(1.1)}'), []);
+});
+
+test('D-64: tampoco la dibuja una isla ni el canvas de la tarjeta', () => {
+  // Las hojas no son la única vía: una isla puede escribir `style.boxShadow`, y la tarjeta
+  // compartible y la lámina dibujan texto en un canvas, donde la sombra se pide por nombre.
+  const fuentes: string[] = [];
+  const recorrer = (dir: string): void => {
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      const ruta = join(dir, e.name);
+      if (e.isDirectory()) recorrer(ruta);
+      else if (/\.(ts|mjs)$/.test(e.name) && !e.name.endsWith('.test.ts')) fuentes.push(ruta);
+    }
+  };
+  recorrer('src/scripts');
+  recorrer('src/lib');
+  const malas = fuentes.filter((f) =>
+    /\b(textShadow|boxShadow|shadowColor|shadowBlur|shadowOffset[XY])\b|setProperty\(\s*['"`](box|text)-shadow/.test(
+      sinComentarios(leer(f)),
+    ),
+  );
+  assert.deepEqual(malas, [], `estos archivos pintan una sombra por código: ${malas.join(', ')}`);
 });
 
 /* ==================================================================
@@ -421,6 +494,11 @@ const ESTADOS_PONELOS = [
   '.bandeja--vacia',
   '.mano--cargada',
   '.lista--compartida',
+  // `D-69`: el mazo de a una y las filas propias.
+  '.pieza--recien',
+  '.carta--moviendo',
+  '.mazo--moviendo',
+  '.filas--editando',
 ];
 
 test('US-08: lo que tenes en la mano no se comunica solo con color', () => {
@@ -611,6 +689,10 @@ const ESTADOS_EJES = [
   // La etiqueta del amigo que la isla pega en la tapa cuando llega un enlace viejo: sin regla,
   // el punteado "del otro" no se ve.
   '.ejes-tapa-etiqueta--amigo',
+  // El plano de dos ejes (`UX-38`): la tuya y la del amigo se marcan con borde. Sin regla, la
+  // marca desaparece del dibujo y nada falla.
+  '.ejes-plano-cuadrante--tuya',
+  '.ejes-plano-cuadrante--suya',
 ];
 
 /**
@@ -690,15 +772,57 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
     ],
   },
 
+  // `D-72`: "Armá tu recital". Los dos estados de la hoja: el tema marcado (sus acciones a la
+  // vista) y el que suena. Ninguno es solo color: contorno y subrayado.
+  'partida-recital.ts': {
+    juego: 'D-72, armá tu recital',
+    fuente: leer('src/scripts/partida-recital.ts'),
+    estados: ['.recital-renglon--marcado', '.recital-renglon--sonando', '.recital-renglon--entra'],
+  },
+  // `D-72`: la página "En vivo" de la Redondopedia, que vive en `sitio.css` como el resto de la
+  // Redondopedia. Su único estado es el tema que suena.
+  'en-vivo.ts': {
+    juego: 'D-72, en vivo',
+    fuente: leer('src/scripts/en-vivo.ts'),
+    estados: ['.en-vivo-tema--sonando'],
+    hoja: 'src/styles/sitio.css',
+  },
+
+  // `D-73`: el bestiario redondo, en la Redondopedia (`sitio.css`). Sus estados: la bestia que
+  // está hablando y las ya anotadas (las dos con forma: un aro punteado y un sello con tilde),
+  // la fila del índice anotada, el botón que suena y la soga del cordero cuando está tensa.
+  // La pastura (el lobo y el cordero) vive aparte desde la séptima vuelta, porque la comparte con
+  // el camino con cruces: la soga tensa la crea ese módulo, y cuenta como de la isla.
+  'bestiario.ts': {
+    juego: 'D-73, el bestiario redondo',
+    fuente: leer('src/scripts/bestiario.ts') + leer('src/scripts/bestiario/pastura.ts'),
+    estados: ['.bestia--elegida', '.bestia--anotada', '.bestiario-item--anotada', '.bestiario-escuchar--sonando', '.soga--tensa', '.bocadillo--abajo'],
+    hoja: 'src/styles/sitio.css',
+  },
+
+  // `D-73`, séptima vuelta: el camino con cruces. Sus estados propios viven en `camino.css`: la
+  // escena andando (pegada a la pantalla), los ojos que se encienden al llegar y el cruce a la
+  // vista. Los que comparte con el bestiario (la bestia que habla, las anotadas, el botón que
+  // suena, la soga) son los de arriba y los pinta `sitio.css`.
+  'camino.ts': {
+    juego: 'D-73, el camino con cruces',
+    fuente: leer('src/scripts/camino.ts'),
+    estados: ['.camino--andando', '.aparece--a-la-vista', '.cruce--a-la-vista'],
+    hoja: 'src/styles/camino.css',
+  },
+
   'analitica.ts': { sinTablero: 'la analitica de Vercel (D-56); pega un script y no toca el DOM visible' },
   'armar-cancionero.ts': { sinTablero: 'arma un HTML autocontenido que se descarga; sus estilos viajan adentro de ese archivo, no en las hojas del sitio' },
   'cancion.ts': { sinTablero: 'transportar y bajar solo en la ficha de un tema; no hay partida ni respuesta que senalar' },
+  'en-x.ts': { sinTablero: 'el posteo de X ya escrito cuando el juego se juega adentro de un posteo (T-513); no crea elementos ni clases' },
   'compartir.ts': { sinTablero: 'el boton de compartir de tapa, letra y dos ejes (con la tarjeta fija de su identidad, D-57); sus tres clases son las de compartir de juego.css' },
   'correccion.ts': { sinTablero: 'el boton de correccion compartido; abre un formulario, no pinta estado de partida' },
   'diagnostico-audio.ts': { sinTablero: 'pantalla de medicion; sus reglas viven en el <style> de su propia pagina y la cubre la red derivada' },
   'lamina.ts': { sinTablero: 'pincel de canvas (US-08); dibuja pixeles, no crea nodos con clase' },
   'mosca.ts': { sinTablero: 'la mosca del portal (D-49); su unica clase, la de tomada a mano, vive en sitio.css y la cubre la red derivada' },
   'oktubre.ts': { sinTablero: 'la estampa del cumpleanos en el afiche de octubre (D-49); cambia un texto, no crea clases' },
+  'oreja.ts': { sinTablero: 'la leyenda del dia en la portada de la Redondopedia (D-75); mueve un hidden, no crea nodos ni clases' },
+  'rocola.ts': { sinTablero: 'la rocola de los recitales (D-72); un <audio> que suena en fila, no crea nodos' },
   'spotify.ts': { sinTablero: 'un <a> y nada mas, que es literalmente RQ-B2 de ADR-01' },
   'tarjeta.ts': { sinTablero: 'pincel de canvas (US-02 y US-07); dibuja pixeles, no crea nodos con clase' },
 };
@@ -984,7 +1108,7 @@ function partirPorMouse(css: string): { conMouse: string; sinMouse: string } {
   let conMouse = '';
   let sinMouse = '';
   let desde = 0;
-  for (const m of limpio.matchAll(/@media \(hover: hover\) and \(pointer: fine\) \{/g)) {
+  for (const m of limpio.matchAll(/@media \(hover: hover\) and \(pointer: fine\)(?: and \(not \(any-pointer: coarse\)\))? \{/g)) {
     let nivel = 1;
     let i = m.index! + m[0].length;
     const inicio = i;
@@ -1032,6 +1156,28 @@ test('ese control sabe encontrar: los botones a la vista con mouse', () => {
   assert.ok(botonesSinMouse(roto).some((p) => p.includes('siguen a la vista')));
 });
 
+/**
+ * **Las capas de `D-61` encima del area** (`UX-37` §2, la enmienda de `ADR-10.5`): el rotulo de
+ * entrada no toma toques —el primer dedo del nivel es del mando—, y el menu desplaza por dentro sin
+ * arrastrar la pagina (el defecto que motivo `D-47`).
+ */
+test('D-61: el rótulo de entrada no toma toques, y el menú desplaza por dentro', () => {
+  const rotulo = reglas(SKAYBOY).find((r) => r.selector === '.juego-skayboy .rotulo-nivel');
+  assert.ok(rotulo && /pointer-events:\s*none/.test(rotulo.cuerpo), 'el rotulo de entrada se come el primer toque del nivel');
+  const menu = reglas(SKAYBOY).find((r) => r.selector === '.juego-skayboy .menu-juego');
+  assert.ok(
+    menu && /overflow-y:\s*auto/.test(menu.cuerpo) && /overscroll-behavior:\s*contain/.test(menu.cuerpo),
+    'el menu no desplaza por dentro, o arrastra la pagina',
+  );
+});
+
+test('ese control sabe encontrar: el rótulo que toma toques', () => {
+  const roto = SKAYBOY.replace(/(\.juego-skayboy \.rotulo-nivel \{[^}]*?)pointer-events: none;/, '$1');
+  assert.notEqual(roto, SKAYBOY, 'el reemplazo no encontro la regla');
+  const rotulo = reglas(roto).find((r) => r.selector === '.juego-skayboy .rotulo-nivel');
+  assert.ok(rotulo && !/pointer-events:\s*none/.test(rotulo.cuerpo));
+});
+
 test('ADR-10.6: el modo lo lee solo skayboy.css', () => {
   // Un segundo lugar que lee el atributo es una segunda verdad sobre que es el modo.
   const otras = HOJAS.filter((h) => h !== 'src/styles/skayboy.css' && leer(h).includes('data-pantalla'));
@@ -1040,7 +1186,8 @@ test('ADR-10.6: el modo lo lee solo skayboy.css', () => {
 
 for (const [caso, roto, espera] of [
   ['🔴 sin touch-action: none en el contenedor', SKAYBOY.replace(/(\.fichin \{[^}]*?)touch-action: none;/, '$1'), 'touch-action'],
-  ['🔴 sin el callout de Safari', SKAYBOY.replace('-webkit-touch-callout: none;', ''), 'touch-callout'],
+  // La columna de mando tambien lo declara desde `D-61`: el que se saca es el del contenedor del modo.
+  ['🔴 sin el callout de Safari', SKAYBOY.replace(/(\[data-pantalla='completa'\] \.juego-skayboy \.fichin \{[^}]*?)-webkit-touch-callout: none;/, '$1'), 'touch-callout'],
   ['🔴 sin overflow: hidden en html y body', SKAYBOY.replace(/overflow: hidden;\n  overscroll-behavior: none;/, 'overscroll-behavior: none;'), 'overflow: hidden'],
   ['🔴 con la pagina que rebota', SKAYBOY.replace(/overflow: hidden;\n  overscroll-behavior: none;/, 'overflow: hidden;'), 'overscroll-behavior'],
   ['🔴 con el encuadre leido en el mueble', SKAYBOY + '\n.juego-skayboy #juego { width: var(--encuadre-ancho); }', 'afuera del modo'],
@@ -1205,7 +1352,7 @@ function negritasFalsas(css: string): string[] {
   return reglas(css)
     .filter(
       (r) =>
-        /font-family:\s*var\(--fuente-(rotulada|titular|marca-firma)\)/.test(r.cuerpo) &&
+        /font-family:\s*var\(--fuente-(rotulada|titular|marca-firma|lobo-suelto|luzbelito|disco)[),]/.test(r.cuerpo) &&
         /font-weight:\s*(bold|bolder|[5-9]00)\b/.test(r.cuerpo),
     )
     .map((r) => r.selector);
@@ -1222,10 +1369,12 @@ test('ninguna fuente de un solo peso se pide en negrita', () => {
  * engordaba a mano en los ocho. El título se declara en peso normal, una sola vez, y las
  * páginas no lo reescriben.
  */
-test('el título de los juegos pide la rotulada en su peso: no hereda la negrita del h1', () => {
+test('el título de los juegos pide la letra de la banda en su peso: no hereda la negrita del h1 (D-65)', () => {
   const titulo = reglas(leer('src/styles/juego.css')).find((r) => r.selector === '.pantalla > h1');
   assert.ok(titulo, 'no existe la regla única del título de los juegos (.pantalla > h1)');
-  assert.match(titulo!.cuerpo, /font-family:\s*var\(--fuente-rotulada\)/);
+  // Desde `D-65` va en Patricio Rey Fan, con las tildes derivadas; antes, en la rotulada. Desde
+  // `D-67`, los dos juegos cuyo disco tiene letra la traen de su variante (`--fuente-disco`).
+  assert.match(titulo!.cuerpo, /font-family:\s*var\(--fuente-disco,\s*var\(--fuente-marca-firma\)\)/);
   assert.match(titulo!.cuerpo, /font-weight:\s*(normal|400)\b/);
   // Y ninguna página lo vuelve a escribir a mano: es como derivaron los ocho la primera vez.
   const conH1Propio = readdirSync('src/pages/juegos')
@@ -1236,13 +1385,62 @@ test('el título de los juegos pide la rotulada en su peso: no hereda la negrita
   assert.deepEqual(conH1Propio, []);
 });
 
+/**
+ * **La letra de pelo no se sella** (`D-67`). El título de cada juego lleva la sal de `D-64`,
+ * que saca puntos enteros de la tinta. Sobre la rotulada o la letra de la banda no se nota;
+ * sobre *Lobo suelto*, que es un trazo de pelo, se lleva trazos enteros. La variante que le pone
+ * esa letra al título le saca la sal, y ninguna otra.
+ */
+test('la variante que escribe el título en Lobo suelto le saca la sal, y ninguna otra (D-67)', () => {
+  const sello = reglas(leer('src/styles/juego.css')).find((r) => r.selector === '.pantalla h1');
+  assert.ok(sello, 'no existe la regla de la sal del título (.pantalla h1)');
+  assert.match(sello!.cuerpo, /(^|[;\s])mask-image:\s*var\(--sal-del-titulo,\s*var\(--textura-tinta-sal\)\)/);
+  const variantes = reglas(leer('src/styles/sitio.css')).filter((r) => /--fuente-disco\s*:/.test(r.cuerpo));
+  assert.equal(variantes.length, 2, 'el mapa de variantes tiene otra cantidad de letras de disco');
+  for (const v of variantes) {
+    const lobo = /--fuente-disco:\s*var\(--fuente-lobo-suelto\)/.test(v.cuerpo);
+    const sinSal = /--sal-del-titulo:\s*none/.test(v.cuerpo);
+    assert.equal(sinSal, lobo, `${v.selector}: ${lobo ? 'Lobo suelto sellado con sal' : 'sin sal y sin ser Lobo suelto'}`);
+  }
+});
+
 test('ese control sabe encontrar: se prueba contra una negrita inventada', () => {
   assert.deepEqual(
     negritasFalsas('.primario { font-family: var(--fuente-rotulada); font-weight: 700; }'),
     ['.primario'],
   );
+  // Las letras de disco tampoco tienen negrita, y la del título se pide por variable.
+  assert.deepEqual(negritasFalsas('.n { font-family: var(--fuente-luzbelito); font-weight: bold; }'), ['.n']);
+  assert.deepEqual(negritasFalsas('.t { font-family: var(--fuente-disco, var(--fuente-marca-firma)); font-weight: 700; }'), ['.t']);
   // La fuente del sistema sí tiene negrita de verdad: ahí el 700 está bien.
   assert.deepEqual(negritasFalsas('.micro { font-family: var(--fuente); font-weight: 700; }'), []);
   // Nombrada en un comentario no es una regla.
   assert.deepEqual(negritasFalsas('/* .x { font-family: var(--fuente-rotulada); font-weight: 700; } */'), []);
+});
+
+/**
+ * **El piso de la letra en el test de dos ejes** (`UX-36` §8.4, `UX-38` §8, guarda G4). El plano
+ * metió cuatro cuerpos chicos (polos, sellos y nombres de 12 a 12,8 px) en un recorte angosto,
+ * y la palanca fácil cuando algo no entra es achicar la letra. Ninguna regla del bloque
+ * `.ejes-*` pide menos de 0,75 rem (12 px), ni en `rem` ni en `px`.
+ */
+function letrasChicasDeEjes(css: string): string[] {
+  return reglas(css)
+    .filter((r) => r.selector.split(',').some((s) => s.trim().startsWith('.ejes-')))
+    .filter((r) => {
+      const m = /font-size:\s*([\d.]+)(rem|px)\b/.exec(r.cuerpo);
+      if (!m) return false;
+      const px = m[2] === 'rem' ? Number(m[1]) * 16 : Number(m[1]);
+      return px < 12;
+    })
+    .map((r) => r.selector);
+}
+
+test('ninguna letra del test de dos ejes baja de 12 px', () => {
+  assert.deepEqual(letrasChicasDeEjes(leer('src/styles/juego.css')), []);
+});
+
+test('ese control sabe encontrar: se prueba contra una letra de 11 px', () => {
+  assert.deepEqual(letrasChicasDeEjes('.ejes-plano-nombre { font-size: 0.7rem; } .otra { font-size: 0.5rem; }'), ['.ejes-plano-nombre']);
+  assert.deepEqual(letrasChicasDeEjes('.ejes-plano-polo, .x { font-size: 11px; }'), ['.ejes-plano-polo, .x']);
 });

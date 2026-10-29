@@ -1,0 +1,107 @@
+---
+/**
+ * Las páginas puente para X (`T-513`): la dirección que se pega en un posteo para que el juego
+ * se juegue adentro del posteo, en el iframe de una **Player Card** (`twitter:card=player`).
+ *
+ * Es una prueba, no una vía confirmada. X no tiene un programa de miniapps, y la Player Card
+ * se pensó para video y audio: según sus foros pide aprobación manual, no se ve en el timeline
+ * y puede no verse en el celular. Si X no muestra el reproductor, la tarjeta cae a la imagen y
+ * el enlace lleva al juego: nadie pierde nada.
+ *
+ * Son siete: "Adiviná el tema", "¿Qué tipo de ricotero sos?" y sus cuatro postales, más que
+ * nada porque la postal es lo que se comparte al terminar (`D-57` punto 11), y una puente sin
+ * postal le sacaría al posteo la manera que te salió. Cada una mete en el iframe **la misma
+ * pantalla de siempre** con `?incrustado`, sin una copia aparte.
+ *
+ * Quien abre una puente en un navegador no se queda acá: lo manda al juego, con el desafío que
+ * traiga la dirección. El que la lee es el rastreador de X, y lo único que necesita son las
+ * etiquetas de `Cabeza`. Si la redirección no anda, queda la marca y un botón.
+ */
+import '../../styles/tokens.css';
+import '../../styles/juego.css';
+import '../../styles/sitio.css';
+import Cabeza from '../../components/Cabeza.astro';
+import { EN_X } from '../../lib/sitio/copy.ts';
+import { PUENTES } from '../../lib/en-x.ts';
+import { PANTALLA_0 as TEMA } from '../../lib/tema/copy.ts';
+import { PANTALLA_0 as EJES, POSTAL, TARJETA, lineaQueNombra } from '../../lib/dos-ejes/copy.ts';
+import { servir } from '../../lib/dos-ejes/servir.ts';
+import { VISTA_PREVIA_JUEGO, rutaDeVistaPrevia, slugDe } from '../../lib/dos-ejes/arte.ts';
+import crudo from '../../data/dos-ejes.json';
+
+interface Puente {
+  ruta: string;
+  titulo: string;
+  descripcion: string;
+  imagen?: string;
+  imagenAlt?: string;
+}
+
+export function getStaticPaths() {
+  const banco = servir(crudo as unknown as Parameters<typeof servir>[0]);
+  const puente = (juego: string) => (PUENTES.find(([j]) => j === juego) as readonly [string, string])[1];
+  const sinBarras = (ruta: string) => ruta.replace(/^\/en-x\/|\/$/g, '');
+
+  const tema = '/juegos/adivinar-el-tema/';
+  const ejes = '/juegos/dos-ejes/';
+  const paginas: Array<{ params: { juego: string }; props: Puente }> = [
+    {
+      params: { juego: sinBarras(puente(tema)) },
+      props: { ruta: tema, titulo: TEMA.titulo, descripcion: TEMA.subtitulo },
+    },
+    {
+      params: { juego: sinBarras(puente(ejes)) },
+      props: {
+        ruta: ejes,
+        titulo: EJES.titulo,
+        descripcion: EJES.subtitulo(banco.momentos.length, banco.preguntasPorEje * 2),
+        imagen: VISTA_PREVIA_JUEGO,
+        imagenAlt: TARJETA.altJuego,
+      },
+    },
+  ];
+  for (const c of banco.cuadrantes) {
+    const linea = lineaQueNombra(c.luzOscuridad, c.ordenCaos);
+    paginas.push({
+      params: { juego: `${sinBarras(puente(ejes))}/${slugDe(c.id)}` },
+      props: {
+        ruta: `${ejes}${slugDe(c.id)}/`,
+        titulo: POSTAL.ogTitulo(c.nombre),
+        descripcion: POSTAL.ogDescripcion(linea),
+        imagen: rutaDeVistaPrevia(c.id),
+        imagenAlt: TARJETA.alt(c.nombre, linea),
+      },
+    });
+  }
+  return paginas;
+}
+
+const { ruta, titulo, descripcion, imagen, imagenAlt } = Astro.props as Puente;
+const imagenPropia = imagen && imagenAlt ? { imagen, imagenAlt } : {};
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={descripcion} />
+    <meta name="robots" content="noindex" />
+    {/* El desafío viaja en la búsqueda, y un `refresh` no lo lleva: primero la redirección que
+        sí, y el `refresh` para quien no tenga JavaScript. */}
+    <script is:inline define:vars={{ ruta }}>
+      location.replace(ruta + location.search + location.hash);
+    </script>
+    <meta http-equiv="refresh" content={`0; url=${ruta}`} />
+    <link rel="canonical" href={new URL(ruta, Astro.site).href} />
+    <title>{`${titulo} — ${EN_X.sitio}`}</title>
+    <Cabeza titulo={titulo} descripcion={descripcion} reproductor={ruta} {...imagenPropia} />
+  </head>
+  <body class="con-grano">
+    <main class="pantalla puente-en-x">
+      <p class="marca"><img src="/marca/fichin-ricotero.svg" alt="Fichín Ricotero" width="1540" height="1450" /></p>
+      <h1>{titulo}</h1>
+      <a class="primario puente-en-x-seguir" href={ruta}>{EN_X.seguir}</a>
+    </main>
+  </body>
+</html>

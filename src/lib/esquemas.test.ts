@@ -69,6 +69,12 @@ for (const archivo of [
   // `US-10` (`CTR-20`), el 2026-09-25: el banco de "Más o menos", con los datos a mano de la
   // banda y las palabras. Lo derivado no está en el archivo y el schema no lo deja entrar.
   'mas-o-menos',
+  // `D-72`, el 2026-10-15: los lugares para soñar de "Armá tu recital".
+  'lugares-recital',
+  // `D-73`, el 2026-10-16: el bestiario redondo, sus regiones y sus bestias.
+  'bestiario',
+  // `D-78`, el 2026-10-20: el segundo del verso de cada bestia y su recorte.
+  'bestiario-sincro',
 ] as const) {
   test(`${archivo}.json valida contra su schema`, () => {
     const errores = erroresDe(archivo, archivo);

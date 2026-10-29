@@ -1,0 +1,1016 @@
+{
+  "decision": "D-78",
+  "actualizado": "2026-10-20",
+  "nota": "Lo escribe scripts/sincronizar-bestiario.mjs. desdeSeg es el segundo del máster donde empieza el verso, sacado de LRCLIB (lrclib.net); de ahí no se guarda la letra. Los que tienen arranque: true van desde el segundo cero del tema, sin LRCLIB. Cada recorte vive en public/audio/bestiario/<id>.mp3.",
+  "recortes": [
+    {
+      "id": "la-bestia-pop",
+      "tema": "la-bestia-pop",
+      "desdeSeg": 44.02,
+      "coincidencia": 1,
+      "lrclib": 34414816,
+      "duracionMasterSeg": 247.1,
+      "difDuracionSeg": -0.1
+    },
+    {
+      "id": "el-senor-de-los-cielos",
+      "tema": "el-arbol-del-gran-bonete",
+      "desdeSeg": 28.56,
+      "coincidencia": 1,
+      "lrclib": 14647920,
+      "duracionMasterSeg": 312.2,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-bicho-del-gran-bonete",
+      "tema": "el-arbol-del-gran-bonete",
+      "desdeSeg": 37.73,
+      "coincidencia": 1,
+      "lrclib": 14647920,
+      "duracionMasterSeg": 312.2,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-jocker-burlon",
+      "tema": "el-arbol-del-gran-bonete",
+      "desdeSeg": 85.28,
+      "coincidencia": 0.75,
+      "lrclib": 14647920,
+      "duracionMasterSeg": 312.2,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-monito-que-trepa",
+      "tema": "juguetes-perdidos",
+      "desdeSeg": 193.49,
+      "coincidencia": 1,
+      "lrclib": 14647077,
+      "duracionMasterSeg": 430.4,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "los-pajaros-de-la-noche",
+      "tema": "juguetes-perdidos",
+      "desdeSeg": 108.68,
+      "coincidencia": 1,
+      "lrclib": 14647077,
+      "duracionMasterSeg": 430.4,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "la-lechuza-que-circula",
+      "tema": "mariposa-pontiac-rock-del-pais",
+      "desdeSeg": 233.91,
+      "coincidencia": 1,
+      "lrclib": 14647933,
+      "duracionMasterSeg": 289.9,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "el-angel-de-la-soledad",
+      "tema": "un-angel-para-tu-soledad",
+      "desdeSeg": 167.56,
+      "coincidencia": 1,
+      "lrclib": 17901973,
+      "duracionMasterSeg": 232.1,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-angel-guardian",
+      "tema": "la-dicha-no-es-una-cosa-alegre",
+      "desdeSeg": 242.88,
+      "coincidencia": 1,
+      "lrclib": 14645124,
+      "duracionMasterSeg": 337.7,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "el-angelito-frito",
+      "tema": "estas-frito-angelito",
+      "desdeSeg": 39.17,
+      "coincidencia": 1,
+      "lrclib": 20880979,
+      "duracionMasterSeg": 274.2,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-capitan-buscapina",
+      "tema": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
+      "desdeSeg": 48.57,
+      "coincidencia": 1,
+      "lrclib": 14649361,
+      "duracionMasterSeg": 284.5,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-rey-garufa",
+      "tema": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
+      "desdeSeg": 102,
+      "coincidencia": 1,
+      "lrclib": 14649361,
+      "duracionMasterSeg": 284.5,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "super-walter",
+      "tema": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
+      "desdeSeg": 74.94,
+      "coincidencia": 1,
+      "lrclib": 14649361,
+      "duracionMasterSeg": 284.5,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "comboman",
+      "tema": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
+      "desdeSeg": 165.9,
+      "coincidencia": 1,
+      "lrclib": 14649361,
+      "duracionMasterSeg": 284.5,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "la-princesita-sapito",
+      "tema": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
+      "desdeSeg": 91.42,
+      "coincidencia": 1,
+      "lrclib": 14649361,
+      "duracionMasterSeg": 284.5,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-alien-duce",
+      "tema": "alien-duce",
+      "desdeSeg": 102.66,
+      "coincidencia": 1,
+      "lrclib": 14648979,
+      "duracionMasterSeg": 194.5,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "porco-rex",
+      "tema": "alien-duce",
+      "desdeSeg": 39.42,
+      "coincidencia": 1,
+      "lrclib": 14648979,
+      "duracionMasterSeg": 194.5,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-gavilan",
+      "tema": "alien-duce",
+      "desdeSeg": 120.21,
+      "coincidencia": 1,
+      "lrclib": 14648979,
+      "duracionMasterSeg": 194.5,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "la-divina-tv-fuhrer",
+      "tema": "divina-tv-fuhrer",
+      "desdeSeg": 41.47,
+      "coincidencia": 1,
+      "lrclib": 7257161,
+      "duracionMasterSeg": 181.3,
+      "difDuracionSeg": -0.3
+    },
+    {
+      "id": "los-buitres-de-la-tele",
+      "tema": "estas-frito-angelito",
+      "desdeSeg": 56.46,
+      "coincidencia": 1,
+      "lrclib": 20880979,
+      "duracionMasterSeg": 274.2,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "los-camellos-prestigiosos",
+      "tema": "estas-frito-angelito",
+      "desdeSeg": 128.49,
+      "coincidencia": 1,
+      "lrclib": 20880979,
+      "duracionMasterSeg": 274.2,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "drogocop",
+      "tema": "drogocop",
+      "desdeSeg": 25.07,
+      "coincidencia": 1,
+      "lrclib": 23027294,
+      "duracionMasterSeg": 186.3,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "las-monjas-verdes",
+      "tema": "noticias-de-ayer",
+      "desdeSeg": 60,
+      "coincidencia": 1,
+      "lrclib": 7384175,
+      "duracionMasterSeg": 263.5,
+      "difDuracionSeg": -0.5
+    },
+    {
+      "id": "momo",
+      "tema": "templo-de-momo",
+      "desdeSeg": 21.41,
+      "coincidencia": 0.89,
+      "lrclib": 32350961,
+      "duracionMasterSeg": 202,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-santo-fumador",
+      "tema": "templo-de-momo",
+      "desdeSeg": 31.16,
+      "coincidencia": 1,
+      "lrclib": 32350961,
+      "duracionMasterSeg": 202,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "los-gallos-sofocados",
+      "tema": "templo-de-momo",
+      "desdeSeg": 138.88,
+      "coincidencia": 1,
+      "lrclib": 32350961,
+      "duracionMasterSeg": 202,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "marita-la-virgencita",
+      "tema": "murga-de-la-virgencita",
+      "desdeSeg": 32.83,
+      "coincidencia": 0.83,
+      "lrclib": 21224416,
+      "duracionMasterSeg": 294.7,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "la-polilla",
+      "tema": "murga-de-la-virgencita",
+      "desdeSeg": 241.14,
+      "coincidencia": 1,
+      "lrclib": 21224416,
+      "duracionMasterSeg": 294.7,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "la-murga-de-los-renegados",
+      "tema": "la-murga-de-los-renegados",
+      "desdeSeg": 32.6,
+      "coincidencia": 1,
+      "lrclib": 14647658,
+      "duracionMasterSeg": 287.8,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "el-morta",
+      "tema": "morta-punto-com",
+      "desdeSeg": 19.99,
+      "coincidencia": 0.8,
+      "lrclib": 30854043,
+      "duracionMasterSeg": 195.7,
+      "difDuracionSeg": 0.3
+    },
+    {
+      "id": "mister-ed-y-huesito",
+      "tema": "lavi-rap",
+      "desdeSeg": 73.73,
+      "coincidencia": 1,
+      "lrclib": 36944049,
+      "duracionMasterSeg": 251.6,
+      "difDuracionSeg": 0.4
+    },
+    {
+      "id": "el-doctor-saturno",
+      "tema": "dr-saturno",
+      "desdeSeg": 93.37,
+      "coincidencia": 0.8,
+      "lrclib": 14645577,
+      "duracionMasterSeg": 328.9,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "el-sheriff",
+      "tema": "sheriff",
+      "desdeSeg": 42.38,
+      "coincidencia": 1,
+      "lrclib": 37106845,
+      "duracionMasterSeg": 360.3,
+      "difDuracionSeg": -0.3
+    },
+    {
+      "id": "la-bailarina",
+      "tema": "ella-baila-con-todos",
+      "desdeSeg": 140.15,
+      "coincidencia": 1,
+      "lrclib": 27800738,
+      "duracionMasterSeg": 299.4,
+      "difDuracionSeg": -0.4
+    },
+    {
+      "id": "el-pibe-de-los-astilleros",
+      "tema": "el-pibe-de-los-astilleros",
+      "desdeSeg": 94.12,
+      "coincidencia": 1,
+      "lrclib": 14746506,
+      "duracionMasterSeg": 212.4,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "la-rana-rubia",
+      "tema": "el-pibe-de-los-astilleros",
+      "desdeSeg": 42.76,
+      "coincidencia": 1,
+      "lrclib": 14746506,
+      "duracionMasterSeg": 212.4,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "la-hija-del-fletero",
+      "tema": "la-hija-del-fletero",
+      "desdeSeg": 19.81,
+      "coincidencia": 1,
+      "lrclib": 25166263,
+      "duracionMasterSeg": 196.1,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "la-gran-lady",
+      "tema": "gran-lady",
+      "desdeSeg": 35.54,
+      "coincidencia": 1,
+      "lrclib": 14648555,
+      "duracionMasterSeg": 210.8,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "la-pequena-novia-del-carioca",
+      "tema": "la-pequena-novia-del-carioca",
+      "desdeSeg": 39.96,
+      "coincidencia": 1,
+      "lrclib": 21819494,
+      "duracionMasterSeg": 290.6,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-botija-rapado",
+      "tema": "botija-rapado",
+      "desdeSeg": 139.44,
+      "coincidencia": 1,
+      "lrclib": 7249977,
+      "duracionMasterSeg": 168.7,
+      "difDuracionSeg": 0.3
+    },
+    {
+      "id": "la-del-lanchon",
+      "tema": "tarea-fina",
+      "desdeSeg": 77.43,
+      "coincidencia": 1,
+      "lrclib": 37020328,
+      "duracionMasterSeg": 223,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-as-del-club-paris",
+      "tema": "blues-de-la-artilleria",
+      "desdeSeg": 31.48,
+      "coincidencia": 1,
+      "lrclib": 35754439,
+      "duracionMasterSeg": 269.8,
+      "difDuracionSeg": 0.2
+    },
+    {
+      "id": "las-almejas",
+      "tema": "la-hija-del-fletero",
+      "desdeSeg": 137.53,
+      "coincidencia": 1,
+      "lrclib": 25166263,
+      "duracionMasterSeg": 196.1,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "el-que-mordio-el-anzuelo",
+      "tema": "esa-estrella-era-mi-lujo",
+      "desdeSeg": 74.95,
+      "coincidencia": 1,
+      "lrclib": 23030054,
+      "duracionMasterSeg": 176.2,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-gordo-pierre",
+      "tema": "pierre-el-vitricida",
+      "desdeSeg": 18.26,
+      "coincidencia": 1,
+      "lrclib": 26039177,
+      "duracionMasterSeg": 65.4,
+      "difDuracionSeg": 0.2
+    },
+    {
+      "id": "el-ahogado-y-su-fiel-fantasma",
+      "tema": "divina-tv-fuhrer",
+      "desdeSeg": 29.1,
+      "coincidencia": 1,
+      "lrclib": 7257161,
+      "duracionMasterSeg": 181.3,
+      "difDuracionSeg": -0.3
+    },
+    {
+      "id": "el-polizon-del-remolque",
+      "tema": "salando-las-heridas",
+      "desdeSeg": 38.14,
+      "coincidencia": 1,
+      "lrclib": 27802504,
+      "duracionMasterSeg": 302.2,
+      "difDuracionSeg": -0.2
+    },
+    {
+      "id": "el-rato-molhado",
+      "tema": "rato-molhado",
+      "desdeSeg": 37.83,
+      "coincidencia": 1,
+      "lrclib": 14644965,
+      "duracionMasterSeg": 252.4,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "los-naufragos",
+      "tema": "cancion-para-naufragios",
+      "desdeSeg": 71.52,
+      "coincidencia": 1,
+      "lrclib": 34429200,
+      "duracionMasterSeg": 361.3,
+      "difDuracionSeg": -0.3
+    },
+    {
+      "id": "las-sirenas",
+      "tema": "barbazul-versus-el-amor-letal",
+      "desdeSeg": 65.59,
+      "coincidencia": 1,
+      "lrclib": 31022724,
+      "duracionMasterSeg": 259,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "la-anguila",
+      "tema": "cruz-diablo",
+      "desdeSeg": 125.46,
+      "coincidencia": 1,
+      "lrclib": 30279613,
+      "duracionMasterSeg": 254,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-diablo-mas-veloz",
+      "tema": "fanfarria-del-cabrio",
+      "desdeSeg": 67.14,
+      "coincidencia": 1,
+      "lrclib": 14644974,
+      "duracionMasterSeg": 309.1,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "zippo",
+      "tema": "cruz-diablo",
+      "desdeSeg": 171.79,
+      "coincidencia": 1,
+      "lrclib": 30279613,
+      "duracionMasterSeg": 254,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-diablo-que-mea-en-todas-partes",
+      "tema": "juguetes-perdidos",
+      "desdeSeg": 344.47,
+      "coincidencia": 1,
+      "lrclib": 14647077,
+      "duracionMasterSeg": 430.4,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "el-diablo-de-muchos-cuernos",
+      "tema": "el-infierno-esta-encantador-esta-noche",
+      "desdeSeg": 131.06,
+      "coincidencia": 1,
+      "lrclib": 27035061,
+      "duracionMasterSeg": 292.4,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "mandinga",
+      "tema": "rato-molhado",
+      "desdeSeg": 161.62,
+      "coincidencia": 1,
+      "lrclib": 14644965,
+      "duracionMasterSeg": 252.4,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "barbazul",
+      "tema": "barbazul-versus-el-amor-letal",
+      "desdeSeg": 49.3,
+      "coincidencia": 1,
+      "lrclib": 31022724,
+      "duracionMasterSeg": 259,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-reo-semental",
+      "tema": "barbazul-versus-el-amor-letal",
+      "desdeSeg": 57.15,
+      "coincidencia": 1,
+      "lrclib": 31022724,
+      "duracionMasterSeg": 259,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-esclavo-sensible-y-chillon",
+      "tema": "preso-en-mi-ciudad",
+      "desdeSeg": 108.56,
+      "coincidencia": 1,
+      "lrclib": 34601982,
+      "duracionMasterSeg": 243,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-pichon",
+      "tema": "preso-en-mi-ciudad",
+      "desdeSeg": 78.02,
+      "coincidencia": 1,
+      "lrclib": 34601982,
+      "duracionMasterSeg": 243,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-pajarito-del-lavi-rap",
+      "tema": "lavi-rap",
+      "desdeSeg": 88.5,
+      "coincidencia": 1,
+      "lrclib": 36944049,
+      "duracionMasterSeg": 251.6,
+      "difDuracionSeg": 0.4
+    },
+    {
+      "id": "los-reos-de-la-sociedad",
+      "tema": "todo-preso-es-politico",
+      "desdeSeg": 25.84,
+      "coincidencia": 1,
+      "lrclib": 7394113,
+      "duracionMasterSeg": 348.5,
+      "difDuracionSeg": 0.5
+    },
+    {
+      "id": "el-chivato",
+      "tema": "murga-purga",
+      "desdeSeg": 143.59,
+      "coincidencia": 1,
+      "lrclib": 23488209,
+      "duracionMasterSeg": 204.5,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "los-titanes-del-orden-viril",
+      "tema": "nuestro-amo-juega-al-esclavo",
+      "desdeSeg": 122.17,
+      "coincidencia": 1,
+      "lrclib": 35797042,
+      "duracionMasterSeg": 239.9,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "el-gato-maton",
+      "tema": "rock-para-el-negro-atila",
+      "desdeSeg": 68.29,
+      "coincidencia": 1,
+      "lrclib": 24621300,
+      "duracionMasterSeg": 240.7,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "el-raton",
+      "tema": "rock-para-el-negro-atila",
+      "desdeSeg": 68.29,
+      "coincidencia": 1,
+      "lrclib": 24621300,
+      "duracionMasterSeg": 240.7,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "el-negro-atila",
+      "tema": "rock-para-el-negro-atila",
+      "desdeSeg": 43.74,
+      "coincidencia": 1,
+      "lrclib": 24621300,
+      "duracionMasterSeg": 240.7,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "limon",
+      "tema": "me-matan-limon",
+      "desdeSeg": 35.66,
+      "coincidencia": 1,
+      "lrclib": 20827514,
+      "duracionMasterSeg": 215.4,
+      "difDuracionSeg": -0.1
+    },
+    {
+      "id": "el-gato-de-susanita",
+      "tema": "susanita",
+      "desdeSeg": 55.88,
+      "coincidencia": 1,
+      "lrclib": 25225347,
+      "duracionMasterSeg": 224.1,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "el-gato-que-llamas-con-silbidos",
+      "tema": "todo-un-palo",
+      "desdeSeg": 130.16,
+      "coincidencia": 1,
+      "lrclib": 35752913,
+      "duracionMasterSeg": 440.6,
+      "difDuracionSeg": 0.4
+    },
+    {
+      "id": "el-que-no-se-cayo-del-cielo",
+      "tema": "yo-no-me-cai-del-cielo",
+      "desdeSeg": 46.38,
+      "coincidencia": 1,
+      "lrclib": 30445968,
+      "duracionMasterSeg": 184.6,
+      "difDuracionSeg": 0.4
+    },
+    {
+      "id": "mi-perro-dinamita",
+      "tema": "mi-perro-dinamita",
+      "desdeSeg": 28.97,
+      "coincidencia": 1,
+      "lrclib": 34415362,
+      "duracionMasterSeg": 155.9,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "ese-perro-que-sigue-alli",
+      "tema": "todo-un-palo",
+      "desdeSeg": 98.38,
+      "coincidencia": 1,
+      "lrclib": 35752913,
+      "duracionMasterSeg": 440.6,
+      "difDuracionSeg": 0.4
+    },
+    {
+      "id": "el-perro-manso",
+      "tema": "cruz-diablo",
+      "desdeSeg": 133.71,
+      "coincidencia": 0.83,
+      "lrclib": 30279613,
+      "duracionMasterSeg": 254,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-perro-que-no-mira-el-cielo",
+      "tema": "nuestro-amo-juega-al-esclavo",
+      "desdeSeg": 133.6,
+      "coincidencia": 0.86,
+      "lrclib": 35797042,
+      "duracionMasterSeg": 239.9,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "el-lobo-suelto",
+      "tema": "invocacion",
+      "desdeSeg": 17.28,
+      "coincidencia": 1,
+      "lrclib": 17900194,
+      "duracionMasterSeg": 60.4,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-lobo-caido",
+      "tema": "el-lobo-caido",
+      "desdeSeg": 14.93,
+      "coincidencia": 1,
+      "lrclib": 14879063,
+      "duracionMasterSeg": 216.9,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-joven-lobo",
+      "tema": "la-parabellum-del-buen-psicopata",
+      "desdeSeg": 28.22,
+      "coincidencia": 1,
+      "lrclib": 36503985,
+      "duracionMasterSeg": 353.9,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "las-antiguas-lobas",
+      "tema": "barbazul-versus-el-amor-letal",
+      "desdeSeg": 109.52,
+      "coincidencia": 1,
+      "lrclib": 31022724,
+      "duracionMasterSeg": 259,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "la-liebre-muerta",
+      "tema": "sorpresa-de-shangai",
+      "desdeSeg": 168.45,
+      "coincidencia": 1,
+      "lrclib": 25215316,
+      "duracionMasterSeg": 220.2,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "el-animal-que-no-late",
+      "tema": "lobo-estas",
+      "desdeSeg": 35.18,
+      "coincidencia": 1,
+      "lrclib": 17483843,
+      "duracionMasterSeg": 181.5,
+      "difDuracionSeg": 0.2
+    },
+    {
+      "id": "el-rey-de-esta-jungla",
+      "tema": "etiqueta-negra",
+      "desdeSeg": 28.4,
+      "coincidencia": 1,
+      "lrclib": 36178168,
+      "duracionMasterSeg": 336.2,
+      "difDuracionSeg": -0.2
+    },
+    {
+      "id": "tu-animal",
+      "tema": "unos-pocos-peligros-sensatos",
+      "desdeSeg": 56.63,
+      "coincidencia": 1,
+      "lrclib": 14647614,
+      "duracionMasterSeg": 185.3,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "el-cordero-atado",
+      "tema": "yo-canibal",
+      "desdeSeg": 84.12,
+      "coincidencia": 1,
+      "lrclib": 35764820,
+      "duracionMasterSeg": 176.7,
+      "difDuracionSeg": 0.3
+    },
+    {
+      "id": "el-borrego",
+      "tema": "rock-yugular",
+      "desdeSeg": 175.12,
+      "coincidencia": 1,
+      "lrclib": 14648115,
+      "duracionMasterSeg": 424.6,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "aquella-solitaria-vaca-cubana",
+      "tema": "aquella-solitaria-vaca-cubana",
+      "desdeSeg": 20.66,
+      "coincidencia": 1,
+      "lrclib": 37364806,
+      "duracionMasterSeg": 255.9,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "el-rebano",
+      "tema": "el-pibe-de-los-astilleros",
+      "desdeSeg": 163.36,
+      "coincidencia": 1,
+      "lrclib": 14746506,
+      "duracionMasterSeg": 212.4,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-ovejero",
+      "tema": "vencedores-vencidos",
+      "desdeSeg": 73.47,
+      "coincidencia": 1,
+      "lrclib": 34415782,
+      "duracionMasterSeg": 208.4,
+      "difDuracionSeg": -0.4
+    },
+    {
+      "id": "el-canibal",
+      "tema": "yo-canibal",
+      "desdeSeg": 42.07,
+      "coincidencia": 1,
+      "lrclib": 35764820,
+      "duracionMasterSeg": 176.7,
+      "difDuracionSeg": 0.3
+    },
+    {
+      "id": "pituca",
+      "tema": "el-arte-del-buen-comer",
+      "desdeSeg": 36.46,
+      "coincidencia": 1,
+      "lrclib": 35926614,
+      "duracionMasterSeg": 276.2,
+      "difDuracionSeg": -0.2
+    },
+    {
+      "id": "el-verdugo-que-cena",
+      "tema": "jijiji",
+      "desdeSeg": 28.89,
+      "coincidencia": 1,
+      "lrclib": 37820703,
+      "duracionMasterSeg": 334.6,
+      "difDuracionSeg": 0.4
+    },
+    {
+      "id": "la-mosca",
+      "tema": "queso-ruso",
+      "desdeSeg": 132.12,
+      "coincidencia": 1,
+      "lrclib": 33628354,
+      "duracionMasterSeg": 292.5,
+      "difDuracionSeg": -0.5
+    },
+    {
+      "id": "el-moscon-zumbon",
+      "tema": "murga-purga",
+      "desdeSeg": 77.86,
+      "coincidencia": 1,
+      "lrclib": 23488209,
+      "duracionMasterSeg": 204.5,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-moscardon-imaginario",
+      "tema": "maldicion-va-a-ser-un-dia-hermoso",
+      "desdeSeg": 24.67,
+      "coincidencia": 1,
+      "lrclib": 19175085,
+      "duracionMasterSeg": 147.8,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "las-hormigas",
+      "tema": "un-poco-de-amor-frances",
+      "desdeSeg": 135.47,
+      "coincidencia": 1,
+      "lrclib": 14746696,
+      "duracionMasterSeg": 206.2,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "la-hormiga-dormida",
+      "tema": "cana-seca-y-un-membrillo",
+      "desdeSeg": 21.18,
+      "coincidencia": 1,
+      "lrclib": 7256119,
+      "duracionMasterSeg": 268,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "el-club-de-mantis",
+      "tema": "superlogico",
+      "desdeSeg": 43.82,
+      "coincidencia": 1,
+      "lrclib": 35754851,
+      "duracionMasterSeg": 184.8,
+      "difDuracionSeg": 0.2
+    },
+    {
+      "id": "la-tipa-rapaz",
+      "tema": "un-poco-de-amor-frances",
+      "desdeSeg": 16.86,
+      "coincidencia": 1,
+      "lrclib": 14746696,
+      "duracionMasterSeg": 206.2,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "la-mula-de-la-enfermedad",
+      "tema": "queso-ruso",
+      "desdeSeg": 116.89,
+      "coincidencia": 1,
+      "lrclib": 33628354,
+      "duracionMasterSeg": 292.5,
+      "difDuracionSeg": -0.5
+    },
+    {
+      "id": "el-zumba",
+      "tema": "gualicho",
+      "desdeSeg": 53.78,
+      "coincidencia": 1,
+      "lrclib": 20878050,
+      "duracionMasterSeg": 287.8,
+      "difDuracionSeg": 0
+    },
+    {
+      "id": "la-mariposa-pontiac",
+      "tema": "mariposa-pontiac-rock-del-pais",
+      "desdeSeg": 65.37,
+      "coincidencia": 1,
+      "lrclib": 14647933,
+      "duracionMasterSeg": 289.9,
+      "difDuracionSeg": 0.1
+    },
+    {
+      "id": "el-taxi-paranormal",
+      "tema": "pensando-como-una-acelga",
+      "desdeSeg": 51.52,
+      "coincidencia": 1,
+      "lrclib": 32057218,
+      "duracionMasterSeg": 280.1,
+      "difDuracionSeg": -0.1
+    },
+    {
+      "id": "la-piba-de-greenpeace",
+      "tema": "una-piba-con-la-remera-de-greenpeace",
+      "desdeSeg": 27.76,
+      "coincidencia": 1,
+      "lrclib": 7394653,
+      "duracionMasterSeg": 220.5,
+      "difDuracionSeg": -0.5
+    }
+  ],
+  "sinSincronizar": [
+    {
+      "id": "los-angelitos-profesionales",
+      "tema": "es-hora-de-levantarse-querido",
+      "motivo": "no está el máster en las carpetas, o ffprobe no lo pudo medir"
+    },
+    {
+      "id": "el-que-duerme-colgado",
+      "tema": "es-hora-de-levantarse-querido",
+      "motivo": "no está el máster en las carpetas, o ffprobe no lo pudo medir"
+    },
+    {
+      "id": "el-pac-man",
+      "tema": "un-pacman-en-el-savoy",
+      "motivo": "el verso no aparece en la versión de LRCLIB"
+    },
+    {
+      "id": "el-super-boca",
+      "tema": "nadie-es-perfecto",
+      "motivo": "el verso no aparece en la versión de LRCLIB"
+    },
+    {
+      "id": "el-amorcito-que-mordio-el-vidrio",
+      "tema": "nam-fri-frufi-fali-fru",
+      "motivo": "no está el máster en las carpetas, o ffprobe no lo pudo medir"
+    },
+    {
+      "id": "los-nenes-de-oro",
+      "tema": "nuotatori-professionisti",
+      "motivo": "el verso no aparece en la versión de LRCLIB"
+    },
+    {
+      "id": "luzbelito",
+      "tema": "luzbelito-y-las-sirenas",
+      "motivo": "el verso no aparece en la versión de LRCLIB"
+    },
+    {
+      "id": "la-fiera-mas-fiera",
+      "tema": "toxi-taxi",
+      "motivo": "no está el máster en las carpetas, o ffprobe no lo pudo medir"
+    },
+    {
+      "id": "la-dracula-con-tacones",
+      "tema": "preso-en-mi-ciudad",
+      "motivo": "el verso no aparece en la versión de LRCLIB"
+    },
+    {
+      "id": "susanita",
+      "tema": "susanita",
+      "motivo": "el verso no aparece en la versión de LRCLIB"
+    },
+    {
+      "id": "los-perros-sin-folleto",
+      "tema": "buenas-noticias",
+      "motivo": "el verso no aparece en la versión de LRCLIB"
+    },
+    {
+      "id": "el-buen-psicopata",
+      "tema": "la-parabellum-del-buen-psicopata",
+      "motivo": "va desde el arranque del tema (pedido del usuario) y el máster no está en esta máquina: correr npm run sincronizar-bestiario -- \"<carpeta de discos>\" --ids=el-buen-psicopata"
+    },
+    {
+      "id": "el-canibal-desdentado",
+      "tema": "es-hora-de-levantarse-querido",
+      "motivo": "no está el máster en las carpetas, o ffprobe no lo pudo medir"
+    },
+    {
+      "id": "el-toxi-taxi",
+      "tema": "toxi-taxi",
+      "motivo": "no está el máster en las carpetas, o ffprobe no lo pudo medir"
+    },
+    {
+      "id": "el-heroe-del-whisky",
+      "tema": "heroe-del-whisky",
+      "motivo": "el verso no aparece en la versión de LRCLIB"
+    },
+    {
+      "id": "la-bella-senora-desencarnada",
+      "tema": "juguetes-perdidos",
+      "motivo": "el verso no aparece en la versión de LRCLIB"
+    }
+  ]
+}

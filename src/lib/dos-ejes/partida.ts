@@ -203,6 +203,40 @@ export function disposicion(
   };
 }
 
+/**
+ * El plano de dos ejes del resultado, **fijo** (`D-62` enmienda 3, elegido por el usuario el
+ * 2026-10-05: *"B, el fijo como el rombo viejo"*): Luz arriba y Orden a la izquierda, el mismo
+ * dibujo para todos. Así se ve dónde cayó cada uno, y dos amigos con resultados opuestos miran
+ * el mismo mapa.
+ *
+ * Es distinto de `disposicion()`, que sigue siendo relativa y ordena **la grilla** (la tuya
+ * primero, para leer). El plano es el mapa; la grilla, la lista.
+ *
+ * Las celdas van arriba a la izquierda, arriba a la derecha, abajo a la izquierda y abajo a la
+ * derecha. No hay ningún número: los lugares son los de los polos, no una medida (`BR-17`).
+ */
+export const PLANO_FIJO = {
+  renglones: ['luz', 'oscuridad'],
+  columnas: ['orden', 'caos'],
+} as const satisfies {
+  readonly renglones: readonly [Cuadrante['luzOscuridad'], Cuadrante['luzOscuridad']];
+  readonly columnas: readonly [Cuadrante['ordenCaos'], Cuadrante['ordenCaos']];
+};
+
+export function planoFijo(banco: Banco): {
+  readonly celdas: readonly [Cuadrante, Cuadrante, Cuadrante, Cuadrante];
+  readonly renglones: typeof PLANO_FIJO.renglones;
+  readonly columnas: typeof PLANO_FIJO.columnas;
+} {
+  const [arriba, abajo] = PLANO_FIJO.renglones;
+  const [izquierda, derecha] = PLANO_FIJO.columnas;
+  return {
+    celdas: [buscar(banco, arriba, izquierda), buscar(banco, arriba, derecha), buscar(banco, abajo, izquierda), buscar(banco, abajo, derecha)],
+    renglones: PLANO_FIJO.renglones,
+    columnas: PLANO_FIJO.columnas,
+  };
+}
+
 /** Qué comparten dos maneras: todo, un polo de un eje, o nada. Nunca quién ganó. */
 export type Relacion = 'misma' | 'luz-oscuridad' | 'orden-caos' | 'opuesta';
 

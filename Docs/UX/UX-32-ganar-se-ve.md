@@ -291,3 +291,12 @@ audita contra esta hoja, `UX-27`, `BR-23` y `BR-24`).
 6. **Sacarle una foto al cuadro del triunfo** y preguntarse si cuenta algo sobre la
    relación entre las dos personas dibujadas. La respuesta tiene que ser que no — es la
    misma prueba que ya usa `UX-29 §9` para el fallo, dada vuelta.
+
+---
+
+> **Enmendado el 2026-10-04 por `UX-37` (`D-61`).** **`§4`**: el *"Nada más"* de lo que pasa
+> afuera del área al ganar pasa a ser *nada más que la tarjeta de fin de nivel*. **`§5`**: el toque
+> sobre el área sigue igual, pero ahora hay botones visibles (`Seguí`, `Repetí`, `Elegí otro`) y
+> *"que sea uno solo"* pasa a valer en el orden de tabulación (`#seguir-juego` sale de él mientras
+> la tarjeta está a la vista). El texto viejo y el nuevo, en `UX-37` `§8.4` y `§8.5`; la tarjeta, en
+> `UX-37` `§4`.

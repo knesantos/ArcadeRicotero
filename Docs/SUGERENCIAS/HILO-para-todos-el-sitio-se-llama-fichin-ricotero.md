@@ -59,10 +59,12 @@ nada de esto traba la publicación.
   `fichinricotero.com.ar` responda por HTTPS; al escribir esto no resuelve DNS. Cuando entre a
   `main` después de esta rama, las tarjetas del taller chocan como binario: se resuelve con
   `npm run generar-dos-ejes`. **Ojo:** `D-59` está reservado dos veces (esa rama y el ciclo
-  19); uno de los dos tiene que renumerar antes de integrar.
-- **El hilo de difusión.** El nombre nuevo está en el commit `be7b9e2` de la rama
-  `difusion/hilo-twitter`, que todavía no tiene PR: el #26 se integró antes, sin ese cambio.
-  Las capturas muestran la marca vieja: se vuelven a sacar cuando esto esté publicado.
+  19); uno de los dos tiene que renumerar antes de integrar. *[Resuelto 2026-10-05: el dominio
+  entró primero como `D-59` y el ciclo 19 se renumeró a `D-62` al integrar (`49d9ea0`).]*
+- **El hilo de difusión.** El texto con el nombre nuevo y las capturas vueltas a sacar contra
+  producción están en el PR #31 (rama `difusion/hilo-fichin`); el #26 se había integrado antes,
+  sin ese cambio. Sus enlaces apuntan a `fichinricotero.com.ar`: no se postea hasta que el
+  dominio cargue.
 - **Skayboy.** El trabajo del menú y el pulgar ya está renumerado sobre `origin/main`
   (rama local `skayboy/menu-y-mando-sobre-main`, `e50110b`: `D-61`, `UX-37`, `CNT-40`,
   `BR-40`, `T-401`…`T-410`). Contra esta rama choca solo como texto.

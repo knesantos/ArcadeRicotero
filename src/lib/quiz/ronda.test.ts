@@ -44,7 +44,7 @@ test('BR-01 sobre el banco real: 1000 rondas y el primero siempre es facil', () 
 test('BR-01 punto 3: el primer item no es siempre el mismo', () => {
   const primeros = new Set<string>();
   for (let s = 0; s < 300; s++) primeros.add(armarRonda(BANCO_REAL, 8, azarSemilla(s))[0]!.id);
-  // El banco tiene 10 faciles. Si saliera siempre el mismo, esto seria 1 y BR-01 punto 3
+  // El banco tiene 14 faciles desde `CNT-41` (eran 10). Si saliera siempre el mismo, esto seria 1 y BR-01 punto 3
   // estaria incumplido: "no es escalonamiento, es una vidriera fija".
   assert.ok(primeros.size >= 5, `solo ${primeros.size} items distintos abrieron la partida`);
 });

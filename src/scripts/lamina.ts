@@ -30,7 +30,9 @@
 
 import {
   planificarLamina,
+  elegirCuerpo,
   bandaDeLasFilas,
+  contenidoDeBanda,
   renglonesQueEntran,
   cuerpoQueEntra,
   partirEnLineas,
@@ -40,11 +42,12 @@ import {
   FRANJA,
   INTERLINEA,
   CUERPOS_LAMINA,
-  BANDAS,
+  MIN_BANDAS,
+  MAX_BANDAS,
   TAPA_LAMINA,
   tapasPorRenglon,
   ladoDeTapa,
-  renglonesDeTapas,
+  pedidoDeTapas,
   type DatosLamina,
 } from '../lib/ponelos/lamina.ts';
 
@@ -78,7 +81,7 @@ async function esperarLetras(): Promise<void> {
 }
 
 /** El grano de serigrafía, como mosaico. La medición está en `tarjeta.ts`. */
-function granular(ctx: CanvasRenderingContext2D): void {
+function granular(ctx: CanvasRenderingContext2D, alto: number): void {
   const mosaico = document.createElement('canvas');
   mosaico.width = GRANO;
   mosaico.height = GRANO;
@@ -108,7 +111,7 @@ function granular(ctx: CanvasRenderingContext2D): void {
   ctx.save();
   ctx.globalAlpha = 0.05;
   ctx.fillStyle = patron;
-  ctx.fillRect(0, 0, LIENZO.ancho, LIENZO.alto);
+  ctx.fillRect(0, 0, LIENZO.ancho, alto);
   ctx.restore();
 }
 
@@ -148,10 +151,33 @@ function escribirAjustado(
   return cuerpo;
 }
 
-/** Cuántos renglones necesita una banda al cuerpo de referencia, con un techo sensato. */
-function renglonesQuePide(ctx: CanvasRenderingContext2D, texto: string): number {
-  const ancho = medir(ctx, texto, CUERPOS_LAMINA.ficha.base, ROTULADA);
-  return Math.max(1, Math.min(10, Math.ceil(ancho / ANCHO_UTIL)));
+/**
+ * Cuánto alto pide una banda de texto a ese cuerpo: los renglones en que se parte, sin techo.
+ *
+ * Sin techo a propósito (`D-69`): el techo de diez renglones de antes juntaba lo que sobraba
+ * en el último, y con los ciento cinco temas eso era una línea de mil títulos encogida hasta
+ * ser ilegible. Ahora la que decide cuánto entra es la planta, que achica la letra y estira
+ * el lienzo antes de cortar nada.
+ */
+function pedidoDeTexto(ctx: CanvasRenderingContext2D, texto: string, cuerpo: number): number {
+  const lineas = partirEnLineas(texto, ANCHO_UTIL, (t) => medir(ctx, t, cuerpo, ROTULADA), Number.MAX_SAFE_INTEGER);
+  return lineas.length * cuerpo * INTERLINEA;
+}
+
+/**
+ * Los renglones de una banda con una ficha por renglón (`renglonPorFicha`, `D-72`): cada
+ * ficha se parte sola, y si no entran todos, lo que sobra se junta en el último —el mismo
+ * criterio de `partirEnLineas`: chico y entero antes que cortado—.
+ */
+function renglonesPorFicha(
+  ctx: CanvasRenderingContext2D,
+  fichas: readonly string[],
+  cuerpo: number,
+  maximo: number = Number.MAX_SAFE_INTEGER,
+): string[] {
+  const lineas = fichas.flatMap((f) => partirEnLineas(f, ANCHO_UTIL, (t) => medir(ctx, t, cuerpo, ROTULADA), Number.MAX_SAFE_INTEGER));
+  if (lineas.length <= maximo) return [...lineas];
+  return [...lineas.slice(0, maximo - 1), lineas.slice(maximo - 1).join(SEPARADOR)];
 }
 
 /**
@@ -184,7 +210,7 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
   lienzo.height = LIENZO.alto;
   const ctx = lienzo.getContext('2d');
   if (!ctx) return null;
-  if (datos.bandas.length !== BANDAS) return null;
+  if (datos.bandas.length < MIN_BANDAS || datos.bandas.length > MAX_BANDAS) return null;
 
   await esperarLetras();
 
@@ -194,12 +220,10 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
     tenue: tinta('--texto-tenue'),
     borde: tinta('--borde'),
     marca: tinta('--marca-rojo'),
-    // El juego viste ¡Bang! ¡Bang!… Estás liquidado (mezcla `D-19`).
-    juego: tinta('--disco-bang-bang-estas-liquidado-tinta', tinta('--texto')),
+    // "Ponelos en fila" viste ¡Bang! ¡Bang!… Estás liquidado (mezcla `D-19`); otro juego que
+    // imprima la misma hoja pide la suya (`D-72`).
+    juego: tinta(datos.tintaJuego ?? '--disco-bang-bang-estas-liquidado-tinta', tinta('--texto')),
   };
-
-  ctx.fillStyle = colores.fondo;
-  ctx.fillRect(0, 0, LIENZO.ancho, LIENZO.alto);
 
   // Las tapas se bajan antes de planificar: una banda de tapas pide alto en función de
   // cuántas entran de ancho, y eso no se puede saber a mitad del dibujo.
@@ -212,18 +236,27 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
   );
 
   // Las bandas se miden ANTES de planificar: el reparto de alto depende de cuánto trae
-  // cada una, que es la diferencia entera con la tarjeta de los otros dos juegos.
+  // cada una, que es la diferencia entera con la tarjeta de los otros dos juegos. Primero se
+  // elige el cuerpo de las fichas —el más grande con el que todo entra—, y con ese cuerpo se
+  // planifica; si ni al piso entra, la planta estira el lienzo (`D-69`).
   const textos = datos.bandas.map((b) => b.fichas.join(SEPARADOR));
-  const bloques = new Map(
-    planificarLamina(
-      datos.bandas.map((_, i) =>
-        tapas[i]!.length > 0
-          ? renglonesDeTapas(tapas[i]!.length, ANCHO_UTIL, CUERPOS_LAMINA.ficha.base)
-          : renglonesQuePide(ctx, textos[i]!),
-      ),
-    ).map((b) => [b.clave, b]),
-  );
+  const pedidos = (cuerpo: number): number[] =>
+    datos.bandas.map((_, i) =>
+      tapas[i]!.length > 0
+        ? pedidoDeTapas(tapas[i]!.length, ANCHO_UTIL)
+        : datos.renglonPorFicha
+          ? renglonesPorFicha(ctx, datos.bandas[i]!.fichas, cuerpo).length * cuerpo * INTERLINEA
+          : pedidoDeTexto(ctx, textos[i]!, cuerpo),
+    );
+  const cuerpoFichas = elegirCuerpo(pedidos);
+  const plan = planificarLamina(pedidos(cuerpoFichas));
+  const bloques = new Map(plan.bloques.map((b) => [b.clave, b]));
   const en = (clave: string) => bloques.get(clave)!;
+
+  // Cambiar el alto de un canvas lo borra entero: va antes de pintar la primera tinta.
+  lienzo.height = plan.alto;
+  ctx.fillStyle = colores.fondo;
+  ctx.fillRect(0, 0, LIENZO.ancho, plan.alto);
 
   escribirAjustado(ctx, MARCA, MARGEN, en('marca').y, ANCHO_UTIL, CALCO, CUERPOS_LAMINA.marcaSitio, colores.marca);
   escribirAjustado(
@@ -241,12 +274,15 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
     // El rótulo de la fila, en registro 3: seco, tenue, y nunca teñido. Ninguna de las
     // cuatro filas lleva color propio — es lo que impide que la de arriba se lea como un
     // premio (`BR-22`).
+    // En mayúsculas, como el sello del tablero: las filas propias llegan escritas como las
+    // escribió cada uno, y en la lámina se leen todas con la misma voz.
     escribirAjustado(
-      ctx, banda.nombre, MARGEN, slot.y,
+      ctx, banda.nombre.toLocaleUpperCase('es-AR'), MARGEN, slot.y,
       ANCHO_UTIL, ROTULADA, CUERPOS_LAMINA.rotuloFila, colores.tenue,
     );
 
     const yFichas = slot.y + CUERPOS_LAMINA.rotuloFila.base * INTERLINEA + 6;
+    const contenido = contenidoDeBanda(slot.alto);
 
     if (tapas[i]!.length > 0) {
       /*
@@ -256,8 +292,7 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
        * cuadrados perfectos seria la plantilla que la regla anti-slop veta. La rotacion se
        * alterna para que la fila no se lea como una sola pieza inclinada.
        */
-      const disponible = slot.alto - (yFichas - slot.y) - 8;
-      const lado = ladoDeTapa(tapas[i]!.length, ANCHO_UTIL, disponible);
+      const lado = ladoDeTapa(tapas[i]!.length, ANCHO_UTIL, contenido);
       const porRenglon = tapasPorRenglon(ANCHO_UTIL, lado);
       tapas[i]!.forEach((img, n) => {
         const col = n % porRenglon;
@@ -274,11 +309,11 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
         ctx.restore();
       });
     } else {
-      const caben = renglonesQueEntran(slot.alto, CUERPOS_LAMINA.ficha.base);
-      let cuerpo: number = CUERPOS_LAMINA.ficha.base;
-      const lineas = [
-        ...partirEnLineas(textos[i]!, ANCHO_UTIL, (s) => medir(ctx, s, cuerpo, ROTULADA), caben),
-      ];
+      let cuerpo: number = cuerpoFichas;
+      const caben = renglonesQueEntran(contenido, cuerpo);
+      const lineas = datos.renglonPorFicha
+        ? renglonesPorFicha(ctx, datos.bandas[i]!.fichas, cuerpo, caben)
+        : [...partirEnLineas(textos[i]!, ANCHO_UTIL, (s) => medir(ctx, s, cuerpo, ROTULADA), caben)];
       const masAncha = Math.max(...lineas.map((l) => medir(ctx, l, cuerpo, ROTULADA)));
       cuerpo = cuerpoQueEntra(masAncha, ANCHO_UTIL, cuerpo, CUERPOS_LAMINA.ficha.piso);
       lineas.forEach((linea, n) => {
@@ -310,9 +345,9 @@ export async function dibujarLamina(datos: DatosLamina): Promise<Blob | null> {
   // La franja del pie: el mismo rojo de Oktubre de `tarjeta.ts` y de `public/tarjeta.png`.
   // Es lo que hace que las tres piezas se reconozcan del mismo lugar.
   ctx.fillStyle = colores.marca;
-  ctx.fillRect(0, LIENZO.alto - FRANJA, LIENZO.ancho, FRANJA);
+  ctx.fillRect(0, plan.alto - FRANJA, LIENZO.ancho, FRANJA);
 
-  granular(ctx);
+  granular(ctx, plan.alto);
 
   return new Promise<Blob | null>((listo) => {
     lienzo.toBlob((blob) => listo(blob), 'image/png');

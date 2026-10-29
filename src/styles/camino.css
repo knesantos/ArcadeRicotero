@@ -1,0 +1,695 @@
+/* ==================================================================
+   El camino con cruces (D-73, séptima vuelta)
+   ==================================================================
+
+   Cada región del bestiario que ya se camina es una página (`pages/redondopedia/bestiario/
+   [region].astro`). La escena es una tira de capas: lo lejano, el piso con los bichos y lo de
+   adelante. Esta hoja la importan solo esas páginas; lo que comparten con el bestiario (el
+   cartel de sello, el bocadillo, la hoja de la ficha, las fichas) sigue en `sitio.css`.
+
+   TRES MODOS, Y EL DE ABAJO ALCANZA SOLO:
+
+   - **Sin JavaScript**: la escena es una tira en el flujo de la página, que se corre de costado
+     con el dedo, como los recintos de noche. Las capas van juntas y el cruce está al final.
+   - **Andando** (`.camino--andando`, lo pone la isla): la escena es la pantalla entera y se corre
+     de costado (`D-77`: se avanza para el lado donde se camina, no para abajo). Así también con
+     movimiento reducido, y así en los recintos de títeres, que son una sola capa.
+   - **Con paralaje** (`.camino--paralaje`, donde hay capas y movimiento): la vista queda pegada a
+     la pantalla mientras la tira pasa por debajo, y la isla corre cada capa a su velocidad. Un
+     píxel de deslizar es un píxel de caminar.
+
+   Lo que aparece (los ojos al llegar, el cruce al final) aparece con opacidad sobre
+   `--duracion-umbral`, que el corte de movimiento reducido lleva a cero. Ninguna sombra ni
+   degradé: la escena son las piezas impresas del bestiario, y la interfaz encima es papel,
+   tinta y borde grueso, como los carteles de los recintos. */
+
+/* El cartel de la región: el mismo sello de los recintos, arriba de la página. */
+.camino-cartel {
+  margin: var(--espacio-2) 0 0 var(--espacio-1);
+}
+
+.camino-cartel .recinto-nombre { font-size: clamp(1.3rem, 6vw, 1.9rem); }
+
+.camino-bajada {
+  max-width: var(--ancho-hoja);
+  margin: var(--espacio-2) 0 0;
+  color: var(--texto-tenue);
+  line-height: 1.5;
+}
+
+/* ---- La escena -------------------------------------------------- */
+
+.camino {
+  --alto-escena: clamp(20rem, 72svh, 44rem);
+  position: relative;
+  margin-top: var(--espacio-3);
+}
+
+/* En el teléfono la escena va de borde a borde; en la compu sale del renglón y se centra,
+   sin `100vw` (que cuenta la barra de desplazamiento y abre un corrimiento de costado). */
+@media (max-width: 52rem) {
+  .camino { margin-inline: calc(50% - 50vw); }
+}
+
+@media (min-width: 52.01rem) {
+  .camino {
+    --ancho-camino: min(100vw - 2 * var(--espacio-3), 90rem);
+    width: var(--ancho-camino);
+    margin-inline: calc((100% - var(--ancho-camino)) / 2);
+  }
+}
+
+.camino-escenario {
+  position: relative;
+  height: var(--alto-escena);
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bestia-lobo-sombra) var(--fondo);
+  background: var(--fondo);
+  border-block: var(--linea) solid var(--bestia-lobo-sombra);
+}
+
+/* La tira: tan ancha como pide el piso a este alto. Con la isla, el ancho lo pone ella, exacto. */
+.camino-tira {
+  position: relative;
+  height: 100%;
+  width: calc(var(--alto-escena) * var(--ancho) / var(--alto));
+  overflow: hidden;
+}
+
+/* La vista: cubre la tira entera, y las capas se paran en ella. */
+.camino-vista {
+  position: absolute;
+  inset: 0;
+}
+
+.camino .capa {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: none;
+  user-select: none;
+}
+
+.capa--lejos,
+.capa--frente { pointer-events: none; }
+
+.camino-deslizar { padding-inline: var(--espacio-2); }
+
+/* ---- Andando: la escena es la pantalla, y se corre de costado (D-77) ---- */
+
+/* La escena entera, siempre: se camina deslizando de costado, con el scroll del navegador. El dedo
+   que baja no hace nada, y el que tira para el costado no vuelve a la página de antes. */
+.camino--andando .camino-escenario {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100svh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+  touch-action: pan-x pinch-zoom;
+  scrollbar-width: none;
+  border: 0;
+}
+
+.camino--andando .camino-escenario::-webkit-scrollbar { display: none; }
+
+.camino--andando { --alto-escena: 100svh; }
+
+/* Una escena más angosta que la pantalla (un recinto en la compu) queda en el medio. */
+.camino--andando .camino-tira { margin-inline: auto; }
+.camino--andando .camino-deslizar { display: none; }
+
+/* Con paralaje, la vista queda quieta en la pantalla mientras la tira pasa: las capas las corre
+   la isla, cada una a su velocidad. La tira no recorta: si recortara, sería ella la caja de
+   scroll de la vista, y la vista no se pegaría a la pantalla. Recorta la vista. */
+.camino--paralaje .camino-tira { overflow: visible; }
+
+.camino--paralaje .camino-vista {
+  position: sticky;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.camino--paralaje .capa { will-change: transform; }
+
+/* La cámara (`D-80`) gira y escala cada capa alrededor de un punto de la vista que calcula la isla,
+   así que el origen de cada capa es su esquina. */
+.camino--andando .capa { transform-origin: 0 0; }
+
+/* ---- La invitación a caminar y el agarre (D-83) ---------------- */
+
+/* La flecha del aviso de deslizar, para el lado del camino: la misma de los carteles del cruce. */
+.camino-deslizar-flecha {
+  display: inline-block;
+  flex: none;
+  width: 1.3rem;
+  height: 0.95rem;
+  margin-left: 0.3rem;
+  vertical-align: middle;
+}
+
+.camino-deslizar-flecha path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Hasta que la mano camine por primera vez, el aviso es un sello flotando abajo de la escena, en el
+   papel y el borde de la región. Solo donde no hay mouse: en la compu alcanzan el primer paso, la
+   ruedita y el agarre. La isla lo saca con el primer trecho caminado (`.camino--invita`). */
+@media (hover: none) {
+  .camino--andando.camino--invita .camino-deslizar {
+    position: fixed;
+    left: 50%;
+    bottom: calc(var(--espacio-2) + env(safe-area-inset-bottom, 0px));
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 0.45rem 0.75rem;
+    white-space: nowrap;
+    color: var(--fondo);
+    background: var(--papel);
+    border: var(--linea) solid var(--tr);
+    border-radius: 3px;
+    transform: translateX(-50%) rotate(-1.5deg);
+    pointer-events: none;
+  }
+}
+
+/* Con mouse, la escena se agarra y se lleva: la mano abierta sobre el camino, cerrada mientras se
+   lo lleva. Los bichos siguen con su propia mano, la de tocar. */
+@media (hover: hover) and (pointer: fine) {
+  .camino--andando .camino-escenario { cursor: grab; }
+  .camino--agarrando { user-select: none; }
+  .camino--agarrando .camino-escenario,
+  .camino--agarrando .camino-escenario * { cursor: grabbing; }
+}
+
+/* Los ojos se encienden cuando se llega a ellos. Solo andando: sin la isla, se ven todos. */
+.camino--andando .aparece {
+  opacity: 0;
+  transition: opacity var(--duracion-umbral) var(--curva-cinta);
+}
+
+.camino--andando .aparece--a-la-vista { opacity: 1; }
+
+/* ---- El cruce ------------------------------------------------------ */
+
+.cruce {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  width: min(19rem, 88%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--espacio-1);
+  padding: var(--espacio-2);
+}
+
+.camino--paralaje .cruce {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duracion-umbral) var(--curva-cinta);
+}
+
+.camino--paralaje .cruce--a-la-vista {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Con picadas (`D-77`), el cruce es una capa del ancho del piso, en sus mismas unidades: cada
+   cartel se clava en un poste al final de su picada, frente a la luz de su disco, y pasa con el
+   piso como cualquier cosa del mundo. Por eso no aparece de golpe: se lo ve venir. */
+.camino .cruce--picadas {
+  --px: calc(var(--alto-escena) / var(--alto));
+  right: auto;
+  bottom: auto;
+  display: block;
+  width: calc(var(--px) * var(--ancho));
+  height: 100%;
+  padding: 0;
+  pointer-events: none;
+}
+
+.camino--paralaje .cruce--picadas { opacity: 1; }
+
+.cruce--picadas .cruce-titulo {
+  position: absolute;
+  top: calc(var(--px) * 150);
+  left: calc(var(--px) * var(--xt));
+  white-space: nowrap;
+  transform: translateX(-50%) rotate(-1.5deg);
+}
+
+.cruce--picadas .cruce-carteles { display: block; }
+
+.cruce--picadas li {
+  position: absolute;
+  left: calc(var(--px) * var(--x));
+  bottom: calc(var(--px) * (var(--alto) - var(--y)));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: max-content;
+  max-width: calc(var(--px) * var(--paso) * 1.7);
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+/* El poste: un palo de papel que baja hasta donde termina la picada. */
+.cruce--picadas li::after {
+  content: '';
+  width: 4px;
+  height: calc(var(--px) * var(--poste));
+  background: var(--papel);
+}
+
+.cruce--picadas .cartel-cruce {
+  grid-template-columns: auto;
+  justify-items: center;
+  max-width: 100%;
+  padding: 0.3rem 0.5rem 0.35rem;
+  text-align: center;
+}
+
+.cruce--picadas .cartel-flecha {
+  grid-row: auto;
+  width: 1.2rem;
+  height: 0.9rem;
+}
+
+.cruce--picadas .cartel-nombre { font-size: 0.72rem; }
+
+.cruce--picadas .cartel-canta { display: none; }
+
+.cruce--picadas .cartel-plano { justify-self: center; }
+
+/* El título del cruce, en un sello: la escena de abajo es oscura y cambia. */
+.cruce-titulo {
+  align-self: flex-start;
+  margin: 0;
+  padding: 0.3rem 0.6rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fondo);
+  background: var(--papel);
+  border-radius: 3px;
+  transform: rotate(-1.5deg);
+}
+
+.cruce-carteles {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Un cartel por región vecina: papel, el borde en la tinta de su disco, apenas torcido, y la
+   flecha para el lado donde queda en el plano redondo. */
+.cartel-cruce {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  column-gap: 0.55rem;
+  align-items: center;
+  min-height: var(--toque-min);
+  padding: 0.45rem 0.7rem 0.5rem;
+  color: var(--fondo);
+  background: var(--papel);
+  border: var(--linea) solid var(--tr);
+  border-radius: 3px;
+  text-decoration: none;
+  transform: rotate(var(--giro, 0deg));
+}
+
+.cartel-cruce:hover,
+.cartel-cruce:focus-visible {
+  outline: 2px solid var(--papel);
+  outline-offset: 3px;
+}
+
+/* El que todavía no se camina lleva a su recinto: borde cortado y un sello que lo dice. */
+.cartel-cruce--plano { border-style: dashed; }
+
+.cartel-flecha {
+  grid-row: 1 / span 3;
+  width: 2rem;
+  height: 1.5rem;
+  transform: rotate(var(--rumbo, 0deg));
+}
+
+.cartel-flecha path {
+  fill: none;
+  stroke: var(--fondo);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cartel-nombre {
+  font-family: var(--fuente-rotulada);
+  font-size: 1rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.cartel-canta {
+  font-size: 0.8rem;
+  font-style: italic;
+  line-height: 1.25;
+}
+
+.cartel-plano {
+  justify-self: start;
+  margin-top: 0.25rem;
+  padding: 0 0.3rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  border: 1.5px solid var(--fondo);
+  border-radius: 3px;
+}
+
+/* Para el teclado: un salto directo al cruce, que aparece al recibir el foco. */
+.camino-saltar {
+  position: absolute;
+  top: var(--espacio-1);
+  left: var(--espacio-2);
+  z-index: 3;
+  padding: 0.4rem 0.7rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--fondo);
+  background: var(--papel);
+  border: 2px solid var(--fondo);
+  border-radius: 3px;
+}
+
+.camino-saltar:not(:focus) {
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- Abajo de la escena -------------------------------------------- */
+
+.camino-simbolos {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.camino-fichas { margin-top: var(--espacio-4); }
+
+/* El que no vive en la región pero anda por el camino: el lobo en la pastura. */
+.bestiario-de-paso {
+  padding: 0 0.35rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  border: 1.5px dashed var(--texto-tenue);
+  border-radius: 3px;
+  transform: rotate(2deg);
+}
+
+/* ==================================================================
+   La pantalla entera (D-76)
+   ==================================================================
+
+   Pedido del usuario: arrancar en el camino, y que para salir haya que tocar algo. Con la isla
+   andando (`html.camino-pantalla`, lo pone `scripts/camino.ts`), la escena es la página: la
+   cabecera y el tablero flotan encima, la lista de fichas se abre con un botón, el pie no está,
+   y abajo del cruce se termina el documento. `overscroll-behavior` saca el rebote y el
+   "tirá para recargar": llegar al final no te lleva a ningún lado.
+
+   Sin isla o con movimiento reducido no se aplica nada de esto: todo queda en el flujo. */
+
+.camino-tablero { position: relative; }
+
+.camino-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+  margin-top: var(--espacio-1);
+}
+
+.camino-botones:not(:has(> :not([hidden]))) { display: none; }
+
+/* Sello de goma, como los carteles del cruce: papel, borde de la tinta de la región. */
+.camino-boton {
+  min-height: var(--toque-min);
+  padding: 0 0.85rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fondo);
+  background: var(--papel);
+  border: var(--linea) solid var(--tr);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: color var(--duracion-toque), background-color var(--duracion-toque), border-color var(--duracion-toque);
+}
+
+.camino-boton:nth-child(2) { transform: rotate(1.2deg); }
+.camino-boton:first-child { transform: rotate(-0.8deg); }
+
+.camino-boton[aria-pressed='true'] {
+  color: var(--papel);
+  background: var(--fondo);
+  border-color: var(--papel);
+}
+
+.camino-boton:focus-visible {
+  outline: 2px solid var(--papel);
+  outline-offset: 3px;
+}
+
+.camino-suena {
+  margin: var(--espacio-1) 0 0;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--texto-tenue);
+}
+
+html.camino-pantalla,
+html.camino-pantalla body { overscroll-behavior-y: none; }
+
+html.camino-pantalla body { background: var(--fondo); }
+
+.camino-pantalla .pie-imprenta,
+.camino-pantalla .camino-fichas:not(.camino-fichas--abierta) { display: none; }
+
+/* La salida, arriba a la izquierda: lo único que saca del camino, además del cruce. */
+.camino-pantalla .cabecera-sitio {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  margin: 0;
+  padding: var(--espacio-1) var(--espacio-2);
+}
+
+.camino-pantalla .cabecera-sitio .marca-chica { display: none; }
+
+/* La cinta de salida, chica: en el teléfono tapaba la escena. El papel se achica y la zona del
+   pulgar sigue siendo de `--toque-min`, porque el borde invisible del toque se estira afuera. */
+.camino-pantalla .volver {
+  position: relative;
+  min-height: 0;
+  line-height: 2rem;
+  padding: 0 0.55rem;
+  font-size: 0.66rem;
+}
+
+.camino-pantalla .volver::after {
+  content: '';
+  position: absolute;
+  inset: calc((var(--toque-min) - 2rem) / -2) -0.25rem;
+}
+
+.camino-pantalla .camino { margin-top: 0; }
+
+/* El tablero, en el mismo renglón que la salida y contra el otro borde: el nombre chico, y lo
+   demás plegado hasta que se toca el nombre (`camino-tablero--plegado`, lo pone la isla). */
+.camino-pantalla .camino-tablero {
+  position: fixed;
+  top: var(--espacio-1);
+  right: var(--espacio-2);
+  z-index: 20;
+  display: grid;
+  justify-items: end;
+  max-width: min(21rem, calc(100% - 8rem));
+  pointer-events: none;
+}
+
+.camino-pantalla .camino-tablero--plegado .recinto-numero,
+.camino-pantalla .camino-tablero--plegado .bestiario-canta,
+.camino-pantalla .camino-tablero--plegado .camino-bajada,
+.camino-pantalla .camino-tablero--plegado .bestiario-libreta,
+.camino-pantalla .camino-tablero--plegado .camino-botones,
+.camino-pantalla .camino-tablero--plegado .camino-suena { display: none; }
+
+.camino-pantalla .camino-cartel {
+  padding: 0.3rem 0.55rem 0.2rem;
+  text-align: right;
+}
+
+.camino-pantalla .camino-cartel .recinto-nombre { font-size: 0.78rem; letter-spacing: 0.04em; }
+
+.camino-pantalla .camino-cartel .bestiario-canta { font-size: 0.8rem; }
+
+/* El nombre es el botón: la misma letra del cartel, y el toque estirado hasta `--toque-min`. */
+.camino-plegar {
+  position: relative;
+  padding: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-align: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.camino-plegar::after {
+  content: '';
+  position: absolute;
+  inset: -0.9rem -0.6rem;
+}
+
+.camino-plegar:focus-visible {
+  outline: 2px solid var(--fondo);
+  outline-offset: 3px;
+}
+
+.camino-pantalla .camino-tablero > * { pointer-events: auto; }
+
+.camino-pantalla .camino-cartel { margin: 0; }
+
+.camino-pantalla .camino-botones { justify-content: flex-end; }
+
+/* Lo que se lee sobre la escena va sobre su tinta: la noche de abajo cambia y el par
+   texto/fondo es el que está testeado. */
+.camino-pantalla .camino-bajada,
+.camino-pantalla .camino-tablero .bestiario-libreta,
+.camino-pantalla .camino-suena {
+  justify-self: end;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.25rem 0.5rem;
+  background: var(--fondo);
+  border-radius: 3px;
+}
+
+.camino-pantalla .camino-bajada { margin-top: var(--espacio-1); font-size: 0.85rem; }
+
+.camino-pantalla .camino-tablero .bestiario-libreta { margin-top: 0.35rem; font-size: 0.68rem; }
+
+/* Los dos botones en un renglón, aun a 320 px. */
+.camino-pantalla .camino-boton { padding: 0 0.6rem; font-size: 0.7rem; }
+
+/* En el cruce, los carteles bajan lo justo para no quedar debajo del renglón de arriba. */
+.camino-pantalla .cruce:not(.cruce--picadas) {
+  justify-content: flex-start;
+  padding-top: calc(var(--toque-min) + var(--espacio-1) * 2 + 1rem);
+}
+
+/* La lista y la ficha flotan encima de la escena sin taparla entera (D-77): un recorte de papel
+   oscuro con el borde grueso, despegado de los bordes, y la escena sigue ahí alrededor. Pedido del
+   usuario: *"que en móvil la ficha tampoco te saque de la inmersión"*. */
+.camino-pantalla .camino-fichas--abierta,
+.camino-pantalla .bestiario-hoja {
+  position: fixed;
+  top: auto;
+  left: var(--espacio-1);
+  right: var(--espacio-1);
+  bottom: calc(var(--espacio-1) + env(safe-area-inset-bottom, 0px));
+  width: auto;
+  max-height: 58svh;
+  margin: 0;
+  padding: var(--espacio-1) var(--espacio-2) var(--espacio-3);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--fondo);
+  border: var(--linea) solid var(--papel);
+  border-radius: 3px;
+}
+
+.camino-pantalla .camino-fichas--abierta { z-index: 35; max-height: 46svh; }
+/* La ficha abre encima de la lista. */
+.camino-pantalla .bestiario-hoja { z-index: 40; max-height: 42svh; }
+
+/* Chica, como el tablero: en el teléfono la letra grande tapaba al bicho que se estaba mirando.
+   La figura se corre al costado del texto y lo demás se lee bajando adentro de la ficha. */
+@media (max-width: 52rem) {
+  .camino-pantalla .bestiario-hoja { font-size: 0.85rem; padding: 0.5rem var(--espacio-1) var(--espacio-2); }
+  .camino-pantalla .bestiario-ficha-titulo { margin-top: 0.3rem; font-size: 0.95rem; }
+  .camino-pantalla .bestiario-hoja .bestiario-figura {
+    float: left;
+    width: 4.5rem;
+    margin: 0.25rem var(--espacio-1) 0.25rem 0;
+  }
+  .camino-pantalla .bestiario-hoja .bestiario-sale,
+  .camino-pantalla .bestiario-hoja .bestiario-tambien,
+  .camino-pantalla .bestiario-hoja .bestiario-estampa { line-height: 1.45; }
+  .camino-pantalla .bestiario-hoja .bestiario-verso { clear: both; margin: 0.5rem 0; padding: 0.35rem 0.6rem; }
+  .camino-pantalla .bestiario-hoja .bestiario-acciones { clear: both; margin: var(--espacio-1) 0; }
+  .camino-pantalla .camino-fichas--abierta { font-size: 0.85rem; }
+}
+
+/* En la compu, a un costado, como en el bestiario: la escena queda entera a la vista. */
+@media (min-width: 52rem) {
+  .camino-pantalla .camino-fichas--abierta,
+  .camino-pantalla .bestiario-hoja {
+    left: auto;
+    right: var(--espacio-2);
+    bottom: var(--espacio-2);
+    width: min(30rem, 42vw);
+    max-height: 82svh;
+  }
+}
+
+/* La ficha se abre donde no tapa al bicho (`D-80`): la isla elige el lado y, en el teléfono, el
+   alto (`lib/bestiario/hoja.ts`). Arriba se para debajo del renglón del camino. */
+.camino-pantalla .bestiario-hoja--arriba {
+  top: calc(var(--toque-min) + var(--espacio-1) * 2);
+  bottom: auto;
+}
+
+@media (min-width: 52rem) {
+  .camino-pantalla .bestiario-hoja--izquierda {
+    left: var(--espacio-2);
+    right: auto;
+  }
+}
+
+.camino-fichas--abierta .bestiario-lista { max-width: var(--ancho-hoja); margin-inline: auto; }
+
+/* La cruz de la lista va pegada arriba adentro de la lista, como la de la ficha. */
+.camino-fichas .camino-cerrar-lista { z-index: 1; }

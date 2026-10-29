@@ -65,9 +65,12 @@ interface Utileria {
   readonly propiedades: Map<string, string>;
   readonly observados: string[];
   readonly boton: { textContent: string | null; atributos: Map<string, string> };
+  /** El botón del menú (`D-61`): hace lo mismo que el sello, con el verbo entero a la vista. */
+  readonly botonDelMenu: { textContent: string | null; atributos: Map<string, string> };
   /** El elemento que el documento dice tener en pantalla completa. */
   sistemaEn(nombre: 'fichin' | null): void;
   tocarElBoton(): void;
+  tocarElDelMenu(): void;
   disparar(tipo: string, evento?: unknown): void;
   avisarAlObservador(): void;
 }
@@ -182,6 +185,17 @@ function armar(esc: Escenario = {}): Utileria {
       if (tipo === 'click') alClic.push(f);
     },
   };
+  const alClicDelMenu: Oyente[] = [];
+  const botonDelMenu = {
+    textContent: null as string | null,
+    atributos: new Map<string, string>(),
+    setAttribute(n: string, v: string) {
+      this.atributos.set(n, v);
+    },
+    addEventListener: (tipo: string, f: Oyente) => {
+      if (tipo === 'click') alClicDelMenu.push(f);
+    },
+  };
 
   const entorno = {
     documento,
@@ -190,6 +204,7 @@ function armar(esc: Escenario = {}): Utileria {
     Observador,
     fichin,
     boton,
+    otros: [botonDelMenu],
     soltarTodas: () => {
       sueltas.cuenta++;
     },
@@ -208,12 +223,17 @@ function armar(esc: Escenario = {}): Utileria {
     propiedades,
     observados,
     boton,
+    botonDelMenu,
     sistemaEn(nombre) {
       documento.fullscreenElement = nombre === 'fichin' ? fichin : null;
     },
     tocarElBoton() {
       assert.ok(alClic.length > 0, 'el botón no tiene quién escuche su clic');
       for (const f of alClic) f({});
+    },
+    tocarElDelMenu() {
+      assert.ok(alClicDelMenu.length > 0, 'el botón del menú no tiene quién escuche su clic');
+      for (const f of alClicDelMenu) f({});
     },
     disparar(tipo, evento = {}) {
       for (const f of oyentes.get(tipo) ?? []) f(evento);
@@ -251,6 +271,39 @@ test('ADR-10.2: el pedido sale en el mismo toque, sobre .fichin y sobre nada má
   // `async` en el camino, acá todavía no hay pedido, y en el teléfono el sistema lo niega.
   assert.deepEqual(u.pedidos, ['fichin'], `pidió sobre ${JSON.stringify(u.pedidos)}: tiene que ser .fichin, una vez, en el toque`);
   assert.ok(enElModo(u), 'el modo tiene que quedar puesto en el mismo toque, antes de todo lo demás');
+});
+
+test('D-61: el botón del menú pide en el mismo toque, sobre .fichin, igual que el sello', () => {
+  const u = armar();
+  u.tocarElDelMenu();
+  // Igual que arriba: se mira apenas vuelve el manejador. Un manejador propio del menú con un
+  // `await` adelante dejaría esto vacío (la prueba que pidió la enmienda de `ADR-10.5`).
+  assert.deepEqual(u.pedidos, ['fichin']);
+  assert.ok(enElModo(u));
+});
+
+test('D-61: el del menú también saca, por la misma salir(), y los dos botones quedan pintados igual', async () => {
+  const u = armar();
+  u.tocarElBoton();
+  await new Promise((r) => setTimeout(r, 0));
+  // Adentro: el sello dice la estampa, el del menú la frase; el `aria-label` es el mismo.
+  assert.equal(u.boton.textContent, PANTALLA_COMPLETA.completa);
+  assert.equal(u.botonDelMenu.textContent, PANTALLA_COMPLETA.salir);
+  assert.equal(u.botonDelMenu.atributos.get('aria-label'), PANTALLA_COMPLETA.salir);
+  assert.equal(u.botonDelMenu.atributos.get('aria-pressed'), undefined, 'el nombre ya dice el verbo: sin aria-pressed');
+  u.tocarElDelMenu();
+  assert.deepEqual(u.salidasDelSistema, ['exitFullscreen'], 'saca la del sistema, como el sello');
+  assert.ok(!enElModo(u));
+  assert.equal(u.boton.textContent, PANTALLA_COMPLETA.ventana, 'el otro sello cambia también');
+  assert.equal(u.botonDelMenu.textContent, PANTALLA_COMPLETA.entrar);
+  assert.equal(u.boton.atributos.get('aria-label'), PANTALLA_COMPLETA.entrar);
+});
+
+test('D-61: cada estampa está contenida en su aria-label (WCAG 2.5.3, CNT-40 §5)', () => {
+  // El sello viejo decía PANTALLA NORMAL y su nombre era "Entrá a pantalla completa": no lo contenía.
+  const sinTildes = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  assert.ok(sinTildes(PANTALLA_COMPLETA.entrar).includes(sinTildes(PANTALLA_COMPLETA.ventana)));
+  assert.ok(sinTildes(PANTALLA_COMPLETA.salir).includes(sinTildes(PANTALLA_COMPLETA.completa)));
 });
 
 test('ADR-10.2: el modo va primero, aunque el pedido tire sin promesa', () => {
@@ -296,7 +349,8 @@ test('ADR-10.3 puerta 1: el mismo botón, dado vuelta, saca y suelta todo', asyn
   await rechazosSinAtajar(() => u.tocarElBoton());
   assert.equal(u.boton.textContent, PANTALLA_COMPLETA.completa);
   assert.equal(u.boton.atributos.get('aria-label'), PANTALLA_COMPLETA.salir);
-  assert.equal(u.boton.atributos.get('aria-pressed'), 'true');
+  // Sin aria-pressed desde `D-61`: el nombre cambia con el estado, y un botón de alternancia no.
+  assert.equal(u.boton.atributos.has('aria-pressed'), false);
 
   u.tocarElBoton();
   assert.ok(!enElModo(u), 'el segundo toque tiene que sacar del modo');
@@ -304,7 +358,7 @@ test('ADR-10.3 puerta 1: el mismo botón, dado vuelta, saca y suelta todo', asyn
   assert.deepEqual(u.desbloqueos, ['unlock']);
   assert.equal(u.boton.textContent, PANTALLA_COMPLETA.ventana);
   assert.equal(u.boton.atributos.get('aria-label'), PANTALLA_COMPLETA.entrar);
-  assert.equal(u.boton.atributos.get('aria-pressed'), 'false');
+  assert.equal(u.boton.atributos.has('aria-pressed'), false);
 });
 
 test('ADR-10.3 puerta 2: sin API, Escape saca del modo', () => {

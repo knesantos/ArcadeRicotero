@@ -36,7 +36,7 @@
  *   `view-transition-name: lugar` de `ADR-03` necesita para que el paso ocurra.
  */
 import { PORTAL } from '../lib/sitio/copy.ts';
-import { pasadaDeDisco, figuraDeDisco, medidas, TITULO_DE_DISCO } from '../lib/sitio/arte.ts';
+import { pasadaDeDisco, figuraDeDisco, multitudDeDisco, medidas, TITULO_DE_DISCO } from '../lib/sitio/arte.ts';
 
 interface Props {
   /**
@@ -54,11 +54,19 @@ interface Props {
   sinPasada?: boolean;
   /** Discos que la pantalla ya acredita por su cuenta; la franja les suma el suyo. */
   tapas?: readonly string[];
+  /**
+   * Que la franja termine en la gente de la tapa del disco, mirando para arriba (`D-63`).
+   * Ocupa el lugar de la pasada: son el mismo motivo, y la multitud ya trae sus banderas.
+   * Si el disco no tiene multitud recortada, la franja sale como siempre.
+   */
+  multitud?: boolean;
 }
 
-const { disco, sinPasada = false, tapas = [] } = Astro.props;
+const { disco, sinPasada = false, tapas = [], multitud: conMultitud = false } = Astro.props;
 
-const pasada = disco && !sinPasada ? pasadaDeDisco(disco) : null;
+const multitud = disco && conMultitud ? multitudDeDisco(disco) : null;
+const medidaMultitud = multitud ? medidas(multitud) : null;
+const pasada = disco && !sinPasada && !multitud ? pasadaDeDisco(disco) : null;
 const figura = disco && !sinPasada ? figuraDeDisco(disco) : null;
 const medidaFigura = figura ? medidas(figura) : null;
 
@@ -66,10 +74,10 @@ const medidaFigura = figura ? medidas(figura) : null;
  * El crédito junta lo que la pantalla ya mostraba y lo que agrega la franja.
  *
  * `D-21` condición 1 no pide una firma genérica: pide que la pantalla diga **qué tapas
- * se usaron en ella**. La pasada y la figura salen las dos de la misma tapa, así que
+ * se usaron en ella**. La pasada, la figura y la multitud salen de la misma tapa, así que
  * suman un disco y uno solo.
  */
-const delPie = disco && (pasada || figura) ? TITULO_DE_DISCO[disco] : undefined;
+const delPie = disco && (pasada || figura || multitud) ? TITULO_DE_DISCO[disco] : undefined;
 const acreditados = [...tapas, ...(delPie && !tapas.includes(delPie) ? [delPie] : [])];
 ---
 
@@ -135,4 +143,22 @@ const acreditados = [...tapas, ...(delPie && !tapas.includes(delPie) ? [delPie] 
       </div>
     </details>
   </div>
+  {/*
+      La gente, al final de todo (`D-63`). Va DESPUÉS del crédito en el documento y en la
+      pantalla: el texto queda arriba, sobre el negro, y nunca arriba de una cara.
+  */}
+  {
+    multitud && (
+      <img
+        class="multitud-pie"
+        src={multitud}
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        decoding="async"
+        width={medidaMultitud?.ancho}
+        height={medidaMultitud?.alto}
+      />
+    )
+  }
 </footer>

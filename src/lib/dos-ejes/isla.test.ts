@@ -11,7 +11,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const ISLA = readFileSync('src/scripts/partida-dos-ejes.ts', 'utf-8');
+// Con los finales de línea de la copia de trabajo pasados a `\n`: en Windows git la deja en
+// CRLF, y los cortes de abajo buscan el cierre de una función por `'\n}\n'`. Sin esto, ahí
+// no lo encontraban y miraban el archivo entero.
+const ISLA = readFileSync('src/scripts/partida-dos-ejes.ts', 'utf-8').replace(/\r\n/g, '\n');
 const TOKENS = readFileSync('src/styles/tokens.css', 'utf-8');
 const PAGINAS = ['src/pages/juegos/dos-ejes.astro', 'src/pages/juegos/dos-ejes/[cu].astro'].map((p) => ({
   p,
@@ -84,4 +87,28 @@ test('compartir lleva la tarjeta ya bajada, y el enlace es la postal de la ident
   assert.match(ISLA, /fetch\(rutaDeTarjeta\(r\.id\)\)/, 'la tarjeta no se baja al pintar el resultado');
   assert.match(ISLA, /archivo: tarjeta/);
   assert.match(ISLA, /\/juegos\/\$\{JUEGO\}\/\$\{slugDe\(r\.id\)\}\//, 'el enlace no es la postal');
+});
+
+test('el plano es una imagen con su texto y no tiene nada que se toque (UX-38 §5)', () => {
+  const desde = ISLA.indexOf('function plano(');
+  assert.ok(desde > 0, 'no está la función del plano');
+  const cuerpo = ISLA.slice(desde, ISLA.indexOf('\n}\n', desde));
+  // La grilla dice las cuatro maneras, no que hay dos ejes ni dónde cae la tuya: eso lo dice
+  // el plano, y sin texto el lector se lo pierde (la crítica de `UX-38`, punto 3).
+  assert.match(cuerpo, /setAttribute\('role', 'img'\)/, 'el plano no es una imagen para el lector');
+  assert.match(cuerpo, /textoDelPlano\(banco, id, suyo\?\.id\)/, 'el plano no dice qué muestra, o lo arma a mano');
+  for (const [que, re] of [
+    ['un enlace', /'a'/],
+    ['un botón', /'button'/],
+    ['un tabindex', /tabindex|tabIndex/],
+    ['un punto', /'circle'|ejes-punto/],
+  ] as const) {
+    assert.ok(!re.test(cuerpo), `el plano trae ${que}`);
+  }
+  // El plano sale de `planoFijo()` y no de una tabla escrita en la isla (`D-62` enmienda 3):
+  // una segunda fuente de los lugares podría contradecir al motor.
+  assert.match(cuerpo, /planoFijo\(banco\)/, 'el plano no sale del motor');
+  assert.ok(!/'luz'|'oscuridad'|'orden'|'caos'/.test(cuerpo), 'el plano escribe los polos a mano');
+  // La grilla sigue con su única `disposicion()`.
+  assert.equal(ISLA.match(/disposicion\(banco/g)?.length, 1, 'la grilla calcula la disposición dos veces');
 });

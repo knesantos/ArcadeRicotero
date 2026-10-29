@@ -44,6 +44,19 @@
  * puede discutir no ordena nada.
  */
 
+/*
+ * ## Desde `D-69`, estas cuatro son las de siempre, no las únicas
+ *
+ * El usuario pidió, textual, *"dejemos al usuario poder editar las categorías por lo que
+ * él quiera y agregar"*. Las cuatro de abajo siguen siendo con las que abre el tablero, y
+ * siguen siendo lo que dice un link de la versión 1; pero el jugador les cambia el nombre,
+ * suma hasta siete y saca hasta dejar dos. El número de una fila pasa a ser **su posición**
+ * (1..n), que es lo único que el empaquetado de tres bits sabe guardar.
+ *
+ * La razón de "cuatro y no seis" de arriba sigue valiendo para las de siempre. Lo que
+ * cambió es quién decide cuántas maneras de moverse hay: ahora, el que juega.
+ */
+
 /** El identificador de una fila, y **su número en el empaquetado del link** (`ADR-06`). */
 export const FILAS = [
   { id: 1, clave: 'pogo', nombre: 'EN EL POGO' },
@@ -77,4 +90,33 @@ export function filaPorId(id: number): Fila | null {
 /** La fila con esa clave, o `null`. */
 export function filaPorClave(clave: string): Fila | null {
   return FILAS.find((f) => f.clave === clave) ?? null;
+}
+
+/**
+ * Una fila tal como la arma el jugador (`D-69`): su número es su posición, y el nombre es
+ * el que le haya puesto. Las de siempre son el caso en que no tocó nada.
+ */
+export interface FilaPropia {
+  readonly id: number;
+  readonly nombre: string;
+}
+
+/** Cuántas filas puede tener un tablero. Siete es lo que entra en tres bits; dos, lo mínimo para repartir. */
+export const MAX_FILAS = MAX_FILAS_CODIFICABLES;
+export const MIN_FILAS = 2;
+
+/** Los nombres de las cuatro de siempre, en orden. */
+export function nombresDeSiempre(): readonly string[] {
+  return FILAS.map((f) => f.nombre);
+}
+
+/** ¿Estos nombres son exactamente los de siempre? Si lo son, el link no los necesita. */
+export function sonLasDeSiempre(nombres: readonly string[]): boolean {
+  const siempre = nombresDeSiempre();
+  return nombres.length === siempre.length && nombres.every((n, i) => n === siempre[i]);
+}
+
+/** De una lista de nombres, las filas numeradas por posición. */
+export function filasDe(nombres: readonly string[]): readonly FilaPropia[] {
+  return nombres.map((nombre, i) => ({ id: i + 1, nombre }));
 }

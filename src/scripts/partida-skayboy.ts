@@ -116,6 +116,30 @@
  * contenedor en vez de leerlos, y así `modo-pantalla.test.ts` las juega en Node con utilería:
  * que el pedido salga en el mismo toque, sobre `.fichin`, y que cada puerta saque de verdad.
  *
+ * ## El menú, la tarjeta de fin de nivel y el rótulo de entrada (`D-61`)
+ *
+ * **El juego abre con el menú**, en la región del tubo y los mandos (`regionDelMenu()`): el botón
+ * grande juega el nivel que corresponde —el mismo que elegía `nivelAJugar()` antes de `D-61`, ya
+ * armado— y al lado están los seis niveles, todos abiertos. El sello `MENÚ` del mueble lo vuelve a
+ * abrir, y **mientras está abierto el mundo no avanza**: el tic vuelve antes de `jugarTic(`, así que
+ * el reloj de la partida no corre y nadie se mueve. Al ganar aparece la tarjeta de fin de nivel,
+ * arriba del área; al empezar cada nivel, el rótulo con su número y su nombre.
+ *
+ * Qué dice cada cosa, qué nivel arma cada botón y cuándo se ve la tarjeta lo deciden `menu.ts` y
+ * `escena.ts`, jugadas en Node (`menu.test.ts`). Acá queda el pegamento. **El toque de seguir sigue
+ * siendo uno solo** (`#seguir-juego`): el "Seguí" de la tarjeta lo aprieta, no tiene un camino propio.
+ *
+ * ## El pulgar rueda (`D-61` punto 4)
+ *
+ * Desde `D-61` el puntero no lo captura cada botón sino **la columna** (`.mando`), y la tecla que
+ * aprieta un dedo la decide `dedos.ts` por geometría: la más cercana, sin franjas muertas, y con la
+ * dirección que viaja al subir el pulgar de una flecha a saltar. Así un pulgar por columna corre
+ * saltando. Las seis teclas siguen siendo los mismos botones: el dedo, el teclado y la leyenda de
+ * `D-55` leen y escriben el mismo estado (`apretadas`), y el motor lee lo de siempre (`mandoDe`).
+ *
+ * Y un toque más corto que un tic no se pierde: `pulsadas` guarda lo que se apretó desde la última
+ * vez que el mundo avanzó, y se vacía recién cuando avanzó.
+ *
  * ## `prefers-reduced-motion` (`ADR-08.8`, vara 1)
  *
  * El juego arranca **quieto por construcción**: los dos parados en su entrada, y nada se
@@ -154,8 +178,33 @@ import {
 import { cargarAvance, guardarPasado } from '../lib/skayboy/avance.ts';
 import { armarEfectos, sonar } from '../lib/skayboy/sonido.ts';
 import { despertarSalida } from '../lib/audio/contexto.ts';
-import { montarPantallaCompleta } from '../lib/skayboy/modo-pantalla.ts';
-import { botonDelEvento } from '../lib/skayboy/teclado.ts';
+import { montarPantallaCompleta, type ModoDePantalla } from '../lib/skayboy/modo-pantalla.ts';
+import { botonDelEvento, type TeclaDelMando } from '../lib/skayboy/teclado.ts';
+import {
+  SIN_TECLA,
+  apoyarDedo,
+  moverDedo,
+  teclaBajoElDedo,
+  teclasDelDedo,
+  type CajaDeTecla,
+  type CajasDelMando,
+  type Dedo,
+} from '../lib/skayboy/dedos.ts';
+import {
+  DURACION_DEL_ROTULO_MS,
+  alRepetir,
+  alTocarFicha,
+  actualDelMenu,
+  enLaFila,
+  fichasDelMenu,
+  finDeNivel,
+  momentoDe,
+  mostrarFinDeNivel,
+  nivelDelBotonGrande,
+  regionDelMenu,
+  type Rectangulo,
+} from '../lib/skayboy/menu.ts';
+import { ENTRADA, FIN_DE_NIVEL, MENU, PANTALLA } from '../lib/skayboy/copy.ts';
 
 /**
  * Qué columna maneja a quién. **Siempre la misma** (`D-43`): no hay botón de cambio y no
@@ -191,10 +240,18 @@ function leerTinta(nombre: string): [number, number, number] {
 /** Qué punteros aprietan cada tecla de cada columna. Vacío es suelta. */
 const apretadas = new Map<HTMLButtonElement, Set<number>>();
 
+/**
+ * **Las teclas que se apretaron desde la última vez que el mundo avanzó**, aunque ya estén sueltas
+ * (`D-61` punto 4). Un toque más corto que un tic —el hilo trabado en un teléfono de gama baja, o
+ * un tic de una pantalla de 120 Hz que no llegó a jugar un cuadro— se perdía entero: el salto sale
+ * por flanco y nunca veía el `true`. El tic las vacía recién cuando el reloj del mundo se movió.
+ */
+const pulsadas = new Set<HTMLButtonElement>();
+
 function mandoDe(lado: 'izquierda' | 'derecha'): Mando {
   const m = { izquierda: false, derecha: false, saltar: false };
   for (const [boton, punteros] of apretadas) {
-    if (punteros.size === 0 || boton.dataset.mando !== lado) continue;
+    if ((punteros.size === 0 && !pulsadas.has(boton)) || boton.dataset.mando !== lado) continue;
     const tecla = boton.dataset.tecla as Tecla;
     if (tecla === 'salto') m.saltar = true;
     else m[tecla] = true;
@@ -208,6 +265,7 @@ function pintarTecla(boton: HTMLButtonElement): void {
 
 function apretar(boton: HTMLButtonElement, puntero: number): void {
   apretadas.get(boton)?.add(puntero);
+  pulsadas.add(boton);
   pintarTecla(boton);
 }
 
@@ -216,11 +274,63 @@ function soltar(boton: HTMLButtonElement, puntero: number): void {
   pintarTecla(boton);
 }
 
+/**
+ * Suelta todo. **Los dedos que siguen apoyados quedan mudos hasta levantarse** (`UX-28 §3`: el que
+ * arranca tiene que estar quieto): se olvida qué apretaba cada uno, y la columna ya no los sigue.
+ */
 function soltarTodas(): void {
+  dedos.clear();
+  pulsadas.clear();
   for (const [boton, punteros] of apretadas) {
     punteros.clear();
     pintarTecla(boton);
   }
+}
+
+/* ---- El dedo: la columna lo sigue por geometría (`dedos.ts`, `D-61` punto 4) ---- */
+
+/** Lo que aprieta cada dedo apoyado en una columna, por puntero. */
+const dedos = new Map<number, { readonly mando: HTMLElement; readonly dedo: Dedo }>();
+
+const TECLAS_DE_LA_COLUMNA: readonly TeclaDelMando[] = ['salto', 'izquierda', 'derecha'];
+
+function botonDeLaTecla(mando: HTMLElement, tecla: TeclaDelMando): HTMLButtonElement | null {
+  return mando.querySelector<HTMLButtonElement>(`button[data-tecla="${tecla}"]`);
+}
+
+/**
+ * Las cajas de las tres teclas de la columna, medidas ahora: la pantalla completa, el giro del
+ * teléfono o la barra del navegador las mueven. Una tecla escondida mide cero y no cuenta (`D-55`).
+ */
+function cajasDe(mando: HTMLElement): CajasDelMando {
+  const cajas: Partial<Record<TeclaDelMando, CajaDeTecla>> = {};
+  for (const tecla of TECLAS_DE_LA_COLUMNA) {
+    const r = botonDeLaTecla(mando, tecla)?.getBoundingClientRect();
+    if (r !== undefined) cajas[tecla] = { izquierda: r.left, arriba: r.top, ancho: r.width, alto: r.height };
+  }
+  return cajas;
+}
+
+/** Cambia lo que aprieta un dedo: suelta lo de antes y aprieta lo nuevo. Sin cambio, nada. */
+function ponerDedo(mando: HTMLElement, puntero: number, dedo: Dedo): void {
+  const antes = dedos.get(puntero)?.dedo ?? SIN_TECLA;
+  if (antes === dedo) return;
+  for (const tecla of teclasDelDedo(antes)) {
+    const boton = botonDeLaTecla(mando, tecla);
+    if (boton !== null) soltar(boton, puntero);
+  }
+  for (const tecla of teclasDelDedo(dedo)) {
+    const boton = botonDeLaTecla(mando, tecla);
+    if (boton !== null) apretar(boton, puntero);
+  }
+  dedos.set(puntero, { mando, dedo });
+}
+
+function levantarDedo(puntero: number): void {
+  const d = dedos.get(puntero);
+  if (d === undefined) return;
+  ponerDedo(d.mando, puntero, SIN_TECLA);
+  dedos.delete(puntero);
 }
 
 /** El teclado usa un puntero que ningún dedo puede tener. */
@@ -234,27 +344,44 @@ const TECLADO = -1;
 const TECLADO_DE_LA_PAGINA = -2;
 
 function escucharTeclas(): void {
-  for (const boton of document.querySelectorAll<HTMLButtonElement>('button[data-mando][data-tecla]')) {
-    apretadas.set(boton, new Set());
-
-    boton.addEventListener('pointerdown', (e) => {
+  /*
+   * El dedo (`D-61` punto 4). **La columna captura el puntero, no el botón**: un botón que captura
+   * se queda con el dedo hasta que se levanta, y el pulgar que se corre de ← a → seguía caminando a
+   * la izquierda. Ahora cada movimiento se vuelve a medir contra las tres cajas de la columna
+   * (`teclaBajoElDedo()`), y lo que aprieta el dedo lo decide `moverDedo()`: la flecha que pisa,
+   * o saltar llevándose la flecha de la que subió.
+   */
+  for (const mando of document.querySelectorAll<HTMLElement>('.mando')) {
+    mando.addEventListener('pointerdown', (e) => {
+      const tecla = teclaBajoElDedo(cajasDe(mando), e.clientX, e.clientY);
+      // Lejos de toda tecla —con mouse, sobre la leyenda de `D-55`—, el toque no es del mando.
+      if (tecla === null) return;
       // No pasivo a propósito: cancelar acá es lo que evita que el toque largo abra el menú
       // del sistema o seleccione texto mientras el pulgar sostiene la dirección.
       e.preventDefault();
-      // La captura es lo que deja correr el pulgar sin soltar la tecla. Si el navegador no
-      // la da (un puntero que ya se fue), la tecla se aprieta igual: sin captura se suelta
-      // al salir del botón, que es peor pero no deja a nadie sin jugar.
+      // La captura es lo que deja correr el pulgar por la columna. Si el navegador no la da (un
+      // puntero que ya se fue), la tecla se aprieta igual y se suelta al salir de la columna.
       try {
-        boton.setPointerCapture(e.pointerId);
+        mando.setPointerCapture(e.pointerId);
       } catch {
         /* sigue sin captura */
       }
-      apretar(boton, e.pointerId);
+      ponerDedo(mando, e.pointerId, apoyarDedo(tecla));
+    });
+    mando.addEventListener('pointermove', (e) => {
+      const d = dedos.get(e.pointerId);
+      // Un dedo que nadie sigue: con mouse sin apretar, o uno que quedó mudo con `soltarTodas()`.
+      if (d === undefined || d.mando !== mando) return;
+      ponerDedo(mando, e.pointerId, moverDedo(d.dedo, teclaBajoElDedo(cajasDe(mando), e.clientX, e.clientY)));
     });
     for (const fin of ['pointerup', 'pointercancel', 'lostpointercapture'] as const) {
-      boton.addEventListener(fin, (e) => soltar(boton, e.pointerId));
+      mando.addEventListener(fin, (e) => levantarDedo(e.pointerId));
     }
-    boton.addEventListener('contextmenu', (e) => e.preventDefault());
+    mando.addEventListener('contextmenu', (e) => e.preventDefault());
+  }
+
+  for (const boton of document.querySelectorAll<HTMLButtonElement>('button[data-mando][data-tecla]')) {
+    apretadas.set(boton, new Set());
 
     // Con teclado también se juega: la tecla del botón enfocado se mantiene como un dedo.
     boton.addEventListener('keydown', (e) => {
@@ -280,6 +407,8 @@ function escucharTeclas(): void {
   const botonDe = (mando: string, tecla: string): HTMLButtonElement | null =>
     document.querySelector<HTMLButtonElement>(`button[data-mando="${mando}"][data-tecla="${tecla}"]`);
   document.addEventListener('keydown', (e) => {
+    // Con el menú abierto las flechas son del menú (desplazan la lista), no del mando.
+    if (menuAbierto()) return;
     const t = botonDelEvento(e);
     if (!t) return;
     e.preventDefault();
@@ -522,6 +651,9 @@ async function arrancar(): Promise<void> {
     // fraccionaria (`ADR-08.3`, el caso feo) el muestreo no le roba un borde al vecino.
     spriteAtlasPadding: 1,
     debug: false,
+    // Que el motor no enfoque el canvas al arrancar: el canvas cancela Tab, y el que juega con el
+    // teclado quedaba trabado ahí al cerrar el menú (la revisión de `D-61`).
+    focus: false,
     loadingScreen: false,
     burp: false,
     touchToMouse: false,
@@ -558,18 +690,240 @@ async function arrancar(): Promise<void> {
   seguir?.addEventListener('click', () => {
     const nuevo = alTocarSeguir(mundo, banco.niveles, deFrente);
     if (nuevo === undefined) return;
-    // Si llegó con el teclado, el foco vuelve a la primera tecla: esconder el botón enfocado lo
-    // mandaría al `body`, y el que juega con Tab tendría que volver a buscar el mando.
-    const conTeclado = seguir.matches(':focus-visible');
+    // Si llegó con el teclado desde la tarjeta (`#seguir-juego` ya no se enfoca, `UX-37` §4.5), el
+    // foco va al sello del menú: esconder la tarjeta enfocada lo mandaría al `body`.
+    const conTeclado = focoConTecladoEn(tarjeta);
     mundo = nuevo;
     // El que arranca tiene que estar quieto (`UX-28 §3`): ningún dedo pasa de un nivel al otro.
     soltarTodas();
     mostrarSeguir(seguir, mundo, banco.niveles);
     mostrarContador(contador, mundo);
-    if (conTeclado) document.querySelector<HTMLButtonElement>('button[data-mando][data-tecla]')?.focus();
+    // La tarjeta se va y el rótulo del nivel nuevo aparece (`D-61` punto 3).
+    alCambiarDeNivel();
+    if (conTeclado) focoAlSello();
   });
 
+  /* ---- El menú, la tarjeta y el rótulo (`D-61`): el pegamento con el DOM ---- */
+
+  /** Cambiar el mundo desde el menú o la tarjeta: lo mismo que hace el toque de seguir, con otro mundo. */
+  function ponerMundo(nuevo: Mundo): void {
+    mundo = nuevo;
+    soltarTodas();
+    mostrarSeguir(seguir, mundo, banco.niveles);
+    mostrarContador(contador, mundo);
+    alCambiarDeNivel();
+  }
+
+  /** Lo que pasa cada vez que arranca un nivel: la tarjeta se va y aparece el rótulo. */
+  function alCambiarDeNivel(): void {
+    tarjetaDe = null;
+    mostrarFinDeNivel(tarjeta, mundo, banco.niveles, menuAbierto());
+    mostrarRotulo();
+  }
+
+  /**
+   * El rótulo de entrada: número y nombre, un rato, y se va solo. El lector de pantalla oye lo
+   * mismo por `#aviso-juego`, en minúsculas. Con el menú abierto no aparece: se ve al cerrarlo.
+   */
+  function mostrarRotulo(): void {
+    const enFila = enLaFila(banco.niveles, mundo.nivel);
+    if (rotulo === null || enFila === undefined || menuAbierto()) return;
+    const numero = rotulo.querySelector('.rotulo-nivel-numero');
+    const nombre = rotulo.querySelector('.rotulo-nivel-nombre');
+    if (numero !== null) numero.textContent = ENTRADA.rotulo(enFila.numero, enFila.total);
+    if (nombre !== null) nombre.textContent = enFila.nombre;
+    rotulo.hidden = false;
+    window.clearTimeout(rotuloHasta);
+    rotuloHasta = window.setTimeout(esconderRotulo, DURACION_DEL_ROTULO_MS);
+    if (aviso !== null) {
+      aviso.textContent = '';
+      aviso.textContent = MENU.cualToca(enFila.numero, enFila.nombre);
+    }
+  }
+
+  /** La tarjeta, cuando aparece: los textos del nivel que se pasó y del que sigue, una vez por mundo. */
+  function pintarTarjeta(): void {
+    const fin = finDeNivel(mundo, banco.niveles);
+    if (fin === null || tarjetaDe === mundo) return;
+    tarjetaDe = mundo;
+    // Si se ganó con el rótulo todavía a la vista, la tarjeta lo esconde (`UX-37` §4.3 y §5.2).
+    esconderRotulo();
+    if (tarjetaRotulo !== null) tarjetaRotulo.textContent = FIN_DE_NIVEL.rotulo(fin.pasado.numero, fin.pasado.total);
+    // En el sexto, en vez del que sigue, que era el último: el botón ya dice a dónde va (`CNT-40`).
+    if (tarjetaSigue !== null) {
+      tarjetaSigue.textContent = fin.ultimo ? FIN_DE_NIVEL.ultimo : FIN_DE_NIVEL.sigue(fin.sigue.nombre || MENU.numero(fin.sigue.numero));
+    }
+    if (tarjetaAvanza !== null) tarjetaAvanza.textContent = fin.ultimo ? FIN_DE_NIVEL.volverAlPrimero : PANTALLA.seguir;
+    // **El foco no se mueve** (`UX-37` §4.5): la persona puede estar con las teclas apretadas, y un
+    // Enter repetido tocaría "Seguí" sin que la tarjeta llegue a verse. Con el teclado se sigue con
+    // un Enter nuevo (abajo, `alApretarEnter`) o se llega con Tab.
+  }
+
+  /**
+   * El menú, pintado con el mundo de ahora: qué dice el botón grande, qué nivel es, y el estado de
+   * cada ficha con el avance recién leído (otra pestaña puede haber ganado uno).
+   */
+  function pintarMenu(): void {
+    const momento = momentoDe(mundo);
+    const grande = enLaFila(banco.niveles, nivelDelBotonGrande(mundo, banco.niveles));
+    if (menuJugar !== null) menuJugar.textContent = momento === 'pausa' ? MENU.seguirJugando : MENU.jugar;
+    if (menuCual !== null) menuCual.textContent = grande === undefined ? '' : MENU.cualToca(grande.numero, grande.nombre);
+    if (menuCualCorto !== null) menuCualCorto.textContent = grande === undefined ? '' : MENU.numero(grande.numero);
+    if (menuRepetir !== null) menuRepetir.hidden = momento !== 'pausa';
+    const fichas = fichasDelMenu(banco.niveles, cargarAvance(), actualDelMenu(mundo));
+    for (const f of fichas) {
+      const ficha = menu?.querySelector<HTMLButtonElement>(`.ficha-nivel[data-nivel="${f.id}"]`);
+      if (ficha == null) continue;
+      ficha.toggleAttribute('data-pasado', f.pasado);
+      ficha.toggleAttribute('data-actual', f.actual);
+      ficha.toggleAttribute('data-toca', grande !== undefined && f.id === grande.id && momento !== 'pausa');
+      // Un sello a la vista por ficha (`UX-37` §3.1), y el lector dice lo que dice el sello (`CNT-40`
+      // §1.1): en la de ahora, "acá estás", aunque esté pasada.
+      ficha.setAttribute('aria-label', MENU.etiqueta(f.numero, f.nombre, f.pasado && !f.actual, f.actual));
+      const sello = ficha.querySelector<HTMLElement>('.ficha-nivel-sello');
+      if (sello !== null) {
+        sello.textContent = f.actual ? MENU.estasAca : f.pasado ? MENU.pasado : '';
+        sello.hidden = sello.textContent === '';
+      }
+    }
+  }
+
+  /** De dónde se abrió el menú: al cerrarlo, el foco vuelve ahí si sigue a la vista. */
+  let abiertoDesde: HTMLElement | null = null;
+
+  function abrirMenu(): void {
+    if (menu === null || menuAbierto()) return;
+    soltarTodas();
+    pintarMenu();
+    esconderRotulo();
+    abiertoDesde = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    menu.hidden = false;
+    ubicarMenu();
+    lugaresInertes(true);
+    mostrarFinDeNivel(tarjeta, mundo, banco.niveles, true);
+    menuJugar?.focus({ preventScroll: true });
+  }
+
+  function cerrarMenu(): void {
+    if (menu === null || !menuAbierto()) return;
+    const empieza = momentoDe(mundo) === 'entrada';
+    const conTeclado = focoConTecladoEn(menu);
+    const teniaElFoco = menu.contains(document.activeElement);
+    menu.hidden = true;
+    lugaresInertes(false);
+    // Nadie pasa del menú a la partida con un dedo apretado (`UX-28 §3`).
+    soltarTodas();
+    mostrarFinDeNivel(tarjeta, mundo, banco.niveles, false);
+    if (finDeNivel(mundo, banco.niveles) !== null) pintarTarjeta();
+    if (empieza) mostrarRotulo();
+    // El foco vuelve a donde estaba si sigue a la vista (el sello, la tarjeta); si no, al sello del
+    // menú con el teclado, y a ningún lado con el dedo. Nunca al canvas, que se traga Tab.
+    const volver = abiertoDesde;
+    abiertoDesde = null;
+    if (volver !== null && volver.isConnected && volver !== document.body && volver.tagName !== 'CANVAS' && volver.getClientRects().length > 0) {
+      volver.focus({ preventScroll: true });
+    } else if (conTeclado) {
+      focoAlSello();
+    } else if (teniaElFoco && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }
+
+  /** El botón grande: jugar o seguir el que está armado; con el mundo ganado, el que sigue. */
+  menuJugar?.addEventListener('click', () => {
+    if (momentoDe(mundo) === 'ganado') {
+      const nuevo = alTocarFicha(mundo, banco.niveles, nivelDelBotonGrande(mundo, banco.niveles).id, deFrente);
+      if (nuevo !== undefined) ponerMundo(nuevo);
+    }
+    cerrarMenu();
+  });
+  menuRepetir?.addEventListener('click', () => {
+    ponerMundo(alRepetir(mundo, deFrente));
+    cerrarMenu();
+  });
+  for (const ficha of menu?.querySelectorAll<HTMLButtonElement>('.ficha-nivel[data-nivel]') ?? []) {
+    ficha.addEventListener('click', () => {
+      const nuevo = alTocarFicha(mundo, banco.niveles, ficha.dataset.nivel ?? '', deFrente);
+      if (nuevo === undefined) return;
+      if (nuevo !== mundo) ponerMundo(nuevo);
+      cerrarMenu();
+    });
+  }
+  // La tarjeta: seguir es **el mismo toque** que el del área (`#seguir-juego`), no un camino aparte.
+  tarjetaAvanza?.addEventListener('click', () => seguir?.click());
+  tarjetaRepetir?.addEventListener('click', () => {
+    const conTeclado = focoConTecladoEn(tarjeta);
+    ponerMundo(alRepetir(mundo, deFrente));
+    if (conTeclado) focoAlSello();
+  });
+  tarjetaMenu?.addEventListener('click', abrirMenu);
+  abrirElMenu?.addEventListener('click', abrirMenu);
+  /*
+   * `Escape` (`UX-37` §3.5): con el menú abierto en pausa o recién ganado, lo cierra —el foco vuelve
+   * al sello, o a la tarjeta—; en la entrada no hace nada, porque no hay partida a la que volver.
+   * Jugando, lo abre. En la pantalla completa sin la del sistema, `Escape` es la puerta de salida del
+   * modo (`ADR-10.3`) y el menú no se entera; con la del sistema, el navegador se la queda.
+   */
+  document.addEventListener(
+    'keydown',
+    (e) => {
+      // Una pulsación larga hace una sola cosa: sin esto el menú titilaba con la repetición.
+      if (e.key !== 'Escape' || e.repeat || modo?.enElModo()) return;
+      if (!menuAbierto()) abrirMenu();
+      else if (momentoDe(mundo) !== 'entrada') cerrarMenu();
+    },
+    true,
+  );
+  /*
+   * **Enter con la tarjeta a la vista sigue** (`UX-37` §4.5), para quien juega con W A D y las
+   * flechas y no tiene el foco en ningún botón. Solo un Enter nuevo —no uno que viene repitiendo
+   * desde antes de ganar— y solo con el foco suelto: sobre un botón, Enter es de ese botón.
+   */
+  document.addEventListener('keydown', (e) => {
+    const suelto = document.activeElement === null || document.activeElement === document.body;
+    if (e.key !== 'Enter' || e.repeat || !suelto || menuAbierto() || tarjeta === null || tarjeta.hidden) return;
+    e.preventDefault();
+    seguir?.click();
+  });
+
+  /**
+   * **Dónde va el menú** (`UX-37` §3.3): la región del tubo y los mandos, que decide
+   * `regionDelMenu()` con lo que mide acá, y nunca el pie de homenaje. Se escribe relativa al bloque
+   * que contiene al menú (`position: absolute`), así que baja y sube con la página. Se vuelve a medir
+   * cada vez que algo del fichín cambia de tamaño: el giro, la pantalla completa, la barra del navegador.
+   */
+  function ubicarMenu(): void {
+    if (menu === null || !menuAbierto()) return;
+    const fichin = document.querySelector<HTMLElement>('.fichin');
+    const aire = fichin === null ? 0 : parseFloat(getComputedStyle(fichin).getPropertyValue('--tecla-aire')) || 0;
+    const region = regionDelMenu({
+      recorte: medir(document.querySelector('.recorte')),
+      mandos: [...document.querySelectorAll('.mando')].map(medir),
+      pie: medir(document.querySelector('.chapa-pie')),
+      // Sin la barra de desplazamiento (`clientWidth`), y lo que se ve de verdad de alto: en el
+      // iPhone, con la barra del navegador a la vista, `innerHeight` es el más chico de los dos.
+      ventana: {
+        ancho: document.documentElement.clientWidth || window.innerWidth,
+        alto: Math.min(window.innerHeight, document.documentElement.clientHeight || window.innerHeight),
+      },
+      enElModo: modo?.enElModo() ?? false,
+      aire,
+      // Parado, el menú baja hasta el borde de la ventana, pero no tapa la firma ni los créditos.
+      tope: medir(document.querySelector('body > footer')).arriba || undefined,
+    });
+    const base = menu.offsetParent?.getBoundingClientRect() ?? { left: -window.scrollX, top: -window.scrollY };
+    menu.style.left = `${region.izquierda - base.left}px`;
+    menu.style.top = `${region.arriba - base.top}px`;
+    menu.style.width = `${region.ancho}px`;
+    menu.style.height = `${region.alto}px`;
+  }
+  const reubicar = new ResizeObserver(() => ubicarMenu());
+  for (const pieza of document.querySelectorAll('.recorte, .mando, .chapa-pie, .fichin')) reubicar.observe(pieza);
+  window.addEventListener('resize', ubicarMenu);
+
   k.onUpdate(() => {
+    // Con el menú abierto la partida está en pausa: el mundo no avanza y su reloj no corre.
+    if (menuAbierto()) return;
     // Las teclas se leen una vez por tic y valen para todos los cuadros de ese tic (ADR-09.1).
     const mandos = {
       [COLUMNA.izquierda]: mandoDe('izquierda'),
@@ -580,7 +934,11 @@ async function arrancar(): Promise<void> {
     // siempre de a un CUADRO_SEG. Es el mismo paso con que la máquina prueba cada nivel en el
     // build, así que lo que se juega acá es, bit a bit, lo que se probó. Todo eso vive en
     // jugarTic(), probado en Node: la isla solo le da el tiempo del motor.
+    const antes = mundo.tiempo;
     atender(jugarTic(reloj, mundo, ambos, k.dt()), deFrente, esElUltimo(mundo, banco.niveles));
+    // Lo que se apretó ya llegó al mundo, si el mundo avanzó; si este tic no jugó ningún cuadro,
+    // espera al que viene (`D-61` punto 4).
+    if (mundo.tiempo !== antes) pulsadas.clear();
     // En el tic en que se gana: el avance se guarda ahí, no al tocar Seguí (`CTR-16.11.1`), y el
     // baile empieza a contar con el reloj del motor, porque el del mundo se congela.
     if (marcarVictoria(victoria, mundo, k.time())) guardarPasado(mundo.nivel.id);
@@ -588,6 +946,8 @@ async function arrancar(): Promise<void> {
     // contador de lo que juntó cada uno ya se ve (`UX-33 §2.5`).
     mostrarSeguir(seguir, mundo, banco.niveles);
     mostrarContador(contador, mundo);
+    // Y la tarjeta de fin de nivel, arriba del área, en el mismo tic (`D-61` punto 3).
+    if (mostrarFinDeNivel(tarjeta, mundo, banco.niveles, false)) pintarTarjeta();
   });
   k.onDraw(() => {
     dibujar(k, mundo, atlas, deFrente, victoria);
@@ -597,9 +957,76 @@ async function arrancar(): Promise<void> {
 
   // El rótulo se va cuando el motor ya dibuja, no antes: si el `import` falla, queda.
   document.querySelector('.rotulo-carga')?.setAttribute('hidden', '');
-  // Y en el mismo momento aparece la manera de jugar (`ADR-10.1`): sin motor no hay nada que
-  // agrandar, y un botón que no hace nada sería prometer lo que no hay (`ADR-08.2`).
-  botonPantalla?.removeAttribute('hidden');
+  // Y en el mismo momento aparecen los dos sellos del mueble (`ADR-10.1`): sin motor no hay nada
+  // que agrandar ni que pausar, y un botón que no hace nada sería prometer lo que no hay (`ADR-08.2`).
+  document.querySelector('.sellos-mueble')?.removeAttribute('hidden');
+  // Y el juego abre con el menú (`D-61` punto 1): el nivel ya está armado y dibujado atrás, y el
+  // botón grande lo juega.
+  abrirMenu();
+}
+
+/* ==========================================================================
+   Las piezas del menú, la tarjeta y el rótulo (`D-61`). Nacen escondidas en el HTML.
+   ========================================================================== */
+
+const menu = document.querySelector<HTMLElement>('#menu-juego');
+const menuJugar = document.querySelector<HTMLButtonElement>('#menu-jugar');
+const menuCual = document.querySelector<HTMLElement>('#menu-cual');
+const menuCualCorto = document.querySelector<HTMLElement>('#menu-cual-corto');
+const menuRepetir = document.querySelector<HTMLButtonElement>('#menu-repetir');
+const abrirElMenu = document.querySelector<HTMLButtonElement>('#abrir-menu');
+const tarjeta = document.querySelector<HTMLElement>('#fin-nivel');
+const tarjetaRotulo = document.querySelector<HTMLElement>('#fin-nivel-rotulo');
+const tarjetaSigue = document.querySelector<HTMLElement>('#fin-nivel-sigue');
+const tarjetaAvanza = document.querySelector<HTMLButtonElement>('#fin-seguir');
+const tarjetaRepetir = document.querySelector<HTMLButtonElement>('#fin-repetir');
+const tarjetaMenu = document.querySelector<HTMLButtonElement>('#fin-menu');
+const rotulo = document.querySelector<HTMLElement>('#rotulo-nivel');
+
+/** De qué mundo tiene los textos la tarjeta: se llenan una vez, cuando aparece. */
+let tarjetaDe: Mundo | null = null;
+let rotuloHasta = 0;
+
+function menuAbierto(): boolean {
+  return menu !== null && !menu.hidden;
+}
+
+function esconderRotulo(): void {
+  window.clearTimeout(rotuloHasta);
+  if (rotulo !== null) rotulo.hidden = true;
+}
+
+/**
+ * Con el menú abierto, el juego no se toca ni se enfoca: el foco no se escapa a las teclas que
+ * quedaron abajo.
+ */
+function lugaresInertes(si: boolean): void {
+  // Las piezas de juego: el tubo (con el toque de seguir y la tarjeta), los sellos y las dos
+  // columnas de mando. La cabecera con el volver, el pie de homenaje (`BR-26`) y el aviso para el
+  // lector de pantalla quedan vivos: el menú no los tapa (`UX-37` §3.3 y §3.5).
+  for (const lugar of document.querySelectorAll<HTMLElement>('.fichin > .mando, .gabinete > .recorte, .gabinete > .sellos-mueble')) {
+    lugar.toggleAttribute('inert', si);
+  }
+}
+
+/** Un elemento medido en la ventana, o un rectángulo vacío si no está. */
+function medir(el: Element | null): Rectangulo {
+  const r = el?.getBoundingClientRect();
+  return r === undefined ? { izquierda: 0, arriba: 0, ancho: 0, alto: 0 } : { izquierda: r.left, arriba: r.top, ancho: r.width, alto: r.height };
+}
+
+/**
+ * Si el foco está adentro de ese lugar y llegó con el teclado (`:focus-visible`). Decide qué pasa con
+ * el foco cuando ese lugar se esconde: con el teclado, al sello del menú; con el dedo, a ningún lado.
+ */
+function focoConTecladoEn(lugar: HTMLElement | null): boolean {
+  const activo = document.activeElement;
+  return lugar !== null && activo instanceof HTMLElement && lugar.contains(activo) && activo.matches(':focus-visible');
+}
+
+/** El lugar seguro del foco durante la partida: el sello del menú, que está siempre a la vista. */
+function focoAlSello(): void {
+  if (abrirElMenu !== null && abrirElMenu.getClientRects().length > 0) abrirElMenu.focus({ preventScroll: true });
 }
 
 /* ==========================================================================
@@ -609,24 +1036,29 @@ async function arrancar(): Promise<void> {
    Node con un DOM de utileria. Aca solo se le pasa lo de verdad.
    ========================================================================== */
 
-/** El interruptor. Nace escondido en el HTML y aparece cuando el motor ya dibuja. */
+/**
+ * El interruptor, y el botón del menú que hace lo mismo (`D-61` punto 5). El sello nace escondido en
+ * el HTML, adentro de `.sellos-mueble`, y aparece cuando el motor ya dibuja.
+ */
 const botonPantalla = document.querySelector<HTMLButtonElement>('#pantalla-completa');
+const botonPantallaDelMenu = document.querySelector<HTMLButtonElement>('#menu-pantalla');
 
-function escucharPantallaCompleta(): void {
+function escucharPantallaCompleta(): ModoDePantalla | null {
   const fichin = document.querySelector<HTMLElement>('.fichin');
-  if (fichin === null || botonPantalla === null) return;
-  montarPantallaCompleta({
+  if (fichin === null || botonPantalla === null) return null;
+  return montarPantallaCompleta({
     documento: document,
     ventana: window,
     orientacion: screen.orientation,
     Observador: ResizeObserver,
     fichin,
     boton: botonPantalla,
+    otros: botonPantallaDelMenu === null ? [] : [botonPantallaDelMenu],
     soltarTodas,
   });
 }
 
 escucharTeclas();
-escucharPantallaCompleta();
+const modo = escucharPantallaCompleta();
 engancharEfectos();
 void arrancar();

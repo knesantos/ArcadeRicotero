@@ -5,7 +5,1130 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-04
+**Última actualización:** 2026-10-29
+
+> ## 🦁 CINCO QUE ERAN OJOS EN LA PROFUNDIDAD DE LA NOCHE: EL REY DE ESTA JUNGLA, EL AHOGADO Y SU FIEL FANTASMA, EL PICHÓN, EL CLUB DE MANTIS Y EL QUE NO SE CAYÓ DEL CIELO (2026-10-29) — `D-73` (25)
+>
+> **Sin integrar**, en la rama `bestiario/cinco-noche`, nacida sobre `bestiario/siete-mas` (`49351b3`, la vigesimocuarta, que entró
+> a `main` por el #88), con `main` adentro. `T-516` (se escribió como `T-514` y se renumeró: `T-514` y `T-515` ya eran de la pulida, `D-83`). Pedido del usuario: cinco bestias que hoy sean ojos en la profundidad de la noche, con vida,
+> animación y detalles únicos. Se eligió una por recinto entre los que menos títeres tienen (el infierno ya no tiene ojos).
+>
+> - **Monte**: el rey de esta jungla, un león viejo enterrado hasta los ojos entre las flores, con la cruz de la etiqueta negra, la
+>   corona de lata y el patín; tocado asoma, ruge sin voz, crecen las flores, rueda el patín y se vuelve a hundir.
+> - **Bajo**: el ahogado y su fiel fantasma, dos en un títere a la izquierda del bote; tocados él se va a pique, la sábana hace BU y
+>   se zambulle detrás, y vuelven los dos chorreando.
+> - **Prisión**: el pichón en el alféizar de la ventana, detrás de la reja (capa `atras`), con la pizarrita de los tiros que esquivó;
+>   tocado, fogonazo, salta, vuelan plumas, queda un agujero nuevo en la piedra y hace la raya. Salió chico y se agrandó al doble:
+>   sus ojos se corrieron a [506, 289].
+> - **Mesa**: el club de mantis, tres señoras con servilleta que se hamacan y siguen con la pseudopupila al macho que llega con un
+>   clavel; tocadas, ÑAC. Se sacaron las tres mantis pintadas del piso (`mesa-piso` y `camino-mesa-piso` reimpresos).
+> - **Techos**: el que no se cayó del cielo, sentado en el filo de la chapa con el vaso que nunca se vuelca; tocado se cae, queda
+>   colgado de una mano, se sube y brinda.
+> - Alrededor: `esclavo.test.ts` ahora pide solo al esclavo en la capa `atras` de la prisión (se le metía el pichón); las cinco
+>   estampas se acortaron al tope de 320 caracteres del schema.
+> - **Verde:** `npm test` (2209), `npm run check` (0 errores), `npm run build` (180 páginas). Vistos vivir y responder al toque en
+>   la página de cada recinto, con la ficha abierta.
+> - **Falta**: `T-516` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
+
+> ## ✨ LA PULIDA DEL BESTIARIO: EL PRIMER PASO, LOS SELLOS QUE SE ASIENTAN Y EL ANOTADO A LA VISTA (2026-10-29) — `D-83`
+>
+> **Sin integrar**, en la rama `bestiario/pulida` (worktree `.claude/worktrees/pulida-bestiario`), sobre `bestiario/siete-mas`
+> en `49351b3` (PR #88, con `main` adentro): trae adentro las siete más. Pedido del usuario: *"Hace una pulida entera del
+> bestiario redondo. Mejora diseños, mejora inmersion, animaciones y todo lo que haga mas inmersivo y pulido al sitio."*
+>
+> - **Lo que se vio antes de tocar**: en el teléfono, al entrar al monte no había ningún bicho a la vista (las lobas arrancan
+>   en el píxel 398 de una pantalla de 375) ni ninguna pista de que se camina de costado, con el tablero plegado; en el camino
+>   la libreta vivía plegada y nada decía que un toque anotaba; el bocadillo y la hoja aparecían de golpe; en la compu la
+>   escena no se agarraba con el mouse.
+> - **El primer paso**: al llegar por el principio, la cámara camina sola el 30 % de la vista (150 px como mucho) en 1,6 s y
+>   se para; cualquier gesto lo corta y con movimiento reducido no se da (`PRIMER_PASO` en `camara.ts`, con test).
+> - **La invitación a caminar**: hasta que la mano camine por primera vez, «Deslizá de costado para caminar» es un sello
+>   flotando abajo de la escena, con la flecha del cruce; se va con el primer trecho caminado y queda anotado en el teléfono
+>   (`fichin-bestiario-sabe-caminar`). Solo donde no hay mouse.
+> - **Los sellos se asientan** (`--duracion-sello`, 220 ms, a cero con movimiento reducido; `movimiento.test.ts` las conoce):
+>   el bocadillo gira desde su punta, la hoja baja los últimos diez píxeles, el «Anotado» nuevo cae como golpe de sello y la
+>   libreta se vuelve a sellar cuando la cuenta sube.
+> - **Lo anotado se ve donde se anota**: la hoja de la ficha lleva el sello «Anotado» y «Anotaste n de 122» al lado del
+>   sello de clase (`scripts/bestiario/sellos.ts`, compartido por las dos islas).
+> - **La escena se agarra con el mouse** (`grab`/`grabbing`): seis píxeles ya son arrastre, y el clic que lo cierra no toca
+>   a nadie.
+> - **Precarga** del piso y de lo lejano desde la cabeza del documento; chips, acciones, rótulos del plano y botones del
+>   camino responden en `--duracion-toque`.
+> - **Verde:** `npm test` (2165), `npm run check` (0 errores), `npm run build` (180 páginas). Visto en el panel a 375×812 y
+>   a 1280×800, con el panel a la vista (escondido no corre `requestAnimationFrame`).
+> - **Falta**: `T-514` (teléfono de verdad: la inercia de iOS, el sello sobre la barra de Safari), `T-515` (el sello de
+>   invitación y el renglón de la hoja al lienzo, hoja 08).
+
+> ## 🃏 SIETE MÁS QUE ERAN OJOS: EL DIABLO DE MUCHOS CUERNOS, LA PRINCESITA SAPITO, LA TIPA RAPAZ, EL RATÓN, LA POLILLA, EL BOTIJA Y EL JOCKER (2026-10-29) — `D-73` (24)
+>
+> **Sin integrar**, en la rama `bestiario/siete-mas`, nacida sobre `bestiario/siete` (`2dd328b`), con `main` ya adentro (la vigesimotercera entró por el #86).
+> `T-513`. Pedido del usuario: otras siete bestias sin diseño complejo, rocambolescas, con buenos detalles y animación acorde.
+>
+> - **Infierno**: el diablo de muchos cuernos, portero de levita; tocado se cuenta los cuernos y le brota otro.
+> - **Cybersiberia**: la princesita sapito en su trono de nieve; tocada pone la trompa, puf, y sigue sapo.
+> - **Mesa**: la tipa rapaz; tocada se queda con la billetera del mantel y brinda.
+> - **Techos**: el ratón de canaleta; tocado huele al gato, se esconde y vuelve a asomar el hocico.
+> - **Templo**: la polilla colgada de la guirnalda, con su foco; tocada se da contra el vidrio e insiste.
+> - **Astilleros**: el botija rapado en la planchada; tocado salta al ferry y «¡Zafó!».
+> - **Árbol**: el jocker burlón colgado de la rama; tocado se da vuelta como un naipe.
+> - Se sacaron del piso las siluetas de la princesita, la tipa, el botija y el jocker (reimpresos).
+> - **Verde:** `npm test` (2164), `npm run check`, `npm run build`.
+> - **Falta**: `T-513` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
+
+> ## 📺 DOS JUEGOS PARA JUGAR ADENTRO DE X, A PRUEBA (2026-10-28) — `T-513`
+>
+> **En `main` desde el PR #89** (commit de fusión `3fe3bcf`), rama `worktree-difusion-x-player`. Lo integró Claude a pedido
+> del usuario (*"Cuando termines metelo a main asi lo puedo probar."*). Pedido del usuario: investigar las "miniapps" de X
+> y armar *"para noche ricotera y adivina el tema"*. El bestiario como miniapp de X lo hace otra sesión, rama
+> `bestiario-en-x`.
+>
+> - **Lo que encontró `investigador`** (sin ficha `RES` todavía; no pudo abrir developer.x.com): X **no tiene miniapps**. La
+>   única vía es la **Player Card** (`twitter:card=player`, un iframe dentro del posteo), pensada para video y audio. Según sus
+>   foros pide aprobación manual, no se ve en el timeline y puede no verse en el celular.
+> - **Qué hay**: siete páginas puente en `/en-x/` (`[...juego].astro`): "Adiviná el tema", "¿Qué tipo de ricotero sos?" y
+>   sus cuatro postales. Llevan la Player Card y mandan al juego a quien las abre, con el desafío de la dirección. El iframe
+>   carga el juego de siempre con `?incrustado`: `Cabeza` (`incrustable`) le pone `html.incrustado` y `<base target="_blank">`.
+>   Tamaño apostado: 480 × 720 (`REPRODUCTOR` en `lib/en-x.ts`).
+> - **El modo incrustado** (`juego.css`, sección "Adentro de X"): la cabecera y la marca grande se cambian por la franja de
+>   `FranjaEnX.astro` (FR chica + "SEGUÍ EN EL FICHÍN"), así a 360 × 540 entran el título y el botón de empezar sin
+>   scroll; en "Adiviná el tema" la escalera de intentos se pliega con poco alto y en el resultado suben el puntaje y
+>   "Compartí". **"Compartí" adentro de X postea** (`scripts/en-x.ts`): abre el posteo ya escrito con **la puente** como
+>   dirección (la postal de la manera que salió, en dos ejes), así el posteo nuevo también se juega adentro.
+> - **Verde:** `npm test` (2013), `npm run check`, `npm run build`. Los dos juegos se jugaron enteros a 360 × 540 y 480 × 720,
+>   con el posteo de X armado y la puente probada con un desafío.
+> - **Falta**: publicar, pegar el enlace en un posteo real y mirarlo en iOS, Android y web. Si X no lo muestra, se
+>   queda la tarjeta grande de siempre. Que `investigador` deje la ficha `RES` con lo que el posteo confirme.
+> ## 🐐 SIETE QUE ERAN OJOS: EL CHIVATO, LOS GALLOS, LA ANGUILA, LA LECHUZA, EL ANZUELO, LA PIBA Y LAS LOBAS (2026-10-28) — `D-73` (23)
+>
+> **En `main`** por el PR #86 (fusión `b1677df`), desde la rama `bestiario/siete`.
+> `T-512`. Pedido del usuario: otras siete bestias sin diseño complejo, rocambolescas, con buenos detalles y animación acorde.
+>
+> - **Prisión**: el chivato murguero con la oreja en la reja; tocado canta la delación y se le vuela la lista.
+> - **Templo**: los gallos sofocados, borrachos de fin de fiesta; tocados, riña de opereta y abrazo.
+> - **Bajo**: la anguila en el barro, que ondula de verdad; tocada salta y el barro se la traga.
+> - **Árbol**: la lechuza que circula, con el pito de vigilante; tocada da la vuelta al árbol mirándote.
+> - **Astilleros**: el que mordió el anzuelo, colgado de la caña; tocado se zafa y vuelve a morder.
+> - **Ruta**: la piba con la remera (ballena, sin logo), que finge que duerme; tocada ronca de mentira y espía.
+> - **Monte**: las antiguas lobas; tocadas reviven, aúllan a dúo, trotan y se vuelven a echar.
+> - Se sacaron del piso las siluetas pintadas de la lechuza, el pescado y la piba (reimpresos).
+> - **Verde:** `npm test` (2105), `npm run check`, `npm run build`. Vistos vivir y responder al toque en la página de cada recinto.
+> - **Falta**: `T-512` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo, el retrato de la desencarnada).
+
+> ## 📺 CINCO QUE ERAN OJOS: EL ALIEN DUCE, LAS SIRENAS, EL AMORCITO, EL GATO MATÓN Y MANDINGA (2026-10-28) — `D-73` (22)
+>
+> **En `main`** por el PR #84 (fusión `84a4b09`), desde la rama `bestiario/cinco-mas`. `T-511`. Pedido del usuario: cinco bestias
+> sin diseño complejo, rocambolescas, con animaciones complejas y los detalles de la letra; una tenía que ser el Alien Duce.
+>
+> - **Cybersiberia**: **el Alien Duce**, adentro de la pantalla de la tele, con el cráneo de bola de espejos que tira puntos de
+>   luz; tocado se aplasta contra el vidrio, escupe el ticket del evangelio hasta la nieve, lo chupa y lo escupe en un bollo.
+> - **El bajo** (tenía uno solo): **las sirenas**, la gata linda y la llena con el botín, que cantan, colean y se zambullen; y
+>   **el amorcito**, colgada de su ventana rota con el vidrio entre los dientes y el sifón; tocada muerde, ¡ÑAM!, y cabalga.
+> - **Los techos**: **el gato matón**, la cana con sirena y matraca de ocasión; tocado sale de operativo y salta al ratón.
+> - **El infierno**: **Mandinga**, un títere de sombra con varillas; tocado saluda, su sombra crece en la pared, encandila y se va.
+> - Los ojos del ratón bajaron a la chapa; `rato.test.ts` mira al rato solo.
+> - **Verde:** `npm test` (2046), `npm run check`, `npm run build`. Vistos vivir y responder al toque en la página de cada recinto.
+> - **Falta**: `T-511` (verlos en un teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
+
+> ## ⛓️ EL ESCLAVO ENCADENADO, EN LA PRISIÓN (2026-10-24) — `D-73` (21)
+>
+> **En `main` desde el PR #81** (commit de fusión `1938397`), rama `bestiario/esclavo-encadenado`. Lo integró Claude a pedido
+> del usuario (*"Integralo a main."*). `T-510`. Pedido del usuario, con la imagen: *"Diseña e implementa una bestia del bestiario
+> redondo que sea esta, usa la imagen de base, es uno de los de la tapa de oktubre, es importante."*
+>
+> - **Bestia nueva**, `el-esclavo-encadenado`: el estarcido de Rocambole que trajo el usuario, **sin redibujar**, cortado en
+>   siete piezas. Se arrodilla adelante de la celda de los reos, entre la jaula vacía y la reja. Verso: *"Casi ya no llora,
+>   ¡atrapado en libertad!"* (*Preso en mi ciudad*).
+> - **Tocado rompe la cadena**: tirón, chispa roja, la cadena sale despedida hacia la jaula, ruge; y la cadena vuelve al puño.
+> - **El disco va como leyenda** en la ficha (`INV-02`: no venía en el vinilo del 86, se difundió con el CD; sin ficha).
+> - **Cómo**: `scripts/preparar-encadenado.mjs` saca la silueta maciza del máster; la imprenta suma `href="master:…"`. No se
+>   tocaron `recortes.ts` ni `recortar-bestiario.mjs`, que otra sesión tiene sin commitear (Luzbelito macizo).
+> - **Verde:** `npm test` (2009), `npm run check`, `npm run build`. Visto en un iframe de teléfono y cuadro por cuadro.
+> - **Falta**: verlo en un teléfono de verdad, que `contenido` lea estampa y leyenda.
+
+> ## 🛩️ CINCO DEL FONDO: ZIPPO, EL DIABLO MÁS VELOZ, EL SANTO FUMADOR, EL COLGADO Y LA SEÑORA (2026-10-24) — `D-73` (20)
+>
+> **En `main` desde el PR #79** (commit de fusión `7e76bf7`), rama `bestiario/cinco-del-fondo`. Lo integró Claude a pedido del
+> usuario (*"Integralo a main."*). `T-509`. Pedido
+> del usuario: cinco bestias sin diseño complejo, pulidas, con su animación y el arte rocambolesco, con los detalles de la letra.
+>
+> - **Infierno** (tenía uno solo): **Zippo**, la cabeza es el encendedor, en su avioneta hecha migas; tocado, picada en rizo
+>   cabeza abajo y risa de azufre. **El diablo más veloz**, cabrío que arrastra los pies; tocado, en un parpadeo patea la Caja
+>   de los Truenos y vuelve arrastrándose.
+> - **Templo**: **el santo fumador**, de plata, dormido en su anda con el pucho; tocado, desfila.
+> - **Árbol**: **el que duerme colgado**, de la rama soldada, soñando angelitos gangsters de tiza; tocado, se despierta.
+> - **Ruta** (tenía uno solo): **la bella señora desencarnada**, calavera con mantilla; tocada, se le viene el día en el pecho.
+> - Se sacaron sus siluetas pintadas del piso del árbol y de la ruta (reimpresos), y se corrieron los ojos del sheriff y la
+>   murga en el templo.
+> - **Verde:** `npm test` (2002), `npm run check`, `npm run build`. Vistos animar en el servidor de desarrollo.
+> - **Falta**: `T-509` (verlas en un teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
+
+> ## 🧨 MI PERRO DINAMITA, CON MECHA Y EXPLOSIÓN (2026-10-23) — `D-73`, decimonovena vuelta
+>
+> **En `main` desde el PR #76** (commit de fusión `7fb4e33`), rama `bestiario/tres-del-fondo`, junto con la decimoctava de
+> abajo. Lo integró Claude a pedido del usuario (*"Integralo a main."*). `T-508`. Pedido del usuario: *"Diseña, e integra bien pulido y bien rocambolesco al perro dinamita"* y *"que
+> tenga una buena animacion y explosion"*.
+>
+> - **El dibujo** (`arte-dinamita.ts`, 16 piezas, 120 kB): el cuerpo es un atado de tres cartuchos con alambre, la
+>   cola es la mecha y del cuello para adelante es un callejero flaco con la trufa que le arde. Soplado en las tintas
+>   de *La mosca y la sopa*, medidas con sharp (`⟨mi perro dinamita⟩` en `tokens.css`), con el rótulo torcido de esa
+>   tapa diciendo DINAMITA.
+> - **La conducta** (`scripts/bestiario/dinamita.ts`): solo trota por el baldío, se da vuelta, jadea, olfatea, aúlla
+>   y le chisporrotea la mecha. Tocado, la mecha se quema, tiembla y explota: fogonazo, estrella del BUM, esquirlas,
+>   humo y sacudón de cámara. Vuela en pedazos, se rearma tiznado, se marea, se sacude y aúlla. Después se abre la
+>   ficha. Con movimiento reducido pasa a la pose del aullido.
+> - **Verde:** `npm test` (1958, con los 10 de `dinamita.test.ts`), `npm run check`, `npm run build`. Probado en
+>   la página del baldío en un iframe con rAF reemplazado.
+> - **Falta**: verlo en un teléfono de verdad.
+
+> ## 🪓 TRES BESTIAS MÁS EN LOS ENTORNOS FLACOS: EL VERDUGO, EL DR. SATURNO Y TU ANIMAL (2026-10-23) — `D-73` (18)
+>
+> **En `main` desde el PR #76** (commit de fusión `7fb4e33`), rama `bestiario/tres-del-fondo`. Pedido del usuario: tres bestias rocambolescas y misteriosas, en
+> los entornos con menos personajes detallados. Se contó entorno por entorno: el monte (1 de 8), la mesa (2 de 12) y el templo
+> (2 de 11).
+>
+> - **El verdugo que cena distinguido** (mesa, *Jijiji*): tallado como *Oktubre* y recortado en papel. Cena solo; tocado, brinda.
+> - **El Dr. Saturno** (templo, *Momo sampler*): aerógrafo violeta, flota, con el anillo y tres lunitas. Tocado, da un turno.
+> - **Tu animal** (monte, *Gulp!*): pincel seco petróleo, se esconde y quedan los ojos; la correa se va del monte. Tocado, se
+>   muestra. Es el primero del elenco en el monte: el monte y su tramo del camino ya llaman al elenco.
+> - **Verde:** `npm test` (1948), `npm run check` (0 errores), `npm run build` (180 páginas). En el sitio servido, las tres
+>   escenas arman los títeres. **No se vieron animar**: el panel estaba oculto.
+> - **Falta**: `T-506` (verlos en un teléfono de verdad) y `T-507` (las tintas al lienzo; que `contenido` lea las estampas).
+
+> ## 👑 LA MARCA: LA FR CORONADA, EN EL SITIO Y EN UN ARTIFACT (2026-10-23) — `D-82`
+>
+> **En `main` desde el PR #74** (commit de fusión `74c426b`), rama `difusion/redes`, junto con las redes de abajo. Lo integró Claude a pedido del usuario (*"Integralo a main cuando los checks estén en verde"*).
+>
+> - **El logo**: homenaje al PR coronado, con la F en el lugar de la P y la misma corona del original,
+>   vectorizada de la referencia de `RES-42`. `python scripts/generar-logo.py` deja cinco SVG en `public/marca/`.
+> - **El sitio la usa**: portada, hoja de cada juego, mesa del escritorio y cabecera de regreso; favicon,
+>   ícono de inicio y tarjeta para compartir (`npm run generar-marca-social`). Visto en el navegador a 375
+>   px y a 1366.
+> - **El sistema de marca**: https://claude.ai/artifact/49r6PNWPk241GcQBfNWbZL (privado).
+> - **Las redes ya la usan**: la foto de perfil y el banner de X.
+> - **Falta**: pegarla en la hoja 01 del lienzo, y verla en un teléfono de verdad.
+
+> ## 📣 LAS REDES: EL ROL `difusion`, LAS PIEZAS Y LA COLA EN BUFFER (2026-10-23) — `D-81`
+>
+> **En `main` desde el PR #74** (commit de fusión `74c426b`), rama `difusion/redes`. Pedido del usuario: armar
+> Instagram y X *"de la forma más automática y simple"*. Metricool quedó afuera porque no le gustó.
+>
+> - **Rol nuevo, el octavo:** `difusion`, con carpeta `Docs/DIFUSION/` y prefijo `DIF-`. Escribe
+>   borradores, no publica. Justificado en `Docs/EQUIPO.md`, "El octavo rol".
+> - **`/redes`**: hace la semana entera. `difusion` escribe, se imprimen las piezas y el usuario dice
+>   que sí. Después se cargan en la cola de Buffer, cada una a su hora.
+> - **`npm run redes -- …`**: `validar`, `piezas`, `perfil`, `lote`, `canales` y `cola`. Las piezas
+>   salen de Edge sin ventana, con los tokens y las letras reales, a `public/redes/`. Ya están
+>   impresos la foto de perfil, el banner de X y `DIF-10` … `DIF-12`.
+> - **Verde:** `npm test` (1921), `npm run check`, `npm run build`, y el validador del instanciador da
+>   `APTA` con un aviso (8 roles).
+> - **Falta**:
+>   - **que el usuario abra las cuentas** (Instagram creador, X y Buffer Free) y deje la clave de
+>     Buffer en `.env`. El paso a paso está en `DIF-01`;
+>   - aprobar `DIF-10` … `DIF-12`, integrar el sitio con las piezas y correr `/redes cola`;
+>   - **ver si Buffer Free deja publicar en X** (`RES-402`). Si no deja, el camino B está en `D-81`;
+>   - el hilo de doce posteos de la rama `difusion/hilo-fichin` (PR #31) sigue sin integrar:
+>     `difusion` lo puede pasar al calendario.
+
+> ## 🎥 LA CÁMARA QUE CAMINA, LA FICHA QUE NO TAPA Y EL PLANO PINTADO ZONA POR ZONA (2026-10-23) — `D-79` (2.ª vuelta) y `D-80`
+>
+> **En `main` desde el PR #72** (commit de fusión `2bd7fbb`), rama `bestiario/sonido-y-portal`, junto con la entrada y los ruidos de abajo. Lo integró Claude a pedido del usuario (*"commiteá e integrá todo a main"*).
+>
+> - **El plano**: cada una de las doce zonas tiene su escena a aerógrafo (`arte-mapa-*.ts`). Va de
+>   borde a borde en el teléfono y hasta 52 rem en la compu. El molinete es ahora uno de cancha, y el
+>   rótulo del monte ya no queda debajo del de la pastura.
+> - **La cámara del camino** (`camara.ts`): el vaivén de los pasos, la inercia, el respirar, los
+>   sacudones (el meteorito de la vaca, el grito del pibe, el bombo y el vidrio), el retumbo de la ruta,
+>   el acercarse al tocar y la entrada. Nada de esto se mueve con movimiento reducido.
+> - **La ficha** se abre donde no tapa al bicho (`hoja.ts`): arriba o abajo en el teléfono, de costado
+>   en la compu.
+> - **Los encimados**: la vaca se corrió lejos del cordero, y el templo, los techos, la prisión y el
+>   bajo se ensancharon a 1400–1500, con los bichos repartidos.
+> - **Verde:** `npm test` (1854), `npm run check`, `npm run build`. Probado en el navegador con un
+>   iframe.
+> - **Falta**:
+>   - verlo en un teléfono de verdad;
+>   - darles claro en la tierra pintada del plano a los seis bichos nuevos del #69 y el #70.
+
+> ## 🚪 LA ENTRADA DEL BESTIARIO Y LOS RUIDOS DESDE ARCHIVOS (2026-10-23) — `D-79`
+>
+> **En `main` desde el PR #72** (commit de fusión `2bd7fbb`), rama `bestiario/sonido-y-portal`. Pedido del usuario: mejores ruidos en el bestiario
+> (pasos, agua, botellas rotas), y un plano rocambolesco, *"como si estuvieras parado en la entrada de un
+> mundo misterioso con un mapa"*.
+>
+> - **La entrada**: el plano va clavado en un cartel, en la puerta de un mundo de noche.
+>   - Cuatro piezas a aerógrafo (`arte-portal.ts`): el horizonte del mundo redondo, el arco de hierro,
+>     el molinete abierto y el farol.
+>   - La tierra del plano ahora va soplada.
+>   - Un sello «ESTÁS ACÁ» sobre la ruta.
+> - **Los ruidos**: `entorno.ts` toca archivos del manifiesto `EFECTOS`. Si un archivo falta, suena la
+>   síntesis, que también se mejoró: pasos por suelo, chapoteo, vidrio, la sala de cada región y fondos
+>   en bucle. Se oye todo junto en `/diagnostico-bestiario/`.
+> - **Verde:** `npm test` (1838), `npm run check`, `npm run build`. Visto en el panel a 375 px y en escritorio.
+> - **Falta**:
+>   - **bajar los archivos**: todavía no hay ninguno. Los candidatos están en `RES-371`, y cada uno se
+>     baja con el OK del usuario;
+>   - oír la síntesis nueva en un teléfono.
+
+> ## 🪰 TRES MÁS, ELEGIDOS POR EL HILO: EL ÁNGEL DE LA SOLEDAD, EL PAC-MAN Y LA MOSCA (2026-10-22) — decimoséptima enmienda de `D-73`
+>
+> **En `main` desde el PR #70** (commit de fusión `274a6d4`), rama `bestiario/seis`, que salió de `bestiario/tres` y entró
+> después del #69. Lo integró Claude a pedido del usuario (*"Integrá todo a main"*). Pedido del usuario: *"Agrega al bestiario con su diseño, animacion y todo bien
+> pulido a 3 bestias que elijas vos."*
+>
+> - **El ángel de la soledad** (árbol): soplado en el sepia de la contratapa de *Lobo suelto*, con las plumas hechas de los
+>   dientes serruchados de sus máscaras. Envuelto en las alas como en una capa; ataja el huevo que se cae del nido, lo
+>   escucha, no le cree y lo tira de vuelta. Tocado, abre las alas para recibirte y abraza el aire.
+> - **El pac-man** (Cybersiberia): el único del bestiario de pixel, en las tintas del fichín, con el resplandor a aerógrafo.
+>   Juega una partida sola en la fila de puntos: lo persigue un fantasma, se muere si lo arrinconan, se lo come con la
+>   pastilla. Tocado, le da el hambre.
+> - **La mosca** (mesa): el recorte de la mosca del rótulo de *La mosca y la sopa*, con su canto de papel. Vuela en ochos
+>   sobre la olla y se posa en el borde, en el cucharón y en la sopa (hace anillos), y se frota las patas. Tocada, se te
+>   viene encima y se va por detrás de la oreja.
+> - **Alrededor**: el elenco son dieciséis; salen del piso la silueta del ángel, la fila del pac-man y la mosca pintada;
+>   bloques de tintas nuevos del ángel y la mosca; cuentas con testimonio del memoir (pp. 293, 304, 324).
+> - **Verde:** `npm test` (1898), `npm run check`, `npm run build` (179 páginas). En el panel a 375 px, los tres se arman,
+>   el toque hace el gesto y abre la ficha. **Sin ver a velocidad real**: el panel estaba oculto y frenaba el reloj.
+> - **Abierto:** `T-504` (verlos en un teléfono de verdad), `T-505` (cotejar las páginas del memoir), `T-431`, `T-435`, `T-500`.
+
+> ## 🐖 TRES MÁS: LA HIJA DEL FLETERO, EL BUEN PSICÓPATA Y PORCO REX (2026-10-22) — decimosexta enmienda de `D-73`
+>
+> **En `main` desde el PR #69** (commit de fusión `a188412`), rama `bestiario/tres`, sobre `main` en `0be8dc6`. Lo integró
+> Claude a pedido del usuario (*"Integrá todo a main"*).
+> Pedido del usuario: *"agrega al bestiario [...] La hija del fletero, El buen Piscopata (que suene el inicio del tema [...])
+> y otro que elijas vos. Que sean bien rocambolescos"*.
+>
+> - **La hija del fletero** (astilleros): grisalla como la mujer del tubo del interior de *Lobo suelto*, con el rosa del
+>   tubo como único color. En la popa del ferry, hablando por un tubo cuyo cable rizado se mete en el agua; le llegan
+>   descargas por el cable y se le para el pelo. Tocada, te mira y la descarga baja al muelle.
+> - **El buen psicópata** (nuevo, en el baldío): el hombre de la gorra de la tapa de *Bang! Bang!*, a guache, mirando el
+>   fusilamiento de la tapa de verdad en un caballete, con el perro de la parabellum que tira saltos mortales. Tocado, el
+>   perro dispara una banderita *BANG* y él te saluda con la gorra.
+> - **Porco Rex** (elegido por el hilo principal, Cybersiberia): un chancho rey en postal virtual de *Último bondi*, con
+>   corona remachada y los anteojos de la banda. Trota, resopla, se revuelca en el barro; tocado, se para y hace los cuernos.
+> - **Alrededor**: el elenco son trece; el baldío llama al elenco; salen las siluetas viejas de la hija y del chancho;
+>   en estos tres **la ficha espera al gesto** (1–1,2 s) y **el psicópata va desde el arranque del tema** (enmiendas a `D-78`).
+> - **Verde:** `npm test` (1871), `npm run check`, `npm run build` (179 páginas). En el panel a 375 px, andando los tres.
+> - **Falta, y no se puede desde acá:** cortar el arranque de *La parabellum* (`T-502`): el máster no está en esta
+>   máquina. Con la carpeta de los discos: `npm run sincronizar-bestiario -- "<carpeta>" --ids=el-buen-psicopata`.
+>   Hasta entonces suena como los que no tienen recorte.
+> - **Abierto:** `T-502`, `T-503` (cotejar las páginas del memoir), `T-431`, `T-435`, `T-437`/`T-439`/`T-490`.
+
+> ## 🎵 EL VERSO SUENA DONDE SE LEE (2026-10-20) — `D-78`
+>
+> **Rama `multimedia/redondos-letras-sincronizadas`**, sin integrar. Pedido del usuario: que el "Escuchar" de la ficha
+> arranque en el verso que muestra, de forma automática y sin tocar la discografía.
+>
+> - **`npm run sincronizar-bestiario -- "<carpeta de discos>"`**: busca el segundo del verso en LRCLIB (solo el número,
+>   cotejando la duración con el máster), corta 10 s y los deja en `public/audio/bestiario/<id>.mp3`. Manifiesto en
+>   `src/data/bestiario-sincro.json`. Los discos se le pasan como carpetas al script, viven fuera del repo
+>   y solo se leen. ffmpeg se instaló con winget.
+> - **Las once bestias con títere sincronizadas.** El caníbal sale de una copia aparte de *Lobo suelto*, porque la
+>   carpeta de discos principal no tiene *Yo caníbal*.
+> - **Verde:** `npm test` (1831), `npm run check`, `npm run build`.
+> - **Corrido para todas:** 103 de 118 sincronizadas; las 15 que faltan están en `sinSincronizar` con su motivo
+>   (6 sin máster en las carpetas, 9 con el verso que no aparece en LRCLIB).
+> - **Sin oír:** ningún recorte todavía, empezando por los siete que coinciden por debajo del 100 % (el Morta, entre ellos).
+> - **Segunda vuelta:** tocar un bicho abre la ficha directo y, en el camino con sonido, suena su recorte; el verso aparece
+>   con el mouse encima o solo (una de cada cinco que aparecen). Sin el botón "Abrí la ficha". **Sin probar en el navegador.**
+
+> ## 🎭 EL ELENCO DE DIEZ, UNO POR ENTORNO (2026-10-19) — decimoquinta enmienda de `D-73`
+>
+> **Rama `bestiario/diez`** (worktree `.claude/worktrees/bestiario-diez`), sobre `main` en `4072abd` (con el #65 adentro).
+> Pedido del usuario: *"orquestar la creación y diseño pulido al máximo al estilo rocambole [de] al menos 10
+> personajes/bestias más [...] dividir lo más posible en entornos que tengan menos personajes"*.
+>
+> - **Diez títeres nuevos, uno por entorno**: la bestia pop (galpón), el monito que trepa (árbol, con la animación en dos
+>   tiempos que pidió el usuario), el Capitán Buscapina (Cybersiberia), el pibe de los astilleros, el caníbal (mesa), la
+>   Mariposa Pontiac (ruta: el primer fierro que es títere), el diablo que mea (infierno), el rato molhado (bajo), el
+>   Morta (templo) y el esclavo sensible y chillón (prisión). Cada uno en la técnica de su tapa, con tintas medidas,
+>   conducta que sale de la letra y el verso hecho gesto al tocarlo.
+> - **Cómo**: una base (`elenco.ts`, `scripts/bestiario/vivos.ts`) con diez lugares, y diez subagentes Opus en paralelo,
+>   cada uno en su rama `elenco/<slug>`. Cada personaje vive en sus archivos (`arte-`, `rig-`, `scripts/bestiario/`,
+>   `<slug>.test.ts`) y entra solo en su recinto y en su camino. **Cierra `T-492`.**
+> - **Arreglado al integrar**: el bocadillo del camino ya no queda debajo del tablero; el galpón arranca mirando a la bestia.
+> - **Verde:** `npm test` (1825), `npm run check`, `npm run build`. En el panel a 375 px: los diez se arman y se mueven en el
+>   bestiario sin errores; la bestia pop andando en su camino; la ficha del Morta con su retrato.
+> - **Sin ver**: la animación de cada uno en un teléfono de verdad y los cuadros por segundo (`T-490`, `T-437`, `T-439`).
+> - **Abierto:** `T-500` (los sonidos del elenco), `T-501` (cotejar las páginas del memoir que citan), `T-431`, `T-435`.
+
+> ## 🪧 EL CAMINO LIVIANO: LA PUERTA, EL RENGLÓN CHICO Y LOS POSTES (2026-10-18) — enmienda de `D-77`
+>
+> **En `main` desde el PR #66** (commit de fusión `c79cb82`), rama `bestiario/camino-liviano`. Pedido del usuario, mirándolo en el teléfono: *"se ven muy grandes los textos y tapan a los
+> personajes"*, *"que suene de una"*, *"lo mismo para las fichas"* y *"que los carteles estén arriba del camino"*.
+>
+> - **Arriba, un renglón chico**: la salida y el nombre. Tocar el nombre despliega lo demás; caminar lo pliega.
+> - **La puerta**: con el sonido pedido se entra con un toque («Tocá y entrá con sonido»), que es el que deja
+>   sonar, como el "Jugá" de "Adiviná el tema". Deslizar no cuenta como toque. «Entrá sin sonido» lo apaga.
+> - **La ficha y la lista flotan más chicas** (42 % y 46 % del alto), con la figura al costado.
+> - **En los once cruces nuevos, cada cartel va en un poste al final de su picada**, frente a la luz de su disco,
+>   y se corre con el piso. Se reimprimieron las once piezas de cruce. El monte y la pastura siguen en columna.
+> - **Verde:** `npm test` (1707), `npm run check`, `npm run build`. Visto en el panel a 375×812 y 1280×800.
+> - **Abierto:** `T-490` (oírlo en un teléfono de verdad), picadas para el monte y la pastura.
+
+> ## 🧭 LOS TRECE ENTORNOS, CONECTADOS Y DE COSTADO (2026-10-18) — `D-77`
+>
+> **En `main` desde el PR #65** (rama `bestiario/todo-caminable`, worktree `.claude/worktrees/camino-todo`), sobre
+> `main` en `cc58d47`, que no se había movido. Lo integró Claude a pedido del usuario (*"Integrá el PR #65 a main"*). Pedido del usuario: *"Todos los entornos deben ser caminables y conectados. En móvil que haya que
+> scrollear para el lado donde avanzás, no para abajo"*, *"siempre en pantalla completa"*, *"que la ficha sea una
+> ficha flotando sin tapar toda la pantalla"* y *"si entrás al bestiario ya estás caminando y con el sonido activado"*.
+>
+> - **Las trece regiones tienen su camino**, y desde el monte se llega a todas y se vuelve (lo mira el test). El
+>   monte y la pastura, como estaban; los seis entornos de la décima vuelta, pintados a 2400 con paralaje; los cinco
+>   recintos de títeres, enteros y a pantalla completa (son chicos por naturaleza: no se caminan, se recorren).
+> - **Cada uno termina en un cruce**: la noche se come el borde de la escena y la picada se abre hacia la luz de cada
+>   vecina. Todos los carteles llevan a otro camino.
+> - **Se avanza de costado**: en el teléfono, el scroll de costado del navegador; en la compu, la ruedita y las flechas.
+> - **La ficha y la lista flotan** abajo, sin tapar la escena entera. Caminando, el tablero se achica al nombre.
+> - **Se entra con el sonido pedido**, que suena con el primer toque, y cada región tiene su receta de ruidos.
+> - **Por dentro**: la vida de los recintos pasó a `scripts/bestiario/recintos.ts` (la usan las dos islas), y el piso
+>   de cada tramo lo arma `lib/bestiario/escenas-camino.ts`. Los rótulos del plano llevan a caminar.
+> - **Verde:** `npm test` (1707), `npm run check`, `npm run build`. Visto en el panel a 375×812 y 1280×800.
+> - **Abierto:** `T-490` (teléfono de verdad y oírlo), `T-491` (el plano como galería o solo mapa), `T-493` (lienzo).
+>   `T-492` lo cerró el elenco de diez.
+
+> ## 🍋 LIMÓN, POR LAS CHAPAS DEL BALDÍO (2026-10-18) — decimocuarta enmienda de `D-73`
+>
+> **En `main` desde el PR #63** (rama `bestiario/limon`, worktree `.claude/worktrees/bestiario-limon`), con `main`
+> juntado en `250fb04` (hasta el #62, la vaca). El usuario eligió 27 bestias para dibujar con más detalle
+> (`Docs/SUGERENCIAS/HILO-para-bestiario-prioridad-de-figuras.md`) y empezó por Limón: *"un limón colombiano que corre
+> por las chapas"*.
+>
+> - **Limón es un limón verde a crayón**, como el perro de *Un baión*: rayones que dan la vuelta a la fruta, teñidos
+>   por la luz del farol. Es un títere de siete piezas con zapatillas, y corre mirando para atrás.
+> - **Por los techos viene el bloque**: dos linternas barren los techos y lo persiguen de punta a punta de la chapa
+>   que remata la medianera. Allá jadea; tocado, salta.
+> - **Comparte el baldío con el negro Atila** (#60): la chapa está en el mismo canto por donde él camina, delante
+>   de él, y Limón corre delante de los dos. La sirena es del Atila; las linternas, de Limón.
+> - **La ficha cuenta lo de Escobar con su rótulo**: testimonio del Indio en el memoir (`RES-21`) y hecho que el
+>   Limón existió (`RES-170`). El tema es de *Luzbelito* (1996), no de *Lobo suelto*.
+> - Se escribió como (10), pasó a la (11) y quedó en la (14) al juntar `main`.
+
+> ## 🐄 LA VACA CUBANA, A PLUMÍN, CON LA TELE HECHA SATÉLITE (2026-10-18) — decimotercera enmienda de `D-73`
+>
+> **En `main` desde el PR #62 (rama `ciclo-26/bestiario`), fusión `250fb04`**; worktree `.claude/worktrees/bestiario-26`, sobre `main`
+> en `c1355e0` y con `main` juntado en `e07fe38` (hasta el #61, Barbazul). Pedido del usuario: *"Hace otro ciclo
+> sobre el bestiario redondo. Agrega otro personaje y pulilo a fondo, se creativo que qeude como uno de
+> rocambole"*, y *"hace la vaca cubana"*.
+>
+> - **La vaca** (`arte-vaca.ts`, técnica nueva en `plumin.ts`): plumín sobre aguada como el frente de *Un
+>   baión*, su disco, con las tintas medidas en la tapa (`--bestia-vaca-*`). Ojo humano vivo que sigue al
+>   satélite. Vive en la punta de la pastura, en el recinto del monte y en el camino (`escena-vaca.ts`).
+> - **El cielo**: la tele de la tapa hecha satélite cruza por arriba; tocada la vaca, se le cae un pedazo
+>   prendido fuego (la llama de la contratapa, recortada de la tapa) al lado. Rumia con el bolo que sube
+>   por el pescuezo, pasta, espanta moscas; al golpe, el cordero bala y el lobo se esconde
+>   (`scripts/bestiario/vaca.ts`, desde `pastura.ts`).
+> - **La historia** (`RES-360`, `INV-360`): el Indio cuenta en el memoir que a la vaca le cayó un pedazo de
+>   satélite; un memo del Departamento de Estado de 1961 confirma, *según se informó*, una vaca cubana muerta
+>   por los restos del Thor-Ablestar del 30-nov-1960. Va en la ficha con los tres rótulos.
+> - **Verde:** `npm test` (1691), `npm run check` y `npm run build`, en la rama con `main` adentro.
+> - **Sin ver en el navegador**: la sesión quedó aislada en el worktree y no pudo sumar su servidor al
+>   `launch.json` de la carpeta principal. Antes del PR hay que mirarla a 375 px: la rumia, el satélite, la
+>   caída y el camino de la pastura.
+> - **Abierto:** `T-431`, `T-435`, `T-437`/`T-439` (ver la enmienda).
+> ## 🗝️ BARBAZUL, TALLADO, CON LA BARBA DE OTRA PLANCHA (2026-10-18) — enmienda (11) de `D-73`, ciclo 25
+>
+> **En main desde el PR #61** (rama `ciclo-25/bestiario`), fusión `e07fe38`. Sacada
+> de `ciclo-24/bestiario` (PR #56) en `82c4453`. Pedido del usuario, el de las dos vueltas anteriores: *"Agrega otro personaje y pulilo a
+> fondo, se creativo que qeude como uno de rocambole"*.
+>
+> - **Barbazul recibe en la entrada de la prisión** (`T-444`): tallado como el barbudo de la contratapa
+>   de *Oktubre* (`arte-barbazul.ts`), y **la barba es otra plancha, azul y corrida de registro**. Mira a
+>   la drácula cuando pasa, se alisa la barba, sacude el manojo. Tocado, hace la reverencia del anfitrión
+>   y al fondo se le entreabre el cuarto: la luz roja corre por el piso hasta sus pies. La llave chiquita
+>   del manojo tiene la mancha del cuento.
+> - **Verde:** `npm test` (1698), `npm run check`, `npm run build`, en la rama fusionada. Visto a 375 y 1280 px; la reverencia,
+>   con movimiento reducido simulado (con el panel oculto el navegador casi no avanza cuadros).
+> - **Para integrar** (`integrar.md`): si `main` se movió, juntarlo de nuevo. La (11) va después de la (10) de los
+>   entornos (#57), que ya está en `main`; si otra rama llega antes con la (11), se renumera esta.
+> - **Abierto:** `T-431`, `T-435` (el azul nuevo al lienzo), `T-437`/`T-439`.
+
+> ## 🧥 EL NEGRO ATILA (2026-10-18) — duodécima enmienda de `D-73`
+>
+> **En main desde el PR #60** (rama `bestiario/negro-atila`, worktree `.claude/worktrees/bestiario-atila`), que entró con `main` adentro
+> en `168a1bd` (los seis entornos, PR #57, y el camino como puerta, PR #59). Pedido del usuario: *"Hace a El negro Atila para el bestiario redondo, diseñalo como rocambole [...] chisotos y acido"*.
+>
+> - **A aerógrafo, como la tapa de *Lobo suelto***: la cara partida en luz y sombra, el ojo ojeroso, la
+>   bufanda acanalada como el pecho del lobo. Camina por la medianera del baldío, hundido en el gabán,
+>   mascando el frío (vaho). Cuando pasa la sirena de ocasión se tira del otro lado y lo delata el vaho.
+> - **Tocado, abre el gabán**: relojes, cucharitas, el eslabón de la cadena del lobo, la dentadura del caníbal
+>   desdentado y la sirena de la cana. Tres testimonios del memoir (`RES-21`, p. 321).
+> - **Verificado**: tests, una simulación de la conducta y el panel a 375 px, que estaba oculto: **la animación no
+>   se vio correr** (`T-480`).
+
+> ## 👣 AL BESTIARIO SE ENTRA CAMINANDO, Y SUENA (2026-10-18) — `D-76`
+>
+> **En main desde el PR #59** (rama `bestiario/entorno-primero`), fusión `168a1bd`.
+> Pedido del usuario: *"El entorno caminable debe ser lo principal del bestiario [...] que para salir debas tocar
+> algo"* y *"que se escuchen otras cosas, pasos, sonidos de los personajes, ruidos del entorno"*.
+>
+> - **La puerta es el monte.** La home y la Redondopedia llevan al camino. El plano queda a un toque ("Al plano").
+> - **Pantalla entera.** Andando, el camino es la página: no hay nada abajo del cruce, no rebota, y se sale tocando.
+>   La lista de fichas se abre con "Mirá la lista". Sin JavaScript, todo igual que antes.
+> - **Suena, si lo prendés.** Recortes del disco del entorno, de lejos y filtrados: *Lobo suelto* en el monte,
+>   *Cordero atado* en la pastura. Más pasos atados al scroll, viento, grillos, una lechuza y el cencerro, todo
+>   sintetizado, sin archivos.
+> - **Qué se graba, qué se baja y qué se sintetiza**, región por región: `Docs/SUGERENCIAS/HILO-sonidos-del-bestiario.md`.
+>   La risa del gordo Pierre la grabás vos; los animales y los cristales, de Freesound CC0.
+> - **Abierto:**
+>   - `T-481`: el verso de cada personaje. Faltan el minuto de cada verso y los temas enteros en disco.
+>   - `T-482`: los sonidos grabados y los bajados.
+>   - `T-483`: probarlo en un teléfono de verdad.
+> - **Verde:** `npm test` (1691), `npm run check`, `npm run build`. Visto en el panel a 375×812.
+
+> ## 🎨 LOS SEIS ENTORNOS, CADA UNO EN SU TAPA (2026-10-18) — décima enmienda de `D-73`
+>
+> **En `main` desde el PR #57 (rama `bestiario/fondos-rocambole`), fusión `46d36d1`.** Pedido del
+> usuario: *"Armá un fondo bien rocambole para cada uno de los entornos del bestiario redondo"*, con el camino
+> scrolleable en mente.
+>
+> - **Cierra `T-443`**: el galpón (*En directo*), el árbol del gran bonete (*Luzbelito*), Cybersiberia (*Último
+>   bondi*, con nieve), los astilleros (*Cordero atado*, disco 2), la mesa (*La mosca y la sopa*, con la mosca
+>   pintada: `T-442`) y la ruta (el surco del disco, con los cuatro fierros que pasan) son recintos de noche a
+>   aerógrafo, con los colores medidos en las tapas. La prisión la hizo la rama de la drácula.
+> - **Mejorados**: el infierno tiene piso de damero de salón de baile; el templo, serpentinas y papel picado.
+> - **Listos para el camino**: cada capa es `(ancho, alto)`, los hitos en el piso, la geometría en
+>   `rig-entornos.ts`, y `luzQueAsoma` para anunciar cada región desde la vecina.
+> - **Verde:** `npm test` (1687), `npm run check`, `npm run build`. Visto en el navegador del panel a 375 y 800 px, y con la
+>   carga de a una.
+> - **Entró después** del camino (PR #54, enmienda 7), la drácula y la carga de a una (PR #56, enmiendas 8 y 9)
+>   y la Redondopedia de noche (PR #55, `D-75`). Las escenas nuevas pasan por `enEspera` como las demás: se arman
+>   cuando el recinto se acerca.
+
+> ## 🌑 LA REDONDOPEDIA DE NOCHE (2026-10-17) — `D-75`
+>
+> **En `main` desde el PR #55 (rama `diseno/redondopedia-inmersiva`), fusión `b6e9957`.** Pedido
+> del usuario: *"Hace una pulida extrema
+> de ui/ux a la redondopedia, debe sentirse inmersiva, misteriosa y mistica. Al mismo tiempo debe ser
+> facil de leer y que leyendo algo te de ganas de seguir con otra cosa"*.
+>
+> - **El lugar:** cada artículo trae su tapa velada subiendo desde arriba de la ventana, detrás del
+>   título, y se pierde en la tinta antes del cuerpo. Un disco trae la suya; los demás, la de su
+>   categoría; los tres graves, nada. Pasar de un artículo a otro corre la cámara de una tapa a la otra
+>   (el nombre `lugar` de `ADR-03`, sin sumar uno). La portada usa la misma capa con *Gulp!*.
+> - **El título en la letra de la banda** (Redonditos de Ricota Fan), si entra entero, en la tinta de
+>   su disco y con sal. *Luzbelito* y Los Decoradores van en la rotulada, *Oktubre* en `--texto` sobre
+>   su tapa, y los graves como siempre.
+> - **Los hilos del pie:** "Seguí por acá" con tarjetas que traen el gancho, si hay leyenda, quién da
+>   testimonio y los minutos; "Pará la oreja", una leyenda de otro artículo con su rótulo (solo las que
+>   *se cuentan*, nunca de un grave); y "También anda por", los artículos que lo nombran.
+> - **La portada:** una leyenda por noche, la clave de rótulos en tres renglones, los saltos a cada
+>   parte, los diez discos con su tapa y su año, y lo leído apagado.
+> - **La lectura:** el cuerpo a 17 px. Nada se mueve adentro del cuerpo, y los rótulos no se tocaron.
+> - **Verde:** `npm test` (1668), `npm run check` y `npm run build`. Mirado a 375 px y a 1366 px.
+> - **En el lienzo** (`T-450`, hecha): hoja 17, "La Redondopedia de noche", versión 20, en la
+>   página Aplicación, debajo de la 11.
+> - **`UX-39` escrita** (`T-451`, hecha por `experiencia`), con la enmienda de `UX-20` §2. De sus
+>   huecos se cerraron A1, A2, A7 y la excepción de `:visited` (en `diseno-marca.md`).
+> - **Abierto, sin trabar:** `T-452`, los ganchos, la ronda de la oreja, los "los fans" de la prosa
+>   y los ganchos alrededor de los graves (`contenido`, `UX-39` A6); `T-453`, probarlo en un iPhone con
+>   los criterios M1 a M7 de `UX-39` §10; que En vivo tome el lugar (`UX-39` A4). La propuesta está en
+>   `Docs/SUGERENCIAS/HILO-para-experiencia-y-contenido-d75-la-redondopedia-de-noche.md`.
+
+> ## 🦇 LA DRÁCULA CON TACONES, TALLADA COMO OKTUBRE, Y LA CARGA DE A UNA (2026-10-18) — octava y novena enmiendas de `D-73`, ciclo 24
+>
+> **En `main` desde el PR #56 (rama `ciclo-24/bestiario`).** Pedido del
+> usuario, el mismo de Pierre: *"Agrega otro personaje y pulilo a fondo, se creativo que quede como uno de
+> rocambole"*; eligió *"Otro más, encima del #52"*.
+>
+> - **La prisión de Barbazul es el sexto recinto de noche**: un pasillo de celdas **tallado como la gente de la
+>   tapa de *Oktubre*** (`grabado.ts`: la plancha negra, la luz sacada a gubia, motas de prensa). Por la ventana
+>   enrejada se ve **la gente de la tapa de verdad**, y sus cinco banderas, recortadas de ahí, flamean afuera.
+> - **La drácula con tacones** (*"Preso en mi ciudad"*), tallada en la misma técnica y recortada en trece piezas.
+>   Taconea por el pasillo; tocada, **abre la capa como dos puertas de papel** y el forro es el rojo de las
+>   banderas. La jaula vacía de la fiera se toca: la puerta chirría.
+> - **Verde:** `npm test` (1668, ya con el camino), `npm run check`, `npm run build`. Visto a 375 y 1024 px; la capa abierta, con
+>   movimiento reducido simulado (con el panel oculto el navegador frena los cuadros).
+> - **Y la carga de a una (`T-445`, novena enmienda de `D-73`)**: cada escena de noche y cada retrato del índice
+>   esperan en un `<noscript>` (`carga.ts`) y la isla los arma a una pantalla y media. Al abrir, la página bajaba
+>   59 piezas y 1673 kB; ahora, arriba de todo, solo el monte: 10 piezas, 466 kB. Sin JavaScript se ve todo igual.
+> - **Abierto:** `T-444` (Barbazul), `T-431`, `T-435`, `T-437`/`T-439` (la mitad que pide un teléfono), `T-443`
+>   (seis recintos; la sesión de `bestiario/fondos-rocambole` está con los fondos de esos seis: sus escenas tienen
+>   que pasar por `enEspera`).
+> - **Al integrar, con el camino ya en `main` (PR #54)**: las dos enmiendas se escribieron como séptima y octava y pasaron
+>   a octava y novena. La ficha vive en `FichaBestia.astro`, que comparte el camino: sus retratos esperan solo si la página
+>   lo pide (`espera`), y lo pide la del bestiario. `recintoDeLaDracula` toma los ayudantes de `scripts/bestiario/articular.ts`.
+>   `bestiario/fondos-rocambole` tenía su enmienda como (9): ahora le toca la (10).
+
+> ## 🌲 EL CAMINO CON CRUCES: EL BESTIARIO SE CAMINA (2026-10-18) — `D-73`, enmienda 7
+>
+> **Integrada a `main` con el PR #54**, desde la rama `bestiario/camino-con-cruces` sobre `159b1bc`. La fusionó Claude a
+> pedido del usuario (*"integra a main"*). Se escribió como novena enmienda de `D-73` y se renumeró a séptima al integrar,
+> porque llegó antes que la drácula y la carga de a una (`ciclo-24/bestiario`), que pasan a octava y novena.
+> Pedido del usuario: que los entornos estén conectados y sea una aventura scrolleable donde aparecen
+> los personajes y se elige con flechas adónde ir. Se investigaron cinco formas y eligió, textual: *"Dale con
+> el camino con cruces: una página por región, scroll que camina de costado y flechas en el cruce. Arrancá por el monte
+> y la pastura como prueba."*
+>
+> - **`/redondopedia/bestiario/el-monte/` y `/la-pastura/`**: bajar camina la escena de costado (lejos 0,45, piso 1,
+>   frente 1,3; un píxel de bajar es un píxel de caminar). Los ojos se encienden al llegar, el lobo asoma cuando lo
+>   tenés cerca y te sigue con la cabeza, y en la pastura el lobo y el cordero viven como en su recinto. Al final, el
+>   cruce: un cartel por región vecina con la flecha según el plano redondo; las que todavía no se caminan llevan a
+>   su recinto ("EN EL PLANO"). El recinto del monte suma la puerta "Entrá caminando".
+> - **Lo que tocó de lo existente:** la lógica del lobo y el cordero pasó a `scripts/bestiario/pastura.ts` (la usan
+>   las dos islas), la ficha a `components/bestiario/FichaBestia.astro`, `arte.ts` separa `claroDeLaPastura()`, y la
+>   imprenta imprime también `PIEZAS_CAMINO` (cuatro piezas, 567 kB).
+> - **Molinetes:** sin JavaScript o con movimiento reducido, la escena es una tira que se corre con el dedo, con todo a
+>   la vista y los títeres en pose quieta.
+> - **Verde:** `npm test` (1662), `npm run check` y `npm run build`. Probado en el navegador a 390 px y a 1280 px:
+>   caminar, el lobo que asoma, tocar al cordero, abrir la ficha, la libreta, ir y volver por el cruce, la vista sin
+>   JavaScript y la de movimiento reducido.
+> - **Coordinado con la sesión de los fondos** (`bestiario/fondos-rocambole`): arma el arte de seis entornos con
+>   funciones `(ancho, alto = 640)` según la especificación del camino, para que cada tramo nuevo las use (`T-470`).
+> - **Abierto, sin trabar:** `T-470` (los otros tramos), `T-471` (teléfono de verdad), `T-472` (`experiencia`),
+>   `T-473` (el recinto del monte sin JavaScript dibuja los títeres enormes, defecto previo) y `T-474` (lienzo).
+> - **`ciclo-24/bestiario` (la drácula y la carga de a una) choca al integrar**: las dos ramas tocan `bestiario.astro` y
+>   `scripts/bestiario.ts`, y como esta entró primero, acomoda aquella: la ficha de `FichaBestia.astro` tiene que dibujar los
+>   retratos con `enEspera(...)` de `carga.ts`, y el test que cuenta tres `enEspera(` en `bestiario.astro` se ajusta;
+>   `recintoDeLaDracula` importa `partes`, `girar`, `parpado`, `hacia` y `suave` de `scripts/bestiario/articular.ts`.
+
+> ## 📼 EL BESTIARIO ENTRA A LA HOME (2026-10-17) — casete B3 del lado B
+>
+> **En `main` desde el PR #53 (rama `portal/bestiario-en-la-home`).** Pedido del usuario: *"Sumá el bestiario a la home, en
+> el lado B, con la voz y el diseño del resto de los casetes"*. Hasta hoy se llegaba solo desde la portada de la
+> Redondopedia.
+>
+> - **El casete**: «Bestiario redondo», B3, después de la Redondopedia. Canta *"El lobo afuera, el cordero atado al
+>   palo."*, viste *Lobo suelto* (`mitologia`) con el cordero recortado de *Cordero atado* (la pieza que no usaba
+>   nadie, `D-49`), y el sello dice «RECORRÉ».
+> - **Un solo lado B**: `LADO_B` en `sitio/copy.ts` lo leen el portal, la carátula de cada juego (que ahora lista el
+>   B3) y los tests. En la compu los dos lados van de a tres por renglón.
+> - **Verde:** `npm test` (1653), `npm run check`, `npm run build`. Visto a 375, 900 y 1440 px.
+
+> ## 🍾 EL GORDO PIERRE, A PINCEL SECO (2026-10-17) — sexta enmienda de `D-73`, ciclo 23
+>
+> **En `main` desde el PR #52 (rama `ciclo-23/bestiario`).** Pedido del usuario: *"Agrega otro personaje y pulilo a
+> fondo, se creativo que quede como uno de rocambole"*.
+>
+> - **El bajo inundado es el quinto recinto de noche**: la Esquina del Sol con el agua adentro (`RES-340`), en
+>   el crayón de *Un baión* —la pared y el agua son la contratapa misma—. El agua entra por el vidrio roto de la
+>   puerta, afuera llueve, y en el escenario quedaron el bafle, el micrófono y el bombo con un sol pintado.
+> - **El gordo Pierre**, inventado en la estética de *Gulp!*, su disco: pincel seco y fotocopia (`pincel.ts`),
+>   en claroscuro, recortado en papel como un títere de seis piezas. La etiqueta de la botella es el «gulp.» de
+>   la contratapa, lo único de él que sale de una tapa. Flota, se empina la botella, y tocado se ríe hasta que
+>   tose; se refleja en el agua y le hace ondas.
+> - **Pulida**: la isla ya no se lleva el aerógrafo al teléfono (33,6 → 22,1 kB, y un test lo vigila).
+> - **Verde:** `npm test`, `npm run check`, `npm run build`. Visto a 375 y 1280 px en el navegador del panel.
+>   Falta en un teléfono de verdad (`T-437`, `T-439`): con el panel oculto no se pudieron medir los cuadros.
+> - **Abierto:** `T-443` (siete recintos con figuras del plano), `T-442` (la mosca), `T-435` (las tintas nuevas
+>   al lienzo), `T-431` (que `contenido` lea la estampa de Pierre).
+
+> ## 🏠 EL SITIO SE MUDÓ A UNA CUENTA HOBBY DE VERCEL (2026-10-17) — `D-74`
+>
+> Pedido del usuario: liberar la cuenta Pro para otro proyecto. **Hecho y verificado en vivo:** el proyecto
+> `arcade-ricotero` vive ahora en otra cuenta de Vercel, equipo Hobby `knesantos`, y despliega `main` desde
+> GitHub. `fichinricotero.com.ar` pasó con *Verify & Claim*; NIC sigue delegando a `ns1/ns2.vercel-dns.com`.
+> El proyecto viejo del Pro está borrado.
+>
+> - **Murió `arcade-ricotero.vercel.app`** (404). La dirección de Vercel nueva es `arcade-ricotero-ochre.vercel.app`.
+> - **El repo es público desde el 2026-10-17.** Con el repo privado, Vercel Hobby frenó la vista previa del PR #51
+>   aunque el commit lo firmaba `knesantos`. En repos públicos no hace ese chequeo. Detalle en `D-74`.
+> - **Pendiente del usuario:** borrar el TXT `_vercel`, confirmar Analytics *Enabled* en Hobby y probar un
+>   despliegue del otro proyecto del Pro.
+
+> ## 🔧 LA PULIDA DEL BESTIARIO (2026-10-16) — quinta enmienda de `D-73`, ciclo 22
+>
+> **En `main` desde el PR #49 (`fca4682`).** Recorrido entero a 375 y 1280 px. El bocadillo ya no se va
+> de la pantalla en las escenas anchas; cada escena de noche arranca mirando a su protagonista y avisa que se
+> desliza; en la compu entran enteras; las fichas de los cinco de tapa muestran su recorte; el índice sigue el
+> orden del recorrido y cada recinto tiene "Volvé al plano". **Verde:** `npm test` (1647), `npm run check`,
+> `npm run build`. Pendiente igual que antes: `T-437`/`T-439` (teléfono real, carga diferida de imágenes).
+
+> ## 🕯️ TRES MÁS DE TAPA: EL PERRO, LUZBELITO Y MOMO (2026-10-16) — cuarta enmienda de `D-73`, ciclo 22
+>
+> **En `main` desde el PR #49 (`fca4682`).** Pedido del usuario: *"Elegí otras 3 bestias y continuá
+> haciéndolas"*.
+>
+> - **El perro de *Un baión*** ("ese perro que sigue allí") entra por el borde del baldío, rayado a crayón, y ladra.
+> - **Luzbelito**, la cabeza con la vela de su tapa, en su piedra del infierno; el fuego es la pincelada de *Gulp!*
+>   teñida de brasa. La llama titila.
+> - **El medallón de Momo** cuelga en su templo, negro y plata, bajo una guirnalda de focos; se mece y gira al tocarlo.
+> - Los demás de esos recintos, ojos en lo oscuro. Van cuatro recintos de noche de doce.
+> - **Verde:** `npm test` (1646), `npm run check`, `npm run build`. Visto a 375 px con el reloj de reemplazo (panel
+>   oculto); los tres responden al toque.
+> - **Abierto:** `T-442` (la mosca), `T-443` (los ocho recintos que quedan).
+
+> ## 🐺 EL LOBO Y EL CORDERO SON LAS TAPAS (2026-10-16) — tercera enmienda de `D-73`, ciclo 22
+>
+> **En `main` desde el PR #49 (`fca4682`).** Pedido del usuario: *"Animados se refiere a que se muevan, no
+> estilo cartoon. Deben ser lo más fiel posible al diseño real"*.
+>
+> - **Recortados de los frentes del disco doble** (`recortes.ts`, `scripts/recortar-bestiario.mjs`), no redibujados:
+>   el lobo es el busto de la tapa y acecha asomándose desde lo oscuro detrás de la pastura; el cordero es la
+>   criatura entera de su tapa y camina con sus dos patas, atado al palo.
+> - **Inventado, en la estética**: el monte, la pastura, el lomo que completa al cordero donde la tapa lo corta, los
+>   párpados y los ojos de los demás bichos.
+> - **Verde:** `npm test` (1645), `npm run check`, `npm run build`. Visto a 375 px con un reloj de reemplazo (el panel
+>   estaba oculto). Falta en un teléfono de verdad (`T-437`, `T-439`).
+> - **Abierto:** `T-440` (los demás recintos con este criterio), `T-441` (la cadena del lobo suelta).
+
+> ## 🌑 EL MONTE DE NOCHE, A AERÓGRAFO (2026-10-16) — segunda enmienda de `D-73`, ciclo 22
+>
+> **En `main` desde el PR #49 (`fca4682`).** Pedido del usuario: *"Que sea el arte más oscuro, no
+> tan infantil [...] que se note más que se basa en arte de Rocambole [...] Más espacio."*
+>
+> - **Técnica nueva**: aerógrafo en SVG (`aerografo.ts`, `arte.ts`) impreso una vez con `sharp` a
+>   `public/bestiario/*.webp` (`npm run imprimir-bestiario`, 20 piezas, 272 kB). Sin contornos. El navegador solo
+>   mueve las piezas.
+> - **El recinto del monte**: de noche, 900 × 640, se recorre de costado en el teléfono. Lobo y cordero
+>   redibujados a aerógrafo desde las tapas; los demás bichos son ojos que miran desde lo oscuro.
+> - **Verde:** `npm test` (1644), `npm run check`, `npm run build`. Visto a 375 px con un reloj de reemplazo
+>   (el panel estaba oculto). Falta en un teléfono de verdad (`T-437`, `T-439`).
+> - **Abierto:** `T-438`, los demás recintos con el mismo método; `T-435`, las tintas al lienzo.
+
+> ## 🐑 EL BESTIARIO SE VUELVE ZOOLÓGICO (2026-10-16) — enmienda de `D-73`, ciclo 22
+>
+> **En `main` desde el PR #49 (`fca4682`).** Pedido del usuario: *"personajes con diseños lindos,
+> al estilo rocambole, animados y viviendo en su entorno [...] algo asi como un zoologico"*.
+>
+> - **El recorrido**: el mapa redondo es el plano de la entrada; abajo, doce recintos en scroll, cada uno con
+>   su cartel. Tocar un bicho lo hace reaccionar y decir su verso en un bocadillo; desde ahí, la ficha.
+> - **Recinto 1, terminado**: el monte de tiras dentadas en sepia (contratapa de *Lobo suelto*) y la pastura
+>   naranja de *Cordero atado*. El lobo y el cordero son títeres por piezas, fieles a las tapas
+>   (`titeres.ts`): el lobo ronda la pastura del lado del cordero, el cordero pasta y huye hasta que la soga
+>   lo frena, y se lo puede arrastrar sin que salga del círculo.
+> - **Los otros once recintos**, con las figuras de la primera vuelta, que respiran y saltan, hasta que les
+>   llegue su arte (`T-436`).
+> - **Verde:** `npm test` (1643), `npm run check`, `npm run build`. Visto a 375 px. La animación se comprobó
+>   con un reloj de reemplazo, porque el panel del navegador estaba oculto: el lobo rodea y el cordero huye
+>   con la soga tensa. Falta verla en un teléfono (`T-437`).
+> - **Abierto:** `T-435` (las tintas nuevas al lienzo), `T-436` (el arte de los demás recintos), `T-437`.
+
+> ## 🐺 EL BESTIARIO REDONDO (2026-10-16) — `D-73`, ciclo 22
+>
+> **En `main` desde el PR #49 (`fca4682`); la rama `ciclo-22/bestiario` salió de `fdaea84`.** Se trabajó en un worktree
+> (`.claude/worktrees/bestiario`) para no mezclarse con la vuelta de `INV-300`, que sigue sin commitear en la
+> carpeta principal. Pedido del usuario: *"Analiza diseña y construi el bestiario redondo. Arma una lista de
+> TODOS los personajes que son parte de la mitologia de los redondos [...] que se puede recorrer desde arriba
+> y entrar a ver el entorno mas en detalle"*.
+>
+> - **La página** (`/redondopedia/bestiario/`, puerta en la portada de la Redondopedia): **120 bichos y
+>   personajes** sacados de las 104 letras, más Patricio Rey y los buñuelos, que son del mito. Cada uno con el
+>   verso exacto de su tema, cotejado a máquina contra `cancionero.json` (`bestiario.test.ts`), su estampa y,
+>   cuando hay, lo que se cuenta rotulado.
+> - **El mundo redondo**: un mapa circular visto desde arriba, con el galpón de Patricio Rey en el medio, once
+>   regiones alrededor y la ruta del último bondi por el borde. La pastura es un claro adentro del monte: el
+>   cordero atado al palo y el lobo suelto acechando en el borde. El bajo inundado del gordo Pierre (botella,
+>   puerta con el vidrio roto) toca el infierno por las sirenas y el barro. Se toca una región y la cámara baja;
+>   de cerca se viaja a la de al lado; cada bestia abre su ficha, suena diez segundos del tema y queda anotada en
+>   el teléfono.
+> - **El gordo Pierre tiene historia** (`RES-340`, `INV-340`): la noche de lluvia en La Esquina del Sol con la
+>   sala inundada y el vidrio de una puerta roto (testimonio del Indio), la versión donde Pierre lo niega
+>   (testimonio) y la del dueño del bar (leyenda).
+> - **Verde:** `npm test` (1639), `npm run check` y `npm run build`. Visto en el navegador a 375 px y en
+>   escritorio: entrar por un rótulo, viajar por "Al lado", abrir una ficha desde el mapa y desde la barra,
+>   escuchar, cerrar con Escape, volver al mapa, y la libreta.
+> - **Abierto, sin trabar** (`D-73`): `T-431` que `contenido` lea las estampas; `T-432` que `investigador`
+>   confirme de primera mano la noche de La Esquina del Sol en el memoir; `T-433` que `experiencia` diga si hace
+>   falta arrastrar el mapa con el dedo; `T-434` probarlo en un iPhone.
+
+> ## 📚 UNA VUELTA ENTERA DE INVESTIGACIÓN PARA LA REDONDOPEDIA (2026-10-15) — `INV-300`
+>
+> **En `main` desde el PR #64 (rama `investigacion/inv-300-wiki`).** Quedó sin commitear en la carpeta principal hasta el 2026-10-18, cuando se guardó tal cual. Pedido del usuario:
+> *"Hace una vuelta entera de buscar mas informacion en la wiki para la web y juegos"* (la wiki es la
+> Redondopedia).
+>
+> - **La wiki de fans se lee entera** (`RES-300`): el 402 de `RES-86` era de la herramienta, no del sitio.
+>   Por la API salen 329 artículos, con 99 recitales con lista (1978–2001), 63 temas, 14 inéditos y 11
+>   personas. Cotejado contra Wikipedia y el memoir: lo que se confirma va como hecho o testimonio, y el
+>   resto como leyenda, porque la wiki se contradice sola (`RES-301`).
+> - **Lo que más le falta a la Redondopedia:** Sidotti y Dawi (ninguno de los dos tiene artículo), los
+>   inéditos, *En directo*, los monologuistas, Racing 98, River 2000, Olavarría 97 con Tandil, y la
+>   última noche en Córdoba. La lista va en `Docs/SUGERENCIAS/HILO-para-contenido-y-arquitectura-inv300-la-wiki.md`.
+> - **Cierra dudas abiertas:** `RES-308` (Olavarría *y* Tandil: la conferencia de prensa fue por la
+>   prohibición de Olavarría, y el recital terminó en Tandil), y `RES-235`/`RES-236` de `INV-425`.
+> - **Primer lote escrito (2026-10-16, `CNT-42`):** `walter-sidotti`, `sergio-dawi` y
+>   `temas-fuera-de-los-discos` (los inéditos), y la corrección de `semilla-bucciarelli`: tocó el bajo
+>   desde 1982 y no desde 1987 (`RES-337`). La Redondopedia queda en 41 artículos. La frase "la favorita
+>   de muchos" sobre *Mi genio amor* es de Marcelo Figueras, el entrevistador del memoir, no del Indio:
+>   corregida en el artículo, en `INV-300` y en `CNT-42`. Verde: `npm test` (1628) y los tests de la
+>   Redondopedia y de la voz después del último cambio. Visto a 375 px.
+> - **Abierto, sin trabar:** que `contenido` siga con Crook, Fargo, Ábalos, Jolivet, los monologuistas
+>   y los hitos (*En directo* como disco número 11 choca con el test que fija diez discos: es una
+>   decisión de `producto`); que `arquitectura` decida si las 99
+>   listas CC-BY-SA entran a `recitales.json` (pasaría entero a BY-SA, `CTR-19.8`). Los scripts que
+>   regeneran todo están en `Docs/INVESTIGACION/INV-300/`.
+
+> ## 🎤 LOS RECITALES EN PANTALLA Y "ARMÁ TU RECITAL" (2026-10-15) — `D-72`, ciclo 21
+>
+> **Integrada a `main` el 2026-10-16 con el PR #47 (fusión `d5f5837`)**, desde la rama `ciclo-21/recitales`
+> sobre `afbe3ff`. La fusionó Claude a pedido del usuario (*"Integrá el PR #47 a main"*). Pedido del usuario: *"Hace la idea
+> 15, hace al mismo tiempo el juego de CREAR tu propio recital. Esta muy bueno aprovechar los recortes de
+> temas para cuando aparece en pantalla mostrarlo."*
+>
+> - **"En vivo"** (`/redondopedia/en-vivo/`, `IDEA-15`): **27 listas enteras**, por año y plegadas: las dos de
+>   MusicBrainz (Concordia, diciembre de 1995) y 25 de Discogs (casetes piratas de 1987 a 2000, `INV-425`),
+>   estas con el sello "SIN REVISAR" que pidió el usuario. Cada una con su rótulo de fuente y licencia y los
+>   bises que marca la fuente; lo que más aparece en las 256 listas de setlist.fm, con su rótulo; y el
+>   índice de 40 noches con el enlace a cada lista. Cada tema con recorte suena al tocarlo, y cada lista
+>   entera suena de corrido, diez segundos por tema. Puerta aparte arriba de la portada de la Redondopedia.
+> - **"Armá tu recital"** (`/juegos/arma-tu-recital/`, A10, viste *Oktubre*, `IDEA-16`): **una expresión de
+>   deseo, hoy** (enmienda de `D-72`). Elegís un estadio o un teatro de todo el país
+>   (`lugares-recital.json`), un descampado en la localidad que escribas, o escribís el lugar; armás la
+>   lista con los 105 —con buscador y la tira de tapas, en orden, con hasta cuatro bises— y cada tema
+>   suena al sumarlo, con el "SUENA" siempre a la vista en el pie. Al cerrar, la noche suena entera marcando el renglón. Dice
+>   cuánto dura con las duraciones de los discos. Sin puntaje (`BR-22`). Se comparte como dirección y como
+>   hoja (la lámina de "Ponelos en fila", con la tinta de *Oktubre* y un tema por renglón), y se baja.
+> - **Lo que tocó de lo existente:** la quinta forma de link en `desafio.ts` (fuera de la unión), dos campos
+>   opcionales en la lámina, el permiso de t8 para que solo "En vivo" lea las listas enteras (`CTR-19.8`), y
+>   las tildes del texto de `cambios` de `recitales.json`, que ahora se lee.
+> - **Revisión independiente** (`REV-23`, `FIND-153`..`FIND-168`): ninguna alta; cuatro medias (foco al cambiar
+>   de pantalla y al sumar, la lista que seguía sonando, la lista guardada que se borraba) y doce bajas, entre
+>   ellas rótulos de "En vivo" que afirmaban más de lo que dicen los datos. Se arreglaron todas.
+> - **Verde:** `npm test` (1628), `npm run check` y `npm run build`. Jugado en el navegador a 375 px y en
+>   escritorio: armar, mover a los bises, cerrar, escuchar la noche, abrir el link en limpio, la hoja.
+> - **Abierto, sin trabar:** de Discogs, confirmar el volcado CC0 y los "datos restringidos", y las fechas en
+>   disputa; el Fandom no entra hasta confirmar su licencia (`INV-425`, "Sin resolver"). `T-427`, que `investigador` confirme los nombres de los 34 estadios y teatros
+>   y `contenido` lea la lista; `T-421`..`T-425`, los documentos de cada rol, con la propuesta en
+>   `Docs/SUGERENCIAS/HILO-para-todos-d72-los-recitales.md`; `T-426`, probarlo en un iPhone (la noche
+>   sonando de corrido y el pie con la barra de Safari). Lo que más le sumaría a "En vivo": más listas
+>   enteras con licencia abierta (`T-425`, `investigador`).
+
+> ## ❓ PREGUNTAS RICOTERAS SE REHACE ENTERO: SE SIENTE COMO UN FICHÍN (2026-10-15) — `D-71`, ciclo 20
+>
+> **Integrada a `main` el 2026-10-15 con el PR #45 (fusión `e6c3139`)**, desde la rama `ciclo-20/preguntas-ricoteras`
+> sobre `243495d`. La fusionó Claude a pedido del usuario (*"Integrá el PR #45 a main"*). Pedido del usuario:
+> *"Hace un ciclo entero mejorando la ui/ux del juego de preguntas ricoteras. Que la mejora sea total de
+> como se siente, hoy esta muy duro y feo. Mejoremos el banco de preguntas, como estan escritas las
+> preguntas todo."* (El ciclo 19 fue la noche ricotera, `D-62`.)
+>
+> - **La pantalla** (`partida.ts`, bloque `D-71` de `juego.css`): tablero con las tres fichas, el `Nº` y
+>   un riel por escalón; "Cerrá la partida" arriba a la derecha; la pregunta como recorte con cinta en
+>   la tinta de su categoría; opciones con letra (y teclas 1–4 / A–D con el foco en la partida); la
+>   respuesta con el grito estampado, la racha (3, 5, 10 al hilo), la correcta escrita grande y **la
+>   tapa del disco**; `SEGUÍ` pegado abajo; el resultado con el `Nº` grande y **la planilla** pregunta
+>   por pregunta, que también viaja al compartir (◆ ✕). La lógica de `BR-19` no se tocó; lo nuevo que
+>   lee la partida vive en `src/lib/quiz/recorrido.ts`, con tests.
+> - **El banco** (`CNT-41`): 44 preguntas, 14 fácil / 15 media / 15 difícil, 11 por categoría. 19
+>   retiradas, 22 reescritas, 23 nuevas (`QZ-044`..`QZ-066`), tres con verso. Los fáciles los saca el
+>   que fue a una previa. 23 ítems traen `disco` (campo nuevo de `CTR-02`, y `fuentes` acepta `RES-`
+>   de tres dígitos).
+> - **Revisión independiente** (`REV-22`, `FIND-141`..`FIND-152`): una alta (`QZ-064` ponía en Tandil
+>   la conferencia de prensa que el memoir ubica en Olavarría, 1997), dos medias y nueve bajas. Se
+>   arreglaron todas. `voz.test.ts` ahora audita el banco del quiz y conoce «show».
+> - **Verde:** `npm test`, `npm run check` y `npm run build`. Jugado en el navegador a 375 px y a
+>   1024 px.
+> - **Abierto, sin trabar:** `T-412` (`experiencia`: `UX-01`/`UX-07` y la hoja 09 del lienzo) y
+>   `T-413` (`arquitectura`: asentar `disco` y el patrón de `fuentes` en `CTR-02`), nota en
+>   `Docs/SUGERENCIAS/HILO-para-experiencia-y-arquitectura-d71-el-quiz.md`. `investigador`: RES-05 y
+>   N-016 (Olavarría o Tandil), matizar RES-07, la advertencia de Patricia Rey, y los pedidos de
+>   `CNT-41` §6. Probarlo en un teléfono de verdad (la barra del `SEGUÍ` con la de Safari).
+
+> ## 🃏 PONELOS EN FILA SE REPARTE DE A UNA, CON FILAS PROPIAS Y LOS 105 TEMAS (2026-10-10) — `D-69`, `D-70`
+>
+> **Integrada a `main` el 2026-10-10 con el PR #43 (fusión `2ffdf4c`)**, desde la rama `ponelos/filas-propias`
+> sobre `41292f9`. La fusionó Claude a pedido del usuario (*"cuando termine integra todo a main"*). Pedidos del usuario:
+> editar y sumar las filas, una tier list de *todos* los temas con su disco, que se vea más lindo y sea
+> más fácil y divertido, que más fichas está bien, y que suene el recorte de cada tema (en una ficha de
+> disco, temas de ese disco, uno detrás de otro).
+>
+> - **El mazo:** abajo va la que sigue (carta grande con tapa, disco y pista) y un botón por fila. Un toque
+>   y viene la próxima. Están Salteala, Elegí otra (con filtro por disco), Mezclá el mazo y Deshacé. Una
+>   ficha puesta se toca para moverla.
+> - **Filas propias:** de dos a siete. Se renombran en el lugar, se guardan en el navegador y viajan en el
+>   link (versión 2 del empaquetado, `#o=2…&f=…`, con lista blanca). Con las de siempre, el link es el
+>   de antes.
+> - **"Todos los temas"** (los 105) va primero. Se guarda una partida por conjunto: abrirlo de nuevo sigue donde
+>   quedó, y la elección ofrece "Te quedó a medias".
+> - **Suena** el recorte de 10 s al tocarte una ficha, y se apaga desde las herramientas. La lámina va de 2
+>   a 7 filas y se estira de alto antes que cortar un tema.
+> - **En el portal sube al A6** (`D-70`), en el lugar de "Preguntas ricoteras", que pasa al A7.
+> - **Revisión independiente:** de trece hallazgos se confirmaron siete (foco, nombres accesibles, el
+>   disco que seguía sonando, media letra en un nombre de fila) y se arreglaron todos.
+> - **Verde:** `npm test`, `npm run check` y `npm run build`. Probado en el navegador a 375 px y a
+>   1400 px.
+> - **Pendiente:** los documentos de rol que quedaron atrás (`UX-23`, `ADR-06`, `CTR-13`,
+>   `PRD-ponelos-en-fila`). La propuesta para cada uno está en
+>   `Docs/SUGERENCIAS/HILO-para-todos-d69-ponelos-mazo-y-filas.md`. Y probarlo en un iPhone de verdad:
+>   el audio que arranca solo y el mazo pegado abajo con la barra de Safari.
+
+> ## 🔢 EL PORTAL CAMBIA DE ORDEN (2026-10-06) — `D-68`
+>
+> Pedido del usuario. El lado A queda: Adiviná el tema, ¿Qué tipo de ricotero sos?, Sacalo por la
+> letra, Skayboy y Poligirl, Completá la letra, Preguntas ricoteras, y después Ponelos en fila,
+> Adiviná la tapa y Más o menos, como estaban. Solo se movió el arreglo `JUEGOS` de `copy.ts`: la
+> pista de cada carátula sale del mismo índice y acompaña sola.
+
+> ## 🔤 LOBO SUELTO Y LA LETRA DE LUZBELITO ENTRAN AL SISTEMA (2026-10-06) — `D-67`
+>
+> **Rama `tipografia/lobo-y-luzbelito`, sobre `main` en `8bb84ab`**, en el worktree
+> `../RicotaArcade-fondo` (reusado). Pedido del usuario: *"vamos a seguir integrando las otras dos
+> que no estan en el sistema, la de lobo suelto y la otra que es medio luz belito"*.
+>
+> - **"La otra" es Redonditos de Ricota**, de Zavala (la del zip del mismo nombre). No es la letra de
+>   la tapa de *Luzbelito*: la viste porque se le parece. Por eso no escribe el nombre del disco en
+>   la estampa.
+> - **Las dos se derivaron con material propio** (`scripts/derivar-lobo-suelto.py`,
+>   `scripts/derivar-redonditos.py`): Lobo suma Á É Í Ó Ú . , ! ¡ y recupera la Ñ de Zavala;
+>   Redonditos, Á É Í Ó Ú Ñ . , ! ? ¡ ¿, escalada a la mayúscula del sistema. Las dos suben al
+>   renglón.
+> - **Dónde escriben:** Lobo, el título de "Adiviná el tema" (sin sal); Redonditos, el título de
+>   "¿Qué tipo de ricotero sos?", el nombre de cada manera, "Las cuatro maneras" y el membrete de la
+>   hoja. La letra viaja con la variante (`--fuente-disco` en `sitio.css`).
+> - **Pendiente:** las postales de dos ejes siguen con el nombre en la rotulada (hay que pasar el
+>   taller a la letra y regenerar los PNG; se esperó a que `ciclo-18/que-ricotero-sos` entre), la
+>   hoja 04 del lienzo y la fila de las letras de Zavala en `CNT-01` (sugerencia para `contenido`).
+
+> ## 🔀 CLAUDE FUSIONA CUANDO SE LO PEDÍS (2026-10-06)
+>
+> Pedido del usuario, textual: *"mergealo vos, vamos a dejar escrita la regla para que puedas
+> tambien"*. El PR #38 (la multitud que se acerca, `D-64`, `D-65`) lo fusionó Claude. Desde ahora
+> hay permiso en `.claude/settings.json` (`Bash(gh pr merge *)`) y una regla,
+> `.claude/rules/integrar.md`, que dice cuándo: **solo si el usuario lo pide en el chat**, con
+> `main` adentro de la rama, todo verde y los checks del PR en verde; siempre `--merge`, nunca
+> `--admin`, `--squash` ni borrar la rama.
+
+> ## 🖨 LA MULTITUD SE ACERCA, LA SOMBRA SALE DE TODOS LADOS, LAS TAPAS SE SELLAN (2026-10-05) — `D-63` enmienda 1, `D-64`, `D-65`
+>
+> **Rama `diseno/la-multitud-se-acerca`, sobre `main` en `8989416`**, en el worktree
+> `../RicotaArcade-fondo` (reusado: la rama del fondo ya estaba integrada). Pedidos del usuario,
+> en orden: *"Saquemosle la sombra a las letras de las tapas de los juegos, busquemos un efecto mas
+> de impresion vieja sobre papel o sello [...] que queden todas coherentes"*; *"Sisi saquemos la
+> sombra de todos lados, no me gusta. Ademas hay que usar la tipografia de los discos en mas
+> lados"*; y *"Continua lo que falta, me gustaria que mientras vas bajando en la pagina en el fondo
+> se vean banderas rojas y gente [...] como si ir para abajo fuese acercase a la multitud"*.
+>
+> - **La multitud se acerca** (`D-63` enmienda 1): dos planos fijos detrás del portal, hechos con el
+>   frente original de *Oktubre* (banderas y gente, en espejo). Arriba se ve chica y lejos; al
+>   bajar crece y sube la fila más cercana; al final llegan las caras grandes del pie, y cada fila
+>   tapa a la de atrás. Sin JavaScript, atado al desplazamiento; quieto con movimiento reducido.
+> - **Sin sombra en ningún lado** (`D-64`): 41 sombras, sobre letras y sobre objetos. Los botones se
+>   hunden y se aclaran; los estados que se decían con sombra se dicen con borde.
+> - **Las tapas se sellan** (`D-64`): el título del casete y el de la carátula en tinta de sello
+>   gastada, la etiqueta en papel viejo, el sello de acción moteado, y el golpe de cada disco igual
+>   en el casete, la carátula y el título de su juego. Lo eligió un panel de tres diseñadores y tres
+>   jueces.
+> - **La letra de la banda** (`D-65`): Patricio Rey Fan escribe el título de cada juego (menos el de
+>   Skayboy, que va chico en su cabecera) y el botón de compartir, con Á É Í Ó Ú ¿ ? ¡ ! . , derivadas de la propia letra
+>   (`scripts/derivar-patricio-rey.py`). El título del casete sigue en la rotulada: a 15 px la letra
+>   de la banda no se lee.
+> - **`npm test` corre en Windows**: el patrón iba entre comillas simples y `cmd` no las saca, así
+>   que corría cero tests y daba verde. Ahora van dobles, que andan en los dos. Y el test de la isla
+>   de dos ejes ya no falla con los finales de línea de Windows.
+>
+> **Verificado:** `npm test` 1562/1562 en Windows, `check` 0/0, build 160. Tests nuevos con su rojo
+> visto: los planos de la multitud (techo y piso de tinta, máscaras, silueta), "ninguna sombra en
+> ningún lado", `texturas.test.ts`, la etiqueta sobre el papel viejo, y la cobertura de Patricio
+> Rey. Mirado en el navegador a 1440×900 y 375×812: el portal arriba, al medio y al final, los
+> casetes, la carátula y el título de los juegos.
+>
+> **Abierto, sin trabar:**
+> - `experiencia`: `UX-05`, `UX-20`, `UX-22` §8, §9 y §13 y `UX-25` describen lo que ya no está
+>   (nota en `Docs/SUGERENCIAS/HILO-para-experiencia-sin-sombra-y-letras.md`). El lienzo tampoco
+>   tiene nada de esto.
+> - El título en Patricio Rey en el teléfono se lee con esfuerzo si no se conoce la letra: si al
+>   usuario le molesta, la salida es dejarlo solo en la mesa.
+> - El efecto de la multitud en el teléfono es más tenue que en la computadora: los casetes tapan
+>   los planos, y la tinta tiene el techo del contraste.
+
+> ## 👥 LA GENTE MIRA DESDE EL FINAL DEL PORTAL (2026-10-04) — `D-63`
+>
+> **Rama `diseno/fondo-multitud`, sobre `main` en `76ba9d3`, integrada a `main` con un PR** a
+> pedido del usuario (*"para y subi e integra todo lo que hayas hecho, despues seguimos"*).
+> Pedido, con la imagen adjunta:
+> *"Usemos esta imagen de fondo de la pagina, sin la parte de las letras de oktubre, un fondo
+> negro y sobre el final de la pagina las personas mirando."*
+>
+> - **El fondo del portal es negro liso.** Sale la franja fija de banderas (`oktubre-banderas`,
+>   velada al 86 %) y su dibujo de repuesto `banderas.svg`.
+> - **La gente de *Oktubre* es el piso del pie de imprenta del portal**, de borde a borde y abajo
+>   del crédito, a tinta plena: `public/arte/multitud-oktubre.png` (1280×368, 64 KB), en
+>   `--papel` y el rojo de la bandera sobre transparente. Lo produce
+>   `node scripts/generar-multitud.mjs` desde el máster
+>   `Docs/INVESTIGACION/TapasDiscos/oktubre-frontal-ancha.webp` (la imagen del usuario).
+> - En el teléfono, piso de 14 rem: se ve el centro de la tapa. La deriva de `UX-20` §1.4 pasó a
+>   la gente, corriendo al revés.
+>
+> **Verificado:** `npm test` 1515/1515 (3 nuevos en `multitud.test.ts`, con su rojo visto),
+> `check` 0/0, build 160. Mirado en el navegador a 1440×900 y a 375×812: la gente al final, sin
+> desborde de costado, el crédito nombra *Oktubre*; el quiz y "Adiviná el tema" siguen con su
+> pasada.
+>
+> **Abierto, sin trabar:** `experiencia` tiene que poner al día `UX-05` (fila de `/`), `UX-20`
+> §2 y `UX-25` §4; el lienzo no tiene esto. Los costados del máster no son de Rocambole (están
+> anotados en `D-63` y en `public/arte/README.md`).
+
+> ## 🍺 LA NOCHE RICOTERA ENTERA, Y EL PLANO FIJO QUE VUELVE (2026-10-05) — `D-62`, ciclo 19
+>
+> Pedido del usuario, textual: *"el recital ricotero es barro, sucio, drogas reviente y también
+> es familia amigos amor, es todo eso, pero lo primero no puede faltar tampoco, un choripán, un
+> pancho una birra un porro hasta cocaína debe ser parte del recital, la previa ir un rato antes
+> a escabiar o no eso es un recital ricotero"*. Después, mirando el sitio publicado: *"nunca
+> cansa el volumen"*, *"quiero que esté el gráfico también, queda lindo ver que está en un plano
+> de dos ejes"*, y entre las dos versiones del plano: *"B, el fijo como el rombo viejo"*. Rama
+> `ciclo-18/que-ricotero-sos`, integrada a `main` el 2026-10-05 a pedido del usuario (*"pará y
+> subí e integrá todo lo que hayas hecho, después seguimos"*), y otra vez el 2026-10-06 con el
+> PR #41, con todo lo de abajo (*"integrá todo"*).
+>
+> **El número.** Se escribió como `D-59` y se renumeró a **`D-62`** al integrar: el `D-59` del
+> dominio llegó antes a `main`. Los commits de la rama dicen `D-59`; el repo, `D-62`.
+>
+> **Lo que hay:**
+> - **`D-62`**: la escena es la ricotera entera (barro, chori, birra, porro, merca como paisaje;
+>   familia, amigos y amor de terceros); la opción es de quien juega. Lo que se toma o se fuma
+>   nunca separa los polos, y se suma un **quinto lugar** a la prueba: *el que no toma ni fuma*.
+>   **Enmienda 1**: la música nunca molesta. **Enmienda 2**: vuelve el plano de dos ejes, arriba
+>   de la grilla que se queda. **Enmienda 3**: el plano es **fijo** (Luz arriba, Orden a la
+>   izquierda, para todos), elegido por el usuario con el costo a la vista.
+> - **`INV-172`** (`RES-172`..`RES-194`): la noche real, casi todo **leyenda** (sin páginas
+>   abiertas: la red bloqueó los diarios; el memoir no está en el disco).
+> - **`BR-38`** y `US-06` enmendada dos veces (`producto`): la tercera exceptúa al plano del
+>   criterio 3 y suma el **criterio 9**. **`CNT-31`** (`contenido`): los 30 enunciados, las
+>   cinco líneas que cantan, las cuatro bajadas; casete y lugar con barro y chori; §13 confirma el
+>   texto del lector (`T-352`). **`UX-38` v1.1** (`experiencia`): el plano construido, con la
+>   crítica respondida.
+> - **El plano** (`planoFijo()` en `partida.ts`, `plano()` en la isla, `.ejes-plano*`): recorte
+>   de papel, ejes en cruz, los cuatro polos, las cuatro maneras, la tuya con borde y sello, la
+>   del amigo punteada, `role="img"` con `RESULTADO.altPlano`. La grilla de abajo sigue relativa.
+>   Medido a 375, 360, 320, 1366 y 1440, con y sin amigo, las cuatro maneras: sin desborde, filas
+>   y columnas iguales, nada bajo 12 px; los botones no se movieron. No viaja en la tarjeta.
+> - **Guardas**: `banco.test.ts` (vetos de la noche con *la música que molesta*, vetos de las
+>   opciones, el consumo nunca de un solo lado, cada celda trae lo sucio), `partida.test.ts` (el
+>   plano fijo; el cuadrado latino de la grilla), `isla.test.ts`, `estilos.test.ts` (piso de 12 px
+>   en `.ejes-*`), `copy.test.ts` (el texto del lector en veinte casos).
+> - **`npm test` corre todo**: el glob iba sin comillas y corría 332 tests. Hoy, con `main`
+>   adentro (`D-63` a `D-67`), **1575 en verde**; `check` sin errores, `build` de 160 páginas.
+> - **El plano está en el lienzo** del sistema de marca como **hoja 16** (`T-351`, versión 19 del
+>   lienzo), debajo de la 08 en la página Aplicación.
+>
+> **`REV-20` está cerrada** (`Docs/REVISIONES/REV-20-la-noche-ricotera.md`, 2026-10-06; los votos
+> en `REV-20-votos.json`). Tres lentes con dos verificadores adversariales cada una, un crítico de
+> completitud y una ronda final. **Ningún hallazgo alto.** `FIND-119` … `FIND-133` (`FIND-128` y
+> `FIND-129` quemados): todo cerrado. `FIND-132` y `FIND-133`, cifras de `UX-36`/`UX-38`, se
+> cerraron en papeles después del cierre (abajo).
+> - `EJ-049` (`FIND-119`) quedó «Festejo con el resto» / «Canto para adentro», en dos vueltas.
+> - La portada a 320 × 568 se rompió dos veces y se arregló dos veces: el lugar nuevo del casete
+>   («Traés barro en las zapatillas.», `FIND-130`) y la letra del título de `D-67` (`FIND-131`:
+>   16 px de aire bajo 22 rem). Hoy «Empezá la noche» termina en 562.
+> - Guardas nuevas de la revisión: la música que molesta en más formas y en primera persona, los
+>   trapos fuera de las opciones, el consumo como verbo, la merca fuera de lo que define una
+>   manera o un momento, ningún número; `textoDelPlano()` en un solo lugar y el orden de los
+>   rincones atado.
+> - La excepción de las líneas que cantan (sin segunda persona) está en `voz-ricotera.md` §5.
+>
+> **Después del cierre**, una última ronda de papeles (`1afb263`, `619b2b2`, `7e772a3`, `0c38b56`)
+> cerró en papeles `FIND-132` y `FIND-133` y lo que el cierre le dejaba a cada rol. Su verificador
+> dejó cinco detalles de redacción, todos bajos, que quedan anotados acá y no se abrió otra vuelta:
+> - `contenido` (`CNT-31`): todavía dice que `producto` no decidió `EJ-051` (decidió en `6b1beeb`:
+>   la escena es la hoja) y que el peso del costo de `CU-4` lo dice `producto` (ya dijo: cuenta la
+>   forma, decide `contenido`); y cita «ficha 15/16/17» donde `REV-20` dice «Sin consenso».
+> - `experiencia` (`UX-36` §5.6, `UX-38` §3.2): «Compartí» a 320 termina en 568,4 en las cuatro
+>   maneras (en `CU-1` y `CU-3` por 0,4 px), no «justo en el borde».
+> - `producto` (`BR-38`): el «Léase» del veto 1 deja afuera «el pogo» que la tabla trae, y la cita
+>   «`REV-20` 2(c)» para los chicos en las bajadas no lo respalda (es cierto, pero por otra lectura).
+>
+> **Lo que decide el usuario:** si «Compartí» tiene que entrar a 320 × 568 en el resultado (hoy
+> no, en ninguna manera, y es de antes de este ciclo); `EJ-040` («Me dejo llevar» con los Redondos
+> sonando) y el costo de `CU-4` («averiguarlo en el celular»), que `contenido` dejó como están;
+> y el teléfono real (lector de pantalla, la portada a 320, el brillo, Safari y Android), y si la
+> noche suena ricotera. La hoja 15 del lienzo (la mesa) sigue pendiente (`T-319`), y antes hay
+> que sacarle el canto.
+
+> ## 🌐 EL DOMINIO: FICHINRICOTERO.COM.AR, ANDANDO (2026-10-05) — `D-59`
+>
+> **El sitio vive en `https://fichinricotero.com.ar`.** El usuario compró el dominio en NIC
+> Argentina (`arcadericotero.com.ar` quedó trabado en revisión manual, "banquinado"; la sospecha
+> es *arca*), lo agregó en Vercel con `www` redirigiendo, y delegó en NIC a `ns1.vercel-dns.com` y
+> `ns2.vercel-dns.com`. Cuando el usuario confirmó que andaba, la rama
+> `dominio/fichinricotero` se fusionó con `main` (que ya traía `D-60` y `D-61`) y se integró.
+>
+> **Lo que cambió en el código:** `site` de `astro.config.mjs` apunta al dominio nuevo, así que
+> `og:url` y `og:image` salen de ahí; las tarjetas del taller de "¿Qué tipo de ricotero sos?" se
+> volvieron a dibujar con la marca de `D-60` y este dominio; los enlaces del hilo de Twitter en
+> `main` apuntan al dominio nuevo.
+>
+> **Lo que queda:**
+> 1. `arcade-ricotero.vercel.app` sigue respondiendo y no redirige: los enlaces viejos andan.
+>    Si se quiere una sola dirección, se configura en Vercel (Settings → Domains).
+> 2. El hilo con el nombre nuevo (rama `difusion/hilo-twitter`) **choca con esta integración** en
+>    `hilo.md` y `hilo.json`: acá cambiaron las direcciones, allá el nombre. Al integrarlo, quedan
+>    las dos cosas.
+> 3. **Renovar en NIC antes del 2027-10-04** ($8.500 hoy; 45 días de gracia). Si se deja vencer,
+>    el sitio sigue en `arcade-ricotero.vercel.app` volviendo `site` atrás.
+
+> ## 🕹 SKAYBOY Y POLIGIRL: EL MENÚ, EL PASO ENTRE NIVELES Y EL PULGAR (2026-10-04) — `D-61`
+>
+> Pedido del usuario, textual: *"Hacé una sesión entera agregándole menú, paso entre niveles y
+> corrigiendo la jugabilidad de las teclas en mobile de skayboy y poligirl. Además ponele en el
+> home al lado de Adiviná el tema. La idea es que tenga un botón para ponerse en pantalla completa,
+> y que en la misma pantalla completa estén los controles medio transparentes para jugar dentro de
+> la pantalla completa. Agregá el menú para jugar y ver qué niveles hay y eso."* Sin plan de
+> `orquestador`: `D-61` la escribió el hilo principal, y cada rol tomó su número (`IDS.md`).
+>
+> **Lo que hay:**
+> - **El menú** (`menu.ts`, `UX-37` §3): abre al entrar —el botón grande juega el nivel que
+>   corresponde, tocable en el primer cuadro— y desde la partida con el sello `MENÚ` del mueble,
+>   que la pone en pausa (el mundo no avanza). **Los seis niveles abiertos** (`D-61` punto 2,
+>   `BR-40`), cada uno con número, nombre de `CNT-21` y sello `PASADO` / `ACÁ ESTÁS`. Ocupa la
+>   región del tubo y los mandos, medida por `regionDelMenu()`: parado, la zona de las teclas con
+>   el nivel dibujado arriba; de costado, la franja del tubo; en el modo, la sala. **Nunca el pie
+>   de homenaje ni la cabecera.**
+> - **La tarjeta de fin de nivel**, en la banda de arriba del área (las puertas están abajo):
+>   `NIVEL 2 DE 6 · PASADO`, el que sigue (con lugar), y Repetí / Elegí otro / Seguí. A ×1 va
+>   compacta. El toque sobre el área sigue valiendo; `#seguir-juego` salió de la tabulación.
+> - **El rótulo de entrada**: `NIVEL 3 DE 6` y el nombre, 2,6 s, sin tomar toques.
+> - **El pulgar rueda** (`dedos.ts`): la columna captura el dedo y la tecla sale por geometría
+>   (sin franjas muertas); subir de una flecha a saltar sin levantar **salta y sigue para ese
+>   lado**. Toques más cortos que un tic no se pierden (`pulsadas`). La tecla se hunde sin
+>   transición. Las notebooks táctiles conservan los botones (`any-pointer: coarse`).
+> - **La pantalla completa en cualquier posición**: el sello aparece también parado y dice el
+>   verbo (`PANTALLA COMPLETA` / `SALÍ`, `CNT-40`); el menú tiene el mismo botón con la frase
+>   entera. De costado, las teclas medio transparentes encima, como ya estaba.
+> - **La portada**: el casete pasa de A9 a **A4**, después de "Adiviná el tema".
+> - Papeles: `D-61` (con sus precisiones del mismo día), `UX-37` (y pies en `UX-27`, `UX-28`,
+>   `UX-32`, `UX-33`), `CNT-40` (enmienda `CNT-22` §1), `BR-40` (enmienda `US-09` criterios 3 y 9 y
+>   `BR-31` §3), enmiendas de `ADR-10` y `CTR-16.11.2`; traspaso en
+>   `Docs/SUGERENCIAS/HILO-para-todos-skayboy-menu-y-mando.md`.
+>
+> **Verificado:** `npm test` 1448/1448 (43 nuevas: `dedos.test.ts`, `menu.test.ts`, y casos en
+> `modo-pantalla.test.ts` y `estilos.test.ts`), `check` 0/0, build 156. La isla pesa 15,4 KB
+> comprimida y con el motor suma 83,8 (techo de 90, `ADR-08.10`). Medido en el panel del
+> navegador del escritorio, con emulación: parado 375×667 y 375×812, acostado 740×360, 568×320 y
+> 812×375, escritorio con mouse, y la pantalla completa parada y acostada (740×360 y 568×320). El
+> nivel 1 se jugó y se ganó de punta a punta (avance guardado, baile, contador, tarjeta, Seguí, el
+> rótulo del 2, el menú en pausa). El pulgar se probó con eventos de puntero: rueda entre flechas,
+> lleva la dirección al saltar, suelta todo lejos de la columna. El pie de homenaje no se cruza
+> con ninguna capa en ningún reparto (medido, y lo prueba `menu.test.ts`).
+>
+> **Revisión adversarial** (cuatro lentes en paralelo: la máquina de estados de la isla, el dedo,
+> el CSS por tamaño, la lógica y los textos): 25 hallazgos distintos. La verificación cruzada se
+> cortó a mitad por el límite de la sesión; los que quedaron sin veredicto los verificó el hilo
+> contra el código y el navegador. **Corregidos:** la tarjeta del sexto se rompía a ×1 y en la
+> grilla ancha ("Volvé al primero"); en el modo a 568×320 la regleta se apilaba y la tarjeta tapaba
+> `SALÍ`; la tarjeta no escondía el rótulo, se comía el toque de seguir con su cuerpo, robaba el
+> foco (y un Enter repetido salteaba el nivel) y se montaba sobre los bloques de saltar en el modo;
+> el rótulo quedaba debajo de los sellos en el modo; `aria-modal` y un `inert` de más le escondían
+> al lector el volver y el pie; el foco volvía al canvas (kaplay lo enfocaba) o se caía al `body`;
+> `Escape` sostenido hacía titilar el menú; el `aria-pressed` contradecía el nombre nuevo; `PASADO`
+> iba en el verde del acierto; el eco del menú pintaba 2 px sobre el pie; dos recortes con "…" en
+> rótulos; el sello se salía 5 px de la ventana a 568; con mouse a ×1 de costado la regleta tapaba
+> el título; el menú parado tapaba la firma y los créditos del sitio; `:active` mostraba teclas que
+> el mando ya había soltado. **Descartados con razón:** que la ficha muestre el dígito y no
+> `MENU.numero` (ver abierto), y que `#seguir-juego` sin tabulación deje sin camino al teclado (lo
+> tiene: Tab a la tarjeta, o Enter con el foco suelto).
+>
+> **Abierto, sin trabar:**
+> - `T-401` (usuario): **el lienzo**. El menú, la tarjeta, el rótulo y los sellos no tienen hoja;
+>   el circuito de `diseno-marca.md` se invirtió otra vez, como con `T-319`. Ningún color nuevo:
+>   todo sale de tokens y pares que ya mide `contraste.test.ts`.
+> - `T-402` (`revisor`): **`REV-21` formal** contra `UX-37` §10, con contexto fresco. La revisión
+>   de esta sesión la hicieron agentes de propósito general, no el rol.
+> - `T-403` (`experiencia`): `UX-35` y `UX-04` todavía dicen A9 para Skayboy; y la leyenda de
+>   `D-55` sigue sin entrar a `UX-28` §2 y `UX-35` §5.
+> - `T-404` (`arquitectura`): las filas de `menu.ts` y `dedos.ts` en `CTR-16.8` y `ADR-08.10`, y
+>   reabrir `hastaDonde()` frente a `pasadosDeLaFila()` (`CTR-16.11.1` y `.3`).
+> - `T-405` (`contenido` y `experiencia`): la ficha muestra el dígito ("3") y `CNT-40` §1.1 pide
+>   `MENU.numero` ("Nivel 3"); en la fila de seis cuadrados no entra. Que lo decida `CNT-40`.
+> - Sigue sin existir la pieza compartible de `BR-27`: "Volvé al primero" en el sexto es el parche
+>   de `BR-40` punto 7.
+>   (Los números se renumeraron al integrar —era `D-56`, `UX-36`, `CNT-30`, `BR-36`, `T-331`+—
+>   porque el ciclo 18 llegó antes a `main` con esos; ver `IDS.md`.)
+> - **Sube como PR a `main`** desde la rama `skayboy/menu-y-mando-sobre-main`, encima del ciclo 18
+>   y de "Fichín Ricotero" (`D-60`), a pedido del usuario.
+>
+> **Del usuario:** jugarlo en un teléfono de verdad, con el pulgar (`T-249` sigue abierta, y ahora
+> mide también el arrastre de dirección y la pantalla completa parada en Android, que gira sola);
+> y decidir si "al lado de Adiviná el tema" tiene que ser literal también en tres columnas (ver
+> `D-61`, precisiones).
 
 > ## 🕹 EL SITIO SE LLAMA FICHÍN RICOTERO (2026-10-04) — `D-60`
 >
@@ -38,6 +1161,7 @@
 >   nombres de Vercel y sumar el dominio al proyecto `arcade-ricotero`. Hasta entonces el
 >   dominio no carga y `D-59` no puede entrar.
 > - **`D-59` está reservado dos veces** (la rama del dominio y el ciclo 19). Uno renumera.
+>   *[Resuelto 2026-10-05: el ciclo 19 pasó a `D-62` al integrar.]*
 > - El trabajo de Skayboy del menú y el pulgar ya está renumerado sobre `origin/main`, en la
 >   rama local `skayboy/menu-y-mando-sobre-main` (`e50110b`: `D-61`, `UX-37`, `CNT-40`,
 >   `BR-40`, `T-401`…`T-410`), sin subir. Contra esta rama choca solo como texto: el final de
@@ -3642,10 +4766,19 @@ los 105 temas de `RES-20` y con el choque que tiene contra lo ya decidido.
 | `IDEA-11` | Mayor o menor: qué palabra se dice más en el cancionero | original (género conocido, motor mínimo) |
 | `IDEA-13` | Supabase: correcciones, puntajes, jugadores | infraestructura, no es juego |
 | `IDEA-14` | Skayboy y Poligirl: dos personajes, una puerta, cielo e infierno | clon vestido — **relevada a fondo el 2026-09-11**, ver el bloque del principio de este archivo |
+| `IDEA-15` | Los recitales en pantalla | original — **hecha el 2026-10-15** ("En vivo", `D-72`) |
+| `IDEA-16` | Armá tu propio recital, con los recortes | original — **hecha el 2026-10-15** (`D-72`) |
 
 Dos reglas nuevas salieron de ahí: **`BR-15`** (los clones se adoptan vestidos, no se
 escriben — instrucción transversal del usuario) y **`BR-16`** (una idea no entra a un ciclo
 sin promoverse antes a `US-XX`). Prefijo `IDEA-` registrado en `Docs/IDS.md`.
+
+> **Al día el 2026-10-15 (`D-72`).** Lo que de esta tabla ya está en el sitio: `IDEA-08` (Letras y
+> acordes), `IDEA-09` (`US-06`, ¿Qué tipo de ricotero sos?), `IDEA-11` (`US-10`, Más o menos), `IDEA-14`
+> (`US-09`, Skayboy y Poligirl), `IDEA-15` (los recitales en pantalla, "En vivo") e `IDEA-16` ("Armá tu
+> recital"). Las dos ideas sin ID de más arriba también: la voz del Indio es `.claude/rules/voz-ricotera.md`
+> y las tres bandas de después de la separación tienen su artículo en la Redondopedia. Siguen sin empezar
+> `IDEA-01` a `IDEA-07`, `IDEA-10` e `IDEA-13`.
 
 **Nada de esto es alcance de la v1 y nada de esto está empezado.** Tres preguntas quedaron
 abiertas al usuario, listadas al final del PRD: qué es "el gordo Pier" (no figura en los

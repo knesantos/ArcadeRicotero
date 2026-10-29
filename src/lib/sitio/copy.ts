@@ -12,6 +12,7 @@
 
 import type { Disco } from '../letra/discos.ts';
 import { CASETE as CASETE_SKAYBOY } from '../skayboy/copy.ts';
+import { ENTRADA as ENTRADA_BESTIARIO } from '../bestiario/camino.ts';
 
 export const PORTAL = {
   /** El logotipo, como se dibuja en pantalla. */
@@ -80,7 +81,7 @@ export const PORTAL = {
    * `Docs/SUGERENCIAS/HILO-para-investigador-figura-encadenada.md`.
    */
   altTarjeta:
-    'Calco en línea blanca de la figura encadenada, del arte de Rocambole (Ricardo Cohen).',
+    'La marca del Fichín Ricotero: una F y una R rojas con una corona arriba, y el nombre abajo.',
   creditoTapas: (discos: readonly string[]) =>
     `En esta pantalla, arte de ${discos.length === 1 ? 'la tapa de' : 'las tapas de'} ` +
     `${discos.length > 1 ? `${discos.slice(0, -1).join(', ')} y ${discos.at(-1)}` : discos[0]}, ` +
@@ -128,7 +129,14 @@ export const LUGARES = {
   // puerta" con la vuelta 2: era la cuarta vez que la pantalla decía "nada", y la puerta de un
   // recital es donde se pide la entrada. "Con las manos vacías" se leía como llegar sin regalo
   // (vuelta 3): queda la imagen de la previa, sin plata y sin puerta.
-  dosEjes: 'Entrá con la campera puesta.',
+  // `CNT-31` §10 (`D-62`): la imagen pasa a ser la de la vuelta (el barro en las zapatillas),
+  // porque la línea que canta de la previa dejó de ser la campera; el portal y la última hoja
+  // comparten objeto. A 320 px el renglón no puede pasar de 30 caracteres: con «seco» (35)
+  // partía en dos y dejaba «Empezá la noche» bajo el pliegue (`REV-20`, `FIND-111` de `REV-19`).
+  dosEjes: 'Traés barro en las zapatillas.',
+  /* `D-72`: "Armá tu recital". La hoja de la lista va pegada con cinta al piso del escenario,
+     al lado del pie del micrófono: la imagen es el papel en blanco y la cinta en la mano. */
+  recital: 'Tenés cinta y una lista en blanco.',
 } as const;
 
 /**
@@ -174,30 +182,13 @@ export interface Casete {
   readonly accion?: string;
 }
 
+/**
+ * El orden del lado A es el del portal y el de la pista (A1, A2…), y lo fijó el usuario el
+ * 2026-10-06 (`D-68`): Adiviná el tema, ¿Qué tipo de ricotero sos?, Sacalo por la letra,
+ * Skayboy y Poligirl, Completá la letra, Preguntas ricoteras, y después el resto como estaba.
+ * El 2026-10-10 (`D-70`) "Ponelos en fila" y "Preguntas ricoteras" cambiaron de lugar: A6 y A7.
+ */
 export const JUEGOS: readonly Casete[] = [
-  {
-    titulo: 'Preguntas ricoteras',
-    baja: 'Ocho preguntas y ninguna piadosa. Historia, discos, letras y mitología, en dos minutos.',
-    variante: 'marca',
-    // *Oktubre* entero: es el disco que viste la portada y la sección de marca (`D-19`), y el
-    // del mes en que se cambió (`D-49`).
-    arte: '/tapas/oktubre.jpg',
-    href: '/quiz/',
-    accion: 'JUGÁ',
-  },
-  {
-    // `US-06`. Terminado y revisado desde el ciclo 8 y **sin un solo enlace** hasta el
-    // 2026-10-01: nadie lo había dejado afuera, fue un olvido (`D-51`). Va segundo porque es
-    // el molinete más abierto del sitio —no pide saber nada de la banda (`UX-06` §0)—, y el
-    // que llega sin idea tiene que encontrarlo antes que los juegos que sí piden.
-    titulo: '¿Qué tipo de ricotero sos?',
-    baja: 'Nadie te toma examen. Una noche de recital, sin puntaje y sin saber nada de la banda.',
-    variante: 'luzbelito',
-    // La cabeza con la vela de *Luzbelito*, recortada a mano: luz y oscuridad en una pieza.
-    arte: '/arte/luzbelito-vela.png',
-    href: '/juegos/dos-ejes/',
-    accion: 'EMPEZÁ',
-  },
   {
     titulo: 'Adiviná el tema',
     baja: 'Con una décima te tiene que alcanzar. Si no, te damos más, hasta diez segundos: cuanto antes la pegues, más vale.',
@@ -205,6 +196,21 @@ export const JUEGOS: readonly Casete[] = [
     arte: '/arte/lobo.svg',
     href: '/juegos/adivinar-el-tema/',
     accion: 'JUGÁ',
+  },
+  {
+    // `US-06`. Terminado y revisado desde el ciclo 8 y **sin un solo enlace** hasta el
+    // 2026-10-01: nadie lo había dejado afuera, fue un olvido (`D-51`). Sigue segundo con
+    // `D-68`: es el molinete más abierto del sitio —no pide saber nada de la banda (`UX-06`
+    // §0)—, y el que llega sin idea tiene que encontrarlo antes que los juegos que sí piden.
+    titulo: '¿Qué tipo de ricotero sos?',
+    // `D-62` (`CNT-31`): la noche es la ricotera, y la bajada lo dice con el barro y el chori.
+    // La primera frase, la que canta y mide `voz.test.ts`, no cambia.
+    baja: 'Nadie te toma examen. Una noche de recital con barro y chori, sin puntaje y sin saber nada de la banda.',
+    variante: 'luzbelito',
+    // La cabeza con la vela de *Luzbelito*, recortada a mano: luz y oscuridad en una pieza.
+    arte: '/arte/luzbelito-vela.png',
+    href: '/juegos/dos-ejes/',
+    accion: 'EMPEZÁ',
   },
   {
     titulo: 'Sacalo por la letra',
@@ -218,6 +224,22 @@ export const JUEGOS: readonly Casete[] = [
     // lista de íconos iguales en vez de un collage.
     arte: '/arte/momo-medallon.png',
     href: '/juegos/adivinar-por-la-letra/',
+    accion: 'JUGÁ',
+  },
+  {
+    // `US-09`. Publicado el 2026-10-01 por decisión del usuario (`D-51`). La copia es la de
+    // `CNT-19`, ya aprobada, y vive en `skayboy/copy.ts`: acá se reusa, no se reescribe.
+    // Era el A9; `D-61` punto 6 lo subió al lado de "Adiviná el tema", y `D-68` lo deja cuarto,
+    // después de "Sacalo por la letra".
+    titulo: CASETE_SKAYBOY.titulo,
+    baja: CASETE_SKAYBOY.baja,
+    // Viste *Gulp!* por herencia del contenido (`UX-30` §2): los dos temas que le dan su par
+    // elemental son de ese disco. La variante `historia` es esa tinta (`--cat-historia`).
+    variante: 'historia',
+    // El "Gulp." rojo del sobre: la otra pieza de *Gulp!* en el portal es el "Patricio Rey"
+    // verde de la Redondopedia, y `D-49` no deja repetir.
+    arte: '/tapas/detalle/gulp-logo.jpg',
+    href: '/juegos/skayboy-y-poligirl/',
     accion: 'JUGÁ',
   },
   {
@@ -235,14 +257,26 @@ export const JUEGOS: readonly Casete[] = [
     accion: 'JUGÁ',
   },
   {
+    // `D-70`: sube al A6, en el lugar de "Preguntas ricoteras", a pedido del usuario.
     titulo: 'Ponelos en fila',
-    // La primera oración canta las filas (`D-52`): del pogo a quietito, sin decir cuál es mejor.
-    baja: 'Unos te tiran al pogo; otros, quietito. Los diez discos, las tapas, o los temas de un disco: el orden lo armás vos.',
+    // La primera oración canta las filas (`D-52`): del pogo a quietito, sin decir cuál es
+    // mejor. La segunda dice lo que hay desde `D-69`: los 105 temas y las filas propias.
+    baja: 'Unos te tiran al pogo; otros, quietito. Los ciento cinco temas, los discos o las tapas, en las filas que vos nombres.',
     variante: 'bang',
     // *¡Bang! ¡Bang!… Estás liquidado* entero: un juego de poner discos en fila lleva un disco.
     arte: '/tapas/bang-bang-estas-liquidado.jpg',
     href: '/juegos/ponelos-en-fila/',
     accion: 'ARMÁ',
+  },
+  {
+    titulo: 'Preguntas ricoteras',
+    baja: 'Ocho preguntas y ninguna piadosa. Historia, discos, letras y mitología, en dos minutos.',
+    variante: 'marca',
+    // *Oktubre* entero: es el disco que viste la portada y la sección de marca (`D-19`), y el
+    // del mes en que se cambió (`D-49`).
+    arte: '/tapas/oktubre.jpg',
+    href: '/quiz/',
+    accion: 'JUGÁ',
   },
   {
     titulo: 'Adiviná la tapa',
@@ -269,23 +303,25 @@ export const JUEGOS: readonly Casete[] = [
     accion: 'JUGÁ',
   },
   {
-    // `US-09`. Publicado el 2026-10-01 por decisión del usuario (`D-51`). La copia es la de
-    // `CNT-19`, ya aprobada, y vive en `skayboy/copy.ts`: acá se reusa, no se reescribe.
-    titulo: CASETE_SKAYBOY.titulo,
-    baja: CASETE_SKAYBOY.baja,
-    // Viste *Gulp!* por herencia del contenido (`UX-30` §2): los dos temas que le dan su par
-    // elemental son de ese disco. La variante `historia` es esa tinta (`--cat-historia`).
-    variante: 'historia',
-    // El "Gulp." rojo del sobre: la otra pieza de *Gulp!* en el portal es el "Patricio Rey"
-    // verde de la Redondopedia, y `D-49` no deja repetir.
-    arte: '/tapas/detalle/gulp-logo.jpg',
-    href: '/juegos/skayboy-y-poligirl/',
-    accion: 'JUGÁ',
+    // `D-72`, el del 2026-10-15: "Armá tu recital". Entra al final del lado A, el A10, como
+    // entraron los juegos nuevos hasta que el usuario los movió (`D-68`, `D-70`).
+    titulo: 'Armá tu recital',
+    // La primera oración canta y no pasa de ocho; la segunda dice lo que hay.
+    // Enmienda de `D-72` (2026-10-15): es una expresión de deseo, en un estadio, un teatro, un
+    // descampado o donde digas.
+    baja: 'Esta noche la lista la escribís vos. El recital que te gustaría: dónde, los temas en orden y los bises, y suena un pedazo de cada uno.',
+    // Viste *Oktubre*, como la portada (`D-19`): la tapa es la gente, y un recital es la gente.
+    variante: 'marca',
+    // La multitud con las banderas, de cerca. *Oktubre* entero ya es el casete de "Preguntas
+    // ricoteras", y `D-49` no deja repetir pieza: este es el detalle, otro pedazo.
+    arte: '/tapas/detalle/oktubre-zoom.jpg',
+    href: '/juegos/arma-tu-recital/',
+    accion: 'ARMÁ',
   },
 ] as const;
 
 /**
- * El casete del cancionero. Va en el lado B con la Redondopedia: no es una partida, es
+ * El casete del cancionero. Va en el lado B con la Redondopedia y el bestiario: no es una partida, es
  * lectura — se entra, se busca un tema y se sale, sin nada que cerrar.
  *
  * Viste La mosca y la sopa por la mezcla `D-19`, que le da ese disco a `letras`.
@@ -311,6 +347,34 @@ export const CASETE_REDONDOPEDIA: Casete = {
   href: '/redondopedia/',
   accion: 'LEÉ',
 } as const;
+
+/**
+ * El casete del bestiario redondo (`D-73`). Lo pidió el usuario el 2026-10-17, textual:
+ * *"Sumá el bestiario a la home, en el lado B, con la voz y el diseño del resto de los
+ * casetes"*. Hasta ese día se llegaba solo desde la portada de la Redondopedia. Va en el lado B,
+ * como el cancionero y la Redondopedia, porque no es una partida: se recorre y se lee, sin nada
+ * que cerrar. Es el B3, después de la Redondopedia, que es de donde sale.
+ *
+ * Viste *Lobo suelto*, como su página (`mitologia`, `D-19`). La pieza es el cordero de *Cordero
+ * atado*, recortado: del lado A el lobo de "Adiviná el tema" anda suelto, y acá está el cordero,
+ * que es el primer recinto del bestiario. `D-49` no deja repetir pieza, y esta no la usaba nadie.
+ */
+export const CASETE_BESTIARIO: Casete = {
+  titulo: 'Bestiario redondo',
+  // La primera oración canta y no pasa de ocho; la segunda dice lo que hay.
+  baja: 'El lobo afuera, el cordero atado al palo. Los bichos y la gente de las letras, cada uno en su recinto: tocás uno y te dice su verso.',
+  variante: 'mitologia',
+  arte: '/arte/cordero-rulo.png',
+  // Se entra caminando, por el monte (`D-76`).
+  href: ENTRADA_BESTIARIO,
+  accion: 'RECORRÉ',
+} as const;
+
+/**
+ * El lado B entero, en el orden de las pistas (B1, B2, B3). Lo leen el portal, la carátula de
+ * cada juego y los tests, así el lado B no se escribe en tres lugares.
+ */
+export const LADO_B: readonly Casete[] = [CASETE_CANCIONERO, CASETE_REDONDOPEDIA, CASETE_BESTIARIO];
 
 /** Los números chicos en letra: en una frase que se lee, "seis" y no "6". */
 const EN_LETRAS = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];
@@ -353,6 +417,25 @@ export const OKTUBRE = {
 } as const;
 
 /**
+ * La página puente para X (`/en-x/<juego>/`): la que se pega en un posteo para que X arme la
+ * Player Card con el juego adentro. Quien la abre en un navegador no se queda acá: lo manda
+ * derecho al juego. Todo registro 3, porque solo se ve medio segundo o sin JavaScript.
+ */
+export const EN_X = {
+  /** El nombre del sitio en la pestaña de la puente. */
+  sitio: 'Fichín Ricotero',
+  /** Si la redirección no anda, el botón a mano. */
+  seguir: 'Seguí al juego',
+  /**
+   * La salida de la franja que el juego lleva adentro de X. No dice "volvé": el que juega en
+   * X nunca estuvo en el sitio, y el enlace abre una pestaña nueva.
+   */
+  alSitio: 'SEGUÍ EN EL FICHÍN',
+  /** Cómo se nombra la marca de la franja para el lector de pantalla. */
+  marca: 'Fichín Ricotero, en una pestaña nueva',
+} as const;
+
+/**
  * La carátula de cada juego (`D-54`, `UX-35`). Todo registro 3: dice qué hay y se calla.
  *
  * El nombre del juego y la lista de temas no se escriben acá: salen de `JUEGOS`, igual que
@@ -373,14 +456,23 @@ export const REDONDOPEDIA = {
   bajada:
     'La enciclopedia ricotera. Se entra y se sale cuando quieras: acá no hay partida ' +
     'que cerrar ni resultado que compartir.',
-  explicacionRotulos:
-    'Todo lo que leas viene rotulado en el punto exacto donde aparece: lo verificado ' +
-    'se cuenta como hecho y cita su ficha; lo que circula entre fans va marcado como ',
-  palabraLeyenda: 'leyenda',
-  explicacionMedio: ' — y vale igual, porque esta historia se transmitió así —; lo que contó ' +
-    'alguien con nombre y apellido va como ',
-  palabraTestimonio: 'testimonio',
-  explicacionCierre: '.',
+  /**
+   * La clave de los rótulos (`D-14`, `BR-08`), en la portada. Registro 3: dice qué hay en
+   * cada casilla y se calla. Hasta `D-75` era un párrafo de cinco renglones adentro de una
+   * caja punteada; ahora es una tabla de tres, porque es lo que el que llega busca de un
+   * vistazo antes de creerle a nada. Y dejó de decir "entre fans" (`voz-ricotera.md` §3.8).
+   */
+  clave: {
+    entrada: 'Cada párrafo dice qué es, en el renglón donde aparece.',
+    palabraHecho: 'hecho',
+    hecho: 'lo verificado, con su ficha al lado',
+    palabraLeyenda: 'leyenda',
+    leyenda: 'lo que se cuenta de boca en boca: así se transmitió esta historia, y vale igual',
+    palabraTestimonio: 'testimonio',
+    testimonio: 'lo que contó alguien con nombre y apellido',
+  },
+  /** El nombre accesible de la fila que salta a cada parte del índice. */
+  partes: 'Las partes del archivo',
   secciones: {
     hito: 'La historia',
     persona: 'La banda y los suyos',
@@ -390,6 +482,29 @@ export const REDONDOPEDIA = {
     leyenda: 'Las leyendas',
   } as const,
   veaTambien: 'Seguí por acá',
+  /**
+   * Los hilos del pie de cada artículo (`D-75`). "Pará la oreja" trae el arranque de una
+   * leyenda que vive en otro artículo, con su rótulo; "También anda por" son los artículos
+   * que nombran a este. Registro 1 los dos: imperativo con el cuerpo adentro, y un andar.
+   */
+  oreja: 'Pará la oreja',
+  seguiEn: 'Seguí en',
+  tambienAnda: 'También anda por',
+  /**
+   * Lo que hay adentro de un artículo, al pie del título y en cada tarjeta. Registro 3: el
+   * rótulo dice qué hay y se calla. Son funciones por el plural, no por adorno.
+   */
+  marcas: {
+    hechos: (n: number): string => (n === 1 ? '1 hecho' : `${n} hechos`),
+    leyendas: (n: number): string => (n === 1 ? '1 leyenda' : `${n} leyendas`),
+    testimonios: (n: number): string => (n === 1 ? '1 testimonio' : `${n} testimonios`),
+    minutos: (n: number): string => `se lee en ${n} min`,
+    /** Quién da testimonio adentro: "lo contó Rocambole", "lo contaron el Indio y Rosso". */
+    voces: (nombres: readonly string[]): string =>
+      nombres.length === 1
+        ? `lo contó ${nombres[0]}`
+        : `lo contaron ${nombres.slice(0, -1).join(', ')} y ${nombres[nombres.length - 1]}`,
+  },
   volverPortada: 'A LA REDONDOPEDIA',
 } as const;
 

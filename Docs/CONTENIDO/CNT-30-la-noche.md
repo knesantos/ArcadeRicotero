@@ -14,6 +14,14 @@
   y §2.3 dejó pendiente. **Las cadenas de pantalla del §6 son la versión que vale**; el §6 dice fila
   por fila qué confirma y qué cambia frente a `copy.ts`. Lo que queda para el hilo principal está
   en `Docs/SUGERENCIAS/CNT-para-hilo-principal-vuelta-4-dos-ejes.md`.
+- **Actualización del 2026-10-04 (`D-62`):** **`CNT-31` reescribe los enunciados, las cinco líneas que
+  cantan y las cuatro bajadas** para que la noche sea la ricotera (barro, chori, birra, porro, familia),
+  y deja 57 de las 60 opciones como están aquí. **[2026-10-06: eso valía el 2026-10-04; desde la
+  vuelta 7 de `CNT-31` son 42 de 60, y desde `REV-20` (`CNT-31` §14) son 41, porque la A de
+  `EJ-049` también cambió.]** **Las tablas de §3, §4 y §5 de este documento son la
+  historia de las cuatro vueltas, no el banco vigente**; las reglas de §2 siguen valiendo salvo las que
+  dicen "sin banda, sin misa, sin pogo", "sin alcohol, drogas ni policía" (queda solo la policía) y "sin
+  plata ni micro ni puesto" en el enunciado (las opciones siguen sin plata).
 - **Consume:** `D-57` (entera, con sus enmiendas 1 a 7), `D-58`, `US-06`, `BR-17`, `BR-36` y `BR-37`
   (apliqué la lista de vetos que vigila `banco.test.ts`, que es su traducción a máquina),
   `CNT-09`, `CNT-02`, `CNT-26`, `REV-07`, `D-14`, `D-17`, `D-21`, `D-33`, `RES-150`..`RES-171`

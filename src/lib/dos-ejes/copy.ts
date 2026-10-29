@@ -10,6 +10,8 @@
  * **Las audita `voz.test.ts`** junto con las cadenas del banco.
  */
 
+import { planoFijo, type Banco, type Polo } from './partida.ts';
+
 /** Los números que el sitio escribe en letras. Hasta diez alcanza: la noche tiene cinco momentos. */
 const LETRAS = ['cero', 'una', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];
 
@@ -143,6 +145,30 @@ export const RESULTADO = {
   suya: 'Quien te lo mandó',
   /** El rótulo de la grilla para el lector de pantalla. */
   altGrilla: 'Las cuatro maneras, con la tuya primero.',
+  /**
+   * Lo que el plano de dos ejes le dice al lector de pantalla (`UX-38`, crítica 3): los dos
+   * ejes y dónde cae la tuya, que la grilla no dice en palabras. Registro 3, seco. Confirmada
+   * por `contenido` (`T-352`, `CNT-31` §13): un punto entre polo y polo, porque cada uno ya
+   * lleva dos comas, y "Tu manera" para que la frase no quede colgada cuando el lector salta
+   * de imagen en imagen.
+   */
+  altPlano: (p: {
+    readonly arriba: string;
+    readonly abajo: string;
+    readonly izquierda: string;
+    readonly derecha: string;
+    readonly tuya: { readonly nombre: string; readonly lugar: string };
+    readonly suya?: { readonly nombre: string; readonly lugar: string } | 'misma';
+  }) =>
+    `Dos ejes en cruz. Arriba, ${p.arriba}. Abajo, ${p.abajo}. A la izquierda, ${p.izquierda}. A la derecha, ${p.derecha}. ` +
+    `Tu manera, ${p.tuya.lugar}: ${p.tuya.nombre}.` +
+    (p.suya === 'misma'
+      ? ' La de quien te lo mandó es la misma.'
+      : p.suya
+        ? ` La de quien te lo mandó, ${p.suya.lugar}: ${p.suya.nombre}.`
+        : ''),
+  /** Los cuatro lugares del plano, en el orden de `planoFijo().celdas`. */
+  lugares: ['arriba a la izquierda', 'arriba a la derecha', 'abajo a la izquierda', 'abajo a la derecha'],
   /** El texto que viaja con el enlace: nombra el test, la identidad, ningún número (`BR-17`). */
   paraCompartir: (nombre: string) => `Me salió «${nombre}». ¿Qué tipo de ricotero sos vos?`,
   copiado: 'Se copió el enlace.',
@@ -188,3 +214,25 @@ export const TARJETA = {
   /** El de la vista previa de la portada del juego. */
   altJuego: 'Tarjeta de Fichín Ricotero: ¿Qué tipo de ricotero sos?, con las cuatro maneras. Lomo, mármol y esquinero de la tapa de Luzbelito (Rocambole).',
 } as const;
+
+/**
+ * Lo que oye el lector en el plano de dos ejes, armado en un solo lugar: lo usan la isla y
+ * `copy.test.ts` (`CTR-08`, E2.4 c). Antes se armaba dos veces y una de las dos podía cambiar
+ * sola. Los lugares salen de `planoFijo()`, nunca de una tabla aparte; `RESULTADO.lugares` va
+ * en el orden de sus celdas, y `copy.test.ts` lo ata.
+ */
+export function textoDelPlano(banco: Banco, id: string, suyoId?: string): string {
+  const { celdas, renglones, columnas } = planoFijo(banco);
+  const extremo = (p: Polo) => `${EJES[p]}, ${POLOS[p]}`;
+  const k = celdas.findIndex((c) => c.id === id);
+  if (k < 0) throw new Error(`el plano no tiene la manera ${id}`);
+  const j = suyoId === undefined ? -1 : celdas.findIndex((c) => c.id === suyoId);
+  return RESULTADO.altPlano({
+    arriba: extremo(renglones[0]),
+    abajo: extremo(renglones[1]),
+    izquierda: extremo(columnas[0]),
+    derecha: extremo(columnas[1]),
+    tuya: { nombre: celdas[k]!.nombre, lugar: RESULTADO.lugares[k]! },
+    suya: j < 0 ? undefined : j === k ? 'misma' : { nombre: celdas[j]!.nombre, lugar: RESULTADO.lugares[j]! },
+  });
+}

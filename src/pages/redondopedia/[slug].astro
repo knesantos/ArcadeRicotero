@@ -9,16 +9,26 @@
  * del segmento. Nada se comunica solo con color.
  *
  * La tapa entera entra en los articulos de tipo `disco` (`BR-07` la pide como campo;
- * `D-04`: baja resolucion y credito a Rocambole). Los demas tipos llevan un **detalle
- * recortado** junto al titulo, que `D-21` habilito y `UX-05` (7b/7c) reparte: historia
- * viste Gulp!, mitologia viste Lobo suelto. Tres articulos quedan sin detalle por tono
- * — la lista vive en `arte.ts`.
+ * `D-04`: baja resolucion y credito a Rocambole).
+ *
+ * **Desde `D-75` la hoja tiene un lugar y tiene hilos.** El lugar es la tapa velada que sube
+ * desde arriba detras del titulo —la propia si es un disco, la de su categoria si no— y se
+ * acaba antes del cuerpo: el misterio esta en el borde, y la lectura queda sobre tinta lisa.
+ * Los hilos son lo que hay al pie para seguir: "Segui por aca" con su gancho, "Para la oreja"
+ * con una leyenda de otro articulo, y "Tambien anda por" con los que nombran a este. Los tres
+ * de tono grave no llevan lugar ni oreja (`UX-20` §3.4).
  */
 import Base from '../../layouts/Base.astro';
+import TarjetaArticulo from '../../components/TarjetaArticulo.astro';
 import { REDONDOPEDIA, PIE_DE_TAPA } from '../../lib/sitio/copy.ts';
 import type { Disco } from '../../lib/letra/discos.ts';
 import {
   TIPO_A_CATEGORIA,
+  contenidoDe,
+  enlacesSalientes,
+  entrantesPor,
+  rumorPara,
+  rumores,
   segmentar,
   type Articulo,
   type Segmento,
@@ -28,10 +38,11 @@ import {
   tapa,
   STICKER_DISCO,
   DISCO_DE_CATEGORIA,
-  detalleArticulo,
+  lugarDeArticulo,
   discosDe,
   SIN_DETALLE_POR_TONO,
 } from '../../lib/sitio/arte.ts';
+import { tituloEnLaBanda } from '../../lib/sitio/letras.ts';
 import crudo from '../../data/redondopedia.json';
 import cancionero from '../../data/cancionero.json';
 import { partesParaCorregir } from '../../lib/correccion/redondopedia.ts';
@@ -71,20 +82,46 @@ const laTapa = articulo.tipo === 'disco' ? tapa(articulo.slug) : null;
 const archivoSticker = STICKER_DISCO[articulo.slug];
 const sticker = archivoSticker ? recorte(archivoSticker) : null;
 
+const grave = SIN_DETALLE_POR_TONO.has(articulo.slug);
+
 /**
- * El detalle de tapa que acompaña al titulo cuando el articulo NO es de disco
- * (`UX-05`, 7b y 7c). Va junto al titulo y nunca detras del cuerpo rotulado: la prosa
- * larga con segmentos de `BR-08` es scroll, y un fondo detras de algo que se estira es
- * lo que `UX-04` evita.
+ * El lugar de la hoja (`D-75`): la tapa velada que sube detras del titulo y se acaba antes
+ * del cuerpo. Nunca detras de la prosa rotulada: la capa mide una ventana como mucho y se
+ * desgasta con el rodillo, asi que el cuerpo se lee sobre tinta lisa, que es lo que `UX-04`
+ * pedia al prohibir un fondo detras de algo que se estira.
  */
-const detalle = detalleArticulo(articulo.tipo, articulo.slug, categoria);
+const lugar = lugarDeArticulo(articulo.tipo, articulo.slug, categoria);
 
 /**
  * Que tapas se ven en esta ficha (`D-21`, condicion 1): la del propio disco si el
- * articulo es de disco, o la del recorte que lo viste si no lo es.
+ * articulo es de disco (en la ficha y de fondo), o la que viste su categoria si no lo es.
+ * Las tarjetas de "Segui por aca" que son discos suman la suya.
  */
-const nombreDetalle = detalle?.split('/').pop()?.replace(/\.jpg$/, '') ?? null;
-const tapasUsadas = laTapa ? [articulo.titulo] : discosDe([nombreDetalle]);
+const vecinos = articulo.veaTambien
+  .map((slug) => todos.find((a) => a.slug === slug))
+  .filter((a): a is Articulo => Boolean(a));
+const discosVecinos = vecinos.filter((a) => a.tipo === 'disco' && tapa(a.slug)).map((a) => a.titulo);
+const tapasUsadas = [
+  ...new Set([...(articulo.tipo === 'disco' ? [articulo.titulo] : discosDe([lugar?.nombre])), ...discosVecinos]),
+];
+
+/** Lo que hay adentro, al pie del titulo (registro 3). */
+const adentro = contenidoDe(articulo);
+const enLaBanda = !grave && tituloEnLaBanda(articulo.slug, articulo.titulo);
+
+/**
+ * Los hilos del pie (`D-75`).
+ *
+ * - **Para la oreja:** una leyenda que vive en otro articulo, mejor si es uno al que este no
+ *   manda ya. Los graves no la llevan y no la prestan: ahi no hay voz que valga.
+ * - **Tambien anda por:** los articulos que nombran a este y que el "vea tambien" no lista.
+ */
+const graves = new Set(SIN_DETALLE_POR_TONO);
+const rumor = grave ? null : rumorPara(articulo.slug, rumores(todos, graves), enlacesSalientes(articulo));
+const yaListados = new Set([...articulo.veaTambien, rumor?.slug]);
+const andaPor = (entrantesPor(todos).get(articulo.slug) ?? [])
+  .filter((slug) => !yaListados.has(slug))
+  .map((slug) => ({ slug, titulo: titulos.get(slug) ?? slug }));
 
 /**
  * De que disco se viste el pie de imprenta de este articulo.
@@ -116,13 +153,14 @@ const etiquetaRotulo = (seg: Segmento): string =>
   volverA={{ href: '/redondopedia/', texto: REDONDOPEDIA.volverPortada }}
   tapas={tapasUsadas}
   discoDelPie={discoDelPie}
+  lugar={lugar?.url}
 >
   {/*
     `articulo--grave` marca los tres artículos de tono grave — Bulacio, Olavarría y la
-    muerte del Indio — para que la hoja de estilos sepa que ahí no va ningún adorno. Hoy
-    lo único que se apaga con esa clase es la capitular de la bajada (`T-187`), y la lista
-    es la misma que ya usa `detalleArticulo()` para no ponerles el recorte de tapa: si
-    algún día se corrige quiénes son, se corrige en un solo lugar.
+    muerte del Indio — para que la hoja de estilos sepa que ahí no va ningún adorno: ni la
+    capitular de la bajada (`T-187`), ni el lugar, ni la letra de la banda en el título, ni la
+    oreja. La lista es la misma que usa `lugarDeArticulo()`: si algún día se corrige quiénes
+    son, se corrige en un solo lugar.
 
     `UX-20` §3.4 lo pide para la pantalla entera, no solo para el párrafo rotulado. Una
     letra capitular de tres renglones arriba de un artículo sobre un pibe que la policía
@@ -132,17 +170,35 @@ const etiquetaRotulo = (seg: Segmento): string =>
     class:list={[
       'articulo',
       `articulo--${categoria}`,
-      { 'articulo--grave': SIN_DETALLE_POR_TONO.has(articulo.slug) },
+      {
+        'articulo--grave': grave,
+        'articulo--con-lugar': lugar,
+        [`de-disco--${articulo.slug}`]: articulo.tipo === 'disco',
+      },
     ]}
   >
-    <span class="articulo-tipo">{articulo.tipo}</span>
-    {detalle && <img class="detalle-articulo" src={detalle} alt="" aria-hidden="true" loading="lazy" />}
-    <h1>{articulo.titulo}</h1>
+    {/* El título y, abajo, lo que hay adentro: primero nombra, después rotula (registro 3).
+        El tipo va en el sello del renglón de abajo y no arriba del título: arriba competía
+        con él por ser lo primero que se lee. */}
+    <header class="articulo-cabeza">
+      <h1 class:list={[{ 'en-la-banda': enLaBanda }]}>{articulo.titulo}</h1>
+      <p class="articulo-adentro">
+        <span class="articulo-tipo">{articulo.tipo}</span>
+        <span class="adentro-lista">
+          {adentro.hechos > 0 && <span>{REDONDOPEDIA.marcas.hechos(adentro.hechos)}</span>}
+          {adentro.leyendas > 0 && <span class="es-leyenda">◆ {REDONDOPEDIA.marcas.leyendas(adentro.leyendas)}</span>}
+          {adentro.testimonios > 0 && (
+            <span class="es-testimonio">❝ {REDONDOPEDIA.marcas.testimonios(adentro.testimonios)}</span>
+          )}
+          <span>{REDONDOPEDIA.marcas.minutos(adentro.minutos)}</span>
+        </span>
+      </p>
+    </header>
 
     {
       laTapa && (
-        /* La ficha estampada y quieta (`UX-22` §9): el papel, el sello y la sombra de
-           registro son el MARCO; la foto de adentro es el mismo JPEG a color de siempre.
+        /* La ficha estampada y quieta (`UX-22` §9): el papel y el sello son el MARCO, sin
+           sombra (`D-64`); la foto de adentro es el mismo JPEG a color de siempre.
            Y no se anima nada — `UX-20` §2: un articulo no se mueve. */
         <figure class="figura-tapa">
           <span class="papel-ficha">
@@ -218,20 +274,58 @@ const etiquetaRotulo = (seg: Segmento): string =>
       ))
     }
 
-    {
-      articulo.veaTambien.length > 0 && (
-        <nav aria-label={REDONDOPEDIA.veaTambien}>
-          <h2 class="lado">{REDONDOPEDIA.veaTambien}</h2>
-          <ul class="vea-tambien">
-            {articulo.veaTambien.map((slug) => (
-              <li>
-                <a href={`/redondopedia/${slug}/`}>{titulos.get(slug) ?? slug}</a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )
-    }
+    {/*
+      Los hilos (`D-75`). Lo que hace que, terminando de leer, den ganas de abrir otra cosa: no
+      un renglón de títulos pelados, sino por qué abrir cada uno. Van en este orden porque es
+      el orden de cercanía: lo que el artículo recomienda, lo que se cuenta en otro lado, y
+      desde dónde nombran a este.
+    */}
+    <footer class="hilos">
+      {
+        vecinos.length > 0 && (
+          <nav class="hilo" aria-labelledby="hilo-seguir">
+            <h2 class="lado" id="hilo-seguir">{REDONDOPEDIA.veaTambien}</h2>
+            <ul class="vea-tambien">
+              {vecinos.map((a) => (
+                <li>
+                  <TarjetaArticulo articulo={a} tope={110} />
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+
+      {
+        rumor && (
+          <section class="hilo oreja" aria-labelledby="hilo-oreja">
+            <h2 class="lado" id="hilo-oreja">{REDONDOPEDIA.oreja}</h2>
+            <p class="parrafo parrafo--leyenda oreja-rumor">
+              <span class="marca-rotulo">Leyenda</span>
+              {rumor.arranque}
+            </p>
+            <a class="oreja-seguir" href={`/redondopedia/${rumor.slug}/`}>
+              {REDONDOPEDIA.seguiEn} <span class:list={['oreja-donde', { 'en-la-banda': tituloEnLaBanda(rumor.slug, rumor.titulo) }]}>{rumor.titulo}</span> →
+            </a>
+          </section>
+        )
+      }
+
+      {
+        andaPor.length > 0 && (
+          <nav class="hilo" aria-labelledby="hilo-anda">
+            <h2 class="lado" id="hilo-anda">{REDONDOPEDIA.tambienAnda}</h2>
+            <ul class="anda-por">
+              {andaPor.map((a) => (
+                <li>
+                  <a href={`/redondopedia/${a.slug}/`}>{a.titulo}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+    </footer>
 
     {/*
       El botón de corrección (`BR-21`, `UX-09`), al pie del artículo y después del "vea

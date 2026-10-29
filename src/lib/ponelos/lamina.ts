@@ -6,8 +6,8 @@
  *
  * `plan.ts` se declara "sin saber de qué juego es", y esa es su virtud: sirve a dos juegos
  * distintos porque los dos comparten **la misma maqueta** —un setlist de hasta seis filas
- * y un número grande abajo—. Esta pieza no comparte la maqueta: son cuatro bandas de
- * altura desigual y no hay número grande, porque no hay puntaje que poner (`BR-22`).
+ * y un número grande abajo—. Esta pieza no comparte la maqueta: son bandas de altura
+ * desigual y no hay número grande, porque no hay puntaje que poner (`BR-22`).
  *
  * Meterla allá adentro habría sido un `if` por juego en un módulo cuyo encabezado dice que
  * no tiene ninguno, y de paso habría que relajar `MAX_FILAS = 6` y `planificar()`, que
@@ -28,14 +28,22 @@
  * ## Las bandas no se reparten en partes iguales, y ahí está toda la gracia
  *
  * `plan.ts` reparte su banda en partes iguales porque sus filas son todas de un tema. Acá
- * una fila puede tener una ficha y la de al lado nueve, y en partes iguales la de nueve
- * saldría apretada al lado de una banda casi vacía.
+ * una fila puede tener una ficha y la de al lado cuarenta, y en partes iguales la de
+ * cuarenta saldría apretada al lado de una banda casi vacía.
  *
- * Así que cada banda recibe **un piso fijo más una parte proporcional a cuántos renglones
- * necesita**, medidos por quien dibuja. El piso existe para que una fila vacía siga siendo
- * una banda visible: `LAMINA.vacia` dice "Nadie" y eso hay que poder leerlo. Una fila que
- * desaparece por estar vacía haría que la lámina mienta por omisión — parecería que el
- * conjunto se repartió en tres lugares.
+ * Así que cada banda recibe **lo que pide más una parte proporcional del sobrante**, medido
+ * por quien dibuja. Y ninguna baja de un renglón: una fila vacía sigue siendo una banda
+ * visible, porque `LAMINA.vacia` dice "Nadie" y eso hay que poder leerlo. Una fila que
+ * desaparece por estar vacía haría que la lámina mienta por omisión.
+ *
+ * ## Desde `D-69`: de dos a siete bandas, y una lámina que se estira
+ *
+ * Las filas las arma el jugador, así que las bandas son las que haya, no cuatro. Y con
+ * "Todos los temas" una lámina puede tener que llevar ciento cinco títulos: en 1080 × 1350
+ * no entran a un cuerpo que se lea. **Antes que cortar un tema, la lámina se estira**: primero
+ * achica la letra hasta su piso (`elegirCuerpo`), y si ni así entra, crece de alto hasta
+ * `ALTO_MAX`. Una imagen alta se comparte igual; una lista a la que le faltan temas es un
+ * rótulo que miente sobre lo que hay adentro.
  */
 
 import { LIENZO, MARGEN, ANCHO_UTIL, FRANJA, INTERLINEA, cuerpoQueEntra, partirEnLineas } from '../tarjeta/plan.ts';
@@ -68,17 +76,38 @@ export const AIRES = {
   trasCredito: 8,
 } as const;
 
-/**
- * El piso de una banda: lo que ocupa el rótulo de la fila más un renglón de contenido.
- *
- * Con cuatro filas son 400 px de los 786 de banda, así que siempre queda más de la mitad
- * para repartir. Si algún día las filas fueran seis, esta cuenta hay que rehacerla — y el
- * test de abajo la rehace sola.
- */
-export const MIN_BANDA = 100;
+/** Los cuerpos de cada renglón, con su piso. Mismos criterios que los de `plan.ts`. */
+export const CUERPOS_LAMINA = {
+  marcaSitio: { base: 62, piso: 34 },
+  tituloJuego: { base: 54, piso: 32 },
+  conjunto: { base: 38, piso: 24 },
+  rotuloFila: { base: 30, piso: 22 },
+  ficha: { base: 34, piso: 22 },
+  pie: { base: 22, piso: 16 },
+} as const;
 
-/** Cuántas bandas dibuja esta lámina. Es `FILAS.length`, dicho donde el plan lo necesita. */
-export const BANDAS = 4;
+/** Cuántas bandas puede dibujar la lámina: las filas que puede tener un tablero (`D-69`). */
+export const MIN_BANDAS = 2;
+export const MAX_BANDAS = 7;
+
+/**
+ * El alto más grande al que se estira la lámina. Con los ciento cinco temas en una sola
+ * fila —el peor caso de texto que existe— pide unos 1900 px al cuerpo más chico; esto deja
+ * lugar y sigue siendo una imagen que un teléfono abre sin pensarlo.
+ */
+export const ALTO_MAX = 2700;
+
+/** Lo que ocupa el rótulo de una banda, más el aire hasta la primera ficha. */
+export const ROTULO_BANDA = Math.ceil(CUERPOS_LAMINA.rotuloFila.base * INTERLINEA) + 6;
+
+/** El aire al pie de cada banda, donde va la raya que la cierra. */
+export const PIE_BANDA = 12;
+
+/**
+ * El contenido mínimo de una banda: un renglón al cuerpo más chico. Es lo que ocupa
+ * "Nadie" en una fila vacía, que se dice y no se esconde.
+ */
+export const MIN_CONTENIDO = Math.ceil(CUERPOS_LAMINA.ficha.piso * INTERLINEA);
 
 /** Lo que la lámina necesita saber de una lista repartida. */
 export interface DatosLamina {
@@ -89,9 +118,9 @@ export interface DatosLamina {
   /**
    * Una banda por fila, en orden, con su rótulo y las fichas que le tocaron.
    *
-   * `imagenes` viene solo en los conjuntos que se miran —los diez discos, las diez tapas—
-   * y entonces la banda se dibuja con las tapas en vez de con los títulos. Una lista de
-   * discos sin las tapas es la mitad de lo que el jugador ordenó.
+   * `imagenes` viene solo en los conjuntos que se miran —las diez tapas— y entonces la
+   * banda se dibuja con las tapas en vez de con los títulos. Una lista de tapas sin las
+   * tapas es la mitad de lo que el jugador ordenó.
    */
   readonly bandas: readonly {
     readonly nombre: string;
@@ -104,84 +133,140 @@ export interface DatosLamina {
   readonly credito: string;
   /** Dónde se juega. Es la única forma de volver que tiene una imagen suelta. */
   readonly sitio: string;
+  /**
+   * La tinta del nombre del juego, como variable de `tokens.css`. Sin ella es la de *¡Bang!
+   * ¡Bang!*, que es la que viste "Ponelos en fila". La pidió "Armá tu recital" (`D-72`), que
+   * imprime la misma hoja con la tinta de *Oktubre*.
+   */
+  readonly tintaJuego?: string;
+  /**
+   * Una ficha por renglón, en vez de todas seguidas con un punto medio. Lo pidió la lista de
+   * "Armá tu recital" (`D-72`): una lista de temas se lee de arriba abajo, como la hoja pegada
+   * en el escenario, y no como un párrafo.
+   */
+  readonly renglonPorFicha?: boolean;
 }
 
 export class LaminaImposible extends Error {}
 
-/** Dónde empieza y cuánto mide la franja que se reparten las cuatro bandas. */
-export function bandaDeLasFilas(): { readonly y: number; readonly alto: number } {
+/** Dónde empieza y cuánto mide la franja que se reparten las bandas, en un lienzo de `alto`. */
+export function bandaDeLasFilas(alto: number = LIENZO.alto): { readonly y: number; readonly alto: number } {
   const arriba =
     MARGEN +
     ALTOS.marca + AIRES.trasMarca +
     ALTOS.titulo + AIRES.trasTitulo +
     ALTOS.conjunto + AIRES.trasConjunto;
   const pie = ALTOS.credito + AIRES.trasCredito + ALTOS.sitio + MARGEN;
-  return { y: arriba, alto: LIENZO.alto - pie - AIRES.trasBandas - arriba };
+  return { y: arriba, alto: alto - pie - AIRES.trasBandas - arriba };
+}
+
+/** Lo que pide una banda entera —rótulo, contenido y pie— para un contenido de `pedido` px. */
+function altoDeBanda(pedido: number): number {
+  return ROTULO_BANDA + Math.max(MIN_CONTENIDO, Math.ceil(pedido)) + PIE_BANDA;
+}
+
+/** Lo que piden todas las bandas juntas. */
+export function altoNecesario(pedidos: readonly number[]): number {
+  return pedidos.reduce((suma, p) => suma + altoDeBanda(p), 0);
+}
+
+/** El alto del lienzo para esas bandas: el de siempre, o más, hasta `ALTO_MAX`. */
+export function altoDeLienzo(pedidos: readonly number[]): number {
+  const falta = altoNecesario(pedidos) - bandaDeLasFilas(LIENZO.alto).alto;
+  return Math.min(ALTO_MAX, LIENZO.alto + Math.max(0, falta));
 }
 
 /**
- * Ubica cada bloque de la lámina y devuelve la lista en orden de dibujo.
+ * El cuerpo de las fichas: el más grande con el que todas las bandas entran en la lámina
+ * de siempre, o el piso si ni así.
  *
- * `renglones` es cuántas líneas de texto necesita cada banda, medidas por quien dibuja.
- * Se le pide al que mide porque medir necesita el canvas, y el canvas no existe acá.
+ * `pide` devuelve, para un cuerpo, cuánto contenido pide cada banda —lo mide quien dibuja,
+ * porque medir necesita el canvas—. Se baja de a dos píxeles: es la misma escalera con la
+ * que `cuerpoQueEntra` encoge una línea que no entra de ancho.
  */
-export function planificarLamina(renglones: readonly number[]): readonly Bloque[] {
-  if (renglones.length !== BANDAS) {
-    throw new LaminaImposible(`la lámina dibuja ${BANDAS} bandas y le pasaron ${renglones.length}`);
+export function elegirCuerpo(pide: (cuerpo: number) => readonly number[]): number {
+  const { base, piso } = CUERPOS_LAMINA.ficha;
+  const franja = bandaDeLasFilas(LIENZO.alto).alto;
+  for (let cuerpo: number = base; cuerpo >= piso; cuerpo -= 2) {
+    if (altoNecesario(pide(cuerpo)) <= franja) return cuerpo;
   }
-  for (const r of renglones) {
-    if (!Number.isInteger(r) || r < 1) {
-      throw new LaminaImposible(`una banda no puede necesitar ${r} renglones`);
+  return piso;
+}
+
+/** Una lámina ya planificada: cuánto mide y dónde va cada bloque. */
+export interface PlanLamina {
+  readonly alto: number;
+  readonly bloques: readonly Bloque[];
+}
+
+/**
+ * Ubica cada bloque de la lámina y devuelve la lista en orden de dibujo, con el alto del
+ * lienzo.
+ *
+ * `pedidos` es cuánto contenido pide cada banda, en píxeles, medido por quien dibuja. Cada
+ * banda recibe lo suyo y el sobrante se reparte en proporción; si no entra ni estirando
+ * hasta `ALTO_MAX`, se reparte en proporción lo que hay.
+ */
+export function planificarLamina(pedidos: readonly number[]): PlanLamina {
+  if (pedidos.length < MIN_BANDAS || pedidos.length > MAX_BANDAS) {
+    throw new LaminaImposible(
+      `la lámina dibuja de ${MIN_BANDAS} a ${MAX_BANDAS} bandas y le pasaron ${pedidos.length}`,
+    );
+  }
+  for (const p of pedidos) {
+    if (!Number.isFinite(p) || p < 0) {
+      throw new LaminaImposible(`una banda no puede pedir ${p} px`);
     }
   }
 
-  const franja = bandaDeLasFilas();
-  if (franja.alto < MIN_BANDA * BANDAS) {
-    throw new LaminaImposible(
-      `las ${BANDAS} bandas piden ${MIN_BANDA * BANDAS} px y la lámina tiene ${franja.alto}`,
-    );
-  }
+  const alto = altoDeLienzo(pedidos);
+  const franja = bandaDeLasFilas(alto);
+  const necesarios = pedidos.map(altoDeBanda);
+  const necesario = necesarios.reduce((a, b) => a + b, 0);
 
   const bloques: Bloque[] = [];
   let y = MARGEN;
-  const poner = (clave: string, alto: number, aire = 0): void => {
-    bloques.push({ clave, y, alto });
-    y += alto + aire;
+  const poner = (clave: string, altoBloque: number, aire = 0): void => {
+    bloques.push({ clave, y, alto: altoBloque });
+    y += altoBloque + aire;
   };
 
   poner('marca', ALTOS.marca, AIRES.trasMarca);
   poner('titulo', ALTOS.titulo, AIRES.trasTitulo);
   poner('conjunto', ALTOS.conjunto, AIRES.trasConjunto);
 
-  // El sobrante se reparte proporcional a los renglones. La última banda se come el resto
-  // de la division para que la suma sea EXACTAMENTE la franja y no quede un pixel bailando
-  // — el mismo truco de `plan.ts`, y por el mismo motivo.
-  const sobrante = franja.alto - MIN_BANDA * BANDAS;
-  const total = renglones.reduce((a, b) => a + b, 0);
+  // Si entra, cada banda recibe lo que pide más su parte del sobrante. Si no, su parte de lo
+  // que hay. La última se come el resto de la división para que la suma sea EXACTAMENTE la
+  // franja y no quede un píxel bailando — el mismo truco de `plan.ts`.
+  const entra = necesario <= franja.alto;
+  const sobrante = franja.alto - necesario;
   let repartido = 0;
-  renglones.forEach((r, i) => {
-    const ultima = i === BANDAS - 1;
-    const extra = ultima ? sobrante - repartido : Math.floor((sobrante * r) / total);
-    repartido += extra;
-    poner(`banda-${i}`, MIN_BANDA + extra);
+  necesarios.forEach((n, i) => {
+    const ultima = i === necesarios.length - 1;
+    const propio = entra
+      ? n + Math.floor((sobrante * n) / necesario)
+      : Math.floor((franja.alto * n) / necesario);
+    const altoBanda = ultima ? franja.alto - repartido : propio;
+    repartido += altoBanda;
+    poner(`banda-${i}`, altoBanda);
   });
 
-  y = LIENZO.alto - MARGEN - ALTOS.sitio - ALTOS.credito - AIRES.trasCredito;
+  y = alto - MARGEN - ALTOS.sitio - ALTOS.credito - AIRES.trasCredito;
   poner('credito', ALTOS.credito, AIRES.trasCredito);
   poner('sitio', ALTOS.sitio);
 
-  return bloques;
+  return { alto, bloques };
 }
 
-/** Los cuerpos de cada renglón, con su piso. Mismos criterios que los de `plan.ts`. */
-export const CUERPOS_LAMINA = {
-  marcaSitio: { base: 62, piso: 34 },
-  tituloJuego: { base: 54, piso: 32 },
-  conjunto: { base: 38, piso: 24 },
-  rotuloFila: { base: 30, piso: 22 },
-  ficha: { base: 34, piso: 22 },
-  pie: { base: 22, piso: 16 },
-} as const;
+/** El contenido que le queda a una banda de ese alto, sacando el rótulo y el pie. */
+export function contenidoDeBanda(altoBanda: number): number {
+  return altoBanda - ROTULO_BANDA - PIE_BANDA;
+}
+
+/** Cuántos renglones de fichas entran en ese contenido, a ese cuerpo. */
+export function renglonesQueEntran(contenido: number, cuerpo: number): number {
+  return Math.max(1, Math.floor(contenido / (cuerpo * INTERLINEA)));
+}
 
 /**
  * El lado de una tapa en la lámina —el más grande que se dibuja— y el aire entre dos.
@@ -217,22 +302,15 @@ export function ladoDeTapa(cuantas: number, ancho: number, alto: number): number
 }
 
 /**
- * Cuántos renglones de texto **equivale** una banda de tapas.
+ * Lo que pide de contenido una banda de `cuantas` tapas, a tamaño completo.
  *
- * El reparto de alto de `planificarLamina` cuenta en renglones de texto, así que una banda
- * de tapas tiene que traducirse a esa misma unidad o pediría de menos y saldría con las
- * tapas cortadas. Es una conversión, no una estimación: alto de las tapas dividido el alto
- * de un renglón.
+ * Es una conversión, no una estimación: el alto de las filas de tapas que entran de ancho.
+ * Con siete bandas y diez tapas en una sola, la lámina se estira en vez de achicarlas.
  */
-export function renglonesDeTapas(cuantas: number, ancho: number, cuerpo: number): number {
+export function pedidoDeTapas(cuantas: number, ancho: number): number {
+  if (cuantas <= 0) return 0;
   const filas = Math.ceil(cuantas / tapasPorRenglon(ancho));
-  return Math.max(1, Math.ceil((filas * (TAPA_LAMINA.lado + TAPA_LAMINA.aire)) / (cuerpo * INTERLINEA)));
-}
-
-/** Cuántos renglones de fichas entran en una banda de ese alto, al cuerpo de referencia. */
-export function renglonesQueEntran(alto: number, cuerpo: number): number {
-  const paraFichas = alto - CUERPOS_LAMINA.rotuloFila.base * INTERLINEA - 12;
-  return Math.max(1, Math.floor(paraFichas / (cuerpo * INTERLINEA)));
+  return filas * (TAPA_LAMINA.lado + TAPA_LAMINA.aire) - TAPA_LAMINA.aire;
 }
 
 /** El nombre del archivo que se baja. Sin espacios ni acentos: viaja por todos lados. */

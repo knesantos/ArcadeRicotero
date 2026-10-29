@@ -14,7 +14,10 @@ import * as dosEjes from './dos-ejes/copy.ts';
 import * as ponelos from './ponelos/copy.ts';
 import * as skayboy from './skayboy/copy.ts';
 import * as masOMenos from './mas-o-menos/copy.ts';
+import * as recital from './recital/copy.ts';
+import * as bestiario from './bestiario/copy.ts';
 import { FILAS } from './ponelos/filas.ts';
+import { textosVisibles as textosDeLasRedes, type Calendario } from './difusion/calendario.ts';
 
 /**
  * La auditoria a maquina de `.claude/rules/voz-ricotera.md`, seccion 8.
@@ -75,6 +78,11 @@ const MODULOS: ReadonlyArray<readonly [string, Record<string, unknown>]> = [
   // de `CNT-25`; las preguntas de los datos a mano viven en el JSON y las mira el recolector
   // del banco, más abajo.
   ['mas-o-menos', masOMenos],
+  // `D-72`, el del 2026-10-15: "Armá tu recital" y la página "En vivo". Entra con el primer
+  // archivo, por la misma lección.
+  ['recital', recital],
+  // `D-73`: el bestiario redondo. Entra con la página, por la lección de `dos-ejes`.
+  ['bestiario', bestiario],
 ];
 
 /*
@@ -191,6 +199,30 @@ function cadenasDelBanco(): string[] {
 }
 
 /**
+ * El banco del quiz: enunciados, opciones, explicaciones y rótulos de leyenda (`FIND-149`).
+ *
+ * Es el texto visible más largo del sitio —44 preguntas, 176 opciones— y hasta `REV-22`
+ * ninguna de las reglas de la sección 8 lo miraba: `banco.test`, `fugas.test` y `ronda.test`
+ * lo leen por estructura, no por voz. Así pasaron dos «show» en el ciclo 20. Mismo criterio
+ * que el banco de dos ejes: solo lo `listo`, y nada de identificadores (`QZ-…`, `facil`).
+ */
+function cadenasDelQuiz(): string[] {
+  interface Crudo {
+    readonly items: readonly {
+      readonly enunciado: string;
+      readonly opciones: readonly { readonly texto: string }[];
+      readonly explicacion: string;
+      readonly rotuloLeyenda?: string;
+      readonly estado: string;
+    }[];
+  }
+  const banco = JSON.parse(readFileSync('src/data/quiz.json', 'utf-8')) as Crudo;
+  return banco.items
+    .filter((i) => i.estado === 'listo')
+    .flatMap((i) => [i.enunciado, ...i.opciones.map((o) => o.texto), i.explicacion, ...(i.rotuloLeyenda ? [i.rotuloLeyenda] : [])]);
+}
+
+/**
  * Los cuatro nombres de fila de `US-08`, que no viven en un `copy.ts` sino en `filas.ts`.
  *
  * **Por que estan aca y no importados con el resto.** `filas.ts` es un modulo hoja que no
@@ -212,10 +244,38 @@ function cadenasDeLasFilas(): string[] {
   return FILAS.map((f) => f.nombre);
 }
 
+/**
+ * Lo que el sitio escribe en el bestiario (`D-73`), que vive en un JSON: el nombre y la
+ * línea que canta de cada región, y la estampa y lo que se cuenta de cada bestia. **No** el
+ * nombre de cada bestia ni sus versos: son citas de las letras, y una cita no se corrige.
+ */
+function cadenasDelBestiario(): string[] {
+  interface Crudo {
+    regiones: Array<{ corto: string; nombre: string; canta: string }>;
+    bestias: Array<{ estampa: string; cuenta?: Array<{ texto: string }> }>;
+  }
+  const b = JSON.parse(readFileSync('src/data/bestiario.json', 'utf-8')) as Crudo;
+  return [
+    ...b.regiones.flatMap((r) => [r.corto, r.nombre, r.canta]),
+    ...b.bestias.flatMap((x) => [x.estampa, ...(x.cuenta ?? []).map((c) => c.texto)]),
+  ];
+}
+
+/**
+ * Lo que el sitio dice afuera, en Instagram y en X (`D-81`). Es la misma voz con otra
+ * vidriera: un anglicismo en un posteo se lee igual que en un botón, y lo lee más gente.
+ */
+function cadenasDeLasRedes(): string[] {
+  return textosDeLasRedes(JSON.parse(readFileSync('Docs/DIFUSION/calendario.json', 'utf-8')) as Calendario);
+}
+
 const VISIBLE: ReadonlyArray<readonly [string, string]> = [
   ...MODULOS.flatMap(([donde, modulo]) => cadenas(modulo).map((texto) => [donde, texto] as const)),
   ...cadenasDelBanco().map((texto) => ['dos-ejes', texto] as const),
+  ...cadenasDelQuiz().map((texto) => ['quiz.json', texto] as const),
   ...cadenasDeLasFilas().map((texto) => ['ponelos/filas', texto] as const),
+  ...cadenasDelBestiario().map((texto) => ['bestiario.json', texto] as const),
+  ...cadenasDeLasRedes().map((texto) => ['redes', texto] as const),
 ];
 
 const sinTilde = (s: string): string => s.normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -237,9 +297,12 @@ function infracciones(patron: RegExp): string[] {
  * Los limites de palabra estan puestos a proposito: `\blist\b` no toca "lista" ni
  * "listo", y `\btop\b` no toca "tope". La regla es contra el anglicismo, no contra el
  * castellano que se le parece.
+ *
+ * `show` entró en el ciclo 20 por lo mismo (`FIND-148`): dos se colaron en el banco del quiz
+ * el día que el banco todavía no pasaba por acá. La palabra corriente es «recital».
  */
 test('D-17: no entra un anglicismo en lo que se lee', () => {
-  const glosario = /\b(feedback|reveal|display|quiz|link|score|player|gaming|ranking|challenge|share|tips?|loading|hint|combo|streak|highscore|tier|list|top)\b/;
+  const glosario = /\b(feedback|reveal|display|quiz|link|score|player|gaming|ranking|challenge|share|tips?|loading|hint|combo|streak|highscore|tier|list|top|show)\b/;
   assert.deepEqual(infracciones(glosario), []);
 });
 
@@ -281,9 +344,12 @@ test('voz 4.1: la linea grande no pasa de ocho palabras', () => {
   const grandes: Array<[string, string]> = [
     ['portal.titulo', sitio.PORTAL.titulo],
     ['redondopedia.titulo', sitio.REDONDOPEDIA.titulo],
+    // `D-75`: los tres hilos del pie de cada artículo, que son línea grande (registro 1).
+    ['redondopedia.veaTambien', sitio.REDONDOPEDIA.veaTambien],
+    ['redondopedia.oreja', sitio.REDONDOPEDIA.oreja],
+    ['redondopedia.tambienAnda', sitio.REDONDOPEDIA.tambienAnda],
     ...sitio.JUEGOS.map((c) => [`casete "${c.titulo}"`, c.titulo] as [string, string]),
-    ['casete cancionero', sitio.CASETE_CANCIONERO.titulo],
-    ['casete redondopedia', sitio.CASETE_REDONDOPEDIA.titulo],
+    ...sitio.LADO_B.map((c) => [`casete "${c.titulo}"`, c.titulo] as [string, string]),
     // Los renglones del lugar (`CNT-13`) son la línea que canta de cada pantalla, y `CNT-13`
     // los midió contra el techo de ocho a mano. Hasta el 2026-10-01 este test no los miraba:
     // lo notó `contenido` al escribir el undécimo (`CNT-26`).
@@ -303,6 +369,16 @@ test('voz 4.1: la linea grande no pasa de ocho palabras', () => {
     ['h1 ponelos en fila', ponelos.PANTALLA_0.titulo],
     // `US-10`: lo pidió `CNT-25` y `REV-16` (`FIND-85`) vio que no había quedado.
     ['h1 más o menos', masOMenos.PANTALLA_0.titulo],
+    // `D-72`: el juego, el encabezado de la lista armada y el título de "En vivo".
+    ['h1 armá tu recital', recital.PANTALLA_0.titulo],
+    ['noche.titulo', recital.NOCHE.titulo],
+    ['h1 en vivo', recital.EN_VIVO.titulo],
+    // `D-73`: el título, el renglón del lugar, y el nombre y la línea que canta de cada región.
+    ['h1 bestiario', bestiario.BESTIARIO.titulo],
+    ['bestiario.dondeEstas', bestiario.BESTIARIO.dondeEstas],
+    ...(JSON.parse(readFileSync('src/data/bestiario.json', 'utf-8')) as { regiones: Array<{ id: string; nombre: string; canta: string }> }).regiones.flatMap(
+      (r) => [[`región ${r.id}`, r.nombre], [`región ${r.id} canta`, r.canta]] as Array<[string, string]>,
+    ),
     ...Object.entries(masOMenos.TRAMOS).map(([k, v]) => [`más o menos tramo ${k}`, v] as [string, string]),
     // `D-49`: el afiche de octubre. El sello y la que canta son línea grande; el botón también.
     ['oktubre.sello', sitio.OKTUBRE.sello],
@@ -321,8 +397,7 @@ test('voz 5: la bajada de un casete arranca cantando, y el verso no pasa de ocho
   const bajadas: Array<[string, string]> = [
     ['portal', sitio.PORTAL.bajada],
     ...sitio.JUEGOS.map((c) => [`casete "${c.titulo}"`, c.baja] as [string, string]),
-    ['casete cancionero', sitio.CASETE_CANCIONERO.baja],
-    ['casete redondopedia', sitio.CASETE_REDONDOPEDIA.baja],
+    ...sitio.LADO_B.map((c) => [`casete "${c.titulo}"`, c.baja] as [string, string]),
   ];
   const largos = bajadas
     .filter(([, texto]) => (texto.split(/(?<=\.)\s+/)[0] ?? '').trim().split(/\s+/).length > 8)
@@ -367,7 +442,7 @@ function cadenasDeFunciones(): Array<readonly [string, string]> {
 }
 
 test('las funciones del copy tampoco pueden traer un anglicismo ni una formula de folleto', () => {
-  const glosario = /\b(feedback|reveal|display|quiz|link|score|player|gaming|ranking|challenge|share|tips?|loading|hint|combo|streak|highscore|tier|list|top)\b/;
+  const glosario = /\b(feedback|reveal|display|quiz|link|score|player|gaming|ranking|challenge|share|tips?|loading|hint|combo|streak|highscore|tier|list|top|show)\b/;
   const folleto =
     /(descubri todo|sumergite|la experiencia (definitiva|unica)|y listo!|a jugar!|increible|imperdible|la mejor forma de)/;
   const gente = /\b(los fans|las? usuarios?|los? usuarios?|nuestra comunidad)\b/;

@@ -45,6 +45,8 @@ export interface Fuente {
   readonly sitio: string;
   readonly licencia: LicenciaDeFuente;
   readonly atribucion?: string;
+  /** `D-72`: las listas las cargó la gente y nadie las revisó. La página lo pone en el rótulo. */
+  readonly revision?: 'sin-revisar';
   readonly ficha: string;
 }
 

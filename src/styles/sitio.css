@@ -149,23 +149,6 @@ html[data-umbral] .marca-grande {
   color: var(--texto-tenue);
 }
 
-/* ---- Recortes que viven en el fondo ---- */
-
-/* La gente con banderas (Oktubre) marcha detras de todo, apenas visible. */
-.banderas-fondo {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  max-height: 26vh;
-  object-fit: cover;
-  object-position: top;
-  opacity: 0.14;
-  pointer-events: none;
-  z-index: 0;
-  user-select: none;
-}
-
 /* ---- La tapa real de fondo (D-21) ----
    Debajo del velo puede haber cualquier foto: el peor caso —el velo sobre un pixel
    blanco puro— ya esta medido en contraste.test.ts, asi que ninguna tapa lo empeora.
@@ -249,77 +232,172 @@ html[data-umbral] .marca-grande {
   }
 }
 
-/* **Y la lleva una sola capa: la franja fija del portal.** No es una limitacion de
-   tiempo, es lo que salio de mirarlo en pantalla.
+/* **Y la lleva una sola capa: la gente del pie del portal** (`D-63`). No es una limitacion
+   de tiempo, es lo que salio de mirarlo en pantalla.
 
-   Las otras `.tapa-fondo` viven adentro de una caja acotada —la cabecera de la
-   Redondopedia, el `main` de cada juego—, y correr hacia arriba una imagen que llena su
-   caja **descubre el borde de abajo**: aparece una franja de fondo pelado donde antes
-   habia foto. Ademas, una capa que se corre adentro de una caja que no se desplaza no es
-   profundidad: es un elemento moviendose, que es exactamente lo que la doctrina prohibe
-   en su primera frase.
+   Las `.tapa-fondo` viven adentro de una caja acotada —la cabecera de la Redondopedia, el
+   `main` de cada juego—, y correr hacia arriba una imagen que llena su caja **descubre el
+   borde de abajo**: aparece una franja de fondo pelado donde antes habia foto. Ademas, una
+   capa que se corre adentro de una caja que no se desplaza no es profundidad: es un
+   elemento moviendose, que es exactamente lo que la doctrina prohibe en su primera frase.
 
-   La franja del portal si es el caso legitimo: esta **fija** al pie de la ventana, o sea
-   ya se queda quieta mientras el contenido sube, y lo que la deriva agrega es que se
-   corra un poco con el — el aire adelantandose apenas al piso. */
+   La multitud si es el caso legitimo, y por una cuenta que cierra sola: corre **al reves**
+   (`reverse`), asi que arranca subida y termina apoyada. El piso de la pagina solo se ve
+   con el desplazamiento al final, que es justo cuando la capa vuelve a cero — el borde de
+   abajo no se descubre nunca. Mientras se baja, la gente sube un poco mas lento que la
+   hoja: queda atras, que es lo que la deriva existe para decir.
+
+   Hasta el 2026-10-04 la llevaba la franja fija de banderas al pie de la ventana, que
+   `D-63` saco: el fondo del portal es negro liso. */
 @supports (animation-timeline: scroll()) {
-  .tapa-fondo--portal {
+  .multitud-pie {
     animation-name: deriva-de-capa;
     animation-timing-function: linear;
+    animation-direction: reverse;
     animation-duration: auto;
     animation-timeline: scroll(root block);
   }
 }
 
-/* Anclada abajo y fija, como la franja de multitud que ya vivia ahi dibujada.
-   NO va detras de la marca grande: esa se escribe en --marca-rojo, que sobre tapa
-   velada no llega a AA (3,38:1) — lo verifica contraste.test.ts. */
-.tapa-fondo--portal {
+/* **Y desde `D-75`, una segunda: el lugar de la Redondopedia.** Es el otro caso legítimo, y
+   por la misma cuenta dada vuelta. La capa no vive en una caja quieta: está anclada arriba
+   de la hoja, que se desplaza entera, así que correrla es profundidad y no un elemento
+   moviéndose. Corre al revés y atada a su propia salida de la ventana (`view()`, tramo
+   `exit`): arranca subida un 8 % y termina en su lugar justo cuando ya salió de la vista.
+   Mientras se baja, la tapa se queda un poco atrás del título. El borde de arriba sale de la
+   ventana antes que nada, y el de abajo es la racleta: ninguno de los dos se descubre.
+
+   Los graves no la tienen porque no tienen capa (`UX-20` §3.4), y con movimiento reducido
+   `--deriva-capa-fondo` vale cero y la tapa se queda quieta. */
+@supports (animation-timeline: view()) {
+  .tapa-fondo--lugar {
+    animation-name: deriva-de-capa;
+    animation-timing-function: linear;
+    animation-direction: reverse;
+    animation-fill-mode: both;
+    animation-duration: auto;
+    animation-timeline: view();
+    animation-range: exit;
+  }
+}
+
+/* ---- La multitud que se acerca (`D-63` enmienda 1) ----
+
+   Pedido del usuario, textual: *"mientras vas bajando en la página en el fondo se vean
+   banderas rojas y gente, como si la gente del final fuese el final de una multitud gigante,
+   como si ir para abajo fuese acercarse a la multitud"*.
+
+   Dos planos fijos al pie de la ventana, detrás de todo, hechos con el frente original de
+   *Oktubre* (banderas y gente, en espejo para que el mosaico no tenga costura). Arriba de la
+   página se ve solo el de lejos: gente chica y banderas en el horizonte. Al bajar, ese plano
+   crece y entra desde abajo el de más cerca, más grande y con más tinta. Al final llega la
+   fila de adelante, que es la del pie (`.multitud-pie`), con las caras grandes.
+
+   CADA FILA TAPA A LA DE ATRÁS. Cada plano pinta tres capas en el orden de una serigrafía:
+   la silueta de la gente en `--fondo` (`::before`), lo claro (`span`) y las banderas
+   (`::after`). Sin la silueta, la gente de atrás se vería por adentro de las caras de
+   adelante. La fila del pie trae su silueta horneada (`generar-multitud.mjs`).
+
+   NO ES UNA FOTO Y NO LLEVA VELO, por la misma razón que la pasada: son máscaras de alfa
+   sola sobre tinta plana de `tokens.css`. Lo que la hace legible no es un velo sino el peso:
+   `--peso-multitud-*` y `--peso-bandera-*` tienen techo, y lo mide `contraste.test.ts` contra
+   todo el texto que pasa por encima.
+
+   EL MOVIMIENTO ES DEL LUGAR (`UX-20`): lo único que se mueve es la cámara acercándose, atado
+   al desplazamiento y sin JavaScript. Donde no hay `animation-timeline`, o con movimiento
+   reducido (`--acercamiento: 0`), los dos planos quedan quietos en su lugar de llegada. */
+.plano-gente {
   position: fixed;
-  /* La franja se extiende por debajo del borde de la ventana **exactamente lo que la
-     deriva la va a correr hacia arriba**. Sin eso, al desplazar aparecería una tira de
-     fondo pelado en el pie: la capa se corre y descubre por dónde termina.
+  inset: auto 0 0 0;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  transform-origin: 50% 100%;
+}
 
-     Las cuentas cierran solas y sin números nuevos: `--deriva-capa-fondo` es un
-     porcentaje, y en un elemento fijo los porcentajes de `height` y de `bottom` se
-     resuelven contra la ventana. Con `8%`, la franja mide 38vh y arranca 8vh por debajo
-     del borde, así que **lo que se ve es la misma banda de 30vh de siempre**. Con
-     movimiento reducido el token vale `0%` y la geometría vuelve a ser la de antes,
-     letra por letra. */
-  inset: auto 0 calc(-1 * var(--deriva-capa-fondo)) 0;
-  height: calc(30vh + var(--deriva-capa-fondo));
-  background-position: bottom;
-  background-image: linear-gradient(var(--velo-tapa), var(--velo-tapa)),
-    url('/tapas/fondo/oktubre-banderas.jpg');
+.plano-gente::before,
+.plano-gente > span,
+.plano-gente::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  -webkit-mask-size: auto 100%;
+  mask-size: auto 100%;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+  -webkit-mask-position: var(--corrimiento) 100%;
+  mask-position: var(--corrimiento) 100%;
+}
 
-  /* LA TINTA SE ACABA HACIA ARRIBA — y este es el corte que el usuario nombró primero.
+.plano-gente::before {
+  background: var(--fondo);
+  -webkit-mask-image: url('/arte/multitud-lejos-silueta.png');
+  mask-image: url('/arte/multitud-lejos-silueta.png');
+}
 
-     Medido antes de tocar nada, a 375×812: la franja arrancaba en y=568 con una línea
-     geométrica de x=0 a x=375. El velo es un lavado plano —dos paradas idénticas— que
-     vale lo mismo en el centro que en el último píxel, así que la foto de la multitud
-     empezaba de golpe. Ninguna máscara, ninguna textura, ningún regreso al fondo.
+.plano-gente > span {
+  background: color-mix(in srgb, var(--papel) var(--peso-gente), var(--fondo));
+  -webkit-mask-image: url('/arte/multitud-lejos-clara.png');
+  mask-image: url('/arte/multitud-lejos-clara.png');
+}
 
-     Ahora se apaga en mota, con la misma receta de dos capas que usa `.pasada-pie` y por
-     los mismos motivos: sin `mask-composite` las capas se unen, que es exactamente lo que
-     hace falta, y un motor que no lo entienda no puede arruinarlo. Abajo NO se desgasta:
-     esa pasada sigue de largo por debajo del borde de la ventana, y la multitud tiene que
-     quedar apoyada en el piso de la pantalla. Una capa que se desvanece por los cuatro
-     lados es una viñeta, que es lo único en lo que esto se puede convertir si se usa mal.
+.plano-gente::after {
+  background: color-mix(in srgb, var(--disco-oktubre-tinta) var(--peso-banderas), var(--fondo));
+  -webkit-mask-image: url('/arte/multitud-lejos-roja.png');
+  mask-image: url('/arte/multitud-lejos-roja.png');
+}
 
-     La deriva no se toca: la máscara viaja con el elemento, así que la tinta no se corre
-     de su propio borde. Y el velo tampoco: enmascarar sólo puede BAJAR el peso de la foto
-     en el compuesto, así que el peor caso que mide `contraste.test.ts` sigue siendo el
-     peor caso y no entra ni un par nuevo. */
-  -webkit-mask-image: var(--textura-rodillo),
-    linear-gradient(to bottom, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
-  mask-image: var(--textura-rodillo),
-    linear-gradient(to bottom, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste));
-  -webkit-mask-size: 240px var(--desgaste), 100% 100%;
-  mask-size: 240px var(--desgaste), 100% 100%;
-  -webkit-mask-repeat: repeat-x, no-repeat;
-  mask-repeat: repeat-x, no-repeat;
-  -webkit-mask-position: top left, top left;
-  mask-position: top left, top left;
+/* Cada plano corre el mosaico distinto, para que los ejes del espejo —donde las banderas
+   quedan de a pares— no caigan uno sobre el otro. */
+.plano-gente--lejos {
+  --peso-gente: var(--peso-multitud-lejos);
+  --peso-banderas: var(--peso-bandera-lejos);
+  --corrimiento: 50%;
+  height: clamp(9rem, 26vh, 15rem);
+}
+
+.plano-gente--cerca {
+  --peso-gente: var(--peso-multitud-cerca);
+  --peso-banderas: var(--peso-bandera-cerca);
+  --corrimiento: 18%;
+  height: clamp(12rem, 46vh, 28rem);
+}
+
+/* Lo de lejos crece mientras te acercás. */
+@keyframes acercarse-lejos {
+  to {
+    transform: scale(calc(1 + 0.45 * var(--acercamiento)));
+  }
+}
+
+/* Lo de más cerca está abajo del borde de la ventana hasta que caminaste un tercio, y después
+   sube y crece un poco. Termina un 12 % abajo del borde: la fila del pie, que llega en ese
+   momento, es la que se apoya en el piso. */
+@keyframes acercarse-cerca {
+  0%,
+  30% {
+    transform: translateY(calc(100% * var(--acercamiento)));
+  }
+  100% {
+    transform: translateY(calc(12% * var(--acercamiento))) scale(calc(1 + 0.12 * var(--acercamiento)));
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .plano-gente {
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-duration: auto;
+    animation-timeline: scroll(root block);
+  }
+
+  .plano-gente--lejos {
+    animation-name: acercarse-lejos;
+  }
+
+  .plano-gente--cerca {
+    animation-name: acercarse-cerca;
+  }
 }
 
 .tapa-fondo--lobo-tiras {
@@ -342,17 +420,83 @@ html[data-umbral] .marca-grande {
     url('/tapas/fondo/gulp-pincelada.jpg');
 }
 
-/* El detalle de tapa que acompaña al titulo de un articulo que no es de disco
-   (UX-05, 7b/7c). Chico y pegado arriba a la derecha: no compite con el titulo ni se
-   mete detras del cuerpo rotulado. Se omite en los tres articulos de tono grave —
-   la lista vive en arte.ts, no acá. */
-.detalle-articulo {
-  float: right;
-  width: clamp(64px, 22vw, 96px);
-  margin: 0 0 var(--espacio-1) var(--espacio-2);
-  border: var(--linea) solid color-mix(in srgb, var(--tinte) 55%, var(--borde));
-  border-radius: 3px;
-  transform: rotate(-2deg);
+/* ---- El lugar de la Redondopedia (`D-75`) ----
+
+   La tapa velada que sube desde arriba de la ventana, detrás del regreso y del título, y se
+   acaba antes del cuerpo. Reemplaza al recorte chico que flotaba junto al título (`UX-05`
+   7b/7c): aquel decoraba el renglón, esto pone el lugar. El misterio vive en el borde de la
+   hoja, y la prosa rotulada se lee sobre tinta lisa.
+
+   Es una `.tapa-fondo` como cualquier otra —el velo plano, la racleta abajo, el nombre de
+   tránsito `lugar`—, con tres diferencias:
+
+   - **Mide lo que mide el arriba de la hoja y no la caja entera** (`--alto-lugar`): la hoja
+     de un artículo mide cuatro ventanas, y una tapa estirada a ese alto es una mancha.
+   - **La racleta levanta más despacio** (`--desgaste` local): la tapa se pierde en la tinta
+     a lo largo de casi un renglón de pantalla, en vez de cortarse. Es la misma receta de
+     textura cruzada con alfa, así que no es un fundido (`D-34`).
+   - **La imagen entra por `--tapa-lugar`**, que la pone `Base.astro` en línea (`ADR-05.7`):
+     cada artículo trae la suya. El velo va acá, en el mismo bloque, donde el test lo ve. */
+.lugar {
+  --desgaste: 7rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  width: min(100%, var(--ancho-lugar));
+  height: min(var(--alto-lugar), 100svh);
+  margin-inline: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.tapa-fondo--lugar {
+  background-image: linear-gradient(var(--velo-tapa), var(--velo-tapa)), var(--tapa-lugar);
+  background-position: center 35%;
+}
+
+/* En la computadora la tapa no llega a los bordes de la ventana —estirada a 1366 px sería una
+   tira ampliada tres veces, la mancha que el comentario de `.tapa-fondo` ya midió—, así que
+   tiene costados. Y un costado recto en el medio de la pantalla es una caja. Se gastan con la
+   misma racleta de abajo puesta de canto: textura cruzada con alfa, no un fundido (`D-34`).
+   Va en la caja de afuera para que las dos máscaras se multipliquen sin componerse. */
+@media (min-width: 46rem) {
+  .lugar {
+    -webkit-mask-image: var(--textura-rodillo-canto), var(--textura-rodillo-canto),
+      linear-gradient(to right, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste),
+        currentColor calc(100% - var(--desgaste)), transparent calc(100% - var(--desgaste) * 0.55), transparent 100%);
+    mask-image: var(--textura-rodillo-canto), var(--textura-rodillo-canto),
+      linear-gradient(to right, transparent 0, transparent calc(var(--desgaste) * 0.55), currentColor var(--desgaste),
+        currentColor calc(100% - var(--desgaste)), transparent calc(100% - var(--desgaste) * 0.55), transparent 100%);
+    -webkit-mask-size: var(--desgaste) 240px, var(--desgaste) 240px, 100% 100%;
+    mask-size: var(--desgaste) 240px, var(--desgaste) 240px, 100% 100%;
+    -webkit-mask-repeat: repeat-y, repeat-y, no-repeat;
+    mask-repeat: repeat-y, repeat-y, no-repeat;
+    -webkit-mask-position: left top, right top, left top;
+    mask-position: left top, right top, left top;
+  }
+}
+
+/* El arriba de la portada: sin caja. Hasta `D-75` era un recuadro con borde que encerraba la
+   tapa; ahora la tapa es el lugar, y el título se apoya en ella como en cada artículo. */
+.umbral-redondopedia {
+  padding-top: var(--aire-lugar);
+  margin-bottom: var(--espacio-3);
+}
+
+/* El nombre del lugar, en la letra de la banda y en el rojo del título manuscrito de *Gulp!*,
+   que es el disco que viste esta portada (`D-19`). Con la sal, como el título de cada juego. */
+.umbral-redondopedia .titulo-seccion {
+  font-size: clamp(2.5rem, 12.5vw, 3.6rem);
+  line-height: 1;
+  color: var(--cat-historia);
+  padding-bottom: 0.07em;
+  margin-bottom: var(--espacio-2);
+  -webkit-mask-image: var(--textura-tinta-sal);
+  mask-image: var(--textura-tinta-sal);
+  -webkit-mask-size: 480px 480px;
+  mask-size: 480px 480px;
 }
 
 /* La cabecera de la Redondopedia viste Gulp! (D-19). El fondo llega hasta acá y no
@@ -502,30 +646,41 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   background: color-mix(in srgb, var(--papel) 88%, transparent);
   border-radius: 3px;
   transform: rotate(-1.6deg);
-  box-shadow: 0 2px 0 color-mix(in srgb, var(--papel-borde) 60%, transparent);
+}
+
+/* Desde `D-82` las cuatro formas de la marca son el logo, no la palabra escrita: la FR
+   coronada que imprime `scripts/generar-logo.py`. La chica es la FR sola; las grandes llevan
+   el nombre abajo. El tamaño lo pone el ancho; la imagen llena su caja. */
+.marca-chica,
+.marca-grande,
+.caratula-marca {
+  line-height: 0;
+}
+
+.marca-chica img,
+.marca-grande img,
+.caratula-marca img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .marca-chica {
-  font-family: var(--fuente-titular);
-  font-size: 1.05rem;
-  line-height: 1;
-  color: var(--marca-rojo);
+  display: block;
+  /* 4,5 rem: con el relleno de la cabecera de un lugar, la FR queda en 56 px de ancho, arriba
+     del mínimo de 48 de alto donde la corona todavía se lee (el manual de marca, `D-82`). */
+  width: 4.5rem;
+  flex-shrink: 0;
   text-decoration: none;
-  max-width: 8ch;
-  text-align: right;
   view-transition-name: marca;
 }
 
 /* ---- La marca grande del portal ---- */
 
 .marca-grande {
-  font-family: var(--fuente-titular);
-  font-size: clamp(2.6rem, 13vw, 4rem);
-  line-height: 0.92;
-  color: var(--marca-rojo);
+  width: clamp(10rem, 50vw, 14rem);
   /* `UX-25` §1: el aire de arriba cede, la letra no. De `--espacio-3` a `--espacio-2`. */
   margin: var(--espacio-2) 0 var(--espacio-1);
-  max-width: 7ch;
   /* El tercero de los tres nombres (`ADR-03` §6.3). La firma es la misma de un lado y del
      otro, asi que el navegador la mueve de su lugar en la portada al suyo en la cabecera
      en vez de dibujarla dos veces. Las cuatro formas de la marca —esta, la chica del
@@ -763,7 +918,9 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   border: 2px solid var(--marca-rojo);
   border-radius: 3px;
   transform: rotate(-1.2deg);
-  box-shadow: 2px 2px 0 color-mix(in srgb, var(--marca-rojo) 40%, var(--papel));
+  /* Es el mismo sello que el JUGÁ de los casetes, y sale de la misma almohadilla (`D-64`). */
+  position: relative;
+  isolation: isolate;
 }
 
 .oktubre-jugar:focus-visible {
@@ -925,9 +1082,10 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   transform: rotate(-4deg);
 }
 
-/* El detalle: un pedazo de la foto, recortado y pegado. Es el mismo tratamiento que ya
-   tiene el detalle de tapa de la Redondopedia (`.detalle-articulo`): borde grueso teñido
-   por el disco del casete, esquina de estampa y una rotación leve (`D-21`, condición 3). */
+/* El detalle: un pedazo de la foto, recortado y pegado. Es el mismo tratamiento que tenía el
+   detalle de tapa de la Redondopedia hasta `D-75` (y que hoy tiene la tapa chica de sus
+   tarjetas de disco): borde grueso teñido por el disco del casete, esquina de estampa y una
+   rotación leve (`D-21`, condición 3). */
 .casete-arte--detalle {
   object-fit: cover;
   border: var(--linea) solid color-mix(in srgb, var(--tinte) 60%, var(--borde));
@@ -944,13 +1102,12 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 }
 
 /* La tapa entera: el disco pegado como un objeto, no como una miniatura. Filete de papel,
-   como el borde blanco que deja la imprenta en un sobre, y la sombra dura corrida del
-   recorte sobre recorte — tinta plana, sin difuminar (la tabla anti-slop). */
+   como el borde blanco que deja la imprenta en un sobre, y torcida: se recorta por el
+   filete y por el giro, sin sombra (`D-64`, la sombra salió de todos lados). */
 .casete-arte--entera {
   object-fit: cover;
   border: 2px solid var(--papel);
   border-radius: 2px;
-  box-shadow: 3px 3px 0 color-mix(in srgb, var(--tinte) 70%, var(--fondo));
   transform: rotate(-3deg);
 }
 
@@ -984,6 +1141,10 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   padding: var(--espacio-1) var(--espacio-2);
   border-radius: 4px;
   transform: rotate(-0.4deg);
+  /* El papel viejo va en un `::before` por debajo de la letra (`D-64`): sin estas dos, el
+     pseudo se iría detrás de toda la página. */
+  position: relative;
+  isolation: isolate;
 }
 
 .casete-titulo {
@@ -995,6 +1156,18 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   font-size: 0.95rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  /* Es un <strong>: sin esto el navegador engorda Archivo Black, que tiene un peso solo (la
+     negrita falsa que `D-54` les sacó a los h1). */
+  font-weight: normal;
+  /* La almohadilla (`D-64`): la tinta del sello no llega pareja. Le faltan puntos y zonas
+     donde la mano aflojó, y lo que falta lo saca la máscara —nunca un gris: la letra que
+     queda es `--fondo` pleno—. Dónde apretó la mano depende del disco (`--golpe`). */
+  -webkit-mask-image: var(--textura-tinta);
+  mask-image: var(--textura-tinta);
+  -webkit-mask-size: 240px 240px;
+  mask-size: 240px 240px;
+  -webkit-mask-position: calc(var(--golpe, 0) * -61px) calc(var(--golpe, 0) * -37px);
+  mask-position: calc(var(--golpe, 0) * -61px) calc(var(--golpe, 0) * -37px);
 }
 
 .casete-baja {
@@ -1043,8 +1216,8 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   border-radius: 3px;
   padding: 0.3em 1em;
   transform: rotate(-1.4deg);
-  /* La tinta del sello no llega pareja al borde: el eco de la segunda pasada, corrido. */
-  box-shadow: 2px 2px 0 color-mix(in srgb, var(--tinte-sello, var(--tinte)) 40%, var(--papel));
+  position: relative;
+  isolation: isolate;
 }
 
 /* El numero de pista, escrito a mano en la etiqueta como en la tapita de un cassette
@@ -1059,8 +1232,10 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   transform: rotate(3deg);
 }
 
-/* Lo que todavia no salio: etiqueta escrita en lapiz, sin boton que engañe. */
-.casete--pronto {
+/* Lo que todavia no salio: etiqueta escrita en lapiz, sin boton que engañe.
+   La opacidad va en la pieza y no en el casete entero (`D-64`): sobre el papel viejo, la
+   pista en `--papel-tenue` con el casete apagado bajaba de AA. */
+.casete--pronto .casete-arte {
   opacity: 0.82;
 }
 
@@ -1068,53 +1243,165 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   font-family: var(--fuente-rotulada);
   font-size: 0.75rem;
   letter-spacing: 0.08em;
-  color: var(--texto-tenue);
-  border: 2px dashed var(--borde);
+  /* Escrito a mano, como la pista: lápiz sobre el papel. Era `--texto-tenue`, que es tinta
+     para el fondo negro y sobre el papel daba 1,72:1. */
+  color: var(--papel-tenue);
+  border: 2px dashed var(--papel-tenue);
   border-radius: 3px;
   padding: 0.35em 1em;
   text-transform: uppercase;
   transform: rotate(0.9deg);
 }
 
+/* La almohadilla, segunda parte (`D-64`): el papel viejo de la etiqueta y el macizo del
+   sello. Las dos van en @supports A PROPÓSITO: sin máscara, el ::before del papel sería un
+   rectángulo pleno de --papel-borde (la pista caería a 3,66:1), y el del sello taparía el
+   relleno de repuesto. El filete y la letra del sello no se enmascaran nunca: el canto de la
+   goma imprime entero, y es lo que sostiene la forma del botón contra el papel. */
+@supports (mask-image: none) or (-webkit-mask-image: none) {
+  .casete-etiqueta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    background: var(--papel-borde);
+    -webkit-mask-image: var(--textura-papel-viejo);
+    mask-image: var(--textura-papel-viejo);
+    -webkit-mask-size: 320px 320px;
+    mask-size: 320px 320px;
+    -webkit-mask-position: calc(var(--golpe, 0) * -83px) calc(var(--golpe, 0) * -131px);
+    mask-position: calc(var(--golpe, 0) * -83px) calc(var(--golpe, 0) * -131px);
+  }
+
+  .casete-accion,
+  .oktubre-jugar {
+    background: transparent;
+  }
+
+  .casete-accion::before,
+  .oktubre-jugar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    -webkit-mask-image: var(--textura-tinta);
+    mask-image: var(--textura-tinta);
+    -webkit-mask-size: 240px 240px;
+    mask-size: 240px 240px;
+    -webkit-mask-position: calc(var(--golpe, 0) * -97px - 120px) calc(var(--golpe, 0) * -53px - 70px);
+    mask-position: calc(var(--golpe, 0) * -97px - 120px) calc(var(--golpe, 0) * -53px - 70px);
+  }
+
+  .casete-accion::before {
+    background: var(--tinte-sello, var(--tinte));
+  }
+
+  /* El de octubre va sobre el negro del afiche y no sobre papel, así que lleva solo la sal y no
+     la presión: aflojada al 80 %, el rojo se oscurecía y la letra `--fondo` encima quedaba en
+     3,52:1. Con la sal la tinta que queda es plena, y el par es el de siempre (4,98:1). Lo
+     encontró `REV` el 2026-10-05; `contraste.test.ts` lo vigila. */
+  .oktubre-jugar::before {
+    background: var(--marca-rojo);
+    -webkit-mask-image: var(--textura-tinta-sal);
+    mask-image: var(--textura-tinta-sal);
+  }
+}
+
+/* Alto contraste y colores forzados: tinta lisa y papel limpio (`D-64`). forced-colors apaga
+   text-shadow solo, pero NO mask-image: si nadie lo hace a mano, la máscara sigue. */
+@media (forced-colors: active), (prefers-contrast: more) {
+  .casete-titulo {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .casete-etiqueta::before,
+  .casete-accion::before,
+  .oktubre-jugar::before {
+    content: none;
+  }
+
+  .casete-accion {
+    background: var(--tinte-sello, var(--tinte));
+  }
+
+  .oktubre-jugar {
+    background: var(--marca-rojo);
+  }
+}
+
 /* Variantes de disco (mezcla D-19). El acento rota; la base, nunca.
 
    **Cada variante sirve dos veces desde el ciclo 17** (`D-54`): `.casete--*` viste el casete
-   del portal y la carátula de cada juego, y `.juego--*` viste la página entera de ese juego
-   —el título, el eco del registro—. Es un solo mapa a propósito: el casete que se toca en la
-   puerta y el juego que abre no pueden vestir dos discos distintos. */
-.casete--marca, .juego--marca { --tinte: var(--marca-rojo); }
-.casete--historia, .juego--historia { --tinte: var(--cat-historia); --tinta-registro: var(--cat-historia-apoyo); }
-.casete--discos, .juego--discos { --tinte: var(--cat-discos); --tinta-registro: var(--cat-discos-apoyo); }
-.casete--letras, .juego--letras { --tinte: var(--cat-letras); --tinta-registro: var(--cat-letras-apoyo); }
-.casete--mitologia, .juego--mitologia { --tinte: var(--cat-mitologia); --tinta-registro: var(--cat-mitologia-apoyo); }
+   del portal y la carátula de cada juego, y `.juego--*` viste la página entera de ese juego.
+   Es un solo mapa a propósito: el casete que se toca en la puerta y el juego que abre no
+   pueden vestir dos discos distintos. (Hasta `D-64` cada variante traía también la tinta
+   del eco del título; salió con la sombra.)
+
+   **Dos variantes traen además su letra** (`D-67`): `--fuente-disco` la toma el título del
+   juego, y solo él. El casete del portal y la carátula siguen en la rotulada, porque a 15 px
+   ninguna de las dos se lee. Lobo suelto no se sella (`--sal-del-titulo: none`): es trazo de
+   pelo, y la sal de `D-64` le comería trazos enteros. */
+.casete--marca, .juego--marca { --tinte: var(--marca-rojo); --semilla: 1; }
+.casete--historia, .juego--historia { --tinte: var(--cat-historia); --semilla: 4; }
+.casete--discos, .juego--discos { --tinte: var(--cat-discos); --semilla: 8; }
+.casete--letras, .juego--letras { --tinte: var(--cat-letras); --semilla: 6; }
+.casete--mitologia, .juego--mitologia {
+  --tinte: var(--cat-mitologia);
+  --semilla: 3;
+  --fuente-disco: var(--fuente-lobo-suelto);
+  --sal-del-titulo: none;
+}
 /* Momo se tiñe con su apoyo —el peltre— para el borde, y el apoyo no lleva letra: el sello
    se llena con la plata de la tinta, que es el par que ya usa el boton de su juego. */
 .casete--momo,
 .juego--momo {
   --tinte: var(--disco-momo-sampler-apoyo);
   --tinte-sello: var(--disco-momo-sampler-tinta);
+  --semilla: 5;
 }
 /* `US-10` (`UX-34` §1): la tinta de *Un baión*, que pasa AA sobre `--fondo` ("Un baion sobre
-   fondo" en `contraste.test.ts`), y el apoyo para el registro. Como ¡Bang! y no como Momo:
+   fondo" en `contraste.test.ts`). Como ¡Bang! y no como Momo:
    la tinta ya es la que lleva letra, así que el sello no necesita un tinte aparte. */
 .casete--baion,
 .juego--baion {
   --tinte: var(--disco-un-baion-para-el-ojo-idiota-tinta);
-  --tinta-registro: var(--disco-un-baion-para-el-ojo-idiota-apoyo);
+  --semilla: 9;
 }
 /* `US-08`. Va con la `-tinta` y no con el `-apoyo` como Momo: la ceniza de ¡Bang! ¡Bang!
    pasa AA sobre `--fondo` y ya tiene su par en `contraste.test.ts`. */
 .casete--bang,
 .juego--bang {
   --tinte: var(--disco-bang-bang-estas-liquidado-tinta);
-  --tinta-registro: var(--disco-bang-bang-estas-liquidado-apoyo);
+  --semilla: 7;
 }
 /* `US-06` (2026-10-01): el cuero de *Luzbelito*, que pasa AA sobre `--fondo` ("Luzbelito
    sobre fondo" en `contraste.test.ts`) — la misma tinta del título de su página. */
 .casete--luzbelito,
 .juego--luzbelito {
   --tinte: var(--disco-luzbelito-tinta);
-  --tinta-registro: var(--disco-luzbelito-apoyo);
+  --semilla: 2;
+  --fuente-disco: var(--fuente-luzbelito);
+}
+
+/* El golpe: dónde apretó la mano (`D-64`). Se declara en la pieza y no en :root porque un
+   var() se resuelve donde se declara: en :root --semilla no existe todavía. El lado B es el
+   mismo disco con otro golpe. Pasos de 61/37 px sobre 240 y de 83/131 sobre 320: los once
+   golpes (1-9, 14, 16) caen en lugares distintos de la tesela. Determinista: una etiqueta
+   impresa no cambia al recargar. Y como sale del mismo mapa de variantes, el casete del
+   portal, la carátula de su juego y el título de su página tienen el mismo golpe. */
+.casetera--b .casete {
+  --semilla-lado: 10;
+}
+
+.casete,
+.caratula,
+.pantalla,
+.oktubre {
+  --golpe: calc(var(--semilla, 0) + var(--semilla-lado, 0));
 }
 
 /* ---- Pie del sitio ---- */
@@ -1224,10 +1511,10 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   letter-spacing: 0.04em;
 }
 
-.cocina--historia { --tinte: var(--cat-historia); --tinta-registro: var(--cat-historia-apoyo); }
-.cocina--discos { --tinte: var(--cat-discos); --tinta-registro: var(--cat-discos-apoyo); }
-.cocina--letras { --tinte: var(--cat-letras); --tinta-registro: var(--cat-letras-apoyo); }
-.cocina--mitologia { --tinte: var(--cat-mitologia); --tinta-registro: var(--cat-mitologia-apoyo); }
+.cocina--historia { --tinte: var(--cat-historia); }
+.cocina--discos { --tinte: var(--cat-discos); }
+.cocina--letras { --tinte: var(--cat-letras); }
+.cocina--mitologia { --tinte: var(--cat-mitologia); }
 
 .cocina-arte {
   width: clamp(90px, 30vw, 140px);
@@ -1306,7 +1593,6 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   border: var(--linea) solid var(--borde);
   border-radius: 4px;
   transform: rotate(-1.2deg);
-  box-shadow: 0 3px 0 color-mix(in srgb, var(--papel-borde) 35%, transparent);
 }
 
 .credito-tapa {
@@ -1318,7 +1604,7 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 /* ---- La ficha de disco, estampada y QUIETA (`UX-22` §9) ----
 
    Los diez articulos de disco ganan el idioma del ciclo alrededor de la imagen que ya
-   mostraban: papel, sello de credito, sombra de registro. Lo que NO ganan es la
+   mostraban: papel y sello de credito. Lo que NO ganan es la
    separacion en tres tintas. La estampa por pasadas tiene sentido donde hay una accion
    de imprimir para mirar —el reveal del tema, el zoom que se abre—; aca el disco ya
    esta impreso hace rato, asi que lo que se estampa es EL MARCO y no la fotografia, que
@@ -1333,15 +1619,12 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   border: var(--linea) solid var(--papel-borde);
   border-radius: 3px;
   rotate: -1.2deg;
-  /* La sombra de registro del `§8`, en el marco: offset plano, sin difuminar. */
-  box-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
 }
 
 /* Adentro del papel la ficha deja de ser un objeto suelto: el objeto es el papel. */
 .papel-ficha .tapa-disco {
   margin: 0;
   transform: none;
-  box-shadow: none;
 }
 
 /* El credito como sello de goma: la condicion 1 de `D-21` dicha en el idioma del ciclo.
@@ -1530,6 +1813,38 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   user-select: none;
 }
 
+/* La gente mirando (`D-63`): el piso del pie del portal, de borde a borde.
+
+   **No es una foto y por eso no lleva velo**, por la misma razón que la pasada: el recorte
+   viene impreso en dos tintas de `tokens.css` (`--papel` y el rojo de la bandera) sobre
+   transparente, así que donde no hay gente se ve `--fondo` y nada más. Y no tiene letra
+   encima: el crédito va arriba, sobre el negro. `D-21` vela una tapa porque hay texto que
+   leer sobre ella; acá no hay. */
+.pie-imprenta:has(.multitud-pie) {
+  /* La gente se apoya en el borde de abajo de la página, sin la sangría de abajo. */
+  padding-bottom: 0;
+}
+
+.multitud-pie {
+  display: block;
+  position: relative;
+  z-index: 1;
+  /* La franja tiene sangría a los costados y la gente no: llega a los dos bordes. */
+  width: calc(100% + 2 * var(--espacio-2));
+  max-width: none;
+  margin: var(--espacio-2) calc(-1 * var(--espacio-2)) 0;
+  height: auto;
+  /* En el teléfono, la proporción del recorte (3,5 a 1) la dejaba en 107 px: una tira de
+     caras chicas. Con piso de alto y `cover` se ve el centro —la tapa de verdad, con las
+     caras grandes— y los costados se cortan contra el borde, como la figura. Probado a
+     375 px con 11 y con 14 rem: con 11 la cara grande del medio quedaba cortada al pie. */
+  min-height: 14rem;
+  object-fit: cover;
+  object-position: center bottom;
+  pointer-events: none;
+  user-select: none;
+}
+
 /* El pie y el crédito, sobre todo lo demás. */
 .pie-imprenta .pie-sitio,
 .pie-imprenta .credito-tapas,
@@ -1576,9 +1891,36 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   margin: 0 0 var(--espacio-1);
 }
 
+/* ---- La letra de la banda en la Redondopedia (`D-75`) ----
+
+   El título de la portada, el de cada artículo y el de cada tarjeta van en Redonditos de
+   Ricota Fan **si entran enteros** (`sitio/letras.ts` decide, `fuentes.test.ts` lo vigila):
+   la Redondopedia era la única parte del sitio que escribía su letra grande en la rotulada,
+   y es la parte que más habla de la banda. La letra se dibujó en mayúscula, así que va en
+   mayúscula siempre; y es de un solo peso, así que nunca en negrita. */
+.en-la-banda,
+.articulo h1.en-la-banda,
+.tarjeta-titulo.en-la-banda,
+.disco-del-indice-titulo.en-la-banda {
+  font-family: var(--fuente-luzbelito);
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+/* La marca chica se apoya en tinta cuando la cabecera queda sobre el lugar (`D-75`): es rojo
+   de marca en letra chica, y ese rojo no llega a AA sobre el peor caso del velo (`D-21`). Una
+   chapa de `--fondo` detrás la deja en el par de siempre, y queda como un recorte pegado
+   sobre la tapa, igual que la cinta del regreso del otro lado. */
+body:has(> .lugar) .marca-chica {
+  background: var(--fondo);
+  padding: 0.25em 0.5em;
+  border-radius: 3px;
+}
+
 .indice-articulos {
   display: grid;
-  gap: var(--espacio-1);
+  gap: var(--espacio-2);
   list-style: none;
   padding: 0;
   margin: 0 0 var(--espacio-3);
@@ -1587,7 +1929,11 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 /* La tarjeta de articulo es un recorte mas del collage: borde grueso tenido por
    su disco, titulo en la tinta del disco, rotacion leve alternada. Nada de barra
    de acento en el borde izquierdo — ese remarcado es el tic de interfaz generica
-   que la regla de marca veta por nombre. */
+   que la regla de marca veta por nombre.
+
+   Desde `D-75` dice tres cosas y no dos (`TarjetaArticulo.astro`): el título, el gancho y lo
+   que hay adentro. Cada renglón tiene su clase: hasta acá se pintaba "todo `span`", y el
+   renglón de adentro trae `span` propios que no son un gancho. */
 .tarjeta-articulo {
   --tinte: var(--texto-tenue);
   display: block;
@@ -1600,28 +1946,249 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   min-height: var(--toque-min);
 }
 
-.indice-articulos > li:nth-child(odd) .tarjeta-articulo {
+.indice-articulos > li:nth-child(odd) .tarjeta-articulo,
+.vea-tambien > li:nth-child(odd) .tarjeta-articulo {
   transform: rotate(-0.4deg);
 }
 
-.indice-articulos > li:nth-child(even) .tarjeta-articulo {
+.indice-articulos > li:nth-child(even) .tarjeta-articulo,
+.vea-tambien > li:nth-child(even) .tarjeta-articulo {
   transform: rotate(0.35deg);
 }
 
-.tarjeta-articulo strong {
+.tarjeta-titulo {
   display: block;
   font-family: var(--fuente-rotulada);
   font-size: 1rem;
+  line-height: 1.15;
   letter-spacing: 0.03em;
   color: var(--tinte);
 }
 
-.tarjeta-articulo span {
+/* La letra de la banda se ve más chica que la rotulada a igual cuerpo: sube un escalón. */
+.tarjeta-titulo.en-la-banda {
+  font-size: 1.3rem;
+  line-height: 1.05;
+}
+
+/* Lo que ya leíste se apaga, y nada más (`:visited` solo deja cambiar el color). Es un
+   mapa de lo que falta, no un estado del juego: no hay acierto ni error que comunicar. */
+.tarjeta-articulo:visited .tarjeta-titulo,
+.disco-del-indice:visited .disco-del-indice-titulo {
+  color: var(--texto-tenue);
+}
+
+.tarjeta-gancho {
+  display: block;
+  margin-top: 0.35em;
+  color: var(--texto-tenue);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+/* Lo que hay adentro: registro 3, chico, y cada casilla con su símbolo y su tinta de rótulo
+   (`--rotulo-*`, que no rotan con la mezcla). El punto que separa lo pone la hoja. */
+.tarjeta-adentro,
+.adentro-lista {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.45em;
+  row-gap: 0.1em;
+}
+
+.tarjeta-adentro {
+  margin-top: 0.55em;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--texto-tenue);
+}
+
+.tarjeta-adentro > * + *::before,
+.adentro-lista > * + *::before {
+  content: '·';
+  margin-right: 0.45em;
+  color: var(--texto-tenue);
+}
+
+.es-hecho { color: var(--texto); }
+.es-leyenda { color: var(--rotulo-leyenda); }
+.es-testimonio { color: var(--rotulo-testimonio); }
+
+/* La tarjeta de un disco lleva su tapa chica al costado: un disco tiene cara. Es el mismo
+   recorte pegado del casete del portal —borde grueso teñido, esquina de estampa, apenas
+   torcido—, a un tamaño que se reconoce sin comerse el renglón. */
+.tarjeta-articulo--con-tapa {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr);
+  column-gap: var(--espacio-2);
+  align-items: start;
+}
+
+.tarjeta-articulo--con-tapa > :not(.tarjeta-tapa) {
+  grid-column: 2;
+}
+
+.tarjeta-tapa {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  width: 4rem;
+  height: auto;
+  aspect-ratio: 1;
+  border: var(--linea) solid color-mix(in srgb, var(--tinte) 60%, var(--borde));
+  border-radius: 3px;
+  transform: rotate(-2.5deg);
+}
+
+/* ---- La portada: la oreja, la clave, las puertas, los saltos y los discos (`D-75`) ---- */
+
+/* La clave de los rótulos: tres renglones, cada casilla en su tinta y con su símbolo. */
+.clave-rotulos {
+  margin: var(--espacio-3) 0;
+  padding: var(--espacio-2);
+  border: 2px dashed var(--borde);
+  border-radius: var(--radio);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--texto-tenue);
+}
+
+.clave-entrada {
+  margin: 0 0 var(--espacio-1);
+  color: var(--texto);
+}
+
+.clave-rotulos dl {
+  display: grid;
+  gap: 0.55em;
+  margin: 0;
+}
+
+.clave-rotulos dl > div {
+  display: grid;
+  grid-template-columns: 7.2rem minmax(0, 1fr);
+  column-gap: var(--espacio-2);
+  align-items: baseline;
+}
+
+.clave-rotulos dt {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.clave-rotulos dd {
+  margin: 0;
+}
+
+/* Las dos puertas que no son artículos van juntas, antes del índice. */
+.puertas-aparte {
+  display: grid;
+  gap: var(--espacio-2);
+  margin: var(--espacio-3) 0;
+}
+
+.puertas-aparte > .tarjeta-articulo {
+  margin: 0;
+}
+
+.puertas-aparte > :nth-child(odd) { transform: rotate(-0.5deg); }
+.puertas-aparte > :nth-child(even) { transform: rotate(0.4deg); }
+
+/* Los saltos a cada parte del índice: sellos de goma, no pastillas (`diseno-marca.md`). */
+.partes ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-1);
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--espacio-2);
+}
+
+.partes a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em;
+  min-height: var(--toque-min);
+  padding: 0.3em 0.75em;
+  line-height: 1.2;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--texto);
+}
+
+.partes li:nth-child(odd) a { transform: rotate(-0.6deg); }
+.partes li:nth-child(even) a { transform: rotate(0.5deg); }
+
+.partes-cuantos {
+  color: var(--texto-tenue);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Saltar a una parte deja el título a la vista, con aire, y no pegado al borde. */
+.parte {
+  scroll-margin-top: var(--espacio-3);
+}
+
+/* Los discos del índice: la tapa entera, el nombre y el año. Diez tapas en dos columnas en
+   el teléfono —cinco filas, menos de lo que medían diez tarjetas de texto— y cinco en la
+   computadora. Es el único lugar del índice con imagen: es la parte que se reconoce de vista. */
+.indice-discos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-3) var(--espacio-2);
+  list-style: none;
+  padding: 0;
+  margin: var(--espacio-2) 0 var(--espacio-3);
+}
+
+.disco-del-indice {
+  --tinte: var(--cat-discos);
+  display: block;
+  text-decoration: none;
+  color: var(--texto);
+}
+
+.disco-del-indice img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border: var(--linea) solid color-mix(in srgb, var(--tinte) 55%, var(--borde));
+  border-radius: 3px;
+}
+
+.indice-discos > li:nth-child(odd) .disco-del-indice { transform: rotate(-1deg); }
+.indice-discos > li:nth-child(even) .disco-del-indice { transform: rotate(0.8deg); }
+
+.disco-del-indice-titulo {
+  display: block;
+  margin-top: 0.55em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.95rem;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--tinte);
+}
+
+.disco-del-indice-titulo.en-la-banda {
+  font-size: 1.15rem;
+  line-height: 1.02;
+}
+
+.disco-del-indice-anio {
   display: block;
   margin-top: 0.2em;
+  font-size: 0.8rem;
   color: var(--texto-tenue);
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ---- Redondopedia: el articulo ---- */
@@ -1630,50 +2197,52 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   --tinte: var(--texto-tenue);
 }
 
-.articulo--historia, .tarjeta-articulo--historia { --tinte: var(--cat-historia); --tinta-registro: var(--cat-historia-apoyo); }
-.articulo--discos, .tarjeta-articulo--discos { --tinte: var(--cat-discos); --tinta-registro: var(--cat-discos-apoyo); }
-.articulo--letras, .tarjeta-articulo--letras { --tinte: var(--cat-letras); --tinta-registro: var(--cat-letras-apoyo); }
-.articulo--mitologia, .tarjeta-articulo--mitologia { --tinte: var(--cat-mitologia); --tinta-registro: var(--cat-mitologia-apoyo); }
+.articulo--historia, .tarjeta-articulo--historia { --tinte: var(--cat-historia); }
+.articulo--discos, .tarjeta-articulo--discos { --tinte: var(--cat-discos); }
+.articulo--letras, .tarjeta-articulo--letras { --tinte: var(--cat-letras); }
+.articulo--mitologia, .tarjeta-articulo--mitologia { --tinte: var(--cat-mitologia); }
 
-/* ==========================================================================
-   El registro imperfecto (`UX-22` §8, ciclo 12)
+/* El artículo de un disco, su tarjeta y su lugar en el índice se tiñen con la tinta de **ese**
+   disco y no con la plata de la categoría (`D-75`): la ficha de *Oktubre* tiene la tapa de
+   *Oktubre* detrás del título, y el título en el rojo de su bandera. Son las diez tintas de
+   `RES-37` que ya viste el cancionero, todas AA sobre `--fondo`, y en `contraste.test.ts`
+   también como letra grande sobre la tapa velada. Van después de las de categoría para que
+   ganen. */
+.de-disco--gulp { --tinte: var(--disco-gulp-tinta); }
+.de-disco--oktubre { --tinte: var(--disco-oktubre-tinta); }
+.de-disco--un-baion-para-el-ojo-idiota { --tinte: var(--disco-un-baion-para-el-ojo-idiota-tinta); }
+.de-disco--bang-bang-estas-liquidado { --tinte: var(--disco-bang-bang-estas-liquidado-tinta); }
+.de-disco--la-mosca-y-la-sopa { --tinte: var(--disco-la-mosca-y-la-sopa-tinta); }
+.de-disco--lobo-suelto { --tinte: var(--disco-lobo-suelto-tinta); }
+.de-disco--cordero-atado { --tinte: var(--disco-cordero-atado-tinta); }
+.de-disco--luzbelito { --tinte: var(--disco-luzbelito-tinta); }
+.de-disco--ultimo-bondi-a-finisterre { --tinte: var(--disco-ultimo-bondi-a-finisterre-tinta); }
+.de-disco--momo-sampler { --tinte: var(--disco-momo-sampler-tinta); }
 
-   El mismo desvio que corre las tintas de la estampa —2 px, siempre en la misma
-   direccion— queda como recurso permanente detras de la letra grande de todo el sitio:
-   un eco del mismo texto, en el color de APOYO del disco de esa seccion, como una
-   imprenta barata que no calzo el segundo color.
+/* La letra grande del sitio va sin sombra (`D-64`).
 
-   TRES COSAS QUE NO SON:
-   1. No es movimiento. Es como queda la letra en reposo, llego asi desde el primer
-      cuadro y no hay nada que apagar con `prefers-reduced-motion`.
-   2. No es la tinta que se lee. Va DETRAS de la real, que sigue siendo la que pasa AA
-      sobre su fondo de siempre: cero pares nuevos en `contraste.test.ts` (`UX-22` §8).
-   3. No es la rotacion de las estampas de goma. Los `rotate(-1.6deg)` de `.casete-accion`
-      o `.categoria` tuercen un objeto entero y no se tocan. Esto es una sombra de
-      segunda tinta, y en texto se hace con `text-shadow` —la unica sombra que
-      `diseno-marca.md` admite, offset plano y duro—, igual que `.estampa-disco` en
-      `juego.css`. El medio grado del `§2.3` vive donde hay capas de imagen de verdad:
-      una sombra de texto no rota, y duplicar el texto en un `::before` para rotarlo lo
-      haria leer dos veces a un lector de pantalla.
+   Hasta el 2026-10-05 la marca, los títulos de casete y el h1 de cada artículo llevaban
+   detrás un eco del mismo texto, corrido 2 px, en el apoyo de su disco: el "registro
+   imperfecto" de `UX-22` §8. El usuario lo vio en el portal y lo dijo, textual: *"saquemos la
+   sombra de todos lados, no me gusta"*. En nueve casetes había siete ecos de colores
+   distintos, y dos en crema sobre el crema de la etiqueta que no se veían. Salió de todos
+   lados, letras y objetos, y `estilos.test.ts` falla si vuelve una sombra corrida. */
 
-   DONDE NO VA, NUNCA: cuerpo de texto, rotulos de registro 3, estados de acierto y
-   error, y los tres articulos de tono grave —Bulacio, Olavarria, la muerte del Indio—,
-   que ni en su letra grande llevan adorno (`UX-20` §3.4). `estilos.test.ts` lo vigila
-   con una lista cerrada de selectores.
-   ========================================================================== */
-
-.marca-grande,
-.casete-titulo,
-.articulo:not(.articulo--grave) h1 {
-  text-shadow: var(--registro) var(--registro) 0 var(--tinta-registro);
+/* La cabeza del artículo (`D-75`): el título y, abajo, lo que hay adentro. Arriba del título
+   queda tapa a la vista (`--aire-lugar`): entrar es bajar un escalón, y la tapa se ve antes de
+   que se escriba nada. En los graves no hay tapa, y el aire se va con ella. */
+.articulo-cabeza {
+  margin: 0 0 var(--espacio-3);
 }
 
-/* El portal viste Oktubre (mezcla `D-19`), asi que su marca lleva atras el gris que el
-   propio Rocambole conto que le agrego a esa tapa. */
-.marca-grande {
-  --tinta-registro: var(--disco-oktubre-apoyo);
+.articulo--con-lugar .articulo-cabeza {
+  padding-top: var(--aire-lugar);
 }
 
+/* El tipo es un sello de goma al principio del renglón de adentro, y no una etiqueta arriba
+   del título: arriba competía con él por ser lo primero que se lee. Lleva fondo de tinta
+   porque se apoya sobre la tapa velada, y la tinta de su disco no llega a AA como texto chico
+   sobre el peor caso del velo; sobre `--fondo`, sí. */
 .articulo-tipo {
   display: inline-block;
   font-family: var(--fuente-rotulada);
@@ -1681,25 +2250,67 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--tinte);
+  background: var(--fondo);
   border: 2px solid var(--tinte);
   border-radius: 3px;
   padding: 0.2em 0.8em;
-  margin-bottom: var(--espacio-1);
   transform: rotate(-1.2deg);
+}
+
+.articulo-adentro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-1) var(--espacio-2);
+  margin: var(--espacio-2) 0 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--texto-tenue);
 }
 
 .articulo h1 {
   font-family: var(--fuente-rotulada);
   font-size: 1.7rem;
   line-height: 1.1;
-  margin: 0 0 var(--espacio-2);
+  margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.02em;
+  text-wrap: balance;
+}
+
+/* El título en la tinta de su disco y con la sal de la almohadilla, como el de cada juego
+   (`D-65`, `D-64`): la sal saca puntos enteros y no le cambia el color a ninguno, así que el
+   par de contraste no se mueve. Va en la letra de la banda si entra entera (`.en-la-banda`), y
+   si no —*Luzbelito*, los paréntesis de Los Decoradores— en la rotulada, un escalón más chica
+   porque es más ancha, pero con la misma tinta y la misma sal.
+
+   Los graves no llevan nada de esto: van en la rotulada y en la tinta de siempre, sin voz. */
+.articulo:not(.articulo--grave) h1 {
+  font-size: clamp(1.9rem, 8.6vw, 2.6rem);
+  line-height: 1.04;
+  color: var(--tinte);
+  padding-bottom: 0.07em;
+  -webkit-mask-image: var(--textura-tinta-sal);
+  mask-image: var(--textura-tinta-sal);
+  -webkit-mask-size: 480px 480px;
+  mask-size: 480px 480px;
+}
+
+.articulo:not(.articulo--grave) h1.en-la-banda {
+  font-size: clamp(2.3rem, 10.8vw, 3.3rem);
+  line-height: 1.02;
+}
+
+/* La tinta de *Oktubre* es el rojo de la marca, y ese rojo no va como texto sobre tapa velada
+   (`D-21`, `contraste.test.ts`): sobre la multitud de su propia tapa, el título va en la tinta
+   del papel. En el índice y en las tarjetas, que van sobre `--fondo`, sigue en su rojo. */
+.articulo--con-lugar.de-disco--oktubre h1 {
+  color: var(--texto);
 }
 
 .articulo-resumen {
-  font-size: 1.05rem;
-  line-height: 1.55;
+  font-size: 1.12rem;
+  line-height: 1.6;
   color: var(--texto);
   margin: 0 0 var(--espacio-3);
 }
@@ -1724,7 +2335,13 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
    primera letra la elige el artículo, no nosotros. Archivo Black las tiene todas.
 
    **No la lleva `.parrafo`, solo la bajada.** El cuerpo rotulado es donde vive `BR-08`, y
-   ahí no entra ningún adorno que compita con el rótulo. */
+   ahí no entra ningún adorno que compita con el rótulo.
+
+   **`D-75` corrió la frontera, no la borró.** El usuario pidió la Redondopedia "inmersiva,
+   misteriosa y mística" y a la vez fácil de leer. Lo que se sumó vive en el borde de la hoja
+   —la tapa velada que sube detrás del título, el título en la letra de la banda, los hilos
+   del pie—, y el cuerpo sigue igual que como lo dejó `T-187`: tinta lisa, quieto, rótulos
+   fríos. La frontera entre el hecho y la leyenda no se toca, y por eso se pudo. */
 .articulo:not(.articulo--grave) .articulo-resumen::first-letter {
   float: left;
   font-family: var(--fuente-rotulada);
@@ -1810,9 +2427,19 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 
 /* ---- El rotulado en prosa (BR-08): la marca vive en el punto exacto ---- */
 
+/* El cuerpo sube a 17 px (`D-75`): con 16 y la columna de 34rem, el renglón pasaba de 75
+   caracteres, y en un teléfono el ojo se cansaba antes de llegar al rótulo del final. Con
+   17 queda entre 60 y 70, que es la medida de un libro. Los rotulados se separan un poco más:
+   cada uno es una casilla distinta, y el aire es parte de la marca. */
 .parrafo {
   margin: 0 0 var(--espacio-2);
-  line-height: 1.65;
+  font-size: 1.0625rem;
+  line-height: 1.68;
+}
+
+.parrafo--leyenda,
+.parrafo--testimonio {
+  margin-block: var(--espacio-3);
 }
 
 /* Leyenda: el parrafo entero se corre y lleva el rombo de siempre. */
@@ -1864,52 +2491,85 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 
 /* Enlaces internos: subrayado grueso, el color no alcanza solo. */
 .parrafo a,
-.vea-tambien a {
+.oreja-seguir,
+.anda-por a {
   color: var(--acento-2);
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
 
+/* ---- Los hilos del pie (`D-75`) ----
+
+   Lo que hay al terminar de leer. Hasta acá era un renglón de títulos pelados en sellos, y un
+   título pelado no da ningún motivo para tocarlo. Ahora son tres hilos, en orden de cercanía:
+   lo que el artículo recomienda (con su gancho), una leyenda de otro lado, y desde dónde
+   nombran a este. */
+.hilos {
+  margin-top: var(--espacio-4);
+}
+
+.hilo + .hilo {
+  margin-top: var(--espacio-4);
+}
+
 .vea-tambien {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--espacio-1);
+  display: grid;
+  gap: var(--espacio-2);
   list-style: none;
   padding: 0;
-  margin: var(--espacio-3) 0;
+  margin: var(--espacio-2) 0 0;
 }
 
-.vea-tambien a {
+/* Pará la oreja: el arranque de una leyenda de otro artículo, con su rótulo entero. Es un
+   párrafo rotulado como cualquier otro (`.parrafo--leyenda`): la sangría de cita es la única
+   barra lateral que la marca admite, y acá es exactamente eso, una cita. */
+.oreja .oreja-rumor {
+  margin: var(--espacio-2) 0 var(--espacio-1);
+}
+
+.oreja-ronda {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.oreja-seguir {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.4em;
+  min-height: var(--toque-min);
+  padding-block: 12px;
+  margin-inline-start: calc(var(--espacio-2) + 3px);
+  font-size: 0.95rem;
+}
+
+.oreja-donde.en-la-banda {
+  font-size: 1.15rem;
+}
+
+/* También anda por: los artículos que nombran a este, corridos como una línea de texto. Sin
+   punto entre uno y otro: el subrayado ya los separa, y el punto dejaba renglones colgando.
+
+   Cada enlace mide la zona del pulgar de alto (`UX-39` §11 A2). Un enlace en línea toca solo
+   donde está su texto —unos 20 px—, aunque el renglón mida 40: el relleno vertical es lo que le
+   da los 48 sin volverlo un botón. */
+.anda-por {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1.1em;
+  list-style: none;
+  padding: 0;
+  margin: var(--espacio-1) 0 0;
+  line-height: 1.5;
+}
+
+.anda-por a {
   display: inline-block;
   min-height: var(--toque-min);
-  line-height: calc(var(--toque-min) - 4px);
-  padding: 0 var(--espacio-2);
-  border: 2px solid var(--borde);
-  border-radius: 3px;
-  text-decoration-thickness: 1px;
+  padding-block: calc((var(--toque-min) - 1.5em) / 2);
 }
-
-.vea-tambien li:nth-child(odd) a {
-  transform: rotate(-0.8deg);
-}
-
-.vea-tambien li:nth-child(even) a {
-  transform: rotate(0.6deg);
-}
-
-/* La explicacion del rotulado en la portada de la Redondopedia. */
-.leyenda-rotulos {
-  border: 2px dashed var(--borde);
-  border-radius: var(--radio);
-  padding: var(--espacio-2);
-  font-size: 0.9rem;
-  color: var(--texto-tenue);
-  margin: 0 0 var(--espacio-3);
-}
-
-.leyenda-rotulos b.es-leyenda { color: var(--rotulo-leyenda); }
-.leyenda-rotulos b.es-testimonio { color: var(--rotulo-testimonio); }
 
 /* El credito puntual de la pantalla (D-21, condicion 1): que tapas se ven aca.
    Va arriba del pie general, en su propia linea, porque nombra cosas distintas en
@@ -1955,8 +2615,19 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
 @media (min-width: 46rem) {
   /* El portal y el indice: "elegir que leer" no es "leer", asi que ensanchan. */
   .casetera,
-  .indice-articulos {
+  .indice-articulos,
+  .puertas-aparte {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Los diez discos en dos filas de cinco: la discografía entera de un vistazo (`D-75`). Y los
+     seis saltos en dos filas de tres. */
+  .indice-discos {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .partes ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   /* El cancionero ensancha por funcion: el acorde alineado sobre la silaba necesita
@@ -2032,7 +2703,7 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   }
 
   .marca-grande {
-    font-size: clamp(4.25rem, 5.6vw, 5.75rem);
+    width: clamp(15rem, 19vw, 19rem);
   }
 
   .donde-estas {
@@ -2081,17 +2752,13 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
     margin-bottom: var(--espacio-3);
   }
 
-  .casetera--a {
+  /* Desde que el bestiario es el B3 (2026-10-17) los dos lados son tres por renglón, con el
+     mismo ancho de casete. Hasta ese día el lado B tenía dos, centrados con el ancho de los
+     del lado A. */
+  .casetera--a,
+  .casetera--b {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: calc(var(--espacio-3) + 6px) var(--espacio-3);
-  }
-
-  /* El lado B tiene dos casetes: van del mismo ancho que los del lado A, centrados. Dos
-     casetes estirados a media mesa serían otra pieza, y una celda vacía a la derecha, un
-     hueco. */
-  .casetera--b {
-    grid-template-columns: repeat(2, calc((100% - 2 * var(--espacio-3)) / 3));
-    justify-content: center;
   }
 
   /* Tres por renglón: la rotación se reparte por columna y no por par/impar, si no la del
@@ -2181,8 +2848,13 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
    `diseno-marca.md` prohibe el "hover que levanta o infla", y aca aplica letra por letra. */
 @media (hover: hover) and (pointer: fine) {
   .casete:hover,
-  .tarjeta-articulo:hover {
+  .tarjeta-articulo:hover,
+  .disco-del-indice:hover img {
     border-color: var(--tinte, var(--acento-2));
+  }
+
+  .partes a:hover {
+    border-color: var(--acento-2);
   }
 
   .pozo:hover:not(:disabled) {
@@ -2365,3 +3037,1725 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   text-align: left;
   margin-top: var(--espacio-3);
 }
+
+/* ==================================================================
+   En vivo: los recitales en pantalla (`IDEA-15`, `D-72`)
+   ==================================================================
+
+   Las listas enteras son hojas de papel (tinta sobre papel, el par testeado); lo citado de
+   setlist.fm va sobre el fondo, en la tinta del sitio. Sin sombras (`D-64`) y sin pastillas.
+*/
+
+.en-vivo-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.en-vivo-puerta {
+  display: block;
+  margin-top: var(--espacio-3);
+}
+
+.en-vivo-bloque {
+  margin: var(--espacio-3) 0;
+}
+
+.en-vivo-entera {
+  margin-top: var(--espacio-2);
+  padding: var(--espacio-2);
+  background: var(--papel);
+  color: var(--fondo);
+  border-radius: 3px;
+  rotate: -0.4deg;
+}
+
+.en-vivo-entera + .en-vivo-entera {
+  rotate: 0.5deg;
+}
+
+.en-vivo-entera a {
+  color: var(--fondo);
+}
+
+/* Cada lista es una hoja plegada: el resumen dice la noche, cuántos temas y si nadie la revisó,
+   y se abre al tocarla. Con veintisiete noches, abiertas todas la página no se recorre. */
+.en-vivo-encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px var(--espacio-1);
+  min-height: var(--toque-min);
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.en-vivo-entera[open] .en-vivo-encabezado {
+  margin-bottom: var(--espacio-1);
+}
+
+.en-vivo-cuantos {
+  font-family: var(--fuente);
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--papel-tenue);
+}
+
+/* El sello de goma de lo que nadie revisó: borde, mayúsculas, apenas torcido. Tinta sobre papel. */
+.en-vivo-sello {
+  padding: 1px 6px;
+  border: 2px solid var(--fondo);
+  border-radius: 3px;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  rotate: -3deg;
+}
+
+.en-vivo-escuchar {
+  min-height: var(--toque-min);
+  padding: 0 14px;
+  background: var(--fondo);
+  color: var(--papel);
+  border: 0;
+  border-radius: var(--radio);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  touch-action: manipulation;
+}
+
+/* El número va con un contador y no con el marcador de la lista: el renglón es flex, y un
+   flex deja de ser ítem de lista. El renglón del bis no lo incrementa: no es un tema. La lista
+   plegada arranca donde termina la de arriba, con `counter-reset` en línea. */
+.en-vivo-lista {
+  margin: var(--espacio-2) 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: tema;
+}
+
+.en-vivo-tema {
+  counter-increment: tema;
+}
+
+.en-vivo-tema::before {
+  content: counter(tema) ".";
+  min-width: 2.4ch;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.85rem;
+  color: var(--texto-tenue);
+}
+
+.en-vivo-entera .en-vivo-tema::before {
+  color: var(--papel-tenue);
+}
+
+/* Lo que más aparece no lleva número: el puesto no se muestra (`CTR-19.3`). */
+.en-vivo-lista--conteo .en-vivo-tema::before {
+  content: none;
+}
+
+.en-vivo-como-suena {
+  margin: var(--espacio-1) 0 0;
+  font-size: 0.85rem;
+  color: var(--papel-tenue);
+}
+
+.en-vivo-tema {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px var(--espacio-1);
+  min-height: var(--toque-min);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--borde);
+}
+
+.en-vivo-entera .en-vivo-tema {
+  border-bottom-color: var(--papel-borde);
+}
+
+.en-vivo-titulo {
+  flex: 1 1 12ch;
+  font-weight: 700;
+}
+
+.en-vivo-veces,
+.en-vivo-fuera,
+.en-vivo-sin,
+.en-vivo-rotulo-conteo {
+  font-size: 0.85rem;
+  color: var(--texto-tenue);
+}
+
+.en-vivo-entera :is(.en-vivo-fuera, .en-vivo-sin) {
+  color: var(--papel-tenue);
+}
+
+.en-vivo-play {
+  min-width: var(--toque-min);
+  min-height: var(--toque-min);
+  padding: 0 10px;
+  background: transparent;
+  color: inherit;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  touch-action: manipulation;
+}
+
+/* El que suena se llena de tinta: el estado es relleno y texto ("Pará"), no solo color. Sobre
+   el papel, tinta con letra de papel; sobre el fondo, la tinta del sitio con letra de fondo. */
+.en-vivo-entera .en-vivo-play[aria-pressed="true"] {
+  color: var(--papel);
+  background: var(--fondo);
+  border-color: var(--fondo);
+}
+
+.en-vivo-lista--conteo .en-vivo-play[aria-pressed="true"] {
+  color: var(--fondo);
+  background: var(--texto);
+  border-color: var(--texto);
+}
+
+/* Los saltos de arriba: sellos de goma, uno por bloque. */
+.en-vivo-saltos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--espacio-2);
+}
+
+.en-vivo-saltos a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  padding: 0 10px;
+  border: 1px solid var(--borde);
+  border-radius: 3px;
+  color: var(--texto);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.en-vivo-saltos a:last-child {
+  border-color: var(--marca-rojo);
+}
+
+/* Lo que suena se subraya grueso, y el botón dice "Pará": nunca solo con color. */
+.en-vivo-tema--sonando .en-vivo-titulo {
+  text-decoration: underline 3px;
+  text-underline-offset: 4px;
+}
+
+.en-vivo-bis {
+  display: block;
+  margin: var(--espacio-2) 0 4px;
+  padding-top: 6px;
+  border-top: 2px dashed var(--papel-borde);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--papel-tenue);
+  list-style: none;
+}
+
+.en-vivo-rotulo {
+  margin: var(--espacio-2) 0 0;
+  font-size: 0.85rem;
+  color: var(--papel-tenue);
+}
+
+.en-vivo-rotulo dt {
+  display: inline;
+  font-weight: 700;
+}
+
+.en-vivo-rotulo dd {
+  display: inline;
+  margin: 0 0 0 0.3em;
+}
+
+.en-vivo-rotulo dd::after {
+  content: "";
+  display: block;
+}
+
+.en-vivo-rotulo-suelto {
+  margin-top: var(--espacio-1);
+}
+
+.en-vivo-rotulo-conteo {
+  margin: 0 0 var(--espacio-2);
+}
+
+.en-vivo-rotulo-conteo a,
+.en-vivo-noches a {
+  color: var(--texto);
+}
+
+.en-vivo-resto summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.en-vivo-anio-titulo {
+  margin: var(--espacio-2) 0 4px;
+  font-family: var(--fuente-rotulada);
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--texto);
+}
+
+.en-vivo-noches {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.en-vivo-noches li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px var(--espacio-1);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--borde);
+}
+
+.en-vivo-noches a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-min);
+}
+
+.en-vivo-armala {
+  margin-bottom: var(--espacio-4);
+}
+
+/* ==================================================================
+   El bestiario redondo (D-73)
+   ==================================================================
+
+   Un mapa redondo pegado sobre la tinta como un recorte (borde grueso y apenas torcido), las
+   figuras en tinta plana sobre papel, y el acento de cada región en `--tr`, que la página
+   pone con el disco que la viste (`D-19`). Las clases cortas (`tn`, `pp`, `ac`...) son las
+   de `lib/bestiario/figuras.ts` y `mapa.ts`; viven acá adentro de `.bestiario-svg` para que
+   no se crucen con nada del resto del sitio. Las fichas usan las mismas figuras con `<use>`,
+   y el `<use>` toma estas reglas del símbolo original. */
+
+.bestiario-titulo {
+  font-family: var(--fuente-lobo-suelto);
+  font-size: clamp(2.2rem, 10vw, 3.6rem);
+  letter-spacing: 0.02em;
+}
+
+.bestiario-libreta {
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  margin: var(--espacio-1) 0 0;
+}
+
+.bestiario {
+  max-width: var(--ancho-tablero-amplio);
+  margin: var(--espacio-2) auto var(--espacio-3);
+}
+
+.bestiario-marco {
+  position: relative;
+  aspect-ratio: 1;
+  width: 100%;
+  border: var(--linea) solid var(--papel);
+  border-radius: 3px;
+  background: var(--fondo);
+  overflow: hidden;
+  transform: rotate(-0.5deg);
+}
+
+/* La entrada (`D-79`): el plano clavado en el cartel, entre el fondo y el frente impresos
+   (`lib/bestiario/arte-portal.ts`). Las medidas salen de `PORTAL` y `PLANO`: la escena es de
+   1000 × 1460 y el plano, un cuadrado de 960 que arranca en (20, 380). */
+.portal {
+  position: relative;
+  aspect-ratio: 1000 / 1460;
+  width: 100%;
+  background: var(--fondo);
+}
+
+/* El plano sale de la columna de lectura: en el teléfono va de borde a borde, y en la
+   computadora crece hasta 52 rem. Es para mirar, no para leer: la medida de línea no corre. */
+.bestiario:has(.portal) {
+  max-width: none;
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+}
+
+@media (min-width: 40rem) {
+  .bestiario:has(.portal) {
+    width: min(52rem, calc(100vw - 3rem));
+    margin-inline: calc(50% - min(26rem, 50vw - 1.5rem));
+  }
+}
+
+/* Los dibujos chicos del plano los reemplaza la escena de cada zona, que viene en la tierra. */
+.portal .bestiario-svg .paisaje { display: none; }
+
+.bestiario-pie-plano { padding-inline: var(--espacio-2); }
+
+.portal-capa {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.portal .bestiario-marco {
+  position: absolute;
+  left: 2%;
+  top: 26.027%;
+  width: 96%;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+.portal-luz {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* El sello de dónde está parada la gente: papel sobre tinta, al revés de los rótulos, que son
+   los que se tocan. */
+.estas-aca {
+  position: absolute;
+  margin: 0;
+  padding: 0.15em 0.45em;
+  white-space: nowrap;
+  font-family: var(--fuente-rotulada);
+  font-size: clamp(0.55rem, 2.1vw, 0.85rem);
+  letter-spacing: 0.05em;
+  color: var(--papel);
+  background: var(--fondo);
+  border: 2px solid var(--acento-2);
+  border-radius: 3px;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(4deg);
+}
+
+.bestiario-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: manipulation;
+}
+
+/* Las tintas de las figuras y del paisaje. Sin ancestro: ver `tinta` en `figuras.ts`. */
+.b-tn { fill: var(--fondo); }
+.b-osc { fill: var(--borde); }
+.b-pp { fill: var(--papel); }
+.b-ac { fill: var(--tr, var(--cat-mitologia)); }
+.b-ac2 { fill: var(--tr, var(--cat-mitologia)); fill-opacity: 0.55; }
+.b-oro { fill: var(--acento-2); }
+.b-az { fill: var(--disco-un-baion-para-el-ojo-idiota-apoyo); }
+.b-ag { fill: var(--disco-un-baion-para-el-ojo-idiota-tinta); fill-opacity: 0.6; }
+.b-barro { fill: var(--disco-luzbelito-apoyo); }
+.b-borde { stroke: var(--fondo); stroke-width: 2.5; }
+.b-borde-grueso { stroke: var(--fondo); stroke-width: 5; stroke-linejoin: round; }
+.b-lana { fill: var(--papel); stroke: var(--fondo); stroke-width: 2; }
+.b-tz,
+.b-tz-pp,
+.b-tz-oro,
+.b-pun {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.b-tz { stroke: var(--fondo); }
+.b-tz-pp { stroke: var(--papel); }
+.b-tz-oro { stroke: var(--acento-2); stroke-width: 2.5; }
+.b-pun { stroke: var(--fondo); stroke-width: 2; stroke-dasharray: 3 3; }
+
+/* El suelo y las regiones. */
+.bestiario-svg .suelo { fill: var(--papel); }
+/* La tierra ya viene soplada en `mapa-tierra.webp`: la tinta plana de la región queda apenas. */
+.bestiario-svg .region-suelo { fill: var(--tr); fill-opacity: 0.08; }
+.bestiario-svg .region-borde {
+  fill: none;
+  stroke: var(--fondo);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 1 7;
+}
+.bestiario-svg .agua { fill: var(--disco-un-baion-para-el-ojo-idiota-tinta); fill-opacity: 0.5; }
+.bestiario-svg .techo { fill: var(--tr); fill-opacity: 0.45; }
+.bestiario-svg .pasto { fill: var(--papel); stroke: var(--fondo); stroke-width: 3; }
+.bestiario-svg .pelado { fill: var(--disco-luzbelito-tinta); fill-opacity: 0.45; }
+.bestiario-svg .copa { stroke: var(--fondo); stroke-width: 3; }
+.bestiario-svg .mantel { fill-opacity: 0.7; }
+.bestiario-svg .ruta { fill: none; stroke: var(--papel-tenue); }
+.bestiario-svg .region { cursor: pointer; }
+
+/* Lo que solo se ve de cerca: el pasto, las banderitas, los yuyos. */
+.bestiario-svg .detalle { display: none; }
+.bestiario-marco[data-vista='cerca'] .bestiario-svg .detalle { display: inline; }
+
+/* De cerca, las demás regiones se apagan un poco y la elegida se marca con su borde entero. */
+.bestiario-marco[data-vista='cerca'] .region .region-suelo { fill-opacity: 0.18; }
+.bestiario-marco[data-vista='cerca'] .region--elegida .region-suelo { fill-opacity: 0.32; }
+.bestiario-svg .region--elegida .region-borde { stroke-width: 5; stroke-dasharray: none; }
+
+/* Las bestias: de lejos son textura, de cerca se tocan. */
+.bestiario-marco[data-vista='lejos'] .bestiario-svg .bestias { pointer-events: none; }
+.bestiario-svg .bestia { cursor: pointer; outline: none; }
+.bestiario-svg .toque { fill: transparent; }
+.bestiario-svg .bestia:focus-visible .toque,
+.bestiario-svg .bestia--elegida .toque {
+  stroke: var(--acento-2);
+  stroke-width: 3;
+  stroke-dasharray: 6 4;
+}
+.bestiario-svg .marca-anotada { display: none; }
+.bestiario-svg .bestia--anotada .marca-anotada { display: inline; }
+
+/* Los rótulos del mapa entero: sellos de goma pegados encima, que son los botones. */
+.bestiario-rotulos {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.rotulo-region {
+  position: absolute;
+  padding: 0.15em 0.4em;
+  white-space: nowrap;
+  font-family: var(--fuente-rotulada);
+  font-size: clamp(0.58rem, 2.3vw, 0.9rem);
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--fondo);
+  background: var(--papel);
+  border: 2px solid var(--fondo);
+  border-radius: 3px;
+  text-decoration: none;
+  pointer-events: auto;
+  cursor: pointer;
+  transform: translate(-50%, -50%) rotate(-2deg);
+  transition: border-color var(--duracion-toque);
+}
+
+.rotulo-region:nth-child(even) { transform: translate(-50%, -50%) rotate(2deg); }
+
+/* El sello es chico, el toque no: la zona de pulgar se agranda por afuera, hasta los 44 px. */
+.rotulo-region::after {
+  content: '';
+  position: absolute;
+  inset: -13px -6px;
+}
+
+.rotulo-region:hover,
+.rotulo-region:focus-visible {
+  border-color: var(--tr);
+  outline: 2px solid var(--fondo);
+}
+
+.bestiario-hoja[hidden],
+.bocadillo[hidden] { display: none; }
+
+.bestiario-sub {
+  display: block;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  margin: var(--espacio-2) 0 0.3rem;
+}
+
+.bestiario-canta {
+  margin: 0.2rem 0 var(--espacio-2);
+  font-style: italic;
+  color: var(--texto);
+}
+
+.bestiario-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bestiario-chip,
+.bestiario-acciones a,
+.bestiario-acciones button {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  padding: 0.3rem 0.75rem;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--texto);
+  text-decoration: none;
+  background: transparent;
+  border: 2px solid var(--papel-tenue);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: border-color var(--duracion-toque);
+}
+
+.bestiario-chip:hover,
+.bestiario-chip:focus-visible,
+.bestiario-acciones a:hover,
+.bestiario-acciones button:hover {
+  border-color: var(--acento-2);
+}
+
+/* La hoja de la ficha: sube desde abajo en el teléfono, y se para a un costado en la compu. */
+.bestiario-hoja {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  max-height: 74vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--espacio-2) var(--espacio-2) var(--espacio-4);
+  background: var(--fondo);
+  border-top: var(--linea) solid var(--papel);
+}
+
+@media (min-width: 52rem) {
+  .bestiario-hoja {
+    left: auto;
+    right: var(--espacio-2);
+    bottom: var(--espacio-2);
+    width: min(30rem, 42vw);
+    max-height: 82vh;
+    border: var(--linea) solid var(--papel);
+    border-radius: 3px;
+  }
+}
+
+.bestiario-cerrar {
+  position: sticky;
+  top: 0;
+  float: right;
+  width: var(--toque-min);
+  height: var(--toque-min);
+  font-size: 1.2rem;
+  color: var(--texto);
+  background: var(--fondo);
+  border: 2px solid var(--papel);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.bestiario-hoja .solo-indice { display: none; }
+
+/* Donde no tapa al bicho tocado (`D-80`): la isla elige el lado y, en el teléfono, el alto. */
+.bestiario-hoja--arriba {
+  top: 0;
+  bottom: auto;
+  border-top: 0;
+  border-bottom: var(--linea) solid var(--papel);
+}
+
+@media (min-width: 52rem) {
+  .bestiario-hoja--izquierda {
+    left: var(--espacio-2);
+    right: auto;
+  }
+}
+
+/* La ficha, igual en la hoja y en el índice. */
+.bestiario-sello {
+  display: inline-block;
+  margin: 0;
+  padding: 0.1rem 0.45rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--texto);
+  border: 2px solid var(--tr, var(--cat-mitologia));
+  border-radius: 3px;
+  transform: rotate(-2deg);
+}
+
+.bestiario-ficha-titulo {
+  margin: 0.5rem 0 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.45rem;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.bestiario-figura {
+  display: block;
+  width: 10rem;
+  height: auto;
+  margin: var(--espacio-2) 0;
+  background: var(--papel);
+  border: var(--linea) solid var(--tr, var(--cat-mitologia));
+  border-radius: 3px;
+  transform: rotate(1.2deg);
+}
+
+.bestiario-sale,
+.bestiario-tambien,
+.bestiario-estampa {
+  margin: 0 0 var(--espacio-1);
+  line-height: 1.6;
+}
+
+.bestiario-sale .bestiario-sub,
+.bestiario-tambien .bestiario-sub {
+  display: inline;
+  margin: 0 0.3rem 0 0;
+}
+
+.bestiario-verso {
+  margin: var(--espacio-1) 0 var(--espacio-2);
+  padding: 0.5rem 0.75rem;
+  font-style: italic;
+  line-height: 1.5;
+  border: 2px dashed var(--tr, var(--cat-mitologia));
+  border-radius: 3px;
+}
+
+.bestiario-verso span { display: block; }
+
+.bestiario-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: var(--espacio-2) 0;
+}
+
+.bestiario-escuchar--sonando { border-style: dashed; border-color: var(--acento-2); }
+
+/* El índice. */
+.bestiario-indice {
+  max-width: var(--ancho-tablero);
+  margin: 0 auto;
+}
+
+.bestiario-region { margin: 0 0 var(--espacio-3); }
+
+.bestiario-region-titulo {
+  display: inline-block;
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  border-bottom: var(--linea) solid var(--tr);
+}
+
+.bestiario-lista {
+  display: grid;
+  gap: 0.4rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bestiario-ficha summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: var(--toque-min);
+  padding: 0.25rem 0.5rem;
+  border: 2px solid var(--borde);
+  border-radius: 3px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.bestiario-ficha summary::-webkit-details-marker { display: none; }
+
+.bestiario-ficha[open] summary { border-color: var(--tr); }
+
+.bestiario-mini {
+  flex: none;
+  width: 2.8rem;
+  height: 2.8rem;
+  background: var(--papel);
+  border-radius: 3px;
+}
+
+.bestiario-nombre { line-height: 1.25; }
+
+.bestiario-anotada-sello {
+  display: none;
+  margin-left: auto;
+  padding: 0 0.35rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  border: 1.5px solid var(--texto-tenue);
+  border-radius: 3px;
+  transform: rotate(-3deg);
+}
+
+.bestiario-item--anotada .bestiario-anotada-sello { display: inline-block; }
+
+.bestiario-cuerpo { padding: var(--espacio-2) 0.25rem var(--espacio-3); }
+
+.bestiario-puerta {
+  display: block;
+  margin-top: var(--espacio-2);
+}
+
+/* Las tintas de los títeres (D-73, segunda vuelta): el lobo y el cordero de Rocambole y sus
+   entornos. Sin ancestro, como las `b-`: viven en la escena y en sus tramas (`titeres.ts`). */
+.bt-lobo-claro { fill: var(--bestia-lobo-claro); }
+.bt-lobo-crema { fill: var(--bestia-lobo-crema); }
+.bt-lobo-ocre { fill: var(--bestia-lobo-ocre); }
+.bt-lobo-sombra { fill: var(--bestia-lobo-sombra); }
+.bt-lobo-oscuro { fill: var(--bestia-lobo-oscuro); }
+.bt-cordero-lana { fill: var(--bestia-cordero-lana); }
+.bt-cordero-lana-clara { fill: var(--bestia-cordero-lana-clara); }
+.bt-cordero-lana-oscura { fill: var(--bestia-cordero-lana-oscura); }
+.bt-cordero-mascara { fill: var(--bestia-cordero-mascara); }
+.bt-cordero-mascara-clara { fill: var(--bestia-cordero-mascara-clara); }
+.bt-cordero-ojo { fill: var(--bestia-cordero-ojo); }
+.bt-cordero-pezunia { fill: var(--bestia-cordero-pezunia); }
+.bt-pastura { fill: var(--entorno-pastura); }
+.bt-pastura-honda { fill: var(--entorno-pastura-honda); }
+.bt-monte-claro { fill: var(--entorno-monte-claro); }
+.bt-monte-medio { fill: var(--entorno-monte-medio); }
+.bt-monte-hondo { fill: var(--entorno-monte-hondo); }
+.bt-papel { fill: var(--papel); }
+.bt-tinta { fill: var(--fondo); }
+.bt-soga { fill: var(--disco-luzbelito-tinta); }
+.bt-sombra-piso { fill: var(--fondo); fill-opacity: 0.22; }
+.bt-borde-oscuro { stroke: var(--bestia-lobo-oscuro); stroke-width: 1.4; }
+.bt-borde-sepia { stroke: var(--bestia-lobo-sombra); stroke-width: 1.6; stroke-linejoin: round; }
+.bt-borde-azul { stroke: var(--bestia-cordero-lana-oscura); stroke-width: 1.1; stroke-linejoin: round; }
+.bt-borde-grueso-azul { stroke: var(--bestia-cordero-lana-oscura); stroke-width: 3; stroke-linejoin: round; }
+.bt-trazo-sepia,
+.bt-trazo-ocre,
+.bt-trazo-oscuro,
+.bt-trazo-azul,
+.bt-trazo-azul-clara,
+.bt-trazo-pezunia,
+.bt-trazo-soga,
+.bt-trazo-monte,
+.bt-trazo-papel {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bt-trazo-sepia { stroke: var(--bestia-lobo-sombra); }
+.bt-trazo-ocre { stroke: var(--bestia-lobo-ocre); }
+.bt-trazo-oscuro { stroke: var(--bestia-lobo-oscuro); }
+.bt-trazo-azul { stroke: var(--bestia-cordero-lana); }
+.bt-trazo-azul-clara { stroke: var(--bestia-cordero-lana-clara); }
+.bt-trazo-pezunia { stroke: var(--bestia-cordero-pezunia); }
+.bt-trazo-soga { stroke: var(--disco-luzbelito-tinta); }
+.bt-trazo-monte { stroke: var(--entorno-monte-hondo); }
+.bt-trazo-papel { stroke: var(--papel); }
+.bt-borde-monte { stroke: var(--entorno-monte-hondo); stroke-width: 1.4; stroke-linejoin: round; }
+
+/* El recorrido (D-73, segunda vuelta): un recinto detrás del otro, como un zoológico. */
+.bestiario-pie-plano {
+  margin: var(--espacio-2) 0 0;
+  color: var(--texto-tenue);
+  line-height: 1.5;
+}
+
+.recorrido {
+  max-width: var(--ancho-tablero-amplio);
+  margin: 0 auto;
+}
+
+.recinto {
+  margin: var(--espacio-4) 0;
+  scroll-margin-top: var(--espacio-2);
+}
+
+/* El cartel del recinto: un sello de goma pegado arriba de la escena, como en un zoológico. */
+.recinto-cartel {
+  display: inline-block;
+  max-width: 100%;
+  margin: 0 0 calc(var(--espacio-1) * -1) var(--espacio-1);
+  padding: 0.5rem 0.8rem 0.3rem;
+  position: relative;
+  z-index: 1;
+  color: var(--fondo);
+  background: var(--papel);
+  border: var(--linea) solid var(--tr);
+  border-radius: 3px;
+  transform: rotate(-1.2deg);
+}
+
+.recinto:nth-child(even) .recinto-cartel { transform: rotate(1deg); }
+
+.recinto-cartel .bestiario-canta { color: var(--fondo); margin: 0.1rem 0 0.2rem; }
+
+.recinto-numero {
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  color: var(--papel-tenue);
+}
+
+.recinto-nombre {
+  margin: 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 1.15rem;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.recinto-escena {
+  position: relative;
+  border: var(--linea) solid var(--papel);
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--papel);
+}
+
+.recinto-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.bestiario-svg .sendero { fill: var(--papel); }
+.bestiario-svg .region-borde--cerco { stroke-width: 4; stroke-dasharray: 2 6; }
+
+/* Décima vuelta (D-73): los seis entornos de noche. En Cybersiberia nieva: dos copias de la misma
+   capa de copos, una arriba de la otra, que bajan y se repiten. Con movimiento reducido, no nieva. */
+.cyber-nevada-copos { animation: nevar var(--duracion-nevada) linear infinite; }
+
+@keyframes nevar {
+  from { transform: translateY(0); }
+  to { transform: translateY(640px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cyber-nevada-copos { animation: none; }
+}
+
+/* Los títeres se tocan; el cordero, además, se arrastra: el dedo no tiene que mover la página. */
+.titere { cursor: pointer; outline: none; }
+.titere--lobo { touch-action: manipulation; }
+.titere--cordero { cursor: grab; touch-action: none; }
+.titere:focus-visible { outline: 2px dashed var(--acento-2); }
+.soga--tensa { stroke-width: 3.2; }
+
+/* El bocadillo: lo que dice un bicho, con el mouse encima o solo (D-78). Papel, borde grueso, una punta abajo. */
+.bocadillo {
+  position: absolute;
+  z-index: 2;
+  /* Ancho propio: en una escena corrida de costado, el ancho "que queda" a la derecha engaña. */
+  width: max-content;
+  max-width: min(17rem, 80%);
+  padding: 0.5rem 0.7rem 0.6rem;
+  color: var(--fondo);
+  background: var(--papel);
+  border: var(--linea) solid var(--fondo);
+  border-radius: 3px;
+}
+
+/* La punta apunta al bicho aunque el bocadillo se haya corrido para entrar en la pantalla. */
+.bocadillo::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--punta, 50%) - 8px);
+  bottom: -11px;
+  border: 8px solid transparent;
+  border-top-color: var(--fondo);
+  border-bottom: 0;
+}
+
+.bocadillo--abajo::after {
+  top: -11px;
+  bottom: auto;
+  border-top: 0;
+  border-top-color: transparent;
+  border-bottom: 8px solid var(--fondo);
+}
+
+.bocadillo-verso {
+  margin: 0;
+  font-style: italic;
+  line-height: 1.35;
+}
+
+/* Los sellos se asientan (D-83). Nada aparece con un fundido (el umbral de arriba lo dice): un
+   sello llega ya estampado y lo único que hace es terminar de apoyar, como la marca en la portada.
+   El bocadillo gira apenas alrededor de su punta; el sello «Anotado» recién puesto baja de más
+   arriba, que es un golpe de sello; la hoja de la ficha baja (o sube, o entra de costado) los
+   últimos píxeles hasta su lugar. Todo en `--duracion-sello`, que el corte de movimiento reducido
+   lleva a cero: con relleno `both`, aparecen ya apoyados. */
+@keyframes sello-apoya {
+  from {
+    scale: var(--sello-desde, 1.06);
+    rotate: var(--sello-giro, -2deg);
+  }
+}
+
+@keyframes hoja-apoya {
+  from {
+    translate: var(--desde-hoja, 0 10px);
+  }
+}
+
+.bocadillo:not([hidden]) {
+  transform-origin: var(--punta, 50%) 100%;
+  animation: sello-apoya var(--duracion-sello) var(--curva-cinta) both;
+}
+
+.bocadillo--abajo:not([hidden]) { transform-origin: var(--punta, 50%) 0; }
+
+.bestiario-hoja:not([hidden]) { animation: hoja-apoya var(--duracion-sello) var(--curva-cinta) both; }
+
+.bestiario-hoja--arriba { --desde-hoja: 0 -10px; }
+
+@media (min-width: 52rem) {
+  .bestiario-hoja { --desde-hoja: 10px 0; }
+  .bestiario-hoja--izquierda { --desde-hoja: -10px 0; }
+}
+
+/* En la hoja, el sello «Anotado» va al lado del sello de clase, con la cuenta de la libreta: así lo
+   anotado se ve donde se anota, también en el camino, donde la libreta vive plegada en el tablero.
+   El recién anotado se estampa; el de siempre ya está apoyado. */
+.bestiario-anotada-sello--hoja {
+  display: inline-block;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+.bestiario-anotada-sello--nueva {
+  --sello-desde: 1.35;
+  --sello-giro: -9deg;
+  color: var(--texto);
+  border-color: var(--acento-2);
+  animation: sello-apoya var(--duracion-sello) var(--curva-cinta) both;
+}
+
+.bestiario-hoja-cuenta {
+  display: inline-block;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+/* La libreta se vuelve a sellar cada vez que la cuenta sube. */
+.bestiario-libreta--sella { animation: sello-apoya var(--duracion-sello) var(--curva-cinta) both; }
+
+/* La tercera vuelta (D-73): el monte de noche. La escena es más ancha que un teléfono y se
+   recorre de costado; en el teléfono va de borde a borde, sin el margen de la hoja. */
+.recinto-escena--noche {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bestia-lobo-sombra) var(--fondo);
+  background: var(--fondo);
+  border-color: var(--bestia-lobo-sombra);
+}
+
+.recinto-escena--noche .recinto-svg { min-width: 54rem; }
+
+@media (max-width: 52rem) {
+  .recinto-escena--noche {
+    margin-inline: calc(50% - 50vw);
+    border-inline: 0;
+    border-radius: 0;
+  }
+}
+
+/* Pulida (D-73): en la compu la escena de noche sale del renglón y entra entera, sin correrse. */
+@media (min-width: 52.01rem) {
+  .recinto-escena--noche {
+    --ancho-noche: min(100vw - 2 * var(--espacio-3), 60rem);
+    width: var(--ancho-noche);
+    margin-inline: calc((100% - var(--ancho-noche)) / 2);
+  }
+}
+
+/* El aviso de que la escena sigue de costado: registro 3, seco, y se va cuando la gente la corre. */
+.recinto-deslizar {
+  margin: var(--espacio-1) 0 0;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+.recinto-deslizar[hidden] { display: none; }
+
+/* La vuelta al plano, al pie de cada recinto: la página es larga y el plano es el índice visual. */
+.recinto-volver {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  margin-top: var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  text-underline-offset: 0.3em;
+}
+
+.recinto-volver:hover,
+.recinto-volver:focus-visible { color: var(--texto); }
+
+/* La puerta de un recinto que ya se camina (D-73, séptima vuelta): un sello pegado al cartel,
+   que lleva a su camino con cruces. */
+.recinto-camino {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  margin: var(--espacio-1) 0 var(--espacio-1) var(--espacio-2);
+  padding: 0 0.8rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--fondo);
+  background: var(--papel);
+  border: var(--linea) solid var(--tr);
+  border-radius: 3px;
+  transform: rotate(1.2deg);
+}
+
+.recinto-camino:hover,
+.recinto-camino:focus-visible { border-style: dashed; }
+
+/* Los cinco de tapa se retratan con su recorte, sobre la tinta de su escena y no sobre papel. */
+.bestiario-figura--tapa,
+.bestiario-mini--tapa { background: var(--fondo); }
+.bestiario-figura--tapa { width: 12rem; border-color: var(--tr, var(--cat-mitologia)); }
+.bestiario-mini--tapa { border: 1.5px solid var(--borde); }
+
+.ojos-oro { fill: var(--acento-2); }
+.ojos-papel { fill: var(--papel); }
+.bestiario-svg .bestia--ojos .toque { fill: transparent; }
+
+/* Cuarta vuelta (D-73): los párpados de los recortes, del color de la piel de arriba de cada ojo. */
+.bt-lobo-parpado { fill: var(--bestia-lobo-parpado); }
+.bt-lobo-parpado-oscuro { fill: var(--bestia-lobo-parpado-oscuro); }
+.bt-cordero-parpado { fill: var(--bestia-cordero-parpado); }
+
+/* Quinta vuelta (D-73): los ojos rojos del infierno, el cordón del medallón, y el fuego de *Gulp!*,
+   que se suma a lo oscuro como luz. */
+.ojos-rojo { fill: var(--marca-rojo); }
+.bt-trazo-cordon { fill: none; stroke: var(--disco-momo-sampler-apoyo); stroke-linecap: round; }
+.infierno-fuego { mix-blend-mode: screen; }
+.titere--perro,
+.titere--luzbelito,
+.titere--momo,
+.titere--pierre,
+.titere--dracula,
+.titere--barbazul,
+.titere--atila,
+.titere--limon { cursor: pointer; }
+
+/* Sexta vuelta (D-73): el bajo inundado y el gordo Pierre. Los párpados son del papel de *Gulp!*
+   con la raya del ojo cerrado; el agua que entra por el vidrio roto, la lluvia de la calle y las
+   ondas son trazos vivos que mueve la isla, en las tintas de *Un baión*. El reflejo de Pierre y el
+   de los ojos que miran desde el agua van apagados. */
+.bt-pierre-parpado { fill: var(--disco-gulp-apoyo); }
+.bt-pierre-pestana { fill: none; stroke: var(--fondo); stroke-width: 4; stroke-linecap: round; }
+.bajo-chorro {
+  fill: none;
+  stroke: var(--entorno-baion-luz);
+  stroke-width: 2.2;
+  stroke-opacity: 0.7;
+  stroke-dasharray: 10 7;
+  stroke-linecap: round;
+}
+.bajo-lluvia { fill: none; stroke: var(--acento-2); stroke-width: 1.4; stroke-opacity: 0.55; stroke-linecap: round; }
+.bajo-onda { fill: none; stroke: var(--entorno-baion-luz); stroke-width: 1.6; }
+.bajo-reflejo { opacity: 0.45; }
+.ojos-reflejo { opacity: 0.28; }
+
+/* La vaca cubana (D-73): el ojo vivo, el párpado de papel, la pantalla de la tele que titila y la
+   estela del pedazo que cae, en las tintas de *Un baión*. */
+.titere--vaca { cursor: pointer; }
+.bt-vaca-blanco { fill: var(--bestia-ojo-blanco); }
+.bt-vaca-iris { fill: var(--bestia-vaca-ocre); stroke: var(--bestia-vaca-rojo-hondo); stroke-width: 1.6; }
+.bt-vaca-brillo { fill: var(--bestia-vaca-luz); }
+.bt-vaca-parpado { fill: var(--bestia-vaca-mancha); }
+.bt-vaca-pestana { fill: none; stroke: var(--fondo); stroke-width: 2.4; stroke-linecap: round; }
+.vaca-pantalla { fill: var(--bestia-vaca-luz); }
+.vaca-estela { fill: none; stroke: var(--bestia-vaca-lila); stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+
+/* Octava vuelta (D-73): la prisión de Barbazul y la drácula con tacones, tallados como la gente
+   de *Oktubre*. El párpado es de tinta, con el filo del párpado cerrado en el blanco de la tapa; la
+   sombra que la drácula tira en el piso es plancha negra; el golpe de cada taco, dos cortes blancos
+   que la isla prende y apaga. */
+.bt-dracula-parpado { fill: var(--fondo); }
+.bt-dracula-pestana { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 1.3; stroke-linecap: round; }
+.dracula-sombra { fill: var(--fondo); }
+.dracula-taco { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 2; stroke-linecap: round; }
+.bestiario-svg .bestia--jaula .toque { fill: transparent; }
+
+/* Undécima vuelta (D-73): Barbazul. Las pupilas son de la página, en la tinta de la plancha y con
+   un brillo de papel, porque la isla las hace mirar; el párpado es de tinta, como el de la drácula. */
+.bt-barbazul-pupila { fill: var(--fondo); }
+.bt-barbazul-brillo { fill: var(--bestia-dracula-papel); }
+.bt-barbazul-parpado { fill: var(--fondo); }
+.bt-barbazul-pestana { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 1.2; stroke-linecap: round; }
+.barbazul-sombra { fill: var(--fondo); }
+
+/* Duodécima vuelta (D-73): el negro Atila en la medianera, a aerógrafo como la tapa de *Lobo
+   suelto*. Los párpados son de su piel: el de la luz ocre, el de la sombra hundido; van a media asta
+   todo el tiempo, que es como mira el que mira de reojo. La luz de la sirena se suma a la noche. */
+.bt-atila-parpado { fill: var(--bestia-lobo-ocre); }
+.bt-atila-parpado-oscuro { fill: var(--bestia-lobo-oscuro); }
+.bt-atila-pestana { fill: none; stroke: var(--fondo); stroke-width: 1.6; stroke-linecap: round; }
+.atila-sirena { mix-blend-mode: screen; }
+
+/* Decimocuarta vuelta (D-73): Limón por las chapas del baldío. Las pupilas son tinta que la isla corre
+   (mira para atrás mientras corre); los párpados, del verde de la cáscara. Las linternas del bloque
+   son luz: se suman a lo oscuro, como el fuego del infierno, y no se llevan los toques. */
+.bt-limon-pupila { fill: var(--fondo); }
+.bt-limon-parpado { fill: var(--bestia-limon-verde); }
+.baldio-linterna { mix-blend-mode: screen; pointer-events: none; }
+
+/* Decimoquinta vuelta (D-73): el elenco de diez, uno por entorno (`elenco.ts`). Lo que la página
+   dibuja de cada títere (pupilas, párpados, lo que la isla prende y apaga) va en su bloque, con las
+   tintas de su bloque de `tokens.css`. Todos se tocan. */
+.titere--bestia-pop, .titere--monito, .titere--buscapina, .titere--pibe, .titere--canibal,
+.titere--pontiac, .titere--diablo, .titere--rato, .titere--morta, .titere--esclavo { cursor: pointer; }
+/* ⟨la bestia pop⟩ */
+/* Los destellos de las lentejuelas: estrellas en el rosado del reflector de *En directo*, que la isla
+   hace saltar. No se toca un destello: el toque es del títere entero. */
+.bt-bestia-pop-chispa { fill: var(--bestia-pop-reflector); pointer-events: none; }
+/* ⟨/la bestia pop⟩ */
+
+/* ⟨el monito que trepa⟩ */
+/* Los ojos de persona del monito: el iris del barro de la frente, la pupila en el morado de las
+   cuencas del busto, con un brillo, y el párpado de su barro, que va a media asta: mira de reojo,
+   desconfiado. */
+.bt-monito-iris { fill: var(--bestia-monito-ocre); }
+.bt-monito-pupila { fill: var(--bestia-monito-cuenca); }
+.bt-monito-brillo { fill: var(--bestia-monito-diente); }
+.bt-monito-parpado { fill: var(--bestia-monito-ocre); }
+/* La mueca del busto, arriba de todo: la boca en el morado de las cuencas y los dientes pelados. */
+.bt-monito-boca { fill: var(--bestia-monito-cuenca); }
+.bt-monito-dientes { fill: var(--bestia-monito-diente); }
+/* ⟨/el monito que trepa⟩ */
+
+/* ⟨el Capitán Buscapina⟩ */
+/* La luz de la tele que le pega por atrás, y la del partido cuando cambia de canal: se suman a la
+   nieve, como las linternas del bloque, y no se llevan el toque de la tele ni del Alien Duce. La boleta
+   que tira y el vaho tampoco se tocan: el toque es del títere. */
+.bt-buscapina-luz { mix-blend-mode: screen; pointer-events: none; }
+.titere--buscapina [data-parte="boleta"], .titere--buscapina [data-parte="vaho"] { pointer-events: none; }
+/* ⟨/el Capitán Buscapina⟩ */
+
+/* ⟨el pibe de los astilleros⟩ */
+/* Los ojos del recorte: la pupila en el negro del pelo de la contratapa, y el párpado de su piel en
+   la sombra de la cuenca, a media asta, que es como mira el que vigila. */
+.bt-pibe-pupila { fill: var(--bestia-pibe-pelo); }
+.bt-pibe-parpado { fill: var(--bestia-pibe-piel-honda); }
+/* El grito de la contratapa: la boca abierta y los dientes de arriba. */
+.bt-pibe-boca { fill: var(--bestia-pibe-boca); }
+.bt-pibe-dientes { fill: var(--bestia-pibe-papel); }
+/* El pucho: el papel, la ceniza larga que no se cae (gris de tiza) y la brasa, en el sodio del farol. */
+.bt-pibe-pucho { fill: none; stroke: var(--bestia-pibe-papel); stroke-width: 1.5; stroke-linecap: round; }
+.bt-pibe-ceniza { fill: none; stroke: var(--entorno-astillero-tiza-clara); stroke-width: 1.6; stroke-linecap: round; }
+.bt-pibe-brasa { fill: var(--disco-cordero-atado-tinta); }
+/* La luz de la brasa en la cara: se suma a lo de abajo, como las linternas del baldío. */
+.bt-pibe-resplandor { mix-blend-mode: screen; pointer-events: none; }
+/* Lo que se afana de la caja: un pedal negro con el cromo que agarra la luz. */
+.bt-pibe-botin { fill: var(--fondo); }
+.bt-pibe-cromo { fill: none; stroke: var(--entorno-astillero-tiza-clara); stroke-width: 1; stroke-linecap: round; }
+/* ⟨/el pibe de los astilleros⟩ */
+
+/* ⟨el caníbal⟩ */
+/* Los ojos de persona del caníbal: el iris verde de la bestia de *Cordero atado*, la pupila en el negro
+   de la boca de la contratapa, con un brillo, y el párpado de la máscara marrón, que va a media asta:
+   mira la pastura con ganas. La sonrisa de la contratapa (la boca negra y los dientes del blanco de las
+   uñas) y la lengua, que la isla prende y apaga. Las moscas van adentro del títere: tocarlas es tocarlo. */
+.bt-canibal-iris { fill: var(--bestia-canibal-iris); }
+.bt-canibal-pupila { fill: var(--bestia-canibal-boca); }
+.bt-canibal-brillo { fill: var(--bestia-canibal-una); }
+.bt-canibal-parpado { fill: var(--bestia-canibal-mascara); }
+.bt-canibal-pestana { fill: none; stroke: var(--bestia-canibal-hondo); stroke-width: 1.1; stroke-linecap: round; }
+.bt-canibal-boca { fill: var(--bestia-canibal-boca); }
+.bt-canibal-dientes { fill: var(--bestia-canibal-una); }
+.bt-canibal-lengua { fill: var(--bestia-canibal-lengua); }
+/* ⟨/el caníbal⟩ */
+
+/* ⟨la Mariposa Pontiac⟩ */
+/* Va adentro de su fierro, que es el que se toca. Lo único que dibuja la página son los párpados de
+   los dos ojos de los óvalos: del yeso del busto a media luz, como la cara que los rodea. */
+.bt-pontiac-parpado { fill: var(--bestia-pontiac-yeso-medio); }
+/* ⟨/la Mariposa Pontiac⟩ */
+
+/* ⟨el diablo que mea⟩ */
+/* El ojo de la cara vuelta: de persona, con el iris del rojo de los ojos del infierno (los que tenía
+   antes de ser títere), y el párpado del cobre de la pelada, que baja cuando desconfía. */
+.bt-diablo-iris { fill: var(--marca-rojo); }
+.bt-diablo-pupila { fill: var(--fondo); }
+.bt-diablo-brillo { fill: var(--bestia-diablo-brillo); }
+.bt-diablo-parpado { fill: var(--bestia-diablo-cobre-hondo); }
+/* El chorro es un arco de brasa: el halo del fuego, sumado como luz, y adentro las gotas del oro de la
+   vela, que corren. Donde cae, un brillo que se seca y unas chispas. Nada de esto se toca. */
+.bt-diablo-halo { fill: none; stroke: var(--entorno-infierno-fuego); stroke-width: 7; stroke-linecap: round; mix-blend-mode: screen; }
+.bt-diablo-chorro { fill: none; stroke: var(--bestia-diablo-brillo); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 26 1.8 9 1.4 4 2.2; }
+.bt-diablo-charco { fill: var(--entorno-infierno-fuego); mix-blend-mode: screen; }
+.bt-diablo-chispa { fill: var(--acento-2); }
+.diablo-suelo { pointer-events: none; }
+/* ⟨/el diablo que mea⟩ */
+
+/* ⟨el rato molhado⟩ */
+/* Los ojos de persona del rato: el iris en el lila del ojo de la contratapa de *Momo Sampler*, la
+   pupila en lo hondo de la piel, con el brillo de plata mojada, y el párpado pesado, a media asta: su
+   cara es tan expresiva como el par de sus botas nuevas. El de la sombra, del violeta hondo; el de la
+   luz, del pelo. El destello de los dientes de oro cuando brinda, y las gotas que le caen del hocico. */
+.bt-rato-iris { fill: var(--bestia-rato-iris); }
+.bt-rato-pupila { fill: var(--bestia-rato-hondo); }
+.bt-rato-brillo { fill: var(--bestia-rato-plata); }
+.bt-rato-parpado { fill: var(--bestia-rato-pelo); stroke: var(--fondo); stroke-width: 0.9; }
+.bt-rato-parpado-hondo { fill: var(--bestia-rato-hondo); stroke: var(--fondo); stroke-width: 0.9; }
+.bt-rato-destello { fill: none; stroke: var(--bestia-rato-oro); stroke-width: 1.2; stroke-linecap: round; }
+.bt-rato-chispa { fill: var(--bestia-rato-plata); }
+.bt-rato-gota { fill: var(--entorno-baion-luz); }
+/* ⟨/el rato molhado⟩ */
+
+/* ⟨el Morta⟩ */
+/* El ojo de persona del Morta: el iris en la pintura de murga de la cara del interior de *Momo Sampler*
+   (un marrón colorado, de gin), la pupila en la tinta de la plancha con un brillo, y el párpado de su
+   piel, pesado. Adentro de la boca que relincha: lo hondo de la cara, la lengua de la pintura y los
+   dientes de caballo. El aceite es negro con el reflejo de la plata del medallón; el chorro y la gota no
+   se tocan aparte. */
+.bt-morta-iris { fill: var(--bestia-morta-pintura); }
+.bt-morta-pupila { fill: var(--fondo); }
+.bt-morta-brillo { fill: var(--bestia-morta-brillo); }
+.bt-morta-parpado { fill: var(--bestia-morta-piel); }
+.bt-morta-pestana { fill: none; stroke: var(--bestia-morta-hondo); stroke-width: 1.2; stroke-linecap: round; }
+.bt-morta-boca { fill: var(--bestia-morta-hondo); }
+.bt-morta-lengua { fill: var(--bestia-morta-pintura); }
+.bt-morta-dientes { fill: var(--bestia-ojo-blanco); }
+.bt-morta-aceite { fill: var(--fondo); }
+.bt-morta-reflejo { fill: var(--disco-momo-sampler-tinta); }
+.bt-morta-chorro { fill: var(--fondo); }
+.bt-morta-chorro-brillo { fill: none; stroke: var(--disco-momo-sampler-tinta); stroke-width: 0.9; stroke-linecap: round; stroke-linejoin: round; stroke-opacity: 0.8; }
+.titere--morta [data-parte="chorro"], .titere--morta [data-parte="chorro-brillo"], .titere--morta [data-parte="gota"] { pointer-events: none; }
+/* ⟨/el Morta⟩ */
+
+/* ⟨el esclavo sensible y chillón⟩ */
+/* Los ojos del pibe preso: la pupila en la tinta de la plancha, con un brillo de papel, porque la isla
+   la hace mirar la calle, a la drácula o a vos; el párpado es de tinta, pesado, como el de los demás
+   tallados de la prisión. Abajo, el borde al rojo vivo que pide la letra, y la lágrima, del papel de la
+   gente, que la isla asoma y no deja caer. */
+.bt-esclavo-pupila { fill: var(--fondo); }
+.bt-esclavo-brillo { fill: var(--bestia-dracula-papel); }
+.bt-esclavo-parpado { fill: var(--fondo); }
+.bt-esclavo-rojo { fill: var(--bestia-esclavo-ojo); }
+.bt-esclavo-lagrima { fill: var(--bestia-dracula-papel); }
+.titere--esclavo [data-parte="lagrima"], .titere--esclavo [data-parte="rojo"] { pointer-events: none; }
+/* ⟨/el esclavo sensible y chillón⟩ */
+
+/* Decimosexta vuelta (D-73): tres más, cada uno en su bloque, con las tintas de su bloque de
+   `tokens.css`. */
+.titere--hija, .titere--psicopata, .titere--porco { cursor: pointer; }
+
+/* ⟨la hija del fletero⟩ */
+/* El cable rizado del tubo, en el rosa del tubo, con un hilo de brillo encima; lo hundido, en la tiza
+   del agua, apenas. La chispa y la luz de la descarga son luz: se suman a lo oscuro. El párpado es de la
+   piel gris de la grisalla. Nada de esto se toca: el toque es del títere entero. */
+.bt-hija-cable { fill: none; stroke: var(--bestia-hija-tubo); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.bt-hija-cable-luz { fill: none; stroke: var(--bestia-hija-tubo-luz); stroke-width: 0.5; stroke-linecap: round; stroke-linejoin: round; stroke-opacity: 0.7; transform: translate(-0.4px, -0.5px); }
+.bt-hija-hundido { fill: none; stroke: var(--entorno-astillero-tiza-clara); stroke-width: 1.4; stroke-linecap: round; stroke-opacity: 0.32; stroke-dasharray: 3 4; }
+.bt-hija-onda { fill: none; stroke: var(--entorno-astillero-tiza-clara); stroke-width: 0.8; }
+.bt-hija-parpado { fill: var(--bestia-hija-media); }
+.bt-hija-chispa, .bt-hija-resplandor { mix-blend-mode: screen; }
+.titere--hija [data-parte="hundido"], .titere--hija [data-parte="ondas"], .titere--hija [data-parte="cable"], .titere--hija [data-parte="cable-luz"],
+.titere--hija [data-parte="chispa"], .titere--hija [data-parte="resplandor"] { pointer-events: none; }
+/* ⟨/la hija del fletero⟩ */
+
+/* ⟨el buen psicópata⟩ */
+/* La correa de cuero, en el marrón de los pliegues de la tapa; los párpados, de la piel de él y del pelo
+   del perro. La luz de la lamparita del cuadro es luz: se suma a lo oscuro. Ni la correa ni el cuadro
+   se tocan: el toque es del títere entero. */
+.bt-psicopata-correa { fill: none; stroke: var(--bestia-psicopata-pliegue); stroke-width: 3.2; stroke-linecap: round; }
+.bt-psicopata-parpado { fill: var(--bestia-psicopata-ocre); }
+.bt-psicopata-parpado-perro { fill: var(--bestia-psicopata-zorro); }
+.bt-psicopata-luz { mix-blend-mode: screen; pointer-events: none; }
+.titere--psicopata [data-parte="correa"], .titere--psicopata [data-parte="humo"], .titere--psicopata [data-parte="bandera"] { pointer-events: none; }
+/* ⟨/el buen psicópata⟩ */
+
+/* ⟨mi perro dinamita⟩ */
+/* La mecha es un cordel trenzado: el sepia claro del interior, con la trenza en el sepia del pelo. La
+   pupila, del negro de la sala; el párpado, del pelo. La fiebre de la trufa es luz: se suma a lo de abajo.
+   El toque es el perro parado (el rectángulo que no se ve), nunca la explosión ni el humo. */
+.bt-dinamita-mecha { fill: none; stroke: var(--bestia-dinamita-pelo-claro); stroke-width: 3.8; stroke-linecap: round; }
+.bt-dinamita-trenza { fill: none; stroke: var(--bestia-dinamita-pelo); stroke-width: 3.8; stroke-dasharray: 1.4 2.4; opacity: 0.8; }
+.bt-dinamita-pupila { fill: var(--bestia-dinamita-negro); }
+.bt-dinamita-brillo { fill: var(--bestia-dinamita-foco); }
+.bt-dinamita-parpado { fill: var(--bestia-dinamita-pelo-medio); }
+.bt-dinamita-toque { fill: transparent; }
+.titere--dinamita [data-parte="fiebre"], .titere--dinamita [data-parte="chispa"] { mix-blend-mode: screen; }
+.titere--dinamita [data-parte="entero"] { pointer-events: none; }
+/* ⟨/mi perro dinamita⟩ */
+
+/* ⟨Porco Rex⟩ */
+/* La sombra en la nieve, del acero hondo de Cybersiberia; lo de adentro de la boca cuando chilla y la
+   ceja que asoma arriba de los anteojos, de la piel en la sombra. El brillo de la tele en los
+   anteojos y el vaho son luz. Nada de esto se toca: el toque es del títere entero. */
+.bt-porco-sombra { fill: var(--entorno-cyber-acero-hondo); opacity: 0.55; }
+.bt-porco-adentro { fill: var(--bestia-porco-piel-honda); }
+.bt-porco-ceja { fill: none; stroke: var(--bestia-porco-piel-honda); stroke-width: 1.6; stroke-linecap: round; }
+.titere--porco [data-parte="brillo"], .titere--porco [data-parte="vaho"] { mix-blend-mode: screen; }
+.titere--porco [data-parte="brillo"], .titere--porco [data-parte="vaho"], .titere--porco [data-parte="salpica"] { pointer-events: none; }
+/* ⟨/Porco Rex⟩ */
+
+/* Decimoséptima vuelta (D-73): tres más, cada uno en su bloque, con las tintas de su bloque de
+   `tokens.css`. */
+.titere--angel, .titere--pacman, .titere--mosca { cursor: pointer; }
+
+/* ⟨el ángel de la soledad⟩ */
+/* La sombra en la tierra roja, de la tierra honda del árbol; los párpados, del sepia de la cara; la ceja
+   que sube cuando no cree, de lo hondo de los pliegues. Las pupilas son lo más hondo, con su brillo de
+   papel. El huevo que ataja no se toca: el toque es del títere entero. */
+.bt-angel-sombra { fill: var(--entorno-arbol-tierra-honda); opacity: 0.7; }
+.bt-angel-parpado { fill: var(--bestia-angel-sepia); }
+.bt-angel-ceja { fill: none; stroke: var(--bestia-angel-hondo); stroke-width: 1.4; stroke-linecap: round; }
+.bt-angel-pupila { fill: var(--bestia-angel-hondo); }
+.bt-angel-brillo { fill: var(--bestia-angel-luz); }
+.titere--angel [data-parte="huevo"] { pointer-events: none; }
+/* ⟨/el ángel de la soledad⟩ */
+
+/* ⟨el pac-man⟩ */
+/* El único del bestiario que es pixel: las tintas son las del fichín (`--px-*`, hoja 14 del lienzo) y
+   el pixel va con el borde vivo, sin suavizar. El amarillo es el tesoro; el fantasma, el rojo del
+   infierno de Gulp!, y asustado se pone del azul del pelo de Poligirl, con la cara del durazno del
+   infierno. Los puntos son la luz. El pasillo entero se toca, aunque no se vea: es fino para un dedo. */
+.titere--pacman path, .bt-pacman-retrato path { shape-rendering: crispEdges; }
+.bt-pacman-retrato image { mix-blend-mode: screen; }
+.bt-pacman-amarillo { fill: var(--px-tesoro); }
+.bt-pacman-punto { fill: var(--px-luz); }
+.bt-pacman-rojo { fill: var(--px-infierno); }
+.bt-pacman-azul { fill: var(--px-poli-1); }
+.bt-pacman-cara { fill: var(--px-infierno-3); }
+.bt-pacman-blanco { fill: var(--px-blanco-gulp); }
+.bt-pacman-cara-titila { fill: var(--px-infierno); }
+.bt-pacman-ojo { fill: var(--px-luz); }
+.bt-pacman-pupila { fill: var(--px-poli-1); }
+.bt-pacman-puntaje { fill: var(--px-luz); }
+.bt-pacman-toque { fill: transparent; }
+.titere--pacman [data-parte="halo-fantasma"], .titere--pacman image { mix-blend-mode: screen; pointer-events: none; }
+/* ⟨/el pac-man⟩ */
+
+/* ⟨la mosca⟩ */
+/* La sombra en el borde de la olla, de lo negro de entre los pelos; los anillos de la sopa, del papel del
+   collage, como el canto del recorte. Se toca el aire donde vuela, que ella es chica para un dedo. */
+.bt-mosca-sombra { fill: var(--bestia-mosca-honda); }
+.bt-mosca-anillo { fill: none; stroke: var(--entorno-mesa-papel); stroke-width: 1.2; }
+.bt-mosca-toque { fill: transparent; }
+.titere--mosca [data-parte="anillo"], .titere--mosca [data-parte="sombra"], .titere--mosca [data-parte="zumbido"] { pointer-events: none; }
+.titere--mosca [data-parte="zumbido"] { mix-blend-mode: screen; }
+/* ⟨/la mosca⟩ */
+
+/* ⟨el verdugo⟩ */
+/* Lo que asoma por los agujeros de la capucha: dos puntos al rojo de la bandera de *Oktubre*, con su
+   brasa alrededor, que se suma a lo negro. Con la risa se achinan: dos rayitas del mismo rojo. */
+.titere--verdugo { cursor: pointer; }
+.bt-verdugo-ojo { fill: var(--bestia-verdugo-rojo); }
+.bt-verdugo-brasa { fill: var(--bestia-verdugo-brasa); opacity: 0.55; mix-blend-mode: screen; }
+.bt-verdugo-risa { fill: none; stroke: var(--bestia-verdugo-rojo); stroke-width: 1.4; stroke-linecap: round; }
+.titere--verdugo [data-parte="filo"] { mix-blend-mode: screen; pointer-events: none; }
+/* ⟨/el verdugo⟩ */
+
+/* ⟨el dr. saturno⟩ */
+/* La sombra en el piso del templo, de lo hondo de la mascara: no pisa, asi que la sombra se achica y se
+   aclara cuanto mas flota. El halo y el destello del espejo son luz: se suman a lo oscuro y no se tocan.
+   El boleto que da tampoco: el toque es del titere. */
+.titere--saturno { cursor: pointer; }
+.bt-saturno-sombra { fill: var(--bestia-saturno-hondo); }
+.titere--saturno [data-parte="halo"], .titere--saturno [data-parte="espejo"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--saturno [data-parte="boleto"], .titere--saturno [data-parte="sombra"] { pointer-events: none; }
+/* ⟨/el dr. saturno⟩ */
+
+/* ⟨tu animal⟩ */
+/* Lo que siempre se ve de tu animal: los ojos amarillos, con el resplandor que se suma a lo oscuro, la
+   pupila en la tinta de la brocha y el parpado del mismo petroleo. La correa es una pincelada roja que se
+   va para afuera del monte. Se toca el hueco oscuro donde esta, no solo el cuerpo. */
+.titere--animal { cursor: pointer; }
+.bt-animal-ojo { fill: var(--bestia-animal-ojo); }
+.bt-animal-pupila { fill: var(--bestia-animal-tinta); }
+.bt-animal-parpado { fill: var(--bestia-animal-verde); }
+.bt-animal-correa { fill: none; stroke: var(--bestia-animal-rojo); stroke-width: 3; stroke-linecap: round; pointer-events: none; }
+.bt-animal-sombra { fill: var(--bestia-animal-tinta); }
+.bt-animal-toque { fill: transparent; }
+.titere--animal [data-parte="sombra"] { pointer-events: none; }
+/* ⟨/tu animal⟩ */
+
+/* ⟨zippo⟩ */
+/* La llama, el azufre de la risa y el borron de la helice son luz: se suman a lo oscuro del infierno. El
+   nubarron que lo sigue, el humo que deja, las fichas que se le caen y su mala sombra en el damero no se tocan: el toque es de el. */
+.titere--zippo { cursor: pointer; }
+.titere--zippo [data-parte="llama"], .titere--zippo [data-parte="azufre"], .titere--zippo [data-parte="borron"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--zippo [data-parte^="humo-"], .titere--zippo [data-parte^="ficha-"], .titere--zippo [data-parte="nubarron"] { pointer-events: none; }
+[data-marco="zippo"] [data-parte="sombra"] { pointer-events: none; }
+/* ⟨/zippo⟩ */
+
+/* ⟨el diablo mas veloz⟩ */
+/* La sombra en el damero, del verdin del fondo del ovalo. Los rayos de la Caja de los Truenos, el fuego
+   robado y el borron de lo veloz son luz o movimiento: se suman y no se tocan. La caja si se toca: es suya. */
+.titere--veloz { cursor: pointer; }
+.bt-veloz-sombra { fill: var(--bestia-veloz-verdin); opacity: 0.7; }
+.titere--veloz [data-parte="rayos"], .titere--veloz [data-parte="fuego"], .titere--veloz [data-parte="chispas"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--veloz [data-parte="estela"] { pointer-events: none; }
+/* ⟨/el diablo mas veloz⟩ */
+
+/* ⟨el santo fumador⟩ */
+/* La sombra del anda en el piso del templo, del fondo del interior de Momo sampler. La aureola, cuando
+   encandila, la brasa y el humo son luz: se suman a lo oscuro y no se tocan. */
+.titere--fumador { cursor: pointer; }
+.bt-fumador-sombra { fill: var(--bestia-fumador-hondo); opacity: 0.75; }
+.titere--fumador [data-parte="encandila"], .titere--fumador [data-parte="aureola"], .titere--fumador [data-parte="brasa"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--fumador [data-parte="hilo"], .titere--fumador [data-parte^="anillo-"], .titere--fumador [data-parte="cae"], .titere--fumador [data-parte="sombra"] { pointer-events: none; }
+/* ⟨/el santo fumador⟩ */
+
+/* ⟨el que duerme colgado⟩ */
+/* El sueno de tiza, el fogonazo de los angelitos y el sueno reventado son del sueno: no se tocan, el toque
+   es del que duerme. La gota de almibar tampoco. */
+.titere--colgado { cursor: pointer; }
+.titere--colgado [data-parte="sueno"], .titere--colgado [data-parte="pop"], .titere--colgado [data-parte="gota"] { pointer-events: none; }
+.titere--colgado [data-parte^="tiro-"] { mix-blend-mode: screen; }
+/* ⟨/el que duerme colgado⟩ */
+
+/* ⟨la bella senora desencarnada⟩ */
+/* La sombra en la banquina, de la tierra honda de la tapa. El dia que se le viene en el corazon y la luz
+   de las cuencas son luz: se suman a lo oscuro de la ruta y no se tocan. */
+.titere--desencarnada { cursor: pointer; }
+.bt-desencarnada-sombra { fill: var(--bestia-desencarnada-tierra-honda); opacity: 0.8; }
+.titere--desencarnada [data-parte="dia"], .titere--desencarnada [data-parte="cuencas"] { mix-blend-mode: screen; pointer-events: none; }
+/* ⟨/la bella senora desencarnada⟩ */
+
+/* ⟨el gato maton⟩ */
+/* La sombra en la chapa es el negro de la gorra. La luz de la sirena y sus haces son luz: se suman a lo
+   oscuro de los techos y no se tocan; el ra-ta-ta de la matraca tampoco. */
+.titere--maton { cursor: pointer; }
+.bt-maton-sombra { fill: var(--bestia-maton-carbon-hondo); opacity: 0.7; }
+.titere--maton [data-parte="haz"], .titere--maton [data-parte="luz"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--maton [data-parte="ratata"] { pointer-events: none; }
+/* ⟨/el gato maton⟩ */
+
+/* ⟨el amorcito que mordio el vidrio⟩ */
+/* El chorro de soda, las migas del vidrio, la burbuja del hipo y el Nam escrito en el aire no se tocan: el
+   toque es de ella. */
+.titere--amorcito { cursor: pointer; }
+.titere--amorcito [data-parte="chorro"], .titere--amorcito [data-parte="migas"], .titere--amorcito [data-parte="hipo"], .titere--amorcito [data-parte="nam"] { pointer-events: none; }
+/* ⟨/el amorcito que mordio el vidrio⟩ */
+
+/* ⟨las sirenas⟩ */
+/* El brillo del prendedor radioactivo es luz y se suma al agua oscura. Lo que cantan, las salpicaduras y
+   las ondas no se tocan: el toque es de ellas. */
+.titere--sirenas { cursor: pointer; }
+.titere--sirenas [data-parte="radio"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--sirenas [data-parte="canto"], .titere--sirenas [data-parte^="salpica-"], .titere--sirenas [data-parte^="ondas-"] { pointer-events: none; }
+/* ⟨/las sirenas⟩ */
+
+/* ⟨mandinga⟩ */
+/* El resplandor del candil y el fogonazo que encandila son luz: se suman al infierno y no se tocan. La
+   sombra chinesca de la pared tampoco: el toque es del titere. */
+.titere--mandinga { cursor: pointer; }
+.titere--mandinga [data-parte="resplandor"], .titere--mandinga [data-parte="destello"], .titere--mandinga [data-parte="llama"] { mix-blend-mode: screen; pointer-events: none; }
+.mandinga-pared { mix-blend-mode: multiply; }
+.bt-mandinga-varilla { fill: none; stroke: var(--bestia-mandinga-plata-honda); stroke-width: 1.6; }
+/* ⟨/mandinga⟩ */
+
+/* ⟨el alien duce⟩ */
+/* Los puntos de la bola de efectos, las lamparitas y los destellos son luz: se suman a la nieve y al acero y
+   no se tocan. El ticket y el bollo tampoco: el toque es de la pantalla. */
+.titere--alien { cursor: pointer; }
+.titere--alien [data-parte="puntos"], .titere--alien [data-parte="lamparas"], .titere--alien [data-parte="brillos"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--alien [data-parte="ticket"], .titere--alien [data-parte="bollo"], .titere--alien [data-parte="ruido"] { pointer-events: none; }
+/* ⟨/el alien duce⟩ */
+
+/* ⟨el chivato⟩ */
+/* La sombra en el piso es lo negro de la contratapa. La hoja que se vuela, el balido y la gota no se tocan:
+   el toque es del chivato. */
+.titere--chivato { cursor: pointer; }
+.bt-chivato-sombra { fill: var(--bestia-chivato-negro); opacity: 0.75; }
+.titere--chivato [data-parte="hoja"], .titere--chivato [data-parte="balido"], .titere--chivato [data-parte="gota"] { pointer-events: none; }
+/* ⟨/el chivato⟩ */
+
+/* ⟨los gallos sofocados⟩ */
+/* Los gallos sofocados (vigesimotercera vuelta, D-73): se tocan enteros; el cacareo, el hipo y las plumas que
+   vuelan no atajan el dedo. La mancha del piso es lo hondo del interior de Momo sampler. */
+.titere--gallos { cursor: pointer; }
+.bt-gallos-sombra { fill: var(--bestia-gallos-hondo); opacity: 0.7; }
+.titere--gallos [data-parte="cacareo"], .titere--gallos [data-parte="hipo"], .titere--gallos [data-parte="plumas"] { pointer-events: none; }
+/* ⟨/los gallos sofocados⟩ */
+
+/* ⟨la anguila⟩ */
+/* El reflejo del fuego en el barro es luz y se suma a lo oscuro. Lo que salpica, chorrea, burbujea y
+   revienta no se toca: el toque es de ella. */
+.titere--anguila { cursor: pointer; }
+.titere--anguila [data-parte="brasa"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--anguila [data-parte^="gota-"], .titere--anguila [data-parte^="salpica-"], .titere--anguila [data-parte^="burbuja-"], .titere--anguila [data-parte^="revienta-"], .titere--anguila [data-parte="globo"], .titere--anguila [data-parte="plop"] { pointer-events: none; }
+/* ⟨/la anguila⟩ */
+
+/* ⟨la lechuza que circula⟩ */
+/* Se toca la lechuza; la rama es del arbol y el boleto esta pinchado en ella: no se tocan. El pitido es aire. */
+.titere--lechuza { cursor: pointer; }
+.titere--lechuza [data-parte="pitido"], .titere--lechuza [data-parte="boleto"] { pointer-events: none; }
+.titere--lechuza [data-parte="entero"] > image { pointer-events: none; }
+/* ⟨/la lechuza que circula⟩ */
+
+/* ⟨el que mordio el anzuelo⟩ */
+/* La linea de la caña es la tanza: el brillo de la pistola de la tapa, finita. El pescado es finito y el
+   toque se agranda con una caja sin tinta. El brillo de la estrella de lata es luz y se suma a la noche; el
+   chapuzon, las ondas y las gotas no se tocan. */
+.titere--anzuelo { cursor: pointer; }
+.bt-anzuelo-linea { fill: none; stroke: var(--bestia-anzuelo-acero-claro); stroke-width: 0.6; opacity: 0.8; }
+.bt-anzuelo-toque { fill: transparent; }
+.titere--anzuelo [data-parte="brillo"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--anzuelo [data-parte="salpica"], .titere--anzuelo [data-parte="ondas"], .titere--anzuelo [data-parte^="gota-"] { pointer-events: none; }
+/* ⟨/el que mordio el anzuelo⟩ */
+
+/* ⟨la piba de greenpeace⟩ */
+/* La sombra en el pasto es lo hondo del interior de Momo sampler. Los zzz de mentira y el mosquito
+   andan por el aire: no se tocan, para que el toque caiga en ella. No tiene luces. */
+.titere--piba { cursor: pointer; }
+.bt-piba-sombra { fill: var(--bestia-piba-hondo); opacity: 0.75; }
+.titere--piba [data-parte^="zeta-"], .titere--piba [data-parte="bicho"] { pointer-events: none; }
+/* ⟨/la piba de greenpeace⟩ */
+
+/* ⟨las antiguas lobas⟩ */
+/* Se tocan las dos, y el hueco donde duermen. El polvo que se sacuden, el crujido y el vaho del aullido no se
+   tocan, y el vaho es aire frio que se suma a lo oscuro del monte. La sombra es la tinta del piso. */
+.titere--lobas { cursor: pointer; }
+.bt-lobas-toque { fill: transparent; }
+.bt-lobas-sombra { fill: var(--bestia-lobas-tinta-honda); opacity: 0.55; }
+.titere--lobas [data-parte^="vaho-"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--lobas [data-parte^="polvo-"], .titere--lobas [data-parte^="cruje-"] { pointer-events: none; }
+/* ⟨/las antiguas lobas⟩ */
+
+/* ⟨el diablo de muchos cuernos⟩ */
+/* Se toca el diablo. El cordon del monoculo es el oro del aro, finito, y no se toca: es un hilo. */
+.titere--cuernos { cursor: pointer; }
+.titere--cuernos [data-parte="cordon"] { pointer-events: none; }
+.bt-cuernos-cordon { fill: none; stroke: var(--bestia-cuernos-oro); stroke-width: 0.8; }
+/* ⟨/el diablo de muchos cuernos⟩ */
+
+/* ⟨la princesita sapito⟩ */
+/* Se toca la sapita, y su trono de nieve con ella. Las chispas son luz: se suman a la nieve. El copo, el vaho,
+   la lengua, las chispas y el puf no se tocan: el toque es de ella. */
+.titere--sapito { cursor: pointer; }
+.titere--sapito [data-parte="chispas"] { mix-blend-mode: screen; }
+.titere--sapito [data-parte="chispas"], .titere--sapito [data-parte="puf"], .titere--sapito [data-parte="copo"], .titere--sapito [data-parte="vaho"], .titere--sapito [data-parte="lengua"] { pointer-events: none; }
+/* ⟨/la princesita sapito⟩ */
+
+/* ⟨la tipa rapaz⟩ */
+/* Se toca la tipa; la billetera es ajena y esta en el mantel, el billete y las plumas sueltas son aire: no se
+   tocan. Las ninas de los ojos son tinta de la pagina, para que miren de reojo sin imprimir nada. */
+.titere--rapaz { cursor: pointer; }
+.titere--rapaz [data-parte="billetera-mesa"], .titere--rapaz [data-parte="billete"], .titere--rapaz [data-parte="plumas"] { pointer-events: none; }
+.bt-rapaz-iris { fill: var(--bestia-rapaz-hondo); }
+.bt-rapaz-brillo { fill: var(--bestia-rapaz-perla); }
+/* ⟨/la tipa rapaz⟩ */
+
+/* ⟨el raton⟩ */
+/* El olor del gato que le llega a la nariz no se toca: el toque es del raton y de su canaleta. */
+.titere--raton { cursor: pointer; }
+.titere--raton [data-parte="olor"] { pointer-events: none; }
+/* ⟨/el raton⟩ */
+
+/* ⟨la polilla⟩ */
+/* Se toca la polilla, y su foco con ella: es de ella. El chispazo, el halo y el polvo son luz y aire: no se tocan. */
+.titere--polilla { cursor: pointer; }
+.titere--polilla [data-parte="golpe"], .titere--polilla [data-parte="halo"], .titere--polilla [data-parte^="polvo-"] { pointer-events: none; }
+/* ⟨/la polilla⟩ */
+
+/* ⟨el botija rapado⟩ */
+/* El botija es flaco: el toque se agranda con una caja sin tinta. Las gotas del susto no se tocan. */
+.titere--botija { cursor: pointer; }
+.bt-botija-toque { fill: transparent; }
+.titere--botija [data-parte="gotas"] { pointer-events: none; }
+/* ⟨/el botija rapado⟩ */
+
+/* ⟨el jocker burlon⟩ */
+/* Se toca el jocker, con sus naipes. El tilin de los cascabeles y el brillo de la estrella son aire y luz:
+   no se tocan. */
+.titere--jocker { cursor: pointer; }
+.titere--jocker [data-parte="tilin"], .titere--jocker [data-parte="brillo"] { pointer-events: none; }
+/* ⟨/el jocker burlon⟩ */
+
+/* ⟨el rey de esta jungla⟩ */
+/* Se toca la tumba entera: la tierra, la cruz, el patin. Los terrones que salta y el petalo que cae son aire: no se tocan. */
+.titere--rey { cursor: pointer; }
+.titere--rey [data-parte="terrones"], .titere--rey [data-parte="petalo"] { pointer-events: none; }
+/* ⟨/el rey de esta jungla⟩ */
+
+/* ⟨el ahogado y su fiel fantasma⟩ */
+/* Se tocan los dos, el ahogado y su fantasma, y lo suyo que flota: el sombrero. Las ondas, el chorrito y las burbujas son agua y aire: no se tocan. */
+.titere--ahogado { cursor: pointer; }
+.titere--ahogado [data-parte="ondas"], .titere--ahogado [data-parte="chorro"], .titere--ahogado [data-parte="burbujon"], .titere--ahogado [data-parte^="burbujas-"] { pointer-events: none; }
+/* ⟨/el ahogado y su fiel fantasma⟩ */
+
+/* ⟨el pichon⟩ */
+/* El pichón se toca a través de la reja, que no ataja el dedo. Los tiros de delante de la reja (el fogonazo,
+   las plumas que vuelan y los agujeros de la piedra) no se tocan: el toque es del pichón. */
+.titere--pichon { cursor: pointer; }
+.pichon-tiros { pointer-events: none; }
+/* ⟨/el pichon⟩ */
+
+/* ⟨el club de mantis⟩ */
+/* Se tocan las tres mantis y el macho que llega. Lo que hay en el mantel (la fuente de masitas, la flor y la
+   antena que quedan en el plato) es de la mesa: no se toca. */
+.titere--mantis { cursor: pointer; }
+.titere--mantis [data-parte="fuente"], .titere--mantis [data-parte="flor"], .titere--mantis [data-parte="antena-suelta"] { pointer-events: none; }
+/* ⟨/el club de mantis⟩ */
+
+/* ⟨el que no se cayo del cielo⟩ */
+/* Se toca el tipo, y su botella con el: es de el. El olor a gato que le llega es aire: no se toca. */
+.titere--cielo { cursor: pointer; }
+.titere--cielo [data-parte="olor"] { pointer-events: none; }
+/* ⟨/el que no se cayo del cielo⟩ */
+
+/* ⟨el esclavo encadenado⟩ */
+/* La sombra de las rodillas es la tinta del fondo, como la de Barbazul y la drácula. La chispa del eslabón
+   es el rojo de las banderas de la tapa con rayas de papel, y no se toca: el toque es del que rompe. */
+.titere--encadenado { cursor: pointer; }
+.bt-encadenado-sombra { fill: var(--fondo); }
+.bt-encadenado-chispa { fill: var(--disco-oktubre-tinta); }
+.bt-encadenado-rayo { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 4; stroke-linecap: square; }
+.titere--encadenado [data-parte="chispa"] { pointer-events: none; }
+/* ⟨/el esclavo encadenado⟩ */

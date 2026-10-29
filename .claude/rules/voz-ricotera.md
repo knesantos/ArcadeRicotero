@@ -212,6 +212,13 @@ El sitio no habla de una sola manera. Habla de tres, y **mezclarlas es el defect
 | **2. El que cuenta** | Redondopedia, explicación post-respuesta, fichas de disco, pies | Oración de ~13 palabras · párrafo de ~36 · rodea, atenúa, declara la duda · puede arrancar por el medio y cerrar en "…" | No arenga. No hace chiste sobre un muerto. |
 | **3. El que rotula** | `LEYENDA` · `TESTIMONIO` · fuentes · errores · avisos · instrucciones · Bulacio, Olavarría y la muerte del Indio | Seco. Sin imagen, sin chiste, sin suspensivos. Dice qué hay adentro y se calla. | **No actúa.** Acá el sitio se saca la voz. |
 
+**La acotación de una escena** (la línea que canta de un momento de la noche en «¿Qué tipo de
+ricotero sos?», y la que va bajo el título de la grilla del resultado) es registro 1 sin la
+segunda persona: **puede ir sin segunda persona ni imperativo**, porque no le habla a quien juega
+ni le dice qué hace; puede nombrar objetos, sonidos, el cuerpo o lo que hace la gente de la
+escena. El resto del registro 1 la obliga igual: ocho palabras, una imagen física, no explica.
+(La pidió `contenido` en `CNT-31` §14.3, la leyó `REV-20`, la trae el hilo principal, 2026-10-06.)
+
 > **La regla de las dos líneas.** Toda pantalla que presenta algo tiene **una línea que
 > nombra y otra que canta**. La que canta hace el trabajo de `CNT-02` ("la jerga va en el
 > tono"); la que nombra hace el de los molinetes ("nunca en la barrera").

@@ -17,7 +17,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, sep } from 'node:path';
 import Ajv2020 from 'ajv/dist/2020.js';
 import {
   repartirEnVivo,
@@ -28,7 +28,7 @@ import {
   type ConteoCitado,
   type LineaCitada,
 } from './en-vivo.ts';
-import { resolverTema } from './letra/temas.ts';
+import { resolverTema, indiceDuro } from './letra/temas.ts';
 import { slugDeTitulo } from './texto.ts';
 
 // ---------------------------------------------------------------- insumos
@@ -49,8 +49,13 @@ const POZO: ReadonlySet<string> = new Set(
 );
 
 /** La puerta de `D-13`, en la forma que `problemasDelConteo` la pide. */
+/**
+ * El índice de los 105 se arma una vez: `resolverTema` sin índice relee la ficha en cada
+ * llamada, y desde `D-72` la pieza 2 trae más de quinientos temas.
+ */
+const INDICE = indiceDuro();
 const resolver = (titulo: string): string | null => {
-  const r = resolverTema(titulo);
+  const r = resolverTema(titulo, INDICE);
   return r ? slugDeTitulo(r.titulo) : null;
 };
 
@@ -654,10 +659,21 @@ test('t8: el corte no nombra las vistas de YouTube ni la pieza 2', () => {
   assert.deepEqual(culpables, [], culpables.join('\n'));
 });
 
+/**
+ * Quién puede leer la pieza 2. **Una sola página**, desde `D-72`: "En vivo" muestra las
+ * listas enteras con los rótulos de `RNF-CTR-19-B` en el mismo bloque. El borde de
+ * `CTR-19.8` (regla 4) existía para que el "compartir igual" de una licencia no alcanzara a
+ * nada más; con una sola fuente CC0 y salida CC0 no hay nada que compartir igual, y aun así
+ * el borde queda angosto: el juego "Armá tu recital" saca los lugares del índice de la pieza
+ * 1 y no de acá. Si entra una fuente BY-SA, esta lista se vuelve a mirar.
+ */
+const LEEN_LA_PIEZA_2 = new Set(['src/pages/redondopedia/en-vivo.astro']);
+
 test('t8: fuera de los tests, nada de src/ nombra la pieza 2 ni importa recitales.ts', () => {
   const culpables: string[] = [];
   for (const ruta of codigo('src', ['.ts', '.astro'])) {
     const t = leer(ruta);
+    if (LEEN_LA_PIEZA_2.has(ruta.split(sep).join('/'))) continue;
     if (t.includes('recitales' + '.json')) culpables.push(`${ruta} nombra la pieza 2`);
     if (/from\s+['"][^'"]*\/recitales\.ts['"]/.test(t)) culpables.push(`${ruta} importa recitales.ts`);
   }
