@@ -165,27 +165,39 @@
   stroke-linejoin: round;
 }
 
+/* La ruedita es del recuadro de X con mouse (`T-518`, más abajo): fuera de ahí no se dice. */
+.camino-deslizar-ruedita { display: none; }
+
+.camino-deslizar-flecha--abajo { rotate: 90deg; }
+
 /* Hasta que la mano camine por primera vez, el aviso es un sello flotando abajo de la escena, en el
    papel y el borde de la región. Solo donde no hay mouse: en la compu alcanzan el primer paso, la
-   ruedita y el agarre. La isla lo saca con el primer trecho caminado (`.camino--invita`). */
-@media (hover: none) {
-  .camino--andando.camino--invita .camino-deslizar {
-    position: fixed;
-    left: 50%;
-    bottom: calc(var(--espacio-2) + env(safe-area-inset-bottom, 0px));
-    z-index: 20;
-    display: inline-flex;
-    align-items: center;
-    margin: 0;
-    padding: 0.45rem 0.75rem;
-    white-space: nowrap;
-    color: var(--fondo);
-    background: var(--papel);
-    border: var(--linea) solid var(--tr);
-    border-radius: 3px;
-    transform: translateX(-50%) rotate(-1.5deg);
-    pointer-events: none;
-  }
+   ruedita y el agarre. La isla lo saca con el primer trecho caminado (`.camino--invita`).
+   Adentro de X va también con mouse (`T-518`): ahí la compu es un cuadrado chico sin pista de que
+   la escena sigue, y el usuario lo pidió textual: *"en la compu scroll para abajo"*. */
+.camino--andando.camino--invita .camino-deslizar {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--espacio-2) + env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0.45rem 0.75rem;
+  white-space: nowrap;
+  color: var(--fondo);
+  background: var(--papel);
+  border: var(--linea) solid var(--tr);
+  border-radius: 3px;
+  transform: translateX(-50%) rotate(-1.5deg);
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  html:not(.incrustado) .camino--andando.camino--invita .camino-deslizar { display: none; }
+
+  html.incrustado .camino-deslizar-dedo { display: none; }
+  html.incrustado .camino-deslizar-ruedita { display: inline; }
 }
 
 /* Con mouse, la escena se agarra y se lleva: la mano abierta sobre el camino, cerrada mientras se
@@ -547,6 +559,12 @@ html.incrustado.camino-pantalla .franja-en-x {
   z-index: 25;
   width: auto;
   padding: 0 var(--espacio-2) var(--espacio-1);
+}
+
+/* El aviso de caminar, arriba de la franja y no debajo: en el posteo de prueba (`T-518`) la franja
+   lo tapaba entero, y nada decía que la escena seguía de costado. */
+html.incrustado .camino--andando.camino--invita .camino-deslizar {
+  bottom: calc(3.6rem + var(--espacio-2) + env(safe-area-inset-bottom, 0px));
 }
 
 /* El tablero, en el mismo renglón que la salida y contra el otro borde: el nombre chico, y lo

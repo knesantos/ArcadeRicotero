@@ -238,7 +238,9 @@ if (avisoSonido) {
     const extra = el('strong', 'aviso-llave', SIN_SONIDO.llaveIphone);
     avisoSonido.append(document.createTextNode(' '), extra);
   }
-  if (donde) {
+  // Adentro del reproductor de un posteo (`T-518`) el juego está donde tiene que estar: mandarlo
+  // a "abrirlo aparte" le contradice la puerta por la que entró.
+  if (donde && !incrustado()) {
     const extra = el('strong', 'aviso-llave', SIN_SONIDO.incrustado(donde));
     avisoSonido.append(document.createTextNode(' '), extra);
   }

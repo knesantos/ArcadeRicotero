@@ -259,11 +259,21 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
         </div>
       </div>
     </div>
+    {/* Dos maneras de decir lo mismo: con el dedo, de costado; con el mouse adentro de X, la
+        ruedita para abajo (`T-518`). La segunda solo la muestra `camino.css` en el recuadro. */}
     <p class="recinto-deslizar camino-deslizar">
-      {CAMINO.deslizar}
-      <svg class="camino-deslizar-flecha" viewBox="-14 -10 28 20" aria-hidden="true">
-        <path d="M-11 0 L8 0 M1 -7 L9 0 L1 7" />
-      </svg>
+      <span class="camino-deslizar-dedo">
+        {CAMINO.deslizar}
+        <svg class="camino-deslizar-flecha" viewBox="-14 -10 28 20" aria-hidden="true">
+          <path d="M-11 0 L8 0 M1 -7 L9 0 L1 7" />
+        </svg>
+      </span>
+      <span class="camino-deslizar-ruedita">
+        {CAMINO.ruedita}
+        <svg class="camino-deslizar-flecha camino-deslizar-flecha--abajo" viewBox="-14 -10 28 20" aria-hidden="true">
+          <path d="M-11 0 L8 0 M1 -7 L9 0 L1 7" />
+        </svg>
+      </span>
     </p>
   </section>
 

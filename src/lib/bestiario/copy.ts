@@ -73,6 +73,8 @@ export const CAMINO = {
   bajada: 'Deslizá de costado para caminar. Al final hay un cruce y elegís para dónde seguir.',
   /** Sin movimiento, la escena se corre con el dedo, como los recintos de noche. */
   deslizar: 'Deslizá de costado para caminar.',
+  /** Con mouse, adentro de un posteo de X (`T-518`): la ruedita camina. */
+  ruedita: 'Bajá con la ruedita para caminar.',
   escena: 'El camino, visto de costado',
   saltar: 'Saltá al cruce',
   cruce: {
