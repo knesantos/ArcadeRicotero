@@ -7,6 +7,33 @@
 
 **Última actualización:** 2026-10-29
 
+> ## 📅 EL ALMANAQUE DEL PORTAL: UN MES, UN AFICHE (2026-10-29) — `D-84`
+>
+> **Sin integrar**: rama `portal/almanaque` (PR #100), sobre `main` en `b0b0bc2`. Pedido del usuario: *"Actualicemos la portada de la
+> página, quedó vieja de oktubre, que quede hasta el fin del mes, pero ya pensemos otra cosa."* y, sobre la propuesta
+> (`Docs/SUGERENCIAS/HILO-para-todos-el-almanaque-del-portal.md`), *"Sí, armalo"*. `T-520`.
+>
+> - **El afiche se apaga solo el 1.º de noviembre** con la fecha del teléfono (`D-49` punto 2): no hubo que tocar nada
+>   para que quede hasta fin de mes.
+> - **El afiche de octubre pasa a ser el almanaque del portal**: una tabla mes → afiche (`ALMANAQUE` en `copy.ts`),
+>   prendida por la fecha de quien mira (`data-mes` y `data-afiche` en la cabeza, con la lista de meses inyectada
+>   desde el build) y con las fechas sacadas de las fichas de disco e hito (`lib/sitio/almanaque.ts`, solo `hecho`).
+>   El mismo componente (`.afiche`, antes `.oktubre`); por mes rotan la tinta, la letra del sello y los textos.
+> - **Noviembre: HURACÁN** (19 y 20-11-1993, "EL 19 CUMPLE 33"), tinta de *Lobo suelto*, sello en la letra de la banda;
+>   seis tacos (la separación 2-2001, *Momo* 17, *Último bondi* 18, Huracán 19 y 20, el Lozanazo 26); botón «MIRÁ QUÉ
+>   SE TOCÓ EL 19» a la lista de esa noche en "En vivo", que ahora se ancla por fecha (`lista-1993-11-19`, con `-2` si
+>   dos cargas comparten noche) y se abre sola al llegar por el `#`.
+> - **Diciembre: CINCUENTA** (la fundación del 28-12-1976, `leyenda`), tinta de *Gulp!*, con el rótulo ◆ LEYENDA pegado
+>   a la estampa —la única leyenda que entra, declarada y testeada—; cuatro tacos; botón «LEÉ CÓMO EMPEZÓ».
+> - **Los meses de duelo no tienen afiche nunca**; mayo, cuando se construya (`T-521`, reservada).
+> - `contenido` leyó las líneas (dos recortes y el botón de noviembre); `experiencia` escribió `UX-40`; la **hoja 18**
+>   del lienzo está pegada (versión 22, página Aplicación, debajo de la 16).
+> - **Verde:** `npm test` (2225), `npm run check` (0 errores), `npm run build` (200 páginas). Visto en el panel a
+>   375×812 (los tres afiches, forzando `data-mes`) y a 1280×800 (el afiche al lado de la cabecera), y el ancla de En vivo
+>   abriendo la lista del 19 con sus 21 temas.
+> - **Falta**: mirar el afiche de noviembre en un teléfono de verdad el 1.º; `T-521` (mayo); un `DIF-` para la semana del
+>   17 al 20 de noviembre (`difusion`).
+
 > ## 📺 ADENTRO DE X, SIN SCROLL (2026-10-29) — `T-518`
 >
 > **En `main` por el PR #97** (fusión `7d28bc9`), rama `x-sin-scroll`. Lo integró Claude a pedido del usuario (*"Sí,
