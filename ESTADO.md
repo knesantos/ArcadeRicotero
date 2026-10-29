@@ -9,8 +9,10 @@
 
 > ## ✨ LA PULIDA DEL BESTIARIO: EL PRIMER PASO, LOS SELLOS QUE SE ASIENTAN Y EL ANOTADO A LA VISTA (2026-10-29) — `D-83`
 >
-> **Sin integrar**, en la rama `bestiario/pulida` (worktree `.claude/worktrees/pulida-bestiario`), sobre `bestiario/siete-mas`
-> en `49351b3` (PR #88, con `main` adentro): trae adentro las siete más. Pedido del usuario: *"Hace una pulida entera del
+> **En `main`** por el PR #91 (fusión `5c90072`), desde la rama `bestiario/pulida` (worktree `.claude/worktrees/pulida-bestiario`),
+> sobre `bestiario/siete-mas` en `49351b3` (PR #88): trae adentro las siete más. Lo integró Claude a pedido del usuario
+> (*"Integralo"*), con `main` adentro (`a16f417`) y todo verde en la rama fusionada: `npm test` (2169), `npm run check`,
+> `npm run build` (186 páginas). Pedido del usuario: *"Hace una pulida entera del
 > bestiario redondo. Mejora diseños, mejora inmersion, animaciones y todo lo que haga mas inmersivo y pulido al sitio."*
 >
 > - **Lo que se vio antes de tocar**: en el teléfono, al entrar al monte no había ningún bicho a la vista (las lobas arrancan
