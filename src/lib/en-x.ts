@@ -15,7 +15,7 @@
 export const PUENTES: ReadonlyArray<readonly [juego: string, puente: string]> = [
   ['/juegos/adivinar-el-tema/', '/en-x/adivinar-el-tema/'],
   ['/juegos/dos-ejes/', '/en-x/que-tipo-de-ricotero-sos/'],
-  // El bestiario redondo (`T-516`): la portada y cada región que se camina, que cuelgan de acá.
+  // El bestiario redondo (`T-517`): la portada y cada región que se camina, que cuelgan de acá.
   ['/redondopedia/bestiario/', '/en-x/bestiario/'],
 ];
 

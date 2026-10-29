@@ -6,7 +6,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { CAMARA, MARGEN, crearCamara, transformDe } from './camara.ts';
+import { CAMARA, MARGEN, PRIMER_PASO, crearCamara, primerPaso, transformDe } from './camara.ts';
 
 const ANCHO = 375;
 const ALTO = 640;
@@ -98,4 +98,16 @@ test('el camino usa la cámara solo sin movimiento reducido, y la vaca la sacude
   const camino = readFileSync('src/scripts/camino.ts', 'utf-8');
   assert.match(camino, /if \(!quieto\(\)\) \{[\s\S]*camara\.encuadre/);
   assert.match(readFileSync('src/scripts/bestiario/pastura.ts', 'utf-8'), /sacudir\(0\.9/);
+});
+
+
+test('el primer paso (D-83): arranca y llega despacio, de cero a uno, y no se pasa', () => {
+  assert.equal(primerPaso(0), 0);
+  assert.equal(primerPaso(1), 1);
+  assert.equal(primerPaso(-0.5), 0, 'antes de arrancar, quieto');
+  assert.equal(primerPaso(1.5), 1, 'después de llegar, quieto');
+  const pasos = Array.from({ length: 11 }, (_, i) => primerPaso(i / 10));
+  for (let i = 1; i < pasos.length; i++) assert.ok(pasos[i]! >= pasos[i - 1]!, 'no vuelve para atrás');
+  assert.ok(pasos[1]! < 0.1 && pasos[9]! > 0.9, 'despacio en las dos puntas');
+  assert.ok(PRIMER_PASO.cuanto < 0.5 && PRIMER_PASO.tope <= 200 && PRIMER_PASO.dura >= 1, 'es un paso corto, no un paseo');
 });

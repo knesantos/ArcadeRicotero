@@ -6940,7 +6940,7 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 
    La base no rota (`diseno-marca.md`): fondo de tinta, grano y zona pulgar quedan igual.
    ========================================================================== */
-/* La franja misma, y la cabecera que reemplaza, viven en `sitio.css` desde `T-516`: el bestiario
+/* La franja misma, y la cabecera que reemplaza, viven en `sitio.css` desde `T-517`: el bestiario
    también va adentro de X y no carga esta hoja. */
 html.incrustado .pantalla > .marca,
 html.incrustado #resultado a.volver,

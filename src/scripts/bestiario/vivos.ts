@@ -49,6 +49,18 @@ import { armarLechuza } from './lechuza.ts';
 import { armarAnzuelo } from './anzuelo.ts';
 import { armarPiba } from './piba.ts';
 import { armarLobas } from './lobas.ts';
+import { armarCuernos } from './cuernos.ts';
+import { armarSapito } from './sapito.ts';
+import { armarRapaz } from './rapaz.ts';
+import { armarRaton } from './raton.ts';
+import { armarPolilla } from './polilla.ts';
+import { armarBotija } from './botija.ts';
+import { armarJocker } from './jocker.ts';
+import { armarRey } from './rey.ts';
+import { armarAhogado } from './ahogado.ts';
+import { armarPichon } from './pichon.ts';
+import { armarMantis } from './mantis.ts';
+import { armarCielo } from './cielo.ts';
 
 /**
  * Lo que la escena le presta a un personaje. Las coordenadas de `hablar` van en las del recinto
@@ -114,6 +126,18 @@ const CONDUCTAS: Readonly<Record<string, Armar | null>> = {
   'el-que-mordio-el-anzuelo': armarAnzuelo,
   'la-piba-de-greenpeace': armarPiba,
   'las-antiguas-lobas': armarLobas,
+  'el-diablo-de-muchos-cuernos': armarCuernos,
+  'la-princesita-sapito': armarSapito,
+  'la-tipa-rapaz': armarRapaz,
+  'el-raton': armarRaton,
+  'la-polilla': armarPolilla,
+  'el-botija-rapado': armarBotija,
+  'el-jocker-burlon': armarJocker,
+  'el-rey-de-esta-jungla': armarRey,
+  'el-ahogado-y-su-fiel-fantasma': armarAhogado,
+  'el-pichon': armarPichon,
+  'el-club-de-mantis': armarMantis,
+  'el-que-no-se-cayo-del-cielo': armarCielo,
 };
 
 /** Los ids que tienen conducta: el test mira que coincidan con los que tienen dibujo. */
