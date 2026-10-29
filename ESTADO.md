@@ -54,8 +54,10 @@
 
 > ## 📺 DOS JUEGOS PARA JUGAR ADENTRO DE X, A PRUEBA (2026-10-28) — `T-513`
 >
-> **Sin integrar**, rama `worktree-difusion-x-player`. Pedido del usuario: investigar las "miniapps" de X y armar
-> *"para noche ricotera y adivina el tema"*.
+> **En `main` desde el PR #89** (commit de fusión `3fe3bcf`), rama `worktree-difusion-x-player`. Lo integró Claude a pedido
+> del usuario (*"Cuando termines metelo a main asi lo puedo probar."*). Pedido del usuario: investigar las "miniapps" de X
+> y armar *"para noche ricotera y adivina el tema"*. El bestiario como miniapp de X lo hace otra sesión, rama
+> `bestiario-en-x`.
 >
 > - **Lo que encontró `investigador`** (sin ficha `RES` todavía; no pudo abrir developer.x.com): X **no tiene miniapps**. La
 >   única vía es la **Player Card** (`twitter:card=player`, un iframe dentro del posteo), pensada para video y audio. Según sus
