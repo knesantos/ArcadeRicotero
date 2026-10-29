@@ -866,41 +866,49 @@ html.incrustado #plano .portal .bestiario-marco {
 }
 
 /* ==========================================================================
-   El afiche de octubre (`D-49`)
+   El almanaque del portal (`D-84`): un mes, un afiche. Nació como el afiche de octubre
+   (`D-49`).
 
-   Octubre es el mes del disco: *Oktubre* salió el 4 de octubre de 1986, y de los diez discos
-   seis salieron en octubre. En ese mes el portal lleva este afiche entre la marca y la
-   casetera; el resto del año no está.
+   Se imprimen todos y se ve el del mes, o ninguno: `data-mes` lo pone la cabeza del portal
+   con la fecha del teléfono, antes del primer cuadro, y `data-afiche` dice que ese mes tiene
+   afiche impreso. Sin el atributo el afiche no ocupa lugar; con él la casetera ya arranca
+   más abajo desde el primer cuadro, sin saltar.
 
-   **Lo decide la fecha del teléfono**, en la cabeza de `index.astro`, antes del primer
-   cuadro: sin el atributo el afiche no ocupa lugar, y con él la casetera ya arranca más
-   abajo desde el primer cuadro, sin saltar.
-
-   Es un afiche pegado, no una tarjeta: borde grueso en el rojo de *Oktubre* (`--marca-rojo`
-   es su tinta, `D-19`), cinta arriba, apenas torcido. El sello va en la letra calcada de la
-   tapa; lo que se lee de corrido, en la del sistema (`UX-01`).
+   Es un afiche pegado, no una tarjeta: borde grueso en la tinta del mes (`--tinte-afiche`:
+   la de *Oktubre* en octubre, la de *Lobo suelto* en noviembre, la de *Gulp!* en diciembre;
+   `D-19`), cinta arriba, apenas torcido. El sello va en la letra calcada de la tapa en
+   octubre y en la de la banda los demás meses; lo que se lee de corrido, en la del sistema
+   (`UX-01`). La estructura y las medidas son las de `UX-40`.
    ========================================================================== */
 
-.oktubre {
+.afiche {
   display: none;
 }
 
-:root[data-mes='oktubre'] .oktubre {
+:root[data-mes='octubre'] .afiche--octubre,
+:root[data-mes='noviembre'] .afiche--noviembre,
+:root[data-mes='diciembre'] .afiche--diciembre {
   display: block;
 }
 
-.oktubre {
+/* La tinta de cada mes. Un mes nuevo sin tinta propia sale con la de la marca. */
+.afiche { --tinte-afiche: var(--marca-rojo); }
+.afiche--octubre { --tinte-afiche: var(--marca-rojo); }
+.afiche--noviembre { --tinte-afiche: var(--disco-lobo-suelto-tinta); }
+.afiche--diciembre { --tinte-afiche: var(--disco-gulp-tinta); }
+
+.afiche {
   position: relative;
   margin: var(--espacio-2) 4px var(--espacio-1);
   padding: var(--espacio-2) var(--espacio-2) calc(var(--espacio-2) + 4px);
   background: var(--fondo);
-  border: var(--linea) solid var(--marca-rojo);
+  border: var(--linea) solid var(--tinte-afiche);
   border-radius: 3px;
   transform: rotate(-0.6deg);
 }
 
 /* La cinta que lo sostiene, la misma de los casetes. */
-.oktubre::before {
+.afiche::before {
   content: '';
   position: absolute;
   top: -14px;
@@ -912,37 +920,57 @@ html.incrustado #plano .portal .bestiario-marco {
   border-radius: 2px;
 }
 
-.oktubre-cabeza {
+.afiche-cabeza {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--espacio-1) var(--espacio-2);
 }
 
-.oktubre-sello {
+/* El sello, en la letra de la banda; octubre lo escribe con la letra calcada de su tapa. */
+.afiche-sello {
   margin: 0;
-  font-family: var(--fuente-titular);
+  font-family: var(--fuente-marca-firma);
   font-size: clamp(2.5rem, 13vw, 3.4rem);
   font-weight: normal;
   line-height: 0.9;
-  color: var(--marca-rojo);
+  color: var(--tinte-afiche);
 }
 
-/* La estampa del cumpleaños: sello de goma hueco, en el mismo rojo. Va en la rotulada
+.afiche--octubre .afiche-sello {
+  font-family: var(--fuente-titular);
+}
+
+/* La estampa del cumpleaños: sello de goma hueco, en la tinta del mes. Va en la rotulada
    porque trae números y tildes ("CUMPLIÓ"), que el calco no tiene. */
-.oktubre-cumple {
+.afiche-cumple {
   padding: 0.35em 0.6em;
   font-family: var(--fuente-rotulada);
   font-size: 0.72rem;
   letter-spacing: 0.08em;
-  color: var(--marca-rojo);
-  border: 2px solid var(--marca-rojo);
+  color: var(--tinte-afiche);
+  border: 2px solid var(--tinte-afiche);
   border-radius: 3px;
   transform: rotate(-5deg);
   white-space: nowrap;
 }
 
-.oktubre-canta {
+/* El rótulo de leyenda, pegado a la estampa (`UX-40` §5): el mismo sello de goma, en la tiza
+   de los rótulos (`.es-leyenda`) y no en la tinta del mes, porque un rótulo no se disfraza de
+   disco (`diseno-marca.md`). */
+.afiche-rotulo {
+  padding: 0.35em 0.6em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  transform: rotate(2deg);
+  white-space: nowrap;
+}
+
+.afiche-canta {
   margin: var(--espacio-1) 0 2px;
   font-size: 1.05rem;
   line-height: 1.35;
@@ -950,17 +978,17 @@ html.incrustado #plano .portal .bestiario-marco {
   text-wrap: balance;
 }
 
-.oktubre-cuenta {
+.afiche-cuenta {
   margin: 0 0 var(--espacio-1);
   font-size: 0.85rem;
   line-height: 1.4;
   color: var(--texto-tenue);
 }
 
-/* Las seis fechas: un taco de almanaque por disco, cada uno con el borde y el número en la
-   tinta de su disco (todas tienen su par AA sobre `--fondo` en `contraste.test.ts`). Tres
-   por renglón entran a 320 px. */
-.oktubre-calendario {
+/* Las fechas: un taco de almanaque por día, cada uno con el borde y el número en la tinta de
+   su disco (todas tienen su par AA sobre `--fondo` en `contraste.test.ts`). Tres por renglón
+   entran a 320 px. */
+.afiche-calendario {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
@@ -969,9 +997,9 @@ html.incrustado #plano .portal .bestiario-marco {
   list-style: none;
 }
 
-/* El día y el año en el mismo renglón, el disco abajo: medido a 375 px, con el año en un
+/* El día y el año en el mismo renglón, el nombre abajo: medido a 375 px, con el año en un
    renglón propio el afiche dejaba la casetera entera debajo del pliegue. */
-.oktubre-fecha a {
+.afiche-fecha a {
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-rows: auto 1fr;
@@ -989,32 +1017,32 @@ html.incrustado #plano .portal .bestiario-marco {
 }
 
 /* Cambio de borde, nunca un levantar: el único movimiento decorativo es la mosca. */
-.oktubre-fecha a:hover,
-.oktubre-fecha a:focus-visible {
+.afiche-fecha a:hover,
+.afiche-fecha a:focus-visible {
   border-color: var(--tinta-fecha);
 }
 
-.oktubre-fecha a:focus-visible {
+.afiche-fecha a:focus-visible {
   outline: var(--linea) solid var(--acento-2);
   outline-offset: 2px;
 }
 
-.oktubre-fecha:nth-child(odd) {
+.afiche-fecha:nth-child(odd) {
   transform: rotate(-0.8deg);
 }
 
-.oktubre-fecha:nth-child(even) {
+.afiche-fecha:nth-child(even) {
   transform: rotate(0.7deg);
 }
 
-.oktubre-dia {
+.afiche-dia {
   font-family: var(--fuente-rotulada);
   font-size: 1.45rem;
   line-height: 1;
   color: var(--tinta-fecha);
 }
 
-.oktubre-disco {
+.afiche-nombre {
   grid-column: 1 / -1;
   grid-row: 2;
   margin-top: 4px;
@@ -1022,31 +1050,38 @@ html.incrustado #plano .portal .bestiario-marco {
   line-height: 1.2;
 }
 
-.oktubre-anio {
+.afiche-anio {
   grid-column: 2;
   grid-row: 1;
   font-size: 0.7rem;
   color: var(--texto-tenue);
 }
 
-/* La de *Oktubre* se distingue por el grosor del borde, además del color. */
-.oktubre-fecha--oktubre a {
+/* El del cumpleaños se distingue por el grosor del borde, además del color. */
+.afiche-fecha--cumple a {
   border-width: var(--linea);
 }
 
-/* Por si mañana una ficha suma otro disco de octubre: borde neutro y número legible. Va
-   antes que las seis: mismo peso de selector, así que gana la que viene después. */
-.oktubre-fecha { --tinta-fecha: var(--texto); }
-.oktubre-fecha--oktubre { --tinta-fecha: var(--disco-oktubre-tinta); }
-.oktubre-fecha--bang-bang-estas-liquidado { --tinta-fecha: var(--disco-bang-bang-estas-liquidado-tinta); }
-.oktubre-fecha--la-mosca-y-la-sopa { --tinta-fecha: var(--disco-la-mosca-y-la-sopa-tinta); }
-.oktubre-fecha--lobo-suelto { --tinta-fecha: var(--disco-lobo-suelto-tinta); }
-.oktubre-fecha--cordero-atado { --tinta-fecha: var(--disco-cordero-atado-tinta); }
-.oktubre-fecha--luzbelito { --tinta-fecha: var(--disco-luzbelito-tinta); }
+/* La tinta de cada taco: un disco, la de su tapa; Huracán, la del disco que presentó esas
+   noches; lo demás, la del texto. La leyenda lleva el número en la tiza de su rótulo. Van
+   primero las neutras: mismo peso de selector, gana la que viene después. */
+.afiche-fecha { --tinta-fecha: var(--texto); }
+.afiche-fecha--gulp { --tinta-fecha: var(--disco-gulp-tinta); }
+.afiche-fecha--oktubre { --tinta-fecha: var(--disco-oktubre-tinta); }
+.afiche-fecha--un-baion-para-el-ojo-idiota { --tinta-fecha: var(--disco-un-baion-para-el-ojo-idiota-tinta); }
+.afiche-fecha--bang-bang-estas-liquidado { --tinta-fecha: var(--disco-bang-bang-estas-liquidado-tinta); }
+.afiche-fecha--la-mosca-y-la-sopa { --tinta-fecha: var(--disco-la-mosca-y-la-sopa-tinta); }
+.afiche-fecha--lobo-suelto { --tinta-fecha: var(--disco-lobo-suelto-tinta); }
+.afiche-fecha--cordero-atado { --tinta-fecha: var(--disco-cordero-atado-tinta); }
+.afiche-fecha--luzbelito { --tinta-fecha: var(--disco-luzbelito-tinta); }
+.afiche-fecha--ultimo-bondi-a-finisterre { --tinta-fecha: var(--disco-ultimo-bondi-a-finisterre-tinta); }
+.afiche-fecha--momo-sampler { --tinta-fecha: var(--disco-momo-sampler-tinta); }
+.afiche-fecha--huracan-93-94 { --tinta-fecha: var(--disco-lobo-suelto-tinta); }
+.afiche-fecha--leyenda { --tinta-fecha: var(--rotulo-leyenda); }
 
-/* El llamado: sello entintado, como el "JUGÁ" de los casetes. Letra de `--fondo` sobre el
-   rojo de Oktubre, que es el par que ya usa el casete de las preguntas. */
-.oktubre-jugar {
+/* El llamado: sello entintado, como el "JUGÁ" de los casetes. Letra de `--fondo` sobre la
+   tinta del mes, que es un par que ya se mide. */
+.afiche-boton {
   display: inline-flex;
   align-items: center;
   min-height: var(--toque-min);
@@ -1056,8 +1091,8 @@ html.incrustado #plano .portal .bestiario-marco {
   letter-spacing: 0.06em;
   color: var(--fondo);
   text-decoration: none;
-  background: var(--marca-rojo);
-  border: 2px solid var(--marca-rojo);
+  background: var(--tinte-afiche);
+  border: 2px solid var(--tinte-afiche);
   border-radius: 3px;
   transform: rotate(-1.2deg);
   /* Es el mismo sello que el JUGÁ de los casetes, y sale de la misma almohadilla (`D-64`). */
@@ -1065,7 +1100,7 @@ html.incrustado #plano .portal .bestiario-marco {
   isolation: isolate;
 }
 
-.oktubre-jugar:focus-visible {
+.afiche-boton:focus-visible {
   outline: var(--linea) solid var(--acento-2);
   outline-offset: 3px;
 }
@@ -1418,12 +1453,12 @@ html.incrustado #plano .portal .bestiario-marco {
   }
 
   .casete-accion,
-  .oktubre-jugar {
+  .afiche-boton {
     background: transparent;
   }
 
   .casete-accion::before,
-  .oktubre-jugar::before {
+  .afiche-boton::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -1441,12 +1476,12 @@ html.incrustado #plano .portal .bestiario-marco {
     background: var(--tinte-sello, var(--tinte));
   }
 
-  /* El de octubre va sobre el negro del afiche y no sobre papel, así que lleva solo la sal y no
+  /* El del afiche va sobre el negro y no sobre papel, así que lleva solo la sal y no
      la presión: aflojada al 80 %, el rojo se oscurecía y la letra `--fondo` encima quedaba en
      3,52:1. Con la sal la tinta que queda es plena, y el par es el de siempre (4,98:1). Lo
      encontró `REV` el 2026-10-05; `contraste.test.ts` lo vigila. */
-  .oktubre-jugar::before {
-    background: var(--marca-rojo);
+  .afiche-boton::before {
+    background: var(--tinte-afiche);
     -webkit-mask-image: var(--textura-tinta-sal);
     mask-image: var(--textura-tinta-sal);
   }
@@ -1462,7 +1497,7 @@ html.incrustado #plano .portal .bestiario-marco {
 
   .casete-etiqueta::before,
   .casete-accion::before,
-  .oktubre-jugar::before {
+  .afiche-boton::before {
     content: none;
   }
 
@@ -1470,8 +1505,8 @@ html.incrustado #plano .portal .bestiario-marco {
     background: var(--tinte-sello, var(--tinte));
   }
 
-  .oktubre-jugar {
-    background: var(--marca-rojo);
+  .afiche-boton {
+    background: var(--tinte-afiche);
   }
 }
 
@@ -1542,7 +1577,7 @@ html.incrustado #plano .portal .bestiario-marco {
 .casete,
 .caratula,
 .pantalla,
-.oktubre {
+.afiche {
   --golpe: calc(var(--semilla, 0) + var(--semilla-lado, 0));
 }
 
@@ -2839,8 +2874,8 @@ body:has(> .lugar) .marca-chica {
     padding-top: var(--espacio-3);
   }
 
-  /* Fuera de octubre no hay afiche y la cabecera queda sola: un renglón, no media mesa vacía. */
-  :root:not([data-mes='oktubre']) .portal-frente {
+  /* Sin afiche la cabecera queda sola: un renglón, no media mesa vacía. */
+  :root:not([data-afiche]) .portal-frente {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -2864,28 +2899,28 @@ body:has(> .lugar) .marca-chica {
     width: clamp(150px, 12vw, 196px);
   }
 
-  .oktubre {
+  .afiche {
     margin: var(--espacio-2) 0;
     padding: var(--espacio-3) var(--espacio-3) calc(var(--espacio-3) + 4px);
   }
 
-  .oktubre-sello {
+  .afiche-sello {
     font-size: 4rem;
   }
 
-  .oktubre-canta {
+  .afiche-canta {
     font-size: 1.12rem;
   }
 
-  .oktubre-fecha a {
+  .afiche-fecha a {
     padding: 8px 10px;
   }
 
-  .oktubre-dia {
+  .afiche-dia {
     font-size: 1.7rem;
   }
 
-  .oktubre-disco {
+  .afiche-nombre {
     font-size: 0.82rem;
   }
 

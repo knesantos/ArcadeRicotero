@@ -509,9 +509,10 @@ test('D-64: la tinta del sello y la mano se leen sobre el papel viejo, con el gr
 test('D-64: el sello que va sobre el negro no lleva la presión, solo la sal', () => {
   // La presión afloja la tinta al 80 %: sobre papel la aclara, pero sobre el negro la oscurece.
   // El sello del afiche de octubre quedaba con la letra `--fondo` en 3,52:1. Con solo la sal la
-  // tinta que queda es plena, y el par es el de la marca sobre el fondo, que ya se mide arriba.
+  // tinta que queda es plena, y el par es el de la tinta del mes sobre el fondo, que ya se mide
+  // arriba (`D-84`: el mismo sello sirve a cada mes con su tinta).
   const sitio = readFileSync('src/styles/sitio.css', 'utf-8').replace(/\/\*[\s\S]*?\*\//g, '');
-  const conMascara = [...sitio.matchAll(/\.oktubre-jugar::before\s*\{([^}]*)\}/g)]
+  const conMascara = [...sitio.matchAll(/\.afiche-boton::before\s*\{([^}]*)\}/g)]
     .map((m) => m[1]!)
     .filter((cuerpo) => /mask-image/.test(cuerpo));
   assert.ok(conMascara.length > 0, 'no se encontró la máscara del macizo del sello de octubre');

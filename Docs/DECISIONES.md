@@ -6889,3 +6889,119 @@ cuelga el `javascript_tool`—:
   sobre la barra de Safari, y la hoja al asentarse.
 - `T-515`: la hoja 08 del lienzo (componentes): el sello de invitación y el renglón «Anotado · cuenta»
   de la hoja. No hubo tintas nuevas: todo sale de `tokens.css`.
+
+## D-84 — El almanaque del portal: un mes, un afiche
+
+- **Fecha:** 2026-10-29
+- **Estado:** aceptada — pedido del usuario, textual: *"Actualicemos la portada de la página, quedó
+  vieja de oktubre, que quede hasta el fin del mes, pero ya pensemos otra cosa."*, y sobre la
+  propuesta escrita (`Docs/SUGERENCIAS/HILO-para-todos-el-almanaque-del-portal.md`): *"Sí,
+  armalo"*. La escribe el hilo principal en la rama `portal/almanaque`, sobre `main` en `b0b0bc2`.
+  Antes de tomar los números se miraron las ramas remotas: `D-83` era la última decisión, y
+  `T-518` y `T-519` ya eran de `x-sin-scroll` y `x-bestiario-sonido`, así que esta tarea es
+  `T-520` y la hoja de `experiencia`, `UX-40`.
+- **Consume:** `D-14`, `D-17`, `D-19`, `D-49`, `D-65`, `D-72`, `D-75`, `UX-25` §1, `UX-35` §2.4,
+  `UX-40`, `RES-210`, `RES-211`, `RES-225`, `.claude/rules/diseno-marca.md`,
+  `.claude/rules/voz-ricotera.md` §5.
+- **Enmienda `D-49`:** sus puntos 1 a 3 se generalizan a cualquier mes (abajo), y el almanaque se
+  lee por día, como un almanaque, y ya no del disco más viejo al más nuevo. El punto 4 (una pieza
+  de tapa por casete) y el 6 (la mosca) no cambian.
+
+### Contexto
+
+El afiche de *Oktubre* se apaga solo el 1.º de noviembre: `D-49` lo dejó prendido por la fecha del
+teléfono, no por el build, así que "que quede hasta el fin del mes" no exigió tocar nada. La
+pregunta era qué viste la portada después. Al mirar las fichas apareció que el mecanismo de
+octubre ya era general: un mes, un afiche, con las fechas sacadas de la Redondopedia y solo las
+rotuladas `hecho`. Y que noviembre y diciembre tienen con qué:
+
+- **Noviembre**: *Momo Sampler* (17-nov-2000) y *Último bondi a Finisterre* (18-nov-1998), los dos
+  discos que no salieron en octubre; **Huracán, 19 y 20 de noviembre de 1993**, la primera vez en
+  esa cancha, más de 70.000 personas, *Lobo suelto, cordero atado* presentado ahí (ficha
+  `huracan-93-94`, todo `hecho`); el Lozanazo del 26-nov-1977, donde nació el nombre; y la
+  oficialización de la separación, 2-nov-2001 (ficha `la-separacion`, `hecho`). El sitio tiene
+  además las dos listas de Huracán cargadas (`RES-210`, `RES-211`) y sonando en "En vivo".
+- **Diciembre**: el debut en Obras (2-dic-1989), Huracán 94 (16 y 17-dic-1994) y la fundación que
+  circula, **28 de diciembre de 1976**, que la ficha `la-formacion` tiene rotulada `leyenda` ("nunca
+  confirmada ni desmentida del todo"). En diciembre de 2026 son cincuenta años, y la prensa lo va a
+  decir sin rótulo.
+
+### Decisión
+
+1. **El afiche de octubre pasa a ser el almanaque del portal.** Una tabla mes → afiche
+   (`ALMANAQUE` en `lib/sitio/copy.ts`): cada mes que está es un afiche entero; los que no están
+   no muestran nada, y el portal es el corto de siempre (`UX-25`). Hoy: octubre, noviembre y
+   diciembre. Mayo, cuando se construya (*Un baión* el 9, Rocambole el 12, Huracán el 14-5-1994).
+2. **El almanaque solo festeja.** Los meses de duelo —Olavarría en marzo, Bulacio en abril, la
+   muerte del Indio en junio— no tienen afiche nunca: eso se cuenta en la Redondopedia, en registro
+   3, y no en un afiche. Un mes sin afiche es un mes sin afiche: no se rellena.
+3. **Lo prende la fecha de quien mira.** La cabeza del portal pone `data-mes` con el nombre del mes
+   y `data-afiche` si ese mes tiene afiche impreso, antes del primer cuadro; la lista de meses con
+   afiche la inyecta Astro desde el build (`define:vars`), así vive en un solo lugar. La isla
+   `scripts/almanaque.ts` corrige la estampa con la fecha del teléfono, como antes.
+4. **Las fechas salen de las fichas** (`lib/sitio/almanaque.ts`, `fechasDelMes()`): un disco entra
+   por su salida y nada más (*Gulp!* tiene tres versiones y no cumple años); un hito entra por
+   cualquier dato que empiece con un día, con el año del valor o de la etiqueta ("Fechas 1993");
+   "19 y 20 de noviembre" son dos tacos. Solo `hecho`, salvo la **única excepción declarada**: la
+   leyenda que un mes nombra como cumpleaños entra **con el rótulo ◆ LEYENDA pegado a la estampa**,
+   para que nunca se lea el número sin su casilla (`UX-40` §5). Un test (`almanaque.test.ts`,
+   "regla 3") falla si la ficha del cumpleaños pierde el rótulo que el afiche declara: sin
+   cumpleaños, ese afiche no se imprime.
+5. **El mes como fue.** Los tacos no eligen: noviembre trae el principio (el Lozanazo) y el final (la
+   separación). Lo que festeja el afiche es el cumpleaños, no cada taco.
+6. **Noviembre: HURACÁN.** Estampa "EL 19 CUMPLE 33" (cuenta desde el 19); canta *"Trepate al
+   alambrado, que ya salen."*; cuenta *"El 19 y el 20 de noviembre del 93, más de setenta mil
+   personas en el Ducó, para presentar el disco doble."*; seis tacos (2, 17, 18, 19, 20, 26); botón
+   **MIRÁ QUÉ SE TOCÓ EL 19**, a la lista de esa noche en "En vivo", que suena diez segundos por
+   tema. Viste la tinta de *Lobo suelto*, el disco que se presentó esas noches. `contenido` leyó las
+   líneas el 2026-10-29: "para presentar" es lo que dice la ficha ("recién salido" era inferencia), y
+   "mirá qué se tocó" es una lista que se mira, no la grabación de la noche, que el sitio no tiene.
+7. **Diciembre: CINCUENTA.** Estampa "EL 28 CUMPLE 50" con el ◆ LEYENDA al lado; canta *"Soplá las
+   velitas, por las dudas."*; cuenta *"Circula que la banda nació el 28 de diciembre de 1976, Día de
+   los Inocentes. Nadie lo confirmó ni lo desmintió del todo."* (el rótulo ya dice qué es; la línea
+   no lo repite); cuatro tacos (2, 16, 17, 28); botón **LEÉ CÓMO EMPEZÓ**, a la ficha. Viste la tinta
+   de *Gulp!*, historia en la mezcla y el primer disco.
+8. **El componente es uno** (`.afiche` en `sitio.css`, antes `.oktubre`): lo que rota por mes es la
+   tinta (`--tinte-afiche`), la letra del sello y los textos. Octubre sigue escribiendo su sello con el
+   calco de su tapa; los demás van en la letra de la banda (`--fuente-marca-firma`, que tiene la Á
+   desde `D-65`; el calco no la tiene, y es la letra de *ese* disco). Ningún hex, ninguna fuente ni
+   ninguna medida nueva: cada tinta ya tiene su par AA sobre `--fondo` en `contraste.test.ts`.
+9. **"En vivo" se ancla por fecha** (`anclasPorFecha()` en `lib/recital/listas.ts`): `lista-<fecha>`,
+   y `-2` si dos cargas comparten noche (Mar del Plata 13/8/94, `RES-225`); antes era `lista-N` por
+   posición, que cargar una lista más movía. La isla abre el `<details>` al llegar por el `#`:
+   `:target` no lo abre solo, y llegar a una lista plegada es llegar a una puerta cerrada.
+10. **El lienzo primero.** La hoja 18, "El almanaque del portal", en la página Aplicación debajo de
+    la 16 (versión 21 del lienzo): los tres afiches a 320 px, el mismo componente con tres tintas y
+    dos letras, la tabla de lo que rota y las reglas. `D-49` había dejado el afiche sin hoja; el
+    almanaque la trae.
+
+### Alternativas descartadas
+
+- **Un afiche de noviembre escrito a mano, y otro de diciembre.** Es el mismo componente tres veces,
+  y tres versiones de una cosa se desincronizan. La tabla es veinte líneas por mes.
+- **Los dos discos como cumpleaños de noviembre.** Cumplen 26 y 28; nada que *Oktubre* no haya tenido
+  mejor. Huracán es el ejemplo que `CLAUDE.md` usa para describir al que sabe, y el sitio tiene qué
+  se tocó. Los discos entran igual, como tacos.
+- **El botón de noviembre al juego "Armá tu recital" con el Ducó elegido.** El juego no acepta un
+  lugar por URL (la quinta forma del link lleva la lista entera); sería un parámetro nuevo para
+  llegar a una lista inventada cuando el sitio tiene la real.
+- **Obras 89 como cumpleaños de diciembre, con la fundación como un taco más.** Pierde la gracia del
+  28 sin ganar honestidad: el rótulo pegado a la estampa ya dice qué clase de número es.
+- **Personas en el almanaque** (Rocambole 12-may-1943, Dawi 20-oct-1955). Cambiaba el afiche de
+  octubre en sus últimos dos días y nadie lo pidió. Entra cuando se construya mayo.
+- **Un afiche más chico fuera de la semana del cumpleaños**, para que el portal no se alargue tres
+  meses al año. Es un segundo componente para ahorrar una pantalla.
+
+### Consecuencias
+
+- El portal suma ~370 px a 375×812 tres meses al año (cuatro con mayo), no uno. Se anota contra
+  `UX-25` y se acepta.
+- `D-49` punto 3 pasa a tener una excepción, declarada y testeada: la leyenda del cumpleaños, con su
+  rótulo a la vista. Ninguna otra leyenda entra.
+- La propuesta queda en `Docs/SUGERENCIAS/` con la nota de que se decidió acá; `UX-40` es la
+  doctrina de `experiencia`; `T-520` es la tarea.
+- `difusion` tiene la semana del 17 al 20 de noviembre para un `DIF-`: el calendario termina el 7.
+- Lo que queda: mayo, cuando llegue (`T-521`, reservada); mirar el afiche de noviembre en un teléfono
+  de verdad el 1.º.
+
+---

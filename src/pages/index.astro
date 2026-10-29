@@ -10,33 +10,46 @@
  * Molinetes abiertos (`D-14`): esta pantalla no pide nada — ni cuenta ni saber.
  */
 import Base from '../layouts/Base.astro';
-import { PORTAL, LUGARES, JUEGOS, LADO_B, OKTUBRE, type Casete } from '../lib/sitio/copy.ts';
+import { PORTAL, LUGARES, JUEGOS, LADO_B, ALMANAQUE, REDONDOPEDIA, type Casete } from '../lib/sitio/copy.ts';
 import { arteDeCasete, conRecorteReal, discoDeRecorte, materialDeCasete, medidas, recorte } from '../lib/sitio/arte.ts';
 import { segunLaPartida } from '../lib/sitio/portal.ts';
-import { cumpleDelDia, discosDeOktubre, type FichaCruda } from '../lib/sitio/oktubre.ts';
+import { cumpleDelDia, cumpleDelMes, fechasDelMes, MESES, type FichaCruda } from '../lib/sitio/almanaque.ts';
 import { pistaDe, primeraOracion, restoDeLaBajada } from '../lib/sitio/caratula.ts';
 import { cargarBanco, type BancoCrudo } from '../lib/letra/banco.ts';
 import crudoLetra from '../data/letra.json';
 import redondopedia from '../data/redondopedia.json';
 
 /**
- * El afiche de octubre (`D-49`): los discos que salieron en octubre, sacados de las fichas.
+ * El almanaque del portal (`D-84`): un afiche por mes, con las fechas sacadas de las fichas de
+ * la Redondopedia (`lib/sitio/almanaque.ts`). Nació como el afiche de octubre (`D-49`).
  *
- * Se imprime siempre y se muestra solo en octubre: lo decide la cabeza de esta página con
- * la fecha del teléfono, antes del primer cuadro (más abajo). Así el sitio no depende de
- * que alguien lo reconstruya el 1.º de octubre ni el 1.º de noviembre.
+ * Se imprimen todos y se ve uno o ninguno: lo decide la cabeza de esta página con la fecha
+ * del teléfono, antes del primer cuadro (más abajo). Así el sitio no depende de que alguien lo
+ * reconstruya el 1.º de cada mes.
  *
- * La estampa sale impresa con la fecha del build y la isla `oktubre.ts` la corrige con la de
- * quien mira. Si *Oktubre* no estuviera entre los de octubre —una ficha corregida—, el
- * afiche no se imprime: no hay cumpleaños que festejar en el mes equivocado.
+ * La estampa sale impresa con la fecha del build y la isla `almanaque.ts` la corrige con la de
+ * quien mira. Si la ficha del cumpleaños perdiera el rótulo que el afiche declara —una fecha
+ * corregida, una leyenda que pasó a hecho—, ese afiche no se imprime: no hay cumpleaños que
+ * festejar en el mes equivocado ni con el rótulo equivocado.
  */
-const { deOktubre, total: discosEnTotal } = discosDeOktubre(
-  (redondopedia as unknown as { articulos: FichaCruda[] }).articulos,
-);
-const salidaOktubre = deOktubre.find((d) => d.slug === 'oktubre');
-const estampaDelBuild = salidaOktubre ? cumpleDelDia(new Date(), salidaOktubre) : '';
-/** El título corto de cada fecha: en un casillero de cien píxeles no entra "¡Bang! ¡Bang!… Estás liquidado". */
-const CORTO: Record<string, string> = { 'bang-bang-estas-liquidado': '¡Bang! ¡Bang!' };
+const fichas = (redondopedia as unknown as { articulos: FichaCruda[] }).articulos;
+const afiches = ALMANAQUE.flatMap((afiche) => {
+  const { tacos, discosDelMes, totalDiscos } = fechasDelMes(fichas, afiche.mes, { leyendas: afiche.leyendas });
+  const cumple = cumpleDelMes(tacos, afiche.cumple);
+  if (!cumple) return [];
+  return [
+    {
+      ...afiche,
+      cumple,
+      estampaDelBuild: cumpleDelDia(new Date(), cumple),
+      cuenta: afiche.cuenta({ discosDelMes, totalDiscos }),
+      // El nombre corto, cuando el título no entra en un taco de cien píxeles.
+      tacos: tacos.map((t) => ({ ...t, nombre: afiche.nombres?.[t.slug] ?? t.titulo })),
+    },
+  ];
+});
+/** Los meses con afiche impreso: la cabeza los lee para saber si hay afiche que mostrar. */
+const mesesConAfiche = afiches.map((a) => a.mes);
 
 /**
  * Los juegos cuya partida depende de un banco que puede estar vacío. El portal pregunta lo
@@ -150,7 +163,7 @@ const tapasUsadas = [
 ---
 
 <Base titulo={PORTAL.nombre} descripcion={PORTAL.bajada} conBanderas conMosca tapas={tapasUsadas} discoDelPie="oktubre">
-  <script is:inline slot="cabeza">
+  <script is:inline slot="cabeza" define:vars={{ meses: MESES, conAfiche: mesesConAfiche }}>
     // El quiz vivia en la raiz: los links de desafio viejos (`?g=quiz&p=...`) siguen
     // valiendo — se redirigen a /quiz/ con la query intacta (ADR-02 no cambia).
     if (/(^|[?&])g=/.test(location.search)) location.replace('/quiz/' + location.search);
@@ -181,19 +194,25 @@ const tapasUsadas = [
     }
 
     /**
-     * Octubre, el mes del disco (`D-49`). En octubre la portada lleva el afiche de *Oktubre*.
+     * El mes de quien mira, para el almanaque del portal (`D-84`; antes `D-49`, solo octubre).
      *
      * Lo decide la fecha del teléfono y no la del build, y por el mismo motivo que el umbral
      * va acá arriba: un afiche que aparece después de pintar empuja la casetera entera hacia
-     * abajo, y eso es un salto. Es la misma pregunta que `esOktubre()` de
-     * `lib/sitio/oktubre.ts`, escrita en línea porque este bloque no puede importar nada.
+     * abajo, y eso es un salto. Es la misma pregunta que `mesDe()` de `lib/sitio/almanaque.ts`,
+     * escrita en línea porque este bloque no puede importar nada: `meses` y `conAfiche` los
+     * inyecta Astro desde el build (`define:vars`), así la lista de meses con afiche vive en
+     * un solo lugar.
      */
-    if (new Date().getMonth() === 9) document.documentElement.dataset.mes = 'oktubre';
+    {
+      const mes = meses[new Date().getMonth()];
+      document.documentElement.dataset.mes = mes;
+      if (conAfiche.indexOf(mes) !== -1) document.documentElement.dataset.afiche = '';
+    }
   </script>
 
   {/* El frente del portal (`UX-35` §2): la cabecera y el afiche. En el teléfono van uno
-      debajo del otro, como siempre; desde 64 rem van lado a lado, y fuera de octubre la
-      cabecera ocupa sola el renglón. Es un envoltorio y nada más: no cambia el orden de
+      debajo del otro, como siempre; desde 64 rem van lado a lado, y sin afiche la cabecera
+      ocupa sola el renglón. Es un envoltorio y nada más: no cambia el orden de
       lectura ni lo que dice cada uno. */}
   <div class="portal-frente">
   <header class="portada-arcade">
@@ -211,35 +230,52 @@ const tapasUsadas = [
     <p class="bajada-portal">{PORTAL.bajada}</p>
   </header>
 
-  {/* El afiche de octubre (`D-49`). Está siempre en el documento y se ve solo con
-      `data-mes="oktubre"`, que pone la cabeza de esta página antes del primer cuadro. El
-      sello va en la letra calcada de la tapa; las fechas, una por disco, cada una con la
-      tinta del suyo (`D-19`) y llevando a su ficha, que es donde está la fuente. */}
+  {/* El afiche del mes (`D-84`). Están todos en el documento y se ve el del mes que la cabeza
+      puso en `data-mes`, antes del primer cuadro. El sello va en la letra calcada de la tapa
+      (octubre) o en la de la banda; la estampa, en registro 3; si el cumpleaños es una leyenda,
+      el rótulo va pegado a la estampa, para que nunca se lea el número sin su casilla
+      (`UX-40` §5). Las fechas, una por taco, cada una con la tinta de su disco (`D-19`) y
+      llevando a su ficha, que es donde está la fuente. */}
   {
-    salidaOktubre && (
-      <section class="oktubre" aria-labelledby="oktubre-sello">
-        <div class="oktubre-cabeza">
-          <h2 class="oktubre-sello" id="oktubre-sello">{OKTUBRE.sello}</h2>
-          <span class="oktubre-cumple" data-cumple-dia={salidaOktubre.dia} data-cumple-anio={salidaOktubre.anio}>
-            {estampaDelBuild}
+    afiches.map((a) => (
+      <section class:list={['afiche', `afiche--${a.mes}`]} aria-labelledby={`afiche-sello-${a.mes}`}>
+        <div class="afiche-cabeza">
+          <h2 class="afiche-sello" id={`afiche-sello-${a.mes}`}>{a.sello}</h2>
+          <span class="afiche-cumple" data-cumple-dia={a.cumple.dia} data-cumple-anio={a.cumple.anio}>
+            {a.estampaDelBuild}
           </span>
+          {a.cumple.rotulo === 'leyenda' && (
+            <span class="afiche-rotulo es-leyenda">◆ {REDONDOPEDIA.clave.palabraLeyenda}</span>
+          )}
         </div>
-        <p class="oktubre-canta">{OKTUBRE.canta}</p>
-        <p class="oktubre-cuenta">{OKTUBRE.cuenta(deOktubre.length, discosEnTotal)}</p>
-        <ul class="oktubre-calendario" aria-label={OKTUBRE.calendario}>
-          {deOktubre.map((d) => (
-            <li class:list={['oktubre-fecha', `oktubre-fecha--${d.slug}`]}>
-              <a href={`/redondopedia/${d.slug}/`}>
-                <span class="oktubre-dia">{d.dia}</span>
-                <span class="oktubre-disco">{CORTO[d.slug] ?? d.titulo}</span>
-                <span class="oktubre-anio">{d.anio}</span>
+        <p class="afiche-canta">{a.canta}</p>
+        <p class="afiche-cuenta">{a.cuenta}</p>
+        <ul class="afiche-calendario" aria-label={a.calendario}>
+          {a.tacos.map((t) => (
+            <li
+              class:list={[
+                'afiche-fecha',
+                `afiche-fecha--${t.slug}`,
+                {
+                  'afiche-fecha--leyenda': t.rotulo === 'leyenda',
+                  'afiche-fecha--cumple': t.slug === a.cumple.slug && t.dia === a.cumple.dia,
+                },
+              ]}
+            >
+              <a href={`/redondopedia/${t.slug}/`}>
+                <span class="afiche-dia">{t.dia}</span>
+                <span class="afiche-nombre">
+                  {t.rotulo === 'leyenda' && <span class="es-leyenda">◆ </span>}
+                  {t.nombre}
+                </span>
+                <span class="afiche-anio">{t.anio}</span>
               </a>
             </li>
           ))}
         </ul>
-        <a class="oktubre-jugar" href="/juegos/adivinar-el-tema/?disco=oktubre">{OKTUBRE.jugar}</a>
+        <a class="afiche-boton" href={a.boton.href}>{a.boton.texto}</a>
       </section>
-    )
+    ))
   }
   </div>
 
@@ -312,7 +348,7 @@ const tapasUsadas = [
   }
 
   <script>
-    // La estampa del cumpleaños, con la fecha de quien mira. Sin afiche no hace nada.
-    import '../scripts/oktubre.ts';
+    // La estampa del cumpleaños del mes, con la fecha de quien mira. Sin afiche no hace nada.
+    import '../scripts/almanaque.ts';
   </script>
 </Base>

@@ -11,6 +11,7 @@
  */
 
 import type { Disco } from '../letra/discos.ts';
+import type { Mes, RotuloDeTaco } from './almanaque.ts';
 import { CASETE as CASETE_SKAYBOY } from '../skayboy/copy.ts';
 import { ENTRADA as ENTRADA_BESTIARIO } from '../bestiario/camino.ts';
 
@@ -381,40 +382,118 @@ const EN_LETRAS = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'sie
 const enLetras = (n: number): string => EN_LETRAS[n] ?? String(n);
 
 /**
- * El afiche de octubre del portal (`D-49`).
+ * El almanaque del portal (`D-84`): un mes, un afiche.
  *
- * Lo pidió el usuario el 2026-10-01: *"entramos en OKTUBRE, el mes del disco, hagamos que
- * la página refleje esto"*. Se muestra solo en octubre, y lo decide el teléfono de quien
- * mira, no el día del build (`index.astro`).
+ * Nació como el afiche de octubre (`D-49`), pedido el 2026-10-01 (*"entramos en OKTUBRE, el
+ * mes del disco, hagamos que la página refleje esto"*). El 2026-10-29 el usuario pidió pensar
+ * qué sigue cuando se apaga, y lo que sigue es esta tabla: cada mes que está acá es un afiche
+ * entero; los que no están no muestran nada, y los meses de duelo no van a estar nunca. Lo
+ * prende la fecha del teléfono de quien mira, no el día del build (`index.astro`).
  *
- * **Lo que cuenta es un hecho, y sale del JSON**: de los diez discos, seis salieron en
- * octubre —*Oktubre* el 4 de 1986, *¡Bang! ¡Bang!* el 7 de 1989, *La mosca y la sopa* el 27
- * de 1991, *Lobo suelto* y *Cordero atado* el 4 de 1993, *Luzbelito* el 7 de 1996—, todos
- * rotulados `hecho` en la Redondopedia y sin discrepancia entre fuentes (`RES-02`, `RES-20`).
- * La cuenta no está escrita acá: la hace `discosDeOktubre()` con las fichas, así que si una
- * fecha se corrige, el afiche se corrige solo.
+ * **Lo que cuenta sale de las fichas** (`almanaque.ts`): los tacos del almanaque y el
+ * cumpleaños del mes se leen de la Redondopedia en el build, solo rotulados `hecho` —salvo la
+ * leyenda que un mes declara, y esa va con su rótulo a la vista—. La cuenta de octubre no está
+ * escrita acá: si una fecha se corrige, el afiche se corrige solo.
  *
- * Las dos líneas de `voz-ricotera.md` §5: nombra el sello (*OKTUBRE*, en la letra calcada de
- * la tapa, que tiene las siete letras) con la estampa del cumpleaños; canta la línea del
- * sobre. Tapada la que canta, el afiche sigue diciendo qué es y qué botón tocar.
+ * Las dos líneas de `voz-ricotera.md` §5 en cada afiche: nombra el sello con la estampa del
+ * cumpleaños (registro 3); canta una línea con un objeto adentro (registro 1); cuenta en
+ * registro 2 solo lo que la ficha respalda. Tapada la que canta, el afiche sigue diciendo qué
+ * es y qué botón tocar. `contenido` leyó las de noviembre y diciembre el 2026-10-29.
  */
-export const OKTUBRE = {
-  /** El sello grande. Va en `--fuente-titular`: O, K, T, U, B, R y E existen en el calco. */
-  sello: 'OKTUBRE',
-  /** La estampa del cumpleaños, según el día. Registro 3: dice qué pasa y se calla. */
+export interface AficheDelMes {
+  /** El mes, con el nombre de `almanaque.ts`: es también el modificador de clase en `sitio.css`. */
+  readonly mes: Mes;
+  /** El sello grande. Octubre va en el calco de su tapa; los demás, en la letra de la banda. */
+  readonly sello: string;
+  /** La ficha y el rótulo que hacen de cumpleaños. Si la ficha cambia de rótulo, no hay afiche. */
+  readonly cumple: { readonly slug: string; readonly rotulo: RotuloDeTaco };
+  /** La que canta (registro 1). */
+  readonly canta: string;
+  /** La que cuenta (registro 2), con los números que el almanaque saca de las fichas. */
+  readonly cuenta: (cuentas: { readonly discosDelMes: number; readonly totalDiscos: number }) => string;
+  /** El nombre de la lista de tacos, para quien no ve la grilla. */
+  readonly calendario: string;
+  /** El botón: imperativo, y adónde lleva. */
+  readonly boton: { readonly texto: string; readonly href: string };
+  /** Cómo se escribe una ficha en un taco de cien píxeles, cuando el título no entra. */
+  readonly nombres?: Readonly<Record<string, string>>;
+  /** Las fichas cuyas fechas rotuladas `leyenda` entran al almanaque, con el ◆ a la vista. */
+  readonly leyendas?: readonly string[];
+}
+
+/** La estampa del cumpleaños, la misma para todos los meses. Registro 3: dice qué pasa y se calla. */
+export const ESTAMPA = {
   cumpleAntes: (dia: number, anios: number) => `EL ${dia} CUMPLE ${anios}`,
   cumpleHoy: (_dia: number, anios: number) => `HOY CUMPLE ${anios}`,
   cumplio: (dia: number, anios: number) => `CUMPLIÓ ${anios} EL ${dia}`,
-  /** La que canta (registro 1): un objeto de la casa, un gesto, y nada que explicar. */
-  canta: 'Sacá el disco del sobre, soplale el polvo.',
-  /** La que cuenta (registro 2), con los números de las fichas. */
-  cuenta: (deOktubre: number, total: number) =>
-    `De los ${enLetras(total)} discos, ${enLetras(deOktubre)} salieron en octubre.`,
-  /** El nombre de la lista de fechas, para quien no ve la grilla. */
-  calendario: 'Los discos que salieron en octubre',
-  /** El botón: el juego de adivinar el tema, con el disco ya elegido. */
-  jugar: 'ADIVINÁ TEMAS DE OKTUBRE',
 } as const;
+
+export const ALMANAQUE: readonly AficheDelMes[] = [
+  {
+    mes: 'octubre',
+    /** O, K, T, U, B, R y E existen en el calco. */
+    sello: 'OKTUBRE',
+    cumple: { slug: 'oktubre', rotulo: 'hecho' },
+    /** Un objeto de la casa, un gesto, y nada que explicar. */
+    canta: 'Sacá el disco del sobre, soplale el polvo.',
+    cuenta: ({ discosDelMes, totalDiscos }) =>
+      `De los ${enLetras(totalDiscos)} discos, ${enLetras(discosDelMes)} salieron en octubre.`,
+    calendario: 'Los discos que salieron en octubre',
+    /** El juego de adivinar el tema, con el disco ya elegido. */
+    boton: { texto: 'ADIVINÁ TEMAS DE OKTUBRE', href: '/juegos/adivinar-el-tema/?disco=oktubre' },
+    /** En un casillero de cien píxeles no entra "¡Bang! ¡Bang!… Estás liquidado". */
+    nombres: { 'bang-bang-estas-liquidado': '¡Bang! ¡Bang!' },
+  },
+  {
+    mes: 'noviembre',
+    /** Lleva Á: la letra de la banda la tiene (`D-65`); el calco de *Oktubre*, no. */
+    sello: 'HURACÁN',
+    /** El 19 y el 20 de noviembre de 1993, la primera vez en esa cancha; la estampa cuenta desde el 19. */
+    cumple: { slug: 'huracan-93-94', rotulo: 'hecho' },
+    /** Un objeto de la cancha, un gesto, y nada que explicar. */
+    canta: 'Trepate al alambrado, que ya salen.',
+    /** Solo lo que la ficha tiene en `hecho`: fechas, público, lugar, y que el disco doble se presentó ahí. */
+    cuenta: () =>
+      'El 19 y el 20 de noviembre del 93, más de setenta mil personas en el Ducó, para presentar el disco doble.',
+    calendario: 'Las fechas de noviembre',
+    /**
+     * A la lista de esa noche en "En vivo", que es lo que el sitio tiene y suena diez segundos
+     * por tema. "Mirá qué se tocó": una lista que se mira, no la grabación de la noche
+     * (`contenido`, 2026-10-29).
+     */
+    boton: { texto: 'MIRÁ QUÉ SE TOCÓ EL 19', href: '/redondopedia/en-vivo/#lista-1993-11-19' },
+    /**
+     * Noviembre tiene el principio y el final: el Lozanazo del 77 (nació el nombre) y la
+     * oficialización de la separación, el 2 de 2001. Las dos son `hecho` y las dos entran: el
+     * almanaque es el mes como fue, y lo que festeja es el cumpleaños, no cada taco.
+     */
+    nombres: {
+      'ultimo-bondi-a-finisterre': 'Último bondi',
+      'huracan-93-94': 'Huracán',
+      'la-formacion': 'El Lozanazo',
+      'la-separacion': 'La separación',
+    },
+  },
+  {
+    mes: 'diciembre',
+    /** En letras, no en cifra: la letra de la banda no tiene números. */
+    sello: 'CINCUENTA',
+    /**
+     * La fundación del 28 de diciembre de 1976, que la ficha tiene rotulada `leyenda` ("nunca
+     * confirmada ni desmentida del todo"). Entra con el ◆ LEYENDA pegado a la estampa.
+     */
+    cumple: { slug: 'la-formacion', rotulo: 'leyenda' },
+    /** Un objeto, un gesto, y la duda adentro. */
+    canta: 'Soplá las velitas, por las dudas.',
+    /** La prosa de la ficha, acortada. El rótulo ya dice qué es; esta línea no lo repite. */
+    cuenta: () =>
+      'Circula que la banda nació el 28 de diciembre de 1976, Día de los Inocentes. Nadie lo confirmó ni lo desmintió del todo.',
+    calendario: 'Las fechas de diciembre',
+    boton: { texto: 'LEÉ CÓMO EMPEZÓ', href: '/redondopedia/la-formacion/' },
+    nombres: { 'debut-en-obras': 'Obras', 'huracan-93-94': 'Huracán', 'la-formacion': 'La formación' },
+    leyendas: ['la-formacion'],
+  },
+];
 
 /**
  * La página puente para X (`/en-x/<juego>/`): la que se pega en un posteo para que X arme la
