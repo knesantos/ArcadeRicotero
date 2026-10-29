@@ -7,11 +7,10 @@
 
 **Última actualización:** 2026-10-29
 
-<<<<<<< HEAD
 > ## 🦁 CINCO QUE ERAN OJOS EN LA PROFUNDIDAD DE LA NOCHE: EL REY DE ESTA JUNGLA, EL AHOGADO Y SU FIEL FANTASMA, EL PICHÓN, EL CLUB DE MANTIS Y EL QUE NO SE CAYÓ DEL CIELO (2026-10-29) — `D-73` (25)
 >
-> **Sin integrar**, en la rama `bestiario/cinco-noche`, nacida sobre `bestiario/siete-mas` (`49351b3`, la vigesimocuarta, todavía
-> sin integrar en el #88). `T-514`. Pedido del usuario: cinco bestias que hoy sean ojos en la profundidad de la noche, con vida,
+> **Sin integrar**, en la rama `bestiario/cinco-noche`, nacida sobre `bestiario/siete-mas` (`49351b3`, la vigesimocuarta, que entró
+> a `main` por el #88), con `main` adentro. `T-516` (se escribió como `T-514` y se renumeró: `T-514` y `T-515` ya eran de la pulida, `D-83`). Pedido del usuario: cinco bestias que hoy sean ojos en la profundidad de la noche, con vida,
 > animación y detalles únicos. Se eligió una por recinto entre los que menos títeres tienen (el infierno ya no tiene ojos).
 >
 > - **Monte**: el rey de esta jungla, un león viejo enterrado hasta los ojos entre las flores, con la cruz de la etiqueta negra, la
@@ -29,8 +28,8 @@
 >   estampas se acortaron al tope de 320 caracteres del schema.
 > - **Verde:** `npm test` (2209), `npm run check` (0 errores), `npm run build` (180 páginas). Vistos vivir y responder al toque en
 >   la página de cada recinto, con la ficha abierta.
-> - **Falta**: `T-514` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
-=======
+> - **Falta**: `T-516` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
+
 > ## ✨ LA PULIDA DEL BESTIARIO: EL PRIMER PASO, LOS SELLOS QUE SE ASIENTAN Y EL ANOTADO A LA VISTA (2026-10-29) — `D-83`
 >
 > **Sin integrar**, en la rama `bestiario/pulida` (worktree `.claude/worktrees/pulida-bestiario`), sobre `bestiario/siete-mas`
@@ -59,7 +58,6 @@
 >   a 1280×800, con el panel a la vista (escondido no corre `requestAnimationFrame`).
 > - **Falta**: `T-514` (teléfono de verdad: la inercia de iOS, el sello sobre la barra de Safari), `T-515` (el sello de
 >   invitación y el renglón de la hoja al lienzo, hoja 08).
->>>>>>> origin/main
 
 > ## 🃏 SIETE MÁS QUE ERAN OJOS: EL DIABLO DE MUCHOS CUERNOS, LA PRINCESITA SAPITO, LA TIPA RAPAZ, EL RATÓN, LA POLILLA, EL BOTIJA Y EL JOCKER (2026-10-29) — `D-73` (24)
 >

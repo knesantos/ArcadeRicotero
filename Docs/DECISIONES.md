@@ -6011,7 +6011,8 @@ Cada uno trae su bloque de tintas medidas con sharp en su tapa, su bloque en `si
 Pedido del usuario, textual: *"Elegi diseña e integra 5 bestias del bestiario. Que hoy sean ojos en la profundidad de la noche, dales
 vida, animalos, dales detalles unicos, estas haciendo un trabajo increible."* La escribe el hilo principal en la rama
 `bestiario/cinco-noche`, sobre `bestiario/siete-mas` en `49351b3` (la vigesimocuarta, todavía sin integrar en el #88). Antes de tomar
-`T-514` se miraron todas las ramas: la última era `T-513`.
+el número se miraron todas las ramas y `T-513` era el último; la tarea se escribió como `T-514` y **se renumeró a `T-516`** al
+fusionar, porque `T-514` y `T-515` ya eran de la pulida (`D-83`, #91), que llegó antes a `main`.
 
 #### Cuáles, y por qué esos
 
@@ -6098,7 +6099,7 @@ Cada uno trae su bloque de tintas medidas con sharp en su tapa (rey 20 en *Lobo 
 *Oktubre*; mantis 17 y cielo 19 en *Gulp!*), su bloque en `sitio.css`, su conducta y su test de 9. Las piezas: rey 28 (171 kB),
 ahogado 23 (129 kB), pichón 20 (98 kB), mantis 24 (95 kB), cielo 22 (91 kB).
 
-- `T-514`: verlos en un teléfono de verdad, que `contenido` lea las cinco estampas y pasar los cinco bloques de tintas al lienzo.
+- `T-516`: verlos en un teléfono de verdad, que `contenido` lea las cinco estampas y pasar los cinco bloques de tintas al lienzo.
   Queda la idea del dibujante del rey de avisar a un vecino del toque ajeno (que el lobo se asome cuando ruge el león), la misma que
   dejó el ratón en la vigesimocuarta.
 
