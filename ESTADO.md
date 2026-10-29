@@ -7,6 +7,28 @@
 
 **Última actualización:** 2026-10-29
 
+> ## 🔀 SEIS PR A `main`, EN ORDEN Y CON `main` ADENTRO (2026-10-29)
+>
+> Pedido del usuario: *"mergea todo a main resolviendo conflictos y mergeando en orden"*. Lo hizo el hilo principal en el
+> checkout principal, rama por rama y por número de PR, como pide `.claude/rules/integrar.md`: `main` adentro de cada
+> rama, `npm test`, `npm run check` y `npm run build` en verde en la rama fusionada, y `gh pr merge --merge`.
+>
+> - **#31** (`difusion/hilo-fichin`, fusión `4aa505f`): el hilo de los 40 de *Oktubre*. `hilo.md`, `hilo.json` y la foto 05
+>   chocaban: quedó la rama, que tiene las fotos con FICHÍN RICOTERO y los alt que las describen (`main` tenía la 05 con
+>   ARCADE RICOTERO y el mismo texto menos la nota del DNS).
+> - **#78** (`difusion/reels`, fusión `ad718cf`): los tres reels y el generador; `puppeteer-core` entra al lockfile.
+> - **#82** (`bestiario/luzbelito-macizo`, fusión `961f9d1`): Luzbelito macizo, sin choques.
+> - **#92** (`claude/bestiario-en-x-9ae3b4`, fusión `c0e460d`): el bestiario adentro de X. **`T-516` pasó a `T-517`** en
+>   `ESTADO.md` y en los siete archivos de `src` que lo nombran: el `T-516` de las cinco de la noche (#93) llegó antes a
+>   `main`. Anotado en su entrada y en `Docs/IDS.md`; los commits de la rama siguen diciendo `T-516`.
+> - **#94** (fusión `6f75ced`) y **#95** (fusión `959e0fd`): los dos `ESTADO.md` que anotaban la entrada a `main` del #91 y
+>   del #93. Chocaban en la entrada de la pulida: quedó el texto del #94, que es el más completo.
+> - El #93 (las cinco de la noche, fusión `ac0c6f6`) lo fusionó otra sesión minutos antes de empezar esto.
+> - Cada choque de `ESTADO.md` se resolvió dejando las dos entradas, cada una en su fecha. De paso, la entrada de `D-78`
+>   decía "sin integrar" y el #68 estaba en `main` desde el 2026-10-20: corregida.
+> - **Falta**: quitar los worktrees `.claude/worktrees/reels` y `.claude/worktrees/bestiario-en-x-9ae3b4` (sus ramas ya
+>   están en `main`), y lo que cada entrada integrada dice en su propio "Falta".
+
 > ## 🦁 CINCO QUE ERAN OJOS EN LA PROFUNDIDAD DE LA NOCHE: EL REY DE ESTA JUNGLA, EL AHOGADO Y SU FIEL FANTASMA, EL PICHÓN, EL CLUB DE MANTIS Y EL QUE NO SE CAYÓ DEL CIELO (2026-10-29) — `D-73` (25)
 >
 > **En `main`** por el PR #93 (fusión `ac0c6f6`), desde la rama `bestiario/cinco-noche`, nacida sobre `bestiario/siete-mas` (`49351b3`, la vigesimocuarta, que entró
@@ -79,7 +101,9 @@
 
 > ## 📺 EL BESTIARIO ADENTRO DE X, A PRUEBA (2026-10-29) — `T-517`
 >
-> **Sin integrar**, rama `claude/bestiario-en-x-9ae3b4`. Pedido del usuario: sumar el bestiario redondo a la vía de la
+> **En `main`** por el PR #92 (fusión `c0e460d`), desde la rama `claude/bestiario-en-x-9ae3b4`. Lo integró Claude a pedido
+> del usuario (*"mergea todo a main"*), con `main` adentro (`32ba1f0`) y todo verde en la rama fusionada: `npm test`
+> (2217), `npm run check`, `npm run build` (186 páginas). Pedido del usuario: sumar el bestiario redondo a la vía de la
 > Player Card de `T-513`. (`T-514` y `T-515` los toma la rama `bestiario/pulida`.) Se escribió como `T-516` y **se
 > renumeró a `T-517` al integrar**: el `T-516` de las cinco de la noche (`D-73`, 25) llegó antes a `main` por el #93;
 > los commits de la rama todavía dicen `T-516`.
@@ -97,8 +121,8 @@
 > - **Compartir**: el bestiario no tiene "Compartí"; no hay nada que cambiar.
 > - **Verde:** `npm test` (2111), `npm run check`, `npm run build`. Probado incrustado a 360 × 540 y 480 × 720: la escena se
 >   ve sin scroll, la animación corre en el iframe, tocar una bestia abre la ficha, y los juegos de `T-513` siguen igual.
-> - **Falta**: lo mismo que `T-513`, mirarlo en un posteo real. Al fusionar, chocan `[region].astro`, `camino.css` y
->   `sitio.css` con `bestiario/pulida` si entra antes.
+> - **Falta**: lo mismo que `T-513`, mirarlo en un posteo real. Al fusionar con la pulida ya en `main`, `[region].astro`,
+>   `camino.css` y `sitio.css` se fusionaron solos; el build y los tests pasaron, pero nadie volvió a mirar el recuadro.
 
 > ## 📺 DOS JUEGOS PARA JUGAR ADENTRO DE X, A PRUEBA (2026-10-28) — `T-513`
 >
@@ -172,7 +196,9 @@
 
 > ## 🕯️ LUZBELITO, MACIZO (2026-10-24) — `D-73`, pulida
 >
-> **En el PR #82** (rama `bestiario/luzbelito-macizo`, sobre `main` en `a206ce2`); **sin integrar**. Pedido del usuario: el
+> **En `main`** por el PR #82 (fusión `961f9d1`), desde la rama `bestiario/luzbelito-macizo`, sobre `main` en `a206ce2`. Lo
+> integró Claude a pedido del usuario (*"mergea todo a main"*), con `main` adentro (`3915e4c`) y todo verde en la rama
+> fusionada: `npm test` (2215), `npm run check`, `npm run build` (186 páginas). Pedido del usuario: el
 > busto de Luzbelito *"está como mal cortado y se transparenta mucho"*.
 >
 > - **Por qué pasaba:** el busto se separaba del óvalo negro por luminosidad, y la sombra de la cara y del cuello es casi igual
@@ -186,7 +212,7 @@
 >   lo hondo a la luz de la vela, con el brillo y el grano, en tintas nuevas (`⟨el lente de Luzbelito⟩` en `tokens.css`).
 >   **Falta pasar esas cuatro tintas al lienzo.** Se reimprimió solo `luzbelito-real-busto.webp`; los demás recortes salen iguales.
 > - **Verde:** `npm test` (2002), `npm run check`, `npm run build`. Visto en la escena del infierno y en la ficha, sobre el fuego.
-> - **Falta:** integrar el PR, y pasar las cuatro tintas del lente al lienzo.
+> - **Falta:** pasar las cuatro tintas del lente al lienzo.
 
 > ## 🛩️ CINCO DEL FONDO: ZIPPO, EL DIABLO MÁS VELOZ, EL SANTO FUMADOR, EL COLGADO Y LA SEÑORA (2026-10-24) — `D-73` (20)
 >
@@ -207,7 +233,9 @@
 
 > ## 🎞️ TRES REELS EN EL CALENDARIO (2026-10-24) — `D-81`
 >
-> Rama `difusion/reels`, **sin integrar**. Pedido del usuario: *"Armate unos buenos reels ricoteros sobre los juegos
+> **En `main`** por el PR #78 (fusión `ad718cf`), desde la rama `difusion/reels`. Lo integró Claude a pedido del usuario
+> (*"mergea todo a main"*), con `main` adentro (`606a086`) y todo verde en la rama fusionada: `npm test` (2215),
+> `npm run check`, `npm run build` (186 páginas). Pedido del usuario: *"Armate unos buenos reels ricoteros sobre los juegos
 > adivina el tema, sacalo por la letra y el bestiario redondo. Que se entienda lo que son pero no muestren de mas"*.
 >
 > - **Los reels** (`public/redes/DIF-13/14/15.mp4`, 1080x1920, 15 a 20 s): Adiviná el tema sube la escalera
@@ -288,8 +316,8 @@
 >     Buffer en `.env`. El paso a paso está en `DIF-01`;
 >   - aprobar `DIF-10` … `DIF-12`, integrar el sitio con las piezas y correr `/redes cola`;
 >   - **ver si Buffer Free deja publicar en X** (`RES-402`). Si no deja, el camino B está en `D-81`;
->   - el hilo de doce posteos de la rama `difusion/hilo-fichin` (PR #31) sigue sin integrar:
->     `difusion` lo puede pasar al calendario.
+>   - el hilo de doce posteos de la rama `difusion/hilo-fichin` entró a `main` por el PR #31 (fusión `4aa505f`,
+>     2026-10-29): `difusion` lo puede pasar al calendario.
 
 > ## 🎥 LA CÁMARA QUE CAMINA, LA FICHA QUE NO TAPA Y EL PLANO PINTADO ZONA POR ZONA (2026-10-23) — `D-79` (2.ª vuelta) y `D-80`
 >
@@ -377,7 +405,8 @@
 
 > ## 🎵 EL VERSO SUENA DONDE SE LEE (2026-10-20) — `D-78`
 >
-> **Rama `multimedia/redondos-letras-sincronizadas`**, sin integrar. Pedido del usuario: que el "Escuchar" de la ficha
+> **En `main`** por el PR #68 (fusión `0be8dc6`, 2026-10-20), desde la rama `multimedia/redondos-letras-sincronizadas`. Pedido
+> del usuario: que el "Escuchar" de la ficha
 > arranque en el verso que muestra, de forma automática y sin tocar la discografía.
 >
 > - **`npm run sincronizar-bestiario -- "<carpeta de discos>"`**: busca el segundo del verso en LRCLIB (solo el número,
@@ -1230,10 +1259,10 @@
 >   `DECISIONES.md` e `IDS.md`, este bloque, y las líneas de la marca en
 >   `skayboy-y-poligirl.astro`.
 > - Los roles: `Docs/SUGERENCIAS/HILO-para-todos-el-sitio-se-llama-fichin-ricotero.md`.
-> - El hilo de difusión en `main` sigue diciendo Arcade Ricotero hasta que entre el **PR #31**
->   (rama `difusion/hilo-fichin`): el texto con el nombre nuevo y el tono de los 40 de
->   *Oktubre*, y las capturas vueltas a sacar con FICHÍN RICOTERO publicado. Sus enlaces van a
->   `fichinricotero.com.ar`, que todavía no resuelve DNS.
+> - El hilo de difusión entró a `main` por el **PR #31** (rama `difusion/hilo-fichin`, fusión
+>   `4aa505f`, 2026-10-29): el texto con el nombre nuevo y el tono de los 40 de *Oktubre*, y las
+>   capturas vueltas a sacar con FICHÍN RICOTERO publicado. Sus enlaces van a
+>   `fichinricotero.com.ar`, que el 4 de octubre todavía no resolvía DNS.
 
 > ## 🌙 "¿QUÉ TIPO DE RICOTERO SOS?" REHECHO: UNA NOCHE Y EL LIBRO DE *LUZBELITO* (2026-10-04) — `D-57`, ciclo 18
 >
