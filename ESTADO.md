@@ -1168,9 +1168,10 @@
 >   `DECISIONES.md` e `IDS.md`, este bloque, y las líneas de la marca en
 >   `skayboy-y-poligirl.astro`.
 > - Los roles: `Docs/SUGERENCIAS/HILO-para-todos-el-sitio-se-llama-fichin-ricotero.md`.
-> - El hilo de difusión en `main` sigue diciendo Arcade Ricotero: el nombre nuevo está en el
->   commit `be7b9e2` de `difusion/hilo-twitter`, sin PR (el #26 se integró antes). Sus
->   capturas muestran la marca vieja: se sacan de nuevo con esto publicado.
+> - El hilo de difusión en `main` sigue diciendo Arcade Ricotero hasta que entre el **PR #31**
+>   (rama `difusion/hilo-fichin`): el texto con el nombre nuevo y el tono de los 40 de
+>   *Oktubre*, y las capturas vueltas a sacar con FICHÍN RICOTERO publicado. Sus enlaces van a
+>   `fichinricotero.com.ar`, que todavía no resuelve DNS.
 
 > ## 🌙 "¿QUÉ TIPO DE RICOTERO SOS?" REHECHO: UNA NOCHE Y EL LIBRO DE *LUZBELITO* (2026-10-04) — `D-57`, ciclo 18
 >

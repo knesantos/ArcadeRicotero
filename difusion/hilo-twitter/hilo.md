@@ -4,8 +4,7 @@ Doce posteos para el 4 de octubre de 2026, los 40 años de Oktubre. El 1 va suel
 
 Antes de publicar:
 
-- Los enlaces apuntan a https://fichinricotero.com.ar, que tiene que estar cargando. El 4 de octubre a la tarde todavía no resolvía.
-- Las fotos se sacaron con la marca vieja (ARCADE RICOTERO). Se vuelven a sacar cuando el nombre nuevo esté publicado.
+- Los enlaces apuntan a https://fichinricotero.com.ar, que tiene que estar cargando. El 4 de octubre a la noche todavía no resolvía DNS; las mismas rutas andan en https://arcade-ricotero.vercel.app.
 - El 1 y el 3 hablan del cumpleaños de Oktubre: son para el 4 de octubre.
 
 ## 1 · Presentación
@@ -66,7 +65,7 @@ Historia, discos, letras y mitología, de fácil a difícil y con tres vidas. Ca
 https://fichinricotero.com.ar/quiz/
 ```
 
-Descripción de la foto: Pregunta de Preguntas ricoteras sobre el álbum doble, respondida bien, con la explicación abajo.
+Descripción de la foto: Pregunta de Preguntas ricoteras sobre qué disco salió en 1988, respondida bien, con la explicación abajo.
 
 ## 5 · ¿Qué tipo de ricotero sos?
 
@@ -136,7 +135,7 @@ Un pedazo de una tapa de Rocambole y cuatro discos para elegir, seis tapas por v
 https://fichinricotero.com.ar/juegos/adivinar-la-tapa/
 ```
 
-Descripción de la foto: Adiviná la tapa: un pedazo de la tapa de Oktubre y cuatro discos para elegir.
+Descripción de la foto: Adiviná la tapa: un pedazo de la tapa de Gulp! y cuatro discos para elegir.
 
 ## 10 · Más o menos
 
@@ -150,7 +149,7 @@ Más o menos.
 https://fichinricotero.com.ar/juegos/mas-o-menos/
 ```
 
-Descripción de la foto: Más o menos: pregunta de cuántos temas tiene un disco, respondida bien, con la fuente del dato.
+Descripción de la foto: Más o menos: pregunta de en cuántos temas aparece una palabra, respondida bien, con la fuente del dato.
 
 ## 11 · Skayboy y Poligirl
 
