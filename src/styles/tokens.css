@@ -1255,6 +1255,7 @@
 
   /* Atmosfera. Las tres se van a cero con `prefers-reduced-motion`. */
   --duracion-paso: 200ms; /* el cruce entre dos pantallas (ADR-03) */
+  --duracion-sello: 220ms; /* un sello que termina de apoyar: el bocadillo, la hoja de la ficha, el anotado (D-83) */
   --duracion-umbral: 380ms; /* cada sub-paso del asentamiento de la portada */
   /* El escalon entre un sub-paso del umbral y el siguiente. `UX-20` §4 nombro la
      duracion de cada sub-paso y no la separacion entre ellos; sin un token para eso, los
@@ -1623,6 +1624,7 @@ a[role='button'] {
   :root {
     --duracion-paso: 0ms;
     --duracion-umbral: 0ms;
+    --duracion-sello: 0ms;
     --escalon-umbral: 0ms;
     --hondura-transito: 1;
     --deriva-capa-fondo: 0%;

@@ -145,6 +145,58 @@
    así que el origen de cada capa es su esquina. */
 .camino--andando .capa { transform-origin: 0 0; }
 
+/* ---- La invitación a caminar y el agarre (D-83) ---------------- */
+
+/* La flecha del aviso de deslizar, para el lado del camino: la misma de los carteles del cruce. */
+.camino-deslizar-flecha {
+  display: inline-block;
+  flex: none;
+  width: 1.3rem;
+  height: 0.95rem;
+  margin-left: 0.3rem;
+  vertical-align: middle;
+}
+
+.camino-deslizar-flecha path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Hasta que la mano camine por primera vez, el aviso es un sello flotando abajo de la escena, en el
+   papel y el borde de la región. Solo donde no hay mouse: en la compu alcanzan el primer paso, la
+   ruedita y el agarre. La isla lo saca con el primer trecho caminado (`.camino--invita`). */
+@media (hover: none) {
+  .camino--andando.camino--invita .camino-deslizar {
+    position: fixed;
+    left: 50%;
+    bottom: calc(var(--espacio-2) + env(safe-area-inset-bottom, 0px));
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 0.45rem 0.75rem;
+    white-space: nowrap;
+    color: var(--fondo);
+    background: var(--papel);
+    border: var(--linea) solid var(--tr);
+    border-radius: 3px;
+    transform: translateX(-50%) rotate(-1.5deg);
+    pointer-events: none;
+  }
+}
+
+/* Con mouse, la escena se agarra y se lleva: la mano abierta sobre el camino, cerrada mientras se
+   lo lleva. Los bichos siguen con su propia mano, la de tocar. */
+@media (hover: hover) and (pointer: fine) {
+  .camino--andando .camino-escenario { cursor: grab; }
+  .camino--agarrando { user-select: none; }
+  .camino--agarrando .camino-escenario,
+  .camino--agarrando .camino-escenario * { cursor: grabbing; }
+}
+
 /* Los ojos se encienden cuando se llega a ellos. Solo andando: sin la isla, se ven todos. */
 .camino--andando .aparece {
   opacity: 0;
@@ -420,6 +472,7 @@
   border: var(--linea) solid var(--tr);
   border-radius: 3px;
   cursor: pointer;
+  transition: color var(--duracion-toque), background-color var(--duracion-toque), border-color var(--duracion-toque);
 }
 
 .camino-boton:nth-child(2) { transform: rotate(1.2deg); }

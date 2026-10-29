@@ -3564,6 +3564,7 @@ body:has(> .lugar) .marca-chica {
   pointer-events: auto;
   cursor: pointer;
   transform: translate(-50%, -50%) rotate(-2deg);
+  transition: border-color var(--duracion-toque);
 }
 
 .rotulo-region:nth-child(even) { transform: translate(-50%, -50%) rotate(2deg); }
@@ -3624,6 +3625,7 @@ body:has(> .lugar) .marca-chica {
   border: 2px solid var(--papel-tenue);
   border-radius: 3px;
   cursor: pointer;
+  transition: border-color var(--duracion-toque);
 }
 
 .bestiario-chip:hover,
@@ -4009,6 +4011,72 @@ body:has(> .lugar) .marca-chica {
   font-style: italic;
   line-height: 1.35;
 }
+
+/* Los sellos se asientan (D-83). Nada aparece con un fundido (el umbral de arriba lo dice): un
+   sello llega ya estampado y lo único que hace es terminar de apoyar, como la marca en la portada.
+   El bocadillo gira apenas alrededor de su punta; el sello «Anotado» recién puesto baja de más
+   arriba, que es un golpe de sello; la hoja de la ficha baja (o sube, o entra de costado) los
+   últimos píxeles hasta su lugar. Todo en `--duracion-sello`, que el corte de movimiento reducido
+   lleva a cero: con relleno `both`, aparecen ya apoyados. */
+@keyframes sello-apoya {
+  from {
+    scale: var(--sello-desde, 1.06);
+    rotate: var(--sello-giro, -2deg);
+  }
+}
+
+@keyframes hoja-apoya {
+  from {
+    translate: var(--desde-hoja, 0 10px);
+  }
+}
+
+.bocadillo:not([hidden]) {
+  transform-origin: var(--punta, 50%) 100%;
+  animation: sello-apoya var(--duracion-sello) var(--curva-cinta) both;
+}
+
+.bocadillo--abajo:not([hidden]) { transform-origin: var(--punta, 50%) 0; }
+
+.bestiario-hoja:not([hidden]) { animation: hoja-apoya var(--duracion-sello) var(--curva-cinta) both; }
+
+.bestiario-hoja--arriba { --desde-hoja: 0 -10px; }
+
+@media (min-width: 52rem) {
+  .bestiario-hoja { --desde-hoja: 10px 0; }
+  .bestiario-hoja--izquierda { --desde-hoja: -10px 0; }
+}
+
+/* En la hoja, el sello «Anotado» va al lado del sello de clase, con la cuenta de la libreta: así lo
+   anotado se ve donde se anota, también en el camino, donde la libreta vive plegada en el tablero.
+   El recién anotado se estampa; el de siempre ya está apoyado. */
+.bestiario-anotada-sello--hoja {
+  display: inline-block;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+.bestiario-anotada-sello--nueva {
+  --sello-desde: 1.35;
+  --sello-giro: -9deg;
+  color: var(--texto);
+  border-color: var(--acento-2);
+  animation: sello-apoya var(--duracion-sello) var(--curva-cinta) both;
+}
+
+.bestiario-hoja-cuenta {
+  display: inline-block;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+/* La libreta se vuelve a sellar cada vez que la cuenta sube. */
+.bestiario-libreta--sella { animation: sello-apoya var(--duracion-sello) var(--curva-cinta) both; }
 
 /* La tercera vuelta (D-73): el monte de noche. La escena es más ancha que un teléfono y se
    recorre de costado; en el teléfono va de borde a borde, sin el margen de la hoja. */

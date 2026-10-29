@@ -49,9 +49,10 @@ import { crearEntorno } from './bestiario/entorno.ts';
 import { RECETAS } from '../lib/bestiario/sonido.ts';
 import { contextoVivo } from '../lib/audio/contexto.ts';
 import { Charla } from '../lib/bestiario/charla.ts';
-import { crearCamara, transformDe, type Encuadre } from '../lib/bestiario/camara.ts';
+import { PRIMER_PASO, crearCamara, primerPaso, transformDe, type Encuadre } from '../lib/bestiario/camara.ts';
 import { alSacudon } from './bestiario/sacudon.ts';
 import { lugarDeLaFicha, type Lado } from '../lib/bestiario/hoja.ts';
+import { reposar, sellar, sellarAnotada } from './bestiario/sellos.ts';
 
 interface Datos {
   region: string;
@@ -124,6 +125,7 @@ function anotar(id: string): void {
   anotadas.add(id);
   pintarAnotada(id);
   pintarLibreta();
+  sellar(libreta, 'bestiario-libreta--sella');
   try {
     localStorage.setItem(CLAVE, JSON.stringify([...anotadas]));
   } catch {
@@ -148,6 +150,7 @@ function abrir(id: string): void {
   // Abierta desde la lista: la lista se cierra y la ficha vuelve a su botón.
   cerrarLista();
   volverA = document.activeElement;
+  const nueva = !anotadas.has(id);
   const copia = original.cloneNode(true) as HTMLElement;
   copia.querySelector('[data-titulo]')?.setAttribute('id', 'hoja-titulo');
   hojaCuerpo.replaceChildren(copia);
@@ -155,7 +158,11 @@ function abrir(id: string): void {
   hoja.scrollTop = 0;
   abierta = id;
   anotar(id);
+  // Lo anotado se ve donde se anota (`D-83`): el sello y la cuenta, en la hoja.
+  sellarAnotada(copia, nueva, anotadas.size, datos.total);
   ubicarHoja(id);
+  // La hoja se asienta de nuevo aunque ya estuviera abierta con otro bicho.
+  reposar(hoja);
   cerrar.focus({ preventScroll: true });
 }
 
@@ -235,7 +242,7 @@ function decir(id: string, sx: number, sy: number, preferirAbajo = false, dura =
   if (!b) return;
   escenario.append(bocadillo);
   bocadilloVerso.textContent = `«${b.dice}»`;
-  bocadillo.hidden = false;
+  reposar(bocadillo);
   const caja = escenario.getBoundingClientRect();
   const ancho = bocadillo.offsetWidth;
   const alto = bocadillo.offsetHeight;
@@ -409,7 +416,23 @@ function encuadrar(): void {
 /** A dónde quiere llegar la ruedita o el teclado, en píxeles; se llega de a poco. */
 let objetivo: number | null = null;
 
+/**
+ * El primer paso (`D-83`, `lib/bestiario/camara.ts`): al llegar, la cámara camina sola un trecho
+ * corto y despacio, para que se vea que el mundo se corre de costado y asome lo primero que hay.
+ * Cualquier gesto lo corta; con movimiento reducido no se da.
+ */
+let paseo: { desde: number; hasta: number; t0: number } | null = null;
+
+function darElPrimerPaso(): void {
+  if (quieto() || recorrido() <= 0) return;
+  const largo = Math.min(vistaPx * PRIMER_PASO.cuanto, PRIMER_PASO.tope, recorrido() - escenario.scrollLeft);
+  if (largo <= 0) return;
+  paseo = { desde: escenario.scrollLeft, hasta: escenario.scrollLeft + largo, t0: reloj };
+  arrancar();
+}
+
 function irA(x: number, deUna = false): void {
+  paseo = null;
   const meta = Math.min(recorrido(), Math.max(0, x));
   if (deUna || quieto()) {
     objetivo = null;
@@ -763,6 +786,15 @@ function cuadro(ahora: number): void {
   const dt = Math.min((ahora - antes) / 1000, 0.05);
   antes = ahora;
   reloj += dt;
+  // El primer paso: la cámara camina sola un trecho corto, y se para.
+  if (paseo) {
+    const u = (reloj - paseo.t0) / PRIMER_PASO.dura;
+    escenario.scrollLeft = paseo.desde + (paseo.hasta - paseo.desde) * primerPaso(u);
+    if (u >= 1) {
+      camDeEntrada = paseo.hasta;
+      paseo = null;
+    }
+  }
   // La ruedita y el teclado llegan de a poco: el scroll se acerca a donde se pidió.
   if (objetivo !== null) {
     const falta = objetivo - escenario.scrollLeft;
@@ -816,7 +848,45 @@ movimiento.addEventListener('change', () => {
 });
 
 /* ------------------------------------------------------------------
-   Caminar: el dedo, la ruedita y el teclado
+   La invitación a caminar (`D-83`)
+   ------------------------------------------------------------------
+
+   En el teléfono, con el tablero plegado, nada decía que se camina deslizando de costado: se veía
+   el monte, y nada más. Hasta que la mano camine por primera vez, el aviso de deslizar es un sello
+   flotando abajo. Lo aprendido queda anotado en el teléfono, como la libreta: la región que sigue
+   ya no lo repite. Donde hay mouse no hace falta: el primer paso y el agarre lo dicen solos. */
+
+const CLAVE_CAMINAR = 'fichin-bestiario-sabe-caminar';
+const invitacion = camino.querySelector<HTMLElement>('.camino-deslizar');
+/** Dónde estaba la cámara al entrar (o al terminar el primer paso): lo caminado se mide desde ahí. */
+let camDeEntrada = 0;
+
+function sabeCaminar(): boolean {
+  try {
+    return localStorage.getItem(CLAVE_CAMINAR) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function invitar(): void {
+  if (!invitacion || sabeCaminar() || recorrido() <= 0) return;
+  camino.classList.add('camino--invita');
+}
+
+/** La mano ya caminó: el sello se va, y no vuelve en este teléfono. */
+function aprender(): void {
+  if (!camino.classList.contains('camino--invita')) return;
+  camino.classList.remove('camino--invita');
+  try {
+    localStorage.setItem(CLAVE_CAMINAR, '1');
+  } catch {
+    // Sin dónde guardar, la próxima región vuelve a invitar.
+  }
+}
+
+/* ------------------------------------------------------------------
+   Caminar: el dedo, la ruedita, el teclado y el mouse
    ------------------------------------------------------------------ */
 
 // El dedo: el scroll de costado del navegador. La isla solo mira dónde quedó.
@@ -824,11 +894,70 @@ escenario.addEventListener(
   'scroll',
   () => {
     if (objetivo === null || Math.abs(objetivo - escenario.scrollLeft) < 1) encuadrar();
+    // Un trecho caminado por la mano, no por el primer paso: ya sabe.
+    if (!paseo && objetivo === null && Math.abs(escenario.scrollLeft - camDeEntrada) > 80) aprender();
   },
   { passive: true },
 );
-// Si el dedo agarra la escena mientras la ruedita la llevaba, manda el dedo.
-escenario.addEventListener('pointerdown', () => (objetivo = null), { passive: true });
+// Si el dedo agarra la escena mientras la ruedita la llevaba, manda el dedo; y corta el primer paso.
+escenario.addEventListener(
+  'pointerdown',
+  (ev) => {
+    objetivo = null;
+    paseo = null;
+    agarrar(ev);
+  },
+  { passive: true },
+);
+
+/* Agarrar la escena con el mouse (`D-83`). En la compu la escena no se arrastraba: el scroll de
+   costado solo lo movían la ruedita y las flechas. Con el mouse apretado, la escena se agarra y se
+   lleva, como con el dedo. Seis píxeles de movimiento y es un arrastre, no un toque; soltar después
+   de arrastrar no toca nada. */
+
+let agarre: { id: number; x: number; cam: number; movio: boolean } | null = null;
+/** El clic que cierra un arrastre no es un toque: se traga. */
+let soltadoSinTocar = false;
+
+function agarrar(ev: PointerEvent): void {
+  soltadoSinTocar = false;
+  if (ev.pointerType !== 'mouse' || ev.button !== 0) return;
+  agarre = { id: ev.pointerId, x: ev.clientX, cam: escenario.scrollLeft, movio: false };
+}
+
+escenario.addEventListener('pointermove', (ev) => {
+  if (!agarre || ev.pointerId !== agarre.id) return;
+  const dx = ev.clientX - agarre.x;
+  if (!agarre.movio) {
+    if (Math.abs(dx) < 6) return;
+    agarre.movio = true;
+    camino.classList.add('camino--agarrando');
+    escenario.setPointerCapture(agarre.id);
+  }
+  escenario.scrollLeft = agarre.cam - dx;
+});
+
+function soltar(ev: PointerEvent): void {
+  if (!agarre || ev.pointerId !== agarre.id) return;
+  if (agarre.movio) {
+    camino.classList.remove('camino--agarrando');
+    soltadoSinTocar = true;
+    aprender();
+  }
+  agarre = null;
+}
+escenario.addEventListener('pointerup', soltar);
+escenario.addEventListener('pointercancel', soltar);
+escenario.addEventListener(
+  'click',
+  (ev) => {
+    if (!soltadoSinTocar) return;
+    soltadoSinTocar = false;
+    ev.stopPropagation();
+    ev.preventDefault();
+  },
+  true,
+);
 
 /** Lo que flota encima: ahí la ruedita y las flechas son de ellos. */
 const encima = (el: Element | null): boolean => !!el?.closest?.('.bestiario-hoja, .camino-fichas--abierta');
@@ -845,6 +974,7 @@ document.addEventListener(
     if (Math.abs(dy) <= Math.abs(dx)) return;
     ev.preventDefault();
     irA((objetivo ?? escenario.scrollLeft) + dy);
+    aprender();
   },
   { passive: false },
 );
@@ -878,6 +1008,7 @@ document.addEventListener('keydown', (ev) => {
   if (meta === undefined) return;
   ev.preventDefault();
   irA(meta);
+  aprender();
 });
 
 /* ------------------------------------------------------------------
@@ -989,9 +1120,15 @@ encuadrar();
 if (quieto()) vida.mover(0, 0);
 requestAnimationFrame(() => {
   // Se llegó al cruce volviendo de la región de al lado (`#cruce`): se aparece al final del
-  // camino. Un enlace a un bicho (`#el-lobo-suelto`) lleva hasta él con su ficha abierta.
+  // camino. Un enlace a un bicho (`#el-lobo-suelto`) lleva hasta él con su ficha abierta. Si no,
+  // se entra por el principio: el primer paso, y a quien no caminó nunca, la invitación.
   const pedido = decodeURIComponent(location.hash.slice(1));
   if (pedido === 'cruce') alCruce(false);
   else if (bestias.has(pedido)) llevarA(pedido);
+  else {
+    camDeEntrada = escenario.scrollLeft;
+    invitar();
+    darElPrimerPaso();
+  }
 });
 arrancar();
