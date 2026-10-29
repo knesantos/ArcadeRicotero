@@ -76,6 +76,8 @@ const enEstaPagina = new Set(lista.map((b) => b.id));
 const capa = (nombre: string | null) => (nombre ? PIEZAS_CAMINO.find((p) => p.nombre === nombre)! : null);
 const lejos = capa(tramo.piezas.lejos);
 const frente = capa(tramo.piezas.frente);
+/** El piso impreso, para pedirlo antes que nada: es lo primero que se ve, y vive adentro del SVG. */
+const pisoImpreso = capa(tramo.piezas.piso);
 const enLaAltura = (caja: readonly number[]): string => `top: ${((caja[1]! / ALTO) * 100).toFixed(3)}%; height: ${((caja[3]! / ALTO) * 100).toFixed(3)}%`;
 
 /** El piso, que es la capa de los bichos (`escenas-camino.ts`). */
@@ -141,6 +143,12 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
   volverA={{ href: '/redondopedia/bestiario/', texto: CAMINO.volver }}
   discoDelPie="lobo-suelto"
 >
+  {/* Lo impreso que se ve al llegar se pide antes de leer la página entera (`D-83`): el piso va
+      adentro del SVG, donde el navegador no lo encuentra hasta armar el documento. */}
+  <Fragment slot="cabeza">
+    {pisoImpreso && <link rel="preload" as="image" href={rutaDePieza(pisoImpreso.nombre)} fetchpriority="high" />}
+    {lejos && <link rel="preload" as="image" href={rutaDePieza(lejos.nombre)} fetchpriority="high" />}
+  </Fragment>
   <section
     class="camino"
     id="camino"
@@ -250,7 +258,12 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
         </div>
       </div>
     </div>
-    <p class="recinto-deslizar camino-deslizar">{CAMINO.deslizar}</p>
+    <p class="recinto-deslizar camino-deslizar">
+      {CAMINO.deslizar}
+      <svg class="camino-deslizar-flecha" viewBox="-14 -10 28 20" aria-hidden="true">
+        <path d="M-11 0 L8 0 M1 -7 L9 0 L1 7" />
+      </svg>
+    </p>
   </section>
 
   <div class="bocadillo" id="bocadillo" hidden role="status">

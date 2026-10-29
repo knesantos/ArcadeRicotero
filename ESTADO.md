@@ -7,6 +7,7 @@
 
 **Última actualización:** 2026-10-29
 
+<<<<<<< HEAD
 > ## 🦁 CINCO QUE ERAN OJOS EN LA PROFUNDIDAD DE LA NOCHE: EL REY DE ESTA JUNGLA, EL AHOGADO Y SU FIEL FANTASMA, EL PICHÓN, EL CLUB DE MANTIS Y EL QUE NO SE CAYÓ DEL CIELO (2026-10-29) — `D-73` (25)
 >
 > **Sin integrar**, en la rama `bestiario/cinco-noche`, nacida sobre `bestiario/siete-mas` (`49351b3`, la vigesimocuarta, todavía
@@ -29,6 +30,36 @@
 > - **Verde:** `npm test` (2209), `npm run check` (0 errores), `npm run build` (180 páginas). Vistos vivir y responder al toque en
 >   la página de cada recinto, con la ficha abierta.
 > - **Falta**: `T-514` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
+=======
+> ## ✨ LA PULIDA DEL BESTIARIO: EL PRIMER PASO, LOS SELLOS QUE SE ASIENTAN Y EL ANOTADO A LA VISTA (2026-10-29) — `D-83`
+>
+> **Sin integrar**, en la rama `bestiario/pulida` (worktree `.claude/worktrees/pulida-bestiario`), sobre `bestiario/siete-mas`
+> en `49351b3` (PR #88, con `main` adentro): trae adentro las siete más. Pedido del usuario: *"Hace una pulida entera del
+> bestiario redondo. Mejora diseños, mejora inmersion, animaciones y todo lo que haga mas inmersivo y pulido al sitio."*
+>
+> - **Lo que se vio antes de tocar**: en el teléfono, al entrar al monte no había ningún bicho a la vista (las lobas arrancan
+>   en el píxel 398 de una pantalla de 375) ni ninguna pista de que se camina de costado, con el tablero plegado; en el camino
+>   la libreta vivía plegada y nada decía que un toque anotaba; el bocadillo y la hoja aparecían de golpe; en la compu la
+>   escena no se agarraba con el mouse.
+> - **El primer paso**: al llegar por el principio, la cámara camina sola el 30 % de la vista (150 px como mucho) en 1,6 s y
+>   se para; cualquier gesto lo corta y con movimiento reducido no se da (`PRIMER_PASO` en `camara.ts`, con test).
+> - **La invitación a caminar**: hasta que la mano camine por primera vez, «Deslizá de costado para caminar» es un sello
+>   flotando abajo de la escena, con la flecha del cruce; se va con el primer trecho caminado y queda anotado en el teléfono
+>   (`fichin-bestiario-sabe-caminar`). Solo donde no hay mouse.
+> - **Los sellos se asientan** (`--duracion-sello`, 220 ms, a cero con movimiento reducido; `movimiento.test.ts` las conoce):
+>   el bocadillo gira desde su punta, la hoja baja los últimos diez píxeles, el «Anotado» nuevo cae como golpe de sello y la
+>   libreta se vuelve a sellar cuando la cuenta sube.
+> - **Lo anotado se ve donde se anota**: la hoja de la ficha lleva el sello «Anotado» y «Anotaste n de 122» al lado del
+>   sello de clase (`scripts/bestiario/sellos.ts`, compartido por las dos islas).
+> - **La escena se agarra con el mouse** (`grab`/`grabbing`): seis píxeles ya son arrastre, y el clic que lo cierra no toca
+>   a nadie.
+> - **Precarga** del piso y de lo lejano desde la cabeza del documento; chips, acciones, rótulos del plano y botones del
+>   camino responden en `--duracion-toque`.
+> - **Verde:** `npm test` (2165), `npm run check` (0 errores), `npm run build` (180 páginas). Visto en el panel a 375×812 y
+>   a 1280×800, con el panel a la vista (escondido no corre `requestAnimationFrame`).
+> - **Falta**: `T-514` (teléfono de verdad: la inercia de iOS, el sello sobre la barra de Safari), `T-515` (el sello de
+>   invitación y el renglón de la hoja al lienzo, hoja 08).
+>>>>>>> origin/main
 
 > ## 🃏 SIETE MÁS QUE ERAN OJOS: EL DIABLO DE MUCHOS CUERNOS, LA PRINCESITA SAPITO, LA TIPA RAPAZ, EL RATÓN, LA POLILLA, EL BOTIJA Y EL JOCKER (2026-10-29) — `D-73` (24)
 >
@@ -46,6 +77,29 @@
 > - **Verde:** `npm test` (2164), `npm run check`, `npm run build`.
 > - **Falta**: `T-513` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
 
+> ## 📺 DOS JUEGOS PARA JUGAR ADENTRO DE X, A PRUEBA (2026-10-28) — `T-513`
+>
+> **En `main` desde el PR #89** (commit de fusión `3fe3bcf`), rama `worktree-difusion-x-player`. Lo integró Claude a pedido
+> del usuario (*"Cuando termines metelo a main asi lo puedo probar."*). Pedido del usuario: investigar las "miniapps" de X
+> y armar *"para noche ricotera y adivina el tema"*. El bestiario como miniapp de X lo hace otra sesión, rama
+> `bestiario-en-x`.
+>
+> - **Lo que encontró `investigador`** (sin ficha `RES` todavía; no pudo abrir developer.x.com): X **no tiene miniapps**. La
+>   única vía es la **Player Card** (`twitter:card=player`, un iframe dentro del posteo), pensada para video y audio. Según sus
+>   foros pide aprobación manual, no se ve en el timeline y puede no verse en el celular.
+> - **Qué hay**: siete páginas puente en `/en-x/` (`[...juego].astro`): "Adiviná el tema", "¿Qué tipo de ricotero sos?" y
+>   sus cuatro postales. Llevan la Player Card y mandan al juego a quien las abre, con el desafío de la dirección. El iframe
+>   carga el juego de siempre con `?incrustado`: `Cabeza` (`incrustable`) le pone `html.incrustado` y `<base target="_blank">`.
+>   Tamaño apostado: 480 × 720 (`REPRODUCTOR` en `lib/en-x.ts`).
+> - **El modo incrustado** (`juego.css`, sección "Adentro de X"): la cabecera y la marca grande se cambian por la franja de
+>   `FranjaEnX.astro` (FR chica + "SEGUÍ EN EL FICHÍN"), así a 360 × 540 entran el título y el botón de empezar sin
+>   scroll; en "Adiviná el tema" la escalera de intentos se pliega con poco alto y en el resultado suben el puntaje y
+>   "Compartí". **"Compartí" adentro de X postea** (`scripts/en-x.ts`): abre el posteo ya escrito con **la puente** como
+>   dirección (la postal de la manera que salió, en dos ejes), así el posteo nuevo también se juega adentro.
+> - **Verde:** `npm test` (2013), `npm run check`, `npm run build`. Los dos juegos se jugaron enteros a 360 × 540 y 480 × 720,
+>   con el posteo de X armado y la puente probada con un desafío.
+> - **Falta**: publicar, pegar el enlace en un posteo real y mirarlo en iOS, Android y web. Si X no lo muestra, se
+>   queda la tarjeta grande de siempre. Que `investigador` deje la ficha `RES` con lo que el posteo confirme.
 > ## 🐐 SIETE QUE ERAN OJOS: EL CHIVATO, LOS GALLOS, LA ANGUILA, LA LECHUZA, EL ANZUELO, LA PIBA Y LAS LOBAS (2026-10-28) — `D-73` (23)
 >
 > **En `main`** por el PR #86 (fusión `b1677df`), desde la rama `bestiario/siete`.

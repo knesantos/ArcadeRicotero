@@ -417,6 +417,25 @@ export const OKTUBRE = {
 } as const;
 
 /**
+ * La página puente para X (`/en-x/<juego>/`): la que se pega en un posteo para que X arme la
+ * Player Card con el juego adentro. Quien la abre en un navegador no se queda acá: lo manda
+ * derecho al juego. Todo registro 3, porque solo se ve medio segundo o sin JavaScript.
+ */
+export const EN_X = {
+  /** El nombre del sitio en la pestaña de la puente. */
+  sitio: 'Fichín Ricotero',
+  /** Si la redirección no anda, el botón a mano. */
+  seguir: 'Seguí al juego',
+  /**
+   * La salida de la franja que el juego lleva adentro de X. No dice "volvé": el que juega en
+   * X nunca estuvo en el sitio, y el enlace abre una pestaña nueva.
+   */
+  alSitio: 'SEGUÍ EN EL FICHÍN',
+  /** Cómo se nombra la marca de la franja para el lector de pantalla. */
+  marca: 'Fichín Ricotero, en una pestaña nueva',
+} as const;
+
+/**
  * La carátula de cada juego (`D-54`, `UX-35`). Todo registro 3: dice qué hay y se calla.
  *
  * El nombre del juego y la lista de temas no se escriben acá: salen de `JUEGOS`, igual que

@@ -6796,3 +6796,95 @@ Pedidos del usuario: *"está como medio cortada la corona, que sea la misma coro
   `public/marca/`.
 - **Salteó el circuito de `diseno-marca.md`** (primero el lienzo) por pedido directo del usuario.
   Queda pegar la marca en la hoja 01 del lienzo.
+
+## D-83 — La pulida del bestiario: el primer paso, los sellos que se asientan y el anotado a la vista
+
+- **Fecha:** 2026-10-29
+- **Estado:** activa. Pedido del usuario, textual: *"Hace una pulida entera del bestiario redondo.
+  Mejora diseños, mejora inmersion, animaciones y todo lo que haga mas inmersivo y pulido al sitio."*
+  La escribe el hilo principal en la rama `bestiario/pulida` (worktree
+  `.claude/worktrees/pulida-bestiario`), sobre `bestiario/siete-mas` en `49351b3` (PR #88, con
+  `main` adentro). Antes de tomar el número se miraron las ramas remotas: `D-82` era el último.
+- **Es decisión aparte** y no enmienda de `D-80`: no cambia la cámara ni la ficha que decidió aquella.
+  Les suma lo que faltaba para que el camino se entienda sin leer, y para que lo que pasa se vea pasar.
+
+### Lo que se vio antes de tocar nada
+
+Se recorrió el bestiario en el panel, a 375×812 y a 1280×800, y se midió en el DOM:
+
+- **Al entrar al monte en un teléfono no había ningún bicho a la vista.** Las antiguas lobas, las
+  primeras del camino, arrancan en el píxel 398 de una pantalla de 375, y el tablero plegado (`D-77`,
+  primera enmienda) esconde la única línea que decía que se camina deslizando de costado. Se veían
+  árboles y tierra, y ninguna pista: un muro en la primera pantalla, que es lo que `CLAUDE.md` prohíbe.
+- **Nada confirmaba que un toque anotara.** La libreta vive en el tablero plegado: en el camino,
+  "Anotaste 3 de 122" no se veía nunca.
+- El bocadillo y la hoja de la ficha aparecían de golpe, sin asentarse, al revés de todo el sitio.
+- En la compu la escena no se agarraba con el mouse: solo la ruedita y las flechas caminaban.
+- El piso impreso de cada camino vive adentro del SVG, donde el navegador no lo pide hasta armar el
+  documento entero.
+
+### Lo que cambia
+
+1. **El primer paso** (`lib/bestiario/camara.ts`, `PRIMER_PASO`; `scripts/camino.ts`). Al llegar a
+   un camino por el principio, la cámara camina sola un trecho corto —el 30 % de la vista, 150 px
+   como mucho, en 1,6 s, arrancando y llegando despacio— y se para. Se ve que el mundo se corre de
+   costado y asoma lo primero que hay: en el monte, las lobas entran en la pantalla. Cualquier gesto
+   lo corta (el dedo, la ruedita, una tecla); con movimiento reducido no se da; llegando por `#cruce`
+   o a un bicho, tampoco. Es el espíritu de la entrada de `D-80` (la cámara se asoma y se asienta),
+   un paso más adelante.
+2. **La invitación a caminar.** Hasta que la mano camine por primera vez, el aviso que ya existía
+   ("Deslizá de costado para caminar.", registro 3) es un sello flotando abajo de la escena, con la
+   flecha de los carteles del cruce, en el papel y el borde de la región. Se va con el primer trecho
+   caminado por la mano (80 px que no sean del primer paso) y queda anotado en el teléfono
+   (`fichin-bestiario-sabe-caminar`), como la libreta: la región que sigue no lo repite. Solo donde
+   no hay mouse (`hover: none`): en la compu alcanzan el primer paso, la ruedita y el agarre. Sin
+   isla, el aviso sigue abajo de la escena como estaba, ahora con la flecha.
+3. **Los sellos se asientan** (`sitio.css`; `--duracion-sello` en `tokens.css`, 220 ms, a cero con
+   movimiento reducido). Nada aparece con un fundido: el umbral de la portada lo dice y es el tic
+   anti-slop número uno. Un sello llega ya estampado y termina de apoyar. El bocadillo gira apenas
+   alrededor de su punta; la hoja de la ficha baja (o sube, o entra de costado, según el lado que
+   eligió `D-80`) los últimos diez píxeles; el sello «Anotado» recién puesto baja de más arriba, que
+   es un golpe de sello; la libreta se vuelve a sellar cuando la cuenta sube. `movimiento.test.ts` las
+   conoce (`sello-apoya`, `hoja-apoya`) y verifica que el corte las lleve a cero. Cuando el bocadillo
+   o la hoja ya estaban a la vista con otro bicho, la isla los vuelve a apoyar
+   (`scripts/bestiario/sellos.ts`, compartido por las dos islas).
+4. **Lo anotado se ve donde se anota.** La hoja de la ficha lleva, al lado del sello de clase, el
+   sello «Anotado» (el mismo del índice) y la cuenta de la libreta: "Anotaste 2 de 122." Las dos
+   islas lo ponen en la copia de la ficha. Es la primera vez que en el camino se ve crecer la colección.
+5. **La escena se agarra con el mouse.** Con el botón apretado, seis píxeles de movimiento la
+   convierten en un arrastre: la escena se lleva como con el dedo, la mano se cierra
+   (`cursor: grabbing`) y el clic que cierra el arrastre no toca a nadie. Los bichos siguen con su
+   mano de tocar. Es respuesta al gesto: con movimiento reducido anda igual.
+6. **Lo impreso que se ve al llegar se pide antes** (`<link rel="preload">` del piso y de lo lejano,
+   con prioridad alta) desde la cabeza del documento.
+7. **Los chips, las acciones, los rótulos del plano y los botones del camino** responden al dedo en
+   `--duracion-toque`, como `.opcion`.
+
+### Lo que no cambia, y por qué
+
+- El resto de la cámara, la ficha que no tapa y los recintos ensanchados de `D-80`.
+- No hay anillo ni vibración al tocar un títere: tocarlo abre la ficha, suena el recorte y la cámara
+  se arrima. Con eso alcanza, y un anillo más sería el tic del "ripple".
+- Las escenas no se alargaron ni se movió ningún bicho de lugar: el primer paso resuelve la pantalla
+  vacía del monte sin tocar el arte.
+
+### Verificado
+
+`npm test`, `npm run check` y `npm run build` en verde (los números, en `ESTADO.md`). En el panel,
+**con el panel a la vista** —escondido no corre `requestAnimationFrame`, y una espera de un cuadro
+cuelga el `javascript_tool`—:
+
+- A 375×812: el primer paso lleva el monte de 0 a 113 px y las lobas entran en la pantalla; el sello
+  «Deslizá de costado para caminar» aparece abajo y se va con el primer trecho, y queda anotado; la
+  ficha de las lobas abre abajo con `hoja-apoya`, el sello «Anotado» y "Anotaste 1 de 122"; la del
+  animal que no late estampa el sello nuevo (`sello-apoya`) y vuelve a sellar la libreta.
+- A 1280×800: en la mesa el primer paso llega a 150 px, la mano sobre la escena es `grab`, el sello
+  de invitación no se muestra, un arrastre de 400 px camina de 150 a 549 sin abrir ninguna ficha, y
+  el mouse sobre la mula de la enfermedad apoya el bocadillo con `sello-apoya` desde su punta.
+
+### Abierto
+
+- `T-514`: verlo en un teléfono de verdad: el primer paso con la inercia del scroll de iOS, el sello
+  sobre la barra de Safari, y la hoja al asentarse.
+- `T-515`: la hoja 08 del lienzo (componentes): el sello de invitación y el renglón «Anotado · cuenta»
+  de la hoja. No hubo tintas nuevas: todo sale de `tokens.css`.
