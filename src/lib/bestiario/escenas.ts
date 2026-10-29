@@ -64,7 +64,8 @@ const parte = (nombre: string, cuerpo: string): string => `<g data-parte="${nomb
 // abren por el baldío.
 export const VECINOS_DEL_BALDIO: Readonly<Record<string, readonly [number, number, Tinta]>> = {
   'el-gato-maton': [300, 206, 'oro'],
-  'el-raton': [344, 252, 'papel'],
+  // El ratón bajó a la chapa, delante de la cara del gato matón, que ahora es títere (`arte-maton.ts`).
+  'el-raton': [370, 282, 'papel'],
   'el-gato-de-susanita': [1150, 168, 'oro'],
   'susanita': [1196, 214, 'papel'],
   'el-gato-que-llamas-con-silbidos': [762, 214, 'oro'],
@@ -172,12 +173,14 @@ export const VECINOS_DEL_TEMPLO: Readonly<Record<string, readonly [number, numbe
   'los-gallos-sofocados': [1010, 520, 'oro'],
   'marita-la-virgencita': [190, 470, 'papel'],
   'la-polilla': [604, 150, 'papel'],
-  'la-murga-de-los-renegados': [-40, 572, 'papel'],
+  // La murga se corrió a la derecha de la columna para dejarle el anda al santo fumador.
+  'la-murga-de-los-renegados': [24, 576, 'papel'],
   'el-morta': [652, 440, 'oro'],
   // Mister Ed se corrió a la derecha para dejarle el aire al Dr. Saturno, que flota delante de la columna.
   'mister-ed-y-huesito': [985, 580, 'papel'],
   'el-doctor-saturno': [1000, 300, 'papel'],
-  'el-sheriff': [-170, 530, 'oro'],
+  // El sheriff, más contra la primera columna: el anda del santo fumador tiene varas largas.
+  'el-sheriff': [-226, 530, 'oro'],
   'la-bailarina': [270, 586, 'papel'],
 };
 
@@ -307,10 +310,11 @@ export const VECINOS_DE_LA_PRISION: Readonly<Record<string, readonly [number, nu
   // celda nueva de la izquierda, y los reos dejan la celda del esclavo por la nueva de la derecha.
   'el-reo-semental': [-170, 396, 'papel'],
   'el-esclavo-sensible-y-chillon': [214, 410, 'papel'],
-  'los-reos-de-la-sociedad': [1056, 420, 'papel'],
+  'los-reos-de-la-sociedad': [1108, 432, 'papel'],
   'los-titanes-del-orden-viril': [622, 322, 'rojo'],
   'el-chivato': [-110, 466, 'oro'],
-  'el-pichon': [558, 324, 'papel'],
+  // Creció a títere de 70 de alto en el alféizar: el ojo sube y queda entre dos barrotes.
+  'el-pichon': [506, 289, 'papel'],
   // Adentro de su jaulita (`JAULITA` en `arte-prision.ts`), que cuelga en el ala de la izquierda.
   'el-pajarito-del-lavi-rap': [-130, 162, 'oro'],
 };

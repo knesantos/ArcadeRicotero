@@ -5,7 +5,162 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-24
+**Última actualización:** 2026-10-29
+
+> ## 🦁 CINCO QUE ERAN OJOS EN LA PROFUNDIDAD DE LA NOCHE: EL REY DE ESTA JUNGLA, EL AHOGADO Y SU FIEL FANTASMA, EL PICHÓN, EL CLUB DE MANTIS Y EL QUE NO SE CAYÓ DEL CIELO (2026-10-29) — `D-73` (25)
+>
+> **Sin integrar**, en la rama `bestiario/cinco-noche`, nacida sobre `bestiario/siete-mas` (`49351b3`, la vigesimocuarta, que entró
+> a `main` por el #88), con `main` adentro. `T-516` (se escribió como `T-514` y se renumeró: `T-514` y `T-515` ya eran de la pulida, `D-83`). Pedido del usuario: cinco bestias que hoy sean ojos en la profundidad de la noche, con vida,
+> animación y detalles únicos. Se eligió una por recinto entre los que menos títeres tienen (el infierno ya no tiene ojos).
+>
+> - **Monte**: el rey de esta jungla, un león viejo enterrado hasta los ojos entre las flores, con la cruz de la etiqueta negra, la
+>   corona de lata y el patín; tocado asoma, ruge sin voz, crecen las flores, rueda el patín y se vuelve a hundir.
+> - **Bajo**: el ahogado y su fiel fantasma, dos en un títere a la izquierda del bote; tocados él se va a pique, la sábana hace BU y
+>   se zambulle detrás, y vuelven los dos chorreando.
+> - **Prisión**: el pichón en el alféizar de la ventana, detrás de la reja (capa `atras`), con la pizarrita de los tiros que esquivó;
+>   tocado, fogonazo, salta, vuelan plumas, queda un agujero nuevo en la piedra y hace la raya. Salió chico y se agrandó al doble:
+>   sus ojos se corrieron a [506, 289].
+> - **Mesa**: el club de mantis, tres señoras con servilleta que se hamacan y siguen con la pseudopupila al macho que llega con un
+>   clavel; tocadas, ÑAC. Se sacaron las tres mantis pintadas del piso (`mesa-piso` y `camino-mesa-piso` reimpresos).
+> - **Techos**: el que no se cayó del cielo, sentado en el filo de la chapa con el vaso que nunca se vuelca; tocado se cae, queda
+>   colgado de una mano, se sube y brinda.
+> - Alrededor: `esclavo.test.ts` ahora pide solo al esclavo en la capa `atras` de la prisión (se le metía el pichón); las cinco
+>   estampas se acortaron al tope de 320 caracteres del schema.
+> - **Verde:** `npm test` (2209), `npm run check` (0 errores), `npm run build` (180 páginas). Vistos vivir y responder al toque en
+>   la página de cada recinto, con la ficha abierta.
+> - **Falta**: `T-516` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
+
+> ## ✨ LA PULIDA DEL BESTIARIO: EL PRIMER PASO, LOS SELLOS QUE SE ASIENTAN Y EL ANOTADO A LA VISTA (2026-10-29) — `D-83`
+>
+> **Sin integrar**, en la rama `bestiario/pulida` (worktree `.claude/worktrees/pulida-bestiario`), sobre `bestiario/siete-mas`
+> en `49351b3` (PR #88, con `main` adentro): trae adentro las siete más. Pedido del usuario: *"Hace una pulida entera del
+> bestiario redondo. Mejora diseños, mejora inmersion, animaciones y todo lo que haga mas inmersivo y pulido al sitio."*
+>
+> - **Lo que se vio antes de tocar**: en el teléfono, al entrar al monte no había ningún bicho a la vista (las lobas arrancan
+>   en el píxel 398 de una pantalla de 375) ni ninguna pista de que se camina de costado, con el tablero plegado; en el camino
+>   la libreta vivía plegada y nada decía que un toque anotaba; el bocadillo y la hoja aparecían de golpe; en la compu la
+>   escena no se agarraba con el mouse.
+> - **El primer paso**: al llegar por el principio, la cámara camina sola el 30 % de la vista (150 px como mucho) en 1,6 s y
+>   se para; cualquier gesto lo corta y con movimiento reducido no se da (`PRIMER_PASO` en `camara.ts`, con test).
+> - **La invitación a caminar**: hasta que la mano camine por primera vez, «Deslizá de costado para caminar» es un sello
+>   flotando abajo de la escena, con la flecha del cruce; se va con el primer trecho caminado y queda anotado en el teléfono
+>   (`fichin-bestiario-sabe-caminar`). Solo donde no hay mouse.
+> - **Los sellos se asientan** (`--duracion-sello`, 220 ms, a cero con movimiento reducido; `movimiento.test.ts` las conoce):
+>   el bocadillo gira desde su punta, la hoja baja los últimos diez píxeles, el «Anotado» nuevo cae como golpe de sello y la
+>   libreta se vuelve a sellar cuando la cuenta sube.
+> - **Lo anotado se ve donde se anota**: la hoja de la ficha lleva el sello «Anotado» y «Anotaste n de 122» al lado del
+>   sello de clase (`scripts/bestiario/sellos.ts`, compartido por las dos islas).
+> - **La escena se agarra con el mouse** (`grab`/`grabbing`): seis píxeles ya son arrastre, y el clic que lo cierra no toca
+>   a nadie.
+> - **Precarga** del piso y de lo lejano desde la cabeza del documento; chips, acciones, rótulos del plano y botones del
+>   camino responden en `--duracion-toque`.
+> - **Verde:** `npm test` (2165), `npm run check` (0 errores), `npm run build` (180 páginas). Visto en el panel a 375×812 y
+>   a 1280×800, con el panel a la vista (escondido no corre `requestAnimationFrame`).
+> - **Falta**: `T-514` (teléfono de verdad: la inercia de iOS, el sello sobre la barra de Safari), `T-515` (el sello de
+>   invitación y el renglón de la hoja al lienzo, hoja 08).
+
+> ## 🃏 SIETE MÁS QUE ERAN OJOS: EL DIABLO DE MUCHOS CUERNOS, LA PRINCESITA SAPITO, LA TIPA RAPAZ, EL RATÓN, LA POLILLA, EL BOTIJA Y EL JOCKER (2026-10-29) — `D-73` (24)
+>
+> **Sin integrar**, en la rama `bestiario/siete-mas`, nacida sobre `bestiario/siete` (`2dd328b`), con `main` ya adentro (la vigesimotercera entró por el #86).
+> `T-513`. Pedido del usuario: otras siete bestias sin diseño complejo, rocambolescas, con buenos detalles y animación acorde.
+>
+> - **Infierno**: el diablo de muchos cuernos, portero de levita; tocado se cuenta los cuernos y le brota otro.
+> - **Cybersiberia**: la princesita sapito en su trono de nieve; tocada pone la trompa, puf, y sigue sapo.
+> - **Mesa**: la tipa rapaz; tocada se queda con la billetera del mantel y brinda.
+> - **Techos**: el ratón de canaleta; tocado huele al gato, se esconde y vuelve a asomar el hocico.
+> - **Templo**: la polilla colgada de la guirnalda, con su foco; tocada se da contra el vidrio e insiste.
+> - **Astilleros**: el botija rapado en la planchada; tocado salta al ferry y «¡Zafó!».
+> - **Árbol**: el jocker burlón colgado de la rama; tocado se da vuelta como un naipe.
+> - Se sacaron del piso las siluetas de la princesita, la tipa, el botija y el jocker (reimpresos).
+> - **Verde:** `npm test` (2164), `npm run check`, `npm run build`.
+> - **Falta**: `T-513` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
+
+> ## 📺 DOS JUEGOS PARA JUGAR ADENTRO DE X, A PRUEBA (2026-10-28) — `T-513`
+>
+> **En `main` desde el PR #89** (commit de fusión `3fe3bcf`), rama `worktree-difusion-x-player`. Lo integró Claude a pedido
+> del usuario (*"Cuando termines metelo a main asi lo puedo probar."*). Pedido del usuario: investigar las "miniapps" de X
+> y armar *"para noche ricotera y adivina el tema"*. El bestiario como miniapp de X lo hace otra sesión, rama
+> `bestiario-en-x`.
+>
+> - **Lo que encontró `investigador`** (sin ficha `RES` todavía; no pudo abrir developer.x.com): X **no tiene miniapps**. La
+>   única vía es la **Player Card** (`twitter:card=player`, un iframe dentro del posteo), pensada para video y audio. Según sus
+>   foros pide aprobación manual, no se ve en el timeline y puede no verse en el celular.
+> - **Qué hay**: siete páginas puente en `/en-x/` (`[...juego].astro`): "Adiviná el tema", "¿Qué tipo de ricotero sos?" y
+>   sus cuatro postales. Llevan la Player Card y mandan al juego a quien las abre, con el desafío de la dirección. El iframe
+>   carga el juego de siempre con `?incrustado`: `Cabeza` (`incrustable`) le pone `html.incrustado` y `<base target="_blank">`.
+>   Tamaño apostado: 480 × 720 (`REPRODUCTOR` en `lib/en-x.ts`).
+> - **El modo incrustado** (`juego.css`, sección "Adentro de X"): la cabecera y la marca grande se cambian por la franja de
+>   `FranjaEnX.astro` (FR chica + "SEGUÍ EN EL FICHÍN"), así a 360 × 540 entran el título y el botón de empezar sin
+>   scroll; en "Adiviná el tema" la escalera de intentos se pliega con poco alto y en el resultado suben el puntaje y
+>   "Compartí". **"Compartí" adentro de X postea** (`scripts/en-x.ts`): abre el posteo ya escrito con **la puente** como
+>   dirección (la postal de la manera que salió, en dos ejes), así el posteo nuevo también se juega adentro.
+> - **Verde:** `npm test` (2013), `npm run check`, `npm run build`. Los dos juegos se jugaron enteros a 360 × 540 y 480 × 720,
+>   con el posteo de X armado y la puente probada con un desafío.
+> - **Falta**: publicar, pegar el enlace en un posteo real y mirarlo en iOS, Android y web. Si X no lo muestra, se
+>   queda la tarjeta grande de siempre. Que `investigador` deje la ficha `RES` con lo que el posteo confirme.
+> ## 🐐 SIETE QUE ERAN OJOS: EL CHIVATO, LOS GALLOS, LA ANGUILA, LA LECHUZA, EL ANZUELO, LA PIBA Y LAS LOBAS (2026-10-28) — `D-73` (23)
+>
+> **En `main`** por el PR #86 (fusión `b1677df`), desde la rama `bestiario/siete`.
+> `T-512`. Pedido del usuario: otras siete bestias sin diseño complejo, rocambolescas, con buenos detalles y animación acorde.
+>
+> - **Prisión**: el chivato murguero con la oreja en la reja; tocado canta la delación y se le vuela la lista.
+> - **Templo**: los gallos sofocados, borrachos de fin de fiesta; tocados, riña de opereta y abrazo.
+> - **Bajo**: la anguila en el barro, que ondula de verdad; tocada salta y el barro se la traga.
+> - **Árbol**: la lechuza que circula, con el pito de vigilante; tocada da la vuelta al árbol mirándote.
+> - **Astilleros**: el que mordió el anzuelo, colgado de la caña; tocado se zafa y vuelve a morder.
+> - **Ruta**: la piba con la remera (ballena, sin logo), que finge que duerme; tocada ronca de mentira y espía.
+> - **Monte**: las antiguas lobas; tocadas reviven, aúllan a dúo, trotan y se vuelven a echar.
+> - Se sacaron del piso las siluetas pintadas de la lechuza, el pescado y la piba (reimpresos).
+> - **Verde:** `npm test` (2105), `npm run check`, `npm run build`. Vistos vivir y responder al toque en la página de cada recinto.
+> - **Falta**: `T-512` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo, el retrato de la desencarnada).
+
+> ## 📺 CINCO QUE ERAN OJOS: EL ALIEN DUCE, LAS SIRENAS, EL AMORCITO, EL GATO MATÓN Y MANDINGA (2026-10-28) — `D-73` (22)
+>
+> **En `main`** por el PR #84 (fusión `84a4b09`), desde la rama `bestiario/cinco-mas`. `T-511`. Pedido del usuario: cinco bestias
+> sin diseño complejo, rocambolescas, con animaciones complejas y los detalles de la letra; una tenía que ser el Alien Duce.
+>
+> - **Cybersiberia**: **el Alien Duce**, adentro de la pantalla de la tele, con el cráneo de bola de espejos que tira puntos de
+>   luz; tocado se aplasta contra el vidrio, escupe el ticket del evangelio hasta la nieve, lo chupa y lo escupe en un bollo.
+> - **El bajo** (tenía uno solo): **las sirenas**, la gata linda y la llena con el botín, que cantan, colean y se zambullen; y
+>   **el amorcito**, colgada de su ventana rota con el vidrio entre los dientes y el sifón; tocada muerde, ¡ÑAM!, y cabalga.
+> - **Los techos**: **el gato matón**, la cana con sirena y matraca de ocasión; tocado sale de operativo y salta al ratón.
+> - **El infierno**: **Mandinga**, un títere de sombra con varillas; tocado saluda, su sombra crece en la pared, encandila y se va.
+> - Los ojos del ratón bajaron a la chapa; `rato.test.ts` mira al rato solo.
+> - **Verde:** `npm test` (2046), `npm run check`, `npm run build`. Vistos vivir y responder al toque en la página de cada recinto.
+> - **Falta**: `T-511` (verlos en un teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
+
+> ## ⛓️ EL ESCLAVO ENCADENADO, EN LA PRISIÓN (2026-10-24) — `D-73` (21)
+>
+> **En `main` desde el PR #81** (commit de fusión `1938397`), rama `bestiario/esclavo-encadenado`. Lo integró Claude a pedido
+> del usuario (*"Integralo a main."*). `T-510`. Pedido del usuario, con la imagen: *"Diseña e implementa una bestia del bestiario
+> redondo que sea esta, usa la imagen de base, es uno de los de la tapa de oktubre, es importante."*
+>
+> - **Bestia nueva**, `el-esclavo-encadenado`: el estarcido de Rocambole que trajo el usuario, **sin redibujar**, cortado en
+>   siete piezas. Se arrodilla adelante de la celda de los reos, entre la jaula vacía y la reja. Verso: *"Casi ya no llora,
+>   ¡atrapado en libertad!"* (*Preso en mi ciudad*).
+> - **Tocado rompe la cadena**: tirón, chispa roja, la cadena sale despedida hacia la jaula, ruge; y la cadena vuelve al puño.
+> - **El disco va como leyenda** en la ficha (`INV-02`: no venía en el vinilo del 86, se difundió con el CD; sin ficha).
+> - **Cómo**: `scripts/preparar-encadenado.mjs` saca la silueta maciza del máster; la imprenta suma `href="master:…"`. No se
+>   tocaron `recortes.ts` ni `recortar-bestiario.mjs`, que otra sesión tiene sin commitear (Luzbelito macizo).
+> - **Verde:** `npm test` (2009), `npm run check`, `npm run build`. Visto en un iframe de teléfono y cuadro por cuadro.
+> - **Falta**: verlo en un teléfono de verdad, que `contenido` lea estampa y leyenda.
+
+> ## 🛩️ CINCO DEL FONDO: ZIPPO, EL DIABLO MÁS VELOZ, EL SANTO FUMADOR, EL COLGADO Y LA SEÑORA (2026-10-24) — `D-73` (20)
+>
+> **En `main` desde el PR #79** (commit de fusión `7e76bf7`), rama `bestiario/cinco-del-fondo`. Lo integró Claude a pedido del
+> usuario (*"Integralo a main."*). `T-509`. Pedido
+> del usuario: cinco bestias sin diseño complejo, pulidas, con su animación y el arte rocambolesco, con los detalles de la letra.
+>
+> - **Infierno** (tenía uno solo): **Zippo**, la cabeza es el encendedor, en su avioneta hecha migas; tocado, picada en rizo
+>   cabeza abajo y risa de azufre. **El diablo más veloz**, cabrío que arrastra los pies; tocado, en un parpadeo patea la Caja
+>   de los Truenos y vuelve arrastrándose.
+> - **Templo**: **el santo fumador**, de plata, dormido en su anda con el pucho; tocado, desfila.
+> - **Árbol**: **el que duerme colgado**, de la rama soldada, soñando angelitos gangsters de tiza; tocado, se despierta.
+> - **Ruta** (tenía uno solo): **la bella señora desencarnada**, calavera con mantilla; tocada, se le viene el día en el pecho.
+> - Se sacaron sus siluetas pintadas del piso del árbol y de la ruta (reimpresos), y se corrieron los ojos del sheriff y la
+>   murga en el templo.
+> - **Verde:** `npm test` (2002), `npm run check`, `npm run build`. Vistos animar en el servidor de desarrollo.
+> - **Falta**: `T-509` (verlas en un teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
 
 > ## 🎞️ TRES REELS EN EL CALENDARIO (2026-10-24) — `D-81`
 >
@@ -1032,9 +1187,10 @@
 >   `DECISIONES.md` e `IDS.md`, este bloque, y las líneas de la marca en
 >   `skayboy-y-poligirl.astro`.
 > - Los roles: `Docs/SUGERENCIAS/HILO-para-todos-el-sitio-se-llama-fichin-ricotero.md`.
-> - El hilo de difusión en `main` sigue diciendo Arcade Ricotero: el nombre nuevo está en el
->   commit `be7b9e2` de `difusion/hilo-twitter`, sin PR (el #26 se integró antes). Sus
->   capturas muestran la marca vieja: se sacan de nuevo con esto publicado.
+> - El hilo de difusión en `main` sigue diciendo Arcade Ricotero hasta que entre el **PR #31**
+>   (rama `difusion/hilo-fichin`): el texto con el nombre nuevo y el tono de los 40 de
+>   *Oktubre*, y las capturas vueltas a sacar con FICHÍN RICOTERO publicado. Sus enlaces van a
+>   `fichinricotero.com.ar`, que todavía no resuelve DNS.
 
 > ## 🌙 "¿QUÉ TIPO DE RICOTERO SOS?" REHECHO: UNA NOCHE Y EL LIBRO DE *LUZBELITO* (2026-10-04) — `D-57`, ciclo 18
 >

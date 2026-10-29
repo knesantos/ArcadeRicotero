@@ -13,6 +13,7 @@ nadie baja a propósito.
 | `cordero-recortado.png` | 2026-09-02 | `public/arte/cordero-rulo.png` (252 px) | Ficha de *Cordero atado* en la Redondopedia |
 | `luz-belito-recortado.png` | 2026-09-02 | `public/arte/luzbelito-vela.png` (252 px) | Ficha de *Luzbelito* |
 | `momo-recortado.png` | 2026-09-02 | `public/arte/momo-medallon.png` (252 px) | Ficha de *Momo Sampler* |
+| `esclavo-encadenado.png` | 2026-10-24 | `esclavo-encadenado-silueta.png` (`scripts/preparar-encadenado.mjs`), que la imprenta del bestiario corta en las siete piezas `public/bestiario/encadenado-*.webp` (`D-73`, 21) | El esclavo encadenado, en la prisión del bestiario |
 
 Los tres llegaron a `public/tapas/recortes/`, que era una carpeta nueva, con nombres que el
 código no buscaba. El despiece que fija los nombres es `public/arte/README.md`; ahí está

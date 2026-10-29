@@ -6923,3 +6923,93 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 .recital-noche-controles .recital-como-suena {
   margin: 4px 0 0;
 }
+
+/* ==========================================================================
+   Adentro de X (`T-513`)
+
+   Cuando el juego se juega en el reproductor de un posteo (`?incrustado`, o metido en un
+   marco ajeno), `Cabeza` le pone `html.incrustado` antes de pintar. No hay sitio alrededor:
+   el recuadro mide lo que X quiera (480 × 720 en la web, unos 360 × 540 en el celular), y lo
+   que manda es que **el título y el botón de empezar entren sin hacer scroll**.
+
+   - La cabecera ("← AL FICHÍN") y la marca grande se van. Las reemplaza la franja de
+     `FranjaEnX.astro`: la FR chica y la salida al sitio, en una pestaña nueva.
+   - En el resultado, los regresos al portal se van por lo mismo: la franja ya es la salida.
+   - En "Adiviná el tema", la escalera de intentos repite lo que dice la cinta; con poco alto
+     se pliega, y el puntaje y "Compartí" suben antes que la lista de temas.
+
+   La base no rota (`diseno-marca.md`): fondo de tinta, grano y zona pulgar quedan igual.
+   ========================================================================== */
+.franja-en-x {
+  display: none;
+}
+
+html.incrustado .franja-en-x {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-2);
+  /* El `body` de los juegos es una columna flexible centrada: sin el ancho, la franja se
+     encogía a lo que mide su contenido y quedaba en el medio. */
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--ancho-hoja);
+  margin-inline: auto;
+  padding: var(--espacio-1) var(--espacio-2) 0;
+}
+
+/* 3,5 rem: la FR queda en 56 px, arriba del mínimo de 48 donde la corona todavía se lee
+   (`D-82`). Se queda con el nombre de tránsito `marca`: en el recuadro la de la hoja no se
+   ve, y la de la carátula solo aparece en el escritorio. */
+html.incrustado .franja-en-x .marca-chica {
+  width: 3.5rem;
+}
+
+html.incrustado .cabecera-sitio,
+html.incrustado .pantalla > .marca,
+html.incrustado #resultado a.volver,
+html.incrustado #resultado a.accion-abajo {
+  display: none;
+}
+
+/* El aire de arriba de cada pantalla lo pone la franja. */
+html.incrustado body > main > .pantalla:first-of-type > h1:first-of-type {
+  margin-top: var(--espacio-2);
+}
+
+@media (max-height: 40rem) {
+  html.incrustado .juego-tema .intentos {
+    display: none;
+  }
+}
+
+html.incrustado .juego-tema #resultado:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+}
+
+/* El sello del desenlace es una estampa, no un renglón: en una columna flexible se estiraba
+   al ancho entero. */
+html.incrustado .juego-tema #resultado > .rotulo-desenlace {
+  align-self: flex-start;
+}
+
+html.incrustado .juego-tema #resultado > .afiche-canta,
+html.incrustado .juego-tema #resultado > .resumen-titulo,
+html.incrustado .juego-tema #resultado > .resumen {
+  order: 1;
+}
+
+/* La puente (`/en-x/`): solo se ve si la redirección no anduvo. La marca, el juego y un botón. */
+.puente-en-x {
+  padding: var(--espacio-3) var(--espacio-2);
+}
+
+.puente-en-x-seguir {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--toque-min);
+  margin-top: var(--espacio-3);
+  text-decoration: none;
+}

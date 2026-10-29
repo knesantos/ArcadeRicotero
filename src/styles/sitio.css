@@ -3564,6 +3564,7 @@ body:has(> .lugar) .marca-chica {
   pointer-events: auto;
   cursor: pointer;
   transform: translate(-50%, -50%) rotate(-2deg);
+  transition: border-color var(--duracion-toque);
 }
 
 .rotulo-region:nth-child(even) { transform: translate(-50%, -50%) rotate(2deg); }
@@ -3624,6 +3625,7 @@ body:has(> .lugar) .marca-chica {
   border: 2px solid var(--papel-tenue);
   border-radius: 3px;
   cursor: pointer;
+  transition: border-color var(--duracion-toque);
 }
 
 .bestiario-chip:hover,
@@ -4009,6 +4011,72 @@ body:has(> .lugar) .marca-chica {
   font-style: italic;
   line-height: 1.35;
 }
+
+/* Los sellos se asientan (D-83). Nada aparece con un fundido (el umbral de arriba lo dice): un
+   sello llega ya estampado y lo único que hace es terminar de apoyar, como la marca en la portada.
+   El bocadillo gira apenas alrededor de su punta; el sello «Anotado» recién puesto baja de más
+   arriba, que es un golpe de sello; la hoja de la ficha baja (o sube, o entra de costado) los
+   últimos píxeles hasta su lugar. Todo en `--duracion-sello`, que el corte de movimiento reducido
+   lleva a cero: con relleno `both`, aparecen ya apoyados. */
+@keyframes sello-apoya {
+  from {
+    scale: var(--sello-desde, 1.06);
+    rotate: var(--sello-giro, -2deg);
+  }
+}
+
+@keyframes hoja-apoya {
+  from {
+    translate: var(--desde-hoja, 0 10px);
+  }
+}
+
+.bocadillo:not([hidden]) {
+  transform-origin: var(--punta, 50%) 100%;
+  animation: sello-apoya var(--duracion-sello) var(--curva-cinta) both;
+}
+
+.bocadillo--abajo:not([hidden]) { transform-origin: var(--punta, 50%) 0; }
+
+.bestiario-hoja:not([hidden]) { animation: hoja-apoya var(--duracion-sello) var(--curva-cinta) both; }
+
+.bestiario-hoja--arriba { --desde-hoja: 0 -10px; }
+
+@media (min-width: 52rem) {
+  .bestiario-hoja { --desde-hoja: 10px 0; }
+  .bestiario-hoja--izquierda { --desde-hoja: -10px 0; }
+}
+
+/* En la hoja, el sello «Anotado» va al lado del sello de clase, con la cuenta de la libreta: así lo
+   anotado se ve donde se anota, también en el camino, donde la libreta vive plegada en el tablero.
+   El recién anotado se estampa; el de siempre ya está apoyado. */
+.bestiario-anotada-sello--hoja {
+  display: inline-block;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+.bestiario-anotada-sello--nueva {
+  --sello-desde: 1.35;
+  --sello-giro: -9deg;
+  color: var(--texto);
+  border-color: var(--acento-2);
+  animation: sello-apoya var(--duracion-sello) var(--curva-cinta) both;
+}
+
+.bestiario-hoja-cuenta {
+  display: inline-block;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+/* La libreta se vuelve a sellar cada vez que la cuenta sube. */
+.bestiario-libreta--sella { animation: sello-apoya var(--duracion-sello) var(--curva-cinta) both; }
 
 /* La tercera vuelta (D-73): el monte de noche. La escena es más ancha que un teléfono y se
    recorre de costado; en el teléfono va de borde a borde, sin el margen de la hoja. */
@@ -4455,3 +4523,239 @@ body:has(> .lugar) .marca-chica {
 .bt-animal-toque { fill: transparent; }
 .titere--animal [data-parte="sombra"] { pointer-events: none; }
 /* ⟨/tu animal⟩ */
+
+/* ⟨zippo⟩ */
+/* La llama, el azufre de la risa y el borron de la helice son luz: se suman a lo oscuro del infierno. El
+   nubarron que lo sigue, el humo que deja, las fichas que se le caen y su mala sombra en el damero no se tocan: el toque es de el. */
+.titere--zippo { cursor: pointer; }
+.titere--zippo [data-parte="llama"], .titere--zippo [data-parte="azufre"], .titere--zippo [data-parte="borron"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--zippo [data-parte^="humo-"], .titere--zippo [data-parte^="ficha-"], .titere--zippo [data-parte="nubarron"] { pointer-events: none; }
+[data-marco="zippo"] [data-parte="sombra"] { pointer-events: none; }
+/* ⟨/zippo⟩ */
+
+/* ⟨el diablo mas veloz⟩ */
+/* La sombra en el damero, del verdin del fondo del ovalo. Los rayos de la Caja de los Truenos, el fuego
+   robado y el borron de lo veloz son luz o movimiento: se suman y no se tocan. La caja si se toca: es suya. */
+.titere--veloz { cursor: pointer; }
+.bt-veloz-sombra { fill: var(--bestia-veloz-verdin); opacity: 0.7; }
+.titere--veloz [data-parte="rayos"], .titere--veloz [data-parte="fuego"], .titere--veloz [data-parte="chispas"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--veloz [data-parte="estela"] { pointer-events: none; }
+/* ⟨/el diablo mas veloz⟩ */
+
+/* ⟨el santo fumador⟩ */
+/* La sombra del anda en el piso del templo, del fondo del interior de Momo sampler. La aureola, cuando
+   encandila, la brasa y el humo son luz: se suman a lo oscuro y no se tocan. */
+.titere--fumador { cursor: pointer; }
+.bt-fumador-sombra { fill: var(--bestia-fumador-hondo); opacity: 0.75; }
+.titere--fumador [data-parte="encandila"], .titere--fumador [data-parte="aureola"], .titere--fumador [data-parte="brasa"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--fumador [data-parte="hilo"], .titere--fumador [data-parte^="anillo-"], .titere--fumador [data-parte="cae"], .titere--fumador [data-parte="sombra"] { pointer-events: none; }
+/* ⟨/el santo fumador⟩ */
+
+/* ⟨el que duerme colgado⟩ */
+/* El sueno de tiza, el fogonazo de los angelitos y el sueno reventado son del sueno: no se tocan, el toque
+   es del que duerme. La gota de almibar tampoco. */
+.titere--colgado { cursor: pointer; }
+.titere--colgado [data-parte="sueno"], .titere--colgado [data-parte="pop"], .titere--colgado [data-parte="gota"] { pointer-events: none; }
+.titere--colgado [data-parte^="tiro-"] { mix-blend-mode: screen; }
+/* ⟨/el que duerme colgado⟩ */
+
+/* ⟨la bella senora desencarnada⟩ */
+/* La sombra en la banquina, de la tierra honda de la tapa. El dia que se le viene en el corazon y la luz
+   de las cuencas son luz: se suman a lo oscuro de la ruta y no se tocan. */
+.titere--desencarnada { cursor: pointer; }
+.bt-desencarnada-sombra { fill: var(--bestia-desencarnada-tierra-honda); opacity: 0.8; }
+.titere--desencarnada [data-parte="dia"], .titere--desencarnada [data-parte="cuencas"] { mix-blend-mode: screen; pointer-events: none; }
+/* ⟨/la bella senora desencarnada⟩ */
+
+/* ⟨el gato maton⟩ */
+/* La sombra en la chapa es el negro de la gorra. La luz de la sirena y sus haces son luz: se suman a lo
+   oscuro de los techos y no se tocan; el ra-ta-ta de la matraca tampoco. */
+.titere--maton { cursor: pointer; }
+.bt-maton-sombra { fill: var(--bestia-maton-carbon-hondo); opacity: 0.7; }
+.titere--maton [data-parte="haz"], .titere--maton [data-parte="luz"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--maton [data-parte="ratata"] { pointer-events: none; }
+/* ⟨/el gato maton⟩ */
+
+/* ⟨el amorcito que mordio el vidrio⟩ */
+/* El chorro de soda, las migas del vidrio, la burbuja del hipo y el Nam escrito en el aire no se tocan: el
+   toque es de ella. */
+.titere--amorcito { cursor: pointer; }
+.titere--amorcito [data-parte="chorro"], .titere--amorcito [data-parte="migas"], .titere--amorcito [data-parte="hipo"], .titere--amorcito [data-parte="nam"] { pointer-events: none; }
+/* ⟨/el amorcito que mordio el vidrio⟩ */
+
+/* ⟨las sirenas⟩ */
+/* El brillo del prendedor radioactivo es luz y se suma al agua oscura. Lo que cantan, las salpicaduras y
+   las ondas no se tocan: el toque es de ellas. */
+.titere--sirenas { cursor: pointer; }
+.titere--sirenas [data-parte="radio"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--sirenas [data-parte="canto"], .titere--sirenas [data-parte^="salpica-"], .titere--sirenas [data-parte^="ondas-"] { pointer-events: none; }
+/* ⟨/las sirenas⟩ */
+
+/* ⟨mandinga⟩ */
+/* El resplandor del candil y el fogonazo que encandila son luz: se suman al infierno y no se tocan. La
+   sombra chinesca de la pared tampoco: el toque es del titere. */
+.titere--mandinga { cursor: pointer; }
+.titere--mandinga [data-parte="resplandor"], .titere--mandinga [data-parte="destello"], .titere--mandinga [data-parte="llama"] { mix-blend-mode: screen; pointer-events: none; }
+.mandinga-pared { mix-blend-mode: multiply; }
+.bt-mandinga-varilla { fill: none; stroke: var(--bestia-mandinga-plata-honda); stroke-width: 1.6; }
+/* ⟨/mandinga⟩ */
+
+/* ⟨el alien duce⟩ */
+/* Los puntos de la bola de efectos, las lamparitas y los destellos son luz: se suman a la nieve y al acero y
+   no se tocan. El ticket y el bollo tampoco: el toque es de la pantalla. */
+.titere--alien { cursor: pointer; }
+.titere--alien [data-parte="puntos"], .titere--alien [data-parte="lamparas"], .titere--alien [data-parte="brillos"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--alien [data-parte="ticket"], .titere--alien [data-parte="bollo"], .titere--alien [data-parte="ruido"] { pointer-events: none; }
+/* ⟨/el alien duce⟩ */
+
+/* ⟨el chivato⟩ */
+/* La sombra en el piso es lo negro de la contratapa. La hoja que se vuela, el balido y la gota no se tocan:
+   el toque es del chivato. */
+.titere--chivato { cursor: pointer; }
+.bt-chivato-sombra { fill: var(--bestia-chivato-negro); opacity: 0.75; }
+.titere--chivato [data-parte="hoja"], .titere--chivato [data-parte="balido"], .titere--chivato [data-parte="gota"] { pointer-events: none; }
+/* ⟨/el chivato⟩ */
+
+/* ⟨los gallos sofocados⟩ */
+/* Los gallos sofocados (vigesimotercera vuelta, D-73): se tocan enteros; el cacareo, el hipo y las plumas que
+   vuelan no atajan el dedo. La mancha del piso es lo hondo del interior de Momo sampler. */
+.titere--gallos { cursor: pointer; }
+.bt-gallos-sombra { fill: var(--bestia-gallos-hondo); opacity: 0.7; }
+.titere--gallos [data-parte="cacareo"], .titere--gallos [data-parte="hipo"], .titere--gallos [data-parte="plumas"] { pointer-events: none; }
+/* ⟨/los gallos sofocados⟩ */
+
+/* ⟨la anguila⟩ */
+/* El reflejo del fuego en el barro es luz y se suma a lo oscuro. Lo que salpica, chorrea, burbujea y
+   revienta no se toca: el toque es de ella. */
+.titere--anguila { cursor: pointer; }
+.titere--anguila [data-parte="brasa"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--anguila [data-parte^="gota-"], .titere--anguila [data-parte^="salpica-"], .titere--anguila [data-parte^="burbuja-"], .titere--anguila [data-parte^="revienta-"], .titere--anguila [data-parte="globo"], .titere--anguila [data-parte="plop"] { pointer-events: none; }
+/* ⟨/la anguila⟩ */
+
+/* ⟨la lechuza que circula⟩ */
+/* Se toca la lechuza; la rama es del arbol y el boleto esta pinchado en ella: no se tocan. El pitido es aire. */
+.titere--lechuza { cursor: pointer; }
+.titere--lechuza [data-parte="pitido"], .titere--lechuza [data-parte="boleto"] { pointer-events: none; }
+.titere--lechuza [data-parte="entero"] > image { pointer-events: none; }
+/* ⟨/la lechuza que circula⟩ */
+
+/* ⟨el que mordio el anzuelo⟩ */
+/* La linea de la caña es la tanza: el brillo de la pistola de la tapa, finita. El pescado es finito y el
+   toque se agranda con una caja sin tinta. El brillo de la estrella de lata es luz y se suma a la noche; el
+   chapuzon, las ondas y las gotas no se tocan. */
+.titere--anzuelo { cursor: pointer; }
+.bt-anzuelo-linea { fill: none; stroke: var(--bestia-anzuelo-acero-claro); stroke-width: 0.6; opacity: 0.8; }
+.bt-anzuelo-toque { fill: transparent; }
+.titere--anzuelo [data-parte="brillo"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--anzuelo [data-parte="salpica"], .titere--anzuelo [data-parte="ondas"], .titere--anzuelo [data-parte^="gota-"] { pointer-events: none; }
+/* ⟨/el que mordio el anzuelo⟩ */
+
+/* ⟨la piba de greenpeace⟩ */
+/* La sombra en el pasto es lo hondo del interior de Momo sampler. Los zzz de mentira y el mosquito
+   andan por el aire: no se tocan, para que el toque caiga en ella. No tiene luces. */
+.titere--piba { cursor: pointer; }
+.bt-piba-sombra { fill: var(--bestia-piba-hondo); opacity: 0.75; }
+.titere--piba [data-parte^="zeta-"], .titere--piba [data-parte="bicho"] { pointer-events: none; }
+/* ⟨/la piba de greenpeace⟩ */
+
+/* ⟨las antiguas lobas⟩ */
+/* Se tocan las dos, y el hueco donde duermen. El polvo que se sacuden, el crujido y el vaho del aullido no se
+   tocan, y el vaho es aire frio que se suma a lo oscuro del monte. La sombra es la tinta del piso. */
+.titere--lobas { cursor: pointer; }
+.bt-lobas-toque { fill: transparent; }
+.bt-lobas-sombra { fill: var(--bestia-lobas-tinta-honda); opacity: 0.55; }
+.titere--lobas [data-parte^="vaho-"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--lobas [data-parte^="polvo-"], .titere--lobas [data-parte^="cruje-"] { pointer-events: none; }
+/* ⟨/las antiguas lobas⟩ */
+
+/* ⟨el diablo de muchos cuernos⟩ */
+/* Se toca el diablo. El cordon del monoculo es el oro del aro, finito, y no se toca: es un hilo. */
+.titere--cuernos { cursor: pointer; }
+.titere--cuernos [data-parte="cordon"] { pointer-events: none; }
+.bt-cuernos-cordon { fill: none; stroke: var(--bestia-cuernos-oro); stroke-width: 0.8; }
+/* ⟨/el diablo de muchos cuernos⟩ */
+
+/* ⟨la princesita sapito⟩ */
+/* Se toca la sapita, y su trono de nieve con ella. Las chispas son luz: se suman a la nieve. El copo, el vaho,
+   la lengua, las chispas y el puf no se tocan: el toque es de ella. */
+.titere--sapito { cursor: pointer; }
+.titere--sapito [data-parte="chispas"] { mix-blend-mode: screen; }
+.titere--sapito [data-parte="chispas"], .titere--sapito [data-parte="puf"], .titere--sapito [data-parte="copo"], .titere--sapito [data-parte="vaho"], .titere--sapito [data-parte="lengua"] { pointer-events: none; }
+/* ⟨/la princesita sapito⟩ */
+
+/* ⟨la tipa rapaz⟩ */
+/* Se toca la tipa; la billetera es ajena y esta en el mantel, el billete y las plumas sueltas son aire: no se
+   tocan. Las ninas de los ojos son tinta de la pagina, para que miren de reojo sin imprimir nada. */
+.titere--rapaz { cursor: pointer; }
+.titere--rapaz [data-parte="billetera-mesa"], .titere--rapaz [data-parte="billete"], .titere--rapaz [data-parte="plumas"] { pointer-events: none; }
+.bt-rapaz-iris { fill: var(--bestia-rapaz-hondo); }
+.bt-rapaz-brillo { fill: var(--bestia-rapaz-perla); }
+/* ⟨/la tipa rapaz⟩ */
+
+/* ⟨el raton⟩ */
+/* El olor del gato que le llega a la nariz no se toca: el toque es del raton y de su canaleta. */
+.titere--raton { cursor: pointer; }
+.titere--raton [data-parte="olor"] { pointer-events: none; }
+/* ⟨/el raton⟩ */
+
+/* ⟨la polilla⟩ */
+/* Se toca la polilla, y su foco con ella: es de ella. El chispazo, el halo y el polvo son luz y aire: no se tocan. */
+.titere--polilla { cursor: pointer; }
+.titere--polilla [data-parte="golpe"], .titere--polilla [data-parte="halo"], .titere--polilla [data-parte^="polvo-"] { pointer-events: none; }
+/* ⟨/la polilla⟩ */
+
+/* ⟨el botija rapado⟩ */
+/* El botija es flaco: el toque se agranda con una caja sin tinta. Las gotas del susto no se tocan. */
+.titere--botija { cursor: pointer; }
+.bt-botija-toque { fill: transparent; }
+.titere--botija [data-parte="gotas"] { pointer-events: none; }
+/* ⟨/el botija rapado⟩ */
+
+/* ⟨el jocker burlon⟩ */
+/* Se toca el jocker, con sus naipes. El tilin de los cascabeles y el brillo de la estrella son aire y luz:
+   no se tocan. */
+.titere--jocker { cursor: pointer; }
+.titere--jocker [data-parte="tilin"], .titere--jocker [data-parte="brillo"] { pointer-events: none; }
+/* ⟨/el jocker burlon⟩ */
+
+/* ⟨el rey de esta jungla⟩ */
+/* Se toca la tumba entera: la tierra, la cruz, el patin. Los terrones que salta y el petalo que cae son aire: no se tocan. */
+.titere--rey { cursor: pointer; }
+.titere--rey [data-parte="terrones"], .titere--rey [data-parte="petalo"] { pointer-events: none; }
+/* ⟨/el rey de esta jungla⟩ */
+
+/* ⟨el ahogado y su fiel fantasma⟩ */
+/* Se tocan los dos, el ahogado y su fantasma, y lo suyo que flota: el sombrero. Las ondas, el chorrito y las burbujas son agua y aire: no se tocan. */
+.titere--ahogado { cursor: pointer; }
+.titere--ahogado [data-parte="ondas"], .titere--ahogado [data-parte="chorro"], .titere--ahogado [data-parte="burbujon"], .titere--ahogado [data-parte^="burbujas-"] { pointer-events: none; }
+/* ⟨/el ahogado y su fiel fantasma⟩ */
+
+/* ⟨el pichon⟩ */
+/* El pichón se toca a través de la reja, que no ataja el dedo. Los tiros de delante de la reja (el fogonazo,
+   las plumas que vuelan y los agujeros de la piedra) no se tocan: el toque es del pichón. */
+.titere--pichon { cursor: pointer; }
+.pichon-tiros { pointer-events: none; }
+/* ⟨/el pichon⟩ */
+
+/* ⟨el club de mantis⟩ */
+/* Se tocan las tres mantis y el macho que llega. Lo que hay en el mantel (la fuente de masitas, la flor y la
+   antena que quedan en el plato) es de la mesa: no se toca. */
+.titere--mantis { cursor: pointer; }
+.titere--mantis [data-parte="fuente"], .titere--mantis [data-parte="flor"], .titere--mantis [data-parte="antena-suelta"] { pointer-events: none; }
+/* ⟨/el club de mantis⟩ */
+
+/* ⟨el que no se cayo del cielo⟩ */
+/* Se toca el tipo, y su botella con el: es de el. El olor a gato que le llega es aire: no se toca. */
+.titere--cielo { cursor: pointer; }
+.titere--cielo [data-parte="olor"] { pointer-events: none; }
+/* ⟨/el que no se cayo del cielo⟩ */
+
+/* ⟨el esclavo encadenado⟩ */
+/* La sombra de las rodillas es la tinta del fondo, como la de Barbazul y la drácula. La chispa del eslabón
+   es el rojo de las banderas de la tapa con rayas de papel, y no se toca: el toque es del que rompe. */
+.titere--encadenado { cursor: pointer; }
+.bt-encadenado-sombra { fill: var(--fondo); }
+.bt-encadenado-chispa { fill: var(--disco-oktubre-tinta); }
+.bt-encadenado-rayo { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 4; stroke-linecap: square; }
+.titere--encadenado [data-parte="chispa"] { pointer-events: none; }
+/* ⟨/el esclavo encadenado⟩ */

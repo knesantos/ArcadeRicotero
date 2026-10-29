@@ -37,6 +37,8 @@
  * Nada se escribe con `innerHTML`, igual que en el resto de las islas.
  */
 
+import { incrustado, postearEnX } from './en-x.ts';
+
 export interface TextosDeCompartir {
   /** El rótulo del botón. Lleva tilde (`Compartí`), y la letra de la firma la tiene desde `D-65`. */
   readonly compartir: string;
@@ -88,6 +90,8 @@ const cancelo = (e: unknown): boolean =>
   e instanceof DOMException && (e.name === 'AbortError' || e.name === 'InvalidStateError');
 
 async function compartir(textos: TextosDeCompartir, que: LoQueSeComparte, salida: HTMLElement): Promise<void> {
+  // Adentro de X, el posteo ya escrito va primero (`en-x.ts`). Antes de cualquier `await`.
+  if (incrustado() && postearEnX(que.texto, que.url)) return;
   const conArchivo = que.archivo && navigator.canShare?.({ files: [que.archivo] }) ? que.archivo : null;
   if (conArchivo) {
     try {
