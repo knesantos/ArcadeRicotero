@@ -6940,32 +6940,8 @@ main:has(> .pantalla:first-of-type[hidden]) > .caratula {
 
    La base no rota (`diseno-marca.md`): fondo de tinta, grano y zona pulgar quedan igual.
    ========================================================================== */
-.franja-en-x {
-  display: none;
-}
-
-html.incrustado .franja-en-x {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--espacio-2);
-  /* El `body` de los juegos es una columna flexible centrada: sin el ancho, la franja se
-     encogía a lo que mide su contenido y quedaba en el medio. */
-  box-sizing: border-box;
-  width: 100%;
-  max-width: var(--ancho-hoja);
-  margin-inline: auto;
-  padding: var(--espacio-1) var(--espacio-2) 0;
-}
-
-/* 3,5 rem: la FR queda en 56 px, arriba del mínimo de 48 donde la corona todavía se lee
-   (`D-82`). Se queda con el nombre de tránsito `marca`: en el recuadro la de la hoja no se
-   ve, y la de la carátula solo aparece en el escritorio. */
-html.incrustado .franja-en-x .marca-chica {
-  width: 3.5rem;
-}
-
-html.incrustado .cabecera-sitio,
+/* La franja misma, y la cabecera que reemplaza, viven en `sitio.css` desde `T-516`: el bestiario
+   también va adentro de X y no carga esta hoja. */
 html.incrustado .pantalla > .marca,
 html.incrustado #resultado a.volver,
 html.incrustado #resultado a.accion-abajo {

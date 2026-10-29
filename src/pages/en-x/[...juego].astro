@@ -8,9 +8,13 @@
  * y puede no verse en el celular. Si X no muestra el reproductor, la tarjeta cae a la imagen y
  * el enlace lleva al juego: nadie pierde nada.
  *
- * Son siete: "Adiviná el tema", "¿Qué tipo de ricotero sos?" y sus cuatro postales, más que
- * nada porque la postal es lo que se comparte al terminar (`D-57` punto 11), y una puente sin
- * postal le sacaría al posteo la manera que te salió. Cada una mete en el iframe **la misma
+ * Son "Adiviná el tema", "¿Qué tipo de ricotero sos?" y sus cuatro postales, más que nada
+ * porque la postal es lo que se comparte al terminar (`D-57` punto 11), y una puente sin postal
+ * le sacaría al posteo la manera que te salió. Desde `T-516`, también el bestiario redondo: la
+ * suya y una por cada región que se camina. La del bestiario entra por donde entra el sitio
+ * (`ENTRADA`, el monte, `D-76`) y no por el plano, que en el recuadro de X no se ve sin bajar. No
+ * hay una por bestia: ninguna tiene imagen de vista previa propia, y la bestia viaja en el `#` de
+ * la región (`#lobo-suelto`), que la puente le pasa al bestiario cuando se la abre en un navegador. Cada una mete en el iframe **la misma
  * pantalla de siempre** con `?incrustado`, sin una copia aparte.
  *
  * Quien abre una puente en un navegador no se queda acá: lo manda al juego, con el desafío que
@@ -28,6 +32,9 @@ import { PANTALLA_0 as EJES, POSTAL, TARJETA, lineaQueNombra } from '../../lib/d
 import { servir } from '../../lib/dos-ejes/servir.ts';
 import { VISTA_PREVIA_JUEGO, rutaDeVistaPrevia, slugDe } from '../../lib/dos-ejes/arte.ts';
 import crudo from '../../data/dos-ejes.json';
+import { BESTIARIO } from '../../lib/bestiario/copy.ts';
+import { CON_CAMINO, ENTRADA } from '../../lib/bestiario/camino.ts';
+import bestiario from '../../data/bestiario.json';
 
 interface Puente {
   ruta: string;
@@ -71,6 +78,19 @@ export function getStaticPaths() {
         imagen: rutaDeVistaPrevia(c.id),
         imagenAlt: TARJETA.alt(c.nombre, linea),
       },
+    });
+  }
+  // El bestiario (`T-516`): su puerta y cada región caminable, con el título y la bajada de su página.
+  const bicho = '/redondopedia/bestiario/';
+  paginas.push({
+    params: { juego: sinBarras(puente(bicho)) },
+    props: { ruta: ENTRADA, titulo: BESTIARIO.enLaPortada.titulo, descripcion: BESTIARIO.enLaPortada.resumen },
+  });
+  for (const id of CON_CAMINO) {
+    const region = bestiario.regiones.find((r) => r.id === id)!;
+    paginas.push({
+      params: { juego: `${sinBarras(puente(bicho))}/${id}` },
+      props: { ruta: `${bicho}${id}/`, titulo: region.nombre, descripcion: `${region.nombre}: ${region.canta}` },
     });
   }
   return paginas;
