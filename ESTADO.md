@@ -25,7 +25,7 @@
 
 > ## 🐐 SIETE QUE ERAN OJOS: EL CHIVATO, LOS GALLOS, LA ANGUILA, LA LECHUZA, EL ANZUELO, LA PIBA Y LAS LOBAS (2026-10-28) — `D-73` (23)
 >
-> **Sin integrar**, en la rama `bestiario/siete`, sobre `bestiario/cinco-mas` (`689266f`): trae adentro la vigesimosegunda.
+> **En `main`** por el PR #86 (fusión `b1677df`), desde la rama `bestiario/siete`.
 > `T-512`. Pedido del usuario: otras siete bestias sin diseño complejo, rocambolescas, con buenos detalles y animación acorde.
 >
 > - **Prisión**: el chivato murguero con la oreja en la reja; tocado canta la delación y se le vuela la lista.
