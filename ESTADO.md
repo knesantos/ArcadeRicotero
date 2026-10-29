@@ -7,6 +7,23 @@
 
 **Última actualización:** 2026-10-29
 
+> ## 🔊 EL BESTIARIO ADENTRO DE X: EL SONIDO QUE SE COLGABA Y LAS FICHAS (2026-10-29) — `T-519`
+>
+> **Sin integrar**, rama `x-bestiario-sonido`. Pedido del usuario, probando el posteo: *"no suena correctamente, se cuelga
+> el sonido, a veces no suena una bestia y queda todo en silencio, aún están muy grandes las fichas"*.
+>
+> - **La rocola ya no se cuelga** (`scripts/rocola.ts`): un recorte que no avanza (7 s para arrancar, 3,5 s trabado) se da
+>   por terminado. Antes un `<audio>` trabado bajando no terminaba ni daba error, y el bestiario dejaba el recital de fondo
+>   bajado esperándolo: todo en silencio. Vale también para "Armá tu recital" y "En vivo", que usan la misma rocola.
+> - **El recital se despierta** (`scripts/camino.ts`): la escucha de toques ya no se suelta con el primero que anda. Cada
+>   toque, con el sonido pedido, despierta el contexto si se durmió, y al terminar de hablar una bestia se intenta un
+>   `resume()`. En el celular el `<audio>` de la bestia puede dejar el Web Audio del recital suspendido.
+> - **Las fichas, chicas adentro de X** (`camino.css`): contra el borde derecho, de 17 rem de ancho como mucho (en el
+>   recuadro de 340 bajó de 329 px a 190), y con mouse la cruz de 20 px en vez de 48.
+> - **Verde:** `npm test` (2217), `npm run check`, `npm run build` (200 páginas). La ficha medida en un iframe de 340 con mouse.
+> - **No verificado**: el sonido en el celular adentro de X, que es donde se colgaba. Ninguna de las dos causas se pudo
+>   reproducir acá; los dos arreglos cubren las dos que el código dejaba abiertas.
+
 > ## 📺 ADENTRO DE X, SIN SCROLL (2026-10-29) — `T-518`
 >
 > **En `main` por el PR #97** (fusión `7d28bc9`), rama `x-sin-scroll`. Lo integró Claude a pedido del usuario (*"Sí,
