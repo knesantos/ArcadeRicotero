@@ -37,9 +37,9 @@ const ESCENA: Readonly<Record<string, (n: ReadonlyMap<string, string>) => string
 /** Los diez de la decimoquinta vuelta, uno por entorno; después vienen los de la decimosexta, la decimoséptima y la decimoctava. */
 const DIEZ = Object.keys(LUGAR_EN_EL_ELENCO).slice(0, 10);
 
-test('el elenco son los diez, uno por entorno, los tres de la decimosexta, la decimoséptima y la decimoctava, el de la decimonovena, los cinco de la vigésima, el de la vigesimoprimera, los cinco de la vigesimosegunda, los siete de la vigesimotercera y los siete de la vigesimocuarta; cada uno es una bestia de esa región', () => {
+test('el elenco son los diez, uno por entorno, los tres de la decimosexta, la decimoséptima y la decimoctava, el de la decimonovena, los cinco de la vigésima, el de la vigesimoprimera, los cinco de la vigesimosegunda, los siete de la vigesimotercera, los siete de la vigesimocuarta y los cinco de la vigesimoquinta; cada uno es una bestia de esa región', () => {
   const lugares = Object.entries(LUGAR_EN_EL_ELENCO);
-  assert.equal(lugares.length, 45);
+  assert.equal(lugares.length, 50);
   assert.equal(new Set(DIEZ.map((id) => LUGAR_EN_EL_ELENCO[id])).size, 10, 'dos de los diez en el mismo entorno');
   assert.deepEqual(lugares.slice(10, 13).map(([id]) => id), ['la-hija-del-fletero', 'el-buen-psicopata', 'porco-rex']);
   assert.deepEqual(lugares.slice(13, 16).map(([id]) => id), ['el-angel-de-la-soledad', 'el-pac-man', 'la-mosca']);
@@ -56,7 +56,9 @@ test('el elenco son los diez, uno por entorno, los tres de la decimosexta, la de
   // La vigesimotercera: siete que seguían siendo ojos o una silueta pintada, uno por entorno flaco de títeres.
   assert.deepEqual(lugares.slice(31, 38).map(([id]) => id), ['el-chivato', 'los-gallos-sofocados', 'la-anguila', 'la-lechuza-que-circula', 'el-que-mordio-el-anzuelo', 'la-piba-de-greenpeace', 'las-antiguas-lobas']);
   // La vigesimocuarta: siete que seguían siendo ojos, uno por entorno y sin repetir bicho.
-  assert.deepEqual(lugares.slice(38).map(([id]) => id), ['el-diablo-de-muchos-cuernos', 'la-princesita-sapito', 'la-tipa-rapaz', 'el-raton', 'la-polilla', 'el-botija-rapado', 'el-jocker-burlon']);
+  assert.deepEqual(lugares.slice(38, 45).map(([id]) => id), ['el-diablo-de-muchos-cuernos', 'la-princesita-sapito', 'la-tipa-rapaz', 'el-raton', 'la-polilla', 'el-botija-rapado', 'el-jocker-burlon']);
+  // La vigesimoquinta: cinco que seguían siendo ojos en la profundidad de la noche, uno por recinto flaco de títeres.
+  assert.deepEqual(lugares.slice(45).map(([id]) => id), ['el-rey-de-esta-jungla', 'el-ahogado-y-su-fiel-fantasma', 'el-pichon', 'el-club-de-mantis', 'el-que-no-se-cayo-del-cielo']);
   for (const [id, region] of lugares) {
     const b = datos.bestias.find((x) => x.id === id);
     assert.ok(b, `${id} no está en el bestiario`);

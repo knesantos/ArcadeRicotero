@@ -675,6 +675,43 @@ main:has(> .tapa-fondo) > *:not(.tapa-fondo, .caratula),
   view-transition-name: marca;
 }
 
+/* ---- Adentro de X (`T-513`, `T-517`) ----
+
+   Cuando la pantalla va en el reproductor de un posteo (`html.incrustado`, lo pone `Cabeza`), la
+   cabecera hablaba de volver a un lugar donde el que mira nunca estuvo: se va, y en su lugar
+   queda la franja de `FranjaEnX.astro`, con la FR chica y la salida al sitio. Vive acá y no en
+   `juego.css` porque el bestiario también va adentro de X y no carga esa hoja; lo que es de cada
+   juego sigue allá, en "Adentro de X". */
+
+.franja-en-x {
+  display: none;
+}
+
+html.incrustado .franja-en-x {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-2);
+  /* El `body` de los juegos es una columna flexible centrada: sin el ancho, la franja se
+     encogía a lo que mide su contenido y quedaba en el medio. */
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--ancho-hoja);
+  margin-inline: auto;
+  padding: var(--espacio-1) var(--espacio-2) 0;
+}
+
+/* 3,5 rem: la FR queda en 56 px, arriba del mínimo de 48 donde la corona todavía se lee
+   (`D-82`). Se queda con el nombre de tránsito `marca`: en el recuadro la de la hoja no se
+   ve, y la de la carátula solo aparece en el escritorio. */
+html.incrustado .franja-en-x .marca-chica {
+  width: 3.5rem;
+}
+
+html.incrustado .cabecera-sitio {
+  display: none;
+}
+
 /* ---- La marca grande del portal ---- */
 
 .marca-grande {
@@ -4717,6 +4754,38 @@ body:has(> .lugar) .marca-chica {
 .titere--jocker { cursor: pointer; }
 .titere--jocker [data-parte="tilin"], .titere--jocker [data-parte="brillo"] { pointer-events: none; }
 /* ⟨/el jocker burlon⟩ */
+
+/* ⟨el rey de esta jungla⟩ */
+/* Se toca la tumba entera: la tierra, la cruz, el patin. Los terrones que salta y el petalo que cae son aire: no se tocan. */
+.titere--rey { cursor: pointer; }
+.titere--rey [data-parte="terrones"], .titere--rey [data-parte="petalo"] { pointer-events: none; }
+/* ⟨/el rey de esta jungla⟩ */
+
+/* ⟨el ahogado y su fiel fantasma⟩ */
+/* Se tocan los dos, el ahogado y su fantasma, y lo suyo que flota: el sombrero. Las ondas, el chorrito y las burbujas son agua y aire: no se tocan. */
+.titere--ahogado { cursor: pointer; }
+.titere--ahogado [data-parte="ondas"], .titere--ahogado [data-parte="chorro"], .titere--ahogado [data-parte="burbujon"], .titere--ahogado [data-parte^="burbujas-"] { pointer-events: none; }
+/* ⟨/el ahogado y su fiel fantasma⟩ */
+
+/* ⟨el pichon⟩ */
+/* El pichón se toca a través de la reja, que no ataja el dedo. Los tiros de delante de la reja (el fogonazo,
+   las plumas que vuelan y los agujeros de la piedra) no se tocan: el toque es del pichón. */
+.titere--pichon { cursor: pointer; }
+.pichon-tiros { pointer-events: none; }
+/* ⟨/el pichon⟩ */
+
+/* ⟨el club de mantis⟩ */
+/* Se tocan las tres mantis y el macho que llega. Lo que hay en el mantel (la fuente de masitas, la flor y la
+   antena que quedan en el plato) es de la mesa: no se toca. */
+.titere--mantis { cursor: pointer; }
+.titere--mantis [data-parte="fuente"], .titere--mantis [data-parte="flor"], .titere--mantis [data-parte="antena-suelta"] { pointer-events: none; }
+/* ⟨/el club de mantis⟩ */
+
+/* ⟨el que no se cayo del cielo⟩ */
+/* Se toca el tipo, y su botella con el: es de el. El olor a gato que le llega es aire: no se toca. */
+.titere--cielo { cursor: pointer; }
+.titere--cielo [data-parte="olor"] { pointer-events: none; }
+/* ⟨/el que no se cayo del cielo⟩ */
 
 /* ⟨el esclavo encadenado⟩ */
 /* La sombra de las rodillas es la tinta del fondo, como la de Barbazul y la drácula. La chispa del eslabón

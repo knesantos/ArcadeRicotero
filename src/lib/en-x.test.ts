@@ -20,6 +20,18 @@ test('cada postal de dos ejes va a su propia puente', () => {
   );
 });
 
+test('el bestiario va por su puente, región por región y con la bestia detrás', () => {
+  assert.equal(puenteDe(`${SITIO}/redondopedia/bestiario/`), `${SITIO}/en-x/bestiario/`);
+  assert.equal(
+    puenteDe(`${SITIO}/redondopedia/bestiario/el-monte/#lobo-suelto`),
+    `${SITIO}/en-x/bestiario/el-monte/#lobo-suelto`,
+  );
+});
+
+test('el resto de la Redondopedia no tiene puente', () => {
+  assert.equal(puenteDe(`${SITIO}/redondopedia/oktubre/`), `${SITIO}/redondopedia/oktubre/`);
+});
+
 test('un juego sin puente vuelve como llegó', () => {
   assert.equal(puenteDe(`${SITIO}/juegos/mas-o-menos/?r=4`), `${SITIO}/juegos/mas-o-menos/?r=4`);
 });

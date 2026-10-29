@@ -12,6 +12,7 @@ import '../styles/tokens.css';
 import '../styles/sitio.css';
 import Cabeza from '../components/Cabeza.astro';
 import PieImprenta from '../components/PieImprenta.astro';
+import FranjaEnX from '../components/FranjaEnX.astro';
 import { conRecorteReal, medidas, recorte } from '../lib/sitio/arte.ts';
 
 interface Props {
@@ -48,6 +49,13 @@ interface Props {
    * tránsito lo cancelan entero, y en silencio (ver la portada de la Redondopedia).
    */
   lugar?: string | null;
+  /**
+   * La pantalla se deja meter en el reproductor de un posteo de X (`T-517`, la vía de `T-513`):
+   * `Cabeza` la marca `incrustable` y arriba va la franja de `FranjaEnX`. Es la ruta de la
+   * sección que se recorre adentro del recuadro (ver `adentro` en `Cabeza`). Hoy la pasa solo
+   * el bestiario.
+   */
+  incrustable?: string;
 }
 
 const {
@@ -59,6 +67,7 @@ const {
   tapas = [],
   discoDelPie,
   lugar,
+  incrustable,
 } = Astro.props;
 
 // La pieza del collage que este cascaron pega por su cuenta, con sus medidas leidas del
@@ -80,7 +89,7 @@ const hayPlanos =
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={descripcion} />
     <title>{titulo}</title>
-    <Cabeza titulo={titulo} descripcion={descripcion} />
+    <Cabeza titulo={titulo} descripcion={descripcion} incrustable={Boolean(incrustable)} adentro={incrustable} />
     <slot name="cabeza" />
   </head>
   <body class="con-grano">
@@ -131,6 +140,7 @@ const hayPlanos =
       )
     }
     <div class="contenido-sitio">
+      {incrustable && <FranjaEnX />}
       {
         volverA && (
           <header class="cabecera-sitio">
