@@ -313,7 +313,8 @@ export const VECINOS_DE_LA_PRISION: Readonly<Record<string, readonly [number, nu
   'los-reos-de-la-sociedad': [1108, 432, 'papel'],
   'los-titanes-del-orden-viril': [622, 322, 'rojo'],
   'el-chivato': [-110, 466, 'oro'],
-  'el-pichon': [558, 324, 'papel'],
+  // Creció a títere de 70 de alto en el alféizar: el ojo sube y queda entre dos barrotes.
+  'el-pichon': [506, 289, 'papel'],
   // Adentro de su jaulita (`JAULITA` en `arte-prision.ts`), que cuelga en el ala de la izquierda.
   'el-pajarito-del-lavi-rap': [-130, 162, 'oro'],
 };

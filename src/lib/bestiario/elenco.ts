@@ -61,6 +61,11 @@ import { RATON_PERSONAJE } from './arte-raton.ts';
 import { POLILLA_PERSONAJE } from './arte-polilla.ts';
 import { BOTIJA_PERSONAJE } from './arte-botija.ts';
 import { JOCKER_PERSONAJE } from './arte-jocker.ts';
+import { REY_PERSONAJE } from './arte-rey.ts';
+import { AHOGADO_PERSONAJE } from './arte-ahogado.ts';
+import { PICHON_PERSONAJE } from './arte-pichon.ts';
+import { MANTIS_PERSONAJE } from './arte-mantis.ts';
+import { CIELO_PERSONAJE } from './arte-cielo.ts';
 
 export type Nombres = ReadonlyMap<string, string>;
 
@@ -104,7 +109,7 @@ export interface Personaje {
  * Los lugares, en el orden del recorrido: los diez de la decimoquinta vuelta y los tres de la
  * decimosexta. `null` es que todavía son ojos en lo oscuro.
  */
-const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA, VERDUGO_CENA, SATURNO_DOCTOR, TU_ANIMAL, DINAMITA, ZIPPO_PERSONAJE, VELOZ_PERSONAJE, FUMADOR_PERSONAJE, COLGADO_PERSONAJE, DESENCARNADA, ENCADENADO_PERSONAJE, MATON_PERSONAJE, AMORCITO_PERSONAJE, SIRENAS_PERSONAJE, MANDINGA_PERSONAJE, ALIEN_PERSONAJE, CHIVATO_PERSONAJE, GALLOS_PERSONAJE, ANGUILA_PERSONAJE, LECHUZA_PERSONAJE, ANZUELO_PERSONAJE, PIBA_PERSONAJE, LOBAS_PERSONAJE, CUERNOS_PERSONAJE, SAPITO_PERSONAJE, RAPAZ_PERSONAJE, RATON_PERSONAJE, POLILLA_PERSONAJE, BOTIJA_PERSONAJE, JOCKER_PERSONAJE];
+const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA, VERDUGO_CENA, SATURNO_DOCTOR, TU_ANIMAL, DINAMITA, ZIPPO_PERSONAJE, VELOZ_PERSONAJE, FUMADOR_PERSONAJE, COLGADO_PERSONAJE, DESENCARNADA, ENCADENADO_PERSONAJE, MATON_PERSONAJE, AMORCITO_PERSONAJE, SIRENAS_PERSONAJE, MANDINGA_PERSONAJE, ALIEN_PERSONAJE, CHIVATO_PERSONAJE, GALLOS_PERSONAJE, ANGUILA_PERSONAJE, LECHUZA_PERSONAJE, ANZUELO_PERSONAJE, PIBA_PERSONAJE, LOBAS_PERSONAJE, CUERNOS_PERSONAJE, SAPITO_PERSONAJE, RAPAZ_PERSONAJE, RATON_PERSONAJE, POLILLA_PERSONAJE, BOTIJA_PERSONAJE, JOCKER_PERSONAJE, REY_PERSONAJE, AHOGADO_PERSONAJE, PICHON_PERSONAJE, MANTIS_PERSONAJE, CIELO_PERSONAJE];
 
 /** Los que ya tienen títere. */
 export const ELENCO: readonly Personaje[] = LUGARES.filter((p): p is Personaje => p !== null);
@@ -227,4 +232,11 @@ export const LUGAR_EN_EL_ELENCO: Readonly<Record<string, string>> = {
   'la-polilla': 'el-templo',
   'el-botija-rapado': 'los-astilleros',
   'el-jocker-burlon': 'el-arbol',
+  // La vigesimoquinta: cinco que seguían siendo ojos en la profundidad de la noche, uno por recinto, empezando por los
+  // que menos títeres tienen: el monte, el bajo, la prisión, la mesa y los techos.
+  'el-rey-de-esta-jungla': 'el-monte',
+  'el-ahogado-y-su-fiel-fantasma': 'el-bajo',
+  'el-pichon': 'la-prision',
+  'el-club-de-mantis': 'la-mesa',
+  'el-que-no-se-cayo-del-cielo': 'los-techos',
 };

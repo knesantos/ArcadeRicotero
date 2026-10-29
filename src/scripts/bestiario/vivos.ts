@@ -56,6 +56,11 @@ import { armarRaton } from './raton.ts';
 import { armarPolilla } from './polilla.ts';
 import { armarBotija } from './botija.ts';
 import { armarJocker } from './jocker.ts';
+import { armarRey } from './rey.ts';
+import { armarAhogado } from './ahogado.ts';
+import { armarPichon } from './pichon.ts';
+import { armarMantis } from './mantis.ts';
+import { armarCielo } from './cielo.ts';
 
 /**
  * Lo que la escena le presta a un personaje. Las coordenadas de `hablar` van en las del recinto
@@ -128,6 +133,11 @@ const CONDUCTAS: Readonly<Record<string, Armar | null>> = {
   'la-polilla': armarPolilla,
   'el-botija-rapado': armarBotija,
   'el-jocker-burlon': armarJocker,
+  'el-rey-de-esta-jungla': armarRey,
+  'el-ahogado-y-su-fiel-fantasma': armarAhogado,
+  'el-pichon': armarPichon,
+  'el-club-de-mantis': armarMantis,
+  'el-que-no-se-cayo-del-cielo': armarCielo,
 };
 
 /** Los ids que tienen conducta: el test mira que coincidan con los que tienen dibujo. */

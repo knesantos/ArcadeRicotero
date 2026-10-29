@@ -899,7 +899,7 @@
       "dibujo": { "f": "persona", "con": ["sabana"], "pose": "flota" },
       "tema": "divina-tv-fuhrer",
       "verso": ["Me estoy por ahogar, me voy a pique", "glu glu", "bu buuu"],
-      "estampa": "Uno que se hunde con el agua al cuello y, arriba, su fantasma con la sábana, que hace bu.",
+      "estampa": "Uno con el agua a la boca y una mano arriba que parece pedir auxilio, aunque lo que tiene en la mano es la moneda para el barquero. Arriba flota su fantasma, una sábana con la marca de la planchada y un remiendo, atada con un piolín a su tobillo. Si él se va a pique, la sábana va detrás; dicen que vuelven los dos…",
       "cerca": ["el-gordo-pierre", "la-divina-tv-fuhrer"]
     },
     {
@@ -1177,7 +1177,7 @@
       "dibujo": { "f": "ave", "tipo": "pichon" },
       "tema": "preso-en-mi-ciudad",
       "verso": ["Practicamos tiro al pichón"],
-      "estampa": "En el patio de la prisión, con un blanco pintado atrás. Mejor que no se quede quieto.",
+      "estampa": "En la letra le tiran y nada más; acá tiene dónde vivir: el alféizar de la ventana de Barbazul, detrás de los barrotes, con una lata agujereada, un casquillo entre las migas y una pizarrita donde lleva la cuenta de los tiros que esquivó. Tiene una pata vendada y le falta una pluma. Los que practican están de este lado…",
       "cerca": ["el-pajarito-del-lavi-rap"]
     },
     {
@@ -1347,7 +1347,7 @@
       "dibujo": { "f": "persona", "ropa": "saco", "pose": "sentado", "con": ["vaso"] },
       "tema": "yo-no-me-cai-del-cielo",
       "verso": ["Yo no me caí del cielo", "Pero sí de un bar muy triste", "nena hay mucho olor a gato"],
-      "estampa": "Sentado en el borde del techo, con un vaso. Huele a gato.",
+      "estampa": "Dice que no se cayó del cielo, y se nota: aterrizó sentado en el filo del techo, con el vaso en la mano y sin derramar una gota. El dibujo le agrega el ojo hinchado, la servilleta del bar con un teléfono y la medalla de la virgen. El olor a gato viene de la chapa del matón. Tocalo y se cae, pero el vaso no se vuelca…",
       "cerca": ["el-gato-maton"]
     },
     {
@@ -1539,7 +1539,7 @@
       "dibujo": { "f": "cosa", "que": "cruz-con-flores" },
       "tema": "etiqueta-negra",
       "verso": ["a él, que era rey de esta jungla,", "se le soltó un patín...", "y ahora mira crecer las flores desde abajo."],
-      "estampa": "Una cruz entre otras, en lo más hondo del monte, con un patín al lado y flores encima.",
+      "estampa": "La letra no dice qué bicho era el rey; acá es un león viejo, con la oreja mordida, enterrado hasta los ojos. La lápida es la etiqueta negra de una botella, clavada en dos palos atados con alambre; la corona, de lata de tomate, quedó tirada al pie. El patín tiene una rueda floja que todavía gira sola…",
       "cerca": ["el-lobo-caido"]
     },
     {
@@ -1782,7 +1782,7 @@
       "dibujo": { "f": "bicho", "tipo": "mantis" },
       "tema": "superlogico",
       "verso": ["El club de mantis muy nervioso está.", "Sin descanso van a devorar."],
-      "estampa": "En la punta de la mesa que da al árbol. Los machos llegan contentos y no se van.",
+      "estampa": "Tres señoras del club, con la servilleta al cogote, que se hamacan como las mantis de verdad. La letra dice que van a devorar y no dice qué; el dibujo pone al macho, más chico, de moño y con un clavel, que llega contento por el mantel. De él quedan la flor en el plato y una antena, y al rato vuelve a llegar…",
       "cerca": ["el-canibal"]
     },
     {
