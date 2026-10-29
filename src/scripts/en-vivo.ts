@@ -12,6 +12,20 @@ import { crearRocola } from './rocola.ts';
 const rocola = crearRocola();
 const aviso = document.getElementById('en-vivo-aviso');
 
+/**
+ * Llegar por el `#` de una lista la abre (`D-84`: el afiche de noviembre manda a la noche del
+ * 19). `:target` no abre un `<details>` solo: el navegador baja hasta el resumen y la lista
+ * queda plegada, que es llegar a una puerta cerrada.
+ */
+function abrirLaDelHash(): void {
+  const id = decodeURIComponent(location.hash.slice(1));
+  if (!id) return;
+  const lista = document.getElementById(id);
+  if (lista instanceof HTMLDetailsElement) lista.open = true;
+}
+abrirLaDelHash();
+window.addEventListener('hashchange', abrirLaDelHash);
+
 /** El botón que está en "Pará", para devolverlo a su rótulo cuando termina. */
 let botonActivo: HTMLButtonElement | null = null;
 

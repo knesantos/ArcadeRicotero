@@ -66,3 +66,17 @@ export function porAnio<T extends { readonly fecha: string }>(noches: readonly T
   }
   return salida;
 }
+
+/**
+ * El ancla de cada lista entera en "En vivo", por su fecha (`D-84`: el portal enlaza una
+ * noche, y cargar una lista más no la mueve). Dos cargas de la misma noche —Mar del Plata,
+ * 13/8/94, dos casetes distintos (`RES-225`)— se numeran desde la segunda: `-2`, `-3`…
+ */
+export function anclasPorFecha(fechas: readonly string[]): readonly string[] {
+  const vistas = new Map<string, number>();
+  return fechas.map((fecha) => {
+    const n = (vistas.get(fecha) ?? 0) + 1;
+    vistas.set(fecha, n);
+    return n === 1 ? `lista-${fecha}` : `lista-${fecha}-${n}`;
+  });
+}
