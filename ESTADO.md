@@ -9,7 +9,7 @@
 
 > ## 🃏 SIETE MÁS QUE ERAN OJOS: EL DIABLO DE MUCHOS CUERNOS, LA PRINCESITA SAPITO, LA TIPA RAPAZ, EL RATÓN, LA POLILLA, EL BOTIJA Y EL JOCKER (2026-10-29) — `D-73` (24)
 >
-> **Sin integrar**, en la rama `bestiario/siete-mas`, sobre `bestiario/siete` (`2dd328b`): trae adentro la vigesimotercera (#86).
+> **Sin integrar**, en la rama `bestiario/siete-mas`, nacida sobre `bestiario/siete` (`2dd328b`), con `main` ya adentro (la vigesimotercera entró por el #86).
 > `T-513`. Pedido del usuario: otras siete bestias sin diseño complejo, rocambolescas, con buenos detalles y animación acorde.
 >
 > - **Infierno**: el diablo de muchos cuernos, portero de levita; tocado se cuenta los cuernos y le brota otro.
