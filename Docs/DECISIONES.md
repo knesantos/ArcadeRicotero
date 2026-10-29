@@ -5894,6 +5894,60 @@ reemplazado: viven, y el toque corre entero hasta abrir la ficha.
 
 - `T-511`: verlos en un teléfono de verdad, que `contenido` lea las cinco estampas, y pasar los cinco bloques de tintas al lienzo.
 
+### Enmienda del 2026-10-28 (23): siete que eran ojos o una silueta pintada, uno por entorno flaco
+
+Pedido del usuario, textual: *"Elegi otras 7 bestias que no tengan un diseñp complejo y dales un buen diseño rocambolesco con
+buenos detalles y una animacion compleja y acorde al personajes"*. La escribe el hilo principal en la rama `bestiario/siete`,
+sobre `bestiario/cinco-mas` en `689266f` (la vigesimosegunda, todavía sin integrar). Antes de tomar `T-512` se miraron todas las
+ramas: la última era `T-511`.
+
+#### Cuáles, y por qué esos
+
+Uno por entorno con pocos títeres para los bichos que tiene, entre los que seguían siendo ojos o una silueta pintada en el piso.
+Se descartaron la drácula con tacones y el lobo suelto, que ya eran títeres de las primeras vueltas.
+
+- **El chivato** (la prisión, *Murga purga*, *Momo sampler*): un chivito murguero parado en dos patas, con levita de lentejuelas,
+  galera entre los cuernos, la oreja pegada a la reja de la celda del reo, la libretita y el lápiz atrás de la oreja. La palabra
+  sirve para el animal y para el buchón. Solo escucha, anota, mastica la hoja o se hace el distraído; tocado canta la delación de
+  murguero, se le vuela la lista adentro de la celda, y se encoge.
+- **Los gallos sofocados** (el templo, *Templo de Momo* y *Pool, Averna y Papusa*, *Momo sampler*): dos gallos de fin de fiesta
+  apoyados uno en el otro, el del espolón de oro con la botella de licor y el flaco con la flor chillona. Tocados arman una riña
+  de opereta, se les ahoga el cacareo y terminan abrazados.
+- **La anguila** (el bajo, *Cruz Diablo*, *Luzbelito*): medio hundida en un charco de barro; el cuerpo es una cadena de doce
+  segmentos de largo fijo con una onda que viaja de la cabeza a la cola, y el barro corta lo que queda abajo. Tocada salta en arco
+  chorreando, se le escapa la burbuja del último aire y el barro se la vuelve a tragar.
+- **La lechuza que circula** (el árbol, *Mariposa Pontiac / Rock del país*, *Luzbelito*): lechuza de campanario en una rama seca,
+  mordiendo un pito de vigilante, con un boleto pinchado en la rama y una anilla en la pata. Gira la cabeza de más; tocada pita y
+  da la vuelta al árbol sin dejar de mirarte.
+- **El que mordió el anzuelo** (los astilleros, *Esa estrella era mi lujo*, *Bang! Bang! Estás liquidado*): un pescado iluso
+  colgado del labio en la caña del muelle, con la estrella de lata de cebo y los anzuelos viejos de las otras veces. Tocado se
+  zafa, se hunde detrás del canto y vuelve a saltar a morder.
+- **La piba con la remera de Greenpeace** (la ruta, *Momo sampler*): dormida en la banquina en un almohadón de sillón, o
+  haciéndose. La remera lleva una ballena pintada a mano y no el logo (el precedente del ticket del Alien; lo mira su test).
+  Abre un ojo cuando pasa un fierro; tocada ronca de mentira, espía, se pone colorada y se vuelve a tirar.
+- **Las antiguas lobas** (el monte, *Barbazul versus el amor letal*, *Gulp!*): dos lobas viejas echadas como muertas, una con la
+  boca pintada y el collar roto, la otra tuerta con catarata. Tocadas se paran crujiendo, aúllan a dúo, trotan de jóvenes un
+  momento y se vuelven a echar.
+
+#### Cómo se hizo, y lo que se tocó alrededor
+
+- El hilo principal armó primero el andamiaje (esqueletos registrados en `elenco.ts` y `vivos.ts`, y bloques vacíos con sus
+  marcadores en `tokens.css` y `sitio.css`), y cada bestia la dibujó y animó un subagente propio (siete en paralelo, en Opus), que
+  escribió solo sus archivos y su bloque y miró sus poses impresas antes de entregar. Lo compartido lo integró el hilo principal.
+- **Se sacaron del piso** las siluetas pintadas de la lechuza (árbol), del pescado colgando de la línea (astilleros, queda la caña)
+  y de la piba (ruta), en `arte-entornos.ts`, y se reimprimieron esos tres pisos y sus versiones del camino. Sus tests miran que no
+  vuelvan. Se sacó `ASTILLERO.pescado` de `rig-entornos.ts`, que ya no lo usa nadie.
+- Los ojos viejos se quedan en sus listas (los cuenta `bestiario.test.ts`); `sinTitere` los saca de la escena.
+- Las siete estampas, con el molde de la vigésima; los discos se cotejaron contra `cancionero.json`.
+
+Cada uno trae su bloque de tintas medidas con sharp en su tapa, su bloque en `sitio.css`, su conducta y su test (8 o 9). `npm test`
+(2105), `npm run check` y `npm run build` en verde. Los siete se vieron vivir y responder al toque en la página de su recinto,
+en un iframe con `requestAnimationFrame` reemplazado, sin errores.
+
+- `T-512`: verlos en un teléfono de verdad, que `contenido` lea las siete estampas, pasar los siete bloques de tintas al lienzo, y
+  ver si `arte-desencarnada.ts` estira `ruta-piso` en su retrato (lo señaló el que hizo la piba: pinta en 0,0,900,640 una pieza
+  de caja 0,200,900,440).
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17

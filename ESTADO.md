@@ -7,6 +7,22 @@
 
 **Última actualización:** 2026-10-28
 
+> ## 🐐 SIETE QUE ERAN OJOS: EL CHIVATO, LOS GALLOS, LA ANGUILA, LA LECHUZA, EL ANZUELO, LA PIBA Y LAS LOBAS (2026-10-28) — `D-73` (23)
+>
+> **Sin integrar**, en la rama `bestiario/siete`, sobre `bestiario/cinco-mas` (`689266f`): trae adentro la vigesimosegunda.
+> `T-512`. Pedido del usuario: otras siete bestias sin diseño complejo, rocambolescas, con buenos detalles y animación acorde.
+>
+> - **Prisión**: el chivato murguero con la oreja en la reja; tocado canta la delación y se le vuela la lista.
+> - **Templo**: los gallos sofocados, borrachos de fin de fiesta; tocados, riña de opereta y abrazo.
+> - **Bajo**: la anguila en el barro, que ondula de verdad; tocada salta y el barro se la traga.
+> - **Árbol**: la lechuza que circula, con el pito de vigilante; tocada da la vuelta al árbol mirándote.
+> - **Astilleros**: el que mordió el anzuelo, colgado de la caña; tocado se zafa y vuelve a morder.
+> - **Ruta**: la piba con la remera (ballena, sin logo), que finge que duerme; tocada ronca de mentira y espía.
+> - **Monte**: las antiguas lobas; tocadas reviven, aúllan a dúo, trotan y se vuelven a echar.
+> - Se sacaron del piso las siluetas pintadas de la lechuza, el pescado y la piba (reimpresos).
+> - **Verde:** `npm test` (2105), `npm run check`, `npm run build`. Vistos vivir y responder al toque en la página de cada recinto.
+> - **Falta**: `T-512` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo, el retrato de la desencarnada).
+
 > ## 📺 CINCO QUE ERAN OJOS: EL ALIEN DUCE, LAS SIRENAS, EL AMORCITO, EL GATO MATÓN Y MANDINGA (2026-10-28) — `D-73` (22)
 >
 > **En `main`** por el PR #84 (fusión `84a4b09`), desde la rama `bestiario/cinco-mas`. `T-511`. Pedido del usuario: cinco bestias

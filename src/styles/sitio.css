@@ -4540,6 +4540,66 @@ body:has(> .lugar) .marca-chica {
 .titere--alien [data-parte="ticket"], .titere--alien [data-parte="bollo"], .titere--alien [data-parte="ruido"] { pointer-events: none; }
 /* ⟨/el alien duce⟩ */
 
+/* ⟨el chivato⟩ */
+/* La sombra en el piso es lo negro de la contratapa. La hoja que se vuela, el balido y la gota no se tocan:
+   el toque es del chivato. */
+.titere--chivato { cursor: pointer; }
+.bt-chivato-sombra { fill: var(--bestia-chivato-negro); opacity: 0.75; }
+.titere--chivato [data-parte="hoja"], .titere--chivato [data-parte="balido"], .titere--chivato [data-parte="gota"] { pointer-events: none; }
+/* ⟨/el chivato⟩ */
+
+/* ⟨los gallos sofocados⟩ */
+/* Los gallos sofocados (vigesimotercera vuelta, D-73): se tocan enteros; el cacareo, el hipo y las plumas que
+   vuelan no atajan el dedo. La mancha del piso es lo hondo del interior de Momo sampler. */
+.titere--gallos { cursor: pointer; }
+.bt-gallos-sombra { fill: var(--bestia-gallos-hondo); opacity: 0.7; }
+.titere--gallos [data-parte="cacareo"], .titere--gallos [data-parte="hipo"], .titere--gallos [data-parte="plumas"] { pointer-events: none; }
+/* ⟨/los gallos sofocados⟩ */
+
+/* ⟨la anguila⟩ */
+/* El reflejo del fuego en el barro es luz y se suma a lo oscuro. Lo que salpica, chorrea, burbujea y
+   revienta no se toca: el toque es de ella. */
+.titere--anguila { cursor: pointer; }
+.titere--anguila [data-parte="brasa"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--anguila [data-parte^="gota-"], .titere--anguila [data-parte^="salpica-"], .titere--anguila [data-parte^="burbuja-"], .titere--anguila [data-parte^="revienta-"], .titere--anguila [data-parte="globo"], .titere--anguila [data-parte="plop"] { pointer-events: none; }
+/* ⟨/la anguila⟩ */
+
+/* ⟨la lechuza que circula⟩ */
+/* Se toca la lechuza; la rama es del arbol y el boleto esta pinchado en ella: no se tocan. El pitido es aire. */
+.titere--lechuza { cursor: pointer; }
+.titere--lechuza [data-parte="pitido"], .titere--lechuza [data-parte="boleto"] { pointer-events: none; }
+.titere--lechuza [data-parte="entero"] > image { pointer-events: none; }
+/* ⟨/la lechuza que circula⟩ */
+
+/* ⟨el que mordio el anzuelo⟩ */
+/* La linea de la caña es la tanza: el brillo de la pistola de la tapa, finita. El pescado es finito y el
+   toque se agranda con una caja sin tinta. El brillo de la estrella de lata es luz y se suma a la noche; el
+   chapuzon, las ondas y las gotas no se tocan. */
+.titere--anzuelo { cursor: pointer; }
+.bt-anzuelo-linea { fill: none; stroke: var(--bestia-anzuelo-acero-claro); stroke-width: 0.6; opacity: 0.8; }
+.bt-anzuelo-toque { fill: transparent; }
+.titere--anzuelo [data-parte="brillo"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--anzuelo [data-parte="salpica"], .titere--anzuelo [data-parte="ondas"], .titere--anzuelo [data-parte^="gota-"] { pointer-events: none; }
+/* ⟨/el que mordio el anzuelo⟩ */
+
+/* ⟨la piba de greenpeace⟩ */
+/* La sombra en el pasto es lo hondo del interior de Momo sampler. Los zzz de mentira y el mosquito
+   andan por el aire: no se tocan, para que el toque caiga en ella. No tiene luces. */
+.titere--piba { cursor: pointer; }
+.bt-piba-sombra { fill: var(--bestia-piba-hondo); opacity: 0.75; }
+.titere--piba [data-parte^="zeta-"], .titere--piba [data-parte="bicho"] { pointer-events: none; }
+/* ⟨/la piba de greenpeace⟩ */
+
+/* ⟨las antiguas lobas⟩ */
+/* Se tocan las dos, y el hueco donde duermen. El polvo que se sacuden, el crujido y el vaho del aullido no se
+   tocan, y el vaho es aire frio que se suma a lo oscuro del monte. La sombra es la tinta del piso. */
+.titere--lobas { cursor: pointer; }
+.bt-lobas-toque { fill: transparent; }
+.bt-lobas-sombra { fill: var(--bestia-lobas-tinta-honda); opacity: 0.55; }
+.titere--lobas [data-parte^="vaho-"] { mix-blend-mode: screen; pointer-events: none; }
+.titere--lobas [data-parte^="polvo-"], .titere--lobas [data-parte^="cruje-"] { pointer-events: none; }
+/* ⟨/las antiguas lobas⟩ */
+
 /* ⟨el esclavo encadenado⟩ */
 /* La sombra de las rodillas es la tinta del fondo, como la de Barbazul y la drácula. La chispa del eslabón
    es el rojo de las banderas de la tapa con rayas de papel, y no se toca: el toque es del que rompe. */

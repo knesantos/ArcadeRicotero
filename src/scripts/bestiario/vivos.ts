@@ -42,6 +42,13 @@ import { armarAmorcito } from './amorcito.ts';
 import { armarSirenas } from './sirenas.ts';
 import { armarMandinga } from './mandinga.ts';
 import { armarAlien } from './alien.ts';
+import { armarChivato } from './chivato.ts';
+import { armarGallos } from './gallos.ts';
+import { armarAnguila } from './anguila.ts';
+import { armarLechuza } from './lechuza.ts';
+import { armarAnzuelo } from './anzuelo.ts';
+import { armarPiba } from './piba.ts';
+import { armarLobas } from './lobas.ts';
 
 /**
  * Lo que la escena le presta a un personaje. Las coordenadas de `hablar` van en las del recinto
@@ -100,6 +107,13 @@ const CONDUCTAS: Readonly<Record<string, Armar | null>> = {
   'las-sirenas': armarSirenas,
   'mandinga': armarMandinga,
   'el-alien-duce': armarAlien,
+  'el-chivato': armarChivato,
+  'los-gallos-sofocados': armarGallos,
+  'la-anguila': armarAnguila,
+  'la-lechuza-que-circula': armarLechuza,
+  'el-que-mordio-el-anzuelo': armarAnzuelo,
+  'la-piba-de-greenpeace': armarPiba,
+  'las-antiguas-lobas': armarLobas,
 };
 
 /** Los ids que tienen conducta: el test mira que coincidan con los que tienen dibujo. */
