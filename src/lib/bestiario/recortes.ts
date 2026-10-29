@@ -39,6 +39,25 @@ export interface Recorte {
    * `desde` y `hasta` se funde.
    */
   fondoOscuro?: { desde: number; hasta: number };
+  /**
+   * Si la figura tiene sombras tan oscuras como el fondo (el busto de Luzbelito): en vez de
+   * transparentar por luminosidad, se separa la silueta —lo que se aleja más de `umbral` del color
+   * `fondo`—, se le tapan los agujeros y queda maciza. Solo el canto se sopla, `canto` píxeles. `incluye`
+   * es lo que es figura aunque tenga el color del fondo, dibujado a mano. `pelar` son las pasadas
+   * que le sacan al canto el ribete del fondo que el cierre deja pegado.
+   */
+  macizo?: {
+    fondo: readonly [number, number, number];
+    umbral: number;
+    canto: number;
+    incluye?: readonly (readonly Punto[])[];
+    pelar?: number;
+  };
+  /**
+   * Lo que se pinta encima de la tapa antes de cortar, en sus píxeles: un SVG hecho con las tintas
+   * de `tokens.css` (`tinta` da el hex de un token). Lo pintado cuenta como figura.
+   */
+  pintado?: (tinta: (token: string) => string) => string;
   /** Cuánto se achica al guardarlo, si no es el `REDUCCION` de siempre: las figuras chicas, enteras. */
   reduccion?: number;
   /**
@@ -117,13 +136,50 @@ const BOCA_PERRO: readonly Punto[] = [
 
 /*
  * Luzbelito (`RES-06`): la cabeza esculpida con la vela encendida en la coronilla, del óvalo de
- * su tapa. El fondo del óvalo es negro, así que se separa por luminosidad. La llama va aparte
+ * su tapa. El fondo del óvalo es negro, pero la sombra de la cara y del cuello es casi igual de
+ * oscura: por luminosidad se transparentaba entera. Así que va maciza (`macizo`): la silueta se
+ * separa por la distancia al negro verdoso del óvalo y se le tapan los agujeros. El polígono solo
+ * acota dónde buscarla: corta en la base del busto, antes del pie y del marco. La llama va aparte
  * para que titile.
  */
 const BUSTO_LUZBELITO: readonly Punto[] = [
-  [428, 382], [470, 368], [494, 372], [495, 352], [515, 352], [516, 372], [556, 384], [580, 420], [574, 498], [586, 520],
-  [594, 590], [545, 600], [470, 600], [434, 596], [430, 540], [440, 520], [424, 480], [424, 420],
+  [428, 382], [470, 368], [496, 372], [498, 352], [512, 352], [514, 372], [556, 384], [580, 420], [574, 498], [586, 520],
+  [594, 586], [545, 590], [490, 586], [458, 578], [448, 540], [440, 520], [424, 480], [424, 420],
 ];
+/**
+ * El lente oscuro del antiparras, el de su izquierda: es del mismo verde negro que el óvalo, así
+ * que por color se cortaba a mordiscos. Va a mano, hasta la correa, que es el canto de la cabeza.
+ */
+const LENTE_LUZBELITO: readonly Punto[] = [
+  [504, 383], [514, 385], [524, 389], [534, 395], [541, 401], [548, 410], [554, 420], [558, 431], [560, 442],
+  [532, 442], [514, 426], [503, 404],
+];
+/**
+ * El mismo lente, repintado (pedido del usuario: *"todavía no se recorta bien el lente, generalo"*).
+ * Un vidrio oval con su aro, soplado de lo hondo a la luz de la vela, con el brillo donde la tapa
+ * lo tiene y el grano de la foto. Las medidas son las del lente de la tapa.
+ */
+function lenteDeLuzbelito(tinta: (token: string) => string): string {
+  const [cx, cy, rx, ry, giro] = [521, 408, 21, 14, 30];
+  return (
+    `<defs>` +
+    `<clipPath id="vidrio"><ellipse cx="0" cy="0" rx="${rx}" ry="${ry}"/></clipPath>` +
+    `<filter id="soplo" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5"/></filter>` +
+    `<filter id="brillo" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.6"/></filter>` +
+    `<filter id="aro"><feGaussianBlur stdDeviation="0.5"/></filter>` +
+    `<filter id="grano"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="7"/>` +
+    `<feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.35 -0.1"/><feComposite in2="SourceGraphic" operator="in"/></filter>` +
+    `</defs>` +
+    `<g transform="translate(${cx} ${cy}) rotate(${giro})">` +
+    `<ellipse rx="${rx}" ry="${ry}" fill="${tinta('--bestia-luzbelito-vidrio')}"/>` +
+    `<g clip-path="url(#vidrio)"><ellipse cx="-3" cy="-7" rx="${rx * 0.8}" ry="${ry * 0.55}" fill="${tinta('--bestia-luzbelito-vidrio-luz')}" filter="url(#soplo)"/></g>` +
+    `<ellipse rx="${rx}" ry="${ry}" fill="${tinta('--bestia-luzbelito-vidrio')}" filter="url(#grano)"/>` +
+    `<ellipse rx="${rx - 0.8}" ry="${ry - 0.8}" fill="none" stroke="${tinta('--bestia-luzbelito-aro')}" stroke-width="1.3" filter="url(#aro)"/>` +
+    `<ellipse cx="-10" cy="-4" rx="5.5" ry="4.2" fill="${tinta('--bestia-luzbelito-brillo')}" filter="url(#brillo)"/>` +
+    `<ellipse cx="-4" cy="-8" rx="2.2" ry="0.9" fill="${tinta('--bestia-luzbelito-brillo')}" opacity="0.7" filter="url(#brillo)"/>` +
+    `</g>`
+  );
+}
 const LLAMA_LUZBELITO: readonly Punto[] = [[494, 312], [516, 312], [516, 360], [494, 360]];
 
 /** El medallón de Momo, de la tapa de *Momo Sampler*: un círculo de plata con la cara del rey del carnaval. */
@@ -145,7 +201,7 @@ export const RECORTES: readonly Recorte[] = [
   { nombre: 'perro-real-boca', reduccion: 1, fuente: 'perro', poligono: BOCA_PERRO, plumado: 4, fundirBordes: true },
   { nombre: 'perro-real-mandibula', reduccion: 1, fuente: 'perro', poligono: MANDIBULA_PERRO, plumado: 4, fundirBordes: true },
   { nombre: 'perro-real-cabeza', reduccion: 1, fuente: 'perro', poligono: CABEZA_PERRO, plumado: 4, fundirBordes: true },
-  { nombre: 'luzbelito-real-busto', reduccion: 1, fuente: 'luzbelito', poligono: BUSTO_LUZBELITO, plumado: 3, fondoOscuro: { desde: 34, hasta: 70 } },
+  { nombre: 'luzbelito-real-busto', reduccion: 1, fuente: 'luzbelito', poligono: BUSTO_LUZBELITO, plumado: 3, macizo: { fondo: [31, 33, 35], umbral: 20, canto: 0.8, incluye: [LENTE_LUZBELITO], pelar: 2 }, pintado: lenteDeLuzbelito },
   { nombre: 'luzbelito-real-llama', reduccion: 1, fuente: 'luzbelito', poligono: LLAMA_LUZBELITO, plumado: 3, fondoOscuro: { desde: 40, hasta: 90 } },
   {
     nombre: 'infierno-pincelada',

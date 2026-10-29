@@ -534,6 +534,21 @@ html.camino-pantalla body { background: var(--fondo); }
 
 .camino-pantalla .camino { margin-top: 0; }
 
+/* Adentro de X (`T-517`): la salida de arriba vuelve al plano, que sigue siendo el bestiario y se
+   abre en el mismo recuadro (`adentro` en `Cabeza`), así que se queda aunque `sitio.css` saque la
+   cabecera. La franja, que en el flujo quedaba debajo de la escena, baja a la esquina de abajo:
+   arriba ya están la salida y el tablero. La hoja y la lista, cuando se abren, la tapan. */
+html.incrustado.camino-pantalla .cabecera-sitio { display: flex; }
+
+html.incrustado.camino-pantalla .franja-en-x {
+  position: fixed;
+  left: 0;
+  bottom: env(safe-area-inset-bottom, 0px);
+  z-index: 25;
+  width: auto;
+  padding: 0 var(--espacio-2) var(--espacio-1);
+}
+
 /* El tablero, en el mismo renglón que la salida y contra el otro borde: el nombre chico, y lo
    demás plegado hasta que se toca el nombre (`camino-tablero--plegado`, lo pone la isla). */
 .camino-pantalla .camino-tablero {

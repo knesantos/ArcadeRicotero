@@ -32,8 +32,10 @@
 
 > ## ✨ LA PULIDA DEL BESTIARIO: EL PRIMER PASO, LOS SELLOS QUE SE ASIENTAN Y EL ANOTADO A LA VISTA (2026-10-29) — `D-83`
 >
-> **En `main`** por el PR #91 (fusión `5c90072`), desde la rama `bestiario/pulida` (worktree `.claude/worktrees/pulida-bestiario`), sobre `bestiario/siete-mas`
-> en `49351b3` (PR #88, con `main` adentro): trae adentro las siete más. Pedido del usuario: *"Hace una pulida entera del
+> **En `main`** por el PR #91 (fusión `5c90072`), desde la rama `bestiario/pulida` (worktree `.claude/worktrees/pulida-bestiario`),
+> sobre `bestiario/siete-mas` en `49351b3` (PR #88): trae adentro las siete más. Lo integró Claude a pedido del usuario
+> (*"Integralo"*), con `main` adentro (`a16f417`) y todo verde en la rama fusionada: `npm test` (2169), `npm run check`,
+> `npm run build` (186 páginas). Pedido del usuario: *"Hace una pulida entera del
 > bestiario redondo. Mejora diseños, mejora inmersion, animaciones y todo lo que haga mas inmersivo y pulido al sitio."*
 >
 > - **Lo que se vio antes de tocar**: en el teléfono, al entrar al monte no había ningún bicho a la vista (las lobas arrancan
@@ -74,6 +76,29 @@
 > - Se sacaron del piso las siluetas de la princesita, la tipa, el botija y el jocker (reimpresos).
 > - **Verde:** `npm test` (2164), `npm run check`, `npm run build`.
 > - **Falta**: `T-513` (teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
+
+> ## 📺 EL BESTIARIO ADENTRO DE X, A PRUEBA (2026-10-29) — `T-517`
+>
+> **Sin integrar**, rama `claude/bestiario-en-x-9ae3b4`. Pedido del usuario: sumar el bestiario redondo a la vía de la
+> Player Card de `T-513`. (`T-514` y `T-515` los toma la rama `bestiario/pulida`.) Se escribió como `T-516` y **se
+> renumeró a `T-517` al integrar**: el `T-516` de las cinco de la noche (`D-73`, 25) llegó antes a `main` por el #93;
+> los commits de la rama todavía dicen `T-516`.
+>
+> - **Puentes**: `/en-x/bestiario/` y una por cada región que se camina (`/en-x/bestiario/<región>/`), en `PUENTES` de
+>   `lib/en-x.ts`. La del bestiario **entra por el monte** (`ENTRADA`, como la puerta de la Redondopedia, `D-76`) y no por
+>   el plano, que en el recuadro no se ve sin bajar. Sin puente por bestia: ninguna tiene vista previa propia, y la bestia
+>   viaja en el `#` de la región, que la puente le pasa al bestiario en un navegador.
+> - **Modo incrustado**: `Base` acepta `incrustable="<sección>"`: pone la franja y le pasa a `Cabeza` la prop nueva
+>   `adentro`, para que los enlaces de esa sección y los `#` **se queden en el recuadro** (pasar de región a región es el
+>   paseo, no una salida); el resto sigue abriéndose afuera. En el camino a pantalla entera queda "← AL PLANO" arriba y la
+>   franja baja a la esquina de abajo (`camino.css`). Las reglas comunes de la franja pasaron de `juego.css` a `sitio.css`,
+>   que el bestiario sí carga.
+> - **`localStorage`**: ya iba envuelto; probado en un marco donde tira, en el build: la isla anda y anota en memoria.
+> - **Compartir**: el bestiario no tiene "Compartí"; no hay nada que cambiar.
+> - **Verde:** `npm test` (2111), `npm run check`, `npm run build`. Probado incrustado a 360 × 540 y 480 × 720: la escena se
+>   ve sin scroll, la animación corre en el iframe, tocar una bestia abre la ficha, y los juegos de `T-513` siguen igual.
+> - **Falta**: lo mismo que `T-513`, mirarlo en un posteo real. Al fusionar, chocan `[region].astro`, `camino.css` y
+>   `sitio.css` con `bestiario/pulida` si entra antes.
 
 > ## 📺 DOS JUEGOS PARA JUGAR ADENTRO DE X, A PRUEBA (2026-10-28) — `T-513`
 >
@@ -145,6 +170,24 @@
 > - **Verde:** `npm test` (2009), `npm run check`, `npm run build`. Visto en un iframe de teléfono y cuadro por cuadro.
 > - **Falta**: verlo en un teléfono de verdad, que `contenido` lea estampa y leyenda.
 
+> ## 🕯️ LUZBELITO, MACIZO (2026-10-24) — `D-73`, pulida
+>
+> **En el PR #82** (rama `bestiario/luzbelito-macizo`, sobre `main` en `a206ce2`); **sin integrar**. Pedido del usuario: el
+> busto de Luzbelito *"está como mal cortado y se transparenta mucho"*.
+>
+> - **Por qué pasaba:** el busto se separaba del óvalo negro por luminosidad, y la sombra de la cara y del cuello es casi igual
+>   de oscura que el fondo: quedaba lleno de agujeros por donde se veía el fuego, con restos del pie y del marco abajo.
+> - **El arreglo:** `recortes.ts` suma la opción `macizo` (la silueta se separa por distancia al negro verdoso del óvalo, se le
+>   tapan los agujeros y queda la pieza más grande; solo se sopla el canto) y `scripts/recortar-bestiario.mjs` la imprime. El
+>   polígono ahora corta en la base del busto. Segunda pasada, a pedido (*"el lente izquierdo corta mal"*): el lente oscuro del
+>   antiparras, del mismo verde negro que el óvalo, va dibujado a mano (`incluye`), y al canto se le pela el ribete del fondo
+>   que dejaba un contorno oscuro (`pelar`). Tercera (*"todavía no se recorta bien el lente, generalo"*): el lente ya no se
+>   corta, **se repinta** encima de la tapa (`pintado`, `lenteDeLuzbelito` en `recortes.ts`): vidrio oval con aro, soplado de
+>   lo hondo a la luz de la vela, con el brillo y el grano, en tintas nuevas (`⟨el lente de Luzbelito⟩` en `tokens.css`).
+>   **Falta pasar esas cuatro tintas al lienzo.** Se reimprimió solo `luzbelito-real-busto.webp`; los demás recortes salen iguales.
+> - **Verde:** `npm test` (2002), `npm run check`, `npm run build`. Visto en la escena del infierno y en la ficha, sobre el fuego.
+> - **Falta:** integrar el PR, y pasar las cuatro tintas del lente al lienzo.
+
 > ## 🛩️ CINCO DEL FONDO: ZIPPO, EL DIABLO MÁS VELOZ, EL SANTO FUMADOR, EL COLGADO Y LA SEÑORA (2026-10-24) — `D-73` (20)
 >
 > **En `main` desde el PR #79** (commit de fusión `7e76bf7`), rama `bestiario/cinco-del-fondo`. Lo integró Claude a pedido del
@@ -161,6 +204,25 @@
 >   murga en el templo.
 > - **Verde:** `npm test` (2002), `npm run check`, `npm run build`. Vistos animar en el servidor de desarrollo.
 > - **Falta**: `T-509` (verlas en un teléfono de verdad, que `contenido` lea las estampas, las tintas al lienzo).
+
+> ## 🎞️ TRES REELS EN EL CALENDARIO (2026-10-24) — `D-81`
+>
+> Rama `difusion/reels`, **sin integrar**. Pedido del usuario: *"Armate unos buenos reels ricoteros sobre los juegos
+> adivina el tema, sacalo por la letra y el bestiario redondo. Que se entienda lo que son pero no muestren de mas"*.
+>
+> - **Los reels** (`public/redes/DIF-13/14/15.mp4`, 1080x1920, 15 a 20 s): Adiviná el tema sube la escalera
+>   0,1-0,5-2-4 s de *Juguetes perdidos* y el tema sigue bajo el cartel, sin decir cuál es; Sacalo por la letra tacha
+>   ocho versos con fibra y deja una palabra de cada uno; el bestiario camina, con su reloj de verdad, la prisión de
+>   Barbazul y la pastura del lobo, el cordero y la vaca (pedido del usuario: *"son bestias reconocibles y entornos
+>   lindos"*; el infierno de la primera versión era "media pila"). Los carteles cuentan temas y bichos desde los JSON.
+> - **El generador** (`npm run reels -- <tema|letra|bestiario> DIF-XX`, `scripts/reels/`): graba cuadro por cuadro
+>   con `puppeteer-core` contra `astro dev`. Necesita `NAVEGADOR` (chrome-headless-shell: Edge sin ventana no levanta en
+>   esta PC) y `FFMPEG`; está en la cabecera de `motor.mjs`. **Grabar desde un checkout limpio**: el dev server sirve lo
+>   que haya sin commitear, y el bestiario mostraría bichos sin publicar.
+> - **El calendario**: `DIF-13` a `DIF-15` en borrador (3, 5 y 7 de noviembre). La pieza acepta `video`;
+>   `redes cola` no sube video todavía y frena: los reels van a mano con el lote.
+> - **Verde:** `npm test` (1959), `npm run check`, `npm run redes -- validar`. **Falta**: el visto bueno del usuario
+>   a los textos, y verlos subidos en Instagram (puede silenciar el audio de los temas; si hay reclamo, se baja, `D-14`).
 
 > ## 🧨 MI PERRO DINAMITA, CON MECHA Y EXPLOSIÓN (2026-10-23) — `D-73`, decimonovena vuelta
 >
@@ -1168,9 +1230,10 @@
 >   `DECISIONES.md` e `IDS.md`, este bloque, y las líneas de la marca en
 >   `skayboy-y-poligirl.astro`.
 > - Los roles: `Docs/SUGERENCIAS/HILO-para-todos-el-sitio-se-llama-fichin-ricotero.md`.
-> - El hilo de difusión en `main` sigue diciendo Arcade Ricotero: el nombre nuevo está en el
->   commit `be7b9e2` de `difusion/hilo-twitter`, sin PR (el #26 se integró antes). Sus
->   capturas muestran la marca vieja: se sacan de nuevo con esto publicado.
+> - El hilo de difusión en `main` sigue diciendo Arcade Ricotero hasta que entre el **PR #31**
+>   (rama `difusion/hilo-fichin`): el texto con el nombre nuevo y el tono de los 40 de
+>   *Oktubre*, y las capturas vueltas a sacar con FICHÍN RICOTERO publicado. Sus enlaces van a
+>   `fichinricotero.com.ar`, que todavía no resuelve DNS.
 
 > ## 🌙 "¿QUÉ TIPO DE RICOTERO SOS?" REHECHO: UNA NOCHE Y EL LIBRO DE *LUZBELITO* (2026-10-04) — `D-57`, ciclo 18
 >
