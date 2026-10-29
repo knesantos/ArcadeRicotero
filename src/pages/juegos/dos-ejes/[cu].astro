@@ -23,6 +23,7 @@ import { servir } from '../../../lib/dos-ejes/servir.ts';
 import { rutaDeVistaPrevia, slugDe } from '../../../lib/dos-ejes/arte.ts';
 import type { Cuadrante } from '../../../lib/dos-ejes/partida.ts';
 import Cabeza from '../../../components/Cabeza.astro';
+import FranjaEnX from '../../../components/FranjaEnX.astro';
 import PieImprenta from '../../../components/PieImprenta.astro';
 import Caratula from '../../../components/Caratula.astro';
 import Tapa from '../../../components/dos-ejes/Tapa.astro';
@@ -54,9 +55,10 @@ const SUBTITULO = PANTALLA_0.subtitulo(banco.momentos.length, banco.preguntasPor
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={DESCRIPCION} />
     <title>{TITULO}</title>
-    <Cabeza titulo={POSTAL.ogTitulo(c.nombre)} descripcion={DESCRIPCION} imagen={rutaDeVistaPrevia(c.id)} imagenAlt={TARJETA.alt(c.nombre, linea)} />
+    <Cabeza titulo={POSTAL.ogTitulo(c.nombre)} descripcion={DESCRIPCION} imagen={rutaDeVistaPrevia(c.id)} imagenAlt={TARJETA.alt(c.nombre, linea)} incrustable />
   </head>
   <body class="con-grano">
+    <FranjaEnX />
     <main id="app" class={`juego--${caratula.casete.variante} disco--luzbelito`} data-desafio={c.id}>
       <section id="inicio" class="pantalla">
         <header class="cabecera-sitio">

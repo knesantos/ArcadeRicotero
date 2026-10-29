@@ -19,6 +19,7 @@
  */
 import { token } from '../lib/sitio/tokens.ts';
 import { PORTAL } from '../lib/sitio/copy.ts';
+import { REPRODUCTOR } from '../lib/en-x.ts';
 
 interface Base {
   /** El titulo de la tarjeta. Suele ser el mismo `<title>` de la pantalla. */
@@ -38,14 +39,42 @@ interface Base {
  */
 type ConImagen = { imagen: string; imagenAlt: string } | { imagen?: undefined; imagenAlt?: undefined };
 
-type Props = Base & ConImagen;
+interface EnX {
+  /**
+   * La ruta del juego que X tiene que meter en el iframe de la Player Card. Solo la pasan las
+   * páginas puente de `/en-x/`; las demás siguen con `summary_large_image`. La imagen se queda
+   * igual: X la pide como respaldo para los clientes que no muestran el reproductor.
+   */
+  reproductor?: string;
+  /**
+   * La pantalla se deja meter en un iframe ajeno. Con `?incrustado` en la dirección, o
+   * adentro de un marco, cada enlace se abre en una pestaña nueva: navegar adentro del
+   * reproductor de X dejaría el sitio entero encerrado en un recuadro.
+   */
+  incrustable?: boolean;
+}
 
-const { titulo, descripcion, imagen: propia, imagenAlt } = Astro.props;
+type Props = Base & ConImagen & EnX;
+
+const { titulo, descripcion, imagen: propia, imagenAlt, reproductor, incrustable } = Astro.props;
 
 const url = new URL(Astro.url.pathname, Astro.site).href;
 const imagen = new URL(propia ?? '/tarjeta.png', Astro.site).href;
 const alt = imagenAlt ?? PORTAL.altTarjeta;
+
+const reproductorUrl = reproductor && new URL(`${reproductor}?incrustado`, Astro.site).href;
 ---
+
+{incrustable && (
+  <script is:inline>
+    if (window.self !== window.top || new URLSearchParams(location.search).has('incrustado')) {
+      document.documentElement.classList.add('incrustado');
+      const base = document.createElement('base');
+      base.target = '_blank';
+      document.head.append(base);
+    }
+  </script>
+)}
 
 <meta name="theme-color" content={token('--fondo')} />
 
@@ -83,7 +112,18 @@ const alt = imagenAlt ?? PORTAL.altTarjeta;
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content={alt} />
 
-<meta name="twitter:card" content="summary_large_image" />
+{
+  reproductorUrl ? (
+    <>
+      <meta name="twitter:card" content="player" />
+      <meta name="twitter:player" content={reproductorUrl} />
+      <meta name="twitter:player:width" content={String(REPRODUCTOR.ancho)} />
+      <meta name="twitter:player:height" content={String(REPRODUCTOR.alto)} />
+    </>
+  ) : (
+    <meta name="twitter:card" content="summary_large_image" />
+  )
+}
 <meta name="twitter:title" content={titulo} />
 <meta name="twitter:description" content={descripcion} />
 <meta name="twitter:image" content={imagen} />

@@ -27,6 +27,7 @@ import { crearRocola } from './rocola.ts';
 import { armarRecinto } from './bestiario/recintos.ts';
 import { Charla } from '../lib/bestiario/charla.ts';
 import { lugarDeLaFicha, type Lado } from '../lib/bestiario/hoja.ts';
+import { reposar, sellar, sellarAnotada } from './bestiario/sellos.ts';
 
 interface BestiaIsla {
   id: string;
@@ -108,6 +109,7 @@ function anotar(id: string): void {
   anotadas.add(id);
   pintarAnotada(id);
   pintarLibreta();
+  sellar(libreta, 'bestiario-libreta--sella');
   try {
     localStorage.setItem(CLAVE, JSON.stringify([...anotadas]));
   } catch {
@@ -127,6 +129,7 @@ function abrir(id: string): void {
   callar();
   rocola.parar();
   volverA = document.activeElement;
+  const nueva = !anotadas.has(id);
   const copia = original.cloneNode(true) as HTMLElement;
   // Si la ficha del índice todavía no se armó, la copia trae el retrato guardado: se arma acá.
   materializar(copia);
@@ -135,8 +138,12 @@ function abrir(id: string): void {
   hoja.hidden = false;
   hoja.scrollTop = 0;
   anotar(id);
+  // Lo anotado se ve donde se anota (`D-83`): el sello y la cuenta, en la hoja.
+  sellarAnotada(copia, nueva, anotadas.size, datos.total);
   history.replaceState(null, '', `#${id}`);
   ubicarHoja(id);
+  // La hoja se asienta de nuevo aunque ya estuviera abierta con otro bicho.
+  reposar(hoja);
   cerrar.focus({ preventScroll: true });
 }
 
@@ -202,7 +209,7 @@ function decir(id: string, escena: HTMLElement, g: Element, dura = 8000): void {
   const caja = escena.getBoundingClientRect();
   escena.append(bocadillo);
   bocadilloVerso.textContent = `«${b.dice}»`;
-  bocadillo.hidden = false;
+  reposar(bocadillo);
   const ancho = bocadillo.offsetWidth;
   const alto = bocadillo.offsetHeight;
   // En coordenadas del contenido de la escena: lo corrido de costado se suma, el borde se resta.

@@ -36,6 +36,31 @@ import { armarVeloz } from './veloz.ts';
 import { armarFumador } from './fumador.ts';
 import { armarColgado } from './colgado.ts';
 import { armarDesencarnada } from './desencarnada.ts';
+import { armarEncadenado } from './encadenado.ts';
+import { armarMaton } from './maton.ts';
+import { armarAmorcito } from './amorcito.ts';
+import { armarSirenas } from './sirenas.ts';
+import { armarMandinga } from './mandinga.ts';
+import { armarAlien } from './alien.ts';
+import { armarChivato } from './chivato.ts';
+import { armarGallos } from './gallos.ts';
+import { armarAnguila } from './anguila.ts';
+import { armarLechuza } from './lechuza.ts';
+import { armarAnzuelo } from './anzuelo.ts';
+import { armarPiba } from './piba.ts';
+import { armarLobas } from './lobas.ts';
+import { armarCuernos } from './cuernos.ts';
+import { armarSapito } from './sapito.ts';
+import { armarRapaz } from './rapaz.ts';
+import { armarRaton } from './raton.ts';
+import { armarPolilla } from './polilla.ts';
+import { armarBotija } from './botija.ts';
+import { armarJocker } from './jocker.ts';
+import { armarRey } from './rey.ts';
+import { armarAhogado } from './ahogado.ts';
+import { armarPichon } from './pichon.ts';
+import { armarMantis } from './mantis.ts';
+import { armarCielo } from './cielo.ts';
 
 /**
  * Lo que la escena le presta a un personaje. Las coordenadas de `hablar` van en las del recinto
@@ -88,6 +113,31 @@ const CONDUCTAS: Readonly<Record<string, Armar | null>> = {
   'el-santo-fumador': armarFumador,
   'el-que-duerme-colgado': armarColgado,
   'la-bella-senora-desencarnada': armarDesencarnada,
+  'el-esclavo-encadenado': armarEncadenado,
+  'el-gato-maton': armarMaton,
+  'el-amorcito-que-mordio-el-vidrio': armarAmorcito,
+  'las-sirenas': armarSirenas,
+  'mandinga': armarMandinga,
+  'el-alien-duce': armarAlien,
+  'el-chivato': armarChivato,
+  'los-gallos-sofocados': armarGallos,
+  'la-anguila': armarAnguila,
+  'la-lechuza-que-circula': armarLechuza,
+  'el-que-mordio-el-anzuelo': armarAnzuelo,
+  'la-piba-de-greenpeace': armarPiba,
+  'las-antiguas-lobas': armarLobas,
+  'el-diablo-de-muchos-cuernos': armarCuernos,
+  'la-princesita-sapito': armarSapito,
+  'la-tipa-rapaz': armarRapaz,
+  'el-raton': armarRaton,
+  'la-polilla': armarPolilla,
+  'el-botija-rapado': armarBotija,
+  'el-jocker-burlon': armarJocker,
+  'el-rey-de-esta-jungla': armarRey,
+  'el-ahogado-y-su-fiel-fantasma': armarAhogado,
+  'el-pichon': armarPichon,
+  'el-club-de-mantis': armarMantis,
+  'el-que-no-se-cayo-del-cielo': armarCielo,
 };
 
 /** Los ids que tienen conducta: el test mira que coincidan con los que tienen dibujo. */

@@ -11,7 +11,8 @@
  * Una pieza puede pedir una tapa de verdad con `href="tapa:<archivo>"` (sin `.jpg`): la imprenta
  * la busca en `Docs/INVESTIGACION/TapasDiscos/` y la mete adentro del SVG. Así la pared del bajo es
  * el crayón de la contratapa de *Un baión* y la etiqueta de la botella de Pierre es el «gulp.» de
- * la contratapa de *Gulp!*, sin redibujarlos. Con `--solo` imprime nada más las piezas cuyo
+ * la contratapa de *Gulp!*, sin redibujarlos. Igual con `href="master:<archivo>"` y un `.png` de
+ * `Docs/UX/recortes-master/`: el esclavo encadenado. Con `--solo` imprime nada más las piezas cuyo
  * nombre empieza con alguno de esos prefijos.
  *
  * El desenfoque y el grano se calculan acá, una vez, y no en el teléfono en cada cuadro.
@@ -43,15 +44,21 @@ const PORTAL = piezasDelPortal(tierrasDe(regiones));
 
 const { valores } = leerDeclaraciones(readFileSync(resolve(raiz, 'src/styles/tokens.css'), 'utf-8'));
 
-/** Mete adentro del SVG cada tapa que pide una pieza (`href="tapa:<archivo>"`). */
+/**
+ * Mete adentro del SVG cada tapa que pide una pieza (`href="tapa:<archivo>"`), y cada máster de
+ * recorte (`href="master:<archivo>"`, un `.png` de `Docs/UX/recortes-master/`): así el esclavo
+ * encadenado es el dibujo que trajo el usuario, cortado en piezas, y no un redibujo.
+ */
 const tapas = new Map();
 function conTapas(svg) {
-  return svg.replace(/href="tapa:([a-z0-9-]+)"/g, (_, nombre) => {
-    if (!tapas.has(nombre)) {
-      const jpg = readFileSync(resolve(raiz, `Docs/INVESTIGACION/TapasDiscos/${nombre}.jpg`));
-      tapas.set(nombre, `data:image/jpeg;base64,${jpg.toString('base64')}`);
+  return svg.replace(/href="(tapa|master):([a-z0-9-]+)"/g, (_, de, nombre) => {
+    const clave = `${de}:${nombre}`;
+    if (!tapas.has(clave)) {
+      const [carpeta, ext, tipo] = de === 'tapa' ? ['Docs/INVESTIGACION/TapasDiscos', 'jpg', 'jpeg'] : ['Docs/UX/recortes-master', 'png', 'png'];
+      const archivo = readFileSync(resolve(raiz, `${carpeta}/${nombre}.${ext}`));
+      tapas.set(clave, `data:image/${tipo};base64,${archivo.toString('base64')}`);
     }
-    return `href="${tapas.get(nombre)}"`;
+    return `href="${tapas.get(clave)}"`;
   });
 }
 

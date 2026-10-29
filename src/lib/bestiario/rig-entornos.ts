@@ -146,9 +146,8 @@ export const ASTILLERO = {
   /** El ferry que sale, en el agua, y la planchada que baja al muelle. */
   ferry: { x0: 570, x1: 880, agua: 372, cubierta: 340 },
   planchada: { muelle: [486, 432], cubierta: [594, 340] },
-  /** La caña apoyada en una bita, y el pescado que cuelga de la línea. */
+  /** La caña apoyada en una bita. Del que mordió el anzuelo, que cuelga de la punta, se ocupa `rig-anzuelo.ts`. */
   cania: { x: 716, piso: 476, punta: [770, 322] },
-  pescado: { x: 770, y: 412 },
   /** El lanchón amarrado en la punta del muelle, con la proa para la izquierda. */
   lanchon: { x0: 784, x1: 910, agua: 430 },
   /** El balde de las almejas y la valija del as del Club París. */

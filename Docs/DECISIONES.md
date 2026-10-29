@@ -5798,6 +5798,311 @@ animar en el servidor de desarrollo, con el toque disparado a mano, y en sus esc
 - `T-509`: verlos en un teléfono de verdad, y que `contenido` lea las cinco estampas; pasar los cinco bloques de tintas al
   lienzo, como `T-507`.
 
+### Enmienda del 2026-10-24 (21): el esclavo encadenado, el dibujo que trajo el usuario
+
+Pedido del usuario, textual, con la imagen: *"Diseña e implementa una bestia del bestiario redondo que sea esta, usa la
+imagen de base, es uno de los de la tapa de oktubre, es importante."* La imagen es el estarcido blanco sobre negro del esclavo
+que rompe las cadenas, el de Rocambole que ya estaba en la portada (`public/arte/oktubre-cadena.png`). La escribe el hilo
+principal en la rama `bestiario/esclavo-encadenado`, en un worktree aparte desde `main` en `a206ce2`, porque otra sesión tenía
+sin commitear `recortes.ts` y `recortar-bestiario.mjs` en el checkout principal. Sin subagentes. Antes de tomar `T-510` se
+miraron todas las ramas: la última era `T-509`.
+
+#### Qué es y cómo se hizo
+
+- **Una bestia nueva, `el-esclavo-encadenado`**, en la prisión de Barbazul, que es de *Oktubre*. No sale nombrado en ninguna
+  letra, pero no es del mito: su verso es *"Casi ya no llora, ¡atrapado en libertad!"* (*Preso en mi ciudad*, de ese disco), y
+  también *"Nuestro amo juega al esclavo"*. El esclavo sensible y chillón sigue siendo otro: es el de la letra, en su celda.
+- **No se redibuja.** El dibujo del usuario quedó como máster (`Docs/UX/recortes-master/esclavo-encadenado.png`) y
+  `scripts/preparar-encadenado.mjs` le saca la **silueta maciza** (lo blanco con las rendijas cerradas y los agujeros tapados):
+  así el negro de adentro es tinta y no deja ver la prisión, que es lo que le pasaba al busto de Luzbelito. Las cadenas, en
+  cambio, quedan caladas, con un canto de tinta de tres píxeles que las despega de los barrotes de la celda de atrás.
+- **La imprenta aprendió `href="master:…"`**, como ya sabía `href="tapa:…"`: mete el `.png` de `Docs/UX/recortes-master/`
+  adentro de la pieza. Cada pieza es el máster recortado por un polígono (`rig-encadenado.ts`) y teñido con tokens
+  (`--bestia-dracula-papel` y `--fondo`): siete piezas, 67 kB. No se tocaron `recortes.ts` ni `recortar-bestiario.mjs`.
+- **Dónde**: arrodillado adelante de la celda de los reos (x 975), entre la jaula vacía de la fiera y la reja; se escapó de
+  la celda y se quedó ahí. Los ojos de los reos se corrieron adentro de su celda, a la derecha (1056 → 1108).
+- **Qué hace**: respira, tironea la cadena, ruge con la cabeza para atrás, aprieta el puño. Tocado, **rompe la cadena**: carga,
+  da el tirón, el eslabón salta con una chispa en el rojo de las banderas, la cadena sale despedida hacia la jaula y él ruge.
+  Después la cadena vuelve a estar en el puño y él baja un poco la cabeza: atrapado en libertad. Pide un sacudón de cámara.
+  Con movimiento reducido, el toque lo pasa de la pose del dibujo a la de la cadena rota.
+
+#### De qué disco: rotulado, no afirmado
+
+El usuario lo pone en la tapa de *Oktubre*, y es lo que piensa casi todo el mundo. Pero `INV-02` reportó que la figura no
+venía en el vinilo del 86 y que se difundió con la reedición en CD, y eso sigue sin ficha (`public/arte/README.md`, "Lo que NO
+va acá"). La ficha lo dice como **leyenda**, con las dos versiones, y la estampa dice "el dibujo de Rocambole que la gente
+asocia con Oktubre", que es cierto se cierre como se cierre. Si `investigador` cierra la pregunta, se cambia el rótulo y nada
+más.
+
+`encadenado.test.ts` (7), y los conteos de la prisión y del elenco. `npm test` (2009), `npm run check` y `npm run build` en
+verde. Visto en la escena en un iframe de teléfono, y los cuadros del toque renderizados uno por uno.
+
+- `T-510`: verlo en un teléfono de verdad; que `contenido` lea la estampa y la leyenda; la ficha `RES-` que cierre de qué
+  edición es la figura sigue pedida en `Docs/SUGERENCIAS/HILO-para-investigador-figura-encadenada.md`.
+
+### Enmienda del 2026-10-28 (22): cinco que eran ojos, con el Alien Duce que pidió el usuario
+
+Pedido del usuario, textual: *"Elegi 5 bestias sin un diseño complejo y diseña e integra al bestiario. Diseños bien
+rocambolescos, con personalidad y animaciones complejas. Que tengan buenos detalles de la letra."* Y en la mitad: *"Que una de
+las bestias sea alien duce. Las demas elegilas"*. La escribe el hilo principal en la rama `bestiario/cinco-mas`, sobre `main` en
+`0260770`. Sin subagentes. Antes de tomar `T-511` se miraron todas las ramas: la última era `T-510`.
+
+#### Cuáles, y por qué esos
+
+Se contó, entorno por entorno, quién seguía siendo ojos en lo oscuro. El bajo tenía uno solo del elenco (el rato) y dos ojos
+con mucha letra; los techos, catorce bichos y dos títeres. Entre los que seguían siendo ojos se eligieron los de letra con más
+objetos para dibujar. El reo semental, que estaba en la lista, salió para dejarle el lugar al Alien Duce.
+
+- **El Alien Duce** (Cybersiberia, *Alien Duce*, *Último bondi a Finisterre*): adentro de la pantalla de ojo de buey de la tele
+  grande, que ya era el ojo de buey de esa tapa, cortado por el círculo. Busto de dictador de opereta, con la quijada para arriba,
+  charreteras y botones de cromo, banda roja y medallas (un disquito, un ticket, una tecla); el cráneo es una **bola de espejos**
+  (*"su look bola de efectos"*) que tira puntos de luz por la nieve y el acero, y le tapa hasta las cejas. Antenas con lamparita.
+  Tocado se aplasta contra el vidrio gritando (*"no quiere estar jamás en la TV"*), le sale por la boca, atravesando la pantalla,
+  el ticket del súper con el evangelio garabateado, que llega a la nieve; lo chupa, mastica y lo escupe hecho un bollo (*"chupa y
+  escupe al fin"*). El ticket no dice la marca del súper: la letra la dice, el dibujo no la pinta.
+- **Las sirenas** (el bajo, *Barbazul versus el amor letal*, *Gulp!*): dos, porque la letra las nombra de a dos. La gata linda,
+  con orejas y bigotes de gata, la camisa apretada y un prendedor radioactivo que brilla; y la llena, redonda como una luna, con
+  el botín que reclaman para la prisión, que es un botín de cordones. El agua las corta en la cintura con un `clipPath` en sus
+  coordenadas, y por adentro de ese corte se zambullen. Tocadas, cantan para el lado del fuego, golpean el agua con la cola, se
+  zambullen y salen.
+- **El amorcito que mordió el vidrio** (el bajo, *Ñam fri frufi fali fru*, *Gulp!*): colgada del marco de su ventana rota, con
+  los codos apoyados, un vidrio entre los dientes y el sifón en la mano. Borracha: se mece, tiene hipo de soda, dormita. Tocada
+  muerde alocada: el vidrio salta en migas, aparece el **¡ÑAM!** escrito en el aire con la letra a mano de la tapa, y cabalga en el
+  marco revoleando el sifón. Al final ya tiene otro vidrio.
+- **El gato matón** (los techos, *Rock para el negro Atila*, *Lobo suelto*): en la letra el gato matón es la cana, así que tiene
+  gorra de vigilante con la sirena nueva arriba (naranja y azul de *Cordero atado*, la tapa gemela) y la matraca de ocasión con
+  la etiqueta del precio colgando; el collar es la cadena de gillettes de la tapa. Agazapado en la chapa del canto, a la izquierda
+  de donde camina el Atila. Tocado sale de operativo: sirena, matraca, meneo, salto adonde estaba el ratón, y nada.
+- **Mandinga** (el infierno, *Rato molhado*, *Momo sampler*): como la letra lo llama sombra chinesca, **es un títere de sombra**,
+  un recorte de perfil sostenido con varillas desde abajo, en el violeta casi negro de la contratapa con el calado de plata del
+  medallón. Las botas nuevas son lo único que brilla (*"su cara es tan expresiva como el par de sus botas nuevas"*). Tiene un
+  candil en el piso y su sombra en la pared del fondo, que muestra los cuernos largos, las garras y la cola que el recorte no
+  muestra. Tocado saluda sacándose el sombrero (y se le ven los cuernos), la sombra crece, un fogonazo encandila y se pone de
+  canto: se va. Las varillas de las manos son una raya de largo 1 que la cuenta gira y estira desde la mano hasta abajo del piso.
+
+#### Lo que se tocó alrededor
+
+- **Los ojos del ratón** bajaron a la chapa, delante de la cara del gato (344, 252 → 370, 282).
+- **`rato.test.ts` mira al rato solo** (`capasDe(..., 'el-rato-molhado')`), como ya hacían el del diablo y el del Morta: ahora el
+  bajo tiene otros títeres con partes del mismo nombre.
+- Las cinco estampas se reescribieron con el molde de la vigésima; la de Mandinga entra justo en los 320 del schema.
+
+Cada uno trae su bloque de tintas medidas con sharp en las tapas de `public/tapas/` (`tokens.css`), su bloque en `sitio.css`,
+su conducta en `scripts/bestiario/` y su test (7 u 8 cada uno). `npm test` (2046), `npm run check` y `npm run build` en verde.
+Se los vio en sus escenas con la imprenta, pose por pose, y en la página de cada recinto, en un iframe con `requestAnimationFrame`
+reemplazado: viven, y el toque corre entero hasta abrir la ficha.
+
+- `T-511`: verlos en un teléfono de verdad, que `contenido` lea las cinco estampas, y pasar los cinco bloques de tintas al lienzo.
+
+### Enmienda del 2026-10-28 (23): siete que eran ojos o una silueta pintada, uno por entorno flaco
+
+Pedido del usuario, textual: *"Elegi otras 7 bestias que no tengan un diseñp complejo y dales un buen diseño rocambolesco con
+buenos detalles y una animacion compleja y acorde al personajes"*. La escribe el hilo principal en la rama `bestiario/siete`,
+sobre `bestiario/cinco-mas` en `689266f` (la vigesimosegunda, todavía sin integrar). Antes de tomar `T-512` se miraron todas las
+ramas: la última era `T-511`.
+
+#### Cuáles, y por qué esos
+
+Uno por entorno con pocos títeres para los bichos que tiene, entre los que seguían siendo ojos o una silueta pintada en el piso.
+Se descartaron la drácula con tacones y el lobo suelto, que ya eran títeres de las primeras vueltas.
+
+- **El chivato** (la prisión, *Murga purga*, *Momo sampler*): un chivito murguero parado en dos patas, con levita de lentejuelas,
+  galera entre los cuernos, la oreja pegada a la reja de la celda del reo, la libretita y el lápiz atrás de la oreja. La palabra
+  sirve para el animal y para el buchón. Solo escucha, anota, mastica la hoja o se hace el distraído; tocado canta la delación de
+  murguero, se le vuela la lista adentro de la celda, y se encoge.
+- **Los gallos sofocados** (el templo, *Templo de Momo* y *Pool, Averna y Papusa*, *Momo sampler*): dos gallos de fin de fiesta
+  apoyados uno en el otro, el del espolón de oro con la botella de licor y el flaco con la flor chillona. Tocados arman una riña
+  de opereta, se les ahoga el cacareo y terminan abrazados.
+- **La anguila** (el bajo, *Cruz Diablo*, *Luzbelito*): medio hundida en un charco de barro; el cuerpo es una cadena de doce
+  segmentos de largo fijo con una onda que viaja de la cabeza a la cola, y el barro corta lo que queda abajo. Tocada salta en arco
+  chorreando, se le escapa la burbuja del último aire y el barro se la vuelve a tragar.
+- **La lechuza que circula** (el árbol, *Mariposa Pontiac / Rock del país*, *Luzbelito*): lechuza de campanario en una rama seca,
+  mordiendo un pito de vigilante, con un boleto pinchado en la rama y una anilla en la pata. Gira la cabeza de más; tocada pita y
+  da la vuelta al árbol sin dejar de mirarte.
+- **El que mordió el anzuelo** (los astilleros, *Esa estrella era mi lujo*, *Bang! Bang! Estás liquidado*): un pescado iluso
+  colgado del labio en la caña del muelle, con la estrella de lata de cebo y los anzuelos viejos de las otras veces. Tocado se
+  zafa, se hunde detrás del canto y vuelve a saltar a morder.
+- **La piba con la remera de Greenpeace** (la ruta, *Momo sampler*): dormida en la banquina en un almohadón de sillón, o
+  haciéndose. La remera lleva una ballena pintada a mano y no el logo (el precedente del ticket del Alien; lo mira su test).
+  Abre un ojo cuando pasa un fierro; tocada ronca de mentira, espía, se pone colorada y se vuelve a tirar.
+- **Las antiguas lobas** (el monte, *Barbazul versus el amor letal*, *Gulp!*): dos lobas viejas echadas como muertas, una con la
+  boca pintada y el collar roto, la otra tuerta con catarata. Tocadas se paran crujiendo, aúllan a dúo, trotan de jóvenes un
+  momento y se vuelven a echar.
+
+#### Cómo se hizo, y lo que se tocó alrededor
+
+- El hilo principal armó primero el andamiaje (esqueletos registrados en `elenco.ts` y `vivos.ts`, y bloques vacíos con sus
+  marcadores en `tokens.css` y `sitio.css`), y cada bestia la dibujó y animó un subagente propio (siete en paralelo, en Opus), que
+  escribió solo sus archivos y su bloque y miró sus poses impresas antes de entregar. Lo compartido lo integró el hilo principal.
+- **Se sacaron del piso** las siluetas pintadas de la lechuza (árbol), del pescado colgando de la línea (astilleros, queda la caña)
+  y de la piba (ruta), en `arte-entornos.ts`, y se reimprimieron esos tres pisos y sus versiones del camino. Sus tests miran que no
+  vuelvan. Se sacó `ASTILLERO.pescado` de `rig-entornos.ts`, que ya no lo usa nadie.
+- Los ojos viejos se quedan en sus listas (los cuenta `bestiario.test.ts`); `sinTitere` los saca de la escena.
+- Las siete estampas, con el molde de la vigésima; los discos se cotejaron contra `cancionero.json`.
+
+Cada uno trae su bloque de tintas medidas con sharp en su tapa, su bloque en `sitio.css`, su conducta y su test (8 o 9). `npm test`
+(2105), `npm run check` y `npm run build` en verde. Los siete se vieron vivir y responder al toque en la página de su recinto,
+en un iframe con `requestAnimationFrame` reemplazado, sin errores.
+
+- `T-512`: verlos en un teléfono de verdad, que `contenido` lea las siete estampas, pasar los siete bloques de tintas al lienzo, y
+  ver si `arte-desencarnada.ts` estira `ruta-piso` en su retrato (lo señaló el que hizo la piba: pinta en 0,0,900,640 una pieza
+  de caja 0,200,900,440).
+
+### Enmienda del 2026-10-29 (24): siete que seguían siendo ojos, uno por entorno y sin repetir bicho
+
+Pedido del usuario, textual, igual que la vigesimotercera: *"Elegi otras 7 bestias que no tengan un diseñp complejo y dales un
+buen diseño rocambolesco con buenos detalles y una animacion compleja y acorde al personajes"*. La escribe el hilo principal en la
+rama `bestiario/siete-mas`, sobre `bestiario/siete` en `2dd328b` (la vigesimotercera, todavía sin integrar en el #86). Antes de tomar
+`T-513` se miraron todas las ramas: la última era `T-512`.
+
+#### Cuáles, y por qué esos
+
+Uno por entorno entre los que seguían siendo ojos, sin repetir un bicho que ya tuviera títere (por eso no la rana rubia, que con la
+princesita serían dos sapos, ni el joven lobo, al lado de las lobas). Entran cuatro entornos que la vigesimotercera no tocó: el
+infierno, Cybersiberia, la mesa y los techos.
+
+- **El diablo de muchos cuernos** (el infierno, *El infierno está encantador esta noche*, *Gulp!*): el portero del salón, de levita,
+  monóculo y guantes, con ocho cuernos de ocho bichos distintos que le hacen de perchero (la galera de un invitado, la ficha del
+  guardarropa). Solo convida, mira el reloj, se rasca entre los cuernos, se le cae el monóculo o golpea la cola; tocado cierra un
+  ojo y se cuenta los cuernos de a uno, y cuando termina le brota otro.
+- **La princesita sapito** (Cybersiberia, *Las increíbles andanzas del Capitán Buscapina…*, *Último bondi a Finisterre*): el cuento
+  al revés, una sapa con corona de lata torcida, jirón de tul y un zapatito de cristal en la punta de los dedos, en un trono de
+  nieve. Croa, caza copos con la lengua, se endereza la corona, tirita; tocada pone la trompa entre chispas, puf, y sigue sapo.
+- **La tipa rapaz** (la mesa, *Un poco de amor francés*, *La mosca y la sopa*): señora de fiesta recortada de una revista de
+  sociales, con nariz de pico, estola de plumas y uñas de garra, persona y no caricatura. Gira la copa, ojea los platos ajenos, se
+  ríe de costado; tocada se queda con la billetera del mantel, se guarda el billete y brinda como si nada.
+- **El ratón** (los techos, *Rock para el negro Atila*, *Lobo suelto*): ratón de canaleta todo hocico, con la oreja mordida, una
+  curita en la cola y un queso de rallar robado. Olfatea, se lava la cara, se para a mirar, se esconde, roe; tocado huele al gato
+  matón, se congela, se tira a la canaleta y vuelve a asomar el hocico.
+- **La polilla** (el templo, *Murga de la virgencita*, *Momo sampler*): polilla de ropero colgada del cable de la guirnalda como
+  del pasamanos del colectivo, con la estampita de la virgencita en las alas de adelante y un ala zurcida. Trae su foco; sola da
+  rondas en espiral y se golpea contra el vidrio, que se hamaca y titila; tocada va derecho, se da el golpe, queda mareada e insiste.
+- **El botija rapado** (los astilleros, *Botija rapado*, *Cordero atado*): pibe rapado a las apuradas, con la curita en la nuca, el
+  boleto en los dientes y el bolso atado con cinta, en la planchada del ferry. Tararea, mira el reloj y para atrás; tocado corre,
+  salta y cae con un pie en la borda, y el «¡Zafó!» de la letra con el boleto en el aire.
+- **El jocker burlón** (el árbol, *El árbol del gran bonete*, *Último bondi a Finisterre*): bufón de baraja vieja colgado de un
+  brazo de la rama baja, con la cara partida como una figura, el bonete de tres cascabeles, los cuatro ases y la estrella de lata
+  del Sur. Se hamaca, abanica los naipes, se ríe del ángel de abajo; tocado da el molinete y se da vuelta como un naipe: el dorso,
+  el as de picas, y otra vez él.
+
+#### Cómo se hizo, y lo que se tocó alrededor
+
+- El hilo principal armó primero el andamiaje (esqueletos registrados en `elenco.ts` y `vivos.ts`, bloques vacíos con sus
+  marcadores en `tokens.css` y `sitio.css`, `elenco.test.ts` de 38 a 45), y cada bestia la dibujó y animó un subagente propio en
+  Opus, **de a tres por vez** como pide la regla de la PC (la paginación estaba en 14 GiB): cada uno escribió solo sus archivos y
+  su bloque y miró sus poses impresas antes de entregar. Lo compartido lo integró el hilo principal.
+- **Se sacaron del piso** las siluetas pintadas de la princesita (Cybersiberia), la tipa (la mesa), el botija (astilleros) y el
+  jocker (el árbol), con el ayudante `bonete` que quedó sin uso, en `arte-entornos.ts`; se reimprimieron esos cuatro pisos y sus
+  versiones del camino. Sus tests miran que no vuelvan.
+- Los ojos viejos se quedan en sus listas (los cuenta `bestiario.test.ts`); `sinTitere` los saca de la escena.
+- Las siete estampas las propuso cada dibujante y las revisó el hilo principal contra el dibujo (a la de la polilla se le corrigió
+  que la estampita va solo en las alas de adelante).
+
+Cada uno trae su bloque de tintas medidas con sharp en su tapa, su bloque en `sitio.css`, su conducta y su test (8 o 9). `npm test`
+(2164), `npm run check` y `npm run build` en verde.
+
+- `T-513`: verlos en un teléfono de verdad, que `contenido` lea las siete estampas y pasar los siete bloques de tintas al lienzo.
+  Queda una idea del que hizo el ratón: que cuando se toca al gato matón el ratón ya esté escondido, lo que pide que `vivos.ts`
+  avise a un vecino del toque ajeno. Y del botija: el molinete de brazos del toque roza un instante el pañuelo de la hija del
+  fletero.
+
+### Enmienda del 2026-10-29 (25): cinco que seguían siendo ojos en la profundidad de la noche
+
+Pedido del usuario, textual: *"Elegi diseña e integra 5 bestias del bestiario. Que hoy sean ojos en la profundidad de la noche, dales
+vida, animalos, dales detalles unicos, estas haciendo un trabajo increible."* La escribe el hilo principal en la rama
+`bestiario/cinco-noche`, sobre `bestiario/siete-mas` en `49351b3` (la vigesimocuarta, todavía sin integrar en el #88). Antes de tomar
+el número se miraron todas las ramas y `T-513` era el último; la tarea se escribió como `T-514` y **se renumeró a `T-516`** al
+fusionar, porque `T-514` y `T-515` ya eran de la pulida (`D-83`, #91), que llegó antes a `main`.
+
+#### Cuáles, y por qué esos
+
+Se contó, recinto por recinto, cuántos títeres del elenco tiene cada uno y cuántos siguen siendo ojos: el infierno ya no tiene
+ninguno; el monte tenía dos títeres y ocho pares de ojos, la prisión tres y cinco, el bajo cuatro y cuatro, la mesa cuatro y ocho,
+los techos cuatro y siete. Uno por cada uno de esos cinco, elegidos por lo que la letra deja animar y por lo que tienen de noche:
+
+- **El rey de esta jungla** (el monte, *Etiqueta negra*, *Lobo suelto, cordero atado*): la tumba en la ladera, entre los árboles,
+  arriba del borde del piso. La letra no dice qué bicho era el rey: acá es un león viejo, con la oreja mordida, una cicatriz cosida
+  en la frente y un colmillo partido, enterrado en un montículo de tierra removida del que asoman los ojos, la frente y la melena
+  con una raíz enredada: *mira crecer las flores desde abajo*. La cruz son dos palos de rama atados con alambre, con una etiqueta
+  negra de botella clavada de epitafio; al pie, la corona recortada de una lata de tomate; al lado, el patín de lata con la llave
+  colgando y una rueda floja; encima, cuatro flores, florcitas blancas y un hueso que asoma. Solo mira una flor y otra, se abre un
+  capullo, la rueda gira con el viento, cae un pétalo, cruza un escarabajo que sigue con los ojos, o duerme un rato largo; tocado,
+  la tierra tiembla y se parte, asoma hasta la boca, la corona le salta a la cabeza torcida, ruge sin voz, las flores crecen y se
+  abren todas, el patín se suelta y rueda, la cruz se tambalea, y se hunde despacio.
+- **El ahogado y su fiel fantasma** (el bajo, *Divina TV Führer*, *Oktubre*): dos en un títere, en el agua de la izquierda, entre el
+  borde del recinto y el bote dado vuelta, con la línea del agua en 500. El ahogado tiene los ojos desorbitados con venitas, el pelo
+  y el bigote pegados, la piel verdosa (el negro de la xilografía de *Oktubre* tira a verde de agua), una mano arriba que parece
+  pedir auxilio pero tiene la moneda para el barquero, la otra agarrada a un salvavidas desinflado rojo de bandera, y el sombrero
+  de fieltro flotando aparte. El fantasma es una sábana con agujeros de verdad (se ve la noche a través), la marca de la planchada,
+  un remiendo en punto cruz y la etiqueta del lavadero en la espalda, atada con un piolín al tobillo del otro. Solos, él sube y baja,
+  manotea, escupe, hace *glu glu*; ella flota, se infla, se da vuelta, lo sostiene de la cabeza; a veces se miran. Tocados, él se va
+  a pique (la mano con la moneda es lo último), el fantasma hace BU con las mangas arriba y se zambulle detrás, silencio con
+  burbujas, y salen los dos de golpe, él con un alga y un pescado en la cabeza, ella escurriendo la sábana. El verso lo dicen con el
+  BU, a los 1,5 s.
+- **El pichón** (la prisión, *Preso en mi ciudad*, *Oktubre*): un pichón de paloma de ciudad, de los feos, parado en el alféizar de
+  la ventana del fondo, del lado de adentro de la reja (capa `atras`; las plumas, el fogonazo y los agujeros van delante de la reja,
+  sin toque). Plumón crudo entre las plumas nuevas, cañones sin abrir en la panza, cuello tornasolado, pico blando con las
+  comisuras amarillas, el ojo grande de susto, una pata vendada con un trapo, y en el ala el hueco de la pluma que le falta. En el
+  alféizar, una lata con etiqueta roja y tres tiros, un casquillo entre las migas y una pizarrita con palitos de tiza: la cuenta de
+  los tiros que esquivó. Solo picotea, se esponja, se sacude, se rasca, mira al pasillo con un ojo y después con el otro, duerme con
+  un ojo cerrado, da dos pasos cabeceando. Tocado, fogonazo desde abajo, salta con las alas abiertas y se tira del lado de la calle,
+  vuelan plumas, se abre un agujero nuevo en la piedra que se queda (cada tiro suma uno y un palito; al séptimo vuelve a empezar),
+  asoma la cabeza, mira el agujero, se sacude y hace la raya. Los que practican están de este lado; él siempre zafa. Salió chico la
+  primera vez (treinta unidades, menos que sus ojos en lo oscuro) y se agrandó al doble, con los ojos corridos en
+  `VECINOS_DE_LA_PRISION`.
+- **El club de mantis** (la mesa, *Superlógico*, *Gulp!*): tres mantis sentadas a la mesa como señoras de club de barrio, en x 552,
+  600 y 638, con la servilleta atada al cogote, muy nerviosas: se hamacan siempre, cada una a su ritmo, como se hamacan las mantis
+  de verdad. La de la izquierda tiene un abanico rojo y amarillo con puntilla; la del medio, ojos de oro (los que se veían en lo
+  oscuro), collar de perlas y una M bordada; la de la derecha mastica con una pata de no se sabe qué asomándole de la boca y la
+  servilleta manchada de tuco. Las tres tienen pseudopupilas que siguen al que mira, ocelos y pinzas con espinas; en la mesa hay
+  una fuente de masitas sobre una blonda. El macho es más chico, de moño amarillo con lunares, y llega con un clavel por el mantel
+  del lado de la tipa rapaz. Solas giran la cabeza de golpe y las otras la siguen, se limpian una antena, abanican, mastican y
+  tragan, chasquean las pinzas, se pasan la fuente, se miran; un tirón de cabeza les hace de pestañeo. Tocadas, el macho llega y se
+  quedan quietas siguiéndolo con las pseudopupilas, él saluda y se sienta en el plato, ellas lo rodean y en un cuadro, ÑAC: queda
+  el clavel y una antena; mastican, se limpian con la servilleta, se calman, y al rato el macho vuelve a estar llegando. El verso
+  sale recién comido el macho. Las tres mantis negras que pintaba el piso de la mesa se sacaron de `mesaPiso()` y se
+  reimprimieron `mesa-piso` y `camino-mesa-piso`.
+- **El que no se cayó del cielo** (los techos, *Yo no me caí del cielo*, *Gulp!*): sentado de frente en el filo de la chapa, a la
+  derecha de todo, debajo del farol del fondo, con las piernas colgando delante de la medianera. El saco verde arrugado, con un
+  botón del que queda solo el hilo; la corbata floja con una mancha de ginebra; la servilleta del bar en el bolsillo, con un
+  teléfono anotado en birome roja; la medalla de la virgen, que cuelga a plomo; el ojo hinchado con moretón verde y amarillo, la
+  ceja cortada, la barba de dos días, la nariz colorada y el pelo revuelto con canas; la media roja con el talón agujereado, el
+  zapato a medio salir, un posavasos pegado a la otra suela y la botella vacía en la chapa. **El vaso nunca se vuelca**: `marcas()`
+  lo endereza en cada cuadro, y el test lo comprueba en todas las poses. Solo bebe, mira el cielo y niega, se tambalea, bosteza,
+  olfatea al gato matón (*hay mucho olor a gato*: está en la misma chapa, a la izquierda) con cara de asco y se tapa la nariz,
+  cabecea y se despierta de golpe, hamaca los pies hasta que el zapato casi se sale, y la botella rueda y vuelve. Tocado, se
+  tambalea, se cae y queda colgado de una mano del filo, se balancea y patalea, se sube con un codo y después con el otro, se
+  sacude el saco y brinda mirando para arriba; ahí dice el verso.
+
+#### Cómo se hizo, y lo que se tocó alrededor
+
+- El hilo principal eligió los cinco contando títeres y ojos por recinto, armó primero el andamiaje (esqueletos registrados en
+  `elenco.ts` y `vivos.ts`, bloques vacíos con sus marcas en `tokens.css` y `sitio.css`, `elenco.test.ts` de 45 a 50), y cada
+  bestia la dibujó y animó un subagente propio en Opus, **de a tres por vez** como pide la regla de la PC (la paginación estaba en
+  1 GiB y había 25 procesos `claude` abiertos, más de los 20 que la regla manda avisar): cada uno escribió solo sus cuatro
+  archivos y sus dos bloques, midió sus tintas con sharp en la tapa de su disco y miró sus poses impresas antes de entregar. Lo
+  compartido lo integró el hilo principal, que además miró cada títere en su recinto con un previsualizador propio del scratchpad
+  (la escena entera a PNG con sharp; el lobo y el cordero del monte no traen pose en el HTML y hubo que posarlos a mano para que
+  no taparan todo).
+- **El pichón salió chico** la primera vez: treinta unidades de ancho, menos que el círculo de ojos que reemplazaba, imposible de
+  tocar en un teléfono. Se le pidió al dibujante que lo agrandara: quedó a escala 1,45 (unas 70 unidades de alto, entre tres
+  barrotes) y sus ojos se corrieron de [558, 324] a [506, 289] en `VECINOS_DE_LA_PRISION`, con el comentario de por qué.
+- **El test del esclavo** armaba la capa `atras` de la prisión sin filtrar por id (era el único de esa capa); con el pichón al
+  lado se le metían sus piezas y su `cabeza`. Ahora pide solo el esclavo (`capasDe(..., 1, ID)`), como ya hacían los demás.
+- **Las estampas tienen tope**: el schema las limita a 320 caracteres y las cinco propuestas lo pasaban. Se acortaron a mano, sin
+  perder lo que el dibujo pone de más respecto de la letra.
+- **Se sacaron del piso** las tres mantis negras de `mesaPiso()` (`arte-entornos.ts`) y se reimprimieron `mesa-piso` y
+  `camino-mesa-piso`. Los demás ojos viejos se quedan en sus listas; `sinTitere` los saca de la escena.
+- Las cinco estampas las propuso cada dibujante y las revisó y acortó el hilo principal contra el dibujo.
+
+Cada uno trae su bloque de tintas medidas con sharp en su tapa (rey 20 en *Lobo suelto, cordero atado*; ahogado 20 y pichón 18 en
+*Oktubre*; mantis 17 y cielo 19 en *Gulp!*), su bloque en `sitio.css`, su conducta y su test de 9. Las piezas: rey 28 (171 kB),
+ahogado 23 (129 kB), pichón 20 (98 kB), mantis 24 (95 kB), cielo 22 (91 kB).
+
+- `T-516`: verlos en un teléfono de verdad, que `contenido` lea las cinco estampas y pasar los cinco bloques de tintas al lienzo.
+  Queda la idea del dibujante del rey de avisar a un vecino del toque ajeno (que el lobo se asome cuando ruge el león), la misma que
+  dejó el ratón en la vigesimocuarta.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17
@@ -6492,3 +6797,95 @@ Pedidos del usuario: *"está como medio cortada la corona, que sea la misma coro
   `public/marca/`.
 - **Salteó el circuito de `diseno-marca.md`** (primero el lienzo) por pedido directo del usuario.
   Queda pegar la marca en la hoja 01 del lienzo.
+
+## D-83 — La pulida del bestiario: el primer paso, los sellos que se asientan y el anotado a la vista
+
+- **Fecha:** 2026-10-29
+- **Estado:** activa. Pedido del usuario, textual: *"Hace una pulida entera del bestiario redondo.
+  Mejora diseños, mejora inmersion, animaciones y todo lo que haga mas inmersivo y pulido al sitio."*
+  La escribe el hilo principal en la rama `bestiario/pulida` (worktree
+  `.claude/worktrees/pulida-bestiario`), sobre `bestiario/siete-mas` en `49351b3` (PR #88, con
+  `main` adentro). Antes de tomar el número se miraron las ramas remotas: `D-82` era el último.
+- **Es decisión aparte** y no enmienda de `D-80`: no cambia la cámara ni la ficha que decidió aquella.
+  Les suma lo que faltaba para que el camino se entienda sin leer, y para que lo que pasa se vea pasar.
+
+### Lo que se vio antes de tocar nada
+
+Se recorrió el bestiario en el panel, a 375×812 y a 1280×800, y se midió en el DOM:
+
+- **Al entrar al monte en un teléfono no había ningún bicho a la vista.** Las antiguas lobas, las
+  primeras del camino, arrancan en el píxel 398 de una pantalla de 375, y el tablero plegado (`D-77`,
+  primera enmienda) esconde la única línea que decía que se camina deslizando de costado. Se veían
+  árboles y tierra, y ninguna pista: un muro en la primera pantalla, que es lo que `CLAUDE.md` prohíbe.
+- **Nada confirmaba que un toque anotara.** La libreta vive en el tablero plegado: en el camino,
+  "Anotaste 3 de 122" no se veía nunca.
+- El bocadillo y la hoja de la ficha aparecían de golpe, sin asentarse, al revés de todo el sitio.
+- En la compu la escena no se agarraba con el mouse: solo la ruedita y las flechas caminaban.
+- El piso impreso de cada camino vive adentro del SVG, donde el navegador no lo pide hasta armar el
+  documento entero.
+
+### Lo que cambia
+
+1. **El primer paso** (`lib/bestiario/camara.ts`, `PRIMER_PASO`; `scripts/camino.ts`). Al llegar a
+   un camino por el principio, la cámara camina sola un trecho corto —el 30 % de la vista, 150 px
+   como mucho, en 1,6 s, arrancando y llegando despacio— y se para. Se ve que el mundo se corre de
+   costado y asoma lo primero que hay: en el monte, las lobas entran en la pantalla. Cualquier gesto
+   lo corta (el dedo, la ruedita, una tecla); con movimiento reducido no se da; llegando por `#cruce`
+   o a un bicho, tampoco. Es el espíritu de la entrada de `D-80` (la cámara se asoma y se asienta),
+   un paso más adelante.
+2. **La invitación a caminar.** Hasta que la mano camine por primera vez, el aviso que ya existía
+   ("Deslizá de costado para caminar.", registro 3) es un sello flotando abajo de la escena, con la
+   flecha de los carteles del cruce, en el papel y el borde de la región. Se va con el primer trecho
+   caminado por la mano (80 px que no sean del primer paso) y queda anotado en el teléfono
+   (`fichin-bestiario-sabe-caminar`), como la libreta: la región que sigue no lo repite. Solo donde
+   no hay mouse (`hover: none`): en la compu alcanzan el primer paso, la ruedita y el agarre. Sin
+   isla, el aviso sigue abajo de la escena como estaba, ahora con la flecha.
+3. **Los sellos se asientan** (`sitio.css`; `--duracion-sello` en `tokens.css`, 220 ms, a cero con
+   movimiento reducido). Nada aparece con un fundido: el umbral de la portada lo dice y es el tic
+   anti-slop número uno. Un sello llega ya estampado y termina de apoyar. El bocadillo gira apenas
+   alrededor de su punta; la hoja de la ficha baja (o sube, o entra de costado, según el lado que
+   eligió `D-80`) los últimos diez píxeles; el sello «Anotado» recién puesto baja de más arriba, que
+   es un golpe de sello; la libreta se vuelve a sellar cuando la cuenta sube. `movimiento.test.ts` las
+   conoce (`sello-apoya`, `hoja-apoya`) y verifica que el corte las lleve a cero. Cuando el bocadillo
+   o la hoja ya estaban a la vista con otro bicho, la isla los vuelve a apoyar
+   (`scripts/bestiario/sellos.ts`, compartido por las dos islas).
+4. **Lo anotado se ve donde se anota.** La hoja de la ficha lleva, al lado del sello de clase, el
+   sello «Anotado» (el mismo del índice) y la cuenta de la libreta: "Anotaste 2 de 122." Las dos
+   islas lo ponen en la copia de la ficha. Es la primera vez que en el camino se ve crecer la colección.
+5. **La escena se agarra con el mouse.** Con el botón apretado, seis píxeles de movimiento la
+   convierten en un arrastre: la escena se lleva como con el dedo, la mano se cierra
+   (`cursor: grabbing`) y el clic que cierra el arrastre no toca a nadie. Los bichos siguen con su
+   mano de tocar. Es respuesta al gesto: con movimiento reducido anda igual.
+6. **Lo impreso que se ve al llegar se pide antes** (`<link rel="preload">` del piso y de lo lejano,
+   con prioridad alta) desde la cabeza del documento.
+7. **Los chips, las acciones, los rótulos del plano y los botones del camino** responden al dedo en
+   `--duracion-toque`, como `.opcion`.
+
+### Lo que no cambia, y por qué
+
+- El resto de la cámara, la ficha que no tapa y los recintos ensanchados de `D-80`.
+- No hay anillo ni vibración al tocar un títere: tocarlo abre la ficha, suena el recorte y la cámara
+  se arrima. Con eso alcanza, y un anillo más sería el tic del "ripple".
+- Las escenas no se alargaron ni se movió ningún bicho de lugar: el primer paso resuelve la pantalla
+  vacía del monte sin tocar el arte.
+
+### Verificado
+
+`npm test`, `npm run check` y `npm run build` en verde (los números, en `ESTADO.md`). En el panel,
+**con el panel a la vista** —escondido no corre `requestAnimationFrame`, y una espera de un cuadro
+cuelga el `javascript_tool`—:
+
+- A 375×812: el primer paso lleva el monte de 0 a 113 px y las lobas entran en la pantalla; el sello
+  «Deslizá de costado para caminar» aparece abajo y se va con el primer trecho, y queda anotado; la
+  ficha de las lobas abre abajo con `hoja-apoya`, el sello «Anotado» y "Anotaste 1 de 122"; la del
+  animal que no late estampa el sello nuevo (`sello-apoya`) y vuelve a sellar la libreta.
+- A 1280×800: en la mesa el primer paso llega a 150 px, la mano sobre la escena es `grab`, el sello
+  de invitación no se muestra, un arrastre de 400 px camina de 150 a 549 sin abrir ninguna ficha, y
+  el mouse sobre la mula de la enfermedad apoya el bocadillo con `sello-apoya` desde su punta.
+
+### Abierto
+
+- `T-514`: verlo en un teléfono de verdad: el primer paso con la inercia del scroll de iOS, el sello
+  sobre la barra de Safari, y la hoja al asentarse.
+- `T-515`: la hoja 08 del lienzo (componentes): el sello de invitación y el renglón «Anotado · cuenta»
+  de la hoja. No hubo tintas nuevas: todo sale de `tokens.css`.
