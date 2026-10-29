@@ -25,6 +25,7 @@ import '../../styles/sitio.css';
 import { catalogo, type Manifiesto } from '../../lib/tema/catalogo.ts';
 import { PANTALLA_0, PARTIDA } from '../../lib/tema/copy.ts';
 import Cabeza from '../../components/Cabeza.astro';
+import FranjaEnX from '../../components/FranjaEnX.astro';
 import PieImprenta from '../../components/PieImprenta.astro';
 import Caratula from '../../components/Caratula.astro';
 import { caratulaDe, tapasConCaratula } from '../../lib/sitio/caratula.ts';
@@ -81,6 +82,7 @@ const bajadaCorta = (() => {
     <Cabeza titulo={TITULO} descripcion={PANTALLA_0.subtitulo} incrustable />
   </head>
   <body class="con-grano juego-tema">
+    <FranjaEnX />
     <main id="app" class={`juego--${caratula.casete.variante}`}>
       {fondo && <div class="tapa-fondo tapa-fondo--lobo-tiras" aria-hidden="true" />}
 

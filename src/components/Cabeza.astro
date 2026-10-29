@@ -19,6 +19,7 @@
  */
 import { token } from '../lib/sitio/tokens.ts';
 import { PORTAL } from '../lib/sitio/copy.ts';
+import { REPRODUCTOR } from '../lib/en-x.ts';
 
 interface Base {
   /** El titulo de la tarjeta. Suele ser el mismo `<title>` de la pantalla. */
@@ -61,9 +62,6 @@ const url = new URL(Astro.url.pathname, Astro.site).href;
 const imagen = new URL(propia ?? '/tarjeta.png', Astro.site).href;
 const alt = imagenAlt ?? PORTAL.altTarjeta;
 
-/* El tamaño del reproductor es una apuesta a probar en un posteo real (`RES` sin fichar
-   todavía): vertical, porque los dos juegos se pensaron para el celular parado. */
-const REPRODUCTOR = { ancho: 480, alto: 720 };
 const reproductorUrl = reproductor && new URL(`${reproductor}?incrustado`, Astro.site).href;
 ---
 

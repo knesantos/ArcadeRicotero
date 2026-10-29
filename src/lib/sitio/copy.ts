@@ -422,8 +422,17 @@ export const OKTUBRE = {
  * derecho al juego. Todo registro 3, porque solo se ve medio segundo o sin JavaScript.
  */
 export const EN_X = {
-  /** Si la redirección no anda, el enlace a mano. */
+  /** El nombre del sitio en la pestaña de la puente. */
+  sitio: 'Fichín Ricotero',
+  /** Si la redirección no anda, el botón a mano. */
   seguir: 'Seguí al juego',
+  /**
+   * La salida de la franja que el juego lleva adentro de X. No dice "volvé": el que juega en
+   * X nunca estuvo en el sitio, y el enlace abre una pestaña nueva.
+   */
+  alSitio: 'SEGUÍ EN EL FICHÍN',
+  /** Cómo se nombra la marca de la franja para el lector de pantalla. */
+  marca: 'Fichín Ricotero, en una pestaña nueva',
 } as const;
 
 /**
