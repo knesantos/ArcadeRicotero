@@ -67,7 +67,7 @@
 
 > ## 🔊 EL BESTIARIO ADENTRO DE X: EL SONIDO QUE SE COLGABA Y LAS FICHAS (2026-10-29) — `T-519`
 >
-> **Sin integrar**, rama `x-bestiario-sonido`. Pedido del usuario, probando el posteo: *"no suena correctamente, se cuelga
+> **En `main` por el PR #99** (fusión `4dd4640`), rama `x-bestiario-sonido`; lo integró Claude a pedido del usuario (*"Sí, integralo"*). Pedido del usuario, probando el posteo: *"no suena correctamente, se cuelga
 > el sonido, a veces no suena una bestia y queda todo en silencio, aún están muy grandes las fichas"*.
 >
 > - **La rocola ya no se cuelga** (`scripts/rocola.ts`): un recorte que no avanza (7 s para arrancar, 3,5 s trabado) se da
