@@ -7,6 +7,29 @@
 
 **Última actualización:** 2026-10-30
 
+> ## 🐒 EL BESTIARIO: LA TIERRA DEL REY Y LA COLA DEL MONITO (2026-10-30) — `T-523`
+>
+> **Sin integrar**, misma rama `bestiario/ux-navegar`, encima de `T-522`. Pedido del usuario: *"otra corrida de pulida,
+> enfocandote en retoques en los diseños y animaciones, por ejemplo que el rey de esta jungla la pila de tierra salga del
+> piso, que al monito no se le separe la cola del cuerpo al subir, cosas asi"*. Se filmaron los 60 títeres de las trece
+> regiones cuadro por cuadro, quietos y tocados (Edge sin ventana, una hoja por región), y de cerca los más articulados.
+>
+> - **El rey flotaba** en el camino del monte: los títeres venían con la altura de la ladera del recinto (pie en y 278) y
+>   el borde del piso del camino está en y ≈ 305, así que el montículo quedaba delante de los troncos, sin tierra abajo.
+>   Ahora cada tramo largo puede bajar a sus títeres (`bajan` en `camino.ts`, `dyDe` en `capasCorridas`): el rey 62, tu
+>   animal 56 y las lobas 30. El montículo sale del piso y tu animal camina sobre él. En el plano no cambia nada: ahí la
+>   ladera es la del dibujo.
+> - **La cola del monito se despegaba**: iba dibujada encima del lomo, y al levantarla para trepar su raíz quedaba como
+>   un cabo suelto pegado a la espalda. Ahora va entre el culo y el lomo (`arte-monito.ts`): tapa el culo y nace debajo
+>   del pelo. Levantada gira −116° (antes −138°, que la escondía entera detrás de la espalda) y el rulo −40°: asoma por el
+>   flanco haciendo equilibrio.
+> - **Revisado y dejado como está** (es del diseño): la correa de tu animal que se va al cielo, el cable rosa del teléfono
+>   de la hija del fletero que se mete en el agua, el lobo suelto que asoma de lo oscuro con el borde soplado, el jocker
+>   que se vuelve carta.
+> - **Verde:** `npm test` (2226, uno nuevo en `camino.test.ts` y uno en `monito.test.ts`), `npm run check`, `npm run build`
+>   (200 páginas). Tocados de nuevo el rey, tu animal, las lobas y el monito: abren su ficha.
+> - **Falta**: probarlo en un teléfono de verdad.
+
 > ## 🧭 EL BESTIARIO: QUE SE PUEDA TOCAR A TODOS (2026-10-30) — `T-522`
 >
 > **Sin integrar**, rama `bestiario/ux-navegar`, sobre `main` en `4dd4640`. Pedido del usuario: *"mejoras del bestiario

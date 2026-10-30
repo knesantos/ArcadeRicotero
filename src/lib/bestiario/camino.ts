@@ -109,6 +109,11 @@ export interface Tramo {
    * pantalla.
    */
   apoyo?: number;
+  /**
+   * Cuánto baja cada títere del elenco en un tramo largo. Vienen de la ladera del recinto, que está
+   * más arriba que el piso del camino: sin bajar, el montículo del rey flotaba delante de los troncos.
+   */
+  bajan?: Readonly<Record<string, number>>;
 }
 
 const SIN_PARALAJE = { lejos: 1, frente: 1 } as const;
@@ -175,6 +180,9 @@ export const CAMINOS: Readonly<Record<string, Tramo>> = {
       'la-liebre-muerta': [2190, 528, 'papel'],
     },
     lobo: { x: 1260 },
+    // El borde del piso del monte está en y ≈ 305 (`camino-monte-piso`): la tierra del rey y las patas
+    // de tu animal entran en él, y las lobas se echan sobre el pasto, no en el borde.
+    bajan: { 'el-rey-de-esta-jungla': 62, 'tu-animal': 56, 'las-antiguas-lobas': 30 },
   },
   'la-pastura': {
     region: 'la-pastura',
