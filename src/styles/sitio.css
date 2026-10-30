@@ -4127,6 +4127,9 @@ body:has(> .lugar) .marca-chica {
   background: var(--papel);
   border: var(--linea) solid var(--fondo);
   border-radius: 3px;
+  /* Solo se lee: el toque pasa al bicho de abajo. Con el mouse, el verso aparece al pasar por encima
+     y quedaba justo arriba del bicho que se iba a tocar (el gavilán, contra el borde de arriba). */
+  pointer-events: none;
 }
 
 /* La punta apunta al bicho aunque el bocadillo se haya corrido para entrar en la pantalla. */

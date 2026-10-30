@@ -128,6 +128,7 @@ const paraLaIsla = {
   total: datos.bestias.length,
   lobo: tramo.lobo?.x ?? null,
   claro: tramo.claro?.dx ?? null,
+  apoyo: tramo.apoyo ?? null,
   bestias: lista.map((b) => ({ id: b.id, nombre: b.nombre, dice: loQueDice(b, BESTIARIO.sinTema) })),
 };
 

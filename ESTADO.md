@@ -5,7 +5,42 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-29
+**Última actualización:** 2026-10-30
+
+> ## 🧭 EL BESTIARIO: QUE SE PUEDA TOCAR A TODOS (2026-10-30) — `T-522`
+>
+> **Sin integrar**, rama `bestiario/ux-navegar`, sobre `main` en `4dd4640`. Pedido del usuario: *"mejoras del bestiario
+> redondo, enfocada en la ui/ux. Que se pueda navegar correctamente, todas las bestias son visibles y estan correctamente
+> ubicadas, no se molestan entre si, las fichas no molestan, que los sonidos andan bien y los recortes tambien"*. Se
+> recorrieron las trece regiones con un navegador de verdad (Edge sin ventana, 375×812 y 1280×800): una tira de capturas
+> por región y un toque a cada uno de los 122 bichos, midiendo si se ve, si se puede tocar, dónde abre la ficha y si suena.
+>
+> - **El toque que se perdía** (`scripts/camino.ts`): el dedo bajaba y subía sobre el bicho, pero el navegador mandaba el
+>   clic al `<svg>` del piso; la ficha se abría y el mismo clic, por "tocar afuera", la cerraba en el acto. Pasaba sobre
+>   todo después de cerrar otra ficha y contra el borde. Ahora el bicho donde el dedo bajó y subió es el tocado, el
+>   toque al lado (a menos de 34 px) va al más cercano, y ese clic no cierra la ficha. **De 122, abren 120 en la prueba
+>   en serie**; los otros dos (la polilla y el gato que llamás con silbidos) abren tocados sueltos: la prueba los perdía
+>   porque vuelan o porque Limón les pasa por encima.
+> - **La cámara cortaba el piso** (`lib/bestiario/camara.ts`, `APOYO`): agrandaba la escena desde el medio y los bichos del
+>   piso quedaban con los pies afuera (los perros del baldío, los náufragos, el taxi, el pac-man). Ahora agranda desde
+>   cerca del piso y el vaivén baja la escena; el corte se lo come el cielo. El árbol, con el señor de los cielos sentado
+>   arriba de la copa (dibujado en la imagen impresa), queda centrado (`apoyo` del tramo).
+> - **El cartel se aparta**: con un bicho debajo del nombre de la región (el señor de los cielos, la lechuza, el gavilán),
+>   el cartel se aclara y deja pasar el toque.
+> - **El cruce del monte y la pastura** se tragaba los toques de abajo (la liebre muerta, el rebaño): ahora solo se tocan
+>   los carteles. En el monte, el rey de esta jungla y tu animal se corrieron antes del final (y los ojos del joven
+>   lobo), porque la columna de carteles les quedaba encima.
+> - **Las fichas de gesto largo**: el que no se cayó del cielo abría la ficha a los 6,9 s, el del anzuelo a los 4,5 y el
+>   perro dinamita a los 3,3. Parecía que el toque no andaba. Ahora ninguna espera más de 1,6 s (`ESPERA_MAXIMA`); el
+>   gesto sigue detrás y, cuando el títere termina, no reabre la ficha ni corta el tema.
+> - **El bocadillo solo se lee** (`sitio.css`): en la compu aparecía al pasar el mouse justo encima del bicho y se comía el clic.
+> - **El panel táctil de costado** ya no pelea con la escena que se corría sola.
+> - **Sonido y recortes**: los 101 bichos con recorte propio suenan al abrir su ficha, sin un solo 404 de imagen ni de audio
+>   en las trece regiones.
+> - **Verde:** `npm test` (2224, seis nuevos en `camino.test.ts` y uno en `camara.test.ts`), `npm run check` (0 errores),
+>   `npm run build` (200 páginas).
+> - **Falta**: probarlo en un teléfono de verdad; los scripts de la recorrida quedaron en el scratchpad de la sesión, no en
+>   el repo.
 
 > ## 🔊 EL BESTIARIO ADENTRO DE X: EL SONIDO QUE SE COLGABA Y LAS FICHAS (2026-10-29) — `T-519`
 >

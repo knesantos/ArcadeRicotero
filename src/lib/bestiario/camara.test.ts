@@ -69,7 +69,17 @@ test('por más que tiemble, nunca se ve el borde de la escena', () => {
     assert.ok(e.escala >= 1 + MARGEN * 0.5, 'la escala nunca baja del margen');
     // Lo que se corre no puede pasar lo que agranda la escala.
     assert.ok(Math.abs(e.x) <= ((e.escala - 1) * ANCHO) / 2 + 0.01);
-    assert.ok(Math.abs(e.y) <= ((e.escala - 1) * ALTO) / 2 + 0.01);
+    assert.ok(e.y <= (e.escala - 1) * e.oy + 0.01, 'no asoma el borde de arriba');
+    assert.ok(-e.y <= (e.escala - 1) * (ALTO - e.oy) + 0.01, 'no asoma el borde de abajo');
+  }
+});
+
+test('lo que agranda se lo come el cielo: el piso casi no se corta', () => {
+  const cam = crearCamara(85);
+  for (const e of correr(cam, 2, 300)) {
+    // Lo que queda afuera por abajo: lo que agranda la escena debajo de `oy`, más lo que se sube.
+    const afuera = (e.escala - 1) * (ALTO - e.oy) - e.y;
+    assert.ok(afuera <= ALTO * 0.012, `se cortan ${afuera.toFixed(1)} px del piso`);
   }
 });
 
