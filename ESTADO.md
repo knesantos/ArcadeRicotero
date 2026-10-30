@@ -9,7 +9,7 @@
 
 > ## 🐒 EL BESTIARIO: LA TIERRA DEL REY Y LA COLA DEL MONITO (2026-10-30) — `T-523`
 >
-> **Sin integrar**, misma rama `bestiario/ux-navegar`, encima de `T-522`. Pedido del usuario: *"otra corrida de pulida,
+> **Sin integrar**, misma rama `bestiario/ux-navegar` (PR #102), encima de `T-522`. Pedido del usuario: *"otra corrida de pulida,
 > enfocandote en retoques en los diseños y animaciones, por ejemplo que el rey de esta jungla la pila de tierra salga del
 > piso, que al monito no se le separe la cola del cuerpo al subir, cosas asi"*. Se filmaron los 60 títeres de las trece
 > regiones cuadro por cuadro, quietos y tocados (Edge sin ventana, una hoja por región), y de cerca los más articulados.
@@ -32,7 +32,7 @@
 
 > ## 🧭 EL BESTIARIO: QUE SE PUEDA TOCAR A TODOS (2026-10-30) — `T-522`
 >
-> **Sin integrar**, rama `bestiario/ux-navegar`, sobre `main` en `4dd4640`. Pedido del usuario: *"mejoras del bestiario
+> **Sin integrar**, rama `bestiario/ux-navegar` (PR #102), sobre `main` en `4dd4640`. Pedido del usuario: *"mejoras del bestiario
 > redondo, enfocada en la ui/ux. Que se pueda navegar correctamente, todas las bestias son visibles y estan correctamente
 > ubicadas, no se molestan entre si, las fichas no molestan, que los sonidos andan bien y los recortes tambien"*. Se
 > recorrieron las trece regiones con un navegador de verdad (Edge sin ventana, 375×812 y 1280×800): una tira de capturas
