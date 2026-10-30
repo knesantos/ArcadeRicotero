@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { capasDe, retratoDe } from './elenco.ts';
-import { CULO_PIEL, LOMO, PIEZAS_MONITO, RETRATO } from './arte-monito.ts';
+import { CULO_PIEL, LOMO, PIEZAS_MONITO, RETRATO, monitoEn } from './arte-monito.ts';
 import {
   ARRIBA, CANTO, MIEMBROS, MONITO, MONITO_ARMADO, PARADAS, TRAMO, VERSO, agarre, alTitere, caderaEn, destape, pose,
   type Punto,
@@ -305,4 +305,11 @@ test('la isla del monito se lleva números: no importa nada que dibuje', () => {
   assert.deepEqual(importa.filter((r) => /arte|aerografo|titeres|escenas|elenco/.test(r)), []);
   // Y la cuenta del rig no dibuja: la pose sale de los mismos números en las dos puntas.
   assert.ok(Math.abs(alTitere(alRecinto([10, -20], [450, 400]), [450, 400])[0] - 10) < 1e-9);
+});
+
+test('la cola nace debajo del pelo: va entre el culo y el lomo, no encima de la espalda', () => {
+  // Encima del lomo, al levantarla para trepar, su raíz quedaba como un cabo suelto pegado a la espalda.
+  const dibujo = monitoEn(TRAMO);
+  const donde = (pieza: string): number => dibujo.indexOf(`monito-${pieza}.webp`);
+  assert.ok(donde('culo') < donde('cola') && donde('cola') < donde('lomo'), 'la cola no está entre el culo y el lomo');
 });

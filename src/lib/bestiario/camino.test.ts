@@ -214,3 +214,56 @@ test('las dos islas se llevan números: ni el camino ni el bestiario importan al
   // Y el guardián sabe encontrar: la página sí dibuja.
   assert.ok(importados('src/lib/bestiario/arte-camino.ts').includes('aerografo.ts'));
 });
+
+/* ------------------------------------------------------------------
+   Que se pueda tocar a todos (la vuelta de la navegación)
+   ------------------------------------------------------------------ */
+
+test('el cruce del monte no tapa al rey ni a tu animal: los dos quedan antes del último tramo', () => {
+  const monte = CAMINOS['el-monte']!;
+  // La columna de carteles aparece pasado el 90 % de lo caminable, y ocupa casi toda la vista.
+  for (const id of ['el-rey-de-esta-jungla', 'tu-animal']) assert.ok(monte.ojos[id]![0] < monte.ancho * 0.75, `${id} cae debajo del cruce`);
+});
+
+test('solo los carteles del cruce se tocan: la columna y los postes dejan pasar el toque', () => {
+  const css = readFileSync('src/styles/camino.css', 'utf-8');
+  assert.match(css, /\.cruce,\s*\.cruce--picadas li \{ pointer-events: none; \}/);
+  assert.match(css, /\.cruce-titulo,\s*\.cartel-cruce \{ pointer-events: auto; \}/);
+  assert.doesNotMatch(css, /\.cruce--a-la-vista \{[^}]*pointer-events: auto/);
+});
+
+test('el bocadillo solo se lee: no le roba el toque al bicho de abajo', () => {
+  assert.match(readFileSync('src/styles/sitio.css', 'utf-8'), /\.bocadillo \{[^}]*pointer-events: none;/);
+});
+
+test('el toque que cae en el piso va al bicho, y no cierra la ficha que acaba de abrir', () => {
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  assert.match(isla, /const RADIO_CERCA = \d+;/);
+  assert.match(isla, /atendidos\.add\(ev\)/);
+  assert.match(isla, /if \(atendidos\.has\(ev\)\) return;/);
+});
+
+test('ningún títere hace esperar su ficha más de ESPERA_MAXIMA, y su llamada tardía no corta el tema', () => {
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  const espera = Number(/const ESPERA_MAXIMA = ([\d.]+);/.exec(isla)?.[1]);
+  assert.ok(espera > 0 && espera <= 2, `la ficha espera ${espera} s`);
+  assert.match(isla, /adelantadas\.set\(id, reloj \+ \d+\)/);
+});
+
+test('el cartel de la región se aparta cuando un bicho queda debajo', () => {
+  assert.match(readFileSync('src/scripts/camino.ts', 'utf-8'), /classList\.toggle\('camino-tablero--apartado', debajo\)/);
+  assert.match(readFileSync('src/styles/camino.css', 'utf-8'), /\.camino-tablero--apartado \.camino-cartel \{[^}]*pointer-events: none;/);
+});
+
+test('en el camino del monte, el rey y tu animal pisan el piso, no la ladera del recinto', async () => {
+  const { REY } = await import('./rig-rey.ts');
+  const { ANIMAL } = await import('./rig-animal.ts');
+  const { LOBAS } = await import('./rig-lobas.ts');
+  const monte = CAMINOS['el-monte']!;
+  // El borde del piso impreso (`camino-monte-piso`) está en y ≈ 305: lo que se apoya, se apoya abajo de eso.
+  for (const [id, piso] of [['el-rey-de-esta-jungla', REY.piso], ['tu-animal', ANIMAL.piso], ['las-antiguas-lobas', LOBAS.piso]] as const) {
+    assert.ok(piso + (monte.bajan?.[id] ?? 0) > 320, `${id} flota sobre el borde del piso`);
+  }
+  // Y el corrimiento llega al dibujo: el marco del títere baja.
+  assert.match(pisoDelCamino(monte, nombres), /data-marco="el-rey-de-esta-jungla" data-capa="figura" data-dx="-?\d+" transform="translate\(-?[\d.]+ 62\)"/);
+});

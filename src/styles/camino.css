@@ -239,10 +239,18 @@
   transition: opacity var(--duracion-umbral) var(--curva-cinta);
 }
 
-.camino--paralaje .cruce--a-la-vista {
-  opacity: 1;
-  pointer-events: auto;
-}
+.camino--paralaje .cruce--a-la-vista { opacity: 1; }
+
+/* Solo los carteles se tocan: la columna del cruce (y el poste de cada picada) dejan pasar el
+   toque a los bichos de abajo. Antes la liebre muerta del monte y el rebaño de la pastura, que
+   quedan debajo de la columna al final del camino, no se podían tocar. */
+.cruce,
+.cruce--picadas li { pointer-events: none; }
+
+.cruce-titulo,
+.cartel-cruce { pointer-events: auto; }
+
+.camino--paralaje .cruce:not(.cruce--a-la-vista, .cruce--picadas) :is(.cruce-titulo, .cartel-cruce) { pointer-events: none; }
 
 /* Con picadas (`D-77`), el cruce es una capa del ancho del piso, en sus mismas unidades: cada
    cartel se clava en un poste al final de su picada, frente a la luz de su disco, y pasa con el
@@ -280,7 +288,6 @@
   width: max-content;
   max-width: calc(var(--px) * var(--paso) * 1.7);
   transform: translateX(-50%);
-  pointer-events: auto;
 }
 
 /* El poste: un palo de papel que baja hasta donde termina la picada. */
@@ -648,6 +655,14 @@ html.incrustado .camino--andando.camino--invita .camino-deslizar {
 }
 
 .camino-pantalla .camino-tablero > * { pointer-events: auto; }
+
+/* Con un bicho debajo, el nombre se aclara y deja pasar el toque (`scripts/camino.ts`). */
+.camino-pantalla .camino-cartel { transition: opacity var(--duracion-umbral) var(--curva-cinta); }
+
+.camino-pantalla .camino-tablero--apartado .camino-cartel {
+  opacity: 0.22;
+  pointer-events: none;
+}
 
 .camino-pantalla .camino-cartel { margin: 0; }
 

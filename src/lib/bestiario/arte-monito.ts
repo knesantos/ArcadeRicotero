@@ -599,8 +599,10 @@ function armado(t: Readonly<Record<string, string>>): string {
     miembro('brazo-1', 'mano-1', 'monito-brazo-1', 'monito-antebrazo-1') +
     miembro('brazo-2', 'mano-2', 'monito-brazo-2', 'monito-antebrazo-2') +
     parte('culo', img('monito-culo'), t.culo) +
-    img('monito-lomo') +
+    // La cola va entre el culo y el lomo: tapa el culo, y nace debajo del pelo de la espalda. Encima
+    // del lomo, al levantarla para trepar, su raíz quedaba como un cabo suelto pegado a la espalda.
     parte('cola', img('monito-cola') + parte('rulo', img('monito-rulo'), t.rulo), t.cola) +
+    img('monito-lomo') +
     parte('cabeza', img('monito-cabeza') + ojos(t) + `<g data-parte="mueca" opacity="${t.mueca}">${mueca()}</g>`, t.cabeza)
   );
 }

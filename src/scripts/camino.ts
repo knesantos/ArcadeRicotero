@@ -64,6 +64,8 @@ interface Datos {
   total: number;
   lobo: number | null;
   claro: number | null;
+  /** A qué altura agranda la cámara; `null`, la de siempre. */
+  apoyo: number | null;
   /** Los recortes del disco que suena de lejos; vacío, el camino no ofrece sonido. */
   lejos: readonly string[];
   bestias: readonly { id: string; nombre: string; dice: string }[];
@@ -277,6 +279,19 @@ function decir(id: string, sx: number, sy: number, preferirAbajo = false, dura =
  */
 function hablar(id: string, _sx?: number, _sy?: number, _abajo?: boolean): void {
   if (!bestias.has(id)) return;
+  // Habló alguien (este títere, u otro bicho que se tocó mientras tanto): ya no se espera a nadie.
+  esperando = null;
+  // El títere que terminó su gesto cuando su ficha ya se había abierto sola: no la abre de nuevo ni
+  // corta el tema que está sonando.
+  const tarde = adelantadas.get(id);
+  if (tarde !== undefined) {
+    adelantadas.delete(id);
+    if (reloj <= tarde) return;
+  }
+  abrirYSonar(id);
+}
+
+function abrirYSonar(id: string): void {
   const boton = (): HTMLButtonElement | null => hojaCuerpo.querySelector<HTMLButtonElement>('[data-escuchar][data-recorte]');
   if (abierta === id && !hoja.hidden) {
     const b = boton();
@@ -287,6 +302,34 @@ function hablar(id: string, _sx?: number, _sy?: number, _abajo?: boolean): void 
   const b = boton();
   if (b && conSonido()) escuchar(b);
   else if (conSonido()) entorno?.tocar(id);
+}
+
+/**
+ * Los títeres abren su ficha después de su gesto, y hay gestos largos: el que no se cayó del cielo
+ * se cae, se sacude y brinda (casi siete segundos), el del anzuelo pega el tirón, el perro dinamita
+ * explota. Pedido del usuario: *"las fichas no molestan"*; esperar tanto parecía que el toque no
+ * había andado. Si a los `ESPERA_MAXIMA` segundos el títere todavía no habló, la ficha se abre igual
+ * y el gesto sigue detrás, a la vista (la ficha se abre donde no tapa al bicho). Cuando el títere
+ * termina y habla, la ficha ya está: esa llamada se traga (`adelantadas`).
+ */
+const ESPERA_MAXIMA = 1.6;
+let esperando: { id: string; hasta: number } | null = null;
+/** Las fichas que se abrieron antes que hablara su títere, con hasta cuándo se espera esa llamada. */
+const adelantadas = new Map<string, number>();
+
+function esperarAlTitere(id: string): void {
+  if (!bestias.has(id) || (abierta === id && !hoja.hidden)) return;
+  esperando = { id, hasta: reloj + ESPERA_MAXIMA };
+  adelantadas.delete(id);
+}
+
+function noEsperarMas(): void {
+  if (!esperando || reloj < esperando.hasta) return;
+  const { id } = esperando;
+  esperando = null;
+  if (abierta === id && !hoja.hidden) return;
+  adelantadas.set(id, reloj + 15);
+  abrirYSonar(id);
 }
 
 /**
@@ -330,7 +373,7 @@ let corridas: number[] = capas.map(() => 0);
  * El cuerpo de quien camina (`D-80`, `lib/bestiario/camara.ts`): el vaivén de los pasos, la inercia,
  * los sacudones, el retumbo y el arrimarse. Con movimiento reducido no se usa.
  */
-const camara = crearCamara(RECETAS[datos.region]?.zancada ?? 85, 0);
+const camara = crearCamara(RECETAS[datos.region]?.zancada ?? 85, 0, datos.apoyo ?? undefined);
 let encuadre: Encuadre | null = null;
 /** Dónde estaba el piso en el cuadro anterior: lo caminado entre cuadro y cuadro mueve el cuerpo. */
 let camEnElCuadro: number | null = null;
@@ -640,6 +683,42 @@ if (tablero && nombre) {
 }
 
 /* ------------------------------------------------------------------
+   El cartel se aparta
+   ------------------------------------------------------------------
+
+   El nombre de la región flota arriba a la derecha, y ahí arriba viven los que vuelan o se sientan
+   alto: el señor de los cielos en la copa del árbol, el gavilán, la lechuza. Pedido del usuario:
+   *"todas las bestias son visibles [...] no se molestan entre sí"*. Cuando un bicho queda debajo
+   del cartel plegado, el cartel se aclara y deja pasar el toque; cuando se va, vuelve. Los títeres
+   que ocupan media pantalla (Momo, el Alien Duce) no cuentan: su caja es el aire que recorren. */
+const cartel = tablero?.querySelector<HTMLElement>('.camino-cartel') ?? null;
+
+function despejarCartel(): void {
+  if (!tablero || !cartel) return;
+  // Apartado, se mide con un margen: el que vuela en el borde no lo hace titilar.
+  const m = tablero.classList.contains('camino-tablero--apartado') ? 24 : 0;
+  const k = cartel.getBoundingClientRect();
+  const c = { left: k.left - m, right: k.right + m, top: k.top - m, bottom: k.bottom + m };
+  let debajo = false;
+  if (tablero.classList.contains('camino-tablero--plegado')) {
+    for (const g of piso.querySelectorAll(BICHOS)) {
+      const r = (g.querySelector('.toque') ?? g).getBoundingClientRect();
+      if (!r.width || r.height > innerHeight * 0.45 || r.right < c.left || r.left > c.right) continue;
+      const ix = Math.min(r.right, c.right) - Math.max(r.left, c.left);
+      const iy = Math.min(r.bottom, c.bottom) - Math.max(r.top, c.top);
+      if (ix > 0 && iy > 0 && ix * iy > r.width * r.height * 0.2) {
+        debajo = true;
+        break;
+      }
+    }
+  }
+  tablero.classList.toggle('camino-tablero--apartado', debajo);
+}
+
+// Con movimiento reducido el reloj no anda: ahí se mira al caminar.
+escenario.addEventListener('scroll', () => quieto() && despejarCartel(), { passive: true });
+
+/* ------------------------------------------------------------------
    Los que viven en el camino
    ------------------------------------------------------------------ */
 
@@ -769,9 +848,79 @@ function tocarBicho(g: SVGGElement): void {
   hablar(id, p.x, p.y);
 }
 
+/**
+ * El dedo es más grueso que un par de ojos, y hay bichos chicos que no se quedan quietos (el moscón,
+ * la del lanchón en su bote). El toque que cae al lado, en el piso, era un toque perdido: pasaba
+ * sobre todo contra el borde de la pantalla. Ahora va al bicho más cercano, si está a menos de
+ * `RADIO_CERCA` píxeles. Los títeres que ocupan media pantalla no cuentan: su caja es el aire que
+ * recorren, y el toque en ese aire no es de ellos.
+ */
+const RADIO_CERCA = 34;
+
+function bichoCerca(x: number, y: number): SVGGElement | null {
+  let mejor: SVGGElement | null = null;
+  let distancia = RADIO_CERCA;
+  for (const g of piso.querySelectorAll<SVGGElement>(BICHOS)) {
+    const r = (g.querySelector('.toque') ?? g).getBoundingClientRect();
+    if (!r.width || r.height > innerHeight * 0.45 || r.width > innerWidth * 0.6) continue;
+    // Entre un par de ojos y un títere a la misma distancia, los ojos: la caja del títere es más
+    // grande que su dibujo.
+    const d = Math.hypot(Math.max(r.left - x, 0, x - r.right), Math.max(r.top - y, 0, y - r.bottom)) + (g.classList.contains('titere') ? 8 : 0);
+    if (d < distancia) [mejor, distancia] = [g, d];
+  }
+  return mejor;
+}
+
+/**
+ * El dedo que baja y sube sobre el mismo bicho lo tocó, aunque el clic llegue al piso. En el
+ * teléfono pasaba con el toque que seguía a cerrar una ficha: el navegador, al armar el clic, lo
+ * mandaba al `<svg>` de abajo, y el bicho no se enteraba.
+ */
+let apretado: { g: SVGGElement; x: number; y: number } | null = null;
+/** Los clics que cayeron en el piso y se le pasaron a un bicho. */
+const atendidos = new WeakSet<Event>();
+let soltado: { g: SVGGElement; t: number } | null = null;
+const bichoDe = (ev: Event): SVGGElement | null => (ev.target as Element).closest<SVGGElement>(BICHOS);
+piso.addEventListener(
+  'pointerdown',
+  (ev) => {
+    const g = bichoDe(ev);
+    apretado = g ? { g, x: ev.clientX, y: ev.clientY } : null;
+  },
+  { passive: true },
+);
+piso.addEventListener(
+  'pointerup',
+  (ev) => {
+    const quieta = apretado && Math.hypot(ev.clientX - apretado.x, ev.clientY - apretado.y) < 12;
+    soltado = quieta && bichoDe(ev) === apretado!.g ? { g: apretado!.g, t: performance.now() } : null;
+    apretado = null;
+  },
+  { passive: true },
+);
+
 piso.addEventListener('click', (ev) => {
-  const g = (ev.target as Element).closest<SVGGElement>('.bestia');
-  if (g) tocarBicho(g);
+  const tocado = ev.target as Element;
+  const suelto = soltado && performance.now() - soltado.t < 600 ? soltado.g : null;
+  soltado = null;
+  const g = tocado.closest<SVGGElement>('.bestia');
+  if (g) return tocarBicho(g);
+  if (tocado.closest('.titere')) return;
+  const cerca = suelto ?? bichoCerca(ev.clientX, ev.clientY);
+  if (!cerca) return;
+  // Este clic ya tocó a alguien: que el de "tocar afuera cierra la ficha" no lo cuente.
+  atendidos.add(ev);
+  if (cerca.classList.contains('bestia')) tocarBicho(cerca);
+  // Un títere escucha su propio toque: se lo pasa como si lo hubieran tocado a él.
+  else cerca.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: ev.clientX, clientY: ev.clientY }));
+});
+
+// Un títere tocado: si su gesto es largo, la ficha no lo espera entero. Corre después del toque del
+// títere (que escucha en él mismo), así que si ya habló, la ficha ya está abierta y no se espera nada.
+escenario.addEventListener('click', (ev) => {
+  if (quieto()) return;
+  const g = (ev.target as Element).closest<SVGGElement>('.titere[data-id]');
+  if (g) esperarAlTitere(g.dataset.id!);
 });
 
 // Tocar cualquier bicho, suelto o títere, arrima la cámara hacia él (`D-80`).
@@ -798,6 +947,8 @@ piso.addEventListener('keydown', (ev) => {
 let antes = 0;
 let corriendo = false;
 
+let cuadros = 0;
+
 function cuadro(ahora: number): void {
   const dt = Math.min((ahora - antes) / 1000, 0.05);
   antes = ahora;
@@ -821,6 +972,9 @@ function cuadro(ahora: number): void {
   }
   encuadrar();
   vida.mover(reloj, dt);
+  noEsperarMas();
+  // Cada tanto alcanza: medir todos los bichos en cada cuadro es caro en un teléfono.
+  if (++cuadros % 8 === 0) despejarCartel();
   if (!quieto()) {
     // Un salto (ir a un bicho, volver del cruce) no es caminar: no mueve el cuerpo.
     const paso = camEnElCuadro === null ? 0 : (cam - camEnElCuadro) / escala;
@@ -986,8 +1140,13 @@ document.addEventListener(
     const unidad = ev.deltaMode === 1 ? 16 : ev.deltaMode === 2 ? vistaPx : 1;
     const dy = ev.deltaY * unidad;
     const dx = ev.deltaX * unidad;
-    // De costado (un panel táctil) camina solo, con el scroll del navegador.
-    if (Math.abs(dy) <= Math.abs(dx)) return;
+    // De costado (un panel táctil) camina solo, con el scroll del navegador. Manda la mano: lo que
+    // la escena se estuviera corriendo sola (la ficha que la corre, el primer paso) se suelta.
+    if (Math.abs(dy) <= Math.abs(dx)) {
+      objetivo = null;
+      paseo = null;
+      return;
+    }
     ev.preventDefault();
     irA((objetivo ?? escenario.scrollLeft) + dy);
     aprender();
@@ -1063,6 +1222,7 @@ document.addEventListener('click', (ev) => {
     return;
   }
   // Tocar la escena fuera de un bicho calla el bocadillo; tocar afuera de la ficha la cierra.
+  if (atendidos.has(ev)) return;
   if (!bocadillo.hidden && !el.closest('.bocadillo, .bestia, .titere')) callar();
   if (!hoja.hidden && !el.closest('.bestiario-hoja, .bocadillo, .bestia, .titere, .camino-fichas')) cerrarHoja();
 });
