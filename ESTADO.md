@@ -5,7 +5,24 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-30
+**Última actualización:** 2026-11-02
+
+> ## 🚌 NOVIEMBRE SE SUBE AL ÚLTIMO BONDI: EL PRIMER MODO DEL PORTAL (2026-11-02) — `D-85`, `T-524`
+>
+> **Commiteado, sin subir: rama local `modo/ultimo-bondi`**, encima de `portal/almanaque` (PR #100, sin
+> integrar) con `main` adentro: **no puede entrar antes que el #100.** Pedido del usuario: un home en modo *Un baión para el
+> ojo idiota*, inmersivo como la multitud de *Oktubre*, "el 7 de noviembre". El Baión salió el 9 de mayo de 1988 (`RES-20`,
+> reconfirmado por `investigador`); el usuario eligió *"Último bondi, sin Huracán"*.
+>
+> - **El afiche de noviembre es *Último bondi*** (18-nov-1998): estampa "EL 18 CUMPLE 28", sello ÚLTIMO BONDI como la chapita
+>   de la tapa, *"Agarrate del pasamanos, que arranca."*, botón ADIVINÁ TEMAS DEL BONDI. Reemplaza al HURACÁN de `D-84`, y las
+>   noches del 93 salen del almanaque de noviembre (`fuera`).
+> - **El modo**: el ojo de buey de la tapa cuelga del afiche (cortado del master, el vidrio se corre al bajar), los tacos son
+>   boletos picados, la chapa de la nave (`.casco`, `lib/sitio/casco.ts`) reemplaza a la multitud detrás de todo y avanza al
+>   bajar, y al final de la hoja espera "ÚLTIMA PARADA · FINISTERRE".
+> - **Verde:** `npm test` (2239), `npm run check`, `npm run build` (200 páginas). Mirado en el navegador a 375×812 y 1280×800.
+> - **Falta**: la hoja del lienzo (la 18 todavía muestra HURACÁN), probarlo en un teléfono de verdad, y el modo Baión para mayo
+>   (`T-521`): el boceto quedó en la rama local `modo/baion-ojo-idiota`.
 
 > ## 🐒 EL BESTIARIO: LA TIERRA DEL REY Y LA COLA DEL MONITO (2026-10-30) — `T-523`
 >

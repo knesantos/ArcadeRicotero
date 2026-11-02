@@ -34,7 +34,10 @@ import redondopedia from '../data/redondopedia.json';
  */
 const fichas = (redondopedia as unknown as { articulos: FichaCruda[] }).articulos;
 const afiches = ALMANAQUE.flatMap((afiche) => {
-  const { tacos, discosDelMes, totalDiscos } = fechasDelMes(fichas, afiche.mes, { leyendas: afiche.leyendas });
+  const { tacos, discosDelMes, totalDiscos } = fechasDelMes(fichas, afiche.mes, {
+    leyendas: afiche.leyendas,
+    fuera: afiche.fuera,
+  });
   const cumple = cumpleDelMes(tacos, afiche.cumple);
   if (!cumple) return [];
   return [
@@ -50,6 +53,18 @@ const afiches = ALMANAQUE.flatMap((afiche) => {
 });
 /** Los meses con afiche impreso: la cabeza los lee para saber si hay afiche que mostrar. */
 const mesesConAfiche = afiches.map((a) => a.mes);
+
+/**
+ * El modo del mes (`D-85`): el mes que lo tiene viste la portada entera, no solo el afiche. Hoy
+ * es noviembre, el último bondi: el ojo de buey de la tapa en el afiche —el aro quieto y el
+ * vidrio, con la banda adentro, que se corre un poco al bajar, como se corre lo que está del
+ * otro lado de una ventana—, el casco de la nave detrás de todo y la chapa de Finisterre al
+ * final de la hoja. Los dos cortes salen del frente de 953 px de `Docs/INVESTIGACION/TapasDiscos/`.
+ */
+const OJO_DE_BUEY: Partial<Record<string, { aro: string; vidrio: string }>> = {
+  noviembre: { aro: '/arte/bondi-ojo-aro.webp', vidrio: '/arte/bondi-ojo-vidrio.webp' },
+};
+const conModo = afiches.filter((a) => a.modo);
 
 /**
  * Los juegos cuya partida depende de un banco que puede estar vacío. El portal pregunta lo
@@ -156,9 +171,11 @@ const conArte = lados.map((lado, l) => ({
  * (`discoDeRecorte`): el casete dibujado no es de ningun disco y no acredita nada.
  */
 const tapasUsadas = [
-  ...new Set(
-    conArte.flatMap((lado) => lado.casetes.map((c) => discoDeRecorte(c.arte))).filter((d): d is string => d !== null),
-  ),
+  ...new Set([
+    ...conArte.flatMap((lado) => lado.casetes.map((c) => discoDeRecorte(c.arte))).filter((d): d is string => d !== null),
+    // El ojo de buey del modo de noviembre es un corte de la tapa de *Último bondi* (`D-85`).
+    ...conModo.map((a) => a.cumple.slug),
+  ]),
 ];
 ---
 
@@ -239,6 +256,12 @@ const tapasUsadas = [
   {
     afiches.map((a) => (
       <section class:list={['afiche', `afiche--${a.mes}`]} aria-labelledby={`afiche-sello-${a.mes}`}>
+        {OJO_DE_BUEY[a.mes] && (
+          <div class="afiche-ojo" aria-hidden="true">
+            <img class="afiche-ojo-vidrio" src={OJO_DE_BUEY[a.mes]!.vidrio} alt="" width="400" height="400" decoding="async" />
+            <img class="afiche-ojo-aro" src={OJO_DE_BUEY[a.mes]!.aro} alt="" width="400" height="400" decoding="async" />
+          </div>
+        )}
         <div class="afiche-cabeza">
           <h2 class="afiche-sello" id={`afiche-sello-${a.mes}`}>{a.sello}</h2>
           <span class="afiche-cumple" data-cumple-dia={a.cumple.dia} data-cumple-anio={a.cumple.anio}>
@@ -278,6 +301,11 @@ const tapasUsadas = [
     ))
   }
   </div>
+
+  {/* El casco de la nave (`D-85`): la chapa de *Último bondi*, detrás de toda la portada en el
+      mes del modo, en lugar de la multitud. Va fijo a la ventana, y al bajar la chapa se corre
+      más lento que la hoja: vas adentro del bondi y el bondi avanza. */}
+  {conModo.map((a) => <div class:list={['casco', `casco--${a.mes}`]} aria-hidden="true" />)}
 
   {/* El rodillo separa la franja de marca de la casetera (`UX-22` §9): la veta que deja
       un rodillo entintado, no una linea. Es decoracion sin contenido, y por eso se
@@ -346,6 +374,10 @@ const tapasUsadas = [
       </section>
     ))
   }
+
+  {/* La última parada (`D-85`): el final de la hoja es el fin de la tierra. Es una chapa, como
+      la de la tapa, y se lee: registro 3, dice dónde estás y se calla. */}
+  {conModo.map((a) => <p class:list={['fin-de-hoja', `fin-de-hoja--${a.mes}`]}>{a.modo!.fin}</p>)}
 
   <script>
     // La estampa del cumpleaños del mes, con la fecha de quien mira. Sin afiche no hace nada.

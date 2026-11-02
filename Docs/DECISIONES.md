@@ -7005,3 +7005,78 @@ rotuladas `hecho`. Y que noviembre y diciembre tienen con qué:
   de verdad el 1.º.
 
 ---
+
+## D-85 — Noviembre se sube al último bondi: el primer modo del portal
+
+- **Fecha:** 2026-11-02
+- **Estado:** aceptada. Pedido del usuario, textual: *"Hagamos el home en modo 'Un baion para el ojo
+  idiota' […] algo como la multitud de oktubre que sea inmersivo. El disco se estreno el 7 de nov.
+  Ponete en rol de diseñador bien rocambolesco"*. La fecha no cerraba: la ficha dice 9 de mayo de
+  1988 (`RES-20`), `investigador` lo reconfirmó y no encontró ninguna fuente del 7 de noviembre. El
+  usuario: *"ah no flashe no salio el 7 de nov. Que disco si salio en nov?"*, y entre *Último bondi* y
+  el Baión para mayo eligió *"Último bondi, sin Huracán"*. La escribe el hilo principal en la rama
+  `modo/ultimo-bondi`, encima de `portal/almanaque` (PR #100, sin integrar) con `main` adentro.
+  Antes de numerar se miraron las ramas remotas: `D-84` era la última y `T-523` la última tarea; esta
+  es `T-524`.
+- **Consume:** `D-14`, `D-19`, `D-21`, `D-63` (y su enmienda 1), `D-64`, `D-84`, `UX-20`, `RES-20`,
+  `RES-22`, `.claude/rules/diseno-marca.md`, `.claude/rules/voz-ricotera.md` §5.
+- **Enmienda `D-84`:** su punto 6 (noviembre: HURACÁN) queda reemplazado por este. El resto del
+  almanaque no cambia.
+
+### Decisión
+
+1. **Noviembre es *Último bondi a Finisterre*** (18-nov-1998, `hecho`). Estampa "EL 18 CUMPLE 28";
+   sello **ÚLTIMO BONDI** en la letra de la banda; canta *"Agarrate del pasamanos, que arranca."*;
+   cuenta *"Salió el 18 de noviembre del 98. Diez temas, y sello nuevo: Patricio Rey Discos."* (lo que
+   la ficha tiene en `hecho`); botón **ADIVINÁ TEMAS DEL BONDI**, al juego con el disco elegido. Viste
+   la plata de la tapa (`--disco-ultimo-bondi-a-finisterre-tinta`).
+2. **Sin Huracán**, por pedido textual: el almanaque suma `fuera` (las fichas que un mes deja afuera
+   aunque sean `hecho`) y noviembre deja afuera `huracan-93-94`. Las noches del 93 siguen en su ficha
+   y en "En vivo", y diciembre conserva las del 94. Los demás tacos siguen: el Lozanazo y la
+   separación son el principio y el final del mes (`D-84` punto 5).
+3. **El primer modo del portal**: además del afiche, el mes viste la portada entera. Es la tapa leída
+   como un lugar: estás adentro de la nave.
+   - **El ojo de buey** reemplaza a la cinta del afiche: dos cortes del frente de 953 px (el aro y el
+     vidrio con la banda, `public/arte/bondi-ojo-*.webp`, 14 y 15 KB). Al bajar, lo que se ve por el
+     vidrio se corre un poco respecto del aro, como lo que está del otro lado de una ventana.
+   - **El sello es la chapita del nombre**, como la de la tapa: plata maciza, letra `--fondo`, un
+     remache en cada punta y marco doble (contorno, no sombra: `D-64`). Par nuevo en
+     `contraste.test.ts`.
+   - **Los tacos son boletos**: el borde de arriba y el de abajo, picados, como el talonario. La lista
+     se llama "Las paradas de noviembre".
+   - **El casco de la nave** reemplaza a la multitud de lejos y de cerca (`D-63`): la chapa repujada
+     de la tapa, con costuras, remaches, caños que doblan en ángulo recto y ranuras de tres agujeros,
+     leída en nuestra línea. Es una baldosa de 320 px que se repite sin costura
+     (`lib/sitio/casco.ts`, servida en el build por `pages/arte/casco-bondi.svg.ts`) y se usa como
+     máscara sobre tinta plana, sin foto y sin velo. Pesa `--peso-casco` (24 %), que mide
+     `contraste.test.ts` como mide la multitud. Al bajar, la chapa se corre dos baldosas: queda atrás
+     de la hoja, y el bondi avanza. La gente del pie de *Oktubre* se queda, mirando.
+   - **La última parada**: al final de la hoja, antes del pie, una chapa dice "ÚLTIMA PARADA ·
+     FINISTERRE". El final de la página es el fin de la tierra.
+4. **El movimiento es del lugar** (`UX-20`): atado al desplazamiento, sin JavaScript, anotado en
+   `movimiento.test.ts` y quieto con movimiento reducido (`--acercamiento: 0`). Con colores forzados no
+   hay casco.
+
+### Alternativas descartadas
+
+- **El modo Baión en noviembre, como se pidió.** El Baión salió el 9 de mayo de 1988: el portal le
+  festejaría el cumpleaños en el mes equivocado, y eso es lo único estricto del proyecto (`D-14`). El
+  boceto del modo Baión (la tele de Rocambole tirándole luz al muñeco del antifaz, el perro mordiendo
+  abajo y los temas como canales) quedó en la rama local `modo/baion-ojo-idiota`, para mayo (`T-521`).
+- **Un afiche aparte para el modo.** El almanaque ya decide qué mes está prendido y qué cumpleaños se
+  festeja; el modo es lo que el afiche de ese mes arrastra con él, no otro interruptor.
+- **El relieve de la chapa con luz y sombra**, como en la tapa. Sería una sombra con otro nombre (`D-64`).
+- **El ojo de buey de 231 px que ya estaba** (el del casete). A 184 px en una pantalla de doble
+  densidad se veía lavado; el corte nuevo sale del master.
+
+### Consecuencias
+
+- `ALMANAQUE` gana dos campos opcionales: `fuera` y `modo`. Un mes nuevo con modo necesita además su
+  arte en `OJO_DE_BUEY` (portal) y su capa de fondo en `sitio.css`.
+- **El lienzo va después del código, y es deuda**: la hoja 18 de `D-84` todavía muestra HURACÁN.
+  `diseno-marca.md` pide el orden contrario. Los valores no cambian (no hay hex ni fuente nueva, solo un
+  peso), pero la hoja tiene que mostrar el afiche del bondi y el casco.
+- Este cambio no puede entrar a `main` antes que el PR #100: va encima de él.
+- Falta mirarlo en un teléfono de verdad.
+
+---

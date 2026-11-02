@@ -875,7 +875,8 @@ html.incrustado #plano .portal .bestiario-marco {
    más abajo desde el primer cuadro, sin saltar.
 
    Es un afiche pegado, no una tarjeta: borde grueso en la tinta del mes (`--tinte-afiche`:
-   la de *Oktubre* en octubre, la de *Lobo suelto* en noviembre, la de *Gulp!* en diciembre;
+   la de *Oktubre* en octubre, la plata de *Último bondi* en noviembre (`D-85`), la de *Gulp!*
+   en diciembre;
    `D-19`), cinta arriba, apenas torcido. El sello va en la letra calcada de la tapa en
    octubre y en la de la banda los demás meses; lo que se lee de corrido, en la del sistema
    (`UX-01`). La estructura y las medidas son las de `UX-40`.
@@ -894,7 +895,7 @@ html.incrustado #plano .portal .bestiario-marco {
 /* La tinta de cada mes. Un mes nuevo sin tinta propia sale con la de la marca. */
 .afiche { --tinte-afiche: var(--marca-rojo); }
 .afiche--octubre { --tinte-afiche: var(--marca-rojo); }
-.afiche--noviembre { --tinte-afiche: var(--disco-lobo-suelto-tinta); }
+.afiche--noviembre { --tinte-afiche: var(--disco-ultimo-bondi-a-finisterre-tinta); }
 .afiche--diciembre { --tinte-afiche: var(--disco-gulp-tinta); }
 
 .afiche {
@@ -1103,6 +1104,196 @@ html.incrustado #plano .portal .bestiario-marco {
 .afiche-boton:focus-visible {
   outline: var(--linea) solid var(--acento-2);
   outline-offset: 3px;
+}
+
+/* ==========================================================================
+   El modo del último bondi (`D-85`): noviembre viste la portada entera.
+
+   La tapa de *Último bondi a Finisterre* es una chapa repujada con un ojo de buey y la banda
+   adentro, y una chapita con el nombre. Acá el portal es el adentro de esa nave: el afiche
+   lleva el ojo de buey en lugar de la cinta, el sello es la chapita, los tacos son boletos, la
+   chapa de la nave pasa detrás de todo (`.casco`, en lugar de la multitud) y al final de la
+   hoja espera la última parada.
+
+   EL MOVIMIENTO ES DEL LUGAR (`UX-20`), como la multitud: atado al desplazamiento, sin
+   JavaScript, y quieto con movimiento reducido (`--acercamiento: 0`). La chapa se corre más
+   lento que la hoja —vas adentro y el bondi avanza—, y lo que se ve por el ojo de buey se
+   corre un poco al revés que el aro, como se corre lo que está del otro lado de un vidrio.
+   ========================================================================== */
+
+.afiche--noviembre {
+  --ancho-ojo: clamp(132px, 40vw, 184px);
+}
+
+/* El ojo de buey reemplaza a la cinta: también es lo que sostiene el afiche contra la pared. */
+.afiche--noviembre::before {
+  content: none;
+}
+
+.afiche-ojo {
+  position: absolute;
+  top: -22px;
+  right: -10px;
+  width: var(--ancho-ojo);
+  aspect-ratio: 1;
+  transform: rotate(6deg);
+  pointer-events: none;
+}
+
+.afiche-ojo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* El vidrio es más grande que el hueco del aro: lo que sobra se esconde debajo del aro, y es
+   lo que deja correr la banda sin que se vea el borde. */
+.afiche-ojo-vidrio {
+  scale: 1.04;
+}
+
+@supports (animation-timeline: view()) {
+  .afiche-ojo-vidrio {
+    animation-name: del-otro-lado-del-vidrio;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-duration: auto;
+    animation-timeline: view();
+  }
+}
+
+@keyframes del-otro-lado-del-vidrio {
+  from {
+    translate: 0 calc(-4% * var(--acercamiento));
+  }
+  to {
+    translate: 0 calc(4% * var(--acercamiento));
+  }
+}
+
+/* La cabecera le deja lugar al ojo de buey, que cuelga arriba a la derecha. */
+.afiche--noviembre .afiche-cabeza {
+  margin-right: calc(var(--ancho-ojo) - 14px);
+  min-height: calc(var(--ancho-ojo) - 30px);
+  align-content: center;
+}
+
+/* El sello es la chapita del nombre: plata maciza, letra de `--fondo` y un remache en cada
+   punta. El par es el de los botones de *Último bondi* (`contraste.test.ts`). El marco doble
+   es un contorno, no una sombra. */
+.afiche--noviembre .afiche-sello,
+.fin-de-hoja {
+  position: relative;
+  padding: 0.12em 0.62em 0.06em;
+  color: var(--fondo);
+  background: var(--tinte-afiche);
+  border-radius: 3px;
+  outline: 2px solid var(--tinte-afiche);
+  outline-offset: 3px;
+}
+
+.afiche--noviembre .afiche-sello {
+  font-size: clamp(1.9rem, 9.6vw, 2.6rem);
+  line-height: 1;
+}
+
+.afiche--noviembre .afiche-sello::before,
+.afiche--noviembre .afiche-sello::after,
+.fin-de-hoja::before,
+.fin-de-hoja::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  background: var(--fondo);
+  border-radius: 50%;
+}
+
+.afiche--noviembre .afiche-sello::before,
+.fin-de-hoja::before {
+  left: 0.2em;
+}
+
+.afiche--noviembre .afiche-sello::after,
+.fin-de-hoja::after {
+  right: 0.2em;
+}
+
+/* Los tacos son boletos: el borde de arriba y el de abajo, picados, como el talonario. */
+.afiche--noviembre .afiche-fecha a {
+  border-top-style: dashed;
+  border-bottom-style: dashed;
+  border-radius: 0;
+}
+
+/* La chapa de la nave, detrás de todo. Tinta plana de la plata de la tapa, recortada por la
+   baldosa del casco (`lib/sitio/casco.ts`); pesa `--peso-casco`, que mide `contraste.test.ts`. */
+.casco {
+  display: none;
+}
+
+:root[data-mes='noviembre'] .casco--noviembre {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--disco-ultimo-bondi-a-finisterre-tinta) var(--peso-casco), var(--fondo));
+  -webkit-mask-image: url('/arte/casco-bondi.svg');
+  mask-image: url('/arte/casco-bondi.svg');
+  -webkit-mask-size: 320px 320px;
+  mask-size: 320px 320px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+}
+
+/* En el bondi no está la multitud: está la chapa. La gente del pie se queda, mirando. */
+:root[data-mes='noviembre'] .plano-gente {
+  display: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  .casco {
+    animation-name: el-bondi-avanza;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-duration: auto;
+    animation-timeline: scroll(root block);
+  }
+}
+
+/* Dos baldosas en toda la bajada: la chapa se corre menos que la hoja, y por eso queda atrás. */
+@keyframes el-bondi-avanza {
+  to {
+    -webkit-mask-position: 0 calc(-640px * var(--acercamiento));
+    mask-position: 0 calc(-640px * var(--acercamiento));
+  }
+}
+
+/* La última parada, al final de la hoja. */
+.fin-de-hoja {
+  display: none;
+}
+
+:root[data-mes='noviembre'] .fin-de-hoja--noviembre {
+  --tinte-afiche: var(--disco-ultimo-bondi-a-finisterre-tinta);
+  display: block;
+  width: fit-content;
+  margin: var(--espacio-4) auto var(--espacio-3);
+  padding-inline: 1.4em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  transform: rotate(-1deg);
+}
+
+@media (forced-colors: active) {
+  .casco {
+    display: none !important;
+  }
 }
 
 /* ---- Los lados del cassette ---- */

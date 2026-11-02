@@ -419,6 +419,14 @@ export interface AficheDelMes {
   readonly nombres?: Readonly<Record<string, string>>;
   /** Las fichas cuyas fechas rotuladas `leyenda` entran al almanaque, con el ◆ a la vista. */
   readonly leyendas?: readonly string[];
+  /** Las fichas que el mes deja afuera aunque sean `hecho` (`D-85`). */
+  readonly fuera?: readonly string[];
+  /**
+   * El modo del mes (`D-85`): además del afiche, el mes viste la portada entera. Hoy lo tiene
+   * noviembre, que es *Último bondi*: el ojo de buey en el afiche y el casco de la nave detrás de
+   * todo. `fin` es la chapa que espera al final de la hoja, antes del pie.
+   */
+  readonly modo?: { readonly fin: string };
 }
 
 /** La estampa del cumpleaños, la misma para todos los meses. Registro 3: dice qué pasa y se calla. */
@@ -446,33 +454,33 @@ export const ALMANAQUE: readonly AficheDelMes[] = [
   },
   {
     mes: 'noviembre',
-    /** Lleva Á: la letra de la banda la tiene (`D-65`); el calco de *Oktubre*, no. */
-    sello: 'HURACÁN',
-    /** El 19 y el 20 de noviembre de 1993, la primera vez en esa cancha; la estampa cuenta desde el 19. */
-    cumple: { slug: 'huracan-93-94', rotulo: 'hecho' },
-    /** Un objeto de la cancha, un gesto, y nada que explicar. */
-    canta: 'Trepate al alambrado, que ya salen.',
-    /** Solo lo que la ficha tiene en `hecho`: fechas, público, lugar, y que el disco doble se presentó ahí. */
-    cuenta: () =>
-      'El 19 y el 20 de noviembre del 93, más de setenta mil personas en el Ducó, para presentar el disco doble.',
-    calendario: 'Las fechas de noviembre',
     /**
-     * A la lista de esa noche en "En vivo", que es lo que el sitio tiene y suena diez segundos
-     * por tema. "Mirá qué se tocó": una lista que se mira, no la grabación de la noche
-     * (`contenido`, 2026-10-29).
+     * *Último bondi a Finisterre*, el 18 de noviembre de 1998 (`D-85`; reemplaza al HURACÁN de
+     * `D-84`). En la letra de la banda, que tiene la Ú desde `D-65`; el calco de *Oktubre*, no.
      */
-    boton: { texto: 'MIRÁ QUÉ SE TOCÓ EL 19', href: '/redondopedia/en-vivo/#lista-1993-11-19' },
+    sello: 'ÚLTIMO BONDI',
+    cumple: { slug: 'ultimo-bondi-a-finisterre', rotulo: 'hecho' },
+    /** Un objeto del colectivo, un gesto, y nada que explicar: la portada es el viaje. */
+    canta: 'Agarrate del pasamanos, que arranca.',
+    /** Lo que la ficha tiene en `hecho`: la fecha, los diez temas y el sello. */
+    cuenta: () => 'Salió el 18 de noviembre del 98. Diez temas, y sello nuevo: Patricio Rey Discos.',
+    /** Los tacos del mes son las paradas del bondi. */
+    calendario: 'Las paradas de noviembre',
+    /** El juego de adivinar el tema, con el disco ya elegido, como el de octubre. */
+    boton: { texto: 'ADIVINÁ TEMAS DEL BONDI', href: '/juegos/adivinar-el-tema/?disco=ultimo-bondi-a-finisterre' },
     /**
-     * Noviembre tiene el principio y el final: el Lozanazo del 77 (nació el nombre) y la
-     * oficialización de la separación, el 2 de 2001. Las dos son `hecho` y las dos entran: el
-     * almanaque es el mes como fue, y lo que festeja es el cumpleaños, no cada taco.
+     * El Lozanazo del 77 y la separación del 2001 siguen subiendo: son el principio y el final,
+     * y el almanaque es el mes como fue (`D-84` punto 5).
      */
     nombres: {
       'ultimo-bondi-a-finisterre': 'Último bondi',
-      'huracan-93-94': 'Huracán',
       'la-formacion': 'El Lozanazo',
       'la-separacion': 'La separación',
     },
+    /** Pedido del usuario, textual: *"Último bondi, sin Huracán"* (2026-11-02). */
+    fuera: ['huracan-93-94'],
+    /** El final de la hoja es el fin de la tierra: Finisterre. */
+    modo: { fin: 'ÚLTIMA PARADA · FINISTERRE' },
   },
   {
     mes: 'diciembre',

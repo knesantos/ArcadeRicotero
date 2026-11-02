@@ -63,6 +63,12 @@ export interface Taco {
 export interface OpcionesDelMes {
   /** Las fichas cuyas fechas rotuladas `leyenda` entran igual, con su rótulo a la vista. */
   readonly leyendas?: readonly string[];
+  /**
+   * Las fichas que el mes deja afuera aunque sean `hecho` (`D-85`). Noviembre se viste de
+   * *Último bondi* y, por pedido del usuario, sin Huracán: las noches del 93 siguen en su ficha
+   * y en "En vivo", pero no se suben a este bondi.
+   */
+  readonly fuera?: readonly string[];
 }
 
 /** Las dos etiquetas con que las fichas de disco nombran la fecha de salida (`D-49`). */
@@ -100,11 +106,13 @@ export function fechasDelMes(
   opciones: OpcionesDelMes = {},
 ): { readonly tacos: readonly Taco[]; readonly discosDelMes: number; readonly totalDiscos: number } {
   const leyendas = new Set(opciones.leyendas ?? []);
+  const fuera = new Set(opciones.fuera ?? []);
   const tacos: Taco[] = [];
   let totalDiscos = 0;
   for (const f of fichas) {
     if (f.tipo !== 'disco' && f.tipo !== 'hito') continue;
     if (f.tipo === 'disco') totalDiscos += 1;
+    if (fuera.has(f.slug)) continue;
     for (const d of f.datos ?? []) {
       const etiqueta = d.etiqueta.trim();
       if (f.tipo === 'disco' && !ETIQUETA_SALIDA.test(etiqueta)) continue;

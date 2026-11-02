@@ -57,6 +57,32 @@ test('noviembre, con las fichas de hoy: la separación, los dos discos, las dos 
   ]);
 });
 
+test('D-85: noviembre se sube al último bondi sin Huracán, y el resto del mes sigue arriba', () => {
+  const noviembre = ALMANAQUE.find((a) => a.mes === 'noviembre')!;
+  const { tacos, discosDelMes } = fechasDelMes(fichas(), 'noviembre', { fuera: noviembre.fuera });
+  assert.equal(discosDelMes, 2);
+  assert.deepEqual(resumen(tacos), [
+    '2/2001 la-separacion',
+    '17/2000 momo-sampler',
+    '18/1998 ultimo-bondi-a-finisterre',
+    '26/1977 la-formacion',
+  ]);
+  // Lo que queda afuera es lo que el mes nombra y nada más: diciembre conserva sus noches del 94.
+  assert.deepEqual(noviembre.fuera, ['huracan-93-94']);
+  const { tacos: deDiciembre } = fechasDelMes(fichas(), 'diciembre');
+  assert.ok(deDiciembre.some((t) => t.slug === 'huracan-93-94'));
+});
+
+test('D-85: el cumpleaños de noviembre es la salida de Último bondi, y el botón lleva a sus temas', () => {
+  const noviembre = ALMANAQUE.find((a) => a.mes === 'noviembre')!;
+  assert.deepEqual(noviembre.cumple, { slug: 'ultimo-bondi-a-finisterre', rotulo: 'hecho' });
+  const { tacos } = fechasDelMes(fichas(), 'noviembre', { fuera: noviembre.fuera });
+  const cumple = cumpleDelMes(tacos, noviembre.cumple)!;
+  assert.equal(cumpleDelDia(new Date(2026, 10, 2), cumple), 'EL 18 CUMPLE 28');
+  // El juego elige el disco por su slug (`partida-tema.ts`); un slug que no existe no elige nada.
+  assert.equal(new URL(noviembre.boton.href, 'https://x').searchParams.get('disco'), noviembre.cumple.slug);
+});
+
 test('diciembre, con las fichas de hoy: Obras, Huracán 94 y, solo si el mes la declara, la fundación', () => {
   const sinLeyenda = fechasDelMes(fichas(), 'diciembre');
   assert.deepEqual(resumen(sinLeyenda.tacos), ['2/1989 debut-en-obras', '16/1994 huracan-93-94', '17/1994 huracan-93-94']);
@@ -73,7 +99,7 @@ test('D-84, regla 3: cada mes del almanaque tiene su cumpleaños con el rótulo 
   // Si una ficha cambia de rótulo —la fundación pasa a hecho, una salida pasa a discutida—,
   // esto se pone en rojo antes de que el portal imprima un afiche con el rótulo equivocado.
   for (const a of ALMANAQUE) {
-    const { tacos } = fechasDelMes(fichas(), a.mes, { leyendas: a.leyendas });
+    const { tacos } = fechasDelMes(fichas(), a.mes, { leyendas: a.leyendas, fuera: a.fuera });
     const cumple = cumpleDelMes(tacos, a.cumple);
     assert.ok(cumple, `${a.mes}: la ficha ${a.cumple.slug} ya no tiene su fecha rotulada ${a.cumple.rotulo}`);
     assert.equal(MESES.includes(a.mes), true);
@@ -91,15 +117,15 @@ test('la leyenda entra solo con el ◆: ningún mes declara una leyenda que no s
   }
 });
 
-test('el botón de noviembre apunta a una lista que existe en En vivo, por su fecha', () => {
-  const noviembre = ALMANAQUE.find((a) => a.mes === 'noviembre')!;
-  const m = /#lista-(\d{4}-\d{2}-\d{2})$/.exec(noviembre.boton.href);
-  assert.ok(m, 'el botón de noviembre no lleva a una lista por fecha');
+test('un botón del almanaque que lleva a En vivo apunta a una lista que existe, por su fecha', () => {
+  // Noviembre llevaba a la lista del 19-11-1993 hasta `D-85`; la guarda queda para el mes que
+  // vuelva a mandar a una noche.
   const archivo = JSON.parse(readFileSync('src/data/recitales.json', 'utf-8')) as { recitales: Array<{ fecha: string }> };
-  assert.ok(
-    archivo.recitales.some((r) => r.fecha === m![1]),
-    `no hay lista del ${m![1]} en recitales.json`,
-  );
+  for (const a of ALMANAQUE) {
+    const m = /\/en-vivo\/#lista-(\d{4}-\d{2}-\d{2})$/.exec(a.boton.href);
+    if (!m) continue;
+    assert.ok(archivo.recitales.some((r) => r.fecha === m[1]), `${a.mes}: no hay lista del ${m[1]} en recitales.json`);
+  }
 });
 
 test('UX-40 §5: en el portal, el rótulo de leyenda va pegado a la estampa, adentro de la misma cabeza', () => {
