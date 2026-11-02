@@ -30,6 +30,7 @@ import {
 } from './en-vivo.ts';
 import { resolverTema, indiceDuro } from './letra/temas.ts';
 import { slugDeTitulo } from './texto.ts';
+import { anclasPorFecha } from './recital/listas.ts';
 
 // ---------------------------------------------------------------- insumos
 
@@ -765,4 +766,19 @@ test('ningún otro dato del sitio nombra setlist.fm: lo citado vive en un solo a
     .filter((n) => n.endsWith('.json') && n !== 'setlistfm.json')
     .filter((n) => leer(join('src/data', n)).includes('setlist.fm'));
   assert.deepEqual(culpables, [], `estos datos mencionan setlist.fm: ${culpables.join(', ')}`);
+});
+
+test('D-84: cada lista entera se ancla por su fecha, y dos cargas de la misma noche no se pisan', () => {
+  // El portal enlaza `#lista-<fecha>`. Con el archivo real, la noche que el afiche de noviembre
+  // enlaza tiene un ancla sola; y Mar del Plata 13/8/94, que está dos veces (RES-225), no repite id.
+  const archivo = JSON.parse(readFileSync('src/data/recitales.json', 'utf-8')) as { recitales: Array<{ fecha: string }> };
+  const anclas = anclasPorFecha(archivo.recitales.map((r) => r.fecha));
+  assert.equal(new Set(anclas).size, anclas.length, 'hay dos listas con el mismo ancla');
+  assert.equal(anclas.filter((a) => a === 'lista-1993-11-19').length, 1);
+  assert.deepEqual(anclasPorFecha(['1994-08-13', '1993-11-19', '1994-08-13']), [
+    'lista-1994-08-13',
+    'lista-1993-11-19',
+    'lista-1994-08-13-2',
+  ]);
+  assert.match(readFileSync('src/pages/redondopedia/en-vivo.astro', 'utf-8'), /anclasPorFecha\(/);
 });

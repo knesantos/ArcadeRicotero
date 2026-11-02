@@ -820,7 +820,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   'diagnostico-audio.ts': { sinTablero: 'pantalla de medicion; sus reglas viven en el <style> de su propia pagina y la cubre la red derivada' },
   'lamina.ts': { sinTablero: 'pincel de canvas (US-08); dibuja pixeles, no crea nodos con clase' },
   'mosca.ts': { sinTablero: 'la mosca del portal (D-49); su unica clase, la de tomada a mano, vive en sitio.css y la cubre la red derivada' },
-  'oktubre.ts': { sinTablero: 'la estampa del cumpleanos en el afiche de octubre (D-49); cambia un texto, no crea clases' },
+  'almanaque.ts': { sinTablero: 'la estampa del cumpleanos en el afiche del mes (D-84); cambia un texto, no crea clases' },
   'oreja.ts': { sinTablero: 'la leyenda del dia en la portada de la Redondopedia (D-75); mueve un hidden, no crea nodos ni clases' },
   'rocola.ts': { sinTablero: 'la rocola de los recitales (D-72); un <audio> que suena en fila, no crea nodos' },
   'spotify.ts': { sinTablero: 'un <a> y nada mas, que es literalmente RQ-B2 de ADR-01' },

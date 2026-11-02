@@ -5,7 +5,24 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-30
+**Última actualización:** 2026-11-02
+
+> ## 🚌 NOVIEMBRE SE SUBE AL ÚLTIMO BONDI: EL PRIMER MODO DEL PORTAL (2026-11-02) — `D-85`, `T-524`
+>
+> **Sin integrar, rama `modo/ultimo-bondi` (PR #104)**, encima de `portal/almanaque` (PR #100, sin
+> integrar) con `main` adentro: **no puede entrar antes que el #100.** Pedido del usuario: un home en modo *Un baión para el
+> ojo idiota*, inmersivo como la multitud de *Oktubre*, "el 7 de noviembre". El Baión salió el 9 de mayo de 1988 (`RES-20`,
+> reconfirmado por `investigador`); el usuario eligió *"Último bondi, sin Huracán"*.
+>
+> - **El afiche de noviembre es *Último bondi*** (18-nov-1998): estampa "EL 18 CUMPLE 28", sello ÚLTIMO BONDI como la chapita
+>   de la tapa, *"Agarrate del pasamanos, que arranca."*, botón ADIVINÁ TEMAS DEL BONDI. Reemplaza al HURACÁN de `D-84`, y las
+>   noches del 93 salen del almanaque de noviembre (`fuera`).
+> - **El modo**: el ojo de buey de la tapa cuelga del afiche (cortado del master, el vidrio se corre al bajar), los tacos son
+>   boletos picados, la chapa de la nave (`.casco`, `lib/sitio/casco.ts`) reemplaza a la multitud detrás de todo y avanza al
+>   bajar, y al final de la hoja espera "ÚLTIMA PARADA · FINISTERRE".
+> - **Verde:** `npm test` (2239), `npm run check`, `npm run build` (200 páginas). Mirado en el navegador a 375×812 y 1280×800.
+> - **Falta**: la hoja del lienzo (la 18 todavía muestra HURACÁN), probarlo en un teléfono de verdad, y el modo Baión para mayo
+>   (`T-521`): el boceto quedó en la rama local `modo/baion-ojo-idiota`.
 
 > ## 🐒 EL BESTIARIO: LA TIERRA DEL REY Y LA COLA DEL MONITO (2026-10-30) — `T-523`
 >
@@ -81,6 +98,33 @@
 > - **Verde:** `npm test` (2217), `npm run check`, `npm run build` (200 páginas). La ficha medida en un iframe de 340 con mouse.
 > - **No verificado**: el sonido en el celular adentro de X, que es donde se colgaba. Ninguna de las dos causas se pudo
 >   reproducir acá; los dos arreglos cubren las dos que el código dejaba abiertas.
+
+> ## 📅 EL ALMANAQUE DEL PORTAL: UN MES, UN AFICHE (2026-10-29) — `D-84`
+>
+> **Sin integrar**: rama `portal/almanaque` (PR #100), sobre `main` en `b0b0bc2`. Pedido del usuario: *"Actualicemos la portada de la
+> página, quedó vieja de oktubre, que quede hasta el fin del mes, pero ya pensemos otra cosa."* y, sobre la propuesta
+> (`Docs/SUGERENCIAS/HILO-para-todos-el-almanaque-del-portal.md`), *"Sí, armalo"*. `T-520`.
+>
+> - **El afiche se apaga solo el 1.º de noviembre** con la fecha del teléfono (`D-49` punto 2): no hubo que tocar nada
+>   para que quede hasta fin de mes.
+> - **El afiche de octubre pasa a ser el almanaque del portal**: una tabla mes → afiche (`ALMANAQUE` en `copy.ts`),
+>   prendida por la fecha de quien mira (`data-mes` y `data-afiche` en la cabeza, con la lista de meses inyectada
+>   desde el build) y con las fechas sacadas de las fichas de disco e hito (`lib/sitio/almanaque.ts`, solo `hecho`).
+>   El mismo componente (`.afiche`, antes `.oktubre`); por mes rotan la tinta, la letra del sello y los textos.
+> - **Noviembre: HURACÁN** (19 y 20-11-1993, "EL 19 CUMPLE 33"), tinta de *Lobo suelto*, sello en la letra de la banda;
+>   seis tacos (la separación 2-2001, *Momo* 17, *Último bondi* 18, Huracán 19 y 20, el Lozanazo 26); botón «MIRÁ QUÉ
+>   SE TOCÓ EL 19» a la lista de esa noche en "En vivo", que ahora se ancla por fecha (`lista-1993-11-19`, con `-2` si
+>   dos cargas comparten noche) y se abre sola al llegar por el `#`.
+> - **Diciembre: CINCUENTA** (la fundación del 28-12-1976, `leyenda`), tinta de *Gulp!*, con el rótulo ◆ LEYENDA pegado
+>   a la estampa —la única leyenda que entra, declarada y testeada—; cuatro tacos; botón «LEÉ CÓMO EMPEZÓ».
+> - **Los meses de duelo no tienen afiche nunca**; mayo, cuando se construya (`T-521`, reservada).
+> - `contenido` leyó las líneas (dos recortes y el botón de noviembre); `experiencia` escribió `UX-40`; la **hoja 18**
+>   del lienzo está pegada (versión 22, página Aplicación, debajo de la 16).
+> - **Verde:** `npm test` (2225), `npm run check` (0 errores), `npm run build` (200 páginas). Visto en el panel a
+>   375×812 (los tres afiches, forzando `data-mes`) y a 1280×800 (el afiche al lado de la cabecera), y el ancla de En vivo
+>   abriendo la lista del 19 con sus 21 temas.
+> - **Falta**: mirar el afiche de noviembre en un teléfono de verdad el 1.º; `T-521` (mayo); un `DIF-` para la semana del
+>   17 al 20 de noviembre (`difusion`).
 
 > ## 📺 ADENTRO DE X, SIN SCROLL (2026-10-29) — `T-518`
 >

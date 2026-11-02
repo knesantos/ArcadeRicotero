@@ -29,7 +29,7 @@ import { EN_VIVO } from '../../lib/recital/copy.ts';
 import { fondoTapa, discosDe } from '../../lib/sitio/arte.ts';
 import { leerTemas, slugDeTitulo } from '../../lib/letra/temas.ts';
 import { indexarFragmentos, type Manifiesto } from '../../lib/tema/catalogo.ts';
-import { fechaLarga, fechaDeConsulta, bisDeLaNota, porAnio, nombreDeLicencia } from '../../lib/recital/listas.ts';
+import { anclasPorFecha, bisDeLaNota, fechaDeConsulta, fechaLarga, nombreDeLicencia, porAnio } from '../../lib/recital/listas.ts';
 import manifiesto from '../../data/adivinar-tema.json';
 import setlistfm from '../../data/setlistfm.json';
 import archivo from '../../data/recitales.json';
@@ -49,6 +49,7 @@ interface TemaDeLista {
 }
 
 /** Una lista entera, con el bis que marca la fuente adelante de cada tema que abre uno. */
+const anclas = anclasPorFecha(archivo.recitales.map((r) => r.fecha));
 const enteras = archivo.recitales.map((r, n) => {
   const fuente = archivo.fuentes.find((f) => f.id === r.fuente)!;
   let bisAnterior: number | null = null;
@@ -60,7 +61,8 @@ const enteras = archivo.recitales.map((r, n) => {
     return { ...t, abreBis, suena };
   });
   return {
-    id: `lista-${n + 1}`,
+    // Por fecha y no por posición: el portal enlaza una noche (`D-84`), y cargar una lista más no la mueve.
+    id: anclas[n]!,
     fecha: r.fecha,
     encabezado: EN_VIVO.enteras.encabezado(fechaLarga(r.fecha), r.lugar, r.ciudad),
     url: r.url,
