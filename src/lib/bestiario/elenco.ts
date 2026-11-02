@@ -148,11 +148,12 @@ export function capasDe(region: string, capa: Capa, nombres: Nombres, k = 1, sol
  * los tramos largos del camino (el monte), donde el recinto no se estira con `k`: cada personaje se corre
  * entero adonde lo esperaban sus ojos en el tramo.
  */
-export function capasCorridas(region: string, capa: Capa, nombres: Nombres, dxDe: (p: Personaje) => number): string {
+export function capasCorridas(region: string, capa: Capa, nombres: Nombres, dxDe: (p: Personaje) => number, dyDe: (p: Personaje) => number = () => 0): string {
   return ELENCO.filter((p) => p.region === region && p.capas[capa])
     .map((p) => {
       const dx = Math.round(dxDe(p));
-      const corre = dx ? ` transform="translate(${f(dx)} 0)"` : '';
+      const dy = Math.round(dyDe(p));
+      const corre = dx || dy ? ` transform="translate(${f(dx)} ${f(dy)})"` : '';
       return `<g data-marco="${p.id}" data-capa="${capa}" data-dx="${dx}"${corre}>${p.capas[capa]!(nombres)}</g>`;
     })
     .join('');

@@ -20,6 +20,14 @@ import { urlDeFragmento } from '../lib/audio/rutas-de-audio.ts';
 
 export const SEGUNDOS_POR_TEMA = 10;
 
+/**
+ * Cuánto se espera a un recorte que no avanza, en milisegundos (`T-519`). Un `<audio>` que se
+ * traba bajando no termina ni da error: se queda callado, y quien esperaba el final (el bestiario
+ * baja el recital de fondo mientras habla una bestia) se quedaba esperando para siempre, con todo
+ * en silencio. El primer plazo es más largo porque incluye bajar el archivo.
+ */
+const PLAZO = { arranque: 7000, trabado: 3500 } as const;
+
 export interface Rocola {
   /**
    * Hace sonar un recorte. Si ya sonaba otro, lo corta. `url` reemplaza al fragmento del tema
@@ -43,9 +51,17 @@ export function crearRocola(): Rocola {
   let vuelta = 0;
   let actual: string | null = null;
   let alFin: (() => void) | null = null;
+  let vigia = 0;
+
+  /** Si en `ms` el recorte no avanzó, se da por terminado: mejor cortado que colgado. */
+  function vigilar(v: number, ms: number, siguiente: () => void): void {
+    clearTimeout(vigia);
+    vigia = window.setTimeout(() => v === vuelta && siguiente(), ms);
+  }
 
   function terminar(v: number): void {
     if (v !== vuelta) return;
+    clearTimeout(vigia);
     audio?.pause();
     actual = null;
     const f = alFin;
@@ -63,10 +79,13 @@ export function crearRocola(): Rocola {
     a.onended = () => v === vuelta && siguiente();
     a.onerror = () => v === vuelta && siguiente();
     a.ontimeupdate = () => {
-      if (v === vuelta && a.currentTime >= SEGUNDOS_POR_TEMA) siguiente();
+      if (v !== vuelta) return;
+      if (a.currentTime >= SEGUNDOS_POR_TEMA) siguiente();
+      else vigilar(v, PLAZO.trabado, siguiente);
     };
     a.src = url;
     a.currentTime = 0;
+    vigilar(v, PLAZO.arranque, siguiente);
     void a.play().catch(() => {
       // Sin gesto o sin red: no suena, y la lista no se queda colgada esperando.
       if (v === vuelta) terminar(v);

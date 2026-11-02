@@ -91,11 +91,13 @@ function pisoLargo(t: Tramo, nombres: Nombres): string {
   if (!claro) {
     // Los del elenco que viven en el tramo (tu animal, en el monte) van donde estaban sus ojos, corridos enteros.
     const dxDe = (p: Personaje): number => (t.ojos[p.id]?.[0] ?? p.ancla) - p.ancla;
+    // Y bajan lo que haga falta para pisar el piso del camino, que está más abajo que la ladera del recinto.
+    const dyDe = (p: Personaje): number => t.bajan?.[p.id] ?? 0;
     return (
-      capasCorridas(t.region, 'atras', nombres, dxDe) +
+      capasCorridas(t.region, 'atras', nombres, dxDe, dyDe) +
       `<g class="acecho">${t.lobo ? titereLobo(t.lobo.x, nombres) : ''}</g>` + piso + ojosQueAparecen(sinTitere(t.ojos), nombres) +
-      capasCorridas(t.region, 'figura', nombres, dxDe) +
-      capasCorridas(t.region, 'delante', nombres, dxDe)
+      capasCorridas(t.region, 'figura', nombres, dxDe, dyDe) +
+      capasCorridas(t.region, 'delante', nombres, dxDe, dyDe)
     );
   }
   return (

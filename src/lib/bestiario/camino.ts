@@ -103,6 +103,17 @@ export interface Tramo {
   claro?: { dx: number; ojos: Readonly<Record<string, Ojos>> };
   /** Los que no viven en la región pero andan por el tramo (el lobo en la pastura). */
   deVisita?: readonly string[];
+  /**
+   * A qué altura agranda la cámara (`APOYO` de `camara.ts`), si no es la de siempre: el árbol tiene
+   * al señor de los cielos sentado arriba de la copa, y ahí agrandar desde el piso lo sacaba de la
+   * pantalla.
+   */
+  apoyo?: number;
+  /**
+   * Cuánto baja cada títere del elenco en un tramo largo. Vienen de la ladera del recinto, que está
+   * más arriba que el piso del camino: sin bajar, el montículo del rey flotaba delante de los troncos.
+   */
+  bajan?: Readonly<Record<string, number>>;
 }
 
 const SIN_PARALAJE = { lejos: 1, frente: 1 } as const;
@@ -161,12 +172,17 @@ export const CAMINOS: Readonly<Record<string, Tramo>> = {
       'las-antiguas-lobas': [380, 300, 'oro'],
       'el-animal-que-no-late': [660, 262, 'papel'],
       'el-lobo-caido': [900, 492, 'oro'],
-      'el-joven-lobo': [1600, 282, 'oro'],
-      'el-rey-de-esta-jungla': [1830, 250, 'papel'],
-      'tu-animal': [2020, 338, 'oro'],
+      // El rey y tu animal, antes del final: el cruce del monte es una columna de carteles que
+      // aparece arriba a la derecha en el último tramo, y los tapaba.
+      'el-joven-lobo': [1070, 282, 'oro'],
+      'el-rey-de-esta-jungla': [1490, 250, 'papel'],
+      'tu-animal': [1720, 338, 'oro'],
       'la-liebre-muerta': [2190, 528, 'papel'],
     },
     lobo: { x: 1260 },
+    // El borde del piso del monte está en y ≈ 305 (`camino-monte-piso`): la tierra del rey y las patas
+    // de tu animal entran en él, y las lobas se echan sobre el pasto, no en el borde.
+    bajan: { 'el-rey-de-esta-jungla': 62, 'tu-animal': 56, 'las-antiguas-lobas': 30 },
   },
   'la-pastura': {
     region: 'la-pastura',
@@ -197,7 +213,7 @@ export const CAMINOS: Readonly<Record<string, Tramo>> = {
   'los-astilleros': entorno('los-astilleros', 'astillero', 0.5, 300),
   'el-templo': recinto('el-templo'),
   'cybersiberia': entorno('cybersiberia', 'cyber', 0.6, 450),
-  'el-arbol': entorno('el-arbol', 'arbol', 0.5, 450),
+  'el-arbol': { ...entorno('el-arbol', 'arbol', 0.5, 450), apoyo: 0.5 },
   'el-galpon': entorno('el-galpon', 'galpon', 0.8, 450),
   // La ruta: el bondi del Zumba, que es el que la abre en el recinto.
   'la-ruta': entorno('la-ruta', 'ruta', 0.45, 250),
