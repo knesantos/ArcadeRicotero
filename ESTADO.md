@@ -9,7 +9,7 @@
 
 > ## 🚌 NOVIEMBRE SE SUBE AL ÚLTIMO BONDI: EL PRIMER MODO DEL PORTAL (2026-11-02) — `D-85`, `T-524`
 >
-> **Commiteado, sin subir: rama local `modo/ultimo-bondi`**, encima de `portal/almanaque` (PR #100, sin
+> **Sin integrar, rama `modo/ultimo-bondi` (PR #104)**, encima de `portal/almanaque` (PR #100, sin
 > integrar) con `main` adentro: **no puede entrar antes que el #100.** Pedido del usuario: un home en modo *Un baión para el
 > ojo idiota*, inmersivo como la multitud de *Oktubre*, "el 7 de noviembre". El Baión salió el 9 de mayo de 1988 (`RES-20`,
 > reconfirmado por `investigador`); el usuario eligió *"Último bondi, sin Huracán"*.
