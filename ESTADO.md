@@ -9,7 +9,7 @@
 
 > ## 🎮 SKAYBOY Y POLIGIRL: DOCE NIVELES, EL MENÚ CON PLANO Y UN CIGARRILLO QUE SE ENTIENDE (2026-11-04) — `D-86`, `T-525`
 >
-> **Sin integrar, rama `skayboy/mejora-total`** sobre `main` en `90583d6`. Pedido del usuario: *"Hace una mejora total
+> **Sin integrar, rama `skayboy/mejora-total` (PR #106)** sobre `main` en `90583d6`. Pedido del usuario: *"Hace una mejora total
 > del juego Skay boy y poli girl, mejora el menu, arma mas niveles, basate en los niveles reales de fireboy y water girl.
 > Hay que mejorar el cigarrillo de poli, no se entiende del todo bien que es."*
 >
