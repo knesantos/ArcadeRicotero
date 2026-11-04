@@ -482,6 +482,22 @@ a.secundario {
 }
 
 /* El hueco: subrayado grueso, no una caja. Es un renglon para completar a mano. */
+/* De dónde sale el verso (2026-11-04): iba en versales de rótulo, en negrita, tres renglones
+   —"DE "AQUELLA SOLITARIA VACA CUBANA", EN UN BAIÓN PARA EL OJO IDIOTA"— y gritaba más que la
+   pregunta. Es un dato de contexto (`BR-03`): va en la letra de lectura, en la tinta tenue, en
+   su propio renglón debajo del paso. */
+.juego--letras .cabecera .micro.tenue {
+  flex-basis: 100%;
+  margin: 0;
+  font-family: var(--fuente);
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--texto-tenue);
+  text-wrap: pretty;
+}
+
 .hueco {
   display: inline-block;
   min-width: 6ch;
@@ -2260,6 +2276,57 @@ a.secundario {
   border-bottom: 1px solid var(--papel-borde);
 }
 
+/* **La hoja va en el medio de la pantalla** (2026-11-04). Medido a 375 × 812: la hoja de la
+   pregunta terminaba en 400 px y debajo quedaban 230 px de nada hasta el piso; las dos
+   opciones —lo único que se toca en toda la noche— caían entre 250 y 370 px, lejos del
+   pulgar (`D-09`). La pantalla de la pregunta es ahora una columna de una ventana con la hoja
+   centrada: la mirada va al medio y las opciones bajan a la zona de la mano. Con una pregunta
+   larga la columna crece y la hoja sube sola. Solo en el teléfono y la tableta: en la mesa
+   (`D-54`, desde 52 rem) hay mouse, no pulgar, y la hoja apoyada arriba deja el pie a la vista. */
+@media (max-width: 51.99rem) {
+  .juego--luzbelito #pregunta:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100svh - 2 * var(--espacio-2));
+  }
+}
+
+/* **Las hojas de la noche** (2026-11-04): cinco casillas en la cabecera, una por momento,
+   la misma fila de casillas que marcan los temas en los juegos de audio y de letra. Dicen de
+   un vistazo en qué parte de la noche vas; el folio y el anuncio lo dicen con palabras, así
+   que esto va sin voz para el lector de pantalla. Pasada: llena en la tinta tenue del papel;
+   actual: llena en la tinta; por venir: hueca. Forma además de tinta. */
+.ejes-noche {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0 auto 0 var(--espacio-1);
+  padding: 0;
+  list-style: none;
+}
+
+.ejes-noche-hoja {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--papel-tenue);
+  border-radius: 2px;
+  transform: rotate(-4deg);
+}
+
+.ejes-noche-hoja:nth-child(even) {
+  transform: rotate(3deg);
+}
+
+.ejes-noche-hoja--pasada {
+  background: var(--papel-tenue);
+}
+
+.ejes-noche-hoja--actual {
+  background: var(--fondo);
+  border-color: var(--fondo);
+}
+
 /* El sello del momento: goma de esquina casi viva, apenas torcido. Seco: registro 3. */
 .ejes-momento {
   margin: 0;
@@ -3768,6 +3835,44 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
   overscroll-behavior: contain;
 }
 
+/* **El verso va en el medio de la pantalla** (2026-11-04).
+
+   Lo de arriba explica el problema que había: una hoja de 545 px con un verso arriba y papel
+   vacío abajo. Pero la respuesta —una hoja del alto del verso pegada arriba y 500 px de negro
+   entre la hoja y el buscador— era el mismo vacío con otro color: medido a 375 × 812 en el
+   primer escalón, el verso terminaba en 140 px y el buscador arrancaba en 650. Un tablero con
+   un agujero en el medio.
+
+   La hoja sigue midiendo lo que miden sus versos (la barra de `UX-08`), pero **el bloque del
+   rótulo y la hoja se centra en la banda**: el margen automático de arriba va en el rótulo y
+   el de abajo en la hoja, así que el sobrante se reparte y los dos viajan juntos. Con un verso
+   la letra queda a la altura de los ojos, como una línea en una hoja de cuaderno; con ocho los
+   márgenes se agotan y la hoja scrollea adentro como antes. El buscador no se mueve: sigue en
+   la zona del pulgar. Y la hoja tiene un piso de alto, con el verso centrado adentro: un
+   renglón solo no es una tira. Con el teclado abierto manda `partida--tecleando`, que le
+   devuelve a la hoja el alto de su contenido y le baja el piso. */
+.versos-cabeza {
+  margin-top: auto;
+}
+
+.hoja-versos {
+  display: flex;
+  flex-direction: column;
+  min-height: 8rem;
+}
+
+.hoja-versos > .verso:first-child {
+  margin-top: auto;
+}
+
+.hoja-versos > .verso:last-child {
+  margin-bottom: auto;
+}
+
+.partida--tecleando .versos-cabeza {
+  margin-top: 0;
+}
+
 /*
  * Al revelar, la hoja deja de pelear por el alto.
  *
@@ -3810,7 +3915,9 @@ body.juego-por-la-letra:has(#partida:not([hidden])) {
  */
 .verso {
   font-family: var(--fuente);
-  font-size: 1.05rem;
+  /* 1,15 rem desde el 2026-11-04: es la pieza central del tablero y ahora tiene la hoja
+     entera para él. Ocho versos a este cuerpo miden ~290 px y entran a 375 × 812. */
+  font-size: 1.15rem;
   line-height: 1.5;
   margin: 0;
   padding-block: var(--espacio-1);
@@ -4245,9 +4352,14 @@ body > main {
 
 /* La marca de la hoja: el logo completo (`D-82`), como las otras tres formas. */
 .marca {
-  width: clamp(7.5rem, 36vw, 9.5rem);
+  /* Más chica desde el 2026-11-04 (de 36vw a 30vw, de 9,5 rem a 8): en la carátula de un
+     juego la FR es la firma, no el titular. Medido a 375 × 812 en "¿Qué tipo de ricotero
+     sos?": el botón de empezar quedaba a 1265 px, debajo del pliegue; ahora entra. Y es UNA
+     medida para las ocho carátulas: las dos páginas densas la achicaban por su cuenta con una
+     regla del logotipo escrito y la FR salía de cuatro tamaños en cuatro juegos. */
+  width: clamp(6.5rem, 30vw, 8rem);
   line-height: 0;
-  margin: var(--espacio-3) 0 var(--espacio-2);
+  margin: var(--espacio-2) 0 var(--espacio-1);
   view-transition-name: marca;
   /* Tinta plana, sin eco: la sombra de las letras salio de todos lados (`D-64`). */
 }

@@ -245,6 +245,28 @@ const tapasUsadas = [
     <h1 class="marca-grande"><img src="/marca/fichin-ricotero.svg" alt="Fichín Ricotero" width="1540" height="1450" /></h1>
     <p class="donde-estas">{LUGARES.portal}</p>
     <p class="bajada-portal">{PORTAL.bajada}</p>
+    {/* Las dos cintas (2026-11-04): la bajada las nombra, y acá se tocan. Dos tiras de cinta
+        adhesiva que llevan a cada lado de la casetera sin pasar por el afiche del mes —medido
+        a 375 × 812, el lado A arrancaba en 900 px y el lado B en 1850—. Son anclas: sin
+        JavaScript, y el que baja despacio ve el afiche igual. */}
+    <nav class="cintas" aria-label={PORTAL.cintas}>
+      {
+        [
+          { href: '#lado-a', titulo: PORTAL.ladoA },
+          { href: '#lado-b', titulo: PORTAL.ladoB },
+        ].map((cinta) => {
+          // "Lado A · Para jugar": el lado arriba, grande, y para qué es abajo, como la
+          // etiqueta de una cinta. El texto es el mismo del rótulo del lado, partido en el punto.
+          const [lado, para] = cinta.titulo.split(' · ');
+          return (
+            <a class="cinta" href={cinta.href}>
+              <strong class="cinta-lado">{lado}</strong>
+              <span class="cinta-para">{para}</span>
+            </a>
+          );
+        })
+      }
+    </nav>
   </header>
 
   {/* El afiche del mes (`D-84`). Están todos en el documento y se ve el del mes que la cabeza
@@ -315,7 +337,7 @@ const tapasUsadas = [
   {
     conArte.map((lado) => (
       <section>
-        <h2 class="lado">{lado.titulo}</h2>
+        <h2 class="lado" id={`lado-${lado.lado}`}>{lado.titulo}</h2>
         <ul class:list={['casetera', `casetera--${lado.lado}`]}>
           {lado.casetes.map((c) => (
             <li>

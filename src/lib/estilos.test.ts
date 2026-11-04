@@ -693,6 +693,10 @@ const ESTADOS_EJES = [
   // marca desaparece del dibujo y nada falla.
   '.ejes-plano-cuadrante--tuya',
   '.ejes-plano-cuadrante--suya',
+  // Las hojas de la noche (2026-11-04): sin regla, las cinco casillas salen todas huecas y
+  // la fila no dice nada.
+  '.ejes-noche-hoja--pasada',
+  '.ejes-noche-hoja--actual',
 ];
 
 /**

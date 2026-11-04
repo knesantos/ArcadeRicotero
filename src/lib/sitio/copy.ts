@@ -27,6 +27,13 @@ export const PORTAL = {
     'sin pagar la entrada, sepas lo que sepas.',
   ladoA: 'Lado A · Para jugar',
   ladoB: 'Lado B · Para leer',
+  /**
+   * Las dos cintas de la puerta (2026-11-04): el nombre de la fila de dos tiras pegadas debajo
+   * de la bajada, que llevan a cada lado de la casetera sin pasar por el afiche. Es lo que la
+   * bajada ya decía —"estás en la puerta, con las dos cintas"— vuelto algo que se toca. Solo
+   * lo lee el lector de pantalla; las tiras dicen `ladoA` y `ladoB`.
+   */
+  cintas: 'Las dos cintas',
   enLaCocina: 'En la cocina',
   volver: 'VOLVÉ',
   volverAlArcade: 'AL FICHÍN',

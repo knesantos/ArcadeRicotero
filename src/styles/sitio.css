@@ -840,6 +840,69 @@ html.incrustado #plano .portal .bestiario-marco {
   text-wrap: balance;
 }
 
+/* ---- Las dos cintas (2026-11-04) ----
+
+   La bajada dice "estás en la puerta, con las dos cintas", y las dos cintas estaban a una
+   pantalla y media de scroll, detrás del afiche del mes: medido a 375 × 812, el lado A
+   arrancaba en 900 px y el lado B en 1850. Ahora son dos tiras de cinta adhesiva pegadas
+   debajo de la bajada —la misma cinta de `.volver`, que es el par tinta-sobre-papel que
+   `contraste.test.ts` ya mide— y cada una lleva a su lado de la casetera. El afiche sigue
+   donde `D-84` lo puso: el que baja despacio lo ve igual; el que viene a jugar llega en un
+   toque. Son anclas, sin JavaScript. */
+.cintas {
+  display: flex;
+  gap: var(--espacio-2);
+  margin: 0 0 var(--espacio-1);
+}
+
+.cinta {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: var(--toque-min);
+  padding: 6px var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  line-height: 1.1;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  color: var(--fondo);
+  background: color-mix(in srgb, var(--papel) 88%, transparent);
+  border-radius: 3px;
+  transform: rotate(-1.2deg);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Como la etiqueta de una cinta: el lado grande y para qué es, chico, debajo. */
+.cinta-lado {
+  font-size: 0.95rem;
+  font-weight: normal;
+  letter-spacing: 0.1em;
+}
+
+.cinta-para {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: var(--papel-tenue);
+}
+
+/* Pegadas a mano: una torcida para cada lado. */
+.cinta + .cinta {
+  transform: rotate(1deg);
+}
+
+.cinta:focus-visible {
+  outline: var(--linea) solid var(--acento-2);
+  outline-offset: 3px;
+}
+
+.cinta:active {
+  background: var(--papel);
+}
+
 /* El personaje de portada mira desde el costado de la marca, pegado como un recorte mas.
    Es mas grande que antes por una razon concreta: paso de ser una silueta llena (el
    perro) a ser un calco de LINEA, y una linea de dos pixeles reducida a un cuarto no es
@@ -1327,6 +1390,11 @@ html.incrustado #plano .portal .bestiario-marco {
   border-top: 2px dashed var(--borde);
 }
 
+/* Las cintas del frente saltan acá: el rótulo del lado llega con aire, no pegado al borde. */
+.lado {
+  scroll-margin-top: var(--espacio-2);
+}
+
 /* ---- El casete: cada juego es un cassette apilado en el collage ---- */
 
 /* **Los casetes se pisan.** Es una pila de cosas apiladas a mano, y una pila de cosas
@@ -1365,8 +1433,11 @@ html.incrustado #plano .portal .bestiario-marco {
   gap: var(--espacio-2);
   align-items: center;
   /* `UX-25` §2.5: de 16 px parejos a 12. Ocho casetes por cuatro lados: es de los pocos
-     lugares del sitio donde cuatro pixeles se notan en el total. */
-  padding: 12px;
+     lugares del sitio donde cuatro pixeles se notan en el total. Desde el 2026-11-04, 10 a
+     los costados: con los 4 del corrimiento lateral y los 8 de la etiqueta, la columna del
+     título pasa de 193 a 213 px a 375 px, y seis títulos que iban en dos renglones entran en
+     uno. Trece casetes: unos 120 px menos de hoja. */
+  padding: 12px 10px;
   /* Sin superficie "elevada": la pieza se recorta del fondo por borde grueso y
      cinta, como en serigrafia — y de paso la tinta de cada disco queda siempre
      sobre --fondo, que es el par que el test AA verifica (sobre el elevado,
@@ -1390,12 +1461,12 @@ html.incrustado #plano .portal .bestiario-marco {
    que sobre una caja de ancho completo sólo puede meter las esquinas en el margen. */
 .casetera > li:nth-child(odd) .casete {
   transform: rotate(-0.9deg);
-  margin-right: 14px;
+  margin-right: 10px;
 }
 
 .casetera > li:nth-child(even) .casete {
   transform: rotate(0.7deg);
-  margin-left: 14px;
+  margin-left: 10px;
 }
 
 /* La cinta adhesiva que sujeta el casete al de al lado.
@@ -1506,7 +1577,9 @@ html.incrustado #plano .portal .bestiario-marco {
     ),
     var(--papel);
   color: var(--fondo);
-  padding: var(--espacio-1) var(--espacio-2);
+  /* 12 px a los costados (2026-11-04): la etiqueta cede aire para que el título entre en un
+     renglón; el de arriba y abajo no cambia. */
+  padding: var(--espacio-1) 12px;
   border-radius: 4px;
   transform: rotate(-0.4deg);
   /* El papel viejo va en un `::before` por debajo de la letra (`D-64`): sin estas dos, el
@@ -1527,6 +1600,10 @@ html.incrustado #plano .portal .bestiario-marco {
   /* Es un <strong>: sin esto el navegador engorda Archivo Black, que tiene un peso solo (la
      negrita falsa que `D-54` les sacó a los h1). */
   font-weight: normal;
+  /* 2026-11-04: con la columna de 213 px, dos títulos de 19 letras ("Sacalo por la letra",
+     "Preguntas ricoteras") quedaban a 10 px de entrar. El cuerpo no baja; cede el aire entre
+     letras, de 0,05 em a 0,02, y entran. Lo mide `index.astro` en el navegador, no esta hoja. */
+  letter-spacing: 0.02em;
   /* La almohadilla (`D-64`): la tinta del sello no llega pareja. Le faltan puntos y zonas
      donde la mano aflojó, y lo que falta lo saca la máscara —nunca un gris: la letra que
      queda es `--fondo` pleno—. Dónde apretó la mano depende del disco (`--golpe`). */
@@ -3219,6 +3296,11 @@ body:has(> .lugar) .marca-chica {
   .tarjeta-articulo:hover,
   .disco-del-indice:hover img {
     border-color: var(--tinte, var(--acento-2));
+  }
+
+  /* La cinta se aprieta: el papel llega entero. Mismo par, ningún color nuevo. */
+  .cinta:hover {
+    background: var(--papel);
   }
 
   .partes a:hover {
