@@ -35,7 +35,7 @@
  * ## El dibujo sale de los atlas, y de nada más (`T-278`, `CTR-15`)
  *
  * Adentro del área no hay un solo rectángulo de tinta plana: todo lo que se ve es un cuadro de
- * `public/sprites/` —`skayboy.v2`, `poligirl.v2`, `sala.v3`—, cargado a tamaño nativo y
+ * `public/sprites/` —`skayboy.v2`, `poligirl.v2`, `sala.v4`—, cargado a tamaño nativo y
  * escalado por el motor con un entero y sin suavizado (`crisp`, `texFilter: 'nearest'`,
  * `ADR-08.3`). **Qué** se dibuja, en qué estado y dónde lo decide `escena.ts`, probado en Node
  * (`escena.test.ts`): el mapeo de `poseDe()` a los estados del atlas, el espejo según `mira`,
@@ -201,6 +201,7 @@ import {
   momentoDe,
   mostrarFinDeNivel,
   nivelDelBotonGrande,
+  pasadosDeLaFila,
   regionDelMenu,
   type Rectangulo,
 } from '../lib/skayboy/menu.ts';
@@ -770,7 +771,9 @@ async function arrancar(): Promise<void> {
     if (menuCual !== null) menuCual.textContent = grande === undefined ? '' : MENU.cualToca(grande.numero, grande.nombre);
     if (menuCualCorto !== null) menuCualCorto.textContent = grande === undefined ? '' : MENU.numero(grande.numero);
     if (menuRepetir !== null) menuRepetir.hidden = momento !== 'pausa';
-    const fichas = fichasDelMenu(banco.niveles, cargarAvance(), actualDelMenu(mundo));
+    const avance = cargarAvance();
+    if (menuPasados !== null) menuPasados.textContent = MENU.pasados(pasadosDeLaFila(banco.niveles, avance), banco.niveles.length);
+    const fichas = fichasDelMenu(banco.niveles, avance, actualDelMenu(mundo));
     for (const f of fichas) {
       const ficha = menu?.querySelector<HTMLButtonElement>(`.ficha-nivel[data-nivel="${f.id}"]`);
       if (ficha == null) continue;
@@ -974,6 +977,7 @@ const menuJugar = document.querySelector<HTMLButtonElement>('#menu-jugar');
 const menuCual = document.querySelector<HTMLElement>('#menu-cual');
 const menuCualCorto = document.querySelector<HTMLElement>('#menu-cual-corto');
 const menuRepetir = document.querySelector<HTMLButtonElement>('#menu-repetir');
+const menuPasados = document.querySelector<HTMLElement>('#menu-pasados');
 const abrirElMenu = document.querySelector<HTMLButtonElement>('#abrir-menu');
 const tarjeta = document.querySelector<HTMLElement>('#fin-nivel');
 const tarjetaRotulo = document.querySelector<HTMLElement>('#fin-nivel-rotulo');

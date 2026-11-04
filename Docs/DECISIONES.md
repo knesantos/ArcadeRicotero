@@ -6889,3 +6889,93 @@ cuelga el `javascript_tool`—:
   sobre la barra de Safari, y la hoja al asentarse.
 - `T-515`: la hoja 08 del lienzo (componentes): el sello de invitación y el renglón «Anotado · cuenta»
   de la hoja. No hubo tintas nuevas: todo sale de `tokens.css`.
+
+---
+
+## D-86 — Skayboy y Poligirl, la mejora entera: doce niveles, el menú con plano y un cigarrillo que se entiende
+
+- **Fecha:** 2026-11-04
+- **Estado:** activa. Pedido del usuario, textual: *"Hace una mejora total del juego Skay boy y poli
+  girl, mejora el menu, arma mas niveles, basate en los niveles reales de fireboy y water girl. Hay
+  que mejorar el cigarrillo de poli, no se entiende del todo bien que es."* La escribe el hilo
+  principal en la rama `skayboy/mejora-total`, sobre `main` en `90583d6`. Antes de tomar el número
+  se miraron las ramas remotas: `D-85` (en `modo/ultimo-bondi`, PR #104, sin integrar) era el último.
+- **Consume:** `D-47` (los coleccionables y la pantalla completa), `D-61` (el menú y la tarjeta),
+  `CTR-16` (los niveles), `CTR-18` (la traza grabada), `BR-29` (la tolerancia por escalón),
+  `UX-33 §3` (la guitarra gorda y el cigarrillo flaco), `UX-37` (el menú).
+
+### Las tres cosas, en el orden en que las pidió
+
+1. **El cigarrillo se entiende.** El tile `tesoroPoligirl` de la sala era un palito en diagonal de
+   un píxel de espesor con un hilo de humo: a ×2 en un teléfono era una aguja. Ahora es un cigarrillo
+   acostado: tubo de papel en luz con contorno de clave, el filtro de corcho en la tinta de objetos
+   a la izquierda con su anillo, la brasa en la misma tinta a la derecha, y el humo de clave subiendo
+   serpenteando. Sigue siendo "flaco" contra la guitarra "gorda" (`UX-33 §3.3`: 12 píxeles de tinta
+   de objetos contra 49, y la vara es el doble) y sigue con aire alrededor. El atlas sube a
+   **`sala.v4`** (`CTR-15.8`); la v3 se queda en `public/sprites/` hasta que nada la pida.
+2. **El menú muestra el plano.** Cada ficha lleva **el plano del nivel**: la sala en miniatura, un
+   sello de 15 × 9 celdas con las tintas del pixel —sólido en clave, cielo, infierno, el de los dos,
+   el tesoro en oro, puertas y piezas en clave aclarada—, armado en el build desde la grilla
+   (`planoDelNivel()`, `menu.ts`). No marca las entradas: eso contaría la solución. Y debajo del
+   título de la lista, un renglón seco: **"Pasaste N de M"** (nada con cero). La grilla de fichas
+   pasa de dos a tres o cuatro por renglón según el ancho, y seis por renglón en la composición baja.
+3. **Doce niveles.** Seis nuevos (`NIV-07` a `NIV-12`), todos de escalón 3 porque combinan lo
+   enseñado y no traen mecanismo nuevo (`E6`), y por lo mismo con el piso de tolerancia de Difícil
+   (`BR-29`: 4 cuadros). Toman del *Forest Temple* de Fireboy y Watergirl lo que el motor permite
+   —charcos de cada uno en el piso, escaleras de bloques hacia una repisa con las dos puertas,
+   palancas que se dejan puestas, placas que uno sostiene, la caja que se empuja hasta una placa
+   para que la compuerta quede abierta, el salto largo— y nada de lo que no: ascensores y plataformas
+   que se mueven no entran porque `CTR-16.10` dice que ninguna pieza tiene reloj ni le mueve el piso
+   a nadie.
+
+| Nivel | Nombre (`voz-ricotera.md §4`) | Qué junta |
+|---|---|---|
+| `NIV-07` | Cada cual con su charco | los dos charcos en el piso, cada uno cruza el suyo caminando y salta el otro; dos bloques y la repisa con las puertas |
+| `NIV-08` | Dejale la palanca puesta | dos palancas en el piso, cada una abre la compuerta del otro; la de cada uno se cruza y se deja |
+| `NIV-09` | No te muevas de ahí | una placa contra la pared que uno sostiene para que el otro pase; la palanca del otro lado la deja abierta |
+| `NIV-10` | Una caja y una promesa | la caja se empuja hasta la placa y la compuerta de arriba queda abierta; dos bloques para subir |
+| `NIV-11` | Un piso para cada uno | dos pisos separados, uno por personaje: la placa de arriba abre la compuerta de abajo, la palanca de abajo abre la de arriba |
+| `NIV-12` | Saltá y no mires | el charco de los dos, de tres de ancho, y la escalera de bloques hasta las puertas |
+
+**Se publican `listo`**, con `deDos: true`: el usuario lo decidió el mismo día, textual, *"Pasalos a
+listo"*, sabiendo que nadie los jugó de a dos en un teléfono, como hizo `D-51` con los seis primeros.
+El booleano, dice su schema, prueba que alguien se hizo cargo de decir que sí: se hizo cargo él. La
+máquina sí los juega en cada build (`CTR-18`).
+
+### Lo que la máquina enseñó al dibujarlos
+
+La traza de uno (`CTR-18`) se grabó para los seis, y para llegar hubo que tirar cuatro diseños.
+Lo que se aprendió queda acá porque el que dibuje el 13 lo va a necesitar:
+
+- **Un techo a menos de dos tiles sobre el que salta mata el salto de dos tiles.** El cuerpo mide
+  20 y sube 40,5 px; si la celda de despegue tiene sólido dos filas arriba del cuerpo (una repisa
+  encima), el salto se corta a 28 px y no llega a la cornisa. Se mira la columna de despegue, no la
+  de llegada.
+- **La pared de una compuerta es un techo.** Salir de la compuerta y saltar enseguida no sale: el
+  muro de arriba deja 12 px de aire. Entre la compuerta y el charco van dos celdas de piso.
+- **Una palanca en la celda donde se aterriza es una moneda al aire.** Si el salto cae a la
+  izquierda del centro de la celda, al caminar se cruza y se activa; un píxel más a la derecha, no.
+  La palanca va a dos celdas de cualquier aterrizaje.
+- **Tapar un charco con cajas no se puede forzar.** Con el perdón tardío de 0,1 s (`PERDON_TARDE_SEG`)
+  todo hueco de dos tiles se cruza desde el borde, y una caja al lado del charco es un escalón que
+  alarga el salto: siempre hay un camino de un píxel de margen que la búsqueda encuentra y la vara
+  de `BR-29` rechaza. La caja queda como escalón y como peso sobre la placa, que es lo que
+  `CTR-16.10.5` prometió.
+- **Los charcos de dos tiles van a cielo abierto.** Bajo un techo de tres filas el salto alcanza
+  33,7 px y un charco de dos pide 23: queda margen para tres cuadros, y `BR-29` pide cuatro.
+- **El que termina primero entra apenas a su puerta.** La búsqueda corta en el cuadro en que entra,
+  y correr cualquier borde anterior lo deja afuera. Por eso el ensanchador (`robustecer()`,
+  `solucionador.ts`) suma desde hoy tres candidatas: alargar la última corrida de la columna del
+  borde apretado, alargarla junto con el gesto que se alarga, y probar los dos sentidos cuando el
+  borde aguanta lo mismo para cada lado. Con eso `NIV-11` pasó de 1 a 10 cuadros sin tocar el
+  nivel. Los 30 casos de `solucionador.test.ts` siguen en verde.
+- **Una placa contra la pared, o dos seguidas**, para el que la sostiene: así no se pasa de largo.
+
+### Lo que no cambia
+
+- La física (`mundo.ts`): ninguna constante se tocó. Los seis niveles viejos conservan su traza.
+- Los textos de `contenido`: los seis nombres nuevos los escribió el hilo principal con la vara de
+  `voz-ricotera.md §4` (ocho palabras, imperativo o imagen, sin explicar la mecánica) y `voz.test.ts`
+  los audita; `contenido` puede proponer otros en `Docs/SUGERENCIAS/`. El renglón "Pasaste N de M"
+  es registro 3.
+- La paridad de `BR-23.1` sobre el banco entero la cuenta `soluciones.test.ts` como siempre.
