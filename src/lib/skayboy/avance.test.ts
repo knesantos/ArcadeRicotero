@@ -54,8 +54,11 @@ function almacen(inicial: string | null = null, tira: 'no' | 'leer' | 'escribir'
   return { a, guardado, escrituras: () => escrituras };
 }
 
-test('la fila del banco tiene los seis niveles, en orden de id (CTR-16.11.2)', () => {
-  assert.deepEqual(ids, ['NIV-01', 'NIV-02', 'NIV-03', 'NIV-04', 'NIV-05', 'NIV-06']);
+test('la fila del banco tiene los doce niveles, en orden de id (CTR-16.11.2, D-86)', () => {
+  assert.deepEqual(
+    ids,
+    ['NIV-01', 'NIV-02', 'NIV-03', 'NIV-04', 'NIV-05', 'NIV-06', 'NIV-07', 'NIV-08', 'NIV-09', 'NIV-10', 'NIV-11', 'NIV-12'],
+  );
 });
 
 test('la clave es literal: arcade.skayboy.avance (CTR-16.11.1)', () => {
@@ -116,10 +119,10 @@ test('sin avance: se juega el primero de la fila, y llegó hasta el cero', () =>
   assert.equal(siguienteDeLaFila([], SIN_AVANCE), null, 'sin fila no hay a dónde');
 });
 
-test('todos pasados: no queda ninguno, y llegó hasta el seis', () => {
+test('todos pasados: no queda ninguno, y llegó hasta el doce', () => {
   const todos = leerAvance(JSON.stringify({ pasados: ids }));
   assert.equal(siguienteDeLaFila(FILA, todos), null);
-  assert.equal(hastaDonde(FILA, todos), 6);
+  assert.equal(hastaDonde(FILA, todos), 12);
 });
 
 test('los ids que la fila de hoy no tiene no cuentan al leer, y se conservan al escribir', () => {

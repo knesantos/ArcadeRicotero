@@ -1134,7 +1134,8 @@ function correrUnBorde(traza: Traza, borde: Borde, delta: number): Traza | null 
  * después); correr la frontera entera entre dos corridas (la siguiente paga la diferencia);
  * y, si es un apriete que no aguanta que lo demoren —una corrida corta, un salto de un
  * cuadro—, alargarlo por la otra punta: primero corriendo solo el borde donde se suelta, después
- * estirando.
+ * estirando. Y desde `D-86`, estirar la última corrida de esa columna, y probar los dos sentidos
+ * cuando el borde aguanta lo mismo para cada lado.
  */
 function* movimientos(traza: Traza, borde: Borde, medida: Tolerancia): Generator<Traza> {
   const hacia = borde.antes < borde.despues ? 1 : borde.antes > borde.despues ? -1 : 0;
@@ -1147,19 +1148,37 @@ function* movimientos(traza: Traza, borde: Borde, medida: Tolerancia): Generator
   );
   const j = suelta === undefined ? -1 : corridaQueEmpiezaEn(traza, suelta.cuadro);
 
+  // La última corrida con teclas de esa columna (`D-86`): cuando el que termina primero entra
+  // apenas a su puerta, correr cualquier borde anterior lo deja afuera, y lo que lo arregla es
+  // que camine un poco más al final —contra la pared de su puerta—. Ninguna de las otras
+  // candidatas toca esa corrida si el borde apretado no es suyo.
+  const ultima = ultimaCorridaDe(traza, borde.columna);
+
   for (const d of cantidades) {
     const candidatas: (Traza | null)[] = [];
-    if (hacia !== 0) {
-      candidatas.push(correrUnBorde(traza, borde, hacia * d));
+    // Con antes y después empatados no hay un lado mejor, y antes de `D-86` no se probaba ninguno:
+    // un borde justo por los dos lados quedaba quieto aunque correrlo lo destrabara.
+    for (const h of hacia !== 0 ? [hacia] : [1, -1]) {
+      candidatas.push(correrUnBorde(traza, borde, h * d));
       if (i > 0) {
-        candidatas.push(conLargos(traza, new Map([[i - 1, hacia * d]])));
-        if (i < traza.length) candidatas.push(conLargos(traza, new Map([[i - 1, hacia * d], [i, -hacia * d]])));
+        candidatas.push(conLargos(traza, new Map([[i - 1, h * d]])));
+        if (i < traza.length) candidatas.push(conLargos(traza, new Map([[i - 1, h * d], [i, -h * d]])));
       }
     }
     if (borde.sentido === 'aprieta' && borde.despues < borde.antes && suelta !== undefined) {
       candidatas.push(correrUnBorde(traza, suelta, d));
       if (j > 0) candidatas.push(conLargos(traza, new Map([[j - 1, d]])));
+      // Alargar el gesto corre al que lo hace, y si ese era el que entraba apenas a su puerta, lo
+      // deja afuera: el gesto y la última caminata se alargan juntos.
+      if (j > 0 && ultima >= 0 && ultima !== j - 1) candidatas.push(conLargos(traza, new Map([[j - 1, d], [ultima, d]])));
     }
+    if (ultima >= 0 && ultima !== i - 1 && ultima !== j - 1) candidatas.push(conLargos(traza, new Map([[ultima, d]])));
     for (const c of candidatas) if (c !== null) yield c;
   }
+}
+
+/** El índice de la última corrida en la que esa columna aprieta algo, o -1. */
+function ultimaCorridaDe(traza: Traza, columna: IdPersonaje): number {
+  for (let i = traza.length - 1; i >= 0; i--) if (columnasConTeclas(traza[i].mandos).includes(columna)) return i;
+  return -1;
 }
