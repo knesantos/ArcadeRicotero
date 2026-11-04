@@ -6937,9 +6937,10 @@ cuelga el `javascript_tool`—:
 | `NIV-11` | Un piso para cada uno | dos pisos separados, uno por personaje: la placa de arriba abre la compuerta de abajo, la palanca de abajo abre la de arriba |
 | `NIV-12` | Saltá y no mires | el charco de los dos, de tres de ancho, y la escalera de bloques hasta las puertas |
 
-**Quedan en `borrador`**, con `deDos: false`: en desarrollo y en la vista previa del PR se siembran
-todos (`nivelesASembrar()`), y en producción solo los seis `listo`. Pasarlos a `listo` es una palabra
-por nivel en `skayboy.json`, y es decisión del usuario (`D-51` lo hizo así con los seis primeros).
+**Se publican `listo`**, con `deDos: true`: el usuario lo decidió el mismo día, textual, *"Pasalos a
+listo"*, sabiendo que nadie los jugó de a dos en un teléfono, como hizo `D-51` con los seis primeros.
+El booleano, dice su schema, prueba que alguien se hizo cargo de decir que sí: se hizo cargo él. La
+máquina sí los juega en cada build (`CTR-18`).
 
 ### Lo que la máquina enseñó al dibujarlos
 

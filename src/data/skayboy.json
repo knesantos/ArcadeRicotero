@@ -333,7 +333,7 @@
       "id": "NIV-07",
       "nombre": "Cada cual con su charco",
       "escalon": 3,
-      "estado": "borrador",
+      "estado": "listo",
       "grilla": [
         "###############",
         "#.............#",
@@ -348,14 +348,14 @@
       "mecanismos": [],
       "compuertas": [],
       "verificaciones": {
-        "deDos": false
+        "deDos": true
       }
     },
     {
       "id": "NIV-08",
       "nombre": "Dejale la palanca puesta",
       "escalon": 3,
-      "estado": "borrador",
+      "estado": "listo",
       "grilla": [
         "###############",
         "#....#.....#..#",
@@ -406,14 +406,14 @@
         }
       ],
       "verificaciones": {
-        "deDos": false
+        "deDos": true
       }
     },
     {
       "id": "NIV-09",
       "nombre": "No te muevas de ahí",
       "escalon": 3,
-      "estado": "borrador",
+      "estado": "listo",
       "grilla": [
         "###############",
         "#...#......#..#",
@@ -465,14 +465,14 @@
         }
       ],
       "verificaciones": {
-        "deDos": false
+        "deDos": true
       }
     },
     {
       "id": "NIV-10",
       "nombre": "Una caja y una promesa",
       "escalon": 3,
-      "estado": "borrador",
+      "estado": "listo",
       "grilla": [
         "###############",
         "#...........#.#",
@@ -506,14 +506,14 @@
         }
       ],
       "verificaciones": {
-        "deDos": false
+        "deDos": true
       }
     },
     {
       "id": "NIV-11",
       "nombre": "Un piso para cada uno",
       "escalon": 3,
-      "estado": "borrador",
+      "estado": "listo",
       "grilla": [
         "###############",
         "#.........|...#",
@@ -574,14 +574,14 @@
         }
       ],
       "verificaciones": {
-        "deDos": false
+        "deDos": true
       }
     },
     {
       "id": "NIV-12",
       "nombre": "Saltá y no mires",
       "escalon": 3,
-      "estado": "borrador",
+      "estado": "listo",
       "grilla": [
         "###############",
         "#.............#",
@@ -596,7 +596,7 @@
       "mecanismos": [],
       "compuertas": [],
       "verificaciones": {
-        "deDos": false
+        "deDos": true
       }
     }
   ]
