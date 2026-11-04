@@ -5,7 +5,50 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-11-02
+**Última actualización:** 2026-11-04
+
+> ## 🎛️ LAS DOS CINTAS Y CUATRO TABLEROS: UNA PASADA DE UI/UX AL PORTAL Y A LOS PRIMEROS JUEGOS (2026-11-04)
+>
+> **Sin integrar, rama `ui/home-y-cuatro-juegos`**, encima de `modo/ultimo-bondi` (PR #104, sin integrar): **no
+> puede entrar antes que el #104**, porque toca el mismo `index.astro`. Pedido del usuario: *"Hace una mejora
+> sustancial de ui/ux de la pagina. El home y los primeros 5 juegos."* Se recorrió todo a 375 × 812 y a 1280 × 800
+> en un navegador de verdad antes de tocar nada, y se midió cada cambio. **Skayboy y Poligirl (A4) quedó afuera a
+> propósito:** otra sesión lo estaba rehaciendo entero en este mismo checkout (`skayboy/mejora-total`), y dos manos
+> sobre un mismo archivo son un choque seguro. Lo que entró:
+>
+> - **Las dos cintas del portal** (`index.astro`, `sitio.css`, `PORTAL.cintas`): la bajada decía "estás en la
+>   puerta, con las dos cintas" y las dos cintas estaban a pantalla y media de scroll, detrás del afiche del mes
+>   (el lado A arrancaba en 900 px y el lado B en 1850). Ahora son dos tiras de cinta adhesiva debajo de la bajada
+>   —LADO A · para jugar, LADO B · para leer— que saltan a cada lado (`#lado-a`, `#lado-b`). Anclas, sin
+>   JavaScript; el afiche sigue donde `D-84` lo puso.
+> - **Los casetes, más angostos por los costados**: 10 px de relleno lateral, 10 de corrimiento y 12 en la
+>   etiqueta (eran 12, 14 y 16), y el título con 0,02 em de aire entre letras en vez de 0,05. La columna del título
+>   pasó de 193 a 213 px y cinco títulos que iban en dos renglones entran en uno; quedan en dos "¿Qué tipo de
+>   ricotero sos?" y "Preguntas ricoteras". La hoja del portal mide 3147 px en vez de 3207 con las cintas puestas.
+> - **La marca de las carátulas, una sola medida** (`.marca` en `juego.css`): de 36vw a 30vw (113 px a 375), y
+>   se sacaron las reglas propias de "Adiviná el tema" y "Sacalo por la letra", que venían del logotipo escrito
+>   anterior a `D-82`. La FR salía de cuatro tamaños en cuatro juegos. En "¿Qué tipo de ricotero sos?" el botón
+>   de empezar bajaba a 1265 px, fuera del pliegue; ahora termina en 633.
+> - **"Sacalo por la letra"**: el botón de la carátula dice *Jugá* y no *JUGÁ* (era el único de los cuatro en
+>   versales). En la partida, el rótulo y la hoja de versos se centran en la banda (margen automático arriba del
+>   rótulo y abajo de la hoja), la hoja tiene un piso de 8 rem con el verso centrado adentro, y el verso va a
+>   1,15 rem: antes el verso terminaba en 140 px y el buscador arrancaba en 650, con negro en el medio. Con ocho
+>   versos los márgenes se agotan y la hoja scrollea como antes; el buscador no se movió de la zona del pulgar.
+> - **"¿Qué tipo de ricotero sos?"**: la hoja de la pregunta va centrada en la pantalla del teléfono y la tableta
+>   (hasta 52 rem; en la mesa queda arriba), así las dos opciones caen en la zona de la mano en vez de entre 250 y
+>   370 px. Y en la cabecera de la hoja, **las hojas de la noche**: cinco casillas, una por momento —pasada,
+>   actual, por venir—, la misma fila que marca los temas en los juegos de audio y de letra (`ejes-noche` en
+>   `partida-dos-ejes.ts`, registrada en `estilos.test.ts`).
+> - **"Completá la letra"**: de dónde sale el verso ("De "Jijiji", en Oktubre") va en la letra de lectura, tenue y
+>   en su renglón; iba en versales de rótulo, en negrita, tres renglones, y gritaba más que la pregunta.
+> - **"Adiviná el tema"**: solo la marca pareja. Se probó la partida entera con puntero de verdad (escribir, elegir
+>   de la lista, arriesgar) y anda.
+> - **Verde:** `npm test` (2239), `npm run check` (0 errores), `npm run build` (200 páginas). Mirado en el navegador a
+>   375 × 812 y 1280 × 800.
+> - **Falta**: probarlo en un teléfono de verdad (el teclado abierto en "Sacalo por la letra" con la hoja
+>   centrada, y las cintas con el dedo); que `experiencia` lea la propuesta en
+>   `Docs/SUGERENCIAS/HILO-para-experiencia-las-dos-cintas-y-cuatro-tableros.md` y la lleve a sus hojas
+>   (`UX-25`, `UX-08`, `UX-36`); la pasada equivalente sobre Skayboy, cuando cierre `skayboy/mejora-total`.
 
 > ## 🚌 NOVIEMBRE SE SUBE AL ÚLTIMO BONDI: EL PRIMER MODO DEL PORTAL (2026-11-02) — `D-85`, `T-524`
 >
