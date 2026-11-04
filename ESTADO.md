@@ -5,7 +5,25 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-10-30
+**Última actualización:** 2026-11-04
+
+> ## 🎮 SKAYBOY Y POLIGIRL: DOCE NIVELES, EL MENÚ CON PLANO Y UN CIGARRILLO QUE SE ENTIENDE (2026-11-04) — `D-86`, `T-525`
+>
+> **Sin integrar, rama `skayboy/mejora-total`** sobre `main` en `90583d6`. Pedido del usuario: *"Hace una mejora total
+> del juego Skay boy y poli girl, mejora el menu, arma mas niveles, basate en los niveles reales de fireboy y water girl.
+> Hay que mejorar el cigarrillo de poli, no se entiende del todo bien que es."*
+>
+> - **El cigarrillo** (`sala.txt`, atlas `sala.v4`): acostado, tubo en luz con contorno, filtro y brasa en la tinta de
+>   objetos, humo de clave. Antes era un palito de un píxel en diagonal.
+> - **El menú**: cada ficha lleva el plano del nivel en miniatura (`planoDelNivel()`, `menu.ts`, un SVG de 15 × 9 con
+>   las tintas del pixel) y la lista dice "Pasaste N de M". La grilla entra de dos a cuatro por renglón.
+> - **Seis niveles nuevos**, `NIV-07` a `NIV-12`, escalón 3, **en `borrador`**: se ven en desarrollo y en la vista previa
+>   del PR, no en producción. Pasarlos a `listo` es decisión del usuario (una palabra por nivel). Cada uno tiene su traza
+>   de uno grabada (`skayboy-soluciones.json`) con tolerancia de 4 a 10 cuadros; lo que costó dibujarlos está en `D-86`.
+> - **El ensanchador del solucionador** suma tres candidatas (`D-86`); los 30 tests de `solucionador.test.ts` en verde.
+> - **Verde:** `npm test`, `npm run check`, `npm run build`. Mirado en el navegador a 375×812 y 1280×800.
+> - **Falta**: jugarlos en un teléfono de verdad y pasarlos a `listo`; que `contenido` ratifique o cambie los seis
+>   nombres (`CNT-21` tiene seis, no doce); la hoja del lienzo del cigarrillo nuevo.
 
 > ## 🐒 EL BESTIARIO: LA TIERRA DEL REY Y LA COLA DEL MONITO (2026-10-30) — `T-523`
 >
