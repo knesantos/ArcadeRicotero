@@ -960,7 +960,6 @@ function cyberPiso(ancho = ANCHO, alto = ALTO): string {
 
   const o = OJOS_DE_CYBERSIBERIA;
   const at = (id: string): [number, number] => [X(o[id]![0]), o[id]![1]];
-  const [gax, gay] = at('el-rey-garufa');
   const [wx, wy] = at('super-walter');
   const [cbx, cby] = at('comboman');
   const [cmx, cmy] = at('los-camellos-prestigiosos');
@@ -970,7 +969,8 @@ function cyberPiso(ancho = ANCHO, alto = ALTO): string {
 
   // El capitán Buscapina ya no se pinta acá: es un títere del elenco (`arte-buscapina.ts`), sentado
   // en este mismo charco de luz.
-  const garufa = parado(gax, gay, 78);
+  // El Rey Garufa ya no se pinta acá: es un títere del elenco (`arte-garufa.ts`), que vaga por esta nieve
+  // siguiendo sus huellas.
   // La princesita sapito ya no se pinta acá: es un títere del elenco (`arte-sapito.ts`), en su trono de nieve.
   // Porco Rex ya no se pinta acá: es un títere del elenco (`arte-porco.ts`), que trota en esta nieve.
   const camello = elipse(cmx - 3, cmy + 1, 10, 6) +
@@ -984,7 +984,6 @@ function cyberPiso(ancho = ANCHO, alto = ALTO): string {
   // Comboman, medio comido: la silueta, con las mordidas sacadas.
   const combo = parado(cbx, cby, 80);
   const mordidas = [[cbx + 16, cby + 30, 10], [cbx + 20, cby + 46, 9], [cbx + 12, cby + 60, 8]] as const;
-  const corona = (x: number, y: number, a: number): string => forma(`M${f(x - a)} ${f(y)} L${f(x - a)} ${f(y - a)} L${f(x - a / 2)} ${f(y - a / 2)} L${f(x)} ${f(y - a * 1.2)} L${f(x + a / 2)} ${f(y - a / 2)} L${f(x + a)} ${f(y - a)} L${f(x + a)} ${f(y)} Z`, C.oro);
 
   const sombraEnLaNieve = (x: number, piso: number, w: number): string => nube(x - 18, piso + 2, w, 6, C.acero, 's', 0.7);
 
@@ -999,8 +998,6 @@ function cyberPiso(ancho = ANCHO, alto = ALTO): string {
     sombraEnLaNieve(cmx + 46, cmy + 78, 46) + canto(camello, 2, -2, 0.5) + forma(camello, C.hondo) +
     sombraEnLaNieve(dx, dy + 84, 30) + canto(robot, -2.5, -2) + forma(robot, C.negro) +
     `<g transform="rotate(-8 ${f(dx + 30)} ${f(dy + 40)})">` + forma(caja(dx + 22, dy - 6, 12, 62), C.hondo) + forma(caja(dx + 25, dy - 22, 6, 18), C.hondo) + trazo(`M${f(dx + 25)} ${f(dy + 2)} L${f(dx + 25)} ${f(dy + 52)}`, C.lente, 1.6, 0.7) + `</g>` +
-    sombraEnLaNieve(gax, gay + 78, 30) + canto(garufa, -2.5, -2) + forma(garufa, C.negro) + corona(gax, gay - 8, 7) +
-    nube(gax, gay + 30, 22, 18, C.rojo, 'l', 0.6) + forma(`M${f(gax)} ${f(gay + 38)} C${f(gax - 12)} ${f(gay + 28)} ${f(gax - 8)} ${f(gay + 18)} ${f(gax)} ${f(gay + 24)} C${f(gax + 8)} ${f(gay + 18)} ${f(gax + 12)} ${f(gay + 28)} ${f(gax)} ${f(gay + 38)} Z`, C.rojo) +
     `<mask id="c-mordidas"><rect x="${f(cbx - 60)}" y="${f(cby - 30)}" width="120" height="140" fill="white"/>${mordidas.map(([mx, my, r]) => `<circle cx="${f(mx)}" cy="${f(my)}" r="${r}" fill="black"/>`).join('')}</mask>` +
     sombraEnLaNieve(cbx, cby + 80, 30) + `<g mask="url(#c-mordidas)">${canto(combo, -2.5, -2)}${forma(combo, C.negro)}</g>` +
     sombraEnLaNieve(spx, spy + 96, 36) + canto(pilar, -2.5, -2, 0.5) + forma(pilar, C.negro) +
@@ -1552,12 +1549,8 @@ function mesaPiso(ancho = ANCHO, alto = ALTO): string {
     const hy = mip + 2 + t * 30;
     hormigas += forma(elipse(hx, hy, 2.6, 1.6), M2.negro) + forma(circulo(hx - 3, hy - 0.6, 1.3), M2.negro) + trazo(`M${f(hx - 2)} ${f(hy)} l-1 2.6 M${f(hx)} ${f(hy)} l0 2.8 M${f(hx + 2)} ${f(hy)} l1 2.6`, M2.negro, 0.7);
   }
-  const [vax, vap] = [X(MESA.vaso.x), MESA.vaso.piso];
-  const vaso =
-    mosca(vax, vap - 18, 8) +
-    `<path d="M${f(vax - 17)} ${f(vap)} L${f(vax - 13)} ${f(vap - 44)} L${f(vax + 13)} ${f(vap - 44)} L${f(vax + 17)} ${f(vap)} Z" fill="${M2.haz}" opacity="0.18"/>` +
-    trazo(`M${f(vax - 17)} ${f(vap)} L${f(vax - 13)} ${f(vap - 44)} L${f(vax + 13)} ${f(vap - 44)} L${f(vax + 17)} ${f(vap)} Z`, M2.haz, 1.6, 0.85) +
-    trazo(`M${f(vax - 8)} ${f(vap - 38)} L${f(vax - 10)} ${f(vap - 6)}`, M2.blanco, 2, 0.5) + forma(elipse(vax, vap, 17, 3), M2.haz, 0.3);
+  // El vaso boca abajo con el moscón ya no se pinta acá: es un títere del elenco (`arte-moscon.ts`), en este mismo lugar.
+  const vaso = '';
   const [mbx, mbp] = [X(MESA.membrillo.x), MESA.membrillo.piso];
   const membrillo = forma(`M${f(mbx - 18)} ${f(mbp)} L${f(mbx - 14)} ${f(mbp - 16)} L${f(mbx + 16)} ${f(mbp - 18)} L${f(mbx + 18)} ${f(mbp - 2)} Z`, M2.sepiaHonda) +
     forma(`M${f(mbx - 14)} ${f(mbp - 16)} L${f(mbx + 16)} ${f(mbp - 18)} L${f(mbx + 12)} ${f(mbp - 22)} L${f(mbx - 16)} ${f(mbp - 20)} Z`, M2.vivo, 0.8) + nube(mbx - 4, mbp - 12, 6, 2, M2.blanco, 's', 0.5);

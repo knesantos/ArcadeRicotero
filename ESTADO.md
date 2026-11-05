@@ -5,7 +5,31 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-11-04
+**Última actualización:** 2026-11-05
+
+> ## 🐕 CINCO QUE SEGUÍAN SIN DISEÑO: EL REY GARUFA, EL JOVEN LOBO, EL REO SEMENTAL, EL MOSCÓN ZUMBÓN Y EL OVEJERO (2026-11-05) — `D-73` (26), `T-526`
+>
+> **Sin integrar**, rama `bestiario/cinco-sin-diseno` (PR #108), sobre `main` en `9fe6a91`. Pedido del usuario: *"Elegi 5 bestias ricoteras sin
+> diseños y haceles uno bien rocambolesco con su animacion y detalles de la letra. Que sea bien detallado y pulido."* Se eligió una
+> por región flaca de títeres, empezando por la pastura, que no tenía ninguno del elenco.
+>
+> - **Cybersiberia**: el Rey Garufa, el fiestero con el frac de la noche anterior, la corona de lata y el corazón de verdad entre las
+>   manos, que late y gotea; vaga por la nieve siguiendo sus huellas y, tocado, lo ofrece. Su silueta salió de `cyberPiso()`.
+> - **Monte**: el joven lobo, sentado en el cráter de un volcán chico, quemándose de adentro: la brasa en el pecho, llamas en el lomo,
+>   la cola que humea; tocado se yergue, aúlla, el volcán hace erupción y le sube un corazón de humo. En el camino baja 116 con el volcán.
+> - **Prisión**: el reo semental en la celda grande de la izquierda, agarrado a la reja, un toro de preso que suda; tocado se licúa
+>   entero, baja con los puños en los barrotes, queda hecho un charco a rayas con los ojos flotando y se vuelve a armar.
+> - **Mesa**: el moscón zumbón, el vaso boca abajo del piso hecho títere, con el moscón adentro que nunca sale del vidrio; tocado se
+>   vuelve loco, le pega al vaso, lo empaña, cae de espaldas y patalea. El vaso salió de `mesaPiso()`.
+> - **Pastura**: el ovejero, echado en un manto negro con el rayado a pluma de *Un baión*, el plato con los restos que no tocó y el ojo
+>   en el cordero; tocado se para, se eriza, ladra tres veces y patea el plato. **La pastura entra al elenco**: sus capas se dibujan en
+>   el recinto del monte y en el claro del camino.
+> - Cinco bloques de tintas medidas en su tapa (`tokens.css`), cinco en `sitio.css`, cinco conductas, cinco tests de 7, estampas
+>   nuevas en `bestiario.json`, `elenco.test.ts` de 50 a 55. Detalle en `D-73` (26).
+> - **Verde:** `npm test` (2294), `npm run check`, `npm run build` (200 páginas). Cada uno mirado a PNG en su recinto y en su tramo
+>   del camino (visor del scratchpad: la escena entera con sharp), y la página construida de Cybersiberia carga las piezas sin un
+>   error de consola.
+> - **Falta**: verlos en un teléfono de verdad; que `contenido` lea las cinco estampas; pasar las tintas al lienzo (`T-526`).
 
 > ## 🎮 SKAYBOY Y POLIGIRL: DOCE NIVELES, EL MENÚ CON PLANO Y UN CIGARRILLO QUE SE ENTIENDE (2026-11-04) — `D-86`, `T-525`
 >

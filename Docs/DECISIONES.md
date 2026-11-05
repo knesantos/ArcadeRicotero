@@ -6103,6 +6103,87 @@ ahogado 23 (129 kB), pichón 20 (98 kB), mantis 24 (95 kB), cielo 22 (91 kB).
   Queda la idea del dibujante del rey de avisar a un vecino del toque ajeno (que el lobo se asome cuando ruge el león), la misma que
   dejó el ratón en la vigesimocuarta.
 
+### Enmienda del 2026-11-05 (26): cinco que seguían sin diseño, uno por región flaca, y el primero de la pastura
+
+Pedido del usuario, textual: *"Elegi 5 bestias ricoteras sin diseños y haceles uno bien rocambolesco con su animacion y detalles de
+la letra. Que sea bien detallado y pulido."* La escribe el hilo principal en la rama `bestiario/cinco-sin-diseno`, sobre `main` en
+`9fe6a91`. Antes de tomar el número se miraron `origin/main` y las ramas remotas: `T-525` era el último (`D-86`), y `D-87` a `D-89`
+están tomados en ramas sin integrar; esto es una enmienda de `D-73` y no toma `D-` nuevo.
+
+#### Cuáles, y por qué esos
+
+Se contó, región por región, cuántos títeres del elenco (o de tapa) tiene cada una y cuántos bichos siguen siendo ojos o una cosa
+pintada: la pastura no tenía ninguno del elenco (solo el cordero y la vaca, que son de tapa), el monte tenía cuatro de ocho,
+Cybersiberia cinco de quince, la prisión seis de once y la mesa cinco de doce. Uno por cada una, elegidos por lo que la letra deja
+dibujar y animar al pie:
+
+- **El Rey Garufa** (Cybersiberia, *Las increíbles andanzas del Capitán Buscapina en Cybersiberia*, *Último bondi*): un rey de fiesta
+  al que se le terminó la fiesta, parado en la nieve donde estaba su silueta pintada y de donde salen sus huellas. El frac de la noche
+  anterior con la camisa afuera y el moño desatado, una corona de lata con una punta doblada y confeti pegado, serpentina enredada en
+  los hombros, nieve encima, y el corazón entre las manos al pie de la letra: de verdad, con la aorta cortada, que late y gotea, y en
+  el pecho el agujero de donde lo sacó, que brilla con cada latido. **El corazón va donde van las manos**: `manosEn()` calcula las
+  dos manos con los brazos girados y el corazón se corre a la mitad entre las dos, así nunca queda en el aire. Solo camina unos pasos
+  (`VAGA`, de la sapita a los ojos de Comboman, y se da vuelta), mira el corazón, tirita y se le cae confeti, baila un pasito de la
+  fiesta, suspira una nube de vaho. Tocado, ofrece el corazón con los brazos estirados, late fuerte y grande, el hueco le brilla al
+  ritmo, gotea, le vuelve la sonrisa, cae el confeti, y lo guarda. Su silueta, la corona y el corazón pintados se sacaron de
+  `cyberPiso()` y se reimprimieron `cyber-piso` y `camino-cyber-piso`; las huellas se quedan.
+- **El joven lobo** (el monte, *La parabellum del buen psicópata*, *Lobo suelto*): sentado en el borde del cráter de un volcán chico,
+  arriba a la derecha del monte donde estaban sus ojos, con la lava abajo que le prende la panza. Se quema de adentro, al pie de la
+  letra: una brasa en el pecho que late y se ve entre las costillas, llamas cortas en el lomo como en un leño, la punta de la cola
+  chamuscada que humea. Flaco y joven, con el aro azul en el ojo de los lobos de la tapa. Solo aúlla al monte con el vaho que sube,
+  se rasca con la pata de atrás donde le arde, se mira la cola que humea, mira el cráter y saltan chispas, se sacude. Tocado se
+  yergue, aúlla largo al cielo, la brasa al rojo y las llamas altas, el volcán hace erupción, y del aullido sube un humo con forma de
+  corazón. **En el camino baja con el volcán entero** (`bajan`, 116): en el recinto está entre las tiras de arriba y en el tramo
+  largo el cráter pisa el piso. El volcán se recortó para no salirse del recinto por la derecha.
+- **El reo semental** (la prisión, *Barbazul versus el amor letal*, *Gulp!*): en la celda grande del ala de la izquierda, donde
+  estaban sus ojos, detrás de la reja (capa `atras`, con su propia reja tallada delante como el esclavo, y recortado al hueco de la
+  celda; el piso de esa celda cae fuera de la pantalla y el charco se arma en el borde de abajo). Un toro de preso: el cuello más
+  ancho que la cabeza, el pecho peludo que abre la camisa a rayas, la chapa con el número, el jopo con gomina, la nariz rota, un
+  tatuaje verde de un corazón con un puñal, los dos puños cerrados en los barrotes. Suda a chorros. Solo suda y sacude la cabeza,
+  resopla, suelta un barrote y se mira el bíceps, se ablanda un poco y se asusta, mira para los costados. Tocado se licúa, al pie
+  de la letra: la cara se estira desde la coronilla, el jopo cae, las rayas chorrean del ruedo, baja entero por la reja **con los
+  puños todavía agarrados** (el brazo sube lo que baja el cuerpo y se estira desde el puño), queda hecho un charco a rayas con los
+  dos ojos flotando, y se vuelve a armar de abajo para arriba. Sus barrotes van en el papel de la talla (`--bestia-dracula-papel`)
+  y nada más: la reja es la de la prisión.
+- **El moscón zumbón** (la mesa, *Murga purga*, *Luzbelito*): el vaso boca abajo que pintaba el piso de la mesa (`MESA.vaso`) pasa a
+  ser el títere, con el moscón adentro: gordo, peludo, el tórax de bronce, el abdomen negro con el brillo de aceite, los ojos rojos
+  compuestos con el facetado, la trompa de esponja, las alas de vidrio con las venas. El vaso tiene el vaho donde respira, los
+  rayones de tanto pegarle, la pestaña saltada en la boca y la marca de vino en el mantel. **No se sale nunca del vidrio**:
+  `adentroDelVaso()` frena lo que se pase, y el moscón va recortado a lo de adentro del vaso. Solo camina de una pared a la otra y se
+  da vuelta, trepa por el vidrio y se resbala, zumba y se da contra el culo del vaso (el vaso tiembla, se empaña, estrellitas), se
+  frota las patas. Tocado se vuelve loco: da cinco vueltas zumbando, le pega seis veces (el vaso tiembla y se corre por el mantel,
+  se empaña entero, se raya más), cae de espaldas, patalea y se da vuelta. El vaso y la mosca del piso se sacaron de `mesaPiso()` y
+  se reimprimieron `mesa-piso` y `camino-mesa-piso`.
+- **El ovejero** (la pastura, *Vencedores vencidos*, *Un baión para el ojo idiota*): **el primero del elenco que vive en la pastura.**
+  Echado sobre un manto negro —la frazada con el rayado a pluma de la tapa, los pliegues y un mordisco en la punta— en el borde de la
+  izquierda del claro, donde estaban sus ojos, de donde ve al cordero sin moverse. Lomo negro, patas canela, el antifaz de ovejero,
+  el ojo amarillo de fuego con la pupila clavada en el claro, el collar de púas con la chapa y un vellón de lana enganchado. Adelante,
+  el plato de lata con los restos que no tocó: dos huesos pelados y una costilla. Solo mira al cordero, bosteza, se lame los belfos,
+  aparta el plato con el hocico, se rasca, gruñe bajito; la cola golpea el manto cada tanto. Tocado se para, se le eriza el lomo, las
+  orejas atrás, el belfo y los dientes, ladra tres veces sin ruido arremetiendo, patea el plato (los huesos vuelan) y se vuelve a
+  echar despacio con el ojo en el cordero. Se dibujó parado y se echa como las lobas (`CAIDA` y `DOBLADA`).
+
+#### Cómo se hizo, y lo que se tocó alrededor
+
+- Todo lo hizo el hilo principal, sin subagentes: cada bestia con sus cuatro archivos (`arte-`, `rig-`, `scripts/bestiario/`,
+  `.test.ts`), sus tintas medidas con sharp en la tapa de su disco (un medidor propio del scratchpad: zona, radio, filtro y
+  percentiles, como anotan los bloques), y cada títere mirado en PNG con un visor propio (el retrato a imagen, con las piezas
+  pasadas a PNG porque librsvg no lee webp) antes de dar por buena una pose. Del visor salieron el hocico más largo del lobo, los
+  brazos estirados del rey al ofrecer, y la reja más fina del reo.
+- **La pastura entra al elenco.** `capasDe('la-pastura', …)` se dibuja en el recinto del monte (`escena-monte.ts`, en las tres
+  capas, detrás del cordero) y en el claro del camino (`escenas-camino.ts`, corrido `claro.dx` con `capasCorridas`); los ojos del
+  claro del camino pasan por `sinTitere`, que no pasaban; y `elenco.test.ts` sabe que la escena de la pastura es la del monte.
+- Las cinco estampas se escribieron largas y se acortaron al tope de 320 del schema sin perder lo que el dibujo pone de más.
+- `elenco.test.ts` pasa de 50 a 55.
+
+Cada uno trae su bloque de tintas (rey 20 en *Último bondi*; lobo 17 en *Lobo suelto*; reo 14 en *Gulp!*; moscón 17 en
+*Luzbelito*; ovejero 18 en *Un baión*), su bloque en `sitio.css`, su conducta y su test de 7. Las piezas: rey 22, lobo 20, reo 19,
+moscón 13, ovejero 18.
+
+- `T-526`: verlos en un teléfono de verdad, que `contenido` lea las cinco estampas, y pasar los cinco bloques de tintas al lienzo.
+  Sigue abierta la idea de avisar a un vecino del toque ajeno (que el cordero se asuste cuando el ovejero ladra), la misma que dejó
+  el ratón en la vigesimocuarta y el león en la vigesimoquinta.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17
