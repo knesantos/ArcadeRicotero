@@ -365,7 +365,7 @@
       "dibujo": { "f": "persona", "con": ["corona", "corazon"], "ropa": "capa" },
       "tema": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
       "verso": ["Así el fiestero Rey Garufa viaja solo", "Y vaga con su corazón entre las manos."],
-      "estampa": "Camina solo por la nieve, con la corona y el corazón en las manos.",
+      "estampa": "Vaga por la nieve con el frac de la fiesta que se terminó: la camisa afuera, el moño desatado, serpentina en los hombros y una corona de lata torcida. Lleva el corazón entre las manos, al pie de la letra: late, gotea, y en el pecho le quedó el agujero. Camina siguiendo sus propias huellas. Si lo mirás, te lo ofrece…",
       "cerca": ["el-capitan-buscapina", "la-princesita-sapito"]
     },
     {
@@ -1100,7 +1100,7 @@
       "dibujo": { "f": "persona", "ropa": "rayado" },
       "tema": "barbazul-versus-el-amor-letal",
       "verso": ["El reo semental se va a licuar"],
-      "estampa": "De traje a rayas, derritiéndose contra los barrotes.",
+      "estampa": "Un toro de preso: el cuello más ancho que la cabeza, el pecho peludo que le abre la camisa a rayas, el jopo con gomina, un tatuaje verde. Agarrado a la reja, sudando a chorros. Se licúa, al pie de la letra: la cara se le estira, las rayas le chorrean, y si lo tocás queda hecho un charco con los dos ojos flotando…",
       "cerca": ["barbazul"]
     },
     {
@@ -1486,7 +1486,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "punta", "hocico": "largo", "cola": "peluda", "pose": "aulla" },
       "tema": "la-parabellum-del-buen-psicopata",
       "verso": ["Y el joven lobo quemándose de amor.", "Está en la cima del volcán."],
-      "estampa": "Arriba del volcán que cierra el monte, aullando con la cola humeando.",
+      "estampa": "Sentado en el borde del cráter de un volcán chico, con la lava abajo. Se quema de adentro: en el pecho tiene una brasa que late y se le ve entre las costillas, del lomo le salen llamas cortas y la punta de la cola humea. Aúlla, y del aullido le sube un humo con forma de corazón.",
       "cerca": ["el-lobo-suelto"]
     },
     {
@@ -1628,7 +1628,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "punta", "hocico": "largo", "cola": "peluda", "pose": "echado", "con": ["manto"] },
       "tema": "vencedores-vencidos",
       "verso": ["tu perro un perro cruel, con la costumbre de", "No contentarse con los restos.", "Ovejero que descansa en manto negro!"],
-      "estampa": "Echado en el borde de la pastura, sobre un manto negro. Cuida, pero no se conforma con las sobras.",
+      "estampa": "Lomo negro y patas canela, echado en un manto negro en el borde del claro, de donde ve al cordero. Adelante, el plato con los restos que no tocó: dos huesos y una costilla. No se conforma con las sobras: lo que quiere está atado a un palo, ahí nomás. Si lo tocás, se para, muestra los dientes y patea el plato.",
       "cerca": ["el-rebano", "mi-perro-dinamita"]
     },
 
@@ -1727,7 +1727,7 @@
       "dibujo": { "f": "cosa", "que": "vaso-con-moscon" },
       "tema": "murga-purga",
       "verso": ["Sos un moscón zumbón", "Que quedó atrapado", "En un vaso boca abajo."],
-      "estampa": "Debajo de un vaso dado vuelta, en la punta de la mesa. Le pega al vidrio y nadie lo oye.",
+      "estampa": "Un vaso de la mesa, dado vuelta, y adentro un moscón de los grandes: gordo, peludo, con el tórax de bronce y los ojos rojos. El vidrio tiene lo que le dejó: el vaho de respirar contra él y los rayones de tanto pegarle. Zumba, se da contra el vidrio, cae mareado y vuelve a empezar. Nadie lo oye.",
       "tambien": [{ "tema": "me-matan-limon", "verso": ["De la tarde y zumba feo algún moscón"] }],
       "cerca": ["la-mosca", "el-moscardon-imaginario"]
     },

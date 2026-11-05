@@ -4904,3 +4904,33 @@ body:has(> .lugar) .marca-chica {
 .bt-encadenado-rayo { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 4; stroke-linecap: square; }
 .titere--encadenado [data-parte="chispa"] { pointer-events: none; }
 /* ⟨/el esclavo encadenado⟩ */
+
+/* ⟨el rey garufa⟩ */
+/* El confeti que se le cae de la corona y el vaho del frío no se tocan: el toque es del rey. */
+.titere--garufa { cursor: pointer; }
+.titere--garufa [data-parte="confeti"], .titere--garufa [data-parte="vaho"] { pointer-events: none; }
+/* ⟨/el rey garufa⟩ */
+
+/* ⟨el joven lobo⟩ */
+/* El humo del cráter, las chispas de la erupción y el vaho del aullido no se tocan: el toque es del lobo y su volcán. */
+.titere--joven { cursor: pointer; }
+.titere--joven [data-parte="humo"], .titere--joven [data-parte="chispas"], .titere--joven [data-parte="aullido"], .titere--joven [data-parte="corazon"] { pointer-events: none; }
+/* ⟨/el joven lobo⟩ */
+
+/* ⟨el reo semental⟩ */
+/* El reo se toca a través de la reja de su celda, que no ataja el dedo. El charco en que se licúa y el sudor no se tocan. */
+.titere--reo { cursor: pointer; }
+.titere--reo [data-parte="charco"], .titere--reo [data-parte="gotas"] { pointer-events: none; }
+/* ⟨/el reo semental⟩ */
+
+/* ⟨el moscon zumbon⟩ */
+/* Las estrellitas del golpe y el vaho del vidrio no se tocan: el toque es del moscón y de su vaso. */
+.titere--moscon { cursor: pointer; }
+.titere--moscon [data-parte="estrellas"], .titere--moscon [data-parte="vaho"] { pointer-events: none; }
+/* ⟨/el moscon zumbon⟩ */
+
+/* ⟨el ovejero⟩ */
+/* Los huesos que vuelan del plato no se tocan: el toque es del perro y de su manto. */
+.titere--ovejero { cursor: pointer; }
+.titere--ovejero [data-parte="huesos"] { pointer-events: none; }
+/* ⟨/el ovejero⟩ */
