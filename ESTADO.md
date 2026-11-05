@@ -9,7 +9,7 @@
 
 > ## 🐕 CINCO QUE SEGUÍAN SIN DISEÑO: EL REY GARUFA, EL JOVEN LOBO, EL REO SEMENTAL, EL MOSCÓN ZUMBÓN Y EL OVEJERO (2026-11-05) — `D-73` (26), `T-526`
 >
-> **Sin integrar**, rama `bestiario/cinco-sin-diseno`, sobre `main` en `9fe6a91`. Pedido del usuario: *"Elegi 5 bestias ricoteras sin
+> **Sin integrar**, rama `bestiario/cinco-sin-diseno` (PR #108), sobre `main` en `9fe6a91`. Pedido del usuario: *"Elegi 5 bestias ricoteras sin
 > diseños y haceles uno bien rocambolesco con su animacion y detalles de la letra. Que sea bien detallado y pulido."* Se eligió una
 > por región flaca de títeres, empezando por la pastura, que no tenía ninguno del elenco.
 >
@@ -28,7 +28,7 @@
 >   nuevas en `bestiario.json`, `elenco.test.ts` de 50 a 55. Detalle en `D-73` (26).
 > - **Verde:** `npm test` (2294), `npm run check`, `npm run build` (200 páginas). Cada uno mirado a PNG en su recinto y en su tramo
 >   del camino (visor del scratchpad: la escena entera con sharp), y la página construida de Cybersiberia carga las piezas sin un
->   error de consola. **Sin commitear**: queda en el árbol de trabajo de la rama.
+>   error de consola.
 > - **Falta**: verlos en un teléfono de verdad; que `contenido` lea las cinco estampas; pasar las tintas al lienzo (`T-526`).
 
 > ## 🎮 SKAYBOY Y POLIGIRL: DOCE NIVELES, EL MENÚ CON PLANO Y UN CIGARRILLO QUE SE ENTIENDE (2026-11-04) — `D-86`, `T-525`
