@@ -30,7 +30,8 @@
 >   escorzo. Se imprime adentro del piso: no son capas.
 > - **La luz** (`LUCES`): una forma impresa por región que se mueve. El cono de sodio de los astilleros, la brasa del infierno, el haz
 >   de la cámara de Cybersiberia, los faros del bondi, el reflejo del pucho de Pierre, el farol de los techos, el reflector de la
->   prisión, un foco del templo y el seguidor del galpón. En los astilleros y la prisión **toca a los bichos**: les prende un filo.
+>   prisión, un foco del templo y el seguidor del galpón. En los astilleros y la prisión **toca a los bichos**: les prende un filo (visto
+>   en los astilleros; en la prisión no se lo vio prendido en captura).
 > - **El misterio**: los **ojos sin dueño** (`ACECHOS`) se abren si te quedás quieto cinco o seis segundos y se apagan si los mirás;
 >   y lejos, muy cada tanto, **cruza algo** (`VIDAS`): un pájaro, un murciélago, una estrella, un barquito de papel.
 > - **Los títeres miran** (`scripts/bestiario/mirada.ts`): el lobo suelto (en el monte y en la pastura), las lobas, Pierre, Momo y
@@ -46,7 +47,8 @@
 >   los techos. Un test mide en la imagen impresa que nada de adelante tape más de un quinto del alto.
 >
 > **Verde:** `npm test` 2337 (los 2294 de antes y 43 nuevos: 29 de `aire.test.ts`, 9 de `lupa.test.ts`, 5 de `mirada.test.ts`),
-> `npm run check` 0 errores, `npm run build` 200 páginas. Ningún test anterior se borró ni se aflojó. Medido con la CPU ×4 en Edge sin
+> `npm run check` 0 errores, `npm run build` 200 páginas. Dos tests anteriores cambiaron a propósito: el tope de peso del aire por región subió de 520 a 560 kB
+> (ronda 3) y el test de la losa del monte pasó a ser el tope del quinto para todas las regiones (ronda 4). Medido con la CPU ×4 en Edge sin
 > ventana: el monte, 9,9 ms de hilo principal y 60 cuadros por segundo; Cybersiberia, entre 12,7 y 15,4 ms y unos 50.
 >
 > **Qué falta**
