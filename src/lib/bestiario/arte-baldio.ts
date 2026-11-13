@@ -321,10 +321,12 @@ function linterna(): string {
   };
   const rnd = azar(461);
   let rayones = '';
-  for (let i = 0; i < 90; i++) {
+  // Eran 90 rayones; desde `D-90` (séptima ronda) son 40 y más flojos: el haz pasa por delante de
+  // los bichos, y con 90 los tapaba.
+  for (let i = 0; i < 40; i++) {
     const x = 60 + rnd() * (largo - 80);
     const y = (rnd() - 0.5) * Math.tan(abre) * x * 1.4;
-    rayones += rayon(x, y, (rnd() - 0.5) * 0.3, 8 + rnd() * 18, rnd() < 0.6 ? L.luz : L.lila, 2 + rnd() * 2, 0.25 + rnd() * 0.3);
+    rayones += rayon(x, y, (rnd() - 0.5) * 0.3, 8 + rnd() * 18, rnd() < 0.6 ? L.luz : L.lila, 2 + rnd() * 2, 0.16 + rnd() * 0.22);
   }
   return soplo(cono(1), L.lila, 'l', 0.4) + soplo(cono(0.45), L.luz, 'm', 0.45) + rayones + nube(4, 0, 10, 8, L.luz, 's', 0.9);
 }
