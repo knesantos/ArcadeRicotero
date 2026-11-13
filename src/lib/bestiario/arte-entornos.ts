@@ -1215,6 +1215,12 @@ function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
     nube(fx + 20, farol.piso + 30, 220, 50, T.sodio, 'xl', 0.35);
   const poste =
     forma(caja(fx - 4, farol.piso - farol.alto, 8, farol.alto), T.negro) +
+    // El pie del farol: la base abulonada al muelle y su mancha. Sin ella el poste terminaba en el aire.
+    nube(fx + 10, farol.piso + 5, 40, 6, T.negro, 's', 0.85) +
+    forma(`M${f(fx - 9)} ${f(farol.piso - 22)} L${f(fx + 9)} ${f(farol.piso - 22)} L${f(fx + 13)} ${f(farol.piso - 4)} L${f(fx - 13)} ${f(farol.piso - 4)} Z`, T.negro) +
+    forma(caja(fx - 20, farol.piso - 5, 40, 8), T.negro) +
+    trazo(`M${f(fx - 19)} ${f(farol.piso - 4.5)} L${f(fx + 19)} ${f(farol.piso - 4.5)}`, T.sodio, 1.2, 0.7) +
+    forma(circulo(fx - 14, farol.piso + 0.5, 1.6), T.sodio, 0.8) + forma(circulo(fx + 14, farol.piso + 0.5, 1.6), T.sodio, 0.8) +
     trazo(`M${f(fx)} ${f(farol.piso - farol.alto)} Q${f(fx + 6)} ${f(farol.piso - farol.alto - 18)} ${f(fx + 30)} ${f(farol.piso - farol.alto - 6)}`, T.negro, 5) +
     forma(`M${f(fx + 18)} ${f(farol.piso - farol.alto - 4)} L${f(fx + 42)} ${f(farol.piso - farol.alto - 4)} L${f(fx + 36)} ${f(farol.piso - farol.alto + 4)} L${f(fx + 24)} ${f(farol.piso - farol.alto + 4)} Z`, T.negro);
 

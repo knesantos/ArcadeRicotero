@@ -19,7 +19,8 @@ import { M, azar, claroDeLaPastura, filaDeTiras } from './arte.ts';
 import { ENTORNOS, PIEZAS_ENTORNOS } from './arte-entornos.ts';
 import { ALTO, CAMINOS, CRUCE, SOLAPE, VELOCIDAD, anchoDeCapa, type Tramo } from './camino.ts';
 import { tintaDe } from './mapa.ts';
-import { sueloDeCybersiberia, sueloDeLosAstilleros, sueloDelMonte } from './arte-suelo.ts';
+import { sueloDeCybersiberia, sueloDeLaRuta, sueloDeLosAstilleros, sueloDelMonte } from './arte-suelo.ts';
+import { RUTA } from './rig-entornos.ts';
 import { ASTILLERO } from './rig-entornos.ts';
 import { PALO } from './rig.ts';
 
@@ -135,7 +136,9 @@ function frente(): string {
     const ancho = 150 + rnd() * 140;
     s += filaDeTiras(540 + rnd() * 30, ALTO + 10, M.hondo, M.medio, 300 + n, `fr-a-${n}`, x, x + ancho);
     s += filaDeTiras(580 + rnd() * 20, ALTO + 10, M.oscuro, M.sombra, 400 + n, `fr-b-${n}`, x + 30, x + ancho + 40);
-    if (n % 3 === 1) s += filaDeTiras(40 + rnd() * 60, ALTO + 10, M.oscuro, M.sombra, 500 + n, `fr-c-${n}`, x + ancho * 0.3, x + ancho * 0.3 + 110);
+    // Cada tanto, una tira más alta. Angosta y hasta media altura: de 110 de ancho y de arriba abajo, en
+    // un teléfono parado era una losa negra que tapaba un tercio de la pantalla (`D-90`, tercera ronda).
+    if (n % 3 === 1) s += filaDeTiras(250 + rnd() * 70, ALTO + 10, M.oscuro, M.sombra, 500 + n, `fr-c-${n}`, x + ancho * 0.3, x + ancho * 0.3 + 26);
     n++;
   }
   return `<g filter="url(#rociado)">${s}</g>`;
@@ -169,6 +172,8 @@ function conSuelo(tramo: Tramo, piso: string): string {
   const rociado = (s: string): string => `<g filter="url(#rociado)">${s}</g>`;
   if (tramo.region === 'cybersiberia') return rociado(sueloDeCybersiberia(tramo.escena)) + piso;
   if (tramo.region === 'los-astilleros') return piso + rociado(sueloDeLosAstilleros(tramo.escena, ASTILLERO.muelle + 60));
+  // En la ruta, lo tirado va en la banquina de abajo: el asfalto es de los fierros.
+  if (tramo.region === 'la-ruta') return piso + rociado(sueloDeLaRuta(tramo.escena, RUTA.asfalto.abajo + 14));
   return piso;
 }
 

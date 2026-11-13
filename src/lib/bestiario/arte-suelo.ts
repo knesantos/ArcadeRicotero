@@ -26,7 +26,7 @@ type Azar = () => number;
  * Un charco: la silueta dura, el agua negra, y adentro los reflejos, que son lengüetas que bajan
  * desde el borde de atrás (lo de atrás, dado vuelta). El borde de adelante agarra un pelo de luz.
  */
-function charco(id: string, x: number, y: number, rx: number, ry: number, rnd: Azar, agua: string, reflejos: readonly string[], brillo: string, como: 'puntas' | 'rayas' = 'puntas'): string {
+function charco(id: string, x: number, y: number, rx: number, ry: number, rnd: Azar, agua: string, reflejos: readonly string[], brillo: string, como: 'puntas' | 'rayas' = 'puntas', reflejados = 0): string {
   // Un óvalo que no es de compás: cuatro curvas con el radio movido.
   const k = (): number => 0.86 + rnd() * 0.28;
   const [a, b, c, d] = [k(), k(), k(), k()];
@@ -36,7 +36,7 @@ function charco(id: string, x: number, y: number, rx: number, ry: number, rnd: A
     `C${f(x + rx * c)} ${f(y + ry * d)} ${f(x + rx * 0.3)} ${f(y + ry * d)} ${f(x - rx * 0.2)} ${f(y + ry * d)} ` +
     `C${f(x - rx * 0.7)} ${f(y + ry * d)} ${f(x - rx * a)} ${f(y + ry * 0.7)} ${f(x - rx * a)} ${f(y)} Z`;
   let adentro = forma(silueta, agua);
-  const cuantos = 3 + Math.floor(rnd() * 4);
+  const cuantos = reflejados || 3 + Math.floor(rnd() * 4);
   for (let i = 0; i < cuantos; i++) {
     const lx = x - rx * 0.75 + ((i + rnd() * 0.7) / cuantos) * rx * 1.5;
     const ancho = rx * (0.07 + rnd() * 0.1);
@@ -80,13 +80,13 @@ function piedra(id: string, x: number, y: number, w: number, rnd: Azar, cuerpo: 
    ------------------------------------------------------------------ */
 
 /** Una raíz que sale del piso, cruza y se vuelve a meter: el lomo oscuro y un pelo de luz arriba. */
-function raiz(x: number, y: number, largo: number, rnd: Azar): string {
+function raiz(x: number, y: number, largo: number, rnd: Azar, gorda = 1): string {
   const sube = 5 + rnd() * 9;
   const d = `M${f(x)} ${f(y)} C${f(x + largo * 0.25)} ${f(y - sube * 1.6)} ${f(x + largo * 0.45)} ${f(y + sube * 0.5)} ${f(x + largo * 0.62)} ${f(y - sube)} S${f(x + largo * 0.9)} ${f(y + 2)} ${f(x + largo)} ${f(y + 3)}`;
   return (
     nube(x + largo / 2, y + 3, largo * 0.5, 4, M.negro, 's', 0.6) +
-    trazo(d, M.negro, 5.5 + rnd() * 3) +
-    `<g transform="translate(0 -1.6)">${trazo(d, M.hondo, 1.3, 0.6)}</g>`
+    trazo(d, M.negro, (5.5 + rnd() * 3) * gorda) +
+    `<g transform="translate(0 ${f(-1.6 * gorda)})">${trazo(d, M.hondo, 1.3 * gorda, 0.6)}</g>`
   );
 }
 
@@ -117,10 +117,32 @@ function hojaCaida(x: number, y: number, largo: number, rnd: Azar): string {
  * Lo tirado en el piso del monte, entre `desde` y `hasta`: charcos que reflejan las tiras de atrás,
  * raíces, piedras, tiras caídas y, cada mucho, un costillar.
  */
+/**
+ * Un claro con peso (tercera ronda): lo suelto y parejo no llenaba el medio del piso. Un charco
+ * grande, que refleja media docena de tiras; una raíz gorda que lo cruza por atrás y se le mete
+ * adentro; dos piedras contra el borde, y del otro lado lo que quedó de alguien.
+ */
+function claroDelMonte(id: string, x: number, y: number, rnd: Azar): string {
+  const rx = 120 + rnd() * 40;
+  const ry = 20 + rnd() * 6;
+  return (
+    raiz(x - rx * 1.25, y - ry * 0.9, rx * 1.5, rnd, 2.1) +
+    charco(`${id}-ch`, x, y, rx, ry, rnd, M.negro, [M.hondo, M.medio, M.claro, M.medio, M.sombra], M.claro, 'puntas', 7) +
+    piedra(`${id}-p1`, x - rx * 0.9, y + ry * 0.7, 40 + rnd() * 12, rnd, M.hondo, M.medio, M.negro) +
+    piedra(`${id}-p2`, x - rx * 0.62, y + ry * 1.05, 24 + rnd() * 8, rnd, M.hondo, M.medio, M.negro) +
+    `<g transform="translate(${f(x + rx * 0.7)} ${f(y + ry * 1.5)}) scale(1.5) translate(${f(-(x + rx * 0.7))} ${f(-(y + ry * 1.5))})">${costillar(x + rx * 0.7, y + ry * 1.5, rnd)}</g>` +
+    hojaCaida(x + rx * 0.2, y + ry * 1.9, 60 + rnd() * 20, rnd)
+  );
+}
+
 export function sueloDelMonte(desde: number, hasta: number, semilla: number): string {
   const rnd = azar(semilla);
   let s = '';
   let n = 0;
+  // Tres claros a lo largo, en el medio del piso (arriba de la picada), cada uno a su altura.
+  [0.17, 0.5, 0.82].forEach((u, i) => {
+    s += claroDelMonte(`sm-cl-${i}`, desde + (hasta - desde) * (u + (rnd() - 0.5) * 0.06), 392 + rnd() * 50, rnd);
+  });
   // De atrás para adelante, así lo de más cerca tapa a lo de más lejos. Lo de atrás es más chico.
   for (let x = desde + 40 + rnd() * 60; x < hasta - 60; x += 38 + rnd() * 62) {
     const hondura = rnd();
@@ -252,6 +274,42 @@ export function sueloDeLosAstilleros(ancho: number, muelle: number): string {
     else if (que < 0.6) s += cadenaTirada(x, y, (40 + rnd() * 50) * escala, rnd);
     else if (que < 0.8) s += aceite(x, y, (22 + rnd() * 26) * escala, rnd);
     else s += tablon(x, y, (44 + rnd() * 40) * escala, rnd);
+    n++;
+  }
+  return s;
+}
+
+/* ------------------------------------------------------------------
+   La ruta
+   ------------------------------------------------------------------ */
+
+const RU = { negro: 'var(--fondo)', noche: 'var(--entorno-astillero-noche)', papel: 'var(--papel)', tenue: 'var(--papel-tenue)', topo: 'var(--disco-luzbelito-apoyo)', vivo: 'var(--marca-rojo)' };
+
+/** Una lata aplastada en la banquina. */
+function lata(x: number, y: number, rnd: Azar): string {
+  const giro = -30 + rnd() * 60;
+  return (
+    `<g transform="rotate(${f(giro)} ${f(x)} ${f(y)})">` + nube(x + 2, y + 4, 12, 3, RU.negro, 's', 0.8) +
+    forma(`M${f(x - 9)} ${f(y - 4)} L${f(x + 8)} ${f(y - 5)} L${f(x + 10)} ${f(y + 3)} L${f(x - 8)} ${f(y + 4)} Z`, RU.topo) +
+    forma(`M${f(x - 2)} ${f(y - 4.6)} L${f(x + 3)} ${f(y - 4.8)} L${f(x + 4)} ${f(y + 3.4)} L${f(x - 1)} ${f(y + 3.6)} Z`, RU.vivo, 0.8) +
+    trazo(`M${f(x - 9)} ${f(y - 4)} L${f(x + 8)} ${f(y - 5)}`, RU.tenue, 0.9, 0.7) + `</g>`
+  );
+}
+
+/** Lo tirado en la banquina de abajo: charcos que reflejan las estrellas, latas, piedras y algún parche de brea. */
+export function sueloDeLaRuta(ancho: number, desde: number): string {
+  const rnd = azar(5501);
+  let s = '';
+  let n = 0;
+  for (let x = 40 + rnd() * 60; x < ancho - 60; x += 46 + rnd() * 70) {
+    const hondura = rnd();
+    const y = desde + hondura * (612 - desde);
+    const escala = 0.8 + hondura * 0.7;
+    const que = rnd();
+    if (que < 0.34) s += charco(`sr-ch-${n}`, x, y, (36 + rnd() * 46) * escala, (5 + rnd() * 4) * escala, rnd, RU.noche, [RU.papel, RU.tenue, RU.papel], RU.tenue, 'rayas');
+    else if (que < 0.58) s += lata(x, y, rnd);
+    else if (que < 0.84) s += piedra(`sr-pi-${n}`, x, y, (10 + rnd() * 16) * escala, rnd, RU.topo, RU.tenue, RU.negro);
+    else s += nube(x, y, (24 + rnd() * 20) * escala, 4 * escala, RU.negro, 's', 0.85);
     n++;
   }
   return s;
