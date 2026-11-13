@@ -7060,3 +7060,100 @@ Lo que se aprendió queda acá porque el que dibuje el 13 lo va a necesitar:
   los audita; `contenido` puede proponer otros en `Docs/SUGERENCIAS/`. El renglón "Pasaste N de M"
   es registro 3.
 - La paridad de `BR-23.1` sobre el banco entero la cuenta `soluciones.test.ts` como siempre.
+
+## D-90 — El bestiario con músculo: el aire entre las capas y la lupa
+
+- **Fecha:** 2026-11-13
+- **Estado:** activa, primera ronda. Pedido del usuario, textual: *"busca cosas que no se vean bien,
+  ambientes mejorables y diseños que se puedan mejorar [...] Quiero mejorar la inmersión. Que se
+  pueda hacer zoom, que tenga más misterio y efectos, nieblas, mejores animaciones, una mejora total
+  manteniendo la esencia y el alma y el diseño rocambolesco ante todo, pero darle músculo."* La
+  escribe el hilo principal (un subagente en su worktree) en la rama `bestiario/inmersion`, cortada
+  de `bestiario/cinco-sin-diseno` (PR #108, sin integrar) en `9fa0b93`. `D-87` a `D-89` están
+  tomados en otras ramas; la tarea es `T-527`.
+- **Consume:** `D-73` (el bestiario, y sus dos excepciones: el aerógrafo con grano y el movimiento
+  de los bichos), `D-77` (caminar de costado con el scroll del navegador), `D-80` (la cámara),
+  `D-83` (la pulida), `T-522` (que se pueda tocar a todos), `diseno-marca.md` (cero sombras, velo
+  plano, nada de degradé), `D-64`.
+
+### La idea
+
+Hasta acá un camino eran tres capas duras —lo lejano, el piso, lo de adelante— y entre una y otra
+no había nada: se veía todo de una, y en un teléfono parado la mitad de abajo de la pantalla era
+piso vacío. La mejora mete **aire** entre las capas y deja **arrimarse** a mirar. Nada de eso se
+sopla en el teléfono: se imprime, como todo el bestiario.
+
+### 1. El aire (`lib/bestiario/aire.ts`, `arte-aire.ts`)
+
+- **Tres planos nuevos**, además de las capas de siempre: `fondo` (entre lo lejano y el piso: la
+  bruma que sale de atrás del borde), `medio` (encima del piso y de los bichos: la niebla rasante, la
+  ventisca, el humo) y `cerca` (encima de todo: lo que está pegado a la cámara, fuera de foco).
+  El plano `cerca` es la respuesta al **piso muerto en vertical**: tapa el borde de abajo con matas,
+  médanos o fierros desenfocados que pasan más rápido que nada (`f` 1,75).
+- **Cada capa es una baldosa impresa** con el aerógrafo y el rociado (grano incluido) por
+  `scripts/imprimir-bestiario.mjs`, que se repite de costado. La isla la corre con `transform` y le
+  cambia la `opacity`: ni `filter`, ni `backdrop-filter`, ni un `linear-gradient`. Va en el mismo
+  reloj del camino; no hay un segundo `requestAnimationFrame`. Tres capas por región, como tope
+  (`aire.test.ts`), y menos de 520 kB de aire por región.
+- **La lengua**: la niebla rasante tiene el canto de abajo duro, como cortado con una máscara de
+  papel apoyada en el piso, y para arriba se pierde soplada. Es el gesto de las tapas (borde duro
+  afuera, volumen blando adentro) aplicado a la niebla: se posa, no flota.
+- **Se abre al paso**: cada capa tiene `abre`. Caminando, la niebla se deshace enseguida; quieto,
+  se vuelve a cerrar despacio. Quedarse quieto tiene premio, y es la base para lo que venga de
+  misterio (lo que solo aparece si no te movés).
+- **La receta es por región** y sumar una es escribir sus números y pintar su baldosa. En esta
+  ronda: el monte y la pastura (bruma, rasante, matas), Cybersiberia (vaho contra la chapa, ventisca
+  con viento, médanos), los astilleros (bruma del río, vaho del agua, norays y cadenas) y el
+  infierno (humo que se arrastra y ceniza encendida que sube, que es la primera capa que se repite
+  también para arriba). El infierno es un recinto de una sola capa: el aire anda igual ahí.
+- **Con movimiento reducido** el aire queda impreso en su lugar con su alfa: no se corre ni respira,
+  y no se pierde nada. **Sin JavaScript**, igual.
+- **Dos cosas de la imprenta que costaron**, anotadas para el que pinte la próxima baldosa: el
+  filtro del grano mide lo que filtra por la caja de las formas *sin contar el soplo*, así que cada
+  baldosa lleva una hoja entera sin tinta (si no, la bruma sale cortada a cuchillo); y lo que cruza
+  el borde de la baldosa necesita lo de afuera para cerrar, así que se imprime con **sangría**
+  (`Pieza.sangria`, 120 unidades de más a cada lado, y se recorta).
+
+### 2. La lupa (`lib/bestiario/lupa.ts`, `scripts/bestiario/pellizco.ts`)
+
+- **Dónde**: en los trece caminos y en el plano redondo. **Cómo**: pellizco de dos dedos,
+  Ctrl + ruedita (que es también el pellizco de un panel táctil), doble toque (sobre un bicho, va a
+  él y lo deja en el medio; con la lupa puesta, es la vuelta), `+` `−` `0` en el teclado, y dos
+  sellos `+` `−` donde hay mouse. Tope en 2,6. La vuelta es un sello, **"Mirá todo"**, que aparece
+  con la lupa puesta.
+- **No se usa el zoom del navegador** porque agranda todo: el cartel, la ficha y los botones se van
+  de la pantalla con la escena. Acá se agranda la escena y nada más.
+- **Caminar sigue siendo del navegador (`D-77`)**. Con la lupa en `z`, la tira del camino mide `z`
+  veces su ancho: un píxel de deslizar sigue siendo un píxel de pantalla y el scroll nativo, con su
+  inercia, no se entera. La lupa va adentro del encuadre de la cámara (`transformDe`), así el
+  cabeceo, el sacudón y el paralaje siguen andando acercado.
+- **El toque que abre la ficha (`T-522`) no se toca**. Un doble toque son dos toques: el primero
+  hace lo de siempre (abre la ficha) y el segundo, si cae enseguida y en el mismo lugar, es la lupa
+  y se traga antes de llegarle a nadie. Los toques que la isla le pasa a un títere no cuentan
+  (`isTrusted`). Probado con dedos emulados: pellizco, caminar con la lupa puesta, mirar para abajo,
+  la vuelta, un toque y doble toque.
+- **Con la lupa, lo pegado a la cámara se corre del medio** (`despejeDeLupa`): acercarse es meterse
+  adentro del aire. Si no, la lupa agrandaba las matas justo encima de lo que se fue a mirar.
+- **En el plano** lo que se agranda es una lente nueva (`#lente`: el dibujo, la luz y los carteles)
+  adentro del marco, que es la ventana. Con la lupa puesta el dedo lleva el plano; sin ella, la
+  página baja como siempre. Los carteles siguen siendo los enlaces.
+- **Con movimiento reducido** la lupa llega de una, sin viaje.
+
+### Lo que se eligió no hacer, y por qué
+
+- **Imprimir todo a más resolución para la lupa.** Las piezas van a 2,5 píxeles por unidad y los
+  fondos a 1,25; a 2,6 de lupa en un teléfono de densidad 3 los títeres aguantan (el aerógrafo y el
+  grano perdonan) y los fondos se ven blandos, que acercado se lee como profundidad de campo.
+  Reimprimir los 18 MB de `public/bestiario` al doble son más de 50 MB en el repo y en el teléfono.
+  Queda para una ronda con medición: un segundo tamaño solo de los títeres que se miran de cerca.
+- **El póster posterizado del infierno y la cara del bajo** se dejan: son la tapa de verdad metida
+  en la escena (`href="tapa:"`), no un descuido. La ceniza y el humo los integran mejor que antes.
+- **El aro punteado amarillo** del bicho que habla es también el foco del teclado: cambiarlo pide
+  repensar los dos estados juntos. Va a la próxima ronda.
+
+### Qué lo verifica
+
+`aire.test.ts` (10) y `lupa.test.ts` (9): las recetas, las baldosas impresas y su peso, que la
+baldosa nunca muestre el borde, que la isla solo escriba `transform` y `opacity`, que el reloj sea
+uno, que la lupa no se salga del mundo y deje quieto lo que está debajo del dedo, y que caminar y
+tocar sigan siendo lo que eran. `npm test` 2313, `npm run check`, `npm run build` (200 páginas).
