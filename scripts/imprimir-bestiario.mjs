@@ -104,6 +104,44 @@ for (const p of [...PIEZAS, ...PIEZAS_CAMINO, ...CRUCES, ...PORTAL, ...PIEZAS_AI
   console.log(`${p.nombre}.webp  ${Math.round(ancho * densidad)}×${Math.round(alto * densidad)}  ${Math.round(buffer.length / 1024)} kB`);
 }
 
+/**
+ * El filo a medida (`D-90`, sexta ronda, `FILO_PROPIO` en `aire.ts`): de cada pieza de los títeres
+ * que pasan bajo una luz se saca el canto que mira para arriba, en la tinta de esa luz. Es lo que está
+ * en la pieza y no está unos píxeles más arriba: una resta de alfas, sin dibujar nada de nuevo. Se
+ * lee la pieza ya impresa, así que se puede correr solo (`--solo filo-de-`).
+ */
+const { FILO_PROPIO, GROSOR_DEL_FILO, tieneFiloPropio } = await importar('src/lib/bestiario/aire.ts');
+const { existsSync } = await import('node:fs');
+for (const [region, de] of Object.entries(FILO_PROPIO)) {
+  const r = resolverToken(valores, /var\((--[a-z0-9-]+)\)/.exec(de.tinta)[1]);
+  if ('error' in r) throw new Error(`filo de ${region}: ${r.error}`);
+  const [rojo, verde, azul] = [1, 3, 5].map((i) => parseInt(r.hex.slice(i, i + 2), 16));
+  for (const pieza of PIEZAS) {
+    if (!tieneFiloPropio(pieza.nombre, region)) continue;
+    const nombre = `filo-de-${pieza.nombre}`;
+    if (solo && !solo.some((prefijo) => nombre.startsWith(prefijo))) continue;
+    const origen = resolve(salida, `${pieza.nombre}.webp`);
+    if (!existsSync(origen)) continue;
+    const { data, info } = await sharp(origen).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    const filo = Buffer.alloc(info.width * info.height * 4);
+    for (let y = 0; y < info.height; y++) {
+      for (let x = 0; x < info.width; x++) {
+        const i = (y * info.width + x) * 4;
+        const arriba = y >= GROSOR_DEL_FILO ? data[((y - GROSOR_DEL_FILO) * info.width + x) * 4 + 3] : 0;
+        const canto = Math.max(0, data[i + 3] - arriba);
+        filo[i] = rojo;
+        filo[i + 1] = verde;
+        filo[i + 2] = azul;
+        // Solo el canto franco: donde la pieza ya es un soplo que se pierde, no hay filo que prender.
+        filo[i + 3] = canto > 110 ? canto : 0;
+      }
+    }
+    const buffer = await sharp(filo, { raw: { width: info.width, height: info.height, channels: 4 } }).webp({ quality: 70, alphaQuality: 80, effort: 5 }).toBuffer();
+    writeFileSync(resolve(salida, `${nombre}.webp`), buffer);
+    console.log(`${nombre}.webp  ${info.width}×${info.height}  ${Math.round(buffer.length / 1024)} kB`);
+  }
+}
+
 if (hoja) {
   // Una hoja de contacto: las piezas una al lado de la otra, sobre gris, para mirarlas juntas.
   const lado = 420;

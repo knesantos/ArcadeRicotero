@@ -51,7 +51,8 @@ import { contextoVivo, despertarSalida } from '../lib/audio/contexto.ts';
 import { Charla } from '../lib/bestiario/charla.ts';
 import { PRIMER_PASO, corridaDe, crearCamara, primerPaso, transformDe, type Encuadre } from '../lib/bestiario/camara.ts';
 import {
-  ACECHOS, AIRE, ALIVIO, LUCES, MIRADA, PASO_PLENO, VIDAS, alfaDeAire, alivioDeEntrada, alivioTras, corridaDeAire, despejeDeLupa, estadoDeLuz, parpadeo, pasoDeVida, tocaLaLuz,
+  ACECHOS, AIRE, ALIVIO, LUCES, MIRADA, PASO_PLENO, VIDAS, alfaDeAire, alivioDeEntrada, alivioTras, corridaDeAire, despejeDeLupa, estadoDeLuz, parpadeo, pasoDeVida, rutaDelFilo, tieneFiloPropio,
+  tocaLaLuz,
 } from '../lib/bestiario/aire.ts';
 import { ENTERA, LUPA, acotar, centrar, conLupa, enElMundo, enfocar, entreLentes, type Lente } from '../lib/bestiario/lupa.ts';
 import { leerGestos } from './bestiario/pellizco.ts';
@@ -106,7 +107,42 @@ const luces = [...camino.querySelectorAll<HTMLElement>('.luz')].flatMap((el) => 
  * a los que tiene más cerca cuando el haz les pasa por encima. `blanco`: dónde está el bicho (su
  * coronilla y su ancho, en unidades del piso); se mide cada tanto, no por cuadro.
  */
-const filos = [...camino.querySelectorAll<HTMLElement>('.filo')].map((el) => ({ el, luz: el.dataset.filo ?? '', blanco: null as { x: number; y: number; ancho: number } | null, alfa: -1 }));
+const filos = [...camino.querySelectorAll<HTMLElement>('.filo')].map((el) => ({
+  el,
+  luz: el.dataset.filo ?? '',
+  blanco: null as { x: number; y: number; ancho: number; propio: readonly SVGGElement[] | null } | null,
+  alfa: -1,
+}));
+/** Los títeres que ya tienen puesto su filo a medida (`FILO_PROPIO`), con los grupos donde está: ahí se lo prende. */
+const vestidos = new Map<SVGGElement, readonly SVGGElement[] | null>();
+
+/**
+ * Le pone a un títere su filo a medida: al lado de cada pieza impresa que lo tenga, la imagen de su
+ * canto encendido, adentro del mismo grupo (así se mueve con la pieza). Devuelve los grupos donde
+ * quedó, o `null` si el bicho no está hecho de piezas (los pintados en el piso).
+ */
+function vestirConFilo(g: SVGGElement): readonly SVGGElement[] | null {
+  const hecho = vestidos.get(g);
+  if (hecho !== undefined) return hecho;
+  const marco = g.closest<SVGGElement>('[data-marco]');
+  const raices = marco ? [...piso.querySelectorAll<SVGGElement>(`[data-marco="${marco.dataset.marco}"]`)] : [g];
+  let puestos = 0;
+  for (const raiz of raices) {
+    for (const img of raiz.querySelectorAll<SVGImageElement>('image:not(.filo-propio)')) {
+      const pieza = /\/([a-z0-9-]+)\.webp$/.exec(img.getAttribute('href') ?? '')?.[1];
+      if (!pieza || !tieneFiloPropio(pieza, datos.region)) continue;
+      const canto = img.cloneNode(false) as SVGImageElement;
+      canto.setAttribute('href', rutaDelFilo(pieza));
+      canto.removeAttribute('data-parte');
+      canto.setAttribute('class', 'filo-propio');
+      img.after(canto);
+      puestos++;
+    }
+  }
+  const donde = puestos ? raices : null;
+  vestidos.set(g, donde);
+  return donde;
+}
 let cuadrosDeLuz = 0;
 /** Un cuadro sí y uno no: para lo que alcanza con moverlo a la mitad del ritmo. */
 let mediaVuelta = false;
@@ -125,7 +161,7 @@ const colgadas = new Map<string, SVGGElement | null>();
  * solo si los cuadros vienen lentos, y un teléfono que ya avisa que es flojo arranca en 1.
  */
 const delNavegador = navigator as Navigator & { deviceMemory?: number };
-let alivio = alivioDeEntrada(navigator.hardwareConcurrency, delNavegador.deviceMemory);
+let alivio = alivioDeEntrada(navigator.hardwareConcurrency, delNavegador.deviceMemory, datos.region);
 /**
  * Para mirarlo sin un teléfono flojo: `?liviano=1` o `?liviano=2` en la dirección fuerza ese escalón
  * (y `?liviano=0`, ninguno aunque el teléfono avise que es flojo). Con la bandera puesta no se mide.
@@ -514,9 +550,12 @@ function pintarLuces(): void {
         const k = b && !quieto() ? tocaLaLuz((Math.atan2(-(b.x - ancla), b.y - l.r.y) * 180) / Math.PI - apunta, l.r.filo.abre) * Math.min(1, e.alfa / l.r.alfa) : 0;
         if (Math.abs(k - fl.alfa) > 0.01) {
           fl.alfa = k;
-          fl.el.style.opacity = (k * 0.9).toFixed(3);
+          // El que tiene filo a medida prende el suyo, en todas sus piezas, con una sola variable; el
+          // que no (los pintados en el piso), la medialuna.
+          if (b?.propio) for (const raiz of b.propio) raiz.style.setProperty('--filo', k.toFixed(3));
+          fl.el.style.opacity = b?.propio ? '0' : (k * 0.9).toFixed(3);
         }
-        if (!b || k <= 0) continue;
+        if (!b || k <= 0 || b.propio) continue;
         const fx = b.x * escala - (paralaje ? cam : 0);
         const fy = b.y * escala - lente.y;
         const tam = Math.min(1.7, Math.max(0.35, b.ancho / 100));
@@ -573,18 +612,28 @@ function medirFilos(): void {
     if (!l.r.filo) continue;
     const mios = filos.filter((f) => f.luz === l.r.pieza);
     const alcance = l.r.caja[2] * 0.75;
-    const cerca: { x: number; y: number; ancho: number; d: number }[] = [];
+    const cerca: { x: number; y: number; ancho: number; d: number; g: SVGGElement }[] = [];
     for (const g of piso.querySelectorAll<SVGGElement>(BICHOS)) {
       if (g.dataset.velocidad) continue;
       const r = (g.querySelector('.toque') ?? g).getBoundingClientRect();
-      if (!r.width || r.height > innerHeight * 0.7) continue;
-      const x = ((r.left + r.width / 2 - caja.left) / z + (paralaje ? cam : 0)) / escala;
+      if (!r.width) continue;
+      // Del dibujo al piso: lo deslizado se suma siempre (con capas o sin ellas, el piso se corrió eso).
+      const x = ((r.left + r.width / 2 - caja.left) / z + cam) / escala;
       const y = ((r.top - caja.top) / z + lente.y) / escala;
       const d = Math.abs(x - l.r.x);
-      if (d < alcance && y > l.r.y + 40) cerca.push({ x, y: y + 6, ancho: Math.min(170, r.width / z / escala), d });
+      // Los muy altos (la drácula, Barbazul) no llevan la medialuna genérica, que les quedaría como un
+      // sombrero; el canto impreso sí, porque les sigue la silueta.
+      if (d < alcance && r.height > innerHeight * 0.7 && !vestirConFilo(g)) continue;
+      if (d < alcance && y > l.r.y + 40) cerca.push({ x, y: y + 6, ancho: Math.min(170, r.width / z / escala), d, g });
     }
     cerca.sort((p, q) => p.d - q.d);
-    mios.forEach((f, i) => (f.blanco = cerca[i] ?? null));
+    mios.forEach((f, i) => {
+      const c = cerca[i];
+      // El que deja de estar cerca se apaga: su filo no queda prendido para siempre.
+      if (f.blanco?.propio && f.blanco.propio !== (c ? vestidos.get(c.g) : null)) for (const raiz of f.blanco.propio) raiz.style.removeProperty('--filo');
+      f.blanco = c ? { x: c.x, y: c.y, ancho: c.ancho, propio: vestirConFilo(c.g) } : null;
+      f.alfa = -1;
+    });
   }
 }
 

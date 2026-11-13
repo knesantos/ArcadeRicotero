@@ -160,6 +160,15 @@
   will-change: transform, opacity;
 }
 
+/* El filo a medida (sexta ronda): el canto encendido de cada pieza de un títere, impreso, puesto encima
+   de la pieza. Lo prende la isla con una sola variable por títere; apagado, no se ve. */
+.camino .filo-propio {
+  opacity: var(--filo, 0);
+  pointer-events: none;
+}
+
+.camino--muy-liviano .filo-propio { display: none; }
+
 .camino .filo,
 .camino .vida,
 .camino .acecho-ojos {
