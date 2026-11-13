@@ -17,10 +17,10 @@
 import { forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
 import { M, azar, claroDeLaPastura, filaDeTiras } from './arte.ts';
 import { ENTORNOS, PIEZAS_ENTORNOS } from './arte-entornos.ts';
-import { ALTO, CAMINOS, CRUCE, SOLAPE, VELOCIDAD, anchoDeCapa, type Tramo } from './camino.ts';
+import { ALTO, CAMINOS, CRUCE, K_ENTORNO, SOLAPE, VELOCIDAD, anchoDeCapa, type Tramo } from './camino.ts';
 import { tintaDe } from './mapa.ts';
-import { sueloDeCybersiberia, sueloDeLaRuta, sueloDeLosAstilleros, sueloDelMonte } from './arte-suelo.ts';
-import { RUTA } from './rig-entornos.ts';
+import { sueloDeCybersiberia, sueloDeLaMesa, sueloDeLaRuta, sueloDeLosAstilleros, sueloDelArbol, sueloDelGalpon, sueloDelMonte } from './arte-suelo.ts';
+import { ARBOL, GALPON, MESA, RUTA } from './rig-entornos.ts';
 import { ASTILLERO } from './rig-entornos.ts';
 import { PALO } from './rig.ts';
 
@@ -207,6 +207,14 @@ function conSuelo(tramo: Tramo, piso: string): string {
   if (tramo.region === 'los-astilleros') return piso + rociado(sueloDeLosAstilleros(tramo.escena, ASTILLERO.muelle + 60));
   // En la ruta, lo tirado va en la banquina de abajo: el asfalto es de los fierros.
   if (tramo.region === 'la-ruta') return piso + rociado(sueloDeLaRuta(tramo.escena, RUTA.asfalto.abajo + 14));
+  // Sexta ronda. El árbol es aerógrafo: con el rociado, y sin nada contra el pie del tronco.
+  if (tramo.region === 'el-arbol') return piso + rociado(sueloDelArbol(tramo.escena, ARBOL.tronco.x * K_ENTORNO));
+  // La mesa es un afiche: tinta plana con el grano fino, abajo de donde cuelga el mantel.
+  if (tramo.region === 'la-mesa') return piso + `<g filter="url(#grano)">${sueloDeLaMesa(tramo.escena, MESA.tablero.cuelga + 22)}</g>`;
+  // El galpón: tinta plana contra el borde del tablado, lejos de lo que está parado ahí.
+  if (tramo.region === 'el-galpon') {
+    return piso + `<g filter="url(#grano)">${sueloDelGalpon(tramo.escena, GALPON.tablado.borde, [GALPON.silla.x, GALPON.fuente.x, GALPON.bestiaPop.x].map((x) => x * K_ENTORNO))}</g>`;
+  }
   return piso;
 }
 

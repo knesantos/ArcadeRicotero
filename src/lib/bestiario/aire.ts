@@ -101,13 +101,14 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   // Cybersiberia: el vaho helado contra la chapa, la ventisca que cruza el piso y los médanos de nieve pegados a la cámara.
   cybersiberia: [
     capa({ pieza: 'aire-cyber-vaho', plano: 'fondo', f: 0.8, y: 110, alto: 320, ancho: 1200, deriva: -12, alfa: 0.75, late: 0.15, ritmo: 0.19 }),
-    capa({ pieza: 'aire-cyber-ventisca', plano: 'medio', f: 1.2, y: 250, alto: 390, ancho: 1300, deriva: -130, alfa: 0.6, late: 0.32, ritmo: 0.47, abre: 0.25, suena: 'viento' }),
+    // La nevisca (sexta ronda): la nevada y la ventisca, fundidas en una sola capa que cae al sesgo.
+    // La nevada vivía adentro del dibujo del piso y bajaba con una animación de CSS, que obligaba a
+    // repintar el piso entero en cada cuadro (12 cuadros por segundo con la CPU ×4); en la tercera
+    // ronda salió a una capa de aire, y con la ventisca eran dos capas de pantalla entera, una encima
+    // de la otra. Ahora es una: copos y rachas en la misma baldosa, que el viento lleva para la
+    // izquierda mientras caen. Una superficie menos para componer.
+    capa({ pieza: 'aire-cyber-nevisca', plano: 'medio', f: 1.15, y: 0, alto: ALTO, ancho: 700, deriva: -74, cae: 44, alfa: 0.8, late: 0.18, ritmo: 0.47, suena: 'viento' }),
     capa({ pieza: 'aire-cyber-cerca', plano: 'cerca', f: 1.75, y: 420, alto: 220, ancho: 1600 }),
-    // La nevada (tercera ronda). Es la misma capa de copos del recinto (`cyber-nieve`), que en el camino
-    // vivía adentro del dibujo del piso y bajaba con una animación de CSS: cada cuadro obligaba a
-    // repintar el piso entero, y Cybersiberia andaba a 12 cuadros por segundo con la CPU estrangulada
-    // ×4. Como capa de aire la mueve el compositor: 51. Cae lo mismo que antes, 640 unidades en 16 s.
-    capa({ pieza: 'cyber-nieve', plano: 'medio', f: 1, y: 0, alto: ALTO, ancho: 900, cae: 40, alfa: 1, ajena: true }),
   ],
   // Los astilleros: la bruma del río detrás del muelle, el vaho que sube del agua y los fierros del muelle fuera de foco.
   'los-astilleros': [
@@ -150,7 +151,12 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   // tinta plana con grano, como el afiche de *La mosca y la sopa*: volutas de papel, no una nube.
   'la-mesa': [capa({ pieza: 'aire-mesa-humo', plano: 'medio', f: 1.1, y: 0, alto: ALTO, ancho: 900, deriva: 4, cae: -15, alfa: 0.55, late: 0.12, ritmo: 0.3, mece: 5, ritmoMece: 0.5 })],
   // El templo: el incienso, que sube en hebras tibias entre los focos de la guirnalda.
-  'el-templo': [capa({ pieza: 'aire-templo-incienso', plano: 'medio', f: 1.15, y: 0, alto: ALTO, ancho: 900, deriva: -3, cae: -11, alfa: 0.6, late: 0.14, ritmo: 0.26, mece: 7, ritmoMece: 0.4 })],
+  'el-templo': [
+    // Las ofrendas (sexta ronda): velas, platitos y el humo que baja, en el piso, entre el medallón y el
+    // papel picado. Van con el piso (`f` 1) y titilan apenas todas juntas.
+    capa({ pieza: 'aire-templo-ofrendas', plano: 'medio', f: 1, y: 440, alto: 180, ancho: 900, alfa: 0.94, late: 0.06, ritmo: 7 }),
+    capa({ pieza: 'aire-templo-incienso', plano: 'medio', f: 1.15, y: 0, alto: ALTO, ancho: 900, deriva: -3, cae: -11, alfa: 0.6, late: 0.14, ritmo: 0.26, mece: 7, ritmoMece: 0.4 }),
+  ],
   // El árbol: las hojas que se le caen, y la racha que las lleva de costado cuando sopla en la copa.
   'el-arbol': [
     capa({ pieza: 'aire-arbol-racha', plano: 'medio', f: 1.2, y: 60, alto: 400, ancho: 1300, deriva: -70, alfa: 0.34, late: 0.3, ritmo: 0.37, mece: 10, ritmoMece: 0.6, suena: 'viento' }),
@@ -261,10 +267,10 @@ export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   // El bajo: el reflejo del pucho de Pierre en el agua, una escalerita de rayas de crayón que tiembla. Pierre está en 486, y el recinto arranca en -250.
   'el-bajo': [{ pieza: 'luz-bajo-reflejo', f: 1, x: 806, y: 492, caja: [-70, -12, 140, 140], vaiven: 2.5, ritmo: 1.7, alfa: 0.62, late: 0.2, pulso: 'titila', crece: 0 }],
   // Los techos: el farol del baldío (650, 130 en su recinto), que titila.
-  'los-techos': [{ pieza: 'luz-techos-farol', f: 1, x: 650, y: 140, caja: [-180, -14, 360, 420], vaiven: 2.5, ritmo: 0.7, alfa: 0.4, late: 0.16, pulso: 'titila', crece: 0, suena: 'zumbido' }],
+  'los-techos': [{ pieza: 'luz-techos-farol', f: 1, x: 650, y: 140, caja: [-180, -14, 360, 420], vaiven: 2.5, ritmo: 0.7, alfa: 0.4, late: 0.16, pulso: 'titila', crece: 0, suena: 'zumbido', filo: { pieza: 'filo-lila', cuantos: 4, abre: 34 } }],
   // La prisión: el reflector del muro, que barre. Es de gubia: canto duro y rayado, sin soplo. Está
   // clavado lejos de donde se para la drácula (630) y barre ligero: las rayas le pasan por la cara, no se le quedan.
-  'la-prision': [{ pieza: 'luz-prision-reflector', f: 1, x: 1010, y: -6, caja: [-220, -14, 440, 660], vaiven: 26, ritmo: 0.44, alfa: 0.32, late: 0.05, pulso: 'barre', crece: 0, filo: { pieza: 'filo-papel', cuantos: 3, abre: 16 } }],
+  'la-prision': [{ pieza: 'luz-prision-reflector', f: 1, x: 1010, y: -6, caja: [-220, -14, 440, 660], vaiven: 26, ritmo: 0.44, alfa: 0.32, late: 0.05, pulso: 'barre', crece: 0, filo: { pieza: 'filo-papel', cuantos: 4, abre: 18 } }],
   // El templo (quinta ronda): un foco de la guirnalda, el del medio, que cae sobre el medallón de Momo y
   // titila. La guirnalda está en (450, 240) de su recinto, que arranca en -300.
   'el-templo': [{ pieza: 'luz-templo-foco', f: 1, x: 556, y: 218, caja: [-170, -14, 340, 400], vaiven: 3, ritmo: 0.6, alfa: 0.42, late: 0.14, pulso: 'titila', crece: 0, suena: 'zumbido' }],
@@ -272,6 +278,39 @@ export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   // escenario y le pega al polvo.
   'el-galpon': [{ pieza: 'luz-galpon-seguidor', f: 1, x: 2027, y: 64, caja: [-200, -14, 400, 460], vaiven: 22, ritmo: 0.36, alfa: 0.4, late: 0.06, pulso: 'barre', crece: 0, rumbo: 18 }],
 };
+
+/**
+ * El filo a medida (sexta ronda). La medialuna de la quinta ronda era la misma para todos: un
+ * arco estirado al ancho del bicho. Esto es el contorno de **cada títere**: de cada una de sus
+ * piezas impresas se saca, en la imprenta, el canto que mira para arriba (lo que está en la pieza y
+ * no está un poco más arriba), en la tinta de la luz de su región. La isla lo pone encima de la
+ * pieza, adentro del mismo grupo, así que se mueve con ella; y lo prende cuando el haz le pasa.
+ *
+ * Solo sirve para los títeres hechos de piezas. Los bichos que están pintados adentro del piso (el
+ * balde de las almejas, la jaula de la fiera) no tienen pieza de la que sacarlo: siguen con la medialuna.
+ */
+export const FILO_PROPIO: Readonly<Record<string, { prefijos: readonly string[]; tinta: string }>> = {
+  'la-prision': { prefijos: ['esclavo-', 'pichon-', 'dracula-', 'encadenado-'], tinta: 'var(--bestia-dracula-papel)' },
+  'los-techos': { prefijos: ['atila-', 'limon-', 'psicopata-', 'perro-', 'dinamita-'], tinta: 'var(--entorno-baion-luz)' },
+  'los-astilleros': { prefijos: ['botija-'], tinta: 'var(--disco-cordero-atado-tinta)' },
+};
+
+/** Las piezas que no son cuerpo: el humo, los fogonazos, los ojos, la boca, los muebles. A esas la luz no les prende un canto. */
+const SIN_FILO =
+  /-(humo|chispa|fogonazo|esquirlas|luz|brillo|gotas|estrella|fiebre|copo|pluma|plumon|hollin-[a-z]+|canto|agujero|rayita|iris-\d|pupila|parpado|ceja|boca|sirena-chica|reja|catre|alfeizar|pizarra|jamba|lata|caballete|cuadro|bandera|boleto|forro-\d)$/;
+
+/** Si una pieza tiene su filo impreso, en esa región. */
+export function tieneFiloPropio(pieza: string, region: string): boolean {
+  const de = FILO_PROPIO[region];
+  // Los recortes de la tapa real (`-real-`) no los imprime la casa: no tienen canto que sacarles.
+  return !!de && de.prefijos.some((p) => pieza.startsWith(p)) && !SIN_FILO.test(pieza) && !pieza.includes('-real-');
+}
+
+/** Dónde queda el filo impreso de una pieza. */
+export const rutaDelFilo = (pieza: string): string => `/bestiario/filo-de-${pieza}.webp`;
+
+/** Cuánto mide el filo, en píxeles de la imagen impresa: lo que se corre la pieza para arriba para sacarlo. */
+export const GROSOR_DEL_FILO = 7;
 
 /** Cuánto le pega una luz a algo que está a `angulo` grados de su haz, de 0 a 1: de lleno en el medio y nada desde `abre`. */
 export function tocaLaLuz(angulo: number, abre: number): number {
@@ -437,9 +476,18 @@ export function alivioTras(nivel: number, msPorCuadro: number): number {
 }
 
 /** Con qué nivel se arranca: un teléfono que ya avisa que es flojo empieza sin la bruma de atrás. */
-export function alivioDeEntrada(nucleos: number | undefined, memoria: number | undefined): number {
-  return (nucleos !== undefined && nucleos <= 2) || (memoria !== undefined && memoria <= 1) ? 1 : 0;
+export function alivioDeEntrada(nucleos: number | undefined, memoria: number | undefined, region = ''): number {
+  const flojo = (nucleos !== undefined && nucleos <= 2) || (memoria !== undefined && memoria <= 1) ? 1 : 0;
+  return Math.max(flojo, ALIVIO_DE_LA_REGION[region] ?? 0);
 }
+
+/**
+ * Las regiones que arrancan aliviadas en cualquier teléfono, porque su escena sola ya gasta casi todo
+ * el cuadro. Cybersiberia (`D-90`, sexta ronda): quince bichos y la nieve que cae en toda la pantalla;
+ * medida con la CPU ×4, su escena sola ya pasa del tope, y con todo el aire se va un tercio más arriba.
+ * Arranca sin el vaho de atrás, que es lo que menos se extraña. La nieve no se toca: es la región.
+ */
+export const ALIVIO_DE_LA_REGION: Readonly<Record<string, number>> = { cybersiberia: 1 };
 
 /** A cuántos píxeles de los ojos un dedo o un mouse ya los está mirando. */
 export const MIRADA = 84;

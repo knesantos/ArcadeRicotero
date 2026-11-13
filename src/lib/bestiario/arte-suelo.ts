@@ -372,3 +372,133 @@ export function sueloDeLaRuta(ancho: number, desde: number): string {
   }
   return s;
 }
+
+/* ------------------------------------------------------------------
+   El árbol, la mesa y el galpón (sexta ronda), cada uno con la mano de su tapa
+   ------------------------------------------------------------------ */
+
+const AR = { claro: 'var(--entorno-arbol-marmol-claro)', marmol: 'var(--entorno-arbol-marmol)', hondo: 'var(--entorno-arbol-marmol-hondo)', cobre: 'var(--entorno-arbol-cobre)', cobreHondo: 'var(--entorno-arbol-cobre-hondo)', veta: 'var(--entorno-arbol-veta)', tierra: 'var(--entorno-arbol-tierra)', honda: 'var(--entorno-arbol-tierra-honda)', viva: 'var(--entorno-arbol-tierra-viva)' };
+
+/** Una hoja del árbol caída: una almendra con su nervio. */
+function hojaDelArbol(x: number, y: number, largo: number, giro: number, color: string): string {
+  const d = `M${f(x - largo / 2)} ${f(y)} Q${f(x)} ${f(y - largo * 0.36)} ${f(x + largo / 2)} ${f(y)} Q${f(x)} ${f(y + largo * 0.3)} ${f(x - largo / 2)} ${f(y)} Z`;
+  return `<g transform="rotate(${f(giro)} ${f(x)} ${f(y)})">${forma(d, color)}${trazo(`M${f(x - largo * 0.4)} ${f(y)} L${f(x + largo * 0.4)} ${f(y)}`, AR.veta, 0.7, 0.5)}</g>`;
+}
+
+/**
+ * Lo tirado en la llanura del árbol: las hojas que se le cayeron (en montoncitos, no una por una),
+ * raíces que asoman, algún fruto podrido y piedras de mármol. Aerógrafo, como la tapa. No se pinta
+ * nada contra el pie del tronco (`tronco`, en x), que es donde se apoyan los que viven en él.
+ */
+export function sueloDelArbol(ancho: number, tronco: number): string {
+  const rnd = azar(7703);
+  let s = '';
+  let n = 0;
+  for (let x = 50 + rnd() * 60; x < ancho - 60; x += 46 + rnd() * 70) {
+    if (Math.abs(x - tronco) < 110) continue;
+    const hondura = rnd();
+    // El horizonte de la llanura está en 452: de ahí para abajo.
+    const y = 464 + hondura * 144;
+    const escala = 0.7 + hondura * 0.9;
+    const que = rnd();
+    if (que < 0.45) {
+      // Un montoncito de hojas.
+      let monton = '';
+      const cuantas = 3 + Math.floor(rnd() * 5);
+      for (let k = 0; k < cuantas; k++) monton += hojaDelArbol(x + (rnd() - 0.5) * 34 * escala, y + (rnd() - 0.5) * 9 * escala, (9 + rnd() * 9) * escala, rnd() * 180, [AR.cobre, AR.claro, AR.cobreHondo, AR.marmol][k % 4]!);
+      s += asentar(acostado(monton, x, y, 0.62), x, y, 44 * escala, hondura, AR.honda, AR.honda);
+    } else if (que < 0.66) {
+      const largo = (50 + rnd() * 60) * escala;
+      const sube = 5 + rnd() * 8;
+      const d = `M${f(x)} ${f(y)} C${f(x + largo * 0.25)} ${f(y - sube * 1.6)} ${f(x + largo * 0.45)} ${f(y + sube * 0.5)} ${f(x + largo * 0.62)} ${f(y - sube)} S${f(x + largo * 0.9)} ${f(y + 2)} ${f(x + largo)} ${f(y + 3)}`;
+      s += asentar(trazo(d, AR.hondo, 5 + rnd() * 3) + `<g transform="translate(0 -1.5)">${trazo(d, AR.claro, 1.2, 0.6)}</g>`, x + largo / 2, y, largo, hondura, AR.honda, AR.honda);
+    } else if (que < 0.82) {
+      // Un fruto caído, con la mancha de lo que soltó.
+      const r = (5 + rnd() * 4) * escala;
+      s += asentar(nube(x + r, y + 1, r * 1.6, r * 0.5, AR.viva, 's', 0.6) + `<circle cx="${f(x)}" cy="${f(y - r * 0.7)}" r="${f(r)}" fill="${AR.viva}"/>` + nube(x - r * 0.3, y - r * 1.1, r * 0.4, r * 0.3, AR.veta, 'xs', 0.6), x, y, r * 2.6, hondura, AR.honda, AR.honda);
+    } else {
+      const w = (14 + rnd() * 18) * escala;
+      s += asentar(piedra(`sb-pi-${n}`, x, y, w, rnd, AR.marmol, AR.claro, AR.honda), x, y, w, hondura, AR.honda, AR.honda);
+    }
+    n++;
+  }
+  return s;
+}
+
+const ME = { papel: 'var(--entorno-mesa-papel)', sepia: 'var(--entorno-mesa-sepia)', clara: 'var(--entorno-mesa-sepia-clara)', honda: 'var(--entorno-mesa-sepia-honda)', rojo: 'var(--entorno-mesa-rojo)', negro: 'var(--fondo)' };
+
+/**
+ * Lo que se cayó de la mesa, abajo del mantel. La tapa es un afiche: **tinta plana**, sin un soplo.
+ * Migas, una cuchara, un corcho, una servilleta hecha un bollo, y la fila de hormigas que va para la
+ * miel. De `desde` para abajo.
+ */
+export function sueloDeLaMesa(ancho: number, desde: number): string {
+  const rnd = azar(8803);
+  let s = '';
+  for (let x = 40 + rnd() * 70; x < ancho - 50; x += 54 + rnd() * 84) {
+    const y = desde + rnd() * (608 - desde);
+    const que = rnd();
+    if (que < 0.34) {
+      // Migas: un puñado de puntos.
+      for (let k = 0; k < 9; k++) s += `<circle cx="${f(x + (rnd() - 0.5) * 40)}" cy="${f(y + (rnd() - 0.5) * 9)}" r="${f(0.9 + rnd() * 1.5)}" fill="${k % 3 ? ME.clara : ME.papel}" opacity="${f(0.6 + rnd() * 0.3)}"/>`;
+    } else if (que < 0.52) {
+      // La cuchara.
+      const giro = -25 + rnd() * 50;
+      s += `<g transform="rotate(${f(giro)} ${f(x)} ${f(y)})"><ellipse cx="${f(x)}" cy="${f(y)}" rx="7" ry="3.6" fill="${ME.clara}"/><ellipse cx="${f(x + 0.8)}" cy="${f(y + 0.3)}" rx="4.4" ry="1.9" fill="${ME.honda}"/>${trazo(`M${f(x + 6.5)} ${f(y)} l22 1`, ME.clara, 2.2)}</g>`;
+    } else if (que < 0.68) {
+      // Un corcho, con su marca de vino.
+      s += forma(`M${f(x - 5)} ${f(y - 3.4)} L${f(x + 5)} ${f(y - 4)} L${f(x + 5.6)} ${f(y + 3)} L${f(x - 4.6)} ${f(y + 3.6)} Z`, ME.sepia) + forma(`M${f(x + 2.4)} ${f(y - 3.8)} L${f(x + 5)} ${f(y - 4)} L${f(x + 5.6)} ${f(y + 3)} L${f(x + 3)} ${f(y + 3.2)} Z`, ME.rojo, 0.8);
+    } else if (que < 0.84) {
+      // La servilleta, hecha un bollo: un polígono con sus dobleces.
+      const w = 14 + rnd() * 8;
+      s += forma(`M${f(x - w)} ${f(y + 3)} L${f(x - w * 0.6)} ${f(y - 6)} L${f(x - w * 0.1)} ${f(y - 3)} L${f(x + w * 0.4)} ${f(y - 8)} L${f(x + w)} ${f(y - 1)} L${f(x + w * 0.5)} ${f(y + 5)} L${f(x - w * 0.2)} ${f(y + 3)} Z`, ME.papel) + trazo(`M${f(x - w * 0.1)} ${f(y - 3)} l${f(w * 0.3)} ${f(7)} M${f(x + w * 0.4)} ${f(y - 8)} l${f(-w * 0.2)} 6`, ME.sepia, 1, 0.8);
+    } else {
+      // Las hormigas, en fila.
+      for (let k = 0; k < 7; k++) {
+        const hx = x + k * 9;
+        const hy = y + Math.sin(k * 0.9) * 2.4;
+        s += `<ellipse cx="${f(hx)}" cy="${f(hy)}" rx="2.6" ry="1.2" fill="${ME.clara}" opacity="0.85"/><circle cx="${f(hx + 3)}" cy="${f(hy - 0.2)}" r="1" fill="${ME.clara}" opacity="0.85"/>`;
+      }
+    }
+  }
+  return s;
+}
+
+const GA = { luz: 'var(--entorno-galpon-luz)', rojo: 'var(--entorno-galpon-rojo)', brasa: 'var(--entorno-galpon-brasa)', noche: 'var(--entorno-galpon-noche)', negro: 'var(--fondo)' };
+
+/**
+ * Lo que quedó en el tablado del galpón, contra el borde: los cables, la lista de temas pegada con
+ * cinta, una púa, un vaso. Tinta plana, en la mano de la trama de *En directo*. `ocupado`: dónde no
+ * se pinta, porque ahí hay algo parado (la silla, la mesita, la bestia pop).
+ */
+export function sueloDelGalpon(ancho: number, borde: number, ocupado: readonly number[]): string {
+  const rnd = azar(9901);
+  let s = '';
+  let lista = -900;
+  for (let x = 60 + rnd() * 80; x < ancho - 60; x += 70 + rnd() * 110) {
+    if (ocupado.some((o) => Math.abs(x - o) < 120)) continue;
+    const y = borde - 6 - rnd() * 44;
+    const que = rnd();
+    if (que < 0.4) {
+      // Un cable que cruza, con su ficha.
+      const largo = 70 + rnd() * 90;
+      const d = `M${f(x)} ${f(y)} C${f(x + largo * 0.3)} ${f(y - 12)} ${f(x + largo * 0.5)} ${f(y + 10)} ${f(x + largo)} ${f(y - 2)}`;
+      s += trazo(d, GA.negro, 2.6) + `<g transform="translate(0 -1)">${trazo(d, GA.brasa, 0.8, 0.8)}</g>` + forma(`M${f(x - 7)} ${f(y - 2.6)} L${f(x)} ${f(y - 2.6)} L${f(x)} ${f(y + 2.6)} L${f(x - 7)} ${f(y + 2.6)} Z`, GA.luz, 0.8);
+    } else if (que < 0.62 && x - lista > 1100) {
+      // La lista de temas: una hoja en escorzo, con renglones, pegada con una cinta roja. Una cada
+      // tanto: es la lista del show, no un volanteo.
+      lista = x;
+      const giro = -12 + rnd() * 24;
+      let renglones = '';
+      for (let k = 0; k < 5; k++) renglones += trazo(`M${f(x - 9)} ${f(y - 5 + k * 2.4)} l${f(10 + rnd() * 8)} 0`, GA.noche, 0.8, 0.8);
+      s += `<g transform="rotate(${f(giro)} ${f(x)} ${f(y)})">` + forma(`M${f(x - 13)} ${f(y - 8)} L${f(x + 12)} ${f(y - 8)} L${f(x + 15)} ${f(y + 7)} L${f(x - 16)} ${f(y + 7)} Z`, GA.luz) + renglones + forma(`M${f(x - 6)} ${f(y - 10)} L${f(x + 6)} ${f(y - 10)} L${f(x + 6)} ${f(y - 6.6)} L${f(x - 6)} ${f(y - 6.6)} Z`, GA.rojo) + `</g>`;
+    } else if (que < 0.8) {
+      // Una púa.
+      s += forma(`M${f(x - 4)} ${f(y - 2)} Q${f(x)} ${f(y - 4)} ${f(x + 4)} ${f(y - 2)} L${f(x)} ${f(y + 3)} Z`, GA.rojo);
+    } else {
+      // Un vaso de plástico, volcado.
+      s += forma(`M${f(x - 9)} ${f(y - 4)} L${f(x + 8)} ${f(y - 3)} L${f(x + 8)} ${f(y + 3)} L${f(x - 9)} ${f(y + 5)} Z`, GA.luz, 0.85) + `<ellipse cx="${f(x - 9)}" cy="${f(y + 0.5)}" rx="1.6" ry="4.6" fill="${GA.noche}"/>` + forma(`M${f(x + 8)} ${f(y - 3)} L${f(x + 22)} ${f(y - 1)} L${f(x + 20)} ${f(y + 3)} L${f(x + 8)} ${f(y + 3)} Z`, GA.brasa, 0.6);
+    }
+  }
+  return s;
+}

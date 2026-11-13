@@ -217,9 +217,41 @@ function cyberVaho(c: CapaDeAire): string {
   return rociado(c, manchas(c, 511, 14, 236, 318, [[C.claro, 0.36], [C.nieve, 0.11], [C.acero, 0.42]], 30) + manchas(c, 517, 7, 200, 280, [[C.lente, 0.08], [C.claro, 0.17]], 16, [40, 100]));
 }
 
-/** La ventisca: rachas largas y finas, apenas caídas, y el polvo de nieve suelto entre ellas. */
-function cyberVentisca(c: CapaDeAire): string {
-  return rachas(c, 523, C.nieve, 64, 90, -3.5, manchas(c, 529, 8, 360, 570, [[C.nieve, 0.13]], 30, [50, 120]));
+/**
+ * La nevisca (sexta ronda): la nevada y la ventisca en una sola baldosa, que cae al sesgo. Copos
+ * redondos de varios tamaños (los grandes, más cerca y más flojos), y entre ellos rachas cortas
+ * acostadas para el lado que sopla. Cierra para los dos lados.
+ */
+function cyberNevisca(c: CapaDeAire): string {
+  const rnd = azar(523);
+  const alto = altoDeBaldosa(c);
+  // Para dónde va: la misma pendiente con la que la mueve la isla (`deriva` y `cae`).
+  const sesgo = (Math.atan2(c.cae, c.deriva) * 180) / Math.PI;
+  const copia = (x: number, y: number, margen: number, pinta: (x: number, y: number) => string): string => {
+    let s = '';
+    for (const dx of [0, x < margen ? c.ancho : x > c.ancho - margen ? -c.ancho : null]) {
+      for (const dy of [0, y < margen ? alto : y > alto - margen ? -alto : null]) if (dx !== null && dy !== null) s += pinta(x + dx, y + dy);
+    }
+    return s;
+  };
+  let s = '';
+  for (let i = 0; i < 116; i++) {
+    const x = rnd() * c.ancho;
+    const y = rnd() * alto;
+    const grande = rnd() < 0.12;
+    const r = grande ? 2.6 + rnd() * 2.4 : 0.8 + rnd() * 1.4;
+    const o = grande ? 0.28 + rnd() * 0.2 : 0.55 + rnd() * 0.4;
+    s += copia(x, y, 14, (xx, yy) => nube(xx, yy, r, r, C.nieve, grande ? 's' : 'xs', o));
+  }
+  for (let i = 0; i < 32; i++) {
+    const x = rnd() * c.ancho;
+    const y = rnd() * alto;
+    const rx = 18 + rnd() * 46;
+    const ry = 1 + rnd() * 1.4;
+    const o = 0.3 + rnd() * 0.35;
+    s += copia(x, y, rx + 12, (xx, yy) => nube(xx, yy, rx, ry, C.nieve, 'xs', o, sesgo));
+  }
+  return `<g filter="url(#rociado)"><rect x="-20" y="-20" width="${c.ancho + 40}" height="${alto + 40}" fill="var(--fondo)" fill-opacity="0"/>${s}</g>`;
 }
 
 /** Rachas y motas que lleva el viento, en una tinta: la nieve de Cybersiberia, el polvo de la ruta. */
@@ -711,6 +743,56 @@ function arbolRacha(c: CapaDeAire): string {
   return rociado(c, s);
 }
 
+/** Una vela de las ofrendas: el cabo, la cera chorreada, la llama y la mancha de luz que deja en el piso. */
+function vela(x: number, y: number, alto: number, rnd: () => number): string {
+  const w = 5 + rnd() * 4;
+  const cabo = `M${f(x - w)} ${f(y)} L${f(x - w * 0.9)} ${f(y - alto)} Q${f(x)} ${f(y - alto - 3)} ${f(x + w * 0.9)} ${f(y - alto)} L${f(x + w)} ${f(y)} Z`;
+  const llama = `M${f(x)} ${f(y - alto - 2)} Q${f(x - 4.4)} ${f(y - alto - 9)} ${f(x + (rnd() - 0.5) * 3)} ${f(y - alto - 19)} Q${f(x + 4.4)} ${f(y - alto - 9)} ${f(x)} ${f(y - alto - 2)} Z`;
+  return (
+    // La luz en el piso y el charco de cera.
+    nube(x, y + 2, 34, 8, TE.foco, 'l', 0.32) +
+    nube(x, y + 1.5, w * 2.2, 3.2, TE.papel, 's', 0.75) +
+    enmascarado(`ve-${Math.round(x)}-${Math.round(alto)}`, cabo, forma(cabo, TE.papel) + nube(x + w * 0.7, y - alto * 0.4, w * 0.9, alto * 0.7, TE.negro, 's', 0.6) + nube(x - w * 0.4, y - alto, w, 5, TE.foco, 's', 0.6)) +
+    // La cera que chorrea por un lado.
+    trazo(`M${f(x - w * 0.5)} ${f(y - alto + 1)} q-1.5 ${f(alto * 0.3)} 0 ${f(alto * 0.5)}`, TE.papel, 2.2) +
+    nube(x, y - alto - 9, 9, 11, TE.foco, 'm', 0.5) +
+    forma(llama, TE.foco) +
+    `<ellipse cx="${f(x)}" cy="${f(y - alto - 7)}" rx="1.5" ry="3.6" fill="${TE.papel}"/>`
+  );
+}
+
+/**
+ * Las ofrendas del templo (sexta ronda): entre el medallón y el papel picado había una franja negra.
+ * Ahí va lo que la gente le deja a Momo: velas de distinto alto, alguna caída, un platito, una
+ * botella, flores, y el humo que **baja** y se queda a ras del piso. Tandas con aire entre una y otra.
+ */
+function temploOfrendas(c: CapaDeAire): string {
+  const rnd = azar(1321);
+  let s = manchas(c, 1323, 7, 548, 592, [[TE.papel, 0.1], [TE.foco, 0.08]], 20, [50, 110]);
+  for (let i = 0; i < 3; i++) {
+    const x0 = (c.ancho / 3) * (i + 0.25 + rnd() * 0.4);
+    const y0 = 548 + rnd() * 36;
+    let tanda = '';
+    const cuantas = 3 + Math.floor(rnd() * 3);
+    for (let k = 0; k < cuantas; k++) tanda += vela(x0 + (k - cuantas / 2) * (16 + rnd() * 10), y0 + (rnd() - 0.5) * 14, 14 + rnd() * 46, rnd);
+    // Un platito con algo adentro, y una botella vacía.
+    const px = x0 + cuantas * 14 + 16;
+    tanda += nube(px, y0 + 6, 18, 3.4, TE.negro, 's', 0.8) + `<ellipse cx="${f(px)}" cy="${f(y0 + 3)}" rx="15" ry="4.4" fill="${TE.papel}" opacity="0.85"/><ellipse cx="${f(px)}" cy="${f(y0 + 2)}" rx="10" ry="2.6" fill="${TE.negro}" opacity="0.7"/>`;
+    if (i % 2 === 0) {
+      const bx = x0 - cuantas * 14 - 12;
+      tanda += nube(bx, y0 + 5, 9, 3, TE.negro, 's', 0.8) + forma(`M${f(bx - 5)} ${f(y0 + 4)} L${f(bx - 5)} ${f(y0 - 18)} Q${f(bx - 4)} ${f(y0 - 24)} ${f(bx - 2)} ${f(y0 - 26)} L${f(bx - 2)} ${f(y0 - 36)} L${f(bx + 2)} ${f(y0 - 36)} L${f(bx + 2)} ${f(y0 - 26)} Q${f(bx + 4)} ${f(y0 - 24)} ${f(bx + 5)} ${f(y0 - 18)} L${f(bx + 5)} ${f(y0 + 4)} Z`, TE.negro) + trazo(`M${f(bx - 3.4)} ${f(y0 - 16)} L${f(bx - 3.4)} ${f(y0)}`, TE.foco, 1.1, 0.6);
+    }
+    // Las flores: tres o cuatro puntos claros con su tallo, tirados.
+    for (let k = 0; k < 4; k++) {
+      const fx = x0 + (rnd() - 0.5) * 120;
+      const fy = y0 + 8 + rnd() * 14;
+      tanda += trazo(`M${f(fx)} ${f(fy)} l${f(8 + rnd() * 6)} ${f(-2 + rnd() * 4)}`, TE.negro, 1.4) + `<circle cx="${f(fx)}" cy="${f(fy)}" r="${f(2 + rnd() * 1.4)}" fill="${k % 2 ? TE.foco : TE.papel}" opacity="0.9"/>`;
+    }
+    s += vuelta(x0, 140, c.ancho, (xx) => `<g transform="translate(${f(xx - x0)} 0)">${tanda.replaceAll('id="ve-', `id="ve${Math.round(xx)}-`).replaceAll('url(#ve-', `url(#ve${Math.round(xx)}-`)}</g>`);
+  }
+  return rociado(c, s);
+}
+
 /** El polvo del galpón: motas chicas y parejas, tibias, como la trama de puntos del público. */
 function galponPolvo(c: CapaDeAire): string {
   const rnd = azar(1511);
@@ -736,11 +818,45 @@ function galponPolvo(c: CapaDeAire): string {
  * luz. Nada de degradé: tres bocanadas, una adentro de la otra.
  */
 function haz(id: string, largo: number, ancho: number, color: string, corazon: string): string {
-  const silueta = `M-5 0 L5 0 L${f(ancho / 2)} ${f(largo)} L${f(-ancho / 2)} ${f(largo)} Z`;
+  // El canto roto (sexta ronda): el haz era una banda de borde liso, de regla, que cruzaba media
+  // pantalla. Ahora la silueta es cartulina **cortada a mano**: cada canto baja en tramos desparejos
+  // que se meten un poco para adentro, con algún tajo más hondo, y se abre más cuanto más lejos de la
+  // boca. Sigue siendo borde duro de máscara de papel, que es la mano de la casa; lo que se fue es la regla.
+  const rnd = azar([...id].reduce((n, ch) => n * 31 + ch.charCodeAt(0), 7) >>> 0);
+  const canto = (lado: number): string[] => {
+    const puntos: string[] = [];
+    for (let u = 0.07 + rnd() * 0.05; u < 0.99; u += 0.022 + rnd() * 0.075) {
+      const tajo = rnd() < 0.16;
+      const muerde = (tajo ? 5 + rnd() * 9 : rnd() * 3.6) * (0.35 + u * 1.15);
+      puntos.push(`L${f(lado * (5 + (ancho / 2 - 5) * u - muerde))} ${f(largo * u)}`);
+      // El tajo vuelve enseguida al canto: es un diente, no una panza.
+      if (tajo) puntos.push(`L${f(lado * (5 + (ancho / 2 - 5) * (u + 0.012) - rnd() * 2))} ${f(largo * (u + 0.012))}`);
+    }
+    return puntos;
+  };
+  const derecho = canto(1);
+  const izquierdo = canto(-1).reverse();
+  const silueta = `M-5 0 L5 0 ${derecho.join(' ')} L${f(ancho / 2)} ${f(largo)} L${f(-ancho / 2)} ${f(largo)} ${izquierdo.join(' ')} Z`;
   // La máscara: los dos cantos de cartulina, duros, y el pie soplado (lo último del haz no llega al
   // piso con canto: se deshace). Blanco deja pasar, negro tapa.
+  // Y adentro no es un plano parejo (sexta ronda): la máscara se cruza con textura. Las **vetas**
+  // son cuñas oscuras que nacen en la boca y se abren hacia el pie, como la luz que pasa por una
+  // rejilla sucia; las **motas**, el polvo que flota y le come luz de a manchas. Todo en la máscara:
+  // lo que queda es menos tinta, no otra tinta.
+  let textura = '';
+  for (let i = 0; i < 9; i++) {
+    const a = (rnd() - 0.5) * (ancho - 24);
+    const w = (4 + rnd() * 20) * (rnd() < 0.3 ? 2 : 1);
+    textura += `<path d="M${f(a * 0.02)} ${f(largo * 0.05)} L${f(a + w / 2)} ${f(largo)} L${f(a - w / 2)} ${f(largo)} Z" fill="black" opacity="${f(0.22 + rnd() * 0.36)}" filter="url(#soplo-xs)"/>`;
+  }
+  for (let i = 0; i < 12; i++) {
+    const u = 0.25 + rnd() * 0.7;
+    const x = (rnd() - 0.5) * ancho * u * 0.9;
+    const r = (10 + rnd() * 26) * (0.5 + u);
+    textura += `<ellipse cx="${f(x)}" cy="${f(largo * u)}" rx="${f(r)}" ry="${f(r * (0.4 + rnd() * 0.5))}" fill="black" opacity="${f(0.2 + rnd() * 0.3)}" filter="url(#soplo-m)"/>`;
+  }
   const mascara =
-    `<mask id="${id}"><path d="${silueta}" fill="white"/>` +
+    `<mask id="${id}"><path d="${silueta}" fill="white"/>${textura}` +
     `<ellipse cx="0" cy="${f(largo * 1.04)}" rx="${f(ancho * 0.8)}" ry="${f(largo * 0.2)}" fill="black" filter="url(#soplo-xl)"/></mask>`;
   return (
     mascara +
@@ -825,6 +941,7 @@ function filo(id: string, color: string, mano: 'aerografo' | 'gubia'): string {
 const QUIEN_FILA: Readonly<Record<string, () => string>> = {
   'filo-sodio': () => filo('fl-s', T.sodio, 'aerografo'),
   'filo-papel': () => filo('fl-p', P.papel, 'gubia'),
+  'filo-lila': () => filo('fl-l', B.luz, 'aerografo'),
 };
 
 /** Las piezas de los filos que piden las luces (`Luz.filo`). */
@@ -889,7 +1006,7 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-monte-rasante': monteRasante,
   'aire-monte-cerca': monteCerca,
   'aire-cyber-vaho': cyberVaho,
-  'aire-cyber-ventisca': cyberVentisca,
+  'aire-cyber-nevisca': cyberNevisca,
   'aire-cyber-cerca': cyberCerca,
   'aire-astillero-bruma': astilleroBruma,
   'aire-astillero-vaho': astilleroVaho,
@@ -907,6 +1024,7 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-prision-rejas': prisionRejas,
   'aire-mesa-humo': mesaHumo,
   'aire-templo-incienso': temploIncienso,
+  'aire-templo-ofrendas': temploOfrendas,
   'aire-arbol-hojas': arbolHojas,
   'aire-arbol-racha': arbolRacha,
   'aire-galpon-polvo': galponPolvo,
