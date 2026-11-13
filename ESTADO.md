@@ -9,7 +9,7 @@
 
 > ## 🌫️ EL BESTIARIO CON MÚSCULO: RESUMEN DE LAS OCHO RONDAS (2026-11-13) — `D-90`, `T-527`
 >
-> **Sin integrar y sin subir**, rama `bestiario/inmersion`, cortada de `bestiario/cinco-sin-diseno` (PR #108) en
+> **Sin integrar**, PR #110 (base: la rama del #108), rama `bestiario/inmersion`, cortada de `bestiario/cinco-sin-diseno` (PR #108) en
 > `9fa0b93`. Pedido del usuario: *"busca cosas que no se vean bien, ambientes mejorables y diseños que se puedan mejorar [...] Quiero
 > mejorar la inmersión. Que se pueda hacer zoom, que tenga más misterio y efectos, nieblas, mejores animaciones, una mejora total
 > manteniendo la esencia y el alma y el diseño rocambolesco ante todo, pero darle músculo."* Se hizo en ocho rondas, cada una
