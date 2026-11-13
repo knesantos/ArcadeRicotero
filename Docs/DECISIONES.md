@@ -7279,3 +7279,73 @@ región; la primera vez, la mitad). Un pájaro en el monte, la pastura y los ast
 arriba. No se toca ni dice nada. Con la lupa no cruza, y con movimiento reducido tampoco.
 
 `aire.test.ts` pasa de 15 a 21. `npm test` 2324, `npm run check`, `npm run build` (200 páginas).
+
+### Enmienda — cuarta ronda (2026-11-13): los títeres miran, lo que no se ve no se mueve, y el alivio a la vista
+
+**La mirada** (`scripts/bestiario/mirada.ts`). Los cinco más vistos saben dónde está el dedo o el
+mouse. Lo único compartido es dónde se vio el puntero por última vez y hace cuánto; cada uno decide
+qué hace. En un teléfono cuenta el dedo mientras está apoyado y dos segundos y medio después. Si
+nadie movió nada hace rato, no se mide nada (ni se toca el DOM).
+
+- **El lobo suelto** (en su monte): la cabeza es pesada. Persigue con un resorte, y cuando asoma,
+  cabecea y se pasa. Con el dedo cerca te clava la vista: baja la cabeza hacia vos, entorna los ojos
+  y respira más corto. Respira con peso (se llena despacio, se vacía más rápido).
+- **Las antiguas lobas**: la que tiene el dedo más cerca para la oreja y entreabre el ojo; la otra
+  sigue durmiendo. Se hacen las muertas, pero espían. La cola y la oreja acompañan la respiración
+  con retraso.
+- **Pierre**: te sigue con la cara, despacio, y achina los ojos (el de ese lado, más). La panza se
+  llena despacio y se vacía de golpe, y la cabeza llega después que la panza.
+- **Momo**: el medallón cuelga de verdad. Al caminar se va para atrás y queda hamacándose; con el
+  dedo cerca se ladea hacia él y el brillo le cruza más seguido.
+- **Luzbelito** (el quinto): el busto se vuelve hacia el que lo mira y la llama se le inclina para
+  ese lado, con retraso.
+
+**Lo que no se ve no se mueve.** En un camino de 2400 unidades un teléfono ve 320.
+
+- El elenco (`vivos.ts`): cada veinte cuadros, y antes de que nadie escriba nada en ese cuadro, se
+  mira quién está a la vista, todos juntos. Los que no, no se mueven. La pose quieta va para todos.
+- Los ojos y las cosas sueltas (`recintoDeMapa`): por la vista que presta el camino, con media
+  pantalla de margen a cada lado, así lo que está por entrar ya se mueve.
+- **Agrupar las escrituras**: lo que se hizo es que cada capa se pinte una vez por cuadro (tercera
+  ronda) y que lo que no se ve no escriba. Juntar las escrituras de cada títere en una tanda al
+  final del cuadro pide reescribir los cuarenta y pico de controladores, y no se hizo.
+
+**Vuelto a medir** (lo mismo de la tercera ronda: Edge sin ventana, 430×860, CPU ×4, ocho segundos
+caminando; hilo principal por cuadro y cuadros por segundo):
+
+| Camino | Tercera ronda | Cuarta ronda | Cuarta, sin aire, luz ni vida |
+|---|---|---|---|
+| El monte | 13,1 ms · 60 c/s | **10,5 ms** · 60 c/s | 9,5 ms |
+| Cybersiberia | 15,7 ms · 54 c/s | 16,4 ms · 48 c/s | 11,0 ms |
+
+El monte queda debajo de los 12 ms. Cybersiberia no: la escena sola bajó de 13,3 a 11,0 con el
+descarte, pero el aire le cuesta más que al monte (son cuatro capas, la luz, la vida y los ojos, y
+cada una es un estilo que se recalcula). Entre una medición y otra hay un par de milisegundos de
+ruido. Es el camino que primero va a pedir el alivio.
+
+**El alivio, a la vista.** `?liviano=1` o `?liviano=2` en la dirección de un camino fuerza ese
+escalón (y `?liviano=0`, ninguno aunque el teléfono avise que es flojo); con la bandera puesta no se
+mide. Mirado en captura: en el 1 se va la bruma de atrás del piso, y casi no se nota; en el 2 se van
+además la luz (el cono del farol) y lo que cruza lejos, y la escena sigue entera.
+
+**Arreglos de la auditoría.**
+
+- **Los barrotes de la prisión** ya no cruzan la cara de nadie: son una reja a la que le limaron el
+  medio. Arriba cuelgan los cabos, abajo quedan los tocones, y el medio queda libre. **El
+  reflector** está clavado lejos de donde se para la drácula y barre más ligero: las rayas le pasan.
+- **Ninguna pieza de adelante tapa más de un quinto del alto**, y lo mide un test en la imagen
+  impresa de todas las regiones: en ventanas del ancho de un dedo, el alto medio de lo opaco (así una
+  hoja de pasto fina no cuenta y una tira ancha sí). La losa del monte era otra vez la tira alta de lo
+  de adelante: se sacó. La única excepción, escrita en el test, es la bengala del galpón.
+- **Lo tirado en el piso apoya** (`asentar` en `arte-suelo.ts`): la mancha húmeda donde toca, la
+  tierra que lo tapa por abajo, y más apagado cuanto más lejos. Lo que está tirado (las tiras
+  caídas, los tablones, las cadenas, el costillar) va en escorzo, no de frente.
+- **Lo lejano del monte no es una cinta**: cada fila va por tramos a distinta altura, con huecos, y
+  cada tanto un tramo vencido, caído contra los vecinos. Hay bruma soplada entre fila y fila, y el pie
+  de las tiras se hunde en ella; el canto del piso va más soplado.
+- **Los techos, rehechos**: la ropa tendida cruza arriba y lejos, de antena a antena, clara contra
+  las medianeras; y el hollín, que no se leía, pasó a humo de chimenea. No llevan nada pegado a la
+  cámara.
+
+`aire.test.ts` queda en 24 y se suma `mirada.test.ts` (4). `npm test` 2331, `npm run check`,
+`npm run build` (200 páginas).

@@ -11,7 +11,7 @@
 >
 > **Sin integrar y sin subir**, rama `bestiario/inmersion`, cortada de `bestiario/cinco-sin-diseno` (PR #108) en `9fa0b93`. Pedido del
 > usuario: *"Quiero mejorar la inmersión. Que se pueda hacer zoom, que tenga más misterio y efectos, nieblas, mejores animaciones, una
-> mejora total manteniendo la esencia y el alma y el diseño rocambolesco ante todo, pero darle músculo."* Van **tres rondas**. Nueve
+> mejora total manteniendo la esencia y el alma y el diseño rocambolesco ante todo, pero darle músculo."* Van **cuatro rondas**. Nueve
 > caminos de trece tienen el paquete: el monte, la pastura, Cybersiberia, los astilleros, el infierno, la ruta, el bajo, los techos y
 > la prisión. Faltan la mesa, el templo, el árbol y el galpón.
 >
@@ -29,20 +29,27 @@
 >   navegador con mouse y con dedo.
 > - **Lo que cruza lejos** (ronda 3, `VIDAS`): un pájaro, un murciélago, una estrella que se cae, un barquito de papel. De a uno y
 >   muy cada tanto.
+> - **Los títeres miran** (ronda 4, `scripts/bestiario/mirada.ts`): el lobo suelto, las lobas, Pierre, Momo y Luzbelito saben dónde
+>   está el dedo o el mouse. El lobo te clava la vista con la cabeza baja, una loba entreabre el ojo, el medallón se ladea. Respiran
+>   con peso, y lo que cuelga llega después.
 > - **La lupa** (`lib/bestiario/lupa.ts`, `scripts/bestiario/pellizco.ts`): pellizco, Ctrl + ruedita, doble toque, `+` `−` `0` y dos
 >   sellos donde hay mouse, en los trece caminos y en el plano. Tope 2,6; la vuelta es **"Mirá todo"**. Caminar sigue siendo el scroll
 >   del navegador (`D-77`) y el toque que abre la ficha (`T-522`) no cambia.
-> - **Rendimiento** (ronda 3, medido con la CPU ×4 en Edge sin ventana): Cybersiberia andaba a **12 cuadros por segundo** por la
->   nevada, que es previa (una animación de CSS adentro del piso). Mudada a capa de aire, **54**. Las capas se pintan una vez por
->   cuadro y no dos. El monte, 60 cuadros por segundo y 13,1 ms de hilo principal. Hay un **alivio** automático que apaga primero la
->   bruma de atrás y después la luz si los cuadros vienen lentos; no se disparó en ninguna medición. Números en `D-90`.
-> - **Arreglos**: el halo del camello, la losa negra del monte (era la tira alta de lo de adelante, previa), el pie del farol de los
->   astilleros, y medidos los bichos en 430×860: ninguno cortado.
-> - **Verde:** `npm test` (2324: los 2294 de antes, 21 de `aire.test.ts` y 9 de `lupa.test.ts`), `npm run check` (0 errores),
->   `npm run build` (200 páginas).
-> - **Falta**: probarlo en un teléfono de verdad (el pellizco en iOS, y si el alivio se dispara cuando tiene que); las cuatro regiones
->   que quedan; las animaciones de espera de los títeres, que son lo que más pesa en el hilo principal; un segundo tamaño impreso
->   para la lupa; el aro punteado del bicho que habla. Nota para el lienzo en `Docs/SUGERENCIAS/lienzo-el-aire-y-la-lupa.md`.
+> - **Rendimiento** (medido con la CPU ×4 en Edge sin ventana): Cybersiberia andaba a **12 cuadros por segundo** por la nevada, que
+>   es previa (una animación de CSS adentro del piso); mudada a capa de aire, alrededor de 50. Las capas se pintan una vez por cuadro,
+>   y desde la ronda 4 **lo que no se ve no se mueve**. El monte: 60 cuadros por segundo y 10,5 ms de hilo principal. Cybersiberia:
+>   48 y 16,4 ms, sin bajar del tope de 12. Números en `D-90`.
+> - **El alivio**: apaga primero la bruma de atrás y después la luz si los cuadros vienen lentos. Se fuerza con `?liviano=1` o
+>   `?liviano=2` para mirarlo; mirado en captura.
+> - **Arreglos**: el halo del camello; las losas del monte (era la tira alta de lo de adelante, previa: se sacó, y un test mide en
+>   la imagen que nada de adelante tape más de un quinto del alto); el pie del farol; los barrotes de la prisión, que ahora dejan libre
+>   el medio; lo tirado en el piso, que ahora apoya; lo lejano del monte, que dejó de ser una cinta; los techos, rehechos (ropa tendida
+>   arriba y lejos, humo de chimenea).
+> - **Verde:** `npm test` (2331: los 2294 de antes, 24 de `aire.test.ts`, 9 de `lupa.test.ts` y 4 de `mirada.test.ts`),
+>   `npm run check` (0 errores), `npm run build` (200 páginas).
+> - **Falta**: probarlo en un teléfono de verdad (el pellizco en iOS, la mirada con el dedo, y si el alivio se dispara cuando tiene
+>   que); las cuatro regiones que quedan; la luz que toca a los bichos; el aro punteado del bicho que habla; el sonido del aire; un
+>   segundo tamaño impreso para la lupa; bajar Cybersiberia de los 12 ms. Nota para el lienzo en `Docs/SUGERENCIAS/lienzo-el-aire-y-la-lupa.md`.
 
 > ## 🐕 CINCO QUE SEGUÍAN SIN DISEÑO: EL REY GARUFA, EL JOVEN LOBO, EL REO SEMENTAL, EL MOSCÓN ZUMBÓN Y EL OVEJERO (2026-11-05) — `D-73` (26), `T-526`
 >

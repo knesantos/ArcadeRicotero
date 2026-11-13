@@ -50,3 +50,13 @@ Capturas de referencia: las de la entrada de `ESTADO.md` de `T-527` (carpeta tem
 14. **Lo que cruza lejos** es una silueta de filo, chica, en la tinta de luz de la región. De a una.
 15. **El alivio**: si el teléfono no da, se apaga primero la bruma de atrás y después la luz. La
     niebla del medio y lo de cerca, nunca.
+
+## Cuarta ronda (2026-11-13)
+
+16. **El tope de lo de adelante es una medida**: en ventanas del ancho de un dedo (24 unidades), lo
+    opaco no pasa de un quinto del alto. Vale para `frente` y para `cerca`, en todas las regiones.
+17. **Lo tirado apoya**: mancha húmeda, tierra que lo tapa por abajo, y más apagado cuanto más lejos.
+    Lo que está tirado va en escorzo. Nada flota como una figurita.
+18. **La mirada**: un títere con el dedo cerca hace una sola cosa, la suya (clavar la vista, espiar,
+    ladearse), y llega tarde. Nada de ojos que siguen al cursor como un juguete.
+19. **Respirar con peso**: se llena despacio, se vacía más rápido; lo que cuelga llega después.
