@@ -271,6 +271,8 @@ function recintoDelBaldio(svg: Raiz, ctx: Contexto): Vida {
   let fase = 0;
   let saltoDesde = -10;
   let parpadeo = 2.5;
+  // La mirada (`D-90`, sexta ronda): parado o jadeando, si el dedo le pasa cerca lo mira de reojo.
+  const ojo = { x: 0, y: 0, cerca: 0 };
 
   const meta = (): number => (bloque === 'der' ? LIMON.desde : LIMON.hasta);
 
@@ -311,7 +313,12 @@ function recintoDelBaldio(svg: Raiz, ctx: Contexto): Vida {
     girar(p.get('brazo-2'), vuela ? 150 : corre ? paso * 50 : jadea ? -14 : -Math.sin(t * 2.2) * 4, [0, 0]);
     // Corriendo se inclina para adelante; jadeando se dobla un poco, con la cabeza gacha.
     const [, fy] = A.fruta.centro;
-    girar(p.get('fruta'), corre ? 10 : jadea ? 6 + Math.sin(t * 9) * 1.5 : vuela ? -6 : Math.sin(t * 1.3) * 2, [0, fy + A.fruta.radio[1]]);
+    // Respira (sexta ronda): la fruta se hincha y se achata desde donde apoya, despacio parado y a
+    // los tirones cuando jadea. Corriendo y en el aire no: ahí manda el paso.
+    const aire = corre || vuela ? 0 : jadea ? Math.sin(t * 9) * 0.045 : Math.sin(t * 2.2) * 0.022;
+    const base = fy + A.fruta.radio[1];
+    const hincha = `translate(0 ${base}) scale(${(1 + aire).toFixed(3)} ${(1 - aire * 0.8).toFixed(3)}) translate(0 ${-base}) `;
+    girar(p.get('fruta'), corre ? 10 : jadea ? 6 + Math.sin(t * 9) * 1.5 : vuela ? -6 : Math.sin(t * 1.3) * 2, [0, base], hincha);
     girar(p.get('hoja'), corre ? -16 + Math.sin(fase * 2) * 14 : Math.sin(t * 2.6) * 6, A.cabito);
 
     // La boca: jadea abriéndose y cerrándose; corriendo, abierta; parado, a medias.
@@ -321,7 +328,15 @@ function recintoDelBaldio(svg: Raiz, ctx: Contexto): Vida {
 
     // Los ojos: corriendo y jadeando mira para atrás, a la luz que lo sigue.
     const mira = estado === 've' ? 2 : -3.2;
-    for (const i of [1, 2]) p.get(`pupila-${i}`)?.setAttribute('transform', `translate(${mira} ${jadea ? 1 : 0})`);
+    // Y si no está corriendo, al dedo que le pasa cerca. El títere está espejado cuando mira para la
+    // izquierda (`frente`), así que el lado se da vuelta con él.
+    const m = corre || vuela ? { dx: 0, dy: 0, cerca: 0 } : miradaDe(g, 0, fy, 260);
+    ojo.x = seguir(ojo.x, m.dx * frente, dt, 6);
+    ojo.y = seguir(ojo.y, m.dy, dt, 6);
+    ojo.cerca = seguir(ojo.cerca, m.cerca, dt, 4);
+    const px = mira * (1 - ojo.cerca) + ojo.x * 3.6 * ojo.cerca;
+    const py = (jadea ? 1 : 0) * (1 - ojo.cerca) + ojo.y * 3 * ojo.cerca;
+    for (const i of [1, 2]) p.get(`pupila-${i}`)?.setAttribute('transform', `translate(${px.toFixed(2)} ${py.toFixed(2)})`);
     if (t > parpadeo) parpadeo = t + 2.5 + Math.random() * 3;
     const cierra = parpadeo - t > 0 && parpadeo - t < 0.14 ? 1 : 0;
     parpado(p.get('parpado-1'), cierra);
@@ -854,6 +869,8 @@ function barbazulDeLaPrision(svg: Raiz, ctx: Contexto, laDracula: () => number, 
   let aElla = 1;
   let cambiaMirada = 3;
   let mirada = 0;
+  // La mirada al dedo (`D-90`, sexta ronda): si le pasan cerca, deja de mirar a la drácula y te mira.
+  const ojo = { x: 0, y: 0, cerca: 0 };
   const barba: Resorte = { v: 0, p: 0 };
   const manojo: Resorte = { v: 0, p: 0 };
   let cabezaAntes = 0;
@@ -870,8 +887,10 @@ function barbazulDeLaPrision(svg: Raiz, ctx: Contexto, laDracula: () => number, 
     }
 
     // Respira, y en la reverencia se inclina hacia el pasillo, del lado del que te abre el paso.
+    // Respira con el cuerpo entero (sexta ronda): crece apenas desde los pies al tomar aire, que en
+    // un tipo de ese tamaño son un par de unidades en los hombros. Antes solo subía y bajaba 0,6.
     const respira = Math.sin(t * 1.15);
-    entero.setAttribute('transform', `translate(${bx} ${(piso + respira * 0.6).toFixed(2)}) rotate(${(2.6 * k).toFixed(2)}) scale(${escala})`);
+    entero.setAttribute('transform', `translate(${bx} ${(piso + respira * 0.6).toFixed(2)}) rotate(${(2.6 * k).toFixed(2)}) scale(${escala} ${(escala * (1 + respira * 0.007)).toFixed(4)})`);
 
     // La mirada: a la drácula o a vos; en la reverencia, a vos, de abajo para arriba.
     if (t > cambiaMirada) {
@@ -879,17 +898,23 @@ function barbazulDeLaPrision(svg: Raiz, ctx: Contexto, laDracula: () => number, 
       cambiaMirada = t + (aElla ? 5 + Math.random() * 4 : 2.5 + Math.random() * 2.5);
     }
     const haciaElla = Math.min(1, Math.max(-1, (laDracula() - bx) / 360));
-    const meta = k ? 0 : aElla * haciaElla;
-    mirada = dt ? hacia(mirada, meta, dt * 2.2) : meta;
+    const m = k ? { dx: 0, dy: 0, cerca: 0 } : miradaDe(entero, AB.cuello[0], AB.cuello[1] - 80, 320);
+    ojo.x = seguir(ojo.x, m.dx, dt, 5);
+    ojo.y = seguir(ojo.y, m.dy, dt, 5);
+    ojo.cerca = seguir(ojo.cerca, m.cerca, dt, 3);
+    const meta = k ? 0 : aElla * haciaElla * (1 - ojo.cerca) + ojo.x * ojo.cerca;
+    mirada = dt ? hacia(mirada, meta, dt * (2.2 + 3 * ojo.cerca)) : meta;
     const [mx, my] = AB.mira;
-    const pupila = `translate(${(mirada * mx).toFixed(2)} ${(-my * 0.9 * k + Math.sin(t * 0.4) * 0.3).toFixed(2)})`;
+    const pupila = `translate(${(mirada * mx).toFixed(2)} ${(-my * 0.9 * k + Math.sin(t * 0.4) * 0.3 * (1 - ojo.cerca) + ojo.y * my * ojo.cerca).toFixed(2)})`;
     p.get('pupila-1')?.setAttribute('transform', pupila);
     p.get('pupila-2')?.setAttribute('transform', pupila);
     if (t > parpadeo + 0.15) parpadeo = t + 2.8 + Math.random() * 3.6;
     const ciego = t > parpadeo && t < parpadeo + 0.15 ? 1 : 0;
     // Los párpados pesan, y en la reverencia bajan un poco más.
-    parpado(p.get('parpado-1'), Math.max(ciego, 0.18 + 0.22 * k));
-    parpado(p.get('parpado-2'), Math.max(ciego, 0.18 + 0.22 * k));
+    // Cuando te mira a vos, los levanta: es lo que se ve de lejos.
+    const pesa = 0.18 * (1 - 0.85 * ojo.cerca) + 0.22 * k;
+    parpado(p.get('parpado-1'), Math.max(ciego, pesa));
+    parpado(p.get('parpado-2'), Math.max(ciego, pesa));
 
     // La cabeza sigue un poco la mirada; en la reverencia cabecea y se ladea hacia el pasillo.
     const [nx, ny] = AB.cuello;
@@ -1016,6 +1041,8 @@ function recintoDeLaPrision(svg: Raiz, ctx: Contexto): Vida {
   let acomodaDesde = -10;
   let mira = 0;
   let mirando = 0;
+  // La mirada al dedo (`D-90`, sexta ronda): parada, si le pasan cerca vuelve la cabeza y abre los ojos.
+  const ojo = { x: 0, y: 0, cerca: 0 };
   // El ctx.reloj() de las banderas: corre más rápido cuando sopla, sin saltar de fase.
   let soplo = 0;
 
@@ -1099,10 +1126,12 @@ function recintoDeLaPrision(svg: Raiz, ctx: Contexto): Vida {
     girar(p.get('pierna-2'), -s * 7, AD.caderas[1], `translate(0 ${(-levanta(-1)).toFixed(2)}) `);
     const rebota = -Math.abs(Math.sin(fase)) * 3 * andar + Math.sin(t * 1.3) * 0.8;
     const inclina = Math.sign(meta - x) * 1.4 * andar;
-    entera.setAttribute('transform', `translate(${x.toFixed(1)} ${(piso + rebota).toFixed(2)}) rotate(${inclina.toFixed(2)}) scale(${escala})`);
+    // Respira (sexta ronda): parada crece apenas desde los tacos, y la capa se abre un pelo con el aire.
+    const respira = Math.sin(t * 1.3) * (1 - andar);
+    entera.setAttribute('transform', `translate(${x.toFixed(1)} ${(piso + rebota).toFixed(2)}) rotate(${inclina.toFixed(2)}) scale(${escala} ${(escala * (1 + respira * 0.006)).toFixed(4)})`);
 
     // La capa: cerrada se mece con el paso; tocada, se abre.
-    const mece = Math.sin(fase) * 1.6 * andar + Math.sin(t * 0.9) * 0.4;
+    const mece = Math.sin(fase) * 1.6 * andar + Math.sin(t * 0.9) * 0.4 + respira * 0.7;
     capa(1, capaAbierta, t, mece);
     capa(2, capaAbierta, t, mece);
     p.get('mano')?.setAttribute('opacity', (1 - suave(capaAbierta / 0.2)).toFixed(2));
@@ -1110,15 +1139,21 @@ function recintoDeLaPrision(svg: Raiz, ctx: Contexto): Vida {
     // La cabeza: se ladea apenas; con la capa abierta se va para atrás, abre la boca y entorna los ojos.
     const [cx, cy] = AD.cuello;
     mirando = hacia(mirando, mira, dt * 1.6);
-    const ladea = Math.sin(t * 0.55) * 1.6 - 4 * k + 5 * suave(Math.abs(mirando)) * Math.sign(mirando);
-    const cabeza = `translate(0 ${(-2 * k).toFixed(2)}) rotate(${ladea.toFixed(2)} ${cx} ${cy})`;
+    const m = modo === 'para' ? miradaDe(entera, cx, cy - 50, 340) : { dx: 0, dy: 0, cerca: 0 };
+    ojo.x = seguir(ojo.x, m.dx * m.cerca, dt, 2.4);
+    ojo.y = seguir(ojo.y, m.dy * m.cerca, dt, 2.4);
+    ojo.cerca = seguir(ojo.cerca, m.cerca, dt, 3);
+    const ladea = Math.sin(t * 0.55) * 1.6 * (1 - ojo.cerca) - 4 * k + 5 * suave(Math.abs(mirando)) * Math.sign(mirando) * (1 - ojo.cerca) + ojo.x * 9;
+    const cabeza = `translate(${(ojo.x * 3).toFixed(2)} ${(-2 * k + ojo.y * 2.4).toFixed(2)}) rotate(${ladea.toFixed(2)} ${cx} ${cy})`;
     p.get('cabeza')?.setAttribute('transform', cabeza);
     p.get('pelo')?.setAttribute('transform', cabeza);
     p.get('mandibula')?.setAttribute('transform', `translate(0 ${(7 * k).toFixed(2)})`);
     if (t > parpadeo + 0.16) parpadeo = t + 2.6 + Math.random() * 3.4;
     const ciega = t > parpadeo && t < parpadeo + 0.16 ? 1 : 0;
-    parpado(p.get('parpado-1'), Math.max(ciega, AD.entornados + 0.3 * k));
-    parpado(p.get('parpado-2'), Math.max(ciega, AD.entornados + 0.3 * k));
+    // Mira con los ojos a media asta; cuando te mira a vos, los abre.
+    const entorna = AD.entornados * (1 - 0.8 * ojo.cerca) + 0.3 * k;
+    parpado(p.get('parpado-1'), Math.max(ciega, entorna));
+    parpado(p.get('parpado-2'), Math.max(ciega, entorna));
 
     // La sombra en el piso, más ancha con las alas abiertas, y el golpe del taco.
     sombra?.setAttribute('cx', x.toFixed(1));

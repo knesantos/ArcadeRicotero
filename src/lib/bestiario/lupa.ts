@@ -25,9 +25,15 @@ export const LUPA = {
   dura: 0.32,
   /** Por debajo de esto, al soltar, la lupa vuelve a 1: nadie quiere quedarse en 1,03. */
   suelta: 1.06,
-  /** Dos toques son un doble toque si caen a menos de esto: milisegundos y píxeles. */
-  doblePausa: 350,
-  dobleRadio: 28,
+  /**
+   * Dos toques son un doble toque si caen a menos de esto: milisegundos y píxeles. Con 350 ms y 28 px
+   * fallaba cuando el teléfono venía cargado (el segundo toque llegaba tarde, o el dedo caía un poco
+   * corrido): 520 y 44 dan margen, y siguen por debajo de lo que tarda alguien en tocar dos veces a
+   * propósito el mismo bicho (`D-90`, sexta ronda). El tiempo se cuenta desde que se apoyó el dedo, no
+   * desde que el navegador avisa el toque.
+   */
+  doblePausa: 520,
+  dobleRadio: 44,
 } as const;
 
 export interface Lente {

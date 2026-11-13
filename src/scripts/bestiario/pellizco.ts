@@ -101,6 +101,12 @@ export function leerGestos(el: HTMLElement, g: Gestos): void {
   );
 
   let ultimo: { t: number; x: number; y: number } | null = null;
+  /**
+   * Cuándo se apoyó el dedo del toque que viene. El aviso de toque (`click`) puede llegar tarde si el
+   * teléfono está ocupado; el dedo no: el reloj del doble toque es el del dedo.
+   */
+  let apoyado = 0;
+  el.addEventListener('pointerdown', (ev) => (apoyado = ev.timeStamp || performance.now()), { passive: true, capture: true });
   el.addEventListener(
     'click',
     (ev) => {
@@ -110,7 +116,7 @@ export function leerGestos(el: HTMLElement, g: Gestos): void {
         ultimo = null;
         return;
       }
-      const ahora = performance.now();
+      const ahora = apoyado || performance.now();
       if (ultimo && ahora - ultimo.t < LUPA.doblePausa && Math.hypot(ev.clientX - ultimo.x, ev.clientY - ultimo.y) < LUPA.dobleRadio) {
         ultimo = null;
         ev.stopPropagation();
