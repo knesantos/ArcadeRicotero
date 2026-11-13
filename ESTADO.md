@@ -7,49 +7,60 @@
 
 **Última actualización:** 2026-11-13
 
-> ## 🌫️ EL BESTIARIO CON MÚSCULO: EL AIRE, LA LUPA, EL PISO, LA LUZ, LOS OJOS SIN DUEÑO Y LO QUE CRUZA LEJOS (2026-11-13) — `D-90`, `T-527`
+> ## 🌫️ EL BESTIARIO CON MÚSCULO: RESUMEN DE LAS CINCO RONDAS (2026-11-13) — `D-90`, `T-527`
 >
-> **Sin integrar y sin subir**, rama `bestiario/inmersion`, cortada de `bestiario/cinco-sin-diseno` (PR #108) en `9fa0b93`. Pedido del
-> usuario: *"Quiero mejorar la inmersión. Que se pueda hacer zoom, que tenga más misterio y efectos, nieblas, mejores animaciones, una
-> mejora total manteniendo la esencia y el alma y el diseño rocambolesco ante todo, pero darle músculo."* Van **cuatro rondas**. Nueve
-> caminos de trece tienen el paquete: el monte, la pastura, Cybersiberia, los astilleros, el infierno, la ruta, el bajo, los techos y
-> la prisión. Faltan la mesa, el templo, el árbol y el galpón.
+> **Sin integrar y sin subir**, rama `bestiario/inmersion` (15 commits), cortada de `bestiario/cinco-sin-diseno` (PR #108) en
+> `9fa0b93`. Pedido del usuario: *"busca cosas que no se vean bien, ambientes mejorables y diseños que se puedan mejorar [...] Quiero
+> mejorar la inmersión. Que se pueda hacer zoom, que tenga más misterio y efectos, nieblas, mejores animaciones, una mejora total
+> manteniendo la esencia y el alma y el diseño rocambolesco ante todo, pero darle músculo."* Se hizo en cinco rondas, cada una
+> auditada. Todo lo soplado se imprime (`scripts/imprimir-bestiario.mjs`): el teléfono solo mueve imágenes con `transform` y `opacity`.
 >
-> - **El aire** (`lib/bestiario/aire.ts`, `arte-aire.ts`): capas entre las del camino. La bruma de atrás del piso, la niebla del
->   medio (de **jirones rasgados**, ninguno más ancho que un teléfono) y lo pegado a la cámara fuera de foco. Baldosas **impresas**
->   que se repiten; la isla solo las corre y les cambia el alfa. La niebla **se abre al paso**.
-> - **Cada región con su mano** (ronda 3): aerógrafo con grano donde la tapa es aerógrafo; **crayón** en el bajo y los techos;
->   **gubia** en la prisión, donde lo pegado a la cámara son los barrotes de la celda de enfrente.
-> - **El piso ya no es liso** (`arte-suelo.ts`): charcos que reflejan lo de atrás, raíces, piedras, costillares, hielo, chapas,
->   cadenas, latas. En el monte, además, tres claros con peso. Se imprimen adentro del piso: no son capas.
-> - **La luz** (`LUCES`), una por región, impresa: el cono de sodio de los astilleros, la brasa del infierno, el haz de la cámara de
->   Cybersiberia, los faros del bondi en la ruta (van con él), el reflejo del pucho en el bajo, el farol de los techos y el reflector
->   de la prisión.
-> - **Los ojos sin dueño** (`ACECHOS`): se abren si te quedás quieto cinco o seis segundos y se apagan si los mirás. Probado en el
->   navegador con mouse y con dedo.
-> - **Lo que cruza lejos** (ronda 3, `VIDAS`): un pájaro, un murciélago, una estrella que se cae, un barquito de papel. De a uno y
->   muy cada tanto.
-> - **Los títeres miran** (ronda 4, `scripts/bestiario/mirada.ts`): el lobo suelto, las lobas, Pierre, Momo y Luzbelito saben dónde
->   está el dedo o el mouse. El lobo te clava la vista con la cabeza baja, una loba entreabre el ojo, el medallón se ladea. Respiran
->   con peso, y lo que cuelga llega después.
+> **Qué cambió**
+>
+> - **El aire, en las trece regiones** (`lib/bestiario/aire.ts`, `arte-aire.ts`): capas impresas entre las del camino. La bruma de
+>   atrás del piso, la niebla del medio (de **jirones rasgados**, ninguno más ancho que un teléfono, y que **se abre al paso**) y lo
+>   pegado a la cámara fuera de foco. Cada región con **la mano de su tapa**: aerógrafo con grano, crayón en el bajo y los techos,
+>   gubia en la prisión, tinta plana en la mesa. Ropa tendida en los techos, barrotes limados en la prisión, ceniza en el infierno,
+>   ventisca en Cybersiberia, hojas en el árbol.
 > - **La lupa** (`lib/bestiario/lupa.ts`, `scripts/bestiario/pellizco.ts`): pellizco, Ctrl + ruedita, doble toque, `+` `−` `0` y dos
 >   sellos donde hay mouse, en los trece caminos y en el plano. Tope 2,6; la vuelta es **"Mirá todo"**. Caminar sigue siendo el scroll
 >   del navegador (`D-77`) y el toque que abre la ficha (`T-522`) no cambia.
-> - **Rendimiento** (medido con la CPU ×4 en Edge sin ventana): Cybersiberia andaba a **12 cuadros por segundo** por la nevada, que
->   es previa (una animación de CSS adentro del piso); mudada a capa de aire, alrededor de 50. Las capas se pintan una vez por cuadro,
->   y desde la ronda 4 **lo que no se ve no se mueve**. El monte: 60 cuadros por segundo y 10,5 ms de hilo principal. Cybersiberia:
->   48 y 16,4 ms, sin bajar del tope de 12. Números en `D-90`.
-> - **El alivio**: apaga primero la bruma de atrás y después la luz si los cuadros vienen lentos. Se fuerza con `?liviano=1` o
->   `?liviano=2` para mirarlo; mirado en captura.
-> - **Arreglos**: el halo del camello; las losas del monte (era la tira alta de lo de adelante, previa: se sacó, y un test mide en
->   la imagen que nada de adelante tape más de un quinto del alto); el pie del farol; los barrotes de la prisión, que ahora dejan libre
->   el medio; lo tirado en el piso, que ahora apoya; lo lejano del monte, que dejó de ser una cinta; los techos, rehechos (ropa tendida
->   arriba y lejos, humo de chimenea).
-> - **Verde:** `npm test` (2331: los 2294 de antes, 24 de `aire.test.ts`, 9 de `lupa.test.ts` y 4 de `mirada.test.ts`),
->   `npm run check` (0 errores), `npm run build` (200 páginas).
-> - **Falta**: probarlo en un teléfono de verdad (el pellizco en iOS, la mirada con el dedo, y si el alivio se dispara cuando tiene
->   que); las cuatro regiones que quedan; la luz que toca a los bichos; el aro punteado del bicho que habla; el sonido del aire; un
->   segundo tamaño impreso para la lupa; bajar Cybersiberia de los 12 ms. Nota para el lienzo en `Docs/SUGERENCIAS/lienzo-el-aire-y-la-lupa.md`.
+> - **El piso ya no es liso** (`arte-suelo.ts`, en el monte, la pastura, Cybersiberia, los astilleros y la ruta): charcos que reflejan
+>   roto lo de atrás, raíces, piedras, costillares, hielo, chapas, cadenas, latas. Todo apoyado (mancha, tierra, distancia) y en
+>   escorzo. Se imprime adentro del piso: no son capas.
+> - **La luz** (`LUCES`): una forma impresa por región que se mueve. El cono de sodio de los astilleros, la brasa del infierno, el haz
+>   de la cámara de Cybersiberia, los faros del bondi, el reflejo del pucho de Pierre, el farol de los techos, el reflector de la
+>   prisión, un foco del templo y el seguidor del galpón. En los astilleros y la prisión **toca a los bichos**: les prende un filo.
+> - **El misterio**: los **ojos sin dueño** (`ACECHOS`) se abren si te quedás quieto cinco o seis segundos y se apagan si los mirás;
+>   y lejos, muy cada tanto, **cruza algo** (`VIDAS`): un pájaro, un murciélago, una estrella, un barquito de papel.
+> - **Los títeres miran** (`scripts/bestiario/mirada.ts`): el lobo suelto (en el monte y en la pastura), las lobas, Pierre, Momo y
+>   Luzbelito saben dónde está el dedo o el mouse, respiran con peso, y lo que cuelga llega después.
+> - **El aire suena** (`entorno.ts`): viento con la ventisca y con la racha, el zumbido del tubo que titila, el chisporroteo de la
+>   brasa. Bajito y con el botón de siempre.
+> - **La tiza**: el aro punteado amarillo del bicho que habla es una vuelta de tiza irregular; el foco del teclado, la misma en oro.
+> - **Rendimiento**: Cybersiberia andaba a 12 cuadros por segundo con la CPU ×4 por una animación previa adentro del piso (la
+>   nevada); mudada a capa, alrededor de 50. Las capas se pintan una vez por cuadro; lo que no se ve no se mueve (el elenco y los
+>   títeres grandes); y hay un **alivio** que apaga la bruma de atrás y después la luz si los cuadros vienen lentos (`?liviano=1` o
+>   `2` lo fuerza para mirarlo).
+> - **Arreglos encontrados auditando**: el halo del camello, las losas del monte, el pie del farol, el horizonte de cinta del monte,
+>   los techos. Un test mide en la imagen impresa que nada de adelante tape más de un quinto del alto.
+>
+> **Verde:** `npm test` 2337 (los 2294 de antes y 43 nuevos: 29 de `aire.test.ts`, 9 de `lupa.test.ts`, 5 de `mirada.test.ts`),
+> `npm run check` 0 errores, `npm run build` 200 páginas. Ningún test anterior se borró ni se aflojó. Medido con la CPU ×4 en Edge sin
+> ventana: el monte, 9,9 ms de hilo principal y 60 cuadros por segundo; Cybersiberia, entre 12,7 y 15,4 ms y unos 50.
+>
+> **Qué falta**
+>
+> - **Un teléfono de verdad.** Todo se miró en Edge sin ventana, con dedos emulados. Sin probar: el pellizco en **iOS**, la mirada
+>   con el dedo, si el alivio se dispara solo cuando tiene que, y cuánto le cuesta todo a un equipo flojo.
+> - **Escucharlo.** El sonido del aire se escribió y se probó que no rompe, pero no se escuchó: hay que ajustarlo de oído.
+> - **El lienzo de marca.** Nada de esto está pegado en el lienzo. La lista de lo que hay que pasar (24 puntos, de las cinco rondas)
+>   está en `Docs/SUGERENCIAS/lienzo-el-aire-y-la-lupa.md`. No hay tintas nuevas en `tokens.css`.
+> - **Cybersiberia no bajó de 12 ms** con la CPU ×4 (la escena sola gasta 11). Bajarla es sacarle capas.
+> - **El doble toque** falló dos veces en las pruebas emuladas con la máquina cargada (depende de que los dos toques lleguen en 350 ms).
+> - Mirada y respiración para Barbazul, la drácula y Limón; un segundo tamaño impreso para la lupa; el filo a medida de cada bicho;
+>   el piso del árbol, la mesa y el galpón; atar los ojos a una mata de adelante.
+> - Integrar: esta rama va encima del PR #108, que sigue abierto. Detalle y números en `D-90` y sus cuatro enmiendas.
 
 > ## 🐕 CINCO QUE SEGUÍAN SIN DISEÑO: EL REY GARUFA, EL JOVEN LOBO, EL REO SEMENTAL, EL MOSCÓN ZUMBÓN Y EL OVEJERO (2026-11-05) — `D-73` (26), `T-526`
 >

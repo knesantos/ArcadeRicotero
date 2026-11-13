@@ -7349,3 +7349,88 @@ además la luz (el cono del farol) y lo que cruza lejos, y la escena sigue enter
 
 `aire.test.ts` queda en 24 y se suma `mirada.test.ts` (4). `npm test` 2331, `npm run check`,
 `npm run build` (200 páginas).
+
+### Enmienda — quinta ronda (2026-11-13): las trece regiones, la luz que toca, el aire que suena y la tiza
+
+**Las cuatro que faltaban.** Las trece regiones tienen aire y ojos sin dueño.
+
+- **La mesa**: el humo que sube, del lado de la olla. La tapa es un afiche (*La mosca y la sopa*),
+  así que el humo es **tinta plana con grano**: volutas del color del papel, sin un soplo. Ojos
+  abajo del mantel; arriba cruza una polilla. No lleva luz propia: ya tiene pintado el seguidor
+  que cae sobre la olla.
+- **El templo**: el incienso, que sí va soplado, en hebras tibias del color de los focos; y **un
+  foco de la guirnalda** que cae al costado del medallón y titila. (Primero lo clavé encima de la
+  cara de Momo: era el reflector de la prisión otra vez. Se corrió.)
+- **El árbol**: las hojas que se le caen (la baldosa cierra para los dos lados) y la racha que las
+  lleva de costado. Cruza un pájaro.
+- **El galpón**: el polvo del recital, en motas parejas como la trama de puntos del público, y el
+  seguidor de atrás, que barre.
+- **La bengala del galpón queda como excepción** del tope del quinto (tapa el 39 %). Es una sola, es
+  fina, es arte previo y es la luz del público: achicarla era sacarle al galpón lo único que tiene
+  de recital. Está escrita con su porqué en `aire.test.ts`.
+
+**La luz toca a los bichos** (`Luz.filo`). Cuando el cono del farol de los astilleros o el reflector
+de la prisión le pasan por encima a un bicho, se le prende un **filo**: una medialuna impresa en la
+coronilla, de aerógrafo con grano en los astilleros y de gubia en la prisión. Cuánto se prende
+depende de a cuántos grados le quedó el haz (`tocaLaLuz`). A quién le toca (los tres más cercanos
+que no anden) se mide cada medio segundo y antes de mover nada. Es una medialuna genérica estirada
+al ancho del bicho, no el contorno de cada uno: un filo a medida pediría imprimirlo por títere.
+
+**El aire suena**, por el motor del camino (`entorno.ts`), con el mismo botón y bajito (los topes
+están en `TOPE_DEL_AIRE`: 0,05 el viento, 0,014 el zumbido, 0,05 la chispa, sobre un general de 0,7).
+Todo atado a algo que se ve: el **viento** sube y baja con el alfa de la ventisca de Cybersiberia y
+de la racha del árbol; el **tubo** de los faroles que titilan (astilleros, techos, templo) zumba y se
+corta cuando se apagan, más fuerte cuanto más en el medio de la pantalla están; la **brasa** del
+infierno chisporrotea una vez por latido. Con movimiento reducido no suenan. **No se escuchó**: la
+máquina donde se hizo corre el navegador sin ventana y en silencio; está probado que no rompe nada
+y que el motor recibe los pedidos, no cómo suena.
+
+**Arreglos de la auditoría.**
+
+- **Los charcos del monte** reflejaban triángulos de punta abajo, parejos y en fila: una guirnalda.
+  Ahora el reflejo es **roto**: tres o cuatro manchas acostadas por tira, cada vez más angostas y más
+  corridas, más oscuras, que arrancan contra el canto de atrás (ahí las corta la máscara) y no llegan
+  a la mitad del charco.
+- **El aro punteado amarillo** del bicho que habla pasó a **una vuelta de tiza**: del papel, con el
+  trazo que se corta donde la tiza salta (doce tramos, ninguno igual al de al lado), apenas ovalada y
+  torcida, de punta redonda. **El foco del teclado** es la misma vuelta en el oro del foco de todo el
+  sitio (`--acento-2`) y más gruesa; el de los títeres, un contorno entero de 3 px despegado del
+  dibujo (era una raya punteada fina). Sigue siendo una forma y no solo un color.
+- **Los títeres grandes tampoco se mueven si no se ven** (`vigia.ts`): Luzbelito, Momo, Pierre y
+  Barbazul. Se miran en la misma tanda que el elenco. La drácula no: anda por el pasillo, y quieta
+  fuera de la vista no volvería.
+- **El lobo de la pastura mira** igual que el del monte.
+
+**Cybersiberia no bajó de 12 ms**, y conviene decirlo sin vueltas. Medido tres veces seguidas al
+cerrar la ronda, con la CPU ×4: 12,7, 15,4 y 15,2 ms por cuadro, a unos 50 cuadros por segundo; la
+escena sola, sin aire ni luz, 11,1. Entre una corrida y otra hay hasta 3 ms de ruido en esa máquina,
+así que sacar o poner una capa no se distingue. Lo que se hizo: lo de atrás del piso se corre un
+cuadro sí y uno no, y el alfa se reescribe con menos frecuencia. Lo que queda es el costo de
+componer cuatro capas grandes más la luz sobre una escena que sola ya gasta 11; bajarlo de verdad es
+sacar capas, y para eso está el alivio. El monte quedó en 9,9 ms y 60 cuadros por segundo.
+
+**Lo que no entró**: la mirada y la respiración de Barbazul, la drácula y Limón.
+
+`aire.test.ts` queda en 29 y `mirada.test.ts` en 5. `npm test` 2337, `npm run check`,
+`npm run build` (200 páginas).
+
+### Resumen de las cinco rondas, y cómo se lee esta decisión
+
+`D-90` creció por enmiendas. Lo que quedó en pie:
+
+1. **El aire** (rondas 1 a 5): tres planos de capas impresas entre las del camino, en las trece
+   regiones, cada una con la mano de su tapa. La niebla es de jirones rasgados y se abre al paso.
+2. **La lupa** (ronda 1): pellizco, Ctrl + ruedita, doble toque, teclado y sellos, en los caminos y
+   en el plano.
+3. **El piso** (rondas 2 a 5): lo tirado, impreso adentro del piso, apoyado y en escorzo.
+4. **La luz** (rondas 2 a 5): una forma impresa por región, que se mueve y toca a los bichos.
+5. **El misterio** (rondas 2 y 3): los ojos sin dueño y lo que cruza lejos.
+6. **Los títeres** (rondas 4 y 5): miran, respiran con peso, y los que no se ven no se mueven.
+7. **El rendimiento** (rondas 3 a 5): la nevada fuera del piso, una pintada por cuadro, el descarte y
+   el alivio.
+8. **El sonido del aire** (ronda 5).
+
+Dos cosas se aprendieron por el camino y valen para lo que venga: **lo que más pesaba no era nada
+de esta decisión** (era una animación de CSS adentro de un dibujo, previa), y **cada vez que algo
+pegado a la cámara subió más que un quinto de la pantalla hubo que bajarlo**; por eso ahora lo mide
+un test en la imagen.

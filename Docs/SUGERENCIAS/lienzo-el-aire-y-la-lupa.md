@@ -60,3 +60,16 @@ Capturas de referencia: las de la entrada de `ESTADO.md` de `T-527` (carpeta tem
 18. **La mirada**: un títere con el dedo cerca hace una sola cosa, la suya (clavar la vista, espiar,
     ladearse), y llega tarde. Nada de ojos que siguen al cursor como un juguete.
 19. **Respirar con peso**: se llena despacio, se vacía más rápido; lo que cuelga llega después.
+
+## Quinta ronda (2026-11-13)
+
+20. **El redondel del bicho que habla es de tiza**: del papel, de trazo roto e irregular, apenas
+    ovalado. Reemplaza al aro punteado amarillo de la hoja 08. El foco del teclado es la misma
+    vuelta en `--acento-2`, más gruesa.
+21. **El reflejo en un charco es roto**: manchas acostadas que se angostan, nunca la forma entera
+    dada vuelta. Corrige el punto 8.
+22. **El filo**: lo que la luz le prende a un bicho es una medialuna de canto duro en la coronilla,
+    en la tinta de esa luz y con la mano de la región.
+23. **La mesa es un afiche**: su humo es tinta plana con grano, sin soplo.
+24. **El sonido del aire** va atado a algo que se ve y no pasa de un susurro. Es de `D-76`, no del
+    lienzo, pero conviene que la hoja 12 lo nombre.
