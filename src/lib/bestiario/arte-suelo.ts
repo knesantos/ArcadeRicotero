@@ -47,8 +47,20 @@ function charco(id: string, x: number, y: number, rx: number, ry: number, rnd: A
     const o = 0.5 + rnd() * 0.35;
     // En el monte se reflejan las puntas de las tiras; donde lo que hay atrás son luces, rayas finas
     // que bajan temblando, como se ve un farol en el agua.
-    if (como === 'puntas') adentro += soplo(`M${f(lx - ancho)} ${f(y - ry * 1.2)} L${f(lx + ancho)} ${f(y - ry * 1.2)} L${f(lx + corre)} ${f(y - ry * 1.2 + largo)} Z`, color, 'xs', o);
-    else {
+    if (como === 'puntas') {
+      // El reflejo de una tira (`D-90`, quinta ronda): **roto**. Antes era un triángulo limpio de punta
+      // abajo, y varios en fila eran una guirnalda de cumpleaños. El agua no devuelve la forma: devuelve
+      // pedazos. Tres o cuatro manchas acostadas, cada vez más angostas y más corridas, que arrancan
+      // contra el canto de atrás (ahí las corta la máscara) y no llegan a la mitad del charco.
+      const pedazos = 3 + Math.floor(rnd() * 2);
+      for (let k = 0; k < pedazos; k++) {
+        const u = k / pedazos;
+        const w = ancho * (1.5 - u * 1.15) * (0.7 + rnd() * 0.5);
+        const yy = y - ry * 1.05 + u * Math.min(largo, ry * 1.25) + (rnd() - 0.5) * ry * 0.12;
+        const xx = lx + corre * u + (rnd() - 0.5) * ancho * 0.9;
+        adentro += nube(xx, yy, Math.max(1.6, w), Math.max(0.9, ry * 0.11), color, 'xs', o * (0.75 - u * 0.4));
+      }
+    } else {
       for (let k = 0; k < 4; k++) {
         const yy = y - ry * 0.8 + k * ry * 0.42;
         adentro += trazo(`M${f(lx - ancho * (0.9 - k * 0.15) + (rnd() - 0.5) * 2)} ${f(yy)} l${f(ancho * (1.8 - k * 0.3))} 0`, color, Math.max(0.9, ry * 0.16), o * (1 - k * 0.18));
@@ -147,7 +159,7 @@ function claroDelMonte(id: string, x: number, y: number, rnd: Azar): string {
   const ry = 20 + rnd() * 6;
   return (
     raiz(x - rx * 1.25, y - ry * 0.9, rx * 1.5, rnd, 2.1) +
-    charco(`${id}-ch`, x, y, rx, ry, rnd, M.negro, [M.hondo, M.medio, M.claro, M.medio, M.sombra], M.claro, 'puntas', 7) +
+    charco(`${id}-ch`, x, y, rx, ry, rnd, M.negro, [M.hondo, M.sombra, M.hondo, M.medio, M.sombra], M.medio, 'puntas', 6) +
     piedra(`${id}-p1`, x - rx * 0.9, y + ry * 0.7, 40 + rnd() * 12, rnd, M.hondo, M.medio, M.negro) +
     piedra(`${id}-p2`, x - rx * 0.62, y + ry * 1.05, 24 + rnd() * 8, rnd, M.hondo, M.medio, M.negro) +
     asentar(
@@ -174,7 +186,7 @@ export function sueloDelMonte(desde: number, hasta: number, semilla: number): st
     const que = rnd();
     // Cada cosa, apoyada: su mancha, la tierra que la tapa por abajo, y más apagada cuanto más lejos.
     const apoya = (dibujo: string, cx: number, w: number): string => asentar(dibujo, cx, y, w, hondura, M.oscuro, M.negro);
-    if (que < 0.24) s += `<g opacity="${f(0.55 + 0.45 * hondura)}">${charco(`sm-ch-${n}`, x, y, (38 + rnd() * 50) * escala, (6 + rnd() * 6) * escala, rnd, M.negro, [M.hondo, M.medio, M.claro, M.sombra], M.medio)}</g>`;
+    if (que < 0.24) s += `<g opacity="${f(0.55 + 0.45 * hondura)}">${charco(`sm-ch-${n}`, x, y, (38 + rnd() * 50) * escala, (6 + rnd() * 6) * escala, rnd, M.negro, [M.hondo, M.sombra, M.hondo, M.medio], M.hondo)}</g>`;
     else if (que < 0.46) {
       const largo = (50 + rnd() * 70) * escala;
       s += apoya(raiz(x, y, largo, rnd), x + largo / 2, largo);

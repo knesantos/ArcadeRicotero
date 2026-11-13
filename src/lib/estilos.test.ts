@@ -789,7 +789,7 @@ const ISLAS: Readonly<Record<string, Tablero | SinTablero>> = {
   },
 
   // `D-73`: el bestiario redondo, en la Redondopedia (`sitio.css`). Sus estados: la bestia que
-  // está hablando y las ya anotadas (las dos con forma: un aro punteado y un sello con tilde),
+  // está hablando y las ya anotadas (las dos con forma: una vuelta de tiza y un sello con tilde),
   // la fila del índice anotada, el botón que suena y la soga del cordero cuando está tensa.
   // La pastura (el lobo y el cordero) vive aparte desde la séptima vuelta, porque la comparte con
   // el camino con cruces: la soga tensa la crea ese módulo, y cuenta como de la isla.
