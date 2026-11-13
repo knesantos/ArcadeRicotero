@@ -36,14 +36,19 @@
 #   caja      se dibuja encima de lo que tape: arriba de una placa, la placa no se ve.
 #   tesoro    uno por dueño desde D-47 (CTR-16.4): tesoroSkayboy para 'para: skayboy', tesoroPoligirl
 #             para la otra. El de los dos se retiró, y con él el tile 'tesoro' de la v2: por eso la v3.
+#             La v4 redibuja el cigarrillo para que se entienda (D-86); los otros tiles no cambian.
 #             La guitarra de Skay es una masa: cuerpo con boca, mástil en diagonal hacia la esquina de
-#             arriba, clavijero. El cigarrillo de Poli es una línea: apoyado en diagonal, con el filtro
-#             marcado por un anillo de clave, la punta encendida en luz y un hilo de humo. En gris se
-#             separan por eso, gorda contra flaca (UX-33 §3.3). Al juntarse, el tile pasa a aire en el
-#             mismo cuadro: no hay brillo ni tile de 'juntado' (UX-33 §3.4). Si llega un reclamo por el
-#             cigarrillo, se redibuja este tile y sube la versión; el dato no se toca (D-47, CTR-16.4).
+#             arriba, clavijero. El cigarrillo de Poli es una línea, pero una que se lee (D-86, v4):
+#             acostado, un tubo de papel en luz con contorno de clave, el filtro de corcho en la tinta
+#             de objetos a la izquierda con su anillo, la brasa en la misma tinta a la derecha y un hilo
+#             de humo de clave que sube serpenteando. Hasta la v3 era un palito en diagonal de un píxel
+#             de espesor, y el usuario no entendía qué era (2026-11-04). En gris se siguen separando,
+#             gorda contra flaca (UX-33 §3.3): el tubo es luz, y la tinta de objetos solo pinta el filtro
+#             y la brasa. Al juntarse, el tile pasa a aire en el mismo cuadro: no hay brillo ni tile de
+#             'juntado' (UX-33 §3.4). Si llega un reclamo por el cigarrillo, se redibuja este tile y sube
+#             la versión; el dato no se toca (D-47, CTR-16.4).
 tipo: tile
-version: 3
+version: 4
 
 tinta: K --px-clave
 tinta: L --px-luz
@@ -164,19 +169,19 @@ LLLLLLLLLLLLLLLL
 
 cuadro: tesoroPoligirl 0
 LLLLLLLLLLLLLLLL
-LLLLLLLLLLLLLLLL
-LLLLLLLLLLLLLLLL
-LLLLLLLLLLLLLLLL
+LLLLLLLLLLLKLLLL
 LLLLLLLLLLLLKLLL
 LLLLLLLLLLLLLKLL
 LLLLLLLLLLLLKLLL
+LLLLLLLLLLLLKLLL
 LLLLLLLLLLLLLKLL
-LLLLLLLLLLKKKLLL
-LLLLLLKKKKOOLKLL
-LLLKKKOOOOOOLKLL
-LLKOOKOOOOKKKLLL
-LLKOOKKKKKLLLLLL
-LLLKKKLLLLLLLLLL
+LLLLLLLLLLLLLLLL
+LLKKKKKKKKKKKKLL
+LLKOOOKLLLLLLOLL
+LLKOOOKLLLLLLOLL
+LLKOOOKLLLLLLOLL
+LLKKKKKKKKKKKKLL
+LLLLLLLLLLLLLLLL
 LLLLLLLLLLLLLLLL
 LLLLLLLLLLLLLLLL
 

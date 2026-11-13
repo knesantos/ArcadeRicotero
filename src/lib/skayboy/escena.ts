@@ -126,10 +126,11 @@ import { duenoDelTesoro, tesorosDelNivel, type Banco, type IdPersonaje, type Niv
 /**
  * El atlas de la sala (`T-276`). Sube de versión con `src/arte/pixel/sala.txt` (`CTR-15.8`): la v2
  * suma la fila de `puertaAbierta` (`T-290`), y la v3 cambia el `tesoro` de los dos por la guitarra y
- * el cigarrillo, uno por dueño (`D-47`, `T-300`/`T-303`). Las viejas se quedan en `public/sprites/`
- * hasta que nada las pida — `CTR-15.8` no las borra en el mismo cambio.
+ * el cigarrillo, uno por dueño (`D-47`, `T-300`/`T-303`); la v4 redibuja el cigarrillo, que era un
+ * palito que nadie entendía (`D-86`). Las viejas se quedan en `public/sprites/` hasta que nada las
+ * pida — `CTR-15.8` no las borra en el mismo cambio.
  */
-export const ATLAS_DE_LA_SALA = 'sala.v3';
+export const ATLAS_DE_LA_SALA = 'sala.v4';
 
 /** Dónde viven los atlas (`CTR-15.5`). Se piden por ruta, como cualquier archivo de `public/`. */
 export const CARPETA_DE_SPRITES = '/sprites/';
