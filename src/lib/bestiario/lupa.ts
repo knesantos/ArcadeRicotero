@@ -26,7 +26,7 @@ export const LUPA = {
   /** Por debajo de esto, al soltar, la lupa vuelve a 1: nadie quiere quedarse en 1,03. */
   suelta: 1.06,
   /** Dos toques son un doble toque si caen a menos de esto: milisegundos y píxeles. */
-  doblePausa: 320,
+  doblePausa: 350,
   dobleRadio: 28,
 } as const;
 

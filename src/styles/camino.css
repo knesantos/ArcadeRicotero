@@ -164,15 +164,30 @@
    De costado sigue siendo caminar. */
 .camino--lupa .camino-escenario { touch-action: pan-x; }
 
-/* Los botones de la lupa (`sitio.css`, los mismos del plano), abajo a la derecha de la escena. */
+/* Los botones de la lupa (`sitio.css`, los mismos del plano), debajo de la salida: es el único
+   rincón que la ficha no ocupa (abajo en el teléfono, a la derecha en la compu), y la vuelta de la
+   lupa tiene que estar siempre a la vista. Van encima de la ficha; si la ficha se abrió arriba,
+   bajan al rincón de abajo. */
 .camino-lupa {
   position: fixed;
-  right: var(--espacio-2);
-  bottom: calc(var(--espacio-2) + env(safe-area-inset-bottom, 0px));
-  z-index: 20;
+  left: var(--espacio-2);
+  top: calc(var(--toque-min) + var(--espacio-2));
+  z-index: 45;
 }
 
-html.incrustado .camino-lupa { bottom: calc(3.6rem + var(--espacio-2) + env(safe-area-inset-bottom, 0px)); }
+body:has(.bestiario-hoja--arriba:not([hidden])) .camino-lupa,
+body:has(.bestiario-hoja--izquierda:not([hidden])) .camino-lupa {
+  top: auto;
+  bottom: calc(var(--espacio-2) + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 52rem) {
+  body:has(.bestiario-hoja--izquierda:not([hidden])) .camino-lupa {
+    left: auto;
+    right: var(--espacio-2);
+  }
+}
+
 
 /* Con paralaje, la vista queda quieta en la pantalla mientras la tira pasa: las capas las corre
    la isla, cada una a su velocidad. La tira no recorta: si recortara, sería ella la caja de
