@@ -5,7 +5,7 @@ import sharp from 'sharp';
 
 import { rutaDePieza } from './aerografo.ts';
 import {
-  ACECHOS, AIRE, ALIVIO, ALIVIO_DE_LA_REGION, FILO_PROPIO, LUCES, MIRADA, PASO_PLENO, VIDAS, aireDe, alfaDeAire, alivioDeEntrada, alivioTras, altoDeBaldosa, rutaDelFilo, tieneFiloPropio, corridaDeAire, despejeDeLupa, estadoDeLuz, latido,
+  ACECHOS, AIRE, ALIVIO, ALIVIO_DE_LA_REGION, FILO_PROPIO, LUCES, MIRADA, PASO_PLENO, VIDAS, aireDe, alfaDeAire, GROSOR_DEL_FILO, alivioDeEntrada, alivioTras, altoDeBaldosa, rutaDelFilo, tieneFiloPropio, corridaDeAire, despejeDeLupa, estadoDeLuz, latido,
   parpadeo, pasoDeVida, resto, tocaLaLuz,
 } from './aire.ts';
 import { PIEZAS_AIRE, PIEZAS_DE_FILO, PIEZAS_DE_LUZ, PIEZAS_DE_VIDA } from './arte-aire.ts';
@@ -405,7 +405,10 @@ test('el filo a medida: cada pieza de los títeres que pasan bajo una luz tiene 
   assert.ok(peso < 400_000, `los cantos pesan ${Math.round(peso / 1024)} kB`);
   // La isla solo les mueve la opacidad, por una variable en la raíz del títere: ni un `filter`.
   const css = readFileSync('src/styles/camino.css', 'utf-8');
-  assert.match(css, /\.camino \.filo-propio \{\s*opacity: var\(--filo, 0\);\s*pointer-events: none;\s*\}/);
+  // Séptima ronda: al doble, para que con medio haz encima ya esté prendido del todo. Sigue siendo
+  // una sola propiedad, `opacity`.
+  assert.match(css, /\.camino \.filo-propio \{[^}]*opacity: calc\(var\(--filo, 0\) \* 2\);\s*pointer-events: none;\s*\}/);
+  assert.doesNotMatch(/\.camino \.filo-propio \{[^}]*\}/.exec(css)![0], /filter|shadow/);
   assert.match(css, /\.camino--muy-liviano \.filo-propio \{ display: none; \}/);
 });
 
@@ -417,6 +420,8 @@ test('el haz no tiene canto de regla ni plano parejo, y el templo tiene sus ofre
   assert.doesNotMatch(foco, /Gradient/i);
   const ofrendas = AIRE['el-templo']!.find((c) => c.pieza === 'aire-templo-ofrendas')!;
   assert.ok(ofrendas.f === 1 && !ofrendas.deriva && !ofrendas.cae, 'van con el piso');
+  // Séptima ronda: no es una baldosa que se repite (caía encima de los bichos), es el templo entero.
+  assert.equal(ofrendas.ancho, 1940);
   assert.ok(ofrendas.y <= 450 && ofrendas.y + ofrendas.alto >= 620, 'llenan de abajo del medallón al papel picado');
   assert.ok(existsSync('public/bestiario/aire-templo-ofrendas.webp'));
 });
@@ -572,4 +577,38 @@ test('el redondel del bicho que habla es de tiza, y el foco del teclado sigue a 
   assert.match(foco, /stroke: var\(--acento-2\);/);
   assert.ok(Number(/stroke-width: ([\d.]+);/.exec(foco)?.[1]) > Number(/stroke-width: ([\d.]+);/.exec(regla)?.[1]));
   assert.match(css, /\.titere:focus-visible \{\s*outline: 3px solid var\(--acento-2\);/);
+});
+
+test('los techos no están ahogados: el crayón queda donde hay luz, no parejo de punta a punta', () => {
+  // La pieza es previa a `D-90` (`baldio-lejos`, de `D-73`/`D-80`): 900 rayones en el cielo y 700 en el
+  // piso se leían como ruido de televisor. Se bajaron en la séptima ronda; los de los faroles, no.
+  const arte = readFileSync('src/lib/bestiario/arte.ts', 'utf-8');
+  const cuenta = (re: RegExp): number => Number(re.exec(arte)![1]);
+  assert.ok(cuenta(/rayones\(-20, -20, 920, 300, (\d+), /) <= 400, 'el cielo');
+  assert.ok(cuenta(/rayones\(-10, 392, 910, alto, (\d+), /) <= 250, 'el piso, donde andan los bichos');
+  assert.doesNotMatch(/rayones\(-10, 392, 910, alto, [^)]*\)/.exec(arte)![0], /B\.lila|B\.luz/, 'sin el lila, que saltaba delante de ellos');
+  assert.ok(cuenta(/rayones\(farol\.x - 170, farol\.y - 120, farol\.x \+ 170, farol\.y \+ 140, (\d+), /) >= 260, 'el farol sigue apretado de rayones');
+  assert.match(readFileSync('src/lib/bestiario/arte-baldio.ts', 'utf-8'), /for \(let i = 0; i < 40; i\+\+\) \{\s*const x = 60 \+ rnd\(\) \* \(largo - 80\);/);
+});
+
+test('el canto a medida se ve: grueso, de tinta llena y nunca blanco sobre blanco', () => {
+  assert.ok(GROSOR_DEL_FILO >= 10);
+  assert.equal(FILO_PROPIO['la-prision']!.tinta, 'var(--disco-oktubre-tinta)');
+  assert.notEqual(FILO_PROPIO['la-prision']!.tinta, 'var(--bestia-dracula-papel)');
+  assert.match(readFileSync('scripts/imprimir-bestiario.mjs', 'utf-8'), /filo\[i \+ 3\] = canto > 110 \? 255 : 0;/);
+  // A quién le pega se mide al medio del cuerpo, no en la coronilla: a los altos no les tocaba nunca.
+  assert.match(readFileSync('src/scripts/camino.ts', 'utf-8'), /Math\.atan2\(-\(b\.x - ancla\), b\.cy - l\.r\.y\)/);
+});
+
+test('el humo del templo baja, y las ofrendas no caen encima de nadie', () => {
+  const humo = AIRE['el-templo']!.find((c) => c.pieza === 'aire-templo-humo-baja')!;
+  assert.ok(humo.cae > 0 && humo.alto === ALTO && humo.alfa < 0.5);
+  const fuente = readFileSync('src/lib/bestiario/arte-aire.ts', 'utf-8');
+  const cerca = [...(/cerca: \[(.*?)\] as const/.exec(fuente)![1]!).matchAll(/\[(\d+), (\d+), /g)].map((m) => [Number(m[1]), Number(m[2])] as const);
+  const lejos = (/lejos: \[([\d, ]+)\]/.exec(fuente)![1]!).split(',').map(Number);
+  assert.ok(cerca.length >= 4 && lejos.length >= 5, 'dos filas');
+  // Los que están parados en el piso del templo: el medio y medio ancho, medidos en la página.
+  const parados: readonly (readonly [number, number])[] = [[63, 28], [194, 68], [328, 28], [589, 28], [979, 85], [1240, 86], [1347, 28], [1468, 115]];
+  for (const [x, cuantas] of cerca) for (const [bx, medio] of parados) assert.ok(Math.abs(x - bx) > medio + cuantas * 13, `la tanda de ${x} cae encima del que está en ${bx}`);
+  for (const x of lejos) for (const [bx, medio] of parados) assert.ok(Math.abs(x - bx) > medio + 20, `la fila de atrás, en ${x}, cae encima del que está en ${bx}`);
 });
