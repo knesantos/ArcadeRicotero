@@ -18,6 +18,7 @@ import {
 import { ARMADO } from '../../lib/bestiario/recortes.ts';
 import { girar, hacia, parpado, partes, suave } from './articular.ts';
 import { miradaDe, seguir } from './mirada.ts';
+import { vigia } from './vigia.ts';
 import { armarPastura } from './pastura.ts';
 import { armarAtila } from './atila.ts';
 import { conElenco } from './vivos.ts';
@@ -383,6 +384,7 @@ function recintoDeLuzbelito(svg: Raiz, ctx: Contexto): Vida {
   let avivaHasta = -1;
   /** La mirada (`D-90`, cuarta ronda): el busto se vuelve hacia el dedo, despacio, y la llama se le va para ese lado. */
   const mira = { x: 0, cerca: 0, antes: 0 };
+  const seVe = vigia(ctx, g);
 
   function pintar(t: number): void {
     const dt = Math.min(0.05, Math.max(0, t - mira.antes));
@@ -423,7 +425,7 @@ function recintoDeLuzbelito(svg: Raiz, ctx: Contexto): Vida {
   return {
     mover: (t, dt) => {
       deMapa.mover(t, dt);
-      pintar(t);
+      if (dt === 0 || seVe()) pintar(t);
     },
     reaccionar: (id, t) => {
       if (id === 'luzbelito') avivaHasta = t + 0.9;
@@ -446,6 +448,7 @@ function recintoDeMomo(svg: Raiz, ctx: Contexto): Vida {
    * quien arrima la cara.
    */
   const peso = { a: 0, v: 0, antes: 0, mira: 0 };
+  const seVe = vigia(ctx, g);
 
   function pintar(t: number): void {
     const dt = Math.min(0.05, Math.max(0, t - peso.antes));
@@ -489,7 +492,7 @@ function recintoDeMomo(svg: Raiz, ctx: Contexto): Vida {
   return {
     mover: (t, dt) => {
       deMapa.mover(t, dt);
-      pintar(t);
+      if (dt === 0 || seVe()) pintar(t);
     },
     reaccionar: (id, t) => {
       if (id === 'momo') {
@@ -536,6 +539,7 @@ function recintoDePierre(svg: Raiz, ctx: Contexto): Vida {
   let proximaGota = 0;
   /** La mirada (`D-90`, cuarta ronda): te sigue con la cara, despacio, y entreabre un ojo. */
   const mira = { x: 0, y: 0, cerca: 0, antes: 0 };
+  const seVe = vigia(ctx, g);
 
   function empezar(m: Modo, t: number, segundos: number): void {
     modo = m;
@@ -736,7 +740,7 @@ function recintoDePierre(svg: Raiz, ctx: Contexto): Vida {
   return {
     mover: (t, dt) => {
       deMapa.mover(t, dt);
-      pintar(t);
+      if (dt === 0 || seVe()) pintar(t);
     },
     reaccionar: (id, t) => {
       if (id === 'el-gordo-pierre') reirse(t);
@@ -982,6 +986,7 @@ function barbazulDeLaPrision(svg: Raiz, ctx: Contexto, laDracula: () => number, 
 function recintoDeLaPrision(svg: Raiz, ctx: Contexto): Vida {
   const deMapa = recintoDeMapa(svg, ctx);
   const g = svg.querySelector<SVGGElement>('.titere--dracula')!;
+  const veBarbazul = vigia(ctx, svg.querySelector('.titere--barbazul'));
   const entera = svg.querySelector<SVGGElement>('#dracula-entera')!;
   const p = partes(g);
   const sombra = svg.querySelector<SVGEllipseElement>('[data-parte="sombra"]');
@@ -1178,7 +1183,9 @@ function recintoDeLaPrision(svg: Raiz, ctx: Contexto): Vida {
     mover: (t, dt) => {
       deMapa.mover(t, dt);
       pintar(t, dt);
-      barbazul.pintar(t, dt);
+      // Barbazul está parado en la entrada: si no se lo ve, no se mueve. La drácula sí: anda por el
+      // pasillo, y quieta fuera de la vista no volvería nunca.
+      if (dt === 0 || veBarbazul()) barbazul.pintar(t, dt);
     },
     reaccionar: (id, t) => {
       if (id === 'la-dracula-con-tacones') abrirLaCapa(t);

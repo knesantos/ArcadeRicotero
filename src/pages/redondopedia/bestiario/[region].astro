@@ -106,6 +106,8 @@ const luces = (LUCES[id] ?? []).map((l) => ({
   alto: l.caja[3],
   estilo: `--lx: ${l.x + l.caja[0]}; --ly: ${l.y + l.caja[1]}; --lw: ${l.caja[2]}; --lh: ${l.caja[3]}; --alfa: ${l.alfa}`,
 }));
+/** Los filos (`Luz.filo`): lo que la luz le prende a los bichos que tiene cerca cuando les pasa por encima. Los ubica la isla. */
+const filos = (LUCES[id] ?? []).flatMap((l) => (l.filo ? Array.from({ length: l.filo.cuantos }, () => ({ luz: l.pieza, pieza: l.filo!.pieza })) : []));
 /** Los ojos sin dueño de la región: no se ven hasta que la isla los abre. */
 const acecho = ACECHOS[id] ?? null;
 /** Lo que cruza lejos, muy cada tanto (`VIDAS`): tampoco se ve hasta que la isla lo suelta. */
@@ -258,6 +260,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
           }
 
           {aire('cerca').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
+          {filos.map((fl) => <img class="filo" data-filo={fl.luz} src={rutaDePieza(fl.pieza)} width="100" height="50" style="--lw: 100; --lh: 50" alt="" decoding="async" loading="lazy" />)}
           {vida && (
             <img class="vida" id="vida" src={rutaDePieza(vida.pieza)} width={vida.ancho} height={vida.alto} style={`--lw: ${vida.ancho}; --lh: ${vida.alto}`} alt="" decoding="async" loading="lazy" />
           )}

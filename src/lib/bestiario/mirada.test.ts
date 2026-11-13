@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 
 import { ATENCION, miradaDe, seguir } from '../../scripts/bestiario/mirada.ts';
 import { MIRAR_CADA } from '../../scripts/bestiario/vivos.ts';
+import { mirarVigias, vigia } from '../../scripts/bestiario/vigia.ts';
 
 /**
  * La mirada y el descarte (`D-90`, cuarta ronda): los títeres más vistos saben dónde está el dedo, y
@@ -46,11 +47,34 @@ test('lo que no se ve no se mueve: el elenco se mira de a tandas, y los ojos por
   const vivos = readFileSync('src/scripts/bestiario/vivos.ts', 'utf-8');
   assert.ok(MIRAR_CADA >= 10 && MIRAR_CADA <= 40, 'ni cada cuadro (caro) ni cada segundo (se nota)');
   // Se mide antes de mover a nadie, todos juntos: una sola medición por tanda.
-  assert.match(vivos, /cuadros\+\+ % MIRAR_CADA === 0\) \{[\s\S]{0,160}ctx\.seVe!\(m\)[\s\S]{0,40}\}\s*vida\.mover\(t, dt\);/);
+  assert.match(vivos, /cuadros\+\+ % MIRAR_CADA === 0\) \{[\s\S]{0,160}ctx\.seVe!\(m\)[\s\S]{0,200}mirarVigias\(ctx\);\s*\}\s*vida\.mover\(t, dt\);/);
   // La pose quieta va para todos: con movimiento reducido nadie queda a medio armar.
   assert.match(vivos, /if \(dt === 0 \|\| aLaVista\[i\]\) vivos\[i\]!\.mover\(t, dt\);/);
   const recintos = readFileSync('src/scripts/bestiario/recintos.ts', 'utf-8');
   assert.match(recintos, /const vista = dt > 0 \? ctx\.vista\?\.\(\) : undefined;/);
   // Y el camino presta la vista con margen: lo que está por entrar ya se mueve.
   assert.match(readFileSync('src/scripts/camino.ts', 'utf-8'), /return \[desde - ancha \* 0\.5, desde \+ ancha \* 1\.5\];/);
+});
+
+test('los títeres grandes tienen vigía: se miran juntos, y sin quien mire se ven siempre', () => {
+  const el = {} as Element;
+  // El recinto de la página del bestiario no presta `seVe`: ahí se mueve todo.
+  assert.equal(vigia({}, el)(), true);
+  assert.equal(vigia({ seVe: () => false }, null)(), true);
+  let visible = false;
+  const ctx = { seVe: () => visible };
+  const seVe = vigia(ctx, el);
+  assert.equal(seVe(), true, 'hasta la primera tanda, se mueve');
+  mirarVigias(ctx);
+  assert.equal(seVe(), false);
+  visible = true;
+  assert.equal(seVe(), false, 'no mide por su cuenta: espera a la tanda');
+  mirarVigias(ctx);
+  assert.equal(seVe(), true);
+  const recintos = readFileSync('src/scripts/bestiario/recintos.ts', 'utf-8');
+  // Luzbelito, Momo, Pierre y Barbazul. La drácula no: anda por el pasillo, y quieta no volvería.
+  assert.equal((recintos.match(/= vigia\(ctx, /g) ?? []).length, 4);
+  assert.equal((recintos.match(/if \(dt === 0 \|\| (seVe|veBarbazul)\(\)\)/g) ?? []).length, 4);
+  // El lobo de la pastura mira igual que el del monte.
+  assert.match(readFileSync('src/scripts/bestiario/pastura.ts', 'utf-8'), /miradaDe\(gLobo, AL\.cabeza\[0\], AL\.cabeza\[1\] - 60/);
 });

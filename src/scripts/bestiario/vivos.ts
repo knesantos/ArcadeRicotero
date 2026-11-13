@@ -11,6 +11,7 @@
  */
 
 import type { Contexto, Vida } from './recintos.ts';
+import { mirarVigias } from './vigia.ts';
 import { armarBestiaPop } from './bestia-pop.ts';
 import { armarMonito } from './monito.ts';
 import { armarBuscapina } from './buscapina.ts';
@@ -178,13 +179,15 @@ export function conElenco(vida: Vida, raiz: ParentNode, ctx: Contexto): Vida {
       }),
     );
   }
-  if (!vivos.length) return vida;
+  if (!vivos.length && !ctx.seVe) return vida;
   return {
     mover: (t, dt) => {
       // Cada tanto, y antes de que nadie escriba nada en este cuadro (así el navegador no tiene que
       // recalcular a mitad de camino), se mira quién está a la vista. Se miden todos juntos.
       if (ctx.seVe && dt > 0 && cuadros++ % MIRAR_CADA === 0) {
         for (let i = 0; i < vivos.length; i++) aLaVista[i] = marcosDe[i]!.some((m) => ctx.seVe!(m));
+        // Y a los títeres grandes del recinto (`vigia.ts`), en la misma lectura.
+        mirarVigias(ctx);
       }
       vida.mover(t, dt);
       // La pose quieta (`dt` 0) va para todos; andando, solo para los que se ven.

@@ -51,7 +51,7 @@ import { contextoVivo, despertarSalida } from '../lib/audio/contexto.ts';
 import { Charla } from '../lib/bestiario/charla.ts';
 import { PRIMER_PASO, corridaDe, crearCamara, primerPaso, transformDe, type Encuadre } from '../lib/bestiario/camara.ts';
 import {
-  ACECHOS, AIRE, ALIVIO, LUCES, MIRADA, PASO_PLENO, VIDAS, alfaDeAire, alivioDeEntrada, alivioTras, corridaDeAire, despejeDeLupa, estadoDeLuz, parpadeo, pasoDeVida,
+  ACECHOS, AIRE, ALIVIO, LUCES, MIRADA, PASO_PLENO, VIDAS, alfaDeAire, alivioDeEntrada, alivioTras, corridaDeAire, despejeDeLupa, estadoDeLuz, parpadeo, pasoDeVida, tocaLaLuz,
 } from '../lib/bestiario/aire.ts';
 import { ENTERA, LUPA, acotar, centrar, conLupa, enElMundo, enfocar, entreLentes, type Lente } from '../lib/bestiario/lupa.ts';
 import { leerGestos } from './bestiario/pellizco.ts';
@@ -99,8 +99,17 @@ const aires = [...camino.querySelectorAll<HTMLElement>('.aire')].flatMap((el) =>
 const recetasDeLuz = new Map((LUCES[datos.region] ?? []).map((l) => [l.pieza, l]));
 const luces = [...camino.querySelectorAll<HTMLElement>('.luz')].flatMap((el) => {
   const r = recetasDeLuz.get(el.dataset.luz ?? '');
-  return r ? [{ el, r, alfa: -1 }] : [];
+  return r ? [{ el, r, alfa: -1, pulso: 0 }] : [];
 });
+/**
+ * Los filos (`D-90`, quinta ronda): la luz toca a los bichos. Cada luz que lo pide le prende un filo
+ * a los que tiene más cerca cuando el haz les pasa por encima. `blanco`: dónde está el bicho (su
+ * coronilla y su ancho, en unidades del piso); se mide cada tanto, no por cuadro.
+ */
+const filos = [...camino.querySelectorAll<HTMLElement>('.filo')].map((el) => ({ el, luz: el.dataset.filo ?? '', blanco: null as { x: number; y: number; ancho: number } | null, alfa: -1 }));
+let cuadrosDeLuz = 0;
+/** Un cuadro sí y uno no: para lo que alcanza con moverlo a la mitad del ritmo. */
+let mediaVuelta = false;
 /** Los ojos sin dueño (`ACECHOS`): se abren si te quedás quieto, y se apagan si los mirás. */
 const acecho = ACECHOS[datos.region] ?? null;
 const acechoEl = document.getElementById('acecho');
@@ -495,6 +504,44 @@ function pintarLuces(): void {
       l.alfa = e.alfa;
       l.el.style.opacity = e.alfa.toFixed(3);
     }
+    // La luz toca a los bichos: a cada uno, lo que le pega según a cuántos grados le quedó el haz.
+    if (l.r.filo) {
+      const apunta = (l.r.rumbo ?? 0) + e.giro;
+      for (const fl of filos) {
+        if (fl.luz !== l.r.pieza) continue;
+        const b = fl.blanco;
+        // El haz apunta para abajo y gira con las agujas: a un bicho a la derecha le toca un giro negativo.
+        const k = b && !quieto() ? tocaLaLuz((Math.atan2(-(b.x - ancla), b.y - l.r.y) * 180) / Math.PI - apunta, l.r.filo.abre) * Math.min(1, e.alfa / l.r.alfa) : 0;
+        if (Math.abs(k - fl.alfa) > 0.01) {
+          fl.alfa = k;
+          fl.el.style.opacity = (k * 0.9).toFixed(3);
+        }
+        if (!b || k <= 0) continue;
+        const fx = b.x * escala - (paralaje ? cam : 0);
+        const fy = b.y * escala - lente.y;
+        const tam = Math.min(1.7, Math.max(0.35, b.ancho / 100));
+        fl.el.style.transform = `${encuadre ? transformDe(encuadre, capaX, fx, z, fy) : corridaDe(fx, z, fy)} scale(${tam.toFixed(3)}) translate(${(-50 * escala).toFixed(1)}px, ${(-20 * escala).toFixed(1)}px)`;
+      }
+    }
+    // Lo que suena (`entorno.ts`), atado a lo que se ve y cada tanto: cuanto más lejos está la luz del
+    // medio de la pantalla, menos. Si el sonido está apagado, el motor no hace nada.
+    if (l.r.suena && !quieto()) {
+      const lejosDelMedio = Math.abs(x * z - (paralaje ? 0 : cam * z) - vistaPx / 2) / (vistaPx * 1.2);
+      const cerca = Math.max(0, 1 - lejosDelMedio);
+      if (l.r.suena === 'zumbido') {
+        // El tubo zumba mientras está prendido y se corta cuando titila.
+        if (cuadrosDeLuz % 5 === 0) entorno?.aire('zumbido', cerca * (e.alfa > l.r.alfa * 0.75 ? 1 : 0.1));
+      } else {
+        // La brasa chisporrotea en el golpe del latido: una vez por golpe.
+        const golpe = e.escala - 1 > l.r.crece * 0.55 ? 1 : 0;
+        if (golpe && !l.pulso && cerca > 0.1) entorno?.chispear(cerca);
+        l.pulso = golpe;
+      }
+    }
+  }
+  // El viento, con la capa que lo trae: sube y baja con ella.
+  if (cuadrosDeLuz++ % 6 === 0 && !quieto()) {
+    for (const a of aires) if (a.c.suena === 'viento' && a.alfa >= 0) entorno?.aire('viento', Math.min(1, a.alfa / (a.c.alfa + a.c.late)));
   }
   pintarVida(capaX);
   if (!acecho || !acechoEl || mira.lugar < 0) return;
@@ -511,6 +558,34 @@ function pintarLuces(): void {
   const base = encuadre ? transformDe(encuadre, capaX, x, 1, mira.y) : corridaDe(x, 1, mira.y);
   const s = tam * (0.85 + 0.15 * mira.abierto);
   acechoEl.style.transform = `${base} scale(${s.toFixed(3)}, ${(s * parpadeo(reloj, mira.lugar * 13 + 5) * mira.abierto).toFixed(3)}) translate(${((-acecho.ancho / 2) * escala).toFixed(1)}px, ${((-acecho.alto / 2) * escala).toFixed(1)}px)`;
+}
+
+/**
+ * A quién le toca cada filo: los bichos que la luz tiene más cerca, que no anden (un fierro que pasa
+ * se le escaparía). Se miden juntos, cada tanto y antes de que el cuadro escriba nada; del dibujo a
+ * unidades del piso, deshaciendo lo deslizado y la lupa (la cámara se mueve poco: no se descuenta).
+ */
+function medirFilos(): void {
+  if (!filos.length) return;
+  const caja = escenario.getBoundingClientRect();
+  const z = lente.z;
+  for (const l of luces) {
+    if (!l.r.filo) continue;
+    const mios = filos.filter((f) => f.luz === l.r.pieza);
+    const alcance = l.r.caja[2] * 0.75;
+    const cerca: { x: number; y: number; ancho: number; d: number }[] = [];
+    for (const g of piso.querySelectorAll<SVGGElement>(BICHOS)) {
+      if (g.dataset.velocidad) continue;
+      const r = (g.querySelector('.toque') ?? g).getBoundingClientRect();
+      if (!r.width || r.height > innerHeight * 0.7) continue;
+      const x = ((r.left + r.width / 2 - caja.left) / z + (paralaje ? cam : 0)) / escala;
+      const y = ((r.top - caja.top) / z + lente.y) / escala;
+      const d = Math.abs(x - l.r.x);
+      if (d < alcance && y > l.r.y + 40) cerca.push({ x, y: y + 6, ancho: Math.min(170, r.width / z / escala), d });
+    }
+    cerca.sort((p, q) => p.d - q.d);
+    mios.forEach((f, i) => (f.blanco = cerca[i] ?? null));
+  }
 }
 
 /**
@@ -635,14 +710,18 @@ function pintarCapas(): void {
   });
   // El aire: cada capa a su velocidad, con su viento, y el alfa que respira y se abre al paso.
   const t = quieto() ? 0 : reloj;
+  mediaVuelta = !mediaVuelta;
   for (const a of aires) {
+    // Lo de atrás del piso va despacio y es pura mancha: se corre un cuadro sí y uno no, que no se nota
+    // y es un estilo menos que recalcular (salvo con la lupa, que lo agranda).
+    if (a.c.plano === 'fondo' && mediaVuelta && z === 1 && a.alfa >= 0) continue;
     const k = corridaDeAire(a.c, cam / escala, t, paralaje);
     const x = quieto() ? 0 : k.x * escala;
     const baja = k.y * escala - lente.y;
     a.el.style.transform = encuadre ? transformDe(encuadre, capaX, x, z, baja) : corridaDe(x, z, baja);
     // Con la lupa uno se mete adentro del aire: lo pegado a la cámara queda atrás, y la niebla afloja.
     const alfa = (quieto() ? a.c.alfa : alfaDeAire(a.c, t, anda)) * despejeDeLupa(a.c.plano, a.c.cae !== 0, z);
-    if (Math.abs(alfa - a.alfa) > 0.004) {
+    if (Math.abs(alfa - a.alfa) > 0.012) {
       a.alfa = alfa;
       a.el.style.opacity = alfa.toFixed(3);
     }
@@ -1351,6 +1430,8 @@ let cuadros = 0;
 
 function cuadro(ahora: number): void {
   medirAlivio(ahora - antes);
+  // A quién toca la luz: cada medio segundo, y antes de mover nada.
+  if (filos.length && cuadros % 30 === 0) medirFilos();
   const dt = Math.min((ahora - antes) / 1000, 0.05);
   antes = ahora;
   reloj += dt;

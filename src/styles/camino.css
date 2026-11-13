@@ -135,6 +135,7 @@
    `transform` y `opacity`; ni resplandor de CSS, ni sombra, ni modo de mezcla. Sin isla, la luz queda
    quieta donde va; los ojos no se abren. */
 .camino .luz,
+.camino .filo,
 .camino .vida,
 .camino .acecho-ojos {
   --px: calc(var(--alto-escena) / var(--alto));
@@ -159,6 +160,7 @@
   will-change: transform, opacity;
 }
 
+.camino .filo,
 .camino .vida,
 .camino .acecho-ojos {
   left: 0;
@@ -172,6 +174,7 @@
    La niebla del medio y lo pegado a la cámara se quedan: son las que hacen la escena. */
 .camino--liviano .aire--fondo,
 .camino--muy-liviano .luz,
+.camino--muy-liviano .filo,
 .camino--muy-liviano .vida { display: none; }
 
 .camino-deslizar { padding-inline: var(--espacio-2); }

@@ -42,7 +42,7 @@ const CRUCES = piezasDeLosCruces(regiones);
 const { piezasDelPortal, tierrasDe } = await importar('src/lib/bestiario/arte-portal.ts');
 const PORTAL = piezasDelPortal(tierrasDe(regiones));
 // El aire (`D-90`): la bruma, la niebla rasante y lo pegado a la cámara, en baldosas que se repiten.
-const { PIEZAS_AIRE, PIEZAS_DE_LUZ, PIEZAS_DE_VIDA } = await importar('src/lib/bestiario/arte-aire.ts');
+const { PIEZAS_AIRE, PIEZAS_DE_LUZ, PIEZAS_DE_VIDA, PIEZAS_DE_FILO } = await importar('src/lib/bestiario/arte-aire.ts');
 
 const { valores } = leerDeclaraciones(readFileSync(resolve(raiz, 'src/styles/tokens.css'), 'utf-8'));
 
@@ -80,7 +80,7 @@ const hoja = process.argv.includes('--hoja') ? process.argv[process.argv.indexOf
 const solo = process.argv.includes('--solo') ? process.argv[process.argv.indexOf('--solo') + 1].split(',') : null;
 const impresas = [];
 
-for (const p of [...PIEZAS, ...PIEZAS_CAMINO, ...CRUCES, ...PORTAL, ...PIEZAS_AIRE, ...PIEZAS_DE_LUZ, ...PIEZAS_DE_VIDA]) {
+for (const p of [...PIEZAS, ...PIEZAS_CAMINO, ...CRUCES, ...PORTAL, ...PIEZAS_AIRE, ...PIEZAS_DE_LUZ, ...PIEZAS_DE_VIDA, ...PIEZAS_DE_FILO]) {
   if (solo && !solo.some((prefijo) => p.nombre.startsWith(prefijo))) continue;
   const [x, y, ancho, alto] = p.caja;
   const densidad = p.densidad ?? 2.5;

@@ -611,6 +611,121 @@ function prisionRejas(c: CapaDeAire): string {
 }
 
 /* ------------------------------------------------------------------
+   La mesa, el templo, el árbol y el galpón (quinta ronda)
+   ------------------------------------------------------------------ */
+
+const ME = { papel: 'var(--entorno-mesa-papel)', sepia: 'var(--entorno-mesa-sepia-clara)', honda: 'var(--entorno-mesa-sepia-honda)' };
+const TE = { foco: 'var(--entorno-templo-foco)', papel: 'var(--entorno-mesa-papel)', negro: 'var(--fondo)' };
+const AR = { claro: 'var(--entorno-arbol-marmol-claro)', marmol: 'var(--entorno-arbol-marmol)', cobre: 'var(--entorno-arbol-cobre)', veta: 'var(--entorno-arbol-veta)', tierra: 'var(--entorno-arbol-tierra-viva)' };
+const GA = { luz: 'var(--entorno-galpon-luz)', rojo: 'var(--entorno-galpon-rojo)', brasa: 'var(--entorno-galpon-brasa)' };
+
+/** Lo que se repite para los dos lados (lo que sube o cae): cada cosa se pinta también del otro lado de los bordes que tenga cerca. */
+function enLosDosEjes(c: CapaDeAire, x: number, y: number, margen: number, pinta: (x: number, y: number) => string): string {
+  const alto = altoDeBaldosa(c);
+  let s = '';
+  for (const dx of [0, x < margen ? c.ancho : x > c.ancho - margen ? -c.ancho : null]) {
+    for (const dy of [0, y < margen ? alto : y > alto - margen ? -alto : null]) if (dx !== null && dy !== null) s += pinta(x + dx, y + dy);
+  }
+  return s;
+}
+
+/**
+ * Volutas: hebras de humo que suben torcidas, cada una una ese larga que se afina. `mano`: sopladas
+ * (el incienso del templo) o de tinta plana con el borde apenas corrido (el humo de la mesa, que es
+ * un afiche).
+ */
+function volutas(c: CapaDeAire, semilla: number, cuantas: number, tintas: readonly (readonly [string, number])[], mano: 'soplada' | 'plana'): string {
+  const rnd = azar(semilla);
+  let s = '';
+  for (let i = 0; i < cuantas; i++) {
+    const x = rnd() * c.ancho;
+    const y = rnd() * c.alto;
+    const largo = 70 + rnd() * 70;
+    const onda = 9 + rnd() * 12;
+    const lado = rnd() < 0.5 ? -1 : 1;
+    const [color, o] = tintas[i % tintas.length]!;
+    const grosor = 2 + rnd() * 2.6;
+    const d = (xx: number, yy: number): string =>
+      `M${f(xx)} ${f(yy)} c${f(lado * onda)} ${f(-largo * 0.18)} ${f(lado * onda)} ${f(-largo * 0.34)} 0 ${f(-largo * 0.5)} s${f(-lado * onda * 0.9)} ${f(-largo * 0.32)} ${f(lado * onda * 0.3)} ${f(-largo * 0.5)}`;
+    s += enLosDosEjes(c, x, y, largo + 20, (xx, yy) =>
+      mano === 'soplada'
+        ? `<g filter="url(#soplo-s)">${trazo(d(xx, yy), color, grosor * 1.8, o)}</g>`
+        : trazo(d(xx, yy), color, grosor, o) + trazo(d(xx + 3, yy - 6), color, grosor * 0.5, o * 0.6),
+    );
+  }
+  return s;
+}
+
+/** El humo de la mesa: volutas de tinta plana, del papel del afiche, con el grano encima. */
+function mesaHumo(c: CapaDeAire): string {
+  return `<g filter="url(#grano)">${volutas(c, 1211, 13, [[ME.papel, 0.5], [ME.sepia, 0.42], [ME.papel, 0.34]], 'plana')}</g>`;
+}
+
+/** El incienso del templo: hebras sopladas, tibias, del color de los focos. */
+function temploIncienso(c: CapaDeAire): string {
+  return `<g filter="url(#rociado)">${volutas(c, 1311, 15, [[TE.foco, 0.3], [TE.papel, 0.24], [TE.foco, 0.2]], 'soplada')}</g>`;
+}
+
+/** Una hoja: una almendra con su nervio, girada a gusto. */
+function hoja_(x: number, y: number, largo: number, giro: number, color: string, o: number): string {
+  const d = `M${f(-largo / 2)} 0 Q0 ${f(-largo * 0.34)} ${f(largo / 2)} 0 Q0 ${f(largo * 0.3)} ${f(-largo / 2)} 0 Z`;
+  return `<g transform="translate(${f(x)} ${f(y)}) rotate(${f(giro)})"${o < 1 ? ` opacity="${f(o)}"` : ''}>${forma(d, color)}${trazo(`M${f(-largo * 0.4)} 0 L${f(largo * 0.4)} 0`, AR.veta, 0.7, 0.5)}</g>`;
+}
+
+/** Las hojas que se le caen al árbol: pocas, sueltas, cada una girada a su modo. La baldosa cierra para los dos lados. */
+function arbolHojas(c: CapaDeAire): string {
+  const rnd = azar(1411);
+  let s = '';
+  for (let i = 0; i < 34; i++) {
+    const x = rnd() * c.ancho;
+    const y = rnd() * c.alto;
+    const largo = 7 + rnd() * 9;
+    const giro = rnd() * 360;
+    const color = [AR.claro, AR.cobre, AR.marmol, AR.cobre][i % 4]!;
+    const o = 0.7 + rnd() * 0.3;
+    s += enLosDosEjes(c, x, y, 18, (xx, yy) => hoja_(xx, yy, largo, giro, color, o));
+  }
+  return `<g filter="url(#grano)">${s}</g>`;
+}
+
+/** La racha en la copa: hojas que pasan de costado, y las rayas del viento que las lleva. */
+function arbolRacha(c: CapaDeAire): string {
+  const rnd = azar(1419);
+  let s = '';
+  for (let i = 0; i < 26; i++) {
+    const x = rnd() * c.ancho;
+    const y = c.y + 50 + rnd() * (c.alto - 100);
+    const rx = 40 + rnd() * 90;
+    const o = 0.3 + rnd() * 0.3;
+    const ry = 1.4 + rnd() * 1.2;
+    s += vuelta(x, rx + 14, c.ancho, (xx) => nube(xx, y, rx, ry, AR.veta, 'xs', o, -4));
+  }
+  for (let i = 0; i < 30; i++) {
+    const x = rnd() * c.ancho;
+    const y = c.y + 40 + rnd() * (c.alto - 80);
+    const largo = 6 + rnd() * 8;
+    const giro = -20 + rnd() * 40;
+    const color = i % 3 ? AR.claro : AR.cobre;
+    s += vuelta(x, 20, c.ancho, (xx) => hoja_(xx, y, largo, giro, color, 0.85));
+  }
+  return rociado(c, s);
+}
+
+/** El polvo del galpón: motas chicas y parejas, tibias, como la trama de puntos del público. */
+function galponPolvo(c: CapaDeAire): string {
+  const rnd = azar(1511);
+  let s = manchas(c, 1513, 8, 180, 380, [[GA.luz, 0.07], [GA.rojo, 0.09]], 30, [50, 120]);
+  for (let i = 0; i < 150; i++) {
+    const x = rnd() * c.ancho;
+    const y = c.y + 30 + rnd() * (c.alto - 60);
+    const r = 0.9 + rnd() * 1.3;
+    const o = 0.4 + rnd() * 0.45;
+    s += vuelta(x, 8, c.ancho, (xx) => `<circle cx="${f(xx)}" cy="${f(y)}" r="${f(r)}" fill="${i % 4 ? GA.luz : GA.rojo}" opacity="${f(o)}"/>`);
+  }
+  return rociado(c, s);
+}
+
+/* ------------------------------------------------------------------
    La luz que se ve en el aire, y los ojos sin dueño (segunda ronda)
    ------------------------------------------------------------------ */
 
@@ -649,6 +764,8 @@ const QUIEN_ALUMBRA: Readonly<Record<string, () => string>> = {
   'luz-cyber-haz': () => haz('lz-c', 560, 330, C.lente, C.nieve),
   'luz-ruta-faros': () => haz('lz-r', 260, 190, RU.faro, RU.papel),
   'luz-techos-farol': () => haz('lz-t', 380, 320, B.lila, B.luz),
+  'luz-templo-foco': () => haz('lz-m', 360, 300, TE.foco, TE.papel),
+  'luz-galpon-seguidor': () => haz('lz-g', 420, 340, GA.luz, GA.luz),
   // El reflejo del pucho en el agua: una escalerita de rayas de crayón, cada vez más cortas y más flojas.
   'luz-bajo-reflejo': () =>
     Array.from({ length: 9 }, (_, i) => trazo(`M${f(-34 + i * 3.4 + (i % 2) * 5)} ${f(4 + i * 13)} l${f(68 - i * 6.6)} 0`, i % 3 ? J.llama : J.clara, 3.6 - i * 0.22, 0.9 - i * 0.07)).join(''),
@@ -689,6 +806,33 @@ const QUIEN_MIRA: Readonly<Record<string, () => string>> = {
   // La prisión: blancos, de gubia, con la pupila roja. El de la celda de enfrente.
   'acecho-prision': () => almendra('ac-p1', 11, 10, P.papel, P.papel, 'punto') + almendra('ac-p2', 35, 10, P.papel, P.papel, 'punto') + `<circle cx="11" cy="9.6" r="1.1" fill="${P.rojo}"/><circle cx="35" cy="9.6" r="1.1" fill="${P.rojo}"/>`,
 };
+
+/**
+ * El filo (quinta ronda): lo que la luz le prende a un bicho cuando le pasa por encima. Es una
+ * medialuna fina, de canto duro del lado de la luz y que se pierde para atrás: el canto encendido de
+ * algo que está a contraluz, como el de las tiras del monte. La caja mide 100 × 50 y la isla la
+ * estira al ancho del bicho; la medialuna abraza la parte de arriba.
+ */
+function filo(id: string, color: string, mano: 'aerografo' | 'gubia'): string {
+  const d = 'M4 44 Q50 -14 96 44 Q50 2 4 44 Z';
+  if (mano === 'gubia') {
+    // En la madera tallada el filo es una raya llena y tres cortes cortos al lado.
+    return `<g filter="url(#gubia)">${forma(d, color)}${trazo('M20 16 l-7 -9 M50 6 l0 -8 M80 16 l7 -9', color, 1.6)}</g>`;
+  }
+  return `<g filter="url(#grano)">${enmascarado(id, 'M0 46 Q50 -22 100 46 Z', forma(d, color) + nube(50, 8, 30, 7, 'var(--entorno-mesa-papel)', 's', 0.7))}</g>`;
+}
+
+const QUIEN_FILA: Readonly<Record<string, () => string>> = {
+  'filo-sodio': () => filo('fl-s', T.sodio, 'aerografo'),
+  'filo-papel': () => filo('fl-p', P.papel, 'gubia'),
+};
+
+/** Las piezas de los filos que piden las luces (`Luz.filo`). */
+export const PIEZAS_DE_FILO: readonly Pieza[] = [...new Set(Object.values(LUCES).flat().flatMap((l) => (l.filo ? [l.filo.pieza] : [])))].map((nombre) => {
+  const pinta = QUIEN_FILA[nombre];
+  if (!pinta) throw new Error(`nadie pinta el filo "${nombre}" (arte-aire.ts)`);
+  return { nombre, caja: [0, 0, 100, 50] as const, dibujo: pinta(), densidad: 3 };
+});
 
 /** Un pájaro lejos, de frente: las dos alas abiertas en ve y el cuerpo. La isla lo aletea achatándolo. */
 const ave = (color: string): string =>
@@ -761,6 +905,11 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-techos-ropa': techosRopa,
   'aire-prision-frio': prisionFrio,
   'aire-prision-rejas': prisionRejas,
+  'aire-mesa-humo': mesaHumo,
+  'aire-templo-incienso': temploIncienso,
+  'aire-arbol-hojas': arbolHojas,
+  'aire-arbol-racha': arbolRacha,
+  'aire-galpon-polvo': galponPolvo,
 };
 
 /**

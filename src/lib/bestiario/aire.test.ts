@@ -6,9 +6,9 @@ import sharp from 'sharp';
 import { rutaDePieza } from './aerografo.ts';
 import {
   ACECHOS, AIRE, ALIVIO, LUCES, MIRADA, PASO_PLENO, VIDAS, aireDe, alfaDeAire, alivioDeEntrada, alivioTras, altoDeBaldosa, corridaDeAire, despejeDeLupa, estadoDeLuz, latido,
-  parpadeo, pasoDeVida, resto,
+  parpadeo, pasoDeVida, resto, tocaLaLuz,
 } from './aire.ts';
-import { PIEZAS_AIRE, PIEZAS_DE_LUZ, PIEZAS_DE_VIDA } from './arte-aire.ts';
+import { PIEZAS_AIRE, PIEZAS_DE_FILO, PIEZAS_DE_LUZ, PIEZAS_DE_VIDA } from './arte-aire.ts';
 import { PIEZAS_CAMINO } from './arte-camino.ts';
 import { pisoDelCamino } from './escenas-camino.ts';
 import { ALTO, CAMINOS, VISTA_MAX } from './camino.ts';
@@ -60,8 +60,8 @@ test('cada baldosa del aire está pintada e impresa, con la caja de su receta', 
     // Nada de degradé, y cada una con la mano de su región: soplada con el aerógrafo, o rayada a
     // crayón (el bajo, los techos) o a gubia (la prisión), que son recintos de otro disco.
     assert.doesNotMatch(p.dibujo, /Gradient/i, `${c.pieza} trae un degradé`);
-    // El hollín de los techos son rayitas de pastel sueltas, como las del cielo de su recinto: sin filtro.
-    assert.ok(/filter="url\(#(soplo-|xerox-fino|gubia)/.test(p.dibujo) || c.pieza === 'aire-techos-hollin', `${c.pieza} no tiene mano`);
+    // O tinta plana con el grano encima, donde la tapa es un afiche (la mesa) o son hojas sueltas (el árbol).
+    assert.match(p.dibujo, /filter="url\(#(soplo-|xerox-fino|gubia|grano|rociado)/, `${c.pieza} no tiene mano`);
   }
   // Ninguna baldosa huérfana: lo que se imprime, alguien lo pide.
   const pedidas = new Set(capas.map(({ c }) => c.pieza));
@@ -233,7 +233,7 @@ test('los ojos sin dueño: una receta por región con aire, en lo oscuro, y se a
   assert.match(isla, /const molesto = seMueve \|\| conLupa\(lente\) \|\| !hoja\.hidden/);
   assert.match(isla, /< MIRADA\) cerrarLosOjos\(/);
   // No son un bicho: no se tocan ni tienen ficha.
-  assert.match(readFileSync('src/styles/camino.css', 'utf-8'), /\.camino \.luz,\s*\.camino \.vida,\s*\.camino \.acecho-ojos \{[^}]*pointer-events: none;/);
+  assert.match(readFileSync('src/styles/camino.css', 'utf-8'), /\.camino \.luz,\s*\.camino \.filo,\s*\.camino \.vida,\s*\.camino \.acecho-ojos \{[^}]*pointer-events: none;/);
   assert.doesNotMatch(readFileSync('src/pages/redondopedia/bestiario/[region].astro', 'utf-8'), /class="acecho-ojos"[^>]*(data-id|role=)/);
   // Con movimiento reducido no están: su reloj corre solo donde corre el del camino.
   assert.match(isla, /if \(!quieto\(\)\) \{[\s\S]*?moverAcecho\(dt, /);
@@ -343,7 +343,7 @@ test('lo que cruza lejos: de a uno, espaciado, impreso, y sin salirse de la cuen
   assert.deepEqual([...new Set([...isla.matchAll(/vidaEl\.style\.(\w+)/g)].map((m) => m[1]))].sort(), ['opacity', 'transform']);
   // No pasa con movimiento reducido, ni con la lupa, ni cuando el teléfono no da.
   assert.match(isla, /if \(reloj < pasa\.proxima \|\| conLupa\(lente\) \|\| quieto\(\) \|\| alivio >= 2\) return;/);
-  assert.match(readFileSync('src/styles/camino.css', 'utf-8'), /\.camino \.vida,\s*\.camino \.acecho-ojos \{[^}]*opacity: 0;/);
+  assert.match(readFileSync('src/styles/camino.css', 'utf-8'), /\.camino \.filo,\s*\.camino \.vida,\s*\.camino \.acecho-ojos \{[^}]*opacity: 0;/);
 });
 
 test('el alivio: sube de a un escalón si los cuadros vienen lentos, y saca primero lo de atrás', () => {
@@ -356,7 +356,7 @@ test('el alivio: sube de a un escalón si los cuadros vienen lentos, y saca prim
   assert.equal(alivioDeEntrada(8, 1), 1);
   assert.equal(alivioDeEntrada(undefined, undefined), 0, 'el que no dice nada arranca con todo');
   const css = readFileSync('src/styles/camino.css', 'utf-8');
-  assert.match(css, /\.camino--liviano \.aire--fondo,\s*\.camino--muy-liviano \.luz,\s*\.camino--muy-liviano \.vida \{ display: none; \}/);
+  assert.match(css, /\.camino--liviano \.aire--fondo,\s*\.camino--muy-liviano \.luz,\s*\.camino--muy-liviano \.filo,\s*\.camino--muy-liviano \.vida \{ display: none; \}/);
   // Lo que hace la escena no se apaga nunca.
   assert.doesNotMatch(css, /liviano \.aire--(medio|cerca)/);
   const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
@@ -408,4 +408,100 @@ test('el alivio se puede forzar para mirarlo, y entonces no se mide', () => {
   const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
   assert.match(isla, /new URLSearchParams\(location\.search\)\.get\('liviano'\)/);
   assert.match(isla, /if \(forzado !== undefined \|\| alivio >= ALIVIO\.niveles/);
+});
+
+/* ------------------------------------------------------------------
+   Quinta ronda: las trece, el charco roto, la luz que toca, lo que suena y la tiza
+   ------------------------------------------------------------------ */
+
+test('las trece regiones tienen aire y ojos sin dueño, y las cuatro últimas, su mano', () => {
+  assert.deepEqual(Object.keys(AIRE).sort(), Object.keys(CAMINOS).sort());
+  assert.deepEqual(Object.keys(ACECHOS).sort(), Object.keys(CAMINOS).sort());
+  const dibujo = (pieza: string): string => PIEZAS_AIRE.find((p) => p.nombre === pieza)!.dibujo;
+  // La mesa es un afiche: tinta plana con grano, ni un soplo.
+  assert.match(dibujo('aire-mesa-humo'), /filter="url\(#grano\)"/);
+  assert.doesNotMatch(dibujo('aire-mesa-humo'), /soplo-/);
+  // El incienso del templo sí va soplado; las hojas del árbol caen y cierran para los dos lados.
+  assert.match(dibujo('aire-templo-incienso'), /soplo-s/);
+  assert.ok(AIRE['el-arbol']!.some((c) => c.cae > 0) && AIRE['el-arbol']!.some((c) => c.suena === 'viento'));
+  assert.ok(AIRE['la-mesa']![0]!.cae < 0 && AIRE['el-templo']![0]!.cae < 0, 'el humo y el incienso suben');
+  // Y el galpón tiene su seguidor, con el polvo adelante.
+  assert.ok(LUCES['el-galpon'] && LUCES['el-templo'] && AIRE['el-galpon']![0]!.pieza === 'aire-galpon-polvo');
+});
+
+test('el charco del monte refleja roto: manchas acostadas, nunca una guirnalda de triángulos', () => {
+  const fuente = readFileSync('src/lib/bestiario/arte-suelo.ts', 'utf-8');
+  // El triángulo de punta abajo, que en fila era una guirnalda, ya no se pinta.
+  assert.doesNotMatch(fuente, /L\$\{f\(lx \+ ancho\)\} \$\{f\(y - ry \* 1\.2\)\} L\$\{f\(lx \+ corre\)\}/);
+  assert.match(fuente, /const pedazos = 3 \+ Math\.floor\(rnd\(\) \* 2\);/);
+  for (const pieza of ['camino-monte-piso', 'camino-pastura-piso']) {
+    const p = PIEZAS_CAMINO.find((q) => q.nombre === pieza)!.dibujo;
+    // Adentro de un charco no hay ningún triángulo soplado.
+    assert.doesNotMatch(p, /<clipPath id="sm-c[hl]-[^"]*">[\s\S]{0,400}?<path d="M[\d.-]+ [\d.-]+ L[\d.-]+ [\d.-]+ L[\d.-]+ [\d.-]+ Z" fill="[^"]+" filter="url\(#soplo-xs\)"/, `${pieza}: un reflejo en triángulo`);
+  }
+});
+
+test('la luz toca a los bichos: un filo impreso, que se prende con el haz encima y no si el haz está lejos', () => {
+  assert.equal(tocaLaLuz(0, 20), 1);
+  assert.equal(tocaLaLuz(20, 20), 0);
+  assert.equal(tocaLaLuz(-35, 20), 0);
+  assert.ok(tocaLaLuz(8, 20) > tocaLaLuz(14, 20) && tocaLaLuz(14, 20) > 0);
+  const conFilo = Object.entries(LUCES).filter(([, l]) => l[0]!.filo);
+  assert.deepEqual(conFilo.map(([r]) => r).sort(), ['la-prision', 'los-astilleros']);
+  for (const [region, [l]] of conFilo) {
+    const p = PIEZAS_DE_FILO.find((q) => q.nombre === l!.filo!.pieza);
+    assert.ok(p && existsSync(`public${rutaDePieza(p.nombre)}`), `${region}: falta imprimir el filo`);
+    assert.ok(l!.filo!.cuantos >= 1 && l!.filo!.cuantos <= 3, 'cada filo es una superficie más');
+    assert.doesNotMatch(p.dibujo, /Gradient/i);
+  }
+  // Cada uno con la mano de su región: aerógrafo con grano en los astilleros, gubia en la prisión.
+  assert.match(PIEZAS_DE_FILO.find((q) => q.nombre === 'filo-sodio')!.dibujo, /filter="url\(#grano\)"/);
+  assert.match(PIEZAS_DE_FILO.find((q) => q.nombre === 'filo-papel')!.dibujo, /filter="url\(#gubia\)"/);
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  assert.deepEqual([...new Set([...isla.matchAll(/fl\.el\.style\.(\w+)/g)].map((m) => m[1]))].sort(), ['opacity', 'transform']);
+  // A quién le toca se mide cada tanto y antes de mover nada, no por cuadro.
+  assert.match(isla, /if \(filos\.length && cuadros % 30 === 0\) medirFilos\(\);/);
+  // Los fierros que pasan no llevan filo: se le escaparían.
+  assert.match(isla, /if \(g\.dataset\.velocidad\) continue;/);
+});
+
+test('el aire suena por el motor del camino, bajito, y solo lo que se ve', () => {
+  const motor = readFileSync('src/scripts/bestiario/entorno.ts', 'utf-8');
+  const topes = /const TOPE_DEL_AIRE = \{ viento: ([\d.]+), zumbido: ([\d.]+), chispa: ([\d.]+) \}/.exec(motor);
+  assert.ok(topes, 'no encuentro los topes del aire');
+  for (const t of topes.slice(1)) assert.ok(Number(t) > 0 && Number(t) <= 0.06, `un tope de ${t}: el aire acompaña, no tapa`);
+  // Apagado no hace nada: sale por la misma salida que se prende y se apaga con el botón.
+  assert.match(motor, /function soplo\(cual: 'viento' \| 'zumbido'\): GainNode \| null \{\s*if \(!prendido \|\| !ctx \|\| !ruido\) return null;/);
+  assert.match(motor, /chispear\(fuerza\) \{\s*if \(!prendido \|\| !ctx \|\| !ruido \|\| !ocupar\(0\.3\)\) return;/);
+  // Y se apaga con todo lo demás.
+  assert.match(motor, /camas\.push\(\(\) => \{\s*soplos\.delete\(cual\);/);
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  // La isla no arma audio: le pide al motor, y solo con movimiento (no hay viento en una foto).
+  assert.doesNotMatch(isla, /createOscillator|createBufferSource|new Audio\(/);
+  assert.match(isla, /if \(l\.r\.suena && !quieto\(\)\) \{/);
+  assert.equal((isla.match(/entorno\?\.(aire|chispear)\(/g) ?? []).length, 3);
+  // Cada cosa que suena está atada a algo que se ve: la ventisca, la racha, un farol que titila, la brasa.
+  assert.ok(AIRE.cybersiberia!.some((c) => c.suena === 'viento'));
+  assert.equal(LUCES['el-infierno']![0]!.suena, 'chispa');
+  for (const [region, [l]] of Object.entries(LUCES)) if (l!.suena === 'zumbido') assert.equal(l!.pulso, 'titila', `${region}: zumba algo que no titila`);
+});
+
+test('el redondel del bicho que habla es de tiza, y el foco del teclado sigue a la vista', () => {
+  const css = readFileSync('src/styles/sitio.css', 'utf-8');
+  // Ni el aro punteado parejo, ni la raya punteada fina del foco de los títeres.
+  assert.doesNotMatch(css, /stroke-dasharray: 6 4;/);
+  assert.doesNotMatch(css, /\.titere:focus-visible \{ outline: 2px dashed/);
+  const regla = /\.bestiario-svg \.bestia:focus-visible \.toque,\s*\.bestiario-svg \.bestia--elegida \.toque \{([^}]*)\}/.exec(css)?.[1] ?? '';
+  assert.match(regla, /stroke: var\(--papel\);/);
+  assert.match(regla, /stroke-linecap: round;/);
+  // Roto e irregular: muchos tramos, y ninguno igual al de al lado.
+  const tramos = (/stroke-dasharray: ([\d ]+);/.exec(regla)?.[1] ?? '').split(' ').map(Number);
+  assert.ok(tramos.length >= 8 && new Set(tramos).size >= 7, `la tiza tiene ${tramos.length} tramos`);
+  // Sigue siendo una forma, no solo un color (`diseno-marca.md`), y no es un filtro ni una sombra.
+  assert.doesNotMatch(regla, /filter|shadow/);
+  // El foco: el oro del foco de todo el sitio, más grueso que la tiza.
+  const foco = /\.bestiario-svg \.bestia:focus-visible \.toque \{([^}]*)\}/.exec(css)?.[1] ?? '';
+  assert.match(foco, /stroke: var\(--acento-2\);/);
+  assert.ok(Number(/stroke-width: ([\d.]+);/.exec(foco)?.[1]) > Number(/stroke-width: ([\d.]+);/.exec(regla)?.[1]));
+  assert.match(css, /\.titere:focus-visible \{\s*outline: 3px solid var\(--acento-2\);/);
 });
