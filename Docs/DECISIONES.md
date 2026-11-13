@@ -7552,6 +7552,58 @@ las posiciones no están a mano); uno nuevo para la linterna quieta.
 
 **Verde:** `npm test` 2346, `npm run check` 0 errores, `npm run build` 200 páginas.
 
+### Enmienda — el velo de llegada (2026-11-13, dentro de la octava ronda)
+
+Pedido del usuario: *"una mejor transición entre las zonas, que dé tiempo a que cargue la región
+siguiente y además sea más inmersiva. Algo relacionado a la zona a la que vas."*
+
+**Qué es.** Cada página del bestiario (las trece regiones y el plano) llega **tapada por una hoja
+impresa** con la firma del lugar, y la hoja se va: para arriba, para abajo o de costado. Lo último
+que se ve es su canto roto. Las catorce firmas están en `lib/bestiario/velos.ts`: la niebla del monte
+que se levanta, la polvareda de la pastura, el mantel de la mesa, la bruma con sodio de los
+astilleros, la ventisca de Cybersiberia, las nubes violetas del árbol, el telón de trama de puntos
+del galpón, los faros de uno que pasa en la ruta, el telón de crayón de los techos, la reja de la
+prisión que se corre, el humo de las brasas del infierno, el agua del bajo que baja, el humo del
+incienso del templo, y la hoja de papel de la imprenta en el plano. Se pintan en `arte-velos.ts`,
+con la mano de cada tapa (soplado con grano, crayón, gubia o tinta plana), y las imprime la imprenta.
+
+**La vía elegida, y las descartadas.** El velo es **de la página a la que se llega**: está en su
+HTML, tapa desde el primer cuadro y se retira con una animación de CSS de 900 ms
+(`--duracion-velo`; el primer quinto quieto, que es lo que dura el fundido de `ADR-03`, y después se
+va). **Sin JavaScript.** Sobre el fundido entre documentos que ya había, se lee así: la pantalla
+vieja se funde en la niebla de la nueva, y la niebla se levanta.
+
+- *Un velo que tapa al tocar el cartel y espera a la página siguiente*: necesita interceptar el toque
+  y demorar la navegación. Alarga la espera, y si la isla falla deja a alguien mirando un velo.
+  `ADR-03` ya había decidido que el paso entre pantallas no tiene JavaScript.
+- *El velo como pieza de la transición de vista* (`view-transition-name`): la captura no espera a
+  que la imagen cargue y depende de cómo cada navegador captura algo que después hay que esconder.
+  Y no anda donde no hay transiciones entre documentos. La animación de CSS anda en todos.
+
+**Lo que cumple y lo que no.**
+- No alarga la espera: no frena nada (`pointer-events: none`); se puede caminar con el velo yéndose.
+- Tope: 900 ms. Con la curva de la casa, a los 300 ms ya dejó ver media pantalla.
+- Si algo falla, la navegación funciona igual: si la imagen del velo no llegó, no se ve nada y listo.
+- Con movimiento reducido es un corte: el token vale cero y la hoja arranca afuera y escondida.
+- Vale para la entrada desde el plano, entre regiones y para la vuelta al plano. También al llegar
+  de afuera con un enlace: la primera vez también se ve.
+- **No espera a que la región esté lista**: son 900 ms fijos. Dar tiempo, da; saber si alcanzó, no.
+  Eso pedía JavaScript y se eligió no ponerlo. Para ayudar, cada página pide su velo antes que nada
+  (`preload`) y los de adonde se puede ir desde ella, de antemano y sin apuro (`prefetch`).
+- La página incrustada en X (`/en-x/bestiario/`) abre sin errores; adentro de X no se probó.
+
+**Peso.** 469 kB entre los catorce; cada uno, menos de 60. Una región pide el suyo y los de sus
+vecinas; el plano pide el suyo y, sin apuro, los trece (unos 420 kB que antes no pedía).
+
+**Visto:** las catorce a mitad de camino en el teléfono emulado, dos a 1280×800, y una navegación de
+verdad (del monte a la pastura por el cartel del cruce, y de ahí al plano) con y sin movimiento
+reducido. No se vio en un teléfono, ni con la red lenta.
+
+**Tests:** `velos.test.ts` (4) y tres entradas en `movimiento.test.ts`. El token nuevo es una
+duración, no una tinta: no lleva par de contraste.
+
+**Verde:** `npm test` 2350, `npm run check` 0 errores, `npm run build` 200 páginas.
+
 ### Resumen de las ocho rondas, y cómo se lee esta decisión
 
 `D-90` creció por enmiendas. Lo que quedó en pie:
@@ -7568,6 +7620,7 @@ las posiciones no están a mano); uno nuevo para la linterna quieta.
 7. **El rendimiento** (rondas 3 a 6): la nevada fuera del piso, una pintada por cuadro, el descarte y
    el alivio. Cybersiberia sigue sin llegar a los 12 ms con la CPU ×4.
 8. **El sonido del aire** (ronda 5).
+9. **El velo de llegada** (ronda 8): una hoja impresa por región que tapa al llegar y se va, sin JavaScript.
 
 Dos cosas se aprendieron por el camino y valen para lo que venga: **lo que más pesaba no era nada
 de esta decisión** (era una animación de CSS adentro de un dibujo, previa), y **cada vez que algo

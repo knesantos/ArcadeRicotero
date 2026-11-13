@@ -48,12 +48,16 @@
 >   nevada); mudada a capa, alrededor de 50. Las capas se pintan una vez por cuadro; lo que no se ve no se mueve (el elenco y los
 >   títeres grandes); y hay un **alivio** que apaga la bruma de atrás y después la luz si los cuadros vienen lentos (`?liviano=1` o
 >   `2` lo fuerza para mirarlo).
+> - **El velo de llegada** (ronda 8, `lib/bestiario/velos.ts`): cada región, y el plano, llega tapada por una hoja impresa con su firma
+>   (la niebla del monte, la reja de la prisión que se corre, el telón del galpón, el agua del bajo que baja) y la hoja se va en 900 ms.
+>   Es CSS solo, sin JavaScript (`ADR-03`), no frena el toque, y con movimiento reducido es un corte. No espera a que la región
+>   termine de cargar: es un tiempo fijo. Visto en el teléfono emulado y en una navegación de verdad; no en un teléfono ni con red lenta.
 > - **Los techos sin ahogar** (ronda 7): lo que tapaba todo eran los rayones de crayón del telón del recinto, previos a esta rama
 >   (`baldio-lejos`). Quedó menos de la mitad, y solo apretados alrededor de los faroles.
 > - **Arreglos encontrados auditando**: el halo del camello, las losas del monte, el pie del farol, el horizonte de cinta del monte,
 >   los techos. Un test mide en la imagen impresa que nada de adelante tape más de un quinto del alto.
 >
-> **Verde:** `npm test` 2346 (los 2294 de antes y 52 nuevos: 37 de `aire.test.ts`, 10 de `lupa.test.ts`, 5 de `mirada.test.ts`),
+> **Verde:** `npm test` 2350 (los 2294 de antes y 56 nuevos: 4 de `velos.test.ts`, 37 de `aire.test.ts`, 10 de `lupa.test.ts`, 5 de `mirada.test.ts`),
 > `npm run check` 0 errores, `npm run build` 200 páginas. Dos tests anteriores cambiaron a propósito: el tope de peso del aire por región subió de 520 a 560 kB
 > (ronda 3) y el test de la losa del monte pasó a ser el tope del quinto para todas las regiones (ronda 4). Medido con la CPU ×4 en Edge sin
 > ventana: el monte, 9,9 ms de hilo principal y 60 cuadros por segundo; Cybersiberia, entre 12,7 y 15,4 ms y unos 50. En la ronda 6

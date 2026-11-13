@@ -90,3 +90,10 @@ Capturas de referencia: las de la entrada de `ESTADO.md` de `T-527` (carpeta tem
     farol y ralo en el resto; nunca parejo de punta a punta.
 29. **El canto encendido contrasta con el títere** (hoja 12): en la prisión, el rojo de las banderas
     (`--disco-oktubre-tinta`), nunca blanco sobre blanco. Sin tintas nuevas.
+
+## Octava ronda (2026-11-13)
+
+30. **El velo de llegada** (hoja 12, movimiento y aire): catorce hojas impresas, una por región y la
+    del plano, cada una con la mano de su tapa. Token nuevo, **ya puesto en `tokens.css` antes que en
+    el lienzo** (al revés de lo que pide el circuito): `--duracion-velo: 900ms`, de la familia de
+    atmósfera, que va a cero con movimiento reducido. Falta pasarlo a la hoja 12.
