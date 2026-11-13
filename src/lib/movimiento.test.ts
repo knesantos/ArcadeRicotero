@@ -182,6 +182,10 @@ const ANIMACIONES = [
   // desplazamiento: con el corte, el recorrido vale cero y los dos planos quedan quietos.
   { nombre: 'acercarse-lejos', apaga: 'recorrido', valor: '--acercamiento', hoja: 'src/styles/sitio.css' },
   { nombre: 'acercarse-cerca', apaga: 'recorrido', valor: '--acercamiento', hoja: 'src/styles/sitio.css' },
+  // El modo del último bondi (`D-85`): la chapa que avanza y lo que se ve por el ojo de buey.
+  // Atadas al desplazamiento como la multitud, con el mismo recorrido.
+  { nombre: 'el-bondi-avanza', apaga: 'recorrido', valor: '--acercamiento', hoja: 'src/styles/sitio.css' },
+  { nombre: 'del-otro-lado-del-vidrio', apaga: 'recorrido', valor: '--acercamiento', hoja: 'src/styles/sitio.css' },
   // La imprenta (`UX-22`, ciclo 12). Las cuatro son barridos de `clip-path`: sin opacidad.
   { nombre: 'pasada', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
   { nombre: 'fijado', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },

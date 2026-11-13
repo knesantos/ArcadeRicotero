@@ -127,6 +127,65 @@
 >   error de consola.
 > - **Falta**: verlos en un teléfono de verdad; que `contenido` lea las cinco estampas; pasar las tintas al lienzo (`T-526`).
 
+> ## 🎛️ LAS DOS CINTAS Y CUATRO TABLEROS: UNA PASADA DE UI/UX AL PORTAL Y A LOS PRIMEROS JUEGOS (2026-11-04)
+>
+> **Sin integrar, rama `ui/home-y-cuatro-juegos`**, encima de `modo/ultimo-bondi` (PR #104, sin integrar): **no
+> puede entrar antes que el #104**, porque toca el mismo `index.astro`. Pedido del usuario: *"Hace una mejora
+> sustancial de ui/ux de la pagina. El home y los primeros 5 juegos."* Se recorrió todo a 375 × 812 y a 1280 × 800
+> en un navegador de verdad antes de tocar nada, y se midió cada cambio. **Skayboy y Poligirl (A4) quedó afuera a
+> propósito:** otra sesión lo estaba rehaciendo entero en este mismo checkout (`skayboy/mejora-total`), y dos manos
+> sobre un mismo archivo son un choque seguro. Lo que entró:
+>
+> - **Las dos cintas del portal** (`index.astro`, `sitio.css`, `PORTAL.cintas`): la bajada decía "estás en la
+>   puerta, con las dos cintas" y las dos cintas estaban a pantalla y media de scroll, detrás del afiche del mes
+>   (el lado A arrancaba en 900 px y el lado B en 1850). Ahora son dos tiras de cinta adhesiva debajo de la bajada
+>   —LADO A · para jugar, LADO B · para leer— que saltan a cada lado (`#lado-a`, `#lado-b`). Anclas, sin
+>   JavaScript; el afiche sigue donde `D-84` lo puso.
+> - **Los casetes, más angostos por los costados**: 10 px de relleno lateral, 10 de corrimiento y 12 en la
+>   etiqueta (eran 12, 14 y 16), y el título con 0,02 em de aire entre letras en vez de 0,05. La columna del título
+>   pasó de 193 a 213 px y cinco títulos que iban en dos renglones entran en uno; quedan en dos "¿Qué tipo de
+>   ricotero sos?" y "Preguntas ricoteras". La hoja del portal mide 3147 px en vez de 3207 con las cintas puestas.
+> - **La marca de las carátulas, una sola medida** (`.marca` en `juego.css`): de 36vw a 30vw (113 px a 375), y
+>   se sacaron las reglas propias de "Adiviná el tema" y "Sacalo por la letra", que venían del logotipo escrito
+>   anterior a `D-82`. La FR salía de cuatro tamaños en cuatro juegos. En "¿Qué tipo de ricotero sos?" el botón
+>   de empezar bajaba a 1265 px, fuera del pliegue; ahora termina en 633.
+> - **"Sacalo por la letra"**: el botón de la carátula dice *Jugá* y no *JUGÁ* (era el único de los cuatro en
+>   versales). En la partida, el rótulo y la hoja de versos se centran en la banda (margen automático arriba del
+>   rótulo y abajo de la hoja), la hoja tiene un piso de 8 rem con el verso centrado adentro, y el verso va a
+>   1,15 rem: antes el verso terminaba en 140 px y el buscador arrancaba en 650, con negro en el medio. Con ocho
+>   versos los márgenes se agotan y la hoja scrollea como antes; el buscador no se movió de la zona del pulgar.
+> - **"¿Qué tipo de ricotero sos?"**: la hoja de la pregunta va centrada en la pantalla del teléfono y la tableta
+>   (hasta 52 rem; en la mesa queda arriba), así las dos opciones caen en la zona de la mano en vez de entre 250 y
+>   370 px. Y en la cabecera de la hoja, **las hojas de la noche**: cinco casillas, una por momento —pasada,
+>   actual, por venir—, la misma fila que marca los temas en los juegos de audio y de letra (`ejes-noche` en
+>   `partida-dos-ejes.ts`, registrada en `estilos.test.ts`).
+> - **"Completá la letra"**: de dónde sale el verso ("De "Jijiji", en Oktubre") va en la letra de lectura, tenue y
+>   en su renglón; iba en versales de rótulo, en negrita, tres renglones, y gritaba más que la pregunta.
+> - **"Adiviná el tema"**: solo la marca pareja. Se probó la partida entera con puntero de verdad (escribir, elegir
+>   de la lista, arriesgar) y anda.
+> - **Verde:** `npm test` (2239), `npm run check` (0 errores), `npm run build` (200 páginas). Mirado en el navegador a
+>   375 × 812 y 1280 × 800.
+> - **Falta**: probarlo en un teléfono de verdad (el teclado abierto en "Sacalo por la letra" con la hoja
+>   centrada, y las cintas con el dedo); que `experiencia` lea la propuesta en
+>   `Docs/SUGERENCIAS/HILO-para-experiencia-las-dos-cintas-y-cuatro-tableros.md` y la lleve a sus hojas
+>   (`UX-25`, `UX-08`, `UX-36`); la pasada equivalente sobre Skayboy, cuando cierre `skayboy/mejora-total`.
+
+> ## 🚌 NOVIEMBRE SE SUBE AL ÚLTIMO BONDI: EL PRIMER MODO DEL PORTAL (2026-11-02) — `D-85`, `T-524`
+>
+> **Sin integrar, rama `modo/ultimo-bondi` (PR #104)**, encima de `portal/almanaque` (PR #100, sin
+> integrar) con `main` adentro: **no puede entrar antes que el #100.** Pedido del usuario: un home en modo *Un baión para el
+> ojo idiota*, inmersivo como la multitud de *Oktubre*, "el 7 de noviembre". El Baión salió el 9 de mayo de 1988 (`RES-20`,
+> reconfirmado por `investigador`); el usuario eligió *"Último bondi, sin Huracán"*.
+>
+> - **El afiche de noviembre es *Último bondi*** (18-nov-1998): estampa "EL 18 CUMPLE 28", sello ÚLTIMO BONDI como la chapita
+>   de la tapa, *"Agarrate del pasamanos, que arranca."*, botón ADIVINÁ TEMAS DEL BONDI. Reemplaza al HURACÁN de `D-84`, y las
+>   noches del 93 salen del almanaque de noviembre (`fuera`).
+> - **El modo**: el ojo de buey de la tapa cuelga del afiche (cortado del master, el vidrio se corre al bajar), los tacos son
+>   boletos picados, la chapa de la nave (`.casco`, `lib/sitio/casco.ts`) reemplaza a la multitud detrás de todo y avanza al
+>   bajar, y al final de la hoja espera "ÚLTIMA PARADA · FINISTERRE".
+> - **Verde:** `npm test` (2239), `npm run check`, `npm run build` (200 páginas). Mirado en el navegador a 375×812 y 1280×800.
+> - **Falta**: la hoja del lienzo (la 18 todavía muestra HURACÁN), probarlo en un teléfono de verdad, y el modo Baión para mayo
+>   (`T-521`): el boceto quedó en la rama local `modo/baion-ojo-idiota`.
 > ## 🎮 SKAYBOY Y POLIGIRL: DOCE NIVELES, EL MENÚ CON PLANO Y UN CIGARRILLO QUE SE ENTIENDE (2026-11-04) — `D-86`, `T-525`
 >
 > **Integrada en `main` el 2026-11-04** (PR #106, commit de fusión `0c3a73d`), desde la rama `skayboy/mejora-total` sobre `main` en `90583d6`. Pedido del usuario: *"Hace una mejora total
@@ -219,6 +278,33 @@
 > - **Verde:** `npm test` (2217), `npm run check`, `npm run build` (200 páginas). La ficha medida en un iframe de 340 con mouse.
 > - **No verificado**: el sonido en el celular adentro de X, que es donde se colgaba. Ninguna de las dos causas se pudo
 >   reproducir acá; los dos arreglos cubren las dos que el código dejaba abiertas.
+
+> ## 📅 EL ALMANAQUE DEL PORTAL: UN MES, UN AFICHE (2026-10-29) — `D-84`
+>
+> **Sin integrar**: rama `portal/almanaque` (PR #100), sobre `main` en `b0b0bc2`. Pedido del usuario: *"Actualicemos la portada de la
+> página, quedó vieja de oktubre, que quede hasta el fin del mes, pero ya pensemos otra cosa."* y, sobre la propuesta
+> (`Docs/SUGERENCIAS/HILO-para-todos-el-almanaque-del-portal.md`), *"Sí, armalo"*. `T-520`.
+>
+> - **El afiche se apaga solo el 1.º de noviembre** con la fecha del teléfono (`D-49` punto 2): no hubo que tocar nada
+>   para que quede hasta fin de mes.
+> - **El afiche de octubre pasa a ser el almanaque del portal**: una tabla mes → afiche (`ALMANAQUE` en `copy.ts`),
+>   prendida por la fecha de quien mira (`data-mes` y `data-afiche` en la cabeza, con la lista de meses inyectada
+>   desde el build) y con las fechas sacadas de las fichas de disco e hito (`lib/sitio/almanaque.ts`, solo `hecho`).
+>   El mismo componente (`.afiche`, antes `.oktubre`); por mes rotan la tinta, la letra del sello y los textos.
+> - **Noviembre: HURACÁN** (19 y 20-11-1993, "EL 19 CUMPLE 33"), tinta de *Lobo suelto*, sello en la letra de la banda;
+>   seis tacos (la separación 2-2001, *Momo* 17, *Último bondi* 18, Huracán 19 y 20, el Lozanazo 26); botón «MIRÁ QUÉ
+>   SE TOCÓ EL 19» a la lista de esa noche en "En vivo", que ahora se ancla por fecha (`lista-1993-11-19`, con `-2` si
+>   dos cargas comparten noche) y se abre sola al llegar por el `#`.
+> - **Diciembre: CINCUENTA** (la fundación del 28-12-1976, `leyenda`), tinta de *Gulp!*, con el rótulo ◆ LEYENDA pegado
+>   a la estampa —la única leyenda que entra, declarada y testeada—; cuatro tacos; botón «LEÉ CÓMO EMPEZÓ».
+> - **Los meses de duelo no tienen afiche nunca**; mayo, cuando se construya (`T-521`, reservada).
+> - `contenido` leyó las líneas (dos recortes y el botón de noviembre); `experiencia` escribió `UX-40`; la **hoja 18**
+>   del lienzo está pegada (versión 22, página Aplicación, debajo de la 16).
+> - **Verde:** `npm test` (2225), `npm run check` (0 errores), `npm run build` (200 páginas). Visto en el panel a
+>   375×812 (los tres afiches, forzando `data-mes`) y a 1280×800 (el afiche al lado de la cabecera), y el ancla de En vivo
+>   abriendo la lista del 19 con sus 21 temas.
+> - **Falta**: mirar el afiche de noviembre en un teléfono de verdad el 1.º; `T-521` (mayo); un `DIF-` para la semana del
+>   17 al 20 de noviembre (`difusion`).
 
 > ## 📺 ADENTRO DE X, SIN SCROLL (2026-10-29) — `T-518`
 >
