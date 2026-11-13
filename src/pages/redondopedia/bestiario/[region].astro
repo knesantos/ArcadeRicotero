@@ -40,7 +40,9 @@ import { lugarDelRotulo, simbolos, tintaDe, type Bestiario, type Bestia } from '
 import { ALTO, CAMINOS, CON_CAMINO, hrefDeRegion } from '../../../lib/bestiario/camino.ts';
 import { destinosDelCruce, HORIZONTE, PIEZAS_CAMINO } from '../../../lib/bestiario/arte-camino.ts';
 import { rutaDePieza } from '../../../lib/bestiario/aerografo.ts';
+import { ACECHOS, LUCES, VIDAS, aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
 import { pisoDelCamino } from '../../../lib/bestiario/escenas-camino.ts';
+import { EL_PLANO, SOBRA, VELOS, rutaDelVelo } from '../../../lib/bestiario/velos.ts';
 import { conAudio, loQueDice } from '../../../lib/bestiario/fichas.ts';
 import { fondoDe } from '../../../lib/bestiario/sonido.ts';
 import { tituloDelDisco } from '../../../lib/letra/discos.ts';
@@ -79,6 +81,38 @@ const frente = capa(tramo.piezas.frente);
 /** El piso impreso, para pedirlo antes que nada: es lo primero que se ve, y vive adentro del SVG. */
 const pisoImpreso = capa(tramo.piezas.piso);
 const enLaAltura = (caja: readonly number[]): string => `top: ${((caja[1]! / ALTO) * 100).toFixed(3)}%; height: ${((caja[3]! / ALTO) * 100).toFixed(3)}%`;
+
+/**
+ * El aire (`D-90`, `lib/bestiario/aire.ts`): baldosas impresas que se repiten de costado, entre las
+ * capas del camino. La imagen entra por una variable y la hoja la pone de fondo; la isla solo corre
+ * la capa y le cambia el alfa. Sin isla quedan quietas en su lugar: la niebla está igual.
+ */
+const aire = (plano: Plano) =>
+  aireDe(id, plano).map((c: CapaDeAire) => ({
+    pieza: c.pieza,
+    plano,
+    cae: altoDeBaldosa(c) > 0,
+    estilo:
+      `--baldosa: url(${rutaDePieza(c.pieza)}); --tw: ${c.ancho}; --th: ${c.alto}; --alfa: ${c.alfa}` +
+      (altoDeBaldosa(c) > 0 ? '' : `; ${enLaAltura([0, c.y, c.ancho, c.alto])}`),
+  }));
+
+/**
+ * Las luces (`D-90`, segunda ronda): una forma soplada impresa, clavada en un punto de la escena. Sin
+ * isla queda quieta en su lugar; con ella, se hamaca, late o titila.
+ */
+const luces = (LUCES[id] ?? []).map((l) => ({
+  pieza: l.pieza,
+  ancho: l.caja[2],
+  alto: l.caja[3],
+  estilo: `--lx: ${l.x + l.caja[0]}; --ly: ${l.y + l.caja[1]}; --lw: ${l.caja[2]}; --lh: ${l.caja[3]}; --alfa: ${l.alfa}`,
+}));
+/** Los filos (`Luz.filo`): lo que la luz le prende a los bichos que tiene cerca cuando les pasa por encima. Los ubica la isla. */
+const filos = (LUCES[id] ?? []).flatMap((l) => (l.filo ? Array.from({ length: l.filo.cuantos }, () => ({ luz: l.pieza, pieza: l.filo!.pieza })) : []));
+/** Los ojos sin dueño de la región: no se ven hasta que la isla los abre. */
+const acecho = ACECHOS[id] ?? null;
+/** Lo que cruza lejos, muy cada tanto (`VIDAS`): tampoco se ve hasta que la isla lo suelta. */
+const vida = VIDAS[id] ?? null;
 
 /** El piso, que es la capa de los bichos (`escenas-camino.ts`). */
 const pisoSvg = pisoDelCamino(tramo, nombres);
@@ -150,7 +184,12 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
   <Fragment slot="cabeza">
     {pisoImpreso && <link rel="preload" as="image" href={rutaDePieza(pisoImpreso.nombre)} fetchpriority="high" />}
     {lejos && <link rel="preload" as="image" href={rutaDePieza(lejos.nombre)} fetchpriority="high" />}
+    {/* El velo con el que se llega a esta región (`D-90`, octava ronda), antes que nada; y los de adonde
+        se puede ir desde acá, para que ya estén cuando se toque un cartel o «Al plano». */}
+    <link rel="preload" as="image" href={rutaDelVelo(id)} fetchpriority="high" />
+    {[...region.vecinas, EL_PLANO].filter((v) => VELOS[v]).map((v) => <link rel="prefetch" as="image" href={rutaDelVelo(v)} />)}
   </Fragment>
+  <div class="velo-de-llegada" aria-hidden="true" data-rumbo={VELOS[id]!.rumbo} style={`--velo: url(${rutaDelVelo(id)}); --sobra: ${SOBRA / 100}`}></div>
   <section
     class="camino"
     id="camino"
@@ -201,6 +240,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
               />
             )
           }
+          {aire('fondo').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
           <svg
             class="capa capa--piso bestiario-svg"
             data-f="1"
@@ -208,6 +248,8 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
             style={`aspect-ratio: ${tramo.ancho} / ${ALTO}`}
             set:html={pisoSvg}
           />
+          {aire('medio').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
+          {luces.map((l) => <img class="luz" data-luz={l.pieza} src={rutaDePieza(l.pieza)} width={l.ancho} height={l.alto} style={l.estilo} alt="" decoding="async" />)}
           {
             frente && (
               <img
@@ -222,6 +264,15 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
               />
             )
           }
+
+          {aire('cerca').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
+          {filos.map((fl) => <img class="filo" data-filo={fl.luz} src={rutaDePieza(fl.pieza)} width="100" height="50" style="--lw: 100; --lh: 50" alt="" decoding="async" loading="lazy" />)}
+          {vida && (
+            <img class="vida" id="vida" src={rutaDePieza(vida.pieza)} width={vida.ancho} height={vida.alto} style={`--lw: ${vida.ancho}; --lh: ${vida.alto}`} alt="" decoding="async" loading="lazy" />
+          )}
+          {acecho && (
+            <img class="acecho-ojos" id="acecho" src={rutaDePieza(acecho.pieza)} width={acecho.ancho} height={acecho.alto} style={`--lw: ${acecho.ancho}; --lh: ${acecho.alto}`} alt="" decoding="async" loading="lazy" />
+          )}
 
           <nav
             class:list={['cruce', { 'cruce--picadas capa': postes }]}
@@ -277,6 +328,14 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
       </span>
     </p>
   </section>
+
+  {/* La lupa (`D-90`): con el dedo es el pellizco y el doble toque; estos botones son para el mouse
+      y el teclado, y el "volvé" que aparece cuando la lupa está puesta. Los prende la isla. */}
+<div class="lupa camino-lupa" id="lupa" role="group" aria-label={BESTIARIO.lupa.grupo} style={`--tr: ${tinta}`} hidden>
+    <button type="button" class="lupa-boton" id="lupa-todo" hidden>{BESTIARIO.lupa.todo}</button>
+    <button type="button" class="lupa-boton lupa-signo" id="lupa-menos" aria-label={BESTIARIO.lupa.alejar}>−</button>
+    <button type="button" class="lupa-boton lupa-signo" id="lupa-mas" aria-label={BESTIARIO.lupa.acercar}>+</button>
+  </div>
 
   <div class="bocadillo" id="bocadillo" hidden role="status">
     <p class="bocadillo-verso" id="bocadillo-verso"></p>

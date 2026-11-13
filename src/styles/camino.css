@@ -99,6 +99,94 @@
 .capa--lejos,
 .capa--frente { pointer-events: none; }
 
+/* ---- El aire (D-90) --------------------------------------------- */
+
+/* La bruma, la niebla rasante y lo pegado a la cámara (`lib/bestiario/aire.ts`). Cada capa es una
+   baldosa impresa con el aerógrafo, grano incluido, que se repite de costado: acá no se sopla nada,
+   ni hay un degradé. Mide una baldosa más que la vista, así la isla la corre sin que asome el borde.
+   No se toca: lo de abajo sigue recibiendo el dedo. */
+.camino .aire {
+  --px: calc(var(--alto-escena) / var(--alto));
+  position: absolute;
+  left: 0;
+  width: calc(100% + var(--px) * var(--tw));
+  background-image: var(--baldosa);
+  background-repeat: repeat-x;
+  background-size: calc(var(--px) * var(--tw)) 100%;
+  opacity: var(--alfa);
+  pointer-events: none;
+}
+
+/* La que cae o sube (la ceniza) se repite también para arriba, y arranca una baldosa antes. */
+.camino .aire--cae {
+  top: calc(var(--px) * var(--th) * -1);
+  height: calc(100% + var(--px) * var(--th));
+  background-repeat: repeat;
+  background-size: calc(var(--px) * var(--tw)) calc(var(--px) * var(--th));
+}
+
+.camino--andando .aire {
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+}
+
+/* La luz que se ve en el aire y los ojos sin dueño (D-90, segunda ronda). Las dos son imágenes
+   impresas: un cono o un resplandor soplados, con grano, y un par de ojos. La isla las mueve con
+   `transform` y `opacity`; ni resplandor de CSS, ni sombra, ni modo de mezcla. Sin isla, la luz queda
+   quieta donde va; los ojos no se abren. */
+.camino .luz,
+.camino .filo,
+.camino .vida,
+.camino .acecho-ojos {
+  --px: calc(var(--alto-escena) / var(--alto));
+  position: absolute;
+  width: calc(var(--px) * var(--lw));
+  height: calc(var(--px) * var(--lh));
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+}
+
+.camino .luz {
+  left: calc(var(--px) * var(--lx));
+  top: calc(var(--px) * var(--ly));
+  opacity: var(--alfa);
+}
+
+.camino--andando .luz {
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+}
+
+/* El filo a medida (sexta ronda): el canto encendido de cada pieza de un títere, impreso, puesto encima
+   de la pieza. Lo prende la isla con una sola variable por títere; apagado, no se ve. */
+.camino .filo-propio {
+  /* Al doble: con medio haz encima ya está prendido del todo (el navegador lo topea en 1). */
+  opacity: calc(var(--filo, 0) * 2);
+  pointer-events: none;
+}
+
+.camino--muy-liviano .filo-propio { display: none; }
+
+.camino .filo,
+.camino .vida,
+.camino .acecho-ojos {
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transform-origin: 0 0;
+}
+
+/* El alivio (D-90, tercera ronda): si los cuadros vienen lentos, la isla saca peso de a un escalón.
+   Primero lo de atrás del piso, que es lo que menos se extraña; después la luz y lo que cruza lejos.
+   La niebla del medio y lo pegado a la cámara se quedan: son las que hacen la escena. */
+.camino--liviano .aire--fondo,
+.camino--muy-liviano .luz,
+.camino--muy-liviano .filo,
+.camino--muy-liviano .vida { display: none; }
+
 .camino-deslizar { padding-inline: var(--espacio-2); }
 
 /* ---- Andando: la escena es la pantalla, y se corre de costado (D-77) ---- */
@@ -126,6 +214,37 @@
 /* Una escena más angosta que la pantalla (un recinto en la compu) queda en el medio. */
 .camino--andando .camino-tira { margin-inline: auto; }
 .camino--andando .camino-deslizar { display: none; }
+
+/* ---- La lupa (D-90) --------------------------------------------- */
+
+/* Con la lupa puesta, el dedo que sube o baja mira más arriba o más abajo: ya no es del navegador.
+   De costado sigue siendo caminar. */
+.camino--lupa .camino-escenario { touch-action: pan-x; }
+
+/* Los botones de la lupa (`sitio.css`, los mismos del plano), debajo de la salida: es el único
+   rincón que la ficha no ocupa (abajo en el teléfono, a la derecha en la compu), y la vuelta de la
+   lupa tiene que estar siempre a la vista. Van encima de la ficha; si la ficha se abrió arriba,
+   bajan al rincón de abajo. */
+.camino-lupa {
+  position: fixed;
+  left: var(--espacio-2);
+  top: calc(var(--toque-min) + var(--espacio-2));
+  z-index: 45;
+}
+
+body:has(.bestiario-hoja--arriba:not([hidden])) .camino-lupa,
+body:has(.bestiario-hoja--izquierda:not([hidden])) .camino-lupa {
+  top: auto;
+  bottom: calc(var(--espacio-2) + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 52rem) {
+  body:has(.bestiario-hoja--izquierda:not([hidden])) .camino-lupa {
+    left: auto;
+    right: var(--espacio-2);
+  }
+}
+
 
 /* Con paralaje, la vista queda quieta en la pantalla mientras la tira pasa: las capas las corre
    la isla, cada una a su velocidad. La tira no recorta: si recortara, sería ella la caja de

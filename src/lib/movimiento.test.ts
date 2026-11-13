@@ -182,6 +182,10 @@ const ANIMACIONES = [
   // desplazamiento: con el corte, el recorrido vale cero y los dos planos quedan quietos.
   { nombre: 'acercarse-lejos', apaga: 'recorrido', valor: '--acercamiento', hoja: 'src/styles/sitio.css' },
   { nombre: 'acercarse-cerca', apaga: 'recorrido', valor: '--acercamiento', hoja: 'src/styles/sitio.css' },
+  // El modo del último bondi (`D-85`): la chapa que avanza y lo que se ve por el ojo de buey.
+  // Atadas al desplazamiento como la multitud, con el mismo recorrido.
+  { nombre: 'el-bondi-avanza', apaga: 'recorrido', valor: '--acercamiento', hoja: 'src/styles/sitio.css' },
+  { nombre: 'del-otro-lado-del-vidrio', apaga: 'recorrido', valor: '--acercamiento', hoja: 'src/styles/sitio.css' },
   // La imprenta (`UX-22`, ciclo 12). Las cuatro son barridos de `clip-path`: sin opacidad.
   { nombre: 'pasada', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
   { nombre: 'fijado', apaga: 'token', valor: '--duracion-pasada', hoja: 'src/styles/juego.css' },
@@ -197,6 +201,11 @@ const ANIMACIONES = [
   // terminan de apoyar; la hoja de la ficha baja los últimos píxeles. Un solo token los apaga.
   { nombre: 'sello-apoya', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/sitio.css' },
   { nombre: 'hoja-apoya', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/sitio.css' },
+  // El velo de llegada del bestiario (`D-90`, octava ronda): tapa y se va, una sola vez por página.
+  // Con el token en cero queda en su último cuadro, afuera y escondido.
+  { nombre: 'velo-sube', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
+  { nombre: 'velo-baja', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
+  { nombre: 'velo-corre', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

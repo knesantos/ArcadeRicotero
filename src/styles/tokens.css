@@ -1644,6 +1644,7 @@
   --duracion-paso: 200ms; /* el cruce entre dos pantallas (ADR-03) */
   --duracion-sello: 220ms; /* un sello que termina de apoyar: el bocadillo, la hoja de la ficha, el anotado (D-83) */
   --duracion-umbral: 380ms; /* cada sub-paso del asentamiento de la portada */
+  --duracion-velo: 900ms; /* el velo de llegada del bestiario: tapa, y se va (D-90, octava ronda) */
   /* El escalon entre un sub-paso del umbral y el siguiente. `UX-20` §4 nombro la
      duracion de cada sub-paso y no la separacion entre ellos; sin un token para eso, los
      retrasos quedaban escritos a mano en `sitio.css`, que es justo lo que esta hoja
@@ -1749,6 +1750,12 @@
   --peso-bandera-lejos: 28%;
   --peso-multitud-cerca: 16%;
   --peso-bandera-cerca: 34%;
+
+  /* Cuánta tinta lleva el casco del último bondi (`D-85`), la chapa que en noviembre va
+     detrás de toda la portada en lugar de la multitud. Es la plata de la tapa, y como la
+     multitud NO ES UNA PREFERENCIA: `contraste.test.ts` la mezcla con el fondo y falla si el
+     texto del portal baja de AA por encima de ella. */
+  --peso-casco: 24%;
 
   /* Espaciado pensado para el pulgar (D-09) */
   --toque-min: 48px;
@@ -2011,6 +2018,7 @@ a[role='button'] {
   :root {
     --duracion-paso: 0ms;
     --duracion-umbral: 0ms;
+    --duracion-velo: 0ms;
     --duracion-sello: 0ms;
     --escalon-umbral: 0ms;
     --hondura-transito: 1;

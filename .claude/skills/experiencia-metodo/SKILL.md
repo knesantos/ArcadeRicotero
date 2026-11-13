@@ -14,6 +14,8 @@ Leé antes de empezar:
 - `Docs/BRIEF.md` — el momento de uso (celular, ratos sueltos).
 - `.claude/rules/diseno-marca.md` — el sistema de marca: qué disco viste cada sección, la
   base que no rota y lo que está vetado.
+- `.claude/rules/bestiario-inmersion.md` — si la pantalla, la escena o la pieza es del
+  bestiario: cómo se compone un ambiente, el aire, la luz, el misterio y cómo se verifica.
 - `Docs/PRODUCTO/` — qué historia `US-XX` resuelve la pantalla o el flujo.
 - `Docs/CONTENIDO/` — qué tipo de ítems tiene que mostrar cada pantalla.
 </contexto>

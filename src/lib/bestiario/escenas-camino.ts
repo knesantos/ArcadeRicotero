@@ -170,14 +170,8 @@ function pisoDeEntorno(t: Tramo, nombres: Nombres): string {
       `<clipPath id="camino-ruta"><rect x="-10" y="-10" width="${t.escena + 30}" height="${ALTO + 20}"/></clipPath>` +
       `<g class="fierros" clip-path="url(#camino-ruta)">${porCarril(0)}${porCarril(1)}</g>`;
   }
-  if (t.region === 'cybersiberia') {
-    // La nieve del recinto, una al lado de la otra a lo largo: dos copias, una arriba de la otra.
-    let copos = '';
-    for (let x = 0; x < t.escena; x += RECINTO) {
-      copos += `<g transform="translate(${x} 0)">${imagen('cyber-nieve')}</g><g transform="translate(${x} -640)">${imagen('cyber-nieve')}</g>`;
-    }
-    extra = `<g class="cyber-nevada" pointer-events="none"><g class="cyber-nevada-copos">${copos}</g></g>`;
-  }
+  // La nevada de Cybersiberia ya no va acá adentro (`D-90`, tercera ronda): animada adentro del dibujo
+  // obligaba a repintar el piso entero en cada cuadro. Es una capa de aire (`aire.ts`), que nieva igual.
   return (
     capasDe(t.region, 'atras', nombres, K_ENTORNO) +
     imagenDePieza(piezaDelCamino(t.piezas.piso!)) +

@@ -28,6 +28,7 @@ import { armarRecinto } from './bestiario/recintos.ts';
 import { Charla } from '../lib/bestiario/charla.ts';
 import { lugarDeLaFicha, type Lado } from '../lib/bestiario/hoja.ts';
 import { reposar, sellar, sellarAnotada } from './bestiario/sellos.ts';
+import { armarLupaDelPlano } from './bestiario/lupa-plano.ts';
 
 interface BestiaIsla {
   id: string;
@@ -462,6 +463,7 @@ window.setInterval(() => {
 /* Arranque: lo anotado, y una dirección que trae una bestia. */
 for (const id of anotadas) pintarAnotada(id);
 pintarLibreta();
+armarLupaDelPlano(quieto);
 
 function seguirLaDireccion(): void {
   const pedido = decodeURIComponent(location.hash.slice(1));

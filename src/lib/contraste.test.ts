@@ -98,6 +98,10 @@ const PARES: Array<[string, string, string]> = [
   ['boton primario de dos-ejes', 'fondo', 'disco-luzbelito-tinta'],
   ['boton primario de completar-la-letra', 'fondo', 'cat-letras'],
   ['boton primario de adivinar-la-tapa', 'fondo', 'cat-discos'],
+  // `D-85`: la chapita del nombre en el afiche de noviembre y la de la última parada, letra
+  // `--fondo` sobre la plata de *Último bondi*. Es la tinta del disco por su nombre, no el alias
+  // de la categoría: si un día se separan, este par se entera.
+  ['chapa del último bondi', 'fondo', 'disco-ultimo-bondi-a-finisterre-tinta'],
   // Y los dos que ya iban en su tinta sin un par que nombrara el uso: "Adiviná el tema" (Lobo
   // suelto) y "Más o menos" (Un baión). El número es el mismo que el de su tinta sobre el
   // fondo —el contraste no tiene dirección—, pero la lista dice dónde se usa cada par.
@@ -442,6 +446,19 @@ test('la multitud que se acerca: se ve de verdad, y lo de cerca tiene mas tinta 
   assert.ok(pesoMultitud('peso-bandera-lejos') < pesoMultitud('peso-bandera-cerca'), 'las banderas de lejos pesan más que las de cerca');
 });
 
+test('D-85: el casco del último bondi deja el texto del portal en AA, y se ve', () => {
+  const piso = mezclaConFondo(token('disco-ultimo-bondi-a-finisterre-tinta'), pesoMultitud('peso-casco'));
+  const fallas: string[] = [];
+  for (const [tinta, minimo] of [['texto', 4.5], ['texto-tenue', 4.5], ['disco-ultimo-bondi-a-finisterre-tinta', 3]] as const) {
+    const r = contraste(token(tinta), piso);
+    if (r < minimo) fallas.push(`${tinta} sobre el casco (${piso}): ${r.toFixed(2)}:1, pide ${minimo}`);
+  }
+  assert.deepEqual(fallas, [], `el --peso-casco dejó texto por debajo de AA:\n  ${fallas.join('\n  ')}`);
+  const fondo = token('fondo');
+  const salto = Math.max(...[1, 3, 5].map((i) => Math.abs(parseInt(piso.slice(i, i + 2), 16) - parseInt(fondo.slice(i, i + 2), 16))));
+  assert.ok(salto >= 12, `el casco no se va a ver en un teléfono: ${salto} niveles sobre el fondo`);
+});
+
 /* ==================================================================
    La etiqueta sellada (`D-64`): la tinta gastada y la mano, sobre el papel viejo
 
@@ -509,9 +526,10 @@ test('D-64: la tinta del sello y la mano se leen sobre el papel viejo, con el gr
 test('D-64: el sello que va sobre el negro no lleva la presión, solo la sal', () => {
   // La presión afloja la tinta al 80 %: sobre papel la aclara, pero sobre el negro la oscurece.
   // El sello del afiche de octubre quedaba con la letra `--fondo` en 3,52:1. Con solo la sal la
-  // tinta que queda es plena, y el par es el de la marca sobre el fondo, que ya se mide arriba.
+  // tinta que queda es plena, y el par es el de la tinta del mes sobre el fondo, que ya se mide
+  // arriba (`D-84`: el mismo sello sirve a cada mes con su tinta).
   const sitio = readFileSync('src/styles/sitio.css', 'utf-8').replace(/\/\*[\s\S]*?\*\//g, '');
-  const conMascara = [...sitio.matchAll(/\.oktubre-jugar::before\s*\{([^}]*)\}/g)]
+  const conMascara = [...sitio.matchAll(/\.afiche-boton::before\s*\{([^}]*)\}/g)]
     .map((m) => m[1]!)
     .filter((cuerpo) => /mask-image/.test(cuerpo));
   assert.ok(conMascara.length > 0, 'no se encontró la máscara del macizo del sello de octubre');

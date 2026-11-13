@@ -62,7 +62,18 @@ export interface Entorno {
   oir(nombre: string): Promise<Sono>;
   /** Un paso suelto, sobre el suelo que se pida. Para el diagnóstico. */
   pisar(suelo: Suelo): Promise<Sono>;
+  /**
+   * El aire que suena (`D-90`, quinta ronda), atado a lo que se ve: el viento sube y baja con la
+   * ventisca, el tubo del farol zumba y se corta cuando titila. `nivel` va de 0 a 1 y se pide cada
+   * tanto; el volumen es discreto y no pasa de su tope. Apagado, no hace nada.
+   */
+  aire(cual: 'viento' | 'zumbido', nivel: number): void;
+  /** Un chisporroteo corto: la brasa cuando late. `fuerza`, de 0 a 1. */
+  chispear(fuerza: number): void;
 }
+
+/** Lo más fuerte que suena cada cosa del aire, sobre el general: están para acompañar, no para tapar. */
+const TOPE_DEL_AIRE = { viento: 0.05, zumbido: 0.014, chispa: 0.05 } as const;
 
 /* ------------------------------------------------------------------
    Lo que se comparte entre caminos: los archivos, el ruido, las salas
@@ -154,6 +165,8 @@ export function crearEntorno(receta: Receta): Entorno {
   let andado = 0;
   let ultimoPaso = 0;
   let pie = 1;
+  /** Lo que suena del aire, mientras esté prendido: una fuente y su ganancia por cada cosa. */
+  const soplos = new Map<string, GainNode>();
 
   /* ---------------- Las salidas ---------------- */
 
@@ -964,7 +977,71 @@ export function crearEntorno(receta: Receta): Entorno {
     return lista;
   }
 
+  /**
+   * La fuente de una cosa del aire, que se arma la primera vez que se la pide. El viento es el ruido
+   * de siempre por un pasabanda ancho; el zumbido, un diente de sierra a 100 Hz (el tubo de sodio)
+   * por un pasabanda angosto en su segundo armónico. Se apagan con todo lo demás.
+   */
+  function soplo(cual: 'viento' | 'zumbido'): GainNode | null {
+    if (!prendido || !ctx || !ruido) return null;
+    const hay = soplos.get(cual);
+    if (hay) return hay;
+    const c = ctx;
+    const g = c.createGain();
+    g.gain.value = 0;
+    g.connect(entrada(false));
+    const filtro = c.createBiquadFilter();
+    filtro.type = 'bandpass';
+    let fuente: AudioScheduledSourceNode;
+    if (cual === 'viento') {
+      const s = c.createBufferSource();
+      s.buffer = ruido;
+      s.loop = true;
+      filtro.frequency.value = 480;
+      filtro.Q.value = 0.5;
+      fuente = s;
+    } else {
+      const o = c.createOscillator();
+      o.type = 'sawtooth';
+      o.frequency.value = 100;
+      filtro.frequency.value = 200;
+      filtro.Q.value = 7;
+      fuente = o;
+    }
+    fuente.connect(filtro);
+    filtro.connect(g);
+    fuente.start();
+    soplos.set(cual, g);
+    camas.push(() => {
+      soplos.delete(cual);
+      g.gain.setTargetAtTime(0, c.currentTime, 0.2);
+      window.setTimeout(() => {
+        try {
+          fuente.stop();
+        } catch {
+          // Ya estaba parada.
+        }
+        g.disconnect();
+      }, 1200);
+    });
+    return g;
+  }
+
   return {
+    aire(cual, nivel) {
+      const g = soplo(cual);
+      if (!g || !ctx) return;
+      // El viento cambia despacio; el tubo, de golpe: cuando titila, se corta.
+      g.gain.setTargetAtTime(TOPE_DEL_AIRE[cual] * Math.min(1, Math.max(0, nivel)), ctx.currentTime, cual === 'viento' ? 0.5 : 0.04);
+    },
+    chispear(fuerza) {
+      if (!prendido || !ctx || !ruido || !ocupar(0.3)) return;
+      const d = panear(entrada(false), Math.random() * 1.2 - 0.6);
+      const k = Math.min(1, Math.max(0, fuerza));
+      for (let i = 0; i < 3; i++) {
+        rafaga(d, { tipo: 'highpass', f: 2400 + Math.random() * 2200, q: 0.8, dura: 0.025, vol: TOPE_DEL_AIRE.chispa * k, cuando: ctx.currentTime + Math.random() * 0.22 });
+      }
+    },
     prender(c) {
       if (prendido) return;
       ctx = c;
