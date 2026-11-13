@@ -7465,16 +7465,58 @@ buscaba la primera capa del templo, que ahora son las ofrendas. Cinco tests nuev
 
 **Verde:** `npm test` 2342, `npm run check` 0 errores, `npm run build` 200 páginas.
 
-### Resumen de las seis rondas, y cómo se lee esta decisión
+### Enmienda — séptima ronda (2026-11-13): los techos sin ahogar, el canto que se ve, y una pasada buscando roturas
+
+1. **Los techos.** Lo que tapaba todo **no era lluvia ni era de esta decisión**: son los rayones de
+   crayón de `baldio-lejos`, el telón del recinto (`arte.ts`, de `D-73`/`D-80`), la mano de *Un baión*.
+   Con 900 parejos en el cielo y 700 en el piso se leía como ruido de televisor. Quedaron 380 en el
+   cielo, a 0,6 de fuerza y sin el lila; 230 en el piso, a media fuerza y sin el lila (era el que
+   saltaba delante de los bichos); 150 en la medianera. **Los de los faroles no se tocaron**: el
+   crayón queda donde hay luz. El haz de las linternas (`baldio-linterna`, también previo) pasó de 90
+   rayones a 40. De lo mío, el humo de las chimeneas bajó de 0,8 a 0,55. El telón lo comparten los
+   retratos de Atila, el psicópata, el matón y Dinamita: cambian igual.
+2. **El canto a medida se ve.** Tres cambios: 12 píxeles en vez de 7 y de tinta llena (era la media
+   tinta del borde); en la prisión va en el **rojo de las banderas** (`--disco-oktubre-tinta`), porque
+   blanco sobre grabado blanco no se veía; y la opacidad va al doble (`calc(var(--filo) * 2)`), así
+   con medio haz encima ya está prendido. Dos arreglos de medición: a los títeres altos no les tocaba
+   nunca (se medía el ángulo a la coronilla; ahora al medio del cuerpo) y se los descartaba por altos.
+   En los astilleros el cono se inclinó 24° hacia el agua (`rumbo`), que es para donde mira el brazo
+   del farol, y ahora cruza al botija. **Visto:** la drácula, prendida en rojo, clara. El botija se
+   prende a 0,2 o 0,25: el cono le pasa por encima pero el canto naranja sobre él **casi no se
+   distingue** en la captura.
+3. **Las seis luces con el haz nuevo, miradas en escena.** Astilleros, Cybersiberia, techos, galpón y
+   templo: las vetas se leen como luz que pasa por una rejilla sucia y no hizo falta ajustarlas por
+   región. La de la ruta va atada al bondi: se la vio bien a 1280 y chica en el teléfono.
+4. **El templo.** El humo que baja (`aire-templo-humo-baja`, de pantalla entera como todo lo que cae)
+   y una fila de velas más lejos. Y un arreglo: las ofrendas eran una baldosa repetida y **caían
+   encima de las patas del Morta y del Doctor Saturno** (se vio a 1280). Ahora son una sola pieza del
+   ancho del templo (1940), con cada tanda en un hueco entre los que están parados; lo mide un test.
+5. **Cybersiberia no se tocó**, por decisión de la coordinación: hasta medir en un teléfono de verdad.
+   **Qué hacer si ahí pasa de 16 ms**, en este orden y midiendo entre uno y otro: (a) la nevisca a
+   media pantalla de alto (de 640 a 320 unidades, arriba; abajo la nieve ya está en el piso), que
+   saca la mitad de lo que se compone; (b) la nevisca a medio ritmo, como ya va el plano de fondo
+   (`mediaVuelta`); (c) alivio 2 de entrada en esa región, que apaga el haz; (d) recién al final, la
+   capa de adelante. No se saca la nieve: sin nieve no es Cybersiberia.
+6. **La pasada.** Las trece regiones a 1280×800 y a 430×860 con movimiento reducido: sin errores de
+   consola, sin desbordes, sin piezas que falten. Dos cosas vistas: lo de las velas del templo
+   (arreglado) y, con movimiento reducido, el haz de la linterna de los techos queda quieto y prendido
+   como un paño claro de borde duro en medio del baldío (previo; con menos rayones se nota más). Queda
+   anotado, sin tocar.
+
+**Tests que cambiaron a propósito:** el del canto (la opacidad pasó a `calc`). Tres nuevos.
+
+**Verde:** `npm test` 2345, `npm run check` 0 errores, `npm run build` 200 páginas.
+
+### Resumen de las siete rondas, y cómo se lee esta decisión
 
 `D-90` creció por enmiendas. Lo que quedó en pie:
 
-1. **El aire** (rondas 1 a 6): tres planos de capas impresas entre las del camino, en las trece
+1. **El aire** (rondas 1 a 7): tres planos de capas impresas entre las del camino, en las trece
    regiones, cada una con la mano de su tapa. La niebla es de jirones rasgados y se abre al paso.
 2. **La lupa** (ronda 1): pellizco, Ctrl + ruedita, doble toque, teclado y sellos, en los caminos y
    en el plano.
 3. **El piso** (rondas 2 a 6): lo tirado, impreso adentro del piso, apoyado y en escorzo.
-4. **La luz** (rondas 2 a 6): una forma impresa por región, que se mueve y toca a los bichos, desde
+4. **La luz** (rondas 2 a 7): una forma impresa por región, que se mueve y toca a los bichos, desde
    la sexta con el canto de cada pieza.
 5. **El misterio** (rondas 2 y 3): los ojos sin dueño y lo que cruza lejos.
 6. **Los títeres** (rondas 4 a 6): miran, respiran con peso, y los que no se ven no se mueven.

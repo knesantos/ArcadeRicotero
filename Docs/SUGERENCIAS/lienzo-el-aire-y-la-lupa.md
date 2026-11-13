@@ -83,3 +83,10 @@ Capturas de referencia: las de la entrada de `ESTADO.md` de `T-527` (carpeta tem
     una de sus piezas, impreso en la tinta de esa luz. Sin tintas nuevas.
 27. **Las ofrendas del templo** y **lo tirado en el árbol, la mesa y el galpón** (hoja 09): el árbol
     en aerógrafo; la mesa y el galpón en tinta plana con grano, sin un soplo.
+
+## Séptima ronda (2026-11-13)
+
+28. **El crayón de *Un baión* va donde hay luz** (hoja 05, la mezcla): apretado alrededor de cada
+    farol y ralo en el resto; nunca parejo de punta a punta.
+29. **El canto encendido contrasta con el títere** (hoja 12): en la prisión, el rojo de las banderas
+    (`--disco-oktubre-tinta`), nunca blanco sobre blanco. Sin tintas nuevas.
