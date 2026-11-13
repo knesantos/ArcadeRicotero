@@ -1,11 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import sharp from 'sharp';
 
 import { rutaDePieza } from './aerografo.ts';
 import {
-  ACECHOS, AIRE, ALIVIO, LUCES, MIRADA, PASO_PLENO, VIDAS, aireDe, alfaDeAire, alivioDeEntrada, alivioTras, altoDeBaldosa, corridaDeAire, despejeDeLupa, estadoDeLuz, latido,
+  ACECHOS, AIRE, ALIVIO, ALIVIO_DE_LA_REGION, FILO_PROPIO, LUCES, MIRADA, PASO_PLENO, VIDAS, aireDe, alfaDeAire, alivioDeEntrada, alivioTras, altoDeBaldosa, rutaDelFilo, tieneFiloPropio, corridaDeAire, despejeDeLupa, estadoDeLuz, latido,
   parpadeo, pasoDeVida, resto, tocaLaLuz,
 } from './aire.ts';
 import { PIEZAS_AIRE, PIEZAS_DE_FILO, PIEZAS_DE_LUZ, PIEZAS_DE_VIDA } from './arte-aire.ts';
@@ -367,8 +367,74 @@ test('la nevada de Cybersiberia es una capa de aire, no una animación adentro d
   // Adentro del dibujo, cada cuadro obligaba a repintar el piso entero: 12 cuadros por segundo con la
   // CPU estrangulada ×4, contra 54 como capa (medido en `D-90`, tercera ronda).
   assert.doesNotMatch(pisoDelCamino(CAMINOS.cybersiberia!, new Map()), /cyber-nevada/);
-  const nevada = AIRE.cybersiberia!.find((c) => c.pieza === 'cyber-nieve');
-  assert.ok(nevada?.ajena && nevada.cae === 40 && nevada.ancho === 900, 'la nevada cae lo mismo que caía: 640 unidades en 16 s');
+  // Sexta ronda: la nevada y la ventisca son una sola capa, la nevisca, que cae al sesgo. Antes este
+  // test pedía la capa `cyber-nieve` aparte; lo que protege es lo mismo (que la nieve no vuelva al
+  // piso) más lo nuevo: que sea una sola superficie de pantalla entera, no dos.
+  const enteras = AIRE.cybersiberia!.filter((c) => c.alto === ALTO);
+  assert.deepEqual(enteras.map((c) => c.pieza), ['aire-cyber-nevisca']);
+  const nevisca = enteras[0]!;
+  assert.ok(nevisca.cae > 0 && nevisca.deriva < 0 && nevisca.suena === 'viento', 'cae y el viento la lleva');
+  assert.ok(!existsSync('public/bestiario/aire-cyber-ventisca.webp'), 'la ventisca vieja no queda impresa');
+});
+
+test('Cybersiberia arranca aliviada en cualquier teléfono; las demás, solo en uno flojo', () => {
+  assert.deepEqual(ALIVIO_DE_LA_REGION, { cybersiberia: 1 });
+  assert.equal(alivioDeEntrada(8, 8, 'cybersiberia'), 1);
+  assert.equal(alivioDeEntrada(8, 8, 'el-monte'), 0);
+  assert.equal(alivioDeEntrada(2, 4, 'el-monte'), 1);
+  assert.match(readFileSync('src/scripts/camino.ts', 'utf-8'), /alivioDeEntrada\(navigator\.hardwareConcurrency, delNavegador\.deviceMemory, datos\.region\)/);
+});
+
+test('el filo a medida: cada pieza de los títeres que pasan bajo una luz tiene su canto impreso', () => {
+  assert.deepEqual(Object.keys(FILO_PROPIO).sort(), ['la-prision', 'los-astilleros', 'los-techos']);
+  // Lo que no es cuerpo no lleva canto: ni el humo, ni los ojos, ni los muebles de la celda.
+  assert.ok(tieneFiloPropio('dracula-cuerpo', 'la-prision') && !tieneFiloPropio('dracula-cuerpo', 'el-monte'));
+  assert.ok(!tieneFiloPropio('atila-vaho', 'los-techos') || existsSync(`public${rutaDelFilo('atila-vaho')}`));
+  assert.ok(!tieneFiloPropio('esclavo-pupila', 'la-prision'));
+  let cuantos = 0;
+  let peso = 0;
+  for (const region of Object.keys(FILO_PROPIO)) {
+    for (const p of [...PIEZAS_CAMINO.map((q) => q.nombre), ...readdirSync('public/bestiario').map((n) => n.replace('.webp', ''))]) {
+      if (p.startsWith('filo-de-') || !tieneFiloPropio(p, region) || !existsSync(`public/bestiario/${p}.webp`)) continue;
+      assert.ok(existsSync(`public${rutaDelFilo(p)}`), `${p}: falta imprimir su filo (--solo filo-de-)`);
+      cuantos++;
+    }
+  }
+  for (const n of readdirSync('public/bestiario')) if (n.startsWith('filo-de-')) peso += statSync(`public/bestiario/${n}`).size;
+  assert.ok(cuantos >= 60, `hay ${cuantos} cantos`);
+  assert.ok(peso < 400_000, `los cantos pesan ${Math.round(peso / 1024)} kB`);
+  // La isla solo les mueve la opacidad, por una variable en la raíz del títere: ni un `filter`.
+  const css = readFileSync('src/styles/camino.css', 'utf-8');
+  assert.match(css, /\.camino \.filo-propio \{\s*opacity: var\(--filo, 0\);\s*pointer-events: none;\s*\}/);
+  assert.match(css, /\.camino--muy-liviano \.filo-propio \{ display: none; \}/);
+});
+
+test('el haz no tiene canto de regla ni plano parejo, y el templo tiene sus ofrendas en el piso', () => {
+  const foco = PIEZAS_DE_LUZ.find((p) => p.nombre === 'luz-templo-foco')!.dibujo;
+  const silueta = /<mask id="lz-m"><path d="([^"]+)"/.exec(foco)![1]!;
+  assert.ok(silueta.split('L').length > 24, 'el canto baja en tramos desparejos, no en dos rectas');
+  assert.ok((foco.match(/fill="black"/g) ?? []).length >= 20, 'la máscara se cruza con vetas y motas');
+  assert.doesNotMatch(foco, /Gradient/i);
+  const ofrendas = AIRE['el-templo']!.find((c) => c.pieza === 'aire-templo-ofrendas')!;
+  assert.ok(ofrendas.f === 1 && !ofrendas.deriva && !ofrendas.cae, 'van con el piso');
+  assert.ok(ofrendas.y <= 450 && ofrendas.y + ofrendas.alto >= 620, 'llenan de abajo del medallón al papel picado');
+  assert.ok(existsSync('public/bestiario/aire-templo-ofrendas.webp'));
+});
+
+test('el árbol, la mesa y el galpón tienen cosas en el piso, cada uno en la mano de su tapa', () => {
+  const piso = (n: string): string => PIEZAS_CAMINO.find((q) => q.nombre === n)!.dibujo;
+  // El árbol, aerógrafo: sus hojas van adentro del rociado. La mesa y el galpón, tinta plana con grano.
+  assert.match(piso('camino-arbol-piso'), /entorno-arbol-cobre/);
+  const fuente = readFileSync('src/lib/bestiario/arte-suelo.ts', 'utf-8');
+  for (const [desde, hasta] of [['export function sueloDeLaMesa', 'const GA = '], ['export function sueloDelGalpon', '\n}\n']] as const) {
+    const a = fuente.indexOf(desde);
+    const tramo = fuente.slice(a, fuente.indexOf(hasta, a));
+    assert.ok(tramo.length > 400);
+    assert.doesNotMatch(tramo, /nube\(|soplo-/, `${desde}: es tinta plana, sin un soplo`);
+  }
+  const armado = readFileSync('src/lib/bestiario/arte-camino.ts', 'utf-8');
+  assert.match(armado, /`<g filter="url\(#grano\)">\$\{sueloDeLaMesa\(/);
+  assert.match(armado, /`<g filter="url\(#grano\)">\$\{sueloDelGalpon\(/);
 });
 
 test('las capas se pintan una vez por cuadro, no dos', () => {
@@ -424,7 +490,7 @@ test('las trece regiones tienen aire y ojos sin dueño, y las cuatro últimas, s
   // El incienso del templo sí va soplado; las hojas del árbol caen y cierran para los dos lados.
   assert.match(dibujo('aire-templo-incienso'), /soplo-s/);
   assert.ok(AIRE['el-arbol']!.some((c) => c.cae > 0) && AIRE['el-arbol']!.some((c) => c.suena === 'viento'));
-  assert.ok(AIRE['la-mesa']![0]!.cae < 0 && AIRE['el-templo']![0]!.cae < 0, 'el humo y el incienso suben');
+  assert.ok(AIRE['la-mesa']![0]!.cae < 0 && AIRE['el-templo']!.find((c) => c.pieza === 'aire-templo-incienso')!.cae < 0, 'el humo y el incienso suben');
   // Y el galpón tiene su seguidor, con el polvo adelante.
   assert.ok(LUCES['el-galpon'] && LUCES['el-templo'] && AIRE['el-galpon']![0]!.pieza === 'aire-galpon-polvo');
 });
@@ -447,11 +513,13 @@ test('la luz toca a los bichos: un filo impreso, que se prende con el haz encima
   assert.equal(tocaLaLuz(-35, 20), 0);
   assert.ok(tocaLaLuz(8, 20) > tocaLaLuz(14, 20) && tocaLaLuz(14, 20) > 0);
   const conFilo = Object.entries(LUCES).filter(([, l]) => l[0]!.filo);
-  assert.deepEqual(conFilo.map(([r]) => r).sort(), ['la-prision', 'los-astilleros']);
+  assert.deepEqual(conFilo.map(([r]) => r).sort(), ['la-prision', 'los-astilleros', 'los-techos']);
   for (const [region, [l]] of conFilo) {
     const p = PIEZAS_DE_FILO.find((q) => q.nombre === l!.filo!.pieza);
     assert.ok(p && existsSync(`public${rutaDePieza(p.nombre)}`), `${region}: falta imprimir el filo`);
-    assert.ok(l!.filo!.cuantos >= 1 && l!.filo!.cuantos <= 3, 'cada filo es una superficie más');
+    // Eran hasta 3; desde la sexta ronda, 4: con el canto a medida la medialuna genérica casi no se
+    // prende (queda para los bichos pintados en el piso), y hace falta lugar para los dos que conviven.
+    assert.ok(l!.filo!.cuantos >= 1 && l!.filo!.cuantos <= 4, 'cada filo es una superficie más');
     assert.doesNotMatch(p.dibujo, /Gradient/i);
   }
   // Cada uno con la mano de su región: aerógrafo con grano en los astilleros, gubia en la prisión.

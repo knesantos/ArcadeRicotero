@@ -122,3 +122,12 @@ test('la lupa del plano agranda la lente y nada más: solo transform', () => {
   assert.match(css, /\.bestiario-marco--lupa \{[^}]*touch-action: none;/);
   assert.doesNotMatch(css, /\.bestiario-marco \{[^}]*touch-action/);
 });
+
+test('el doble toque tiene margen: medio segundo y 44 px, contados desde que se apoya el dedo', () => {
+  // Con 350 ms y 28 px fallaba con el teléfono cargado (`D-90`, sexta ronda).
+  assert.ok(LUPA.doblePausa >= 500 && LUPA.doblePausa <= 600);
+  assert.ok(LUPA.dobleRadio >= 40 && LUPA.dobleRadio <= 48, 'un dedo, no media pantalla');
+  const gesto = readFileSync('src/scripts/bestiario/pellizco.ts', 'utf-8');
+  assert.match(gesto, /addEventListener\('pointerdown', \(ev\) => \(apoyado = ev\.timeStamp \|\| performance\.now\(\)\), \{ passive: true, capture: true \}\)/);
+  assert.match(gesto, /const ahora = apoyado \|\| performance\.now\(\);/);
+});

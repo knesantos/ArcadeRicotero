@@ -33,7 +33,15 @@ test('los cinco más vistos miran: el lobo, las lobas, Pierre, Momo y Luzbelito'
   const lobas = readFileSync('src/scripts/bestiario/lobas.ts', 'utf-8');
   assert.match(camino, /miradaDe\(g, AL\.cabeza\[0\], AL\.cabeza\[1\] - 60/, 'el lobo no mira');
   assert.match(lobas, /miradaDe\(titere, VERSO\[0\]/, 'las lobas no espían');
-  assert.equal((recintos.match(/miradaDe\(g, /g) ?? []).length, 3, 'Luzbelito, Momo y Pierre');
+  // Eran tres; en la sexta ronda se sumó Limón, que mira al dedo cuando no corre.
+  assert.equal((recintos.match(/miradaDe\(g, /g) ?? []).length, 4, 'Luzbelito, Momo, Pierre y Limón');
+  // Y los dos de la prisión, que miran desde el cuerpo entero (el grupo que la isla mueve).
+  assert.match(recintos, /miradaDe\(entero, AB\.cuello\[0\], AB\.cuello\[1\] - 80, 320\)/, 'Barbazul no mira');
+  assert.match(recintos, /modo === 'para' \? miradaDe\(entera, cx, cy - 50, 340\)/, 'la drácula no mira');
+  // Los tres respiran: crecen desde los pies, o se hinchan desde donde apoyan. Solo `transform`.
+  assert.match(recintos, /scale\(\$\{escala\} \$\{\(escala \* \(1 \+ respira \* 0\.007\)\)\.toFixed\(4\)\}\)/);
+  assert.match(recintos, /scale\(\$\{escala\} \$\{\(escala \* \(1 \+ respira \* 0\.006\)\)\.toFixed\(4\)\}\)/);
+  assert.match(recintos, /const hincha = `translate\(0 \$\{base\}\) scale\(/);
   // Respiran con peso: se llenan despacio y se vacían más rápido (no es un seno parejo).
   for (const [quien, fuente] of [['el lobo', camino], ['las lobas', lobas], ['Pierre', recintos]] as const) {
     assert.match(fuente, /aire > 0 \? Math\.pow\(aire, 0\.7\) : -Math\.pow\(-aire, 1\.[56]\)/, `${quien} respira parejo`);
