@@ -7157,3 +7157,49 @@ sopla en el teléfono: se imprime, como todo el bestiario.
 baldosa nunca muestre el borde, que la isla solo escriba `transform` y `opacity`, que el reloj sea
 uno, que la lupa no se salga del mundo y deje quieto lo que está debajo del dedo, y que caminar y
 tocar sigan siendo lo que eran. `npm test` 2313, `npm run check`, `npm run build` (200 páginas).
+
+### Enmienda — segunda ronda (2026-11-13): el piso, la niebla rasgada, la luz y los ojos sin dueño
+
+Auditoría de la primera ronda: la niebla rasante se leía como escalones (franjas parejas que
+cruzaban la pantalla), el piso seguía liso debajo, y el camello de Cybersiberia tenía un halo.
+
+- **La lengua pasa a jirón.** El canto de abajo sigue siendo duro (máscara de papel) pero **rasgado**:
+  tramos rectos desparejos, torcido y combado, con dos a cinco bocanadas de distinto alto adentro.
+  Van sueltos, cada uno a su altura y con aire entre uno y otro; el más largo mide 260 unidades y un
+  teléfono parado ve 320, así que **ninguna franja cruza la pantalla**. Las manchas de la bruma
+  también tienen tope de ancho. `aire.test.ts` lo cuida.
+- **El piso deja de ser liso** (`arte-suelo.ts`): charcos que reflejan lo de atrás (en el monte, las
+  puntas de las tiras dadas vuelta; en la nieve y en el muelle, rayas de luz que bajan temblando),
+  raíces, piedras, tiras caídas y costillares en el monte; placas de hielo, chapas remachadas, cables
+  y cascotes en Cybersiberia; charcos de sodio, cadenas, aceite y tablones en los astilleros. **No
+  son capas**: se imprimen adentro del piso de cada camino, debajo de los bichos, y no le cuestan nada
+  al teléfono. El infierno no lleva: su piso es el damero de la tapa y es un recinto con su propio
+  arte; ahí el piso lo hace la brasa.
+- **El halo del camello** era previo: `canto()` en `arte-entornos.ts` soplaba la silueta entera en
+  celeste detrás de los de la nieve, y asomaba para todos lados. Ahora es un filo duro, la silueta
+  corrida un pelo hacia la luz y tapada por el cuerpo: se ve de un solo lado. Alcanza al camello, al
+  robot, a Comboman y al pilar, en el recinto y en el camino.
+- **Bichos cortados**: medidos los cinco caminos de la ronda en 430×860, con cada bicho llevado al
+  medio. Ninguno queda cortado: los tres que el barrido marcó son la soga de tu animal (que sube
+  fuera de cuadro a propósito), el Alien Duce (que es más ancho que la pantalla por diseño) y la caja
+  de Mandinga, que incluye piezas escondidas.
+- **La luz que se ve en el aire** (`LUCES` en `aire.ts`): una forma soplada impresa, con grano,
+  clavada en un punto de la escena, que la isla gira, agranda y le cambia el alfa. El haz es
+  aerógrafo con máscara: los dos cantos duros de cartulina, tres bocanadas adentro y el pie
+  deshecho. Una por región: el **cono del farol de sodio** de los astilleros, que se hamaca y titila
+  como un tubo viejo; la **brasa** al pie de Luzbelito, que late (dos golpes y una pausa); y el
+  **haz de la cámara** que barre la nieve de Cybersiberia. Ni `filter`, ni sombra, ni modo de mezcla.
+- **Los ojos sin dueño** (`ACECHOS`): si te quedás quieto cinco o seis segundos, en lo oscuro se
+  abren unos ojos que no son de ningún bicho de la libreta. Parpadean, y **se apagan si los mirás**:
+  caminar, tocar cerca, pasarles el mouse, sacar la lupa o abrir una ficha los cierra, y vuelven más
+  tarde en otro lado. Es un sistema: receta por región (la pieza y los lugares donde pueden abrirse),
+  y cada región con aire tiene la suya. En el monte son de bicho; en Cybersiberia, dos lentes con su
+  piloto rojo; en los astilleros miran desde el agua, con su reflejo; en el infierno son de brasa.
+  No se tocan ni abren ficha. Con movimiento reducido no están.
+- **De paso**: al cambiar el tamaño de la pantalla, lo deslizado se lee del scroll y no de la cámara.
+
+Lo que se eligió: los ojos se abren en puntos de la pantalla (abajo, en lo oscuro, o lejos entre lo
+de atrás), no atados a una mata en particular de la capa `cerca`, que pasa volando y se repite.
+Como solo existen con la cámara quieta, no se nota; atarlos a la mata queda para cuando haga falta.
+
+`aire.test.ts` pasa de 10 a 15. `npm test` 2318, `npm run check`, `npm run build` (200 páginas).

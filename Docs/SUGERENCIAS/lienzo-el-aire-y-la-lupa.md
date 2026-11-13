@@ -23,3 +23,17 @@ conviene que esté en el lienzo, en la hoja 12 (movimiento y aire) o en una hoja
    fila del hover y los micro-rebotes, para que nadie lo lea como un adorno suelto.
 
 Capturas de referencia: las de la entrada de `ESTADO.md` de `T-527` (carpeta temporal de la sesión).
+
+## Segunda ronda (2026-11-13)
+
+7. **La lengua de niebla pasa a jirón**: el canto de abajo, duro y rasgado (tramos rectos desparejos),
+   nunca una curva lisa, y ninguno más ancho que una pantalla de teléfono. Reemplaza al punto 2.
+8. **El charco** es la pieza del piso: óvalo aplastado de silueta dura, el agua en la tinta más honda
+   y adentro lo de atrás dado vuelta (puntas en el monte, rayas de luz donde hay faroles), con un
+   pelo de luz en el borde de adelante.
+9. **El haz**: cono de dos cantos duros con tres bocanadas adentro y el pie deshecho. Es la única
+   forma de "luz en el aire" del sistema. No es un resplandor de CSS ni lleva modo de mezcla.
+10. **Los ojos sin dueño**: par de almendras de filo, con grano, en `--acento-2` en el monte y en la
+    tinta de luz de cada región en las demás. No llevan aro ni resplandor.
+11. **El canto prendido** de una silueta contra la luz es un filo duro de un solo lado, nunca la
+    silueta soplada entera (eso es un halo).

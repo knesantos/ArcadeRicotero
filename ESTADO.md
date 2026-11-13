@@ -7,32 +7,38 @@
 
 **Última actualización:** 2026-11-13
 
-> ## 🌫️ EL BESTIARIO CON MÚSCULO: EL AIRE ENTRE LAS CAPAS Y LA LUPA (2026-11-13) — `D-90`, `T-527`
+> ## 🌫️ EL BESTIARIO CON MÚSCULO: EL AIRE, LA LUPA, EL PISO, LA LUZ Y LOS OJOS SIN DUEÑO (2026-11-13) — `D-90`, `T-527`
 >
 > **Sin integrar y sin subir**, rama `bestiario/inmersion`, cortada de `bestiario/cinco-sin-diseno` (PR #108) en `9fa0b93`. Pedido del
 > usuario: *"Quiero mejorar la inmersión. Que se pueda hacer zoom, que tenga más misterio y efectos, nieblas, mejores animaciones, una
-> mejora total manteniendo la esencia y el alma y el diseño rocambolesco ante todo, pero darle músculo."* Es la **primera ronda**: la
-> base (el sistema de aire y la lupa) y cuatro regiones.
+> mejora total manteniendo la esencia y el alma y el diseño rocambolesco ante todo, pero darle músculo."* Van **dos rondas**: la base
+> (el aire y la lupa) y, encima, el piso, la niebla rehecha, la luz y lo que aparece si te quedás quieto. Cinco caminos: el monte, la
+> pastura, Cybersiberia, los astilleros y el infierno.
 >
 > - **El aire** (`lib/bestiario/aire.ts`, `arte-aire.ts`): capas nuevas entre las del camino. La bruma que sale de atrás del piso, la
->   niebla rasante con el canto de abajo cortado a máscara de papel, y lo pegado a la cámara fuera de foco, que tapa el **piso muerto**
->   del teléfono parado. Son baldosas **impresas** con el aerógrafo y el grano, que se repiten; la isla solo las corre y les cambia el
->   alfa, en el mismo reloj. La niebla **se abre al paso** y se cierra cuando te quedás quieto.
-> - **Cuatro regiones con aire**: el monte y la pastura (bruma, rasante, matas), Cybersiberia (vaho, ventisca con viento, médanos), los
->   astilleros (bruma del río, vaho, norays y cadenas) y el infierno (humo y ceniza encendida que sube). Sumar otra es escribir su
->   receta y pintar su baldosa.
+>   niebla rasante y lo pegado a la cámara fuera de foco. Son baldosas **impresas** con el aerógrafo y el grano, que se repiten; la
+>   isla solo las corre y les cambia el alfa, en el mismo reloj. La niebla **se abre al paso** y se cierra cuando te quedás quieto.
+> - **La niebla es de jirones** (ronda 2): el canto de abajo, duro y **rasgado**, cada uno a su altura y más corto que una pantalla de
+>   teléfono. Ya no hay franjas que crucen la pantalla.
+> - **El piso ya no es liso** (ronda 2, `arte-suelo.ts`): charcos que reflejan lo de atrás, raíces, piedras, costillares, hielo,
+>   chapas, cables, cadenas y aceite, impresos adentro del piso de cada camino. No son capas.
+> - **La luz** (ronda 2, `LUCES`): formas sopladas impresas que se mueven. El cono del farol de sodio en los astilleros, la brasa que
+>   late al pie de Luzbelito y el haz de la cámara en Cybersiberia. Una por región.
+> - **Los ojos sin dueño** (ronda 2, `ACECHOS`): si te quedás quieto cinco o seis segundos se abren en lo oscuro, y se apagan si los
+>   mirás. Receta por región; no son un bicho ni abren ficha.
 > - **La lupa** (`lib/bestiario/lupa.ts`, `scripts/bestiario/pellizco.ts`): pellizco, Ctrl + ruedita, doble toque, `+` `−` `0` y dos
 >   sellos donde hay mouse, en los trece caminos y en el plano. Tope 2,6; la vuelta es el sello **"Mirá todo"**. Con la lupa la tira
 >   mide `z` veces su ancho, así caminar de costado sigue siendo el scroll del navegador (`D-77`), y el toque que abre la ficha
->   (`T-522`) no cambia: el doble toque se traga solo el segundo.
-> - La imprenta aprendió la **sangría** (`Pieza.sangria`) para que una baldosa cierre sin costura.
-> - **Verde:** `npm test` (2313: los 2294 de antes, 10 de `aire.test.ts` y 9 de `lupa.test.ts`), `npm run check` (0 errores),
+>   (`T-522`) no cambia.
+> - **Arreglos de la auditoría**: el halo celeste del camello de Cybersiberia (era previo: ahora es un filo duro de un solo lado); y
+>   medidos los bichos de los cinco caminos en 430×860, ninguno queda cortado.
+> - **Verde:** `npm test` (2318: los 2294 de antes, 15 de `aire.test.ts` y 9 de `lupa.test.ts`), `npm run check` (0 errores),
 >   `npm run build` (200 páginas). Mirado en 430×860 y 1280×800, con y sin movimiento reducido, y los gestos probados con dedos
->   emulados en Edge sin ventana (pellizco, caminar con la lupa, mirar abajo, la vuelta, toque y doble toque).
-> - **Falta**: probarlo en un teléfono de verdad (el pellizco en iOS sobre todo, y cuánto le cuestan tres capas de aire a uno flojo);
->   el aire de las otras ocho regiones; un segundo tamaño impreso de los títeres para la lupa; lo de misterio y de animación del
->   pedido, que esta ronda solo dejó preparado (lo que aparece si te quedás quieto); el aro punteado del bicho que habla. Nota para el
->   lienzo en `Docs/SUGERENCIAS/lienzo-el-aire-y-la-lupa.md`. Detalle en `D-90`.
+>   emulados en Edge sin ventana.
+> - **Falta**: probarlo en un teléfono de verdad (el pellizco en iOS, y cuánto le cuestan a uno flojo tres capas de aire más la luz);
+>   el aire, el piso, la luz y los ojos de las otras ocho regiones; un segundo tamaño impreso de los títeres para la lupa; las
+>   animaciones de espera de los títeres y la vida del fondo; el aro punteado del bicho que habla. Nota para el lienzo en
+>   `Docs/SUGERENCIAS/lienzo-el-aire-y-la-lupa.md`. Detalle en `D-90` y su enmienda.
 
 > ## 🐕 CINCO QUE SEGUÍAN SIN DISEÑO: EL REY GARUFA, EL JOVEN LOBO, EL REO SEMENTAL, EL MOSCÓN ZUMBÓN Y EL OVEJERO (2026-11-05) — `D-73` (26), `T-526`
 >
