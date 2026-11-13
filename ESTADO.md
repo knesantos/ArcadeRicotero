@@ -7,9 +7,23 @@
 
 **Última actualización:** 2026-11-13
 
+> ## 🔀 OCHO PR A `main`, POR CADENA (2026-11-13)
+>
+> Pedido del usuario: *"mete todo a main."* Entraron los ocho PR abiertos, siguiendo `.claude/rules/integrar.md`:
+>
+> - **Portal y juegos**: el #105 apuntaba a la rama del #104, y el #104 a la del #100. Se fusionó `main` en la punta
+>   (`116ab89`, choques de `ESTADO.md` y `DECISIONES.md`, quedaron los dos lados), entró el #105 a su base, el #104 a `main`
+>   (`390223d`) y GitHub cerró el #100 como fusionado.
+> - **Bestiario**: el #109 y el #110 apuntaban a la rama del #108. Chocaban en `sitio.css` (quedaron las dos tandas de
+>   reglas) y en tres pisos impresos, que se reimprimieron con `imprimir-bestiario --solo` sobre el código junto. Entraron
+>   el #109 y el #110 a su base y el #108 a `main` (`34e2d48`).
+> - **Los #101 y #103**, solo de `ESTADO.md`, con `main` adentro (`5665517`).
+> - **Verde** en cada punta: 2272 y 2398 tests, `check` y `build`. Checks de Vercel en verde en cada PR.
+> - **Falta**: mirar en un teléfono los tres pisos reimpresos, que juntan dos rondas distintas por primera vez.
+
 > ## 🌫️ EL BESTIARIO CON MÚSCULO: RESUMEN DE LAS OCHO RONDAS (2026-11-13) — `D-90`, `T-527`
 >
-> **Sin integrar**, PR #110 (base: la rama del #108), rama `bestiario/inmersion`, cortada de `bestiario/cinco-sin-diseno` (PR #108) en
+> **En `main` el 2026-11-13**: el PR #110 entró a la rama del #108 (fusión `a26a495`) y el #108 a `main` (`34e2d48`). Rama `bestiario/inmersion`, cortada de `bestiario/cinco-sin-diseno` (PR #108) en
 > `9fa0b93`. Pedido del usuario: *"busca cosas que no se vean bien, ambientes mejorables y diseños que se puedan mejorar [...] Quiero
 > mejorar la inmersión. Que se pueda hacer zoom, que tenga más misterio y efectos, nieblas, mejores animaciones, una mejora total
 > manteniendo la esencia y el alma y el diseño rocambolesco ante todo, pero darle músculo."* Se hizo en ocho rondas, cada una
@@ -81,12 +95,13 @@
 >   y con la lupa al máximo la imagen se ve blanda.
 > - **El doble toque** ahora tiene 520 ms y 44 px y cuenta desde que se apoya el dedo: seis de seis con la máquina cargada, emulado.
 > - Un segundo tamaño impreso para la lupa; atar los ojos a una mata de adelante.
-> - Integrar: esta rama va encima del PR #108, que sigue abierto. Detalle y números en `D-90` y sus siete enmiendas.
+> - Integrada con el #109: los tres pisos que las dos ramas reimprimían (`astillero-piso`, `camino-astillero-piso`,
+>   `camino-ruta-piso`) se volvieron a imprimir con el código junto. Detalle y números en `D-90` y sus siete enmiendas.
 
 > ## 🐸 CINCO MÁS, DIBUJADOS POR UN FABLE Y AUDITADOS: LA RANA RUBIA, EL BORREGO, LA LIEBRE MUERTA, EL TAXI PARANORMAL Y EL POLIZÓN (2026-11-13) — `D-73` (27)
 >
-> **Sin integrar y sin commitear**, rama `bestiario/cinco-de-fable`, sobre `bestiario/cinco-sin-diseno` (PR #108, sin integrar: esta
-> rama lo trae adentro). Pedido del usuario: que el hilo principal elija bestias sin diseño (*"al menos 5"*), se las encargue a un
+> **En `main` el 2026-11-13**: PR #109 a la rama del #108 (fusión `a0656f4`) y de ahí a `main` con el #108 (`34e2d48`). Rama
+> `bestiario/cinco-de-fable`, sobre `bestiario/cinco-sin-diseno`. Pedido del usuario: que el hilo principal elija bestias sin diseño (*"al menos 5"*), se las encargue a un
 > Fable con libertad para ser rocambolesco, critique lo que vuelve y se lo devuelva. Una por región flaca y sin repetir bicho.
 >
 > - **La rana rubia** (astilleros): peluca, reposera y reflector de papel de aluminio, toma sol de noche; tocada croa y se come la mosca.
@@ -105,7 +120,7 @@
 
 > ## 🐕 CINCO QUE SEGUÍAN SIN DISEÑO: EL REY GARUFA, EL JOVEN LOBO, EL REO SEMENTAL, EL MOSCÓN ZUMBÓN Y EL OVEJERO (2026-11-05) — `D-73` (26), `T-526`
 >
-> **Sin integrar**, rama `bestiario/cinco-sin-diseno` (PR #108), sobre `main` en `9fe6a91`. Pedido del usuario: *"Elegi 5 bestias ricoteras sin
+> **En `main` el 2026-11-13** por el PR #108 (fusión `34e2d48`), rama `bestiario/cinco-sin-diseno`, sobre `main` en `9fe6a91`. Pedido del usuario: *"Elegi 5 bestias ricoteras sin
 > diseños y haceles uno bien rocambolesco con su animacion y detalles de la letra. Que sea bien detallado y pulido."* Se eligió una
 > por región flaca de títeres, empezando por la pastura, que no tenía ninguno del elenco.
 >
@@ -129,8 +144,8 @@
 
 > ## 🎛️ LAS DOS CINTAS Y CUATRO TABLEROS: UNA PASADA DE UI/UX AL PORTAL Y A LOS PRIMEROS JUEGOS (2026-11-04)
 >
-> **Sin integrar, rama `ui/home-y-cuatro-juegos`**, encima de `modo/ultimo-bondi` (PR #104, sin integrar): **no
-> puede entrar antes que el #104**, porque toca el mismo `index.astro`. Pedido del usuario: *"Hace una mejora
+> **En `main` el 2026-11-13**: PR #105 a la rama del #104 (fusión `80e1ea3`) y de ahí a `main` con el #104 (`390223d`). Rama
+> `ui/home-y-cuatro-juegos`, encima de `modo/ultimo-bondi`, porque toca el mismo `index.astro`. Pedido del usuario: *"Hace una mejora
 > sustancial de ui/ux de la pagina. El home y los primeros 5 juegos."* Se recorrió todo a 375 × 812 y a 1280 × 800
 > en un navegador de verdad antes de tocar nada, y se midió cada cambio. **Skayboy y Poligirl (A4) quedó afuera a
 > propósito:** otra sesión lo estaba rehaciendo entero en este mismo checkout (`skayboy/mejora-total`), y dos manos
@@ -170,22 +185,6 @@
 >   `Docs/SUGERENCIAS/HILO-para-experiencia-las-dos-cintas-y-cuatro-tableros.md` y la lleve a sus hojas
 >   (`UX-25`, `UX-08`, `UX-36`); la pasada equivalente sobre Skayboy, cuando cierre `skayboy/mejora-total`.
 
-> ## 🚌 NOVIEMBRE SE SUBE AL ÚLTIMO BONDI: EL PRIMER MODO DEL PORTAL (2026-11-02) — `D-85`, `T-524`
->
-> **Sin integrar, rama `modo/ultimo-bondi` (PR #104)**, encima de `portal/almanaque` (PR #100, sin
-> integrar) con `main` adentro: **no puede entrar antes que el #100.** Pedido del usuario: un home en modo *Un baión para el
-> ojo idiota*, inmersivo como la multitud de *Oktubre*, "el 7 de noviembre". El Baión salió el 9 de mayo de 1988 (`RES-20`,
-> reconfirmado por `investigador`); el usuario eligió *"Último bondi, sin Huracán"*.
->
-> - **El afiche de noviembre es *Último bondi*** (18-nov-1998): estampa "EL 18 CUMPLE 28", sello ÚLTIMO BONDI como la chapita
->   de la tapa, *"Agarrate del pasamanos, que arranca."*, botón ADIVINÁ TEMAS DEL BONDI. Reemplaza al HURACÁN de `D-84`, y las
->   noches del 93 salen del almanaque de noviembre (`fuera`).
-> - **El modo**: el ojo de buey de la tapa cuelga del afiche (cortado del master, el vidrio se corre al bajar), los tacos son
->   boletos picados, la chapa de la nave (`.casco`, `lib/sitio/casco.ts`) reemplaza a la multitud detrás de todo y avanza al
->   bajar, y al final de la hoja espera "ÚLTIMA PARADA · FINISTERRE".
-> - **Verde:** `npm test` (2239), `npm run check`, `npm run build` (200 páginas). Mirado en el navegador a 375×812 y 1280×800.
-> - **Falta**: la hoja del lienzo (la 18 todavía muestra HURACÁN), probarlo en un teléfono de verdad, y el modo Baión para mayo
->   (`T-521`): el boceto quedó en la rama local `modo/baion-ojo-idiota`.
 > ## 🎮 SKAYBOY Y POLIGIRL: DOCE NIVELES, EL MENÚ CON PLANO Y UN CIGARRILLO QUE SE ENTIENDE (2026-11-04) — `D-86`, `T-525`
 >
 > **Integrada en `main` el 2026-11-04** (PR #106, commit de fusión `0c3a73d`), desde la rama `skayboy/mejora-total` sobre `main` en `90583d6`. Pedido del usuario: *"Hace una mejora total
@@ -204,6 +203,22 @@
 > - **Falta**: jugarlos en un teléfono de verdad; que `contenido` ratifique o cambie los seis
 >   nombres (`CNT-21` tiene seis, no doce); la hoja del lienzo del cigarrillo nuevo.
 
+> ## 🚌 NOVIEMBRE SE SUBE AL ÚLTIMO BONDI: EL PRIMER MODO DEL PORTAL (2026-11-02) — `D-85`, `T-524`
+>
+> **En `main` el 2026-11-13** por el PR #104 (fusión `390223d`), rama `modo/ultimo-bondi`, encima de `portal/almanaque` (PR #100)
+> con `main` adentro. Pedido del usuario: un home en modo *Un baión para el
+> ojo idiota*, inmersivo como la multitud de *Oktubre*, "el 7 de noviembre". El Baión salió el 9 de mayo de 1988 (`RES-20`,
+> reconfirmado por `investigador`); el usuario eligió *"Último bondi, sin Huracán"*.
+>
+> - **El afiche de noviembre es *Último bondi*** (18-nov-1998): estampa "EL 18 CUMPLE 28", sello ÚLTIMO BONDI como la chapita
+>   de la tapa, *"Agarrate del pasamanos, que arranca."*, botón ADIVINÁ TEMAS DEL BONDI. Reemplaza al HURACÁN de `D-84`, y las
+>   noches del 93 salen del almanaque de noviembre (`fuera`).
+> - **El modo**: el ojo de buey de la tapa cuelga del afiche (cortado del master, el vidrio se corre al bajar), los tacos son
+>   boletos picados, la chapa de la nave (`.casco`, `lib/sitio/casco.ts`) reemplaza a la multitud detrás de todo y avanza al
+>   bajar, y al final de la hoja espera "ÚLTIMA PARADA · FINISTERRE".
+> - **Verde:** `npm test` (2239), `npm run check`, `npm run build` (200 páginas). Mirado en el navegador a 375×812 y 1280×800.
+> - **Falta**: la hoja del lienzo (la 18 todavía muestra HURACÁN), probarlo en un teléfono de verdad, y el modo Baión para mayo
+>   (`T-521`): el boceto quedó en la rama local `modo/baion-ojo-idiota`.
 > ## 🐒 EL BESTIARIO: LA TIERRA DEL REY Y LA COLA DEL MONITO (2026-10-30) — `T-523`
 >
 > **En `main`** por el PR #102 (fusión `90583d6`), rama `bestiario/ux-navegar`, encima de `T-522`. Lo integró Claude a pedido del usuario (*"Sí, integralo"*), con `main` sin moverse desde la rama y todo verde. Pedido del usuario: *"otra corrida de pulida,
@@ -281,7 +296,7 @@
 
 > ## 📅 EL ALMANAQUE DEL PORTAL: UN MES, UN AFICHE (2026-10-29) — `D-84`
 >
-> **Sin integrar**: rama `portal/almanaque` (PR #100), sobre `main` en `b0b0bc2`. Pedido del usuario: *"Actualicemos la portada de la
+> **En `main` el 2026-11-13**, adentro del PR #104 (fusión `390223d`; GitHub cerró el #100 como fusionado): rama `portal/almanaque`, sobre `main` en `b0b0bc2`. Pedido del usuario: *"Actualicemos la portada de la
 > página, quedó vieja de oktubre, que quede hasta el fin del mes, pero ya pensemos otra cosa."* y, sobre la propuesta
 > (`Docs/SUGERENCIAS/HILO-para-todos-el-almanaque-del-portal.md`), *"Sí, armalo"*. `T-520`.
 >
