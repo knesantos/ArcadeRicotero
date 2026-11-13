@@ -7,12 +7,12 @@
 
 **Última actualización:** 2026-11-13
 
-> ## 🌫️ EL BESTIARIO CON MÚSCULO: RESUMEN DE LAS SIETE RONDAS (2026-11-13) — `D-90`, `T-527`
+> ## 🌫️ EL BESTIARIO CON MÚSCULO: RESUMEN DE LAS OCHO RONDAS (2026-11-13) — `D-90`, `T-527`
 >
 > **Sin integrar y sin subir**, rama `bestiario/inmersion`, cortada de `bestiario/cinco-sin-diseno` (PR #108) en
 > `9fa0b93`. Pedido del usuario: *"busca cosas que no se vean bien, ambientes mejorables y diseños que se puedan mejorar [...] Quiero
 > mejorar la inmersión. Que se pueda hacer zoom, que tenga más misterio y efectos, nieblas, mejores animaciones, una mejora total
-> manteniendo la esencia y el alma y el diseño rocambolesco ante todo, pero darle músculo."* Se hizo en siete rondas, cada una
+> manteniendo la esencia y el alma y el diseño rocambolesco ante todo, pero darle músculo."* Se hizo en ocho rondas, cada una
 > auditada. Todo lo soplado se imprime (`scripts/imprimir-bestiario.mjs`): el teléfono solo mueve imágenes con `transform` y `opacity`.
 >
 > **Qué cambió**
@@ -21,7 +21,7 @@
 >   atrás del piso, la niebla del medio (de **jirones rasgados**, ninguno más ancho que un teléfono, y que **se abre al paso**) y lo
 >   pegado a la cámara fuera de foco. Cada región con **la mano de su tapa**: aerógrafo con grano, crayón en el bajo y los techos,
 >   gubia en la prisión, tinta plana en la mesa. Ropa tendida en los techos, barrotes limados en la prisión, ceniza en el infierno,
->   nevisca en Cybersiberia, hojas en el árbol, y en el templo las ofrendas en el piso: velas en dos filas, platitos, flores, y el humo que baja (rondas 6 y 7).
+>   nevisca en Cybersiberia, hojas en el árbol, y en el templo las ofrendas en el piso: velas en dos filas, platitos y flores, puestas en los huecos entre los bichos según los datos de la escena (rondas 6 a 8).
 > - **La lupa** (`lib/bestiario/lupa.ts`, `scripts/bestiario/pellizco.ts`): pellizco, Ctrl + ruedita, doble toque, `+` `−` `0` y dos
 >   sellos donde hay mouse, en los trece caminos y en el plano. Tope 2,6; la vuelta es **"Mirá todo"**. Caminar sigue siendo el scroll
 >   del navegador (`D-77`) y el toque que abre la ficha (`T-522`) no cambia.
@@ -34,8 +34,8 @@
 >   prisión, un foco del templo y el seguidor del galpón. El haz ya no es de regla: canto cortado a mano y vetas adentro (ronda 6). En los
 >   astilleros, la prisión y los techos **toca a los bichos**: desde la ronda 6 les prende **el canto de cada pieza**, impreso (82
 >   imágenes `filo-de-*`); la medialuna genérica queda para los pintados en el piso. En la ronda 7 se engrosó y en la prisión pasó al
->   rojo de las banderas: la drácula se ve prendida, clara. En los astilleros el cono se inclinó y cruza al botija, pero su canto casi
->   no se distingue.
+>   rojo de las banderas: la drácula se ve prendida, clara. En los astilleros el cono se inclinó y cruza al botija, cuyo canto va en tiza
+>   clara (ronda 8): de cerca se distingue, a tamaño de teléfono es un hilo.
 > - **El misterio**: los **ojos sin dueño** (`ACECHOS`) se abren si te quedás quieto cinco o seis segundos y se apagan si los mirás;
 >   y lejos, muy cada tanto, **cruza algo** (`VIDAS`): un pájaro, un murciélago, una estrella, un barquito de papel.
 > - **Los títeres miran** (`scripts/bestiario/mirada.ts`): el lobo suelto (en el monte y en la pastura), las lobas, Pierre, Momo y
@@ -53,7 +53,7 @@
 > - **Arreglos encontrados auditando**: el halo del camello, las losas del monte, el pie del farol, el horizonte de cinta del monte,
 >   los techos. Un test mide en la imagen impresa que nada de adelante tape más de un quinto del alto.
 >
-> **Verde:** `npm test` 2345 (los 2294 de antes y 51 nuevos: 36 de `aire.test.ts`, 10 de `lupa.test.ts`, 5 de `mirada.test.ts`),
+> **Verde:** `npm test` 2346 (los 2294 de antes y 52 nuevos: 37 de `aire.test.ts`, 10 de `lupa.test.ts`, 5 de `mirada.test.ts`),
 > `npm run check` 0 errores, `npm run build` 200 páginas. Dos tests anteriores cambiaron a propósito: el tope de peso del aire por región subió de 520 a 560 kB
 > (ronda 3) y el test de la losa del monte pasó a ser el tope del quinto para todas las regiones (ronda 4). Medido con la CPU ×4 en Edge sin
 > ventana: el monte, 9,9 ms de hilo principal y 60 cuadros por segundo; Cybersiberia, entre 12,7 y 15,4 ms y unos 50. En la ronda 6
@@ -70,11 +70,14 @@
 > - **Cybersiberia no bajó de 12 ms** con la CPU ×4. En la ronda 6 se fundieron la nevada y la ventisca en una capa y la región
 >   arranca en alivio 1: no alcanzó (mediana 21,0 ms, máquina cargada). Lo que cuesta es la nieve de pantalla entera. No se toca más hasta
 >   medir en un teléfono; qué hacer si ahí pasa de 16 ms está escrito en `D-90`, séptima enmienda.
-> - **El canto del botija** casi no se distingue; el de la drácula sí. Mirarlos en un teléfono.
-> - **Con movimiento reducido**, el haz de la linterna de los techos queda prendido y quieto como un paño claro (previo a esta rama).
+> - **El templo, sin medir bien.** Con la CPU ×4 gastaba 1,4 veces lo que el monte; se le sacó el humo que bajaba y quedó en 1,1,
+>   pero las dos tandas se midieron con la máquina cargada. Falta medirlo con la máquina libre.
+> - **Lo que frenó a un recién llegado** (paseo de la ronda 8, sin arreglar; lista en `D-90`): el mapa empieza debajo del pliegue, las
+>   zonas del oeste del plano se pisan al tocar, la primera pantalla del monte y la pastura no tiene bichos, «Al plano» mide 35 de alto,
+>   y con la lupa al máximo la imagen se ve blanda.
 > - **El doble toque** ahora tiene 520 ms y 44 px y cuenta desde que se apoya el dedo: seis de seis con la máquina cargada, emulado.
 > - Un segundo tamaño impreso para la lupa; atar los ojos a una mata de adelante.
-> - Integrar: esta rama va encima del PR #108, que sigue abierto. Detalle y números en `D-90` y sus seis enmiendas.
+> - Integrar: esta rama va encima del PR #108, que sigue abierto. Detalle y números en `D-90` y sus siete enmiendas.
 
 > ## 🐕 CINCO QUE SEGUÍAN SIN DISEÑO: EL REY GARUFA, EL JOVEN LOBO, EL REO SEMENTAL, EL MOSCÓN ZUMBÓN Y EL OVEJERO (2026-11-05) — `D-73` (26), `T-526`
 >

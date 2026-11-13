@@ -7507,16 +7507,61 @@ buscaba la primera capa del templo, que ahora son las ofrendas. Cinco tests nuev
 
 **Verde:** `npm test` 2345, `npm run check` 0 errores, `npm run build` 200 páginas.
 
-### Resumen de las siete rondas, y cómo se lee esta decisión
+### Enmienda — octava ronda (2026-11-13): el botija en tiza, la linterna quieta, el templo medido y un paseo de recién llegado
+
+1. **El canto del botija** va en la tiza clara del muelle (`--entorno-astillero-tiza-clara`): moreno y
+   bajo una luz naranja, el canto naranja se le perdía. El haz le pega desde más lejos (`abre` 60).
+   **Visto:** de cerca (recorte ×3, o con la lupa) se distingue en la cabeza, los hombros, el bolso y
+   las zapatillas; a tamaño de teléfono el botija mide 46 unidades y el canto es un hilo: se nota que
+   está iluminado, no se lee como contorno.
+2. **La linterna de los techos con movimiento reducido** queda a un tercio (0,28 en vez de 0,85): se
+   sabe de dónde viene y no es un paño. Miradas las trece regiones quietas, no hay otra luz que haga lo
+   mismo: las de `LUCES` son formas sopladas o rayadas que quietas se leen bien.
+3. **Los que comparten el telón de los techos.** En la página de los techos, con Atila, el psicópata,
+   el gato matón y Dinamita en escena, ninguno perdió fuerza: se recortan mejor que antes. Sus retratos
+   de la ficha miden 80 píxeles y el cambio ahí no se ve. El plano no usa ese telón (lo pinta
+   `arte-mapa-oeste.ts`): no cambió. No se devolvió nada.
+4. **El templo, medido** con la CPU ×4, tres corridas, con el monte de control en la misma tanda:
+   monte 11,3 / 16,4 / 16,0 (mediana 16,0); templo 22,3 / 22,4 / 18,0 (mediana 22,3); templo pelado,
+   15,5. La máquina estaba cargada (el monte en 16, no en 10), así que el número no vale solo; la
+   proporción sí: el templo gastaba 1,4 veces el monte, y su aire 7 ms. **Se sacó el humo que baja**
+   (séptima ronda): era la segunda capa de pantalla entera y, aislada, costaba entre 2 y 5 ms. Vuelto
+   a medir, con la máquina todavía más cargada: monte 24,0, templo 26,6 (1,1 veces). Queda pendiente
+   medirlo con la máquina libre.
+5. **Las ofrendas salen de los datos de la escena** (`lib/bestiario/ofrendas.ts`): los parados son los
+   títeres del elenco del templo (su ancla) y los vecinos que pisan el piso (`VECINOS_DEL_TEMPLO`),
+   corridos con `marcoDelRecinto`. Las velas van en los huecos, y nunca en el cruce. Quedó una tanda
+   de cinco velas abajo del medallón y tres grupos atrás: menos que en la séptima ronda, porque los
+   márgenes ahora son los de los datos y no los de una medición a ojo. El test guarda también las
+   posiciones medidas en la página, como control independiente.
+6. **El paseo de alguien que llega** (430×860, sin nada guardado; capturas en el informe). Lo que
+   frenó o confundió, sin arreglar:
+   - En el plano, el mapa arranca debajo del pliegue: lo primero que se ve es el cartel y medio mapa.
+   - Tocando el medio de la zona de «El monte» se entró a la pastura: las zonas del oeste están muy
+     apretadas y el medio de una cae adentro de la otra.
+   - La primera pantalla del monte y de la pastura no tiene ningún bicho: árboles arriba y media
+     pantalla de piso oscuro abajo. El cartel «Deslizá de costado para caminar» es lo único que invita.
+   - «← Al plano» mide 35 de alto, menos que el mínimo de toque del sistema (48).
+   - El lobo caído es una silueta negra sobre piso negro y su retrato en la ficha, una mancha.
+   - Con la lupa al máximo la imagen se ve blanda: hace falta el segundo tamaño impreso.
+   - Al volver al plano el navegador tira un error de transición de vista (previo, no rompe nada).
+   - En los techos, tocando a Atila se abrió la ficha de Limón, que le corre por delante.
+
+**Tests:** el del humo y las ofrendas de la séptima ronda se reescribió (ya no hay humo que baje y
+las posiciones no están a mano); uno nuevo para la linterna quieta.
+
+**Verde:** `npm test` 2346, `npm run check` 0 errores, `npm run build` 200 páginas.
+
+### Resumen de las ocho rondas, y cómo se lee esta decisión
 
 `D-90` creció por enmiendas. Lo que quedó en pie:
 
-1. **El aire** (rondas 1 a 7): tres planos de capas impresas entre las del camino, en las trece
+1. **El aire** (rondas 1 a 8): tres planos de capas impresas entre las del camino, en las trece
    regiones, cada una con la mano de su tapa. La niebla es de jirones rasgados y se abre al paso.
 2. **La lupa** (ronda 1): pellizco, Ctrl + ruedita, doble toque, teclado y sellos, en los caminos y
    en el plano.
 3. **El piso** (rondas 2 a 6): lo tirado, impreso adentro del piso, apoyado y en escorzo.
-4. **La luz** (rondas 2 a 7): una forma impresa por región, que se mueve y toca a los bichos, desde
+4. **La luz** (rondas 2 a 8): una forma impresa por región, que se mueve y toca a los bichos, desde
    la sexta con el canto de cada pieza.
 5. **El misterio** (rondas 2 y 3): los ojos sin dueño y lo que cruza lejos.
 6. **Los títeres** (rondas 4 a 6): miran, respiran con peso, y los que no se ven no se mueven.
