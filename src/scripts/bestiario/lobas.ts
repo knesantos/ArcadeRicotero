@@ -21,6 +21,7 @@
 import { AULLAN, QUIETO, VERSO, VUELTA, enLaVuelta, marcas, type Loba, type Momento } from '../../lib/bestiario/rig-lobas.ts';
 import { suave } from './articular.ts';
 import type { Armar, Escenario, Vivo } from './vivos.ts';
+import { miradaDe, seguir } from './mirada.ts';
 
 const ID = 'las-antiguas-lobas';
 
@@ -82,6 +83,8 @@ export function armarLobasCon(marcos: readonly SVGGElement[], esc: Escenario, az
   let espiadas = 0;
   // Cada una respira a su ritmo.
   const ritmo = [1.05 + azar() * 0.2, 0.85 + azar() * 0.2] as const;
+  /** Cuánto está atenta cada una al dedo, de 0 a 1 (`mirada.ts`). */
+  const atenta: [number, number] = [0, 0];
 
   function elegir(): Accion {
     const opciones = (['oreja', 'lame', 'suena', 'bosteza'] as const).filter((a) => a !== ultima);
@@ -98,8 +101,21 @@ export function armarLobasCon(marcos: readonly SVGGElement[], esc: Escenario, az
 
   /** Lo que hace una loba sola, echada. */
   function sola(l: Loba, n: 0 | 1, t: number): void {
-    l.respira = 0.03 * Math.sin(t * ritmo[n] * 1.3 + n * 2);
-    l.cola = 2 * Math.sin(t * 0.4 + n);
+    // Respira con peso (`D-90`, cuarta ronda): el pecho se llena despacio y se vacía más rápido, y la
+    // cola y la oreja lo acompañan con retraso, como todo lo que cuelga de un cuerpo que respira.
+    const fase = t * ritmo[n] * 1.3 + n * 2;
+    const aire = Math.sin(fase);
+    l.respira = 0.045 * (aire > 0 ? Math.pow(aire, 0.7) : -Math.pow(-aire, 1.5));
+    l.cola = 2 * Math.sin(t * 0.4 + n) + 1.6 * Math.sin(fase - 1.1);
+    l.oreja = 1.8 * Math.sin(fase - 0.7);
+    // La mirada: si el dedo anda cerca, la de ese lado para la oreja y entreabre el ojo. Se hace la
+    // muerta, pero espía. La otra sigue durmiendo.
+    if (atenta[n] > 0.02) {
+      l.parpado = Math.min(l.parpado, 1 - 0.75 * atenta[n]);
+      l.oreja -= 20 * atenta[n];
+      l.cola += 5 * atenta[n] * Math.sin(t * 6);
+      l.cabeza -= 3 * atenta[n];
+    }
     // Espía: entreabre el ojo un rato y lo cierra.
     const e = t - espiaEn;
     if (n === espiona && e > 0 && e < OJO_ABIERTO) l.parpado = Math.max(0, 1 - 1.2 * Math.sin((e / OJO_ABIERTO) * Math.PI));
@@ -238,6 +254,10 @@ export function armarLobasCon(marcos: readonly SVGGElement[], esc: Escenario, az
       hasta = t + entre(PAUSA);
     }
     if (!accion && t >= hasta) empezar(elegir(), t);
+    // Cuál de las dos tiene el dedo más cerca: esa es la que se pone atenta, y de a poco.
+    const m = miradaDe(titere, VERSO[0], VERSO[1] + 60, 240);
+    const cual = m.dx < 0 ? 0 : 1;
+    for (const n of [0, 1] as const) atenta[n] = seguir(atenta[n], n === cual ? m.cerca : 0, dt, n === cual ? 3 : 1.5);
     aplicar(momento(t));
   }
 

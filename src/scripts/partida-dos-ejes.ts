@@ -138,6 +138,18 @@ function pintarPregunta(antes?: Polo): void {
   if (item.momento !== momentoAnterior) sello.classList.add('ejes-momento--entra');
   momentoAnterior = item.momento;
   cabeza.append(sello);
+  // Las hojas de la noche (2026-11-04): una casilla por momento, pasada, actual o por venir.
+  // Solo para el ojo: el folio y el anuncio ya dicen dónde estás.
+  const noche = el('ol', 'ejes-noche');
+  noche.setAttribute('aria-hidden', 'true');
+  const actual = banco.momentos.findIndex((m) => m.id === item.momento);
+  banco.momentos.forEach((_, k) => {
+    const casilla = el('li', 'ejes-noche-hoja');
+    if (k < actual) casilla.classList.add('ejes-noche-hoja--pasada');
+    if (k === actual) casilla.classList.add('ejes-noche-hoja--actual');
+    noche.append(casilla);
+  });
+  cabeza.append(noche);
   cabeza.append(el('p', 'ejes-folio', PARTIDA.folio(paso + 1, ronda.length)));
   hoja.append(cabeza);
   hoja.append(el('p', 'ejes-canta', momento.canta));

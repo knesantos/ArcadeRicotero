@@ -365,7 +365,7 @@
       "dibujo": { "f": "persona", "con": ["corona", "corazon"], "ropa": "capa" },
       "tema": "las-increibles-andanzas-del-capitan-buscapina-en-cybersiberia",
       "verso": ["Así el fiestero Rey Garufa viaja solo", "Y vaga con su corazón entre las manos."],
-      "estampa": "Camina solo por la nieve, con la corona y el corazón en las manos.",
+      "estampa": "Vaga por la nieve con el frac de la fiesta que se terminó: la camisa afuera, el moño desatado, serpentina en los hombros y una corona de lata torcida. Lleva el corazón entre las manos, al pie de la letra: late, gotea, y en el pecho le quedó el agujero. Camina siguiendo sus propias huellas. Si lo mirás, te lo ofrece…",
       "cerca": ["el-capitan-buscapina", "la-princesita-sapito"]
     },
     {
@@ -735,7 +735,7 @@
       "dibujo": { "f": "rana" },
       "tema": "el-pibe-de-los-astilleros",
       "verso": ["Alquiló una rana rubia, tibia y haragana"],
-      "estampa": "Tomando sol arriba de un container, tibia y haragana. La estampa la toma al pie de la letra: una rana.",
+      "estampa": "Una rana con peluca rubia, en una reposera arriba del container, tomando un sol que no hay: es de noche, llovizna, y junta el farol de la grúa con un reflector de papel de aluminio. De la reposera cuelga la etiqueta del alquiler. A la mosca le tira la lengua sin levantarse, y le erra. Si la tocás, croa hasta despegar.",
       "cerca": ["el-pibe-de-los-astilleros", "la-princesita-sapito"]
     },
     {
@@ -926,7 +926,7 @@
       "dibujo": { "f": "persona", "ropa": "saco", "con": ["bote"] },
       "tema": "salando-las-heridas",
       "verso": ["Un dia el bote volcó", "Y el premio a pique se fue", "Sin luz, como un polizón"],
-      "estampa": "Abajo de un bote dado vuelta, a oscuras. Todos lo dan por muerto.",
+      "estampa": "Abajo de un bote dado vuelta, a oscuras. Todos lo dan por muerto: arriba le dejaron una corona y una vela, apagada. Cada tanto levanta una rendija, saca un café frío, sala el agua. Si lo tocás lo destapás: está maquillado, con una curita arriba del lunar, y resplandece. Te pide silencio con el dedo.",
       "cerca": ["los-naufragos"]
     },
     {
@@ -1100,7 +1100,7 @@
       "dibujo": { "f": "persona", "ropa": "rayado" },
       "tema": "barbazul-versus-el-amor-letal",
       "verso": ["El reo semental se va a licuar"],
-      "estampa": "De traje a rayas, derritiéndose contra los barrotes.",
+      "estampa": "Un toro de preso: el cuello más ancho que la cabeza, el pecho peludo que le abre la camisa a rayas, el jopo con gomina, un tatuaje verde. Agarrado a la reja, sudando a chorros. Se licúa, al pie de la letra: la cara se le estira, las rayas le chorrean, y si lo tocás queda hecho un charco con los dos ojos flotando…",
       "cerca": ["barbazul"]
     },
     {
@@ -1486,7 +1486,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "punta", "hocico": "largo", "cola": "peluda", "pose": "aulla" },
       "tema": "la-parabellum-del-buen-psicopata",
       "verso": ["Y el joven lobo quemándose de amor.", "Está en la cima del volcán."],
-      "estampa": "Arriba del volcán que cierra el monte, aullando con la cola humeando.",
+      "estampa": "Sentado en el borde del cráter de un volcán chico, con la lava abajo. Se quema de adentro: en el pecho tiene una brasa que late y se le ve entre las costillas, del lomo le salen llamas cortas y la punta de la cola humea. Aúlla, y del aullido le sube un humo con forma de corazón.",
       "cerca": ["el-lobo-suelto"]
     },
     {
@@ -1513,7 +1513,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "largas", "hocico": "corto", "cola": "corta", "pose": "echado" },
       "tema": "sorpresa-de-shangai",
       "verso": ["¡Caras de liebre!", "¿De liebre muerta?"],
-      "estampa": "Tendida en un claro. Si está muerta o se hace, el lobo todavía no lo decidió.",
+      "estampa": "Tendida a la Bartola sobre un terciopelo, en el borde del claro, con la lengua afuera y unas guindas al lado. Si está muerta o se hace, el lobo todavía no lo decidió. Un ojo se le abre solo cuando cree que nadie mira. Si la tocás se muere más fuerte, con las cuatro patas para arriba. Después se come una guinda.",
       "cerca": ["el-lobo-suelto"]
     },
     {
@@ -1583,7 +1583,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "caidas", "hocico": "corto", "cola": "corta", "lana": true },
       "tema": "rock-yugular",
       "verso": ["y ya sabes que jugando al borrego te van a carnear"],
-      "estampa": "Suelto, cerca del palo. Por estar suelto, más a mano.",
+      "estampa": "No es un borrego: juega al borrego. El vellón es un disfraz con cierre, y lleva un pañuelo rojo atado al cogote. Brinca suelto abajo del palo, justo donde no llega la soga del otro. Por estar suelto, más a mano. Si lo tocás se le caen los disfraces, y abajo ya tiene marcados los cortes, a línea de puntos.",
       "cerca": ["el-cordero-atado"]
     },
     {
@@ -1628,7 +1628,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "punta", "hocico": "largo", "cola": "peluda", "pose": "echado", "con": ["manto"] },
       "tema": "vencedores-vencidos",
       "verso": ["tu perro un perro cruel, con la costumbre de", "No contentarse con los restos.", "Ovejero que descansa en manto negro!"],
-      "estampa": "Echado en el borde de la pastura, sobre un manto negro. Cuida, pero no se conforma con las sobras.",
+      "estampa": "Lomo negro y patas canela, echado en un manto negro en el borde del claro, de donde ve al cordero. Adelante, el plato con los restos que no tocó: dos huesos y una costilla. No se conforma con las sobras: lo que quiere está atado a un palo, ahí nomás. Si lo tocás, se para, muestra los dientes y patea el plato.",
       "cerca": ["el-rebano", "mi-perro-dinamita"]
     },
 
@@ -1727,7 +1727,7 @@
       "dibujo": { "f": "cosa", "que": "vaso-con-moscon" },
       "tema": "murga-purga",
       "verso": ["Sos un moscón zumbón", "Que quedó atrapado", "En un vaso boca abajo."],
-      "estampa": "Debajo de un vaso dado vuelta, en la punta de la mesa. Le pega al vidrio y nadie lo oye.",
+      "estampa": "Un vaso de la mesa, dado vuelta, y adentro un moscón de los grandes: gordo, peludo, con el tórax de bronce y los ojos rojos. El vidrio tiene lo que le dejó: el vaho de respirar contra él y los rayones de tanto pegarle. Zumba, se da contra el vidrio, cae mareado y vuelve a empezar. Nadie lo oye.",
       "tambien": [{ "tema": "me-matan-limon", "verso": ["De la tarde y zumba feo algún moscón"] }],
       "cerca": ["la-mosca", "el-moscardon-imaginario"]
     },
@@ -1867,7 +1867,7 @@
       "dibujo": { "f": "maquina", "que": "taxi", "volcado": true },
       "tema": "pensando-como-una-acelga",
       "verso": ["Volanteás, volcás", "Tu taxi paranormal,", "En plan de chofer suicida"],
-      "estampa": "Volcado en la banquina, con las ruedas para arriba.",
+      "estampa": "Volcado en la banquina, con las ruedas para arriba y un faro prendido que parpadea como un ojo. Por el escape larga pompas de jabón, por el baúl le asoma un diablo, y de la ventanilla cuelga el brazo del chofer, puro hueso, con el reloj puesto. Si lo tocás levita un rato, se va de foco, y el chofer saluda.",
       "cerca": ["el-toxi-taxi"]
     },
     {

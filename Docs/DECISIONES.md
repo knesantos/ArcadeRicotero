@@ -6103,6 +6103,187 @@ ahogado 23 (129 kB), pichón 20 (98 kB), mantis 24 (95 kB), cielo 22 (91 kB).
   Queda la idea del dibujante del rey de avisar a un vecino del toque ajeno (que el lobo se asome cuando ruge el león), la misma que
   dejó el ratón en la vigesimocuarta.
 
+### Enmienda del 2026-11-05 (26): cinco que seguían sin diseño, uno por región flaca, y el primero de la pastura
+
+Pedido del usuario, textual: *"Elegi 5 bestias ricoteras sin diseños y haceles uno bien rocambolesco con su animacion y detalles de
+la letra. Que sea bien detallado y pulido."* La escribe el hilo principal en la rama `bestiario/cinco-sin-diseno`, sobre `main` en
+`9fe6a91`. Antes de tomar el número se miraron `origin/main` y las ramas remotas: `T-525` era el último (`D-86`), y `D-87` a `D-89`
+están tomados en ramas sin integrar; esto es una enmienda de `D-73` y no toma `D-` nuevo.
+
+#### Cuáles, y por qué esos
+
+Se contó, región por región, cuántos títeres del elenco (o de tapa) tiene cada una y cuántos bichos siguen siendo ojos o una cosa
+pintada: la pastura no tenía ninguno del elenco (solo el cordero y la vaca, que son de tapa), el monte tenía cuatro de ocho,
+Cybersiberia cinco de quince, la prisión seis de once y la mesa cinco de doce. Uno por cada una, elegidos por lo que la letra deja
+dibujar y animar al pie:
+
+- **El Rey Garufa** (Cybersiberia, *Las increíbles andanzas del Capitán Buscapina en Cybersiberia*, *Último bondi*): un rey de fiesta
+  al que se le terminó la fiesta, parado en la nieve donde estaba su silueta pintada y de donde salen sus huellas. El frac de la noche
+  anterior con la camisa afuera y el moño desatado, una corona de lata con una punta doblada y confeti pegado, serpentina enredada en
+  los hombros, nieve encima, y el corazón entre las manos al pie de la letra: de verdad, con la aorta cortada, que late y gotea, y en
+  el pecho el agujero de donde lo sacó, que brilla con cada latido. **El corazón va donde van las manos**: `manosEn()` calcula las
+  dos manos con los brazos girados y el corazón se corre a la mitad entre las dos, así nunca queda en el aire. Solo camina unos pasos
+  (`VAGA`, de la sapita a los ojos de Comboman, y se da vuelta), mira el corazón, tirita y se le cae confeti, baila un pasito de la
+  fiesta, suspira una nube de vaho. Tocado, ofrece el corazón con los brazos estirados, late fuerte y grande, el hueco le brilla al
+  ritmo, gotea, le vuelve la sonrisa, cae el confeti, y lo guarda. Su silueta, la corona y el corazón pintados se sacaron de
+  `cyberPiso()` y se reimprimieron `cyber-piso` y `camino-cyber-piso`; las huellas se quedan.
+- **El joven lobo** (el monte, *La parabellum del buen psicópata*, *Lobo suelto*): sentado en el borde del cráter de un volcán chico,
+  arriba a la derecha del monte donde estaban sus ojos, con la lava abajo que le prende la panza. Se quema de adentro, al pie de la
+  letra: una brasa en el pecho que late y se ve entre las costillas, llamas cortas en el lomo como en un leño, la punta de la cola
+  chamuscada que humea. Flaco y joven, con el aro azul en el ojo de los lobos de la tapa. Solo aúlla al monte con el vaho que sube,
+  se rasca con la pata de atrás donde le arde, se mira la cola que humea, mira el cráter y saltan chispas, se sacude. Tocado se
+  yergue, aúlla largo al cielo, la brasa al rojo y las llamas altas, el volcán hace erupción, y del aullido sube un humo con forma de
+  corazón. **En el camino baja con el volcán entero** (`bajan`, 116): en el recinto está entre las tiras de arriba y en el tramo
+  largo el cráter pisa el piso. El volcán se recortó para no salirse del recinto por la derecha.
+- **El reo semental** (la prisión, *Barbazul versus el amor letal*, *Gulp!*): en la celda grande del ala de la izquierda, donde
+  estaban sus ojos, detrás de la reja (capa `atras`, con su propia reja tallada delante como el esclavo, y recortado al hueco de la
+  celda; el piso de esa celda cae fuera de la pantalla y el charco se arma en el borde de abajo). Un toro de preso: el cuello más
+  ancho que la cabeza, el pecho peludo que abre la camisa a rayas, la chapa con el número, el jopo con gomina, la nariz rota, un
+  tatuaje verde de un corazón con un puñal, los dos puños cerrados en los barrotes. Suda a chorros. Solo suda y sacude la cabeza,
+  resopla, suelta un barrote y se mira el bíceps, se ablanda un poco y se asusta, mira para los costados. Tocado se licúa, al pie
+  de la letra: la cara se estira desde la coronilla, el jopo cae, las rayas chorrean del ruedo, baja entero por la reja **con los
+  puños todavía agarrados** (el brazo sube lo que baja el cuerpo y se estira desde el puño), queda hecho un charco a rayas con los
+  dos ojos flotando, y se vuelve a armar de abajo para arriba. Sus barrotes van en el papel de la talla (`--bestia-dracula-papel`)
+  y nada más: la reja es la de la prisión.
+- **El moscón zumbón** (la mesa, *Murga purga*, *Luzbelito*): el vaso boca abajo que pintaba el piso de la mesa (`MESA.vaso`) pasa a
+  ser el títere, con el moscón adentro: gordo, peludo, el tórax de bronce, el abdomen negro con el brillo de aceite, los ojos rojos
+  compuestos con el facetado, la trompa de esponja, las alas de vidrio con las venas. El vaso tiene el vaho donde respira, los
+  rayones de tanto pegarle, la pestaña saltada en la boca y la marca de vino en el mantel. **No se sale nunca del vidrio**:
+  `adentroDelVaso()` frena lo que se pase, y el moscón va recortado a lo de adentro del vaso. Solo camina de una pared a la otra y se
+  da vuelta, trepa por el vidrio y se resbala, zumba y se da contra el culo del vaso (el vaso tiembla, se empaña, estrellitas), se
+  frota las patas. Tocado se vuelve loco: da cinco vueltas zumbando, le pega seis veces (el vaso tiembla y se corre por el mantel,
+  se empaña entero, se raya más), cae de espaldas, patalea y se da vuelta. El vaso y la mosca del piso se sacaron de `mesaPiso()` y
+  se reimprimieron `mesa-piso` y `camino-mesa-piso`.
+- **El ovejero** (la pastura, *Vencedores vencidos*, *Un baión para el ojo idiota*): **el primero del elenco que vive en la pastura.**
+  Echado sobre un manto negro —la frazada con el rayado a pluma de la tapa, los pliegues y un mordisco en la punta— en el borde de la
+  izquierda del claro, donde estaban sus ojos, de donde ve al cordero sin moverse. Lomo negro, patas canela, el antifaz de ovejero,
+  el ojo amarillo de fuego con la pupila clavada en el claro, el collar de púas con la chapa y un vellón de lana enganchado. Adelante,
+  el plato de lata con los restos que no tocó: dos huesos pelados y una costilla. Solo mira al cordero, bosteza, se lame los belfos,
+  aparta el plato con el hocico, se rasca, gruñe bajito; la cola golpea el manto cada tanto. Tocado se para, se le eriza el lomo, las
+  orejas atrás, el belfo y los dientes, ladra tres veces sin ruido arremetiendo, patea el plato (los huesos vuelan) y se vuelve a
+  echar despacio con el ojo en el cordero. Se dibujó parado y se echa como las lobas (`CAIDA` y `DOBLADA`).
+
+#### Cómo se hizo, y lo que se tocó alrededor
+
+- Todo lo hizo el hilo principal, sin subagentes: cada bestia con sus cuatro archivos (`arte-`, `rig-`, `scripts/bestiario/`,
+  `.test.ts`), sus tintas medidas con sharp en la tapa de su disco (un medidor propio del scratchpad: zona, radio, filtro y
+  percentiles, como anotan los bloques), y cada títere mirado en PNG con un visor propio (el retrato a imagen, con las piezas
+  pasadas a PNG porque librsvg no lee webp) antes de dar por buena una pose. Del visor salieron el hocico más largo del lobo, los
+  brazos estirados del rey al ofrecer, y la reja más fina del reo.
+- **La pastura entra al elenco.** `capasDe('la-pastura', …)` se dibuja en el recinto del monte (`escena-monte.ts`, en las tres
+  capas, detrás del cordero) y en el claro del camino (`escenas-camino.ts`, corrido `claro.dx` con `capasCorridas`); los ojos del
+  claro del camino pasan por `sinTitere`, que no pasaban; y `elenco.test.ts` sabe que la escena de la pastura es la del monte.
+- Las cinco estampas se escribieron largas y se acortaron al tope de 320 del schema sin perder lo que el dibujo pone de más.
+- `elenco.test.ts` pasa de 50 a 55.
+
+Cada uno trae su bloque de tintas (rey 20 en *Último bondi*; lobo 17 en *Lobo suelto*; reo 14 en *Gulp!*; moscón 17 en
+*Luzbelito*; ovejero 18 en *Un baión*), su bloque en `sitio.css`, su conducta y su test de 7. Las piezas: rey 22, lobo 20, reo 19,
+moscón 13, ovejero 18.
+
+- `T-526`: verlos en un teléfono de verdad, que `contenido` lea las cinco estampas, y pasar los cinco bloques de tintas al lienzo.
+  Sigue abierta la idea de avisar a un vecino del toque ajeno (que el cordero se asuste cuando el ovejero ladra), la misma que dejó
+  el ratón en la vigesimocuarta y el león en la vigesimoquinta.
+
+### Enmienda del 2026-11-13 (27): cinco más que eran ojos o una silueta, uno por región, dibujados por un subagente
+
+Encargo del hilo principal a un subagente Fable (Claude Fable 5.2), en la rama `bestiario/cinco-de-fable`, sobre `9fa0b93`: pasar
+de ojos en lo oscuro o de silueta pintada a títere entero a cinco bestias, con *"detalles sacados de la letra, al pie, y
+rocambolescos"*. **Las dibujó, las animó y las probó el subagente; el hilo principal las audita después.** Es una enmienda de
+`D-73` y no toma `D-` ni `T-` nuevo: el número de la tarea de seguimiento lo toma el hilo principal al integrar.
+
+#### Cuáles
+
+Las cinco las eligió el hilo principal, una por región: los astilleros, la pastura, el monte, la ruta y el bajo.
+
+- **La rana rubia** (los astilleros, *El pibe de los astilleros*, *La mosca y la sopa*): el verso se toma palabra por palabra.
+  Es una **rana**; es **rubia** porque tiene peluca, y se le corre; está **tibia** porque toma sol en una reposera arriba de la pila
+  de containers, de noche y con llovizna, juntando el farol de la grúa con un reflector de papel de aluminio, y ya está colorada; es
+  **haragana** porque le tira un lengüetazo a la mosca sin levantarse y le erra; y está **alquilada**: de la reposera cuelga la
+  etiqueta del alquiler, con el piolín. El lustre del muslo es *"el más bello fuselaje que jamás lustró"*. Sola le erra a la mosca,
+  mueve el pie, acomoda el reflector, mira de reojo al pibe (que es el que la alquiló, y está sentado al lado), croa bajito y se le
+  corre la peluca. Tocada le salta la peluca, se levanta los anteojos, croa tres veces con el buche a pleno, **que la levanta de la
+  reposera** (sube después que el buche, no con él), cae, y sin mirar se come la mosca; al rato llega otra. Su silueta se sacó de
+  `astilleroPiso()` y se reimprimieron `astillero-piso` y `camino-astillero-piso`. `OJOS_DE_LOS_ASTILLEROS` conserva su lugar,
+  porque el pibe la mira ahí (`rig-pibe.ts`).
+- **El borrego** (la pastura, *Rock yugular*, *Luzbelito*): *"jugando al borrego te van a carnear"* se toma por el verbo. No es un
+  borrego: **juega** al borrego. El vellón es un disfraz, con cierre en el lomo, costuras y etiqueta, y abajo hay un bicho flaco y
+  pelado que ya tiene marcados en el cuero, a línea de puntos, los cortes del carnicero. Lleva el *pañuelo rojo* atado al cogote,
+  en la yugular, con la herida copiada, y la línea de puntos más gruesa le cruza el cogote, con su tijerita. Suelto abajo y a la
+  izquierda del palo, **justo afuera de donde llega el cordero con la soga tirante** (lo mide el test, también brincando). Solo
+  brinca, pasta, mira al atado, tira una patada, se rasca y se le resbala el disfraz. Tocado pega un brinco y *caen los disfraces*:
+  el vellón no sube con él, se le cae a las pezuñas; queda pelado, temblando, bala sin ruido, se lo sube con los dientes en tres
+  tirones y se sacude. El vellón va adentro del cuerpo y descuenta el salto cuando está caído, así queda en el piso aunque brinque.
+  **El cogote es una pieza aparte** que gira la mitad que la cabeza en el mismo punto (`COGOTE`): sin él, al agachar la cabeza
+  quedaba un hueco. El pañuelo va de dos tintas, el rojo del marco con el canto oscuro de la base del busto y lunares de marfil:
+  *Luzbelito* no tiene rojo, y ese naranja solo no se veía sobre el pasto.
+- **La liebre muerta** (el monte, *Sorpresa de Shangai*, *Lobo suelto*): panza arriba sobre un retazo de terciopelo (*"voy a
+  tumbarme a la Bartola sobre unos terciopelos"*), con la lengua afuera, el ojo cerrado y un montón de guindas al lado (*"¡toda esta
+  guinda!"*). Se hace la muerta y le sale mal: espía, se le para una oreja, patea de reflejo, se relame, suspira, y cada tanto le
+  pasa una piedra rodando (*"mis penas como piedras caen, ruedan y escapan"*). Tocada se muere más fuerte: las cuatro patas derechas
+  para arriba, tiesa, temblando; después espía, levanta la cabeza (las orejas le cuelgan, no se paran), se come una guinda y se
+  vuelve a tumbar. **Se mudó**: sus ojos
+  estaban abajo a la derecha, en lo oscuro, donde las tiras de adelante le tapaban el terciopelo y la vaca, que se dibuja después,
+  le tapaba las patas. Quedó en el borde de abajo del claro (*"tendida en un claro"*), fuera de la soga del cordero. En el tramo
+  del camino sigue donde la esperaban sus ojos.
+- **El taxi paranormal** (la ruta, *Pensando como una acelga*, *Momo Sampler*): volcado en la banquina de este lado, con las ruedas
+  para arriba, donde estaba pintado; **no es del tránsito**, va en la capa de la figura y los fierros le pasan por detrás. Todo lo
+  que tiene encima es del tema: *fuera de foco* (un doble soplado que se le despega), *parpadeando a lo gurú-vudú* (el faro prendido
+  es un ojo con párpado), *tu cerebro es un jabón* (pompas por el escape), *flor de espadas* (tres naipes en el limpiaparabrisas),
+  *chofer suicida* y *cara de loco esqueleto* (el brazo del chofer, puro hueso, con reloj, colgando de la ventanilla), *loco por una
+  colilla* (una, humeando en el pasto) y *se te escapa un poquito el diablo* (una cola con punta de flecha, por el baúl). Solo gira
+  una rueda y se frena sola, parpadea, larga pompas, se le escapa la cola, tamborilea el chofer, se va de foco y titila la bandera.
+  Tocado levita, se va de foco, se le abre el baúl, asoma el diablo, el chofer saluda (*"así también te ves bien"*), cae de golpe y
+  se aplasta. **Las ruedas tienen peso**: la isla guarda la velocidad de cada una, la toma rápido y la pierde despacio. **Es negro y
+  amarillo**, como el toxi-taxi del carril (`--fondo` y `--acento-2`, las tintas del sitio), con el cartel de TAXI del techo
+  aplastado contra el pasto y dado vuelta; las tintas de *Momo Sampler* van en los detalles. La chapa negra se despega de la
+  banquina negra con el canto perfilado en plata y el brillo violeta en el lomo. **Va en la capa `delante`**, con sus propias matas
+  bajas al pie: en `figura` los yuyos de `ruta-frente` lo rayaban entero. **El diablo cuelga cabeza abajo del baúl**, y en reposo ya
+  asoma los cuernos y los ojos (`diablo: 0,6`). Se corrió 22 a la izquierda (`RUTA.volcado.x`, 668) y se agrandó a 0,7. Se sacó de
+  `rutaPiso()` y se reimprimieron `ruta-piso` y `camino-ruta-piso`.
+- **El polizón del remolque** (el bajo, *Salando las heridas*, *La mosca y la sopa*): el bote dado vuelta que flotaba adelante en
+  `bajo-frente` pasa a ser suyo, y el títere es el bote. Verso por verso: *el bote volcó*; *el premio a pique se fue* (la copa,
+  hundida de costado, al lado); *todos te daban por muerto* (una corona con su cinta y una vela apagada, arriba de la quilla); *en
+  tu remolque* (la soga, que sale de la proa); *sin luz, como un polizón* (a oscuras no se le ve nada: `polizon` va con opacidad 0).
+  Solo levanta una rendija por la proa y espía, saca un pocillo de café frío (*"el café con tu suerte se enfría"*), sala el agua
+  con un salero, prende un fósforo y lo sopla, y golpea la tablazón tres veces. Tocado lo destapan: el bote se levanta girando en
+  la popa, la corona se cae de costado más tarde que el bote, y él queda a la vista, *bien maquillado*, con una curita arriba del
+  *lunar* y los *pómulos hundidos*, y *resplandece*; pide silencio con el dedo, baja el bote despacio, lo suelta, y desde abajo
+  endereza la corona. Lo oscuro de abajo es una cuña que se abre con el bote, con el canto de la derecha roto a mano, y lo de abajo
+  va recortado a la línea del agua. **A oscuras es una sombra con dos ojos** (`luz` y la pieza `polizon-sombra`): por la rendija, y
+  cuando el bote baja, no se le ve la cara, que quedaba como una cabeza cortada pegada al agua. La luz se la dan el bote
+  destapado y, a medias, el fósforo. El bote se sacó de `bajoFrente()` y se reimprimió `bajo-frente`.
+
+#### Cómo se hizo, y lo que se tocó alrededor
+
+- El molde es el de la vigesimosexta: cuatro archivos por bestia (`arte-`, `rig-`, `scripts/bestiario/`, `.test.ts`), el registro
+  en `elenco.ts` y `vivos.ts`, un bloque de tintas en `tokens.css` y otro en `sitio.css`, la estampa nueva dentro del tope de 320.
+- **Las tintas se midieron en `public/tapas/`** (las tapas de 320 px y sus contratapas de 320 × 252), con un medidor del
+  scratchpad: zona, radio y percentil por luz, como anota cada bloque. Donde la tapa no tiene el color que pide la letra, se buscó
+  el píxel más saturado y se anotó como tal: el rojo del pañuelo es el canto de abajo del marco de *Luzbelito*, y el magenta del
+  terciopelo es el sello de la contratapa de *Lobo suelto*, el único color de ese disco.
+- Cada títere se miró a PNG en su recinto y en su tramo del camino, quieto y en el pico del toque, y además en **una tira de seis
+  cuadros del toque**, que es donde se ven las piezas que se separan. De mirar salieron: la mudanza de la liebre, la lengua de la
+  liebre para arriba (caída sobre el cachete le tapaba el ojo), el reflector de la rana en abanico (derecho se leía como una
+  notebook), las ruedas más altas del taxi, y el canto roto de la cuña del polizón.
+- **Hubo una segunda vuelta, auditada por el hilo principal sobre esas capturas.** De ahí salieron: el taxi negro y amarillo, con
+  cartel, en la capa de adelante y con el diablo a la vista; la sombra del polizón; el cogote y el pañuelo de dos tintas del
+  borrego; los anteojos de la rana, que levantados eran una mata negra y ahora son dos lentes con marco que no se tocan, y su
+  peluca, que salta más alto y más tiempo; y las orejas de la liebre, que con la cabeza levantada parecían cuernos.
+- `elenco.test.ts` acepta la capa `delante` para un personaje de entorno corrido con `k`: es el taxi.
+- Los ojos de `VECINOS_DEL_MONTE` y de `VECINOS_DEL_BAJO` de la liebre, el borrego y el polizón se corrieron adonde tienen el ojo,
+  y con ellos los del claro en `camino.ts`. `COSAS_DE_LA_RUTA` se corrió con el taxi.
+- `elenco.test.ts` pasa de 55 a 60.
+
+Cada uno trae su bloque de tintas (rana 14 y polizón 12 en *La mosca y la sopa*; borrego 13 en *Luzbelito*; liebre 11 en *Lobo
+suelto*; taxi 13 en *Momo Sampler*), su bloque en `sitio.css`, su conducta y su test de 7. Las piezas: rana 15, borrego 16,
+liebre 15, taxi 14, polizón 18.
+
+Queda para el hilo principal: la auditoría, verlos en un teléfono de verdad, que `contenido` lea las cinco estampas, pasar los
+cinco bloques de tintas al lienzo, y sumarlos a `scripts/bestiario/mirada.ts` cuando ese archivo llegue a esta rama (hoy no
+está). Lo que quedó flojo: en el camino, lo de adelante de la ruta es otra capa, con su paralaje, y sus matas le siguen pasando
+por delante al taxi mientras se camina; el taxi apoyado asoma las ruedas sobre el carril de adelante; y al borrego, cuando se sube
+el disfraz, la boca no llega a tocarlo.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17
@@ -6889,3 +7070,848 @@ cuelga el `javascript_tool`—:
   sobre la barra de Safari, y la hoja al asentarse.
 - `T-515`: la hoja 08 del lienzo (componentes): el sello de invitación y el renglón «Anotado · cuenta»
   de la hoja. No hubo tintas nuevas: todo sale de `tokens.css`.
+
+## D-84 — El almanaque del portal: un mes, un afiche
+
+- **Fecha:** 2026-10-29
+- **Estado:** aceptada — pedido del usuario, textual: *"Actualicemos la portada de la página, quedó
+  vieja de oktubre, que quede hasta el fin del mes, pero ya pensemos otra cosa."*, y sobre la
+  propuesta escrita (`Docs/SUGERENCIAS/HILO-para-todos-el-almanaque-del-portal.md`): *"Sí,
+  armalo"*. La escribe el hilo principal en la rama `portal/almanaque`, sobre `main` en `b0b0bc2`.
+  Antes de tomar los números se miraron las ramas remotas: `D-83` era la última decisión, y
+  `T-518` y `T-519` ya eran de `x-sin-scroll` y `x-bestiario-sonido`, así que esta tarea es
+  `T-520` y la hoja de `experiencia`, `UX-40`.
+- **Consume:** `D-14`, `D-17`, `D-19`, `D-49`, `D-65`, `D-72`, `D-75`, `UX-25` §1, `UX-35` §2.4,
+  `UX-40`, `RES-210`, `RES-211`, `RES-225`, `.claude/rules/diseno-marca.md`,
+  `.claude/rules/voz-ricotera.md` §5.
+- **Enmienda `D-49`:** sus puntos 1 a 3 se generalizan a cualquier mes (abajo), y el almanaque se
+  lee por día, como un almanaque, y ya no del disco más viejo al más nuevo. El punto 4 (una pieza
+  de tapa por casete) y el 6 (la mosca) no cambian.
+
+### Contexto
+
+El afiche de *Oktubre* se apaga solo el 1.º de noviembre: `D-49` lo dejó prendido por la fecha del
+teléfono, no por el build, así que "que quede hasta el fin del mes" no exigió tocar nada. La
+pregunta era qué viste la portada después. Al mirar las fichas apareció que el mecanismo de
+octubre ya era general: un mes, un afiche, con las fechas sacadas de la Redondopedia y solo las
+rotuladas `hecho`. Y que noviembre y diciembre tienen con qué:
+
+- **Noviembre**: *Momo Sampler* (17-nov-2000) y *Último bondi a Finisterre* (18-nov-1998), los dos
+  discos que no salieron en octubre; **Huracán, 19 y 20 de noviembre de 1993**, la primera vez en
+  esa cancha, más de 70.000 personas, *Lobo suelto, cordero atado* presentado ahí (ficha
+  `huracan-93-94`, todo `hecho`); el Lozanazo del 26-nov-1977, donde nació el nombre; y la
+  oficialización de la separación, 2-nov-2001 (ficha `la-separacion`, `hecho`). El sitio tiene
+  además las dos listas de Huracán cargadas (`RES-210`, `RES-211`) y sonando en "En vivo".
+- **Diciembre**: el debut en Obras (2-dic-1989), Huracán 94 (16 y 17-dic-1994) y la fundación que
+  circula, **28 de diciembre de 1976**, que la ficha `la-formacion` tiene rotulada `leyenda` ("nunca
+  confirmada ni desmentida del todo"). En diciembre de 2026 son cincuenta años, y la prensa lo va a
+  decir sin rótulo.
+
+### Decisión
+
+1. **El afiche de octubre pasa a ser el almanaque del portal.** Una tabla mes → afiche
+   (`ALMANAQUE` en `lib/sitio/copy.ts`): cada mes que está es un afiche entero; los que no están
+   no muestran nada, y el portal es el corto de siempre (`UX-25`). Hoy: octubre, noviembre y
+   diciembre. Mayo, cuando se construya (*Un baión* el 9, Rocambole el 12, Huracán el 14-5-1994).
+2. **El almanaque solo festeja.** Los meses de duelo —Olavarría en marzo, Bulacio en abril, la
+   muerte del Indio en junio— no tienen afiche nunca: eso se cuenta en la Redondopedia, en registro
+   3, y no en un afiche. Un mes sin afiche es un mes sin afiche: no se rellena.
+3. **Lo prende la fecha de quien mira.** La cabeza del portal pone `data-mes` con el nombre del mes
+   y `data-afiche` si ese mes tiene afiche impreso, antes del primer cuadro; la lista de meses con
+   afiche la inyecta Astro desde el build (`define:vars`), así vive en un solo lugar. La isla
+   `scripts/almanaque.ts` corrige la estampa con la fecha del teléfono, como antes.
+4. **Las fechas salen de las fichas** (`lib/sitio/almanaque.ts`, `fechasDelMes()`): un disco entra
+   por su salida y nada más (*Gulp!* tiene tres versiones y no cumple años); un hito entra por
+   cualquier dato que empiece con un día, con el año del valor o de la etiqueta ("Fechas 1993");
+   "19 y 20 de noviembre" son dos tacos. Solo `hecho`, salvo la **única excepción declarada**: la
+   leyenda que un mes nombra como cumpleaños entra **con el rótulo ◆ LEYENDA pegado a la estampa**,
+   para que nunca se lea el número sin su casilla (`UX-40` §5). Un test (`almanaque.test.ts`,
+   "regla 3") falla si la ficha del cumpleaños pierde el rótulo que el afiche declara: sin
+   cumpleaños, ese afiche no se imprime.
+5. **El mes como fue.** Los tacos no eligen: noviembre trae el principio (el Lozanazo) y el final (la
+   separación). Lo que festeja el afiche es el cumpleaños, no cada taco.
+6. **Noviembre: HURACÁN.** Estampa "EL 19 CUMPLE 33" (cuenta desde el 19); canta *"Trepate al
+   alambrado, que ya salen."*; cuenta *"El 19 y el 20 de noviembre del 93, más de setenta mil
+   personas en el Ducó, para presentar el disco doble."*; seis tacos (2, 17, 18, 19, 20, 26); botón
+   **MIRÁ QUÉ SE TOCÓ EL 19**, a la lista de esa noche en "En vivo", que suena diez segundos por
+   tema. Viste la tinta de *Lobo suelto*, el disco que se presentó esas noches. `contenido` leyó las
+   líneas el 2026-10-29: "para presentar" es lo que dice la ficha ("recién salido" era inferencia), y
+   "mirá qué se tocó" es una lista que se mira, no la grabación de la noche, que el sitio no tiene.
+7. **Diciembre: CINCUENTA.** Estampa "EL 28 CUMPLE 50" con el ◆ LEYENDA al lado; canta *"Soplá las
+   velitas, por las dudas."*; cuenta *"Circula que la banda nació el 28 de diciembre de 1976, Día de
+   los Inocentes. Nadie lo confirmó ni lo desmintió del todo."* (el rótulo ya dice qué es; la línea
+   no lo repite); cuatro tacos (2, 16, 17, 28); botón **LEÉ CÓMO EMPEZÓ**, a la ficha. Viste la tinta
+   de *Gulp!*, historia en la mezcla y el primer disco.
+8. **El componente es uno** (`.afiche` en `sitio.css`, antes `.oktubre`): lo que rota por mes es la
+   tinta (`--tinte-afiche`), la letra del sello y los textos. Octubre sigue escribiendo su sello con el
+   calco de su tapa; los demás van en la letra de la banda (`--fuente-marca-firma`, que tiene la Á
+   desde `D-65`; el calco no la tiene, y es la letra de *ese* disco). Ningún hex, ninguna fuente ni
+   ninguna medida nueva: cada tinta ya tiene su par AA sobre `--fondo` en `contraste.test.ts`.
+9. **"En vivo" se ancla por fecha** (`anclasPorFecha()` en `lib/recital/listas.ts`): `lista-<fecha>`,
+   y `-2` si dos cargas comparten noche (Mar del Plata 13/8/94, `RES-225`); antes era `lista-N` por
+   posición, que cargar una lista más movía. La isla abre el `<details>` al llegar por el `#`:
+   `:target` no lo abre solo, y llegar a una lista plegada es llegar a una puerta cerrada.
+10. **El lienzo primero.** La hoja 18, "El almanaque del portal", en la página Aplicación debajo de
+    la 16 (versión 21 del lienzo): los tres afiches a 320 px, el mismo componente con tres tintas y
+    dos letras, la tabla de lo que rota y las reglas. `D-49` había dejado el afiche sin hoja; el
+    almanaque la trae.
+
+### Alternativas descartadas
+
+- **Un afiche de noviembre escrito a mano, y otro de diciembre.** Es el mismo componente tres veces,
+  y tres versiones de una cosa se desincronizan. La tabla es veinte líneas por mes.
+- **Los dos discos como cumpleaños de noviembre.** Cumplen 26 y 28; nada que *Oktubre* no haya tenido
+  mejor. Huracán es el ejemplo que `CLAUDE.md` usa para describir al que sabe, y el sitio tiene qué
+  se tocó. Los discos entran igual, como tacos.
+- **El botón de noviembre al juego "Armá tu recital" con el Ducó elegido.** El juego no acepta un
+  lugar por URL (la quinta forma del link lleva la lista entera); sería un parámetro nuevo para
+  llegar a una lista inventada cuando el sitio tiene la real.
+- **Obras 89 como cumpleaños de diciembre, con la fundación como un taco más.** Pierde la gracia del
+  28 sin ganar honestidad: el rótulo pegado a la estampa ya dice qué clase de número es.
+- **Personas en el almanaque** (Rocambole 12-may-1943, Dawi 20-oct-1955). Cambiaba el afiche de
+  octubre en sus últimos dos días y nadie lo pidió. Entra cuando se construya mayo.
+- **Un afiche más chico fuera de la semana del cumpleaños**, para que el portal no se alargue tres
+  meses al año. Es un segundo componente para ahorrar una pantalla.
+
+### Consecuencias
+
+- El portal suma ~370 px a 375×812 tres meses al año (cuatro con mayo), no uno. Se anota contra
+  `UX-25` y se acepta.
+- `D-49` punto 3 pasa a tener una excepción, declarada y testeada: la leyenda del cumpleaños, con su
+  rótulo a la vista. Ninguna otra leyenda entra.
+- La propuesta queda en `Docs/SUGERENCIAS/` con la nota de que se decidió acá; `UX-40` es la
+  doctrina de `experiencia`; `T-520` es la tarea.
+- `difusion` tiene la semana del 17 al 20 de noviembre para un `DIF-`: el calendario termina el 7.
+- Lo que queda: mayo, cuando llegue (`T-521`, reservada); mirar el afiche de noviembre en un teléfono
+  de verdad el 1.º.
+
+---
+
+## D-85 — Noviembre se sube al último bondi: el primer modo del portal
+
+- **Fecha:** 2026-11-02
+- **Estado:** aceptada. Pedido del usuario, textual: *"Hagamos el home en modo 'Un baion para el ojo
+  idiota' […] algo como la multitud de oktubre que sea inmersivo. El disco se estreno el 7 de nov.
+  Ponete en rol de diseñador bien rocambolesco"*. La fecha no cerraba: la ficha dice 9 de mayo de
+  1988 (`RES-20`), `investigador` lo reconfirmó y no encontró ninguna fuente del 7 de noviembre. El
+  usuario: *"ah no flashe no salio el 7 de nov. Que disco si salio en nov?"*, y entre *Último bondi* y
+  el Baión para mayo eligió *"Último bondi, sin Huracán"*. La escribe el hilo principal en la rama
+  `modo/ultimo-bondi`, encima de `portal/almanaque` (PR #100, sin integrar) con `main` adentro.
+  Antes de numerar se miraron las ramas remotas: `D-84` era la última y `T-523` la última tarea; esta
+  es `T-524`.
+- **Consume:** `D-14`, `D-19`, `D-21`, `D-63` (y su enmienda 1), `D-64`, `D-84`, `UX-20`, `RES-20`,
+  `RES-22`, `.claude/rules/diseno-marca.md`, `.claude/rules/voz-ricotera.md` §5.
+- **Enmienda `D-84`:** su punto 6 (noviembre: HURACÁN) queda reemplazado por este. El resto del
+  almanaque no cambia.
+
+### Decisión
+
+1. **Noviembre es *Último bondi a Finisterre*** (18-nov-1998, `hecho`). Estampa "EL 18 CUMPLE 28";
+   sello **ÚLTIMO BONDI** en la letra de la banda; canta *"Agarrate del pasamanos, que arranca."*;
+   cuenta *"Salió el 18 de noviembre del 98. Diez temas, y sello nuevo: Patricio Rey Discos."* (lo que
+   la ficha tiene en `hecho`); botón **ADIVINÁ TEMAS DEL BONDI**, al juego con el disco elegido. Viste
+   la plata de la tapa (`--disco-ultimo-bondi-a-finisterre-tinta`).
+2. **Sin Huracán**, por pedido textual: el almanaque suma `fuera` (las fichas que un mes deja afuera
+   aunque sean `hecho`) y noviembre deja afuera `huracan-93-94`. Las noches del 93 siguen en su ficha
+   y en "En vivo", y diciembre conserva las del 94. Los demás tacos siguen: el Lozanazo y la
+   separación son el principio y el final del mes (`D-84` punto 5).
+3. **El primer modo del portal**: además del afiche, el mes viste la portada entera. Es la tapa leída
+   como un lugar: estás adentro de la nave.
+   - **El ojo de buey** reemplaza a la cinta del afiche: dos cortes del frente de 953 px (el aro y el
+     vidrio con la banda, `public/arte/bondi-ojo-*.webp`, 14 y 15 KB). Al bajar, lo que se ve por el
+     vidrio se corre un poco respecto del aro, como lo que está del otro lado de una ventana.
+   - **El sello es la chapita del nombre**, como la de la tapa: plata maciza, letra `--fondo`, un
+     remache en cada punta y marco doble (contorno, no sombra: `D-64`). Par nuevo en
+     `contraste.test.ts`.
+   - **Los tacos son boletos**: el borde de arriba y el de abajo, picados, como el talonario. La lista
+     se llama "Las paradas de noviembre".
+   - **El casco de la nave** reemplaza a la multitud de lejos y de cerca (`D-63`): la chapa repujada
+     de la tapa, con costuras, remaches, caños que doblan en ángulo recto y ranuras de tres agujeros,
+     leída en nuestra línea. Es una baldosa de 320 px que se repite sin costura
+     (`lib/sitio/casco.ts`, servida en el build por `pages/arte/casco-bondi.svg.ts`) y se usa como
+     máscara sobre tinta plana, sin foto y sin velo. Pesa `--peso-casco` (24 %), que mide
+     `contraste.test.ts` como mide la multitud. Al bajar, la chapa se corre dos baldosas: queda atrás
+     de la hoja, y el bondi avanza. La gente del pie de *Oktubre* se queda, mirando.
+   - **La última parada**: al final de la hoja, antes del pie, una chapa dice "ÚLTIMA PARADA ·
+     FINISTERRE". El final de la página es el fin de la tierra.
+4. **El movimiento es del lugar** (`UX-20`): atado al desplazamiento, sin JavaScript, anotado en
+   `movimiento.test.ts` y quieto con movimiento reducido (`--acercamiento: 0`). Con colores forzados no
+   hay casco.
+
+### Alternativas descartadas
+
+- **El modo Baión en noviembre, como se pidió.** El Baión salió el 9 de mayo de 1988: el portal le
+  festejaría el cumpleaños en el mes equivocado, y eso es lo único estricto del proyecto (`D-14`). El
+  boceto del modo Baión (la tele de Rocambole tirándole luz al muñeco del antifaz, el perro mordiendo
+  abajo y los temas como canales) quedó en la rama local `modo/baion-ojo-idiota`, para mayo (`T-521`).
+- **Un afiche aparte para el modo.** El almanaque ya decide qué mes está prendido y qué cumpleaños se
+  festeja; el modo es lo que el afiche de ese mes arrastra con él, no otro interruptor.
+- **El relieve de la chapa con luz y sombra**, como en la tapa. Sería una sombra con otro nombre (`D-64`).
+- **El ojo de buey de 231 px que ya estaba** (el del casete). A 184 px en una pantalla de doble
+  densidad se veía lavado; el corte nuevo sale del master.
+
+### Consecuencias
+
+- `ALMANAQUE` gana dos campos opcionales: `fuera` y `modo`. Un mes nuevo con modo necesita además su
+  arte en `OJO_DE_BUEY` (portal) y su capa de fondo en `sitio.css`.
+- **El lienzo va después del código, y es deuda**: la hoja 18 de `D-84` todavía muestra HURACÁN.
+  `diseno-marca.md` pide el orden contrario. Los valores no cambian (no hay hex ni fuente nueva, solo un
+  peso), pero la hoja tiene que mostrar el afiche del bondi y el casco.
+- Este cambio no puede entrar a `main` antes que el PR #100: va encima de él.
+- Falta mirarlo en un teléfono de verdad.
+
+---
+
+## D-86 — Skayboy y Poligirl, la mejora entera: doce niveles, el menú con plano y un cigarrillo que se entiende
+
+- **Fecha:** 2026-11-04
+- **Estado:** activa. Pedido del usuario, textual: *"Hace una mejora total del juego Skay boy y poli
+  girl, mejora el menu, arma mas niveles, basate en los niveles reales de fireboy y water girl. Hay
+  que mejorar el cigarrillo de poli, no se entiende del todo bien que es."* La escribe el hilo
+  principal en la rama `skayboy/mejora-total`, sobre `main` en `90583d6`. Antes de tomar el número
+  se miraron las ramas remotas: `D-85` (en `modo/ultimo-bondi`, PR #104, sin integrar) era el último.
+- **Consume:** `D-47` (los coleccionables y la pantalla completa), `D-61` (el menú y la tarjeta),
+  `CTR-16` (los niveles), `CTR-18` (la traza grabada), `BR-29` (la tolerancia por escalón),
+  `UX-33 §3` (la guitarra gorda y el cigarrillo flaco), `UX-37` (el menú).
+
+### Las tres cosas, en el orden en que las pidió
+
+1. **El cigarrillo se entiende.** El tile `tesoroPoligirl` de la sala era un palito en diagonal de
+   un píxel de espesor con un hilo de humo: a ×2 en un teléfono era una aguja. Ahora es un cigarrillo
+   acostado: tubo de papel en luz con contorno de clave, el filtro de corcho en la tinta de objetos
+   a la izquierda con su anillo, la brasa en la misma tinta a la derecha, y el humo de clave subiendo
+   serpenteando. Sigue siendo "flaco" contra la guitarra "gorda" (`UX-33 §3.3`: 12 píxeles de tinta
+   de objetos contra 49, y la vara es el doble) y sigue con aire alrededor. El atlas sube a
+   **`sala.v4`** (`CTR-15.8`); la v3 se queda en `public/sprites/` hasta que nada la pida.
+2. **El menú muestra el plano.** Cada ficha lleva **el plano del nivel**: la sala en miniatura, un
+   sello de 15 × 9 celdas con las tintas del pixel —sólido en clave, cielo, infierno, el de los dos,
+   el tesoro en oro, puertas y piezas en clave aclarada—, armado en el build desde la grilla
+   (`planoDelNivel()`, `menu.ts`). No marca las entradas: eso contaría la solución. Y debajo del
+   título de la lista, un renglón seco: **"Pasaste N de M"** (nada con cero). La grilla de fichas
+   pasa de dos a tres o cuatro por renglón según el ancho, y seis por renglón en la composición baja.
+3. **Doce niveles.** Seis nuevos (`NIV-07` a `NIV-12`), todos de escalón 3 porque combinan lo
+   enseñado y no traen mecanismo nuevo (`E6`), y por lo mismo con el piso de tolerancia de Difícil
+   (`BR-29`: 4 cuadros). Toman del *Forest Temple* de Fireboy y Watergirl lo que el motor permite
+   —charcos de cada uno en el piso, escaleras de bloques hacia una repisa con las dos puertas,
+   palancas que se dejan puestas, placas que uno sostiene, la caja que se empuja hasta una placa
+   para que la compuerta quede abierta, el salto largo— y nada de lo que no: ascensores y plataformas
+   que se mueven no entran porque `CTR-16.10` dice que ninguna pieza tiene reloj ni le mueve el piso
+   a nadie.
+
+| Nivel | Nombre (`voz-ricotera.md §4`) | Qué junta |
+|---|---|---|
+| `NIV-07` | Cada cual con su charco | los dos charcos en el piso, cada uno cruza el suyo caminando y salta el otro; dos bloques y la repisa con las puertas |
+| `NIV-08` | Dejale la palanca puesta | dos palancas en el piso, cada una abre la compuerta del otro; la de cada uno se cruza y se deja |
+| `NIV-09` | No te muevas de ahí | una placa contra la pared que uno sostiene para que el otro pase; la palanca del otro lado la deja abierta |
+| `NIV-10` | Una caja y una promesa | la caja se empuja hasta la placa y la compuerta de arriba queda abierta; dos bloques para subir |
+| `NIV-11` | Un piso para cada uno | dos pisos separados, uno por personaje: la placa de arriba abre la compuerta de abajo, la palanca de abajo abre la de arriba |
+| `NIV-12` | Saltá y no mires | el charco de los dos, de tres de ancho, y la escalera de bloques hasta las puertas |
+
+**Se publican `listo`**, con `deDos: true`: el usuario lo decidió el mismo día, textual, *"Pasalos a
+listo"*, sabiendo que nadie los jugó de a dos en un teléfono, como hizo `D-51` con los seis primeros.
+El booleano, dice su schema, prueba que alguien se hizo cargo de decir que sí: se hizo cargo él. La
+máquina sí los juega en cada build (`CTR-18`).
+
+### Lo que la máquina enseñó al dibujarlos
+
+La traza de uno (`CTR-18`) se grabó para los seis, y para llegar hubo que tirar cuatro diseños.
+Lo que se aprendió queda acá porque el que dibuje el 13 lo va a necesitar:
+
+- **Un techo a menos de dos tiles sobre el que salta mata el salto de dos tiles.** El cuerpo mide
+  20 y sube 40,5 px; si la celda de despegue tiene sólido dos filas arriba del cuerpo (una repisa
+  encima), el salto se corta a 28 px y no llega a la cornisa. Se mira la columna de despegue, no la
+  de llegada.
+- **La pared de una compuerta es un techo.** Salir de la compuerta y saltar enseguida no sale: el
+  muro de arriba deja 12 px de aire. Entre la compuerta y el charco van dos celdas de piso.
+- **Una palanca en la celda donde se aterriza es una moneda al aire.** Si el salto cae a la
+  izquierda del centro de la celda, al caminar se cruza y se activa; un píxel más a la derecha, no.
+  La palanca va a dos celdas de cualquier aterrizaje.
+- **Tapar un charco con cajas no se puede forzar.** Con el perdón tardío de 0,1 s (`PERDON_TARDE_SEG`)
+  todo hueco de dos tiles se cruza desde el borde, y una caja al lado del charco es un escalón que
+  alarga el salto: siempre hay un camino de un píxel de margen que la búsqueda encuentra y la vara
+  de `BR-29` rechaza. La caja queda como escalón y como peso sobre la placa, que es lo que
+  `CTR-16.10.5` prometió.
+- **Los charcos de dos tiles van a cielo abierto.** Bajo un techo de tres filas el salto alcanza
+  33,7 px y un charco de dos pide 23: queda margen para tres cuadros, y `BR-29` pide cuatro.
+- **El que termina primero entra apenas a su puerta.** La búsqueda corta en el cuadro en que entra,
+  y correr cualquier borde anterior lo deja afuera. Por eso el ensanchador (`robustecer()`,
+  `solucionador.ts`) suma desde hoy tres candidatas: alargar la última corrida de la columna del
+  borde apretado, alargarla junto con el gesto que se alarga, y probar los dos sentidos cuando el
+  borde aguanta lo mismo para cada lado. Con eso `NIV-11` pasó de 1 a 10 cuadros sin tocar el
+  nivel. Los 30 casos de `solucionador.test.ts` siguen en verde.
+- **Una placa contra la pared, o dos seguidas**, para el que la sostiene: así no se pasa de largo.
+
+### Lo que no cambia
+
+- La física (`mundo.ts`): ninguna constante se tocó. Los seis niveles viejos conservan su traza.
+- Los textos de `contenido`: los seis nombres nuevos los escribió el hilo principal con la vara de
+  `voz-ricotera.md §4` (ocho palabras, imperativo o imagen, sin explicar la mecánica) y `voz.test.ts`
+  los audita; `contenido` puede proponer otros en `Docs/SUGERENCIAS/`. El renglón "Pasaste N de M"
+  es registro 3.
+- La paridad de `BR-23.1` sobre el banco entero la cuenta `soluciones.test.ts` como siempre.
+
+## D-90 — El bestiario con músculo: el aire entre las capas y la lupa
+
+- **Fecha:** 2026-11-13
+- **Estado:** activa, primera ronda. Pedido del usuario, textual: *"busca cosas que no se vean bien,
+  ambientes mejorables y diseños que se puedan mejorar [...] Quiero mejorar la inmersión. Que se
+  pueda hacer zoom, que tenga más misterio y efectos, nieblas, mejores animaciones, una mejora total
+  manteniendo la esencia y el alma y el diseño rocambolesco ante todo, pero darle músculo."* La
+  escribe el hilo principal (un subagente en su worktree) en la rama `bestiario/inmersion`, cortada
+  de `bestiario/cinco-sin-diseno` (PR #108, sin integrar) en `9fa0b93`. `D-87` a `D-89` están
+  tomados en otras ramas; la tarea es `T-527`.
+- **Consume:** `D-73` (el bestiario, y sus dos excepciones: el aerógrafo con grano y el movimiento
+  de los bichos), `D-77` (caminar de costado con el scroll del navegador), `D-80` (la cámara),
+  `D-83` (la pulida), `T-522` (que se pueda tocar a todos), `diseno-marca.md` (cero sombras, velo
+  plano, nada de degradé), `D-64`.
+
+### La idea
+
+Hasta acá un camino eran tres capas duras —lo lejano, el piso, lo de adelante— y entre una y otra
+no había nada: se veía todo de una, y en un teléfono parado la mitad de abajo de la pantalla era
+piso vacío. La mejora mete **aire** entre las capas y deja **arrimarse** a mirar. Nada de eso se
+sopla en el teléfono: se imprime, como todo el bestiario.
+
+### 1. El aire (`lib/bestiario/aire.ts`, `arte-aire.ts`)
+
+- **Tres planos nuevos**, además de las capas de siempre: `fondo` (entre lo lejano y el piso: la
+  bruma que sale de atrás del borde), `medio` (encima del piso y de los bichos: la niebla rasante, la
+  ventisca, el humo) y `cerca` (encima de todo: lo que está pegado a la cámara, fuera de foco).
+  El plano `cerca` es la respuesta al **piso muerto en vertical**: tapa el borde de abajo con matas,
+  médanos o fierros desenfocados que pasan más rápido que nada (`f` 1,75).
+- **Cada capa es una baldosa impresa** con el aerógrafo y el rociado (grano incluido) por
+  `scripts/imprimir-bestiario.mjs`, que se repite de costado. La isla la corre con `transform` y le
+  cambia la `opacity`: ni `filter`, ni `backdrop-filter`, ni un `linear-gradient`. Va en el mismo
+  reloj del camino; no hay un segundo `requestAnimationFrame`. Tres capas por región, como tope
+  (`aire.test.ts`), y menos de 520 kB de aire por región.
+- **La lengua**: la niebla rasante tiene el canto de abajo duro, como cortado con una máscara de
+  papel apoyada en el piso, y para arriba se pierde soplada. Es el gesto de las tapas (borde duro
+  afuera, volumen blando adentro) aplicado a la niebla: se posa, no flota.
+- **Se abre al paso**: cada capa tiene `abre`. Caminando, la niebla se deshace enseguida; quieto,
+  se vuelve a cerrar despacio. Quedarse quieto tiene premio, y es la base para lo que venga de
+  misterio (lo que solo aparece si no te movés).
+- **La receta es por región** y sumar una es escribir sus números y pintar su baldosa. En esta
+  ronda: el monte y la pastura (bruma, rasante, matas), Cybersiberia (vaho contra la chapa, ventisca
+  con viento, médanos), los astilleros (bruma del río, vaho del agua, norays y cadenas) y el
+  infierno (humo que se arrastra y ceniza encendida que sube, que es la primera capa que se repite
+  también para arriba). El infierno es un recinto de una sola capa: el aire anda igual ahí.
+- **Con movimiento reducido** el aire queda impreso en su lugar con su alfa: no se corre ni respira,
+  y no se pierde nada. **Sin JavaScript**, igual.
+- **Dos cosas de la imprenta que costaron**, anotadas para el que pinte la próxima baldosa: el
+  filtro del grano mide lo que filtra por la caja de las formas *sin contar el soplo*, así que cada
+  baldosa lleva una hoja entera sin tinta (si no, la bruma sale cortada a cuchillo); y lo que cruza
+  el borde de la baldosa necesita lo de afuera para cerrar, así que se imprime con **sangría**
+  (`Pieza.sangria`, 120 unidades de más a cada lado, y se recorta).
+
+### 2. La lupa (`lib/bestiario/lupa.ts`, `scripts/bestiario/pellizco.ts`)
+
+- **Dónde**: en los trece caminos y en el plano redondo. **Cómo**: pellizco de dos dedos,
+  Ctrl + ruedita (que es también el pellizco de un panel táctil), doble toque (sobre un bicho, va a
+  él y lo deja en el medio; con la lupa puesta, es la vuelta), `+` `−` `0` en el teclado, y dos
+  sellos `+` `−` donde hay mouse. Tope en 2,6. La vuelta es un sello, **"Mirá todo"**, que aparece
+  con la lupa puesta.
+- **No se usa el zoom del navegador** porque agranda todo: el cartel, la ficha y los botones se van
+  de la pantalla con la escena. Acá se agranda la escena y nada más.
+- **Caminar sigue siendo del navegador (`D-77`)**. Con la lupa en `z`, la tira del camino mide `z`
+  veces su ancho: un píxel de deslizar sigue siendo un píxel de pantalla y el scroll nativo, con su
+  inercia, no se entera. La lupa va adentro del encuadre de la cámara (`transformDe`), así el
+  cabeceo, el sacudón y el paralaje siguen andando acercado.
+- **El toque que abre la ficha (`T-522`) no se toca**. Un doble toque son dos toques: el primero
+  hace lo de siempre (abre la ficha) y el segundo, si cae enseguida y en el mismo lugar, es la lupa
+  y se traga antes de llegarle a nadie. Los toques que la isla le pasa a un títere no cuentan
+  (`isTrusted`). Probado con dedos emulados: pellizco, caminar con la lupa puesta, mirar para abajo,
+  la vuelta, un toque y doble toque.
+- **Con la lupa, lo pegado a la cámara se corre del medio** (`despejeDeLupa`): acercarse es meterse
+  adentro del aire. Si no, la lupa agrandaba las matas justo encima de lo que se fue a mirar.
+- **En el plano** lo que se agranda es una lente nueva (`#lente`: el dibujo, la luz y los carteles)
+  adentro del marco, que es la ventana. Con la lupa puesta el dedo lleva el plano; sin ella, la
+  página baja como siempre. Los carteles siguen siendo los enlaces.
+- **Con movimiento reducido** la lupa llega de una, sin viaje.
+
+### Lo que se eligió no hacer, y por qué
+
+- **Imprimir todo a más resolución para la lupa.** Las piezas van a 2,5 píxeles por unidad y los
+  fondos a 1,25; a 2,6 de lupa en un teléfono de densidad 3 los títeres aguantan (el aerógrafo y el
+  grano perdonan) y los fondos se ven blandos, que acercado se lee como profundidad de campo.
+  Reimprimir los 18 MB de `public/bestiario` al doble son más de 50 MB en el repo y en el teléfono.
+  Queda para una ronda con medición: un segundo tamaño solo de los títeres que se miran de cerca.
+- **El póster posterizado del infierno y la cara del bajo** se dejan: son la tapa de verdad metida
+  en la escena (`href="tapa:"`), no un descuido. La ceniza y el humo los integran mejor que antes.
+- **El aro punteado amarillo** del bicho que habla es también el foco del teclado: cambiarlo pide
+  repensar los dos estados juntos. Va a la próxima ronda.
+
+### Qué lo verifica
+
+`aire.test.ts` (10) y `lupa.test.ts` (9): las recetas, las baldosas impresas y su peso, que la
+baldosa nunca muestre el borde, que la isla solo escriba `transform` y `opacity`, que el reloj sea
+uno, que la lupa no se salga del mundo y deje quieto lo que está debajo del dedo, y que caminar y
+tocar sigan siendo lo que eran. `npm test` 2313, `npm run check`, `npm run build` (200 páginas).
+
+### Enmienda — segunda ronda (2026-11-13): el piso, la niebla rasgada, la luz y los ojos sin dueño
+
+Auditoría de la primera ronda: la niebla rasante se leía como escalones (franjas parejas que
+cruzaban la pantalla), el piso seguía liso debajo, y el camello de Cybersiberia tenía un halo.
+
+- **La lengua pasa a jirón.** El canto de abajo sigue siendo duro (máscara de papel) pero **rasgado**:
+  tramos rectos desparejos, torcido y combado, con dos a cinco bocanadas de distinto alto adentro.
+  Van sueltos, cada uno a su altura y con aire entre uno y otro; el más largo mide 260 unidades y un
+  teléfono parado ve 320, así que **ninguna franja cruza la pantalla**. Las manchas de la bruma
+  también tienen tope de ancho. `aire.test.ts` lo cuida.
+- **El piso deja de ser liso** (`arte-suelo.ts`): charcos que reflejan lo de atrás (en el monte, las
+  puntas de las tiras dadas vuelta; en la nieve y en el muelle, rayas de luz que bajan temblando),
+  raíces, piedras, tiras caídas y costillares en el monte; placas de hielo, chapas remachadas, cables
+  y cascotes en Cybersiberia; charcos de sodio, cadenas, aceite y tablones en los astilleros. **No
+  son capas**: se imprimen adentro del piso de cada camino, debajo de los bichos, y no le cuestan nada
+  al teléfono. El infierno no lleva: su piso es el damero de la tapa y es un recinto con su propio
+  arte; ahí el piso lo hace la brasa.
+- **El halo del camello** era previo: `canto()` en `arte-entornos.ts` soplaba la silueta entera en
+  celeste detrás de los de la nieve, y asomaba para todos lados. Ahora es un filo duro, la silueta
+  corrida un pelo hacia la luz y tapada por el cuerpo: se ve de un solo lado. Alcanza al camello, al
+  robot, a Comboman y al pilar, en el recinto y en el camino.
+- **Bichos cortados**: medidos los cinco caminos de la ronda en 430×860, con cada bicho llevado al
+  medio. Ninguno queda cortado: los tres que el barrido marcó son la soga de tu animal (que sube
+  fuera de cuadro a propósito), el Alien Duce (que es más ancho que la pantalla por diseño) y la caja
+  de Mandinga, que incluye piezas escondidas.
+- **La luz que se ve en el aire** (`LUCES` en `aire.ts`): una forma soplada impresa, con grano,
+  clavada en un punto de la escena, que la isla gira, agranda y le cambia el alfa. El haz es
+  aerógrafo con máscara: los dos cantos duros de cartulina, tres bocanadas adentro y el pie
+  deshecho. Una por región: el **cono del farol de sodio** de los astilleros, que se hamaca y titila
+  como un tubo viejo; la **brasa** al pie de Luzbelito, que late (dos golpes y una pausa); y el
+  **haz de la cámara** que barre la nieve de Cybersiberia. Ni `filter`, ni sombra, ni modo de mezcla.
+- **Los ojos sin dueño** (`ACECHOS`): si te quedás quieto cinco o seis segundos, en lo oscuro se
+  abren unos ojos que no son de ningún bicho de la libreta. Parpadean, y **se apagan si los mirás**:
+  caminar, tocar cerca, pasarles el mouse, sacar la lupa o abrir una ficha los cierra, y vuelven más
+  tarde en otro lado. Es un sistema: receta por región (la pieza y los lugares donde pueden abrirse),
+  y cada región con aire tiene la suya. En el monte son de bicho; en Cybersiberia, dos lentes con su
+  piloto rojo; en los astilleros miran desde el agua, con su reflejo; en el infierno son de brasa.
+  No se tocan ni abren ficha. Con movimiento reducido no están.
+- **De paso**: al cambiar el tamaño de la pantalla, lo deslizado se lee del scroll y no de la cámara.
+
+Lo que se eligió: los ojos se abren en puntos de la pantalla (abajo, en lo oscuro, o lejos entre lo
+de atrás), no atados a una mata en particular de la capa `cerca`, que pasa volando y se repite.
+Como solo existen con la cámara quieta, no se nota; atarlos a la mata queda para cuando haga falta.
+
+`aire.test.ts` pasa de 10 a 15. `npm test` 2318, `npm run check`, `npm run build` (200 páginas).
+
+### Enmienda — tercera ronda (2026-11-13): rendimiento medido, cuatro regiones más y lo que cruza lejos
+
+**Lo que se midió.** Edge sin ventana (sin GPU: el pintado es por software), teléfono emulado de
+430×860 a densidad 2, CPU estrangulada ×4, ocho segundos caminando. Hilo principal por cuadro, y
+cuadros por segundo:
+
+| Camino | Antes de la ronda | Sin aire, luz ni vida | Al cerrar la ronda |
+|---|---|---|---|
+| Cybersiberia | 23,4 ms · **12 c/s** | 24,5 ms · 13 c/s | 15,7 ms · **54 c/s** |
+| El monte | 15,9 ms · 59 c/s | 12,5 ms · 60 c/s | 13,1 ms · 60 c/s |
+
+- **Cybersiberia andaba a 12 cuadros por segundo y el aire no tenía nada que ver** (sin él daba 13).
+  Era la nevada, que es previa: dos copias de los copos adentro del dibujo del piso, bajando con una
+  animación de CSS. Cada cuadro obligaba a repintar el piso entero. **Ahora la nevada es una capa de
+  aire** (la misma pieza `cyber-nieve`, marcada `ajena`): la mueve el compositor, cae lo mismo que
+  caía (640 unidades en 16 s) y el camino pasa a 51 cuadros por segundo. El recinto de la página
+  del bestiario conserva la suya.
+- **Las capas se pintaban dos veces por cuadro** (al leer el scroll y después de mover la cámara),
+  y cada pintada es un estilo que el navegador recalcula. Ahora una. Con eso el monte baja de 15,9 a
+  13,1 ms y Cybersiberia de 19,5 a 15,7.
+- **Lo que cuestan el aire, la luz y la vida**: 2,4 ms por cuadro con la CPU ×4 en los dos caminos
+  (13,1 contra 10,7 en el monte; 15,7 contra 13,3 en Cybersiberia), casi todo recálculo de estilo.
+- **El tope de ~12 ms no se cumple con la CPU ×4**: quedan 13,1 y 15,7. Pero la escena sola, sin
+  nada de esta decisión, ya da 10,7 y 13,3: lo que falta está en los títeres, no en el aire. Los dos
+  caminos sostienen 54 a 60 cuadros por segundo así estrangulados.
+- **El alivio** (`ALIVIO` en `aire.ts`): la isla mide tandas de cuadros (90, o dos segundos y medio)
+  y, si el promedio pasa de 28 ms, sube un escalón: en el primero se apaga lo de atrás del piso (la
+  bruma, que es lo que menos se extraña) y en el segundo la luz y lo que cruza lejos. La niebla del
+  medio y lo pegado a la cámara no se apagan nunca. Un teléfono que avisa dos núcleos o un giga de
+  memoria arranca en el primer escalón. **No se disparó en ninguna medición** (ni a 12 cuadros por
+  segundo, porque entonces la tanda tardaba más que la medición; por eso ahora tiene tope de tiempo).
+  Sin probar en un teléfono de verdad.
+
+**Arreglos de la auditoría.**
+
+- **La losa negra** del monte no era de `cerca`: era la tira alta de lo de adelante, que es previa
+  (110 de ancho, de arriba abajo; un tercio de un teléfono). Ahora mide 26 y arranca a media altura.
+  De paso, `cerca` tiene tope en las cuatro regiones: matas más bajas, tiras de 30, médanos más
+  chicos; todo arranca de la mitad para abajo, y `aire.test.ts` lo cuida.
+- **El farol de los astilleros** apoya: base abulonada al muelle, con su mancha (en el camino y en
+  el recinto).
+- **El jirón blanco** del monte bajó de tinta y de alfa. **La brasa** del infierno cambió de tinta
+  (del rojo de la brasa, que se perdía sobre el damero rojo, al naranja del fuego con corazón claro).
+- **El medio del piso del monte**: tres claros con peso (un charco grande que refleja siete tiras,
+  una raíz gorda que lo cruza, dos piedras, un costillar, una tira caída) en vez de todo salpicado
+  parejo.
+- **El cierre de los ojos, probado en el navegador**: con mouse y con dedo, se abren a los 7 u 8
+  segundos de quietud, un puntero lejos no los cierra, y uno a menos de 84 píxeles los apaga. No
+  abren ficha.
+
+**Cuatro regiones más, cada una con su mano.** La ruta es aerógrafo. Los otros tres son recintos
+que visten el disco de su tapa, y el aire la respeta: **no hay soplo ni grano donde la mano es otra**.
+
+- **La ruta**: bruma baja en el horizonte, el polvo que levantan los fierros y los pastos de la
+  banquina con algún mojón torcido. La luz son **los faros del último bondi**, que van colgados de
+  él (`sigue`) y alumbran el polvo. En la banquina, charcos que reflejan las estrellas, latas y
+  piedras. Cruza una estrella que se cae.
+- **El bajo** (crayón, *Gulp!* y la contratapa de *Un baión*): el vaho del agua es rayado de crayón,
+  con el borde corrido de la fotocopia; los juncos, de espaldas. La luz es el reflejo del pucho de
+  Pierre en el agua, una escalerita de rayas que tiembla. Los ojos miran desde el agua. Cruza un
+  barquito de papel.
+- **Los techos** (pastel, *Un baión*): hollín que cae en rayitas, la ropa tendida que se hamaca
+  (`mece`), y el farol del baldío con su cono, que titila. Los ojos son los gatos. Cruza un murciélago.
+- **La prisión** (gubia, *Oktubre*): el frío es un rayado blanco a ras del piso; lo pegado a la
+  cámara son **los barrotes, de arriba abajo**, finos y separados: se mira desde la celda de enfrente.
+  La luz es el reflector del muro, un cono de canto duro lleno de rayas, que barre. Los ojos son
+  blancos con la pupila roja. Cruza un pájaro blanco por arriba del muro: el único que sale.
+- Los recintos son una sola capa, así que **no llevan nada detrás del piso** (no se vería), ni piso
+  nuevo: su piso es el de la tapa.
+
+**Lo que cruza lejos** (`VIDAS`): de a uno, y muy cada tanto (entre 14 y 40 segundos según la
+región; la primera vez, la mitad). Un pájaro en el monte, la pastura y los astilleros, y los de
+arriba. No se toca ni dice nada. Con la lupa no cruza, y con movimiento reducido tampoco.
+
+`aire.test.ts` pasa de 15 a 21. `npm test` 2324, `npm run check`, `npm run build` (200 páginas).
+
+### Enmienda — cuarta ronda (2026-11-13): los títeres miran, lo que no se ve no se mueve, y el alivio a la vista
+
+**La mirada** (`scripts/bestiario/mirada.ts`). Los cinco más vistos saben dónde está el dedo o el
+mouse. Lo único compartido es dónde se vio el puntero por última vez y hace cuánto; cada uno decide
+qué hace. En un teléfono cuenta el dedo mientras está apoyado y dos segundos y medio después. Si
+nadie movió nada hace rato, no se mide nada (ni se toca el DOM).
+
+- **El lobo suelto** (en su monte): la cabeza es pesada. Persigue con un resorte, y cuando asoma,
+  cabecea y se pasa. Con el dedo cerca te clava la vista: baja la cabeza hacia vos, entorna los ojos
+  y respira más corto. Respira con peso (se llena despacio, se vacía más rápido).
+- **Las antiguas lobas**: la que tiene el dedo más cerca para la oreja y entreabre el ojo; la otra
+  sigue durmiendo. Se hacen las muertas, pero espían. La cola y la oreja acompañan la respiración
+  con retraso.
+- **Pierre**: te sigue con la cara, despacio, y achina los ojos (el de ese lado, más). La panza se
+  llena despacio y se vacía de golpe, y la cabeza llega después que la panza.
+- **Momo**: el medallón cuelga de verdad. Al caminar se va para atrás y queda hamacándose; con el
+  dedo cerca se ladea hacia él y el brillo le cruza más seguido.
+- **Luzbelito** (el quinto): el busto se vuelve hacia el que lo mira y la llama se le inclina para
+  ese lado, con retraso.
+
+**Lo que no se ve no se mueve.** En un camino de 2400 unidades un teléfono ve 320.
+
+- El elenco (`vivos.ts`): cada veinte cuadros, y antes de que nadie escriba nada en ese cuadro, se
+  mira quién está a la vista, todos juntos. Los que no, no se mueven. La pose quieta va para todos.
+- Los ojos y las cosas sueltas (`recintoDeMapa`): por la vista que presta el camino, con media
+  pantalla de margen a cada lado, así lo que está por entrar ya se mueve.
+- **Agrupar las escrituras**: lo que se hizo es que cada capa se pinte una vez por cuadro (tercera
+  ronda) y que lo que no se ve no escriba. Juntar las escrituras de cada títere en una tanda al
+  final del cuadro pide reescribir los cuarenta y pico de controladores, y no se hizo.
+
+**Vuelto a medir** (lo mismo de la tercera ronda: Edge sin ventana, 430×860, CPU ×4, ocho segundos
+caminando; hilo principal por cuadro y cuadros por segundo):
+
+| Camino | Tercera ronda | Cuarta ronda | Cuarta, sin aire, luz ni vida |
+|---|---|---|---|
+| El monte | 13,1 ms · 60 c/s | **10,5 ms** · 60 c/s | 9,5 ms |
+| Cybersiberia | 15,7 ms · 54 c/s | 16,4 ms · 48 c/s | 11,0 ms |
+
+El monte queda debajo de los 12 ms. Cybersiberia no: la escena sola bajó de 13,3 a 11,0 con el
+descarte, pero el aire le cuesta más que al monte (son cuatro capas, la luz, la vida y los ojos, y
+cada una es un estilo que se recalcula). Entre una medición y otra hay un par de milisegundos de
+ruido. Es el camino que primero va a pedir el alivio.
+
+**El alivio, a la vista.** `?liviano=1` o `?liviano=2` en la dirección de un camino fuerza ese
+escalón (y `?liviano=0`, ninguno aunque el teléfono avise que es flojo); con la bandera puesta no se
+mide. Mirado en captura: en el 1 se va la bruma de atrás del piso, y casi no se nota; en el 2 se van
+además la luz (el cono del farol) y lo que cruza lejos, y la escena sigue entera.
+
+**Arreglos de la auditoría.**
+
+- **Los barrotes de la prisión** ya no cruzan la cara de nadie: son una reja a la que le limaron el
+  medio. Arriba cuelgan los cabos, abajo quedan los tocones, y el medio queda libre. **El
+  reflector** está clavado lejos de donde se para la drácula y barre más ligero: las rayas le pasan.
+- **Ninguna pieza de adelante tapa más de un quinto del alto**, y lo mide un test en la imagen
+  impresa de todas las regiones: en ventanas del ancho de un dedo, el alto medio de lo opaco (así una
+  hoja de pasto fina no cuenta y una tira ancha sí). La losa del monte era otra vez la tira alta de lo
+  de adelante: se sacó. La única excepción, escrita en el test, es la bengala del galpón.
+- **Lo tirado en el piso apoya** (`asentar` en `arte-suelo.ts`): la mancha húmeda donde toca, la
+  tierra que lo tapa por abajo, y más apagado cuanto más lejos. Lo que está tirado (las tiras
+  caídas, los tablones, las cadenas, el costillar) va en escorzo, no de frente.
+- **Lo lejano del monte no es una cinta**: cada fila va por tramos a distinta altura, con huecos, y
+  cada tanto un tramo vencido, caído contra los vecinos. Hay bruma soplada entre fila y fila, y el pie
+  de las tiras se hunde en ella; el canto del piso va más soplado.
+- **Los techos, rehechos**: la ropa tendida cruza arriba y lejos, de antena a antena, clara contra
+  las medianeras; y el hollín, que no se leía, pasó a humo de chimenea. No llevan nada pegado a la
+  cámara.
+
+`aire.test.ts` queda en 24 y se suma `mirada.test.ts` (4). `npm test` 2331, `npm run check`,
+`npm run build` (200 páginas).
+
+### Enmienda — quinta ronda (2026-11-13): las trece regiones, la luz que toca, el aire que suena y la tiza
+
+**Las cuatro que faltaban.** Las trece regiones tienen aire y ojos sin dueño.
+
+- **La mesa**: el humo que sube, del lado de la olla. La tapa es un afiche (*La mosca y la sopa*),
+  así que el humo es **tinta plana con grano**: volutas del color del papel, sin un soplo. Ojos
+  abajo del mantel; arriba cruza una polilla. No lleva luz propia: ya tiene pintado el seguidor
+  que cae sobre la olla.
+- **El templo**: el incienso, que sí va soplado, en hebras tibias del color de los focos; y **un
+  foco de la guirnalda** que cae al costado del medallón y titila. (Primero lo clavé encima de la
+  cara de Momo: era el reflector de la prisión otra vez. Se corrió.)
+- **El árbol**: las hojas que se le caen (la baldosa cierra para los dos lados) y la racha que las
+  lleva de costado. Cruza un pájaro.
+- **El galpón**: el polvo del recital, en motas parejas como la trama de puntos del público, y el
+  seguidor de atrás, que barre.
+- **La bengala del galpón queda como excepción** del tope del quinto (tapa el 39 %). Es una sola, es
+  fina, es arte previo y es la luz del público: achicarla era sacarle al galpón lo único que tiene
+  de recital. Está escrita con su porqué en `aire.test.ts`.
+
+**La luz toca a los bichos** (`Luz.filo`). Cuando el cono del farol de los astilleros o el reflector
+de la prisión le pasan por encima a un bicho, se le prende un **filo**: una medialuna impresa en la
+coronilla, de aerógrafo con grano en los astilleros y de gubia en la prisión. Cuánto se prende
+depende de a cuántos grados le quedó el haz (`tocaLaLuz`). A quién le toca (los tres más cercanos
+que no anden) se mide cada medio segundo y antes de mover nada. Es una medialuna genérica estirada
+al ancho del bicho, no el contorno de cada uno: un filo a medida pediría imprimirlo por títere.
+
+**El aire suena**, por el motor del camino (`entorno.ts`), con el mismo botón y bajito (los topes
+están en `TOPE_DEL_AIRE`: 0,05 el viento, 0,014 el zumbido, 0,05 la chispa, sobre un general de 0,7).
+Todo atado a algo que se ve: el **viento** sube y baja con el alfa de la ventisca de Cybersiberia y
+de la racha del árbol; el **tubo** de los faroles que titilan (astilleros, techos, templo) zumba y se
+corta cuando se apagan, más fuerte cuanto más en el medio de la pantalla están; la **brasa** del
+infierno chisporrotea una vez por latido. Con movimiento reducido no suenan. **No se escuchó**: la
+máquina donde se hizo corre el navegador sin ventana y en silencio; está probado que no rompe nada
+y que el motor recibe los pedidos, no cómo suena.
+
+**Arreglos de la auditoría.**
+
+- **Los charcos del monte** reflejaban triángulos de punta abajo, parejos y en fila: una guirnalda.
+  Ahora el reflejo es **roto**: tres o cuatro manchas acostadas por tira, cada vez más angostas y más
+  corridas, más oscuras, que arrancan contra el canto de atrás (ahí las corta la máscara) y no llegan
+  a la mitad del charco.
+- **El aro punteado amarillo** del bicho que habla pasó a **una vuelta de tiza**: del papel, con el
+  trazo que se corta donde la tiza salta (doce tramos, ninguno igual al de al lado), apenas ovalada y
+  torcida, de punta redonda. **El foco del teclado** es la misma vuelta en el oro del foco de todo el
+  sitio (`--acento-2`) y más gruesa; el de los títeres, un contorno entero de 3 px despegado del
+  dibujo (era una raya punteada fina). Sigue siendo una forma y no solo un color.
+- **Los títeres grandes tampoco se mueven si no se ven** (`vigia.ts`): Luzbelito, Momo, Pierre y
+  Barbazul. Se miran en la misma tanda que el elenco. La drácula no: anda por el pasillo, y quieta
+  fuera de la vista no volvería.
+- **El lobo de la pastura mira** igual que el del monte.
+
+**Cybersiberia no bajó de 12 ms**, y conviene decirlo sin vueltas. Medido tres veces seguidas al
+cerrar la ronda, con la CPU ×4: 12,7, 15,4 y 15,2 ms por cuadro, a unos 50 cuadros por segundo; la
+escena sola, sin aire ni luz, 11,1. Entre una corrida y otra hay hasta 3 ms de ruido en esa máquina,
+así que sacar o poner una capa no se distingue. Lo que se hizo: lo de atrás del piso se corre un
+cuadro sí y uno no, y el alfa se reescribe con menos frecuencia. Lo que queda es el costo de
+componer cuatro capas grandes más la luz sobre una escena que sola ya gasta 11; bajarlo de verdad es
+sacar capas, y para eso está el alivio. El monte quedó en 9,9 ms y 60 cuadros por segundo.
+
+**Lo que no entró**: la mirada y la respiración de Barbazul, la drácula y Limón.
+
+`aire.test.ts` queda en 29 y `mirada.test.ts` en 5. `npm test` 2337, `npm run check`,
+`npm run build` (200 páginas).
+
+### Enmienda — sexta ronda (2026-11-13): el canto a medida, la nevisca, las ofrendas y tres que miran
+
+Pedido de la auditoría de la quinta: bajar Cybersiberia, el filo a medida, mirada para Barbazul, la
+drácula y Limón, el piso de tres regiones, la franja muerta y el haz liso del templo, y el doble toque.
+
+1. **Cybersiberia: una capa menos, y no alcanzó.** La nevada y la ventisca se fundieron en una sola
+   baldosa, la **nevisca** (`aire-cyber-nevisca`): copos y rachas que caen al sesgo, cerrando para los
+   dos lados. La ventisca vieja se borró. Y la región **arranca en alivio 1** en cualquier teléfono
+   (`ALIVIO_DE_LA_REGION`, que `alivioDeEntrada` lee). **Medido tres veces** con la CPU ×4 en Edge sin
+   ventana: 20,9, 21,6 y 21,0 ms de hilo principal por cuadro; **mediana 21,0** (unos 40 cuadros por
+   segundo). La escena pelada, sin aire ni luz, dio 15,4 ese mismo día. **El objetivo de 12 ms no se
+   cumple.** Dos avisos sobre el número: la máquina estaba cargada (ese día el monte, que no se tocó,
+   midió 17,4 contra los 9,9 de la quinta ronda), así que estos valores no se comparan con los de
+   rondas anteriores; y fundir las capas casi no movió la aguja en el raster por software. Lo que
+   cuesta es la nieve de pantalla entera (entre 2,6 y 3,8 ms): sacarla sería sacarle la nieve a
+   Cybersiberia, y eso no se decide sin medir en un teléfono de verdad.
+2. **El filo a medida** (`FILO_PROPIO`, `tieneFiloPropio`, `rutaDelFilo`). La imprenta lee cada pieza
+   ya impresa de los títeres que pasan bajo una luz y le saca **el canto que mira para arriba**: lo
+   que está en la pieza y no está 7 píxeles más arriba, en la tinta de esa luz. Son 82 imágenes
+   `filo-de-*.webp`. La isla clona cada `<image>` del títere con su canto (`vestirConFilo`) y lo
+   prende con una variable por títere (`--filo`), solo `opacity`. La medialuna genérica queda para
+   los bichos pintados en el piso. Prisión (esclavos, pichón, drácula), techos (Atila, Limón, el
+   psicópata, el perro, Dinamita; el farol ahora tiene filo) y astilleros (el botija). De paso se
+   arregló un error de la quinta ronda: en los recintos el filo genérico se medía sin sumar lo
+   deslizado y caía corrido. **Lo que se vio:** en captura el canto se prende (`--filo` entre 0,6 y
+   0,9 en el esclavo; 0,6 en Dinamita) pero **se ve poco**: es un borde de dos unidades, blanco sobre
+   grabado blanco en la prisión y lila bajo la lluvia en los techos. En los astilleros el botija queda
+   fuera del cono y no se lo vio prendido. El templo no tiene títeres de piezas bajo el foco.
+3. **Barbazul, la drácula y Limón miran y respiran** (`recintos.ts`). Barbazul deja de mirar a la
+   drácula y te sigue con las pupilas, levantando los párpados; la drácula, parada, vuelve la cabeza
+   y abre los ojos; Limón, cuando no corre, mira de reojo al dedo. Los dos de la prisión crecen apenas
+   desde los pies al tomar aire; Limón se hincha desde donde apoya, a los tirones cuando jadea.
+4. **El piso del árbol, la mesa y el galpón** (`arte-suelo.ts`). El árbol, aerógrafo: montoncitos de
+   hojas, raíces, frutos caídos, piedras de mármol, de la línea del horizonte para abajo. La mesa,
+   tinta plana: migas, una cuchara, corchos, la servilleta, la fila de hormigas. El galpón, tinta
+   plana: cables, púas, vasos y **una** lista de temas.
+5. **El templo.** El haz (`haz()`, que usan seis luces) ya no tiene canto de regla: la silueta es
+   cartulina cortada a mano, en tramos desparejos con algún tajo, y la máscara se cruza con textura
+   (vetas que nacen en la boca y motas de polvo). Y en la franja muerta van **las ofrendas**
+   (`aire-templo-ofrendas`): velas, platitos, una botella, flores, con el piso.
+6. **El doble toque**: 520 ms y 44 px (eran 350 y 28), y el reloj es el del dedo que se apoya
+   (`pointerdown`), no el del aviso de toque. Probado seis veces seguidas con la batería de tests
+   corriendo al mismo tiempo: seis de seis.
+
+**Tests que cambiaron a propósito:** el de la nevada pedía la capa `cyber-nieve` aparte y ahora pide
+una sola capa de pantalla entera; el del filo aceptaba hasta 3 por luz y dos regiones, ahora 4 y
+tres; el de la mirada contaba tres `miradaDe(g, …)` en los recintos y ahora cuatro; y el del incienso
+buscaba la primera capa del templo, que ahora son las ofrendas. Cinco tests nuevos.
+
+**Verde:** `npm test` 2342, `npm run check` 0 errores, `npm run build` 200 páginas.
+
+### Enmienda — séptima ronda (2026-11-13): los techos sin ahogar, el canto que se ve, y una pasada buscando roturas
+
+1. **Los techos.** Lo que tapaba todo **no era lluvia ni era de esta decisión**: son los rayones de
+   crayón de `baldio-lejos`, el telón del recinto (`arte.ts`, de `D-73`/`D-80`), la mano de *Un baión*.
+   Con 900 parejos en el cielo y 700 en el piso se leía como ruido de televisor. Quedaron 380 en el
+   cielo, a 0,6 de fuerza y sin el lila; 230 en el piso, a media fuerza y sin el lila (era el que
+   saltaba delante de los bichos); 150 en la medianera. **Los de los faroles no se tocaron**: el
+   crayón queda donde hay luz. El haz de las linternas (`baldio-linterna`, también previo) pasó de 90
+   rayones a 40. De lo mío, el humo de las chimeneas bajó de 0,8 a 0,55. El telón lo comparten los
+   retratos de Atila, el psicópata, el matón y Dinamita: cambian igual.
+2. **El canto a medida se ve.** Tres cambios: 12 píxeles en vez de 7 y de tinta llena (era la media
+   tinta del borde); en la prisión va en el **rojo de las banderas** (`--disco-oktubre-tinta`), porque
+   blanco sobre grabado blanco no se veía; y la opacidad va al doble (`calc(var(--filo) * 2)`), así
+   con medio haz encima ya está prendido. Dos arreglos de medición: a los títeres altos no les tocaba
+   nunca (se medía el ángulo a la coronilla; ahora al medio del cuerpo) y se los descartaba por altos.
+   En los astilleros el cono se inclinó 24° hacia el agua (`rumbo`), que es para donde mira el brazo
+   del farol, y ahora cruza al botija. **Visto:** la drácula, prendida en rojo, clara. El botija se
+   prende a 0,2 o 0,25: el cono le pasa por encima pero el canto naranja sobre él **casi no se
+   distingue** en la captura.
+3. **Las seis luces con el haz nuevo, miradas en escena.** Astilleros, Cybersiberia, techos, galpón y
+   templo: las vetas se leen como luz que pasa por una rejilla sucia y no hizo falta ajustarlas por
+   región. La de la ruta va atada al bondi: se la vio bien a 1280 y chica en el teléfono.
+4. **El templo.** El humo que baja (`aire-templo-humo-baja`, de pantalla entera como todo lo que cae)
+   y una fila de velas más lejos. Y un arreglo: las ofrendas eran una baldosa repetida y **caían
+   encima de las patas del Morta y del Doctor Saturno** (se vio a 1280). Ahora son una sola pieza del
+   ancho del templo (1940), con cada tanda en un hueco entre los que están parados; lo mide un test.
+5. **Cybersiberia no se tocó**, por decisión de la coordinación: hasta medir en un teléfono de verdad.
+   **Qué hacer si ahí pasa de 16 ms**, en este orden y midiendo entre uno y otro: (a) la nevisca a
+   media pantalla de alto (de 640 a 320 unidades, arriba; abajo la nieve ya está en el piso), que
+   saca la mitad de lo que se compone; (b) la nevisca a medio ritmo, como ya va el plano de fondo
+   (`mediaVuelta`); (c) alivio 2 de entrada en esa región, que apaga el haz; (d) recién al final, la
+   capa de adelante. No se saca la nieve: sin nieve no es Cybersiberia.
+6. **La pasada.** Las trece regiones a 1280×800 y a 430×860 con movimiento reducido: sin errores de
+   consola, sin desbordes, sin piezas que falten. Dos cosas vistas: lo de las velas del templo
+   (arreglado) y, con movimiento reducido, el haz de la linterna de los techos queda quieto y prendido
+   como un paño claro de borde duro en medio del baldío (previo; con menos rayones se nota más). Queda
+   anotado, sin tocar.
+
+**Tests que cambiaron a propósito:** el del canto (la opacidad pasó a `calc`). Tres nuevos.
+
+**Verde:** `npm test` 2345, `npm run check` 0 errores, `npm run build` 200 páginas.
+
+### Enmienda — octava ronda (2026-11-13): el botija en tiza, la linterna quieta, el templo medido y un paseo de recién llegado
+
+1. **El canto del botija** va en la tiza clara del muelle (`--entorno-astillero-tiza-clara`): moreno y
+   bajo una luz naranja, el canto naranja se le perdía. El haz le pega desde más lejos (`abre` 60).
+   **Visto:** de cerca (recorte ×3, o con la lupa) se distingue en la cabeza, los hombros, el bolso y
+   las zapatillas; a tamaño de teléfono el botija mide 46 unidades y el canto es un hilo: se nota que
+   está iluminado, no se lee como contorno.
+2. **La linterna de los techos con movimiento reducido** queda a un tercio (0,28 en vez de 0,85): se
+   sabe de dónde viene y no es un paño. Miradas las trece regiones quietas, no hay otra luz que haga lo
+   mismo: las de `LUCES` son formas sopladas o rayadas que quietas se leen bien.
+3. **Los que comparten el telón de los techos.** En la página de los techos, con Atila, el psicópata,
+   el gato matón y Dinamita en escena, ninguno perdió fuerza: se recortan mejor que antes. Sus retratos
+   de la ficha miden 80 píxeles y el cambio ahí no se ve. El plano no usa ese telón (lo pinta
+   `arte-mapa-oeste.ts`): no cambió. No se devolvió nada.
+4. **El templo, medido** con la CPU ×4, tres corridas, con el monte de control en la misma tanda:
+   monte 11,3 / 16,4 / 16,0 (mediana 16,0); templo 22,3 / 22,4 / 18,0 (mediana 22,3); templo pelado,
+   15,5. La máquina estaba cargada (el monte en 16, no en 10), así que el número no vale solo; la
+   proporción sí: el templo gastaba 1,4 veces el monte, y su aire 7 ms. **Se sacó el humo que baja**
+   (séptima ronda): era la segunda capa de pantalla entera y, aislada, costaba entre 2 y 5 ms. Vuelto
+   a medir, con la máquina todavía más cargada: monte 24,0, templo 26,6 (1,1 veces). Queda pendiente
+   medirlo con la máquina libre.
+5. **Las ofrendas salen de los datos de la escena** (`lib/bestiario/ofrendas.ts`): los parados son los
+   títeres del elenco del templo (su ancla) y los vecinos que pisan el piso (`VECINOS_DEL_TEMPLO`),
+   corridos con `marcoDelRecinto`. Las velas van en los huecos, y nunca en el cruce. Quedó una tanda
+   de cinco velas abajo del medallón y tres grupos atrás: menos que en la séptima ronda, porque los
+   márgenes ahora son los de los datos y no los de una medición a ojo. El test guarda también las
+   posiciones medidas en la página, como control independiente.
+6. **El paseo de alguien que llega** (430×860, sin nada guardado; capturas en el informe). Lo que
+   frenó o confundió, sin arreglar:
+   - En el plano, el mapa arranca debajo del pliegue: lo primero que se ve es el cartel y medio mapa.
+   - Tocando el medio de la zona de «El monte» se entró a la pastura: las zonas del oeste están muy
+     apretadas y el medio de una cae adentro de la otra.
+   - La primera pantalla del monte y de la pastura no tiene ningún bicho: árboles arriba y media
+     pantalla de piso oscuro abajo. El cartel «Deslizá de costado para caminar» es lo único que invita.
+   - «← Al plano» mide 35 de alto, menos que el mínimo de toque del sistema (48).
+   - El lobo caído es una silueta negra sobre piso negro y su retrato en la ficha, una mancha.
+   - Con la lupa al máximo la imagen se ve blanda: hace falta el segundo tamaño impreso.
+   - Al volver al plano el navegador tira un error de transición de vista (previo, no rompe nada).
+   - En los techos, tocando a Atila se abrió la ficha de Limón, que le corre por delante.
+
+**Tests:** el del humo y las ofrendas de la séptima ronda se reescribió (ya no hay humo que baje y
+las posiciones no están a mano); uno nuevo para la linterna quieta.
+
+**Verde:** `npm test` 2346, `npm run check` 0 errores, `npm run build` 200 páginas.
+
+### Enmienda — el velo de llegada (2026-11-13, dentro de la octava ronda)
+
+Pedido del usuario: *"una mejor transición entre las zonas, que dé tiempo a que cargue la región
+siguiente y además sea más inmersiva. Algo relacionado a la zona a la que vas."*
+
+**Qué es.** Cada página del bestiario (las trece regiones y el plano) llega **tapada por una hoja
+impresa** con la firma del lugar, y la hoja se va: para arriba, para abajo o de costado. Lo último
+que se ve es su canto roto. Las catorce firmas están en `lib/bestiario/velos.ts`: la niebla del monte
+que se levanta, la polvareda de la pastura, el mantel de la mesa, la bruma con sodio de los
+astilleros, la ventisca de Cybersiberia, las nubes violetas del árbol, el telón de trama de puntos
+del galpón, los faros de uno que pasa en la ruta, el telón de crayón de los techos, la reja de la
+prisión que se corre, el humo de las brasas del infierno, el agua del bajo que baja, el humo del
+incienso del templo, y la hoja de papel de la imprenta en el plano. Se pintan en `arte-velos.ts`,
+con la mano de cada tapa (soplado con grano, crayón, gubia o tinta plana), y las imprime la imprenta.
+
+**La vía elegida, y las descartadas.** El velo es **de la página a la que se llega**: está en su
+HTML, tapa desde el primer cuadro y se retira con una animación de CSS de 900 ms
+(`--duracion-velo`; el primer quinto quieto, que es lo que dura el fundido de `ADR-03`, y después se
+va). **Sin JavaScript.** Sobre el fundido entre documentos que ya había, se lee así: la pantalla
+vieja se funde en la niebla de la nueva, y la niebla se levanta.
+
+- *Un velo que tapa al tocar el cartel y espera a la página siguiente*: necesita interceptar el toque
+  y demorar la navegación. Alarga la espera, y si la isla falla deja a alguien mirando un velo.
+  `ADR-03` ya había decidido que el paso entre pantallas no tiene JavaScript.
+- *El velo como pieza de la transición de vista* (`view-transition-name`): la captura no espera a
+  que la imagen cargue y depende de cómo cada navegador captura algo que después hay que esconder.
+  Y no anda donde no hay transiciones entre documentos. La animación de CSS anda en todos.
+
+**Lo que cumple y lo que no.**
+- No alarga la espera: no frena nada (`pointer-events: none`); se puede caminar con el velo yéndose.
+- Tope: 900 ms. Con la curva de la casa, a los 300 ms ya dejó ver media pantalla.
+- Si algo falla, la navegación funciona igual: si la imagen del velo no llegó, no se ve nada y listo.
+- Con movimiento reducido es un corte: el token vale cero y la hoja arranca afuera y escondida.
+- Vale para la entrada desde el plano, entre regiones y para la vuelta al plano. También al llegar
+  de afuera con un enlace: la primera vez también se ve.
+- **No espera a que la región esté lista**: son 900 ms fijos. Dar tiempo, da; saber si alcanzó, no.
+  Eso pedía JavaScript y se eligió no ponerlo. Para ayudar, cada página pide su velo antes que nada
+  (`preload`) y los de adonde se puede ir desde ella, de antemano y sin apuro (`prefetch`).
+- La página incrustada en X (`/en-x/bestiario/`) abre sin errores; adentro de X no se probó.
+
+**Peso.** 469 kB entre los catorce; cada uno, menos de 60. Una región pide el suyo y los de sus
+vecinas; el plano pide el suyo y, sin apuro, los trece (unos 420 kB que antes no pedía).
+
+**Visto:** las catorce a mitad de camino en el teléfono emulado, dos a 1280×800, y una navegación de
+verdad (del monte a la pastura por el cartel del cruce, y de ahí al plano) con y sin movimiento
+reducido. No se vio en un teléfono, ni con la red lenta.
+
+**Tests:** `velos.test.ts` (4) y tres entradas en `movimiento.test.ts`. El token nuevo es una
+duración, no una tinta: no lleva par de contraste.
+
+**Verde:** `npm test` 2350, `npm run check` 0 errores, `npm run build` 200 páginas.
+
+### Resumen de las ocho rondas, y cómo se lee esta decisión
+
+`D-90` creció por enmiendas. Lo que quedó en pie:
+
+1. **El aire** (rondas 1 a 8): tres planos de capas impresas entre las del camino, en las trece
+   regiones, cada una con la mano de su tapa. La niebla es de jirones rasgados y se abre al paso.
+2. **La lupa** (ronda 1): pellizco, Ctrl + ruedita, doble toque, teclado y sellos, en los caminos y
+   en el plano.
+3. **El piso** (rondas 2 a 6): lo tirado, impreso adentro del piso, apoyado y en escorzo.
+4. **La luz** (rondas 2 a 8): una forma impresa por región, que se mueve y toca a los bichos, desde
+   la sexta con el canto de cada pieza.
+5. **El misterio** (rondas 2 y 3): los ojos sin dueño y lo que cruza lejos.
+6. **Los títeres** (rondas 4 a 6): miran, respiran con peso, y los que no se ven no se mueven.
+7. **El rendimiento** (rondas 3 a 6): la nevada fuera del piso, una pintada por cuadro, el descarte y
+   el alivio. Cybersiberia sigue sin llegar a los 12 ms con la CPU ×4.
+8. **El sonido del aire** (ronda 5).
+9. **El velo de llegada** (ronda 8): una hoja impresa por región que tapa al llegar y se va, sin JavaScript.
+
+Dos cosas se aprendieron por el camino y valen para lo que venga: **lo que más pesaba no era nada
+de esta decisión** (era una animación de CSS adentro de un dibujo, previa), y **cada vez que algo
+pegado a la cámara subió más que un quinto de la pantalla hubo que bajarlo**; por eso ahora lo mide
+un test en la imagen.

@@ -25,6 +25,14 @@
 /** Cuánto se agranda siempre la escena, para tener margen donde moverse sin mostrar el borde. */
 export const MARGEN = 0.06;
 
+/**
+ * A qué altura de la vista se agranda la escena, de 0 (arriba) a 1 (abajo). No en el medio: lo que
+ * agranda se lo come el cielo, que arriba igual queda debajo del tablero, y el piso casi no se corta.
+ * Agrandando desde el medio, los bichos del piso (los perros del baldío, los náufragos, el taxi)
+ * quedaban con los pies afuera de la pantalla.
+ */
+export const APOYO = 0.86;
+
 /** Los números de cada movimiento, en fracciones del alto de la vista y en grados. */
 export const CAMARA = {
   caminata: { vaiven: 0.007, bamboleo: 0.35, plena: 420 },
@@ -90,9 +98,10 @@ export interface Camara {
 
 /**
  * Una cámara nueva. `zancada`: la de los pasos de la región, en unidades de escena. `llegada`: el
- * momento en que se entra, para la asomada; sin él, no se asoma.
+ * momento en que se entra, para la asomada; sin él, no se asoma. `apoyo`: a qué altura agranda
+ * (`APOYO`), para el tramo que tiene algo importante bien arriba.
  */
-export function crearCamara(zancada: number, llegada: number | null = null): Camara {
+export function crearCamara(zancada: number, llegada: number | null = null, apoyo: number = APOYO): Camara {
   let fase = 0;
   let velocidad = 0;
   let sentido = 0;
@@ -129,8 +138,9 @@ export function crearCamara(zancada: number, llegada: number | null = null): Cam
       velocidad *= Math.max(0, 1 - dt * 4);
       const anda = suave(velocidad / C.caminata.plena);
 
-      // 1. La caminata: dos topes por vuelta (un paso de cada pie) y el bamboleo de lado a lado.
-      let y = -Math.abs(Math.sin(fase)) * C.caminata.vaiven * alto * anda;
+      // 1. La caminata: dos topes por vuelta (un paso de cada pie) y el bamboleo de lado a lado. El
+      // vaivén baja la escena, para el lado donde sobra margen (`APOYO`).
+      let y = Math.abs(Math.sin(fase)) * C.caminata.vaiven * alto * anda;
       let giro = Math.sin(fase) * C.caminata.bamboleo * anda;
 
       // 2. La inercia: el resorte persigue el adelanto que pide la velocidad.
@@ -157,7 +167,7 @@ export function crearCamara(zancada: number, llegada: number | null = null): Cam
 
       // 6. El acercarse: entra, se queda y sale; escala alrededor del punto tocado.
       let ox = ancho / 2;
-      let oy = alto / 2;
+      let oy = alto * apoyo;
       if (cerca) {
         const A = C.acercarse;
         const u = t - cerca.desde;
@@ -166,7 +176,7 @@ export function crearCamara(zancada: number, llegada: number | null = null): Cam
         else {
           // El punto de giro se corre hacia lo tocado en la misma medida en que se arrima.
           ox += (cerca.x - ancho / 2) * k;
-          oy += (cerca.y - alto / 2) * k;
+          oy += (cerca.y - alto * apoyo) * k;
           escala += A.cuanto * k;
         }
       }
@@ -182,22 +192,38 @@ export function crearCamara(zancada: number, llegada: number | null = null): Cam
       }
 
       // Nunca más corrimiento que el margen que da la escala, descontado lo que se come el giro.
-      const sobraX = ((escala - 1) * ancho) / 2 - Math.abs(Math.sin((giro * Math.PI) / 180)) * alto * 0.5;
-      const sobraY = ((escala - 1) * alto) / 2 - Math.abs(Math.sin((giro * Math.PI) / 180)) * ancho * 0.5;
+      // Para abajo hay tanto margen como agranda la escena por encima de `oy`; para arriba, por debajo.
+      const seno = Math.abs(Math.sin((giro * Math.PI) / 180));
+      const sobraX = ((escala - 1) * ancho) / 2 - seno * alto * 0.5;
+      const sobraArriba = (escala - 1) * oy - seno * ancho * 0.5;
+      const sobraAbajo = (escala - 1) * (alto - oy) - seno * ancho * 0.5;
       x = Math.max(-Math.max(0, sobraX), Math.min(Math.max(0, sobraX), x));
-      y = Math.max(-Math.max(0, sobraY), Math.min(Math.max(0, sobraY), y));
+      y = Math.max(-Math.max(0, sobraAbajo), Math.min(Math.max(0, sobraArriba), y));
       return { x, y, giro, escala: Math.max(1 + MARGEN * 0.5, escala), ox, oy };
     },
   };
 }
 
-/** El encuadre como `transform` de CSS para una capa cuya esquina está en `(capaX, 0)` de la vista. */
-export function transformDe(e: Encuadre, capaX: number, corrida: number): string {
+/**
+ * La lupa (`lib/bestiario/lupa.ts`) y el corrimiento propio de una capa, como `transform` de CSS: lo
+ * que va adentro de todo. `corrida` y `baja` se miden en píxeles sin agrandar.
+ */
+export function corridaDe(corrida: number, z = 1, baja = 0): string {
+  const mover = `translate3d(${corrida.toFixed(1)}px, ${baja === 0 ? '0' : `${baja.toFixed(1)}px`}, 0)`;
+  return z === 1 ? mover : `scale(${z.toFixed(4)}) ${mover}`;
+}
+
+/**
+ * El encuadre como `transform` de CSS para una capa cuya esquina está en `(capaX, 0)` de la vista.
+ * `z` es la lupa y `baja` lo que la capa se corre para abajo (la lupa mirando más abajo, o el aire
+ * que cae); sin ellos, el encuadre de siempre.
+ */
+export function transformDe(e: Encuadre, capaX: number, corrida: number, z = 1, baja = 0): string {
   // Alrededor del punto (ox, oy) de la vista: se lleva la capa a ese origen, se gira y escala, y se
   // vuelve. `corrida` es el paralaje de la capa, que va adentro de todo.
   const ox = e.ox - capaX;
   return (
     `translate(${(ox + e.x).toFixed(1)}px, ${(e.oy + e.y).toFixed(1)}px) rotate(${e.giro.toFixed(3)}deg) ` +
-    `scale(${e.escala.toFixed(4)}) translate(${(-ox).toFixed(1)}px, ${(-e.oy).toFixed(1)}px) translate3d(${corrida.toFixed(1)}px, 0, 0)`
+    `scale(${e.escala.toFixed(4)}) translate(${(-ox).toFixed(1)}px, ${(-e.oy).toFixed(1)}px) ${corridaDe(corrida, z, baja)}`
   );
 }

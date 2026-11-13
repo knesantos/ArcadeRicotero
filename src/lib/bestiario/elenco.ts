@@ -66,6 +66,16 @@ import { AHOGADO_PERSONAJE } from './arte-ahogado.ts';
 import { PICHON_PERSONAJE } from './arte-pichon.ts';
 import { MANTIS_PERSONAJE } from './arte-mantis.ts';
 import { CIELO_PERSONAJE } from './arte-cielo.ts';
+import { GARUFA_PERSONAJE } from './arte-garufa.ts';
+import { JOVEN_PERSONAJE } from './arte-joven.ts';
+import { REO_PERSONAJE } from './arte-reo.ts';
+import { MOSCON_PERSONAJE } from './arte-moscon.ts';
+import { OVEJERO_PERSONAJE } from './arte-ovejero.ts';
+import { RANA_PERSONAJE } from './arte-rana.ts';
+import { BORREGO_PERSONAJE } from './arte-borrego.ts';
+import { LIEBRE_PERSONAJE } from './arte-liebre.ts';
+import { TAXI_PERSONAJE } from './arte-taxi.ts';
+import { POLIZON_PERSONAJE } from './arte-polizon.ts';
 
 export type Nombres = ReadonlyMap<string, string>;
 
@@ -109,7 +119,7 @@ export interface Personaje {
  * Los lugares, en el orden del recorrido: los diez de la decimoquinta vuelta y los tres de la
  * decimosexta. `null` es que todavía son ojos en lo oscuro.
  */
-const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA, VERDUGO_CENA, SATURNO_DOCTOR, TU_ANIMAL, DINAMITA, ZIPPO_PERSONAJE, VELOZ_PERSONAJE, FUMADOR_PERSONAJE, COLGADO_PERSONAJE, DESENCARNADA, ENCADENADO_PERSONAJE, MATON_PERSONAJE, AMORCITO_PERSONAJE, SIRENAS_PERSONAJE, MANDINGA_PERSONAJE, ALIEN_PERSONAJE, CHIVATO_PERSONAJE, GALLOS_PERSONAJE, ANGUILA_PERSONAJE, LECHUZA_PERSONAJE, ANZUELO_PERSONAJE, PIBA_PERSONAJE, LOBAS_PERSONAJE, CUERNOS_PERSONAJE, SAPITO_PERSONAJE, RAPAZ_PERSONAJE, RATON_PERSONAJE, POLILLA_PERSONAJE, BOTIJA_PERSONAJE, JOCKER_PERSONAJE, REY_PERSONAJE, AHOGADO_PERSONAJE, PICHON_PERSONAJE, MANTIS_PERSONAJE, CIELO_PERSONAJE];
+const LUGARES: ReadonlyArray<Personaje | null> = [BESTIA_POP, MONITO, BUSCAPINA, PIBE, CANIBAL, PONTIAC, DIABLO, RATO, MORTA, ESCLAVO, HIJA, PSICOPATA, PORCO, ANGEL, PACMAN, MOSCA, VERDUGO_CENA, SATURNO_DOCTOR, TU_ANIMAL, DINAMITA, ZIPPO_PERSONAJE, VELOZ_PERSONAJE, FUMADOR_PERSONAJE, COLGADO_PERSONAJE, DESENCARNADA, ENCADENADO_PERSONAJE, MATON_PERSONAJE, AMORCITO_PERSONAJE, SIRENAS_PERSONAJE, MANDINGA_PERSONAJE, ALIEN_PERSONAJE, CHIVATO_PERSONAJE, GALLOS_PERSONAJE, ANGUILA_PERSONAJE, LECHUZA_PERSONAJE, ANZUELO_PERSONAJE, PIBA_PERSONAJE, LOBAS_PERSONAJE, CUERNOS_PERSONAJE, SAPITO_PERSONAJE, RAPAZ_PERSONAJE, RATON_PERSONAJE, POLILLA_PERSONAJE, BOTIJA_PERSONAJE, JOCKER_PERSONAJE, REY_PERSONAJE, AHOGADO_PERSONAJE, PICHON_PERSONAJE, MANTIS_PERSONAJE, CIELO_PERSONAJE, GARUFA_PERSONAJE, JOVEN_PERSONAJE, REO_PERSONAJE, MOSCON_PERSONAJE, OVEJERO_PERSONAJE, RANA_PERSONAJE, BORREGO_PERSONAJE, LIEBRE_PERSONAJE, TAXI_PERSONAJE, POLIZON_PERSONAJE];
 
 /** Los que ya tienen títere. */
 export const ELENCO: readonly Personaje[] = LUGARES.filter((p): p is Personaje => p !== null);
@@ -148,11 +158,12 @@ export function capasDe(region: string, capa: Capa, nombres: Nombres, k = 1, sol
  * los tramos largos del camino (el monte), donde el recinto no se estira con `k`: cada personaje se corre
  * entero adonde lo esperaban sus ojos en el tramo.
  */
-export function capasCorridas(region: string, capa: Capa, nombres: Nombres, dxDe: (p: Personaje) => number): string {
+export function capasCorridas(region: string, capa: Capa, nombres: Nombres, dxDe: (p: Personaje) => number, dyDe: (p: Personaje) => number = () => 0): string {
   return ELENCO.filter((p) => p.region === region && p.capas[capa])
     .map((p) => {
       const dx = Math.round(dxDe(p));
-      const corre = dx ? ` transform="translate(${f(dx)} 0)"` : '';
+      const dy = Math.round(dyDe(p));
+      const corre = dx || dy ? ` transform="translate(${f(dx)} ${f(dy)})"` : '';
       return `<g data-marco="${p.id}" data-capa="${capa}" data-dx="${dx}"${corre}>${p.capas[capa]!(nombres)}</g>`;
     })
     .join('');
@@ -239,4 +250,18 @@ export const LUGAR_EN_EL_ELENCO: Readonly<Record<string, string>> = {
   'el-pichon': 'la-prision',
   'el-club-de-mantis': 'la-mesa',
   'el-que-no-se-cayo-del-cielo': 'los-techos',
+  // La vigesimosexta: cinco que seguían sin diseño, uno por región flaca de títeres: Cybersiberia, el monte, la prisión, la
+  // mesa y la pastura, que no tenía ninguno del elenco.
+  'el-rey-garufa': 'cybersiberia',
+  'el-joven-lobo': 'el-monte',
+  'el-reo-semental': 'la-prision',
+  'el-moscon-zumbon': 'la-mesa',
+  'el-ovejero': 'la-pastura',
+  // La vigesimoséptima: cinco que seguían siendo ojos en lo oscuro o una silueta pintada, que dibujó un subagente por
+  // encargo del hilo principal, cada uno en una región distinta: los astilleros, la pastura, el monte, la ruta y el bajo.
+  'la-rana-rubia': 'los-astilleros',
+  'el-borrego': 'la-pastura',
+  'la-liebre-muerta': 'el-monte',
+  'el-taxi-paranormal': 'la-ruta',
+  'el-polizon-del-remolque': 'el-bajo',
 };

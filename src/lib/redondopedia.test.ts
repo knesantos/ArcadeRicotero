@@ -177,7 +177,7 @@ test('BR-34 §3: las siete aristas de entrada a las bandas', () => {
 });
 
 test('BR-34 §5: los discos de las bandas no son artículos disco — el afiche sigue contando diez', () => {
-  // `discosDeOktubre()` cuenta como total todo artículo `disco`: un disco de los Fakires
+  // `fechasDelMes()` cuenta como total todo artículo `disco`: un disco de los Fakires
   // haría decir al afiche "de los once discos".
   assert.equal(articulos.filter((a) => a.tipo === 'disco').length, 10);
 });

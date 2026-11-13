@@ -176,7 +176,7 @@ export interface Pose {
 }
 
 /** Cuánto gira la cola: colgada sobre el culo (0) o levantada al costado para el equilibrio. */
-export const COLA = { tapa: 0, levantada: -138, rulo: { tapa: 0, levantada: -28 } } as const;
+export const COLA = { tapa: 0, levantada: -116, rulo: { tapa: 0, levantada: -40 } } as const;
 /** Cuánto baja y crece el culo pelado, tapado y destapado: abajo queda entero debajo del pelo. */
 export const CULO = { baja: [-14, 10] as Punto, crece: [0.78, 1.1] as Punto } as const;
 

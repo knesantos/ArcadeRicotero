@@ -380,10 +380,15 @@ test('voz 4.1: la linea grande no pasa de ocho palabras', () => {
       (r) => [[`región ${r.id}`, r.nombre], [`región ${r.id} canta`, r.canta]] as Array<[string, string]>,
     ),
     ...Object.entries(masOMenos.TRAMOS).map(([k, v]) => [`más o menos tramo ${k}`, v] as [string, string]),
-    // `D-49`: el afiche de octubre. El sello y la que canta son línea grande; el botón también.
-    ['oktubre.sello', sitio.OKTUBRE.sello],
-    ['oktubre.canta', sitio.OKTUBRE.canta],
-    ['oktubre.jugar', sitio.OKTUBRE.jugar],
+    // `D-84`: el almanaque del portal. Por mes, el sello y la que canta son línea grande; el botón también.
+    ...sitio.ALMANAQUE.flatMap(
+      (a) =>
+        [
+          [`afiche ${a.mes} sello`, a.sello],
+          [`afiche ${a.mes} canta`, a.canta],
+          [`afiche ${a.mes} botón`, a.boton.texto],
+        ] as Array<[string, string]>,
+    ),
   ];
   const largos = grandes
     .filter(([, texto]) => texto.trim().split(/\s+/).length > 8)

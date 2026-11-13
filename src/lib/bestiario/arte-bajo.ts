@@ -760,21 +760,13 @@ function bajoAgua(): string {
   );
 }
 
-/** Lo que flota adelante: un bote dado vuelta, una silla, una botella vacía y unos papeles. */
+/** Lo que flota adelante: una silla, una botella vacía y unos papeles. El bote dado vuelta es del polizón (`arte-polizon.ts`). */
 function bajoFrente(): string {
   const { ancho, alto } = ESCENA_BAJO;
-  const bote = 'M24 600 C40 566 200 560 236 590 L230 606 C180 598 80 600 30 612 Z';
   const silla = 'M772 528 L780 528 L782 600 L774 600 Z M820 524 L828 524 L830 600 L822 600 Z M776 536 L826 532 L826 546 L776 550 Z M776 560 L826 556 L826 566 L776 570 Z';
   return (
     `<g filter="url(#rociado)">` +
-    // El bote: madera rayada y el canto de la quilla. Abajo, a oscuras, se esconde el polizón.
-    forma(bote, B.noche) +
-    `<clipPath id="bf-bote"><path d="${bote}"/></clipPath><g clip-path="url(#bf-bote)">` +
-    rayado([24, 560, 236, 612], 90, [B.rosa, B.violeta, B.noche], 1501, { angulo: 4, largo: [14, 40], grueso: [2, 3.6], temblor: 0.05 }) +
-    `</g>` +
-    fibra([[24, 600], [40, 572], [120, 562], [200, 566], [236, 590]], 3.4, 1502) +
-    fibra([[40, 570], [120, 559], [196, 563]], 1.8, 1507, B.llama) +
-    fibra([[60, 590], [130, 582], [204, 586]], 1.8, 1503) +
+    // El bote dado vuelta ya no se pinta acá: es del polizón del remolque, un títere del elenco (`arte-polizon.ts`).
     // La silla, con el respaldo afuera del agua: se corrió con el escenario.
     `<g transform="translate(${CORRE_ESCENARIO} 0)">${forma(silla, B.negro)}${fibra([[776, 600], [778, 528]], 2.4, 1504, B.rosa)}</g>` +
     // La botella vacía que flota acostada, y un papel con algo escrito que ya no se lee.

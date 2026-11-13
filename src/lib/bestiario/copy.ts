@@ -16,6 +16,17 @@ export const BESTIARIO = {
   plano: 'El plano del recorrido',
   /** El sello del plano en la entrada (`D-79`): donde está parada la gente, del lado del molinete. */
   estasAca: 'ESTÁS ACÁ',
+  /**
+   * La lupa (`D-90`), en el plano y en los caminos. Registro 3: dicen qué hacen y se callan. Los dos
+   * primeros son el nombre de los botones `+` y `−`; el tercero es la vuelta, que aparece con la
+   * lupa puesta.
+   */
+  lupa: {
+    grupo: 'La lupa',
+    acercar: 'Acercate',
+    alejar: 'Alejate',
+    todo: 'Mirá todo',
+  },
   alPlano: 'Tocá una región del plano y entrás caminando. Abajo están los recintos, uno detrás del otro.',
   recinto: (n: number): string => `RECINTO ${n}`,
   recintoMonte: 'El monte del lobo y la pastura',
