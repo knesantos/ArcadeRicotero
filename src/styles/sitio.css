@@ -5441,11 +5441,50 @@ body:has(> .lugar) .marca-chica {
 .titere--borrego { cursor: pointer; }
 /* ⟨/el borrego⟩ */
 
+/* ⟨el rebano⟩ */
+/* Se toca entero: las tres ovejas, la veleta y la bolsa. El pasto pisado también, que agranda el blanco para el dedo. */
+.titere--rebano { cursor: pointer; }
+/* ⟨/el rebano⟩ */
+
+/* ⟨el lobo caido⟩ */
+/* Se toca entero: el lobo, la trompetilla y la rodilla de los tantos. El otro lobo que cruza detras no se toca. */
+.titere--lobocaido { cursor: pointer; }
+.titere--lobocaido [data-parte="paso"] { pointer-events: none; }
+/* ⟨/el lobo caido⟩ */
+
+/* ⟨los redonditos de ricota⟩ */
+/* Se toca entera: la fuente, el vapor y las pinzas. La silla de Patricio Rey, al lado, es otra cosa. */
+.titere--bunuelos { cursor: pointer; }
+/* ⟨/los redonditos de ricota⟩ */
+
+/* ⟨los buitres de la tele⟩ */
+/* Se tocan los dos: los buitres, las servilletas, los cubiertos y el travesaño. La chispa no se toca. */
+.titere--buitres { cursor: pointer; }
+.titere--buitres [data-parte="chispa"] { pointer-events: none; }
+/* ⟨/los buitres de la tele⟩ */
+
 /* ⟨la rana rubia⟩ */
 /* La mosca que le da vueltas y la lengua que le tira no se tocan: el toque es de la rana y de su reposera. */
 .titere--rana { cursor: pointer; }
 .titere--rana [data-parte="mosca"], .titere--rana [data-parte="lengua"] { pointer-events: none; }
 /* ⟨/la rana rubia⟩ */
+
+/* ⟨el heroe del whisky⟩ */
+/* El humo del escape, el haz y los arcos del ladrido no se tocan: el toque es del fierro, que viaja con todo adentro. */
+.heroe-del-whisky [data-parte="humo-1"], .heroe-del-whisky [data-parte="humo-2"], .heroe-del-whisky [data-parte="ladrido"] { pointer-events: none; }
+/* ⟨/el heroe del whisky⟩ */
+
+/* ⟨el angelito frito⟩ */
+/* El humo, la tos y las chispas no se tocan: el toque es del angelito y de su aureola. */
+.titere--angelito { cursor: pointer; }
+.titere--angelito [data-parte="humo-1"], .titere--angelito [data-parte="humo-2"], .titere--angelito [data-parte="humo-3"], .titere--angelito [data-parte="tos"], .titere--angelito [data-parte="chispas"], .titere--angelito [data-parte="esqueleto"], .titere--angelito [data-parte="craneo"] { pointer-events: none; }
+/* ⟨/el angelito frito⟩ */
+
+/* ⟨la hormiga dormida⟩ */
+/* Las zetas, la gota y la burbuja no se tocan: el toque es de la hormiga, del membrillo y de la camisa. */
+.titere--hormiga { cursor: pointer; }
+.titere--hormiga [data-parte="zzz"], .titere--hormiga [data-parte="gota"], .titere--hormiga [data-parte="burbuja"] { pointer-events: none; }
+/* ⟨/la hormiga dormida⟩ */
 
 /* ⟨el taxi paranormal⟩ */
 /* El haz del faro, el doble fuera de foco y las pompas del escape no se tocan: el toque es del fierro. */
@@ -5458,3 +5497,21 @@ body:has(> .lugar) .marca-chica {
 .titere--polizon { cursor: pointer; }
 .titere--polizon [data-parte="ondas"], .titere--polizon [data-parte="resplandor"], .titere--polizon [data-parte="fosforo"] { pointer-events: none; }
 /* ⟨/el polizon del remolque⟩ */
+
+/* ⟨los naufragos⟩ */
+/* Las ondas, el rayo, el estornudo y las burbujas no se tocan: el toque es de los dos que asoman, de la bomba y de la multitud. */
+.titere--nau { cursor: pointer; }
+.titere--nau [data-parte="ondas"], .titere--nau [data-parte="rayo"], .titere--nau [data-parte="gotas"], .titere--nau [data-parte="burbuja"], .titere--nau [data-parte="humo"] { pointer-events: none; }
+/* ⟨/los naufragos⟩ */
+
+/* ⟨mister ed y huesito⟩ */
+/* Las burbujas de jabón no se tocan: el toque es del caballo, del tambor, del esqueleto y de la red. */
+.titere--ed { cursor: pointer; }
+.titere--ed [data-parte^="burbuja"] { pointer-events: none; }
+/* ⟨/mister ed y huesito⟩ */
+
+/* ⟨las almejas⟩ */
+/* Los chorros, el vapor de la sopa y la perla no se tocan: el toque es del balde, de las almejas y del plato. */
+.titere--almejas { cursor: pointer; }
+.titere--almejas [data-parte^="chorro"], .titere--almejas [data-parte^="vapor"], .titere--almejas [data-parte="perla"] { pointer-events: none; }
+/* ⟨/las almejas⟩ */

@@ -148,7 +148,7 @@
       "tam": 40,
       "dibujo": { "f": "cosa", "que": "bunuelos" },
       "articulo": "la-formacion",
-      "estampa": "Una fuente de buñuelos al lado de la silla. Son los que le dieron el apellido a la banda, y en la estampa están para que agarre el que pase.",
+      "estampa": "Una fuente de buñuelos servida en la mesita de la silla vacía, todavía humeante, con la receta de Patricia apoyada contra el plato y unas pinzas para el que quiera. Son los que le dieron el apellido a la banda, y están para que agarre el que pase. Tocada, te ofrece uno.",
       "cuenta": [
         { "rotulo": "hecho", "texto": "El nombre salió de la receta de unos buñuelos redondos de ricota, de un libro de la ecónoma Patricia Rey: la fuente dice Patricia, la banda dijo Patricio.", "fuente": "RES-05" }
       ],
@@ -334,7 +334,7 @@
       "dibujo": { "f": "persona", "con": ["alas", "humo"], "ropa": "tunica" },
       "tema": "estas-frito-angelito",
       "verso": ["Estas frito Angelito"],
-      "estampa": "Chamuscado, con las alas humeando. Cayó del lado del galpón.",
+      "estampa": "Cayó del lado del galpón con el enchufe todavía en la mano, y quedó frito: el pelo parado, la aureola torcida, las alas hechas hueso y brasa. Un brote del pasto quemado se le arrima al pie y él lo patea. Tocado, lo cruza la corriente otra vez.",
       "cerca": ["los-buitres-de-la-tele", "el-angel-de-la-soledad"]
     },
 
@@ -484,7 +484,7 @@
       "dibujo": { "f": "ave", "tipo": "buitre" },
       "tema": "estas-frito-angelito",
       "verso": ["hay buitres en la tele"],
-      "estampa": "Dos, arriba de una antena. Esperan.",
+      "estampa": "Dos, arriba de la antena, en un travesaño que alguien les ató. Esperan: cada uno con la servilleta metida en la gorguera, uno con el tenedor y el otro con el cuchillo, mirando la pantalla. A veces se afilan los cubiertos. Si los tocás, giran de golpe para vos.",
       "cerca": ["el-angelito-frito", "los-camellos-prestigiosos"]
     },
     {
@@ -664,7 +664,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "punta", "hocico": "largo", "cola": "peluda", "cuello": "largo", "pose": "parado-dos" },
       "tema": "lavi-rap",
       "verso": ["El morta, huesito y mister ed", "van a saltar otra vez sin red"],
-      "estampa": "Mister Ed era el caballo que hablaba en una serie de la tele, y acá se lo dibuja así: un caballo en dos patas haciendo equilibrio, sin red.",
+      "estampa": "Mister Ed, el caballo que hablaba en la tele, parado de manos sobre el tambor de un lavarropas, con el toallón del Morta y la jaula del pajarito en la pezuña. Huesito, de esqueleto, en el lomo. La red está en el piso, con un agujero. Si los tocás saltan: Huesito da dos mortales, se cae por el agujero y vuelve a subir.",
       "cerca": ["el-morta"]
     },
     {
@@ -841,7 +841,7 @@
       "dibujo": { "f": "almeja" },
       "tema": "la-hija-del-fletero",
       "verso": ["Sopa de almejas es todo lo que como"],
-      "estampa": "En el muelle, en un balde. Es lo único que come el que se quedó.",
+      "estampa": "Un balde de almejas sobre el muelle: es lo único que come el que se quedó. Al lado, el plato de lata con la sopa y la cuchara adentro, un higo seco que nadie toca y dos cartas sin abrir. Una se escapó, y la cuchara baja a buscarla. Si las tocás, cierran de golpe, tiran tres chorros y escupen una perla.",
       "cerca": ["la-hija-del-fletero", "la-mosca"]
     },
     {
@@ -958,7 +958,7 @@
       "dibujo": { "f": "persona", "pose": "flota", "ropa": "remera" },
       "tema": "cancion-para-naufragios",
       "verso": ["Ya no estás solo, estamos todos en naufragar"],
-      "estampa": "Dos cabezas asomando del agua, cerca del galpón. Nadie está solo.",
+      "estampa": "Dos cabezas asomando del agua, agarradas de la mano levantada: uno se tapa los ojos para buscar un barco, el otro espera con el tubo de un teléfono en la oreja y un reloj que marca seis minutos. A un costado flota una bomba que es un globo. Si los tocás cae el rayo y atrás se ve la multitud, con los brazos para arriba.",
       "cerca": ["el-polizon-del-remolque"]
     },
     {
@@ -1473,7 +1473,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "caidas", "hocico": "largo", "cola": "peluda", "pose": "echado" },
       "tema": "el-lobo-caido",
       "verso": ["Dije que el lobo estaba sordo", "Que no escuchaba más."],
-      "estampa": "Tirado entre las raíces, con las orejas gachas. No oye ni al otro lobo, que le pasa por al lado.",
+      "estampa": "Un lobo viejo, tirado entre las raíces, con una trompetilla atada a la oreja y sin oír nada: ni al otro lobo, el de plata, que cada tanto le pasa por detrás. Marca tantos con la uña en una raíz y se duerme antes de terminar. Si lo tocás no se entera; después levanta la cabeza y grita sin voz.",
       "cerca": ["el-lobo-suelto", "las-antiguas-lobas"]
     },
     {
@@ -1615,7 +1615,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "caidas", "hocico": "corto", "cola": "corta", "lana": true },
       "tema": "el-pibe-de-los-astilleros",
       "verso": ["Esos tipos soplan con el viento", "Al rebaño y su temor"],
-      "estampa": "Amontonado en la punta que da lejos del monte, con miedo de todo lo que sopla.",
+      "estampa": "Tres ovejas amontonadas en la punta de la pastura, lejos del monte, alrededor de una veleta de gallo de lata y de una bolsa de nailon que aletea enganchada. Soplan con el viento: miran para donde sople, cada una un poco más tarde. Tocadas, saltan juntas, sueltan lana y se vuelven a apretar, más.",
       "cerca": ["el-ovejero"]
     },
     {
@@ -1768,7 +1768,7 @@
       "dibujo": { "f": "bicho", "tipo": "hormiga", "pose": "duerme" },
       "tema": "cana-seca-y-un-membrillo",
       "verso": ["Negrita yace asustada", "La hormiga se le durmió"],
-      "estampa": "Dormida en el mantel, panza arriba, al lado de un membrillo.",
+      "estampa": "Duerme panza arriba en el mantel, con la cabeza en un dedal de caña y el gorro puesto, al lado del membrillo. Ronca una burbuja que a veces revienta, la pata que le cuelga se le durmió y sus zapatillas de baile están tiradas. Tocada, baila de espaldas hasta el fin.",
       "cerca": ["las-hormigas"]
     },
     {
@@ -1880,7 +1880,7 @@
       "dibujo": { "f": "maquina", "que": "camion" },
       "tema": "heroe-del-whisky",
       "verso": ["Y regresará a su ciudad, En la caja de un camión", "Un héroe del whisky más, el perro se hace notar"],
-      "estampa": "Vuelve a su ciudad tirado en la caja de un camión, con las estrellas ahí nomás.",
+      "estampa": "Vuelve a su ciudad tirado en la caja de un camión, con el menú de Tony Soirée calado hasta las cejas. Las estrellas cuelgan de una caña, a una mano de su mano, y nunca llega. La botella está vacía. El perro, sentado al lado, se hace notar.",
       "cerca": ["el-zumba", "la-bestia-pop"]
     },
     {
