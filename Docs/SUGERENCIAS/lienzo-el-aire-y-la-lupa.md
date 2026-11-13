@@ -37,3 +37,16 @@ Capturas de referencia: las de la entrada de `ESTADO.md` de `T-527` (carpeta tem
     tinta de luz de cada región en las demás. No llevan aro ni resplandor.
 11. **El canto prendido** de una silueta contra la luz es un filo duro de un solo lado, nunca la
     silueta soplada entera (eso es un halo).
+
+## Tercera ronda (2026-11-13)
+
+12. **El aire viste la mano de la región.** Aerógrafo con grano donde la tapa es aerógrafo. En los
+    recintos de otro disco, la suya: **rayado de crayón** con el borde corrido de la fotocopia (el
+    bajo, los techos) y **rayado de gubia**, blanco de filo duro (la prisión). Nunca un soplo sobre
+    la madera tallada.
+13. **Lo pegado a la cámara tiene tope**: de la mitad de la pantalla para abajo, y ninguna pieza más
+    ancha que un décimo de un teléfono parado si sube más que eso. La excepción son los barrotes de
+    la prisión, que van de arriba abajo porque son finos (13 unidades) y separados.
+14. **Lo que cruza lejos** es una silueta de filo, chica, en la tinta de luz de la región. De a una.
+15. **El alivio**: si el teléfono no da, se apaga primero la bruma de atrás y después la luz. La
+    niebla del medio y lo de cerca, nunca.

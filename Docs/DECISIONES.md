@@ -7203,3 +7203,79 @@ de atrás), no atados a una mata en particular de la capa `cerca`, que pasa vola
 Como solo existen con la cámara quieta, no se nota; atarlos a la mata queda para cuando haga falta.
 
 `aire.test.ts` pasa de 10 a 15. `npm test` 2318, `npm run check`, `npm run build` (200 páginas).
+
+### Enmienda — tercera ronda (2026-11-13): rendimiento medido, cuatro regiones más y lo que cruza lejos
+
+**Lo que se midió.** Edge sin ventana (sin GPU: el pintado es por software), teléfono emulado de
+430×860 a densidad 2, CPU estrangulada ×4, ocho segundos caminando. Hilo principal por cuadro, y
+cuadros por segundo:
+
+| Camino | Antes de la ronda | Sin aire, luz ni vida | Al cerrar la ronda |
+|---|---|---|---|
+| Cybersiberia | 23,4 ms · **12 c/s** | 24,5 ms · 13 c/s | 15,7 ms · **54 c/s** |
+| El monte | 15,9 ms · 59 c/s | 12,5 ms · 60 c/s | 13,1 ms · 60 c/s |
+
+- **Cybersiberia andaba a 12 cuadros por segundo y el aire no tenía nada que ver** (sin él daba 13).
+  Era la nevada, que es previa: dos copias de los copos adentro del dibujo del piso, bajando con una
+  animación de CSS. Cada cuadro obligaba a repintar el piso entero. **Ahora la nevada es una capa de
+  aire** (la misma pieza `cyber-nieve`, marcada `ajena`): la mueve el compositor, cae lo mismo que
+  caía (640 unidades en 16 s) y el camino pasa a 51 cuadros por segundo. El recinto de la página
+  del bestiario conserva la suya.
+- **Las capas se pintaban dos veces por cuadro** (al leer el scroll y después de mover la cámara),
+  y cada pintada es un estilo que el navegador recalcula. Ahora una. Con eso el monte baja de 15,9 a
+  13,1 ms y Cybersiberia de 19,5 a 15,7.
+- **Lo que cuestan el aire, la luz y la vida**: 2,4 ms por cuadro con la CPU ×4 en los dos caminos
+  (13,1 contra 10,7 en el monte; 15,7 contra 13,3 en Cybersiberia), casi todo recálculo de estilo.
+- **El tope de ~12 ms no se cumple con la CPU ×4**: quedan 13,1 y 15,7. Pero la escena sola, sin
+  nada de esta decisión, ya da 10,7 y 13,3: lo que falta está en los títeres, no en el aire. Los dos
+  caminos sostienen 54 a 60 cuadros por segundo así estrangulados.
+- **El alivio** (`ALIVIO` en `aire.ts`): la isla mide tandas de cuadros (90, o dos segundos y medio)
+  y, si el promedio pasa de 28 ms, sube un escalón: en el primero se apaga lo de atrás del piso (la
+  bruma, que es lo que menos se extraña) y en el segundo la luz y lo que cruza lejos. La niebla del
+  medio y lo pegado a la cámara no se apagan nunca. Un teléfono que avisa dos núcleos o un giga de
+  memoria arranca en el primer escalón. **No se disparó en ninguna medición** (ni a 12 cuadros por
+  segundo, porque entonces la tanda tardaba más que la medición; por eso ahora tiene tope de tiempo).
+  Sin probar en un teléfono de verdad.
+
+**Arreglos de la auditoría.**
+
+- **La losa negra** del monte no era de `cerca`: era la tira alta de lo de adelante, que es previa
+  (110 de ancho, de arriba abajo; un tercio de un teléfono). Ahora mide 26 y arranca a media altura.
+  De paso, `cerca` tiene tope en las cuatro regiones: matas más bajas, tiras de 30, médanos más
+  chicos; todo arranca de la mitad para abajo, y `aire.test.ts` lo cuida.
+- **El farol de los astilleros** apoya: base abulonada al muelle, con su mancha (en el camino y en
+  el recinto).
+- **El jirón blanco** del monte bajó de tinta y de alfa. **La brasa** del infierno cambió de tinta
+  (del rojo de la brasa, que se perdía sobre el damero rojo, al naranja del fuego con corazón claro).
+- **El medio del piso del monte**: tres claros con peso (un charco grande que refleja siete tiras,
+  una raíz gorda que lo cruza, dos piedras, un costillar, una tira caída) en vez de todo salpicado
+  parejo.
+- **El cierre de los ojos, probado en el navegador**: con mouse y con dedo, se abren a los 7 u 8
+  segundos de quietud, un puntero lejos no los cierra, y uno a menos de 84 píxeles los apaga. No
+  abren ficha.
+
+**Cuatro regiones más, cada una con su mano.** La ruta es aerógrafo. Los otros tres son recintos
+que visten el disco de su tapa, y el aire la respeta: **no hay soplo ni grano donde la mano es otra**.
+
+- **La ruta**: bruma baja en el horizonte, el polvo que levantan los fierros y los pastos de la
+  banquina con algún mojón torcido. La luz son **los faros del último bondi**, que van colgados de
+  él (`sigue`) y alumbran el polvo. En la banquina, charcos que reflejan las estrellas, latas y
+  piedras. Cruza una estrella que se cae.
+- **El bajo** (crayón, *Gulp!* y la contratapa de *Un baión*): el vaho del agua es rayado de crayón,
+  con el borde corrido de la fotocopia; los juncos, de espaldas. La luz es el reflejo del pucho de
+  Pierre en el agua, una escalerita de rayas que tiembla. Los ojos miran desde el agua. Cruza un
+  barquito de papel.
+- **Los techos** (pastel, *Un baión*): hollín que cae en rayitas, la ropa tendida que se hamaca
+  (`mece`), y el farol del baldío con su cono, que titila. Los ojos son los gatos. Cruza un murciélago.
+- **La prisión** (gubia, *Oktubre*): el frío es un rayado blanco a ras del piso; lo pegado a la
+  cámara son **los barrotes, de arriba abajo**, finos y separados: se mira desde la celda de enfrente.
+  La luz es el reflector del muro, un cono de canto duro lleno de rayas, que barre. Los ojos son
+  blancos con la pupila roja. Cruza un pájaro blanco por arriba del muro: el único que sale.
+- Los recintos son una sola capa, así que **no llevan nada detrás del piso** (no se vería), ni piso
+  nuevo: su piso es el de la tapa.
+
+**Lo que cruza lejos** (`VIDAS`): de a uno, y muy cada tanto (entre 14 y 40 segundos según la
+región; la primera vez, la mitad). Un pájaro en el monte, la pastura y los astilleros, y los de
+arriba. No se toca ni dice nada. Con la lupa no cruza, y con movimiento reducido tampoco.
+
+`aire.test.ts` pasa de 15 a 21. `npm test` 2324, `npm run check`, `npm run build` (200 páginas).
