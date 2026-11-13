@@ -5033,3 +5033,91 @@ body:has(> .lugar) .marca-chica {
 .titere--ovejero { cursor: pointer; }
 .titere--ovejero [data-parte="huesos"] { pointer-events: none; }
 /* ⟨/el ovejero⟩ */
+
+/* ==========================================================================
+   El velo de llegada del bestiario (`D-90`, octava ronda; `lib/bestiario/velos.ts`)
+
+   Al entrar a una región, o al volver al plano, la página llega tapada por una hoja impresa
+   con la firma del lugar (la niebla del monte, la reja de la prisión, el telón del galpón) y
+   la hoja se va: para arriba, para abajo o de costado, y lo último que se ve es su canto roto.
+   Mientras tapa, la región carga sus piezas atrás.
+
+   Es de la página a la que se llega y no tiene JavaScript, como manda `ADR-03` para el paso
+   entre pantallas: si la isla falla, el velo se va igual. No frena nada (`pointer-events:
+   none`): quien quiera caminar ya puede. Solo `transform`; lo soplado está impreso.
+
+   Con movimiento reducido `--duracion-velo` vale cero y el relleno `both` la deja en su último
+   cuadro, afuera y escondida: es un corte.
+   ========================================================================== */
+
+.velo-de-llegada {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 80;
+  width: 100vw;
+  height: 100vh;
+  height: 100lvh;
+  pointer-events: none;
+  background: var(--velo) 0 0 / 100% 100% no-repeat;
+  animation-duration: var(--duracion-velo);
+  animation-timing-function: var(--curva-cinta);
+  animation-fill-mode: both;
+}
+
+/* La hoja es más larga que la pantalla (`--sobra`): lo que sobra es el canto que arrastra. */
+.velo-de-llegada[data-rumbo='sube'] {
+  height: calc(100vh * var(--sobra));
+  height: calc(100lvh * var(--sobra));
+  animation-name: velo-sube;
+}
+
+.velo-de-llegada[data-rumbo='baja'] {
+  top: calc(100vh * (1 - var(--sobra)));
+  top: calc(100lvh * (1 - var(--sobra)));
+  height: calc(100vh * var(--sobra));
+  height: calc(100lvh * var(--sobra));
+  animation-name: velo-baja;
+}
+
+.velo-de-llegada[data-rumbo='corre'] {
+  width: calc(100vw * var(--sobra));
+  animation-name: velo-corre;
+}
+
+/* Tapa quieta el primer quinto, que es lo que dura el fundido entre las dos pantallas, y después se va. */
+@keyframes velo-sube {
+  0%,
+  22% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, -100%, 0);
+    visibility: hidden;
+  }
+}
+
+@keyframes velo-baja {
+  0%,
+  22% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 100%, 0);
+    visibility: hidden;
+  }
+}
+
+@keyframes velo-corre {
+  0%,
+  22% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(-100%, 0, 0);
+    visibility: hidden;
+  }
+}

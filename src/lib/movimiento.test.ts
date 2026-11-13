@@ -197,6 +197,11 @@ const ANIMACIONES = [
   // terminan de apoyar; la hoja de la ficha baja los últimos píxeles. Un solo token los apaga.
   { nombre: 'sello-apoya', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/sitio.css' },
   { nombre: 'hoja-apoya', apaga: 'token', valor: '--duracion-sello', hoja: 'src/styles/sitio.css' },
+  // El velo de llegada del bestiario (`D-90`, octava ronda): tapa y se va, una sola vez por página.
+  // Con el token en cero queda en su último cuadro, afuera y escondido.
+  { nombre: 'velo-sube', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
+  { nombre: 'velo-baja', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
+  { nombre: 'velo-corre', apaga: 'token', valor: '--duracion-velo', hoja: 'src/styles/sitio.css' },
 ] as const;
 
 test('no hay ninguna animacion que esta lista no conozca', () => {

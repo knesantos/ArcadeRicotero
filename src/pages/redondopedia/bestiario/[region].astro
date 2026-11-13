@@ -42,6 +42,7 @@ import { destinosDelCruce, HORIZONTE, PIEZAS_CAMINO } from '../../../lib/bestiar
 import { rutaDePieza } from '../../../lib/bestiario/aerografo.ts';
 import { ACECHOS, LUCES, VIDAS, aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
 import { pisoDelCamino } from '../../../lib/bestiario/escenas-camino.ts';
+import { EL_PLANO, SOBRA, VELOS, rutaDelVelo } from '../../../lib/bestiario/velos.ts';
 import { conAudio, loQueDice } from '../../../lib/bestiario/fichas.ts';
 import { fondoDe } from '../../../lib/bestiario/sonido.ts';
 import { tituloDelDisco } from '../../../lib/letra/discos.ts';
@@ -183,7 +184,12 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
   <Fragment slot="cabeza">
     {pisoImpreso && <link rel="preload" as="image" href={rutaDePieza(pisoImpreso.nombre)} fetchpriority="high" />}
     {lejos && <link rel="preload" as="image" href={rutaDePieza(lejos.nombre)} fetchpriority="high" />}
+    {/* El velo con el que se llega a esta región (`D-90`, octava ronda), antes que nada; y los de adonde
+        se puede ir desde acá, para que ya estén cuando se toque un cartel o «Al plano». */}
+    <link rel="preload" as="image" href={rutaDelVelo(id)} fetchpriority="high" />
+    {[...region.vecinas, EL_PLANO].filter((v) => VELOS[v]).map((v) => <link rel="prefetch" as="image" href={rutaDelVelo(v)} />)}
   </Fragment>
+  <div class="velo-de-llegada" aria-hidden="true" data-rumbo={VELOS[id]!.rumbo} style={`--velo: url(${rutaDelVelo(id)}); --sobra: ${SOBRA / 100}`}></div>
   <section
     class="camino"
     id="camino"
