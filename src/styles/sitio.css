@@ -840,6 +840,69 @@ html.incrustado #plano .portal .bestiario-marco {
   text-wrap: balance;
 }
 
+/* ---- Las dos cintas (2026-11-04) ----
+
+   La bajada dice "estás en la puerta, con las dos cintas", y las dos cintas estaban a una
+   pantalla y media de scroll, detrás del afiche del mes: medido a 375 × 812, el lado A
+   arrancaba en 900 px y el lado B en 1850. Ahora son dos tiras de cinta adhesiva pegadas
+   debajo de la bajada —la misma cinta de `.volver`, que es el par tinta-sobre-papel que
+   `contraste.test.ts` ya mide— y cada una lleva a su lado de la casetera. El afiche sigue
+   donde `D-84` lo puso: el que baja despacio lo ve igual; el que viene a jugar llega en un
+   toque. Son anclas, sin JavaScript. */
+.cintas {
+  display: flex;
+  gap: var(--espacio-2);
+  margin: 0 0 var(--espacio-1);
+}
+
+.cinta {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: var(--toque-min);
+  padding: 6px var(--espacio-1);
+  font-family: var(--fuente-rotulada);
+  line-height: 1.1;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  color: var(--fondo);
+  background: color-mix(in srgb, var(--papel) 88%, transparent);
+  border-radius: 3px;
+  transform: rotate(-1.2deg);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Como la etiqueta de una cinta: el lado grande y para qué es, chico, debajo. */
+.cinta-lado {
+  font-size: 0.95rem;
+  font-weight: normal;
+  letter-spacing: 0.1em;
+}
+
+.cinta-para {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: var(--papel-tenue);
+}
+
+/* Pegadas a mano: una torcida para cada lado. */
+.cinta + .cinta {
+  transform: rotate(1deg);
+}
+
+.cinta:focus-visible {
+  outline: var(--linea) solid var(--acento-2);
+  outline-offset: 3px;
+}
+
+.cinta:active {
+  background: var(--papel);
+}
+
 /* El personaje de portada mira desde el costado de la marca, pegado como un recorte mas.
    Es mas grande que antes por una razon concreta: paso de ser una silueta llena (el
    perro) a ser un calco de LINEA, y una linea de dos pixeles reducida a un cuarto no es
@@ -866,41 +929,50 @@ html.incrustado #plano .portal .bestiario-marco {
 }
 
 /* ==========================================================================
-   El afiche de octubre (`D-49`)
+   El almanaque del portal (`D-84`): un mes, un afiche. Nació como el afiche de octubre
+   (`D-49`).
 
-   Octubre es el mes del disco: *Oktubre* salió el 4 de octubre de 1986, y de los diez discos
-   seis salieron en octubre. En ese mes el portal lleva este afiche entre la marca y la
-   casetera; el resto del año no está.
+   Se imprimen todos y se ve el del mes, o ninguno: `data-mes` lo pone la cabeza del portal
+   con la fecha del teléfono, antes del primer cuadro, y `data-afiche` dice que ese mes tiene
+   afiche impreso. Sin el atributo el afiche no ocupa lugar; con él la casetera ya arranca
+   más abajo desde el primer cuadro, sin saltar.
 
-   **Lo decide la fecha del teléfono**, en la cabeza de `index.astro`, antes del primer
-   cuadro: sin el atributo el afiche no ocupa lugar, y con él la casetera ya arranca más
-   abajo desde el primer cuadro, sin saltar.
-
-   Es un afiche pegado, no una tarjeta: borde grueso en el rojo de *Oktubre* (`--marca-rojo`
-   es su tinta, `D-19`), cinta arriba, apenas torcido. El sello va en la letra calcada de la
-   tapa; lo que se lee de corrido, en la del sistema (`UX-01`).
+   Es un afiche pegado, no una tarjeta: borde grueso en la tinta del mes (`--tinte-afiche`:
+   la de *Oktubre* en octubre, la plata de *Último bondi* en noviembre (`D-85`), la de *Gulp!*
+   en diciembre;
+   `D-19`), cinta arriba, apenas torcido. El sello va en la letra calcada de la tapa en
+   octubre y en la de la banda los demás meses; lo que se lee de corrido, en la del sistema
+   (`UX-01`). La estructura y las medidas son las de `UX-40`.
    ========================================================================== */
 
-.oktubre {
+.afiche {
   display: none;
 }
 
-:root[data-mes='oktubre'] .oktubre {
+:root[data-mes='octubre'] .afiche--octubre,
+:root[data-mes='noviembre'] .afiche--noviembre,
+:root[data-mes='diciembre'] .afiche--diciembre {
   display: block;
 }
 
-.oktubre {
+/* La tinta de cada mes. Un mes nuevo sin tinta propia sale con la de la marca. */
+.afiche { --tinte-afiche: var(--marca-rojo); }
+.afiche--octubre { --tinte-afiche: var(--marca-rojo); }
+.afiche--noviembre { --tinte-afiche: var(--disco-ultimo-bondi-a-finisterre-tinta); }
+.afiche--diciembre { --tinte-afiche: var(--disco-gulp-tinta); }
+
+.afiche {
   position: relative;
   margin: var(--espacio-2) 4px var(--espacio-1);
   padding: var(--espacio-2) var(--espacio-2) calc(var(--espacio-2) + 4px);
   background: var(--fondo);
-  border: var(--linea) solid var(--marca-rojo);
+  border: var(--linea) solid var(--tinte-afiche);
   border-radius: 3px;
   transform: rotate(-0.6deg);
 }
 
 /* La cinta que lo sostiene, la misma de los casetes. */
-.oktubre::before {
+.afiche::before {
   content: '';
   position: absolute;
   top: -14px;
@@ -912,37 +984,57 @@ html.incrustado #plano .portal .bestiario-marco {
   border-radius: 2px;
 }
 
-.oktubre-cabeza {
+.afiche-cabeza {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--espacio-1) var(--espacio-2);
 }
 
-.oktubre-sello {
+/* El sello, en la letra de la banda; octubre lo escribe con la letra calcada de su tapa. */
+.afiche-sello {
   margin: 0;
-  font-family: var(--fuente-titular);
+  font-family: var(--fuente-marca-firma);
   font-size: clamp(2.5rem, 13vw, 3.4rem);
   font-weight: normal;
   line-height: 0.9;
-  color: var(--marca-rojo);
+  color: var(--tinte-afiche);
 }
 
-/* La estampa del cumpleaños: sello de goma hueco, en el mismo rojo. Va en la rotulada
+.afiche--octubre .afiche-sello {
+  font-family: var(--fuente-titular);
+}
+
+/* La estampa del cumpleaños: sello de goma hueco, en la tinta del mes. Va en la rotulada
    porque trae números y tildes ("CUMPLIÓ"), que el calco no tiene. */
-.oktubre-cumple {
+.afiche-cumple {
   padding: 0.35em 0.6em;
   font-family: var(--fuente-rotulada);
   font-size: 0.72rem;
   letter-spacing: 0.08em;
-  color: var(--marca-rojo);
-  border: 2px solid var(--marca-rojo);
+  color: var(--tinte-afiche);
+  border: 2px solid var(--tinte-afiche);
   border-radius: 3px;
   transform: rotate(-5deg);
   white-space: nowrap;
 }
 
-.oktubre-canta {
+/* El rótulo de leyenda, pegado a la estampa (`UX-40` §5): el mismo sello de goma, en la tiza
+   de los rótulos (`.es-leyenda`) y no en la tinta del mes, porque un rótulo no se disfraza de
+   disco (`diseno-marca.md`). */
+.afiche-rotulo {
+  padding: 0.35em 0.6em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  transform: rotate(2deg);
+  white-space: nowrap;
+}
+
+.afiche-canta {
   margin: var(--espacio-1) 0 2px;
   font-size: 1.05rem;
   line-height: 1.35;
@@ -950,17 +1042,17 @@ html.incrustado #plano .portal .bestiario-marco {
   text-wrap: balance;
 }
 
-.oktubre-cuenta {
+.afiche-cuenta {
   margin: 0 0 var(--espacio-1);
   font-size: 0.85rem;
   line-height: 1.4;
   color: var(--texto-tenue);
 }
 
-/* Las seis fechas: un taco de almanaque por disco, cada uno con el borde y el número en la
-   tinta de su disco (todas tienen su par AA sobre `--fondo` en `contraste.test.ts`). Tres
-   por renglón entran a 320 px. */
-.oktubre-calendario {
+/* Las fechas: un taco de almanaque por día, cada uno con el borde y el número en la tinta de
+   su disco (todas tienen su par AA sobre `--fondo` en `contraste.test.ts`). Tres por renglón
+   entran a 320 px. */
+.afiche-calendario {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
@@ -969,9 +1061,9 @@ html.incrustado #plano .portal .bestiario-marco {
   list-style: none;
 }
 
-/* El día y el año en el mismo renglón, el disco abajo: medido a 375 px, con el año en un
+/* El día y el año en el mismo renglón, el nombre abajo: medido a 375 px, con el año en un
    renglón propio el afiche dejaba la casetera entera debajo del pliegue. */
-.oktubre-fecha a {
+.afiche-fecha a {
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-rows: auto 1fr;
@@ -989,32 +1081,32 @@ html.incrustado #plano .portal .bestiario-marco {
 }
 
 /* Cambio de borde, nunca un levantar: el único movimiento decorativo es la mosca. */
-.oktubre-fecha a:hover,
-.oktubre-fecha a:focus-visible {
+.afiche-fecha a:hover,
+.afiche-fecha a:focus-visible {
   border-color: var(--tinta-fecha);
 }
 
-.oktubre-fecha a:focus-visible {
+.afiche-fecha a:focus-visible {
   outline: var(--linea) solid var(--acento-2);
   outline-offset: 2px;
 }
 
-.oktubre-fecha:nth-child(odd) {
+.afiche-fecha:nth-child(odd) {
   transform: rotate(-0.8deg);
 }
 
-.oktubre-fecha:nth-child(even) {
+.afiche-fecha:nth-child(even) {
   transform: rotate(0.7deg);
 }
 
-.oktubre-dia {
+.afiche-dia {
   font-family: var(--fuente-rotulada);
   font-size: 1.45rem;
   line-height: 1;
   color: var(--tinta-fecha);
 }
 
-.oktubre-disco {
+.afiche-nombre {
   grid-column: 1 / -1;
   grid-row: 2;
   margin-top: 4px;
@@ -1022,31 +1114,38 @@ html.incrustado #plano .portal .bestiario-marco {
   line-height: 1.2;
 }
 
-.oktubre-anio {
+.afiche-anio {
   grid-column: 2;
   grid-row: 1;
   font-size: 0.7rem;
   color: var(--texto-tenue);
 }
 
-/* La de *Oktubre* se distingue por el grosor del borde, además del color. */
-.oktubre-fecha--oktubre a {
+/* El del cumpleaños se distingue por el grosor del borde, además del color. */
+.afiche-fecha--cumple a {
   border-width: var(--linea);
 }
 
-/* Por si mañana una ficha suma otro disco de octubre: borde neutro y número legible. Va
-   antes que las seis: mismo peso de selector, así que gana la que viene después. */
-.oktubre-fecha { --tinta-fecha: var(--texto); }
-.oktubre-fecha--oktubre { --tinta-fecha: var(--disco-oktubre-tinta); }
-.oktubre-fecha--bang-bang-estas-liquidado { --tinta-fecha: var(--disco-bang-bang-estas-liquidado-tinta); }
-.oktubre-fecha--la-mosca-y-la-sopa { --tinta-fecha: var(--disco-la-mosca-y-la-sopa-tinta); }
-.oktubre-fecha--lobo-suelto { --tinta-fecha: var(--disco-lobo-suelto-tinta); }
-.oktubre-fecha--cordero-atado { --tinta-fecha: var(--disco-cordero-atado-tinta); }
-.oktubre-fecha--luzbelito { --tinta-fecha: var(--disco-luzbelito-tinta); }
+/* La tinta de cada taco: un disco, la de su tapa; Huracán, la del disco que presentó esas
+   noches; lo demás, la del texto. La leyenda lleva el número en la tiza de su rótulo. Van
+   primero las neutras: mismo peso de selector, gana la que viene después. */
+.afiche-fecha { --tinta-fecha: var(--texto); }
+.afiche-fecha--gulp { --tinta-fecha: var(--disco-gulp-tinta); }
+.afiche-fecha--oktubre { --tinta-fecha: var(--disco-oktubre-tinta); }
+.afiche-fecha--un-baion-para-el-ojo-idiota { --tinta-fecha: var(--disco-un-baion-para-el-ojo-idiota-tinta); }
+.afiche-fecha--bang-bang-estas-liquidado { --tinta-fecha: var(--disco-bang-bang-estas-liquidado-tinta); }
+.afiche-fecha--la-mosca-y-la-sopa { --tinta-fecha: var(--disco-la-mosca-y-la-sopa-tinta); }
+.afiche-fecha--lobo-suelto { --tinta-fecha: var(--disco-lobo-suelto-tinta); }
+.afiche-fecha--cordero-atado { --tinta-fecha: var(--disco-cordero-atado-tinta); }
+.afiche-fecha--luzbelito { --tinta-fecha: var(--disco-luzbelito-tinta); }
+.afiche-fecha--ultimo-bondi-a-finisterre { --tinta-fecha: var(--disco-ultimo-bondi-a-finisterre-tinta); }
+.afiche-fecha--momo-sampler { --tinta-fecha: var(--disco-momo-sampler-tinta); }
+.afiche-fecha--huracan-93-94 { --tinta-fecha: var(--disco-lobo-suelto-tinta); }
+.afiche-fecha--leyenda { --tinta-fecha: var(--rotulo-leyenda); }
 
-/* El llamado: sello entintado, como el "JUGÁ" de los casetes. Letra de `--fondo` sobre el
-   rojo de Oktubre, que es el par que ya usa el casete de las preguntas. */
-.oktubre-jugar {
+/* El llamado: sello entintado, como el "JUGÁ" de los casetes. Letra de `--fondo` sobre la
+   tinta del mes, que es un par que ya se mide. */
+.afiche-boton {
   display: inline-flex;
   align-items: center;
   min-height: var(--toque-min);
@@ -1056,8 +1155,8 @@ html.incrustado #plano .portal .bestiario-marco {
   letter-spacing: 0.06em;
   color: var(--fondo);
   text-decoration: none;
-  background: var(--marca-rojo);
-  border: 2px solid var(--marca-rojo);
+  background: var(--tinte-afiche);
+  border: 2px solid var(--tinte-afiche);
   border-radius: 3px;
   transform: rotate(-1.2deg);
   /* Es el mismo sello que el JUGÁ de los casetes, y sale de la misma almohadilla (`D-64`). */
@@ -1065,9 +1164,199 @@ html.incrustado #plano .portal .bestiario-marco {
   isolation: isolate;
 }
 
-.oktubre-jugar:focus-visible {
+.afiche-boton:focus-visible {
   outline: var(--linea) solid var(--acento-2);
   outline-offset: 3px;
+}
+
+/* ==========================================================================
+   El modo del último bondi (`D-85`): noviembre viste la portada entera.
+
+   La tapa de *Último bondi a Finisterre* es una chapa repujada con un ojo de buey y la banda
+   adentro, y una chapita con el nombre. Acá el portal es el adentro de esa nave: el afiche
+   lleva el ojo de buey en lugar de la cinta, el sello es la chapita, los tacos son boletos, la
+   chapa de la nave pasa detrás de todo (`.casco`, en lugar de la multitud) y al final de la
+   hoja espera la última parada.
+
+   EL MOVIMIENTO ES DEL LUGAR (`UX-20`), como la multitud: atado al desplazamiento, sin
+   JavaScript, y quieto con movimiento reducido (`--acercamiento: 0`). La chapa se corre más
+   lento que la hoja —vas adentro y el bondi avanza—, y lo que se ve por el ojo de buey se
+   corre un poco al revés que el aro, como se corre lo que está del otro lado de un vidrio.
+   ========================================================================== */
+
+.afiche--noviembre {
+  --ancho-ojo: clamp(132px, 40vw, 184px);
+}
+
+/* El ojo de buey reemplaza a la cinta: también es lo que sostiene el afiche contra la pared. */
+.afiche--noviembre::before {
+  content: none;
+}
+
+.afiche-ojo {
+  position: absolute;
+  top: -22px;
+  right: -10px;
+  width: var(--ancho-ojo);
+  aspect-ratio: 1;
+  transform: rotate(6deg);
+  pointer-events: none;
+}
+
+.afiche-ojo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* El vidrio es más grande que el hueco del aro: lo que sobra se esconde debajo del aro, y es
+   lo que deja correr la banda sin que se vea el borde. */
+.afiche-ojo-vidrio {
+  scale: 1.04;
+}
+
+@supports (animation-timeline: view()) {
+  .afiche-ojo-vidrio {
+    animation-name: del-otro-lado-del-vidrio;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-duration: auto;
+    animation-timeline: view();
+  }
+}
+
+@keyframes del-otro-lado-del-vidrio {
+  from {
+    translate: 0 calc(-4% * var(--acercamiento));
+  }
+  to {
+    translate: 0 calc(4% * var(--acercamiento));
+  }
+}
+
+/* La cabecera le deja lugar al ojo de buey, que cuelga arriba a la derecha. */
+.afiche--noviembre .afiche-cabeza {
+  margin-right: calc(var(--ancho-ojo) - 14px);
+  min-height: calc(var(--ancho-ojo) - 30px);
+  align-content: center;
+}
+
+/* El sello es la chapita del nombre: plata maciza, letra de `--fondo` y un remache en cada
+   punta. El par es el de los botones de *Último bondi* (`contraste.test.ts`). El marco doble
+   es un contorno, no una sombra. */
+.afiche--noviembre .afiche-sello,
+.fin-de-hoja {
+  position: relative;
+  padding: 0.12em 0.62em 0.06em;
+  color: var(--fondo);
+  background: var(--tinte-afiche);
+  border-radius: 3px;
+  outline: 2px solid var(--tinte-afiche);
+  outline-offset: 3px;
+}
+
+.afiche--noviembre .afiche-sello {
+  font-size: clamp(1.9rem, 9.6vw, 2.6rem);
+  line-height: 1;
+}
+
+.afiche--noviembre .afiche-sello::before,
+.afiche--noviembre .afiche-sello::after,
+.fin-de-hoja::before,
+.fin-de-hoja::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  background: var(--fondo);
+  border-radius: 50%;
+}
+
+.afiche--noviembre .afiche-sello::before,
+.fin-de-hoja::before {
+  left: 0.2em;
+}
+
+.afiche--noviembre .afiche-sello::after,
+.fin-de-hoja::after {
+  right: 0.2em;
+}
+
+/* Los tacos son boletos: el borde de arriba y el de abajo, picados, como el talonario. */
+.afiche--noviembre .afiche-fecha a {
+  border-top-style: dashed;
+  border-bottom-style: dashed;
+  border-radius: 0;
+}
+
+/* La chapa de la nave, detrás de todo. Tinta plana de la plata de la tapa, recortada por la
+   baldosa del casco (`lib/sitio/casco.ts`); pesa `--peso-casco`, que mide `contraste.test.ts`. */
+.casco {
+  display: none;
+}
+
+:root[data-mes='noviembre'] .casco--noviembre {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--disco-ultimo-bondi-a-finisterre-tinta) var(--peso-casco), var(--fondo));
+  -webkit-mask-image: url('/arte/casco-bondi.svg');
+  mask-image: url('/arte/casco-bondi.svg');
+  -webkit-mask-size: 320px 320px;
+  mask-size: 320px 320px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+}
+
+/* En el bondi no está la multitud: está la chapa. La gente del pie se queda, mirando. */
+:root[data-mes='noviembre'] .plano-gente {
+  display: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  .casco {
+    animation-name: el-bondi-avanza;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-duration: auto;
+    animation-timeline: scroll(root block);
+  }
+}
+
+/* Dos baldosas en toda la bajada: la chapa se corre menos que la hoja, y por eso queda atrás. */
+@keyframes el-bondi-avanza {
+  to {
+    -webkit-mask-position: 0 calc(-640px * var(--acercamiento));
+    mask-position: 0 calc(-640px * var(--acercamiento));
+  }
+}
+
+/* La última parada, al final de la hoja. */
+.fin-de-hoja {
+  display: none;
+}
+
+:root[data-mes='noviembre'] .fin-de-hoja--noviembre {
+  --tinte-afiche: var(--disco-ultimo-bondi-a-finisterre-tinta);
+  display: block;
+  width: fit-content;
+  margin: var(--espacio-4) auto var(--espacio-3);
+  padding-inline: 1.4em;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  transform: rotate(-1deg);
+}
+
+@media (forced-colors: active) {
+  .casco {
+    display: none !important;
+  }
 }
 
 /* ---- Los lados del cassette ---- */
@@ -1099,6 +1388,11 @@ html.incrustado #plano .portal .bestiario-marco {
   content: '';
   flex: 1;
   border-top: 2px dashed var(--borde);
+}
+
+/* Las cintas del frente saltan acá: el rótulo del lado llega con aire, no pegado al borde. */
+.lado {
+  scroll-margin-top: var(--espacio-2);
 }
 
 /* ---- El casete: cada juego es un cassette apilado en el collage ---- */
@@ -1139,8 +1433,11 @@ html.incrustado #plano .portal .bestiario-marco {
   gap: var(--espacio-2);
   align-items: center;
   /* `UX-25` §2.5: de 16 px parejos a 12. Ocho casetes por cuatro lados: es de los pocos
-     lugares del sitio donde cuatro pixeles se notan en el total. */
-  padding: 12px;
+     lugares del sitio donde cuatro pixeles se notan en el total. Desde el 2026-11-04, 10 a
+     los costados: con los 4 del corrimiento lateral y los 8 de la etiqueta, la columna del
+     título pasa de 193 a 213 px a 375 px, y seis títulos que iban en dos renglones entran en
+     uno. Trece casetes: unos 120 px menos de hoja. */
+  padding: 12px 10px;
   /* Sin superficie "elevada": la pieza se recorta del fondo por borde grueso y
      cinta, como en serigrafia — y de paso la tinta de cada disco queda siempre
      sobre --fondo, que es el par que el test AA verifica (sobre el elevado,
@@ -1164,12 +1461,12 @@ html.incrustado #plano .portal .bestiario-marco {
    que sobre una caja de ancho completo sólo puede meter las esquinas en el margen. */
 .casetera > li:nth-child(odd) .casete {
   transform: rotate(-0.9deg);
-  margin-right: 14px;
+  margin-right: 10px;
 }
 
 .casetera > li:nth-child(even) .casete {
   transform: rotate(0.7deg);
-  margin-left: 14px;
+  margin-left: 10px;
 }
 
 /* La cinta adhesiva que sujeta el casete al de al lado.
@@ -1280,7 +1577,9 @@ html.incrustado #plano .portal .bestiario-marco {
     ),
     var(--papel);
   color: var(--fondo);
-  padding: var(--espacio-1) var(--espacio-2);
+  /* 12 px a los costados (2026-11-04): la etiqueta cede aire para que el título entre en un
+     renglón; el de arriba y abajo no cambia. */
+  padding: var(--espacio-1) 12px;
   border-radius: 4px;
   transform: rotate(-0.4deg);
   /* El papel viejo va en un `::before` por debajo de la letra (`D-64`): sin estas dos, el
@@ -1301,6 +1600,10 @@ html.incrustado #plano .portal .bestiario-marco {
   /* Es un <strong>: sin esto el navegador engorda Archivo Black, que tiene un peso solo (la
      negrita falsa que `D-54` les sacó a los h1). */
   font-weight: normal;
+  /* 2026-11-04: con la columna de 213 px, dos títulos de 19 letras ("Sacalo por la letra",
+     "Preguntas ricoteras") quedaban a 10 px de entrar. El cuerpo no baja; cede el aire entre
+     letras, de 0,05 em a 0,02, y entran. Lo mide `index.astro` en el navegador, no esta hoja. */
+  letter-spacing: 0.02em;
   /* La almohadilla (`D-64`): la tinta del sello no llega pareja. Le faltan puntos y zonas
      donde la mano aflojó, y lo que falta lo saca la máscara —nunca un gris: la letra que
      queda es `--fondo` pleno—. Dónde apretó la mano depende del disco (`--golpe`). */
@@ -1418,12 +1721,12 @@ html.incrustado #plano .portal .bestiario-marco {
   }
 
   .casete-accion,
-  .oktubre-jugar {
+  .afiche-boton {
     background: transparent;
   }
 
   .casete-accion::before,
-  .oktubre-jugar::before {
+  .afiche-boton::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -1441,12 +1744,12 @@ html.incrustado #plano .portal .bestiario-marco {
     background: var(--tinte-sello, var(--tinte));
   }
 
-  /* El de octubre va sobre el negro del afiche y no sobre papel, así que lleva solo la sal y no
+  /* El del afiche va sobre el negro y no sobre papel, así que lleva solo la sal y no
      la presión: aflojada al 80 %, el rojo se oscurecía y la letra `--fondo` encima quedaba en
      3,52:1. Con la sal la tinta que queda es plena, y el par es el de siempre (4,98:1). Lo
      encontró `REV` el 2026-10-05; `contraste.test.ts` lo vigila. */
-  .oktubre-jugar::before {
-    background: var(--marca-rojo);
+  .afiche-boton::before {
+    background: var(--tinte-afiche);
     -webkit-mask-image: var(--textura-tinta-sal);
     mask-image: var(--textura-tinta-sal);
   }
@@ -1462,7 +1765,7 @@ html.incrustado #plano .portal .bestiario-marco {
 
   .casete-etiqueta::before,
   .casete-accion::before,
-  .oktubre-jugar::before {
+  .afiche-boton::before {
     content: none;
   }
 
@@ -1470,8 +1773,8 @@ html.incrustado #plano .portal .bestiario-marco {
     background: var(--tinte-sello, var(--tinte));
   }
 
-  .oktubre-jugar {
-    background: var(--marca-rojo);
+  .afiche-boton {
+    background: var(--tinte-afiche);
   }
 }
 
@@ -1542,7 +1845,7 @@ html.incrustado #plano .portal .bestiario-marco {
 .casete,
 .caratula,
 .pantalla,
-.oktubre {
+.afiche {
   --golpe: calc(var(--semilla, 0) + var(--semilla-lado, 0));
 }
 
@@ -2839,8 +3142,8 @@ body:has(> .lugar) .marca-chica {
     padding-top: var(--espacio-3);
   }
 
-  /* Fuera de octubre no hay afiche y la cabecera queda sola: un renglón, no media mesa vacía. */
-  :root:not([data-mes='oktubre']) .portal-frente {
+  /* Sin afiche la cabecera queda sola: un renglón, no media mesa vacía. */
+  :root:not([data-afiche]) .portal-frente {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -2864,28 +3167,28 @@ body:has(> .lugar) .marca-chica {
     width: clamp(150px, 12vw, 196px);
   }
 
-  .oktubre {
+  .afiche {
     margin: var(--espacio-2) 0;
     padding: var(--espacio-3) var(--espacio-3) calc(var(--espacio-3) + 4px);
   }
 
-  .oktubre-sello {
+  .afiche-sello {
     font-size: 4rem;
   }
 
-  .oktubre-canta {
+  .afiche-canta {
     font-size: 1.12rem;
   }
 
-  .oktubre-fecha a {
+  .afiche-fecha a {
     padding: 8px 10px;
   }
 
-  .oktubre-dia {
+  .afiche-dia {
     font-size: 1.7rem;
   }
 
-  .oktubre-disco {
+  .afiche-nombre {
     font-size: 0.82rem;
   }
 
@@ -2993,6 +3296,11 @@ body:has(> .lugar) .marca-chica {
   .tarjeta-articulo:hover,
   .disco-del-indice:hover img {
     border-color: var(--tinte, var(--acento-2));
+  }
+
+  /* La cinta se aprieta: el papel llega entero. Mismo par, ningún color nuevo. */
+  .cinta:hover {
+    background: var(--papel);
   }
 
   .partes a:hover {
@@ -3581,6 +3889,81 @@ body:has(> .lugar) .marca-chica {
   overflow: visible;
 }
 
+/* ---- La lupa (D-90) ----
+   El plano se acerca adentro de su cartel: la lente es lo que se agranda (el dibujo, la luz y los
+   carteles) y el marco, la ventana que la recorta. Con la lupa puesta, el dedo lleva el plano y no
+   la página. Solo `transform`, que pone la isla (`scripts/bestiario/lupa-plano.ts`). */
+.bestiario-lente {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+}
+
+.bestiario-marco--lupa {
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+}
+
+.portal .bestiario-marco--lupa { overflow: hidden; }
+
+/* Los botones de la lupa, en el plano y en los caminos: sellos de goma. El `+` y el `−` son para el
+   mouse y el teclado (el dedo pellizca y da doble toque); "Mirá todo" aparece con la lupa puesta,
+   para cualquiera, y es la vuelta. */
+.lupa {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+}
+
+.lupa[hidden],
+.lupa [hidden] { display: none; }
+
+.lupa--plano {
+  position: absolute;
+  right: var(--espacio-1);
+  bottom: var(--espacio-1);
+  z-index: 2;
+}
+
+.lupa-boton {
+  min-height: var(--toque-min);
+  padding: 0 0.7rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fondo);
+  background: var(--papel);
+  border: var(--linea) solid var(--tr, var(--fondo));
+  border-radius: 3px;
+  cursor: pointer;
+  transform: rotate(-0.8deg);
+}
+
+.lupa-boton:nth-child(2) { transform: rotate(1.2deg); }
+
+.lupa-signo {
+  min-width: var(--toque-min);
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.lupa-boton:disabled {
+  border-style: dashed;
+  cursor: default;
+}
+
+.lupa-boton:focus-visible {
+  outline: 2px solid var(--papel);
+  outline-offset: 3px;
+}
+
+@media (hover: none) {
+  .lupa-signo { display: none; }
+}
+
 .portal-luz {
   position: absolute;
   inset: 0;
@@ -3673,11 +4056,30 @@ body:has(> .lugar) .marca-chica {
 .bestiario-marco[data-vista='lejos'] .bestiario-svg .bestias { pointer-events: none; }
 .bestiario-svg .bestia { cursor: pointer; outline: none; }
 .bestiario-svg .toque { fill: transparent; }
+/* El redondel del bicho que habla (`D-90`, quinta ronda): tiza. Era un aro punteado amarillo, parejo,
+   de interfaz. Ahora es una vuelta de tiza hecha a mano: del papel, con el trazo que se corta donde
+   la tiza salta (tramos largos y cortos, ninguno igual al otro), apenas ovalada y torcida, de punta
+   redonda. Sigue siendo una forma y no solo un color.
+   El foco del teclado es la misma vuelta, en el oro del foco de todo el sitio (`--acento-2`) y más
+   gruesa: tiene que verse siempre, y sobre la tinta del fondo pasa de largo el 3:1 que se le pide a
+   un indicador. Si el bicho habla y además tiene el foco, manda el foco. */
 .bestiario-svg .bestia:focus-visible .toque,
 .bestiario-svg .bestia--elegida .toque {
+  stroke: var(--papel);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 19 4 3 6 27 5 9 4 2 7 14 6;
+  stroke-opacity: 0.9;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: rotate(-9deg) scale(1.05, 0.95);
+}
+
+.bestiario-svg .bestia:focus-visible .toque {
   stroke: var(--acento-2);
-  stroke-width: 3;
-  stroke-dasharray: 6 4;
+  stroke-width: 3.4;
+  stroke-opacity: 1;
+  stroke-dasharray: 31 5 12 4 44 6;
 }
 .bestiario-svg .marca-anotada { display: none; }
 .bestiario-svg .bestia--anotada .marca-anotada { display: inline; }
@@ -4112,7 +4514,12 @@ body:has(> .lugar) .marca-chica {
 .titere { cursor: pointer; outline: none; }
 .titere--lobo { touch-action: manipulation; }
 .titere--cordero { cursor: grab; touch-action: none; }
-.titere:focus-visible { outline: 2px dashed var(--acento-2); }
+/* El foco de un títere: el oro del foco del sitio, entero y grueso, despegado del dibujo. Era una
+   raya punteada fina, pegada al borde. */
+.titere:focus-visible {
+  outline: 3px solid var(--acento-2);
+  outline-offset: 5px;
+}
 .soga--tensa { stroke-width: 3.2; }
 
 /* El bocadillo: lo que dice un bicho, con el mouse encima o solo (D-78). Papel, borde grueso, una punta abajo. */
@@ -4904,3 +5311,150 @@ body:has(> .lugar) .marca-chica {
 .bt-encadenado-rayo { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 4; stroke-linecap: square; }
 .titere--encadenado [data-parte="chispa"] { pointer-events: none; }
 /* ⟨/el esclavo encadenado⟩ */
+
+/* ⟨el rey garufa⟩ */
+/* El confeti que se le cae de la corona y el vaho del frío no se tocan: el toque es del rey. */
+.titere--garufa { cursor: pointer; }
+.titere--garufa [data-parte="confeti"], .titere--garufa [data-parte="vaho"] { pointer-events: none; }
+/* ⟨/el rey garufa⟩ */
+
+/* ⟨el joven lobo⟩ */
+/* El humo del cráter, las chispas de la erupción y el vaho del aullido no se tocan: el toque es del lobo y su volcán. */
+.titere--joven { cursor: pointer; }
+.titere--joven [data-parte="humo"], .titere--joven [data-parte="chispas"], .titere--joven [data-parte="aullido"], .titere--joven [data-parte="corazon"] { pointer-events: none; }
+/* ⟨/el joven lobo⟩ */
+
+/* ⟨el reo semental⟩ */
+/* El reo se toca a través de la reja de su celda, que no ataja el dedo. El charco en que se licúa y el sudor no se tocan. */
+.titere--reo { cursor: pointer; }
+.titere--reo [data-parte="charco"], .titere--reo [data-parte="gotas"] { pointer-events: none; }
+/* ⟨/el reo semental⟩ */
+
+/* ⟨el moscon zumbon⟩ */
+/* Las estrellitas del golpe y el vaho del vidrio no se tocan: el toque es del moscón y de su vaso. */
+.titere--moscon { cursor: pointer; }
+.titere--moscon [data-parte="estrellas"], .titere--moscon [data-parte="vaho"] { pointer-events: none; }
+/* ⟨/el moscon zumbon⟩ */
+
+/* ⟨el ovejero⟩ */
+/* Los huesos que vuelan del plato no se tocan: el toque es del perro y de su manto. */
+.titere--ovejero { cursor: pointer; }
+.titere--ovejero [data-parte="huesos"] { pointer-events: none; }
+/* ⟨/el ovejero⟩ */
+
+/* ==========================================================================
+   El velo de llegada del bestiario (`D-90`, octava ronda; `lib/bestiario/velos.ts`)
+
+   Al entrar a una región, o al volver al plano, la página llega tapada por una hoja impresa
+   con la firma del lugar (la niebla del monte, la reja de la prisión, el telón del galpón) y
+   la hoja se va: para arriba, para abajo o de costado, y lo último que se ve es su canto roto.
+   Mientras tapa, la región carga sus piezas atrás.
+
+   Es de la página a la que se llega y no tiene JavaScript, como manda `ADR-03` para el paso
+   entre pantallas: si la isla falla, el velo se va igual. No frena nada (`pointer-events:
+   none`): quien quiera caminar ya puede. Solo `transform`; lo soplado está impreso.
+
+   Con movimiento reducido `--duracion-velo` vale cero y el relleno `both` la deja en su último
+   cuadro, afuera y escondida: es un corte.
+   ========================================================================== */
+
+.velo-de-llegada {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 80;
+  width: 100vw;
+  height: 100vh;
+  height: 100lvh;
+  pointer-events: none;
+  background: var(--velo) 0 0 / 100% 100% no-repeat;
+  animation-duration: var(--duracion-velo);
+  animation-timing-function: var(--curva-cinta);
+  animation-fill-mode: both;
+}
+
+/* La hoja es más larga que la pantalla (`--sobra`): lo que sobra es el canto que arrastra. */
+.velo-de-llegada[data-rumbo='sube'] {
+  height: calc(100vh * var(--sobra));
+  height: calc(100lvh * var(--sobra));
+  animation-name: velo-sube;
+}
+
+.velo-de-llegada[data-rumbo='baja'] {
+  top: calc(100vh * (1 - var(--sobra)));
+  top: calc(100lvh * (1 - var(--sobra)));
+  height: calc(100vh * var(--sobra));
+  height: calc(100lvh * var(--sobra));
+  animation-name: velo-baja;
+}
+
+.velo-de-llegada[data-rumbo='corre'] {
+  width: calc(100vw * var(--sobra));
+  animation-name: velo-corre;
+}
+
+/* Tapa quieta el primer quinto, que es lo que dura el fundido entre las dos pantallas, y después se va. */
+@keyframes velo-sube {
+  0%,
+  22% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, -100%, 0);
+    visibility: hidden;
+  }
+}
+
+@keyframes velo-baja {
+  0%,
+  22% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 100%, 0);
+    visibility: hidden;
+  }
+}
+
+@keyframes velo-corre {
+  0%,
+  22% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(-100%, 0, 0);
+    visibility: hidden;
+  }
+}
+
+/* ⟨la liebre muerta⟩ */
+/* La piedra que le pasa rodando no se toca: el toque es de la liebre, de su terciopelo y de sus guindas. */
+.titere--liebre { cursor: pointer; }
+.titere--liebre [data-parte="piedra"] { pointer-events: none; }
+/* ⟨/la liebre muerta⟩ */
+
+/* ⟨el borrego⟩ */
+/* Se toca entero: el bicho, el disfraz y el pañuelo. El pasto pisado también, que agranda el blanco para el dedo. */
+.titere--borrego { cursor: pointer; }
+/* ⟨/el borrego⟩ */
+
+/* ⟨la rana rubia⟩ */
+/* La mosca que le da vueltas y la lengua que le tira no se tocan: el toque es de la rana y de su reposera. */
+.titere--rana { cursor: pointer; }
+.titere--rana [data-parte="mosca"], .titere--rana [data-parte="lengua"] { pointer-events: none; }
+/* ⟨/la rana rubia⟩ */
+
+/* ⟨el taxi paranormal⟩ */
+/* El haz del faro, el doble fuera de foco y las pompas del escape no se tocan: el toque es del fierro. */
+.titere--taxi { cursor: pointer; }
+.titere--taxi [data-parte="haz"], .titere--taxi [data-parte="doble"], .titere--taxi [data-parte="pompas"] { pointer-events: none; }
+/* ⟨/el taxi paranormal⟩ */
+
+/* ⟨el polizon del remolque⟩ */
+/* Las ondas del agua, el resplandor y la luz del fósforo no se tocan: el toque es del bote, de la corona y de él. */
+.titere--polizon { cursor: pointer; }
+.titere--polizon [data-parte="ondas"], .titere--polizon [data-parte="resplandor"], .titere--polizon [data-parte="fosforo"] { pointer-events: none; }
+/* ⟨/el polizon del remolque⟩ */

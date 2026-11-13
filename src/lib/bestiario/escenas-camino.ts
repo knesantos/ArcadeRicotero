@@ -103,12 +103,16 @@ function pisoLargo(t: Tramo, nombres: Nombres): string {
   return (
     `<g class="acecho" transform="translate(${claro.dx} 0)">${titereLobo(560, nombres)}</g>` +
     piso +
+    // Los del elenco que viven en la pastura: corridos enteros con el claro, delante del piso y detrás del cordero.
+    capasCorridas(t.region, 'atras', nombres, () => claro.dx) +
+    capasCorridas(t.region, 'figura', nombres, () => claro.dx) +
     `<g class="claro" transform="translate(${claro.dx} 0)">` +
-    ojosQueAparecen(claro.ojos, nombres, claro.dx) +
+    ojosQueAparecen(sinTitere(claro.ojos), nombres, claro.dx) +
     `<path id="soga" class="bt-trazo-soga" stroke-width="2.8" d="M${PALO.x} ${PALO.y - 46} L${PALO.x + 40} ${PALO.y}"/>` +
     `<g class="actores"><g class="titere titere--cordero" data-id="el-cordero-atado" role="button" tabindex="0" aria-label="${nombres.get('el-cordero-atado')}" transform="${poseDelCordero()}">${cordero()}</g></g>` +
     vacaEnElClaro(nombres.get('aquella-solitaria-vaca-cubana') ?? '') +
-    `</g>`
+    `</g>` +
+    capasCorridas(t.region, 'delante', nombres, () => claro.dx)
   );
 }
 
@@ -166,14 +170,8 @@ function pisoDeEntorno(t: Tramo, nombres: Nombres): string {
       `<clipPath id="camino-ruta"><rect x="-10" y="-10" width="${t.escena + 30}" height="${ALTO + 20}"/></clipPath>` +
       `<g class="fierros" clip-path="url(#camino-ruta)">${porCarril(0)}${porCarril(1)}</g>`;
   }
-  if (t.region === 'cybersiberia') {
-    // La nieve del recinto, una al lado de la otra a lo largo: dos copias, una arriba de la otra.
-    let copos = '';
-    for (let x = 0; x < t.escena; x += RECINTO) {
-      copos += `<g transform="translate(${x} 0)">${imagen('cyber-nieve')}</g><g transform="translate(${x} -640)">${imagen('cyber-nieve')}</g>`;
-    }
-    extra = `<g class="cyber-nevada" pointer-events="none"><g class="cyber-nevada-copos">${copos}</g></g>`;
-  }
+  // La nevada de Cybersiberia ya no va acá adentro (`D-90`, tercera ronda): animada adentro del dibujo
+  // obligaba a repintar el piso entero en cada cuadro. Es una capa de aire (`aire.ts`), que nieva igual.
   return (
     capasDe(t.region, 'atras', nombres, K_ENTORNO) +
     imagenDePieza(piezaDelCamino(t.piezas.piso!)) +

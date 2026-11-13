@@ -204,13 +204,26 @@ export function crearCamara(zancada: number, llegada: number | null = null, apoy
   };
 }
 
-/** El encuadre como `transform` de CSS para una capa cuya esquina está en `(capaX, 0)` de la vista. */
-export function transformDe(e: Encuadre, capaX: number, corrida: number): string {
+/**
+ * La lupa (`lib/bestiario/lupa.ts`) y el corrimiento propio de una capa, como `transform` de CSS: lo
+ * que va adentro de todo. `corrida` y `baja` se miden en píxeles sin agrandar.
+ */
+export function corridaDe(corrida: number, z = 1, baja = 0): string {
+  const mover = `translate3d(${corrida.toFixed(1)}px, ${baja === 0 ? '0' : `${baja.toFixed(1)}px`}, 0)`;
+  return z === 1 ? mover : `scale(${z.toFixed(4)}) ${mover}`;
+}
+
+/**
+ * El encuadre como `transform` de CSS para una capa cuya esquina está en `(capaX, 0)` de la vista.
+ * `z` es la lupa y `baja` lo que la capa se corre para abajo (la lupa mirando más abajo, o el aire
+ * que cae); sin ellos, el encuadre de siempre.
+ */
+export function transformDe(e: Encuadre, capaX: number, corrida: number, z = 1, baja = 0): string {
   // Alrededor del punto (ox, oy) de la vista: se lleva la capa a ese origen, se gira y escala, y se
   // vuelve. `corrida` es el paralaje de la capa, que va adentro de todo.
   const ox = e.ox - capaX;
   return (
     `translate(${(ox + e.x).toFixed(1)}px, ${(e.oy + e.y).toFixed(1)}px) rotate(${e.giro.toFixed(3)}deg) ` +
-    `scale(${e.escala.toFixed(4)}) translate(${(-ox).toFixed(1)}px, ${(-e.oy).toFixed(1)}px) translate3d(${corrida.toFixed(1)}px, 0, 0)`
+    `scale(${e.escala.toFixed(4)}) translate(${(-ox).toFixed(1)}px, ${(-e.oy).toFixed(1)}px) ${corridaDe(corrida, z, baja)}`
   );
 }

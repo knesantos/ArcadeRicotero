@@ -41,6 +41,10 @@ const CRUCES = piezasDeLosCruces(regiones);
 // La entrada (`D-79`): el portal, el cartel y la tierra del plano, que pinta cada región del JSON.
 const { piezasDelPortal, tierrasDe } = await importar('src/lib/bestiario/arte-portal.ts');
 const PORTAL = piezasDelPortal(tierrasDe(regiones));
+// El aire (`D-90`): la bruma, la niebla rasante y lo pegado a la cámara, en baldosas que se repiten.
+const { PIEZAS_AIRE, PIEZAS_DE_LUZ, PIEZAS_DE_VIDA, PIEZAS_DE_FILO } = await importar('src/lib/bestiario/arte-aire.ts');
+// Los velos de llegada (`D-90`, octava ronda): lo que tapa la pantalla al entrar a una región y se va.
+const { PIEZAS_DE_VELO } = await importar('src/lib/bestiario/arte-velos.ts');
 
 const { valores } = leerDeclaraciones(readFileSync(resolve(raiz, 'src/styles/tokens.css'), 'utf-8'));
 
@@ -78,22 +82,67 @@ const hoja = process.argv.includes('--hoja') ? process.argv[process.argv.indexOf
 const solo = process.argv.includes('--solo') ? process.argv[process.argv.indexOf('--solo') + 1].split(',') : null;
 const impresas = [];
 
-for (const p of [...PIEZAS, ...PIEZAS_CAMINO, ...CRUCES, ...PORTAL]) {
+for (const p of [...PIEZAS, ...PIEZAS_CAMINO, ...CRUCES, ...PORTAL, ...PIEZAS_AIRE, ...PIEZAS_DE_LUZ, ...PIEZAS_DE_VIDA, ...PIEZAS_DE_FILO, ...PIEZAS_DE_VELO]) {
   if (solo && !solo.some((prefijo) => p.nombre.startsWith(prefijo))) continue;
   const [x, y, ancho, alto] = p.caja;
   const densidad = p.densidad ?? 2.5;
+  // La sangría (`D-90`): una baldosa que se repite se imprime con un margen de más a cada lado y se
+  // recorta. Sin él, el soplo de lo que cruza el borde se queda sin la mitad de afuera y la costura se ve.
+  const sangria = p.sangria ?? 0;
   const svg = conTapas(
     conTintas(
-      `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.round(ancho * densidad)}" height="${Math.round(alto * densidad)}" viewBox="${x} ${y} ${ancho} ${alto}">` +
+      `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.round((ancho + 2 * sangria) * densidad)}" height="${Math.round(alto * densidad)}" viewBox="${x - sangria} ${y} ${ancho + 2 * sangria} ${alto}">` +
         `<defs>${filtros()}</defs>${p.dibujo}</svg>`,
       p.nombre,
     ),
   );
-  const imagen = sharp(Buffer.from(svg), { density: 72 });
+  const entera = sharp(Buffer.from(svg), { density: 72 });
+  const imagen = sangria
+    ? entera.extract({ left: Math.round(sangria * densidad), top: 0, width: Math.round(ancho * densidad), height: Math.round(alto * densidad) })
+    : entera;
   const buffer = await imagen.webp({ quality: p.calidad ?? (p.opaca ? 82 : 86), alphaQuality: 90, effort: 5 }).toBuffer();
   writeFileSync(resolve(salida, `${p.nombre}.webp`), buffer);
   impresas.push({ nombre: p.nombre, svg, ancho: Math.round(ancho * densidad), alto: Math.round(alto * densidad), kb: Math.round(buffer.length / 1024) });
   console.log(`${p.nombre}.webp  ${Math.round(ancho * densidad)}×${Math.round(alto * densidad)}  ${Math.round(buffer.length / 1024)} kB`);
+}
+
+/**
+ * El filo a medida (`D-90`, sexta ronda, `FILO_PROPIO` en `aire.ts`): de cada pieza de los títeres
+ * que pasan bajo una luz se saca el canto que mira para arriba, en la tinta de esa luz. Es lo que está
+ * en la pieza y no está unos píxeles más arriba: una resta de alfas, sin dibujar nada de nuevo. Se
+ * lee la pieza ya impresa, así que se puede correr solo (`--solo filo-de-`).
+ */
+const { FILO_PROPIO, GROSOR_DEL_FILO, tieneFiloPropio } = await importar('src/lib/bestiario/aire.ts');
+const { existsSync } = await import('node:fs');
+for (const [region, de] of Object.entries(FILO_PROPIO)) {
+  const r = resolverToken(valores, /var\((--[a-z0-9-]+)\)/.exec(de.tinta)[1]);
+  if ('error' in r) throw new Error(`filo de ${region}: ${r.error}`);
+  const [rojo, verde, azul] = [1, 3, 5].map((i) => parseInt(r.hex.slice(i, i + 2), 16));
+  for (const pieza of PIEZAS) {
+    if (!tieneFiloPropio(pieza.nombre, region)) continue;
+    const nombre = `filo-de-${pieza.nombre}`;
+    if (solo && !solo.some((prefijo) => nombre.startsWith(prefijo))) continue;
+    const origen = resolve(salida, `${pieza.nombre}.webp`);
+    if (!existsSync(origen)) continue;
+    const { data, info } = await sharp(origen).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    const filo = Buffer.alloc(info.width * info.height * 4);
+    for (let y = 0; y < info.height; y++) {
+      for (let x = 0; x < info.width; x++) {
+        const i = (y * info.width + x) * 4;
+        const arriba = y >= GROSOR_DEL_FILO ? data[((y - GROSOR_DEL_FILO) * info.width + x) * 4 + 3] : 0;
+        const canto = Math.max(0, data[i + 3] - arriba);
+        filo[i] = rojo;
+        filo[i + 1] = verde;
+        filo[i + 2] = azul;
+        // Solo el canto franco: donde la pieza ya es un soplo que se pierde, no hay filo que prender.
+        // Y franco de verdad: tinta llena, no la media tinta del borde suavizado (séptima ronda: no se veía).
+        filo[i + 3] = canto > 110 ? 255 : 0;
+      }
+    }
+    const buffer = await sharp(filo, { raw: { width: info.width, height: info.height, channels: 4 } }).webp({ quality: 70, alphaQuality: 80, effort: 5 }).toBuffer();
+    writeFileSync(resolve(salida, `${nombre}.webp`), buffer);
+    console.log(`${nombre}.webp  ${info.width}×${info.height}  ${Math.round(buffer.length / 1024)} kB`);
+  }
 }
 
 if (hoja) {

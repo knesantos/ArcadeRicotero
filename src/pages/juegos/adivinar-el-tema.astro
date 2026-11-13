@@ -246,15 +246,9 @@ const bajadaCorta = (() => {
       .donde-estas {
         margin-bottom: var(--espacio-1);
       }
-      .marca {
-        font-family: var(--fuente-titular);
-        font-size: clamp(1.3rem, 6vw, 1.8rem);
-        line-height: 0.96;
-        letter-spacing: 0.02em;
-        color: var(--marca-rojo);
-        margin: var(--espacio-1) 0 var(--espacio-1);
-        max-width: 7ch;
-      }
+      /* La marca ya no se achica acá (2026-11-04): las ocho carátulas la llevan de la misma
+         medida, la de `.marca` en `juego.css`. Esta regla era del logotipo escrito, anterior a
+         `D-82`, y dejaba cuatro medidas distintas de la FR en cuatro juegos. */
       /* El `h1` es uno solo para los ocho juegos desde el ciclo 17 (`juego.css`, `D-54`): la
          rotulada, sin negrita falsa, en la tinta del disco que la página viste. */
       .tenue {

@@ -18,6 +18,8 @@ import {
   nivelDelBotonGrande,
   numeroDelNivel,
   pasadosDeLaFila,
+  celdaDelPlano,
+  planoDelNivel,
   regionDelMenu,
   seTocan,
 } from './menu.ts';
@@ -36,17 +38,17 @@ function ganado(nivel: Nivel) {
 
 const QUIETOS = { skayboy: QUIETO, poligirl: QUIETO };
 
-test('la fila tiene los seis niveles listos, en orden: lo que el menú muestra', () => {
-  assert.equal(FILA.length, 6);
+test('la fila tiene los doce niveles del banco, en orden: lo que el menú muestra (D-86)', () => {
+  assert.equal(FILA.length, 12);
   assert.deepEqual(
     FILA.map((n) => numeroDelNivel(FILA, n.id)),
-    [1, 2, 3, 4, 5, 6],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   );
   assert.equal(numeroDelNivel(FILA, 'NIV-99'), undefined);
 });
 
 test('enLaFila nombra el nivel con su número y el total; uno no sembrado, nada', () => {
-  assert.deepEqual(enLaFila(FILA, TERCERO), { id: TERCERO.id, numero: 3, total: 6, nombre: TERCERO.nombre });
+  assert.deepEqual(enLaFila(FILA, TERCERO), { id: TERCERO.id, numero: 3, total: 12, nombre: TERCERO.nombre });
   assert.equal(enLaFila(FILA, { id: 'NIV-99', nombre: 'x' }), undefined);
   assert.equal(enLaFila(FILA.slice(0, 2), TERCERO), undefined, 'en producción solo se siembran los listos');
 });
@@ -54,16 +56,14 @@ test('enLaFila nombra el nivel con su número y el total; uno no sembrado, nada'
 test('las fichas: una por nivel, todas tocables, las pasadas lo dicen y la armada también (D-61 punto 2)', () => {
   const avance = conPasado(conPasado(SIN_AVANCE, PRIMERO.id), TERCERO.id);
   const fichas = fichasDelMenu(FILA, avance, SEGUNDO.id);
-  assert.equal(fichas.length, 6);
+  assert.equal(fichas.length, 12);
   assert.deepEqual(
     fichas.map((f) => [f.numero, f.pasado, f.actual]),
     [
       [1, true, false],
       [2, false, true],
       [3, true, false],
-      [4, false, false],
-      [5, false, false],
-      [6, false, false],
+      ...[4, 5, 6, 7, 8, 9, 10, 11, 12].map((n) => [n, false, false]),
     ],
   );
   // Los nombres son los de `CNT-21`, tal cual, y nadie queda bloqueado: una ficha no tiene ningún
@@ -151,8 +151,8 @@ test('repetir arma el mismo nivel de cero', () => {
 test('la tarjeta de fin de nivel: solo ganado, nombra el pasado y el que sigue', () => {
   assert.equal(finDeNivel(crearMundo(BANCO, PRIMERO), FILA), null, 'sin ganar no hay tarjeta');
   assert.deepEqual(finDeNivel(ganado(PRIMERO), FILA), {
-    pasado: { id: PRIMERO.id, numero: 1, total: 6, nombre: PRIMERO.nombre },
-    sigue: { id: SEGUNDO.id, numero: 2, total: 6, nombre: SEGUNDO.nombre },
+    pasado: { id: PRIMERO.id, numero: 1, total: 12, nombre: PRIMERO.nombre },
+    sigue: { id: SEGUNDO.id, numero: 2, total: 12, nombre: SEGUNDO.nombre },
     ultimo: false,
   });
 });
@@ -161,7 +161,7 @@ test('en el sexto la tarjeta dice que era el último y que lo que sigue es el pr
   const fin = finDeNivel(ganado(SEXTO), FILA);
   assert.equal(fin?.ultimo, true);
   assert.equal(fin?.sigue.id, PRIMERO.id);
-  assert.equal(fin?.pasado.numero, 6);
+  assert.equal(fin?.pasado.numero, 12);
 });
 
 test('un nivel ganado que no está en lo sembrado no tiene tarjeta: no hay a dónde seguir', () => {
@@ -319,4 +319,56 @@ test('el menú no escribe el avance: no tiene con qué', () => {
   const fuente = readFileSync('src/lib/skayboy/menu.ts', 'utf-8').replace(/\/\*[\s\S]*?\*\//g, '');
   assert.doesNotMatch(fuente, /guardarPasado\s*\(/);
   assert.doesNotMatch(fuente, /localStorage/);
+});
+
+/* ---- El plano de cada ficha (`D-86`) ---- */
+
+test('el plano dibuja lo que la sala dibuja: sólido, los tres molinetes, el tesoro, las puertas y las piezas; el aire y la entrada, no', () => {
+  const { leyenda } = BANCO;
+  assert.equal(celdaDelPlano(leyenda['.']), null, 'el aire no se dibuja');
+  assert.equal(celdaDelPlano(leyenda['1']), null, 'la entrada es aire para el plano, como para la sala');
+  assert.equal(celdaDelPlano(leyenda['2']), null);
+  assert.equal(celdaDelPlano(undefined), null, 'un caracter que no está en la leyenda no es nada');
+  assert.equal(celdaDelPlano(leyenda['#']), 'solido');
+  assert.equal(celdaDelPlano(leyenda['C']), 'cielo');
+  assert.equal(celdaDelPlano(leyenda['I']), 'infierno');
+  assert.equal(celdaDelPlano(leyenda['X']), 'dos');
+  assert.equal(celdaDelPlano(leyenda['g']), 'tesoro');
+  assert.equal(celdaDelPlano(leyenda['-']), 'tesoro');
+  assert.equal(celdaDelPlano(leyenda['A']), 'puerta');
+  assert.equal(celdaDelPlano(leyenda['B']), 'puerta');
+  for (const c of ['/', '=', '|', 'n']) assert.equal(celdaDelPlano(leyenda[c]), 'pieza', `«${c}» es una pieza`);
+});
+
+test('el plano del nivel 1: el marco de sólido, las dos puertas y los dos tesoros, en orden de lectura, y nada más', () => {
+  const plano = planoDelNivel(BANCO, PRIMERO);
+  const cuenta = (celda: string) => plano.filter((t) => t.celda === celda).length;
+  // 15 arriba, 15 abajo y 7 a cada lado en las filas 1 a 7: el marco de la sala.
+  assert.equal(cuenta('solido'), 15 + 15 + 7 * 2);
+  assert.equal(cuenta('puerta'), 2);
+  assert.equal(cuenta('tesoro'), 2);
+  assert.equal(plano.length, 44 + 4, 'ni el aire ni las entradas');
+  assert.deepEqual(plano[0], { columna: 0, fila: 0, celda: 'solido' });
+  assert.deepEqual(
+    plano.filter((t) => t.celda === 'puerta'),
+    [
+      { columna: 1, fila: 7, celda: 'puerta' },
+      { columna: 13, fila: 7, celda: 'puerta' },
+    ],
+  );
+  // Todo cae adentro de la sala, y en orden de lectura: fila por fila, columna por columna.
+  for (let i = 1; i < plano.length; i++) {
+    const a = plano[i - 1]!;
+    const b = plano[i]!;
+    assert.ok(a.fila < b.fila || (a.fila === b.fila && a.columna < b.columna), `${i}: fuera de orden`);
+  }
+  for (const t of plano) assert.ok(t.columna >= 0 && t.columna < BANCO.ancho && t.fila >= 0 && t.fila < BANCO.alto);
+});
+
+test('cada nivel del banco tiene plano, y el plano no sabe de la partida: con el mundo ganado es el mismo', () => {
+  for (const nivel of FILA) {
+    const plano = planoDelNivel(BANCO, nivel);
+    assert.ok(plano.some((t) => t.celda === 'puerta'), `${nivel.id}: sin puertas en el plano`);
+    assert.deepEqual(planoDelNivel(ganado(nivel).banco, ganado(nivel).nivel), plano);
+  }
 });

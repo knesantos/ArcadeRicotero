@@ -12,6 +12,7 @@
 import { ACECHO, ACHATE, ESCALA_CORDERO, ESCALA_LOBO, PALO, SOGA, profundidad } from '../../lib/bestiario/rig.ts';
 import { ARMADO } from '../../lib/bestiario/recortes.ts';
 import { girar, hacia, parpado, partes, suave } from './articular.ts';
+import { miradaDe, seguir } from './mirada.ts';
 import { armarVaca } from './vaca.ts';
 import { sacudir } from './sacudon.ts';
 
@@ -47,6 +48,8 @@ export function armarPastura(raiz: ParentNode, esc: Escenario): Pastura {
    * despacio, mira al cordero un rato y se vuelve a hundir. `alzado` va de 0 (no se ve) a 1.
    */
   const lobo = { x: 300, alzado: 0, modo: 'hundido' as 'hundido' | 'sube' | 'mira' | 'baja', desde: 0, hasta: 1.5, parpadeo: 2 };
+  /** Cuánto le importa el dedo, y para dónde lo tiene (`mirada.ts`). */
+  const atento = { x: 0, cerca: 0, antes: 0 };
   const oveja = { u: 24, v: 18, mu: 24, mv: 18, mira: 1, paso: 0, patas: 0, cambio: 1, modo: 'pasta' as string, balaHasta: -1, parpadeo: 3.4, s: 1 };
   let arrastre: { id: number; x0: number; y0: number; movido: boolean } | null = null;
 
@@ -203,14 +206,22 @@ export function armarPastura(raiz: ParentNode, esc: Escenario): Pastura {
     const o = pantallaOveja();
     const y = ACECHO.piso + (1 - lobo.alzado) * ACECHO.hundido;
     gLobo.setAttribute('transform', `translate(${lobo.x.toFixed(1)} ${y.toFixed(1)}) scale(${ESCALA_LOBO}) translate(${-AL.piso[0]} ${-AL.piso[1]})`);
-    const respira = Math.sin(t * 1.7) * 0.012;
+    // La mirada (`D-90`, quinta ronda), como el lobo del monte: está mirando al cordero, pero si le
+    // acercás el dedo, te mira a vos, baja la cabeza y entorna los ojos. Y respira con peso.
+    const dtm = Math.min(0.05, Math.max(0, t - atento.antes));
+    atento.antes = t;
+    const m = lobo.alzado > 0.5 ? miradaDe(gLobo, AL.cabeza[0], AL.cabeza[1] - 60, 300) : { dx: 0, dy: 0, cerca: 0 };
+    atento.x = seguir(atento.x, m.dx * m.cerca, dtm, 3);
+    atento.cerca = seguir(atento.cerca, m.cerca, dtm, 2.5);
+    const aire = Math.sin(t * (1.7 + atento.cerca * 1.6));
+    const respira = (aire > 0 ? Math.pow(aire, 0.7) : -Math.pow(-aire, 1.5)) * (0.016 + atento.cerca * 0.008);
     pl.get('pecho')?.setAttribute('transform', `translate(${AL.piso[0]} ${AL.piso[1]}) scale(1 ${(1 + respira).toFixed(4)}) translate(${-AL.piso[0]} ${-AL.piso[1]})`);
-    const ladeo = Math.max(-7, Math.min(7, (o.x - lobo.x) / 30)) + Math.sin(t * 0.7) * 1.2;
-    girar(pl.get('cabeza'), ladeo, AL.cabeza, `translate(0 ${(-respira * 300).toFixed(2)}) `);
+    const ladeo = Math.max(-7, Math.min(7, (o.x - lobo.x) / 30)) * (1 - atento.cerca) + atento.x * 9 + Math.sin(t * 0.7) * 1.2;
+    girar(pl.get('cabeza'), ladeo, AL.cabeza, `translate(0 ${(-respira * 300 + atento.cerca * 5).toFixed(2)}) `);
     if (t > lobo.parpadeo + 0.15) lobo.parpadeo = t + 2.5 + Math.random() * 4;
     const ciega = t > lobo.parpadeo && t < lobo.parpadeo + 0.15 ? 1 : 0;
-    parpado(pl.get('parpado-1'), ciega);
-    parpado(pl.get('parpado-2'), ciega);
+    parpado(pl.get('parpado-1'), Math.max(ciega, atento.cerca * 0.42));
+    parpado(pl.get('parpado-2'), Math.max(ciega, atento.cerca * 0.42));
 
     // El cordero: las dos patas de la tapa, que se turnan al andar.
     oveja.s = profundidad(o.y);

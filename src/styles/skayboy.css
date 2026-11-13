@@ -1614,10 +1614,12 @@ html[data-pantalla='completa'],
    consulta de contenedor: una columna, o dos cuando hay ancho.
 
    **Recorte pegado, opaco**: la hoja es `--fondo` con el borde grueso en la tinta de *Gulp!*,
-   sin sombra (`D-64`). Los seis niveles abiertos: cada ficha es un boton, con su
-   numero en la tinta del disco, su nombre (`CNT-21`) en la letra del sistema, y un sello si esta
-   pasada (la tinta del acierto, que no se disfraza de ningun disco) o si es la de ahora. Ningun
-   estado se dice solo con color: los sellos dicen la palabra.
+   sin sombra (`D-64`). Los niveles abiertos, todos: cada ficha es un boton, con **el plano del
+   nivel** (`D-86`: la sala en miniatura, un sello de 15 x 9 con las tintas del pixel, que es lo
+   unico de pixel que se ve afuera del tubo, y se ve como sello pegado, no como pantalla), su numero
+   en la tinta del disco, su nombre (`CNT-21`) en la letra del sistema, y un sello si esta pasada
+   (la tinta del acierto, que no se disfraza de ningun disco) o si es la de ahora. Ningun estado se
+   dice solo con color: los sellos dicen la palabra. Debajo del titulo, cuantos pasaste.
    ========================================================================== */
 
 .juego-skayboy .menu-juego {
@@ -1727,6 +1729,17 @@ html[data-pantalla='completa'],
   color: var(--texto-tenue);
 }
 
+/* Cuantos pasaste (`D-86`): un renglon seco debajo del titulo; vacio, no ocupa lugar. */
+.juego-skayboy .menu-pasados {
+  margin: -2px 0 0;
+  font-size: 0.78rem;
+  color: var(--texto-tenue);
+}
+
+.juego-skayboy .menu-pasados:empty {
+  display: none;
+}
+
 .juego-skayboy .fichas {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1744,14 +1757,15 @@ html[data-pantalla='completa'],
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   grid-template-areas:
-    'numero nombre'
-    'numero sello';
+    'plano numero'
+    'nombre nombre'
+    'sello sello';
   align-items: center;
   align-content: center;
   column-gap: 6px;
-  row-gap: 2px;
+  row-gap: 3px;
   margin: 0;
-  padding: 4px 6px;
+  padding: 5px 6px;
   font: inherit;
   text-align: left;
   color: var(--texto);
@@ -1764,19 +1778,66 @@ html[data-pantalla='completa'],
   transition: border-color var(--duracion-toque);
 }
 
+/* El plano (`D-86`): 15 x 9 celdas a 3 px CSS, sobre el aire del area (`--px-luz`), con el
+   contorno de clave que cierra todo tile de la sala (`UX-27 §5.2`). Las tintas son las del pixel
+   y ninguna otra; el que no se dibuja es el aire, y la entrada es aire tambien (`sala.txt`). Las
+   puertas y las piezas van en clave, aclaradas: en 3 px no hay forma que las separe del solido,
+   y la tinta es la misma que en el tubo. */
+.juego-skayboy .ficha-nivel-plano {
+  grid-area: plano;
+  width: 45px;
+  height: 27px;
+  display: block;
+  background: var(--px-luz);
+  outline: 1px solid var(--px-clave);
+  shape-rendering: crispEdges;
+}
+
+.juego-skayboy .plano-solido {
+  fill: var(--px-clave);
+}
+
+.juego-skayboy .plano-cielo {
+  fill: var(--px-blanco-gulp);
+}
+
+.juego-skayboy .plano-infierno {
+  fill: var(--px-infierno);
+}
+
+.juego-skayboy .plano-dos {
+  fill: var(--px-infierno-3);
+}
+
+.juego-skayboy .plano-tesoro {
+  fill: var(--px-tesoro);
+}
+
+.juego-skayboy .plano-puerta {
+  fill: var(--px-clave);
+  fill-opacity: 0.55;
+}
+
+.juego-skayboy .plano-pieza {
+  fill: var(--px-clave);
+  fill-opacity: 0.3;
+}
+
 .juego-skayboy .ficha-nivel-numero {
   grid-area: numero;
   min-width: 1.2ch;
   font-family: var(--fuente-rotulada);
   font-size: 1.5rem;
   line-height: 1;
-  text-align: center;
+  text-align: left;
   color: var(--disco-gulp-tinta);
 }
 
+/* El nombre debajo del plano y el numero, a lo ancho de la ficha: dos renglones a lo sumo para
+   los de ocho palabras, sin cortar con puntos (`voz-ricotera.md` §3.7). */
 .juego-skayboy .ficha-nivel-nombre {
   grid-area: nombre;
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   line-height: 1.2;
 }
 
@@ -1792,11 +1853,6 @@ html[data-pantalla='completa'],
   border: 1px solid var(--disco-gulp-apoyo);
   border-radius: 3px;
   transform: rotate(-2deg);
-}
-
-/* Sin sello, el nombre ocupa las dos filas: la ficha no deja un renglon vacio abajo. */
-.juego-skayboy .ficha-nivel:not(:has(.ficha-nivel-sello:not([hidden]))) .ficha-nivel-nombre {
-  grid-row: 1 / -1;
 }
 
 /* El nivel que juega el boton grande, y el de ahora: el borde en la tinta del disco. */
@@ -1848,7 +1904,7 @@ html[data-pantalla='completa'],
    region de costado (x1: 480 x 152 con las columnas) y la de la pantalla completa acostada. */
 @container (min-width: 440px) {
   .juego-skayboy .menu-hoja {
-    grid-template-columns: minmax(10rem, 0.8fr) minmax(0, 1.4fr);
+    grid-template-columns: minmax(10rem, 0.8fr) minmax(0, 1.6fr);
     grid-template-areas: 'accion lista';
     column-gap: var(--espacio-2);
     padding: var(--espacio-1) var(--espacio-2);
@@ -1859,11 +1915,19 @@ html[data-pantalla='completa'],
   }
 }
 
-/* **Baja** —x1 de costado: la region es el tubo y las columnas, 152 de alto—: las seis fichas en
-   un renglon, cada una su numero y su sello, sin el nombre a la vista. El nombre no se pierde: lo
-   dice el `aria-label` de la ficha, y el del nivel que juega el boton grande, el renglon de abajo
-   del boton. Asi la accion entra sin desplazar en la entrada (`UX-37` §3.3) y ninguna ficha baja
-   de `--toque-min`. */
+/* Con ancho de sobra (la pantalla completa acostada en un telefono grande, la computadora): cuatro
+   por renglon, y doce fichas son tres renglones. */
+@container (min-width: 640px) {
+  .juego-skayboy .fichas {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* **Baja** —x1 de costado: la region es el tubo y las columnas, 152 de alto—: seis fichas por
+   renglon (doce son dos), cada una su numero y su sello, sin el nombre ni el plano a la vista. El
+   nombre no se pierde: lo dice el `aria-label` de la ficha, y el del nivel que juega el boton
+   grande, el renglon de abajo del boton. Asi la accion entra sin desplazar en la entrada (`UX-37`
+   §3.3) y ninguna ficha baja de `--toque-min`. */
 @container (max-height: 220px) {
   .juego-skayboy .fichas {
     grid-template-columns: repeat(6, minmax(var(--toque-min), 1fr));
@@ -1877,6 +1941,11 @@ html[data-pantalla='completa'],
       'sello';
     justify-items: center;
     padding: 4px 2px;
+  }
+
+  .juego-skayboy .ficha-nivel-plano,
+  .juego-skayboy .menu-pasados {
+    display: none;
   }
 
   /* La ficha mide poco mas que `--toque-min` de ancho: el sello se achica para entrar, y "ACA
@@ -1916,8 +1985,8 @@ html[data-pantalla='completa'],
    desarma (`display: contents`) para que sus botones entren a esta grilla sin cambiar el orden
    del documento. */
 @container (max-height: 220px) and (min-width: 440px) {
-  /* La columna de las fichas pide lo justo para las seis (`--toque-min` cada una y el aire); lo que
-     sobra se reparte, y la del boton grande no baja de 8 rem. */
+  /* La columna de las fichas pide lo justo para seis por renglon (`--toque-min` cada una y el
+     aire); lo que sobra se reparte, y la del boton grande no baja de 8 rem. */
   .juego-skayboy .menu-hoja {
     grid-template-columns: minmax(8rem, 1fr) minmax(calc(6 * var(--toque-min) + 30px), 1.6fr);
     grid-template-areas:
@@ -1976,12 +2045,17 @@ html[data-pantalla='completa'],
     padding: 6px var(--espacio-1);
   }
 
+  .juego-skayboy .ficha-nivel-plano {
+    width: 60px;
+    height: 36px;
+  }
+
   .juego-skayboy .ficha-nivel-numero {
     font-size: 1.8rem;
   }
 
   .juego-skayboy .ficha-nivel-nombre {
-    font-size: 0.88rem;
+    font-size: 0.82rem;
   }
 
   .juego-skayboy .menu-accion .primario {

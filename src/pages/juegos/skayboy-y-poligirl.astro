@@ -30,6 +30,7 @@ import PieImprenta from '../../components/PieImprenta.astro';
 import { PORTAL } from '../../lib/sitio/copy.ts';
 import { CASETE, FIN_DE_NIVEL, MENU, PANTALLA, PANTALLA_COMPLETA, PIE_HOMENAJE, TECLAS } from '../../lib/skayboy/copy.ts';
 import { nivelesASembrar, problemasDelBanco, type Banco } from '../../lib/skayboy/niveles.ts';
+import { planoDelNivel } from '../../lib/skayboy/menu.ts';
 import { teclaDelBoton } from '../../lib/skayboy/teclado.ts';
 import datos from '../../data/skayboy.json';
 
@@ -335,7 +336,10 @@ const PISO = [
             desde la partida, con el sello del mueble, que la deja en pausa. **Los seis niveles
             abiertos**: la fila dice dónde se retoma, no qué se puede jugar.
 
-            **Su lugar es la región del tubo y los mandos** (`UX-37` §3.3), que mide la isla con
+            Desde `D-86` cada ficha lleva el plano del nivel en miniatura y la lista dice cuántos
+          pasaste; la fila ya no son seis sino los que el banco siembre.
+
+          **Su lugar es la región del tubo y los mandos** (`UX-37` §3.3), que mide la isla con
             `regionDelMenu()` (`menu.ts`): parado, la zona de las teclas, con el nivel a la vista
             arriba; de costado, el tubo y las dos columnas; en el modo, la sala. **Nunca el pie de
             homenaje** (`BR-26`), ni la cabecera con el volver. Vive adentro de `.fichin`, así que se
@@ -368,6 +372,8 @@ const PISO = [
               </div>
               <div class="menu-lista">
                 <h3 class="menu-niveles">{MENU.niveles}</h3>
+                {/* Cuántos pasaste, de los sembrados (`D-86`): lo llena la isla con el avance del aparato. */}
+                <p id="menu-pasados" class="menu-pasados"></p>
                 <ol class="fichas">
                   {
                     SEMBRADO.niveles.map((n, i) => (
@@ -378,6 +384,17 @@ const PISO = [
                           data-nivel={n.id}
                           aria-label={MENU.etiqueta(i + 1, n.nombre, false, false)}
                         >
+                          {/*
+                            El plano del nivel (`D-86`): la sala en miniatura, un sello de 15 × 9 con las
+                            tintas del pixel, armado en el build desde la grilla (`planoDelNivel()`). Es
+                            solo para el ojo —el lector ya tiene el número y el nombre— y las tintas las
+                            pone `skayboy.css` por clase, no este archivo.
+                          */}
+                          <svg class="ficha-nivel-plano" viewBox={`0 0 ${SEMBRADO.ancho} ${SEMBRADO.alto}`} aria-hidden="true" focusable="false">
+                            {planoDelNivel(SEMBRADO, n).map((t) => (
+                              <rect class={`plano-${t.celda}`} x={t.columna} y={t.fila} width="1" height="1" />
+                            ))}
+                          </svg>
                           <span class="ficha-nivel-numero" aria-hidden="true">{i + 1}</span>
                           <span class="ficha-nivel-nombre" aria-hidden="true">{n.nombre}</span>
                           <span class="ficha-nivel-sello" aria-hidden="true" hidden></span>

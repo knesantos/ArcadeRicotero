@@ -182,7 +182,8 @@ export const CAMINOS: Readonly<Record<string, Tramo>> = {
     lobo: { x: 1260 },
     // El borde del piso del monte está en y ≈ 305 (`camino-monte-piso`): la tierra del rey y las patas
     // de tu animal entran en él, y las lobas se echan sobre el pasto, no en el borde.
-    bajan: { 'el-rey-de-esta-jungla': 62, 'tu-animal': 56, 'las-antiguas-lobas': 30 },
+    // El joven lobo baja con su volcán entero: en el recinto está entre las tiras de arriba, y acá el cráter pisa el piso.
+    bajan: { 'el-rey-de-esta-jungla': 62, 'tu-animal': 56, 'las-antiguas-lobas': 30, 'el-joven-lobo': 116 },
   },
   'la-pastura': {
     region: 'la-pastura',
@@ -198,7 +199,7 @@ export const CAMINOS: Readonly<Record<string, Tramo>> = {
       // Los mismos lugares que en el recinto del monte (`escena-monte.ts`).
       ojos: {
         'el-ovejero': [168, 396, 'oro'],
-        'el-borrego': [214, 470, 'papel'],
+        'el-borrego': [343, 460, 'papel'],
         'el-rebano': [640, 560, 'papel'],
       },
     },
