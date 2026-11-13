@@ -41,6 +41,8 @@ const CRUCES = piezasDeLosCruces(regiones);
 // La entrada (`D-79`): el portal, el cartel y la tierra del plano, que pinta cada región del JSON.
 const { piezasDelPortal, tierrasDe } = await importar('src/lib/bestiario/arte-portal.ts');
 const PORTAL = piezasDelPortal(tierrasDe(regiones));
+// El aire (`D-90`): la bruma, la niebla rasante y lo pegado a la cámara, en baldosas que se repiten.
+const { PIEZAS_AIRE } = await importar('src/lib/bestiario/arte-aire.ts');
 
 const { valores } = leerDeclaraciones(readFileSync(resolve(raiz, 'src/styles/tokens.css'), 'utf-8'));
 
@@ -78,18 +80,24 @@ const hoja = process.argv.includes('--hoja') ? process.argv[process.argv.indexOf
 const solo = process.argv.includes('--solo') ? process.argv[process.argv.indexOf('--solo') + 1].split(',') : null;
 const impresas = [];
 
-for (const p of [...PIEZAS, ...PIEZAS_CAMINO, ...CRUCES, ...PORTAL]) {
+for (const p of [...PIEZAS, ...PIEZAS_CAMINO, ...CRUCES, ...PORTAL, ...PIEZAS_AIRE]) {
   if (solo && !solo.some((prefijo) => p.nombre.startsWith(prefijo))) continue;
   const [x, y, ancho, alto] = p.caja;
   const densidad = p.densidad ?? 2.5;
+  // La sangría (`D-90`): una baldosa que se repite se imprime con un margen de más a cada lado y se
+  // recorta. Sin él, el soplo de lo que cruza el borde se queda sin la mitad de afuera y la costura se ve.
+  const sangria = p.sangria ?? 0;
   const svg = conTapas(
     conTintas(
-      `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.round(ancho * densidad)}" height="${Math.round(alto * densidad)}" viewBox="${x} ${y} ${ancho} ${alto}">` +
+      `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.round((ancho + 2 * sangria) * densidad)}" height="${Math.round(alto * densidad)}" viewBox="${x - sangria} ${y} ${ancho + 2 * sangria} ${alto}">` +
         `<defs>${filtros()}</defs>${p.dibujo}</svg>`,
       p.nombre,
     ),
   );
-  const imagen = sharp(Buffer.from(svg), { density: 72 });
+  const entera = sharp(Buffer.from(svg), { density: 72 });
+  const imagen = sangria
+    ? entera.extract({ left: Math.round(sangria * densidad), top: 0, width: Math.round(ancho * densidad), height: Math.round(alto * densidad) })
+    : entera;
   const buffer = await imagen.webp({ quality: p.calidad ?? (p.opaca ? 82 : 86), alphaQuality: 90, effort: 5 }).toBuffer();
   writeFileSync(resolve(salida, `${p.nombre}.webp`), buffer);
   impresas.push({ nombre: p.nombre, svg, ancho: Math.round(ancho * densidad), alto: Math.round(alto * densidad), kb: Math.round(buffer.length / 1024) });

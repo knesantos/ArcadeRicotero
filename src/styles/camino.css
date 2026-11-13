@@ -99,6 +99,37 @@
 .capa--lejos,
 .capa--frente { pointer-events: none; }
 
+/* ---- El aire (D-90) --------------------------------------------- */
+
+/* La bruma, la niebla rasante y lo pegado a la cámara (`lib/bestiario/aire.ts`). Cada capa es una
+   baldosa impresa con el aerógrafo, grano incluido, que se repite de costado: acá no se sopla nada,
+   ni hay un degradé. Mide una baldosa más que la vista, así la isla la corre sin que asome el borde.
+   No se toca: lo de abajo sigue recibiendo el dedo. */
+.camino .aire {
+  --px: calc(var(--alto-escena) / var(--alto));
+  position: absolute;
+  left: 0;
+  width: calc(100% + var(--px) * var(--tw));
+  background-image: var(--baldosa);
+  background-repeat: repeat-x;
+  background-size: calc(var(--px) * var(--tw)) 100%;
+  opacity: var(--alfa);
+  pointer-events: none;
+}
+
+/* La que cae o sube (la ceniza) se repite también para arriba, y arranca una baldosa antes. */
+.camino .aire--cae {
+  top: calc(var(--px) * var(--th) * -1);
+  height: calc(100% + var(--px) * var(--th));
+  background-repeat: repeat;
+  background-size: calc(var(--px) * var(--tw)) calc(var(--px) * var(--th));
+}
+
+.camino--andando .aire {
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+}
+
 .camino-deslizar { padding-inline: var(--espacio-2); }
 
 /* ---- Andando: la escena es la pantalla, y se corre de costado (D-77) ---- */
@@ -126,6 +157,22 @@
 /* Una escena más angosta que la pantalla (un recinto en la compu) queda en el medio. */
 .camino--andando .camino-tira { margin-inline: auto; }
 .camino--andando .camino-deslizar { display: none; }
+
+/* ---- La lupa (D-90) --------------------------------------------- */
+
+/* Con la lupa puesta, el dedo que sube o baja mira más arriba o más abajo: ya no es del navegador.
+   De costado sigue siendo caminar. */
+.camino--lupa .camino-escenario { touch-action: pan-x; }
+
+/* Los botones de la lupa (`sitio.css`, los mismos del plano), abajo a la derecha de la escena. */
+.camino-lupa {
+  position: fixed;
+  right: var(--espacio-2);
+  bottom: calc(var(--espacio-2) + env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+}
+
+html.incrustado .camino-lupa { bottom: calc(3.6rem + var(--espacio-2) + env(safe-area-inset-bottom, 0px)); }
 
 /* Con paralaje, la vista queda quieta en la pantalla mientras la tira pasa: las capas las corre
    la isla, cada una a su velocidad. La tira no recorta: si recortara, sería ella la caja de

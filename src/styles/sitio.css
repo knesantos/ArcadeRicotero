@@ -3581,6 +3581,81 @@ body:has(> .lugar) .marca-chica {
   overflow: visible;
 }
 
+/* ---- La lupa (D-90) ----
+   El plano se acerca adentro de su cartel: la lente es lo que se agranda (el dibujo, la luz y los
+   carteles) y el marco, la ventana que la recorta. Con la lupa puesta, el dedo lleva el plano y no
+   la página. Solo `transform`, que pone la isla (`scripts/bestiario/lupa-plano.ts`). */
+.bestiario-lente {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+}
+
+.bestiario-marco--lupa {
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+}
+
+.portal .bestiario-marco--lupa { overflow: hidden; }
+
+/* Los botones de la lupa, en el plano y en los caminos: sellos de goma. El `+` y el `−` son para el
+   mouse y el teclado (el dedo pellizca y da doble toque); "Mirá todo" aparece con la lupa puesta,
+   para cualquiera, y es la vuelta. */
+.lupa {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+}
+
+.lupa[hidden],
+.lupa [hidden] { display: none; }
+
+.lupa--plano {
+  position: absolute;
+  right: var(--espacio-1);
+  bottom: var(--espacio-1);
+  z-index: 2;
+}
+
+.lupa-boton {
+  min-height: var(--toque-min);
+  padding: 0 0.7rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fondo);
+  background: var(--papel);
+  border: var(--linea) solid var(--tr, var(--fondo));
+  border-radius: 3px;
+  cursor: pointer;
+  transform: rotate(-0.8deg);
+}
+
+.lupa-boton:nth-child(2) { transform: rotate(1.2deg); }
+
+.lupa-signo {
+  min-width: var(--toque-min);
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.lupa-boton:disabled {
+  border-style: dashed;
+  cursor: default;
+}
+
+.lupa-boton:focus-visible {
+  outline: 2px solid var(--papel);
+  outline-offset: 3px;
+}
+
+@media (hover: none) {
+  .lupa-signo { display: none; }
+}
+
 .portal-luz {
   position: absolute;
   inset: 0;

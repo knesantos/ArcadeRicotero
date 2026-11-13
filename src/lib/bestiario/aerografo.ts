@@ -116,6 +116,11 @@ export interface Pieza {
    * aerógrafo: el fondo de la prisión se imprime un poco más comprimido, que el corte lo aguanta.
    */
   calidad?: number;
+  /**
+   * Para una baldosa que se repite de costado (`arte-aire.ts`): cuántas unidades de más se imprimen
+   * a cada lado antes de recortar. El soplo de lo que cruza el borde necesita lo de afuera para cerrar.
+   */
+  sangria?: number;
 }
 
 /** La ruta pública de la imagen de una pieza. */

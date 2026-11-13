@@ -40,6 +40,7 @@ import { lugarDelRotulo, simbolos, tintaDe, type Bestiario, type Bestia } from '
 import { ALTO, CAMINOS, CON_CAMINO, hrefDeRegion } from '../../../lib/bestiario/camino.ts';
 import { destinosDelCruce, HORIZONTE, PIEZAS_CAMINO } from '../../../lib/bestiario/arte-camino.ts';
 import { rutaDePieza } from '../../../lib/bestiario/aerografo.ts';
+import { aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
 import { pisoDelCamino } from '../../../lib/bestiario/escenas-camino.ts';
 import { conAudio, loQueDice } from '../../../lib/bestiario/fichas.ts';
 import { fondoDe } from '../../../lib/bestiario/sonido.ts';
@@ -79,6 +80,20 @@ const frente = capa(tramo.piezas.frente);
 /** El piso impreso, para pedirlo antes que nada: es lo primero que se ve, y vive adentro del SVG. */
 const pisoImpreso = capa(tramo.piezas.piso);
 const enLaAltura = (caja: readonly number[]): string => `top: ${((caja[1]! / ALTO) * 100).toFixed(3)}%; height: ${((caja[3]! / ALTO) * 100).toFixed(3)}%`;
+
+/**
+ * El aire (`D-90`, `lib/bestiario/aire.ts`): baldosas impresas que se repiten de costado, entre las
+ * capas del camino. La imagen entra por una variable y la hoja la pone de fondo; la isla solo corre
+ * la capa y le cambia el alfa. Sin isla quedan quietas en su lugar: la niebla está igual.
+ */
+const aire = (plano: Plano) =>
+  aireDe(id, plano).map((c: CapaDeAire) => ({
+    pieza: c.pieza,
+    cae: altoDeBaldosa(c) > 0,
+    estilo:
+      `--baldosa: url(${rutaDePieza(c.pieza)}); --tw: ${c.ancho}; --th: ${c.alto}; --alfa: ${c.alfa}` +
+      (altoDeBaldosa(c) > 0 ? '' : `; ${enLaAltura([0, c.y, c.ancho, c.alto])}`),
+  }));
 
 /** El piso, que es la capa de los bichos (`escenas-camino.ts`). */
 const pisoSvg = pisoDelCamino(tramo, nombres);
@@ -201,6 +216,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
               />
             )
           }
+          {aire('fondo').map((a) => <div class:list={['aire', { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
           <svg
             class="capa capa--piso bestiario-svg"
             data-f="1"
@@ -208,6 +224,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
             style={`aspect-ratio: ${tramo.ancho} / ${ALTO}`}
             set:html={pisoSvg}
           />
+          {aire('medio').map((a) => <div class:list={['aire', { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
           {
             frente && (
               <img
@@ -222,6 +239,8 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
               />
             )
           }
+
+          {aire('cerca').map((a) => <div class:list={['aire', { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
 
           <nav
             class:list={['cruce', { 'cruce--picadas capa': postes }]}
@@ -277,6 +296,14 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
       </span>
     </p>
   </section>
+
+  {/* La lupa (`D-90`): con el dedo es el pellizco y el doble toque; estos botones son para el mouse
+      y el teclado, y el "volvé" que aparece cuando la lupa está puesta. Los prende la isla. */}
+<div class="lupa camino-lupa" id="lupa" role="group" aria-label={BESTIARIO.lupa.grupo} style={`--tr: ${tinta}`} hidden>
+    <button type="button" class="lupa-boton" id="lupa-todo" hidden>{BESTIARIO.lupa.todo}</button>
+    <button type="button" class="lupa-boton lupa-signo" id="lupa-menos" aria-label={BESTIARIO.lupa.alejar}>−</button>
+    <button type="button" class="lupa-boton lupa-signo" id="lupa-mas" aria-label={BESTIARIO.lupa.acercar}>+</button>
+  </div>
 
   <div class="bocadillo" id="bocadillo" hidden role="status">
     <p class="bocadillo-verso" id="bocadillo-verso"></p>
