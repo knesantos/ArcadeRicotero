@@ -163,7 +163,8 @@
 /* El filo a medida (sexta ronda): el canto encendido de cada pieza de un títere, impreso, puesto encima
    de la pieza. Lo prende la isla con una sola variable por títere; apagado, no se ve. */
 .camino .filo-propio {
-  opacity: var(--filo, 0);
+  /* Al doble: con medio haz encima ya está prendido del todo (el navegador lo topea en 1). */
+  opacity: calc(var(--filo, 0) * 2);
   pointer-events: none;
 }
 

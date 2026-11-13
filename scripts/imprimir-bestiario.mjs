@@ -133,7 +133,8 @@ for (const [region, de] of Object.entries(FILO_PROPIO)) {
         filo[i + 1] = verde;
         filo[i + 2] = azul;
         // Solo el canto franco: donde la pieza ya es un soplo que se pierde, no hay filo que prender.
-        filo[i + 3] = canto > 110 ? canto : 0;
+        // Y franco de verdad: tinta llena, no la media tinta del borde suavizado (séptima ronda: no se veía).
+        filo[i + 3] = canto > 110 ? 255 : 0;
       }
     }
     const buffer = await sharp(filo, { raw: { width: info.width, height: info.height, channels: 4 } }).webp({ quality: 70, alphaQuality: 80, effort: 5 }).toBuffer();

@@ -698,6 +698,15 @@ function temploIncienso(c: CapaDeAire): string {
   return `<g filter="url(#rociado)">${volutas(c, 1311, 15, [[TE.foco, 0.3], [TE.papel, 0.24], [TE.foco, 0.2]], 'soplada')}</g>`;
 }
 
+/**
+ * El humo que baja (séptima ronda): el de las velas y el incienso que ya subió, se enfrió y vuelve.
+ * Las mismas hebras, más pocas y más flojas; la isla las hace caer despacio hasta el piso.
+ */
+function temploHumoQueBaja(c: CapaDeAire): string {
+  // Las volutas se pintan desde arriba de la baldosa: se las corre a donde empieza esta capa.
+  return `<g filter="url(#rociado)"><g transform="translate(0 ${c.y})">${volutas({ ...c, y: 0 }, 1341, 12, [[TE.papel, 0.42], [TE.foco, 0.34]], 'soplada')}</g></g>`;
+}
+
 /** Una hoja: una almendra con su nervio, girada a gusto. */
 function hoja_(x: number, y: number, largo: number, giro: number, color: string, o: number): string {
   const d = `M${f(-largo / 2)} 0 Q0 ${f(-largo * 0.34)} ${f(largo / 2)} 0 Q0 ${f(largo * 0.3)} ${f(-largo / 2)} 0 Z`;
@@ -766,29 +775,51 @@ function vela(x: number, y: number, alto: number, rnd: () => number): string {
  * Ahí va lo que la gente le deja a Momo: velas de distinto alto, alguna caída, un platito, una
  * botella, flores, y el humo que **baja** y se queda a ras del piso. Tandas con aire entre una y otra.
  */
+/**
+ * Dónde van las ofrendas, a lo largo del templo entero (1940). No es una baldosa que se repite: en la
+ * séptima ronda se vio que, repetida, las velas caían encima de las patas de Mister Ed y del Doctor
+ * Saturno. Cada tanda va en un hueco entre los que están parados en el piso: la murga (328), la
+ * bailarina (589), el Morta (979), Saturno (1240), Mister Ed (1347), los gallos (1468), el santo (194).
+ * `cerca`: dónde, cuántas velas y si lleva botella. `lejos`: dónde, la fila de atrás.
+ */
+const OFRENDAS = {
+  cerca: [[462, 3, false], [752, 5, true], [1722, 4, true], [1868, 3, false]] as const,
+  lejos: [440, 690, 835, 1108, 1640, 1795],
+};
+
 function temploOfrendas(c: CapaDeAire): string {
   const rnd = azar(1321);
-  let s = manchas(c, 1323, 7, 548, 592, [[TE.papel, 0.1], [TE.foco, 0.08]], 20, [50, 110]);
-  for (let i = 0; i < 3; i++) {
-    const x0 = (c.ancho / 3) * (i + 0.25 + rnd() * 0.4);
+  let s = '';
+  // La fila de atrás (séptima ronda): más lejos, contra donde empieza el piso. Las mismas velas, a
+  // poco más de la mitad y más apagadas, en tandas que no coinciden con las de adelante.
+  const lejos = azar(1327);
+  for (let i = 0; i < OFRENDAS.lejos.length; i++) {
+    const x0 = OFRENDAS.lejos[i]!;
+    const y0 = 504 + lejos() * 12;
+    let tanda = '';
+    const cuantas = 2 + Math.floor(lejos() * 3);
+    for (let k = 0; k < cuantas; k++) tanda += vela(x0 + (k - cuantas / 2) * (20 + lejos() * 12) + 0.37 * i, y0 + (lejos() - 0.5) * 8, 16 + lejos() * 40, lejos).replaceAll('"ve-', `"vl${i}-`).replaceAll('(#ve-', `(#vl${i}-`);
+    s += `<g opacity="0.62" transform="translate(${f(x0)} ${f(y0)}) scale(0.56) translate(${f(-x0)} ${f(-y0)})">${tanda}</g>`;
+  }
+  for (let i = 0; i < OFRENDAS.cerca.length; i++) {
+    const [x0, cuantas, conBotella] = OFRENDAS.cerca[i]!;
     const y0 = 548 + rnd() * 36;
     let tanda = '';
-    const cuantas = 3 + Math.floor(rnd() * 3);
     for (let k = 0; k < cuantas; k++) tanda += vela(x0 + (k - cuantas / 2) * (16 + rnd() * 10), y0 + (rnd() - 0.5) * 14, 14 + rnd() * 46, rnd);
     // Un platito con algo adentro, y una botella vacía.
     const px = x0 + cuantas * 14 + 16;
     tanda += nube(px, y0 + 6, 18, 3.4, TE.negro, 's', 0.8) + `<ellipse cx="${f(px)}" cy="${f(y0 + 3)}" rx="15" ry="4.4" fill="${TE.papel}" opacity="0.85"/><ellipse cx="${f(px)}" cy="${f(y0 + 2)}" rx="10" ry="2.6" fill="${TE.negro}" opacity="0.7"/>`;
-    if (i % 2 === 0) {
+    if (conBotella) {
       const bx = x0 - cuantas * 14 - 12;
       tanda += nube(bx, y0 + 5, 9, 3, TE.negro, 's', 0.8) + forma(`M${f(bx - 5)} ${f(y0 + 4)} L${f(bx - 5)} ${f(y0 - 18)} Q${f(bx - 4)} ${f(y0 - 24)} ${f(bx - 2)} ${f(y0 - 26)} L${f(bx - 2)} ${f(y0 - 36)} L${f(bx + 2)} ${f(y0 - 36)} L${f(bx + 2)} ${f(y0 - 26)} Q${f(bx + 4)} ${f(y0 - 24)} ${f(bx + 5)} ${f(y0 - 18)} L${f(bx + 5)} ${f(y0 + 4)} Z`, TE.negro) + trazo(`M${f(bx - 3.4)} ${f(y0 - 16)} L${f(bx - 3.4)} ${f(y0)}`, TE.foco, 1.1, 0.6);
     }
     // Las flores: tres o cuatro puntos claros con su tallo, tirados.
     for (let k = 0; k < 4; k++) {
-      const fx = x0 + (rnd() - 0.5) * 120;
+      const fx = x0 + (rnd() - 0.5) * cuantas * 24;
       const fy = y0 + 8 + rnd() * 14;
       tanda += trazo(`M${f(fx)} ${f(fy)} l${f(8 + rnd() * 6)} ${f(-2 + rnd() * 4)}`, TE.negro, 1.4) + `<circle cx="${f(fx)}" cy="${f(fy)}" r="${f(2 + rnd() * 1.4)}" fill="${k % 2 ? TE.foco : TE.papel}" opacity="0.9"/>`;
     }
-    s += vuelta(x0, 140, c.ancho, (xx) => `<g transform="translate(${f(xx - x0)} 0)">${tanda.replaceAll('id="ve-', `id="ve${Math.round(xx)}-`).replaceAll('url(#ve-', `url(#ve${Math.round(xx)}-`)}</g>`);
+    s += tanda;
   }
   return rociado(c, s);
 }
@@ -1025,6 +1056,7 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-mesa-humo': mesaHumo,
   'aire-templo-incienso': temploIncienso,
   'aire-templo-ofrendas': temploOfrendas,
+  'aire-templo-humo-baja': temploHumoQueBaja,
   'aire-arbol-hojas': arbolHojas,
   'aire-arbol-racha': arbolRacha,
   'aire-galpon-polvo': galponPolvo,

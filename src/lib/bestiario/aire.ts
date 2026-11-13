@@ -139,7 +139,7 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   // No llevan nada pegado a la cámara: abajo, el baldío ya tiene sus yuyos.
   'los-techos': [
     capa({ pieza: 'aire-techos-ropa', plano: 'medio', f: 0.72, y: 150, alto: 190, ancho: 1600, mece: 5, ritmoMece: 0.9, alfa: 0.9 }),
-    capa({ pieza: 'aire-techos-humo', plano: 'medio', f: 0.85, y: 40, alto: 380, ancho: 1300, deriva: -11, alfa: 0.8, late: 0.14, ritmo: 0.33, mece: 6, ritmoMece: 0.5 }),
+    capa({ pieza: 'aire-techos-humo', plano: 'medio', f: 0.85, y: 40, alto: 380, ancho: 1300, deriva: -11, alfa: 0.55, late: 0.14, ritmo: 0.33, mece: 6, ritmoMece: 0.5 }),
   ],
   // La prisión es madera tallada (*Oktubre*): el frío es un rayado de gubia a ras del piso, y lo
   // pegado a la cámara son los barrotes, de arriba abajo. Se mira desde otra celda.
@@ -154,7 +154,9 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   'el-templo': [
     // Las ofrendas (sexta ronda): velas, platitos y el humo que baja, en el piso, entre el medallón y el
     // papel picado. Van con el piso (`f` 1) y titilan apenas todas juntas.
-    capa({ pieza: 'aire-templo-ofrendas', plano: 'medio', f: 1, y: 440, alto: 180, ancho: 900, alfa: 0.94, late: 0.06, ritmo: 7 }),
+    capa({ pieza: 'aire-templo-ofrendas', plano: 'medio', f: 1, y: 440, alto: 180, ancho: 1940, alfa: 0.94, late: 0.06, ritmo: 7 }),
+    // El humo que baja (séptima ronda): el que ya subió y vuelve, despacio. De pantalla entera, como todo lo que cae.
+    capa({ pieza: 'aire-templo-humo-baja', plano: 'medio', f: 1.05, y: 0, alto: ALTO, ancho: 800, deriva: 2, cae: 8, alfa: 0.36, late: 0.12, ritmo: 0.21, mece: 5, ritmoMece: 0.33 }),
     capa({ pieza: 'aire-templo-incienso', plano: 'medio', f: 1.15, y: 0, alto: ALTO, ancho: 900, deriva: -3, cae: -11, alfa: 0.6, late: 0.14, ritmo: 0.26, mece: 7, ritmoMece: 0.4 }),
   ],
   // El árbol: las hojas que se le caen, y la racha que las lleva de costado cuando sopla en la copa.
@@ -259,7 +261,7 @@ export interface Luz {
  */
 export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   // El farol está en `ASTILLERO.farol` (440 de 900, a lo largo ×2400/900), y su boca a 30 a la derecha del poste.
-  'los-astilleros': [{ pieza: 'luz-astillero-cono', f: 1, x: 1203, y: 244, caja: [-170, -14, 340, 380], vaiven: 7, ritmo: 0.55, alfa: 0.62, late: 0.16, pulso: 'titila', crece: 0, suena: 'zumbido', filo: { pieza: 'filo-sodio', cuantos: 3, abre: 22 } }],
+  'los-astilleros': [{ pieza: 'luz-astillero-cono', f: 1, x: 1203, y: 244, caja: [-170, -14, 340, 380], vaiven: 8, ritmo: 0.55, alfa: 0.62, late: 0.16, pulso: 'titila', crece: 0, suena: 'zumbido', rumbo: -24, filo: { pieza: 'filo-sodio', cuantos: 3, abre: 40 } }],
   'el-infierno': [{ pieza: 'luz-infierno-brasa', f: 1, x: 452, y: 486, caja: [-260, -110, 520, 220], vaiven: 0, ritmo: 3.9, alfa: 0.56, late: 0.36, pulso: 'late', crece: 0.07, suena: 'chispa' }],
   cybersiberia: [{ pieza: 'luz-cyber-haz', f: 1, x: 1560, y: -6, caja: [-190, -14, 380, 600], vaiven: 15, ritmo: 0.33, alfa: 0.34, late: 0.05, pulso: 'barre', crece: 0 }],
   // La ruta: los faros del último bondi, que van con él y alumbran el polvo. El bondi anda para la derecha.
@@ -290,7 +292,9 @@ export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
  * balde de las almejas, la jaula de la fiera) no tienen pieza de la que sacarlo: siguen con la medialuna.
  */
 export const FILO_PROPIO: Readonly<Record<string, { prefijos: readonly string[]; tinta: string }>> = {
-  'la-prision': { prefijos: ['esclavo-', 'pichon-', 'dracula-', 'encadenado-'], tinta: 'var(--bestia-dracula-papel)' },
+  // La prisión es blanco sobre negro: un canto blanco no se ve sobre una figura blanca. Va en el rojo
+  // de las banderas de *Oktubre*, que corta sobre los dos (`D-90`, séptima ronda).
+  'la-prision': { prefijos: ['esclavo-', 'pichon-', 'dracula-', 'encadenado-'], tinta: 'var(--disco-oktubre-tinta)' },
   'los-techos': { prefijos: ['atila-', 'limon-', 'psicopata-', 'perro-', 'dinamita-'], tinta: 'var(--entorno-baion-luz)' },
   'los-astilleros': { prefijos: ['botija-'], tinta: 'var(--disco-cordero-atado-tinta)' },
 };
@@ -310,7 +314,7 @@ export function tieneFiloPropio(pieza: string, region: string): boolean {
 export const rutaDelFilo = (pieza: string): string => `/bestiario/filo-de-${pieza}.webp`;
 
 /** Cuánto mide el filo, en píxeles de la imagen impresa: lo que se corre la pieza para arriba para sacarlo. */
-export const GROSOR_DEL_FILO = 7;
+export const GROSOR_DEL_FILO = 12;
 
 /** Cuánto le pega una luz a algo que está a `angulo` grados de su haz, de 0 a 1: de lleno en el medio y nada desde `abre`. */
 export function tocaLaLuz(angulo: number, abre: number): number {

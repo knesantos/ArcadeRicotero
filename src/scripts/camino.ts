@@ -110,7 +110,7 @@ const luces = [...camino.querySelectorAll<HTMLElement>('.luz')].flatMap((el) => 
 const filos = [...camino.querySelectorAll<HTMLElement>('.filo')].map((el) => ({
   el,
   luz: el.dataset.filo ?? '',
-  blanco: null as { x: number; y: number; ancho: number; propio: readonly SVGGElement[] | null } | null,
+  blanco: null as { x: number; y: number; cy: number; ancho: number; propio: readonly SVGGElement[] | null } | null,
   alfa: -1,
 }));
 /** Los títeres que ya tienen puesto su filo a medida (`FILO_PROPIO`), con los grupos donde está: ahí se lo prende. */
@@ -547,7 +547,7 @@ function pintarLuces(): void {
         if (fl.luz !== l.r.pieza) continue;
         const b = fl.blanco;
         // El haz apunta para abajo y gira con las agujas: a un bicho a la derecha le toca un giro negativo.
-        const k = b && !quieto() ? tocaLaLuz((Math.atan2(-(b.x - ancla), b.y - l.r.y) * 180) / Math.PI - apunta, l.r.filo.abre) * Math.min(1, e.alfa / l.r.alfa) : 0;
+        const k = b && !quieto() ? tocaLaLuz((Math.atan2(-(b.x - ancla), b.cy - l.r.y) * 180) / Math.PI - apunta, l.r.filo.abre) * Math.min(1, e.alfa / l.r.alfa) : 0;
         if (Math.abs(k - fl.alfa) > 0.01) {
           fl.alfa = k;
           // El que tiene filo a medida prende el suyo, en todas sus piezas, con una sola variable; el
@@ -612,7 +612,7 @@ function medirFilos(): void {
     if (!l.r.filo) continue;
     const mios = filos.filter((f) => f.luz === l.r.pieza);
     const alcance = l.r.caja[2] * 0.75;
-    const cerca: { x: number; y: number; ancho: number; d: number; g: SVGGElement }[] = [];
+    const cerca: { x: number; y: number; cy: number; ancho: number; d: number; g: SVGGElement }[] = [];
     for (const g of piso.querySelectorAll<SVGGElement>(BICHOS)) {
       if (g.dataset.velocidad) continue;
       const r = (g.querySelector('.toque') ?? g).getBoundingClientRect();
@@ -624,14 +624,14 @@ function medirFilos(): void {
       // Los muy altos (la drácula, Barbazul) no llevan la medialuna genérica, que les quedaría como un
       // sombrero; el canto impreso sí, porque les sigue la silueta.
       if (d < alcance && r.height > innerHeight * 0.7 && !vestirConFilo(g)) continue;
-      if (d < alcance && y > l.r.y + 40) cerca.push({ x, y: y + 6, ancho: Math.min(170, r.width / z / escala), d, g });
+      if (d < alcance && y > l.r.y + 40) cerca.push({ x, y: y + 6, cy: y + r.height / z / escala / 2, ancho: Math.min(170, r.width / z / escala), d, g });
     }
     cerca.sort((p, q) => p.d - q.d);
     mios.forEach((f, i) => {
       const c = cerca[i];
       // El que deja de estar cerca se apaga: su filo no queda prendido para siempre.
       if (f.blanco?.propio && f.blanco.propio !== (c ? vestidos.get(c.g) : null)) for (const raiz of f.blanco.propio) raiz.style.removeProperty('--filo');
-      f.blanco = c ? { x: c.x, y: c.y, ancho: c.ancho, propio: vestirConFilo(c.g) } : null;
+      f.blanco = c ? { x: c.x, y: c.y, cy: c.cy, ancho: c.ancho, propio: vestirConFilo(c.g) } : null;
       f.alfa = -1;
     });
   }
