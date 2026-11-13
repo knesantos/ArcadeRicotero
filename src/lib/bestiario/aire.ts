@@ -60,6 +60,11 @@ export interface CapaDeAire {
   ritmo: number;
   /** Cuánto se deshace caminando, de 0 (nada) a 1 (del todo). */
   abre: number;
+  /** Lo que se hamaca de costado, en unidades, y a qué ritmo: la ropa tendida, los juncos. */
+  mece: number;
+  ritmoMece: number;
+  /** La pieza ya la pinta y la imprime otro (`arte-entornos.ts`): acá solo se la mueve. */
+  ajena?: boolean;
 }
 
 const capa = (c: Partial<CapaDeAire> & Pick<CapaDeAire, 'pieza' | 'plano' | 'f' | 'y' | 'alto' | 'ancho'>): CapaDeAire => ({
@@ -69,6 +74,8 @@ const capa = (c: Partial<CapaDeAire> & Pick<CapaDeAire, 'pieza' | 'plano' | 'f' 
   late: 0,
   ritmo: 0.5,
   abre: 0,
+  mece: 0,
+  ritmoMece: 0.8,
   ...c,
 });
 
@@ -94,6 +101,11 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
     capa({ pieza: 'aire-cyber-vaho', plano: 'fondo', f: 0.8, y: 110, alto: 320, ancho: 1200, deriva: -12, alfa: 0.75, late: 0.15, ritmo: 0.19 }),
     capa({ pieza: 'aire-cyber-ventisca', plano: 'medio', f: 1.2, y: 250, alto: 390, ancho: 1300, deriva: -130, alfa: 0.6, late: 0.32, ritmo: 0.47, abre: 0.25 }),
     capa({ pieza: 'aire-cyber-cerca', plano: 'cerca', f: 1.75, y: 420, alto: 220, ancho: 1600 }),
+    // La nevada (tercera ronda). Es la misma capa de copos del recinto (`cyber-nieve`), que en el camino
+    // vivía adentro del dibujo del piso y bajaba con una animación de CSS: cada cuadro obligaba a
+    // repintar el piso entero, y Cybersiberia andaba a 12 cuadros por segundo con la CPU estrangulada
+    // ×4. Como capa de aire la mueve el compositor: 51. Cae lo mismo que antes, 640 unidades en 16 s.
+    capa({ pieza: 'cyber-nieve', plano: 'medio', f: 1, y: 0, alto: ALTO, ancho: 900, cae: 40, alfa: 1, ajena: true }),
   ],
   // Los astilleros: la bruma del río detrás del muelle, el vaho que sube del agua y los fierros del muelle fuera de foco.
   'los-astilleros': [
@@ -105,6 +117,30 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
   'el-infierno': [
     capa({ pieza: 'aire-infierno-humo', plano: 'medio', f: 1.15, y: 250, alto: 390, ancho: 1300, deriva: 8, alfa: 0.8, late: 0.14, ritmo: 0.27, abre: 0.4 }),
     capa({ pieza: 'aire-infierno-ceniza', plano: 'cerca', f: 1.5, y: 0, alto: ALTO, ancho: 800, deriva: 9, cae: -34, alfa: 0.9, late: 0.1, ritmo: 0.9 }),
+  ],
+  // La ruta (tercera ronda): la bruma baja del horizonte, el polvo que levantan los fierros y los pastos de la banquina.
+  'la-ruta': [
+    capa({ pieza: 'aire-ruta-bruma', plano: 'fondo', f: 0.6, y: 110, alto: 320, ancho: 1200, deriva: 4, alfa: 0.7, late: 0.1, ritmo: 0.2 }),
+    capa({ pieza: 'aire-ruta-polvo', plano: 'medio', f: 1.2, y: 250, alto: 390, ancho: 1300, deriva: 46, alfa: 0.55, late: 0.25, ritmo: 0.41, abre: 0.2 }),
+    capa({ pieza: 'aire-ruta-cerca', plano: 'cerca', f: 1.75, y: 420, alto: 220, ancho: 1600, mece: 3, ritmoMece: 0.9 }),
+  ],
+  // Los tres recintos que siguen son de una sola capa y cada uno viste la mano de su disco: el aire
+  // no es aerógrafo ahí. En el bajo es crayón (*Gulp!* y la contratapa de *Un baión*): vaho rayado
+  // sobre el agua y juncos.
+  'el-bajo': [
+    capa({ pieza: 'aire-bajo-vaho', plano: 'medio', f: 1.1, y: 380, alto: 260, ancho: 1300, deriva: 7, alfa: 0.7, late: 0.16, ritmo: 0.3, abre: 0.4 }),
+    capa({ pieza: 'aire-bajo-cerca', plano: 'cerca', f: 1.75, y: 440, alto: 200, ancho: 1600, mece: 4, ritmoMece: 0.7 }),
+  ],
+  // Los techos: el hollín que cae, a rayas de pastel como el cielo de *Un baión*, y la ropa tendida que se hamaca.
+  'los-techos': [
+    capa({ pieza: 'aire-techos-hollin', plano: 'medio', f: 1.3, y: 0, alto: ALTO, ancho: 800, deriva: -9, cae: 16, alfa: 0.75, late: 0.1, ritmo: 0.5 }),
+    capa({ pieza: 'aire-techos-ropa', plano: 'cerca', f: 1.75, y: 430, alto: 210, ancho: 1600, mece: 7, ritmoMece: 1.1 }),
+  ],
+  // La prisión es madera tallada (*Oktubre*): el frío es un rayado de gubia a ras del piso, y lo
+  // pegado a la cámara son los barrotes, de arriba abajo. Se mira desde otra celda.
+  'la-prision': [
+    capa({ pieza: 'aire-prision-frio', plano: 'medio', f: 1.1, y: 330, alto: 310, ancho: 1300, deriva: 5, alfa: 0.42, late: 0.14, ritmo: 0.26, abre: 0.45 }),
+    capa({ pieza: 'aire-prision-rejas', plano: 'cerca', f: 1.75, y: 0, alto: ALTO, ancho: 1500 }),
   ],
 };
 
@@ -126,7 +162,8 @@ export const resto = (v: number, m: number): number => ((v % m) + m) % m;
 export function corridaDeAire(c: CapaDeAire, cam: number, t: number, suelta: boolean): { x: number; y: number } {
   const paralaje = (suelta ? c.f : c.f - 1) * cam;
   const alto = altoDeBaldosa(c);
-  const x = -resto(paralaje - c.deriva * t, c.ancho);
+  const hamaca = c.mece ? Math.sin(t * c.ritmoMece) * c.mece : 0;
+  const x = -resto(paralaje - c.deriva * t - hamaca, c.ancho);
   return { x: x === 0 ? 0 : x, y: alto ? resto(c.cae * t, alto) : 0 };
 }
 
@@ -179,6 +216,10 @@ export interface Luz {
   pulso: 'titila' | 'late' | 'barre';
   /** Cuánto crece con el pulso, en partes de su tamaño. */
   crece: number;
+  /** Para dónde apunta, en grados: 0 para abajo (un farol), -90 para la derecha (un faro). */
+  rumbo?: number;
+  /** Si va colgada de un bicho que se mueve (el bondi): su `id`. Entonces `x` se mide desde él. */
+  sigue?: string;
 }
 
 /**
@@ -192,6 +233,14 @@ export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   'los-astilleros': [{ pieza: 'luz-astillero-cono', f: 1, x: 1203, y: 244, caja: [-170, -14, 340, 380], vaiven: 7, ritmo: 0.55, alfa: 0.62, late: 0.16, pulso: 'titila', crece: 0 }],
   'el-infierno': [{ pieza: 'luz-infierno-brasa', f: 1, x: 452, y: 486, caja: [-260, -110, 520, 220], vaiven: 0, ritmo: 3.9, alfa: 0.56, late: 0.36, pulso: 'late', crece: 0.07 }],
   cybersiberia: [{ pieza: 'luz-cyber-haz', f: 1, x: 1560, y: -6, caja: [-190, -14, 380, 600], vaiven: 15, ritmo: 0.33, alfa: 0.34, late: 0.05, pulso: 'barre', crece: 0 }],
+  // La ruta: los faros del último bondi, que van con él y alumbran el polvo. El bondi anda para la derecha.
+  'la-ruta': [{ pieza: 'luz-ruta-faros', f: 1, x: 286, y: 446, caja: [-110, -14, 220, 300], vaiven: 1.6, ritmo: 6.5, alfa: 0.72, late: 0.06, pulso: 'barre', crece: 0, rumbo: -90, sigue: 'el-zumba' }],
+  // El bajo: el reflejo del pucho de Pierre en el agua, una escalerita de rayas de crayón que tiembla. Pierre está en 486, y el recinto arranca en -250.
+  'el-bajo': [{ pieza: 'luz-bajo-reflejo', f: 1, x: 806, y: 492, caja: [-70, -12, 140, 140], vaiven: 2.5, ritmo: 1.7, alfa: 0.62, late: 0.2, pulso: 'titila', crece: 0 }],
+  // Los techos: el farol del baldío (650, 130 en su recinto), que titila.
+  'los-techos': [{ pieza: 'luz-techos-farol', f: 1, x: 650, y: 140, caja: [-180, -14, 360, 420], vaiven: 2.5, ritmo: 0.7, alfa: 0.4, late: 0.16, pulso: 'titila', crece: 0 }],
+  // La prisión: el reflector del muro, que barre. Es de gubia: canto duro y rayado, sin soplo.
+  'la-prision': [{ pieza: 'luz-prision-reflector', f: 1, x: 760, y: -6, caja: [-220, -14, 440, 660], vaiven: 19, ritmo: 0.27, alfa: 0.32, late: 0.05, pulso: 'barre', crece: 0 }],
 };
 
 /** El latido: dos golpes seguidos y una pausa, de 0 a 1. `u` es la fase, en vueltas. */
@@ -249,7 +298,101 @@ export const ACECHOS: Readonly<Record<string, Acecho>> = {
   cybersiberia: { pieza: 'acecho-cyber', ancho: 46, alto: 20, lugares: [[0.14, 598, 1], [0.82, 606, 1.1], [0.36, 168, 0.6], [0.7, 232, 0.6]], espera: [5, 6.5], dura: [5, 8] },
   'los-astilleros': { pieza: 'acecho-astillero', ancho: 46, alto: 30, lugares: [[0.2, 600, 1], [0.78, 606, 1.1], [0.62, 372, 0.55], [0.3, 380, 0.5]], espera: [5, 6.5], dura: [6, 9] },
   'el-infierno': { pieza: 'acecho-infierno', ancho: 46, alto: 20, lugares: [[0.18, 606, 1.1], [0.8, 610, 1.2], [0.5, 616, 0.9]], espera: [5, 6.5], dura: [5, 8] },
+  // La ruta: algo en la banquina, o lejos, al borde del asfalto.
+  'la-ruta': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.16, 600, 1], [0.82, 606, 1.1], [0.3, 404, 0.5], [0.7, 396, 0.45]], espera: [5, 6.5], dura: [6, 9] },
+  // El bajo: lo que mira desde el agua, con su reflejo.
+  'el-bajo': { pieza: 'acecho-astillero', ancho: 46, alto: 30, lugares: [[0.2, 560, 0.9], [0.78, 590, 1.1], [0.5, 610, 1]], espera: [5, 6.5], dura: [6, 9] },
+  // Los techos: los gatos, en lo negro de las medianeras.
+  'los-techos': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.2, 300, 0.6], [0.7, 330, 0.65], [0.45, 340, 0.55], [0.84, 612, 1]], espera: [5, 6.5], dura: [6, 9] },
+  // La prisión: desde la celda de enfrente, en lo negro de arriba.
+  'la-prision': { pieza: 'acecho-prision', ancho: 46, alto: 20, lugares: [[0.18, 190, 0.8], [0.8, 210, 0.85], [0.5, 150, 0.7]], espera: [5, 6.5], dura: [5, 8] },
 };
+
+/* ------------------------------------------------------------------
+   La vida del fondo (tercera ronda)
+   ------------------------------------------------------------------ */
+
+/**
+ * Lo que pasa solo, lejos, de a uno y muy cada tanto: un pájaro que cruza, una estrella que se cae,
+ * un barquito de papel que se lleva el agua. No se toca ni dice nada: premia al que mira. Es una
+ * imagen impresa que cruza la pantalla con `transform`; con movimiento reducido no pasa nada.
+ */
+export interface Vida {
+  pieza: string;
+  /** Lo que mide la pieza, en unidades de escena, y cuánto se la achica (lo lejos que está). */
+  ancho: number;
+  alto: number;
+  tam: number;
+  /** La altura por la que cruza: de dónde a dónde, en unidades de escena. */
+  y: readonly [number, number];
+  /** Cuánto tarda en cruzar la pantalla, en segundos, y cada cuánto pasa uno. */
+  dura: readonly [number, number];
+  espera: readonly [number, number];
+  /** Cuánto aletea (0, nada: una estrella, un barco) y cuánto se bambolea, en grados. */
+  aletea: number;
+  bamboleo: number;
+  alfa: number;
+  /** Si puede venir de cualquiera de los dos lados, o siempre de la izquierda (la estrella cae para un lado). */
+  deLosDosLados: boolean;
+}
+
+const AVE = { pieza: 'vida-ave', ancho: 40, alto: 18, tam: 0.55, y: [70, 150], dura: [9, 14], espera: [22, 40], aletea: 1, bamboleo: 0, alfa: 0.8, deLosDosLados: true } as const;
+
+export const VIDAS: Readonly<Record<string, Vida>> = {
+  // La lechuza del monte y la gaviota del río son la misma silueta lejana.
+  'el-monte': AVE,
+  'la-pastura': AVE,
+  'los-astilleros': { ...AVE, y: [60, 130] },
+  // Los techos: un murciélago, más bajo y más rápido.
+  'los-techos': { ...AVE, tam: 0.45, y: [120, 240], dura: [5, 8] },
+  // La prisión: un pájaro blanco, de gubia, que pasa por arriba del muro. El único que sale.
+  'la-prision': { ...AVE, pieza: 'vida-ave-papel', y: [40, 110], dura: [10, 15], alfa: 0.9 },
+  // La ruta: una estrella que se cae.
+  'la-ruta': { pieza: 'vida-fugaz', ancho: 90, alto: 30, tam: 1, y: [50, 190], dura: [0.9, 1.4], espera: [18, 34], aletea: 0, bamboleo: 0, alfa: 0.9, deLosDosLados: false },
+  // El bajo: un barquito de papel que se lleva el agua, despacio.
+  'el-bajo': { pieza: 'vida-barquito', ancho: 40, alto: 30, tam: 0.7, y: [500, 506], dura: [34, 46], espera: [14, 26], aletea: 0, bamboleo: 5, alfa: 0.9, deLosDosLados: true },
+};
+
+/**
+ * Dónde está lo que cruza, para un avance `u` de 0 a 1: de costado en partes de la vista (entra y
+ * sale por afuera), la altura en unidades, lo que aletea (de 0,3 a 1) y lo que se bambolea.
+ */
+export function pasoDeVida(v: Vida, u: number, t: number, alReves: boolean): { fx: number; y: number; aleteo: number; giro: number } {
+  const k = Math.min(1, Math.max(0, u));
+  const fx = alReves ? 1.15 - k * 1.3 : -0.15 + k * 1.3;
+  // Un pájaro sube y baja apenas mientras cruza; lo que cae, cae derecho.
+  const onda = v.aletea ? Math.sin(k * Math.PI * 3) * 6 : 0;
+  return {
+    fx,
+    y: v.y[0] + (v.y[1] - v.y[0]) * k + onda,
+    aleteo: v.aletea ? 0.3 + 0.7 * Math.abs(Math.sin(t * 7.5)) : 1,
+    giro: v.bamboleo ? Math.sin(t * 1.3) * v.bamboleo : 0,
+  };
+}
+
+/* ------------------------------------------------------------------
+   El alivio: cuando el teléfono no da (tercera ronda)
+   ------------------------------------------------------------------ */
+
+/**
+ * Si los cuadros vienen lentos, el camino se saca peso de encima, de a un escalón: primero lo de
+ * atrás del piso (la bruma: es lo que menos se extraña), después la luz y la vida del fondo. La
+ * niebla del medio y lo pegado a la cámara, que son las que hacen la escena, se quedan.
+ *
+ * `LENTO`: milisegundos por cuadro, promediados en una tanda de `TANDA` cuadros. 30 fps son 33 ms;
+ * por encima de 28 ya se nota a tirones.
+ */
+export const ALIVIO = { lento: 28, tanda: 90, niveles: 2, /** Una tanda no dura más que esto, en milisegundos: a 10 cuadros por segundo, 90 cuadros serían nueve segundos de espera. */ tope: 2500 } as const;
+
+/** El nivel de alivio que toca después de una tanda: sube de a uno, y no vuelve a bajar en la visita. */
+export function alivioTras(nivel: number, msPorCuadro: number): number {
+  return msPorCuadro > ALIVIO.lento ? Math.min(ALIVIO.niveles, nivel + 1) : nivel;
+}
+
+/** Con qué nivel se arranca: un teléfono que ya avisa que es flojo empieza sin la bruma de atrás. */
+export function alivioDeEntrada(nucleos: number | undefined, memoria: number | undefined): number {
+  return (nucleos !== undefined && nucleos <= 2) || (memoria !== undefined && memoria <= 1) ? 1 : 0;
+}
 
 /** A cuántos píxeles de los ojos un dedo o un mouse ya los está mirando. */
 export const MIRADA = 84;

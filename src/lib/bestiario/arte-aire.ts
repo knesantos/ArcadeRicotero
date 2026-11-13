@@ -17,7 +17,7 @@
  */
 
 import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
-import { ACECHOS, AIRE, LUCES, altoDeBaldosa, type CapaDeAire } from './aire.ts';
+import { ACECHOS, AIRE, LUCES, VIDAS, altoDeBaldosa, type CapaDeAire } from './aire.ts';
 import { M, azar, filaDeTiras } from './arte.ts';
 import { ALTO } from './camino.ts';
 
@@ -168,7 +168,7 @@ function monteBruma(c: CapaDeAire): string {
 
 function monteRasante(c: CapaDeAire): string {
   return rociado(c,     manchas(c, 331, 14, 400, 590, [[M.medio, 0.3], [M.claro, 0.14], [M.hondo, 0.2]], 26, [45, 105]) +
-      jirones('mr', c, 337, 13, 372, 612, [[M.claro, 0.44], [M.medio, 0.5], [M.claro, 0.34]]),
+      jirones('mr', c, 337, 13, 372, 612, [[M.medio, 0.4], [M.claro, 0.26], [M.medio, 0.34]]),
   );
 }
 
@@ -199,11 +199,11 @@ function monteCerca(c: CapaDeAire): string {
   let tiras = '';
   let n = 0;
   for (let x = 90; x < c.ancho - 60; x += 250 + rnd() * 210) {
-    const ancho = 130 + rnd() * 120;
-    const alto = 150 + rnd() * 80;
+    const ancho = 110 + rnd() * 90;
+    const alto = 110 + rnd() * 70;
     matas += vuelta(x, ancho / 2 + 60, c.ancho, (xx) => mata(xx, ancho, alto, azar(400 + n), n % 2 ? M.negro : M.oscuro, M.hondo));
     // Cada tanto, una tira de las del monte, enorme y de espaldas: es el mismo bosque, visto desde adentro.
-    if (n % 3 === 1 && x + ancho * 0.7 + 170 < c.ancho) tiras += filaDeTiras(430 + rnd() * 40, ALTO + 30, M.negro, M.sombra, 600 + n, `mc-${n}`, x + ancho * 0.7, x + ancho * 0.7 + 70);
+    if (n % 3 === 1 && x + ancho * 0.7 + 170 < c.ancho) tiras += filaDeTiras(470 + rnd() * 40, ALTO + 30, M.negro, M.sombra, 600 + n, `mc-${n}`, x + ancho * 0.7, x + ancho * 0.7 + 30);
     n++;
   }
   return rociado(c, fueraDeFoco(tiras + matas) + apagon(c, M.negro));
@@ -219,23 +219,28 @@ function cyberVaho(c: CapaDeAire): string {
 
 /** La ventisca: rachas largas y finas, apenas caídas, y el polvo de nieve suelto entre ellas. */
 function cyberVentisca(c: CapaDeAire): string {
-  const rnd = azar(523);
-  let s = manchas(c, 529, 8, 360, 570, [[C.nieve, 0.13]], 30, [50, 120]);
-  for (let i = 0; i < 64; i++) {
+  return rachas(c, 523, C.nieve, 64, 90, -3.5, manchas(c, 529, 8, 360, 570, [[C.nieve, 0.13]], 30, [50, 120]));
+}
+
+/** Rachas y motas que lleva el viento, en una tinta: la nieve de Cybersiberia, el polvo de la ruta. */
+function rachas(c: CapaDeAire, semilla: number, color: string, largas: number, motas: number, giro: number, fondo: string): string {
+  const rnd = azar(semilla);
+  let s = fondo;
+  for (let i = 0; i < largas; i++) {
     const x = rnd() * c.ancho;
     const y = c.y + 60 + rnd() * (c.alto - 100);
     const gorda = rnd() < 0.28;
     const rx = gorda ? 90 + rnd() * 130 : 30 + rnd() * 80;
     const ry = gorda ? 4 + rnd() * 5 : 1.1 + rnd() * 1.6;
     const o = gorda ? 0.2 + rnd() * 0.16 : 0.4 + rnd() * 0.4;
-    s += vuelta(x, rx + 14, c.ancho, (xx) => nube(xx, y, rx, ry, C.nieve, gorda ? 's' : 'xs', o, -3.5));
+    s += vuelta(x, rx + 14, c.ancho, (xx) => nube(xx, y, rx, ry, color, gorda ? 's' : 'xs', o, giro));
   }
-  for (let i = 0; i < 90; i++) {
+  for (let i = 0; i < motas; i++) {
     const x = rnd() * c.ancho;
     const y = c.y + 50 + rnd() * (c.alto - 80);
     const r = 0.8 + rnd() * 1.5;
     const o = 0.5 + rnd() * 0.4;
-    s += vuelta(x, 12, c.ancho, (xx) => nube(xx, y, r * 2.4, r, C.nieve, 'xs', o, -3.5));
+    s += vuelta(x, 12, c.ancho, (xx) => nube(xx, y, r * 2.4, r, color, 'xs', o, giro));
   }
   return rociado(c, s);
 }
@@ -259,8 +264,8 @@ function cyberCerca(c: CapaDeAire): string {
   let s = '';
   let n = 0;
   for (let x = 140; x < c.ancho - 60; x += 330 + rnd() * 240) {
-    const ancho = 220 + rnd() * 160;
-    const alto = 95 + rnd() * 75;
+    const ancho = 170 + rnd() * 90;
+    const alto = 80 + rnd() * 55;
     s += vuelta(x, ancho / 2 + 40, c.ancho, (xx, k) => medano(`cc-${n}-${k}`, xx, ancho, alto));
     // Un fierro torcido que sale de la nieve, con su hielo colgando.
     if (n % 2 === 0) {
@@ -383,6 +388,211 @@ function infiernoCeniza(c: CapaDeAire): string {
 }
 
 /* ------------------------------------------------------------------
+   La ruta, el bajo, los techos y la prisión (tercera ronda)
+   ------------------------------------------------------------------
+   La ruta es aerógrafo, como las cuatro de arriba. Los otros tres son recintos que visten la mano
+   de su disco, y el aire la respeta: en el bajo y en los techos es **crayón** (rayas cortas, de
+   pulso, con el borde corrido de la fotocopia), y en la prisión, **gubia** (rayas rectas de filo
+   duro, blanco sobre negro). Ahí no hay soplo ni grano: sería otra mano.
+*/
+
+const RU = { noche: 'var(--entorno-astillero-noche)', negro: 'var(--fondo)', papel: 'var(--papel)', tenue: 'var(--papel-tenue)', topo: 'var(--disco-luzbelito-apoyo)', polvo: 'var(--entorno-monte-claro)', faro: 'var(--entorno-templo-foco)' };
+const J = { agua: 'var(--entorno-bajo-agua)', celeste: 'var(--entorno-bajo-celeste)', llama: 'var(--entorno-bajo-llama)', clara: 'var(--entorno-bajo-llama-clara)', luz: 'var(--entorno-baion-luz)', negro: 'var(--fondo)' };
+const B = { noche: 'var(--entorno-baion-noche)', violeta: 'var(--entorno-baion-violeta)', lila: 'var(--entorno-baion-lila)', luz: 'var(--entorno-baion-luz)', azul: 'var(--entorno-baion-azul)', rosa: 'var(--entorno-baion-rosa)', negro: 'var(--fondo)' };
+const P = { papel: 'var(--bestia-dracula-papel)', negro: 'var(--fondo)', rojo: 'var(--disco-oktubre-tinta)' };
+
+/** La mano del crayón: el borde corrido de la fotocopia. La de la gubia: el filo de la madera. */
+const crayon = (c: CapaDeAire, adentro: string): string => `<g filter="url(#xerox-fino)">${hoja(c)}${adentro}</g>`;
+const gubia = (c: CapaDeAire, adentro: string): string => `<g filter="url(#gubia)">${hoja(c)}${adentro}</g>`;
+
+/**
+ * Tandas de rayas cortas, casi paralelas: el rayado de crayón de *Un baión* y el de gubia de
+ * *Oktubre*. Cada tanda es un manchón de rayas, con aire alrededor; `giro` es para dónde van.
+ */
+function rayado(
+  c: CapaDeAire, semilla: number, tandas: number, desde: number, hasta: number, tintas: readonly (readonly [string, number])[],
+  m: { largo: readonly [number, number]; grosor: readonly [number, number]; giro: number; porTanda: readonly [number, number]; abre: readonly [number, number] },
+): string {
+  const rnd = azar(semilla);
+  let s = '';
+  for (let i = 0; i < tandas; i++) {
+    const x = (c.ancho / tandas) * (i + rnd());
+    const y = desde + rnd() * (hasta - desde);
+    const [color, o] = tintas[i % tintas.length]!;
+    const cuantas = Math.round(m.porTanda[0] + rnd() * (m.porTanda[1] - m.porTanda[0]));
+    let tanda = '';
+    for (let j = 0; j < cuantas; j++) {
+      const largo = m.largo[0] + rnd() * (m.largo[1] - m.largo[0]);
+      const a = ((m.giro + (rnd() - 0.5) * 10) * Math.PI) / 180;
+      const px = (rnd() - 0.5) * 2 * m.abre[0];
+      const py = (rnd() - 0.5) * 2 * m.abre[1];
+      tanda += trazo(`M${f(px)} ${f(py)} l${f(Math.cos(a) * largo)} ${f(Math.sin(a) * largo)}`, color, m.grosor[0] + rnd() * (m.grosor[1] - m.grosor[0]), o * (0.6 + rnd() * 0.4));
+    }
+    s += vuelta(x, m.abre[0] + m.largo[1], c.ancho, (xx) => `<g transform="translate(${f(xx)} ${f(y)})">${tanda}</g>`);
+  }
+  return s;
+}
+
+/* ---- La ruta ---- */
+
+function rutaBruma(c: CapaDeAire): string {
+  return rociado(c, manchas(c, 811, 13, 250, 326, [[RU.noche, 0.5], [RU.tenue, 0.1], [RU.topo, 0.24]], 28) + manchas(c, 813, 6, 220, 290, [[RU.tenue, 0.07]], 14, [40, 100]));
+}
+
+/** El polvo que levantan los fierros: motas y rachas cortas, tibias, que se van para donde va el tránsito. */
+function rutaPolvo(c: CapaDeAire): string {
+  return rociado(c, rachas(c, 821, RU.polvo, 34, 120, 2.5, manchas(c, 823, 9, 400, 580, [[RU.polvo, 0.1], [RU.topo, 0.14]], 26, [50, 120])));
+}
+
+function rutaCerca(c: CapaDeAire): string {
+  const rnd = azar(829);
+  let s = '';
+  let n = 0;
+  for (let x = 100; x < c.ancho - 60; x += 240 + rnd() * 220) {
+    const ancho = 90 + rnd() * 80;
+    const alto = 90 + rnd() * 60;
+    s += vuelta(x, ancho / 2 + 60, c.ancho, (xx) => mata(xx, ancho, alto, azar(840 + n), n % 2 ? RU.negro : RU.topo, RU.tenue));
+    // Cada tanto, un mojón de la ruta, torcido.
+    if (n % 3 === 2) {
+      const mx = x + ancho;
+      s += vuelta(mx, 40, c.ancho, (xx) =>
+        `<g transform="rotate(-7 ${f(xx)} ${ALTO})">` + forma(`M${f(xx - 13)} ${ALTO + 30} L${f(xx - 13)} ${ALTO - 70} Q${f(xx)} ${ALTO - 88} ${f(xx + 13)} ${ALTO - 70} L${f(xx + 13)} ${ALTO + 30} Z`, RU.topo) +
+        forma(`M${f(xx - 13)} ${ALTO - 56} L${f(xx + 13)} ${ALTO - 56} L${f(xx + 13)} ${ALTO - 46} L${f(xx - 13)} ${ALTO - 46} Z`, 'var(--marca-rojo)', 0.8) + `</g>`);
+    }
+    n++;
+  }
+  return rociado(c, fueraDeFoco(s) + apagon(c, RU.negro));
+}
+
+/* ---- El bajo ---- */
+
+/** El vaho del agua, a crayón: manchones de rayas acostadas, y cada tanto unas que suben torcidas. */
+function bajoVaho(c: CapaDeAire): string {
+  return crayon(
+    c,
+    rayado(c, 911, 16, 470, 616, [[J.celeste, 0.5], [J.luz, 0.3], [J.celeste, 0.36]], { largo: [22, 70], grosor: [1.6, 3.4], giro: 0, porTanda: [5, 11], abre: [70, 12] }) +
+      rayado(c, 913, 9, 430, 520, [[J.luz, 0.3], [J.celeste, 0.3]], { largo: [10, 24], grosor: [1.4, 2.4], giro: -78, porTanda: [3, 6], abre: [26, 16] }),
+  );
+}
+
+/** Los juncos de la orilla: cañas finas con su penacho, de espaldas a la luz. */
+function bajoCerca(c: CapaDeAire): string {
+  const rnd = azar(919);
+  let s = '';
+  let n = 0;
+  for (let x = 90; x < c.ancho - 60; x += 250 + rnd() * 230) {
+    const cuantos = 4 + Math.floor(rnd() * 4);
+    let mata_ = '';
+    for (let i = 0; i < cuantos; i++) {
+      const bx = (rnd() - 0.5) * 90;
+      const alto = 80 + rnd() * 70;
+      const cae = (rnd() - 0.5) * 40;
+      const d = `M${f(bx)} ${ALTO + 30} Q${f(bx + cae * 0.2)} ${f(ALTO - alto * 0.5)} ${f(bx + cae)} ${f(ALTO - alto)}`;
+      mata_ += trazo(d, J.negro, 4.5) + `<ellipse cx="${f(bx + cae)}" cy="${f(ALTO - alto - 9)}" rx="4.6" ry="13" fill="${J.negro}" transform="rotate(${f(cae * 0.4)} ${f(bx + cae)} ${f(ALTO - alto)})"/>` +
+        (i % 2 ? `<g transform="translate(-1.6 0)">${trazo(d, J.celeste, 1.2, 0.6)}</g>` : '');
+    }
+    s += vuelta(x, 110, c.ancho, (xx) => `<g transform="translate(${f(xx)} 0)">${mata_}</g>`);
+    n++;
+  }
+  return `<g>${hoja(c)}${fueraDeFoco(s)}${apagon(c, J.negro)}</g>`;
+}
+
+/* ---- Los techos ---- */
+
+/** El hollín: rayitas de pastel que caen torcidas, oscuras, y alguna lila que agarra la luz del farol. La baldosa cierra para los dos lados. */
+function techosHollin(c: CapaDeAire): string {
+  const rnd = azar(1011);
+  const alto = altoDeBaldosa(c);
+  let s = '';
+  for (let i = 0; i < 110; i++) {
+    const x = rnd() * c.ancho;
+    const y = rnd() * alto;
+    const largo = 5 + rnd() * 9;
+    const a = ((68 + rnd() * 16) * Math.PI) / 180;
+    const clara = rnd() < 0.22;
+    const color = clara ? B.lila : rnd() < 0.5 ? B.negro : B.noche;
+    const o = clara ? 0.5 + rnd() * 0.3 : 0.75 + rnd() * 0.25;
+    const grosor = 1.4 + rnd() * 1.6;
+    for (const dx of [0, x < 16 ? c.ancho : x > c.ancho - 16 ? -c.ancho : null]) {
+      for (const dy of [0, y < 16 ? alto : y > alto - 16 ? -alto : null]) {
+        if (dx !== null && dy !== null) s += trazo(`M${f(x + dx)} ${f(y + dy)} l${f(-Math.cos(a) * largo)} ${f(Math.sin(a) * largo)}`, color, grosor, o);
+      }
+    }
+  }
+  return s;
+}
+
+/** Una prenda colgada de la soga, de espaldas a la luz: remera, sábana, media o calzón. */
+function prenda(cual: number, x: number, y: number, k: number): string {
+  const formas = [
+    // La remera.
+    `M${f(x - 20 * k)} ${f(y)} L${f(x - 34 * k)} ${f(y + 16 * k)} L${f(x - 24 * k)} ${f(y + 24 * k)} L${f(x - 17 * k)} ${f(y + 16 * k)} L${f(x - 16 * k)} ${f(y + 56 * k)} L${f(x + 16 * k)} ${f(y + 58 * k)} L${f(x + 17 * k)} ${f(y + 16 * k)} L${f(x + 24 * k)} ${f(y + 24 * k)} L${f(x + 34 * k)} ${f(y + 16 * k)} L${f(x + 20 * k)} ${f(y)} Q${f(x)} ${f(y + 9 * k)} ${f(x - 20 * k)} ${f(y)} Z`,
+    // La sábana, con la punta que se vuela.
+    `M${f(x - 30 * k)} ${f(y)} L${f(x + 30 * k)} ${f(y)} L${f(x + 34 * k)} ${f(y + 62 * k)} Q${f(x + 10 * k)} ${f(y + 54 * k)} ${f(x - 8 * k)} ${f(y + 64 * k)} L${f(x - 28 * k)} ${f(y + 58 * k)} Z`,
+    // La media.
+    `M${f(x - 6 * k)} ${f(y)} L${f(x + 6 * k)} ${f(y)} L${f(x + 6 * k)} ${f(y + 30 * k)} Q${f(x + 20 * k)} ${f(y + 36 * k)} ${f(x + 18 * k)} ${f(y + 44 * k)} L${f(x - 4 * k)} ${f(y + 44 * k)} Q${f(x - 8 * k)} ${f(y + 36 * k)} ${f(x - 6 * k)} ${f(y + 30 * k)} Z`,
+    // El calzón.
+    `M${f(x - 20 * k)} ${f(y)} L${f(x + 20 * k)} ${f(y)} L${f(x + 22 * k)} ${f(y + 24 * k)} L${f(x + 6 * k)} ${f(y + 26 * k)} L${f(x)} ${f(y + 14 * k)} L${f(x - 6 * k)} ${f(y + 26 * k)} L${f(x - 22 * k)} ${f(y + 24 * k)} Z`,
+  ];
+  const d = formas[cual % formas.length]!;
+  return forma(d, B.negro) + trazo(`M${f(x - 18 * k)} ${f(y + 1.5)} L${f(x + 18 * k)} ${f(y + 1.5)}`, B.lila, 1.4, 0.55);
+}
+
+/** La ropa tendida: la soga combada de palo a palo, y lo que cuelga. Entre tendido y tendido, nada. */
+function techosRopa(c: CapaDeAire): string {
+  const rnd = azar(1019);
+  let s = '';
+  let n = 0;
+  for (let x = 140; x < c.ancho - 420; x += 520 + rnd() * 160) {
+    const largo = 250 + rnd() * 90;
+    const y0 = 520 + rnd() * 26;
+    const comba = 16 + rnd() * 10;
+    const soga = (u: number): number => y0 + Math.sin(u * Math.PI) * comba;
+    let tendido = trazo(`M${f(x)} ${f(y0)} Q${f(x + largo / 2)} ${f(y0 + comba * 2)} ${f(x + largo)} ${f(y0)}`, B.negro, 2.4);
+    // Los palos, que salen de abajo.
+    tendido += forma(`M${f(x - 5)} ${ALTO + 30} L${f(x - 3)} ${f(y0 - 12)} L${f(x + 3)} ${f(y0 - 12)} L${f(x + 5)} ${ALTO + 30} Z`, B.negro);
+    const cuantas = 3 + Math.floor(rnd() * 2);
+    for (let i = 0; i < cuantas; i++) {
+      const u = (i + 0.6 + rnd() * 0.3) / (cuantas + 0.4);
+      tendido += prenda(n * 3 + i, x + largo * u, soga(u), 0.72 + rnd() * 0.2);
+    }
+    s += tendido;
+    n++;
+  }
+  return `<g>${hoja(c)}${fueraDeFoco(s)}${apagon(c, B.negro, 0.7)}</g>`;
+}
+
+/* ---- La prisión ---- */
+
+/** El frío de la celda: rayado de gubia, blanco, a ras del piso. Tandas flacas, con aire entre una y otra. */
+function prisionFrio(c: CapaDeAire): string {
+  return gubia(
+    c,
+    // El filtro de la gubia deja el filo duro: lo que no llega a un tercio de tinta, desaparece. Las rayas
+    // van llenas, y lo flojo lo pone el alfa de la capa (`aire.ts`).
+    rayado(c, 1111, 15, 400, 612, [[P.papel, 2]], { largo: [26, 84], grosor: [1, 1.9], giro: 0, porTanda: [4, 9], abre: [60, 10] }) +
+      rayado(c, 1113, 7, 360, 470, [[P.papel, 2]], { largo: [8, 18], grosor: [1, 1.5], giro: -84, porTanda: [3, 5], abre: [18, 12] }),
+  );
+}
+
+/**
+ * Los barrotes de la celda de enfrente, de arriba abajo: se mira desde adentro. Son finos (cada uno
+ * tapa menos de la veinteava parte de un teléfono) y separados; el filo blanco es de un solo lado.
+ */
+function prisionRejas(c: CapaDeAire): string {
+  const rnd = azar(1117);
+  let s = '';
+  for (let x = 120; x < c.ancho - 60; x += 200 + rnd() * 110) {
+    const w = 10 + rnd() * 4;
+    s += forma(`M${f(x)} -20 L${f(x + w)} -20 L${f(x + w)} ${ALTO + 20} L${f(x)} ${ALTO + 20} Z`, P.negro) + trazo(`M${f(x + 1.2)} -20 L${f(x + 1.2)} ${ALTO + 20}`, P.papel, 1.3);
+    // Un travesaño corto que asoma a cada lado, a la altura de la mano.
+    const ty = 250 + rnd() * 120;
+    s += forma(`M${f(x - 26)} ${f(ty)} L${f(x + w + 26)} ${f(ty)} L${f(x + w + 26)} ${f(ty + 8)} L${f(x - 26)} ${f(ty + 8)} Z`, P.negro) + trazo(`M${f(x - 26)} ${f(ty + 1)} L${f(x + w + 26)} ${f(ty + 1)}`, P.papel, 1.1);
+  }
+  return gubia(c, s);
+}
+
+/* ------------------------------------------------------------------
    La luz que se ve en el aire, y los ojos sin dueño (segunda ronda)
    ------------------------------------------------------------------ */
 
@@ -413,13 +623,29 @@ function haz(id: string, largo: number, ancho: number, color: string, corazon: s
 }
 
 /** La brasa: una mancha ancha y baja, tres bocanadas una adentro de la otra. */
-const brasa = (): string => nube(0, 0, 170, 26, I.brasa, 'xl', 0.9) + nube(0, 4, 100, 20, I.fuego, 'xl', 0.5) + nube(0, 6, 44, 9, I.chispa, 'l', 0.4);
+const brasa = (): string => nube(0, 0, 170, 26, I.fuego, 'xl', 0.75) + nube(0, 4, 100, 20, I.chispa, 'xl', 0.6) + nube(0, 6, 44, 9, 'var(--entorno-mesa-papel)', 'l', 0.55);
 
 const QUIEN_ALUMBRA: Readonly<Record<string, () => string>> = {
   'luz-astillero-cono': () => haz('lz-a', 340, 300, T.sodio, 'var(--entorno-mesa-papel)'),
   'luz-infierno-brasa': brasa,
   'luz-cyber-haz': () => haz('lz-c', 560, 330, C.lente, C.nieve),
+  'luz-ruta-faros': () => haz('lz-r', 260, 190, RU.faro, RU.papel),
+  'luz-techos-farol': () => haz('lz-t', 380, 320, B.lila, B.luz),
+  // El reflejo del pucho en el agua: una escalerita de rayas de crayón, cada vez más cortas y más flojas.
+  'luz-bajo-reflejo': () =>
+    Array.from({ length: 9 }, (_, i) => trazo(`M${f(-34 + i * 3.4 + (i % 2) * 5)} ${f(4 + i * 13)} l${f(68 - i * 6.6)} 0`, i % 3 ? J.llama : J.clara, 3.6 - i * 0.22, 0.9 - i * 0.07)).join(''),
+  // El reflector del muro: de gubia. El cono de canto duro, casi nada de tinta, y el rayado que lo llena.
+  'luz-prision-reflector': () => {
+    const silueta = 'M-6 0 L6 0 L200 640 L-200 640 Z';
+    let rayas = '';
+    for (let y = 30; y < 640; y += 15) rayas += trazo(`M${f(-y * 0.32)} ${y} L${f(y * 0.32)} ${y}`, P.papel, 1.4);
+    // El cono apenas teñido va sin filtro (la gubia se lo comería); el rayado, con su filo.
+    return forma(silueta, P.papel, 0.2) + `<g filter="url(#gubia)">${enmascarado('lz-p', silueta, rayas)}</g>`;
+  },
 };
+
+/** Las luces que no son de aerógrafo: van con la mano de su recinto (crayón, gubia), sin rociado. */
+const SIN_ROCIADO: Readonly<Record<string, string>> = { 'luz-bajo-reflejo': 'xerox-fino', 'luz-prision-reflector': '' };
 
 /** Un ojo de almendra: la silueta dura, el iris soplado adentro y la pupila. `giro`, lo torcido. */
 function almendra(id: string, x: number, y: number, color: string, hondo: string, pupila: 'raya' | 'punto', giro = 0): string {
@@ -442,7 +668,30 @@ const QUIEN_MIRA: Readonly<Record<string, () => string>> = {
     [12, 34].map((x) => `<ellipse cx="${x}" cy="20" rx="4.2" ry="1.3" fill="${T.clara}" opacity="0.5"/><ellipse cx="${x + 1.2}" cy="24" rx="3" ry="0.9" fill="${T.clara}" opacity="0.3"/>`).join(''),
   // El infierno: los ojos torcidos para adentro, de brasa.
   'acecho-infierno': () => almendra('ac-i1', 11, 10, I.fuego, I.brasa, 'raya', 16) + almendra('ac-i2', 35, 10, I.fuego, I.brasa, 'raya', -16),
+  // La prisión: blancos, de gubia, con la pupila roja. El de la celda de enfrente.
+  'acecho-prision': () => almendra('ac-p1', 11, 10, P.papel, P.papel, 'punto') + almendra('ac-p2', 35, 10, P.papel, P.papel, 'punto') + `<circle cx="11" cy="9.6" r="1.1" fill="${P.rojo}"/><circle cx="35" cy="9.6" r="1.1" fill="${P.rojo}"/>`,
 };
+
+/** Un pájaro lejos, de frente: las dos alas abiertas en ve y el cuerpo. La isla lo aletea achatándolo. */
+const ave = (color: string): string =>
+  forma('M20 11 Q12 2 1 4 Q10 6 15 12 Q18 15 20 14 Q22 15 25 12 Q30 6 39 4 Q28 2 20 11 Z', color) + `<ellipse cx="20" cy="12.5" rx="2.6" ry="3.4" fill="${color}"/>`;
+
+const QUIEN_PASA: Readonly<Record<string, () => string>> = {
+  'vida-ave': () => ave(M.medio),
+  'vida-ave-papel': () => ave(P.papel),
+  // La estrella que se cae: la cabeza, y la cola que se pierde para atrás (cae hacia la derecha y abajo).
+  'vida-fugaz': () => soplo('M4 4 L84 22 L86 26 L82 27 Z', RU.papel, 'xs', 0.7) + nube(84, 25, 3.4, 3, RU.papel, 'xs', 1),
+  // El barquito de papel: dos pliegues y la vela, con su raya de agua.
+  'vida-barquito': () =>
+    forma('M4 18 L36 18 L29 27 L11 27 Z', J.luz) + forma('M20 3 L30 18 L10 18 Z', J.luz) + forma('M20 3 L20 18 L10 18 Z', J.celeste, 0.6) + trazo('M2 28.5 l12 0 M20 29 l16 0', J.celeste, 1.2, 0.7),
+};
+
+/** Las piezas de lo que pasa lejos (`VIDAS` en `aire.ts`): chicas y de filo, se imprimen finas. */
+export const PIEZAS_DE_VIDA: readonly Pieza[] = [...new Map(Object.values(VIDAS).map((v) => [v.pieza, v] as const)).values()].map((v) => {
+  const pinta = QUIEN_PASA[v.pieza];
+  if (!pinta) throw new Error(`nadie pinta "${v.pieza}" (arte-aire.ts)`);
+  return { nombre: v.pieza, caja: [0, 0, v.ancho, v.alto] as const, dibujo: pinta(), densidad: 4 };
+});
 
 /**
  * Las piezas de las luces y de los ojos sin dueño. Las luces llevan el rociado, con su hoja entera
@@ -456,8 +705,8 @@ export const PIEZAS_DE_LUZ: readonly Pieza[] = [
     return {
       nombre: l.pieza,
       caja: l.caja,
-      dibujo: `<g filter="url(#rociado)"><rect x="${x}" y="${y}" width="${ancho}" height="${alto}" fill="var(--fondo)" fill-opacity="0"/>${pinta()}</g>`,
-      densidad: 1,
+      dibujo: `<g${SIN_ROCIADO[l.pieza] === '' ? '' : ` filter="url(#${SIN_ROCIADO[l.pieza] ?? 'rociado'})"`}><rect x="${x}" y="${y}" width="${ancho}" height="${alto}" fill="var(--fondo)" fill-opacity="0"/>${pinta()}</g>`,
+      densidad: l.pieza in SIN_ROCIADO ? 1.5 : 1,
       calidad: 60,
     };
   }),
@@ -485,13 +734,22 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-astillero-cerca': astilleroCerca,
   'aire-infierno-humo': infiernoHumo,
   'aire-infierno-ceniza': infiernoCeniza,
+  'aire-ruta-bruma': rutaBruma,
+  'aire-ruta-polvo': rutaPolvo,
+  'aire-ruta-cerca': rutaCerca,
+  'aire-bajo-vaho': bajoVaho,
+  'aire-bajo-cerca': bajoCerca,
+  'aire-techos-hollin': techosHollin,
+  'aire-techos-ropa': techosRopa,
+  'aire-prision-frio': prisionFrio,
+  'aire-prision-rejas': prisionRejas,
 };
 
 /**
  * Las baldosas del aire, una por pieza (el monte y la pastura comparten las suyas). La niebla es
  * pura mancha y se imprime gruesa, que pesa poco; lo que tiene filo (las matas, la ceniza) va más fino.
  */
-export const PIEZAS_AIRE: readonly Pieza[] = [...new Map(Object.values(AIRE).flat().map((c) => [c.pieza, c] as const)).values()].map((c) => {
+export const PIEZAS_AIRE: readonly Pieza[] = [...new Map(Object.values(AIRE).flat().filter((c) => !c.ajena).map((c) => [c.pieza, c] as const)).values()].map((c) => {
   const pinta = PINTA[c.pieza];
   if (!pinta) throw new Error(`nadie pinta la baldosa "${c.pieza}" (arte-aire.ts)`);
   const region = Object.keys(AIRE).find((r) => AIRE[r]!.includes(c))!;
@@ -499,7 +757,7 @@ export const PIEZAS_AIRE: readonly Pieza[] = [...new Map(Object.values(AIRE).fla
     nombre: c.pieza,
     caja: [0, c.y, c.ancho, c.alto] as const,
     dibujo: pinta(receta(region, c.pieza)),
-    densidad: c.plano === 'cerca' ? (c.cae ? 1.5 : 1.25) : 1,
+    densidad: c.cae ? 1.5 : c.plano === 'cerca' ? 1.25 : 1,
     // El grano pesa: la niebla aguanta más compresión que un títere, porque no tiene filo que cuidar.
     calidad: c.plano === 'cerca' ? 78 : 58,
     // La que se repite también para arriba (la ceniza) son motas sueltas: no hay soplo que cruce el borde.

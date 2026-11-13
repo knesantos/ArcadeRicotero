@@ -40,7 +40,7 @@ import { lugarDelRotulo, simbolos, tintaDe, type Bestiario, type Bestia } from '
 import { ALTO, CAMINOS, CON_CAMINO, hrefDeRegion } from '../../../lib/bestiario/camino.ts';
 import { destinosDelCruce, HORIZONTE, PIEZAS_CAMINO } from '../../../lib/bestiario/arte-camino.ts';
 import { rutaDePieza } from '../../../lib/bestiario/aerografo.ts';
-import { ACECHOS, LUCES, aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
+import { ACECHOS, LUCES, VIDAS, aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
 import { pisoDelCamino } from '../../../lib/bestiario/escenas-camino.ts';
 import { conAudio, loQueDice } from '../../../lib/bestiario/fichas.ts';
 import { fondoDe } from '../../../lib/bestiario/sonido.ts';
@@ -89,6 +89,7 @@ const enLaAltura = (caja: readonly number[]): string => `top: ${((caja[1]! / ALT
 const aire = (plano: Plano) =>
   aireDe(id, plano).map((c: CapaDeAire) => ({
     pieza: c.pieza,
+    plano,
     cae: altoDeBaldosa(c) > 0,
     estilo:
       `--baldosa: url(${rutaDePieza(c.pieza)}); --tw: ${c.ancho}; --th: ${c.alto}; --alfa: ${c.alfa}` +
@@ -107,6 +108,8 @@ const luces = (LUCES[id] ?? []).map((l) => ({
 }));
 /** Los ojos sin dueño de la región: no se ven hasta que la isla los abre. */
 const acecho = ACECHOS[id] ?? null;
+/** Lo que cruza lejos, muy cada tanto (`VIDAS`): tampoco se ve hasta que la isla lo suelta. */
+const vida = VIDAS[id] ?? null;
 
 /** El piso, que es la capa de los bichos (`escenas-camino.ts`). */
 const pisoSvg = pisoDelCamino(tramo, nombres);
@@ -229,7 +232,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
               />
             )
           }
-          {aire('fondo').map((a) => <div class:list={['aire', { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
+          {aire('fondo').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
           <svg
             class="capa capa--piso bestiario-svg"
             data-f="1"
@@ -237,7 +240,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
             style={`aspect-ratio: ${tramo.ancho} / ${ALTO}`}
             set:html={pisoSvg}
           />
-          {aire('medio').map((a) => <div class:list={['aire', { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
+          {aire('medio').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
           {luces.map((l) => <img class="luz" data-luz={l.pieza} src={rutaDePieza(l.pieza)} width={l.ancho} height={l.alto} style={l.estilo} alt="" decoding="async" />)}
           {
             frente && (
@@ -254,7 +257,10 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
             )
           }
 
-          {aire('cerca').map((a) => <div class:list={['aire', { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
+          {aire('cerca').map((a) => <div class:list={['aire', `aire--${a.plano}`, { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
+          {vida && (
+            <img class="vida" id="vida" src={rutaDePieza(vida.pieza)} width={vida.ancho} height={vida.alto} style={`--lw: ${vida.ancho}; --lh: ${vida.alto}`} alt="" decoding="async" loading="lazy" />
+          )}
           {acecho && (
             <img class="acecho-ojos" id="acecho" src={rutaDePieza(acecho.pieza)} width={acecho.ancho} height={acecho.alto} style={`--lw: ${acecho.ancho}; --lh: ${acecho.alto}`} alt="" decoding="async" loading="lazy" />
           )}

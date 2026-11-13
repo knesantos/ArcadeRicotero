@@ -135,6 +135,7 @@
    `transform` y `opacity`; ni resplandor de CSS, ni sombra, ni modo de mezcla. Sin isla, la luz queda
    quieta donde va; los ojos no se abren. */
 .camino .luz,
+.camino .vida,
 .camino .acecho-ojos {
   --px: calc(var(--alto-escena) / var(--alto));
   position: absolute;
@@ -158,12 +159,20 @@
   will-change: transform, opacity;
 }
 
+.camino .vida,
 .camino .acecho-ojos {
   left: 0;
   top: 0;
   opacity: 0;
   transform-origin: 0 0;
 }
+
+/* El alivio (D-90, tercera ronda): si los cuadros vienen lentos, la isla saca peso de a un escalón.
+   Primero lo de atrás del piso, que es lo que menos se extraña; después la luz y lo que cruza lejos.
+   La niebla del medio y lo pegado a la cámara se quedan: son las que hacen la escena. */
+.camino--liviano .aire--fondo,
+.camino--muy-liviano .luz,
+.camino--muy-liviano .vida { display: none; }
 
 .camino-deslizar { padding-inline: var(--espacio-2); }
 

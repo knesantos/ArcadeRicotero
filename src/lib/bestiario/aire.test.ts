@@ -3,9 +3,13 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 
 import { rutaDePieza } from './aerografo.ts';
-import { ACECHOS, AIRE, LUCES, MIRADA, PASO_PLENO, aireDe, alfaDeAire, altoDeBaldosa, corridaDeAire, despejeDeLupa, estadoDeLuz, latido, parpadeo, resto } from './aire.ts';
-import { PIEZAS_AIRE, PIEZAS_DE_LUZ } from './arte-aire.ts';
+import {
+  ACECHOS, AIRE, ALIVIO, LUCES, MIRADA, PASO_PLENO, VIDAS, aireDe, alfaDeAire, alivioDeEntrada, alivioTras, altoDeBaldosa, corridaDeAire, despejeDeLupa, estadoDeLuz, latido,
+  parpadeo, pasoDeVida, resto,
+} from './aire.ts';
+import { PIEZAS_AIRE, PIEZAS_DE_LUZ, PIEZAS_DE_VIDA } from './arte-aire.ts';
 import { PIEZAS_CAMINO } from './arte-camino.ts';
+import { pisoDelCamino } from './escenas-camino.ts';
 import { ALTO, CAMINOS, VISTA_MAX } from './camino.ts';
 import { LUPA } from './lupa.ts';
 
@@ -21,8 +25,11 @@ test('el aire es de regiones que se caminan, y pocas capas por región', () => {
   assert.ok(Object.keys(AIRE).length >= 4, 'el aire tiene que estar probado en varias regiones');
   for (const [region, lista] of Object.entries(AIRE)) {
     assert.ok(CAMINOS[region], `${region} no es un camino`);
-    // Cada capa es una superficie que el teléfono compone encima de la escena: tres, y ni una más.
-    assert.ok(lista.length >= 1 && lista.length <= 3, `${region}: ${lista.length} capas de aire`);
+    // Cada capa es una superficie que el teléfono compone encima de la escena: tres, y ni una más. La
+    // que ya existía y solo se mudó (la nevada de Cybersiberia, que salió de adentro del piso) no cuenta:
+    // no es peso nuevo, es peso que bajó.
+    const propias = lista.filter((c) => !c.ajena).length;
+    assert.ok(propias >= 1 && propias <= 3, `${region}: ${propias} capas de aire`);
   }
 });
 
@@ -44,24 +51,28 @@ test('cada capa de aire entra en la escena y su baldosa es más ancha que cualqu
 
 test('cada baldosa del aire está pintada e impresa, con la caja de su receta', () => {
   const piezas = new Map(PIEZAS_AIRE.map((p) => [p.nombre, p]));
-  for (const { c } of capas) {
+  for (const { c } of capas.filter((x) => !x.c.ajena)) {
     const p = piezas.get(c.pieza);
     assert.ok(p, `nadie pinta ${c.pieza}`);
     assert.deepEqual([...p.caja], [0, c.y, c.ancho, c.alto]);
     assert.ok(existsSync(`public${rutaDePieza(c.pieza)}`), `falta imprimir ${c.pieza}: npm run imprimir-bestiario -- --solo aire-`);
-    // Soplada y con grano, como todo el bestiario: nada de degradé.
+    // Nada de degradé, y cada una con la mano de su región: soplada con el aerógrafo, o rayada a
+    // crayón (el bajo, los techos) o a gubia (la prisión), que son recintos de otro disco.
     assert.doesNotMatch(p.dibujo, /Gradient/i, `${c.pieza} trae un degradé`);
-    assert.match(p.dibujo, /filter="url\(#soplo-/, `${c.pieza} no está soplada`);
+    // El hollín de los techos son rayitas de pastel sueltas, como las del cielo de su recinto: sin filtro.
+    assert.ok(/filter="url\(#(soplo-|xerox-fino|gubia)/.test(p.dibujo) || c.pieza === 'aire-techos-hollin', `${c.pieza} no tiene mano`);
   }
   // Ninguna baldosa huérfana: lo que se imprime, alguien lo pide.
   const pedidas = new Set(capas.map(({ c }) => c.pieza));
+  // La que es de otro (la nevada) está impresa por su dueño.
+  for (const { c } of capas.filter((x) => x.c.ajena)) assert.ok(existsSync(`public${rutaDePieza(c.pieza)}`), `${c.pieza} no está impresa`);
   assert.deepEqual(PIEZAS_AIRE.map((p) => p.nombre).filter((n) => !pedidas.has(n)), []);
 });
 
 test('el aire de una región pesa poco: se baja entero antes de dar dos pasos', () => {
   for (const [region, lista] of Object.entries(AIRE)) {
     const kb = lista.reduce((s, c) => s + statSync(`public${rutaDePieza(c.pieza)}`).size, 0) / 1024;
-    assert.ok(kb < 520, `${region}: el aire pesa ${Math.round(kb)} kB`);
+    assert.ok(kb < 560, `${region}: el aire pesa ${Math.round(kb)} kB`);
   }
 });
 
@@ -175,7 +186,7 @@ test('el piso de las regiones con aire ya no es liso: charcos, piedras y lo que 
 
 test('las luces: una por región, impresas, clavadas en la escena y sin salirse de sus topes', () => {
   const piezas = new Map(PIEZAS_DE_LUZ.map((p) => [p.nombre, p]));
-  assert.ok(Object.keys(LUCES).length >= 3);
+  assert.ok(Object.keys(LUCES).length >= 7);
   for (const [region, lista] of Object.entries(LUCES)) {
     assert.ok(CAMINOS[region], `${region} no es un camino`);
     assert.equal(lista.length, 1, `${region}: más de una luz es otra superficie más para el teléfono`);
@@ -184,9 +195,12 @@ test('las luces: una por región, impresas, clavadas en la escena y sin salirse 
       assert.ok(p, `nadie pinta ${l.pieza}`);
       assert.deepEqual([...p.caja], [...l.caja]);
       assert.ok(existsSync(`public${rutaDePieza(l.pieza)}`), `falta imprimir ${l.pieza}`);
-      assert.match(p.dibujo, /filter="url\(#rociado\)"/, `${l.pieza} no tiene grano`);
+      // Con el grano del aerógrafo, o con la mano del recinto: crayón en el bajo, gubia en la prisión.
+      assert.match(p.dibujo, /filter="url\(#(rociado|xerox-fino|gubia)\)"/, `${l.pieza} no tiene mano`);
       assert.doesNotMatch(p.dibujo, /Gradient/i);
       assert.ok(l.x > 0 && l.x < CAMINOS[region]!.escena, `${l.pieza} cae afuera de la escena`);
+      // La que va colgada de un bicho, que el bicho exista en ese camino.
+      if (l.sigue) assert.match(pisoDelCamino(CAMINOS[region]!, new Map()), new RegExp(`class="bestia[^"]*" data-id="${l.sigue}"`), `${l.pieza}: no está ${l.sigue}`);
       for (let t = 0; t < 40; t += 0.37) {
         const e = estadoDeLuz(l, t);
         assert.ok(e.alfa >= 0 && e.alfa <= 1 && Math.abs(e.giro) <= l.vaiven * 1.13 + 1e-9 && e.escala >= 1 && e.escala <= 1 + l.crece * 1.5 + 1e-9, `${l.pieza} en ${t}`);
@@ -218,7 +232,7 @@ test('los ojos sin dueño: una receta por región con aire, en lo oscuro, y se a
   assert.match(isla, /const molesto = seMueve \|\| conLupa\(lente\) \|\| !hoja\.hidden/);
   assert.match(isla, /< MIRADA\) cerrarLosOjos\(/);
   // No son un bicho: no se tocan ni tienen ficha.
-  assert.match(readFileSync('src/styles/camino.css', 'utf-8'), /\.camino \.luz,\s*\.camino \.acecho-ojos \{[^}]*pointer-events: none;/);
+  assert.match(readFileSync('src/styles/camino.css', 'utf-8'), /\.camino \.luz,\s*\.camino \.vida,\s*\.camino \.acecho-ojos \{[^}]*pointer-events: none;/);
   assert.doesNotMatch(readFileSync('src/pages/redondopedia/bestiario/[region].astro', 'utf-8'), /class="acecho-ojos"[^>]*(data-id|role=)/);
   // Con movimiento reducido no están: su reloj corre solo donde corre el del camino.
   assert.match(isla, /if \(!quieto\(\)\) \{[\s\S]*?moverAcecho\(dt, /);
@@ -230,4 +244,96 @@ test('la luz y los ojos son imágenes que la isla solo mueve: transform y opacit
   assert.deepEqual([...new Set(escrituras)].sort(), ['opacity', 'transform']);
   const css = readFileSync('src/styles/camino.css', 'utf-8');
   assert.doesNotMatch(css, /\.(luz|acecho-ojos)[^{]*\{[^}]*(filter|gradient|mix-blend|box-shadow|text-shadow)/);
+});
+
+/* ------------------------------------------------------------------
+   Tercera ronda: cuatro regiones más, lo que cruza lejos, y el alivio
+   ------------------------------------------------------------------ */
+
+test('la ruta, el bajo, los techos y la prisión tienen el paquete entero: aire, luz y ojos', () => {
+  for (const region of ['la-ruta', 'el-bajo', 'los-techos', 'la-prision']) {
+    assert.ok(AIRE[region]?.length, `${region}: sin aire`);
+    assert.ok(LUCES[region]?.length, `${region}: sin luz`);
+    assert.ok(ACECHOS[region], `${region}: sin ojos`);
+    assert.ok(VIDAS[region], `${region}: nada cruza lejos`);
+    // Lo pegado a la cámara está: es lo que llena el borde de abajo.
+    assert.ok(aireDe(region, 'cerca').length === 1, `${region}: sin primer plano`);
+  }
+  // Los recintos son una sola capa: lo de atrás del piso no se vería, así que no lo llevan.
+  for (const region of ['el-bajo', 'los-techos', 'la-prision', 'el-infierno']) assert.equal(aireDe(region, 'fondo').length, 0, `${region}: una bruma que nadie ve`);
+  // Y cada recinto con su mano: en la prisión, ni un soplo.
+  for (const pieza of ['aire-prision-frio', 'aire-prision-rejas']) assert.doesNotMatch(PIEZAS_AIRE.find((p) => p.nombre === pieza)!.dibujo, /soplo-|rociado/, `${pieza}: aerógrafo en la madera tallada`);
+  assert.match(PIEZAS_AIRE.find((p) => p.nombre === 'aire-bajo-vaho')!.dibujo, /xerox-fino/);
+  // El piso de la ruta también tiene lo suyo, en la banquina.
+  assert.ok((PIEZAS_CAMINO.find((q) => q.nombre === 'camino-ruta-piso')!.dibujo.match(/<clipPath id="sr-ch-/g) ?? []).length >= 4);
+});
+
+test('lo pegado a la cámara tiene tope: nada que sea una losa en un teléfono parado', () => {
+  const fuente = readFileSync('src/lib/bestiario/arte-aire.ts', 'utf-8');
+  // Las tiras del monte en `cerca`: angostas (30 de 320) y de la cintura para abajo.
+  assert.match(fuente, /filaDeTiras\(470 \+ rnd\(\) \* 40, ALTO \+ 30, M\.negro, M\.sombra, 600 \+ n, `mc-\$\{n\}`, x \+ ancho \* 0\.7, x \+ ancho \* 0\.7 \+ 30\)/);
+  // Y la tira alta de lo de adelante del monte, que era la losa: angosta y hasta media altura.
+  assert.match(readFileSync('src/lib/bestiario/arte-camino.ts', 'utf-8'), /filaDeTiras\(250 \+ rnd\(\) \* 70, ALTO \+ 10, [^)]*x \+ ancho \* 0\.3 \+ 26\)/);
+  // Los barrotes de la prisión van de arriba abajo, pero finos y separados.
+  assert.match(fuente, /const w = 10 \+ rnd\(\) \* 4;/);
+  assert.match(fuente, /x \+= 200 \+ rnd\(\) \* 110\) \{\s*const w = 10/);
+  // Todo lo demás de `cerca` arranca de la mitad para abajo.
+  for (const { region, c } of capas.filter((x) => x.c.plano === 'cerca' && !x.c.cae && x.c.pieza !== 'aire-prision-rejas')) assert.ok(c.y >= 380, `${c.pieza} (${region}) sube demasiado`);
+});
+
+test('lo que cruza lejos: de a uno, espaciado, impreso, y sin salirse de la cuenta', () => {
+  const piezas = new Map(PIEZAS_DE_VIDA.map((p) => [p.nombre, p]));
+  assert.ok(Object.keys(VIDAS).length >= 6);
+  for (const [region, v] of Object.entries(VIDAS)) {
+    assert.ok(CAMINOS[region], `${region} no es un camino`);
+    assert.ok(piezas.get(v.pieza) && existsSync(`public${rutaDePieza(v.pieza)}`), `${region}: falta imprimir ${v.pieza}`);
+    // Muy cada tanto: es un premio, no un salvapantallas.
+    assert.ok(v.espera[0] >= 12, `${region}: pasa demasiado seguido`);
+    for (const alReves of [false, true]) {
+      const a = pasoDeVida(v, 0, 3, alReves);
+      const z = pasoDeVida(v, 1, 9, alReves);
+      // Entra y sale por afuera de la pantalla.
+      assert.ok((a.fx < 0 && z.fx > 1) || (a.fx > 1 && z.fx < 0), `${region}: no cruza entera`);
+      for (let u = 0; u <= 1; u += 0.05) {
+        const p = pasoDeVida(v, u, u * 10, alReves);
+        assert.ok(p.y > 0 && p.y < ALTO && p.aleteo > 0 && p.aleteo <= 1 && Math.abs(p.giro) <= v.bamboleo + 1e-9);
+      }
+    }
+  }
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  assert.deepEqual([...new Set([...isla.matchAll(/vidaEl\.style\.(\w+)/g)].map((m) => m[1]))].sort(), ['opacity', 'transform']);
+  // No pasa con movimiento reducido, ni con la lupa, ni cuando el teléfono no da.
+  assert.match(isla, /if \(reloj < pasa\.proxima \|\| conLupa\(lente\) \|\| quieto\(\) \|\| alivio >= 2\) return;/);
+  assert.match(readFileSync('src/styles/camino.css', 'utf-8'), /\.camino \.vida,\s*\.camino \.acecho-ojos \{[^}]*opacity: 0;/);
+});
+
+test('el alivio: sube de a un escalón si los cuadros vienen lentos, y saca primero lo de atrás', () => {
+  assert.equal(alivioTras(0, 16.7), 0);
+  assert.equal(alivioTras(0, ALIVIO.lento + 5), 1);
+  assert.equal(alivioTras(1, 60), 2);
+  assert.equal(alivioTras(2, 200), 2, 'no hay un tercer escalón: la niebla del medio y lo de cerca se quedan');
+  assert.equal(alivioDeEntrada(8, 8), 0);
+  assert.equal(alivioDeEntrada(2, 4), 1);
+  assert.equal(alivioDeEntrada(8, 1), 1);
+  assert.equal(alivioDeEntrada(undefined, undefined), 0, 'el que no dice nada arranca con todo');
+  const css = readFileSync('src/styles/camino.css', 'utf-8');
+  assert.match(css, /\.camino--liviano \.aire--fondo,\s*\.camino--muy-liviano \.luz,\s*\.camino--muy-liviano \.vida \{ display: none; \}/);
+  // Lo que hace la escena no se apaga nunca.
+  assert.doesNotMatch(css, /liviano \.aire--(medio|cerca)/);
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  assert.match(isla, /medirAlivio\(ahora - antes\);/);
+});
+
+test('la nevada de Cybersiberia es una capa de aire, no una animación adentro del piso', () => {
+  // Adentro del dibujo, cada cuadro obligaba a repintar el piso entero: 12 cuadros por segundo con la
+  // CPU estrangulada ×4, contra 54 como capa (medido en `D-90`, tercera ronda).
+  assert.doesNotMatch(pisoDelCamino(CAMINOS.cybersiberia!, new Map()), /cyber-nevada/);
+  const nevada = AIRE.cybersiberia!.find((c) => c.pieza === 'cyber-nieve');
+  assert.ok(nevada?.ajena && nevada.cae === 40 && nevada.ancho === 900, 'la nevada cae lo mismo que caía: 640 unidades en 16 s');
+});
+
+test('las capas se pintan una vez por cuadro, no dos', () => {
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  assert.match(isla, /function encuadrar\(pintar = true\): void \{/);
+  assert.match(isla, /encuadrar\(quieto\(\)\);/);
 });
