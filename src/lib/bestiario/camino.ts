@@ -199,7 +199,7 @@ export const CAMINOS: Readonly<Record<string, Tramo>> = {
       // Los mismos lugares que en el recinto del monte (`escena-monte.ts`).
       ojos: {
         'el-ovejero': [168, 396, 'oro'],
-        'el-borrego': [214, 470, 'papel'],
+        'el-borrego': [343, 460, 'papel'],
         'el-rebano': [640, 560, 'papel'],
       },
     },

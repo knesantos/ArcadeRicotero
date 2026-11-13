@@ -1231,16 +1231,14 @@ function astilleroPiso(ancho = ANCHO, alto = ALTO): string {
 
   const o = OJOS_DE_LOS_ASTILLEROS;
   const at = (id: string): [number, number] => [X(o[id]![0]), o[id]![1]];
-  const [rnx, rny] = at('la-rana-rubia');
   const [lyx, lyy] = at('la-gran-lady');
   const [lnx, lny] = at('la-del-lanchon');
   const [asx, asy] = at('el-as-del-club-paris');
   const [nvx, nvy] = [X(COSAS_DE_LOS_ASTILLEROS['la-pequena-novia-del-carioca']![0]), COSAS_DE_LOS_ASTILLEROS['la-pequena-novia-del-carioca']![1]];
 
   // El pibe ya no se pinta acá: es un títere del elenco (`arte-pibe.ts`), sentado en esta pila.
-  const rana =
-    forma(`M${f(rnx - 18)} ${f(pila.arriba)} C${f(rnx - 20)} ${f(rny + 4)} ${f(rnx - 10)} ${f(rny - 6)} ${f(rnx - 6)} ${f(rny - 3)} Q${f(rnx)} ${f(rny - 5)} ${f(rnx + 6)} ${f(rny - 3)} C${f(rnx + 10)} ${f(rny - 6)} ${f(rnx + 20)} ${f(rny + 4)} ${f(rnx + 18)} ${f(pila.arriba)} Z`, T.negro) +
-    trazo(`M${f(rnx - 18)} ${f(pila.arriba)} C${f(rnx - 20)} ${f(rny + 4)} ${f(rnx - 10)} ${f(rny - 6)} ${f(rnx - 6)} ${f(rny - 3)} Q${f(rnx)} ${f(rny - 5)} ${f(rnx + 6)} ${f(rny - 3)} C${f(rnx + 10)} ${f(rny - 6)} ${f(rnx + 20)} ${f(rny + 4)} ${f(rnx + 18)} ${f(pila.arriba)}`, T.oro, 1.6, 0.8);
+  // La rana rubia tampoco: es un títere del elenco (`arte-rana.ts`), en su reposera, arriba de esta pila.
+  const rana = '';
 
   // La hamaca, de la pila al poste del farol, con la Gran Lady acostada al sol que no hay.
   const [h0x, h0y] = [X(hamaca.desde[0]), hamaca.desde[1]];
@@ -1721,17 +1719,8 @@ function rutaPiso(ancho = ANCHO, alto = ALTO): string {
   for (let i = 0; i < postes.length - 1; i++) {
     for (const d of [-18, 6]) telegrafo += trazo(`M${f(postes[i]! + d)} 258 Q${f((postes[i]! + postes[i + 1]!) / 2 + d)} 290 ${f(postes[i + 1]! + d)} 258`, R.negro, 1.2, 0.85);
   }
-  // El taxi paranormal, volcado en la banquina, con un faro que todavía alumbra el cielo.
-  const { x: vx0, piso: vp } = RUTA.volcado;
-  const vx = X(vx0);
-  const volcado =
-    soplo(poli([[vx + 50, vp - 30], [vx + 58, vp - 22], [vx + 300, vp - 300], [vx + 230, vp - 330]]), R.papel, 'm', 0.13) +
-    nube(vx, vp + 4, 90, 8, R.negro, 's', 0.8) +
-    forma(`M${f(vx - 60)} ${f(vp - 30)} L${f(vx + 62)} ${f(vp - 30)} L${f(vx + 66)} ${f(vp - 16)} L${f(vx + 40)} ${f(vp - 14)} L${f(vx + 30)} ${f(vp)} L${f(vx - 34)} ${f(vp)} L${f(vx - 44)} ${f(vp - 14)} L${f(vx - 64)} ${f(vp - 16)} Z`, R.negro) +
-    forma(caja(vx - 40, vp - 30, 80, 4), R.oro, 0.85) +
-    [vx - 38, vx + 38].map((wx) => forma(circulo(wx, vp - 40, 12), R.negro) + forma(circulo(wx, vp - 40, 5), R.tenue)).join('') +
-    nube(vx + 58, vp - 26, 6, 5, R.papel, 's', 0.9) +
-    forma(caja(vx - 62, vp - 24, 6, 6), R.vivo, 0.8);
+  // El taxi paranormal ya no se pinta acá: es un títere del elenco (`arte-taxi.ts`), volcado en esta banquina.
+  const volcado = '';
   // La bella señora ya no se pinta acá: es un títere del elenco (`arte-desencarnada.ts`), en la banquina de este lado.
   // La piba con la remera tampoco: es un títere del elenco (`arte-piba.ts`), dormida en esta banquina (o haciéndose).
   return (
