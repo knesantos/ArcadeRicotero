@@ -10,6 +10,7 @@ import {
 } from './aire.ts';
 import { PIEZAS_AIRE, PIEZAS_DE_FILO, PIEZAS_DE_LUZ, PIEZAS_DE_VIDA } from './arte-aire.ts';
 import { PIEZAS_CAMINO } from './arte-camino.ts';
+import { ofrendasDelTemplo, paradosEnElTemplo } from './ofrendas.ts';
 import { pisoDelCamino } from './escenas-camino.ts';
 import { ALTO, CAMINOS, VISTA_MAX } from './camino.ts';
 import { LUPA } from './lupa.ts';
@@ -594,21 +595,37 @@ test('los techos no están ahogados: el crayón queda donde hay luz, no parejo d
 test('el canto a medida se ve: grueso, de tinta llena y nunca blanco sobre blanco', () => {
   assert.ok(GROSOR_DEL_FILO >= 10);
   assert.equal(FILO_PROPIO['la-prision']!.tinta, 'var(--disco-oktubre-tinta)');
+  // Y el botija, moreno bajo una luz naranja, en la tiza clara del muelle (octava ronda).
+  assert.equal(FILO_PROPIO['los-astilleros']!.tinta, 'var(--entorno-astillero-tiza-clara)');
   assert.notEqual(FILO_PROPIO['la-prision']!.tinta, 'var(--bestia-dracula-papel)');
   assert.match(readFileSync('scripts/imprimir-bestiario.mjs', 'utf-8'), /filo\[i \+ 3\] = canto > 110 \? 255 : 0;/);
   // A quién le pega se mide al medio del cuerpo, no en la coronilla: a los altos no les tocaba nunca.
   assert.match(readFileSync('src/scripts/camino.ts', 'utf-8'), /Math\.atan2\(-\(b\.x - ancla\), b\.cy - l\.r\.y\)/);
 });
 
-test('el humo del templo baja, y las ofrendas no caen encima de nadie', () => {
-  const humo = AIRE['el-templo']!.find((c) => c.pieza === 'aire-templo-humo-baja')!;
-  assert.ok(humo.cae > 0 && humo.alto === ALTO && humo.alfa < 0.5);
-  const fuente = readFileSync('src/lib/bestiario/arte-aire.ts', 'utf-8');
-  const cerca = [...(/cerca: \[(.*?)\] as const/.exec(fuente)![1]!).matchAll(/\[(\d+), (\d+), /g)].map((m) => [Number(m[1]), Number(m[2])] as const);
-  const lejos = (/lejos: \[([\d, ]+)\]/.exec(fuente)![1]!).split(',').map(Number);
-  assert.ok(cerca.length >= 4 && lejos.length >= 5, 'dos filas');
-  // Los que están parados en el piso del templo: el medio y medio ancho, medidos en la página.
-  const parados: readonly (readonly [number, number])[] = [[63, 28], [194, 68], [328, 28], [589, 28], [979, 85], [1240, 86], [1347, 28], [1468, 115]];
-  for (const [x, cuantas] of cerca) for (const [bx, medio] of parados) assert.ok(Math.abs(x - bx) > medio + cuantas * 13, `la tanda de ${x} cae encima del que está en ${bx}`);
-  for (const x of lejos) for (const [bx, medio] of parados) assert.ok(Math.abs(x - bx) > medio + 20, `la fila de atrás, en ${x}, cae encima del que está en ${bx}`);
+test('las ofrendas del templo salen de los datos de la escena y no caen encima de nadie', () => {
+  // Octava ronda. Antes los lugares estaban escritos a mano; ahora salen del ancla de cada títere y del
+  // lugar de cada vecino (`ofrendas.ts`). Y el humo que bajaba se sacó: era la segunda capa de pantalla
+  // entera del templo, y costaba entre 2 y 5 ms por cuadro con la CPU ×4.
+  assert.equal(AIRE['el-templo']!.filter((c) => c.alto === ALTO).length, 1, 'una sola capa de pantalla entera');
+  assert.ok(!existsSync('public/bestiario/aire-templo-humo-baja.webp'));
+  const parados = paradosEnElTemplo();
+  assert.ok(parados.length >= 7, 'los del elenco y los vecinos que pisan el piso');
+  const { cerca, lejos } = ofrendasDelTemplo();
+  assert.ok(cerca.length >= 1 && lejos.length >= 2, 'dos filas');
+  for (const [x, cuantas] of cerca) for (const [bx, medio] of parados) assert.ok(Math.abs(x - bx) >= medio + cuantas * 13, `la tanda de ${x} cae encima del que está en ${bx}`);
+  for (const x of lejos) for (const [bx, medio] of parados) assert.ok(Math.abs(x - bx) >= medio + 20, `la fila de atrás, en ${x}, cae encima del que está en ${bx}`);
+  // Y un control que no sale de los mismos datos: dónde se los midió en la página el 2026-11-13 (medio y medio ancho).
+  const medidos: readonly (readonly [number, number])[] = [[63, 28], [194, 68], [328, 28], [589, 28], [979, 85], [1240, 86], [1347, 28], [1468, 115]];
+  for (const [x, cuantas] of cerca) for (const [bx, medio] of medidos) assert.ok(Math.abs(x - bx) > medio + cuantas * 13, `medido: la tanda de ${x} pisa al de ${bx}`);
+  // Ninguna vela en el cruce, donde están los carteles.
+  assert.ok([...cerca.map((c) => c[0] + c[1] * 14 + 30), ...lejos].every((x) => x < 1500));
+  // Si alguien se muda, las velas se corren: el arte no guarda ningún lugar a mano.
+  assert.doesNotMatch(readFileSync('src/lib/bestiario/arte-aire.ts', 'utf-8'), /const OFRENDAS = \{/);
+});
+
+test('con movimiento reducido la linterna de los techos no queda prendida del todo', () => {
+  const isla = readFileSync('src/scripts/bestiario/recintos.ts', 'utf-8');
+  assert.match(isla, /const fuerza = \(\): number => \(ctx\.quieto\(\) \? 0\.28 : 0\.85\);/);
+  assert.match(isla, /const brillo = \{ der: fuerza\(\), izq: 0 \};/);
 });
