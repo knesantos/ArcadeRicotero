@@ -260,7 +260,10 @@ function recintoDelBaldio(svg: Raiz, ctx: Contexto): Vida {
     der: svg.querySelector<SVGGElement>('.baldio-linterna[data-lado="der"]')!,
     izq: svg.querySelector<SVGGElement>('.baldio-linterna[data-lado="izq"]')!,
   };
-  const brillo = { der: 0.85, izq: 0 };
+  // Con movimiento reducido la linterna no barre: prendida del todo quedaba como un paño claro clavado
+  // en medio del baldío. Quieta va a un tercio, que alcanza para saber de dónde viene (`D-90`, octava ronda).
+  const fuerza = (): number => (ctx.quieto() ? 0.28 : 0.85);
+  const brillo = { der: fuerza(), izq: 0 };
   const angulo = { der: (LINTERNAS.der.barre[0] + LINTERNAS.der.barre[1]) / 2, izq: (LINTERNAS.izq.barre[0] + LINTERNAS.izq.barre[1]) / 2 };
 
   let x = (LIMON.desde + LIMON.hasta) / 2;
@@ -348,7 +351,7 @@ function recintoDelBaldio(svg: Raiz, ctx: Contexto): Vida {
     for (const lado of ['der', 'izq'] as const) {
       const L = LINTERNAS[lado];
       const prendida = lado === bloque && estado !== 'jadea';
-      brillo[lado] = hacia(brillo[lado], prendida ? 0.85 : 0, dt * (prendida ? 1.4 : 0.7));
+      brillo[lado] = dt ? hacia(brillo[lado], prendida ? fuerza() : 0, dt * (prendida ? 1.4 : 0.7)) : prendida ? fuerza() : 0;
       const busca = (Math.atan2(CHAPA.piso - 50 - L.y, x - L.x) * 180) / Math.PI;
       const meta = Math.min(L.barre[1], Math.max(L.barre[0], busca + Math.sin(t * 1.7 + (lado === 'der' ? 0 : 2)) * 4));
       angulo[lado] = hacia(angulo[lado], meta, dt * 40);

@@ -155,8 +155,8 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
     // Las ofrendas (sexta ronda): velas, platitos y el humo que baja, en el piso, entre el medallón y el
     // papel picado. Van con el piso (`f` 1) y titilan apenas todas juntas.
     capa({ pieza: 'aire-templo-ofrendas', plano: 'medio', f: 1, y: 440, alto: 180, ancho: 1940, alfa: 0.94, late: 0.06, ritmo: 7 }),
-    // El humo que baja (séptima ronda): el que ya subió y vuelve, despacio. De pantalla entera, como todo lo que cae.
-    capa({ pieza: 'aire-templo-humo-baja', plano: 'medio', f: 1.05, y: 0, alto: ALTO, ancho: 800, deriva: 2, cae: 8, alfa: 0.36, late: 0.12, ritmo: 0.21, mece: 5, ritmoMece: 0.33 }),
+    // El humo que bajaba (séptima ronda) se sacó en la octava: era la segunda capa de pantalla entera
+    // del templo y, medido con la CPU ×4, costaba entre 2 y 5 ms por cuadro sobre una escena que sola ya gasta 15.
     capa({ pieza: 'aire-templo-incienso', plano: 'medio', f: 1.15, y: 0, alto: ALTO, ancho: 900, deriva: -3, cae: -11, alfa: 0.6, late: 0.14, ritmo: 0.26, mece: 7, ritmoMece: 0.4 }),
   ],
   // El árbol: las hojas que se le caen, y la racha que las lleva de costado cuando sopla en la copa.
@@ -261,7 +261,7 @@ export interface Luz {
  */
 export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   // El farol está en `ASTILLERO.farol` (440 de 900, a lo largo ×2400/900), y su boca a 30 a la derecha del poste.
-  'los-astilleros': [{ pieza: 'luz-astillero-cono', f: 1, x: 1203, y: 244, caja: [-170, -14, 340, 380], vaiven: 8, ritmo: 0.55, alfa: 0.62, late: 0.16, pulso: 'titila', crece: 0, suena: 'zumbido', rumbo: -24, filo: { pieza: 'filo-sodio', cuantos: 3, abre: 40 } }],
+  'los-astilleros': [{ pieza: 'luz-astillero-cono', f: 1, x: 1203, y: 244, caja: [-170, -14, 340, 380], vaiven: 8, ritmo: 0.55, alfa: 0.62, late: 0.16, pulso: 'titila', crece: 0, suena: 'zumbido', rumbo: -24, filo: { pieza: 'filo-sodio', cuantos: 3, abre: 60 } }],
   'el-infierno': [{ pieza: 'luz-infierno-brasa', f: 1, x: 452, y: 486, caja: [-260, -110, 520, 220], vaiven: 0, ritmo: 3.9, alfa: 0.56, late: 0.36, pulso: 'late', crece: 0.07, suena: 'chispa' }],
   cybersiberia: [{ pieza: 'luz-cyber-haz', f: 1, x: 1560, y: -6, caja: [-190, -14, 380, 600], vaiven: 15, ritmo: 0.33, alfa: 0.34, late: 0.05, pulso: 'barre', crece: 0 }],
   // La ruta: los faros del último bondi, que van con él y alumbran el polvo. El bondi anda para la derecha.
@@ -296,7 +296,9 @@ export const FILO_PROPIO: Readonly<Record<string, { prefijos: readonly string[];
   // de las banderas de *Oktubre*, que corta sobre los dos (`D-90`, séptima ronda).
   'la-prision': { prefijos: ['esclavo-', 'pichon-', 'dracula-', 'encadenado-'], tinta: 'var(--disco-oktubre-tinta)' },
   'los-techos': { prefijos: ['atila-', 'limon-', 'psicopata-', 'perro-', 'dinamita-'], tinta: 'var(--entorno-baion-luz)' },
-  'los-astilleros': { prefijos: ['botija-'], tinta: 'var(--disco-cordero-atado-tinta)' },
+  // El botija es moreno y de remera azul, bajo una luz naranja: un canto naranja se le perdía. Va en
+  // la tiza clara de los astilleros, que es la que dibuja los cantos de todo el muelle (octava ronda).
+  'los-astilleros': { prefijos: ['botija-'], tinta: 'var(--entorno-astillero-tiza-clara)' },
 };
 
 /** Las piezas que no son cuerpo: el humo, los fogonazos, los ojos, la boca, los muebles. A esas la luz no les prende un canto. */

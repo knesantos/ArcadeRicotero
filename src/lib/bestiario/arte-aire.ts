@@ -20,6 +20,7 @@ import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.
 import { ACECHOS, AIRE, LUCES, VIDAS, altoDeBaldosa, type CapaDeAire } from './aire.ts';
 import { M, azar, filaDeTiras } from './arte.ts';
 import { ALTO } from './camino.ts';
+import { ofrendasDelTemplo } from './ofrendas.ts';
 
 const f = (v: number): string => (Math.round(v * 10) / 10).toString();
 
@@ -698,15 +699,6 @@ function temploIncienso(c: CapaDeAire): string {
   return `<g filter="url(#rociado)">${volutas(c, 1311, 15, [[TE.foco, 0.3], [TE.papel, 0.24], [TE.foco, 0.2]], 'soplada')}</g>`;
 }
 
-/**
- * El humo que baja (séptima ronda): el de las velas y el incienso que ya subió, se enfrió y vuelve.
- * Las mismas hebras, más pocas y más flojas; la isla las hace caer despacio hasta el piso.
- */
-function temploHumoQueBaja(c: CapaDeAire): string {
-  // Las volutas se pintan desde arriba de la baldosa: se las corre a donde empieza esta capa.
-  return `<g filter="url(#rociado)"><g transform="translate(0 ${c.y})">${volutas({ ...c, y: 0 }, 1341, 12, [[TE.papel, 0.42], [TE.foco, 0.34]], 'soplada')}</g></g>`;
-}
-
 /** Una hoja: una almendra con su nervio, girada a gusto. */
 function hoja_(x: number, y: number, largo: number, giro: number, color: string, o: number): string {
   const d = `M${f(-largo / 2)} 0 Q0 ${f(-largo * 0.34)} ${f(largo / 2)} 0 Q0 ${f(largo * 0.3)} ${f(-largo / 2)} 0 Z`;
@@ -775,19 +767,9 @@ function vela(x: number, y: number, alto: number, rnd: () => number): string {
  * Ahí va lo que la gente le deja a Momo: velas de distinto alto, alguna caída, un platito, una
  * botella, flores, y el humo que **baja** y se queda a ras del piso. Tandas con aire entre una y otra.
  */
-/**
- * Dónde van las ofrendas, a lo largo del templo entero (1940). No es una baldosa que se repite: en la
- * séptima ronda se vio que, repetida, las velas caían encima de las patas de Mister Ed y del Doctor
- * Saturno. Cada tanda va en un hueco entre los que están parados en el piso: la murga (328), la
- * bailarina (589), el Morta (979), Saturno (1240), Mister Ed (1347), los gallos (1468), el santo (194).
- * `cerca`: dónde, cuántas velas y si lleva botella. `lejos`: dónde, la fila de atrás.
- */
-const OFRENDAS = {
-  cerca: [[462, 3, false], [752, 5, true], [1722, 4, true], [1868, 3, false]] as const,
-  lejos: [440, 690, 835, 1108, 1640, 1795],
-};
-
 function temploOfrendas(c: CapaDeAire): string {
+  // Dónde va cada tanda sale de los datos de la escena (`ofrendas.ts`): en los huecos entre los que están parados.
+  const OFRENDAS = ofrendasDelTemplo();
   const rnd = azar(1321);
   let s = '';
   // La fila de atrás (séptima ronda): más lejos, contra donde empieza el piso. Las mismas velas, a
@@ -1056,7 +1038,6 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-mesa-humo': mesaHumo,
   'aire-templo-incienso': temploIncienso,
   'aire-templo-ofrendas': temploOfrendas,
-  'aire-templo-humo-baja': temploHumoQueBaja,
   'aire-arbol-hojas': arbolHojas,
   'aire-arbol-racha': arbolRacha,
   'aire-galpon-polvo': galponPolvo,
