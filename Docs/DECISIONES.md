@@ -6184,6 +6184,106 @@ moscón 13, ovejero 18.
   Sigue abierta la idea de avisar a un vecino del toque ajeno (que el cordero se asuste cuando el ovejero ladra), la misma que dejó
   el ratón en la vigesimocuarta y el león en la vigesimoquinta.
 
+### Enmienda del 2026-11-13 (27): cinco más que eran ojos o una silueta, uno por región, dibujados por un subagente
+
+Encargo del hilo principal a un subagente Fable (Claude Fable 5.2), en la rama `bestiario/cinco-de-fable`, sobre `9fa0b93`: pasar
+de ojos en lo oscuro o de silueta pintada a títere entero a cinco bestias, con *"detalles sacados de la letra, al pie, y
+rocambolescos"*. **Las dibujó, las animó y las probó el subagente; el hilo principal las audita después.** Es una enmienda de
+`D-73` y no toma `D-` ni `T-` nuevo: el número de la tarea de seguimiento lo toma el hilo principal al integrar.
+
+#### Cuáles
+
+Las cinco las eligió el hilo principal, una por región: los astilleros, la pastura, el monte, la ruta y el bajo.
+
+- **La rana rubia** (los astilleros, *El pibe de los astilleros*, *La mosca y la sopa*): el verso se toma palabra por palabra.
+  Es una **rana**; es **rubia** porque tiene peluca, y se le corre; está **tibia** porque toma sol en una reposera arriba de la pila
+  de containers, de noche y con llovizna, juntando el farol de la grúa con un reflector de papel de aluminio, y ya está colorada; es
+  **haragana** porque le tira un lengüetazo a la mosca sin levantarse y le erra; y está **alquilada**: de la reposera cuelga la
+  etiqueta del alquiler, con el piolín. El lustre del muslo es *"el más bello fuselaje que jamás lustró"*. Sola le erra a la mosca,
+  mueve el pie, acomoda el reflector, mira de reojo al pibe (que es el que la alquiló, y está sentado al lado), croa bajito y se le
+  corre la peluca. Tocada le salta la peluca, se levanta los anteojos, croa tres veces con el buche a pleno, **que la levanta de la
+  reposera** (sube después que el buche, no con él), cae, y sin mirar se come la mosca; al rato llega otra. Su silueta se sacó de
+  `astilleroPiso()` y se reimprimieron `astillero-piso` y `camino-astillero-piso`. `OJOS_DE_LOS_ASTILLEROS` conserva su lugar,
+  porque el pibe la mira ahí (`rig-pibe.ts`).
+- **El borrego** (la pastura, *Rock yugular*, *Luzbelito*): *"jugando al borrego te van a carnear"* se toma por el verbo. No es un
+  borrego: **juega** al borrego. El vellón es un disfraz, con cierre en el lomo, costuras y etiqueta, y abajo hay un bicho flaco y
+  pelado que ya tiene marcados en el cuero, a línea de puntos, los cortes del carnicero. Lleva el *pañuelo rojo* atado al cogote,
+  en la yugular, con la herida copiada, y la línea de puntos más gruesa le cruza el cogote, con su tijerita. Suelto abajo y a la
+  izquierda del palo, **justo afuera de donde llega el cordero con la soga tirante** (lo mide el test, también brincando). Solo
+  brinca, pasta, mira al atado, tira una patada, se rasca y se le resbala el disfraz. Tocado pega un brinco y *caen los disfraces*:
+  el vellón no sube con él, se le cae a las pezuñas; queda pelado, temblando, bala sin ruido, se lo sube con los dientes en tres
+  tirones y se sacude. El vellón va adentro del cuerpo y descuenta el salto cuando está caído, así queda en el piso aunque brinque.
+  **El cogote es una pieza aparte** que gira la mitad que la cabeza en el mismo punto (`COGOTE`): sin él, al agachar la cabeza
+  quedaba un hueco. El pañuelo va de dos tintas, el rojo del marco con el canto oscuro de la base del busto y lunares de marfil:
+  *Luzbelito* no tiene rojo, y ese naranja solo no se veía sobre el pasto.
+- **La liebre muerta** (el monte, *Sorpresa de Shangai*, *Lobo suelto*): panza arriba sobre un retazo de terciopelo (*"voy a
+  tumbarme a la Bartola sobre unos terciopelos"*), con la lengua afuera, el ojo cerrado y un montón de guindas al lado (*"¡toda esta
+  guinda!"*). Se hace la muerta y le sale mal: espía, se le para una oreja, patea de reflejo, se relame, suspira, y cada tanto le
+  pasa una piedra rodando (*"mis penas como piedras caen, ruedan y escapan"*). Tocada se muere más fuerte: las cuatro patas derechas
+  para arriba, tiesa, temblando; después espía, levanta la cabeza (las orejas le cuelgan, no se paran), se come una guinda y se
+  vuelve a tumbar. **Se mudó**: sus ojos
+  estaban abajo a la derecha, en lo oscuro, donde las tiras de adelante le tapaban el terciopelo y la vaca, que se dibuja después,
+  le tapaba las patas. Quedó en el borde de abajo del claro (*"tendida en un claro"*), fuera de la soga del cordero. En el tramo
+  del camino sigue donde la esperaban sus ojos.
+- **El taxi paranormal** (la ruta, *Pensando como una acelga*, *Momo Sampler*): volcado en la banquina de este lado, con las ruedas
+  para arriba, donde estaba pintado; **no es del tránsito**, va en la capa de la figura y los fierros le pasan por detrás. Todo lo
+  que tiene encima es del tema: *fuera de foco* (un doble soplado que se le despega), *parpadeando a lo gurú-vudú* (el faro prendido
+  es un ojo con párpado), *tu cerebro es un jabón* (pompas por el escape), *flor de espadas* (tres naipes en el limpiaparabrisas),
+  *chofer suicida* y *cara de loco esqueleto* (el brazo del chofer, puro hueso, con reloj, colgando de la ventanilla), *loco por una
+  colilla* (una, humeando en el pasto) y *se te escapa un poquito el diablo* (una cola con punta de flecha, por el baúl). Solo gira
+  una rueda y se frena sola, parpadea, larga pompas, se le escapa la cola, tamborilea el chofer, se va de foco y titila la bandera.
+  Tocado levita, se va de foco, se le abre el baúl, asoma el diablo, el chofer saluda (*"así también te ves bien"*), cae de golpe y
+  se aplasta. **Las ruedas tienen peso**: la isla guarda la velocidad de cada una, la toma rápido y la pierde despacio. **Es negro y
+  amarillo**, como el toxi-taxi del carril (`--fondo` y `--acento-2`, las tintas del sitio), con el cartel de TAXI del techo
+  aplastado contra el pasto y dado vuelta; las tintas de *Momo Sampler* van en los detalles. La chapa negra se despega de la
+  banquina negra con el canto perfilado en plata y el brillo violeta en el lomo. **Va en la capa `delante`**, con sus propias matas
+  bajas al pie: en `figura` los yuyos de `ruta-frente` lo rayaban entero. **El diablo cuelga cabeza abajo del baúl**, y en reposo ya
+  asoma los cuernos y los ojos (`diablo: 0,6`). Se corrió 22 a la izquierda (`RUTA.volcado.x`, 668) y se agrandó a 0,7. Se sacó de
+  `rutaPiso()` y se reimprimieron `ruta-piso` y `camino-ruta-piso`.
+- **El polizón del remolque** (el bajo, *Salando las heridas*, *La mosca y la sopa*): el bote dado vuelta que flotaba adelante en
+  `bajo-frente` pasa a ser suyo, y el títere es el bote. Verso por verso: *el bote volcó*; *el premio a pique se fue* (la copa,
+  hundida de costado, al lado); *todos te daban por muerto* (una corona con su cinta y una vela apagada, arriba de la quilla); *en
+  tu remolque* (la soga, que sale de la proa); *sin luz, como un polizón* (a oscuras no se le ve nada: `polizon` va con opacidad 0).
+  Solo levanta una rendija por la proa y espía, saca un pocillo de café frío (*"el café con tu suerte se enfría"*), sala el agua
+  con un salero, prende un fósforo y lo sopla, y golpea la tablazón tres veces. Tocado lo destapan: el bote se levanta girando en
+  la popa, la corona se cae de costado más tarde que el bote, y él queda a la vista, *bien maquillado*, con una curita arriba del
+  *lunar* y los *pómulos hundidos*, y *resplandece*; pide silencio con el dedo, baja el bote despacio, lo suelta, y desde abajo
+  endereza la corona. Lo oscuro de abajo es una cuña que se abre con el bote, con el canto de la derecha roto a mano, y lo de abajo
+  va recortado a la línea del agua. **A oscuras es una sombra con dos ojos** (`luz` y la pieza `polizon-sombra`): por la rendija, y
+  cuando el bote baja, no se le ve la cara, que quedaba como una cabeza cortada pegada al agua. La luz se la dan el bote
+  destapado y, a medias, el fósforo. El bote se sacó de `bajoFrente()` y se reimprimió `bajo-frente`.
+
+#### Cómo se hizo, y lo que se tocó alrededor
+
+- El molde es el de la vigesimosexta: cuatro archivos por bestia (`arte-`, `rig-`, `scripts/bestiario/`, `.test.ts`), el registro
+  en `elenco.ts` y `vivos.ts`, un bloque de tintas en `tokens.css` y otro en `sitio.css`, la estampa nueva dentro del tope de 320.
+- **Las tintas se midieron en `public/tapas/`** (las tapas de 320 px y sus contratapas de 320 × 252), con un medidor del
+  scratchpad: zona, radio y percentil por luz, como anota cada bloque. Donde la tapa no tiene el color que pide la letra, se buscó
+  el píxel más saturado y se anotó como tal: el rojo del pañuelo es el canto de abajo del marco de *Luzbelito*, y el magenta del
+  terciopelo es el sello de la contratapa de *Lobo suelto*, el único color de ese disco.
+- Cada títere se miró a PNG en su recinto y en su tramo del camino, quieto y en el pico del toque, y además en **una tira de seis
+  cuadros del toque**, que es donde se ven las piezas que se separan. De mirar salieron: la mudanza de la liebre, la lengua de la
+  liebre para arriba (caída sobre el cachete le tapaba el ojo), el reflector de la rana en abanico (derecho se leía como una
+  notebook), las ruedas más altas del taxi, y el canto roto de la cuña del polizón.
+- **Hubo una segunda vuelta, auditada por el hilo principal sobre esas capturas.** De ahí salieron: el taxi negro y amarillo, con
+  cartel, en la capa de adelante y con el diablo a la vista; la sombra del polizón; el cogote y el pañuelo de dos tintas del
+  borrego; los anteojos de la rana, que levantados eran una mata negra y ahora son dos lentes con marco que no se tocan, y su
+  peluca, que salta más alto y más tiempo; y las orejas de la liebre, que con la cabeza levantada parecían cuernos.
+- `elenco.test.ts` acepta la capa `delante` para un personaje de entorno corrido con `k`: es el taxi.
+- Los ojos de `VECINOS_DEL_MONTE` y de `VECINOS_DEL_BAJO` de la liebre, el borrego y el polizón se corrieron adonde tienen el ojo,
+  y con ellos los del claro en `camino.ts`. `COSAS_DE_LA_RUTA` se corrió con el taxi.
+- `elenco.test.ts` pasa de 55 a 60.
+
+Cada uno trae su bloque de tintas (rana 14 y polizón 12 en *La mosca y la sopa*; borrego 13 en *Luzbelito*; liebre 11 en *Lobo
+suelto*; taxi 13 en *Momo Sampler*), su bloque en `sitio.css`, su conducta y su test de 7. Las piezas: rana 15, borrego 16,
+liebre 15, taxi 14, polizón 18.
+
+Queda para el hilo principal: la auditoría, verlos en un teléfono de verdad, que `contenido` lea las cinco estampas, pasar los
+cinco bloques de tintas al lienzo, y sumarlos a `scripts/bestiario/mirada.ts` cuando ese archivo llegue a esta rama (hoy no
+está). Lo que quedó flojo: en el camino, lo de adelante de la ruta es otra capa, con su paralaje, y sus matas le siguen pasando
+por delante al taxi mientras se camina; el taxi apoyado asoma las ruedas sobre el carril de adelante; y al borrego, cuando se sube
+el disfraz, la boca no llega a tocarlo.
+
 ## D-74 — El sitio se muda a una cuenta Hobby de Vercel
 
 - **Fecha:** 2026-10-17

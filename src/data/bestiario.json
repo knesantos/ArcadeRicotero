@@ -735,7 +735,7 @@
       "dibujo": { "f": "rana" },
       "tema": "el-pibe-de-los-astilleros",
       "verso": ["Alquiló una rana rubia, tibia y haragana"],
-      "estampa": "Tomando sol arriba de un container, tibia y haragana. La estampa la toma al pie de la letra: una rana.",
+      "estampa": "Una rana con peluca rubia, en una reposera arriba del container, tomando un sol que no hay: es de noche, llovizna, y junta el farol de la grúa con un reflector de papel de aluminio. De la reposera cuelga la etiqueta del alquiler. A la mosca le tira la lengua sin levantarse, y le erra. Si la tocás, croa hasta despegar.",
       "cerca": ["el-pibe-de-los-astilleros", "la-princesita-sapito"]
     },
     {
@@ -926,7 +926,7 @@
       "dibujo": { "f": "persona", "ropa": "saco", "con": ["bote"] },
       "tema": "salando-las-heridas",
       "verso": ["Un dia el bote volcó", "Y el premio a pique se fue", "Sin luz, como un polizón"],
-      "estampa": "Abajo de un bote dado vuelta, a oscuras. Todos lo dan por muerto.",
+      "estampa": "Abajo de un bote dado vuelta, a oscuras. Todos lo dan por muerto: arriba le dejaron una corona y una vela, apagada. Cada tanto levanta una rendija, saca un café frío, sala el agua. Si lo tocás lo destapás: está maquillado, con una curita arriba del lunar, y resplandece. Te pide silencio con el dedo.",
       "cerca": ["los-naufragos"]
     },
     {
@@ -1513,7 +1513,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "largas", "hocico": "corto", "cola": "corta", "pose": "echado" },
       "tema": "sorpresa-de-shangai",
       "verso": ["¡Caras de liebre!", "¿De liebre muerta?"],
-      "estampa": "Tendida en un claro. Si está muerta o se hace, el lobo todavía no lo decidió.",
+      "estampa": "Tendida a la Bartola sobre un terciopelo, en el borde del claro, con la lengua afuera y unas guindas al lado. Si está muerta o se hace, el lobo todavía no lo decidió. Un ojo se le abre solo cuando cree que nadie mira. Si la tocás se muere más fuerte, con las cuatro patas para arriba. Después se come una guinda.",
       "cerca": ["el-lobo-suelto"]
     },
     {
@@ -1583,7 +1583,7 @@
       "dibujo": { "f": "cuadrupedo", "orejas": "caidas", "hocico": "corto", "cola": "corta", "lana": true },
       "tema": "rock-yugular",
       "verso": ["y ya sabes que jugando al borrego te van a carnear"],
-      "estampa": "Suelto, cerca del palo. Por estar suelto, más a mano.",
+      "estampa": "No es un borrego: juega al borrego. El vellón es un disfraz con cierre, y lleva un pañuelo rojo atado al cogote. Brinca suelto abajo del palo, justo donde no llega la soga del otro. Por estar suelto, más a mano. Si lo tocás se le caen los disfraces, y abajo ya tiene marcados los cortes, a línea de puntos.",
       "cerca": ["el-cordero-atado"]
     },
     {
@@ -1867,7 +1867,7 @@
       "dibujo": { "f": "maquina", "que": "taxi", "volcado": true },
       "tema": "pensando-como-una-acelga",
       "verso": ["Volanteás, volcás", "Tu taxi paranormal,", "En plan de chofer suicida"],
-      "estampa": "Volcado en la banquina, con las ruedas para arriba.",
+      "estampa": "Volcado en la banquina, con las ruedas para arriba y un faro prendido que parpadea como un ojo. Por el escape larga pompas de jabón, por el baúl le asoma un diablo, y de la ventanilla cuelga el brazo del chofer, puro hueso, con el reloj puesto. Si lo tocás levita un rato, se va de foco, y el chofer saluda.",
       "cerca": ["el-toxi-taxi"]
     },
     {

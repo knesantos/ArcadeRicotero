@@ -67,6 +67,11 @@ import { armarJoven } from './joven.ts';
 import { armarReo } from './reo.ts';
 import { armarMoscon } from './moscon.ts';
 import { armarOvejero } from './ovejero.ts';
+import { armarRana } from './rana.ts';
+import { armarBorrego } from './borrego.ts';
+import { armarLiebre } from './liebre.ts';
+import { armarTaxi } from './taxi.ts';
+import { armarPolizon } from './polizon.ts';
 
 /**
  * Lo que la escena le presta a un personaje. Las coordenadas de `hablar` van en las del recinto
@@ -149,6 +154,11 @@ const CONDUCTAS: Readonly<Record<string, Armar | null>> = {
   'el-reo-semental': armarReo,
   'el-moscon-zumbon': armarMoscon,
   'el-ovejero': armarOvejero,
+  'la-rana-rubia': armarRana,
+  'el-borrego': armarBorrego,
+  'la-liebre-muerta': armarLiebre,
+  'el-taxi-paranormal': armarTaxi,
+  'el-polizon-del-remolque': armarPolizon,
 };
 
 /** Los ids que tienen conducta: el test mira que coincidan con los que tienen dibujo. */

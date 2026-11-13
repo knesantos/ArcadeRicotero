@@ -1373,6 +1373,113 @@
   --bestia-ovejero-gris-claro: #b0afe8; /* ese rayado donde brilla (misma zona, percentil 97): el brillo de la lata */
   /* ⟨/el ovejero⟩ */
 
+  /* ⟨la liebre muerta⟩ */
+  /* La liebre muerta (vigesimoseptima vuelta, D-73) es de Sorpresa de Shangai, en Lobo suelto, cordero atado:
+     viste esa tapa. El pelo es el gris plata del lobo del frente, la panza y el pompon son su crema, la
+     sombra es el topo del fondo, y el terciopelo y las guindas son el magenta del sello de la contratapa,
+     el unico color que tiene ese disco. Medido con sharp en public/tapas/lobo-suelto.jpg (320 px) y en
+     public/tapas/trasera/lobo-suelto.jpg (320 x 252 px): zona (x, y) y radio, ordenada por luz. */
+  --bestia-liebre-gris: #89858e; /* el pelo del lobo (frente, zona 60,60 de 25, mediana): el pelo */
+  --bestia-liebre-gris-hondo: #4d4b52; /* ese pelo en la sombra (misma zona, percentil 25): las patas y la oreja de lejos */
+  --bestia-liebre-noche: #353642; /* ese pelo en lo hondo (misma zona, percentil 10): la sombra del lomo, la pupila, las unas */
+  --bestia-liebre-topo: #534f47; /* el fondo de la derecha (frente, zona 250,80 de 20, mediana): la piedra y el cabito de la guinda */
+  --bestia-liebre-arena: #9e846d; /* el pecho del lobo (frente, zona 160,170 de 20, mediana): la ojera y el ombligo */
+  --bestia-liebre-crema: #cbb7ac; /* el pelo donde le da la luz (frente, zona 60,60 de 25, percentil 90): la panza y el pompon */
+  --bestia-liebre-marfil: #edd6cd; /* el collar (frente, zona 270,200 de 20, percentil 97): el blanco del ojo y los dientes */
+  --bestia-liebre-papel: #d3cbbd; /* el lomo de la caja (contratapa, zona 310,120 de 4, mediana): los bigotes */
+  --bestia-liebre-magenta: #ba317b; /* el sello (contratapa, zona 107,236 de 3, mediana): el terciopelo y la guinda */
+  --bestia-liebre-magenta-hondo: #aa3370; /* ese sello en la sombra (misma zona, percentil 25): el pelo del terciopelo y las guindas de abajo */
+  --bestia-liebre-rosa: #cf7298; /* ese sello donde brilla (misma zona, percentil 97): la lengua, la nariz y el adentro de las orejas */
+  /* ⟨/la liebre muerta⟩ */
+
+  /* ⟨el borrego⟩ */
+  /* El borrego (vigesimoseptima vuelta, D-73) es de Rock yugular, en Luzbelito: viste esa tapa. El vellon del
+     disfraz es el marfil del busto, el cuero pelado es la cera de las velas de la contratapa, la cara y las
+     orejas son el bronce del marco en lo hondo, el cierre y los ojos son su oro, la linea de puntos del
+     carnicero es el cobre, el panuelo es el rojo del marco, y la sombra es el verde del marmol. Medido con
+     sharp en public/tapas/luzbelito.jpg (320 px) y en public/tapas/trasera/luzbelito.jpg (320 x 252 px):
+     zona (x, y) y radio, ordenada por luz. */
+  --bestia-borrego-marfil: #e8e6d8; /* el busto (frente, zona 172,135 de 8, percentil 75): el vellon del disfraz */
+  --bestia-borrego-hueso: #feffed; /* el busto donde brilla (misma zona, percentil 90): la luz del lomo y los dientes */
+  --bestia-borrego-cera: #c4bfa8; /* la vela (contratapa, zona 250,178 de 4, mediana): el cuero pelado y la sombra de la lana */
+  --bestia-borrego-cera-honda: #8d8771; /* esa vela en la sombra (misma zona, percentil 10): las costillas, los rulos y las patas de lejos */
+  --bestia-borrego-oro: #dea773; /* el marco (frente, zona 138,145 de 3, percentil 75): el carrito del cierre y el ojo */
+  --bestia-borrego-oro-claro: #fcca85; /* ese marco donde brilla (misma zona, percentil 90): el ojo, el tirador y la etiqueta */
+  --bestia-borrego-bronce: #7a5330; /* ese marco en la sombra (misma zona, mediana): la cara y los dientes del cierre */
+  --bestia-borrego-cobre: #c76a45; /* el canto de arriba del marco (frente, zona 153,100 de 6, mediana): la linea de puntos y el nudo */
+  --bestia-borrego-rojo: #f47957; /* lo mas rojo de la tapa, el canto de abajo del marco (frente, pixel 190,212): el panuelo */
+  --bestia-borrego-verde: #2d4d42; /* el marmol (frente, zona 100,220 de 30, mediana): la sombra del anca */
+  --bestia-borrego-verde-claro: #5f7d70; /* la veta del marmol (misma zona, percentil 97): la sombra de abajo del vellon */
+  --bestia-borrego-tinta: #191d1e; /* el fondo del ovalo (frente, zona 153,128 de 10, percentil 10): las pezunas, la nariz y la pupila */
+  --bestia-borrego-sombra: #3b2718; /* la base del busto (frente, zona 172,150 de 6, percentil 10): el pasto pisado y la mancha del panuelo */
+  /* ⟨/el borrego⟩ */
+
+  /* ⟨la rana rubia⟩ */
+  /* La rana rubia (vigesimoseptima vuelta, D-73) es de El pibe de los astilleros, en La mosca y la sopa: viste
+     esa tapa. El cuero es el rosa del lomo de la caja, colorado del sol con el rojo del frente; la peluca es el
+     amarillo del otro lomo y de las letras; los anteojos son el negro de la foto; el reflector de papel de
+     aluminio es el haz del seguidor; la reposera va a rayas rojas y crema; y la etiqueta del alquiler es el
+     carton de la contratapa. Medido con sharp en public/tapas/la-mosca-y-la-sopa.jpg (320 px) y en
+     public/tapas/trasera/la-mosca-y-la-sopa.jpg (320 x 252 px): zona (x, y) y radio, ordenada por luz. */
+  --bestia-rana-piel: #e78067; /* el lomo rosa de la caja (contratapa, zona 6,118 de 3, mediana): el cuero */
+  --bestia-rana-piel-clara: #fb977f; /* ese lomo donde brilla (misma zona, percentil 97): la panza, el buche y las ventosas */
+  --bestia-rana-piel-honda: #d1454a; /* ese lomo en la sombra (misma zona, percentil 10): la pierna de lejos y la sombra del cuero */
+  --bestia-rana-rojo: #c82f1f; /* el rojo del frente (frente, zona 40,250 de 20, mediana): la boca pintada, lo colorado del sol y las rayas de la lona */
+  --bestia-rana-rojo-hondo: #882405; /* el escenario en la sombra (frente, zona 100,120 de 6, mediana): las manchas del lomo y el filo de la boca */
+  --bestia-rana-amarillo: #ebea52; /* el lomo amarillo de la caja (contratapa, zona 314,63 de 3, mediana): la peluca */
+  --bestia-rana-amarillo-claro: #fcfb9d; /* las letras del titulo donde brillan (frente, zona 190,262 de 6, percentil 97): el blanco de los ojos, el lustre y el brillo de la peluca */
+  --bestia-rana-amarillo-hondo: #c7ce69; /* esas letras en la sombra (misma zona, percentil 75): los mechones */
+  --bestia-rana-negro: #0c0b11; /* el negro de la foto (frente, zona 160,165 de 8, mediana): los anteojos y la mosca */
+  --bestia-rana-haz: #d5dfe8; /* el haz del seguidor (frente, zona 250,95 de 8, percentil 75): el papel de aluminio y los canos */
+  --bestia-rana-haz-hondo: #4c5874; /* ese haz en el borde (misma zona, mediana): las arrugas del aluminio y los canos en la sombra */
+  --bestia-rana-sepia: #5f3a29; /* la tierra (contratapa, zona 60,180 de 10, mediana): los renglones de la etiqueta y la red de la peluca */
+  --bestia-rana-carton: #906b51; /* la olla (contratapa, zona 250,140 de 10, percentil 75): el carton de la etiqueta */
+  --bestia-rana-crema: #cfc1af; /* esa olla donde le da la luz (misma zona, percentil 97): las rayas claras de la lona y el piolin */
+  /* ⟨/la rana rubia⟩ */
+
+  /* ⟨el taxi paranormal⟩ */
+  /* El taxi paranormal (vigesimoseptima vuelta, D-73) es de Pensando como una acelga, en Momo Sampler: viste
+     esa tapa. La chapa es el negro del frente y el violeta de la contratapa, el techo de taxi es el oro viejo
+     de las letras del titulo, los cromados y las llantas son la plata del medallon, y el diablo, el doble
+     fuera de foco, las pompas y los huesos del chofer son los lilas de la contratapa. Medido con sharp en
+     public/tapas/momo-sampler.jpg (320 px) y en public/tapas/trasera/momo-sampler.jpg (320 x 252 px): zona
+     (x, y) y radio, ordenada por luz. */
+  --bestia-taxi-negro: #010101; /* el fondo del frente (frente, zona 50,50 de 20, mediana): la chapa y las cubiertas */
+  --bestia-taxi-violeta: #443b5c; /* la cara de la contratapa (contratapa, zona 120,134 de 12, percentil 75): la chapa donde le da la luna */
+  --bestia-taxi-violeta-hondo: #251931; /* el fondo de la contratapa (contratapa, zona 200,118 de 15, mediana): los vidrios y el piso del auto */
+  --bestia-taxi-violeta-claro: #776d90; /* esa cara donde brilla (contratapa, zona 120,134 de 12, percentil 97): el brillo de la chapa */
+  --bestia-taxi-malva: #8a6d99; /* lo mas violeta de la contratapa (pixel 158,198): el diablo, su cola y el doble fuera de foco */
+  --bestia-taxi-lila: #c7bfcb; /* el lomo de la caja (contratapa, zona 310,95 de 4, mediana): las pompas, el haz y los vidrios rotos */
+  --bestia-taxi-hueso: #ebe2ee; /* ese lomo donde brilla (misma zona, percentil 97): los huesos del chofer, los cuernos, los naipes y el faro */
+  --bestia-taxi-plata: #858585; /* el medallon (frente, zona 160,160 de 25, mediana): las llantas, los paragolpes y el escape */
+  --bestia-taxi-plata-honda: #555555; /* ese medallon en la sombra (misma zona, percentil 10): los rayos y el cardan */
+  --bestia-taxi-plata-clara: #bababa; /* ese medallon donde brilla (misma zona, percentil 97): el brillo de la llanta */
+  --bestia-taxi-oro: #b38b71; /* las letras del titulo (contratapa, zona 140,20 de 5, percentil 75): el techo y la franja de taxi */
+  --bestia-taxi-oro-claro: #d8ae8b; /* esas letras donde brillan (misma zona, percentil 97): la bandera del reloj, los ojos del diablo y la brasa */
+  --bestia-taxi-oro-hondo: #98633d; /* esas letras en la sombra (misma zona, mediana): la sombra del techo */
+  /* ⟨/el taxi paranormal⟩ */
+
+  /* ⟨el polizon del remolque⟩ */
+  /* El polizon del remolque (vigesimoseptima vuelta, D-73) es de Salando las heridas, en La mosca y la sopa:
+     viste esa tapa. El bote dado vuelta es la tierra de la contratapa; la franja de la borda y las flores de
+     la corona son el rojo del frente y el rosa y el amarillo de los lomos de la caja; la cara empolvada es el
+     haz del seguidor, con las ojeras de su borde; el resplandor es el amarillo de las letras; y la luz del
+     fosforo, el naranja del escenario. Medido con sharp en public/tapas/la-mosca-y-la-sopa.jpg (320 px) y en
+     public/tapas/trasera/la-mosca-y-la-sopa.jpg (320 x 252 px): zona (x, y) y radio, ordenada por luz. */
+  --bestia-polizon-madera: #5f3a29; /* la tierra (contratapa, zona 60,180 de 10, mediana): la tablazon del bote y el saco */
+  --bestia-polizon-madera-clara: #964d35; /* esa tierra donde le da la luz (misma zona, percentil 75): la quilla y las vetas */
+  --bestia-polizon-madera-honda: #39190b; /* esa tierra en lo hondo (misma zona, percentil 10): las juntas de las tablas, el saco y las hojas de la corona */
+  --bestia-polizon-negro: #0c0b11; /* el negro de la foto (frente, zona 160,165 de 8, mediana): lo oscuro de abajo del bote, el pelo y el lunar */
+  --bestia-polizon-rojo: #c82f1f; /* el rojo del frente (frente, zona 40,250 de 20, mediana): la franja de la borda, el rubor, la boca y la corbata */
+  --bestia-polizon-rosa: #e78067; /* el lomo rosa de la caja (contratapa, zona 6,118 de 3, mediana): las flores y la gasa de la curita */
+  --bestia-polizon-amarillo: #ebea52; /* el lomo amarillo de la caja (contratapa, zona 314,63 de 3, mediana): el resplandor, la copa del premio y las flores */
+  --bestia-polizon-amarillo-claro: #fcfb9d; /* las letras del titulo donde brillan (frente, zona 190,262 de 6, percentil 97): el blanco de los ojos, los rayos y la llama */
+  --bestia-polizon-polvo: #d5dfe8; /* el haz del seguidor (frente, zona 250,95 de 8, percentil 75): la cara empolvada, las manos y la sal */
+  --bestia-polizon-ojera: #4c5874; /* ese haz en el borde (misma zona, mediana): las ojeras, los pomulos hundidos, la lata del remiendo y las ondas */
+  --bestia-polizon-crema: #cfc1af; /* la olla donde le da la luz (contratapa, zona 250,140 de 10, percentil 97): la cinta de la corona, la vela, el pocillo y la soga */
+  --bestia-polizon-naranja: #d3511c; /* las luces del escenario (frente, zona 130,100 de 10, percentil 90): la luz del fosforo */
+  /* ⟨/el polizon del remolque⟩ */
+
   /* ⟨el que duerme colgado⟩ */
   /* El que duerme colgado (vigesima vuelta, D-73) es de Es hora de levantarse, querido!, en Cordero
      atado: viste el bicho de plumas azules del frente sobre el naranja, con sus pezunas de ocre y sus
