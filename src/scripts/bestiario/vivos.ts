@@ -153,14 +153,23 @@ const CONDUCTAS: Readonly<Record<string, Armar | null>> = {
 /** Los ids que tienen conducta: el test mira que coincidan con los que tienen dibujo. */
 export const CON_CONDUCTA: readonly string[] = Object.keys(CONDUCTAS).filter((id) => CONDUCTAS[id]);
 
+/** Cada cuántos cuadros se mira quién del elenco está a la vista: un tercio de segundo. */
+export const MIRAR_CADA = 20;
+
 /** Suma a la vida de una escena los personajes del elenco que viven en ella. */
 export function conElenco(vida: Vida, raiz: ParentNode, ctx: Contexto): Vida {
   const vivos: Vivo[] = [];
+  /** Los marcos de cada uno, y si está a la vista: el que no se ve no se mueve (`D-90`, cuarta ronda). */
+  const marcosDe: SVGGElement[][] = [];
+  const aLaVista: boolean[] = [];
+  let cuadros = 0;
   for (const [id, armar] of Object.entries(CONDUCTAS)) {
     if (!armar) continue;
     const marcos = [...raiz.querySelectorAll<SVGGElement>(`[data-marco="${id}"]`)];
     if (!marcos.length) continue;
     const dx = Number(marcos[0]!.dataset.dx ?? 0);
+    marcosDe.push(marcos);
+    aLaVista.push(true);
     vivos.push(
       armar(marcos, {
         hablar: (b, x, y, abajo) => ctx.hablar(b, x + dx, y, abajo),
@@ -172,8 +181,14 @@ export function conElenco(vida: Vida, raiz: ParentNode, ctx: Contexto): Vida {
   if (!vivos.length) return vida;
   return {
     mover: (t, dt) => {
+      // Cada tanto, y antes de que nadie escriba nada en este cuadro (así el navegador no tiene que
+      // recalcular a mitad de camino), se mira quién está a la vista. Se miden todos juntos.
+      if (ctx.seVe && dt > 0 && cuadros++ % MIRAR_CADA === 0) {
+        for (let i = 0; i < vivos.length; i++) aLaVista[i] = marcosDe[i]!.some((m) => ctx.seVe!(m));
+      }
       vida.mover(t, dt);
-      for (const v of vivos) v.mover(t, dt);
+      // La pose quieta (`dt` 0) va para todos; andando, solo para los que se ven.
+      for (let i = 0; i < vivos.length; i++) if (dt === 0 || aLaVista[i]) vivos[i]!.mover(t, dt);
     },
     // Si ninguno del elenco lo reconoce como suyo, reacciona el recinto (los ojos, los fierros).
     reaccionar: (id, t) => {

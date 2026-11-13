@@ -55,6 +55,7 @@ import {
 } from '../lib/bestiario/aire.ts';
 import { ENTERA, LUPA, acotar, centrar, conLupa, enElMundo, enfocar, entreLentes, type Lente } from '../lib/bestiario/lupa.ts';
 import { leerGestos } from './bestiario/pellizco.ts';
+import { miradaDe, seguir } from './bestiario/mirada.ts';
 import { alSacudon } from './bestiario/sacudon.ts';
 import { lugarDeLaFicha, type Lado } from '../lib/bestiario/hoja.ts';
 import { reposar, sellar, sellarAnotada } from './bestiario/sellos.ts';
@@ -116,6 +117,12 @@ const colgadas = new Map<string, SVGGElement | null>();
  */
 const delNavegador = navigator as Navigator & { deviceMemory?: number };
 let alivio = alivioDeEntrada(navigator.hardwareConcurrency, delNavegador.deviceMemory);
+/**
+ * Para mirarlo sin un teléfono flojo: `?liviano=1` o `?liviano=2` en la dirección fuerza ese escalón
+ * (y `?liviano=0`, ninguno aunque el teléfono avise que es flojo). Con la bandera puesta no se mide.
+ */
+const forzado = /^[012]$/.exec(new URLSearchParams(location.search).get('liviano') ?? '')?.[0];
+if (forzado !== undefined) alivio = Number(forzado);
 const tanda = { cuadros: 0, ms: 0 };
 
 const hoja = document.getElementById('hoja')!;
@@ -429,6 +436,8 @@ let viaje: { desde: Lente; hasta: Lente; t0: number } | null = null;
 let lupaPintada = false;
 /** Cuánto se camina ahora, de 0 a 1, para el aire: sube rápido y baja despacio (la niebla tarda en cerrarse). */
 let anda = 0;
+/** A cuánto se camina en este cuadro, en unidades por segundo y con signo: lo que cuelga se va para atrás. */
+let pasoAhora = 0;
 
 const vistaDe = (): { ancho: number; alto: number } => ({ ancho: vistaPx, alto: altoPx });
 const mundoDe = (): { ancho: number; alto: number } => ({ ancho: anchoPx, alto: altoPx });
@@ -548,7 +557,7 @@ function pintarAlivio(): void {
  * este cuadro de verdad, sin el tope del reloj.
  */
 function medirAlivio(ms: number): void {
-  if (alivio >= ALIVIO.niveles || reloj < 1.5 || ms > 400) return;
+  if (forzado !== undefined || alivio >= ALIVIO.niveles || reloj < 1.5 || ms > 400) return;
   tanda.cuadros++;
   tanda.ms += ms;
   if (tanda.cuadros < ALIVIO.tanda && tanda.ms < ALIVIO.tope) return;
@@ -1073,8 +1082,30 @@ escenario.addEventListener('scroll', () => quieto() && despejarCartel(), { passi
 let reloj = 0;
 
 /** Lo que cada escena le pide a la isla: el bocadillo en sus coordenadas, el reloj y la quietud. */
-function contexto(marco: SVGGraphicsElement, ancho: number): { hablar(id: string, x: number, y: number, abajo?: boolean): void; quieto(): boolean; reloj(): number; ancho: number } {
+function contexto(marco: SVGGraphicsElement, ancho: number): {
+  hablar(id: string, x: number, y: number, abajo?: boolean): void;
+  quieto(): boolean;
+  reloj(): number;
+  ancho: number;
+  vista(): readonly [number, number];
+  seVe(el: Element): boolean;
+  paso(): number;
+} {
+  // Cuánto está corrido el marco adentro del piso (el recinto que arranca antes del cero, el claro de la pastura).
+  const corrido = marco === piso ? 0 : ((marco as SVGGElement).transform.baseVal.consolidate()?.matrix.e ?? 0);
   return {
+    // Lo que se ve, en las unidades del marco, con media pantalla de margen a cada lado: lo que está
+    // por entrar ya se está moviendo.
+    vista: () => {
+      const ancha = vistaPx / lente.z / escala;
+      const desde = cam / escala - corrido;
+      return [desde - ancha * 0.5, desde + ancha * 1.5];
+    },
+    seVe: (el) => {
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.right > -vistaPx * 0.5 && r.left < vistaPx * 1.5;
+    },
+    paso: () => pasoAhora,
     hablar: (id, x, y, abajo) => {
       const p = enPantalla(marco, x, y);
       hablar(id, p.x, p.y, abajo);
@@ -1095,6 +1126,12 @@ function armarLoboDelMonte(x: number): { mover(t: number, dt: number): void } {
   const p = partes(g);
   const AL = ARMADO.lobo;
   const lobo = { alzado: quieto() ? 1 : 0, hasta: -1, parpadeo: 2 };
+  /**
+   * El cuerpo del lobo (`D-90`, cuarta ronda). La cabeza llega tarde y se pasa (un resorte): cuando
+   * asoma, cabecea; cuando lo mirás de cerca, te clava la vista con la cabeza baja y los ojos
+   * entornados, y resopla. `mira`: hacia dónde tiene el dedo, y cuánto le importa.
+   */
+  const cuerpo = { cabeza: 0, v: 0, mira: 0, cerca: 0, antes: 0, alzadoAntes: lobo.alzado };
 
   const arriba = (): { x: number; y: number } => ({
     x,
@@ -1104,15 +1141,30 @@ function armarLoboDelMonte(x: number): { mover(t: number, dt: number): void } {
   function pintar(t: number): void {
     const y = ACECHO.piso + (1 - lobo.alzado) * ACECHO.hundido;
     g.setAttribute('transform', `translate(${x} ${y.toFixed(1)}) scale(${ESCALA_LOBO}) translate(${-AL.piso[0]} ${-AL.piso[1]})`);
-    const respira = Math.sin(t * 1.7) * 0.012;
+    const dt = Math.min(0.05, Math.max(0, t - cuerpo.antes));
+    cuerpo.antes = t;
+    // La mirada: el dedo o el mouse cerca de la cara. Con alguien encima respira más corto y más hondo.
+    const m = lobo.alzado > 0.5 ? miradaDe(g, AL.cabeza[0], AL.cabeza[1] - 60, 300) : { dx: 0, dy: 0, cerca: 0 };
+    cuerpo.mira = seguir(cuerpo.mira, m.dx * m.cerca, dt, 3);
+    cuerpo.cerca = seguir(cuerpo.cerca, m.cerca, dt, 2.5);
+    // Respira con peso: el pecho se llena despacio y se vacía más rápido.
+    const aire = Math.sin(t * (1.7 + cuerpo.cerca * 1.6));
+    const respira = (aire > 0 ? Math.pow(aire, 0.7) : -Math.pow(-aire, 1.5)) * (0.016 + cuerpo.cerca * 0.008);
     p.get('pecho')?.setAttribute('transform', `translate(${AL.piso[0]} ${AL.piso[1]}) scale(1 ${(1 + respira).toFixed(4)}) translate(${-AL.piso[0]} ${-AL.piso[1]})`);
     const centro = medioDeLaVista();
-    const ladeo = Math.max(-7, Math.min(7, (centro - x) / 30)) + Math.sin(t * 0.7) * 1.2;
-    girar(p.get('cabeza'), ladeo, AL.cabeza, `translate(0 ${(-respira * 300).toFixed(2)}) `);
+    // Adónde quiere tener la cabeza: hacia quien pasa, y si hay un dedo cerca, hacia el dedo, agachada.
+    const quiere = Math.max(-7, Math.min(7, (centro - x) / 30)) * (1 - cuerpo.cerca) + cuerpo.mira * 9 + Math.sin(t * 0.7) * 1.2;
+    // La cabeza es pesada: persigue con un resorte, y lo que sube o baja el cuerpo la empuja para el otro lado.
+    const empuje = dt > 0 ? ((lobo.alzado - cuerpo.alzadoAntes) / dt) * -14 : 0;
+    cuerpo.alzadoAntes = lobo.alzado;
+    cuerpo.v += ((quiere + empuje - cuerpo.cabeza) * 42 - cuerpo.v * 7.5) * dt;
+    cuerpo.cabeza += cuerpo.v * dt;
+    girar(p.get('cabeza'), dt > 0 ? cuerpo.cabeza : quiere, AL.cabeza, `translate(0 ${(-respira * 300 + cuerpo.cerca * 5).toFixed(2)}) `);
     if (t > lobo.parpadeo + 0.15) lobo.parpadeo = t + 2.5 + Math.random() * 4;
     const ciega = t > lobo.parpadeo && t < lobo.parpadeo + 0.15 ? 1 : 0;
-    parpado(p.get('parpado-1'), ciega);
-    parpado(p.get('parpado-2'), ciega);
+    // Con alguien cerca entorna los ojos: no parpadea de más, mira fijo.
+    parpado(p.get('parpado-1'), Math.max(ciega, cuerpo.cerca * 0.42));
+    parpado(p.get('parpado-2'), Math.max(ciega, cuerpo.cerca * 0.42));
   }
 
   const tocar = (): void => {
@@ -1340,6 +1392,7 @@ function cuadro(ahora: number): void {
     // El aire se abre al paso: sube enseguida y se vuelve a cerrar despacio.
     const pide = dt > 0 && Math.abs(paso) < 160 ? Math.min(1, Math.abs(paso) / dt / PASO_PLENO) : 0;
     anda += (pide - anda) * Math.min(1, dt * (pide > anda ? 3.5 : 0.55));
+    pasoAhora = dt > 0 && Math.abs(paso) < 160 ? paso / dt : 0;
     moverAcecho(dt, dt > 0 && Math.abs(paso) / dt > 6);
     camEnElCuadro = cam;
     camara.retumbar(retumboDeLaRuta());

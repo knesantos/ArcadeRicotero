@@ -17,6 +17,7 @@ import {
 } from '../../lib/bestiario/rig.ts';
 import { ARMADO } from '../../lib/bestiario/recortes.ts';
 import { girar, hacia, parpado, partes, suave } from './articular.ts';
+import { miradaDe, seguir } from './mirada.ts';
 import { armarPastura } from './pastura.ts';
 import { armarAtila } from './atila.ts';
 import { conElenco } from './vivos.ts';
@@ -32,6 +33,16 @@ export interface Contexto {
   reloj(): number;
   /** El ancho de la escena, en sus unidades: por ahí salen los fierros de la ruta. */
   ancho: number;
+  /**
+   * Lo que se ve ahora, en las unidades de la escena y con un margen: `[desde, hasta]`. Lo presta el
+   * camino, que es más largo que la pantalla; sin él (el recinto de la página del bestiario), se
+   * mueve todo. Lo que queda afuera no se mueve: nadie lo está mirando (`D-90`, cuarta ronda).
+   */
+  vista?(): readonly [number, number];
+  /** Si un elemento de la escena está a la vista (con margen). Se pregunta de a tandas, no por cuadro. */
+  seVe?(el: Element): boolean;
+  /** A cuánto se camina ahora, en unidades por segundo y con signo: lo que cuelga se va para atrás. */
+  paso?(): number;
 }
 
 /** Lo que hace una escena viva. */
@@ -104,7 +115,11 @@ function vivir(p: Pieza, t: number, extra = ''): void {
 function recintoDeMapa(svg: Raiz, ctx: Contexto): Vida {
   const lista = piezas(svg);
   return {
-    mover: (t) => lista.forEach((p) => vivir(p, t)),
+    mover: (t, dt) => {
+      // Los que quedaron lejos de la vista no se mueven: son ojos que nadie ve. La pose quieta (`dt` 0) va para todos.
+      const vista = dt > 0 ? ctx.vista?.() : undefined;
+      for (const p of lista) if (!vista || (p.x >= vista[0] && p.x <= vista[1])) vivir(p, t);
+    },
     reaccionar: (id, t) => {
       const p = lista.find((x) => x.g.dataset.id === id);
       if (p) p.saltoDesde = t;
@@ -366,19 +381,30 @@ function recintoDeLuzbelito(svg: Raiz, ctx: Contexto): Vida {
   const ly = Number(luz.dataset.y);
   const AL = ARMADO.luzbelito;
   let avivaHasta = -1;
+  /** La mirada (`D-90`, cuarta ronda): el busto se vuelve hacia el dedo, despacio, y la llama se le va para ese lado. */
+  const mira = { x: 0, cerca: 0, antes: 0 };
 
   function pintar(t: number): void {
-    const aviva = t < avivaHasta ? 1 : 0;
+    const dt = Math.min(0.05, Math.max(0, t - mira.antes));
+    mira.antes = t;
+    const m = miradaDe(g, AL.cuello[0], AL.cuello[1] - 120, 300);
+    mira.x = seguir(mira.x, m.dx * m.cerca, dt, 2.2);
+    mira.cerca = seguir(mira.cerca, m.cerca, dt, 3);
+    const aviva = Math.max(t < avivaHasta ? 1 : 0, mira.cerca * 0.35);
     // La llama: un temblor que no se repite, hecho de dos senos que no se encuentran.
     const temblor = Math.sin(t * 13) * 0.5 + Math.sin(t * 7.3) * 0.5;
     const alto = 1 + temblor * 0.12 + aviva * 0.6;
-    const ladeo = Math.sin(t * 5.1) * 5;
+    // La llama se inclina para donde se vuelve el busto, con retraso: es lo que cuelga de él.
+    const ladeo = Math.sin(t * 5.1) * 5 - mira.x * 14;
     const [fx, fy] = [AL.llama[0], AL.llama[1] + 8];
     p.get('llama')?.setAttribute('transform', `translate(${fx} ${fy}) rotate(${ladeo.toFixed(1)}) scale(${(1 + aviva * 0.3).toFixed(2)} ${alto.toFixed(3)}) translate(${-fx} ${-fy})`);
     const brillo = 0.75 + temblor * 0.15 + aviva * 0.25;
     luz.setAttribute('transform', `translate(${lx} ${ly}) scale(${(0.9 + temblor * 0.08 + aviva * 0.35).toFixed(3)})`);
     luz.setAttribute('opacity', brillo.toFixed(2));
-    girar(p.get('busto'), Math.sin(t * 0.6) * 1.4, AL.cuello);
+    // Respira con peso: sube despacio y cae un poco más rápido. Y se vuelve hacia el que lo mira.
+    const aire = Math.sin(t * 0.9);
+    const pecho = (aire > 0 ? aire : aire * 0.7) * 1.6;
+    girar(p.get('busto'), Math.sin(t * 0.6) * 1.4 + mira.x * 4.5, AL.cuello, `translate(0 ${(-pecho).toFixed(2)}) `);
   }
 
   const tocar = (): void => {
@@ -414,19 +440,34 @@ function recintoDeMomo(svg: Raiz, ctx: Contexto): Vida {
   const AM = ARMADO.momo;
   let giraDesde = -10;
   let empujon = 0;
+  /**
+   * El peso del medallón (`D-90`, cuarta ronda): cuelga de verdad. Al caminar se va para atrás y
+   * queda hamacándose (un resorte con freno), y si le acercás el dedo se ladea hacia él, como
+   * quien arrima la cara.
+   */
+  const peso = { a: 0, v: 0, antes: 0, mira: 0 };
 
   function pintar(t: number): void {
+    const dt = Math.min(0.05, Math.max(0, t - peso.antes));
+    peso.antes = t;
+    const m = miradaDe(g, AM.centro[0], AM.centro[1], 320);
+    peso.mira = seguir(peso.mira, m.dx * m.cerca, dt, 2.4);
+    // Lo que lo tira: el paso de quien camina (para atrás) y el dedo (hacia él).
+    const tira = -Math.max(-1, Math.min(1, (ctx.paso?.() ?? 0) / 260)) * 9 + peso.mira * 5;
+    peso.v += ((tira - peso.a) * 14 - peso.v * 1.6) * dt;
+    peso.a += peso.v * dt;
     // El péndulo, con el empujón del toque que se va apagando.
     const gira = (t - giraDesde) / 1.3;
     const amplitud = 4 + empujon * Math.exp(-(t - giraDesde) * 0.8);
-    const angulo = Math.sin(t * 1.5) * amplitud;
+    const angulo = Math.sin(t * 1.5) * amplitud + peso.a;
     p.get('pendulo')?.setAttribute('transform', `rotate(${angulo.toFixed(2)} ${MOMO_ESC.cuelga.x} ${MOMO_ESC.cuelga.y})`);
     // El giro: el medallón se da vuelta como una moneda, una vez.
     const ancho = gira >= 0 && gira < 1 ? Math.cos(gira * Math.PI * 2) : 1;
     const [cx, cy] = AM.centro;
     p.get('medallon')?.setAttribute('transform', `translate(${cx} ${cy}) scale(${ancho.toFixed(3)} 1) translate(${-cx} ${-cy})`);
     // El brillo: cruza el medallón cada tanto, de izquierda a derecha.
-    const pasada = (t % 4.5) / 1.2;
+    // Con el dedo cerca, el brillo le cruza más seguido: lo están mirando y se luce.
+    const pasada = (t % (peso.mira !== 0 ? 2.2 : 4.5)) / 1.2;
     const dx = pasada < 1 ? -420 + pasada * 840 : 600;
     p.get('brillo')?.setAttribute('transform', `translate(${(cx + dx).toFixed(1)} ${cy}) scale(1.6)`);
   }
@@ -493,6 +534,8 @@ function recintoDePierre(svg: Raiz, ctx: Contexto): Vida {
   let parpadeo = 2.2;
   let proximaOnda = 0;
   let proximaGota = 0;
+  /** La mirada (`D-90`, cuarta ronda): te sigue con la cara, despacio, y entreabre un ojo. */
+  const mira = { x: 0, y: 0, cerca: 0, antes: 0 };
 
   function empezar(m: Modo, t: number, segundos: number): void {
     modo = m;
@@ -610,12 +653,26 @@ function recintoDePierre(svg: Raiz, ctx: Contexto): Vida {
       else empezar('risa', t, 1.3);
     }
 
+    // La mirada: con el dedo cerca, la cara se le va para ese lado. Solo cuando no está en otra cosa.
+    const dtm = Math.min(0.05, Math.max(0, t - mira.antes));
+    mira.antes = t;
+    const m = modo === 'quieto' ? miradaDe(g, AP.cuello[0], AP.cuello[1] - 150, 340) : { dx: 0, dy: 0, cerca: 0 };
+    mira.x = seguir(mira.x, m.dx * m.cerca, dtm, 1.8);
+    mira.y = seguir(mira.y, m.dy * m.cerca, dtm, 1.8);
+    mira.cerca = seguir(mira.cerca, m.cerca, dtm, 2.5);
+    cabezaGiro += mira.x * 5;
+    cabezaDy += mira.y * 3;
     // Flota: sube y baja con el agua, y se mece apenas. El temblor de la risa va encima.
     const bob = Math.sin(t * 0.9) * 2.4 + sacude + encoge * 3;
-    const mece = Math.sin(t * 0.6) * 0.7;
+    const mece = Math.sin(t * 0.6) * 0.7 + mira.x * 0.8;
     entero.setAttribute('transform', `translate(${px} ${(agua + bob).toFixed(2)}) rotate(${mece.toFixed(2)}) scale(${escala})`);
-    // Respira: la panza crece y se achica desde el agua; la cabeza y el brazo la siguen.
-    const sy = 1 + Math.sin(t * 1.6) * 0.008 + sacude * 0.006 - encoge * 0.02;
+    // Respira con peso: la panza se llena despacio y se vacía de golpe, y la cabeza llega tarde (lo
+    // que va arriba de un gordo que respira se mueve después que la panza). El brazo la sigue.
+    const aire = Math.sin(t * 1.25);
+    const lleno = aire > 0 ? Math.pow(aire, 0.7) : -Math.pow(-aire, 1.6);
+    const sy = 1 + lleno * 0.016 + sacude * 0.006 - encoge * 0.02;
+    cabezaDy += Math.sin(t * 1.25 - 0.9) * 1.4;
+    cabezaGiro += Math.sin(t * 1.25 - 1.4) * 0.6;
     p.get('cuerpo')?.setAttribute('transform', `scale(1 ${sy.toFixed(4)})`);
     const [cx, cy] = AP.cuello;
     const alza = cy * (sy - 1);
@@ -628,8 +685,10 @@ function recintoDePierre(svg: Raiz, ctx: Contexto): Vida {
     girar(p.get('antebrazo'), antebrazo, AP.codo);
     if (t > parpadeo + 0.16) parpadeo = t + 2.4 + Math.random() * 3.6;
     const ciego = t > parpadeo && t < parpadeo + 0.16 ? 1 : 0;
-    parpado(p.get('parpado-1'), Math.max(ciego, achina));
-    parpado(p.get('parpado-2'), Math.max(ciego, achina));
+    // Con alguien cerca, achina los ojos: desconfía. El de ese lado, un poco más.
+    const recela = mira.cerca * 0.45;
+    parpado(p.get('parpado-1'), Math.max(ciego, achina, recela * (mira.x < 0 ? 1.25 : 0.8)));
+    parpado(p.get('parpado-2'), Math.max(ciego, achina, recela * (mira.x > 0 ? 1.25 : 0.8)));
 
     // El reflejo se corre un poco de costado, como se corre en el agua que se mueve.
     reflejo?.setAttribute('transform', `translate(${(Math.sin(t * 1.3) * 2.2).toFixed(2)} 0)`);
