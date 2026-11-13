@@ -148,7 +148,10 @@ textura siguen siendo ley.
   lo que barriendo es un haz, clavado es un paño.
 - Una vez por tanda, **una recorrida como de alguien nuevo**: el plano, una región entera, dos fichas,
   la lupa, la vuelta.
-- Los servidores se apagan, y los perfiles temporales del navegador se borran al terminar.
+- Los servidores se apagan al terminar. **El perfil del navegador sin ventana se crea adentro del
+  scratchpad de la sesión** (`--user-data-dir=<scratchpad>/edge`), nunca suelto en `%TEMP%`: así queda
+  con los demás temporales de la tarea y no hace falta un borrado recursivo fuera del proyecto, que
+  pide el OK del usuario (un perfil suelto llegó a pesar 519 MB).
 
 ## 11. Cómo se cuenta lo hecho
 
