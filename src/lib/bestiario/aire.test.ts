@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 
 import { rutaDePieza } from './aerografo.ts';
-import { AIRE, PASO_PLENO, aireDe, alfaDeAire, altoDeBaldosa, corridaDeAire, despejeDeLupa, resto } from './aire.ts';
-import { PIEZAS_AIRE } from './arte-aire.ts';
+import { ACECHOS, AIRE, LUCES, MIRADA, PASO_PLENO, aireDe, alfaDeAire, altoDeBaldosa, corridaDeAire, despejeDeLupa, estadoDeLuz, latido, parpadeo, resto } from './aire.ts';
+import { PIEZAS_AIRE, PIEZAS_DE_LUZ } from './arte-aire.ts';
+import { PIEZAS_CAMINO } from './arte-camino.ts';
 import { ALTO, CAMINOS, VISTA_MAX } from './camino.ts';
 import { LUPA } from './lupa.ts';
 
@@ -139,4 +140,94 @@ test('con movimiento reducido el aire queda quieto en su lugar, con su alfa', ()
   assert.match(isla, /quieto\(\) \? a\.c\.alfa : alfaDeAire/);
   // Y sin isla también está: la página pone la capa con su alfa.
   assert.match(readFileSync('src/pages/redondopedia/bestiario/[region].astro', 'utf-8'), /--alfa: \$\{c\.alfa\}/);
+});
+
+/* ------------------------------------------------------------------
+   Segunda ronda: la niebla rasgada, el piso, la luz y los ojos sin dueño
+   ------------------------------------------------------------------ */
+
+test('la niebla rasante es de jirones rasgados, y ninguno cruza una pantalla de teléfono', () => {
+  const fuente = readFileSync('src/lib/bestiario/arte-aire.ts', 'utf-8');
+  // El jirón más largo que se siembra, bien por debajo de las 320 unidades de un teléfono parado.
+  const m = /const largo = (\d+) \+ hondura \* (\d+) \+ rnd\(\) \* (\d+);/.exec(fuente);
+  assert.ok(m, 'no encuentro el largo de los jirones');
+  assert.ok(Number(m[1]) + Number(m[2]) + Number(m[3]) <= 280, 'un jirón ya mide casi una pantalla: vuelve la franja');
+  // Y las manchas de la bruma tampoco: su radio tiene tope.
+  assert.match(fuente, /ancha: readonly \[number, number\] = \[70, 150\]/);
+  // Ya no hay lenguas de canto liso.
+  assert.doesNotMatch(fuente, /function lengua\(/);
+  for (const pieza of ['aire-monte-rasante', 'aire-astillero-vaho', 'aire-infierno-humo']) {
+    const p = PIEZAS_AIRE.find((q) => q.nombre === pieza)!;
+    assert.ok((p.dibujo.match(/<clipPath/g) ?? []).length >= 10, `${pieza}: pocos jirones`);
+    // El canto rasgado es una máscara de tramos rectos, no una curva.
+    assert.doesNotMatch(p.dibujo, /<clipPath id="[a-z]+-\d+-\d"><path d="M[^"]*Q/, `${pieza}: un canto liso`);
+  }
+});
+
+test('el piso de las regiones con aire ya no es liso: charcos, piedras y lo que dejó cada lugar', () => {
+  for (const [pieza, marca] of [['camino-monte-piso', 'sm-ch-'], ['camino-pastura-piso', 'sm-ch-'], ['camino-cyber-piso', 'sc-ch-'], ['camino-astillero-piso', 'sa-ch-']] as const) {
+    const p = PIEZAS_CAMINO.find((q) => q.nombre === pieza)!;
+    const charcos = (p.dibujo.match(new RegExp(`<clipPath id="${marca}`, 'g')) ?? []).length;
+    assert.ok(charcos >= 5, `${pieza}: ${charcos} charcos`);
+    assert.doesNotMatch(p.dibujo, /Gradient/i);
+  }
+});
+
+test('las luces: una por región, impresas, clavadas en la escena y sin salirse de sus topes', () => {
+  const piezas = new Map(PIEZAS_DE_LUZ.map((p) => [p.nombre, p]));
+  assert.ok(Object.keys(LUCES).length >= 3);
+  for (const [region, lista] of Object.entries(LUCES)) {
+    assert.ok(CAMINOS[region], `${region} no es un camino`);
+    assert.equal(lista.length, 1, `${region}: más de una luz es otra superficie más para el teléfono`);
+    for (const l of lista) {
+      const p = piezas.get(l.pieza);
+      assert.ok(p, `nadie pinta ${l.pieza}`);
+      assert.deepEqual([...p.caja], [...l.caja]);
+      assert.ok(existsSync(`public${rutaDePieza(l.pieza)}`), `falta imprimir ${l.pieza}`);
+      assert.match(p.dibujo, /filter="url\(#rociado\)"/, `${l.pieza} no tiene grano`);
+      assert.doesNotMatch(p.dibujo, /Gradient/i);
+      assert.ok(l.x > 0 && l.x < CAMINOS[region]!.escena, `${l.pieza} cae afuera de la escena`);
+      for (let t = 0; t < 40; t += 0.37) {
+        const e = estadoDeLuz(l, t);
+        assert.ok(e.alfa >= 0 && e.alfa <= 1 && Math.abs(e.giro) <= l.vaiven * 1.13 + 1e-9 && e.escala >= 1 && e.escala <= 1 + l.crece * 1.5 + 1e-9, `${l.pieza} en ${t}`);
+      }
+    }
+  }
+  // El latido son dos golpes y una pausa.
+  assert.ok(latido(0.12) > 0.9 && latido(0.36) > 0.6 && latido(0.75) < 0.05);
+});
+
+test('los ojos sin dueño: una receta por región con aire, en lo oscuro, y se apagan si los mirás', () => {
+  const piezas = new Map(PIEZAS_DE_LUZ.map((p) => [p.nombre, p]));
+  // Es un sistema: cada región con aire tiene los suyos.
+  assert.deepEqual(Object.keys(ACECHOS).sort(), Object.keys(AIRE).sort());
+  for (const [region, a] of Object.entries(ACECHOS)) {
+    assert.ok(piezas.get(a.pieza) && existsSync(`public${rutaDePieza(a.pieza)}`), `${region}: faltan los ojos impresos`);
+    assert.ok(a.lugares.length >= 3, `${region}: con menos de tres lugares siempre salen en el mismo`);
+    for (const [fx, y, tam] of a.lugares) assert.ok(fx > 0.05 && fx < 0.95 && y > 120 && y < ALTO - 16 && tam > 0.3 && tam <= 1.3, `${region}: un lugar raro`);
+    // Hay que quedarse quieto de verdad: cinco o seis segundos.
+    assert.ok(a.espera[0] >= 5 && a.espera[1] <= 7 && a.dura[0] >= 4);
+  }
+  assert.ok(MIRADA >= 48, 'el dedo tiene que alcanzar a mirarlos');
+  // El parpadeo es corto, y casi siempre están abiertos.
+  let abiertos = 0;
+  for (let t = 0; t < 30; t += 0.01) if (parpadeo(t, 5) === 1) abiertos++;
+  assert.ok(abiertos / 3000 > 0.9);
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  // Caminar, la lupa o una ficha abierta los cierran; mirarlos, también.
+  assert.match(isla, /const molesto = seMueve \|\| conLupa\(lente\) \|\| !hoja\.hidden/);
+  assert.match(isla, /< MIRADA\) cerrarLosOjos\(/);
+  // No son un bicho: no se tocan ni tienen ficha.
+  assert.match(readFileSync('src/styles/camino.css', 'utf-8'), /\.camino \.luz,\s*\.camino \.acecho-ojos \{[^}]*pointer-events: none;/);
+  assert.doesNotMatch(readFileSync('src/pages/redondopedia/bestiario/[region].astro', 'utf-8'), /class="acecho-ojos"[^>]*(data-id|role=)/);
+  // Con movimiento reducido no están: su reloj corre solo donde corre el del camino.
+  assert.match(isla, /if \(!quieto\(\)\) \{[\s\S]*?moverAcecho\(dt, /);
+});
+
+test('la luz y los ojos son imágenes que la isla solo mueve: transform y opacity, sin resplandor de CSS', () => {
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  const escrituras = [...isla.matchAll(/(?:l\.el|acechoEl)\.style\.(\w+)/g)].map((m) => m[1]);
+  assert.deepEqual([...new Set(escrituras)].sort(), ['opacity', 'transform']);
+  const css = readFileSync('src/styles/camino.css', 'utf-8');
+  assert.doesNotMatch(css, /\.(luz|acecho-ojos)[^{]*\{[^}]*(filter|gradient|mix-blend|box-shadow|text-shadow)/);
 });

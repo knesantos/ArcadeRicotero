@@ -130,6 +130,41 @@
   will-change: transform, opacity;
 }
 
+/* La luz que se ve en el aire y los ojos sin dueño (D-90, segunda ronda). Las dos son imágenes
+   impresas: un cono o un resplandor soplados, con grano, y un par de ojos. La isla las mueve con
+   `transform` y `opacity`; ni resplandor de CSS, ni sombra, ni modo de mezcla. Sin isla, la luz queda
+   quieta donde va; los ojos no se abren. */
+.camino .luz,
+.camino .acecho-ojos {
+  --px: calc(var(--alto-escena) / var(--alto));
+  position: absolute;
+  width: calc(var(--px) * var(--lw));
+  height: calc(var(--px) * var(--lh));
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+}
+
+.camino .luz {
+  left: calc(var(--px) * var(--lx));
+  top: calc(var(--px) * var(--ly));
+  opacity: var(--alfa);
+}
+
+.camino--andando .luz {
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+}
+
+.camino .acecho-ojos {
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transform-origin: 0 0;
+}
+
 .camino-deslizar { padding-inline: var(--espacio-2); }
 
 /* ---- Andando: la escena es la pantalla, y se corre de costado (D-77) ---- */

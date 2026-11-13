@@ -40,7 +40,7 @@ import { lugarDelRotulo, simbolos, tintaDe, type Bestiario, type Bestia } from '
 import { ALTO, CAMINOS, CON_CAMINO, hrefDeRegion } from '../../../lib/bestiario/camino.ts';
 import { destinosDelCruce, HORIZONTE, PIEZAS_CAMINO } from '../../../lib/bestiario/arte-camino.ts';
 import { rutaDePieza } from '../../../lib/bestiario/aerografo.ts';
-import { aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
+import { ACECHOS, LUCES, aireDe, altoDeBaldosa, type CapaDeAire, type Plano } from '../../../lib/bestiario/aire.ts';
 import { pisoDelCamino } from '../../../lib/bestiario/escenas-camino.ts';
 import { conAudio, loQueDice } from '../../../lib/bestiario/fichas.ts';
 import { fondoDe } from '../../../lib/bestiario/sonido.ts';
@@ -94,6 +94,19 @@ const aire = (plano: Plano) =>
       `--baldosa: url(${rutaDePieza(c.pieza)}); --tw: ${c.ancho}; --th: ${c.alto}; --alfa: ${c.alfa}` +
       (altoDeBaldosa(c) > 0 ? '' : `; ${enLaAltura([0, c.y, c.ancho, c.alto])}`),
   }));
+
+/**
+ * Las luces (`D-90`, segunda ronda): una forma soplada impresa, clavada en un punto de la escena. Sin
+ * isla queda quieta en su lugar; con ella, se hamaca, late o titila.
+ */
+const luces = (LUCES[id] ?? []).map((l) => ({
+  pieza: l.pieza,
+  ancho: l.caja[2],
+  alto: l.caja[3],
+  estilo: `--lx: ${l.x + l.caja[0]}; --ly: ${l.y + l.caja[1]}; --lw: ${l.caja[2]}; --lh: ${l.caja[3]}; --alfa: ${l.alfa}`,
+}));
+/** Los ojos sin dueño de la región: no se ven hasta que la isla los abre. */
+const acecho = ACECHOS[id] ?? null;
 
 /** El piso, que es la capa de los bichos (`escenas-camino.ts`). */
 const pisoSvg = pisoDelCamino(tramo, nombres);
@@ -225,6 +238,7 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
             set:html={pisoSvg}
           />
           {aire('medio').map((a) => <div class:list={['aire', { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
+          {luces.map((l) => <img class="luz" data-luz={l.pieza} src={rutaDePieza(l.pieza)} width={l.ancho} height={l.alto} style={l.estilo} alt="" decoding="async" />)}
           {
             frente && (
               <img
@@ -241,6 +255,9 @@ const titulo = `${region.nombre} — ${BESTIARIO.enLaPortada.titulo} — Fichín
           }
 
           {aire('cerca').map((a) => <div class:list={['aire', { 'aire--cae': a.cae }]} data-aire={a.pieza} style={a.estilo} />)}
+          {acecho && (
+            <img class="acecho-ojos" id="acecho" src={rutaDePieza(acecho.pieza)} width={acecho.ancho} height={acecho.alto} style={`--lw: ${acecho.ancho}; --lh: ${acecho.alto}`} alt="" decoding="async" loading="lazy" />
+          )}
 
           <nav
             class:list={['cruce', { 'cruce--picadas capa': postes }]}

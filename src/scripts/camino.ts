@@ -50,7 +50,7 @@ import { RECETAS } from '../lib/bestiario/sonido.ts';
 import { contextoVivo, despertarSalida } from '../lib/audio/contexto.ts';
 import { Charla } from '../lib/bestiario/charla.ts';
 import { PRIMER_PASO, corridaDe, crearCamara, primerPaso, transformDe, type Encuadre } from '../lib/bestiario/camara.ts';
-import { AIRE, PASO_PLENO, alfaDeAire, corridaDeAire, despejeDeLupa } from '../lib/bestiario/aire.ts';
+import { ACECHOS, AIRE, LUCES, MIRADA, PASO_PLENO, alfaDeAire, corridaDeAire, despejeDeLupa, estadoDeLuz, parpadeo } from '../lib/bestiario/aire.ts';
 import { ENTERA, LUPA, acotar, centrar, conLupa, enElMundo, enfocar, entreLentes, type Lente } from '../lib/bestiario/lupa.ts';
 import { leerGestos } from './bestiario/pellizco.ts';
 import { alSacudon } from './bestiario/sacudon.ts';
@@ -92,6 +92,16 @@ const aires = [...camino.querySelectorAll<HTMLElement>('.aire')].flatMap((el) =>
   const c = recetasDeAire.get(el.dataset.aire ?? '');
   return c ? [{ el, c, alfa: -1 }] : [];
 });
+/** Las luces de la región (`LUCES`): la imagen, su receta y el alfa que tiene pintada. */
+const recetasDeLuz = new Map((LUCES[datos.region] ?? []).map((l) => [l.pieza, l]));
+const luces = [...camino.querySelectorAll<HTMLElement>('.luz')].flatMap((el) => {
+  const r = recetasDeLuz.get(el.dataset.luz ?? '');
+  return r ? [{ el, r, alfa: -1 }] : [];
+});
+/** Los ojos sin dueño (`ACECHOS`): se abren si te quedás quieto, y se apagan si los mirás. */
+const acecho = ACECHOS[datos.region] ?? null;
+const acechoEl = document.getElementById('acecho');
+const mira = { abierto: 0, pintado: -1, quiere: false, quietud: 0, proxima: 0, hasta: 0, lugar: -1, x: 0, y: 0 };
 
 const hoja = document.getElementById('hoja')!;
 const hojaCuerpo = document.getElementById('hoja-cuerpo')!;
@@ -437,7 +447,87 @@ function medir(): void {
  * Cada capa, con su paralaje y la cámara encima. Sin paralaje la capa empieza en la punta de la tira,
  * que está corrida `cam` a la izquierda de la vista.
  */
+/**
+ * Las luces y los ojos sin dueño, en el mismo cuadro que las capas. La luz va clavada en su punto de
+ * la escena y se hamaca, late o titila; quieta (con movimiento reducido), queda en su lugar con su alfa.
+ */
+function pintarLuces(): void {
+  const z = lente.z;
+  const capaX = paralaje ? 0 : -cam * z;
+  for (const l of luces) {
+    const e = quieto() ? { giro: 0, alfa: l.r.alfa, escala: 1 } : estadoDeLuz(l.r, reloj);
+    const x = l.r.x * escala - (paralaje ? corrimiento(l.r.f, cam, datos.foco * escala, vistaPx) : 0);
+    const y = l.r.y * escala - lente.y;
+    const base = encuadre ? transformDe(encuadre, capaX, x, z, y) : corridaDe(x, z, y);
+    l.el.style.transform = `${base} rotate(${e.giro.toFixed(2)}deg) scale(${e.escala.toFixed(3)}) translate(${(l.r.caja[0] * escala).toFixed(1)}px, ${(l.r.caja[1] * escala).toFixed(1)}px)`;
+    if (Math.abs(e.alfa - l.alfa) > 0.004) {
+      l.alfa = e.alfa;
+      l.el.style.opacity = e.alfa.toFixed(3);
+    }
+  }
+  if (!acecho || !acechoEl || mira.lugar < 0) return;
+  if (Math.abs(mira.abierto - mira.pintado) > 0.004) {
+    mira.pintado = mira.abierto;
+    acechoEl.style.opacity = mira.abierto.toFixed(3);
+  }
+  if (mira.abierto <= 0) return;
+  const [fx, alto, tam] = acecho.lugares[mira.lugar]!;
+  // En la pantalla: los ojos no caminan con nada. Están donde se abrieron, y si caminás, se cierran.
+  mira.x = fx * vistaPx;
+  mira.y = alto * escala;
+  const x = (paralaje ? 0 : cam) + mira.x;
+  const base = encuadre ? transformDe(encuadre, capaX, x, 1, mira.y) : corridaDe(x, 1, mira.y);
+  const s = tam * (0.85 + 0.15 * mira.abierto);
+  acechoEl.style.transform = `${base} scale(${s.toFixed(3)}, ${(s * parpadeo(reloj, mira.lugar * 13 + 5) * mira.abierto).toFixed(3)}) translate(${((-acecho.ancho / 2) * escala).toFixed(1)}px, ${((-acecho.alto / 2) * escala).toFixed(1)}px)`;
+}
+
+const sortearEspera = (extra = 0): void => {
+  if (acecho) mira.proxima = extra + acecho.espera[0] + Math.random() * (acecho.espera[1] - acecho.espera[0]);
+};
+sortearEspera();
+
+/** Los ojos se cierran y esperan un rato más largo antes de volver, en otro lado. */
+function cerrarLosOjos(extra: number): void {
+  mira.quiere = false;
+  mira.quietud = 0;
+  sortearEspera(extra);
+}
+
+/**
+ * La vida de los ojos sin dueño. `seMueve`: se está caminando en este cuadro. Cualquier cosa que no
+ * sea quedarse mirando la escena (caminar, la lupa, una ficha abierta) los cierra y vuelve a cero
+ * la cuenta de la quietud.
+ */
+function moverAcecho(dt: number, seMueve: boolean): void {
+  if (!acecho || !acechoEl) return;
+  const molesto = seMueve || conLupa(lente) || !hoja.hidden || lista.classList.contains('camino-fichas--abierta') || agarre !== null;
+  if (molesto) {
+    mira.quietud = 0;
+    if (mira.quiere) cerrarLosOjos(3);
+  } else mira.quietud += dt;
+  if (!mira.quiere && mira.abierto <= 0 && mira.quietud >= mira.proxima) {
+    // Otro lugar que el de la última vez.
+    const n = acecho.lugares.length;
+    mira.lugar = (Math.max(0, mira.lugar) + 1 + Math.floor(Math.random() * (n - 1))) % n;
+    mira.quiere = true;
+    mira.hasta = reloj + acecho.dura[0] + Math.random() * (acecho.dura[1] - acecho.dura[0]);
+  }
+  if (mira.quiere && reloj > mira.hasta) cerrarLosOjos(7);
+  // Se abren despacio y se cierran de golpe.
+  mira.abierto = Math.min(1, Math.max(0, mira.abierto + dt * (mira.quiere ? 1.1 : -5)));
+}
+
+/** Si te fijás en ellos, se apagan: un dedo o un mouse cerca alcanza. */
+function mirarLosOjos(ev: PointerEvent): void {
+  if (!acecho || mira.abierto < 0.2 || !mira.quiere) return;
+  const caja = escenario.getBoundingClientRect();
+  if (Math.hypot(ev.clientX - caja.left - mira.x, ev.clientY - caja.top - mira.y) < MIRADA) cerrarLosOjos(6);
+}
+escenario.addEventListener('pointermove', mirarLosOjos, { passive: true });
+escenario.addEventListener('pointerdown', mirarLosOjos, { passive: true });
+
 function pintarCapas(): void {
+  pintarLuces();
   const lupa = conLupa(lente);
   if (!encuadre && !paralaje && !lupa) {
     // Quieto y sin lupa, las capas van en su lugar. Si venían de una lupa, se despintan.
@@ -1166,6 +1256,7 @@ function cuadro(ahora: number): void {
     // El aire se abre al paso: sube enseguida y se vuelve a cerrar despacio.
     const pide = dt > 0 && Math.abs(paso) < 160 ? Math.min(1, Math.abs(paso) / dt / PASO_PLENO) : 0;
     anda += (pide - anda) * Math.min(1, dt * (pide > anda ? 3.5 : 0.55));
+    moverAcecho(dt, dt > 0 && Math.abs(paso) / dt > 6);
     camEnElCuadro = cam;
     camara.retumbar(retumboDeLaRuta());
     encuadre = camara.encuadre(reloj, dt, vistaPx, escenario.clientHeight);
@@ -1189,7 +1280,9 @@ let pendiente = 0;
 window.addEventListener('resize', () => {
   cancelAnimationFrame(pendiente);
   pendiente = requestAnimationFrame(() => {
-    const p = avance();
+    // Lo deslizado se lee del scroll, no de la cámara: si el tamaño cambia en el mismo cuadro en que
+    // se deslizó, la cámara todavía no se enteró, y volver a su cuenta era pegar un salto para atrás.
+    const p = recorrido() > 0 ? Math.min(1, escenario.scrollLeft / recorrido()) : 1;
     medir();
     // Al cambiar el tamaño, se queda en el mismo punto del camino.
     irA(p * recorrido(), true);

@@ -17,7 +17,7 @@
  */
 
 import { enmascarado, forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
-import { AIRE, altoDeBaldosa, type CapaDeAire } from './aire.ts';
+import { ACECHOS, AIRE, LUCES, altoDeBaldosa, type CapaDeAire } from './aire.ts';
 import { M, azar, filaDeTiras } from './arte.ts';
 import { ALTO } from './camino.ts';
 
@@ -61,47 +61,73 @@ function vuelta(x: number, medio: number, ancho: number, pinta: (x: number, n: n
 }
 
 /**
- * Una lengua de niebla: el canto de abajo duro (la máscara de papel apoyada en el piso, apenas
- * combada) y para arriba soplada. Lo más espeso está contra el canto.
+ * Un jirón de niebla (segunda ronda; antes era una *lengua* de canto liso, y varias juntas se leían
+ * como escalones). El canto de abajo es duro pero **rasgado**: papel roto con la mano, no cortado
+ * con regla, y va torcido, así ninguno queda a la altura del de al lado. Para arriba se pierde
+ * soplado, y el espesor cambia a lo largo: dos o tres bocanadas de distinto alto.
+ *
+ * Se arma una vez alrededor del cero y se corre: las copias que cierran la baldosa son la misma.
  */
-function lengua(id: string, x: number, y: number, largo: number, alto: number, color: string, o: number): string {
-  // La máscara pasa de largo a los costados: lo único que corta es el canto de abajo.
-  const a = x - largo * 0.8;
-  const b = x + largo * 0.8;
-  const silueta = `M${f(a)} ${f(y)} Q${f(x)} ${f(y + alto * 0.55)} ${f(b)} ${f(y)} L${f(b)} ${f(y - alto * 4)} L${f(a)} ${f(y - alto * 4)} Z`;
-  const tam = largo >= 230 ? 'l' : 'm';
-  return enmascarado(
-    id,
-    silueta,
-    nube(x, y + alto * 0.3, largo * 0.3, alto * 1.25, color, tam, o) + nube(x - largo * 0.07, y + alto * 0.16, largo * 0.15, Math.max(5, alto * 0.42), color, 'm', o * 0.85),
-  );
+function jiron(id: string, largo: number, alto: number, color: string, o: number, rnd: () => number): string {
+  const a = -largo / 2;
+  const pasos = Math.max(6, Math.round(largo / 8));
+  const caida = (rnd() - 0.5) * alto * 2.2;
+  const comba = alto * (0.2 + rnd() * 0.5);
+  let canto = '';
+  for (let i = 0; i <= pasos; i++) {
+    const u = i / pasos;
+    // La línea por donde se rasgó: torcida y combada. Y el rasgado: dientes desparejos, alguno hondo.
+    const linea = caida * (u - 0.5) + Math.sin(u * Math.PI) * comba;
+    const diente = (i % 2 ? 1 : -0.4) * (0.7 + rnd() * 2) + (rnd() < 0.12 ? 3 + rnd() * 3 : 0);
+    canto += `${i ? ' L' : 'M'}${f(a + largo * u + (rnd() - 0.5) * 3)} ${f(linea + diente)}`;
+  }
+  const silueta = `${canto} L${f(-a)} ${f(-alto * 6)} L${f(a)} ${f(-alto * 6)} Z`;
+  // Lo que entra antes de que el soplo toque el costado de la máscara.
+  const tam = largo >= 165 ? 'm' : 's';
+  const margen = tam === 'm' ? 22 : 10;
+  let bocanadas = '';
+  const cuantas = 3 + Math.floor(rnd() * 3);
+  for (let i = 0; i < cuantas; i++) {
+    const rx = largo * (0.1 + rnd() * 0.07);
+    const libre = Math.max(0, largo / 2 - rx - margen);
+    const cx = (rnd() * 2 - 1) * libre;
+    const ry = Math.max(5, alto * (0.5 + rnd() * 0.6));
+    bocanadas += nube(cx, caida * (cx / largo) + ry * 0.25, rx, ry, color, tam, o * (0.5 + rnd() * 0.3));
+  }
+  return enmascarado(id, silueta, bocanadas);
 }
 
-/** Lenguas sembradas en una franja: las de arriba (lejos) más chicas y finas que las de abajo. */
-function lenguas(prefijo: string, c: CapaDeAire, semilla: number, cuantas: number, desde: number, hasta: number, tintas: readonly (readonly [string, number])[]): string {
+/**
+ * Jirones sembrados en una franja, sueltos: los de arriba (lejos) más chicos que los de abajo, cada
+ * uno a su altura, y con aire entre uno y otro para que asome el piso. Ninguno llega a medir lo que
+ * mide una pantalla de teléfono (320 unidades): no hay franja que la cruce entera.
+ */
+function jirones(prefijo: string, c: CapaDeAire, semilla: number, cuantos: number, desde: number, hasta: number, tintas: readonly (readonly [string, number])[]): string {
   const rnd = azar(semilla);
   let s = '';
-  for (let i = 0; i < cuantas; i++) {
-    const hondura = (i + rnd() * 0.8) / cuantas;
+  for (let i = 0; i < cuantos; i++) {
+    const hondura = rnd();
     const y = desde + (hasta - desde) * hondura;
-    const largo = 150 + hondura * 170 + rnd() * 110;
-    const alto = 9 + hondura * 10 + rnd() * 5;
+    const largo = 120 + hondura * 90 + rnd() * 50;
+    const alto = 9 + hondura * 11 + rnd() * 5;
     const [color, o] = tintas[i % tintas.length]!;
-    const x = rnd() * c.ancho;
-    const oo = o * (0.8 + rnd() * 0.3);
-    s += vuelta(x, largo * 0.8, c.ancho, (xx, n) => lengua(`${prefijo}-${i}-${n}`, xx, y, largo, alto, color, oo));
+    // Repartidos a lo largo, pero no en fila: cada uno en su tramo, corrido a gusto.
+    const x = (c.ancho / cuantos) * (i + rnd());
+    const dibujo = (n: number): string => jiron(`${prefijo}-${i}-${n}`, largo, alto, color, o * (0.85 + ((i * 7) % 5) * 0.05), azar(semilla * 31 + i));
+    s += vuelta(x, largo / 2 + 30, c.ancho, (xx, n) => `<g transform="translate(${f(xx)} ${f(y)})">${dibujo(n)}</g>`);
   }
   return s;
 }
 
 /** Manchas sueltas, sopladas para todos lados: la bruma. */
-function manchas(c: CapaDeAire, semilla: number, cuantas: number, desde: number, hasta: number, tintas: readonly (readonly [string, number])[], gorda = 34): string {
+function manchas(c: CapaDeAire, semilla: number, cuantas: number, desde: number, hasta: number, tintas: readonly (readonly [string, number])[], gorda = 34, ancha: readonly [number, number] = [70, 150]): string {
   const rnd = azar(semilla);
   let s = '';
   for (let i = 0; i < cuantas; i++) {
     const x = (c.ancho / cuantas) * (i + rnd() * 0.9);
     const y = desde + rnd() * (hasta - desde);
-    const rx = 110 + rnd() * 150;
+    // Ninguna mide lo que una pantalla de teléfono: son manchas, no franjas.
+    const rx = ancha[0] + rnd() * (ancha[1] - ancha[0]);
     const ry = gorda * (0.5 + rnd() * 0.5);
     const [color, o] = tintas[i % tintas.length]!;
     const oo = o * (0.75 + rnd() * 0.4);
@@ -134,15 +160,15 @@ const receta = (region: string, pieza: string): CapaDeAire => AIRE[region]!.find
    ------------------------------------------------------------------ */
 
 function monteBruma(c: CapaDeAire): string {
-  return rociado(c,     manchas(c, 311, 9, 262, 304, [[M.medio, 0.36], [M.claro, 0.17], [M.hondo, 0.4]]) +
+  return rociado(c,     manchas(c, 311, 15, 236, 312, [[M.medio, 0.4], [M.claro, 0.2], [M.hondo, 0.44]], 30) +
       // Unas hebras más claras, finas, que cruzan: la bruma tiene vetas.
-      manchas(c, 313, 6, 236, 290, [[M.claro, 0.11]], 16),
+      manchas(c, 313, 8, 214, 286, [[M.claro, 0.13]], 14, [40, 90]),
   );
 }
 
 function monteRasante(c: CapaDeAire): string {
-  return rociado(c,     manchas(c, 331, 10, 430, 580, [[M.medio, 0.32], [M.claro, 0.15], [M.hondo, 0.2]], 24) +
-      lenguas('mr', c, 337, 7, 400, 600, [[M.claro, 0.3], [M.medio, 0.38], [M.claro, 0.24]]),
+  return rociado(c,     manchas(c, 331, 14, 400, 590, [[M.medio, 0.3], [M.claro, 0.14], [M.hondo, 0.2]], 26, [45, 105]) +
+      jirones('mr', c, 337, 13, 372, 612, [[M.claro, 0.44], [M.medio, 0.5], [M.claro, 0.34]]),
   );
 }
 
@@ -188,13 +214,13 @@ function monteCerca(c: CapaDeAire): string {
    ------------------------------------------------------------------ */
 
 function cyberVaho(c: CapaDeAire): string {
-  return rociado(c, manchas(c, 511, 8, 262, 312, [[C.claro, 0.34], [C.nieve, 0.1], [C.acero, 0.4]]) + manchas(c, 517, 5, 226, 280, [[C.lente, 0.07], [C.claro, 0.16]], 18));
+  return rociado(c, manchas(c, 511, 14, 236, 318, [[C.claro, 0.36], [C.nieve, 0.11], [C.acero, 0.42]], 30) + manchas(c, 517, 7, 200, 280, [[C.lente, 0.08], [C.claro, 0.17]], 16, [40, 100]));
 }
 
 /** La ventisca: rachas largas y finas, apenas caídas, y el polvo de nieve suelto entre ellas. */
 function cyberVentisca(c: CapaDeAire): string {
   const rnd = azar(523);
-  let s = manchas(c, 529, 5, 380, 560, [[C.nieve, 0.12]]);
+  let s = manchas(c, 529, 8, 360, 570, [[C.nieve, 0.13]], 30, [50, 120]);
   for (let i = 0; i < 64; i++) {
     const x = rnd() * c.ancho;
     const y = c.y + 60 + rnd() * (c.alto - 100);
@@ -255,12 +281,12 @@ function cyberCerca(c: CapaDeAire): string {
    ------------------------------------------------------------------ */
 
 function astilleroBruma(c: CapaDeAire): string {
-  return rociado(c, manchas(c, 611, 8, 262, 306, [[T.azul, 0.3], [T.clara, 0.1], [T.noche, 0.5]]) + manchas(c, 613, 4, 232, 280, [[T.sodio, 0.07], [T.clara, 0.08]], 18));
+  return rociado(c, manchas(c, 611, 14, 236, 316, [[T.azul, 0.32], [T.clara, 0.11], [T.noche, 0.5]], 30) + manchas(c, 613, 6, 206, 280, [[T.sodio, 0.08], [T.clara, 0.09]], 16, [40, 100]));
 }
 
 function astilleroVaho(c: CapaDeAire): string {
-  return rociado(c,     manchas(c, 617, 9, 440, 580, [[T.azul, 0.2], [T.clara, 0.08], [T.noche, 0.3]], 26) +
-      lenguas('av', c, 619, 7, 410, 600, [[T.clara, 0.24], [T.azul, 0.36], [T.clara, 0.18]]),
+  return rociado(c,     manchas(c, 617, 13, 410, 590, [[T.azul, 0.22], [T.clara, 0.09], [T.noche, 0.3]], 26, [45, 105]) +
+      jirones('av', c, 619, 12, 392, 610, [[T.clara, 0.34], [T.azul, 0.46], [T.clara, 0.26]]),
   );
 }
 
@@ -314,8 +340,8 @@ function astilleroCerca(c: CapaDeAire): string {
    ------------------------------------------------------------------ */
 
 function infiernoHumo(c: CapaDeAire): string {
-  return rociado(c,     manchas(c, 711, 9, 400, 590, [[I.brasa, 0.4], [I.negro, 0.34], [I.fuego, 0.08]], 26) +
-      lenguas('ih', c, 719, 8, 372, 612, [[I.brasa, 0.62], [I.negro, 0.5], [I.fuego, 0.14]]),
+  return rociado(c,     manchas(c, 711, 13, 380, 590, [[I.brasa, 0.42], [I.negro, 0.34], [I.fuego, 0.09]], 26, [45, 105]) +
+      jirones('ih', c, 719, 12, 372, 612, [[I.brasa, 0.62], [I.negro, 0.5], [I.fuego, 0.14]]),
   );
 }
 
@@ -355,6 +381,92 @@ function infiernoCeniza(c: CapaDeAire): string {
   }
   return s;
 }
+
+/* ------------------------------------------------------------------
+   La luz que se ve en el aire, y los ojos sin dueño (segunda ronda)
+   ------------------------------------------------------------------ */
+
+/**
+ * Un haz: el cono de un farol o de un reflector, con la boca en el cero y abierto para abajo. Es
+ * aerógrafo con máscara, como los rayos de cualquier tapa: los dos cantos duros (la cartulina) y
+ * adentro el soplo, más cargado contra la boca y perdiéndose hacia el piso, donde deja su charco de
+ * luz. Nada de degradé: tres bocanadas, una adentro de la otra.
+ */
+function haz(id: string, largo: number, ancho: number, color: string, corazon: string): string {
+  const silueta = `M-5 0 L5 0 L${f(ancho / 2)} ${f(largo)} L${f(-ancho / 2)} ${f(largo)} Z`;
+  // La máscara: los dos cantos de cartulina, duros, y el pie soplado (lo último del haz no llega al
+  // piso con canto: se deshace). Blanco deja pasar, negro tapa.
+  const mascara =
+    `<mask id="${id}"><path d="${silueta}" fill="white"/>` +
+    `<ellipse cx="0" cy="${f(largo * 1.04)}" rx="${f(ancho * 0.8)}" ry="${f(largo * 0.2)}" fill="black" filter="url(#soplo-xl)"/></mask>`;
+  return (
+    mascara +
+    `<g mask="url(#${id})">` +
+    forma(silueta, color, 0.2) +
+    nube(0, largo * 0.2, ancho * 0.14, largo * 0.26, color, 'l', 0.5) +
+    nube(0, largo * 0.5, ancho * 0.26, largo * 0.34, color, 'xl', 0.34) +
+    nube(0, largo * 0.06, ancho * 0.05, largo * 0.08, corazon, 'm', 0.7) +
+    `</g>` +
+    // El charco de luz, donde el haz toca el piso.
+    nube(0, largo * 0.8, ancho * 0.34, Math.max(18, largo * 0.05), color, 'xl', 0.4)
+  );
+}
+
+/** La brasa: una mancha ancha y baja, tres bocanadas una adentro de la otra. */
+const brasa = (): string => nube(0, 0, 170, 26, I.brasa, 'xl', 0.9) + nube(0, 4, 100, 20, I.fuego, 'xl', 0.5) + nube(0, 6, 44, 9, I.chispa, 'l', 0.4);
+
+const QUIEN_ALUMBRA: Readonly<Record<string, () => string>> = {
+  'luz-astillero-cono': () => haz('lz-a', 340, 300, T.sodio, 'var(--entorno-mesa-papel)'),
+  'luz-infierno-brasa': brasa,
+  'luz-cyber-haz': () => haz('lz-c', 560, 330, C.lente, C.nieve),
+};
+
+/** Un ojo de almendra: la silueta dura, el iris soplado adentro y la pupila. `giro`, lo torcido. */
+function almendra(id: string, x: number, y: number, color: string, hondo: string, pupila: 'raya' | 'punto', giro = 0): string {
+  const d = `M${f(x - 9)} ${f(y)} Q${f(x)} ${f(y - 6.8)} ${f(x + 9)} ${f(y)} Q${f(x)} ${f(y + 5)} ${f(x - 9)} ${f(y)} Z`;
+  const ojo = enmascarado(id, d, forma(d, color) + nube(x, y - 5.5, 9, 3.2, hondo, 'xs', 0.8)) +
+    (pupila === 'raya' ? `<ellipse cx="${f(x)}" cy="${f(y - 0.4)}" rx="1.3" ry="3.8" fill="var(--fondo)"/>` : `<circle cx="${f(x)}" cy="${f(y - 0.4)}" r="2.3" fill="var(--fondo)"/>`);
+  return giro ? `<g transform="rotate(${giro} ${f(x)} ${f(y)})">${ojo}</g>` : ojo;
+}
+
+const QUIEN_MIRA: Readonly<Record<string, () => string>> = {
+  // El monte: ojos de bicho, de almendra, con la pupila en raya.
+  'acecho-monte': () => almendra('ac-m1', 11, 10, 'var(--acento-2)', M.sombra, 'raya') + almendra('ac-m2', 35, 10, 'var(--acento-2)', M.sombra, 'raya'),
+  // Cybersiberia: no es un bicho, es una cámara. Dos lentes con su aro y el piloto rojo en el medio.
+  'acecho-cyber': () =>
+    [11, 35].map((x) => `<circle cx="${x}" cy="10" r="5.6" fill="${C.hondo}"/><circle cx="${x}" cy="10" r="4" fill="${C.lente}"/><circle cx="${x}" cy="10" r="1.6" fill="var(--fondo)"/><circle cx="${x - 1.4}" cy="8.4" r="0.9" fill="${C.nieve}"/>`).join('') +
+    `<circle cx="23" cy="10" r="1.5" fill="var(--marca-rojo)"/>`,
+  // Los astilleros: algo que mira desde el agua. Los ojos redondos, y abajo, cortado por las ondas, su reflejo.
+  'acecho-astillero': () =>
+    [12, 34].map((x) => `<circle cx="${x}" cy="8" r="4.6" fill="${T.clara}"/><circle cx="${x + 0.6}" cy="8.4" r="1.9" fill="var(--fondo)"/>`).join('') +
+    [12, 34].map((x) => `<ellipse cx="${x}" cy="20" rx="4.2" ry="1.3" fill="${T.clara}" opacity="0.5"/><ellipse cx="${x + 1.2}" cy="24" rx="3" ry="0.9" fill="${T.clara}" opacity="0.3"/>`).join(''),
+  // El infierno: los ojos torcidos para adentro, de brasa.
+  'acecho-infierno': () => almendra('ac-i1', 11, 10, I.fuego, I.brasa, 'raya', 16) + almendra('ac-i2', 35, 10, I.fuego, I.brasa, 'raya', -16),
+};
+
+/**
+ * Las piezas de las luces y de los ojos sin dueño. Las luces llevan el rociado, con su hoja entera
+ * para que el filtro del grano no las corte; los ojos son chicos y de filo: se imprimen finos.
+ */
+export const PIEZAS_DE_LUZ: readonly Pieza[] = [
+  ...[...new Map(Object.values(LUCES).flat().map((l) => [l.pieza, l] as const)).values()].map((l) => {
+    const pinta = QUIEN_ALUMBRA[l.pieza];
+    if (!pinta) throw new Error(`nadie pinta la luz "${l.pieza}" (arte-aire.ts)`);
+    const [x, y, ancho, alto] = l.caja;
+    return {
+      nombre: l.pieza,
+      caja: l.caja,
+      dibujo: `<g filter="url(#rociado)"><rect x="${x}" y="${y}" width="${ancho}" height="${alto}" fill="var(--fondo)" fill-opacity="0"/>${pinta()}</g>`,
+      densidad: 1,
+      calidad: 60,
+    };
+  }),
+  ...[...new Map(Object.values(ACECHOS).map((a) => [a.pieza, a] as const)).values()].map((a) => {
+    const pinta = QUIEN_MIRA[a.pieza];
+    if (!pinta) throw new Error(`nadie pinta los ojos "${a.pieza}" (arte-aire.ts)`);
+    return { nombre: a.pieza, caja: [0, 0, a.ancho, a.alto] as const, dibujo: `<g filter="url(#grano)">${pinta()}</g>`, densidad: 5 };
+  }),
+];
 
 /* ------------------------------------------------------------------
    Las piezas

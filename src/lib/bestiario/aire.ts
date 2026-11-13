@@ -151,5 +151,118 @@ export function despejeDeLupa(plano: Plano, cae: boolean, z: number): number {
   return 1;
 }
 
+/* ------------------------------------------------------------------
+   La luz que se ve en el aire (segunda ronda)
+   ------------------------------------------------------------------ */
+
+/**
+ * Una luz: una forma soplada **impresa** (un cono, un resplandor) clavada en un punto de una capa,
+ * que la isla gira, agranda y le cambia el alfa. No es un `glow`, ni una sombra, ni un modo de
+ * mezcla: es una mancha de aerógrafo con grano, como el resplandor de cualquier tapa, que se mueve.
+ */
+export interface Luz {
+  pieza: string;
+  /** La velocidad de la capa en la que está clavada: 1, el piso. */
+  f: number;
+  /** Dónde está clavada, en unidades de esa capa: la boca del farol, el centro de la brasa. */
+  x: number;
+  y: number;
+  /** La caja de la pieza, medida desde ese punto: x, y, ancho, alto. */
+  caja: readonly [number, number, number, number];
+  /** El vaivén: cuántos grados para cada lado y a qué ritmo (radianes por segundo). */
+  vaiven: number;
+  ritmo: number;
+  /** El alfa quieta y lo que cambia. */
+  alfa: number;
+  late: number;
+  /** Cómo cambia: `titila` como un tubo viejo, `late` como un corazón (dos golpes y una pausa), `barre` parejo. */
+  pulso: 'titila' | 'late' | 'barre';
+  /** Cuánto crece con el pulso, en partes de su tamaño. */
+  crece: number;
+}
+
+/**
+ * Las luces de cada región, una por región como mucho: es una superficie más que el teléfono compone.
+ * En los astilleros, el cono del farol de sodio del muelle, que se hamaca con el viento y barre la
+ * bruma. En el infierno, la brasa al pie de Luzbelito, que late sobre el humo. En Cybersiberia, el
+ * haz de la cámara que vigila la nieve desde la chapa.
+ */
+export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
+  // El farol está en `ASTILLERO.farol` (440 de 900, a lo largo ×2400/900), y su boca a 30 a la derecha del poste.
+  'los-astilleros': [{ pieza: 'luz-astillero-cono', f: 1, x: 1203, y: 244, caja: [-170, -14, 340, 380], vaiven: 7, ritmo: 0.55, alfa: 0.62, late: 0.16, pulso: 'titila', crece: 0 }],
+  'el-infierno': [{ pieza: 'luz-infierno-brasa', f: 1, x: 452, y: 486, caja: [-260, -110, 520, 220], vaiven: 0, ritmo: 3.9, alfa: 0.56, late: 0.36, pulso: 'late', crece: 0.07 }],
+  cybersiberia: [{ pieza: 'luz-cyber-haz', f: 1, x: 1560, y: -6, caja: [-190, -14, 380, 600], vaiven: 15, ritmo: 0.33, alfa: 0.34, late: 0.05, pulso: 'barre', crece: 0 }],
+};
+
+/** El latido: dos golpes seguidos y una pausa, de 0 a 1. `u` es la fase, en vueltas. */
+export function latido(u: number): number {
+  const k = u - Math.floor(u);
+  const golpe = (centro: number, ancho: number): number => Math.exp(-(((k - centro) / ancho) ** 2));
+  return Math.min(1, golpe(0.12, 0.07) + 0.7 * golpe(0.36, 0.08));
+}
+
+/** Cómo está una luz en el momento `t`: cuánto giró, su alfa y su tamaño. */
+export function estadoDeLuz(l: Luz, t: number): { giro: number; alfa: number; escala: number } {
+  const giro = l.vaiven ? Math.sin(t * l.ritmo) * l.vaiven + Math.sin(t * l.ritmo * 2.7 + 1.3) * l.vaiven * 0.12 : 0;
+  // De -1 a 1 (o de 0 a 1 el latido): lo que el pulso le suma al alfa.
+  const pulso =
+    l.pulso === 'late'
+      ? latido((t * l.ritmo) / (Math.PI * 2)) * 2 - 0.6
+      : l.pulso === 'titila'
+        ? Math.sin(t * 7.3) * 0.35 + Math.sin(t * 13.1 + 2) * 0.25 + (Math.sin(t * 1.9) > 0.93 ? -1.4 : 0.2)
+        : Math.sin(t * l.ritmo * 2);
+  const alfa = Math.min(1, Math.max(0, l.alfa + pulso * l.late));
+  return { giro, alfa, escala: 1 + (l.crece ? l.crece * Math.max(0, pulso) : 0) };
+}
+
+/* ------------------------------------------------------------------
+   Lo que aparece si te quedás quieto (segunda ronda)
+   ------------------------------------------------------------------ */
+
+/**
+ * Los ojos sin dueño. Si te quedás quieto unos segundos, en lo oscuro se abren unos ojos que no son
+ * de ningún bicho de la libreta. Parpadean, y **se apagan si los mirás**: caminar, tocarles cerca,
+ * pasarles el mouse o sacar la lupa los cierra. Vuelven más tarde, en otro lado.
+ *
+ * No se tocan ni abren ficha: no son un bicho, son el monte mirando. Con movimiento reducido no están.
+ */
+export interface Acecho {
+  /** La pieza impresa: el par de ojos de la región. */
+  pieza: string;
+  /** Lo que mide la pieza, en unidades de escena. */
+  ancho: number;
+  alto: number;
+  /**
+   * Dónde pueden abrirse: `[de costado, de 0 a 1 de la vista; altura, en unidades de escena; tamaño]`.
+   * Siempre en lo oscuro: entre las matas de abajo, o lejos, entre lo de atrás.
+   */
+  lugares: readonly (readonly [number, number, number])[];
+  /** Cuánto hay que quedarse quieto para que se abran, en segundos: entre tanto y tanto. */
+  espera: readonly [number, number];
+  /** Cuánto se quedan mirando, si nadie los mira. */
+  dura: readonly [number, number];
+}
+
+export const ACECHOS: Readonly<Record<string, Acecho>> = {
+  'el-monte': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.16, 596, 1], [0.8, 604, 1.15], [0.5, 612, 0.9], [0.3, 268, 0.5], [0.72, 252, 0.45]], espera: [5, 6.5], dura: [6, 9] },
+  'la-pastura': { pieza: 'acecho-monte', ancho: 46, alto: 20, lugares: [[0.14, 600, 1], [0.84, 606, 1.1], [0.24, 262, 0.5], [0.66, 250, 0.45]], espera: [5, 6.5], dura: [6, 9] },
+  cybersiberia: { pieza: 'acecho-cyber', ancho: 46, alto: 20, lugares: [[0.14, 598, 1], [0.82, 606, 1.1], [0.36, 168, 0.6], [0.7, 232, 0.6]], espera: [5, 6.5], dura: [5, 8] },
+  'los-astilleros': { pieza: 'acecho-astillero', ancho: 46, alto: 30, lugares: [[0.2, 600, 1], [0.78, 606, 1.1], [0.62, 372, 0.55], [0.3, 380, 0.5]], espera: [5, 6.5], dura: [6, 9] },
+  'el-infierno': { pieza: 'acecho-infierno', ancho: 46, alto: 20, lugares: [[0.18, 606, 1.1], [0.8, 610, 1.2], [0.5, 616, 0.9]], espera: [5, 6.5], dura: [5, 8] },
+};
+
+/** A cuántos píxeles de los ojos un dedo o un mouse ya los está mirando. */
+export const MIRADA = 84;
+
+/**
+ * El párpado de los ojos sin dueño: 1 abierto, cerca de 0 cerrado. Parpadean cada tanto, corto, con
+ * un compás que depende de dónde están (así dos regiones no parpadean igual).
+ */
+export function parpadeo(t: number, semilla: number): number {
+  const ciclo = 3.1 + (semilla % 7) * 0.31;
+  const k = (t + semilla) % ciclo;
+  return k < 0.14 ? 0.12 + 0.88 * Math.abs(k - 0.07) / 0.07 : 1;
+}
+
 /** A qué paso la niebla ya está abierta del todo, en unidades de escena por segundo. */
 export const PASO_PLENO = 380;
