@@ -126,6 +126,8 @@ leyenda **disfrazada de dato** hace quedar mal al jugador, no al sitio.
   `contenido` (`CNT-01`) **es un mapa, no un gate**: qué se está usando y de dónde salió,
   para poder responder rápido y bien si alguien pregunta. Donde el repo todavía hable de un
   cerrojo antes de publicar, es `D-07`, y `D-14` lo reemplazó.
+- **El bestiario tiene su vara** (`D-90`): todo el que arme, anime, revise o encargue algo del
+  bestiario lee antes `.claude/rules/bestiario-inmersion.md`, lo aprendido en las rondas de mejora.
 - **Dedicación en ráfagas.** El trabajo se corta en tareas `T-XX` autocontenidas que
   cierran enteras en una ráfaga. `ESTADO.md` tiene que alcanzar para retomar sin releer
   el repo entero.

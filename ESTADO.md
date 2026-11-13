@@ -5,7 +5,127 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-11-04
+**Última actualización:** 2026-11-13
+
+> ## 🌫️ EL BESTIARIO CON MÚSCULO: RESUMEN DE LAS OCHO RONDAS (2026-11-13) — `D-90`, `T-527`
+>
+> **Sin integrar**, PR #110 (base: la rama del #108), rama `bestiario/inmersion`, cortada de `bestiario/cinco-sin-diseno` (PR #108) en
+> `9fa0b93`. Pedido del usuario: *"busca cosas que no se vean bien, ambientes mejorables y diseños que se puedan mejorar [...] Quiero
+> mejorar la inmersión. Que se pueda hacer zoom, que tenga más misterio y efectos, nieblas, mejores animaciones, una mejora total
+> manteniendo la esencia y el alma y el diseño rocambolesco ante todo, pero darle músculo."* Se hizo en ocho rondas, cada una
+> auditada. Todo lo soplado se imprime (`scripts/imprimir-bestiario.mjs`): el teléfono solo mueve imágenes con `transform` y `opacity`.
+>
+> **Qué cambió**
+>
+> - **El aire, en las trece regiones** (`lib/bestiario/aire.ts`, `arte-aire.ts`): capas impresas entre las del camino. La bruma de
+>   atrás del piso, la niebla del medio (de **jirones rasgados**, ninguno más ancho que un teléfono, y que **se abre al paso**) y lo
+>   pegado a la cámara fuera de foco. Cada región con **la mano de su tapa**: aerógrafo con grano, crayón en el bajo y los techos,
+>   gubia en la prisión, tinta plana en la mesa. Ropa tendida en los techos, barrotes limados en la prisión, ceniza en el infierno,
+>   nevisca en Cybersiberia, hojas en el árbol, y en el templo las ofrendas en el piso: velas en dos filas, platitos y flores, puestas en los huecos entre los bichos según los datos de la escena (rondas 6 a 8).
+> - **La lupa** (`lib/bestiario/lupa.ts`, `scripts/bestiario/pellizco.ts`): pellizco, Ctrl + ruedita, doble toque, `+` `−` `0` y dos
+>   sellos donde hay mouse, en los trece caminos y en el plano. Tope 2,6; la vuelta es **"Mirá todo"**. Caminar sigue siendo el scroll
+>   del navegador (`D-77`) y el toque que abre la ficha (`T-522`) no cambia.
+> - **El piso ya no es liso** (`arte-suelo.ts`, en el monte, la pastura, Cybersiberia, los astilleros, la ruta y, desde la ronda 6,
+>   el árbol, la mesa y el galpón): charcos que reflejan
+>   roto lo de atrás, raíces, piedras, costillares, hielo, chapas, cadenas, latas. Todo apoyado (mancha, tierra, distancia) y en
+>   escorzo. Se imprime adentro del piso: no son capas.
+> - **La luz** (`LUCES`): una forma impresa por región que se mueve. El cono de sodio de los astilleros, la brasa del infierno, el haz
+>   de la cámara de Cybersiberia, los faros del bondi, el reflejo del pucho de Pierre, el farol de los techos, el reflector de la
+>   prisión, un foco del templo y el seguidor del galpón. El haz ya no es de regla: canto cortado a mano y vetas adentro (ronda 6). En los
+>   astilleros, la prisión y los techos **toca a los bichos**: desde la ronda 6 les prende **el canto de cada pieza**, impreso (82
+>   imágenes `filo-de-*`); la medialuna genérica queda para los pintados en el piso. En la ronda 7 se engrosó y en la prisión pasó al
+>   rojo de las banderas: la drácula se ve prendida, clara. En los astilleros el cono se inclinó y cruza al botija, cuyo canto va en tiza
+>   clara (ronda 8): de cerca se distingue, a tamaño de teléfono es un hilo.
+> - **El misterio**: los **ojos sin dueño** (`ACECHOS`) se abren si te quedás quieto cinco o seis segundos y se apagan si los mirás;
+>   y lejos, muy cada tanto, **cruza algo** (`VIDAS`): un pájaro, un murciélago, una estrella, un barquito de papel.
+> - **Los títeres miran** (`scripts/bestiario/mirada.ts`): el lobo suelto (en el monte y en la pastura), las lobas, Pierre, Momo y
+>   Luzbelito saben dónde está el dedo o el mouse, respiran con peso, y lo que cuelga llega después. Desde la ronda 6 también
+>   Barbazul, la drácula y Limón.
+> - **El aire suena** (`entorno.ts`): viento con la ventisca y con la racha, el zumbido del tubo que titila, el chisporroteo de la
+>   brasa. Bajito y con el botón de siempre.
+> - **La tiza**: el aro punteado amarillo del bicho que habla es una vuelta de tiza irregular; el foco del teclado, la misma en oro.
+> - **Rendimiento**: Cybersiberia andaba a 12 cuadros por segundo con la CPU ×4 por una animación previa adentro del piso (la
+>   nevada); mudada a capa, alrededor de 50. Las capas se pintan una vez por cuadro; lo que no se ve no se mueve (el elenco y los
+>   títeres grandes); y hay un **alivio** que apaga la bruma de atrás y después la luz si los cuadros vienen lentos (`?liviano=1` o
+>   `2` lo fuerza para mirarlo).
+> - **El velo de llegada** (ronda 8, `lib/bestiario/velos.ts`): cada región, y el plano, llega tapada por una hoja impresa con su firma
+>   (la niebla del monte, la reja de la prisión que se corre, el telón del galpón, el agua del bajo que baja) y la hoja se va en 900 ms.
+>   Es CSS solo, sin JavaScript (`ADR-03`), no frena el toque, y con movimiento reducido es un corte. No espera a que la región
+>   termine de cargar: es un tiempo fijo. Visto en el teléfono emulado y en una navegación de verdad; no en un teléfono ni con red lenta.
+> - **Los techos sin ahogar** (ronda 7): lo que tapaba todo eran los rayones de crayón del telón del recinto, previos a esta rama
+>   (`baldio-lejos`). Quedó menos de la mitad, y solo apretados alrededor de los faroles.
+> - **Arreglos encontrados auditando**: el halo del camello, las losas del monte, el pie del farol, el horizonte de cinta del monte,
+>   los techos. Un test mide en la imagen impresa que nada de adelante tape más de un quinto del alto.
+>
+> **Verde:** `npm test` 2350 (los 2294 de antes y 56 nuevos: 4 de `velos.test.ts`, 37 de `aire.test.ts`, 10 de `lupa.test.ts`, 5 de `mirada.test.ts`),
+> `npm run check` 0 errores, `npm run build` 200 páginas. Dos tests anteriores cambiaron a propósito: el tope de peso del aire por región subió de 520 a 560 kB
+> (ronda 3) y el test de la losa del monte pasó a ser el tope del quinto para todas las regiones (ronda 4). Medido con la CPU ×4 en Edge sin
+> ventana: el monte, 9,9 ms de hilo principal y 60 cuadros por segundo; Cybersiberia, entre 12,7 y 15,4 ms y unos 50. En la ronda 6
+> cambiaron otros cuatro tests a propósito (la nevada, el tope de filos, la cuenta de miradas, el incienso; detalle en `D-90`), y
+> Cybersiberia se volvió a medir tres veces con la máquina cargada: mediana 21,0 ms, contra 15,4 de la escena pelada ese mismo día.
+>
+> **Qué falta**
+>
+> - **Un teléfono de verdad.** Todo se miró en Edge sin ventana, con dedos emulados. Sin probar: el pellizco en **iOS**, la mirada
+>   con el dedo, si el alivio se dispara solo cuando tiene que, y cuánto le cuesta todo a un equipo flojo.
+> - **Escucharlo.** El sonido del aire se escribió y se probó que no rompe, pero no se escuchó: hay que ajustarlo de oído.
+> - **El lienzo de marca.** Nada de esto está pegado en el lienzo. La lista de lo que hay que pasar (24 puntos, de las cinco rondas)
+>   está en `Docs/SUGERENCIAS/lienzo-el-aire-y-la-lupa.md`. No hay tintas nuevas en `tokens.css`.
+> - **Cybersiberia no bajó de 12 ms** con la CPU ×4. En la ronda 6 se fundieron la nevada y la ventisca en una capa y la región
+>   arranca en alivio 1: no alcanzó (mediana 21,0 ms, máquina cargada). Lo que cuesta es la nieve de pantalla entera. No se toca más hasta
+>   medir en un teléfono; qué hacer si ahí pasa de 16 ms está escrito en `D-90`, séptima enmienda.
+> - **El templo, sin medir bien.** Con la CPU ×4 gastaba 1,4 veces lo que el monte; se le sacó el humo que bajaba y quedó en 1,1,
+>   pero las dos tandas se midieron con la máquina cargada. Falta medirlo con la máquina libre.
+> - **Lo que frenó a un recién llegado** (paseo de la ronda 8, sin arreglar; lista en `D-90`): el mapa empieza debajo del pliegue, las
+>   zonas del oeste del plano se pisan al tocar, la primera pantalla del monte y la pastura no tiene bichos, «Al plano» mide 35 de alto,
+>   y con la lupa al máximo la imagen se ve blanda.
+> - **El doble toque** ahora tiene 520 ms y 44 px y cuenta desde que se apoya el dedo: seis de seis con la máquina cargada, emulado.
+> - Un segundo tamaño impreso para la lupa; atar los ojos a una mata de adelante.
+> - Integrar: esta rama va encima del PR #108, que sigue abierto. Detalle y números en `D-90` y sus siete enmiendas.
+
+> ## 🐸 CINCO MÁS, DIBUJADOS POR UN FABLE Y AUDITADOS: LA RANA RUBIA, EL BORREGO, LA LIEBRE MUERTA, EL TAXI PARANORMAL Y EL POLIZÓN (2026-11-13) — `D-73` (27)
+>
+> **Sin integrar y sin commitear**, rama `bestiario/cinco-de-fable`, sobre `bestiario/cinco-sin-diseno` (PR #108, sin integrar: esta
+> rama lo trae adentro). Pedido del usuario: que el hilo principal elija bestias sin diseño (*"al menos 5"*), se las encargue a un
+> Fable con libertad para ser rocambolesco, critique lo que vuelve y se lo devuelva. Una por región flaca y sin repetir bicho.
+>
+> - **La rana rubia** (astilleros): peluca, reposera y reflector de papel de aluminio, toma sol de noche; tocada croa y se come la mosca.
+> - **El borrego** (pastura): el vellón es un disfraz con cierre; tocado "caen los disfraces" y quedan los cortes del carnicero a puntos.
+> - **La liebre muerta** (monte, mudada al borde de abajo del claro): se hace la muerta y le sale mal; tocada se pone tiesa.
+> - **El taxi paranormal** (ruta, capa `delante`): volcado, negro y amarillo, el cartel al revés, el diablo colgando del baúl; tocado levita.
+> - **El polizón del remolque** (bajo): el bote con corona de muerto; a oscuras es una sombra con dos ojos; tocado lo destapan.
+> - **Dos vueltas**: la auditoría sobre las tiras de seis cuadros pidió cinco arreglos (el taxi no se leía, la cabeza del polizón
+>   flotaba fuera del casco, al borrego se le abría la nuca, los anteojos de la rana eran una mata, la oreja de la liebre un cuerno).
+> - **Lo aprendido quedó escrito** en `.claude/rules/bestiario-bestias.md` (flexible, mañas con su caso, también para mejorar las ya
+>   hechas). Es la §13 pendiente de `bestiario-inmersion.md`, que vive sin commitear en la rama `bestiario/inmersion` (`D-90`): al
+>   integrar las dos, esa §13 pasa a apuntar acá.
+> - **Verde** (corrido por el hilo principal): `npm test` (2329 de 2329), `npm run check` (0 errores, 0 avisos), `npm run build` (200 páginas).
+> - **Falta**: verlos en el navegador y en un teléfono (solo se miraron en PNG); bajar las matas de `camino-ruta-frente` en el tramo
+>   del taxi; vecinos que reaccionan; sumarlos a `mirada.ts`; que `contenido` lea las cinco estampas; pasar las tintas al lienzo.
+
+> ## 🐕 CINCO QUE SEGUÍAN SIN DISEÑO: EL REY GARUFA, EL JOVEN LOBO, EL REO SEMENTAL, EL MOSCÓN ZUMBÓN Y EL OVEJERO (2026-11-05) — `D-73` (26), `T-526`
+>
+> **Sin integrar**, rama `bestiario/cinco-sin-diseno` (PR #108), sobre `main` en `9fe6a91`. Pedido del usuario: *"Elegi 5 bestias ricoteras sin
+> diseños y haceles uno bien rocambolesco con su animacion y detalles de la letra. Que sea bien detallado y pulido."* Se eligió una
+> por región flaca de títeres, empezando por la pastura, que no tenía ninguno del elenco.
+>
+> - **Cybersiberia**: el Rey Garufa, el fiestero con el frac de la noche anterior, la corona de lata y el corazón de verdad entre las
+>   manos, que late y gotea; vaga por la nieve siguiendo sus huellas y, tocado, lo ofrece. Su silueta salió de `cyberPiso()`.
+> - **Monte**: el joven lobo, sentado en el cráter de un volcán chico, quemándose de adentro: la brasa en el pecho, llamas en el lomo,
+>   la cola que humea; tocado se yergue, aúlla, el volcán hace erupción y le sube un corazón de humo. En el camino baja 116 con el volcán.
+> - **Prisión**: el reo semental en la celda grande de la izquierda, agarrado a la reja, un toro de preso que suda; tocado se licúa
+>   entero, baja con los puños en los barrotes, queda hecho un charco a rayas con los ojos flotando y se vuelve a armar.
+> - **Mesa**: el moscón zumbón, el vaso boca abajo del piso hecho títere, con el moscón adentro que nunca sale del vidrio; tocado se
+>   vuelve loco, le pega al vaso, lo empaña, cae de espaldas y patalea. El vaso salió de `mesaPiso()`.
+> - **Pastura**: el ovejero, echado en un manto negro con el rayado a pluma de *Un baión*, el plato con los restos que no tocó y el ojo
+>   en el cordero; tocado se para, se eriza, ladra tres veces y patea el plato. **La pastura entra al elenco**: sus capas se dibujan en
+>   el recinto del monte y en el claro del camino.
+> - Cinco bloques de tintas medidas en su tapa (`tokens.css`), cinco en `sitio.css`, cinco conductas, cinco tests de 7, estampas
+>   nuevas en `bestiario.json`, `elenco.test.ts` de 50 a 55. Detalle en `D-73` (26).
+> - **Verde:** `npm test` (2294), `npm run check`, `npm run build` (200 páginas). Cada uno mirado a PNG en su recinto y en su tramo
+>   del camino (visor del scratchpad: la escena entera con sharp), y la página construida de Cybersiberia carga las piezas sin un
+>   error de consola.
+> - **Falta**: verlos en un teléfono de verdad; que `contenido` lea las cinco estampas; pasar las tintas al lienzo (`T-526`).
 
 > ## 🎛️ LAS DOS CINTAS Y CUATRO TABLEROS: UNA PASADA DE UI/UX AL PORTAL Y A LOS PRIMEROS JUEGOS (2026-11-04)
 >

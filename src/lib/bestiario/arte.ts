@@ -254,7 +254,7 @@ const B = {
 };
 
 /** Rayones de crayón: cortos, en tandas que apuntan para un mismo lado, como los de la tapa. */
-function rayones(x0: number, y0: number, x1: number, y1: number, cuantos: number, colores: readonly string[], semilla: number, haciaX?: number, haciaY?: number): string {
+function rayones(x0: number, y0: number, x1: number, y1: number, cuantos: number, colores: readonly string[], semilla: number, haciaX?: number, haciaY?: number, fuerza = 1): string {
   const rnd = azar(semilla);
   let s = '';
   for (let i = 0; i < cuantos; i++) {
@@ -264,7 +264,7 @@ function rayones(x0: number, y0: number, x1: number, y1: number, cuantos: number
     if (haciaX !== undefined && haciaY !== undefined) ang = Math.atan2(y - haciaY, x - haciaX) + (rnd() - 0.5) * 0.5;
     const largo = 8 + rnd() * 26;
     const color = colores[Math.floor(rnd() * colores.length)]!;
-    s += trazo(`M${x.toFixed(1)} ${y.toFixed(1)} l${(Math.cos(ang) * largo).toFixed(1)} ${(Math.sin(ang) * largo).toFixed(1)}`, color, 2.2 + rnd() * 2.6, 0.5 + rnd() * 0.45);
+    s += trazo(`M${x.toFixed(1)} ${y.toFixed(1)} l${(Math.cos(ang) * largo).toFixed(1)} ${(Math.sin(ang) * largo).toFixed(1)}`, color, 2.2 + rnd() * 2.6, (0.5 + rnd() * 0.45) * fuerza);
   }
   return s;
 }
@@ -281,8 +281,8 @@ function baldioLejos(): string {
   const ancho = TECHOS.ancho;
   const farol = { x: 650, y: 130 };
   const otro = FAROL_DEL_FONDO;
-  const nuevo = (x0: number, y0: number, y1: number, cuantos: number, colores: readonly string[], semilla: number): string =>
-    rayones(x0, y0, ancho + 20, y1, Math.round((cuantos * (ancho + 20 - x0)) / 940), colores, semilla);
+  const nuevo = (x0: number, y0: number, y1: number, cuantos: number, colores: readonly string[], semilla: number, fuerza = 1): string =>
+    rayones(x0, y0, ancho + 20, y1, Math.round((cuantos * (ancho + 20 - x0)) / 940), colores, semilla, undefined, undefined, fuerza);
   // Los techos: chapa a dos aguas y en diente de sierra, con antenas de tele.
   const rnd = azar(61);
   let techos = '';
@@ -303,9 +303,12 @@ function baldioLejos(): string {
   return (
     `<g filter="url(#rociado)">` +
     `<rect x="-10" y="-10" width="${ancho + 20}" height="${alto + 20}" fill="${B.noche}"/>` +
-    // El cielo rayado, y la luz del farol que aprieta los rayones alrededor.
-    rayones(-20, -20, 920, 300, 900, [B.violeta, B.azul, B.violeta, B.noche, B.lila], 5) +
-    nuevo(920, -20, 300, 900, [B.violeta, B.azul, B.violeta, B.noche, B.lila], 105) +
+    // El cielo rayado, y la luz del farol que aprieta los rayones alrededor. Desde `D-90` (séptima
+    // ronda) el cielo lleva menos de la mitad de los rayones y más flojos: con 900 parejos de punta a
+    // punta se leía como ruido de televisor, y tapaba lo que pasa adelante. El crayón de *Un baión*
+    // queda donde hay luz: apretado alrededor de cada farol, que no se tocó.
+    rayones(-20, -20, 920, 300, 380, [B.violeta, B.azul, B.violeta, B.noche], 5, undefined, undefined, 0.6) +
+    nuevo(920, -20, 300, 380, [B.violeta, B.azul, B.violeta, B.noche], 105, 0.6) +
     nube(farol.x, farol.y, 120, 90, B.lila, 'xl', 0.5) +
     rayones(farol.x - 170, farol.y - 120, farol.x + 170, farol.y + 140, 260, [B.luz, B.lila, B.luz], 9, farol.x, farol.y) +
     nube(farol.x, farol.y, 22, 18, B.luz, 'm') +
@@ -318,8 +321,8 @@ function baldioLejos(): string {
     nuevo(920, 180, 260, 120, [B.lila, B.violeta], 113) +
     // La medianera, con los ladrillos rayados.
     forma(`M-10 300 L${ancho + 10} 300 L${ancho + 10} 392 L-10 392 Z`, B.violeta) +
-    rayones(-10, 300, 910, 392, 260, [B.noche, B.rosa, B.lila], 17) +
-    nuevo(910, 300, 392, 260, [B.noche, B.rosa, B.lila], 117) +
+    rayones(-10, 300, 910, 392, 150, [B.noche, B.rosa, B.lila], 17, undefined, undefined, 0.8) +
+    nuevo(910, 300, 392, 150, [B.noche, B.rosa, B.lila], 117, 0.8) +
     nube(farol.x, 360, 200, 40, B.lila, 'l', 0.35) +
     nube(otro.x, 360, 170, 36, B.lila, 'l', 0.28) +
     // El piso del baldío, oscuro, con la luz del farol que cae.
@@ -327,8 +330,10 @@ function baldioLejos(): string {
     nube(farol.x - 20, 520, 220, 70, B.violeta, 'xl', 0.9) +
     nube(farol.x - 20, 520, 120, 36, B.lila, 'l', 0.35) +
     nube(otro.x - 20, 520, 190, 60, B.violeta, 'xl', 0.75) +
-    rayones(-10, 392, 910, alto, 700, [B.violeta, B.azul, B.noche, B.noche, B.lila], 21) +
-    nuevo(910, 392, alto, 700, [B.violeta, B.azul, B.noche, B.noche, B.lila], 121) +
+    // El piso, donde andan los bichos: un tercio de los rayones de antes, sin el lila (que era el
+    // que saltaba delante de ellos) y a media fuerza. Se ve el crayón; no compite con Dinamita.
+    rayones(-10, 392, 910, alto, 230, [B.violeta, B.azul, B.noche, B.noche], 21, undefined, undefined, 0.5) +
+    nuevo(910, 392, alto, 230, [B.violeta, B.azul, B.noche, B.noche], 121, 0.5) +
     // Una goma tirada y unos yuyos.
     `<ellipse cx="340" cy="548" rx="34" ry="12" fill="none" stroke="${B.negro}" stroke-width="9"/>` +
     rayones(320, 470, 480, 520, 60, [B.azul, B.lila], 23, 400, 540) +

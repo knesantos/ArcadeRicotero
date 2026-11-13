@@ -49,7 +49,14 @@ import { crearEntorno } from './bestiario/entorno.ts';
 import { RECETAS } from '../lib/bestiario/sonido.ts';
 import { contextoVivo, despertarSalida } from '../lib/audio/contexto.ts';
 import { Charla } from '../lib/bestiario/charla.ts';
-import { PRIMER_PASO, crearCamara, primerPaso, transformDe, type Encuadre } from '../lib/bestiario/camara.ts';
+import { PRIMER_PASO, corridaDe, crearCamara, primerPaso, transformDe, type Encuadre } from '../lib/bestiario/camara.ts';
+import {
+  ACECHOS, AIRE, ALIVIO, LUCES, MIRADA, PASO_PLENO, VIDAS, alfaDeAire, alivioDeEntrada, alivioTras, corridaDeAire, despejeDeLupa, estadoDeLuz, parpadeo, pasoDeVida, rutaDelFilo, tieneFiloPropio,
+  tocaLaLuz,
+} from '../lib/bestiario/aire.ts';
+import { ENTERA, LUPA, acotar, centrar, conLupa, enElMundo, enfocar, entreLentes, type Lente } from '../lib/bestiario/lupa.ts';
+import { leerGestos } from './bestiario/pellizco.ts';
+import { miradaDe, seguir } from './bestiario/mirada.ts';
 import { alSacudon } from './bestiario/sacudon.ts';
 import { lugarDeLaFicha, type Lado } from '../lib/bestiario/hoja.ts';
 import { reposar, sellar, sellarAnotada } from './bestiario/sellos.ts';
@@ -83,6 +90,85 @@ const capas = [...camino.querySelectorAll<HTMLElement>('.capa')].map((el) => ({ 
 const conCapas = capas.some((c) => c.f !== 1);
 const cruce = document.getElementById('cruce')!;
 const apariciones = [...piso.querySelectorAll<SVGGElement>('.aparece')].map((el) => ({ el, x: Number(el.dataset.x) }));
+/** El aire (`D-90`, `lib/bestiario/aire.ts`): cada capa con su receta, y el alfa que tiene pintada. */
+const recetasDeAire = new Map((AIRE[datos.region] ?? []).map((c) => [c.pieza, c]));
+const aires = [...camino.querySelectorAll<HTMLElement>('.aire')].flatMap((el) => {
+  const c = recetasDeAire.get(el.dataset.aire ?? '');
+  return c ? [{ el, c, alfa: -1 }] : [];
+});
+/** Las luces de la región (`LUCES`): la imagen, su receta y el alfa que tiene pintada. */
+const recetasDeLuz = new Map((LUCES[datos.region] ?? []).map((l) => [l.pieza, l]));
+const luces = [...camino.querySelectorAll<HTMLElement>('.luz')].flatMap((el) => {
+  const r = recetasDeLuz.get(el.dataset.luz ?? '');
+  return r ? [{ el, r, alfa: -1, pulso: 0 }] : [];
+});
+/**
+ * Los filos (`D-90`, quinta ronda): la luz toca a los bichos. Cada luz que lo pide le prende un filo
+ * a los que tiene más cerca cuando el haz les pasa por encima. `blanco`: dónde está el bicho (su
+ * coronilla y su ancho, en unidades del piso); se mide cada tanto, no por cuadro.
+ */
+const filos = [...camino.querySelectorAll<HTMLElement>('.filo')].map((el) => ({
+  el,
+  luz: el.dataset.filo ?? '',
+  blanco: null as { x: number; y: number; cy: number; ancho: number; propio: readonly SVGGElement[] | null } | null,
+  alfa: -1,
+}));
+/** Los títeres que ya tienen puesto su filo a medida (`FILO_PROPIO`), con los grupos donde está: ahí se lo prende. */
+const vestidos = new Map<SVGGElement, readonly SVGGElement[] | null>();
+
+/**
+ * Le pone a un títere su filo a medida: al lado de cada pieza impresa que lo tenga, la imagen de su
+ * canto encendido, adentro del mismo grupo (así se mueve con la pieza). Devuelve los grupos donde
+ * quedó, o `null` si el bicho no está hecho de piezas (los pintados en el piso).
+ */
+function vestirConFilo(g: SVGGElement): readonly SVGGElement[] | null {
+  const hecho = vestidos.get(g);
+  if (hecho !== undefined) return hecho;
+  const marco = g.closest<SVGGElement>('[data-marco]');
+  const raices = marco ? [...piso.querySelectorAll<SVGGElement>(`[data-marco="${marco.dataset.marco}"]`)] : [g];
+  let puestos = 0;
+  for (const raiz of raices) {
+    for (const img of raiz.querySelectorAll<SVGImageElement>('image:not(.filo-propio)')) {
+      const pieza = /\/([a-z0-9-]+)\.webp$/.exec(img.getAttribute('href') ?? '')?.[1];
+      if (!pieza || !tieneFiloPropio(pieza, datos.region)) continue;
+      const canto = img.cloneNode(false) as SVGImageElement;
+      canto.setAttribute('href', rutaDelFilo(pieza));
+      canto.removeAttribute('data-parte');
+      canto.setAttribute('class', 'filo-propio');
+      img.after(canto);
+      puestos++;
+    }
+  }
+  const donde = puestos ? raices : null;
+  vestidos.set(g, donde);
+  return donde;
+}
+let cuadrosDeLuz = 0;
+/** Un cuadro sí y uno no: para lo que alcanza con moverlo a la mitad del ritmo. */
+let mediaVuelta = false;
+/** Los ojos sin dueño (`ACECHOS`): se abren si te quedás quieto, y se apagan si los mirás. */
+const acecho = ACECHOS[datos.region] ?? null;
+const acechoEl = document.getElementById('acecho');
+const mira = { abierto: 0, pintado: -1, quiere: false, quietud: 0, proxima: 0, hasta: 0, lugar: -1, x: 0, y: 0 };
+/** Lo que cruza lejos (`VIDAS`): de a uno y muy cada tanto. `desde` y `hasta`, en el reloj del camino. */
+const loQuePasa = VIDAS[datos.region] ?? null;
+const vidaEl = document.getElementById('vida');
+const pasa = { desde: -1, hasta: -1, alReves: false, proxima: 0, visible: false };
+/** El bicho del que cuelga cada luz que va con uno (los faros del bondi). */
+const colgadas = new Map<string, SVGGElement | null>();
+/**
+ * El alivio (`ALIVIO`): 0, todo; 1, sin la bruma de atrás; 2, sin la luz ni lo que cruza lejos. Sube
+ * solo si los cuadros vienen lentos, y un teléfono que ya avisa que es flojo arranca en 1.
+ */
+const delNavegador = navigator as Navigator & { deviceMemory?: number };
+let alivio = alivioDeEntrada(navigator.hardwareConcurrency, delNavegador.deviceMemory, datos.region);
+/**
+ * Para mirarlo sin un teléfono flojo: `?liviano=1` o `?liviano=2` en la dirección fuerza ese escalón
+ * (y `?liviano=0`, ninguno aunque el teléfono avise que es flojo). Con la bandera puesta no se mide.
+ */
+const forzado = /^[012]$/.exec(new URLSearchParams(location.search).get('liviano') ?? '')?.[0];
+if (forzado !== undefined) alivio = Number(forzado);
+const tanda = { cuadros: 0, ms: 0 };
 
 const hoja = document.getElementById('hoja')!;
 const hojaCuerpo = document.getElementById('hoja-cuerpo')!;
@@ -381,7 +467,29 @@ alSacudon((fuerza) => camara.sacudir(fuerza));
 /** Si las capas se corren cada una a su velocidad (con capas y sin movimiento reducido). */
 let paralaje = false;
 
-const recorrido = (): number => Math.max(0, anchoPx - vistaPx);
+/**
+ * La lupa (`D-90`, `lib/bestiario/lupa.ts`). Con la lupa en `z`, la tira mide `z` veces su ancho:
+ * así un píxel de deslizar sigue siendo un píxel de pantalla, con la lupa que sea, y el scroll del
+ * navegador (`D-77`) no se entera de nada. `cam` es siempre lo caminado **sin agrandar**; `lente.x`
+ * es lo mismo, y `lente.y`, cuánto se mira para abajo.
+ */
+let lente: Lente = { ...ENTERA };
+let altoPx = 0;
+/** El viaje de la lupa (el doble toque, los botones): de dónde a dónde, y desde cuándo. */
+let viaje: { desde: Lente; hasta: Lente; t0: number } | null = null;
+/** Si hay una lupa pintada en las capas: al sacarla, quieto, hay que despintarla. */
+let lupaPintada = false;
+/** Cuánto se camina ahora, de 0 a 1, para el aire: sube rápido y baja despacio (la niebla tarda en cerrarse). */
+let anda = 0;
+/** A cuánto se camina en este cuadro, en unidades por segundo y con signo: lo que cuelga se va para atrás. */
+let pasoAhora = 0;
+
+const vistaDe = (): { ancho: number; alto: number } => ({ ancho: vistaPx, alto: altoPx });
+const mundoDe = (): { ancho: number; alto: number } => ({ ancho: anchoPx, alto: altoPx });
+/** Lo que se puede deslizar, en píxeles de pantalla. */
+const recorrido = (): number => Math.max(0, anchoPx * lente.z - vistaPx);
+/** El medio de lo que se ve, en unidades de escena. */
+const medioDeLaVista = (): number => (cam + vistaPx / (2 * lente.z)) / escala;
 
 function medir(): void {
   paralaje = conCapas && !quieto();
@@ -393,7 +501,9 @@ function medir(): void {
   escala = alto / ALTO;
   anchoPx = datos.ancho * escala;
   vistaPx = escenario.clientWidth;
-  tira.style.width = `${Math.round(anchoPx)}px`;
+  altoPx = alto;
+  lente = acotar(lente, vistaDe(), mundoDe());
+  tira.style.width = `${Math.round(anchoPx * lente.z)}px`;
   vista.style.width = paralaje ? `${vistaPx}px` : '';
   if (!paralaje) corridas = capas.map(() => 0);
   if (quieto()) {
@@ -406,18 +516,387 @@ function medir(): void {
  * Cada capa, con su paralaje y la cámara encima. Sin paralaje la capa empieza en la punta de la tira,
  * que está corrida `cam` a la izquierda de la vista.
  */
+/**
+ * Las luces y los ojos sin dueño, en el mismo cuadro que las capas. La luz va clavada en su punto de
+ * la escena y se hamaca, late o titila; quieta (con movimiento reducido), queda en su lugar con su alfa.
+ */
+function pintarLuces(): void {
+  const z = lente.z;
+  const capaX = paralaje ? 0 : -cam * z;
+  for (const l of luces) {
+    const e = quieto() ? { giro: 0, alfa: l.r.alfa, escala: 1 } : estadoDeLuz(l.r, reloj);
+    // La que cuelga de un bicho que anda (los faros del bondi) va donde está él ahora.
+    let ancla = l.r.x;
+    if (l.r.sigue) {
+      if (!colgadas.has(l.r.sigue)) colgadas.set(l.r.sigue, piso.querySelector<SVGGElement>(`.bestia[data-id="${l.r.sigue}"]`));
+      const g = colgadas.get(l.r.sigue);
+      ancla += Number(g?.dataset.ahora ?? g?.dataset.x ?? 0);
+    }
+    const x = ancla * escala - (paralaje ? corrimiento(l.r.f, cam, datos.foco * escala, vistaPx) : 0);
+    const y = l.r.y * escala - lente.y;
+    const base = encuadre ? transformDe(encuadre, capaX, x, z, y) : corridaDe(x, z, y);
+    l.el.style.transform = `${base} rotate(${((l.r.rumbo ?? 0) + e.giro).toFixed(2)}deg) scale(${e.escala.toFixed(3)}) translate(${(l.r.caja[0] * escala).toFixed(1)}px, ${(l.r.caja[1] * escala).toFixed(1)}px)`;
+    if (Math.abs(e.alfa - l.alfa) > 0.004) {
+      l.alfa = e.alfa;
+      l.el.style.opacity = e.alfa.toFixed(3);
+    }
+    // La luz toca a los bichos: a cada uno, lo que le pega según a cuántos grados le quedó el haz.
+    if (l.r.filo) {
+      const apunta = (l.r.rumbo ?? 0) + e.giro;
+      for (const fl of filos) {
+        if (fl.luz !== l.r.pieza) continue;
+        const b = fl.blanco;
+        // El haz apunta para abajo y gira con las agujas: a un bicho a la derecha le toca un giro negativo.
+        const k = b && !quieto() ? tocaLaLuz((Math.atan2(-(b.x - ancla), b.cy - l.r.y) * 180) / Math.PI - apunta, l.r.filo.abre) * Math.min(1, e.alfa / l.r.alfa) : 0;
+        if (Math.abs(k - fl.alfa) > 0.01) {
+          fl.alfa = k;
+          // El que tiene filo a medida prende el suyo, en todas sus piezas, con una sola variable; el
+          // que no (los pintados en el piso), la medialuna.
+          if (b?.propio) for (const raiz of b.propio) raiz.style.setProperty('--filo', k.toFixed(3));
+          fl.el.style.opacity = b?.propio ? '0' : (k * 0.9).toFixed(3);
+        }
+        if (!b || k <= 0 || b.propio) continue;
+        const fx = b.x * escala - (paralaje ? cam : 0);
+        const fy = b.y * escala - lente.y;
+        const tam = Math.min(1.7, Math.max(0.35, b.ancho / 100));
+        fl.el.style.transform = `${encuadre ? transformDe(encuadre, capaX, fx, z, fy) : corridaDe(fx, z, fy)} scale(${tam.toFixed(3)}) translate(${(-50 * escala).toFixed(1)}px, ${(-20 * escala).toFixed(1)}px)`;
+      }
+    }
+    // Lo que suena (`entorno.ts`), atado a lo que se ve y cada tanto: cuanto más lejos está la luz del
+    // medio de la pantalla, menos. Si el sonido está apagado, el motor no hace nada.
+    if (l.r.suena && !quieto()) {
+      const lejosDelMedio = Math.abs(x * z - (paralaje ? 0 : cam * z) - vistaPx / 2) / (vistaPx * 1.2);
+      const cerca = Math.max(0, 1 - lejosDelMedio);
+      if (l.r.suena === 'zumbido') {
+        // El tubo zumba mientras está prendido y se corta cuando titila.
+        if (cuadrosDeLuz % 5 === 0) entorno?.aire('zumbido', cerca * (e.alfa > l.r.alfa * 0.75 ? 1 : 0.1));
+      } else {
+        // La brasa chisporrotea en el golpe del latido: una vez por golpe.
+        const golpe = e.escala - 1 > l.r.crece * 0.55 ? 1 : 0;
+        if (golpe && !l.pulso && cerca > 0.1) entorno?.chispear(cerca);
+        l.pulso = golpe;
+      }
+    }
+  }
+  // El viento, con la capa que lo trae: sube y baja con ella.
+  if (cuadrosDeLuz++ % 6 === 0 && !quieto()) {
+    for (const a of aires) if (a.c.suena === 'viento' && a.alfa >= 0) entorno?.aire('viento', Math.min(1, a.alfa / (a.c.alfa + a.c.late)));
+  }
+  pintarVida(capaX);
+  if (!acecho || !acechoEl || mira.lugar < 0) return;
+  if (Math.abs(mira.abierto - mira.pintado) > 0.004) {
+    mira.pintado = mira.abierto;
+    acechoEl.style.opacity = mira.abierto.toFixed(3);
+  }
+  if (mira.abierto <= 0) return;
+  const [fx, alto, tam] = acecho.lugares[mira.lugar]!;
+  // En la pantalla: los ojos no caminan con nada. Están donde se abrieron, y si caminás, se cierran.
+  mira.x = fx * vistaPx;
+  mira.y = alto * escala;
+  const x = (paralaje ? 0 : cam) + mira.x;
+  const base = encuadre ? transformDe(encuadre, capaX, x, 1, mira.y) : corridaDe(x, 1, mira.y);
+  const s = tam * (0.85 + 0.15 * mira.abierto);
+  acechoEl.style.transform = `${base} scale(${s.toFixed(3)}, ${(s * parpadeo(reloj, mira.lugar * 13 + 5) * mira.abierto).toFixed(3)}) translate(${((-acecho.ancho / 2) * escala).toFixed(1)}px, ${((-acecho.alto / 2) * escala).toFixed(1)}px)`;
+}
+
+/**
+ * A quién le toca cada filo: los bichos que la luz tiene más cerca, que no anden (un fierro que pasa
+ * se le escaparía). Se miden juntos, cada tanto y antes de que el cuadro escriba nada; del dibujo a
+ * unidades del piso, deshaciendo lo deslizado y la lupa (la cámara se mueve poco: no se descuenta).
+ */
+function medirFilos(): void {
+  if (!filos.length) return;
+  const caja = escenario.getBoundingClientRect();
+  const z = lente.z;
+  for (const l of luces) {
+    if (!l.r.filo) continue;
+    const mios = filos.filter((f) => f.luz === l.r.pieza);
+    const alcance = l.r.caja[2] * 0.75;
+    const cerca: { x: number; y: number; cy: number; ancho: number; d: number; g: SVGGElement }[] = [];
+    for (const g of piso.querySelectorAll<SVGGElement>(BICHOS)) {
+      if (g.dataset.velocidad) continue;
+      const r = (g.querySelector('.toque') ?? g).getBoundingClientRect();
+      if (!r.width) continue;
+      // Del dibujo al piso: lo deslizado se suma siempre (con capas o sin ellas, el piso se corrió eso).
+      const x = ((r.left + r.width / 2 - caja.left) / z + cam) / escala;
+      const y = ((r.top - caja.top) / z + lente.y) / escala;
+      const d = Math.abs(x - l.r.x);
+      // Los muy altos (la drácula, Barbazul) no llevan la medialuna genérica, que les quedaría como un
+      // sombrero; el canto impreso sí, porque les sigue la silueta.
+      if (d < alcance && r.height > innerHeight * 0.7 && !vestirConFilo(g)) continue;
+      if (d < alcance && y > l.r.y + 40) cerca.push({ x, y: y + 6, cy: y + r.height / z / escala / 2, ancho: Math.min(170, r.width / z / escala), d, g });
+    }
+    cerca.sort((p, q) => p.d - q.d);
+    mios.forEach((f, i) => {
+      const c = cerca[i];
+      // El que deja de estar cerca se apaga: su filo no queda prendido para siempre.
+      if (f.blanco?.propio && f.blanco.propio !== (c ? vestidos.get(c.g) : null)) for (const raiz of f.blanco.propio) raiz.style.removeProperty('--filo');
+      f.blanco = c ? { x: c.x, y: c.y, cy: c.cy, ancho: c.ancho, propio: vestirConFilo(c.g) } : null;
+      f.alfa = -1;
+    });
+  }
+}
+
+/**
+ * Lo que cruza lejos: un pájaro, una estrella, un barquito. De a uno, y muy cada tanto: la primera
+ * vez tarda la mitad, para que el que se quedó mirando tenga su premio. Con la lupa puesta no cruza
+ * (va por la pantalla, no por la escena), y con movimiento reducido el reloj no anda.
+ */
+function pintarVida(capaX: number): void {
+  if (!loQuePasa || !vidaEl) return;
+  if (pasa.desde < 0) {
+    if (pasa.proxima === 0) pasa.proxima = reloj + (loQuePasa.espera[0] + Math.random() * (loQuePasa.espera[1] - loQuePasa.espera[0])) * 0.5;
+    if (reloj < pasa.proxima || conLupa(lente) || quieto() || alivio >= 2) return;
+    pasa.desde = reloj;
+    pasa.hasta = reloj + loQuePasa.dura[0] + Math.random() * (loQuePasa.dura[1] - loQuePasa.dura[0]);
+    pasa.alReves = loQuePasa.deLosDosLados && Math.random() < 0.5;
+  }
+  const u = (reloj - pasa.desde) / (pasa.hasta - pasa.desde);
+  if (u >= 1 || conLupa(lente)) {
+    pasa.desde = -1;
+    pasa.proxima = reloj + loQuePasa.espera[0] + Math.random() * (loQuePasa.espera[1] - loQuePasa.espera[0]);
+    pasa.visible = false;
+    vidaEl.style.opacity = '0';
+    return;
+  }
+  if (!pasa.visible) {
+    pasa.visible = true;
+    vidaEl.style.opacity = String(loQuePasa.alfa);
+  }
+  const p = pasoDeVida(loQuePasa, u, reloj, pasa.alReves);
+  const x = (paralaje ? 0 : cam) + p.fx * vistaPx;
+  const base = encuadre ? transformDe(encuadre, capaX, x, 1, p.y * escala) : corridaDe(x, 1, p.y * escala);
+  const lado = pasa.alReves ? -loQuePasa.tam : loQuePasa.tam;
+  vidaEl.style.transform = `${base} rotate(${p.giro.toFixed(2)}deg) scale(${lado.toFixed(3)}, ${(loQuePasa.tam * p.aleteo).toFixed(3)}) translate(${((-loQuePasa.ancho / 2) * escala).toFixed(1)}px, ${((-loQuePasa.alto / 2) * escala).toFixed(1)}px)`;
+}
+
+/** Pone el alivio que toca: las clases las pinta `camino.css`. */
+function pintarAlivio(): void {
+  camino.classList.toggle('camino--liviano', alivio >= 1);
+  camino.classList.toggle('camino--muy-liviano', alivio >= 2);
+}
+
+/**
+ * Mide una tanda de cuadros y, si vinieron lentos, sube un escalón de alivio. `ms`: lo que tardó
+ * este cuadro de verdad, sin el tope del reloj.
+ */
+function medirAlivio(ms: number): void {
+  if (forzado !== undefined || alivio >= ALIVIO.niveles || reloj < 1.5 || ms > 400) return;
+  tanda.cuadros++;
+  tanda.ms += ms;
+  if (tanda.cuadros < ALIVIO.tanda && tanda.ms < ALIVIO.tope) return;
+  const antes = alivio;
+  alivio = alivioTras(alivio, tanda.ms / tanda.cuadros);
+  tanda.cuadros = 0;
+  tanda.ms = 0;
+  if (alivio !== antes) pintarAlivio();
+}
+
+const sortearEspera = (extra = 0): void => {
+  if (acecho) mira.proxima = extra + acecho.espera[0] + Math.random() * (acecho.espera[1] - acecho.espera[0]);
+};
+sortearEspera();
+
+/** Los ojos se cierran y esperan un rato más largo antes de volver, en otro lado. */
+function cerrarLosOjos(extra: number): void {
+  mira.quiere = false;
+  mira.quietud = 0;
+  sortearEspera(extra);
+}
+
+/**
+ * La vida de los ojos sin dueño. `seMueve`: se está caminando en este cuadro. Cualquier cosa que no
+ * sea quedarse mirando la escena (caminar, la lupa, una ficha abierta) los cierra y vuelve a cero
+ * la cuenta de la quietud.
+ */
+function moverAcecho(dt: number, seMueve: boolean): void {
+  if (!acecho || !acechoEl) return;
+  const molesto = seMueve || conLupa(lente) || !hoja.hidden || lista.classList.contains('camino-fichas--abierta') || agarre !== null;
+  if (molesto) {
+    mira.quietud = 0;
+    if (mira.quiere) cerrarLosOjos(3);
+  } else mira.quietud += dt;
+  if (!mira.quiere && mira.abierto <= 0 && mira.quietud >= mira.proxima) {
+    // Otro lugar que el de la última vez.
+    const n = acecho.lugares.length;
+    mira.lugar = (Math.max(0, mira.lugar) + 1 + Math.floor(Math.random() * (n - 1))) % n;
+    mira.quiere = true;
+    mira.hasta = reloj + acecho.dura[0] + Math.random() * (acecho.dura[1] - acecho.dura[0]);
+  }
+  if (mira.quiere && reloj > mira.hasta) cerrarLosOjos(7);
+  // Se abren despacio y se cierran de golpe.
+  mira.abierto = Math.min(1, Math.max(0, mira.abierto + dt * (mira.quiere ? 1.1 : -5)));
+}
+
+/** Si te fijás en ellos, se apagan: un dedo o un mouse cerca alcanza. */
+function mirarLosOjos(ev: PointerEvent): void {
+  if (!acecho || mira.abierto < 0.2 || !mira.quiere) return;
+  const caja = escenario.getBoundingClientRect();
+  if (Math.hypot(ev.clientX - caja.left - mira.x, ev.clientY - caja.top - mira.y) < MIRADA) cerrarLosOjos(6);
+}
+escenario.addEventListener('pointermove', mirarLosOjos, { passive: true });
+escenario.addEventListener('pointerdown', mirarLosOjos, { passive: true });
+
 function pintarCapas(): void {
-  if (!encuadre && !paralaje) return;
+  pintarLuces();
+  const lupa = conLupa(lente);
+  if (!encuadre && !paralaje && !lupa) {
+    // Quieto y sin lupa, las capas van en su lugar. Si venían de una lupa, se despintan.
+    if (lupaPintada) {
+      for (const c of capas) c.el.style.removeProperty('transform');
+      for (const a of aires) a.el.style.removeProperty('transform');
+      lupaPintada = false;
+    }
+    return;
+  }
+  lupaPintada = lupa;
+  const z = lente.z;
+  // La capa que viaja con la tira tiene su esquina donde la tira: corrida lo deslizado, en pantalla.
+  const capaX = paralaje ? 0 : -cam * z;
   capas.forEach((c, i) => {
     const corrida = corridas[i]!;
-    c.el.style.transform = encuadre ? transformDe(encuadre, paralaje ? 0 : -cam, corrida) : `translate3d(${corrida.toFixed(1)}px, 0, 0)`;
+    c.el.style.transform = encuadre ? transformDe(encuadre, capaX, corrida, z, -lente.y) : corridaDe(corrida, z, -lente.y);
   });
+  // El aire: cada capa a su velocidad, con su viento, y el alfa que respira y se abre al paso.
+  const t = quieto() ? 0 : reloj;
+  mediaVuelta = !mediaVuelta;
+  for (const a of aires) {
+    // Lo de atrás del piso va despacio y es pura mancha: se corre un cuadro sí y uno no, que no se nota
+    // y es un estilo menos que recalcular (salvo con la lupa, que lo agranda).
+    if (a.c.plano === 'fondo' && mediaVuelta && z === 1 && a.alfa >= 0) continue;
+    const k = corridaDeAire(a.c, cam / escala, t, paralaje);
+    const x = quieto() ? 0 : k.x * escala;
+    const baja = k.y * escala - lente.y;
+    a.el.style.transform = encuadre ? transformDe(encuadre, capaX, x, z, baja) : corridaDe(x, z, baja);
+    // Con la lupa uno se mete adentro del aire: lo pegado a la cámara queda atrás, y la niebla afloja.
+    const alfa = (quieto() ? a.c.alfa : alfaDeAire(a.c, t, anda)) * despejeDeLupa(a.c.plano, a.c.cae !== 0, z);
+    if (Math.abs(alfa - a.alfa) > 0.012) {
+      a.alfa = alfa;
+      a.el.style.opacity = alfa.toFixed(3);
+    }
+  }
 }
+
+/* ------------------------------------------------------------------
+   La lupa (`D-90`)
+   ------------------------------------------------------------------ */
+
+const lupa = document.getElementById('lupa');
+const lupaTodo = document.getElementById('lupa-todo') as HTMLButtonElement | null;
+const lupaMas = document.getElementById('lupa-mas') as HTMLButtonElement | null;
+const lupaMenos = document.getElementById('lupa-menos') as HTMLButtonElement | null;
+
+/** Los botones dicen lo que se puede: sin lupa no hay de dónde alejarse, y en el tope no hay más. */
+function pintarLupa(): void {
+  const puesta = conLupa(lente);
+  camino.classList.toggle('camino--lupa', puesta);
+  if (lupaTodo) lupaTodo.hidden = !puesta;
+  if (lupaMenos) lupaMenos.disabled = !puesta;
+  if (lupaMas) lupaMas.disabled = lente.z >= LUPA.max - 0.01;
+}
+
+/** Pone la lupa donde se le dice, ya: agranda la tira, acomoda el scroll y pinta. */
+function ponerLente(l: Lente): void {
+  const antes = lente.z;
+  lente = acotar(l, vistaDe(), mundoDe());
+  if (lente.z !== antes) {
+    tira.style.width = `${Math.round(anchoPx * lente.z)}px`;
+    pintarLupa();
+  }
+  escenario.scrollLeft = lente.x * lente.z;
+  // Acercarse no es caminar: que la cámara no cabecee ni suenen pasos.
+  camEnElCuadro = null;
+  encuadrar();
+}
+
+/** Mirar más arriba o más abajo con la lupa puesta, sin tocar el scroll (que es del dedo). */
+function mirarA(y: number): void {
+  lente = acotar({ ...lente, y }, vistaDe(), mundoDe());
+  pintarCapas();
+}
+
+/** Lleva la lupa hasta `hasta` de a poco; con movimiento reducido, de una. */
+function viajar(hasta: Lente): void {
+  paseo = null;
+  objetivo = null;
+  if (quieto()) {
+    viaje = null;
+    ponerLente(hasta);
+    alLlegarLaLupa();
+    return;
+  }
+  viaje = { desde: { ...lente }, hasta, t0: reloj };
+  arrancar();
+}
+
+/** Con la lupa en su lugar, la ficha abierta se acomoda de nuevo: el bicho se movió en la pantalla. */
+function alLlegarLaLupa(): void {
+  if (abierta && !hoja.hidden) ubicarHoja(abierta);
+}
+
+/** Un paso de lupa, desde el medio de la vista: los botones y el teclado. */
+function pasoDeLupa(factor: number): void {
+  const desde = viaje?.hasta ?? lente;
+  viajar(enfocar(desde, desde.z * factor, vistaPx / 2, altoPx / 2, vistaDe(), mundoDe()));
+}
+
+/** La vuelta: la escena entera, parada donde estaba. */
+function mirarTodo(): void {
+  viajar(acotar({ z: 1, x: lente.x, y: 0 }, vistaDe(), mundoDe()));
+}
+
+lupaMas?.addEventListener('click', () => pasoDeLupa(LUPA.paso));
+lupaMenos?.addEventListener('click', () => pasoDeLupa(1 / LUPA.paso));
+lupaTodo?.addEventListener('click', mirarTodo);
+
+/** Dónde arrancó el pellizco: la lupa que había y el punto del mundo que quedó entre los dedos. */
+let pellizcado: { z: number; mx: number; my: number } | null = null;
+
+leerGestos(escenario, {
+  empieza(cx, cy) {
+    viaje = null;
+    paseo = null;
+    objetivo = null;
+    agarre = null;
+    const caja = escenario.getBoundingClientRect();
+    const m = enElMundo(lente, cx - caja.left, cy - caja.top);
+    pellizcado = { z: lente.z, mx: m.x, my: m.y };
+  },
+  pellizco(factor, cx, cy) {
+    if (!pellizcado) return;
+    const caja = escenario.getBoundingClientRect();
+    const z = Math.min(LUPA.max, Math.max(LUPA.min, pellizcado.z * factor));
+    // Lo que estaba entre los dedos sigue entre los dedos.
+    ponerLente({ z, x: pellizcado.mx - (cx - caja.left) / z, y: pellizcado.my - (cy - caja.top) / z });
+  },
+  termina() {
+    pellizcado = null;
+    if (conLupa(lente) && lente.z < LUPA.suelta) mirarTodo();
+    else alLlegarLaLupa();
+  },
+  rueda(factor, x, y) {
+    viaje = null;
+    const caja = escenario.getBoundingClientRect();
+    ponerLente(enfocar(lente, lente.z * factor, x - caja.left, y - caja.top, vistaDe(), mundoDe()));
+    if (conLupa(lente) && lente.z < LUPA.suelta && factor < 1) ponerLente({ z: 1, x: lente.x, y: 0 });
+  },
+  doble(x, y, blanco) {
+    // Con la lupa puesta, el doble toque es la vuelta.
+    if (lente.z > 1.2) return mirarTodo();
+    const caja = escenario.getBoundingClientRect();
+    const g = blanco.closest(BICHOS) ?? bichoCerca(x, y);
+    if (!g) return viajar(enfocar(lente, LUPA.doble, x - caja.left, y - caja.top, vistaDe(), mundoDe()));
+    // Sobre un bicho, la lupa va a él y lo deja en el medio.
+    const r = (g.querySelector('.toque') ?? g).getBoundingClientRect();
+    const m = enElMundo(lente, r.left + r.width / 2 - caja.left, r.top + r.height / 2 - caja.top);
+    viajar(centrar(LUPA.doble, m.x, m.y, vistaDe(), mundoDe()));
+  },
+});
 
 /** El retumbo de la ruta: los fierros que pasan cerca del medio de la vista hacen temblar el piso. */
 function retumboDeLaRuta(): number {
   if (datos.region !== 'la-ruta') return 0;
-  const medio = (cam + vistaPx / 2) / escala;
+  const medio = medioDeLaVista();
   let nivel = 0;
   for (const g of piso.querySelectorAll<SVGGElement>('.bestia[data-velocidad]')) {
     const x = Number(g.dataset.ahora ?? g.dataset.x);
@@ -427,7 +906,7 @@ function retumboDeLaRuta(): number {
 }
 
 /** Cuánto de la tira ya se caminó, de 0 a 1. */
-const avance = (): number => (recorrido() > 0 ? Math.min(1, cam / recorrido()) : 1);
+const avance = (): number => (recorrido() > 0 ? Math.min(1, (cam * lente.z) / recorrido()) : 1);
 
 /**
  * Si el cruce ya está a la vista. En un tramo largo, al final de la caminata, encima del piso.
@@ -436,20 +915,26 @@ const avance = (): number => (recorrido() > 0 ? Math.min(1, cam / recorrido()) :
  */
 function enElCruce(): boolean {
   if (datos.forma === 'largo') return avance() > 0.9;
-  const v = vistaPx / escala;
-  return cam / escala >= Math.min(datos.escena - 0.1 * v, recorrido() / escala) - 1;
+  const v = vistaPx / lente.z / escala;
+  return cam / escala >= Math.min(datos.escena - 0.1 * v, recorrido() / lente.z / escala) - 1;
 }
 
-function encuadrar(): void {
-  cam = escenario.scrollLeft;
+/**
+ * Lee dónde quedó el scroll y acomoda todo. `pintar`: si además pinta las capas. Con el reloj andando
+ * no hace falta: el cuadro las pinta una vez, después de mover la cámara (antes se pintaban dos
+ * veces por cuadro, y cada pintada es un estilo que el navegador recalcula).
+ */
+function encuadrar(pintar = true): void {
+  cam = escenario.scrollLeft / lente.z;
+  lente.x = cam;
   if (paralaje) {
     const focoPx = datos.foco * escala;
     corridas = capas.map((c) => -corrimiento(c.f, cam, focoPx, vistaPx));
   }
-  pintarCapas();
+  if (pintar) pintarCapas();
   for (const a of apariciones) {
     const x = a.x * escala - cam;
-    a.el.classList.toggle('aparece--a-la-vista', x > -20 && x < vistaPx * 0.92);
+    a.el.classList.toggle('aparece--a-la-vista', x > -20 && x < (vistaPx / lente.z) * 0.92);
   }
   const alFinal = enElCruce();
   cruce.classList.toggle('cruce--a-la-vista', alFinal);
@@ -725,8 +1210,30 @@ escenario.addEventListener('scroll', () => quieto() && despejarCartel(), { passi
 let reloj = 0;
 
 /** Lo que cada escena le pide a la isla: el bocadillo en sus coordenadas, el reloj y la quietud. */
-function contexto(marco: SVGGraphicsElement, ancho: number): { hablar(id: string, x: number, y: number, abajo?: boolean): void; quieto(): boolean; reloj(): number; ancho: number } {
+function contexto(marco: SVGGraphicsElement, ancho: number): {
+  hablar(id: string, x: number, y: number, abajo?: boolean): void;
+  quieto(): boolean;
+  reloj(): number;
+  ancho: number;
+  vista(): readonly [number, number];
+  seVe(el: Element): boolean;
+  paso(): number;
+} {
+  // Cuánto está corrido el marco adentro del piso (el recinto que arranca antes del cero, el claro de la pastura).
+  const corrido = marco === piso ? 0 : ((marco as SVGGElement).transform.baseVal.consolidate()?.matrix.e ?? 0);
   return {
+    // Lo que se ve, en las unidades del marco, con media pantalla de margen a cada lado: lo que está
+    // por entrar ya se está moviendo.
+    vista: () => {
+      const ancha = vistaPx / lente.z / escala;
+      const desde = cam / escala - corrido;
+      return [desde - ancha * 0.5, desde + ancha * 1.5];
+    },
+    seVe: (el) => {
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.right > -vistaPx * 0.5 && r.left < vistaPx * 1.5;
+    },
+    paso: () => pasoAhora,
     hablar: (id, x, y, abajo) => {
       const p = enPantalla(marco, x, y);
       hablar(id, p.x, p.y, abajo);
@@ -747,6 +1254,12 @@ function armarLoboDelMonte(x: number): { mover(t: number, dt: number): void } {
   const p = partes(g);
   const AL = ARMADO.lobo;
   const lobo = { alzado: quieto() ? 1 : 0, hasta: -1, parpadeo: 2 };
+  /**
+   * El cuerpo del lobo (`D-90`, cuarta ronda). La cabeza llega tarde y se pasa (un resorte): cuando
+   * asoma, cabecea; cuando lo mirás de cerca, te clava la vista con la cabeza baja y los ojos
+   * entornados, y resopla. `mira`: hacia dónde tiene el dedo, y cuánto le importa.
+   */
+  const cuerpo = { cabeza: 0, v: 0, mira: 0, cerca: 0, antes: 0, alzadoAntes: lobo.alzado };
 
   const arriba = (): { x: number; y: number } => ({
     x,
@@ -756,15 +1269,30 @@ function armarLoboDelMonte(x: number): { mover(t: number, dt: number): void } {
   function pintar(t: number): void {
     const y = ACECHO.piso + (1 - lobo.alzado) * ACECHO.hundido;
     g.setAttribute('transform', `translate(${x} ${y.toFixed(1)}) scale(${ESCALA_LOBO}) translate(${-AL.piso[0]} ${-AL.piso[1]})`);
-    const respira = Math.sin(t * 1.7) * 0.012;
+    const dt = Math.min(0.05, Math.max(0, t - cuerpo.antes));
+    cuerpo.antes = t;
+    // La mirada: el dedo o el mouse cerca de la cara. Con alguien encima respira más corto y más hondo.
+    const m = lobo.alzado > 0.5 ? miradaDe(g, AL.cabeza[0], AL.cabeza[1] - 60, 300) : { dx: 0, dy: 0, cerca: 0 };
+    cuerpo.mira = seguir(cuerpo.mira, m.dx * m.cerca, dt, 3);
+    cuerpo.cerca = seguir(cuerpo.cerca, m.cerca, dt, 2.5);
+    // Respira con peso: el pecho se llena despacio y se vacía más rápido.
+    const aire = Math.sin(t * (1.7 + cuerpo.cerca * 1.6));
+    const respira = (aire > 0 ? Math.pow(aire, 0.7) : -Math.pow(-aire, 1.5)) * (0.016 + cuerpo.cerca * 0.008);
     p.get('pecho')?.setAttribute('transform', `translate(${AL.piso[0]} ${AL.piso[1]}) scale(1 ${(1 + respira).toFixed(4)}) translate(${-AL.piso[0]} ${-AL.piso[1]})`);
-    const centro = (cam + vistaPx / 2) / escala;
-    const ladeo = Math.max(-7, Math.min(7, (centro - x) / 30)) + Math.sin(t * 0.7) * 1.2;
-    girar(p.get('cabeza'), ladeo, AL.cabeza, `translate(0 ${(-respira * 300).toFixed(2)}) `);
+    const centro = medioDeLaVista();
+    // Adónde quiere tener la cabeza: hacia quien pasa, y si hay un dedo cerca, hacia el dedo, agachada.
+    const quiere = Math.max(-7, Math.min(7, (centro - x) / 30)) * (1 - cuerpo.cerca) + cuerpo.mira * 9 + Math.sin(t * 0.7) * 1.2;
+    // La cabeza es pesada: persigue con un resorte, y lo que sube o baja el cuerpo la empuja para el otro lado.
+    const empuje = dt > 0 ? ((lobo.alzado - cuerpo.alzadoAntes) / dt) * -14 : 0;
+    cuerpo.alzadoAntes = lobo.alzado;
+    cuerpo.v += ((quiere + empuje - cuerpo.cabeza) * 42 - cuerpo.v * 7.5) * dt;
+    cuerpo.cabeza += cuerpo.v * dt;
+    girar(p.get('cabeza'), dt > 0 ? cuerpo.cabeza : quiere, AL.cabeza, `translate(0 ${(-respira * 300 + cuerpo.cerca * 5).toFixed(2)}) `);
     if (t > lobo.parpadeo + 0.15) lobo.parpadeo = t + 2.5 + Math.random() * 4;
     const ciega = t > lobo.parpadeo && t < lobo.parpadeo + 0.15 ? 1 : 0;
-    parpado(p.get('parpado-1'), ciega);
-    parpado(p.get('parpado-2'), ciega);
+    // Con alguien cerca entorna los ojos: no parpadea de más, mira fijo.
+    parpado(p.get('parpado-1'), Math.max(ciega, cuerpo.cerca * 0.42));
+    parpado(p.get('parpado-2'), Math.max(ciega, cuerpo.cerca * 0.42));
   }
 
   const tocar = (): void => {
@@ -788,7 +1316,7 @@ function armarLoboDelMonte(x: number): { mover(t: number, dt: number): void } {
   return {
     mover(t, dt) {
       // Cuánto falta para llegar a él, en unidades de escena, desde el medio de la vista.
-      const centro = (cam + vistaPx / 2) / escala;
+      const centro = medioDeLaVista();
       const cerca = 1 - suave((Math.abs(centro - x) - 140) / 300);
       const meta = t < lobo.hasta ? 1 : cerca;
       lobo.alzado = hacia(lobo.alzado, meta, dt * (meta > lobo.alzado ? 0.7 : 0.9));
@@ -950,6 +1478,9 @@ let corriendo = false;
 let cuadros = 0;
 
 function cuadro(ahora: number): void {
+  medirAlivio(ahora - antes);
+  // A quién toca la luz: cada medio segundo, y antes de mover nada.
+  if (filos.length && cuadros % 30 === 0) medirFilos();
   const dt = Math.min((ahora - antes) / 1000, 0.05);
   antes = ahora;
   reloj += dt;
@@ -962,6 +1493,15 @@ function cuadro(ahora: number): void {
       paseo = null;
     }
   }
+  // El viaje de la lupa: llega de a poco, y al llegar acomoda la ficha.
+  if (viaje) {
+    const u = (reloj - viaje.t0) / LUPA.dura;
+    ponerLente(entreLentes(viaje.desde, viaje.hasta, u));
+    if (u >= 1) {
+      viaje = null;
+      alLlegarLaLupa();
+    }
+  }
   // La ruedita y el teclado llegan de a poco: el scroll se acerca a donde se pidió.
   if (objetivo !== null) {
     const falta = objetivo - escenario.scrollLeft;
@@ -970,7 +1510,7 @@ function cuadro(ahora: number): void {
       objetivo = null;
     } else escenario.scrollLeft += falta * Math.min(1, dt * 12);
   }
-  encuadrar();
+  encuadrar(quieto());
   vida.mover(reloj, dt);
   noEsperarMas();
   // Cada tanto alcanza: medir todos los bichos en cada cuadro es caro en un teléfono.
@@ -979,6 +1519,11 @@ function cuadro(ahora: number): void {
     // Un salto (ir a un bicho, volver del cruce) no es caminar: no mueve el cuerpo.
     const paso = camEnElCuadro === null ? 0 : (cam - camEnElCuadro) / escala;
     if (Math.abs(paso) < 160) camara.caminar(paso, dt);
+    // El aire se abre al paso: sube enseguida y se vuelve a cerrar despacio.
+    const pide = dt > 0 && Math.abs(paso) < 160 ? Math.min(1, Math.abs(paso) / dt / PASO_PLENO) : 0;
+    anda += (pide - anda) * Math.min(1, dt * (pide > anda ? 3.5 : 0.55));
+    pasoAhora = dt > 0 && Math.abs(paso) < 160 ? paso / dt : 0;
+    moverAcecho(dt, dt > 0 && Math.abs(paso) / dt > 6);
     camEnElCuadro = cam;
     camara.retumbar(retumboDeLaRuta());
     encuadre = camara.encuadre(reloj, dt, vistaPx, escenario.clientHeight);
@@ -1002,7 +1547,9 @@ let pendiente = 0;
 window.addEventListener('resize', () => {
   cancelAnimationFrame(pendiente);
   pendiente = requestAnimationFrame(() => {
-    const p = avance();
+    // Lo deslizado se lee del scroll, no de la cámara: si el tamaño cambia en el mismo cuadro en que
+    // se deslizó, la cámara todavía no se enteró, y volver a su cuenta era pegar un salto para atrás.
+    const p = recorrido() > 0 ? Math.min(1, escenario.scrollLeft / recorrido()) : 1;
     medir();
     // Al cambiar el tamaño, se queda en el mismo punto del camino.
     irA(p * recorrido(), true);
@@ -1063,7 +1610,7 @@ function aprender(): void {
 escenario.addEventListener(
   'scroll',
   () => {
-    if (objetivo === null || Math.abs(objetivo - escenario.scrollLeft) < 1) encuadrar();
+    if (objetivo === null || Math.abs(objetivo - escenario.scrollLeft) < 1) encuadrar(!corriendo || quieto());
     // Un trecho caminado por la mano, no por el primer paso: ya sabe.
     if (!paseo && objetivo === null && Math.abs(escenario.scrollLeft - camDeEntrada) > 80) aprender();
   },
@@ -1085,26 +1632,34 @@ escenario.addEventListener(
    lleva, como con el dedo. Seis píxeles de movimiento y es un arrastre, no un toque; soltar después
    de arrastrar no toca nada. */
 
-let agarre: { id: number; x: number; cam: number; movio: boolean } | null = null;
+let agarre: { id: number; x: number; y: number; cam: number; sube: number; mouse: boolean; movio: boolean } | null = null;
 /** El clic que cierra un arrastre no es un toque: se traga. */
 let soltadoSinTocar = false;
 
 function agarrar(ev: PointerEvent): void {
   soltadoSinTocar = false;
-  if (ev.pointerType !== 'mouse' || ev.button !== 0) return;
-  agarre = { id: ev.pointerId, x: ev.clientX, cam: escenario.scrollLeft, movio: false };
+  const mouse = ev.pointerType === 'mouse';
+  // El mouse agarra siempre. El dedo camina solo (el scroll es del navegador): se lo sigue nada más
+  // que con la lupa puesta, para mirar más arriba o más abajo (`D-90`).
+  if (mouse ? ev.button !== 0 : !conLupa(lente) || pellizcado !== null) return;
+  agarre = { id: ev.pointerId, x: ev.clientX, y: ev.clientY, cam: escenario.scrollLeft, sube: lente.y, mouse, movio: false };
 }
 
 escenario.addEventListener('pointermove', (ev) => {
   if (!agarre || ev.pointerId !== agarre.id) return;
   const dx = ev.clientX - agarre.x;
+  const dy = ev.clientY - agarre.y;
+  const conLente = conLupa(lente);
   if (!agarre.movio) {
-    if (Math.abs(dx) < 6) return;
+    if (Math.hypot(agarre.mouse ? dx : 0, conLente ? dy : 0) < 6) return;
     agarre.movio = true;
-    camino.classList.add('camino--agarrando');
-    escenario.setPointerCapture(agarre.id);
+    if (agarre.mouse) {
+      camino.classList.add('camino--agarrando');
+      escenario.setPointerCapture(agarre.id);
+    }
   }
-  escenario.scrollLeft = agarre.cam - dx;
+  if (agarre.mouse) escenario.scrollLeft = agarre.cam - dx;
+  if (conLente) mirarA(agarre.sube - dy / lente.z);
 });
 
 function soltar(ev: PointerEvent): void {
@@ -1112,7 +1667,7 @@ function soltar(ev: PointerEvent): void {
   if (agarre.movio) {
     camino.classList.remove('camino--agarrando');
     soltadoSinTocar = true;
-    aprender();
+    if (agarre.mouse) aprender();
   }
   agarre = null;
 }
@@ -1164,6 +1719,13 @@ document.addEventListener('keydown', (ev) => {
   const el = ev.target as Element;
   if (ev.defaultPrevented || ev.altKey || ev.ctrlKey || ev.metaKey || encima(el) || el.closest('input, textarea, select')) return;
   const boton = el.closest('a, button, [role="button"]');
+  // La lupa, con el teclado: más, menos y cero, como en cualquier lado.
+  const deLupa: Record<string, () => void> = { '+': () => pasoDeLupa(LUPA.paso), '=': () => pasoDeLupa(LUPA.paso), '-': () => pasoDeLupa(1 / LUPA.paso), '0': mirarTodo };
+  if (deLupa[ev.key]) {
+    ev.preventDefault();
+    deLupa[ev.key]!();
+    return;
+  }
   const paso = vistaPx * 0.25;
   const hoja_ = vistaPx * 0.8;
   const desde = objetivo ?? escenario.scrollLeft;
@@ -1224,7 +1786,7 @@ document.addEventListener('click', (ev) => {
   // Tocar la escena fuera de un bicho calla el bocadillo; tocar afuera de la ficha la cierra.
   if (atendidos.has(ev)) return;
   if (!bocadillo.hidden && !el.closest('.bocadillo, .bestia, .titere')) callar();
-  if (!hoja.hidden && !el.closest('.bestiario-hoja, .bocadillo, .bestia, .titere, .camino-fichas')) cerrarHoja();
+  if (!hoja.hidden && !el.closest('.bestiario-hoja, .bocadillo, .bestia, .titere, .camino-fichas, .lupa')) cerrarHoja();
 });
 
 /** Lleva hasta un bicho de esta página y abre su ficha: lo pide un enlace de otro camino. */
@@ -1291,6 +1853,9 @@ window.setInterval(() => {
 
 for (const id of anotadas) if (bestias.has(id)) pintarAnotada(id);
 pintarLibreta();
+if (lupa) lupa.hidden = false;
+pintarLupa();
+pintarAlivio();
 medir();
 encuadrar();
 if (quieto()) vida.mover(0, 0);

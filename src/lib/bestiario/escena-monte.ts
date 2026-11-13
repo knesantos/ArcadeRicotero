@@ -37,8 +37,10 @@ export const VECINOS_DEL_MONTE: Readonly<Record<string, readonly [number, number
   'el-rey-de-esta-jungla': [566, 222, 'papel'],
   'tu-animal': [846, 352, 'oro'],
   'el-lobo-caido': [92, 486, 'oro'],
-  'la-liebre-muerta': [818, 540, 'papel'],
-  'el-borrego': [214, 470, 'papel'],
+  // La liebre se tendió en el borde de abajo del claro: los ojos van donde tiene el ojo.
+  'la-liebre-muerta': [553, 516, 'papel'],
+  // El borrego anda suelto abajo del palo, afuera de la soga: los ojos van donde tiene el ojo.
+  'el-borrego': [343, 460, 'papel'],
   'el-rebano': [640, 560, 'papel'],
   'el-ovejero': [168, 396, 'oro'],
 };
@@ -54,11 +56,15 @@ export function escenaMonte(nombres: ReadonlyMap<string, string>): string {
     `<g class="acecho"><g class="titere titere--lobo" data-id="el-lobo-suelto" role="button" tabindex="0" aria-label="${nombres.get('el-lobo-suelto')}">${lobo()}</g></g>` +
     imagen('monte-cerca') +
     `<g class="ojos-del-monte">${vecinos}</g>` +
+    // Los de la pastura van en las coordenadas del recinto, como los del monte: el claro es parte de la escena.
+    capasDe('la-pastura', 'atras', nombres) +
     capasDe('el-monte', 'figura', nombres) +
+    capasDe('la-pastura', 'figura', nombres) +
     `<path id="soga" class="bt-trazo-soga" stroke-width="2.8" d="M${PALO.x} ${PALO.y - 46} L${PALO.x + 40} ${PALO.y}"/>` +
     `<g class="actores"><g class="titere titere--cordero" data-id="el-cordero-atado" role="button" tabindex="0" aria-label="${nombres.get('el-cordero-atado')}">${cordero()}</g></g>` +
     vacaEnElClaro(nombres.get('aquella-solitaria-vaca-cubana') ?? '') +
     `<g class="escena-frente" pointer-events="none">${imagen('monte-frente')}</g>` +
-    capasDe('el-monte', 'delante', nombres)
+    capasDe('el-monte', 'delante', nombres) +
+    capasDe('la-pastura', 'delante', nombres)
   );
 }

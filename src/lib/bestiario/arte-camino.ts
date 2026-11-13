@@ -17,8 +17,11 @@
 import { forma, nube, soplo, trazo, type Pieza } from './aerografo.ts';
 import { M, azar, claroDeLaPastura, filaDeTiras } from './arte.ts';
 import { ENTORNOS, PIEZAS_ENTORNOS } from './arte-entornos.ts';
-import { ALTO, CAMINOS, CRUCE, SOLAPE, VELOCIDAD, anchoDeCapa, type Tramo } from './camino.ts';
+import { ALTO, CAMINOS, CRUCE, K_ENTORNO, SOLAPE, VELOCIDAD, anchoDeCapa, type Tramo } from './camino.ts';
 import { tintaDe } from './mapa.ts';
+import { sueloDeCybersiberia, sueloDeLaMesa, sueloDeLaRuta, sueloDeLosAstilleros, sueloDelArbol, sueloDelGalpon, sueloDelMonte } from './arte-suelo.ts';
+import { ARBOL, GALPON, MESA, RUTA } from './rig-entornos.ts';
+import { ASTILLERO } from './rig-entornos.ts';
 import { PALO } from './rig.ts';
 
 const ANCHO = CAMINOS['el-monte']!.ancho;
@@ -42,13 +45,45 @@ function lejos(): string {
   for (let x = 160; x < LEJOS; x += 320 + rnd() * 260) {
     resplandores += nube(x, 120 + rnd() * 60, 180 + rnd() * 200, 60 + rnd() * 40, rnd() < 0.5 ? M.sombra : M.hondo, 'xl', 0.4 + rnd() * 0.2);
   }
+  /**
+   * Una fila de tiras que no es una cinta pareja (`D-90`, cuarta ronda): va por tramos, cada uno a su
+   * altura (unos petisos, otros que se pierden arriba), con huecos por donde se ve la fila de atrás,
+   * y cada tanto un tramo vencido, caído de costado contra los vecinos.
+   */
+  const fila = (base: number, abajo: number, cuerpo: string, luz: string, semilla: number, prefijo: string): string => {
+    let s = '';
+    let n = 0;
+    for (let x = -40; x < LEJOS + 20; n++) {
+      const largo = 120 + rnd() * 240;
+      if (rnd() < 0.15) {
+        x += 30 + rnd() * 70;
+        continue;
+      }
+      const tramo = filaDeTiras(base - 30 + rnd() * 110, abajo, cuerpo, luz, semilla + n * 7, `${prefijo}-${n}`, x, x + largo);
+      const vencido = rnd() < 0.2;
+      s += vencido ? `<g transform="rotate(${((rnd() < 0.5 ? -1 : 1) * (12 + rnd() * 16)).toFixed(1)} ${(x + largo / 2).toFixed(0)} ${abajo})">${tramo}</g>` : tramo;
+      x += largo * (vencido ? 0.8 : 1);
+    }
+    return s;
+  };
+  /** La bruma entre fila y fila: es lo que las separa en profundidad. Manchas, no una franja. */
+  const bruma = (y: number, color: string, o: number): string => {
+    let s = '';
+    for (let x = rnd() * 200; x < LEJOS; x += 150 + rnd() * 230) s += nube(x, y + (rnd() - 0.5) * 40, 90 + rnd() * 90, 20 + rnd() * 16, color, 'xl', o * (0.6 + rnd() * 0.6));
+    return s;
+  };
   return (
     `<g filter="url(#rociado)">` +
     `<rect x="-10" y="-10" width="${LEJOS + 20}" height="${ALTO + 20}" fill="${M.negro}"/>` +
     resplandores +
-    filaDeTiras(-40, 300, M.oscuro, M.sombra, 3, 'cl-a', -20, LEJOS + 20) +
-    filaDeTiras(30, 320, M.hondo, M.medio, 9, 'cl-b', -20, LEJOS + 20) +
-    filaDeTiras(110, 335, M.sombra, M.claro, 17, 'cl-c', -20, LEJOS + 20) +
+    fila(-40, 300, M.oscuro, M.sombra, 3, 'cl-a') +
+    bruma(232, M.hondo, 0.4) +
+    fila(30, 320, M.hondo, M.medio, 9, 'cl-b') +
+    bruma(272, M.medio, 0.26) +
+    fila(110, 335, M.sombra, M.claro, 17, 'cl-c') +
+    // El pie de las tiras se hunde en la niebla, en vez de cortarse contra el piso.
+    bruma(312, M.hondo, 0.62) +
+    bruma(330, M.medio, 0.3) +
     `</g>`
   );
 }
@@ -80,11 +115,14 @@ function pisoDelMonte(desde: number, hasta: number, semilla: number): string {
     noche += nube(x, 400 + rnd() * 180, 140 + rnd() * 160, 50 + rnd() * 50, M.negro, 'xl', 0.35 + rnd() * 0.3);
   }
   return (
-    soplo(borde(300), M.oscuro, 'm') +
-    soplo(borde(318), M.oscuro, 's') +
+    // El canto de atrás, bien soplado: el piso no arranca con una raya.
+    soplo(borde(300), M.oscuro, 'l') +
+    soplo(borde(320), M.oscuro, 'm') +
     nube((desde + hasta) / 2, 600, (hasta - desde) * 0.6, 80, M.negro, 'xl', 0.5) +
     noche +
     soplo(`${picada} L${hasta + 40} 600 L${desde - 40} 600 Z`, M.sombra, 'l', 0.5) +
+    // Lo tirado en el piso (`D-90`): charcos que reflejan las tiras, raíces, piedras, un costillar.
+    sueloDelMonte(desde, hasta, semilla + 7) +
     pastos +
     // Abajo, lo más cerca, se apaga: la noche se come el borde de la vista.
     soplo(`M${desde - 40} 590 L${hasta + 40} 590 L${hasta + 40} ${ALTO + 40} L${desde - 40} ${ALTO + 40} Z`, M.negro, 'l', 0.7)
@@ -131,7 +169,9 @@ function frente(): string {
     const ancho = 150 + rnd() * 140;
     s += filaDeTiras(540 + rnd() * 30, ALTO + 10, M.hondo, M.medio, 300 + n, `fr-a-${n}`, x, x + ancho);
     s += filaDeTiras(580 + rnd() * 20, ALTO + 10, M.oscuro, M.sombra, 400 + n, `fr-b-${n}`, x + 30, x + ancho + 40);
-    if (n % 3 === 1) s += filaDeTiras(40 + rnd() * 60, ALTO + 10, M.oscuro, M.sombra, 500 + n, `fr-c-${n}`, x + ancho * 0.3, x + ancho * 0.3 + 110);
+    // Acá había, cada tanto, una tira alta que cruzaba la vista: en un teléfono parado era una losa
+    // (`D-90`, tercera y cuarta ronda). Lo de adelante no sube más que un quinto de la pantalla, y
+    // `aire.test.ts` lo mide en la imagen impresa de todas las regiones.
     n++;
   }
   return `<g filter="url(#rociado)">${s}</g>`;
@@ -156,6 +196,28 @@ const DE_ENTORNO = Object.values(CAMINOS).filter((t) => t.forma === 'entorno');
 /** La altura donde empieza una capa en su recinto (`PIEZAS_ENTORNOS`). */
 const arribaDe = (nombre: string): number => PIEZAS_ENTORNOS.find((p) => p.nombre === nombre)!.caja[1];
 
+/**
+ * Lo tirado en el piso de un entorno caminable (`D-90`, `arte-suelo.ts`), con el grano del rociado.
+ * En la nieve va debajo de las cosas del piso (la tele, los de la nieve), que no pintan el suelo. En
+ * el muelle, que sí lo pinta (los tablones), va encima y de la mitad para abajo, donde no hay nada apoyado.
+ */
+function conSuelo(tramo: Tramo, piso: string): string {
+  const rociado = (s: string): string => `<g filter="url(#rociado)">${s}</g>`;
+  if (tramo.region === 'cybersiberia') return rociado(sueloDeCybersiberia(tramo.escena)) + piso;
+  if (tramo.region === 'los-astilleros') return piso + rociado(sueloDeLosAstilleros(tramo.escena, ASTILLERO.muelle + 60));
+  // En la ruta, lo tirado va en la banquina de abajo: el asfalto es de los fierros.
+  if (tramo.region === 'la-ruta') return piso + rociado(sueloDeLaRuta(tramo.escena, RUTA.asfalto.abajo + 14));
+  // Sexta ronda. El árbol es aerógrafo: con el rociado, y sin nada contra el pie del tronco.
+  if (tramo.region === 'el-arbol') return piso + rociado(sueloDelArbol(tramo.escena, ARBOL.tronco.x * K_ENTORNO));
+  // La mesa es un afiche: tinta plana con el grano fino, abajo de donde cuelga el mantel.
+  if (tramo.region === 'la-mesa') return piso + `<g filter="url(#grano)">${sueloDeLaMesa(tramo.escena, MESA.tablero.cuelga + 22)}</g>`;
+  // El galpón: tinta plana contra el borde del tablado, lejos de lo que está parado ahí.
+  if (tramo.region === 'el-galpon') {
+    return piso + `<g filter="url(#grano)">${sueloDelGalpon(tramo.escena, GALPON.tablado.borde, [GALPON.silla.x, GALPON.fuente.x, GALPON.bestiaPop.x].map((x) => x * K_ENTORNO))}</g>`;
+  }
+  return piso;
+}
+
 function piezasDeEntorno(tramo: Tramo): Pieza[] {
   const capas = ENTORNOS[tramo.region as keyof typeof ENTORNOS];
   const pieza = tramo.piezas.piso!.replace(/^camino-|-piso$/g, '');
@@ -164,7 +226,7 @@ function piezasDeEntorno(tramo: Tramo): Pieza[] {
   const yFrente = arribaDe(`${pieza}-frente`);
   return [
     { nombre: tramo.piezas.lejos!, caja: [0, 0, tramo.escena, ALTO], dibujo: capas.lejos(tramo.escena, ALTO), opaca: true, densidad: 1.25 },
-    { nombre: tramo.piezas.piso!, caja: [0, yPiso, tramo.escena, ALTO - yPiso], dibujo: capas.piso(tramo.escena, ALTO), densidad: 1.25 },
+    { nombre: tramo.piezas.piso!, caja: [0, yPiso, tramo.escena, ALTO - yPiso], dibujo: conSuelo(tramo, capas.piso(tramo.escena, ALTO)), densidad: 1.25 },
     { nombre: tramo.piezas.frente!, caja: [0, yFrente, frente, ALTO - yFrente], dibujo: capas.frente(frente, ALTO), densidad: 1.25 },
   ];
 }

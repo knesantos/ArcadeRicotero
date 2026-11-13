@@ -3889,6 +3889,81 @@ body:has(> .lugar) .marca-chica {
   overflow: visible;
 }
 
+/* ---- La lupa (D-90) ----
+   El plano se acerca adentro de su cartel: la lente es lo que se agranda (el dibujo, la luz y los
+   carteles) y el marco, la ventana que la recorta. Con la lupa puesta, el dedo lleva el plano y no
+   la página. Solo `transform`, que pone la isla (`scripts/bestiario/lupa-plano.ts`). */
+.bestiario-lente {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+}
+
+.bestiario-marco--lupa {
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+}
+
+.portal .bestiario-marco--lupa { overflow: hidden; }
+
+/* Los botones de la lupa, en el plano y en los caminos: sellos de goma. El `+` y el `−` son para el
+   mouse y el teclado (el dedo pellizca y da doble toque); "Mirá todo" aparece con la lupa puesta,
+   para cualquiera, y es la vuelta. */
+.lupa {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+}
+
+.lupa[hidden],
+.lupa [hidden] { display: none; }
+
+.lupa--plano {
+  position: absolute;
+  right: var(--espacio-1);
+  bottom: var(--espacio-1);
+  z-index: 2;
+}
+
+.lupa-boton {
+  min-height: var(--toque-min);
+  padding: 0 0.7rem;
+  font-family: var(--fuente-rotulada);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fondo);
+  background: var(--papel);
+  border: var(--linea) solid var(--tr, var(--fondo));
+  border-radius: 3px;
+  cursor: pointer;
+  transform: rotate(-0.8deg);
+}
+
+.lupa-boton:nth-child(2) { transform: rotate(1.2deg); }
+
+.lupa-signo {
+  min-width: var(--toque-min);
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.lupa-boton:disabled {
+  border-style: dashed;
+  cursor: default;
+}
+
+.lupa-boton:focus-visible {
+  outline: 2px solid var(--papel);
+  outline-offset: 3px;
+}
+
+@media (hover: none) {
+  .lupa-signo { display: none; }
+}
+
 .portal-luz {
   position: absolute;
   inset: 0;
@@ -3981,11 +4056,30 @@ body:has(> .lugar) .marca-chica {
 .bestiario-marco[data-vista='lejos'] .bestiario-svg .bestias { pointer-events: none; }
 .bestiario-svg .bestia { cursor: pointer; outline: none; }
 .bestiario-svg .toque { fill: transparent; }
+/* El redondel del bicho que habla (`D-90`, quinta ronda): tiza. Era un aro punteado amarillo, parejo,
+   de interfaz. Ahora es una vuelta de tiza hecha a mano: del papel, con el trazo que se corta donde
+   la tiza salta (tramos largos y cortos, ninguno igual al otro), apenas ovalada y torcida, de punta
+   redonda. Sigue siendo una forma y no solo un color.
+   El foco del teclado es la misma vuelta, en el oro del foco de todo el sitio (`--acento-2`) y más
+   gruesa: tiene que verse siempre, y sobre la tinta del fondo pasa de largo el 3:1 que se le pide a
+   un indicador. Si el bicho habla y además tiene el foco, manda el foco. */
 .bestiario-svg .bestia:focus-visible .toque,
 .bestiario-svg .bestia--elegida .toque {
+  stroke: var(--papel);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 19 4 3 6 27 5 9 4 2 7 14 6;
+  stroke-opacity: 0.9;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: rotate(-9deg) scale(1.05, 0.95);
+}
+
+.bestiario-svg .bestia:focus-visible .toque {
   stroke: var(--acento-2);
-  stroke-width: 3;
-  stroke-dasharray: 6 4;
+  stroke-width: 3.4;
+  stroke-opacity: 1;
+  stroke-dasharray: 31 5 12 4 44 6;
 }
 .bestiario-svg .marca-anotada { display: none; }
 .bestiario-svg .bestia--anotada .marca-anotada { display: inline; }
@@ -4420,7 +4514,12 @@ body:has(> .lugar) .marca-chica {
 .titere { cursor: pointer; outline: none; }
 .titere--lobo { touch-action: manipulation; }
 .titere--cordero { cursor: grab; touch-action: none; }
-.titere:focus-visible { outline: 2px dashed var(--acento-2); }
+/* El foco de un títere: el oro del foco del sitio, entero y grueso, despegado del dibujo. Era una
+   raya punteada fina, pegada al borde. */
+.titere:focus-visible {
+  outline: 3px solid var(--acento-2);
+  outline-offset: 5px;
+}
 .soga--tensa { stroke-width: 3.2; }
 
 /* El bocadillo: lo que dice un bicho, con el mouse encima o solo (D-78). Papel, borde grueso, una punta abajo. */
@@ -5212,3 +5311,150 @@ body:has(> .lugar) .marca-chica {
 .bt-encadenado-rayo { fill: none; stroke: var(--bestia-dracula-papel); stroke-width: 4; stroke-linecap: square; }
 .titere--encadenado [data-parte="chispa"] { pointer-events: none; }
 /* ⟨/el esclavo encadenado⟩ */
+
+/* ⟨el rey garufa⟩ */
+/* El confeti que se le cae de la corona y el vaho del frío no se tocan: el toque es del rey. */
+.titere--garufa { cursor: pointer; }
+.titere--garufa [data-parte="confeti"], .titere--garufa [data-parte="vaho"] { pointer-events: none; }
+/* ⟨/el rey garufa⟩ */
+
+/* ⟨el joven lobo⟩ */
+/* El humo del cráter, las chispas de la erupción y el vaho del aullido no se tocan: el toque es del lobo y su volcán. */
+.titere--joven { cursor: pointer; }
+.titere--joven [data-parte="humo"], .titere--joven [data-parte="chispas"], .titere--joven [data-parte="aullido"], .titere--joven [data-parte="corazon"] { pointer-events: none; }
+/* ⟨/el joven lobo⟩ */
+
+/* ⟨el reo semental⟩ */
+/* El reo se toca a través de la reja de su celda, que no ataja el dedo. El charco en que se licúa y el sudor no se tocan. */
+.titere--reo { cursor: pointer; }
+.titere--reo [data-parte="charco"], .titere--reo [data-parte="gotas"] { pointer-events: none; }
+/* ⟨/el reo semental⟩ */
+
+/* ⟨el moscon zumbon⟩ */
+/* Las estrellitas del golpe y el vaho del vidrio no se tocan: el toque es del moscón y de su vaso. */
+.titere--moscon { cursor: pointer; }
+.titere--moscon [data-parte="estrellas"], .titere--moscon [data-parte="vaho"] { pointer-events: none; }
+/* ⟨/el moscon zumbon⟩ */
+
+/* ⟨el ovejero⟩ */
+/* Los huesos que vuelan del plato no se tocan: el toque es del perro y de su manto. */
+.titere--ovejero { cursor: pointer; }
+.titere--ovejero [data-parte="huesos"] { pointer-events: none; }
+/* ⟨/el ovejero⟩ */
+
+/* ==========================================================================
+   El velo de llegada del bestiario (`D-90`, octava ronda; `lib/bestiario/velos.ts`)
+
+   Al entrar a una región, o al volver al plano, la página llega tapada por una hoja impresa
+   con la firma del lugar (la niebla del monte, la reja de la prisión, el telón del galpón) y
+   la hoja se va: para arriba, para abajo o de costado, y lo último que se ve es su canto roto.
+   Mientras tapa, la región carga sus piezas atrás.
+
+   Es de la página a la que se llega y no tiene JavaScript, como manda `ADR-03` para el paso
+   entre pantallas: si la isla falla, el velo se va igual. No frena nada (`pointer-events:
+   none`): quien quiera caminar ya puede. Solo `transform`; lo soplado está impreso.
+
+   Con movimiento reducido `--duracion-velo` vale cero y el relleno `both` la deja en su último
+   cuadro, afuera y escondida: es un corte.
+   ========================================================================== */
+
+.velo-de-llegada {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 80;
+  width: 100vw;
+  height: 100vh;
+  height: 100lvh;
+  pointer-events: none;
+  background: var(--velo) 0 0 / 100% 100% no-repeat;
+  animation-duration: var(--duracion-velo);
+  animation-timing-function: var(--curva-cinta);
+  animation-fill-mode: both;
+}
+
+/* La hoja es más larga que la pantalla (`--sobra`): lo que sobra es el canto que arrastra. */
+.velo-de-llegada[data-rumbo='sube'] {
+  height: calc(100vh * var(--sobra));
+  height: calc(100lvh * var(--sobra));
+  animation-name: velo-sube;
+}
+
+.velo-de-llegada[data-rumbo='baja'] {
+  top: calc(100vh * (1 - var(--sobra)));
+  top: calc(100lvh * (1 - var(--sobra)));
+  height: calc(100vh * var(--sobra));
+  height: calc(100lvh * var(--sobra));
+  animation-name: velo-baja;
+}
+
+.velo-de-llegada[data-rumbo='corre'] {
+  width: calc(100vw * var(--sobra));
+  animation-name: velo-corre;
+}
+
+/* Tapa quieta el primer quinto, que es lo que dura el fundido entre las dos pantallas, y después se va. */
+@keyframes velo-sube {
+  0%,
+  22% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, -100%, 0);
+    visibility: hidden;
+  }
+}
+
+@keyframes velo-baja {
+  0%,
+  22% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 100%, 0);
+    visibility: hidden;
+  }
+}
+
+@keyframes velo-corre {
+  0%,
+  22% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(-100%, 0, 0);
+    visibility: hidden;
+  }
+}
+
+/* ⟨la liebre muerta⟩ */
+/* La piedra que le pasa rodando no se toca: el toque es de la liebre, de su terciopelo y de sus guindas. */
+.titere--liebre { cursor: pointer; }
+.titere--liebre [data-parte="piedra"] { pointer-events: none; }
+/* ⟨/la liebre muerta⟩ */
+
+/* ⟨el borrego⟩ */
+/* Se toca entero: el bicho, el disfraz y el pañuelo. El pasto pisado también, que agranda el blanco para el dedo. */
+.titere--borrego { cursor: pointer; }
+/* ⟨/el borrego⟩ */
+
+/* ⟨la rana rubia⟩ */
+/* La mosca que le da vueltas y la lengua que le tira no se tocan: el toque es de la rana y de su reposera. */
+.titere--rana { cursor: pointer; }
+.titere--rana [data-parte="mosca"], .titere--rana [data-parte="lengua"] { pointer-events: none; }
+/* ⟨/la rana rubia⟩ */
+
+/* ⟨el taxi paranormal⟩ */
+/* El haz del faro, el doble fuera de foco y las pompas del escape no se tocan: el toque es del fierro. */
+.titere--taxi { cursor: pointer; }
+.titere--taxi [data-parte="haz"], .titere--taxi [data-parte="doble"], .titere--taxi [data-parte="pompas"] { pointer-events: none; }
+/* ⟨/el taxi paranormal⟩ */
+
+/* ⟨el polizon del remolque⟩ */
+/* Las ondas del agua, el resplandor y la luz del fósforo no se tocan: el toque es del bote, de la corona y de él. */
+.titere--polizon { cursor: pointer; }
+.titere--polizon [data-parte="ondas"], .titere--polizon [data-parte="resplandor"], .titere--polizon [data-parte="fosforo"] { pointer-events: none; }
+/* ⟨/el polizon del remolque⟩ */

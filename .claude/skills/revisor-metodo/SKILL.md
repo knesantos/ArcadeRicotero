@@ -15,6 +15,9 @@ Leé antes de empezar:
 - El criterio contra el que revisás: una historia `US-XX` en `Docs/PRODUCTO/`, un
   contrato `CTR-XX` o `ADR-XX` en `Docs/ARQ/`, o el schema de `src/data/`.
 - Lo entregado en sí: el archivo, el JSON, o el diff.
+- Si la entrega es del bestiario, `.claude/rules/bestiario-inmersion.md`: es vara de
+  revisión además de criterio de construcción (el tope del quinto, nada fijo sobre una cara,
+  lo visto contra lo escrito).
 </contexto>
 
 <procedimiento>

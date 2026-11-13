@@ -224,7 +224,7 @@ export const RUTA = {
   /** Los dos carriles: por donde pasan los fierros, de izquierda a derecha. */
   carriles: [490, 546],
   /** El taxi paranormal, volcado en la banquina de abajo. */
-  volcado: { x: 690, piso: 612 },
+  volcado: { x: 668, piso: 612 },
 } as const;
 
 export const OJOS_DE_LA_RUTA: Readonly<Record<string, Ojos>> = {
@@ -232,7 +232,7 @@ export const OJOS_DE_LA_RUTA: Readonly<Record<string, Ojos>> = {
   'la-piba-de-greenpeace': [252, 598, 'papel'],
 };
 export const COSAS_DE_LA_RUTA: Readonly<Record<string, Cosa>> = {
-  'el-taxi-paranormal': [690, 590, 44],
+  'el-taxi-paranormal': [668, 590, 44],
 };
 
 /**

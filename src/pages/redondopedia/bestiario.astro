@@ -48,6 +48,7 @@ import { ENTORNOS_DE_NOCHE } from '../../lib/bestiario/escenas-entornos.ts';
 import { enEspera, SIN_ISLA } from '../../lib/bestiario/carga.ts';
 import { PALO, marcoDelRecinto } from '../../lib/bestiario/rig.ts';
 import { CON_CAMINO, hrefDeRegion, recintoDe } from '../../lib/bestiario/camino.ts';
+import { EL_PLANO, SOBRA, VELOS, rutaDelVelo } from '../../lib/bestiario/velos.ts';
 import FichaBestia from '../../components/bestiario/FichaBestia.astro';
 import { loQueDice } from '../../lib/bestiario/fichas.ts';
 import crudo from '../../data/bestiario.json';
@@ -155,6 +156,13 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
 >
   {/* Sin JavaScript, el <noscript> de cada escena y de cada retrato ya dibuja el de verdad: el que guarda el lugar se esconde. */}
   <Fragment set:html={SIN_ISLA} />
+  {/* El velo con el que se llega al plano (`D-90`, octava ronda), y los de las regiones a las que se
+      puede entrar desde acá, pedidos de antemano y sin apuro. */}
+  <Fragment slot="cabeza">
+    <link rel="preload" as="image" href={rutaDelVelo(EL_PLANO)} fetchpriority="high" />
+    {CON_CAMINO.filter((r) => VELOS[r]).map((r) => <link rel="prefetch" as="image" href={rutaDelVelo(r)} />)}
+  </Fragment>
+  <div class="velo-de-llegada" aria-hidden="true" data-rumbo={VELOS[EL_PLANO]!.rumbo} style={`--velo: url(${rutaDelVelo(EL_PLANO)}); --sobra: ${SOBRA / 100}`}></div>
 
   <div class="portada-redondopedia bestiario-portada">
     <h1 class="titulo-seccion bestiario-titulo">{BESTIARIO.titulo}</h1>
@@ -171,6 +179,8 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
     <div class="portal">
     <img class="portal-capa" src="/bestiario/portal-fondo.webp" alt="" width="1100" height="1606" decoding="async" />
     <div class="bestiario-marco" id="marco" data-vista="lejos">
+      {/* La lente (`D-90`): lo que la lupa agranda. El marco es la ventana. */}
+      <div class="bestiario-lente" id="lente">
       <svg id="mapa" class="bestiario-svg" viewBox={`0 0 ${LADO} ${LADO}`} aria-hidden="true">
         <defs set:html={simbolos(bestias)} />
         <g class="suelo" set:html={dibujarSuelo(datos)} />
@@ -212,8 +222,15 @@ const titulo = `${BESTIARIO.enLaPortada.titulo} — La Redondopedia — Fichín 
         }
       </nav>
       <p class="estas-aca" style={`left: ${aca.x}%; top: ${aca.y}%`}>{BESTIARIO.estasAca}</p>
+      </div>
     </div>
     <img class="portal-capa portal-capa--frente" src="/bestiario/portal-frente.webp" alt="" width="1100" height="1606" decoding="async" />
+    {/* La lupa: con el dedo, el pellizco y el doble toque; los botones, para el mouse y el teclado. */}
+    <div class="lupa lupa--plano" id="lupa" role="group" aria-label={BESTIARIO.lupa.grupo} hidden>
+      <button type="button" class="lupa-boton" id="lupa-todo" hidden>{BESTIARIO.lupa.todo}</button>
+      <button type="button" class="lupa-boton lupa-signo" id="lupa-menos" aria-label={BESTIARIO.lupa.alejar}>−</button>
+      <button type="button" class="lupa-boton lupa-signo" id="lupa-mas" aria-label={BESTIARIO.lupa.acercar}>+</button>
+    </div>
     </div>
     <p class="bestiario-pie-plano">{BESTIARIO.alPlano}</p>
   </section>
