@@ -73,3 +73,13 @@ Capturas de referencia: las de la entrada de `ESTADO.md` de `T-527` (carpeta tem
 23. **La mesa es un afiche**: su humo es tinta plana con grano, sin soplo.
 24. **El sonido del aire** va atado a algo que se ve y no pasa de un susurro. Es de `D-76`, no del
     lienzo, pero conviene que la hoja 12 lo nombre.
+
+## Sexta ronda (2026-11-13)
+
+25. **El haz cortado a mano** (hoja 07, línea y textura): el cono de luz no tiene canto de regla. La
+    silueta baja en tramos desparejos con algún tajo, y la máscara se cruza con vetas y motas. Vale
+    para las seis luces que usan `haz()`.
+26. **El canto a medida** (hoja 12): el filo de un títere bajo la luz es el canto de arriba de cada
+    una de sus piezas, impreso en la tinta de esa luz. Sin tintas nuevas.
+27. **Las ofrendas del templo** y **lo tirado en el árbol, la mesa y el galpón** (hoja 09): el árbol
+    en aerógrafo; la mesa y el galpón en tinta plana con grano, sin un soplo.

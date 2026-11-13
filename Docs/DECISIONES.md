@@ -7414,20 +7414,72 @@ sacar capas, y para eso está el alivio. El monte quedó en 9,9 ms y 60 cuadros 
 `aire.test.ts` queda en 29 y `mirada.test.ts` en 5. `npm test` 2337, `npm run check`,
 `npm run build` (200 páginas).
 
-### Resumen de las cinco rondas, y cómo se lee esta decisión
+### Enmienda — sexta ronda (2026-11-13): el canto a medida, la nevisca, las ofrendas y tres que miran
+
+Pedido de la auditoría de la quinta: bajar Cybersiberia, el filo a medida, mirada para Barbazul, la
+drácula y Limón, el piso de tres regiones, la franja muerta y el haz liso del templo, y el doble toque.
+
+1. **Cybersiberia: una capa menos, y no alcanzó.** La nevada y la ventisca se fundieron en una sola
+   baldosa, la **nevisca** (`aire-cyber-nevisca`): copos y rachas que caen al sesgo, cerrando para los
+   dos lados. La ventisca vieja se borró. Y la región **arranca en alivio 1** en cualquier teléfono
+   (`ALIVIO_DE_LA_REGION`, que `alivioDeEntrada` lee). **Medido tres veces** con la CPU ×4 en Edge sin
+   ventana: 20,9, 21,6 y 21,0 ms de hilo principal por cuadro; **mediana 21,0** (unos 40 cuadros por
+   segundo). La escena pelada, sin aire ni luz, dio 15,4 ese mismo día. **El objetivo de 12 ms no se
+   cumple.** Dos avisos sobre el número: la máquina estaba cargada (ese día el monte, que no se tocó,
+   midió 17,4 contra los 9,9 de la quinta ronda), así que estos valores no se comparan con los de
+   rondas anteriores; y fundir las capas casi no movió la aguja en el raster por software. Lo que
+   cuesta es la nieve de pantalla entera (entre 2,6 y 3,8 ms): sacarla sería sacarle la nieve a
+   Cybersiberia, y eso no se decide sin medir en un teléfono de verdad.
+2. **El filo a medida** (`FILO_PROPIO`, `tieneFiloPropio`, `rutaDelFilo`). La imprenta lee cada pieza
+   ya impresa de los títeres que pasan bajo una luz y le saca **el canto que mira para arriba**: lo
+   que está en la pieza y no está 7 píxeles más arriba, en la tinta de esa luz. Son 82 imágenes
+   `filo-de-*.webp`. La isla clona cada `<image>` del títere con su canto (`vestirConFilo`) y lo
+   prende con una variable por títere (`--filo`), solo `opacity`. La medialuna genérica queda para
+   los bichos pintados en el piso. Prisión (esclavos, pichón, drácula), techos (Atila, Limón, el
+   psicópata, el perro, Dinamita; el farol ahora tiene filo) y astilleros (el botija). De paso se
+   arregló un error de la quinta ronda: en los recintos el filo genérico se medía sin sumar lo
+   deslizado y caía corrido. **Lo que se vio:** en captura el canto se prende (`--filo` entre 0,6 y
+   0,9 en el esclavo; 0,6 en Dinamita) pero **se ve poco**: es un borde de dos unidades, blanco sobre
+   grabado blanco en la prisión y lila bajo la lluvia en los techos. En los astilleros el botija queda
+   fuera del cono y no se lo vio prendido. El templo no tiene títeres de piezas bajo el foco.
+3. **Barbazul, la drácula y Limón miran y respiran** (`recintos.ts`). Barbazul deja de mirar a la
+   drácula y te sigue con las pupilas, levantando los párpados; la drácula, parada, vuelve la cabeza
+   y abre los ojos; Limón, cuando no corre, mira de reojo al dedo. Los dos de la prisión crecen apenas
+   desde los pies al tomar aire; Limón se hincha desde donde apoya, a los tirones cuando jadea.
+4. **El piso del árbol, la mesa y el galpón** (`arte-suelo.ts`). El árbol, aerógrafo: montoncitos de
+   hojas, raíces, frutos caídos, piedras de mármol, de la línea del horizonte para abajo. La mesa,
+   tinta plana: migas, una cuchara, corchos, la servilleta, la fila de hormigas. El galpón, tinta
+   plana: cables, púas, vasos y **una** lista de temas.
+5. **El templo.** El haz (`haz()`, que usan seis luces) ya no tiene canto de regla: la silueta es
+   cartulina cortada a mano, en tramos desparejos con algún tajo, y la máscara se cruza con textura
+   (vetas que nacen en la boca y motas de polvo). Y en la franja muerta van **las ofrendas**
+   (`aire-templo-ofrendas`): velas, platitos, una botella, flores, con el piso.
+6. **El doble toque**: 520 ms y 44 px (eran 350 y 28), y el reloj es el del dedo que se apoya
+   (`pointerdown`), no el del aviso de toque. Probado seis veces seguidas con la batería de tests
+   corriendo al mismo tiempo: seis de seis.
+
+**Tests que cambiaron a propósito:** el de la nevada pedía la capa `cyber-nieve` aparte y ahora pide
+una sola capa de pantalla entera; el del filo aceptaba hasta 3 por luz y dos regiones, ahora 4 y
+tres; el de la mirada contaba tres `miradaDe(g, …)` en los recintos y ahora cuatro; y el del incienso
+buscaba la primera capa del templo, que ahora son las ofrendas. Cinco tests nuevos.
+
+**Verde:** `npm test` 2342, `npm run check` 0 errores, `npm run build` 200 páginas.
+
+### Resumen de las seis rondas, y cómo se lee esta decisión
 
 `D-90` creció por enmiendas. Lo que quedó en pie:
 
-1. **El aire** (rondas 1 a 5): tres planos de capas impresas entre las del camino, en las trece
+1. **El aire** (rondas 1 a 6): tres planos de capas impresas entre las del camino, en las trece
    regiones, cada una con la mano de su tapa. La niebla es de jirones rasgados y se abre al paso.
 2. **La lupa** (ronda 1): pellizco, Ctrl + ruedita, doble toque, teclado y sellos, en los caminos y
    en el plano.
-3. **El piso** (rondas 2 a 5): lo tirado, impreso adentro del piso, apoyado y en escorzo.
-4. **La luz** (rondas 2 a 5): una forma impresa por región, que se mueve y toca a los bichos.
+3. **El piso** (rondas 2 a 6): lo tirado, impreso adentro del piso, apoyado y en escorzo.
+4. **La luz** (rondas 2 a 6): una forma impresa por región, que se mueve y toca a los bichos, desde
+   la sexta con el canto de cada pieza.
 5. **El misterio** (rondas 2 y 3): los ojos sin dueño y lo que cruza lejos.
-6. **Los títeres** (rondas 4 y 5): miran, respiran con peso, y los que no se ven no se mueven.
-7. **El rendimiento** (rondas 3 a 5): la nevada fuera del piso, una pintada por cuadro, el descarte y
-   el alivio.
+6. **Los títeres** (rondas 4 a 6): miran, respiran con peso, y los que no se ven no se mueven.
+7. **El rendimiento** (rondas 3 a 6): la nevada fuera del piso, una pintada por cuadro, el descarte y
+   el alivio. Cybersiberia sigue sin llegar a los 12 ms con la CPU ×4.
 8. **El sonido del aire** (ronda 5).
 
 Dos cosas se aprendieron por el camino y valen para lo que venga: **lo que más pesaba no era nada
