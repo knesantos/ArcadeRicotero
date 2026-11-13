@@ -63,6 +63,26 @@ function charco(id: string, x: number, y: number, rx: number, ry: number, rnd: A
   );
 }
 
+/**
+ * El asiento (`D-90`, cuarta ronda): lo tirado en el piso flotaba como una figurita pegada. Tres cosas
+ * lo apoyan, y las tres son dibujo de aerógrafo: la **mancha húmeda** donde toca el suelo, la
+ * **tierra que lo tapa** por abajo (está un poco enterrado, no posado), y la **distancia**: lo de
+ * atrás se apaga hacia la tinta del piso. `hondura` va de 0 (lejos) a 1 (cerca); `cx` y `ancho`, el
+ * medio y lo que mide el objeto.
+ */
+function asentar(dibujo: string, cx: number, y: number, ancho: number, hondura: number, tierra: string, mancha: string): string {
+  const w = Math.max(10, ancho);
+  return (
+    nube(cx, y + 1.5, w * 0.66, Math.max(2.4, w * 0.075), mancha, 's', 0.8) +
+    `<g opacity="${f(0.5 + 0.5 * hondura)}">${dibujo}</g>` +
+    nube(cx, y + 2.6, w * 0.52, Math.max(2, w * 0.05), tierra, 'xs', 0.92)
+  );
+}
+
+/** Acostado: lo que está tirado se ve de arriba y en escorzo, no de frente como un cartel. */
+const acostado = (dibujo: string, x: number, y: number, k = 0.6, sesgo = 0): string =>
+  `<g transform="translate(${f(x)} ${f(y)})${sesgo ? ` skewX(${sesgo})` : ''} scale(1 ${k}) translate(${f(-x)} ${f(-y)})">${dibujo}</g>`;
+
 /** Una piedra: la silueta dura, la luz arriba y la panza en sombra, y su mancha en el piso. */
 function piedra(id: string, x: number, y: number, w: number, rnd: Azar, cuerpo: string, luz: string, sombra: string): string {
   const h = w * (0.45 + rnd() * 0.25);
@@ -130,8 +150,11 @@ function claroDelMonte(id: string, x: number, y: number, rnd: Azar): string {
     charco(`${id}-ch`, x, y, rx, ry, rnd, M.negro, [M.hondo, M.medio, M.claro, M.medio, M.sombra], M.claro, 'puntas', 7) +
     piedra(`${id}-p1`, x - rx * 0.9, y + ry * 0.7, 40 + rnd() * 12, rnd, M.hondo, M.medio, M.negro) +
     piedra(`${id}-p2`, x - rx * 0.62, y + ry * 1.05, 24 + rnd() * 8, rnd, M.hondo, M.medio, M.negro) +
-    `<g transform="translate(${f(x + rx * 0.7)} ${f(y + ry * 1.5)}) scale(1.5) translate(${f(-(x + rx * 0.7))} ${f(-(y + ry * 1.5))})">${costillar(x + rx * 0.7, y + ry * 1.5, rnd)}</g>` +
-    hojaCaida(x + rx * 0.2, y + ry * 1.9, 60 + rnd() * 20, rnd)
+    asentar(
+      `<g transform="translate(${f(x + rx * 0.7)} ${f(y + ry * 1.5)}) skewX(-14) scale(1.5 1.2) translate(${f(-(x + rx * 0.7))} ${f(-(y + ry * 1.5))})">${costillar(x + rx * 0.7, y + ry * 1.5, rnd)}</g>`,
+      x + rx * 0.7 + 30, y + ry * 1.5, 80, 0.9, M.oscuro, M.negro,
+    ) +
+    asentar(acostado(hojaCaida(x + rx * 0.2, y + ry * 1.9, 60 + rnd() * 20, rnd), x + rx * 0.2, y + ry * 1.9), x + rx * 0.2 + 35, y + ry * 1.9, 70, 0.95, M.oscuro, M.negro)
   );
 }
 
@@ -149,11 +172,19 @@ export function sueloDelMonte(desde: number, hasta: number, semilla: number): st
     const y = 348 + hondura * 255;
     const escala = 0.7 + hondura * 1.0;
     const que = rnd();
-    if (que < 0.24) s += charco(`sm-ch-${n}`, x, y, (38 + rnd() * 50) * escala, (6 + rnd() * 6) * escala, rnd, M.negro, [M.hondo, M.medio, M.claro, M.sombra], M.medio);
-    else if (que < 0.46) s += raiz(x, y, (50 + rnd() * 70) * escala, rnd);
-    else if (que < 0.72) s += piedra(`sm-pi-${n}`, x, y, (14 + rnd() * 22) * escala, rnd, M.hondo, M.medio, M.negro);
-    else if (que < 0.93) s += hojaCaida(x, y, (26 + rnd() * 30) * escala, rnd);
-    else s += `<g transform="translate(${f(x)} ${f(y)}) scale(${f(escala)}) translate(${f(-x)} ${f(-y)})">${costillar(x, y, rnd)}</g>`;
+    // Cada cosa, apoyada: su mancha, la tierra que la tapa por abajo, y más apagada cuanto más lejos.
+    const apoya = (dibujo: string, cx: number, w: number): string => asentar(dibujo, cx, y, w, hondura, M.oscuro, M.negro);
+    if (que < 0.24) s += `<g opacity="${f(0.55 + 0.45 * hondura)}">${charco(`sm-ch-${n}`, x, y, (38 + rnd() * 50) * escala, (6 + rnd() * 6) * escala, rnd, M.negro, [M.hondo, M.medio, M.claro, M.sombra], M.medio)}</g>`;
+    else if (que < 0.46) {
+      const largo = (50 + rnd() * 70) * escala;
+      s += apoya(raiz(x, y, largo, rnd), x + largo / 2, largo);
+    } else if (que < 0.72) {
+      const w = (14 + rnd() * 22) * escala;
+      s += apoya(piedra(`sm-pi-${n}`, x, y, w, rnd, M.hondo, M.medio, M.negro), x, w);
+    } else if (que < 0.93) {
+      const largo = (26 + rnd() * 30) * escala;
+      s += apoya(acostado(hojaCaida(x, y, largo, rnd), x, y), x + largo / 2, largo);
+    } else s += apoya(`<g transform="translate(${f(x)} ${f(y)}) skewX(-14) scale(${f(escala)} ${f(escala * 0.8)}) translate(${f(-x)} ${f(-y)})">${costillar(x, y, rnd)}</g>`, x + 23 * escala, 50 * escala);
     n++;
   }
   return s;
@@ -202,9 +233,16 @@ export function sueloDeCybersiberia(ancho: number): string {
     const escala = 0.7 + hondura * 1.0;
     const que = rnd();
     if (que < 0.3) s += charco(`sc-ch-${n}`, x, y, (40 + rnd() * 50) * escala, (6 + rnd() * 6) * escala, rnd, C.acero, [C.lente, C.claro, C.nieve, n % 4 === 0 ? C.rojo : C.vidrio], C.nieve, 'rayas');
-    else if (que < 0.5) s += chapa(x, y, (34 + rnd() * 30) * escala, rnd);
-    else if (que < 0.72) s += cable(x, y, (50 + rnd() * 60) * escala, rnd);
-    else s += piedra(`sc-pi-${n}`, x, y, (12 + rnd() * 18) * escala, rnd, C.nieve, C.nieve, C.acero);
+    else if (que < 0.5) {
+      const w = (34 + rnd() * 30) * escala;
+      s += asentar(chapa(x, y, w, rnd), x + w / 2, y, w, hondura, C.nieve, C.acero);
+    } else if (que < 0.72) {
+      const largo = (50 + rnd() * 60) * escala;
+      s += asentar(cable(x, y, largo, rnd), x + largo / 2, y, largo, hondura, C.nieve, C.acero);
+    } else {
+      const w = (12 + rnd() * 18) * escala;
+      s += asentar(piedra(`sc-pi-${n}`, x, y, w, rnd, C.nieve, C.nieve, C.acero), x, y, w, hondura, C.nieve, C.acero);
+    }
     n++;
   }
   return s;
@@ -271,9 +309,14 @@ export function sueloDeLosAstilleros(ancho: number, muelle: number): string {
     const escala = 0.75 + hondura * 0.95;
     const que = rnd();
     if (que < 0.38) s += charco(`sa-ch-${n}`, x, y, (40 + rnd() * 55) * escala, (6 + rnd() * 6) * escala, rnd, T.noche, [T.sodio, T.sodio, T.clara, T.azul], T.clara, 'rayas');
-    else if (que < 0.6) s += cadenaTirada(x, y, (40 + rnd() * 50) * escala, rnd);
-    else if (que < 0.8) s += aceite(x, y, (22 + rnd() * 26) * escala, rnd);
-    else s += tablon(x, y, (44 + rnd() * 40) * escala, rnd);
+    else if (que < 0.6) {
+      const largo = (40 + rnd() * 50) * escala;
+      s += asentar(acostado(cadenaTirada(x, y, largo, rnd), x, y, 0.7), x + largo / 2, y, largo, hondura, T.negro, T.negro);
+    } else if (que < 0.8) s += `<g opacity="${f(0.55 + 0.45 * hondura)}">${aceite(x, y, (22 + rnd() * 26) * escala, rnd)}</g>`;
+    else {
+      const largo = (44 + rnd() * 40) * escala;
+      s += asentar(acostado(tablon(x, y, largo, rnd), x, y, 0.7), x + largo / 2, y, largo, hondura, T.negro, T.negro);
+    }
     n++;
   }
   return s;
@@ -307,8 +350,11 @@ export function sueloDeLaRuta(ancho: number, desde: number): string {
     const escala = 0.8 + hondura * 0.7;
     const que = rnd();
     if (que < 0.34) s += charco(`sr-ch-${n}`, x, y, (36 + rnd() * 46) * escala, (5 + rnd() * 4) * escala, rnd, RU.noche, [RU.papel, RU.tenue, RU.papel], RU.tenue, 'rayas');
-    else if (que < 0.58) s += lata(x, y, rnd);
-    else if (que < 0.84) s += piedra(`sr-pi-${n}`, x, y, (10 + rnd() * 16) * escala, rnd, RU.topo, RU.tenue, RU.negro);
+    else if (que < 0.58) s += asentar(lata(x, y, rnd), x, y, 22, hondura, RU.negro, RU.negro);
+    else if (que < 0.84) {
+      const w = (10 + rnd() * 16) * escala;
+      s += asentar(piedra(`sr-pi-${n}`, x, y, w, rnd, RU.topo, RU.tenue, RU.negro), x, y, w, hondura, RU.negro, RU.negro);
+    }
     else s += nube(x, y, (24 + rnd() * 20) * escala, 4 * escala, RU.negro, 's', 0.85);
     n++;
   }

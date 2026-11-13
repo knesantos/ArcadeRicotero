@@ -131,10 +131,12 @@ export const AIRE: Readonly<Record<string, readonly CapaDeAire[]>> = {
     capa({ pieza: 'aire-bajo-vaho', plano: 'medio', f: 1.1, y: 380, alto: 260, ancho: 1300, deriva: 7, alfa: 0.7, late: 0.16, ritmo: 0.3, abre: 0.4 }),
     capa({ pieza: 'aire-bajo-cerca', plano: 'cerca', f: 1.75, y: 440, alto: 200, ancho: 1600, mece: 4, ritmoMece: 0.7 }),
   ],
-  // Los techos: el hollín que cae, a rayas de pastel como el cielo de *Un baión*, y la ropa tendida que se hamaca.
+  // Los techos (rehechos en la cuarta ronda): el humo de las chimeneas, a rayas de pastel claras como
+  // el cielo de *Un baión*, y la ropa tendida que cruza arriba y lejos, de antena a antena, y se hamaca.
+  // No llevan nada pegado a la cámara: abajo, el baldío ya tiene sus yuyos.
   'los-techos': [
-    capa({ pieza: 'aire-techos-hollin', plano: 'medio', f: 1.3, y: 0, alto: ALTO, ancho: 800, deriva: -9, cae: 16, alfa: 0.75, late: 0.1, ritmo: 0.5 }),
-    capa({ pieza: 'aire-techos-ropa', plano: 'cerca', f: 1.75, y: 430, alto: 210, ancho: 1600, mece: 7, ritmoMece: 1.1 }),
+    capa({ pieza: 'aire-techos-ropa', plano: 'medio', f: 0.72, y: 150, alto: 190, ancho: 1600, mece: 5, ritmoMece: 0.9, alfa: 0.9 }),
+    capa({ pieza: 'aire-techos-humo', plano: 'medio', f: 0.85, y: 40, alto: 380, ancho: 1300, deriva: -11, alfa: 0.8, late: 0.14, ritmo: 0.33, mece: 6, ritmoMece: 0.5 }),
   ],
   // La prisión es madera tallada (*Oktubre*): el frío es un rayado de gubia a ras del piso, y lo
   // pegado a la cámara son los barrotes, de arriba abajo. Se mira desde otra celda.
@@ -239,8 +241,9 @@ export const LUCES: Readonly<Record<string, readonly Luz[]>> = {
   'el-bajo': [{ pieza: 'luz-bajo-reflejo', f: 1, x: 806, y: 492, caja: [-70, -12, 140, 140], vaiven: 2.5, ritmo: 1.7, alfa: 0.62, late: 0.2, pulso: 'titila', crece: 0 }],
   // Los techos: el farol del baldío (650, 130 en su recinto), que titila.
   'los-techos': [{ pieza: 'luz-techos-farol', f: 1, x: 650, y: 140, caja: [-180, -14, 360, 420], vaiven: 2.5, ritmo: 0.7, alfa: 0.4, late: 0.16, pulso: 'titila', crece: 0 }],
-  // La prisión: el reflector del muro, que barre. Es de gubia: canto duro y rayado, sin soplo.
-  'la-prision': [{ pieza: 'luz-prision-reflector', f: 1, x: 760, y: -6, caja: [-220, -14, 440, 660], vaiven: 19, ritmo: 0.27, alfa: 0.32, late: 0.05, pulso: 'barre', crece: 0 }],
+  // La prisión: el reflector del muro, que barre. Es de gubia: canto duro y rayado, sin soplo. Está
+  // clavado lejos de donde se para la drácula (630) y barre ligero: las rayas le pasan por la cara, no se le quedan.
+  'la-prision': [{ pieza: 'luz-prision-reflector', f: 1, x: 1010, y: -6, caja: [-220, -14, 440, 660], vaiven: 26, ritmo: 0.44, alfa: 0.32, late: 0.05, pulso: 'barre', crece: 0 }],
 };
 
 /** El latido: dos golpes seguidos y una pausa, de 0 a 1. `u` es la fase, en vueltas. */

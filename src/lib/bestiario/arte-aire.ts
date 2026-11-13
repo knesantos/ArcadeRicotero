@@ -200,7 +200,7 @@ function monteCerca(c: CapaDeAire): string {
   let n = 0;
   for (let x = 90; x < c.ancho - 60; x += 250 + rnd() * 210) {
     const ancho = 110 + rnd() * 90;
-    const alto = 110 + rnd() * 70;
+    const alto = 96 + rnd() * 50;
     matas += vuelta(x, ancho / 2 + 60, c.ancho, (xx) => mata(xx, ancho, alto, azar(400 + n), n % 2 ? M.negro : M.oscuro, M.hondo));
     // Cada tanto, una tira de las del monte, enorme y de espaldas: es el mismo bosque, visto desde adentro.
     if (n % 3 === 1 && x + ancho * 0.7 + 170 < c.ancho) tiras += filaDeTiras(470 + rnd() * 40, ALTO + 30, M.negro, M.sombra, 600 + n, `mc-${n}`, x + ancho * 0.7, x + ancho * 0.7 + 30);
@@ -323,7 +323,7 @@ function astilleroCerca(c: CapaDeAire): string {
   let s = '';
   let n = 0;
   for (let x = 120; x < c.ancho - 80; x += 300 + rnd() * 240) {
-    const alto = 110 + rnd() * 60;
+    const alto = 84 + rnd() * 38;
     s += vuelta(x, 70, c.ancho, (xx) => noray(xx, alto));
     if (n % 2 === 0) {
       const largo = 130 + rnd() * 90;
@@ -499,30 +499,37 @@ function bajoCerca(c: CapaDeAire): string {
 
 /* ---- Los techos ---- */
 
-/** El hollín: rayitas de pastel que caen torcidas, oscuras, y alguna lila que agarra la luz del farol. La baldosa cierra para los dos lados. */
-function techosHollin(c: CapaDeAire): string {
+/**
+ * El humo de las chimeneas (cuarta ronda; antes era hollín, que se perdía en el rayado del cielo).
+ * Cada penacho sube torcido y se abre: tandas de rayas de pastel, claras, cada vez más sueltas y más
+ * flojas. Claro sobre el cielo oscuro, para que se lea.
+ */
+function techosHumo(c: CapaDeAire): string {
   const rnd = azar(1011);
-  const alto = altoDeBaldosa(c);
   let s = '';
-  for (let i = 0; i < 110; i++) {
-    const x = rnd() * c.ancho;
-    const y = rnd() * alto;
-    const largo = 5 + rnd() * 9;
-    const a = ((68 + rnd() * 16) * Math.PI) / 180;
-    const clara = rnd() < 0.22;
-    const color = clara ? B.lila : rnd() < 0.5 ? B.negro : B.noche;
-    const o = clara ? 0.5 + rnd() * 0.3 : 0.75 + rnd() * 0.25;
-    const grosor = 1.4 + rnd() * 1.6;
-    for (const dx of [0, x < 16 ? c.ancho : x > c.ancho - 16 ? -c.ancho : null]) {
-      for (const dy of [0, y < 16 ? alto : y > alto - 16 ? -alto : null]) {
-        if (dx !== null && dy !== null) s += trazo(`M${f(x + dx)} ${f(y + dy)} l${f(-Math.cos(a) * largo)} ${f(Math.sin(a) * largo)}`, color, grosor, o);
+  for (let i = 0; i < 4; i++) {
+    const x = (c.ancho / 4) * (i + 0.2 + rnd() * 0.6);
+    const pie = 330 + rnd() * 50;
+    const tuerce = 18 + rnd() * 22;
+    let penacho = '';
+    for (let k = 0; k < 9; k++) {
+      const abre = 8 + k * 7;
+      const cuantas = 5 + k;
+      const color = k % 3 === 0 ? B.luz : B.lila;
+      for (let j = 0; j < cuantas; j++) {
+        const px = -k * tuerce * (0.6 + k * 0.06) + (rnd() - 0.5) * 2 * abre;
+        const py = -k * 30 + (rnd() - 0.5) * 22;
+        const largo = 7 + rnd() * 9 + k;
+        const a = ((-64 + (rnd() - 0.5) * 50 - k * 3) * Math.PI) / 180;
+        penacho += trazo(`M${f(px)} ${f(py)} l${f(Math.cos(a) * largo)} ${f(Math.sin(a) * largo)}`, color, 2.2 + rnd() * 1.6, (0.62 - k * 0.055) * (0.7 + rnd() * 0.3));
       }
     }
+    s += vuelta(x, 330, c.ancho, (xx) => `<g transform="translate(${f(xx)} ${f(pie)})">${penacho}</g>`);
   }
-  return s;
+  return crayon(c, s);
 }
 
-/** Una prenda colgada de la soga, de espaldas a la luz: remera, sábana, media o calzón. */
+/** Una prenda colgada de la soga, lejos: remera, sábana, media o calzón. Claras, que les pega el farol. */
 function prenda(cual: number, x: number, y: number, k: number): string {
   const formas = [
     // La remera.
@@ -535,31 +542,36 @@ function prenda(cual: number, x: number, y: number, k: number): string {
     `M${f(x - 20 * k)} ${f(y)} L${f(x + 20 * k)} ${f(y)} L${f(x + 22 * k)} ${f(y + 24 * k)} L${f(x + 6 * k)} ${f(y + 26 * k)} L${f(x)} ${f(y + 14 * k)} L${f(x - 6 * k)} ${f(y + 26 * k)} L${f(x - 22 * k)} ${f(y + 24 * k)} Z`,
   ];
   const d = formas[cual % formas.length]!;
-  return forma(d, B.negro) + trazo(`M${f(x - 18 * k)} ${f(y + 1.5)} L${f(x + 18 * k)} ${f(y + 1.5)}`, B.lila, 1.4, 0.55);
+  const color = [B.lila, B.luz, B.rosa, B.lila][cual % 4]!;
+  return forma(d, color, 0.9) + trazo(`M${f(x - 12 * k)} ${f(y + 10 * k)} l${f(3 * k)} ${f(30 * k)}`, B.violeta, 1.2, 0.6);
 }
 
-/** La ropa tendida: la soga combada de palo a palo, y lo que cuelga. Entre tendido y tendido, nada. */
+/**
+ * La ropa tendida (cuarta ronda): cruza **arriba y lejos**, de antena a antena, por encima de las
+ * medianeras. Antes iba pegada a la cámara, abajo, y casi no se veía. La soga combada, lo que
+ * cuelga, y entre tendido y tendido, cielo.
+ */
 function techosRopa(c: CapaDeAire): string {
   const rnd = azar(1019);
   let s = '';
   let n = 0;
-  for (let x = 140; x < c.ancho - 420; x += 520 + rnd() * 160) {
-    const largo = 250 + rnd() * 90;
-    const y0 = 520 + rnd() * 26;
-    const comba = 16 + rnd() * 10;
+  for (let x = 120; x < c.ancho - 400; x += 480 + rnd() * 160) {
+    const largo = 250 + rnd() * 110;
+    const y0 = c.y + 36 + rnd() * 40;
+    const comba = 12 + rnd() * 8;
     const soga = (u: number): number => y0 + Math.sin(u * Math.PI) * comba;
-    let tendido = trazo(`M${f(x)} ${f(y0)} Q${f(x + largo / 2)} ${f(y0 + comba * 2)} ${f(x + largo)} ${f(y0)}`, B.negro, 2.4);
-    // Los palos, que salen de abajo.
-    tendido += forma(`M${f(x - 5)} ${ALTO + 30} L${f(x - 3)} ${f(y0 - 12)} L${f(x + 3)} ${f(y0 - 12)} L${f(x + 5)} ${ALTO + 30} Z`, B.negro);
-    const cuantas = 3 + Math.floor(rnd() * 2);
+    let tendido = trazo(`M${f(x)} ${f(y0)} Q${f(x + largo / 2)} ${f(y0 + comba * 2)} ${f(x + largo)} ${f(y0)}`, B.luz, 1.3, 0.75);
+    // Los dos palos: antenas flacas que bajan hasta los techos.
+    for (const px of [x, x + largo]) tendido += trazo(`M${f(px)} ${f(y0 - 14)} L${f(px)} ${f(c.y + c.alto + 10)}`, B.negro, 2.6) + trazo(`M${f(px - 9)} ${f(y0 - 6)} L${f(px + 9)} ${f(y0 - 6)}`, B.negro, 2);
+    const cuantas = 4 + Math.floor(rnd() * 3);
     for (let i = 0; i < cuantas; i++) {
-      const u = (i + 0.6 + rnd() * 0.3) / (cuantas + 0.4);
-      tendido += prenda(n * 3 + i, x + largo * u, soga(u), 0.72 + rnd() * 0.2);
+      const u = (i + 0.5 + rnd() * 0.3) / (cuantas + 0.3);
+      tendido += prenda(n * 3 + i, x + largo * u, soga(u), 0.4 + rnd() * 0.14);
     }
     s += tendido;
     n++;
   }
-  return `<g>${hoja(c)}${fueraDeFoco(s)}${apagon(c, B.negro, 0.7)}</g>`;
+  return crayon(c, s);
 }
 
 /* ---- La prisión ---- */
@@ -576,18 +588,24 @@ function prisionFrio(c: CapaDeAire): string {
 }
 
 /**
- * Los barrotes de la celda de enfrente, de arriba abajo: se mira desde adentro. Son finos (cada uno
- * tapa menos de la veinteava parte de un teléfono) y separados; el filo blanco es de un solo lado.
+ * Los barrotes de la celda de enfrente (cuarta ronda): se mira desde adentro, por una reja a la que
+ * le limaron el medio. Arriba cuelgan los cabos y abajo quedan los tocones, cada uno cortado a su
+ * altura y al sesgo; el travesaño de arriba y el de abajo los unen. **El medio queda libre**: antes los
+ * barrotes iban enteros y uno pasaba justo por la cara de la drácula.
  */
 function prisionRejas(c: CapaDeAire): string {
   const rnd = azar(1117);
   let s = '';
-  for (let x = 120; x < c.ancho - 60; x += 200 + rnd() * 110) {
+  // Los dos travesaños, de punta a punta: finos, con el filo blanco arriba.
+  for (const y of [34, 606]) s += forma(`M-140 ${y} L${c.ancho + 140} ${y} L${c.ancho + 140} ${y + 9} L-140 ${y + 9} Z`, P.negro) + trazo(`M-140 ${y + 1.2} L${c.ancho + 140} ${y + 1.2}`, P.papel, 1.2);
+  for (let x = 70; x < c.ancho - 40; x += 120 + rnd() * 90) {
     const w = 10 + rnd() * 4;
-    s += forma(`M${f(x)} -20 L${f(x + w)} -20 L${f(x + w)} ${ALTO + 20} L${f(x)} ${ALTO + 20} Z`, P.negro) + trazo(`M${f(x + 1.2)} -20 L${f(x + 1.2)} ${ALTO + 20}`, P.papel, 1.3);
-    // Un travesaño corto que asoma a cada lado, a la altura de la mano.
-    const ty = 250 + rnd() * 120;
-    s += forma(`M${f(x - 26)} ${f(ty)} L${f(x + w + 26)} ${f(ty)} L${f(x + w + 26)} ${f(ty + 8)} L${f(x - 26)} ${f(ty + 8)} Z`, P.negro) + trazo(`M${f(x - 26)} ${f(ty + 1)} L${f(x + w + 26)} ${f(ty + 1)}`, P.papel, 1.1);
+    // El cabo de arriba: baja hasta donde lo limaron, con el corte al sesgo.
+    const yt = 70 + rnd() * 54;
+    s += forma(`M${f(x)} -20 L${f(x + w)} -20 L${f(x + w)} ${f(yt)} L${f(x)} ${f(yt + 9)} Z`, P.negro) + trazo(`M${f(x + 1.2)} -20 L${f(x + 1.2)} ${f(yt + 7)}`, P.papel, 1.3);
+    // El tocón de abajo.
+    const yb = 548 + rnd() * 40;
+    s += forma(`M${f(x)} ${f(yb + 8)} L${f(x + w)} ${f(yb)} L${f(x + w)} ${ALTO + 20} L${f(x)} ${ALTO + 20} Z`, P.negro) + trazo(`M${f(x + 1.2)} ${f(yb + 9)} L${f(x + 1.2)} ${ALTO + 20}`, P.papel, 1.3);
   }
   return gubia(c, s);
 }
@@ -739,7 +757,7 @@ const PINTA: Readonly<Record<string, (c: CapaDeAire) => string>> = {
   'aire-ruta-cerca': rutaCerca,
   'aire-bajo-vaho': bajoVaho,
   'aire-bajo-cerca': bajoCerca,
-  'aire-techos-hollin': techosHollin,
+  'aire-techos-humo': techosHumo,
   'aire-techos-ropa': techosRopa,
   'aire-prision-frio': prisionFrio,
   'aire-prision-rejas': prisionRejas,

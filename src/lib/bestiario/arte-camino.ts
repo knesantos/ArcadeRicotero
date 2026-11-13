@@ -45,13 +45,45 @@ function lejos(): string {
   for (let x = 160; x < LEJOS; x += 320 + rnd() * 260) {
     resplandores += nube(x, 120 + rnd() * 60, 180 + rnd() * 200, 60 + rnd() * 40, rnd() < 0.5 ? M.sombra : M.hondo, 'xl', 0.4 + rnd() * 0.2);
   }
+  /**
+   * Una fila de tiras que no es una cinta pareja (`D-90`, cuarta ronda): va por tramos, cada uno a su
+   * altura (unos petisos, otros que se pierden arriba), con huecos por donde se ve la fila de atrás,
+   * y cada tanto un tramo vencido, caído de costado contra los vecinos.
+   */
+  const fila = (base: number, abajo: number, cuerpo: string, luz: string, semilla: number, prefijo: string): string => {
+    let s = '';
+    let n = 0;
+    for (let x = -40; x < LEJOS + 20; n++) {
+      const largo = 120 + rnd() * 240;
+      if (rnd() < 0.15) {
+        x += 30 + rnd() * 70;
+        continue;
+      }
+      const tramo = filaDeTiras(base - 30 + rnd() * 110, abajo, cuerpo, luz, semilla + n * 7, `${prefijo}-${n}`, x, x + largo);
+      const vencido = rnd() < 0.2;
+      s += vencido ? `<g transform="rotate(${((rnd() < 0.5 ? -1 : 1) * (12 + rnd() * 16)).toFixed(1)} ${(x + largo / 2).toFixed(0)} ${abajo})">${tramo}</g>` : tramo;
+      x += largo * (vencido ? 0.8 : 1);
+    }
+    return s;
+  };
+  /** La bruma entre fila y fila: es lo que las separa en profundidad. Manchas, no una franja. */
+  const bruma = (y: number, color: string, o: number): string => {
+    let s = '';
+    for (let x = rnd() * 200; x < LEJOS; x += 150 + rnd() * 230) s += nube(x, y + (rnd() - 0.5) * 40, 90 + rnd() * 90, 20 + rnd() * 16, color, 'xl', o * (0.6 + rnd() * 0.6));
+    return s;
+  };
   return (
     `<g filter="url(#rociado)">` +
     `<rect x="-10" y="-10" width="${LEJOS + 20}" height="${ALTO + 20}" fill="${M.negro}"/>` +
     resplandores +
-    filaDeTiras(-40, 300, M.oscuro, M.sombra, 3, 'cl-a', -20, LEJOS + 20) +
-    filaDeTiras(30, 320, M.hondo, M.medio, 9, 'cl-b', -20, LEJOS + 20) +
-    filaDeTiras(110, 335, M.sombra, M.claro, 17, 'cl-c', -20, LEJOS + 20) +
+    fila(-40, 300, M.oscuro, M.sombra, 3, 'cl-a') +
+    bruma(232, M.hondo, 0.4) +
+    fila(30, 320, M.hondo, M.medio, 9, 'cl-b') +
+    bruma(272, M.medio, 0.26) +
+    fila(110, 335, M.sombra, M.claro, 17, 'cl-c') +
+    // El pie de las tiras se hunde en la niebla, en vez de cortarse contra el piso.
+    bruma(312, M.hondo, 0.62) +
+    bruma(330, M.medio, 0.3) +
     `</g>`
   );
 }
@@ -83,8 +115,9 @@ function pisoDelMonte(desde: number, hasta: number, semilla: number): string {
     noche += nube(x, 400 + rnd() * 180, 140 + rnd() * 160, 50 + rnd() * 50, M.negro, 'xl', 0.35 + rnd() * 0.3);
   }
   return (
-    soplo(borde(300), M.oscuro, 'm') +
-    soplo(borde(318), M.oscuro, 's') +
+    // El canto de atrás, bien soplado: el piso no arranca con una raya.
+    soplo(borde(300), M.oscuro, 'l') +
+    soplo(borde(320), M.oscuro, 'm') +
     nube((desde + hasta) / 2, 600, (hasta - desde) * 0.6, 80, M.negro, 'xl', 0.5) +
     noche +
     soplo(`${picada} L${hasta + 40} 600 L${desde - 40} 600 Z`, M.sombra, 'l', 0.5) +
@@ -136,9 +169,9 @@ function frente(): string {
     const ancho = 150 + rnd() * 140;
     s += filaDeTiras(540 + rnd() * 30, ALTO + 10, M.hondo, M.medio, 300 + n, `fr-a-${n}`, x, x + ancho);
     s += filaDeTiras(580 + rnd() * 20, ALTO + 10, M.oscuro, M.sombra, 400 + n, `fr-b-${n}`, x + 30, x + ancho + 40);
-    // Cada tanto, una tira más alta. Angosta y hasta media altura: de 110 de ancho y de arriba abajo, en
-    // un teléfono parado era una losa negra que tapaba un tercio de la pantalla (`D-90`, tercera ronda).
-    if (n % 3 === 1) s += filaDeTiras(250 + rnd() * 70, ALTO + 10, M.oscuro, M.sombra, 500 + n, `fr-c-${n}`, x + ancho * 0.3, x + ancho * 0.3 + 26);
+    // Acá había, cada tanto, una tira alta que cruzaba la vista: en un teléfono parado era una losa
+    // (`D-90`, tercera y cuarta ronda). Lo de adelante no sube más que un quinto de la pantalla, y
+    // `aire.test.ts` lo mide en la imagen impresa de todas las regiones.
     n++;
   }
   return `<g filter="url(#rociado)">${s}</g>`;

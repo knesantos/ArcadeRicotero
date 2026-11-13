@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, statSync } from 'node:fs';
+import sharp from 'sharp';
 
 import { rutaDePieza } from './aerografo.ts';
 import {
@@ -256,8 +257,9 @@ test('la ruta, el bajo, los techos y la prisión tienen el paquete entero: aire,
     assert.ok(LUCES[region]?.length, `${region}: sin luz`);
     assert.ok(ACECHOS[region], `${region}: sin ojos`);
     assert.ok(VIDAS[region], `${region}: nada cruza lejos`);
-    // Lo pegado a la cámara está: es lo que llena el borde de abajo.
-    assert.ok(aireDe(region, 'cerca').length === 1, `${region}: sin primer plano`);
+    // Lo pegado a la cámara está: es lo que llena el borde de abajo. Los techos no lo llevan: abajo
+    // tienen los yuyos de su baldío, y su ropa tendida cruza arriba y lejos.
+    assert.equal(aireDe(region, 'cerca').length, region === 'los-techos' ? 0 : 1, `${region}: el primer plano`);
   }
   // Los recintos son una sola capa: lo de atrás del piso no se vería, así que no lo llevan.
   for (const region of ['el-bajo', 'los-techos', 'la-prision', 'el-infierno']) assert.equal(aireDe(region, 'fondo').length, 0, `${region}: una bruma que nadie ve`);
@@ -268,17 +270,54 @@ test('la ruta, el bajo, los techos y la prisión tienen el paquete entero: aire,
   assert.ok((PIEZAS_CAMINO.find((q) => q.nombre === 'camino-ruta-piso')!.dibujo.match(/<clipPath id="sr-ch-/g) ?? []).length >= 4);
 });
 
-test('lo pegado a la cámara tiene tope: nada que sea una losa en un teléfono parado', () => {
-  const fuente = readFileSync('src/lib/bestiario/arte-aire.ts', 'utf-8');
-  // Las tiras del monte en `cerca`: angostas (30 de 320) y de la cintura para abajo.
-  assert.match(fuente, /filaDeTiras\(470 \+ rnd\(\) \* 40, ALTO \+ 30, M\.negro, M\.sombra, 600 \+ n, `mc-\$\{n\}`, x \+ ancho \* 0\.7, x \+ ancho \* 0\.7 \+ 30\)/);
-  // Y la tira alta de lo de adelante del monte, que era la losa: angosta y hasta media altura.
-  assert.match(readFileSync('src/lib/bestiario/arte-camino.ts', 'utf-8'), /filaDeTiras\(250 \+ rnd\(\) \* 70, ALTO \+ 10, [^)]*x \+ ancho \* 0\.3 \+ 26\)/);
-  // Los barrotes de la prisión van de arriba abajo, pero finos y separados.
-  assert.match(fuente, /const w = 10 \+ rnd\(\) \* 4;/);
-  assert.match(fuente, /x \+= 200 \+ rnd\(\) \* 110\) \{\s*const w = 10/);
-  // Todo lo demás de `cerca` arranca de la mitad para abajo.
-  for (const { region, c } of capas.filter((x) => x.c.plano === 'cerca' && !x.c.cae && x.c.pieza !== 'aire-prision-rejas')) assert.ok(c.y >= 380, `${c.pieza} (${region}) sube demasiado`);
+/**
+ * Cuánto tapa una pieza impresa, medido en la imagen: en cada ventana de 24 unidades de ancho (lo
+ * que mide un dedo en un teléfono parado), el alto medio de lo opaco. Así una hoja de pasto fina y
+ * alta no cuenta como losa, y una tira ancha sí.
+ */
+async function loQueTapa(pieza: string, densidad: number): Promise<number> {
+  const { data, info } = await sharp(`public${rutaDePieza(pieza)}`).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const ventana = Math.round(24 * densidad);
+  const columna = new Float32Array(info.width);
+  for (let x = 0; x < info.width; x++) {
+    let n = 0;
+    for (let y = 0; y < info.height; y++) if (data[(y * info.width + x) * 4 + 3]! > 128) n++;
+    columna[x] = n / densidad;
+  }
+  let peor = 0;
+  let suma = 0;
+  for (let x = 0; x < info.width; x++) {
+    suma += columna[x]!;
+    if (x >= ventana) suma -= columna[x - ventana]!;
+    if (x >= ventana - 1) peor = Math.max(peor, suma / ventana);
+  }
+  return peor / ALTO;
+}
+
+test('nada de lo de adelante ni de lo pegado a la cámara tapa más de un quinto del alto, en ninguna región', async () => {
+  // El tope de la auditoría: ~20 % del alto visible en un teléfono parado. La escena se escala al alto
+  // de la pantalla, así que el alto de la escena es el alto visible.
+  const TOPE = 0.22;
+  /**
+   * La única que pasa, y por qué: en el galpón lo de adelante es la gente del recital, de espaldas, y
+   * de ahí sale un brazo con la bengala, que es la luz de la escena. Es una, es fina, y es el dibujo.
+   */
+  const EXCEPCIONES: Readonly<Record<string, number>> = { 'camino-galpon-frente': 0.42 };
+  const piezas: { nombre: string; densidad: number }[] = [];
+  for (const t of Object.values(CAMINOS)) if (t.piezas.frente) piezas.push({ nombre: t.piezas.frente, densidad: PIEZAS_CAMINO.find((p) => p.nombre === t.piezas.frente)!.densidad ?? 2.5 });
+  for (const p of PIEZAS_AIRE) if (capas.some(({ c }) => c.pieza === p.nombre && c.plano === 'cerca' && !c.cae)) piezas.push({ nombre: p.nombre, densidad: p.densidad ?? 2.5 });
+  const vistas = new Set<string>();
+  for (const { nombre, densidad } of piezas) {
+    if (vistas.has(nombre)) continue;
+    vistas.add(nombre);
+    const tapa = await loQueTapa(nombre, densidad);
+    assert.ok(tapa <= (EXCEPCIONES[nombre] ?? TOPE), `${nombre} tapa el ${Math.round(tapa * 100)} % del alto: es una losa en un teléfono parado`);
+  }
+  // Recorre todas: las trece regiones tienen su `frente` o no lo tienen, y cada `cerca` del aire está.
+  assert.ok(vistas.size >= 12, `solo se midieron ${vistas.size} piezas`);
+  // Los barrotes de la prisión dejan libre el medio: nunca cruzan la cara de nadie.
+  const rejas = PIEZAS_AIRE.find((p) => p.nombre === 'aire-prision-rejas')!.dibujo;
+  assert.doesNotMatch(rejas, /L[\d.]+ -20 L[\d.]+ 660 L/, 'un barrote entero, de arriba abajo');
 });
 
 test('lo que cruza lejos: de a uno, espaciado, impreso, y sin salirse de la cuenta', () => {
@@ -336,4 +375,37 @@ test('las capas se pintan una vez por cuadro, no dos', () => {
   const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
   assert.match(isla, /function encuadrar\(pintar = true\): void \{/);
   assert.match(isla, /encuadrar\(quieto\(\)\);/);
+});
+
+/* ------------------------------------------------------------------
+   Cuarta ronda: el asiento del piso, lo lejano del monte, y el alivio forzado
+   ------------------------------------------------------------------ */
+
+test('lo tirado en el piso apoya: su mancha, la tierra que lo tapa, y más apagado cuanto más lejos', () => {
+  const fuente = readFileSync('src/lib/bestiario/arte-suelo.ts', 'utf-8');
+  assert.match(fuente, /function asentar\(/);
+  // Todo lo que no es un charco pasa por el asiento, en las cuatro regiones con piso nuevo.
+  assert.ok((fuente.match(/asentar\(|apoya\(/g) ?? []).length >= 14);
+  // Y lo que está tirado va en escorzo, no de frente.
+  assert.match(fuente, /acostado\(hojaCaida\(/);
+  const piso = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-monte-piso')!.dibujo;
+  // La distancia apaga: hay objetos a media tinta, no todos al mismo valor.
+  const apagados = new Set([...piso.matchAll(/<g opacity="(0\.\d+)">/g)].map((m) => m[1]));
+  assert.ok(apagados.size >= 4, `el piso del monte tiene ${apagados.size} valores de distancia`);
+});
+
+test('lo lejano del monte no es una cinta: tramos a distinta altura, huecos, alguno vencido y bruma entre las filas', () => {
+  const lejos = PIEZAS_CAMINO.find((q) => q.nombre === 'camino-monte-lejos')!.dibujo;
+  // Algún tramo caído de costado.
+  assert.ok((lejos.match(/<g transform="rotate\(-?\d/g) ?? []).length >= 3, 'ningún tramo vencido');
+  // Bruma soplada entre las tres filas y al pie.
+  assert.ok((lejos.match(/filter="url\(#soplo-xl\)"/g) ?? []).length >= 30, 'poca bruma entre las filas');
+  // El canto del piso va bien soplado: no arranca con una raya.
+  assert.match(readFileSync('src/lib/bestiario/arte-camino.ts', 'utf-8'), /soplo\(borde\(300\), M\.oscuro, 'l'\)/);
+});
+
+test('el alivio se puede forzar para mirarlo, y entonces no se mide', () => {
+  const isla = readFileSync('src/scripts/camino.ts', 'utf-8');
+  assert.match(isla, /new URLSearchParams\(location\.search\)\.get\('liviano'\)/);
+  assert.match(isla, /if \(forzado !== undefined \|\| alivio >= ALIVIO\.niveles/);
 });
