@@ -1512,6 +1512,12 @@
   --peso-multitud-cerca: 16%;
   --peso-bandera-cerca: 34%;
 
+  /* Cuánta tinta lleva el casco del último bondi (`D-85`), la chapa que en noviembre va
+     detrás de toda la portada en lugar de la multitud. Es la plata de la tapa, y como la
+     multitud NO ES UNA PREFERENCIA: `contraste.test.ts` la mezcla con el fondo y falla si el
+     texto del portal baja de AA por encima de ella. */
+  --peso-casco: 24%;
+
   /* Espaciado pensado para el pulgar (D-09) */
   --toque-min: 48px;
   --espacio-1: 0.5rem;
