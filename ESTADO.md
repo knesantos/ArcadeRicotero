@@ -5,7 +5,27 @@
 >
 > Regla: un estado **nunca baja por inferencia**. Solo el usuario degrada un estado.
 
-**Última actualización:** 2026-11-05
+**Última actualización:** 2026-11-13
+
+> ## 🐸 CINCO MÁS, DIBUJADOS POR UN FABLE Y AUDITADOS: LA RANA RUBIA, EL BORREGO, LA LIEBRE MUERTA, EL TAXI PARANORMAL Y EL POLIZÓN (2026-11-13) — `D-73` (27)
+>
+> **Sin integrar y sin commitear**, rama `bestiario/cinco-de-fable`, sobre `bestiario/cinco-sin-diseno` (PR #108, sin integrar: esta
+> rama lo trae adentro). Pedido del usuario: que el hilo principal elija bestias sin diseño (*"al menos 5"*), se las encargue a un
+> Fable con libertad para ser rocambolesco, critique lo que vuelve y se lo devuelva. Una por región flaca y sin repetir bicho.
+>
+> - **La rana rubia** (astilleros): peluca, reposera y reflector de papel de aluminio, toma sol de noche; tocada croa y se come la mosca.
+> - **El borrego** (pastura): el vellón es un disfraz con cierre; tocado "caen los disfraces" y quedan los cortes del carnicero a puntos.
+> - **La liebre muerta** (monte, mudada al borde de abajo del claro): se hace la muerta y le sale mal; tocada se pone tiesa.
+> - **El taxi paranormal** (ruta, capa `delante`): volcado, negro y amarillo, el cartel al revés, el diablo colgando del baúl; tocado levita.
+> - **El polizón del remolque** (bajo): el bote con corona de muerto; a oscuras es una sombra con dos ojos; tocado lo destapan.
+> - **Dos vueltas**: la auditoría sobre las tiras de seis cuadros pidió cinco arreglos (el taxi no se leía, la cabeza del polizón
+>   flotaba fuera del casco, al borrego se le abría la nuca, los anteojos de la rana eran una mata, la oreja de la liebre un cuerno).
+> - **Lo aprendido quedó escrito** en `.claude/rules/bestiario-bestias.md` (flexible, mañas con su caso, también para mejorar las ya
+>   hechas). Es la §13 pendiente de `bestiario-inmersion.md`, que vive sin commitear en la rama `bestiario/inmersion` (`D-90`): al
+>   integrar las dos, esa §13 pasa a apuntar acá.
+> - **Verde** (corrido por el hilo principal): `npm test` (2329 de 2329), `npm run check` (0 errores, 0 avisos), `npm run build` (200 páginas).
+> - **Falta**: verlos en el navegador y en un teléfono (solo se miraron en PNG); bajar las matas de `camino-ruta-frente` en el tramo
+>   del taxi; vecinos que reaccionan; sumarlos a `mirada.ts`; que `contenido` lea las cinco estampas; pasar las tintas al lienzo.
 
 > ## 🐕 CINCO QUE SEGUÍAN SIN DISEÑO: EL REY GARUFA, EL JOVEN LOBO, EL REO SEMENTAL, EL MOSCÓN ZUMBÓN Y EL OVEJERO (2026-11-05) — `D-73` (26), `T-526`
 >
