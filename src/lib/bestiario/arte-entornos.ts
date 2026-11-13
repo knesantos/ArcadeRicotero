@@ -936,7 +936,12 @@ function parado(x: number, cabeza: number, alto: number, hombros = 1): string {
 }
 
 /** El canto de una silueta prendido por la tele: el mismo contorno, corrido y soplado. */
-const canto = (d: string, dx: number, dy: number, o = 0.55): string => `<g transform="translate(${f(dx)} ${f(dy)})">${soplo(d, C.lente, 'xs', o)}</g>`;
+/**
+ * El canto prendido de los de la nieve: la luz de la tele les pega de un lado. Es un filo duro, la
+ * misma silueta corrida un pelo hacia la luz y tapada por el cuerpo: se ve solo del lado encendido.
+ * Antes era la silueta soplada, que asomaba para todos lados y se leía como un halo (`D-90`).
+ */
+const canto = (d: string, dx: number, dy: number, o = 0.55): string => `<g transform="translate(${f(dx * 0.7)} ${f(dy * 0.7)})">${forma(d, C.lente, Math.min(1, o + 0.2))}</g>`;
 
 function cyberPiso(ancho = ANCHO, alto = ALTO): string {
   const k = ancho / ANCHO;

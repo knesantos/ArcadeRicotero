@@ -19,6 +19,8 @@ import { M, azar, claroDeLaPastura, filaDeTiras } from './arte.ts';
 import { ENTORNOS, PIEZAS_ENTORNOS } from './arte-entornos.ts';
 import { ALTO, CAMINOS, CRUCE, SOLAPE, VELOCIDAD, anchoDeCapa, type Tramo } from './camino.ts';
 import { tintaDe } from './mapa.ts';
+import { sueloDeCybersiberia, sueloDeLosAstilleros, sueloDelMonte } from './arte-suelo.ts';
+import { ASTILLERO } from './rig-entornos.ts';
 import { PALO } from './rig.ts';
 
 const ANCHO = CAMINOS['el-monte']!.ancho;
@@ -85,6 +87,8 @@ function pisoDelMonte(desde: number, hasta: number, semilla: number): string {
     nube((desde + hasta) / 2, 600, (hasta - desde) * 0.6, 80, M.negro, 'xl', 0.5) +
     noche +
     soplo(`${picada} L${hasta + 40} 600 L${desde - 40} 600 Z`, M.sombra, 'l', 0.5) +
+    // Lo tirado en el piso (`D-90`): charcos que reflejan las tiras, raíces, piedras, un costillar.
+    sueloDelMonte(desde, hasta, semilla + 7) +
     pastos +
     // Abajo, lo más cerca, se apaga: la noche se come el borde de la vista.
     soplo(`M${desde - 40} 590 L${hasta + 40} 590 L${hasta + 40} ${ALTO + 40} L${desde - 40} ${ALTO + 40} Z`, M.negro, 'l', 0.7)
@@ -156,6 +160,18 @@ const DE_ENTORNO = Object.values(CAMINOS).filter((t) => t.forma === 'entorno');
 /** La altura donde empieza una capa en su recinto (`PIEZAS_ENTORNOS`). */
 const arribaDe = (nombre: string): number => PIEZAS_ENTORNOS.find((p) => p.nombre === nombre)!.caja[1];
 
+/**
+ * Lo tirado en el piso de un entorno caminable (`D-90`, `arte-suelo.ts`), con el grano del rociado.
+ * En la nieve va debajo de las cosas del piso (la tele, los de la nieve), que no pintan el suelo. En
+ * el muelle, que sí lo pinta (los tablones), va encima y de la mitad para abajo, donde no hay nada apoyado.
+ */
+function conSuelo(tramo: Tramo, piso: string): string {
+  const rociado = (s: string): string => `<g filter="url(#rociado)">${s}</g>`;
+  if (tramo.region === 'cybersiberia') return rociado(sueloDeCybersiberia(tramo.escena)) + piso;
+  if (tramo.region === 'los-astilleros') return piso + rociado(sueloDeLosAstilleros(tramo.escena, ASTILLERO.muelle + 60));
+  return piso;
+}
+
 function piezasDeEntorno(tramo: Tramo): Pieza[] {
   const capas = ENTORNOS[tramo.region as keyof typeof ENTORNOS];
   const pieza = tramo.piezas.piso!.replace(/^camino-|-piso$/g, '');
@@ -164,7 +180,7 @@ function piezasDeEntorno(tramo: Tramo): Pieza[] {
   const yFrente = arribaDe(`${pieza}-frente`);
   return [
     { nombre: tramo.piezas.lejos!, caja: [0, 0, tramo.escena, ALTO], dibujo: capas.lejos(tramo.escena, ALTO), opaca: true, densidad: 1.25 },
-    { nombre: tramo.piezas.piso!, caja: [0, yPiso, tramo.escena, ALTO - yPiso], dibujo: capas.piso(tramo.escena, ALTO), densidad: 1.25 },
+    { nombre: tramo.piezas.piso!, caja: [0, yPiso, tramo.escena, ALTO - yPiso], dibujo: conSuelo(tramo, capas.piso(tramo.escena, ALTO)), densidad: 1.25 },
     { nombre: tramo.piezas.frente!, caja: [0, yFrente, frente, ALTO - yFrente], dibujo: capas.frente(frente, ALTO), densidad: 1.25 },
   ];
 }
