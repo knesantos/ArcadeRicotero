@@ -1281,7 +1281,7 @@ test('🔴 mostrarContador escribe solo lo que cambia: el DOM no se toca sesenta
 
 test('🔴 la victoria del sexto es la misma que la de cualquier otro, con el mismo toque, que vuelve al primero (UX-33 §2.3, §2.4)', () => {
   const sexto = BANCO.niveles.at(-1)!;
-  assert.equal(sexto.id, 'NIV-06');
+  assert.equal(sexto.id, 'NIV-12', 'el último de la fila (D-86: son doce)');
   const nivel = BANCO.niveles.at(-1)!;
   const { traza } = leerTraza(nivel.id, SOLUCIONES.soluciones[nivel.id]!.deUno);
   const mundo = crearMundo(BANCO, nivel);

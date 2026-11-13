@@ -22,7 +22,8 @@
 export const PANTALLA_0 = {
   titulo: 'Sacalo por la letra',
   subtitulo: 'Un verso te tiene que alcanzar. Si no, te damos más: dos, cuatro, ocho. Cuanto antes lo saques, más vale.',
-  boton: 'JUGÁ',
+  /** En la caja de los otros juegos (2026-11-04): era el único de los cuatro de arriba en versales. */
+  boton: 'Jugá',
   /**
    * La chapa de lo que vale cada escalón, impresa en la portada. Mismo mecanismo que el
    * hermano: la bajada contaba la escalera en prosa —"dos, cuatro, ocho"— y la tabla lo dice

@@ -201,6 +201,11 @@ export const MENU = {
   repetir: 'Empezá el nivel de nuevo',
   cualToca: (numero: number, nombre: string) => (nombre === '' ? `Nivel ${numero}` : `Nivel ${numero}: ${nombre}`),
   niveles: 'Los niveles, todos abiertos',
+  /**
+   * Cuántos de la fila están pasados, debajo del título de la lista (`D-86`): un hecho y nada más,
+   * en registro 3. Sin ninguno pasado no dice nada —"cero de doce" es un reproche, no un dato—.
+   */
+  pasados: (pasados: number, total: number) => (pasados === 0 ? '' : `Pasaste ${pasados} de ${total}`),
   numero: (numero: number) => `Nivel ${numero}`,
   pasado: 'PASADO',
   estasAca: 'ACÁ ESTÁS',

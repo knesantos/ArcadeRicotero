@@ -26,7 +26,7 @@
 import { siguienteDeLaFila, type Avance } from './avance.ts';
 import { siguienteAlGanar } from './escena.ts';
 import { crearMundo, type Mundo } from './mundo.ts';
-import type { IdPersonaje, Nivel } from './niveles.ts';
+import { duenoDelTesoro, type Banco, type IdPersonaje, type Nivel, type Terreno } from './niveles.ts';
 
 /* =========================================================================================
    Dónde está cada nivel en la fila
@@ -316,4 +316,67 @@ export function seTocan(a: Rectangulo, b: Rectangulo): boolean {
  */
 export function pasadosDeLaFila(fila: readonly Nivel[], avance: Avance): number {
   return fila.filter((n) => avance.pasados.includes(n.id)).length;
+}
+
+/* =========================================================================================
+   El plano de cada ficha (`D-86`)
+   ========================================================================================= */
+
+/**
+ * Qué se ve de una celda en el plano en miniatura de la ficha: **lo que la sala dibuja, con sus
+ * tintas, y nada más**. El sólido en clave; los tres molinetes en su rampa; el tesoro en la tinta
+ * de objetos; las dos puertas y las cuatro piezas (palanca, placa, compuerta, caja) en clave, como
+ * en la sala. El aire y la entrada no se dibujan: la entrada es aire para el dibujo también en el
+ * tubo (`sala.txt`), y un plano que marcara dónde arranca cada uno contaría la solución.
+ */
+export type CeldaDelPlano = 'solido' | 'cielo' | 'infierno' | 'dos' | 'tesoro' | 'puerta' | 'pieza';
+
+export interface TrazoDelPlano {
+  readonly columna: number;
+  readonly fila: number;
+  readonly celda: CeldaDelPlano;
+}
+
+/** Qué celda del plano es ese terreno, o `null` si no se dibuja. */
+export function celdaDelPlano(t: Terreno | undefined): CeldaDelPlano | null {
+  if (t === undefined) return null;
+  switch (t.tipo) {
+    case 'aire':
+    case 'entrada':
+      return null;
+    case 'solido':
+      return 'solido';
+    case 'molinete': {
+      const devuelve = t.devuelve ?? [];
+      if (devuelve.length > 1) return 'dos';
+      const elemento = t.elemento ?? (devuelve[0] === 'skayboy' ? 'cielo' : 'infierno');
+      return elemento === 'cielo' ? 'cielo' : 'infierno';
+    }
+    case 'tesoro':
+      return duenoDelTesoro(t) === null ? null : 'tesoro';
+    case 'puerta':
+      return 'puerta';
+    case 'palanca':
+    case 'placa':
+    case 'compuerta':
+    case 'caja':
+      return 'pieza';
+  }
+}
+
+/**
+ * **El plano del nivel**: una celda por caracter de la grilla que se dibuje, en orden de lectura,
+ * para que la página lo imprima como un sello de 15 × 9 en cada ficha del menú. Se lee del banco
+ * y de la leyenda —de ningún otro lado— y se arma en el build: el plano no cambia con la partida,
+ * no sabe de cajas que se movieron ni de compuertas abiertas. Es el nivel como se dibujó.
+ */
+export function planoDelNivel(banco: Pick<Banco, 'leyenda'>, nivel: Pick<Nivel, 'grilla'>): TrazoDelPlano[] {
+  const trazos: TrazoDelPlano[] = [];
+  nivel.grilla.forEach((renglon, fila) => {
+    for (let columna = 0; columna < renglon.length; columna++) {
+      const celda = celdaDelPlano(banco.leyenda[renglon[columna] ?? '']);
+      if (celda !== null) trazos.push({ columna, fila, celda });
+    }
+  });
+  return trazos;
 }
